@@ -825,7 +825,7 @@ app.get('/expiring/:depot_uuid/:df/:dt', function (req, res, next) {
 
   db.exec(req.params.depot_uuid === '*' ? genSql() : speSql())
   .then(function (ans) {
-    res.send(process(ans));
+    res.send(ans);
   })
   .catch(function (err) {
     next(err);
