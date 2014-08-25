@@ -118,7 +118,15 @@
             <td> {{ receipt.billed | currency }} </td>
             <td> {{ receipt.due | currency }} </td>
           </tr>
-
+        </tbody>
+        <tfoot>
+          <tr>
+            <th colspan="2">{{ "COLUMNS.TOTAL" | translate }}</th>
+            <td>{{ session.patient.total_amount | currency }}</td>
+            <td>{{ session.patient.total_due | currency }}</td>
+          </tr>
+        </tfoot>
+      </table>
     </div>
   </div>
 </div>
