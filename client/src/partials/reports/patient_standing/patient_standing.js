@@ -84,7 +84,7 @@ angular.module('bhima.controllers')
       .catch(function (err) {
         messenger.danger('An error occured:' + JSON.stringify(err));
       });
-    };
+    }
 
     $scope.isOutstanding = function isoutstanding(receipt) {
       return receipt.debit - receipt.credit !== 0;
@@ -97,7 +97,7 @@ angular.module('bhima.controllers')
       .then(processModels, handleErrors);
     });
 
-    function print () { $window.print(); };
+    function print () { $window.print(); }
     $scope.search = search;
     $scope.print = print;
 
