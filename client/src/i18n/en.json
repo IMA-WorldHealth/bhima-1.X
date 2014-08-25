@@ -253,7 +253,7 @@
     "ACCOUNT_BALANCE"    : "Account Balance",
     "LAST_PURCHASE_DATE" : "Last Purchase Date",
     "LAST_PAYMENT_DATE"  : "Last Payment Date",
-    "OUTSTANDING_BILLS"  : "Outstanding Bills",
+    "OUTSTANDING_BILLS"  : "Outstanding Bills and Other payments",
     "IMG"                : "Patient picture",
     "NO_TRANSACTION"     : "No transaction"
   },

@@ -68,7 +68,7 @@ angular.module('bhima.controllers')
           if (receipt.debit - receipt.credit !== 0){
             receipt.billed = receipt.debit;
             receipt.due = receipt.debit - receipt.credit;
-            balance += receipt.billed - receipt.due;
+            balance += receipt.debit - receipt.credit;
             sumBilled += receipt.billed;
             sumDue += receipt.due;
           }          
