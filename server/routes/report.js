@@ -167,7 +167,6 @@ module.exports = function (db, sanitize, util) {
         deferred.resolve(packageResponse);
       })
       .catch(function (error) {
-        console.log('failed', error);
         deferred.reject(error);
       });
 
@@ -297,7 +296,6 @@ module.exports = function (db, sanitize, util) {
     .then(function (rows) {
       var row = rows.pop();
       patient.last_payment_date = row.trans_date;
-      console.log('le patient :::', patient);
 
       sql =
         'SELECT trans_date FROM (' +
@@ -473,7 +471,6 @@ module.exports = function (db, sanitize, util) {
 
   /*
   function transReport(params) {
-    console.log('[transReport] params', params);
     params = JSON.parse(params);
     var deferred = q.defer();
 
@@ -490,7 +487,6 @@ module.exports = function (db, sanitize, util) {
       var sql = 'SELECT id FROM '+table+' Where '+cle+' =''+id+''';
       db.execute(sql, function(err, ans){
         if(err){
-          console.log('trans report, Query failed');
           throw err;
           return;
         }else{
@@ -519,7 +515,6 @@ module.exports = function (db, sanitize, util) {
 
               db.execute(sql, function(err, ans) {
                 if(err) {
-                  console.log('trans report, Query failed');
                   throw err;
                   // deferred.reject(err);
                   return;
@@ -541,7 +536,6 @@ module.exports = function (db, sanitize, util) {
 
         db.execute(sql, function(err, ans) {
           if(err) {
-            console.log('trans report, Query failed');
             throw err;
             // deferred.reject(err);
             return;
@@ -550,7 +544,6 @@ module.exports = function (db, sanitize, util) {
         });
 
         } else {
-          console.log('groupe vide');
           deffered.resolve(tabIds); //un tableau vide
         }
       });
@@ -607,10 +600,8 @@ module.exports = function (db, sanitize, util) {
 
     db.execute(requette, function(err, ans) {
       if (err) {
-        console.log('account statement, Query failed');
         throw err;
       }
-      console.log('on a les resultats', ans);
       def.resolve(ans);
     });
 
