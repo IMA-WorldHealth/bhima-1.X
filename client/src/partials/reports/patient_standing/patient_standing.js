@@ -10,6 +10,8 @@ angular.module('bhima.controllers')
     var dependencies = {};
     $scope.img = 'placeholder.gif';
     var session = $scope.session = {};
+    session.isSearched = false;
+    session.noRecord = false;
 
     dependencies.patients = {
       required : true,
@@ -41,7 +43,7 @@ angular.module('bhima.controllers')
 
     function processModels(models) {
       angular.extend(session, models);
-      $scope.session.date = new Date();
+      session.date = new Date();
       console.log('session', session);
     }
 
@@ -65,19 +67,23 @@ angular.module('bhima.controllers')
             sumBilled = 0;
 
         session.receipts.forEach(function (receipt) {
-          if (receipt.debit - receipt.credit === 0) { return; }
-          receipt.billed = receipt.debit;
-          receipt.due = receipt.debit - receipt.credit;
-          balance += receipt.billed - receipt.due;
-          sumBilled += receipt.billed;
-          sumDue += receipt.due;
+          if (receipt.debit - receipt.credit !== 0){
+            receipt.billed = receipt.debit;
+            receipt.due = receipt.debit - receipt.credit;
+            balance += receipt.billed - receipt.due;
+            sumBilled += receipt.billed;
+            sumDue += receipt.due;
+          }          
         });
-        
+
         session.patient.total_amount = sumBilled;
         session.patient.total_due = sumDue;
         session.patient.account_balance = balance;
+        session.isSearched = true;
+        session.noRecord = session.isSearched && !session.receipts.length;
+
       })
-      .error(function (err) {
+      .catch(function (err) {
         messenger.danger('An error occured:' + JSON.stringify(err));
       });
     };

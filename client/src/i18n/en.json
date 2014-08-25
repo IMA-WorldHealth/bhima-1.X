@@ -254,7 +254,8 @@
     "LAST_PURCHASE_DATE" : "Last Purchase Date",
     "LAST_PAYMENT_DATE"  : "Last Payment Date",
     "OUTSTANDING_BILLS"  : "Outstanding Bills",
-    "IMG"                : "Patient picture"
+    "IMG"                : "Patient picture",
+    "NO_TRANSACTION"     : "No transaction"
   },
 
   "FISCAL_YEAR"             : {
