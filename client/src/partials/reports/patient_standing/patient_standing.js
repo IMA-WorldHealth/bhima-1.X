@@ -9,6 +9,7 @@ angular.module('bhima.controllers')
   function ($scope, $window, validate, appstate, messenger, connect) {
     var dependencies = {};
     $scope.img = 'placeholder.gif';
+    var session = $scope.session = {};
 
     dependencies.patients = {
       required : true,
@@ -39,28 +40,31 @@ angular.module('bhima.controllers')
     };
 
     function processModels(models) {
-      angular.extend($scope, models);
-      $scope.date = new Date();
+      angular.extend(session, models);
+      $scope.session.date = new Date();
+      console.log('session', session);
     }
 
     function handleErrors(err) {
       messenger.danger('An error occured:' + JSON.stringify(err));
     }
 
-    $scope.search = function search() {
-      $scope.patient = $scope.selection;
-      var id = $scope.patient.debitor_uuid;
+    function search() {
+      session.patient = session.selected;
+      var id = session.patient.debitor_uuid;
       connect.fetch('/reports/patientStanding/?id=' + id)
       .then(function (data) {
-        $scope.receipts = data.receipts || [];
+        console.log('on a', data);
 
-        $scope.patient.last_payment_date = new Date(data.last_payment_date);
-        $scope.patient.last_purchase_date = new Date(data.last_purchase_date);
+        session.receipts = data.receipts || [];
+        session.patient.last_payment_date = new Date(data.last_payment_date);
+        session.patient.last_purchase_date = new Date(data.last_purchase_date);
 
         var balance = 0,
             sumDue = 0,
             sumBilled = 0;
-        $scope.receipts.forEach(function (receipt) {
+
+        session.receipts.forEach(function (receipt) {
           if (receipt.debit - receipt.credit === 0) { return; }
           receipt.billed = receipt.debit;
           receipt.due = receipt.debit - receipt.credit;
@@ -68,9 +72,10 @@ angular.module('bhima.controllers')
           sumBilled += receipt.billed;
           sumDue += receipt.due;
         });
-        $scope.patient.total_amount = sumBilled;
-        $scope.patient.total_due = sumDue;
-        $scope.patient.account_balance = balance;
+        
+        session.patient.total_amount = sumBilled;
+        session.patient.total_due = sumDue;
+        session.patient.account_balance = balance;
       })
       .error(function (err) {
         messenger.danger('An error occured:' + JSON.stringify(err));
@@ -88,7 +93,9 @@ angular.module('bhima.controllers')
       .then(processModels, handleErrors);
     });
 
-    $scope.print = function () { $window.print(); };
+    function print () { $window.print(); };
+    $scope.search = search;
+    $scope.print = print;
 
   }
 ]);

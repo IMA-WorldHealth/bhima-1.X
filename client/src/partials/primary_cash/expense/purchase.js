@@ -129,7 +129,7 @@ angular.module('bhima.controllers')
       var purchase = {
         uuid : session.selected.uuid,
         paid : 1,
-        paid_uuid : result.data.purchaseId.primary_cash_uuid
+        paid_uuid : result.data.purchaseId
       };
       return connect.basicPost('purchase', [purchase], ['uuid']);
     }
