@@ -44,7 +44,6 @@ angular.module('bhima.controllers')
     function processModels(models) {
       angular.extend(session, models);
       session.date = new Date();
-      console.log('session', session);
     }
 
     function handleErrors(err) {
@@ -56,7 +55,6 @@ angular.module('bhima.controllers')
       var id = session.patient.debitor_uuid;
       connect.fetch('/reports/patientStanding/?id=' + id)
       .then(function (data) {
-        console.log('on a', data);
 
         session.receipts = data.receipts || [];
         session.patient.last_payment_date = new Date(data.last_payment_date);
