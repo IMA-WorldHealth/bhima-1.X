@@ -138,7 +138,7 @@ angular.module('bhima.controllers')
 
         // Download new data, try and match current value to currently selected, if not select default
         if (dependency) {
-          console.log('updating ', key, 'should now call update', dependency, 'with', currentValue);
+          // console.log('updating ', key, 'should now call update', dependency, 'with', currentValue);
           updateLocation(dependency, currentValue);
         }
 
@@ -157,7 +157,7 @@ angular.module('bhima.controllers')
       if (session.locationSearch) {
         var originId = locationRelationship.village.value;
 
-        console.log('originId', originId);
+        // console.log('originId', originId);
         if (originId) {
           condition.push('patient.origin_location_id=' + originId, 'AND');
         }
