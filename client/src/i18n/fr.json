@@ -82,7 +82,8 @@
     "OFF"               : "Off",
     "AGGREGATES"        : "Agregats",
     "SIGNATURES"        : "Signature",
-    "CURRENCY"          : "Monnaie"
+    "CURRENCY"          : "Monnaie",
+    "SEARCH"            : "Chercher"
   },
 
   "ENTERPRISE"                 : {
@@ -422,6 +423,18 @@
     "ALL_PROJECTS" : "Tous Projets"
   },
 
+  "PATIENT_STANDING"     : {
+    "TITLE"              : "Rapport Constat du Patient",
+    "PLACEHOLDER"        : "Charcher le patient ...",
+    "CREATED_ON"         : "Cree en",
+    "ACCOUNT_NUMBER"     : "Numero de Compte",
+    "ACCOUNT_BALANCE"    : "Balance Compte",
+    "LAST_PURCHASE_DATE" : "Dernier date d'achat",
+    "LAST_PAYMENT_DATE"  : "Dernier date payement",
+    "OUTSTANDING_BILLS"  : "Factures impayees",
+    "IMG"                : "Photo du patient"
+  },
+
   "PATIENT_RECORDS"     : {
     "TITLE"             : "Historique des Malades",
     "ADVANCED_SEARCH"   : "Recherche Detaillee",
@@ -699,7 +712,10 @@
     "TRANSACTION_NUMBER" : "Numero Transaction",
     "SOURCE"                : "Source",
     "TOTAL_DEBIT"         : "Debit total",
-    "TOTAL_CREDIT"         : "Credit total"
+    "TOTAL_CREDIT"         : "Credit total",
+    "DATE_BILLED"         : "Date creation",
+    "AMOUNT_BILLED"       : "Montant facture",
+    "AMOUNT_DUE"          : "Montant a payer"        
   },
 
   "REPORT"                  : {

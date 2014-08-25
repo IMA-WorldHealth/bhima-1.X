@@ -284,16 +284,30 @@ module.exports = function (db, sanitize, util) {
 
       // last payment date
       sql =
-        'SELECT trans_date FROM `posting_journal` WHERE `origin_id` = 1 ORDER BY `trans_date` DESC LIMIT 1;';
+        'SELECT trans_date FROM (' +
+        ' SELECT trans_date FROM `posting_journal` WHERE `posting_journal`.`deb_cred_uuid`=' + id + ' AND `posting_journal`.`deb_cred_type`=\'D\' ' + 
+        'AND `posting_journal`.`origin_id`=(SELECT `transaction_type`.`id` FROM `transaction_type` WHERE `transaction_type`.`service_txt`=\'cash\' OR `transaction_type`.`service_txt`=\'caution\' LIMIT 1)' + 
+        ' UNION ' + 
+        'SELECT trans_date FROM `general_ledger` WHERE `general_ledger`.`deb_cred_uuid`=' + id + ' AND `general_ledger`.`deb_cred_type`=\'D\' ' + 
+        'AND `general_ledger`.`origin_id`=(SELECT `transaction_type`.`id` FROM `transaction_type` WHERE `transaction_type`.`service_txt`=\'cash\' OR `transaction_type`.`service_txt`=\'caution\' LIMIT 1)' + 
+        ') as aggregate ORDER BY trans_date DESC LIMIT 1;';
 
       return db.exec(sql);
     })
     .then(function (rows) {
       var row = rows.pop();
       patient.last_payment_date = row.trans_date;
+      console.log('le patient :::', patient);
 
       sql =
-        'SELECT trans_date FROM `posting_journal` WHERE `origin_id` = 2 ORDER BY `trans_date` DESC LIMIT 1;';
+        'SELECT trans_date FROM (' +
+        ' SELECT trans_date FROM `posting_journal` WHERE `posting_journal`.`deb_cred_uuid`=' + id + ' AND `posting_journal`.`deb_cred_type`=\'D\' ' + 
+        'AND `posting_journal`.`origin_id`=(SELECT `transaction_type`.`id` FROM `transaction_type` WHERE `transaction_type`.`service_txt`=\'sale\' OR `transaction_type`.`service_txt`=\'group_invoice\' LIMIT 1)' + 
+        ' UNION ' + 
+        'SELECT trans_date FROM `general_ledger` WHERE `general_ledger`.`deb_cred_uuid`=' + id + ' AND `general_ledger`.`deb_cred_type`=\'D\' ' + 
+        'AND `general_ledger`.`origin_id`=(SELECT `transaction_type`.`id` FROM `transaction_type` WHERE `transaction_type`.`service_txt`=\'sale\' OR `transaction_type`.`service_txt`=\'group_invoice\' LIMIT 1)' + 
+        ') as aggregate ORDER BY trans_date DESC LIMIT 1;';
+
       return db.exec(sql);
     })
     .then(function (rows) {

@@ -4,9 +4,11 @@
 
 <nav>
   <div class="col-xs-3">
-    <input class="form-bhima" ng-model="selection" typeahead="patient as formatPatient(patient) for patient in patients.data | filter:$viewValue | limitTo:10" typeahead-template-url="template.html" placeholder="{{ 'PATIENT_STANDING.PLACEHOLDER' | translate }}">
+    <input class="form-bhima" ng-model="session.selected" typeahead="patient as formatPatient(patient) for patient in session.patients.data | filter:$viewValue | limitTo:10" typeahead-template-url="template.html" placeholder="{{ 'PATIENT_STANDING.PLACEHOLDER' | translate }}">
   </div>
-  <a class="btn btn-sm btn-primary" ng-click="search()" ng-disabled="!selection">{{ "UTIL.SEARCH" | translate }}</a>
+
+  <a class="btn btn-sm btn-primary" ng-click="search()" ng-disabled="!session.selected">{{ "UTIL.SEARCH" | translate }}</a>
+
   <div class="pull-right">
     <a class="btn btn-sm btn-default" ng-click="print()"><span class="glyphicon glyphicon-print"></span> {{ "UTIL.PRINT" | translate }}</a>
   </div>
