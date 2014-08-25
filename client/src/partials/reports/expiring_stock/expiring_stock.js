@@ -11,6 +11,9 @@ angular.module('bhima.controllers')
     var session = $scope.session = {};
     var dependencies = {};
 
+    session.dateFrom = new Date();
+    session.dateTo = new Date();
+
     $scope.options = [
       {
         label : 'EXPIRING.DAY',
@@ -105,7 +108,6 @@ angular.module('bhima.controllers')
     }
 
     function cleanDepotList () {
-      console.log('voici la liste a soigner : ', $scope.uncompletedList);
       return $scope.uncompletedList.map(function (item) {
         return {
           tracking_number : item.tracking_number,
