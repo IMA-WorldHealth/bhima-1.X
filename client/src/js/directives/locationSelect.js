@@ -50,12 +50,10 @@ angular.module('bhima.directives')
       appstate.register('project', settup);
 
       function settup(project) {
-        console.log('settup');
         indexLocationDependencies();
         defineLocationRequests();
       
         var template = generateTemplate('locationConfig');
-        console.log('tmpl', template);
         element.replaceWith($compile(generateTemplate('locationConfig'))(scope));
         
         fetchInitialLocation(project.location_id)
@@ -68,6 +66,8 @@ angular.module('bhima.directives')
 
       function initialiseLocation(defaultLocation) {
         defaultLocation = defaultLocation[0];
+        
+        console.log('initialiseLocation');
 
         // Populate initial values (enterprise default)
         Object.keys(locationConfig).forEach(function (key) {
@@ -114,7 +114,8 @@ angular.module('bhima.directives')
         connect.req(config.request).then(function (result) {
 
           
-          console.log('[locationSelect] [fetchLocationData] Got data', result);
+          console.log('[locationSelect] [fetchLocationData] [', key, '][', uuidDependency, '] Got data:');
+          console.log('---->', result);
           return assignLocationData(key, result);
         });
       }
@@ -143,6 +144,7 @@ angular.module('bhima.directives')
         
         // Call any configuration that requires on this key
         if (requiresCurrentKey) {
+          console.log('<---> Reuires current key');
           fetchLocationData(requiresCurrentKey, currentLocationValue);
         }
       }
@@ -195,7 +197,7 @@ angular.module('bhima.directives')
         var compile = "";
 
         // Such meta templating
-        var componentStructure = '<div class="form-group"><label for="location-select-<%CONFIGID%>" class="control-label">{{<%CONFIGLABEL%> | translate}}</label><div class="pull-right"><span class="glyphicon glyphicon-globe"></span> {{locationStore.<%CONFIGID%>.data.length}}</div><select ng-disabled="locationSelect.session.locationSearch" ng-model="locationRelationship.<%CONFIGID%>.value" ng-options="<%CONFIGID%>.uuid as <%CONFIGID%>.<%CONFIGCOLUMN%> for <%CONFIGID%> in locationStore.<%CONFIGID%>.data | orderBy : \'name\'" ng-change="updateLocation(\'<%CONFIGDEPEND%>\', locationRelationship.<%CONFIGID%>.value)" class="form-bhima" id="location-select-<%CONFIGID%>"></select></div>';
+        var componentStructure = '<div class="form-group"><label for="location-select-<%CONFIGID%>" class="control-label">{{<%CONFIGLABEL%> | translate}}</label><div class="pull-right"><span class="glyphicon glyphicon-globe"></span> {{locationSelect.locationStore.<%CONFIGID%>.model.data.length}}</div><select ng-disabled="locationSelect.session.locationSearch" ng-model="locationSelect.locationStore.<%CONFIGID%>.value" ng-options="<%CONFIGID%>.uuid as <%CONFIGID%>.<%CONFIGCOLUMN%> for <%CONFIGID%> in locationSelect.locationStore.<%CONFIGID%>.model.data | orderBy : \'name\'" ng-change="locationSelect.fetchLocationData(\'<%CONFIGDEPEND%>\', locationSelect.locationStore.<%CONFIGID%>.value)" class="form-bhima" id="location-select-<%CONFIGID%>"><option value="" ng-if="!locationSelect.locationStore.<%CONFIGID%>.model.data.length" disblaed="disabled">----</option></select></div>';
 
         // var initialTemplate =
         var templateString = "";
@@ -215,6 +217,7 @@ angular.module('bhima.directives')
       }
 
       namespace.lookupModel = lookupModel;
+      namespace.fetchLocationData = fetchLocationData;
     }
   };
 }]);
