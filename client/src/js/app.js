@@ -202,8 +202,8 @@
       templateUrl: 'partials/reports/chart_of_accounts/chart.html'
     })
     .when('/invoice/:originId/:invoiceId', {
-      controller: 'invoice',
-      templateUrl: 'partials/invoice/invoice.html'
+      controller: 'receipts',
+      templateUrl: 'partials/receipts/receipts.html'
     })
     .when('/credit_note/:invoiceId?/', {
       controller: 'creditNote',
