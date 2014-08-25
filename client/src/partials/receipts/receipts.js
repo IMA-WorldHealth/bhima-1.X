@@ -1,23 +1,23 @@
 //TODO Debtor table currently has no personal information - this strictly ties debtors to patients
 // (or some existing table) - a reverse lookup from debtor / creditor ID to recipient is needed.
 angular.module('bhima.controllers')
-.controller('invoice', [
+.controller('receipts', [
   '$scope',
   '$routeParams',
+  '$q',
   'validate',
-  'messenger',
   'exchange',
   'appstate',
-  function ($scope, $routeParams, validate, messenger, exchange, appstate) {
+  function ($scope, $routeParams, $q, validate, exchange, appstate) {
 
-    var dependencies = {},
+    var templates, dependencies = {},
         origin       = $scope.origin = $routeParams.originId,
         invoiceId    = $scope.invoiceId = $routeParams.invoiceId,
         process      = {};
 
-    $scope.timestamp = new Date();
-
     if (!(origin && invoiceId)) { throw new Error('Invalid parameters'); }
+
+    $scope.timestamp = new Date();
 
     dependencies.recipient = {
       required: true
@@ -100,10 +100,14 @@ angular.module('bhima.controllers')
       .then(cautionInvoice);
     }
 
-    function processTransfert (transfert_uuid) {
+    function getLocation(locationUuid) {
+      return validate.process({ query : 'location/' + locationUuid});
+    }
 
-      var dependencies = {};
-      dependencies.enterprise = {
+    function processTransfer(uuid) {
+      var depends = {};
+
+      depends.enterprise = {
         query : {
           tables : {
             'enterprise' : {columns : ['id', 'name', 'phone', 'email', 'location_id' ]},
@@ -113,7 +117,7 @@ angular.module('bhima.controllers')
         }
       };
 
-      dependencies.transfert = {
+      depends.transfer = {
         required: true,
         query:  {
           tables: {
@@ -122,16 +126,13 @@ angular.module('bhima.controllers')
             account : {columns : ['account_txt']}
           },
           join : ['primary_cash.user_id=user.id', 'primary_cash.account_id=account.id'],
-          where: ['primary_cash.uuid=' + transfert_uuid]
+          where: ['primary_cash.uuid=' + uuid]
         }
       };
-      validate.process(dependencies).then(getLocation).then(transfertInvoice);
 
-      function getLocation (model) {
-        dependencies.location = {};
-        dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id;
-        return validate.process(dependencies, ['location']);
-      }
+      validate.process(depends)
+        .then(function (model) { return getLocation(model.enterprise[0].location_id); })
+        .then(transfertInvoice);
     }
 
     function processConvention (convention_uuid) {
@@ -150,7 +151,9 @@ angular.module('bhima.controllers')
           where: ['primary_cash.uuid=' + convention_uuid]
         }
       };
-      validate.process(dependencies, ['convention']).then(buildConventionInvoice);
+
+      validate.process(dependencies, ['convention'])
+        .then(buildConventionInvoice);
     }
 
     function processCash(requestId) {
@@ -445,10 +448,6 @@ angular.module('bhima.controllers')
       validate.process(dependencies, ['credit']).then(buildCreditRecipient);
     }
 
-    function processDebtor() {
-      messenger.danger('Method not implemented');
-    }
-
     function processPatient() {
       dependencies.recipient.query = {
         tables: {},
@@ -524,7 +523,6 @@ angular.module('bhima.controllers')
         $scope.invoice.employee_code = model.purchase.data[0].code;
         $scope.invoice.cost = model.purchase.data[0].cost;
       }
-
     }
 
     function processServiceDist (identifiant){
@@ -765,7 +763,8 @@ angular.module('bhima.controllers')
 
     function buildConventionInvoice (model) {
       dependencies.location.query = 'location/' + model.convention.data[0].location_id;
-      validate.process(dependencies, ['location']).then(conventionInvoice);
+      validate.process(dependencies, ['location'])
+        .then(conventionInvoice);
     }
 
     function buildInvoiceQuery(model) {
@@ -921,7 +920,6 @@ angular.module('bhima.controllers')
     }
 
     function transfertInvoice (model) {
-
       $scope.invoice = {};
       $scope.model = model;
       $scope.invoice.enterprise_name = model.enterprise.data[0].name;
@@ -938,29 +936,73 @@ angular.module('bhima.controllers')
       $scope.location = $scope.model.location.data[0];
     }
 
-    process = {
-      'cash'                  : processCash,
-      'caution'               : processCaution,
-      'sale'                  : processSale,
-      'credit'                : processCredit,
-      'debtor'                : processDebtor,
-      'patient'               : processPatient,
-      'purchase'              : processPurchase,
-      'pcash_transfert'       : processTransfert,
-      'pcash_convention'      : processConvention,
-      'movement'              : processMovement,
-      'consumption'           : processConsumption,
-      'indirect_purchase'     : processIndirectPurchase,
-      'confirm_purchase'      : processConfirmPurchase,
-      'service_distribution'  : processServiceDist,
-      'generic_income'        : processGenericIncome,
-      'generic_expense'       : processGenericExpense
-
+    templates = {
+      'cash' : {
+        fn  : processCash,
+        url : '/partials/receipts/templates/cash.html'
+      },
+      'caution' : {
+        fn  : processCaution,
+        url : '/partials/receipts/templates/caution.html'
+      },
+      'sale' : {
+        fn  : processSale,
+        url : '/partials/receipts/templates/sale.html'
+      },
+      'credit' : {
+        fn  : processCredit,
+        url : '/partials/receipts/templates/credit.html'
+      },
+      'patient' : {
+        fn  : processPatient,
+        url : '/partials/receipts/templates/patient.html'
+      },
+      'purchase' : {
+        fn  : processPurchase,
+        url : '/partials/receipts/templates/purchase.html'
+      },
+      'pcash_transfert' : {
+        fn  : processTransfer,
+        url : '/partials/receipts/templates/transfer.html'
+      },
+      'pcash_convention' : {
+        fn  : processConvention,
+        url : '/partials/receipts/templates/convention.html'
+      },
+      'movement' : {
+        fn  : processMovement,
+        url : '/partials/receipts/templates/movement.html'
+      },
+      'consumption' : {
+        fn  : processConsumption,
+        url : '/partials/receipts/templates/consumption.html'
+      },
+      'indirect_purchase' : {
+        fn  : processIndirectPurchase,
+        url : '/partials/receipts/templates/indirect.purchase.html'
+      },
+      'confirm_purchase' : {
+        fn  : processConfirmPurchase,
+        url : '/partials/receipts/templates/confirm.purchase.html'
+      },
+      'service_distribution' : {
+        fn  : processServiceDist,
+        url : '/partials/receipts/templates/distribution.html'
+      },
+      'generic_income' : {
+        fn  : processGenericIncome,
+        url : '/partials/receipts/templates/generic.income.html'
+      },
+      'generic_expense' : {
+        fn              : processGenericExpense,
+        url             : '/partials/receipts/templates/generic.income.html'
+      }
     };
 
     appstate.register('project', function (project) {
       $scope.project = project;
-      process[origin](invoiceId);
+      $scope.template = templates[origin];
+      templates[origin].fn(invoiceId);
     });
 
     $scope.convert = convert;
