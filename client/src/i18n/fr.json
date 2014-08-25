@@ -424,7 +424,7 @@
   },
 
   "PATIENT_STANDING"     : {
-    "TITLE"              : "Rapport Constat du Patient",
+    "TITLE"              : "Etat Financier du Patient",
     "PLACEHOLDER"        : "Charcher le patient ...",
     "CREATED_ON"         : "Cree en",
     "ACCOUNT_NUMBER"     : "Numero de Compte",
@@ -432,7 +432,8 @@
     "LAST_PURCHASE_DATE" : "Dernier date d'achat",
     "LAST_PAYMENT_DATE"  : "Dernier date payement",
     "OUTSTANDING_BILLS"  : "Factures impayees",
-    "IMG"                : "Photo du patient"
+    "IMG"                : "Photo du patient",
+    "NO_TRANSACTION"     : "pas des transaction"
   },
 
   "PATIENT_RECORDS"     : {

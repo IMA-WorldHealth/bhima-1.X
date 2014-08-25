@@ -17,14 +17,14 @@
 <div class="report">
   <div class="reportBody">
     <div class="reportFrame">
-      <h4>{{ "PATIENT_STANDING.TITLE" | translate }} <small> {{ "PATIENT_STANDING.CREATED_ON" | translate }} {{ date | date }}</small></h4>
+      <h4>{{ "PATIENT_STANDING.TITLE" | translate }} <small> {{ "PATIENT_STANDING.CREATED_ON" | translate }} {{ session.date | date }}</small></h4>
 
-      <div class="media">
+      <div class="media" ng-show="!session.noRecord">
         <span class="pull-left">
           <img class="media-object" ng-src="/assets/{{img}}" alt="{{ 'PATIENT_STANDING.IMG' | translate }}" width="150" height="150">
         </span>
         <div class="media-body">
-          <h4 class="media-heading">{{ patient.first_name }} {{ patient.last_name }}</h4>
+          <h4 class="media-heading">{{ patient.first_name }} {{ session.patient.last_name }}</h4>
           <div class="media-body">
             <form class="form-horizontal">
 
@@ -33,14 +33,14 @@
                   {{ "COLUMNS.ID" | translate }}
                 </label>
                 <div class="col-xs-4">
-                  <p class="form-control-static">{{ patient.abbr + patient.project_id }} <small ng-if="!!patient">({{ patient.uuid }})</small></p>
+                  <p class="form-control-static">{{ session.patient.abbr + session.patient.project_id }} <small ng-if="!!patient">({{ session.patient.uuid }})</small></p>
                 </div>
 
                 <label class="control-label col-xs-2">
                   {{ "COLUMNS.REGISTERED" | translate }}
                 </label>
                 <div class="col-xs-4">
-                  <p class="form-control-static">{{ patient.registration_date | date }}</p>
+                  <p class="form-control-static">{{ session.patient.registration_date | date }}</p>
                 </div>
               </div>
 
@@ -49,14 +49,14 @@
                   {{ "COLUMNS.SEX" | translate }}
                 </label>
                 <div class="col-xs-4">
-                  <p class="form-control-static">{{ patient.sex }}</p>
+                  <p class="form-control-static">{{ session.patient.sex }}</p>
                 </div>
 
                 <label class="control-label col-xs-2">
                   {{ "COLUMNS.DOB" | translate }}
                 </label>
                 <div class="col-xs-4">
-                  <p class="form-control-static">{{ patient.dob | date }}</p>
+                  <p class="form-control-static">{{ session.patient.dob | date }}</p>
                 </div>
               </div>
 
@@ -65,14 +65,14 @@
                   {{ "PATIENT_STANDING.ACCOUNT_NUMBER" | translate }}
                 </label>
                 <div class="col-xs-4">
-                  <p class="form-control-static">{{ accounts.get(patient.account_id).account_number }}</p>
+                  <p class="form-control-static">{{ session.accounts.get(session.patient.account_id).account_number }}</p>
                 </div>
 
                 <label class="control-label col-xs-2">
                   {{ "PATIENT_STANDING.ACCOUNT_BALANCE" | translate }}
                 </label>
                 <div class="col-xs-4">
-                  <p class="form-control-static">{{ patient.account_balance | currency }}</p>
+                  <p class="form-control-static">{{ session.patient.account_balance | currency }}</p>
                 </div>
               </div>
 
@@ -81,20 +81,23 @@
                   {{ "PATIENT_STANDING.LAST_PURCHASE_DATE" | translate }}
                 </label>
                 <div class="col-xs-4">
-                  <p class="form-control-static">{{ patient.last_purchase_date | date }}</p>
+                  <p class="form-control-static">{{ session.patient.last_purchase_date | date }}</p>
                 </div>
 
                 <label class="control-label col-xs-2">
                   {{ "PATIENT_STANDING.LAST_PAYMENT_DATE" | translate }}
                 </label>
                 <div class="col-xs-4">
-                  <p class="form-control-static">{{ patient.last_payment_date | date }}</p>
+                  <p class="form-control-static">{{ session.patient.last_payment_date | date }}</p>
                 </div>
               </div>
 
             </form>
           </div>
         </div>
+      </div>
+      <div class="media" ng-if="session.noRecord">
+        <h4>{{ "PATIENT_STANDING.TITLE" | translate }} <small> {{ "PATIENT_STANDING.NO_TRANSACTION" | translate }}</small></h4>
       </div>
 
       <h4> {{ "PATIENT_STANDING.OUTSTANDING_BILLS" | translate }} </h4>
@@ -109,21 +112,12 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="receipt in receipts | filter:isOutstanding | orderBy:'trans_date'">
+          <tr ng-repeat="receipt in session.receipts | filter:isOutstanding | orderBy:'trans_date'">
             <td> {{ receipt.inv_po_id || 'Unreferenced Balance' }} </td>
             <td> {{ receipt.trans_date | date }} </td>
             <td> {{ receipt.billed | currency }} </td>
             <td> {{ receipt.due | currency }} </td>
           </tr>
-        </tbody>
-        <tfoot>
-          <tr>
-            <th colspan="2">{{ "COLUMNS.TOTAL" | translate }}</th>
-            <td>{{ patient.total_amount | currency }}</td>
-            <td>{{ patient.total_due | currency }}</td>
-          </tr>
-        </tfoot>
-      </table>
 
     </div>
   </div>
