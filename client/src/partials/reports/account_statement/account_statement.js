@@ -9,98 +9,132 @@ angular.module('bhima.controllers')
   'uuid',
   'util',
   'messenger',
-  function ($scope, $q, $http, $routeParams, $translate, appstate, uuid, util, messenger) {
+  '$window',
+  'validate',
+  function ($scope, $q, $http, $routeParams, $translate, appstate, uuid, util, messenger, $window, validate) {
     var dependencies = {};
     var session = $scope.session = {
       reportDate : new Date(),
       timestamp : new Date(),
       config : {
-        limit : 25
+        limit : 10
       },
       loaded : false,
       select : false
     };
-    session.config.dateFrom = util.convertToMysqlDate(session.reportDate);
-    session.config.dateTo = session.config.dateFrom;
+    session.config.dateFrom = new Date();
+    session.config.dateTo = new Date();
 
-    dependencies.report = {
-      // query : '/report/account_statement/'
-    };
-   
-    parseParams();
-
-    function parseParams() {
-      session.requestId = $routeParams.id;
-
-      if (!session.requestId) {
-        session.select = true;
-        return;
+    dependencies.accounts = {
+      query : {
+        tables : {
+          'account' :{
+            columns : ['id', 'account_txt', 'account_number']
+          }
+        }
       }
+    }
 
-      return fetchReport(session.requestId);
+    appstate.register('project', function (project) {
+      $scope.project = project;
+      validate.process(dependencies)
+      .then(init, handleError);
+    });
+
+    function init (models) {
+      angular.extend(session, models);
+    }
+
+    function handleError (err) {
+       messenger.danger($translate.instant('REPORT.ACCOUNT_STATEMENT.CANNOT_FIND_ACCOUNT') + ' ' + session.requestId);      
+    }
+
+    function formatAccount (account) {
+      return account ? [account.account_txt].join(' ') : '';
+    }
+
+    function requestAccount(accountId) {
+      if (accountId) { fetchReport(accountId); }
     }
 
     function fetchReport(accountId) {
       session.config.accountId = accountId;
 
-      processProject()
-      .then(
-        processReport
-      ).then(
-        initialise
-      ).catch(
-        handleError
-      );
-    }
-   
-    function initialise(model) {
-      session.loaded = true;
-      session.select = false;
-
-      $scope.report = model.data;
-      console.log($scope.report);
-      $scope.report.uuid = uuid();
+        processReport()
+        .then(
+          initialise
+        ).catch(
+          handleError
+        );
     }
 
     function processReport() {
+      dependencies.report = {};
       var statementParams = {
-        dateFrom : session.config.dateFrom,
-        dateTo : session.config.dateTo,
+        dateFrom : util.sqlDate(session.config.dateFrom),
+        dateTo : util.sqlDate(session.config.dateTo),
         order : 'date',
-        limit : session.config.limit,
+        limit : angular.isNumber(session.config.limit)? session.config.limit : 10,
         accountId : session.config.accountId
       };
 
       dependencies.report.query =
         '/reports/accountStatement/?' +
-        JSON.stringify(statementParams);
-   
-      console.log('requesting', statementParams);
+        JSON.stringify(statementParams);   
       return $http.get(dependencies.report.query);
     }
 
-    function processProject() {
-      var deferred = $q.defer();
+    function initialise(model) {
+      $scope.report = model.data;
+      console.log($scope.report);
+      $scope.report.uuid = uuid();
+    }
+
+
+
+    
+   
+    // parseParams();
+
+    // function parseParams() {
+    //   session.requestId = $routeParams.id;
+
+    //   if (!session.requestId) {
+    //     session.select = true;
+    //     return;
+    //   }
+
+    //   return fetchReport(session.requestId);
+    // }
+
+    
+   
+    
+
+    
+
+    // function processProject() {
+    //   var deferred = $q.defer();
      
-      appstate.register('project', function (result) {
-        $scope.project = result;
-        deferred.resolve(result);
-      });
-      return deferred.promise;
-    }
+    //   appstate.register('project', function (result) {
+    //     $scope.project = result;
+    //     deferred.resolve(result);
+    //   });
+    //   return deferred.promise;
+    // }
 
-    function handleError(error) {
-      messenger.danger($translate.instant('REPORT.ACCOUNT_STATEMENT.CANNOT_FIND_ACCOUNT') + ' ' + session.requestId);
-      session.loaded = false;
-      session.select = true;
-      throw error;
-    }
+    // function handleError(error) {
+    //   messenger.danger($translate.instant('REPORT.ACCOUNT_STATEMENT.CANNOT_FIND_ACCOUNT') + ' ' + session.requestId);
+    //   session.loaded = false;
+    //   session.select = true;
+    //   throw error;
+    // }
 
-    function requestAccount(accountId) {
-      if (accountId) { fetchReport(accountId); }
-      console.log('requestId', accountId);
-    }
+    
 
+    function print () { $window.print(); }
+    $scope.print = print;
     $scope.requestAccount = requestAccount;
+    $scope.formatAccount = formatAccount;
   }
 ]);

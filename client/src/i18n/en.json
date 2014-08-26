@@ -414,7 +414,12 @@
     "ACCOUNT_STATEMENT"     : {
       "TITLE"               : "Account Summary Report",
       "NO_ACCOUNT_SPECIFIED": "Account ID not specified",
-      "CANNOT_FIND_ACCOUNT" : "Unable to find account"
+      "CANNOT_FIND_ACCOUNT" : "Unable to find account",
+      "PERIOD"              : "Period",
+      "ACCOUNT_CREATED"     : "Account created on",
+      "SUMMARY"             : "Account Summary",
+      "DETAILS"             : "Account transactions details"
+
     }
   },
 

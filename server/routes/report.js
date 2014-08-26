@@ -102,13 +102,17 @@ module.exports = function (db, sanitize, util) {
 
     params.dateFrom = '\'' + params.dateFrom + '\'';
     params.dateTo = '\'' + params.dateTo + '\'';
+    params.accountId = '\'' + params.accountId + '\'';
 
     // Define report sections
     report.overview = {
       query :
-        'SELECT SUM(debit_equiv) as `invoiced`, SUM(credit_equiv) as `credit`, SUM(debit_equiv - credit_equiv) as `balance` ' +
-        'FROM posting_journal ' +
-        'WHERE account_id = ' + params.accountId + ' AND trans_date >= ' + params.dateFrom + ' AND trans_date <= ' + params.dateTo + ';',
+        'SELECT COUNT(uuid) as `count`, SUM(debit_equiv) as `debit`, SUM(credit_equiv) as `credit`, SUM(debit_equiv - credit_equiv) as `balance` ' +
+        'FROM ( ' +
+        'SELECT `posting_journal`.`uuid`, `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`trans_date` FROM `posting_journal` WHERE' + 
+        ' `posting_journal`.`account_id`=' + params.accountId + ' UNION SELECT `general_ledger`.`uuid`, `general_ledger`.`debit_equiv`, ' + 
+        '`general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`trans_date` FROM `general_ledger` WHERE `general_ledger`.`account_id` =' + params.accountId + ')' + 
+        'as `pg`, account as `a` WHERE `a`.`id` = `pg`.`account_id` AND `pg`.`account_id` = ' + params.accountId + ' AND trans_date >= ' + params.dateFrom + ' AND trans_date <= ' + params.dateTo + ';',
       singleResult : true
     };
 
@@ -118,28 +122,23 @@ module.exports = function (db, sanitize, util) {
       singleResult : true
     };
 
-    report.balance = {
-      query :
-        'SELECT SUM(debit_equiv) as `debit`, SUM(credit_equiv) as `credit`, sum(debit_equiv - credit_equiv) as `balance`, COUNT(uuid) as `count` ' +
-        'FROM ' +
-        '(SELECT uuid, debit_equiv, credit_equiv FROM posting_journal WHERE account_id = ' + params.accountId + ' AND trans_date >= ' + params.dateFrom + ' AND trans_date <= ' + params.dateTo + ' ORDER BY trans_date DESC LIMIT ' + (params.limit) + ', 18446744073709551615)a;',
-      singleResult : true
-    };
-
-    report.payment = {
-      query :
-        'SELECT SUM(credit_equiv) as `payed` ' +
-        'FROM posting_journal ' +
-        'WHERE account_id=' + params.accountId + ' AND origin_id=1 ' + ' AND trans_date >= ' + params.dateFrom + ' AND trans_date <= ' + params.dateTo + ';',
-      singleResult : true
-    };
+    // report.balance = {
+    //   query :
+    //     'SELECT SUM(debit_equiv) as `debit`, SUM(credit_equiv) as `credit`, sum(debit_equiv - credit_equiv) as `balance`, COUNT(uuid) as `count` ' +
+    //     'FROM ' +
+    //     '(SELECT uuid, debit_equiv, credit_equiv FROM posting_journal WHERE account_id = ' + params.accountId + ' AND trans_date >= ' + params.dateFrom + ' AND trans_date <= ' + params.dateTo + ' ORDER BY trans_date DESC LIMIT ' + (params.limit) + ', 18446744073709551615)a;',
+    //   singleResult : true
+    // };
 
     report.detail = {
+
       query :
-        'SELECT trans_date, description, inv_po_id, debit_equiv, credit_equiv, uuid ' +
-        'FROM posting_journal ' +
-        'WHERE account_id = ' + params.accountId + ' AND trans_date >= ' + params.dateFrom + ' AND trans_date <= ' + params.dateTo + ' ' +
-        'ORDER BY trans_date DESC LIMIT ' + params.limit + ';',
+        'SELECT debit_equiv, credit_equiv, trans_date, description, inv_po_id ' +
+        'FROM ( ' +
+        'SELECT `posting_journal`.`uuid`, `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`trans_date`, `posting_journal`.`description`, `posting_journal`.`inv_po_id` FROM `posting_journal` WHERE' + 
+        ' `posting_journal`.`account_id`=' + params.accountId + ' UNION SELECT `general_ledger`.`uuid`, `general_ledger`.`debit_equiv`, ' + 
+        '`general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`trans_date`, `general_ledger`.`description`, `general_ledger`.`inv_po_id` FROM `general_ledger` WHERE `general_ledger`.`account_id` =' + params.accountId + ')' + 
+        'as `pg`, account as `a` WHERE `a`.`id` = `pg`.`account_id` AND `pg`.`account_id` = ' + params.accountId + ' AND trans_date >= ' + params.dateFrom + ' AND trans_date <= ' + params.dateTo + ' ORDER BY trans_date DESC LIMIT ' + params.limit + ';',
       singleResult : false
     };
 
@@ -152,6 +151,7 @@ module.exports = function (db, sanitize, util) {
     // Handle results
     q.all(queryStatus)
       .then(function (result) {
+        console.log('result :::', result);
         var packageResponse = {};
 
         reportSections.forEach(function (key, index) {
@@ -163,6 +163,8 @@ module.exports = function (db, sanitize, util) {
         if (!report.account.result) {
           return deferred.reject(new Error('Unkown account ' + params.accountId));
         }
+
+        console.log('packageResponse :::', packageResponse);
 
         deferred.resolve(packageResponse);
       })

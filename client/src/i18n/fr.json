@@ -756,7 +756,16 @@
     "VISIBLE_PERIODS"       : "Periods Visible",
     "CHOOSE_PERIOD"         : "Choissir Period",
     "INCOME_EXPENSE_REPORT" : "Rapport des Revenues et Depense",
-    "TRANSACTIONS_BY_ACCOUNT" : "Transactions par Compte"
+    "TRANSACTIONS_BY_ACCOUNT" : "Transactions par Compte",
+    "ACCOUNT_STATEMENT"     : {
+      "TITLE"               : "Rapport sommaire des comptes",
+      "NO_ACCOUNT_SPECIFIED": "ID compte non Specifie",
+      "CANNOT_FIND_ACCOUNT" : "Ne peut trouver le compte",
+      "PERIOD"              : "Periode",
+      "ACCOUNT_CREATED"     : "Compte cree en",
+      "SUMMARY"             : "Sommaire compte",
+      "DETAILS"             : "Details transactions du compte"
+    }
 
   },
 
