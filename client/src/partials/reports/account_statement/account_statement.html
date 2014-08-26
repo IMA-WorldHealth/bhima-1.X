@@ -3,49 +3,52 @@
 </header>
 
 <nav>
-<!-- <div class="pull&#45;right"> -->
-  <div class="row">
 
-    <div class="col-xs-3">
-      <input ng-change="requestAccount(session.requestId)" ng-disabled="session.select || !session.loaded" type="date" ng-model="session.config.dateFrom" class="form-bhima">
-    </div>
-    <div class="col-xs-3">
-      <input ng-change="requestAccount(session.requestId)" ng-disabled="session.select || !session.loaded" type="date" ng-model="session.config.dateTo" class="form-bhima">
-    </div>
-
-    <!-- <div class="col&#45;xs&#45;3"> -->
-    <!--   <input ng&#45;disabled="session.select || !session.loaded" type="number" class="form&#45;bhima spinner" ng&#45;model="session.config.limit"> -->
-    <!-- </div> -->
-
+  <div class="col-xs-3">
+    <input ng-model="session.config.limit" type="number" class="form-bhima"/>
   </div>
-  <!-- </div> -->
+
+  <div class="col-xs-3">    
+    <input ng-change="requestAccount(session.requestId)" type="date" ng-model="session.config.dateFrom" class="form-bhima">
+  </div>
+
+  <div class="col-xs-3">
+    <input ng-change="requestAccount(session.requestId)" type="date" ng-model="session.config.dateTo" class="form-bhima">
+  </div>
+
+  <div class="pull-right">
+    <a class="btn btn-sm btn-default" ng-click="print()"><span class="glyphicon glyphicon-print"></span> {{ "UTIL.PRINT" | translate }}</a>
+  </div>
 </nav>
 
-<!-- <div class="reportBody" style="margin&#45;top: 87px"> -->
 <div class="reportBody" style="margin-top: 87px">
   <div class="reportFrame">
-    <!-- <div ng&#45;if="!session.loaded">Loading report...</div> -->
     
-    <div ng-if="session.select" style="margin-bottom : 15px">
+    <div style="margin-bottom : 15px">
       <div style="margin-bottom : 15px">
         {{ "REPORT.ACCOUNT_STATEMENT.NO_ACCOUNT_SPECIFIED" | translate }}
       </div>
       
       <div class="input-group"> 
-        <input class="form-bhima" type="text" ng-model="session.requestId" placeholder="Account ID">
+        <input 
+          class="form-bhima"
+          type="text"
+          ng-model="session.requestId"
+          placeholder="Account ID"
+          typeahead="account.id as formatAccount(account) for account in session.accounts.data | filter:$viewValue | limitTo:10" typeahead-template-url="AccountList.html"
+          typeahead-on-select="requestAccount(session.requestID)"
+          >
         <span class="input-group-btn">
           <button ng-click="requestAccount(session.requestId)" class="btn btn-default btn-sm square">{{ "FORM.SUBMIT" | translate }}</button>
         </span>
-      </div>
-      
+      </div>      
     </div>
   
-    <!-- <div> -->
-    <div ng-if="session.loaded">
+    <div>
       <div class="row">
         <div class="col-xs-12">
           <div class="pull-left">
-            <h3>Account Statement <small> {{report.account.account_txt}}</small></h3>
+            <h3>{{"REPORT.ACCOUNT_STATEMENT.TITLE" | translate}} <small> {{report.account.account_txt}}</small></h3>
           </div>
           <div class="pull-right">
             {{session.timestamp | date}}
@@ -69,15 +72,15 @@
           <table class="reportTable">
             <thead>
               <tr>
-                <th>Account Number</th>
-                <th>Statement Period</th>
+                <th>{{"COLUMNS.ACCOUNT_NUMBER" | translate}}</th>
+                <th>{{"REPORT.ACCOUNT_STATEMENT.PERIOD" | translate}}</th>
               </tr>
             </thead>
 
             <tbody>
               <tr>
                 <td>{{report.account.account_number}}</td>
-                <td>{{session.config.dateFrom | date}} to {{session.config.dateTo | date}}</td>
+                <td>{{session.config.dateFrom | date}} -- {{session.config.dateTo | date}}</td>
               </td>
             </tbody>
           </table>
@@ -87,7 +90,7 @@
           <table class="reportTable">
             <thead>
               <tr>
-                <th>Account Created</th>
+                <th>{{"REPORT.ACCOUNT_STATEMENT.ACCOUNT_CREATED" | translate}}</th>
               </tr>
             </thead>
             <tbody>
@@ -102,25 +105,21 @@
           <table class="reportTable">
             <thead>
               <tr>
-                <th colspan="2">Account Summary</th>
+                <th colspan="2">{{ "REPORT.ACCOUNT_STATEMENT.SUMMARY" | translate }}</th>
               </tr>
             </thead>
 
             <tbody>
               <tr>
-                <td>Invoiced</td>
-                <td>{{report.overview.invoiced | currency}}</td>
+                <td>{{"COLUMNS.DEBIT" | translate}}</td>
+                <td>{{report.overview.debit | currency}}</td>
               </tr>
               <tr>
-                <td>Payments</td>
-                <td>{{report.payment.payed | currency}}</td>
-              </tr>
-              <tr>
-                <td>Credit</td>
+                <td>{{"COLUMNS.CREDIT" | translate}}</td>
                 <td>{{report.overview.credit | currency}}</td>
               </tr>
               <tr>
-                <td style="font-weight: bold">Account Balance</td>
+                <td style="font-weight: bold">{{"COLUMNS.BALANCE" | translate}}</td>
                 <td style="font-weight: bold">{{report.overview.balance | currency}}</td>
               </tr>
             </tbody>
@@ -130,55 +129,37 @@
 
       <div class="row">
         <div class="col-xs-12">
-          <!-- Transaction Detail (ordered : ASC, limit : 10) -->
           <table class="reportTable">
             <thead>
               <tr>
                 <th colspan="6">
-                  Transaction Detail 
+                {{ "REPORT.ACCOUNT_STATEMENT.DETAILS" | translate }}
                   <small style="font-size: 8px">(Ordered : Date, Limit {{session.config.limit}})</small>
                 </th>
               </tr>
               <tr>
-                <th>Date</th>
-                <th>Description</th>
-                <!-- <th>Debtor</th> -->
-                <th>Invoice Ref</th>
-                <th>Debtor Ref</th>
-                <th>Debit</th>
-                <th>Credit</th>
-                <!-- <th>Balance</th> -->
+                <th>{{ "COLUMNS.DATE" | translate }}</th>
+                <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
+                <th>{{ "COLUMNS.INVPO_ID" | translate }}</th>
+                <th>{{ "COLUMNS.DEBIT" | translate }}</th>
+                <th>{{ "COLUMNS.CREDIT" | translate }}</th>
               </tr>
             </thead>
             
             <tbody>
-              <!-- Group row -->
               <tr>
-                <td colspan="4">[{{report.balance.count}} Transactions Grouped] <small>(Display limit is {{session.config.limit}})</small></td>
+                <td colspan="3">[{{report.balance.count}} Transactions Grouped] <small>(Display limit is {{session.config.limit}})</small></td>
                 <td>{{report.balance.debit | currency}}</td>
                 <td>{{report.balance.credit | currency}}</td>
-                <!-- <td>{{report.balance.balance | currency}}</td> -->
               </tr>
               
-              <!-- Transaction rows -->
               <tr ng-repeat="item in report.detail">
                 <td>{{item.trans_date | date}}</td>
                 <td>{{item.description}}</td>
                 <td>{{item.inv_po_id}}</td>
-                <td>{{item.uuid}}</td>
                 <td>{{item.debit_equiv | currency}}</td>
                 <td>{{item.credit_equiv | currency}}</td>
-
-                <!-- FIXME Ordering issue with balance and retreival from DB-->
-                <!-- <td>{{item.balance | currency}}</td> -->
               </tr>
-              
-              <!-- FIXME -->
-              <!-- Total row -->
-              <!-- <tr> -->
-                <!-- <td colspan="5" style="text&#45;align: right; padding&#45;right: 10px; font&#45;weight: bold;">Final Balance</td> -->
-                <!-- <td>{{report.overview.balance | currency}}</td> -->
-              <!-- </tr> -->
             </tbody>
           </table>
         </div>
@@ -189,3 +170,11 @@
     </div>
   </div>
 </div>
+
+<script type="text/ng-template" id="AccountList.html">
+  <a>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+    <span><b>[{{ match.model.account_number }}]</b></span>
+  </a>
+</script>
+
