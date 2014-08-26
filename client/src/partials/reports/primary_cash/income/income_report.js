@@ -8,7 +8,8 @@ angular.module('bhima.controllers')
   'messenger',
   'util',
   'appcache',
-  function ($scope, $q, connect, appstate, validate, messenger, util, Appcache) {
+  'exchange',
+  function ($scope, $q, connect, appstate, validate, messenger, util, Appcache,exchange) {
     var session = $scope.session = {};
     var dependencies = {};
     var cache = new Appcache('income_report');
@@ -32,7 +33,19 @@ angular.module('bhima.controllers')
         join : ['cash_box.id=cash_box_account_currency.cash_box_id', 'currency.id=cash_box_account_currency.currency_id' ]
       }
     };
-    dependencies.records = {};    
+    
+    dependencies.records = {};
+
+    dependencies.currencies = {
+      required : true,
+      query : {
+        tables : {
+          'currency' : {
+            columns : ['id', 'symbol']
+          }
+        }
+      }
+    };
 
     cache.fetch('selectedCash').then(load);
 
@@ -41,6 +54,7 @@ angular.module('bhima.controllers')
       
       appstate.register('project', function(project) {
         session.project = project;
+
         dependencies.cashes.query.where = ['cash_box.project_id=' + project.id, 'AND', 'cash_box.is_auxillary=0'];
         validate.process(dependencies, ['cashes'])
         .then(init)
@@ -73,8 +87,9 @@ angular.module('bhima.controllers')
       };
 
       dependencies.records.query = '/reports/income_report/?' + JSON.stringify(request);      
-      validate.refresh(dependencies, ['records'])
+      validate.refresh(dependencies, ['records','currencies'])
       .then(prepareReport)
+      .then(convert)
       .catch(function (err) {
        messenger.danger(err.toString());
 
@@ -83,9 +98,25 @@ angular.module('bhima.controllers')
 
     function prepareReport (model) {
       session.model = model;
+      //Currencies
+      $scope.currencies = session.model.currencies;
+      session.currency = session.project.currency_id;
     }
 
     $scope.setSelectedCash = setSelectedCash;
     $scope.fill = fill;
+
+    //Code Bruce
+    function convert (){
+      session.sum_debit = 0; 
+      if(session.model.records.data) {   
+        session.model.records.data.forEach(function (transaction) {
+          session.sum_debit += exchange.convertir(transaction.debit, transaction.currency_id, session.currency, transaction.trans_date);
+          console.log('From '+transaction.currency_id+' To '+session.currency);
+        });        
+      }
+    }
+    $scope.convert = convert;
+    
   }
 ]);
