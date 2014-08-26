@@ -62,11 +62,24 @@
 <section class="bar-bottom" style="background-color:#fff">
   <table style="width: 99%">
     <tbody>
-      <td style="width:50%;">
+      <td style="width:20%;">
         <span style="margin-right: 10px;">
           <span class="glyphicon glyphicon-list-alt" style="color: #428bca"></span> <b>{{ session.model.records.data.length }}</b>
         </span>
       </td>
+
+      <td style="width:30%;">
+        <span style="margin-right: 20px;">
+          <span class="glyphicon glyphicon-money" style="color: #428bca"></span> Total D&eacute;pense(s) : <b ng-bind-html="session.sum_credit | intlcurrency:session.currency"></b>
+        </span>
+      </td>
+
+      <td colspan="2">
+        <div style="width:15%;">
+          <select class="form-bhima" ng-model="session.currency" ng-options="currency.id as currency.symbol for currency in currencies.data" ng-change="convert()"></select>
+        </div>
+      </td>
+
     </tbody>
   </table>
 </section>
