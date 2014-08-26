@@ -836,8 +836,8 @@ app.get('/expiring/:depot_uuid/:df/:dt', function (req, res, next) {
     return 'SELECT stock.inventory_uuid, stock.tracking_number, ' +
           'stock.lot_number, stock.quantity as initial, stock.expiration_date, inventory.text '+
           'FROM stock JOIN inventory ON stock.inventory_uuid = inventory.uuid '+
-          'WHERE stock.expiration_date>='+sanitize.escape(req.params.df)+
-          ' AND stock.expiration_date<='+sanitize.escape(req.params.dt);
+          'WHERE DATE(stock.expiration_date) >=DATE('+sanitize.escape(req.params.df)+')'+
+          ' AND DATE(stock.expiration_date) <=DATE('+sanitize.escape(req.params.dt)+')';
   }
 
   function speSql() {
