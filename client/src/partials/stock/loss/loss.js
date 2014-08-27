@@ -13,7 +13,7 @@ angular.module('bhima.controllers')
   function ($scope, $routeParams, validate, appstate, uuid, $q, $http, $location, connect, util) {
     /* jshint unused : false */
     var session = $scope.session = {},
-      depotId, dependencies = {}, configuration = $scope.configuration = {};
+      depotId, dependencies = {}, configuration = $scope.configuration = {}, selectedIventories = [];
 
     depotId  = $routeParams.depotId;
     session.block = !angular.isDefined(depotId);
@@ -93,6 +93,10 @@ angular.module('bhima.controllers')
     }
 
     function removeRow (index) {
+      if($scope.configuration.rows[index].code){
+        $scope.model.inventory.push(selectedIventories.splice(getInventoryIndex($scope.configuration.rows[index].code, selectedIventories), 1)[0]);
+      }
+
       configuration.rows.splice(index, 1);
     }
 
@@ -139,12 +143,49 @@ angular.module('bhima.controllers')
     }
 
     function submit (){
-      // var consumption = buildConsumptions();
-      // consumption.details = $scope.model.project.data[0];
-      // $http.post('service_dist/', consumption)
-      // .then(function (res){
-      //   $location.path('/invoice/loss/' + res.data.dist.docId);
-      // });
+      var consumption = buildConsumptions();
+      consumption.details = $scope.model.project.data[0];
+      $http.post('consumption_loss/', consumption)
+      .then(function (res){
+        return;
+        $location.path('/invoice/loss/' + res.data.dist.docId);
+      });
+    }
+
+    function buildConsumptions () {
+      var consumptions = {};
+      consumptions.main_consumptions = [];
+      consumptions.loss_consumptions = [];
+
+      configuration.rows.forEach(function (row) {
+        var qte = 0, loss_qte = row.quantity;
+        var current_qte = (row.lot.entered - row.lot.moved - row.lot.consumed);
+        if(loss_qte <= current_qte) {
+          qte = loss_qte;
+        }else{
+          qte = current_qte;
+        }
+
+        var main_consumption_item = {
+          uuid                : uuid(),
+          depot_uuid          : $scope.model.depots.data[0].uuid,
+          date                : util.sqlDate(session.date),
+          document_id         : session.document_id,
+          tracking_number     : row.lot.tracking_number,
+          quantity            : qte
+        };
+
+        var loss_consumption_item = {
+          uuid               : uuid(),
+          consumption_uuid   : main_consumption_item.uuid,
+          document_uuid      : session.document_id
+        };
+
+        consumptions.main_consumptions.push(main_consumption_item);
+        consumptions.loss_consumptions.push(loss_consumption_item);
+      });
+
+      return consumptions;
     }
 
     function updateLigne (code, index){
@@ -153,6 +194,20 @@ angular.module('bhima.controllers')
         return item.code === code;
       })[0].purchase_price;
       configuration.rows[index].lots = extractLot(code);
+
+      selectedIventories.push($scope.model.inventory.splice(getInventoryIndex(code, $scope.model.inventory), 1)[0]);
+    }
+
+    function getInventoryIndex (code, arr) {
+      var list = arr;
+      var ind;
+      for (var i = 0; i < list.length; i++) {
+        if(list[i].code === code) {
+         ind = i;
+         break;
+        }
+      };
+      return ind;
     }
 
     function extractLot (code){
@@ -160,7 +215,6 @@ angular.module('bhima.controllers')
         return;
       }
       return $scope.model.avail_stocks.data.filter(function (item){
-        console.log('item', item);
         return item.code === code;
       });
     }
@@ -185,7 +239,6 @@ angular.module('bhima.controllers')
         loss_ligne.validQuantity = true;
         configuration.rows[index] = loss_ligne;
       }
-
     }
 
     function testQuantity (track, index) {
