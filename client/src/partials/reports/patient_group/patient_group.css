@@ -1,14 +1,17 @@
 
-/* user interface elements */
+/* user interface fonts */
 
-.uie-red {
+.uif-red {
   color: #d43f3a;
 }
 
-.uie-green {
+.uif-green {
   color: #8cc152;
 }
 
-.uie-orange {
+.uif-orange {
   color: #f0ad4e;
 }
+
+
+/* user interface elements */

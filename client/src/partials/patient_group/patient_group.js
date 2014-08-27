@@ -3,12 +3,13 @@ angular.module('bhima.controllers')
   '$scope',
   '$translate',
   '$window',
+  '$location',
   'connect',
   'validate',
   'appstate',
   'messenger',
   'uuid',
-  function ($scope, $translate, $window, connect, validate, appstate, messenger, uuid) {
+  function ($scope, $translate, $window, $location, connect, validate, appstate, messenger, uuid) {
     var dependencies = {};
     var session = $scope.session = {
       selected : null
@@ -107,6 +108,10 @@ angular.module('bhima.controllers')
       .then(function () {
         messenger.success('Successfully modified the group.');
       });
+    };
+
+    $scope.showReport = function (grp) {
+      $location.path('/reports/patient_group/' + grp.uuid);
     };
 
   }
