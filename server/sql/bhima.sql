@@ -521,6 +521,7 @@ create table `patient_group` (
   price_list_uuid   char(36) not null,
   name              varchar(60) not null,
   note              text,
+  created           timestamp null default CURRENT_TIMESTAMP,
   primary key (`uuid`),
   key `enterprise_id` (`enterprise_id`),
   key `price_list_uuid` (`price_list_uuid`),
