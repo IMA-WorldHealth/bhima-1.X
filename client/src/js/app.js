@@ -130,6 +130,10 @@
       controller: 'reportFinance',
       templateUrl: 'partials/reports/finance/finance_report.html'
     })
+    .when('/reports/patient_group/:uuid', {
+      controller : 'report.patientGroup',
+      templateUrl : 'partials/reports/patient_group/patient_group.html'
+    })
     .when('/reports/prices', {
       controller : 'report.prices',
       templateUrl : 'partials/reports/prices/prices.html'
