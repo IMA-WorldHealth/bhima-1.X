@@ -13,22 +13,21 @@
 <div class="report">
   <div class="reportBody">
     <div class="reportFrame">
-      <h3 class="capitalize">{{ group.name }} <small>{{ group.uuid }}</small></h3>
+      <h3 class="capitalize">{{ group.name }} <small class="pull-right">{{ group.uuid }}</small></h3>
 
-      <!-- header metadata -->
-      <form>
+      <form class="form-horizontal">
         <div class="form-group" ng-if="group.description">
-          <label>{{ "COLUMNS.DESCRIPTION" | translate }}:</label>
+          <label class="col-xs-2 control-label">{{ "COLUMNS.DESCRIPTION" | translate }}:</label>
           <p class="form-control-static">{{ group.description}}</p>
         </div>
 
         <div class="form-group">
-          <label>{{ "COLUMNS.CREATED" | translate }} :</label>
+          <label class="col-xs-2 control-label">{{ "COLUMNS.CREATED" | translate }} :</label>
           <p class="form-control-static">{{ group.created | date }}</p>
         </div>
 
         <div class="form-group">
-          <label>{{ "COLUMNS.MEMBERS" | translate }} :</label>
+          <label class="col-xs-2 control-label">{{ "COLUMNS.MEMBERS" | translate }} :</label>
           <p class="form-control-static">{{ group.members }}</p>
         </div>
       </form>
@@ -50,11 +49,11 @@
         <tbody>
           <tr ng-repeat="detail in priceListDetails">
             <td style="text-align: center">
-              <span class="glyphicon" ng-class="{ 'glyphicon-plus-sign uie-green' : !!detail.isDiscount, 'glyphicon-minus-sign uie-red' : !detail.isDiscount }"></span>
+              <span class="glyphicon" ng-class="{ 'glyphicon-plus-sign uif-green' : !!detail.isDiscount, 'glyphicon-minus-sign uif-red' : !detail.isDiscount }"></span>
             </td>
             <td>{{ detail.description }}</td>
             <td style="text-align: center">
-              <span class="glyphicon" ng-class="{ 'glyphicon-ok uie-green' : !!detail.isGlobal, 'glyphicon-remove uie-red' : !detail.isGlobal }"></span>
+              <span class="glyphicon" ng-class="{ 'glyphicon-ok uif-green' : !!detail.isGlobal, 'glyphicon-remove uif-red' : !detail.isGlobal }"></span>
             </td>
             <td>{{ detail.value }}</td>
           </tr>
