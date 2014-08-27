@@ -5,6 +5,8 @@ var q = require('q'),
 module.exports = function (db, sanitize, util) {
   'use strict';
 
+  function patientGroupReport() {}
+
   function buildFinanceQuery(requiredFiscalYears) {
     //TODO currently joins two very seperate querries and just extracts columns from both, these should
     //be combined and calculations (SUM etc.) performed on the single joined table
@@ -630,7 +632,8 @@ module.exports = function (db, sanitize, util) {
       'stock_count'      : stockCount,
       'transactions'     : transactionsByAccount,
       'income_report'    : incomeReport,
-      'expense_report'   : expenseReport
+      'expense_report'   : expenseReport,
+      'patient_group'    : require('./reports/patient_group')(db)
     };
 
     route[request](params)
