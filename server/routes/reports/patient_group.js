@@ -8,7 +8,6 @@ module.exports = function (db) {
   
   function fetchMembers(uuid) {
     // fetch the number of members in the current patient group.
-    console.log('[DEBUG]', 'Fetching Members...');
     var sql =
       'SELECT COUNT(*) AS members FROM assignation_patient ' +
       'WHERE assignation_patient.patient_group_uuid = ?';
@@ -17,11 +16,10 @@ module.exports = function (db) {
   }
 
   function fetchPatientGroupAndPriceList(groupUuid) {
-    console.log('[DEBUG]', 'Fetching patient group...');
     // load the selected patient group
     var sql, result, data;
     sql =
-      'SELECT pg.uuid, pg.price_list_uuid, pg.name, pg.note, pl.title, ' +
+      'SELECT pg.uuid, pg.created, pg.price_list_uuid, pg.name, pg.note, pl.title, ' +
         'pl.description, pli.is_discount, pli.description AS itemDescription, ' + 
         'pli.value, pli.is_global ' +
       'FROM patient_group AS pg JOIN price_list AS pl JOIN price_list_item AS pli ' +
@@ -31,7 +29,6 @@ module.exports = function (db) {
 
     return db.exec(sql, [groupUuid])
     .then(function (rows) {
-      console.log('[DEBUG]', 'Got :', rows);
       result = rows[0];  // first row
      
       // format the data for easy client-side consumption
@@ -41,7 +38,7 @@ module.exports = function (db) {
         uuid        : result.uuid,
         description : result.note,
         name        : result.name,
-        created     : new Date()     // TODO : Store when the patient_group is created
+        created     : result.created
       };
 
       data.pricelist = {
@@ -90,8 +87,6 @@ module.exports = function (db) {
     params = qs.parse(params);
     // routes the request
     
-    console.log('{PARAMS}', params);
-
     var uuid = params.uuid;
     var body = {};
   
