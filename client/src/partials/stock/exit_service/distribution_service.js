@@ -18,7 +18,7 @@ angular.module('bhima.controllers')
     };
 
     var configuration = $scope.configuration = {};
-    var dependencies = {};
+    var dependencies = {}, selectedIventories = [];
     dependencies.services = {
       query : {
         tables : {
@@ -115,6 +115,9 @@ angular.module('bhima.controllers')
     }
 
     function removeRow (index) {
+      if($scope.configuration.rows[index].code){
+        $scope.model.inventory.push(selectedIventories.splice(getInventoryIndex($scope.configuration.rows[index].code, selectedIventories), 1)[0]);
+      }
       configuration.rows.splice(index, 1);
     }
 
@@ -224,6 +227,20 @@ angular.module('bhima.controllers')
       configuration.rows[index].price = $scope.model.avail_stocks.data.filter(function (item){
         return item.code === code;
       })[0].purchase_price;
+
+      selectedIventories.push($scope.model.inventory.splice(getInventoryIndex(code, $scope.model.inventory), 1)[0]);
+    }
+
+    function getInventoryIndex (code, arr) {
+      var list = arr;
+      var ind;
+      for (var i = 0; i < list.length; i++) {
+        if(list[i].code === code) {
+         ind = i;
+         break;
+        }
+      };
+      return ind;
     }
 
     function verifyDistribution () {
@@ -238,7 +255,6 @@ angular.module('bhima.controllers')
       consumption.details = $scope.model.project.data[0];
       $http.post('service_dist/', consumption)
       .then(function (res){
-        console.log('ok', res);
         $location.path('/invoice/service_distribution/' + res.data.dist.docId);
       });
     }

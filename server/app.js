@@ -32,19 +32,20 @@ var authorize    = require('./middleware/authorization')(cfg.auth.paths),
     projects     = require('./middleware/projects')(db);
 
 // import routes
-var report         = require('./routes/report')(db, sanitize, util),
-    trialbalance   = require('./routes/trialbalance')(db, sanitize, util, uuid),
-    ledger         = require('./routes/ledger')(db, sanitize),
-    fiscal         = require('./routes/fiscal')(db),
-    synthetic      = require('./routes/synthetic')(db, sanitize),
-    journal        = require('./routes/journal')(db, sanitize, util, validate, store, uuid),
-    createSale     = require('./routes/createSale')(db, parser, journal, uuid),
-    createPurchase = require('./routes/createPurchase')(db, parser, journal, uuid),
-    depotRouter    = require('./routes/depot')(db, sanitize, store),
-    tree           = require('./routes/tree')(db, parser),
-    drugRouter     = require('./routes/drug')(db),
-    api            = require('./routes/data')(db, parser),
-    serviceDist    = require('./routes/serviceDist')(db, parser, journal, uuid);
+var report            = require('./routes/report')(db, sanitize, util),
+    trialbalance      = require('./routes/trialbalance')(db, sanitize, util, uuid),
+    ledger            = require('./routes/ledger')(db, sanitize),
+    fiscal            = require('./routes/fiscal')(db),
+    synthetic         = require('./routes/synthetic')(db, sanitize),
+    journal           = require('./routes/journal')(db, sanitize, util, validate, store, uuid),
+    createSale        = require('./routes/createSale')(db, parser, journal, uuid),
+    createPurchase    = require('./routes/createPurchase')(db, parser, journal, uuid),
+    depotRouter       = require('./routes/depot')(db, sanitize, store),
+    tree              = require('./routes/tree')(db, parser),
+    drugRouter        = require('./routes/drug')(db),
+    api               = require('./routes/data')(db, parser),
+    serviceDist       = require('./routes/serviceDist')(db, parser, journal, uuid),
+    consumptionLoss   = require('./routes/consumptionLoss')(db, parser, journal, uuid);
 
 // create app
 var app = express();
@@ -97,6 +98,13 @@ app.post('/sale/', function (req, res, next) {
 
 app.post('/service_dist/', function (req, res, next) {
   serviceDist.execute(req.body, req.session.user_id, function (err, ans) {
+    if (err) { return next(err); }
+    res.send({dist: ans});
+  });
+});
+
+app.post('/consumption_loss/', function (req, res, next) {
+  consumptionLoss.execute(req.body, req.session.user_id, function (err, ans) {
     if (err) { return next(err); }
     res.send({dist: ans});
   });

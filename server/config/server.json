@@ -77,7 +77,8 @@
       "/services/",
       "/available_cost_center/",
       "/available_profit_center/",
-      "/service_dist/"
+      "/service_dist/",
+      "/consumption_loss/"
     ]
   }
 }
