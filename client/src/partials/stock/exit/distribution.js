@@ -9,7 +9,8 @@ angular.module('bhima.controllers')
   'messenger',
   'util',
   'uuid',
-  function ($scope, $q, $routeParams, $location, validate, connect, messenger, util, uuid) {
+  '$translate',
+  function ($scope, $q, $routeParams, $location, validate, connect, messenger, util, uuid, $translate) {
     var session = $scope.session = {
       // FIXME
       index : -1,
@@ -23,17 +24,17 @@ angular.module('bhima.controllers')
     // Test for module organised into step structure
     var moduleDefinition = $scope.moduleDefinition = [
       {
-        title : 'Locate Patient',
+        title : $translate.instant('DISTRIBUTION.LOCATE_PATIENT'),
         template : 'patientSearch.tmpl.html',
         method : null
       },
       {
-        title : 'Select prescription sale',
+        title : $translate.instant('DISTRIBUTION.SLECT_PRESCRIPTION'),
         template : 'selectSale.tmpl.html',
         method : null
       },
       {
-        title : 'Allocate medicine',
+        title : $translate.instant('DISTRIBUTION.ALLOCATE_MEDECINE'),
         template : 'allocateLot.tmpl.html',
         method : null
       }
@@ -41,16 +42,15 @@ angular.module('bhima.controllers')
 
     var stock = {
       NONE : {
-        //TODO Replace with translatable key
-        alert : 'This item is not in stock in the depot, contact the stock administrator',
+        alert : $translate.instant('DISTRIBUTION.NONE'),
         icon : 'glyphicon-remove-sign error'
       },
       LIMITED_STOCK : {
-        alert : 'There is not enough valid stock available to fulfill the order, contact the stock administrator.',
+        alert :  $translate.instant('DISTRIBUTION.LIMITED_STOCK'),
         icon : 'glyphicon-info-sign warn'
       },
       EXPIRED : {
-        alert : 'Available stock CANNOT be used as it has expired, contact the stock administrator.',
+        alert : $translate.instant('DISTRIBUTION.EXPIRED'),
         icon : 'glyphicon-info-sign error'
       }
     };
@@ -60,7 +60,6 @@ angular.module('bhima.controllers')
     moduleStep();
 
     function initialiseDistributionDetails(patient) {
-      console.log('patient', patient);
       dependencies.ledger.query = '/ledgers/debitor/' + patient.debitor_uuid;
       session.patient = patient;
       validate.process(dependencies).then(startup);
@@ -74,10 +73,8 @@ angular.module('bhima.controllers')
     }
 
     function moduleStep() {
-      // FIXME
       session.index += 1;
       session.state = moduleDefinition[session.index];
-      // session.state.method();
     }
 
     function selectSale(sale) {

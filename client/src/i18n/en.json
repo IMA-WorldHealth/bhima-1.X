@@ -752,7 +752,33 @@
     "LOT_DETAILS"            : "Lot Details",
     "EMPTY_MESSAGE"          : "No sale selected!",
     "CONSUMED"               : "This prescription has already been consumed",
-    "NOT_CONSUMED"           : "This prescription is unfufilled"
+    "NOT_CONSUMED"           : "This prescription is unfufilled",    
+    "INVOICE_NOT_PAID"       : "Invoice has not been payed",
+    "INVOICE_PAID"           : "Invoice has been fully payed",
+    "INVOICE_PARTIALLY_PAID" : "Invoice has been partially payed",
+    "SALE"                   : "Sale",
+    "DATE"                   : "Date",
+    "SALE_STATUS"            : "Sale state",
+    "SALE_BALANCE"           : "Sale balance",
+    "VIEW_SALE"              : "View sale details",
+    "NOT_CONSUMED"           : "Not consumed",
+    "CONSUMED"               : "Consumed",
+    "ASSIGN"                 : "Assign lots",
+    "SELECT"                 : " Select sale for distribution",
+    "RECOMANDED"             : "Recomended Lot",
+    "NOT_CONSUMABLE"         : "Not consumable",
+    "SELECT_FROM"            : "Selected from lot",
+    "LOT_NUMBER"             : "Lot Number",
+    "REMAINING_QUANTITY"     : "Remaining quantity",
+    "EXP_DATE"               : "Expiration date",
+    "LOCATE_PATIENT"         : "Locate patient",
+    "SLECT_PRESCRIPTION"     : "Select prescription sale",
+    "ALLOCATE_MEDECINE"      : "Allocate medicine",
+    "NONE"                   : "This item is not in stock in the depot, contact the stock administrator",
+    "LIMITED_STOCK"          : "There is not enough valid stock available to fulfill the order, contact the stock administrator.",
+    "EXPIRED"                : "Available stock CANNOT be used as it has expired, contact the stock administrator."
+
+
   },
 
     "DISTRIBUTION_SERVICE" : {
