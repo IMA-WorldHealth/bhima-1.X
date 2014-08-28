@@ -1,4 +1,3 @@
-<!-- TODO -->
 <header data-header>
   {{ "DISTRIBUTION.TITLE" | translate }}
 </header>
@@ -37,14 +36,6 @@
           {{$index + 1}}</span>
         <span ng-class="{'strike' : session.index>$index}">{{section.title}}</span>
       </div>
-    </div>
-  </div>
-
-  <!-- Section Body -->
-  <ng-include
-    ng-if="session.index >= $index"
-    ng-repeat-end
-    src="section.template"></ng-include>
 </main>
 
 <footer>
@@ -76,10 +67,10 @@
     <table class="table table-condensed table-bordered">
       <thead>
         <tr>
-          <th>Sale</th>
-          <th>Date</th>
-          <th>Sale Status</th>
-          <th>Sale Balance</th>
+          <th>{{"DISTRIBUTION.SALE" | translate}}</th>
+          <th>{{"DISTRIBUTION.DATE" | translate}}</th>
+          <th>{{"DISTRIBUTION.SALE_STATUS" | translate}}</th>
+          <th>{{"DISTRIBUTION.SALE_BALANCE" | translate}}</th>
         </tr>
       </thead>
 
@@ -95,7 +86,7 @@
                 ng-class="{
                   'glyphicon-remove-sign error' : true
                 }"
-                ></span> Invoice has not been payed
+                ></span> {{ "DISTRIBUTION.INVOICE_NOT_PAID" | translate }}
               </div>
 
               <div ng-if="session.sale.balance===0">
@@ -104,7 +95,7 @@
                 ng-class="{
                   'glyphicon-ok-sign correct' : true
                 }"
-                ></span> Invoice has been fully payed
+                ></span> {{ "DISTRIBUTION.INVOICE_PAID" | translate }}
               </div>
 
               <div ng-if="session.sale.balance!==0&&session.sale.balance<session.sale.debit">
@@ -113,7 +104,7 @@
                 ng-class="{
                   'glyphicon-minus-sign warn' : true
                 }"
-                ></span> Invoice has been partially payed
+                ></span> {{ "DISTRIBUTION.INVOICE_PARTIALLY_PAID" | translate }} 
               </div>
             </div>
           </td>
@@ -159,10 +150,10 @@
                 <table class="table table-condensed table-bordered">
                   <thead>
                     <tr>
-                      <th>Sale</th>
-                      <th>Date</th>
-                      <th>Sale Status</th>
-                      <th>Sale Balance</th>
+                      <th>{{"DISTRIBUTION.SALE" | translate}}</th>
+                      <th>{{"DISTRIBUTION.DATE" | translate}}</th>
+                      <th>{{"DISTRIBUTION.SALE_STATUS" | translate}}</th>
+                      <th>{{"DISTRIBUTION.SALE_BALANCE" | translate}}</th>
                     </tr>
                   </thead>
 
@@ -178,7 +169,7 @@
                             ng-class="{
                               'glyphicon-remove-sign error' : true
                             }"
-                            ></span> Invoice has not been payed
+                            ></span> {{ "DISTRIBUTION.INVOICE_NOT_PAID" | translate }}
                           </div>
 
                           <div ng-if="item.balance===0">
@@ -187,7 +178,7 @@
                             ng-class="{
                               'glyphicon-ok-sign correct' : true
                             }"
-                            ></span> Invoice has been fully payed
+                            ></span> {{ "DISTRIBUTION.INVOICE_PAID" | translate }}
                           </div>
 
                           <div ng-if="item.balance!==0&&item.balance<item.debit">
@@ -196,7 +187,7 @@
                             ng-class="{
                               'glyphicon-minus-sign warn' : true
                             }"
-                            ></span> Invoice has been partially payed
+                            ></span> {{ "DISTRIBUTION.INVOICE_PARTIALLY_PAID" | translate }}
                           </div>
                         </div>
                       </td>
@@ -208,8 +199,8 @@
                 <div ng-if="!item.consumed">
                   <button
                     ng-click="selectSale(item)"
-                    class="btn btn-default btn-sm"><span class="glyphicon glyphicon-circle-arrow-right correct"></span> Select sale for distribution</button>
-                  <button class="btn btn-default btn-sm">View sale details</button>
+                    class="btn btn-default btn-sm"><span class="glyphicon glyphicon-circle-arrow-right correct"></span>{{ "DISTRIBUTION.SELECT" | translate }}</button>
+                  <button class="btn btn-default btn-sm">{{ "DISTRIBUTION.VIEW_SALE" | translate }}</button>
                 </div>
               </div>
             </div>
@@ -223,7 +214,7 @@
 <script type="text/ng-template" id="allocateLot.tmpl.html">
   <div class="panel panel-default">
     <div class="panel-heading">
-      <span class="glyphicon glyphicon-list"></span> Assign lots
+      <span class="glyphicon glyphicon-list"></span> {{"DISTRIBUTION.ASSIGN" | translate}}
     </div>
 
     <div class="panel-body">
@@ -242,7 +233,7 @@
               <span
                 ng-if="inventoryItem.consumable"><b>{{inventoryItem.quantity}} x </b></span>
               <span>{{inventoryItem.text}} </span>
-              <span ng-if="!inventoryItem.consumable">(Not consumable)</span>
+              <span ng-if="!inventoryItem.consumable">({{"DISTRIBUTION.NOT_CONSUMABLE" | translate}})</span>
             </td>
           </tr>
 
@@ -254,8 +245,8 @@
 
           <tr
             ng-if="inventoryItem.recomendedLots">
-            <td><span class="glyphicon glyphicon-ok-sign correct"></span> <b>Recomended Lot</b></td>
-            <td><b>Quantity <small>(Selected from lot)</small></b></td>
+            <td><span class="glyphicon glyphicon-ok-sign correct"></span> <b>{{"DISTRIBUTION.RECOMANDED" | translate}}</b></td>
+            <td><b>Quantity <small>({{"DISTRIBUTION.SELECT_FROM" | translate}})</small></b></td>
           </tr>
 
           <tr
@@ -265,13 +256,13 @@
               <table class="reportTable">
                 <tbody>
                   <tr>
-                    <td width="30%">Lot Number</td><td><b>{{recomended.details.lot_number}}</b></td>
+                    <td width="30%">{{"DISTRIBUTION.LOT_NUMBER" | translate}}</td><td><b>{{recomended.details.lot_number}}</b></td>
                   </tr>
                   <tr>
-                    <td width="30%">Quantity Remaining</td><td>{{recomended.details.quantity}}</td>
+                    <td width="30%">{{"DISTRIBUTION.REMAINING_QUANTITY" | translate}}</td><td>{{recomended.details.quantity}}</td>
                   </tr>
                   <tr>
-                    <td width="30%">Expiration Date</td><td>{{recomended.details.expiration_date | date}}</td>
+                    <td width="30%">{{"DISTRIBUTION.EXP_DATE" | translate}}</td><td>{{recomended.details.expiration_date | date}}</td>
                   </tr>
                 </tbody>
               </table>

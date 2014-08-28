@@ -1396,7 +1396,7 @@
   },
 
   "DISTRIBUTION" : {
-    "TITLE"                 : "Distribution",
+    "TITLE"                 : "Distribution Medicaments aux malades",
     "SALE_DETAILS"          : "Details des ventes",
     "ADD_ROW"               : "Ajouter Item",
     "DESCRIPTION"           : "Description",
@@ -1410,7 +1410,32 @@
     "SALE_DATE"             : "Date de Vente",
     "COST"                  : "Cout",
     "LOT_DETAILS"           : "Details des Lots",
-    "EMPTY_MESSAGE"         : "Aucune vente selectionnee !"
+    "EMPTY_MESSAGE"         : "Aucune vente selectionnee !",
+    "INVOICE_NOT_PAID"      : "Cette vente n'a pa ete payee !",
+    "INVOICE_PAID"          : "Cette vente a ete totalement payee !",
+    "INVOICE_PARTIALLY_PAID" : "Cette vente a ete partiellement payee !",
+    "SALE"                   : "Vente",
+    "DATE"                   : "Date",
+    "SALE_STATUS"            : "Etat de la vente",
+    "SALE_BALANCE"           : "Balance de la vente",
+    "VIEW_SALE"              : "Voir details vente",
+    "NOT_CONSUMED"           : "Non consommee",
+    "CONSUMED"               : "Consommee",
+    "ASSIGN"                 : "Assignation lots",
+    "SELECT"                 : "Choisir vente pour distribution",
+    "RECOMANDED"             : "Lot recommande",
+    "NOT_CONSUMABLE"         : "Non consommable",
+    "SELECT_FROM"            : "Selectionne du lot",
+    "LOT_NUMBER"             : "Numero lot",
+    "REMAINING_QUANTITY"     : "Quantite restant",
+    "EXP_DATE"               : "Date d'expiration",
+    "LOCATE_PATIENT"         : "Chercher le patient",
+    "SLECT_PRESCRIPTION"     : "Selectionner la vente",
+    "ALLOCATE_MEDECINE"      : "Allouer les medicamnets",
+    "NONE"                   : "Cet item n'existe dans le stock du depot, contacter l'administrateur",
+    "LIMITED_STOCK"          : "Il n ' y a pas assesz de stock pour couvrir la vente, contacter l'administrateur",
+    "EXPIRED"                : "Le stock disponible ne peut pas etre utilise comme il est expire, contacter l'administrateur."
+
   },
 
     "DISTRIBUTION_SERVICE" : {
