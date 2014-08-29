@@ -58,8 +58,8 @@ module.exports = function (db, sanitize) {
         'SELECT s.reference, s.project_id, `t`.`inv_po_id`, `t`.`trans_date`, SUM(`t`.`debit_equiv`) AS `debit`,  ' +
         'SUM(`t`.`credit_equiv`) AS `credit`, SUM(`t`.`debit_equiv` - `t`.`credit_equiv`) as balance, ' +
         '`t`.`account_id`, `t`.`deb_cred_uuid`, `t`.`currency_id`, `t`.`doc_num`, `t`.`description`, `t`.`account_id`, ' +
-        '`t`.`comment`, `p`.`abbr` ' +
-        ', IF(c.document_id, true, false) as consumed ' +
+        '`t`.`comment`, `p`.`abbr`, `c`.`document_id` ' +
+        ', IF(NOT(ISNULL(`c`.`document_id`)), 1, 0) as `consumed` ' +
         // TODO Check if sale exists in consumption_sale table, validate if it has been distributed
         // 'CASE(WHEN `t`.`consumption_id` THEN true ELSE false) as consumed ' +
         'FROM (' +
@@ -84,6 +84,7 @@ module.exports = function (db, sanitize) {
       return db.exec(sql);
     })
     .then(function (ans) {
+      console.log('ans :::', ans);
       defer.resolve(ans);
     })
     .catch(function (error) {

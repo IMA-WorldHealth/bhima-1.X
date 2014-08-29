@@ -776,7 +776,8 @@
     "ALLOCATE_MEDECINE"      : "Allocate medicine",
     "NONE"                   : "This item is not in stock in the depot, contact the stock administrator",
     "LIMITED_STOCK"          : "There is not enough valid stock available to fulfill the order, contact the stock administrator.",
-    "EXPIRED"                : "Available stock CANNOT be used as it has expired, contact the stock administrator."
+    "EXPIRED"                : "Available stock CANNOT be used as it has expired, contact the stock administrator.",
+    "AVAILABLE"              : "Available prescriptions"
 
 
   },

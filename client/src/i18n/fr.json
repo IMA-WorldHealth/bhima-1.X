@@ -1434,7 +1434,8 @@
     "ALLOCATE_MEDECINE"      : "Allouer les medicamnets",
     "NONE"                   : "Cet item n'existe dans le stock du depot, contacter l'administrateur",
     "LIMITED_STOCK"          : "Il n ' y a pas assesz de stock pour couvrir la vente, contacter l'administrateur",
-    "EXPIRED"                : "Le stock disponible ne peut pas etre utilise comme il est expire, contacter l'administrateur."
+    "EXPIRED"                : "Le stock disponible ne peut pas etre utilise comme il est expire, contacter l'administrateur.",
+    "AVAILABLE"              : "Prescriptions disponibles"
 
   },
 

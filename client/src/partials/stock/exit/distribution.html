@@ -40,6 +40,14 @@
           {{$index + 1}}</span>
         <span ng-class="{'strike' : session.index>$index}">{{section.title}}</span>
       </div>
+    </div>
+  </div>
+
+  <!-- Section Body -->
+  <ng-include
+    ng-if="session.index >= $index"
+    ng-repeat-end
+    src="section.template"></ng-include>
 </main>
 
 <footer>
@@ -137,7 +145,7 @@
 
         <div ng-if="ledger.data.length" class="panel panel-default">
           <div class="panel-heading">
-            <span class="glyphicon glyphicon-th-list"></span> Available Prescriptions
+            <span class="glyphicon glyphicon-th-list"></span> {{"DISTRIBUTION.AVAILABLE" | translate}}
           </div>
 
           <div class="panel-body">
