@@ -90,7 +90,8 @@ angular.module('bhima.controllers')
       });
 
       grid.onCellChange.subscribe(function(e, args) {
-        dataview.updateItem(args.item.id, args.item);
+        var id = args.item.id || args.item.uuid;
+        dataview.updateItem(id, args.item);
       });
 
       dataview.beginUpdate();
