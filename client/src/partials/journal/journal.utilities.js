@@ -226,14 +226,14 @@ angular.module('bhima.controllers')
       });
 
       if (manager.session.mode === 'lock') {
-        editTemplate = '<div class="pull-right"><a class="editTransaction" style="color: white; cursor: pointer;"><span class="glyphicon glyphicon-pencil"></span> ' + $translate('POSTING_JOURNAL.EDIT_TRANSACTION') + ' </a></div>';
+        editTemplate = '<div class="pull-right"><a class="editTransaction" style="color: white; cursor: pointer;"><span class="glyphicon glyphicon-pencil"></span> ' + $translate.instant('POSTING_JOURNAL.EDIT_TRANSACTION') + ' </a></div>';
       }
 
       if (manager.session.mode === 'edit' && correctRow) {
         rowMarkup =
           '<span style="color: white;">' +
           '  <span style="color: white;" class="glyphicon glyphicon-warning-sign"> </span> ' +
-          $translate('POSTING_JOURNAL.LIVE_TRANSACTION') + ' <strong>'  + g.value + '</strong> (' + g.count + ' records)' +
+          $translate.instant('POSTING_JOURNAL.LIVE_TRANSACTION') + ' <strong>'  + g.value + '</strong> (' + g.count + ' records)' +
           '</span> ' +
           '<span class="pull-right">' +
           //'  <a class='addRow' style='color: white; cursor: pointer;'> <span class='glyphicon glyphicon-plus'></span>  ' + $translate('POSTING_JOURNAL.ADD_ROW') + '</a>' +
