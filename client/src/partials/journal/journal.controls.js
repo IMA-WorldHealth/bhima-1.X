@@ -17,7 +17,7 @@ angular.module('bhima.controllers')
     /* jshint unused : true */
     var dependencies = {};
     var columns, options, dataview, grid, manager;
-    var sort_column;
+    var sortColumn;
 
     var journalError =  liberror.namespace('JOURNAL');
     
@@ -116,7 +116,7 @@ angular.module('bhima.controllers')
       // set up grid sorting
 
       grid.onSort.subscribe(function(e, args) {
-        sort_column = args.sortCol.field;
+        sortColumn = args.sortCol.field;
         dataview.sort(sort, args.sortAsc);
       });
 
@@ -139,8 +139,8 @@ angular.module('bhima.controllers')
     }
 
     function sort (a,b) {
-      var x = a[sort_column];
-      var y = b[sort_column];
+      var x = a[sortColumn];
+      var y = b[sortColumn];
       return x > y ? 1 : -1;
     }
 
@@ -470,19 +470,19 @@ angular.module('bhima.controllers')
       var defaultValue;
 
       this.init = function () {
-        defaultValue = new Date(args.item.trans_date).toISOString().substring(0,10);
+        console.log('trans_date', args.item.trans_date);
+        defaultValue = args.item.trans_date.split('T')[0]; // If the date encodes timezone info, strip it.
         this.$input = $('<input class="editor-text" type="date">');
         this.$input.appendTo(args.container);
         this.$input.focus();
       };
 
-      this.applyValue = function(item,state) {
-        var stateDate = new Date(state);
-        var e = util.convertToMysqlDate(stateDate);
-        var dateInfo = getDateInfo(stateDate);
+      this.applyValue = function(item, state) {
+        var dateInfo = getDateInfo(state);
+        console.log(state);
         item.fiscal_year_id = dateInfo.fiscal_year_id;
         item.period_id = dateInfo.period_id;
-        item[args.column.field] = e;
+        item[args.column.field] = state;
       };
 
       this.loadValue = function () { this.$input.val(defaultValue); };
