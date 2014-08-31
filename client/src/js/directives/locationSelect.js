@@ -1,19 +1,20 @@
 /**
- * Ideally directive would supply a template and a link method seperately, this is a work around for 
- * not being able to template in ng-model, maybe there's a better way. Ironically more optimal than using 
- * ng-repeat, the number of location properties should never change.
- *
+ * @param {string} level-select The method that will be called on selection of a village, this method should accept a 32 char UUID
  * 
+ * Note : Directive should have a sepearate template and link method;
+ *  - Angular doesn't allow you to template ng-model
+ *  - I'm too stuborn to let that win, and (simplify everything) just hard-code in location selects
+ *  - This doesn't need to be this generic, and should be refactored if required
  */
 angular.module('bhima.directives')
 .directive('locationSelect', ['appstate', 'connect', '$compile',  function (appstate, connect, $compile) {
-  /* jshint unused : false */
   return {
     restrict : 'A',
     replace : true,
     transclue : true,
     link : function (scope, element, attrs) {
       
+      console.log('attrs', attrs);
       var namespace = scope.locationSelect = {};
       
       // TODO rename variables etc. with useful names 
@@ -44,16 +45,29 @@ angular.module('bhima.directives')
         }
       };
       var locationStore = namespace.locationStore = {};
-      
+      var submitCallback = attrs.selectVillage;
+
+      // Validate configuration 
+      if (!submitCallback) { 
+        console.error('[location-select] invalid select-village property');
+        return;
+      }
+
+      if (!scope[submitCallback]) { 
+        console.error('[location-select] method \'' + submitCallback + '\' not found - is it available to $scope?');
+        return;
+      }
+
       appstate.register('project', settup);
 
       function settup(project) {
+        var metaTemplate;
 
         indexLocationDependencies();
         defineLocationRequests();
       
-        var template = generateTemplate('locationConfig');
-        element.replaceWith($compile(template)(scope));
+        metaTemplate = generateTemplate('locationConfig');
+        element.html($compile(metaTemplate)(scope));
         
         fetchInitialLocation(project.location_id)
         .then(initialiseLocation);
@@ -80,39 +94,31 @@ angular.module('bhima.directives')
       }
 
       function submitVillage(uuid) { 
-        console.log('calling village callback with', uuid);
+        scope[submitCallback](uuid);
         return;
       }
-
-      // function updateLocation(key, uuidDependency) {
-        // fetchLocationData(key, uuidDependency)
-        // .then(function (data) {
-          // return assignLocationData(key, data);
-        // });
-      // }
-
+      
       function fetchLocationData(key, uuidDependency) {
         var config = locationConfig[key];
         var model, requires; 
-   
-        // ng-change hack
-        if (!angular.isDefined(key)) return;
+        var requiredDependencyFailed;
 
         model = locationStore[key].model;
         requires = lookupDependency(key);
         
         // Conditions
-        var requiredDependencyFailed = !uuidDependency && config.dependency;
+        requiredDependencyFailed = !uuidDependency && config.dependency;
        
-        
         // Clear results and stop propegation 
         if (requiredDependencyFailed) {
           
           model = locationStore[key].model = { data : [] };
-
+         
+          // FIXME hardcoded 
           if (requires) {
-
             fetchLocationData(requires, null);
+          } else { 
+            submitVillage(null);
           }
           return ;
         }
@@ -123,9 +129,8 @@ angular.module('bhima.directives')
 
         // TODO Refactor : fetch and assign data from one function, each method 
         // responsible for only one thing
+        // TODO Error / exception handling
         connect.req(config.request).then(function (result) {
-
-          
           return assignLocationData(key, result);
         });
       }
@@ -141,15 +146,11 @@ angular.module('bhima.directives')
         // Conditions 
         validCurrentLocation = angular.isDefined(store.model.get(store.value));
         locationsFound = store.model.data.length;
-      
-    
-        
         
         if (!validCurrentLocation) store.value = null;
         if (locationsFound && !validCurrentLocation) store.value = store.model.data[0].uuid;
                
-        // Call any configuration that requires on this key
-        // Propegate
+        // Propegate selection
         if (requiresCurrentKey) {
           fetchLocationData(requiresCurrentKey, store.value);
         } else { 
@@ -188,8 +189,6 @@ angular.module('bhima.directives')
 
       // Search will only ever have to hit 4 elements, convenience method
       function lookupDependency(currentKey) {
-        
-        // return locationConfig[locationIndex[currentKey]];
         return locationIndex[currentKey];
       }
 
@@ -205,9 +204,8 @@ angular.module('bhima.directives')
 
         // Such meta templating
         var componentStructure = '<div class="form-group"><label for="location-select-<%CONFIGID%>" class="control-label">{{\"<%CONFIGLABEL%>\" | translate}}</label><div class="pull-right"><span class="glyphicon glyphicon-globe" ng-class="{\'error\' : !locationSelect.locationStore.<%CONFIGID%>.model.data.length}"></span> {{locationSelect.locationStore.<%CONFIGID%>.model.data.length}}</div><select ng-disabled="locationSelect.session.locationSearch" ng-model="locationSelect.locationStore.<%CONFIGID%>.value" ng-options="<%CONFIGID%>.uuid as <%CONFIGID%>.<%CONFIGCOLUMN%> for <%CONFIGID%> in locationSelect.locationStore.<%CONFIGID%>.model.data | orderBy : \'name\'" ng-change=<%CONFIGCHANGE%> class="form-bhima" id="location-select-<%CONFIGID%>"><option value="" ng-if="!locationSelect.locationStore.<%CONFIGID%>.model.data.length" disblaed="disabled">----</option></select></div>'; 
-        // var initialTemplate =
-        var templateString = '';
         var configurationList = Object.keys(config).reverse();
+        
         configurationList.forEach(function (key) { 
           var configObject = config[key];
           var component = componentStructure;
@@ -223,16 +221,13 @@ angular.module('bhima.directives')
           component = component.replace(/<%CONFIGCOLUMN%>/g, configObject.column);
           component = component.replace(/<%CONFIGDEPEND%>/g, lookupDependency(key));
 
-          component = component.replace(
-            /<%CONFIGCHANGE%>/g, 
-            changeSubmit 
-          ); 
+          component = component.replace(/<%CONFIGCHANGE%>/g, changeSubmit); 
           compile = compile.concat(component);
         });
 
         return compile; 
       }
-
+      
       namespace.lookupModel = lookupModel;
       namespace.fetchLocationData = fetchLocationData;
       namespace.submitVillage = submitVillage;
