@@ -1353,7 +1353,12 @@
     "EMPLOYEES"       : "All Employees",
     "REGISTER"        : "Register Employee",
     "NONE_FOUND"      : "No employee records found.",
-    "CREDITOR_GROUP"  : "Creditor Group"
+    "CREDITOR_GROUP"  : "Creditor Group",
+    "INFO"            : "The employee management tool can be used to create, view and update employees and their information. Employees listed here are implicitly settup for credit and available for integration to modules such as /payroll/",
+    "SUBMIT_NEW"      : "Submit Registration",
+    "EDIT"            : "Update Employee Details",
+    "SUBMIT_EDIT"     : "Submit Details",
+    "CREDITOR_REFERENCE" : "BHIMA Creditor ID"
   },
 
   "SERVICE" : {

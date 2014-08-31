@@ -39,8 +39,6 @@ angular.module('bhima.controllers')
       }
     };
 
-    session.editSelected = null;
-
     function initialise(model) {
       angular.extend($scope, model);
     }
@@ -93,8 +91,6 @@ angular.module('bhima.controllers')
     }
 
     function editEmployee(employee) { 
-      
-      session.editSelected = employee;
       session.employee = employee;
       session.state = route.edit;
     }
