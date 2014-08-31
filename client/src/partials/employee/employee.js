@@ -9,15 +9,25 @@ angular.module('bhima.controllers')
   function ($scope, $translate, validate, uuid, messenger, connect) {
     var dependencies = {}, session = $scope.session = {};
     var route = $scope.route = {
-      create : 'EMPLOYEE.REGISTER',
-      edit : 'EMPLOYEE.EDIT'
+      create : { 
+        title : 'EMPLOYEE.REGISTER',
+        submit : 'EMPLOYEE.SUBMIT_NEW',
+        method : registerEmployee
+      },
+      edit : {
+        title : 'EMPLOYEE.EDIT',
+        submit : 'EMPLOYEE.SUBMIT_EDIT',
+        method : updateEmployee
+      }
     };
 
     dependencies.employee = {
       query : {
         tables : {
-          employee : { columns : ['id', 'name', 'code', 'creditor_uuid'] }
-        }
+          employee : { columns : ['id', 'name', 'code', 'creditor_uuid', 'dob'] },
+          creditor : { columns : ['group_uuid'] }
+        },
+        join : ['employee.creditor_uuid=creditor.uuid']
       }
     };
 
@@ -29,23 +39,18 @@ angular.module('bhima.controllers')
       }
     };
 
+    session.editSelected = null;
+
     function initialise(model) {
       angular.extend($scope, model);
-      // console.log(model.creditorGroup);
     }
       
     validate.process(dependencies)
     .then(initialise);
     
     function transitionRegister() { 
-      console.log('transition register');
-      session.state = route.create;
-    }
-
-    function createEmployee() {
       session.state = route.create;
       session.employee = {};
-      //console.log(session.state);
     }
 
     function registerEmployee() {
@@ -60,18 +65,19 @@ angular.module('bhima.controllers')
     function writeCreditor(creditor_uuid) {
       var creditor = {
         uuid : creditor_uuid,
-        group_uuid : session.creditor.group_uuid,
+        group_uuid : session.employee.group_uuid,
         text : 'Employee [' + session.employee.name + ']'
       };
 
       return connect.basicPut('creditor', [creditor], ['uuid']);
-      // return deferred.promise;
     }
 
     function writeEmployee(creditor_uuid) {
       session.employee.creditor_uuid = creditor_uuid;
+      
+      // FIXME
+      delete(session.employee.group_uuid);
       return connect.basicPut('employee', [session.employee], ['uuid']);
-      // return deferred.promise;
     }
 
     function registerSuccess() {
@@ -86,16 +92,46 @@ angular.module('bhima.controllers')
       });
     }
 
-    function editEmployee(uuid) { 
-      session.state = route.create; 
+    function editEmployee(employee) { 
+      
+      session.editSelected = employee;
+      session.employee = employee;
+      session.state = route.edit;
+    }
+
+    function updateEmployee() { 
+      var creditor = {
+        uuid : session.employee.creditor_uuid,
+        group_uuid : session.employee.group_uuid
+      };
+      var employee = session.employee;
+      
+      delete(employee.group_uuid);
+      
+      submitCreditorEdit(creditor)
+      .then(submitEmployeeEdit(employee))
+      .then(function (result) { 
+        session.state = null;
+        session.employee = {};
+      })
+      .catch(handleError);
+    }
+
+    function submitCreditorEdit(creditor) { 
+      return connect.basicPost('creditor', [creditor], ['uuid']);
+    }
+
+    function submitEmployeeEdit(employee) {
+      return connect.basicPost('employee', [employee], ['id']);
     }
 
     function handleError(error) {
+      
       // TODO Error Handling
       messenger.danger($translate.instant('EMPLOYEE.REGISTER_FAIL'));
       throw error;
     }
-    $scope.createEmployee = createEmployee;
+    
     $scope.registerEmployee = registerEmployee;
     $scope.editEmployee = editEmployee;
     $scope.transitionRegister = transitionRegister;
