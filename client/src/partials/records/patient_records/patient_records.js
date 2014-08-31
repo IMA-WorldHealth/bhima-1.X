@@ -8,6 +8,7 @@ angular.module('bhima.controllers')
     var dependencies = {}, session = $scope.session = {};
 
     session.searchLocation = false;
+    session.villageUuid = null; 
     session.searched = false;
     session.searching = false;
 
@@ -26,124 +27,8 @@ angular.module('bhima.controllers')
       }
     };
 
-    var locationDictionary = ['village', 'sector', 'province', 'country'];
-    var locationRelationship = $scope.locationRelationship = {
-      village : {
-        value : null,
-        dependency : null,
-        requires : 'sector',
-        label : 'name'
-      },
-      sector : {
-        value : null,
-        dependency : 'village',
-        requires : 'province',
-        label : 'name'
-      },
-      province : {
-        value : null,
-        dependency : 'sector',
-        requires : 'country',
-        label : 'name'
-      },
-      country : {
-        value : null,
-        dependency : 'province',
-        requires : null,
-        label : 'country_en'
-      }
-    };
-    var locationStore = $scope.locationStore = {};
-
-    appstate.register('project', function (project) {
-      defineLocationDependency();
-      initialiseLocation(project.location_id);
-    });
-
-    function defineLocationDependency() {
-      locationDictionary.forEach(function (key) {
-        var locationQuery;
-        var label = locationRelationship[key].label;
-        var locationDetails = locationRelationship[key];
-
-        locationQuery = dependencies[key] = {
-          query : {
-            identifier : 'uuid',
-            tables : {},
-            order : [label]
-          }
-        };
-        locationQuery.query.tables[key] = {
-          columns : ['uuid', label]
-        };
-
-        if (locationDetails.requires) {
-          locationQuery.query.tables[key].columns.push(
-            formatLocationIdString(locationDetails.requires)
-            );
-        }
-      });
-    }
-
-    function formatLocationIdString(target) {
-      var uuidTemplate = '_uuid';
-      return target.concat(uuidTemplate);
-    }
-
-    function initialiseLocation(locationId) {
-      connect.fetch('/location/' + locationId).then(function (defaultLocation) {
-        defaultLocation = defaultLocation[0];
-
-        // Populate initial values
-        locationDictionary.forEach(function (key) {
-          locationRelationship[key].value = defaultLocation[formatLocationIdString(key)];
-        });
-        updateLocation('country', null);
-      });
-    }
-
-    // TODO refactor / remove redundencies
-    function updateLocation(key, uuidDependency) {
-      var dependency = locationRelationship[key].dependency;
-      var currentValue;
-
-      if (!uuidDependency && locationRelationship[key].requires) {
-        locationStore[key] = { data : [] };
-
-        if (dependency) { updateLocation(dependency, null); }
-        return;
-      }
-
-      // Not for country
-      if (uuidDependency) {
-        dependencies[key].query.where = [key + '.' + locationRelationship[key].requires + '_uuid=' + uuidDependency];
-      }
-
-      validate.refresh(dependencies, [key]).then(function (result) {
-        locationStore[key] = result[key];
-
-        currentValue = locationStore[key].get(locationRelationship[key].value);
-
-        // FIXME
-        if (currentValue) { currentValue = currentValue.uuid; }
-
-        if (!currentValue) {
-          if (locationStore[key].data.length) {
-            // TODO Should be sorted alphabetically, making this the first value
-            currentValue = locationRelationship[key].value = locationStore[key].data[0].uuid;
-          }
-        }
-
-        locationRelationship[key].value = currentValue;
-
-        // Download new data, try and match current value to currently selected, if not select default
-        if (dependency) {
-          // console.log('updating ', key, 'should now call update', dependency, 'with', currentValue);
-          updateLocation(dependency, currentValue);
-        }
-
-      });
-
+    function assignVillageLocation(uuid) { 
+      session.villageUuid = uuid;
     }
 
     function patientSearch(searchParams) {
@@ -155,9 +40,8 @@ angular.module('bhima.controllers')
 
       // Filter location search
       if (session.locationSearch) {
-        var originId = locationRelationship.village.value;
+        var originId = session.villageUuid;
 
-        // console.log('originId', originId);
         if (originId) {
           condition.push('patient.origin_location_id=' + originId, 'AND');
         }
@@ -184,6 +68,7 @@ angular.module('bhima.controllers')
     }
 
     function patientRecords(model) {
+      
       // This is a hack to get date of birth displaying correctly
       $scope.model = model;
       filterNames(model.patient.data);
@@ -209,6 +94,6 @@ angular.module('bhima.controllers')
 
     $scope.patientSearch = patientSearch;
     $scope.select = select;
-    $scope.updateLocation = updateLocation;
+    $scope.assignVillageLocation = assignVillageLocation;
   }
 ]);
