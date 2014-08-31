@@ -26,11 +26,13 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="item in employee.data">
+            <tr 
+              ng-repeat="item in employee.data"
+              ng-class="{'rowSelected' : session.employee.id==item.id}">
               <td>{{ item.name }}</td> 
-              <td>{{ item.code }}</td>
+              <td><span ng-if="!item.code" class="glyphicon glyphicon-minus-sign"></span>{{ item.code}}</td>
               <td>{{ item.creditor_uuid }}</td>
-              <td><span ng-click="editEmployee(item.uuid)" class="btn-link glyphicon glyphicon-circle-arrow-right"></span></td>
+              <td><span ng-click="editEmployee(item)" class="btn-link glyphicon glyphicon-circle-arrow-right"></span></td>
             </tr>
 
             <tr ng-if="!employee.data.length">
@@ -43,39 +45,41 @@
 
     <div class="col-xs-6">
       
-      <div ng-switch="session.state">
-        <div ng-switch-default>
+      <div>
+        <div ng-if="!session.state">
           <div class="alert alert-info">
             <h4>{{ 'EMPLOYEE.TITLE' | translate }}</h4>
             <p>{{ 'EMPLOYEE.INFO' | translate }}</p>
           </div>
         </div>
 
-        <div ng-switch-when="EMPLOYEE.REGISTER">
+        <div ng-if="session.state">
           <form class="form-horizontal" name="employeeForm" novalidate>
             <fieldset>
-              <legend>{{ "EMPLOYEE.REGISTER" | translate }}</legend>
-
+              <!-- TODO Not semantic or clean -->
+              <legend>{{ session.state.title | translate }}</legend>
+      
               <div class="form-group">
                 <label class="col-xs-3 control-label required">{{ "COLUMNS.NAME" | translate }}:</label>
                 <div class="col-xs-9">
                   <input class="form-bhima" ng-model="session.employee.name" required>
                 </div>
               </div> 
-
+    
+              {{session.employee}}
               <div class="form-group">
                 <label class="col-xs-3 control-label required">{{ "EMPLOYEE.CREDITOR_GROUP" | translate }}:</label>
                 <div class="col-xs-9">
-                  <select class="form-bhima" ng-model="session.creditor.group_uuid" ng-options="group.uuid as group.name for group in creditorGroup.data" required> 
+                  <select class="form-bhima" ng-model="session.employee.group_uuid" ng-options="group.uuid as group.name for group in creditorGroup.data" required> 
                     <option value="" disabled="disabled">--- {{ "SELECT.CREDITOR_GROUP" | translate }} ---</option>
                   </select>
                 </div>
               </div>
               
               <div class="form-group">
-                <label class="col-xs-3 control-label required">{{ "COLUMNS.CODE" | translate }}:</label>
+                <label class="col-xs-3 control-label">{{ "COLUMNS.CODE" | translate }}:</label>
                 <div class="col-xs-9">
-                  <input class="form-bhima" ng-model="session.employee.code" required>
+                  <input class="form-bhima" ng-model="session.employee.code">
                 </div>
               </div> 
               
@@ -87,8 +91,8 @@
               </div>
 
               <div class="pull-right">
-                <button ng-disabled="employeeForm.$invalid" class="btn btn-success btn-sm" ng-click="registerEmployee()">
-                  {{ "FORM.SUBMIT" | translate }} 
+                <button ng-disabled="employeeForm.$invalid" class="btn btn-success btn-sm" ng-click="session.state.method()">
+                  {{ session.state.submit | translate }} 
                 </button>
               </div>
             </fieldset>
