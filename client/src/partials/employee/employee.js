@@ -33,9 +33,14 @@ angular.module('bhima.controllers')
       angular.extend($scope, model);
       // console.log(model.creditorGroup);
     }
-
+      
     validate.process(dependencies)
     .then(initialise);
+    
+    function transitionRegister() { 
+      console.log('transition register');
+      session.state = route.create;
+    }
 
     function createEmployee() {
       session.state = route.create;
@@ -77,7 +82,12 @@ angular.module('bhima.controllers')
       // FIXME just add employee to model
       validate.refresh(dependencies, ['employee']).then(function (model) {
         angular.extend($scope, model);
+        session.state = null;
       });
+    }
+
+    function editEmployee(uuid) { 
+      session.state = route.create; 
     }
 
     function handleError(error) {
@@ -87,5 +97,7 @@ angular.module('bhima.controllers')
     }
     $scope.createEmployee = createEmployee;
     $scope.registerEmployee = registerEmployee;
+    $scope.editEmployee = editEmployee;
+    $scope.transitionRegister = transitionRegister;
   }
 ]);
