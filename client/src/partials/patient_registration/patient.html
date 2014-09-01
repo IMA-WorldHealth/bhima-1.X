@@ -46,6 +46,7 @@
                       <input type="text" class="form-bhima" id="second-name" ng-model="patient.last_name" required>
                     </div>
                   </div>
+                  
 
                   <div class="form-group" ng-show="!sessionProperties.fullDateEnabled">
                     <label for="yob" class="control-label col-xs-3 required"> {{ "PATIENT_REG.YOB" | translate }}</label>
@@ -58,11 +59,18 @@
                       </div>
                     </div>
                   </div>
-
+                  
+                                    
                   <div class="form-group" >
                     <label for="patient-dob" class="col-xs-3 control-label">{{ "PATIENT_REG.DOB" | translate }}</label>
                     <div class="col-xs-9">
                       <input required id="patient-dob" type="date" class="form-bhima" ng-disabled="!sessionProperties.fullDateEnabled" ng-model="patient.dob" max="{{ getMaxDate() }}">
+                    </div>
+                  </div>
+            
+                  <div class="form-group" ng-if="validation.dates.flag">
+                    <div style="margin : 0em 1em 0em; text-align: center;" class="alert alert-danger">
+                      <span class="glyphicon glyphicon-calendar"></span> <b>{{validation.dates.flag.message}} </b>
                     </div>
                   </div>
 
@@ -89,6 +97,7 @@
               <form name="location" class="form">
                 <fieldset>
                   <legend>{{ "LOCATION.LOCATION" | translate }}</legend>
+              
                   <div class="col-xs-6">
                     <fieldset>
 
@@ -108,7 +117,17 @@
                       <div location-select select-village="setCurrentLocation"></div>
                     </fieldset>
                   </div>
+
+                  
                 </fieldset>
+
+<div class="form-group" ng-if="validation.locations.flag">
+                    <div style="margin : 0em 1em 0em; text-align: center;" class="alert alert-danger">
+                      <span class="glyphicon glyphicon-globe"></span> <b>{{validation.locations.flag.message}} </b>
+                    </div>
+                  </div>
+
+ 
                 </form>
 
                 <form name="finance" class="form-horizontal">
@@ -250,8 +269,9 @@
 
 <footer>
   <div class="pull-right">
-    <a id="submitPatient" ng-click="registerPatient()" ng-disabled="form.$invalid || location.$invalid || details.$invalid || finance.$invalid || registrationType.$invalid" class="btn btn-success btn-sm">
+    <a id="submitPatient" ng-click="registerPatient()" ng-disabled="sessionProperties.failedSessionValidation || location.$invalid || details.$invalid || finance.$invalid || registrationType.$invalid" class="btn btn-success btn-sm">
       <span class="glyphicon glyphicon-pencil"></span> {{ "PATIENT_REG.REGISTER_PATIENT" | translate }}
+      {{sessionProperties.failedSessionValidation}}
     </a>
   </div>
 </footer>
