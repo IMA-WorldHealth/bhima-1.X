@@ -32,12 +32,13 @@
 
 .modal-table-body {
   position: absolute;
-  top:33px; bottom:30px; left:0; right:0;
+  top : 31px; bottom:30px; left:0; right:0;
   max-height: 350px;
   overflow: auto;
 }
 
 .modal-table-foot {
+  border-left: 6px solid #fff;
   position: absolute;
   height: 30px;
   bottom:0; right:0; left:0;
