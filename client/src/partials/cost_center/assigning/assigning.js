@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('assigning', [
+.controller('costCenter.assigning', [
   '$scope',
   '$q',
   'connect',
@@ -50,10 +50,6 @@ angular.module('bhima.controllers')
 
     function performChange() {
       $scope.selected_aux_cost_center = JSON.parse($scope.configuration.aux_cost_center);
-      // loadCenterAccount()
-      // .then(function (results) {
-      //   $scope.model.associatedAccounts = results;
-      // })
     }
 
     function isForwardable() {
@@ -90,6 +86,9 @@ angular.module('bhima.controllers')
       .then(function() {
         setAction('suivant');
         calculate();
+      })
+      .catch(function (err) {
+        console.log('error', err);
       });
     }
 
@@ -195,7 +194,9 @@ angular.module('bhima.controllers')
     appstate.register('project', function (project) {
       $scope.project = project;
       validate.process(dependencies)
-      .then(init);
+      .then(init, function (err) {
+        console.log('erreur', err);
+      });
     });
 
     $scope.performChange = performChange;
