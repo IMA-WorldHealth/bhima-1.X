@@ -96,29 +96,6 @@ angular.module('bhima.controllers')
       return $q.when();
     }
 
-    /*
-    function handlePatientImage() {
-
-      //FIXME This is super cheeky in angular - create a directive for this
-      var video = document.querySelector('#patientImage'), patientResolution = { video : { mandatory : { minWidth: 300, maxWidth: 400 } } };
-
-      navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
-
-      function videoError(error) {
-        //throw error;
-        //console.error(error);
-      }
-
-      function handleVideo(stream) {
-        video.src = window.URL.createObjectURL(stream);
-      }
-
-      if (navigator.getUserMedia) {
-        navigator.getUserMedia(patientResolution, handleVideo, videoError);
-      }
-    }
-    */
-
     $scope.registerPatient = function registerPatient() {
 
       if (util.isDateAfter($scope.patient.dob, new Date())) {
@@ -237,8 +214,6 @@ angular.module('bhima.controllers')
 
 
     function handleLocation () {
-      // // webcams for the win
-      // // handlePatientImage();
       defineLocationDependency();
       initialiseLocation($scope.project.location_id);
     }

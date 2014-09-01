@@ -25,7 +25,8 @@
         <div class="row">
           <div id="patientDetails" class="panel panel-primary">
             <div class="panel-heading">
-              <span class="glyphicon glyphicon-user"></span> {{ "PATIENT_REG.PATIENT_DETAILS" | translate }}
+              <!-- Required styling workaround -->
+              <span class="glyphicon glyphicon-user"></span> <b>{{ "PATIENT_REG.PATIENT_DETAILS" | translate }}</b>
             </div>
             <div class="panel-body">
 
@@ -82,25 +83,6 @@
                       </div>
                     </div>
                   </div>
-
-                  <div class="form-group">
-                    <label class="control-label col-xs-3 required"> {{ "PATIENT_REG.RENEWAL" | translate }}</label>
-                    <div class="col-xs-9">
-                      <div class="radio-inline">
-                        <label>
-                          <input type="radio" name="renewal_select" id="yes" value="1" checked ng-model="patient.renewal" required>
-                          {{ "PATIENT_REG.YES" | translate }}
-                        </label>
-                      </div>
-                      <div class="radio-inline">
-                        <label>
-                          <input type="radio" name="renewal_select" id="no" value="0" ng-model="patient.renewal" required>
-                          {{ "PATIENT_REG.NO" | translate }}
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-
                 </fieldset>
               </form>
 
@@ -333,28 +315,45 @@
       <div class="col-xs-5">
         <!-- <div class="col&#45;xs&#45;12"> -->
           <div class="row hack-right">
-            <div class="panel panel-default">
+            <div class="panel panel-warning">
               <div class="panel-heading">
-                <span class="glyphicon glyphicon-camera"></span>
-                <div class="pull-right">
-                  <span class="glyphicon glyphicon-eye-close"></span>
-                </div>
+                <span class="glyphicon glyphicon-list-alt"></span> <b>Registration Type</b>  <b style="color : red;">*</b>
               </div>
               <div class="panel-body">
-                <div class="image_container">
-                  <video autoplay="false" id="patientImage"></video>
-                </div>
+                <form name="registrationType">
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="renewal_select" id="no" value="0" ng-model="patient.renewal" required>
+                      <b>Patient is new to the hospital</b>
+                    </label>
+                  </div>
+                  <div>
+                    <p>Select this option for patients that have never been registered with the hospital before. The hospital has no information about this patient and no prescription / service history.</p>
+                  </div>
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="renewal_select" id="yes" value="1" ng-model="patient.renewal" required>
+                      <b>Patient has previously been registered, but is new to the BHIMA system</b>
+                    </label>
+                  </div>
+                  <div>
+                    <p>Select this option for patients that have been registered, and have a prescription / sale history with the hospital, but have never been registered with the BHIMA system, this patient is returning to the institution but being registred with the new system.</p>
+                  </div>
+                </form>
               </div>
             </div> <!-- End panel -->
           </div> <!-- End column 5 row -->
-          <div class="row hack-right">
+          <!--div class="row hack-right">
             <div class="panel panel-default">
               <div class="panel-heading">
-                <span class="glyphicon glyphicon-pencil"></span> {{ "PATIENT_REG.PATIENT_NOTES" | translate }}
+                Additional Component
               </div>
-              <textarea type="text" multiline class="form-bhima note"></textarea>
+
+              <div class="panel-body">
+                Content
+              </div>
             </div> <!-- End panel -->
-          </div> <!-- End column 5 row -->
+          </div--> <!-- End column 5 row -->
         </div>
       <!-- </div> <!&#45;&#45;End main column 5 &#45;&#45;> -->
     </div><!-- End row -->
@@ -363,7 +362,7 @@
 
 <footer>
   <div class="pull-right">
-    <a id="submitPatient" ng-click="registerPatient()" ng-disabled="form.$invalid || location.$invalid || details.$invalid || finance.$invalid" class="btn btn-success btn-sm">
+    <a id="submitPatient" ng-click="registerPatient()" ng-disabled="form.$invalid || location.$invalid || details.$invalid || finance.$invalid || registrationType.$invalid" class="btn btn-success btn-sm">
       <span class="glyphicon glyphicon-pencil"></span> {{ "PATIENT_REG.REGISTER_PATIENT" | translate }}
     </a>
   </div>
