@@ -4,3 +4,7 @@
      -moz-box-sizing: content-box;
           box-sizing: content-box;
 }
+
+.editor-text {
+  width: 100%;
+}
