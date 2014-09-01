@@ -497,13 +497,13 @@ angular.module('bhima.controllers')
       };
 
       validate.process(dependencies)
-      .then(getLocation)
+      .then(getLocations)
       .then(polish)
       .catch(function (err) {
         console.log('error pendant la genaration de la facture');
       });
 
-      function getLocation (model) {
+      function getLocations (model) {
         dependencies.location = {};
         dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id;
         return validate.process(dependencies, ['location']);
@@ -554,13 +554,13 @@ angular.module('bhima.controllers')
       };
 
       validate.process(dependencies)
-      .then(getLocation)
+      .then(getLocations)
       .then(polish)
       .catch(function (err) {
         console.log('error pendant la genaration de la facture');
       });
 
-      function getLocation (model) {
+      function getLocations (model) {
         console.log('notre model', model);
         dependencies.location = {};
         dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id;
@@ -618,13 +618,13 @@ angular.module('bhima.controllers')
       };
 
       validate.process(dependencies)
-      .then(getLocation)
+      .then(getLocations)
       .then(polish)
       .catch(function (err) {
         console.log('error pendant la genaration de la facture');
       });
 
-      function getLocation (model) {
+      function getLocations (model) {
         dependencies.location = {};
         dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id;
         return validate.process(dependencies, ['location']);
@@ -673,13 +673,13 @@ angular.module('bhima.controllers')
       };
 
       validate.process(dependencies)
-      .then(getLocation)
+      .then(getLocations)
       .then(polish)
       .catch(function (err) {
         console.log('error ');
       });
 
-      function getLocation (model) {
+      function getLocations (model) {
         dependencies.location = {};
         dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id;
         return validate.process(dependencies, ['location']);
@@ -730,13 +730,13 @@ angular.module('bhima.controllers')
       };
 
       validate.process(dependencies)
-      .then(getLocation)
+      .then(getLocations)
       .then(polish)
       .catch(function (err) {
         console.log('error ');
       });
 
-      function getLocation (model) {
+      function getLocations (model) {
         dependencies.location = {};
         dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id;
         return validate.process(dependencies, ['location']);

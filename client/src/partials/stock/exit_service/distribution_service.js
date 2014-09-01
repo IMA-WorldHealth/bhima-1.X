@@ -239,7 +239,7 @@ angular.module('bhima.controllers')
          ind = i;
          break;
         }
-      };
+      }
       return ind;
     }
 
