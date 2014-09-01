@@ -360,13 +360,22 @@
 
   "PATIENT_REGISTRATIONS" : {
     "TITLE"               : "Patient Registrations",
+    "TYPE"                : "Registration Type",
     "FIND_DATE"           : "Pick a Date",
     "DATE_FROM"           : "Date From",
     "DATE_TO"             : "Date To",
     "DAY"                 : "Today",
     "WEEK"                : "This Week",
     "MONTH"               : "This Month",
-    "SEARCH"              : "Search"
+    "SEARCH"              : "Search",
+    "INCORRECT_DATE_TYPE" : "Provided date value is invalid",
+    "INCORRECT_DATE_LIMIT" : "Year of birth must be between 1900 and 2014",
+    "INCORRECT_LOCATION_CURRENT" : "Current village not specified",
+    "INCORRECT_LOCATION_ORIGIN" : "Origin village not specified",
+    "STATUS_NEW_TITLE" : "Patient is new to the hospital",
+    "STATUS_NEW_BODY" : "Select this option for patients that have never been registered with the hospital before. The hospital has no information about this patient and no prescription / service history.",
+    "STATUS_RETURNING_TITLE" : "Patient has previously been registered, but is new to the BHIMA system",
+    "STATUS_RETURNING_BODY" : "Select this option for patients that have been registered, and have a prescription / sale history with the hospital, but have never been registered with the BHIMA system, this patient is returning to the insitution but being registered with the new system."
   },
 
   "REPORT"                  : {

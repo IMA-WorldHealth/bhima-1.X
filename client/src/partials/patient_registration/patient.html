@@ -48,11 +48,11 @@
                   </div>
                   
 
-                  <div class="form-group" ng-show="!sessionProperties.fullDateEnabled">
+                  <div class="form-group" ng-show="!session.fullDateEnabled">
                     <label for="yob" class="control-label col-xs-3 required"> {{ "PATIENT_REG.YOB" | translate }}</label>
                     <div class="col-xs-9">
                       <div class="input-group">
-                        <input type="text" class="form-bhima" id="yob" ng-model="sessionProperties.yob">
+                        <input type="text" class="form-bhima" id="yob" ng-model="session.yob">
                         <span class="input-group-btn">
                           <button ng-click="enableFullDate()" type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-calendar"></span>{{ "PATIENT_REG.ENTER_FULL_DATE" | translate }}</button>
                         </span>
@@ -64,13 +64,13 @@
                   <div class="form-group" >
                     <label for="patient-dob" class="col-xs-3 control-label">{{ "PATIENT_REG.DOB" | translate }}</label>
                     <div class="col-xs-9">
-                      <input required id="patient-dob" type="date" class="form-bhima" ng-disabled="!sessionProperties.fullDateEnabled" ng-model="patient.dob" max="{{ getMaxDate() }}">
+                      <input required id="patient-dob" type="date" class="form-bhima" ng-disabled="!session.fullDateEnabled" ng-model="patient.dob" max="{{ getMaxDate() }}">
                     </div>
                   </div>
             
                   <div class="form-group" ng-if="validation.dates.flag">
                     <div style="margin : 0em 1em 0em; text-align: center;" class="alert alert-danger">
-                      <span class="glyphicon glyphicon-calendar"></span> <b>{{validation.dates.flag.message}} </b>
+                      <span class="glyphicon glyphicon-calendar"></span> <b>{{validation.dates.flag.message | translate}} </b>
                     </div>
                   </div>
 
@@ -123,7 +123,7 @@
 
 <div class="form-group" ng-if="validation.locations.flag">
                     <div style="margin : 0em 1em 0em; text-align: center;" class="alert alert-danger">
-                      <span class="glyphicon glyphicon-globe"></span> <b>{{validation.locations.flag.message}} </b>
+                      <span class="glyphicon glyphicon-globe"></span> <b>{{validation.locations.flag.message | translate}} </b>
                     </div>
                   </div>
 
@@ -224,27 +224,27 @@
           <div class="row hack-right">
             <div class="panel panel-warning">
               <div class="panel-heading">
-                <span class="glyphicon glyphicon-list-alt"></span> <b>Registration Type</b>  <b style="color : red;">*</b>
+                <span class="glyphicon glyphicon-list-alt"></span> <b>{{ "PATIENT_REGISTRATIONS.TYPE" | translate }}</b>  <b style="color : red;">*</b>
               </div>
               <div class="panel-body">
                 <form name="registrationType">
                   <div class="radio">
                     <label>
                       <input type="radio" name="renewal_select" id="no" value="0" ng-model="patient.renewal" required>
-                      <b>Patient is new to the hospital</b>
+                      <b>{{ "PATIENT_REGISTRATIONS.STATUS_NEW_TITLE" | translate }}</b>
                     </label>
                   </div>
                   <div>
-                    <p>Select this option for patients that have never been registered with the hospital before. The hospital has no information about this patient and no prescription / service history.</p>
+                    <p>{{ "PATIENT_REGISTRATIONS.STATUS_NEW_BODY" | translate }}</p>
                   </div>
                   <div class="radio">
                     <label>
                       <input type="radio" name="renewal_select" id="yes" value="1" ng-model="patient.renewal" required>
-                      <b>Patient has previously been registered, but is new to the BHIMA system</b>
+                      <b>{{ "PATIENT_REGISTRATIONS.STATUS_RETURNING_TITLE" | translate }}</b>
                     </label>
                   </div>
                   <div>
-                    <p>Select this option for patients that have been registered, and have a prescription / sale history with the hospital, but have never been registered with the BHIMA system, this patient is returning to the institution but being registred with the new system.</p>
+                    <p>{{ "PATIENT_REGISTRATIONS.STATUS_RETURNING_BODY" | translate }}</p>
                   </div>
                 </form>
               </div>
@@ -262,16 +262,14 @@
             </div> <!-- End panel -->
           </div--> <!-- End column 5 row -->
         </div>
-      <!-- </div> <!&#45;&#45;End main column 5 &#45;&#45;> -->
     </div><!-- End row -->
   </div>
 </main>
 
 <footer>
   <div class="pull-right">
-    <a id="submitPatient" ng-click="registerPatient()" ng-disabled="sessionProperties.failedSessionValidation || location.$invalid || details.$invalid || finance.$invalid || registrationType.$invalid" class="btn btn-success btn-sm">
+    <a id="submitPatient" ng-click="registerPatient()" ng-disabled="session.failedSessionValidation || location.$invalid || details.$invalid || finance.$invalid || registrationType.$invalid" class="btn btn-success btn-sm">
       <span class="glyphicon glyphicon-pencil"></span> {{ "PATIENT_REG.REGISTER_PATIENT" | translate }}
-      {{sessionProperties.failedSessionValidation}}
     </a>
   </div>
 </footer>
