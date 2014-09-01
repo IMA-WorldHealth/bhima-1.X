@@ -16,11 +16,45 @@ angular.module('bhima.controllers')
     var defaultBirthMonth = '06-01';
     
     var originLocationUuid, currentLocationUuid;
-
+  
+    // TODO rename session
     $scope.sessionProperties = { timestamp : new Date() };
+    $scope.sessionProperties.originLocationUuid = null;
+    $scope.sessionProperties.currentLocationUuid = null;
+
+    $scope.sessionProperties.failedSessionValidation = false;
     $scope.patient = {};
     $scope.origin = {};
     $scope.current = {};
+
+    var validation = $scope.validation = {};
+    validation.dates = { 
+      flag : false,
+      tests : { 
+        type : { 
+          flag : false,
+          message : "REGISTRATION.INCORRECT_DATE_TYPE"
+        },
+        limit : { 
+          flag : false,
+          message : "REGISTRATION.INCORRECT_DATA_LIMIT" 
+        }
+      }
+    };
+
+    validation.locations = { 
+      flag : false,
+      tests : { 
+        current : { 
+          flag : false,
+          message : "REGISTRATION.INCORRECT_LOCATION_CURRENT"
+        },
+        origin : { 
+          flag : false,
+          message : "REGISTRATION.INCORRECT_LOCATION_ORIGIN"
+        }
+      }
+    };
 
     dependencies.debtorGroup = {
       query : {
@@ -39,16 +73,86 @@ angular.module('bhima.controllers')
     }
 
     function validateFields() { 
-      return validateDates() && validateLocations();
+      console.log('validateFields');
+      return false;
+    }
+   
+    // Tests in an ng-disabled method often got called in the wrong order/ scope was not updated
+    $scope.$watch('patient.dob', function (nval, oval) { 
+      customValidation();
+    }, true);
+
+    $scope.$watch('sessionProperties', function (nval, oval) { 
+      customValidation(); 
+    }, true);
+  
+    function validateLocations() { 
+      validation.locations.flag = false;
+      if (!$scope.sessionProperties.originLocationUuid) { 
+        validation.locations.flag = validation.locations.tests.origin;
+        return true;
+      }
+
+      if (!$scope.sessionProperties.currentLocationUuid) { 
+        validation.locations.flag = validation.locations.tests.current;
+        return true;
+      }
+
+      return false;
+    }
+  
+    // TODO rename
+    function customValidation() { 
+      var dates = validateDates();
+      var locations = validateLocations();
+
+      $scope.sessionProperties.failedSessionValidation = dates || locations;
+      return;
+    }
+
+    // Conveluted date validation 
+    function validateDates() { 
+      console.log('vd', $scope.sessionProperties.dob);
+      var extractYear = $scope.sessionProperties.yob;  
+      validation.dates.flag = false;
+      
+      if ($scope.sessionProperties.fullDateEnabled) { 
+  
+        if (!$scope.patient.dob) { 
+          validation.dates.flag = validation.dates.tests.type;
+          return true;
+        }
+
+        extractYear = $scope.patient.dob.getFullYear();
+        console.log($scope.patient.dob);
+      }
+
+      // FIXME Horrible branching structure 
+      if (extractYear) { 
+       
+        if (isNaN(extractYear)) { 
+          validation.dates.flag = validation.dates.tests.type;
+
+          console.log('setting flag', validation.dates.flag);
+          return true;
+        }
+
+        if (extractYear > 2014 || extractYear < 1900) { 
+          validation.dates.flag = validation.dates.tests.limit;
+          return true;
+        }  
+      }
+
+      return false;
     }
 
     // Location methods
     function setOriginLocation(uuid) { 
-      originLocationUuid = uuid;
+      $scope.sessionProperties.originLocationUuid = uuid;
     }
 
     function setCurrentLocation(uuid) { 
-      currentLocationUuid = uuid;
+      $scope.sessionProperties.currentLocationUuid = uuid;
     }
 
     $scope.registerPatient = function registerPatient() {
@@ -133,5 +237,6 @@ angular.module('bhima.controllers')
 
     $scope.setOriginLocation = setOriginLocation;
     $scope.setCurrentLocation = setCurrentLocation;
+    $scope.validateFields = validateFields;
   }
 ]);
