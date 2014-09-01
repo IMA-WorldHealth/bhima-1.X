@@ -1005,7 +1005,7 @@ create table `fonction` (
 drop table if exists `employee`;
 create table `employee` (
   `id`                  int unsigned not null auto_increment,
-  `code`                varchar(20) not null,
+  `code`                varchar(20),
   `prenom`              text,
   `name`                text not null,
   `postnom`             text,
