@@ -12,10 +12,11 @@ angular.module('bhima.controllers')
   'uuid',
   function ($scope, $q, $location, $translate, connect, messenger, validate, appstate, util, uuid) {
 
-    var dependencies = {},
-        defaultBirthMonth = '06-01';
+    var dependencies = {};
+    var defaultBirthMonth = '06-01';
+    
+    var originLocationUuid, currentLocationUuid;
 
-    $scope.assignation = {};
     $scope.sessionProperties = { timestamp : new Date() };
     $scope.patient = {};
     $scope.origin = {};
@@ -32,68 +33,22 @@ angular.module('bhima.controllers')
       query : 'user_session'
     };
 
-
-    var locationDictionary = ['village', 'sector', 'province', 'country'];
-    var locationRelationshipOrigin = $scope.locationRelationshipOrigin = {
-      village : {
-        value : null,
-        dependency : null,
-        requires : 'sector',
-        label : 'name'
-      },
-      sector : {
-        value : null,
-        dependency : 'village',
-        requires : 'province',
-        label : 'name'
-      },
-      province : {
-        value : null,
-        dependency : 'sector',
-        requires : 'country',
-        label : 'name'
-      },
-      country : {
-        value : null,
-        dependency : 'province',
-        requires : null,
-        label : 'country_en'
-      }
-    };
-
-    var locationRelationshipCurrent = $scope.locationRelationshipCurrent = {
-      village : {
-        value : null,
-        dependency : null,
-        requires : 'sector',
-        label : 'name'
-      },
-      sector : {
-        value : null,
-        dependency : 'village',
-        requires : 'province',
-        label : 'name'
-      },
-      province : {
-        value : null,
-        dependency : 'sector',
-        requires : 'country',
-        label : 'name'
-      },
-      country : {
-        value : null,
-        dependency : 'province',
-        requires : null,
-        label : 'country_en'
-      }
-    };
-
-    var locationStoreOrigin = $scope.locationStoreOrigin = {};
-    var locationStoreCurrent = $scope.locationStoreCurrent = {};
-
     function patientRegistration(model) {
       angular.extend($scope, model);
       return $q.when();
+    }
+
+    function validateFields() { 
+      return validateDates() && validateLocations();
+    }
+
+    // Location methods
+    function setOriginLocation(uuid) { 
+      originLocationUuid = uuid;
+    }
+
+    function setCurrentLocation(uuid) { 
+      currentLocationUuid = uuid;
     }
 
     $scope.registerPatient = function registerPatient() {
@@ -102,9 +57,13 @@ angular.module('bhima.controllers')
         return messenger.warn($translate('PATIENT_REG.INVALID_DATE'), 6000);
       }
 
+      if (!originLocationUuid || !currentLocationUuid) { 
+        return messenger.warn("Invalid location - validation required", 6000);
+      }
+
       var patient = $scope.patient;
-      patient.current_location_id = $scope.locationRelationshipCurrent.village.value;
-      patient.origin_location_id = $scope.locationRelationshipOrigin.village.value;
+      patient.current_location_id = originLocationUuid;
+      patient.origin_location_id = currentLocationUuid;
       writePatient(patient);
     };
 
@@ -169,139 +128,10 @@ angular.module('bhima.controllers')
       $scope.project = project;
       validate.process(dependencies)
       .then(patientRegistration)
-      .then(handleLocation)
       .catch(handleError);
     });
 
-    function defineLocationDependency() {
-      locationDictionary.forEach(function (key) {
-        var locationQuery;
-        var label = locationRelationshipOrigin[key].label;
-        var locationDetails = locationRelationshipOrigin[key];
-
-        locationQuery = dependencies[key] = {
-          query : {
-            identifier : 'uuid',
-            tables : {},
-            order : [label]
-          }
-        };
-        locationQuery.query.tables[key] = {
-          columns : ['uuid', label]
-        };
-
-        if (locationDetails.requires) {
-          locationQuery.query.tables[key].columns.push(
-            formatLocationIdString(locationDetails.requires)
-            );
-        }
-      });
-    }
-
-    function initialiseLocation(locationId) {
-      connect.fetch('/location/' + locationId)
-      .then(function (defaultLocation) {
-        defaultLocation = defaultLocation[0];
-        locationDictionary.forEach(function (key) {
-          locationRelationshipOrigin[key].value = defaultLocation[formatLocationIdString(key)];
-          locationRelationshipCurrent[key].value = defaultLocation[formatLocationIdString(key)];
-        });
-
-        updateOriginLocation('country', null);
-        updateCurrentLocation('country', null);
-      });
-    }
-
-
-    function handleLocation () {
-      defineLocationDependency();
-      initialiseLocation($scope.project.location_id);
-    }
-
-    function formatLocationIdString(target) {
-      var uuidTemplate = '_uuid';
-      return target.concat(uuidTemplate);
-    }
-
-    function updateOriginLocation (key, uuidDependency) {
-      var dependency = locationRelationshipOrigin[key].dependency;
-
-      if (!uuidDependency && locationRelationshipOrigin[key].requires) {
-        locationStoreOrigin[key] = { data : [] };
-
-        if (dependency) { updateOriginLocation(dependency, null); }
-        return;
-      }
-
-      if (uuidDependency) {
-        dependencies[key].query.where = [key + '.' + locationRelationshipOrigin[key].requires + '_uuid=' + uuidDependency];
-      }
-
-      validate.refresh(dependencies, [key])
-      .then(function (result) {
-        locationStoreOrigin[key] = result[key];
-        var currentValue = locationStoreOrigin[key].get(locationRelationshipOrigin[key].value);
-
-        // FIXME
-        if (currentValue) { currentValue = currentValue.uuid; }
-
-        if (!currentValue) {
-          if (locationStoreOrigin[key].data.length) {
-            // TODO Should be sorted alphabetically, making this the first value
-            currentValue = locationRelationshipOrigin[key].value = locationStoreOrigin[key].data[0].uuid;
-          }
-        }
-
-        locationRelationshipOrigin[key].value = currentValue;
-
-        // Download new data, try and match current value to currently selected, if not select default
-        if (dependency) {
-          updateOriginLocation(dependency, currentValue);
-        }
-      });
-    }
-
-    function updateCurrentLocation (key, uuidDependency) {
-      //we can have one method for orin and current, but for now it seems clear to separate them
-      var dependency = locationRelationshipCurrent[key].dependency;
-
-      if (!uuidDependency && locationRelationshipCurrent[key].requires) {
-        locationStoreCurrent[key] = { data : [] };
-
-        if (dependency) { updateCurrentLocation(dependency, null); }
-        return;
-      }
-
-      if (uuidDependency) {
-        dependencies[key].query.where = [key + '.' + locationRelationshipCurrent[key].requires + '_uuid=' + uuidDependency];
-      }
-
-      validate.refresh(dependencies, [key])
-      .then(function (result) {
-        locationStoreCurrent[key] = result[key];
-
-        var currentValue = locationStoreCurrent[key].get(locationRelationshipCurrent[key].value);
-
-        // FIXME
-        if (currentValue) { currentValue = currentValue.uuid; }
-
-        if (!currentValue) {
-          if (locationStoreCurrent[key].data.length) {
-            // TODO Should be sorted alphabetically, making this the first value
-            currentValue = locationRelationshipCurrent[key].value = locationStoreCurrent[key].data[0].uuid;
-          }
-        }
-
-        locationRelationshipCurrent[key].value = currentValue;
-
-        // Download new data, try and match current value to currently selected, if not select default
-        if (dependency) {
-          updateCurrentLocation(dependency, currentValue);
-        }
-      });
-    }
-
-    $scope.updateOriginLocation = updateOriginLocation;
-    $scope.updateCurrentLocation = updateCurrentLocation;
+    $scope.setOriginLocation = setOriginLocation;
+    $scope.setCurrentLocation = setCurrentLocation;
   }
 ]);
