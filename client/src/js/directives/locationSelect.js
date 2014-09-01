@@ -14,9 +14,11 @@ angular.module('bhima.directives')
     transclue : true,
     link : function (scope, element, attrs) {
       
-      console.log('attrs', attrs);
-      var namespace = scope.locationSelect = {};
-      
+      var submitCallback = attrs.selectVillage;
+      scope.locationSelect = scope.locationSelect || {};
+
+      var namespace = scope.locationSelect[submitCallback] = {};
+
       // TODO rename variables etc. with useful names 
       var locationIndex = {};
       var locationConfig = namespace.locationConfig = {
@@ -45,18 +47,8 @@ angular.module('bhima.directives')
         }
       };
       var locationStore = namespace.locationStore = {};
-      var submitCallback = attrs.selectVillage;
 
-      // Validate configuration 
-      if (!submitCallback) { 
-        console.error('[location-select] invalid select-village property');
-        return;
-      }
-
-      if (!scope[submitCallback]) { 
-        console.error('[location-select] method \'' + submitCallback + '\' not found - is it available to $scope?');
-        return;
-      }
+      
 
       appstate.register('project', settup);
 
@@ -207,25 +199,26 @@ angular.module('bhima.directives')
         var compile = '';
 
         // Such meta templating
-        var componentStructure = '<div class="form-group"><label for="location-select-<%CONFIGID%>" class="control-label">{{\"<%CONFIGLABEL%>\" | translate}}</label><div class="pull-right"><span class="glyphicon glyphicon-globe" ng-class="{\'error\' : !locationSelect.locationStore.<%CONFIGID%>.model.data.length}"></span> {{locationSelect.locationStore.<%CONFIGID%>.model.data.length}}</div><select ng-disabled="locationSelect.session.locationSearch" ng-model="locationSelect.locationStore.<%CONFIGID%>.value" ng-options="<%CONFIGID%>.uuid as <%CONFIGID%>.<%CONFIGCOLUMN%> for <%CONFIGID%> in locationSelect.locationStore.<%CONFIGID%>.model.data | orderBy : \'name\'" ng-change=<%CONFIGCHANGE%> class="form-bhima" id="location-select-<%CONFIGID%>"><option value="" ng-if="!locationSelect.locationStore.<%CONFIGID%>.model.data.length" disblaed="disabled">----</option></select></div>'; 
+        var componentStructure = '<div class="form-group"><label for="location-select-<%CONFIGID%>" class="control-label">{{\"<%CONFIGLABEL%>\" | translate}}</label><div class="pull-right"><span class="glyphicon glyphicon-globe" ng-class="{\'error\' : !locationSelect.<%NAMESPACE%>.locationStore.<%CONFIGID%>.model.data.length}"></span> {{locationSelect.<%NAMESPACE%>.locationStore.<%CONFIGID%>.model.data.length}}</div><select ng-disabled="locationSelect.<%NAMESPACE%>.session.locationSearch" ng-model="locationSelect.<%NAMESPACE%>.locationStore.<%CONFIGID%>.value" ng-options="<%CONFIGID%>.uuid as <%CONFIGID%>.<%CONFIGCOLUMN%> for <%CONFIGID%> in locationSelect.<%NAMESPACE%>.locationStore.<%CONFIGID%>.model.data | orderBy : \'name\'" ng-change=<%CONFIGCHANGE%> class="form-bhima" id="location-select-<%CONFIGID%>"><option value="" ng-if="!locationSelect.<%NAMESPACE%>.locationStore.<%CONFIGID%>.model.data.length" disblaed="disabled">----</option></select></div>'; 
         var configurationList = Object.keys(config).reverse();
         
         configurationList.forEach(function (key) { 
           var configObject = config[key];
           var component = componentStructure;
 
-          var changeSubmit;
+          var changeSubmit = lookupDependency(key) ? 
+            '\"locationSelect.<%NAMESPACE%>.fetchLocationData(\'' + lookupDependency(key) + '\', locationSelect.<%NAMESPACE%>.locationStore.' + configObject.id + '.value)\"' : 
+            '\"locationSelect.<%NAMESPACE%>.submitVillage(locationSelect.<%NAMESPACE%>.locationStore.' + configObject.id + '.value)\"';  
 
-          changeSubmit = lookupDependency(key) ? 
-            '\"locationSelect.fetchLocationData(\'' + lookupDependency(key) + '\', locationSelect.locationStore.' + configObject.id + '.value)\"' : 
-            '\"locationSelect.submitVillage(locationSelect.locationStore.' + configObject.id + '.value)\"';  
-
+          changeSubmit = changeSubmit.replace(/<%NAMESPACE%>/g, submitCallback);
+          
           component = component.replace(/<%CONFIGID%>/g, configObject.id);
           component = component.replace(/<%CONFIGLABEL%>/g, configObject.label);
           component = component.replace(/<%CONFIGCOLUMN%>/g, configObject.column);
           component = component.replace(/<%CONFIGDEPEND%>/g, lookupDependency(key));
+          component = component.replace(/<%NAMESPACE%>/g, submitCallback);
+          component = component.replace(/<%CONFIGCHANGE%>/g, changeSubmit);
 
-          component = component.replace(/<%CONFIGCHANGE%>/g, changeSubmit); 
           compile = compile.concat(component);
         });
 

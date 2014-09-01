@@ -94,64 +94,8 @@
 
                       <!-- Temporary required work around -->
                       <legend>{{ "LOCATION.ORIGIN" | translate }} <small style="color : red;">*</small></legend>
-
-                      <div class="form-group">
-                        <label for="location-country" class="control-label">
-                          {{ "LOCATION.COUNTRY" | translate }}
-                        </label>
-                        <select
-                          required class="form-bhima"
-                          id="location-country"
-                          ng-model="locationRelationshipOrigin.country.value"
-                          ng-options="country.uuid as country.country_en for country in locationStoreOrigin.country.data | orderBy: 'country_en'"
-                          ng-change="updateOriginLocation('province', locationRelationshipOrigin.country.value)"
-                          >
-                          <option value="" disabled="disabled">-- {{ "SELECT.COUNTRY" | translate }} --</option>
-                        </select>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="location-province" class="control-label">
-                          {{ "LOCATION.PROVINCE" | translate }}
-                        </label>
-                        <select
-                          required class="form-bhima"
-                          id="location-province"
-                          ng-model="locationRelationshipOrigin.province.value"
-                          ng-options="province.uuid as province.name for province in locationStoreOrigin.province.data | orderBy: 'name'"
-                          ng-change="updateOriginLocation('sector', locationRelationshipOrigin.province.value)">
-                          <option value="" disabled="disabled">-- {{ "SELECT.PROVINCE" | translate }} --</option>
-                        </select>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="location-sector" class="control-label">
-                          {{ "LOCATION.VILLE" | translate }}
-                        </label>
-                        <select
-                          class="form-bhima"
-                          id="location-sector"
-                          ng-model="locationRelationshipOrigin.sector.value"
-                          ng-options="sector.uuid as sector.name for sector in locationStoreOrigin.sector.data | orderBy:'name'"
-                          ng-change="updateOriginLocation('village', locationRelationshipOrigin.sector.value)"
-                          required>
-                          <option value="" disabled="disabled">-- {{ "SELECT.SECTOR" | translate }}--</option>
-                        </select>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="location-village" class="control-label">
-                          {{ "LOCATION.VILLAGE" | translate }}
-                        </label>
-                        <select
-                          class="form-bhima"
-                          id="location-village"
-                          ng-model="locationRelationshipOrigin.village.value"
-                          ng-options="village.uuid as village.name for village in locationStoreOrigin.village.data | orderBy:'name'"
-                          required>
-                          <option value="" disabled="disabled">-- {{ "SELECT.VILLAGE" | translate }}--</option>
-                        </select>
-                      </div>
+                      
+                      <div location-select select-village="setOriginLocation"></div>
                     </fieldset>
                   </div>
 
@@ -160,64 +104,8 @@
 
                       <!-- Temporary required work around -->
                       <legend> {{ "LOCATION.CURRENT" | translate }} <small style="color : red;">*</small></legend>
-                      <div class="form-group">
-                        <label for="location-country" class="control-label">
-                          {{ "LOCATION.COUNTRY" | translate }}
-                        </label>
-                        <select
-                          required
-                          class="form-bhima"
-                          id="location-country"
-                          ng-model="locationRelationshipCurrent.country.value"
-                          ng-options="country.uuid as country.country_en for country in locationStoreCurrent.country.data | orderBy:'country_en'"
-                          ng-change="updateCurrentLocation('province', locationRelationshipCurrent.country.value)">
-                          <option value="" disabled="disabled">-- {{ "SELECT.COUNTRY" | translate }} --</option>
-                        </select>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="location-province" class="control-label">
-                          {{ "LOCATION.PROVINCE" | translate }}
-                        </label>
-                        <select
-                          required
-                          class="form-bhima"
-                          id="location-province"
-                          ng-model="locationRelationshipCurrent.province.value"
-                          ng-options="province.uuid as province.name for province in locationStoreCurrent.province.data | orderBy:'name'"
-                          ng-change="updateCurrentLocation('sector', locationRelationshipCurrent.province.value)">
-                          <option value="" disabled="disabled">-- {{"SELECT.PROVINCE" | translate }} --</option>
-                        </select>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="location-sector" class="control-label">
-                          {{ "LOCATION.VILLE" | translate }}
-                        </label>
-                        <select
-                          required
-                          class="form-bhima"
-                          id="location-sector"
-                          ng-model="locationRelationshipCurrent.sector.value"
-                          ng-options="sector.uuid as sector.name for sector in locationStoreCurrent.sector.data | orderBy:'name'"
-                          ng-change="updateCurrentLocation('village', locationRelationshipCurrent.sector.value)">
-                          <option value="" disabled="disabled">-- {{ "SELECT.SECTOR" | translate }} --</option>
-                        </select>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="location-village" class="control-label">
-                          {{ "LOCATION.VILLAGE" | translate }}
-                        </label>
-                        <select
-                          class="form-bhima"
-                          id="location-village"
-                          ng-model="locationRelationshipCurrent.village.value"
-                          ng-options="village.uuid as village.name for village in locationStoreCurrent.village.data | orderBy:'name'"
-                          required>
-                          <option value="" disabled="disabled">-- {{ "SELECT.VILLAGE" | translate }}--</option>
-                        </select>
-                      </div>
+    
+                      <div location-select select-village="setCurrentLocation"></div>
                     </fieldset>
                   </div>
                 </fieldset>
