@@ -33,21 +33,21 @@
                 <fieldset>
                   <legend>{{ "PATIENT_REG.PATIENT" | translate }}</legend>
                   <div class="form-group">
-                    <label for="first-name" class="control-label col-xs-3">{{ "PATIENT_REG.FIRST_NAME" | translate }}</label>
+                    <label for="first-name" class="control-label col-xs-3 required">{{ "PATIENT_REG.FIRST_NAME" | translate }}</label>
                     <div class="col-xs-9">
                       <input type="text" class="form-bhima" id="first-name" ng-model="patient.first_name">
                     </div>
                   </div>
 
                   <div class="form-group">
-                    <label for="second-name" class="control-label col-xs-3">{{ "PATIENT_REG.SECOND_NAME" | translate }}</label>
+                    <label for="second-name" class="control-label col-xs-3 required">{{ "PATIENT_REG.SECOND_NAME" | translate }}</label>
                     <div class="col-xs-9">
                       <input type="text" class="form-bhima" id="second-name" ng-model="patient.last_name" required>
                     </div>
                   </div>
 
                   <div class="form-group" ng-show="!sessionProperties.fullDateEnabled">
-                    <label for="yob" class="control-label col-xs-3"> {{ "PATIENT_REG.YOB" | translate }}</label>
+                    <label for="yob" class="control-label col-xs-3 required"> {{ "PATIENT_REG.YOB" | translate }}</label>
                     <div class="col-xs-9">
                       <div class="input-group">
                         <input type="text" class="form-bhima" id="yob" ng-model="sessionProperties.yob">
@@ -58,16 +58,15 @@
                     </div>
                   </div>
 
-                  <!-- Use ng-show to display this only if enter full date is disabled -->
                   <div class="form-group" >
                     <label for="patient-dob" class="col-xs-3 control-label">{{ "PATIENT_REG.DOB" | translate }}</label>
                     <div class="col-xs-9">
-                      <input id="patient-dob" type="date" class="form-bhima" ng-disabled="!sessionProperties.fullDateEnabled" ng-model="patient.dob" max="{{ getMaxDate() }}">
+                      <input required id="patient-dob" type="date" class="form-bhima" ng-disabled="!sessionProperties.fullDateEnabled" ng-model="patient.dob" max="{{ getMaxDate() }}">
                     </div>
                   </div>
 
                   <div class="form-group">
-                    <label class="control-label col-xs-3"> {{ "PATIENT_REG.SEX" | translate }}</label>
+                    <label class="control-label col-xs-3 required"> {{ "PATIENT_REG.SEX" | translate }}</label>
                     <div class="col-xs-9">
                       <div class="radio-inline">
                         <label>
@@ -85,7 +84,7 @@
                   </div>
 
                   <div class="form-group">
-                    <label class="control-label col-xs-3"> {{ "PATIENT_REG.RENEWAL" | translate }}</label>
+                    <label class="control-label col-xs-3 required"> {{ "PATIENT_REG.RENEWAL" | translate }}</label>
                     <div class="col-xs-9">
                       <div class="radio-inline">
                         <label>
@@ -110,7 +109,9 @@
                   <legend>{{ "LOCATION.LOCATION" | translate }}</legend>
                   <div class="col-xs-6">
                     <fieldset>
-                      <legend>{{ "LOCATION.ORIGIN" | translate }}</legend>
+
+                      <!-- Temporary required work around -->
+                      <legend>{{ "LOCATION.ORIGIN" | translate }} <small style="color : red;">*</small></legend>
 
                       <div class="form-group">
                         <label for="location-country" class="control-label">
@@ -174,7 +175,9 @@
 
                   <div class="col-xs-6">
                     <fieldset>
-                      <legend> {{ "LOCATION.CURRENT" | translate }}</legend>
+
+                      <!-- Temporary required work around -->
+                      <legend> {{ "LOCATION.CURRENT" | translate }} <small style="color : red;">*</small></legend>
                       <div class="form-group">
                         <label for="location-country" class="control-label">
                           {{ "LOCATION.COUNTRY" | translate }}
@@ -236,19 +239,21 @@
                     </fieldset>
                   </div>
                 </fieldset>
+                </form>
 
-                <fieldset>
-                  <legend>{{ "PATIENT_REG.FINANCE" | translate }}</legend>
-                  <div class="form-group">
-                    <label for="debtor-group" class="col-xs-3 control-label">{{ "PATIENT_REG.DEBTOR_GROUP" | translate }}</label>
-                    <div class="col-xs-9">
-                      <select required class="form-bhima" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in debtorGroup.data | orderBy:'name'">
-                        <option value="" disabled="disabled">-- {{"SELECT.DEBITOR_GROUP" | translate }} --</option>
-                      </select>
+                <form name="finance" class="form-horizontal">
+                  <fieldset>
+                    <legend>{{ "PATIENT_REG.FINANCE" | translate }}</legend>
+                    <div class="form-group">
+                      <label for="debtor-group" class="control-label col-xs-3 required">{{ "PATIENT_REG.DEBTOR_GROUP" | translate }}</label>
+                      <div class="col-xs-9">
+                        <select required class="form-bhima" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in debtorGroup.data | orderBy:'name'">
+                          <option value="" disabled="disabled">-- {{"SELECT.DEBITOR_GROUP" | translate }} --</option>
+                        </select>
+                      </div>
                     </div>
-                  </div>
-                </fieldset>
-              </form>
+                  </fieldset>
+                </form>
 
             </div> <!-- End panel body -->
           </div> <!-- End panel -->
@@ -358,7 +363,7 @@
 
 <footer>
   <div class="pull-right">
-    <a id="submitPatient" ng-click="registerPatient()" ng-disabled="form.$invalid || location.$invalid || details.$invalid" class="btn btn-success btn-sm">
+    <a id="submitPatient" ng-click="registerPatient()" ng-disabled="form.$invalid || location.$invalid || details.$invalid || finance.$invalid" class="btn btn-success btn-sm">
       <span class="glyphicon glyphicon-pencil"></span> {{ "PATIENT_REG.REGISTER_PATIENT" | translate }}
     </a>
   </div>

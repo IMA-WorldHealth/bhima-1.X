@@ -147,8 +147,12 @@ angular.module('bhima.directives')
         validCurrentLocation = angular.isDefined(store.model.get(store.value));
         locationsFound = store.model.data.length;
         
-        if (!validCurrentLocation) store.value = null;
-        if (locationsFound && !validCurrentLocation) store.value = store.model.data[0].uuid;
+        if (!validCurrentLocation) {
+          store.value = null;
+        }
+        if (locationsFound && !validCurrentLocation) {
+          store.value = store.model.data[0].uuid;
+        }
                
         // Propegate selection
         if (requiresCurrentKey) {
