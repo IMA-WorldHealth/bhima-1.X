@@ -365,6 +365,10 @@
       controller : 'inventory.distribution',
       templateUrl : 'partials/inventory/distribution/distribution.html'
     })
+    .when('/snis/', {
+      controller : 'snis.controller',
+      templateUrl : 'partials/snis/snis.html'
+    })	
     .when('/purchase_menu/', {
       controller : 'purchase.menu',
       templateUrl : 'partials/purchase/purchase_menu.html'
