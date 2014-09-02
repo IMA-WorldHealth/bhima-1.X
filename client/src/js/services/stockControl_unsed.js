@@ -5,6 +5,7 @@ angular.module('bhima.services')
 	// A FAIRE : des simulations concretes pour DL
 	// A FAIRE : des simulations concretes pour IC
 	// A FAIRE : gerer les cas de valeur null
+	
 	var dependencies = {},
 		inventory = {};
 
