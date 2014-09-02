@@ -1241,7 +1241,6 @@ app.get('/getStockEntry/', function (req, res, next) {
   .done();
 });
 
-//     TOTAL DES CONSOMMATIONS PAR RAPPORT A UN INVENTORY UUID
 app.get('/getStockConsumption/', function (req, res, next) {
   var sql = "SELECT inventory.text, SUM(consumption.quantity) AS 'quantity', inventory.uuid, stock.inventory_uuid"
           + " FROM consumption RIGHT JOIN stock ON stock.tracking_number = consumption.tracking_number"
@@ -1257,6 +1256,7 @@ app.get('/getStockConsumption/', function (req, res, next) {
 });
 
 app.get('/getNombreMoisStockControl/:inventory_uuid', function (req, res, next) {
+
   var sql = "SELECT COUNT(DISTINCT(MONTH(c.date))) AS nb"
           + " FROM consumption c"
           + " JOIN stock s ON c.tracking_number=s.tracking_number "
@@ -1266,7 +1266,6 @@ app.get('/getNombreMoisStockControl/:inventory_uuid', function (req, res, next) 
 
   db.exec(sql)
   .then(function (result) {
-    console.log(result);
     res.send(result[0]);
   })
   .catch(function (err) { next(err); })
@@ -1280,8 +1279,7 @@ app.get('/monthlyConsumptions/:inventory_uuid/:nb', function (req, res, next) {
           + " JOIN inventory i ON i.uuid=s.inventory_uuid "
           + " WHERE s.inventory_uuid=" + sanitize.escape(req.params.inventory_uuid)
           + " AND c.uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss )"
-          + " AND (c.date BETWEEN DATE_SUB(CURDATE(),INTERVAL " + sanitize.escape(req.params.inventory_uuid) + " MONTH) AND CURDATE())"
-          + " GROUP BY i.uuid";
+          + " AND (c.date BETWEEN DATE_SUB(CURDATE(),INTERVAL " + sanitize.escape(req.params.nb) + " MONTH) AND CURDATE())";
 
   db.exec(sql)
   .then(function (result) {
@@ -1292,13 +1290,14 @@ app.get('/monthlyConsumptions/:inventory_uuid/:nb', function (req, res, next) {
 });
 
 app.get('/getDelaiLivraison/:id', function (req, res, next) {
-  var sql = "SELECT ROUND(AVG(CEIL(DATEDIFF(s.entry_date,p.purchase_date)/30))) AS dl"
-          + " FROM purchase p"
-          + " JOIN stock s ON p.uuid=s.purchase_order_uuid "
-          + " JOIN purchase_item z ON p.uuid=z.purchase_uuid "
-          + " JOIN inventory i ON s.inventory_uuid=i.uuid "
-          + " WHERE z.inventory_uuid=s.inventory_uuid "
-          + " AND s.inventory_uuid=" + sanitize.escape(req.params.id);
+
+  var sql = "SELECT " + 
+  "ROUND(AVG(ROUND(DATEDIFF(s.entry_date, p.purchase_date) / 30))) AS dl " +
+  "FROM purchase p " +
+  "JOIN stock s ON p.uuid=s.purchase_order_uuid " +
+  "JOIN purchase_item z ON p.uuid=z.purchase_uuid " +
+  "JOIN inventory i ON s.inventory_uuid=i.uuid " +
+  "WHERE z.inventory_uuid=s.inventory_uuid AND s.inventory_uuid=" + sanitize.escape(req.params.id);
 
   db.exec(sql)
   .then(function (result) {
@@ -1324,7 +1323,7 @@ app.get('/getCommandes/:id', function (req, res, next) {
 });
 
 app.get('/getMonthsBeforeExpiration/:id', function (req, res, next) {
-  var sql = "SELECT s.tracking_number, s.lot_number, FLOOR(DATEDIFF(s.expiration_date,CURDATE())/30) AS months_before_expiration"
+  var sql = "SELECT s.tracking_number, s.lot_number, FLOOR(DATEDIFF(s.expiration_date, CURDATE()) / 30) AS months_before_expiration"
           + " FROM stock s"
           + " JOIN inventory i ON s.inventory_uuid=i.uuid "
           + " WHERE s.inventory_uuid=" + sanitize.escape(req.params.id);
