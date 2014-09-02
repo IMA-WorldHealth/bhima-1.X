@@ -43,9 +43,11 @@ var report            = require('./routes/report')(db, sanitize, util),
     depotRouter       = require('./routes/depot')(db, sanitize, store),
     tree              = require('./routes/tree')(db, parser),
     drugRouter        = require('./routes/drug')(db),
-    api               = require('./routes/data')(db, parser),
+    locationRouter    = require('./routes/location')(db, express.Router()),
+    dataRouter        = require('./routes/data')(db, parser, express.Router()),
     serviceDist       = require('./routes/serviceDist')(db, parser, journal, uuid),
-    consumptionLoss   = require('./routes/consumptionLoss')(db, parser, journal, uuid);
+    consumptionLoss   = require('./routes/consumptionLoss')(db, parser, journal, uuid),
+    donation          = require('./routes/postingDonation')(db, parser, journal, uuid);
 
 // create app
 var app = express();
@@ -65,18 +67,36 @@ app.use(authorize);
 app.use(projects);
 app.use(express.static(cfg.static, { maxAge : 10000 }));
 
+// routers
+app.use('/data', dataRouter);
+app.use('/location', locationRouter);
+
 app.get('/', function (req, res, next) {
   /* jshint unused : false */
   // This is to preserve the /#/ path in the url
   res.sendfile(cfg.rootFile);
 });
 
-app.route('/data/')
-  .get(api.get)
-  .put(api.put)
-  .post(api.post);
+/* this is required for location select */
+app.get('/location/:villageId?', function (req, res, next) {
+  var specifyVillage = req.params.villageId ? ' AND `village`.`uuid`=\'' + req.params.villageId + '\'' : '';
 
-app.delete('/data/:table/:column/:value', api.delete);
+  var sql =
+    'SELECT `village`.`uuid` as `uuid`, village.uuid as village_uuid, `village`.`name` as `village`, ' +
+      '`sector`.`name` as `sector`, sector.uuid as sector_uuid, `province`.`name` as `province`, province.uuid as province_uuid, ' +
+      '`country`.`country_en` as `country`, country.uuid as country_uuid ' +
+    'FROM `village`, `sector`, `province`, `country` ' +
+    'WHERE village.sector_uuid = sector.uuid AND ' +
+      'sector.province_uuid = province.uuid AND ' +
+      'province.country_uuid=country.uuid ' + specifyVillage + ';';
+
+  db.exec(sql)
+  .then(function (rows) {
+    res.send(rows);
+  })
+  .catch(next)
+  .done();
+});
 
 app.post('/purchase', function (req, res, next) {
   createPurchase.run(req.session.user_id, req.body)
@@ -86,7 +106,6 @@ app.post('/purchase', function (req, res, next) {
   .catch(next)
   .done();
 });
-
 
 app.post('/sale/', function (req, res, next) {
 
@@ -107,6 +126,13 @@ app.post('/consumption_loss/', function (req, res, next) {
   consumptionLoss.execute(req.body, req.session.user_id, function (err, ans) {
     if (err) { return next(err); }
     res.send({dist: ans});
+  });
+});
+
+app.post('/posting_donation/', function (req, res, next) {
+  donation.execute(req.body, req.session.user_id, function (err, ans) {
+    if (err) { return next(err); }
+    res.send({resp: ans});
   });
 });
 
@@ -195,6 +221,28 @@ app.get('/journal_list/', function (req, res, next) {
   .catch(function (err) { next(err); })
   .done();
 });
+
+app.get('/hollyday_list/:pp/:employee_id', function (req, res, next) {
+  var pp = JSON.parse(req.params.pp);
+  var sql =
+    "SELECT `hollyday`.`id`, `hollyday`.`label`, `hollyday`.`dateFrom`, `hollyday`.`dateTo` " + 
+    "FROM `hollyday` WHERE " + 
+    "((`hollyday`.`dateFrom`>=" + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + " AND " +
+    "`hollyday`.`dateFrom`<=" + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ") OR " +
+    "(`hollyday`.`dateTo`>=" + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + " AND " +
+    "`hollyday`.`dateTo`<=" + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ") OR " + 
+    "(`hollyday`.`dateFrom`<=" + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + " AND " +
+    "`hollyday`.`dateTo`>=" + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ")) AND " +
+    "`hollyday`.`employee_id`=" + sanitize.escape(req.params.employee_id) + ";"; 
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
 
 app.get('/period_paiement/', function (req, res, next) {
   // var sql =
@@ -624,10 +672,6 @@ app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', functio
 });
 
 app.get('/getCheckHollyday/', function (req, res, next) {
-  console.log(req.query.dateTo);
-  console.log(req.query.dateFrom);
-  console.log(req.query.employee_id);
-  console.log(req.query.line);
   var sql = "SELECT id, employee_id, label, dateTo, dateFrom FROM hollyday WHERE employee_id = '"+ req.query.employee_id +"'"
           + " AND ((dateFrom >= '" + req.query.dateFrom +"') OR (dateTo >= '" + req.query.dateFrom + "') OR (dateFrom >= '"+ req.query.dateTo +"')"
           + " OR (dateTo >= '" + req.query.dateTo + "'))"
@@ -639,7 +683,6 @@ app.get('/getCheckHollyday/', function (req, res, next) {
 
   db.exec(sql)
   .then(function (result) {
-    console.log(result);
     res.send(result);
   })
   .catch(function (err) { next(err); })
@@ -647,7 +690,6 @@ app.get('/getCheckHollyday/', function (req, res, next) {
 });
 
 app.get('/getCheckOffday/', function (req, res, next) {
-  console.log(req.query.date);
   var sql ="SELECT * FROM offday WHERE date = '" + req.query.date + "'";
   db.exec(sql)
   .then(function (result) {
@@ -656,6 +698,10 @@ app.get('/getCheckOffday/', function (req, res, next) {
   .catch(function (err) { next(err); })
   .done();
 });
+
+
+/* new locations API */
+app.use('/location', locationRouter);
 
 app.get('/tree', function (req, res, next) {
   /* jshint unused : false*/
@@ -667,26 +713,6 @@ app.get('/tree', function (req, res, next) {
   .catch(function (err) {
     res.send(301, err);
   })
-  .done();
-});
-
-app.get('/location/:villageId?', function (req, res, next) {
-  var specifyVillage = req.params.villageId ? ' AND `village`.`uuid`=\'' + req.params.villageId + '\'' : '';
-
-  var sql =
-    'SELECT `village`.`uuid` as `uuid`, village.uuid as village_uuid, `village`.`name` as `village`, ' +
-      '`sector`.`name` as `sector`, sector.uuid as sector_uuid, `province`.`name` as `province`, province.uuid as province_uuid, ' +
-      '`country`.`country_en` as `country`, country.uuid as country_uuid ' +
-    'FROM `village`, `sector`, `province`, `country` ' +
-    'WHERE village.sector_uuid = sector.uuid AND ' +
-      'sector.province_uuid = province.uuid AND ' +
-      'province.country_uuid=country.uuid ' + specifyVillage + ';';
-
-  db.exec(sql)
-  .then(function (rows) {
-    res.send(rows);
-  })
-  .catch(next)
   .done();
 });
 
@@ -1041,8 +1067,18 @@ app.get('/getAccount6/', function (req, res, next) {
   .done();
 });
 
+app.get('/getAccount7/', function (req, res, next) {
+  var sql ="SELECT id, enterprise_id, account_number, account_txt FROM account WHERE account_number LIKE '7%' AND account_type_id <> '3'";
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
 app.get('/available_payment_period/', function (req, res, next) {
-  var sql = "SELECT p.id, p.config_tax_id, p.config_rubric_id, p.label, p.dateFrom, p.dateTo, r.label AS RUBRIC, t.label AS TAX FROM paiement_period p, config_rubric r, config_tax t WHERE p.config_tax_id = t.id AND p.config_rubric_id = r.id ORDER BY p.id DESC";
+  var sql = "SELECT p.id, p.config_tax_id, p.config_rubric_id, p.label, p.dateFrom, p.dateTo, r.label AS RUBRIC, t.label AS TAX, a.label AS ACCOUNT FROM paiement_period p, config_rubric r, config_tax t, config_accounting a WHERE p.config_tax_id = t.id AND p.config_rubric_id = r.id AND a.id=p.config_accounting_id ORDER BY p.id DESC";
   db.exec(sql)
   .then(function (result) {
     res.send(result);
@@ -1067,6 +1103,248 @@ app.use(liberror.middleware);
 https.createServer(options, app)
 .listen(cfg.port, function () {
   console.log('Secure application running on localhost:' + cfg.port);
+});
+
+
+app.get('/getConsuptionDrugs/', function (req, res, next) {
+
+  var sql = "SELECT consumption.uuid,  SUM(consumption.quantity) AS quantity, consumption.date, inventory.code, inventory.text"
+          + " FROM consumption"
+          + " JOIN stock ON stock.tracking_number = consumption.tracking_number"
+          + " JOIN inventory ON inventory.uuid = stock.inventory_uuid"
+          + " WHERE consumption.uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss )"
+          + " AND ((consumption.date >= '"+ req.query.dateFrom +"') AND (consumption.date <= '" + req.query.dateTo + "'))"
+          + " GROUP BY inventory.uuid ORDER BY inventory.text ASC";
+
+  db.exec(sql)
+  .then(function (result) {
+    console.log(result);
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getItemInConsumption/', function (req, res, next) {
+  var sql = "SELECT consumption.uuid,  SUM(consumption.quantity) AS quantity, consumption.date, inventory.code, inventory.text"
+          + " FROM consumption "
+          + " JOIN stock ON stock.tracking_number = consumption.tracking_number"
+          + " JOIN inventory ON inventory.uuid = stock.inventory_uuid"
+          + " WHERE consumption.uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss )"
+          + " AND inventory.code = '" + req.query.code + "' AND ((consumption.date >= '"+ req.query.dateFrom +"')"
+          + " AND (consumption.date <= '" + req.query.dateTo + "'))"
+          + " GROUP BY consumption.date";
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getTop10Consumption/', function (req, res, next) {
+  var sql = "SELECT inventory.text, SUM(consumption.quantity) as 'quantity', inventory.uuid, stock.inventory_uuid "
+          + " FROM consumption"
+          + " JOIN stock ON stock.tracking_number = consumption.tracking_number"
+          + " JOIN inventory ON inventory.uuid = stock.inventory_uuid"
+          + " WHERE consumption.uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss )"
+          + " GROUP BY stock.inventory_uuid ORDER BY quantity DESC, inventory.text ASC LIMIT 10";
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getPurchaseOrders/', function (req, res, next) {
+  var sql;
+  if(req.query.request == 'OrdersPayed'){
+    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE paid = '1'";  
+  } else if (req.query.request == 'OrdersWatingPayment'){
+    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE paid = '0'";  
+  } else if (req.query.request == 'OrdersReceived'){
+    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE closed = '1'";  
+  } else if (req.query.request == 'InWatingReception'){
+    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE closed = '0' AND confirmed = '1'";  
+  }  
+  
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getTop10Donor/', function (req, res, next) {
+  var sql = "SELECT donor.id, donor.name, donations.date, COUNT(date) AS 'dates' "
+          + " FROM donations JOIN donor ON donor.id = donations.donor_id"
+          + " GROUP BY donations.date, donor.id ORDER BY donations.date DESC Limit 10";
+          
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getConsumptionTrackingNumber/', function (req, res, next) {
+  var sql = "SELECT consumption.tracking_number, SUM(consumption.quantity) AS 'quantity'"
+          + " FROM consumption"
+          + " GROUP BY consumption.tracking_number";   
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getExpiredTimes/', function (req, res, next) {
+  var sql;
+  if(req.query.request == 'expired'){
+    sql = "SELECT inventory.text, stock.lot_number, stock.tracking_number, stock.expiration_date, SUM(stock.quantity) AS quantity"
+        + " FROM stock"
+        + " JOIN inventory ON inventory.uuid = stock.inventory_uuid"
+        + " WHERE stock.expiration_date <= CURDATE()"
+        + " GROUP BY stock.tracking_number";  
+
+  } else if(req.query.request == 'expiredDellai'){
+    sql = "SELECT inventory.text, stock.lot_number, stock.tracking_number, stock.expiration_date,"
+        + " SUM(stock.quantity) AS quantity"
+        + " FROM stock JOIN inventory ON inventory.uuid = stock.inventory_uuid"
+        + " WHERE ((DATEDIFF(stock.expiration_date ,CURDATE()) > '" + req.query.inf + "')"
+        + " AND ((DATEDIFF(stock.expiration_date ,CURDATE()) <  '" + req.query.sup + "')))"
+        + " GROUP BY stock.tracking_number";  
+  } else if(req.query.request == 'oneYear'){
+    sql = "SELECT inventory.text, stock.lot_number, stock.tracking_number, stock.expiration_date,"
+        + " SUM(stock.quantity) AS quantity"
+        + " FROM stock JOIN inventory ON inventory.uuid = stock.inventory_uuid"
+        + " WHERE (DATEDIFF(stock.expiration_date ,CURDATE()) > '365')"
+        + " GROUP BY stock.tracking_number";  
+  }     
+    
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+//     TOTAL DES ENTREES PAR RAPPORT A UN INVENTORY UUID
+app.get('/getStockEntry/', function (req, res, next) {
+  var sql = "SELECT stock.inventory_uuid, stock.entry_date, stock.tracking_number, SUM(stock.quantity) AS 'quantity', inventory.text"
+          + " FROM stock"
+          + " JOIN inventory ON inventory.uuid = stock.inventory_uuid"
+          + " GROUP BY stock.inventory_uuid";
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+//     TOTAL DES CONSOMMATIONS PAR RAPPORT A UN INVENTORY UUID
+app.get('/getStockConsumption/', function (req, res, next) {
+  var sql = "SELECT inventory.text, SUM(consumption.quantity) AS 'quantity', inventory.uuid, stock.inventory_uuid"
+          + " FROM consumption RIGHT JOIN stock ON stock.tracking_number = consumption.tracking_number"
+          + " JOIN inventory ON inventory.uuid = stock.inventory_uuid "
+          + " GROUP BY stock.inventory_uuid";
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getNombreMoisStockControl/:inventory_uuid', function (req, res, next) {
+  var sql = "SELECT COUNT(DISTINCT(MONTH(c.date))) AS nb"
+          + " FROM consumption c"
+          + " JOIN stock s ON c.tracking_number=s.tracking_number "
+          + " JOIN inventory i ON i.uuid=s.inventory_uuid "
+          + " WHERE (c.date BETWEEN DATE_SUB(CURDATE(),INTERVAL 6 MONTH) AND CURDATE()) "
+          + " AND s.inventory_uuid=" + sanitize.escape(req.params.inventory_uuid);
+
+  db.exec(sql)
+  .then(function (result) {
+    console.log(result);
+    res.send(result[0]);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/monthlyConsumptions/:inventory_uuid/:nb', function (req, res, next) {
+  var sql = "SELECT c.uuid, c.date, SUM(c.quantity) AS quantity, s.inventory_uuid "
+          + " FROM consumption c "
+          + " JOIN stock s ON s.tracking_number=c.tracking_number "
+          + " JOIN inventory i ON i.uuid=s.inventory_uuid "
+          + " WHERE s.inventory_uuid=" + sanitize.escape(req.params.inventory_uuid)
+          + " AND c.uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss )"
+          + " AND (c.date BETWEEN DATE_SUB(CURDATE(),INTERVAL " + sanitize.escape(req.params.inventory_uuid) + " MONTH) AND CURDATE())"
+          + " GROUP BY i.uuid";
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getDelaiLivraison/:id', function (req, res, next) {
+  var sql = "SELECT ROUND(AVG(CEIL(DATEDIFF(s.entry_date,p.purchase_date)/30))) AS dl"
+          + " FROM purchase p"
+          + " JOIN stock s ON p.uuid=s.purchase_order_uuid "
+          + " JOIN purchase_item z ON p.uuid=z.purchase_uuid "
+          + " JOIN inventory i ON s.inventory_uuid=i.uuid "
+          + " WHERE z.inventory_uuid=s.inventory_uuid "
+          + " AND s.inventory_uuid=" + sanitize.escape(req.params.id);
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result[0]);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getCommandes/:id', function (req, res, next) {
+  var sql = "SELECT p.purchase_date AS date_commande"
+          + " FROM purchase p"
+          + " JOIN purchase_item z ON p.uuid=z.purchase_uuid "
+          + " JOIN inventory i ON z.inventory_uuid=i.uuid "
+          + " WHERE z.inventory_uuid=" + sanitize.escape(req.params.id);
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getMonthsBeforeExpiration/:id', function (req, res, next) {
+  var sql = "SELECT s.tracking_number, s.lot_number, FLOOR(DATEDIFF(s.expiration_date,CURDATE())/30) AS months_before_expiration"
+          + " FROM stock s"
+          + " JOIN inventory i ON s.inventory_uuid=i.uuid "
+          + " WHERE s.inventory_uuid=" + sanitize.escape(req.params.id);
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
 });
 
 // temporary error handling for development!

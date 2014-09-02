@@ -23,8 +23,7 @@
 	              <th>{{ "PAYMENT_PERIOD.LABEL" | translate}}</th>
 	              <th>{{ "PAYMENT_PERIOD.FROM" | translate}}</th>
 	              <th>{{ "PAYMENT_PERIOD.TO" | translate}}</th>
-	              <th>{{ "PAYMENT_PERIOD.RUBRIC" | translate}}</th>
-	              <th>{{ "PAYMENT_PERIOD.TAX" | translate}}</th>
+	              <th colspan="2">{{ "PAYMENT_PERIOD.CONFIGURATIONS" | translate}}</th>
 	              <th colspan="4" style="max-width: 20%;">{{ "COLUMNS.ACTIONS" | translate }}</th>
 	            </tr>
 	          </thead>
@@ -33,8 +32,13 @@
 	              <td>{{period.label}}</td>
 	              <td>{{period.dateFrom | date}}</td>
 	              <td>{{period.dateTo | date}}</td>
-	              <td>{{period.RUBRIC}}</td>
-	              <td>{{period.TAX}}</td>
+	              <td>
+	              	<table class="table table-condensed table-bordered table-striped" style="margin:0px;">
+	              		<tr><th>{{ "PAYMENT_PERIOD.RUBRIC" | translate}}</th><td>{{period.RUBRIC}}</td></tr>
+	              		<tr><th>{{ "PAYMENT_PERIOD.TAX" | translate}}</th><td>{{period.TAX}}</td></tr>
+	              		<tr><th>{{ "PAYMENT_PERIOD.ACCOUNT" | translate}}</th><td>{{period.ACCOUNT}}</td></tr>
+	              	</table>
+	              </td>
 	              <td><a class="action" ng-click="config(period)"><span class="glyphicon glyphicon-cog"></span></a></td>
 	              <td><a class="action" ng-click="edit(period)"><span class="glyphicon glyphicon-pencil"></span></a></td>
 	              <td><a class="action danger" ng-click="delete(period)"><span class="glyphicon glyphicon-trash"></span></a></td>
@@ -97,6 +101,15 @@
 	          </div>
 
 	          <div class="form-group">
+	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.ACCOUNT" | translate }}</label>
+	            <div class="col-xs-8">
+	              <select ng-model="session.new.config_accounting_id" class="form-bhima" ng-options="acc.id as acc.label for acc in config_accounting.data" required="required">
+	              	<option>{{ "SELECT.PERIOD_ACCOUNT_CONFIG" | translate }}</option>
+	              </select>
+	            </div>
+	          </div>
+
+	          <div class="form-group">
 	            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
 	            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
 	          </div>   
@@ -142,6 +155,15 @@
 	            <div class="col-xs-8">
 	              <select ng-model="session.edit.config_tax_id" class="form-bhima" ng-options="tax.id as tax.label for tax in config_tax.data" required="required">
 	              	<option>{{ "SELECT.PERIOD_TAX_CONFIG" | translate }}</option>
+	              </select>
+	            </div>
+	          </div>
+
+	          <div class="form-group">
+	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.ACCOUNT" | translate }}</label>
+	            <div class="col-xs-8">
+	              <select ng-model="session.edit.config_accounting_id" class="form-bhima" ng-options="acc.id as acc.label for acc in config_accounting.data" required="required">
+	              	<option>{{ "SELECT.PERIOD_ACCOUNT_CONFIG" | translate }}</option>
 	              </select>
 	            </div>
 	          </div>

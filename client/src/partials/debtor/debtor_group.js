@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('debitorGroup', [
+.controller('group.debtor', [
   '$scope',
   'connect',
   'appstate',
@@ -52,9 +52,8 @@ angular.module('bhima.controllers')
     };
 
     dependencies.location = {
-      query : '/location/'
+      query : '/location/villages'
     };
-
 
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
@@ -76,15 +75,15 @@ angular.module('bhima.controllers')
       $scope.action = '';
     }
 
-    $scope.formatAccount = function formatAccount (account) {
+    $scope.formatAccount = function formatAccount(account) {
       return [account.account_number, account.account_txt].join(' :: ');
     };
 
-    $scope.formatLocation = function formatLocation (location) {
-      return [location.village, location.sector, location.province, location.country].join(', ');
+    $scope.formatLocation = function formatLocation(l) {
+      return [l.name, l.sector_name, l.province_name, l.country_name].join(', ');
     };
 
-    $scope.formatPriceList = function formatPriceList (pl) {
+    $scope.formatPriceList = function formatPriceList(pl) {
       return pl.title;
     };
 

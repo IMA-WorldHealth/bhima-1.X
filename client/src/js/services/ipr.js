@@ -63,7 +63,10 @@ angular.module('bhima.services')
 		.then(setupModel)
 		.then(generateEcartsImpots)
 		.then(generateCumuls)
-		.then(handleResult);
+		.then(handleResult)
+		.then(function (result) {
+			deff.resolve(result);
+		});
 		return deff.promise;
 	}
 
@@ -77,7 +80,7 @@ angular.module('bhima.services')
 		});
 		return deff.promise;
 	}
-
+	
 	this.calculate = calculate;
 	this.fillFrom = fillFrom;
 

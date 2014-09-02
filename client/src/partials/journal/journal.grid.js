@@ -31,7 +31,7 @@ angular.module('bhima.controllers')
     dependencies.journal_bis = {
       identifier : 'uuid',
       query : 'journal_list/'
-    }
+    };
 
     function initialise (models) {
 
