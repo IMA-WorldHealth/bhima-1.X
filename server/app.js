@@ -305,11 +305,9 @@ app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function (req, r
 
   fiscal.create(enterprise, startDate, endDate, description)
   .then(function (status) {
-    console.log('[STATUS]', status);
     res.status(200).send(status);
   })
   .catch(function (err) {
-    console.log('[ERR]', err);
     res.status(500).send(err);
   })
   .done();
@@ -399,26 +397,29 @@ app.get('/availableAccounts_profit/:id_enterprise/', function(req, res, next) {
 app.get('/cost/:id_project/:cc_id', function(req, res, next) {
   var sql =
     'SELECT account.id, account.account_number, account.account_txt FROM account '+
-    'WHERE account.cc_id = ' + sanitize.escape(req.params.cc_id) + ' ' +
-      'AND account.account_type_id <> 3';
+    'WHERE account.cc_id = ' + sanitize.escape(req.params.cc_id) + 
+    ' AND account.account_type_id <> 3';
 
   function process(accounts) {
+    if(accounts.length === 0) {return {cost : 0};}
     var availablechargeAccounts = accounts.filter(function(item) {
       return item.account_number.toString().indexOf('6') === 0;
     });
-    return availablechargeAccounts;
+
+    var cost = availablechargeAccounts.reduce(function (x, y) {
+      return x + (y.debit - y.credit);
+
+    }, 0);
+
+    return {cost : cost};
   }
 
   db.exec(sql)
   .then(function (ans) {
-    if (ans.length > 0) {
-      synthetic('ccc', req.params.id_project, {cc_id : req.params.cc_id, accounts : ans}, function (err, data) {
-        if (err) { return next(err); }
-        res.send(process(data));
-      });
-    } else {
-      res.send({cost : 0});
-    }
+    synthetic('ccc', req.params.id_project, {cc_id : req.params.cc_id, accounts : ans}, function (err, data) {
+      if (err) { return next(err); }
+      res.send(process(data));
+    });
   })
   .catch(next)
   .done();

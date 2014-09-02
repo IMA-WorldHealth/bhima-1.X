@@ -33,7 +33,7 @@ angular.module('bhima.controllers')
           }
         }
       }
-    }
+    };
 
     appstate.register('project', function (project) {
       $scope.project = project;
