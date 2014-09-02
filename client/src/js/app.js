@@ -257,10 +257,6 @@
       controller: 'reportCashPayments',
       templateUrl: 'partials/reports/cash_payments/cash_payments.html'
     })
-    .when('/renewal', {
-      controller : 'renewal',
-      templateUrl : 'partials/patient_renewal/renewal.html'
-    })
     .when('/swap_debitor', {
       controller : 'swapDebitor',
       templateUrl : 'partials/swap_debitor/swap_debitor.html'
