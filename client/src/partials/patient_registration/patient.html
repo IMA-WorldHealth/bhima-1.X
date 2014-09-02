@@ -25,7 +25,8 @@
         <div class="row">
           <div id="patientDetails" class="panel panel-primary">
             <div class="panel-heading">
-              <span class="glyphicon glyphicon-user"></span> {{ "PATIENT_REG.PATIENT_DETAILS" | translate }}
+              <!-- Required styling workaround -->
+              <span class="glyphicon glyphicon-user"></span> <b>{{ "PATIENT_REG.PATIENT_DETAILS" | translate }}</b>
             </div>
             <div class="panel-body">
 
@@ -33,41 +34,48 @@
                 <fieldset>
                   <legend>{{ "PATIENT_REG.PATIENT" | translate }}</legend>
                   <div class="form-group">
-                    <label for="first-name" class="control-label col-xs-3">{{ "PATIENT_REG.FIRST_NAME" | translate }}</label>
+                    <label for="first-name" class="control-label col-xs-3 required">{{ "PATIENT_REG.FIRST_NAME" | translate }}</label>
                     <div class="col-xs-9">
                       <input type="text" class="form-bhima" id="first-name" ng-model="patient.first_name">
                     </div>
                   </div>
 
                   <div class="form-group">
-                    <label for="second-name" class="control-label col-xs-3">{{ "PATIENT_REG.SECOND_NAME" | translate }}</label>
+                    <label for="second-name" class="control-label col-xs-3 required">{{ "PATIENT_REG.SECOND_NAME" | translate }}</label>
                     <div class="col-xs-9">
                       <input type="text" class="form-bhima" id="second-name" ng-model="patient.last_name" required>
                     </div>
                   </div>
+                  
 
-                  <div class="form-group" ng-show="!sessionProperties.fullDateEnabled">
-                    <label for="yob" class="control-label col-xs-3"> {{ "PATIENT_REG.YOB" | translate }}</label>
+                  <div class="form-group" ng-show="!session.fullDateEnabled">
+                    <label for="yob" class="control-label col-xs-3 required"> {{ "PATIENT_REG.YOB" | translate }}</label>
                     <div class="col-xs-9">
                       <div class="input-group">
-                        <input type="text" class="form-bhima" id="yob" ng-model="sessionProperties.yob">
+                        <input type="text" class="form-bhima" id="yob" ng-model="session.yob">
                         <span class="input-group-btn">
                           <button ng-click="enableFullDate()" type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-calendar"></span>{{ "PATIENT_REG.ENTER_FULL_DATE" | translate }}</button>
                         </span>
                       </div>
                     </div>
                   </div>
-
-                  <!-- Use ng-show to display this only if enter full date is disabled -->
+                  
+                                    
                   <div class="form-group" >
                     <label for="patient-dob" class="col-xs-3 control-label">{{ "PATIENT_REG.DOB" | translate }}</label>
                     <div class="col-xs-9">
-                      <input id="patient-dob" type="date" class="form-bhima" ng-disabled="!sessionProperties.fullDateEnabled" ng-model="patient.dob" max="{{ getMaxDate() }}">
+                      <input required id="patient-dob" type="date" class="form-bhima" ng-disabled="!session.fullDateEnabled" ng-model="patient.dob" max="{{ getMaxDate() }}">
+                    </div>
+                  </div>
+            
+                  <div class="form-group" ng-if="validation.dates.flag">
+                    <div style="margin : 0em 1em 0em; text-align: center;" class="alert alert-danger">
+                      <span class="glyphicon glyphicon-calendar"></span> <b>{{validation.dates.flag.message | translate}} </b>
                     </div>
                   </div>
 
                   <div class="form-group">
-                    <label class="control-label col-xs-3"> {{ "PATIENT_REG.SEX" | translate }}</label>
+                    <label class="control-label col-xs-3 required"> {{ "PATIENT_REG.SEX" | translate }}</label>
                     <div class="col-xs-9">
                       <div class="radio-inline">
                         <label>
@@ -83,172 +91,58 @@
                       </div>
                     </div>
                   </div>
-
-                  <div class="form-group">
-                    <label class="control-label col-xs-3"> {{ "PATIENT_REG.RENEWAL" | translate }}</label>
-                    <div class="col-xs-9">
-                      <div class="radio-inline">
-                        <label>
-                          <input type="radio" name="renewal_select" id="yes" value="1" checked ng-model="patient.renewal" required>
-                          {{ "PATIENT_REG.YES" | translate }}
-                        </label>
-                      </div>
-                      <div class="radio-inline">
-                        <label>
-                          <input type="radio" name="renewal_select" id="no" value="0" ng-model="patient.renewal" required>
-                          {{ "PATIENT_REG.NO" | translate }}
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-
                 </fieldset>
               </form>
 
               <form name="location" class="form">
                 <fieldset>
                   <legend>{{ "LOCATION.LOCATION" | translate }}</legend>
+              
                   <div class="col-xs-6">
                     <fieldset>
-                      <legend>{{ "LOCATION.ORIGIN" | translate }}</legend>
 
-                      <div class="form-group">
-                        <label for="location-country" class="control-label">
-                          {{ "LOCATION.COUNTRY" | translate }}
-                        </label>
-                        <select
-                          required class="form-bhima"
-                          id="location-country"
-                          ng-model="locationRelationshipOrigin.country.value"
-                          ng-options="country.uuid as country.country_en for country in locationStoreOrigin.country.data | orderBy: 'country_en'"
-                          ng-change="updateOriginLocation('province', locationRelationshipOrigin.country.value)"
-                          >
-                          <option value="" disabled="disabled">-- {{ "SELECT.COUNTRY" | translate }} --</option>
-                        </select>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="location-province" class="control-label">
-                          {{ "LOCATION.PROVINCE" | translate }}
-                        </label>
-                        <select
-                          required class="form-bhima"
-                          id="location-province"
-                          ng-model="locationRelationshipOrigin.province.value"
-                          ng-options="province.uuid as province.name for province in locationStoreOrigin.province.data | orderBy: 'name'"
-                          ng-change="updateOriginLocation('sector', locationRelationshipOrigin.province.value)">
-                          <option value="" disabled="disabled">-- {{ "SELECT.PROVINCE" | translate }} --</option>
-                        </select>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="location-sector" class="control-label">
-                          {{ "LOCATION.VILLE" | translate }}
-                        </label>
-                        <select
-                          class="form-bhima"
-                          id="location-sector"
-                          ng-model="locationRelationshipOrigin.sector.value"
-                          ng-options="sector.uuid as sector.name for sector in locationStoreOrigin.sector.data | orderBy:'name'"
-                          ng-change="updateOriginLocation('village', locationRelationshipOrigin.sector.value)"
-                          required>
-                          <option value="" disabled="disabled">-- {{ "SELECT.SECTOR" | translate }}--</option>
-                        </select>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="location-village" class="control-label">
-                          {{ "LOCATION.VILLAGE" | translate }}
-                        </label>
-                        <select
-                          class="form-bhima"
-                          id="location-village"
-                          ng-model="locationRelationshipOrigin.village.value"
-                          ng-options="village.uuid as village.name for village in locationStoreOrigin.village.data | orderBy:'name'"
-                          required>
-                          <option value="" disabled="disabled">-- {{ "SELECT.VILLAGE" | translate }}--</option>
-                        </select>
-                      </div>
+                      <!-- Temporary required work around -->
+                      <legend>{{ "LOCATION.ORIGIN" | translate }} <small style="color : red;">*</small></legend>
+                      
+                      <div location-select select-village="setOriginLocation"></div>
                     </fieldset>
                   </div>
 
                   <div class="col-xs-6">
                     <fieldset>
-                      <legend> {{ "LOCATION.CURRENT" | translate }}</legend>
-                      <div class="form-group">
-                        <label for="location-country" class="control-label">
-                          {{ "LOCATION.COUNTRY" | translate }}
-                        </label>
-                        <select
-                          required
-                          class="form-bhima"
-                          id="location-country"
-                          ng-model="locationRelationshipCurrent.country.value"
-                          ng-options="country.uuid as country.country_en for country in locationStoreCurrent.country.data | orderBy:'country_en'"
-                          ng-change="updateCurrentLocation('province', locationRelationshipCurrent.country.value)">
-                          <option value="" disabled="disabled">-- {{ "SELECT.COUNTRY" | translate }} --</option>
-                        </select>
-                      </div>
 
-                      <div class="form-group">
-                        <label for="location-province" class="control-label">
-                          {{ "LOCATION.PROVINCE" | translate }}
-                        </label>
-                        <select
-                          required
-                          class="form-bhima"
-                          id="location-province"
-                          ng-model="locationRelationshipCurrent.province.value"
-                          ng-options="province.uuid as province.name for province in locationStoreCurrent.province.data | orderBy:'name'"
-                          ng-change="updateCurrentLocation('sector', locationRelationshipCurrent.province.value)">
-                          <option value="" disabled="disabled">-- {{"SELECT.PROVINCE" | translate }} --</option>
-                        </select>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="location-sector" class="control-label">
-                          {{ "LOCATION.VILLE" | translate }}
-                        </label>
-                        <select
-                          required
-                          class="form-bhima"
-                          id="location-sector"
-                          ng-model="locationRelationshipCurrent.sector.value"
-                          ng-options="sector.uuid as sector.name for sector in locationStoreCurrent.sector.data | orderBy:'name'"
-                          ng-change="updateCurrentLocation('village', locationRelationshipCurrent.sector.value)">
-                          <option value="" disabled="disabled">-- {{ "SELECT.SECTOR" | translate }} --</option>
-                        </select>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="location-village" class="control-label">
-                          {{ "LOCATION.VILLAGE" | translate }}
-                        </label>
-                        <select
-                          class="form-bhima"
-                          id="location-village"
-                          ng-model="locationRelationshipCurrent.village.value"
-                          ng-options="village.uuid as village.name for village in locationStoreCurrent.village.data | orderBy:'name'"
-                          required>
-                          <option value="" disabled="disabled">-- {{ "SELECT.VILLAGE" | translate }}--</option>
-                        </select>
-                      </div>
+                      <!-- Temporary required work around -->
+                      <legend> {{ "LOCATION.CURRENT" | translate }} <small style="color : red;">*</small></legend>
+    
+                      <div location-select select-village="setCurrentLocation"></div>
                     </fieldset>
                   </div>
+
+                  
                 </fieldset>
 
-                <fieldset>
-                  <legend>{{ "PATIENT_REG.FINANCE" | translate }}</legend>
-                  <div class="form-group">
-                    <label for="debtor-group" class="col-xs-3 control-label">{{ "PATIENT_REG.DEBTOR_GROUP" | translate }}</label>
-                    <div class="col-xs-9">
-                      <select required class="form-bhima" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in debtorGroup.data | orderBy:'name'">
-                        <option value="" disabled="disabled">-- {{"SELECT.DEBITOR_GROUP" | translate }} --</option>
-                      </select>
+<div class="form-group" ng-if="validation.locations.flag">
+                    <div style="margin : 0em 1em 0em; text-align: center;" class="alert alert-danger">
+                      <span class="glyphicon glyphicon-globe"></span> <b>{{validation.locations.flag.message | translate}} </b>
                     </div>
                   </div>
-                </fieldset>
-              </form>
+
+ 
+                </form>
+
+                <form name="finance" class="form-horizontal">
+                  <fieldset>
+                    <legend>{{ "PATIENT_REG.FINANCE" | translate }}</legend>
+                    <div class="form-group">
+                      <label for="debtor-group" class="control-label col-xs-3 required">{{ "PATIENT_REG.DEBTOR_GROUP" | translate }}</label>
+                      <div class="col-xs-9">
+                        <select required class="form-bhima" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in debtorGroup.data | orderBy:'name'">
+                          <option value="" disabled="disabled">-- {{"SELECT.DEBITOR_GROUP" | translate }} --</option>
+                        </select>
+                      </div>
+                    </div>
+                  </fieldset>
+                </form>
 
             </div> <!-- End panel body -->
           </div> <!-- End panel -->
@@ -328,37 +222,53 @@
       <div class="col-xs-5">
         <!-- <div class="col&#45;xs&#45;12"> -->
           <div class="row hack-right">
-            <div class="panel panel-default">
+            <div class="panel panel-warning">
               <div class="panel-heading">
-                <span class="glyphicon glyphicon-camera"></span>
-                <div class="pull-right">
-                  <span class="glyphicon glyphicon-eye-close"></span>
-                </div>
+                <span class="glyphicon glyphicon-list-alt"></span> <b>{{ "PATIENT_REGISTRATIONS.TYPE" | translate }}</b>  <b style="color : red;">*</b>
               </div>
               <div class="panel-body">
-                <div class="image_container">
-                  <video autoplay="false" id="patientImage"></video>
-                </div>
+                <form name="registrationType">
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="renewal_select" id="no" value="0" ng-model="patient.renewal" required>
+                      <b>{{ "PATIENT_REGISTRATIONS.STATUS_NEW_TITLE" | translate }}</b>
+                    </label>
+                  </div>
+                  <div>
+                    <p>{{ "PATIENT_REGISTRATIONS.STATUS_NEW_BODY" | translate }}</p>
+                  </div>
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="renewal_select" id="yes" value="1" ng-model="patient.renewal" required>
+                      <b>{{ "PATIENT_REGISTRATIONS.STATUS_RETURNING_TITLE" | translate }}</b>
+                    </label>
+                  </div>
+                  <div>
+                    <p>{{ "PATIENT_REGISTRATIONS.STATUS_RETURNING_BODY" | translate }}</p>
+                  </div>
+                </form>
               </div>
             </div> <!-- End panel -->
           </div> <!-- End column 5 row -->
-          <div class="row hack-right">
+          <!--div class="row hack-right">
             <div class="panel panel-default">
               <div class="panel-heading">
-                <span class="glyphicon glyphicon-pencil"></span> {{ "PATIENT_REG.PATIENT_NOTES" | translate }}
+                Additional Component
               </div>
-              <textarea type="text" multiline class="form-bhima note"></textarea>
+
+              <div class="panel-body">
+                Content
+              </div>
             </div> <!-- End panel -->
-          </div> <!-- End column 5 row -->
+          </div--> <!-- End column 5 row -->
         </div>
-      <!-- </div> <!&#45;&#45;End main column 5 &#45;&#45;> -->
     </div><!-- End row -->
   </div>
 </main>
 
 <footer>
   <div class="pull-right">
-    <a id="submitPatient" ng-click="registerPatient()" ng-disabled="form.$invalid || location.$invalid || details.$invalid" class="btn btn-success btn-sm">
+    <a id="submitPatient" ng-click="registerPatient()" ng-disabled="session.failedSessionValidation || location.$invalid || details.$invalid || finance.$invalid || registrationType.$invalid" class="btn btn-success btn-sm">
       <span class="glyphicon glyphicon-pencil"></span> {{ "PATIENT_REG.REGISTER_PATIENT" | translate }}
     </a>
   </div>
