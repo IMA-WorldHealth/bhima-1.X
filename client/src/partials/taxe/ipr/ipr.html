@@ -88,7 +88,7 @@
 			          </thead>
 			          <tbody>
 			            <tr ng-repeat="tax in taxe_ipr.data">
-			              <td></td>
+			              <td>{{tax.symbol}}</td>
 			              <td>{{tax.taux}} %</td>
 			              <td>{{tax.tranche_annuelle_debut}}</td>
 			              <td>{{tax.tranche_annuelle_fin}}</td>
@@ -110,7 +110,7 @@
 			      </div>
 
 			      <div ng-switch-when="new">
-			        <form novalidate class="form-horizontal">
+			        <form class="form-horizontal" novalidate>
 			          <legend><h3>{{ "TAXES.NEW_TRANCH" | translate }} </h3></legend>
 
 			          <div class="form-group">
@@ -118,8 +118,8 @@
 			            	{{ "TAXES.CURRENCY" | translate }}
 			            </label>
 			            <div class="col-xs-8">
-			              <select class="form-bhima" ng-model="session.new.currency_id" ng-options="cur.id as cur.symbol for cur in currency.data" required>
-			              	<option disabled="true">--- {{ "SELECT.CURRENCY" | translate }} ---</option>
+			              <select class="form-bhima" ng-model="session.new.currency_id" ng-options="cur.id as cur.symbol for cur in currency.data" required ng-disabled="session.currency_id">
+			              	<option value="" disabled="true">--- {{ "SELECT.CURRENCY" | translate }} ---</option>
 			              </select>
 			            </div>
 			          </div>
@@ -165,8 +165,8 @@
 			            	{{ "TAXES.CURRENCY" | translate }}
 			            </label>
 			            <div class="col-xs-8">
-			              <select class="form-bhima" ng-model="session.edit.currency_id" ng-options="cur.id as cur.symbol for cur in currency.data">
-			              	<option disabled="true">--- {{ "SELECT.CURRENCY" | translate }} ---</option>
+			              <select class="form-bhima" ng-model="session.edit.currency_id" ng-options="cur.id as cur.symbol for cur in currency.data" ng-disabled="session.currency_id">
+			              	<option value="" disabled="true">--- {{ "SELECT.CURRENCY" | translate }} ---</option>
 			              </select>
 			            </div>
 			          </div>
