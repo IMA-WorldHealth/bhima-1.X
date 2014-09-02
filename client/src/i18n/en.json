@@ -375,7 +375,9 @@
     "STATUS_NEW_TITLE" : "Patient is new to the hospital",
     "STATUS_NEW_BODY" : "Select this option for patients that have never been registered with the hospital before. The hospital has no information about this patient and no prescription / service history.",
     "STATUS_RETURNING_TITLE" : "Patient has previously been registered, but is new to the BHIMA system",
-    "STATUS_RETURNING_BODY" : "Select this option for patients that have been registered, and have a prescription / sale history with the hospital, but have never been registered with the BHIMA system, this patient is returning to the insitution but being registered with the new system."
+    "STATUS_RETURNING_BODY" : "Select this option for patients that have been registered, and have a prescription / sale history with the hospital, but have never been registered with the BHIMA system, this patient is returning to the insitution but being registered with the new system.",
+    "STATUS_REGISTERED_TITLE" : "Patient has previously been registered in the BHIMA system",
+    "STATUS_REGISTERED_BODY" : "Select this option for patients that have been registered in the BHIMA system.  This patient has an electronic medical record for this patient that will be looked up."
   },
 
   "REPORT"                  : {
