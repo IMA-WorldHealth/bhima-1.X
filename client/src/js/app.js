@@ -38,9 +38,9 @@
       controller: 'patientRegistration',
       templateUrl: 'partials/patient_registration/patient.html'
     })
-    .when('/debitor/debitor_group', {
-      controller : 'debitorGroup',
-      templateUrl: 'partials/debitor/debitor_group.html'
+    .when('/debtor/debtor_group', {
+      controller : 'group.debtor',
+      templateUrl: 'partials/debtor/debtor_group.html'
     })
     .when('/journal_voucher', {
       controller: 'journalVoucher',
@@ -95,7 +95,7 @@
       templateUrl: '/partials/creditor/creditor.html'
     })
     .when('/creditors/creditor_group', {
-      controller: 'creditorGroup',
+      controller: 'group.creditor',
       templateUrl: 'partials/creditor/group/creditor_group.html'
     }).
     when('/purchase/create/', {
@@ -158,9 +158,9 @@
       controller: 'summary',
       templateUrl: 'partials/reports/summary/summary.html'
     })
-    .when('/reports/debitor_aging/', {
+    .when('/reports/debtor_aging/', {
       controller: 'reportDebitorAging',
-      templateUrl: 'partials/reports/debitor_aging/debitor_aging.html'
+      templateUrl: 'partials/reports/debtor_aging/debtor_aging.html'
     })
     .when('/reports/account_statement/:id?', {
       controller: 'accountStatement',
@@ -257,9 +257,9 @@
       controller: 'reportCashPayments',
       templateUrl: 'partials/reports/cash_payments/cash_payments.html'
     })
-    .when('/swap_debitor', {
-      controller : 'swapDebitor',
-      templateUrl : 'partials/swap_debitor/swap_debitor.html'
+    .when('/swap_debtor', {
+      controller : 'group.debtor.reassignment',
+      templateUrl : 'partials/swap_debtor/swap_debtor.html'
     })
     .when('/reports/all_transactions', {
       controller : 'allTransactions',
@@ -317,6 +317,10 @@
       controller : 'payroll',
       templateUrl : 'partials/primary_cash/expense/payroll.html'
     })
+    .when('/primary_cash/expense/multi_payroll/:cashbox', {
+      controller : 'multi_payroll',
+      templateUrl : 'partials/primary_cash/expense/multi_payroll.html'
+    })
     .when('/inventory/depot', {
       controller : 'inventory.depot',
       templateUrl : 'partials/inventory/depot/depot.html'
@@ -364,6 +368,22 @@
     .when('/stock/expiring/:depotId', {
       controller : 'stock.expiring',
       templateUrl : 'partials/stock/expiring/expiring.html'
+    })
+    .when('/stock/donation_management/', {
+      controller : 'donation_management',
+      templateUrl : 'partials/stock/donation_management/donation_management.html'
+    })
+    .when('/stock/donation_management/:depotId', {
+      controller : 'donation_management',
+      templateUrl : 'partials/stock/donation_management/donation_management.html'
+    })
+    .when('/stock/donation_management/report/:documentId', {
+      controller : 'donation_management.report',
+      templateUrl : 'partials/stock/donation_management/report.html'
+    })
+    .when('/stock_dashboard/', {
+      controller : 'stock_dashboard',
+      templateUrl : 'partials/stock_dashboard/stock_dashboard.html'
     })
     .when('/inventory/distribution/:depotId?', {
       controller : 'inventory.distribution',
@@ -424,9 +444,21 @@
     .when('/config_tax/', {
       controller : 'config_tax',
       templateUrl : 'partials/config_tax/config_tax.html'
-    });        
+    })
+    .when('/reports/daily_consumption/', {
+      controller : 'daily_consumption',
+      templateUrl : 'partials/reports/daily_consumption/daily_consumption.html'
+    })
+    .when('/consumptions/:code_drugs/:dateFrom/:dateTo', {
+      controller: 'daily_consumption',
+      templateUrl: 'partials/reports/daily_consumption/consumptions.html'
+    })
+    .when('/config_accounting/', {
+      controller: 'config_accounting',
+      templateUrl: 'partials/config_accounting/config_accounting.html'
+    });               
   }
-
+  
   function translateConfig($translateProvider) {
     //TODO Review i18n and determine if this it the right solution/grade_employers/
     $translateProvider.useStaticFilesLoader({

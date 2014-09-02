@@ -270,14 +270,14 @@ module.exports = function (db, sanitize, util) {
         patient = {},
         defer = q.defer(),
         sql =
-        'SELECT uuid, trans_id, trans_date, sum(credit_equiv) as credit, sum(debit_equiv) as debit, description, inv_po_id ' +
+        'SELECT `aggregate`.`uuid`, `aggregate`.`trans_id`, `aggregate`.`trans_date`, sum(`aggregate`.`credit_equiv`) as credit, sum(`aggregate`.`debit_equiv`) as debit, `aggregate`.`description`, `aggregate`.`inv_po_id` ' +
         'FROM (' +
-          'SELECT uuid, trans_id, trans_date, debit_equiv, credit_equiv, description, inv_po_id ' +
-          'FROM posting_journal WHERE deb_cred_uuid=' + id + ' AND deb_cred_type=\'D\' ' +
+          'SELECT `posting_journal`.`uuid`, `posting_journal`.`trans_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`description`, `posting_journal`.`inv_po_id` ' +
+          'FROM `posting_journal` WHERE `posting_journal`.`deb_cred_uuid`=' + id + ' AND `posting_journal`.`deb_cred_type`=\'D\' ' +
         'UNION ' +
-          'SELECT uuid, trans_id, trans_date, debit_equiv, credit_equiv, description, inv_po_id ' +
-          'FROM general_ledger WHERE deb_cred_uuid=' + id + ' AND deb_cred_type=\'D\') as aggregate ' +
-        'GROUP BY `inv_po_id` ORDER BY `trans_date` DESC;';
+          'SELECT `general_ledger`.`uuid`, `general_ledger`.`trans_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, `general_ledger`.`description`, `general_ledger`.`inv_po_id` ' +
+          'FROM `general_ledger` WHERE `general_ledger`.`deb_cred_uuid`=' + id + ' AND `general_ledger`.`deb_cred_type`=\'D\') as aggregate ' +
+        'GROUP BY `aggregate`.`inv_po_id` ORDER BY `aggregate`.`trans_date` DESC;';
 
     db.exec(sql)
     .then(function (rows) {

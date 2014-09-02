@@ -183,7 +183,9 @@
     "SUMMARY" : "Summaire",
     "FINANCE_OFFICER" : "Chef Finance",
     "CHIEF_ACCOUNTANT" : "Chef Comptable",
-    "POST_TO_LEDGER"   : "Poster dans le grand livre"
+    "POST_TO_LEDGER"   : "Poster dans le grand livre",
+    "CHIEF_ACCOUNTANT" : "Chef comptable",
+    "FINANCE_OFFICER" : "Chef finance"
   },
 
   "ERROR"                 : {
@@ -283,11 +285,15 @@
     "DEBTOR"          : "Selectionner un debiteur",
     "CREDITOR"          : "Selectionner un Crediteur",
     "PRIMARY_CASH"    : "Selectionner Caisse principale",
+    "EMPLOYEE"        : "Selectionner un employé",
     "EMPLOYEE_SEX"    : "Selectionner Sexe",
-    "EMPLOYEE_SERVICE"    : "Selectionner un Service",
-    "EMPLOYEE_GRADE"      : "Selectionner un Grade",
-    "PERIOD_RUBRIC_CONFIG": "Selectionner une configuration des rubriques",
-    "PERIOD_TAX_CONFIG"   : "Selectionner une configuration des taxes"
+    "EMPLOYEE_SERVICE"      : "Selectionner un Service",
+    "EMPLOYEE_GRADE"        : "Selectionner un Grade",
+    "PERIOD_RUBRIC_CONFIG"  : "Selectionner une configuration des rubriques",
+    "PERIOD_TAX_CONFIG"     : "Selectionner une configuration des taxes",
+    "PERIOD_ACCOUNT_CONFIG" : "Selectionner une configuration des comptes",
+    "DONOR"                 : "Selectionner un Donateur",
+    "PERIOD_PAYMENT" : "Selectionner une periode de paiement"
   },
 
   "RENEWAL"           : {
@@ -417,11 +423,17 @@
     "TAXES"                     : "Taxes",    
     "TAXE_MANAGEMENT"           : "Gestion des taxes",
     "RUBRIC_PAYROLL"            : "Gestion des rubriques",
-    "OFFDAY_MANAGEMENT"         : "Gestion des jours ferriés",
+    "OFFDAY_MANAGEMENT"         : "Gestion des jours fériés",
     "HOLLYDAY_MANAGEMENT"       : "Gestion des vacances",
     "PAYMENT_PERIOD"            : "Gestion des Périodes",
     "CONFIG_RUBRIC"             : "Configuration des rubriques",
-    "CONFIG_TAX"                : "Configuration des taxes"    
+    "CONFIG_TAX"                : "Configuration des taxes",
+    "DONATION_MANAGEMENT"       : "Gestion des Dons",
+    "STOCK_DASHBOARD"           : "Tableau de bord du Stock",
+    "DAILY_CONSUMPTION"         : "Consommation journaliere",    
+    "DONATION_MANAGEMENT"       : "Gestion des Dons",
+    "CONFIG_ACCOUNTING"         : "Configuration des comptes"
+
 },
 
   "RUBRIC_PAYROLL"       : {
@@ -610,6 +622,10 @@
     },
     "REPORT" : {
       "STOCK_COUNT" : "Stock Count"
+    },
+    "DONATION" : {
+        "KEY"    : "Entrer Donation",
+        "TITLE"  : "Entrer Donation"
     }
   },
 
@@ -780,7 +796,7 @@
 	"GRADE"				  : "Grade",
     "STAFF_COST"          : "Pour les employés",
     "IS_PERCENT"          : "En pourcentage",
-    "OFFDAYS"             : "Jours ferriés",
+    "OFFDAYS"             : "Jours fériés",
     "PERCENT_PAY"         : "Pourcentage de paiement",
     "EMPLOYEE_NAME"       : "Nom de l'employé",
     "DATE_FROM"           : "Date du début",
@@ -794,7 +810,10 @@
     "APPLIES_GLOBALLY"     : "Appliquer globalement",
     "REFERENCE_PURCHASE" : "Reference",
     "GIVEN_AMOUNT"       : "Montant donne",
-    "NUM" : "Numero"
+    "NUM" : "Numero",
+    "TRANSACTION_NUMBER" : "Numero transaction",
+    "BY"                 : "Par",
+    "DRUGS"              : "Médicaments"           
   },
 
   "REPORT"                  : {
@@ -836,6 +855,7 @@
     "INCOME_EXPENSE_REPORT" : "Rapport des Revenues et Depense",
     "TRANSACTIONS_BY_ACCOUNT" : "Transactions par Compte",
     "PATIENT_GROUP"         : "Rapport de groupe des patients",
+    "TOTAL" : "Total",
     "ACCOUNT_STATEMENT"     : {
       "TITLE"               : "Rapport sommaire des comptes",
       "NO_ACCOUNT_SPECIFIED": "ID compte non Specifie",
@@ -1327,8 +1347,7 @@
     "INFO_CAUTION" : "Information sur la caution",
     "CAUTION"      : "Caution",
     "PAY"          : "Payer",
-    "SUCCES"       : "Operation reussie !",
-    "DANGER"       : "Erreur ! Une erreur se produite pendant le posting !"
+    "UNIT_ERROR"   : "La quantite est trop grande!"
   },
 
  "CONVENTION"            : {
@@ -1464,6 +1483,8 @@
     "LOADING_ERROR" : "Erreur lors du chargement des dependances",
     "EXPENSE" : {
       "PAYROLL"      : "Paie des employees",
+      "MULTI_PAYROLL"   : "Payroll Multiple",
+      "PAYABLE_EMPLOYEE" : "Liste des employees payables",
       "PURCHASE"        : "Achat",
       "GENERIC_TITLE"   : "Depenses Generiques",
       "GENERIC_RECEIPT" : "Recettes Generiques",
@@ -1484,12 +1505,18 @@
       "SENIORITY" : "Ancienete",
       "ADVANTAGES" : "Avantages",
       "SALARY" : "Salaire net",
-      "TAXES_OTHERS" : "Taxes et autres deductions",
+      "TAXES_OTHERS" : "Taxes employee et autres deductions",
       "SALARY_AV" : "Avance sur salaire",
       "INSS" : "Cot. INSS",
       "IPR" : "IPR",
       "OTHER_DEDUCT" : "Autres deductions" ,
-      "SELECT_PERIOD" : "Selectionner une periode de paiement"
+      "SELECT_PERIOD" : "Selectionner une periode de paiement",
+      "DAYS"                  : "Jours",
+      "RUBRICS" : "Rubriques",
+      "ONEM"     : "ONEM",
+      "IERE" : "IERE",
+      "INPP" : "INPP",
+      "TAXES_OTHERS_ENTERPRISE" : "Taxes entreprise et autres deductions"
     },
     "INCOME" : {
       "TRANSFER"              : "Transfert",
@@ -1857,18 +1884,18 @@
   },
 
   "OFFDAY_MANAGEMENT" : {
-    "TITLE"         : "Gestion des jours ferriés",
-    "NEW_OFFDAY"    : "Nouveau Jour ferrié",
+    "TITLE"         : "Gestion des jours fériés",
+    "NEW_OFFDAY"    : "Nouveau Jour férié",
     "SAVE_SUCCES"  : "Enregistrement avec succès",    
     "UPDATE_SUCCES" : "Mis à jour avec succès",
-    "NO_OFFDAY"    : "Aucun jour ferrié n'est encore enregistré",
-    "CONFIRM"       : "Etes vous sure de vouloir supprimer ce jour ferrié",      
-    "UPDATE"        : "Mettre à jour un jour ferrié",    
-    "ADD"           : "Ajouter un jour ferrié",
-    "REGISTERED"    : "jours ferriés enregistrés",
-    "ALERT"         : "Le module gestion des jours ferriés permet de configurer les différents types de jours ferriés qui sont prises en charge dans l'organisation",
+    "NO_OFFDAY"    : "Aucun jour férié n'est encore enregistré",
+    "CONFIRM"       : "Etes vous sure de vouloir supprimer ce jour férié",      
+    "UPDATE"        : "Mettre à jour un jour férié",    
+    "ADD"           : "Ajouter un jour férié",
+    "REGISTERED"    : "jours fériés enregistrés",
+    "ALERT"         : "Le module gestion des jours fériés permet de configurer les différents types de jours fériés qui sont prises en charge dans l'organisation",
     "CREATE_TAXE"   : "Creation des taxes",
-    "SAVE_FAILURE" : "Ce jour ferrié existe deja"
+    "SAVE_FAILURE" : "Ce jour férié existe deja"
   },
 
   "HOLLYDAY_MANAGEMENT" : {
@@ -1908,7 +1935,9 @@
     "CONFIG"       : "Configurer semaines",
     "WEEKS"        : "Les Semaines",
     "ADD_WEEK"     : "Ajouter",
-    "WARNING_WEEK" : "Les semaines doivent appartenir à la periode"
+    "WARNING_WEEK" : "Les semaines doivent appartenir à la periode",
+    "ACCOUNT"      : "Compte",
+    "CONFIGURATIONS" : "Les configurations"
   },
 
    "TAXES" : {
@@ -1982,5 +2011,107 @@
     "PAYABLE"       : "Payable",
     "DELETE_SUCCESS" : "Suppression avec succès",
     "NO_CONFIG_TAX" : "Aucune configuration de taxes"
+  },
+
+  "DAILY_CONSUMPTION" : {
+    "TITLE"       : "Consommation journaliere",
+    "DAY"         : "Aujourd'hui",
+    "WEEK"        : "Cette Semaine",
+    "MONTH"       : "Ce Mois",
+    "SEARCH"      : "Rechercher",
+    "ALL_PROJECTS" : "Tous Projets",
+    "NO_CONSUMPTION" : "Aucune consommation durant cette période",
+    "ITEMS"          : "Articles",
+    "NR"           : "Nr"
+  },  
+
+  "DONATION_MANAGEMENT" : {
+    "TITLE"             : "Gestion des Dons",
+    "CONFIGURE"         : "Configurer la donation",
+    "DONOR"             : "Donateur",
+    "RESPONSABLE"       : "Responsable",
+    "DONATION"          : "Donation",
+    "ALL_DONATIONS"     : "Les Donations",
+    "NEW"               : "Configuration Nouvelle Donation",
+    "DATE"              : "Date",
+    "NOTE"              : "Note",
+    "ITEM"              : "Article(s)",
+    "DONATION_ITEM"     : "Article(s) Donation",
+    "ADD_LINE_ITEM"     : "Ajouter article",
+    "SUBMIT_DONATION"   : "Soumettre le Don",
+    "ENTRY_DONATION"    : "Entrer Don dans le Stock par Lots",
+    "TOTAL_COST"        : "Cout Total",
+    "SAVE_BY_LOT"       : "Enregistrement des lots",
+    "CANCEL"            : "Annuler",
+    "SEE_ALL"           : "Voir toutes les donations",
+    "NB"                : "N°",
+    "UUID"              : "Code",
+    "LOT"               : "Lot",
+    "QTE"               : "Quantité",
+    "TRACKING_NB"       : "N° Tracking",
+    "PROOF"             : "Preuve d'enregistrement du don dans le Stock",
+    "REPORT"            : "Rapport",
+    "DATE_REGISTER"     : "Date d'enregistrement",
+    "PERFORM_BY"        : "Effectue par : "
+  },
+
+  "STOCK_DASHBOARD"     : {
+    "TITLE"             : "Tableau de bord du Stock",
+    "MOST_CONSUMED"     : "Produits les plus consommes (10 premiers)",
+    "PURCHASE_ORDER"    : {
+            "TITLE"     : "Commandes",
+            "IN_WATING" : "en attente de paiement",
+            "PAYED"     : "payées",
+            "RECEIVED"  : "reçues",
+            "WATING_RECEPTION" : "en attente de reception"
+        },
+    "MOVEMENT"          : {
+            "TITLE"     : "Mouvement",
+            "ENTER"     : "Entrée",
+            "EXIT"      : "Sortie"
+        },
+    "STOCK_BY_PRODUCT"  : {
+            "TITLE"          : "Stock par produits",
+            "OUT_OF_STOCK"   : "Stock épuisé",
+            "UNDER_MIN"      : "En dessous du minimum",
+            "OVER_MAX"       : "Au dessus du maximum",
+            "IN_STOCK"       : "En stock",
+            "NO_LONGER"      : "Tend vers épuisement",
+            "OPTIMAL_LEVEL"  : "Niveau de stock optimale"
+        },
+    "EXPIRING_INVENTORY"     : {
+            "TITLE"          : "Expirations produits",
+            "EXPIRED"        : "Expirés",
+            "WITHIN_30"      : "Expiration dans moins 30 jours",
+            "WITHIN_90"      : "Expiration entre 30 et 90 jours",
+            "WITHIN_180"     : "Expiration entre 90 et 180 jours",
+            "WITHIN_365"     : "Expiration entre 180 et 365 jours",
+            "WITHIN_1YEAR"   : "Expiration dans plus d'une année"
+        },
+    "DONATIONS"          : {
+            "TITLE"      : "le 10 derniers dons"
+        },
+    "REPORTS"           : {
+            "TITLE"             : "Rapports",
+            "SITUATION_STOCK"   : "Stock status",
+            "EXPIRING_STOCK"    : "Expiring Stock"
+        }
+  },
+
+  "CONFIG_ACCOUNTING" : {
+    "TITLE"        : "Configuration des comptes",
+    "NEW_CONFIG"    : "Nouvelle configuration",
+    "SAVE_SUCCES"  : "Enregistrement avec succès",    
+    "UPDATE_SUCCES" : "Mis à jour avec succès",
+    "CONFIRM"       : "Etes vous sure de vouloir supprimer cette configuration",      
+    "UPDATE"        : "Mettre à jour une configuration",    
+    "ADD"           : "Créer une nouvelle configuration",
+    "REGISTERED"    : "Configuration des comptes enregistrées",
+    "ALERT"         : "Le module configuration des comptes, permet le paramétrage du compte qui sera prise utilisé lors du payroll",
+    "CONFIG"        : "Configuration",
+    "RUBRIC"        : "Rubriques Payroll",
+    "DELETE_SUCCESS" : "Suppression avec succès",
+    "NO_CONFIG_RUBRIC" : "Aucune configuration de comptes",
+    "ABBR"          : "Abr."
   }  
 }

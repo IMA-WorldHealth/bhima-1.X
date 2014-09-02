@@ -39,6 +39,7 @@ delete from `config_rubric`;
 delete from `rubric`;
 delete from `config_rubric_item`;
 delete from `config_tax`;
+delete from `config_accounting`;
 delete from `tax`;
 delete from `config_tax_item`;
 delete from `paiement_period`;
@@ -69,7 +70,7 @@ INSERT INTO `unit` VALUES
 (21,'Price List','TREE.PRICE_LIST','Configure price lists!',1,0,'/partials/price_list/','/inventory/price_list'),
 (22,'Exchange Rate','TREE.EXCHANGE','Set todays exchange rate!',1,0,'/partials/exchange_rate/','/exchange_rate'),
 (23,'Creditor Groups','TREE.CREDITOR_GRP','',1,0,'/partials/creditor/group/','/creditors/creditor_group'),
-(24,'Debitor Groups','TREE.DEBTOR_GRP','',1,0,'/partials/debitor/','/debitor/debitor_group'),
+(24,'Debitor Groups','TREE.DEBTOR_GRP','',1,0,'/partials/debtor/','/debtor/debtor_group'),
 (25,'General Ledger','TREE.GENERAL_LEDGER','',10,0,'/partials/reports/ledger/','/reports/ledger/general_ledger'),
 (26,'Location Manager','TREE.LOCATION','',1,0,'/partials/location/location.html','/location'),
 (27,'Chart of Accounts','TREE.CHART_OF_ACCOUNTS','',10,0,'/partials/reports/chart_of_accounts/','/reports/chart_of_accounts/'),
@@ -80,7 +81,7 @@ INSERT INTO `unit` VALUES
 (32,'Group Invoicing','TREE.GRP_INVOICING','',5,0,'/partials/group_invoice/','/group_invoice/'),
 (33,'Currency','TREE.CURRENCY','',1,0,'/partials/currency/','/currency'),
 (35,'Patient Registrations','TREE.PATIENT_REGISTRATION','',10,0,'/partials/reports/patient_registrations/','/reports/patient_registrations'),
-(36,'Change Patient Group','TREE.SWAP_DEBITOR','',12,0,'/partials/swap_debitor/','/swap_debitor/'),
+(36,'Change Patient Group','TREE.SWAP_DEBITOR','',12,0,'/partials/swap_debtor/','/swap_debtor/'),
 (37,'Cash Payments','TREE.CASH_PAYMENTS','',10,0,'/partials/reports/cash_payments/','/reports/cash_payments'),
 (38,'Transactions by Account','TREE.TRANSACTIONS_BY_ACCOUNT','',10,0,'/partials/reports/transactions/','/reports/transactions/account'),
 (39,'Caution','TREE.CAUTION','',5,0,'/partials/caution/','/caution'),
@@ -111,7 +112,10 @@ INSERT INTO `unit` VALUES
 (65,'Gestion des vacances','TREE.HOLLYDAY_MANAGEMENT','',1,0,'/partials/hollydays/','/hollyday_management/'),
 (66,'Gestion des periodes','TREE.PAYMENT_PERIOD','',1,0,'/partials/payment_period/','/payment_period/'),
 (67,'Configuration des rubriques','TREE.CONFIG_RUBRIC','',1,0,'/partials/config_rubric/','/config_rubric/'),
-(68,'Configuration des taxes','TREE.CONFIG_TAX','',1,0,'/partials/config_tax/','/config_tax/');
+(68,'Configuration des taxes','TREE.CONFIG_TAX','',1,0,'/partials/config_tax/','/config_tax/'),
+(69,'Stock Dashboard','TREE.STOCK_DASHBOARD','',11,0,'/partials/stock/stock_dashboard/','/stock_dashboard/'),
+(70,'Daily consumption', 'TREE.DAILY_CONSUMPTION', '', 10, 0, '/partials/reports/daily_consumption', '/reports/daily_consumption/'),
+(71,'Configuration des comptes','TREE.CONFIG_ACCOUNTING','',1,0,'/partials/config_accounting/','/config_accounting/');
 
 -- base user & permissions
 INSERT INTO `user` (id, username, password, first, last, email, logged_in) VALUES
@@ -1042,7 +1046,7 @@ INSERT INTO `account` (`id`, `account_type_id`, `enterprise_id`, `account_number
 (887, 1, 200, 68001000, 'DOTATIONS AUX AMORTISSEMENTS ET PROVISIONS', 6, 0, 0, NULL, '2014-07-10 10:13:00'),
 (888, 3, 200, 7, 'COMPTES DE PRODUITS', 0, 0, 0, NULL, '2014-07-10 10:13:00'),
 (889, 3, 200, 700, 'VENTE MEDICAMENTS', 7, 0, 0, NULL, '2014-07-10 10:13:00'),
-(890, 2, 200, 70011100, 'Antidote', 700, 0, 0, NULL, '2014-07-10 10:13:00'),
+(890, 2, 200, 70011100, 'Don Comprimes medicament', 700, 0, 0, NULL, '2014-07-10 10:13:00'),
 (891, 2, 200, 70011101, 'Tension artérielle', 700, 0, 0, NULL, '2014-07-10 10:13:00'),
 (892, 2, 200, 70011102, 'Diurétiques', 700, 0, 0, NULL, '2014-07-10 10:13:00'),
 (893, 2, 200, 70011103, 'Système cardiovasculaire', 700, 0, 0, NULL, '2014-07-10 10:13:00'),
@@ -1252,7 +1256,7 @@ INSERT INTO `account` (`id`, `account_type_id`, `enterprise_id`, `account_number
 -- Configure base inventory metadata
 INSERT INTO `inventory_unit` VALUES (1,'Act'),(2,'Pallet'),(3,'Pill'),(4,'Box'),(5,'Lot');
 INSERT INTO `inventory_type` (`id`, `text`) VALUES (1, 'Article'),(2, 'Assembly'),(3, 'Service'),(4, 'Discount');
-INSERT INTO `inventory_group` (`uuid`, `name`, `code`, `sales_account`, `cogs_account`, `stock_account`, `tax_account`) VALUES
+INSERT INTO `inventory_group` (`uuid`, `name`, `code`, `sales_account`, `cogs_account`, `stock_account`, `donation_account`) VALUES
 ('124b8a66-c0e3-47ab-8e0a-19c0019b6c43', 'Consultation', 10, 942, 1074, NULL, NULL),
 ('233e9302-8b24-4bec-87ef-76b56b1ad62f', 'Caution/Impaye', 190, 956, 1075, NULL, NULL),
 ('26a06810-c868-4edc-9720-0cb3ee20f8fa', 'Optique', 180, 962, 1076, NULL, NULL),
@@ -1272,7 +1276,7 @@ INSERT INTO `inventory_group` (`uuid`, `name`, `code`, `sales_account`, `cogs_ac
 ('b554ebf9-7a0f-4fd2-bdde-f902ebd96fee', 'Imagerie Médicale', 70, 969, 1089, 164, NULL),
 ('c13da749-a9cd-4894-b39b-be0c26919304', 'Injectable', 120, 951, 1090, 137, NULL),
 ('c673e6d2-a1fd-4bca-aa0e-92425fc099bb', 'Orl', 80, 975, 1091, NULL, NULL),
-('d66a0518-67ce-475c-b124-0bb78a65533f', 'Comprimes Medicam', 100, 954, 1092, 1065, NULL),
+('d66a0518-67ce-475c-b124-0bb78a65533f', 'Comprimes Medicam', 100, 954, 1092, 1065, 890),
 ('d9f8daaa-22de-4a33-801e-4c07317b1983', 'Externe', 150, 958, 1093, NULL, NULL),
 ('f24e7325-67a8-48f1-aeb0-b7c4c89f2884', 'Perfusion', 130, 955, 1094, NULL, NULL);
 -- Add inventory items
@@ -1793,7 +1797,7 @@ INSERT INTO `fiscal_year` VALUES (200,1,11,'Tshikaji 2014',NULL,NULL,NULL,1,2014
 
 INSERT INTO `period` VALUES (1,1,0,'2014-01-01','2014-01-01',0),(2,1,1,'2014-01-01','2014-01-31',0),(3,1,11,'2014-02-01','2014-02-28',0),(4,1,21,'2014-03-01','2014-03-31',0),(5,1,31,'2014-04-01','2014-04-30',0),(6,1,41,'2014-05-01','2014-05-31',0),(7,1,51,'2014-06-01','2014-06-30',0),(8,1,61,'2014-07-01','2014-07-31',0),(9,1,71,'2014-08-01','2014-08-31',0),(10,1,81,'2014-09-01','2014-09-30',0),(11,1,91,'2014-10-01','2014-10-31',0),(12,1,101,'2014-11-01','2014-11-30',0),(13,1,111,'2014-12-01','2014-12-31',0);
 
-INSERT INTO `transaction_type` VALUES (1,'cash'),(2,'sale'),(3,'purchase'),(4,'journal'),(5,'group_invoice'),(6,'credit_note'),(7,'caution'),(8,'pcash'),(9,'autre'),(10, 'pcash_convention'), (11, 'primary_cash'), (12, 'distribution'), (13, 'loss');
+INSERT INTO `transaction_type` VALUES (1,'cash'),(2,'sale'),(3,'purchase'),(4,'journal'),(5,'group_invoice'),(6,'credit_note'),(7,'caution'),(8,'pcash'),(9,'autre'),(10, 'pcash_convention'), (11, 'primary_cash'), (12, 'distribution'), (13, 'loss'), (14, 'payroll'), (15, 'donation');
 
 INSERT INTO `price_list` VALUES (200,'61dcf7f0-b4a8-4f45-8eac-cf41e56dce2b','Malade hospitalisé','Interné'),(200,'71b5b0ad-bffd-4d92-bc20-1cf961a804b8','Reduction IMA',NULL),(200,'82865bba-3800-4cfc-bf0a-8087b3463608','Riduction IMA pour hospitalise',NULL),(200,'d3728cfb-61c5-46b0-9afd-48ba807f0fe0','Convention',NULL);
 
@@ -1820,6 +1824,9 @@ INSERT INTO `service` VALUES
 
 INSERT INTO `config_rubric` VALUES 
 (1, "configuration des rubrique par defaut");
+
+INSERT INTO `config_accounting` VALUES 
+(1, "configuration de comptabilite de paie par defaut", 721);
 
 INSERT INTO `rubric` VALUES 
 (1, "Logement", "HOUS", 0, 1, 30),
@@ -1855,7 +1862,7 @@ INSERT INTO `config_tax_item` VALUES
 (6, 1, 6, 1);
 
 INSERT INTO `paiement_period` VALUES
-(1, 1, 1, "period de paiement par defaut", '2014-09-01', '2014-09-30');
+(1, 1, 1, 1, "period de paiement par defaut", '2014-09-01', '2014-09-30');
 
 INSERT INTO `offday` VALUES
 (1, "ferrie 1", '2014-09-17', 100),
@@ -1869,3 +1876,7 @@ INSERT INTO `config_paiement_period` VALUES
 (4, 1, '2014-09-22', '2014-09-26'),
 (5, 1, '2014-09-29', '2014-09-30');
 
+INSERT INTO `donor` VALUES
+(1, 'IMA World Health'),
+(2, 'WHO / OMS'),
+(3, 'UNICEF');
