@@ -254,5 +254,6 @@ angular.module('bhima.controllers')
 
     $scope.setOriginLocation = setOriginLocation;
     $scope.setCurrentLocation = setCurrentLocation;
+
   }
 ]);
