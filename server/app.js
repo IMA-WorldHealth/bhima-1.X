@@ -1338,12 +1338,12 @@ app.get('/getMonthsBeforeExpiration/:id', function (req, res, next) {
 });
 
 app.get('/getEmployeePayment/:id', function (req, res, next) {
-  var sql = "SELECT e.id, e.prenom, e.name, e.postnom, p.uuid, p.currency_id, t.label, t.abbr, z.tax_id, z.value, z.posted"
+  var sql = "SELECT e.id, e.code, e.prenom, e.name, e.postnom, p.uuid, p.currency_id, t.label, t.abbr, z.tax_id, z.value, z.posted"
           + " FROM employee e "
           + " JOIN paiement p ON e.id=p.employee_id "
           + " JOIN tax_paiement z ON z.paiement_uuid=p.uuid "
           + " JOIN tax t ON t.id=z.tax_id "
-          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.id) + " AND t.is_employee=1";
+          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.id) + " AND t.is_employee=1 ";
 
   db.exec(sql)
   .then(function (result) {

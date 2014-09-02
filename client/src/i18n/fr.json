@@ -2135,6 +2135,7 @@
 
   "TAX_PAYMENT" : {
     "EMPLOYEE"         : "Nom de l'employé",
+    "CODE"             : "Code",
     "TAX"              : "Taxe",
     "VALUE"            : "Valeur",
     "PAID"             : "Payé",

@@ -7,15 +7,13 @@ angular.module('bhima.controllers')
   'messenger',
   'validate',
   'appstate',
-  'connect',
-  '$location',
-  'util',
   'appcache',
+  'connect',
+  'util',
   'exchange',
   '$q',
-  'ipr',
   'uuid',
-  function ($scope, $routeParams, $translate, $http, messenger, validate, appstate, connect, $location, util, Appcache, exchange, $q, ipr, uuid) {
+  function ($scope, $routeParams, $translate, $http, messenger, validate, appstate, Appcache, connect, util, exchange, $q, uuid) {
     var dependencies = {},
         cache = new Appcache('tax_payment'),
         session = $scope.session = {
@@ -27,42 +25,6 @@ angular.module('bhima.controllers')
         };
 
     session.cashbox = $routeParams.cashbox;
-
-    dependencies.cash_box = {
-      required : true,
-      query : {
-        tables : {
-          'cash_box_account_currency' : {
-            columns : ['id', 'currency_id', 'account_id']
-          },
-          'currency' : {
-            columns : ['symbol', 'min_monentary_unit']
-          },
-          'cash_box' : {
-            columns : ['id', 'text', 'project_id']
-          }
-        },
-        join : [
-          'cash_box_account_currency.currency_id=currency.id',
-          'cash_box_account_currency.cash_box_id=cash_box.id'
-        ],
-        where : [
-          'cash_box_account_currency.cash_box_id=' + session.cashbox
-        ]
-      }
-    };
-
-    dependencies.exchange_rate = {
-      required : true,
-      query : {
-        tables : {
-          'exchange_rate' : {
-            columns : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'date', 'rate']
-          }
-        },
-        where : ['exchange_rate.date='+util.sqlDate(new Date())]
-      }
-    };
 
     dependencies.cashier = {
       query : 'user_session'
@@ -78,38 +40,11 @@ angular.module('bhima.controllers')
       }
     };
 
-    dependencies.pcash_module = {
-      required : true,
-      query : {
-        tables : {
-          'primary_cash_module' : {
-            columns : ['id']
-          }
-        },
-        where : ['primary_cash_module.text=Tax Payment']
-      }
-    };
-
-    dependencies.enterprise = {
-      query : {
-        tables : {
-          'enterprise' : {
-          columns : ['currency_id']
-        }
-        }
-      }
-    };
-
     appstate.register('project', function (project) {
       $scope.project = project;               
-        validate.process(dependencies, ['enterprise', 'pcash_module', 'paiement_period', 'cashier', 'exchange_rate', 'cash_box'])
+        validate.process(dependencies, ['paiement_period', 'cashier'])
         .then(init, function (err) {
           messenger.danger(err.message + ' ' + err.reference);
-          console.log('ko', err);
-          $translate('PRIMARY_CASH.EXPENSE.LOADING_ERROR')
-          .then(function (value) {
-            messenger.danger(value);
-          }); 
         });     
     });
 
@@ -118,7 +53,6 @@ angular.module('bhima.controllers')
       cache.fetch('selectedItem')
       .then(function (selectedItem){
         if (!selectedItem) { throw new Error('Currency undefined'); }
-        session.loading_currency_id = selectedItem.currency_id;
         session.selectedItem = selectedItem;
         return cache.fetch('paiement_period');
       })
@@ -143,7 +77,6 @@ angular.module('bhima.controllers')
         session.model = model;
         session.configured = true;
         session.complete = true;
-        console.log('model : ',session.model);
       })
       .catch(function (err) {
         messenger.danger(err.message);
