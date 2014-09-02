@@ -8,7 +8,8 @@ angular.module('bhima.controllers')
   'connect',
   'messenger',
   'uuid',
-  function ($scope, $location, $routeParams, validate, appstate, connect, messenger, uuid) {
+  'util',
+  function ($scope, $location, $routeParams, validate, appstate, connect, messenger, uuid, util) {
 
     // TODO Generic requirements for module to load/ warn
     var dependencies = {};
@@ -121,7 +122,7 @@ angular.module('bhima.controllers')
       angular.extend($scope, models);
 
       session.doc.document_id = uuid();
-      session.doc.date = new Date();
+      session.doc.date = util.sqlDate(new Date());
 
       session.depot = validDepo;
       depotMap.from.model = angular.copy($scope.depots);

@@ -79,11 +79,16 @@ module.exports = function (db, sanitize) {
       return account.id;
     });
 
+    var ids_conditions_p = (ids.length > 0) ? ' OR `posting_journal`.`account_id` IN ('+ids.join(',') : '';
+    var ids_conditions_g = (ids.length > 0) ? ' OR `general_ledger`.`account_id` IN ('+ids.join(',') : '';
+
     var sql =
-      'SELECT SUM(`debit_equiv`) as debit, SUM(`credit_equiv`) as credit, service_id '+
-      'FROM ((SELECT `debit_equiv`, `credit_equiv`, `project_id`, `account_id`, `service_id` FROM `posting_journal`)'+
-      ' UNION (SELECT `debit_equiv`, `credit_equiv`, `project_id`, `account_id`, `service_id` FROM `general_ledger`)) as `t` LEFT JOIN `service` ON `service`.`id` = `t`.`service_id`'+
-      ' WHERE `t`.`project_id`='+sanitize.escape(project_id)+' AND `t`.`account_id` IN ('+ids.join(',')+') AND (`t`.`service_id` IS NULL OR `service`.`cost_center_id`='+sanitize.escape(request.cc_id)+') GROUP BY `t`.`account_id`';
+      'SELECT SUM(`t`.`debit_equiv`) as debit, SUM(`t`.`credit_equiv`) as credit, `t`.`account_id`, `t`.`project_id`, `c`.`account_number`' +
+      ' FROM (SELECT `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`project_id` FROM `posting_journal` JOIN' +
+      ' `cost_center` ON `posting_journal`.`cc_id` = `cost_center`.`id` WHERE `posting_journal`.`cc_id`=' + sanitize.escape(request.cc_id) + ids_conditions_p +
+      ' UNION SELECT `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`project_id` FROM `general_ledger` JOIN' +
+      ' `cost_center` ON `general_ledger`.`cc_id` = `cost_center`.`id` WHERE `general_ledger`.`cc_id`=' + sanitize.escape(request.cc_id) + ids_conditions_g +
+      ' ) as `t` JOIN `account` as `c` ON `t`.`account_id`=`c`.`id` WHERE `t`.`project_id`=' + sanitize.escape(project_id) + ' GROUP BY `t`.`account_id`';
 
     db.execute(sql, function(err, ans){
       if (err) { return callback(err); }

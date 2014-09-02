@@ -147,7 +147,6 @@ angular.module('bhima.controllers')
       consumption.details = $scope.model.project.data[0];
       $http.post('consumption_loss/', consumption)
       .then(function (res){
-        return;
         $location.path('/invoice/loss/' + res.data.dist.docId);
       });
     }
@@ -206,7 +205,7 @@ angular.module('bhima.controllers')
          ind = i;
          break;
         }
-      };
+      }
       return ind;
     }
 
