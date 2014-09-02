@@ -228,6 +228,7 @@
               </div>
               <div class="panel-body">
                 <form name="registrationType">
+
                   <div class="radio">
                     <label>
                       <input type="radio" name="renewal_select" id="no" value="0" ng-model="patient.renewal" required>
@@ -237,6 +238,7 @@
                   <div>
                     <p>{{ "PATIENT_REGISTRATIONS.STATUS_NEW_BODY" | translate }}</p>
                   </div>
+
                   <div class="radio">
                     <label>
                       <input type="radio" name="renewal_select" id="yes" value="1" ng-model="patient.renewal" required>
@@ -245,6 +247,17 @@
                   </div>
                   <div>
                     <p>{{ "PATIENT_REGISTRATIONS.STATUS_RETURNING_BODY" | translate }}</p>
+                  </div>
+
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="renewal_select" id="past" value="2" ng-model="patient.renewal" required>
+                      <b>{{ "PATIENT_REGISTRATIONS.STATUS_REGISTERED_TITLE" | translate }}</b>
+                    </label>
+                  </div>
+                  <div>
+                    <p>{{ "PATIENT_REGISTRATIONS.STATUS_REGISTERED_BODY" | translate }}</p>
+                    <div ng-if="patient.renewal==2" find-patient on-search-complete="loadPatient"></div>
                   </div>
                 </form>
               </div>
@@ -273,3 +286,10 @@
     </a>
   </div>
 </footer>
+
+<script type="text/ng-template" id="debtorListItem.html">
+  <a>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+    <span><b>[{{match.model.uuid}}]</b></span>
+  </a>
+</script>
