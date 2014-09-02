@@ -319,28 +319,33 @@ angular.module('bhima.controllers')
           depot_entry     : session.cfg.depot.id
         }
 
+        var synthese = {
+          lot : lot,
+          movement : movement,
+          donation : donation,
+          currency_id : $scope.enterprise.data[0].currency_id,
+          project_id : $scope.project.id
+        }
 
-        return connect.post('stock',[lot])
+        var def = $q.defer();
+
+        connect.post('stock',[lot])
         .then(function () {
           return connect.post('movement', [movement]);
         })
         .then(function () {
           return connect.post('donations', [donation]);
         })
-        .then(function(){
-          var synthese = {
-            lot : lot,
-            movement : movement,
-            donation : donation,
-            currency_id : $scope.enterprise.data[0].currency_id,
-            project_id : $scope.project.id
-          }
+        .then(function(){          
           return $http.post('posting_donation/', synthese);
-        });       
+        })
+        .then(function (res) {
+          def.resolve(res);
+        })
+        return def.promise;      
       }))
       .then(function () {
         messenger.success('STOCK.ENTRY.WRITE_SUCCESS');
-        return $q.when();
       })
       .then(function () {
         $location.path('/stock/donation_management/report/' + document_id);

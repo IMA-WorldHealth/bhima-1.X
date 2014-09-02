@@ -2029,7 +2029,6 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
 
   function handleDonation (id, user_id, data, done) {
     var cfg = {}, reference, sql = "SELECT * FROM `inventory` WHERE `inventory`.`uuid`=" + sanitize.escape(data.lot.inventory_uuid) + ";";
-    var date = util.toMysqlDate(get.date());
 
     db.exec(sql)
     .then(function (records) {
@@ -2045,7 +2044,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       return get.transactionId(data.project_id);
     })
     .then(function (trans_id) {
-      console.log('voici la trans_id', trans_id);
+      console.log('trans_id est ', trans_id);
       cfg.trans_id = trans_id;
       cfg.descrip =  'Donation/' + new Date().toISOString().slice(0, 10).toString();
       return debit();
@@ -2121,8 +2120,8 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
             cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\''
           ].join(',') + ', `inventory_group`.`donation_account`, ' +
           [
-            0, cfg.cost,
-            0, cfg.cost,
+            cfg.cost, 0,
+            cfg.cost, 0,
             data.currency_id
           ].join(',') +
           ', null, null, ' +
