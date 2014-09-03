@@ -93,7 +93,9 @@ INSERT INTO `unit` VALUES
 (55,'Profit center management', 'TREE.PROFIT_CENTER_MGMNT', '', 30, 0, 'partials/profit_center/', '/profit_center/'),
 (56,'Income Report','TREE.INCOME_REPORT','',10,0,'/partials/reports/primary_cash/income/','/reports/income_report/'),
 (57,'Expense Report','TREE.EXPENSE_REPORT','',10,0,'/partials/reports/primary_cash/expense/','/reports/expense_report/'),
-(58,'Patient Group Report','TREE.PATIENT_GROUP_REPORT','',10,0,'/partials/reports/patient_group/','/reports/patient_group/');
+(58,'Patient Group Report','TREE.PATIENT_GROUP_REPORT','',10,0,'/partials/reports/patient_group/','/reports/patient_group/'),
+(59,'Canevas SNIS', 'Canevas SNIS', '', 0, 1, 'partials/snis/', '/canevas_snis/'),
+(60,'Rapports SNIS', 'Rapports SNIS', '', 56, 0, 'partials/snis/index.html', '/snis/');
 
 -- base user & permissions
 INSERT INTO `user` (id, username, password, first, last, email, logged_in) VALUES
