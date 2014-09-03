@@ -141,7 +141,10 @@
     "RESULTS"           : "Results",
     "VIEW_ALL"          : "View all Patients",
     "SEARCH"            : "Search",
-    "VIEW_PATIENT_CARD" : "Patient card"
+    "VIEW_PATIENT_CARD" : "Patient card",
+    "INFO_SEARCH"       : "Any fields left blank will not be included in the search, included fields will be marked with an ",
+    "REMOVE_LOCATION_SEARCH" : "Remove Location Search",
+    "INCLUDE_LOCATION_SEARCH" : "Include Location Search"
   },
 
   "EXCHANGE"     : {
