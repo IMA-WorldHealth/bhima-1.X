@@ -70,7 +70,6 @@ INSERT INTO `unit` VALUES
 (31,'Cost Center Management','TREE.COST_CENTER_MGMT','',30,0,'/partials/cost_center/','/cost_center/'),
 (32,'Group Invoicing','TREE.GRP_INVOICING','',5,0,'/partials/group_invoice/','/group_invoice/'),
 (33,'Currency','TREE.CURRENCY','',1,0,'/partials/currency/','/currency'),
-(34,'Patient Renewal','TREE.RENEWAL','',12,0,'/partials/patient_renewal/','/renewal'),
 (35,'Patient Registrations','TREE.PATIENT_REGISTRATION','',10,0,'/partials/reports/patient_registrations/','/reports/patient_registrations'),
 (36,'Change Patient Group','TREE.SWAP_DEBITOR','',12,0,'/partials/swap_debitor/','/swap_debitor/'),
 (37,'Cash Payments','TREE.CASH_PAYMENTS','',10,0,'/partials/reports/cash_payments/','/reports/cash_payments'),

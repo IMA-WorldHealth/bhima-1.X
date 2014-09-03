@@ -226,6 +226,21 @@ angular.module('bhima.controllers')
       session.fullDateEnabled = true;
     };
 
+    $scope.loadPatient = function loadPatient(patient) {
+      // very, very basic.
+      connect.fetch('/visit/"' + patient.uuid + '"')
+      .then(function () {
+        //Patient visit has been logged
+        messenger.success($translate.instant('RENEWAL.SUCCESS_MESSAGE'));
+        $location.path('invoice/patient/' + patient.uuid); // Niave
+      })
+      .catch(function () {
+        //Patient visit log failed
+        messenger.danger($translate.instant('RENEWAL.FAILURE_MESSAGE'));
+      })
+      .finally();
+    };
+
     function handleError(err) {
       messenger.danger('An Error Occured : ' + JSON.stringify(err));
     }
@@ -239,5 +254,6 @@ angular.module('bhima.controllers')
 
     $scope.setOriginLocation = setOriginLocation;
     $scope.setCurrentLocation = setCurrentLocation;
+
   }
 ]);
