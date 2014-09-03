@@ -632,15 +632,15 @@ app.get('/province/', function (req, res, next) {
 
 // FIXME : make this code more modular
 app.get('/visit/:patientId', function (req, res, next) {
-  var patientId = req.params.patientId;
-  var sql =
-    'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES ' +
-    '(' + [sanitize.escape(uuid()), patientId, req.session.user_id].join(', ') + ');';
-  db.exec(sql)
+  var sql, id = req.params.patientId;
+  sql =
+    'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES (?, ?, ?);';
+
+  db.exec(sql, [uuid(), id, req.session.user_id])
   .then(function () {
     res.send();
   })
-  .catch(function (err) { next(err); })
+  .catch(next)
   .done();
 });
 

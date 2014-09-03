@@ -4,10 +4,6 @@
 
 <nav>
   <div class="pull-right">
-    <a href="#/debitor/debitor_group" class="capital btn btn-default btn-sm">
-      <span class="glyphicon glyphicon-tag"></span> {{ "PATIENT_REG.CREATE_DEBTOR_GROUP" | translate }}
-    </a>
-
     <a href="#/location" class="capital btn btn-default btn-sm">
       <span class="glyphicon glyphicon-globe"></span> {{ "PATIENT_REG.LOCATION" | translate }}
     </a>
@@ -23,7 +19,7 @@
     <div class="row">
       <div class="col-xs-7">
         <div class="row">
-          <div id="patientDetails" class="panel panel-primary">
+          <div id="patientDetails" class="panel panel-primary" ng-class="{'form-disabled' : patient.renewal==2 }">
             <div class="panel-heading">
               <!-- Required styling workaround -->
               <span class="glyphicon glyphicon-user"></span> <b>{{ "PATIENT_REG.PATIENT_DETAILS" | translate }}</b>
@@ -117,18 +113,14 @@
                       <div location-select select-village="setCurrentLocation"></div>
                     </fieldset>
                   </div>
-
-                  
                 </fieldset>
 
-<div class="form-group" ng-if="validation.locations.flag">
-                    <div style="margin : 0em 1em 0em; text-align: center;" class="alert alert-danger">
-                      <span class="glyphicon glyphicon-globe"></span> <b>{{validation.locations.flag.message | translate}} </b>
-                    </div>
+                <div class="form-group" ng-if="validation.locations.flag">
+                  <div style="margin : 0em 1em 0em; text-align: center;" class="alert alert-danger">
+                    <span class="glyphicon glyphicon-globe"></span> <b>{{validation.locations.flag.message | translate}} </b>
                   </div>
-
- 
-                </form>
+                </div>
+              </form>
 
                 <form name="finance" class="form-horizontal">
                   <fieldset>
@@ -228,6 +220,7 @@
               </div>
               <div class="panel-body">
                 <form name="registrationType">
+
                   <div class="radio">
                     <label>
                       <input type="radio" name="renewal_select" id="no" value="0" ng-model="patient.renewal" required>
@@ -237,6 +230,7 @@
                   <div>
                     <p>{{ "PATIENT_REGISTRATIONS.STATUS_NEW_BODY" | translate }}</p>
                   </div>
+
                   <div class="radio">
                     <label>
                       <input type="radio" name="renewal_select" id="yes" value="1" ng-model="patient.renewal" required>
@@ -245,6 +239,19 @@
                   </div>
                   <div>
                     <p>{{ "PATIENT_REGISTRATIONS.STATUS_RETURNING_BODY" | translate }}</p>
+                  </div>
+
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="renewal_select" id="past" value="2" ng-model="patient.renewal" required>
+                      <b>{{ "PATIENT_REGISTRATIONS.STATUS_REGISTERED_TITLE" | translate }}</b>
+                    </label>
+                  </div>
+                  <div>
+                    <p>{{ "PATIENT_REGISTRATIONS.STATUS_REGISTERED_BODY" | translate }}</p>
+                    <div ng-if="patient.renewal==2">
+                      <div find-patient on-search-complete="loadPatient"></div>
+                    </div>
                   </div>
                 </form>
               </div>
@@ -273,3 +280,10 @@
     </a>
   </div>
 </footer>
+
+<script type="text/ng-template" id="debtorListItem.html">
+  <a class="action">
+    <span><b>[{{ match.model.age + match.model.sex }}]</b></span>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+  </a>
+</script>
