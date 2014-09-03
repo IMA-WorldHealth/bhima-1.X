@@ -396,7 +396,7 @@
     "INVENTORY_MANAGEMENT"      : "Gestion de l'Inventaire",
     "EXPIRING"                  : "Rapport Expiration Stocks",
     "TRANSACTIONS_BY_ACCOUNT"   : "Transactions par Compte",
-    "PURCHASE_ORDER_MANAGEMENT" : "Gestion des Ordres d'achat (Bon de commande)",
+    "PURCHASE_ORDER_MANAGEMENT" : "Gestion des Ordres d'achat",
     "PATIENT_SEARCH"            : "Recherche des Patients",
     "PROFIT_CENTER_MGMNT"       : "Centres de profit",
     "INCOME_REPORT"             : "Rapport des Recettes",
@@ -716,7 +716,7 @@
     "PURCHASER"           : "Acheteur",
     "EMPLOYER"            : "Creer par",
     "PROFIT_CENTER"       : "Center profit",
-    "MEDECINE"             : "Medicement",
+    "MEDECINE"             : "Medicament",
     "QTY"                  : "Quantite",
     "DOCUMENT_UUID"      : "Numero Document",
     "QTY_LOSS"           : "Quantite perdue",
@@ -1137,7 +1137,9 @@
     "CONVENTION"                   : "Recit pour convention",
     "NUM_CONVENTION_PAY"           : "Reference",
     "GENERIC_INCOME"               : "Recette Genarale",
-    "GENERIC_EXPENSE"              : "Depense Generale"
+    "GENERIC_EXPENSE"              : "Depense Generale",
+    "LOSS"                         : "Document de perte de stock",
+    "DATE_DOCUMENT"                : "Date document"
 
   },
 
