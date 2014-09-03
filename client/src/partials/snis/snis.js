@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('service', [
+.controller('snis', [
   '$scope',
   '$q',
   '$translate',
@@ -8,6 +8,6 @@ angular.module('bhima.controllers')
   'connect',
   'appstate',
   function ($scope, $q, $translate, validate, messenger, connect, appstate) {
-    
+  	console.log('allo');    
   }
 ]);

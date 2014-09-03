@@ -298,7 +298,7 @@
       templateUrl : 'partials/employee/employee.html'
     })
     .when('/service', {
-      controller : 'service',
+      controller : 'admin.service',
       templateUrl : 'partials/service/service.html'
     })
     .when('/journal/print', {
@@ -366,7 +366,7 @@
       templateUrl : 'partials/inventory/distribution/distribution.html'
     })
     .when('/snis/', {
-      controller : 'snis.controller',
+      controller : 'snis',
       templateUrl : 'partials/snis/snis.html'
     })	
     .when('/purchase_menu/', {

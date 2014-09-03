@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('service', [
+.controller('admin.service', [
   '$scope',
   '$q',
   '$translate',
@@ -85,6 +85,7 @@ angular.module('bhima.controllers')
     }
 
     function setAction (value, service) {
+      console.log('ok');
       $scope.choosen = angular.copy(service) || {};
       if (value === 'more') {
         getCost($scope.choosen.cost_center_id)
