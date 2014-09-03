@@ -396,9 +396,9 @@ app.get('/availableAccounts_profit/:id_enterprise/', function(req, res, next) {
 
 app.get('/cost/:id_project/:cc_id', function(req, res, next) {
   var sql =
-    'SELECT account.id, account.account_number, account.account_txt FROM account '+
-    'WHERE account.cc_id = ' + sanitize.escape(req.params.cc_id) + 
-    ' AND account.account_type_id <> 3';
+    'SELECT `account`.`id`, `account`.`account_number`, `account`.`account_txt` FROM `account` '+
+    'WHERE `account`.`cc_id` = ' + sanitize.escape(req.params.cc_id) + 
+    ' AND `account`.`account_type_id` <> 3';
 
   function process(accounts) {
     if(accounts.length === 0) {return {cost : 0};}

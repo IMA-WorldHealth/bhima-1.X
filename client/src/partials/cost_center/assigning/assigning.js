@@ -10,7 +10,7 @@ angular.module('bhima.controllers')
   '$translate',
   function ($scope, $q, connect, appstate, messenger, validate, util, $translate) {
     var dependencies = {};
-    $scope.configuration = {};
+    var config = $scope.configuration = {};
 
     dependencies.aux_cost_centers = {
       query : {
@@ -49,7 +49,7 @@ angular.module('bhima.controllers')
     }
 
     function performChange() {
-      $scope.selected_aux_cost_center = JSON.parse($scope.configuration.aux_cost_center);
+      $scope.selected_aux_cost_center = JSON.parse(config.aux_cost_center);
     }
 
     function isForwardable() {
@@ -103,8 +103,10 @@ angular.module('bhima.controllers')
       );
     }
 
-    function handleResult(cout) {
+    function handleResult(cout) {      
       $scope.selected_aux_cost_center.cost = cout.data.cost;
+      console.log('le resulat recu est :::', cout);
+      return;
       return $q.when();
     }
 
