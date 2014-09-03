@@ -15,7 +15,7 @@
           <div class="row">
             <div class="col-xs-12">
               <div class="alert alert-info">
-                <span class="glyphicon glyphicon-info-sign"></span> Any fields left blank will not be included in the search, <b>included fields will be marked with an</b> <span class="glyphicon glyphicon-saved error"></span>
+                <span class="glyphicon glyphicon-info-sign"></span> {{ "PATIENT_RECORDS.INFO_SEARCH" | translate}} <span class="glyphicon glyphicon-saved error"></span>
           </div>
 
             </div>
@@ -102,7 +102,7 @@
           <button 
             class="btn btn-default btn-sm"
             ng-click="session.locationSearch=!session.locationSearch">
-            {{session.locationSearch ? 'Remove Location Search' : 'Include Location Search'}}</button>
+            {{session.locationSearch ? 'Enlever la localisation dans la recherche' : 'Inclure la localisation dans la recherche'}}</button>
           </div>
         </div>
       </div>
