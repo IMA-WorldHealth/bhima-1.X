@@ -1370,7 +1370,23 @@
     "SUBMIT_NEW"      : "Submit Registration",
     "EDIT"            : "Update Employee Details",
     "SUBMIT_EDIT"     : "Submit Details",
-    "CREDITOR_REFERENCE" : "BHIMA Creditor ID"
+    "CREDITOR_REFERENCE" : "BHIMA Creditor ID",
+    "SERVICE"            : "Service",
+    "LAST_NAME"          : "Last Name",
+    "POST_NAME"          : "Post Name",
+    "CODE"               : "Code/Matricule",
+    "SEX"                : "Sex",
+    "NB_SPOUSE"          : "Nb Spouse(s)",
+    "NB_CHILDREN"        : "Nb Children",
+    "GRADE"              : "Grade",
+    "DATE_EMBAUCHE"      : "Starting Date",
+    "ASSIGNMENT"         : "Assignment",
+    "DAILY_SALARY"       : "Daily Salary",
+    "BANK"               : "Bank",
+    "BANK_ACCOUNT"       : "Bank Account",
+    "PHONE"              : "Phone",
+    "EMAIL"               : "Mail",
+    "ADDRESS"            : "Address"
   },
 
   "SERVICE" : {
