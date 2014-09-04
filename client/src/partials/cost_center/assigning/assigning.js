@@ -106,7 +106,6 @@ angular.module('bhima.controllers')
     function handleResult(cout) {      
       $scope.selected_aux_cost_center.cost = cout.data.cost;
       console.log('le resulat recu est :::', cout);
-      return;
       return $q.when();
     }
 
