@@ -582,6 +582,62 @@ angular.module('bhima.controllers')
 
     }
 
+
+    function processLoss (identifiant){
+      var dependencies = {};
+      dependencies.enterprise = {
+        query : {
+          tables : {
+            'enterprise' : {columns : ['id', 'name', 'phone', 'email', 'location_id' ]},
+            'project'    : {columns : ['name', 'abbr']}
+          },
+          join : ['enterprise.id=project.enterprise_id']
+        }
+      };
+
+      dependencies.loss= {
+        query : {
+          identifier : 'uuid',
+          tables : {
+            consumption : { columns : ['quantity', 'date', 'uuid'] },
+            consumption_loss : { columns : ['document_uuid'] },
+            stock : {columns : ['tracking_number']},
+            inventory : {columns : ['text', 'purchase_price']}
+          },
+          join : ['consumption.uuid=consumption_loss.consumption_uuid', 'consumption.tracking_number=stock.tracking_number', 'stock.inventory_uuid=inventory.uuid'],
+          where : ['consumption.document_id='+identifiant]
+        }
+      };
+
+      validate.process(dependencies)
+      .then(getLocations)
+      .then(polish)
+      .catch(function (err) {
+        console.log('error pendant la genaration de la facture');
+      });
+
+      function getLocations (model) {
+        console.log('notre model', model);
+        dependencies.location = {};
+        dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id;
+        return validate.process(dependencies, ['location']);
+      }
+
+      function polish (model) {
+        $scope.records = model.loss.data;
+        $scope.invoice = {};
+        $scope.invoice.uuid = identifiant;
+        $scope.invoice.enterprise_name = model.enterprise.data[0].name;
+        $scope.invoice.village = model.location.data[0].village;
+        $scope.invoice.sector = model.location.data[0].sector;
+        $scope.invoice.phone = model.enterprise.data[0].phone;
+        $scope.invoice.email = model.enterprise.data[0].email;
+        $scope.invoice.name = model.loss.data[0].name;
+        $scope.invoice.date = model.loss.data[0].date;
+      }
+
+    }
+
     function buildPatientLocation(model) {
       dependencies.location = {
         required: true,
@@ -996,6 +1052,10 @@ angular.module('bhima.controllers')
       'generic_expense' : {
         fn              : processGenericExpense,
         url             : '/partials/receipts/templates/generic.income.html'
+      },
+      'loss' : {
+        fn              : processLoss,
+        url             : '/partials/receipts/templates/loss.html'
       }
     };
 

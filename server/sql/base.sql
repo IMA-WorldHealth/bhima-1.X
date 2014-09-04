@@ -70,7 +70,6 @@ INSERT INTO `unit` VALUES
 (31,'Cost Center Management','TREE.COST_CENTER_MGMT','',30,0,'/partials/cost_center/','/cost_center/'),
 (32,'Group Invoicing','TREE.GRP_INVOICING','',5,0,'/partials/group_invoice/','/group_invoice/'),
 (33,'Currency','TREE.CURRENCY','',1,0,'/partials/currency/','/currency'),
-(34,'Patient Renewal','TREE.RENEWAL','',12,0,'/partials/patient_renewal/','/renewal'),
 (35,'Patient Registrations','TREE.PATIENT_REGISTRATION','',10,0,'/partials/reports/patient_registrations/','/reports/patient_registrations'),
 (36,'Change Patient Group','TREE.SWAP_DEBITOR','',12,0,'/partials/swap_debitor/','/swap_debitor/'),
 (37,'Cash Payments','TREE.CASH_PAYMENTS','',10,0,'/partials/reports/cash_payments/','/reports/cash_payments'),
@@ -95,7 +94,9 @@ INSERT INTO `unit` VALUES
 (56,'Income Report','TREE.INCOME_REPORT','',10,0,'/partials/reports/primary_cash/income/','/reports/income_report/'),
 (57,'Expense Report','TREE.EXPENSE_REPORT','',10,0,'/partials/reports/primary_cash/expense/','/reports/expense_report/'),
 (58,'Patient Group Report','TREE.PATIENT_GROUP_REPORT','',10,0,'/partials/reports/patient_group/','/reports/patient_group/'),
-(59,'Grade Employers','TREE.GRADE_EMPLOYERS','',1,0,'/partials/grade_employers/','/grade_employers/');
+(59,'Canevas SNIS', 'Canevas SNIS', '', 0, 1, 'partials/snis/', '/canevas_snis/'),
+(60,'Rapports SNIS', 'Rapports SNIS', '', 59, 0, 'partials/snis/index.html', '/snis/'),
+(61,'Grade Employers','TREE.GRADE_EMPLOYERS','',1,0,'/partials/grade_employers/','/grade_employers/');
 
 -- base user & permissions
 INSERT INTO `user` (id, username, password, first, last, email, logged_in) VALUES

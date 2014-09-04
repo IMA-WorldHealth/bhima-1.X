@@ -75,6 +75,7 @@ module.exports = function (db, sanitize) {
   }
 
   function ccc (project_id, request, callback){
+    console.log('la requette recu', request);
     var ids = request.accounts.map(function (account) {
       return account.id;
     });
