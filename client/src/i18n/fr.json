@@ -400,8 +400,9 @@
     "PATIENT_SEARCH"            : "Recherche des Patients",
     "PROFIT_CENTER_MGMNT"       : "Centres de profit",
     "INCOME_REPORT"             : "Rapport des Recettes",
-    "EXPENSE_REPORT"            : "Rapport des Dépenses"
-  },
+    "EXPENSE_REPORT"            : "Rapport des Depenses",
+	"GRADE_EMPLOYERS"			: "Grade des employés"
+},
 
   "PATIENT_REGISTRATIONS" : {
     "TITLE"               : "Les Enregistrements des Patients",
@@ -728,7 +729,10 @@
     "TOTAL_CREDIT"         : "Credit total",
     "DATE_BILLED"         : "Date creation",
     "AMOUNT_BILLED"       : "Montant facture",
-    "AMOUNT_DUE"          : "Montant a payer"        
+    "AMOUNT_DUE"          : "Montant a payer",
+	"NR"				  : "N°",
+	"BASIC_SALARY"	      : "Salaire de base",
+	"GRADE"				  : "Grade"
   },
 
   "REPORT"                  : {
@@ -921,7 +925,7 @@
     "PROJECTS"    : "Projets",
     "PERMISSIONS" : "Permissions",
     "ADD"         : "Ajouter Utilisateur",
-    "REGISTERED"  : "Utilisateurs Enregistes",
+    "REGISTERED"  : "Utilisateurs Enregistrés",
     "HELP_TXT_1"  : "Editer Utilisateur Existant et sa permission a partir de la table a gauche",
     "HELP_TXT_2"  : "Editer les Metadonnees de l'utilisateur",
     "HELP_TXT_3"  : "Editer la permission de l'Utilisateur",
@@ -1722,5 +1726,18 @@
     "CONFIRM_PAY_OF" : "Confirmer payement de  ",
     "BY"             : "par ",
     "DISCARD"        : "Annuler l'ordre d'achat"
-  }
+  },
+  
+   "GRADE" : {
+    "TITLE"        : "Gestion de grades des employés",
+	"ADD"		   : "Ajouter un grade",
+	"REGISTERED"   : "Grades enregistrés",
+	"ALERT"		   : "Le module gestion de grade est un module qui a été conçu pour permettre l'administration des grades existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'un grade ainsi que la suppression.",
+    "NO_GRADES"    : "Aucun grade n'est encore enregistré",
+    "NEW_GRADE"    : "Nouveau Grade",
+    "SAVE_SUCCES"  : "Enregistrement avec succès",
+    "UPDATE_SUCCES" : "Mis à jour avec succès",
+    "DELETE_SUCCESS" : "Suppression avec succès",
+    "CONFIRM" : "Etes vois sure de vouloir supprimer ce Grade"
+  }  
 }
