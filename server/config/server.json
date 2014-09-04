@@ -87,6 +87,7 @@
       "/getCheckHollyday/",
       "/getCheckOffday/",
       "/journal_list/",
+      "/taxe_ipr_currency/",
       "/getConsuptionDrugs/",
       "/getItemInConsumption/",
       "/hollyday_list",
