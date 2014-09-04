@@ -610,7 +610,10 @@
     "REFERENCE_PURCHASE"  : "Purchase Order Reference",
     "SOURCE"                : "Source",
     "TOTAL_DEBIT"        : "Total debit",
-    "TOTAL_CREDIT"         : "Total credit"
+    "TOTAL_CREDIT"         : "Total credit",
+  "NR"          : "Nr",
+  "BASIC_SALARY"        : "Basic salary",
+  "GRADE"         : "Grade"
   },
 
   "INVENTORY" : {
@@ -746,7 +749,8 @@
     "PURCHASE_ORDER_MANAGEMENT" : "Purchase Order Management",
     "PROFIT_CENTER_MGMNT"       : "Profit center management",
     "INCOME_REPORT"             : "Incomes Report",
-    "EXPENSE_REPORT"             : "Expenses Report"
+    "EXPENSE_REPORT"            : "Expenses Report",
+  "GRADE_EMPLOYERS"     : "Grade Employees"
   },
 
   "DISTRIBUTION" : {
@@ -792,10 +796,7 @@
     "LIMITED_STOCK"          : "There is not enough valid stock available to fulfill the order, contact the stock administrator.",
     "EXPIRED"                : "Available stock CANNOT be used as it has expired, contact the stock administrator.",
     "AVAILABLE"              : "Available prescriptions"
-
-
   },
-
     "DISTRIBUTION_SERVICE" : {
     "TITLE"                  : "Stock distribution to services",
     "ADD_ROW"                : "Add an Item",
@@ -1072,7 +1073,6 @@
       "JUSTIFICATION"      : "Please include a justification for the payment on the debitor's account"
     }
   },
-
   "CREDIT_NOTE"    : {
     "TITLE"        : "Credit Note",
     "SALE_DETAILS" : "Sale Details",
@@ -1684,7 +1684,6 @@
     "LAST_PAGE" : "Last Page Visited",
     "HOME_PAGE" : "Default Home Page"
   },
-
   "PURCHASE_RECORDS" : {
     "TITLE"                : "Pruchase Order Records",
     "ADVANCE_SEARCH"       : "Advanced Search",
@@ -1707,5 +1706,21 @@
   "CONFIRM" : {
     "TITLE" : "Purchase order payment confirmation",
     "PARENT" : "Purchase order management"
-  }
+  },
+  
+  "GRADE" : {
+    "TITLE"        : "Grade management",
+    "ADD"          : "Add a grade",
+    "REGISTERED"   : "Registered Grades",
+    "ALERT"      : "Grade management module is a module that has been designed to allow administration of existing grades within the organization, the table is left to record, to update the attributes of a grade and the deletion.",
+    "NO_GRADES"    : "No grave have been registered.",
+    "NEW_GRADE"    : "New Grade",
+    "SAVE_SUCCES"  : "Successfully saving grade",
+    "UPDATE_SUCCES" : "Updated successfully",
+    "DELETE_SUCCESS" : "Deleted successfully",
+    "CONFIRM" : "Are you sure you want to delete this Grade"
+  } 
+
+
 }
+
