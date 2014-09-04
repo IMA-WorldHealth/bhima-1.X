@@ -24,7 +24,7 @@ angular.module('bhima.controllers')
     dependencies.employee = {
       query : {
         tables : {
-          employee : { columns : ['id', 'name', 'code', 'creditor_uuid', 'dob'] },
+          employee : { columns : ['id', 'name', 'code', 'creditor_uuid', 'dob', 'prenom', 'postnom', 'sexe', 'nb_spouse', 'nb_enfant', 'date_embauche', 'assignation', 'grade', 'daily_salary', 'bank', 'bank_account', 'phone', 'email', 'adresse'] },
           creditor : { columns : ['group_uuid'] }
         },
         join : ['employee.creditor_uuid=creditor.uuid']
@@ -39,12 +39,29 @@ angular.module('bhima.controllers')
       }
     };
 
+    //================ BEGIN CODE BRUCE =======================//
+    dependencies.services = {
+      query : {
+        tables : {
+          service : { columns : ['id','name']},
+          project : { columns : ['abbr']}
+        },
+        join : ['service.project_id=project.id']
+      }
+    };
+
+    var initServiceProject = function(){
+      $scope.dataServices = $scope.services.data;
+    };
+    //================= END CODE BRUCE ========================//
+
     function initialise(model) {
       angular.extend($scope, model);
     }
       
     validate.process(dependencies)
-    .then(initialise);
+    .then(initialise)
+    .then(initServiceProject);
     
     function transitionRegister() { 
       session.state = route.create;
@@ -93,6 +110,9 @@ angular.module('bhima.controllers')
     function editEmployee(employee) { 
       session.employee = employee;
       session.state = route.edit;
+      //BRUCE 
+      console.log(employee);
+      //BRUCE
     }
 
     function updateEmployee() { 

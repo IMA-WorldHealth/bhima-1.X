@@ -32,7 +32,7 @@
             <tr ng-repeat="grade in grades.data">
               <td>{{$index + 1}}</td>
               <td>{{ grade.code }}</td>
-              <td>{{ grade.grade_text }}</td>
+              <td>{{ grade.text }}</td>
               <td>{{ grade.basic_salary }}</td>
               <td><a class="action" ng-click="edit(grade)"><span class="glyphicon glyphicon-pencil"></span></a></td>
               <td><a class="action danger" ng-click="delete(grade)"><span class="glyphicon glyphicon-trash"></span></a></td>
@@ -65,7 +65,7 @@
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.GRADE" | translate }}</label>
             <div class="col-xs-8">
-              <input ng-model="session.new.grade_text" class="form-bhima" required="required">
+              <input ng-model="session.new.text" class="form-bhima" required="required">
             </div>
           </div>
 
@@ -97,7 +97,7 @@
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.GRADE" | translate }}</label>
             <div class="col-xs-8">
-              <input ng-model="session.edit.grade_text" class="form-bhima" required="required">
+              <input ng-model="session.edit.text" class="form-bhima" required="required">
             </div>
           </div>
 

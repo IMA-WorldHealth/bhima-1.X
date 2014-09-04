@@ -257,10 +257,6 @@
       controller: 'reportCashPayments',
       templateUrl: 'partials/reports/cash_payments/cash_payments.html'
     })
-    .when('/renewal', {
-      controller : 'renewal',
-      templateUrl : 'partials/patient_renewal/renewal.html'
-    })
     .when('/swap_debitor', {
       controller : 'swapDebitor',
       templateUrl : 'partials/swap_debitor/swap_debitor.html'
@@ -302,7 +298,7 @@
       templateUrl : 'partials/employee/employee.html'
     })
     .when('/service', {
-      controller : 'service',
+      controller : 'admin.service',
       templateUrl : 'partials/service/service.html'
     })
     .when('/journal/print', {
@@ -369,6 +365,10 @@
       controller : 'inventory.distribution',
       templateUrl : 'partials/inventory/distribution/distribution.html'
     })
+    .when('/snis/', {
+      controller : 'snis',
+      templateUrl : 'partials/snis/snis.html'
+    })	
     .when('/purchase_menu/', {
       controller : 'purchase.menu',
       templateUrl : 'partials/purchase/purchase_menu.html'

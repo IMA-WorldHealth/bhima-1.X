@@ -16,7 +16,7 @@ angular.module('bhima.controllers')
         identifier : 'uuid',
         tables : {
           'grade' : {
-            columns : ['uuid', 'code', 'grade_text', 'basic_salary']
+            columns : ['uuid', 'code', 'text', 'basic_salary']
           }
         }
       }

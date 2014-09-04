@@ -1006,39 +1006,47 @@ drop table if exists `grade`;
 create table `grade` (
   `uuid`                char(36) not null,
   `code`                varchar(30),
-  `grade_text`          text,  
-  `basic_salary`         decimal(19,4) unsigned,
+  `text`                text,
+  `basic_salary`        decimal(19,4) unsigned,
   primary key (`uuid`)
 ) engine=innodb;
 
-
 drop table if exists `employee`;
-create table `employee` (
-  `id`                  int unsigned not null auto_increment,
-  `code`                varchar(20),
-  `prenom`              text,
-  `name`                text not null,
-  `postnom`             text,
-  `dob`                 date not null,
-  `date_embauche`       date, -- not null,
-  `phone`               varchar(20),
-  `email`               varchar(70),
-  `fonction_id`         tinyint unsigned, -- not null,
-  `service_id`          smallint unsigned, -- not null,
-  `location_id`         char(36), -- not null,
-  `creditor_uuid`       char(36), -- not null,
-  `debitor_uuid`        char(36), -- not null,
+create table  `employee` (
+  `id` int unsigned not null auto_increment,
+  `code` varchar(20) not null,
+  `prenom` text,
+  `name` text not null,
+  `postnom` text,
+  `sexe` varchar(10) not null,
+  `dob` date not null,
+  `date_embauche` date default null,
+  `nb_spouse` int(11) not null,
+  `nb_enfant` int(11) not null,
+  `grade_id` char(36) not null,
+  `daily_salary` float not null,
+  `bank` varchar(30) not null,
+  `bank_account` varchar(30) not null,
+  `adresse` varchar(50) not null,
+  `phone` varchar(20) default null,
+  `email` varchar(70) default null,
+  `fonction_id` tinyint(3) unsigned default null,
+  `service_id` smallint(5) unsigned default null,
+  `location_id` char(36) default null,
+  `creditor_uuid` char(36) default null,
+  `debitor_uuid` char(36) default null,
   primary key (`id`),
   key `fonction_id` (`fonction_id`),
-  key `service_id`  (`service_id`),
+  key `service_id` (`service_id`),
   key `location_id` (`location_id`),
   key `creditor_uuid` (`creditor_uuid`),
-  key `debitor_uuid`  (`debitor_uuid`),
+  key `debitor_uuid` (`debitor_uuid`),
   constraint foreign key (`fonction_id`) references `fonction` (`id`),
   constraint foreign key (`service_id`) references `service` (`id`),
   constraint foreign key (`location_id`) references `village` (`uuid`),
   constraint foreign key (`creditor_uuid`) references `creditor` (`uuid`),
-  constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`)
+  constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`),
+  constraint foreign key (`grade_id`) references `grade` (`uuid`)
 ) engine=innodb;
 
 drop table if exists `inventory_log`;
@@ -1246,4 +1254,129 @@ create table `movement` (
   key `depot_exit` (`depot_exit`),
   constraint foreign key (`tracking_number`) references `stock` (`tracking_number`),
   constraint foreign key (`depot_exit`) references `depot` (`uuid`)
+) engine=innodb;
+
+drop table if exists `rubric`;
+create table `rubric` (
+  `id`                      int unsigned auto_increment not null,
+  `label`                   text,
+  `is_discount`             boolean,
+  `is_percent`              boolean,
+  `value`                   float default 0,
+  primary key (`id`)
+) engine=innodb;
+
+drop table if exists `config_rubric`;
+create table `config_rubric` (
+  `id`                      int unsigned auto_increment not null,
+  `label`                   text,
+  primary key (`id`)
+) engine=innodb;
+
+drop table if exists `config_rubric_item`;
+create table `config_rubric_item` (
+  `id`                      int unsigned auto_increment not null,
+  `config_rubric_id`        int unsigned not null,
+  `rubric_id`               int unsigned not null,
+  `payable`                 boolean,
+  primary key (`id`),
+  key `config_rubric_id` (`config_rubric_id`),
+  key `rubric_id` (`rubric_id`),
+  constraint foreign key (`config_rubric_id`) references `config_rubric` (`id`),
+  constraint foreign key (`rubric_id`) references `rubric` (`id`)
+) engine=innodb;
+
+drop table if exists `tax`;
+create table `tax` (
+  `id`                      int unsigned auto_increment not null,
+  `label`                   text,
+  `is_employee`             boolean,
+  `is_percent`              boolean,
+  `account_id`              int unsigned not null,
+  `value`                   float default 0,
+  primary key (`id`),
+  key `account_id` (`account_id`),
+  constraint foreign key (`account_id`) references `account` (`id`)
+) engine=innodb;
+
+drop table if exists `config_tax`;
+create table `config_tax` (
+  `id`                      int unsigned auto_increment not null,
+  `label`                   text,
+  primary key (`id`)
+) engine=innodb;
+
+drop table if exists `config_tax_item`;
+create table `config_tax_item` (
+  `id`                      int unsigned auto_increment not null,
+  `config_tax_id`           int unsigned not null,
+  `tax_id`                  int unsigned not null,
+  `payable`                 boolean,
+  primary key (`id`),
+  key `config_tax_id` (`config_tax_id`),
+  key `tax_id` (`tax_id`),
+  constraint foreign key (`config_tax_id`) references `config_tax` (`id`),
+  constraint foreign key (`tax_id`) references `tax` (`id`)
+) engine=innodb;
+
+drop table if exists `paiement_period`;
+create table `paiement_period` (
+  `id`                      int unsigned auto_increment not null,
+  `config_tax_id`           int unsigned not null,
+  `config_rubric_id`        int unsigned not null,
+  `label`                   text,
+  `dateFrom`                date not null,
+  `dateTo`                  date not null,
+  primary key (`id`),
+  key `config_tax_id` (`config_tax_id`),
+  key `config_rubric_id` (`config_rubric_id`),
+  constraint foreign key (`config_tax_id`) references `config_tax` (`id`),
+  constraint foreign key (`config_rubric_id`) references `config_rubric` (`id`)
+) engine=innodb;
+
+drop table if exists `config_paiement_period`;
+create table `config_paiement_period` (
+  `id`                      int unsigned auto_increment not null,
+  `paiement_period_id`      int unsigned not null,
+  `weekFrom`                date not null,
+  `weekTo`                  date not null,
+  primary key (`id`),
+  key `paiement_period_id` (`paiement_period_id`),
+  constraint foreign key (`paiement_period_id`) references `paiement_period` (`id`)
+) engine=innodb;
+
+drop table if exists `paiement`;
+create table `paiement` (
+  `uuid`                    char(36) not null,
+  `employee_id`             int unsigned not null,
+  `paiement_period_id`      int unsigned not null,
+  `paiement_date`           date,
+  `working_day`             int unsigned not null,
+  `net_salary`              float default 0,
+  primary key (`uuid`),
+  key `employee_id` (`employee_id`),
+  key `paiement_period_id` (`paiement_period_id`),
+  constraint foreign key (`employee_id`) references `employee` (`id`),
+  constraint foreign key (`paiement_period_id`) references `paiement_period` (`id`)
+) engine=innodb;
+
+drop table if exists `offday`;
+create table `offday` (
+  `id`                      int unsigned auto_increment not null,
+  `label`                   text,
+  `date`                    date not null,
+  `percent_pay`             float default 100,
+  primary key (`id`)
+) engine=innodb;
+
+drop table if exists `hollyday`;
+create table `hollyday` (
+  `id`                      int unsigned auto_increment not null,
+  `employee_id`             int unsigned not null,
+  `label`                   text,
+  `dateFrom`                date,
+  `dateTo`                  date,
+  primary key (`id`),
+  key `employee_id` (`employee_id`),
+  constraint foreign key (`employee_id`) references `employee` (`id`)
 ) engine=innodb;

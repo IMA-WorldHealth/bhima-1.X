@@ -396,9 +396,9 @@ app.get('/availableAccounts_profit/:id_enterprise/', function(req, res, next) {
 
 app.get('/cost/:id_project/:cc_id', function(req, res, next) {
   var sql =
-    'SELECT account.id, account.account_number, account.account_txt FROM account '+
-    'WHERE account.cc_id = ' + sanitize.escape(req.params.cc_id) + 
-    ' AND account.account_type_id <> 3';
+    'SELECT `account`.`id`, `account`.`account_number`, `account`.`account_txt` FROM `account` '+
+    'WHERE `account`.`cc_id` = ' + sanitize.escape(req.params.cc_id) + 
+    ' AND `account`.`account_type_id` <> 3';
 
   function process(accounts) {
     if(accounts.length === 0) {return {cost : 0};}
@@ -632,15 +632,15 @@ app.get('/province/', function (req, res, next) {
 
 // FIXME : make this code more modular
 app.get('/visit/:patientId', function (req, res, next) {
-  var patientId = req.params.patientId;
-  var sql =
-    'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES ' +
-    '(' + [sanitize.escape(uuid()), patientId, req.session.user_id].join(', ') + ');';
-  db.exec(sql)
+  var sql, id = req.params.patientId;
+  sql =
+    'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES (?, ?, ?);';
+
+  db.exec(sql, [uuid(), id, req.session.user_id])
   .then(function () {
     res.send();
   })
-  .catch(function (err) { next(err); })
+  .catch(next)
   .done();
 });
 
