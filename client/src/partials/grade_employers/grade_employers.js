@@ -33,12 +33,12 @@ angular.module('bhima.controllers')
     });
 
     $scope.delete = function (grade) {
-      var result = confirm($translate.instant('GRADE_EMPLOYERS.CONFIRM'));
+      var result = confirm($translate.instant('GRADE.CONFIRM'));
       if (result) {  
         connect.basicDelete('grade', grade.uuid, 'uuid')
         .then(function () {
           $scope.grades.remove(grade.uuid);
-          messenger.info($translate.instant('GRADE_EMPLOYERS.DELETE_SUCCESS'));
+          messenger.info($translate.instant('GRADE.DELETE_SUCCESS'));
         });
       }
     };
@@ -60,7 +60,7 @@ angular.module('bhima.controllers')
       delete record.reference;
       connect.basicPost('grade', [record], ['uuid'])
       .then(function () {
-        messenger.success($translate.instant('GRADE_EMPLOYERS.UPDATE_SUCCES')); 
+        messenger.success($translate.instant('GRADE.UPDATE_SUCCES')); 
         $scope.grades.put(record);
         session.action = '';
         session.edit = {};
@@ -72,7 +72,7 @@ angular.module('bhima.controllers')
       record.uuid = uuid();
       connect.basicPut('grade', [record])
       .then(function () {
-        messenger.success($translate.instant('GRADE_EMPLOYERS.SAVE_SUCCES'));        
+        messenger.success($translate.instant('GRADE.SAVE_SUCCES'));        
         // record.id = res.data.insertId;
         record.reference = generateReference(); // this is simply to make the ui look pretty;
         $scope.grades.post(record);
