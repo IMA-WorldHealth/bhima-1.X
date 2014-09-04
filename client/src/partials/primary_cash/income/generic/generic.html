@@ -13,7 +13,7 @@
   </div>
 
 
-  <div class="pull-right dropdown">
+  <div class="pull-right">
     <button class="btn btn-sm btn-primary dropdown-toggle">
       {{ session.currency.symbol || "UTIL.CURRENCY" | translate }}
       <span class="caret" data-caret="&#9660;"></span>
@@ -23,11 +23,46 @@
         <a href="" ng-click="setCurrency(currency)">{{ currency.symbol }}</a>
       </li>
     </ul>
+
+    <button
+      style="margin-left: 5px;"
+      ng-click="reconfigure()"
+      class="btn btn-sm btn-default">
+      {{'PRIMARY_CASH.INCOME.SELECT_ACCOUNT' | translate}}
+      <span class="glyphicon glyphicon-repeat"></span>
+    </button>
+
   </div>
 </nav>
 
 <main>
-  <div class="row">
+
+  <div ng-if="!session.configured" class="row">
+    <div class="col-xs-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          {{ "PRIMARY_CASH.INCOME.SELECT_ACCOUNT" | translate }}
+        </div>
+
+        <div class="panel-body">
+          <div class="configure">
+            <span
+              style="font-size: 70px"
+              class="glyphicon glyphicon-import">
+            </span>
+          </div>
+          <br>
+          <div class="configure">
+            <select ng-model="session.ac" ng-options="ac as formatAccount(ac) for ac in session.account7" ng-change="setConfiguration(session.ac)">
+              <option value="" ng-disabled="disabled" disabled="true">-- {{'PRIMARY_CASH.INCOME.SELECT_ACCOUNT' | translate}} -- </option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div ng-if="session.configured" class="row">
     <div class="col-xs-8">
       <div class="panel panel-primary">
         <div class="panel-heading">
@@ -89,7 +124,15 @@
         </div>
       </div>
     </div>
+
+    <div class="col-xs-4">
+      <div class="alert alert-info">
+        <h3 style="margin:0px;">{{ 'PRIMARY_CASH.INCOME.ACCOUNT' | translate }}</h3>
+        <strong>{{ session.ac.account_number }}</strong> - {{ session.ac.account_txt }}
+      </div>
+    </div>
   </div>
+
 </main>
 
 <script type="text/ng-template" id="DebtorList.html">

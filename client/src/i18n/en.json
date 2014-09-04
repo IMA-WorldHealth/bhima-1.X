@@ -87,7 +87,9 @@
       "GENERIC" : {
         "TITLE"   : "Generic Income",
         "RECEIPT" : "Receipt"
-      }
+      },
+      "SELECT_ACCOUNT"        : "Select an account",
+      "ACCOUNT"               : "Account"
     },
     "REPORT" : {
         "INCOME" : {
