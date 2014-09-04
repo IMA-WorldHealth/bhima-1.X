@@ -63,6 +63,41 @@ angular.module('bhima.controllers')
       return [location.village, location.sector, location.province, location.country].join(', ');
     };
     //==================LOCATION====================//
+
+    //==================GRADE=======================//
+    dependencies.grade = {
+      query : {
+        tables : {
+          grade : { columns : ['uuid', 'code', 'text']}
+        }
+      }
+    };
+
+    $scope.formatGrade = function formatGrade (grade) {
+      return grade.code + " - " + grade.text;
+    };
+    //==================GRADE=======================//
+
+    //==================DEBTOR======================//
+    dependencies.debtorGroup = {
+      query : {
+        tables : {
+          debitor_group : { columns : ['uuid', 'name'] }
+        }
+      }
+    };
+
+    function writeDebitor(debitor_uuid) {
+      var debitor = {
+        uuid : debitor_uuid,
+        group_uuid : session.employee.debitor_uuid,
+        text : 'Employee [' + session.employee.name + ']'
+      };
+
+      return connect.basicPut('debitor', [debitor], ['uuid']);
+    }
+    //==================DEBTOR======================//
+
     //================= END CODE BRUCE ========================//
 
     function initialise(model) {
@@ -80,8 +115,10 @@ angular.module('bhima.controllers')
 
     function registerEmployee() {
       var creditor_uuid = uuid();
+      var debitor_uuid = uuid();//Code Bruce
 
       writeCreditor(creditor_uuid)
+      .then(writeDebitor(debitor_uuid))
       .then(writeEmployee(creditor_uuid))
       .then(registerSuccess)
       .catch(handleError);

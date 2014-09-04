@@ -1506,6 +1506,7 @@
     "EMPLOYEES"  : "Les employés enregistrés",
     "REGISTER" : "Enregistrer un nouveau employé",
     "CREDITOR_GROUP" : "Groupe Créditeur",
+    "DEBITOR_GROUP" : "Groupe Débiteur",
     "INFO"            : "L'outil de gestion du personnel peut être utilisé pour créer, afficher et mettre à jour les employés et leurs informations. Les employés inscrits ici sont disponibles pour l'intégration dans des modules tels que / Payroll (Gestion de paiment) /.",
     "SUBMIT_NEW"      : "Soumettre l'enregistrement",
     "EDIT"            : "Mise à jour employé",
