@@ -1879,23 +1879,6 @@
     "CONFIRM" : "Etes vois sure de vouloir supprimer ce Grade"
   },
 
-   "TAXES" : {
-    "TITLE"        : "Gestion de taxes",
-    "ADD"          : "Ajouter une taxe",
-    "NO_TAXES"    : "Aucune taxe n'est encore enregistrée",
-    "NEW_TAX"      : "Nouvelle Taxe",
-    "REGISTERED"   : "Taxes enregistrés",
-    "SAVE_SUCCES"  : "Enregistrement avec succès",
-    "UPDATE_SUCCES" : "Mis à jour avec succès",
-    "UPDATE"        : "Mettre à jour une taxe",
-    "CONFIRM" : "Etes vois sure de vouloir supprimer cette taxe",  
-    "DELETE_SUCCESS" : "Suppression avec succès",  
-    "ALERT"        : "Le module gestion de taxes est un module qui a été conçu pour permettre l'administration des taxes existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'une taxe ainsi que la suppression.",   
-    "NO_TAXES"    : "Aucune taxe n'est encore enregistré",
-    "NOT_EMPTY"   : "ABR. ne peut être vide",
-    "NOT_SUP4"    : "Ne peut avoir plus de 4 caractères"
-
-  } ,
   "TAXE_MANAGEMENT" : {
     "TITLE" : "Gestion des taxes",
     "CREATE_TAXE" : "Creation des taxes",
@@ -1971,7 +1954,7 @@
     "UPDATE"       : "Modifier",
     "CONFIRM"      : "Voulez-vous vraiment effectuer cette operation ?",
     "DELETE_SUCCESS" : "Suppression avec succès",
-    "ALERT"        : "Taxes management module is a module that has been designed to allow administration of existing tas within the organization, the table is left to record, to update the attributes of a tax and the deletion.",
+    "ALERT"        : "Le module gestion de taxes est un module qui a été conçu pour permettre l'administration des taxes existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'une taxe ainsi que la suppression.",
     "IPR"          : "Taxe IPR",
     "ADD_TRANCHE"  : "Ajouter Tranche",
     "REGISTERED_TRANCHES" : "Tranches Enregistrées",
@@ -1993,8 +1976,9 @@
     "MONTH_IMPOT"         : "Impot Mensuel",
     "ANNUAL_CUMUL"        : "Cumul Annuel",
     "MONTH_CUMUL"         : "Cumul Mensuel",
-    "NOT_EMPTY"   : "ABR. ne peut être vide",
-    "NOT_SUP4"    : "Ne peut avoir plus de 4 caractères"    
+    "NOT_EMPTY"           : "ABR. ne peut être vide",
+    "NOT_SUP4"            : "Ne peut avoir plus de 4 caractères",
+    "CURRENCY"            : "Monnaie"   
   },
 
    "CONFIG_RUBRIC" : {
