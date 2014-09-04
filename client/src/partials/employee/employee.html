@@ -69,7 +69,7 @@
               </div>
 
               <div class="form-group">
-                <label class="col-xs-3 control-label required">Service:</label>
+                <label class="col-xs-3 control-label required">{{ "EMPLOYEE.SERVICE" | translate }}:</label>
                 <div class="col-xs-9">
                   <select class="form-bhima" ng-model="session.employee.service_id">
                     <option ng-repeat="service in dataServices" ng-value="service.id">{{service.name}} ({{service.abbr}})</option>
@@ -78,7 +78,7 @@
               </div>
 
               <div class="form-group">
-                <label class="col-xs-3 control-label required">Prénom :</label>
+                <label class="col-xs-3 control-label required">{{ "EMPLOYEE.LAST_NAME" | translate }}:</label>
                 <div class="col-xs-9">
                   <input class="form-bhima" ng-model="session.employee.prenom" required>
                 </div>
@@ -92,7 +92,7 @@
               </div>
 
               <div class="form-group">
-                <label class="col-xs-3 control-label required">Postnom :</label>
+                <label class="col-xs-3 control-label required">{{ "EMPLOYEE.POST_NAME" | translate }}:</label>
                 <div class="col-xs-9">
                   <input class="form-bhima" ng-model="session.employee.postnom" required>
                 </div>
@@ -106,14 +106,14 @@
               </div> 
 
               <div class="form-group" >
-                <label for="employee-dob" class="col-xs-3 control-label required">{{ "COLUMNS.DOB" | translate }}</label>
+                <label for="employee-dob" class="col-xs-3 control-label required">{{ "COLUMNS.DOB" | translate }}:</label>
                 <div class="col-xs-9">
                   <input id="employee-dob" required type="date" class="form-bhima"  ng-model="session.employee.dob">
                 </div>
               </div>
 
               <div class="form-group">
-                <label class="col-xs-3 control-label required">Sexe:</label>
+                <label class="col-xs-3 control-label required">{{ "EMPLOYEE.SEX" | translate }}:</label>
                 <div class="col-xs-9">
                   <select class="form-bhima" ng-model="session.employee.sexe">
                     <option>M</option><option>F</option>
@@ -122,77 +122,77 @@
               </div>
 
               <div class="form-group">
-                <label class="col-xs-3 control-label">Nombre de Femme(s):</label>
+                <label class="col-xs-3 control-label">{{ "EMPLOYEE.NB_SPOUSE" | translate }}:</label>
                 <div class="col-xs-9">
-                  <input class="form-bhima" type="number" ng-model="session.employee.nbFemme">
+                  <input class="form-bhima" type="number" ng-model="session.employee.nb_spouse">
                 </div>
               </div>
 
               <div class="form-group">
-                <label class="col-xs-3 control-label">Nombre d'Enfant(s):</label>
+                <label class="col-xs-3 control-label">{{ "EMPLOYEE.NB_CHILDREN" | translate }}:</label>
                 <div class="col-xs-9">
-                  <input class="form-bhima" type="number" ng-model="session.employee.nbEnfant">
+                  <input class="form-bhima" type="number" ng-model="session.employee.nb_enfant">
                 </div>
               </div>
               
               <div class="form-group">
-                <label class="col-xs-3 control-label required">Grade:</label>
+                <label class="col-xs-3 control-label required">{{ "EMPLOYEE.GRADE" | translate }}:</label>
                 <div class="col-xs-9">
                   <input class="form-bhima" ng-model="session.employee.grade" required>
                 </div>
               </div>
 
               <div class="form-group" >
-                <label for="employee-dob" class="col-xs-3 control-label required">Date d'Embauche</label>
+                <label for="employee-dob" class="col-xs-3 control-label required">{{ "EMPLOYEE.DATE_EMBAUCHE" | translate }}</label>
                 <div class="col-xs-9">
-                  <input id="employee-dob" required type="date" class="form-bhima"  ng-model="session.employee.dateEmbauche" required>
+                  <input id="employee-dob" required type="date" class="form-bhima"  ng-model="session.employee.date_embauche" required>
                 </div>
               </div>
 
               <div class="form-group">
-                <label class="col-xs-3 control-label required">Assignation:</label>
+                <label class="col-xs-3 control-label required">{{ "EMPLOYEE.ASSIGNMENT" | translate }}:</label>
                 <div class="col-xs-9">
                   <input class="form-bhima" ng-model="session.employee.assignation" required>
                 </div>
               </div>
 
               <div class="form-group">
-                <label class="col-xs-3 control-label">Salaire Journalier (Fixe):</label>
+                <label class="col-xs-3 control-label">{{ "EMPLOYEE.DAILY_SALARY" | translate }}:</label>
                 <div class="col-xs-9">
-                  <input class="form-bhima" ng-model="session.employee.dailySalary">
+                  <input class="form-bhima" ng-model="session.employee.daily_salary">
                 </div>
               </div>
 
               <div class="form-group">
-                <label class="col-xs-3 control-label">Banque:</label>
+                <label class="col-xs-3 control-label">{{ "EMPLOYEE.BANK" | translate }}:</label>
                 <div class="col-xs-9">
                   <input class="form-bhima" ng-model="session.employee.bank">
                 </div>
               </div>
 
               <div class="form-group">
-                <label class="col-xs-3 control-label">Compte Bancaire:</label>
+                <label class="col-xs-3 control-label">{{ "EMPLOYEE.BANK_ACCOUNT" | translate }}:</label>
                 <div class="col-xs-9">
-                  <input class="form-bhima" ng-model="session.employee.bankAccount">
+                  <input class="form-bhima" ng-model="session.employee.bank_account">
                 </div>
               </div>
 
               <div class="form-group">
-                <label class="col-xs-3 control-label">Téléphone:</label>
+                <label class="col-xs-3 control-label">{{ "EMPLOYEE.PHONE" | translate }}:</label>
                 <div class="col-xs-9">
                   <input class="form-bhima" ng-model="session.employee.phone">
                 </div>
               </div>
 
               <div class="form-group">
-                <label class="col-xs-3 control-label">Email:</label>
+                <label class="col-xs-3 control-label">{{ "EMPLOYEE.EMAIL" | translate }}:</label>
                 <div class="col-xs-9">
                   <input class="form-bhima" ng-model="session.employee.email">
                 </div>
               </div>
 
               <div class="form-group">
-                <label class="col-xs-3 control-label">Adresse:</label>
+                <label class="col-xs-3 control-label">{{ "EMPLOYEE.ADDRESS" | translate }}:</label>
                 <div class="col-xs-9">
                   <input class="form-bhima" ng-model="session.employee.adresse">
                 </div>

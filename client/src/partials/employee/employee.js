@@ -48,14 +48,11 @@ angular.module('bhima.controllers')
         },
         join : ['service.project_id=project.id']
       }
-    }
+    };
 
     var initServiceProject = function(){
       $scope.dataServices = $scope.services.data;
-    }
-    $scope.echo = function(){
-        console.log($scope.session.employee.service);
-    }
+    };
     //================= END CODE BRUCE ========================//
 
     function initialise(model) {
