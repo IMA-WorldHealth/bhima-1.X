@@ -1362,3 +1362,12 @@ create table `hollyday` (
   key `employee_id` (`employee_id`),
   constraint foreign key (`employee_id`) references `employee` (`id`)
 ) engine=innodb;
+
+drop table if exists `grade`;
+create table `grade` (
+  `uuid`                char(36) not null,
+  `code`                varchar(30),
+  `text`                text,
+  `basic_salary`        decimal(19,4) unsigned,
+  primary key (`uuid`)
+) engine=innodb;
