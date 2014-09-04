@@ -19,8 +19,7 @@ angular.module('bhima.controllers')
         session = $scope.session = {
           configured : false, 
           complete : false, 
-          data : {}, 
-          selectedItem : {}, 
+          data : {},
           rows : []
         };
 
@@ -50,19 +49,16 @@ angular.module('bhima.controllers')
 
     function init (model) {
       session.model = model;
-      cache.fetch('selectedItem')
-      .then(function (selectedItem){
-        if (!selectedItem) { throw new Error('Currency undefined'); }
-        session.selectedItem = selectedItem;
-        return cache.fetch('paiement_period');
-      })
+      cache.fetch('paiement_period')
       .then(function (pp) {
-        if(!pp) {
-          throw new Error('Paiement period undefined');
+        if(pp){
+          session.pp = pp; 
+          session.pp_label = formatPeriod (pp);
+        }else {
+          session.pp = {};
+          session.pp.id = -1;
         }
-        session.pp = pp; 
-        session.pp_label = formatPeriod (pp);
-
+        
         dependencies.employees_payment = {
           query : '/getEmployeePayment/' + session.pp.id
         };
@@ -77,9 +73,16 @@ angular.module('bhima.controllers')
         session.model = model;
         session.configured = true;
         session.complete = true;
+
+        if(session.model.employees_payment.data.length > 0){
+          session.available = true;
+        }else {
+          session.available = false;
+        }
+
+        console.log(session);
       })
       .catch(function (err) {
-        messenger.danger(err.message);
         console.log('err', err);
       });
     }
@@ -89,6 +92,8 @@ angular.module('bhima.controllers')
       session.pp = null;
       session.configured = false;
       session.complete = false;
+      session.available = false;
+      session.pp_label = '';
     }
 
     function formatPeriod (pp) {
@@ -105,19 +110,8 @@ angular.module('bhima.controllers')
       }            
     }
 
-    function setCashAccount(cashAccount) {
-      if (cashAccount) {
-        session.loading_currency_id = session.selectedItem.currency_id || session.model.enterprise.data[0].currency_id;
-        var reload = session.selectedItem.currency_id ? false : true;
-        session.selectedItem = cashAccount;        
-        cache.put('selectedItem', cashAccount);
-        if(reload){
-          init(session.model);
-        }
-      }
-    }
-
     function submit (emp) {
+
       var primary = {
         uuid          : uuid(),
         project_id    : $scope.project.id,
@@ -125,8 +119,8 @@ angular.module('bhima.controllers')
         date          : util.sqlDate(new Date()),
         deb_cred_uuid : emp.id,
         deb_cred_type : 'C',
-        account_id    : session.selectedItem.account_id,
-        currency_id   : session.selectedItem.currency_id,
+        account_id    : 486, // A FIXE : Il faut le recuperer de facon auto
+        currency_id   : emp.currency_id,
         cost          : emp.value,
         user_id       : session.model.cashier.data.id,
         description   : "Tax Payment " + '(' +emp.abbr+ ') : ' + emp.name + emp.postnom,
@@ -178,9 +172,7 @@ angular.module('bhima.controllers')
       
     }
 
-    $scope.setCashAccount = setCashAccount; 
     $scope.formatPeriod = formatPeriod;
-    $scope.setConfiguration = setConfiguration;
     $scope.reconfigure = reconfigure;
     $scope.submit = submit;
   }
