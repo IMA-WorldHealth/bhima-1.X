@@ -1002,33 +1002,51 @@ create table `fonction` (
   primary key (`id`)
 ) engine=innodb;
 
+drop table if exists `grade`;
+create table `grade` (
+  `uuid`                char(36) not null,
+  `code`                varchar(30),
+  `text`                text,
+  `basic_salary`        decimal(19,4) unsigned,
+  primary key (`uuid`)
+) engine=innodb;
+
 drop table if exists `employee`;
-create table `employee` (
-  `id`                  int unsigned not null auto_increment,
-  `code`                varchar(20),
-  `prenom`              text,
-  `name`                text not null,
-  `postnom`             text,
-  `dob`                 date not null,
-  `date_embauche`       date, -- not null,
-  `phone`               varchar(20),
-  `email`               varchar(70),
-  `fonction_id`         tinyint unsigned, -- not null,
-  `service_id`          smallint unsigned, -- not null,
-  `location_id`         char(36), -- not null,
-  `creditor_uuid`       char(36), -- not null,
-  `debitor_uuid`        char(36), -- not null,
+create table  `employee` (
+  `id` int unsigned not null auto_increment,
+  `code` varchar(20) not null,
+  `prenom` text,
+  `name` text not null,
+  `postnom` text,
+  `sexe` varchar(10) not null,
+  `dob` date not null,
+  `date_embauche` date default null,
+  `nb_spouse` int(11) not null,
+  `nb_enfant` int(11) not null,
+  `grade_id` char(36) not null,
+  `daily_salary` float not null,
+  `bank` varchar(30) not null,
+  `bank_account` varchar(30) not null,
+  `adresse` varchar(50) not null,
+  `phone` varchar(20) default null,
+  `email` varchar(70) default null,
+  `fonction_id` tinyint(3) unsigned default null,
+  `service_id` smallint(5) unsigned default null,
+  `location_id` char(36) default null,
+  `creditor_uuid` char(36) default null,
+  `debitor_uuid` char(36) default null,
   primary key (`id`),
   key `fonction_id` (`fonction_id`),
-  key `service_id`  (`service_id`),
+  key `service_id` (`service_id`),
   key `location_id` (`location_id`),
   key `creditor_uuid` (`creditor_uuid`),
-  key `debitor_uuid`  (`debitor_uuid`),
+  key `debitor_uuid` (`debitor_uuid`),
   constraint foreign key (`fonction_id`) references `fonction` (`id`),
   constraint foreign key (`service_id`) references `service` (`id`),
   constraint foreign key (`location_id`) references `village` (`uuid`),
   constraint foreign key (`creditor_uuid`) references `creditor` (`uuid`),
-  constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`)
+  constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`),
+  constraint foreign key (`grade_id`) references `grade` (`uuid`)
 ) engine=innodb;
 
 drop table if exists `inventory_log`;
@@ -1361,13 +1379,4 @@ create table `hollyday` (
   primary key (`id`),
   key `employee_id` (`employee_id`),
   constraint foreign key (`employee_id`) references `employee` (`id`)
-) engine=innodb;
-
-drop table if exists `grade`;
-create table `grade` (
-  `uuid`                char(36) not null,
-  `code`                varchar(30),
-  `text`                text,
-  `basic_salary`        decimal(19,4) unsigned,
-  primary key (`uuid`)
 ) engine=innodb;
