@@ -39,12 +39,32 @@ angular.module('bhima.controllers')
       }
     };
 
+    //================ BEGIN CODE BRUCE =======================//
+    dependencies.services = {
+      query : {
+        tables : {
+          service : { columns : ['id','name']},
+          project : { columns : ['abbr']}
+        },
+        join : ['service.project_id=project.id']
+      }
+    }
+
+    var initServiceProject = function(){
+      $scope.dataServices = $scope.services.data;
+    }
+    $scope.echo = function(){
+        console.log($scope.session.employee.service);
+    }
+    //================= END CODE BRUCE ========================//
+
     function initialise(model) {
       angular.extend($scope, model);
     }
       
     validate.process(dependencies)
-    .then(initialise);
+    .then(initialise)
+    .then(initServiceProject);
     
     function transitionRegister() { 
       session.state = route.create;
