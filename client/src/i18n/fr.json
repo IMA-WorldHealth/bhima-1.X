@@ -1522,7 +1522,8 @@
     "BANK_ACCOUNT"       : "Compte Bancaire",
     "PHONE"              : "Téléphone",
     "EMAIL"               : "Email",
-    "ADDRESS"            : "Adresse"
+    "ADDRESS"            : "Adresse",
+    "LOCATION"           : "Localisation"
   },
 
   "COST_CENTER" : {

@@ -1388,7 +1388,8 @@
     "BANK_ACCOUNT"       : "Bank Account",
     "PHONE"              : "Phone",
     "EMAIL"               : "Mail",
-    "ADDRESS"            : "Address"
+    "ADDRESS"            : "Address",
+    "LOCATION"           : "Location"
   },
 
   "SERVICE" : {
