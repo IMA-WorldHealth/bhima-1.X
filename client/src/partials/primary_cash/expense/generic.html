@@ -13,15 +13,17 @@
   </div>
 
   <div class="pull-right">
-    <button class="btn btn-sm btn-primary dropdown-toggle">
-      {{ session.currency.symbol || "UTIL.CURRENCY" | translate }}
-      <span class="caret" data-caret="&#9660;"></span>
-    </button>
-    <ul class="dropdown-menu">
-      <li ng-repeat="currency in currencies.data">
-        <a href="" ng-click="setCurrency(currency)">{{ currency.symbol }}</a>
-      </li>
-    </ul>
+    <div class="dropdown" style="display:inline-block;">
+      <button class="btn btn-sm btn-primary dropdown-toggle">
+        {{ session.currency.symbol || "UTIL.CURRENCY" | translate }}
+        <span class="caret" data-caret="&#9660;"></span>
+      </button>
+      <ul class="dropdown-menu">
+        <li ng-repeat="currency in currencies.data">
+          <a href="" ng-click="setCurrency(currency)">{{ currency.symbol }}</a>
+        </li>
+      </ul>
+    </div>
 
     <button
       style="margin-left: 5px;"

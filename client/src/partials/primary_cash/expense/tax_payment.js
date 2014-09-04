@@ -106,6 +106,7 @@ angular.module('bhima.controllers')
         session.configured = true;
         session.pp = pp;
         session.complete = true;
+        session.available = true;
         init(session.model);
       }            
     }
@@ -173,6 +174,7 @@ angular.module('bhima.controllers')
     }
 
     $scope.formatPeriod = formatPeriod;
+    $scope.setConfiguration = setConfiguration;
     $scope.reconfigure = reconfigure;
     $scope.submit = submit;
   }
