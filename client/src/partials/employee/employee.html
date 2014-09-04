@@ -138,7 +138,7 @@
               <div class="form-group">
                 <label class="col-xs-3 control-label required">{{ "EMPLOYEE.GRADE" | translate }}:</label>
                 <div class="col-xs-9">
-                  <input class="form-bhima" ng-model="session.employee.grade" required>
+                  <input class="form-bhima" ng-model="session.employee.grade_id" required>
                 </div>
               </div>
 
@@ -150,9 +150,11 @@
               </div>
 
               <div class="form-group">
-                <label class="col-xs-3 control-label required">{{ "EMPLOYEE.ASSIGNMENT" | translate }}:</label>
+                <label class="col-xs-3 control-label required">{{ "EMPLOYEE.LOCATION" | translate }}:</label>
                 <div class="col-xs-9">
-                  <input class="form-bhima" ng-model="session.employee.assignation" required>
+                  <select class="form-bhima" ng-model="session.employee.location_id" ng-options="loc.uuid as formatLocation(loc) for loc in location.data | orderBy:'village'" required>
+                  <option value="" disabled="disabled">-- {{ "SELECT.LOCATION" | translate }} --</option>
+                  </select>
                 </div>
               </div>
 
