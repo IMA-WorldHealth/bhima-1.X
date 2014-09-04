@@ -1002,6 +1002,16 @@ create table `fonction` (
   primary key (`id`)
 ) engine=innodb;
 
+drop table if exists `grade`;
+create table `grade` (
+  `uuid`                char(36) not null,
+  `code`                varchar(30),
+  `grade_text`          text,  
+  `basic_salary`         decimal(19,4) unsigned,
+  primary key (`uuid`)
+) engine=innodb;
+
+
 drop table if exists `employee`;
 create table `employee` (
   `id`                  int unsigned not null auto_increment,
