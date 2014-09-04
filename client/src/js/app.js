@@ -380,11 +380,15 @@
     .when('/reports/expense_report/', {
       controller : 'primary_cash.expenseReport',
       templateUrl : 'partials/reports/primary_cash/expense/expense_report.html'
+    })
+    .when('/grade_employers/', {
+      controller : 'grade',
+      templateUrl : 'partials/grade_employers/grade_employers.html'
     });
   }
 
   function translateConfig($translateProvider) {
-    //TODO Review i18n and determine if this it the right solution
+    //TODO Review i18n and determine if this it the right solution/grade_employers/
     $translateProvider.useStaticFilesLoader({
       prefix: '/i18n/',
       suffix: '.json'
