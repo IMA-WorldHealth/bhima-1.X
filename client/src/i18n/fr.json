@@ -1690,7 +1690,7 @@
     "DISCARD"        : "Annuler l'ordre d'achat"
   },
   
-   "GRADE_EMPLOYERS" : {
+   "GRADE" : {
     "TITLE"        : "Gestion de grades des employés",
 	"ADD"		   : "Ajouter un grade",
 	"REGISTERED"   : "Grades enregistrés",

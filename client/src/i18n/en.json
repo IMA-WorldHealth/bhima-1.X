@@ -1686,7 +1686,7 @@
     "PARENT" : "Purchase order management"
   },
   
-  "GRADE_EMPLOYERS" : {
+  "GRADE" : {
     "TITLE"        : "Grade management",
     "ADD"          : "Add a grade",
     "REGISTERED"   : "Registered Grades",
