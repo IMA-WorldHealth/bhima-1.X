@@ -1506,7 +1506,23 @@
     "SUBMIT_NEW"      : "Soumettre l'enregistrement",
     "EDIT"            : "Mise à jour employé",
     "SUBMIT_EDIT"     : "Envoyer les détails",
-    "CREDITOR_REFERENCE" : "BHIMA créanciers ID"
+    "CREDITOR_REFERENCE" : "BHIMA créanciers ID",
+    "SERVICE"            : "Service",
+    "LAST_NAME"          : "Prénom",
+    "POST_NAME"          : "Post-nom",
+    "CODE"               : "Code/Matricule",
+    "SEX"                : "Sexe",
+    "NB_SPOUSE"          : "Nb Epoux/Epouse(s)",
+    "NB_CHILDREN"           : "Nb Enfant(s)",
+    "GRADE"              : "Grade",
+    "DATE_EMBAUCHE"      : "Date d'embauche",
+    "ASSIGNMENT"         : "Assignation",
+    "DAILY_SALARY"       : "Salaire Journalier (Fixe)",
+    "BANK"               : "Banque",
+    "BANK_ACCOUNT"       : "Compte Bancaire",
+    "PHONE"              : "Téléphone",
+    "EMAIL"               : "Email",
+    "ADDRESS"            : "Adresse"
   },
 
   "COST_CENTER" : {
