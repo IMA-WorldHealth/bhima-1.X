@@ -2140,6 +2140,7 @@
     "VALUE"            : "Valeur",
     "PAID"             : "Payé",
     "SUBMIT_PAID_TAX"  : "Payé la taxe",
-    "CONFIRM_SUBMIT"   : "Confirmez-vous le paiement de la taxe ?"
+    "CONFIRM_SUBMIT"   : "Confirmez-vous le paiement de la taxe ?",
+    "NONE_PERIOD"      : "Aucune periode de paiement séléctionnée"
   }
 }
