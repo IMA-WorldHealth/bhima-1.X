@@ -205,7 +205,7 @@
               <div class="form-group">
                 <label class="col-xs-3 control-label required">{{ "EMPLOYEE.DEBITOR_GROUP" | translate }}:</label>
                 <div class="col-xs-9">
-                  <select class="form-bhima" ng-model="session.employee.debitor_uuid" ng-options="group.uuid as group.name for group in debtorGroup.data" required> 
+                  <select class="form-bhima" ng-model="session.employee.group_debitor_uuid" ng-options="group.uuid as group.name for group in debtorGroup.data" required> 
                     <option value="" disabled="disabled">--- {{ "SELECT.DEBITOR_GROUP" | translate }} ---</option>
                   </select>
                 </div>
