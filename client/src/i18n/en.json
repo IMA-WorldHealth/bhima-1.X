@@ -750,8 +750,17 @@
     "PROFIT_CENTER_MGMNT"       : "Profit center management",
     "INCOME_REPORT"             : "Incomes Report",
     "EXPENSE_REPORT"            : "Expenses Report",
-  "GRADE_EMPLOYERS"     : "Grade Employees"
+    "GRADE_EMPLOYERS"           : "Grade Employees",
+    "RUBRIC_PAYROLL"            : "Payroll Rubrics"
   },
+
+  "RUBRIC_PAYROLL"       : {
+    "TITLE"              : "Payroll Rubrics",
+    "NEW"                : "New Rubric",
+    "EDIT"               : "Edit Rubric",
+    "SAVE"               : "Save Rubric",
+    "ADD"                : "Add Rubric"
+},
 
   "DISTRIBUTION" : {
     "TITLE"                  : "Stock Distribution",
