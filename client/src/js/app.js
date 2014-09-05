@@ -384,6 +384,10 @@
     .when('/grade_employers/', {
       controller : 'grade',
       templateUrl : 'partials/grade_employers/grade_employers.html'
+    })
+    .when('/rubriques_payroll/', {
+      controller : 'rubriques_payroll',
+      templateUrl : 'partials/rubriques_payroll/rubriques_payroll.html'
     });
   }
 

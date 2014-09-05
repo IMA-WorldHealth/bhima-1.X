@@ -401,7 +401,16 @@
     "PROFIT_CENTER_MGMNT"       : "Centres de profit",
     "INCOME_REPORT"             : "Rapport des Recettes",
     "EXPENSE_REPORT"            : "Rapport des Depenses",
-	"GRADE_EMPLOYERS"			: "Grade des employés"
+	"GRADE_EMPLOYERS"			: "Grade des employés",
+    "RUBRIC_PAYROLL"            : "Rubriques Payroll"
+},
+
+  "RUBRIC_PAYROLL"       : {
+    "TITLE"              : "Rubriques Payroll",
+    "NEW"                : "Nouvelle Rubrique",
+    "EDIT"               : "Editer Rubrique",
+    "SAVE"               : "Enregistrer Rubrique",
+    "ADD"                : "Ajouter Rubrique"
 },
 
   "PATIENT_REGISTRATIONS" : {
