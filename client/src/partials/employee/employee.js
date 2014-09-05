@@ -24,7 +24,7 @@ angular.module('bhima.controllers')
     dependencies.employee = {
       query : {
         tables : {
-          employee : { columns : ['id', 'name', 'code', 'creditor_uuid', 'dob', 'prenom', 'postnom', 'sexe', 'nb_spouse', 'nb_enfant', 'date_embauche', 'grade_id', 'daily_salary', 'bank', 'bank_account', 'phone', 'email', 'adresse'] },
+          employee : { columns : ['id', 'name', 'code', 'creditor_uuid', 'dob', 'prenom', 'postnom', 'sexe', 'nb_spouse', 'nb_enfant', 'date_embauche', 'grade_id', 'daily_salary', 'bank', 'bank_account', 'phone', 'email', 'adresse','service_id', 'location_id', 'debitor_uuid'] },
           creditor : { columns : ['group_uuid'] }
         },
         join : ['employee.creditor_uuid=creditor.uuid']
