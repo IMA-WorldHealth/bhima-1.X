@@ -96,7 +96,8 @@ INSERT INTO `unit` VALUES
 (58,'Patient Group Report','TREE.PATIENT_GROUP_REPORT','',10,0,'/partials/reports/patient_group/','/reports/patient_group/'),
 (59,'Canevas SNIS', 'Canevas SNIS', '', 0, 1, 'partials/snis/', '/canevas_snis/'),
 (60,'Rapports SNIS', 'Rapports SNIS', '', 59, 0, 'partials/snis/index.html', '/snis/'),
-(61,'Grade Employers','TREE.GRADE_EMPLOYERS','',1,0,'/partials/grade_employers/','/grade_employers/');
+(61,'Grade Employers','TREE.GRADE_EMPLOYERS','',1,0,'/partials/grade_employers/','/grade_employers/'),
+(62,'Gestions des taxes','TREE.TAXE_MANAGEMENT','',1,0,'/partials/taxe/','/taxes_management/');
 
 -- base user & permissions
 INSERT INTO `user` (id, username, password, first, last, email, logged_in) VALUES
