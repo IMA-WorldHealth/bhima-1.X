@@ -58,6 +58,7 @@
     "NAVIGATION"  : "Navigation",
     "CONFIGURE"   : "Configure Cash Box",
     "EXPENSE"     : {
+      "PAYROLL"               : "Payroll",
       "GENERIC_TITLE"         : "Generic Expense",
       "GENERIC_RECEIPT"       : "Generic Receipt",
       "REFERENCE_DOCUMENT_ID" : "Reference Document ID",
@@ -750,7 +751,8 @@
     "PROFIT_CENTER_MGMNT"       : "Profit center management",
     "INCOME_REPORT"             : "Incomes Report",
     "EXPENSE_REPORT"            : "Expenses Report",
-  "GRADE_EMPLOYERS"     : "Grade Employees"
+    "GRADE_EMPLOYERS"           : "Grade Employees",
+    "TAXE_MANAGEMENT"           : "Tax management"
   },
 
   "DISTRIBUTION" : {
@@ -1718,6 +1720,12 @@
     "UPDATE_SUCCES" : "Updated successfully",
     "DELETE_SUCCESS" : "Deleted successfully",
     "CONFIRM" : "Are you sure you want to delete this Grade"
+  },
+  "TAXE_MANAGEMENT" : {
+    "TITLE" : "Taxes management",
+    "CREATE_TAXE" : "taxes creation",
+    "CONFIGURE_IPR" : "IPR configuration",
+    "OPTIONS" : "Options"
   } 
 
 
