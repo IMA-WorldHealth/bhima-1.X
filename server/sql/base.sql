@@ -96,7 +96,8 @@ INSERT INTO `unit` VALUES
 (59,'Canevas SNIS', 'Canevas SNIS', '', 0, 1, 'partials/snis/', '/canevas_snis/'),
 (60,'Rapports SNIS', 'Rapports SNIS', '', 59, 0, 'partials/snis/index.html', '/snis/'),
 (61,'Grade Employers','TREE.GRADE_EMPLOYERS','',1,0,'/partials/grade_employers/','/grade_employers/'),
-(62,'Gestions des taxes','TREE.TAXE_MANAGEMENT','',1,0,'/partials/taxe/','/taxes_management/');
+(62,'Gestions des taxes','TREE.TAXE_MANAGEMENT','',1,0,'/partials/taxe/','/taxes_management/'),
+(63,'Rubriques Payroll','TREE.RUBRIC_PAYROLL','',1,0,'/partials/rubriques_payroll/','/rubriques_payroll/');
 
 -- base user & permissions
 INSERT INTO `user` (id, username, password, first, last, email, logged_in) VALUES
