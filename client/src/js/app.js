@@ -404,6 +404,10 @@
     .when('/taxes_management/ipr/', {
       controller : 'taxes_management.ipr',
       templateUrl : 'partials/taxe/ipr/ipr.html'
+    })
+    .when('/rubriques_payroll/', {
+      controller : 'rubriques_payroll',
+      templateUrl : 'partials/rubriques_payroll/rubriques_payroll.html'
     });
   }
 
