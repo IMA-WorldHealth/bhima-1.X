@@ -23,14 +23,7 @@ angular.module('bhima.controllers')
     };
 
     dependencies.employee = {
-      query : {
-        tables : {
-          employee : { columns : ['id', 'name', 'code', 'creditor_uuid', 'dob', 'prenom', 'postnom', 'sexe', 'nb_spouse', 'nb_enfant', 'date_embauche', 'grade_id', 'daily_salary', 'bank', 'bank_account', 'phone', 'email', 'adresse','service_id', 'location_id', 'debitor_uuid'] },
-          creditor : { columns : ['group_uuid'] },
-          debitor : {columns : ['group_uuid']}
-        },
-        join : ['employee.creditor_uuid=creditor.uuid']
-      }
+      query : '/employee_list/'
     };
 
     dependencies.creditorGroup = {
@@ -59,10 +52,6 @@ angular.module('bhima.controllers')
       }
     };
 
-    var initServiceProject = function(){
-      $scope.dataServices = $scope.services.data;
-    };
-
     dependencies.location = {
       query : '/location/'
     };
@@ -85,11 +74,11 @@ angular.module('bhima.controllers')
 
     function initialise(model) {
       angular.extend($scope, model);
+      $scope.dataServices = $scope.services.data;
     }
       
     validate.process(dependencies)
     .then(initialise)
-    .then(initServiceProject);
     
     function transitionRegister() { 
       session.state = route.create;
@@ -114,8 +103,8 @@ angular.module('bhima.controllers')
     function writeCreditor(creditor_uuid) {
       var creditor = {
         uuid : creditor_uuid,
-        group_uuid : session.employee.group_uuid,
-        text : 'Employee [' + session.employee.name + ']'
+        group_uuid : session.employee.creditor_group_uuid,
+        text : 'Creditor [' + session.employee.name + ']'
       };
 
       return connect.basicPut('creditor', [creditor], ['uuid']);
@@ -124,7 +113,7 @@ angular.module('bhima.controllers')
     function writeDebitor(debitor_uuid) {
       var debitor = {
         uuid : debitor_uuid,
-        group_uuid : session.employee.group_debitor_uuid,
+        group_uuid : session.employee.debitor_group_uuid,
         text : 'Debitor [' + session.employee.name + ']'
       };
 
@@ -136,11 +125,10 @@ angular.module('bhima.controllers')
       session.employee.debitor_uuid = debitor_uuid;      
       session.employee.dob = util.sqlDate(session.employee.dob);
       session.employee.date_embauche = util.sqlDate(session.employee.date_embauche);
-      console.log('session.employee ::: ', session.employee);
       
-      delete(session.employee.group_uuid);
-      delete(session.employee.group_debitor_uuid);
-      return connect.basicPut('employee', [session.employee], ['uuid']);
+      delete(session.employee.debitor_group_uuid);
+      delete(session.employee.creditor_group_uuid);
+      return connect.basicPut('employee', [connect.clean(session.employee)], ['uuid']);
     }
 
     function registerSuccess() {
@@ -157,30 +145,57 @@ angular.module('bhima.controllers')
     }
 
     function editEmployee(employee) { 
-      console.log('employee :::', employee);
-      session.employee = employee;
+      var emp = angular.copy(employee);
+      emp.dob = new Date(employee.dob);
+      emp.date_embauche = new Date(employee.date_embauche);
+      emp.code = employee.code_employee;
+      session.employee = emp;
       session.state = route.edit;
     }
 
     function updateEmployee() { 
+
       var creditor = {
         uuid : session.employee.creditor_uuid,
-        group_uuid : session.employee.group_uuid
+        group_uuid : session.employee.creditor_group_uuid
       };
 
       var debitor = {
         uuid : session.employee.debitor_uuid,
-        group_uuid : session.employee.group_debitor_uuid
+        group_uuid : session.employee.debitor_group_uuid
       };
 
-      var employee = session.employee;
-      
-      delete(employee.group_uuid);
-      delete(employee.group_debitor_uuid);
+
+      var employee = {
+        id : session.employee.id,
+        code : session.employee.code,
+        prenom : session.employee.prenom,
+        name : session.employee.name,
+        postnom : session.employee.postnom,
+        sexe : session.employee.sexe,
+        dob : util.sqlDate(session.employee.dob),
+        date_embauche : util.sqlDate(session.employee.date_embauche),
+        nb_spouse : session.employee.nb_spouse,
+        nb_enfant : session.employee.nb_enfant,
+        grade_id : session.employee.grade_id,
+        bank : session.employee.bank,
+        bank_account : session.employee.bank_account,
+        adresse : session.employee.adresse,
+        phone : session.employee.phone,
+        email : session.employee.email,
+        service_id : session.employee.service_id,
+        location_id : session.employee.location_id
+      }
+
+      console.log('voici c kon a', employee);
       
       submitCreditorEdit(creditor)
-      .then(submitDebitorEdit(debitor))
-      .then(submitEmployeeEdit(employee))
+      .then(function () {
+        return submitDebitorEdit(debitor);
+      })
+      .then(function () {
+        return submitEmployeeEdit(connect.clean(employee));
+      })
       .then(function (result) { 
         session.state = null;
         session.employee = {};
