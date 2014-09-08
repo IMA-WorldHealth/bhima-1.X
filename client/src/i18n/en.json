@@ -621,7 +621,8 @@
     "BASIC_SALARY"        : "Basic salary",
     "GRADE"               : "Grade",
     "STAFF_COST"          : "Is Staff Cost",
-    "IS_PERCENT"          : "Is Percent"
+    "IS_PERCENT"          : "Is Percent",
+    "GRADE"               : "Grade"
   },
 
   "INVENTORY" : {
@@ -760,8 +761,31 @@
     "EXPENSE_REPORT"            : "Expenses Report",
     "GRADE_EMPLOYERS"           : "Grade Employees",
     "TAXES"                     : "Taxes",     
-    "TAXE_MANAGEMENT"           : "Tax management"
+    "TAXE_MANAGEMENT"           : "Tax management",
+    "RUBRIC_PAYROLL"            : "Payroll Rubrics"
   },
+
+  "RUBRIC_PAYROLL"       : {
+    "TITLE"              : "Payroll Rubrics",
+    "NEW"                : "New Rubric",
+    "EDIT"               : "Edit Rubric",
+    "SAVE"               : "Save Rubric",
+    "ADD"                : "Add Rubric",
+    "REGISTERED"         : "Registered Rubrics",
+    "ALERT"              : "The Payroll Topics Module is a module that has been designed to allow the definition of different benefits and other elements involved in the calculation of payroll.",
+    "NO_RUBRICS"         : "No category yet registered",
+    "SAVE_SUCCES"        : "Registration successful",
+    "UPDATE_SUCCES"      : "Updated successfully",
+    "DELETE_SUCCESS"     : "Deleting successfully",
+    "CONFIRM"            : "Are you sure to delete this category",
+    "NB"                 : "N",
+    "LABEL"              : "Rubric",
+    "IS_PERCENT"         : "Is a percent (%)?",
+    "IS_DISCOUNT"        : "Is a discount?",
+    "VALUE"              : "Value",
+    "YES"                : "Yes",
+    "NO"                 : "No"
+},
 
   "DISTRIBUTION" : {
     "TITLE"                  : "Stock Distribution",
@@ -1761,4 +1785,5 @@
     "ALERT"        : "Taxes management module is a module that has been designed to allow administration of existing tas within the organization, the table is left to record, to update the attributes of a tax and the deletion."
   }    
 }
+
 
