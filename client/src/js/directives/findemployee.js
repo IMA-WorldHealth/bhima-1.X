@@ -3,7 +3,7 @@ angular.module('bhima.directives')
   return {
     restrict: 'A',
     link : function(scope, element, attrs) {
-      var dependencies = {}, employeeList = scope.debtorList = [];
+      var dependencies = {}, employeeList = scope.employeeList = [];
       var searchCallback = scope[attrs.onSearchComplete];
       var cache = new Appcache('employeeSearchDirective');
 
@@ -24,63 +24,60 @@ angular.module('bhima.directives')
       };
 
       scope.findEmployee = {
-        state : 'id',
+        state : 'name',
         submitSuccess : false,
         enableRefresh : attrs.enableRefresh || true
       };
 
       var template =
-        '<div id=\'findEmployee\' class=\'panel panel-default square\' ng-class="{\'panel-success\': findEmployee.valid, \'panel-danger\': findEmployee.valid===false}">'+ '  <div class=\'panel-heading square\'>'+
-        '    <div ng-switch=\'findEmployee.submitSuccess\'>'+
-        '     <div ng-switch-when=\'false\'>'+
-        '       <span class=\'glyphicon glyphicon-search\'></span> {{ \'FIND.TITLE\' | translate }}'+
-        '       <div class=\'pull-right\'>'+
-        '         <a id=\'findById\' style=\'cursor:pointer;\' ng-class="{\'link-selected\': findEmployee.state===\'id\'}" ng-click=\'findEmployee.updateState("id")\' class=\'employee-find\'><span class=\'glyphicon glyphicon-pencil\'></span> {{ \'FIND.ENTER_EMPLOYEE_ID\' | translate }} </a>'+
-        '         <a id=\'findByName\' style=\'cursor:pointer;\' ng-class="{\'link-selected\': findEmployee.state===\'name\'}" ng-click=\'findEmployee.updateState("name")\' class=\'employee-find\'><span class=\'glyphicon glyphicon-user\'></span> {{ \'FIND.SEARCH\' | translate }} </a>'+
-        '       </div>'+
-        '     </div>'+
-        '     <div ng-switch-when=\'true\'>'+
-        '       <!-- Style hack -->'+
-        '       <span style=\'margin-right: 5px;\' class=\'glyphicon glyphicon-user\'> </span> {{findEmployee.employee.name}} <small>({{findPatient.employee.sexe}})</small>'+
-        '       <div class=\'pull-right\' ng-if=\'findEmployee.enableRefresh\'>'+
-        '         <span ng-click=\'findEmployee.refresh()\' class=\'glyphicon glyphicon-repeat\'></span>'+
-        '       </div>'+
-        '     </div>'+
-        '    </div>'+
-        '  </div>'+
-        '  <div class=\'panel-body find-collapse\' ng-show=\'!findEmployee.submitSuccess\'>'+
-        '    <div ng-switch on=\'findEmployee.state\'>'+
-        '      <div ng-switch-when=\'name\'>'+
-        '        <div class=\'input-group\'>'+
-        '          <input '+
+        '<div id=\'findEmployee\' class=\'panel panel-default square\' ng-class="{\'panel-success\': findEmployee.valid, \'panel-danger\': findEmployee.valid===false}">' +
+        '  <div class=\'panel-heading square\'>' +
+        '    <div ng-switch=\'findEmployee.submitSuccess\'>' +
+        '     <div ng-switch-when=\'false\'>' +
+        '       <span class=\'glyphicon glyphicon-search\'></span> {{ \'EFIND.TITLE\' | translate }}' +
+        '     </div>' +
+        '     <div ng-switch-when=\'true\'>' +
+        '       <!-- Style hack -->' +
+        '       <span style=\'margin-right: 5px;\' class=\'glyphicon glyphicon-user\'> </span> {{findEmployee.employee.name}} <small>({{findEmployee.employee.sexe}})</small>' +
+        '       <div class=\'pull-right\' ng-if=\'findEmployee.enableRefresh\'>' +
+        '         <span ng-click=\'findEmployee.refresh()\' class=\'glyphicon glyphicon-repeat\'></span>' +
+        '       </div>' +
+        '     </div>' +
+        '    </div>' +
+        '  </div>' +
+        '  <div class=\'panel-body find-collapse\' ng-show=\'!findEmployee.submitSuccess\'>' +
+        '    <div ng-switch on=\'findEmployee.state\'>' +
+        '      <div ng-switch-when=\'name\'>' +
+        '        <div class=\'input-group\'>' +
+        '          <input ' +
         '          id=\'findSearch\' ' +
-        '          type=\'text\' '+
-        '          ng-model=\'findEmployee.selectedEmployee\' '+
-        '          typeahead=\'employee as employee.name for employee in employeeList | filter:$viewValue | limitTo:8\' '+
-        '          placeholder=\'{{ "FIND.PLACEHOLDER" | translate }}\' ' +
-        '          typeahead-on-select=\'loadEmployee(employee.id)\' '+
-        '          typeahead-template-url=\'employeeListItem.html\''+
-        '          class=\'form-bhima\' '+
-        '          size=\'25\'>'+
+        '          type=\'text\' ' +
+        '          ng-model=\'findEmployee.selectedEmployee\' ' +
+        '          typeahead=\'employee as employee.name for employee in employeeList | filter:$viewValue | limitTo:8\' ' +
+        '          placeholder=\'{{ "EFIND.PLACEHOLDER" | translate }}\' ' +
+        '          typeahead-on-select=\'loadEmployee(employee.id)\' ' +
+        '          typeahead-template-url=\'employeeListItem.html\'' +
+        '          class=\'form-bhima\' ' +
+        '          size=\'25\'>' +
         '          <span class=\'input-group-btn\'> '+
-        '            <button id=\'submitSearch\' ng-disabled=\'validateNameSearch(findEmployee.selectedEmployee)\' ng-click=\'submitEmployee(findEmployee.selectedEmployee)\' class=\'btn btn-default btn-sm\'> {{ \'FORM.SUBMIT\' | translate }}</button>'+
-        '          </span>'+
-        '        </div>'+
-        '      </div> <!-- End searchName component -->'+
-        '      <div ng-switch-when=\'id\'>'+
-        '        <div class=\'input-group\'>'+
-        '          <input '+
-        '            type=\'text\''+
-        '            ng-model=\'findEmployee.employeeId\''+
-        '            class=\'form-bhima\''+
-        '            placeholder=\'{{ "FIND.PATIENT_ID" | translate }}\'>'+
-        '          <span class=\'input-group-btn\'>'+
-        '            <button ng-click=\'submitEmployee(findEmployee.employeeId)\' class=\'btn btn-default btn-sm\'> {{ \'FORM.SUBMIT\' | translate }} </button>'+
-        '          </span>'+
-        '        </div>'+
-        '      </div>'+
-        '    </div> <!--End find patient switch -->'+
-        '  </div>'+
+        '            <button id=\'submitSearch\' ng-disabled=\'validateNameSearch(findEmployee.selectedEmployee)\' ng-click=\'submitEmployee(findEmployee.selectedEmployee)\' class=\'btn btn-default btn-sm\'> {{ \'FORM.SUBMIT\' | translate }}</button>' +
+        '          </span>' +
+        '        </div>' +
+        '      </div> <!-- End searchName component -->' +
+        '      <div ng-switch-when=\'id\'>' +
+        '        <div class=\'input-group\'>' +
+        '          <input ' +
+        '            type=\'text\'' +
+        '            ng-model=\'findEmployee.employeeId\'' +
+        '            class=\'form-bhima\'' +
+        '            placeholder=\'{{ "EFIND.ENTER_EMPLOYEE_ID" | translate }}\'>' +
+        '          <span class=\'input-group-btn\'>' +
+        '            <button ng-click=\'submitEmployee(findEmployee.employeeId)\' class=\'btn btn-default btn-sm\'> {{ \'FORM.SUBMIT\' | translate }} </button>' +
+        '          </span>' +
+        '        </div>' +
+        '      </div>' +
+        '    </div> <!--End find patient switch -->' +
+        '  </div>' +
         '</div>';
 
       var stateMap = {
@@ -94,9 +91,10 @@ angular.module('bhima.directives')
 
       function findEmployee(model) {
         scope.findEmployee.model = model;
-        extractMetaData(model.employee.data);
+        // extractMetaData(model.employee.data);
         var employees = extractMetaData(model.employee.data);
         employeeList = scope.employeeList = angular.copy(employees);
+        console.log(employeeList);
       }
 
       function searchName(value) {
@@ -109,65 +107,38 @@ angular.module('bhima.directives')
       }
 
       function searchId(value) {
-        var id = parseId(value), project;
+        var id = value, project;        
 
         if (!id) {
           return messenger.danger('Cannot parse employee ID');
         }
-        project = scope.findEmployee.model.project.get(id.projectCode);
 
-        if (!project) {
-          return messenger.danger('Cannot find project \'' + id.projectCode + '\'');
-        }
-        validate.refresh(dependencies, ['employee']).then(handleIdRequest, handleIdError);
-      }
-
-      function searchUuid(value) {
         dependencies.employee.query.where = [
-          'employee.id=' + value
+          'employee.id=' + id
         ];
+
         validate.refresh(dependencies, ['employee']).then(handleIdRequest, handleIdError);
       }
-
-      // TODO should this be temporary?
-      function parseId(idString) {
-        var codeLength = 3, namespacedId = {};
-
-        // Current format VarChar(3):Int
-        namespacedId.projectCode = idString.substr(0, codeLength);
-        namespacedId.reference = idString.substr(codeLength);
-
-        // console.log(namespacedId);
-        if (!namespacedId.projectCode || !namespacedId.reference) { return null; }
-        if (isNaN(Number(namespacedId.reference))) { return null; }
-
-        // Ignore case temporary fix
-        // FIXME MySQL request is not case sensitive - only the get on a
-        //       model - this should be leveraged to not required uppercase
-        namespacedId.projectCode = namespacedId.projectCode.toUpperCase();
-        return namespacedId;
-      }
-
+      
       function handleIdRequest(model) {
-        var debtor = scope.findPatient.debtor = extractMetaData(model.debtor.data)[0];
-        console.log('downloaded', model);
-        //Validate only one debtor matches
-        if (!debtor) {
-          return messenger.danger('Received invalid debtor, unknown');
+        console.log('le model refresh', model);
+        var employee = scope.findEmployee.employee = extractMetaData(model.employee.data)[0];
+        if (!employee) {
+          return messenger.danger('Received invalid employee, unknown');
         }
-        scope.findPatient.valid = true;
-        searchCallback(debtor);
-        scope.findPatient.submitSuccess = true;
+        scope.findEmployee.valid = true;
+        searchCallback(employee);
+        scope.findEmployee.submitSuccess = true;
       }
 
       function handleIdError(error) {
-        scope.findPatient.valid = false;
+        scope.findEmployee.valid = false;
         console.log(error);
 
         //Naive implementation
         if (error.validModelError) {
           if (error.flag === 'required') {
-            messenger.danger('Patient record cannot be found');
+            messenger.danger('Employee record cannot be found');
           }
         }
       }
@@ -179,14 +150,10 @@ angular.module('bhima.directives')
       function extractMetaData(employeeData) {
 
         employeeData.forEach(function(employee) {
-          var currentDate = new Date();
-          var employeeDate = new Date(employee.dob);
-
-          //Searchable name
-          employee.name = employee.prenom + ' ' + patient.name;
+          employee.name = employee.prenom + ' ' + employee.name;
           
         });
-        return empoyeeData;
+        return employeeData;
       }
 
       function validateNameSearch(value) {
@@ -217,9 +184,6 @@ angular.module('bhima.directives')
           return;
         }
       }
-
-      // Expose selecting a debtor to the module (probabl a hack)(FIXME)
-      scope.findEmployee.forceSelect = searchUuid;
 
       scope.validateNameSearch = validateNameSearch;
       scope.findEmployee.refresh = resetSearch;

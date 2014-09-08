@@ -158,7 +158,8 @@ app.get('/employee_list/', function (req, res, next) {
     "WHERE " +
     "`employee`.`grade_id` = `grade`.`uuid` AND " + 
     "`employee`.`debitor_uuid` = `debitor`.`uuid` AND " +
-    "`employee`.`creditor_uuid` = `creditor`.`uuid` " 
+    "`employee`.`creditor_uuid` = `creditor`.`uuid` "
+
 
   db.exec(sql)
   .then(function (result) {
@@ -947,6 +948,17 @@ app.get('/errorcodes', function (req, res, next) {
   /* jshint unused : false */
   res.send(errorCodes);
 });
+
+app.get('/getAccount6/', function (req, res, next) {
+  var sql ="SELECT id, enterprise_id, account_number, account_txt FROM account WHERE account_number LIKE '6%' AND account_type_id <> '3'";
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
 
 app.use(logger.error());
 app.use(liberror.middleware);
