@@ -119,6 +119,11 @@ angular.module('bhima.controllers')
       }
     }
 
-    $scope.setCashAccount = setCashAccount;   
+    function initialiseEmployee (selectedEmployee) {
+      console.log(selectedEmployee);
+    }
+
+    $scope.setCashAccount = setCashAccount;  
+    $scope.initialiseEmployee = initialiseEmployee; 
   }
 ]);
