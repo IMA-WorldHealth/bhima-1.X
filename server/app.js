@@ -142,6 +142,33 @@ app.get('/available_cost_center/', function (req, res, next) {
   .done();
 });
 
+
+app.get('/employee_list/', function (req, res, next) {
+  var sql =
+
+    "SELECT " +
+    "`employee`.`id`, `employee`.`code` AS `code_employee`, `employee`.`prenom`, `employee`.`name`, " +
+    "`employee`.`postnom`, `employee`.`sexe`, `employee`.`dob`, `employee`.`date_embauche`, `employee`.`service_id`, " +
+    "`employee`.`nb_spouse`, `employee`.`nb_enfant`, `employee`.`grade_id`, `grade`.`text`, `grade`.`basic_salary`, " +
+    "`employee`.`phone`, `employee`.`email`, `employee`.`adresse`, `employee`.`bank`, `employee`.`bank_account`, `employee`.`daily_salary`, `employee`.`location_id`, " +  
+    "`grade`.`code` AS `code_grade`, `debitor`.`uuid` as `debitor_uuid`, `debitor`.`text` AS `debitor_text`,`debitor`.`group_uuid` as `debitor_group_uuid`, " + 
+    "`creditor`.`uuid` as `creditor_uuid`, `creditor`.`text` AS `creditor_text`, `creditor`.`group_uuid` as `creditor_group_uuid` " +
+    "FROM " +
+    "`employee`, `grade`, `debitor`, `creditor` " +
+    "WHERE " +
+    "`employee`.`grade_id` = `grade`.`uuid` AND " + 
+    "`employee`.`debitor_uuid` = `debitor`.`uuid` AND " +
+    "`employee`.`creditor_uuid` = `creditor`.`uuid` "
+
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
 app.get('/available_profit_center/', function (req, res, next) {
   var sql =
     'SELECT `profit_center`.`text`, `profit_center`.`id`, `profit_center`.`project_id`, `service`.`name` '+
@@ -208,9 +235,7 @@ app.get('/trialbalance/submit/:key/', function (req, res, next) {
   .then(function () {
     res.send(200);
   })
-  .catch(function (err) {
-    next(err);
-  })
+  .catch(next)
   .done();
 });
 

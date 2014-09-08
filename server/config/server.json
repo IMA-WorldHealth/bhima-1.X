@@ -80,7 +80,8 @@
       "/available_profit_center/",
       "/service_dist/",
       "/consumption_loss/",
-      "/getAccount6/"
+      "/getAccount6/",
+      "/employee_list/"
     ]
   }
 }

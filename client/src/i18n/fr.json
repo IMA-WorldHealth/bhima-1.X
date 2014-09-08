@@ -236,6 +236,13 @@
     "PLACEHOLDER"     : "Chercher une convention"
   },
 
+  "EFIND" : {
+    "TITLE"           : "Trouver Employer",
+    "SEARCH"          : "Chercher Par Nom",
+    "PLACEHOLDER"     : "Chercher un employee",
+    "ENTER_EMPLOYEE_ID" : "Entrer ID employee"
+  },
+
   "LANGUAGES" : {
     "ENGLISH" : "Anglais",
     "FRENCH" : "Francais",
@@ -402,7 +409,8 @@
     "INCOME_REPORT"             : "Rapport des Recettes",
     "EXPENSE_REPORT"            : "Rapport des Depenses",
 	"GRADE_EMPLOYERS"			: "Grade des employés",
-    "TAXES"                     : "Taxes"    
+    "TAXES"                     : "Taxes",    
+    "TAXE_MANAGEMENT"           : "Gestion des taxes"
 },
 
   "PATIENT_REGISTRATIONS" : {
@@ -578,7 +586,7 @@
     "ENTERPRISE"          : "Entreprise",
     "FIX"                 : "Fix",
     "USER_NAME"           : "Nom Utilisateur",
-    "LAST_NAME"           : "Nom",
+    "LAST_NAME"           : "Postnom",
     "GROUP"               : "Groupe",
     "REGISTERED_BY"       : "Enregistrer par",
     "ENTERPRISE_ID"       : "ID Enterprise",
@@ -1371,6 +1379,7 @@
   },
 
   "PRIMARY_CASH" : {
+    "DEFAULT_CURRENCY" : "Monnaie",
     "SELECT_CASHBOX" : "Selectionner une Caisse",
     "TITLE"        : "Caisse Pricipale",
     "EXPENSES"     : "Depenses",
@@ -1379,7 +1388,9 @@
     "NAVIGATION"   : "Naviguation",
     "CONFIGURE"    : "Configuration",
     "HOME"         : "caisse principale",
+    "LOADING_ERROR" : "Erreur lors du chargement des dependances",
     "EXPENSE" : {
+      "PAYROLL"      : "Paie des employees",
       "PURCHASE"        : "Achat",
       "GENERIC_TITLE"   : "Depenses Generiques",
       "GENERIC_RECEIPT" : "Recettes Generiques",
@@ -1507,16 +1518,17 @@
     "TITLE" : "Gestion des employés",
     "NONE_FOUND" : "Aucun employé trouvé",
     "EMPLOYEES"  : "Les employés enregistrés",
-    "REGISTER" : "Enregistrer un nouveau employé",
+    "REGISTER" : "Nouveau employé",
     "CREDITOR_GROUP" : "Groupe Créditeur",
+    "DEBITOR_GROUP" : "Groupe Débiteur",
     "INFO"            : "L'outil de gestion du personnel peut être utilisé pour créer, afficher et mettre à jour les employés et leurs informations. Les employés inscrits ici sont disponibles pour l'intégration dans des modules tels que / Payroll (Gestion de paiment) /.",
     "SUBMIT_NEW"      : "Soumettre l'enregistrement",
     "EDIT"            : "Mise à jour employé",
     "SUBMIT_EDIT"     : "Envoyer les détails",
     "CREDITOR_REFERENCE" : "BHIMA créanciers ID",
     "SERVICE"            : "Service",
-    "LAST_NAME"          : "Prénom",
-    "POST_NAME"          : "Post-nom",
+    "LAST_NAME"          : "Postnom",
+    "FIRST_NAME"          : "Prenom",
     "CODE"               : "Code/Matricule",
     "SEX"                : "Sexe",
     "NB_SPOUSE"          : "Nb Epoux/Epouse(s)",
@@ -1529,7 +1541,9 @@
     "BANK_ACCOUNT"       : "Compte Bancaire",
     "PHONE"              : "Téléphone",
     "EMAIL"               : "Email",
-    "ADDRESS"            : "Adresse"
+    "ADDRESS"            : "Adresse",
+    "LOCATION"           : "Localisation",
+    "NAME"               : "Nom"
   },
 
   "COST_CENTER" : {
@@ -1756,5 +1770,11 @@
     "DELETE_SUCCESS" : "Suppression avec succès",  
     "ALERT"        : "Le module gestion de taxes est un module qui a été conçu pour permettre l'administration des taxes existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'une taxe ainsi que la suppression.",   
     "NO_TAXES"    : "Aucune taxe n'est encore enregistré"  
-  }    
+  } ,
+  "TAXE_MANAGEMENT" : {
+    "TITLE" : "Gestion des taxes",
+    "CREATE_TAXE" : "Creation des taxes",
+    "CONFIGURE_IPR" : "Configuration IPR",
+    "OPTIONS" : "Options"
+  }  
 }

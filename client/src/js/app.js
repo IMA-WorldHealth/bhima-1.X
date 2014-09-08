@@ -313,6 +313,10 @@
       controller : 'purchaseOrderCash',
       templateUrl : 'partials/primary_cash/expense/purchase.html'
     })
+    .when('/primary_cash/expense/payroll/:cashbox', {
+      controller : 'payroll',
+      templateUrl : 'partials/primary_cash/expense/payroll.html'
+    })
     .when('/inventory/depot', {
       controller : 'inventory.depot',
       templateUrl : 'partials/inventory/depot/depot.html'
@@ -388,6 +392,18 @@
     .when('/grade_employers/', {
       controller : 'grade',
       templateUrl : 'partials/grade_employers/grade_employers.html'
+    }) 
+    .when('/taxes_management/', {
+      controller : 'taxes_management.menu',
+      templateUrl : 'partials/taxe/taxe_management.html'
+    })
+    .when('/taxes_management/create/', {
+      controller : 'taxes_management.create',
+      templateUrl : 'partials/taxe/create/create_taxe.html'
+    })
+    .when('/taxes_management/ipr/', {
+      controller : 'taxes_management.ipr',
+      templateUrl : 'partials/taxe/ipr/ipr.html'
     });
   }
 

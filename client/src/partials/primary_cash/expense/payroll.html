@@ -1,0 +1,44 @@
+<header>
+  {{ 'PRIMARY_CASH.EXPENSE.PAYROLL' | translate }}
+</header>
+
+<nav>
+  <div style="position: absolute; right: 5px;">
+    <button class="btn btn-sm btn-primary dropdown-toggle">
+      {{ session.selectedItem.symbol || "PRIMARY_CASH.DEFAULT_CURRENCY" | translate }}
+      <span class="caret" data-caret="&#9660;"></span>
+    </button>
+    <ul class="dropdown-menu pull-left">
+      <li ng-repeat="box in model.cash_box.data">
+        <a href="" ng-click="setCashAccount(box)"> {{ box.symbol }} </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a href="#/primary_cash/">{{"PRIMARY_CASH.TITLE" | translate}}</a></li>
+      <li class="active">{{"PRIMARY_CASH.EXPENSE.PAYROLL" | translate}}</li>
+
+    <li class="active">{{"PRIMARY_CASH.EXPENSE.PAYROLL" | translate}}</li>
+      <li class="active">{{"PRIMARY_CASH.EXPENSE.PAYROLL" | translate}}</li>
+
+    </ol>
+  </div>
+</nav>
+
+<main>
+  <div class="row">
+    <div class="col-xs-6">
+      <div find-employee on-search-complete="initialiseEmployee"></div>
+    </div>
+  </div>
+</main>
+
+<script type="text/ng-template" id="employeeListItem.html">
+  <a>
+    <span><b>[{{ match.model.id }}]</b></span>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+  </a>
+</script>
