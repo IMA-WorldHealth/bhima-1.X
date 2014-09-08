@@ -759,7 +759,21 @@
     "NEW"                : "New Rubric",
     "EDIT"               : "Edit Rubric",
     "SAVE"               : "Save Rubric",
-    "ADD"                : "Add Rubric"
+    "ADD"                : "Add Rubric",
+    "REGISTERED"         : "Rubrique enregistrés",
+    "ALERT"              : "The Payroll Topics Module is a module that has been designed to allow the definition of different benefits and other elements involved in the calculation of payroll.",
+    "NO_RUBRICS"          : "No category yet registered",
+    "SAVE_SUCCES"        : "Registration successful", 
+    "UPDATE_SUCCES"      : "Updated successfully", 
+    "DELETE_SUCCESS"     : "Deleting successfully",
+    "CONFIRM"            : "Are you sure to delete this category",
+    "NB"                 : "N",
+    "LABEL"              : "Rubrique",
+    "IS_PERCENT"         : "Is in (%)?",
+    "IS_DISCOUNT"        : "Is a discount?",
+    "VALUE"              : "Value",
+    "YES"                : "Yes",
+    "NO"                 : "No"
 },
 
   "DISTRIBUTION" : {
