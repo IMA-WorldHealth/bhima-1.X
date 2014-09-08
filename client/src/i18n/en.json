@@ -611,12 +611,14 @@
     "QTY_LOSS"            : "Loss Quantity",
     "DOCUMENT_UUID"       : "Document Number",
     "REFERENCE_PURCHASE"  : "Purchase Order Reference",
-    "SOURCE"                : "Source",
-    "TOTAL_DEBIT"        : "Total debit",
-    "TOTAL_CREDIT"         : "Total credit",
-  "NR"          : "Nr",
-  "BASIC_SALARY"        : "Basic salary",
-  "GRADE"         : "Grade"
+    "SOURCE"              : "Source",
+    "TOTAL_DEBIT"         : "Total debit",
+    "TOTAL_CREDIT"        : "Total credit",
+    "NR"                  : "Nr",
+    "BASIC_SALARY"        : "Basic salary",
+    "GRADE"               : "Grade",
+    "STAFF_COST"          : "Is Staff Cost",
+    "IS_PERCENT"          : "Is Percent"
   },
 
   "INVENTORY" : {
@@ -754,6 +756,7 @@
     "INCOME_REPORT"             : "Incomes Report",
     "EXPENSE_REPORT"            : "Expenses Report",
     "GRADE_EMPLOYERS"           : "Grade Employees",
+    "TAXES"                     : "Taxes",     
     "TAXE_MANAGEMENT"           : "Tax management"
   },
 
@@ -1731,13 +1734,27 @@
     "DELETE_SUCCESS" : "Deleted successfully",
     "CONFIRM" : "Are you sure you want to delete this Grade"
   },
+
   "TAXE_MANAGEMENT" : {
     "TITLE" : "Taxes management",
     "CREATE_TAXE" : "taxes creation",
     "CONFIGURE_IPR" : "IPR configuration",
     "OPTIONS" : "Options"
-  } 
+  } ,
 
 
+   "TAXES" : {
+    "TITLE"        : "Taxes management",
+    "REGISTERED"   : "Registered Taxes", 
+    "NEW_TAX"      : "New Tax", 
+    "SAVE_SUCCES"  : "Successfully saving tax",    
+    "NO_TAXES"     : "No tax have been registred",  
+    "ADD"          : "Add a tax",
+    "UPDATE_SUCCES" : "Updated successfully",
+    "UPDATE"        : "Modify a Tax",
+    "CONFIRM" : "Are you sure you want to delete this Tax",
+    "DELETE_SUCCESS" : "Deleted successfully",
+    "ALERT"        : "Taxes management module is a module that has been designed to allow administration of existing tas within the organization, the table is left to record, to update the attributes of a tax and the deletion."
+  }    
 }
 
