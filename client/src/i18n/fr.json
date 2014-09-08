@@ -410,7 +410,21 @@
     "NEW"                : "Nouvelle Rubrique",
     "EDIT"               : "Editer Rubrique",
     "SAVE"               : "Enregistrer Rubrique",
-    "ADD"                : "Ajouter Rubrique"
+    "ADD"                : "Ajouter Rubrique",
+    "REGISTERED"         : "Rubrique enregistrés",
+    "ALERT"              : "Le module Rubriques Payroll est un module qui a été conçu pour permettre la definition des differents avantages et autres éléments qui interviennent lors du calcul de la paie.",
+    "NO_RUBRICS"          : "Aucune rubrique n'est encore enregistrée",
+    "SAVE_SUCCES"        : "Enregistrement avec succès",
+    "UPDATE_SUCCES"      : "Mis à jour avec succès",
+    "DELETE_SUCCESS"     : "Suppression avec succès",
+    "CONFIRM"            : "Etes vois sure de vouloir supprimer cette rubrique",
+    "NB"                 : "N",
+    "LABEL"              : "Rubrique",
+    "IS_PERCENT"         : "Est-ce en(%) ?",
+    "IS_DISCOUNT"        : "Est-ce une reduction ?",
+    "VALUE"              : "Valeur",
+    "YES"                : "Oui",
+    "NO"                 : "Non"
 },
 
   "PATIENT_REGISTRATIONS" : {
