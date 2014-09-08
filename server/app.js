@@ -232,9 +232,7 @@ app.get('/trialbalance/submit/:key/', function (req, res, next) {
   .then(function () {
     res.send(200);
   })
-  .catch(function (err) {
-    next(err);
-  })
+  .catch(next)
   .done();
 });
 
