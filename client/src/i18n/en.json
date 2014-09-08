@@ -608,12 +608,12 @@
     "QTY_LOSS"            : "Loss Quantity",
     "DOCUMENT_UUID"       : "Document Number",
     "REFERENCE_PURCHASE"  : "Purchase Order Reference",
-    "SOURCE"                : "Source",
-    "TOTAL_DEBIT"        : "Total debit",
-    "TOTAL_CREDIT"         : "Total credit",
-  "NR"          : "Nr",
-  "BASIC_SALARY"        : "Basic salary",
-  "GRADE"         : "Grade"
+    "SOURCE"              : "Source",
+    "TOTAL_DEBIT"         : "Total debit",
+    "TOTAL_CREDIT"        : "Total credit",
+    "NR"                  : "Nr",
+    "BASIC_SALARY"        : "Basic salary",
+    "GRADE"               : "Grade"
   },
 
   "INVENTORY" : {
@@ -760,16 +760,16 @@
     "EDIT"               : "Edit Rubric",
     "SAVE"               : "Save Rubric",
     "ADD"                : "Add Rubric",
-    "REGISTERED"         : "Rubrique enregistrés",
+    "REGISTERED"         : "Registered Rubrics",
     "ALERT"              : "The Payroll Topics Module is a module that has been designed to allow the definition of different benefits and other elements involved in the calculation of payroll.",
-    "NO_RUBRICS"          : "No category yet registered",
-    "SAVE_SUCCES"        : "Registration successful", 
-    "UPDATE_SUCCES"      : "Updated successfully", 
-    "DELETE_SUCCESS"     : "Deleting successfully",
-    "CONFIRM"            : "Are you sure to delete this category",
+    "NO_RUBRICS"         : "No category yet registered",
+    "SAVE_SUCCES"        : "Registration successful",
+    "UPDATE_SUCCES"      : "Updated successfully",
+    "DELETE_SUCCESS"     : "Deleting successfully",
+    "CONFIRM"            : "Are you sure to delete this category",
     "NB"                 : "N",
-    "LABEL"              : "Rubrique",
-    "IS_PERCENT"         : "Is in (%)?",
+    "LABEL"              : "Rubric",
+    "IS_PERCENT"         : "Is a percent (%)?",
     "IS_DISCOUNT"        : "Is a discount?",
     "VALUE"              : "Value",
     "YES"                : "Yes",
@@ -1745,6 +1745,4 @@
     "CONFIRM" : "Are you sure you want to delete this Grade"
   } 
 
-
 }
-

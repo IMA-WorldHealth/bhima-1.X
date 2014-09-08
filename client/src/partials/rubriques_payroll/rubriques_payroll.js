@@ -89,7 +89,7 @@ angular.module('bhima.controllers')
 
 
     var checkValue = function(value){
-    	if(value == true){return 1;}
+    	if(value === true){return 1;}
     	else {return 0;}
     };
     $scope.checkValue = checkValue;
