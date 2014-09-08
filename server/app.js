@@ -158,7 +158,8 @@ app.get('/employee_list/', function (req, res, next) {
     "WHERE " +
     "`employee`.`grade_id` = `grade`.`uuid` AND " + 
     "`employee`.`debitor_uuid` = `debitor`.`uuid` AND " +
-    "`employee`.`creditor_uuid` = `creditor`.`uuid` " 
+    "`employee`.`creditor_uuid` = `creditor`.`uuid` "
+
 
   db.exec(sql)
   .then(function (result) {
