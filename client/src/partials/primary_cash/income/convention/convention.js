@@ -199,10 +199,6 @@ angular.module('bhima.controllers')
         $scope.selectedItem = cashAccount;
         cache.put('selectedItem', cashAccount);
       }
-
-      // if($scope.overviews){
-      //   convert();
-      // }
     }
 
     function handleSucces() {

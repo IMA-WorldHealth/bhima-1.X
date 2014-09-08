@@ -1369,6 +1369,7 @@
   },
 
   "PRIMARY_CASH" : {
+    "DEFAULT_CURRENCY" : "Monnaie",
     "SELECT_CASHBOX" : "Selectionner une Caisse",
     "TITLE"        : "Caisse Pricipale",
     "EXPENSES"     : "Depenses",
@@ -1377,6 +1378,7 @@
     "NAVIGATION"   : "Naviguation",
     "CONFIGURE"    : "Configuration",
     "HOME"         : "caisse principale",
+    "LOADING_ERROR" : "Erreur lors du chargement des dependances",
     "EXPENSE" : {
       "PAYROLL"      : "Paie des employees",
       "PURCHASE"        : "Achat",
