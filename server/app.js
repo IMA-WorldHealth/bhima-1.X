@@ -148,9 +148,11 @@ app.get('/employee_list/', function (req, res, next) {
 
     "SELECT " +
     "`employee`.`id`, `employee`.`code` AS `code_employee`, `employee`.`prenom`, `employee`.`name`, " +
-    "`employee`.`postnom`, `employee`.`sexe`, `employee`.`dob`, `employee`.`date_embauche`,  " +
-    "`employee`.`nb_spouse`, `employee`.`nb_enfant`, `grade`.`text`, `grade`.`basic_salary`, " + 
-    "`grade`.`code` AS `code_grade`, `debitor`.`text` AS `debitor_text`, `creditor`.`text` AS `creditor_text` " +
+    "`employee`.`postnom`, `employee`.`sexe`, `employee`.`dob`, `employee`.`date_embauche`, `employee`.`service_id`, " +
+    "`employee`.`nb_spouse`, `employee`.`nb_enfant`, `employee`.`grade_id`, `grade`.`text`, `grade`.`basic_salary`, " +
+    "`employee`.`phone`, `employee`.`email`, `employee`.`adresse`, `employee`.`bank`, `employee`.`bank_account`, `employee`.`daily_salary`, `employee`.`location_id`, " +  
+    "`grade`.`code` AS `code_grade`, `debitor`.`uuid` as `debitor_uuid`, `debitor`.`text` AS `debitor_text`,`debitor`.`group_uuid` as `debitor_group_uuid`, " + 
+    "`creditor`.`uuid` as `creditor_uuid`, `creditor`.`text` AS `creditor_text`, `creditor`.`group_uuid` as `creditor_group_uuid` " +
     "FROM " +
     "`employee`, `grade`, `debitor`, `creditor` " +
     "WHERE " +

@@ -578,7 +578,7 @@
     "ENTERPRISE"          : "Entreprise",
     "FIX"                 : "Fix",
     "USER_NAME"           : "Nom Utilisateur",
-    "LAST_NAME"           : "Nom",
+    "LAST_NAME"           : "Postnom",
     "GROUP"               : "Groupe",
     "REGISTERED_BY"       : "Enregistrer par",
     "ENTERPRISE_ID"       : "ID Enterprise",
@@ -1508,7 +1508,7 @@
     "TITLE" : "Gestion des employés",
     "NONE_FOUND" : "Aucun employé trouvé",
     "EMPLOYEES"  : "Les employés enregistrés",
-    "REGISTER" : "Enregistrer un nouveau employé",
+    "REGISTER" : "Nouveau employé",
     "CREDITOR_GROUP" : "Groupe Créditeur",
     "DEBITOR_GROUP" : "Groupe Débiteur",
     "INFO"            : "L'outil de gestion du personnel peut être utilisé pour créer, afficher et mettre à jour les employés et leurs informations. Les employés inscrits ici sont disponibles pour l'intégration dans des modules tels que / Payroll (Gestion de paiment) /.",
@@ -1517,8 +1517,8 @@
     "SUBMIT_EDIT"     : "Envoyer les détails",
     "CREDITOR_REFERENCE" : "BHIMA créanciers ID",
     "SERVICE"            : "Service",
-    "LAST_NAME"          : "Prénom",
-    "POST_NAME"          : "Post-nom",
+    "LAST_NAME"          : "Postnom",
+    "FIRST_NAME"          : "Prenom",
     "CODE"               : "Code/Matricule",
     "SEX"                : "Sexe",
     "NB_SPOUSE"          : "Nb Epoux/Epouse(s)",
@@ -1532,7 +1532,8 @@
     "PHONE"              : "Téléphone",
     "EMAIL"               : "Email",
     "ADDRESS"            : "Adresse",
-    "LOCATION"           : "Localisation"
+    "LOCATION"           : "Localisation",
+    "NAME"               : "Nom"
   },
 
   "COST_CENTER" : {
