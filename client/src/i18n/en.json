@@ -50,7 +50,9 @@
   },
 
   "PRIMARY_CASH"  : {
+    "DEFAULT_CURRENCY" : "currency",
     "SELECT_CASHBOX" : "Select a Cash box",
+    "LOADING_ERROR" : "Error when loading dependencies",
     "TITLE"       : "Primary Cash",
     "EXPENSES"    : "Expenses",
     "INCOMES"     : "Income",
