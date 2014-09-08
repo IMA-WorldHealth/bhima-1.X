@@ -409,6 +409,7 @@
     "INCOME_REPORT"             : "Rapport des Recettes",
     "EXPENSE_REPORT"            : "Rapport des Depenses",
 	"GRADE_EMPLOYERS"			: "Grade des employés",
+    "TAXES"                     : "Taxes",    
     "TAXE_MANAGEMENT"           : "Gestion des taxes"
 },
 
@@ -740,7 +741,9 @@
     "AMOUNT_DUE"          : "Montant a payer",
 	"NR"				  : "N°",
 	"BASIC_SALARY"	      : "Salaire de base",
-	"GRADE"				  : "Grade"
+	"GRADE"				  : "Grade",
+    "STAFF_COST"          : "Pour les employés",
+    "IS_PERCENT"          : "En pourcentage"
   },
 
   "REPORT"                  : {
@@ -1752,6 +1755,21 @@
     "UPDATE_SUCCES" : "Mis à jour avec succès",
     "DELETE_SUCCESS" : "Suppression avec succès",
     "CONFIRM" : "Etes vois sure de vouloir supprimer ce Grade"
+  },
+
+   "TAXES" : {
+    "TITLE"        : "Gestion de taxes",
+    "ADD"          : "Ajouter une taxe",
+    "NO_TAXES"    : "Aucune taxe n'est encore enregistrée",
+    "NEW_TAX"      : "Nouvelle Taxe",
+    "REGISTERED"   : "Taxes enregistrés",
+    "SAVE_SUCCES"  : "Enregistrement avec succès",
+    "UPDATE_SUCCES" : "Mis à jour avec succès",
+    "UPDATE"        : "Mettre à jour une taxe",
+    "CONFIRM" : "Etes vois sure de vouloir supprimer cette taxe",  
+    "DELETE_SUCCESS" : "Suppression avec succès",  
+    "ALERT"        : "Le module gestion de taxes est un module qui a été conçu pour permettre l'administration des taxes existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'une taxe ainsi que la suppression.",   
+    "NO_TAXES"    : "Aucune taxe n'est encore enregistré"  
   } ,
   "TAXE_MANAGEMENT" : {
     "TITLE" : "Gestion des taxes",
