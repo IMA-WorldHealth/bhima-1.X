@@ -1226,6 +1226,12 @@
     "PATIENT_ID"      : "Patient ID"
   },
 
+  "EFIND" : {
+    "TITLE"           : "Find employee",
+    "SEARCH"          : "Search by name",
+    "PLACEHOLDER"     : "Search an employee"
+  },
+
   "COUNTRY" : {
     "TITLE"                : "Country Management",
     "LOCATION_MANAGER"     : "Location Manager",

@@ -236,6 +236,13 @@
     "PLACEHOLDER"     : "Chercher une convention"
   },
 
+  "EFIND" : {
+    "TITLE"           : "Trouver Employer",
+    "SEARCH"          : "Chercher Par Nom",
+    "PLACEHOLDER"     : "Chercher un employee",
+    "ENTER_EMPLOYEE_ID" : "Entrer ID employee"
+  },
+
   "LANGUAGES" : {
     "ENGLISH" : "Anglais",
     "FRENCH" : "Francais",
