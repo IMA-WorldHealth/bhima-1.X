@@ -9,6 +9,7 @@ angular.module('bhima.controllers')
   'util',
   function ($scope, $translate, validate, uuid, messenger, connect, util) {
     var dependencies = {}, session = $scope.session = {};
+
     var route = $scope.route = {
       create : { 
         title : 'EMPLOYEE.REGISTER',
@@ -78,7 +79,7 @@ angular.module('bhima.controllers')
     }
       
     validate.process(dependencies)
-    .then(initialise)
+    .then(initialise);
     
     function transitionRegister() { 
       session.state = route.create;
@@ -153,6 +154,19 @@ angular.module('bhima.controllers')
       session.state = route.edit;
     }
 
+    function editSuccess() {
+      session.employee = {};
+      session.creditor = {};
+      session.debitor = {};
+      messenger.success($translate.instant('EMPLOYEE.EDIT_SUCCESS'));
+
+      // FIXME just add employee to model
+      validate.refresh(dependencies, ['employee']).then(function (model) {
+        angular.extend($scope, model);
+        session.state = null;
+      });
+    }
+
     function updateEmployee() { 
 
       var creditor = {
@@ -185,9 +199,7 @@ angular.module('bhima.controllers')
         email : session.employee.email,
         service_id : session.employee.service_id,
         location_id : session.employee.location_id
-      }
-
-      console.log('voici c kon a', employee);
+      };
       
       submitCreditorEdit(creditor)
       .then(function () {
@@ -196,6 +208,7 @@ angular.module('bhima.controllers')
       .then(function () {
         return submitEmployeeEdit(connect.clean(employee));
       })
+      .then(editSuccess)
       .then(function (result) { 
         session.state = null;
         session.employee = {};

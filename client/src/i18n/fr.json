@@ -282,7 +282,10 @@
     "DEPOT"           : "Selectionner un Depot",
     "DEBTOR"          : "Selectionner un debiteur",
     "CREDITOR"          : "Selectionner un Crediteur",
-    "PRIMARY_CASH"    : "Selectionner Caisse principale"
+    "PRIMARY_CASH"    : "Selectionner Caisse principale",
+    "EMPLOYEE_SEX"    : "Selectionner Sexe",
+    "EMPLOYEE_SERVICE"    : "Selectionner un Service",
+    "EMPLOYEE_GRADE"      : "Selectionner un Grade"
   },
 
   "RENEWAL"           : {
@@ -1543,7 +1546,8 @@
     "EMAIL"               : "Email",
     "ADDRESS"            : "Adresse",
     "LOCATION"           : "Localisation",
-    "NAME"               : "Nom"
+    "NAME"               : "Nom",
+    "EDITED_SUCCES"      : "Mise à jour avec succes "
   },
 
   "COST_CENTER" : {
