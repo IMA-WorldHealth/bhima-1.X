@@ -15,7 +15,7 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           'rubric' : {
-            columns : ['id', 'label', 'is_discount', 'is_percent', 'value']
+            columns : ['id', 'label', 'is_percent', 'is_discount', 'value']
           }
         }
       }
@@ -45,19 +45,24 @@ angular.module('bhima.controllers')
     $scope.edit = function (rubric) {
       session.action = 'edit';
       session.edit = angular.copy(rubric);
+      session.edit.is_percent = (session.edit.is_percent)!==0;
+      session.edit.is_discount = (session.edit.is_discount)!==0;
     };
 
     $scope.new = function () {
       session.action = 'new';
       session.new = {};
+      session.new.is_percent = (session.new.is_percent)!==0;
+      session.new.is_discount = (session.new.is_discount)!==0;
     };
 
     $scope.save = {};
 
     $scope.save.edit = function () {
-      session.edit.is_percent = checkValue(session.edit.is_percent);
-      session.edit.is_discount = checkValue(session.edit.is_discount);
+      session.edit.is_percent = (session.edit.is_percent)?1:0;
+      session.edit.is_discount = (session.edit.is_discount)?1:0;
       var record = connect.clean(session.edit);
+      console.log('Save Edit Session: ',session.edit);
       delete record.reference;
       connect.basicPost('rubric', [record], ['id'])
       .then(function () {
@@ -69,12 +74,13 @@ angular.module('bhima.controllers')
     };
 
     $scope.save.new = function () {
+      session.new.is_percent = (session.new.is_percent)?1:0;
+      session.new.is_discount = (session.new.is_discount)?1:0;
       var record = connect.clean(session.new);
       connect.basicPut('rubric', [record])
       .then(function () {
-        messenger.success($translate.instant('RUBRIC_PAYROLL.SAVE_SUCCES'));        
-        // record.id = res.data.insertId;
-        record.reference = generateReference(); // this is simply to make the ui look pretty;
+        messenger.success($translate.instant('RUBRIC_PAYROLL.SAVE_SUCCES'));
+        record.reference = generateReference();
         $scope.rubrics.post(record);
         session.action = '';
         session.new = {};
@@ -86,13 +92,6 @@ angular.module('bhima.controllers')
       var max = Math.max.apply(Math.max, $scope.rubrics.data.map(function (o) { return o.reference; }));
       return Number.isNaN(max) ? 1 : max + 1;
     }
-
-
-    var checkValue = function(value){
-    	if(value === true){return 1;}
-    	else {return 0;}
-    };
-    $scope.checkValue = checkValue;
 
     $scope.checkedYesOrNo = function(value){
     	if(value == 1) {return $translate.instant('RUBRIC_PAYROLL.YES');}

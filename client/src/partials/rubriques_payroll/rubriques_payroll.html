@@ -105,14 +105,14 @@
           <div class="form-group">
             <label class="control-label col-xs-3">{{ "RUBRIC_PAYROLL.IS_PERCENT" | translate }}</label>
             <div class="col-xs-8">
-              <input type="checkbox" ng-model="session.edit.is_percent" class="form-bhima" ng-checked="session.edit.is_percent">
+              <input type="checkbox" ng-model="session.edit.is_percent" class="form-bhima" ng-checked="session.edit.is_percent" ng-change="status()">
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-3">{{ "RUBRIC_PAYROLL.IS_DISCOUNT" | translate }}</label>
             <div class="col-xs-8">
-              <input type="checkbox" ng-model="session.edit.is_discount" class="form-bhima" ng-checked="session.edit.is_discount">
+              <input type="checkbox" ng-model="session.edit.is_discount" class="form-bhima" ng-checked="session.edit.is_discount" ng-change="status()">
             </div>
           </div>
 
