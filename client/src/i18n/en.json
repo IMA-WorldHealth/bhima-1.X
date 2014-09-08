@@ -361,7 +361,10 @@
     "SOURCE"          : "Select a source",
     "DEBTOR"          : "Select a debtor",
     "CREDITOR"        : "Select a creditor",
-    "PRIMARY_CASH"    : "Select a Primary cash"
+    "PRIMARY_CASH"    : "Select a Primary cash",
+    "EMPLOYEE_SEX"    : "Select Sex",
+    "EMPLOYEE_SERVICE"    : "Select a Service",
+    "EMPLOYEE_GRADE"      : "Select a grade"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -1394,7 +1397,8 @@
     "PHONE"              : "Phone",
     "EMAIL"               : "Mail",
     "ADDRESS"            : "Address",
-    "LOCATION"           : "Location"
+    "LOCATION"           : "Location",
+    "EDIT_SUCCES"      : "Update successfully"
   },
 
   "SERVICE" : {
