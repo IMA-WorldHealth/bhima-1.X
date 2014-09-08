@@ -401,7 +401,8 @@
     "PROFIT_CENTER_MGMNT"       : "Centres de profit",
     "INCOME_REPORT"             : "Rapport des Recettes",
     "EXPENSE_REPORT"            : "Rapport des Depenses",
-	"GRADE_EMPLOYERS"			: "Grade des employés"
+	"GRADE_EMPLOYERS"			: "Grade des employés",
+    "TAXE_MANAGEMENT"           : "Gestion des taxes"
 },
 
   "PATIENT_REGISTRATIONS" : {
@@ -1368,6 +1369,7 @@
   },
 
   "PRIMARY_CASH" : {
+    "DEFAULT_CURRENCY" : "Monnaie",
     "SELECT_CASHBOX" : "Selectionner une Caisse",
     "TITLE"        : "Caisse Pricipale",
     "EXPENSES"     : "Depenses",
@@ -1376,7 +1378,9 @@
     "NAVIGATION"   : "Naviguation",
     "CONFIGURE"    : "Configuration",
     "HOME"         : "caisse principale",
+    "LOADING_ERROR" : "Erreur lors du chargement des dependances",
     "EXPENSE" : {
+      "PAYROLL"      : "Paie des employees",
       "PURCHASE"        : "Achat",
       "GENERIC_TITLE"   : "Depenses Generiques",
       "GENERIC_RECEIPT" : "Recettes Generiques",
@@ -1740,5 +1744,11 @@
     "UPDATE_SUCCES" : "Mis à jour avec succès",
     "DELETE_SUCCESS" : "Suppression avec succès",
     "CONFIRM" : "Etes vois sure de vouloir supprimer ce Grade"
+  } ,
+  "TAXE_MANAGEMENT" : {
+    "TITLE" : "Gestion des taxes",
+    "CREATE_TAXE" : "Creation des taxes",
+    "CONFIGURE_IPR" : "Configuration IPR",
+    "OPTIONS" : "Options"
   }  
 }
