@@ -411,10 +411,10 @@
     "PROFIT_CENTER_MGMNT"       : "Centres de profit",
     "INCOME_REPORT"             : "Rapport des Recettes",
     "EXPENSE_REPORT"            : "Rapport des Depenses",
-	"GRADE_EMPLOYERS"			: "Grade des employés",
+	"GRADE_EMPLOYERS"			: "Gestion des Grades",
     "TAXES"                     : "Taxes",    
     "TAXE_MANAGEMENT"           : "Gestion des taxes",
-    "RUBRIC_PAYROLL"            : "Rubriques Payroll"
+    "RUBRIC_PAYROLL"            : "Gestion des rubriques"
 },
 
   "RUBRIC_PAYROLL"       : {

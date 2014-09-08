@@ -69,7 +69,6 @@ angular.module('bhima.controllers')
       $scope.session.edit.is_percent = ($scope.session.edit.is_percent)? 1 : 0;
 
       var record = angular.copy(connect.clean(session.edit));
-      console.log("Le ID a Modifier ",record.id);
       delete record.reference;
       delete record.account_number;
       delete record.account_txt;
@@ -95,7 +94,7 @@ angular.module('bhima.controllers')
       $scope.session.new.is_percent = ($scope.session.new.is_percent)? 1 : 0;
 
       var record = connect.clean(session.new);
-      record.id = "";
+      record.id = '';
       connect.basicPut('tax', [record])
       .then(function (res) {
 
@@ -106,6 +105,6 @@ angular.module('bhima.controllers')
         session.action = '';
         session.new = {};
       });
-    } 
+    }; 
   } 
 ]);

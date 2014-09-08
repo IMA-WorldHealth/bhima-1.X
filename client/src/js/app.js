@@ -384,11 +384,7 @@
     .when('/reports/expense_report/', {
       controller : 'primary_cash.expenseReport',
       templateUrl : 'partials/reports/primary_cash/expense/expense_report.html'
-    })
-    .when('/taxes/', {
-      controller : 'taxes',
-      templateUrl : 'partials/taxes/taxes.html'
-    })    
+    })       
     .when('/grade_employers/', {
       controller : 'grade',
       templateUrl : 'partials/grade_employers/grade_employers.html'
