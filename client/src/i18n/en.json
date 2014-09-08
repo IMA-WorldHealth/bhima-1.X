@@ -1368,6 +1368,7 @@
     "REGISTER"        : "Register Employee",
     "NONE_FOUND"      : "No employee records found.",
     "CREDITOR_GROUP"  : "Creditor Group",
+    "DEBITOR_GROUP"    : "Debtor Group",
     "INFO"            : "The employee management tool can be used to create, view and update employees and their information. Employees listed here are implicitly settup for credit and available for integration to modules such as /payroll/",
     "SUBMIT_NEW"      : "Submit Registration",
     "EDIT"            : "Update Employee Details",
@@ -1388,7 +1389,8 @@
     "BANK_ACCOUNT"       : "Bank Account",
     "PHONE"              : "Phone",
     "EMAIL"               : "Mail",
-    "ADDRESS"            : "Address"
+    "ADDRESS"            : "Address",
+    "LOCATION"           : "Location"
   },
 
   "SERVICE" : {
