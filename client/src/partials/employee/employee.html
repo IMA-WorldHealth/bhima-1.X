@@ -92,6 +92,7 @@
                 <label class="col-xs-3 control-label required">{{ "EMPLOYEE.SEX" | translate }}:</label>
                 <div class="col-xs-9">
                   <select class="form-bhima" ng-model="session.employee.sexe">
+                    <option value="" disabled="disabled">-- {{ "SELECT.EMPLOYEE_SEX" | translate }} --</option>
                     <option>M</option><option>F</option>
                   </select>
                 </div>
@@ -129,7 +130,7 @@
                 <label class="col-xs-3 control-label required">{{ "EMPLOYEE.SERVICE" | translate }}:</label>
                 <div class="col-xs-9">
                   <select class="form-bhima" ng-model="session.employee.service_id" ng-options="service.id as service.name + ' - ' + service.abbr for service in dataServices">
-                    <option value="" disabled="disabled">-- {{ "EMPLOYEE.SERVICE" | translate }} --</option>
+                    <option value="" disabled="disabled">--- {{ "SELECT.EMPLOYEE_SERVICE" | translate }} ---</option>
                   </select>
                 </div>
               </div>
@@ -138,7 +139,7 @@
                 <label class="col-xs-3 control-label required">{{ "EMPLOYEE.GRADE" | translate }}:</label>
                 <div class="col-xs-9">
                   <select class="form-bhima" ng-model="session.employee.grade_id" ng-options="gr.uuid as formatGrade(gr) for gr in grade.data" required>
-                    <option value="" disabled="disabled">-- {{ "EMPLOYEE.GRADE" | translate }} --</option>
+                    <option value="" disabled="disabled">--- {{ "SELECT.EMPLOYEE_GRADE" | translate }} ---</option>
                   </select>
                 </div>
               </div>
