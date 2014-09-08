@@ -74,16 +74,16 @@ module.exports = function (db, sanitize, util, uuid) {
       });
 
       var sql =
-        'SELECT `pt`.`debit`, `pt`.`credit`, '  +
-        '`pt`.`account_id`, `pt`.`balance`, `account`.`account_number` ' +
+        'SELECT pt.debit, pt.credit, '  +
+        'pt.account_id, pt.balance, account.account_number ' +
         'FROM  account JOIN ( ' +
-          'SELECT SUM(`debit_equiv`) AS `debit`, SUM(`credit_equiv`) AS `credit`, ' +
-          '`posting_journal`.`account_id`, (`period_total`.`debit` - `period_total`.`credit`) AS `balance` ' +
-          'FROM posting_journal LEFT JOIN `period_total` ' +
-          'ON `posting_journal`.`account_id` = `period_total`.`account_id` ' +
-          'GROUP BY `posting_journal`.`account_id` ' +
-          ') AS `pt` ' +
-        'ON `account`.`id`=`pt`.`account_id`;';
+          'SELECT SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit, ' +
+          'posting_journal.account_id, (period_total.debit - period_total.credit) AS balance ' +
+          'FROM posting_journal LEFT JOIN period_total ' +
+          'ON posting_journal.account_id = period_total.account_id ' +
+          'GROUP BY posting_journal.account_id ' +
+          ') AS pt ' +
+        'ON account.id=pt.account_id;';
 
       return db.exec(sql);
     })
@@ -92,7 +92,7 @@ module.exports = function (db, sanitize, util, uuid) {
       results.errors = errors;
 
       var sql =
-        'SELECT COUNT(`uuid`) AS `lines`, `trans_id`, `trans_date` FROM posting_journal GROUP BY trans_id;';
+        'SELECT COUNT(uuid) AS `lines`, trans_id, trans_date FROM posting_journal GROUP BY trans_id;';
       return db.exec(sql);
     })
     .then(function (rows) {
@@ -112,10 +112,10 @@ module.exports = function (db, sanitize, util, uuid) {
   function areAccountsLocked () {
     var d = q.defer();
     var sql =
-      'SELECT `posting_journal`.`uuid`, `posting_journal`.`trans_id` ' +
-      'FROM `posting_journal` LEFT JOIN `account` ' +
-      'ON  `posting_journal`.`account_id`=`account`.`id` ' +
-      'WHERE `account`.`locked`=1;';
+      'SELECT posting_journal.uuid, posting_journal.trans_id ' +
+      'FROM posting_journal LEFT JOIN account ' +
+      'ON posting_journal.account_id=account.id ' +
+      'WHERE account.locked=1;';
 
     db.execute(sql, function (err, rows) {
       if (err) { d.reject(new error('ERR_QUERY', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
@@ -130,10 +130,10 @@ module.exports = function (db, sanitize, util, uuid) {
   function areAccountsNull () {
     var d = q.defer();
     var sql =
-      'SELECT `uuid`, `trans_id` ' +
-      'FROM `posting_journal` ' +
-      'LEFT JOIN `account` ON `posting_journal`.`account_id`=`account`.`id` ' +
-      'WHERE `account`.`id` IS NULL;';
+      'SELECT uuid, trans_id ' +
+      'FROM posting_journal ' +
+      'LEFT JOIN account ON posting_journal.account_id=account.id ' +
+      'WHERE account.id IS NULL;';
 
     db.execute(sql, function (err, rows) {
       if (err) { d.reject(new error('ERR_QUERY', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
@@ -147,9 +147,9 @@ module.exports = function (db, sanitize, util, uuid) {
   function areAllDatesValid () {
     var d = q.defer();
     var sql =
-      'SELECT `uuid`, `trans_id`, `period_id`, `trans_date`, `period_start`, `period_stop` ' +
-      'FROM `posting_journal` JOIN `period` ' +
-      'ON `posting_journal`.`period_id`=`period`.`id`;';
+      'SELECT uuid, trans_id, period_id, trans_date, period_start, period_stop ' +
+      'FROM posting_journal JOIN period ' +
+      'ON posting_journal.period_id=period.id;';
 
     db.execute(sql, function (err, rows) {
       if (err) { d.reject(new error('ERR_QUERY', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
@@ -167,10 +167,10 @@ module.exports = function (db, sanitize, util, uuid) {
   function areCostsBalanced () {
     var d = q.defer();
     var sql =
-      'SELECT `uuid`, `trans_id`, sum(`debit`) as d, sum(`credit`) as c, ' +
-      'sum(`debit_equiv`) as de, sum(`credit_equiv`) as ce  ' +
-      'FROM `posting_journal` ' +
-      'GROUP BY `trans_id`;';
+      'SELECT uuid, trans_id, sum(debit) as d, sum(credit) as c, ' +
+      'sum(debit_equiv) as de, sum(credit_equiv) as ce  ' +
+      'FROM posting_journal ' +
+      'GROUP BY trans_id;';
 
     db.execute(sql, function (err, rows) {
       if (err) { d.reject(new error('ERR_QUERY', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
@@ -185,16 +185,16 @@ module.exports = function (db, sanitize, util, uuid) {
   function areDebitorCreditorDefined () {
     var d = q.defer();
     var sql =
-      'SELECT `uuid`, `trans_id` ' +
-      'FROM `posting_journal` ' +
+      'SELECT uuid, trans_id ' +
+      'FROM posting_journal ' +
       'WHERE NOT EXISTS (' +
         '(' +
-          'SELECT `creditor`.`uuid`, `posting_journal`.`deb_cred_uuid` ' +
-          'FROM `creditor` JOIN `posting_journal` ' +
-          'ON `creditor`.`uuid`=`posting_journal`.`deb_cred_uuid`' +
+          'SELECT creditor.uuid, posting_journal.deb_cred_uuid ' +
+          'FROM creditor JOIN posting_journal ' +
+          'ON creditor.uuid=posting_journal.deb_cred_uuid' +
         ') UNION (' +
-          'SELECT `debitor`.`uuid`, `posting_journal`.`deb_cred_uuid` '+
-          'FROM `debitor` JOIN `posting_journal` ON `debitor`.`uuid`=`posting_journal`.`deb_cred_uuid`' +
+          'SELECT debitor.uuid, posting_journal.deb_cred_uuid '+
+          'FROM debitor JOIN posting_journal ON debitor.uuid=posting_journal.deb_cred_uuid' +
         ')' +
       ');';
 
@@ -228,47 +228,43 @@ module.exports = function (db, sanitize, util, uuid) {
 
       // Next, we need to generate a posting session id.
       sql =
-        'INSERT INTO `posting_session` ' +
-        'SELECT max(`posting_session`.`id`) + 1, ' + sanitize.escape(userId) + ', ' +
-        sanitize.escape(util.toMysqlDate()) + ' ' +
-        'FROM `posting_session`;';
+        'INSERT INTO posting_session ' +
+        'SELECT max(posting_session.id) + 1, ?, ? ' +
+        'FROM posting_session;';
 
-      return db.exec(sql);
+      return db.exec(sql, [userId, new Date()]);
     })
     .then(function (res) {
       // Next, we must move the data into the general ledger.
-      var session_id = res.insertId;
+      var sessionId = res.insertId;
       sql =
-        'INSERT INTO `general_ledger` ' +
-          '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
-          '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-          '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `comment`, `cost_ctrl_id`, ' +
-          '`origin_id`, `user_id`, `session_id`) ' +
-        'SELECT `project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
-          '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, ' +
-          '`deb_cred_uuid`, `deb_cred_type`,`inv_po_id`, `comment`, `cost_ctrl_id`, `origin_id`, `user_id`, ' +
-          session_id + ' ' +
-        'FROM `posting_journal`;';
-      return db.exec(sql);
+        'INSERT INTO general_ledger ' +
+          '(project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, doc_num, ' +
+          'description, account_id, debit, credit, debit_equiv, credit_equiv, ' +
+          'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, comment, cost_ctrl_id, ' +
+          'origin_id, user_id, session_id) ' +
+        'SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, doc_num, ' +
+          'description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, ' +
+          'deb_cred_uuid, deb_cred_type,inv_po_id, comment, cost_ctrl_id, origin_id, user_id, ? ' +
+        'FROM posting_journal;';
+      return db.exec(sql, [sessionId]);
     })
     .then(function () {
       // Sum all transactions for a given period from the PJ
-      // into `period_total`, updating old values if necessary.
+      // into period_total, updating old values if necessary.
       sql =
-        'INSERT INTO `period_total` (`account_id`, `credit`, `debit`, `fiscal_year_id`, `enterprise_id`, `period_id`) ' +
-        'SELECT `account_id`, SUM(`credit_equiv`) AS credit, SUM(`debit_equiv`) as debit , `fiscal_year_id`, `project`.`enterprise_id`, ' +
-          '`period_id` FROM `posting_journal` JOIN `project` ON `posting_journal`.`project_id`=`project`.`id` ' +
-        'GROUP BY `account_id` ' +
-        'ON DUPLICATE KEY UPDATE `credit` = `credit` + VALUES(`credit`), `debit` = `debit` + VALUES(`debit`);';
-
-      db.exec(sql);
+        'INSERT INTO period_total (account_id, credit, debit, fiscal_year_id, enterprise_id, period_id) ' +
+        'SELECT account_id, SUM(credit_equiv) AS credit, SUM(debit_equiv) as debit , fiscal_year_id, project.enterprise_id, ' +
+          'period_id FROM posting_journal JOIN project ON posting_journal.project_id=project.id ' +
+        'GROUP BY account_id ' +
+        'ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit);';
+      return db.exec(sql);
     })
     .then(function () {
       // Finally, we can remove the data from the posting journal
-      sql = 'DELETE FROM `posting_journal` WHERE 1;';
+      sql = 'DELETE FROM posting_journal WHERE 1;';
       return db.exec(sql);
-    })
-    .done();
+    });
   }
 
   return {

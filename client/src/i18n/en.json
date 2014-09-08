@@ -50,7 +50,9 @@
   },
 
   "PRIMARY_CASH"  : {
+    "DEFAULT_CURRENCY" : "currency",
     "SELECT_CASHBOX" : "Select a Cash box",
+    "LOADING_ERROR" : "Error when loading dependencies",
     "TITLE"       : "Primary Cash",
     "EXPENSES"    : "Expenses",
     "INCOMES"     : "Income",
@@ -58,6 +60,7 @@
     "NAVIGATION"  : "Navigation",
     "CONFIGURE"   : "Configure Cash Box",
     "EXPENSE"     : {
+      "PAYROLL"               : "Payroll",
       "GENERIC_TITLE"         : "Generic Expense",
       "GENERIC_RECEIPT"       : "Generic Receipt",
       "REFERENCE_DOCUMENT_ID" : "Reference Document ID",
@@ -753,7 +756,8 @@
     "INCOME_REPORT"             : "Incomes Report",
     "EXPENSE_REPORT"            : "Expenses Report",
     "GRADE_EMPLOYERS"           : "Grade Employees",
-    "TAXES"                     : "Taxes"     
+    "TAXES"                     : "Taxes",     
+    "TAXE_MANAGEMENT"           : "Tax management"
   },
 
   "DISTRIBUTION" : {
@@ -1225,6 +1229,12 @@
     "PATIENT_ID"      : "Patient ID"
   },
 
+  "EFIND" : {
+    "TITLE"           : "Find employee",
+    "SEARCH"          : "Search by name",
+    "PLACEHOLDER"     : "Search an employee"
+  },
+
   "COUNTRY" : {
     "TITLE"                : "Country Management",
     "LOCATION_MANAGER"     : "Location Manager",
@@ -1371,6 +1381,7 @@
     "REGISTER"        : "Register Employee",
     "NONE_FOUND"      : "No employee records found.",
     "CREDITOR_GROUP"  : "Creditor Group",
+    "DEBITOR_GROUP"    : "Debtor Group",
     "INFO"            : "The employee management tool can be used to create, view and update employees and their information. Employees listed here are implicitly settup for credit and available for integration to modules such as /payroll/",
     "SUBMIT_NEW"      : "Submit Registration",
     "EDIT"            : "Update Employee Details",
@@ -1391,7 +1402,8 @@
     "BANK_ACCOUNT"       : "Bank Account",
     "PHONE"              : "Phone",
     "EMAIL"               : "Mail",
-    "ADDRESS"            : "Address"
+    "ADDRESS"            : "Address",
+    "LOCATION"           : "Location"
   },
 
   "SERVICE" : {
@@ -1722,6 +1734,14 @@
     "DELETE_SUCCESS" : "Deleted successfully",
     "CONFIRM" : "Are you sure you want to delete this Grade"
   },
+
+  "TAXE_MANAGEMENT" : {
+    "TITLE" : "Taxes management",
+    "CREATE_TAXE" : "taxes creation",
+    "CONFIGURE_IPR" : "IPR configuration",
+    "OPTIONS" : "Options"
+  } ,
+
 
    "TAXES" : {
     "TITLE"        : "Taxes management",

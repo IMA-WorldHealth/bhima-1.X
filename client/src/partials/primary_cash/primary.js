@@ -40,6 +40,10 @@ angular.module('bhima.controllers')
 
     configuration.expense = [
       {
+        key : 'PRIMARY_CASH.EXPENSE.PAYROLL',
+        link : '/primary_cash/expense/payroll/'
+      },
+      {
         key : 'PRIMARY_CASH.EXPENSE.PURCHASE',
         link : '/primary_cash/expense/purchase/'
       },
