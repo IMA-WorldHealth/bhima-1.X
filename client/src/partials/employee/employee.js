@@ -6,7 +6,8 @@ angular.module('bhima.controllers')
   'uuid',
   'messenger',
   'connect',
-  function ($scope, $translate, validate, uuid, messenger, connect) {
+  'util',
+  function ($scope, $translate, validate, uuid, messenger, connect, util) {
     var dependencies = {}, session = $scope.session = {};
     var route = $scope.route = {
       create : { 
@@ -25,7 +26,8 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           employee : { columns : ['id', 'name', 'code', 'creditor_uuid', 'dob', 'prenom', 'postnom', 'sexe', 'nb_spouse', 'nb_enfant', 'date_embauche', 'grade_id', 'daily_salary', 'bank', 'bank_account', 'phone', 'email', 'adresse','service_id', 'location_id', 'debitor_uuid'] },
-          creditor : { columns : ['group_uuid'] }
+          creditor : { columns : ['group_uuid'] },
+          debitor : {columns : ['group_uuid']}
         },
         join : ['employee.creditor_uuid=creditor.uuid']
       }
@@ -39,7 +41,6 @@ angular.module('bhima.controllers')
       }
     };
 
-    //BRUCE
     dependencies.debtorGroup = {
       query : {
         tables : {
@@ -47,9 +48,7 @@ angular.module('bhima.controllers')
         }
       }
     };
-    //BRUCE
 
-    //================ BEGIN CODE BRUCE =======================//
     dependencies.services = {
       query : {
         tables : {
@@ -64,7 +63,6 @@ angular.module('bhima.controllers')
       $scope.dataServices = $scope.services.data;
     };
 
-    //==================LOCATION====================//
     dependencies.location = {
       query : '/location/'
     };
@@ -72,9 +70,7 @@ angular.module('bhima.controllers')
     $scope.formatLocation = function formatLocation (location) {
       return [location.village, location.sector, location.province, location.country].join(', ');
     };
-    //==================LOCATION====================//
 
-    //==================GRADE=======================//
     dependencies.grade = {
       query : {
         tables : {
@@ -86,9 +82,6 @@ angular.module('bhima.controllers')
     $scope.formatGrade = function formatGrade (grade) {
       return grade.code + ' - ' + grade.text;
     };
-    //==================GRADE=======================//
-
-    //================= END CODE BRUCE ========================//
 
     function initialise(model) {
       angular.extend($scope, model);
@@ -105,11 +98,15 @@ angular.module('bhima.controllers')
 
     function registerEmployee() {
       var creditor_uuid = uuid();
-      var debitor_uuid = uuid();//Code Bruce
+      var debitor_uuid = uuid();
 
       writeCreditor(creditor_uuid)
-      .then(writeDebitor(debitor_uuid))
-      .then(writeEmployee(creditor_uuid,debitor_uuid))
+      .then(function () {
+        return writeDebitor(debitor_uuid);
+      })
+      .then(function () {
+        return writeEmployee(creditor_uuid, debitor_uuid);
+      })
       .then(registerSuccess)
       .catch(handleError);
     }
@@ -124,7 +121,6 @@ angular.module('bhima.controllers')
       return connect.basicPut('creditor', [creditor], ['uuid']);
     }
 
-    //BRUCE
     function writeDebitor(debitor_uuid) {
       var debitor = {
         uuid : debitor_uuid,
@@ -134,22 +130,23 @@ angular.module('bhima.controllers')
 
       return connect.basicPut('debitor', [debitor], ['uuid']);
     }
-    //BRUCE
 
-    function writeEmployee(creditor_uuid,debitor_uuid) {
+    function writeEmployee(creditor_uuid, debitor_uuid) {
       session.employee.creditor_uuid = creditor_uuid;
-      session.employee.debitor_uuid = debitor_uuid;
+      session.employee.debitor_uuid = debitor_uuid;      
+      session.employee.dob = util.sqlDate(session.employee.dob);
+      session.employee.date_embauche = util.sqlDate(session.employee.date_embauche);
+      console.log('session.employee ::: ', session.employee);
       
-      // FIXME
       delete(session.employee.group_uuid);
-      delete(session.employee.group_debitor_uuid);//BRUCE
+      delete(session.employee.group_debitor_uuid);
       return connect.basicPut('employee', [session.employee], ['uuid']);
     }
 
     function registerSuccess() {
       session.employee = {};
       session.creditor = {};
-      session.debitor = {};//BRUCE
+      session.debitor = {};
       messenger.success($translate.instant('EMPLOYEE.REGISTER_SUCCESS'));
 
       // FIXME just add employee to model
@@ -160,6 +157,7 @@ angular.module('bhima.controllers')
     }
 
     function editEmployee(employee) { 
+      console.log('employee :::', employee);
       session.employee = employee;
       session.state = route.edit;
     }
@@ -170,17 +168,15 @@ angular.module('bhima.controllers')
         group_uuid : session.employee.group_uuid
       };
 
-      //BRUCE
       var debitor = {
         uuid : session.employee.debitor_uuid,
         group_uuid : session.employee.group_debitor_uuid
       };
-      //BRUCE
 
       var employee = session.employee;
       
       delete(employee.group_uuid);
-      delete(employee.group_debitor_uuid);//BRUCE
+      delete(employee.group_debitor_uuid);
       
       submitCreditorEdit(creditor)
       .then(submitDebitorEdit(debitor))
@@ -196,11 +192,9 @@ angular.module('bhima.controllers')
       return connect.basicPost('creditor', [creditor], ['uuid']);
     }
 
-    //BRUCE
     function submitDebitorEdit(debitor) { 
       return connect.basicPost('debitor', [debitor], ['uuid']);
     }
-    //BRUCE
 
     function submitEmployeeEdit(employee) {
       return connect.basicPost('employee', [employee], ['id']);
