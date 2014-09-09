@@ -1803,5 +1803,20 @@
     "CREATE_TAXE" : "Creation des taxes",
     "CONFIGURE_IPR" : "Configuration IPR",
     "OPTIONS" : "Options"
+  } ,
+
+   "TAXES" : {
+    "TITLE"        : "Gestion des taxes",
+    "REGISTERED"   : "Taxe enregistrées", 
+    "NEW_TAX"      : "Nouvelle Taxe", 
+    "SAVE_SUCCES"  : "Taxe enregistrée avec succès",    
+    "NO_TAXES"     : "Aucune taxe n'a ete enregistrée",  
+    "ADD"          : "Ajouter ",
+    "UPDATE_SUCCES": "Updated successfully",
+    "UPDATE"       : "Modify a Tax",
+    "CONFIRM"      : "Are you sure you want to delete this Tax",
+    "DELETE_SUCCESS" : "Deleted successfully",
+    "ALERT"        : "Taxes management module is a module that has been designed to allow administration of existing tas within the organization, the table is left to record, to update the attributes of a tax and the deletion.",
+    "IPR"          : "Taxe IPR"
   }  
 }

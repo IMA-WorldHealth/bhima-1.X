@@ -1,0 +1,55 @@
+<header data-header>
+  {{ "TAXES.IPR" | translate }}
+</header>
+
+<nav>
+  
+</nav>
+
+<main>
+	<div class="row">
+		<table class="table table-condensed center">
+			<thead>
+				<tr>
+					<td>Taux</td>
+					<td colspan="2">Tranche annuelle</td>
+					<td colspan="2">Tranche mensuelle</td>
+					<td colspan="2">Ecarts</td>
+					<td colspan="2">Impots</td>
+					<td colspan="2">Cumuls</td>
+					<td>Observation</td>
+				</tr>
+				<tr>
+					<td> </td>
+					<td>de</td>
+					<td>à</td>
+					<td>de</td>
+					<td>à</td>
+					<td>Annuels</td>
+					<td>Mensuels</td>
+					<td>Annuels</td>
+					<td>Mensuels</td>
+					<td>Annuels</td>
+					<td>Mensuels</td>
+					<td> </td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="(key, value) in session.table_ipr">
+					<td> </td>
+					<td>de</td>
+					<td>à</td>
+					<td>de</td>
+					<td>à</td>
+					<td>{{value.ecart_annuel}}</td>
+					<td>{{value.ecart_mois}}</td>
+					<td>{{value.impot_annuel}}</td>
+					<td>{{value.impot_mois}}</td>
+					<td>{{value.cumul_annuel}}</td>
+					<td>{{value.cumul_mois}}</td>
+					<td> </td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</main>
