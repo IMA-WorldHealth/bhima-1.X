@@ -20,7 +20,6 @@
       class="btn btn-sm btn-default">
       <span class="glyphicon glyphicon-repeat"></span>
     </button>
-
   </div>
 
   <div class="pull-left">
@@ -50,7 +49,7 @@
           </div>
           <br>
           <div class="configure">
-            <select ng-model="session.period_id" ng-options="pp.id as formatPeriod(pp) for pp in session.model.paiement_period.data" ng-change="setConfiguration(pp)">
+            <select ng-model="session.pp" ng-options="pp as formatPeriod(pp) for pp in session.model.paiement_period.data" ng-change="setConfiguration(session.pp)">
               <option value="" ng-disabled="disabled">-- {{SELECT.PERIOD_PAYMENT | translate}}-- </option>
             </select>
           </div>
