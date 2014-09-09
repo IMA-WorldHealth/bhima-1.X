@@ -12,7 +12,8 @@ angular.module('bhima.controllers')
   'util',
   'appcache',
   'exchange',
-  function ($scope, $routeParams, $translate, $http, messenger, validate, appstate, connect, $location, util, Appcache, exchange) {
+  '$q',
+  function ($scope, $routeParams, $translate, $http, messenger, validate, appstate, connect, $location, util, Appcache, exchange, $q) {
     var dependencies = {},
         cache = new Appcache('payroll'), session = $scope.session = {configured : false, complete : false};
     session.cashbox = $routeParams.cashbox;
@@ -90,25 +91,28 @@ angular.module('bhima.controllers')
       }
     };
 
-    cache.fetch('paiement_period').then(readConfig);
-    cache.fetch('selectedItem').then(load);
-    
-
-    appstate.register('project', function (project) {
-      $scope.project = project;
-      validate.process(dependencies)
-      .then(init, function (err) {
-         $translate('PRIMARY_CASH.EXPENSE.LOADING_ERROR')
-          .then(function (value) {
-            messenger.danger(value);
-          }); 
-      });     
+    cache.fetch('paiement_period')
+    .then(readConfig)
+    .then(load)
+    .then(function () {
+        appstate.register('project', function (project) {
+          $scope.project = project;
+          validate.process(dependencies)
+          .then(init, function (err) {
+             $translate('PRIMARY_CASH.EXPENSE.LOADING_ERROR')
+              .then(function (value) {
+                messenger.danger(value);
+              }); 
+          });     
+        });
     });
+   
 
     function load (selectedItem) {
       if (!selectedItem) { return ; }
       session.loading_currency_id = selectedItem.currency_id;
       session.selectedItem = selectedItem;
+      return $q.when();
     }   
 
     function readConfig (pp) {
@@ -117,6 +121,7 @@ angular.module('bhima.controllers')
         session.configured = true;
         session.complete = true;
       }
+      return cache.fetch('selectedItem');
     }
 
 
@@ -125,10 +130,47 @@ angular.module('bhima.controllers')
       session.pp = null;
       session.configured = false;
       session.complete = false;
+      session.isEmployeeSelected = false;
     } 
 
     function init (model) {
       session.model = model;
+      getOffDayCount();
+    }
+
+    function getOffDayCount () {
+      console.log('pp',session.pp);
+      dependencies.offDays = {
+        required : true,
+        query : {
+          tables : {
+            'offday' : {
+              columns : ['id', 'label', 'date', 'percent_pay']
+            }
+          },
+          where : ['offday.date>=' + util.sqlDate(session.pp.dateFrom), 'AND', 'offday.date<=' + util.sqlDate(session.pp.dateTo)]
+        }
+      }
+
+      dependencies.paiement_period_conf = {
+        required : true,
+        query : {
+          tables : {
+            'config_paiement_period' : {
+              columns : ['id', 'weekFrom', 'weekTo']
+            }
+          },
+          where : ['config_paiement_period.paiement_period_id>=' + session.pp.id]
+        }
+      }
+
+      validate.process(dependencies)
+      .then(function (model) {
+        console.log('model',model);
+
+      })
+
+
     }
 
     function setCashAccount(cashAccount) {
@@ -148,6 +190,7 @@ angular.module('bhima.controllers')
     }
 
     function setConfiguration (pp) {
+      console.log('set pp', pp);
       cache.put('paiement_period', pp);
       session.configured = true;
       session.pp = pp;
@@ -157,7 +200,7 @@ angular.module('bhima.controllers')
 
     function selectEmployee (employee) {
       session.selectedEmployee = employee; 
-      session.selectedEmployee.basic_salary = exchange.convertir(session.selectedEmployee.basic_salary, 2, session.selectedItem.currency_id, util.sqlDate(new Date()));    // FIX ME : hack enterprise currency      
+      session.selectedEmployee.basic_salary = exchange.convertir(session.selectedEmployee.basic_salary, session.model.enterprise.data[0].currency_id, session.selectedItem.currency_id, util.sqlDate(new Date()));     
       return true;
     }
 
