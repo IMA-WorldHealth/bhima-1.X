@@ -11,10 +11,12 @@ angular.module('bhima.controllers')
   '$location',
   'util',
   'appcache',
-  function ($scope, $routeParams, $translate, $http, messenger, validate, appstate, connect, $location, util, Appcache) {
+  'exchange',
+  function ($scope, $routeParams, $translate, $http, messenger, validate, appstate, connect, $location, util, Appcache, exchange) {
     var dependencies = {},
         cache = new Appcache('payroll'), session = $scope.session = {};
     session.cashbox = $routeParams.cashbox;
+    session.selectedEmployee = {};
 
     dependencies.cash_box = {
       required : true,
@@ -89,6 +91,8 @@ angular.module('bhima.controllers')
       }
     };
 
+    cache.fetch('selectedItem').then(load);
+
     appstate.register('project', function (project) {
       $scope.project = project;
       dependencies.accounts.query.where = ['account.enterprise_id=' + project.enterprise_id];
@@ -103,25 +107,37 @@ angular.module('bhima.controllers')
 
     function load (selectedItem) {
       if (!selectedItem) { return ; }
+      session.loading_currency_id = selectedItem.currency_id;
       session.selectedItem = selectedItem;
-    }
-
-    cache.fetch('selectedItem').then(load);
+    }    
 
     function init (model) {
-      $scope.model = model;
+      session.model = model;
     }
 
     function setCashAccount(cashAccount) {
       if (cashAccount) {
-        session.selectedItem = cashAccount;
+        session.loading_currency_id = session.selectedItem.currency_id;
+        session.selectedItem = cashAccount;        
         cache.put('selectedItem', cashAccount);
       }
     }
 
     function initialiseEmployee (selectedEmployee) {
-      console.log(selectedEmployee);
+      session.isEmployeeSelected = selectedEmployee ? selectEmployee(selectedEmployee) : false;      
     }
+
+    function selectEmployee (employee) {
+      session.selectedEmployee = employee; 
+      session.selectedEmployee.basic_salary = exchange.convertir(session.selectedEmployee.basic_salary, 2, session.selectedItem.currency_id, util.sqlDate(new Date()));    // FIX ME : hack enterprise currency      
+      return true;
+    }
+    
+    $scope.$watch('session.selectedItem', function (nval, oval) {
+      if(session.isEmployeeSelected){
+        session.selectedEmployee.basic_salary = exchange.convertir(session.selectedEmployee.basic_salary, session.loading_currency_id, session.selectedItem.currency_id, util.sqlDate(new Date()));      
+      }     
+    }, true);
 
     $scope.setCashAccount = setCashAccount;  
     $scope.initialiseEmployee = initialiseEmployee; 

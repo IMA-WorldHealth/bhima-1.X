@@ -622,7 +622,11 @@
     "GRADE"               : "Grade",
     "STAFF_COST"          : "Is Staff Cost",
     "IS_PERCENT"          : "Is Percent",
-    "GRADE"               : "Grade"
+    "GRADE"               : "Grade",
+    "DATE_EMBAUCHE"       : "Hiring date",
+    "NB_CHILD"            : "Child count",
+    "NB_SPOUSE"           : "spouse count",
+    "BASE_SALARY"         : "base salary"
   },
 
   "INVENTORY" : {
