@@ -1384,7 +1384,7 @@ create table `hollyday` (
 drop table if exists `taxe_ipr`;
 create table `taxe_ipr` (
   id                      int unsigned auto_increment not null,
-  taux                    int not null,
+  taux                    float not null,
   tranche_annuelle_debut  float,
   tranche_annuelle_fin    float,
   tranche_mensuelle_debut float,
