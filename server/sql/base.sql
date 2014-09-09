@@ -43,6 +43,7 @@ delete from `tax`;
 delete from `config_tax_item`;
 delete from `paiement_period`;
 delete from `offday`;
+delete from `config_paiement_period`;
 
 -- registered units
 INSERT INTO `unit` VALUES
@@ -1855,6 +1856,14 @@ INSERT INTO `offday` VALUES
 (1, "ferrie 1", '2014-09-17', 100),
 (2, "ferrie 2", '2014-09-25', 25),
 (3, "ferrie 3", '2014-10-05', 100);
+
+INSERT INTO `config_paiement_period` VALUES
+(1, 1, '2014-09-01', '2014-09-05'),
+(2, 1, '2014-09-08', '2014-09-12'),
+(3, 1, '2014-09-15', '2014-09-19'),
+(4, 1, '2014-09-22', '2014-09-26'),
+(5, 1, '2014-09-29', '2014-09-30');
+
 
 
 

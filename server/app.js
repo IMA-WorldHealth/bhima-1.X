@@ -169,6 +169,28 @@ app.get('/employee_list/', function (req, res, next) {
   .done();
 });
 
+
+app.get('/period_paiement/', function (req, res, next) {
+  // var sql =
+
+  //   "SELECT " +
+  //   "`"
+  //   "FROM " +
+  //   "`employee`, `grade`, `debitor`, `creditor` " +
+  //   "WHERE " +
+  //   "`employee`.`grade_id` = `grade`.`uuid` AND " + 
+  //   "`employee`.`debitor_uuid` = `debitor`.`uuid` AND " +
+  //   "`employee`.`creditor_uuid` = `creditor`.`uuid` "
+
+
+  // db.exec(sql)
+  // .then(function (result) {
+  //   res.send(result);
+  // })
+  // .catch(function (err) { next(err); })
+  // .done();
+});
+
 app.get('/available_profit_center/', function (req, res, next) {
   var sql =
     'SELECT `profit_center`.`text`, `profit_center`.`id`, `profit_center`.`project_id`, `service`.`name` '+

@@ -13,6 +13,14 @@
         <a href="" ng-click="setCashAccount(box)"> {{ box.symbol }} </a>
       </li>
     </ul>
+
+     <button
+      style="margin-left: 5px;"
+      ng-click="reconfigure()"
+      class="btn btn-sm btn-default">
+      <span class="glyphicon glyphicon-repeat"></span>
+    </button>
+
   </div>
 
   <div class="pull-left">
@@ -25,13 +33,39 @@
 </nav>
 
 <main>
-  <div class="row">
+
+  <div ng-if="!session.configured" class="row">
+    <div class="col-xs-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          {{ "PRIMARY_CASH.EXPENSE.SELECT_PERIOD" | translate }}
+        </div>
+
+        <div class="panel-body">
+          <div class="configure">
+            <span
+              style="font-size: 70px"
+              class="glyphicon glyphicon-calendar">
+            </span>
+          </div>
+          <br>
+          <div class="configure">
+            <select ng-model="session.period_id" ng-options="pp.id as formatPeriod(pp) for pp in session.model.paiement_period.data" ng-change="setConfiguration(pp)">
+              <option value="" ng-disabled="disabled">-- {{SELECT.PERIOD_PAYMENT | translate}}-- </option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" ng-if="session.configured">
     <div class="col-xs-6">
       <div find-employee on-search-complete="initialiseEmployee"></div>
     </div>
   </div>
 
-  <div class="col-xs-12" ng-show="session.isEmployeeSelected">
+  <div class="col-xs-12" ng-show="session.isEmployeeSelected && session.complete">
     <fieldset>
       <legend>
         {{ "PRIMARY_CASH.EXPENSE.SUMMARY" | translate}}
@@ -62,7 +96,7 @@
     </fieldset>
   </div>
 
-  <div class="col-xs-4" ng-show="session.isEmployeeSelected">
+  <div class="col-xs-4" ng-show="session.isEmployeeSelected && session.complete">
     <div class="panel panel-default">
       <div class="panel-heading" >
         <b>{{ "PRIMARY_CASH.EXPENSE.INFO_GLOBAL" | translate}}</b>
@@ -106,7 +140,7 @@
     </div>
   </div>
 
-  <div class="col-xs-4" ng-show="session.isEmployeeSelected">
+  <div class="col-xs-4" ng-show="session.isEmployeeSelected && session.complete">
     <div class="panel panel-default">
       <div class="panel-heading" >
         <b>{{ "PRIMARY_CASH.EXPENSE.ADVANTAGES" | translate}}</b>
@@ -163,7 +197,7 @@
     </div>
   </div>
 
-  <div class="col-xs-4" ng-show="session.isEmployeeSelected">
+  <div class="col-xs-4" ng-show="session.isEmployeeSelected && session.complete">
     <div class="panel panel-default">
       <div class="panel-heading" >
         <b>{{ "PRIMARY_CASH.EXPENSE.TAXES_OTHERS" | translate}}</b>
