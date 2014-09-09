@@ -14,7 +14,7 @@ angular.module('bhima.controllers')
   'exchange',
   function ($scope, $routeParams, $translate, $http, messenger, validate, appstate, connect, $location, util, Appcache, exchange) {
     var dependencies = {},
-        cache = new Appcache('payroll'), session = $scope.session = {};
+        cache = new Appcache('payroll'), session = $scope.session = {configured : false, complete : false};
     session.cashbox = $routeParams.cashbox;
     session.selectedEmployee = {};
 
@@ -54,20 +54,19 @@ angular.module('bhima.controllers')
       }
     };
 
-    dependencies.accounts = {
-      required : true,
-      query : {
-        tables : {
-          'account' : {
-            columns : ['id','account_number', 'account_txt']
-          }
-        }
-      }
-    };
-
     dependencies.cashier = {
       query : 'user_session'
     };
+
+    dependencies.paiement_period = {
+      query : {
+        tables : {
+          'paiement_period' : {
+            columns : ['id', 'config_tax_id', 'config_rubric_id', 'label', 'dateFrom', 'dateTo']
+          }
+        }
+      }
+    }
 
     dependencies.pcash_module = {
       required : true,
@@ -91,17 +90,18 @@ angular.module('bhima.controllers')
       }
     };
 
+    cache.fetch('paiement_period').then(readConfig);
     cache.fetch('selectedItem').then(load);
+    
 
     appstate.register('project', function (project) {
       $scope.project = project;
-      dependencies.accounts.query.where = ['account.enterprise_id=' + project.enterprise_id];
       validate.process(dependencies)
       .then(init, function (err) {
          $translate('PRIMARY_CASH.EXPENSE.LOADING_ERROR')
-        .then(function (value) {
-          messenger.danger(value);
-        }); 
+          .then(function (value) {
+            messenger.danger(value);
+          }); 
       });     
     });
 
@@ -109,7 +109,23 @@ angular.module('bhima.controllers')
       if (!selectedItem) { return ; }
       session.loading_currency_id = selectedItem.currency_id;
       session.selectedItem = selectedItem;
-    }    
+    }   
+
+    function readConfig (pp) {
+      if(pp){
+        session.pp = pp;
+        session.configured = true;
+        session.complete = true;
+      }
+    }
+
+
+    function reconfigure() {
+      cache.remove('paiement_period');
+      session.pp = null;
+      session.configured = false;
+      session.complete = false;
+    } 
 
     function init (model) {
       session.model = model;
@@ -127,12 +143,24 @@ angular.module('bhima.controllers')
       session.isEmployeeSelected = selectedEmployee ? selectEmployee(selectedEmployee) : false;      
     }
 
+    function formatPeriod (pp) {
+      return [pp.label, util.sqlDate(pp.dateFrom), util.sqlDate(pp.dateTo)].join(' / ');
+    }
+
+    function setConfiguration (pp) {
+      cache.put('paiement_period', pp);
+      session.configured = true;
+      session.pp = pp;
+      session.complete = true;
+    }
+
+
     function selectEmployee (employee) {
       session.selectedEmployee = employee; 
       session.selectedEmployee.basic_salary = exchange.convertir(session.selectedEmployee.basic_salary, 2, session.selectedItem.currency_id, util.sqlDate(new Date()));    // FIX ME : hack enterprise currency      
       return true;
     }
-    
+
     $scope.$watch('session.selectedItem', function (nval, oval) {
       if(session.isEmployeeSelected){
         session.selectedEmployee.basic_salary = exchange.convertir(session.selectedEmployee.basic_salary, session.loading_currency_id, session.selectedItem.currency_id, util.sqlDate(new Date()));      
@@ -141,5 +169,8 @@ angular.module('bhima.controllers')
 
     $scope.setCashAccount = setCashAccount;  
     $scope.initialiseEmployee = initialiseEmployee; 
+    $scope.formatPeriod = formatPeriod;
+    $scope.setConfiguration = setConfiguration;
+    $scope.reconfigure = reconfigure;
   }
 ]);

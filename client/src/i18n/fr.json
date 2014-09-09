@@ -1445,7 +1445,8 @@
       "SALARY_AV" : "Avance sur salaire",
       "INSS" : "Cot. INSS",
       "IPR" : "IPR",
-      "OTHER_DEDUCT" : "Autres deductions" 
+      "OTHER_DEDUCT" : "Autres deductions" ,
+      "SELECT_PERIOD" : "Selectionner une periode de paiement"
     },
     "INCOME" : {
       "TRANSFER"              : "Transfert",
