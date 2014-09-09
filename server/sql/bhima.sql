@@ -1380,3 +1380,14 @@ create table `hollyday` (
   key `employee_id` (`employee_id`),
   constraint foreign key (`employee_id`) references `employee` (`id`)
 ) engine=innodb;
+
+drop table if exists `taxe_ipr`;
+create table `taxe_ipr` (
+  id                      int unsigned auto_increment not null,
+  taux                    int not null,
+  tranche_annuelle_debut  float,
+  tranche_annuelle_fin    float,
+  tranche_mensuelle_debut float,
+  tranche_mensuelle_fin   float,
+  primary key (`id`)
+) engine=innodb;
