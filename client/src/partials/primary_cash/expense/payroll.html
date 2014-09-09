@@ -9,7 +9,7 @@
       <span class="caret" data-caret="&#9660;"></span>
     </button>
     <ul class="dropdown-menu pull-left">
-      <li ng-repeat="box in model.cash_box.data">
+      <li ng-repeat="box in session.model.cash_box.data">
         <a href="" ng-click="setCashAccount(box)"> {{ box.symbol }} </a>
       </li>
     </ul>
@@ -20,10 +20,6 @@
       <li><span class="glyphicon glyphicon-home"></span></li>
       <li><a href="#/primary_cash/">{{"PRIMARY_CASH.TITLE" | translate}}</a></li>
       <li class="active">{{"PRIMARY_CASH.EXPENSE.PAYROLL" | translate}}</li>
-
-    <li class="active">{{"PRIMARY_CASH.EXPENSE.PAYROLL" | translate}}</li>
-      <li class="active">{{"PRIMARY_CASH.EXPENSE.PAYROLL" | translate}}</li>
-
     </ol>
   </div>
 </nav>
@@ -32,6 +28,194 @@
   <div class="row">
     <div class="col-xs-6">
       <div find-employee on-search-complete="initialiseEmployee"></div>
+    </div>
+  </div>
+
+  <div class="col-xs-12" ng-show="session.isEmployeeSelected">
+    <fieldset>
+      <legend>
+        {{ "PRIMARY_CASH.EXPENSE.SUMMARY" | translate}}
+      </legend>
+      <table class=' table-condensed table table-bordered'>
+        <thead>
+          <tr>
+            <th>{{ "COLUMNS.NAME" | translate}}</th>
+            <th>{{ "COLUMNS.DATE_EMBAUCHE" | translate}}</th>
+            <th>{{ "COLUMNS.GRADE" | translate}}</th>
+            <th>{{ "COLUMNS.NB_CHILD" | translate}}</th>
+            <th>{{ "COLUMNS.NB_SPOUSE" | translate}}</th>
+            <th>{{ "COLUMNS.BASE_SALARY" | translate}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{session.selectedEmployee.name}}</td>
+            <td>{{session.selectedEmployee.date_embauche | date}}</td>
+            <td>{{session.selectedEmployee.text}}</td>
+            <td>{{session.selectedEmployee.nb_enfant}}</td>
+            <td>{{session.selectedEmployee.nb_spouse}}</td>
+            <td><b ng-bind-html="session.selectedEmployee.basic_salary | intlcurrency:session.selectedItem.currency_id"></b></td>
+          </tr>
+        </tbody>
+      </table>
+      </form>
+    </fieldset>
+  </div>
+
+  <div class="col-xs-4" ng-show="session.isEmployeeSelected">
+    <div class="panel panel-default">
+      <div class="panel-heading" >
+        <b>{{ "PRIMARY_CASH.EXPENSE.INFO_GLOBAL" | translate}}</b>
+      </div>
+      <div class="panel-body">
+        <form class="form-horizontal">
+          <div class="form-group">
+            <label class="col-xs-4">{{"PRIMARY_CASH.EXPENSE.WORKING_DAY" | translate}}</label>
+            <div class="col-xs-8">
+              <input type="number" ng-model="session.data.working_day"  class="form-bhima" min="0" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-xs-4">{{"PRIMARY_CASH.EXPENSE.OFF_DAY" | translate}}</label>
+            <div class="col-xs-8">
+              <input type="number" ng-model="session.data.off_day"  class="form-bhima" min="0" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-xs-4">{{"PRIMARY_CASH.EXPENSE.HOLLY_DAY" | translate}}</label>
+            <div class="col-xs-8">
+              <input type="number" ng-model="session.data.holly_day"  class="form-bhima" min="0" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-xs-4">
+              <label class="control-label">{{"PRIMARY_CASH.EXPENSE.SALARY" | translate}}</label>
+            </div>
+
+            <div class="input-group col-xs-8">
+              <input type="number" ng-model="session.data.salary"  class="form-bhima" min="0" disabled="disabled">
+              <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xs-4" ng-show="session.isEmployeeSelected">
+    <div class="panel panel-default">
+      <div class="panel-heading" >
+        <b>{{ "PRIMARY_CASH.EXPENSE.ADVANTAGES" | translate}}</b>
+      </div>
+      <div class="panel-body">
+        <form class="form-horizontal">
+
+          <div class="form-group">
+            <div class="col-xs-4">
+              <label class="control-label">{{"PRIMARY_CASH.EXPENSE.HOUSING" | translate}}</label>
+            </div>
+
+            <div class="input-group col-xs-8">
+              <input type="number" ng-model="session.data.housing"  class="form-bhima" min="0" required>
+              <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
+            </div>
+          </div>          
+
+          <div class="form-group">
+            <div class="col-xs-4">
+              <label class="control-label">{{"PRIMARY_CASH.EXPENSE.FAM_ALLOW" | translate}}</label>
+            </div>
+
+            <div class="input-group col-xs-8">
+              <input type="number" ng-model="session.data.fam_allow"  class="form-bhima" min="0" required>
+              <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
+            </div>
+          </div>         
+
+          <div class="form-group">
+            <div class="col-xs-4">
+              <label class="control-label">{{"PRIMARY_CASH.EXPENSE.TRANSPORT" | translate}}</label>
+            </div>
+
+            <div class="input-group col-xs-8">
+              <input type="number" ng-model="session.data.transport"  class="form-bhima" min="0" required>
+              <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
+            </div>
+          </div>          
+
+          <div class="form-group">
+            <div class="col-xs-4">
+              <label class="control-label">{{"PRIMARY_CASH.EXPENSE.SENIORITY" | translate}}</label>
+            </div>
+
+            <div class="input-group col-xs-8">
+              <input type="number" ng-model="session.data.seniority"  class="form-bhima" min="0" required>
+              <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xs-4" ng-show="session.isEmployeeSelected">
+    <div class="panel panel-default">
+      <div class="panel-heading" >
+        <b>{{ "PRIMARY_CASH.EXPENSE.TAXES_OTHERS" | translate}}</b>
+      </div>
+      <div class="panel-body">
+        <form class="form-horizontal">
+
+          <div class="form-group">
+            <div class="col-xs-4">
+              <label class="control-label">{{"PRIMARY_CASH.EXPENSE.INSS" | translate}}</label>
+            </div>
+
+            <div class="input-group col-xs-8">
+              <input type="number" ng-model="session.data.housing"  class="form-bhima" min="0" required>
+              <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
+            </div>
+          </div>          
+
+          <div class="form-group">
+            <div class="col-xs-4">
+              <label class="control-label">{{"PRIMARY_CASH.EXPENSE.IPR" | translate}}</label>
+            </div>
+
+            <div class="input-group col-xs-8">
+              <input type="number" ng-model="session.data.fam_allow"  class="form-bhima" min="0" required>
+              <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
+            </div>
+          </div> 
+
+          <div class="form-group">
+            <div class="col-xs-4">
+              <label class="control-label">{{"PRIMARY_CASH.EXPENSE.SALARY_AV" | translate}}</label>
+            </div>
+
+            <div class="input-group col-xs-8">
+              <input type="number" ng-model="session.data.seniority"  class="form-bhima" min="0" required>
+              <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
+            </div>
+          </div>        
+
+          <div class="form-group">
+            <div class="col-xs-4">
+              <label class="control-label">{{"PRIMARY_CASH.EXPENSE.OTHER_DEDUCT" | translate}}</label>
+            </div>
+
+            <div class="input-group col-xs-8">
+              <input type="number" ng-model="session.data.transport"  class="form-bhima" min="0" required>
+              <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
+            </div>
+          </div>          
+        </form>
+      </div>
     </div>
   </div>
 </main>

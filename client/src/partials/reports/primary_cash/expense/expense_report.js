@@ -104,7 +104,6 @@ angular.module('bhima.controllers')
     $scope.setSelectedCash = setSelectedCash;
     $scope.fill = fill;
 
-    //Code Bruce
     function convert (){
       session.sum_credit = 0; 
       if(session.model.records.data) {   
