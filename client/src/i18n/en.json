@@ -622,7 +622,8 @@
     "GRADE"               : "Grade",
     "STAFF_COST"          : "Is Staff Cost",
     "IS_PERCENT"          : "Is Percent",
-    "GRADE"               : "Grade"
+    "OFFDAYS"             : "Offdays",
+    "PERCENT_PAY"         : "Percent pay"    
   },
 
   "INVENTORY" : {
@@ -762,7 +763,8 @@
     "GRADE_EMPLOYERS"           : "Grade Employees",
     "TAXES"                     : "Taxes",     
     "TAXE_MANAGEMENT"           : "Tax management",
-    "RUBRIC_PAYROLL"            : "Payroll Rubrics"
+    "RUBRIC_PAYROLL"            : "Payroll Rubrics",
+    "OFFDAY_MANAGEMENT"         : "Offday management"  
   },
 
   "RUBRIC_PAYROLL"       : {
@@ -1783,7 +1785,21 @@
     "CONFIRM" : "Are you sure you want to delete this Tax",
     "DELETE_SUCCESS" : "Deleted successfully",
     "ALERT"        : "Taxes management module is a module that has been designed to allow administration of existing tas within the organization, the table is left to record, to update the attributes of a tax and the deletion."
-  }    
+  },
+
+  "OFFDAY_MANAGEMENT" : {
+    "TITLE"         : "Offdays Management",
+    "NEW_OFFDAY"    : "New Offday",
+    "SAVE_SUCCES"  : "Successfully saving Offday",    
+    "UPDATE_SUCCES" : "Updated successfully",
+    "UPDATE"        : "Modify a Offday",
+    "DELETE_SUCCESS" : "Deleted successfully",    
+    "ADD"           : "Add a Offday",
+    "CONFIRM"       : "Are you sure you want to delete this Offday",    
+    "REGISTERED"    : "Registered Offdays",
+    "ALERT"         : "Le module gestion des jours ferriés permet de configurer les différents types de jours ferriés qui sont prises en charge dans l'organisation",
+    "CREATE_TAXE"   : "Creation des taxes"
+  }      
 }
 
 
