@@ -1770,7 +1770,6 @@
     "OPTIONS" : "Options"
   } ,
 
-
    "TAXES" : {
     "TITLE"        : "Taxes management",
     "REGISTERED"   : "Registered Taxes", 
@@ -1783,7 +1782,27 @@
     "CONFIRM"      : "Are you sure you want to delete this Tax",
     "DELETE_SUCCESS" : "Deleted successfully",
     "ALERT"        : "Taxes management module is a module that has been designed to allow administration of existing tas within the organization, the table is left to record, to update the attributes of a tax and the deletion.",
-    "IPR"          : "IPR Tax"
+    "IPR"          : "IPR Tax",
+    "ADD_TRANCHE"  : "Ajouter Tranche",
+    "REGISTERED_TRANCHES" : "Slices Registred",
+    "TAUX"                : "Rate",
+    "ANNUAL_TRANCH"       : "Annual Tranch",
+    "MONTH_TRANCH"        : "Month Tranch",
+    "TRANCH"              : "Tranch",
+    "FROM"                : "From",
+    "TO"                  : "To",
+    "NO_TRANCHES"         : "No tranch has been recorded",
+    "INFO_IPR"            : "This interface allows to manage slices to calculate the IPR",
+    "NEW_TRANCH"          : "New Tranch",
+    "EDIT_TRANCH"         : "Edit Tranch",
+    "SEE_TABLE"           : "See the complete table",
+    "INTERFACE"           : "Interface",
+    "ANNUAL_ECART"        : "Annual Difference",
+    "MONTH_ECART"         : "Monthly Difference",
+    "ANNUAL_IMPOT"        : "Annual Impot",
+    "MONTH_IMPOT"         : "Monthly Impot",
+    "ANNUAL_CUMUL"        : "Annual Accumulation",
+    "MONTH_CUMUL"         : "Accumulated Monthly"
   }    
 }
 

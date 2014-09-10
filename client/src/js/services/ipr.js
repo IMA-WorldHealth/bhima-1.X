@@ -1,9 +1,10 @@
 angular.module('bhima.services')
-.factory('ipr', ['validate', function(validate){
+.service('ipr', ['validate', '$q', function(validate, $q){
 	//Summary:
 	// Ce service effectue les calculs de l'IPR pour le Payroll
+	
 	var session = {};
-		session.tranches = {};
+		session.tranches = [];
 		session.ecarts = [];
 		session.impots = [];
 		session.cumuls = [];
@@ -17,48 +18,49 @@ angular.module('bhima.services')
 		}
 	};
 
-	validate.process(dependencies)
-	.then(setupModel)
-	.then(generateEcartsImpots)
-	.then(generateCumuls);
-
-	function get(){
-		return {
-			ecarts    : session.ecarts,
-			impots    : session.impots,
-			cumuls    : session.cumuls,
-			tranches  : session.tranches
-		};
-	}
-
 	function setupModel(model){
-		session.tranches = model.taxe_ipr.data;
-		console.log(session);
+		return $q.when(model.taxe_ipr.data);
 	}
 
-	function generateEcartsImpots(){
-		var ecart_an, ecart_mois, impot_an, impot_mois;
-		for (var tranche in session.tranches){
-			ecart_an = session.tranches[tranche].tranche_annuelle_fin - session.tranches[tranche].tranche_annuelle_debut;
-			ecart_mois = session.tranches[tranche].tranche_mensuelle_fin - session.tranches[tranche].tranche_mensuelle_debut;
-			impot_an = ecart_an * (session.tranches[tranche].taux / 100);
-			impot_mois = ecart_mois * (session.tranches[tranche].taux / 100);
-			session.ecarts.push({'taux':session.tranches[tranche].taux,'ecart_annuel':ecart_an,'ecart_mois':ecart_mois});
-			session.impots.push({'taux':session.tranches[tranche].taux,'impot_annuel':impot_an,'impot_mois':impot_mois});
+	function generateEcartsImpots(tranches){
+		var ecart_an, ecart_mois, impot_an, impot_mois, ecarts = [], impots = [];
+		session.tranches = tranches;
+		for (var tranche in tranches){
+			ecart_an = tranches[tranche].tranche_annuelle_fin - tranches[tranche].tranche_annuelle_debut;
+			ecart_mois = tranches[tranche].tranche_mensuelle_fin - tranches[tranche].tranche_mensuelle_debut;
+			impot_an = Math.round(ecart_an * (tranches[tranche].taux / 100));
+			impot_mois = Math.round(ecart_mois * (tranches[tranche].taux / 100));
+			ecarts.push({'taux':tranches[tranche].taux,'ecart_annuel':ecart_an,'ecart_mois':ecart_mois});
+			impots.push({'taux':tranches[tranche].taux,'impot_annuel':impot_an,'impot_mois':impot_mois});
 		}
+		return $q.when({ecarts : ecarts, impots : impots});
 	}
 
-	function generateCumuls(){
+	function generateCumuls(obj){
 		var cum_an, cum_mois;
-			session.cumuls.push({'taux':session.impots[0].taux,'cumul_annuel':0,'cumul_mois':0});
-		for (i=1;i<session.impots.length;i++){
+		session.ecarts = obj.ecarts;
+		session.impots = obj.impots;
+		session.cumuls.push({'taux':session.impots[0].taux,'cumul_annuel':0,'cumul_mois':0});
+		for (var i=1;i<session.impots.length;i++){
 			cum_an = session.impots[i].impot_annuel + session.cumuls[i-1].cumul_annuel;
 			cum_mois = session.impots[i].impot_mois + session.cumuls[i-1].cumul_mois;
 			session.cumuls.push({'taux':session.impots[i].taux,'cumul_annuel':cum_an,'cumul_mois':cum_mois});
 		}
+		return $q.when();
 	}
 
-	return {
-		get : get
-	};
+	function start () {
+		var deff = $q.defer();
+		validate.process(dependencies)
+		.then(setupModel)
+		.then(generateEcartsImpots)
+		.then(generateCumuls)
+		.then(function () {
+			deff.resolve(session);
+		});
+		return deff.promise;
+	}
+
+	this.start = start;
+
 }]);
