@@ -414,7 +414,8 @@
 	"GRADE_EMPLOYERS"			: "Gestion des Grades",
     "TAXES"                     : "Taxes",    
     "TAXE_MANAGEMENT"           : "Gestion des taxes",
-    "RUBRIC_PAYROLL"            : "Gestion des rubriques"
+    "RUBRIC_PAYROLL"            : "Gestion des rubriques",
+    "OFFDAY_MANAGEMENT"         : "Gestion des jours ferriés"    
 },
 
   "RUBRIC_PAYROLL"       : {
@@ -769,7 +770,9 @@
 	"BASIC_SALARY"	      : "Salaire de base",
 	"GRADE"				  : "Grade",
     "STAFF_COST"          : "Pour les employés",
-    "IS_PERCENT"          : "En pourcentage"
+    "IS_PERCENT"          : "En pourcentage",
+    "OFFDAYS"             : "Jours ferriés",
+    "PERCENT_PAY"         : "Pourcentage de paiement"    
   },
 
   "REPORT"                  : {
@@ -1803,5 +1806,19 @@
     "CREATE_TAXE" : "Creation des taxes",
     "CONFIGURE_IPR" : "Configuration IPR",
     "OPTIONS" : "Options"
-  }  
+  },
+
+  "OFFDAY_MANAGEMENT" : {
+    "TITLE"         : "Gestion des jours ferriés",
+    "NEW_OFFDAY"    : "Nouveau Jour ferrié",
+    "SAVE_SUCCES"  : "Enregistrement avec succès",    
+    "UPDATE_SUCCES" : "Mis à jour avec succès",
+    "CONFIRM"       : "Etes vous sure de vouloir supprimer ce jour ferrié",      
+    "UPDATE"        : "Mettre à jour un jour ferrié",    
+    "ADD"           : "Ajouter un jour ferrié",
+    "REGISTERED"    : "jours ferriés enregistrés",
+    "ALERT"         : "Le module gestion des jours ferriés permet de configurer les différents types de jours ferriés qui sont prises en charge dans l'organisation",
+    "CREATE_TAXE"   : "Creation des taxes"
+  }
+
 }

@@ -404,7 +404,11 @@
     .when('/rubriques_payroll/', {
       controller : 'rubriques_payroll',
       templateUrl : 'partials/rubriques_payroll/rubriques_payroll.html'
-    });
+    })
+    .when('/offday_management/', {
+      controller : 'offdays',
+      templateUrl : 'partials/offdays/offdays.html'
+    });    
   }
 
   function translateConfig($translateProvider) {
