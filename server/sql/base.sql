@@ -98,7 +98,8 @@ INSERT INTO `unit` VALUES
 (61,'Grade Employers','TREE.GRADE_EMPLOYERS','',1,0,'/partials/grade_employers/','/grade_employers/'),
 (62,'Gestions des taxes','TREE.TAXE_MANAGEMENT','',1,0,'/partials/taxe/','/taxes_management/'),
 (63,'Rubriques Payroll','TREE.RUBRIC_PAYROLL','',1,0,'/partials/rubriques_payroll/','/rubriques_payroll/'),
-(64,'Gestions des jours ferries','TREE.OFFDAY_MANAGEMENT','',1,0,'/partials/offdays/','/offday_management/');
+(64,'Gestions des jours ferries','TREE.OFFDAY_MANAGEMENT','',1,0,'/partials/offdays/','/offday_management/'),
+(65,'Gestion des vacances','TREE.HOLLYDAY_MANAGEMENT','',1,0,'/partials/hollydays/','/hollyday_management/');
 
 -- base user & permissions
 INSERT INTO `user` (id, username, password, first, last, email, logged_in) VALUES
