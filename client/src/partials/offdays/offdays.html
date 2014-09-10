@@ -1,0 +1,119 @@
+<header data-header>
+  {{ "OFFDAY_MANAGEMENT.TITLE" | translate }}
+</header>
+
+<nav>
+  <button class="btn btn-sm btn-default" ng-click="new()">
+    <span class="glyphicon glyphicon-time"></span>
+    {{ "OFFDAY_MANAGEMENT.ADD" | translate }}
+  </button>
+</nav>
+
+<main>
+  <div class="row">
+
+    <div class="col-xs-6">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-time"></span>
+          {{ "OFFDAY_MANAGEMENT.REGISTERED" | translate }}
+        </div>
+        <table class="table table-condensed">
+          <thead>
+            <tr>
+              <th>{{ "COLUMNS.NR" | translate}}</th>
+              <th>{{ "COLUMNS.OFFDAYS" | translate}}</th>
+              <th>{{ "COLUMNS.DATE" | translate}}</th>
+              <th>{{ "COLUMNS.PERCENT_PAY" | translate}}</th>
+              <th colspan="4" style="max-width: 20%;">{{ "COLUMNS.ACTIONS" | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="offday in offdays.data | orderBy:'date'">
+              <td>{{$index + 1}}</td>
+              <td>{{ offday.label }}</td>
+              <td>{{ offday.date | date}}</td>
+              <td>{{ offday.percent_pay }} %</td>
+              <td><a class="action" ng-click="edit(offday)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+              <td><a class="action danger" ng-click="delete(offday)"><span class="glyphicon glyphicon-trash"></span></a></td>
+            </tr>
+            <tr ng-if="!offdays.data.length">
+              <td colspan="4">{{ "GRADE.NO_GRADES" | translate }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col-xs-6" ng-switch="session.action">
+      <div class="alert alert-info" ng-switch-default>
+        <h4>{{ "OFFDAY_MANAGEMENT.TITLE" | translate }}</h4>
+        <p>{{ "OFFDAY_MANAGEMENT.ALERT" | translate }}</p>
+      </div>
+
+      <div ng-switch-when="new">
+        <form novalidate class="form-horizontal">
+          <legend><h3>{{ "OFFDAY_MANAGEMENT.NEW_OFFDAY" | translate }} </h3></legend>
+
+          <div class="form-group">
+            <label class="control-label col-xs-3 required">{{ "COLUMNS.OFFDAYS" | translate }}</label>
+            <div class="col-xs-8">
+              <input ng-model="session.new.label" class="form-bhima" required="required">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-3 required">{{ "COLUMNS.DATE" | translate }}</label>
+            <div class="col-xs-8">
+              <input type="date" ng-model="session.new.date" class="form-bhima" required="required">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-3 required">{{ "COLUMNS.PERCENT_PAY" | translate }}</label>
+            <div class="col-xs-8">
+              <input ng-model="session.new.percent_pay" class="form-bhima" required="required">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
+            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
+          </div>   
+        </form>
+      </div>
+
+      <div ng-switch-when="edit">
+        <form novalidate class="form-horizontal">
+          <legend><h3>{{ "OFFDAY_MANAGEMENT.UPDATE" | translate }} </h3></legend>
+
+          <div class="form-group">
+            <label class="control-label col-xs-3 required">{{ "COLUMNS.OFFDAYS" | translate }}</label>
+            <div class="col-xs-8">
+              <input ng-model="session.edit.label" class="form-bhima" required="required">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-3 required">{{ "COLUMNS.DATE" | translate }}</label>
+            <div class="col-xs-8">
+              <input required class="form-bhima"  ng-model="session.edit.date" type="date">    
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-3 required">{{ "COLUMNS.PERCENT_PAY" | translate }}</label>
+            <div class="col-xs-8">
+              <input ng-model="session.edit.percent_pay" class="form-bhima" required="required">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
+            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
+          </div>   
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
