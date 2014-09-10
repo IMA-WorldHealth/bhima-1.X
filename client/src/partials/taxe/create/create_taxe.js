@@ -80,8 +80,7 @@ angular.module('bhima.controllers')
           angular.extend($scope, models);
           messenger.success($translate.instant('TAXES.UPDATE_SUCCES'));
           session.action = '';
-        session.edit = {};
-
+          session.edit = {};
         });        
       });
     };
