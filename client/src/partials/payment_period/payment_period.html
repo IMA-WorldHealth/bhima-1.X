@@ -1,0 +1,156 @@
+<header data-header>
+  {{ "PAYMENT_PERIOD.TITLE" | translate }}
+</header>
+
+<nav>
+  <button class="btn btn-sm btn-default" ng-click="new()">
+    <span class="glyphicon glyphicon-file"></span>
+    {{ "PAYMENT_PERIOD.ADD" | translate }}
+  </button>
+</nav>
+
+<main>
+	<div class="row">
+		<div class="col-xs-6">
+	      <div class="panel panel-primary">
+	        <div class="panel-heading">
+	          <span class="glyphicon glyphicon-th-list"></span>
+	          {{ "PAYMENT_PERIOD.REGISTERED" | translate }}
+	        </div>
+	        <table class="table table-condensed">
+	          <thead>
+	            <tr>
+	              <th>{{ "PAYMENT_PERIOD.LABEL" | translate}}</th>
+	              <th>{{ "PAYMENT_PERIOD.FROM" | translate}}</th>
+	              <th>{{ "PAYMENT_PERIOD.TO" | translate}}</th>
+	              <th>{{ "PAYMENT_PERIOD.RUBRIC" | translate}}</th>
+	              <th>{{ "PAYMENT_PERIOD.TAX" | translate}}</th>
+	              <th colspan="4" style="max-width: 20%;">{{ "COLUMNS.ACTIONS" | translate }}</th>
+	            </tr>
+	          </thead>
+	          <tbody>
+	            <tr ng-repeat="period in paiement_period.data">
+	              <td>{{period.label}}</td>
+	              <td>{{period.dateFrom | date : "d MMM yyyy"}}</td>
+	              <td>{{period.dateTo | date : "d MMM yyyy"}}</td>
+	              <td>rubric</td>
+	              <td>tax</td>
+	              <td><a class="action" ng-click="edit(rubric)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+	              <td><a class="action danger" ng-click="delete(rubric)"><span class="glyphicon glyphicon-trash"></span></a></td>
+	            </tr>
+	            <tr ng-if="!paiement_period.data.length">
+	              <td colspan="5">{{ "PAYMENT_PERIOD.NO_PERIODS" | translate }}</td>
+	            </tr>
+	          </tbody>
+	        </table>
+	      </div>
+	    </div>
+
+	    <div class="col-xs-6" ng-switch="session.action">
+	      <div class="alert alert-info" ng-switch-default>
+	        <h4>{{ "PAYMENT_PERIOD.TITLE" | translate }}</h4>
+	        <p>{{ "PAYMENT_PERIOD.INFO" | translate }}</p>
+	      </div>
+
+	      <div ng-switch-when="new">
+	        <form novalidate class="form-horizontal">
+	          <legend><h3>{{ "PAYMENT_PERIOD.NEW" | translate }} </h3></legend>
+
+	          <div class="form-group">
+	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.LABEL" | translate }}</label>
+	            <div class="col-xs-8">
+	              <input ng-model="session.new.label" class="form-bhima" required="required">
+	            </div>
+	          </div>
+
+	          <div class="form-group">
+	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.FROM" | translate }}</label>
+	            <div class="col-xs-8">
+	              <input type="date" ng-model="session.new.from" class="form-bhima" required="required">
+	            </div>
+	          </div>
+
+	          <div class="form-group">
+	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.TO" | translate }}</label>
+	            <div class="col-xs-8">
+	              <input type="date" ng-model="session.new.to" class="form-bhima" required="required">
+	            </div>
+	          </div>
+
+	          <div class="form-group">
+	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.RUBRIC" | translate }}</label>
+	            <div class="col-xs-8">
+	              <select ng-model="session.new.rubric" class="form-bhima" required="required">
+	              	<option>{{ "SELECT.PERIOD_RUBRIC_CONFIG" | translate }}</option>
+	              </select>
+	            </div>
+	          </div>
+
+	          <div class="form-group">
+	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.TAX" | translate }}</label>
+	            <div class="col-xs-8">
+	              <select ng-model="session.new.rubric" class="form-bhima" required="required">
+	              	<option>{{ "SELECT.PERIOD_TAX_CONFIG" | translate }}</option>
+	              </select>
+	            </div>
+	          </div>
+
+	          <div class="form-group">
+	            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
+	            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
+	          </div>   
+	        </form>
+	      </div>
+
+	      <div ng-switch-when="edit">
+	        <form novalidate class="form-horizontal">
+	          <legend><h3>{{ "PAYMENT_PERIOD.EDIT" | translate }} </h3></legend>
+
+	          <div class="form-group">
+	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.LABEL" | translate }}</label>
+	            <div class="col-xs-8">
+	              <input ng-model="session.edit.label" class="form-bhima" required="required">
+	            </div>
+	          </div>
+
+	          <div class="form-group">
+	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.FROM" | translate }}</label>
+	            <div class="col-xs-8">
+	              <input type="date" ng-model="session.edit.from" class="form-bhima" required="required">
+	            </div>
+	          </div>
+
+	          <div class="form-group">
+	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.TO" | translate }}</label>
+	            <div class="col-xs-8">
+	              <input type="date" ng-model="session.edit.to" class="form-bhima" required="required">
+	            </div>
+	          </div>
+
+	          <div class="form-group">
+	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.RUBRIC" | translate }}</label>
+	            <div class="col-xs-8">
+	              <select ng-model="session.edit.rubric" class="form-bhima" required="required">
+	              	<option>{{ "SELECT.PERIOD_RUBRIC_CONFIG" | translate }}</option>
+	              </select>
+	            </div>
+	          </div>
+
+	          <div class="form-group">
+	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.TAX" | translate }}</label>
+	            <div class="col-xs-8">
+	              <select ng-model="session.edit.rubric" class="form-bhima" required="required">
+	              	<option>{{ "SELECT.PERIOD_TAX_CONFIG" | translate }}</option>
+	              </select>
+	            </div>
+	          </div>
+
+	          <div class="form-group">
+	            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
+	            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
+	          </div>   
+	        </form>
+	      </div>
+	    </div>
+	</div>
+</main>

@@ -285,7 +285,9 @@
     "PRIMARY_CASH"    : "Selectionner Caisse principale",
     "EMPLOYEE_SEX"    : "Selectionner Sexe",
     "EMPLOYEE_SERVICE"    : "Selectionner un Service",
-    "EMPLOYEE_GRADE"      : "Selectionner un Grade"
+    "EMPLOYEE_GRADE"      : "Selectionner un Grade",
+    "PERIOD_RUBRIC_CONFIG": "Selectionner une configuration des rubriques",
+    "PERIOD_TAX_CONFIG"   : "Selectionner une configuration des taxes"
   },
 
   "RENEWAL"           : {
@@ -416,7 +418,8 @@
     "TAXE_MANAGEMENT"           : "Gestion des taxes",
     "RUBRIC_PAYROLL"            : "Gestion des rubriques",
     "OFFDAY_MANAGEMENT"         : "Gestion des jours ferriés",
-    "HOLIDAY_MANAGEMENT"        : "Gestion des vacances"
+    "HOLLIDAY_MANAGEMENT"       : "Gestion des vacances",
+    "PAYMENT_PERIOD"            : "Gestion des Périodes"
 },
 
   "RUBRIC_PAYROLL"       : {
@@ -1838,5 +1841,24 @@
     "REGISTERED"    : "Période des vacances enregistrées",
     "ALERT"         : "Le module gestion des vacances, permet de standardiser et de sécuriser les demandes et la gestion des vacances (congés payés, repos compensateur…). Il favorise leur intégration automatique en paie, depuis la demande, sa validation et jusqu’à son traitement.",
     "EMPLOYEE"      : "Employé"
+  },
+
+  "PAYMENT_PERIOD" : {
+    "TITLE"        : "Gestion des périodes de paiement",
+    "NEW"          : "Nouvelle périodes",
+    "ADD"          : "Ajouter période",
+    "EDIT"         : "Editer période",
+    "DELETE"       : "Supprimer période",
+    "REGISTERED"    : "Periodes enregistrées",
+    "SAVE_PERIOD"  : "Sauver",
+    "SAVE_SUCCES"  : "Enregistrement avec succès",
+    "UPDATE_SUCCES": "Mis à jour avec succès",
+    "INFO"         : "Le module gestion des périodes permet de configuer les périodes de paiement",
+    "LABEL"        : "Titre",
+    "FROM"         : "debut",
+    "TO"           : "fin",
+    "TAX"          : "Config. Tax.",
+    "RUBRIC"       : "Config. Rub.",
+    "NO_PERIODS"   : "Aucune période enregistrées"
   }
 }
