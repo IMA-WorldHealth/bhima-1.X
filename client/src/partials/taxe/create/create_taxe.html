@@ -34,8 +34,8 @@
             <tr ng-repeat="tax in taxes.data">
               <td>{{$index + 1}}</td>
               <td>{{ tax.label }}</td>
-              <td>{{ tax.is_employee }}</td>
-              <td>{{ tax.is_percent }}</td>
+              <td><span class="glyphicon" ng-class="{'glyphicon-ok' : !!tax.is_employee}"></td>
+              <td><span class="glyphicon" ng-class="{'glyphicon-ok' : !!tax.is_percent}"></td>
               <td>{{ tax.account_number }}</td>
               <td>{{ tax.value }}</td>
               <td><a class="action" ng-click="edit(tax)"><span class="glyphicon glyphicon-pencil"></span></a></td>

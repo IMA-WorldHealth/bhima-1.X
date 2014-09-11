@@ -45,7 +45,7 @@ angular.module('bhima.controllers')
 
     $scope.edit = function (offday) {
       session.action = 'edit';
-      offday.date = util.sqlDate(new Date(offday.date));
+      offday.date = new Date(offday.date);
       session.edit = angular.copy(offday);
       //console.log(session.edit.date);
     };
