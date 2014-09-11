@@ -768,7 +768,8 @@
     "TAXE_MANAGEMENT"           : "Tax management",
     "RUBRIC_PAYROLL"            : "Payroll Rubrics",
     "OFFDAY_MANAGEMENT"         : "Offday management",
-    "HOLLYDAY_MANAGEMENT"        : "Holiday Management"  
+    "HOLLYDAY_MANAGEMENT"       : "Holiday Management",
+    "PAYMENT_PERIOD"            : "Payment Period Management" 
   },
 
   "RUBRIC_PAYROLL"       : {
@@ -1819,6 +1820,25 @@
     "REGISTERED"    : "Registered Hollydays",
     "ALERT"         : "The management of holiday standardizes and secure applications and management of vacation (paid leave, compensatory time off ...). It supports automatic introduction pays from request, validation and to its treatment.",
     "EMPLOYEE"      : "Employee"
+  },
+
+  "PAYMENT_PERIOD" : {
+    "TITLE"        : "Payment Period Management",
+    "NEW"          : "New period",
+    "ADD"          : "Add period",
+    "EDIT"         : "Edit period",
+    "DELETE"       : "Delete period",
+    "REGISTERED"   : "Registered periods",
+    "SAVE_PERIOD"  : "Save",
+    "SAVE_SUCCES"  : "Successfully saving period",
+    "UPDATE_SUCCES": "Update successfully",
+    "INFO"         : "The managment period allows the configuration of the payment periods",
+    "LABEL"        : "Title",
+    "FROM"         : "From",
+    "TO"           : "To",
+    "TAX"          : "Taxes Config.",
+    "RUBRIC"       : "Rubrics Config. ",
+    "NO_PERIODS"   : "No period registred"
   }        
 }
 

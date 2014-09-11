@@ -81,7 +81,8 @@
       "/service_dist/",
       "/consumption_loss/",
       "/getAccount6/",
-      "/employee_list/"
+      "/employee_list/",
+      "/available_payment_period/"
     ]
   }
 }
