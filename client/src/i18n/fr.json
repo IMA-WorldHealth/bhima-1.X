@@ -779,7 +779,11 @@
     "PERCENT_PAY"         : "Pourcentage de paiement",
     "EMPLOYEE_NAME"       : "Nom de l'employé",
     "DATE_FROM"           : "Date du début",
-    "DATE_TO"             : "Date de la fin"        
+    "DATE_TO"             : "Date de la fin" ,       
+    "DATE_EMBAUCHE"       : "Date embauche",
+    "NB_CHILD"            : "Nombre Enfant",
+    "NB_SPOUSE"           : "Nombre epoux (se)",
+    "BASE_SALARY"         : "Salaire de base"
   },
 
   "REPORT"                  : {
@@ -1435,7 +1439,24 @@
       "PURPOSE"                 : "Motif",
       "CREDITOR"                : "Crediteur",
       "EXPENSE_DATE"                  : "Date",
-      "AMOUNT" : "Montant"
+      "AMOUNT" : "Montant",
+      "SUMMARY" : "Sommaire",
+      "INFO_GLOBAL" : "Informations globales",
+      "WORKING_DAY" : "Jours preste",
+      "HOLLY_DAY"   : "Vacances",
+      "OFF_DAY"     : "Ferrie",
+      "HOUSING"  : "Logement",
+      "FAM_ALLOW" : "Alloc. Fam",
+      "TRANSPORT" : "Transport",
+      "SENIORITY" : "Ancienete",
+      "ADVANTAGES" : "Avantages",
+      "SALARY" : "Salaire net",
+      "TAXES_OTHERS" : "Taxes et autres deductions",
+      "SALARY_AV" : "Avance sur salaire",
+      "INSS" : "Cot. INSS",
+      "IPR" : "IPR",
+      "OTHER_DEDUCT" : "Autres deductions" ,
+      "SELECT_PERIOD" : "Selectionner une periode de paiement"
     },
     "INCOME" : {
       "TRANSFER"              : "Transfert",
@@ -1860,5 +1881,40 @@
     "TAX"          : "Config. Tax.",
     "RUBRIC"       : "Config. Rub.",
     "NO_PERIODS"   : "Aucune période enregistrées"
+  },
+
+   "TAXES" : {
+    "TITLE"        : "Gestion des taxes",
+    "REGISTERED"   : "Taxe enregistrées", 
+    "NEW_TAX"      : "Nouvelle Taxe", 
+    "SAVE_SUCCES"  : "Taxe enregistrée avec succès",    
+    "NO_TAXES"     : "Aucune taxe n'a ete enregistrée",  
+    "ADD"          : "Ajouter ",
+    "UPDATE_SUCCES": "Mise à jour avec succès",
+    "UPDATE"       : "Modifier",
+    "CONFIRM"      : "Voulez-vous vraiment effectuer cette operation ?",
+    "DELETE_SUCCESS" : "Suppression avec succès",
+    "ALERT"        : "Taxes management module is a module that has been designed to allow administration of existing tas within the organization, the table is left to record, to update the attributes of a tax and the deletion.",
+    "IPR"          : "Taxe IPR",
+    "ADD_TRANCHE"  : "Ajouter Tranche",
+    "REGISTERED_TRANCHES" : "Tranches Enregistrées",
+    "TAUX"                : "Taux",
+    "ANNUAL_TRANCH"       : "Tranche Annuelle",
+    "MONTH_TRANCH"        : "Tranche Mensuelle",
+    "TRANCH"              : "Tranche",
+    "FROM"                : "Debut",
+    "TO"                  : "Fin",
+    "NO_TRANCHES"         : "Aucune tranche n'a ete enregistrée",
+    "INFO_IPR"            : "Cette interface permet de gerer les tranches pour le calcul de l'IPR",
+    "NEW_TRANCH"          : "Nouvelle Tranche",
+    "EDIT_TRANCH"         : "Editer Tranche",
+    "SEE_TABLE"           : "Voir le tableau complet",
+    "TOGGLE_VIEW"         : "Changer de vue",
+    "ANNUAL_ECART"        : "Ecart Annuel",
+    "MONTH_ECART"         : "Ecart Mensuel",
+    "ANNUAL_IMPOT"        : "Impot Annuel",
+    "MONTH_IMPOT"         : "Impot Mensuel",
+    "ANNUAL_CUMUL"        : "Cumul Annuel",
+    "MONTH_CUMUL"         : "Cumul Mensuel"
   }
 }
