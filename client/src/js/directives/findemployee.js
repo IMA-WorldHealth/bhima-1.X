@@ -94,7 +94,6 @@ angular.module('bhima.directives')
         // extractMetaData(model.employee.data);
         var employees = extractMetaData(model.employee.data);
         employeeList = scope.employeeList = angular.copy(employees);
-        console.log(employeeList);
       }
 
       function searchName(value) {
@@ -121,7 +120,6 @@ angular.module('bhima.directives')
       }
       
       function handleIdRequest(model) {
-        console.log('le model refresh', model);
         var employee = scope.findEmployee.employee = extractMetaData(model.employee.data)[0];
         if (!employee) {
           return messenger.danger('Received invalid employee, unknown');
@@ -133,8 +131,6 @@ angular.module('bhima.directives')
 
       function handleIdError(error) {
         scope.findEmployee.valid = false;
-        console.log(error);
-
         //Naive implementation
         if (error.validModelError) {
           if (error.flag === 'required') {

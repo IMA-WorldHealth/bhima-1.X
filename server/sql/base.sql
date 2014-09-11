@@ -35,6 +35,15 @@ delete from `price_list`;
 delete from `service`;
 delete from `cost_center`;
 delete from `profit_center`;
+delete from `config_rubric`;
+delete from `rubric`;
+delete from `config_rubric_item`;
+delete from `config_tax`;
+delete from `tax`;
+delete from `config_tax_item`;
+delete from `paiement_period`;
+delete from `offday`;
+delete from `config_paiement_period`;
 
 -- registered units
 INSERT INTO `unit` VALUES
@@ -1804,4 +1813,56 @@ INSERT INTO `profit_center` VALUES
 (1, 1, "Nursing profit center","note");
 
 INSERT INTO `service` VALUES
-(1, 1, "Nursing Service", 1,1);
+(1, 1, "Nursing Service", 1, 1);
+
+INSERT INTO `config_rubric` VALUES 
+(1, "configuration des rubrique par defaut");
+
+INSERT INTO `rubric` VALUES 
+(1, "Logement", 0, 1, 30),
+(2, "Allocation Familliale", 0, 0, 0),
+(3, "Transport", 0, 0, 0),
+(4, "Ancienete", 0, 1, 0),
+(5, "Avance sur salaire", 1, 0, 0);
+
+INSERT INTO `config_rubric_item` VALUES 
+(1, 1, 1, 1),
+(2, 1, 2, 1),
+(3, 1, 3, 1),
+(4, 1, 4, 1),
+(5, 1, 5, 1);
+
+INSERT INTO `config_tax` VALUES 
+(1, "configuration des taxes par defaut");
+
+INSERT INTO `tax` VALUES 
+(1, "INSS Employee", 1, 1, 707, 3.5),
+(2, "IPR", 1, 0, 886, 0),
+(3, "INSS Entreprise", 0, 1, 886, 9),
+(4, "IERE", 0, 1, 886, 2.5),
+(5, "ONEM", 0, 1, 886, 0.5),
+(6, "INPP", 0, 1, 886, 1.5);
+
+INSERT INTO `config_tax_item` VALUES 
+(1, 1, 1, 1),
+(2, 1, 2, 1),
+(3, 1, 3, 1),
+(4, 1, 4, 1),
+(5, 1, 5, 1),
+(6, 1, 6, 1);
+
+INSERT INTO `paiement_period` VALUES
+(1, 1, 1, "period de paiement par defaut", '2014-09-01', '2014-09-30');
+
+INSERT INTO `offday` VALUES
+(1, "ferrie 1", '2014-09-17', 100),
+(2, "ferrie 2", '2014-09-25', 25),
+(3, "ferrie 3", '2014-10-05', 100);
+
+INSERT INTO `config_paiement_period` VALUES
+(1, 1, '2014-09-01', '2014-09-05'),
+(2, 1, '2014-09-08', '2014-09-12'),
+(3, 1, '2014-09-15', '2014-09-19'),
+(4, 1, '2014-09-22', '2014-09-26'),
+(5, 1, '2014-09-29', '2014-09-30');
+

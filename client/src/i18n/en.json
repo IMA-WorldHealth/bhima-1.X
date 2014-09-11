@@ -626,7 +626,12 @@
     "PERCENT_PAY"         : "Percent pay",
     "EMPLOYEE_NAME"       : "Employee Name",
     "DATE_FROM"           : "Date From",
-    "DATE_TO"             : "Date To"      
+    "DATE_TO"             : "Date To" ,     
+    "GRADE"               : "Grade",
+    "DATE_EMBAUCHE"       : "Hiring date",
+    "NB_CHILD"            : "Child count",
+    "NB_SPOUSE"           : "spouse count",
+    "BASE_SALARY"         : "base salary"
   },
 
   "INVENTORY" : {
