@@ -408,6 +408,10 @@
     .when('/offday_management/', {
       controller : 'offdays',
       templateUrl : 'partials/offdays/offdays.html'
+    })
+    .when('/hollyday_management/', {
+      controller : 'hollydays',
+      templateUrl : 'partials/hollydays/hollydays.html'
     });    
   }
 
