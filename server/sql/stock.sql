@@ -26,3 +26,6 @@ insert into depot (uuid, text, enterprise_id) values
   (UUID(), "Warehouse", 200), 
   (UUID(), "Pharmacy 1", 200),
   (UUID(), "Pharmacy 2", 200);
+
+INSERT INTO `hollyday` VALUES
+(1, 1, "vancances employe A", '2014-09-10', '2014-09-20');
