@@ -15,7 +15,7 @@ angular.module('bhima.controllers')
   '$q',
   function ($scope, $routeParams, $translate, $http, messenger, validate, appstate, connect, $location, util, Appcache, exchange, $q) {
     var dependencies = {},
-        cache = new Appcache('payroll'), session = $scope.session = {configured : false, complete : false};
+        cache = new Appcache('payroll'), session = $scope.session = {configured : false, complete : false, data : {}};
     session.cashbox = $routeParams.cashbox;
     session.selectedEmployee = {};
 
@@ -67,7 +67,7 @@ angular.module('bhima.controllers')
           }
         }
       }
-    }
+    };
 
     dependencies.pcash_module = {
       required : true,
@@ -135,22 +135,12 @@ angular.module('bhima.controllers')
 
     function init (model) {
       session.model = model;
-      getOffDayCount();
+      getPPConf()
+      .then(getOffDayCount)
+      .then(getHollyDayCount);
     }
 
-    function getOffDayCount () {
-      console.log('pp',session.pp);
-      dependencies.offDays = {
-        required : true,
-        query : {
-          tables : {
-            'offday' : {
-              columns : ['id', 'label', 'date', 'percent_pay']
-            }
-          },
-          where : ['offday.date>=' + util.sqlDate(session.pp.dateFrom), 'AND', 'offday.date<=' + util.sqlDate(session.pp.dateTo)]
-        }
-      }
+    function getPPConf() {     
 
       dependencies.paiement_period_conf = {
         required : true,
@@ -162,16 +152,127 @@ angular.module('bhima.controllers')
           },
           where : ['config_paiement_period.paiement_period_id>=' + session.pp.id]
         }
-      }
+      };
 
-      validate.process(dependencies)
-      .then(function (model) {
-        console.log('model',model);
-
-      })
-
-
+      return validate.process(dependencies, ['paiement_period_conf']);
     }
+
+    function getOffDayCount (model) {
+      
+      dependencies.offDays = {
+        query : {
+          tables : {
+            'offday' : {
+              columns : ['id', 'label', 'date', 'percent_pay']
+            }
+          },
+          where : ['offday.date>=' + util.sqlDate(model.paiement_period.data[0].dateFrom), 'AND', 'offday.date<=' + util.sqlDate(model.paiement_period.data[0].dateTo)]
+        }
+      };     
+
+      validate.process(dependencies, ['offDays'])
+      .then(function (model) {
+        var offdays = model.offDays.data;
+        var pp_confs = model.paiement_period_conf.data;
+        var nb_offdays = 0;
+
+        offdays.forEach(function (offDay) {
+          for(var i = 0; i < pp_confs.length; i++){
+            if ((util.isDateAfter(offDay.date, pp_confs[i].weekFrom) || util.areDatesEqual(offDay.date, pp_confs[i].weekFrom)) &&
+                (util.isDateAfter(pp_confs[i].weekTo, offDay.date) || util.areDatesEqual(offDay.date, pp_confs[i].weekTo))) {
+              nb_offdays++;
+            }
+          }
+        });
+
+        session.data.off_day = nb_offdays;
+      });
+      return $q.when(model);
+    }
+
+    function getHollyDayCount (model) {
+      dependencies.hollydays = {
+        query : {
+          tables : {
+            'hollyday' : {
+              columns : ['id', 'label', 'dateFrom', 'dateTo']
+            }
+          },
+          where : [
+                    'hollyday.dateFrom>=' + new Date(model.paiement_period.data[0].dateFrom).toISOString().slice(0, 10),
+                    'AND',
+                    'hollyday.dateFrom<=' + new Date(model.paiement_period.data[0].dateTo).toISOString().slice(0, 10),
+                    'OR',
+                    'hollyday.dateTo>=' + new Date(model.paiement_period.data[0].dateFrom).toISOString().slice(0, 10),
+                    'AND',
+                    'hollyday.dateTo<=' + new Date(model.paiement_period.data[0].dateTo).toISOString().slice(0, 10),
+                    'OR',
+                    'hollyday.dateFrom<=' + new Date(model.paiement_period.data[0].dateFrom).toISOString().slice(0, 10),
+                    'AND',
+                    'hollyday.dateTo>=' + new Date(model.paiement_period.data[0].dateTo).toISOString().slice(0, 10)
+          ]
+        }
+      };     
+
+      validate.process(dependencies, ['hollydays'])
+      .then(function (model) {
+        console.log(model);
+
+        var hollydays = model.hollydays.data;
+        var pp_confs = model.paiement_period_conf.data;
+        var soms = [];
+
+        hollydays.forEach(function (h) {
+          var nb = 0;
+          function getValue (ppc) {
+
+            //paiement period config === ppc
+
+            var date_pweekfrom = new Date(ppc.weekFrom);
+            var date_pweekto = new Date(ppc.weekTo);
+
+            var date_hdatefrom = new Date(h.dateFrom);
+            var date_hdateto = new Date(h.dateTo);
+
+            var num_pweekfrom = date_pweekfrom.setHours(0,0,0,0);
+            var num_pweekto = date_pweekto.setHours(0,0,0,0);
+
+            var num_hdatefrom = date_hdatefrom.setHours(0,0,0,0);            
+            var num_hdateto = date_hdateto.setHours(0,0,0,0);
+
+            var minus_right = 0, minus_left = 0;
+
+            if(num_pweekto > num_hdateto){
+              minus_right = date_pweekto.getDate() - date_hdateto.getDate();
+              // console.log('minus_right', minus_right, 'period', ppc, 'hollyday', h);
+            }
+
+            if(num_pweekfrom < num_hdatefrom){
+              minus_left = date_hdatefrom.getDate() - date_pweekfrom.getDate();
+              // console.log('minus_left', minus_left, 'period', ppc, 'hollyday', h);
+            }
+
+            var total = date_pweekto.getDate() - date_pweekfrom.getDate();
+            if(minus_left > total) return 0;
+            if(minus_right > total) return 0;
+            return total - (minus_left + minus_right);
+          }
+
+          pp_confs.forEach(function (ppc) {
+            nb += getValue(ppc);
+          });
+
+          soms.push(nb);
+          console.log('total est', soms);
+        });
+
+        session.data.holly_day = soms.reduce(function (x, y){
+          return x+y;
+        }, 0);        
+      });
+      return $q.when();
+    }
+
 
     function setCashAccount(cashAccount) {
       if (cashAccount) {
@@ -190,7 +291,6 @@ angular.module('bhima.controllers')
     }
 
     function setConfiguration (pp) {
-      console.log('set pp', pp);
       cache.put('paiement_period', pp);
       session.configured = true;
       session.pp = pp;

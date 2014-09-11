@@ -39,6 +39,13 @@ angular.module('bhima.services')
     return date1 === date2;
   };
 
+  this.isDateBetween = function (date, dateFrom, dateTo){
+    date = new Date(date).setHours(0,0,0,0);
+    dateFrom = new Date(dateFrom).setHours(0,0,0,0);
+    dateTo = new Date(dateTo).setHours(0,0,0,0);
+    return ((date>=dateFrom) && (date<=dateTo));
+  }
+
   this.sqlDate = this.convertToMysqlDate;
 
 }]);
