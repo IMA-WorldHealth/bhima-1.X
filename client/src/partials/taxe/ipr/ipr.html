@@ -8,14 +8,9 @@
      {{ "TAXES.ADD" | translate }}
   </button>
 
-  <button class="btn btn-sm btn-default pull-right" ng-click="tableau()">
-    <span class="glyphicon glyphicon-th"></span>
-     {{ "TAXES.SEE_TABLE" | translate }}
-  </button>
-
-  <button class="btn btn-sm btn-default pull-right" ng-click="crud()">
+  <button class="btn btn-sm btn-default pull-right" ng-click="toggleView()">
     <span class="glyphicon glyphicon-th-list"></span>
-     {{ "TAXES.INTERFACE" | translate }}
+     {{session.view}}
   </button>
 </nav>
 
@@ -57,11 +52,11 @@
 								<td>{{value.tranche_mensuelle_debut | number}}</td>
 								<td>{{value.tranche_mensuelle_fin | number}}</td>
 								<td>{{value.ecart_annuel | number}}</td>
-								<td>{{value.ecart_mois | number}}</td>
+								<td>{{value.ecart_mensuel | number}}</td>
 								<td>{{value.impot_annuel | number}}</td>
-								<td>{{value.impot_mois | number}}</td>
+								<td>{{value.impot_mensuel | number}}</td>
 								<td>{{value.cumul_annuel | number}}</td>
-								<td>{{value.cumul_mois | number}}</td>
+								<td>{{value.cumul_mensuel | number}}</td>
 							</tr>
 						</tbody>
 					</table>
@@ -119,7 +114,7 @@
 			          <div class="form-group">
 			            <label class="control-label col-xs-3 required">{{ "TAXES.TAUX" | translate }}</label>
 			            <div class="col-xs-8">
-			              <input ng-model="session.new.taux" class="form-bhima" required="required">
+			              <input type="number" ng-model="session.new.taux" class="form-bhima" required>
 			            </div>
 			          </div>
 
@@ -128,7 +123,7 @@
 			            	{{ "TAXES.TRANCH" | translate }} {{"TAXES.FROM" | translate}}
 			            </label>
 			            <div class="col-xs-8">
-			              <input type="text" ng-model="session.new.tranche_annuelle_debut" class="form-bhima" required>
+			              <input type="number" ng-model="session.new.tranche_annuelle_debut" class="form-bhima" required>
 			            </div>
 			          </div>
 
@@ -137,7 +132,7 @@
 			            	{{ "TAXES.TRANCH" | translate }} {{"TAXES.TO" | translate}}
 			            </label>
 			            <div class="col-xs-8">
-			              <input type="text" ng-model="session.new.tranche_annuelle_fin" class="form-bhima" required>
+			              <input type="number" ng-model="session.new.tranche_annuelle_fin" class="form-bhima" required>
 			            </div>
 			          </div>
 
@@ -155,7 +150,7 @@
 			          <div class="form-group">
 			            <label class="control-label col-xs-3 required">{{ "TAXES.TAUX" | translate }}</label>
 			            <div class="col-xs-8">
-			              <input ng-model="session.edit.taux" class="form-bhima" required="required">
+			              <input ng-model="session.edit.taux" class="form-bhima" required>
 			            </div>
 			          </div>
 
@@ -164,7 +159,7 @@
 			            	{{ "TAXES.TRANCH" | translate }} {{"TAXES.FROM" | translate}}
 			            </label>
 			            <div class="col-xs-8">
-			              <input type="text" ng-model="session.edit.tranche_annuelle_debut" class="form-bhima" required>
+			              <input type="number" ng-model="session.edit.tranche_annuelle_debut" class="form-bhima" required>
 			            </div>
 			          </div>
 
@@ -173,7 +168,7 @@
 			            	{{ "TAXES.TRANCH" | translate }} {{"TAXES.TO" | translate}}
 			            </label>
 			            <div class="col-xs-8">
-			              <input type="text" ng-model="session.edit.tranche_annuelle_fin" class="form-bhima" required>
+			              <input type="number" ng-model="session.edit.tranche_annuelle_fin" class="form-bhima" required>
 			            </div>
 			          </div>
 

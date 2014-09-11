@@ -1831,7 +1831,7 @@
     "NEW_TRANCH"          : "Nouvelle Tranche",
     "EDIT_TRANCH"         : "Editer Tranche",
     "SEE_TABLE"           : "Voir le tableau complet",
-    "INTERFACE"           : "Interface",
+    "TOGGLE_VIEW"         : "Changer de vue",
     "ANNUAL_ECART"        : "Ecart Annuel",
     "MONTH_ECART"         : "Ecart Mensuel",
     "ANNUAL_IMPOT"        : "Impot Annuel",
