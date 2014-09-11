@@ -1389,5 +1389,11 @@ create table `taxe_ipr` (
   tranche_annuelle_fin    float,
   tranche_mensuelle_debut float,
   tranche_mensuelle_fin   float,
+  ecart_annuel            float,
+  ecart_mensuel           float,
+  impot_annuel            float,
+  impot_mensuel           float,
+  cumul_annuel            float,
+  cumul_mensuel           float,
   primary key (`id`)
 ) engine=innodb;

@@ -1796,7 +1796,7 @@
     "NEW_TRANCH"          : "New Tranch",
     "EDIT_TRANCH"         : "Edit Tranch",
     "SEE_TABLE"           : "See the complete table",
-    "INTERFACE"           : "Interface",
+    "TOGGLE_VIEW"         : "Change View",
     "ANNUAL_ECART"        : "Annual Difference",
     "MONTH_ECART"         : "Monthly Difference",
     "ANNUAL_IMPOT"        : "Annual Impot",
