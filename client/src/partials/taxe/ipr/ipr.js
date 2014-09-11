@@ -25,10 +25,14 @@ angular.module('bhima.controllers')
 
 	function startup (models) {
       angular.extend($scope, models);
-      ipr.fillFrom(models.taxe_ipr.data)
-      .then(function(data){
-      	session.table_ipr = data;
-      });
+      loadIprData(models.taxe_ipr.data);
+    }
+
+    function loadIprData(data){
+    	ipr.fillFrom(data)
+	    .then(function(data){
+	    	session.table_ipr = data;
+	    });
     }
 
 	appstate.register('enterprise', function (enterprise) {
@@ -75,6 +79,10 @@ angular.module('bhima.controllers')
         $scope.taxe_ipr.put(record);
         session.action = '';
         session.edit = {};
+        
+        validate.refresh(dependencies)
+      	.then(startup);
+
       });
     };
 
@@ -90,6 +98,10 @@ angular.module('bhima.controllers')
         $scope.taxe_ipr.post(record);
         session.action = '';
         session.new = {};
+        
+        validate.refresh(dependencies)
+      	.then(startup);
+        
       });
     };
 

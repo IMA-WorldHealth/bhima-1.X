@@ -1803,15 +1803,3 @@ INSERT INTO `profit_center` VALUES
 
 INSERT INTO `service` VALUES
 (1, 1, "Nursing Service", 1,1);
-
-INSERT INTO `taxe_ipr` (`taux`,`tranche_annuelle_debut`,`tranche_annuelle_fin`,`tranche_mensuelle_debut`,`tranche_mensuelle_fin`,`ecart_annuel`,`ecart_mensuel`,`impot_annuel`,`impot_mensuel`,`cumul_annuel`,`cumul_mensuel`) VALUES
-(0, 0, 524160.00, 0, 0, 0, 0, 0, 0, 0, 0),
-(15, 524161.00, 1428000.00, 0, 0, 0, 0, 0, 0, 0, 0),
-(20, 1428001.00, 2700000.00, 0, 0, 0, 0, 0, 0, 0, 0),
-(22.5, 2700001.00, 4620000.00, 0, 0, 0, 0, 0, 0, 0, 0),
-(25, 4620001.00, 7260000.00, 0, 0, 0, 0, 0, 0, 0, 0),
-(30, 7260001.00, 10260000.00, 0, 0, 0, 0, 0, 0, 0, 0),
-(32.5, 10260001.00, 13908000.00, 0, 0, 0, 0, 0, 0, 0, 0),
-(35, 13908001.00, 16824000.00, 0, 0, 0, 0, 0, 0, 0, 0),
-(37.5, 16824001.00, 22956000.00, 0, 0, 0, 0, 0, 0, 0, 0),
-(40, 999999999.00, 999999999.00, 0, 0, 0, 0, 0, 0, 0, 0);

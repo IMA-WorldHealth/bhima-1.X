@@ -32,7 +32,7 @@ angular.module('bhima.services')
 
 	function generateCumuls(obj){
 		var cum_an, cum_mois, cumuls = [];
-		cumuls.push({'cumul_annuel':0,'cumul_mois':0});
+		cumuls.push({'cumul_annuel':0,'cumul_mensuel':0});
 		for (var i=1;i<obj.impots.length;i++){
 			cum_an = obj.impots[i].impot_annuel + cumuls[i-1].cumul_annuel;
 			cum_mois = cum_an / 12;
