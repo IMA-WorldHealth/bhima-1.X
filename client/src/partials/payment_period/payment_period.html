@@ -11,7 +11,7 @@
 
 <main>
 	<div class="row">
-		<div class="col-xs-6">
+		<div class="col-xs-7">
 	      <div class="panel panel-primary">
 	        <div class="panel-heading">
 	          <span class="glyphicon glyphicon-th-list"></span>
@@ -33,10 +33,10 @@
 	              <td>{{period.label}}</td>
 	              <td>{{period.dateFrom | date : "d MMM yyyy"}}</td>
 	              <td>{{period.dateTo | date : "d MMM yyyy"}}</td>
-	              <td>rubric</td>
-	              <td>tax</td>
-	              <td><a class="action" ng-click="edit(rubric)"><span class="glyphicon glyphicon-pencil"></span></a></td>
-	              <td><a class="action danger" ng-click="delete(rubric)"><span class="glyphicon glyphicon-trash"></span></a></td>
+	              <td>{{period.RUBRIC}}</td>
+	              <td>{{period.TAX}}</td>
+	              <td><a class="action" ng-click="edit(period)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+	              <td><a class="action danger" ng-click="delete(period)"><span class="glyphicon glyphicon-trash"></span></a></td>
 	            </tr>
 	            <tr ng-if="!paiement_period.data.length">
 	              <td colspan="5">{{ "PAYMENT_PERIOD.NO_PERIODS" | translate }}</td>
@@ -46,7 +46,7 @@
 	      </div>
 	    </div>
 
-	    <div class="col-xs-6" ng-switch="session.action">
+	    <div class="col-xs-5" ng-switch="session.action">
 	      <div class="alert alert-info" ng-switch-default>
 	        <h4>{{ "PAYMENT_PERIOD.TITLE" | translate }}</h4>
 	        <p>{{ "PAYMENT_PERIOD.INFO" | translate }}</p>
@@ -66,21 +66,21 @@
 	          <div class="form-group">
 	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.FROM" | translate }}</label>
 	            <div class="col-xs-8">
-	              <input type="date" ng-model="session.new.from" class="form-bhima" required="required">
+	              <input type="date" ng-model="session.new.dateFrom" class="form-bhima" required="required">
 	            </div>
 	          </div>
 
 	          <div class="form-group">
 	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.TO" | translate }}</label>
 	            <div class="col-xs-8">
-	              <input type="date" ng-model="session.new.to" class="form-bhima" required="required">
+	              <input type="date" ng-model="session.new.dateTo" class="form-bhima" required="required">
 	            </div>
 	          </div>
 
 	          <div class="form-group">
 	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.RUBRIC" | translate }}</label>
 	            <div class="col-xs-8">
-	              <select ng-model="session.new.rubric" class="form-bhima" required="required">
+	              <select ng-model="session.new.config_rubric_id" class="form-bhima" ng-options="rubric.id as rubric.label for rubric in config_rubric.data" required="required">
 	              	<option>{{ "SELECT.PERIOD_RUBRIC_CONFIG" | translate }}</option>
 	              </select>
 	            </div>
@@ -89,7 +89,7 @@
 	          <div class="form-group">
 	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.TAX" | translate }}</label>
 	            <div class="col-xs-8">
-	              <select ng-model="session.new.rubric" class="form-bhima" required="required">
+	              <select ng-model="session.new.config_tax_id" class="form-bhima" ng-options="tax.id as tax.label for tax in config_tax.data" required="required">
 	              	<option>{{ "SELECT.PERIOD_TAX_CONFIG" | translate }}</option>
 	              </select>
 	            </div>
@@ -116,21 +116,21 @@
 	          <div class="form-group">
 	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.FROM" | translate }}</label>
 	            <div class="col-xs-8">
-	              <input type="date" ng-model="session.edit.from" class="form-bhima" required="required">
+	              <input type="date" ng-model="session.edit.dateFrom" class="form-bhima" required="required">
 	            </div>
 	          </div>
 
 	          <div class="form-group">
 	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.TO" | translate }}</label>
 	            <div class="col-xs-8">
-	              <input type="date" ng-model="session.edit.to" class="form-bhima" required="required">
+	              <input type="date" ng-model="session.edit.dateTo" class="form-bhima" required="required">
 	            </div>
 	          </div>
 
 	          <div class="form-group">
 	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.RUBRIC" | translate }}</label>
 	            <div class="col-xs-8">
-	              <select ng-model="session.edit.rubric" class="form-bhima" required="required">
+	              <select ng-model="session.edit.config_rubric_id" class="form-bhima" ng-options="rubric.id as rubric.label for rubric in config_rubric.data" required="required">
 	              	<option>{{ "SELECT.PERIOD_RUBRIC_CONFIG" | translate }}</option>
 	              </select>
 	            </div>
@@ -139,7 +139,7 @@
 	          <div class="form-group">
 	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.TAX" | translate }}</label>
 	            <div class="col-xs-8">
-	              <select ng-model="session.edit.rubric" class="form-bhima" required="required">
+	              <select ng-model="session.edit.config_tax_id" class="form-bhima" ng-options="tax.id as tax.label for tax in config_tax.data" required="required">
 	              	<option>{{ "SELECT.PERIOD_TAX_CONFIG" | translate }}</option>
 	              </select>
 	            </div>
