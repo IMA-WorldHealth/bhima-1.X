@@ -1870,6 +1870,7 @@
     "ADD"          : "Ajouter période",
     "EDIT"         : "Editer période",
     "DELETE"       : "Supprimer période",
+    "CONFIRM"      : "Voulez-vous vraiment effectuer cette operation ?",
     "REGISTERED"    : "Periodes enregistrées",
     "SAVE_PERIOD"  : "Sauver",
     "SAVE_SUCCES"  : "Enregistrement avec succès",
