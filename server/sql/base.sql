@@ -1819,11 +1819,11 @@ INSERT INTO `config_rubric` VALUES
 (1, "configuration des rubrique par defaut");
 
 INSERT INTO `rubric` VALUES 
-(1, "Logement", 0, 1, 30),
-(2, "Allocation Familliale", 0, 0, 0),
-(3, "Transport", 0, 0, 0),
-(4, "Ancienete", 0, 1, 0),
-(5, "Avance sur salaire", 1, 0, 0);
+(1, "Logement", "HOUS", 0, 1, 30),
+(2, "Allocation Familliale", "ALLO", 0, 0, 0),
+(3, "Transport", "TRAN", 0, 0, 0),
+(4, "Ancienete", "SENI", 0, 1, 0),
+(5, "Avance sur salaire", "ADVA", 1, 0, 0);
 
 INSERT INTO `config_rubric_item` VALUES 
 (1, 1, 1, 1),
@@ -1836,12 +1836,12 @@ INSERT INTO `config_tax` VALUES
 (1, "configuration des taxes par defaut");
 
 INSERT INTO `tax` VALUES 
-(1, "INSS Employee", 1, 1, 707, 3.5),
-(2, "IPR", 1, 0, 886, 0),
-(3, "INSS Entreprise", 0, 1, 886, 9),
-(4, "IERE", 0, 1, 886, 2.5),
-(5, "ONEM", 0, 1, 886, 0.5),
-(6, "INPP", 0, 1, 886, 1.5);
+(1, "INSS Employee", "INS1", 1, 1, 707, 3.5),
+(2, "IPR", "IPR1", 1, 0, 886, 0),
+(3, "INSS Entreprise", "INS2", 0, 1, 886, 9),
+(4, "IERE", "IERE", 0, 1, 886, 2.5),
+(5, "ONEM", "ONEM", 0, 1, 886, 0.5),
+(6, "INPP", "INPP", 0, 1, 886, 1.5);
 
 INSERT INTO `config_tax_item` VALUES 
 (1, 1, 1, 1),
