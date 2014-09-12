@@ -51,7 +51,7 @@ angular.module('bhima.controllers')
             columns : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'date', 'rate']
           }
         },
-        where : ['exchange_rate.date='+util.convertToMysqlDate(new Date())]
+        where : ['exchange_rate.date='+util.sqlDate(new Date())]
       }
     };
 
@@ -93,6 +93,9 @@ angular.module('bhima.controllers')
 
     cache.fetch('paiement_period')
     .then(readConfig)
+    .then(function () {
+      return cache.fetch('selectedItem');
+    })
     .then(load)
     .then(function () {
         appstate.register('project', function (project) {
@@ -116,12 +119,12 @@ angular.module('bhima.controllers')
     }   
 
     function readConfig (pp) {
-      if(pp){
-        session.pp = pp;
-        session.configured = true;
-        session.complete = true;
-      }
-      return cache.fetch('selectedItem');
+
+      if(!pp) {return;}
+      session.pp = pp;
+      session.configured = true;
+      session.complete = true;
+      return $q.when();
     }
 
 
@@ -137,7 +140,9 @@ angular.module('bhima.controllers')
       session.model = model;
       getPPConf()
       .then(getOffDayCount)
-      .then(getHollyDayCount);
+      .catch(function (err) {
+        console.log('err', err);
+      });
     }
 
     function getPPConf() {     
@@ -154,7 +159,31 @@ angular.module('bhima.controllers')
         }
       };
 
-      return validate.process(dependencies, ['paiement_period_conf']);
+      dependencies.rubric_config = {
+        required : true,
+        query : {
+          tables : {
+            'config_rubric' : {
+              columns : ['id', 'label']
+            },
+            'config_rubric_item' : {
+              columns : ['rubric_id', 'payable']
+            },
+            'rubric' : {
+              columns : ['abbr', 'is_percent', 'is_discount', 'value']
+            }
+          },
+          join : [
+            'config_rubric.id=config_rubric_item.config_rubric_id',
+            'rubric.id=config_rubric_item.rubric_id'
+          ],
+          where : [
+            'config_rubric.id=' + session.pp.config_rubric_id
+          ]
+        }
+      };
+
+      return validate.process(dependencies, ['paiement_period_conf', 'rubric_config']);
     }
 
     function getOffDayCount (model) {
@@ -216,61 +245,75 @@ angular.module('bhima.controllers')
 
       validate.process(dependencies, ['hollydays'])
       .then(function (model) {
-        console.log(model);
-
         var hollydays = model.hollydays.data;
-        var pp_confs = model.paiement_period_conf.data;
-        var soms = [];
+        if(hollydays.length) {
+          var pp_confs = model.paiement_period_conf.data;
+          var soms = [];
 
-        hollydays.forEach(function (h) {
-          var nb = 0;
-          function getValue (ppc) {
+          hollydays.forEach(function (h) {
+            var nb = 0;
+            function getValue (ppc) {
+              //paiement period config === ppc
+              var date_pweekfrom = new Date(ppc.weekFrom);
+              var date_pweekto = new Date(ppc.weekTo);
 
-            //paiement period config === ppc
+              var date_hdatefrom = new Date(h.dateFrom);
+              var date_hdateto = new Date(h.dateTo);
 
-            var date_pweekfrom = new Date(ppc.weekFrom);
-            var date_pweekto = new Date(ppc.weekTo);
+              var num_pweekfrom = date_pweekfrom.setHours(0,0,0,0);
+              var num_pweekto = date_pweekto.setHours(0,0,0,0);
 
-            var date_hdatefrom = new Date(h.dateFrom);
-            var date_hdateto = new Date(h.dateTo);
+              var num_hdatefrom = date_hdatefrom.setHours(0,0,0,0);            
+              var num_hdateto = date_hdateto.setHours(0,0,0,0);
 
-            var num_pweekfrom = date_pweekfrom.setHours(0,0,0,0);
-            var num_pweekto = date_pweekto.setHours(0,0,0,0);
+              var minus_right = 0, minus_left = 0;
 
-            var num_hdatefrom = date_hdatefrom.setHours(0,0,0,0);            
-            var num_hdateto = date_hdateto.setHours(0,0,0,0);
+              if(num_pweekto > num_hdateto){
+                minus_right = date_pweekto.getDate() - date_hdateto.getDate();
+              }
 
-            var minus_right = 0, minus_left = 0;
+              if(num_pweekfrom < num_hdatefrom){
+                minus_left = date_hdatefrom.getDate() - date_pweekfrom.getDate();
+              }
 
-            if(num_pweekto > num_hdateto){
-              minus_right = date_pweekto.getDate() - date_hdateto.getDate();
-              // console.log('minus_right', minus_right, 'period', ppc, 'hollyday', h);
+              var total = date_pweekto.getDate() - date_pweekfrom.getDate();
+              if(minus_left > total) return 0;
+              if(minus_right > total) return 0;
+              return total - (minus_left + minus_right);
             }
 
-            if(num_pweekfrom < num_hdatefrom){
-              minus_left = date_hdatefrom.getDate() - date_pweekfrom.getDate();
-              // console.log('minus_left', minus_left, 'period', ppc, 'hollyday', h);
-            }
-
-            var total = date_pweekto.getDate() - date_pweekfrom.getDate();
-            if(minus_left > total) return 0;
-            if(minus_right > total) return 0;
-            return total - (minus_left + minus_right);
-          }
-
-          pp_confs.forEach(function (ppc) {
-            nb += getValue(ppc);
+            pp_confs.forEach(function (ppc) {
+              nb += getValue(ppc);
+            });
+            soms.push(nb);
           });
 
-          soms.push(nb);
-          console.log('total est', soms);
-        });
-
-        session.data.holly_day = soms.reduce(function (x, y){
-          return x+y;
-        }, 0);        
+          session.data.holly_day = soms.reduce(function (x, y){
+            return x+y;
+          }, 0); 
+        } else{
+          session.data.holly_day = 0;
+        }
+               
       });
-      return $q.when();
+      return $q.when(model);
+    }
+
+    function getHousing (model) {
+      var rubrics = model.rubric_config.data, housing = 0;
+
+      var item = rubrics.filter(function (item) {
+        return item.abbr;
+      })[0];
+
+      if(item.payable) {
+        housing = (item.is_percent) ? 
+        (session.selectedEmployee.basic_salary * item.value) / 100 :
+         exchange.convertir(item.value, session.model.enterprise.data[0].currency_id, session.selectedItem.currency_id, util.sqlDate(new Date()));     
+      }
+
+      session.data.housing = housing;      
+      return $q.when(model);      
     }
 
 
@@ -283,7 +326,13 @@ angular.module('bhima.controllers')
     }
 
     function initialiseEmployee (selectedEmployee) {
-      session.isEmployeeSelected = selectedEmployee ? selectEmployee(selectedEmployee) : false;      
+      session.data.working_day = 0;
+      session.data.fam_allow = 0;
+      session.data.transport = 0;
+      session.data.seniority = 0;
+      session.isEmployeeSelected = selectedEmployee ? selectEmployee(selectedEmployee) : false; 
+      getHollyDayCount(session.model)
+      .then(getHousing);
     }
 
     function formatPeriod (pp) {
@@ -307,6 +356,7 @@ angular.module('bhima.controllers')
     $scope.$watch('session.selectedItem', function (nval, oval) {
       if(session.isEmployeeSelected){
         session.selectedEmployee.basic_salary = exchange.convertir(session.selectedEmployee.basic_salary, session.loading_currency_id, session.selectedItem.currency_id, util.sqlDate(new Date()));      
+        session.data.housing = exchange.convertir(session.data.housing, session.loading_currency_id, session.selectedItem.currency_id, util.sqlDate(new Date()));      
       }     
     }, true);
 
