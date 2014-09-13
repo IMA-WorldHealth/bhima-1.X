@@ -88,15 +88,16 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
 
       db.exec(sql)
       .then(function (rows) {
-        var data = rows.pop();       
+        var data = rows.pop();
+
+        //FIX ME: dangerous test     
 
         if(!data.abbr){
           console.log('vide :::')
           db.exec(sql2)
           .then(function (rows){            
-            data = rows.pop();
-            console.log('Apres vide on a :::', data);
-            value = '\'' + data.abbr + 1 + '\'';
+            var data2 = rows.pop();
+            value = (data.increment) ? '\'' + data2.abbr + data.increment + '\'' : '\'' + data.abbr + 1 + '\'';
             defer.resolve(value);
           });
         }else{
