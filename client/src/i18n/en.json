@@ -1843,7 +1843,10 @@
     "TO"           : "To",
     "TAX"          : "Taxes Config.",
     "RUBRIC"       : "Rubrics Config. ",
-    "NO_PERIODS"   : "No period registred"
+    "NO_PERIODS"   : "No period registred",
+    "CONFIG"       : "Configure Weeks",
+    "WEEKS"        : "Weeks",
+    "ADD_WEEK"     : "Add"
   },
 
    "TAXES" : {

@@ -991,7 +991,6 @@ app.get('/available_payment_period/', function (req, res, next) {
   .done();
 });
 
-
 app.use(logger.error());
 app.use(liberror.middleware);
 
