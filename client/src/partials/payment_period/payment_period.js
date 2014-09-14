@@ -61,6 +61,13 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid){
       delete session.edit.TAX;
     };
 
+    $scope.config = function (period) {
+    	session.action = 'config';
+     	session.config = angular.copy(period);
+     	session.weeks = [];
+     	getWeeks(session.config.id);
+    };
+
     $scope.new = function () {
       session.action = 'new';
       session.new = {};
@@ -108,5 +115,61 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid){
       return Number.isNaN(max) ? 1 : max + 1;
     }
 
+    //objet week
+    function Week () {
+    	var self = this;
+    	this.paiement_period_id = session.config.id;
+		this.weekFrom = null;
+		this.weekTo = null;
+    	return this;
+    }
+
+    function getWeeks (paiement_period_id) {
+    	var weeks = {
+    		tables : {
+    			config_paiement_period : { columns : ['weekFrom','weekTo']}
+    		},
+    		where : ['config_paiement_period.paiement_period_id='+paiement_period_id]
+    	};
+
+    	connect.fetch(weeks)
+    	.then(function (model) {
+    		session.weeks = model;
+    		for(var i in session.weeks){
+    			session.weeks[i].weekFrom = new Date(session.weeks[i].weekFrom);
+    			session.weeks[i].weekTo = new Date(session.weeks[i].weekTo);
+    		}
+    		console.log('getWeek ',session.weeks, 'model', model);
+    	});
+    }
+
+    $scope.addWeek = function () {
+    	var week = new Week();
+    	session.weeks.push(week);
+    	return week;
+    };
+
+    $scope.removeWeek = function (index) {
+    	console.log('index ',index,'session.weeks ',session.weeks);
+    	session.weeks.splice(index,1);
+    	console.log('After splice : index ',index,'session.weeks ',session.weeks);
+    };
+
+    $scope.save.config = function () {
+    	var result = confirm($translate.instant('PAYMENT_PERIOD.CONFIRM'));
+    	var record = connect.clean(session.config);
+    	if (result && record.id && session.weeks.length) {
+    		connect.delete('config_paiement_period','paiement_period_id',record.id)
+    		.then(function(){
+    			insertConfigPaiementPeriod(session.weeks);
+    		});
+    	}
+
+    	function insertConfigPaiementPeriod (data) {
+    		return connect.post('config_paiement_period', data).then(function(){
+    			messenger.success($translate.instant('PAYMENT_PERIOD.SAVE_SUCCES'));
+    		})
+    	}
+    };
 
 }]);

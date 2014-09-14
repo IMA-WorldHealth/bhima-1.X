@@ -35,6 +35,7 @@
 	              <td>{{period.dateTo | date : "d MMM yyyy"}}</td>
 	              <td>{{period.RUBRIC}}</td>
 	              <td>{{period.TAX}}</td>
+	              <td><a class="action" ng-click="config(period)"><span class="glyphicon glyphicon-cog"></span></a></td>
 	              <td><a class="action" ng-click="edit(period)"><span class="glyphicon glyphicon-pencil"></span></a></td>
 	              <td><a class="action danger" ng-click="delete(period)"><span class="glyphicon glyphicon-trash"></span></a></td>
 	            </tr>
@@ -151,6 +152,59 @@
 	          </div>   
 	        </form>
 	      </div>
+
+	      <div ng-switch-when="config">
+	      	<div class="panel panel-default">
+	      		<div class="panel-heading">
+	              <span class="glyphicon glyphicon-cog"></span> 
+	              <span><strong>{{ "PAYMENT_PERIOD.CONFIG" | translate }}</strong></span>
+	              <span class="pull-right">
+	                <a ng-click="save.config()" class="clk">
+	                  <span class="glyphicon glyphicon-floppy-disk"></span> {{ "FORM.SAVE" | translate }}
+	                </a>
+	              </span>
+	            </div>
+	            <div class="panel-body">
+			      	<form novalidate class="form-horizontal">
+			      		<h4 class="alert alert-info">{{session.config.label}}</h4>
+
+			      		<div class="panel panel-default square">
+				      		<div class="panel-heading square">
+					          <span class="glyphicon glyphicon-list"></span> {{ 'PAYMENT_PERIOD.WEEKS' | translate }}
+					          <!-- FIXME style hack -->
+					          <a class="pull-right menu-item" ng-click="addWeek()" style="margin-top: 0px"><span class="glyphicon glyphicon&#45;plus"></span> {{ "PAYMENT_PERIOD.ADD_WEEK" | translate }}</a>
+					        </div>
+
+				      		<table class="table table-condensed">
+				      			<thead>
+				      				<tr>
+				      					<th>#</th>
+				      					<th>Debut</th>
+				      					<th>Fin</th>
+				      					<th colspan="2"></th>
+				      				</tr>
+				      			</thead>
+				      			<tbody>
+				      				<tr ng-repeat="week in session.weeks">
+				      					<td>{{$index + 1}}</td>
+				      					<td>
+				      						<input type="date" ng-model="week.weekFrom" class="form-invoice" required="required">
+			          					</td>
+			          					<td>
+				      						<input type="date" ng-model="week.weekTo" class="form-invoice" required="required">
+			          					</td>
+			          					<td colspan="2">
+			          						<a class="action danger" ng-click="removeWeek($index)"><span class="glyphicon glyphicon&#45;trash"></span></a>
+			          					</td>
+				      				</tr>
+				      			</tbody>
+				      		</table>
+			      		</div>
+			        </form>
+			    </div>
+	        </div>
+	      </div>
+
 	    </div>
 	</div>
 </main>
