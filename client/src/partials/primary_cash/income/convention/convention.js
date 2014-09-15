@@ -130,7 +130,7 @@ angular.module('bhima.controllers')
         uuid            : uuid(),
         project_id      : $scope.project.id,
         type            : 'E',
-        date            : util.convertToMysqlDate(new Date().toString()),
+        date            : util.sqlDate(new Date().toString()),
         currency_id     : $scope.selectedItem.currency_id,
         account_id      : $scope.selectedConvention.account_id,
         cost            : $scope.data.payment,
