@@ -637,7 +637,8 @@
     "MEMBERS"              : "Members",
     "APPLIES_GLOBALLY"     : "Applies globally",
     "REFERENCE_PURCHASE" : "Reference",
-    "GIVEN_AMOUNT"       : "Given amount"
+    "GIVEN_AMOUNT"       : "Given amount",
+    "ABBREVIATION"       : "Abreviation"
   },
 
   "INVENTORY" : {
@@ -804,7 +805,10 @@
     "IS_DISCOUNT"        : "Is a discount?",
     "VALUE"              : "Value",
     "YES"                : "Yes",
-    "NO"                 : "No"
+    "NO"                 : "No",
+    "ABBR"               : "Abbr.",
+    "NOT_EMPTY"          : "Abbr. Can not be empty",
+    "NOT_SUP4"            : "Can not be more than 4 characters"    
 },
 
   "DISTRIBUTION" : {
@@ -1913,7 +1917,9 @@
     "ANNUAL_IMPOT"        : "Annual Impot",
     "MONTH_IMPOT"         : "Monthly Impot",
     "ANNUAL_CUMUL"        : "Annual Accumulation",
-    "MONTH_CUMUL"         : "Accumulated Monthly"
+    "MONTH_CUMUL"         : "Accumulated Monthly",
+    "NOT_EMPTY"           : "Abbr. Can not be empty",
+    "NOT_SUP4"            : "Can not be more than 4 characters"
   },
 
   "CONFIG_RUBRIC" : {
@@ -1930,7 +1936,8 @@
     "RUBRIC"        : "Rubrics Payroll"
     "PAYABLE"       : "Payable",
     "DELETE_SUCCESS" : "Deleted successfully",
-    "NO_CONFIG_RUBRIC" : "No Configuration Rubrics"
+    "NO_CONFIG_RUBRIC" : "No Configuration Rubrics",
+    "ABBR"          : "Abbr.",
   },
   
   "CONFIG_TAX" : {

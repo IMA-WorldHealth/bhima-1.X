@@ -15,7 +15,7 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           'rubric' : {
-            columns : ['id', 'label', 'is_percent', 'is_discount', 'value']
+            columns : ['id', 'label', 'abbr', 'is_percent', 'is_discount', 'value']
           }
         }
       }
@@ -64,27 +64,43 @@ angular.module('bhima.controllers')
       var record = connect.clean(session.edit);
       console.log('Save Edit Session: ',session.edit);
       delete record.reference;
-      connect.basicPost('rubric', [record], ['id'])
-      .then(function () {
-        messenger.success($translate.instant('RUBRIC_PAYROLL.UPDATE_SUCCES')); 
-        $scope.rubrics.put(record);
-        session.action = '';
-        session.edit = {};
-      });
+      if(record.abbr){
+        if(record.abbr.length <= 4){
+          connect.basicPost('rubric', [record], ['id'])
+          .then(function () {
+            messenger.success($translate.instant('RUBRIC_PAYROLL.UPDATE_SUCCES')); 
+            $scope.rubrics.put(record);
+            session.action = '';
+            session.edit = {};
+          });
+        } else if (record.abbr.length > 4){
+          messenger.danger($translate.instant('RUBRIC_PAYROLL.NOT_SUP4'));  
+        }  
+      } else {
+        messenger.danger($translate.instant('RUBRIC_PAYROLL.NOT_EMPTY'));  
+      } 
     };
 
     $scope.save.new = function () {
       session.new.is_percent = (session.new.is_percent)?1:0;
       session.new.is_discount = (session.new.is_discount)?1:0;
       var record = connect.clean(session.new);
-      connect.basicPut('rubric', [record])
-      .then(function () {
-        messenger.success($translate.instant('RUBRIC_PAYROLL.SAVE_SUCCES'));
-        record.reference = generateReference();
-        $scope.rubrics.post(record);
-        session.action = '';
-        session.new = {};
-      });
+      if(record.abbr){
+        if(record.abbr.length <= 4){
+          connect.basicPut('rubric', [record])
+          .then(function () {
+            messenger.success($translate.instant('RUBRIC_PAYROLL.SAVE_SUCCES'));
+            record.reference = generateReference();
+            $scope.rubrics.post(record);
+            session.action = '';
+            session.new = {};
+          });
+        } else if (record.abbr.length > 4){
+          messenger.danger($translate.instant('RUBRIC_PAYROLL.NOT_SUP4'));  
+        }  
+      } else {
+        messenger.danger($translate.instant('RUBRIC_PAYROLL.NOT_EMPTY'));  
+      }   
     };
 
     function generateReference () {

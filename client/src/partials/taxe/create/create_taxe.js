@@ -15,7 +15,7 @@ angular.module('bhima.controllers')
       query : {
         identifier : 'id',
         tables : {
-          'tax' : { columns : ['id', 'label', 'is_employee', 'is_percent', 'account_id', 'value'] },
+          'tax' : { columns : ['id', 'label', 'abbr', 'is_employee', 'is_percent', 'account_id', 'value'] },
           'account' : { columns : ['account_number', 'account_txt'] }
         },
         join : ['tax.account_id=account.id']
@@ -73,33 +73,48 @@ angular.module('bhima.controllers')
       delete record.account_number;
       delete record.account_txt;
 
-      connect.basicPost('tax', [record], ['id'])
-      .then(function () {
-        validate.refresh(dependencies)
-        .then(function (models) {
-          angular.extend($scope, models);
-          messenger.success($translate.instant('TAXES.UPDATE_SUCCES'));
-          session.action = '';
-          session.edit = {};
-        });        
-      });
+      if(record.abbr){
+        if(record.abbr.length <= 4){
+          connect.basicPost('tax', [record], ['id'])
+          .then(function () {
+            validate.refresh(dependencies)
+            .then(function (models) {
+              angular.extend($scope, models);
+              messenger.success($translate.instant('TAXES.UPDATE_SUCCES'));
+              session.action = '';
+              session.edit = {};
+            });        
+          });
+        } else if (record.abbr.length > 4){
+          messenger.danger($translate.instant('TAXES.NOT_SUP4'));  
+        }   
+      }  else {
+        messenger.danger($translate.instant('TAXES.NOT_EMPTY'));  
+      }  
     };
 
     $scope.save.new = function () {
       $scope.session.new.is_employee = ($scope.session.new.is_employee)? 1 : 0;
       $scope.session.new.is_percent = ($scope.session.new.is_percent)? 1 : 0;
-
       var record = connect.clean(session.new);
-      connect.basicPut('tax', [record])
-      .then(function (res) {
+      if(record.abbr){
+        if(record.abbr.length <= 4){
+          connect.basicPut('tax', [record])
+          .then(function (res) {
 
-        validate.refresh(dependencies)
-        .then(function (models) {
-          angular.extend($scope, models);
-        });
-        session.action = '';
-        session.new = {};
-      });
+            validate.refresh(dependencies)
+            .then(function (models) {
+              angular.extend($scope, models);
+            });
+            session.action = '';
+            session.new = {};
+          });
+        } else if (record.abbr.length > 4){
+          messenger.danger($translate.instant('TAXES.NOT_SUP4'));  
+        }   
+      }  else {
+        messenger.danger($translate.instant('TAXES.NOT_EMPTY'));  
+      }  
     }; 
   } 
 ]);
