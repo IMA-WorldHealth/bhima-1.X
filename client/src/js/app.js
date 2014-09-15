@@ -412,6 +412,10 @@
     .when('/hollyday_management/', {
       controller : 'hollydays',
       templateUrl : 'partials/hollydays/hollydays.html'
+    })
+    .when('/payment_period/', {
+      controller : 'payment_period',
+      templateUrl : 'partials/payment_period/payment_period.html'
     });    
   }
 
