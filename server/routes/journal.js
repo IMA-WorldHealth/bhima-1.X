@@ -1693,9 +1693,9 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
                       [
                         (reference.quantity * reference.purchase_price).toFixed(4), 0,
                         (reference.quantity * reference.purchase_price).toFixed(4), 0,
-                        2
+                        2, sanitize.escape(reference.inventory_uuid)
                       ].join(',') +
-                      ', null, null, ' +
+                      ', null, ' +
                       [
                         sanitize.escape(id),
                         cfg.originId,
@@ -1799,9 +1799,9 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
                       [
                         (reference.quantity * reference.purchase_price).toFixed(4), 0,
                         (reference.quantity * reference.purchase_price).toFixed(4), 0,
-                        details.currency_id
+                        details.currency_id, sanitize.escape(reference.inventory_uuid)
                       ].join(',') +
-                      ', null, null, ' +
+                      ', null, ' +
                       [
                         sanitize.escape(id),
                         cfg.originId,
@@ -1815,7 +1815,6 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
   }
 
   function handleDistributionLoss (id, user_id, details, done) {
-    console.log('on est la !!!!!!!!!');
 
     var references, dayExchange, cfg = {};
     var sql =
