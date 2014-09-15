@@ -1380,7 +1380,18 @@
     "DEPOT_REF"                    : "Depot Ref.",
     "DISTRIBUTION_SERVICE"         : "Service Distribution",
     "GENERIC_INCOME"               : "Generic Income",
-    "GENERIC_EXPENSE"              : "Generic Expense"
+    "GENERIC_EXPENSE"              : "Generic Expense",
+    "STOCK_MOVEMENT"               : "Stock movement",
+    "NAME" : "Name",
+    "REFERENCE" : "Reference",
+    "TRANSFERT_DATE" : "Transfer date",
+    "ITEM" : "Item",
+    "EXPIRATION_DATE" : "Expiration date",
+    "TRANSFERED_QTE" : "Transfered Quantity",
+    "TRACKING_NUMBER" : "Trancking number",
+    "DESTINATION_DEPOT" : "Destination depot",
+    "ORIGIN_DEPOT" : "Origin depot",
+    "LOT" : "Lot"
   },
 
   "SECTOR"             : {

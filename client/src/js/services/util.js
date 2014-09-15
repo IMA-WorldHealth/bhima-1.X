@@ -44,7 +44,7 @@ angular.module('bhima.services')
     dateFrom = new Date(dateFrom).setHours(0,0,0,0);
     dateTo = new Date(dateTo).setHours(0,0,0,0);
     return ((date>=dateFrom) && (date<=dateTo));
-  }
+  };
 
   this.sqlDate = this.convertToMysqlDate;
 

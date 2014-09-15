@@ -1191,7 +1191,18 @@
     "GENERIC_INCOME"               : "Recette Genarale",
     "GENERIC_EXPENSE"              : "Depense Generale",
     "LOSS"                         : "Document de perte de stock",
-    "DATE_DOCUMENT"                : "Date document"
+    "DATE_DOCUMENT"                : "Date document",
+    "STOCK_MOVEMENT"               : "Mouvement de stock",
+    "NAME" : "Nom",
+    "REFERENCE" : "Reference",
+    "TRANSFERT_DATE" : "Date transfert",
+    "ITEM" : "Item",
+    "EXPIRATION_DATE" : "Date expiration",
+    "TRANSFERED_QTE" : "Quantite transferee",
+    "TRACKING_NUMBER" : "Numero tracking",
+    "DESTINATION_DEPOT" : "Depot destination",
+    "ORIGIN_DEPOT" : "Depot Origine",
+    "LOT" : "Lot"
 
   },
 
