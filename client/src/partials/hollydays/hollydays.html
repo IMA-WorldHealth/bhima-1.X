@@ -21,15 +21,17 @@
         <table class="table table-condensed">
           <thead>
             <tr>
-              <th>{{ "COLUMNS.EMPLOYEE_NAME" | translate}}</th>            
+              <th>{{ "COLUMNS.EMPLOYEE_NAME" | translate}}</th>
+              <th>{{ "COLUMNS.LABEL" | translate}}</th>            
               <th>{{ "COLUMNS.DATE_FROM" | translate}}</th>
               <th>{{ "COLUMNS.DATE_TO" | translate}}</th>              
               <th colspan="4" style="max-width: 20%;">{{ "COLUMNS.ACTIONS" | translate }}</th>
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="hollyday in hollydays.data | orderBy:'date'">
+            <tr ng-repeat="hollyday in hollydays.data | orderBy:'name'">
               <td>{{ hollyday.name }} {{ hollyday.postnom }} {{ hollyday.prenom }}</td>
+              <td>{{ hollyday.label | date}}</td>
               <td>{{ hollyday.dateFrom | date}}</td>
               <td>{{ hollyday.dateTo | date}}</td>
               <td><a class="action" ng-click="edit(hollyday)"><span class="glyphicon glyphicon-pencil"></span></a></td>

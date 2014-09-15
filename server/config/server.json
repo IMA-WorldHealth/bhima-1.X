@@ -83,7 +83,8 @@
       "/getAccount6/",
       "/employee_list/",
       "/period_paiement/",
-      "/available_payment_period/"
+      "/available_payment_period/",
+      "/getCheckHollyday/"
     ]
   }
 }

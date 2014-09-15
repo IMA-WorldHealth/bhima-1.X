@@ -2,12 +2,13 @@ angular.module('bhima.controllers')
 .controller('hollydays', [
   '$scope',
   '$translate',
+  '$http',  
   'validate',
   'messenger',
   'connect',
   'appstate',
   'util',
-  function ($scope, $translate, validate, messenger, connect, appstate, util) {
+  function ($scope, $translate, $http, validate, messenger, connect, appstate, util) {
     var dependencies = {},
         session = $scope.session = {};
 
@@ -78,33 +79,63 @@ angular.module('bhima.controllers')
       delete record.prenom;
       delete record.date;
 
-      connect.basicPost('hollyday', [record], ['id'])
-      .then(function () {
-        validate.refresh(dependencies)
-        .then(function (models) {
-          angular.extend($scope, models);
-          messenger.success($translate.instant('HOLLYDAY_MANAGEMENT.UPDATE_SUCCES'));
-          session.action = '';
-          session.edit = {};
-        }); 
+      $http.get('/getCheckHollyday/',{params : {
+          'dateFrom' : record.dateFrom, 
+          'dateTo' : record.dateTo,
+          'employee_id' : record.employee_id,
+          'line' : record.id
+        }
+      }).
+      success(function(data) {
+        console.log(data);
+        if(data.length === 0){        
+          connect.basicPost('hollyday', [record], ['id'])
+          .then(function () {
+            validate.refresh(dependencies)
+            .then(function (models) {
+              angular.extend($scope, models);
+              messenger.success($translate.instant('HOLLYDAY_MANAGEMENT.UPDATE_SUCCES'));
+              session.action = '';
+              session.edit = {};
+            }); 
+          });
+        } else if (data.length > 0){
+           messenger.danger($translate.instant('HOLLYDAY_MANAGEMENT.SAVE_FAILURE')); 
+           session.action = '';
+        }          
       });
     };
 
     $scope.save.new = function () {
       session.new.dateFrom = util.sqlDate(session.new.dateFrom);
       session.new.dateTo = util.sqlDate(session.new.dateTo);
-      console.log(session.new);
+      //console.log(session.new);
       var record = connect.clean(session.new);
-      connect.basicPut('hollyday', [record])
-      .then(function (res) {
-        messenger.success($translate.instant('HOLLYDAY_MANAGEMENT.SAVE_SUCCES'));        
-        
-        validate.refresh(dependencies)
-        .then(function (models) {
-          angular.extend($scope, models);
-        });
-        session.action = '';
-        session.new = {};
+
+      $http.get('/getCheckHollyday/',{params : {
+          'dateFrom' : record.dateFrom, 
+          'dateTo' : record.dateTo,
+          'employee_id' : record.employee_id,
+          'line' : ""
+        }
+      }).
+      success(function(data) {
+        if(data.length === 0){
+          connect.basicPut('hollyday', [record])
+          .then(function (res) {
+            messenger.success($translate.instant('HOLLYDAY_MANAGEMENT.SAVE_SUCCES'));        
+            
+            validate.refresh(dependencies)
+            .then(function (models) {
+              angular.extend($scope, models);
+            });
+            session.action = '';
+            session.new = {};
+          });          
+        } else if (data.length > 0){
+           messenger.danger($translate.instant('HOLLYDAY_MANAGEMENT.SAVE_FAILURE'));  
+           session.action = '';
+        }
       });
     };
 
