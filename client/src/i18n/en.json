@@ -1409,7 +1409,8 @@
     "SIGN_EMPLOYEE" : "Employee signature",
     "PROOF_OF_PATIENT_CONSUMPTION" : "Proof of patient consumption",
     "DOCUMENT_REF" : "Sale reference",
-    "DEPOT_REF" : "Depot reference"
+    "DEPOT_REF" : "Depot reference",
+    "PURCHASE_RECIPIENT" : "Supplier"
   },
 
   "SECTOR"             : {
@@ -1927,7 +1928,7 @@
     "REGISTERED"    : "Registered Configuration Rubrics",
     "ALERT"         : "The configuration of Rubrics allows setting different kinds rubrics that are taken during a pay period",
     "CONFIG"        : "Configuration",
-    "RUBRIC"        : "Rubrics Payroll"
+    "RUBRIC"        : "Rubrics Payroll",
     "PAYABLE"       : "Payable",
     "DELETE_SUCCESS" : "Deleted successfully",
     "NO_CONFIG_RUBRIC" : "No Configuration Rubrics"
@@ -1944,7 +1945,7 @@
     "REGISTERED"    : "Registered Configuration Taxes",
     "ALERT"         : "The configuration of Taxes allows setting different kinds Taxes that are taken during a pay period",
     "CONFIG"        : "Configuration",
-    "RUBRIC"        : "Taxes Payroll"
+    "RUBRIC"        : "Taxes Payroll",
     "PAYABLE"       : "Payable",
     "DELETE_SUCCESS" : "Deleted successfully",
     "NO_CONFIG_TAX" : "No Configuration Taxes"
