@@ -790,7 +790,8 @@
     "MEMBERS"              : "Membres",    
     "APPLIES_GLOBALLY"     : "Appliquer globalement",
     "REFERENCE_PURCHASE" : "Reference",
-    "GIVEN_AMOUNT"       : "Montant donne"
+    "GIVEN_AMOUNT"       : "Montant donne",
+    "NUM" : "Numero"
   },
 
   "REPORT"                  : {
