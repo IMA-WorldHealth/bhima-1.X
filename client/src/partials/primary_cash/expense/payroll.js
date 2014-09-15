@@ -277,8 +277,8 @@ angular.module('bhima.controllers')
               }
 
               var total = date_pweekto.getDate() - date_pweekfrom.getDate();
-              if(minus_left > total) return 0;
-              if(minus_right > total) return 0;
+              if(minus_left > total) { return 0; }
+              if(minus_right > total) { return 0; } 
               return total - (minus_left + minus_right);
             }
 

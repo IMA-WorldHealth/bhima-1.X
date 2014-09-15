@@ -97,7 +97,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
           db.exec(sql2)
           .then(function (rows){            
             var data2 = rows.pop();
-            value = (data.increment) ? '\'' + data2.abbr + data.increment + '\'' : '\'' + data.abbr + 1 + '\'';
+            value = (data.increment) ? '\'' + data2.abbr + data.increment + '\'' : '\'' + data2.abbr + 1 + '\'';
             defer.resolve(value);
           });
         }else{
