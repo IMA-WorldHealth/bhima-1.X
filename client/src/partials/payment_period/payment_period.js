@@ -7,7 +7,8 @@ angular.module('bhima.controllers')
 'connect',
 'appstate',
 'uuid',
-function($scope, $translate, validate, messenger, connect, appstate, uuid){
+'util',
+function($scope, $translate, validate, messenger, connect, appstate, uuid, util){
 	var dependencies = {},
 		session = $scope.session = {};
 	
@@ -44,11 +45,14 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid){
     $scope.delete = function (period) {
       var result = confirm($translate.instant('PAYMENT_PERIOD.CONFIRM'));
       if (result) {  
-        connect.basicDelete('paiement_period', period.id, 'id')
-        .then(function () {
-          $scope.paiement_period.remove(period.id);
-          messenger.info($translate.instant('PAYMENT_PERIOD.DELETE_SUCCESS'));
-        });
+      	connect.delete('config_paiement_period','paiement_period_id',period.id)
+      	.then(function (){
+      		connect.delete('paiement_period','id',period.id)
+	        .then(function () {
+	          $scope.paiement_period.remove(period.id);
+	          messenger.info($translate.instant('PAYMENT_PERIOD.DELETE_SUCCESS'));
+	        });
+      	});
       }
     };
 
@@ -115,7 +119,6 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid){
       return Number.isNaN(max) ? 1 : max + 1;
     }
 
-    //objet week
     function Week () {
     	var self = this;
     	this.paiement_period_id = session.config.id;
@@ -136,10 +139,10 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid){
     	.then(function (model) {
     		session.weeks = model;
     		for(var i in session.weeks){
+    			session.weeks[i].paiement_period_id = paiement_period_id;
     			session.weeks[i].weekFrom = new Date(session.weeks[i].weekFrom);
     			session.weeks[i].weekTo = new Date(session.weeks[i].weekTo);
     		}
-    		console.log('getWeek ',session.weeks, 'model', model);
     	});
     }
 
@@ -150,26 +153,45 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid){
     };
 
     $scope.removeWeek = function (index) {
-    	console.log('index ',index,'session.weeks ',session.weeks);
     	session.weeks.splice(index,1);
-    	console.log('After splice : index ',index,'session.weeks ',session.weeks);
     };
 
     $scope.save.config = function () {
     	var result = confirm($translate.instant('PAYMENT_PERIOD.CONFIRM'));
     	var record = connect.clean(session.config);
+
     	if (result && record.id && session.weeks.length) {
-    		connect.delete('config_paiement_period','paiement_period_id',record.id)
-    		.then(function(){
-    			insertConfigPaiementPeriod(session.weeks);
-    		});
+    		if (isValidWeeks(session.weeks)) {
+    			connect.delete('config_paiement_period','paiement_period_id',record.id)
+	    		.then(function(){
+	    			insertConfigPaiementPeriod(session.weeks);
+	    		});
+    		} else {
+    			messenger.danger($translate.instant('PAYMENT_PERIOD.WARNING_WEEK'));
+    		}
+    		
     	}
 
     	function insertConfigPaiementPeriod (data) {
     		return connect.post('config_paiement_period', data).then(function(){
     			messenger.success($translate.instant('PAYMENT_PERIOD.SAVE_SUCCES'));
-    		})
+    		});
+    	}
+
+    	function isValidWeeks (weeks) {
+    		var r = false;
+    		for(var i in weeks){
+    			r = isInPeriod(weeks[i]);
+    		}
+    		return r;
     	}
     };
+
+    function isInPeriod (week) {
+    	var r = false;
+    	if (util.sqlDate(week.weekFrom) >= util.sqlDate(session.config.dateFrom) && util.sqlDate(week.weekTo) <= util.sqlDate(session.config.dateTo)) {r = true;}
+    	else {r = false;}
+    	return r;
+    }
 
 }]);

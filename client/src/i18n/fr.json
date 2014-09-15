@@ -1874,6 +1874,7 @@
     "REGISTERED"    : "Periodes enregistrées",
     "SAVE_PERIOD"  : "Sauver",
     "SAVE_SUCCES"  : "Enregistrement avec succès",
+    "DELETE_SUCCESS" : "Supprimé(e) avec succès",
     "UPDATE_SUCCES": "Mis à jour avec succès",
     "INFO"         : "Le module gestion des périodes permet de configuer les périodes de paiement",
     "LABEL"        : "Titre",
@@ -1884,7 +1885,8 @@
     "NO_PERIODS"   : "Aucune période enregistrées",
     "CONFIG"       : "Configurer semaines",
     "WEEKS"        : "Les Semaines",
-    "ADD_WEEK"     : "Ajouter"
+    "ADD_WEEK"     : "Ajouter",
+    "WARNING_WEEK" : "Les semaines doivent appartenir à la periode"
   },
 
    "TAXES" : {
