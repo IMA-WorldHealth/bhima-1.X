@@ -71,6 +71,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       // get a new transaction id from the journal.
       // make sure it is the last thing fired in the
       // call stack before posting.
+      var defer = q.defer();
 
       console.log('received project_id', project_id);
       var sql =
@@ -83,12 +84,33 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
           'FROM general_ledger JOIN project ON general_ledger.project_id = project.id ' +
           'WHERE project_id = ' + project_id + ')c;';
 
-      return db.exec(sql)
+      var sql2 = 'SELECT `project`.`abbr` FROM `project` WHERE `project`.`id` = ' + project_id;
+
+      db.exec(sql)
       .then(function (rows) {
         var data = rows.pop();
-        // catch a corner case where the posting journal has no data
-        return q(data.increment ? '\'' + data.abbr + data.increment + '\'' : '\'' + data.abbr + 1 + '\'');
+
+        //FIX ME: dangerous test     
+
+        if(!data.abbr){
+          console.log('vide :::')
+          db.exec(sql2)
+          .then(function (rows){            
+            var data2 = rows.pop();
+            value = (data.increment) ? '\'' + data2.abbr + data.increment + '\'' : '\'' + data2.abbr + 1 + '\'';
+            defer.resolve(value);
+          });
+        }else{
+          var value = '\'' + data.abbr + data.increment + '\'';
+          defer.resolve(value);
+        }
+
+        
+        // console.log('voici le tableau data :::', data);
+        // var value = data.increment ? '\'' + data.abbr + data.increment + '\'' : '\'' + data.abbr + 1 + '\'';                
       });
+
+      return defer.promise;
     },
 
     date : function (date) {
@@ -250,6 +272,8 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       return get.transactionId(reference.project_id);
     })
     .then(function (trans_id) {
+
+      console.log('this is pur trans_id :::', trans_id);
       // we can begin copying data from SALE -> JOURNAL
 
       // First, copy the data from sale into the journal.

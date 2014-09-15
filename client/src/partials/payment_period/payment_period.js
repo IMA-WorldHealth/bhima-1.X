@@ -75,8 +75,8 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
     $scope.new = function () {
       session.action = 'new';
       session.new = {};
-      session.new.dateFrom = new Date();
-      session.new.dateTo = new Date();
+      session.new.dateFrom = util.sqlDate(new Date());
+      session.new.dateTo = util.sqlDate(new Date());
     };
 
     $scope.save = {};
@@ -84,6 +84,8 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
     $scope.save.edit = function () {
       var record = connect.clean(session.edit);
       delete record.reference;
+      record.dateFrom = util.sqlDate(record.dateFrom);
+      record.dateTo = util.sqlDate(record.dateTo);
       connect.basicPost('paiement_period', [record], ['id'])
       .then(function () {
         messenger.success($translate.instant('PAYMENT_PERIOD.UPDATE_SUCCES')); 
@@ -99,6 +101,8 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
 
     $scope.save.new = function () {
       var record = connect.clean(session.new);
+      record.dateFrom = util.sqlDate(record.dateFrom);
+      record.dateTo = util.sqlDate(record.dateTo);
       connect.basicPut('paiement_period', [record])
       .then(function () {
         messenger.success($translate.instant('PAYMENT_PERIOD.SAVE_SUCCES'));
@@ -173,6 +177,12 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
     	}
 
     	function insertConfigPaiementPeriod (data) {
+        //FIX ME : hack
+        data.forEach(function (item) {
+          item.weekFrom = util.sqlDate(item.weekFrom);
+          item.weekTo = util.sqlDate(item.weekTo);
+
+        })
     		return connect.post('config_paiement_period', data).then(function(){
     			messenger.success($translate.instant('PAYMENT_PERIOD.SAVE_SUCCES'));
     		});

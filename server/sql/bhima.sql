@@ -1260,6 +1260,7 @@ drop table if exists `rubric`;
 create table `rubric` (
   `id`                      int unsigned auto_increment not null,
   `label`                   text,
+  `abbr`                    varchar(4) null,
   `is_discount`             boolean,
   `is_percent`              boolean,
   `value`                   float default 0,
@@ -1290,6 +1291,7 @@ drop table if exists `tax`;
 create table `tax` (
   `id`                      int unsigned auto_increment not null,
   `label`                   text,
+  `abbr`                    varchar(4) null,
   `is_employee`             boolean,
   `is_percent`              boolean,
   `account_id`              int unsigned not null,
