@@ -285,7 +285,9 @@
     "PRIMARY_CASH"    : "Selectionner Caisse principale",
     "EMPLOYEE_SEX"    : "Selectionner Sexe",
     "EMPLOYEE_SERVICE"    : "Selectionner un Service",
-    "EMPLOYEE_GRADE"      : "Selectionner un Grade"
+    "EMPLOYEE_GRADE"      : "Selectionner un Grade",
+    "PERIOD_RUBRIC_CONFIG": "Selectionner une configuration des rubriques",
+    "PERIOD_TAX_CONFIG"   : "Selectionner une configuration des taxes"
   },
 
   "RENEWAL"           : {
@@ -416,7 +418,8 @@
     "TAXE_MANAGEMENT"           : "Gestion des taxes",
     "RUBRIC_PAYROLL"            : "Gestion des rubriques",
     "OFFDAY_MANAGEMENT"         : "Gestion des jours ferriés",
-    "HOLIDAY_MANAGEMENT"        : "Gestion des vacances"
+    "HOLLIDAY_MANAGEMENT"       : "Gestion des vacances",
+    "PAYMENT_PERIOD"            : "Gestion des Périodes"
 },
 
   "RUBRIC_PAYROLL"       : {
@@ -1872,6 +1875,30 @@
     "EMPLOYEE"      : "Employé"
   },
 
+  "PAYMENT_PERIOD" : {
+    "TITLE"        : "Gestion des périodes de paiement",
+    "NEW"          : "Nouvelle périodes",
+    "ADD"          : "Ajouter période",
+    "EDIT"         : "Editer période",
+    "DELETE"       : "Supprimer période",
+    "CONFIRM"      : "Voulez-vous vraiment effectuer cette operation ?",
+    "REGISTERED"    : "Periodes enregistrées",
+    "SAVE_PERIOD"  : "Sauver",
+    "SAVE_SUCCES"  : "Enregistrement avec succès",
+    "DELETE_SUCCESS" : "Supprimé(e) avec succès",
+    "UPDATE_SUCCES": "Mis à jour avec succès",
+    "INFO"         : "Le module gestion des périodes permet de configuer les périodes de paiement",
+    "LABEL"        : "Titre",
+    "FROM"         : "debut",
+    "TO"           : "fin",
+    "TAX"          : "Config. Tax.",
+    "RUBRIC"       : "Config. Rub.",
+    "NO_PERIODS"   : "Aucune période enregistrées",
+    "CONFIG"       : "Configurer semaines",
+    "WEEKS"        : "Les Semaines",
+    "ADD_WEEK"     : "Ajouter",
+    "WARNING_WEEK" : "Les semaines doivent appartenir à la periode"
+  },
 
    "TAXES" : {
     "TITLE"        : "Gestion des taxes",
@@ -1906,5 +1933,5 @@
     "MONTH_IMPOT"         : "Impot Mensuel",
     "ANNUAL_CUMUL"        : "Cumul Annuel",
     "MONTH_CUMUL"         : "Cumul Mensuel"
-  }  
+  }
 }
