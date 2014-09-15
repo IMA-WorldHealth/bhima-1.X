@@ -1836,6 +1836,7 @@
     "REGISTERED"   : "Registered periods",
     "SAVE_PERIOD"  : "Save",
     "SAVE_SUCCES"  : "Successfully saving period",
+    "DELETE_SUCCESS" : "Successfully deleted",
     "UPDATE_SUCCES": "Update successfully",
     "INFO"         : "The managment period allows the configuration of the payment periods",
     "LABEL"        : "Title",
@@ -1846,7 +1847,8 @@
     "NO_PERIODS"   : "No period registred",
     "CONFIG"       : "Configure Weeks",
     "WEEKS"        : "Weeks",
-    "ADD_WEEK"     : "Add"
+    "ADD_WEEK"     : "Add",
+    "WARNING_WEEK" : "Weeks must be in the period"
   },
 
    "TAXES" : {
