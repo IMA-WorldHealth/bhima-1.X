@@ -180,14 +180,13 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
 
     	function isValidWeeks (weeks) {
     		var r = false;
-    		for(var i=0 ; i < weeks.length ; i++){
-    			r = isInPeriod(weeks[i])
+    		for(var i in weeks){
+    			r = isInPeriod(weeks[i]);
     			if (!r){
-    				break ;
+    				break;
     			} else {
     				r = true;
     			}
-    			console.log(r);
     		}
     		return r;
     	}
@@ -195,8 +194,9 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
 
     function isInPeriod (week) {
     	var r = false;
-    	if (util.sqlDate(week.weekFrom) >= util.sqlDate(session.config.dateFrom) && util.sqlDate(week.weekTo) <= util.sqlDate(session.config.dateTo)) {r = true;}
+    	if (util.sqlDate(week.weekFrom) >= util.sqlDate(session.config.dateFrom) && util.sqlDate(week.weekTo) <= util.sqlDate(session.config.dateTo) && util.sqlDate(week.weekFrom) <= util.sqlDate(week.weekTo)) {r = true;}
     	else {r = false;}
+    	console.log(r);
     	return r;
     }
 
