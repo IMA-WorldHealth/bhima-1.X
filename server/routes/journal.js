@@ -1555,9 +1555,9 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
                       [
                         0, reference.total.toFixed(4),
                         0, reference.total.toFixed(4),
-                        reference.currency_id
+                        reference.currency_id, sanitize.escape(reference.inventory_uuid)
                       ].join(',') +
-                      ', null, null, ' +
+                      ', null, ' +
                       [
                         sanitize.escape(reference.paid_uuid),
                         cfg.originId,
@@ -1905,9 +1905,9 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
                       [
                         (reference.quantity * reference.purchase_price).toFixed(4), 0,
                         (reference.quantity * reference.purchase_price).toFixed(4), 0,
-                        details.currency_id
+                        details.currency_id, sanitize.escape(reference.inventory_uuid)
                       ].join(',') +
-                      ', null, null, ' +
+                      ', null, ' +
                       [
                         sanitize.escape(id),
                         cfg.originId,
