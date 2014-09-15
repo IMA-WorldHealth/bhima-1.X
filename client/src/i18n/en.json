@@ -774,7 +774,9 @@
     "RUBRIC_PAYROLL"            : "Payroll Rubrics",
     "OFFDAY_MANAGEMENT"         : "Offday management",
     "HOLLYDAY_MANAGEMENT"       : "Holiday Management",
-    "PAYMENT_PERIOD"            : "Payment Period Management" 
+    "PAYMENT_PERIOD"            : "Payment Period Management",
+    "CONFIG_RUBRIC"             : "Configuration Rubrics",
+    "CONFIG_TAX"                : "Configuration Taxes"     
   },
 
   "RUBRIC_PAYROLL"       : {
@@ -1785,7 +1787,8 @@
    "HOLLYDAY_MANAGEMENT" : {
     "TITLE"         : "Offdays Management",
     "NEW_HOLLYDAY"  : "Create a hollyday period",
-    "SAVE_SUCCES"  : "Successfully saving Offday",    
+    "SAVE_SUCCES"  : "Successfully saving Offday",  
+    "SAVE_FAILURE" : "Error, these data are entangled with other holiday period",  
     "UPDATE_SUCCES" : "Updated successfully",
     "UPDATE"        : "Modify a hollyday period",
     "NO_HOLLYDAY"   : "No Hollyday have been registred",    
@@ -1884,7 +1887,41 @@
     "MONTH_IMPOT"         : "Monthly Impot",
     "ANNUAL_CUMUL"        : "Annual Accumulation",
     "MONTH_CUMUL"         : "Accumulated Monthly"
-  }
+  },
+
+  "CONFIG_RUBRIC" : {
+    "TITLE"         : "Configuration Rubrics",
+    "NEW_OFFDAY"    : "New configuration",
+    "SAVE_SUCCES"  : "Successfully saving Configuration",    
+    "UPDATE_SUCCES" : "Updated successfully",
+    "UPDATE"        : "Modify a Configuration",    
+    "ADD"           : "Create a new configuration",
+    "CONFIRM"       : "Are you sure you want to delete this Configuration",    
+    "REGISTERED"    : "Registered Configuration Rubrics",
+    "ALERT"         : "The configuration of Rubrics allows setting different kinds rubrics that are taken during a pay period",
+    "CONFIG"        : "Configuration",
+    "RUBRIC"        : "Rubrics Payroll"
+    "PAYABLE"       : "Payable",
+    "DELETE_SUCCESS" : "Deleted successfully",
+    "NO_CONFIG_RUBRIC" : "No Configuration Rubrics"
+  },
+  
+  "CONFIG_TAX" : {
+    "TITLE"         : "Configuration Taxes",
+    "NEW_OFFDAY"    : "New configuration",
+    "SAVE_SUCCES"  : "Successfully saving Configuration",    
+    "UPDATE_SUCCES" : "Updated successfully",
+    "UPDATE"        : "Modify a Configuration",    
+    "ADD"           : "Create a new configuration",
+    "CONFIRM"       : "Are you sure you want to delete this Configuration",    
+    "REGISTERED"    : "Registered Configuration Taxes",
+    "ALERT"         : "The configuration of Taxes allows setting different kinds Taxes that are taken during a pay period",
+    "CONFIG"        : "Configuration",
+    "RUBRIC"        : "Taxes Payroll"
+    "PAYABLE"       : "Payable",
+    "DELETE_SUCCESS" : "Deleted successfully",
+    "NO_CONFIG_TAX" : "No Configuration Taxes"
+  }    
 }
 
 

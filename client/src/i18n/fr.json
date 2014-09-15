@@ -418,8 +418,10 @@
     "TAXE_MANAGEMENT"           : "Gestion des taxes",
     "RUBRIC_PAYROLL"            : "Gestion des rubriques",
     "OFFDAY_MANAGEMENT"         : "Gestion des jours ferriés",
-    "HOLLIDAY_MANAGEMENT"       : "Gestion des vacances",
-    "PAYMENT_PERIOD"            : "Gestion des Périodes"
+    "HOLLYDAY_MANAGEMENT"       : "Gestion des vacances",
+    "PAYMENT_PERIOD"            : "Gestion des Périodes",
+    "CONFIG_RUBRIC"             : "Configuration des rubriques",
+    "CONFIG_TAX"                : "Configuration des taxes"    
 },
 
   "RUBRIC_PAYROLL"       : {
@@ -1853,7 +1855,8 @@
   "HOLLYDAY_MANAGEMENT" : {
     "TITLE"         : "Gestion des vacances",
     "NEW_HOLLYDAY"  : "Créer une période de vacance pour un employé ",
-    "SAVE_SUCCES"  : "Enregistrement avec succès",    
+    "SAVE_SUCCES"  : "Enregistrement avec succès",
+    "SAVE_FAILURE" : "Erreur, ces données s'enchevêtre avec d'autres période des vacances",    
     "UPDATE_SUCCES" : "Mis à jour avec succès",
     "CONFIRM"       : "Etes vous sure de vouloir supprimer cette période de vacance",      
     "UPDATE"        : "Mettre à jour une période de vacance",   
@@ -1922,5 +1925,39 @@
     "MONTH_IMPOT"         : "Impot Mensuel",
     "ANNUAL_CUMUL"        : "Cumul Annuel",
     "MONTH_CUMUL"         : "Cumul Mensuel"
-  }
+  },
+
+   "CONFIG_RUBRIC" : {
+    "TITLE"         : "Configuration des rubriques",
+    "NEW_CONFIG"    : "Nouvelle configuration",
+    "SAVE_SUCCES"  : "Enregistrement avec succès",    
+    "UPDATE_SUCCES" : "Mis à jour avec succès",
+    "CONFIRM"       : "Etes vous sure de vouloir supprimer cette configuration",      
+    "UPDATE"        : "Mettre à jour une configuration",    
+    "ADD"           : "Créer une nouvelle configuration",
+    "REGISTERED"    : "Configuration des rubriques enregistrées",
+    "ALERT"         : "Le module configuration des rubriques, permet le paramétrage des différentes types rubriques qui sont prises pendant une période de paie",
+    "CONFIG"        : "Configuration",
+    "RUBRIC"        : "Rubriques Payroll",
+    "PAYABLE"       : "Payable",
+    "DELETE_SUCCESS" : "Suppression avec succès",
+    "NO_CONFIG_RUBRIC" : "Aucune configuration de rubriques"
+  },
+
+   "CONFIG_TAX" : {
+    "TITLE"         : "Configuration des taxes",
+    "NEW_CONFIG"    : "Nouvelle configuration",
+    "SAVE_SUCCES"  : "Enregistrement avec succès",    
+    "UPDATE_SUCCES" : "Mis à jour avec succès",
+    "CONFIRM"       : "Etes vous sure de vouloir supprimer cette configuration",      
+    "UPDATE"        : "Mettre à jour une configuration",    
+    "ADD"           : "Créer une nouvelle configuration",
+    "REGISTERED"    : "Configuration des taxes enregistrées",
+    "ALERT"         : "Le module configuration des taxes, permet le paramétrage des différentes types taxes qui sont prises pendant une période de paie",
+    "CONFIG"        : "Configuration",
+    "RUBRIC"        : "Taxes Payroll",
+    "PAYABLE"       : "Payable",
+    "DELETE_SUCCESS" : "Suppression avec succès",
+    "NO_CONFIG_TAX" : "Aucune configuration de taxes"
+  }  
 }

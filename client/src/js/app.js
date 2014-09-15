@@ -416,7 +416,15 @@
     .when('/payment_period/', {
       controller : 'payment_period',
       templateUrl : 'partials/payment_period/payment_period.html'
-    });    
+    })
+    .when('/config_rubric/', {
+      controller : 'config_rubric',
+      templateUrl : 'partials/config_rubric/config_rubric.html'
+    })
+    .when('/config_tax/', {
+      controller : 'config_tax',
+      templateUrl : 'partials/config_tax/config_tax.html'
+    });        
   }
 
   function translateConfig($translateProvider) {
