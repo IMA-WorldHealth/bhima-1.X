@@ -431,6 +431,7 @@
     "INCOME_EXPENSE_REPORT" : "Income/Expense Report",
     "GENERATED_ON"          : "Generated on",
     "TRANSACTIONS_BY_ACCOUNT" : "Transactions by Account",
+    "PATIENT_GROUP"         : "Patient group report",
 
     "ACCOUNT_STATEMENT"     : {
       "TITLE"               : "Account Summary Report",
@@ -631,7 +632,12 @@
     "DATE_EMBAUCHE"       : "Hiring date",
     "NB_CHILD"            : "Child count",
     "NB_SPOUSE"           : "spouse count",
-    "BASE_SALARY"         : "base salary"
+    "BASE_SALARY"         : "base salary",
+    "CREATED"             : "Created",
+    "MEMBERS"              : "Members",
+    "APPLIES_GLOBALLY"     : "Applies globally",
+    "REFERENCE_PURCHASE" : "Reference",
+    "GIVEN_AMOUNT"       : "Given amount"
   },
 
   "INVENTORY" : {
@@ -1392,7 +1398,16 @@
     "TRACKING_NUMBER" : "Trancking number",
     "DESTINATION_DEPOT" : "Destination depot",
     "ORIGIN_DEPOT" : "Origin depot",
-    "LOT" : "Lot"
+    "LOT" : "Lot",
+    "INDIRECT_PURCHASE" : "Indirect proof payment for purchase order",
+    "COST" : "Cost",
+    "RECIPIENT" : "Recipient",
+    "CONFIRM_PURCHASE" : "Payment confirmation",
+    "CONFIRMED_BY" : "Confirmed by ",
+    "SIGN_EMPLOYEE" : "Employee signature",
+    "PROOF_OF_PATIENT_CONSUMPTION" : "Proof of patient consumption",
+    "DOCUMENT_REF" : "Sale reference",
+    "DEPOT_REF" : "Depot reference"
   },
 
   "SECTOR"             : {
@@ -1689,7 +1704,8 @@
     "RESPONSABLE"       : "Responsable",
     "BENEFICIARY"       : "Beneficiary",
     "EMPLOYEE"          : "Employee",
-    "CREDITOR"          : "Creditor"
+    "CREDITOR"          : "Creditor",
+    "CUSTOMER" : "Client"
   },
 
   "CONVENTION" : {

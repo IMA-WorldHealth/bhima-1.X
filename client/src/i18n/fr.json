@@ -783,7 +783,12 @@
     "DATE_EMBAUCHE"       : "Date embauche",
     "NB_CHILD"            : "Nombre Enfant",
     "NB_SPOUSE"           : "Nombre epoux (se)",
-    "BASE_SALARY"         : "Salaire de base"
+    "BASE_SALARY"         : "Salaire de base",
+    "CREATED"             : "Cree",
+    "MEMBERS"              : "Membres",    
+    "APPLIES_GLOBALLY"     : "Appliquer globalement",
+    "REFERENCE_PURCHASE" : "Reference",
+    "GIVEN_AMOUNT"       : "Montant donne"
   },
 
   "REPORT"                  : {
@@ -824,6 +829,7 @@
     "CHOOSE_PERIOD"         : "Choissir Period",
     "INCOME_EXPENSE_REPORT" : "Rapport des Revenues et Depense",
     "TRANSACTIONS_BY_ACCOUNT" : "Transactions par Compte",
+    "PATIENT_GROUP"         : "Rapport de groupe des patients",
     "ACCOUNT_STATEMENT"     : {
       "TITLE"               : "Rapport sommaire des comptes",
       "NO_ACCOUNT_SPECIFIED": "ID compte non Specifie",
@@ -1205,7 +1211,16 @@
     "TRACKING_NUMBER" : "Numero tracking",
     "DESTINATION_DEPOT" : "Depot destination",
     "ORIGIN_DEPOT" : "Depot Origine",
-    "LOT" : "Lot"
+    "LOT" : "Lot",
+    "INDIRECT_PURCHASE" : "Preuve paiement indirect de l'ordre d'achat",
+    "COST" : "Cout",
+    "RECIPIENT" : "Recepteur",
+    "CONFIRM_PURCHASE" : "Confirmation paiement",
+    "CONFIRMED_BY" : "Confirmer par ",
+    "SIGN_EMPLOYEE" : "Signature employee",
+    "PROOF_OF_PATIENT_CONSUMPTION" : "Preuve de consommation du patient",
+    "DOCUMENT_REF" : "Reference vente",
+    "DEPOT_REF" : "Reference depot"
 
   },
 
@@ -1767,7 +1782,8 @@
     "BENEFICIARY"   : "Beneficiare",
     "EMPLOYEE"      : "Employee",
     "CLIENT"        : "Client",
-    "CREDITOR"      : "Crediteur"
+    "CREDITOR"      : "Crediteur",
+    "CUSTOMER" : "Client"
   },
 
 "EXPIRING_UTIL" : {
