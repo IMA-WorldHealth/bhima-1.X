@@ -86,10 +86,12 @@
     },
     "REPORT" : {
         "INCOME" : {
-            "TITLE" : "Incomes Reports"
+            "TITLE" : "Incomes Reports",
+            "EMPTY_REPORT" : "No record found !"
         },
-        "INCOME" : {
-            "TITLE" : "Expenses Reports"
+        "EXPENSE" : {
+            "TITLE" : "Expenses Reports",
+            "EMPTY_REPORT" : "No record found !"
         }
     }
   },
@@ -638,7 +640,9 @@
     "APPLIES_GLOBALLY"     : "Applies globally",
     "REFERENCE_PURCHASE" : "Reference",
     "GIVEN_AMOUNT"       : "Given amount",
-    "ABBREVIATION"       : "Abreviation"
+    "ABBREVIATION"       : "Abreviation",    
+    "TRANSACTION_NUMBER" : "Transaction number",
+    "BY" : "By"
   },
 
   "INVENTORY" : {
