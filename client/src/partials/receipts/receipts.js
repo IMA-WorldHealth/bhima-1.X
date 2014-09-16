@@ -131,8 +131,32 @@ angular.module('bhima.controllers')
       };
 
       validate.process(depends)
-        .then(function (model) { return getLocation(model.enterprise[0].location_id); })
+        .then(buildTransferInvoice);
+
+      function buildTransferInvoice (model) {
+        depends.location = {};
+        depends.location.query = 'location/' + model.enterprise.data[0].location_id;
+        validate.process(depends, ['location'])
         .then(transfertInvoice);
+      }
+
+      function getLocations (model) {
+        dependencies.location = {};
+        dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id;
+        return validate.process(dependencies, ['location']);
+      }
+
+      function transfertInvoice (model) {
+        console.log("model est :", model);        
+        $scope.invoice = {};
+        $scope.model = model;
+        $scope.invoice.enterprise_name = model.enterprise.data[0].name;
+        $scope.invoice.village = model.location.data[0].village;
+        $scope.invoice.sector = model.location.data[0].sector;
+        $scope.invoice.phone = model.enterprise.data[0].phone;
+        $scope.invoice.email = model.enterprise.data[0].email;
+        $scope.transfer = $scope.model.transfer.data[0];
+      } 
     }
 
     function processConvention (convention_uuid) {
@@ -154,6 +178,19 @@ angular.module('bhima.controllers')
 
       validate.process(dependencies, ['convention'])
         .then(buildConventionInvoice);
+
+      function buildConventionInvoice (model) {
+        dependencies.location.query = 'location/' + model.convention.data[0].location_id;
+        validate.process(dependencies, ['location'])
+        .then(conventionInvoice);
+      }
+
+      function conventionInvoice (model) {
+        $scope.model = model;
+        $scope.conventions = $scope.model.convention.data;
+        $scope.location = $scope.model.location.data[0];
+        $scope.invariable = $scope.conventions[0];
+      }
     }
 
     function processCash(requestId) {
@@ -817,11 +854,7 @@ angular.module('bhima.controllers')
       }
     }
 
-    function buildConventionInvoice (model) {
-      dependencies.location.query = 'location/' + model.convention.data[0].location_id;
-      validate.process(dependencies, ['location'])
-        .then(conventionInvoice);
-    }
+    
 
     function buildInvoiceQuery(model) {
       var invoiceCondition = dependencies.invoice.query.where = [];
@@ -975,22 +1008,7 @@ angular.module('bhima.controllers')
       $scope.caution = $scope.model.caution.data[0];
     }
 
-    function transfertInvoice (model) {
-      $scope.invoice = {};
-      $scope.model = model;
-      $scope.invoice.enterprise_name = model.enterprise.data[0].name;
-      $scope.invoice.village = model.location.data[0].village;
-      $scope.invoice.sector = model.location.data[0].sector;
-      $scope.invoice.phone = model.enterprise.data[0].phone;
-      $scope.invoice.email = model.enterprise.data[0].email;
-      $scope.transfert = $scope.model.transfert.data[0];
-    }
-
-    function conventionInvoice (model) {
-      $scope.model = model;
-      $scope.conventions = $scope.model.convention.data;
-      $scope.location = $scope.model.location.data[0];
-    }
+       
 
     templates = {
       'cash' : {
