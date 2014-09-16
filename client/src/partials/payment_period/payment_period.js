@@ -75,8 +75,8 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
     $scope.new = function () {
       session.action = 'new';
       session.new = {};
-      session.new.dateFrom = util.sqlDate(new Date());
-      session.new.dateTo = util.sqlDate(new Date());
+      session.new.dateFrom = new Date();
+      session.new.dateTo = new Date();
     };
 
     $scope.save = {};
@@ -84,8 +84,6 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
     $scope.save.edit = function () {
       var record = connect.clean(session.edit);
       delete record.reference;
-      record.dateFrom = util.sqlDate(record.dateFrom);
-      record.dateTo = util.sqlDate(record.dateTo);
       connect.basicPost('paiement_period', [record], ['id'])
       .then(function () {
         messenger.success($translate.instant('PAYMENT_PERIOD.UPDATE_SUCCES')); 
@@ -101,8 +99,6 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
 
     $scope.save.new = function () {
       var record = connect.clean(session.new);
-      record.dateFrom = util.sqlDate(record.dateFrom);
-      record.dateTo = util.sqlDate(record.dateTo);
       connect.basicPut('paiement_period', [record])
       .then(function () {
         messenger.success($translate.instant('PAYMENT_PERIOD.SAVE_SUCCES'));
@@ -168,7 +164,7 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
     		if (isValidWeeks(session.weeks)) {
     			connect.delete('config_paiement_period','paiement_period_id',record.id)
 	    		.then(function(){
-	    			insertConfigPaiementPeriod(session.weeks);
+	    			insertConfigPaiementPeriod(angular.copy(session.weeks));
 	    		});
     		} else {
     			messenger.danger($translate.instant('PAYMENT_PERIOD.WARNING_WEEK'));
@@ -177,12 +173,6 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
     	}
 
     	function insertConfigPaiementPeriod (data) {
-        //FIX ME : hack
-        data.forEach(function (item) {
-          item.weekFrom = util.sqlDate(item.weekFrom);
-          item.weekTo = util.sqlDate(item.weekTo);
-
-        })
     		return connect.post('config_paiement_period', data).then(function(){
     			messenger.success($translate.instant('PAYMENT_PERIOD.SAVE_SUCCES'));
     		});
@@ -192,6 +182,11 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
     		var r = false;
     		for(var i in weeks){
     			r = isInPeriod(weeks[i]);
+    			if (!r){
+    				break;
+    			} else {
+    				r = true;
+    			}
     		}
     		return r;
     	}
@@ -199,8 +194,9 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
 
     function isInPeriod (week) {
     	var r = false;
-    	if (util.sqlDate(week.weekFrom) >= util.sqlDate(session.config.dateFrom) && util.sqlDate(week.weekTo) <= util.sqlDate(session.config.dateTo)) {r = true;}
+    	if (util.sqlDate(week.weekFrom) >= util.sqlDate(session.config.dateFrom) && util.sqlDate(week.weekTo) <= util.sqlDate(session.config.dateTo) && util.sqlDate(week.weekFrom) <= util.sqlDate(week.weekTo)) {r = true;}
     	else {r = false;}
+    	console.log(r);
     	return r;
     }
 
