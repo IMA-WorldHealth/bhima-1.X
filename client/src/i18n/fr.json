@@ -443,7 +443,10 @@
     "IS_DISCOUNT"        : "Est-ce une reduction ?",
     "VALUE"              : "Valeur",
     "YES"                : "Oui",
-    "NO"                 : "Non"
+    "NO"                 : "Non",
+    "ABBR"               : "Abr.",
+    "NOT_EMPTY"          : "ABR. ne peut être vide",
+    "NOT_SUP4"    : "Ne peut avoir plus de 4 caractères"    
 },
 
   "PATIENT_REGISTRATIONS" : {
@@ -623,7 +626,7 @@
     "GROUP"               : "Groupe",
     "REGISTERED_BY"       : "Enregistrer par",
     "ENTERPRISE_ID"       : "ID Enterprise",
-    "ABBR"                : "Abbr.",
+    "ABBR"                : "Abr.",
     "TRANSACTION_ID"      : "ID Transaction",
     "LINE_ID"             : "ID Ligne",
     "INVOICE_DATE"        : "Date Facture",
@@ -1856,7 +1859,10 @@
     "CONFIRM" : "Etes vois sure de vouloir supprimer cette taxe",  
     "DELETE_SUCCESS" : "Suppression avec succès",  
     "ALERT"        : "Le module gestion de taxes est un module qui a été conçu pour permettre l'administration des taxes existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'une taxe ainsi que la suppression.",   
-    "NO_TAXES"    : "Aucune taxe n'est encore enregistré"  
+    "NO_TAXES"    : "Aucune taxe n'est encore enregistré",
+    "NOT_EMPTY"   : "ABR. ne peut être vide",
+    "NOT_SUP4"    : "Ne peut avoir plus de 4 caractères"
+
   } ,
   "TAXE_MANAGEMENT" : {
     "TITLE" : "Gestion des taxes",
@@ -1951,7 +1957,9 @@
     "ANNUAL_IMPOT"        : "Impot Annuel",
     "MONTH_IMPOT"         : "Impot Mensuel",
     "ANNUAL_CUMUL"        : "Cumul Annuel",
-    "MONTH_CUMUL"         : "Cumul Mensuel"
+    "MONTH_CUMUL"         : "Cumul Mensuel",
+    "NOT_EMPTY"   : "ABR. ne peut être vide",
+    "NOT_SUP4"    : "Ne peut avoir plus de 4 caractères"    
   },
 
    "CONFIG_RUBRIC" : {
@@ -1968,7 +1976,8 @@
     "RUBRIC"        : "Rubriques Payroll",
     "PAYABLE"       : "Payable",
     "DELETE_SUCCESS" : "Suppression avec succès",
-    "NO_CONFIG_RUBRIC" : "Aucune configuration de rubriques"
+    "NO_CONFIG_RUBRIC" : "Aucune configuration de rubriques",
+    "ABBR"          : "Abr."
   },
 
    "CONFIG_TAX" : {
