@@ -620,6 +620,17 @@ app.get('/getCheckHollyday/', function (req, res, next) {
   .done();
 });
 
+app.get('/getCheckOffday/', function (req, res, next) {
+  console.log(req.query.date);
+  var sql ="SELECT * FROM offday WHERE date = '" + req.query.date + "'";
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
 app.get('/tree', function (req, res, next) {
   /* jshint unused : false*/
 
