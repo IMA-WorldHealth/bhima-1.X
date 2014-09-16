@@ -116,7 +116,7 @@ angular.module('bhima.controllers')
           'dateFrom' : record.dateFrom, 
           'dateTo' : record.dateTo,
           'employee_id' : record.employee_id,
-          'line' : ""
+          'line' : ''
         }
       }).
       success(function(data) {
