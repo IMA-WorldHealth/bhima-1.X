@@ -84,7 +84,8 @@
       "/employee_list/",
       "/period_paiement/",
       "/available_payment_period/",
-      "/getCheckHollyday/"
+      "/getCheckHollyday/",
+      "/getCheckOffday/"
     ]
   }
 }
