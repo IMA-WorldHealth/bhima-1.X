@@ -163,14 +163,8 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
     	if (result && record.id && session.weeks.length) {
     		if (isValidWeeks(session.weeks)) {
     			connect.delete('config_paiement_period','paiement_period_id',record.id)
-<<<<<<< HEAD
-	    		.then(function(){
-	    			insertConfigPaiementPeriod(angular.copy(session.weeks));
-=======
 	    		.then(function(){            
 	    			insertConfigPaiementPeriod(angular.copy(session.weeks));
-            console.log('il y a rien');
->>>>>>> fixing
 	    		});
     		} else {
     			messenger.danger($translate.instant('PAYMENT_PERIOD.WARNING_WEEK'));
@@ -179,14 +173,10 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
     	}
 
     	function insertConfigPaiementPeriod (data) {
-<<<<<<< HEAD
-=======
-        //FIX ME : hack
         data.forEach(function (item) {
           item.weekFrom = util.sqlDate(item.weekFrom);
           item.weekTo = util.sqlDate(item.weekTo);
         })
->>>>>>> fixing
     		return connect.post('config_paiement_period', data).then(function(){
     			messenger.success($translate.instant('PAYMENT_PERIOD.SAVE_SUCCES'));
     		});
