@@ -1578,7 +1578,7 @@
     "INFO_DESCRIPTION"       : "This feature will help you to manage your cost center(creating, editing, deleting as well as consultating)",
     "TEXT"                   : "Text",
     "COST"                   : "Cost",
-    "IS_PROFIT"              : "Profit center",
+    "IS_PROFIT"              : "Principle",
     "NOTE"                   : "Note",
     "REGISTER"               : "Registering",
     "NEW"                    : "New center",

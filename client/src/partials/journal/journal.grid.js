@@ -15,20 +15,27 @@ angular.module('bhima.controllers')
 
     appstate.set('journal.ready', ready.promise);
 
-    dependencies.journal = {
-      query : {
-        identifier : 'uuid',
-        tables : {
-          'posting_journal' : {
-            'columns' : ['uuid', 'fiscal_year_id', 'period_id', 'trans_id', 'trans_date', 'doc_num', 'description', 'account_id', 'debit', 'credit', 'currency_id', 'deb_cred_uuid', 'deb_cred_type', 'inv_po_id', 'debit_equiv', 'credit_equiv', 'currency_id', 'comment', 'user_id', 'pc_id', 'cc_id']
-          },
-          'account' : { 'columns' : ['account_number'] }
-        },
-        join: ['posting_journal.account_id=account.id']
-      }
-    };
+    // dependencies.journal = {
+    //   query : {
+    //     identifier : 'uuid',
+    //     tables : {
+    //       'posting_journal' : {
+    //         'columns' : ['uuid', 'fiscal_year_id', 'period_id', 'trans_id', 'trans_date', 'doc_num', 'description', 'account_id', 'debit', 'credit', 'currency_id', 'deb_cred_uuid', 'deb_cred_type', 'inv_po_id', 'debit_equiv', 'credit_equiv', 'currency_id', 'comment', 'user_id', 'pc_id', 'cc_id']
+    //       },
+    //       'account' : { 'columns' : ['account_number'] },
+    //     },
+    //     join: ['posting_journal.account_id=account.id']
+    //   }
+    // };
+
+    dependencies.journal_bis = {
+      identifier : 'uuid',
+      query : 'journal_list/'
+    }
 
     function initialise (models) {
+
+      console.log('notre model', models);
       angular.extend($scope, models);
 
       // set up grid properties
@@ -46,8 +53,8 @@ angular.module('bhima.controllers')
         {id: 'deb_cred_type'  , name: $translate.instant('COLUMNS.DC_TYPE')        , field: 'deb_cred_type'},
         {id: 'inv_po_id'      , name: $translate.instant('COLUMNS.INVPO_ID')       , field: 'inv_po_id'},
         {id: 'comment'        , name: $translate.instant('COLUMNS.COMMENT')        , field: 'comment'        , sortable : true, editor: Slick.Editors.Text} ,
-        {id: 'cc'             , name: $translate.instant('COLUMNS.COST_CENTER')    , field: 'cc_id'          , sortable : true},
-        {id: 'pc'             , name: $translate.instant('COLUMNS.PROFIT_CENTER')  , field: 'pc_id'          , sortable : true}
+        {id: 'cc'             , name: $translate.instant('COLUMNS.COST_CENTER')    , field: 'cc'          , sortable : true},
+        {id: 'pc'             , name: $translate.instant('COLUMNS.PROFIT_CENTER')  , field: 'pc'          , sortable : true}
       ];
 
       options = {
@@ -97,7 +104,7 @@ angular.module('bhima.controllers')
       });
 
       dataview.beginUpdate();
-      dataview.setItems($scope.journal.data, 'uuid');
+      dataview.setItems($scope.journal_bis.data, 'uuid');
       dataview.endUpdate();
 
       expose();
