@@ -96,7 +96,7 @@ angular.module('bhima.controllers')
     }
 
 
-    function submitProjectPermissions() {
+    function submitConfig() {
       var rubrics = $scope.rubrics.data,
           removals  = [],
           additions = [];
@@ -197,10 +197,7 @@ angular.module('bhima.controllers')
           submitAdd();
           break;
         case 'rubrics' :
-          submitProjectPermissions();
-          break;
-        case 'permissions' :
-          submitUnitPermissions();
+          submitConfig();
           break;
         default:
           console.log('current.state', current.state);

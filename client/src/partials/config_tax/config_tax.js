@@ -93,7 +93,7 @@ angular.module('bhima.controllers')
     }
 
 
-    function submitProjectPermissions() {
+    function submitConfig() {
       var taxs = $scope.taxs.data,
           removals  = [],
           additions = [];
@@ -194,10 +194,7 @@ angular.module('bhima.controllers')
           submitAdd();
           break;
         case 'taxs' :
-          submitProjectPermissions();
-          break;
-        case 'permissions' :
-          submitUnitPermissions();
+          submitConfig();
           break;
         default:
           console.log('current.state', current.state);
