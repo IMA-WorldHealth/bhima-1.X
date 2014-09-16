@@ -793,7 +793,8 @@
     "MEMBERS"              : "Membres",    
     "APPLIES_GLOBALLY"     : "Appliquer globalement",
     "REFERENCE_PURCHASE" : "Reference",
-    "GIVEN_AMOUNT"       : "Montant donne"
+    "GIVEN_AMOUNT"       : "Montant donne",
+    "NUM" : "Numero"
   },
 
   "REPORT"                  : {
@@ -1225,7 +1226,8 @@
     "SIGN_EMPLOYEE" : "Signature employee",
     "PROOF_OF_PATIENT_CONSUMPTION" : "Preuve de consommation du patient",
     "DOCUMENT_REF" : "Reference vente",
-    "DEPOT_REF" : "Reference depot"
+    "DEPOT_REF" : "Reference depot",
+    "PURCHASE_RECIPIENT" : "Fournisseur"
 
   },
 
