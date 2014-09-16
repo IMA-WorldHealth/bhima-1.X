@@ -169,6 +169,32 @@ app.get('/employee_list/', function (req, res, next) {
   .done();
 });
 
+app.get('/journal_list/', function (req, res, next) {
+
+  var sql =
+    "SELECT `posting_journal`.`uuid`, `posting_journal`.`fiscal_year_id`, `posting_journal`.`period_id`, " + 
+    "`posting_journal`.`trans_id`, `posting_journal`.`trans_date`, `posting_journal`.`doc_num`, " + 
+    "`posting_journal`.`description`, `posting_journal`.`account_id`, `posting_journal`.`debit`, " +
+    "`posting_journal`.`credit`, `posting_journal`.`currency_id`, `posting_journal`.`deb_cred_uuid`, " +
+    "`posting_journal`.`deb_cred_type`, `posting_journal`.`inv_po_id`, " +
+    "`posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`currency_id`, " + 
+    "`posting_journal`.`comment`, `posting_journal`.`user_id`, `posting_journal`.`pc_id`, " + 
+    "`posting_journal`.`cc_id`, `account`.`account_number`, `user`.`first`, " +
+    "`user`.`last`, `currency`.`symbol`, `cost_center`.`text` AS `cc`, " +
+    "`profit_center`.`text` AS `pc` " +
+    "FROM `posting_journal` JOIN `account` ON `posting_journal`.`account_id`=`account`.`id` " + 
+    "JOIN `user` ON `posting_journal`.`user_id`=`user`.`id` " + 
+    "JOIN `currency` ON `posting_journal`.`currency_id`=`currency`.`id` " + 
+    "LEFT JOIN `cost_center` ON `posting_journal`.`cc_id`=`cost_center`.`id` " + 
+    "LEFT JOIN `profit_center` ON `posting_journal`.`pc_id`=`profit_center`.`id`"
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
 
 app.get('/period_paiement/', function (req, res, next) {
   // var sql =
