@@ -1666,10 +1666,10 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
                       [
                         sanitize.escape(id),
                         cfg.originId,
-                        user_id,
-                        reference.service_id
+                        user_id
                       ].join(',') +
-                    ' FROM `inventory_group` WHERE `inventory_group`.`uuid`= ' + sanitize.escape(reference.group_uuid) + ';';
+                      ', `service`.`cost_center_id` FROM `service` WHERE `service`.`id`= ' + sanitize.escape(reference.service_id) + ';';
+                    // ' FROM `inventory_group` WHERE `inventory_group`.`uuid`= ' + sanitize.escape(reference.group_uuid) + ';';
           return db.exec(sql);
         })
       );

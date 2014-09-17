@@ -211,7 +211,9 @@
     "ERROR"            : "Error",
     "DESCRIPTION"      : "Description",
     "AFFECTED_ROWS"    : "Affected Rows",
-    "SUMMARY"          : "Summary"
+    "SUMMARY"          : "Summary",
+    "CHIEF_ACCOUNTANT" : "Chief accountant",
+    "FINANCE_OFFICER" : "Finance officer"
   },
 
   "ERROR"                 : {
@@ -434,6 +436,7 @@
     "GENERATED_ON"          : "Generated on",
     "TRANSACTIONS_BY_ACCOUNT" : "Transactions by Account",
     "PATIENT_GROUP"         : "Patient group report",
+    "TOTAL" : "Total",
 
     "ACCOUNT_STATEMENT"     : {
       "TITLE"               : "Account Summary Report",
