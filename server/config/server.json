@@ -86,7 +86,8 @@
       "/available_payment_period/",
       "/getCheckHollyday/",
       "/getCheckOffday/",
-      "/journal_list/"
+      "/journal_list/",
+      "/taxe_ipr_currency/"
     ]
   }
 }
