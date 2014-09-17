@@ -1469,6 +1469,7 @@
     "LOADING_ERROR" : "Erreur lors du chargement des dependances",
     "EXPENSE" : {
       "PAYROLL"      : "Paie des employees",
+      "MULTI_PAYROLL"   : "Payroll Multiple",
       "PURCHASE"        : "Achat",
       "GENERIC_TITLE"   : "Depenses Generiques",
       "GENERIC_RECEIPT" : "Recettes Generiques",
