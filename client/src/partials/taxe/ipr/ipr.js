@@ -16,12 +16,16 @@ angular.module('bhima.controllers')
 
   	var dependencies = {};
 	dependencies.taxe_ipr = {
-		query : {
-			tables : {
-				'taxe_ipr' : { columns : ['id','taux','tranche_annuelle_debut','tranche_annuelle_fin','tranche_mensuelle_debut','tranche_mensuelle_fin','ecart_annuel','ecart_mensuel','impot_annuel','impot_mensuel','cumul_annuel','cumul_mensuel']}
-			}
-		}
+		query : '/taxe_ipr_currency/'
 	};
+
+  dependencies.currency = {
+    query : {
+      tables : {
+        'currency' : { columns : ['id','symbol']}
+      }
+    }
+  };
 
 	function startup (models) {
       angular.extend($scope, models);

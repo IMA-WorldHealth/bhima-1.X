@@ -1397,5 +1397,6 @@ create table `taxe_ipr` (
   impot_mensuel           float,
   cumul_annuel            float,
   cumul_mensuel           float,
+  currency_id             int,
   primary key (`id`)
 ) engine=innodb;
