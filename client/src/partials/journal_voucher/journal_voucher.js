@@ -72,7 +72,7 @@ angular.module('bhima.controllers')
       });
 
       voucher.currency_id = model.currencies.data[model.currencies.data.length-1].id;
-      voucher.trans_date = util.convertToMysqlDate(new Date());
+      voucher.trans_date = util.sqlDate(new Date());
       voucher.rows = [new JournalRow(), new JournalRow()];
 
       connect.fetch('/max_trans/' + $scope.project.id)
@@ -86,7 +86,7 @@ angular.module('bhima.controllers')
       // local variables to speed up calculation
       var prid, peid, fyid, description, transDate, invid, userId;
       prid = $scope.project.id;
-      transDate = util.convertToMysqlDate(voucher.trans_date);
+      transDate = util.sqlDate(voucher.trans_date);
       invid = voucher.inv_po_id;
       description = voucher.description;
 
@@ -135,7 +135,7 @@ angular.module('bhima.controllers')
           uuid           : uuid(),
           transaction_id : voucher.trans_id,
           justification  : voucher.description,
-          date           : voucher.trans_date,
+          date           : util.sqlDate(voucher.trans_date),
           user_id        : userId
         };
 
