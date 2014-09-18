@@ -13,7 +13,8 @@ angular.module('bhima.controllers')
   'appcache',
   'exchange',
   '$q',
-  function ($scope, $routeParams, $translate, $http, messenger, validate, appstate, connect, $location, util, Appcache, exchange, $q) {
+  'ipr',
+  function ($scope, $routeParams, $translate, $http, messenger, validate, appstate, connect, $location, util, Appcache, exchange, $q, ipr) {
     var dependencies = {},
         cache = new Appcache('payroll'), session = $scope.session = {configured : false, complete : false, data : {}, rows : []};
     session.cashbox = $routeParams.cashbox;
@@ -180,6 +181,11 @@ angular.module('bhima.controllers')
         self.fam_allow = 0;
         self.transport = 0;
         self.seniority = 0;
+        self.av_salary = 0;
+        self.other = 0;
+        self.onem = 0;
+        self.inpp = 0;
+        self.iere = 0;
         self.visible = false;
         return getHousing(self);        
       })
@@ -187,11 +193,29 @@ angular.module('bhima.controllers')
         self.housing = hous;
         return getEmployeeINSS(self);
       })
-      .then(function (value) {
-        self.employee_inss = value;
-
+      .then(function (employee_INSS) {
+        self.employee_inss = employee_INSS;
+        return getIPR(self);        
+      })
+      .then(function (IPR){
+        self.ipr = IPR;
+        return getEnterpriseINSS(self);        
+      })
+      .then(function (enterprise_INSS){
+        self.enterprise_inss = enterprise_INSS;
         def.resolve(self);
       });
+      return def.promise;
+    }
+
+    function getIPR() {
+      var def = $q.defer();
+      ipr.calculate()
+      .then(function(tranches){
+        console.log(tranches);
+        def.resolve(2);
+      });
+
       return def.promise;
     }
 
@@ -409,6 +433,28 @@ angular.module('bhima.controllers')
       return $q.when(employee_inss);      
     }
 
+    function getEnterpriseINSS (row) {
+      var taxes = session.model.tax_config.data, enterprise_inss = 0;
+      if(!taxes.length) return $q.when(enterprise_inss);
+
+      var item = taxes.filter(function (item) {
+        return item.abbr === "INS2";
+      })[0];
+
+      if(item) {
+        enterprise_inss = (item.is_percent) ? 
+        (row.emp.basic_salary * item.value) / 100 : item.value;    
+      }
+
+      enterprise_inss = exchange.convertir(
+          enterprise_inss,
+          session.model.enterprise.data[0].currency_id,
+          session.selectedItem.currency_id,
+          util.sqlDate(new Date())
+      );
+      return $q.when(enterprise_inss);      
+    }
+
 
     function setCashAccount(cashAccount) {
       if (cashAccount) {
@@ -467,6 +513,13 @@ angular.module('bhima.controllers')
 
             row.employee_inss = exchange.convertir(
               row.employee_inss,
+              session.loading_currency_id,
+              session.selectedItem.currency_id,
+              util.sqlDate(new Date())
+            ); 
+
+            row.enterprise_inss = exchange.convertir(
+              row.enterprise_inss,
               session.loading_currency_id,
               session.selectedItem.currency_id,
               util.sqlDate(new Date())
