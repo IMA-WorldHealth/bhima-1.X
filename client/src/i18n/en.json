@@ -69,7 +69,9 @@
       "EXPENSE_DATE"          : "Expense Date",
       "RECIPIENT"             : "Recipient",
       "AMOUNT"                : "Amount Dispensed",
-      "PURPOSE"               : "Purpose of Expense"
+      "PURPOSE"               : "Purpose of Expense",
+      "DAYS"                  : "Days",
+      "RUBRICS"               : "Rubrics"
     },
     "INCOME" : {
       "TRANSFER"              : "Transfert",
