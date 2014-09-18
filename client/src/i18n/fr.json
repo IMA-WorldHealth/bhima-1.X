@@ -1490,12 +1490,18 @@
       "SENIORITY" : "Ancienete",
       "ADVANTAGES" : "Avantages",
       "SALARY" : "Salaire net",
-      "TAXES_OTHERS" : "Taxes et autres deductions",
+      "TAXES_OTHERS" : "Taxes employee et autres deductions",
       "SALARY_AV" : "Avance sur salaire",
       "INSS" : "Cot. INSS",
       "IPR" : "IPR",
       "OTHER_DEDUCT" : "Autres deductions" ,
-      "SELECT_PERIOD" : "Selectionner une periode de paiement"
+      "SELECT_PERIOD" : "Selectionner une periode de paiement",
+      "DAYS"                  : "Jours",
+      "RUBRICS" : "Rubriques",
+      "ONEM"     : "ONEM",
+      "IERE" : "IERE",
+      "INPP" : "INPP",
+      "TAXES_OTHERS_ENTERPRISE" : "Taxes entreprise et autres deductions"
     },
     "INCOME" : {
       "TRANSFER"              : "Transfert",
