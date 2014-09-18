@@ -1698,7 +1698,7 @@
     },
     "DONATION" : {
         "KEY"    : "Entry Donation",
-        "TITLE"  : "Entry Donation",
+        "TITLE"  : "Entry Donation"
     }
   },
 
@@ -1964,6 +1964,8 @@
     "DONOR"             : "Donor",
     "RESPONSABLE"       : "Responsable",
     "DONATION"          : "Donation",
+    "ALL_DONATIONS"     : "Donations",
+    "NEW"               : "Configure New Donation",
     "DATE"              : "Date",
     "NOTE"              : "Note",
     "ITEM"              : "Item(s)",
@@ -1973,7 +1975,13 @@
     "ENTRY_DONATION"    : "Enter Donation in Stock by Lots",
     "TOTAL_COST"        : "Total Cost",
     "SAVE_BY_LOT"       : "Register by lots",
-    "CANCEL"            : "Cancel"
+    "CANCEL"            : "Cancel",
+    "SEE_ALL"           : "See all donations",
+    "NB"                : "N°",
+    "UUID"              : "Code",
+    "LOT"               : "Lot",
+    "QTE"               : "Quantity",
+    "TRACKING_NB"       : "Tracking Nb"
   }
 
 }

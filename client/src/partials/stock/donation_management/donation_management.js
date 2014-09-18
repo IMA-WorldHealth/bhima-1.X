@@ -22,6 +22,8 @@ angular.module('bhima.controllers')
       messenger.error('NO_DEPOT_ID');
     }
 
+    session.crud_or_read = 'crud';
+    session.view = $translate.instant('DONATION_MANAGEMENT.SEE_ALL');
     session.cfg.depot = { id : $routeParams.depotId };
 
     dependencies.depots = {
@@ -60,15 +62,19 @@ angular.module('bhima.controllers')
       }
     };
 
-    dependencies.user = {
-      query : 'user_session'
-    };
-
-    dependencies.enterprise = {
+    dependencies.donations = {
       query : {
         tables : {
-          enterprise : { columns : ['currency_id']}
-        }
+          donations : { columns : ['date']},
+          inventory : { columns : ['text']},
+          stock     : { columns : ['tracking_number','lot_number','quantity']},
+          donor     : { columns : ['name']}
+        },
+        join : [
+          'donations.donor_id=donor.id',
+          'inventory.uuid=stock.inventory_uuid',
+          'stock.tracking_number=donations.tracking_number'
+        ]
       }
     };
 
@@ -256,13 +262,76 @@ angular.module('bhima.controllers')
     $scope.review = function review () {
       // prepare object for cloning
       session.review = true;
-      // var lots = [];
-      // session.donation.items.forEach(function (o) {
-      //   lots = lots.concat(o.lots.data);
-      // });
-      // session.lots = lots;
+      var lots = [];
+      session.donation.items.forEach(function (o) {
+        o.lots.data.forEach(function (item) {
+          item.inventory_uuid = o.inventoryId;
+        });
+        lots = lots.concat(o.lots.data);
+      });
+      session.lots = lots;
     };
+
+    $scope.accept = function (){
+      var lots = processLots();
+      var donations = processDonations();
+      connect.post('stock',lots)
+      .then(function () {
+        return connect.post('donations',donations)
+      })
+      .then(function () {
+        messenger.success('STOCK.ENTRY.WRITE_SUCCESS');
+      })
+      .catch(function () {
+        messenger.error('STOCK.ENTRY.WRITE_ERROR');
+      });
+    };
+
+    function processLots () {
+      // Lot a inserer dans la table `stock`
+      var lots = [];
+      session.lots.forEach(function (lot) {
+        lots.push({
+          inventory_uuid      : lot.inventory_uuid,
+          expiration_date     : util.sqlDate(lot.expiration_date),
+          entry_date          : util.sqlDate(new Date()),
+          lot_number          : lot.lot_number,
+          tracking_number     : lot.tracking_number,
+          quantity            : lot.quantity
+        });
+      });
+
+      return lots;
+    }
+
+    function processDonations () {
+      var donations = [];
+      session.lots.forEach(function (lot) {
+        donations.push({
+          uuid            : uuid(),
+          donor_id        : session.config.donor.id,
+          employee_id     : session.config.employee.id,
+          tracking_number : lot.tracking_number,
+          date            : util.sqlDate(session.config.date)
+        });
+      });
+
+      return donations;
+    }
     // =========================== END STEP 2 ===========================//
 
+    // ========= CHOOSE VIEW =========== //
+    $scope.toggleView = function(){
+      if(session.crud_or_read == 'crud'){
+        session.crud_or_read = 'read';
+        session.view = $translate.instant('DONATION_MANAGEMENT.NEW');
+        session.crud = true;
+      }else if(session.crud_or_read == 'read'){
+        session.crud_or_read = 'crud';
+        session.view = $translate.instant('DONATION_MANAGEMENT.SEE_ALL');
+        session.read = true;
+      }
+    }
+    // ========= END CHOOSE VIEW ======== //
   }
 ]);
