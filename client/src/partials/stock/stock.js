@@ -45,6 +45,11 @@ angular.module('bhima.controllers')
         key : 'STOCK.MOVEMENT.KEY',
         ico : 'glyphicon-transfer',
         link : '/stock/movement'
+      },
+      {
+        key : 'STOCK.DONATION.KEY',
+        ico : 'glyphicon-heart',
+        link : '/stock/donation_management'
       }
     ];
 
