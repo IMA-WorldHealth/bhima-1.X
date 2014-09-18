@@ -1231,7 +1231,7 @@ create table `stock` (
   `expiration_date`        date not null,
   `entry_date`             date not null,
   `lot_number`             varchar(70) not null,
-  `purchase_order_uuid`    char(36) not null,
+  `purchase_order_uuid`    char(36) null,
   `quantity`               int not null default 0,
   primary key (`tracking_number`),
   key `inventory_uuid` (`inventory_uuid`),
@@ -1405,4 +1405,14 @@ create table `donor` (
   id                      int unsigned auto_increment not null,
   name                    text not null,
   primary key (`id`)
+) engine=innodb;
+
+drop table if exists `donations`;
+create table `donations` (
+  `uuid`                    char(36) not null,
+  `donor_id`                int not null,
+  `employee_id`             int not null,
+  `tracking_number`         char(36) not null,
+  `date`                    date,
+  primary key (`uuid`)
 ) engine=innodb;

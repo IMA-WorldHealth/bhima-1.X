@@ -2018,6 +2018,8 @@
     "DONOR"             : "Donateur",
     "RESPONSABLE"       : "Responsable",
     "DONATION"          : "Donation",
+    "ALL_DONATIONS"     : "Les Donations",
+    "NEW"               : "Configuration Nouvelle Donation",
     "DATE"              : "Date",
     "NOTE"              : "Note",
     "ITEM"              : "Article(s)",
@@ -2027,7 +2029,13 @@
     "ENTRY_DONATION"    : "Entrer Don dans le Stock par Lots",
     "TOTAL_COST"        : "Cout Total",
     "SAVE_BY_LOT"       : "Enregistrement des lots",
-    "CANCEL"            : "Annuler"
+    "CANCEL"            : "Annuler",
+    "SEE_ALL"           : "Voir toutes les donations",
+    "NB"                : "N°",
+    "UUID"              : "Code",
+    "LOT"               : "Lot",
+    "QTE"               : "Quantité",
+    "TRACKING_NB"       : "N° Tracking"
   }
 
 }
