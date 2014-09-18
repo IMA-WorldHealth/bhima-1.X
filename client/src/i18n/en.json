@@ -366,9 +366,11 @@
     "DEBTOR"          : "Select a debtor",
     "CREDITOR"        : "Select a creditor",
     "PRIMARY_CASH"    : "Select a Primary cash",
+    "EMPLOYEE"        : "Select an employee",
     "EMPLOYEE_SEX"    : "Select Sex",
     "EMPLOYEE_SERVICE"    : "Select a Service",
-    "EMPLOYEE_GRADE"      : "Select a grade"
+    "EMPLOYEE_GRADE"      : "Select a grade",
+    "DONOR"               : "Select a donor"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -790,7 +792,8 @@
     "HOLLYDAY_MANAGEMENT"       : "Holiday Management",
     "PAYMENT_PERIOD"            : "Payment Period Management",
     "CONFIG_RUBRIC"             : "Configuration Rubrics",
-    "CONFIG_TAX"                : "Configuration Taxes"     
+    "CONFIG_TAX"                : "Configuration Taxes",
+    "DONATION_MANAGEMENT"       : "Donation Management"     
   },
 
   "RUBRIC_PAYROLL"       : {
@@ -1692,6 +1695,10 @@
     },
     "REPORT" : {
       "STOCK_COUNT" : "Stock Count"
+    },
+    "DONATION" : {
+        "KEY"    : "Entry Donation",
+        "TITLE"  : "Entry Donation",
     }
   },
 
@@ -1949,7 +1956,26 @@
     "PAYABLE"       : "Payable",
     "DELETE_SUCCESS" : "Deleted successfully",
     "NO_CONFIG_TAX" : "No Configuration Taxes"
-  }    
+  },
+
+  "DONATION_MANAGEMENT" : {
+    "TITLE"             : "Donation Management",
+    "CONFIGURE"         : "Configure Donation",
+    "DONOR"             : "Donor",
+    "RESPONSABLE"       : "Responsable",
+    "DONATION"          : "Donation",
+    "DATE"              : "Date",
+    "NOTE"              : "Note",
+    "ITEM"              : "Item(s)",
+    "DONATION_ITEM"     : "Donation Item(s)",
+    "ADD_LINE_ITEM"     : "Add Item",
+    "SUBMIT_DONATION"   : "Submit donation",
+    "ENTRY_DONATION"    : "Enter Donation in Stock by Lots",
+    "TOTAL_COST"        : "Total Cost",
+    "SAVE_BY_LOT"       : "Register by lots",
+    "CANCEL"            : "Cancel"
+  }
+
 }
 
 

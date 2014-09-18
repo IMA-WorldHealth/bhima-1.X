@@ -365,6 +365,14 @@
       controller : 'stock.expiring',
       templateUrl : 'partials/stock/expiring/expiring.html'
     })
+    .when('/stock/donation_management/', {
+      controller : 'donation_management',
+      templateUrl : 'partials/stock/donation_management/donation_management.html'
+    })
+    .when('/stock/donation_management/:depotId', {
+      controller : 'donation_management',
+      templateUrl : 'partials/stock/donation_management/donation_management.html'
+    })
     .when('/inventory/distribution/:depotId?', {
       controller : 'inventory.distribution',
       templateUrl : 'partials/inventory/distribution/distribution.html'
@@ -424,7 +432,7 @@
     .when('/config_tax/', {
       controller : 'config_tax',
       templateUrl : 'partials/config_tax/config_tax.html'
-    });        
+    });      
   }
 
   function translateConfig($translateProvider) {

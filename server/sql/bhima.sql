@@ -1399,3 +1399,10 @@ create table `taxe_ipr` (
   cumul_mensuel           float,
   primary key (`id`)
 ) engine=innodb;
+
+drop table if exists `donor`;
+create table `donor` (
+  id                      int unsigned auto_increment not null,
+  name                    text not null,
+  primary key (`id`)
+) engine=innodb;
