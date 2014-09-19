@@ -796,7 +796,8 @@
     "PAYMENT_PERIOD"            : "Payment Period Management",
     "CONFIG_RUBRIC"             : "Configuration Rubrics",
     "CONFIG_TAX"                : "Configuration Taxes",
-    "DONATION_MANAGEMENT"       : "Donation Management"     
+    "DONATION_MANAGEMENT"       : "Donation Management",
+    "STOCK_DASHBOARD"           : "Stock Dashboard" 
   },
 
   "RUBRIC_PAYROLL"       : {
@@ -1988,6 +1989,10 @@
     "PROOF"             : "Proof of registering in Stock",
     "REPORT"            : "Report",
     "DATE_REGISTER"     : "Register Date"
+  },
+
+  "STOCK_DASHBOARD"     : {
+    "TITLE"             : "Stock Dashboard"
   }
 
 }

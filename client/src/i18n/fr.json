@@ -426,7 +426,8 @@
     "PAYMENT_PERIOD"            : "Gestion des Périodes",
     "CONFIG_RUBRIC"             : "Configuration des rubriques",
     "CONFIG_TAX"                : "Configuration des taxes",
-    "DONATION_MANAGEMENT"       : "Gestion des Dons"   
+    "DONATION_MANAGEMENT"       : "Gestion des Dons",
+    "STOCK_DASHBOARD"           : "Tableau de bord du Stock"  
 },
 
   "RUBRIC_PAYROLL"       : {
@@ -2046,6 +2047,10 @@
     "PROOF"             : "Preuve d'enregistrement du don dans le Stock",
     "REPORT"            : "Rapport",
     "DATE_REGISTER"     : "Date d'enregistrement"
+  },
+
+  "STOCK_DASHBOARD"     : {
+    "TITLE"             : "Tableau de bord du Stock"
   }
 
 }
