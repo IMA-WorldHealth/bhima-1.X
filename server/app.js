@@ -196,6 +196,29 @@ app.get('/journal_list/', function (req, res, next) {
   .done();
 });
 
+app.get('/hollyday_list/:pp/:employee_id', function (req, res, next) {
+  var pp = JSON.parse(req.params.pp);
+  var sql =
+    "SELECT `hollyday`.`id`, `hollyday`.`label`, `hollyday`.`dateFrom`, `hollyday`.`dateTo` " + 
+    "FROM `hollyday` WHERE " + 
+    "((`hollyday`.`dateFrom`>=" + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + " AND " +
+    "`hollyday`.`dateFrom`<=" + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ") OR " +
+    "(`hollyday`.`dateTo`>=" + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + " AND " +
+    "`hollyday`.`dateTo`<=" + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ") OR " + 
+    "(`hollyday`.`dateFrom`<=" + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + " AND " +
+    "`hollyday`.`dateTo`>=" + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ")) AND " +
+    "`hollyday`.`employee_id`=" + sanitize.escape(req.params.employee_id) + ";"; 
+
+  db.exec(sql)
+  .then(function (result) {
+    console.log('le resultat employee list :::', result)
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+
 app.get('/period_paiement/', function (req, res, next) {
   // var sql =
 
