@@ -176,7 +176,7 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
         data.forEach(function (item) {
           item.weekFrom = util.sqlDate(item.weekFrom);
           item.weekTo = util.sqlDate(item.weekTo);
-        })
+        });
     		return connect.post('config_paiement_period', data).then(function(){
     			messenger.success($translate.instant('PAYMENT_PERIOD.SAVE_SUCCES'));
     		});

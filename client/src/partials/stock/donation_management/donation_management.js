@@ -273,19 +273,44 @@ angular.module('bhima.controllers')
     };
 
     $scope.accept = function (){
+      var document_id = uuid();
       var lots = processLots();
       var donations = processDonations();
+      var movements = processMovements(document_id);
+
       connect.post('stock',lots)
       .then(function () {
-        return connect.post('donations',donations)
+        return connect.post('movement', movements);
+      })
+      .then(function () {
+        return connect.post('donations',donations);
       })
       .then(function () {
         messenger.success('STOCK.ENTRY.WRITE_SUCCESS');
       })
       .catch(function () {
         messenger.error('STOCK.ENTRY.WRITE_ERROR');
+      })
+      .finally(function () {
+        $location.path('/stock/donation_management/report/' + document_id);
       });
     };
+
+    function processMovements (document_id) {
+      var movements = [];
+      session.lots.forEach(function (stock) {
+        movements.push({
+          uuid : uuid(),
+          document_id     : document_id,
+          tracking_number : stock.tracking_number,
+          date            : util.sqlDate(new Date()),
+          quantity        : stock.quantity,
+          depot_entry     : session.cfg.depot.id
+        });
+      });
+
+      return movements;
+    }
 
     function processLots () {
       // Lot a inserer dans la table `stock`
@@ -331,7 +356,7 @@ angular.module('bhima.controllers')
         session.view = $translate.instant('DONATION_MANAGEMENT.SEE_ALL');
         session.read = true;
       }
-    }
+    };
     // ========= END CHOOSE VIEW ======== //
   }
 ]);

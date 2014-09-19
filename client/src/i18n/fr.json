@@ -2042,7 +2042,10 @@
     "UUID"              : "Code",
     "LOT"               : "Lot",
     "QTE"               : "Quantité",
-    "TRACKING_NB"       : "N° Tracking"
+    "TRACKING_NB"       : "N° Tracking",
+    "PROOF"             : "Preuve d'enregistrement du don dans le Stock",
+    "REPORT"            : "Rapport",
+    "DATE_REGISTER"     : "Date d'enregistrement"
   }
 
 }
