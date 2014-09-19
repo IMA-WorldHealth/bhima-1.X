@@ -424,9 +424,17 @@
     .when('/config_tax/', {
       controller : 'config_tax',
       templateUrl : 'partials/config_tax/config_tax.html'
-    });        
+    })
+    .when('/reports/daily_consumption/', {
+      controller : 'daily_consumption',
+      templateUrl : 'partials/reports/daily_consumption/daily_consumption.html'
+    })
+    .when('/consumptions/:code_drugs/:dateFrom/:dateTo', {
+      controller: 'daily_consumption',
+      templateUrl: 'partials/reports/daily_consumption/consumptions.html'
+    });           
   }
-
+  
   function translateConfig($translateProvider) {
     //TODO Review i18n and determine if this it the right solution/grade_employers/
     $translateProvider.useStaticFilesLoader({

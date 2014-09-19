@@ -419,11 +419,12 @@
     "TAXES"                     : "Taxes",    
     "TAXE_MANAGEMENT"           : "Gestion des taxes",
     "RUBRIC_PAYROLL"            : "Gestion des rubriques",
-    "OFFDAY_MANAGEMENT"         : "Gestion des jours ferriés",
+    "OFFDAY_MANAGEMENT"         : "Gestion des jours fériés",
     "HOLLYDAY_MANAGEMENT"       : "Gestion des vacances",
     "PAYMENT_PERIOD"            : "Gestion des Périodes",
     "CONFIG_RUBRIC"             : "Configuration des rubriques",
-    "CONFIG_TAX"                : "Configuration des taxes"    
+    "CONFIG_TAX"                : "Configuration des taxes",
+    "DAILY_CONSUMPTION"         : "Consommation journaliere"    
 },
 
   "RUBRIC_PAYROLL"       : {
@@ -782,7 +783,7 @@
 	"GRADE"				  : "Grade",
     "STAFF_COST"          : "Pour les employés",
     "IS_PERCENT"          : "En pourcentage",
-    "OFFDAYS"             : "Jours ferriés",
+    "OFFDAYS"             : "Jours fériés",
     "PERCENT_PAY"         : "Pourcentage de paiement",
     "EMPLOYEE_NAME"       : "Nom de l'employé",
     "DATE_FROM"           : "Date du début",
@@ -798,7 +799,8 @@
     "GIVEN_AMOUNT"       : "Montant donne",
     "NUM" : "Numero",
     "TRANSACTION_NUMBER" : "Numero transaction",
-    "BY" : "Par"
+    "BY"                 : "Par",
+    "DRUGS"              : "Médicaments"           
   },
 
   "REPORT"                  : {
@@ -1879,18 +1881,18 @@
   },
 
   "OFFDAY_MANAGEMENT" : {
-    "TITLE"         : "Gestion des jours ferriés",
-    "NEW_OFFDAY"    : "Nouveau Jour ferrié",
+    "TITLE"         : "Gestion des jours fériés",
+    "NEW_OFFDAY"    : "Nouveau Jour férié",
     "SAVE_SUCCES"  : "Enregistrement avec succès",    
     "UPDATE_SUCCES" : "Mis à jour avec succès",
-    "NO_OFFDAY"    : "Aucun jour ferrié n'est encore enregistré",
-    "CONFIRM"       : "Etes vous sure de vouloir supprimer ce jour ferrié",      
-    "UPDATE"        : "Mettre à jour un jour ferrié",    
-    "ADD"           : "Ajouter un jour ferrié",
-    "REGISTERED"    : "jours ferriés enregistrés",
-    "ALERT"         : "Le module gestion des jours ferriés permet de configurer les différents types de jours ferriés qui sont prises en charge dans l'organisation",
+    "NO_OFFDAY"    : "Aucun jour férié n'est encore enregistré",
+    "CONFIRM"       : "Etes vous sure de vouloir supprimer ce jour férié",      
+    "UPDATE"        : "Mettre à jour un jour férié",    
+    "ADD"           : "Ajouter un jour férié",
+    "REGISTERED"    : "jours fériés enregistrés",
+    "ALERT"         : "Le module gestion des jours fériés permet de configurer les différents types de jours fériés qui sont prises en charge dans l'organisation",
     "CREATE_TAXE"   : "Creation des taxes",
-    "SAVE_FAILURE" : "Ce jour ferrié existe deja"
+    "SAVE_FAILURE" : "Ce jour férié existe deja"
   },
 
   "HOLLYDAY_MANAGEMENT" : {
@@ -2003,5 +2005,18 @@
     "PAYABLE"       : "Payable",
     "DELETE_SUCCESS" : "Suppression avec succès",
     "NO_CONFIG_TAX" : "Aucune configuration de taxes"
+  },
+
+  "DAILY_CONSUMPTION" : {
+    "TITLE"       : "Consommation journaliere",
+    "DAY"         : "Aujourd'hui",
+    "WEEK"        : "Cette Semaine",
+    "MONTH"       : "Ce Mois",
+    "SEARCH"      : "Rechercher",
+    "ALL_PROJECTS" : "Tous Projets",
+    "NO_CONSUMPTION" : "Aucune consommation durant cette période",
+    "ITEMS"          : "Articles",
+    "NR"           : "Nr"
   }  
+
 }

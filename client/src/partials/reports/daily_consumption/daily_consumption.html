@@ -1,0 +1,43 @@
+<header data-header>
+  {{ "DAILY_CONSUMPTION.TITLE" | translate }}
+</header>
+
+<nav>
+  <div>
+    <div class="col-xs-2">
+      <input class="form-bhima" type="date" ng-model="session.dateFrom" rows="20" ng-change="reset()">
+    </div>
+    <div class="col-xs-2">
+      <input class="form-bhima" type="date" ng-model="session.dateTo" rows="20" ng-change="reset()">
+    </div>
+  </div>
+</nav>
+
+<div class="report report-compressed">
+  <div class="reportBody">
+    <div class="reportFrame">
+       <h4 class="visible-print">{{ "DAILY_CONSUMPTION.TITLE" | translate }} <small> {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small></h4>
+        <table id="patientTable" class="reportTable">
+          <thead>
+            <tr>
+              <th>{{ "COLUMNS.CODE" | translate }}</th>
+              <th>{{ "COLUMNS.DRUGS" | translate }}</th>
+              <th>{{ "COLUMNS.QUANTITY" | translate }} {{ "COLUMNS.TOTAL" | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="consumption in consumptions | orderBy:'name'">
+              <td><a ng-href="/#/consumptions/{{consumption.code}}/{{ session.dateFrom | date:'yyyy-MM-dd'}}/{{ session.dateTo  | date:'yyyy-MM-dd'}}">{{ consumption.code }}</a></td>
+              <td>{{ consumption.text }}</td>
+              <td>{{ consumption.quantity | uppercase }}</td>
+            </tr>
+            <tr ng-if="!consumptions.length">
+              <td colspan="4">{{ "DAILY_CONSUMPTION.NO_CONSUMPTION" | translate }}</td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+  </div>
+</div>
+
+
