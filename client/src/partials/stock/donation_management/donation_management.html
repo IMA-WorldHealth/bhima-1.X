@@ -340,7 +340,7 @@
 		    				</tr>
 		    			</thead>
 		    			<tbody>
-		    				<tr ng-repeat="don in donations.data">
+		    				<tr ng-repeat="don in donations.data | orderBy:'name'">
 		    					<td>{{ $index + 1}}</td>
 		    					<td>{{ don.name }}</td>
 		    					<td>{{ don.text }}</td>

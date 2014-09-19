@@ -1984,7 +1984,10 @@
     "UUID"              : "Code",
     "LOT"               : "Lot",
     "QTE"               : "Quantity",
-    "TRACKING_NB"       : "Tracking Nb"
+    "TRACKING_NB"       : "Tracking Nb",
+    "PROOF"             : "Proof of registering in Stock",
+    "REPORT"            : "Report",
+    "DATE_REGISTER"     : "Register Date"
   }
 
 }
