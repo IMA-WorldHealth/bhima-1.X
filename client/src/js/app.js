@@ -369,6 +369,18 @@
       controller : 'stock.expiring',
       templateUrl : 'partials/stock/expiring/expiring.html'
     })
+    .when('/stock/donation_management/', {
+      controller : 'donation_management',
+      templateUrl : 'partials/stock/donation_management/donation_management.html'
+    })
+    .when('/stock/donation_management/:depotId', {
+      controller : 'donation_management',
+      templateUrl : 'partials/stock/donation_management/donation_management.html'
+    })
+    .when('/stock/donation_management/report/:documentId', {
+      controller : 'donation_management.report',
+      templateUrl : 'partials/stock/donation_management/report.html'
+    })
     .when('/inventory/distribution/:depotId?', {
       controller : 'inventory.distribution',
       templateUrl : 'partials/inventory/distribution/distribution.html'
