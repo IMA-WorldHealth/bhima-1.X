@@ -61,6 +61,7 @@
     "CONFIGURE"   : "Configure Cash Box",
     "EXPENSE"     : {
       "PAYROLL"               : "Payroll",
+      "MULTI_PAYROLL"         : "Multiple Payroll",
       "GENERIC_TITLE"         : "Generic Expense",
       "GENERIC_RECEIPT"       : "Generic Receipt",
       "REFERENCE_DOCUMENT_ID" : "Reference Document ID",
@@ -68,7 +69,9 @@
       "EXPENSE_DATE"          : "Expense Date",
       "RECIPIENT"             : "Recipient",
       "AMOUNT"                : "Amount Dispensed",
-      "PURPOSE"               : "Purpose of Expense"
+      "PURPOSE"               : "Purpose of Expense",
+      "DAYS"                  : "Days",
+      "RUBRICS"               : "Rubrics"
     },
     "INCOME" : {
       "TRANSFER"              : "Transfert",
