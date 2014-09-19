@@ -317,6 +317,10 @@
       controller : 'payroll',
       templateUrl : 'partials/primary_cash/expense/payroll.html'
     })
+    .when('/primary_cash/expense/multi_payroll/:cashbox', {
+      controller : 'multi_payroll',
+      templateUrl : 'partials/primary_cash/expense/multi_payroll.html'
+    })
     .when('/inventory/depot', {
       controller : 'inventory.depot',
       templateUrl : 'partials/inventory/depot/depot.html'

@@ -29,7 +29,7 @@ angular.module('bhima.controllers')
     }
 
     function loadIprData(data){
-    	ipr.fillFrom(data)
+    	ipr.calculate()
 	    .then(function(data){
 	    	session.table_ipr = data;
 	    });
