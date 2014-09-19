@@ -2050,7 +2050,44 @@
   },
 
   "STOCK_DASHBOARD"     : {
-    "TITLE"             : "Tableau de bord du Stock"
+    "TITLE"             : "Tableau de bord du Stock",
+    "MOST_CONSUMED"     : "Produits les plus consommes",
+    "PURCHASE_ORDER"    : {
+            "TITLE"     : "Commandes",
+            "IN_WATING" : "Commandes en attente",
+            "PAYED"     : "Commandes payées",
+            "RECEIVED"  : "Commandes reçues",
+            "WATING_RECEPTION" : "En Attente de reception"
+        },
+    "MOVEMENT"          : {
+            "TITLE"     : "Mouvement",
+            "ENTER"     : "Entrée",
+            "EXIT"      : "Sortie"
+        },
+    "STOCK_BY_PRODUCT"  : {
+            "TITLE"          : "Stock par produits",
+            "OUT_OF_STOCK"   : "Stock épuisé",
+            "UNDER_MIN"      : "En dessous du minimum",
+            "OVER_MAX"       : "Au dessus du maximum",
+            "IN_STOCK"       : "En stock",
+            "NO_LONGER"      : "Tend vers épuisement"
+        },
+    "EXPIRING_INVENTORY"     : {
+            "TITLE"          : "Expirations produits",
+            "EXPIRED"        : "Expirés",
+            "WITHIN_30"      : "Expiration dans 30 jours",
+            "WITHIN_90"      : "Expiration dans 90 jours",
+            "WITHIN_180"     : "Expiration dans 180 jours",
+            "WITHIN_365"     : "Expiration dans 365 jours"
+        },
+    "DONATIONS"          : {
+            "TITLE"      : "Donations"
+        },
+    "REPORTS"           : {
+            "TITLE"             : "Rapports",
+            "SITUATION_STOCK"   : "Stock status",
+            "EXPIRING_STOCK"    : "Expiring Stock"
+        }
   }
 
 }
