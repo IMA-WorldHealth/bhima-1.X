@@ -141,19 +141,19 @@ angular.module('bhima.controllers')
     } 
 
     function init (model) {
-      console.log('model', model);
       session.model = model;      
       getPPConf()
       .then(getOffDayCount)
+      .then(getTrancheIPR)
       .then(getEmployees)
       .catch(function (err) {
         console.log('err', err);
       });
     }
 
-    function getEmployees (model) {
-
-      model.employees.data.forEach(function (emp) {
+    function getEmployees (tranches) {
+      session.tranches_ipr = tranches;
+      session.model.employees.data.forEach(function (emp) {
         new employeeRow(emp)
         .then(function (row) {
           row.emp.basic_salary = 
@@ -164,7 +164,6 @@ angular.module('bhima.controllers')
               util.sqlDate(new Date())
             );     
           session.rows.push(row);
-          console.log('les employeeRows', session.rows);
         });        
       });
     }
@@ -178,45 +177,71 @@ angular.module('bhima.controllers')
         self.off_day = session.data.off_day;
         self.emp = emp;
         self.working_day = session.data.max_day - (hl + session.data.off_day);
-        self.fam_allow = 0;
-        self.transport = 0;
-        self.seniority = 0;
-        self.av_salary = 0;
+        self.ALLO = 0;
+        self.TRAN = 0;
+        self.SENI = 0;
+        self.ADVA = 0;
         self.other = 0;
-        self.onem = 0;
-        self.inpp = 0;
-        self.iere = 0;
+        self.ONEM = 0;
+        self.INPP = 0;
+        self.IERE = 0;
         self.visible = false;
         return getHousing(self);        
       })
       .then(function (hous) {
-        self.housing = hous;
+        self.HOUS = hous;
         return getEmployeeINSS(self);
       })
       .then(function (employee_INSS) {
-        self.employee_inss = employee_INSS;
+        self.INS1 = employee_INSS;
         return getIPR(self);        
       })
       .then(function (IPR){
-        self.ipr = IPR;
+        console.log('notre ipr est : ', IPR);
+        self.IPR1 = IPR;
         return getEnterpriseINSS(self);        
       })
       .then(function (enterprise_INSS){
-        self.enterprise_inss = enterprise_INSS;
+        self.INS2 = enterprise_INSS;
         def.resolve(self);
       });
       return def.promise;
     }
 
-    function getIPR() {
-      var def = $q.defer();
-      ipr.calculate()
-      .then(function(tranches){
-        console.log(tranches);
-        def.resolve(2);
-      });
+    function getIPR(row) {
+      var tranches = session.tranches_ipr;
 
-      return def.promise;
+      var net_imposable = row.emp.basic_salary - exchange.convertir(
+        row.INS1,                                                                    
+        session.selectedItem.currency_id,
+        session.model.enterprise.data[0].currency_id,
+        util.sqlDate(new Date())
+      );
+
+      net_imposable = exchange.convertir(
+        net_imposable,
+        session.model.enterprise.data[0].currency_id,                                                                    
+        1,  // will be the ipr currency                  
+        util.sqlDate(new Date())
+      );
+      var montant_annuel = net_imposable * 12;
+
+      var ind;
+      for(var i = 0; i< tranches.length; i++) {
+        if(montant_annuel > tranches[i].tranche_annuelle_debut && montant_annuel < tranches[i].tranche_annuelle_fin) {
+          ind = i;
+          break;
+        }
+      }
+
+      if(!ind) { return 0; }
+      var initial = tranches[ind].tranche_annuelle_debut;
+      var taux = tranches[ind].taux / 100;
+      var cumul = (tranches[ind - 1]) ? tranches[ind - 1].cumul_annuel : 0;
+
+      var value = (((montant_annuel - initial) * taux) + cumul) / 12;     
+
+      return exchange.convertir(value, 1, session.selectedItem.currency_id, util.sqlDate(new Date()));
     }
 
     function getPPConf() {     
@@ -285,6 +310,7 @@ angular.module('bhima.controllers')
     }
 
     function getOffDayCount (model) {
+      session.model = model;
       
       dependencies.offDays = {
         query : {
@@ -314,7 +340,11 @@ angular.module('bhima.controllers')
 
         session.data.off_day = nb_offdays;
       });
-      return $q.when(model);
+      return $q.when();
+    }
+
+    function getTrancheIPR () {
+      return ipr.calculate();
     }
 
     function getMaxDays (ppcs) {
@@ -504,22 +534,29 @@ angular.module('bhima.controllers')
                 util.sqlDate(new Date())
               );  
 
-            row.housing = exchange.convertir(
-              row.housing,
+            row.HOUS = exchange.convertir(
+              row.HOUS,
               session.loading_currency_id,
               session.selectedItem.currency_id,
               util.sqlDate(new Date())
             );
 
-            row.employee_inss = exchange.convertir(
-              row.employee_inss,
+            row.INS1 = exchange.convertir(
+              row.INS1,
               session.loading_currency_id,
               session.selectedItem.currency_id,
               util.sqlDate(new Date())
             ); 
 
-            row.enterprise_inss = exchange.convertir(
-              row.enterprise_inss,
+            row.INS2 = exchange.convertir(
+              row.INS2,
+              session.loading_currency_id,
+              session.selectedItem.currency_id,
+              util.sqlDate(new Date())
+            );
+
+            row.IPR1 = exchange.convertir(
+              row.IPR1,
               session.loading_currency_id,
               session.selectedItem.currency_id,
               util.sqlDate(new Date())
