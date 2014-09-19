@@ -1870,3 +1870,7 @@ INSERT INTO `config_paiement_period` VALUES
 (4, 1, '2014-09-22', '2014-09-26'),
 (5, 1, '2014-09-29', '2014-09-30');
 
+INSERT INTO `donor` VALUES
+(1, 'IMA World Health'),
+(2, 'WHO / OMS'),
+(3, 'UNICEF');

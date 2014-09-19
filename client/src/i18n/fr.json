@@ -285,11 +285,13 @@
     "DEBTOR"          : "Selectionner un debiteur",
     "CREDITOR"          : "Selectionner un Crediteur",
     "PRIMARY_CASH"    : "Selectionner Caisse principale",
+    "EMPLOYEE"        : "Selectionner un employé",
     "EMPLOYEE_SEX"    : "Selectionner Sexe",
     "EMPLOYEE_SERVICE"    : "Selectionner un Service",
     "EMPLOYEE_GRADE"      : "Selectionner un Grade",
     "PERIOD_RUBRIC_CONFIG": "Selectionner une configuration des rubriques",
-    "PERIOD_TAX_CONFIG"   : "Selectionner une configuration des taxes"
+    "PERIOD_TAX_CONFIG"   : "Selectionner une configuration des taxes",
+    "DONOR"               : "Selectionner un Donateur"
   },
 
   "RENEWAL"           : {
@@ -424,7 +426,8 @@
     "PAYMENT_PERIOD"            : "Gestion des Périodes",
     "CONFIG_RUBRIC"             : "Configuration des rubriques",
     "CONFIG_TAX"                : "Configuration des taxes",
-    "DAILY_CONSUMPTION"         : "Consommation journaliere"    
+    "DAILY_CONSUMPTION"         : "Consommation journaliere",    
+    "DONATION_MANAGEMENT"       : "Gestion des Dons"   
 },
 
   "RUBRIC_PAYROLL"       : {
@@ -613,6 +616,10 @@
     },
     "REPORT" : {
       "STOCK_COUNT" : "Stock Count"
+    },
+    "DONATION" : {
+        "KEY"    : "Entrer Donation",
+        "TITLE"  : "Entrer Donation"
     }
   },
 
@@ -2024,6 +2031,35 @@
     "NO_CONSUMPTION" : "Aucune consommation durant cette période",
     "ITEMS"          : "Articles",
     "NR"           : "Nr"
-  }  
+  },  
+
+  "DONATION_MANAGEMENT" : {
+    "TITLE"             : "Gestion des Dons",
+    "CONFIGURE"         : "Configurer la donation",
+    "DONOR"             : "Donateur",
+    "RESPONSABLE"       : "Responsable",
+    "DONATION"          : "Donation",
+    "ALL_DONATIONS"     : "Les Donations",
+    "NEW"               : "Configuration Nouvelle Donation",
+    "DATE"              : "Date",
+    "NOTE"              : "Note",
+    "ITEM"              : "Article(s)",
+    "DONATION_ITEM"     : "Article(s) Donation",
+    "ADD_LINE_ITEM"     : "Ajouter article",
+    "SUBMIT_DONATION"   : "Soumettre le Don",
+    "ENTRY_DONATION"    : "Entrer Don dans le Stock par Lots",
+    "TOTAL_COST"        : "Cout Total",
+    "SAVE_BY_LOT"       : "Enregistrement des lots",
+    "CANCEL"            : "Annuler",
+    "SEE_ALL"           : "Voir toutes les donations",
+    "NB"                : "N°",
+    "UUID"              : "Code",
+    "LOT"               : "Lot",
+    "QTE"               : "Quantité",
+    "TRACKING_NB"       : "N° Tracking",
+    "PROOF"             : "Preuve d'enregistrement du don dans le Stock",
+    "REPORT"            : "Rapport",
+    "DATE_REGISTER"     : "Date d'enregistrement"
+  }
 
 }
