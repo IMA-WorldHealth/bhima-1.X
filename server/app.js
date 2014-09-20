@@ -43,6 +43,7 @@ var report            = require('./routes/report')(db, sanitize, util),
     depotRouter       = require('./routes/depot')(db, sanitize, store),
     tree              = require('./routes/tree')(db, parser),
     drugRouter        = require('./routes/drug')(db),
+    locationRouter    = require('./routes/location')(db, express.Router()),
     dataRouter        = require('./routes/data')(db, parser, express.Router()),
     serviceDist       = require('./routes/serviceDist')(db, parser, journal, uuid),
     consumptionLoss   = require('./routes/consumptionLoss')(db, parser, journal, uuid);
@@ -73,6 +74,7 @@ app.get('/', function (req, res, next) {
 
 // data routes
 app.use('/data', dataRouter);
+app.use('/location', locationRouter);
 
 app.post('/purchase', function (req, res, next) {
   createPurchase.run(req.session.user_id, req.body)
@@ -669,19 +671,6 @@ app.get('/getCheckOffday/', function (req, res, next) {
   .done();
 });
 
-app.get('/tree', function (req, res, next) {
-  /* jshint unused : false*/
-
-  tree.load(req.session.user_id)
-  .then(function (treeData) {
-    res.send(treeData);
-  })
-  .catch(function (err) {
-    res.send(301, err);
-  })
-  .done();
-});
-
 app.get('/location/:villageId?', function (req, res, next) {
   var specifyVillage = req.params.villageId ? ' AND `village`.`uuid`=\'' + req.params.villageId + '\'' : '';
 
@@ -699,6 +688,23 @@ app.get('/location/:villageId?', function (req, res, next) {
     res.send(rows);
   })
   .catch(next)
+  .done();
+});
+
+
+/* new locations API */
+app.use('/location', locationRouter);
+
+app.get('/tree', function (req, res, next) {
+  /* jshint unused : false*/
+
+  tree.load(req.session.user_id)
+  .then(function (treeData) {
+    res.send(treeData);
+  })
+  .catch(function (err) {
+    res.send(301, err);
+  })
   .done();
 });
 
