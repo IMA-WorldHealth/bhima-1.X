@@ -912,8 +912,7 @@
     "INFO_CAUTION" : "Information on the Caution",
     "CAUTION"      : "Caution",
     "PAY"          : "Pay",
-    "SUCCES"       : "Operation Successfully Completed",
-    "DANGER"       : "Error. Pleases see a system administrator or try again."
+    "UNIT_ERROR"   : "The caution amount is less than the smallest unit of the selected currency!"
   },
 
   "PCASH"                   : {

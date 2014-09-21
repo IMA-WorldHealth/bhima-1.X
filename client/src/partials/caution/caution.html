@@ -78,6 +78,7 @@
         </div>
       </div>
     </div>
+
     <div class="col-xs-6">
       <div class="panel panel-default">
         <div class="panel-heading">{{ "CAUTION.INFO_CAUTION" | translate }}</div>
@@ -89,6 +90,10 @@
                 <input type="number" ng-model="session.payment"  class="form-bhima" min="0" required>
                 <span class="input-group-addon"> {{ currency.symbol }} </span>
               </div>
+            </div>
+
+            <div style="color: #b94a48;" ng-if="session.payment < currency.min_monentary_unit">
+              <span class="glyphicon glyphicon-bell"></span> {{ "CAUTION.UNIT_ERROR" | translate }}
             </div>
           </form>
         </div>
