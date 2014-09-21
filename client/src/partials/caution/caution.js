@@ -11,27 +11,40 @@ angular.module('bhima.controllers')
   'uuid',
   'appcache',
   function($scope, $location, $translate, validate, connect, appstate, messenger, util, uuid, Appcache) {
-
+    var defaultCurrency, defaultCashBox;
     var dependencies = {},
+        session = $scope.session = {},
         caution_uuid = -1,
         cache = new Appcache('caution');
 
-    dependencies.cash_box = {
+    dependencies.cashboxes = {
       query : {
         tables : {
+          'cash_box' : {
+            columns : ['id', 'text', 'project_id']
+          }
+        }
+      }
+    };
+
+    // TODO currently fetches all accounts, should be selected by project
+    dependencies.cashbox_accounts = {
+      query : {
+        identifier : 'currency_id',
+        tables : {
           'cash_box_account_currency' : {
-            columns : ['id', 'currency_id', 'account_id']
+            columns : ['id', 'cash_box_id', 'currency_id', 'account_id']
           },
           'currency' : {
             columns : ['symbol', 'min_monentary_unit']
           },
-          'cash_box' : {
-            columns : ['id', 'text', 'project_id']
+          'account' : {
+            columns : ['account_txt']
           }
         },
         join : [
           'cash_box_account_currency.currency_id=currency.id',
-          'cash_box_account_currency.cash_box_id=cash_box.id'
+          'account.id=cash_box_account_currency.account_id'
         ]
       }
     };
@@ -44,7 +57,7 @@ angular.module('bhima.controllers')
             columns : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'date', 'rate']
           }
         },
-        where : ['exchange_rate.date='+util.convertToMysqlDate(new Date())]
+        where : ['exchange_rate.date=' + util.sqlDate(new Date())]
       }
     };
 
@@ -60,107 +73,124 @@ angular.module('bhima.controllers')
     };
 
     $scope.noEmpty = false;
-    $scope.debitor = {};
-    $scope.data = {};
 
+    cache.fetch('cashbox').then(loadDefaultCashBox);
+    cache.fetch('currency').then(loadDefaultCurrency);
 
-    dependencies.cashier = {
-      query : 'user_session'
+    function startup(models) {
+      angular.extend($scope, models);
+    }
+
+    $scope.loadDebtor = function loadDebtor(debtor) {
+      if (!debtor) { return messenger.danger('No debtor selected'); }
+      $scope.debtor = debtor;
+      connect.fetch('/location/' + debtor.origin_location_id)
+      .then(function (data) {
+        $scope.location = data[0];
+        $scope.noEmpty = true;
+      });
     };
 
-
-    $scope.model = {};
-
-    function init (model) {
-      $scope.model = model;
-
-    }
-
-    function ready (model) {
-      $scope.model.location = model.location;
-      $scope.locationDebitor = model.location.data[0];
-      $scope.noEmpty = true;
-    }
-
-    function initialiseCaution (selectedDebitor) {
-      if (!selectedDebitor) { return messenger.danger('No debtor selected'); }
-      $scope.selectedDebitor = selectedDebitor;
-      dependencies.location = { query : '/location/' + $scope.selectedDebitor.origin_location_id};
-      validate.process(dependencies, ['location'])
-      .then(ready);
-    }
-
-    function payCaution () {
+    function payCaution() {
       var record = {
         uuid         : uuid(),
-        reference    : 1, // FIXME                                                                                                                               : Workaround for dead triggers
-        value        : $scope.data.payment,
+        reference    : 1, // FIXME: Workaround for dead triggers
+        value        : session.payment,
         project_id   : $scope.project.id,
-        debitor_uuid : $scope.selectedDebitor.debitor_uuid,
-        currency_id  : $scope.selectedItem.currency_id,
-        user_id      : $scope.model.cashier.data.id,
-        cash_box_id  : $scope.selectedItem.id,
-        description  : ['CAP', $scope.selectedDebitor.debitor_uuid, $scope.selectedDebitor.first_name, util.convertToMysqlDate(new Date().toString())].join('/')
+        debitor_uuid : $scope.debtor.debitor_uuid,
+        currency_id  : $scope.currency.currency_id,
+        cash_box_id  : $scope.cashbox.id,
+        description  : ['CAP', $scope.debtor.debitor_uuid, $scope.debtor.first_name, util.sqlDate(new Date())].join('/')
       };
-      writeCaution(record)
-      .then(postToJournal)
-      .then(handleSucces)
+
+      connect.fetch('/user_session')
+      .then(function (user) {
+        record.user_id = user.id;
+        console.log('[record]', record);
+        return connect.post('caution', record);
+      })
+      .then(function () {
+        return connect.fetch('/journal/caution/' + record.uuid);
+      })
+      .then(function () {
+        messenger.success($translate.instant('CAUTION.SUCCES'));
+        $location.path('/invoice/caution/' + record.uuid);
+      })
       .catch(handleError);
-    }
-
-    function postToJournal (res) {
-      caution_uuid = res.config.data.data[0].uuid;
-      return connect.fetch('/journal/caution/' + caution_uuid);
-    }
-
-    function writeCaution(record) {
-      return connect.basicPut('caution', [record]);
-    }
-
-    function setCashAccount(cashAccount) {
-      if (cashAccount) {
-        $scope.selectedItem = cashAccount;
-        cache.put('selectedItem', cashAccount);
-      }
-    }
-
-    function handleSucces() {
-      messenger.success($translate.instant('CAUTION.SUCCES'));
-      $scope.selectedDebitor = {};
-      $scope.data = {};
-      $scope.noEmpty = false;
-      if (caution_uuid !== -1) { $location.path('/invoice/caution/' + caution_uuid); }
     }
 
     function handleError() {
       messenger.danger($translate.instant('CAUTION.DANGER'));
     }
 
-    function load (selectedItem) {
+    function load(selectedItem) {
       if (!selectedItem) { return; }
       $scope.selectedItem = selectedItem;
     }
 
-    cache.fetch('selectedItem').then(load);
-
     appstate.register('project', function (project) {
       $scope.project = project;
       dependencies.accounts.query.where = ['account.enterprise_id='+project.enterprise_id];
-      dependencies.cash_box.query.where=['cash_box.project_id='+project.id, 'AND', 'cash_box.is_auxillary='+1];
-      validate.process(dependencies).then(init, handleError);
+      validate.process(dependencies)
+      .then(startup);
     });
 
     function check () {
-      if ($scope.data.payment) {
-        return $scope.data.payment < $scope.selectedItem.min_monentary_unit;
-      }else{
-        return true;
-      }
+      return session.payment && $scope.currency ? session.payment < $scope.currency.min_monentary_unit : true;
     }
 
-    $scope.initialiseCaution = initialiseCaution;
+    $scope.setCurrency = function setCurrency (currency) {
+      $scope.currency = currency;
+      cache.put('currency', currency);
+    };
+
+    $scope.setCashBox = function setCashBox (box) {
+      $scope.cashbox = box;
+      cache.put('cashbox', box);
+
+      dependencies.cashbox_accounts.query.where =
+        ['cash_box_account_currency.cash_box_id=' + $scope.cashbox.id];
+      validate.refresh(dependencies, ['cashbox_accounts'])
+      .then(refreshCurrency);
+    };
+
+    function loadDefaultCurrency(currency) {
+      if (!currency) { return; }
+      defaultCurrency = currency;
+
+      // Fallback for slow IDB read
+      if ($scope.currency) { $scope.currency = currency; }
+    }
+
+    function loadDefaultCashBox(cashBox) {
+      if (!cashBox) { return; }
+      defaultCashBox = cashBox;
+
+      // Fallback for slow IDB read
+      if ($scope.cashbox) { $scope.cashbox = cashBox; }
+    }
+
+    function refreshCurrency(model) {
+      var sessionDefault;
+
+      angular.extend($scope, model);
+
+      sessionDefault =
+        $scope.cashbox_accounts.get($scope.project.currency_id) ||
+        $scope.cashbox_accounts.data[0];
+
+      if (defaultCurrency) {
+        var verifyCurrency = $scope.cashbox_accounts.get(defaultCurrency.currency_id);
+        if (verifyCurrency)  { sessionDefault = verifyCurrency; }
+      }
+
+      // Everything sucks
+      if (!sessionDefault) { return messenger.danger('Cannot find accounts for cash box ' + $scope.cashbox.id); }
+
+      $scope.setCurrency(sessionDefault);
+    }
+
     $scope.payCaution = payCaution;
-    $scope.setCashAccount = setCashAccount;
     $scope.check = check;
   }
 ]);
