@@ -12,9 +12,9 @@ angular.module('bhima.controllers')
   'appcache',
   function($scope, $location, $translate, validate, connect, appstate, messenger, util, uuid, Appcache) {
     var defaultCurrency, defaultCashBox;
+
     var dependencies = {},
         session = $scope.session = {},
-        caution_uuid = -1,
         cache = new Appcache('caution');
 
     dependencies.cashboxes = {
@@ -79,6 +79,17 @@ angular.module('bhima.controllers')
 
     function startup(models) {
       angular.extend($scope, models);
+      if (!$scope.cashbox) {
+        var sessionDefault =
+          $scope.cashboxes.data[0];
+
+        if (defaultCashBox) {
+          var verifyBox = $scope.cashboxes.get(defaultCashBox.id);
+          if (verifyBox) { sessionDefault = verifyBox; }
+        }
+
+        $scope.setCashBox(sessionDefault);
+      }
     }
 
     $scope.loadDebtor = function loadDebtor(debtor) {
@@ -155,6 +166,7 @@ angular.module('bhima.controllers')
     };
 
     function loadDefaultCurrency(currency) {
+      console.log('[Loading Default]', currency);
       if (!currency) { return; }
       defaultCurrency = currency;
 
@@ -163,6 +175,7 @@ angular.module('bhima.controllers')
     }
 
     function loadDefaultCashBox(cashBox) {
+      console.log('[Loading Default]', cashBox);
       if (!cashBox) { return; }
       defaultCashBox = cashBox;
 

@@ -43,46 +43,38 @@
   <div class="row">
     <div class="col-xs-6">
       <div class="panel panel-default">
-        <div class="panel-heading">
-          {{ "CAUTION.PATIENT" | translate }}
-        </div>
+        <div class="panel-heading">{{ "CAUTION.PATIENT" | translate }}</div>
 
         <div ng-show="noEmpty" class="panel-body">
-          <div class="row">
+          <form class="form-horizontal">
             <div class="col-xs-6">
 
               <div class="form-group">
-                <label class="control-label">{{ "CAUTION.NAME" | translate }}</label>
-                <br>
-                {{debtor.name}}
+                <label class="control-label col-xs-2">{{ "CAUTION.NAME" | translate }}</label>
+                <p class="form-control-static col-xs-10">{{debtor.name}}</p>
               </div>
 
               <div class="form-group">
-                <label class="control-label">{{ "CAUTION.AGE" | translate }}</label>
-                <br>
-                {{debtor.age}}
+                <label class="control-label col-xs-2">{{ "CAUTION.AGE" | translate }}</label>
+                <p class="form-control-static col-xs-10">{{debtor.age}}</p>
               </div>
 
               <div class="form-group">
-                <label class="control-label">{{ "CAUTION.GENDER" | translate }}</label>
-                <br>
-                {{debtor.sex}}
+                <label class="control-label col-xs-2">{{ "CAUTION.GENDER" | translate }}</label>
+                <p class="form-control-static col-xs-10">{{debtor.sex}}</p>
               </div>
             </div>
 
             <div class="col-xs-6">
-              <!-- FIXME style hacks -->
-              <label>{{ "CAUTION.ORIGIN" | translate }}</label>
-              <br>
-              {{location.village}}
-              <br>
-              {{location.sector}}
-              <br>
-              {{location.province}}
-              <br>
-              {{location.country}}
+              <label class="control-label">{{ "CAUTION.ORIGIN" | translate }}</label>
+              <p class="form-control-static">
+                {{location.village}}<br>
+                {{location.sector}}<br>
+                {{location.province}}<br>
+                {{location.country}}
+              </p>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>
