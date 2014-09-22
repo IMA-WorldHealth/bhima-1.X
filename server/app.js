@@ -1082,6 +1082,44 @@ https.createServer(options, app)
   console.log('Secure application running on localhost:' + cfg.port);
 });
 
+
+app.get('/getConsuptionDrugs/', function (req, res, next) {
+  console.log(req.query.dateTo);
+  console.log(req.query.dateFrom);
+  var sql = "SELECT consumption.uuid,  SUM(consumption.quantity) AS quantity, consumption.date, inventory.code, inventory.text"
+          + " FROM consumption "
+          + " JOIN stock ON stock.tracking_number = consumption.tracking_number"
+          + " JOIN inventory ON inventory.uuid = stock.inventory_uuid"
+          + " WHERE ((consumption.date >= '"+ req.query.dateFrom +"') AND (consumption.date <= '" + req.query.dateTo+ "'))"
+          + " GROUP BY inventory.uuid";
+
+  db.exec(sql)
+  .then(function (result) {
+    console.log(result);
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getItemInConsumption/', function (req, res, next) {
+  var sql = "SELECT consumption.uuid,  SUM(consumption.quantity) AS quantity, consumption.date, inventory.code, inventory.text"
+          + " FROM consumption "
+          + " JOIN stock ON stock.tracking_number = consumption.tracking_number"
+          + " JOIN inventory ON inventory.uuid = stock.inventory_uuid"
+          + " WHERE inventory.code = '" + req.query.code + "' AND ((consumption.date >= '"+ req.query.dateFrom +"')"
+          + " AND (consumption.date <= '" + req.query.dateTo + "'))"
+          + " GROUP BY consumption.date";
+
+  db.exec(sql)
+  .then(function (result) {
+    console.log(result);
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
 // temporary error handling for development!
 process.on('uncaughtException', function (err) {
   console.log('[uncaughtException]', err);

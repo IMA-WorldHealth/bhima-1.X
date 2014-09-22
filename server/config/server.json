@@ -87,6 +87,8 @@
       "/getCheckHollyday/",
       "/getCheckOffday/",
       "/journal_list/",
+      "/getConsuptionDrugs/",
+      "/getItemInConsumption/",
       "/hollyday_list"
     ]
   }
