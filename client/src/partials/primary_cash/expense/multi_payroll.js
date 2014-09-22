@@ -522,6 +522,11 @@ angular.module('bhima.controllers')
       return true;
     }
 
+    function submit (list) {
+      console.log('la liste', list);
+
+    }
+
     $scope.$watch('session.selectedItem', function (nval, oval) {
 
        if(session.rows.length) {
@@ -570,5 +575,6 @@ angular.module('bhima.controllers')
     $scope.formatPeriod = formatPeriod;
     $scope.setConfiguration = setConfiguration;
     $scope.reconfigure = reconfigure;
+    $scope.submit = submit;
   }
 ]);

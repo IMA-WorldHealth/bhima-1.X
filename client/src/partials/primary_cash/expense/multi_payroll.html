@@ -286,11 +286,24 @@
                     </div>
                   </div>
                 </fieldset>
+                <hr/>
+                <div class="pull-right">
+                  <button class="btn btn-sm btn-success" type="submit" ng-click="submit([row])" ng-disabled="depotNew.$invalid">
+                    {{ "FORM.SUBMIT" | translate }}
+                  </button>
+                </div>
               </form>
             </div>
           </div>
         </div>
-        <hr ng-repeat-end>         
+        <hr ng-repeat-end> 
+
+        <div class="pull-right">
+                  <button class="btn btn-sm btn-success" type="submit" ng-click="submit()" ng-disabled="depotNew.$invalid">
+                    {{ "FORM.SUBMIT" | translate }}
+                  </button>
+                </div>
+
       </div>
     </div>
   </div>
