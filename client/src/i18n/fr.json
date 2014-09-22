@@ -1341,8 +1341,7 @@
     "INFO_CAUTION" : "Information sur la caution",
     "CAUTION"      : "Caution",
     "PAY"          : "Payer",
-    "SUCCES"       : "Operation reussie !",
-    "DANGER"       : "Erreur ! Une erreur se produite pendant le posting !"
+    "UNIT_ERROR"   : "La quantite est trop grande!"
   },
 
  "CONVENTION"            : {
