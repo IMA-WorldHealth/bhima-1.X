@@ -381,6 +381,10 @@
       controller : 'donation_management.report',
       templateUrl : 'partials/stock/donation_management/report.html'
     })
+    .when('/stock_dashboard/', {
+      controller : 'stock_dashboard',
+      templateUrl : 'partials/stock_dashboard/stock_dashboard.html'
+    })
     .when('/inventory/distribution/:depotId?', {
       controller : 'inventory.distribution',
       templateUrl : 'partials/inventory/distribution/distribution.html'
