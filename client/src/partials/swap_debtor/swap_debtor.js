@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('swapDebitor', [
+.controller('group.debtor.reassignment', [
   '$scope',
   'validate',
   'connect',
