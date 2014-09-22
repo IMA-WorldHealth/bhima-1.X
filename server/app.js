@@ -43,7 +43,7 @@ var report            = require('./routes/report')(db, sanitize, util),
     depotRouter       = require('./routes/depot')(db, sanitize, store),
     tree              = require('./routes/tree')(db, parser),
     drugRouter        = require('./routes/drug')(db),
-    api               = require('./routes/data')(db, parser),
+    dataRouter        = require('./routes/data')(db, parser, express.Router()),
     serviceDist       = require('./routes/serviceDist')(db, parser, journal, uuid),
     consumptionLoss   = require('./routes/consumptionLoss')(db, parser, journal, uuid);
 
@@ -71,12 +71,8 @@ app.get('/', function (req, res, next) {
   res.sendfile(cfg.rootFile);
 });
 
-app.route('/data/')
-  .get(api.get)
-  .put(api.put)
-  .post(api.post);
-
-app.delete('/data/:table/:column/:value', api.delete);
+// data routes
+app.use('/data', dataRouter);
 
 app.post('/purchase', function (req, res, next) {
   createPurchase.run(req.session.user_id, req.body)
