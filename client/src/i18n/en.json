@@ -797,8 +797,10 @@
     "PAYMENT_PERIOD"            : "Payment Period Management",
     "CONFIG_RUBRIC"             : "Configuration Rubrics",
     "CONFIG_TAX"                : "Configuration Taxes",
+    "DONATION_MANAGEMENT"       : "Donation Management",
+    "STOCK_DASHBOARD"           : "Stock Dashboard",
     "DAILY_CONSUMPTION"         : "Daily Consumption",     
-    "DONATION_MANAGEMENT"       : "Donation Management"     
+    "DONATION_MANAGEMENT"       : "Donation Management"
   },
 
   "RUBRIC_PAYROLL"       : {
@@ -2001,6 +2003,47 @@
     "PROOF"             : "Proof of registering in Stock",
     "REPORT"            : "Report",
     "DATE_REGISTER"     : "Register Date"
+  },
+
+  "STOCK_DASHBOARD"     : {
+    "TITLE"             : "Stock Dashboard",
+    "MOST_CONSUMED"     : "Most consumed",
+    "PURCHASE_ORDER"    : {
+            "TITLE"     : "Purchase Order",
+            "IN_WATING" : "Orders in wating payment",
+            "PAYED"     : "Orders payed",
+            "RECEIVED"  : "Orders received",
+            "WATING_RECEPTION" : "In wating reception"
+        },
+    "MOVEMENT"          : {
+            "TITLE"     : "Movement",
+            "ENTER"     : "Enter",
+            "EXIT"      : "Exit"
+        },
+    "STOCK_BY_PRODUCT"  : {
+            "TITLE"          : "Stock by product",
+            "OUT_OF_STOCK"   : "Out of stock",
+            "UNDER_MIN"      : "Under minimum",
+            "OVER_MAX"       : "Over minimum",
+            "IN_STOCK"       : "In stock",
+            "NO_LONGER"      : "No longer in stock"
+        },
+    "EXPIRING_INVENTORY"     : {
+            "TITLE"          : "Expiring Inventory",
+            "EXPIRED"        : "Expired",
+            "WITHIN_30"      : "Expiring within 30 days",
+            "WITHIN_90"      : "Expiring within 90 days",
+            "WITHIN_180"     : "Expiring within 180 days",
+            "WITHIN_365"     : "Expiring within 365 days"
+        },
+    "DONATIONS"          : {
+            "TITLE"      : "Donations"
+        },
+    "REPORTS"           : {
+            "TITLE"     : "Reports",
+            "SITUATION_STOCK"   : "Stock status",
+            "EXPIRING_STOCK"    : "Expiring Stock"
+        }
   }
 }
 
