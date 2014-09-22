@@ -66,15 +66,15 @@ app.use(authorize);
 app.use(projects);
 app.use(express.static(cfg.static, { maxAge : 10000 }));
 
+// routers
+app.use('/data', dataRouter);
+app.use('/location', locationRouter);
+
 app.get('/', function (req, res, next) {
   /* jshint unused : false */
   // This is to preserve the /#/ path in the url
   res.sendfile(cfg.rootFile);
 });
-
-// data routes
-app.use('/data', dataRouter);
-app.use('/location', locationRouter);
 
 app.post('/purchase', function (req, res, next) {
   createPurchase.run(req.session.user_id, req.body)
