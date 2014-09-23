@@ -114,7 +114,8 @@ INSERT INTO `unit` VALUES
 (67,'Configuration des rubriques','TREE.CONFIG_RUBRIC','',1,0,'/partials/config_rubric/','/config_rubric/'),
 (68,'Configuration des taxes','TREE.CONFIG_TAX','',1,0,'/partials/config_tax/','/config_tax/'),
 (69,'Stock Dashboard','TREE.STOCK_DASHBOARD','',11,0,'/partials/stock/stock_dashboard/','/stock_dashboard/'),
-(70,'Daily consumption', 'TREE.DAILY_CONSUMPTION', '', 10, 0, '/partials/reports/daily_consumption', '/reports/daily_consumption/');
+(70,'Daily consumption', 'TREE.DAILY_CONSUMPTION', '', 10, 0, '/partials/reports/daily_consumption', '/reports/daily_consumption/'),
+(71,'Configuration des comptes','TREE.CONFIG_ACCOUNTING','',1,0,'/partials/config_accounting/','/config_accounting/');
 
 -- base user & permissions
 INSERT INTO `user` (id, username, password, first, last, email, logged_in) VALUES
