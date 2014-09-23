@@ -288,7 +288,7 @@
                 </fieldset>
                 <hr/>
                 <div class="pull-right">
-                  <button class="btn btn-sm btn-success" type="submit" ng-click="submit([row])" ng-disabled="depotNew.$invalid">
+                  <button class="btn btn-sm btn-success" type="button" ng-click="submit([row])" ng-disabled="depotNew.$invalid">
                     {{ "FORM.SUBMIT" | translate }}
                   </button>
                 </div>
@@ -296,14 +296,12 @@
             </div>
           </div>
         </div>
-        <hr ng-repeat-end> 
-
+        <hr ng-repeat-end>
         <div class="pull-right">
-                  <button class="btn btn-sm btn-success" type="submit" ng-click="submit()" ng-disabled="depotNew.$invalid">
-                    {{ "FORM.SUBMIT" | translate }}
-                  </button>
-                </div>
-
+          <button class="btn btn-sm btn-success" type="button" ng-click="submit(session.rows)" ng-disabled="depotNew.$invalid">
+            {{ "FORM.SUBMIT" | translate }}
+          </button>
+        </div>
       </div>
     </div>
   </div>

@@ -39,6 +39,7 @@ delete from `config_rubric`;
 delete from `rubric`;
 delete from `config_rubric_item`;
 delete from `config_tax`;
+delete from `config_accounting`;
 delete from `tax`;
 delete from `config_tax_item`;
 delete from `paiement_period`;
@@ -1823,6 +1824,9 @@ INSERT INTO `service` VALUES
 INSERT INTO `config_rubric` VALUES 
 (1, "configuration des rubrique par defaut");
 
+INSERT INTO `config_accounting` VALUES 
+(1, "configuration de comptabilite de paie par defaut", 721);
+
 INSERT INTO `rubric` VALUES 
 (1, "Logement", "HOUS", 0, 1, 30),
 (2, "Allocation Familliale", "ALLO", 0, 0, 0),
@@ -1857,7 +1861,7 @@ INSERT INTO `config_tax_item` VALUES
 (6, 1, 6, 1);
 
 INSERT INTO `paiement_period` VALUES
-(1, 1, 1, "period de paiement par defaut", '2014-09-01', '2014-09-30');
+(1, 1, 1, 1, "period de paiement par defaut", '2014-09-01', '2014-09-30');
 
 INSERT INTO `offday` VALUES
 (1, "ferrie 1", '2014-09-17', 100),
