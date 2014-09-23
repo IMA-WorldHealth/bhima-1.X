@@ -505,11 +505,12 @@ angular.module('bhima.controllers')
     }
 
     function submit (list) {
-      console.log('la liste', list);
       rubric_config_list = session.model.rubric_config.data;
       tax_config_list = session.model.tax_config.data;
-      list.forEach(function (elmt) {
-        console.log('paiement employee', elmt);
+
+      return $q.all(list.map(function (elmt) {
+        var rc_records = [];
+        var tc_records = [];
         elmt.net_before_taxe = elmt.emp.basic_salary - elmt.INS1;
         elmt.net_after_taxe = elmt.net_before_taxe - elmt.IPR1 - elmt.ONEM - elmt.IERE - elmt.INPP;
         elmt.net_salary = elmt.net_after_taxe + (elmt.HOUS + elmt.TRAN + elmt.ALLO + elmt.SENI - (elmt.ADVA + (elmt.daily_salary * elmt.off_day))) + elmt.offdays_cost; 
@@ -524,41 +525,58 @@ angular.module('bhima.controllers')
           net_after_tax : elmt.net_after_taxe,          
           net_salary : elmt.net_salary
         }
-        connect.basicPut('paiement', [paiement], ['uuid'])
-        .then(function () {
-          var records = [];
-          rubric_config_list.forEach(function (rc) {
-            var record = {
-              paiement_uuid : paiement.uuid,
-              rubric_id : rc.id,
-              value : elmt[rc.abbr]
-            }
-            records.push(record);
-          });
 
-          return connect.basicPut('rubric_paiement', records, ['id']);
-        })
-        .then(function () {
-          var records = [];
-          tax_config_list.forEach(function (tc) {
-            var record = {
-              paiement_uuid : paiement.uuid,
-              tax_id : tc.id,
-              value : elmt[tc.abbr],
-              posted : 0
-            }
-            records.push(record);
-          });
-
-          return connect.basicPut('tax_paiement', records, ['id']);
-        })
-        .catch(function () {
-          connect.basicDelete('paiement', [paiement.uuid], 'uuid')
-          .then(function () {
-            messenger.danger('Echec');
-          });
+        rubric_config_list.forEach(function (rc) {
+          var record = {
+            paiement_uuid : paiement.uuid,
+            rubric_id : rc.id,
+            value : elmt[rc.abbr]
+          }
+          rc_records.push(record);
         });
-      });
+          
+        tax_config_list.forEach(function (tc) {
+          var record = {
+            paiement_uuid : paiement.uuid,
+            tax_id : tc.id,
+            value : elmt[tc.abbr],
+            posted : 0
+          }
+          tc_records.push(record);
+        });
+
+        var primary = {
+          uuid          : uuid(),
+          project_id    : $scope.project.id,
+          type          : 'S',
+          date          : util.sqlDate(new Date()),
+          deb_cred_uuid : elmt.emp.creditor_uuid,
+          deb_cred_type : 'C',
+          account_id    : session.selectedItem.account_id,
+          currency_id   : session.selectedItem.currency_id,
+          cost          : paiement.net_salary,
+          user_id       : session.model.cashier.data.id,
+          description   : "Payroll : " + elmt.emp.name + elmt.emp.postnom,
+          cash_box_id   : session.cashbox,
+          origin_id     : 6,
+        };
+
+        var primary_details = {
+          uuid              : uuid(),
+          primary_cash_uuid : primary.uuid,
+          debit             : 0,
+          credit            : primary.cost,
+          document_uuid     : paiement.uuid
+        };        
+
+        return $q.all([
+          connect.basicPut('paiement', [paiement], ['uuid']),
+          connect.basicPut('primary_cash', [primary], ['uuid']),
+          connect.basicPut('primary_cash_item', [primary_details], ['uuid']),
+          connect.basicPut('rubric_paiement', rc_records, ['id']),
+          connect.basicPut('tax_paiement', tc_records, ['id'])
+        ]);
+      }));
     }
 
     $scope.$watch('session.selectedItem', function (nval, oval) {

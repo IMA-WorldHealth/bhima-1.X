@@ -1920,6 +1920,12 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     }
   }
 
+  function handlePayroll (id, user_id, done) {
+    console.log('nous sommes ici :::', id);
+
+    
+  }
+
   // router for incoming requests
   table_router = {
     'sale'                  : handleSales,
@@ -1936,7 +1942,8 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     'confirm'               : handleConfirm,
     'distribution_patient'  : handleDistributionPatient,
     'distribution_service'  : handleDistributionService,
-    'consumption_loss'      : handleDistributionLoss
+    'consumption_loss'      : handleDistributionLoss,
+    'payroll'               : handlePayroll
   };
 
   function request (table, id, user_id, done, debCaution, details) {
