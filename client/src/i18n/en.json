@@ -800,7 +800,8 @@
     "DONATION_MANAGEMENT"       : "Donation Management",
     "STOCK_DASHBOARD"           : "Stock Dashboard",
     "DAILY_CONSUMPTION"         : "Daily Consumption",     
-    "DONATION_MANAGEMENT"       : "Donation Management"
+    "DONATION_MANAGEMENT"       : "Donation Management",
+    "CONFIG_ACCOUNTING"         : "Configuration accounting"
   },
 
   "RUBRIC_PAYROLL"       : {
@@ -2044,6 +2045,22 @@
             "SITUATION_STOCK"   : "Stock status",
             "EXPIRING_STOCK"    : "Expiring Stock"
         }
+  },
+
+  "CONFIG_ACCOUNTING" : {
+    "TITLE"        : "Configuration accounting",
+    "NEW_CONFIG"    : "New configuration",
+    "SAVE_SUCCES"   : "Successfully saving Configuration",    
+    "UPDATE_SUCCES" : "Updated successfully",
+    "UPDATE"        : "Modify a Configuration",    
+    "ADD"           : "Create a new configuration",
+    "CONFIRM"       : "Are you sure you want to delete this Configuration",    
+    "REGISTERED"    : "Registered Configuration Accounting",
+    "ALERT"         : "The account setup module allows setting the account to be used when making payroll",
+    "CONFIG"        : "Configuration",
+    "RUBRIC"        : "Taxes Payroll",
+    "DELETE_SUCCESS" : "Deleted successfully",
+    "NO_CONFIG_TAX" : "No Configuration Accounting"
   }
 }
 
