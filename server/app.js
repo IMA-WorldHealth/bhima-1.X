@@ -1061,7 +1061,7 @@ app.get('/getAccount6/', function (req, res, next) {
 });
 
 app.get('/available_payment_period/', function (req, res, next) {
-  var sql = "SELECT p.id, p.config_tax_id, p.config_rubric_id, p.label, p.dateFrom, p.dateTo, r.label AS RUBRIC, t.label AS TAX FROM paiement_period p, config_rubric r, config_tax t WHERE p.config_tax_id = t.id AND p.config_rubric_id = r.id ORDER BY p.id DESC";
+  var sql = "SELECT p.id, p.config_tax_id, p.config_rubric_id, p.label, p.dateFrom, p.dateTo, r.label AS RUBRIC, t.label AS TAX, a.label AS ACCOUNT FROM paiement_period p, config_rubric r, config_tax t, config_accounting a WHERE p.config_tax_id = t.id AND p.config_rubric_id = r.id AND a.id=p.config_accounting_id ORDER BY p.id DESC";
   db.exec(sql)
   .then(function (result) {
     res.send(result);

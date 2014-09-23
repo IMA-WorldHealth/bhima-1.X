@@ -287,11 +287,12 @@
     "PRIMARY_CASH"    : "Selectionner Caisse principale",
     "EMPLOYEE"        : "Selectionner un employé",
     "EMPLOYEE_SEX"    : "Selectionner Sexe",
-    "EMPLOYEE_SERVICE"    : "Selectionner un Service",
-    "EMPLOYEE_GRADE"      : "Selectionner un Grade",
-    "PERIOD_RUBRIC_CONFIG": "Selectionner une configuration des rubriques",
-    "PERIOD_TAX_CONFIG"   : "Selectionner une configuration des taxes",
-    "DONOR"               : "Selectionner un Donateur"
+    "EMPLOYEE_SERVICE"      : "Selectionner un Service",
+    "EMPLOYEE_GRADE"        : "Selectionner un Grade",
+    "PERIOD_RUBRIC_CONFIG"  : "Selectionner une configuration des rubriques",
+    "PERIOD_TAX_CONFIG"     : "Selectionner une configuration des taxes",
+    "PERIOD_ACCOUNT_CONFIG" : "Selectionner une configuration des comptes",
+    "DONOR"                 : "Selectionner un Donateur"
   },
 
   "RENEWAL"           : {
@@ -429,7 +430,9 @@
     "DONATION_MANAGEMENT"       : "Gestion des Dons",
     "STOCK_DASHBOARD"           : "Tableau de bord du Stock",
     "DAILY_CONSUMPTION"         : "Consommation journaliere",    
-    "DONATION_MANAGEMENT"       : "Gestion des Dons" 
+    "DONATION_MANAGEMENT"       : "Gestion des Dons",
+    "CONFIG_ACCOUNTING"         : "Configuration des comptes"
+
 },
 
   "RUBRIC_PAYROLL"       : {
@@ -1947,7 +1950,9 @@
     "CONFIG"       : "Configurer semaines",
     "WEEKS"        : "Les Semaines",
     "ADD_WEEK"     : "Ajouter",
-    "WARNING_WEEK" : "Les semaines doivent appartenir à la periode"
+    "WARNING_WEEK" : "Les semaines doivent appartenir à la periode",
+    "ACCOUNT"      : "Compte",
+    "CONFIGURATIONS" : "Les configurations"
   },
 
    "TAXES" : {
@@ -2102,6 +2107,22 @@
             "SITUATION_STOCK"   : "Stock status",
             "EXPIRING_STOCK"    : "Expiring Stock"
         }
-  }
+  },
 
+  "CONFIG_ACCOUNTING" : {
+    "TITLE"        : "Configuration des comptes",
+    "NEW_CONFIG"    : "Nouvelle configuration",
+    "SAVE_SUCCES"  : "Enregistrement avec succès",    
+    "UPDATE_SUCCES" : "Mis à jour avec succès",
+    "CONFIRM"       : "Etes vous sure de vouloir supprimer cette configuration",      
+    "UPDATE"        : "Mettre à jour une configuration",    
+    "ADD"           : "Créer une nouvelle configuration",
+    "REGISTERED"    : "Configuration des comptes enregistrées",
+    "ALERT"         : "Le module configuration des comptes, permet le paramétrage du compte qui sera prise utilisé lors du payroll",
+    "CONFIG"        : "Configuration",
+    "RUBRIC"        : "Rubriques Payroll",
+    "DELETE_SUCCESS" : "Suppression avec succès",
+    "NO_CONFIG_RUBRIC" : "Aucune configuration de comptes",
+    "ABBR"          : "Abr."
+  }  
 }
