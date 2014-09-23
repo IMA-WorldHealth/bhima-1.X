@@ -373,6 +373,7 @@
     "EMPLOYEE_SEX"    : "Select Sex",
     "EMPLOYEE_SERVICE"    : "Select a Service",
     "EMPLOYEE_GRADE"      : "Select a grade",
+    "PERIOD_ACCOUNT_CONFIG" : "Select an accounting config",
     "DONOR"               : "Select a donor"
   },
 
@@ -1890,7 +1891,9 @@
     "CONFIG"       : "Configure Weeks",
     "WEEKS"        : "Weeks",
     "ADD_WEEK"     : "Add",
-    "WARNING_WEEK" : "Weeks must be in the period"
+    "WARNING_WEEK" : "Weeks must be in the period",
+    "ACCOUNT"      : "Account",
+    "CONFIGURATIONS" : "Configurations"
   },
 
    "TAXES" : {

@@ -28,6 +28,14 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
 		}
 	};
 
+  dependencies.config_accounting = {
+    query : {
+      tables : {
+        config_accounting : { columns : ['id', 'label']}
+      }
+    }
+  };
+
 	dependencies.paiement_period = {
 		query : '/available_payment_period/'
 	};
@@ -63,6 +71,7 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
       session.edit.dateTo = new Date(session.edit.dateTo);
       delete session.edit.RUBRIC;
       delete session.edit.TAX;
+      delete session.edit.ACCOUNT;
     };
 
     $scope.config = function (period) {

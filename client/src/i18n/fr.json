@@ -287,11 +287,12 @@
     "PRIMARY_CASH"    : "Selectionner Caisse principale",
     "EMPLOYEE"        : "Selectionner un employé",
     "EMPLOYEE_SEX"    : "Selectionner Sexe",
-    "EMPLOYEE_SERVICE"    : "Selectionner un Service",
-    "EMPLOYEE_GRADE"      : "Selectionner un Grade",
-    "PERIOD_RUBRIC_CONFIG": "Selectionner une configuration des rubriques",
-    "PERIOD_TAX_CONFIG"   : "Selectionner une configuration des taxes",
-    "DONOR"               : "Selectionner un Donateur"
+    "EMPLOYEE_SERVICE"      : "Selectionner un Service",
+    "EMPLOYEE_GRADE"        : "Selectionner un Grade",
+    "PERIOD_RUBRIC_CONFIG"  : "Selectionner une configuration des rubriques",
+    "PERIOD_TAX_CONFIG"     : "Selectionner une configuration des taxes",
+    "PERIOD_ACCOUNT_CONFIG" : "Selectionner une configuration des comptes",
+    "DONOR"                 : "Selectionner un Donateur"
   },
 
   "RENEWAL"           : {
@@ -1949,7 +1950,9 @@
     "CONFIG"       : "Configurer semaines",
     "WEEKS"        : "Les Semaines",
     "ADD_WEEK"     : "Ajouter",
-    "WARNING_WEEK" : "Les semaines doivent appartenir à la periode"
+    "WARNING_WEEK" : "Les semaines doivent appartenir à la periode",
+    "ACCOUNT"      : "Compte",
+    "CONFIGURATIONS" : "Les configurations"
   },
 
    "TAXES" : {
