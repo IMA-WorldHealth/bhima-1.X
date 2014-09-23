@@ -76,22 +76,16 @@ angular.module('bhima.controllers')
           angular.extend($scope, models);
           messenger.success($translate.instant('TAXES.UPDATE_SUCCES'));
           session.action = '';
-        session.edit = {};
-
-        });
-         
-        // $scope.config_accountings.put(record);
-        
+          session.edit = {};
+        });        
       });
     };
 
     $scope.save.new = function () {
 
       var record = connect.clean(session.new);
-      record.id = '';
-      connect.basicPut('config_accounting', [record])
+      connect.basicPut('config_accounting', [record], ['id'])
       .then(function (res) {
-
         validate.refresh(dependencies)
         .then(function (models) {
           angular.extend($scope, models);
