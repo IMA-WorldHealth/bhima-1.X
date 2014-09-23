@@ -14,7 +14,8 @@ angular.module('bhima.controllers')
   'exchange',
   '$q',
   'ipr',
-  function ($scope, $routeParams, $translate, $http, messenger, validate, appstate, connect, $location, util, Appcache, exchange, $q, ipr) {
+  'uuid',
+  function ($scope, $routeParams, $translate, $http, messenger, validate, appstate, connect, $location, util, Appcache, exchange, $q, ipr, uuid) {
     var dependencies = {},
         cache = new Appcache('payroll'), session = $scope.session = {configured : false, complete : false, data : {}, rows : []};
     session.cashbox = $routeParams.cashbox;
@@ -155,14 +156,7 @@ angular.module('bhima.controllers')
       session.tranches_ipr = tranches;
       session.model.employees.data.forEach(function (emp) {
         new employeeRow(emp)
-        .then(function (row) {
-          row.emp.basic_salary = 
-            exchange.convertir(
-              row.emp.basic_salary,
-              session.model.enterprise.data[0].currency_id,
-              session.selectedItem.currency_id,
-              util.sqlDate(new Date())
-            );     
+        .then(function (row) {      
           session.rows.push(row);
         });        
       });
@@ -170,13 +164,21 @@ angular.module('bhima.controllers')
 
     function employeeRow (emp) {
       var self = this;
-      var def = $q.defer();
+      var def = $q.defer();      
       getHollyDayCount(emp)
       .then(function (hl){
         self.hollyday = hl;
         self.off_day = session.data.off_day;
         self.emp = emp;
+        self.emp.basic_salary = 
+        exchange.convertir(
+          self.emp.basic_salary,
+          session.model.enterprise.data[0].currency_id,
+          session.selectedItem.currency_id,
+          util.sqlDate(new Date())
+        );
         self.working_day = session.data.max_day - (hl + session.data.off_day);
+        self.daily_salary = self.emp.basic_salary / session.data.max_day;
         self.ALLO = 0;
         self.TRAN = 0;
         self.SENI = 0;
@@ -184,7 +186,7 @@ angular.module('bhima.controllers')
         self.other = 0;
         self.ONEM = 0;
         self.INPP = 0;
-        self.IERE = 0;
+        self.IERE = 0;       
         self.visible = false;
         return getHousing(self);        
       })
@@ -193,16 +195,16 @@ angular.module('bhima.controllers')
         return getEmployeeINSS(self);
       })
       .then(function (employee_INSS) {
-        self.INS1 = employee_INSS;
+        self.INS1 = employee_INSS;        
         return getIPR(self);        
       })
       .then(function (IPR){
-        console.log('notre ipr est : ', IPR);
-        self.IPR1 = IPR;
+        self.IPR1 = IPR;        
         return getEnterpriseINSS(self);        
       })
       .then(function (enterprise_INSS){
         self.INS2 = enterprise_INSS;
+        self.offdays_cost = getOffDayCost(self);
         def.resolve(self);
       });
       return def.promise;
@@ -211,19 +213,15 @@ angular.module('bhima.controllers')
     function getIPR(row) {
       var tranches = session.tranches_ipr;
 
-      var net_imposable = row.emp.basic_salary - exchange.convertir(
-        row.INS1,                                                                    
-        session.selectedItem.currency_id,
-        session.model.enterprise.data[0].currency_id,
-        util.sqlDate(new Date())
-      );
-
-      net_imposable = exchange.convertir(
-        net_imposable,
+      var net_imposable = exchange.convertir(
+        row.net_before_taxe,
         session.model.enterprise.data[0].currency_id,                                                                    
         1,  // will be the ipr currency                  
         util.sqlDate(new Date())
       );
+
+
+
       var montant_annuel = net_imposable * 12;
 
       var ind;
@@ -234,14 +232,27 @@ angular.module('bhima.controllers')
         }
       }
 
+
       if(!ind) { return 0; }
       var initial = tranches[ind].tranche_annuelle_debut;
       var taux = tranches[ind].taux / 100;
       var cumul = (tranches[ind - 1]) ? tranches[ind - 1].cumul_annuel : 0;
 
-      var value = (((montant_annuel - initial) * taux) + cumul) / 12;     
+      var value = (((montant_annuel - initial) * taux) + cumul) / 12;
+
+      if(row.emp.nb_enfant > 0) {
+        value -= value * (row.emp.nb_enfant * 2) / 100;
+      }     
 
       return exchange.convertir(value, 1, session.selectedItem.currency_id, util.sqlDate(new Date()));
+    }
+
+    function getOffDayCost (row) {
+      var cost = 0;
+      session.model.offDays.data.forEach(function (offday) {
+        cost = cost + (row.daily_salary * offday.percent_pay) / 100;
+      });
+      return cost;
     }
 
     function getPPConf() {     
@@ -263,13 +274,13 @@ angular.module('bhima.controllers')
         query : {
           tables : {
             'config_rubric' : {
-              columns : ['id', 'label']
+              columns : ['label']
             },
             'config_rubric_item' : {
               columns : ['rubric_id', 'payable']
             },
             'rubric' : {
-              columns : ['abbr', 'is_percent', 'is_discount', 'value']
+              columns : ['id', 'abbr', 'is_percent', 'is_discount', 'value']
             }
           },
           join : [
@@ -287,13 +298,13 @@ angular.module('bhima.controllers')
         query : {
           tables : {
             'config_tax' : {
-              columns : ['id', 'label']
+              columns : ['label']
             },
             'config_tax_item' : {
               columns : ['tax_id', 'payable']
             },
             'tax' : {
-              columns : ['abbr', 'is_percent', 'value', 'account_id']
+              columns : ['id', 'abbr', 'is_percent', 'value', 'account_id']
             }
           },
           join : [
@@ -431,13 +442,6 @@ angular.module('bhima.controllers')
         housing = (item.is_percent) ? 
         (row.emp.basic_salary * item.value) / 100 : item.value;    
       }
-
-      housing = exchange.convertir(
-          housing,
-          session.model.enterprise.data[0].currency_id,
-          session.selectedItem.currency_id,
-          util.sqlDate(new Date())
-      );
       return $q.when(housing);      
     }
 
@@ -453,13 +457,6 @@ angular.module('bhima.controllers')
         employee_inss = (item.is_percent) ? 
         (row.emp.basic_salary * item.value) / 100 : item.value;    
       }
-
-      employee_inss = exchange.convertir(
-          employee_inss,
-          session.model.enterprise.data[0].currency_id,
-          session.selectedItem.currency_id,
-          util.sqlDate(new Date())
-      );
       return $q.when(employee_inss);      
     }
 
@@ -475,13 +472,6 @@ angular.module('bhima.controllers')
         enterprise_inss = (item.is_percent) ? 
         (row.emp.basic_salary * item.value) / 100 : item.value;    
       }
-
-      enterprise_inss = exchange.convertir(
-          enterprise_inss,
-          session.model.enterprise.data[0].currency_id,
-          session.selectedItem.currency_id,
-          util.sqlDate(new Date())
-      );
       return $q.when(enterprise_inss);      
     }
 
@@ -499,7 +489,6 @@ angular.module('bhima.controllers')
       session.data.fam_allow = 0;
       session.data.transport = 0;
       session.data.seniority = 0;
-      // session.isEmployeeSelected = selectedEmployee ? selectEmployee(selectedEmployee) : false; 
       getHollyDayCount(session.model)
       .then(getHousing);
     }
@@ -515,16 +504,61 @@ angular.module('bhima.controllers')
       session.complete = true;
     }
 
-
-    function selectEmployee (employee) {
-      session.selectedEmployee = employee; 
-      session.selectedEmployee.basic_salary = exchange.convertir(session.selectedEmployee.basic_salary, session.model.enterprise.data[0].currency_id, session.selectedItem.currency_id, util.sqlDate(new Date()));     
-      return true;
-    }
-
     function submit (list) {
       console.log('la liste', list);
+      rubric_config_list = session.model.rubric_config.data;
+      tax_config_list = session.model.tax_config.data;
+      list.forEach(function (elmt) {
+        console.log('paiement employee', elmt);
+        elmt.net_before_taxe = elmt.emp.basic_salary - elmt.INS1;
+        elmt.net_after_taxe = elmt.net_before_taxe - elmt.IPR1 - elmt.ONEM - elmt.IERE - elmt.INPP;
+        elmt.net_salary = elmt.net_after_taxe + (elmt.HOUS + elmt.TRAN + elmt.ALLO + elmt.SENI - (elmt.ADVA + (elmt.daily_salary * elmt.off_day))) + elmt.offdays_cost; 
+        var paiement = {
+          uuid : uuid(),
+          employee_id : elmt.emp.id,
+          paiement_period_id : session.pp.id,
+          currency_id : session.selectedItem.currency_id,
+          paiement_date : util.sqlDate(new Date()),
+          working_day : elmt.working_day,
+          net_before_tax : elmt.net_before_taxe,
+          net_after_tax : elmt.net_after_taxe,          
+          net_salary : elmt.net_salary
+        }
+        connect.basicPut('paiement', [paiement], ['uuid'])
+        .then(function () {
+          var records = [];
+          rubric_config_list.forEach(function (rc) {
+            var record = {
+              paiement_uuid : paiement.uuid,
+              rubric_id : rc.id,
+              value : elmt[rc.abbr]
+            }
+            records.push(record);
+          });
 
+          return connect.basicPut('rubric_paiement', records, ['id']);
+        })
+        .then(function () {
+          var records = [];
+          tax_config_list.forEach(function (tc) {
+            var record = {
+              paiement_uuid : paiement.uuid,
+              tax_id : tc.id,
+              value : elmt[tc.abbr],
+              posted : 0
+            }
+            records.push(record);
+          });
+
+          return connect.basicPut('tax_paiement', records, ['id']);
+        })
+        .catch(function () {
+          connect.basicDelete('paiement', [paiement.uuid], 'uuid')
+          .then(function () {
+            messenger.danger('Echec');
+          });
+        });
+      });
     }
 
     $scope.$watch('session.selectedItem', function (nval, oval) {
@@ -537,7 +571,15 @@ angular.module('bhima.controllers')
                 session.loading_currency_id,
                 session.selectedItem.currency_id,
                 util.sqlDate(new Date())
-              );  
+            );
+
+            row.daily_salary = 
+              exchange.convertir(
+                row.daily_salary,
+                session.loading_currency_id,
+                session.selectedItem.currency_id,
+                util.sqlDate(new Date())
+            );   
 
             row.HOUS = exchange.convertir(
               row.HOUS,
@@ -565,7 +607,68 @@ angular.module('bhima.controllers')
               session.loading_currency_id,
               session.selectedItem.currency_id,
               util.sqlDate(new Date())
-            );             
+            );
+
+            row.ALLO = exchange.convertir(
+              row.ALLO,
+              session.loading_currency_id,
+              session.selectedItem.currency_id,
+              util.sqlDate(new Date())
+            );
+
+            row.SENI = exchange.convertir(
+              row.SENI,
+              session.loading_currency_id,
+              session.selectedItem.currency_id,
+              util.sqlDate(new Date())
+            );
+
+            row.ADVA = exchange.convertir(
+              row.ADVA,
+              session.loading_currency_id,
+              session.selectedItem.currency_id,
+              util.sqlDate(new Date())
+            );
+
+            row.TRAN = exchange.convertir(
+              row.TRAN,
+              session.loading_currency_id,
+              session.selectedItem.currency_id,
+              util.sqlDate(new Date())
+            );
+
+
+            row.net_before_taxe = 
+              exchange.convertir(
+                row.net_before_taxe,
+                session.loading_currency_id,
+                session.selectedItem.currency_id,
+                util.sqlDate(new Date())
+            );
+
+            row.net_after_taxe = 
+              exchange.convertir(
+                row.net_after_taxe,
+                session.loading_currency_id,
+                session.selectedItem.currency_id,
+                util.sqlDate(new Date())
+            );
+
+            row.offdays_cost = 
+              exchange.convertir(
+                row.offdays_cost,
+                session.loading_currency_id,
+                session.selectedItem.currency_id,
+                util.sqlDate(new Date())
+            );
+
+            row.net_salary = 
+              exchange.convertir(
+                row.net_salary,
+                session.loading_currency_id,
+                session.selectedItem.currency_id,
+                util.sqlDate(new Date())
+            );
           });
         }     
     }, true);

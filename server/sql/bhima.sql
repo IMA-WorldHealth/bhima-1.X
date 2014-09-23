@@ -1321,19 +1321,32 @@ create table `config_tax_item` (
   constraint foreign key (`tax_id`) references `tax` (`id`)
 ) engine=innodb;
 
+drop table if exists `config_accounting`;
+create table `config_accounting` (
+  `id`                      int unsigned auto_increment not null,
+  `label`                   text,
+  `account_id`              int unsigned not null,
+  primary key (`id`),
+  key `account_id` (`account_id`),
+  constraint foreign key (`account_id`) references `account` (`id`)
+) engine=innodb;
+
 drop table if exists `paiement_period`;
 create table `paiement_period` (
   `id`                      int unsigned auto_increment not null,
   `config_tax_id`           int unsigned not null,
   `config_rubric_id`        int unsigned not null,
+  `config_accounting_id`    int unsigned not null,
   `label`                   text,
   `dateFrom`                date not null,
   `dateTo`                  date not null,
   primary key (`id`),
   key `config_tax_id` (`config_tax_id`),
   key `config_rubric_id` (`config_rubric_id`),
+  key `config_accounting_id` (`config_accounting_id`),
   constraint foreign key (`config_tax_id`) references `config_tax` (`id`),
-  constraint foreign key (`config_rubric_id`) references `config_rubric` (`id`)
+  constraint foreign key (`config_rubric_id`) references `config_rubric` (`id`),
+  constraint foreign key (`config_accounting_id`) references `config_accounting` (`id`)
 ) engine=innodb;
 
 drop table if exists `config_paiement_period`;
@@ -1352,15 +1365,49 @@ create table `paiement` (
   `uuid`                    char(36) not null,
   `employee_id`             int unsigned not null,
   `paiement_period_id`      int unsigned not null,
+  `currency_id`             tinyint unsigned,
   `paiement_date`           date,
   `working_day`             int unsigned not null,
+  `net_before_tax`          float default 0,
+  `net_after_tax`           float default 0,
   `net_salary`              float default 0,
   primary key (`uuid`),
   key `employee_id` (`employee_id`),
   key `paiement_period_id` (`paiement_period_id`),
+  key `currency_id` (`currency_id`),
   constraint foreign key (`employee_id`) references `employee` (`id`),
-  constraint foreign key (`paiement_period_id`) references `paiement_period` (`id`)
+  constraint foreign key (`paiement_period_id`) references `paiement_period` (`id`),
+  constraint foreign key (`currency_id`) references `currency` (`id`)
 ) engine=innodb;
+
+
+drop table if exists `rubric_paiement`;
+create table `rubric_paiement` (
+  `id`                      int unsigned auto_increment not null,
+  `paiement_uuid`           char(36) not null,
+  `rubric_id`               int unsigned not null,
+  `value`                   float default 0,
+  primary key (`id`),
+  key `paiement_uuid` (`paiement_uuid`),
+  key `rubric_id` (`rubric_id`),
+  constraint foreign key (`paiement_uuid`) references `paiement` (`uuid`),
+  constraint foreign key (`rubric_id`) references `rubric` (`id`)
+) engine=innodb;
+
+drop table if exists `tax_paiement`;
+create table `tax_paiement` (
+  `id`                      int unsigned auto_increment not null,
+  `paiement_uuid`           char(36) not null,
+  `tax_id`                  int unsigned not null,
+  `value`                   float default 0,
+  `posted`                  boolean,
+  primary key (`id`),
+  key `paiement_uuid` (`paiement_uuid`),
+  key `tax_id` (`tax_id`),
+  constraint foreign key (`paiement_uuid`) references `paiement` (`uuid`),
+  constraint foreign key (`tax_id`) references `tax` (`id`)
+) engine=innodb;
+
 
 drop table if exists `offday`;
 create table `offday` (
@@ -1385,25 +1432,25 @@ create table `hollyday` (
 
 drop table if exists `taxe_ipr`;
 create table `taxe_ipr` (
-  id                      int unsigned auto_increment not null,
-  taux                    float not null,
-  tranche_annuelle_debut  float,
-  tranche_annuelle_fin    float,
-  tranche_mensuelle_debut float,
-  tranche_mensuelle_fin   float,
-  ecart_annuel            float,
-  ecart_mensuel           float,
-  impot_annuel            float,
-  impot_mensuel           float,
-  cumul_annuel            float,
-  cumul_mensuel           float,
+  `id`                      int unsigned auto_increment not null,
+  `taux`                    float not null,
+  `tranche_annuelle_debut`  float,
+  `tranche_annuelle_fin`    float,
+  `tranche_mensuelle_debut` float,
+  `tranche_mensuelle_fin`   float,
+  `ecart_annuel`            float,
+  `ecart_mensuel`           float,
+  `impot_annuel`            float,
+  `impot_mensuel`           float,
+  `cumul_annuel`            float,
+  `cumul_mensuel`           float,
   primary key (`id`)
 ) engine=innodb;
 
 drop table if exists `donor`;
 create table `donor` (
-  id                      int unsigned auto_increment not null,
-  name                    text not null,
+  `id`                      int unsigned auto_increment not null,
+  `name`                    text not null,
   primary key (`id`)
 ) engine=innodb;
 
@@ -1416,3 +1463,7 @@ create table `donations` (
   `date`                    date,
   primary key (`uuid`)
 ) engine=innodb;
+
+
+
+
