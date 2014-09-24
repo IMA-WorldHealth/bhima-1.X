@@ -89,7 +89,8 @@
       "/journal_list/",
       "/getConsuptionDrugs/",
       "/getItemInConsumption/",
-      "/hollyday_list"
+      "/hollyday_list",
+      "/getTop10Consumption/"
     ]
   }
 }

@@ -2071,7 +2071,7 @@
 
   "STOCK_DASHBOARD"     : {
     "TITLE"             : "Tableau de bord du Stock",
-    "MOST_CONSUMED"     : "Produits les plus consommes",
+    "MOST_CONSUMED"     : "Produits les plus consommes (10 premiers)",
     "PURCHASE_ORDER"    : {
             "TITLE"     : "Commandes",
             "IN_WATING" : "Commandes en attente",

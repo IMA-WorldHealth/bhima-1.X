@@ -1083,11 +1083,12 @@ app.get('/getConsuptionDrugs/', function (req, res, next) {
   console.log(req.query.dateTo);
   console.log(req.query.dateFrom);
   var sql = "SELECT consumption.uuid,  SUM(consumption.quantity) AS quantity, consumption.date, inventory.code, inventory.text"
-          + " FROM consumption "
+          + " FROM consumption"
           + " JOIN stock ON stock.tracking_number = consumption.tracking_number"
           + " JOIN inventory ON inventory.uuid = stock.inventory_uuid"
-          + " WHERE ((consumption.date >= '"+ req.query.dateFrom +"') AND (consumption.date <= '" + req.query.dateTo+ "'))"
-          + " GROUP BY inventory.uuid";
+          + " WHERE consumption.uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss )"
+          + " AND ((consumption.date >= '"+ req.query.dateFrom +"') AND (consumption.date <= '" + req.query.dateTo+ "'))"
+          + " GROUP BY inventory.uuid ORDER BY inventory.text ASC";
 
   db.exec(sql)
   .then(function (result) {
@@ -1103,13 +1104,29 @@ app.get('/getItemInConsumption/', function (req, res, next) {
           + " FROM consumption "
           + " JOIN stock ON stock.tracking_number = consumption.tracking_number"
           + " JOIN inventory ON inventory.uuid = stock.inventory_uuid"
-          + " WHERE inventory.code = '" + req.query.code + "' AND ((consumption.date >= '"+ req.query.dateFrom +"')"
+          + " WHERE consumption.uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss )"
+          + " AND inventory.code = '" + req.query.code + "' AND ((consumption.date >= '"+ req.query.dateFrom +"')"
           + " AND (consumption.date <= '" + req.query.dateTo + "'))"
           + " GROUP BY consumption.date";
 
   db.exec(sql)
   .then(function (result) {
     console.log(result);
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getTop10Consumption/', function (req, res, next) {
+  var sql = "SELECT inventory.text, SUM(consumption.quantity) as 'quantity', inventory.uuid, stock.inventory_uuid "
+          + " FROM consumption"
+          + " JOIN stock ON stock.tracking_number = consumption.tracking_number"
+          + " JOIN inventory ON inventory.uuid = stock.inventory_uuid"
+          + " WHERE consumption.uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss )"
+          + " GROUP BY stock.inventory_uuid ORDER BY quantity DESC, inventory.text ASC LIMIT 10";
+  db.exec(sql)
+  .then(function (result) {
     res.send(result);
   })
   .catch(function (err) { next(err); })
