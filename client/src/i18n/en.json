@@ -2012,7 +2012,7 @@
 
   "STOCK_DASHBOARD"     : {
     "TITLE"             : "Stock Dashboard",
-    "MOST_CONSUMED"     : "Most consumed",
+    "MOST_CONSUMED"     : "Most consumed (top 10)",
     "PURCHASE_ORDER"    : {
             "TITLE"     : "Purchase Order",
             "IN_WATING" : "Orders in wating payment",
