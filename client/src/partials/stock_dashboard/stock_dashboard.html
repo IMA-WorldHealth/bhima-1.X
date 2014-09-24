@@ -47,29 +47,30 @@
 									<div>
 										<i class="glyphicon glyphicon-asterisk" style="color:green;"></i>
 										<a href="">
-											{{ "STOCK_DASHBOARD.PURCHASE_ORDER.PAYED" | translate }}
-											<span class="pull-right"><strong>#</strong></span>
-										</a>
-									</div>
-									<div>
-										<i class="glyphicon glyphicon-asterisk" style="color:green;"></i>
-										<a href="">
 											{{ "STOCK_DASHBOARD.PURCHASE_ORDER.IN_WATING" | translate }}
-											<span class="pull-right"><strong>#</strong></span>
+											<span class="pull-right"><strong> {{ OrdersWatingPayment[0].count }}</strong></span>
 										</a>
-									</div>
+									</div>									
 									<div>
 										<i class="glyphicon glyphicon-asterisk" style="color:green;"></i>
 										<a href="">
-											{{ "STOCK_DASHBOARD.PURCHASE_ORDER.RECEIVED" | translate }}
-											<span class="pull-right"><strong>#</strong></span>
+											{{ "STOCK_DASHBOARD.PURCHASE_ORDER.PAYED" | translate }}
+											<span class="pull-right"><strong> {{ orderpayed[0].count }}</strong></span>
 										</a>
 									</div>
 									<div>
 										<i class="glyphicon glyphicon-asterisk" style="color:green;"></i>
 										<a href="">
 											{{ "STOCK_DASHBOARD.PURCHASE_ORDER.WATING_RECEPTION" | translate }}
-											<span class="pull-right"><strong>#</strong></span>
+											<span class="pull-right"><strong>{{ InWatingReception[0].count }}</strong></span>
+										</a>
+									</div>
+									
+									<div>
+										<i class="glyphicon glyphicon-asterisk" style="color:green;"></i>
+										<a href="">
+											{{ "STOCK_DASHBOARD.PURCHASE_ORDER.RECEIVED" | translate }}
+											<span class="pull-right"><strong>{{ OrdersReceived[0].count }}</strong></span>
 										</a>
 									</div>
 								</div>

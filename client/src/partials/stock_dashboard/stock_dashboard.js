@@ -26,5 +26,44 @@ angular.module('bhima.controllers')
       $scope.consumptions = data;
     });
 
+
+    $http.get('/getPurchaseOrders/',{params : {
+          'request' : 'OrdersPayed'
+        }  
+    }).
+    success(function(data) {
+	  console.log(data);      
+      $scope.orderpayed = data;
+    });
+
+
+    $http.get('/getPurchaseOrders/',{params : {
+          'request' : 'OrdersWatingPayment'
+        }  
+    }).
+    success(function(data) {
+	  console.log(data);      
+      $scope.OrdersWatingPayment = data;
+    });
+
+    $http.get('/getPurchaseOrders/',{params : {
+          'request' : 'OrdersReceived'
+        }  
+    }).
+    success(function(data) {
+	  console.log(data);      
+      $scope.OrdersReceived = data;
+    });
+
+
+    $http.get('/getPurchaseOrders/',{params : {
+          'request' : 'InWatingReception'
+        }  
+    }).
+    success(function(data) {
+	  console.log(data);      
+      $scope.InWatingReception = data;
+    });
+
   } 
 ]);

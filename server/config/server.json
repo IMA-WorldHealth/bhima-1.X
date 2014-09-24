@@ -90,7 +90,9 @@
       "/getConsuptionDrugs/",
       "/getItemInConsumption/",
       "/hollyday_list",
-      "/getTop10Consumption/"
+      "/getTop10Consumption/",
+      "/getPurchaseOrders/"
+      
     ]
   }
 }

@@ -1080,14 +1080,13 @@ https.createServer(options, app)
 
 
 app.get('/getConsuptionDrugs/', function (req, res, next) {
-  console.log(req.query.dateTo);
-  console.log(req.query.dateFrom);
+
   var sql = "SELECT consumption.uuid,  SUM(consumption.quantity) AS quantity, consumption.date, inventory.code, inventory.text"
           + " FROM consumption"
           + " JOIN stock ON stock.tracking_number = consumption.tracking_number"
           + " JOIN inventory ON inventory.uuid = stock.inventory_uuid"
           + " WHERE consumption.uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss )"
-          + " AND ((consumption.date >= '"+ req.query.dateFrom +"') AND (consumption.date <= '" + req.query.dateTo+ "'))"
+          + " AND ((consumption.date >= '"+ req.query.dateFrom +"') AND (consumption.date <= '" + req.query.dateTo + "'))"
           + " GROUP BY inventory.uuid ORDER BY inventory.text ASC";
 
   db.exec(sql)
@@ -1133,6 +1132,25 @@ app.get('/getTop10Consumption/', function (req, res, next) {
   .done();
 });
 
+app.get('/getPurchaseOrders/', function (req, res, next) {
+  var sql;
+  if(req.query.request == 'OrdersPayed'){
+    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE paid = '1'";  
+  } else if (req.query.request == 'OrdersWatingPayment'){
+    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE paid = '0'";  
+  } else if (req.query.request == 'OrdersReceived'){
+    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE closed = '1'";  
+  } else if (req.query.request == 'InWatingReception'){
+    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE closed = '0' AND confirmed = '1'";  
+  }  
+  
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
 // temporary error handling for development!
 process.on('uncaughtException', function (err) {
   console.log('[uncaughtException]', err);
