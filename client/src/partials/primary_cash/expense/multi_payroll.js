@@ -97,6 +97,18 @@ angular.module('bhima.controllers')
       }
     };
 
+
+
+    dependencies.paiements = {
+      query : {
+        tables : {
+          'paiement' : {
+            columns : ['uuid', 'employee_id']
+          }
+        }        
+      }
+    };
+
     cache.fetch('paiement_period')
     .then(readConfig)
     .then(function () {
@@ -106,6 +118,7 @@ angular.module('bhima.controllers')
     .then(function () {
         appstate.register('project', function (project) {
           $scope.project = project;
+          dependencies.paiements.query.where = ['paiement.paiement_period_id=' + session.pp.id];
           validate.process(dependencies)
           .then(init, function (err) {
              $translate('PRIMARY_CASH.EXPENSE.LOADING_ERROR')
@@ -132,7 +145,6 @@ angular.module('bhima.controllers')
       return $q.when();
     }
 
-
     function reconfigure() {
       cache.remove('paiement_period');
       session.pp = null;
@@ -146,19 +158,42 @@ angular.module('bhima.controllers')
       getPPConf()
       .then(getOffDayCount)
       .then(getTrancheIPR)
+      .then(function(tranches){
+         session.tranches_ipr = tranches;
+      })
       .then(getEmployees)
       .catch(function (err) {
         console.log('err', err);
       });
     }
 
-    function getEmployees (tranches) {
-      session.tranches_ipr = tranches;
-      session.model.employees.data.forEach(function (emp) {
+    function getEmployees () {
+      session.rows = [];     
+      var unpaidEmployees = getUnpaidEmployees();
+      unpaidEmployees.forEach(function (emp) {
         new employeeRow(emp)
         .then(function (row) {      
           session.rows.push(row);
         });        
+      });
+    }
+
+    function getUnpaidEmployees () {
+      return session.model.employees.data.filter(function (emp) {
+        var pass = session.model.paiements.data.some(function (paiement) {
+          return paiement.employee_id === emp.id;
+        });
+
+        return !pass;
+      });
+    }
+
+    function refreshList () {
+      return session.rows.filter(function (row) {
+        var pass = session.model.paiements.data.some(function (paiement) {
+          return paiement.employee_id === row.emp.id;
+        });
+        return !pass;
       });
     }
 
@@ -265,7 +300,7 @@ angular.module('bhima.controllers')
               columns : ['id', 'weekFrom', 'weekTo']
             }
           },
-          where : ['config_paiement_period.paiement_period_id>=' + session.pp.id]
+          where : ['config_paiement_period.paiement_period_id=' + session.pp.id]
         }
       };
 
@@ -567,16 +602,38 @@ angular.module('bhima.controllers')
           debit             : 0,
           credit            : primary.cost,
           document_uuid     : paiement.uuid
-        };        
+        };
 
-        return $q.all([
-          connect.basicPut('paiement', [paiement], ['uuid']),
-          connect.basicPut('primary_cash', [primary], ['uuid']),
-          connect.basicPut('primary_cash_item', [primary_details], ['uuid']),
-          connect.basicPut('rubric_paiement', rc_records, ['id']),
-          connect.basicPut('tax_paiement', tc_records, ['id'])
-        ]);
-      }));
+        connect.basicPut('paiement', [paiement], ['uuid'])
+        .then(function () {
+          return connect.basicPut('primary_cash', [primary], ['uuid']);
+        })
+        .then(function () {
+          return connect.basicPut('primary_cash_item', [primary_details], ['uuid']);
+        })
+        .then(function () {
+          return connect.basicPut('rubric_paiement', rc_records, ['id']);
+        })
+        .then(function () {
+          return connect.basicPut('tax_paiement', tc_records, ['id']);
+        })
+        .then(function () {
+          return connect.fetch('/journal/payroll/' + primary.uuid);
+        })
+        .catch(function (err){
+          console.log(err);
+        })
+      }))
+      .then(function () {
+        messenger.success("success");
+        validate.refresh(dependencies, ['paiements'])
+        .then(function () {
+          session.rows = refreshList();
+        });
+      })
+      .catch(function (err) {
+        messenger.danger(err);
+      });
     }
 
     $scope.$watch('session.selectedItem', function (nval, oval) {

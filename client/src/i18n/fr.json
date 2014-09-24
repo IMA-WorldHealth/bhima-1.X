@@ -1483,6 +1483,7 @@
     "EXPENSE" : {
       "PAYROLL"      : "Paie des employees",
       "MULTI_PAYROLL"   : "Payroll Multiple",
+      "PAYABLE_EMPLOYEE" : "Liste des employees payables",
       "PURCHASE"        : "Achat",
       "GENERIC_TITLE"   : "Depenses Generiques",
       "GENERIC_RECEIPT" : "Recettes Generiques",
