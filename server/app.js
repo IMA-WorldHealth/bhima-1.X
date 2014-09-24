@@ -141,20 +141,19 @@ app.get('/available_cost_center/', function (req, res, next) {
 
 app.get('/employee_list/', function (req, res, next) {
   var sql =
-
-    "SELECT " +
-    "`employee`.`id`, `employee`.`code` AS `code_employee`, `employee`.`prenom`, `employee`.`name`, " +
-    "`employee`.`postnom`, `employee`.`sexe`, `employee`.`dob`, `employee`.`date_embauche`, `employee`.`service_id`, " +
-    "`employee`.`nb_spouse`, `employee`.`nb_enfant`, `employee`.`grade_id`, `grade`.`text`, `grade`.`basic_salary`, " +
-    "`employee`.`phone`, `employee`.`email`, `employee`.`adresse`, `employee`.`bank`, `employee`.`bank_account`, `employee`.`daily_salary`, `employee`.`location_id`, " +  
-    "`grade`.`code` AS `code_grade`, `debitor`.`uuid` as `debitor_uuid`, `debitor`.`text` AS `debitor_text`,`debitor`.`group_uuid` as `debitor_group_uuid`, " + 
-    "`creditor`.`uuid` as `creditor_uuid`, `creditor`.`text` AS `creditor_text`, `creditor`.`group_uuid` as `creditor_group_uuid` " +
-    "FROM " +
-    "`employee`, `grade`, `debitor`, `creditor` " +
-    "WHERE " +
-    "`employee`.`grade_id` = `grade`.`uuid` AND " + 
-    "`employee`.`debitor_uuid` = `debitor`.`uuid` AND " +
-    "`employee`.`creditor_uuid` = `creditor`.`uuid` "
+    'SELECT ' +
+      '`employee`.`id`, `employee`.`code` AS `code_employee`, `employee`.`prenom`, `employee`.`name`, ' +
+      '`employee`.`postnom`, `employee`.`sexe`, `employee`.`dob`, `employee`.`date_embauche`, `employee`.`service_id`, ' +
+      '`employee`.`nb_spouse`, `employee`.`nb_enfant`, `employee`.`grade_id`, `grade`.`text`, `grade`.`basic_salary`, ' +
+      '`employee`.`phone`, `employee`.`email`, `employee`.`adresse`, `employee`.`bank`, `employee`.`bank_account`, `employee`.`daily_salary`, `employee`.`location_id`, ' +  
+      '`grade`.`code` AS `code_grade`, `debitor`.`uuid` as `debitor_uuid`, `debitor`.`text` AS `debitor_text`,`debitor`.`group_uuid` as `debitor_group_uuid`, ' + 
+      '`creditor`.`uuid` as `creditor_uuid`, `creditor`.`text` AS `creditor_text`, `creditor`.`group_uuid` as `creditor_group_uuid` ' +
+    'FROM ' +
+      '`employee`, `grade`, `debitor`, `creditor` ' +
+    'WHERE ' +
+      '`employee`.`grade_id` = `grade`.`uuid` AND ' + 
+      '`employee`.`debitor_uuid` = `debitor`.`uuid` AND ' +
+      '`employee`.`creditor_uuid` = `creditor`.`uuid`;';
 
 
   db.exec(sql)
@@ -168,21 +167,21 @@ app.get('/employee_list/', function (req, res, next) {
 app.get('/journal_list/', function (req, res, next) {
 
   var sql =
-    "SELECT `posting_journal`.`uuid`, `posting_journal`.`fiscal_year_id`, `posting_journal`.`period_id`, " + 
-    "`posting_journal`.`trans_id`, `posting_journal`.`trans_date`, `posting_journal`.`doc_num`, " + 
-    "`posting_journal`.`description`, `posting_journal`.`account_id`, `posting_journal`.`debit`, " +
-    "`posting_journal`.`credit`, `posting_journal`.`currency_id`, `posting_journal`.`deb_cred_uuid`, " +
-    "`posting_journal`.`deb_cred_type`, `posting_journal`.`inv_po_id`, " +
-    "`posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`currency_id`, " + 
-    "`posting_journal`.`comment`, `posting_journal`.`user_id`, `posting_journal`.`pc_id`, " + 
-    "`posting_journal`.`cc_id`, `account`.`account_number`, `user`.`first`, " +
-    "`user`.`last`, `currency`.`symbol`, `cost_center`.`text` AS `cc`, " +
-    "`profit_center`.`text` AS `pc` " +
-    "FROM `posting_journal` JOIN `account` ON `posting_journal`.`account_id`=`account`.`id` " + 
-    "JOIN `user` ON `posting_journal`.`user_id`=`user`.`id` " + 
-    "JOIN `currency` ON `posting_journal`.`currency_id`=`currency`.`id` " + 
-    "LEFT JOIN `cost_center` ON `posting_journal`.`cc_id`=`cost_center`.`id` " + 
-    "LEFT JOIN `profit_center` ON `posting_journal`.`pc_id`=`profit_center`.`id`"
+    'SELECT `posting_journal`.`uuid`, `posting_journal`.`fiscal_year_id`, `posting_journal`.`period_id`, ' + 
+    '`posting_journal`.`trans_id`, `posting_journal`.`trans_date`, `posting_journal`.`doc_num`, ' + 
+    '`posting_journal`.`description`, `posting_journal`.`account_id`, `posting_journal`.`debit`, ' +
+    '`posting_journal`.`credit`, `posting_journal`.`currency_id`, `posting_journal`.`deb_cred_uuid`, ' +
+    '`posting_journal`.`deb_cred_type`, `posting_journal`.`inv_po_id`, ' +
+    '`posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`currency_id`, ' + 
+    '`posting_journal`.`comment`, `posting_journal`.`user_id`, `posting_journal`.`pc_id`, ' + 
+    '`posting_journal`.`cc_id`, `account`.`account_number`, `user`.`first`, ' +
+    '`user`.`last`, `currency`.`symbol`, `cost_center`.`text` AS `cc`, ' +
+    '`profit_center`.`text` AS `pc` ' +
+    'FROM `posting_journal` JOIN `account` ON `posting_journal`.`account_id`=`account`.`id` ' + 
+    'JOIN `user` ON `posting_journal`.`user_id`=`user`.`id` ' + 
+    'JOIN `currency` ON `posting_journal`.`currency_id`=`currency`.`id` ' + 
+    'LEFT JOIN `cost_center` ON `posting_journal`.`cc_id`=`cost_center`.`id` ' + 
+    'LEFT JOIN `profit_center` ON `posting_journal`.`pc_id`=`profit_center`.`id`';
 
   db.exec(sql)
   .then(function (result) {
@@ -195,19 +194,19 @@ app.get('/journal_list/', function (req, res, next) {
 app.get('/hollyday_list/:pp/:employee_id', function (req, res, next) {
   var pp = JSON.parse(req.params.pp);
   var sql =
-    "SELECT `hollyday`.`id`, `hollyday`.`label`, `hollyday`.`dateFrom`, `hollyday`.`dateTo` " + 
-    "FROM `hollyday` WHERE " + 
-    "((`hollyday`.`dateFrom`>=" + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + " AND " +
-    "`hollyday`.`dateFrom`<=" + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ") OR " +
-    "(`hollyday`.`dateTo`>=" + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + " AND " +
-    "`hollyday`.`dateTo`<=" + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ") OR " + 
-    "(`hollyday`.`dateFrom`<=" + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + " AND " +
-    "`hollyday`.`dateTo`>=" + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ")) AND " +
-    "`hollyday`.`employee_id`=" + sanitize.escape(req.params.employee_id) + ";"; 
+    'SELECT `hollyday`.`id`, `hollyday`.`label`, `hollyday`.`dateFrom`, `hollyday`.`dateTo` ' + 
+    'FROM `hollyday` WHERE ' + 
+    '((`hollyday`.`dateFrom`>=' + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + ' AND ' +
+    '`hollyday`.`dateFrom`<=' + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ') OR ' +
+    '(`hollyday`.`dateTo`>=' + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + ' AND ' +
+    '`hollyday`.`dateTo`<=' + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ') OR ' + 
+    '(`hollyday`.`dateFrom`<=' + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + ' AND ' +
+    '`hollyday`.`dateTo`>=' + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ')) AND ' +
+    '`hollyday`.`employee_id`=' + sanitize.escape(req.params.employee_id) + ';'; 
 
   db.exec(sql)
   .then(function (result) {
-    console.log('le resultat employee list :::', result)
+    console.log('le resultat employee list :::', result);
     res.send(result);
   })
   .catch(function (err) { next(err); })
@@ -218,14 +217,14 @@ app.get('/hollyday_list/:pp/:employee_id', function (req, res, next) {
 app.get('/period_paiement/', function (req, res, next) {
   // var sql =
 
-  //   "SELECT " +
-  //   "`"
-  //   "FROM " +
-  //   "`employee`, `grade`, `debitor`, `creditor` " +
-  //   "WHERE " +
-  //   "`employee`.`grade_id` = `grade`.`uuid` AND " + 
-  //   "`employee`.`debitor_uuid` = `debitor`.`uuid` AND " +
-  //   "`employee`.`creditor_uuid` = `creditor`.`uuid` "
+  //   'SELECT ' +
+  //   '`'
+  //   'FROM ' +
+  //   '`employee`, `grade`, `debitor`, `creditor` ' +
+  //   'WHERE ' +
+  //   '`employee`.`grade_id` = `grade`.`uuid` AND ' + 
+  //   '`employee`.`debitor_uuid` = `debitor`.`uuid` AND ' +
+  //   '`employee`.`creditor_uuid` = `creditor`.`uuid` '
 
 
   // db.exec(sql)
@@ -647,13 +646,16 @@ app.get('/getCheckHollyday/', function (req, res, next) {
   console.log(req.query.dateFrom);
   console.log(req.query.employee_id);
   console.log(req.query.line);
-  var sql = "SELECT id, employee_id, label, dateTo, dateFrom FROM hollyday WHERE employee_id = '"+ req.query.employee_id +"'"
-          + " AND ((dateFrom >= '" + req.query.dateFrom +"') OR (dateTo >= '" + req.query.dateFrom + "') OR (dateFrom >= '"+ req.query.dateTo +"')"
-          + " OR (dateTo >= '" + req.query.dateTo + "'))"
-          + " AND ((dateFrom <= '" + req.query.dateFrom +"') OR (dateTo <= '" + req.query.dateFrom + "') OR (dateFrom <= '"+ req.query.dateTo +"')"
-          + " OR (dateTo <= '" + req.query.dateTo + "'))"
-  if (req.query.line !== ""){
-    sql += " AND id <> '" + req.query.line + "'";
+  var sql =
+    'SELECT id, employee_id, label, dateTo, dateFrom ' +
+    'FROM hollyday ' +
+    'WHERE employee_id = \''+ req.query.employee_id +'\' AND ' +
+      '((dateFrom >= \'' + req.query.dateFrom + '\') OR (dateTo >= \'' + req.query.dateFrom + '\') OR (dateFrom >= \''+ req.query.dateTo +'\') OR ' +
+      '(dateTo >= \'' + req.query.dateTo + '\'))' +
+    'AND ((dateFrom <= \'' + req.query.dateFrom + '\') OR (dateTo <= \'' + req.query.dateFrom + '\') OR (dateFrom <= \''+ req.query.dateTo + '\')' +
+    'OR (dateTo <= \'' + req.query.dateTo + '\'))';
+  if (req.query.line !== '') {
+    sql += ' AND id <> \'' + req.query.line + '\'';
   }
 
   db.exec(sql)
@@ -667,7 +669,7 @@ app.get('/getCheckHollyday/', function (req, res, next) {
 
 app.get('/getCheckOffday/', function (req, res, next) {
   console.log(req.query.date);
-  var sql ="SELECT * FROM offday WHERE date = '" + req.query.date + "'";
+  var sql = 'SELECT * FROM offday WHERE date = \'' + req.query.date + '\'';
   db.exec(sql)
   .then(function (result) {
     res.send(result);
@@ -1051,7 +1053,7 @@ app.get('/errorcodes', function (req, res, next) {
 });
 
 app.get('/getAccount6/', function (req, res, next) {
-  var sql ="SELECT id, enterprise_id, account_number, account_txt FROM account WHERE account_number LIKE '6%' AND account_type_id <> '3'";
+  var sql = 'SELECT id, enterprise_id, account_number, account_txt FROM account WHERE account_number LIKE \'6%\' AND account_type_id <> \'3\'';
   db.exec(sql)
   .then(function (result) {
     res.send(result);
@@ -1061,7 +1063,7 @@ app.get('/getAccount6/', function (req, res, next) {
 });
 
 app.get('/available_payment_period/', function (req, res, next) {
-  var sql = "SELECT p.id, p.config_tax_id, p.config_rubric_id, p.label, p.dateFrom, p.dateTo, r.label AS RUBRIC, t.label AS TAX, a.label AS ACCOUNT FROM paiement_period p, config_rubric r, config_tax t, config_accounting a WHERE p.config_tax_id = t.id AND p.config_rubric_id = r.id AND a.id=p.config_accounting_id ORDER BY p.id DESC";
+  var sql = 'SELECT p.id, p.config_tax_id, p.config_rubric_id, p.label, p.dateFrom, p.dateTo, r.label AS RUBRIC, t.label AS TAX, a.label AS ACCOUNT FROM paiement_period p, config_rubric r, config_tax t, config_accounting a WHERE p.config_tax_id = t.id AND p.config_rubric_id = r.id AND a.id=p.config_accounting_id ORDER BY p.id DESC';
   db.exec(sql)
   .then(function (result) {
     res.send(result);
@@ -1082,12 +1084,14 @@ https.createServer(options, app)
 app.get('/getConsuptionDrugs/', function (req, res, next) {
   console.log(req.query.dateTo);
   console.log(req.query.dateFrom);
-  var sql = "SELECT consumption.uuid,  SUM(consumption.quantity) AS quantity, consumption.date, inventory.code, inventory.text"
-          + " FROM consumption "
-          + " JOIN stock ON stock.tracking_number = consumption.tracking_number"
-          + " JOIN inventory ON inventory.uuid = stock.inventory_uuid"
-          + " WHERE ((consumption.date >= '"+ req.query.dateFrom +"') AND (consumption.date <= '" + req.query.dateTo+ "'))"
-          + " GROUP BY inventory.uuid";
+  var sql =
+    'SELECT consumption.uuid,  SUM(consumption.quantity) AS quantity, consumption.date, inventory.code, inventory.text ' +
+    'FROM consumption ' +
+    'JOIN stock JOIN inventory ON ' +
+      'stock.tracking_number = consumption.tracking_number AND ' +
+      'inventory.uuid = stock.inventory_uuid ' +
+    'WHERE ((consumption.date >= \''+ req.query.dateFrom + '\') AND (consumption.date <= \'' + req.query.dateTo+ '\'))'+
+    'GROUP BY inventory.uuid';
 
   db.exec(sql)
   .then(function (result) {
@@ -1099,13 +1103,16 @@ app.get('/getConsuptionDrugs/', function (req, res, next) {
 });
 
 app.get('/getItemInConsumption/', function (req, res, next) {
-  var sql = "SELECT consumption.uuid,  SUM(consumption.quantity) AS quantity, consumption.date, inventory.code, inventory.text"
-          + " FROM consumption "
-          + " JOIN stock ON stock.tracking_number = consumption.tracking_number"
-          + " JOIN inventory ON inventory.uuid = stock.inventory_uuid"
-          + " WHERE inventory.code = '" + req.query.code + "' AND ((consumption.date >= '"+ req.query.dateFrom +"')"
-          + " AND (consumption.date <= '" + req.query.dateTo + "'))"
-          + " GROUP BY consumption.date";
+  var sql =
+    'SELECT consumption.uuid,  SUM(consumption.quantity) AS quantity, consumption.date, ' +
+      'inventory.code, inventory.text ' +
+    'FROM consumption ' +
+    'JOIN stock JOIN inventory ON ' +
+      'stock.tracking_number = consumption.tracking_number AND ' +
+      'inventory ON inventory.uuid = stock.inventory_uuid ' +
+    'WHERE inventory.code = \'' + req.query.code + '\' AND ((consumption.date >= \''+ req.query.dateFrom + '\') ' +
+      'AND (consumption.date <= \'' + req.query.dateTo + '\'))' +
+    'GROUP BY consumption.date';
 
   db.exec(sql)
   .then(function (result) {
