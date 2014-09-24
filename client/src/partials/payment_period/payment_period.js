@@ -93,6 +93,8 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
     $scope.save.edit = function () {
       var record = connect.clean(session.edit);
       delete record.reference;
+      record.dateFrom = util.sqlDate(record.dateFrom);
+      record.dateTo = util.sqlDate(record.dateTo);
       connect.basicPost('paiement_period', [record], ['id'])
       .then(function () {
         messenger.success($translate.instant('PAYMENT_PERIOD.UPDATE_SUCCES')); 
@@ -108,6 +110,8 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
 
     $scope.save.new = function () {
       var record = connect.clean(session.new);
+      record.dateFrom = util.sqlDate(record.dateFrom);
+      record.dateTo = util.sqlDate(record.dateTo);
       connect.basicPut('paiement_period', [record])
       .then(function () {
         messenger.success($translate.instant('PAYMENT_PERIOD.SAVE_SUCCES'));
