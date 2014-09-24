@@ -62,6 +62,7 @@
     "EXPENSE"     : {
       "PAYROLL"               : "Payroll",
       "MULTI_PAYROLL"         : "Multiple Payroll",
+      "PAYABLE_EMPLOYEE"      : "Payable employee list",
       "GENERIC_TITLE"         : "Generic Expense",
       "GENERIC_RECEIPT"       : "Generic Receipt",
       "REFERENCE_DOCUMENT_ID" : "Reference Document ID",
