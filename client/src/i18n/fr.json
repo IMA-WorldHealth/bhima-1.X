@@ -2073,10 +2073,10 @@
     "MOST_CONSUMED"     : "Produits les plus consommes (10 premiers)",
     "PURCHASE_ORDER"    : {
             "TITLE"     : "Commandes",
-            "IN_WATING" : "Commandes en attente",
-            "PAYED"     : "Commandes payées",
-            "RECEIVED"  : "Commandes reçues",
-            "WATING_RECEPTION" : "En Attente de reception"
+            "IN_WATING" : "en attente de paiement",
+            "PAYED"     : "payées",
+            "RECEIVED"  : "reçues",
+            "WATING_RECEPTION" : "en attente de reception"
         },
     "MOVEMENT"          : {
             "TITLE"     : "Mouvement",
