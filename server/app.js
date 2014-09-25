@@ -1151,6 +1151,21 @@ app.get('/getPurchaseOrders/', function (req, res, next) {
   .catch(function (err) { next(err); })
   .done();
 });
+
+app.get('/getTop10Donor/', function (req, res, next) {
+  var sql = "SELECT donor.id, donor.name, COUNT(donations.date)"
+          + " FROM donations "
+          + " JOIN donor ON donor.id = donations.donor_id "
+          + "GROUP BY donor.id ORDER BY donations.date DESC Limit 10";
+          
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
 // temporary error handling for development!
 process.on('uncaughtException', function (err) {
   console.log('[uncaughtException]', err);

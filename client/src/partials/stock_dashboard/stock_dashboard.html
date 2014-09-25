@@ -28,7 +28,7 @@
 							            	</tr>
 							          	</thead>
 										<tbody>
-            								<tr ng-repeat="consumption in consumptions | orderBy:'username'">
+            								<tr ng-repeat="consumption in consumptions">
               									<td>{{ $index + 1 }}</td>
               									<td>{{ consumption.text }}</td>
               									<td>{{ consumption.quantity }}</td>
@@ -197,6 +197,23 @@
 									{{ "STOCK_DASHBOARD.DONATIONS.TITLE" | translate }}
 								</div>
 								<div class="panel-body">
+									<table class="table table-hover table-condensed">
+							        	<thead>
+							            	<tr>
+							              		<th>{{ "COLUMNS.NR" | translate}}</th>
+							              		<th>{{ "COLUMNS.BY" | translate}}</th>
+							              		<th>{{ "COLUMNS.QUANTITY" | translate}}</th>
+							            	</tr>
+							          	</thead>
+										<tbody>
+            								<tr ng-repeat="donor in donors">
+              									<td>{{ $index + 1 }}</td>
+              									<td>{{ donor.name }}</td>
+              									<td>{{ donor.date | date }}</td>
+								            </tr>
+          								</tbody>
+							        </table>
+
 								</div>
 							</div>
 

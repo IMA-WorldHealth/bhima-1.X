@@ -91,7 +91,8 @@
       "/getItemInConsumption/",
       "/hollyday_list",
       "/getTop10Consumption/",
-      "/getPurchaseOrders/"
+      "/getPurchaseOrders/",
+      "/getTop10Donor/"
       
     ]
   }
