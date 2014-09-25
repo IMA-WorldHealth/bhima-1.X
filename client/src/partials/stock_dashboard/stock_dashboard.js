@@ -26,6 +26,10 @@ angular.module('bhima.controllers')
       $scope.consumptions = data;
     });
 
+    $http.get('/getTop10Donor/').
+    success(function(data) {
+      $scope.donors = data;
+    });
 
     $http.get('/getPurchaseOrders/',{params : {
           'request' : 'OrdersPayed'
