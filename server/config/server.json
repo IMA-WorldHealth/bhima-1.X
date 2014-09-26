@@ -92,8 +92,11 @@
       "/hollyday_list",
       "/getTop10Consumption/",
       "/getPurchaseOrders/",
-      "/getTop10Donor/"
-      
+      "/getTop10Donor/",
+      "/getExpiredTimes/",
+      "/getConsumptionTrackingNumber/",
+      "/getStockEntry/",
+      "/getStockConsumption/"
     ]
   }
 }

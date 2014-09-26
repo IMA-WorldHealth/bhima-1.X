@@ -2090,18 +2090,20 @@
             "UNDER_MIN"      : "En dessous du minimum",
             "OVER_MAX"       : "Au dessus du maximum",
             "IN_STOCK"       : "En stock",
-            "NO_LONGER"      : "Tend vers épuisement"
+            "NO_LONGER"      : "Tend vers épuisement",
+            "OPTIMAL_LEVEL"  : "Niveau de stock optimale"
         },
     "EXPIRING_INVENTORY"     : {
             "TITLE"          : "Expirations produits",
             "EXPIRED"        : "Expirés",
-            "WITHIN_30"      : "Expiration dans 30 jours",
-            "WITHIN_90"      : "Expiration dans 90 jours",
-            "WITHIN_180"     : "Expiration dans 180 jours",
-            "WITHIN_365"     : "Expiration dans 365 jours"
+            "WITHIN_30"      : "Expiration dans moins 30 jours",
+            "WITHIN_90"      : "Expiration entre 30 et 90 jours",
+            "WITHIN_180"     : "Expiration entre 90 et 180 jours",
+            "WITHIN_365"     : "Expiration entre 180 et 365 jours",
+            "WITHIN_1YEAR"   : "Expiration dans plus d'une année"
         },
     "DONATIONS"          : {
-            "TITLE"      : "Donations"
+            "TITLE"      : "le 10 derniers dons"
         },
     "REPORTS"           : {
             "TITLE"             : "Rapports",
