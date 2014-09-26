@@ -113,6 +113,8 @@ angular.module('bhima.controllers')
       $scope.project = project;               
         validate.process(dependencies, ['enterprise', 'pcash_module', 'paiement_period', 'cashier', 'exchange_rate', 'cash_box'])
         .then(init, function (err) {
+          messenger.danger(err.message + ' ' + err.reference);
+          console.log('ko', err);
           $translate('PRIMARY_CASH.EXPENSE.LOADING_ERROR')
           .then(function (value) {
             messenger.danger(value);
@@ -131,14 +133,14 @@ angular.module('bhima.controllers')
       session.model = model; 
       cache.fetch('selectedItem')
       .then(function (selectedItem){
-        if (!selectedItem) { throw new Error("Pas de Monnaie"); }
+        if (!selectedItem) { throw new Error("Currency undefined"); }
         session.loading_currency_id = selectedItem.currency_id;
         session.selectedItem = selectedItem;
         return cache.fetch('paiement_period');
       })
       .then(function (pp) {
         if(!pp) {
-          throw new Error("Pas de paiement");
+          throw new Error("Paiement period undefined");
         }
         session.pp = pp; 
         dependencies.paiements.query.where = ['paiement.paiement_period_id=' + session.pp.id];
@@ -166,6 +168,7 @@ angular.module('bhima.controllers')
       })
       .then(getEmployees)
       .catch(function (err) {
+        messenger.danger(err.message);
         console.log('err', err);
       });
     }
@@ -398,7 +401,7 @@ angular.module('bhima.controllers')
     function getMaxDays (ppcs) {
       var nb = 0;
       ppcs.forEach(function (item) {
-        nb += (new Date(item.weekTo).getDate() - new Date(item.weekFrom).getDate());
+        nb += (new Date(item.weekTo).getDate() - new Date(item.weekFrom).getDate()) + 1;
       });
 
       return nb;
