@@ -111,7 +111,7 @@
 										<i class="glyphicon glyphicon-asterisk" style="color:green;"></i>
 										<a href="">
 											{{ "STOCK_DASHBOARD.STOCK_BY_PRODUCT.OUT_OF_STOCK" | translate }}
-											<span class="pull-right"><strong>#</strong></span>
+											<span class="pull-right"><strong>{{ stocksOut }}</strong></span>
 										</a>
 									</div>
 									<div>
@@ -131,15 +131,8 @@
 									<div>
 										<i class="glyphicon glyphicon-asterisk" style="color:green;"></i>
 										<a href="">
-											{{ "STOCK_DASHBOARD.STOCK_BY_PRODUCT.IN_STOCK" | translate }}
-											<span class="pull-right"><strong>#</strong></span>
-										</a>
-									</div>
-									<div>
-										<i class="glyphicon glyphicon-asterisk" style="color:green;"></i>
-										<a href="">
-											{{ "STOCK_DASHBOARD.STOCK_BY_PRODUCT.NO_LONGER" | translate }}
-											<span class="pull-right"><strong>#</strong></span>
+											{{ "STOCK_DASHBOARD.STOCK_BY_PRODUCT.OPTIMAL_LEVEL" | translate }}
+											<span class="pull-right"><strong>{{ stocksIn }}</strong></span>
 										</a>
 									</div>
 								</div>
@@ -153,39 +146,47 @@
 								<div class="panel-body">
 									<div>
 										<i class="glyphicon glyphicon-asterisk" style="color:green;"></i>
-										<a href="">
+										<a href="/#/reports/expiring">
 											{{ "STOCK_DASHBOARD.EXPIRING_INVENTORY.EXPIRED" | translate }}
-											<span class="pull-right"><strong>#</strong></span>
+											<span class="pull-right"><strong>{{ nbExpired }}</strong></span>
 										</a>
 									</div>
 									<div>
 										<i class="glyphicon glyphicon-asterisk" style="color:green;"></i>
-										<a href="">
+										<a href="/#/reports/expiring">
 											{{ "STOCK_DASHBOARD.EXPIRING_INVENTORY.WITHIN_30" | translate }}
-											<span class="pull-right"><strong>#</strong></span>
+											<span class="pull-right"><strong>{{ nbExpired30 }}</strong></span>
 										</a>
 									</div>
 									<div>
 										<i class="glyphicon glyphicon-asterisk" style="color:green;"></i>
-										<a href="">
+										<a href="/#/reports/expiring">
 											{{ "STOCK_DASHBOARD.EXPIRING_INVENTORY.WITHIN_90" | translate }}
-											<span class="pull-right"><strong>#</strong></span>
+											<span class="pull-right"><strong>{{ nbExpired3090 }}</strong></span>
 										</a>
 									</div>
 									<div>
 										<i class="glyphicon glyphicon-asterisk" style="color:green;"></i>
-										<a href="">
+										<a href="/#/reports/expiring">
 											{{ "STOCK_DASHBOARD.EXPIRING_INVENTORY.WITHIN_180" | translate }}
-											<span class="pull-right"><strong>#</strong></span>
+											<span class="pull-right"><strong>{{ nbExpired180 }}</strong></span>
 										</a>
 									</div>
 									<div>
 										<i class="glyphicon glyphicon-asterisk" style="color:green;"></i>
-										<a href="">
+										<a href="/#/reports/expiring">
 											{{ "STOCK_DASHBOARD.EXPIRING_INVENTORY.WITHIN_365" | translate }}
-											<span class="pull-right"><strong>#</strong></span>
+											<span class="pull-right"><strong>{{ nbExpired365 }}</strong></span>
 										</a>
 									</div>
+									<div>
+										<i class="glyphicon glyphicon-asterisk" style="color:green;"></i>
+										<a href="/#/reports/expiring">
+											{{ "STOCK_DASHBOARD.EXPIRING_INVENTORY.WITHIN_1YEAR" | translate }}
+											<span class="pull-right"><strong>{{ nbExpired1 }}</strong></span>
+										</a>
+									</div>
+
 								</div>
 							</div>
 						</div>
@@ -202,7 +203,7 @@
 							            	<tr>
 							              		<th>{{ "COLUMNS.NR" | translate}}</th>
 							              		<th>{{ "COLUMNS.BY" | translate}}</th>
-							              		<th>{{ "COLUMNS.QUANTITY" | translate}}</th>
+							              		<th>{{ "COLUMNS.DATE" | translate}}</th>
 							            	</tr>
 							          	</thead>
 										<tbody>
