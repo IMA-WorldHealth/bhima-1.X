@@ -1232,6 +1232,87 @@ app.get('/getStockConsumption/', function (req, res, next) {
   .done();
 });
 
+app.get('/getNombreMoisStockControl/:inventory_uuid', function (req, res, next) {
+  var sql = "SELECT COUNT(DISTINCT(MONTH(c.date))) AS nb"
+          + " FROM consumption c"
+          + " JOIN stock s ON c.tracking_number=s.tracking_number "
+          + " JOIN inventory i ON i.uuid=s.inventory_uuid "
+          + " WHERE (c.date BETWEEN DATE_SUB(CURDATE(),INTERVAL 6 MONTH) AND CURDATE()) "
+          + " AND s.inventory_uuid=" + sanitize.escape(req.params.inventory_uuid);
+
+  db.exec(sql)
+  .then(function (result) {
+    console.log(result);
+    res.send(result[0]);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/monthlyConsumptions/:inventory_uuid/:nb', function (req, res, next) {
+  var sql = "SELECT c.uuid, c.date, SUM(c.quantity) AS quantity, s.inventory_uuid "
+          + " FROM consumption c "
+          + " JOIN stock s ON s.tracking_number=c.tracking_number "
+          + " JOIN inventory i ON i.uuid=s.inventory_uuid "
+          + " WHERE s.inventory_uuid=" + sanitize.escape(req.params.inventory_uuid)
+          + " AND c.uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss )"
+          + " AND (c.date BETWEEN DATE_SUB(CURDATE(),INTERVAL " + sanitize.escape(req.params.inventory_uuid) + " MONTH) AND CURDATE())"
+          + " GROUP BY i.uuid";
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getDelaiLivraison/:id', function (req, res, next) {
+  var sql = "SELECT ROUND(AVG(CEIL(DATEDIFF(s.entry_date,p.purchase_date)/30))) AS dl"
+          + " FROM purchase p"
+          + " JOIN stock s ON p.uuid=s.purchase_order_uuid "
+          + " JOIN purchase_item z ON p.uuid=z.purchase_uuid "
+          + " JOIN inventory i ON s.inventory_uuid=i.uuid "
+          + " WHERE z.inventory_uuid=s.inventory_uuid "
+          + " AND s.inventory_uuid=" + sanitize.escape(req.params.id);
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result[0]);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getCommandes/:id', function (req, res, next) {
+  var sql = "SELECT p.purchase_date AS date_commande"
+          + " FROM purchase p"
+          + " JOIN purchase_item z ON p.uuid=z.purchase_uuid "
+          + " JOIN inventory i ON z.inventory_uuid=i.uuid "
+          + " WHERE z.inventory_uuid=" + sanitize.escape(req.params.id);
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getMonthsBeforeExpiration/:id', function (req, res, next) {
+  var sql = "SELECT s.tracking_number, s.lot_number, FLOOR(DATEDIFF(s.expiration_date,CURDATE())/30) AS months_before_expiration"
+          + " FROM stock s"
+          + " JOIN inventory i ON s.inventory_uuid=i.uuid "
+          + " WHERE s.inventory_uuid=" + sanitize.escape(req.params.id);
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
 // temporary error handling for development!
 process.on('uncaughtException', function (err) {
   console.log('[uncaughtException]', err);
