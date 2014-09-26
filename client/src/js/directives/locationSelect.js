@@ -33,8 +33,7 @@ angular.module('bhima.directives')
           label : 'LOCATION.SECTOR',
           column : 'name',
           id : 'sector'
-        },
-        province : {
+        }, province : {
           dependency : 'country',
           label : 'LOCATION.PROVINCE',
           column : 'name',
@@ -47,8 +46,9 @@ angular.module('bhima.directives')
           id : 'country'
         }
       };
-
       var locationStore = namespace.locationStore = {};
+
+      
 
       appstate.register('project', settup);
 
@@ -69,15 +69,16 @@ angular.module('bhima.directives')
         return connect.fetch('/location/' + villageUuid);
       }
 
-      function initialiseLocation(defaultLocation) {  
+      function initialiseLocation(defaultLocation) {
         defaultLocation = defaultLocation[0];
         
+
         // Populate initial values (enterprise default)
         Object.keys(locationConfig).forEach(function (key) {
           locationStore[key] = {model : {}, value : {}};
-          // new API caused the following change:
-          // locationStore[key].value = defaultLocation[formatKeyId(key)];
-          // locationStore[key].value = defaultLocation[formatKeyId(key)];
+          // modelMap.push(locationStore[key].value);
+          locationStore[key].value = defaultLocation[formatKeyId(key)];
+
         });
 
         // Initial request, update config with no dependency
