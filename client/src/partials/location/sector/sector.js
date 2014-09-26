@@ -23,8 +23,6 @@ angular.module('bhima.controllers')
       query : '/sector/'
     };
 
-    //fonction
-
     function manageSector(model) {
       angular.extend($scope, model);
     }
