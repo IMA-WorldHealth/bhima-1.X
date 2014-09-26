@@ -66,7 +66,7 @@ angular.module('bhima.directives')
       }
 
       function fetchInitialLocation(villageUuid) {
-        return connect.fetch('/location/village/' + villageUuid);
+        return connect.fetch('/location/' + villageUuid);
       }
 
       function initialiseLocation(defaultLocation) {  

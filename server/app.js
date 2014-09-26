@@ -76,6 +76,27 @@ app.get('/', function (req, res, next) {
   res.sendfile(cfg.rootFile);
 });
 
+/* this is required for location select */
+app.get('/location/:villageId?', function (req, res, next) {
+  var specifyVillage = req.params.villageId ? ' AND `village`.`uuid`=\'' + req.params.villageId + '\'' : '';
+
+  var sql =
+    'SELECT `village`.`uuid` as `uuid`, village.uuid as village_uuid, `village`.`name` as `village`, ' +
+      '`sector`.`name` as `sector`, sector.uuid as sector_uuid, `province`.`name` as `province`, province.uuid as province_uuid, ' +
+      '`country`.`country_en` as `country`, country.uuid as country_uuid ' +
+    'FROM `village`, `sector`, `province`, `country` ' +
+    'WHERE village.sector_uuid = sector.uuid AND ' +
+      'sector.province_uuid = province.uuid AND ' +
+      'province.country_uuid=country.uuid ' + specifyVillage + ';';
+
+  db.exec(sql)
+  .then(function (rows) {
+    res.send(rows);
+  })
+  .catch(next)
+  .done();
+});
+
 app.post('/purchase', function (req, res, next) {
   createPurchase.run(req.session.user_id, req.body)
   .then(function (id) {
@@ -84,7 +105,6 @@ app.post('/purchase', function (req, res, next) {
   .catch(next)
   .done();
 });
-
 
 app.post('/sale/', function (req, res, next) {
 
@@ -668,26 +688,6 @@ app.get('/getCheckOffday/', function (req, res, next) {
     res.send(result);
   })
   .catch(function (err) { next(err); })
-  .done();
-});
-
-app.get('/location/:villageId?', function (req, res, next) {
-  var specifyVillage = req.params.villageId ? ' AND `village`.`uuid`=\'' + req.params.villageId + '\'' : '';
-
-  var sql =
-    'SELECT `village`.`uuid` as `uuid`, village.uuid as village_uuid, `village`.`name` as `village`, ' +
-      '`sector`.`name` as `sector`, sector.uuid as sector_uuid, `province`.`name` as `province`, province.uuid as province_uuid, ' +
-      '`country`.`country_en` as `country`, country.uuid as country_uuid ' +
-    'FROM `village`, `sector`, `province`, `country` ' +
-    'WHERE village.sector_uuid = sector.uuid AND ' +
-      'sector.province_uuid = province.uuid AND ' +
-      'province.country_uuid=country.uuid ' + specifyVillage + ';';
-
-  db.exec(sql)
-  .then(function (rows) {
-    res.send(rows);
-  })
-  .catch(next)
   .done();
 });
 
