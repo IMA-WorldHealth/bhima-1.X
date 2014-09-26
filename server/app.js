@@ -207,7 +207,6 @@ app.get('/hollyday_list/:pp/:employee_id', function (req, res, next) {
 
   db.exec(sql)
   .then(function (result) {
-    console.log('le resultat employee list :::', result)
     res.send(result);
   })
   .catch(function (err) { next(err); })
@@ -643,10 +642,6 @@ app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', functio
 });
 
 app.get('/getCheckHollyday/', function (req, res, next) {
-  console.log(req.query.dateTo);
-  console.log(req.query.dateFrom);
-  console.log(req.query.employee_id);
-  console.log(req.query.line);
   var sql = "SELECT id, employee_id, label, dateTo, dateFrom FROM hollyday WHERE employee_id = '"+ req.query.employee_id +"'"
           + " AND ((dateFrom >= '" + req.query.dateFrom +"') OR (dateTo >= '" + req.query.dateFrom + "') OR (dateFrom >= '"+ req.query.dateTo +"')"
           + " OR (dateTo >= '" + req.query.dateTo + "'))"
@@ -658,7 +653,6 @@ app.get('/getCheckHollyday/', function (req, res, next) {
 
   db.exec(sql)
   .then(function (result) {
-    console.log(result);
     res.send(result);
   })
   .catch(function (err) { next(err); })
@@ -666,7 +660,6 @@ app.get('/getCheckHollyday/', function (req, res, next) {
 });
 
 app.get('/getCheckOffday/', function (req, res, next) {
-  console.log(req.query.date);
   var sql ="SELECT * FROM offday WHERE date = '" + req.query.date + "'";
   db.exec(sql)
   .then(function (result) {
@@ -1110,7 +1103,6 @@ app.get('/getItemInConsumption/', function (req, res, next) {
 
   db.exec(sql)
   .then(function (result) {
-    console.log(result);
     res.send(result);
   })
   .catch(function (err) { next(err); })

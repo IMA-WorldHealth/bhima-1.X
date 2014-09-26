@@ -17,7 +17,9 @@ angular.module('bhima.controllers')
   'uuid',
   function ($scope, $routeParams, $translate, $http, messenger, validate, appstate, connect, $location, util, Appcache, exchange, $q, ipr, uuid) {
     var dependencies = {},
-        cache = new Appcache('payroll'), session = $scope.session = {configured : false, complete : false, data : {}, rows : []};
+        cache = new Appcache('payroll'),
+        session = $scope.session = {configured : false, complete : false, data : {}, selectedItem : {}, rows : []};
+
     session.cashbox = $routeParams.cashbox;
 
     dependencies.cash_box = {
@@ -97,8 +99,6 @@ angular.module('bhima.controllers')
       }
     };
 
-
-
     dependencies.paiements = {
       query : {
         tables : {
@@ -109,53 +109,58 @@ angular.module('bhima.controllers')
       }
     };
 
-    cache.fetch('paiement_period')
-    .then(readConfig)
-    .then(function () {
-      return cache.fetch('selectedItem');
-    })
-    .then(load)
-    .then(function () {
-        appstate.register('project', function (project) {
-          $scope.project = project;
-          dependencies.paiements.query.where = ['paiement.paiement_period_id=' + session.pp.id];
-          validate.process(dependencies)
-          .then(init, function (err) {
-             $translate('PRIMARY_CASH.EXPENSE.LOADING_ERROR')
-              .then(function (value) {
-                messenger.danger(value);
-              }); 
-          });     
-        });
-    });   
-
-    function load (selectedItem) {
-      if (!selectedItem) { return ; }
-      session.loading_currency_id = selectedItem.currency_id;
-      session.selectedItem = selectedItem;
-      return $q.when();
-    }   
-
-    function readConfig (pp) {
-
-      if(!pp) {return;}
-      session.pp = pp;
-      session.configured = true;
-      session.complete = true;
-      return $q.when();
-    }
+    appstate.register('project', function (project) {
+      $scope.project = project;               
+        validate.process(dependencies, ['enterprise', 'pcash_module', 'paiement_period', 'cashier', 'exchange_rate', 'cash_box'])
+        .then(init, function (err) {
+          messenger.danger(err.message + ' ' + err.reference);
+          console.log('ko', err);
+          $translate('PRIMARY_CASH.EXPENSE.LOADING_ERROR')
+          .then(function (value) {
+            messenger.danger(value);
+          }); 
+        });     
+    });
 
     function reconfigure() {
       cache.remove('paiement_period');
       session.pp = null;
       session.configured = false;
       session.complete = false;
-      session.isEmployeeSelected = false;
     } 
 
     function init (model) {
-      session.model = model;      
-      getPPConf()
+      session.model = model; 
+      cache.fetch('selectedItem')
+      .then(function (selectedItem){
+        if (!selectedItem) { throw new Error("Currency undefined"); }
+        session.loading_currency_id = selectedItem.currency_id;
+        session.selectedItem = selectedItem;
+        return cache.fetch('paiement_period');
+      })
+      .then(function (pp) {
+        if(!pp) {
+          throw new Error("Paiement period undefined");
+        }
+        session.pp = pp; 
+        dependencies.paiements.query.where = ['paiement.paiement_period_id=' + session.pp.id];
+        if(dependencies.paiements) {
+          dependencies.paiements.processed = false;
+        }
+
+        if(dependencies.employees){
+          dependencies.employees.processed = false;
+        }
+        
+             
+        return validate.process(dependencies, ['employees', 'paiements']);
+      })
+      .then(function (model) {
+        session.model = model;
+        session.configured = true;
+        session.complete = true;
+        return getPPConf();
+      })
       .then(getOffDayCount)
       .then(getTrancheIPR)
       .then(function(tranches){
@@ -163,6 +168,7 @@ angular.module('bhima.controllers')
       })
       .then(getEmployees)
       .catch(function (err) {
+        messenger.danger(err.message);
         console.log('err', err);
       });
     }
@@ -174,7 +180,7 @@ angular.module('bhima.controllers')
         new employeeRow(emp)
         .then(function (row) {      
           session.rows.push(row);
-        });        
+        }); 
       });
     }
 
@@ -183,7 +189,6 @@ angular.module('bhima.controllers')
         var pass = session.model.paiements.data.some(function (paiement) {
           return paiement.employee_id === emp.id;
         });
-
         return !pass;
       });
     }
@@ -290,7 +295,7 @@ angular.module('bhima.controllers')
       return cost;
     }
 
-    function getPPConf() {     
+    function getPPConf() {
 
       dependencies.paiement_period_conf = {
         required : true,
@@ -396,7 +401,7 @@ angular.module('bhima.controllers')
     function getMaxDays (ppcs) {
       var nb = 0;
       ppcs.forEach(function (item) {
-        nb += (new Date(item.weekTo).getDate() - new Date(item.weekFrom).getDate());
+        nb += (new Date(item.weekTo).getDate() - new Date(item.weekFrom).getDate()) + 1;
       });
 
       return nb;
@@ -405,7 +410,8 @@ angular.module('bhima.controllers')
     function getHollyDayCount (employee) {
       var defer = $q.defer();
       var som = 0;
-      var pp = session.model.paiement_period.data[0];
+      // var pp = session.model.paiement_period.data[0];
+      var pp = session.pp;
  
 
       connect.fetch('/hollyday_list/' + JSON.stringify(pp) + '/' + employee.id)
@@ -513,9 +519,13 @@ angular.module('bhima.controllers')
 
     function setCashAccount(cashAccount) {
       if (cashAccount) {
-        session.loading_currency_id = session.selectedItem.currency_id;
+        session.loading_currency_id = session.selectedItem.currency_id || session.model.enterprise.data[0].currency_id;
+        var reload = session.selectedItem.currency_id ? false : true;
         session.selectedItem = cashAccount;        
         cache.put('selectedItem', cashAccount);
+        if(reload){
+          init(session.model);
+        }
       }
     }
 
@@ -533,10 +543,13 @@ angular.module('bhima.controllers')
     }
 
     function setConfiguration (pp) {
-      cache.put('paiement_period', pp);
-      session.configured = true;
-      session.pp = pp;
-      session.complete = true;
+      if(pp){
+        cache.put('paiement_period', pp);
+        session.configured = true;
+        session.pp = pp;
+        session.complete = true;
+        init(session.model);
+      }            
     }
 
     function submit (list) {
