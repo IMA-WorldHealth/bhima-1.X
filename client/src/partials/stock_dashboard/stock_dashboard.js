@@ -254,5 +254,5 @@ angular.module('bhima.controllers')
 
     
 
-  } 
+  }
 ]);
