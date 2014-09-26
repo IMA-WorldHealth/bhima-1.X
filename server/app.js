@@ -1143,6 +1143,95 @@ app.get('/getPurchaseOrders/', function (req, res, next) {
   .catch(function (err) { next(err); })
   .done();
 });
+
+app.get('/getTop10Donor/', function (req, res, next) {
+  var sql = "SELECT donor.id, donor.name, donations.date, COUNT(date) AS 'dates' "
+          + " FROM donations JOIN donor ON donor.id = donations.donor_id"
+          + " GROUP BY donations.date, donor.id ORDER BY donations.date DESC Limit 10";
+          
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getConsumptionTrackingNumber/', function (req, res, next) {
+  var sql = "SELECT consumption.tracking_number, SUM(consumption.quantity) AS 'quantity'"
+          + " FROM consumption"
+          + " GROUP BY consumption.tracking_number";   
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getExpiredTimes/', function (req, res, next) {
+  var sql;
+  if(req.query.request == 'expired'){
+    sql = "SELECT inventory.text, stock.lot_number, stock.tracking_number, stock.expiration_date, SUM(stock.quantity) AS quantity"
+        + " FROM stock"
+        + " JOIN inventory ON inventory.uuid = stock.inventory_uuid"
+        + " WHERE stock.expiration_date <= CURDATE()"
+        + " GROUP BY stock.tracking_number";  
+
+  } else if(req.query.request == 'expiredDellai'){
+    sql = "SELECT inventory.text, stock.lot_number, stock.tracking_number, stock.expiration_date,"
+        + " SUM(stock.quantity) AS quantity"
+        + " FROM stock JOIN inventory ON inventory.uuid = stock.inventory_uuid"
+        + " WHERE ((DATEDIFF(stock.expiration_date ,CURDATE()) > '" + req.query.inf + "')"
+        + " AND ((DATEDIFF(stock.expiration_date ,CURDATE()) <  '" + req.query.sup + "')))"
+        + " GROUP BY stock.tracking_number";  
+  } else if(req.query.request == 'oneYear'){
+    sql = "SELECT inventory.text, stock.lot_number, stock.tracking_number, stock.expiration_date,"
+        + " SUM(stock.quantity) AS quantity"
+        + " FROM stock JOIN inventory ON inventory.uuid = stock.inventory_uuid"
+        + " WHERE (DATEDIFF(stock.expiration_date ,CURDATE()) > '365')"
+        + " GROUP BY stock.tracking_number";  
+  }     
+    
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+//     TOTAL DES ENTREES PAR RAPPORT A UN INVENTORY UUID
+app.get('/getStockEntry/', function (req, res, next) {
+  var sql = "SELECT stock.inventory_uuid, stock.entry_date, stock.tracking_number, SUM(stock.quantity) AS 'quantity', inventory.text"
+          + " FROM stock"
+          + " JOIN inventory ON inventory.uuid = stock.inventory_uuid"
+          + " GROUP BY stock.inventory_uuid";
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+//     TOTAL DES CONSOMMATIONS PAR RAPPORT A UN INVENTORY UUID
+app.get('/getStockConsumption/', function (req, res, next) {
+  var sql = "SELECT inventory.text, SUM(consumption.quantity) AS 'quantity', inventory.uuid, stock.inventory_uuid"
+          + " FROM consumption RIGHT JOIN stock ON stock.tracking_number = consumption.tracking_number"
+          + " JOIN inventory ON inventory.uuid = stock.inventory_uuid "
+          + " GROUP BY stock.inventory_uuid";
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
 // temporary error handling for development!
 process.on('uncaughtException', function (err) {
   console.log('[uncaughtException]', err);
