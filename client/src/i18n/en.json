@@ -2029,20 +2029,22 @@
             "TITLE"          : "Stock by product",
             "OUT_OF_STOCK"   : "Out of stock",
             "UNDER_MIN"      : "Under minimum",
-            "OVER_MAX"       : "Over minimum",
+            "OVER_MAX"       : "Over maximum",
             "IN_STOCK"       : "In stock",
-            "NO_LONGER"      : "No longer in stock"
+            "NO_LONGER"      : "No longer in stock",
+            "OPTIMAL_LEVEL"  : "Optimal level of stock"
         },
     "EXPIRING_INVENTORY"     : {
             "TITLE"          : "Expiring Inventory",
             "EXPIRED"        : "Expired",
             "WITHIN_30"      : "Expiring within 30 days",
-            "WITHIN_90"      : "Expiring within 90 days",
-            "WITHIN_180"     : "Expiring within 180 days",
-            "WITHIN_365"     : "Expiring within 365 days"
+            "WITHIN_90"      : "Expiring between 30 and 90 days",
+            "WITHIN_180"     : "Expiring between 90 and 180 days",
+            "WITHIN_365"     : "Expiring between 180 and 365 days",
+            "WITHIN_1YEAR"   : "Expiring in over a year"
         },
     "DONATIONS"          : {
-            "TITLE"      : "Donations"
+            "TITLE"      : "The last 10 Donations"
         },
     "REPORTS"           : {
             "TITLE"     : "Reports",
