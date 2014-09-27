@@ -1,16 +1,30 @@
 angular.module('bhima.controllers')
 .controller('app', [
+  'AUTH_EVENTS',
+  '$scope',
   '$location',
   '$translate',
+  'appauth',
   'appcache',
   'appstate',
   'connect',
   'validate',
-  function($location, $translate, Appcache, appstate, connect) {
+  'util',
+  function (AUTH_EVENTS, $scope, $location, $translate, appauth, Appcache, appstate, connect, util) {
 
     var moduleNamespace = 'application',
         dependencies = {},
         cache = new Appcache(moduleNamespace);
+  
+  
+    $scope.$on(AUTH_EVENTS.notAuthenticated, $location.path('/login'));
+    $scope.$on(AUTH_EVENTS.sessionTimeout, $location.path('/login'));
+
+    $scope.user = null;
+
+    $scope.setUser = function (user) {
+      $scope.user = user;
+    };
 
     dependencies.enterprise = {
       required : true,
@@ -34,7 +48,7 @@ angular.module('bhima.controllers')
           }
         },
         join : ['period.fiscal_year_id=fiscal_year.id'],
-        where : ['period.period_start<=' + mysqlDate(), 'AND', 'period.period_stop>=' + mysqlDate()]
+        where : ['period.period_start<=' + util.sqlDate(), 'AND', 'period.period_stop>=' + util.sqlDate()]
       }
     };
 
@@ -45,7 +59,7 @@ angular.module('bhima.controllers')
             'columns' : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'rate', 'date']
           }
         },
-        'where' : ['exchange_rate.date='+mysqlDate()]
+        'where' : ['exchange_rate.date='+util.sqlDate()]
       }
     };
 
@@ -63,7 +77,7 @@ angular.module('bhima.controllers')
         'fiscal_year' : { 'columns': ['fiscal_year_txt', 'start_month', 'start_year', 'previous_fiscal_year', 'enterprise_id'] }
       },
       join : ['period.fiscal_year_id=fiscal_year.id'],
-      where : ['period.period_start<=' + mysqlDate(), 'AND', 'period.period_stop>=' + mysqlDate()]
+      where : ['period.period_start<=' + util.sqlDate(), 'AND', 'period.period_stop>=' + util.sqlDate()]
     };
 
     var queryExchange = {
@@ -72,7 +86,7 @@ angular.module('bhima.controllers')
           'columns' : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'rate', 'date']
         }
       },
-      // 'where' : ['exchange_rate.date='+mysqlDate()]
+      // 'where' : ['exchange_rate.date='+util.sqlDate()]
     };
 
     var queryCurrency = {
@@ -113,10 +127,6 @@ angular.module('bhima.controllers')
       });
     }
 
-    function setUser(user) {
-      appstate.set('user', user.data);
-    }
-
     //Slightly more verbose than the inline equivalent but I think it looks cleaner
     //TODO: transition this to using validate
     function fetchSessionState() {
@@ -126,7 +136,6 @@ angular.module('bhima.controllers')
       .then(setExchange)
       .then(setProject)
       .then(setCurrency)
-      .then(setUser)
       .catch(handleError)
       .finally();
     }
@@ -166,15 +175,10 @@ angular.module('bhima.controllers')
 
     function setCurrency(result) {
       if (result) { appstate.set('currency', result.data); }
-      return connect.req('/user_session');
     }
 
     function handleError(error) {
       throw error;
-    }
-
-    function mysqlDate (date) {
-      return (date || new Date()).toISOString().slice(0,10);
     }
   }
 ]);
