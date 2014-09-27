@@ -32,20 +32,20 @@ var authorize    = require('./middleware/authorization')(cfg.auth.paths),
     projects     = require('./middleware/projects')(db);
 
 // import routes
-var report            = require('./routes/report')(db, sanitize, util),
-    trialbalance      = require('./routes/trialbalance')(db, sanitize, util, uuid),
-    ledger            = require('./routes/ledger')(db, sanitize),
-    fiscal            = require('./routes/fiscal')(db),
-    synthetic         = require('./routes/synthetic')(db, sanitize),
-    journal           = require('./routes/journal')(db, sanitize, util, validate, store, uuid),
-    createSale        = require('./routes/createSale')(db, parser, journal, uuid),
-    createPurchase    = require('./routes/createPurchase')(db, parser, journal, uuid),
-    depotRouter       = require('./routes/depot')(db, sanitize, store),
-    tree              = require('./routes/tree')(db, parser),
-    drugRouter        = require('./routes/drug')(db),
-    dataRouter        = require('./routes/data')(db, parser, express.Router()),
-    serviceDist       = require('./routes/serviceDist')(db, parser, journal, uuid),
-    consumptionLoss   = require('./routes/consumptionLoss')(db, parser, journal, uuid);
+var report            = require('./controllers/report')(db, sanitize, util),
+    trialbalance      = require('./controllers/trialbalance')(db, sanitize, util, uuid),
+    ledger            = require('./controllers/ledger')(db, sanitize),
+    fiscal            = require('./controllers/fiscal')(db),
+    synthetic         = require('./controllers/synthetic')(db, sanitize),
+    journal           = require('./controllers/journal')(db, sanitize, util, validate, store, uuid),
+    createSale        = require('./controllers/createSale')(db, parser, journal, uuid),
+    createPurchase    = require('./controllers/createPurchase')(db, parser, journal, uuid),
+    depotRouter       = require('./controllers/depot')(db, sanitize, store),
+    tree              = require('./controllers/tree')(db, parser),
+    drugRouter        = require('./controllers/drug')(db),
+    //dataRouter        = require('./controllers/data')(db, parser, express.Router()),
+    serviceDist       = require('./controllers/serviceDist')(db, parser, journal, uuid),
+    consumptionLoss   = require('./controllers/consumptionLoss')(db, parser, journal, uuid);
 
 // create app
 var app = express();
@@ -72,7 +72,10 @@ app.get('/', function (req, res, next) {
 });
 
 // data routes
-app.use('/data', dataRouter);
+//app.use('/data', dataRouter);
+
+// Initialise router
+require('./config/routes', app);
 
 app.post('/purchase', function (req, res, next) {
   createPurchase.run(req.session.user_id, req.body)
