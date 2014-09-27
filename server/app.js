@@ -28,7 +28,7 @@ var parser       = require('./lib/parser')(),
 
 // import middleware
 var authorize    = require('./middleware/authorization')(cfg.auth.paths),
-    authenticate = require('./middleware/authentication')(db, sanitize),
+    authenticate = require('./middleware/authentication')(db, uuid),
     projects     = require('./middleware/projects')(db);
 
 // import routes

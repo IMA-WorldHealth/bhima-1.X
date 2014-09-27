@@ -2,12 +2,12 @@
 
 // Middleware: authenticate
 
-module.exports = function (db, sanitize) {
+module.exports = function (db, uuid) {
   'use strict';
 
   // This is the first middleware hit by any incoming
   // request, yet it will only act on AUTHENTICATION
-  // paths -- those with req.url : { '/logout' | '/login' }
+  // paths -- those with req.url : { '/logout' | '/auth/login' }
   //
   // The idea is that authentication should come before
   // authorization.  A first request, if it is trying
@@ -24,15 +24,16 @@ module.exports = function (db, sanitize) {
         usr = req.body.username,
         pwd = req.body.password;
 
-    sql = 'SELECT `user`.`id`, `user`.`logged_in` ' +
-      'FROM `user` WHERE `user`.`username`=' + sanitize.escape(usr) +
-      ' AND `user`.`password`=' + sanitize.escape(pwd);
+    sql =
+      'SELECT user.id, user.logged_in ' +
+      'FROM user WHERE user.username = ? ' +
+      'AND user.password = ?;';
 
-    db.exec(sql)
+    db.exec(sql, [usr, pwd])
     .then(function (results) {
       // TODO: client-side logic not implimented for this.
       if (results.length < 1) {
-        return res.sendfile('client/dest/error.html');
+        return res.status(401);
         //return next(new Error('Incorrect username/password combination.'));
       }
 
@@ -46,20 +47,19 @@ module.exports = function (db, sanitize) {
       }
       */
 
-      id = sanitize.escape(user.id);
-      sql = 'UPDATE `user` SET `user`.`logged_in`=1 WHERE `user`.`id` = ' + id;
+      sql = 'UPDATE user SET user.logged_in = 1 WHERE user.id = ?;';
    
-      return db.exec(sql);
+      return db.exec(sql, [user.id]);
     })
     .then(function () {
       var sql =
-        'SELECT `unit`.`url` ' +
-        'FROM `unit`, `permission`, `user` WHERE ' +
-          '`permission`.`user_id` = `user`.`id` AND ' +
-          '`permission`.`unit_id` = `unit`.`id` AND ' +
-          '`user`.`id`=' + id;
+        'SELECT unit.url ' +
+        'FROM unit, permission, user WHERE ' +
+          'permission.user_id = user.id AND ' +
+          'permission.unit_id = unit.id AND ' +
+          'user.id = ?;';
 
-      return db.exec(sql);
+      return db.exec(sql, [user.id]);
     })
     .then(function (results) {
       if (!results.length) {
@@ -74,12 +74,12 @@ module.exports = function (db, sanitize) {
       });
 
       sql =
-        'SELECT `project`.`id`, `project`.`name`, `project`.`abbr` ' +
-        'FROM `project` JOIN `project_permission` ' +
-        'ON `project`.`id` = `project_permission`.`project_id` ' +
-        'WHERE `project_permission`.`user_id` = ' + sanitize.escape(req.session.user_id) + ';';
+        'SELECT project.id, project.name, project.abbr ' +
+        'FROM project JOIN project_permission ' +
+        'ON project.id = project_permission.project_id ' +
+        'WHERE project_permission.user_id = ?;';
 
-      return db.exec(sql);
+      return db.exec(sql, [req.session.user_id]);
     })
     .then(function (results) {
 
@@ -102,11 +102,9 @@ module.exports = function (db, sanitize) {
       return next();
     }
 
-    sql =
-      'UPDATE `user` SET `user`.`logged_in`=0' +
-      ' WHERE `user`.`id`=' + sanitize.escape(req.session.user_id);
+    sql = 'UPDATE user SET user.logged_in = 0 WHERE user.id = ?;';
 
-    db.exec(sql)
+    db.exec(sql, [req.session.user_id])
     .then(function () {
       req.session.destroy(function () {
         res.clearCookie('connect.sid');
@@ -119,15 +117,13 @@ module.exports = function (db, sanitize) {
   }
 
   return function authenticate(req, res, next) {
-
     var router = {
-      '/logout' : logout,
-      '/login' : login
+      '/auth/logout' : logout,
+      '/auth/login' : login
     };
 
     var fn = router[req.url];
     return fn ? fn(req, res, next) : next();
 
   };
-
 };
