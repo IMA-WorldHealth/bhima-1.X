@@ -7,7 +7,7 @@ module.exports = function (db, uuid) {
 
   // This is the first middleware hit by any incoming
   // request, yet it will only act on AUTHENTICATION
-  // paths -- those with req.url : { '/logout' | '/auth/login' }
+  // paths -- those with req.url : { '/auth/logout' | '/auth/login' }
   //
   // The idea is that authentication should come before
   // authorization.  A first request, if it is trying
@@ -16,6 +16,14 @@ module.exports = function (db, uuid) {
   //
   // All other paths are welcome to continue on to be
   // validated by the authorization middleware.
+  
+  function protect(req, res, next) {
+    if (!req.session || !req.session.token) {
+      next(new Error('Not Logged In'));
+    } else {
+      next();
+    }
+  }
 
   function login(req, res, next) {
     // FIXME: find a better way to structure this.
@@ -31,22 +39,11 @@ module.exports = function (db, uuid) {
 
     db.exec(sql, [usr, pwd])
     .then(function (results) {
-      // TODO: client-side logic not implimented for this.
       if (results.length < 1) {
-        return res.status(401);
-        //return next(new Error('Incorrect username/password combination.'));
+        throw 'No user found';
       }
 
-      // FIXME : this is strange, but works. Ideally, you should
-      // only have one user matching the given parameters.
       user = results.pop();
-      /*
-      if (user.logged_in) {
-        // FIXME: This is temporary to reflect that we are live in an enterprise
-        //return next(new Error ('User already logged in.'));
-      }
-      */
-
       sql = 'UPDATE user SET user.logged_in = 1 WHERE user.id = ?;';
    
       return db.exec(sql, [user.id]);
@@ -66,9 +63,7 @@ module.exports = function (db, uuid) {
         throw new Error('This user has no permissions, please contact your System Administrator.');
       }
 
-      req.session.authenticated = true;
-      req.session.user_id = user.id; // TODO : Change all instances to userId
-
+      req.session.user_id = user.id;
       req.session.paths = results.map(function (row) {
         return row.url;
       });
@@ -82,16 +77,16 @@ module.exports = function (db, uuid) {
       return db.exec(sql, [req.session.user_id]);
     })
     .then(function (results) {
-
       if (results.length === 1) {
-        req.session.project_id = results[0].id;
-        res.redirect('/');
-      } else {
-        // FIXME hardcoded routes
-        return res.sendfile('client/dest/project.html');
-      }
+        req.session.project_id = results[0].id; // TODO: projects should be incorporated
+      }                                         // into login page
+      console.log('Sending 200..');
+      res.status(200).send({ accessToken : uuid(), userData : user });
     })
-    .catch(function (err) { next(err); })
+    .catch(function (err) {
+      console.log('Login Error:', err);
+      res.status(401).send(err);
+    })
     .done();
   }
 
@@ -124,6 +119,5 @@ module.exports = function (db, uuid) {
 
     var fn = router[req.url];
     return fn ? fn(req, res, next) : next();
-
   };
 };

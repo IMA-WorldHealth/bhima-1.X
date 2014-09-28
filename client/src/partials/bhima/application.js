@@ -1,6 +1,6 @@
 angular.module('bhima.controllers')
 .controller('app', [
-  'AUTH_EVENTS',
+  'EVENTS',
   '$scope',
   '$location',
   '$translate',
@@ -10,172 +10,152 @@ angular.module('bhima.controllers')
   'connect',
   'validate',
   'util',
-  function (AUTH_EVENTS, $scope, $location, $translate, appauth, Appcache, appstate, connect, util) {
+  function (EVENTS, $scope, $location, $translate, appauth, Appcache, appstate, connect, validate, util) {
+    var dependencies = {},
+        preferences = new Appcache('preferences'),
+        cache = new Appcache('application');
 
-    var moduleNamespace = 'application',
-        dependencies = {},
-        cache = new Appcache(moduleNamespace);
+    function setEnvironmentVariable(key, data) {
+      connect.fetch(data)
+      .then(function (values) {
+        appstate.set(key, values);
+      });
+    }
+
+    function loadCachedLanguage() {
+      //FIXME This could be done in util.js -
+      // extra object (in this file) vs. the clarity
+      // of doing all set up in one place
+      preferences.fetch('language')
+      .then(function (res) {
+        if (res) { $translate.use(res.current); }
+      })
+      .catch(handleError);
+    }
+
+    function loadCachedLocation() {
+      preferences.fetch('location')
+      .then(function(res) {
+        if (res) { $location.path(res.path); }
+      })
+      .catch(handleError);
+    }
+
+    // define dependencies for before login initially happens
+    function beforeLogin() {
+      var languages, enterprises, projects;
+      console.log('[Loading] Application dependencies');
+
+      languages = {
+        tables : {
+          'language' : { columns : ['id', 'name', 'key'] }
+        }
+      };
+
+      // For future use
+      enterprises = {
+        tables : {
+          'enterprise' : {
+            columns : ['id', 'name', 'abbr', 'location_id', 'currency_id', 'phone', 'email']
+          }
+        }
+      };
+
+      projects = {
+        tables : {
+          'project' : { columns : ['id', 'name', 'enterprise_id', 'abbr'] }
+        }
+      };
+
+      // set appstate variables
+      setEnvironmentVariable('languages', languages);
+      setEnvironmentVariable('enterprises', enterprises);
+      setEnvironmentVariable('projects', projects);
+
+      // load appcache variables
+      var url = $location.url();
+      if (url === '' || url === '/') { loadCachedLocation(); }
+      loadCachedLanguage();
+
+      // FIXME
+      // Set DEPRECATED appstate values until we can change them in the future.
+      appstate.register('enterprises', function (result) {
+        var defaultEnterprise = result[0];
+        if (defaultEnterprise) { appstate.set('enterprise', defaultEnterprise); }
+      });
+    }
+
+    // Fires after login
+    function afterLogin() {
+      var currencies, exchangeRate, fiscalYear;
+
+      exchangeRate = {
+        'tables' : {
+          'exchange_rate' : {
+            'columns' : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'rate', 'date']
+          }
+        },
+        'where' : ['exchange_rate.date=' + util.sqlDate()]
+      };
+
+      fiscalYear = {
+        'tables' : {
+          'period' : { 'columns' : ['id', 'period_start', 'period_stop', 'fiscal_year_id'] },
+          'fiscal_year' : { 'columns': ['fiscal_year_txt', 'start_month', 'start_year', 'previous_fiscal_year', 'enterprise_id'] }
+        },
+        join : ['period.fiscal_year_id=fiscal_year.id'],
+        where : ['period.period_start<=' + util.sqlDate(), 'AND', 'period.period_stop>=' + util.sqlDate()]
+      };
+
+      currencies = {
+        'tables' : {
+          'currency' : {
+            'columns' : ['id', 'name', 'symbol', 'min_monentary_unit']
+          }
+        }
+      };
+
+      // set appstate variables
+      // TODO : Loading exchange rates should be moved into a service
+      // where only the pages needing exchange rates load them.
+      setEnvironmentVariable('exchange_rate', exchangeRate);
+      setEnvironmentVariable('fiscalYears', fiscalYear);
+      setEnvironmentVariable('currencies', currencies);
+      
+      // FIXME
+      // set DEPRECATED appstate variables until we can change them
+      // throughout the application.
+      appstate.register('fiscalYears', function (data) {
+        var currentFiscal = data[0];
+        if (currentFiscal) {
+          currentFiscal.period_id = currentFiscal.id;
+          currentFiscal.id = currentFiscal.fiscal_year_id;
+          appstate.set('fiscal', currentFiscal);
+        }
+      });
+    }
   
-  
-    $scope.$on(AUTH_EVENTS.notAuthenticated, $location.path('/login'));
-    $scope.$on(AUTH_EVENTS.sessionTimeout, $location.path('/login'));
+    $scope.$on(EVENTS.auth.notAuthenticated, function (e) {
+      console.log('Not Authenticated Event Fired!');
+      beforeLogin();
+      $location.path('/login');
+    });
+
+    $scope.$on(EVENTS.auth.sessionTimeout, function (e) {
+      console.log('Session Timeout Event Fired!');
+      $location.path('/login');
+    });
+
+    $scope.$on(EVENTS.auth.LoginSuccess, function (e) {
+      console.log('Logged in successfully');
+      afterLogin();
+    });
 
     $scope.user = null;
 
     $scope.setUser = function (user) {
       $scope.user = user;
     };
-
-    dependencies.enterprise = {
-      required : true,
-      query : {
-        'tables' : {
-          'enterprise' : {
-            'columns' : ['id', 'name', 'phone', 'email', 'location_id', 'currency_id']
-          }
-        }
-      }
-    };
-
-    dependencies.fiscal = {
-      query : {
-        'tables' : {
-          'period' : {
-            'columns' : ['id', 'period_start', 'period_stop', 'fiscal_year_id']
-          },
-          'fiscal_year' : {
-            'columns': ['fiscal_year_txt', 'start_month', 'start_year', 'previous_fiscal_year', 'enterprise_id']
-          }
-        },
-        join : ['period.fiscal_year_id=fiscal_year.id'],
-        where : ['period.period_start<=' + util.sqlDate(), 'AND', 'period.period_stop>=' + util.sqlDate()]
-      }
-    };
-
-    dependencies.exchange = {
-      query : {
-        'tables' : {
-          'exchange_rate' : {
-            'columns' : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'rate', 'date']
-          }
-        },
-        'where' : ['exchange_rate.date='+util.sqlDate()]
-      }
-    };
-
-    var queryEnterprise = {
-      'tables' : {
-        'enterprise' : {
-          'columns' : ['id', 'name', 'phone', 'email', 'location_id', 'currency_id']
-        }
-      }
-    };
-
-    var queryFiscal = {
-      'tables' : {
-        'period' : { 'columns' : ['id', 'period_start', 'period_stop', 'fiscal_year_id'] },
-        'fiscal_year' : { 'columns': ['fiscal_year_txt', 'start_month', 'start_year', 'previous_fiscal_year', 'enterprise_id'] }
-      },
-      join : ['period.fiscal_year_id=fiscal_year.id'],
-      where : ['period.period_start<=' + util.sqlDate(), 'AND', 'period.period_stop>=' + util.sqlDate()]
-    };
-
-    var queryExchange = {
-      tables : {
-        'exchange_rate' : {
-          'columns' : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'rate', 'date']
-        }
-      },
-      // 'where' : ['exchange_rate.date='+util.sqlDate()]
-    };
-
-    var queryCurrency = {
-      'tables' : {
-        'currency' : {
-          'columns' : ['id', 'name', 'symbol', 'min_monentary_unit']
-        }
-      }
-    };
-
-    var queryProject = '/currentProject';
-
-    function settupApplication() {
-      var url = $location.url();
-
-      //TODO experimental - loading previous sessions language settings - not always ideal during development
-      loadLanguage();
-
-      //Initial page load assumed be navigating to nothing
-      if (url === '' || url === '/') { loadCachedLocation(); }
-      fetchSessionState();
-    }
-
-    settupApplication();
-
-    function loadCachedLocation() {
-      cache.fetch('location').then(function(res) {
-        if (res) { $location.path(res.path); }
-      }, handleError);
-    }
-
-    function loadLanguage() {
-
-      //FIXME This could be done in util.js - extra object (in this file) vs. the clarity of doing all set up in one place
-      var utilCache = new Appcache('util');
-      utilCache.fetch('language').then(function(res) {
-        if (res) { $translate.use(res.current); }
-      });
-    }
-
-    //Slightly more verbose than the inline equivalent but I think it looks cleaner
-    //TODO: transition this to using validate
-    function fetchSessionState() {
-      loadEnterprise()
-      .then(setEnterpriseLoadFiscal)
-      .then(setFiscalLoadExchange)
-      .then(setExchange)
-      .then(setProject)
-      .then(setCurrency)
-      .catch(handleError)
-      .finally();
-    }
-
-    function loadEnterprise() {
-      return connect.req(queryEnterprise);
-    }
-
-    function setEnterpriseLoadFiscal(result) {
-      var defaultEnterprise = result.data[0];
-      if (defaultEnterprise) { appstate.set('enterprise', defaultEnterprise); }
-
-      return connect.req(queryFiscal);
-    }
-
-    function setFiscalLoadExchange(result) {
-      var currentFiscal = result.data[0];
-
-      //TODO improve mini hack with aliasing in query etc.
-      if (currentFiscal) {
-        currentFiscal.period_id = currentFiscal.id;
-        currentFiscal.id = currentFiscal.fiscal_year_id;
-        appstate.set('fiscal', currentFiscal);
-      }
-      return connect.req(queryExchange);
-    }
-
-    function setExchange(result) {
-      if (result) { appstate.set('exchange_rate', result.data); }
-      return connect.fetch(queryProject);
-    }
-
-    function setProject(result) {
-      if (result) { appstate.set('project', result); }
-      return connect.req(queryCurrency);
-    }
-
-    function setCurrency(result) {
-      if (result) { appstate.set('currency', result.data); }
-    }
 
     function handleError(error) {
       throw error;

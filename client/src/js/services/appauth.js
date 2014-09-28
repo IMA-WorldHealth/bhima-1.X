@@ -1,26 +1,31 @@
 angular.module('bhima.services')
 .factory('appauth', [
   '$q',
-  'connect',
+  '$http',
   'appstate',
-  function ($q, connect, appstate) {
+  function ($q, $http, appstate) {
     var session = {},
         mod = {};
 
-    mod.login = function(credentials) {
-      return connect.post('/auth/login', credentials)
+    mod.login = function (credentials) {
+      var dfd = $q.defer();
+      $http.post('/auth/login', credentials)
       .then(function (res) {
         session.user = {
           token : res.data.accessToken,
           data  : res.data.userData
         };
+        console.log('SESSION.USER', session.user);
         appstate.set('user', session.user);
-        return $q(session.user);
-      });
+        dfd.resolve(session.user);
+      })
+      .catch(function (err) { dfd.reject(err); })
+      .finally();
+      return dfd.promise;
     };
 
     mod.isAuthenticated = function () {
-      return !!session.user.token;
+      return !!session.user && !!session.user.token;
     };
 
     mod.getSession = function () {
