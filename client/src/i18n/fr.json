@@ -162,30 +162,28 @@
     "CURRENCY_DEFN" : "Definition de la Monaie"
   },
 
-  "TRIAL_BALANCE"   : {
-    "TITLE"         : "Rapprochement",
-    "ERROR_TEXT"    : "Vous avez des Erreurs!",
-    "ACCOUNT"       : "Compte",
-    "BEFORE"        : "Avant",
-    "AFTER"         : "Apres",
-    "RESULTS"       : "Resultats",
-    "DEBIT"         : "Debit",
-    "SHOW"          : "Voire",
-    "HIDE"          : "Cacher",
-    "CREDIT"        : "Credit",
-    "BTN_TEXT"      : "Poster au Grand Livre",
-    "TRANSACTIONS"  : "Transactions",
-    "ERRORS"        : "Erreurs",
-    "ERROR"         : "Erreur",
-    "DESCRIPTION"   : "Description",
-    "AFFECTED_ROWS" : "Lignes",
-    "SIGNATURES" : "Signees",
-    "SUMMARY" : "Summaire",
-    "FINANCE_OFFICER" : "Chef Finance",
+  "TRIAL_BALANCE" : {
+    "TITLE"            : "Rapprochement",
+    "ERROR_TEXT"       : "Vous avez des Erreurs!",
+    "ACCOUNT"          : "Compte",
+    "BEFORE"           : "Avant",
+    "AFTER"            : "Apres",
+    "RESULTS"          : "Resultats",
+    "DEBIT"            : "Debit",
+    "SHOW"             : "Voire",
+    "HIDE"             : "Cacher",
+    "CREDIT"           : "Credit",
+    "BTN_TEXT"         : "Poster au Grand Livre",
+    "TRANSACTIONS"     : "Transactions",
+    "ERRORS"           : "Erreurs",
+    "ERROR"            : "Erreur",
+    "DESCRIPTION"      : "Description",
+    "AFFECTED_ROWS"    : "Lignes",
+    "SIGNATURES"       : "Signees",
+    "SUMMARY"          : "Summaire",
+    "FINANCE_OFFICER"  : "Chef Finance",
     "CHIEF_ACCOUNTANT" : "Chef Comptable",
-    "POST_TO_LEDGER"   : "Poster dans le grand livre",
-    "CHIEF_ACCOUNTANT" : "Chef comptable",
-    "FINANCE_OFFICER" : "Chef finance"
+    "POST_TO_LEDGER"   : "Poster dans le grand livre"
   },
 
   "ERROR"                 : {
@@ -348,7 +346,7 @@
     "LOCATION"                 : "Gestion Emplacement"
   },
 
-  "TREE"                        : {
+  "TREE" : {
     "ROOT"                      : "Racine",
     "ADMIN"                     : "Admin",
     "ENTERPRISE"                : "Entreprise",
@@ -419,8 +417,8 @@
     "PROFIT_CENTER_MGMNT"       : "Centres de profit",
     "INCOME_REPORT"             : "Rapport des Recettes",
     "EXPENSE_REPORT"            : "Rapport des Depenses",
-	"GRADE_EMPLOYERS"			: "Gestion des Grades",
-    "TAXES"                     : "Taxes",    
+    "GRADE_EMPLOYERS"           : "Gestion des Grades",
+    "TAXES"                     : "Taxes",
     "TAXE_MANAGEMENT"           : "Gestion des taxes",
     "RUBRIC_PAYROLL"            : "Gestion des rubriques",
     "OFFDAY_MANAGEMENT"         : "Gestion des jours fériés",
@@ -434,8 +432,9 @@
     "DONATION_MANAGEMENT"       : "Gestion des Dons",
     "CONFIG_ACCOUNTING"         : "Configuration des comptes",
     "PAYROLL_REPORT"            : "Rapports de paiements"
-
-},
+    "DAILY_CONSUMPTION"         : "Consommation journaliere",
+    "CONFIG_ACCOUNTING"         : "Configuration des comptes"
+  },
 
   "RUBRIC_PAYROLL"       : {
     "TITLE"              : "Rubriques Payroll",
@@ -598,7 +597,6 @@
     "LOSS"     : {
       "KEY"    : "Perte stock",
       "TITLE"  : "Perte stock",
-      "KEY"    : "Perte stock",
       "NO_DEPOT" : "Pas de depot",
       "LOSS_GENERAL_INFO" : "Sommaire",
       "SUBMIT"              : "Soumettre"
@@ -632,12 +630,11 @@
       "ITEM_IN_STOCK"     : "Article en stock"
     },
     "DONATION" : {
-        "KEY"    : "Entrer Donation",
-        "TITLE"  : "Entrer Donation"
+      "KEY" : "Entrer Donation"
     }
   },
 
-  "COLUMNS"               : {
+  "COLUMNS" : {
     "COLUMNS"             : "Colonnes",
     "PASSWORD"            : "Mot de passe",
     "ID"                  : "ID",
@@ -732,6 +729,7 @@
     "STOCK"               : "Stock",
     "VOLUME"              : "Volume",
     "WEIGHT"              : "Poids",
+    "USERNAME"            : "Nom d'utilisateur",
     "PRICE_LIST"          : "Liste de Prix",
     "TITLE"               : "Titre",
     "VALUE"               : "Valeur",
@@ -787,33 +785,31 @@
     "EMPLOYER"            : "Creer par",
     "PROFIT_CENTER"       : "Center profit",
     "MEDECINE"            : "Medicament",
-    "QTY"                 : "Quantite",
     "DOCUMENT_UUID"       : "Numero Document",
     "QTY_LOSS"            : "Quantite perdue",
-    "REFERENCE"           : "Reference",
     "BY"                  : "Par",
     "TRANSACTION_NUMBER"  : "Numero Transaction",
     "SOURCE"              : "Source",
     "TOTAL_DEBIT"         : "Debit total",
-    "TOTAL_CREDIT"        : "Credit total",
     "DATE_BILLED"         : "Date creation",
     "AMOUNT_BILLED"       : "Montant facture",
     "AMOUNT_DUE"          : "Montant a payer",
-	"NR"				  : "N°",
-	"BASIC_SALARY"	      : "Salaire de base",
-	"GRADE"				  : "Grade",
+    "NR"                  : "N°",
+    "BASIC_SALARY"        : "Salaire de base",
+    "GRADE"               : "Grade",
     "STAFF_COST"          : "Pour les employés",
     "IS_PERCENT"          : "En pourcentage",
     "OFFDAYS"             : "Jours fériés",
     "PERCENT_PAY"         : "Pourcentage de paiement",
     "EMPLOYEE_NAME"       : "Nom de l'employé",
     "DATE_FROM"           : "Date du début",
-    "DATE_TO"             : "Date de la fin" ,       
+    "DATE_TO"             : "Date de la fin" ,
     "DATE_EMBAUCHE"       : "Date embauche",
     "NB_CHILD"            : "Nombre Enfant",
     "NB_SPOUSE"           : "Nombre epoux (se)",
     "BASE_SALARY"         : "Salaire de base",
     "CREATED"             : "Cree",
+<<<<<<< HEAD
     "MEMBERS"              : "Membres",    
     "APPLIES_GLOBALLY"     : "Appliquer globalement",
     "REFERENCE_PURCHASE" : "Reference",
@@ -835,7 +831,13 @@
     "STOCK_QTE"          : "Quantité en Stock",
     "STOCK_QTE_MIN"      : "Quantité Minimum", 
     "STOCK_QTE_MAX"      : "Quantité Maximum", 
-    "STOCK_QTE_SEC"      : "Stock de securité"
+    "STOCK_QTE_SEC"      : "Stock de securité",
+    "MEMBERS"             : "Membres",
+    "APPLIES_GLOBALLY"    : "Appliquer globalement",
+    "REFERENCE_PURCHASE"  : "Reference",
+    "GIVEN_AMOUNT"        : "Montant donne",
+    "NUM"                 : "Numero",
+    "DRUGS"               : "Médicaments"
   },
 
   "REPORT"                  : {
@@ -1968,7 +1970,7 @@
     "CONFIGURATIONS" : "Les configurations"
   },
 
-   "TAXES" : {
+  "TAXES" : {
     "TITLE"        : "Gestion des taxes",
     "REGISTERED"   : "Taxe enregistrées", 
     "NEW_TAX"      : "Nouvelle Taxe", 
@@ -1982,6 +1984,20 @@
     "ALERT"        : "Le module gestion de taxes est un module qui a été conçu pour permettre l'administration des taxes existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'une taxe ainsi que la suppression.",
     "IPR"          : "Taxe IPR",
     "ADD_TRANCHE"  : "Ajouter Tranche",
+    "ADD"                 : "Ajouter une taxe",
+    "NO_TAXES"            : "Aucune taxe n'est encore enregistrée",
+    "NEW_TAX"             : "Nouvelle Taxe",
+    "REGISTERED"          : "Taxes enregistrés",
+    "SAVE_SUCCES"         : "Enregistrement avec succès",
+    "UPDATE_SUCCES"       : "Mis à jour avec succès",
+    "UPDATE"              : "Mettre à jour une taxe",
+    "CONFIRM"             : "Etes vois sure de vouloir supprimer cette taxe",
+    "DELETE_SUCCESS"      : "Suppression avec succès",
+    "ALERT"               : "Le module gestion de taxes est un module qui a été conçu pour permettre l'administration des taxes existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'une taxe ainsi que la suppression.",
+    "NOT_EMPTY"           : "ABR. ne peut être vide",
+    "NOT_SUP4"            : "Ne peut avoir plus de 4 caractères",
+    "IPR"                 : "Taxe IPR",
+    "ADD_TRANCHE"         : "Ajouter Tranche",
     "REGISTERED_TRANCHES" : "Tranches Enregistrées",
     "TAUX"                : "Taux",
     "ANNUAL_TRANCH"       : "Tranche Annuelle",
@@ -2003,7 +2019,8 @@
     "MONTH_CUMUL"         : "Cumul Mensuel",
     "NOT_EMPTY"           : "ABR. ne peut être vide",
     "NOT_SUP4"            : "Ne peut avoir plus de 4 caractères",
-    "CURRENCY"            : "Monnaie"   
+    "CURRENCY"            : "Monnaie",
+    "MONTH_CUMUL"         : "Cumul Mensuel"
   },
 
    "CONFIG_RUBRIC" : {
@@ -2161,6 +2178,11 @@
     "SUBMIT_PAID_TAX"  : "Payé la taxe",
     "CONFIRM_SUBMIT"   : "Confirmez-vous le paiement de la taxe ?",
     "NONE_PERIOD"      : "Aucune periode de paiement séléctionnée"
-  }
+  },
 
+  "AUTH" : {
+    "LOGIN" : "Bhima Login",
+    "LOGIN_ERROR" : "Erreur: Nom de utilisateur et mots de pass ne sont pas correct",
+    "LOGOUT_SUCCESS" : "Vous n'etes pas connecte"
+  }
 }

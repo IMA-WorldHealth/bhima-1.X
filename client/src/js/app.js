@@ -525,6 +525,6 @@
   bhima.config(['$translateProvider', translateConfig]);
   bhima.config(['$httpProvider', authConfig]);
   // run
-  bhima.config(['$rootScope', 'EVENTS', 'appauth', startupConfig]);
+  bhima.run(['$rootScope', 'EVENTS', 'appauth', startupConfig]);
 
 })(angular);
