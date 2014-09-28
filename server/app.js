@@ -18,9 +18,14 @@ var cfg = require('./config/server.json'),
 // import lib dependencies
 var parser       = require('./lib/parser')(),
     uuid         = require('./lib/guid'),
-    logger       = require('./lib/logger')(cfg.log, uuid),
-    db           = require('./lib/db')(cfg.db, logger, uuid),
-    sanitize     = require('./lib/sanitize'),
+    logger       = require('./lib/logger')(cfg.log, uuid);
+    //db           = require('./lib/db')(cfg.db, logger, uuid),
+
+// TODO Temporary layout for transitioning structure
+require('./lib/db').initialise(cfg, logger, uuid);
+var db = require('./lib/db');
+
+var sanitize     = require('./lib/sanitize'),
     util         = require('./lib/util'),
     validate     = require('./lib/validate')(),
     store        = require('./lib/store'),
