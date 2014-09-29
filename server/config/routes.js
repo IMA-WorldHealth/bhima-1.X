@@ -8,7 +8,7 @@ var createSale = require('./../controllers/createSale');
 
 var serviceDist = require('./../controllers/serviceDist');
 var consumptionLoss = require('./../controllers/consumptionLoss');
-
+var trialbalance = require('./../controllers/trialbalance');
 var uncategorised = require('./../controllers/uncategorised');
 /**
  * Initialise link between server paths and controller logic
@@ -31,7 +31,10 @@ exports.initialise = function (app) {
   app.post('/sale/', createSale.execute);
   app.post('/service_dist/', serviceDist.execute);
   app.post('/consumption_loss/', consumptionLoss.execute);
-  
+ 
+  app.get('/trialbalance/initialize', trialbalance.initialiseTrialBalance);
+  app.get('/trialbalance/submit/:key/', trialbalance.submitTrialBalance);
+
   // TODO These routes all belong somewhere 
   app.get('/services/', uncategorised.services);
   app.get('/available_cost_center/', uncategorised.availableCenters);
@@ -42,6 +45,7 @@ exports.initialise = function (app) {
   app.get('/currentProject', uncategorised.currentProject);
   app.get('/user_session', uncategorised.userSession);
   app.get('/pcash_transfer_summers', uncategorised.pcashTransferSummers);
+  app.get('/editsession/authenticate/:pin', uncategorised.authenticatePin);
 };
 
 //Temporary (for C + V) 
