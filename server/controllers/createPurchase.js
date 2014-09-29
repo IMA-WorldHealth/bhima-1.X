@@ -7,7 +7,7 @@ var journal = require('./journal');
 /*
  * HTTP Controllers 
 */
-exports.run = function (req, res, next) { 
+exports.execute = function (req, res, next) { 
   executePurchase(req.session.user_id, req.body)
   .then(function (id) {
     res.status(200).send({ purchaseId : id });
@@ -16,6 +16,9 @@ exports.run = function (req, res, next) {
   .done();
 };
 
+/*
+ * Utility Methods
+*/
 // TODO Server side sale and purchase order are very similar, they should
 // probably be combined
 
@@ -93,6 +96,7 @@ function writeCashItems(primaryCashId, data) {
 }
 
 function postToJournal(primaryCashId, userId) {
+  console.log('posting to journal ...');
   var dfd = q.defer();
   journal.request('indirect_purchase', primaryCashId, userId, function (err, result) {
     if (err) { return dfd.reject(err); }

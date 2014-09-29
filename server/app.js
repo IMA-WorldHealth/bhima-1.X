@@ -46,15 +46,16 @@ var report            = require('./controllers/report')(db, sanitize, util),
     ledger            = require('./controllers/ledger')(db, sanitize),
     fiscal            = require('./controllers/fiscal')(db),
     synthetic         = require('./controllers/synthetic')(db, sanitize),
-    journal           = require('./controllers/journal')(db, sanitize, util, validate, store, uuid),
-    createSale        = require('./controllers/createSale')(db, parser, journal, uuid),
+    //journal           = require('./controllers/journal')(db, sanitize, util, validate, store, uuid),
+    journal           = require('./controllers/journal'),
+    //createSale        = require('./controllers/createSale')(db, parser, journal, uuid),
     //createPurchase    = require('./controllers/createPurchase')(db, parser, journal, uuid),
     depotRouter       = require('./controllers/depot')(db, sanitize, store),
     tree              = require('./controllers/tree')(db, parser),
-    drugRouter        = require('./controllers/drug')(db),
+    drugRouter        = require('./controllers/drug')(db);
     //dataRouter        = require('./controllers/data')(db, parser, express.Router()),
-    serviceDist       = require('./controllers/serviceDist')(db, parser, journal, uuid),
-    consumptionLoss   = require('./controllers/consumptionLoss')(db, parser, journal, uuid);
+    //serviceDist       = require('./controllers/serviceDist')(db, parser, journal, uuid),
+    //consumptionLoss   = require('./controllers/consumptionLoss')(db, parser, journal, uuid);
 
 // create app
 var app = express();
@@ -95,7 +96,6 @@ app.post('/purchase', function (req, res, next) {
   .catch(next)
   .done();
 });
-*/
 
 app.post('/sale/', function (req, res, next) {
 
@@ -103,7 +103,7 @@ app.post('/sale/', function (req, res, next) {
     if (err) { return next(err); }
     res.send({saleId: ans});
   });
-});
+})
 
 app.post('/service_dist/', function (req, res, next) {
   serviceDist.execute(req.body, req.session.user_id, function (err, ans) {
@@ -118,6 +118,7 @@ app.post('/consumption_loss/', function (req, res, next) {
     res.send({dist: ans});
   });
 });
+*/
 
 app.get('/services/', function (req, res, next) {
   var sql =
