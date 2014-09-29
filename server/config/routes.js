@@ -10,7 +10,7 @@ var serviceDist = require('./../controllers/serviceDist');
 var consumptionLoss = require('./../controllers/consumptionLoss');
 var trialbalance = require('./../controllers/trialbalance');
 var journal = require('./../controllers/journal');
-
+var ledger = require('./../controllers/ledger');
 var uncategorised = require('./../controllers/uncategorised');
 
 
@@ -40,6 +40,10 @@ exports.initialise = function (app) {
   app.get('/trialbalance/submit/:key/', trialbalance.submitTrialBalance);
   
   app.get('/journal/:table/:id', journal.lookupTable);
+  
+  app.get('/ledgers/debitor/:id', ledger.compileDebtorLedger);
+  app.get('/ledgers/debitor_group/:id', ledger.compileGroupLedger);
+  app.get('/ledgers/distributableSale/:id', ledger.compileSaleLedger);
 
   // TODO These routes all belong somewhere 
   app.get('/services/', uncategorised.services);
@@ -52,7 +56,7 @@ exports.initialise = function (app) {
   app.get('/user_session', uncategorised.userSession);
   app.get('/pcash_transfer_summers', uncategorised.pcashTransferSummers);
   app.get('/editsession/authenticate/:pin', uncategorised.authenticatePin);
-
+  app.get('/max/:id/:table/:join?', uncategorised.lookupMaxTableId);
 };
 
 //Temporary (for C + V) 
