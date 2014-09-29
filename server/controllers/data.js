@@ -1,7 +1,7 @@
 var url = require('url');
 var qs = require('querystring');
-var db = require('db');
-var parser = require('parser');
+var db = require('../lib/db');
+var parser = require('../lib/parser');
 
 /* 
  * HTTP Controllers
@@ -20,7 +20,8 @@ exports.create = function create(req, res, next) {
 
 exports.read = function read(req, res, next) { 
   var query, data, sql;
-
+  
+  console.log('reading data');
   query = qs.parse(decodeURI(url.parse(req.url).query)).q;
   data = JSON.parse(query);
   sql = parser.select(data);
