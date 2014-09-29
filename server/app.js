@@ -29,12 +29,15 @@ require('./lib/db').initialise(cfg.db, logger, uuid);
 var db = require('./lib/db');
 var parser = require('./lib/parser');
 
+//require('./lib/store');
+
 var sanitize     = require('./lib/sanitize'),
     util         = require('./lib/util'),
     validate     = require('./lib/validate')(),
     store        = require('./lib/store'),
     liberror     = require('./lib/liberror')();
 
+console.log('got store', store, typeof(store));
 // import middleware
 var authorize    = require('./middleware/authorization')(cfg.auth.paths),
     authenticate = require('./middleware/authentication')(db, sanitize),
@@ -1067,7 +1070,6 @@ app.get('/inv_in_depot/:depot_uuid', function (req, res, next){
   })
   .done();
 });
-
 */
 
 app.get('/errorcodes', function (req, res, next) {
