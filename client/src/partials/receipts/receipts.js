@@ -93,7 +93,7 @@ angular.module('bhima.controllers')
     function buildCaution (model) {
       dependencies.location = {
         required: true,
-        query: '/location/' + model.caution.data[0].current_location_id
+        query: '/location/village/' + model.caution.data[0].current_location_id
       };
 
       validate.process(dependencies, ['location'])
@@ -448,7 +448,7 @@ angular.module('bhima.controllers')
         var locationId = model.supplier.data[0].location_id;
 
         dependencies.supplierLocation = {
-          query : '/location/' + locationId
+          query : '/location/village/' + locationId
         };
 
         validate.process(dependencies, ['supplierLocation']).then(initialisePurchase);
@@ -678,7 +678,7 @@ angular.module('bhima.controllers')
     function buildPatientLocation(model) {
       dependencies.location = {
         required: true,
-        query: '/location/' + model.recipient.data[0].current_location_id
+        query: '/location/village/' + model.recipient.data[0].current_location_id
       };
 
       validate.process(dependencies, ['location'])
@@ -883,7 +883,7 @@ angular.module('bhima.controllers')
     function buildCreditRecipient(model) {
       dependencies.location = {
         required: true,
-        query: '/location/' + model.credit.data[0].current_location_id
+        query: '/location/village/' + model.credit.data[0].current_location_id
       };
 
       validate.process(dependencies).then(creditInvoice);
