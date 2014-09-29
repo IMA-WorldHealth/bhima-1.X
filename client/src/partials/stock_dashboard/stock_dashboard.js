@@ -86,7 +86,7 @@ angular.module('bhima.controllers')
       //console.log(data);      
       $scope.expired = data;
       $scope.nbExpired = data.length;
-      for (item in $scope.TrackingNumbers){
+      for(item in $scope.TrackingNumbers){
         var TrackingNumber = $scope.TrackingNumbers[item];
         for(item2 in data){
           var data2 = data[item2];
@@ -110,7 +110,7 @@ angular.module('bhima.controllers')
     success(function(data) {      
       $scope.expired30 = data;
       $scope.nbExpired30 = data.length;
-      for (item in $scope.TrackingNumbers){
+      for(item in $scope.TrackingNumbers){
         var TrackingNumber = $scope.TrackingNumbers[item];
         for(item2 in data){
           var data2 = data[item2];
@@ -134,7 +134,7 @@ angular.module('bhima.controllers')
     success(function(data) {      
       $scope.expired3090 = data;
       $scope.nbExpired3090 = data.length;
-      for (item in $scope.TrackingNumbers){
+      for(item in $scope.TrackingNumbers){
         var TrackingNumber = $scope.TrackingNumbers[item];
         for(item2 in data){
           var data2 = data[item2];
@@ -158,7 +158,7 @@ angular.module('bhima.controllers')
     success(function(data) {      
       $scope.expired180 = data;
       $scope.nbExpired180 = data.length;
-      for (item in $scope.TrackingNumbers){
+      for(item in $scope.TrackingNumbers){
         var TrackingNumber = $scope.TrackingNumbers[item];
         for(item2 in data){
           var data2 = data[item2];
@@ -182,7 +182,7 @@ angular.module('bhima.controllers')
     success(function(data) {      
       $scope.expired365 = data;
       $scope.nbExpired365 = data.length;
-      for (item in $scope.TrackingNumbers){
+      for(item in $scope.TrackingNumbers){
         var TrackingNumber = $scope.TrackingNumbers[item];
         for(item2 in data){
           var data2 = data[item2];
@@ -204,7 +204,7 @@ angular.module('bhima.controllers')
     success(function(data) {      
       $scope.expired1 = data;
       $scope.nbExpired1 = data.length;
-      for (item in $scope.TrackingNumbers){
+      for(item in $scope.TrackingNumbers){
         var TrackingNumber = $scope.TrackingNumbers[item];
         for(item2 in data){
           var data2 = data[item2];
@@ -228,7 +228,7 @@ angular.module('bhima.controllers')
       var stocksOut = 0,
         stocksIn = 0;
 
-      for (item in $scope.enterStocks){
+      for(item in $scope.enterStocks){
         var stock = $scope.enterStocks[item];
         for(item2 in data){
           var data2 = data[item2],

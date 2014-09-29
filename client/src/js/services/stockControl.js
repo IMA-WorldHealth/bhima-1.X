@@ -26,7 +26,13 @@ angular.module('bhima.services')
 
 		function calculMois (models) {
 			var nb = models.nombreMois.data.nb;
+<<<<<<< HEAD
 			if(nb > 6){ nb = 6;}
+=======
+			if(nb > 6) {
+				nb = 6;
+			}
+>>>>>>> dev
 			inventory.nb = nb;
 			deff.resolve(nb);
 		}

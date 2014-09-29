@@ -46,7 +46,8 @@ var report            = require('./routes/report')(db, sanitize, util),
     locationRouter    = require('./routes/location')(db, express.Router()),
     dataRouter        = require('./routes/data')(db, parser, express.Router()),
     serviceDist       = require('./routes/serviceDist')(db, parser, journal, uuid),
-    consumptionLoss   = require('./routes/consumptionLoss')(db, parser, journal, uuid);
+    consumptionLoss   = require('./routes/consumptionLoss')(db, parser, journal, uuid),
+    donation          = require('./routes/postingDonation')(db, parser, journal, uuid);
 
 // create app
 var app = express();
@@ -125,6 +126,13 @@ app.post('/consumption_loss/', function (req, res, next) {
   consumptionLoss.execute(req.body, req.session.user_id, function (err, ans) {
     if (err) { return next(err); }
     res.send({dist: ans});
+  });
+});
+
+app.post('/posting_donation/', function (req, res, next) {
+  donation.execute(req.body, req.session.user_id, function (err, ans) {
+    if (err) { return next(err); }
+    res.send({resp: ans});
   });
 });
 
@@ -1051,6 +1059,16 @@ app.get('/errorcodes', function (req, res, next) {
 
 app.get('/getAccount6/', function (req, res, next) {
   var sql ="SELECT id, enterprise_id, account_number, account_txt FROM account WHERE account_number LIKE '6%' AND account_type_id <> '3'";
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getAccount7/', function (req, res, next) {
+  var sql ="SELECT id, enterprise_id, account_number, account_txt FROM account WHERE account_number LIKE '7%' AND account_type_id <> '3'";
   db.exec(sql)
   .then(function (result) {
     res.send(result);

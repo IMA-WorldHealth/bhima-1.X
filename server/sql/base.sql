@@ -1046,7 +1046,7 @@ INSERT INTO `account` (`id`, `account_type_id`, `enterprise_id`, `account_number
 (887, 1, 200, 68001000, 'DOTATIONS AUX AMORTISSEMENTS ET PROVISIONS', 6, 0, 0, NULL, '2014-07-10 10:13:00'),
 (888, 3, 200, 7, 'COMPTES DE PRODUITS', 0, 0, 0, NULL, '2014-07-10 10:13:00'),
 (889, 3, 200, 700, 'VENTE MEDICAMENTS', 7, 0, 0, NULL, '2014-07-10 10:13:00'),
-(890, 2, 200, 70011100, 'Antidote', 700, 0, 0, NULL, '2014-07-10 10:13:00'),
+(890, 2, 200, 70011100, 'Don Comprimes medicament', 700, 0, 0, NULL, '2014-07-10 10:13:00'),
 (891, 2, 200, 70011101, 'Tension artérielle', 700, 0, 0, NULL, '2014-07-10 10:13:00'),
 (892, 2, 200, 70011102, 'Diurétiques', 700, 0, 0, NULL, '2014-07-10 10:13:00'),
 (893, 2, 200, 70011103, 'Système cardiovasculaire', 700, 0, 0, NULL, '2014-07-10 10:13:00'),
@@ -1256,7 +1256,7 @@ INSERT INTO `account` (`id`, `account_type_id`, `enterprise_id`, `account_number
 -- Configure base inventory metadata
 INSERT INTO `inventory_unit` VALUES (1,'Act'),(2,'Pallet'),(3,'Pill'),(4,'Box'),(5,'Lot');
 INSERT INTO `inventory_type` (`id`, `text`) VALUES (1, 'Article'),(2, 'Assembly'),(3, 'Service'),(4, 'Discount');
-INSERT INTO `inventory_group` (`uuid`, `name`, `code`, `sales_account`, `cogs_account`, `stock_account`, `tax_account`) VALUES
+INSERT INTO `inventory_group` (`uuid`, `name`, `code`, `sales_account`, `cogs_account`, `stock_account`, `donation_account`) VALUES
 ('124b8a66-c0e3-47ab-8e0a-19c0019b6c43', 'Consultation', 10, 942, 1074, NULL, NULL),
 ('233e9302-8b24-4bec-87ef-76b56b1ad62f', 'Caution/Impaye', 190, 956, 1075, NULL, NULL),
 ('26a06810-c868-4edc-9720-0cb3ee20f8fa', 'Optique', 180, 962, 1076, NULL, NULL),
@@ -1276,7 +1276,7 @@ INSERT INTO `inventory_group` (`uuid`, `name`, `code`, `sales_account`, `cogs_ac
 ('b554ebf9-7a0f-4fd2-bdde-f902ebd96fee', 'Imagerie Médicale', 70, 969, 1089, 164, NULL),
 ('c13da749-a9cd-4894-b39b-be0c26919304', 'Injectable', 120, 951, 1090, 137, NULL),
 ('c673e6d2-a1fd-4bca-aa0e-92425fc099bb', 'Orl', 80, 975, 1091, NULL, NULL),
-('d66a0518-67ce-475c-b124-0bb78a65533f', 'Comprimes Medicam', 100, 954, 1092, 1065, NULL),
+('d66a0518-67ce-475c-b124-0bb78a65533f', 'Comprimes Medicam', 100, 954, 1092, 1065, 890),
 ('d9f8daaa-22de-4a33-801e-4c07317b1983', 'Externe', 150, 958, 1093, NULL, NULL),
 ('f24e7325-67a8-48f1-aeb0-b7c4c89f2884', 'Perfusion', 130, 955, 1094, NULL, NULL);
 -- Add inventory items
@@ -1798,7 +1798,7 @@ INSERT INTO `fiscal_year` VALUES (200,1,11,'Tshikaji 2014',NULL,NULL,NULL,1,2014
 
 INSERT INTO `period` VALUES (1,1,0,'2014-01-01','2014-01-01',0),(2,1,1,'2014-01-01','2014-01-31',0),(3,1,11,'2014-02-01','2014-02-28',0),(4,1,21,'2014-03-01','2014-03-31',0),(5,1,31,'2014-04-01','2014-04-30',0),(6,1,41,'2014-05-01','2014-05-31',0),(7,1,51,'2014-06-01','2014-06-30',0),(8,1,61,'2014-07-01','2014-07-31',0),(9,1,71,'2014-08-01','2014-08-31',0),(10,1,81,'2014-09-01','2014-09-30',0),(11,1,91,'2014-10-01','2014-10-31',0),(12,1,101,'2014-11-01','2014-11-30',0),(13,1,111,'2014-12-01','2014-12-31',0);
 
-INSERT INTO `transaction_type` VALUES (1,'cash'),(2,'sale'),(3,'purchase'),(4,'journal'),(5,'group_invoice'),(6,'credit_note'),(7,'caution'),(8,'pcash'),(9,'autre'),(10, 'pcash_convention'), (11, 'primary_cash'), (12, 'distribution'), (13, 'loss'), (14, 'payroll');
+INSERT INTO `transaction_type` VALUES (1,'cash'),(2,'sale'),(3,'purchase'),(4,'journal'),(5,'group_invoice'),(6,'credit_note'),(7,'caution'),(8,'pcash'),(9,'autre'),(10, 'pcash_convention'), (11, 'primary_cash'), (12, 'distribution'), (13, 'loss'), (14, 'payroll'), (15, 'donation');
 
 INSERT INTO `price_list` VALUES (200,'61dcf7f0-b4a8-4f45-8eac-cf41e56dce2b','Malade hospitalisé','Interné'),(200,'71b5b0ad-bffd-4d92-bc20-1cf961a804b8','Reduction IMA',NULL),(200,'82865bba-3800-4cfc-bf0a-8087b3463608','Riduction IMA pour hospitalise',NULL),(200,'d3728cfb-61c5-46b0-9afd-48ba807f0fe0','Convention',NULL);
 
