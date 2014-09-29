@@ -54,11 +54,11 @@ angular.module('bhima.controllers')
     };
 
     dependencies.location = {
-      query : '/location/'
+      query : '/location/villages'
     };
     
     $scope.formatLocation = function formatLocation (location) {
-      return [location.village, location.sector, location.province, location.country].join(', ');
+      return [location.name, location.sector_name, location.province_name, location.country_name].join(', ');
     };
 
     dependencies.grade = {
