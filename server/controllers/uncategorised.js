@@ -1,4 +1,8 @@
 var db = require('./../lib/db');
+var sanitize = require('./../lib/sanitize');
+
+// Route specific requirements
+var synthetic = require('./synthetic');
 
 exports.services = function (req, res, next) { 
   var sql =
@@ -213,6 +217,83 @@ exports.listInExAccounts = function (req, res, next) {
   db.exec(sql)
   .then(function (rows) {
     res.send(process(rows));
+  })
+  .catch(next)
+  .done();
+};
+
+exports.listEnterpriseAccounts = function (req, res, next) { 
+  var sql =
+    'SELECT account.id, account.account_number, account.account_txt FROM account ' +
+    'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
+      'AND account.parent <> 0 ' +
+      'AND account.cc_id IS NULL ' +
+      'AND account.account_type_id <> 3';
+
+  function process(accounts) {
+    var availablechargeAccounts = accounts.filter(function(item) {
+      return item.account_number.toString().indexOf('6') === 0;
+    });
+    return availablechargeAccounts;
+  }
+
+  db.exec(sql)
+  .then(function (rows) {
+    res.send(process(rows));
+  })
+  .catch(next)
+  .done();
+};
+
+exports.listEnterpriseProfitAccounts = function (req, res, next) { 
+  var sql =
+    'SELECT account.id, account.account_number, account.account_txt FROM account ' +
+    'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
+      'AND account.parent <> 0 ' +
+      'AND account.pc_id IS NULL ' +
+      'AND account.account_type_id <> 3';
+
+  function process(accounts) {
+    var availablechargeAccounts = accounts.filter(function(item) {
+      return item.account_number.toString().indexOf('7') === 0;
+    });
+    return availablechargeAccounts;
+  }
+
+  db.exec(sql)
+  .then(function (rows) {
+    res.send(process(rows));
+  })
+  .catch(next)
+  .done();
+};
+
+exports.costCenterCost = function (req, res, next) { 
+  var sql =
+    'SELECT `account`.`id`, `account`.`account_number`, `account`.`account_txt` FROM `account` '+
+    'WHERE `account`.`cc_id` = ' + sanitize.escape(req.params.cc_id) + 
+    ' AND `account`.`account_type_id` <> 3';
+
+  function process(accounts) {
+    if(accounts.length === 0) {return {cost : 0};}
+    var availablechargeAccounts = accounts.filter(function(item) {
+      return item.account_number.toString().indexOf('6') === 0;
+    });
+
+    var cost = availablechargeAccounts.reduce(function (x, y) {
+      return x + (y.debit - y.credit);
+
+    }, 0);
+
+    return {cost : cost};
+  }
+
+  db.exec(sql)
+  .then(function (ans) {
+    synthetic('ccc', req.params.id_project, {cc_id : req.params.cc_id, accounts : ans}, function (err, data) {
+      if (err) { return next(err); }
+      res.send(process(data));
+    });
   })
   .catch(next)
   .done();
