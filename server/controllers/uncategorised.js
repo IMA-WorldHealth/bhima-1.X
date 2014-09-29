@@ -195,3 +195,25 @@ exports.lookupMaxTableId = function (req, res, next) {
   })
   .done();
 };
+
+exports.listInExAccounts = function (req, res, next) { 
+  // var sql = 'SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = ''+req.params.id_enterprise+'''+
+  // ' AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'';
+  var sql =
+    'SELECT account.id, account.account_number, account.account_txt, parent ' +
+    'FROM account ' +
+    'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ';';
+  function process(accounts) {
+    var InExAccounts = accounts.filter(function(item) {
+      return item.account_number.toString().indexOf('6') === 0 || item.account_number.toString().indexOf('7') === 0;
+    });
+    return InExAccounts;
+  }
+
+  db.exec(sql)
+  .then(function (rows) {
+    res.send(process(rows));
+  })
+  .catch(next)
+  .done();
+};

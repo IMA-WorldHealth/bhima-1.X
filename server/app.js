@@ -432,8 +432,6 @@ app.get('/reports/:route/', function(req, res, next) {
   });
 });
 
-*/
-
 app.get('/InExAccounts/:id_enterprise/', function(req, res, next) {
   // var sql = 'SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = ''+req.params.id_enterprise+'''+
   // ' AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'';
@@ -455,6 +453,7 @@ app.get('/InExAccounts/:id_enterprise/', function(req, res, next) {
   .catch(next)
   .done();
 });
+*/
 
 app.get('/availableAccounts/:id_enterprise/', function(req, res, next) {
   var sql =
