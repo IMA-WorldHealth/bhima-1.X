@@ -706,6 +706,7 @@ app.get('/tree', function (req, res, next) {
 */
 
 
+// TODO Sync location API with Jon's recent API and new route structure 
 app.get('/location/:villageId?', function (req, res, next) {
   var specifyVillage = req.params.villageId ? ' AND `village`.`uuid`=\'' + req.params.villageId + '\'' : '';
 
@@ -727,7 +728,6 @@ app.get('/location/:villageId?', function (req, res, next) {
 });
 
 app.get('/village/', function (req, res, next) {
-  /*jshint unused : false*/
 
   var sql =
     'SELECT `village`.`uuid` AS `uuid`,  `village`.`name` AS `village`, ' +
@@ -745,7 +745,6 @@ app.get('/village/', function (req, res, next) {
 
 app.get('/sector/', function (req, res, next) {
 
-  /*jshint unused : false*/
   var sql = 'SELECT `sector`.`uuid` as `uuid`,  `sector`.`name` as `sector`, `province`.`uuid` '+
             'as `province_uuid`, `province`.`name` as `province` FROM `sector`, `province` '+
             'WHERE `sector`.`province_uuid` = `province`.`uuid`';
@@ -759,7 +758,6 @@ app.get('/sector/', function (req, res, next) {
 });
 
 app.get('/province/', function (req, res, next) {
-  /*jshint unused : false*/
   var sql =
     'SELECT `province`.`uuid` as `uuid`,  `province`.`name` as `province`, `country`.`uuid` '+
       'AS `country_uuid`, `country`.`country_en` as `country_en`, `country`.`country_fr` as `country_fr` ' +
@@ -773,6 +771,7 @@ app.get('/province/', function (req, res, next) {
   .done();
 });
 
+/*
 // FIXME : make this code more modular
 app.get('/visit/:patientId', function (req, res, next) {
   var sql, id = req.params.patientId;
@@ -829,6 +828,7 @@ app.get('/caution/:debitor_uuid/:project_id', function (req, res, next) {
   .done();
 });
 
+
 app.get('/account_balance/:id', function (req, res, next) {
   // TODO : put this in a module!
   var enterprise_id = req.params.id;
@@ -862,6 +862,7 @@ app.get('/synthetic/:goal/:project_id?', function (req, res, next) {
   });
 });
 
+
 app.get('/period/:date', function (req, res, next) {
   var date = sanitize.escape(util.toMysqlDate(new Date(Number(req.params.date))));
 
@@ -879,6 +880,7 @@ app.get('/period/:date', function (req, res, next) {
   .done();
 });
 
+
 app.get('/lot/:inventory_uuid', function (req, res, next) {
   var sql = 'SELECT expiration_date, lot_number, tracking_number, quantity, code, uuid, text FROM stock, inventory WHERE inventory.uuid = stock.inventory_uuid AND stock.inventory_uuid='+sanitize.escape(req.params.inventory_uuid);
   db.exec(sql)
@@ -890,6 +892,7 @@ app.get('/lot/:inventory_uuid', function (req, res, next) {
   })
   .done();
 });
+
 
 app.get('/max_trans/:project_id', function (req, res, next) {
   var project_id = sanitize.escape(req.params.project_id);
@@ -912,6 +915,7 @@ app.get('/max_trans/:project_id', function (req, res, next) {
   .done();
 });
 
+*/
 app.get('/print/journal', function (req, res, next) {
   /*jshint unused : false*/
   res.send('Under Contruction');

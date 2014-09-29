@@ -1,5 +1,7 @@
 var db = require('./../lib/db');
 var sanitize = require('./../lib/sanitize');
+var util = require('./../lib/util');
+var uuid = require('./../lib/guid');
 
 // Route specific requirements
 var synthetic = require('./synthetic');
@@ -450,3 +452,140 @@ exports.checkOffday = function (req, res, next) {
   .done();
 };
 
+exports.logVisit = function (req, res, next) { 
+  var sql, id = req.params.patientId;
+  sql =
+    'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES (?, ?, ?);';
+
+  db.exec(sql, [uuid(), id, req.session.user_id])
+  .then(function () {
+    res.send();
+  })
+  .catch(next)
+  .done();
+
+};
+
+exports.cautionDebtor = function (req, res, next) { 
+  var sql, debitor_uuid = sanitize.escape(req.params.debitor_uuid),
+      project_id = sanitize.escape(req.params.project_id);
+  //prochaine enterprise_id sera obtenue par requette via debitor_id
+
+  sql =
+    'SELECT `enterprise`.`currency_id` ' +
+    'FROM `enterprise` ' +
+    'WHERE `enterprise`.`id` = (SELECT `project`.`enterprise_id` FROM `project` WHERE `project`.`id`='+project_id+')';
+
+  db.exec(sql)
+  .then(function (ans) {
+    var currency_id = ans.pop().currency_id;
+    sql =
+      'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `t`.`debit_equiv` AS `debit`, ' +
+        '`t`.`credit_equiv` AS `credit`, `t`.`description`, `t`.`account_id` ' +
+        'FROM (' +
+          'SELECT `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`account_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, ' +
+            '`posting_journal`.`credit_equiv`, `posting_journal`.`deb_cred_uuid`, ' +
+            '`posting_journal`.`trans_id`, `posting_journal`.`description` ' +
+          'FROM `posting_journal` WHERE `posting_journal`.`deb_cred_uuid` = ' + debitor_uuid +
+        ' UNION ' +
+          'SELECT `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`account_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, ' +
+            '`general_ledger`.`credit_equiv`, `general_ledger`.`deb_cred_uuid`, ' +
+            '`general_ledger`.`trans_id`, `general_ledger`.`description` ' +
+          'FROM `general_ledger` WHERE `general_ledger`.`deb_cred_uuid` = ' + debitor_uuid +
+        ') AS `t` JOIN `account` ON `t`.`account_id` = `account`.`id` ' +
+        'WHERE `t`.`account_id` IN (' +
+          'SELECT `caution_box_account_currency`.`account_id` FROM `caution_box_account_currency` ' +
+          'WHERE `caution_box_account_currency`.`currency_id`=' +currency_id +
+          ' AND `caution_box_account_currency`.`caution_box_id`= (SELECT distinct `caution_box`.`id` FROM `caution_box` WHERE `caution_box`.`project_id`='+ project_id +'));';
+    return db.exec(sql);
+  })
+  .then(function (ans) {
+    res.send(ans);
+  })
+  .catch(function (err) {
+    next(err);
+  })
+  .done();
+};
+
+exports.accountBalance = function (req, res, next) { 
+  // TODO : put this in a module!
+  var enterprise_id = req.params.id;
+
+  var sql =
+    'SELECT temp.`id`, temp.`account_number`, temp.`account_txt`, account_type.`type`, temp.`parent`, temp.`fixed`, temp.`balance` FROM ' +
+    '(' +
+      'SELECT account.id, account.account_number, account.account_txt, account.account_type_id, account.parent, account.fixed, period_total.credit - period_total.debit as balance ' +
+      'FROM account LEFT JOIN period_total ' +
+      'ON account.id=period_total.account_id ' +
+      'WHERE account.enterprise_id = ' + sanitize.escape(enterprise_id) +
+    ') ' +
+    'AS temp JOIN account_type ' +
+    'ON temp.account_type_id = account_type.id ' +
+    'ORDER BY temp.account_number;';
+
+  db.exec(sql)
+  .then(function (rows) {
+    res.send(rows);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+};
+
+exports.syntheticGoal = function (req, res, next) { 
+  var query = decodeURIComponent(url.parse(req.url).query);
+  synthetic(req.params.goal, req.params.project_id, query, function (err, data) {
+    if (err) { return next(err); }
+    res.send(data);
+  });
+};
+
+exports.getPeriodByDate = function (req, res, next) { 
+  var date = sanitize.escape(util.toMysqlDate(new Date(Number(req.params.date))));
+
+  var sql =
+    'SELECT id, fiscal_year_id FROM period ' +
+    'WHERE period_start <= ' + date + ' AND period_stop >= ' + date + ' LIMIT 1';
+
+  db.exec(sql)
+  .then(function (ans) {
+    res.send(ans);
+  })
+  .catch(function (err) {
+    next(err);
+  })
+  .done();
+};
+
+exports.getInventoryLot = function (req, res, next) { 
+  var sql = 'SELECT expiration_date, lot_number, tracking_number, quantity, code, uuid, text FROM stock, inventory WHERE inventory.uuid = stock.inventory_uuid AND stock.inventory_uuid='+sanitize.escape(req.params.inventory_uuid);
+  db.exec(sql)
+  .then(function (ans) {
+    res.send(ans);
+  })
+  .catch(function (err) {
+    next(err);
+  })
+  .done();
+};
+
+exports.maxTransactionByProject = function (req, res, next) { 
+  var project_id = sanitize.escape(req.params.project_id);
+  var sql =
+    'SELECT abbr, max(increment) AS increment FROM (' +
+      'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
+      'FROM posting_journal JOIN project ON posting_journal.project_id = project.id ' +
+      'WHERE project_id = ' + project_id + ' ' +
+      'UNION ' +
+      'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
+      'FROM general_ledger JOIN project ON general_ledger.project_id = project.id ' +
+      'WHERE project_id = ' + project_id + ')c;';
+  db.exec(sql)
+  .then(function (ans) {
+    res.send(ans);
+  })
+  .catch(function (err) {
+    next(err);
+  })
+  .done();
+};
