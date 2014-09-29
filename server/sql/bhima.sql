@@ -398,12 +398,12 @@ create table `inventory_group` (
   `sales_account`   mediumint unsigned not null,
   `cogs_account`    mediumint unsigned,
   `stock_account`   mediumint unsigned,
-  `tax_account`     mediumint unsigned,
+  `donation_account`     mediumint unsigned,
   primary key (`uuid`),
   key `sales_account` (`sales_account`),
   key `cogs_account` (`cogs_account`),
   key `stock_account` (`stock_account`),
-  key `tax_account` (`tax_account`)
+  key `donation_account` (`donation_account`)
   -- constraint foreign key (`sales_account`) references `account` (`account_number`),
   -- constraint foreign key (`cogs_account`) references `account` (`account_number`),
   -- constraint foreign key (`stock_account`) references `account` (`account_number`),

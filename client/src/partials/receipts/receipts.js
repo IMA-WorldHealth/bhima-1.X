@@ -147,7 +147,6 @@ angular.module('bhima.controllers')
       }
 
       function transfertInvoice (model) {
-        console.log("model est :", model);        
         $scope.invoice = {};
         $scope.model = model;
         $scope.invoice.enterprise_name = model.enterprise.data[0].name;
