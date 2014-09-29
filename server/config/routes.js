@@ -30,7 +30,7 @@ exports.initialise = function (app) {
   app.post('/data/', data.create);
   app.get('/data/', data.read);
   app.put('/data/', data.update);
-  app.delete('/data/', data.deleteRecord);
+  app.delete('/data/:table/:column/:value', data.deleteRecord);
 
   // TODO All of these methods should be operations on a module
   // /i.e finance.createSale
@@ -64,6 +64,7 @@ exports.initialise = function (app) {
   app.get('/pcash_transfer_summers', uncategorised.pcashTransferSummers);
   app.get('/editsession/authenticate/:pin', uncategorised.authenticatePin);
   app.get('/max/:id/:table/:join?', uncategorised.lookupMaxTableId);
+  app.get('/InExAccounts/:id_enterprise/', uncategorised.listInExAccounts);
 };
 
 //Temporary (for C + V) 

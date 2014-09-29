@@ -1,5 +1,7 @@
 var q = require('q');
 var querystring = require('querystring');
+var url = require('url');
+
 var db = require('./../lib/db');
 var sanitize = require('./../lib/sanitize');
 var util = require('./../lib/util');
@@ -8,8 +10,6 @@ var util = require('./../lib/util');
  * HTTP Controllers
 */
 exports.buildReport = function (req, res, next) { 
-  
-  console.log('buildReport\n\n\n');
   var route = req.params.route;
 
   //parse the URL for data following the '?' character
