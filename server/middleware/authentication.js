@@ -93,8 +93,8 @@ module.exports = function (db, uuid) {
   function logout(req, res, next) {
     var sql;
 
-    if (!req.session || !req.session.authenticated) {
-      return next();
+    if (!req.session || !req.session.user_id) {
+      return res.status(419).send();
     }
 
     sql = 'UPDATE user SET user.logged_in = 0 WHERE user.id = ?;';
@@ -103,7 +103,7 @@ module.exports = function (db, uuid) {
     .then(function () {
       req.session.destroy(function () {
         res.clearCookie('connect.sid');
-        res.redirect('/login');
+        res.send();
       });
       req.session = null; // see: http://expressjs.com/api.html#cookieSession
     })

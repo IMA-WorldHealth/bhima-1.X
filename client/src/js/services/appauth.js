@@ -35,19 +35,27 @@ angular.module('bhima.services')
       .then(function (res) {
         delete $window.sessionStorage.session;
         session = null;
+        dfd.resolve(res);
       })
-      .catch(function (err) { dfd.reject(err); })
+      .catch(function (err) {
+        dfd.reject(err);
+      })
       .finally();
+
+      return dfd.promise;
     };
 
     mod.isAuthenticated = function () {
-      console.log('sessionStorage', $window.sessionStorage.session);
-      console.log('isAuthenticated', !!session && !!session.token);
       return !!session && !!session.token;
     };
 
     mod.getSession = function () {
       return session;
+    };
+
+    mod.destroySession = function () {
+      delete $window.sessionStorage.session;
+      session = null;
     };
 
     return mod;

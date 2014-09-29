@@ -21,6 +21,9 @@ angular.module('bhima.controllers')
         $rootScope.$broadcast(EVENTS.auth.logoutSuccess);
         $location.path('/login');
       })
+      .catch(function () {
+        $rootScope.$broadcast(EVENTS.auth.sessionTimeout);
+      })
       .finally();
     };
   }
