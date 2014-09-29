@@ -1921,8 +1921,6 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
   }
 
   function handlePayroll (id, user_id, done) {
-    console.log('nous sommes ici :::', id);
-
     var sql, rate, state = {}, data, reference, cfg = {};
     state.user_id = user_id;
 
@@ -1971,7 +1969,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
 
     function getTransId (trans_id) {
       cfg.trans_id = trans_id;
-      cfg.descrip =  'Payroll/' + new Date().toISOString().slice(0, 10).toString() ;
+      cfg.descrip =  'Payroll/' + new Date().toISOString().slice(0, 10).toString();
       return debit();
     }
 
@@ -2029,6 +2027,115 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     }    
   }
 
+  function handleDonation (id, user_id, data, done) {
+    var cfg = {}, reference, sql = "SELECT * FROM `inventory` WHERE `inventory`.`uuid`=" + sanitize.escape(data.lot.inventory_uuid) + ";";
+    var date = util.toMysqlDate(get.date());
+
+    db.exec(sql)
+    .then(function (records) {
+      if (records.length === 0) { throw new Error('pas enregistrement'); }
+      reference = records[0];
+      cfg.cost = (reference.purchase_price * data.lot.quantity).toFixed(4);
+      return q([get.origin('donation'), get.period(get.date())]);
+    })    
+    .spread(function (originId, periodObject) {
+      cfg.originId = originId;
+      cfg.periodId = periodObject.id;
+      cfg.fiscalYearId = periodObject.fiscal_year_id;
+      return get.transactionId(data.project_id);
+    })
+    .then(function (trans_id) {
+      console.log('voici la trans_id', trans_id);
+      cfg.trans_id = trans_id;
+      cfg.descrip =  'Donation/' + new Date().toISOString().slice(0, 10).toString();
+      return debit();
+    })
+    .then(function () {
+      return credit();
+    })
+    .then(function (res) {
+      return done(null, res);
+    })
+    .catch(function (err) {
+      console.log('erreur', err);
+      var donation_deleting = "DELETE FROM `donations` WHERE `donations`.`uuid`=" + sanitize.escape(data.donation.uuid), 
+          movement_deleting = "DELETE FROM `movement` WHERE `movement`.`uuid`=" + sanitize.escape(data.movement.uuid),
+          stock_deleting = "DELETE FROM `stock` WHERE `stock`.`tracking_number`=" + sanitize.escape(data.lot.tracking_number);
+
+      db.exec(donation_deleting)
+      .then(function () {
+        return db.exec(movement_deleting);
+      })
+      .then(function () {
+        return db.exec(stock_deleting);
+      })
+      .catch(function (err) {
+        console.log('erreur pendant la suppression ::: ', err);
+      })
+      .finally(function () {
+        return done(err, null);
+      });
+    });
+
+    function debit () {
+      var sql = 
+        'INSERT INTO posting_journal '+
+        '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+        '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) '+
+        'SELECT '+
+          [
+            sanitize.escape(uuid()),
+            data.project_id,
+            cfg.fiscalYearId,
+            cfg.periodId,
+            cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\''
+          ].join(',') + ', `inventory_group`.`stock_account`, ' +
+          [
+            0, cfg.cost,
+            0, cfg.cost,
+            data.currency_id, sanitize.escape(data.lot.inventory_uuid)
+          ].join(',') +
+          ', null, ' +
+          [
+            sanitize.escape(data.donation.uuid),
+            cfg.originId,
+            user_id
+          ].join(',') +
+        ' FROM `inventory_group` WHERE `inventory_group`.`uuid`= ' + sanitize.escape(reference.group_uuid);
+      return db.exec(sql);
+    }
+
+    function credit () {
+      var sql = 
+        'INSERT INTO posting_journal ' +
+        '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+        '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
+        'SELECT ' +
+          [
+            sanitize.escape(uuid()),
+            data.project_id,
+            cfg.fiscalYearId,
+            cfg.periodId,
+            cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\''
+          ].join(',') + ', `inventory_group`.`donation_account`, ' +
+          [
+            0, cfg.cost,
+            0, cfg.cost,
+            data.currency_id
+          ].join(',') +
+          ', null, null, ' +
+          [
+            sanitize.escape(data.donation.uuid),
+            cfg.originId,
+            user_id
+          ].join(',') +
+        ' FROM `inventory_group` WHERE `inventory_group`.`uuid`= ' + sanitize.escape(reference.group_uuid);
+      return db.exec(sql);
+    }
+  }
+
   // router for incoming requests
   table_router = {
     'sale'                  : handleSales,
@@ -2046,7 +2153,8 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     'distribution_patient'  : handleDistributionPatient,
     'distribution_service'  : handleDistributionService,
     'consumption_loss'      : handleDistributionLoss,
-    'payroll'               : handlePayroll
+    'payroll'               : handlePayroll,
+    'donation'              : handleDonation
   };
 
   function request (table, id, user_id, done, debCaution, details) {

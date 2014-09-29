@@ -14,7 +14,7 @@
       </li>
     </ul>
 
-     <button
+    <button
       style="margin-left: 5px;"
       ng-click="reconfigure()"
       class="btn btn-sm btn-default">
@@ -46,11 +46,12 @@
               style="font-size: 70px"
               class="glyphicon glyphicon-calendar">
             </span>
-          </div>
-          <br>
-          <div class="configure">
-            <select ng-model="session.pp" ng-options="pp as formatPeriod(pp) for pp in session.model.paiement_period.data" ng-change="setConfiguration(session.pp)">
-              <option value="" ng-disabled="disabled">-- {{SELECT.PERIOD_PAYMENT | translate}}-- </option>
+            <select 
+              ng-model="session.pp" 
+              ng-options="pp as formatPeriod(pp) for pp in session.model.paiement_period.data" 
+              ng-change="setConfiguration(session.pp)"
+              class="form-bhima">
+              <option value="" ng-disabled="disabled">-- {{"SELECT.PERIOD_PAYMENT" | translate}}-- </option>
             </select>
           </div>
         </div>
@@ -102,7 +103,6 @@
                     </tr>
                   </tbody>
                 </table>
-                </form>
               </fieldset>
             </div>
 
