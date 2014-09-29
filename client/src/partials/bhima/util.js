@@ -17,7 +17,6 @@ angular.module('bhima.controllers')
     $scope.logout = function () {
       appauth.logout()
       .then(function () {
-        console.log('[LOGOUT]');
         $rootScope.$broadcast(EVENTS.auth.logoutSuccess);
         $location.path('/login');
       })

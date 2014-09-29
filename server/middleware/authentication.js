@@ -33,7 +33,7 @@ module.exports = function (db, uuid) {
         pwd = req.body.password;
 
     sql =
-      'SELECT user.id, user.logged_in ' +
+      'SELECT user.id, user.username, user.first, user.last, user.email ' +
       'FROM user WHERE user.username = ? ' +
       'AND user.password = ?;';
 
