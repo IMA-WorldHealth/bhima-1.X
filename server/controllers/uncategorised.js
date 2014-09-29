@@ -589,3 +589,131 @@ exports.maxTransactionByProject = function (req, res, next) {
   })
   .done();
 };
+
+exports.printJournal = function (req, res, next) { 
+  res.send('Under Contruction');
+};
+
+exports.stockIn = function (req, res, next) { 
+  var sql;
+  var condition =
+    'WHERE stock.expiration_date >= ' + sanitize.escape(req.params.df) + ' ' +
+    'AND stock.expiration_date <= ' + sanitize.escape(req.params.dt);
+  condition += (req.params.depot_uuid === '*') ? '' : ' AND consumption.depot_uuid = ' + sanitize.escape(req.params.depot_uuid) + ' ';
+
+  if (req.params.depot_uuid === '*') {
+    sql =
+      'SELECT stock.inventory_uuid, stock.tracking_number, stock.lot_number, SUM(consumption.quantity) AS consumed, ' +
+        'stock.expiration_date, stock.quantity as initial ' +
+      'FROM stock LEFT JOIN consumption ON ' +
+        'stock.tracking_number=consumption.tracking_number '+condition+
+        'GROUP BY stock.tracking_number;';
+
+  } else {
+    sql =
+      'SELECT stock.inventory_uuid, stock.tracking_number, '+
+      'stock.lot_number, stock.quantity, SUM(consumption.quantity) AS consumed,'+
+      'movement.quantity, ';
+  }
+
+  db.exec(sql)
+  .then(function (ans) {
+    res.send(ans);
+  })
+  .catch(function (err) {
+    next(err);
+  })
+  .done();
+
+};
+
+exports.stockExpiringByDepot = function (req, res, next) { 
+  //TODO : put it in a separate file
+
+  db.exec(req.params.depot_uuid === '*' ? genSql() : speSql())
+  .then(function (ans) {
+    res.send(ans);
+  })
+  .catch(function (err) {
+    next(err);
+  })
+  .done();
+
+  function genSql () {
+    return 'SELECT stock.inventory_uuid, stock.tracking_number, ' +
+          'stock.lot_number, stock.quantity as initial, stock.expiration_date, inventory.text '+
+          'FROM stock JOIN inventory ON stock.inventory_uuid = inventory.uuid '+
+          'WHERE DATE(stock.expiration_date) >=DATE('+sanitize.escape(req.params.df)+')'+
+          ' AND DATE(stock.expiration_date) <=DATE('+sanitize.escape(req.params.dt)+')';
+  }
+
+  function speSql() {
+    return 'SELECT stock.inventory_uuid, stock.tracking_number, ' +
+          'stock.lot_number, stock.expiration_date, SUM(if (movement.depot_entry='+sanitize.escape(req.params.depot_uuid)+
+          ', movement.quantity, (movement.quantity*-1))) as current, SUM(if (movement.depot_entry='+sanitize.escape(req.params.depot_uuid)+
+          ', movement.quantity, 0)) AS initial, inventory.text FROM stock JOIN inventory JOIN movement ON stock.inventory_uuid = inventory.uuid AND '+
+          'stock.tracking_number = movement.tracking_number WHERE (movement.depot_entry='+sanitize.escape(req.params.depot_uuid)+
+          'OR movement.depot_exit='+sanitize.escape(req.params.depot_uuid)+') AND stock.expiration_date>='+sanitize.escape(req.params.df)+
+          ' AND stock.expiration_date<='+sanitize.escape(req.params.dt)+' GROUP BY movement.tracking_number';
+  }
+
+};
+
+exports.stockExpiringComplete = function (req, res, next) { 
+  //TODO : put it in a separate file
+  db.exec(req.params.depot_uuid === '*' ? genSql() : speSql())
+  .then(function (ans) {
+    res.send(ans);
+  })
+  .catch(function (err) {
+    next(err);
+  })
+  .done();
+
+  function genSql () {
+    return 'SELECT SUM(consumption.quantity) AS consumed FROM stock LEFT JOIN consumption '+
+           'ON stock.tracking_number = consumption.tracking_number WHERE stock.tracking_number='+sanitize.escape(req.params.tracking_number);
+  }
+
+  function speSql () {
+    return 'SELECT SUM(consumption.quantity) AS consumed FROM stock LEFT JOIN consumption '+
+         'ON stock.tracking_number = consumption.tracking_number WHERE stock.tracking_number='+sanitize.escape(req.params.tracking_number)+
+         ' AND consumption.depot_uuid='+sanitize.escape(req.params.depot_uuid);
+  }
+};
+
+exports.distributeStockDepot = function (req, res, next) { 
+  //TODO : put it in a separate file
+ var sql= 'SELECT stock.inventory_uuid, stock.tracking_number, ' +
+          'stock.lot_number, stock.expiration_date, SUM(if (movement.depot_entry='+sanitize.escape(req.params.depot_uuid)+
+          ', movement.quantity, 0)) AS entered, SUM(if (movement.depot_exit='+sanitize.escape(req.params.depot_uuid)+
+          ', movement.quantity, 0)) AS moved,  inventory.text, inventory.code, inventory.purchase_price  FROM stock JOIN inventory JOIN movement ON stock.inventory_uuid = inventory.uuid AND '+
+          'stock.tracking_number = movement.tracking_number WHERE (movement.depot_entry='+sanitize.escape(req.params.depot_uuid)+
+          'OR movement.depot_exit='+sanitize.escape(req.params.depot_uuid)+') GROUP BY stock.tracking_number';
+  db.exec(sql)
+  .then(function (ans) {
+    res.send(ans);
+  })
+  .catch(function (err) {
+      next(err);
+  })
+  .done();
+};
+
+exports.inventoryByDepot = function (req, res, next) { 
+  var sql = 'SELECT '+
+            'distinct inventory.text, '+
+            'inventory.uuid, '+
+            'inventory.code '+
+            'FROM stock JOIN inventory JOIN ON stock.inventory_uuid = inventory.uuid '+
+            'WHERE stock.depot_uuid='+sanitize.escape(req.params.depot_uuid);
+
+  db.exec(sql)
+  .then(function (ans) {
+    res.send(ans);
+  })
+  .catch(function (err) {
+    next(err);
+  })
+  .done();
+};
