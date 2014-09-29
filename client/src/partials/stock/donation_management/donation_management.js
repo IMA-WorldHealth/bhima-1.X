@@ -327,7 +327,9 @@ angular.module('bhima.controllers')
           project_id : $scope.project.id
         }
 
-        return connect.post('stock',[lot])
+        var def = $q.defer();
+
+        connect.post('stock',[lot])
         .then(function () {
           return connect.post('movement', [movement]);
         })
@@ -336,7 +338,11 @@ angular.module('bhima.controllers')
         })
         .then(function(){          
           return $http.post('posting_donation/', synthese);
-        });       
+        })
+        .then(function (res) {
+          def.resolve(res);
+        })
+        return def.promise;      
       }))
       .then(function () {
         messenger.success('STOCK.ENTRY.WRITE_SUCCESS');
