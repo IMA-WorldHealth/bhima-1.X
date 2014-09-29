@@ -11,6 +11,9 @@ var consumptionLoss = require('./../controllers/consumptionLoss');
 var trialbalance = require('./../controllers/trialbalance');
 var journal = require('./../controllers/journal');
 var ledger = require('./../controllers/ledger');
+var fiscal = require('./../controllers/fiscal');
+var report = require('./../controllers/report');
+
 var uncategorised = require('./../controllers/uncategorised');
 
 
@@ -44,6 +47,10 @@ exports.initialise = function (app) {
   app.get('/ledgers/debitor/:id', ledger.compileDebtorLedger);
   app.get('/ledgers/debitor_group/:id', ledger.compileGroupLedger);
   app.get('/ledgers/distributableSale/:id', ledger.compileSaleLedger);
+
+  app.get('/fiscal/:enterprise/:startDate/:endDate/:description', fiscal.writeYear);
+
+  app.get('/reports/:route/', report.buildReport);
 
   // TODO These routes all belong somewhere 
   app.get('/services/', uncategorised.services);

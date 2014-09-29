@@ -41,11 +41,11 @@ var authorize    = require('./middleware/authorization')(cfg.auth.paths),
     projects     = require('./middleware/projects')(db);
 
 // import routes
-var report            = require('./controllers/report')(db, sanitize, util),
+//var report            = require('./controllers/report')(db, sanitize, util),
     //trialbalance      = require('./controllers/trialbalance')(db, sanitize, util, uuid),
-    ledger            = require('./controllers/ledger'),
-    fiscal            = require('./controllers/fiscal')(db),
-    synthetic         = require('./controllers/synthetic')(db, sanitize),
+    //ledger            = require('./controllers/ledger'),
+    //fiscal            = require('./controllers/fiscal')(db),
+var synthetic         = require('./controllers/synthetic')(db, sanitize),
     //journal           = require('./controllers/journal')(db, sanitize, util, validate, store, uuid),
     journal           = require('./controllers/journal'),
     //createSale        = require('./controllers/createSale')(db, parser, journal, uuid),
@@ -402,7 +402,6 @@ app.get('/ledgers/distributableSale/:id', function (req, res, next) {
   .done();
 });
 
-*/
 
 app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function (req, res) {
   var enterprise = req.params.enterprise;
@@ -420,6 +419,7 @@ app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function (req, r
   .done();
 });
 
+
 app.get('/reports/:route/', function(req, res, next) {
   var route = req.params.route;
 
@@ -431,6 +431,8 @@ app.get('/reports/:route/', function(req, res, next) {
     res.send(report);
   });
 });
+
+*/
 
 app.get('/InExAccounts/:id_enterprise/', function(req, res, next) {
   // var sql = 'SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = ''+req.params.id_enterprise+'''+
