@@ -100,16 +100,6 @@ angular.module('bhima.controllers')
       }
     };
 
-    dependencies.paiements = {
-      query : {
-        tables : {
-          'paiement' : {
-            columns : ['uuid', 'employee_id']
-          }
-        }        
-      }
-    };
-
     appstate.register('project', function (project) {
       $scope.project = project;               
         validate.process(dependencies, ['enterprise', 'pcash_module', 'paiement_period', 'cashier', 'exchange_rate', 'cash_box'])
@@ -139,32 +129,37 @@ angular.module('bhima.controllers')
         session.pp = pp; 
         session.pp_label = formatPeriod (pp);
 
-        dependencies.paiements.query.where = ['paiement.paiement_period_id=' + session.pp.id];
-        dependencies.employees = {
+        dependencies.employees_payment = {
           query : {
             tables : {
               employee : { columns : ['id','prenom','name','postnom']},
-              paiement : { columns : ['paiement_date']}
+              paiement : { columns : ['uuid','paiement_date']},
+              tax : { columns : ['label','abbr']},
+              tax_paiement : { columns : ['value','posted']}
             },
             join : ['employee.id=paiement.employee_id'],
-            where : ['paiement.paiement_period_id=' + session.pp.id]
+            join : ['tax_paiement.paiement_uuid=paiement.uuid'],
+            join : ['tax.id=tax_paiement.tax_id'],
+            where : [
+              'paiement.paiement_period_id=' + session.pp.id,
+              'AND',
+              'tax.is_employee=1'
+            ]
           }
         };
+        console.log('session.pp.id : ',session.pp.id);
 
-        if(dependencies.paiements) {
-          dependencies.paiements.processed = false;
-        }
-
-        if(dependencies.employees){
-          dependencies.employees.processed = false;
+        if(dependencies.employees_payment){
+          dependencies.employees_payment.processed = false;
         }
         
-        return validate.process(dependencies, ['employees', 'paiements']);
+        return validate.process(dependencies, ['employees_payment']);
       })
       .then(function (model) {
         session.model = model;
         session.configured = true;
         session.complete = true;
+        console.log('model : ',session.model);
       })
       .catch(function (err) {
         messenger.danger(err.message);
@@ -203,6 +198,44 @@ angular.module('bhima.controllers')
           init(session.model);
         }
       }
+    }
+
+    function submit (emp) {
+      var primary = {
+        uuid          : uuid(),
+        project_id    : $scope.project.id,
+        type          : 'S',
+        date          : util.sqlDate(new Date()),
+        deb_cred_uuid : emp.id,
+        deb_cred_type : 'C',
+        account_id    : session.selectedItem.account_id,
+        currency_id   : session.selectedItem.currency_id,
+        cost          : emp.value,
+        user_id       : session.model.cashier.data.id,
+        description   : "Tax Payment " + '(' +emp.abbr+ ') : ' + emp.name + emp.postnom,
+        cash_box_id   : session.cashbox,
+        origin_id     : 7,
+      };
+
+      var primary_details = {
+        uuid              : uuid(),
+        primary_cash_uuid : primary.uuid,
+        debit             : 0,
+        credit            : primary.cost,
+        document_uuid     : emp.uuid
+      };
+
+      var result = confirm($translate.instant('PAYMENT_PERIOD.CONFIRM'));
+      if(result){
+        connect.post('primary_cash',[primary],['uuid'])
+        .then(function () {
+          return connect.post('primary_cash_item', [primary_details],['uuid']);
+        })
+        .catch(function (err) {
+          messenger.danger(err);
+        });
+      }
+      
     }
 
     $scope.setCashAccount = setCashAccount; 
