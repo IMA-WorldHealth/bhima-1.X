@@ -298,3 +298,20 @@ exports.costCenterCost = function (req, res, next) {
   .catch(next)
   .done();
 };
+
+exports.processProfitCenter = function (req, res, next) { 
+  function process (values) {
+    if (values.length <= 0) { return {profit : 0}; }
+    var som = 0;
+    values.forEach(function (value) {
+      som+= value.credit;
+    });
+    return {profit:som};
+  }
+
+  synthetic('sp', req.params.id_project, {service_id : req.params.service_id}, function (err, data) {
+    if (err) { return next(err); }
+    res.send(process(data));
+  });
+
+};
