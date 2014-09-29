@@ -6,7 +6,7 @@ var db = require('./../lib/db');
 var sanitize = require('./../lib/sanitize');
 var Store = require('./../lib/store');
 var uuid = require('./../lib/guid');
-var validate = require('./../lib/validate');
+var validate = require('./../lib/validate')();
 var util = require('./../lib/util');
 
 'use strict';
@@ -2070,5 +2070,3 @@ function request (table, id, user_id, done, debCaution, details) {
 module.exports = { 
   request : request
 };
-//module.exports = function (db, sanitize, util, validate, Store, uuid) {
-//  };
