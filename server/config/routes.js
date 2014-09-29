@@ -93,6 +93,10 @@ exports.initialise = function (app) {
   app.get('/serv_dist_stock/:depot_uuid', uncategorised.distributeStockDepot);
   app.get('/inv_in_depot/:depot_uuid', uncategorised.inventoryByDepot);
 
+  // +Resolve store issue (ref. github)
+  // +Finish get paths 
+  // +Merge 
+  //
 };
 
 //Temporary (for C + V) 
