@@ -9,7 +9,11 @@ var createSale = require('./../controllers/createSale');
 var serviceDist = require('./../controllers/serviceDist');
 var consumptionLoss = require('./../controllers/consumptionLoss');
 var trialbalance = require('./../controllers/trialbalance');
+var journal = require('./../controllers/journal');
+
 var uncategorised = require('./../controllers/uncategorised');
+
+
 /**
  * Initialise link between server paths and controller logic
  *
@@ -34,6 +38,8 @@ exports.initialise = function (app) {
  
   app.get('/trialbalance/initialize', trialbalance.initialiseTrialBalance);
   app.get('/trialbalance/submit/:key/', trialbalance.submitTrialBalance);
+  
+  app.get('/journal/:table/:id', journal.lookupTable);
 
   // TODO These routes all belong somewhere 
   app.get('/services/', uncategorised.services);
@@ -46,6 +52,7 @@ exports.initialise = function (app) {
   app.get('/user_session', uncategorised.userSession);
   app.get('/pcash_transfer_summers', uncategorised.pcashTransferSummers);
   app.get('/editsession/authenticate/:pin', uncategorised.authenticatePin);
+
 };
 
 //Temporary (for C + V) 

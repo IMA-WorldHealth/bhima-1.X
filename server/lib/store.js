@@ -90,4 +90,4 @@ store.recalculateIndex = function () {
   }
 };
 
-module.exports = store;
+module.exports = function () { return store; };

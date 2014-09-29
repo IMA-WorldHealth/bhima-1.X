@@ -333,7 +333,6 @@ app.get('/editsession/authenticate/:pin', function (req, res, next) {
   })
   .done();
 });
-*/
 
 app.get('/journal/:table/:id', function (req, res, next) {
   // What are the params here?
@@ -342,6 +341,7 @@ app.get('/journal/:table/:id', function (req, res, next) {
     res.send(200);
   });
 });
+*/
 
 //FIXME receive any number of tables using regex
 app.get('/max/:id/:table/:join?', function (req, res) {

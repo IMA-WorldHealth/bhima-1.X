@@ -13,6 +13,22 @@ var util = require('./../lib/util');
 
 var table_router, check, get;
 
+console.log('[journal] Configuring journal');
+/*
+ * HTTP Controllers
+*/
+function lookupTable(req, res, next) { 
+  console.log('trying to lookuptable');
+  // What are the params here?
+  request(req.params.table, req.params.id, req.session.user_id, function (err) {
+    if (err) { return next(err); }
+    res.send(200);
+  });
+};
+
+/*
+/* Utility Methods
+*/
 // validity checks
 check = {
   validPeriod : function (enterprise_id, date) {
@@ -166,12 +182,15 @@ get = {
         throw new Error('No exchange rate found for date : ' + date);
       }
 
+      console.log('using store');
+
       var store = new Store();
       rows.forEach(function (line) {
         store.post({ id : line.foreign_currency_id, rate : line.rate });
         store.post({ id : line.enterprise_currency_id, rate : 1});
       });
-
+      
+      console.log('used store');
       return q(store);
     });
   },
@@ -2068,5 +2087,6 @@ function request (table, id, user_id, done, debCaution, details) {
 }
 
 module.exports = { 
-  request : request
+  request : request,
+  lookupTable : lookupTable
 };
