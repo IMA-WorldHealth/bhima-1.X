@@ -68,6 +68,8 @@ exports.initialise = function (app) {
   app.get('/availableAccounts/:id_enterprise/', uncategorised.listEnterpriseAccounts);
   app.get('/availableAccounts_profit/:id_enterprise/', uncategorised.listEnterpriseProfitAccounts);
   app.get('/cost/:id_project/:cc_id', uncategorised.costCenterCost);
+  //app.get('/profit/:id_project/:service_id', uncategorised.processProfitCenter);
+
 };
 
 //Temporary (for C + V) 

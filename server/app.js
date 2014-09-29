@@ -45,7 +45,7 @@ var authorize    = require('./middleware/authorization')(cfg.auth.paths),
     //trialbalance      = require('./controllers/trialbalance')(db, sanitize, util, uuid),
     //ledger            = require('./controllers/ledger'),
     //fiscal            = require('./controllers/fiscal')(db),
-var synthetic         = require('./controllers/synthetic')(db, sanitize),
+var synthetic         = require('./controllers/synthetic'),
     //journal           = require('./controllers/journal')(db, sanitize, util, validate, store, uuid),
     journal           = require('./controllers/journal'),
     //createSale        = require('./controllers/createSale')(db, parser, journal, uuid),
@@ -500,7 +500,6 @@ app.get('/availableAccounts_profit/:id_enterprise/', function(req, res, next) {
   .done();
 });
 
-*/
 
 app.get('/cost/:id_project/:cc_id', function(req, res, next) {
   var sql =
@@ -534,6 +533,7 @@ app.get('/cost/:id_project/:cc_id', function(req, res, next) {
 });
 
 
+*/
 app.get('/profit/:id_project/:service_id', function(req, res, next) {
   function process (values) {
     if (values.length <= 0) { return {profit : 0}; }
