@@ -2,6 +2,10 @@
 
 // Module: db.js
 
+// TODO rewrite documentation - this module can now be required by any controller module throughout the application
+// TODO Seperate DB wrapper and DB methods - this module should just initialise a new DB instance 
+// new db(config, etc.) and return it in module exports
+
 // TODO EVERY query to the DB is currently handled on it's own connection, one
 // HTTP request can result in tens of connections. Performance checks for
 // sharing connections between request sessions (also allowing for shraring a
@@ -13,14 +17,13 @@
 
 var q = require('q');
 
-var db, con;
+var db, con, supportedDatabases, log, dbms;
+
+console.log('[db] Configuring database');
 
 // Initiliase module on startup - create once and allow db to be required anywhere
-exports.initialise = function initialise(cfg, logger, uuid) { 
+function initialise(cfg, logger, uuid) { 
   'use strict';
-
-  console.log('This is called second');
-  var log, dbms, supportedDatabases, con;
 
   cfg = cfg || {};
   log = logger.external('DB');
@@ -43,13 +46,44 @@ exports.initialise = function initialise(cfg, logger, uuid) {
 
   //  FIXME reset all logged in users on event of server crashing / terminating - this should be removed/ implemented into the error/ loggin module before shipping
   flushUsers(con);
-
-  return {
-    
-  };
-
 };
 
+function exec(sql, params) {
+  var defer = q.defer();
+  
+  console.log('[db] [execute]: ', sql);
+  con.getConnection(function (err, connection) {
+    if (err) { return defer.reject(err); }
+    connection.query(sql, params, function (err, results) {
+      if (err) { return defer.reject(err); }
+      connection.release();          
+      defer.resolve(results);
+    });
+  });
+
+  return defer.promise;
+}
+
+function execute(sql, callback) {
+  // This fxn is formated for mysql pooling, not in all generality
+  console.log('[DEPRECATED] [db] [execute]: ', sql);
+
+  con.getConnection(function (err, connection) {
+    if (err) { return callback(err); }
+    connection.query(sql, function (err, results) {
+      connection.release();
+      if (err) { return callback(err); }
+      return callback(null, results);
+    });
+  });
+}
+
+
+function getSupportedDatabases() { 
+  return Object.keys(supportedDatabases);
+}
+
+// Depreciated test methods
 function requestTransactionConnection() {
   var __connection__;
   var __connectionReady__ = q.defer();
@@ -157,42 +191,6 @@ function executeAsTransaction(querries) {
   return deferred.promise;
 }
 
-function exec(sql, params) {
-  var defer = q.defer();
-  
-  console.log('[db] [execute]: ', sql);
-  con.getConnection(function (err, connection) {
-    if (err) { return defer.reject(err); }
-    connection.query(sql, params, function (err, results) {
-      if (err) { return defer.reject(err); }
-      connection.release();          
-      defer.resolve(results);
-    });
-  });
-
-  return defer.promise;
-}
-
-function execute(sql, callback) {
-  // This fxn is formated for mysql pooling, not in all generality
-  console.log('[DEPRECATED] [db] [execute]: ', sql);
-
-  con.getConnection(function (err, connection) {
-    if (err) { return callback(err); }
-    connection.query(sql, function (err, results) {
-      connection.release();
-      if (err) { return callback(err); }
-      return callback(null, results);
-    });
-  });
-}
-
-
-function getSupportedDatabases() { 
-  return Object.keys(supportedDatabases);
-}
-
-/* Legacy utility methods */
 function mysqlInit (config) {
   'use strict';
   var db = require('mysql');
@@ -217,7 +215,7 @@ function flushUsers (db_con) {
         if (err) { throw err; }
         con.query(reset, function (err) {
           if (err) { throw err; }
-          console.log('[db.js] (*) user . logged_in set to 0');
+          console.log('[db] (*) user . logged_in set to 0');
         });
       });
     });
@@ -256,5 +254,13 @@ function promiseQuery(connection, sql) {
   });
   return deferred.promise;
 }
+
+module.exports = { 
+  initialise : initialise,
+  requestTransactionConnection : requestTransactionConnection,
+  executeAsTransaction : executeAsTransaction,
+  exec : exec,
+  execute : execute
+};
 
 //module.exports = db;

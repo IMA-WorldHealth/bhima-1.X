@@ -16,14 +16,18 @@ var cfg = require('./config/server.json'),
     options = { key : fs.readFileSync(cfg.tls.key, 'utf8'), cert : fs.readFileSync(cfg.tls.cert, 'utf8') };
 
 // import lib dependencies
-var parser       = require('./lib/parser')(),
-    uuid         = require('./lib/guid'),
+//var parser       = require('./lib/parser')(),
+var uuid         = require('./lib/guid'),
     logger       = require('./lib/logger')(cfg.log, uuid);
     //db           = require('./lib/db')(cfg.db, logger, uuid),
 
 // TODO Temporary layout for transitioning structure
-require('./lib/db').initialise(cfg, logger, uuid);
+require('./lib/parser').initialise();
+require('./lib/db').initialise(cfg.db, logger, uuid);
+
+// FIXME Remove this when routes are no longer defined in app.js
 var db = require('./lib/db');
+var parser = require('./lib/parser');
 
 var sanitize     = require('./lib/sanitize'),
     util         = require('./lib/util'),
@@ -80,7 +84,7 @@ app.get('/', function (req, res, next) {
 //app.use('/data', dataRouter);
 
 // Initialise router
-require('./config/routes', app);
+require('./config/routes').initialise(app);
 
 app.post('/purchase', function (req, res, next) {
   createPurchase.run(req.session.user_id, req.body)
@@ -1076,7 +1080,7 @@ app.use(liberror.middleware);
 
 https.createServer(options, app)
 .listen(cfg.port, function () {
-  console.log('Secure application running on localhost:' + cfg.port);
+  console.log('[app] Secure application running on localhost:' + cfg.port);
 });
 
 

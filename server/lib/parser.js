@@ -1,16 +1,23 @@
+// TODO rewrite to allow single initialisation any import any stage in the application
+
 // builds the sql queries that a store will use
 
 var sanitize = require('./sanitize'),
     util = require('./util');
 
-//module: Parser
-module.exports = function (options) {
+// FIXME Hacky self assigning object - simply upgrading to allow new routing structure - needs refactor
+var self = {
+  initialise : initialise
+};
+
+console.log('[parser] Configuring parser');
+
+function initialise(options) { 
   // The parser module is the composer for all SQL queries
   // to the backend.  Query objects are decoded from the URL
   // and passed into composer's methods.
   'use strict';
-
-  var self = {};
+  
   options = options || {};
 
   self.templates = options.templates || {
@@ -20,64 +27,6 @@ module.exports = function (options) {
     insert: 'INSERT INTO %table% %values% VALUES %expressions%;',
     insert_ref : 'INSERT INTO %table% %values% SELECT %expressions% from %table% where project_id=%project_id%;'
   };
-
-  function cdm (table, columns) {
-    // creates a 'dot map' mapping on table
-    // to multiple columns.
-    // e.g. `table`.`column1`, `table`.`column2`
-    return columns.map(function (c) {
-      return [table, '.', sanitize.escapeid(c)].join('');
-    }).join(', ');
-  }
-
-  function parseWhere (list) {
-    var ops = ['AND', 'OR'];
-    return list.map(function (cond) {
-      return ~ops.indexOf(cond) ? cond : subroutine(cond);
-    }).join(' ');
-  }
-
-  function subroutine (cond) {
-    // summary:
-    //    Parses and escapes all components of a where
-    //    clause separated by an equals sign.
-    // eg:
-    //  expr = 'a.id=b.id';
-    //  parsewhr(expr)
-    //    => '`a`.`id`=`b`.`id`'
-    var ops = ['>=', '<=', '!=', '<>', '=', '<', '>'],
-      conditions,
-      operator;
-
-    if (sanitize.isArray(cond)) {
-      // recursively compile the condition
-      return '(' + parseWhere(cond) + ')';
-    }
-
-    // halts on true
-    ops.some(function (op) {
-      if (~cond.indexOf(op)) {
-        conditions = cond.split(op);
-        operator = op;
-        return true;
-      }
-    });
-
-    // escape values
-    return conditions.map(function (exp) {
-      return ~exp.indexOf('.') ? exp.split('.').map(function (e) { return sanitize.escapeid(e); }).join('.') : sanitize.escape(exp);
-    }).join(operator);
-  }
-
-  function arrayToIn (id, ids) {
-    var templ = ' %id% IN (%ids%) ';
-    ids = ids.map(function (v) {
-      return sanitize.escape(v);
-    });
-
-    return templ.replace('%id%', id)
-                .replace('%ids%', ids.toString());
-  }
 
   // delete
   self.delete = function (table, column, id) {
@@ -206,6 +155,64 @@ module.exports = function (options) {
       .replace(' LIMIT %limit%', def.limit ? ' LIMIT ' + def.limit : '');
   };
 
-  return self;
+}
 
-};
+function cdm (table, columns) {
+  // creates a 'dot map' mapping on table
+  // to multiple columns.
+  // e.g. `table`.`column1`, `table`.`column2`
+  return columns.map(function (c) {
+    return [table, '.', sanitize.escapeid(c)].join('');
+  }).join(', ');
+}
+
+function parseWhere (list) {
+  var ops = ['AND', 'OR'];
+  return list.map(function (cond) {
+    return ~ops.indexOf(cond) ? cond : subroutine(cond);
+  }).join(' ');
+}
+
+function subroutine (cond) {
+  // summary:
+  //    Parses and escapes all components of a where
+  //    clause separated by an equals sign.
+  // eg:
+  //  expr = 'a.id=b.id';
+  //  parsewhr(expr)
+  //    => '`a`.`id`=`b`.`id`'
+  var ops = ['>=', '<=', '!=', '<>', '=', '<', '>'],
+    conditions,
+    operator;
+
+  if (sanitize.isArray(cond)) {
+    // recursively compile the condition
+    return '(' + parseWhere(cond) + ')';
+  }
+
+  // halts on true
+  ops.some(function (op) {
+    if (~cond.indexOf(op)) {
+      conditions = cond.split(op);
+      operator = op;
+      return true;
+    }
+  });
+
+  // escape values
+  return conditions.map(function (exp) {
+    return ~exp.indexOf('.') ? exp.split('.').map(function (e) { return sanitize.escapeid(e); }).join('.') : sanitize.escape(exp);
+  }).join(operator);
+}
+
+function arrayToIn (id, ids) {
+  var templ = ' %id% IN (%ids%) ';
+  ids = ids.map(function (v) {
+    return sanitize.escape(v);
+  });
+
+  return templ.replace('%id%', id)
+              .replace('%ids%', ids.toString());
+}
+
+module.exports = self;
