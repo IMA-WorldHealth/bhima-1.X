@@ -17,7 +17,6 @@ angular.module('bhima.controllers')
         // FIXME : why do I have two caches here again?
     
     $scope.isLoggedIn = function () {
-      console.log('Called isLoggedIn()');
       return appauth.isAuthenticated();
     };
 
@@ -153,23 +152,21 @@ angular.module('bhima.controllers')
       });
     }
     
-    // TODO: There is a corner case where the user is currently logged in
-    // and has simply refreshed the page.  We must refresh the view based 
-    // on this.
-  
     $scope.$on(EVENTS.auth.notAuthenticated, function (e) {
-      console.log('Not Authenticated Event Fired!');
+      console.log('[AUTH] Not Authenticated Event Fired!');
+      appauth.destroySession();
       beforeLogin();
       $location.path('/login');
     });
 
     $scope.$on(EVENTS.auth.sessionTimeout, function (e) {
-      console.log('Session Timeout Event Fired!');
+      console.log('[AUTH] Session Timeout Event Fired!');
+      appauth.destroySession();
       $location.path('/login');
     });
 
     $scope.$on(EVENTS.auth.loginSuccess, function (e) {
-      console.log('Logged in successfully');
+      console.log('[AUTH] Logged in successfully');
       afterLogin();
     });
 
