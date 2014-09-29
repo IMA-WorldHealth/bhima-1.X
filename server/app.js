@@ -48,7 +48,7 @@ var report            = require('./controllers/report')(db, sanitize, util),
     synthetic         = require('./controllers/synthetic')(db, sanitize),
     journal           = require('./controllers/journal')(db, sanitize, util, validate, store, uuid),
     createSale        = require('./controllers/createSale')(db, parser, journal, uuid),
-    createPurchase    = require('./controllers/createPurchase')(db, parser, journal, uuid),
+    //createPurchase    = require('./controllers/createPurchase')(db, parser, journal, uuid),
     depotRouter       = require('./controllers/depot')(db, sanitize, store),
     tree              = require('./controllers/tree')(db, parser),
     drugRouter        = require('./controllers/drug')(db),
@@ -86,6 +86,7 @@ app.get('/', function (req, res, next) {
 // Initialise router
 require('./config/routes').initialise(app);
 
+/*
 app.post('/purchase', function (req, res, next) {
   createPurchase.run(req.session.user_id, req.body)
   .then(function (id) {
@@ -94,7 +95,7 @@ app.post('/purchase', function (req, res, next) {
   .catch(next)
   .done();
 });
-
+*/
 
 app.post('/sale/', function (req, res, next) {
 

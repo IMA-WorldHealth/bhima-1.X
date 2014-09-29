@@ -1,5 +1,7 @@
 // Controllers 
 var data = require('./../controllers/data');
+var createPurchase = require ('./../controllers/createPurchase');
+
 //var report = require('/server/controllers/report');
 
 /**
@@ -16,4 +18,6 @@ exports.initialise = function (app) {
   app.get('/data/', data.read);
   app.put('/data/', data.update);
   app.delete('/data/', data.deleteRecord);
+
+  app.post('/purchase', createPurchase.run);
 };
