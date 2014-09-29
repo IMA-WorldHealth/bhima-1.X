@@ -1515,7 +1515,8 @@
       "ONEM"     : "ONEM",
       "IERE" : "IERE",
       "INPP" : "INPP",
-      "TAXES_OTHERS_ENTERPRISE" : "Taxes entreprise et autres deductions"
+      "TAXES_OTHERS_ENTERPRISE" : "Taxes entreprise et autres deductions",
+      "TAX_PAYMENT"             : "Paiement Taxes Employés"
     },
     "INCOME" : {
       "TRANSFER"              : "Transfert",
@@ -2127,5 +2128,13 @@
     "DELETE_SUCCESS" : "Suppression avec succès",
     "NO_CONFIG_RUBRIC" : "Aucune configuration de comptes",
     "ABBR"          : "Abr."
-  }  
+  },
+
+  "TAX_PAYMENT" : {
+    "EMPLOYEE"         : "Nom de l'employé",
+    "TAX"              : "Taxe",
+    "VALUE"            : "Valeur",
+    "PAID"             : "Payé",
+    "SUBMIT_PAID_TAX"  : "Payer la taxe"
+  } 
 }
