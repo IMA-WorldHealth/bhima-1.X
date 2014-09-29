@@ -31,7 +31,7 @@ angular.module('bhima.controllers')
     };
 
     dependencies.location = {
-      query : '/location/'
+      query : '/location/villages'
     };
 
     appstate.register('enterprise', function (enterprise) {
@@ -41,14 +41,12 @@ angular.module('bhima.controllers')
     });
 
     function initialize (models) {
-      //model.dependences = models[0];
-      //$scope.location = models[1];
       angular.extend($scope, models);
       $scope.newAccount = {};
     }
 
-    $scope.formatLocation = function fLocation (l) {
-      return [l.village, l.sector, l.province, l.country].join(' -- ');
+    $scope.formatLocation = function formatLocation (l) {
+      return [l.name, l.sector_name, l.province_name, l.country_name].join(' -- ');
     };
 
     $scope.newEnterprise = function () {
