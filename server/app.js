@@ -915,11 +915,11 @@ app.get('/max_trans/:project_id', function (req, res, next) {
   .done();
 });
 
-*/
 app.get('/print/journal', function (req, res, next) {
-  /*jshint unused : false*/
   res.send('Under Contruction');
 });
+
+*/
 
 app.get('/inventory/depot/:depot/*', function (req, res, next) {
   depotRouter(req.url, req.params.depot)
@@ -943,6 +943,7 @@ app.get('/inventory/drug/:code', function (req, res, next) {
   .done();
 });
 
+/*
 app.get('/stockIn/:depot_uuid/:df/:dt', function (req, res, next) {
   var sql;
   var condition =
@@ -975,7 +976,6 @@ app.get('/stockIn/:depot_uuid/:df/:dt', function (req, res, next) {
   .done();
 });
 
-
 app.get('/expiring/:depot_uuid/:df/:dt', function (req, res, next) {
   //TODO : put it in a separate file
 
@@ -1006,6 +1006,7 @@ app.get('/expiring/:depot_uuid/:df/:dt', function (req, res, next) {
           ' AND stock.expiration_date<='+sanitize.escape(req.params.dt)+' GROUP BY movement.tracking_number';
   }
 });
+
 
 app.get('/expiring_complete/:tracking_number/:depot_uuid', function (req, res, next) {
   //TODO : put it in a separate file
@@ -1048,6 +1049,7 @@ app.get('/serv_dist_stock/:depot_uuid', function (req, res, next) {
   .done();
 });
 
+
 app.get('/inv_in_depot/:depot_uuid', function (req, res, next){
   var sql = 'SELECT '+
             'distinct inventory.text, '+
@@ -1065,6 +1067,8 @@ app.get('/inv_in_depot/:depot_uuid', function (req, res, next){
   })
   .done();
 });
+
+*/
 
 app.get('/errorcodes', function (req, res, next) {
   /* jshint unused : false */

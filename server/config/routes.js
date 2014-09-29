@@ -86,6 +86,13 @@ exports.initialise = function (app) {
   app.get('/period/:date', uncategorised.getPeriodByDate);
   app.get('/lot/:inventory_uuid', uncategorised.getInventoryLot);
   app.get('/max_trans/:project_id', uncategorised.maxTransactionByProject);
+  app.get('/print/journal', uncategorised.printJournal);
+  app.get('/stockIn/:depot_uuid/:df/:dt', uncategorised.stockIn);
+  app.get('/expiring/:depot_uuid/:df/:dt', uncategorised.stockExpiringByDepot);
+  app.get('/expiring_complete/:tracking_number/:depot_uuid', uncategorised.stockExpiringComplete);
+  app.get('/serv_dist_stock/:depot_uuid', uncategorised.distributeStockDepot);
+  app.get('/inv_in_depot/:depot_uuid', uncategorised.inventoryByDepot);
+
 };
 
 //Temporary (for C + V) 
