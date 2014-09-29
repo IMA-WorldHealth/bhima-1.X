@@ -113,12 +113,7 @@ angular.module('bhima.controllers')
       $scope.project = project;               
         validate.process(dependencies, ['enterprise', 'pcash_module', 'paiement_period', 'cashier', 'exchange_rate', 'cash_box'])
         .then(init, function (err) {
-          messenger.danger(err.message + ' ' + err.reference);
-          console.log('ko', err);
-          $translate('PRIMARY_CASH.EXPENSE.LOADING_ERROR')
-          .then(function (value) {
-            messenger.danger(value);
-          }); 
+          messenger.danger(err.message + ' ' + err.reference);           
         });     
     });
 

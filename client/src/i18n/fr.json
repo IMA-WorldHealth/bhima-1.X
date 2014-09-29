@@ -292,7 +292,8 @@
     "PERIOD_RUBRIC_CONFIG"  : "Selectionner une configuration des rubriques",
     "PERIOD_TAX_CONFIG"     : "Selectionner une configuration des taxes",
     "PERIOD_ACCOUNT_CONFIG" : "Selectionner une configuration des comptes",
-    "DONOR"                 : "Selectionner un Donateur"
+    "DONOR"                 : "Selectionner un Donateur",
+    "PERIOD_PAYMENT" : "Selectionner une periode de paiement"
   },
 
   "RENEWAL"           : {
@@ -2066,7 +2067,8 @@
     "TRACKING_NB"       : "N° Tracking",
     "PROOF"             : "Preuve d'enregistrement du don dans le Stock",
     "REPORT"            : "Rapport",
-    "DATE_REGISTER"     : "Date d'enregistrement"
+    "DATE_REGISTER"     : "Date d'enregistrement",
+    "PERFORM_BY"        : "Effectue par : "
   },
 
   "STOCK_DASHBOARD"     : {
