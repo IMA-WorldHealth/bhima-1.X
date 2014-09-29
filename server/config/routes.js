@@ -13,6 +13,7 @@ var journal = require('./../controllers/journal');
 var ledger = require('./../controllers/ledger');
 var fiscal = require('./../controllers/fiscal');
 var report = require('./../controllers/report');
+var tree = require('./../controllers/tree');
 
 var uncategorised = require('./../controllers/uncategorised');
 
@@ -52,6 +53,8 @@ exports.initialise = function (app) {
 
   app.get('/reports/:route/', report.buildReport);
 
+  app.get('/tree', tree.generate);
+
   // TODO These routes all belong somewhere 
   app.get('/services/', uncategorised.services);
   app.get('/available_cost_center/', uncategorised.availableCenters);
@@ -68,8 +71,14 @@ exports.initialise = function (app) {
   app.get('/availableAccounts/:id_enterprise/', uncategorised.listEnterpriseAccounts);
   app.get('/availableAccounts_profit/:id_enterprise/', uncategorised.listEnterpriseProfitAccounts);
   app.get('/cost/:id_project/:cc_id', uncategorised.costCenterCost);
-  //app.get('/profit/:id_project/:service_id', uncategorised.processProfitCenter);
-
+  app.get('/profit/:id_project/:service_id', uncategorised.processProfitCenter);
+  app.get('/costCenterAccount/:id_enterprise/:cost_center_id', uncategorised.costCenterAccount);
+  app.get('/profitCenterAccount/:id_enterprise/:profit_center_id', uncategorised.profitCenterAccount);
+  app.get('/removeFromCostCenter/:tab', uncategorised.removeFromCostCenter);
+  app.get('/removeFromProfitCenter/:tab', uncategorised.removeFromProfitCenter);
+  app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', uncategorised.auxCenterAccount);
+  app.get('/getCheckHollyday/', uncategorised.checkHoliday);
+  app.get('/getCheckOffday/', uncategorised.checkOffday);
 };
 
 //Temporary (for C + V) 
