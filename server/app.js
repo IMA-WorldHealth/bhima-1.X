@@ -118,7 +118,6 @@ app.post('/consumption_loss/', function (req, res, next) {
     res.send({dist: ans});
   });
 });
-*/
 
 app.get('/services/', function (req, res, next) {
   var sql =
@@ -132,6 +131,7 @@ app.get('/services/', function (req, res, next) {
   .catch(function (err) { next(err); })
   .done();
 });
+*/
 
 app.get('/available_cost_center/', function (req, res, next) {
   var sql =

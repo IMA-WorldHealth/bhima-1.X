@@ -9,6 +9,7 @@ var createSale = require('./../controllers/createSale');
 var serviceDist = require('./../controllers/serviceDist');
 var consumptionLoss = require('./../controllers/consumptionLoss');
 
+var uncategorised = require('./../controllers/uncategorised');
 /**
  * Initialise link between server paths and controller logic
  *
@@ -31,11 +32,10 @@ exports.initialise = function (app) {
   app.post('/service_dist/', serviceDist.execute);
 
   app.post('/consumption_loss/', consumptionLoss.execute);
+  
+  // TODO These routes all belong somewhere 
+  app.get('/services/', uncategorised.services);
 };
-
-
-
-
 
 //Temporary (for C + V) 
 /*
