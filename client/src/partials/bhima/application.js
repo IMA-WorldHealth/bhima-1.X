@@ -14,7 +14,14 @@ angular.module('bhima.controllers')
     var dependencies = {},
         preferences = new Appcache('preferences'),
         cache = new Appcache('application');
+        // FIXME : why do I have two caches here again?
+    
+    $scope.isLoggedIn = function () {
+      console.log('Called isLoggedIn()');
+      return appauth.isAuthenticated();
+    };
 
+    // utility function to set appstate() variables
     function setEnvironmentVariable(key, data) {
       connect.fetch(data)
       .then(function (values) {
@@ -41,10 +48,19 @@ angular.module('bhima.controllers')
       .catch(handleError);
     }
 
+    // load the tree
+    function loadTree() {
+      connect.fetch('/tree')
+      .then(function (data) {
+        $scope.treeData = data;
+      })
+      .finally();
+    }
+
     // define dependencies for before login initially happens
     function beforeLogin() {
       var languages, enterprises, projects;
-      console.log('[Loading] Application dependencies');
+      console.log('[NOTICE] beforeLogin() called');
 
       languages = {
         tables : {
@@ -87,6 +103,7 @@ angular.module('bhima.controllers')
 
     // Fires after login
     function afterLogin() {
+      console.log('[NOTICE] afterLogin() called');
       var currencies, exchangeRate, fiscalYear;
 
       exchangeRate = {
@@ -115,6 +132,7 @@ angular.module('bhima.controllers')
         }
       };
 
+
       // set appstate variables
       // TODO : Loading exchange rates should be moved into a service
       // where only the pages needing exchange rates load them.
@@ -134,6 +152,10 @@ angular.module('bhima.controllers')
         }
       });
     }
+    
+    // TODO: There is a corner case where the user is currently logged in
+    // and has simply refreshed the page.  We must refresh the view based 
+    // on this.
   
     $scope.$on(EVENTS.auth.notAuthenticated, function (e) {
       console.log('Not Authenticated Event Fired!');
@@ -146,16 +168,10 @@ angular.module('bhima.controllers')
       $location.path('/login');
     });
 
-    $scope.$on(EVENTS.auth.LoginSuccess, function (e) {
+    $scope.$on(EVENTS.auth.loginSuccess, function (e) {
       console.log('Logged in successfully');
       afterLogin();
     });
-
-    $scope.user = null;
-
-    $scope.setUser = function (user) {
-      $scope.user = user;
-    };
 
     function handleError(error) {
       throw error;

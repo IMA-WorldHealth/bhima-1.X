@@ -33,8 +33,6 @@ angular.module('bhima.controllers')
       });
     }
 
-    $scope.projects = {};
-
     $scope.login = function (cred) {
       // put project in cache to save it for next login
       cache.put('project', { id :cred.project });
@@ -44,13 +42,14 @@ angular.module('bhima.controllers')
       appauth.login(cred)
       .then(function (sess) {
         $rootScope.$broadcast(EVENTS.auth.loginSuccess);
-        $scope.setUser(sess.user);
         session.loginFailure = false;
+        $location.path('/');
       })
       .catch(function (err) {
         $rootScope.$broadcast(EVENTS.auth.loginFailed);
         session.loginFailure = true;
-      });
+      })
+      .finally();
     };
 
     $scope.changeLanguage = function (lang) {
