@@ -25,16 +25,23 @@ exports.initialise = function (app) {
   app.put('/data/', data.update);
   app.delete('/data/', data.deleteRecord);
 
+  // TODO All of these methods should be operations on a module
+  // /i.e finance.createSale
   app.post('/purchase', createPurchase.execute);
-
   app.post('/sale/', createSale.execute);
-
   app.post('/service_dist/', serviceDist.execute);
-
   app.post('/consumption_loss/', consumptionLoss.execute);
   
   // TODO These routes all belong somewhere 
   app.get('/services/', uncategorised.services);
+  app.get('/available_cost_center/', uncategorised.availableCenters);
+  app.get('/employee_list/', uncategorised.listEmployees);
+  app.get('/journal_list/', uncategorised.listJournal);
+  app.get('/hollyday_list/:pp/:employee_id', uncategorised.listHolidays);
+  app.get('/available_profit_center/', uncategorised.listAvailableProfitCenters);
+  app.get('/currentProject', uncategorised.currentProject);
+  app.get('/user_session', uncategorised.userSession);
+  app.get('/pcash_transfer_summers', uncategorised.pcashTransferSummers);
 };
 
 //Temporary (for C + V) 

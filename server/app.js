@@ -131,7 +131,7 @@ app.get('/services/', function (req, res, next) {
   .catch(function (err) { next(err); })
   .done();
 });
-*/
+
 
 app.get('/available_cost_center/', function (req, res, next) {
   var sql =
@@ -226,7 +226,7 @@ app.get('/hollyday_list/:pp/:employee_id', function (req, res, next) {
   .catch(function (err) { next(err); })
   .done();
 });
-
+*/
 
 app.get('/period_paiement/', function (req, res, next) {
   // var sql =
@@ -249,6 +249,7 @@ app.get('/period_paiement/', function (req, res, next) {
   // .done();
 });
 
+/*
 app.get('/available_profit_center/', function (req, res, next) {
   var sql =
     'SELECT `profit_center`.`text`, `profit_center`.`id`, `profit_center`.`project_id`, `service`.`name` '+
@@ -302,6 +303,7 @@ app.get('/pcash_transfer_summers', function (req, res, next) {
   })
   .done();
 });
+*/
 
 app.get('/trialbalance/initialize', function (req, res, next) {
   trialbalance.run(req.session.user_id, function (err, result) {
