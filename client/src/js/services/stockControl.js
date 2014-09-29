@@ -2,8 +2,6 @@ angular.module('bhima.services')
 .service('stockControl', ['validate', '$q', 'connect','util', function (validate, $q, connect, util){
 	// Summary :
 	// Ce service calcul les qte moyennes de consommation des inventories
-	// A FAIRE : recuperer les consommations mensuelles de chaque lot
-	// A FAIRE : calculer les peremptions de chaque lots d'un inventory
 	// A FAIRE : des simulations concretes pour DL
 	// A FAIRE : des simulations concretes pour IC
 	// A FAIRE : gerer les cas de valeur null
