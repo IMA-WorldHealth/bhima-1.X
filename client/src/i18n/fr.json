@@ -470,14 +470,16 @@
     "WEEK"                : "Cette Semaine",
     "MONTH"               : "Ce Mois",
     "SEARCH"              : "Rechercher",
-    "INCORRECT_DATE_TYPE" : "la valeur de la date est invalide",
-    "INCORRECT_DATE_LIMIT" : "Année de naissance doit être comprise entre 1900 et 2014",
-    "INCORRECT_LOCATION_CURRENT" : "village actuel non spécifiée",
-    "INCORRECT_LOCATION_ORIGIN" : "village d'origine non spécifiée",
-    "STATUS_NEW_TITLE" : "Le patient est de nouveau à l'hôpital",
-    "STATUS_NEW_BODY" : "Sélectionnez cette option pour les patients qui n'ont jamais été inscrits à l'hôpital auparavant. L'hôpital dispose d'aucune information à propos de ce patient et pas d'histoire prescription / service.",
-    "STATUS_RETURNING_TITLE" : "Le patient a été enregistrée, mais est nouvelle dans le système BHIMA",
-    "STATUS_RETURNING_BODY" : "Sélectionnez cette option pour les patients qui ont été enregistrés, et ont une histoire prescription / vente avec l'hôpital, mais n'ont jamais été enregistrée dans le système BHIMA, ce patient est de retour à l'insitution mais étant inscrit sur le nouveau système."
+    "INCORRECT_DATE_TYPE"         : "la valeur de la date est invalide",
+    "INCORRECT_DATE_LIMIT"        : "Année de naissance doit être comprise entre 1900 et 2014",
+    "INCORRECT_LOCATION_CURRENT"  : "village actuel non spécifiée",
+    "INCORRECT_LOCATION_ORIGIN"   : "village d'origine non spécifiée",
+    "STATUS_NEW_TITLE"            : "Le patient est de nouveau à l'hôpital",
+    "STATUS_NEW_BODY"             : "Sélectionnez cette option pour les patients qui n'ont jamais été inscrits à l'hôpital auparavant. L'hôpital dispose d'aucune information à propos de ce patient et pas d'histoire prescription / service.",
+    "STATUS_RETURNING_TITLE"      : "Le patient a été enregistré, mais est nouveau dans le système BHIMA",
+    "STATUS_RETURNING_BODY"       : "Sélectionnez cette option pour les patients qui ont été enregistrés, et ont une histoire prescription / vente avec l'hôpital, mais n'ont jamais été enregistrée dans le système BHIMA, ce patient est de retour à l'insitution mais étant inscrit sur le nouveau système.",
+    "STATUS_REGISTERED_TITLE"     : "Le patient a été enregistrée dans le système BHIMA",
+    "STATUS_REGISTERED_BODY"      : "Sélectionnez cette option pour les patients qui ont été enregistrés dans le système BHIMA. Ce patient a un dossier médical électronique."
   },
 
   "CASH_PAYMENTS" : {

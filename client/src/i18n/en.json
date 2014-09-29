@@ -72,7 +72,8 @@
       "AMOUNT"                : "Amount Dispensed",
       "PURPOSE"               : "Purpose of Expense",
       "DAYS"                  : "Days",
-      "RUBRICS"               : "Rubrics"
+      "RUBRICS"               : "Rubrics",
+      "TAX_PAYMENT"           : "Taxes Payment"
     },
     "INCOME" : {
       "TRANSFER"              : "Transfert",
@@ -2067,7 +2068,15 @@
     "RUBRIC"        : "Taxes Payroll",
     "DELETE_SUCCESS" : "Deleted successfully",
     "NO_CONFIG_TAX" : "No Configuration Accounting"
-  }
+  },
+
+  "TAX_PAYMENT" : {
+    "EMPLOYEE"         : "Employee Name",
+    "TAX"              : "Tax",
+    "VALUE"            : "Value",
+    "PAID"             : "Paid",
+    "SUBMIT_PAID_TAX"  : "Paid the tax"
+  } 
 }
 
 
