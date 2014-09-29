@@ -168,5 +168,30 @@ exports.authenticatePin = function (req, res, next) {
     next(err);
   })
   .done();
+};
 
+exports.lookupMaxTableId = function (req, res, next) { 
+  var maxRequest, id = req.params.id,
+      table = req.params.table,
+      join = req.params.join;
+
+  maxRequest = 'SELECT MAX(' + id + ') FROM ';
+
+  maxRequest += '(SELECT MAX(' + id + ') AS `' + id + '` FROM ' + table;
+  if (join) {
+    maxRequest += ' UNION ALL SELECT MAX(' + id + ') AS `' + id + '` FROM ' + join + ')a;';
+  } else {
+    maxRequest += ')a;';
+  }
+
+  db.exec(maxRequest)
+  .then(function (ans) {
+    res.send({max: ans[0]['MAX(' + id + ')']});
+  })
+  .catch(function (err) {
+    res.send(500, {info: 'SQL', detail: err});
+    console.error(err);
+    return;
+  })
+  .done();
 };

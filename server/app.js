@@ -43,7 +43,7 @@ var authorize    = require('./middleware/authorization')(cfg.auth.paths),
 // import routes
 var report            = require('./controllers/report')(db, sanitize, util),
     //trialbalance      = require('./controllers/trialbalance')(db, sanitize, util, uuid),
-    ledger            = require('./controllers/ledger')(db, sanitize),
+    ledger            = require('./controllers/ledger'),
     fiscal            = require('./controllers/fiscal')(db),
     synthetic         = require('./controllers/synthetic')(db, sanitize),
     //journal           = require('./controllers/journal')(db, sanitize, util, validate, store, uuid),
@@ -341,7 +341,6 @@ app.get('/journal/:table/:id', function (req, res, next) {
     res.send(200);
   });
 });
-*/
 
 //FIXME receive any number of tables using regex
 app.get('/max/:id/:table/:join?', function (req, res) {
@@ -403,6 +402,7 @@ app.get('/ledgers/distributableSale/:id', function (req, res, next) {
   .done();
 });
 
+*/
 
 app.get('/fiscal/:enterprise/:startDate/:endDate/:description', function (req, res) {
   var enterprise = req.params.enterprise;
