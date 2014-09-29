@@ -512,8 +512,8 @@
   function startupConfig($rootScope, EVENTS, appauth) {
     $rootScope.$on('$routeChangeStart', function (event, next) {
       if (!appauth.isAuthenticated()) {
-        event.preventDefault();
         $rootScope.$broadcast(EVENTS.auth.notAuthenticated);
+        event.preventDefault();
       }
     });
   }
