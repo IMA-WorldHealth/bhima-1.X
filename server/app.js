@@ -43,6 +43,7 @@ var report            = require('./routes/report')(db, sanitize, util),
     depotRouter       = require('./routes/depot')(db, sanitize, store),
     tree              = require('./routes/tree')(db, parser),
     drugRouter        = require('./routes/drug')(db),
+    locationRouter    = require('./routes/location')(db, express.Router()),
     dataRouter        = require('./routes/data')(db, parser, express.Router()),
     serviceDist       = require('./routes/serviceDist')(db, parser, journal, uuid),
     consumptionLoss   = require('./routes/consumptionLoss')(db, parser, journal, uuid);
@@ -65,14 +66,36 @@ app.use(authorize);
 app.use(projects);
 app.use(express.static(cfg.static, { maxAge : 10000 }));
 
+// routers
+app.use('/data', dataRouter);
+app.use('/location', locationRouter);
+
 app.get('/', function (req, res, next) {
   /* jshint unused : false */
   // This is to preserve the /#/ path in the url
   res.sendfile(cfg.rootFile);
 });
 
-// data routes
-app.use('/data', dataRouter);
+/* this is required for location select */
+app.get('/location/:villageId?', function (req, res, next) {
+  var specifyVillage = req.params.villageId ? ' AND `village`.`uuid`=\'' + req.params.villageId + '\'' : '';
+
+  var sql =
+    'SELECT `village`.`uuid` as `uuid`, village.uuid as village_uuid, `village`.`name` as `village`, ' +
+      '`sector`.`name` as `sector`, sector.uuid as sector_uuid, `province`.`name` as `province`, province.uuid as province_uuid, ' +
+      '`country`.`country_en` as `country`, country.uuid as country_uuid ' +
+    'FROM `village`, `sector`, `province`, `country` ' +
+    'WHERE village.sector_uuid = sector.uuid AND ' +
+      'sector.province_uuid = province.uuid AND ' +
+      'province.country_uuid=country.uuid ' + specifyVillage + ';';
+
+  db.exec(sql)
+  .then(function (rows) {
+    res.send(rows);
+  })
+  .catch(next)
+  .done();
+});
 
 app.post('/purchase', function (req, res, next) {
   createPurchase.run(req.session.user_id, req.body)
@@ -82,7 +105,6 @@ app.post('/purchase', function (req, res, next) {
   .catch(next)
   .done();
 });
-
 
 app.post('/sale/', function (req, res, next) {
 
@@ -669,6 +691,10 @@ app.get('/getCheckOffday/', function (req, res, next) {
   .done();
 });
 
+
+/* new locations API */
+app.use('/location', locationRouter);
+
 app.get('/tree', function (req, res, next) {
   /* jshint unused : false*/
 
@@ -679,26 +705,6 @@ app.get('/tree', function (req, res, next) {
   .catch(function (err) {
     res.send(301, err);
   })
-  .done();
-});
-
-app.get('/location/:villageId?', function (req, res, next) {
-  var specifyVillage = req.params.villageId ? ' AND `village`.`uuid`=\'' + req.params.villageId + '\'' : '';
-
-  var sql =
-    'SELECT `village`.`uuid` as `uuid`, village.uuid as village_uuid, `village`.`name` as `village`, ' +
-      '`sector`.`name` as `sector`, sector.uuid as sector_uuid, `province`.`name` as `province`, province.uuid as province_uuid, ' +
-      '`country`.`country_en` as `country`, country.uuid as country_uuid ' +
-    'FROM `village`, `sector`, `province`, `country` ' +
-    'WHERE village.sector_uuid = sector.uuid AND ' +
-      'sector.province_uuid = province.uuid AND ' +
-      'province.country_uuid=country.uuid ' + specifyVillage + ';';
-
-  db.exec(sql)
-  .then(function (rows) {
-    res.send(rows);
-  })
-  .catch(next)
   .done();
 });
 
