@@ -51,7 +51,7 @@ var synthetic         = require('./controllers/synthetic'),
     //createSale        = require('./controllers/createSale')(db, parser, journal, uuid),
     //createPurchase    = require('./controllers/createPurchase')(db, parser, journal, uuid),
     depotRouter       = require('./controllers/depot')(db, sanitize, store),
-    tree              = require('./controllers/tree')(db, parser),
+//    tree              = require('./controllers/tree')(db, parser),
     drugRouter        = require('./controllers/drug')(db);
     //dataRouter        = require('./controllers/data')(db, parser, express.Router()),
     //serviceDist       = require('./controllers/serviceDist')(db, parser, journal, uuid),
@@ -533,7 +533,6 @@ app.get('/cost/:id_project/:cc_id', function(req, res, next) {
 });
 
 
-*/
 app.get('/profit/:id_project/:service_id', function(req, res, next) {
   function process (values) {
     if (values.length <= 0) { return {profit : 0}; }
@@ -549,6 +548,7 @@ app.get('/profit/:id_project/:service_id', function(req, res, next) {
     res.send(process(data));
   });
 });
+
 
 app.get('/costCenterAccount/:id_enterprise/:cost_center_id', function(req, res, next) {
   var sql =
@@ -574,6 +574,7 @@ app.get('/costCenterAccount/:id_enterprise/:cost_center_id', function(req, res, 
   .done();
 });
 
+
 app.get('/profitCenterAccount/:id_enterprise/:profit_center_id', function(req, res, next) {
   var sql =
     'SELECT account.id, account.account_number, account.account_txt ' +
@@ -597,6 +598,7 @@ app.get('/profitCenterAccount/:id_enterprise/:profit_center_id', function(req, r
   .catch(next)
   .done();
 });
+
 
 app.get('/removeFromCostCenter/:tab', function(req, res, next) {
   var tabs = JSON.parse(req.params.tab);
@@ -633,7 +635,6 @@ app.get('/removeFromProfitCenter/:tab', function(req, res, next) {
   .done();
 });
 
-
 app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', function(req, res, next) {
   var sql =
     'SELECT account.id, account.account_number, account.account_txt ' +
@@ -658,6 +659,7 @@ app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', functio
   .done();
 });
 
+
 app.get('/getCheckHollyday/', function (req, res, next) {
   var sql = "SELECT id, employee_id, label, dateTo, dateFrom FROM hollyday WHERE employee_id = '"+ req.query.employee_id +"'"
           + " AND ((dateFrom >= '" + req.query.dateFrom +"') OR (dateTo >= '" + req.query.dateFrom + "') OR (dateFrom >= '"+ req.query.dateTo +"')"
@@ -676,6 +678,9 @@ app.get('/getCheckHollyday/', function (req, res, next) {
   .done();
 });
 
+*/
+
+/*
 app.get('/getCheckOffday/', function (req, res, next) {
   var sql ="SELECT * FROM offday WHERE date = '" + req.query.date + "'";
   db.exec(sql)
@@ -687,7 +692,6 @@ app.get('/getCheckOffday/', function (req, res, next) {
 });
 
 app.get('/tree', function (req, res, next) {
-  /* jshint unused : false*/
 
   tree.load(req.session.user_id)
   .then(function (treeData) {
@@ -698,6 +702,9 @@ app.get('/tree', function (req, res, next) {
   })
   .done();
 });
+
+*/
+
 
 app.get('/location/:villageId?', function (req, res, next) {
   var specifyVillage = req.params.villageId ? ' AND `village`.`uuid`=\'' + req.params.villageId + '\'' : '';

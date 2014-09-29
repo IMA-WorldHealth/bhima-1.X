@@ -313,5 +313,140 @@ exports.processProfitCenter = function (req, res, next) {
     if (err) { return next(err); }
     res.send(process(data));
   });
-
 };
+
+exports.costCenterAccount = function (req, res, next) { 
+  var sql =
+    'SELECT account.id, account.account_number, account.account_txt ' +
+    'FROM account JOIN cost_center ' +
+    'ON account.cc_id = cost_center.id '+
+    'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
+      'AND account.parent <> 0 ' +
+      'AND account.cc_id = ' + sanitize.escape(req.params.cost_center_id) + ';';
+
+  function process(accounts) {
+    var availablechargeAccounts = accounts.filter(function(item) {
+      return item.account_number.toString().indexOf('6') === 0;
+    });
+    return availablechargeAccounts;
+  }
+
+  db.exec(sql)
+  .then(function (rows) {
+    res.send(process(rows));
+  })
+  .catch(next)
+  .done();
+};
+
+exports.profitCenterAccount = function (req, res, next) { 
+  var sql =
+    'SELECT account.id, account.account_number, account.account_txt ' +
+    'FROM account JOIN profit_center ' +
+    'ON account.pc_id = profit_center.id '+
+    'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
+      'AND account.parent <> 0 ' +
+      'AND account.pc_id = ' + sanitize.escape(req.params.profit_center_id) + ';';
+
+  function process(accounts) {
+    var availableprofitAccounts = accounts.filter(function(item) {
+      return item.account_number.toString().indexOf('7') === 0;
+    });
+    return availableprofitAccounts;
+  }
+
+  db.exec(sql)
+  .then(function (rows) {
+    res.send(process(rows));
+  })
+  .catch(next)
+  .done();
+};
+
+exports.removeFromCostCenter = function (req, res, next) { 
+  var tabs = JSON.parse(req.params.tab);
+
+  tabs = tabs.map(function (item) {
+    return item.id;
+  });
+
+  var sql =
+    'UPDATE `account` SET `account`.`cc_id` = NULL WHERE `account`.`id` IN ('+tabs.join(',')+')';
+
+  db.exec(sql)
+  .then(function (rows) {
+    res.send(rows);
+  })
+  .catch(next)
+  .done();
+};
+
+exports.removeFromProfitCenter = function (req, res, next) { 
+  var tabs = JSON.parse(req.params.tab);
+  tabs = tabs.map(function (item) {
+    return item.id;
+  });
+
+  var sql =
+    'UPDATE `account` SET `account`.`pc_id` = NULL WHERE `account`.`id` IN (' + tabs.join(',') + ')';
+
+  db.exec(sql)
+  .then(function (rows) {
+    res.send(rows);
+  })
+  .catch(next)
+  .done();
+};
+
+exports.auxCenterAccount = function (req, res, next) { 
+  var sql =
+    'SELECT account.id, account.account_number, account.account_txt ' +
+    'FROM account JOIN auxiliairy_center ' +
+    'ON account.auxiliairy_center_id = auxiliairy_center.id ' +
+    'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
+      'AND account.parent <> 0 ' +
+      'AND account.auxiliairy_center_id = ' + sanitize.escape(req.params.auxiliairy_center_id) + ';';
+
+  function process(accounts) {
+    var availablechargeAccounts = accounts.filter(function(item) {
+      return item.account_number.toString().indexOf('6') === 0;
+    });
+    return availablechargeAccounts;
+  }
+
+  db.exec(sql)
+  .then(function (rows) {
+    res.send(process(rows));
+  })
+  .catch(next)
+  .done();
+};
+
+exports.checkHoliday = function (req, res, next) { 
+  var sql = "SELECT id, employee_id, label, dateTo, dateFrom FROM hollyday WHERE employee_id = '"+ req.query.employee_id +"'"
+          + " AND ((dateFrom >= '" + req.query.dateFrom +"') OR (dateTo >= '" + req.query.dateFrom + "') OR (dateFrom >= '"+ req.query.dateTo +"')"
+          + " OR (dateTo >= '" + req.query.dateTo + "'))"
+          + " AND ((dateFrom <= '" + req.query.dateFrom +"') OR (dateTo <= '" + req.query.dateFrom + "') OR (dateFrom <= '"+ req.query.dateTo +"')"
+          + " OR (dateTo <= '" + req.query.dateTo + "'))"
+  if (req.query.line !== ""){
+    sql += " AND id <> '" + req.query.line + "'";
+  }
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+};
+
+exports.checkOffday = function (req, res, next) { 
+  var sql ="SELECT * FROM offday WHERE date = '" + req.query.date + "'";
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+};
+
