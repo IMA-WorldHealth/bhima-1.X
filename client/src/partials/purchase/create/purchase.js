@@ -47,7 +47,7 @@ angular.module('bhima.controllers')
 
     dependencies.creditorLocation = {
       identifier : 'uuid',
-      query : '/location'
+      query : '/location/villages'
     };
 
     dependencies.user = {
