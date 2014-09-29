@@ -42,7 +42,7 @@ var authorize    = require('./middleware/authorization')(cfg.auth.paths),
 
 // import routes
 var report            = require('./controllers/report')(db, sanitize, util),
-    trialbalance      = require('./controllers/trialbalance')(db, sanitize, util, uuid),
+    //trialbalance      = require('./controllers/trialbalance')(db, sanitize, util, uuid),
     ledger            = require('./controllers/ledger')(db, sanitize),
     fiscal            = require('./controllers/fiscal')(db),
     synthetic         = require('./controllers/synthetic')(db, sanitize),
@@ -303,7 +303,6 @@ app.get('/pcash_transfer_summers', function (req, res, next) {
   })
   .done();
 });
-*/
 
 app.get('/trialbalance/initialize', function (req, res, next) {
   trialbalance.run(req.session.user_id, function (err, result) {
@@ -334,6 +333,7 @@ app.get('/editsession/authenticate/:pin', function (req, res, next) {
   })
   .done();
 });
+*/
 
 app.get('/journal/:table/:id', function (req, res, next) {
   // What are the params here?
