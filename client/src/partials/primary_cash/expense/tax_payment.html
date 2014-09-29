@@ -1,0 +1,101 @@
+<header>
+  {{ 'PRIMARY_CASH.EXPENSE.TAX_PAYMENT' | translate }} 
+  <small ng-if="session.pp_label"> | {{ session.pp_label }}</small>
+</header>
+
+<nav>
+  <div style="position: absolute; right: 5px;">
+    <button class="btn btn-sm btn-primary dropdown-toggle">
+      {{ session.selectedItem.symbol || "PRIMARY_CASH.DEFAULT_CURRENCY" | translate }}
+      <span class="caret" data-caret="&#9660;"></span>
+    </button>
+    <ul class="dropdown-menu pull-left">
+      <li ng-repeat="box in session.model.cash_box.data">
+        <a href="" ng-click="setCashAccount(box)"> {{ box.symbol }} </a>
+      </li>
+    </ul>
+
+     <button
+      style="margin-left: 5px;"
+      ng-click="reconfigure()"
+      class="btn btn-sm btn-default">
+      {{'PRIMARY_CASH.EXPENSE.SELECT_PERIOD' | translate}}
+      <span class="glyphicon glyphicon-repeat"></span>
+    </button>
+  </div>
+
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a href="#/primary_cash/">{{"PRIMARY_CASH.TITLE" | translate}}</a></li>
+      <li class="active">{{"PRIMARY_CASH.EXPENSE.TAX_PAYMENT" | translate}}</li>
+    </ol>
+  </div>
+</nav>
+
+<main>
+	
+	<div ng-if="!session.configured" class="row">
+    <div class="col-xs-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          {{ "PRIMARY_CASH.EXPENSE.SELECT_PERIOD" | translate }}
+        </div>
+
+        <div class="panel-body">
+          <div class="configure">
+            <span
+              style="font-size: 70px"
+              class="glyphicon glyphicon-calendar">
+            </span>
+          </div>
+          <br>
+          <div class="configure">
+            <select ng-model="session.pp" ng-options="pp as formatPeriod(pp) for pp in session.model.paiement_period.data" ng-change="setConfiguration(session.pp)">
+              <option value="" ng-disabled="disabled">-- {{SELECT.PERIOD_PAYMENT | translate}}-- </option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div ng-if="session.configured" class="row">
+    <div class="col-xs-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          {{ "PRIMARY_CASH.EXPENSE.TAX_PAYMENT" | translate }}
+        </div>
+
+        <div class="panel-body">
+          <table class="table table-condensed">
+          	<thead>
+          		<tr>
+	          		<th>{{ "TAX_PAYMENT.EMPLOYEE" | translate }}</th>
+	          		<th>{{ "TAX_PAYMENT.TAX" | translate }}</th>
+	          		<th>{{ "TAX_PAYMENT.VALUE" | translate }}</th>
+	          		<th>{{ "TAX_PAYMENT.PAID" | translate }}</th>
+	          		<th></th>
+          		</tr>
+          	</thead>
+          	<tbody>
+          		<tr ng-repeat="emp in session.model.employee">
+          			<td>
+          				<span ng-if="emp.prenom">{{ emp.prenom }}</span> 
+          				<span ng-if="emp.name">, {{ emp.name }}</span> 
+          				<span ng-if="emp.name"> - {{ emp.postnom }}</span>
+          			</td>
+          			<td></td>
+          			<td></td>
+          			<td>
+          				<button class="btn btn-default">{{ "TAX_PAYMENT.SUBMIT_PAID_TAX" | translate }}</button>
+          			</td>
+          		</tr>
+          	</tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
