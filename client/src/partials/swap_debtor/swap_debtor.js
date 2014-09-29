@@ -47,7 +47,7 @@ angular.module('bhima.controllers')
         $scope.selectedDebitor = selectedDebitor;
         $scope.noEmpty = true;
         dependencies.location = {
-          query : '/location/' + $scope.selectedDebitor.origin_location_id
+          query : '/location/village/' + $scope.selectedDebitor.origin_location_id
         };
         validate.process(dependencies).then(swap);
       });

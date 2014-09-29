@@ -36,11 +36,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="location in locations.data | orderBy:'country'">
-              <td>{{ location.village }}</td>
-              <td>{{ location.sector }}</td>
-              <td>{{ location.province }}</td>
-              <td>{{ location.country }}</td>
+            <tr ng-repeat="location in locations | orderBy:'country_name'">
+              <td>{{ location.name }}</td>
+              <td>{{ location.sector_name }}</td>
+              <td>{{ location.province_name }}</td>
+              <td>{{ location.country_name }}</td>
             </tr>
           </tbody>
         </table>
