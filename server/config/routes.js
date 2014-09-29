@@ -65,6 +65,9 @@ exports.initialise = function (app) {
   app.get('/editsession/authenticate/:pin', uncategorised.authenticatePin);
   app.get('/max/:id/:table/:join?', uncategorised.lookupMaxTableId);
   app.get('/InExAccounts/:id_enterprise/', uncategorised.listInExAccounts);
+  app.get('/availableAccounts/:id_enterprise/', uncategorised.listEnterpriseAccounts);
+  app.get('/availableAccounts_profit/:id_enterprise/', uncategorised.listEnterpriseProfitAccounts);
+  app.get('/cost/:id_project/:cc_id', uncategorised.costCenterCost);
 };
 
 //Temporary (for C + V) 

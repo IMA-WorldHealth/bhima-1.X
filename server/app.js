@@ -453,7 +453,6 @@ app.get('/InExAccounts/:id_enterprise/', function(req, res, next) {
   .catch(next)
   .done();
 });
-*/
 
 app.get('/availableAccounts/:id_enterprise/', function(req, res, next) {
   var sql =
@@ -501,6 +500,7 @@ app.get('/availableAccounts_profit/:id_enterprise/', function(req, res, next) {
   .done();
 });
 
+*/
 
 app.get('/cost/:id_project/:cc_id', function(req, res, next) {
   var sql =
