@@ -4,8 +4,8 @@ angular.module('bhima.services')
 	// Ce service calcul les qte moyennes de consommation des inventories
 	// A FAIRE : recuperer les consommations mensuelles de chaque lot
 	// A FAIRE : calculer les peremptions de chaque lots d'un inventory
-	// A FAIRE : des dimunaltion concrete pour DL
-	// A FAIRE : des dimunaltion concrete pour IC
+	// A FAIRE : des simulations concretes pour DL
+	// A FAIRE : des simulations concretes pour IC
 	// A FAIRE : gerer les cas de valeur null
 	var dependencies = {},
 		inventory = {};
@@ -28,7 +28,7 @@ angular.module('bhima.services')
 
 		function calculMois (models) {
 			var nb = models.nombreMois.data.nb;
-			if(nb > 6) nb = 6;
+			if(nb > 6){ nb = 6;}
 			inventory.nb = nb;
 			deff.resolve(nb);
 		}
