@@ -94,6 +94,7 @@ module.exports = function (db, uuid) {
     var sql;
 
     if (!req.session || !req.session.user_id) {
+      console.log('[ERROR] session data does not exist.');
       return res.status(419).send();
     }
 

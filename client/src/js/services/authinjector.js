@@ -11,6 +11,7 @@ angular.module('bhima.services')
           419 : EVENTS.auth.sessionTimeout,
           440 : EVENTS.auth.sessionTimeout
         };
+        console.log('[INTERCEPTOR] Recieved res status', res.status); 
         $rootScope.$broadcast(errors[res.status], res);
         return $q.reject(res);
       }

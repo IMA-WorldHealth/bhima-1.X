@@ -151,6 +151,8 @@ angular.module('bhima.controllers')
         }
       });
     }
+
+    // Event handlers
     
     $scope.$on(EVENTS.auth.notAuthenticated, function (e) {
       console.log('[AUTH] Not Authenticated Event Fired!');
@@ -166,8 +168,13 @@ angular.module('bhima.controllers')
     });
 
     $scope.$on(EVENTS.auth.loginSuccess, function (e) {
-      console.log('[AUTH] Logged in successfully');
+      console.log('[AUTH] Login Success Event Fired!');
       afterLogin();
+    });
+
+    $scope.$on(EVENTS.auth.loginFailed, function (e) {
+      console.log('[AUTH] Login Failed Event Fired!');
+      appauth.destroySession();
     });
 
     function handleError(error) {
