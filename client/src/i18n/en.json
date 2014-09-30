@@ -1932,7 +1932,8 @@
     "ANNUAL_CUMUL"        : "Annual Accumulation",
     "MONTH_CUMUL"         : "Accumulated Monthly",
     "NOT_EMPTY"           : "Abbr. Can not be empty",
-    "NOT_SUP4"            : "Can not be more than 4 characters"
+    "NOT_SUP4"            : "Can not be more than 4 characters",
+    "CURRENCY"            : "Currency"
   },
 
   "CONFIG_RUBRIC" : {
