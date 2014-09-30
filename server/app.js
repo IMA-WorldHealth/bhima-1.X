@@ -1078,7 +1078,7 @@ app.get('/getAccount7/', function (req, res, next) {
 });
 
 app.get('/available_payment_period/', function (req, res, next) {
-  var sql = "SELECT p.id, p.config_tax_id, p.config_rubric_id, p.label, p.dateFrom, p.dateTo, r.label AS RUBRIC, t.label AS TAX, a.label AS ACCOUNT FROM paiement_period p, config_rubric r, config_tax t, config_accounting a WHERE p.config_tax_id = t.id AND p.config_rubric_id = r.id AND a.id=p.config_accounting_id ORDER BY p.id DESC";
+  var sql = "SELECT p.id, p.config_tax_id, p.config_rubric_id, p.config_accounting_id, p.label, p.dateFrom, p.dateTo, r.label AS RUBRIC, t.label AS TAX, a.label AS ACCOUNT FROM paiement_period p, config_rubric r, config_tax t, config_accounting a WHERE p.config_tax_id = t.id AND p.config_rubric_id = r.id AND a.id=p.config_accounting_id ORDER BY p.id DESC";
   db.exec(sql)
   .then(function (result) {
     res.send(result);
@@ -1337,6 +1337,34 @@ app.get('/getMonthsBeforeExpiration/:id', function (req, res, next) {
           + " FROM stock s"
           + " JOIN inventory i ON s.inventory_uuid=i.uuid "
           + " WHERE s.inventory_uuid=" + sanitize.escape(req.params.id);
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getEmployeePayment/:id', function (req, res, next) {
+  var sql = "SELECT e.id, e.code, e.prenom, e.name, e.postnom, p.uuid, p.currency_id, t.label, t.abbr, z.tax_id, z.value, z.posted"
+          + " FROM employee e "
+          + " JOIN paiement p ON e.id=p.employee_id "
+          + " JOIN tax_paiement z ON z.paiement_uuid=p.uuid "
+          + " JOIN tax t ON t.id=z.tax_id "
+          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.id) + " AND t.is_employee=1 ";
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.put('/setTaxPayment/', function (req, res, next) {
+  var sql = "UPDATE tax_paiement SET posted=1"
+          + " WHERE tax_paiement.paiement_uuid=" + sanitize.escape(req.body.paiement_uuid) + " AND tax_paiement.tax_id=" + sanitize.escape(req.body.tax_id);
 
   db.exec(sql)
   .then(function (result) {

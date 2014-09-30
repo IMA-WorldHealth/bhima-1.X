@@ -72,7 +72,8 @@
       "AMOUNT"                : "Amount Dispensed",
       "PURPOSE"               : "Purpose of Expense",
       "DAYS"                  : "Days",
-      "RUBRICS"               : "Rubrics"
+      "RUBRICS"               : "Rubrics",
+      "TAX_PAYMENT"           : "Taxes Payment"
     },
     "INCOME" : {
       "TRANSFER"              : "Transfert",
@@ -376,7 +377,7 @@
     "EMPLOYEE_GRADE"      : "Select a grade",
     "PERIOD_ACCOUNT_CONFIG" : "Select an accounting config",
     "DONOR"               : "Select a donor",
-    "PERIOD_PAYMENT" : "Select payment period"
+    "PERIOD_PAYMENT"      : "Select a payment period"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -398,7 +399,7 @@
     "STATUS_RETURNING_TITLE" : "Patient has previously been registered, but is new to the BHIMA system",
     "STATUS_RETURNING_BODY" : "Select this option for patients that have been registered, and have a prescription / sale history with the hospital, but have never been registered with the BHIMA system, this patient is returning to the insitution but being registered with the new system.",
     "STATUS_REGISTERED_TITLE" : "Patient has previously been registered in the BHIMA system",
-    "STATUS_REGISTERED_BODY" : "Select this option for patients that have been registered in the BHIMA system.  This patient has an electronic medical record for this patient that will be looked up."
+    "STATUS_REGISTERED_BODY" : "Select this option for patients that have been registered in the BHIMA system. This patient has an electronic medical record for this patient that will be looked up."
   },
 
   "REPORT"                  : {
@@ -2009,8 +2010,7 @@
     "TRACKING_NB"       : "Tracking Nb",
     "PROOF"             : "Proof of registering in Stock",
     "REPORT"            : "Report",
-    "DATE_REGISTER"     : "Register Date",
-    "PERFORM_BY"        : "Performed by : "
+    "DATE_REGISTER"     : "Register Date"
   },
 
   "STOCK_DASHBOARD"     : {
@@ -2070,7 +2070,17 @@
     "RUBRIC"        : "Taxes Payroll",
     "DELETE_SUCCESS" : "Deleted successfully",
     "NO_CONFIG_TAX" : "No Configuration Accounting"
-  }
+  },
+
+  "TAX_PAYMENT" : {
+    "EMPLOYEE"         : "Employee Name",
+    "CODE"             : "Code",
+    "TAX"              : "Tax",
+    "VALUE"            : "Value",
+    "PAID"             : "Paid",
+    "SUBMIT_PAID_TAX"  : "Paid the tax",
+    "CONFIRM_SUBMIT"   : "Do you confirm the payment of tax ?"
+  } 
 }
 
 
