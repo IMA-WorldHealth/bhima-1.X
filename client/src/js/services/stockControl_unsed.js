@@ -7,6 +7,7 @@ angular.module('bhima.services')
 	// A FAIRE : des dimunaltion concrete pour DL
 	// A FAIRE : des dimunaltion concrete pour IC
 	// A FAIRE : gerer les cas de valeur null
+	
 	var dependencies = {},
 		inventory = {};
 
