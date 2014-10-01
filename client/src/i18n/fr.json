@@ -459,7 +459,8 @@
     "NO"                 : "Non",
     "ABBR"               : "Abr.",
     "NOT_EMPTY"          : "ABR. ne peut être vide",
-    "NOT_SUP4"    : "Ne peut avoir plus de 4 caractères"    
+    "NOT_SUP4"           : "Ne peut avoir plus de 4 caractères",
+    "NOT_SUP_MAXDAY"     : "Ne peut être supérieur au total des jours ouvrables"    
 },
 
   "PATIENT_REGISTRATIONS" : {
@@ -1530,7 +1531,9 @@
       "IERE" : "IERE",
       "INPP" : "INPP",
       "TAXES_OTHERS_ENTERPRISE" : "Taxes entreprise et autres deductions",
-      "TAX_PAYMENT"           : "Paiement Taxe"
+      "TAX_PAYMENT"           : "Paiement Taxe",
+      "SELECT_ACCOUNT"        : "Selectionner un compte",
+      "ACCOUNT"               : "Compte"
     },
     "INCOME" : {
       "TRANSFER"              : "Transfert",
@@ -1544,7 +1547,9 @@
       "GENERIC" : {
         "TITLE"   : "Recette Generique",
         "RECEIPT" : "Reception"
-      }
+      },
+      "SELECT_ACCOUNT"        : "Selectionner un compte",
+      "ACCOUNT"               : "Compte"
     },
     "REPORT" : {
         "INCOME" : {

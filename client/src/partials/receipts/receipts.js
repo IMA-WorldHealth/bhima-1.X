@@ -1011,8 +1011,8 @@ angular.module('bhima.controllers')
     }
 
     function processPayslip () {
-      console.log("La fonction Process Payslip");
-      console.log("Numero de paiement : " + invoiceId);
+      /*console.log("La fonction Process Payslip");
+      console.log("Numero de paiement : " + invoiceId);*/
       $scope.TotalPaid = 0;
       $scope.TotalWithheld = 0;
       $scope.TotalNet = 0;
@@ -1022,8 +1022,8 @@ angular.module('bhima.controllers')
           }  
       }).
       success(function(data) {
-        console.log(util.sqlDate(data[0].dateFrom));
-        console.log(util.sqlDate(data[0].dateTo));
+        //console.log(util.sqlDate(data[0].dateFrom));
+        //console.log(util.sqlDate(data[0].dateTo));
         getOffDayCount();
         getPPConf();
         
@@ -1091,7 +1091,15 @@ angular.module('bhima.controllers')
 
 
               if($scope.max_day > 0){
+
+                data[0].basic_salary = exchange(
+                                data[0].basic_salary,
+                                data[0].currency_id,
+                                util.sqlDate(new Date())
+                              );
+
                 $scope.daly_rate = data[0].basic_salary / $scope.max_day;
+
                 $scope.amont_payable = $scope.daly_rate * $scope.total_day; 
                 $scope.TotalPaid += $scope.amont_payable;
                 $scope.TotalNet += $scope.amont_payable;
@@ -1103,10 +1111,17 @@ angular.module('bhima.controllers')
 
               defer.resolve(som); 
             }else{
-              console.log('Nombre de jour prester ',data[0].working_day,$scope.off_day);
+              //console.log('Nombre de jour prester ',data[0].working_day,$scope.off_day);
               $scope.total_day = data[0].working_day + $scope.off_day;
 
               if($scope.max_day > 0){
+
+                data[0].basic_salary = exchange(
+                                data[0].basic_salary,
+                                data[0].currency_id,
+                                util.sqlDate(new Date())
+                              );
+
                 $scope.daly_rate = data[0].basic_salary / $scope.max_day;
                 $scope.amont_payable = $scope.daly_rate * $scope.total_day; 
                 $scope.TotalPaid += $scope.amont_payable;

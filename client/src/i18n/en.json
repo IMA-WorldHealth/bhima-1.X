@@ -73,7 +73,9 @@
       "PURPOSE"               : "Purpose of Expense",
       "DAYS"                  : "Days",
       "RUBRICS"               : "Rubrics",
-      "TAX_PAYMENT"           : "Taxes Payment"
+      "TAX_PAYMENT"           : "Taxes Payment",
+      "SELECT_ACCOUNT"        : "Select an account",
+      "ACCOUNT"               : "Account"
     },
     "INCOME" : {
       "TRANSFER"              : "Transfert",
@@ -87,7 +89,9 @@
       "GENERIC" : {
         "TITLE"   : "Generic Income",
         "RECEIPT" : "Receipt"
-      }
+      },
+      "SELECT_ACCOUNT"        : "Select an account",
+      "ACCOUNT"               : "Account"
     },
     "REPORT" : {
         "INCOME" : {
@@ -841,7 +845,8 @@
     "NO"                 : "No",
     "ABBR"               : "Abbr.",
     "NOT_EMPTY"          : "Abbr. Can not be empty",
-    "NOT_SUP4"            : "Can not be more than 4 characters"    
+    "NOT_SUP4"           : "Can not be more than 4 characters",
+    "NOT_SUP_MAXDAY"     : "Can not be greater than the total working days"     
 },
 
   "DISTRIBUTION" : {
