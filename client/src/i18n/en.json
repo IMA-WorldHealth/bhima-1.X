@@ -656,6 +656,7 @@
     "TRANSACTION_NUMBER" : "Transaction number",
     "BY"                 : "By",
     "DRUGS"              : "Drugs",
+    "NET_BEFORE_TAXES"   : "Net before taxes",
     "NET_AFTER_TAXES"    : "Net after taxes",
     "NET_SALARY"         : "Net Salary",
     "PAYCHECK"           : "Paycheck",
