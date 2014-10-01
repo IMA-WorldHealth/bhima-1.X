@@ -653,7 +653,16 @@
     "ABBREVIATION"       : "Abreviation",    
     "TRANSACTION_NUMBER" : "Transaction number",
     "BY"                 : "By",
-    "DRUGS"              : "Drugs"
+    "DRUGS"              : "Drugs",
+    "NET_AFTER_TAXES"    : "Net after taxes",
+    "NET_SALARY"         : "Net Salary",
+    "PAYCHECK"           : "Paycheck",
+    "DAILY_RATE"         : "Daily rate", 
+    "AMOUNT_WITHHELD"    : "Amount to be withheld",
+    "TIMES"              : "Times",
+    "AMOUNT_PAYABLE"     : "Amount Payable",
+    "NET_CASH"           : "Net Cash",
+    "WORKING_DAY"        : "Working days"   
   },
 
   "INVENTORY" : {
@@ -803,7 +812,8 @@
     "STOCK_DASHBOARD"           : "Stock Dashboard",
     "DAILY_CONSUMPTION"         : "Daily Consumption",     
     "DONATION_MANAGEMENT"       : "Donation Management",
-    "CONFIG_ACCOUNTING"         : "Configuration accounting"
+    "CONFIG_ACCOUNTING"         : "Configuration accounting",
+    "PAYROLL_REPORT"            : "Payroll Reports"
   },
 
   "RUBRIC_PAYROLL"       : {
@@ -2067,7 +2077,18 @@
     "RUBRIC"        : "Taxes Payroll",
     "DELETE_SUCCESS" : "Deleted successfully",
     "NO_CONFIG_TAX" : "No Configuration Accounting"
-  }
+  },
+
+  "PAYCHECK" : {
+    "TITLE"         : "Payroll Reports",
+    "PAYSLIP"       : "Payslip",
+    "VIEW"          : "View",
+    "SELECT_PERIOD" : "Select a payment period",
+    "MATRICULE"     : "Matricule",
+    "FAM_STATUS"    : "Familly status",
+    "GRADE"         : "Grade"
+  } 
+
 }
 
 
