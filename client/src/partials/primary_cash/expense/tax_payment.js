@@ -29,6 +29,30 @@ angular.module('bhima.controllers')
       query : 'user_session'
     };
 
+    dependencies.cash_box = {
+      required : true,
+      query : {
+        tables : {
+          'cash_box_account_currency' : {
+            columns : ['id', 'currency_id', 'account_id']
+          },
+          'currency' : {
+            columns : ['symbol', 'min_monentary_unit']
+          },
+          'cash_box' : {
+            columns : ['id', 'text', 'project_id']
+          }
+        },
+        join : [
+          'cash_box_account_currency.currency_id=currency.id',
+          'cash_box_account_currency.cash_box_id=cash_box.id'
+        ],
+        where : [
+          'cash_box_account_currency.cash_box_id=' + session.cashbox
+        ]
+      }
+    };
+
     dependencies.paiement_period = {
       query : {
         tables : {
@@ -41,7 +65,7 @@ angular.module('bhima.controllers')
 
     appstate.register('project', function (project) {
       $scope.project = project;               
-        validate.process(dependencies, ['paiement_period', 'cashier'])
+        validate.process(dependencies, ['paiement_period', 'cashier', 'cash_box'])
         .then(init, function (err) {
           messenger.danger(err.message + ' ' + err.reference);
         });     
@@ -51,13 +75,11 @@ angular.module('bhima.controllers')
       session.model = model;
       cache.fetch('paiement_period')
       .then(function (pp) {
-        if(pp){
-          session.pp = pp; 
-          session.pp_label = formatPeriod (pp);
-        }else {
-          session.pp = {};
-          session.pp.id = -1;
+        if(!pp){
+          throw new Error("period paiement not defined");         
         }
+        session.pp = pp; 
+        session.pp_label = formatPeriod (pp);
         
         dependencies.employees_payment = {
           query : '/getEmployeePayment/' + session.pp.id
@@ -73,17 +95,11 @@ angular.module('bhima.controllers')
         session.model = model;
         session.configured = true;
         session.complete = true;
-
-        if(session.model.employees_payment.data.length > 0){
-          session.available = true;
-        }else {
-          session.available = false;
-        }
-
-        console.log(session);
+        session.available = (session.model.employees_payment.data.length > 0) ? true : false
       })
       .catch(function (err) {
         console.log('err', err);
+        messenger.danger(err.message);
       });
     }
 
@@ -103,27 +119,37 @@ angular.module('bhima.controllers')
     function setConfiguration (pp) {
       if(pp){
         cache.put('paiement_period', pp);
-        session.configured = true;
         session.pp = pp;
+        session.configured = true;
         session.complete = true;
+        session.available = true;
         init(session.model);
       }            
     }
 
+    function getCashAccountID (currency_id) {
+      console.log('model', session.model);
+      return session.model.cash_box.data.filter(function (item) {
+        return item.currency_id === currency_id;
+      })[0].account_id;
+    }
+
     function submit (emp) {
+      console.log("emp", emp);
+      var document_uuid = uuid();
 
       var primary = {
         uuid          : uuid(),
         project_id    : $scope.project.id,
         type          : 'S',
         date          : util.sqlDate(new Date()),
-        deb_cred_uuid : emp.id,
+        deb_cred_uuid : emp.creditor_uuid,
         deb_cred_type : 'C',
-        account_id    : 486, // A FIXE : Il faut le recuperer de facon auto
+        account_id    : getCashAccountID(emp.currency_id), // A FIXE : Il faut le recuperer de facon auto 486
         currency_id   : emp.currency_id,
         cost          : emp.value,
         user_id       : session.model.cashier.data.id,
-        description   : "Tax Payment " + '(' +emp.abbr+ ') : ' + emp.name + emp.postnom,
+        description   : "Tax Payment " + '(' + emp.label + ') : ' + emp.name + emp.postnom,
         cash_box_id   : session.cashbox,
         origin_id     : 7,
       };
@@ -133,47 +159,39 @@ angular.module('bhima.controllers')
         primary_cash_uuid : primary.uuid,
         debit             : 0,
         credit            : primary.cost,
-        document_uuid     : emp.uuid
+        inv_po_id         : emp.paiement_uuid,
+        document_uuid     : document_uuid
       };
 
-      var tax_paiement = {
-        paiement_uuid : emp.uuid,
-        tax_id : emp.tax_id,
-        posted : 1
-      };
-
-      var result = confirm($translate.instant('PAYMENT_PERIOD.CONFIRM'));
-      if(result){
-        connect.post('primary_cash',[primary],['uuid'])
-        .then(function () {
-          return connect.post('primary_cash_item',[primary_details],['uuid']);
-        })
-        .then(function () {
-          // A FIXE : Utilisation de $http au lieu de connect
-          var formatObject = {
-            table : 'tax_paiement',
-            paiement_uuid : emp.uuid,
-            tax_id : emp.tax_id
-          };
-          return $http
-            .put('/setTaxPayment/', formatObject)
-            .success(function (res) {
-              console.log('Update Tax Payment success');
-            });
-        })
-        .then(function () {
-          messenger.success("success");
-          validate.refresh(dependencies, ['employees_payment']);
-        })
-        .catch(function (err) {
-          messenger.danger(err);
-        });
+      var other = {
+        tax_id : emp.tax_id
       }
-      
+
+      var package = {
+        primary : primary,
+        primary_details : primary_details,
+        other : other
+      }
+
+      $http.post('payTax/', package)
+      .then(function (res){
+         // A FIXE : Using $http instead connect
+        var formatObject = {
+          table : 'tax_paiement',
+          paiement_uuid : emp.paiement_uuid,
+          tax_id : emp.tax_id
+        };
+        return $http.put('/setTaxPayment/', formatObject)
+        .success(function (res) {
+          emp.posted = 1;
+          console.log('Update Tax Payment success');
+        });
+      });
     }
 
     $scope.formatPeriod = formatPeriod;
     $scope.reconfigure = reconfigure;
     $scope.submit = submit;
+    $scope.setConfiguration = setConfiguration;
   }
 ]);
