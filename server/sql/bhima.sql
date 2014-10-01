@@ -1460,11 +1460,15 @@ create table `donations` (
   `uuid`                    char(36) not null,
   `donor_id`                int not null,
   `employee_id`             int not null,
-  `tracking_number`         char(36) not null,
   `date`                    date,
   primary key (`uuid`)
 ) engine=innodb;
 
 
-
-
+drop table if exists `donation_item`;
+create table `donation_item` (
+  `uuid`                    char(36) not null,
+  `donation_uuid`           char(36) not null,
+  `tracking_number`         char(36) not null,
+  primary key (`uuid`)
+) engine=innodb;
