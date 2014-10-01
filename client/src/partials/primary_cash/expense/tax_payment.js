@@ -106,6 +106,7 @@ angular.module('bhima.controllers')
         session.configured = true;
         session.pp = pp;
         session.complete = true;
+        session.available = true;
         init(session.model);
       }            
     }
@@ -123,7 +124,7 @@ angular.module('bhima.controllers')
         currency_id   : emp.currency_id,
         cost          : emp.value,
         user_id       : session.model.cashier.data.id,
-        description   : "Tax Payment " + '(' +emp.abbr+ ') : ' + emp.name + emp.postnom,
+        description   : 'Tax Payment ' + '(' +emp.abbr+ ') : ' + emp.name + emp.postnom,
         cash_box_id   : session.cashbox,
         origin_id     : 7,
       };
