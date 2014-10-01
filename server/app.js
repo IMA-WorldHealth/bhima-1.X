@@ -43,9 +43,11 @@ var report            = require('./routes/report')(db, sanitize, util),
     depotRouter       = require('./routes/depot')(db, sanitize, store),
     tree              = require('./routes/tree')(db, parser),
     drugRouter        = require('./routes/drug')(db),
+    locationRouter    = require('./routes/location')(db, express.Router()),
     dataRouter        = require('./routes/data')(db, parser, express.Router()),
     serviceDist       = require('./routes/serviceDist')(db, parser, journal, uuid),
-    consumptionLoss   = require('./routes/consumptionLoss')(db, parser, journal, uuid);
+    consumptionLoss   = require('./routes/consumptionLoss')(db, parser, journal, uuid),
+    donation          = require('./routes/postingDonation')(db, parser, journal, uuid);
 
 // create app
 var app = express();
@@ -65,14 +67,36 @@ app.use(authorize);
 app.use(projects);
 app.use(express.static(cfg.static, { maxAge : 10000 }));
 
+// routers
+app.use('/data', dataRouter);
+app.use('/location', locationRouter);
+
 app.get('/', function (req, res, next) {
   /* jshint unused : false */
   // This is to preserve the /#/ path in the url
   res.sendfile(cfg.rootFile);
 });
 
-// data routes
-app.use('/data', dataRouter);
+/* this is required for location select */
+app.get('/location/:villageId?', function (req, res, next) {
+  var specifyVillage = req.params.villageId ? ' AND `village`.`uuid`=\'' + req.params.villageId + '\'' : '';
+
+  var sql =
+    'SELECT `village`.`uuid` as `uuid`, village.uuid as village_uuid, `village`.`name` as `village`, ' +
+      '`sector`.`name` as `sector`, sector.uuid as sector_uuid, `province`.`name` as `province`, province.uuid as province_uuid, ' +
+      '`country`.`country_en` as `country`, country.uuid as country_uuid ' +
+    'FROM `village`, `sector`, `province`, `country` ' +
+    'WHERE village.sector_uuid = sector.uuid AND ' +
+      'sector.province_uuid = province.uuid AND ' +
+      'province.country_uuid=country.uuid ' + specifyVillage + ';';
+
+  db.exec(sql)
+  .then(function (rows) {
+    res.send(rows);
+  })
+  .catch(next)
+  .done();
+});
 
 app.post('/purchase', function (req, res, next) {
   createPurchase.run(req.session.user_id, req.body)
@@ -82,7 +106,6 @@ app.post('/purchase', function (req, res, next) {
   .catch(next)
   .done();
 });
-
 
 app.post('/sale/', function (req, res, next) {
 
@@ -103,6 +126,13 @@ app.post('/consumption_loss/', function (req, res, next) {
   consumptionLoss.execute(req.body, req.session.user_id, function (err, ans) {
     if (err) { return next(err); }
     res.send({dist: ans});
+  });
+});
+
+app.post('/posting_donation/', function (req, res, next) {
+  donation.execute(req.body, req.session.user_id, function (err, ans) {
+    if (err) { return next(err); }
+    res.send({resp: ans});
   });
 });
 
@@ -669,6 +699,10 @@ app.get('/getCheckOffday/', function (req, res, next) {
   .done();
 });
 
+
+/* new locations API */
+app.use('/location', locationRouter);
+
 app.get('/tree', function (req, res, next) {
   /* jshint unused : false*/
 
@@ -679,26 +713,6 @@ app.get('/tree', function (req, res, next) {
   .catch(function (err) {
     res.send(301, err);
   })
-  .done();
-});
-
-app.get('/location/:villageId?', function (req, res, next) {
-  var specifyVillage = req.params.villageId ? ' AND `village`.`uuid`=\'' + req.params.villageId + '\'' : '';
-
-  var sql =
-    'SELECT `village`.`uuid` as `uuid`, village.uuid as village_uuid, `village`.`name` as `village`, ' +
-      '`sector`.`name` as `sector`, sector.uuid as sector_uuid, `province`.`name` as `province`, province.uuid as province_uuid, ' +
-      '`country`.`country_en` as `country`, country.uuid as country_uuid ' +
-    'FROM `village`, `sector`, `province`, `country` ' +
-    'WHERE village.sector_uuid = sector.uuid AND ' +
-      'sector.province_uuid = province.uuid AND ' +
-      'province.country_uuid=country.uuid ' + specifyVillage + ';';
-
-  db.exec(sql)
-  .then(function (rows) {
-    res.send(rows);
-  })
-  .catch(next)
   .done();
 });
 
@@ -1053,8 +1067,28 @@ app.get('/getAccount6/', function (req, res, next) {
   .done();
 });
 
+app.get('/getAccount7/', function (req, res, next) {
+  var sql ="SELECT id, enterprise_id, account_number, account_txt FROM account WHERE account_number LIKE '7%' AND account_type_id <> '3'";
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
 app.get('/available_payment_period/', function (req, res, next) {
-  var sql = "SELECT p.id, p.config_tax_id, p.config_rubric_id, p.label, p.dateFrom, p.dateTo, r.label AS RUBRIC, t.label AS TAX, a.label AS ACCOUNT FROM paiement_period p, config_rubric r, config_tax t, config_accounting a WHERE p.config_tax_id = t.id AND p.config_rubric_id = r.id AND a.id=p.config_accounting_id ORDER BY p.id DESC";
+  var sql = "SELECT p.id, p.config_tax_id, p.config_rubric_id, p.config_accounting_id, p.label, p.dateFrom, p.dateTo, r.label AS RUBRIC, t.label AS TAX, a.label AS ACCOUNT FROM paiement_period p, config_rubric r, config_tax t, config_accounting a WHERE p.config_tax_id = t.id AND p.config_rubric_id = r.id AND a.id=p.config_accounting_id ORDER BY p.id DESC";
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/taxe_ipr_currency/', function (req, res, next) {
+  var sql = "SELECT t.id,t.taux,t.tranche_annuelle_debut,t.tranche_annuelle_fin,t.tranche_mensuelle_debut,t.tranche_mensuelle_fin,t.ecart_annuel,t.ecart_mensuel,t.impot_annuel,t.impot_mensuel,t.cumul_annuel,t.cumul_mensuel,t.currency_id,c.symbol FROM taxe_ipr t, currency c WHERE t.currency_id = c.id";
   db.exec(sql)
   .then(function (result) {
     res.send(result);
@@ -1217,7 +1251,6 @@ app.get('/getStockEntry/', function (req, res, next) {
   .done();
 });
 
-//     TOTAL DES CONSOMMATIONS PAR RAPPORT A UN INVENTORY UUID
 app.get('/getStockConsumption/', function (req, res, next) {
   var sql = "SELECT inventory.text, SUM(consumption.quantity) AS 'quantity', inventory.uuid, stock.inventory_uuid"
           + " FROM consumption RIGHT JOIN stock ON stock.tracking_number = consumption.tracking_number"
@@ -1305,6 +1338,7 @@ app.get('/getDataTaxes/', function (req, res, next) {
 // Fin de l'information sur la fiche de paiement
 
 app.get('/getNombreMoisStockControl/:inventory_uuid', function (req, res, next) {
+
   var sql = "SELECT COUNT(DISTINCT(MONTH(c.date))) AS nb"
           + " FROM consumption c"
           + " JOIN stock s ON c.tracking_number=s.tracking_number "
@@ -1314,7 +1348,6 @@ app.get('/getNombreMoisStockControl/:inventory_uuid', function (req, res, next) 
 
   db.exec(sql)
   .then(function (result) {
-    console.log(result);
     res.send(result[0]);
   })
   .catch(function (err) { next(err); })
@@ -1328,8 +1361,7 @@ app.get('/monthlyConsumptions/:inventory_uuid/:nb', function (req, res, next) {
           + " JOIN inventory i ON i.uuid=s.inventory_uuid "
           + " WHERE s.inventory_uuid=" + sanitize.escape(req.params.inventory_uuid)
           + " AND c.uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss )"
-          + " AND (c.date BETWEEN DATE_SUB(CURDATE(),INTERVAL " + sanitize.escape(req.params.inventory_uuid) + " MONTH) AND CURDATE())"
-          + " GROUP BY i.uuid";
+          + " AND (c.date BETWEEN DATE_SUB(CURDATE(),INTERVAL " + sanitize.escape(req.params.nb) + " MONTH) AND CURDATE())";
 
   db.exec(sql)
   .then(function (result) {
@@ -1340,13 +1372,14 @@ app.get('/monthlyConsumptions/:inventory_uuid/:nb', function (req, res, next) {
 });
 
 app.get('/getDelaiLivraison/:id', function (req, res, next) {
-  var sql = "SELECT ROUND(AVG(CEIL(DATEDIFF(s.entry_date,p.purchase_date)/30))) AS dl"
-          + " FROM purchase p"
-          + " JOIN stock s ON p.uuid=s.purchase_order_uuid "
-          + " JOIN purchase_item z ON p.uuid=z.purchase_uuid "
-          + " JOIN inventory i ON s.inventory_uuid=i.uuid "
-          + " WHERE z.inventory_uuid=s.inventory_uuid "
-          + " AND s.inventory_uuid=" + sanitize.escape(req.params.id);
+
+  var sql = "SELECT " + 
+  "ROUND(AVG(ROUND(DATEDIFF(s.entry_date, p.purchase_date) / 30))) AS dl " +
+  "FROM purchase p " +
+  "JOIN stock s ON p.uuid=s.purchase_order_uuid " +
+  "JOIN purchase_item z ON p.uuid=z.purchase_uuid " +
+  "JOIN inventory i ON s.inventory_uuid=i.uuid " +
+  "WHERE z.inventory_uuid=s.inventory_uuid AND s.inventory_uuid=" + sanitize.escape(req.params.id);
 
   db.exec(sql)
   .then(function (result) {
@@ -1372,10 +1405,38 @@ app.get('/getCommandes/:id', function (req, res, next) {
 });
 
 app.get('/getMonthsBeforeExpiration/:id', function (req, res, next) {
-  var sql = "SELECT s.tracking_number, s.lot_number, FLOOR(DATEDIFF(s.expiration_date,CURDATE())/30) AS months_before_expiration"
+  var sql = "SELECT s.tracking_number, s.lot_number, FLOOR(DATEDIFF(s.expiration_date, CURDATE()) / 30) AS months_before_expiration"
           + " FROM stock s"
           + " JOIN inventory i ON s.inventory_uuid=i.uuid "
           + " WHERE s.inventory_uuid=" + sanitize.escape(req.params.id);
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getEmployeePayment/:id', function (req, res, next) {
+  var sql = "SELECT e.id, e.code, e.prenom, e.name, e.postnom, p.uuid, p.currency_id, t.label, t.abbr, z.tax_id, z.value, z.posted"
+          + " FROM employee e "
+          + " JOIN paiement p ON e.id=p.employee_id "
+          + " JOIN tax_paiement z ON z.paiement_uuid=p.uuid "
+          + " JOIN tax t ON t.id=z.tax_id "
+          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.id) + " AND t.is_employee=1 ";
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.put('/setTaxPayment/', function (req, res, next) {
+  var sql = "UPDATE tax_paiement SET posted=1"
+          + " WHERE tax_paiement.paiement_uuid=" + sanitize.escape(req.body.paiement_uuid) + " AND tax_paiement.tax_id=" + sanitize.escape(req.body.tax_id);
 
   db.exec(sql)
   .then(function (result) {

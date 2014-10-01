@@ -113,12 +113,7 @@ angular.module('bhima.controllers')
       $scope.project = project;               
         validate.process(dependencies, ['enterprise', 'pcash_module', 'paiement_period', 'cashier', 'exchange_rate', 'cash_box'])
         .then(init, function (err) {
-          messenger.danger(err.message + ' ' + err.reference);
-          console.log('ko', err);
-          $translate('PRIMARY_CASH.EXPENSE.LOADING_ERROR')
-          .then(function (value) {
-            messenger.danger(value);
-          }); 
+          messenger.danger(err.message + ' ' + err.reference);           
         });     
     });
 
@@ -235,7 +230,8 @@ angular.module('bhima.controllers')
         return getEmployeeINSS(self);
       })
       .then(function (employee_INSS) {
-        self.INS1 = employee_INSS;        
+        self.INS1 = employee_INSS;
+        self.net_before_taxe = self.emp.basic_salary - self.INS1;        
         return getIPR(self);        
       })
       .then(function (IPR){
@@ -255,16 +251,15 @@ angular.module('bhima.controllers')
 
       var net_imposable = exchange.convertir(
         row.net_before_taxe,
-        session.model.enterprise.data[0].currency_id,                                                                    
+        session.selectedItem.currency_id,                                                                    
         1,  // will be the ipr currency                  
         util.sqlDate(new Date())
       );
 
 
-
       var montant_annuel = net_imposable * 12;
 
-      var ind;
+      var ind = -1;
       for(var i = 0; i< tranches.length; i++) {
         if(montant_annuel > tranches[i].tranche_annuelle_debut && montant_annuel < tranches[i].tranche_annuelle_fin) {
           ind = i;
@@ -272,17 +267,18 @@ angular.module('bhima.controllers')
         }
       }
 
-
-      if(!ind) { return 0; }
+      if(ind < 0) { return 0; }
       var initial = tranches[ind].tranche_annuelle_debut;
       var taux = tranches[ind].taux / 100;
+
       var cumul = (tranches[ind - 1]) ? tranches[ind - 1].cumul_annuel : 0;
 
       var value = (((montant_annuel - initial) * taux) + cumul) / 12;
 
       if(row.emp.nb_enfant > 0) {
         value -= value * (row.emp.nb_enfant * 2) / 100;
-      }     
+      }
+      //FIX ME : currency hard coded     
 
       return exchange.convertir(value, 1, session.selectedItem.currency_id, util.sqlDate(new Date()));
     }
@@ -558,8 +554,7 @@ angular.module('bhima.controllers')
 
       return $q.all(list.map(function (elmt) {
         var rc_records = [];
-        var tc_records = [];
-        elmt.net_before_taxe = elmt.emp.basic_salary - elmt.INS1;
+        var tc_records = [];        
         elmt.net_after_taxe = elmt.net_before_taxe - elmt.IPR1 - elmt.ONEM - elmt.IERE - elmt.INPP;
         elmt.net_salary = elmt.net_after_taxe + (elmt.HOUS + elmt.TRAN + elmt.ALLO + elmt.SENI - (elmt.ADVA + (elmt.daily_salary * elmt.off_day))) + elmt.offdays_cost; 
         var paiement = {

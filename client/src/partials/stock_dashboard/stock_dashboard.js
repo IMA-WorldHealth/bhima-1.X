@@ -159,6 +159,7 @@ angular.module('bhima.controllers')
       $scope.expired180 = data;
       $scope.nbExpired180 = data.length;
       for (var item in $scope.TrackingNumbers){
+
         var TrackingNumber = $scope.TrackingNumbers[item];
         for(var item2 in data){
           var data2 = data[item2];
@@ -183,6 +184,7 @@ angular.module('bhima.controllers')
       $scope.expired365 = data;
       $scope.nbExpired365 = data.length;
       for (var item in $scope.TrackingNumbers){
+
         var TrackingNumber = $scope.TrackingNumbers[item];
         for(var item2 in data){
           var data2 = data[item2];
@@ -227,6 +229,7 @@ angular.module('bhima.controllers')
     success(function(data) {
       var stocksOut = 0,
         stocksIn = 0;
+
 
       for (var item in $scope.enterStocks){
         var stock = $scope.enterStocks[item];

@@ -13,10 +13,14 @@ angular.module('bhima.controllers')
   'store',
   'uuid',
   'util',
-  function ($scope,$q,$translate,$location,$routeParams,validate,connect,appstate,messenger,precision,Store,uuid,util) {
+  'appcache',
+  '$http',
+  function ($scope, $q, $translate, $location, $routeParams, validate, connect, appstate, messenger, precision, Store, uuid, util, Appcache, $http) {
     var dependencies = {}, 
-        session = $scope.session = {cfg : {}, totals : []}, 
+        session = $scope.session = {cfg : {}, totals : [], selectedAccount : {}, configured : true}, 
         warnings = $scope.warnings = {};
+
+    var cache = new Appcache('donation');
 
     if (!angular.isDefined($routeParams.depotId)) {
       messenger.error('NO_DEPOT_ID');
@@ -78,29 +82,53 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.accounts = {
+      required : true,
+      query : 'getAccount7/'
+    }
+
+    dependencies.enterprise = {
+      required : true,
+      query : {
+        tables : {
+          enterprise : {columns : ['currency_id']}
+        }
+      }
+    }
+
     appstate.register('project', function (project) {
       $scope.project = project;
-      validate.process(dependencies)
+      validate.process(dependencies)      
       .then(startup)
+      // .then(function (sacc) {
+      //   if(!sacc) {
+      //     session.configured = false;
+      //     return;
+      //   }
+      //   session.configured = true;
+        
+      // })
       .catch(error);
     });
 
     function startup (models) {
+
       session.config = {};
       session.config.date = new Date();
       session.donation = {};
       session.donation.items = [];
-      $scope.addDonationItem();
+      addDonationItem();
 
       angular.extend($scope, models);
+      console.log("ID", $scope.enterprise);
       session.depot = $scope.depots.get($routeParams.depotId);
+      // return cache.fetch('selectedAccount');
     }
 
     function error (err) {
       messenger.danger(JSON.stringify(err));
     }
 
-    // ======================== STEP 1 =============================//
     function DonationItem() {
       var self = this;
 
@@ -127,11 +155,11 @@ angular.module('bhima.controllers')
       return this;
     }
 
-    $scope.addDonationItem = function() {
+    function addDonationItem () {
       var item = new DonationItem();
       session.donation.items.push(item);
       return item;
-    };
+    }
 
     $scope.updateDonationItem = function(donationItem, inventoryReference) {
       if (donationItem.inventoryReference) {
@@ -146,21 +174,21 @@ angular.module('bhima.controllers')
       $scope.inventory.recalculateIndex();
     };
 
-    $scope.removeDonationItem = function(index) {
+    function removeDonationItem (index) {
       var currentItem = session.donation.items[index];
 
       if (currentItem.inventoryReference) {
         $scope.inventory.post(currentItem.inventoryReference);
         $scope.inventory.recalculateIndex();
       }
-      session.items.splice(index, 1);
-    };
+      session.donation.items.splice(index, 1);
+    }
 
     $scope.donationTotal = function() {
       return session.donation.items.reduce(priceMultiplyQuantity, 0);
     };
 
-    $scope.nextStep = function nextStep() {
+    function nextStep() {
       if(session.donation.items.length > 0){
         
         session.donation.items.forEach(function (donation) {
@@ -187,9 +215,6 @@ angular.module('bhima.controllers')
       return (b.code) ? a + (b.quantity * b.purchase_price) : a;
     }
 
-    // ========================== END STEP 1 ===========================//
-
-    // ============================= STEP 2 ===========================//
     function validateSession () {
       session.valid = session.donation.items.every(function (drug) {
         return drug.validLots;
@@ -205,7 +230,7 @@ angular.module('bhima.controllers')
       this.quantity = 0;
     }
 
-    $scope.addLot = function addLot (drug) {
+    function addLot (drug) {
       var lot = new Lot();
       lot.code = drug.code;
       lot.inventory_uuid = drug.inventory_uuid;
@@ -275,25 +300,59 @@ angular.module('bhima.controllers')
     $scope.accept = function (){
       var document_id = uuid();
       var lots = processLots();
-      var donations = processDonations();
-      var movements = processMovements(document_id);
 
-      connect.post('stock',lots)
-      .then(function () {
-        return connect.post('movement', movements);
-      })
-      .then(function () {
-        return connect.post('donations',donations);
-      })
+      return $q.all(lots.map(function (lot) {
+        var donation = {
+          uuid            : uuid(),
+          donor_id        : session.config.donor.id,
+          employee_id     : session.config.employee.id,
+          tracking_number : lot.tracking_number,
+          date            : util.sqlDate(session.config.date)
+        }
+
+        var movement = {
+          uuid : uuid(),
+          document_id     : document_id,
+          tracking_number : lot.tracking_number,
+          date            : util.sqlDate(new Date()),
+          quantity        : lot.quantity,
+          depot_entry     : session.cfg.depot.id
+        }
+
+        var synthese = {
+          lot : lot,
+          movement : movement,
+          donation : donation,
+          currency_id : $scope.enterprise.data[0].currency_id,
+          project_id : $scope.project.id
+        }
+
+        var def = $q.defer();
+
+        connect.post('stock',[lot])
+        .then(function () {
+          return connect.post('movement', [movement]);
+        })
+        .then(function () {
+          return connect.post('donations', [donation]);
+        })
+        .then(function(){          
+          return $http.post('posting_donation/', synthese);
+        })
+        .then(function (res) {
+          def.resolve(res);
+        })
+        return def.promise;      
+      }))
       .then(function () {
         messenger.success('STOCK.ENTRY.WRITE_SUCCESS');
       })
+      .then(function () {
+        $location.path('/stock/donation_management/report/' + document_id);
+      })
       .catch(function () {
         messenger.error('STOCK.ENTRY.WRITE_ERROR');
-      })
-      .finally(function () {
-        $location.path('/stock/donation_management/report/' + document_id);
-      });
+      }); 
     };
 
     function processMovements (document_id) {
@@ -343,9 +402,7 @@ angular.module('bhima.controllers')
 
       return donations;
     }
-    // =========================== END STEP 2 ===========================//
 
-    // ========= CHOOSE VIEW =========== //
     $scope.toggleView = function(){
       if(session.crud_or_read == 'crud'){
         session.crud_or_read = 'read';
@@ -357,6 +414,31 @@ angular.module('bhima.controllers')
         session.read = true;
       }
     };
-    // ========= END CHOOSE VIEW ======== //
+
+    function formatAccount (acc) {
+      return [acc.account_number, acc.account_txt].join(' - ');
+    }
+
+    function setConfiguration (acc) {
+      if(acc){
+        cache.put('selectedAccount', acc);
+        session.configured = true;
+        session.acc = acc;
+      }            
+    }
+
+    function reconfigure() {
+      cache.remove('selectedAccount');
+      session.acc = null;
+      session.configured = false;
+    } 
+
+    $scope.formatAccount = formatAccount;
+    $scope.setConfiguration = setConfiguration;
+    $scope.addDonationItem = addDonationItem;
+    $scope.removeDonationItem = removeDonationItem;
+    $scope.reconfigure = reconfigure;
+    $scope.nextStep = nextStep;
+    $scope.addLot = addLot;
   }
 ]);
