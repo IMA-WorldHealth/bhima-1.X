@@ -12,7 +12,7 @@ angular.module('bhima.controllers')
   '$location',
   function ($scope, $routeParams, validate, messenger, appstate, connect, uuid, util, Appcache, $location) {
     var isDefined, dependencies = {};
-    var session = $scope.session = { receipt : { date : new Date() } };
+    var session = $scope.session = { receipt : { date : new Date() }, configure : false, complete : false };
     var cache = new Appcache('expense');
 
     // TODO
@@ -53,6 +53,10 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.account6 = {
+      query : '/getAccount6/'
+    };
+
     cache.fetch('currency').then(load);
 
     function load (currency) {
@@ -68,6 +72,8 @@ angular.module('bhima.controllers')
         session.receipt.date = new Date();
         session.receipt.cost = 0.00;
         session.receipt.cash_box_id = $routeParams.id;
+
+        session.account6 = models.account6.data;
       })
       .catch(function (err) {
         messenger.danger(err);
@@ -157,6 +163,24 @@ angular.module('bhima.controllers')
     function update (value) {
       session.receipt.recipient = value;
     }
+
+    $scope.formatAccount = function (ac) {
+      return ac.account_number + ' - ' + ac.account_txt;
+    };
+
+    $scope.reconfigure = function () {
+      session.configured = false;
+      session.ac = null;
+      session.complete = false;
+    };
+
+    $scope.setConfiguration = function (ac) {
+      if(ac){
+        session.configured = true;
+        session.ac = ac;
+        session.complete = true;
+      } 
+    };
 
     $scope.update = update;
     $scope.setCurrency = setCurrency;
