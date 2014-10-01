@@ -841,7 +841,8 @@
     "NO"                 : "No",
     "ABBR"               : "Abbr.",
     "NOT_EMPTY"          : "Abbr. Can not be empty",
-    "NOT_SUP4"            : "Can not be more than 4 characters"    
+    "NOT_SUP4"           : "Can not be more than 4 characters",
+    "NOT_SUP_MAXDAY"     : "Can not be greater than the total working days"     
 },
 
   "DISTRIBUTION" : {

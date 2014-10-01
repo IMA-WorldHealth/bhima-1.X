@@ -212,7 +212,10 @@ angular.module('bhima.controllers')
           session.selectedItem.currency_id,
           util.sqlDate(new Date())
         );
+        self.max_day = session.data.max_day;
         self.working_day = session.data.max_day - (hl + session.data.off_day);
+        self.hollydays = hl;
+        self.offdays = session.data.off_day;
         self.daily_salary = self.emp.basic_salary / session.data.max_day;
         self.ALLO = 0;
         self.TRAN = 0;
@@ -231,7 +234,7 @@ angular.module('bhima.controllers')
       })
       .then(function (employee_INSS) {
         self.INS1 = employee_INSS;
-        self.net_before_taxe = self.emp.basic_salary - self.INS1;        
+        self.net_before_taxe = ((self.working_day + self.hollydays + self.offdays) * self.daily_salary) - self.INS1;        
         return getIPR(self);        
       })
       .then(function (IPR){
@@ -491,8 +494,10 @@ angular.module('bhima.controllers')
       })[0];
 
       if(item) {
+        //console.log("La valeur du pourcentage",item.value,"Le salaire de base",row.working_day,row.hollydays,row.offdays);
+        //console.log("INSS EMPLOYER",((row.daily_salary * (row.working_day + row.hollydays + row.offdays)) * item.value) / 100 );
         employee_inss = (item.is_percent) ? 
-        (row.emp.basic_salary * item.value) / 100 : item.value;    
+        ((row.daily_salary * (row.working_day + row.hollydays + row.offdays)) * item.value) / 100 : item.value;    
       }
       return $q.when(employee_inss);      
     }
@@ -507,7 +512,7 @@ angular.module('bhima.controllers')
 
       if(item) {
         enterprise_inss = (item.is_percent) ? 
-        (row.emp.basic_salary * item.value) / 100 : item.value;    
+        ((row.daily_salary * (row.working_day + row.hollydays + row.offdays)) * item.value) / 100 : item.value;    
       }
       return $q.when(enterprise_inss);      
     }
@@ -644,6 +649,40 @@ angular.module('bhima.controllers')
       });
     }
 
+    function refresh(row){
+      var totaldays = row.working_day + row.hollydays + row.offdays; 
+      if(!row.working_day){
+        row.working_day = 0;
+      }
+
+      if((row.working_day) && (totaldays <= row.max_day)){
+        getEmployeeINSS(row)
+        .then(function (val) {
+          row.INS1 = val;
+          row.net_before_taxe = ((row.working_day + row.hollydays + row.offdays) * row.daily_salary) - row.INS1; 
+        });   
+
+        getEnterpriseINSS(row)
+        .then(function (val) {
+          row.INS2 = val;
+        });   
+
+      } else if (totaldays > row.max_day) {
+        messenger.danger($translate.instant('RUBRIC_PAYROLL.NOT_SUP_MAXDAY'));  
+        row.working_day = 0;
+        getEmployeeINSS(row)
+        .then(function (val) {
+          row.INS1 = val;
+          row.net_before_taxe = ((row.working_day + row.hollydays + row.offdays) * row.daily_salary) - row.INS1;
+        });        
+
+        getEnterpriseINSS(row)
+        .then(function (val) {
+          row.INS2 = val;
+        }); 
+      } 
+    }
+
     $scope.$watch('session.selectedItem', function (nval, oval) {
 
        if(session.rows.length) {
@@ -762,5 +801,6 @@ angular.module('bhima.controllers')
     $scope.setConfiguration = setConfiguration;
     $scope.reconfigure = reconfigure;
     $scope.submit = submit;
+    $scope.refresh = refresh;
   }
 ]);
