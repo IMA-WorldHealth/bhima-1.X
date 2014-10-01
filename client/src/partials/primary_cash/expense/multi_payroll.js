@@ -370,7 +370,7 @@ angular.module('bhima.controllers')
               columns : ['id', 'label', 'date', 'percent_pay']
             }
           },
-          where : ['offday.date>=' + util.sqlDate(model.paiement_period.data[0].dateFrom), 'AND', 'offday.date<=' + util.sqlDate(model.paiement_period.data[0].dateTo)]
+          where : ['offday.date>=' + util.sqlDate(session.pp.dateFrom), 'AND', 'offday.date<=' + util.sqlDate(session.pp.dateTo)]
         }
       };     
 

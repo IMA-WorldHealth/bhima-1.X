@@ -456,6 +456,10 @@
     .when('/config_accounting/', {
       controller: 'config_accounting',
       templateUrl: 'partials/config_accounting/config_accounting.html'
+    })
+    .when('/reports/payroll_report/', {
+      controller : 'payroll_report',
+      templateUrl : 'partials/reports/payroll_report/payroll_report.html'
     });               
   }
   

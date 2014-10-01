@@ -101,7 +101,11 @@
       "/getExpiredTimes/",
       "/getConsumptionTrackingNumber/",
       "/getStockEntry/",
-      "/getStockConsumption/"
+      "/getStockConsumption/",
+      "/getReportPayroll/",
+      "/getDataPaiement/",
+      "/getDataRubrics/",
+      "/getDataTaxes/"
     ]
   }
 }

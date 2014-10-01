@@ -660,7 +660,7 @@ app.get('/getCheckHollyday/', function (req, res, next) {
 });
 
 app.get('/getCheckOffday/', function (req, res, next) {
-  var sql ="SELECT * FROM offday WHERE date = '" + req.query.date + "'";
+  var sql ="SELECT * FROM offday WHERE date = '" + req.query.date + "' AND id <> '" + req.query.id +"'";
   db.exec(sql)
   .then(function (result) {
     res.send(result);
@@ -1231,6 +1231,78 @@ app.get('/getStockConsumption/', function (req, res, next) {
   .catch(function (err) { next(err); })
   .done();
 });
+
+//Obtention de periode de paiement
+
+app.get('/getReportPayroll/', function (req, res, next) {
+  var sql = "SELECT paiement.uuid, paiement.employee_id, paiement.paiement_period_id, paiement.currency_id,"
+          + " paiement.net_before_tax, paiement.net_after_tax, paiement.net_after_tax, paiement.net_salary,"
+          + " employee.code, employee.prenom, employee.name, employee.postnom, employee.dob, employee.sexe"
+          + " FROM paiement"
+          + " JOIN employee ON employee.id = paiement.employee_id"
+          + " WHERE paiement_period_id = " + sanitize.escape(req.query.period_id);
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+// Information sur la fiche de paiement
+app.get('/getDataPaiement/', function (req, res, next) {
+  var sql = "SELECT paiement.uuid, paiement.employee_id, paiement.paiement_period_id, paiement_period.dateFrom,"
+          + " paiement_period.dateTo, paiement.currency_id,"
+          + " paiement.net_before_tax, paiement.net_after_tax, paiement.net_after_tax, paiement.net_salary,"
+          + " paiement.working_day, paiement.paiement_date, employee.code, employee.prenom, employee.name,"
+          + " employee.postnom, employee.dob, employee.sexe, employee.nb_spouse, employee.nb_enfant,"
+          + " employee.grade_id, grade.text, grade.code AS 'codegrade', grade.basic_salary"
+          + " FROM paiement"
+          + " JOIN employee ON employee.id = paiement.employee_id"
+          + " JOIN grade ON grade.uuid = employee.grade_id "
+          + " JOIN paiement_period ON paiement_period.id = paiement.paiement_period_id"
+          + " WHERE paiement.uuid = " + sanitize.escape(req.query.invoiceId);
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getDataRubrics/', function (req, res, next) {
+  var sql = "SELECT rubric_paiement.id, rubric_paiement.paiement_uuid, rubric_paiement.rubric_id, rubric.label,"
+          + " rubric.is_discount, rubric_paiement.value"
+          + " FROM rubric_paiement"
+          + " JOIN rubric ON rubric.id = rubric_paiement.rubric_id"
+          + " WHERE rubric_paiement.paiement_uuid= " + sanitize.escape(req.query.invoiceId);
+          
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getDataTaxes/', function (req, res, next) {
+  var sql = "SELECT tax_paiement.id, tax_paiement.paiement_uuid, tax_paiement.tax_id, tax.label,"
+          + " tax_paiement.value, tax.is_employee"
+          + " FROM tax_paiement"
+          + " JOIN tax ON tax.id = tax_paiement.tax_id"
+          + " WHERE tax.is_employee = '1' AND tax_paiement.paiement_uuid = " + sanitize.escape(req.query.invoiceId);
+          
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+// Fin de l'information sur la fiche de paiement
 
 app.get('/getNombreMoisStockControl/:inventory_uuid', function (req, res, next) {
   var sql = "SELECT COUNT(DISTINCT(MONTH(c.date))) AS nb"
