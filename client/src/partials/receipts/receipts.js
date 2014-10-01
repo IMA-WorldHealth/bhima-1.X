@@ -5,10 +5,13 @@ angular.module('bhima.controllers')
   '$scope',
   '$routeParams',
   '$q',
+  '$http',
   'validate',
   'exchange',
   'appstate',
-  function ($scope, $routeParams, $q, validate, exchange, appstate) {
+  'util',
+  'connect',
+  function ($scope, $routeParams, $q, $http, validate, exchange, appstate, util, connect) {
 
     var templates, dependencies = {},
         origin       = $scope.origin = $routeParams.originId,
@@ -1007,7 +1010,214 @@ angular.module('bhima.controllers')
       $scope.caution = $scope.model.caution.data[0];
     }
 
-       
+    function processPayslip () {
+      console.log("La fonction Process Payslip");
+      console.log("Numero de paiement : " + invoiceId);
+      $scope.TotalPaid = 0;
+      $scope.TotalWithheld = 0;
+      $scope.TotalNet = 0;
+
+      $http.get('/getDataPaiement/',{params : {
+            'invoiceId' : invoiceId
+          }  
+      }).
+      success(function(data) {
+        console.log(util.sqlDate(data[0].dateFrom));
+        console.log(util.sqlDate(data[0].dateTo));
+        getOffDayCount();
+        getPPConf();
+        
+
+        function getHollyDayCount(paiement_period_confs) {
+          var defer = $q.defer();
+          var som = 0;
+          
+          // var pp = session.model.paiement_period.data[0];
+          $http.get('/getCheckHollyday/',{params : {
+              'dateFrom' : util.sqlDate(data[0].dateFrom), 
+              'dateTo' : util.sqlDate(data[0].dateTo),
+              'employee_id' : data[0].employee_id,
+              'line' : ''
+            }
+          }).
+          success(function(res) {
+            var hollydays = res;
+            if(hollydays.length) {
+              var soms = [];
+              hollydays.forEach(function (h) {
+                var nb = 0;
+                function getValue (ppc) {
+                  //paiement period config === ppc
+                  var date_pweekfrom = new Date(ppc.weekFrom);
+                  var date_pweekto = new Date(ppc.weekTo);
+
+                  var date_hdatefrom = new Date(h.dateFrom);
+                  var date_hdateto = new Date(h.dateTo);
+
+                  var num_pweekfrom = date_pweekfrom.setHours(0,0,0,0);
+                  var num_pweekto = date_pweekto.setHours(0,0,0,0);
+
+                  var num_hdatefrom = date_hdatefrom.setHours(0,0,0,0);            
+                  var num_hdateto = date_hdateto.setHours(0,0,0,0);
+
+                  var minus_right = 0, minus_left = 0;
+
+                  if(num_pweekto > num_hdateto){
+                    minus_right = date_pweekto.getDate() - date_hdateto.getDate();
+                  }
+
+                  if(num_pweekfrom < num_hdatefrom){
+                    minus_left = date_hdatefrom.getDate() - date_pweekfrom.getDate();
+                  }
+
+                  var total = date_pweekto.getDate() - date_pweekfrom.getDate();
+                  if(minus_left > total) { return 0; }
+                  if(minus_right > total) { return 0; } 
+                  return total - (minus_left + minus_right);
+                }
+
+                paiement_period_confs.forEach(function (ppc) {
+                  nb += getValue(ppc);
+                  
+                });
+                soms.push(nb);
+              });
+
+              som = soms.reduce(function (x, y){
+                return x+y;
+              }, 0);
+              console.log(som);
+              $scope.total_day = data[0].working_day + $scope.off_day + som;
+
+
+              if($scope.max_day > 0){
+                $scope.daly_rate = data[0].basic_salary / $scope.max_day;
+                $scope.amont_payable = $scope.daly_rate * $scope.total_day; 
+                $scope.TotalPaid += $scope.amont_payable;
+                $scope.TotalNet += $scope.amont_payable;
+                console.log($scope.TotalNet);
+              } else {
+                $scope.daly_rate = 0;
+                $scope.amont_payable = 0; 
+              }
+
+              defer.resolve(som); 
+            }else{
+              console.log('Nombre de jour prester ',data[0].working_day,$scope.off_day);
+              $scope.total_day = data[0].working_day + $scope.off_day;
+
+              if($scope.max_day > 0){
+                $scope.daly_rate = data[0].basic_salary / $scope.max_day;
+                $scope.amont_payable = $scope.daly_rate * $scope.total_day; 
+                $scope.TotalPaid += $scope.amont_payable;
+                $scope.TotalNet += $scope.amont_payable;
+                console.log($scope.TotalNet);
+              } else {
+                $scope.daly_rate = 0;
+                $scope.amont_payable = 0; 
+              }
+
+              defer.resolve(0);
+            }               
+          });
+          return defer.promise;
+        }        
+
+        function getOffDayCount() {        
+          
+          dependencies.offDays = {
+            query : {
+              tables : {
+                'offday' : {
+                  columns : ['id', 'label', 'date', 'percent_pay']
+                }
+              },
+              where : ['offday.date>=' + util.sqlDate(data[0].dateFrom), 'AND', 'offday.date<=' + util.sqlDate(data[0].dateTo)]
+            }
+          };  
+
+          validate.process(dependencies, ['offDays'])
+          .then(function (model) {
+            if(model.offDays.data.length > 0){
+              $scope.off_day = model.offDays.data.length;  
+            } else {
+              $scope.off_day = 0;
+            }
+            
+          });
+        }
+
+
+
+        function getPPConf() {  
+
+          dependencies.paiement_period_conf = {
+            required : true,
+            query : {
+              tables : {
+                'config_paiement_period' : {
+                  columns : ['id', 'weekFrom', 'weekTo']
+                }
+              },
+              where : ['config_paiement_period.paiement_period_id=' + data[0].paiement_period_id]
+            }
+          };
+
+          validate.process(dependencies, ['paiement_period_conf'])
+          .then(function (model) {
+            var paiement_period_confs = model.paiement_period_conf.data;
+            $scope.max_day = getMaxDays(paiement_period_confs);
+            getHollyDayCount(paiement_period_confs); 
+          });
+        } 
+
+        function getMaxDays (ppcs) {
+          var nb = 0;
+          ppcs.forEach(function (item) {
+            nb += (new Date(item.weekTo).getDate() - new Date(item.weekFrom).getDate()) + 1;
+          });
+          return nb;
+        }         
+        $scope.dataPaiements = data;
+      });
+
+
+      $http.get('/getDataRubrics/',{params : {
+            'invoiceId' : invoiceId
+          }  
+      }).
+      success(function(data) {
+        $scope.dataRubrics = data;
+        data.forEach(function (item) {
+          if(item.is_discount === 0){
+            $scope.TotalPaid += item.value;
+            item.valueP = item.value;
+            item.valueR = 0;
+            $scope.TotalNet += item.value;;
+          } else if(item.is_discount === 1){
+            $scope.TotalWithheld += item.value;
+            item.valueP = 0;
+            item.valueR = item.value;            
+            $scope.TotalNet -= item.value;
+          } 
+          
+        });  
+        
+      });
+
+      $http.get('/getDataTaxes/',{params : {
+            'invoiceId' : invoiceId
+          }  
+      }).
+      success(function(data) {
+        $scope.dataTaxes = data;
+        data.forEach(function (item) {
+          $scope.TotalWithheld += item.value;
+          $scope.TotalNet -= item.value;
+        });
+      });
+
+    }   
 
     templates = {
       'cash' : {
@@ -1073,7 +1283,11 @@ angular.module('bhima.controllers')
       'loss' : {
         fn              : processLoss,
         url             : '/partials/receipts/templates/loss.html'
-      }
+      },
+      'payslip' : {
+        fn              : processPayslip,
+        url             : '/partials/receipts/templates/payslip.html'
+      }      
     };
 
     appstate.register('project', function (project) {

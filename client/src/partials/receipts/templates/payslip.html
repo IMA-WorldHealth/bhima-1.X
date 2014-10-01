@@ -1,0 +1,114 @@
+<!-- Patient Invoice template -->
+<div class="row customer-details">
+  <div class="col-xs-12">
+
+    <small style="float: right; color: grey; font-size: 8px">{{ invoice.uuid }}</small>
+    <h4 class="invoice-header">{{ 'PAYCHECK.PAYSLIP' | translate }} : {{ dataPaiements[0].paiement_date | date}}</h4>
+  </div>
+</div>
+
+<div class="row customer-details">
+  <!-- Temporary style; needs official markup and CSS -->
+  <div class="col-xs-4">
+    <span>
+      <b>{{project.enterprise_name}}</b>
+    </span>
+    <br>
+    {{project.village}}
+    <br>
+    <!-- hah -->
+    {{ project.postal || 'B.P. 205'}}
+    <br>
+    {{project.sector}}
+    <br>
+    <i>TEL</i> {{project.phone}}
+    <br>
+    <i>FAX</i> {{project.email}}
+
+  </div>
+  <div class="col-xs-4">
+
+  </div>
+  <div class="col-xs-4">
+     <b>{{ dataPaiements[0].name }} {{ dataPaiements[0].postnom }} {{ dataPaiements[0].prenom }}</b>
+    <br>
+    <i>{{'PAYCHECK.MATRICULE' | translate}}</i> : <b>{{ dataPaiements[0].code }}</b>
+    <br>
+    <i>{{ 'PAYCHECK.FAM_STATUS' | translate }}</i> : <b>{{ dataPaiements[0].nb_spouse }}</b> &nbsp&nbsp&nbsp&nbsp&nbsp <b>{{ dataPaiements[0].nb_enfant }}</b>
+    <br>
+    <i>{{'PAYCHECK.GRADE' | translate}}</i> : <b>{{ dataPaiements[0].codegrade }}</b>
+    <br>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12">
+
+    <table class="invoiceTable">
+      <thead>
+        <tr>
+          <th>{{'COLUMNS.CODE' | translate}}</th>
+          <th>{{'COLUMNS.LABEL' | translate}}</th>
+          <th>{{'COLUMNS.TIMES' | translate}}</th>
+          <th>{{'COLUMNS.DAILY_RATE' | translate}}</th>
+          <th>{{'COLUMNS.AMOUNT_PAYABLE' | translate}}</th>
+          <th>{{'COLUMNS.AMOUNT_WITHHELD' | translate}}</th>
+          <th>{{'COLUMNS.NET_CASH' | translate}}</th>
+        </tr>
+      </thead>
+      <tbody class="items">
+        <tr>
+          <td> </td>
+          <td>{{'COLUMNS.WORKING_DAY' | translate}}</td>
+          <td>{{ total_day }}</td>
+          <td><span ng-bind-html="daly_rate| intlcurrency:dataPaiements[0].currency_id"></span></td>
+          <td><span ng-bind-html="amont_payable| intlcurrency:dataPaiements[0].currency_id"></span></td>
+          <td><span ng-bind-html="item.localeTransaction | intlcurrency:dataPaiements[0].currency_id"></span></td>
+          <td></td>
+        </tr>
+        <tr ng-repeat="item in dataRubrics | orderBy:'label'">
+          <td> </td>
+          <td>{{ item.label }}</td>
+          <td>{{ total_day }}</td>
+          <td>{{ }}</td>
+          <td><span ng-bind-html="item.valueP | intlcurrency:dataPaiements[0].currency_id"></span></td>
+          <td><span ng-bind-html="item.valueR | intlcurrency:session.currentCurrency.id"></span></td>
+          <td></td>
+        </tr>
+        <tr ng-repeat="tax in dataTaxes | orderBy:'label'">
+          <td> </td>
+          <td>{{ tax.label }}</td>
+          <td> </td>
+          <td></td>
+          <td></span></td>
+          <td><span ng-bind-html="tax.value | intlcurrency:dataPaiements[0].currency_id"></span></td>
+          <td></td>
+        </tr>        
+      </tbody>
+      <tbody class="totals">
+        <tr>
+          <td colspan="4" class="no-border"><b>{{'INVOICE.TOTAL' | translate}}</b></td>
+          <td><span ng-bind-html="TotalPaid | intlcurrency:session.currentCurrency.id"></span></td>
+          <td><span ng-bind-html="TotalWithheld | intlcurrency:session.currentCurrency.id"></span></td>
+          <td><span ng-bind-html="TotalNet | intlcurrency:session.currentCurrency.id"></span></td>
+        </tr>
+      </tbody>
+
+    </table>
+  </div>
+</div>
+<!--
+<div class="row">
+  <div class="col-xs-6">
+    <div class="pull-right">
+      <b>{{"INVOICE.SIGN_HEADER_BILLING" | translate}}</b>
+    </div>
+  </div>
+  <div class="col-xs-6">
+    <div class="pull-left">
+     <b>{{"INVOICE.SIGN_CLIENT" | translate}}</b>
+    </div>
+  </div>
+</div>
+ -->
+<!-- End Patient Invoice template -->

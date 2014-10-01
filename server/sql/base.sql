@@ -115,9 +115,11 @@ INSERT INTO `unit` VALUES
 (68,'Configuration des taxes','TREE.CONFIG_TAX','',1,0,'/partials/config_tax/','/config_tax/'),
 (69,'Stock Dashboard','TREE.STOCK_DASHBOARD','',11,0,'/partials/stock/stock_dashboard/','/stock_dashboard/'),
 (70,'Daily consumption', 'TREE.DAILY_CONSUMPTION', '', 10, 0, '/partials/reports/daily_consumption', '/reports/daily_consumption/'),
-(71,'Configuration des comptes','TREE.CONFIG_ACCOUNTING','',1,0,'/partials/config_accounting/','/config_accounting/');
+(71,'Configuration des comptes','TREE.CONFIG_ACCOUNTING','',1,0,'/partials/config_accounting/','/config_accounting/'),
+(72,'Paycheck', 'TREE.PAYROLL_REPORT', '', 10, 0, '/partials/reports/payroll_report', '/reports/payroll_report/');
 
--- base user & permissions
+
+-- base user & permissions Payroll Reports
 INSERT INTO `user` (id, username, password, first, last, email, logged_in) VALUES
 (1, 'admin','1','System','Administrato','bhimadeveloper@gmail.com',1),
 (2, 'jniles','1','Jonathan','Niles','jonathanwniles@gmail.com',0),
