@@ -2079,7 +2079,8 @@
     "VALUE"            : "Value",
     "PAID"             : "Paid",
     "SUBMIT_PAID_TAX"  : "Paid the tax",
-    "CONFIRM_SUBMIT"   : "Do you confirm the payment of tax ?"
+    "CONFIRM_SUBMIT"   : "Do you confirm the payment of tax ?",
+    "NONE_PERIOD"      : "None payment period available"
   } 
 }
 
