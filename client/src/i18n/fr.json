@@ -459,7 +459,8 @@
     "NO"                 : "Non",
     "ABBR"               : "Abr.",
     "NOT_EMPTY"          : "ABR. ne peut être vide",
-    "NOT_SUP4"    : "Ne peut avoir plus de 4 caractères"    
+    "NOT_SUP4"           : "Ne peut avoir plus de 4 caractères",
+    "NOT_SUP_MAXDAY"     : "Ne peut être supérieur au total des jours ouvrables"    
 },
 
   "PATIENT_REGISTRATIONS" : {
