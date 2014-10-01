@@ -432,7 +432,8 @@
     "STOCK_DASHBOARD"           : "Tableau de bord du Stock",
     "DAILY_CONSUMPTION"         : "Consommation journaliere",    
     "DONATION_MANAGEMENT"       : "Gestion des Dons",
-    "CONFIG_ACCOUNTING"         : "Configuration des comptes"
+    "CONFIG_ACCOUNTING"         : "Configuration des comptes",
+    "PAYROLL_REPORT"            : "Rapports de paiements"
 
 },
 
@@ -815,7 +816,17 @@
     "NUM" : "Numero",
     "TRANSACTION_NUMBER" : "Numero transaction",
     "BY"                 : "Par",
-    "DRUGS"              : "Médicaments"           
+    "DRUGS"              : "Médicaments",
+    "NET_BEFORE_TAXES"   : "Net avant taxes",
+    "NET_AFTER_TAXES"    : "Net après taxes",
+    "NET_SALARY"         : "Salaire net",
+    "PAYCHECK"           : "Bulletin",
+    "DAILY_RATE"         : "Taux journalier", 
+    "AMOUNT_WITHHELD"    : "Montant à retenir",
+    "TIMES"              : "Temps",
+    "AMOUNT_PAYABLE"     : "Montant à payer",
+    "NET_CASH"           : "Net à payer",
+    "WORKING_DAY"        : "Jours prestés"    
   },
 
   "REPORT"                  : {
@@ -2117,6 +2128,16 @@
     "ABBR"          : "Abr."
   },
 
+  "PAYCHECK" : {
+    "TITLE"         : "Rapports de paiements",
+    "PAYSLIP"       : "Feuille de paie",
+    "VIEW"          : "Vue",
+    "SELECT_PERIOD" : "Sélectionner une période de paiement",
+    "MATRICULE"     : "Matricule",
+    "FAM_STATUS"    : "Situation familiale",
+    "GRADE"         : "Grade"  
+  },  
+
   "TAX_PAYMENT" : {
     "EMPLOYEE"         : "Nom de l'employé",
     "CODE"             : "Code",
@@ -2127,4 +2148,5 @@
     "CONFIRM_SUBMIT"   : "Confirmez-vous le paiement de la taxe ?",
     "NONE_PERIOD"      : "Aucune periode de paiement séléctionnée"
   }
+
 }

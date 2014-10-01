@@ -86,9 +86,9 @@ angular.module('bhima.controllers')
       //console.log(data);      
       $scope.expired = data;
       $scope.nbExpired = data.length;
-      for(item in $scope.TrackingNumbers){
+      for (var item in $scope.TrackingNumbers){
         var TrackingNumber = $scope.TrackingNumbers[item];
-        for(item2 in data){
+        for(var item2 in data){
           var data2 = data[item2];
           if(data2.tracking_number === TrackingNumber.tracking_number){
             var diffQuantity = data2.quantity - TrackingNumber.quantity;
@@ -110,9 +110,9 @@ angular.module('bhima.controllers')
     success(function(data) {      
       $scope.expired30 = data;
       $scope.nbExpired30 = data.length;
-      for(item in $scope.TrackingNumbers){
+      for (var item in $scope.TrackingNumbers){
         var TrackingNumber = $scope.TrackingNumbers[item];
-        for(item2 in data){
+        for(var item2 in data){
           var data2 = data[item2];
           if(data2.tracking_number === TrackingNumber.tracking_number){
             var diffQuantity = data2.quantity - TrackingNumber.quantity;
@@ -134,9 +134,9 @@ angular.module('bhima.controllers')
     success(function(data) {      
       $scope.expired3090 = data;
       $scope.nbExpired3090 = data.length;
-      for(item in $scope.TrackingNumbers){
+      for (var item in $scope.TrackingNumbers){
         var TrackingNumber = $scope.TrackingNumbers[item];
-        for(item2 in data){
+        for(var item2 in data){
           var data2 = data[item2];
           if(data2.tracking_number === TrackingNumber.tracking_number){
             var diffQuantity = data2.quantity - TrackingNumber.quantity;
@@ -158,9 +158,10 @@ angular.module('bhima.controllers')
     success(function(data) {      
       $scope.expired180 = data;
       $scope.nbExpired180 = data.length;
-      for(item in $scope.TrackingNumbers){
+      for (var item in $scope.TrackingNumbers){
+
         var TrackingNumber = $scope.TrackingNumbers[item];
-        for(item2 in data){
+        for(var item2 in data){
           var data2 = data[item2];
           if(data2.tracking_number === TrackingNumber.tracking_number){
             var diffQuantity = data2.quantity - TrackingNumber.quantity;
@@ -182,9 +183,10 @@ angular.module('bhima.controllers')
     success(function(data) {      
       $scope.expired365 = data;
       $scope.nbExpired365 = data.length;
-      for(item in $scope.TrackingNumbers){
+      for (var item in $scope.TrackingNumbers){
+
         var TrackingNumber = $scope.TrackingNumbers[item];
-        for(item2 in data){
+        for(var item2 in data){
           var data2 = data[item2];
           if(data2.tracking_number === TrackingNumber.tracking_number){
             var diffQuantity = data2.quantity - TrackingNumber.quantity;
@@ -204,9 +206,9 @@ angular.module('bhima.controllers')
     success(function(data) {      
       $scope.expired1 = data;
       $scope.nbExpired1 = data.length;
-      for(item in $scope.TrackingNumbers){
+      for (var item in $scope.TrackingNumbers){
         var TrackingNumber = $scope.TrackingNumbers[item];
-        for(item2 in data){
+        for(var item2 in data){
           var data2 = data[item2];
           if(data2.tracking_number === TrackingNumber.tracking_number){
             var diffQuantity = data2.quantity - TrackingNumber.quantity;
@@ -228,9 +230,10 @@ angular.module('bhima.controllers')
       var stocksOut = 0,
         stocksIn = 0;
 
-      for(item in $scope.enterStocks){
+
+      for (var item in $scope.enterStocks){
         var stock = $scope.enterStocks[item];
-        for(item2 in data){
+        for(var item2 in data){
           var data2 = data[item2],
               diff;
           if(data2.inventory_uuid === stock.inventory_uuid){
@@ -239,10 +242,10 @@ angular.module('bhima.controllers')
             diff = stock.quantity - data2.quantity;
             if(diff === 0){
               stocksOut++;
-              console.log("Finis " + stocksOut);
+              //console.log("Finis " + stocksOut);
             } else if (diff > 0){
               stocksIn++;
-              console.log("En stock " + stocksIn);
+              //console.log("En stock " + stocksIn);
             }
           }
         }
