@@ -88,9 +88,9 @@
       <tbody class="totals">
         <tr>
           <td colspan="4" class="no-border"><b>{{'INVOICE.TOTAL' | translate}}</b></td>
-          <td><span ng-bind-html="TotalPaid | intlcurrency:session.currentCurrency.id"></span></td>
-          <td><span ng-bind-html="TotalWithheld | intlcurrency:session.currentCurrency.id"></span></td>
-          <td><span ng-bind-html="TotalNet | intlcurrency:session.currentCurrency.id"></span></td>
+          <td><span ng-bind-html="TotalPaid | intlcurrency:dataPaiements[0].currency_id"></span></td>
+          <td><span ng-bind-html="TotalWithheld | intlcurrency:dataPaiements[0].currency_id"></span></td>
+          <td><span ng-bind-html="TotalNet | intlcurrency:dataPaiements[0].currency_id"></span></td>
         </tr>
       </tbody>
 
