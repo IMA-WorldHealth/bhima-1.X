@@ -110,7 +110,8 @@
       "/getAccount7/",
       "/posting_donation/",
       "/getEmployeePayment/",
-      "/setTaxPayment/"
+      "/setTaxPayment/",
+      "/payTax/"
     ]
   }
 }

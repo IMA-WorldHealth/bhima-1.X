@@ -47,6 +47,7 @@ var report            = require('./routes/report')(db, sanitize, util),
     dataRouter        = require('./routes/data')(db, parser, express.Router()),
     serviceDist       = require('./routes/serviceDist')(db, parser, journal, uuid),
     consumptionLoss   = require('./routes/consumptionLoss')(db, parser, journal, uuid),
+    taxPayment        = require('./routes/taxPayment')(db, parser, journal, uuid),
     donation          = require('./routes/postingDonation')(db, parser, journal, uuid);
 
 // create app
@@ -126,6 +127,13 @@ app.post('/consumption_loss/', function (req, res, next) {
   consumptionLoss.execute(req.body, req.session.user_id, function (err, ans) {
     if (err) { return next(err); }
     res.send({dist: ans});
+  });
+});
+
+app.post('/payTax/', function (req, res, next) {
+  taxPayment.execute(req.body, req.session.user_id, function (err, ans) {
+    if (err) { return next(err); }
+    res.send({resp: ans});
   });
 });
 
@@ -1419,7 +1427,7 @@ app.get('/getMonthsBeforeExpiration/:id', function (req, res, next) {
 });
 
 app.get('/getEmployeePayment/:id', function (req, res, next) {
-  var sql = "SELECT e.id, e.code, e.prenom, e.name, e.postnom, p.uuid, p.currency_id, t.label, t.abbr, z.tax_id, z.value, z.posted"
+  var sql = "SELECT e.id, e.code, e.prenom, e.name, e.postnom, e.creditor_uuid, p.uuid as paiement_uuid, p.currency_id, t.label, t.abbr, z.tax_id, z.value, z.posted"
           + " FROM employee e "
           + " JOIN paiement p ON e.id=p.employee_id "
           + " JOIN tax_paiement z ON z.paiement_uuid=p.uuid "
