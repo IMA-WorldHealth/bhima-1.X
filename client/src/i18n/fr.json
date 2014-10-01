@@ -817,6 +817,7 @@
     "TRANSACTION_NUMBER" : "Numero transaction",
     "BY"                 : "Par",
     "DRUGS"              : "Médicaments",
+    "NET_BEFORE_TAXES"   : "Net avant taxes",
     "NET_AFTER_TAXES"    : "Net après taxes",
     "NET_SALARY"         : "Salaire net",
     "PAYCHECK"           : "Bulletin",

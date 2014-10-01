@@ -6,14 +6,13 @@ angular.module('bhima.controllers')
   '$routeParams',
   'connect',  
   'validate',
-  'messenger',
   'appstate',
   'util',
-  function ($scope, $translate, $http, $routeParams, connect, validate, connect, appstate, util) {
+  function ($scope, $translate, $http, $routeParams, connect, validate, appstate, util) {
     var dependencies = {},
         session = $scope.session = {};
 
-    dependencies.getPeriods = {
+   dependencies.getPeriods = {
       query : {
         identifier : 'id',
         tables : {
@@ -24,10 +23,6 @@ angular.module('bhima.controllers')
       }
     };
 
-    function search (selection) {
-      session.selected = selection;
-      selection.fn();
-    }
 
     function reset () {
       record = connect.clean(session);
@@ -41,7 +36,10 @@ angular.module('bhima.controllers')
       });
     }
 
-
+    function startup (models) {
+      angular.extend($scope, models);
+    }
+/*
     var record = connect.clean(session);
 
     function startup (models) {
@@ -56,12 +54,19 @@ angular.module('bhima.controllers')
 
     //$scope.search = search;
     $scope.reset = reset;
+*/
+    appstate.register('enterprise', function (enterprise) {
+      $scope.enterprise = enterprise;
+      validate.process(dependencies)
+      .then(startup);
+    });
 
+    $scope.reset = reset;
     function generateReference () {
       window.data = $scope.getPeriods.data;
       var max = Math.max.apply(Math.max, $scope.getPeriods.data.map(function (o) { return o.reference; }));
       return Number.isNaN(max) ? 1 : max + 1;
-    }
-  }  
+    } 
+  } 
 ]);
 
