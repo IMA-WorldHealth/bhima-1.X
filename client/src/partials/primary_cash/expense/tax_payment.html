@@ -5,16 +5,6 @@
 
 <nav>
   <div style="position: absolute; right: 5px;">
-    <button class="btn btn-sm btn-primary dropdown-toggle">
-      {{ session.selectedItem.symbol || "PRIMARY_CASH.DEFAULT_CURRENCY" | translate }}
-      <span class="caret" data-caret="&#9660;"></span>
-    </button>
-    <ul class="dropdown-menu pull-left">
-      <li ng-repeat="box in session.model.cash_box.data">
-        <a href="" ng-click="setCashAccount(box)"> {{ box.symbol }} </a>
-      </li>
-    </ul>
-
      <button
       style="margin-left: 5px;"
       ng-click="reconfigure()"
@@ -87,14 +77,14 @@
           			</td>
           			<td>{{ emp.label }} ({{ emp.abbr }})</td>
           			<td>
-          				<span ng-bind-html="emp.value | intlcurrency:session.selectedItem.currency_id"></span>
+          				<span ng-bind-html="emp.value | intlcurrency:emp.currency_id"></span>
           			</td>
           			<td>
           				<span ng-if="emp.posted==0" class="label label-danger">{{ "RUBRIC_PAYROLL.NO" | translate }}</span>
           				<span ng-if="emp.posted==1" class="label label-success">{{ "RUBRIC_PAYROLL.YES" | translate }}</span>
           			</td>
           			<td>
-          				<button class="btn btn-success" ng-disabled="emp.posted==1" style="padding:0px 10px;">
+          				<button class="btn btn-success" ng-disabled="emp.posted==1" style="padding:0px 10px;" ng-click="submit(emp)">
           					{{ "TAX_PAYMENT.SUBMIT_PAID_TAX" | translate }}
           				</button>
           			</td>

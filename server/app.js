@@ -1337,6 +1337,34 @@ app.get('/getMonthsBeforeExpiration/:id', function (req, res, next) {
   .done();
 });
 
+app.get('/getEmployeePayment/:id', function (req, res, next) {
+  var sql = "SELECT e.id, e.prenom, e.name, e.postnom, p.uuid, p.currency_id, t.label, t.abbr, z.tax_id, z.value, z.posted"
+          + " FROM employee e "
+          + " JOIN paiement p ON e.id=p.employee_id "
+          + " JOIN tax_paiement z ON z.paiement_uuid=p.uuid "
+          + " JOIN tax t ON t.id=z.tax_id "
+          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.id) + " AND t.is_employee=1";
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.put('/setTaxPayment/', function (req, res, next) {
+  var sql = "UPDATE tax_paiement SET posted=1"
+          + " WHERE tax_paiement.paiement_uuid=" + sanitize.escape(req.body.paiement_uuid) + " AND tax_paiement.tax_id=" + sanitize.escape(req.body.tax_id);
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
 // temporary error handling for development!
 process.on('uncaughtException', function (err) {
   console.log('[uncaughtException]', err);
