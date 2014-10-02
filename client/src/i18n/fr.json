@@ -433,7 +433,8 @@
     "DAILY_CONSUMPTION"         : "Consommation journaliere",    
     "DONATION_MANAGEMENT"       : "Gestion des Dons",
     "CONFIG_ACCOUNTING"         : "Configuration des comptes",
-    "PAYROLL_REPORT"            : "Rapports de paiements"
+    "PAYROLL_REPORT"            : "Rapports de paiements",
+    "STOCK_STATUS"              : "Situation du stock"
 
 },
 
@@ -827,7 +828,13 @@
     "TIMES"              : "Temps",
     "AMOUNT_PAYABLE"     : "Montant à payer",
     "NET_CASH"           : "Net à payer",
-    "WORKING_DAY"        : "Jours prestés"    
+    "WORKING_DAY"        : "Jours prestés",
+    "CONSUMPTION_PER_MONTH" : "Consommation par mois", 
+    "SAFETY_STOCK"          : "Stock de sécurité", 
+    "MINIMUM_STOCK"         : "Stock Minimum", 
+    "MAXIMUM_STOCK"         : "Stock Maximum", 
+    "MONTH_OF_STOCK"        : "Mois de stock",
+    "QUANTITY_ORDER"        : "Quantité à commander"          
   },
 
   "REPORT"                  : {
@@ -2111,8 +2118,8 @@
         },
     "REPORTS"           : {
             "TITLE"             : "Rapports",
-            "SITUATION_STOCK"   : "Stock status",
-            "EXPIRING_STOCK"    : "Expiring Stock"
+            "SITUATION_STOCK"   : "Situation du stock",
+            "EXPIRING_STOCK"    : "Expiration du Stock"
         }
   },
 
@@ -2152,6 +2159,17 @@
     "SUBMIT_PAID_TAX"  : "Payé la taxe",
     "CONFIRM_SUBMIT"   : "Confirmez-vous le paiement de la taxe ?",
     "NONE_PERIOD"      : "Aucune periode de paiement séléctionnée"
-  }
+  },
+
+  "STOCK_STATUS"     :{
+    "TITLE"                 : "Situation de stock",
+    "NO_CONSUMPTION"        : "Stock is empty",    
+    "CONSUMPTION_PER_MONTH" : "Consommation par mois", 
+    "SAFETY_STOCK"          : "Stock de sécurité", 
+    "MINIMUM_STOCK"         : "Stock Minimum", 
+    "MAXIMUM_STOCK"         : "Stock Maximum", 
+    "MONTH_OF_STOCK"        : "Mois de stock",
+    "QUANTITY_ORDER"        : "Quantité à commander"
+  }   
 
 }

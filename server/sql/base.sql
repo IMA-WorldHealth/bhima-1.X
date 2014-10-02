@@ -116,7 +116,8 @@ INSERT INTO `unit` VALUES
 (69,'Stock Dashboard','TREE.STOCK_DASHBOARD','',11,0,'/partials/stock/stock_dashboard/','/stock_dashboard/'),
 (70,'Daily consumption', 'TREE.DAILY_CONSUMPTION', '', 10, 0, '/partials/reports/daily_consumption', '/reports/daily_consumption/'),
 (71,'Configuration des comptes','TREE.CONFIG_ACCOUNTING','',1,0,'/partials/config_accounting/','/config_accounting/'),
-(72,'Paycheck', 'TREE.PAYROLL_REPORT', '', 10, 0, '/partials/reports/payroll_report', '/reports/payroll_report/');
+(72,'Paycheck', 'TREE.PAYROLL_REPORT', '', 10, 0, '/partials/reports/payroll_report', '/reports/payroll_report/'),
+(73,'Stock Status', 'TREE.STOCK_STATUS', '', 10, 0, '/partials/reports/stock_status', '/reports/stock_status/');
 
 
 -- base user & permissions Payroll Reports

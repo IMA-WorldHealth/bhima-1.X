@@ -464,7 +464,12 @@
     .when('/reports/payroll_report/', {
       controller : 'payroll_report',
       templateUrl : 'partials/reports/payroll_report/payroll_report.html'
-    });               
+    })
+    .when('/reports/stock_status/', {
+      controller : 'stock_status',
+      templateUrl : 'partials/reports/stock_status/stock_status.html'
+    });          
+
   }
   
   function translateConfig($translateProvider) {

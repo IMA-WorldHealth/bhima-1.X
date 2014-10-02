@@ -25,7 +25,7 @@ angular.module('bhima.controllers')
 
 
     function reset () {
-      record = connect.clean(session);
+      var record = connect.clean(session);
       $http.get('/getReportPayroll/',{params : {
             'period_id' : record.period_id
           }  
@@ -39,22 +39,7 @@ angular.module('bhima.controllers')
     function startup (models) {
       angular.extend($scope, models);
     }
-/*
-    var record = connect.clean(session);
 
-    function startup (models) {
-      angular.extend($scope, models);
-    }
-
-    appstate.register('enterprise', function (enterprise) {
-      $scope.enterprise = enterprise;
-      validate.process(dependencies)
-      .then(startup);
-    });
-
-    //$scope.search = search;
-    $scope.reset = reset;
-*/
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
       validate.process(dependencies)
