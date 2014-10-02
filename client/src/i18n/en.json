@@ -669,7 +669,13 @@
     "TIMES"              : "Times",
     "AMOUNT_PAYABLE"     : "Amount Payable",
     "NET_CASH"           : "Net Cash",
-    "WORKING_DAY"        : "Working days"   
+    "WORKING_DAY"        : "Working days",
+    "CONSUMPTION_PER_MONTH" : "Consumption per month", 
+    "SAFETY_STOCK"          : "Safety stock", 
+    "MINIMUM_STOCK"         : "Minimum Stock", 
+    "MAXIMUM_STOCK"         : "Maximum Stock", 
+    "MONTH_OF_STOCK"        : "Months of stock",
+    "QUANTITY_ORDER"        : "Quantity to Order"        
   },
 
   "INVENTORY" : {
@@ -820,7 +826,8 @@
     "DAILY_CONSUMPTION"         : "Daily Consumption",     
     "DONATION_MANAGEMENT"       : "Donation Management",
     "CONFIG_ACCOUNTING"         : "Configuration accounting",
-    "PAYROLL_REPORT"            : "Payroll Reports"
+    "PAYROLL_REPORT"            : "Payroll Reports",
+    "STOCK_STATUS"              : "Stock Status"
   },
 
   "RUBRIC_PAYROLL"       : {
@@ -2107,7 +2114,18 @@
     "SUBMIT_PAID_TAX"  : "Paid the tax",
     "CONFIRM_SUBMIT"   : "Do you confirm the payment of tax ?",
     "NONE_PERIOD"      : "None payment period available"
-  } 
+  },
+
+  "STOCK_STATUS"     :{
+    "TITLE"                 : "Stock Situation",
+    "NO_CONSUMPTION"        : "Aucun produits en stock",
+    "CONSUMPTION_PER_MONTH" : "Consumption per month", 
+    "SAFETY_STOCK"          : "Safety stock", 
+    "MINIMUM_STOCK"         : "Minimum Stock", 
+    "MAXIMUM_STOCK"         : "Maximum Stock", 
+    "MONTH_OF_STOCK"        : "Months of stock",
+    "QUANTITY_ORDER"        : "Quantity to Order"
+  }     
 }
 
 

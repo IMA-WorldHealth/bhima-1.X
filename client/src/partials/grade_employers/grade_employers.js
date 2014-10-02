@@ -22,6 +22,22 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.enterprise = {
+      query : {
+        tables : {
+          'enterprise' : {
+            columns : ['currency_id']
+          },
+          'currency' : {
+            columns : ['id', 'symbol']
+          }
+        },
+        join : [
+            'enterprise.currency_id=currency.id'
+          ]
+        }
+    };
+
     function startup (models) {
       angular.extend($scope, models);
     }
