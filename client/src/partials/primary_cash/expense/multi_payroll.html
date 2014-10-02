@@ -8,6 +8,7 @@
       {{ session.selectedItem.symbol || "PRIMARY_CASH.DEFAULT_CURRENCY" | translate }}
       <span class="caret" data-caret="&#9660;"></span>
     </button>
+    
     <ul class="dropdown-menu pull-left">
       <li ng-repeat="box in session.model.cash_box.data">
         <a href="" ng-click="setCashAccount(box)"> {{ box.symbol }} </a>
