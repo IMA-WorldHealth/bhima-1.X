@@ -1,4 +1,4 @@
-<header>
+<header data-header>
   {{ "CONVENTION.TITLE" | translate }}
 </header>
 
@@ -106,10 +106,3 @@
     </div>
   </div>
 </main>
-
-<script type="text/ng-template" id="debitorGroupListItem.html">
-  <a>
-    <span><b>[{{ match.model.uuid }}]</b></span>
-    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-  </a>
-</script>

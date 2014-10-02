@@ -2,6 +2,7 @@ angular.module('bhima.directives')
 .directive('findEmployee', ['$compile', 'validate', 'messenger', 'appcache', function($compile, validate, messenger, Appcache) {
   return {
     restrict: 'A',
+    templateUrl: '/partials/templates/findemployee.tmpl.html',
     link : function(scope, element, attrs) {
       var dependencies = {}, employeeList = scope.employeeList = [];
       var searchCallback = scope[attrs.onSearchComplete];
@@ -11,7 +12,7 @@ angular.module('bhima.directives')
 
       dependencies.employee = {
         required : true,
-        query : 'employee_list/'       
+        query : 'employee_list/'
       };
 
       dependencies.project = {
@@ -28,57 +29,6 @@ angular.module('bhima.directives')
         submitSuccess : false,
         enableRefresh : attrs.enableRefresh || true
       };
-
-      var template =
-        '<div id=\'findEmployee\' class=\'panel panel-default square\' ng-class="{\'panel-success\': findEmployee.valid, \'panel-danger\': findEmployee.valid===false}">' +
-        '  <div class=\'panel-heading square\'>' +
-        '    <div ng-switch=\'findEmployee.submitSuccess\'>' +
-        '     <div ng-switch-when=\'false\'>' +
-        '       <span class=\'glyphicon glyphicon-search\'></span> {{ \'EFIND.TITLE\' | translate }}' +
-        '     </div>' +
-        '     <div ng-switch-when=\'true\'>' +
-        '       <!-- Style hack -->' +
-        '       <span style=\'margin-right: 5px;\' class=\'glyphicon glyphicon-user\'> </span> {{findEmployee.employee.name}} <small>({{findEmployee.employee.sexe}})</small>' +
-        '       <div class=\'pull-right\' ng-if=\'findEmployee.enableRefresh\'>' +
-        '         <span ng-click=\'findEmployee.refresh()\' class=\'glyphicon glyphicon-repeat\'></span>' +
-        '       </div>' +
-        '     </div>' +
-        '    </div>' +
-        '  </div>' +
-        '  <div class=\'panel-body find-collapse\' ng-show=\'!findEmployee.submitSuccess\'>' +
-        '    <div ng-switch on=\'findEmployee.state\'>' +
-        '      <div ng-switch-when=\'name\'>' +
-        '        <div class=\'input-group\'>' +
-        '          <input ' +
-        '          id=\'findSearch\' ' +
-        '          type=\'text\' ' +
-        '          ng-model=\'findEmployee.selectedEmployee\' ' +
-        '          typeahead=\'employee as employee.name for employee in employeeList | filter:$viewValue | limitTo:8\' ' +
-        '          placeholder=\'{{ "EFIND.PLACEHOLDER" | translate }}\' ' +
-        '          typeahead-on-select=\'loadEmployee(employee.id)\' ' +
-        '          typeahead-template-url=\'employeeListItem.html\'' +
-        '          class=\'form-bhima\' ' +
-        '          size=\'25\'>' +
-        '          <span class=\'input-group-btn\'> '+
-        '            <button id=\'submitSearch\' ng-disabled=\'validateNameSearch(findEmployee.selectedEmployee)\' ng-click=\'submitEmployee(findEmployee.selectedEmployee)\' class=\'btn btn-default btn-sm\'> {{ \'FORM.SUBMIT\' | translate }}</button>' +
-        '          </span>' +
-        '        </div>' +
-        '      </div> <!-- End searchName component -->' +
-        '      <div ng-switch-when=\'id\'>' +
-        '        <div class=\'input-group\'>' +
-        '          <input ' +
-        '            type=\'text\'' +
-        '            ng-model=\'findEmployee.employeeId\'' +
-        '            class=\'form-bhima\'' +
-        '            placeholder=\'{{ "EFIND.ENTER_EMPLOYEE_ID" | translate }}\'>' +
-        '          <span class=\'input-group-btn\'>' +
-        '            <button ng-click=\'submitEmployee(findEmployee.employeeId)\' class=\'btn btn-default btn-sm\'> {{ \'FORM.SUBMIT\' | translate }} </button>' +
-        '          </span>' +
-        '        </div>' +
-        '      </div>' +
-        '    </div> <!--End find patient switch -->' +
-        '  </div>' +
-        '</div>';
 
       var stateMap = {
         'name' : searchName,
@@ -106,7 +56,7 @@ angular.module('bhima.directives')
       }
 
       function searchId(value) {
-        var id = value, project;        
+        var id = value, project;
 
         if (!id) {
           return messenger.danger('Cannot parse employee ID');
@@ -118,7 +68,7 @@ angular.module('bhima.directives')
 
         validate.refresh(dependencies, ['employee']).then(handleIdRequest, handleIdError);
       }
-      
+
       function handleIdRequest(model) {
         var employee = scope.findEmployee.employee = extractMetaData(model.employee.data)[0];
         if (!employee) {
@@ -147,7 +97,6 @@ angular.module('bhima.directives')
 
         employeeData.forEach(function(employee) {
           employee.name = employee.prenom + ' ' + employee.name;
-          
         });
         return employeeData;
       }
@@ -186,7 +135,6 @@ angular.module('bhima.directives')
       scope.submitEmployee = submitEmployee;
 
       scope.findEmployee.updateState = updateState;
-      element.replaceWith($compile(template)(scope));
     }
   };
 }]);
