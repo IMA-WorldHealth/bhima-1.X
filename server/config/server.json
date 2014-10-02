@@ -112,7 +112,8 @@
       "/getEmployeePayment/",
       "/setTaxPayment/",
       "/payTax/",
-      "/getDistinctInventories/"
+      "/getDistinctInventories/",
+      "/partials/"
     ]
   }
 }
