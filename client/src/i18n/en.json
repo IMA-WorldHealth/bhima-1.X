@@ -817,10 +817,8 @@
     "DONATION_MANAGEMENT"       : "Donation Management",
     "STOCK_DASHBOARD"           : "Stock Dashboard",
     "DAILY_CONSUMPTION"         : "Daily Consumption",     
-    "DONATION_MANAGEMENT"       : "Donation Management",
     "CONFIG_ACCOUNTING"         : "Configuration accounting",
     "PAYROLL_REPORT"            : "Payroll Reports"
-    "CONFIG_ACCOUNTING"         : "Configuration accounting"
   },
 
   "RUBRIC_PAYROLL"       : {
