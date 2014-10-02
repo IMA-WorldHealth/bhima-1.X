@@ -130,24 +130,8 @@ angular.module('bhima.controllers')
         session.pp_label = formatPeriod (pp);
 
         dependencies.employees_payment = {
-          query : {
-            tables : {
-              employee : { columns : ['id','prenom','name','postnom']},
-              paiement : { columns : ['uuid','paiement_date']},
-              tax : { columns : ['label','abbr']},
-              tax_paiement : { columns : ['value','posted']}
-            },
-            join : ['employee.id=paiement.employee_id'],
-            join : ['tax_paiement.paiement_uuid=paiement.uuid'],
-            join : ['tax.id=tax_paiement.tax_id'],
-            where : [
-              'paiement.paiement_period_id=' + session.pp.id,
-              'AND',
-              'tax.is_employee=1'
-            ]
-          }
+          query : '/getEmployeePayment/' + session.pp.id
         };
-        console.log('session.pp.id : ',session.pp.id);
 
         if(dependencies.employees_payment){
           dependencies.employees_payment.processed = false;
@@ -225,11 +209,34 @@ angular.module('bhima.controllers')
         document_uuid     : emp.uuid
       };
 
+      var tax_paiement = {
+        paiement_uuid : emp.uuid,
+        tax_id : emp.tax_id,
+        posted : 1
+      };
+
       var result = confirm($translate.instant('PAYMENT_PERIOD.CONFIRM'));
       if(result){
         connect.post('primary_cash',[primary],['uuid'])
         .then(function () {
-          return connect.post('primary_cash_item', [primary_details],['uuid']);
+          return connect.post('primary_cash_item',[primary_details],['uuid']);
+        })
+        .then(function () {
+          // A FIXE : Utilisation de $http au lieu de connect
+          var formatObject = {
+            table : 'tax_paiement',
+            paiement_uuid : emp.uuid,
+            tax_id : emp.tax_id
+          };
+          return $http
+            .put('/setTaxPayment/', formatObject)
+            .success(function (res) {
+              console.log('Update Tax Payment success');
+            });
+        })
+        .then(function () {
+          messenger.success("success");
+          validate.refresh(dependencies, ['employees_payment']);
         })
         .catch(function (err) {
           messenger.danger(err);
@@ -242,5 +249,6 @@ angular.module('bhima.controllers')
     $scope.formatPeriod = formatPeriod;
     $scope.setConfiguration = setConfiguration;
     $scope.reconfigure = reconfigure;
+    $scope.submit = submit;
   }
 ]);

@@ -103,7 +103,9 @@
       "/getStockEntry/",
       "/getStockConsumption/",
       "/getAccount7/",
-      "/posting_donation/"
+      "/posting_donation/",
+      "/getEmployeePayment/",
+      "/setTaxPayment/"
     ]
   }
 }
