@@ -28,7 +28,7 @@
           typeahead="patient as patient.name for patient in debtorList | filter:$viewValue | limitTo:8"
           placeholder="{{ 'FIND.PLACEHOLDER' | translate }}"
           typeahead-on-select="loadDebitor(debitor.id)"
-          typeahead-template-url="debtorListItem.html"
+          typeahead-template-url="/partials/templates/debtorListItem.tmpl.html"
           class="form-bhima"
           size="25">
           <span class="input-group-btn">

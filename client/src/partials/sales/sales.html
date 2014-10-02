@@ -159,18 +159,11 @@
   </div>
 </main>
 
-<section class="bar-bottom">
+<footer>
   <div class="pull-right">
     <a ng-disabled="verifySubmission()" ng-click="submitInvoice()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "SALE.SUBMIT" | translate }}</a>
   </div>
-</section>
-
-<script type="text/ng-template" id="debtorListItem.html">
-  <a>
-    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-    <span><b>[{{match.model.uuid}}]</b></span>
-  </a>
-</script>
+</footer>
 
 <script type="text/ng-template" id="invoiceListItem.html">
   <a>
