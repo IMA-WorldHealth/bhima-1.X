@@ -77,15 +77,21 @@ angular.module('bhima.services')
 					for(var i = 1 ; i < dates.length ; i++){
 						sMonth += DateDiff.inMonths(dates[i], dates[i-1]);
 					}
-					sAvg = sMonth / (dates.length - 1);
-				}else if(dates.length == 1){
-			 		sAvg = sMonth; 
+					
+					if(sMonth === 0){
+						// Si on a deux ou plusieurs commande mais au meme jour => sMonth = 0
+						sAvg = 1;
+					}else {
+						sAvg = sMonth / (dates.length - 1);
+					}
+					
 				}else {
-			 		sAvg = 0; 
+			 		sAvg = 1; 
 				}
 			}else{
 				sAvg = 0;
 			}
+			
 			def.resolve(sAvg);
 		});	
 
@@ -250,6 +256,6 @@ angular.module('bhima.services')
 		getStockMonth : getStockMonth,
 		getStock : getStock,
 		getStockToCommand : getStockToCommand
-	}
+	};
 	
 }]);

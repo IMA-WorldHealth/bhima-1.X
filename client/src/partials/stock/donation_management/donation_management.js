@@ -85,7 +85,7 @@ angular.module('bhima.controllers')
     dependencies.accounts = {
       required : true,
       query : 'getAccount7/'
-    }
+    };
 
     dependencies.enterprise = {
       required : true,
@@ -94,7 +94,7 @@ angular.module('bhima.controllers')
           enterprise : {columns : ['currency_id']}
         }
       }
-    }
+    };
 
     appstate.register('project', function (project) {
       $scope.project = project;
@@ -120,7 +120,6 @@ angular.module('bhima.controllers')
       addDonationItem();
 
       angular.extend($scope, models);
-      console.log("ID", $scope.enterprise);
       session.depot = $scope.depots.get($routeParams.depotId);
       // return cache.fetch('selectedAccount');
     }
@@ -204,7 +203,7 @@ angular.module('bhima.controllers')
 
         session.donation.step = 'input_inventories';
       }
-    };
+    }
 
     $scope.previousStep = function previousStep() {
       session.donation.step = 'select_inventories';
@@ -235,7 +234,7 @@ angular.module('bhima.controllers')
       lot.code = drug.code;
       lot.inventory_uuid = drug.inventory_uuid;
       drug.lots.post(lot);
-    };
+    }
 
     $scope.removeLot = function removeLot (drug, idx) {
       drug.lots.data.splice(idx, 1);
@@ -308,7 +307,7 @@ angular.module('bhima.controllers')
           employee_id     : session.config.employee.id,
           tracking_number : lot.tracking_number,
           date            : util.sqlDate(session.config.date)
-        }
+        };
 
         var movement = {
           uuid : uuid(),
@@ -317,7 +316,7 @@ angular.module('bhima.controllers')
           date            : util.sqlDate(new Date()),
           quantity        : lot.quantity,
           depot_entry     : session.cfg.depot.id
-        }
+        };
 
         var synthese = {
           lot : lot,
@@ -325,7 +324,7 @@ angular.module('bhima.controllers')
           donation : donation,
           currency_id : $scope.enterprise.data[0].currency_id,
           project_id : $scope.project.id
-        }
+        };
 
         var def = $q.defer();
 
@@ -341,7 +340,7 @@ angular.module('bhima.controllers')
         })
         .then(function (res) {
           def.resolve(res);
-        })
+        });
         return def.promise;      
       }))
       .then(function () {

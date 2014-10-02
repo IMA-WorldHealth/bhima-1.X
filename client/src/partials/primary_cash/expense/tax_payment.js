@@ -76,7 +76,7 @@ angular.module('bhima.controllers')
       cache.fetch('paiement_period')
       .then(function (pp) {
         if(!pp){
-          throw new Error("period paiement not defined");         
+          throw new Error('period paiement not defined');         
         }
         session.pp = pp; 
         session.pp_label = formatPeriod (pp);
@@ -95,7 +95,7 @@ angular.module('bhima.controllers')
         session.model = model;
         session.configured = true;
         session.complete = true;
-        session.available = (session.model.employees_payment.data.length > 0) ? true : false
+        session.available = (session.model.employees_payment.data.length > 0) ? true : false ;
       })
       .catch(function (err) {
         console.log('err', err);
@@ -128,14 +128,12 @@ angular.module('bhima.controllers')
     }
 
     function getCashAccountID (currency_id) {
-      console.log('model', session.model);
       return session.model.cash_box.data.filter(function (item) {
         return item.currency_id === currency_id;
       })[0].account_id;
     }
 
     function submit (emp) {
-      console.log("emp", emp);
       var document_uuid = uuid();
 
       var primary = {
@@ -149,7 +147,7 @@ angular.module('bhima.controllers')
         currency_id   : emp.currency_id,
         cost          : emp.value,
         user_id       : session.model.cashier.data.id,
-        description   : "Tax Payment " + '(' + emp.label + ') : ' + emp.name + emp.postnom,
+        description   : 'Tax Payment ' + '(' + emp.label + ') : ' + emp.name + emp.postnom,
         cash_box_id   : session.cashbox,
         origin_id     : 7,
       };
@@ -165,13 +163,13 @@ angular.module('bhima.controllers')
 
       var other = {
         tax_id : emp.tax_id
-      }
+      };
 
       var package = {
         primary : primary,
         primary_details : primary_details,
         other : other
-      }
+      };
 
       $http.post('payTax/', package)
       .then(function (res){

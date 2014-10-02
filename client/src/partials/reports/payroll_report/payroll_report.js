@@ -25,7 +25,7 @@ angular.module('bhima.controllers')
 
 
     function reset () {
-      record = connect.clean(session);
+      var record = connect.clean(session);
       $http.get('/getReportPayroll/',{params : {
             'period_id' : record.period_id
           }  
