@@ -6,7 +6,7 @@ angular.module('bhima.services')
 	dependencies.taxe_ipr = {
 		query : {
 			tables : {
-				'taxe_ipr' : { columns : ['id','taux','tranche_annuelle_debut','tranche_annuelle_fin','tranche_mensuelle_debut','tranche_mensuelle_fin','ecart_annuel','ecart_mensuel','impot_annuel','impot_mensuel','cumul_annuel','cumul_mensuel']}
+				'taxe_ipr' : { columns : ['id', 'taux', 'tranche_annuelle_debut', 'tranche_annuelle_fin', 'tranche_mensuelle_debut', 'tranche_mensuelle_fin', 'ecart_annuel', 'ecart_mensuel', 'impot_annuel', 'impot_mensuel', 'cumul_annuel', 'cumul_mensuel', 'currency_id']}
 			}
 		}
 	};
@@ -27,7 +27,7 @@ angular.module('bhima.services')
 			ecarts.push({'ecart_annuel':ecart_an,'ecart_mensuel':ecart_mois});
 			impots.push({'impot_annuel':impot_an,'impot_mensuel':impot_mois});
 		}
-		return $q.when({tranches : tranches, ecarts : ecarts, impots : impots});
+		return $q.when({tranches : tranches, ecarts : ecarts, impots : impots, currency_id : (tranches[0]) ? tranches[0].currency_id : null});
 	}
 
 	function generateCumuls(obj){
