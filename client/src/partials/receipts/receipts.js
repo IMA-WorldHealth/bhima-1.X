@@ -818,13 +818,14 @@ angular.module('bhima.controllers')
           identifier : 'uuid',
           tables : {
             primary_cash : { columns : ['reference', 'description', 'cost', 'currency_id', 'date'] },
+            primary_cash_item : { columns : ['document_uuid'] },
             user : { columns : ['first', 'last'] },
-            creditor : { columns : ['text'] }
+            account : { columns : ['account_txt'] }
           },
-          join : ['primary_cash.user_id=user.id', 'primary_cash.deb_cred_uuid=creditor.uuid'],
+          join : ['primary_cash.user_id=user.id', 'primary_cash.account_id=account.id', 'primary_cash.uuid=primary_cash_item.primary_cash_uuid'],
           where : ['primary_cash.uuid='+identifiant]
         }
-      };
+      };      
 
       validate.process(dependencies)
       .then(getLocations)
@@ -848,13 +849,14 @@ angular.module('bhima.controllers')
         $scope.invoice.sector = model.location.data[0].sector;
         $scope.invoice.phone = model.enterprise.data[0].phone;
         $scope.invoice.email = model.enterprise.data[0].email;
-        $scope.invoice.name = model.record.data[0].text;
+        $scope.invoice.name = model.record.data[0].account_txt;
         $scope.invoice.date = model.record.data[0].date;
         $scope.invoice.reference = model.enterprise.data[0].abbr + model.record.data[0].reference;
         $scope.invoice.cost = model.record.data[0].cost;
         $scope.invoice.description = model.record.data[0].description;
         $scope.invoice.currency_id = model.record.data[0].currency_id;
         $scope.invoice.by = model.record.data[0].first + '  ' + model.record.data[0].last;
+        $scope.invoice.document_uuid =  model.record.data[0].document_uuid;
       }
     }
 

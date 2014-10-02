@@ -1291,10 +1291,10 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
         'INSERT INTO `posting_journal` ' +
           '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
           '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-          '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+          '`currency_id`, `inv_po_id`, `origin_id`, `user_id` ) ' +
         'SELECT `project_id`, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'' ].join(', ') + ', ' +
           '`description`, `account_id`, `credit`, `debit`, `credit` / ' + rate + ', `debit` / ' + rate + ', ' +
-          '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `document_uuid`, ' + cfg.originId + ', ' + user_id + ' ' +
+          '`currency_id`, `document_uuid`, ' + cfg.originId + ', ' + user_id + ' ' +
         'FROM `primary_cash` JOIN `primary_cash_item` ON ' +
           '`primary_cash`.`uuid` = `primary_cash_item`.`primary_cash_uuid` ' +
         'WHERE `primary_cash`.`uuid` = ' + sanitize.escape(id) + ';';
@@ -1307,10 +1307,10 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
         'INSERT INTO `posting_journal` ' +
           '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
           '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-          '`currency_id`, `deb_cred_uuid`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+          '`currency_id`, `inv_po_id`, `origin_id`, `user_id` ) ' +
         'SELECT `project_id`, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, state.transId, '\''+get.date()+'\'' ].join(', ') + ', ' +
           '`description`, `cash_box_account_currency`.`account_id`, `debit`, `credit`, `debit` / ' + rate + ', `credit` / ' + rate + ', ' +
-          '`primary_cash`.`currency_id`, `deb_cred_uuid`, `document_uuid`,' + cfg.originId + ', ' + user_id + ' ' +
+          '`primary_cash`.`currency_id`, `document_uuid`,' + cfg.originId + ', ' + user_id + ' ' +
         'FROM `primary_cash` JOIN `primary_cash_item` JOIN `cash_box_account_currency` ON ' +
           '`primary_cash`.`uuid` = `primary_cash_item`.`primary_cash_uuid` AND ' +
           '`primary_cash`.`cash_box_id` = `cash_box_account_currency`.`cash_box_id` ' +
