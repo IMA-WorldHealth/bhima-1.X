@@ -154,16 +154,21 @@ angular.module('bhima.controllers')
       });
     }
 
+    $scope.removeLastGroup = function () {
+      $scope.groups.pop();
+      dataview.setGrouping($scope.groups);
+    };
+
     function formatTransactionGroup(g) {
-      return '<span>TRANSACTION(' + g.value + ')</span>';
+      return '<span>TRANSACTION (' + g.value + ')</span>';
     }
 
     function formatAccountGroup(g) {
-      return '<span>ACCOUNT(' + g.value + ')</span>';
+      return '<span>ACCOUNT (' + g.value + ')</span>';
     }
 
     function formatPeriodGroup(g) {
-      return '<span>PERIOD(' + g.value + ')</span>';
+      return '<span>PERIOD (' + g.value + ')</span>';
     }
 
     function formatGroupTotalRow(totals, column) {
