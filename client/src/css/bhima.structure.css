@@ -41,8 +41,8 @@ main {
 }
 
 main + footer {
-  bottom: 0;
-  border-top: 1px solid #ddd;
+  bottom     : 0;
+  border-top : 1px solid #ddd;
   position   : absolute;
   left       : 0;
   right      : 0;
