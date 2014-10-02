@@ -625,7 +625,11 @@
       "KEY" : "Expiring Stock"
     },
     "REPORT" : {
-      "STOCK_COUNT" : "Stock Count"
+      "STOCK_COUNT"       : "Stock Count",
+      "DATE"              : "Date",
+      "TITLE"             : "Etat du stock",
+      "EXPIRING_STOCK"    : "Expiration Stock",
+      "ITEM_IN_STOCK"     : "Article en stock"
     },
     "DONATION" : {
         "KEY"    : "Entrer Donation",
@@ -827,7 +831,11 @@
     "TIMES"              : "Temps",
     "AMOUNT_PAYABLE"     : "Montant à payer",
     "NET_CASH"           : "Net à payer",
-    "WORKING_DAY"        : "Jours prestés"    
+    "WORKING_DAY"        : "Jours prestés"    ,
+    "STOCK_QTE"          : "Quantité en Stock",
+    "STOCK_QTE_MIN"      : "Quantité Minimum", 
+    "STOCK_QTE_MAX"      : "Quantité Maximum", 
+    "STOCK_QTE_SEC"      : "Stock de securité"
   },
 
   "REPORT"                  : {
@@ -878,7 +886,8 @@
       "ACCOUNT_CREATED"     : "Compte cree en",
       "SUMMARY"             : "Sommaire compte",
       "DETAILS"             : "Details transactions du compte"
-    }
+    },
+    "STOCK"                 : "Rapport Stock"
 
   },
 
@@ -2111,7 +2120,7 @@
         },
     "REPORTS"           : {
             "TITLE"             : "Rapports",
-            "SITUATION_STOCK"   : "Stock status",
+            "SITUATION_STOCK"   : "Situation Stock",
             "EXPIRING_STOCK"    : "Expiring Stock"
         }
   },

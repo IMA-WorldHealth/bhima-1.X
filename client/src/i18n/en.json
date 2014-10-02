@@ -460,7 +460,8 @@
       "SUMMARY"             : "Account Summary",
       "DETAILS"             : "Account transactions details"
 
-    }
+    },
+    "STOCK"                 : "Stock Report"
   },
 
   "CASH_PAYMENTS" : {
@@ -669,7 +670,11 @@
     "TIMES"              : "Times",
     "AMOUNT_PAYABLE"     : "Amount Payable",
     "NET_CASH"           : "Net Cash",
-    "WORKING_DAY"        : "Working days"   
+    "WORKING_DAY"        : "Working days",
+    "STOCK_QTE"          : "Stock Quantity",
+    "STOCK_QTE_MIN"      : "Stock Minimum Quantity", 
+    "STOCK_QTE_MAX"      : "Stock Maximum Quantity", 
+    "STOCK_QTE_SEC"      : "Security Stock Quantity"
   },
 
   "INVENTORY" : {
@@ -1721,7 +1726,11 @@
       "KEY" : "Expiring Stock"
     },
     "REPORT" : {
-      "STOCK_COUNT" : "Stock Count"
+      "STOCK_COUNT"       : "Stock Count",
+      "DATE"              : "Date",
+      "TITLE"             : "Stock status",
+      "EXPIRING_STOCK"    : "Expiring stock",
+      "ITEM_IN_STOCK"     : "Item in stock"
     },
     "DONATION" : {
         "KEY"    : "Entry Donation",
