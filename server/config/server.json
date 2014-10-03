@@ -91,7 +91,9 @@
       "/getItemInConsumption/",
       "/hollyday_list",
       "/getNombreMoisStockControl/",
-      "/getDelaiLivraison/"
+      "/getDelaiLivraison/",
+      "/monthlyConsumptions/",
+      "/getCommandes/"
     ]
   }
 }

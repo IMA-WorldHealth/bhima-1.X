@@ -1,22 +1,16 @@
 angular.module('bhima.services')
-.service('stockControl', ['validate', '$q', 'connect', function(validate, $q, connect){
+.service('stockControl', ['validate', '$q', 'connect','util', function (validate, $q, connect, util){
 	// Summary :
 	// Ce service calcul les qte moyennes de consommation des inventories
 	var dependencies = {},
-		session = {};
+		inventory = {};
 
-	dependencies.consumptions = {
+	dependencies.stock = {
 		query : {
 			tables : {
-				consumption : { columns : ['uuid','depot_uuid','date','quantity']},
-				stock : { columns : ['inventory_uuid']}
-			},
-			join : ['consumption.tracking_number=stock.tracking_number']
+				stock : {columns : ['quantity']}
+			}
 		}
-	};
-
-	dependencies.nombreMois = {
-		query : '/getNombreMoisStockControl/'
 	};
 
 	validate.process(dependencies);
@@ -24,10 +18,12 @@ angular.module('bhima.services')
 	function getNombreMoisAVG (uuid) {
 		// Nombre de mois pour AVG
 		var deff = $q.defer();
-		dependencies.consumptions.query.where = ['stock.inventory_uuid=' + uuid ];
+		dependencies.nombreMois = {};
+		dependencies.nombreMois.query = '/getNombreMoisStockControl/'+uuid;
 
 		function calculMois (models) {
 			var nb = models.nombreMois.data.nb;
+			inventory.nb = nb;
 			deff.resolve(nb);
 		}
 
@@ -36,22 +32,62 @@ angular.module('bhima.services')
 			.then(function(){ return deff.promise; });
 	}
 
-	function consommationMensuelleSingle (uuid) {
+	function getMonthlyConsumption (uuid,nb_month) {
 		//Consommation mensuelle d'un seul inventory
 		var deff = $q.defer();
-		dependencies.consumptions.query.where = ['stock.inventory_uuid=' + uuid ];
+
+		dependencies.consumptions = {};
+		dependencies.consumptions.query = '/monthlyConsumptions/' + uuid + '/' + nb_month;
+
+		dependencies.allConsumptions = {
+			query : {
+				tables : {
+					consumption : { columns : ['quantity']},
+					stock : { columns : ['inventory_uuid']}
+				},
+				join : ['consumption.tracking_number=stock.tracking_number'],
+				where : ['stock.inventory_uuid=' + uuid ]
+			}
+		};
+
+		dependencies.stock.query.where = ['stock.inventory_uuid=' + uuid ];
 
 		function calculCM (models) {
-			var cons = models.consumptions.data;
-			var nb = models.nombreMois.data.nb;
-			var CM = 0;
-			if(cons.length){
-				cons.forEach(function (item) {
-					CM += item.quantity;
-				});
-				if(nb > 0){ CM = CM / nb; }else{ CM = NaN; }
+			if(models.stock.data.length > 0){
+				var stock_status = models.stock.data;
+				var cons = models.consumptions.data;
+				var allCons = models.allConsumptions.data;
+				var consumptions = 0;
+				var nb = nb_month;
+				var CM = 0;
+				var stock_init = 0;
+				var stock = 0;
+
+				if(stock_status.length){
+					stock_status.forEach(function (item) {
+						stock_init += item.quantity;
+					});
+				}
+
+				if(allCons.length){
+					allCons.forEach(function (item) {
+						consumptions += item.quantity;
+					});
+				}
+
+				if(cons.length){
+					cons.forEach(function (item) {
+						CM += item.quantity; 
+					});
+					if(nb > 0){ CM = CM / nb; }else{ CM = 0; }
+				}
+
+				stock = stock_init - consumptions;
+				inventory.stock_init = stock_init;
+				inventory.stock = stock;
+				inventory.cm = CM;
+				deff.resolve(CM);
 			}
-			deff.resolve(CM);
 		}
 
 		return validate.refresh(dependencies)
@@ -59,19 +95,92 @@ angular.module('bhima.services')
 			.then(function(){ return deff.promise; });
 	}
 
-	function getDelaiLivraison (uuid) {
+	function getDelaiLivraison (uuid,default_dl) {
 		// Le delais de livraison 
 		var deff = $q.defer();
 		dependencies.delaiLivraison = {};
-		dependencies.delaiLivraison.query = "/getDelaiLivraison/"+uuid;
+		dependencies.delaiLivraison.query = '/getDelaiLivraison/'+uuid;
 
 		function calculDL (models) {
-			var dl = models.delaiLivraison.data.dl;
-			deff.resolve(dl);
+			if(default_dl){
+				inventory.dl = default_dl;
+				deff.resolve(default_dl);
+			}else{
+				var dl = models.delaiLivraison.data.dl;
+				inventory.dl = dl;
+				deff.resolve(dl);
+			}
+			
 		}
 
 		return validate.refresh(dependencies)
 			.then(calculDL)
+			.then(function(){ return deff.promise; });
+	}
+
+	function getIntervalleCommande (uuid,default_ic) {
+		// Intervalle de commande
+		var deff = $q.defer();
+		dependencies.commandes = {};
+		dependencies.commandes.query = '/getCommandes/'+uuid;
+
+		function calculIC (models) {
+			if(default_ic){
+				inventory.ic = default_ic;
+				deff.resolve(default_ic);
+			}else {
+				var commandes = models.commandes.data;
+				var dates = [];
+
+				commandes.forEach(function (item) {
+					dates.push(new Date(item.date_commande));
+				});
+
+				var sMonth = 0;
+				var sAvg = 0;
+
+				if(dates.length > 1){ 
+					for(var i = 1 ; i < dates.length ; i++){
+						sMonth += DateDiff.inMonths(dates[i],dates[i-1]);
+					}
+					sAvg = sMonth / (dates.length - 1);
+				}
+				else if(dates.length == 1){ sAvg = sMonth; }
+				else { sAvg = 0; }
+
+				inventory.ic = sAvg;
+				deff.resolve(sAvg);
+			}
+			
+		}
+
+		var DateDiff = {
+		    inDays: function(d1, d2) {
+		        var t2 = d2.getTime();
+		        var t1 = d1.getTime();
+		        return parseInt((t2-t1)/(24*3600*1000));
+		    },
+		    inWeeks: function(d1, d2) {
+		        var t2 = d2.getTime();
+		        var t1 = d1.getTime();
+
+		        return parseInt((t2-t1)/(24*3600*1000*7));
+		    },
+		    inMonths: function(d1, d2) {
+		        var d1Y = d1.getFullYear();
+		        var d2Y = d2.getFullYear();
+		        var d1M = d1.getMonth();
+		        var d2M = d2.getMonth();
+
+		        return (d2M+12*d2Y)-(d1M+12*d1Y);
+		    },
+		    inYears: function(d1, d2) {
+		        return d2.getFullYear()-d1.getFullYear();
+		    }
+		};
+
+		return validate.refresh(dependencies)
+			.then(calculIC)
 			.then(function(){ return deff.promise; });
 	}
 
@@ -80,19 +189,21 @@ angular.module('bhima.services')
 		var deff = $q.defer();
 		var ss;
 
-		if(dl){
-			consommationMensuelleSingle(uuid)
+		if(typeof dl !== 'undefined'){
+			getMonthlyConsumption(uuid,inventory.nb)
 			.then(function (cm) {
 				ss = cm * dl;
+				inventory.ss = ss;
 				deff.resolve(ss);
 			});
 		}else {
-			consommationMensuelleSingle(uuid)
+			getMonthlyConsumption(uuid,inventory.nb)
 			.then(function (cm) {
 				var CM = cm;
 				getDelaiLivraison(uuid)
 				.then(function (dl){
 					ss = CM * dl;
+					inventory.ss = ss;
 					deff.resolve(ss);
 				});
 			});
@@ -101,10 +212,48 @@ angular.module('bhima.services')
 		return deff.promise;
 	}
 
+	function inventoryData (uuid,dl,ic) {
+		// Summary :
+		// uuid : le uuid de l'inventory
+		// dl : le delai de livraison ! important
+		// ic : l'intervalle de commande
+		var deff = $q.defer();
+
+		getNombreMoisAVG(uuid)
+		.then(function (nb) {
+			getMonthlyConsumption(uuid,nb)
+			.then(function (cm) {
+				getDelaiLivraison(uuid,dl)
+				.then(function () {
+					getIntervalleCommande(uuid,ic)
+					.then(function() {
+						getStockSecurity(uuid,dl)
+						.then(function (ss) {
+							ic = ic || 1;
+							inventory.s_min = inventory.ss * 2;
+							inventory.s_max = inventory.cm * ic + inventory.s_min;
+							if(inventory.cm > 0) {
+								inventory.mois_stock = inventory.stock / inventory.cm;
+							}else {
+								inventory.mois_stock = 0;
+							}
+							inventory.q = inventory.s_max - inventory.stock;
+							deff.resolve(inventory);
+						});
+					});
+				});
+			});
+		});
+
+		return deff.promise;
+	}
+
 	//Output
-	this.consommationMensuelleSingle = consommationMensuelleSingle;
+	this.getMonthlyConsumption = getMonthlyConsumption;
 	this.getDelaiLivraison = getDelaiLivraison;
 	this.getStockSecurity = getStockSecurity;
 	this.getNombreMoisAVG = getNombreMoisAVG;
+	this.inventoryData = inventoryData;
+	this.getIntervalleCommande = getIntervalleCommande;
 	
 }]);
