@@ -28,7 +28,7 @@ nav {
 main {
   position      : absolute;
   bottom        : 37px;
-  top           : 95px;
+  top           : 87px;
   right         : 0;
   left          : 0;
   overflow      : auto;
@@ -41,8 +41,8 @@ main {
 }
 
 main + footer {
-  bottom: 0;
-  border-top: 1px solid #ddd;
+  bottom     : 0;
+  border-top : 1px solid #ddd;
   position   : absolute;
   left       : 0;
   right      : 0;
