@@ -1120,10 +1120,13 @@ app.get('/getItemInConsumption/', function (req, res, next) {
   .done();
 });
 
-app.get('/getNombreMoisStockControl/', function (req, res, next) {
-  var sql = "SELECT COUNT(DISTINCT(MONTH(consumption.date))) AS nb"
-          + " FROM consumption "
-          + " WHERE consumption.date BETWEEN DATE_SUB(CURDATE(),INTERVAL 6 MONTH) AND CURDATE()";
+app.get('/getNombreMoisStockControl/:inventory_uuid', function (req, res, next) {
+  var sql = "SELECT COUNT(DISTINCT(MONTH(c.date))) AS nb"
+          + " FROM consumption c,stock s, inventory i "
+          + " WHERE (c.date BETWEEN DATE_SUB(CURDATE(),INTERVAL 6 MONTH) AND CURDATE()) "
+          + " AND c.tracking_number=s.tracking_number "
+          + " AND i.uuid=s.inventory_uuid "
+          + " AND s.inventory_uuid=" + sanitize.escape(req.params.inventory_uuid);
 
   db.exec(sql)
   .then(function (result) {
@@ -1134,8 +1137,24 @@ app.get('/getNombreMoisStockControl/', function (req, res, next) {
   .done();
 });
 
+app.get('/monthlyConsumptions/:inventory_uuid/:nb', function (req, res, next) {
+  var sql = "SELECT c.uuid, c.date, c.quantity, s.inventory_uuid "
+          + " FROM consumption c, stock s, inventory i "
+          + " WHERE c.tracking_number=s.tracking_number "
+          + " AND i.uuid=s.inventory_uuid "
+          + " AND s.inventory_uuid=" + sanitize.escape(req.params.inventory_uuid)
+          + " AND (c.date BETWEEN DATE_SUB(CURDATE(),INTERVAL 6 MONTH) AND CURDATE())";
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
 app.get('/getDelaiLivraison/:id', function (req, res, next) {
-  var sql = "SELECT CEIL(DATEDIFF(s.entry_date,p.purchase_date)/30) AS dl"
+  var sql = "SELECT ROUND(AVG(CEIL(DATEDIFF(s.entry_date,p.purchase_date)/30))) AS dl"
           + " FROM purchase AS p,stock AS s, purchase_item AS z, inventory AS i"
           + " WHERE p.uuid=s.purchase_order_uuid"
           + " AND p.uuid=z.purchase_uuid"
@@ -1146,6 +1165,21 @@ app.get('/getDelaiLivraison/:id', function (req, res, next) {
   db.exec(sql)
   .then(function (result) {
     res.send(result[0]);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getCommandes/:id', function (req, res, next) {
+  var sql = "SELECT p.purchase_date AS date_commande"
+          + " FROM purchase AS p, purchase_item AS z, inventory AS i"
+          + " WHERE p.uuid=z.purchase_uuid"
+          + " AND z.inventory_uuid=i.uuid"
+          + " AND i.uuid=" + sanitize.escape(req.params.id);
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
   })
   .catch(function (err) { next(err); })
   .done();

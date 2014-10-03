@@ -6,29 +6,11 @@ angular.module('bhima.controllers')
 	function ($scope,$q,stockControl) {
 		var session = $scope.session = {};
 
-		var uuid = '248c675a-7013-4b98-9301-27c8277a3ce2';
-
-		stockControl.getNombreMoisAVG(uuid)
+		var uuid = '538c3edc-853d-48bf-8d12-367a8cb1ed84';
+		stockControl.inventoryData(uuid)
 		.then(function (data) {
-			console.log('NB : ', data);
+			console.log('Inventory : ',data);
 		});
-
-		stockControl.consommationMensuelleSingle(uuid)
-		.then(function (data) {
-			console.log('CM : ', data);
-		});
-
-		// Delai Livraison
-		stockControl.getDelaiLivraison(uuid)
-		.then(function (data) {
-			console.log('DL : ',data);
-		});
-
-		// Stock Security
-		stockControl.getStockSecurity(uuid)
-		.then(function (data) {
-			console.log('SS : ', data);
-		});
-
+		
 	}
 ]);
