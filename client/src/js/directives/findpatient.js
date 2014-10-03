@@ -2,6 +2,7 @@ angular.module('bhima.directives')
 .directive('findPatient', ['$compile', 'validate', 'messenger', 'appcache', function($compile, validate, messenger, Appcache) {
   return {
     restrict: 'A',
+    templateUrl : 'partials/templates/findpatient.tmpl.html',
     link : function(scope, element, attrs) {
       var dependencies = {}, debtorList = scope.debtorList = [];
       var searchCallback = scope[attrs.onSearchComplete];
@@ -40,60 +41,6 @@ angular.module('bhima.directives')
         submitSuccess : false,
         enableRefresh : attrs.enableRefresh || true
       };
-
-      var template =
-      '<div id=\'findPatient\' class=\'panel panel-default square\' ng-class="{\'panel-success\': findPatient.valid, \'panel-danger\': findPatient.valid===false}">'+ '  <div class=\'panel-heading square\'>'+
-      '    <div ng-switch=\'findPatient.submitSuccess\'>'+
-      '     <div ng-switch-when=\'false\'>'+
-      '       <span class=\'glyphicon glyphicon-search\'></span> {{ \'FIND.TITLE\' | translate }}'+
-      '       <div class=\'pull-right\'>'+
-      '         <a id=\'findById\' style=\'cursor:pointer;\' ng-class="{\'link-selected\': findPatient.state===\'id\'}" ng-click=\'findPatient.updateState("id")\' class=\'patient-find\'><span class=\'glyphicon glyphicon-pencil\'></span> {{ \'FIND.ENTER_DEBTOR_ID\' | translate }} </a>'+
-      '         <a id=\'findByName\' style=\'cursor:pointer;\' ng-class="{\'link-selected\': findPatient.state===\'name\'}" ng-click=\'findPatient.updateState("name")\' class=\'patient-find\'><span class=\'glyphicon glyphicon-user\'></span> {{ \'FIND.SEARCH\' | translate }} </a>'+
-      '       </div>'+
-      '     </div>'+
-      '     <div ng-switch-when=\'true\'>'+
-      '       <!-- Style hack -->'+
-      '       <span style=\'margin-right: 5px;\' class=\'glyphicon glyphicon-user\'> </span> {{findPatient.debtor.name}} <small>({{findPatient.debtor.sex}} {{findPatient.debtor.age}})</small>'+
-      '       <div class=\'pull-right\' ng-if=\'findPatient.enableRefresh\'>'+
-      '         <span ng-click=\'findPatient.refresh()\' class=\'glyphicon glyphicon-repeat\'></span>'+
-      '       </div>'+
-      '     </div>'+
-      '    </div>'+
-      '  </div>'+
-      '  <div class=\'panel-body find-collapse\' ng-show=\'!findPatient.submitSuccess\'>'+
-      '    <div ng-switch on=\'findPatient.state\'>'+
-      '      <div ng-switch-when=\'name\'>'+
-      '        <div class=\'input-group\'>'+
-      '          <input '+
-      '          id=\'findSearch\' ' +
-      '          type=\'text\' '+
-      '          ng-model=\'findPatient.selectedDebtor\' '+
-      '          typeahead=\'patient as patient.name for patient in debtorList | filter:$viewValue | limitTo:8\' '+
-      '          placeholder=\'{{ "FIND.PLACEHOLDER" | translate }}\' ' +
-      '          typeahead-on-select=\'loadDebitor(debitor.id)\' '+
-      '          typeahead-template-url=\'debtorListItem.html\''+
-      '          class=\'form-bhima\' '+
-      '          size=\'25\'>'+
-      '          <span class=\'input-group-btn\'> '+
-      '            <button id=\'submitSearch\' ng-disabled=\'validateNameSearch(findPatient.selectedDebtor)\' ng-click=\'submitDebtor(findPatient.selectedDebtor)\' class=\'btn btn-default btn-sm\'> {{ \'FORM.SUBMIT\' | translate }}</button>'+
-      '          </span>'+
-      '        </div>'+
-      '      </div> <!-- End searchName component -->'+
-      '      <div ng-switch-when=\'id\'>'+
-      '        <div class=\'input-group\'>'+
-      '          <input '+
-      '            type=\'text\''+
-      '            ng-model=\'findPatient.debtorId\''+
-      '            class=\'form-bhima\''+
-      '            placeholder=\'{{ "FIND.PATIENT_ID" | translate }}\'>'+
-      '          <span class=\'input-group-btn\'>'+
-      '            <button ng-click=\'submitDebtor(findPatient.debtorId)\' class=\'btn btn-default btn-sm\'> {{ \'FORM.SUBMIT\' | translate }} </button>'+
-      '          </span>'+
-      '        </div>'+
-      '      </div>'+
-      '    </div> <!--End find patient switch -->'+
-      '  </div>'+
-      '</div>';
 
       var stateMap = {
         'name' : searchName,
@@ -243,7 +190,7 @@ angular.module('bhima.directives')
         }
       }
 
-      // Expose selecting a debtor to the module (probabl a hack)(FIXME)
+      // Expose selecting a debtor to the module (probably a hack)(FIXME)
       scope.findPatient.forceSelect = searchUuid;
 
       scope.validateNameSearch = validateNameSearch;
@@ -251,7 +198,6 @@ angular.module('bhima.directives')
       scope.submitDebtor = submitDebtor;
 
       scope.findPatient.updateState = updateState;
-      element.replaceWith($compile(template)(scope));
     }
   };
 }]);
