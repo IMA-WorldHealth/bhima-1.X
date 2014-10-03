@@ -22,7 +22,7 @@
               <th>{{ "COLUMNS.PROJECT" | translate }}</th>
               <th>{{ "COLUMNS.COST_CENTER" | translate }}</th>
               <th>{{ "COLUMNS.PROFIT_CENTER" | translate }}</th>
-              <th>{{"COLUMNS.ACTIONS" | translate}}</th>
+              <th colspan="3">{{ "COLUMNS.ACTIONS" | translate}}</th>
             </tr>
           </thead>
           <tbody>
@@ -31,11 +31,9 @@
               <td>{{ item.project }}</td>
               <td>{{ item.cost_center }}</td>
               <td>{{ item.profit_center }}</td>
-              <td>
-                <button class="btn btn-sm btn-default" ng-click="setAction('edit', item)"><i class="glyphicon glyphicon-pencil"></i></button>
-                <button class="btn btn-sm btn-default" ng-click="setAction('more', item)"><i class="glyphicon glyphicon-eye-open"></i></button>
-                <button class="btn btn-sm btn-danger" ng-click="remove(item)"><i class="glyphicon glyphicon-trash"></i></button>
-              </td>
+              <td><a class="clk" ng-click="setAction('edit', item)"><i class="glyphicon glyphicon-pencil"></i></a></td>
+              <td><a class="clk" ng-click="setAction('more', item)"><i class="glyphicon glyphicon-eye-open"></i></a></td>
+              <td><a class="clk danger" ng-click="remove(item)"><i class="glyphicon glyphicon-trash"></i></a></td>
             </tr>
             <tr ng-if="!model.services.data.length">
               <td colspan="3"><div class="alert alert-warning square">{{ 'SERVICE.NONE_FOUND' | translate }}</div></td>
@@ -48,10 +46,8 @@
     <div class="col-xs-6" ng-switch="action">
       <div ng-switch-default>
         <div class="alert alert-info">
-          <b>{{'SERVICE.INFO' | translate}}</b>
-          <p>
-            {{'SERVICE.INFO_DESCRIPTION' | translate}}
-          </p>
+          <b>{{ 'SERVICE.INFO' | translate}}</b>
+          <p>{{ 'SERVICE.INFO_DESCRIPTION' | translate }}</p>
         </div>
       </div>
 
