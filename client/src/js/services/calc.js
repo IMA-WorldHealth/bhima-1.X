@@ -8,7 +8,8 @@ angular.module('bhima.services')
     // to pay or bill, based on the currency
     var store;
 
-    appstate.register('currency', function (curr) {
+    appstate.register('currencies', function (curr) {
+      console.log('[curr]', curr);
       store = new Store({ data : curr});
     });
 
