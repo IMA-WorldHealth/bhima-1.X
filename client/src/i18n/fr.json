@@ -162,30 +162,28 @@
     "CURRENCY_DEFN" : "Definition de la Monaie"
   },
 
-  "TRIAL_BALANCE"   : {
-    "TITLE"         : "Rapprochement",
-    "ERROR_TEXT"    : "Vous avez des Erreurs!",
-    "ACCOUNT"       : "Compte",
-    "BEFORE"        : "Avant",
-    "AFTER"         : "Apres",
-    "RESULTS"       : "Resultats",
-    "DEBIT"         : "Debit",
-    "SHOW"          : "Voire",
-    "HIDE"          : "Cacher",
-    "CREDIT"        : "Credit",
-    "BTN_TEXT"      : "Poster au Grand Livre",
-    "TRANSACTIONS"  : "Transactions",
-    "ERRORS"        : "Erreurs",
-    "ERROR"         : "Erreur",
-    "DESCRIPTION"   : "Description",
-    "AFFECTED_ROWS" : "Lignes",
-    "SIGNATURES" : "Signees",
-    "SUMMARY" : "Summaire",
-    "FINANCE_OFFICER" : "Chef Finance",
+  "TRIAL_BALANCE" : {
+    "TITLE"            : "Rapprochement",
+    "ERROR_TEXT"       : "Vous avez des Erreurs!",
+    "ACCOUNT"          : "Compte",
+    "BEFORE"           : "Avant",
+    "AFTER"            : "Apres",
+    "RESULTS"          : "Resultats",
+    "DEBIT"            : "Debit",
+    "SHOW"             : "Voire",
+    "HIDE"             : "Cacher",
+    "CREDIT"           : "Credit",
+    "BTN_TEXT"         : "Poster au Grand Livre",
+    "TRANSACTIONS"     : "Transactions",
+    "ERRORS"           : "Erreurs",
+    "ERROR"            : "Erreur",
+    "DESCRIPTION"      : "Description",
+    "AFFECTED_ROWS"    : "Lignes",
+    "SIGNATURES"       : "Signees",
+    "SUMMARY"          : "Summaire",
+    "FINANCE_OFFICER"  : "Chef Finance",
     "CHIEF_ACCOUNTANT" : "Chef Comptable",
-    "POST_TO_LEDGER"   : "Poster dans le grand livre",
-    "CHIEF_ACCOUNTANT" : "Chef comptable",
-    "FINANCE_OFFICER" : "Chef finance"
+    "POST_TO_LEDGER"   : "Poster dans le grand livre"
   },
 
   "ERROR"                 : {
@@ -348,7 +346,7 @@
     "LOCATION"                 : "Gestion Emplacement"
   },
 
-  "TREE"                        : {
+  "TREE" : {
     "ROOT"                      : "Racine",
     "ADMIN"                     : "Admin",
     "ENTERPRISE"                : "Entreprise",
@@ -419,8 +417,8 @@
     "PROFIT_CENTER_MGMNT"       : "Centres de profit",
     "INCOME_REPORT"             : "Rapport des Recettes",
     "EXPENSE_REPORT"            : "Rapport des Depenses",
-	"GRADE_EMPLOYERS"			: "Gestion des Grades",
-    "TAXES"                     : "Taxes",    
+    "GRADE_EMPLOYERS"           : "Gestion des Grades",
+    "TAXES"                     : "Taxes",
     "TAXE_MANAGEMENT"           : "Gestion des taxes",
     "RUBRIC_PAYROLL"            : "Gestion des rubriques",
     "OFFDAY_MANAGEMENT"         : "Gestion des jours fériés",
@@ -431,11 +429,9 @@
     "DONATION_MANAGEMENT"       : "Gestion des Dons",
     "STOCK_DASHBOARD"           : "Tableau de bord du Stock",
     "DAILY_CONSUMPTION"         : "Consommation journaliere",    
-    "DONATION_MANAGEMENT"       : "Gestion des Dons",
     "CONFIG_ACCOUNTING"         : "Configuration des comptes",
     "PAYROLL_REPORT"            : "Rapports de paiements"
-
-},
+  },
 
   "RUBRIC_PAYROLL"       : {
     "TITLE"              : "Rubriques Payroll",
@@ -598,7 +594,6 @@
     "LOSS"     : {
       "KEY"    : "Perte stock",
       "TITLE"  : "Perte stock",
-      "KEY"    : "Perte stock",
       "NO_DEPOT" : "Pas de depot",
       "LOSS_GENERAL_INFO" : "Sommaire",
       "SUBMIT"              : "Soumettre"
@@ -632,12 +627,11 @@
       "ITEM_IN_STOCK"     : "Article en stock"
     },
     "DONATION" : {
-        "KEY"    : "Entrer Donation",
-        "TITLE"  : "Entrer Donation"
+      "KEY" : "Entrer Donation"
     }
   },
 
-  "COLUMNS"               : {
+  "COLUMNS" : {
     "COLUMNS"             : "Colonnes",
     "PASSWORD"            : "Mot de passe",
     "ID"                  : "ID",
@@ -732,6 +726,7 @@
     "STOCK"               : "Stock",
     "VOLUME"              : "Volume",
     "WEIGHT"              : "Poids",
+    "USERNAME"            : "Nom d'utilisateur",
     "PRICE_LIST"          : "Liste de Prix",
     "TITLE"               : "Titre",
     "VALUE"               : "Valeur",
@@ -787,28 +782,25 @@
     "EMPLOYER"            : "Creer par",
     "PROFIT_CENTER"       : "Center profit",
     "MEDECINE"            : "Medicament",
-    "QTY"                 : "Quantite",
     "DOCUMENT_UUID"       : "Numero Document",
     "QTY_LOSS"            : "Quantite perdue",
-    "REFERENCE"           : "Reference",
     "BY"                  : "Par",
     "TRANSACTION_NUMBER"  : "Numero Transaction",
     "SOURCE"              : "Source",
     "TOTAL_DEBIT"         : "Debit total",
-    "TOTAL_CREDIT"        : "Credit total",
     "DATE_BILLED"         : "Date creation",
     "AMOUNT_BILLED"       : "Montant facture",
     "AMOUNT_DUE"          : "Montant a payer",
-	"NR"				  : "N°",
-	"BASIC_SALARY"	      : "Salaire de base",
-	"GRADE"				  : "Grade",
+    "NR"                  : "N°",
+    "BASIC_SALARY"        : "Salaire de base",
+    "GRADE"               : "Grade",
     "STAFF_COST"          : "Pour les employés",
     "IS_PERCENT"          : "En pourcentage",
     "OFFDAYS"             : "Jours fériés",
     "PERCENT_PAY"         : "Pourcentage de paiement",
     "EMPLOYEE_NAME"       : "Nom de l'employé",
     "DATE_FROM"           : "Date du début",
-    "DATE_TO"             : "Date de la fin" ,       
+    "DATE_TO"             : "Date de la fin" ,
     "DATE_EMBAUCHE"       : "Date embauche",
     "NB_CHILD"            : "Nombre Enfant",
     "NB_SPOUSE"           : "Nombre epoux (se)",
@@ -819,8 +811,6 @@
     "REFERENCE_PURCHASE" : "Reference",
     "GIVEN_AMOUNT"       : "Montant donne",
     "NUM" : "Numero",
-    "TRANSACTION_NUMBER" : "Numero transaction",
-    "BY"                 : "Par",
     "DRUGS"              : "Médicaments",
     "NET_BEFORE_TAXES"   : "Net avant taxes",
     "NET_AFTER_TAXES"    : "Net après taxes",
@@ -1703,7 +1693,7 @@
     }
   },
 
-    "PROFIT_CENTER" : {
+  "PROFIT_CENTER" : {
     "TITLE"         : "Gestion de Centre de profits",
     "NAVIGATION"    : "Naviguation",
     "OPERATION"     : "operations",
@@ -1714,28 +1704,28 @@
     }
   },
 
-"ANALYSIS_CENTER"              :{
-    "TITLE"                    :   "Centre de couts",
-    "PARENT"                   :   "Gestion de centre de couts",
-    "NAVIGATION"               :   "Naviguation",
-    "REGISTERED"               :   "Centre des couts enregistres",
-    "INFO"                     :   "Information sur le centre des couts",
-    "INFO_DESCRIPTION"         :   "Ce module vous permet de gerer vos centre des couts (leur creation, modification et suppression ainsi que leur consultation)",
-    "TEXT"                     :   "Text",
-    "COST"                     :   "Cout",
-    "IS_PROFIT"                :   "Principal",
-    "NOTE"                     :   "Note",
-    "REGISTER"                 :   "Enregistrement",
-    "NEW"                      :   "Nouveau centre",
-    "INSERT_SUCCESS_MESSAGE"   :   "Insertion avec succes !",
-    "INSERT_FAIL_MESSAGE"      :   "Erreur durant l'insertion !",
-    "NONE_FOUND"               :   "Aucun centre de frais trouve !",
-    "MODIFYING"                :   "Modification",
-    "UPDATE_SUCCESS_MESSAGE"   :   "Mise a jour avec succes !",
-    "UPDATE_FAIL_MESSAGE"      :   "Erreur durant la mise a jour !",
-    "REMOVE_FAIL_MESSAGE"      :   "Erreur durant la suppression !",
-    "REMOVE_SUCCESS_MESSAGE"   :   "Suppression avec succes !"
-},
+  "ANALYSIS_CENTER" : {
+    "TITLE"                  : "Centre de couts",
+    "PARENT"                 : "Gestion de centre de couts",
+    "NAVIGATION"             : "Naviguation",
+    "REGISTERED"             : "Centre des couts enregistres",
+    "INFO"                   : "Information sur le centre des couts",
+    "INFO_DESCRIPTION"       : "Ce module vous permet de gerer vos centre des couts (leur creation, modification et suppression ainsi que leur consultation)",
+    "TEXT"                   : "Text",
+    "COST"                   : "Cout",
+    "IS_PROFIT"              : "Principal",
+    "NOTE"                   : "Note",
+    "REGISTER"               : "Enregistrement",
+    "NEW"                    : "Nouveau centre",
+    "INSERT_SUCCESS_MESSAGE" : "Insertion avec succes !",
+    "INSERT_FAIL_MESSAGE"    : "Erreur durant l'insertion !",
+    "NONE_FOUND"             : "Aucun centre de frais trouve !",
+    "MODIFYING"              : "Modification",
+    "UPDATE_SUCCESS_MESSAGE" : "Mise a jour avec succes !",
+    "UPDATE_FAIL_MESSAGE"    : "Erreur durant la mise a jour !",
+    "REMOVE_FAIL_MESSAGE"    : "Erreur durant la suppression !",
+    "REMOVE_SUCCESS_MESSAGE" : "Suppression avec succes !"
+  },
 
 "ANALYSIS_PROFIT_CENTER"              :{
     "TITLE"                    :   "Centre de profits",
@@ -1758,9 +1748,9 @@
     "UPDATE_FAIL_MESSAGE"      :   "Erreur durant la mise a jour !",
     "REMOVE_FAIL_MESSAGE"      :   "Erreur durant la suppression !",
     "REMOVE_SUCCESS_MESSAGE"   :   "Suppression avec succes !"
-},
+  },
 
-"VERSEMENT" : {
+  "VERSEMENT" : {
     "TITLE"                  : "Versement des comptes",
     "PARENT"                 : "Gestion de centre de couts",
     "CHOOSE"                 : "Selectionner centre de couts",
@@ -1770,8 +1760,8 @@
     "NAVIG"                  : "Navigation",
     "ASSOCIATED_TO"          : "Les comptes associe a : ",
     "PLEASE_SELECT"          : "(Selectionner centre frais SVP!)"
-},
-"VERSEMENT_PROFIT_CENTER" : {
+  },
+  "VERSEMENT_PROFIT_CENTER" : {
     "TITLE"                  : "Versement des comptes",
     "PARENT"                 : "Gestion de centre de profits",
     "CHOOSE"                 : "Selectionner centre de profit",
@@ -1781,9 +1771,9 @@
     "NAVIG"                  : "Navigation",
     "ASSOCIATED_TO"          : "Les comptes associe a : ",
     "PLEASE_SELECT"          : "(Selectionner centre profit SVP!)"
-},
+  },
 
-"SERVICE" : {
+  "SERVICE" : {
     "TITLE"                    : "Gestion des Services",
     "REGISTERED"               : "Services enregistres",
     "NONE_FOUND"               : "Aucun service trouve",
@@ -1797,9 +1787,9 @@
     "INFO_DESCRIPTION"         :  "Ce module vous permet de gerer vos services (leur creation, modification et suppression ainsi que leur consultation)",
     "MODIFYING"                :  "Modification",
     "OVERVIEW_SERVICE"         : "Resultat synthetique du service :"
-},
+  },
 
-"ASSIGNING" : {
+  "ASSIGNING" : {
     "TITLE"                  : "Assignation",
     "NAVIG"                  : "Navigation",
     "PARENT"                 : "Gestion de centre de couts",
@@ -1824,57 +1814,55 @@
     "LABEL_CC"               : "Designation",
     "TYPE_CC"                : "Type",
     "NOTE"                   : "Description"
-},
-
-"EXPIRING_REPORT" : {
-    "TITLE" : "Rapport d'Expiration de medicaments",
-    "ALL_DEPOTS" : "Tous les depots",
-    "DAY" : "Aujourd'ui",
-    "MONTH" : "Ce mois",
-    "WEEK"  : "Cette semaine",
-    "EMPTY_REPORT" : "Aucun enregistrement trouve !"
-},
-
-"SIGNATURES" : {
-    "WAREHOUSE_MANAGER" : "Gerant de l'entrepot",
-    "CHIEF_ACCOUNTANT" : "Chef comptable",
-    "FINANCE_OFFICER" : "Officier Finance",
-    "ADMINISTRATOR" : "Adminstrateur",
-    "RESPONSABLE"   : "Responsable",
-    "BENEFICIARY"   : "Beneficiare",
-    "EMPLOYEE"      : "Employee",
-    "CLIENT"        : "Client",
-    "CREDITOR"      : "Crediteur",
-    "CUSTOMER" : "Client"
   },
 
-"EXPIRING_UTIL" : {
-    "TITLE" : "Liste des Lots Expirants",
-    "DAY" : "Aujourd'ui",
-    "MONTH" : "Ce mois",
-    "WEEK"  : "Cette semaine",
+  "EXPIRING_REPORT"  : {
+    "TITLE"        : "Rapport d'Expiration de medicaments",
+    "ALL_DEPOTS"   : "Tous les depots",
+    "DAY"          : "Aujourd'ui",
+    "MONTH"        : "Ce mois",
+    "WEEK"         : "Cette semaine",
+    "EMPTY_REPORT" : "Aucun enregistrement trouve !"
+  },
+
+"SIGNATURES"            : {
+    "WAREHOUSE_MANAGER" : "Gerant de l'entrepot",
+    "CHIEF_ACCOUNTANT"  : "Chef comptable",
+    "FINANCE_OFFICER"   : "Officier Finance",
+    "ADMINISTRATOR"     : "Adminstrateur",
+    "RESPONSABLE"       : "Responsable",
+    "BENEFICIARY"       : "Beneficiare",
+    "EMPLOYEE"          : "Employee",
+    "CLIENT"            : "Client",
+    "CREDITOR"          : "Crediteur",
+    "CUSTOMER"          : "Client"
+  },
+
+  "EXPIRING_UTIL"    : {
+    "TITLE"        : "Liste des Lots Expirants",
+    "DAY"          : "Aujourd'ui",
+    "MONTH"        : "Ce mois",
+    "WEEK"         : "Cette semaine",
     "EMPTY_REPORT" : "Aucun enregistrement trouve !",
-    "GROUP_BY" : "Grouper Par"
-},
+    "GROUP_BY"     : "Grouper Par"
+  },
 
-  "PURCHASE_RECORDS" : {
-    "TITLE" : "Liste des Ordres d'Achats",
-    "ADVANCE_SEARCH" : "Recherche Avancee",
-    "NO_PURCHASE_FOUND" : "Aucun ordre d'Achat trouve",
-    "REFERENCE" : "Reference",
-    "PURCHASE_ORDER" : "Ordres des achats",
-    "TO_REQUEST" : " pour demander un ordre d'achat",
+  "PURCHASE_RECORDS"       : {
+    "TITLE"                : "Liste des Ordres d'Achats",
+    "ADVANCE_SEARCH"       : "Recherche Avancee",
+    "NO_PURCHASE_FOUND"    : "Aucun ordre d'Achat trouve",
+    "REFERENCE"            : "Reference",
+    "PURCHASE_ORDER"       : "Ordres des achats",
+    "TO_REQUEST"           : " pour demander un ordre d'achat",
     "VIEW_PURCHASE_DETAIL" : "Voir Details"
+  },
 
-  }
-  ,
-
-    "PURCHASE_MENU" : {
-    "TITLE" : "Gestion des ordres d'achats",
-    "OPERATION" : "Operations",
+  "PURCHASE_MENU"      : {
+    "TITLE"            : "Gestion des ordres d'achats",
+    "OPERATION"        : "Operations",
     "PUCHASE_CREATION" : "Creer ordre achat",
-    "CONFIRM" : "Confirmer paiement",
-    "VIEW" : "Liste ordres achats"
+    "CONFIRM"          : "Confirmer paiement",
+    "VIEW"             : "Liste ordres achats"
   },
 
   "CONFIRM" : {
@@ -1912,76 +1900,78 @@
   },
 
   "OFFDAY_MANAGEMENT" : {
-    "TITLE"         : "Gestion des jours fériés",
-    "NEW_OFFDAY"    : "Nouveau Jour férié",
-    "SAVE_SUCCES"  : "Enregistrement avec succès",    
-    "UPDATE_SUCCES" : "Mis à jour avec succès",
-    "NO_OFFDAY"    : "Aucun jour férié n'est encore enregistré",
-    "CONFIRM"       : "Etes vous sure de vouloir supprimer ce jour férié",      
-    "UPDATE"        : "Mettre à jour un jour férié",    
-    "ADD"           : "Ajouter un jour férié",
-    "REGISTERED"    : "jours fériés enregistrés",
-    "ALERT"         : "Le module gestion des jours fériés permet de configurer les différents types de jours fériés qui sont prises en charge dans l'organisation",
-    "CREATE_TAXE"   : "Creation des taxes",
-    "SAVE_FAILURE" : "Ce jour férié existe deja"
+    "TITLE"           : "Gestion des jours fériés",
+    "NEW_OFFDAY"      : "Nouveau Jour férié",
+    "SAVE_SUCCES"     : "Enregistrement avec succès",
+    "UPDATE_SUCCES"   : "Mis à jour avec succès",
+    "NO_OFFDAY"       : "Aucun jour férié n'est encore enregistré",
+    "CONFIRM"         : "Etes vous sure de vouloir supprimer ce jour férié",
+    "UPDATE"          : "Mettre à jour un jour férié",
+    "ADD"             : "Ajouter un jour férié",
+    "REGISTERED"      : "jours fériés enregistrés",
+    "ALERT"           : "Le module gestion des jours fériés permet de configurer les différents types de jours fériés qui sont prises en charge dans l'organisation",
+    "CREATE_TAXE"     : "Creation des taxes",
+    "SAVE_FAILURE"    : "Ce jour férié existe deja"
   },
 
   "HOLLYDAY_MANAGEMENT" : {
-    "TITLE"         : "Gestion des vacances",
-    "NEW_HOLLYDAY"  : "Créer une période de vacance pour un employé ",
-    "SAVE_SUCCES"  : "Enregistrement avec succès",
-    "SAVE_FAILURE" : "Erreur, ces données s'enchevêtre avec d'autres période des vacances",    
-    "UPDATE_SUCCES" : "Mis à jour avec succès",
-    "CONFIRM"       : "Etes vous sure de vouloir supprimer cette période de vacance",      
-    "UPDATE"        : "Mettre à jour une période de vacance",   
-    "NO_HOLLYDAY"   : "Aucune période de vacance n'est encore enregistrée",      
-    "ADD"           : "Créer une période de vacance",
-    "REGISTERED"    : "Période des vacances enregistrées",
-    "ALERT"         : "Le module gestion des vacances, permet de standardiser et de sécuriser les demandes et la gestion des vacances (congés payés, repos compensateur…). Il favorise leur intégration automatique en paie, depuis la demande, sa validation et jusqu’à son traitement.",
-    "EMPLOYEE"      : "Employé"
+    "TITLE"             : "Gestion des vacances",
+    "NEW_HOLLYDAY"      : "Créer une période de vacance pour un employé ",
+    "SAVE_SUCCES"       : "Enregistrement avec succès",
+    "SAVE_FAILURE"      : "Erreur, ces données s'enchevêtre avec d'autres période des vacances",
+    "UPDATE_SUCCES"     : "Mis à jour avec succès",
+    "CONFIRM"           : "Etes vous sure de vouloir supprimer cette période de vacance",
+    "UPDATE"            : "Mettre à jour une période de vacance",
+    "NO_HOLLYDAY"       : "Aucune période de vacance n'est encore enregistrée",
+    "ADD"               : "Créer une période de vacance",
+    "REGISTERED"        : "Période des vacances enregistrées",
+    "ALERT"             : "Le module gestion des vacances, permet de standardiser et de sécuriser les demandes et la gestion des vacances (congés payés, repos compensateur…). Il favorise leur intégration automatique en paie, depuis la demande, sa validation et jusqu’à son traitement.",
+    "EMPLOYEE"          : "Employé"
   },
 
-  "PAYMENT_PERIOD" : {
-    "TITLE"        : "Gestion des périodes de paiement",
-    "NEW"          : "Nouvelle périodes",
-    "ADD"          : "Ajouter période",
-    "EDIT"         : "Editer période",
-    "DELETE"       : "Supprimer période",
-    "CONFIRM"      : "Voulez-vous vraiment effectuer cette operation ?",
-    "REGISTERED"    : "Periodes enregistrées",
-    "SAVE_PERIOD"  : "Sauver",
-    "SAVE_SUCCES"  : "Enregistrement avec succès",
+  "PAYMENT_PERIOD"   : {
+    "TITLE"          : "Gestion des périodes de paiement",
+    "NEW"            : "Nouvelle périodes",
+    "ADD"            : "Ajouter période",
+    "EDIT"           : "Editer période",
+    "DELETE"         : "Supprimer période",
+    "CONFIRM"        : "Voulez-vous vraiment effectuer cette operation ?",
+    "REGISTERED"     : "Periodes enregistrées",
+    "SAVE_PERIOD"    : "Sauver",
+    "SAVE_SUCCES"    : "Enregistrement avec succès",
     "DELETE_SUCCESS" : "Supprimé(e) avec succès",
-    "UPDATE_SUCCES": "Mis à jour avec succès",
-    "INFO"         : "Le module gestion des périodes permet de configuer les périodes de paiement",
-    "LABEL"        : "Titre",
-    "FROM"         : "debut",
-    "TO"           : "fin",
-    "TAX"          : "Config. Tax.",
-    "RUBRIC"       : "Config. Rub.",
-    "NO_PERIODS"   : "Aucune période enregistrées",
-    "CONFIG"       : "Configurer semaines",
-    "WEEKS"        : "Les Semaines",
-    "ADD_WEEK"     : "Ajouter",
-    "WARNING_WEEK" : "Les semaines doivent appartenir à la periode",
-    "ACCOUNT"      : "Compte",
+    "UPDATE_SUCCES"  : "Mis à jour avec succès",
+    "INFO"           : "Le module gestion des périodes permet de configuer les périodes de paiement",
+    "LABEL"          : "Titre",
+    "FROM"           : "debut",
+    "TO"             : "fin",
+    "TAX"            : "Config. Tax.",
+    "RUBRIC"         : "Config. Rub.",
+    "NO_PERIODS"     : "Aucune période enregistrées",
+    "CONFIG"         : "Configurer semaines",
+    "WEEKS"          : "Les Semaines",
+    "ADD_WEEK"       : "Ajouter",
+    "WARNING_WEEK"   : "Les semaines doivent appartenir à la periode",
+    "ACCOUNT"        : "Compte",
     "CONFIGURATIONS" : "Les configurations"
   },
 
-   "TAXES" : {
-    "TITLE"        : "Gestion des taxes",
-    "REGISTERED"   : "Taxe enregistrées", 
-    "NEW_TAX"      : "Nouvelle Taxe", 
-    "SAVE_SUCCES"  : "Taxe enregistrée avec succès",    
-    "NO_TAXES"     : "Aucune taxe n'a ete enregistrée",  
-    "ADD"          : "Ajouter ",
-    "UPDATE_SUCCES": "Mise à jour avec succès",
-    "UPDATE"       : "Modifier",
-    "CONFIRM"      : "Voulez-vous vraiment effectuer cette operation ?",
-    "DELETE_SUCCESS" : "Suppression avec succès",
-    "ALERT"        : "Le module gestion de taxes est un module qui a été conçu pour permettre l'administration des taxes existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'une taxe ainsi que la suppression.",
-    "IPR"          : "Taxe IPR",
-    "ADD_TRANCHE"  : "Ajouter Tranche",
+  "TAXES"                 : {
+    "TITLE"               : "Gestion des taxes",
+    "REGISTERED"          : "Taxe enregistrées",
+    "NEW_TAX"             : "Nouvelle Taxe",
+    "SAVE_SUCCES"         : "Taxe enregistrée avec succès",
+    "NO_TAXES"            : "Aucune taxe n'a ete enregistrée",
+    "ADD"                 : "Ajouter ",
+    "UPDATE_SUCCES"       : "Mise à jour avec succès",
+    "UPDATE"              : "Modifier",
+    "CONFIRM"             : "Voulez-vous vraiment effectuer cette operation ?",
+    "DELETE_SUCCESS"      : "Suppression avec succès",
+    "ALERT"               : "Le module gestion de taxes est un module qui a été conçu pour permettre l'administration des taxes existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'une taxe ainsi que la suppression.",
+    "IPR"                 : "Taxe IPR",
+    "ADD_TRANCHE"         : "Ajouter Tranche",
+    "NOT_EMPTY"           : "ABR. ne peut être vide",
+    "NOT_SUP4"            : "Ne peut avoir plus de 4 caractères",
     "REGISTERED_TRANCHES" : "Tranches Enregistrées",
     "TAUX"                : "Taux",
     "ANNUAL_TRANCH"       : "Tranche Annuelle",
@@ -2001,56 +1991,54 @@
     "MONTH_IMPOT"         : "Impot Mensuel",
     "ANNUAL_CUMUL"        : "Cumul Annuel",
     "MONTH_CUMUL"         : "Cumul Mensuel",
-    "NOT_EMPTY"           : "ABR. ne peut être vide",
-    "NOT_SUP4"            : "Ne peut avoir plus de 4 caractères",
-    "CURRENCY"            : "Monnaie"   
+    "CURRENCY"            : "Monnaie"
   },
 
-   "CONFIG_RUBRIC" : {
-    "TITLE"         : "Configuration des rubriques",
-    "NEW_CONFIG"    : "Nouvelle configuration",
-    "SAVE_SUCCES"  : "Enregistrement avec succès",    
-    "UPDATE_SUCCES" : "Mis à jour avec succès",
-    "CONFIRM"       : "Etes vous sure de vouloir supprimer cette configuration",      
-    "UPDATE"        : "Mettre à jour une configuration",    
-    "ADD"           : "Créer une nouvelle configuration",
-    "REGISTERED"    : "Configuration des rubriques enregistrées",
-    "ALERT"         : "Le module configuration des rubriques, permet le paramétrage des différentes types rubriques qui sont prises pendant une période de paie",
-    "CONFIG"        : "Configuration",
-    "RUBRIC"        : "Rubriques Payroll",
-    "PAYABLE"       : "Payable",
-    "DELETE_SUCCESS" : "Suppression avec succès",
+   "CONFIG_RUBRIC"     : {
+    "TITLE"            : "Configuration des rubriques",
+    "NEW_CONFIG"       : "Nouvelle configuration",
+    "SAVE_SUCCES"      : "Enregistrement avec succès",
+    "UPDATE_SUCCES"    : "Mis à jour avec succès",
+    "CONFIRM"          : "Etes vous sure de vouloir supprimer cette configuration",
+    "UPDATE"           : "Mettre à jour une configuration",
+    "ADD"              : "Créer une nouvelle configuration",
+    "REGISTERED"       : "Configuration des rubriques enregistrées",
+    "ALERT"            : "Le module configuration des rubriques, permet le paramétrage des différentes types rubriques qui sont prises pendant une période de paie",
+    "CONFIG"           : "Configuration",
+    "RUBRIC"           : "Rubriques Payroll",
+    "PAYABLE"          : "Payable",
+    "DELETE_SUCCESS"   : "Suppression avec succès",
     "NO_CONFIG_RUBRIC" : "Aucune configuration de rubriques",
-    "ABBR"          : "Abr."
+    "ABBR"             : "Abr."
   },
 
-   "CONFIG_TAX" : {
-    "TITLE"         : "Configuration des taxes",
-    "NEW_CONFIG"    : "Nouvelle configuration",
-    "SAVE_SUCCES"  : "Enregistrement avec succès",    
-    "UPDATE_SUCCES" : "Mis à jour avec succès",
-    "CONFIRM"       : "Etes vous sure de vouloir supprimer cette configuration",      
-    "UPDATE"        : "Mettre à jour une configuration",    
-    "ADD"           : "Créer une nouvelle configuration",
-    "REGISTERED"    : "Configuration des taxes enregistrées",
-    "ALERT"         : "Le module configuration des taxes, permet le paramétrage des différentes types taxes qui sont prises pendant une période de paie",
-    "CONFIG"        : "Configuration",
-    "RUBRIC"        : "Taxes Payroll",
-    "PAYABLE"       : "Payable",
+   "CONFIG_TAX"      : {
+    "TITLE"          : "Configuration des taxes",
+    "NEW_CONFIG"     : "Nouvelle configuration",
+    "SAVE_SUCCES"    : "Enregistrement avec succès",
+    "UPDATE_SUCCES"  : "Mis à jour avec succès",
+    "CONFIRM"        : "Etes vous sure de vouloir supprimer cette configuration",
+    "UPDATE"         : "Mettre à jour une configuration",
+    "ADD"            : "Créer une nouvelle configuration",
+    "REGISTERED"     : "Configuration des taxes enregistrées",
+    "ALERT"          : "Le module configuration des taxes, permet le paramétrage des différentes types taxes qui sont prises pendant une période de paie",
+    "CONFIG"         : "Configuration",
+    "RUBRIC"         : "Taxes Payroll",
+    "PAYABLE"        : "Payable",
     "DELETE_SUCCESS" : "Suppression avec succès",
-    "NO_CONFIG_TAX" : "Aucune configuration de taxes"
+    "NO_CONFIG_TAX"  : "Aucune configuration de taxes"
   },
 
   "DAILY_CONSUMPTION" : {
-    "TITLE"       : "Consommation journaliere",
-    "DAY"         : "Aujourd'hui",
-    "WEEK"        : "Cette Semaine",
-    "MONTH"       : "Ce Mois",
-    "SEARCH"      : "Rechercher",
-    "ALL_PROJECTS" : "Tous Projets",
-    "NO_CONSUMPTION" : "Aucune consommation durant cette période",
-    "ITEMS"          : "Articles",
-    "NR"           : "Nr"
+    "TITLE"           : "Consommation journaliere",
+    "DAY"             : "Aujourd'hui",
+    "WEEK"            : "Cette Semaine",
+    "MONTH"           : "Ce Mois",
+    "SEARCH"          : "Rechercher",
+    "ALL_PROJECTS"    : "Tous Projets",
+    "NO_CONSUMPTION"  : "Aucune consommation durant cette période",
+    "ITEMS"           : "Articles",
+    "NR"              : "Nr"
   },  
 
   "DONATION_MANAGEMENT" : {
@@ -2125,21 +2113,21 @@
         }
   },
 
-  "CONFIG_ACCOUNTING" : {
-    "TITLE"        : "Configuration des comptes",
-    "NEW_CONFIG"    : "Nouvelle configuration",
-    "SAVE_SUCCES"  : "Enregistrement avec succès",    
-    "UPDATE_SUCCES" : "Mis à jour avec succès",
-    "CONFIRM"       : "Etes vous sure de vouloir supprimer cette configuration",      
-    "UPDATE"        : "Mettre à jour une configuration",    
-    "ADD"           : "Créer une nouvelle configuration",
-    "REGISTERED"    : "Configuration des comptes enregistrées",
-    "ALERT"         : "Le module configuration des comptes, permet le paramétrage du compte qui sera prise utilisé lors du payroll",
-    "CONFIG"        : "Configuration",
-    "RUBRIC"        : "Rubriques Payroll",
-    "DELETE_SUCCESS" : "Suppression avec succès",
+  "CONFIG_ACCOUNTING"  : {
+    "TITLE"            : "Configuration des comptes",
+    "NEW_CONFIG"       : "Nouvelle configuration",
+    "SAVE_SUCCES"      : "Enregistrement avec succès",
+    "UPDATE_SUCCES"    : "Mis à jour avec succès",
+    "CONFIRM"          : "Etes vous sure de vouloir supprimer cette configuration",
+    "UPDATE"           : "Mettre à jour une configuration",
+    "ADD"              : "Créer une nouvelle configuration",
+    "REGISTERED"       : "Configuration des comptes enregistrées",
+    "ALERT"            : "Le module configuration des comptes, permet le paramétrage du compte qui sera prise utilisé lors du payroll",
+    "CONFIG"           : "Configuration",
+    "RUBRIC"           : "Rubriques Payroll",
+    "DELETE_SUCCESS"   : "Suppression avec succès",
     "NO_CONFIG_RUBRIC" : "Aucune configuration de comptes",
-    "ABBR"          : "Abr."
+    "ABBR"             : "Abr."
   },
 
   "PAYCHECK" : {
@@ -2161,6 +2149,11 @@
     "SUBMIT_PAID_TAX"  : "Payé la taxe",
     "CONFIRM_SUBMIT"   : "Confirmez-vous le paiement de la taxe ?",
     "NONE_PERIOD"      : "Aucune periode de paiement séléctionnée"
-  }
+  },
 
+  "AUTH"             : {
+    "LOGIN"          : "Bhima Login",
+    "LOGIN_ERROR"    : "Erreur                    : Nom de utilisateur et mots de pass ne sont pas correct",
+    "LOGOUT_SUCCESS" : "Vous n'etes pas connecte"
+  }
 }

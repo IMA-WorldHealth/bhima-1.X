@@ -42,12 +42,6 @@ module.exports = function (globalPaths) {
           fix      : 'Change config.json or paths in the database'
         });
     }
-
-    // FIXME harcoded routes
-    if (req.url === '/login') {
-      return res.sendfile('client/dest/login.html');
-    } else {
-      return res.redirect('/login');
-    }
+    next();
   };
 };
