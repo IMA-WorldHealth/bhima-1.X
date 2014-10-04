@@ -2,12 +2,12 @@
   {{ 'INCOME.TITLE' | translate }}
 </header>
 
-<section class="top-nav">
+<nav>
   <div class="pull-right">
-    <a href="" class="capital btn btn-default btn-sm" ng-click="setAction('transfer')"><span class="glyphicon glyphicon-tag"></span> {{ 'INCOME.TRANSFER' | translate }}</a>
-    <a href=""  class="capital btn btn-default btn-sm" ng-click="setAction('convention')"><span class="glyphicon glyphicon-tag"></span> {{ 'INCOME.CONVENTION' | translate }}</a>
-    <a href="" class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-tag" ng-click="setAction('other')"></span> {{ 'INCOME.OTHER' | translate }}</a>
-    <a href="#/main_cash"  class="capital btn btn-default btn-sm"><span class="glyphicon glyphicon-tag"></span> {{ 'INCOME.PCASH' | translate }}</a>
+    <a class="btn btn-default btn-sm" ng-click="setAction('transfer')"><span class="glyphicon glyphicon-tag"></span> {{ 'INCOME.TRANSFER' | translate }}</a>
+    <a  class="btn btn-default btn-sm" ng-click="setAction('convention')"><span class="glyphicon glyphicon-tag"></span> {{ 'INCOME.CONVENTION' | translate }}</a>
+    <a class="btn btn-default btn-sm"><span class="glyphicon glyphicon-tag" ng-click="setAction('other')"></span> {{ 'INCOME.OTHER' | translate }}</a>
+    <a href="#/main_cash"  class="btn btn-default btn-sm"><span class="glyphicon glyphicon-tag"></span> {{ 'INCOME.PCASH' | translate }}</a>
 	</div>
 
 	<div style="position: absolute; left: 5px;">
@@ -17,13 +17,13 @@
 		</button>
 		<ul class="dropdown-menu pull-left">
 			<li ng-repeat="item in model.currency_account.data">
-				<a href="" ng-click="setCashAccount(item)"> {{ model.accounts.get(item.cash_account).account_txt }} </a>
+				<a ng-click="setCashAccount(item)"> {{ model.accounts.get(item.cash_account).account_txt }} </a>
 			</li>
 		</ul>
     </div>
-</section>
+</nav>
 
-<div class="content">
+<main>
 	<div class="row">
 		<div class="col-xs-4">
 			<div class="panel panel-default" style="max-height: 525px;">
@@ -113,4 +113,4 @@
 			</div>
 		</div>
 	</div>
-</div>
+</main>
