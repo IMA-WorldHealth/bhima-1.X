@@ -83,10 +83,16 @@ angular.module('bhima.controllers')
         }
       };
 
+      // FIXME: What is the deal here? 
+      // Why do we need to have currency_id for a project?
+      // sales.js uses it, so I require it here, but this should
+      // probably change.
       projects = {
         tables : {
+          'enterprise' : { columns: ['currency_id'] },
           'project' : { columns : ['id', 'name', 'enterprise_id', 'abbr'] }
-        }
+        },
+        join : ['project.enterprise_id=enterprise.id']
       };
 
       // set appstate variables
