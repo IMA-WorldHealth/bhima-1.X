@@ -40,5 +40,9 @@ textarea.form-bhima {
 }
 
 select.form-bhima {
-  cursor: pointer;
+  cursor : pointer;
+}
+
+a[ng-click] {
+  cursor : pointer;
 }
