@@ -6,11 +6,11 @@
   <div class="pull-right">
 
     <span class="dropdown">
-      <a class="capital btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> Visible Fiscal Year</a>
+      <a class="btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> Visible Fiscal Year</a>
       <ul class="dropdown-menu">
         <li class="dropdown-header">choose Fiscal Years</li>
         <li ng-repeat="fy in models.fys">
-          <a class="capital" ng-click="reload(fy)" href="">
+          <a ng-click="reload(fy)" >
             <i class="glyphicon" ng-class="{'glyphicon-unchecked' : !fy.checked, 'glyphicon-check' : !!fy.checked}"></i>{{fy.fiscal_year_txt}}
           </a>
         </li>
@@ -18,11 +18,11 @@
     </span> 
 
     <span class="dropdown">
-      <a class="capital btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> Visible Periods</a>
+      <a class="btn btn-default btn-sm dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> Visible Periods</a>
       <ul class="dropdown-menu">
         <li class="dropdown-header">choose the period</li>
         <li ng-repeat="p in models.periods">
-          <a class="capital" ng-click="adjust(p)" href="">
+          <a ng-click="adjust(p)" >
             <i class="glyphicon" ng-class="{'glyphicon-unchecked' : !p.checked, 'glyphicon-check' : !!p.checked}"></i>{{p.period_start | date}}
           </a>
         </li>

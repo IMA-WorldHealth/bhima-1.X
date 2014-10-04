@@ -1,16 +1,16 @@
-<header>
+<header data-header>
   <span>{{ "CREDITOR_GRP.TITLE" | translate }}</span>
 </header>
 
-<section class="top-nav">
+<nav>
   <div class="pull-right">
     <button class="btn btn-sm btn-default" ng-click="newGroup()">
       <i class="glyphicon glyphicon-plus-sign"></i> {{ "CREDITOR_GRP.NEW" | translate }}
     </button>
   </div>
-</section>
+</nav>
 
-<div class="content">
+<main>
   <div class="row">
 
     <div class="col-xs-6">
@@ -32,7 +32,7 @@
               <td>{{ group.name }}</td>
               <td>{{ accounts.get(group.account_id).account_number }}</td>
               <td><input type="checkbox" ng-model="group.locked" ng-change="lock(group)" ng-true-value="1" ng-false-value="0" ng-checked="group.locked"></td>
-              <td style="cursor: pointer;"><a href="" ng-click="editGroup(group)"><i class="glyphicon glyphicon-pencil"></i></a></td>
+              <td style="cursor: pointer;"><a ng-click="editGroup(group)"><i class="glyphicon glyphicon-pencil"></i></a></td>
             </tr>
           </tbody>
         </table>
@@ -123,4 +123,4 @@
 
     </div>
   </div>
-</div>
+</main>
