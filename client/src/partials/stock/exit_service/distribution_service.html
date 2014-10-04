@@ -7,7 +7,7 @@
     <ol class="breadcrumb" style="float: right;">
       <li><span class="glyphicon glyphicon-home"></span></li>
       <li><a tabindex="-1" href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
-      <li><a tabindex="-1" href="">{{ "STOCK.EXIT_SERVICE.KEY" | translate }}</a></li>
+      <li><a tabindex="-1" >{{ "STOCK.EXIT_SERVICE.KEY" | translate }}</a></li>
     </ol>
   </div>
 
@@ -175,11 +175,11 @@
   </div>
 </main>
 
-<section class="bar-bottom">
+<footer>
   <div class="pull-right">
     <a ng-disabled="verifyDistribution()" ng-click="Distribute()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "DISTRIBUTION_SERVICE.DISTRIBUTE" | translate }}</a>
   </div>
-</section>
+</footer>
 
 <script type="text/ng-template" id="lotList.html">
   <a>
