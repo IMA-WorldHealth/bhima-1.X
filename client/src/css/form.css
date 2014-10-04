@@ -38,3 +38,7 @@
 textarea.form-bhima {
   height: auto;
 }
+
+select.form-bhima {
+  cursor: pointer;
+}
