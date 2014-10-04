@@ -1,13 +1,13 @@
-<header>
+<header data-header>
   {{ 'CASH_PURCHASE.TITLE' | translate }}
 </header>
 
-<section class="top-nav">
+<nav>
   <div class="pull-left">
   <ol class="breadcrumb">
     <li><span class="glyphicon glyphicon-home"></span></li>
     <li><a href="#/primary_cash/">{{ "PRIMARY_CASH.TITLE" | translate }}</a></li>
-    <li><a href="">{{ "PRIMARY_CASH.EXPENSES" | translate }}</a></li>
+    <li><a >{{ "PRIMARY_CASH.EXPENSES" | translate }}</a></li>
     <li class="active">{{ "PRIMARY_CASH.EXPENSE.PURCHASE" | translate }}</li>
   </ol>
   </div>
@@ -16,9 +16,9 @@
   <div class="pull-right" style="margin-top: 9px;">
     <b>[{{cashbox.id}}] {{cashbox.text}}</b>
   </div>
-</section>
+</nav>
 
-<div class="content">
+<main>
   <div class="row" style="margin-top: 10px">
 
     <div class="col-xs-5">
@@ -103,4 +103,4 @@
       </div>
     </div>
   </div>
-</div>
+</main>

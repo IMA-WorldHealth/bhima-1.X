@@ -1,4 +1,5 @@
 * {
+  *
   outline: none;
 }
 
@@ -98,21 +99,6 @@ td.visible-print {
   overflow : auto;
 }
 
-.content {
-  position      : absolute;
-  bottom        : 37px;
-  top           : 87px;
-  right         : 0;
-  left          : 0;
-  overflow      : auto;
-  margin-right  : auto;
-  margin-left   : auto;
-  padding-left  : 15px;
-  padding-right : 15px;
-  padding-top   : 5px;
-  font-size     : 12px;
-}
-
 .extend {
   bottom: 0;
 }
@@ -165,16 +151,12 @@ td.visible-print {
   border-top: 1px solid #dddddd;
 }
 
-.capital {
-  text-transform: capitalize;
-}
-
 /* everything is bad */
 .hack-left {
   margin-left: -15px;
 }
 
-.hack-right { 
+.hack-right {
   margin-left: 5px !important;
 }
 
@@ -197,29 +179,6 @@ td.visible-print {
   list-style  : none;
   margin-left : 15px;
   padding     : 0;
-}
-
-.top-nav {
-  top           : 50px;
-  border-bottom : 1px solid #ddd;
-}
-
-.top-nav .breadcrumb {
-  background-color : #fff;
-  margin: 0;
-}
-
-.top-nav .label {
-  vertical-align : middle;
-}
-
-header + .content {
-  top : 50px;
-}
-
-.bar-bottom {
-  bottom: 0;
-  border-top: 1px solid #ddd;
 }
 
 /* positioned relative to the entire window */
@@ -308,7 +267,7 @@ header + .content {
   color           : #cecece;
 }
 
-[selected] { 
+[selected] {
   font-weight: bold;
 }
 
@@ -421,20 +380,20 @@ a.danger {
   color : #b94a48;
 }
 
-.correct { 
+.correct {
   color            : #468847;
 }
 
-.warn { 
+.warn {
   color : #c09853;
 }
 
-.invalid { 
+.invalid {
   background-color : #ececec;
   color : #9f9f9f;
 }
 
-.configure { 
+.configure {
   text-align : center;
 }
 
@@ -455,15 +414,11 @@ a.danger {
   padding: 5px;
 }
 
-.capitalize {
-  text-transform: capitalize;
-}
-
-.strike { 
+.strike {
   text-decoration : line-through;
 }
 
-.note { 
+.note {
   min-height: 10em;
 }
 
