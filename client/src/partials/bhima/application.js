@@ -4,13 +4,14 @@ angular.module('bhima.controllers')
   '$scope',
   '$location',
   '$translate',
+  '$timeout',
   'appauth',
   'appcache',
   'appstate',
   'connect',
   'validate',
   'util',
-  function (EVENTS, $scope, $location, $translate, appauth, Appcache, appstate, connect, validate, util) {
+  function (EVENTS, $scope, $location, $translate, $timeout, appauth, Appcache, appstate, connect, validate, util) {
     var dependencies = {},
         preferences = new Appcache('preferences'),
         cache = new Appcache('application');
@@ -24,7 +25,9 @@ angular.module('bhima.controllers')
     function setEnvironmentVariable(key, data) {
       connect.fetch(data)
       .then(function (values) {
-        appstate.set(key, values);
+        $timeout(function () {
+          appstate.set(key, values);
+        });
       });
     }
 
@@ -165,8 +168,11 @@ angular.module('bhima.controllers')
       });
     }
 
+    // FIXME : this needs to be better formalized
+    // It's really terribly coding
+    // We should really have an onReload() method
     beforeLogin();
-
+    if (appauth.isAuthenticated()) { afterLogin(); }
     // Event handlers
     
     $scope.$on(EVENTS.auth.notAuthenticated, function (e) {
