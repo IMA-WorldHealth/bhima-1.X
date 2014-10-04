@@ -131,7 +131,6 @@ angular.module('bhima.controllers')
         }
       };
 
-
       // set appstate variables
       // TODO : Loading exchange rates should be moved into a service
       // where only the pages needing exchange rates load them.
@@ -151,6 +150,8 @@ angular.module('bhima.controllers')
         }
       });
     }
+
+    beforeLogin();
 
     // Event handlers
     

@@ -5,10 +5,11 @@ angular.module('bhima.controllers')
   '$rootScope',
   '$translate',
   '$location',
+  'store',
   'appauth',
   'appcache',
   'appstate',
-  function (EVENTS, $scope, $rootScope, $translate, $location, appauth, Appcache, appstate) {
+  function (EVENTS, $scope, $rootScope, $translate, $location, Store, appauth, Appcache, appstate) {
     var session = $scope.session = { menu : false };
     var credentials = $scope.credentials = {};
     var cache = new Appcache('preferences');
@@ -34,10 +35,13 @@ angular.module('bhima.controllers')
     }
 
     $scope.login = function (cred) {
+      var projects = new Store({ identifier : 'id', data : session.projects });
+
       // put project in cache to save it for next login
-      cache.put('project', { id :cred.project });
+      cache.put('project', projects.get(cred.project));
+
       // put project in appstate for use throughout this session
-      appstate.set('project', { id: cred.project });
+      appstate.set('project', projects.get(cred.project));
 
       appauth.login(cred)
       .then(function (sess) {
