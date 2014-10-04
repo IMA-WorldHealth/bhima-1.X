@@ -25,6 +25,7 @@ angular.module('bhima.controllers')
       session.languages = languages;
     });
 
+    // fetch the default project
     function loadProject() {
       cache.fetch('project')
       .then(function (project) {

@@ -41,10 +41,17 @@ angular.module('bhima.controllers')
 
     function loadCachedLocation() {
       preferences.fetch('location')
-      .then(function(res) {
+      .then(function (res) {
         if (res) { $location.path(res.path); }
       })
       .catch(handleError);
+    }
+
+    function loadCachedProject() {
+      preferences.fetch('project')
+      .then(function (project) {
+        appstate.set('project', project);
+      });
     }
 
     // load the tree
@@ -91,6 +98,7 @@ angular.module('bhima.controllers')
       var url = $location.url();
       if (url === '' || url === '/') { loadCachedLocation(); }
       loadCachedLanguage();
+      loadCachedProject();
 
       // FIXME
       // Set DEPRECATED appstate values until we can change them in the future.
