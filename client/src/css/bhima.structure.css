@@ -40,7 +40,8 @@ main {
   font-size     : 12px;
 }
 
-main + footer {
+main + footer,
+.report + footer {
   bottom     : 0;
   border-top : 1px solid #ddd;
   position   : absolute;
@@ -49,4 +50,8 @@ main + footer {
   min-height : 37px;
   padding    : 3px 15px;
   margin-top : 0;
+}
+
+.report + footer {
+  background-color: #fff;
 }

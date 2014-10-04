@@ -96,15 +96,8 @@
   </div>
 </main>
 
-<section class="bar-bottom">
+<footer>
   <div class="pull-right">
     <a ng-disabled="!session.valid" ng-click="submit()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "JOURNAL_VOUCHER.SUBMIT" | translate }}</a>
   </div>
-</section>
-
-<script type="text/ng-template" id="debitorList.html">
-  <a>
-    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-    <span><b>[ {{ match.model.text.split(' ').pop() }}]</b></span>
-  </a>
-</script>
+</footer>

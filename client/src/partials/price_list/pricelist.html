@@ -26,13 +26,13 @@
             <tr ng-class="{'selected-primary' : session.selected===list}" ng-repeat="list in model.priceList.data">
               <td> {{ list.title }} </td>
               <td>
-                <a class="btn btn-sm btn-default" ng-click="editMeta(list)" href=""><i class="glyphicon glyphicon-pencil"></i></a>
+                <a class="btn btn-sm btn-default" ng-click="editMeta(list)" ><i class="glyphicon glyphicon-pencil"></i></a>
               </td>
               <td>
                 <a class="btn btn-sm btn-default" ng-click="editItems(list)"><i class="glyphicon glyphicon-cog"></i></a>
               </td>
               <td>
-                <a class="btn btn-sm btn-danger" ng-click="removeList(list)" href=""><i class="glyphicon glyphicon-trash"></i></a>
+                <a class="btn btn-sm btn-danger" ng-click="removeList(list)" ><i class="glyphicon glyphicon-trash"></i></a>
               </td>
             </tr>
 
