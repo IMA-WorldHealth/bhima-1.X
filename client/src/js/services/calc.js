@@ -9,7 +9,6 @@ angular.module('bhima.services')
     var store;
 
     appstate.register('currencies', function (curr) {
-      console.log('[curr]', curr);
       store = new Store({ data : curr});
     });
 
