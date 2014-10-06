@@ -151,7 +151,7 @@
                 <input
                 class="form-invoice"
                 type="text"
-                typeahead-template-url="invoiceListItem.html"
+                typeahead-template-url="/partials/templates/invoiceListItem.tmpl.html"
                 ng-model="purchaseItem.selectedReference"
                 typeahead="inventoryItem as inventoryItem.code for inventoryItem in inventory.data | filter:$viewValue | limitTo:8"
                 typeahead-on-select="updatePurchaseItem(purchaseItem, purchaseItem.selectedReference)"
