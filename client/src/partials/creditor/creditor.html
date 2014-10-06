@@ -53,8 +53,10 @@
                 <label for="email" class="control-label required">{{ "SUPPLIER.EMAIL" | translate }}</label>
                 <input required type="email" class="form-bhima" id="emailID" ng-model="session.supplier.email">
               </div>
-            </fieldset>
 
+              <div location-select select-village="selectVillage" default-village="defaultVillage">
+            </fieldset>
+            
             <fieldset>
               <legend>Location <small style="color : red;">*</small></legend>
                 <div class="form-group">

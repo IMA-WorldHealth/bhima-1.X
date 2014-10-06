@@ -15,6 +15,16 @@ angular.module('bhima.directives')
     link : function (scope, element, attrs) {
       
       var submitCallback = attrs.selectVillage;
+      var defaultLocationTag = attrs.defaultLocation;
+  
+      // Verify location parameters
+      if (!submitCallback) { 
+        throw new Error("[locationSelect] Location select must define village selection callback");
+      }
+      if (!scope[submitCallback]) { 
+        throw new Error("[locationSelect] Village selection callback not found on scope");
+      }
+
       scope.locationSelect = scope.locationSelect || {};
 
       var namespace = scope.locationSelect[submitCallback] = {};
@@ -52,6 +62,7 @@ angular.module('bhima.directives')
 
       function settup(enterprise) {
         var metaTemplate;
+        var defaultLocation = scope[defaultLocationTag] || enterprise.location_id;
 
         indexLocationDependencies();
         defineLocationRequests();
@@ -59,9 +70,14 @@ angular.module('bhima.directives')
         metaTemplate = generateTemplate('locationConfig');
         element.html($compile(metaTemplate)(scope));
         
-        fetchInitialLocation(enterprise.location_id)
+        
+        fetchInitialLocation(defaultLocation)
         .then(initialiseLocation);
       }
+
+      scope.$watch(defaultLocationTag, function(ovar, nvar) { 
+        console.log(ovar, nvar);
+      });
 
       function fetchInitialLocation(villageUuid) {
         return connect.fetch('/location/' + villageUuid);
