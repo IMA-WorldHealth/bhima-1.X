@@ -138,7 +138,7 @@ angular.module('bhima.controllers')
       session.supplier.creditor_uuid = creditor_uuid;
 
       requestCreditor(session.creditor)
-      .then(requestSupplier(session.supplier))
+      .then(writeSupplier(session.supplier))
       .then(handleRegistration)
       .catch(handleError);
     }
@@ -147,8 +147,12 @@ angular.module('bhima.controllers')
       return connect.basicPut('creditor', [creditor]);
     }
 
-    function requestSupplier(supplier) {
+    function writeSupplier(supplier) {  
       return connect.basicPut('supplier', [supplier]);
+    }
+
+    function requestSupplier(supplier) {
+      return connect.basicPost('supplier', [supplier], ['uuid']);
     }
 
     function handleRegistration() {
@@ -181,6 +185,7 @@ angular.module('bhima.controllers')
 
       return validate.process(dependencies, ['creditor'])
       .then(function (model) {
+       
         // Assuming one supplier will only ever have one creditor account
         var creditor = model.creditor.data[0];
         creditor.group_uuid = session.creditor.group_uuid;
