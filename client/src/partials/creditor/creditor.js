@@ -204,5 +204,9 @@ angular.module('bhima.controllers')
     $scope.registerSupplier = registerSupplier;
     $scope.editSupplier = editSupplier;
     $scope.createSupplier = createSupplier;
+
+    $scope.selectVillage = function selectVillage(village) { 
+      console.log('location selected village', village); 
+    }
   }
 ]);
