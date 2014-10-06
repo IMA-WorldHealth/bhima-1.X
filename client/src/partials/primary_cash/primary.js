@@ -51,10 +51,10 @@ angular.module('bhima.controllers')
       //  key : 'PRIMARY_CASH.EXPENSE.TAX_PAYMENT',
       //  link : '/primary_cash/expense/tax_payment/'
       //},
-      {
-        key : 'PRIMARY_CASH.EXPENSE.ENTERPRISE_TAX_PAYMENT',
-        link : '/primary_cash/expense/enterprise_tax_payment/'
-      },
+      // {
+      //   key : 'PRIMARY_CASH.EXPENSE.ENTERPRISE_TAX_PAYMENT',
+      //   link : '/primary_cash/expense/enterprise_tax_payment/'
+      // },
       {
         key : 'PRIMARY_CASH.EXPENSE.PURCHASE',
         link : '/primary_cash/expense/purchase/'
