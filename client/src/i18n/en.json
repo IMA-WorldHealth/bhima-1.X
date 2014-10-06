@@ -2113,16 +2113,7 @@
     "DELETE_SUCCESS" : "Deleted successfully",
     "NO_CONFIG_TAX" : "No Configuration Accounting"
   },
-
-<<<<<<< HEAD
-  "TAX_PAYMENT" : {
-    "EMPLOYEE"         : "Employee Name",
-    "TAX"              : "Tax",
-    "VALUE"            : "Value",
-    "PAID"             : "Paid",
-    "SUBMIT_PAID_TAX"  : "Paid the tax"
-  } 
-=======
+  
   "PAYCHECK" : {
     "TITLE"         : "Payroll Reports",
     "PAYSLIP"       : "Payslip",
@@ -2153,11 +2144,12 @@
     "MAXIMUM_STOCK"         : "Maximum Stock", 
     "MONTH_OF_STOCK"        : "Months of stock",
     "QUANTITY_ORDER"        : "Quantity to Order"
-  }, 
+  },
+
   "AUTH" :  {
     "LOGIN"  : "Login to Bhima",
     "LOGIN_ERROR" : "Login Error: Username and password combination are incorrect.",
     "LOGOUT_SUCCESS" : "You are now logged out."
   }
->>>>>>> dev
+  
 }
