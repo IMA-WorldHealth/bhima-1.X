@@ -28,7 +28,8 @@ angular.module('bhima.controllers')
         join : ['supplier.creditor_uuid=creditor.uuid']
       }
     };
-
+  
+    /*
     dependencies.village = {
       query : {
         identifier : 'uuid',
@@ -55,7 +56,7 @@ angular.module('bhima.controllers')
         identifier : 'uuid',
         tables : { 'country' : { 'columns' : ['uuid', 'country_en', 'country_fr'] }}
       }
-    };
+    };*/
 
     route = $scope.route = {
       create : {
@@ -89,9 +90,10 @@ angular.module('bhima.controllers')
 
     function settupForm(model) {
       angular.extend($scope, model);
-      setDefaultLocation(session.enterprise.location_id);
+      //setDefaultLocation(session.enterprise.location_id);
     }
 
+    /*
     function setDefaultLocation(location_id) {
       if (location_id) { 
         session.location.village = $scope.village.get(location_id);
@@ -99,16 +101,19 @@ angular.module('bhima.controllers')
         session.location.province = $scope.province.get(session.location.sector.province_uuid);
         session.location.country = $scope.country.get(session.location.province.country_uuid);
       }
-    }
+    }*/
 
     function createSupplier() {
       session.supplier = {};
       session.creditor = {};
-      setDefaultLocation(session.project.location_id);
-
+      //setDefaultLocation(session.enterprise.location_id);
+      
       session.state = route.create;
       session.selected = null;
-    }
+
+      // Default location 
+      $scope.defaultVillage = session.enterprise.location_id;
+   }
 
     function editSupplier(uuid) {
 
@@ -123,7 +128,9 @@ angular.module('bhima.controllers')
     function assignSupplier(supplier) {
       session.supplier = supplier;
       session.creditor = { group_uuid : supplier.group_uuid };
-      setDefaultLocation(supplier.location_id);
+      //setDefaultLocation(supplier.location_id);
+      
+      $scope.defaultVillage = supplier.location_id;
     }
 
     function registerSupplier() {
@@ -135,9 +142,9 @@ angular.module('bhima.controllers')
 
       // Assign uuid, location and creditor id to supplier
       session.supplier.uuid = uuid();
-      session.supplier.location_id = session.location.village.uuid;
+      session.supplier.location_id = session.location.village;
       session.supplier.creditor_uuid = creditor_uuid;
-
+    
       requestCreditor(session.creditor)
       .then(writeSupplier(session.supplier))
       .then(handleRegistration)
@@ -206,7 +213,8 @@ angular.module('bhima.controllers')
     $scope.createSupplier = createSupplier;
 
     $scope.selectVillage = function selectVillage(village) { 
-      console.log('location selected village', village); 
+      console.log('new village assigned', village); 
+      session.location.village = village;
     }
   }
 ]);
