@@ -123,7 +123,6 @@
 
 <footer>
   <div class="pull-right">
-    {{session.location.village}}
     <button class="btn btn-success btn-sm" ng-click="session.state.method()" ng-disabled="form.$invalid || !session.location.village" >
       {{ session.state.button | translate }}
     </button>
