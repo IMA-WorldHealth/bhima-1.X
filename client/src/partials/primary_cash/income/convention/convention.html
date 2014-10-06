@@ -1,4 +1,4 @@
-<header>
+<header data-header>
   {{ "CONVENTION.TITLE" | translate }}
 </header>
 
@@ -10,7 +10,7 @@
     </button>
     <ul class="dropdown-menu pull-left">
       <li ng-repeat="box in model.cash_box.data">
-        <a href="" ng-click="setCashAccount(box)"> {{ box.symbol }} </a>
+        <a ng-click="setCashAccount(box)"> {{ box.symbol }} </a>
       </li>
     </ul>
   </div>
@@ -106,10 +106,3 @@
     </div>
   </div>
 </main>
-
-<script type="text/ng-template" id="debitorGroupListItem.html">
-  <a>
-    <span><b>[{{ match.model.uuid }}]</b></span>
-    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-  </a>
-</script>

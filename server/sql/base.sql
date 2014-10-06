@@ -118,8 +118,13 @@ INSERT INTO `unit` VALUES
 (71,'Configuration des comptes','TREE.CONFIG_ACCOUNTING','',1,0,'/partials/config_accounting/','/config_accounting/'),
 (72,'Paycheck', 'TREE.PAYROLL_REPORT', '', 10, 0, '/partials/reports/payroll_report', '/reports/payroll_report/');
 
+-- references language .json files
+INSERT INTO `language` (id, name, `key`) VALUES
+  (1, 'Francais', 'fr'),
+  (2, 'English', 'en'),
+  (3, 'Lingala', 'lg');
 
--- base user & permissions Payroll Reports
+-- base user & permissions
 INSERT INTO `user` (id, username, password, first, last, email, logged_in) VALUES
 (1, 'admin','1','System','Administrato','bhimadeveloper@gmail.com',1),
 (2, 'jniles','1','Jonathan','Niles','jonathanwniles@gmail.com',0),

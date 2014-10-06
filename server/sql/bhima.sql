@@ -9,6 +9,15 @@ grant all privileges on *.* to 'bhima'@'localhost' identified by 'HISCongo2013' 
 -- grant super on *.* to 'bhima'@'%';
 flush privileges;
 
+drop table if exists `language`;
+create table `language` (
+  `id`        tinyint unsigned not null,
+  `name`      text not null,
+  `key`       text not null,
+  primary key (`id`)
+);
+
+
 drop table if exists `currency`;
 create table `currency` (
   `id`                  tinyint unsigned not null auto_increment,

@@ -27,9 +27,7 @@ var parser       = require('./lib/parser')(),
     liberror     = require('./lib/liberror')();
 
 // import middleware
-var authorize    = require('./middleware/authorization')(cfg.auth.paths),
-    authenticate = require('./middleware/authentication')(db, sanitize),
-    projects     = require('./middleware/projects')(db);
+var authenticate = require('./middleware/authentication')(db, uuid);
 
 // import routes
 var report            = require('./routes/report')(db, sanitize, util),
@@ -64,8 +62,6 @@ app.use('/lib', express.static('client/dest/lib', { maxAge : 10000 }));
 app.use('/i18n', express.static('client/dest/i18n', { maxAge : 10000 }));
 // app.use('/assets', express.static('client/dest/assets', {maxAge:10000}));
 app.use(authenticate);
-app.use(authorize);
-app.use(projects);
 app.use(express.static(cfg.static, { maxAge : 10000 }));
 
 // routers

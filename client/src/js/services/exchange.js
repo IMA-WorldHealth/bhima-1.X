@@ -67,6 +67,7 @@ angular.module('bhima.services')
     };
 
     appstate.register('exchange_rate', function (rates) {
+      console.log('[EXCHANGE]', rates);
       cfg.rates = rates;
       $timeout(function () { exchange.hasExchange(); }); // Force refresh
 
