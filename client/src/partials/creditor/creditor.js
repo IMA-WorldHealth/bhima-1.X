@@ -70,27 +70,36 @@ angular.module('bhima.controllers')
       }
     };
 
-    appstate.register('project', initialise);
-
+    // Request enterprise information 
+    appstate.register('enterprise', function (enterprise) { 
+      session.enterprise = enterprise;
+      
+      // Request project information - initialise page
+      appstate.register('project', initialise);
+    });
+    
     function initialise(project) {
       session.project = project;
       session.state = route.create;
       session.location = {};
-
+      
+      console.log('got project', project);
       // Request data from server
       validate.process(dependencies).then(settupForm);
     }
 
     function settupForm(model) {
       angular.extend($scope, model);
-      setDefaultLocation(session.project.location_id);
+      setDefaultLocation(session.enterprise.location_id);
     }
 
     function setDefaultLocation(location_id) {
-      session.location.village = $scope.village.get(location_id);
-      session.location.sector = $scope.sector.get(session.location.village.sector_uuid);
-      session.location.province = $scope.province.get(session.location.sector.province_uuid);
-      session.location.country = $scope.country.get(session.location.province.country_uuid);
+      if (location_id) { 
+        session.location.village = $scope.village.get(location_id);
+        session.location.sector = $scope.sector.get(session.location.village.sector_uuid);
+        session.location.province = $scope.province.get(session.location.sector.province_uuid);
+        session.location.country = $scope.country.get(session.location.province.country_uuid);
+      }
     }
 
     function createSupplier() {
