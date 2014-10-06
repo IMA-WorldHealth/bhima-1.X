@@ -47,12 +47,10 @@ angular.module('bhima.directives')
         }
       };
       var locationStore = namespace.locationStore = {};
-
       
+      appstate.register('enterprise', settup);
 
-      appstate.register('project', settup);
-
-      function settup(project) {
+      function settup(enterprise) {
         var metaTemplate;
 
         indexLocationDependencies();
@@ -61,7 +59,7 @@ angular.module('bhima.directives')
         metaTemplate = generateTemplate('locationConfig');
         element.html($compile(metaTemplate)(scope));
         
-        fetchInitialLocation(project.location_id)
+        fetchInitialLocation(enterprise.location_id)
         .then(initialiseLocation);
       }
 
@@ -70,6 +68,7 @@ angular.module('bhima.directives')
       }
 
       function initialiseLocation(defaultLocation) {
+        console.log('[DEFAULTLOCATION]', defaultLocation);
         defaultLocation = defaultLocation[0];
         
 

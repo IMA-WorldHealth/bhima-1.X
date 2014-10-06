@@ -13,7 +13,7 @@
 <div class="report">
   <div class="reportBody">
     <div class="reportFrame">
-      <h3 class="capitalize">{{ group.name }} <small class="pull-right">{{ group.uuid }}</small></h3>
+      <h3>{{ group.name }} <small class="pull-right">{{ group.uuid }}</small></h3>
 
       <form class="form-horizontal">
         <div class="form-group" ng-if="group.description">
@@ -37,7 +37,7 @@
       <table class="table table-condensed table-bordered">
         <thead>
           <tr>
-            <td colspan="4" class="capitalize">{{ priceList.title }}</td>
+            <td colspan="4">{{ priceList.title }}</td>
           </tr>
           <tr>
             <th style="width: 8%;">{{ "COLUMNS.DISCOUNT" | translate }}</th>

@@ -179,16 +179,8 @@
   </div>
 </main>
 
-
-<section class="bar-bottom">
+<footer>
   <div class="pull-right">
     <a ng-disabled="verifyPurchase(session.items)" ng-click="submitPurchase()" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "PURCHASE.SUBMIT_ORDER" | translate }}</a>
   </div>
-</section>
-
-<script type="text/ng-template" id="invoiceListItem.html">
-  <a>
-    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-    <span><i>{{match.model.text}}</i></span>
-  </a>
-</script>
+</footer>

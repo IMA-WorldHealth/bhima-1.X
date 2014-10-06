@@ -1,5 +1,11 @@
 angular.module('bhima.services')
-.factory('connect', [ '$http', '$q', 'liberror', 'messenger', 'store', function ($http, $q, liberror, messenger, Store) {
+.factory('connect', [
+  '$http',
+  '$q',
+  'liberror',
+  'messenger',
+  'store',
+  function ($http, $q, liberror, messenger, Store) {
   // Summary:
   //  provides an interface between angular modules (controllers) and a HTTP server. Requests are fetched, packaged and returned
   //  as 'models', objects with indexed data, get, delete, update and create functions, and access to the services scope to
