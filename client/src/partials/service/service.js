@@ -151,13 +151,12 @@ angular.module('bhima.controllers')
 
 
     function handleResultCost(value) {
-      console.log("result cost ", value);
       $scope.choosen.charge = value.data.cost;
+      console.log('on a ', value);
       return $q.when();
     }
 
     function handleResultProfit(value) {
-      console.log("result cost ", value);
       $scope.choosen.profit = value.data.profit;
       return $q.when();
     }

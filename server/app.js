@@ -520,7 +520,6 @@ app.get('/availableAccounts_profit/:id_enterprise/', function(req, res, next) {
 
 
 app.get('/cost/:id_project/:cc_id', function(req, res, next) {
-  console.log('voici le project :::', req.params.id_project);
   var sql =
     'SELECT `account`.`id`, `account`.`account_number`, `account`.`account_txt` FROM `account` '+
     'WHERE `account`.`cc_id`=' + sanitize.escape(req.params.cc_id) + 
@@ -532,6 +531,8 @@ app.get('/cost/:id_project/:cc_id', function(req, res, next) {
       return item.account_number.toString().indexOf('6') === 0;
     });
 
+    console.log('voici le retour :::', availablechargeAccounts);
+
     var cost = availablechargeAccounts.reduce(function (x, y) {
       return x + (y.debit - y.credit);
 
@@ -542,7 +543,6 @@ app.get('/cost/:id_project/:cc_id', function(req, res, next) {
 
   db.exec(sql)
   .then(function (ans) {
-    console.log("on a ccc :::", ans);
     synthetic('ccc', req.params.id_project, {cc_id : req.params.cc_id, accounts : ans}, function (err, data) {
       if (err) { return next(err); }
       res.send(process(data));
@@ -554,7 +554,6 @@ app.get('/cost/:id_project/:cc_id', function(req, res, next) {
 
 
 app.get('/profit/:id_project/:pc_id', function(req, res, next) {
-   console.log('voici le project :::', req.params.id_project);
 
   var sql =
     'SELECT `account`.`id`, `account`.`account_number`, `account`.`account_txt` FROM `account` '+
@@ -1141,7 +1140,6 @@ app.get('/getConsuptionDrugs/', function (req, res, next) {
 
   db.exec(sql)
   .then(function (result) {
-    console.log(result);
     res.send(result);
   })
   .catch(function (err) { next(err); })
