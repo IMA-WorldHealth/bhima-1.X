@@ -472,6 +472,7 @@ angular.module('bhima.controllers')
 
     function getHousing (row) {
       var rubrics = session.model.rubric_config.data, housing = 0;
+
       if(!rubrics.length){
         return $q.when(housing);
       } 
@@ -490,6 +491,7 @@ angular.module('bhima.controllers')
     function getEmployeeINSS (row) {
       var taxes = session.model.tax_config.data, employee_inss = 0;
       if(!taxes.length) {
+
         return $q.when(employee_inss);
       }
 
@@ -506,6 +508,7 @@ angular.module('bhima.controllers')
 
     function getEnterpriseINSS (row) {
       var taxes = session.model.tax_config.data, enterprise_inss = 0;
+
       if(!taxes.length) {
         return $q.when(enterprise_inss);
       }
@@ -645,7 +648,7 @@ angular.module('bhima.controllers')
           user_id       : session.model.cashier.data.id,
           description   : 'Payroll : ' + elmt.emp.name + elmt.emp.postnom,
           cash_box_id   : session.cashbox,
-          origin_id     : 6,
+          origin_id     : 6
         };
 
         var primary_details = {
