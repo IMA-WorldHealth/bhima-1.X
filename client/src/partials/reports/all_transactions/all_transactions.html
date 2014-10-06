@@ -2,7 +2,7 @@
   {{ "ALLTRANSACTIONS.TITLE" | translate }}
 </header>
 
-<section class="top-nav">
+<nav>
 
   <div class="pull-left col-xs-3">
      <select required class="form-bhima" id="account" ng-model="model.account_id">
@@ -32,10 +32,10 @@
   </div>
 
   <div class="pull-right">
-    <a href="" class="btn btn-sm btn-primary" ng-click="search()"> {{ "ALLTRANSACTIONS.SEARCH" | translate }}
+    <a class="btn btn-sm btn-primary" ng-click="search()"> {{ "ALLTRANSACTIONS.SEARCH" | translate }}
     </a>
   </div>
-</section>
+</nav>
 
 <div class="report">
   <div class="reportBody">
@@ -160,4 +160,3 @@
     </div>
   </div>
 </div>
-

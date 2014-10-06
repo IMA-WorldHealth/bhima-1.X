@@ -111,7 +111,9 @@
       "/posting_donation/",
       "/getEmployeePayment/",
       "/setTaxPayment/",
-      "/payTax/"
+      "/payTax/",
+      "/getDistinctInventories/",
+      "/partials/"
     ]
   }
 }

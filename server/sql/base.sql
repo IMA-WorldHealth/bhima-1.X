@@ -1,3 +1,4 @@
+
 use `bhima`;
 
 delete from `posting_journal`;
@@ -45,6 +46,7 @@ delete from `config_tax_item`;
 delete from `paiement_period`;
 delete from `offday`;
 delete from `config_paiement_period`;
+delete from `language`;	
 
 -- registered units
 INSERT INTO `unit` VALUES
@@ -116,9 +118,13 @@ INSERT INTO `unit` VALUES
 (69,'Configuration des comptes','TREE.CONFIG_ACCOUNTING','',1,0,'/partials/config_accounting/','/config_accounting/'),
 (70,'Paycheck', 'TREE.PAYROLL_REPORT', '', 10, 0, '/partials/reports/payroll_report', '/reports/payroll_report/'),
 (71,'Stock Status', 'TREE.STOCK_STATUS', '', 10, 0, '/partials/reports/stock_status', '/reports/stock_status/');
+-- references language .json files
+INSERT INTO `language` (id, name, `key`) VALUES
+  (1, 'Francais', 'fr'),
+  (2, 'English', 'en'),
+  (3, 'Lingala', 'lg');
 
-
--- base user & permissions Payroll Reports
+-- base user & permissions
 INSERT INTO `user` (id, username, password, first, last, email, logged_in) VALUES
 (1, 'admin','1','System','Administrato','bhimadeveloper@gmail.com',1),
 (2, 'jniles','1','Jonathan','Niles','jonathanwniles@gmail.com',0),
@@ -1882,3 +1888,4 @@ INSERT INTO `donor` VALUES
 (1, 'IMA World Health'),
 (2, 'WHO / OMS'),
 (3, 'UNICEF');
+

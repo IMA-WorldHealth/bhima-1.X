@@ -82,7 +82,6 @@ angular.module('bhima.controllers')
 
     function getAccount (ac) {
       if (!ac) { return; }
-      console.log('ac', ac);
        session.configured = true;
        session.ac = ac;
        session.complete = true;

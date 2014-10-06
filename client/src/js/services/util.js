@@ -10,7 +10,7 @@ angular.module('bhima.services')
   };
 
   this.convertToMysqlDate = function (dateParam) {
-    var date = new Date(dateParam),
+    var date = !!dateParam ? new Date(dateParam) : new Date(),
       annee,
       mois,
       jour;

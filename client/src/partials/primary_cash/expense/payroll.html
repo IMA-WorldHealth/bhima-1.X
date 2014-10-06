@@ -3,6 +3,26 @@
 </header>
 
 <nav>
+
+  <div style="position: absolute; right: 5px;">
+    <button class="btn btn-sm btn-primary dropdown-toggle">
+      {{ session.selectedItem.symbol || "PRIMARY_CASH.DEFAULT_CURRENCY" | translate }}
+      <span class="caret" data-caret="&#9660;"></span>
+    </button>
+    <ul class="dropdown-menu pull-left">
+      <li ng-repeat="box in session.model.cash_box.data">
+        <a ng-click="setCashAccount(box)"> {{ box.symbol }} </a>
+      </li>
+    </ul>
+
+     <button
+      style="margin-left: 5px;"
+      ng-click="reconfigure()"
+      class="btn btn-sm btn-default">
+      <span class="glyphicon glyphicon-repeat"></span>
+    </button>
+  </div>
+
   <div class="pull-left">
     <ol class="breadcrumb">
       <li><span class="glyphicon glyphicon-home"></span></li>
