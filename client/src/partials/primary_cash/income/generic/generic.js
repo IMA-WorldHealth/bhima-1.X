@@ -12,7 +12,7 @@ angular.module('bhima.controllers')
   'appcache',
   function ($scope, $routeParams, validate, messenger, appstate, connect, uuid, util, $location, Appcache) {
     var isDefined, dependencies = {};
-    var session = $scope.session = { receipt : {} };
+    var session = $scope.session = { receipt : {}, configured : false, complete : false };
     var cache = new Appcache('income');
 
     // TODO
@@ -26,25 +26,25 @@ angular.module('bhima.controllers')
 
     session.today = $scope.timestamp.toISOString().slice(0, 10);
 
-    dependencies.debtors = {
-      query : {
-        tables : {
-          'patient' : {
-            columns : ['uuid', 'debitor_uuid', 'project_id', 'reference', 'first_name', 'last_name']
-          },
-          'debitor' : {
-            columns : ['group_uuid']
-          },
-          'debitor_group' : {
-            columns : ['account_id']
-          }
-        },
-        join : [
-          'patient.debitor_uuid=debitor.uuid',
-          'debitor.group_uuid=debitor_group.uuid'
-        ]
-      }
-    };
+    // dependencies.debtors = {
+    //   query : {
+    //     tables : {
+    //       'patient' : {
+    //         columns : ['uuid', 'debitor_uuid', 'project_id', 'reference', 'first_name', 'last_name']
+    //       },
+    //       'debitor' : {
+    //         columns : ['group_uuid']
+    //       },
+    //       'debitor_group' : {
+    //         columns : ['account_id']
+    //       }
+    //     },
+    //     join : [
+    //       'patient.debitor_uuid=debitor.uuid',
+    //       'debitor.group_uuid=debitor_group.uuid'
+    //     ]
+    //   }
+    // };
 
     dependencies.currencies = {
       query : {
@@ -66,11 +66,25 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.account7 = {
+      query : '/getAccount7/'
+    };
+
     cache.fetch('currency').then(load);
+    cache.fetch('account').then(getAccount);
+
+
 
     function load (currency) {
       if (!currency) { return; }
        $scope.session.currency = currency;
+    }
+
+    function getAccount (ac) {
+      if (!ac) { return; }
+       session.configured = true;
+       session.ac = ac;
+       session.complete = true;
     }
 
     appstate.register('project', function (project) {
@@ -83,6 +97,7 @@ angular.module('bhima.controllers')
         session.receipt.date = new Date();
         session.receipt.cost = 0.00;
         session.receipt.cash_box_id = $routeParams.id;
+        session.account7 = models.account7.data;
       })
       .catch(function (err) {
         messenger.error(err);
@@ -117,7 +132,6 @@ angular.module('bhima.controllers')
       var r = session.receipt;
 
       session.invalid = !(isDefined(session.currency) &&
-        isDefined(r.recipient) &&
         isDefined(r.cost) &&
         r.cost > 0 &&
         isDefined(r.description) &&
@@ -143,13 +157,11 @@ angular.module('bhima.controllers')
           project_id    : $scope.project.id,
           type          : 'E',
           date          : util.sqlDate(receipt.date),
-          deb_cred_uuid : receipt.recipient.debitor_uuid,
-          deb_cred_type : 'C',
-          account_id    : receipt.recipient.account_id,
+          account_id    : session.ac.id,
           currency_id   : session.currency.id,
           cost          : receipt.cost,
           user_id       : user.id,
-          description   : receipt.description + ' ID       : ' + receipt.reference_uuid,
+          description   : receipt.description,
           cash_box_id   : receipt.cash_box_id,
           origin_id     : 5,
         };
@@ -187,6 +199,25 @@ angular.module('bhima.controllers')
       $scope.session.currency=obj;
       cache.put('currency', obj);
     }  
+
+    $scope.formatAccount = function (ac) {
+      return ac.account_number + ' - ' + ac.account_txt;
+    };
+
+    $scope.reconfigure = function () {      
+      session.ac = null;
+      session.configured = false;
+      session.complete = false;
+    };
+
+    $scope.setConfiguration = function (ac) {
+      if(ac){
+        cache.put('account', ac);
+        session.configured = true;
+        session.ac = ac;
+        session.complete = true;
+      } 
+    };
 
     $scope.update = update;
     $scope.setCurrency = setCurrency;

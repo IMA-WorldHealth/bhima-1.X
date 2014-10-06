@@ -16,7 +16,12 @@ angular.module('bhima.controllers')
       {
        key : $translate.instant('TAXE_MANAGEMENT.CONFIGURE_IPR'),
        link : '/taxes_management/ipr/'
-      }
+      },
+
+      {
+       key : $translate.instant('CONFIG_TAX.TITLE'),
+       link : '/taxes_management/config_tax/'
+      }      
     ];
 
     $scope.loadPath = function loadPath(path) {

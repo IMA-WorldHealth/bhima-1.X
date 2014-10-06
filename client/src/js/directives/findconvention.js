@@ -7,6 +7,7 @@ angular.module('bhima.directives')
   function ($compile, validate, messenger, Appcache) {
     return {
       restrict: 'A',
+      templateUrl : '/partials/templates/findconvention.tmpl.html',
       link : function(scope, element, attrs) {
         var dependencies = {}, conventionList = scope.conventionList = [];
         var searchCallback = scope[attrs.onSearchComplete];
@@ -27,44 +28,6 @@ angular.module('bhima.directives')
           state: 'name',
           submitSuccess: false
         };
-
-        var template =
-          '<div id=\'findConvention\' class=\'panel panel-default\' ng-class="{\'panel-success\': findConvention.valid, \'panel-danger\': findConvention.valid===false}">'+ '  <div class=\'panel-heading\'>'+
-          '    <div ng-switch=\'findConvention.submitSuccess\'>'+
-          '     <div ng-switch-when=\'false\'>'+
-          '       <span class=\'glyphicon glyphicon-search\'></span> {{ \'CFIND.TITLE\' | translate }}'+         
-          '     </div>'+
-          '     <div ng-switch-when=\'true\'>'+
-          '       <!-- Style hack -->'+
-          '       <span style=\'margin-right: 5px;\' class=\'glyphicon glyphicon-user\'> </span> {{findConvention.debtor_group.name}}'+
-          '       <div class=\'pull-right\'>'+
-          '         <span ng-click=\'findConvention.refresh()\' class=\'glyphicon glyphicon-repeat\'></span>'+
-          '       </div>'+
-          '     </div>'+
-          '    </div>'+
-          '  </div>'+
-          '  <div class=\'panel-body find-collapse\' ng-show=\'!findConvention.submitSuccess\'>'+
-          '    <div ng-switch on=\'findConvention.state\'>'+
-          '      <div ng-switch-when=\'name\'>'+
-          '        <div class=\'input-group\'>'+
-          '          <input '+
-          '          id=\'findSearch\' ' +
-          '          type=\'text\' '+
-          '          ng-model=\'findConvention.selectedConvention\' '+
-          '          typeahead=\'convention as convention.name for convention in conventionList | filter:$viewValue | limitTo:8\' '+
-          '          placeholder=\'{{ "CFIND.PLACEHOLDER" | translate }}\' ' +
-          '          typeahead-on-select=\'loadDebitorGroup(debitor_group.uuid)\' '+
-          '          typeahead-template-url=\'debitorGroupListItem.html\''+
-          '          class=\'form-bhima\' '+
-          '          size=\'25\'>'+
-          '          <span class=\'input-group-btn\'> '+
-          '            <button id=\'submitSearch\' ng-disabled=\'validateNameSearch(findConvention.selectedConvention)\' ng-click=\'submitDebitorGroup(findConvention.selectedConvention)\' class=\'btn btn-default btn-sm\'> {{ \'FORM.SUBMIT\' | translate }}</button>'+
-          '          </span>'+
-          '        </div>'+
-          '      </div> <!-- End searchName component -->'+
-          '    </div>'+
-          '  </div>'+
-          '</div>';
 
         var stateMap = {
           'name' : searchName,
@@ -131,7 +94,7 @@ angular.module('bhima.directives')
           }
         }
 
-        // Expose selecting a debtor to the module (probabl a hack)(FIXME)
+        // Expose selecting a debtor to the module (probably a hack)(FIXME)
         //scope.findConvention.forceSelect = searchUuid;
 
         scope.validateNameSearch = validateNameSearch;
@@ -139,7 +102,6 @@ angular.module('bhima.directives')
         scope.submitDebitorGroup = submitDebitorGroup;
 
         scope.findConvention.updateState = updateState;
-        element.replaceWith($compile(template)(scope));
       }
     };
   }

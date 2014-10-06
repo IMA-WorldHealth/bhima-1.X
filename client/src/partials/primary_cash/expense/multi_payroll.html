@@ -8,13 +8,14 @@
       {{ session.selectedItem.symbol || "PRIMARY_CASH.DEFAULT_CURRENCY" | translate }}
       <span class="caret" data-caret="&#9660;"></span>
     </button>
+    
     <ul class="dropdown-menu pull-left">
       <li ng-repeat="box in session.model.cash_box.data">
-        <a href="" ng-click="setCashAccount(box)"> {{ box.symbol }} </a>
+        <a ng-click="setCashAccount(box)"> {{ box.symbol }} </a>
       </li>
     </ul>
 
-     <button
+    <button
       style="margin-left: 5px;"
       ng-click="reconfigure()"
       class="btn btn-sm btn-default">
@@ -26,7 +27,7 @@
     <ol class="breadcrumb">
       <li><span class="glyphicon glyphicon-home"></span></li>
       <li><a href="#/primary_cash/">{{"PRIMARY_CASH.TITLE" | translate}}</a></li>
-      <li class="active">{{"PRIMARY_CASH.EXPENSE.PAYROLL" | translate}}</li>
+      <li class="active">{{"PRIMARY_CASH.EXPENSE.MULTI_PAYROLL" | translate}}</li>
     </ol>
   </div>
 </nav>
@@ -46,11 +47,12 @@
               style="font-size: 70px"
               class="glyphicon glyphicon-calendar">
             </span>
-          </div>
-          <br>
-          <div class="configure">
-            <select ng-model="session.pp" ng-options="pp as formatPeriod(pp) for pp in session.model.paiement_period.data" ng-change="setConfiguration(session.pp)">
-              <option value="" ng-disabled="disabled">-- {{SELECT.PERIOD_PAYMENT | translate}}-- </option>
+            <select 
+              ng-model="session.pp" 
+              ng-options="pp as formatPeriod(pp) for pp in session.model.paiement_period.data" 
+              ng-change="setConfiguration(session.pp)"
+              class="form-bhima">
+              <option value="" ng-disabled="disabled">-- {{"SELECT.PERIOD_PAYMENT" | translate}}-- </option>
             </select>
           </div>
         </div>
@@ -102,7 +104,6 @@
                     </tr>
                   </tbody>
                 </table>
-                </form>
               </fieldset>
             </div>
 
@@ -115,7 +116,7 @@
                   <div class="form-group col-xs-4">
                     <label class="col-xs-4">{{"PRIMARY_CASH.EXPENSE.WORKING_DAY" | translate}}</label>                  
                     <div class="input-group col-xs-8">                    
-                      <input type="number" ng-model="row.working_day"  class="form-bhima" min="0" required>
+                      <input type="number" ng-model="row.working_day" ng-change="refresh(row)"  class="form-bhima" min="0" required>
                       <span class="input-group-addon">{{"PRIMARY_CASH.EXPENSE.DAYS" | translate}} </span>
                     </div>
                   </div>
@@ -123,7 +124,7 @@
                   <div class="form-group col-xs-4">
                     <label class="col-xs-4">{{"PRIMARY_CASH.EXPENSE.OFF_DAY" | translate}}</label>
                     <div class="input-group col-xs-8">
-                      <input type="number" ng-model="row.off_day"  class="form-bhima" min="0" required>
+                      <input type="number" ng-model="row.off_day" disabled  class="form-bhima" min="0" required>
                       <span class="input-group-addon">{{"PRIMARY_CASH.EXPENSE.DAYS" | translate}} </span>
                     </div>
                   </div>
@@ -131,7 +132,7 @@
                   <div class="form-group col-xs-4">
                     <label class="col-xs-4">{{"PRIMARY_CASH.EXPENSE.HOLLY_DAY" | translate}}</label>
                     <div class="input-group col-xs-8">
-                      <input type="number" ng-model="row.hollyday"  class="form-bhima" min="0" required>
+                      <input type="number" ng-model="row.hollyday" disabled  class="form-bhima" min="0" required>
                       <span class="input-group-addon">{{"PRIMARY_CASH.EXPENSE.DAYS" | translate}} </span>
                     </div>
                   </div>
@@ -198,7 +199,7 @@
                     </div>
 
                     <div class="input-group col-xs-8">
-                      <input type="number" ng-model="row.INS1"  class="form-bhima" min="0" required>
+                      <input type="number" disabled ng-model="row.INS1"  class="form-bhima" min="0" required>
                       <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
                     </div>
                   </div>          
@@ -209,7 +210,7 @@
                     </div>
 
                     <div class="input-group col-xs-8">
-                      <input type="number" ng-model="row.IPR1"  class="form-bhima" min="0" required>
+                      <input type="number" disabled ng-model="row.IPR1"  class="form-bhima" min="0" required>
                       <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
                     </div>
                   </div> 

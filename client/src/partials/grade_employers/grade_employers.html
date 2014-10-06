@@ -71,8 +71,9 @@
 
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.BASIC_SALARY" | translate }}</label>
-            <div class="col-xs-8">
+            <div class="input-group col-xs-8">
               <input ng-model="session.new.basic_salary" class="form-bhima" required="required">
+              <span class="input-group-addon"> {{ enterprise.data[0].symbol }} </span>
             </div>
           </div>
 
@@ -103,8 +104,9 @@
 
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.BASIC_SALARY" | translate }}</label>
-            <div class="col-xs-8">
+            <div class="input-group col-xs-8">
               <input ng-model="session.edit.basic_salary" class="form-bhima" required="required">
+              <span class="input-group-addon"> {{ enterprise.data[0].symbol }} </span>
             </div>
           </div>
 

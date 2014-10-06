@@ -60,20 +60,46 @@
     "NAVIGATION"  : "Navigation",
     "CONFIGURE"   : "Configure Cash Box",
     "EXPENSE"     : {
-      "PAYROLL"               : "Payroll",
-      "MULTI_PAYROLL"         : "Multiple Payroll",
-      "PAYABLE_EMPLOYEE"      : "Payable employee list",
-      "GENERIC_TITLE"         : "Generic Expense",
-      "GENERIC_RECEIPT"       : "Generic Receipt",
-      "REFERENCE_DOCUMENT_ID" : "Reference Document ID",
-      "PURCHASE"              : "Pay Purchase Order",
-      "EXPENSE_DATE"          : "Expense Date",
-      "RECIPIENT"             : "Recipient",
-      "AMOUNT"                : "Amount Dispensed",
-      "PURPOSE"               : "Purpose of Expense",
-      "DAYS"                  : "Days",
-      "RUBRICS"               : "Rubrics",
-      "TAX_PAYMENT"           : "Taxes Payment"
+      "PAYROLL"                 : "Payroll",
+      "MULTI_PAYROLL"           : "Multiple Payroll",
+      "PAYABLE_EMPLOYEE"        : "Payable employee list",
+      "GENERIC_TITLE"           : "Generic Expense",
+      "GENERIC_RECEIPT"         : "Generic Receipt",
+      "REFERENCE_DOCUMENT_ID"   : "Reference Document ID",
+      "PURCHASE"                : "Pay Purchase Order",
+      "EXPENSE_DATE"            : "Expense Date",
+      "RECIPIENT"               : "Recipient",
+      "AMOUNT"                  : "Amount Dispensed",
+      "PURPOSE"                 : "Purpose of Expense",
+      "DAYS"                    : "Days",
+      "CREDITOR"                : "Creditor",
+      "SUMMARY"                 : "Summary",
+      "INFO_GLOBAL"             : "Global informations",
+      "WORKING_DAY"             : "Working days",
+      "HOLLY_DAY"               : "Holly day",
+      "OFF_DAY"                 : "Off day",
+      "HOUSING"                 : "Housing",
+      "FAM_ALLOW"               : "Fam. Alloc.",
+      "TRANSPORT"               : "Transport",
+      "SENIORITY"               : "Seniority",
+      "ADVANTAGES"              : "Advantages",
+      "SALARY"                  : "Net salary",
+      "TAXES_OTHERS"            : "Employee Taxes and others deductions",
+      "SALARY_AV"               : "Salary Advance",
+      "INSS"                    : "Cot. INSS",
+      "IPR"                     : "IPR",
+      "OTHER_DEDUCT"            : "Others deductions" ,
+      "SELECT_PERIOD"           : "Select a payment period",
+      "ONEM"                    : "ONEM",
+      "IERE"                    : "IERE",
+      "INPP"                    : "INPP",
+      "TAXES_OTHERS_ENTERPRISE" : "Enterprise Taxes et others deductions",
+      "RUBRICS"                 : "Rubrics",
+      "TAX_PAYMENT"             : "Taxes Payment",
+      "SELECT_ACCOUNT"          : "Select an account",
+      "ACCOUNT"                 : "Account",
+      "ENTERPRISE_TAX_PAYMENT"  : "Entreprise Taxes Payment",
+      "NO_DATA"                 : "No data available"
     },
     "INCOME" : {
       "TRANSFER"              : "Transfert",
@@ -87,7 +113,9 @@
       "GENERIC" : {
         "TITLE"   : "Generic Income",
         "RECEIPT" : "Receipt"
-      }
+      },
+      "SELECT_ACCOUNT"        : "Select an account",
+      "ACCOUNT"               : "Account"
     },
     "REPORT" : {
         "INCOME" : {
@@ -107,7 +135,7 @@
     "CONVENTION"      : "Convention",
     "PCASH"           : "Primary cash",
     "SOME_REPORT"     : "Rapport Sommaire de Recettes (20 derniers)",
-    "OVERVIEW"        : "Primary cash                                                                                                                                  : Receipts management",
+    "OVERVIEW"        : "Primary cash  : Receipts management",
     "INFO"            : "This Primary cash feature, is responsible of the receipt automatisation. Use this module to debit the primary cash by transfert, and so one",
     "SOURCE"          : "Source",
     "EXPECTED"        : "expected",
@@ -376,7 +404,8 @@
     "EMPLOYEE_SERVICE"    : "Select a Service",
     "EMPLOYEE_GRADE"      : "Select a grade",
     "PERIOD_ACCOUNT_CONFIG" : "Select an accounting config",
-    "DONOR"               : "Select a donor"
+    "DONOR"               : "Select a donor",
+    "PERIOD_PAYMENT"      : "Select a payment period"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -398,7 +427,7 @@
     "STATUS_RETURNING_TITLE" : "Patient has previously been registered, but is new to the BHIMA system",
     "STATUS_RETURNING_BODY" : "Select this option for patients that have been registered, and have a prescription / sale history with the hospital, but have never been registered with the BHIMA system, this patient is returning to the insitution but being registered with the new system.",
     "STATUS_REGISTERED_TITLE" : "Patient has previously been registered in the BHIMA system",
-    "STATUS_REGISTERED_BODY" : "Select this option for patients that have been registered in the BHIMA system.  This patient has an electronic medical record for this patient that will be looked up."
+    "STATUS_REGISTERED_BODY" : "Select this option for patients that have been registered in the BHIMA system. This patient has an electronic medical record for this patient that will be looked up."
   },
 
   "REPORT"                  : {
@@ -443,7 +472,6 @@
     "INCOME_EXPENSE_REPORT" : "Income/Expense Report",
     "GENERATED_ON"          : "Generated on",
     "TRANSACTIONS_BY_ACCOUNT" : "Transactions by Account",
-    "PATIENT_GROUP"         : "Patient group report",
     "TOTAL" : "Total",
 
     "ACCOUNT_STATEMENT"     : {
@@ -455,7 +483,8 @@
       "SUMMARY"             : "Account Summary",
       "DETAILS"             : "Account transactions details"
 
-    }
+    },
+    "STOCK"                 : "Stock Report"
   },
 
   "CASH_PAYMENTS" : {
@@ -563,6 +592,7 @@
     "TRANS_ID"            : "Transaction #",
     "DEB_EQUIV"           : "Debit Equiv",
     "CRE_EQUIV"           : "Credit Equiv",
+    "USERNAME"            : "Username",
     "DC_TYPE"             : "D/C Type",
     "INVPO_ID"            : "Inv/PO #",
     "PATIENT"             : "Patient",
@@ -630,7 +660,6 @@
     "REFERENCE_PURCHASE"  : "Purchase Order Reference",
     "SOURCE"              : "Source",
     "TOTAL_DEBIT"         : "Total debit",
-    "TOTAL_CREDIT"        : "Total credit",
     "NR"                  : "Nr",
     "BASIC_SALARY"        : "Basic salary",
     "GRADE"               : "Grade",
@@ -641,20 +670,35 @@
     "EMPLOYEE_NAME"       : "Employee Name",
     "DATE_FROM"           : "Date From",
     "DATE_TO"             : "Date To" ,     
-    "GRADE"               : "Grade",
     "DATE_EMBAUCHE"       : "Hiring date",
     "NB_CHILD"            : "Child count",
     "NB_SPOUSE"           : "spouse count",
     "BASE_SALARY"         : "base salary",
-    "CREATED"             : "Created",
-    "MEMBERS"              : "Members",
-    "APPLIES_GLOBALLY"     : "Applies globally",
-    "REFERENCE_PURCHASE" : "Reference",
     "GIVEN_AMOUNT"       : "Given amount",
     "ABBREVIATION"       : "Abreviation",    
     "TRANSACTION_NUMBER" : "Transaction number",
     "BY"                 : "By",
-    "DRUGS"              : "Drugs"
+    "DRUGS"              : "Drugs",
+    "NET_BEFORE_TAXES"   : "Net before taxes",
+    "NET_AFTER_TAXES"    : "Net after taxes",
+    "NET_SALARY"         : "Net Salary",
+    "PAYCHECK"           : "Paycheck",
+    "DAILY_RATE"         : "Daily rate", 
+    "AMOUNT_WITHHELD"    : "Amount to be withheld",
+    "TIMES"              : "Times",
+    "AMOUNT_PAYABLE"     : "Amount Payable",
+    "NET_CASH"           : "Net Cash",
+    "WORKING_DAY"        : "Working days",
+    "CONSUMPTION_PER_MONTH" : "Consumption per month",
+    "SAFETY_STOCK"          : "Safety stock", 
+    "MINIMUM_STOCK"         : "Minimum Stock", 
+    "MAXIMUM_STOCK"         : "Maximum Stock", 
+    "MONTH_OF_STOCK"        : "Months of stock",
+    "QUANTITY_ORDER"        : "Quantity to Order",        
+    "STOCK_QTE"          : "Stock Quantity",
+    "STOCK_QTE_MIN"      : "Stock Minimum Quantity", 
+    "STOCK_QTE_MAX"      : "Stock Maximum Quantity", 
+    "STOCK_QTE_SEC"      : "Security Stock Quantity"
   },
 
   "INVENTORY" : {
@@ -793,8 +837,8 @@
     "EXPENSE_REPORT"            : "Expenses Report",
     "GRADE_EMPLOYERS"           : "Grade Employees",
     "TAXES"                     : "Taxes",     
-    "TAXE_MANAGEMENT"           : "Tax management",
-    "RUBRIC_PAYROLL"            : "Payroll Rubrics",
+    "TAXE_MANAGEMENT"           : "Taxes management",
+    "RUBRIC_MANAGEMENT"         : "Rubrics Management",
     "OFFDAY_MANAGEMENT"         : "Offday management",
     "HOLLYDAY_MANAGEMENT"       : "Holiday Management",
     "PAYMENT_PERIOD"            : "Payment Period Management",
@@ -803,8 +847,9 @@
     "DONATION_MANAGEMENT"       : "Donation Management",
     "STOCK_DASHBOARD"           : "Stock Dashboard",
     "DAILY_CONSUMPTION"         : "Daily Consumption",     
-    "DONATION_MANAGEMENT"       : "Donation Management",
-    "CONFIG_ACCOUNTING"         : "Configuration accounting"
+    "CONFIG_ACCOUNTING"         : "Configuration accounting",
+    "PAYROLL_REPORT"            : "Payroll Reports",
+    "STOCK_STATUS"              : "Stock Status"
   },
 
   "RUBRIC_PAYROLL"       : {
@@ -829,7 +874,8 @@
     "NO"                 : "No",
     "ABBR"               : "Abbr.",
     "NOT_EMPTY"          : "Abbr. Can not be empty",
-    "NOT_SUP4"            : "Can not be more than 4 characters"    
+    "NOT_SUP4"           : "Can not be more than 4 characters",
+    "NOT_SUP_MAXDAY"     : "Can not be greater than the total working days"     
 },
 
   "DISTRIBUTION" : {
@@ -858,8 +904,6 @@
     "SALE_STATUS"            : "Sale state",
     "SALE_BALANCE"           : "Sale balance",
     "VIEW_SALE"              : "View sale details",
-    "NOT_CONSUMED"           : "Not consumed",
-    "CONSUMED"               : "Consumed",
     "ASSIGN"                 : "Assign lots",
     "SELECT"                 : " Select sale for distribution",
     "RECOMANDED"             : "Recomended Lot",
@@ -876,7 +920,8 @@
     "EXPIRED"                : "Available stock CANNOT be used as it has expired, contact the stock administrator.",
     "AVAILABLE"              : "Available prescriptions"
   },
-    "DISTRIBUTION_SERVICE" : {
+
+  "DISTRIBUTION_SERVICE" : {
     "TITLE"                  : "Stock distribution to services",
     "ADD_ROW"                : "Add an Item",
     "DESCRIPTION"            : "Description",
@@ -1354,87 +1399,81 @@
     "PATIENTS"        : "patients"
   },
 
-  "INVOICE"                        : {
-    "TITLE"                        : "Receipts",
-    "PATIENT"                      : "Patient",
-    "PATIENT_ID"                   : "Patient #",
-    "DATE_REGISTRATION"            : "Date of registration",
-    "DATE_RECEIPT"                 : "Date of receipt",
-    "PATIENT_INVOICE"              : "Patient Invoice",
-    "TO"                           : "To",
-    "GIVEN_AMOUNT"                 : "Given Amount",
-    "RECIPIENT"                    : "Recipient",
-    "COST"                         : "Cost",
-    "INVOICE_ID"                   : "Invoice No.",
-    "CLIENT_ID"                    : "Client Code",
-    "DATE"                         : "Date",
-    "DESCRIPTION"                  : "Description",
-    "AMOUNT"                       : "Amount",
-    "TOTAL"                        : "Total",
-    "AMOUNT_RECEIVE"               : "Amount Received",
-    "BALANCE_DUE"                  : "Balance Due",
-    "CREDIT_NOTE"                  : "Credit Note",
-    "NOTE_ID"                      : "Note #",
-    "NOTE"                         : "Note",
-    "DEBTOR_ID"                    : "# Debtor",
-    "TOTAL_CREDITED"               : "Total Credited",
-    "ADDRESS"                      : "Address",
-    "ID"                           : "Id",
-    "PHONE"                        : "Phone",
-    "CASH_RECEIPT"                 : "Cash Receipt",
-    "CASH_ID"                      : "Cash transaction #",
-    "AMOUNT_RECEIVED"              : "Amount Recieved",
-    "TRANSACTION_PRICE"            : "Transaction Price",
-    "PURCHASE_ORDER"               : "Purchase Order",
-    "PURCHASE_RECIPIENT"           : "Supplier",
-    "PURCHASE_ID"                  : "Purchase No.",
-    "PURCHASE_DATE"                : "Purchase Date",
-    "EMPLOYEE_CONTACT"             : "Employee Ref.",
-    "EMPLOYEE_CODE"                : "Employee Code",
-    "PURCHASE_TOTAL"               : "Total Purchase Cost",
-    "TRANSFERT"                    : "Transfert",
-    "BY"                           : "By",
-    "LIBELLE_TRANSFERT_FROM"       : "Transfert from ",
-    "PCASH"                        : "Primary cash",
-    "DESIGNATION"                  : "Detail",
-    "TOTAL_TRANSFERT"              : "Transfert Total",
-    "CONVENTION"                   : "Convention",
-    "NUM_CONVENTION_PAY"           : "Reference",
-    "CAUTION"                      : "Caution",
-    "CAUTION_ID"                   : "# Caution",
-    "LIBELLE_CAUTION"              : "Caution Reception",
-    "TOTAL_CAUTION"                : "Total",
-    "SIGN_HEADER_BILLING"          : "Head of Billing Signature",
-    "SIGN_CLIENT"                  : "Customer Signature ",
-    "SIGN_HEADER_AUXI"             : "Head of Auxilliairy Cash Signature",
-    "SIGN_HEADER_PRI"              : "Head of Principle Cash Signature",
-    "PROOF_OF_PATIENT_CONSUMPTION" : "Proof of consumption",
-    "DOCUMENT_REF"                 : "Document Ref.",
-    "DEPOT_REF"                    : "Depot Ref.",
-    "DISTRIBUTION_SERVICE"         : "Service Distribution",
-    "GENERIC_INCOME"               : "Generic Income",
-    "GENERIC_EXPENSE"              : "Generic Expense",
-    "STOCK_MOVEMENT"               : "Stock movement",
-    "NAME" : "Name",
-    "REFERENCE" : "Reference",
-    "TRANSFERT_DATE" : "Transfer date",
-    "ITEM" : "Item",
-    "EXPIRATION_DATE" : "Expiration date",
-    "TRANSFERED_QTE" : "Transfered Quantity",
-    "TRACKING_NUMBER" : "Trancking number",
-    "DESTINATION_DEPOT" : "Destination depot",
-    "ORIGIN_DEPOT" : "Origin depot",
-    "LOT" : "Lot",
-    "INDIRECT_PURCHASE" : "Indirect proof payment for purchase order",
-    "COST" : "Cost",
-    "RECIPIENT" : "Recipient",
-    "CONFIRM_PURCHASE" : "Payment confirmation",
-    "CONFIRMED_BY" : "Confirmed by ",
-    "SIGN_EMPLOYEE" : "Employee signature",
-    "PROOF_OF_PATIENT_CONSUMPTION" : "Proof of patient consumption",
-    "DOCUMENT_REF" : "Sale reference",
-    "DEPOT_REF" : "Depot reference",
-    "PURCHASE_RECIPIENT" : "Supplier"
+  "INVOICE" : {
+    "TITLE"                         : "Receipts",
+    "PATIENT"                       : "Patient",
+    "PATIENT_ID"                    : "Patient #",
+    "DATE_REGISTRATION"             : "Date of registration",
+    "DATE_RECEIPT"                  : "Date of receipt",
+    "PATIENT_INVOICE"               : "Patient Invoice",
+    "TO"                            : "To",
+    "GIVEN_AMOUNT"                  : "Given Amount",
+    "RECIPIENT"                     : "Recipient",
+    "COST"                          : "Cost",
+    "INVOICE_ID"                    : "Invoice No.",
+    "CLIENT_ID"                     : "Client Code",
+    "DATE"                          : "Date",
+    "DESCRIPTION"                   : "Description",
+    "AMOUNT"                        : "Amount",
+    "TOTAL"                         : "Total",
+    "AMOUNT_RECEIVE"                : "Amount Received",
+    "BALANCE_DUE"                   : "Balance Due",
+    "CREDIT_NOTE"                   : "Credit Note",
+    "NOTE_ID"                       : "Note #",
+    "NOTE"                          : "Note",
+    "DEBTOR_ID"                     : "# Debtor",
+    "TOTAL_CREDITED"                : "Total Credited",
+    "ADDRESS"                       : "Address",
+    "ID"                            : "Id",
+    "PHONE"                         : "Phone",
+    "CASH_RECEIPT"                  : "Cash Receipt",
+    "CASH_ID"                       : "Cash transaction #",
+    "AMOUNT_RECEIVED"               : "Amount Recieved",
+    "TRANSACTION_PRICE"             : "Transaction Price",
+    "PURCHASE_ORDER"                : "Purchase Order",
+    "PURCHASE_RECIPIENT"            : "Supplier",
+    "PURCHASE_ID"                   : "Purchase No.",
+    "PURCHASE_DATE"                 : "Purchase Date",
+    "EMPLOYEE_CONTACT"              : "Employee Ref.",
+    "EMPLOYEE_CODE"                 : "Employee Code",
+    "PURCHASE_TOTAL"                : "Total Purchase Cost",
+    "TRANSFERT"                     : "Transfert",
+    "BY"                            : "By",
+    "LIBELLE_TRANSFERT_FROM"        : "Transfert from ",
+    "PCASH"                         : "Primary cash",
+    "DESIGNATION"                   : "Detail",
+    "TOTAL_TRANSFERT"               : "Transfert Total",
+    "CONVENTION"                    : "Convention",
+    "NUM_CONVENTION_PAY"            : "Reference",
+    "CAUTION"                       : "Caution",
+    "CAUTION_ID"                    : "# Caution",
+    "LIBELLE_CAUTION"               : "Caution Reception",
+    "TOTAL_CAUTION"                 : "Total",
+    "SIGN_HEADER_BILLING"           : "Head of Billing Signature",
+    "SIGN_CLIENT"                   : "Customer Signature ",
+    "SIGN_HEADER_AUXI"              : "Head of Auxilliairy Cash Signature",
+    "SIGN_HEADER_PRI"               : "Head of Principle Cash Signature",
+    "PROOF_OF_PATIENT_CONSUMPTION"  : "Proof of consumption",
+    "DOCUMENT_REF"                  : "Document Ref.",
+    "DEPOT_REF"                     : "Depot Ref.",
+    "DISTRIBUTION_SERVICE"          : "Service Distribution",
+    "GENERIC_INCOME"                : "Generic Income",
+    "GENERIC_EXPENSE"               : "Generic Expense",
+    "STOCK_MOVEMENT"                : "Stock movement",
+    "NAME"                          : "Name",
+    "REFERENCE"                     : "Reference",
+    "TRANSFERT_DATE"                : "Transfer date",
+    "ITEM"                          : "Item",
+    "EXPIRATION_DATE"               : "Expiration date",
+    "TRANSFERED_QTE"                : "Transfered Quantity",
+    "TRACKING_NUMBER"               : "Trancking number",
+    "DESTINATION_DEPOT"             : "Destination depot",
+    "ORIGIN_DEPOT"                  : "Origin depot",
+    "LOT"                           : "Lot",
+    "INDIRECT_PURCHASE"             : "Indirect proof payment for purchase order",
+    "CONFIRM_PURCHASE"              : "Payment confirmation",
+    "CONFIRMED_BY"                  : "Confirmed by ",
+    "SIGN_EMPLOYEE"                 : "Employee signature"
   },
 
   "SECTOR"             : {
@@ -1704,7 +1743,11 @@
       "KEY" : "Expiring Stock"
     },
     "REPORT" : {
-      "STOCK_COUNT" : "Stock Count"
+      "STOCK_COUNT"       : "Stock Count",
+      "DATE"              : "Date",
+      "TITLE"             : "Stock status",
+      "EXPIRING_STOCK"    : "Expiring stock",
+      "ITEM_IN_STOCK"     : "Item in stock"
     },
     "DONATION" : {
         "KEY"    : "Entry Donation",
@@ -1735,8 +1778,7 @@
     "RESPONSABLE"       : "Responsable",
     "BENEFICIARY"       : "Beneficiary",
     "EMPLOYEE"          : "Employee",
-    "CREDITOR"          : "Creditor",
-    "CUSTOMER" : "Client"
+    "CREDITOR"          : "Creditor"
   },
 
   "CONVENTION" : {
@@ -1932,7 +1974,8 @@
     "ANNUAL_CUMUL"        : "Annual Accumulation",
     "MONTH_CUMUL"         : "Accumulated Monthly",
     "NOT_EMPTY"           : "Abbr. Can not be empty",
-    "NOT_SUP4"            : "Can not be more than 4 characters"
+    "NOT_SUP4"            : "Can not be more than 4 characters",
+    "CURRENCY"            : "Currency"
   },
 
   "CONFIG_RUBRIC" : {
@@ -1945,7 +1988,8 @@
     "CONFIRM"       : "Are you sure you want to delete this Configuration",    
     "REGISTERED"    : "Registered Configuration Rubrics",
     "ALERT"         : "The configuration of Rubrics allows setting different kinds rubrics that are taken during a pay period",
-    "CONFIG"        : "Configuration",
+    "CONFIG"                   : "Configuration",
+    "RUBRIC_MANAGEMENT"        : "Rubrics Management",
     "RUBRIC"        : "Rubrics Payroll",
     "PAYABLE"       : "Payable",
     "DELETE_SUCCESS" : "Deleted successfully",
@@ -2070,6 +2114,7 @@
     "NO_CONFIG_TAX" : "No Configuration Accounting"
   },
 
+<<<<<<< HEAD
   "TAX_PAYMENT" : {
     "EMPLOYEE"         : "Employee Name",
     "TAX"              : "Tax",
@@ -2077,6 +2122,42 @@
     "PAID"             : "Paid",
     "SUBMIT_PAID_TAX"  : "Paid the tax"
   } 
+=======
+  "PAYCHECK" : {
+    "TITLE"         : "Payroll Reports",
+    "PAYSLIP"       : "Payslip",
+    "VIEW"          : "View",
+    "SELECT_PERIOD" : "Select a payment period",
+    "MATRICULE"     : "Matricule",
+    "FAM_STATUS"    : "Familly status",
+    "GRADE"         : "Grade"
+  }, 
+
+  "TAX_PAYMENT" : {
+    "EMPLOYEE"         : "Employee Name",
+    "CODE"             : "Code",
+    "TAX"              : "Tax",
+    "VALUE"            : "Value",
+    "PAID"             : "Paid",
+    "SUBMIT_PAID_TAX"  : "Paid the tax",
+    "CONFIRM_SUBMIT"   : "Do you confirm the payment of tax ?",
+    "NONE_PERIOD"      : "None payment period available"
+  },
+
+  "STOCK_STATUS"     :{
+    "TITLE"                 : "Stock Situation",
+    "NO_CONSUMPTION"        : "Aucun produits en stock",
+    "CONSUMPTION_PER_MONTH" : "Consumption per month", 
+    "SAFETY_STOCK"          : "Safety stock", 
+    "MINIMUM_STOCK"         : "Minimum Stock", 
+    "MAXIMUM_STOCK"         : "Maximum Stock", 
+    "MONTH_OF_STOCK"        : "Months of stock",
+    "QUANTITY_ORDER"        : "Quantity to Order"
+  }, 
+  "AUTH" :  {
+    "LOGIN"  : "Login to Bhima",
+    "LOGIN_ERROR" : "Login Error: Username and password combination are incorrect.",
+    "LOGOUT_SUCCESS" : "You are now logged out."
+  }
+>>>>>>> dev
 }
-
-

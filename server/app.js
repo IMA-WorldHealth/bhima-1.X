@@ -27,9 +27,7 @@ var parser       = require('./lib/parser')(),
     liberror     = require('./lib/liberror')();
 
 // import middleware
-var authorize    = require('./middleware/authorization')(cfg.auth.paths),
-    authenticate = require('./middleware/authentication')(db, sanitize),
-    projects     = require('./middleware/projects')(db);
+var authenticate = require('./middleware/authentication')(db, uuid);
 
 // import routes
 var report            = require('./routes/report')(db, sanitize, util),
@@ -46,7 +44,9 @@ var report            = require('./routes/report')(db, sanitize, util),
     locationRouter    = require('./routes/location')(db, express.Router()),
     dataRouter        = require('./routes/data')(db, parser, express.Router()),
     serviceDist       = require('./routes/serviceDist')(db, parser, journal, uuid),
-    consumptionLoss   = require('./routes/consumptionLoss')(db, parser, journal, uuid);
+    consumptionLoss   = require('./routes/consumptionLoss')(db, parser, journal, uuid),
+    taxPayment        = require('./routes/taxPayment')(db, parser, journal, uuid),
+    donation          = require('./routes/postingDonation')(db, parser, journal, uuid);
 
 // create app
 var app = express();
@@ -62,8 +62,6 @@ app.use('/lib', express.static('client/dest/lib', { maxAge : 10000 }));
 app.use('/i18n', express.static('client/dest/i18n', { maxAge : 10000 }));
 // app.use('/assets', express.static('client/dest/assets', {maxAge:10000}));
 app.use(authenticate);
-app.use(authorize);
-app.use(projects);
 app.use(express.static(cfg.static, { maxAge : 10000 }));
 
 // routers
@@ -125,6 +123,20 @@ app.post('/consumption_loss/', function (req, res, next) {
   consumptionLoss.execute(req.body, req.session.user_id, function (err, ans) {
     if (err) { return next(err); }
     res.send({dist: ans});
+  });
+});
+
+app.post('/payTax/', function (req, res, next) {
+  taxPayment.execute(req.body, req.session.user_id, function (err, ans) {
+    if (err) { return next(err); }
+    res.send({resp: ans});
+  });
+});
+
+app.post('/posting_donation/', function (req, res, next) {
+  donation.execute(req.body, req.session.user_id, function (err, ans) {
+    if (err) { return next(err); }
+    res.send({resp: ans});
   });
 });
 
@@ -682,7 +694,7 @@ app.get('/getCheckHollyday/', function (req, res, next) {
 });
 
 app.get('/getCheckOffday/', function (req, res, next) {
-  var sql ="SELECT * FROM offday WHERE date = '" + req.query.date + "'";
+  var sql ="SELECT * FROM offday WHERE date = '" + req.query.date + "' AND id <> '" + req.query.id +"'";
   db.exec(sql)
   .then(function (result) {
     res.send(result);
@@ -1059,8 +1071,28 @@ app.get('/getAccount6/', function (req, res, next) {
   .done();
 });
 
+app.get('/getAccount7/', function (req, res, next) {
+  var sql ="SELECT id, enterprise_id, account_number, account_txt FROM account WHERE account_number LIKE '7%' AND account_type_id <> '3'";
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
 app.get('/available_payment_period/', function (req, res, next) {
-  var sql = "SELECT p.id, p.config_tax_id, p.config_rubric_id, p.label, p.dateFrom, p.dateTo, r.label AS RUBRIC, t.label AS TAX, a.label AS ACCOUNT FROM paiement_period p, config_rubric r, config_tax t, config_accounting a WHERE p.config_tax_id = t.id AND p.config_rubric_id = r.id AND a.id=p.config_accounting_id ORDER BY p.id DESC";
+  var sql = "SELECT p.id, p.config_tax_id, p.config_rubric_id, p.config_accounting_id, p.label, p.dateFrom, p.dateTo, r.label AS RUBRIC, t.label AS TAX, a.label AS ACCOUNT FROM paiement_period p, config_rubric r, config_tax t, config_accounting a WHERE p.config_tax_id = t.id AND p.config_rubric_id = r.id AND a.id=p.config_accounting_id ORDER BY p.id DESC";
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/taxe_ipr_currency/', function (req, res, next) {
+  var sql = "SELECT t.id,t.taux,t.tranche_annuelle_debut,t.tranche_annuelle_fin,t.tranche_mensuelle_debut,t.tranche_mensuelle_fin,t.ecart_annuel,t.ecart_mensuel,t.impot_annuel,t.impot_mensuel,t.cumul_annuel,t.cumul_mensuel,t.currency_id,c.symbol FROM taxe_ipr t, currency c WHERE t.currency_id = c.id";
   db.exec(sql)
   .then(function (result) {
     res.send(result);
@@ -1223,7 +1255,6 @@ app.get('/getStockEntry/', function (req, res, next) {
   .done();
 });
 
-//     TOTAL DES CONSOMMATIONS PAR RAPPORT A UN INVENTORY UUID
 app.get('/getStockConsumption/', function (req, res, next) {
   var sql = "SELECT inventory.text, SUM(consumption.quantity) AS 'quantity', inventory.uuid, stock.inventory_uuid"
           + " FROM consumption RIGHT JOIN stock ON stock.tracking_number = consumption.tracking_number"
@@ -1238,7 +1269,80 @@ app.get('/getStockConsumption/', function (req, res, next) {
   .done();
 });
 
+//Obtention de periode de paiement
+
+app.get('/getReportPayroll/', function (req, res, next) {
+  var sql = "SELECT paiement.uuid, paiement.employee_id, paiement.paiement_period_id, paiement.currency_id,"
+          + " paiement.net_before_tax, paiement.net_after_tax, paiement.net_after_tax, paiement.net_salary,"
+          + " employee.code, employee.prenom, employee.name, employee.postnom, employee.dob, employee.sexe"
+          + " FROM paiement"
+          + " JOIN employee ON employee.id = paiement.employee_id"
+          + " WHERE paiement_period_id = " + sanitize.escape(req.query.period_id);
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+// Information sur la fiche de paiement
+app.get('/getDataPaiement/', function (req, res, next) {
+  var sql = "SELECT paiement.uuid, paiement.employee_id, paiement.paiement_period_id, paiement_period.dateFrom,"
+          + " paiement_period.dateTo, paiement.currency_id,"
+          + " paiement.net_before_tax, paiement.net_after_tax, paiement.net_after_tax, paiement.net_salary,"
+          + " paiement.working_day, paiement.paiement_date, employee.code, employee.prenom, employee.name,"
+          + " employee.postnom, employee.dob, employee.sexe, employee.nb_spouse, employee.nb_enfant,"
+          + " employee.grade_id, grade.text, grade.code AS 'codegrade', grade.basic_salary"
+          + " FROM paiement"
+          + " JOIN employee ON employee.id = paiement.employee_id"
+          + " JOIN grade ON grade.uuid = employee.grade_id "
+          + " JOIN paiement_period ON paiement_period.id = paiement.paiement_period_id"
+          + " WHERE paiement.uuid = " + sanitize.escape(req.query.invoiceId);
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getDataRubrics/', function (req, res, next) {
+  var sql = "SELECT rubric_paiement.id, rubric_paiement.paiement_uuid, rubric_paiement.rubric_id, rubric.label,"
+          + " rubric.is_discount, rubric_paiement.value"
+          + " FROM rubric_paiement"
+          + " JOIN rubric ON rubric.id = rubric_paiement.rubric_id"
+          + " WHERE rubric_paiement.paiement_uuid= " + sanitize.escape(req.query.invoiceId);
+          
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getDataTaxes/', function (req, res, next) {
+  var sql = "SELECT tax_paiement.id, tax_paiement.paiement_uuid, tax_paiement.tax_id, tax.label,"
+          + " tax_paiement.value, tax.is_employee"
+          + " FROM tax_paiement"
+          + " JOIN tax ON tax.id = tax_paiement.tax_id"
+          + " WHERE tax.is_employee = '1' AND tax_paiement.paiement_uuid = " + sanitize.escape(req.query.invoiceId);
+          
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+// Fin de l'information sur la fiche de paiement
+
 app.get('/getNombreMoisStockControl/:inventory_uuid', function (req, res, next) {
+
   var sql = "SELECT COUNT(DISTINCT(MONTH(c.date))) AS nb"
           + " FROM consumption c"
           + " JOIN stock s ON c.tracking_number=s.tracking_number "
@@ -1248,7 +1352,6 @@ app.get('/getNombreMoisStockControl/:inventory_uuid', function (req, res, next) 
 
   db.exec(sql)
   .then(function (result) {
-    console.log(result);
     res.send(result[0]);
   })
   .catch(function (err) { next(err); })
@@ -1262,8 +1365,7 @@ app.get('/monthlyConsumptions/:inventory_uuid/:nb', function (req, res, next) {
           + " JOIN inventory i ON i.uuid=s.inventory_uuid "
           + " WHERE s.inventory_uuid=" + sanitize.escape(req.params.inventory_uuid)
           + " AND c.uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss )"
-          + " AND (c.date BETWEEN DATE_SUB(CURDATE(),INTERVAL " + sanitize.escape(req.params.inventory_uuid) + " MONTH) AND CURDATE())"
-          + " GROUP BY i.uuid";
+          + " AND (c.date BETWEEN DATE_SUB(CURDATE(),INTERVAL " + sanitize.escape(req.params.nb) + " MONTH) AND CURDATE())";
 
   db.exec(sql)
   .then(function (result) {
@@ -1274,13 +1376,14 @@ app.get('/monthlyConsumptions/:inventory_uuid/:nb', function (req, res, next) {
 });
 
 app.get('/getDelaiLivraison/:id', function (req, res, next) {
-  var sql = "SELECT ROUND(AVG(CEIL(DATEDIFF(s.entry_date,p.purchase_date)/30))) AS dl"
-          + " FROM purchase p"
-          + " JOIN stock s ON p.uuid=s.purchase_order_uuid "
-          + " JOIN purchase_item z ON p.uuid=z.purchase_uuid "
-          + " JOIN inventory i ON s.inventory_uuid=i.uuid "
-          + " WHERE z.inventory_uuid=s.inventory_uuid "
-          + " AND s.inventory_uuid=" + sanitize.escape(req.params.id);
+
+  var sql = "SELECT " + 
+  "ROUND(AVG(ROUND(DATEDIFF(s.entry_date, p.purchase_date) / 30))) AS dl " +
+  "FROM purchase p " +
+  "JOIN stock s ON p.uuid=s.purchase_order_uuid " +
+  "JOIN purchase_item z ON p.uuid=z.purchase_uuid " +
+  "JOIN inventory i ON s.inventory_uuid=i.uuid " +
+  "WHERE z.inventory_uuid=s.inventory_uuid AND s.inventory_uuid=" + sanitize.escape(req.params.id);
 
   db.exec(sql)
   .then(function (result) {
@@ -1306,10 +1409,66 @@ app.get('/getCommandes/:id', function (req, res, next) {
 });
 
 app.get('/getMonthsBeforeExpiration/:id', function (req, res, next) {
-  var sql = "SELECT s.tracking_number, s.lot_number, FLOOR(DATEDIFF(s.expiration_date,CURDATE())/30) AS months_before_expiration"
+  var sql = "SELECT s.tracking_number, s.lot_number, FLOOR(DATEDIFF(s.expiration_date, CURDATE()) / 30) AS months_before_expiration"
           + " FROM stock s"
           + " JOIN inventory i ON s.inventory_uuid=i.uuid "
           + " WHERE s.inventory_uuid=" + sanitize.escape(req.params.id);
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getEmployeePayment/:id', function (req, res, next) {
+  var sql = "SELECT e.id, e.code, e.prenom, e.name, e.postnom, e.creditor_uuid, p.uuid as paiement_uuid, p.currency_id, t.label, t.abbr, z.tax_id, z.value, z.posted"
+          + " FROM employee e "
+          + " JOIN paiement p ON e.id=p.employee_id "
+          + " JOIN tax_paiement z ON z.paiement_uuid=p.uuid "
+          + " JOIN tax t ON t.id=z.tax_id "
+          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.id) + " AND t.is_employee=1 ";
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.put('/setTaxPayment/', function (req, res, next) {
+  var sql = "UPDATE tax_paiement SET posted=1"
+          + " WHERE tax_paiement.paiement_uuid=" + sanitize.escape(req.body.paiement_uuid) + " AND tax_paiement.tax_id=" + sanitize.escape(req.body.tax_id);
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getDistinctInventories/', function (req, res, next) {
+  var sql = "SELECT DISTINCT inventory.code, inventory.text, stock.inventory_uuid FROM stock"
+          + " JOIN inventory ON stock.inventory_uuid=inventory.uuid";
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getEnterprisePayment/:employee_id', function (req, res, next) {
+  var sql = "SELECT e.id, e.code, e.prenom, e.name, e.postnom, e.creditor_uuid, p.uuid as paiement_uuid, p.currency_id, t.label, t.abbr, z.tax_id, z.value, z.posted"
+          + " FROM employee e "
+          + " JOIN paiement p ON e.id=p.employee_id "
+          + " JOIN tax_paiement z ON z.paiement_uuid=p.uuid "
+          + " JOIN tax t ON t.id=z.tax_id "
+          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.employee_id) + " AND t.is_employee=0 ";
 
   db.exec(sql)
   .then(function (result) {
