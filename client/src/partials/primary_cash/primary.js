@@ -39,18 +39,18 @@ angular.module('bhima.controllers')
     ];
 
     configuration.expense = [
-      // {
-      //   key : 'PRIMARY_CASH.EXPENSE.PAYROLL',
-      //   link : '/primary_cash/expense/payroll/'
-      // },
       {
-        key : 'PRIMARY_CASH.EXPENSE.MULTI_PAYROLL',
-        link : '/primary_cash/expense/multi_payroll/'
+         key : 'PRIMARY_CASH.EXPENSE.PAYROLL',
+         link : '/primary_cash/expense/payroll/'
       },
-      {
-        key : 'PRIMARY_CASH.EXPENSE.TAX_PAYMENT',
-        link : '/primary_cash/expense/tax_payment/'
-      },
+      //{
+      //  key : 'PRIMARY_CASH.EXPENSE.MULTI_PAYROLL',
+      //  link : '/primary_cash/expense/multi_payroll/'
+      //},
+      //{
+      //  key : 'PRIMARY_CASH.EXPENSE.TAX_PAYMENT',
+      //  link : '/primary_cash/expense/tax_payment/'
+      //},
       {
         key : 'PRIMARY_CASH.EXPENSE.ENTERPRISE_TAX_PAYMENT',
         link : '/primary_cash/expense/enterprise_tax_payment/'
