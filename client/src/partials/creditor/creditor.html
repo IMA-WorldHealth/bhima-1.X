@@ -20,7 +20,6 @@
       <div class="panel panel-default" ng-class="{'panel-primary' : session.state===route.create, 'panel-success' : session.state===route.edit}">
         <div class="panel-heading">
           <span class="glyphicon glyphicon-user"></span> {{ 'SUPPLIER.SUPPLIER_DETAILS' | translate }}
-          <span class="pull-right">{{ (session.state.header | translate) || '...' }}</span>
         </div>
         <div class="panel-body">
           <form role="form" name="form" novalidate>
@@ -28,12 +27,12 @@
               <legend>Supplier</legend>
 
               <div class="form-group">
-                <label for="name">{{ "COLUMNS.NAME" | translate }}</label>
+                <label for="name" class="control-label required">{{ "COLUMNS.NAME" | translate }}</label>
                 <input type="text" class="form-bhima" id="name" ng-model="session.supplier.name" required>
               </div>
 
               <div class="form-group">
-                <label for="Group">{{ "COLUMNS.GROUP" | translate }}</label>
+                <label for="Group" class="control-label required">{{ "COLUMNS.GROUP" | translate }}</label>
                 <select required class="form-bhima" id="groupselectID" ng-model="session.creditor.group_uuid" ng-options="group.uuid as group.name for group in creditGroup.data">
                   <option value="" disabled="disabled">--Select Group--</option>
                 </select>
@@ -46,18 +45,18 @@
               </div>
 
               <div class="form-group">
-                <label for="phone">{{ "SUPPLIER.PHONE" | translate }}</label>
+                <label for="phone" class="control-label required">{{ "SUPPLIER.PHONE" | translate }}</label>
                 <input required type="text" class="form-bhima" id="phoneID" ng-model="session.supplier.phone">
               </div>
 
               <div class="form-group">
-                <label for="email">{{ "SUPPLIER.EMAIL" | translate }}</label>
+                <label for="email" class="control-label required">{{ "SUPPLIER.EMAIL" | translate }}</label>
                 <input required type="email" class="form-bhima" id="emailID" ng-model="session.supplier.email">
               </div>
             </fieldset>
 
             <fieldset>
-              <legend>Location</legend>
+              <legend>Location <small style="color : red;">*</small></legend>
                 <div class="form-group">
                   <label for="location-country">
                     {{ "LOCATION.COUNTRY" | translate }}

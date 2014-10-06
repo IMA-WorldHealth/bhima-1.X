@@ -70,27 +70,35 @@ angular.module('bhima.controllers')
       }
     };
 
-    appstate.register('project', initialise);
-
+    // Request enterprise information 
+    appstate.register('enterprise', function (enterprise) { 
+      session.enterprise = enterprise;
+      
+      // Request project information - initialise page
+      appstate.register('project', initialise);
+    });
+    
     function initialise(project) {
       session.project = project;
       session.state = route.create;
       session.location = {};
-
+      
       // Request data from server
       validate.process(dependencies).then(settupForm);
     }
 
     function settupForm(model) {
       angular.extend($scope, model);
-      setDefaultLocation(session.project.location_id);
+      setDefaultLocation(session.enterprise.location_id);
     }
 
     function setDefaultLocation(location_id) {
-      session.location.village = $scope.village.get(location_id);
-      session.location.sector = $scope.sector.get(session.location.village.sector_uuid);
-      session.location.province = $scope.province.get(session.location.sector.province_uuid);
-      session.location.country = $scope.country.get(session.location.province.country_uuid);
+      if (location_id) { 
+        session.location.village = $scope.village.get(location_id);
+        session.location.sector = $scope.sector.get(session.location.village.sector_uuid);
+        session.location.province = $scope.province.get(session.location.sector.province_uuid);
+        session.location.country = $scope.country.get(session.location.province.country_uuid);
+      }
     }
 
     function createSupplier() {
@@ -105,6 +113,8 @@ angular.module('bhima.controllers')
     function editSupplier(uuid) {
 
       // Verify there is nothing in the current session
+      //
+
       assignSupplier($scope.supplier.get(uuid));
       session.state = route.edit;
       session.selected = uuid;
@@ -118,7 +128,7 @@ angular.module('bhima.controllers')
 
     function registerSupplier() {
       var creditor_uuid = uuid();
-
+  
       // Assign uuid and note to creditor
       session.creditor.uuid = creditor_uuid;
       session.creditor.text = 'Supplier [' + session.supplier.name + ']';
@@ -129,7 +139,7 @@ angular.module('bhima.controllers')
       session.supplier.creditor_uuid = creditor_uuid;
 
       requestCreditor(session.creditor)
-      .then(requestSupplier(session.supplier))
+      .then(writeSupplier(session.supplier))
       .then(handleRegistration)
       .catch(handleError);
     }
@@ -138,8 +148,12 @@ angular.module('bhima.controllers')
       return connect.basicPut('creditor', [creditor]);
     }
 
-    function requestSupplier(supplier) {
+    function writeSupplier(supplier) {  
       return connect.basicPut('supplier', [supplier]);
+    }
+
+    function requestSupplier(supplier) {
+      return connect.basicPost('supplier', [supplier], ['uuid']);
     }
 
     function handleRegistration() {
@@ -160,21 +174,24 @@ angular.module('bhima.controllers')
     }
 
     function requestCreditorUpdate() {
-
       dependencies.creditor = {
         query : {
           tables : {
             creditor : { columns : ['uuid', 'group_uuid'] }
-          }
+          },
+          where : ['creditor.uuid=' + session.supplier.creditor_uuid]
         },
-        where : ['creditor.uuid=' + session.creditor.group_uuid]
       };
 
       return validate.process(dependencies, ['creditor'])
       .then(function (model) {
+       
         // Assuming one supplier will only ever have one creditor account
         var creditor = model.creditor.data[0];
         creditor.group_uuid = session.creditor.group_uuid;
+    
+        // FIXME hack
+        session.supplier.group_uuid = creditor.group_uuid;
         return connect.basicPost('creditor', [creditor], ['uuid']);
       });
     }
