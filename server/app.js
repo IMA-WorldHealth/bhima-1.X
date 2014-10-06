@@ -1462,6 +1462,22 @@ app.get('/getDistinctInventories/', function (req, res, next) {
   .done();
 });
 
+app.get('/getEnterprisePayment/:employee_id', function (req, res, next) {
+  var sql = "SELECT e.id, e.code, e.prenom, e.name, e.postnom, e.creditor_uuid, p.uuid as paiement_uuid, p.currency_id, t.label, t.abbr, z.tax_id, z.value, z.posted"
+          + " FROM employee e "
+          + " JOIN paiement p ON e.id=p.employee_id "
+          + " JOIN tax_paiement z ON z.paiement_uuid=p.uuid "
+          + " JOIN tax t ON t.id=z.tax_id "
+          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.employee_id) + " AND t.is_employee=0 ";
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
 // temporary error handling for development!
 process.on('uncaughtException', function (err) {
   console.log('[uncaughtException]', err);
