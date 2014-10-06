@@ -128,14 +128,14 @@ angular.module('bhima.controllers')
       session.model = model; 
       cache.fetch('selectedItem')
       .then(function (selectedItem){
-        if (!selectedItem) { throw new Error("Currency undefined"); }
+        if (!selectedItem) { throw new Error('Currency undefined'); }
         session.loading_currency_id = selectedItem.currency_id;
         session.selectedItem = selectedItem;
         return cache.fetch('paiement_period');
       })
       .then(function (pp) {
         if(!pp) {
-          throw new Error("Paiement period undefined");
+          throw new Error('Paiement period undefined');
         }
         session.pp = pp; 
         dependencies.paiements.query.where = ['paiement.paiement_period_id=' + session.pp.id];
@@ -472,10 +472,12 @@ angular.module('bhima.controllers')
 
     function getHousing (row) {
       var rubrics = session.model.rubric_config.data, housing = 0;
-      if(!rubrics.length) return $q.when(housing);
+      if(!rubrics.length){ 
+        return $q.when(housing); 
+      }
 
       var item = rubrics.filter(function (item) {
-        return item.abbr === "HOUS";
+        return item.abbr === 'HOUS';
       })[0];
 
       if(item) {
@@ -487,10 +489,12 @@ angular.module('bhima.controllers')
 
     function getEmployeeINSS (row) {
       var taxes = session.model.tax_config.data, employee_inss = 0;
-      if(!taxes.length) return $q.when(employee_inss);
+      if(!taxes.length){
+        return $q.when(employee_inss);
+      }
 
       var item = taxes.filter(function (item) {
-        return item.abbr === "INS1";
+        return item.abbr === 'INS1';
       })[0];
 
       if(item) {
@@ -502,10 +506,12 @@ angular.module('bhima.controllers')
 
     function getEnterpriseINSS (row) {
       var taxes = session.model.tax_config.data, enterprise_inss = 0;
-      if(!taxes.length) return $q.when(enterprise_inss);
+      if(!taxes.length){ 
+        return $q.when(enterprise_inss);
+      }
 
       var item = taxes.filter(function (item) {
-        return item.abbr === "INS2";
+        return item.abbr === 'INS2';
       })[0];
 
       if(item) {
@@ -580,15 +586,15 @@ angular.module('bhima.controllers')
           def.resolve(res);
         })
         .catch(function (err){
-          def.reject(err)
+          def.reject(err);
         });
 
         return def.promise;
     }
 
     function submit (list) {
-      rubric_config_list = session.model.rubric_config.data;
-      tax_config_list = session.model.tax_config.data;
+      var rubric_config_list = session.model.rubric_config.data;
+      var tax_config_list = session.model.tax_config.data;
 
       return $q.all(list.map(function (elmt) {
         var rc_records = [];
@@ -605,14 +611,14 @@ angular.module('bhima.controllers')
           net_before_tax : elmt.net_before_taxe,
           net_after_tax : elmt.net_after_taxe,          
           net_salary : elmt.net_salary
-        }
+        };
 
         rubric_config_list.forEach(function (rc) {
           var record = {
             paiement_uuid : paiement.uuid,
             rubric_id : rc.id,
             value : elmt[rc.abbr]
-          }
+          };
           rc_records.push(record);
         });
           
@@ -622,7 +628,7 @@ angular.module('bhima.controllers')
             tax_id : tc.id,
             value : elmt[tc.abbr],
             posted : 0
-          }
+          };
           tc_records.push(record);
         });
 
@@ -637,9 +643,9 @@ angular.module('bhima.controllers')
           currency_id   : session.selectedItem.currency_id,
           cost          : paiement.net_salary,
           user_id       : session.model.cashier.data.id,
-          description   : "Payroll : " + elmt.emp.name + elmt.emp.postnom,
+          description   : 'Payroll : ' + elmt.emp.name + elmt.emp.postnom,
           cash_box_id   : session.cashbox,
-          origin_id     : 6,
+          origin_id     : 6
         };
 
         var primary_details = {
@@ -656,7 +662,7 @@ angular.module('bhima.controllers')
           primary_details : primary_details,
           rc_records : rc_records,
           tc_records : tc_records
-        }
+        };
 
         var def = $q.defer();
         payEmployee(packagePay)
@@ -667,7 +673,7 @@ angular.module('bhima.controllers')
       }))
       .then(function (tab) {
         console.log('tableau de promesse', tab);
-        messenger.success("success");
+        messenger.success('success');
         validate.refresh(dependencies, ['paiements'])
         .then(function () {
           session.rows = refreshList();
