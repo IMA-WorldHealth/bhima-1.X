@@ -402,7 +402,8 @@
     "EMPLOYEE_GRADE"      : "Select a grade",
     "PERIOD_ACCOUNT_CONFIG" : "Select an accounting config",
     "DONOR"               : "Select a donor",
-    "PERIOD_PAYMENT"      : "Select a payment period"
+    "PERIOD_PAYMENT"      : "Select a payment period",
+    "PROFIT_CENTER"       : "Select a Profit Center"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -1548,7 +1549,9 @@
     "INFO"                     :  "Service informations",
     "INFO_DESCRIPTION"         :  "This feature will help you to manage your services (creating, editing and suppressing as well as consulting)",
     "MODIFYING"                :  "Editing",
-    "OVERVIEW_SERVICE"         : "Systhetic result of service"
+    "OVERVIEW_SERVICE"         : "Systhetic result of service",
+    "PROJECT_SELECT"           : "Selectionner a Project",
+    "PROFIT_CENTER_SELECT"     : "Profit Center"
   },
 
   "COST_CENTER" : {
@@ -1991,7 +1994,8 @@
     "PAYABLE"       : "Payable",
     "DELETE_SUCCESS" : "Deleted successfully",
     "NO_CONFIG_RUBRIC" : "No Configuration Rubrics",
-    "ABBR"          : "Abbr."
+    "ABBR"          : "Abbr.",
+    "MESSAGE"       : "Please check the different rubrics that will be payable for this configuration"
   },
   
   "CONFIG_TAX" : {
@@ -2008,7 +2012,8 @@
     "RUBRIC"        : "Taxes Payroll",
     "PAYABLE"       : "Payable",
     "DELETE_SUCCESS" : "Deleted successfully",
-    "NO_CONFIG_TAX" : "No Configuration Taxes"
+    "NO_CONFIG_TAX" : "No Configuration Taxes",
+    "MESSAGE"       : "Please check the different taxes that will be payable for this configuration"
   },
 
   "DAILY_CONSUMPTION" : {
