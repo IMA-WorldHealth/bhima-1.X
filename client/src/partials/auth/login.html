@@ -1,0 +1,61 @@
+<div  style="margin-top: 5em;">
+  <div class="col-sm-offset-4 col-xs-4" style="margin-top:5%;">
+    <div class="panel" ng-class="{ 'panel-default' : !session.loginFailure, 'panel-danger' : !!session.loginFailure }">
+      <div class="panel-heading">
+        {{ "AUTH.LOGIN" | translate }}
+        <span class="pull-right dropdown">
+          <a class="clk dropdown-toggle"><i class="glyphicon glyphicon-cog"></i></a>
+          <ul class="dropdown-menu">
+            <li ng-repeat="lang in session.languages">
+              <a ng-click="changeLanguage(lang)">{{ lang.name }}</a>
+            </li>
+          </ul>
+        </span>
+      </div>
+      <ul class="list-group" ng-if="!!session.loginFailure">
+        <li class="list-group-item text-danger" ><i class="glyphicon glyphicon-remove"></i> <b>{{ "AUTH.LOGIN_ERROR" | translate }}</b></li>
+      </ul>
+      <div class="panel-body">
+        <form class="form" ng-submit="login(credentials)" novalidate>
+          <fieldset>
+
+            <div class="form-group">
+              <label for="username">{{ "COLUMNS.USERNAME" | translate }}</label>
+              <div class="input-group">
+                <span class="input-group-addon" style="background-color: #fff;">
+                  <span class="glyphicon glyphicon-user"></span>
+                </span>
+                <input ng-model="credentials.username" class="form-bhima" placeholder="Enter your username" type="text" autofocus required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="password">{{ "COLUMNS.PASSWORD" | translate }}</label>
+              <div class="input-group">
+                <span class="input-group-addon" style="background-color: #fff;">
+                  <span class="glyphicon glyphicon-lock"></span>
+                </span>
+                <input ng-model="credentials.password" class="form-bhima" placeholder="Enter your password" type="password" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="password">{{ "COLUMNS.PROJECT" | translate }}</label>
+              <div class="input-group">
+                <span class="input-group-addon" style="background-color: #fff;">
+                  <i class="glyphicon glyphicon-home"></i>
+                </span>
+                <select class="form-bhima" ng-model="credentials.project" ng-options="proj.id as proj.name for proj in session.projects">
+                  <option disabled="disabled" selected="selected"> -- {{ "SELECT.PROJECT" | translate }} --</option>
+                </select>
+              </div>
+            </div>
+
+            <input class="btn btn-sm btn-success" type="submit"/>
+            <input class="btn btn-sm btn-default" type="reset"/>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

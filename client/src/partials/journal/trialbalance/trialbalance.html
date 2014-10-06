@@ -3,12 +3,12 @@
     <h3>{{ 'TRIAL_BALANCE.TITLE' | translate }}</h3>
     <div class="modal-icons">
       <label><span class="glyphicon glyphicon-tasks"></span> {{ transactions.length }} {{"TRIAL_BALANCE.TRANSACTIONS" | translate }}</label>
-      <label ng-show="session.action=='hide'"><a href="" ng-click="session.action='show'" ng-class="{ 'danger' : !!errors.length }"><span class="glyphicon glyphicon-flag"></span> {{ errors.length }} {{"TRIAL_BALANCE.ERRORS" | translate }}</a></label>
-      <label ng-show="session.action=='show'"><a href="" ng-click="session.action='hide'"><span class="glyphicon glyphicon-flag"></span> {{ errors.length }} {{"TRIAL_BALANCE.RESULTS" | translate }}</a></label>
+      <label ng-show="session.action=='hide'"><a ng-click="session.action='show'" ng-class="{ 'danger' : !!errors.length }"><span class="glyphicon glyphicon-flag"></span> {{ errors.length }} {{"TRIAL_BALANCE.ERRORS" | translate }}</a></label>
+      <label ng-show="session.action=='show'"><a ng-click="session.action='hide'"><span class="glyphicon glyphicon-flag"></span> {{ errors.length }} {{"TRIAL_BALANCE.RESULTS" | translate }}</a></label>
       <label><span class="glyphicon glyphicon-calendar"></span> {{ session.min | date}} - {{ session.max | date }}</label>
     </div>
     <div class="modal-print">
-      <a href="" ng-click="print()" style="margin: 5px;"><span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}</a>
+      <a ng-click="print()" style="margin: 5px;"><span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}</a>
     </div>
   </div>
 

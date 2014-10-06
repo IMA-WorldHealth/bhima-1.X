@@ -16,9 +16,15 @@
   </div>
 
   <div class="pull-left">
-    <div class="group-crumbs" style="display: block; width: 100%;">
-      <label>{{ "REPORT.GROUP_DETAIL" | translate }}</label> <span ng-repeat="activeGroup in groups">  > {{activeGroup.title}} </span>
-    </div>
+    <ol class="breadcrumb">
+      <li>{{ "REPORT.GROUP_DETAIL" | translate }}</li>
+      <li ng-repeat="activeGroup in groups">
+        <span class="label label-info" style="white-space:inherit;"> <!-- FIXME: style hack -->
+          {{ activeGroup.title }}
+        </span>
+      </li>
+      <li ng-if="groups.length>0"><span class="label label-danger" style="cursor:pointer;" ng-click="removeLastGroup()"><span class="glyphicon glyphicon-chevron-left"></span><span class="glyphicon glyphicon-remove"></span></span></li>
+    </ol>
   </div>
 
   <div class="pull-right dropdown">

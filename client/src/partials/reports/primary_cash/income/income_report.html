@@ -11,10 +11,10 @@
       <input class="form-bhima" type="date" ng-model="session.dateTo" rows="20" ng-change="fill()" >
     </div>
     <div class="col-xs-4 pull-right">
-      <select 
-        class="form-bhima" 
+      <select
+        class="form-bhima"
         ng-model="session.selectedCash"
-        ng-options="cash as cash.text + ' ' + cash.symbol for cash in session.model.cashes.data" 
+        ng-options="cash as cash.text + ' ' + cash.symbol for cash in session.model.cashes.data"
         ng-change="setSelectedCash(session.selectedCash)">
         <option value="" disabled="disabled"> -- {{ 'SELECT.PRIMARY_CASH' | translate }} --</option>
         <!--option ng-repeat="cash in session.model.cashes.data" value="{{cash}}">{{ cash.text}} {{ cash.symbol}}</option-->
@@ -30,12 +30,11 @@
       <table id="patientTable" class="reportTable">
         <thead>
           <tr>
-            <th>{{ "COLUMNS.TRANSACTION_NUMBER" | translate }}</th>           
+            <th>{{ "COLUMNS.TRANSACTION_NUMBER" | translate }}</th>
             <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
             <th>{{ "COLUMNS.AMOUNT" | translate }}</th>
             <th>{{ "COLUMNS.DATE" | translate }}</th>
-             <th>{{ "COLUMNS.SOURCE" | translate }}</th>
-            
+            <th>{{ "COLUMNS.SOURCE" | translate }}</th>
             <th>{{ "COLUMNS.BY" | translate }}</th>
           </tr>
         </thead>
@@ -60,7 +59,7 @@
   </div>
 </div>
 
-<section class="bar-bottom" style="background-color:#fff">
+<footer>
   <table style="width: 99%">
     <tbody>
       <td style="width:20%;">
@@ -80,7 +79,6 @@
           <select class="form-bhima" ng-model="session.currency" ng-options="currency.id as currency.symbol for currency in currencies.data" ng-change="convert()"></select>
         </div>
       </td>
-
     </tbody>
   </table>
-</section>
+</footer>

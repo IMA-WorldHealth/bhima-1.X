@@ -3,10 +3,27 @@
 
   var bhima = angular.module('bhima', ['bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate']);
 
+  // application events
+  // Contains constants for use in the application by
+  // event emitters throughout the app.
+  var events = {};
+  events.auth = {
+    loginSuccess     : 'auth.login.success',
+    loginFailure     : 'auth.login.failure',
+    logoutSuccess    : 'auth.logout.success',
+    sessionTimeout   : 'auth.session.timeout',
+    notAuthorizied   : 'auth.not.authorized',
+    notAuthenticated : 'auth.not.authenticated'
+  };
+
   function bhimaconfig($routeProvider) {
     //TODO: Dynamic routes loaded from unit database?
-    $routeProvider.
-    when('/budgeting/:accountID?', {
+    $routeProvider
+    .when('/login', {
+      controller : 'auth.login',
+      templateUrl : 'partials/auth/login.html'
+    })
+    .when('/budgeting/:accountID?', {
       controller: 'budget',
       templateUrl: 'partials/budget/budget.html'
     })
@@ -396,7 +413,7 @@
     .when('/snis/', {
       controller : 'snis',
       templateUrl : 'partials/snis/snis.html'
-    })	
+    })
     .when('/purchase_menu/', {
       controller : 'purchase.menu',
       templateUrl : 'partials/purchase/purchase_menu.html'
@@ -408,11 +425,15 @@
     .when('/reports/expense_report/', {
       controller : 'primary_cash.expenseReport',
       templateUrl : 'partials/reports/primary_cash/expense/expense_report.html'
+    }) 
+    .when('/reports/stock_report/', {
+      controller : 'stock_report',
+      templateUrl : 'partials/reports/stock/stock_report.html'
     })       
     .when('/grade_employers/', {
       controller : 'grade',
       templateUrl : 'partials/grade_employers/grade_employers.html'
-    }) 
+    })
     .when('/taxes_management/', {
       controller : 'taxes_management.menu',
       templateUrl : 'partials/taxe/taxe_management.html'
@@ -472,10 +493,10 @@
     .when('/reports/stock_status/', {
       controller : 'stock_status',
       templateUrl : 'partials/reports/stock_status/stock_status.html'
-    });          
-
+    })               
+    .otherwise('/');
   }
-  
+ 
   function translateConfig($translateProvider) {
     //TODO Review i18n and determine if this it the right solution/grade_employers/
     $translateProvider.useStaticFilesLoader({
@@ -487,6 +508,31 @@
     $translateProvider.preferredLanguage('fr');
   }
 
+  function authConfig($httpProvider) {
+    $httpProvider.interceptors.push([
+      '$injector',
+      function ($injector) {
+        return $injector.get('auth.injector');
+      }
+    ]);
+  }
+
+  function startupConfig($rootScope, EVENTS, appauth) {
+    $rootScope.$on('$routeChangeStart', function (event, next) {
+      if (!appauth.isAuthenticated()) {
+        $rootScope.$broadcast(EVENTS.auth.notAuthenticated);
+        event.preventDefault();
+      }
+    });
+  }
+
+  // Event constants
+  bhima.constant('EVENTS', events);
+  // configuration
   bhima.config(['$routeProvider', bhimaconfig]);
   bhima.config(['$translateProvider', translateConfig]);
+  bhima.config(['$httpProvider', authConfig]);
+  // run
+  bhima.run(['$rootScope', 'EVENTS', 'appauth', startupConfig]);
+
 })(angular);

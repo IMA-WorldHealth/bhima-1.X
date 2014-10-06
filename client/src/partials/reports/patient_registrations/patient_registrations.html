@@ -52,8 +52,8 @@
               <td> {{ patient.first_name + ' ' + patient.last_name }} </td>
               <td> {{ patient.dob | date }} </td>
               <td> {{ patient.sex }} </td>
-              <td ng-show="!patient.expand"><a href="" ng-click="patient.expand=!patient.expand">{{ "UTIL.SHOW" | translate }}</a></td>
-              <td ng-show="patient.expand"> <a href="" ng-click="patient.expand=!patient.expand">{{ patient.debitor_uuid }}</a></td>
+              <td ng-show="!patient.expand"><a ng-click="patient.expand=!patient.expand">{{ "UTIL.SHOW" | translate }}</a></td>
+              <td ng-show="patient.expand"> <a ng-click="patient.expand=!patient.expand">{{ patient.debitor_uuid }}</a></td>
               <td> {{ patient.registration_date | date }} </td>
               <td> {{ patient.date | date }} </td>
               <td> {{ patient.registrar }}</td>
@@ -64,7 +64,7 @@
   </div>
 </div>
 
-<section class="bar-bottom" style="background-color:#fff;">
+<footer style="background-color:#fff;">
   <span style="margin-right: 10px;">
   <span class="glyphicon glyphicon-user" style="color: #428bca"></span> <b>{{ patients.length }}</b>
     <span ng-if="session.searching">...</span>
@@ -72,4 +72,4 @@
 
   <span><b>{{ "SEX.M" | translate }}: {{ session.count.male }}</b></span>
   <span><b>{{ "SEX.F" | translate }}: {{ session.count.female }}</b></span>
-</section>
+</footer>
