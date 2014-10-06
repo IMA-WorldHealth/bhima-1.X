@@ -57,7 +57,6 @@ angular.module('bhima.controllers')
     };
 
     function init (model) {
-      console.log(model);
       $scope.model = model;
       configuration.cost_centers = model.cost_centers.data;
       configuration.profit_centers = model.profit_centers.data;
@@ -92,16 +91,14 @@ angular.module('bhima.controllers')
         .then(getProfit)
         .then(handleResultProfit);
       }else if (value === 'edit'){
-        console.log('voici le service', service);
         configuration.cost_centers = $scope.model.costs.data;
         configuration.profit_centers = $scope.model.profits.data;
-        console.log('voici le service', service);
       }
       $scope.action = value;
     }
 
     function getProfit() {
-      return connect.req('/profit/' + $scope.project.id + '/' + $scope.choosen.id);
+      return connect.req('/profit/' + $scope.project.id + '/' + $scope.choosen.profit_center_id);
     }
 
     function edit() {
@@ -125,7 +122,7 @@ angular.module('bhima.controllers')
           messenger.danger('Error:' + JSON.stringify(err));
         });
       }else{
-        alert("ko");
+        alert('centre de cout ou centre de profit deja utilise');
       }
 
     }
@@ -153,13 +150,14 @@ angular.module('bhima.controllers')
     }
 
 
-
     function handleResultCost(value) {
+      console.log("result cost ", value);
       $scope.choosen.charge = value.data.cost;
       return $q.when();
     }
 
     function handleResultProfit(value) {
+      console.log("result cost ", value);
       $scope.choosen.profit = value.data.profit;
       return $q.when();
     }

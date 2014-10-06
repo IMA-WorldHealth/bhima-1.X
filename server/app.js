@@ -520,9 +520,10 @@ app.get('/availableAccounts_profit/:id_enterprise/', function(req, res, next) {
 
 
 app.get('/cost/:id_project/:cc_id', function(req, res, next) {
+  console.log('voici le project :::', req.params.id_project);
   var sql =
     'SELECT `account`.`id`, `account`.`account_number`, `account`.`account_txt` FROM `account` '+
-    'WHERE `account`.`cc_id` = ' + sanitize.escape(req.params.cc_id) + 
+    'WHERE `account`.`cc_id`=' + sanitize.escape(req.params.cc_id) + 
     ' AND `account`.`account_type_id` <> 3';
 
   function process(accounts) {
@@ -541,6 +542,7 @@ app.get('/cost/:id_project/:cc_id', function(req, res, next) {
 
   db.exec(sql)
   .then(function (ans) {
+    console.log("on a ccc :::", ans);
     synthetic('ccc', req.params.id_project, {cc_id : req.params.cc_id, accounts : ans}, function (err, data) {
       if (err) { return next(err); }
       res.send(process(data));
@@ -551,20 +553,37 @@ app.get('/cost/:id_project/:cc_id', function(req, res, next) {
 });
 
 
-app.get('/profit/:id_project/:service_id', function(req, res, next) {
-  function process (values) {
-    if (values.length <= 0) { return {profit : 0}; }
-    var som = 0;
-    values.forEach(function (value) {
-      som+= value.credit;
+app.get('/profit/:id_project/:pc_id', function(req, res, next) {
+   console.log('voici le project :::', req.params.id_project);
+
+  var sql =
+    'SELECT `account`.`id`, `account`.`account_number`, `account`.`account_txt` FROM `account` '+
+    'WHERE `account`.`pc_id`=' + sanitize.escape(req.params.pc_id) + 
+    ' AND `account`.`account_type_id` <> 3';
+
+  function process(accounts) {
+    if(accounts.length === 0) {return {profit : 0};}
+    var availableprofitAccounts = accounts.filter(function(item) {
+      return item.account_number.toString().indexOf('7') === 0;
     });
-    return {profit:som};
+
+    var profit = availableprofitAccounts.reduce(function (x, y) {
+      return x + (y.credit - y.debit);
+
+    }, 0);
+
+    return {profit : profit};
   }
 
-  synthetic('sp', req.params.id_project, {service_id : req.params.service_id}, function (err, data) {
-    if (err) { return next(err); }
-    res.send(process(data));
-  });
+  db.exec(sql)
+  .then(function (ans) {
+    synthetic('pcv', req.params.id_project, {pc_id : req.params.pc_id, accounts : ans}, function (err, data) {
+      if (err) { return next(err); }
+      res.send(process(data));
+    });
+  })
+  .catch(next)
+  .done();
 });
 
 app.get('/costCenterAccount/:id_enterprise/:cost_center_id', function(req, res, next) {
