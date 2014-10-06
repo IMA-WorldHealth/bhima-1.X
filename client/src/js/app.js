@@ -425,10 +425,10 @@
       controller : 'taxes_management.ipr',
       templateUrl : 'partials/taxe/ipr/ipr.html'
     })
-    .when('/rubriques_payroll/', {
-      controller : 'rubriques_payroll',
-      templateUrl : 'partials/rubriques_payroll/rubriques_payroll.html'
-    })
+    .when('/taxes_management/config_tax/', {
+      controller : 'config_tax',
+      templateUrl : 'partials/taxe/config_tax/config_tax.html'
+    })    
     .when('/offday_management/', {
       controller : 'offdays',
       templateUrl : 'partials/offdays/offdays.html'
@@ -441,14 +441,18 @@
       controller : 'payment_period',
       templateUrl : 'partials/payment_period/payment_period.html'
     })
-    .when('/config_rubric/', {
+    .when('/rubric_management/', {
+      controller : 'rubric_management.menu',
+      templateUrl : 'partials/rubric/rubric_management.html'
+    })
+    .when('/rubric_management/config_rubric/', {
       controller : 'config_rubric',
-      templateUrl : 'partials/config_rubric/config_rubric.html'
-    })
-    .when('/config_tax/', {
-      controller : 'config_tax',
-      templateUrl : 'partials/config_tax/config_tax.html'
-    })
+      templateUrl : 'partials/rubric/config_rubric/config_rubric.html'
+    }) 
+    .when('/rubric_management/rubriques_payroll/', {
+      controller : 'rubriques_payroll',
+      templateUrl : 'partials/rubric/rubriques_payroll/rubriques_payroll.html'
+    })       
     .when('/reports/daily_consumption/', {
       controller : 'daily_consumption',
       templateUrl : 'partials/reports/daily_consumption/daily_consumption.html'
