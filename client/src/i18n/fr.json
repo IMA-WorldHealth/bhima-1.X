@@ -291,7 +291,8 @@
     "PERIOD_TAX_CONFIG"     : "Selectionner une configuration des taxes",
     "PERIOD_ACCOUNT_CONFIG" : "Selectionner une configuration des comptes",
     "DONOR"                 : "Selectionner un Donateur",
-    "PERIOD_PAYMENT"        : "Selectionner une periode de paiement"
+    "PERIOD_PAYMENT"        : "Selectionner une periode de paiement",
+    "PROFIT_CENTER"         : "Select a un centre de profits"
   },
 
   "RENEWAL"           : {
@@ -430,7 +431,7 @@
     "STOCK_DASHBOARD"           : "Tableau de bord du Stock",
     "DAILY_CONSUMPTION"         : "Consommation journaliere",    
     "CONFIG_ACCOUNTING"         : "Configuration des comptes",
-    "PAYROLL_REPORT"            : "Rapports de paiements",
+    "PAYROLL_REPORT"            : "Rapports du Payroll",
     "STOCK_STATUS"              : "Situation du stock"
 },
 
@@ -1797,7 +1798,9 @@
     "INFO"                     :  "Information sur le service",
     "INFO_DESCRIPTION"         :  "Ce module vous permet de gerer vos services (leur creation, modification et suppression ainsi que leur consultation)",
     "MODIFYING"                :  "Modification",
-    "OVERVIEW_SERVICE"         : "Resultat synthetique du service :"
+    "OVERVIEW_SERVICE"         : "Resultat synthetique du service :",
+    "PROJECT_SELECT"           : "Selectionner un projet",
+    "PROFIT_CENTER_SELECT"     : "Centre de profit"
   },
 
   "ASSIGNING" : {
@@ -2023,7 +2026,8 @@
     "PAYABLE"       : "Payable",
     "DELETE_SUCCESS" : "Suppression avec succès",
     "NO_CONFIG_RUBRIC" : "Aucune configuration de rubriques",
-    "ABBR"             : "Abr."
+    "ABBR"             : "Abr.",
+    "MESSAGE"          : "Veuillez cocher les différentes rubriques qui seront payable pour cette configuration"
   },
 
    "CONFIG_TAX"      : {
@@ -2040,7 +2044,8 @@
     "RUBRIC"         : "Taxes Payroll",
     "PAYABLE"        : "Payable",
     "DELETE_SUCCESS" : "Suppression avec succès",
-    "NO_CONFIG_TAX"  : "Aucune configuration de taxes"
+    "NO_CONFIG_TAX"  : "Aucune configuration de taxes",
+    "MESSAGE"        : "Veuillez cocher les différentes taxes qui seront payable pour cette configuration"
   },
 
   "DAILY_CONSUMPTION" : {
@@ -2145,7 +2150,7 @@
   },
 
   "PAYCHECK" : {
-    "TITLE"         : "Rapports de paiements",
+    "TITLE"         : "Rapports du Payroll",
     "PAYSLIP"       : "Feuille de paie",
     "VIEW"          : "Vue",
     "SELECT_PERIOD" : "Sélectionner une période de paiement",
@@ -2167,7 +2172,7 @@
 
   "STOCK_STATUS"     :{
     "TITLE"                 : "Situation de stock",
-    "NO_CONSUMPTION"        : "Stock is empty",    
+    "NO_CONSUMPTION"        : "Aucun produits en stock",    
     "CONSUMPTION_PER_MONTH" : "Consommation par mois", 
     "SAFETY_STOCK"          : "Stock de sécurité", 
     "MINIMUM_STOCK"         : "Stock Minimum", 
