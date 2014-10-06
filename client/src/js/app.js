@@ -3,10 +3,27 @@
 
   var bhima = angular.module('bhima', ['bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate']);
 
+  // application events
+  // Contains constants for use in the application by
+  // event emitters throughout the app.
+  var events = {};
+  events.auth = {
+    loginSuccess     : 'auth.login.success',
+    loginFailure     : 'auth.login.failure',
+    logoutSuccess    : 'auth.logout.success',
+    sessionTimeout   : 'auth.session.timeout',
+    notAuthorizied   : 'auth.not.authorized',
+    notAuthenticated : 'auth.not.authenticated'
+  };
+
   function bhimaconfig($routeProvider) {
     //TODO: Dynamic routes loaded from unit database?
-    $routeProvider.
-    when('/budgeting/:accountID?', {
+    $routeProvider
+    .when('/login', {
+      controller : 'auth.login',
+      templateUrl : 'partials/auth/login.html'
+    })
+    .when('/budgeting/:accountID?', {
       controller: 'budget',
       templateUrl: 'partials/budget/budget.html'
     })
@@ -321,6 +338,14 @@
       controller : 'multi_payroll',
       templateUrl : 'partials/primary_cash/expense/multi_payroll.html'
     })
+    .when('/primary_cash/expense/tax_payment/:cashbox', {
+      controller : 'primary_cash.tax_payment',
+      templateUrl : 'partials/primary_cash/expense/tax_payment.html'
+    })
+    .when('/primary_cash/expense/enterprise_tax_payment/:cashbox', {
+      controller : 'primary_cash.enterprise_tax_payment',
+      templateUrl : 'partials/primary_cash/expense/enterprise_tax_payment.html'
+    })
     .when('/inventory/depot', {
       controller : 'inventory.depot',
       templateUrl : 'partials/inventory/depot/depot.html'
@@ -392,7 +417,7 @@
     .when('/snis/', {
       controller : 'snis',
       templateUrl : 'partials/snis/snis.html'
-    })	
+    })
     .when('/purchase_menu/', {
       controller : 'purchase.menu',
       templateUrl : 'partials/purchase/purchase_menu.html'
@@ -404,11 +429,15 @@
     .when('/reports/expense_report/', {
       controller : 'primary_cash.expenseReport',
       templateUrl : 'partials/reports/primary_cash/expense/expense_report.html'
+    }) 
+    .when('/reports/stock_report/', {
+      controller : 'stock_report',
+      templateUrl : 'partials/reports/stock/stock_report.html'
     })       
     .when('/grade_employers/', {
       controller : 'grade',
       templateUrl : 'partials/grade_employers/grade_employers.html'
-    }) 
+    })
     .when('/taxes_management/', {
       controller : 'taxes_management.menu',
       templateUrl : 'partials/taxe/taxe_management.html'
@@ -421,10 +450,10 @@
       controller : 'taxes_management.ipr',
       templateUrl : 'partials/taxe/ipr/ipr.html'
     })
-    .when('/rubriques_payroll/', {
-      controller : 'rubriques_payroll',
-      templateUrl : 'partials/rubriques_payroll/rubriques_payroll.html'
-    })
+    .when('/taxes_management/config_tax/', {
+      controller : 'config_tax',
+      templateUrl : 'partials/taxe/config_tax/config_tax.html'
+    })    
     .when('/offday_management/', {
       controller : 'offdays',
       templateUrl : 'partials/offdays/offdays.html'
@@ -437,14 +466,18 @@
       controller : 'payment_period',
       templateUrl : 'partials/payment_period/payment_period.html'
     })
-    .when('/config_rubric/', {
+    .when('/rubric_management/', {
+      controller : 'rubric_management.menu',
+      templateUrl : 'partials/rubric/rubric_management.html'
+    })
+    .when('/rubric_management/config_rubric/', {
       controller : 'config_rubric',
-      templateUrl : 'partials/config_rubric/config_rubric.html'
-    })
-    .when('/config_tax/', {
-      controller : 'config_tax',
-      templateUrl : 'partials/config_tax/config_tax.html'
-    })
+      templateUrl : 'partials/rubric/config_rubric/config_rubric.html'
+    }) 
+    .when('/rubric_management/rubriques_payroll/', {
+      controller : 'rubriques_payroll',
+      templateUrl : 'partials/rubric/rubriques_payroll/rubriques_payroll.html'
+    })       
     .when('/reports/daily_consumption/', {
       controller : 'daily_consumption',
       templateUrl : 'partials/reports/daily_consumption/daily_consumption.html'
@@ -456,9 +489,18 @@
     .when('/config_accounting/', {
       controller: 'config_accounting',
       templateUrl: 'partials/config_accounting/config_accounting.html'
-    });               
+    })
+    .when('/reports/payroll_report/', {
+      controller : 'payroll_report',
+      templateUrl : 'partials/reports/payroll_report/payroll_report.html'
+    })
+    .when('/reports/stock_status/', {
+      controller : 'stock_status',
+      templateUrl : 'partials/reports/stock_status/stock_status.html'
+    })               
+    .otherwise('/');
   }
-  
+ 
   function translateConfig($translateProvider) {
     //TODO Review i18n and determine if this it the right solution/grade_employers/
     $translateProvider.useStaticFilesLoader({
@@ -470,6 +512,31 @@
     $translateProvider.preferredLanguage('fr');
   }
 
+  function authConfig($httpProvider) {
+    $httpProvider.interceptors.push([
+      '$injector',
+      function ($injector) {
+        return $injector.get('auth.injector');
+      }
+    ]);
+  }
+
+  function startupConfig($rootScope, EVENTS, appauth) {
+    $rootScope.$on('$routeChangeStart', function (event, next) {
+      if (!appauth.isAuthenticated()) {
+        $rootScope.$broadcast(EVENTS.auth.notAuthenticated);
+        event.preventDefault();
+      }
+    });
+  }
+
+  // Event constants
+  bhima.constant('EVENTS', events);
+  // configuration
   bhima.config(['$routeProvider', bhimaconfig]);
   bhima.config(['$translateProvider', translateConfig]);
+  bhima.config(['$httpProvider', authConfig]);
+  // run
+  bhima.run(['$rootScope', 'EVENTS', 'appauth', startupConfig]);
+
 })(angular);

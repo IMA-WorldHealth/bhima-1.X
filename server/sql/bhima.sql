@@ -9,6 +9,15 @@ grant all privileges on *.* to 'bhima'@'localhost' identified by 'HISCongo2013' 
 -- grant super on *.* to 'bhima'@'%';
 flush privileges;
 
+drop table if exists `language`;
+create table `language` (
+  `id`        tinyint unsigned not null,
+  `name`      text not null,
+  `key`       text not null,
+  primary key (`id`)
+);
+
+
 drop table if exists `currency`;
 create table `currency` (
   `id`                  tinyint unsigned not null auto_increment,
@@ -398,12 +407,12 @@ create table `inventory_group` (
   `sales_account`   mediumint unsigned not null,
   `cogs_account`    mediumint unsigned,
   `stock_account`   mediumint unsigned,
-  `tax_account`     mediumint unsigned,
+  `donation_account`     mediumint unsigned,
   primary key (`uuid`),
   key `sales_account` (`sales_account`),
   key `cogs_account` (`cogs_account`),
   key `stock_account` (`stock_account`),
-  key `tax_account` (`tax_account`)
+  key `donation_account` (`donation_account`)
   -- constraint foreign key (`sales_account`) references `account` (`account_number`),
   -- constraint foreign key (`cogs_account`) references `account` (`account_number`),
   -- constraint foreign key (`stock_account`) references `account` (`account_number`),
@@ -1444,6 +1453,7 @@ create table `taxe_ipr` (
   `impot_mensuel`           float,
   `cumul_annuel`            float,
   `cumul_mensuel`           float,
+  `currency_id`             int,
   primary key (`id`)
 ) engine=innodb;
 
@@ -1459,11 +1469,15 @@ create table `donations` (
   `uuid`                    char(36) not null,
   `donor_id`                int not null,
   `employee_id`             int not null,
-  `tracking_number`         char(36) not null,
   `date`                    date,
   primary key (`uuid`)
 ) engine=innodb;
 
 
-
-
+drop table if exists `donation_item`;
+create table `donation_item` (
+  `uuid`                    char(36) not null,
+  `donation_uuid`           char(36) not null,
+  `tracking_number`         char(36) not null,
+  primary key (`uuid`)
+) engine=innodb;

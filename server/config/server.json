@@ -80,13 +80,14 @@
       "/available_profit_center/",
       "/service_dist/",
       "/consumption_loss/",
-      "/getAccount6/",
+      "/getAccount6/",      
       "/employee_list/",
       "/period_paiement/",
       "/available_payment_period/",
       "/getCheckHollyday/",
       "/getCheckOffday/",
       "/journal_list/",
+      "/taxe_ipr_currency/",
       "/getConsuptionDrugs/",
       "/getItemInConsumption/",
       "/hollyday_list",
@@ -101,7 +102,19 @@
       "/getExpiredTimes/",
       "/getConsumptionTrackingNumber/",
       "/getStockEntry/",
-      "/getStockConsumption/"
+      "/getStockConsumption/",
+      "/getReportPayroll/",
+      "/getDataPaiement/",
+      "/getDataRubrics/",
+      "/getDataTaxes/",
+      "/getAccount7/",
+      "/posting_donation/",
+      "/getEmployeePayment/",
+      "/setTaxPayment/",
+      "/payTax/",
+      "/getDistinctInventories/",
+      "/partials/",
+      "/getEnterprisePayment/"
     ]
   }
 }

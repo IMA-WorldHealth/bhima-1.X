@@ -64,7 +64,8 @@ angular.module('bhima.controllers')
         delete record.reference;
 
       $http.get('/getCheckOffday/',{params : {
-            'date' : record.date
+            'date' : record.date,
+            'id'   : record.id
           }
         }).
       success(function(data) {
@@ -88,7 +89,8 @@ angular.module('bhima.controllers')
       console.log($scope.offdays.data);
       
       $http.get('/getCheckOffday/',{params : {
-            'date' : record.date
+            'date' : record.date,
+            'id'   : ''
           }
         }).
       success(function(data) {

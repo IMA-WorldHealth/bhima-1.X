@@ -16,24 +16,37 @@ angular.module('bhima.controllers')
 
   	var dependencies = {};
 	dependencies.taxe_ipr = {
-		query : {
-			tables : {
-				'taxe_ipr' : { columns : ['id','taux','tranche_annuelle_debut','tranche_annuelle_fin','tranche_mensuelle_debut','tranche_mensuelle_fin','ecart_annuel','ecart_mensuel','impot_annuel','impot_mensuel','cumul_annuel','cumul_mensuel']}
-			}
-		}
+		query : '/taxe_ipr_currency/'
 	};
 
-	function startup (models) {
-      angular.extend($scope, models);
-      loadIprData(models.taxe_ipr.data);
+  dependencies.currency = {
+    query : {
+      tables : {
+        'currency' : { columns : ['id','symbol']}
+      }
     }
+  };
 
-    function loadIprData(data){
-    	ipr.calculate()
-	    .then(function(data){
-	    	session.table_ipr = data;
-	    });
+	function startup (models) {
+    angular.extend($scope, models);
+
+    var taxe_ipr_data = models.taxe_ipr.data;
+    loadIprData(taxe_ipr_data);
+    checkFirstCurrency(taxe_ipr_data);
+  }
+
+  function loadIprData(data){
+  	ipr.calculate()
+    .then(function(data){
+    	session.table_ipr = data;
+    });
+  }
+
+  function checkFirstCurrency (taxe_ipr_data) {
+    if(taxe_ipr_data.length > 0){
+      session.currency_id = taxe_ipr_data[0].currency_id;
     }
+  }
 
 	appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
@@ -44,10 +57,11 @@ angular.module('bhima.controllers')
     $scope.delete = function (taxe_ipr) {
       var result = confirm($translate.instant('TAXES.CONFIRM'));
       if (result) {  
-        connect.basicDelete('taxe_ipr', taxe_ipr.id, 'id')
+        connect.delete('taxe_ipr', 'id', taxe_ipr.id)
         .then(function () {
           $scope.taxe_ipr.remove(taxe_ipr.id);
           messenger.info($translate.instant('TAXES.DELETE_SUCCESS'));
+          session.action = '';
           session.edit = {};
           session.new = {};
         });
@@ -63,6 +77,9 @@ angular.module('bhima.controllers')
       session.action = 'new';
       session.new = {};
       session.show = 'crud';
+      if(session.currency_id){
+        session.new.currency_id = session.currency_id;
+      }
     };
 
     $scope.save = {};
@@ -73,7 +90,8 @@ angular.module('bhima.controllers')
 
       var record = connect.clean(session.edit);
       delete record.reference;
-      connect.basicPost('taxe_ipr', [record], ['id'])
+      delete record.symbol;
+      connect.put('taxe_ipr', [record], ['id'])
       .then(function () {
         messenger.success($translate.instant('TAXES.UPDATE_SUCCES')); 
         $scope.taxe_ipr.put(record);
@@ -91,7 +109,7 @@ angular.module('bhima.controllers')
       session.new.tranche_mensuelle_fin = session.new.tranche_annuelle_fin / 12;
 
       var record = connect.clean(session.new);
-      connect.basicPut('taxe_ipr', [record])
+      connect.post('taxe_ipr', [record])
       .then(function () {
         messenger.success($translate.instant('TAXES.SAVE_SUCCES'));
         record.reference = generateReference();

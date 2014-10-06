@@ -3,17 +3,20 @@ angular.module('bhima.controllers')
   '$scope',
   '$translate',
   '$http',
+  '$q',
   'validate',
   'messenger',
   'connect',
   'appstate',
-  function ($scope, $translate, $http, validate, messenger, connect, appstate) {
+  'stockControler',
+  function ($scope, $translate, $http, $q, validate, messenger, connect, appstate, stockControler) {
     var dependencies = {},
         session = $scope.session = {},
         expiredTotal = $scope.expiredTotal = {};
 
     function startup (models) {
       angular.extend($scope, models);
+      stockParProduit();
     }
 
     appstate.register('enterprise', function (enterprise) {
@@ -36,8 +39,7 @@ angular.module('bhima.controllers')
           'request' : 'OrdersPayed'
         }  
     }).
-    success(function(data) {
-	    //console.log(data);      
+    success(function(data) {   
       $scope.orderpayed = data;
     });
 
@@ -46,8 +48,7 @@ angular.module('bhima.controllers')
           'request' : 'OrdersWatingPayment'
         }  
     }).
-    success(function(data) {
-	    //console.log(data);      
+    success(function(data) {    
       $scope.OrdersWatingPayment = data;
     });
 
@@ -56,7 +57,6 @@ angular.module('bhima.controllers')
         }  
     }).
     success(function(data) {
-	    //console.log(data);      
       $scope.OrdersReceived = data;
     });
 
@@ -65,15 +65,13 @@ angular.module('bhima.controllers')
           'request' : 'InWatingReception'
         }  
     }).
-    success(function(data) {
-	    //console.log(data);      
+    success(function(data) {  
       $scope.InWatingReception = data;
     });
 
     /* Consumption By tracking_number */
     $http.get('/getConsumptionTrackingNumber/').
-    success(function(data) {
-      //console.log(data);      
+    success(function(data) {  
       $scope.TrackingNumbers = data;
     });
 
@@ -82,13 +80,12 @@ angular.module('bhima.controllers')
           'request' : 'expired'
         }  
     }).
-    success(function(data) {
-      //console.log(data);      
+    success(function(data) {     
       $scope.expired = data;
       $scope.nbExpired = data.length;
-      for (item in $scope.TrackingNumbers){
+      for (var item in $scope.TrackingNumbers){
         var TrackingNumber = $scope.TrackingNumbers[item];
-        for(item2 in data){
+        for(var item2 in data){
           var data2 = data[item2];
           if(data2.tracking_number === TrackingNumber.tracking_number){
             var diffQuantity = data2.quantity - TrackingNumber.quantity;
@@ -110,9 +107,9 @@ angular.module('bhima.controllers')
     success(function(data) {      
       $scope.expired30 = data;
       $scope.nbExpired30 = data.length;
-      for (item in $scope.TrackingNumbers){
+      for (var item in $scope.TrackingNumbers){
         var TrackingNumber = $scope.TrackingNumbers[item];
-        for(item2 in data){
+        for(var item2 in data){
           var data2 = data[item2];
           if(data2.tracking_number === TrackingNumber.tracking_number){
             var diffQuantity = data2.quantity - TrackingNumber.quantity;
@@ -134,9 +131,9 @@ angular.module('bhima.controllers')
     success(function(data) {      
       $scope.expired3090 = data;
       $scope.nbExpired3090 = data.length;
-      for (item in $scope.TrackingNumbers){
+      for (var item in $scope.TrackingNumbers){
         var TrackingNumber = $scope.TrackingNumbers[item];
-        for(item2 in data){
+        for(var item2 in data){
           var data2 = data[item2];
           if(data2.tracking_number === TrackingNumber.tracking_number){
             var diffQuantity = data2.quantity - TrackingNumber.quantity;
@@ -158,9 +155,10 @@ angular.module('bhima.controllers')
     success(function(data) {      
       $scope.expired180 = data;
       $scope.nbExpired180 = data.length;
-      for (item in $scope.TrackingNumbers){
+      for (var item in $scope.TrackingNumbers){
+
         var TrackingNumber = $scope.TrackingNumbers[item];
-        for(item2 in data){
+        for(var item2 in data){
           var data2 = data[item2];
           if(data2.tracking_number === TrackingNumber.tracking_number){
             var diffQuantity = data2.quantity - TrackingNumber.quantity;
@@ -182,9 +180,10 @@ angular.module('bhima.controllers')
     success(function(data) {      
       $scope.expired365 = data;
       $scope.nbExpired365 = data.length;
-      for (item in $scope.TrackingNumbers){
+      for (var item in $scope.TrackingNumbers){
+
         var TrackingNumber = $scope.TrackingNumbers[item];
-        for(item2 in data){
+        for(var item2 in data){
           var data2 = data[item2];
           if(data2.tracking_number === TrackingNumber.tracking_number){
             var diffQuantity = data2.quantity - TrackingNumber.quantity;
@@ -204,9 +203,9 @@ angular.module('bhima.controllers')
     success(function(data) {      
       $scope.expired1 = data;
       $scope.nbExpired1 = data.length;
-      for (item in $scope.TrackingNumbers){
+      for (var item in $scope.TrackingNumbers){
         var TrackingNumber = $scope.TrackingNumbers[item];
-        for(item2 in data){
+        for(var item2 in data){
           var data2 = data[item2];
           if(data2.tracking_number === TrackingNumber.tracking_number){
             var diffQuantity = data2.quantity - TrackingNumber.quantity;
@@ -226,23 +225,20 @@ angular.module('bhima.controllers')
     $http.get('/getStockConsumption/').
     success(function(data) {
       var stocksOut = 0,
-        stocksIn = 0;
+          stocksIn = 0;
 
-      for (item in $scope.enterStocks){
+
+      for (var item in $scope.enterStocks){
         var stock = $scope.enterStocks[item];
-        for(item2 in data){
+        for(var item2 in data){
           var data2 = data[item2],
               diff;
           if(data2.inventory_uuid === stock.inventory_uuid){
-            //console.log(data2.text+" inventory- "+stock.text);
-            //console.log(stock.quantity+" - "+data2.quantity);
             diff = stock.quantity - data2.quantity;
             if(diff === 0){
               stocksOut++;
-              console.log("Finis " + stocksOut);
             } else if (diff > 0){
               stocksIn++;
-              console.log("En stock " + stocksIn);
             }
           }
         }
@@ -252,7 +248,56 @@ angular.module('bhima.controllers')
       $scope.OutStocks = data;
     });
 
-    
+    function stockParProduit () {
+      // Calcul l'etat du stock par rapport a tous les produits dans le stock
+      var def = $q.defer(),
+          stock_inventory = [];
 
+      // A FIXE : $http.get instead connect because cannot get distinct data with connect
+      $http.get('/getDistinctInventories/')
+      .success(function (inventories) {
+        inventories.forEach(function (item) {
+          var inventory = {};
+
+          stockControler.getStock(item.inventory_uuid)
+          .then(function (data) { inventory.stock = data;})
+          .then(stockControler.getStockMin(item.inventory_uuid)
+                .then(function (data) { inventory.stock_min = data; })
+                .then(stockControler.getStockSecurity(item.inventory_uuid)
+                      .then(function (data) { inventory.stock_security = data;})
+                      .then(stockControler.getStockMax(item.inventory_uuid)
+                            .then(function (data) { 
+                              inventory.stock_max = data; 
+                              inventory.uuid = item.inventory_uuid;
+                              stock_inventory.push(inventory);
+                              // A FIXE : contrainte execution asynchrone, trop d'imbrication
+                              // Process
+                                var count_stock = 0;
+                                var count_stock_min = 0;
+                                var count_stock_max = 0;
+                                var count_stock_ok = 0;
+
+                                for(var i in stock_inventory){
+                                  if(stock_inventory[i].stock === 0 || stock_inventory[i].stock <= 0){ count_stock++; }
+                                  if(stock_inventory[i].stock_min >= stock_inventory[i].stock){ count_stock_min++; }
+                                  if(stock_inventory[i].stock_max <= stock_inventory[i].stock){ count_stock_max++; }
+                                  if(stock_inventory[i].stock < stock_inventory[i].stock_max && stock_inventory[i].stock > stock_inventory[i].stock_min){ count_stock_ok++; }
+                                }
+                                $scope.count_stock = count_stock;
+                                $scope.count_stock_min = count_stock_min;
+                                $scope.count_stock_max = count_stock_max;
+                                $scope.count_stock_ok = count_stock_ok;
+
+                                console.log(stock_inventory);
+                              // End process
+                            })
+                          )
+                      )
+                );
+
+        });
+
+      });
+    }
   }
 ]);
