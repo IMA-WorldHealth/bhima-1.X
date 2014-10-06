@@ -29,35 +29,6 @@ angular.module('bhima.controllers')
       }
     };
   
-    /*
-    dependencies.village = {
-      query : {
-        identifier : 'uuid',
-        tables : { 'village' : { 'columns' : ['uuid', 'name', 'sector_uuid'] }}
-      }
-    };
-
-    dependencies.sector = {
-      query : {
-        identifier : 'uuid',
-        tables : { 'sector' : { 'columns' : ['uuid', 'name', 'province_uuid'] }}
-      }
-    };
-
-    dependencies.province = {
-      query : {
-        identifier : 'uuid',
-        tables : { 'province' : { 'columns' : ['uuid', 'name', 'country_uuid'] }}
-      }
-    };
-
-    dependencies.country = {
-      query : {
-        identifier : 'uuid',
-        tables : { 'country' : { 'columns' : ['uuid', 'country_en', 'country_fr'] }}
-      }
-    };*/
-
     route = $scope.route = {
       create : {
         header : 'SUPPLIER.CREATE',
@@ -90,18 +61,7 @@ angular.module('bhima.controllers')
 
     function settupForm(model) {
       angular.extend($scope, model);
-      //setDefaultLocation(session.enterprise.location_id);
     }
-
-    /*
-    function setDefaultLocation(location_id) {
-      if (location_id) { 
-        session.location.village = $scope.village.get(location_id);
-        session.location.sector = $scope.sector.get(session.location.village.sector_uuid);
-        session.location.province = $scope.province.get(session.location.sector.province_uuid);
-        session.location.country = $scope.country.get(session.location.province.country_uuid);
-      }
-    }*/
 
     function createSupplier() {
       session.supplier = {};
@@ -128,7 +88,6 @@ angular.module('bhima.controllers')
     function assignSupplier(supplier) {
       session.supplier = supplier;
       session.creditor = { group_uuid : supplier.group_uuid };
-      //setDefaultLocation(supplier.location_id);
       
       $scope.defaultVillage = supplier.location_id;
     }
