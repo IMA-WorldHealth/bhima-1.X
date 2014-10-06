@@ -1,3 +1,4 @@
+
 use `bhima`;
 
 delete from `posting_journal`;
@@ -45,6 +46,7 @@ delete from `config_tax_item`;
 delete from `paiement_period`;
 delete from `offday`;
 delete from `config_paiement_period`;
+delete from `language`;	
 
 -- registered units
 INSERT INTO `unit` VALUES
@@ -107,17 +109,15 @@ INSERT INTO `unit` VALUES
 (60,'Rapports SNIS', 'Rapports SNIS', '', 59, 0, 'partials/snis/index.html', '/snis/'),
 (61,'Grade Employers','TREE.GRADE_EMPLOYERS','',1,0,'/partials/grade_employers/','/grade_employers/'),
 (62,'Gestions des taxes','TREE.TAXE_MANAGEMENT','',1,0,'/partials/taxe/','/taxes_management/'),
-(63,'Rubriques Payroll','TREE.RUBRIC_PAYROLL','',1,0,'/partials/rubriques_payroll/','/rubriques_payroll/'),
+(63,'Rubriques Management','TREE.RUBRIC_MANAGEMENT','',1,0,'/partials/rubric/','/rubric_management/'),
 (64,'Gestions des jours ferries','TREE.OFFDAY_MANAGEMENT','',1,0,'/partials/offdays/','/offday_management/'),
 (65,'Gestion des vacances','TREE.HOLLYDAY_MANAGEMENT','',1,0,'/partials/hollydays/','/hollyday_management/'),
 (66,'Gestion des periodes','TREE.PAYMENT_PERIOD','',1,0,'/partials/payment_period/','/payment_period/'),
-(67,'Configuration des rubriques','TREE.CONFIG_RUBRIC','',1,0,'/partials/config_rubric/','/config_rubric/'),
-(68,'Configuration des taxes','TREE.CONFIG_TAX','',1,0,'/partials/config_tax/','/config_tax/'),
-(69,'Stock Dashboard','TREE.STOCK_DASHBOARD','',11,0,'/partials/stock/stock_dashboard/','/stock_dashboard/'),
-(70,'Daily consumption', 'TREE.DAILY_CONSUMPTION', '', 10, 0, '/partials/reports/daily_consumption', '/reports/daily_consumption/'),
-(71,'Configuration des comptes','TREE.CONFIG_ACCOUNTING','',1,0,'/partials/config_accounting/','/config_accounting/'),
-(72,'Paycheck', 'TREE.PAYROLL_REPORT', '', 10, 0, '/partials/reports/payroll_report', '/reports/payroll_report/');
-
+(67,'Stock Dashboard','TREE.STOCK_DASHBOARD','',11,0,'/partials/stock/stock_dashboard/','/stock_dashboard/'),
+(68,'Daily consumption', 'TREE.DAILY_CONSUMPTION', '', 10, 0, '/partials/reports/daily_consumption', '/reports/daily_consumption/'),
+(69,'Configuration des comptes','TREE.CONFIG_ACCOUNTING','',1,0,'/partials/config_accounting/','/config_accounting/'),
+(70,'Paycheck', 'TREE.PAYROLL_REPORT', '', 10, 0, '/partials/reports/payroll_report', '/reports/payroll_report/'),
+(71,'Stock Status', 'TREE.STOCK_STATUS', '', 10, 0, '/partials/reports/stock_status', '/reports/stock_status/');
 -- references language .json files
 INSERT INTO `language` (id, name, `key`) VALUES
   (1, 'Francais', 'fr'),
@@ -1888,3 +1888,4 @@ INSERT INTO `donor` VALUES
 (1, 'IMA World Health'),
 (2, 'WHO / OMS'),
 (3, 'UNICEF');
+

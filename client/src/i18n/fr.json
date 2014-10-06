@@ -357,7 +357,7 @@
     "POSTING_JOURNAL"           : "Journal de Saisie",
     "REPORTS"                   : "Rapports",
     "INVENTORY"                 : "Stock",
-    "HOSPITAL"                  : "hôpital",
+    "HOSPITAL"                  : "Hôpital",
     "SWAP_DEBITOR"              : "Changer Groupe Debiteur",
     "FISCAL_YEAR"               : "Année Fiscale",
     "PATIENT_REG"               : "Enregistrement Patients",
@@ -420,7 +420,7 @@
     "GRADE_EMPLOYERS"           : "Gestion des Grades",
     "TAXES"                     : "Taxes",
     "TAXE_MANAGEMENT"           : "Gestion des taxes",
-    "RUBRIC_PAYROLL"            : "Gestion des rubriques",
+    "RUBRIC_MANAGEMENT"         : "Gestion des rubriques",
     "OFFDAY_MANAGEMENT"         : "Gestion des jours fériés",
     "HOLLYDAY_MANAGEMENT"       : "Gestion des vacances",
     "PAYMENT_PERIOD"            : "Gestion des Périodes",
@@ -430,8 +430,10 @@
     "STOCK_DASHBOARD"           : "Tableau de bord du Stock",
     "DAILY_CONSUMPTION"         : "Consommation journaliere",    
     "CONFIG_ACCOUNTING"         : "Configuration des comptes",
-    "PAYROLL_REPORT"            : "Rapports de paiements"
-  },
+    "PAYROLL_REPORT"            : "Rapports de paiements",
+    "STOCK_STATUS"              : "Situation du stock"
+},
+
 
   "RUBRIC_PAYROLL"       : {
     "TITLE"              : "Rubriques Payroll",
@@ -821,6 +823,13 @@
     "TIMES"              : "Temps",
     "AMOUNT_PAYABLE"     : "Montant à payer",
     "NET_CASH"           : "Net à payer",
+    "WORKING_DAY"        : "Jours prestés",
+    "CONSUMPTION_PER_MONTH" : "Consommation par mois", 
+    "SAFETY_STOCK"          : "Stock de sécurité", 
+    "MINIMUM_STOCK"         : "Stock Minimum", 
+    "MAXIMUM_STOCK"         : "Stock Maximum", 
+    "MONTH_OF_STOCK"        : "Mois de stock",
+    "QUANTITY_ORDER"        : "Quantité à commander",          
     "WORKING_DAY"        : "Jours prestés"    ,
     "STOCK_QTE"          : "Quantité en Stock",
     "STOCK_QTE_MIN"      : "Quantité Minimum", 
@@ -1993,23 +2002,26 @@
     "MONTH_IMPOT"         : "Impot Mensuel",
     "ANNUAL_CUMUL"        : "Cumul Annuel",
     "MONTH_CUMUL"         : "Cumul Mensuel",
-    "CURRENCY"            : "Monnaie"
+    "NOT_EMPTY"           : "ABR. ne peut être vide",
+    "NOT_SUP4"            : "Ne peut avoir plus de 4 caractères",
+    "CURRENCY"            : "Monnaie"   
   },
 
-   "CONFIG_RUBRIC"     : {
-    "TITLE"            : "Configuration des rubriques",
-    "NEW_CONFIG"       : "Nouvelle configuration",
-    "SAVE_SUCCES"      : "Enregistrement avec succès",
-    "UPDATE_SUCCES"    : "Mis à jour avec succès",
-    "CONFIRM"          : "Etes vous sure de vouloir supprimer cette configuration",
-    "UPDATE"           : "Mettre à jour une configuration",
-    "ADD"              : "Créer une nouvelle configuration",
-    "REGISTERED"       : "Configuration des rubriques enregistrées",
-    "ALERT"            : "Le module configuration des rubriques, permet le paramétrage des différentes types rubriques qui sont prises pendant une période de paie",
-    "CONFIG"           : "Configuration",
-    "RUBRIC"           : "Rubriques Payroll",
-    "PAYABLE"          : "Payable",
-    "DELETE_SUCCESS"   : "Suppression avec succès",
+   "CONFIG_RUBRIC" : {
+    "TITLE"         : "Configuration des rubriques",
+    "NEW_CONFIG"    : "Nouvelle configuration",
+    "SAVE_SUCCES"  : "Enregistrement avec succès",    
+    "UPDATE_SUCCES" : "Mis à jour avec succès",
+    "CONFIRM"       : "Etes vous sure de vouloir supprimer cette configuration",      
+    "UPDATE"        : "Mettre à jour une configuration",    
+    "ADD"           : "Créer une nouvelle configuration",
+    "REGISTERED"    : "Configuration des rubriques enregistrées",
+    "ALERT"         : "Le module configuration des rubriques, permet le paramétrage des différentes types rubriques qui sont prises pendant une période de paie",
+    "CONFIG"                : "Configuration",
+    "RUBRIC_MANAGEMENT"     : "Gestion des rubriques",
+    "RUBRIC"        : "Rubriques Payroll",
+    "PAYABLE"       : "Payable",
+    "DELETE_SUCCESS" : "Suppression avec succès",
     "NO_CONFIG_RUBRIC" : "Aucune configuration de rubriques",
     "ABBR"             : "Abr."
   },
@@ -2110,8 +2122,8 @@
         },
     "REPORTS"           : {
             "TITLE"             : "Rapports",
-            "SITUATION_STOCK"   : "Situation Stock",
-            "EXPIRING_STOCK"    : "Expiring Stock"
+            "SITUATION_STOCK"   : "Situation du stock",
+            "EXPIRING_STOCK"    : "Expiration du Stock"
         }
   },
 
@@ -2152,6 +2164,17 @@
     "CONFIRM_SUBMIT"   : "Confirmez-vous le paiement de la taxe ?",
     "NONE_PERIOD"      : "Aucune periode de paiement séléctionnée"
   },
+
+  "STOCK_STATUS"     :{
+    "TITLE"                 : "Situation de stock",
+    "NO_CONSUMPTION"        : "Stock is empty",    
+    "CONSUMPTION_PER_MONTH" : "Consommation par mois", 
+    "SAFETY_STOCK"          : "Stock de sécurité", 
+    "MINIMUM_STOCK"         : "Stock Minimum", 
+    "MAXIMUM_STOCK"         : "Stock Maximum", 
+    "MONTH_OF_STOCK"        : "Mois de stock",
+    "QUANTITY_ORDER"        : "Quantité à commander"
+  },  
 
   "AUTH"             : {
     "LOGIN"          : "Bhima Login",
