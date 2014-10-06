@@ -60,43 +60,46 @@
     "NAVIGATION"  : "Navigation",
     "CONFIGURE"   : "Configure Cash Box",
     "EXPENSE"     : {
-      "PAYROLL"               : "Payroll",
-      "MULTI_PAYROLL"         : "Multiple Payroll",
-      "PAYABLE_EMPLOYEE"      : "Payable employee list",
-      "GENERIC_TITLE"         : "Generic Expense",
-      "GENERIC_RECEIPT"       : "Generic Receipt",
-      "REFERENCE_DOCUMENT_ID" : "Reference Document ID",
-      "PURCHASE"              : "Pay Purchase Order",
-      "EXPENSE_DATE"          : "Expense Date",
-      "RECIPIENT"             : "Recipient",
-      "AMOUNT"                : "Amount Dispensed",
-      "SUMMARY"               : "Summary",
-      "INFO_GLOBAL"           : "Informations globales",
-      "WORKING_DAY"           : "Working days",
-      "HOLLY_DAY"             : "Hollyday",
-      "OFF_DAY"               : "Offday",
-      "HOUSING"               : "Housing",
-      "FAM_ALLOW"             : "Fam. Allow. ",
-      "TRANSPORT"             : "Transport",
-      "SENIORITY"             : "SENIORITY",
-      "ADVANTAGES"            : "Advantages",
-      "SALARY"                : "Net Salary", 
-      "TAXES_OTHERS"          : "Taxes employee and Others deductions",
-      "SALARY_AV"             : "Payday advance",
-      "INSS"                  : "INSS",
-      "IPR"                   : "IPR",
-      "OTHER_DEDUCT" : "Autres deductions",
-      "PURPOSE"               : "Purpose of Expense",
-      "SELECT_PERIOD"         : "Select a payment period",
-      "DAYS"                  : "Days",
-      "RUBRICS"               : "Rubrics",
-      "ONEM"     : "ONEM",
-      "IERE" : "IERE",
-      "INPP" : "INPP",
-      "TAXES_OTHERS_ENTERPRISE" : "Taxes entreprise and Others deductions",      
-      "TAX_PAYMENT"           : "Taxes Payment",
-      "SELECT_ACCOUNT"        : "Select an account",
-      "ACCOUNT"               : "Account"
+      "PAYROLL"                 : "Payroll",
+      "MULTI_PAYROLL"           : "Multiple Payroll",
+      "PAYABLE_EMPLOYEE"        : "Payable employee list",
+      "GENERIC_TITLE"           : "Generic Expense",
+      "GENERIC_RECEIPT"         : "Generic Receipt",
+      "REFERENCE_DOCUMENT_ID"   : "Reference Document ID",
+      "PURCHASE"                : "Pay Purchase Order",
+      "EXPENSE_DATE"            : "Expense Date",
+      "RECIPIENT"               : "Recipient",
+      "AMOUNT"                  : "Amount Dispensed",
+      "PURPOSE"                 : "Purpose of Expense",
+      "DAYS"                    : "Days",
+      "CREDITOR"                : "Creditor",
+      "SUMMARY"                 : "Summary",
+      "INFO_GLOBAL"             : "Global informations",
+      "WORKING_DAY"             : "Working days",
+      "HOLLY_DAY"               : "Holly day",
+      "OFF_DAY"                 : "Off day",
+      "HOUSING"                 : "Housing",
+      "FAM_ALLOW"               : "Fam. Alloc.",
+      "TRANSPORT"               : "Transport",
+      "SENIORITY"               : "Seniority",
+      "ADVANTAGES"              : "Advantages",
+      "SALARY"                  : "Net salary",
+      "TAXES_OTHERS"            : "Employee Taxes and others deductions",
+      "SALARY_AV"               : "Salary Advance",
+      "INSS"                    : "Cot. INSS",
+      "IPR"                     : "IPR",
+      "OTHER_DEDUCT"            : "Others deductions" ,
+      "SELECT_PERIOD"           : "Select a payment period",
+      "ONEM"                    : "ONEM",
+      "IERE"                    : "IERE",
+      "INPP"                    : "INPP",
+      "TAXES_OTHERS_ENTERPRISE" : "Enterprise Taxes et others deductions",
+      "RUBRICS"                 : "Rubrics",
+      "TAX_PAYMENT"             : "Taxes Payment",
+      "SELECT_ACCOUNT"          : "Select an account",
+      "ACCOUNT"                 : "Account",
+      "ENTERPRISE_TAX_PAYMENT"  : "Entreprise Taxes Payment",
+      "NO_DATA"                 : "No data available"
     },
     "INCOME" : {
       "TRANSFER"              : "Transfert",
@@ -402,7 +405,8 @@
     "EMPLOYEE_GRADE"      : "Select a grade",
     "PERIOD_ACCOUNT_CONFIG" : "Select an accounting config",
     "DONOR"               : "Select a donor",
-    "PERIOD_PAYMENT"      : "Select a payment period"
+    "PERIOD_PAYMENT"      : "Select a payment period",
+    "PROFIT_CENTER"       : "Select a Profit Center"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -1548,7 +1552,9 @@
     "INFO"                     :  "Service informations",
     "INFO_DESCRIPTION"         :  "This feature will help you to manage your services (creating, editing and suppressing as well as consulting)",
     "MODIFYING"                :  "Editing",
-    "OVERVIEW_SERVICE"         : "Systhetic result of service"
+    "OVERVIEW_SERVICE"         : "Systhetic result of service",
+    "PROJECT_SELECT"           : "Selectionner a Project",
+    "PROFIT_CENTER_SELECT"     : "Profit Center"
   },
 
   "COST_CENTER" : {
@@ -1991,7 +1997,8 @@
     "PAYABLE"       : "Payable",
     "DELETE_SUCCESS" : "Deleted successfully",
     "NO_CONFIG_RUBRIC" : "No Configuration Rubrics",
-    "ABBR"          : "Abbr."
+    "ABBR"          : "Abbr.",
+    "MESSAGE"       : "Please check the different rubrics that will be payable for this configuration"
   },
   
   "CONFIG_TAX" : {
@@ -2008,7 +2015,8 @@
     "RUBRIC"        : "Taxes Payroll",
     "PAYABLE"       : "Payable",
     "DELETE_SUCCESS" : "Deleted successfully",
-    "NO_CONFIG_TAX" : "No Configuration Taxes"
+    "NO_CONFIG_TAX" : "No Configuration Taxes",
+    "MESSAGE"       : "Please check the different taxes that will be payable for this configuration"
   },
 
   "DAILY_CONSUMPTION" : {

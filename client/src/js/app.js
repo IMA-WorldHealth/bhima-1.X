@@ -342,6 +342,10 @@
       controller : 'primary_cash.tax_payment',
       templateUrl : 'partials/primary_cash/expense/tax_payment.html'
     })
+    .when('/primary_cash/expense/enterprise_tax_payment/:cashbox', {
+      controller : 'primary_cash.enterprise_tax_payment',
+      templateUrl : 'partials/primary_cash/expense/enterprise_tax_payment.html'
+    })
     .when('/inventory/depot', {
       controller : 'inventory.depot',
       templateUrl : 'partials/inventory/depot/depot.html'

@@ -291,7 +291,8 @@
     "PERIOD_TAX_CONFIG"     : "Selectionner une configuration des taxes",
     "PERIOD_ACCOUNT_CONFIG" : "Selectionner une configuration des comptes",
     "DONOR"                 : "Selectionner un Donateur",
-    "PERIOD_PAYMENT"        : "Selectionner une periode de paiement"
+    "PERIOD_PAYMENT"        : "Selectionner une periode de paiement",
+    "PROFIT_CENTER"         : "Select a un centre de profits"
   },
 
   "RENEWAL"           : {
@@ -430,7 +431,7 @@
     "STOCK_DASHBOARD"           : "Tableau de bord du Stock",
     "DAILY_CONSUMPTION"         : "Consommation journaliere",    
     "CONFIG_ACCOUNTING"         : "Configuration des comptes",
-    "PAYROLL_REPORT"            : "Rapports de paiements",
+    "PAYROLL_REPORT"            : "Rapports du Payroll",
     "STOCK_STATUS"              : "Situation du stock"
 },
 
@@ -1504,44 +1505,46 @@
     "HOME"         : "caisse principale",
     "LOADING_ERROR" : "Erreur lors du chargement des dependances",
     "EXPENSE" : {
-      "PAYROLL"      : "Paie des employees",
-      "MULTI_PAYROLL"   : "Payroll Multiple",
-      "PAYABLE_EMPLOYEE" : "Liste des employees payables",
-      "PURCHASE"        : "Achat",
-      "GENERIC_TITLE"   : "Depenses Generiques",
-      "GENERIC_RECEIPT" : "Recettes Generiques",
-       "REFERENCE_DOCUMENT_ID" : "Reference Document ID",
-      "RECIPIENT"             : "Destinataire",
+      "PAYROLL"                 : "Paie des employees",
+      "MULTI_PAYROLL"           : "Payroll Multiple",
+      "PAYABLE_EMPLOYEE"        : "Liste des employees payables",
+      "PURCHASE"                : "Achat",
+      "GENERIC_TITLE"           : "Depenses Generiques",
+      "GENERIC_RECEIPT"         : "Recettes Generiques",
+      "REFERENCE_DOCUMENT_ID"   : "Reference Document ID",
+      "RECIPIENT"               : "Destinataire",
       "PURPOSE"                 : "Motif",
       "CREDITOR"                : "Crediteur",
-      "EXPENSE_DATE"                  : "Date",
-      "AMOUNT" : "Montant",
-      "SUMMARY" : "Sommaire",
-      "INFO_GLOBAL" : "Informations globales",
-      "WORKING_DAY" : "Jours preste",
-      "HOLLY_DAY"   : "Vacances",
-      "OFF_DAY"     : "Ferié",
-      "HOUSING"  : "Logement",
-      "FAM_ALLOW" : "Alloc. Fam",
-      "TRANSPORT" : "Transport",
-      "SENIORITY" : "Ancienete",
-      "ADVANTAGES" : "Avantages",
-      "SALARY" : "Salaire net",
-      "TAXES_OTHERS" : "Taxes employee et autres deductions",
-      "SALARY_AV" : "Avance sur salaire",
-      "INSS" : "Cot. INSS",
-      "IPR" : "IPR",
-      "OTHER_DEDUCT" : "Autres deductions",
-      "SELECT_PERIOD" : "Selectionner une periode de paiement",
-      "DAYS"                  : "Jours",
-      "RUBRICS" : "Rubriques",
-      "ONEM"     : "ONEM",
-      "IERE" : "IERE",
-      "INPP" : "INPP",
+      "EXPENSE_DATE"            : "Date",
+      "AMOUNT"                  : "Montant",
+      "SUMMARY"                 : "Sommaire",
+      "INFO_GLOBAL"             : "Informations globales",
+      "WORKING_DAY"             : "Jours preste",
+      "HOLLY_DAY"               : "Vacances",
+      "OFF_DAY"                 : "Ferrie",
+      "HOUSING"                 : "Logement",
+      "FAM_ALLOW"               : "Alloc. Fam",
+      "TRANSPORT"               : "Transport",
+      "SENIORITY"               : "Ancienete",
+      "ADVANTAGES"              : "Avantages",
+      "SALARY"                  : "Salaire net",
+      "TAXES_OTHERS"            : "Taxes employee et autres deductions",
+      "SALARY_AV"               : "Avance sur salaire",
+      "INSS"                    : "Cot. INSS",
+      "IPR"                     : "IPR",
+      "OTHER_DEDUCT"            : "Autres deductions" ,
+      "SELECT_PERIOD"           : "Selectionner une periode de paiement",
+      "DAYS"                    : "Jours",
+      "RUBRICS"                 : "Rubriques",
+      "ONEM"                    : "ONEM",
+      "IERE"                    : "IERE",
+      "INPP"                    : "INPP",
       "TAXES_OTHERS_ENTERPRISE" : "Taxes entreprise et autres deductions",
-      "TAX_PAYMENT"           : "Paiement Taxe",
-      "SELECT_ACCOUNT"        : "Selectionner un compte",
-      "ACCOUNT"               : "Compte"
+      "TAX_PAYMENT"             : "Paiement Taxes",
+      "SELECT_ACCOUNT"          : "Selectionner un compte",
+      "ACCOUNT"                 : "Compte",
+      "ENTERPRISE_TAX_PAYMENT"  : "Paiement Taxes Entreprise",
+      "NO_DATA"                 : "Aucune donnée disponible"
     },
     "INCOME" : {
       "TRANSFER"              : "Transfert",
@@ -1795,7 +1798,9 @@
     "INFO"                     :  "Information sur le service",
     "INFO_DESCRIPTION"         :  "Ce module vous permet de gerer vos services (leur creation, modification et suppression ainsi que leur consultation)",
     "MODIFYING"                :  "Modification",
-    "OVERVIEW_SERVICE"         : "Resultat synthetique du service :"
+    "OVERVIEW_SERVICE"         : "Resultat synthetique du service :",
+    "PROJECT_SELECT"           : "Selectionner un projet",
+    "PROFIT_CENTER_SELECT"     : "Centre de profit"
   },
 
   "ASSIGNING" : {
@@ -2021,7 +2026,8 @@
     "PAYABLE"       : "Payable",
     "DELETE_SUCCESS" : "Suppression avec succès",
     "NO_CONFIG_RUBRIC" : "Aucune configuration de rubriques",
-    "ABBR"             : "Abr."
+    "ABBR"             : "Abr.",
+    "MESSAGE"          : "Veuillez cocher les différentes rubriques qui seront payable pour cette configuration"
   },
 
    "CONFIG_TAX"      : {
@@ -2038,7 +2044,8 @@
     "RUBRIC"         : "Taxes Payroll",
     "PAYABLE"        : "Payable",
     "DELETE_SUCCESS" : "Suppression avec succès",
-    "NO_CONFIG_TAX"  : "Aucune configuration de taxes"
+    "NO_CONFIG_TAX"  : "Aucune configuration de taxes",
+    "MESSAGE"        : "Veuillez cocher les différentes taxes qui seront payable pour cette configuration"
   },
 
   "DAILY_CONSUMPTION" : {
@@ -2143,7 +2150,7 @@
   },
 
   "PAYCHECK" : {
-    "TITLE"         : "Rapports de paiements",
+    "TITLE"         : "Rapports du Payroll",
     "PAYSLIP"       : "Feuille de paie",
     "VIEW"          : "Vue",
     "SELECT_PERIOD" : "Sélectionner une période de paiement",
@@ -2165,7 +2172,7 @@
 
   "STOCK_STATUS"     :{
     "TITLE"                 : "Situation de stock",
-    "NO_CONSUMPTION"        : "Stock is empty",    
+    "NO_CONSUMPTION"        : "Aucun produits en stock",    
     "CONSUMPTION_PER_MONTH" : "Consommation par mois", 
     "SAFETY_STOCK"          : "Stock de sécurité", 
     "MINIMUM_STOCK"         : "Stock Minimum", 

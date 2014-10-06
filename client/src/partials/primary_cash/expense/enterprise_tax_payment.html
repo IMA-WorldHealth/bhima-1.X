@@ -1,5 +1,5 @@
 <header>
-  {{ 'PRIMARY_CASH.EXPENSE.TAX_PAYMENT' | translate }} 
+  {{ 'PRIMARY_CASH.EXPENSE.ENTERPRISE_TAX_PAYMENT' | translate }} 
   <small ng-if="session.pp_label"> | {{ session.pp_label }}</small>
 </header>
 
@@ -18,7 +18,7 @@
     <ol class="breadcrumb">
       <li><span class="glyphicon glyphicon-home"></span></li>
       <li><a href="#/primary_cash/">{{"PRIMARY_CASH.TITLE" | translate}}</a></li>
-      <li class="active">{{"PRIMARY_CASH.EXPENSE.TAX_PAYMENT" | translate}}</li>
+      <li class="active">{{"PRIMARY_CASH.EXPENSE.ENTERPRISE_TAX_PAYMENT" | translate}}</li>
     </ol>
   </div>
 </nav>
@@ -89,7 +89,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="emp in session.model.employees_payment.data | orderBy : 'code' | filter : search">
+                <tr ng-repeat="emp in session.model.enterprise_payment.data | orderBy : 'code' | filter : search">
                   <td>
                     <span ng-show="emp.prenom">{{ emp.prenom }}, </span> 
                     <span ng-show="emp.name">{{ emp.name }}</span> 
