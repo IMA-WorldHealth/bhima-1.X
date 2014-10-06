@@ -2119,6 +2119,15 @@
     "NO_CONFIG_TAX" : "No Configuration Accounting"
   },
 
+<<<<<<< HEAD
+  "TAX_PAYMENT" : {
+    "EMPLOYEE"         : "Employee Name",
+    "TAX"              : "Tax",
+    "VALUE"            : "Value",
+    "PAID"             : "Paid",
+    "SUBMIT_PAID_TAX"  : "Paid the tax"
+  } 
+=======
   "PAYCHECK" : {
     "TITLE"         : "Payroll Reports",
     "PAYSLIP"       : "Payslip",
@@ -2155,4 +2164,5 @@
     "LOGIN_ERROR" : "Login Error: Username and password combination are incorrect.",
     "LOGOUT_SUCCESS" : "You are now logged out."
   }
+>>>>>>> dev
 }
