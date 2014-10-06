@@ -2172,7 +2172,7 @@
     "MAXIMUM_STOCK"         : "Stock Maximum", 
     "MONTH_OF_STOCK"        : "Mois de stock",
     "QUANTITY_ORDER"        : "Quantité à commander"
-  }   
+  },  
 
   "AUTH"             : {
     "LOGIN"          : "Bhima Login",
