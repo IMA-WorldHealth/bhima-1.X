@@ -29,8 +29,15 @@ angular.module('bhima.controllers')
     function loadProject() {
       cache.fetch('project')
       .then(function (project) {
-        if (project && project.id) {
+        var projectCacheFound = project && project.id;
+
+        if (projectCacheFound) {
           credentials.project = project.id;
+        } else { 
+          
+          // Assign default project for now
+          var defaultProjectIndex = 0;
+          credentials.project = session.projects[defaultProjectIndex].id;
         }
       });
     }
