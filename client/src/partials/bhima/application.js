@@ -69,7 +69,7 @@ angular.module('bhima.controllers')
     // define dependencies for before login initially happens
     function beforeLogin() {
       var languages, enterprises, projects;
-      console.log('[NOTICE] beforeLogin() called');
+      console.log('[NOTICE] beforeLogin()');
 
       languages = {
         tables : {
@@ -92,8 +92,8 @@ angular.module('bhima.controllers')
       // probably change.
       projects = {
         tables : {
-          'enterprise' : { columns: ['currency_id'] },
-          'project' : { columns : ['id', 'name', 'enterprise_id', 'abbr'] }
+          'enterprise' : { columns: ['currency_id', 'phone', 'email', 'location_id'] },
+          'project' : { columns : ['id', 'name', 'enterprise_id', 'abbr'] },
         },
         join : ['project.enterprise_id=enterprise.id']
       };
@@ -119,7 +119,7 @@ angular.module('bhima.controllers')
 
     // Fires after login
     function afterLogin() {
-      console.log('[NOTICE] afterLogin() called');
+      console.log('[NOTICE] afterLogin()');
       var currencies, exchangeRate, fiscalYear;
 
       exchangeRate = {
@@ -169,10 +169,15 @@ angular.module('bhima.controllers')
     }
 
     // FIXME : this needs to be better formalized
-    // It's really terribly coding
-    // We should really have an onReload() method
     beforeLogin();
-    if (appauth.isAuthenticated()) { afterLogin(); }
+
+    function onReload() {
+      console.log('[NOTICE] onReload()');
+      afterLogin();
+    }
+
+    if (appauth.isAuthenticated()) { onReload(); }
+
     // Event handlers
     
     $scope.$on(EVENTS.auth.notAuthenticated, function (e) {
