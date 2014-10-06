@@ -77,49 +77,45 @@ module.exports = function (db, sanitize) {
   }
 
   function ccc (project_id, request, callback){
-    console.log('la requette recu', request);
     var ids = request.accounts.map(function (account) {
       return account.id;
     });
 
-    var ids_conditions_p = (ids.length > 0) ? ' OR `posting_journal`.`account_id` IN ('+ids.join(',') : '';
-    var ids_conditions_g = (ids.length > 0) ? ' OR `general_ledger`.`account_id` IN ('+ids.join(',') : '';
+    var ids_conditions_p = (ids.length > 0) ? ' OR `posting_journal`.`account_id` IN (' + ids.join(',') + ')' : '';
+    var ids_conditions_g = (ids.length > 0) ? ' OR `general_ledger`.`account_id` IN (' + ids.join(',') + ')' : '';
 
     var sql =
       'SELECT SUM(`t`.`debit_equiv`) as debit, SUM(`t`.`credit_equiv`) as credit, `t`.`account_id`, `t`.`project_id`, `c`.`account_number`' +
-      ' FROM (SELECT `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`project_id` FROM `posting_journal` JOIN' +
+      ' FROM (SELECT `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`project_id` FROM `posting_journal` LEFT JOIN' +
       ' `cost_center` ON `posting_journal`.`cc_id` = `cost_center`.`id` WHERE `posting_journal`.`cc_id`=' + sanitize.escape(request.cc_id) + ids_conditions_p +
-      ' UNION SELECT `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`project_id` FROM `general_ledger` JOIN' +
+      ' UNION SELECT `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`project_id` FROM `general_ledger` LEFT JOIN' +
       ' `cost_center` ON `general_ledger`.`cc_id` = `cost_center`.`id` WHERE `general_ledger`.`cc_id`=' + sanitize.escape(request.cc_id) + ids_conditions_g +
       ' ) as `t` JOIN `account` as `c` ON `t`.`account_id`=`c`.`id` WHERE `t`.`project_id`=' + sanitize.escape(project_id) + ' GROUP BY `t`.`account_id`';
 
     db.execute(sql, function(err, ans){
       if (err) { return callback(err); }
-      console.log('les resultats a retourner', ans);
       return callback(null, ans);
     });
   }
 
   function pcv (project_id, request, callback){
-    console.log('la requette recu', request);
     var ids = request.accounts.map(function (account) {
       return account.id;
     });
 
-    var ids_conditions_p = (ids.length > 0) ? ' OR `posting_journal`.`account_id` IN ('+ids.join(',') : '';
-    var ids_conditions_g = (ids.length > 0) ? ' OR `general_ledger`.`account_id` IN ('+ids.join(',') : '';
+    var ids_conditions_p = (ids.length > 0) ? ' OR `posting_journal`.`account_id` IN (' + ids.join(',') + ')' : '';
+    var ids_conditions_g = (ids.length > 0) ? ' OR `general_ledger`.`account_id` IN (' + ids.join(',') + ')' : '';
 
     var sql =
       'SELECT SUM(`t`.`debit_equiv`) as debit, SUM(`t`.`credit_equiv`) as credit, `t`.`account_id`, `t`.`project_id`, `c`.`account_number`' +
-      ' FROM (SELECT `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`project_id` FROM `posting_journal` JOIN' +
+      ' FROM (SELECT `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`project_id` FROM `posting_journal` LEFT JOIN' +
       ' `profit_center` ON `posting_journal`.`pc_id` = `profit_center`.`id` WHERE `posting_journal`.`pc_id`=' + sanitize.escape(request.pc_id) + ids_conditions_p +
-      ' UNION SELECT `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`project_id` FROM `general_ledger` JOIN' +
+      ' UNION SELECT `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`project_id` FROM `general_ledger` LEFT JOIN' +
       ' `profit_center` ON `general_ledger`.`pc_id` = `profit_center`.`id` WHERE `general_ledger`.`pc_id`=' + sanitize.escape(request.pc_id) + ids_conditions_g +
       ' ) as `t` JOIN `account` as `c` ON `t`.`account_id`=`c`.`id` WHERE `t`.`project_id`=' + sanitize.escape(project_id) + ' GROUP BY `t`.`account_id`';
 
     db.execute(sql, function(err, ans){
       if (err) { return callback(err); }
-      console.log('les resultats a retourner', ans);
       return callback(null, ans);
     });
   }
