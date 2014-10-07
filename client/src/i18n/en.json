@@ -129,22 +129,20 @@
     }
   },
 
-  "TRANSFERT" : {
-    "TITLE"           : "Transfert",
-    "TRANSFER"        : "Transfert",
+  "TRANSFER" : {
+    "TITLE"           : "Transfer",
+    "TRANSFER"        : "Transfer",
     "CONVENTION"      : "Convention",
     "PCASH"           : "Primary cash",
     "SOME_REPORT"     : "Rapport Sommaire de Recettes (20 derniers)",
     "OVERVIEW"        : "Primary cash  : Receipts management",
-    "INFO"            : "This Primary cash feature, is responsible of the receipt automatisation. Use this module to debit the primary cash by transfert, and so one",
+    "INFO"            : "This Primary cash feature, is responsible of the receipt automatisation. Use this module to debit the primary cash by transfer, and so one",
     "SOURCE"          : "Source",
-    "EXPECTED"        : "expected",
-    "AMOUNT"          : "amount",
-    "CRUMB_PCASH"     : "primary cash",
-    "CRUMB_TRANSFERT" : "transfert",
+    "EXPECTED"        : "Expected",
+    "AMOUNT"          : "Amount",
     "PROJECT"         : "Project",
     "CAISSE"          : "Cash",
-    "CURRENCY"        : "currency",
+    "CURRENCY"        : "Currency",
     "NAVIGATION"      : "Browsing",
     "NO_CURRENCY"     : "No currency selected",
     "DATA_ERROR"      : "Incorrect Data"
@@ -670,13 +668,13 @@
     "PERCENT_PAY"         : "Percent pay",
     "EMPLOYEE_NAME"       : "Employee Name",
     "DATE_FROM"           : "Date From",
-    "DATE_TO"             : "Date To" ,     
+    "DATE_TO"             : "Date To" ,
     "DATE_EMBAUCHE"       : "Hiring date",
     "NB_CHILD"            : "Child count",
     "NB_SPOUSE"           : "spouse count",
     "BASE_SALARY"         : "base salary",
     "GIVEN_AMOUNT"       : "Given amount",
-    "ABBREVIATION"       : "Abreviation",    
+    "ABBREVIATION"       : "Abreviation",
     "TRANSACTION_NUMBER" : "Transaction number",
     "BY"                 : "By",
     "DRUGS"              : "Drugs",
@@ -684,21 +682,21 @@
     "NET_AFTER_TAXES"    : "Net after taxes",
     "NET_SALARY"         : "Net Salary",
     "PAYCHECK"           : "Paycheck",
-    "DAILY_RATE"         : "Daily rate", 
+    "DAILY_RATE"         : "Daily rate",
     "AMOUNT_WITHHELD"    : "Amount to be withheld",
     "TIMES"              : "Times",
     "AMOUNT_PAYABLE"     : "Amount Payable",
     "NET_CASH"           : "Net Cash",
     "WORKING_DAY"        : "Working days",
     "CONSUMPTION_PER_MONTH" : "Consumption per month",
-    "SAFETY_STOCK"          : "Safety stock", 
-    "MINIMUM_STOCK"         : "Minimum Stock", 
-    "MAXIMUM_STOCK"         : "Maximum Stock", 
+    "SAFETY_STOCK"          : "Safety stock",
+    "MINIMUM_STOCK"         : "Minimum Stock",
+    "MAXIMUM_STOCK"         : "Maximum Stock",
     "MONTH_OF_STOCK"        : "Months of stock",
-    "QUANTITY_ORDER"        : "Quantity to Order",        
+    "QUANTITY_ORDER"        : "Quantity to Order",
     "STOCK_QTE"          : "Stock Quantity",
-    "STOCK_QTE_MIN"      : "Stock Minimum Quantity", 
-    "STOCK_QTE_MAX"      : "Stock Maximum Quantity", 
+    "STOCK_QTE_MIN"      : "Stock Minimum Quantity",
+    "STOCK_QTE_MAX"      : "Stock Maximum Quantity",
     "STOCK_QTE_SEC"      : "Security Stock Quantity"
   },
 
@@ -837,7 +835,7 @@
     "INCOME_REPORT"             : "Incomes Report",
     "EXPENSE_REPORT"            : "Expenses Report",
     "GRADE_EMPLOYERS"           : "Grade Employees",
-    "TAXES"                     : "Taxes",     
+    "TAXES"                     : "Taxes",
     "TAXE_MANAGEMENT"           : "Taxes management",
     "RUBRIC_MANAGEMENT"         : "Rubrics Management",
     "OFFDAY_MANAGEMENT"         : "Offday management",
@@ -847,7 +845,7 @@
     "CONFIG_TAX"                : "Configuration Taxes",
     "DONATION_MANAGEMENT"       : "Donation Management",
     "STOCK_DASHBOARD"           : "Stock Dashboard",
-    "DAILY_CONSUMPTION"         : "Daily Consumption",     
+    "DAILY_CONSUMPTION"         : "Daily Consumption",
     "CONFIG_ACCOUNTING"         : "Configuration accounting",
     "PAYROLL_REPORT"            : "Payroll Reports",
     "STOCK_STATUS"              : "Stock Status"
@@ -876,7 +874,7 @@
     "ABBR"               : "Abbr.",
     "NOT_EMPTY"          : "Abbr. Can not be empty",
     "NOT_SUP4"           : "Can not be more than 4 characters",
-    "NOT_SUP_MAXDAY"     : "Can not be greater than the total working days"     
+    "NOT_SUP_MAXDAY"     : "Can not be greater than the total working days"
 },
 
   "DISTRIBUTION" : {
@@ -896,7 +894,7 @@
     "LOT_DETAILS"            : "Lot Details",
     "EMPTY_MESSAGE"          : "No sale selected!",
     "CONSUMED"               : "This prescription has already been consumed",
-    "NOT_CONSUMED"           : "This prescription is unfufilled",    
+    "NOT_CONSUMED"           : "This prescription is unfufilled",
     "INVOICE_NOT_PAID"       : "Invoice has not been payed",
     "INVOICE_PAID"           : "Invoice has been fully payed",
     "INVOICE_PARTIALLY_PAID" : "Invoice has been partially payed",
@@ -1172,7 +1170,7 @@
     "NEW_FORM"        : "New Form",
     "REVIEW"          : "Review",
     "BACK"            : "Back",
-    "NEW_TRANSFER"   : "New transfert"
+    "NEW_TRANSFER"   : "New transfer"
   },
 
   "CASH"                   : {
@@ -1864,7 +1862,7 @@
     "TITLE" : "Purchase order payment confirmation",
     "PARENT" : "Purchase order management"
   },
-  
+
   "GRADE" : {
     "TITLE"        : "Grade management",
     "ADD"          : "Add a grade",
@@ -1888,14 +1886,14 @@
    "HOLLYDAY_MANAGEMENT" : {
     "TITLE"         : "Hollydays Management",
     "NEW_HOLLYDAY"  : "Create a hollyday period",
-    "SAVE_SUCCES"  : "Successfully saving Offday",  
-    "SAVE_FAILURE" : "Error, these data are entangled with other holiday period",  
+    "SAVE_SUCCES"  : "Successfully saving Offday",
+    "SAVE_FAILURE" : "Error, these data are entangled with other holiday period",
     "UPDATE_SUCCES" : "Updated successfully",
     "UPDATE"        : "Modify a hollyday period",
-    "NO_HOLLYDAY"   : "No Hollyday have been registred",    
-    "DELETE_SUCCESS" : "Deleted successfully",    
+    "NO_HOLLYDAY"   : "No Hollyday have been registred",
+    "DELETE_SUCCESS" : "Deleted successfully",
     "ADD"           : "Create a hollyday period",
-    "CONFIRM"       : "Are you sure you want to delete this Hollyday period",    
+    "CONFIRM"       : "Are you sure you want to delete this Hollyday period",
     "REGISTERED"    : "Registered Hollydays",
     "ALERT"         : "The management of hollyday standardizes and secure applications and management of vacation (paid leave, compensatory time off ...). It supports automatic introduction pays from request, validation and to its treatment.",
     "EMPLOYEE"      : "Employee"
@@ -1904,13 +1902,13 @@
   "OFFDAY_MANAGEMENT" : {
     "TITLE"         : "Offdays Management",
     "NEW_OFFDAY"    : "New Offday",
-    "SAVE_SUCCES"  : "Successfully saving Offday",    
+    "SAVE_SUCCES"  : "Successfully saving Offday",
     "UPDATE_SUCCES" : "Updated successfully",
     "UPDATE"        : "Modify a Offday",
-    "NO_OFFDAY"     : "No Offday have been registred",     
-    "DELETE_SUCCESS" : "Deleted successfully",    
+    "NO_OFFDAY"     : "No Offday have been registred",
+    "DELETE_SUCCESS" : "Deleted successfully",
     "ADD"           : "Add a Offday",
-    "CONFIRM"       : "Are you sure you want to delete this Offday",    
+    "CONFIRM"       : "Are you sure you want to delete this Offday",
     "REGISTERED"    : "Registered Offdays",
     "ALERT"         : "The management of the Offdays allows the configuration of different types of offdays that are supported in the organization",
     "CREATE_TAXE"   : "Creation des taxes",
@@ -1945,10 +1943,10 @@
 
    "TAXES" : {
     "TITLE"        : "Taxes management",
-    "REGISTERED"   : "Registered Taxes", 
-    "NEW_TAX"      : "New Tax", 
-    "SAVE_SUCCES"  : "Successfully saving tax",    
-    "NO_TAXES"     : "No tax have been registred",  
+    "REGISTERED"   : "Registered Taxes",
+    "NEW_TAX"      : "New Tax",
+    "SAVE_SUCCES"  : "Successfully saving tax",
+    "NO_TAXES"     : "No tax have been registred",
     "ADD"          : "Add a tax",
     "UPDATE_SUCCES": "Updated successfully",
     "UPDATE"       : "Modify a Tax",
@@ -1984,11 +1982,11 @@
   "CONFIG_RUBRIC" : {
     "TITLE"         : "Configuration Rubrics",
     "NEW_CONFIG"    : "New configuration",
-    "SAVE_SUCCES"  : "Successfully saving Configuration",    
+    "SAVE_SUCCES"  : "Successfully saving Configuration",
     "UPDATE_SUCCES" : "Updated successfully",
-    "UPDATE"        : "Modify a Configuration",    
+    "UPDATE"        : "Modify a Configuration",
     "ADD"           : "Create a new configuration",
-    "CONFIRM"       : "Are you sure you want to delete this Configuration",    
+    "CONFIRM"       : "Are you sure you want to delete this Configuration",
     "REGISTERED"    : "Registered Configuration Rubrics",
     "ALERT"         : "The configuration of Rubrics allows setting different kinds rubrics that are taken during a pay period",
     "CONFIG"                   : "Configuration",
@@ -2000,15 +1998,15 @@
     "ABBR"          : "Abbr.",
     "MESSAGE"       : "Please check the different rubrics that will be payable for this configuration"
   },
-  
+
   "CONFIG_TAX" : {
     "TITLE"         : "Configuration Taxes",
     "NEW_CONFIG"    : "New configuration",
-    "SAVE_SUCCES"  : "Successfully saving Configuration",    
+    "SAVE_SUCCES"  : "Successfully saving Configuration",
     "UPDATE_SUCCES" : "Updated successfully",
-    "UPDATE"        : "Modify a Configuration",    
+    "UPDATE"        : "Modify a Configuration",
     "ADD"           : "Create a new configuration",
-    "CONFIRM"       : "Are you sure you want to delete this Configuration",    
+    "CONFIRM"       : "Are you sure you want to delete this Configuration",
     "REGISTERED"    : "Registered Configuration Taxes",
     "ALERT"         : "The configuration of Taxes allows setting different kinds Taxes that are taken during a pay period",
     "CONFIG"        : "Configuration",
@@ -2029,7 +2027,7 @@
     "NO_CONSUMPTION" : "No consumption during this period",
     "ITEMS"        : "Items",
     "NR"           : "N°"
-  },      
+  },
 
   "DONATION_MANAGEMENT" : {
     "TITLE"             : "Donation Management",
@@ -2106,11 +2104,11 @@
   "CONFIG_ACCOUNTING" : {
     "TITLE"        : "Configuration accounting",
     "NEW_CONFIG"    : "New configuration",
-    "SAVE_SUCCES"   : "Successfully saving Configuration",    
+    "SAVE_SUCCES"   : "Successfully saving Configuration",
     "UPDATE_SUCCES" : "Updated successfully",
-    "UPDATE"        : "Modify a Configuration",    
+    "UPDATE"        : "Modify a Configuration",
     "ADD"           : "Create a new configuration",
-    "CONFIRM"       : "Are you sure you want to delete this Configuration",    
+    "CONFIRM"       : "Are you sure you want to delete this Configuration",
     "REGISTERED"    : "Registered Configuration Accounting",
     "ALERT"         : "The account setup module allows setting the account to be used when making payroll",
     "CONFIG"        : "Configuration",
@@ -2118,7 +2116,7 @@
     "DELETE_SUCCESS" : "Deleted successfully",
     "NO_CONFIG_TAX" : "No Configuration Accounting"
   },
-  
+
   "PAYCHECK" : {
     "TITLE"         : "Payroll Reports",
     "PAYSLIP"       : "Payslip",
@@ -2127,7 +2125,7 @@
     "MATRICULE"     : "Matricule",
     "FAM_STATUS"    : "Familly status",
     "GRADE"         : "Grade"
-  }, 
+  },
 
   "TAX_PAYMENT" : {
     "EMPLOYEE"         : "Employee Name",
@@ -2143,10 +2141,10 @@
   "STOCK_STATUS"     :{
     "TITLE"                 : "Stock Situation",
     "NO_CONSUMPTION"        : "Aucun produits en stock",
-    "CONSUMPTION_PER_MONTH" : "Consumption per month", 
-    "SAFETY_STOCK"          : "Safety stock", 
-    "MINIMUM_STOCK"         : "Minimum Stock", 
-    "MAXIMUM_STOCK"         : "Maximum Stock", 
+    "CONSUMPTION_PER_MONTH" : "Consumption per month",
+    "SAFETY_STOCK"          : "Safety stock",
+    "MINIMUM_STOCK"         : "Minimum Stock",
+    "MAXIMUM_STOCK"         : "Maximum Stock",
     "MONTH_OF_STOCK"        : "Months of stock",
     "QUANTITY_ORDER"        : "Quantity to Order"
   },
@@ -2156,5 +2154,5 @@
     "LOGIN_ERROR" : "Login Error: Username and password combination are incorrect.",
     "LOGOUT_SUCCESS" : "You are now logged out."
   }
-  
+
 }
