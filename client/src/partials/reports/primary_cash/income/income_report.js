@@ -111,7 +111,7 @@ angular.module('bhima.controllers')
       session.sum_debit = 0; 
       if(session.model.records.data) {   
         session.model.records.data.forEach(function (transaction) {
-          session.sum_debit += exchange.convertir(transaction.debit, transaction.currency_id, session.currency, transaction.trans_date);
+          session.sum_debit += exchange.convertir(transaction.debit, transaction.currency_id, session.currency, new Date()); //transaction.trans_date
           console.log('From '+transaction.currency_id+' To '+session.currency);
         });        
       }

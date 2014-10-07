@@ -108,7 +108,8 @@ angular.module('bhima.controllers')
       session.sum_credit = 0; 
       if(session.model.records.data) {   
         session.model.records.data.forEach(function (transaction) {
-          session.sum_credit += exchange.convertir(transaction.credit, transaction.currency_id, session.currency, transaction.trans_date);
+          console.log('trans :::', transaction);
+          session.sum_credit += exchange.convertir(transaction.credit, transaction.currency_id, session.currency, new Date()); // FIX ME : appstate return only the dailyexchange rate, it should be transaction.trans_date
           console.log('From '+transaction.currency_id+' To '+session.currency);
         });        
       }
