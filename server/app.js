@@ -531,7 +531,6 @@ app.get('/cost/:id_project/:cc_id', function(req, res, next) {
       return item.account_number.toString().indexOf('6') === 0;
     });
 
-    console.log('voici le retour :::', availablechargeAccounts);
 
     var cost = availablechargeAccounts.reduce(function (x, y) {
       return x + (y.debit - y.credit);

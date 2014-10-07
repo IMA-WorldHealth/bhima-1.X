@@ -242,10 +242,10 @@ module.exports = function (db, sanitize, util, uuid) {
           '(project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, doc_num, ' +
           'description, account_id, debit, credit, debit_equiv, credit_equiv, ' +
           'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, comment, cost_ctrl_id, ' +
-          'origin_id, user_id, session_id) ' +
+          'origin_id, user_id,cc_id, pc_id, session_id) ' +
         'SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, doc_num, ' +
           'description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, ' +
-          'deb_cred_uuid, deb_cred_type,inv_po_id, comment, cost_ctrl_id, origin_id, user_id, ? ' +
+          'deb_cred_uuid, deb_cred_type, inv_po_id, comment, cost_ctrl_id, origin_id, user_id, cc_id, pc_id, ? ' +
         'FROM posting_journal;';
       return db.exec(sql, [sessionId]);
     })
