@@ -172,7 +172,7 @@ angular.module('bhima.controllers')
       session.rows = [];     
       var unpaidEmployees = getUnpaidEmployees();
       unpaidEmployees.forEach(function (emp) {
-        new employeeRow(emp)
+        new EmployeeRow(emp)
         .then(function (row) {      
           session.rows.push(row);
         }); 
@@ -197,7 +197,7 @@ angular.module('bhima.controllers')
       });
     }
 
-    function employeeRow (emp) {
+    function EmployeeRow (emp) {
       var self = this;
       var def = $q.defer();      
       getHollyDayCount(emp)

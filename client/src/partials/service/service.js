@@ -57,7 +57,6 @@ angular.module('bhima.controllers')
     };
 
     function init (model) {
-      console.log(model);
       $scope.model = model;
       configuration.cost_centers = model.cost_centers.data;
       configuration.profit_centers = model.profit_centers.data;
@@ -85,7 +84,6 @@ angular.module('bhima.controllers')
     }
 
     function setAction (value, service) {
-      console.log('ok');
       $scope.choosen = angular.copy(service) || {};
       if (value === 'more') {
         getCost($scope.choosen.cost_center_id)
@@ -100,29 +98,61 @@ angular.module('bhima.controllers')
     }
 
     function getProfit() {
-      return connect.req('/profit/' + $scope.project.id + '/' + $scope.choosen.id);
+      return connect.req('/profit/' + $scope.project.id + '/' + $scope.choosen.profit_center_id);
     }
 
     function edit() {
       var data = {
-        id             : $scope.choosen.id,
-        name           : $scope.choosen.name,
-        cost_center_id : $scope.choosen.cost_center_id
+        id                : $scope.choosen.id,
+        name              : $scope.choosen.name,
+        cost_center_id    : $scope.choosen.cost_center_id,
+        profit_center_id  : $scope.choosen.profit_center_id
       };
 
-      connect.basicPost('service', [data], ['id'])
-      .then(function () {
-        $scope.model.services.put(connect.clean($scope.choosen));
-        $scope.action = '';
-        $scope.choosen = {}; // reset
-      })
-      .catch(function (err) {
-        messenger.danger('Error:' + JSON.stringify(err));
-      });
+      if(isValid(data.cost_center_id, data.profit_center_id)){
+        connect.basicPost('service', [connect.clean(data)], ['id'])
+        .then(function () { 
+          $scope.choosen.cost_center = $scope.choosen.cost_center_id ? getCostcenterText($scope.choosen.cost_center_id) : $scope.choosen.cost_center;
+          $scope.choosen.profit_center = $scope.choosen.profit_center_id ? getProfitCenterText($scope.choosen.profit_center_id) : $scope.choosen.profit_center;       
+          $scope.model.services.put(connect.clean($scope.choosen));
+          $scope.action = '';
+          $scope.choosen = {}; // reset
+        })
+        .catch(function (err) {
+          messenger.danger('Error:' + JSON.stringify(err));
+        });
+      }else{
+        alert('centre de cout ou centre de profit deja utilise');
+      }
+
     }
+
+    function isValid (cost_id, profit_id) {
+      var c = $scope.model.services.data.filter(function (item) {
+        return (item.cost_center_id === cost_id && $scope.choosen.id !== item.id) || (item.profit_center_id === profit_id && $scope.choosen.id !== item.id);
+      })[0];
+
+      return c ? false : true;
+    }
+
+    function getCostcenterText (cost_id){
+      //FIX ME : hack
+      return configuration.cost_centers.filter(function (item) {
+        return item.id === cost_id;
+      })[0].text;
+    }
+
+    function getProfitCenterText (profit_id) {
+      //FIX ME : hack
+      return configuration.profit_centers.filter(function (item) {
+        return item.id === profit_id;
+      })[0].text;
+    }
+
 
     function handleResultCost(value) {
       $scope.choosen.charge = value.data.cost;
+      console.log('on a ', value);
       return $q.when();
     }
 

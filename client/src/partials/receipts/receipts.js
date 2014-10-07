@@ -1,4 +1,4 @@
-//TODO Debtor table currently has no personal information - this strictly ties debtors to patients
+// TODO Debtor table currently has no personal information - this strictly ties debtors to patients
 // (or some existing table) - a reverse lookup from debtor / creditor ID to recipient is needed.
 angular.module('bhima.controllers')
 .controller('receipts', [
@@ -1296,21 +1296,35 @@ angular.module('bhima.controllers')
         url : '/partials/receipts/templates/generic.income.html'
       },
       'generic_expense' : {
-        fn              : processGenericExpense,
-        url             : '/partials/receipts/templates/generic.income.html'
+        fn  : processGenericExpense,
+        url : '/partials/receipts/templates/generic.income.html'
       },
       'loss' : {
-        fn              : processLoss,
-        url             : '/partials/receipts/templates/loss.html'
+        fn  : processLoss,
+        url : '/partials/receipts/templates/loss.html'
       },
       'payslip' : {
-        fn              : processPayslip,
-        url             : '/partials/receipts/templates/payslip.html'
+        fn  : processPayslip,
+        url : '/partials/receipts/templates/payslip.html'
       }      
     };
 
     appstate.register('project', function (project) {
+      console.log('project', project);
+      // FIXME : Hack to get project to behave like it used ot
+      project.enterprise_name = project.name;
       $scope.project = project;
+
+      // FIXME : Load the location information for templates
+      connect.fetch('/location/village/' + project.location_id)
+      .then(function (res) {
+        var locationInfo = res[0];
+        project.village  = locationInfo.name;
+        project.sector = locationInfo.sector_name;
+        project.province = locationInfo.province_name;
+        project.country = locationInfo.country_name;
+      });
+
       $scope.template = templates[origin];
       templates[origin].fn(invoiceId);
     });
