@@ -2,19 +2,17 @@ angular.module('bhima.controllers')
 .controller('primaryCash.income.transfer', [
   '$scope',
   'connect',
-  'messenger',
   'validate',
   'appstate',
   'util',
   'uuid',
   '$routeParams',
   '$location',
-  '$translate',
-  function ($scope, connect, messenger, validate, appstate, util, uuid, $routeParams, $location, $translate) {
+  function ($scope, connect, validate, appstate, util, uuid, $routeParams, $location) {
     var dependencies = {},
         data = $scope.data = {};
 
-    $scope.pcash_box_id = $routeParams.cashbox_id;
+    var pcash_box_id = $routeParams.cashbox_id;
 
     var moduleQuery = {
       tables : {
@@ -91,13 +89,10 @@ angular.module('bhima.controllers')
     }
 
     $scope.submit = function submit() {
-      console.log('Submitting...');
       var pcash, item, accountId, date = util.sqlDate();
 
       accountId = getAccount(data.currency_id, data.cash_box_id);
       if (!accountId) { throw 'NO ACCOUNT'; }
-
-      console.log('accountId', accountId);
 
       pcash = {
         uuid        : uuid(),
@@ -108,8 +103,7 @@ angular.module('bhima.controllers')
         account_id  : accountId,
         cost        : data.value,
         description : 'CT/' + date,
-        cash_box_id : $scope.pcash_box_id,
-        origin_id   : $scope.module_id
+        cash_box_id : pcash_box_id
       };
 
       // fetch module id

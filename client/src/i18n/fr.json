@@ -1460,7 +1460,6 @@
     "DISCARD"        : "Annuler l'ordre d'achat"
   },
 
-
   "DASHBOARD" : {
     "TITLE" : "Tableau de bord"
   },
@@ -1471,6 +1470,7 @@
     "LAST_PAGE" : "Dernier Page Visite",
     "HOME_PAGE" : "Page Defaut"
   },
+
   "PURCHASE"        : {
     "TITLE"         : "Ordre Achat",
     "ADD_SUPPLIER"  : "Ajouter Fournisseur",
@@ -1488,19 +1488,18 @@
     "SUBMIT_ORDER"  : "Soumettre Ordre Achat",
     "RESPONSABLE"   : "Responsable",
     "TOTAL_COST"    : "Cout total"
-
   },
 
   "PRIMARY_CASH" : {
     "DEFAULT_CURRENCY" : "Monnaie",
     "SELECT_CASHBOX" : "Selectionner une Caisse",
-    "TITLE"        : "Caisse Pricipale",
+    "TITLE"        : "Caisse Principale",
     "EXPENSES"     : "Depenses",
     "INCOMES"      : "Recettes",
     "GENERIC"      : "Generique",
     "NAVIGATION"   : "Naviguation",
     "CONFIGURE"    : "Configuration",
-    "HOME"         : "caisse principale",
+    "HOME"         : "Caisse Principale",
     "LOADING_ERROR" : "Erreur lors du chargement des dependances",
     "EXPENSE" : {
       "PAYROLL"                 : "Paie des employees",

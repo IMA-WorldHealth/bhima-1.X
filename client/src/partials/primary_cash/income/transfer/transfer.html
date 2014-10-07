@@ -15,10 +15,9 @@
 <main>
   <div class="row">
     <div class="col-xs-8">
-      <div class="panel panel-primary" style="max-height: 525px;">
+      <div class="panel panel-primary">
         <div class="panel-heading">
-          <span class="glyphicon glyphicon-share-alt"></span>
-          {{ "TRANSFER.TRANSFER" | translate }}
+          <i class="glyphicon glyphicon-share-alt"></i> {{ "TRANSFER.TRANSFER" | translate }}
         </div>
         <div class="panel-body">
           <form ng-submit="submit()">
@@ -51,8 +50,8 @@
               </div>
             </div>
 
-            <input class="btn btn-default btn-success" type="submit" value="{{ 'FORM.ADD' | translate }}">
-            <button class="btn btn-default btn-sm" type="reset">{{ 'FORM.NEW_TRANSFER' | translate }}</button>
+            <input class="btn btn-success" type="submit" value="{{ 'FORM.ADD' | translate }}">
+            <input class="btn btn-default" type="reset" value="{{ 'FORM.NEW_TRANSFER' | translate }}">
           </form>
         </div>
       </div>
