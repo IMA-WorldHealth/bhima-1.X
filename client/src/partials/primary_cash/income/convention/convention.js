@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('convention', [
+.controller('primaryCash.convention', [
   '$scope',
   '$q',
   '$location',
@@ -12,7 +12,7 @@ angular.module('bhima.controllers')
   'uuid',
   'appcache',
   '$translate',
-  function($scope, $q, $location, $routeParams, validate, connect, appstate, messenger, util, uuid, Appcache, $translate) {
+  function ($scope, $q, $location, $routeParams, validate, connect, appstate, messenger, util, uuid, Appcache, $translate) {
 
     var dependencies = {}, record_uuid = -1,
         cache = new Appcache('convention');
@@ -50,7 +50,7 @@ angular.module('bhima.controllers')
             columns : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'date', 'rate']
           }
         },
-        where : ['exchange_rate.date='+util.convertToMysqlDate(new Date())]
+        where : ['exchange_rate.date='+util.sqlDate(new Date())]
       }
     };
 
@@ -135,7 +135,7 @@ angular.module('bhima.controllers')
         account_id      : $scope.selectedConvention.account_id,
         cost            : $scope.data.payment,
         user_id         : $scope.model.cashier.data.id,
-        description     : ['COVP', $scope.selectedConvention.name, util.convertToMysqlDate(new Date().toString())].join('/'),
+        description     : ['COVP', $scope.selectedConvention.name, util.sqlDate(new Date().toString())].join('/'),
         cash_box_id     : $scope.cashbox_id,
         origin_id       : $scope.model.pcash_module.data[0].id
       };

@@ -15,6 +15,16 @@ angular.module('bhima.directives')
     link : function (scope, element, attrs) {
       
       var submitCallback = attrs.selectVillage;
+      var defaultVillageTag = attrs.defaultVillage;
+  
+      // Verify location parameters
+      if (!submitCallback) { 
+        throw new Error("[locationSelect] Location select must define village selection callback");
+      }
+      if (!scope[submitCallback]) { 
+        throw new Error("[locationSelect] Village selection callback not found on scope");
+      }
+
       scope.locationSelect = scope.locationSelect || {};
 
       var namespace = scope.locationSelect[submitCallback] = {};
@@ -47,11 +57,13 @@ angular.module('bhima.directives')
         }
       };
       var locationStore = namespace.locationStore = {};
-      
-      appstate.register('enterprise', settup);
+      var initialised = false;
 
+      appstate.register('enterprise', settup);
+      
       function settup(enterprise) {
         var metaTemplate;
+        var defaultLocation = scope[defaultVillageTag] || enterprise.location_id;
 
         indexLocationDependencies();
         defineLocationRequests();
@@ -59,8 +71,26 @@ angular.module('bhima.directives')
         metaTemplate = generateTemplate('locationConfig');
         element.html($compile(metaTemplate)(scope));
         
-        fetchInitialLocation(enterprise.location_id)
-        .then(initialiseLocation);
+        scope.$watch(defaultVillageTag, refreshDefaultVillage);
+        
+        fetchInitialLocation(defaultLocation)
+        .then(function (result) { 
+          return initialiseLocation(result);          
+        });
+      }
+      
+      function refreshDefaultVillage(nval, oval) { 
+        if (initialised) { 
+          
+          if (nval) { 
+
+            // Request new location 
+            fetchInitialLocation(nval)
+            .then(function (result) { 
+              return initialiseLocation(result);          
+            });
+          }
+        }
       }
 
       function fetchInitialLocation(villageUuid) {
@@ -68,11 +98,8 @@ angular.module('bhima.directives')
       }
 
       function initialiseLocation(defaultLocation) {
-        console.log('[DEFAULTLOCATION]', defaultLocation);
         defaultLocation = defaultLocation[0];
         
-
-        // Populate initial values (enterprise default)
         Object.keys(locationConfig).forEach(function (key) {
           locationStore[key] = {model : {}, value : {}};
           // modelMap.push(locationStore[key].value);
@@ -82,9 +109,11 @@ angular.module('bhima.directives')
 
         // Initial request, update config with no dependency
         fetchLocationData(lookupDependency(null), null);
+
       }
 
       function submitVillage(uuid) { 
+        initialised = true;
         scope[submitCallback](uuid);
         return;
       }

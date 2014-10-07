@@ -164,13 +164,13 @@
               </tr>
             </thead>
             <tbody>
-              <tr  ng-if="false">
-                <td>{{selected.name}}</td>
-                <td>{{selected.charge | currency }}</td>
-                <td>{{selected.profit | currency }}</td>
-                <td>{{(selected.profit-selected.charge) | currency}}</td>
+              <tr  ng-if="true">
+                <td>{{choosen.service}}</td>
+                <td>{{choosen.charge | currency }}</td>
+                <td>{{choosen.profit | currency }}</td>
+                <td>{{(choosen.profit-choosen.charge) | currency}}</td>
               </tr>
-              <tr ng-if="true">
+              <tr ng-if="false">
                 <td colspan="4"><div class="alert alert-warning square">Non disponible</div></td>
               </tr>
             </tbody>
