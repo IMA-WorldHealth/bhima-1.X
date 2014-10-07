@@ -429,7 +429,7 @@
     "CONFIG_TAX"                : "Configuration des taxes",
     "DONATION_MANAGEMENT"       : "Gestion des Dons",
     "STOCK_DASHBOARD"           : "Tableau de bord du Stock",
-    "DAILY_CONSUMPTION"         : "Consommation journaliere",    
+    "DAILY_CONSUMPTION"         : "Consommation journaliere",
     "CONFIG_ACCOUNTING"         : "Configuration des comptes",
     "PAYROLL_REPORT"            : "Rapports du Payroll",
     "STOCK_STATUS"              : "Situation du stock"
@@ -459,7 +459,7 @@
     "ABBR"               : "Abr.",
     "NOT_EMPTY"          : "ABR. ne peut être vide",
     "NOT_SUP4"           : "Ne peut avoir plus de 4 caractères",
-    "NOT_SUP_MAXDAY"     : "Ne peut être supérieur au total des jours ouvrables"    
+    "NOT_SUP_MAXDAY"     : "Ne peut être supérieur au total des jours ouvrables"
 },
 
   "PATIENT_REGISTRATIONS" : {
@@ -809,7 +809,7 @@
     "NB_SPOUSE"           : "Nombre epoux (se)",
     "BASE_SALARY"         : "Salaire de base",
     "CREATED"             : "Cree",
-    "MEMBERS"              : "Membres",    
+    "MEMBERS"              : "Membres",
     "APPLIES_GLOBALLY"     : "Appliquer globalement",
     "REFERENCE_PURCHASE" : "Reference",
     "GIVEN_AMOUNT"       : "Montant donne",
@@ -819,22 +819,22 @@
     "NET_AFTER_TAXES"    : "Net après taxes",
     "NET_SALARY"         : "Salaire net",
     "PAYCHECK"           : "Bulletin",
-    "DAILY_RATE"         : "Taux journalier", 
+    "DAILY_RATE"         : "Taux journalier",
     "AMOUNT_WITHHELD"    : "Montant à retenir",
     "TIMES"              : "Temps",
     "AMOUNT_PAYABLE"     : "Montant à payer",
     "NET_CASH"           : "Net à payer",
     "WORKING_DAY"        : "Jours prestés",
-    "CONSUMPTION_PER_MONTH" : "Consommation par mois", 
-    "SAFETY_STOCK"          : "Stock de sécurité", 
-    "MINIMUM_STOCK"         : "Stock Minimum", 
-    "MAXIMUM_STOCK"         : "Stock Maximum", 
+    "CONSUMPTION_PER_MONTH" : "Consommation par mois",
+    "SAFETY_STOCK"          : "Stock de sécurité",
+    "MINIMUM_STOCK"         : "Stock Minimum",
+    "MAXIMUM_STOCK"         : "Stock Maximum",
     "MONTH_OF_STOCK"        : "Mois de stock",
-    "QUANTITY_ORDER"        : "Quantité à commander",          
+    "QUANTITY_ORDER"        : "Quantité à commander",
     "WORKING_DAY"        : "Jours prestés"    ,
     "STOCK_QTE"          : "Quantité en Stock",
-    "STOCK_QTE_MIN"      : "Quantité Minimum", 
-    "STOCK_QTE_MAX"      : "Quantité Maximum", 
+    "STOCK_QTE_MIN"      : "Quantité Minimum",
+    "STOCK_QTE_MAX"      : "Quantité Maximum",
     "STOCK_QTE_SEC"      : "Stock de securité"
   },
 
@@ -1429,7 +1429,7 @@
       "LOG"                   : "Log Journal ID "
   },
 
-  "TRANSFERT"        : {
+  "TRANSFER"        : {
     "TITLE"       : "Transfert",
     "TRANSFER"    : "Transfert",
     "CONVENTION"  : "Convention",
@@ -1440,8 +1440,6 @@
     "SOURCE"      : "Source",
     "EXPECTED"    : "Attendu",
     "AMOUNT"      : "Montant",
-    "CRUMB_PCASH" : "caisse principale",
-    "CRUMB_TRANSFERT" : "transfert",
     "PROJECT"     : "Proget",
     "CAISSE"      : "Caisse",
     "CURRENCY"    : "Monnaie",
@@ -1892,7 +1890,7 @@
     "BY"             : "par ",
     "DISCARD"        : "Annuler l'ordre d'achat"
   },
-  
+
    "GRADE" : {
     "TITLE"        : "Gestion de grades des employés",
 	"ADD"		   : "Ajouter un grade",
@@ -2007,16 +2005,16 @@
     "MONTH_CUMUL"         : "Cumul Mensuel",
     "NOT_EMPTY"           : "ABR. ne peut être vide",
     "NOT_SUP4"            : "Ne peut avoir plus de 4 caractères",
-    "CURRENCY"            : "Monnaie"   
+    "CURRENCY"            : "Monnaie"
   },
 
    "CONFIG_RUBRIC" : {
     "TITLE"         : "Configuration des rubriques",
     "NEW_CONFIG"    : "Nouvelle configuration",
-    "SAVE_SUCCES"  : "Enregistrement avec succès",    
+    "SAVE_SUCCES"  : "Enregistrement avec succès",
     "UPDATE_SUCCES" : "Mis à jour avec succès",
-    "CONFIRM"       : "Etes vous sure de vouloir supprimer cette configuration",      
-    "UPDATE"        : "Mettre à jour une configuration",    
+    "CONFIRM"       : "Etes vous sure de vouloir supprimer cette configuration",
+    "UPDATE"        : "Mettre à jour une configuration",
     "ADD"           : "Créer une nouvelle configuration",
     "REGISTERED"    : "Configuration des rubriques enregistrées",
     "ALERT"         : "Le module configuration des rubriques, permet le paramétrage des différentes types rubriques qui sont prises pendant une période de paie",
@@ -2058,7 +2056,7 @@
     "NO_CONSUMPTION"  : "Aucune consommation durant cette période",
     "ITEMS"           : "Articles",
     "NR"              : "Nr"
-  },  
+  },
 
   "DONATION_MANAGEMENT" : {
     "TITLE"             : "Gestion des Dons",
@@ -2156,8 +2154,8 @@
     "SELECT_PERIOD" : "Sélectionner une période de paiement",
     "MATRICULE"     : "Matricule",
     "FAM_STATUS"    : "Situation familiale",
-    "GRADE"         : "Grade"  
-  },  
+    "GRADE"         : "Grade"
+  },
 
   "TAX_PAYMENT" : {
     "EMPLOYEE"         : "Nom de l'employé",
@@ -2172,14 +2170,14 @@
 
   "STOCK_STATUS"     :{
     "TITLE"                 : "Situation de stock",
-    "NO_CONSUMPTION"        : "Aucun produits en stock",    
-    "CONSUMPTION_PER_MONTH" : "Consommation par mois", 
-    "SAFETY_STOCK"          : "Stock de sécurité", 
-    "MINIMUM_STOCK"         : "Stock Minimum", 
-    "MAXIMUM_STOCK"         : "Stock Maximum", 
+    "NO_CONSUMPTION"        : "Aucun produits en stock",
+    "CONSUMPTION_PER_MONTH" : "Consommation par mois",
+    "SAFETY_STOCK"          : "Stock de sécurité",
+    "MINIMUM_STOCK"         : "Stock Minimum",
+    "MAXIMUM_STOCK"         : "Stock Maximum",
     "MONTH_OF_STOCK"        : "Mois de stock",
     "QUANTITY_ORDER"        : "Quantité à commander"
-  },  
+  },
 
   "AUTH"             : {
     "LOGIN"          : "Bhima Login",

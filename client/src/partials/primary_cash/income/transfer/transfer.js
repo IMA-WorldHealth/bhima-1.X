@@ -14,7 +14,7 @@ angular.module('bhima.controllers')
 
     //inits and declarations
     var dependencies = {}, configuration = {};
-    $scope.data= {};
+    $scope.data = {};
     configuration.cash_box_id = $routeParams.cashbox_id;
 
     dependencies.project = {
@@ -115,7 +115,7 @@ angular.module('bhima.controllers')
 
     function updateInfoCashBox(cash_box_source_id, currency_id) {
       if (!cash_box_source_id || !currency_id) {
-        messenger.danger();
+        messenger.danger('WHAT IS THIS?');
         return;
       }
       configuration.cash_account_currency = $scope.model.cashAccounCurrency.data.filter(function (item) {
@@ -145,7 +145,7 @@ angular.module('bhima.controllers')
     function ajouter () {
       configuration.value = $scope.data.value;
 
-      if (!isValid()) { return  messenger.danger($translate.instant('TRANSFERT.NO_CURRENCY')); }
+      if (!isValid()) { return  messenger.danger($translate.instant('TRANSFER.NO_CURRENCY')); }
 
       writeTransfer()
       .then(writeItem)
