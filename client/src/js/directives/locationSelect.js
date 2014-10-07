@@ -19,10 +19,10 @@ angular.module('bhima.directives')
   
       // Verify location parameters
       if (!submitCallback) { 
-        throw new Error("[locationSelect] Location select must define village selection callback");
+        throw new Error('[locationSelect] Location select must define village selection callback');
       }
       if (!scope[submitCallback]) { 
-        throw new Error("[locationSelect] Village selection callback not found on scope");
+        throw new Error('[locationSelect] Village selection callback not found on scope');
       }
 
       scope.locationSelect = scope.locationSelect || {};
