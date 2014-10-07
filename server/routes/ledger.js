@@ -84,7 +84,6 @@ module.exports = function (db, sanitize) {
       return db.exec(sql);
     })
     .then(function (ans) {
-      console.log('ans :::', ans);
       defer.resolve(ans);
     })
     .catch(function (error) {
