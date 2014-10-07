@@ -1002,7 +1002,7 @@
 
     "REGISTER" : {
       "TITLE"            : "Enregistrement des Stocks",
-      "GENERAL"          : "General",
+      "GENERAL"          : "Général",
       "CODE"             : "Code",
       "DESCRIPTION"      : "Description",
       "GROUP"            : "Groupe Inventaire",
@@ -1079,7 +1079,7 @@
 
   "ACCOUNT"          : {
     "TITLE"          : "Gestion des Comptes",
-    "GENERATE"       : "Generer un rapport des Comptes",
+    "GENERATE"       : "Générer un rapport des Comptes",
     "CREATE"         : "Créer un plan Comptable",
     "ADD"            : "Ajouter un Compte",
     "HELP_TXT_1"     : "Un Plan Comptable pour",
@@ -1247,7 +1247,7 @@
     "CONVENTION"                   : "Recit pour convention",
     "NUM_CONVENTION_PAY"           : "Reference",
     "GENERIC_INCOME"               : "Recette Genarale",
-    "GENERIC_EXPENSE"              : "Depense Generale",
+    "GENERIC_EXPENSE"              : "Depense Générale",
     "LOSS"                         : "Document de perte de stock",
     "DATE_DOCUMENT"                : "Date document",
     "STOCK_MOVEMENT"               : "Mouvement de stock",
@@ -1440,7 +1440,7 @@
     "SOURCE"      : "Source",
     "EXPECTED"    : "Attendu",
     "AMOUNT"      : "Montant",
-    "PROJECT"     : "Proget",
+    "PROJECT"     : "Projet",
     "CAISSE"      : "Caisse",
     "CURRENCY"    : "Monnaie",
     "NAVIGATION"  : "Naviguation",
@@ -1496,7 +1496,7 @@
     "TITLE"        : "Caisse Pricipale",
     "EXPENSES"     : "Depenses",
     "INCOMES"      : "Recettes",
-    "GENERIC"      : "Generique",
+    "GENERIC"      : "Générique",
     "NAVIGATION"   : "Naviguation",
     "CONFIGURE"    : "Configuration",
     "HOME"         : "Caisse Principale",
@@ -1506,8 +1506,8 @@
       "MULTI_PAYROLL"           : "Payroll Multiple",
       "PAYABLE_EMPLOYEE"        : "Liste des employées payables",
       "PURCHASE"                : "Achat",
-      "GENERIC_TITLE"           : "Depenses Generiques",
-      "GENERIC_RECEIPT"         : "Recettes Generiques",
+      "GENERIC_TITLE"           : "Depenses Génériques",
+      "GENERIC_RECEIPT"         : "Recettes Génériques",
       "REFERENCE_DOCUMENT_ID"   : "Reference Document ID",
       "RECIPIENT"               : "Destinataire",
       "PURPOSE"                 : "Motif",
@@ -1553,7 +1553,7 @@
       "DATE"                  : "Date recette",
       "AMOUNT"                : "Montant",
       "GENERIC" : {
-        "TITLE"   : "Recette Generique",
+        "TITLE"   : "Recette Générique",
         "RECEIPT" : "Reception"
       },
       "SELECT_ACCOUNT"        : "Sélectionner un compte",
