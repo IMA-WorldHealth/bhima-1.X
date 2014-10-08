@@ -15,17 +15,20 @@ angular.module('bhima.controllers')
         data = $scope.data = { rows : [] },
         session = $scope.session = {};
 
+    if (!exchange.hasDailyRate()) {
+      session.noExchange = true;
+      return messenger.error('No Exchange Rate Detected!');
+    }
+
     // used in orderBy
     session.order = '+account_number';
-    // used to select a deb/cred id
-    session.type = 'd';
 
     function VoucherRow() {
       this.debit = null;
       this.credit = null;
       this.account_id = null;
-      this.comment = '';
       this.selectEntity = false;
+      this.dctype = 'd';
     }
 
     data.rows = [new VoucherRow(), new VoucherRow()];
@@ -69,6 +72,17 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.currencies = {
+      required : true,
+      query : {
+        tables : {
+          'currency' : {
+            columns : ['id', 'name', 'symbol']
+          }
+        }
+      }
+    };
+
     function startup(models) {
       var entities;
       models.accounts.data.forEach(function (account) {
@@ -93,6 +107,89 @@ angular.module('bhima.controllers')
 
     $scope.submit = function submit() {
       // local variables to speed up calculation
+      var records;
+      
+      // First step:
+      // Get the periods associated for the date.
+      connect.fetch('/period/' + Number(data.date))
+      .then(function (period) {
+        data.period_id = period.id;
+        data.fiscal_year_id = period.fiscal_year_id;
+        return connect.fetch('/user_session');
+      })
+      .then(function (user) {
+        session.user_id = user.id;
+        // FIXME : This is really bad in the long run.  If we scale to multiple
+        // users, there is a chance a collision could take place and we
+        // have duplicate transaction ids.
+        return connect.fetch('/max_trans/' + $scope.project.id);
+      })
+      .then(function (transaction) {
+        // FIXME : this should just return a simple number
+        // or something.  transaction[0] looks ugly
+        data.trans_id = transaction[0].abbr + transaction[0].increment;
+
+        records = data.rows.map(function (row) {
+          var record = {};
+
+          record.uuid = uuid();
+          record.trans_id = data.trans_id;
+          record.description = data.description;
+          record.project_id = $scope.project.id;
+          record.trans_date = util.sqlDate(data.date);
+          record.period_id = data.period_id;
+          record.fiscal_year_id = data.fiscal_year_id;
+         
+          if (data.comment) { record.comment = data.comment; }
+          if (data.document_id) { record.inv_po_id = data.document_id; }
+
+          record.currency_id = data.currency_id;
+
+          record.account_id = row.account_id;
+
+
+          if (row.debit) {
+            record.debit = row.debit;
+            record.debit_equiv = exchange(row.debit, data.currency_id);
+          }
+
+          if (row.credit) {
+            record.credit = row.credit;
+            record.credit_equiv = exchange(row.credit, data.currency_id);
+          }
+
+          if (row.deb_cred_uuid) {
+            record.deb_cred_uuid = row.deb_cred_uuid;
+            record.deb_cred_type = row.deb_cred_type;
+          }
+
+          record.origin_id = 1; // FIXME
+          record.user_id = session.user_id;
+
+          return record;
+        });
+
+        console.log(records);
+
+        return connect.basicPut('posting_journal', records);
+      })
+      .then(function () {
+        var log = {
+          uuid           : uuid(),
+          transaction_id : data.trans_id,
+          justification  : data.description,
+          date           : util.sqlDate(data.trans_date),
+          user_id        : session.user_id 
+        };
+        return connect.post('journal_log', log);
+      })
+      .then(function () {
+        messenger.success('Data Posted Successfully.');
+      })
+      .catch(function (err) {
+        console.error(err);
+      })
+      .finally();
 
       /*
       // serialize date
@@ -155,6 +252,7 @@ angular.module('bhima.controllers')
     // startup
     appstate.register('project', function (project) {
       $scope.project = project;
+      data.currency_id = project.currency_id;
       dependencies.accounts.query.where =
         ['account.enterprise_id=' + project.enterprise_id];
       validate.process(dependencies)
@@ -170,10 +268,12 @@ angular.module('bhima.controllers')
 
     $scope.totalDebit = function () {
       session.totalDebit = total('debit');
+      session.validTotals = session.totalCredit === session.totalDebit && session.totalCredit !== 0;
     };
 
     $scope.totalCredit = function () {
       session.totalCredit = total('credit');
+      session.validTotals = session.totalCredit === session.totalDebit && session.totalCredit !== 0;
     };
 
     $scope.remove = function (index) {
@@ -197,7 +297,6 @@ angular.module('bhima.controllers')
       delete row.deb_cred_uuid;
       delete row.deb_cred_type;
       row.account_id = row.account.id;
-      console.log(row);
     };
   }
 ]);

@@ -2,11 +2,12 @@
   {{ "JOURNAL_VOUCHER.TITLE" | translate }}
 </header>
 
-<main>
+<main class="extend">
   <div class="row">
     <div class="col-xs-8">
-      <div class="panel panel-primary">
-        <div class="panel panel-heading">
+      <div class="panel panel-primary" ng-class="{'form-disabled' : session.noExchange }">
+        <div class="panel-heading">
+          <i class="glyphicon glyphicon-list-alt"></i>
           {{ "JOURNAL_VOUCHER.TITLE" | translate }}
         </div>
         <div class="panel-body">
@@ -19,31 +20,21 @@
               </div>
             </div>
 
-            <div class="row">
-              <div class="col-xs-6">
-                <div class="form-group">
-                  <label class="control-label col-xs-4">{{ "COLUMNS.DATE" | translate }}</label>
-                  <div class="input-group col-xs-8">
-                    <span class="input-group-addon">
-                      <i class="glyphicon glyphicon-calendar"></i>
-                    </span>
-                    <input type="date" class="form-bhima" ng-model="data.date" required>
-                  </div>
-                </div>
+            <div class="form-group">
+              <label class="control-label col-xs-2">{{ "COLUMNS.DATE" | translate }}</label>
+              <div class="input-group col-xs-10">
+                <span class="input-group-addon">
+                  <i class="glyphicon glyphicon-calendar"></i>
+                </span>
+                <input type="date" class="form-bhima" ng-model="data.date" required>
               </div>
+            </div>
 
-              <div class="col-xs-6">
-                <div class="form-group">
-                  <label class="control-label col-xs-4">
-                    {{ "COLUMNS.REFERENCE" | translate }}
-                  </label>
-                  <div class="input-group col-xs-8">
-                    <span class="input-group-addon">
-                      <i class="glyphicon glyphicon-file"></i>
-                    </span>
-                    <input class="form-bhima" ng-model="data.reference" required>
-                  </div>
-                </div>
+            <div class="form-group">
+              <label class="control-label col-xs-2">{{ "COLUMNS.CURRENCY" | translate }}</label>
+              <div class="col-xs-10">
+                <select class="form-bhima" ng-model="data.currency_id" ng-options="curr.id as curr.symbol for curr in currencies.data">
+                </select>
               </div>
             </div>
 
@@ -54,17 +45,33 @@
               </div>
             </div>
 
-            <div class="form-group" ng-if="!session.comment">
-              <p class="form-control-static col-sm-offset-2">
-                <a ng-click="session.comment=!session.comment">
-                  <i class="glyphicon glyphicon-list-alt"></i>
-                  {{ "JOURNAL_VOUCHER.ADD_COMMENT" | translate }}
+            <div class="form-group" ng-if="session.document">
+              <label class="control-label col-xs-2">{{ "COLUMNS.REFERENCE" | translate }}</label>
+              <div class="input-group col-xs-10">
+                <span class="input-group-addon">
+                  <i class="glyphicon glyphicon-file"></i>
+                </span>
+                <input class="form-bhima" ng-model="data.document_id" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <p class="col-xs-2"></p> <!-- styling hack -->
+              <p class="form-control-static col-xs-3"  ng-if="!session.comment">
+                <a ng-click="session.comment=!session.comment"> <i class="glyphicon glyphicon-plus-sign"></i>
+                  <b>{{ "JOURNAL_VOUCHER.ADD_COMMENT" | translate }}</b>
+                </a>
+              </p>
+
+              <p class="form-control-static col-xs-4" ng-if="!session.document">
+                <a ng-click="session.document=!session.document"> <i class="glyphicon glyphicon-plus-sign"></i>
+                  <b>{{ "JOURNAL_VOUCHER.ADD_REFERENCE_DOCUMENT" | translate }}</b>
                 </a>
               </p>
             </div>
-
           </form>
         </div>
+
         <table class="table table-condensed">
           <thead>
             <tr>
@@ -98,32 +105,32 @@
                     class="form-bhima"
                     ng-if="!!row.selectEntity"
                     ng-model="row.deb_cred"
-                    typeahead="e as e.text for e in entities | filter:{type : session.type} | filter:$viewValue | limitTo:8"
+                    typeahead="e as e.text for e in entities | filter:{type : row.dctype} | filter:$viewValue | limitTo:8"
                     typeahead-on-select="selectDebCred(row)"
                     typeahead-template-url="entityListItem.tmpl.html"
-                    placeholder="{{ 'SELECT.DEB_CRED_UUID' | translate }}"
+                    placeholder="{{ 'SELECT.DEB_CRED' | translate }}"
                   >
                   <span class="input-group-btn dropdown" ng-if="!!row.selectEntity">
                     <a class="btn btn-default dropdown-toggle">
-                      {{ session.type | uppercase }}
+                      {{ row.dctype | uppercase }}
                       <span class="caret" data-caret="&#9660;"></span>
                     </a>
                     <ul class="dropdown-menu">
-                      <li><a ng-click="session.type='d'">{{ "COLUMNS.DEBTOR" | translate }}</a></li>
-                      <li><a ng-click="session.type='c'">{{ "COLUMNS.CREDITOR" | translate }}</a></li>
+                      <li><a ng-click="row.dctype='d'">{{ "COLUMNS.DEBTOR" | translate }}</a></li>
+                      <li><a ng-click="row.dctype='c'">{{ "COLUMNS.CREDITOR" | translate }}</a></li>
                     </ul>
                   </span>
                 </div>
               </td>
-              <td><input type="number" class="form-invoice" min="0" placeholder="0.00" ng-model="row.debit" ng-change="totalDebit()"></td>
-              <td><input type="number" class="form-invoice" min="0" placeholder="0.00" ng-model="row.credit" ng-change="totalCredit()"></td>
+              <td><input type="number" class="form-invoice" min="0" placeholder="0.00" ng-model="row.debit" ng-change="totalDebit()" ng-disabled="row.credit>0"></td>
+              <td><input type="number" class="form-invoice" min="0" placeholder="0.00" ng-model="row.credit" ng-change="totalCredit()" ng-disabled="row.debit>0"></td>
               <td><a ng-click="remove($index)" class="danger" ng-if="data.rows.length>2"><i class="glyphicon glyphicon-trash"></i></a></td>
             </tr>
             <tr>
               <td></td>
-              <td>{{ session.totalDebit || 0 }}</td>
-              <td>{{ session.totalCredit || 0 }}</td>
-              <td><i class="glyphicon" ng-class="{ 'glyphicon-ok-circle text-success' : session.totalDebit==session.totalCredit, 'glyphicon-ban-circle text-danger': session.totalDebit!=session.totalCredit }"></i></td>
+              <td ng-bind-html="(session.totalDebit || 0) | intlcurrency:data.currency_id"></td>
+              <td ng-bind-html="(session.totalCredit || 0) | intlcurrency:data.currency_id"></td>
+              <td><i class="glyphicon" ng-class="{ 'glyphicon-ok-circle text-success' : session.validTotals, 'glyphicon-ban-circle text-danger': !session.validTotals }"></i></td>
             </tr>
           </tbody>
           <tfoot>
@@ -137,6 +144,11 @@
             <tr>
           </tfoot>
         <table>
+        <div class="panel-footer">
+          <div class="form-group col-sm-offset-11">
+            <button class="btn btn-sm btn-default" ng-click="submit()">{{ 'FORM.SUBMIT' | translate }}</button>
+          </div>
+        </div>
       </div>
     <div>
   </div>
@@ -150,7 +162,7 @@
 
 <script type="text/ng-template" id="accountListItem.tmpl.html">
   <a class="clk">
-    <span ng-if="match.model.account_type=='title'" class="text-danger">
+    <span ng-if="match.model.account_type=='title'" class="text-danger pull-right">
       <i class="glyphicon glyphicon-exclamation-sign"></i>
     </span>
     <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
