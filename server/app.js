@@ -901,8 +901,9 @@ app.get('/lot/:inventory_uuid', function (req, res, next) {
 });
 
 app.get('/max_trans/:projectId', function (req, res, next) {
+  // When did we switch from IFNULL in the posting journal
   var sql =
-    'SELECT abbr, max(increment) AS increment FROM (' +
+    'SELECT abbr, IFNULL(MAX(increment), 1) AS increment FROM (' +
       'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
       'FROM posting_journal JOIN project ON posting_journal.project_id = project.id ' +
       'WHERE project_id = ? ' +
