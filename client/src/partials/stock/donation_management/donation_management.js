@@ -308,16 +308,39 @@ angular.module('bhima.controllers')
       var movement = processMovements(document_id);
       var synthese = [];
 
-      // lots.forEach(function (lot) {
+      // lots.forEach(function (lot, index) {
       //   synthese.push({
       //     lot : lot,
-      //     movement : movement,
+      //     movement : movement[index],
       //     donation : donation,
-      //     donation_items : donation_items,
+      //     donation_item : donation_items[index],
       //     currency_id : $scope.enterprise.data[0].currency_id,
       //     project_id : $scope.project.id
       //   });
       // });
+
+      session.donation.items.forEach(function (inventoryReference) {
+        var inventory_lots = [],
+            sum_lots = 0;
+
+        inventoryReference.lots.data.forEach(function (lot) {
+          sum_lots += lot.quantity;
+          inventory_lots.push(lot.tracking_number);
+        });
+
+        synthese.push({
+          movement         : {
+            document_id    : document_id
+          },
+          inventory_uuid   : inventoryReference.inventoryId,
+          donation         : donation,
+          tracking_numbers : inventory_lots,
+          quantity         : sum_lots,
+          currency_id      : $scope.enterprise.data[0].currency_id,
+          project_id       : $scope.project.id
+        });
+
+      });
 
       connect.post('stock',lots)
         .then(function () {
@@ -329,11 +352,13 @@ angular.module('bhima.controllers')
         .then(function () {
           return connect.post('donation_item', donation_items);
         })
-        .then(function(){   
-          // movement.forEach(function (synthese) {
-            
-          // })       
-          // return $http.post('posting_donation/', synthese);
+        .then(function(){ 
+          // return $q.all(synthese.map(function (postingEntry) {
+          //   return $http.post('posting_donation/', postingEntry);
+          // }));
+          return $q.all(synthese.map(function (postingEntry) {
+            return $http.post('posting_donation/', postingEntry);
+          }));
         })
         .then(function () {
           $location.path('/stock/donation_management/report/' + document_id);
@@ -390,7 +415,7 @@ angular.module('bhima.controllers')
           date            : util.sqlDate(session.config.date)
       };
 
-      session.lots.forEach(function (lot, index) {
+      session.lots.forEach(function (lot) {
         don.donation_items.push({
           uuid : uuid(),
           donation_uuid : don.donation.uuid,
