@@ -404,7 +404,8 @@
     "PERIOD_ACCOUNT_CONFIG" : "Select an accounting config",
     "DONOR"               : "Select a donor",
     "PERIOD_PAYMENT"      : "Select a payment period",
-    "PROFIT_CENTER"       : "Select a Profit Center"
+    "PROFIT_CENTER"       : "Select a Profit Center",
+    "DEB_CRED"            : "Select a debtor or creditor"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -942,7 +943,8 @@
   "JOURNAL_VOUCHER"  : {
     "TITLE"                 : "Journal Voucher",
     "ADD_ROW"               : "Add Line",
-    "ADD_COMMENT"           : "Add Comment"
+    "ADD_COMMENT"           : "Add Comment",
+    "ADD_REFERENCE_DOCUMENT" : "Add Reference Document"
   },
 
   "CAUTION"        : {
@@ -1602,7 +1604,7 @@
     "CHOOSE"                : "Select a secondary cost center",
     "INFO_COST_CENTER"      : "Cost center details",
     "ASSOCIATED_TO"         : "Cost center for ",
-    "PLEASE_SELECT"         : "(choose cost center pleaase!)",
+    "PLEASE_SELECT"         : "(choose cost center please!)",
     "NEXT"                  : "Next",
     "TEXT_COST"             : "Designation",
     "AUX_CENTER"            : "Auxilliairy center",

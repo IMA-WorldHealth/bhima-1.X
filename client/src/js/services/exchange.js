@@ -6,6 +6,8 @@ angular.module('bhima.services')
   'messenger',
   'precision',
   function ($timeout, Store, appstate, messenger, precision) {
+    // FIXME: this module needs to be able to do
+    // exchange.setRate() so that it can detect changes
     var called = false;
     var cfg = {};
 
@@ -70,14 +72,12 @@ angular.module('bhima.services')
     };
 
     appstate.register('exchange_rate', function (rates) {
-      console.log('[EXCHANGE]', rates);
       cfg.rates = rates;
       $timeout(function () { exchange.hasExchange(); }); // Force refresh
 
       var store = exchange.store = new Store({ identifier : 'date', data : [] });
 
       rates.forEach(function (rate) {
-        console.log('rate :::', rate);
         var date = normalize(new Date(rate.date));
         if (!store.get(date)) {
           store.post({ date : date, rateStore : new Store({ data : [] }) });
