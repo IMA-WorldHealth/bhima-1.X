@@ -69,15 +69,17 @@ angular.module('bhima.controllers')
     dependencies.donations = {
       query : {
         tables : {
-          donations : { columns : ['date']},
-          inventory : { columns : ['text']},
-          stock     : { columns : ['tracking_number','lot_number','quantity']},
-          donor     : { columns : ['name']}
+          donations     : { columns : ['date']},
+          donation_item : { columns : ['uuid']},
+          inventory     : { columns : ['text']},
+          stock         : { columns : ['tracking_number','lot_number','quantity']},
+          donor         : { columns : ['name']}
         },
         join : [
           'donations.donor_id=donor.id',
+          'donations.uuid=donation_item.donation_uuid',
           'inventory.uuid=stock.inventory_uuid',
-          'stock.tracking_number=donations.tracking_number'
+          'stock.tracking_number=donation_item.tracking_number'
         ]
       }
     };
@@ -299,70 +301,61 @@ angular.module('bhima.controllers')
     $scope.accept = function (){
       var document_id = uuid();
       var lots = processLots();
+      var don = processDonations();
 
-      return $q.all(lots.map(function (lot) {
-        var donation = {
-          uuid            : uuid(),
-          donor_id        : session.config.donor.id,
-          employee_id     : session.config.employee.id,
-          tracking_number : lot.tracking_number,
-          date            : util.sqlDate(session.config.date)
-        };
+      var donation = don.donation;
+      var donation_items = don.donation_items;
+      var movement = processMovements(document_id);
+      var synthese = [];
 
-        var movement = {
+      // lots.forEach(function (lot) {
+      //   synthese.push({
+      //     lot : lot,
+      //     movement : movement,
+      //     donation : donation,
+      //     donation_items : donation_items,
+      //     currency_id : $scope.enterprise.data[0].currency_id,
+      //     project_id : $scope.project.id
+      //   });
+      // });
+
+      connect.post('stock',lots)
+        .then(function () {
+          return connect.post('movement', movement);
+        })
+        .then(function () {
+          return connect.post('donations', [donation]);
+        })
+        .then(function () {
+          return connect.post('donation_item', donation_items);
+        })
+        .then(function(){   
+          // movement.forEach(function (synthese) {
+            
+          // })       
+          // return $http.post('posting_donation/', synthese);
+        })
+        .then(function () {
+          $location.path('/stock/donation_management/report/' + document_id);
+        })
+        .then(function () {
+          messenger.success('STOCK.ENTRY.WRITE_SUCCESS');
+        })
+        .catch(function () {
+          messenger.error('STOCK.ENTRY.WRITE_ERROR');
+        });
+
+    };
+
+    function processMovements (document_id) {
+      var movements = [];
+      session.lots.forEach(function (lot) {
+        movements.push({
           uuid : uuid(),
           document_id     : document_id,
           tracking_number : lot.tracking_number,
           date            : util.sqlDate(new Date()),
           quantity        : lot.quantity,
-          depot_entry     : session.cfg.depot.id
-        };
-
-        var synthese = {
-          lot : lot,
-          movement : movement,
-          donation : donation,
-          currency_id : $scope.enterprise.data[0].currency_id,
-          project_id : $scope.project.id
-        };
-
-        var def = $q.defer();
-
-        connect.post('stock',[lot])
-        .then(function () {
-          return connect.post('movement', [movement]);
-        })
-        .then(function () {
-          return connect.post('donations', [donation]);
-        })
-        .then(function(){          
-          return $http.post('posting_donation/', synthese);
-        })
-        .then(function (res) {
-          def.resolve(res);
-        });
-        return def.promise;      
-      }))
-      .then(function () {
-        messenger.success('STOCK.ENTRY.WRITE_SUCCESS');
-      })
-      .then(function () {
-        $location.path('/stock/donation_management/report/' + document_id);
-      })
-      .catch(function () {
-        messenger.error('STOCK.ENTRY.WRITE_ERROR');
-      }); 
-    };
-
-    function processMovements (document_id) {
-      var movements = [];
-      session.lots.forEach(function (stock) {
-        movements.push({
-          uuid : uuid(),
-          document_id     : document_id,
-          tracking_number : stock.tracking_number,
-          date            : util.sqlDate(new Date()),
-          quantity        : stock.quantity,
           depot_entry     : session.cfg.depot.id
         });
       });
@@ -388,18 +381,24 @@ angular.module('bhima.controllers')
     }
 
     function processDonations () {
-      var donations = [];
-      session.lots.forEach(function (lot) {
-        donations.push({
+      var don = { donation : {}, donation_items : [] };
+
+      don.donation = {
           uuid            : uuid(),
           donor_id        : session.config.donor.id,
           employee_id     : session.config.employee.id,
-          tracking_number : lot.tracking_number,
           date            : util.sqlDate(session.config.date)
+      };
+
+      session.lots.forEach(function (lot, index) {
+        don.donation_items.push({
+          uuid : uuid(),
+          donation_uuid : don.donation.uuid,
+          tracking_number : lot.tracking_number
         });
       });
 
-      return donations;
+      return don;
     }
 
     $scope.toggleView = function(){
