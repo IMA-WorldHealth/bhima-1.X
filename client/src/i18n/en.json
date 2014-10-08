@@ -942,13 +942,7 @@
   "JOURNAL_VOUCHER"  : {
     "TITLE"                 : "Journal Voucher",
     "ADD_ROW"               : "Add Line",
-    "POSTING_JOURNAL"       : "Posting Journal",
-    "TAB_LOCK_COLONNE"      : "Tab Lock Column",
-    "TAB_LOCK_LINE"         : "Tab Lock Line",
-    "SUBMIT"                : "Submit",
-    "DEFAULT_CURRENCY"      : "Default Currency",
-    "TRANS_ID"              : "Transaction ID",
-    "LOG"                   : "Log Journal ID"
+    "ADD_COMMENT"           : "Add Comment"
   },
 
   "CAUTION"        : {
