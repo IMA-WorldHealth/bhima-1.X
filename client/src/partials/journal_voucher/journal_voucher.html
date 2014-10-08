@@ -2,102 +2,159 @@
   {{ "JOURNAL_VOUCHER.TITLE" | translate }}
 </header>
 
-<nav>
-  <div class="pull-left dropdown">
-    <button class="btn btn-sm btn-primary dropdown-toggle square">
-      {{ currencies.get(voucher.currency_id).symbol || "JOURNAL_VOUCHER.DEFAULT_CURRENCY" | translate }}
-      <span class="caret" data-caret="&#9660;"></span>
-    </button>
-    <ul class="dropdown-menu square">
-      <li ng-repeat="currency in currencies.data">
-        <a class="clk" ng-click="voucher.currency_id=currency.id">{{ currency.symbol }}</a>
-      </li>
-    </ul>
-  </div>
-
-  <div class="pull-right">
-    <a href="#/posting_journal" class="btn btn-sm btn-default square">
-      <span class="glyphicon glyphicon-tag"></span> {{ "JOURNAL_VOUCHER.POSTING_JOURNAL" | translate}}
-    </a>
-  </div>
-</nav>
-
 <main>
-  <div class="row col-xs-12">
-    <form class="form-horizontal">
-        <div class="form-group">
-          <label class="col-xs-3">{{ 'COLUMNS.DATE' | translate }}</label>
-          <div class="col-xs-9">
-            <input class="form-bhima" type="date" ng-model="voucher.trans_date" max="{{ today }}">
-          </div>
+  <div class="row">
+    <div class="col-xs-8">
+      <div class="panel panel-primary">
+        <div class="panel panel-heading">
+          {{ "JOURNAL_VOUCHER.TITLE" | translate }}
         </div>
+        <div class="panel-body">
+          <form class="form-horizontal">
 
-        <div class="form-group">
-          <label class="col-xs-3">{{ 'COLUMNS.DESCRIPTION' | translate }}</label>
-          <div class="col-xs-9">
-            <input type="text" ng-model="voucher.description" class="form-bhima" required>
-          </div>
-        </div>
+            <div class="form-group">
+              <label class="control-label col-xs-2">{{ "COLUMNS.DESCRIPTION" | translate }}</label>
+              <div class="col-xs-10">
+                <input class="form-bhima" ng-model="data.description" required>
+              </div>
+            </div>
 
-        <div class="form-group">
-          <label class="col-xs-3">{{'COLUMNS.INVPO_ID' | translate}}</label>
-          <div class="col-xs-9">
-            <input type="text" ng-model="voucher.inv_po_id" class="form-bhima"  min="10" required>
-          </div>
+            <div class="row">
+              <div class="col-xs-6">
+                <div class="form-group">
+                  <label class="control-label col-xs-4">{{ "COLUMNS.DATE" | translate }}</label>
+                  <div class="input-group col-xs-8">
+                    <span class="input-group-addon">
+                      <i class="glyphicon glyphicon-calendar"></i>
+                    </span>
+                    <input type="date" class="form-bhima" ng-model="data.date" required>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xs-6">
+                <div class="form-group">
+                  <label class="control-label col-xs-4">
+                    {{ "COLUMNS.REFERENCE" | translate }}
+                  </label>
+                  <div class="input-group col-xs-8">
+                    <span class="input-group-addon">
+                      <i class="glyphicon glyphicon-file"></i>
+                    </span>
+                    <input class="form-bhima" ng-model="data.reference" required>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group" ng-if="session.comment">
+              <label class="control-label col-xs-2">{{ "COLUMNS.COMMENT" | translate }}</label>
+              <div class="col-xs-10">
+                <input class="form-bhima" ng-model="data.comment" required>
+              </div>
+            </div>
+
+            <div class="form-group" ng-if="!session.comment">
+              <p class="form-control-static col-sm-offset-2">
+                <a ng-click="session.comment=!session.comment">
+                  <i class="glyphicon glyphicon-list-alt"></i>
+                  {{ "JOURNAL_VOUCHER.ADD_COMMENT" | translate }}
+                </a>
+              </p>
+            </div>
+
+          </form>
         </div>
-    </form>
-  </div>
-  <div class="row col-xs-12">
-    <div class="pull-right">
-      <a ng-click="addRow()" class="fieldset-util"><span class="glyphicon glyphicon-plus"></span> {{ "JOURNAL_VOUCHER.ADD_ROW" | translate }} </a>
-    </div>
-    <table class='table table-condensed'>
-      <thead>
-        <tr>
-          <th>{{ "COLUMNS.ACCOUNT" | translate }}</th>
-          <th>{{ "COLUMNS.DEBIT" | translate }}</th>
-          <th>{{ "COLUMNS.CREDIT" | translate }}</th>
-          <th>{{ "COLUMNS.DEBITOR" | translate }}/{{ "COLUMNS.CREDITOR" | translate }}</th>
-          <th>{{ "COLUMNS.DC_TYPE" | translate }}</th>
-          <th>{{ "COLUMNS.COMMENT" | translate }}</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="row in voucher.rows" ng-class="{ 'incomplete-outline': !row.description || !row.account_id, 'complete-outline' : !!row.account_id }">
-          <td>
-            <select class="form-bhima" ng-model="row.account_id">
-              <option value="{{ account.id }}" ng-repeat="account in accounts.data" ng-disabled="account.account_type_id==3">{{ account.account_number }} {{ account.account_txt }}</option>
-            </select>
-          </td>
-          <td><input class="form-invoice" type="number" placeholder="0" ng-model="row.debit"></td>
-          <td><input class="form-invoice" type="number" placeholder="0" ng-model="row.credit"></td>
-          <td><input class="form-invoice" type="text" placeholder="{{ 'COLUMNS.DEBITOR' | translate }} / {{ 'COLUMNS.CREDITOR' | translate }}" ng-model="row.deb_cred_uuid" typeahead-template-url="debitorList.html" typeahead="debitor.text as debitor.uuid for debitor in debitors.data | filter:$viewValue | limitTo:8"></td>
-          <td>
-            <!--
-            <select class="form-bhima" ng-model="row.deb_cred_type" ng-options="option for option in options">
-              <option disabled>{{ "SELECT.DEB_CRED_TYPE" | translate }}</option>
-            </select>
-            -->
-            <input class="form-invoice" type="text" placeholder="{{ 'COLUMNS.DEB_CRED_TYPE' | translate }}" ng-model="row.deb_cred_type">
-          </td>
-          <td><input class="form-invoice" type="text" placeholder="{{ 'COLUMNS.COMMENT' | translate }}" ng-model="row.comment" ></td>
-          <td ng-click="removeRow($index)" style="cursor: pointer; color: red;"><span class="glyphicon glyphicon-trash"></span></td>
-        </tr>
-      </tbody>
-      <tfoot>
-        <tr>
-          <th colspan="1">{{ "COLUMNS.BALANCE" | translate }}</th>
-          <th> {{ voucher.debitTotal }} {{ currencies.get(voucher.currency_id).symbol }}</th>
-          <th colspan="5"> {{ voucher.creditTotal }} {{ currencies.get(voucher.currency_id).symbol }}</th>
-        </tr>
-      </tfoot>
-    </table>
+        <table class="table table-condensed">
+          <thead>
+            <tr>
+              <th style="width:50%">{{ "COLUMNS.ACCOUNT" | translate }}</th>
+              <th>{{ "COLUMNS.DEBIT" | translate }}</th>
+              <th>{{ "COLUMNS.CREDIT" | translate }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="row in data.rows">
+              <td>
+                <div class="input-group">
+                  <span class="input-group-btn">
+                    <a class="btn btn-sm btn-default" ng-click="row.selectEntity=!row.selectEntity">
+                      <i class="glyphicon" ng-class="{ 'glyphicon-user' : !row.selectEntity, 'glyphicon-th-list': !!row.selectEntity}"></i>
+                    </a>
+                  </span>
+
+                  <input
+                    class="form-bhima"
+                    ng-if="!row.selectEntity"
+                    ng-model="row.account"
+                    typeahead="account as account.account_number for account in accounts.data | filter:$viewValue | limitTo:8"
+                    typeahead-on-select="selectAccount(row, account)"
+                    typeahead-template-url="accountListItem.tmpl.html"
+                    placeholder="{{ 'SELECT.ACCOUNT' | translate }}"
+                  >
+
+                  <input
+                    class="form-bhima"
+                    ng-if="!!row.selectEntity"
+                    ng-model="row.deb_cred"
+                    typeahead="e as e.text for e in entities | filter:{type : session.type} | filter:$viewValue | limitTo:8"
+                    typeahead-on-select="selectDebCred(row)"
+                    typeahead-template-url="entityListItem.tmpl.html"
+                    placeholder="{{ 'SELECT.DEB_CRED_UUID' | translate }}"
+                  >
+                  <span class="input-group-btn dropdown" ng-if="!!row.selectEntity">
+                    <a class="btn btn-default dropdown-toggle">
+                      {{ session.type | uppercase }}
+                      <span class="caret" data-caret="&#9660;"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><a ng-click="session.type='d'">{{ "COLUMNS.DEBTOR" | translate }}</a></li>
+                      <li><a ng-click="session.type='c'">{{ "COLUMNS.CREDITOR" | translate }}</a></li>
+                    </ul>
+                  </span>
+                </div>
+              </td>
+              <td><input type="number" class="form-invoice" min="0" placeholder="0.00" ng-model="row.debit" ng-change="totalDebit()"></td>
+              <td><input type="number" class="form-invoice" min="0" placeholder="0.00" ng-model="row.credit" ng-change="totalCredit()"></td>
+              <td><a ng-click="remove($index)" class="danger" ng-if="data.rows.length>2"><i class="glyphicon glyphicon-trash"></i></a></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>{{ session.totalDebit || 0 }}</td>
+              <td>{{ session.totalCredit || 0 }}</td>
+              <td><i class="glyphicon" ng-class="{ 'glyphicon-ok-circle text-success' : session.totalDebit==session.totalCredit, 'glyphicon-ban-circle text-danger': session.totalDebit!=session.totalCredit }"></i></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="4">
+                <a ng-click="addRow()">
+                  <i class="glyphicon glyphicon-plus-sign"></i>
+                  {{ "JOURNAL_VOUCHER.ADD_ROW" | translate }}
+                </a>
+              </th>
+            <tr>
+          </tfoot>
+        <table>
+      </div>
+    <div>
   </div>
 </main>
 
-<footer>
-  <div class="pull-right">
-    <a ng-disabled="!session.valid" ng-click="submit()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "JOURNAL_VOUCHER.SUBMIT" | translate }}</a>
-  </div>
-</footer>
+<script type="text/ng-template" id="entityListItem.tmpl.html">
+  <a class="clk">
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+  </a>
+</script>
+
+<script type="text/ng-template" id="accountListItem.tmpl.html">
+  <a class="clk">
+    <span ng-if="match.model.account_type=='title'" class="text-danger">
+      <i class="glyphicon glyphicon-exclamation-sign"></i>
+    </span>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+    <span>-- {{ match.model.account_txt }}</span>
+  </a>
+</script>
+

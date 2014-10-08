@@ -60,7 +60,7 @@
       templateUrl: 'partials/debtor/debtor_group.html'
     })
     .when('/journal_voucher', {
-      controller: 'journalVoucher',
+      controller: 'journal.voucher',
       templateUrl: 'partials/journal_voucher/journal_voucher.html'
     })
     .when('/inventory', {

@@ -1,97 +1,102 @@
 angular.module('bhima.controllers')
-.controller('journalVoucher', [
+.controller('journal.voucher', [
   '$scope',
   'validate',
   'connect',
   'appstate',
+  'appcache',
   'messenger',
   'uuid',
   'util',
   'exchange',
-  function ($scope, validate, connect, appstate, messenger, uuid, util, exchange) {
-    var dependencies = {};
-    var voucher = $scope.voucher = { rows : [] };
-    var session = $scope.session = {};
+  function ($scope, validate, connect, appstate, AppCache, messenger, uuid, util, exchange) {
+    var dependencies = {},
+        db = new AppCache('journal.voucher'),
+        data = $scope.data = { rows : [] },
+        session = $scope.session = {};
 
-    $scope.options = ['D', 'C'];
+    // used in orderBy
+    session.order = '+account_number';
+    // used to select a deb/cred id
+    session.type = 'd';
 
-    $scope.today = new Date().toISOString().slice(0,10);
+    function VoucherRow() {
+      this.debit = null;
+      this.credit = null;
+      this.account_id = null;
+      this.comment = '';
+      this.selectEntity = false;
+    }
+
+    data.rows = [new VoucherRow(), new VoucherRow()];
+
+    // current timestamp
+    data.date = new Date();
 
     dependencies.accounts = {
       required : true,
       query : {
+        identifier : 'account_number',
         tables : {
-          'account' : {
-            columns : ['id', 'account_number', 'account_txt', 'account_type_id']
-          }
-        }
+          account : { columns : ['id', 'account_number', 'account_txt', 'account_type_id', 'fixed', 'parent'] },
+          account_type : { columns : ['type'] }
+        },
+        join: ['account.account_type_id=account_type.id']
+      },
+    };
+
+    dependencies.debtors = {
+      query: {
+        identifier : 'uuid',
+        'tables' : {
+          'debitor' : { 'columns' : ['uuid', 'text'] },
+          'patient' : { 'columns' : ['first_name', 'last_name'] },
+          'debitor_group' : { 'columns' : ['name'] },
+          'account' : { 'columns' : ['account_number'] }
+        },
+        join: ['debitor.uuid=patient.debitor_uuid', 'debitor_group.uuid=debitor.group_uuid', 'debitor_group.account_id=account.id']
       }
     };
 
-    dependencies.currencies = {
-      required : true,
-      query : {
-        tables : {
-          'currency' : {
-            columns : ['id', 'symbol', 'min_monentary_unit']
-          }
-        }
+    dependencies.creditors = {
+      query: {
+        'tables' : {
+          'creditor' : { 'columns' : ['uuid', 'text'] },
+          'creditor_group' : { 'columns' : ['name'] },
+          'account' : { 'columns' : ['account_number'] }
+        },
+        join: ['creditor.group_uuid=creditor_group.uuid','creditor_group.account_id=account.id']
       }
     };
 
-    dependencies.debitors = {
-      query : {
-        tables : {
-          'debitor' : {
-            columns : ['uuid', 'text']
-          }
-        }
-      }
-    };
-
-    function JournalRow () {
-      this.id = Math.random();
-      this.description = null;
-      this.account = null;
-      this.debit = 0;
-      this.credit = 0;
-      this.currency_id = null;
-      this.deb_cred_uuid = null;
-      this.deb_cred_type = null;
-      this.inv_po_id = null;
-      this.comment = null;
-      this.origin = null;
-      return this;
-    }
-
-    function init (model) {
-      angular.extend($scope, model);
-
-      $scope.accounts.data.forEach(function (account) {
+    function startup(models) {
+      var entities;
+      models.accounts.data.forEach(function (account) {
+        if (account.type === 'title') { account.disabled = true; }
         account.account_number = String(account.account_number);
       });
 
-      voucher.currency_id = model.currencies.data[model.currencies.data.length-1].id;
-      voucher.trans_date = util.sqlDate(new Date());
-      voucher.rows = [new JournalRow(), new JournalRow()];
-
-      connect.fetch('/max_trans/' + $scope.project.id)
-      .then(function (ids) {
-        var id = ids.pop();
-        voucher.trans_id = id.increment ? id.abbr + id.increment : $scope.project.abbr + 1;
+      // Hmmm...  Can we do better?
+      entities = models.entities = [];
+      models.debtors.data.forEach(function (debtor) {
+        debtor.type = 'd';
+        entities.push(debtor);
       });
+
+      models.creditors.data.forEach(function (creditor) {
+        creditor.type = 'c';
+        entities.push(creditor);
+      });
+
+      angular.extend($scope, models);
     }
 
     $scope.submit = function submit() {
       // local variables to speed up calculation
-      var prid, peid, fyid, description, transDate, invid, userId;
-      prid = $scope.project.id;
-      transDate = util.sqlDate(voucher.trans_date);
-      invid = voucher.inv_po_id;
-      description = voucher.description;
 
+      /*
       // serialize date
-      connect.fetch('/period/' + new Date(voucher.trans_date).valueOf())
+      connect.fetch('/period/' + new Date(data.trans_date).valueOf())
       .then(function (periods) {
         if (!periods.length) { throw new Error('No periods for that trans_id'); }
         var period = periods.pop();
@@ -143,66 +148,56 @@ angular.module('bhima.controllers')
       })
       .then(function () {
         messenger.success('Data posted successfully');
-        flush();
       });
+      */
     };
 
-    function flush (){
-      voucher.rows = [new JournalRow(), new JournalRow()];
-      voucher.description = null;
-      voucher.inv_po_id = null;
-
-      connect.fetch('/max_trans/' + $scope.project.id)
-      .then(function (ids) {
-        var id = ids.pop();
-        voucher.trans_id = id.increment ? id.abbr + id.increment : $scope.project.abbr + 1;
-      });
-    }
-
-    function calculateTotals () {
-      var debitSom = 0, creditSom = 0;
-      $scope.voucher.rows.forEach(function (item) {
-        debitSom += item.debit;
-        creditSom += item.credit;
-      });
-
-      $scope.voucher.debitTotal = debitSom;
-      $scope.voucher.creditTotal = creditSom;
-    }
-
-    $scope.$watch('voucher.rows', function () {
-      calculateTotals();
-
-      var hasAccounts = voucher.rows.every(function (row) {
-        return !!row.account_id;
-      });
-
-      var isBalanced = voucher.debitTotal === voucher.creditTotal;
-      var nonZeroBalances = voucher.debitTotal + voucher.creditTotal !== 0;
-      var nonDoubleEntry = voucher.rows.length >= 2;
-
-      session.valid = hasAccounts && isBalanced && nonZeroBalances && nonDoubleEntry;
-    }, true);
-
+    // startup
     appstate.register('project', function (project) {
       $scope.project = project;
       dependencies.accounts.query.where =
         ['account.enterprise_id=' + project.enterprise_id];
-
       validate.process(dependencies)
-      .then(init)
-      .catch(function (error) {
-        messenger.danger('An error occured : ' + JSON.stringify(error));
-        //console.error(error);
-      });
+      .then(startup)
+      .finally();
     });
 
-    $scope.addRow = function addRow () {
-      voucher.rows.push(new JournalRow());
+    // totaler fn
+    function total(column) {
+      function sum(prev, next) { return prev + next[column]; }
+      return data.rows.reduce(sum, 0);
+    }
+
+    $scope.totalDebit = function () {
+      session.totalDebit = total('debit');
     };
 
-    $scope.removeRow = function removeRow (index) {
-      voucher.rows.splice(index, 1);
+    $scope.totalCredit = function () {
+      session.totalCredit = total('credit');
+    };
+
+    $scope.remove = function (index) {
+      data.rows.splice(index,1);
+    };
+
+    $scope.addRow = function () {
+      data.rows.push(new VoucherRow());
+      $scope.totalDebit();
+      $scope.totalCredit();
+    };
+
+    $scope.selectDebCred = function (row) {
+      var e = row.deb_cred;
+      row.deb_cred_uuid = e.uuid;
+      row.deb_cred_type = e.type === 'd' ?  'D' : 'C';
+      row.account_id = $scope.accounts.get(e.account_number).id;
+    };
+
+    $scope.selectAccount = function (row) {
+      delete row.deb_cred_uuid;
+      delete row.deb_cred_type;
+      row.account_id = row.account.id;
+      console.log(row);
     };
   }
 ]);
