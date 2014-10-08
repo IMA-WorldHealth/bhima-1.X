@@ -151,11 +151,15 @@ angular.module('bhima.controllers')
           if (row.debit) {
             record.debit = row.debit;
             record.debit_equiv = exchange(row.debit, data.currency_id);
+            record.credit = 0;
+            record.credit_equiv = 0;
           }
 
           if (row.credit) {
             record.credit = row.credit;
             record.credit_equiv = exchange(row.credit, data.currency_id);
+            record.debit = 0;
+            record.debit_equiv = 0;
           }
 
           if (row.deb_cred_uuid) {
