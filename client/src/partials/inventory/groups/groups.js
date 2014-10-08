@@ -11,7 +11,7 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           'inventory_group' : {
-            columns : ['uuid', 'name', 'code', 'sales_account', 'cogs_account', 'stock_account', 'tax_account']
+            columns : ['uuid', 'name', 'code', 'sales_account', 'cogs_account', 'stock_account', 'donation_account']
           }
         }
       }

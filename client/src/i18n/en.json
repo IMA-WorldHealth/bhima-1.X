@@ -718,7 +718,7 @@
       "SALES_ACCOUNT" : "Sales Accnt",
       "COGS_ACCOUNT" : "COGS Accnt",
       "STOCK_ACCOUNT" : "Stock Accnt",
-      "TAX_ACCOUNT" : "Tax Accnt",
+      "DONATION_ACCOUNT" : "Donation Accnt",
       "ADD" : "Creating Inventory Group",
       "EDIT" : "Edit Inventory Group",
       "ALERT" : "This module will help you to create groupe for your inventories"

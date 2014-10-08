@@ -974,7 +974,7 @@
       "SALES_ACCOUNT" : "Compte Produit",
       "COGS_ACCOUNT"  : "Compte COGS",
       "STOCK_ACCOUNT" : "Compte Stock",
-      "TAX_ACCOUNT"   : "Compte Tax",
+      "DONATION_ACCOUNT"   : "Compte Donation",
       "CREATE_GROUP"  : "Créer Groupe",
       "ALL_GROUPS"    : "Tous",
       "ALERT"         : "Ce module vous aidera a créer des groupes pour vos inventaires"
