@@ -14,18 +14,20 @@ angular.module('bhima.controllers')
     dependencies.donations = {
       query : {
         tables : {
-          movement  : { columns : ['uuid','depot_entry', 'tracking_number', 'quantity']},
-          donations : { columns : ['date']},
-          inventory : { columns : ['code']},
-          stock     : { columns : ['lot_number','expiration_date', 'entry_date']},
-          donor     : { columns : ['name']},
-          depot     : { columns : ['reference','text']}
+          movement      : { columns : ['uuid','depot_entry', 'tracking_number', 'quantity']},
+          donations     : { columns : ['date']},
+          donation_item : { columns : ['donation_uuid']},
+          inventory     : { columns : ['code','text']},
+          stock         : { columns : ['lot_number','expiration_date', 'entry_date']},
+          donor         : { columns : ['name']},
+          depot         : { columns : ['reference']}
         },
         join : [
           'movement.depot_entry=depot.uuid',
           'donations.donor_id=donor.id',
           'inventory.uuid=stock.inventory_uuid',
-          'stock.tracking_number=donations.tracking_number',
+          'donations.uuid=donation_item.donation_uuid',
+          'stock.tracking_number=donation_item.tracking_number',
           'movement.tracking_number=stock.tracking_number',
         ]
       }
