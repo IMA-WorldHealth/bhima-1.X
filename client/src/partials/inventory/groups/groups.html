@@ -126,10 +126,10 @@
 
         <div class="form-group">
           <label class="col-xs-2 control-label" for="group-tax-account">
-            {{ "INVENTORY.GROUPS.TAX_ACCOUNT" | translate }}
+            {{ "INVENTORY.GROUPS.DONATION_ACCOUNT" | translate }}
           </label>
           <div class="col-xs-10">
-            <select id="group-tax-account" class="form-bhima" ng-model="group.tax_account" ng-options="account.id as account.account_number+'--'+account.account_txt for account in accounts.data | orderBy:'account_number'">
+            <select id="group-tax-account" class="form-bhima" ng-model="group.donation_account" ng-options="account.id as account.account_number+'--'+account.account_txt for account in accounts.data | orderBy:'account_number'">
               <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
             </select>
           </div>
@@ -198,11 +198,11 @@
         </div>
 
         <div class="form-group">
-          <label class="col-xs-2 control-label" for="group-tax-account">
-            {{ "INVENTORY.GROUPS.TAX_ACCOUNT" | translate }}
+          <label class="col-xs-2 control-label" for="group-donation-account">
+            {{ "INVENTORY.GROUPS.DONATION_ACCOUNT" | translate }}
           </label>
           <div class="col-xs-10">
-            <select id="group-tax-account" class="form-bhima" ng-model="group.tax_account" ng-options="account.id as account.account_number+'--'+account.account_txt for account in accounts.data | orderBy:'account_number'">
+            <select id="group-donation-account" class="form-bhima" ng-model="group.donation_account" ng-options="account.id as account.account_number+'--'+account.account_txt for account in accounts.data | orderBy:'account_number'">
               <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
             </select>
           </div>
