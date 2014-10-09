@@ -237,10 +237,10 @@
   },
 
   "EFIND" : {
-    "TITLE"           : "Trouver Employer",
+    "TITLE"           : "Trouver Employé",
     "SEARCH"          : "Chercher Par Nom",
-    "PLACEHOLDER"     : "Chercher un employée",
-    "ENTER_EMPLOYEE_ID" : "Entrer ID employée"
+    "PLACEHOLDER"     : "Chercher un employé",
+    "ENTER_EMPLOYEE_ID" : "Entrer ID employé"
   },
 
   "LANGUAGES" : {
@@ -384,7 +384,7 @@
     "CHART_OF_ACCOUNTS"         : "Plan Comptable",
     "DEBTOR_AGING"              : "Rapport Débiteur",
     "ACCOUNT_STATEMENT"         : "Rapport Compte",
-    "INCOME_EXPENSE"            : "Rapport Recettes/Depense",
+    "INCOME_EXPENSE"            : "Rapport Recettes/Dépense",
     "CREDIT_NOTE"               : "Note de Crédit",
     "PATIENT_GRP_ASSIGNMENT"    : "Assignation Groupes Patients",
     "PATIENT_GRP"               : "Groupe des Patients",
@@ -417,7 +417,7 @@
     "PATIENT_SEARCH"            : "Recherche des Patients",
     "PROFIT_CENTER_MGMNT"       : "Centres de profit",
     "INCOME_REPORT"             : "Rapport des Recettes",
-    "EXPENSE_REPORT"            : "Rapport des Depenses",
+    "EXPENSE_REPORT"            : "Rapport des Dépenses",
     "GRADE_EMPLOYERS"           : "Gestion des Grades",
     "TAXES"                     : "Taxes",
     "TAXE_MANAGEMENT"           : "Gestion des taxes",
@@ -874,7 +874,7 @@
     "VISIBLE_FISCAL_YEAR"   : "Année Fiscale Visible",
     "VISIBLE_PERIODS"       : "Periods Visible",
     "CHOOSE_PERIOD"         : "Choissir Period",
-    "INCOME_EXPENSE_REPORT" : "Rapport des Revenues et Depense",
+    "INCOME_EXPENSE_REPORT" : "Rapport des Revenues et Dépense",
     "TRANSACTIONS_BY_ACCOUNT" : "Transactions par Compte",
     "PATIENT_GROUP"         : "Rapport de groupe des patients",
     "TOTAL" : "Total",
@@ -1196,7 +1196,7 @@
   },
 
   "INVOICE"             : {
-    "TITLE"             : "Recit",
+    "TITLE"             : "Reçu",
     "PATIENT"           : "Patient",
     "PATIENT_ID"        : "# Patient",
     "DATE_REGISTRATION" : "Date d'enregistrement",
@@ -1244,10 +1244,10 @@
     "PURCHASE_TOTAL"               : "Total",
     "PURCHASE_ORDER"               : "Ordre D'Achat",
     "DISTRIBUTION_SERVICE" : "Distribution Service",
-    "CONVENTION"                   : "Recit pour convention",
+    "CONVENTION"                   : "Reçu pour convention",
     "NUM_CONVENTION_PAY"           : "Reference",
     "GENERIC_INCOME"               : "Recette Genarale",
-    "GENERIC_EXPENSE"              : "Depense Générale",
+    "GENERIC_EXPENSE"              : "Dépense Générale",
     "LOSS"                         : "Document de perte de stock",
     "DATE_DOCUMENT"                : "Date document",
     "STOCK_MOVEMENT"               : "Mouvement de stock",
@@ -1266,7 +1266,7 @@
     "RECIPIENT" : "Recepteur",
     "CONFIRM_PURCHASE" : "Confirmation paiement",
     "CONFIRMED_BY" : "Confirmer par ",
-    "SIGN_EMPLOYEE" : "Signature employée",
+    "SIGN_EMPLOYEE" : "Signature employé",
     "PROOF_OF_PATIENT_CONSUMPTION" : "Preuve de consommation du patient",
     "DOCUMENT_REF" : "Reference vente",
     "DEPOT_REF" : "Reference depot",
@@ -1395,14 +1395,14 @@
   "PCASH"                   : {
     "TITLE"                 : "Gestion de la Caisse Principale",
     "INCOME"                : "Recette",
-    "EXPENSE"               : "Depense",
+    "EXPENSE"               : "Dépense",
     "SOME_REPORT"           : "Rapport sommaire des activites (20 derniers)",
     "MANAGER_CONFIGURATION" : "Gestion de la Caisse Principale",
     "DESCRIPTION"           : "Ce module vous permettra de realiser de facoun automatisée toutes les operations liéesa la caisse pricipale. Utiliser ce module pour gerer les recettes et depenses avec aisance."
   },
 
   "INCOME"        : {
-    "TITLE"       : "Caisse Principale: Depense",
+    "TITLE"       : "Caisse Principale: Dépense",
     "TRANSFER"    : "Transfert",
     "CONVENTION"  : "Convention",
     "OTHER"       : "Autre",
@@ -1449,7 +1449,7 @@
   },
 
   "CASH_PURCHASE" : {
-    "TITLE"       : "Depense de l'ordre d'achat",
+    "TITLE"       : "Dépense de l'ordre d'achat",
     "NOT_FOUND"   : "Aucun ordre d'achat trouve !",
     "FILTER"      : "Filtrer les ordres d'achats",
     "SELECT_PURCHASE" : "Sélectionner ordre d'achat",
@@ -1477,7 +1477,7 @@
     "CONFIGURE"     : "Parametrage",
     "SALE_DATE"     : "Date de creation",
     "SUPPLIER"      : "Fournisseur",
-    "RESPONSIBLE"   : "Employe Responsable",
+    "RESPONSIBLE"   : "Employé Responsable",
     "ORDER"         : "Ordre",
     "DATE"          : "Date",
     "NOTE"          : "Note",
@@ -1494,7 +1494,7 @@
     "DEFAULT_CURRENCY" : "Monnaie",
     "SELECT_CASHBOX" : "Sélectionner une Caisse",
     "TITLE"        : "Caisse Pricipale",
-    "EXPENSES"     : "Depenses",
+    "EXPENSES"     : "Dépenses",
     "INCOMES"      : "Recettes",
     "GENERIC"      : "Générique",
     "NAVIGATION"   : "Naviguation",
@@ -1502,11 +1502,11 @@
     "HOME"         : "Caisse Principale",
     "LOADING_ERROR" : "Erreur lors du chargement des dependances",
     "EXPENSE" : {
-      "PAYROLL"                 : "Paie des employées",
+      "PAYROLL"                 : "Paie des employés",
       "MULTI_PAYROLL"           : "Payroll Multiple",
-      "PAYABLE_EMPLOYEE"        : "Liste des employées payables",
+      "PAYABLE_EMPLOYEE"        : "Liste des employés payables",
       "PURCHASE"                : "Achat",
-      "GENERIC_TITLE"           : "Depenses Génériques",
+      "GENERIC_TITLE"           : "Dépenses Génériques",
       "GENERIC_RECEIPT"         : "Recettes Génériques",
       "REFERENCE_DOCUMENT_ID"   : "Reference Document ID",
       "RECIPIENT"               : "Destinataire",
@@ -1525,7 +1525,7 @@
       "SENIORITY"               : "Ancienete",
       "ADVANTAGES"              : "Avantages",
       "SALARY"                  : "Salaire net",
-      "TAXES_OTHERS"            : "Taxes employée et autres deductions",
+      "TAXES_OTHERS"            : "Taxes employé et autres deductions",
       "SALARY_AV"               : "Avance sur salaire",
       "INSS"                    : "Cot. INSS",
       "IPR"                     : "IPR",
@@ -1565,7 +1565,7 @@
             "EMPTY_REPORT" : "Aucun enregistrement trouve !"
         },
         "EXPENSE" : {
-            "TITLE" : "Rapport des Depenses",
+            "TITLE" : "Rapport des Dépenses",
             "EMPTY_REPORT" : "Aucun enregistrement trouve !"
         }
     }
@@ -1843,7 +1843,7 @@
     "ADMINISTRATOR"     : "Adminstrateur",
     "RESPONSABLE"       : "Responsable",
     "BENEFICIARY"       : "Beneficiare",
-    "EMPLOYEE"          : "Employée",
+    "EMPLOYEE"          : "Employé",
     "CLIENT"            : "Client",
     "CREDITOR"          : "Créditeur",
     "CUSTOMER"          : "Client"
