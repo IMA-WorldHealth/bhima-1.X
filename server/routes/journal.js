@@ -753,6 +753,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       cfg.enterprise_id = results[0].enterprise_id;
       cfg.project_id = results[0].project_id;
       cfg.date = results[0].date;
+      cfg.descript = 'Paiement charite/'+new Date().toISOString().slice(0, 10).toString();
       return check.validPeriod(cfg.enterprise_id, cfg.date);
     }
 
@@ -786,11 +787,11 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
             var debit_sql=
               'INSERT INTO `posting_journal` ' +
               '  (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-              '  `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-              '  `currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+              '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
+              '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
               'SELECT ' +
-                [sanitize.escape(uuid()), cfg.project_id, cfg.fiscal_year_id, cfg.period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-              '  `group_invoice`.`note`, `debitor_group`.`account_id`, `group_invoice_item`.`cost`, ' +
+                [sanitize.escape(uuid()), cfg.project_id, cfg.fiscal_year_id, cfg.period_id, trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descript)].join(', ') + ', ' +
+              '`debitor_group`.`account_id`, `group_invoice_item`.`cost`, ' +
               '  0, `group_invoice_item`.`cost`, 0, `enterprise`.`currency_id`, ' +
               '  null, null, `group_invoice_item`.`invoice_uuid`, ' +
               [cfg.originId, user_id].join(', ') + ' ' +
@@ -804,13 +805,13 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
             var credit_sql=
               'INSERT INTO `posting_journal` ' +
               '  (`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-              '  `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
+              '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
               '  `currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
               'SELECT `group_invoice`.`project_id`, ' +
-                [sanitize.escape(uuid()), cfg.fiscal_year_id, cfg.period_id, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-              '  `group_invoice`.`note`, `debitor_group`.`account_id`, 0, `group_invoice_item`.`cost`, ' +
-              '  0, `group_invoice_item`.`cost`, `enterprise`.`currency_id`,  ' +
-              '  `group_invoice`.`debitor_uuid`, \'D\', `group_invoice_item`.`invoice_uuid`, ' +
+                [sanitize.escape(uuid()), cfg.fiscal_year_id, cfg.period_id, trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descript)].join(', ') + ', ' +
+              '`debitor_group`.`account_id`, 0, `group_invoice_item`.`cost`, ' +
+              '0, `group_invoice_item`.`cost`, `enterprise`.`currency_id`,  ' +
+              '`group_invoice`.`debitor_uuid`, \'D\', `group_invoice_item`.`invoice_uuid`, ' +
               [ cfg.originId, user_id].join(', ') + ' ' +
               'FROM `group_invoice` JOIN `group_invoice_item` JOIN `debitor` JOIN `debitor_group` JOIN `sale` JOIN `project` JOIN `enterprise` ON ' +
               '  `group_invoice`.`uuid` = `group_invoice_item`.`payment_uuid` AND ' +
