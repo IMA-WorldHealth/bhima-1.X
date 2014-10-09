@@ -86,7 +86,7 @@
               <td>
                 <div class="input-group">
                   <span class="input-group-btn">
-                    <a class="btn btn-sm btn-default" ng-click="row.selectEntity=!row.selectEntity">
+                    <a class="btn btn-sm btn-default" ng-click="switchEntity(row)">
                       <i class="glyphicon" ng-class="{ 'glyphicon-user' : !row.selectEntity, 'glyphicon-th-list': !!row.selectEntity}"></i>
                     </a>
                   </span>
@@ -146,7 +146,7 @@
         <table>
         <div class="panel-footer">
           <div class="form-group col-sm-offset-11">
-            <button class="btn btn-sm btn-default" ng-click="submit()">{{ 'FORM.SUBMIT' | translate }}</button>
+            <button class="btn btn-sm btn-default" ng-click="submit()" ng-disabled="!valid()">{{ 'FORM.SUBMIT' | translate }}</button>
           </div>
         </div>
       </div>
@@ -162,7 +162,7 @@
 
 <script type="text/ng-template" id="accountListItem.tmpl.html">
   <a class="clk">
-    <span ng-if="match.model.account_type=='title'" class="text-danger pull-right">
+    <span ng-if="match.model.type=='title'" class="text-warning">
       <i class="glyphicon glyphicon-exclamation-sign"></i>
     </span>
     <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>

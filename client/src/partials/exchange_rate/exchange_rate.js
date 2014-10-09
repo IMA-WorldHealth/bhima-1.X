@@ -5,7 +5,8 @@ angular.module('bhima.controllers')
   'messenger',
   'appstate',
   'validate',
-  function ($scope, connect, messenger, appstate, validate) {
+  'exchange',
+  function ($scope, connect, messenger, appstate, validate, exchange) {
     var dependencies = {};
 
     dependencies.currency = {
@@ -73,6 +74,7 @@ angular.module('bhima.controllers')
         }
 
         appstate.set('exchange_rate', $scope.globalRates);
+        exchange.forceRefresh();
 
         // add to store
         data.id = result.data.insertId;

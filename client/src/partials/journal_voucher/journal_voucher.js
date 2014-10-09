@@ -15,10 +15,7 @@ angular.module('bhima.controllers')
         data = $scope.data = { rows : [] },
         session = $scope.session = {};
 
-    if (!exchange.hasDailyRate()) {
-      session.noExchange = true;
-      return messenger.error('No Exchange Rate Detected!');
-    }
+    var isDefined = angular.isDefined;
 
     // used in orderBy
     session.order = '+account_number';
@@ -108,7 +105,14 @@ angular.module('bhima.controllers')
     $scope.submit = function submit() {
       // local variables to speed up calculation
       var records;
-      
+
+      /*
+      if (!exchange.hasDailyRate()) {
+        session.noExchange = true;
+        return messenger.danger('No exchange rate found!');
+      }
+      */
+
       // First step:
       // Get the periods associated for the date.
       connect.fetch('/period/' + Number(data.date))
@@ -139,7 +143,7 @@ angular.module('bhima.controllers')
           record.trans_date = util.sqlDate(data.date);
           record.period_id = data.period_id;
           record.fiscal_year_id = data.fiscal_year_id;
-         
+
           if (data.comment) { record.comment = data.comment; }
           if (data.document_id) { record.inv_po_id = data.document_id; }
 
@@ -173,8 +177,6 @@ angular.module('bhima.controllers')
           return record;
         });
 
-        console.log(records);
-
         return connect.basicPut('posting_journal', records);
       })
       .then(function () {
@@ -183,7 +185,7 @@ angular.module('bhima.controllers')
           transaction_id : data.trans_id,
           justification  : data.description,
           date           : util.sqlDate(data.trans_date),
-          user_id        : session.user_id 
+          user_id        : session.user_id
         };
         return connect.post('journal_log', log);
       })
@@ -194,63 +196,6 @@ angular.module('bhima.controllers')
         console.error(err);
       })
       .finally();
-
-      /*
-      // serialize date
-      connect.fetch('/period/' + new Date(data.trans_date).valueOf())
-      .then(function (periods) {
-        if (!periods.length) { throw new Error('No periods for that trans_id'); }
-        var period = periods.pop();
-        peid = period.id;
-        fyid = period.fiscal_year_id;
-
-        return connect.fetch('/user_session');
-      })
-      .then(function () {
-        var records = [];
-        userId = 1; // FIXME
-        voucher.rows.forEach(function (row) {
-          var record = {
-            uuid           : uuid(),
-            project_id     : prid,
-            period_id      : peid,
-            fiscal_year_id : fyid,
-            trans_id       : voucher.trans_id,
-            trans_date     : transDate,
-            description    : description,
-            account_id     : row.account_id,
-            debit          : row.debit,
-            credit         : row.credit,
-            debit_equiv    : row.debit * exchange.rate(row.debit, voucher.currency_id),
-            credit_equiv   : row.credit * exchange.rate(row.credit, voucher.currency_id),
-            currency_id    : voucher.currency_id,
-            deb_cred_uuid  : row.deb_cred_uuid,
-            deb_cred_type  : row.deb_cred_type,
-            inv_po_id      : invid,
-            comment        : row.comment,
-            origin_id      : 9,
-            user_id        : userId,
-          };
-          records.push(record);
-        });
-
-        return connect.basicPut('posting_journal', records);
-      })
-      .then(function () {
-        var log = {
-          uuid           : uuid(),
-          transaction_id : voucher.trans_id,
-          justification  : voucher.description,
-          date           : util.sqlDate(voucher.trans_date),
-          user_id        : userId
-        };
-
-        return connect.basicPut('journal_log', [log]);
-      })
-      .then(function () {
-        messenger.success('Data posted successfully');
-      });
-      */
     };
 
     // startup
@@ -263,6 +208,26 @@ angular.module('bhima.controllers')
       .then(startup)
       .finally();
     });
+
+    $scope.valid = function () {
+      var hasMetaData = isDefined(data.description) &&
+        isDefined(data.date) &&
+        isDefined(data.currency_id);
+
+      var hasValidRows = data.rows.every(function (row) {
+        var validAmount, validAccount;
+
+        validAmount =
+          (row.debit > 0 && !row.credit) ||
+          (!row.debit && row.credit > 0);
+
+        validAccount = isDefined(row.deb_cred) || isDefined(row.account);
+
+        return validAmount && validAccount;
+      });
+
+      return hasMetaData && hasValidRows && session.validTotals;
+    };
 
     // totaler fn
     function total(column) {
@@ -301,6 +266,12 @@ angular.module('bhima.controllers')
       delete row.deb_cred_uuid;
       delete row.deb_cred_type;
       row.account_id = row.account.id;
+    };
+
+    $scope.switchEntity = function (row) {
+      // We are going from entity --> account
+      delete row[row.selectEntity ? 'deb_cred' : 'account'];
+      row.selectEntity = !row.selectEntity;
     };
   }
 ]);
