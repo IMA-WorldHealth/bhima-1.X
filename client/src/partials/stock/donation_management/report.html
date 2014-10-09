@@ -32,6 +32,7 @@
           <tr>
             <th>{{ "COLUMNS.DEPOT" | translate }}</th>
             <th>{{ "COLUMNS.TRACKING_NUMBER" | translate }}</th>
+            <th>{{ "COLUMNS.INVENTORY_ITEM" | translate }}</th>
             <th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>
             <th>{{ "COLUMNS.INVENTORY_CODE" | translate }}</th>
             <th>{{ "DONATION_MANAGEMENT.DATE_REGISTER" | translate }}</th>
@@ -41,8 +42,9 @@
         </thead>
         <tbody>
           <tr ng-repeat="movement in donations.data | orderBy:'date'">
-            <td>{{ movement.text }}</td>
+            <td>{{ movement.reference }}</td>
             <td>{{ movement.tracking_number }}</td>
+            <td>{{ movement.text }}</td>
             <td>{{ movement.lot_number }}</td>
             <td>{{ movement.code }}</td>
             <td>{{ movement.date | date }}</td>

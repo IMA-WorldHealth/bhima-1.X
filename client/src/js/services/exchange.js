@@ -55,7 +55,7 @@ angular.module('bhima.services')
       console.log('calcul taux avant normalisation date ', date);
       date = normalize(date);
       var converter = exchange.store.get(date);
-      console.log("converter ", converter);
+      console.log('converter ', converter);
 
 
       var from = converter.rateStore.data.filter(function (item) {
