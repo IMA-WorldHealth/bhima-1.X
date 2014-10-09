@@ -359,6 +359,9 @@ angular.module('bhima.controllers')
 
           return $q.all(synthese.map(function (postingEntry) {
             console.log('Posting : ', postingEntry);
+            // A FIXE   : L'affichage des transactions dans le journal n'est pas en ordre
+            // A FIXE   : Ecrire chaque 'postingEntry' dans le journal de facon singuliere
+            // OBJECTIF : Ecrire pour chaque inventory de la donation comme une transaction dans le journal  
             return $http.post('posting_donation/', postingEntry);
           }));
 
