@@ -2028,53 +2028,39 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
   }
 
   function handleDonation (id, user_id, data, done) {
-    var cfg = {}, reference, sql = "SELECT * FROM `inventory` WHERE `inventory`.`uuid`=" + sanitize.escape(data.lot.inventory_uuid) + ";";
+    var cfg = {}, 
+        reference, 
+        sql = "SELECT * FROM `inventory` WHERE `inventory`.`uuid`=" + sanitize.escape(data.inventory_uuid) + ";";
 
     db.exec(sql)
-    .then(function (records) {
+    .then(getRecord)    
+    .spread(getDetails)
+    .then(getTransId)
+    .then(credit)
+    .then(function (res) {
+      return done(null, res);
+    })
+    .catch(catchError);
+
+    function getRecord (records) {
       if (records.length === 0) { throw new Error('pas enregistrement'); }
       reference = records[0];
-      cfg.cost = (reference.purchase_price * data.lot.quantity).toFixed(4);
+      cfg.cost = (reference.purchase_price * data.quantity).toFixed(4);
       return q([get.origin('donation'), get.period(get.date())]);
-    })    
-    .spread(function (originId, periodObject) {
+    }
+
+    function getDetails (originId, periodObject) {
       cfg.originId = originId;
       cfg.periodId = periodObject.id;
       cfg.fiscalYearId = periodObject.fiscal_year_id;
       return get.transactionId(data.project_id);
-    })
-    .then(function (trans_id) {
-      console.log('trans_id est ', trans_id);
+    }
+
+    function getTransId (trans_id) {
       cfg.trans_id = trans_id;
       cfg.descrip =  'Donation/' + new Date().toISOString().slice(0, 10).toString();
       return debit();
-    })
-    .then(function () {
-      return credit();
-    })
-    .then(function (res) {
-      return done(null, res);
-    })
-    .catch(function (err) {
-      console.log('erreur', err);
-      var donation_deleting = "DELETE FROM `donations` WHERE `donations`.`uuid`=" + sanitize.escape(data.donation.uuid), 
-          movement_deleting = "DELETE FROM `movement` WHERE `movement`.`uuid`=" + sanitize.escape(data.movement.uuid),
-          stock_deleting = "DELETE FROM `stock` WHERE `stock`.`tracking_number`=" + sanitize.escape(data.lot.tracking_number);
-
-      db.exec(donation_deleting)
-      .then(function () {
-        return db.exec(movement_deleting);
-      })
-      .then(function () {
-        return db.exec(stock_deleting);
-      })
-      .catch(function (err) {
-        console.log('erreur pendant la suppression ::: ', err);
-      })
-      .finally(function () {
-        return done(err, null);
-      });
-    });
+    }
 
     function debit () {
       var sql = 
@@ -2093,7 +2079,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
           [
             0, cfg.cost,
             0, cfg.cost,
-            data.currency_id, sanitize.escape(data.lot.inventory_uuid)
+            data.currency_id, sanitize.escape(data.inventory_uuid)
           ].join(',') +
           ', null, ' +
           [
@@ -2132,6 +2118,30 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
           ].join(',') +
         ' FROM `inventory_group` WHERE `inventory_group`.`uuid`= ' + sanitize.escape(reference.group_uuid);
       return db.exec(sql);
+    }
+
+    function catchError (err) {
+      var donation_deleting = "DELETE FROM `donations` WHERE `donations`.`uuid`=" + sanitize.escape(data.donation.uuid), 
+          donation_item_deleting = "DELETE FROM `donation_item` WHERE `donation_item`.`donation_uuid`=" + sanitize.escape(data.donation.uuid), 
+          movement_deleting = "DELETE FROM `movement` WHERE `movement`.`document_id`=" + sanitize.escape(data.movement.document_id),
+          stock_deleting = "DELETE FROM `stock` WHERE `stock`.`tracking_number` IN (" + data.tracking_numbers.join() + ')';
+
+      db.exec(donation_item_deleting)
+      .then(function () {
+        return db.exec(donation_deleting);
+      })
+      .then(function () {
+        return db.exec(movement_deleting);
+      })
+      .then(function () {
+        return db.exec(stock_deleting);
+      })
+      .catch(function (err) {
+        console.log('erreur pendant la suppression ::: ', err);
+      })
+      .finally(function () {
+        return done(err, null);
+      });
     }
   }
 
