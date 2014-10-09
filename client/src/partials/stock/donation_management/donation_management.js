@@ -356,9 +356,12 @@ angular.module('bhima.controllers')
           // return $q.all(synthese.map(function (postingEntry) {
           //   return $http.post('posting_donation/', postingEntry);
           // }));
+
           return $q.all(synthese.map(function (postingEntry) {
+            console.log('Posting : ', postingEntry);
             return $http.post('posting_donation/', postingEntry);
           }));
+
         })
         .then(function () {
           $location.path('/stock/donation_management/report/' + document_id);
