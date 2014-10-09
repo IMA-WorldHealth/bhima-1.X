@@ -45,6 +45,21 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.currency = {
+      required : true,
+      query : {
+        tables : {
+          'enterprise' : {
+            columns : ['currency_id']
+          },
+          'currency' : {
+            columns : ['symbol']
+          }
+        },
+        join : ['enterprise.currency_id=currency.id']
+      }
+    }
+
     // get enterprise
     appstate.register('project', function (project) {
       $scope.project = project;
@@ -53,7 +68,7 @@ angular.module('bhima.controllers')
       dependencies.conventions.query.where.push(
         'debitor_group.enterprise_id=' + project.enterprise_id
       );
-      validate.process(dependencies, ['debitors', 'conventions']).then(setUpModels);
+      validate.process(dependencies, ['debitors', 'conventions', 'currency']).then(setUpModels);
     });
 
     $scope.setDebitor = function () {
@@ -80,6 +95,7 @@ angular.module('bhima.controllers')
     }
 
     $scope.examineInvoice = function (invoice) {
+      console.log('examine', invoice, 'debitor', $scope.selected.debitor);
       $scope.examine = invoice;
       $scope.old_action = $scope.action;
       $scope.action = 'examine';
@@ -168,7 +184,6 @@ angular.module('bhima.controllers')
       });
 
       return items;
-
     }
 
     $scope.filter = function (invoice) {
