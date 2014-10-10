@@ -166,9 +166,12 @@ angular.module('bhima.controllers')
             record.debit_equiv = 0;
           }
 
-          if (row.deb_cred_uuid) {
-            record.deb_cred_uuid = row.deb_cred_uuid;
-            record.deb_cred_type = row.deb_cred_type;
+          if (row.deb_cred) {
+            record.deb_cred_uuid = row.deb_cred.uuid;
+            record.deb_cred_type = row.deb_cred.type.toUpperCase();
+          } else {
+            record.deb_cred_uuid = '';
+            record.deb_cred_type = '';
           }
 
           record.origin_id = 1; // FIXME
