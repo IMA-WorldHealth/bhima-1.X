@@ -66,6 +66,15 @@
           <td><span ng-bind-html="item.localeTransaction | intlcurrency:dataPaiements[0].currency_id"></span></td>
           <td></td>
         </tr>
+        <tr ng-repeat="item in dataOffDays.data | orderBy:'label'">
+          <td> </td>
+          <td>{{ item.label }}</td>
+          <td> 1 </td>
+          <td><span ng-bind-html="item.rate_offDay | intlcurrency:dataPaiements[0].currency_id"></span></td>
+          <td><span ng-bind-html="item.rate_offDay | intlcurrency:dataPaiements[0].currency_id"></td>
+          <td></td>
+          <td></td>
+        </tr>
         <tr ng-repeat="item in dataRubrics | orderBy:'label'">
           <td> </td>
           <td>{{ item.label }}</td>

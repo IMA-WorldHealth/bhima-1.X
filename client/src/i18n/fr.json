@@ -139,7 +139,7 @@
 
   "CREDIT_NOTE" : {
     "TITLE"        : "Note de Crédit",
-    "SALE_DETAILS" : "Detaille de la Facture",
+    "SALE_DETAILS" : "Détaille de la Facture",
     "TOTAL_DEBIT"  : "Total Débiter",
     "DESCRIPTION"  : "Description",
     "SUBMIT"       : "Soumettre Note de Crédit"
@@ -237,10 +237,10 @@
   },
 
   "EFIND" : {
-    "TITLE"           : "Trouver Employer",
+    "TITLE"           : "Trouver Employé",
     "SEARCH"          : "Chercher Par Nom",
-    "PLACEHOLDER"     : "Chercher un employée",
-    "ENTER_EMPLOYEE_ID" : "Entrer ID employée"
+    "PLACEHOLDER"     : "Chercher un employé",
+    "ENTER_EMPLOYEE_ID" : "Entrer ID employé"
   },
 
   "LANGUAGES" : {
@@ -279,7 +279,7 @@
     "ENTERPRISE"      : "Sélectionner Enterprise",
     "PROJECT"         : "Proget",
     "COST_CENTER"     : "Sélectionner Centre des frais",
-    "DEPOT"           : "Sélectionner un Depot",
+    "DEPOT"           : "Sélectionner un Dépôt",
     "DEBTOR"          : "Sélectionner un debiteur",
     "CREDITOR"          : "Sélectionner un Créditeur",
     "PRIMARY_CASH"    : "Sélectionner Caisse principale",
@@ -384,7 +384,7 @@
     "CHART_OF_ACCOUNTS"         : "Plan Comptable",
     "DEBTOR_AGING"              : "Rapport Débiteur",
     "ACCOUNT_STATEMENT"         : "Rapport Compte",
-    "INCOME_EXPENSE"            : "Rapport Recettes/Depense",
+    "INCOME_EXPENSE"            : "Rapport Recettes/Dépense",
     "CREDIT_NOTE"               : "Note de Crédit",
     "PATIENT_GRP_ASSIGNMENT"    : "Assignation Groupes Patients",
     "PATIENT_GRP"               : "Groupe des Patients",
@@ -417,7 +417,7 @@
     "PATIENT_SEARCH"            : "Recherche des Patients",
     "PROFIT_CENTER_MGMNT"       : "Centres de profit",
     "INCOME_REPORT"             : "Rapport des Recettes",
-    "EXPENSE_REPORT"            : "Rapport des Depenses",
+    "EXPENSE_REPORT"            : "Rapport des Dépenses",
     "GRADE_EMPLOYERS"           : "Gestion des Grades",
     "TAXES"                     : "Taxes",
     "TAXE_MANAGEMENT"           : "Gestion des taxes",
@@ -559,12 +559,12 @@
       "TITLE"               : "Gestion de Stock",
       "MODULES"             : "Modules Disponible",
       "UTILITIES"           : "Utilitaires de Stock",
-      "CONFIGURE_WAREHOUSE" : "Sélectionner depot",
-      "WAREHOUSE_INFO_1"    : "Configurer le depot utiliser par defaut dans ce module.",
-      "WAREHOUSE_INFO_2"    : "Toutes operations des stock sera affectée au depot selectionner.",
+      "CONFIGURE_WAREHOUSE" : "Sélectionner dépôt",
+      "WAREHOUSE_INFO_1"    : "Configurer le dépôt utiliser par defaut dans ce module.",
+      "WAREHOUSE_INFO_2"    : "Toutes operations des stock sera affectée au dépôt selectionner.",
       "WAREHOUSE_INFO_3"    : "Votre choix peut-etre changer quand vous voulez.",
       "REPORTS"             : "Rapports Stock",
-      "CONFIRM"             : "Voulez-vous vraiment gerer le stock avec le depot : "
+      "CONFIRM"             : "Voulez-vous vraiment gerer le stock avec le dépôt : "
     },
     "ENTRY" : {
       "KEY"                 : "Entrée de Stock",
@@ -572,7 +572,7 @@
       "SELECT"              : "Sélectionner",
       "NUM_ITEMS"           : "Nombre Items",
       "ENTRY_MANIFEST"      : "Document des Entrées",
-      "SELECT_DEPOT"        : "Sélectionner un depot",
+      "SELECT_DEPOT"        : "Sélectionner un dépôt",
       "FIND_PURCHASE_ORDER" : "Choisir une Ordre d'Achat",
       "ORDER_DETAIL"        : "Details Ordre",
       "ASSIGN_LOTS"         : "Affecter lots",
@@ -597,7 +597,7 @@
     "LOSS"     : {
       "KEY"    : "Perte stock",
       "TITLE"  : "Perte stock",
-      "NO_DEPOT" : "Pas de depot",
+      "NO_DEPOT" : "Pas de dépôt",
       "LOSS_GENERAL_INFO" : "Sommaire",
       "SUBMIT"              : "Soumettre"
     },
@@ -606,9 +606,9 @@
       "TITLE"  : "Movements des Stock",
       "FORM"   : "Documents des Movements",
       "INVALID_SESSION" : "La page a reçu une configuartion des données invalide, Essayer via la gestion de stock ou contacter l'administrateur systeme.",
-      "ONLY_ONE_DEPOT"   : "Un depot seulemet etait enregistrement avec BHIMA. Le movement de stock necessite un depot source et un depot destination",
+      "ONLY_ONE_DEPOT"   : "Un dépôt seulemet etait enregistrement avec BHIMA. Le movement de stock necessite un dépôt source et un dépôt destination",
       "DEPOT_FROM"       : "Depo Source",
-      "DEPOT_TO"       : "Depot Destination",
+      "DEPOT_TO"       : "Dépôt Destination",
       "INVENTORY"      : "Inventaire",
       "INVALID_TRANSFERT_QTE"  : "Quantité transferée invalide",
       "SELECT_LOT" : "Sélect lot from"
@@ -775,7 +775,7 @@
     "LABEL"               : "Désignation",
     "TOTAL_PRICE"         : "Prix Total",
     "SUMMARY"             : "Sommaire",
-    "DEPOT"               : "Depot",
+    "DEPOT"               : "Dépôt",
     "PURCHASE_DATE"       : "Date Ordre Achat",
     "LOT_DETAILS"         : "Detail Lot",
     "TRANSFER_QUANTITY"   : "Quantité à transferer",
@@ -866,7 +866,7 @@
     "GROUP_ROWS"            : "Groupement des Lignes",
     "COLUMNS"               : "Columns",
     "VISIBLE_COLUMNS"       : "Columns Visible",
-    "GROUP_DETAIL"          : "Detaille Groupe",
+    "GROUP_DETAIL"          : "Détaille Groupe",
     "FISCAL_YEAR"           : "Année Fiscale",
     "REPORT"                : "Rapport",
     "DEBITOR_AGING"         : "Débiteur Rapport",
@@ -874,7 +874,7 @@
     "VISIBLE_FISCAL_YEAR"   : "Année Fiscale Visible",
     "VISIBLE_PERIODS"       : "Periods Visible",
     "CHOOSE_PERIOD"         : "Choissir Period",
-    "INCOME_EXPENSE_REPORT" : "Rapport des Revenues et Depense",
+    "INCOME_EXPENSE_REPORT" : "Rapport des Revenues et Dépense",
     "TRANSACTIONS_BY_ACCOUNT" : "Transactions par Compte",
     "PATIENT_GROUP"         : "Rapport de groupe des patients",
     "TOTAL" : "Total",
@@ -1002,7 +1002,7 @@
 
     "REGISTER" : {
       "TITLE"            : "Enregistrement des Stocks",
-      "GENERAL"          : "General",
+      "GENERAL"          : "Général",
       "CODE"             : "Code",
       "DESCRIPTION"      : "Description",
       "GROUP"            : "Groupe Inventaire",
@@ -1079,7 +1079,7 @@
 
   "ACCOUNT"          : {
     "TITLE"          : "Gestion des Comptes",
-    "GENERATE"       : "Generer un rapport des Comptes",
+    "GENERATE"       : "Générer un rapport des Comptes",
     "CREATE"         : "Créer un plan Comptable",
     "ADD"            : "Ajouter un Compte",
     "HELP_TXT_1"     : "Un Plan Comptable pour",
@@ -1196,7 +1196,7 @@
   },
 
   "INVOICE"             : {
-    "TITLE"             : "Recit",
+    "TITLE"             : "Reçu",
     "PATIENT"           : "Patient",
     "PATIENT_ID"        : "# Patient",
     "DATE_REGISTRATION" : "Date d'enregistrement",
@@ -1244,10 +1244,10 @@
     "PURCHASE_TOTAL"               : "Total",
     "PURCHASE_ORDER"               : "Ordre D'Achat",
     "DISTRIBUTION_SERVICE" : "Distribution Service",
-    "CONVENTION"                   : "Recit pour convention",
+    "CONVENTION"                   : "Reçu pour convention",
     "NUM_CONVENTION_PAY"           : "Reference",
     "GENERIC_INCOME"               : "Recette Genarale",
-    "GENERIC_EXPENSE"              : "Depense Generale",
+    "GENERIC_EXPENSE"              : "Dépense Générale",
     "LOSS"                         : "Document de perte de stock",
     "DATE_DOCUMENT"                : "Date document",
     "STOCK_MOVEMENT"               : "Mouvement de stock",
@@ -1258,18 +1258,18 @@
     "EXPIRATION_DATE" : "Date expiration",
     "TRANSFERED_QTE" : "Quantité transferée",
     "TRACKING_NUMBER" : "Numéro tracking",
-    "DESTINATION_DEPOT" : "Depot destination",
-    "ORIGIN_DEPOT" : "Depot Origine",
+    "DESTINATION_DEPOT" : "Dépôt destination",
+    "ORIGIN_DEPOT" : "Dépôt Origine",
     "LOT" : "Lot",
     "INDIRECT_PURCHASE" : "Preuve paiement indirect de l'ordre d'achat",
     "COST" : "Cout",
     "RECIPIENT" : "Recepteur",
     "CONFIRM_PURCHASE" : "Confirmation paiement",
     "CONFIRMED_BY" : "Confirmer par ",
-    "SIGN_EMPLOYEE" : "Signature employée",
+    "SIGN_EMPLOYEE" : "Signature employé",
     "PROOF_OF_PATIENT_CONSUMPTION" : "Preuve de consommation du patient",
     "DOCUMENT_REF" : "Reference vente",
-    "DEPOT_REF" : "Reference depot",
+    "DEPOT_REF" : "Reference dépôt",
     "PURCHASE_RECIPIENT" : "Fournisseur"
 
   },
@@ -1395,14 +1395,14 @@
   "PCASH"                   : {
     "TITLE"                 : "Gestion de la Caisse Principale",
     "INCOME"                : "Recette",
-    "EXPENSE"               : "Depense",
+    "EXPENSE"               : "Dépense",
     "SOME_REPORT"           : "Rapport sommaire des activites (20 derniers)",
     "MANAGER_CONFIGURATION" : "Gestion de la Caisse Principale",
     "DESCRIPTION"           : "Ce module vous permettra de realiser de facoun automatisée toutes les operations liéesa la caisse pricipale. Utiliser ce module pour gerer les recettes et depenses avec aisance."
   },
 
   "INCOME"        : {
-    "TITLE"       : "Caisse Principale: Depense",
+    "TITLE"       : "Caisse Principale: Dépense",
     "TRANSFER"    : "Transfert",
     "CONVENTION"  : "Convention",
     "OTHER"       : "Autre",
@@ -1440,7 +1440,7 @@
     "SOURCE"      : "Source",
     "EXPECTED"    : "Attendu",
     "AMOUNT"      : "Montant",
-    "PROJECT"     : "Proget",
+    "PROJECT"     : "Projet",
     "CAISSE"      : "Caisse",
     "CURRENCY"    : "Monnaie",
     "NAVIGATION"  : "Naviguation",
@@ -1449,7 +1449,7 @@
   },
 
   "CASH_PURCHASE" : {
-    "TITLE"       : "Depense de l'ordre d'achat",
+    "TITLE"       : "Dépense de l'ordre d'achat",
     "NOT_FOUND"   : "Aucun ordre d'achat trouve !",
     "FILTER"      : "Filtrer les ordres d'achats",
     "SELECT_PURCHASE" : "Sélectionner ordre d'achat",
@@ -1477,7 +1477,7 @@
     "CONFIGURE"     : "Parametrage",
     "SALE_DATE"     : "Date de creation",
     "SUPPLIER"      : "Fournisseur",
-    "RESPONSIBLE"   : "Employe Responsable",
+    "RESPONSIBLE"   : "Employé Responsable",
     "ORDER"         : "Ordre",
     "DATE"          : "Date",
     "NOTE"          : "Note",
@@ -1494,20 +1494,20 @@
     "DEFAULT_CURRENCY" : "Monnaie",
     "SELECT_CASHBOX" : "Sélectionner une Caisse",
     "TITLE"        : "Caisse Pricipale",
-    "EXPENSES"     : "Depenses",
+    "EXPENSES"     : "Dépenses",
     "INCOMES"      : "Recettes",
-    "GENERIC"      : "Generique",
+    "GENERIC"      : "Générique",
     "NAVIGATION"   : "Naviguation",
     "CONFIGURE"    : "Configuration",
     "HOME"         : "Caisse Principale",
     "LOADING_ERROR" : "Erreur lors du chargement des dependances",
     "EXPENSE" : {
-      "PAYROLL"                 : "Paie des employées",
+      "PAYROLL"                 : "Paie des employés",
       "MULTI_PAYROLL"           : "Payroll Multiple",
-      "PAYABLE_EMPLOYEE"        : "Liste des employées payables",
+      "PAYABLE_EMPLOYEE"        : "Liste des employés payables",
       "PURCHASE"                : "Achat",
-      "GENERIC_TITLE"           : "Depenses Generiques",
-      "GENERIC_RECEIPT"         : "Recettes Generiques",
+      "GENERIC_TITLE"           : "Dépenses Génériques",
+      "GENERIC_RECEIPT"         : "Recettes Génériques",
       "REFERENCE_DOCUMENT_ID"   : "Reference Document ID",
       "RECIPIENT"               : "Destinataire",
       "PURPOSE"                 : "Motif",
@@ -1525,7 +1525,7 @@
       "SENIORITY"               : "Ancienete",
       "ADVANTAGES"              : "Avantages",
       "SALARY"                  : "Salaire net",
-      "TAXES_OTHERS"            : "Taxes employée et autres deductions",
+      "TAXES_OTHERS"            : "Taxes employé et autres deductions",
       "SALARY_AV"               : "Avance sur salaire",
       "INSS"                    : "Cot. INSS",
       "IPR"                     : "IPR",
@@ -1553,7 +1553,7 @@
       "DATE"                  : "Date recette",
       "AMOUNT"                : "Montant",
       "GENERIC" : {
-        "TITLE"   : "Recette Generique",
+        "TITLE"   : "Recette Générique",
         "RECEIPT" : "Reception"
       },
       "SELECT_ACCOUNT"        : "Sélectionner un compte",
@@ -1565,7 +1565,7 @@
             "EMPTY_REPORT" : "Aucun enregistrement trouve !"
         },
         "EXPENSE" : {
-            "TITLE" : "Rapport des Depenses",
+            "TITLE" : "Rapport des Dépenses",
             "EMPTY_REPORT" : "Aucun enregistrement trouve !"
         }
     }
@@ -1608,7 +1608,7 @@
     "LOCATE_PATIENT"         : "Chercher le patient",
     "SLECT_PRESCRIPTION"     : "Sélectionner la vente",
     "ALLOCATE_MEDECINE"      : "Allouer les medicamnets",
-    "NONE"                   : "Cet item n'existe dans le stock du depot, contacter l'administrateur",
+    "NONE"                   : "Cet item n'existe dans le stock du dépôt, contacter l'administrateur",
     "LIMITED_STOCK"          : "Il n ' y a pas assesz de stock pour couvrir la vente, contacter l'administrateur",
     "EXPIRED"                : "Le stock disponible ne peut pas etre utilise comme il est expire, contacter l'administrateur.",
     "AVAILABLE"              : "Prescriptions disponibles"
@@ -1651,11 +1651,11 @@
   },
 
   "DEPOT" : {
-    "TITLE"     : "Gestionn des Depot",
-    "NO_DEPOTS" : "Aucun depot trouve",
+    "TITLE"     : "Gestionn des Dépôt",
+    "NO_DEPOTS" : "Aucun dépôt trouve",
     "ADD" : "Ajouter",
-    "ALERT" : "Ce module vous permet de gerer vos depot",
-    "NEW"   : "Nouveau depot"
+    "ALERT" : "Ce module vous permet de gerer vos dépôt",
+    "NEW"   : "Nouveau dépôt"
   },
 
   "EMPLOYEE" : {
@@ -1829,7 +1829,7 @@
 
   "EXPIRING_REPORT"  : {
     "TITLE"        : "Rapport d'Expiration de medicaments",
-    "ALL_DEPOTS"   : "Tous les depots",
+    "ALL_DEPOTS"   : "Tous les dépôts",
     "DAY"          : "Aujourd'ui",
     "MONTH"        : "Ce mois",
     "WEEK"         : "Cette semaine",
@@ -1843,7 +1843,7 @@
     "ADMINISTRATOR"     : "Adminstrateur",
     "RESPONSABLE"       : "Responsable",
     "BENEFICIARY"       : "Beneficiare",
-    "EMPLOYEE"          : "Employée",
+    "EMPLOYEE"          : "Employé",
     "CLIENT"            : "Client",
     "CREDITOR"          : "Créditeur",
     "CUSTOMER"          : "Client"
