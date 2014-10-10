@@ -114,7 +114,8 @@
       "/payTax/",
       "/getDistinctInventories/",
       "/partials/",
-      "/getEnterprisePayment/"
+      "/getEnterprisePayment/",
+      "/getOffDaysHollydays/"
     ]
   }
 }
