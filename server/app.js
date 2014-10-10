@@ -874,19 +874,17 @@ app.get('/synthetic/:goal/:project_id?', function (req, res, next) {
 });
 
 app.get('/period/:date', function (req, res, next) {
-  var date = sanitize.escape(util.toMysqlDate(new Date(Number(req.params.date))));
+  var date = new Date(Number(req.params.date));
 
   var sql =
     'SELECT id, fiscal_year_id FROM period ' +
-    'WHERE period_start <= ' + date + ' AND period_stop >= ' + date + ' LIMIT 1';
+    'WHERE period_start <= ? AND period_stop >= ? LIMIT 1';
 
-  db.exec(sql)
-  .then(function (ans) {
-    res.send(ans);
+  db.exec(sql, [date, date])
+  .then(function (rows) {
+    res.send(rows[0]);
   })
-  .catch(function (err) {
-    next(err);
-  })
+  .catch(next)
   .done();
 });
 
@@ -902,24 +900,22 @@ app.get('/lot/:inventory_uuid', function (req, res, next) {
   .done();
 });
 
-app.get('/max_trans/:project_id', function (req, res, next) {
-  var project_id = sanitize.escape(req.params.project_id);
+app.get('/max_trans/:projectId', function (req, res, next) {
+  // When did we switch from IFNULL in the posting journal
   var sql =
-    'SELECT abbr, max(increment) AS increment FROM (' +
+    'SELECT abbr, IFNULL(MAX(increment), 1) AS increment FROM (' +
       'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
       'FROM posting_journal JOIN project ON posting_journal.project_id = project.id ' +
-      'WHERE project_id = ' + project_id + ' ' +
+      'WHERE project_id = ? ' +
       'UNION ' +
       'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
       'FROM general_ledger JOIN project ON general_ledger.project_id = project.id ' +
-      'WHERE project_id = ' + project_id + ')c;';
-  db.exec(sql)
+      'WHERE project_id = ?)c;';
+  db.exec(sql, [req.params.projectId, req.params.projectId])
   .then(function (ans) {
     res.send(ans);
   })
-  .catch(function (err) {
-    next(err);
-  })
+  .catch(next)
   .done();
 });
 

@@ -31,8 +31,8 @@
           <select
             class="col-xs-2 form-bhima"
             ng-model="invoice.service"
-            ng-options="serv as serv.name  for serv in model.services.data"
-            ng-change="preparDistribution()"
+            ng-options="service as service.name  for service in model.services.data"
+            ng-change="SelectService()"
           >
           </select>
         </div>

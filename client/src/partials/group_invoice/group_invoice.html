@@ -33,18 +33,38 @@
             <div class="form-group">
               <label class="control-label col-xs-2">{{ "GROUP_INVOICE.GROUP" | translate }}: </label>
               <div class="col-xs-8">
-                <select class="form-bhima" ng-model="selected.convention" ng-options="group as group.name for group in conventions.data">
+
+                <input
+                  class="form-bhima"
+                  type="text"
+                  typeahead-template-url="ConventionList.html"
+                  ng-model="selected.convention"
+                  typeahead="group as group.name for group in conventions.data | filter:$viewValue | limitTo:8"
+                  placeholder="{{ 'SELECT.DEBITOR_GROUP' | translate }}"
+                >
+                <!--select class="form-bhima" ng-model="selected.convention" ng-options="group as group.name for group in conventions.data">
                   <option value="">-- {{ "SELECT.DEBITOR_GROUP" | translate }} --</option>
-                </select>
+                </select-->
               </div>
             </div>
 
             <div class="form-group">
               <label class="control-label col-xs-2"> {{ "GROUP_INVOICE.DEBITOR" | translate }}:</label>
               <div class="col-xs-8">
-                <select class="form-bhima" ng-model="selected.debitor" ng-options="debitor as debitor.text for debitor in debitors.data">
+
+                <input
+                  class="form-bhima"
+                  type="text"
+                  typeahead-template-url="DebtorList.html"
+                  ng-model="selected.debitor"
+                  typeahead="debitor as debitor.text for debitor in debitors.data | filter:$viewValue | limitTo:8"
+                  placeholder="{{ 'SELECT.DEBITOR' | translate }}"
+                >
+
+
+                <!--select class="form-bhima" ng-model="selected.debitor" ng-options="debitor as debitor.text for debitor in debitors.data">
                   <option value="">-- {{ "SELECT.DEBITOR" | translate }}--</option>
-                </select>
+                </select-->
               </div>
             </div>
 
@@ -53,6 +73,7 @@
           </fieldset>
         </form>
       </div>
+
       <div class="panel panel-default" ng-switch-when="true">
         <div class="panel-heading">
           <span class="glyphicon glyphicon-list"></span>
@@ -71,7 +92,7 @@
           <tbody>
             <tr ng-repeat="invoice in invoices.data | filter:filter">
               <td>{{invoice.inv_po_id}}</td>
-              <td>{{invoice.deb_cred_id}}</td>
+              <td>{{invoice.deb_cred_uuid}}</td>
               <td>{{invoice.trans_date | date}}</td>
               <td>{{invoice.balance | currency }}</td>
               <td><button class="btn btn-sm btn-default" ng-click="examineInvoice(invoice, $index)"><i class="glyphicon glyphicon-search"></i></button></td>
@@ -111,7 +132,7 @@
                   <p class="form-control-static col-xs-3">{{ invoice.inv_po_id }}</p>
                   <p class="form-control-static col-xs-3">{{ invoice.balance | currency}}</p>
                   <div class="col-xs-6 input-group">
-                    <span class="input-group-addon">$</span>
+                    <span class="input-group-addon">{{currency.data[0].symbol}}</span>
                     <input type="number" class="form-bhima" ng-model="invoice.payment" min="0" max="{{invoice.balance}}">
                   </div>
                 </div>
@@ -122,7 +143,6 @@
                 <label class="control-label col-xs-2">{{ "GROUP_INVOICE.BALANCE" | translate }}: </label>
                 <p class="col-xs-4 form-control-static">{{ (paymentBalance | currency) || ("GROUP_INVOICE.ERROR_TXT_1" | translate) }}</p>
               </div>
-
             </form>
           </div>
         </div>
@@ -211,12 +231,12 @@
                   </div>
                 </div>
 
-                <div class="form-group">
+                <!--div class="form-group">
                   <label class="control-label col-xs-3">{{ "COLUMNS.DEBITOR" | translate }}</label>
                   <div class="col-xs-9">
-                    <p class="form-control-static">{{ debitors.get(examine.deb_cred_id).text }}</p>
+                    <p class="form-control-static">{{ debitors.get(examine.deb_cred_uuid).text }}</p>
                   </div>
-                </div>
+                </div-->
 
                 <div class="form-group">
                   <label class="control-label col-xs-3">{{ "COLUMNS.BALANCE" | translate }}</label>
@@ -240,3 +260,18 @@
     </div>
   </div>
 </main>
+
+<script type="text/ng-template" id="ConventionList.html">
+  <a>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+    <span><i>{{match.model.name}}</i></span>
+  </a>
+</script>
+
+
+<script type="text/ng-template" id="DebtorList.html">
+  <a>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+    <span><i>{{match.model.text}}</i></span>
+  </a>
+</script>

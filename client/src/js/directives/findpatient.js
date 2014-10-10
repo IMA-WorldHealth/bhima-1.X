@@ -115,7 +115,6 @@ angular.module('bhima.directives')
 
       function handleIdRequest(model) {
         var debtor = scope.findPatient.debtor = extractMetaData(model.debtor.data)[0];
-        console.log('downloaded', model);
         //Validate only one debtor matches
         if (!debtor) {
           return messenger.danger('Received invalid debtor, unknown');
