@@ -6,6 +6,8 @@ angular.module('bhima.services')
   'messenger',
   'precision',
   function ($timeout, Store, appstate, messenger, precision) {
+    // FIXME: this module needs to be able to do
+    // exchange.setRate() so that it can detect changes
     var called = false;
     var cfg = {};
 
@@ -69,31 +71,43 @@ angular.module('bhima.services')
       return (value * to.rate) / from.rate;
     };
 
-    appstate.register('exchange_rate', function (rates) {
-      console.log('[EXCHANGE]', rates);
+    function createDailyRateStore(store, rate) {
+      var date = normalize(new Date(rate.date));
+      if (!store.get(date)) {
+        store.post({ date : date, rateStore : new Store({ data : [] }) });
+        store.get(date).rateStore.post({ id : rate.enterprise_currency_id, rate : 1}); // default rate for enterprises
+        store.get(date).rateStore.post({
+          id : rate.foreign_currency_id,
+          rate : rate.rate,
+        });
+      } else {
+        store.get(date).rateStore.post({
+          id : rate.foreign_currency_id,
+          rate : rate.rate,
+        });
+      }
+    }
+
+    function loadRates(rates) {
+      // loads in an array of rates
       cfg.rates = rates;
       $timeout(function () { exchange.hasExchange(); }); // Force refresh
 
       var store = exchange.store = new Store({ identifier : 'date', data : [] });
 
       rates.forEach(function (rate) {
-        console.log('rate :::', rate);
-        var date = normalize(new Date(rate.date));
-        if (!store.get(date)) {
-          store.post({ date : date, rateStore : new Store({ data : [] }) });
-          store.get(date).rateStore.post({ id : rate.enterprise_currency_id, rate : 1}); // default rate for enterprises
-          store.get(date).rateStore.post({
-            id : rate.foreign_currency_id,
-            rate : rate.rate,
-          });
-        } else {
-          store.get(date).rateStore.post({
-            id : rate.foreign_currency_id,
-            rate : rate.rate,
-          });
-        }
+        createDailyRateStore(store, rate);
       });
-    });
+    }
+
+    function forceRefresh() {
+      loadRates(appstate.get('exchange_rate'));
+    }
+
+    exchange.forceRefresh = forceRefresh;
+
+    appstate.register('exchange_rate', loadRates);
+
     return exchange;
   }
 ]);
