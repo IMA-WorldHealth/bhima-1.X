@@ -1494,6 +1494,21 @@ app.get('/getEnterprisePayment/:employee_id', function (req, res, next) {
   .done();
 });
 
+app.get('/getOffDaysHollydays/', function (req, res, next) {
+  var sql = "SELECT offday.id, offday.label, offday.date, offday.percent_pay"
+          + " FROM offday"
+          + " WHERE (offday.date >= '" + req.query.weekFrom + "' AND offday.date <= '" + req.query.weekTo + "')"
+          + " AND (offday.date >= '" + req.query.hFrom + "' AND offday.date <= '" + req.query.hTo + "')";
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+
 // temporary error handling for development!
 process.on('uncaughtException', function (err) {
   console.log('[uncaughtException]', err);
