@@ -1015,8 +1015,6 @@ angular.module('bhima.controllers')
     }
 
     function processPayslip () {
-      /*console.log("La fonction Process Payslip");
-      console.log("Numero de paiement : " + invoiceId);*/
       $scope.TotalPaid = 0;
       $scope.TotalWithheld = 0;
       $scope.TotalNet = 0;
@@ -1026,17 +1024,12 @@ angular.module('bhima.controllers')
           }  
       }).
       success(function(data) {
-        //console.log(util.sqlDate(data[0].dateFrom));
-        //console.log(util.sqlDate(data[0].dateTo));
-        getOffDayCount();
         getPPConf();
-        
 
         function getHollyDayCount(paiement_period_confs) {
           var defer = $q.defer();
           var som = 0;
           
-          // var pp = session.model.paiement_period.data[0];
           $http.get('/getCheckHollyday/',{params : {
               'dateFrom' : util.sqlDate(data[0].dateFrom), 
               'dateTo' : util.sqlDate(data[0].dateTo),
@@ -1050,6 +1043,8 @@ angular.module('bhima.controllers')
               var soms = [];
               hollydays.forEach(function (h) {
                 var nb = 0;
+
+
                 function getValue (ppc) {
                   //paiement period config === ppc
                   var date_pweekfrom = new Date(ppc.weekFrom);
@@ -1074,7 +1069,17 @@ angular.module('bhima.controllers')
                     minus_left = date_hdatefrom.getDate() - date_pweekfrom.getDate();
                   }
 
-                  var total = date_pweekto.getDate() - date_pweekfrom.getDate();
+                  var nbOffDaysPos = 0; 
+                  for(var i = 0; i < $scope.OffDaysData.length; i++){
+                    var dateOff = new Date($scope.OffDaysData[i].date);
+                    var num_dateOff = dateOff.setHours(0,0,0,0);
+                    if(((num_dateOff >= num_hdatefrom) && (num_dateOff <= num_hdateto)) && 
+                      ((num_dateOff >= num_pweekfrom) && (num_dateOff <= num_pweekto))){
+                      nbOffDaysPos++;
+                    }
+                  }                  
+
+                  var total = date_pweekto.getDate() - date_pweekfrom.getDate() + 1 - nbOffDaysPos;
                   if(minus_left > total) { return 0; }
                   if(minus_right > total) { return 0; } 
                   return total - (minus_left + minus_right);
@@ -1090,9 +1095,8 @@ angular.module('bhima.controllers')
               som = soms.reduce(function (x, y){
                 return x+y;
               }, 0);
-              console.log(som);
-              $scope.total_day = data[0].working_day + $scope.off_day + som;
 
+              $scope.total_day = data[0].working_day + som;
 
               if($scope.max_day > 0){
 
@@ -1107,7 +1111,6 @@ angular.module('bhima.controllers')
                 $scope.amont_payable = $scope.daly_rate * $scope.total_day; 
                 $scope.TotalPaid += $scope.amont_payable;
                 $scope.TotalNet += $scope.amont_payable;
-                console.log($scope.TotalNet);
               } else {
                 $scope.daly_rate = 0;
                 $scope.amont_payable = 0; 
@@ -1115,8 +1118,7 @@ angular.module('bhima.controllers')
 
               defer.resolve(som); 
             }else{
-              //console.log('Nombre de jour prester ',data[0].working_day,$scope.off_day);
-              $scope.total_day = data[0].working_day + $scope.off_day;
+              $scope.total_day = data[0].working_day;
 
               if($scope.max_day > 0){
 
@@ -1130,19 +1132,38 @@ angular.module('bhima.controllers')
                 $scope.amont_payable = $scope.daly_rate * $scope.total_day; 
                 $scope.TotalPaid += $scope.amont_payable;
                 $scope.TotalNet += $scope.amont_payable;
-                console.log($scope.TotalNet);
               } else {
                 $scope.daly_rate = 0;
                 $scope.amont_payable = 0; 
               }
-
               defer.resolve(0);
             }               
           });
           return defer.promise;
         }        
 
-        function getOffDayCount() {        
+        function getOffDayCount() {          
+          dependencies.offDays = {
+            query : {
+              tables : {
+                'offday' : {
+                  columns : ['id', 'label', 'date', 'percent_pay']
+                }
+              },
+              where : ['offday.date>=' + util.sqlDate(data[0].dateFrom), 'AND', 'offday.date<=' + util.sqlDate(data[0].dateTo)]
+            }
+          };  
+
+          validate.process(dependencies, ['offDays'])
+          .then(function (model) {
+            $scope.nbOffDays = model.offDays.data.length;
+            $scope.OffDaysData = model.offDays.data;
+          });
+        }
+
+
+
+        function getOffDay() {        
           
           dependencies.offDays = {
             query : {
@@ -1157,19 +1178,18 @@ angular.module('bhima.controllers')
 
           validate.process(dependencies, ['offDays'])
           .then(function (model) {
-            if(model.offDays.data.length > 0){
-              $scope.off_day = model.offDays.data.length;  
-            } else {
-              $scope.off_day = 0;
+            $scope.dataOffDays = model.offDays;
+            for(var i = 0; i < model.offDays.data.length; i++){
+
+              model.offDays.data[i].rate_offDay = (model.offDays.data[i].percent_pay) * ($scope.daly_rate / 100);
+              $scope.TotalPaid += model.offDays.data[i].rate_offDay;
+              $scope.TotalNet += model.offDays.data[i].rate_offDay;
             }
-            
+
           });
         }
 
-
-
         function getPPConf() {  
-
           dependencies.paiement_period_conf = {
             required : true,
             query : {
@@ -1186,7 +1206,9 @@ angular.module('bhima.controllers')
           .then(function (model) {
             var paiement_period_confs = model.paiement_period_conf.data;
             $scope.max_day = getMaxDays(paiement_period_confs);
-            getHollyDayCount(paiement_period_confs); 
+            getOffDayCount(); 
+            getHollyDayCount(paiement_period_confs);
+            getOffDay(); 
           });
         } 
 
@@ -1199,7 +1221,6 @@ angular.module('bhima.controllers')
         }         
         $scope.dataPaiements = data;
       });
-
 
       $http.get('/getDataRubrics/',{params : {
             'invoiceId' : invoiceId

@@ -213,7 +213,13 @@ angular.module('bhima.controllers')
           util.sqlDate(new Date())
         );
         self.max_day = session.data.max_day;
+
+        /*if(session.data.max_day === hl){
+          hl -= session.data.off_day;
+          self.hollyday = hl; 
+        }*/
         self.working_day = session.data.max_day - (hl + session.data.off_day);
+
         self.hollydays = hl;
         self.offdays = session.data.off_day;
         self.daily_salary = self.emp.basic_salary / session.data.max_day;
@@ -372,7 +378,6 @@ angular.module('bhima.controllers')
           where : ['offday.date>=' + util.sqlDate(session.pp.dateFrom), 'AND', 'offday.date<=' + util.sqlDate(session.pp.dateTo)]
         }
       };     
-
       validate.process(dependencies, ['offDays'])
       .then(function (model) {
         var offdays = model.offDays.data;
@@ -388,6 +393,7 @@ angular.module('bhima.controllers')
           }
         });
 
+        session.data.offdays = offdays;
         session.data.off_day = nb_offdays;
       });
       return $q.when();
@@ -412,7 +418,6 @@ angular.module('bhima.controllers')
       // var pp = session.model.paiement_period.data[0];
       var pp = session.pp;
  
-
       connect.fetch('/hollyday_list/' + JSON.stringify(pp) + '/' + employee.id)
       .then(function (res) {
         var hollydays = res;
@@ -421,7 +426,9 @@ angular.module('bhima.controllers')
           var soms = [];
 
           hollydays.forEach(function (h) {
-            var nb = 0;
+            var nb = 0,
+                nbOf = 0;
+            
             function getValue (ppc) {
               //paiement period config === ppc
               var date_pweekfrom = new Date(ppc.weekFrom);
@@ -429,6 +436,7 @@ angular.module('bhima.controllers')
 
               var date_hdatefrom = new Date(h.dateFrom);
               var date_hdateto = new Date(h.dateTo);
+              var nbOff = 0;
 
               var num_pweekfrom = date_pweekfrom.setHours(0,0,0,0);
               var num_pweekto = date_pweekto.setHours(0,0,0,0);
@@ -446,7 +454,19 @@ angular.module('bhima.controllers')
                 minus_left = date_hdatefrom.getDate() - date_pweekfrom.getDate();
               }
 
-              var total = date_pweekto.getDate() - date_pweekfrom.getDate();
+              //console.log('Le nombre total de Offdays:',session.data.offdays.length);
+              var nbOffDaysPos = 0; 
+              for(var i = 0; i < session.data.offdays.length; i++){
+                var dateOff = new Date(session.data.offdays[i].date);
+                var num_dateOff = dateOff.setHours(0,0,0,0);
+                //console.log(util.sqlDate(dateOff),util.sqlDate(date_pweekfrom),util.sqlDate(date_pweekto));
+                if(((num_dateOff >= num_hdatefrom) && (num_dateOff <= num_hdateto)) && 
+                  ((num_dateOff >= num_pweekfrom) && (num_dateOff <= num_pweekto))){
+                  nbOffDaysPos++;
+                }
+              }
+
+              var total = date_pweekto.getDate() - date_pweekfrom.getDate() + 1 - nbOffDaysPos;
               if(minus_left > total) { return 0; }
               if(minus_right > total) { return 0; } 
               return total - (minus_left + minus_right);
@@ -454,7 +474,11 @@ angular.module('bhima.controllers')
 
             pp_confs.forEach(function (ppc) {
               nb += getValue(ppc);
+              
             });
+
+
+            
             soms.push(nb);
           });
 
