@@ -11,7 +11,8 @@ angular.module('bhima.controllers')
   'connect',
   'validate',
   'util',
-  function (EVENTS, $scope, $location, $translate, $timeout, appauth, Appcache, appstate, connect, validate, util) {
+  'exchange',
+  function (EVENTS, $scope, $location, $translate, $timeout, appauth, Appcache, appstate, connect, validate, util, exchange) {
     var dependencies = {},
         preferences = new Appcache('preferences'),
         cache = new Appcache('application');
@@ -151,9 +152,9 @@ angular.module('bhima.controllers')
       // set appstate variables
       // TODO : Loading exchange rates should be moved into a service
       // where only the pages needing exchange rates load them.
-      setEnvironmentVariable('exchange_rate', exchangeRate);
       setEnvironmentVariable('fiscalYears', fiscalYear);
       setEnvironmentVariable('currencies', currencies);
+      setEnvironmentVariable('exchange_rate', exchangeRate);
       
       // FIXME
       // set DEPRECATED appstate variables until we can change them

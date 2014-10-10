@@ -438,10 +438,13 @@ angular.module('bhima.controllers')
     function processRecover(recoveredSession) {
       if (!session) { return; }
       $scope.session.recovered = recoveredSession;
+      console.log('on a', $scope.session.recovered);
     }
 
     function selectRecover() {
       $scope.session.recovering = true;
+      //console.log($scope.session.recovered);
+      //invoice.service = $scope.session.recovered.service;
       $scope.findPatient.forceSelect($scope.session.recovered.patientId);
     }
 
@@ -452,6 +455,8 @@ angular.module('bhima.controllers')
         updateInvoiceItem(currentItem, invItem);
         currentItem.quantity = item.quantity;
       });
+
+      //invoice.service = $scope.session.recovered.service || null;
 
       // FIXME this is stupid
       session.displayRecover = true;
@@ -464,6 +469,7 @@ angular.module('bhima.controllers')
       //FIXME currently puts new object on every item, this could be improved
       var recoverObject = session.recoverObject || {
         patientId : invoice.debtor.uuid,
+        //service : invoice.service,
         items : []
       };
 
@@ -504,6 +510,10 @@ angular.module('bhima.controllers')
       return invalidItems;
     }
 
+    function SelectService () {
+      updateSessionRecover();
+    }
+
     $scope.initialiseSaleDetails = initialiseSaleDetails;
     $scope.addInvoiceItem = addInvoiceItem;
     $scope.updateInvoiceItem = updateInvoiceItem;
@@ -514,5 +524,6 @@ angular.module('bhima.controllers')
     $scope.selectRecover = selectRecover;
     $scope.cacheQuantity = cacheQuantity;
     $scope.verifySubmission = verifySubmission;
+    //$scope.SelectService = SelectService;
   }
 ]);
