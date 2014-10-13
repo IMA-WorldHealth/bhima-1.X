@@ -81,7 +81,7 @@
           <td>{{ total_day }}</td>
           <td>{{ }}</td>
           <td><span ng-bind-html="item.valueP | intlcurrency:dataPaiements[0].currency_id"></span></td>
-          <td><span ng-bind-html="item.valueR | intlcurrency:session.currentCurrency.id"></span></td>
+          <td><span ng-bind-html="item.valueR | intlcurrency:dataPaiements[0].currency_id"></span></td>
           <td></td>
         </tr>
         <tr ng-repeat="tax in dataTaxes | orderBy:'label'">

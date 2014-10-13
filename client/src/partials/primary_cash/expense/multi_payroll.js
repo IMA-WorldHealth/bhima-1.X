@@ -626,7 +626,10 @@ angular.module('bhima.controllers')
       return $q.all(list.map(function (elmt) {
         var rc_records = [];
         var tc_records = [];        
-        elmt.net_after_taxe = elmt.net_before_taxe - elmt.IPR1 - elmt.ONEM - elmt.IERE - elmt.INPP;
+        //elmt.net_after_taxe = elmt.net_before_taxe - elmt.IPR1 - elmt.ONEM - elmt.IERE - elmt.INPP;
+        console.log(elmt.net_before_taxe,elmt.IPR1);
+        elmt.net_after_taxe = elmt.net_before_taxe - elmt.IPR1;
+
         elmt.net_salary = elmt.net_after_taxe + (elmt.HOUS + elmt.TRAN + elmt.ALLO + elmt.SENI - (elmt.ADVA + (elmt.daily_salary * elmt.off_day))) + elmt.offdays_cost; 
         var paiement = {
           uuid : uuid(),
