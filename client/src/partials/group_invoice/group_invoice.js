@@ -58,7 +58,7 @@ angular.module('bhima.controllers')
         },
         join : ['enterprise.currency_id=currency.id']
       }
-    }
+    };
 
     // get enterprise
     appstate.register('project', function (project) {
