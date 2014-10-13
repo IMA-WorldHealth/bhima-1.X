@@ -90,24 +90,26 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       .then(function (rows) {
         var data = rows.pop();
 
-        //FIX ME: dangerous test     
+        //FIX ME: dangerous test
 
         if(!data.abbr){
-          console.log('vide :::')
+          console.log('pas existence abbr, alors data.increment est : ', data.increment);
           db.exec(sql2)
-          .then(function (rows){            
+          .then(function (rows){
             var data2 = rows.pop();
             value = (data.increment) ? '\'' + data2.abbr + data.increment + '\'' : '\'' + data2.abbr + 1 + '\'';
             defer.resolve(value);
           });
         }else{
-          var value = '\'' + data.abbr + data.increment + '\'';
+          console.log('existence abbr, alors data.increment est : ', data.increment);
+          // var value = '\'' + data.abbr + data.increment + '\'';
+          var value = data.increment ? '\'' + data.abbr + data.increment + '\'' : '\'' + data.abbr + 1 + '\'';
           defer.resolve(value);
         }
 
-        
+
         // console.log('voici le tableau data :::', data);
-        // var value = data.increment ? '\'' + data.abbr + data.increment + '\'' : '\'' + data.abbr + 1 + '\'';                
+        // var value = data.increment ? '\'' + data.abbr + data.increment + '\'' : '\'' + data.abbr + 1 + '\'';
       });
 
       return defer.promise;
@@ -727,7 +729,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
         'WHERE `purchase`.`id` = ' + sanitize.escape(id) + ';';
 
       return db.exec(queries.purchase);
-    }) 
+    })
     .then(function () {
       return db.exec(queries.purchase_item);
     })
@@ -1315,7 +1317,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
         'FROM `primary_cash` JOIN `primary_cash_item` JOIN `cash_box_account_currency` ON ' +
           '`primary_cash`.`uuid` = `primary_cash_item`.`primary_cash_uuid` AND ' +
           '`primary_cash`.`cash_box_id` = `cash_box_account_currency`.`cash_box_id` ' +
-        'WHERE `primary_cash`.`uuid` = ' + sanitize.escape(id) + ' AND `cash_box_account_currency`.`currency_id` = ' + sanitize.escape(reference.currency_id) + ';'; 
+        'WHERE `primary_cash`.`uuid` = ' + sanitize.escape(id) + ' AND `cash_box_account_currency`.`currency_id` = ' + sanitize.escape(reference.currency_id) + ';';
       return db.exec(sql);
     })
     .then(function () {
@@ -1393,7 +1395,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
         'FROM `primary_cash` JOIN `primary_cash_item` JOIN `cash_box_account_currency` ON ' +
           '`primary_cash`.`uuid` = `primary_cash_item`.`primary_cash_uuid` AND ' +
           '`primary_cash`.`cash_box_id` = `cash_box_account_currency`.`cash_box_id` ' +
-        'WHERE `primary_cash`.`uuid` = ' + sanitize.escape(id) + ' AND `cash_box_account_currency`.`currency_id` = ' + sanitize.escape(reference.currency_id) + ';'; 
+        'WHERE `primary_cash`.`uuid` = ' + sanitize.escape(id) + ' AND `cash_box_account_currency`.`currency_id` = ' + sanitize.escape(reference.currency_id) + ';';
       return db.exec(sql);
     })
     .then(function () {
@@ -1420,7 +1422,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     .then(getTransId)
     .then(credit)
     .then(function (res){
-      return done(null, res); 
+      return done(null, res);
     })
     .catch(function (err){
       return done(err);
@@ -1774,7 +1776,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
                       [
                         sanitize.escape(id),
                         cfg.originId,
-                        user_id                        
+                        user_id
                       ].join(',') +
                     ', `service`.`cost_center_id` FROM `service` WHERE `service`.`id`= ' + sanitize.escape(reference.service_id) + ';';
           return db.exec(sql);
@@ -1947,9 +1949,9 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     function getRecord (records) {
       if (records.length === 0) { throw new Error('pas enregistrement'); }
       reference = records[0];
-      var sql2 = 
+      var sql2 =
       "SELECT account_id FROM `config_accounting`, `paiement_period`, `paiement` " +
-      "WHERE `paiement`.`paiement_period_id` = `paiement_period`.`id` AND " + 
+      "WHERE `paiement`.`paiement_period_id` = `paiement_period`.`id` AND " +
       "`paiement_period`.`config_accounting_id` = `config_accounting`.`id` AND " +
       "`paiement`.`uuid` = " + sanitize.escape(reference.document_uuid) + ";";
 
@@ -1974,9 +1976,9 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       return debit();
     }
 
-    function debit () {      
+    function debit () {
       console.log('le taux est  :::', rate);
-      var debit_sql = 
+      var debit_sql =
         'INSERT INTO posting_journal ' +
         '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
         '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
@@ -2025,16 +2027,16 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
           ].join(',') + ', null, null, ' + [sanitize.escape(id), cfg.originId, user_id].join(',') +
         ');';
       return db.exec(credit_sql);
-    }    
+    }
   }
 
   function handleDonation (id, user_id, data, done) {
-    var cfg = {}, 
-        reference, 
+    var cfg = {},
+        reference,
         sql = "SELECT * FROM `inventory` WHERE `inventory`.`uuid`=" + sanitize.escape(data.inventory_uuid) + ";";
 
     db.exec(sql)
-    .then(getRecord)    
+    .then(getRecord)
     .spread(getDetails)
     .then(getTransId)
     .then(credit)
@@ -2064,7 +2066,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     }
 
     function debit () {
-      var sql = 
+      var sql =
         'INSERT INTO posting_journal '+
         '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
         '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
@@ -2093,7 +2095,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     }
 
     function credit () {
-      var sql = 
+      var sql =
         'INSERT INTO posting_journal ' +
         '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
         '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
@@ -2122,8 +2124,8 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     }
 
     function catchError (err) {
-      var donation_deleting = "DELETE FROM `donations` WHERE `donations`.`uuid`=" + sanitize.escape(data.donation.uuid), 
-          donation_item_deleting = "DELETE FROM `donation_item` WHERE `donation_item`.`donation_uuid`=" + sanitize.escape(data.donation.uuid), 
+      var donation_deleting = "DELETE FROM `donations` WHERE `donations`.`uuid`=" + sanitize.escape(data.donation.uuid),
+          donation_item_deleting = "DELETE FROM `donation_item` WHERE `donation_item`.`donation_uuid`=" + sanitize.escape(data.donation.uuid),
           movement_deleting = "DELETE FROM `movement` WHERE `movement`.`document_id`=" + sanitize.escape(data.movement.document_id),
           stock_deleting = "DELETE FROM `stock` WHERE `stock`.`tracking_number` IN (" + data.tracking_numbers.join() + ')';
 
@@ -2173,7 +2175,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       if (records.length === 0) { throw new Error('pas enregistrement'); }
       reference = records[0];
       console.log("other :::", details);
-      var sql2 = 
+      var sql2 =
       "SELECT account_id FROM `tax`" +
       "WHERE `tax`.`id`=" + sanitize.escape(details.tax_id) + ";";
       var date = util.toMysqlDate(get.date());
@@ -2196,8 +2198,8 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       return debit();
     }
 
-    function debit () {      
-      var debit_sql = 
+    function debit () {
+      var debit_sql =
         'INSERT INTO posting_journal ' +
         '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
         '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
@@ -2246,7 +2248,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
           ].join(',') + ', null, null, ' + [sanitize.escape(id), cfg.originId, user_id].join(',') +
         ');';
       return db.exec(credit_sql);
-    }    
+    }
   }
 
   // router for incoming requests
