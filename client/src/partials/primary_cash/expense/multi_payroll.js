@@ -589,27 +589,21 @@ angular.module('bhima.controllers')
 
       connect.basicPut('paiement', [packagePay.paiement], ['uuid'])
         .then(function () {
-          console.log('debut primary');
           return connect.basicPut('primary_cash', [packagePay.primary], ['uuid']);
         })
         .then(function () {
-          console.log('debut primary_cash_item');
           return connect.basicPut('primary_cash_item', [packagePay.primary_details], ['uuid']);
         })
         .then(function () {
-          console.log('debut rc_records');
           return connect.basicPut('rubric_paiement', packagePay.rc_records, ['id']);
         })
         .then(function () {
-          console.log('debut tax_paiement');
           return connect.basicPut('tax_paiement', packagePay.tc_records, ['id']);
         })
         .then(function () {
-          console.log('debut journal');
           return connect.fetch('/journal/payroll/' + packagePay.primary.uuid);
         })
         .then(function (res){
-          console.log('le resultat renvoye est ', res);
           def.resolve(res);
         })
         .catch(function (err){
@@ -627,7 +621,6 @@ angular.module('bhima.controllers')
         var rc_records = [];
         var tc_records = [];        
         //elmt.net_after_taxe = elmt.net_before_taxe - elmt.IPR1 - elmt.ONEM - elmt.IERE - elmt.INPP;
-        console.log(elmt.net_before_taxe,elmt.IPR1);
         elmt.net_after_taxe = elmt.net_before_taxe - elmt.IPR1;
 
         elmt.net_salary = elmt.net_after_taxe + (elmt.HOUS + elmt.TRAN + elmt.ALLO + elmt.SENI - (elmt.ADVA + (elmt.daily_salary * elmt.off_day))) + elmt.offdays_cost; 
