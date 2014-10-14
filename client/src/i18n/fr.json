@@ -1418,6 +1418,8 @@
   "JOURNAL_VOUCHER"  : {
       "TITLE"                 : "Ajout Transaction",
       "ADD_ROW"               : "Ajouter Ligne",
+      "ADD_COMMENT"           : "Ajouter commentaire",
+      "ADD_REFERENCE_DOCUMENT": "Ajouter reference document",
       "POSTING_JOURNAL"       : "Posting Journal",
       "TAB_LOCK_COLONNE"      : "Colonne par Colonne",
       "TAB_LOCK_LINE"         : "Ligne par Ligne",
