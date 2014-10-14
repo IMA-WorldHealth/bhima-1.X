@@ -56,6 +56,7 @@ angular.module('bhima.services')
       date = new Date(date) || new Date();
       date = normalize(date);
       var converter = exchange.store.get(date);
+      if(!converter) { messenger.danger('No exchange rates loaded for date: ' + new Date(date)); return;}
 
       var from = converter.rateStore.data.filter(function (item) {
         return item.id === from_currency_id;
