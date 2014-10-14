@@ -944,7 +944,16 @@
     "TITLE"                 : "Journal Voucher",
     "ADD_ROW"               : "Add Line",
     "ADD_COMMENT"           : "Add Comment",
-    "ADD_REFERENCE_DOCUMENT" : "Add Reference Document"
+    "ADD_REFERENCE_DOCUMENT": "Add Reference Document",
+    "POSTING_JOURNAL"       : "Posting Journal",
+    "TAB_LOCK_COLONNE"      : "Colonne by Colonne",
+    "TAB_LOCK_LINE"         : "Row by row",
+    "DATE"                  : "Date Transaction",
+    "DESCRIPTION"           : "Description",
+    "SUBMIT"                : "Submit",
+    "DEFAULT_CURRENCY"      : "Currency",
+    "TRANS_ID"              : "Transaction ID ",
+    "LOG"                   : "Log Journal ID "
   },
 
   "CAUTION"        : {
