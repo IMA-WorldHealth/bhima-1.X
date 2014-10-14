@@ -1260,7 +1260,8 @@
     "NEW" : "Register a new Depot",
     "EDIT" : "Edit depot information",
     "ADD" : "Add a Depot",
-    "NO_DEPOTS" : "No depots have been registered."
+    "NO_DEPOTS" : "No depots have been registered.",
+    "ALL"       : "All Depots"
   },
 
   "PRICE_LIST"         : {
