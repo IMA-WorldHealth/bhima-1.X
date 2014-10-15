@@ -1495,7 +1495,7 @@
   "PRIMARY_CASH" : {
     "DEFAULT_CURRENCY" : "Monnaie",
     "SELECT_CASHBOX" : "Sélectionner une Caisse",
-    "TITLE"        : "Caisse Pricipale",
+    "TITLE"        : "Caisse Principale",
     "EXPENSES"     : "Dépenses",
     "INCOMES"      : "Recettes",
     "GENERIC"      : "Générique",
