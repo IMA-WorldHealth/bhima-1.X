@@ -42,7 +42,7 @@ angular.module('bhima.controllers')
           account_type : { columns : ['type'] }
         },
         join: ['account.account_type_id=account_type.id']
-      },
+      }
     };
 
     dependencies.debtors = {
@@ -79,6 +79,17 @@ angular.module('bhima.controllers')
         }
       }
     };
+
+    dependencies.enterprise = {
+      required : true,
+      query : {
+        tables : {
+          'enterprise' : {
+            columns : ['currency_id']
+          }
+        }
+      }
+    }
 
     function startup(models) {
       var entities;
@@ -154,14 +165,16 @@ angular.module('bhima.controllers')
 
           if (row.debit) {
             record.debit = row.debit;
-            record.debit_equiv = exchange(row.debit, data.currency_id);
+            // record.debit_equiv = exchange(row.debit, data.currency_id);
+            record.debit_equiv = exchange.convertir(row.debit, data.currency_id, $scope.enterprise.data[0].currency_id, util.sqlDate(data.date));
             record.credit = 0;
             record.credit_equiv = 0;
           }
 
           if (row.credit) {
             record.credit = row.credit;
-            record.credit_equiv = exchange(row.credit, data.currency_id);
+            // record.credit_equiv = exchange(row.credit, data.currency_id);
+            record.credit_equiv = exchange.convertir(row.credit, data.currency_id, $scope.enterprise.data[0].currency_id, util.sqlDate(data.date));
             record.debit = 0;
             record.debit_equiv = 0;
           }
