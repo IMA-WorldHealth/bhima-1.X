@@ -2158,6 +2158,12 @@
     "LOGIN"  : "Login to Bhima",
     "LOGIN_ERROR" : "Login Error: Username and password combination are incorrect.",
     "LOGOUT_SUCCESS" : "You are now logged out."
+  },
+
+  "WELCOME"          : {
+    "IMA"            : "IMA World Health",
+    "HMS"            : "HMS",
+    "HMS_LONG"       : "Hospital Management System"
   }
 
 }

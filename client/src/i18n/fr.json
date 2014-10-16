@@ -2184,5 +2184,11 @@
     "LOGIN"          : "Bhima Login",
     "LOGIN_ERROR"    : "Erreur                    : Nom de utilisateur et mots de pass ne sont pas correct",
     "LOGOUT_SUCCESS" : "Vous n'etes pas connecte"
+  },
+
+  "WELCOME"          : {
+    "IMA"            : "IMA World Health",
+    "HMS"            : "HMS",
+    "HMS_LONG"       : "Hospital Management System"
   }
 }

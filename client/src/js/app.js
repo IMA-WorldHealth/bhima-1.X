@@ -497,8 +497,16 @@
     .when('/reports/stock_status/', {
       controller : 'stock_status',
       templateUrl : 'partials/reports/stock_status/stock_status.html'
+    })
+    .when('/welcome/', {
+      controller : 'welcome',
+      templateUrl : 'partials/welcome/welcome.html'
+    }) 
+    .when('/', {
+      controller : 'welcome',
+      templateUrl : 'partials/welcome/welcome.html'
     })               
-    .otherwise('/');
+    .otherwise('/welcome/');
   }
  
   function translateConfig($translateProvider) {

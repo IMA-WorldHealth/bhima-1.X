@@ -55,7 +55,7 @@ angular.module('bhima.controllers')
       .then(function (sess) {
         $rootScope.$broadcast(EVENTS.auth.loginSuccess);
         session.loginFailure = false;
-        $location.path('/');
+        $location.path('/welcome/');
       })
       .catch(function (err) {
         $rootScope.$broadcast(EVENTS.auth.loginFailed);

@@ -1,0 +1,25 @@
+#welcome {
+	width:40%; 
+	margin:auto; 
+	text-align:center;
+}
+#welcome h1, #welcome h2, #welcome h3 {
+	margin: 0px;
+}
+
+.panel-welcome {
+	margin:5px 10px; 
+	float:left; 
+	width:23% !important; 
+	height:190px;
+}
+.panel-welcome ul {
+	list-style:none; 
+	padding:0px; 
+	margin:0px; 
+	overflow-y:auto; 
+	height: 110px;
+}
+.panel-welcome strong {
+	font-size: 1.2em;
+}
