@@ -39,7 +39,7 @@ angular.module('bhima.controllers')
     ];
 
     $scope.loadPath = function loadPath(item) {
-      $location.path($location.path() + '/' + item.path);
+      $location.path($location.path() + '' + item.path);
     };
   }
 ]);
