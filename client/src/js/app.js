@@ -63,7 +63,7 @@
       controller: 'journal.voucher',
       templateUrl: 'partials/journal_voucher/journal_voucher.html'
     })
-    .when('/inventory', {
+    .when('/inventory/', {
       controller: 'inventory',
       templateUrl: '/partials/inventory/inventory.html'
     })
@@ -163,7 +163,7 @@
       controller: 'reportTransaction',
       templateUrl: 'partials/reports/transaction_report/transaction_report.html'
     })
-    .when('/reports/patient_standing/', {
+    .when('/reports/patient_standing', {
       controller : 'reportPatientStanding',
       templateUrl : '/partials/reports/patient_standing/patient_standing.html'
     })
@@ -214,7 +214,7 @@
       controller: 'settings',
       templateUrl: 'partials/settings/settings.html'
     })
-    .when('/patient_group_assignment', {
+    .when('/patient_group_assignment/', {
       controller: 'AssignPatientGroup',
       templateUrl: 'partials/patient_group_assignment/patient_group_assign.html'
     })
@@ -230,11 +230,11 @@
       controller: 'creditNote',
       templateUrl: 'partials/credit_note/credit_note.html'
     })
-    .when('/cost_center', {
+    .when('/cost_center/', {
       controller: 'costCenter',
       templateUrl: 'partials/cost_center/cost_center.html'
     })
-    .when('/profit_center', {
+    .when('/profit_center/', {
       controller: 'profitCenter',
       templateUrl: 'partials/profit_center/profit_center.html'
     })
@@ -258,7 +258,7 @@
       controller: 'profitCenter.allocation',
       templateUrl: 'partials/profit_center/allocation/allocation.html'
     })
-    .when('/patient_group', {
+    .when('/patient_group/', {
       controller: 'patientGroup',
       templateUrl: 'partials/patient_group/patient_group.html'
     })
@@ -274,7 +274,7 @@
       controller: 'reportCashPayments',
       templateUrl: 'partials/reports/cash_payments/cash_payments.html'
     })
-    .when('/swap_debtor', {
+    .when('/swap_debtor/', {
       controller : 'group.debtor.reassignment',
       templateUrl : 'partials/swap_debtor/swap_debtor.html'
     })
@@ -306,7 +306,7 @@
       controller : 'trialbalance.print',
       templateUrl : 'partials/journal/trialbalance/print.html'
     })
-    .when('/primary_cash/', {
+    .when('/primary_cash', {
       controller : 'primaryCash',
       templateUrl : 'partials/primary_cash/primary.html'
     })
@@ -350,7 +350,7 @@
       controller : 'inventory.depot',
       templateUrl : 'partials/inventory/depot/depot.html'
     })
-    .when('/stock/', {
+    .when('/stock', {
       controller : 'stock.main',
       templateUrl : 'partials/stock/stock.html'
     })
