@@ -13,6 +13,7 @@ angular.module('bhima.controllers')
   'precision',
   'uuid',
   function ($scope, $location, $http, validate, connect, appstate, messenger, Appcache, precision, uuid) {
+
     var dependencies = {},
         invoice = {},
         inventory = [];
