@@ -25,6 +25,11 @@ angular.module('bhima.controllers')
       tablock : -1
     };
 
+    var serviceComponent = $scope.serviceComponent = { 
+      selected : null,
+      complete : false
+    };
+
     dependencies.inventory = {
       query: {
         identifier : 'uuid',
@@ -59,7 +64,16 @@ angular.module('bhima.controllers')
     }
 
     validate.process(dependencies).then(sales);
+    
+    function assignService() { 
+      var selectedService = serviceComponent.selected;
 
+      if (!selectedService) { return messenger.danger('No service selected'); }
+      invoice.service = selectedService;
+
+      console.log('invoice assigned service', invoice.service);
+    }
+    
     function initialiseSaleDetails(selectedDebtor) {
       if (!selectedDebtor) { return messenger.danger('No invoice debtor selected'); }
 
@@ -141,6 +155,8 @@ angular.module('bhima.controllers')
 
         invoice.note = formatNote(invoice);
         invoice.displayId = invoice.uuid.substr(0, 13);
+
+        console.log('result invoice', invoice);
         $scope.invoice = invoice;
 
       });
@@ -445,8 +461,12 @@ angular.module('bhima.controllers')
     function selectRecover() {
       $scope.session.recovering = true;
       //console.log($scope.session.recovered);
-      //invoice.service = $scope.session.recovered.service;
+      
       $scope.findPatient.forceSelect($scope.session.recovered.patientId);
+    
+      console.log('forcing', $scope.session.recovered.service);
+      serviceComponent.selected = $scope.session.recovered.service;
+      assignService();
     }
 
     function recover() {
@@ -470,7 +490,7 @@ angular.module('bhima.controllers')
       //FIXME currently puts new object on every item, this could be improved
       var recoverObject = session.recoverObject || {
         patientId : invoice.debtor.uuid,
-        //service : invoice.service,
+        service : invoice.service,
         items : []
       };
 
@@ -525,6 +545,8 @@ angular.module('bhima.controllers')
     $scope.selectRecover = selectRecover;
     $scope.cacheQuantity = cacheQuantity;
     $scope.verifySubmission = verifySubmission;
+
+    $scope.assignService = assignService;
     //$scope.SelectService = SelectService;
   }
 ]);
