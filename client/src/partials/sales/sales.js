@@ -1,5 +1,12 @@
-// TODO Global charges currently don't hit an invetory item || account,
-// no way of tracing this back to a reason for being
+/**
+ * TODO Global charges currently don't hit an invetory item || account,
+ * no way of tracing this back to a reason for being
+ *
+ * FIXME State currently relies on random variables, there should be a clear state object that 
+ * controls and verifies the current state
+ *
+ * FIXME All sale details are still downloaded on patient select, hidden until service assignment, this should all be reuqested at once - ties in with state
+ */
 angular.module('bhima.controllers')
 .controller('sales', [
   '$scope',
