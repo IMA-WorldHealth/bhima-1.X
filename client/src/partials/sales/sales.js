@@ -70,8 +70,6 @@ angular.module('bhima.controllers')
 
       if (!selectedService) { return messenger.danger('No service selected'); }
       invoice.service = selectedService;
-
-      console.log('invoice assigned service', invoice.service);
     }
     
     function initialiseSaleDetails(selectedDebtor) {
@@ -219,8 +217,11 @@ angular.module('bhima.controllers')
       $scope.model.inventory.remove(inventoryReference.uuid);
 
       $scope.model.inventory.recalculateIndex();
-
-      updateSessionRecover();
+  
+      // Do not update the recovery object for items added during recovery 
+      if (!session.recovering) { 
+        updateSessionRecover();
+      }
     }
 
     function removeInvoiceItem(index) {
@@ -455,21 +456,21 @@ angular.module('bhima.controllers')
     function processRecover(recoveredSession) {
       if (!session) { return; }
       $scope.session.recovered = recoveredSession;
-      console.log('on a', $scope.session.recovered);
     }
 
     function selectRecover() {
       $scope.session.recovering = true;
-      //console.log($scope.session.recovered);
       
       $scope.findPatient.forceSelect($scope.session.recovered.patientId);
     
-      console.log('forcing', $scope.session.recovered.service);
       serviceComponent.selected = $scope.session.recovered.service;
       assignService();
     }
 
     function recover() {
+      
+      invoice.service = $scope.session.recovered.service || null;
+      
       $scope.session.recovered.items.forEach(function (item) {
         var currentItem = addInvoiceItem(), invItem = $scope.model.inventory.get(item.uuid);
         currentItem.selectedReference = invItem.code;
@@ -477,7 +478,6 @@ angular.module('bhima.controllers')
         currentItem.quantity = item.quantity;
       });
 
-      //invoice.service = $scope.session.recovered.service || null;
 
       // FIXME this is stupid
       session.displayRecover = true;
@@ -487,6 +487,7 @@ angular.module('bhima.controllers')
     }
 
     function updateSessionRecover() {
+
       //FIXME currently puts new object on every item, this could be improved
       var recoverObject = session.recoverObject || {
         patientId : invoice.debtor.uuid,
