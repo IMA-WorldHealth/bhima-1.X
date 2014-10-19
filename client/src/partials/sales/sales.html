@@ -18,12 +18,12 @@
 
   <div class="row">
     <div class="col-xs-12">
-      <div find-patient on-search-complete="initialiseSaleDetails"></div>
+      <div find-patient on-search-complete="initialiseSaleDetails" enable-refresh="false"></div>
     </div>
   </div>
-  <div class="panel panel-default">
+  <div class="panel panel-default" ng-if="invoice.debtor">
     <div class="panel-heading">
-      {{'SALE.CHOOSE' | translate}}
+      <span class="glyphicon glyphicon-tag"></span> {{'SALE.CHOOSE' | translate}}
     </div>
     <div class="panel-body">
       <form class="form">
