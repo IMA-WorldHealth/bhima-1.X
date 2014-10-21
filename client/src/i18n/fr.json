@@ -2144,7 +2144,7 @@
     "UPDATE"           : "Mettre à jour une configuration",
     "ADD"              : "Créer une nouvelle configuration",
     "REGISTERED"       : "Configuration des comptes enregistrées",
-    "ALERT"            : "Le module configuration des comptes, permet le paramétrage du compte qui sera prise utilisé lors du payroll",
+    "ALERT"            : "Le module configuration des comptes, permet le paramétrage du compte qui sera utilisé lors du payroll",
     "CONFIG"           : "Configuration",
     "RUBRIC"           : "Rubriques Payroll",
     "DELETE_SUCCESS"   : "Suppression avec succès",
