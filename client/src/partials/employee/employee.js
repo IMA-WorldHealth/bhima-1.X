@@ -56,10 +56,6 @@ angular.module('bhima.controllers')
     dependencies.location = {
       query : '/location/villages'
     };
-    
-    $scope.formatLocation = function formatLocation (location) {
-      return [location.name, location.sector_name, location.province_name, location.country_name].join(', ');
-    };
 
     dependencies.grade = {
       query : {
@@ -69,13 +65,28 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.fonction = {
+      query : {
+        tables : {
+          'fonction' : { columns : ['id', 'fonction_txt']}
+        }
+      }
+    };
+
+    $scope.formatLocation = function formatLocation (location) {
+      return [location.name, location.sector_name, location.province_name, location.country_name].join(', ');
+    };
+
     $scope.formatGrade = function formatGrade (grade) {
       return grade.code + ' - ' + grade.text;
     };
 
+    $scope.formatService = function formatService (service) {
+      return service.name + ' [' + service.abbr + ']';
+    };
+
     function initialise(model) {
       angular.extend($scope, model);
-      $scope.dataServices = $scope.services.data;
     }
       
     validate.process(dependencies)
@@ -197,6 +208,7 @@ angular.module('bhima.controllers')
         adresse : session.employee.adresse,
         phone : session.employee.phone,
         email : session.employee.email,
+        fonction_id : session.employee.fonction_id,
         service_id : session.employee.service_id,
         location_id : session.employee.location_id
       };
