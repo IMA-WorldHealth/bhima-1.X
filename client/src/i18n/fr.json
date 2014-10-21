@@ -432,7 +432,8 @@
     "DAILY_CONSUMPTION"         : "Consommation journaliere",
     "CONFIG_ACCOUNTING"         : "Configuration des comptes",
     "PAYROLL_REPORT"            : "Rapports du Payroll",
-    "STOCK_STATUS"              : "Situation du stock"
+    "STOCK_STATUS"              : "Situation du stock",
+    "FONCTION"                  : "Gestion des fonctions"
 },
 
 
@@ -2187,5 +2188,22 @@
     "LOGIN"          : "Bhima Login",
     "LOGIN_ERROR"    : "Erreur                    : Nom de utilisateur et mots de pass ne sont pas correct",
     "LOGOUT_SUCCESS" : "Vous n'etes pas connecté"
-  }
+  },
+
+  "FONCTION"  : {
+    "TITLE"            : "Gestion des fonctions",
+    "ADD"              : "Ajouter une fonction",
+    "NEW"              : "Nouvelle fonction",
+    "SAVE_SUCCES"      : "Enregistrement avec succès",
+    "UPDATE_SUCCES"    : "Mis à jour avec succès",
+    "CONFIRM"          : "Etes vous sure de vouloir supprimer cette fonction",
+    "UPDATE"           : "Mettre à jour une fonction",
+    "REGISTERED"       : "Liste des fonctions existants",
+    "ALERT"            : "Le module gestion de fonction est un module qui a été conçu pour permettre l'administration des fonctions existantes au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'une fonction ainsi que la suppression.",
+    "CONFIG"           : "Configuration",
+    "RUBRIC"           : "Rubriques Payroll",
+    "DELETE_SUCCESS"   : "Suppression avec succès",
+    "NO_FONCTION"      : "Aucune fonction n'est enregistrée",
+    "ABBR"             : "Abr."
+  } 
 }

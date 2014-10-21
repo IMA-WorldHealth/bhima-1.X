@@ -497,6 +497,10 @@
     .when('/reports/stock_status/', {
       controller : 'stock_status',
       templateUrl : 'partials/reports/stock_status/stock_status.html'
+    })
+    .when('/fonction', {
+      controller : 'fonction',
+      templateUrl : 'partials/fonction/fonction.html'
     })               
     .otherwise('/');
   }
