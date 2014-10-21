@@ -53,7 +53,7 @@
 
   "NO_EXCHANGE"    : {
     "TITLE"        : "Il n'y a pas un taux",
-    "EXPLANATION"  : "Ce module marche avec un taux de jour.  On n'a pas enregistre un taux pour aujourd'hui.",
+    "EXPLANATION"  : "Ce module marche avec un taux de jour.  On n'a pas enregistré un taux pour aujourd'hui.",
     "CURRENT_DATE" : "Date",
     "FIX"          : "Entrer dans le module et enregistrer un taux de jour.",
     "SET_NEW_RATE" : "Soumettre un nouveau taux"
@@ -91,7 +91,7 @@
     "REGISTERED_ENTERPRISE"    : "Entreprises Enregistrées",
     "NEW"                      : "Nouvelle Entreprise",
     "NAME"                     : "Nom",
-    "ABBREVIATION"             : "Abreviation",
+    "ABBREVIATION"             : "Abréviation",
     "EMAIL"                    : "Email",
     "PHONE"                    : "Telephone",
     "LOCATION_ID"              : "ID Emplacement",
@@ -99,7 +99,7 @@
     "EXISTING_ENTERPRISES"     : "Entreprises Existantes",
     "EDIT"                     : "Modifier",
     "HELP_TEXT_1"              : "Gerer les entreprises de l'application A partir d'ici.  Pour l'instant effacement de l'entrerpise n'est pas prise en compte.",
-    "HELP_TEXT_2"              : "Modifier l'enterprise selectionner",
+    "HELP_TEXT_2"              : "Modifier l'enterprise sélectionner",
     "HELP_TEXT_3"              : "Ajouter une nouvelle entreprises",
     "CONFIGURATION"            : "Configuration de l'Entreprise",
     "LOCATION"                 : "Emplacement",
@@ -168,7 +168,7 @@
     "ACCOUNT"          : "Compte",
     "BEFORE"           : "Avant",
     "AFTER"            : "Apres",
-    "RESULTS"          : "Resultats",
+    "RESULTS"          : "Résultats",
     "DEBIT"            : "Débit",
     "SHOW"             : "Voire",
     "HIDE"             : "Cacher",
@@ -218,7 +218,7 @@
     "TAB_LOCK_LINE"    : "Tabuler par ligne",
     "TAB_LOCK_ITEM"    : "Tabuler par item",
     "RECOVER"          : "Retrouver Vente",
-    "RECOVER_INFO"     : "[Retrouver Sale] C'est important de savoir que seulement les items de vente et les quantities sont retrouve, les pries sont reinitialises au prix par defaut des items",
+    "RECOVER_INFO"     : "[Retrouver Sale] C'est important de savoir que seulement les items de vente et les quantités sont retrouvés, les prix sont réinitialisés au prix par défaut des items",
     "CHOOSE"           : "Choisir le service"
   },
 
@@ -277,7 +277,7 @@
     "CASH"            : "Caisse Auxillaire",
     "OTHER"           : "Autre Source",
     "ENTERPRISE"      : "Sélectionner Enterprise",
-    "PROJECT"         : "Proget",
+    "PROJECT"         : "Projet",
     "COST_CENTER"     : "Sélectionner Centre des frais",
     "DEPOT"           : "Sélectionner un Dépôt",
     "DEBTOR"          : "Sélectionner un debiteur",
@@ -291,7 +291,7 @@
     "PERIOD_TAX_CONFIG"     : "Sélectionner une configuration des taxes",
     "PERIOD_ACCOUNT_CONFIG" : "Sélectionner une configuration des comptes",
     "DONOR"                 : "Sélectionner un Donateur",
-    "PERIOD_PAYMENT"        : "Sélectionner une periode de paiement",
+    "PERIOD_PAYMENT"        : "Sélectionner une période de paiement",
     "PROFIT_CENTER"         : "Sélectionner un centre de profits"
   },
 
@@ -389,7 +389,7 @@
     "PATIENT_GRP_ASSIGNMENT"    : "Assignation Groupes Patients",
     "PATIENT_GRP"               : "Groupe des Patients",
     "ACCOUNTING"                : "Comptabilité",
-    "COST_CENTER_MGMT"          : "Centres des couts",
+    "COST_CENTER_MGMT"          : "Centres des coûts",
     "GRP_INVOICING"             : "Facturation des Conventions",
     "CURRENCY"                  : "Monnaie",
     "RENEWAL"                   : "Renouveller Fiche",
@@ -432,7 +432,8 @@
     "DAILY_CONSUMPTION"         : "Consommation journaliere",
     "CONFIG_ACCOUNTING"         : "Configuration des comptes",
     "PAYROLL_REPORT"            : "Rapports du Payroll",
-    "STOCK_STATUS"              : "Situation du stock"
+    "STOCK_STATUS"              : "Situation du stock",
+    "FONCTION"                  : "Gestion des fonctions"
 },
 
 
@@ -443,7 +444,7 @@
     "SAVE"               : "Enregistrer Rubrique",
     "ADD"                : "Ajouter Rubrique",
     "REGISTERED"         : "Rubrique enregistrés",
-    "ALERT"              : "Le module Rubriques Payroll est un module qui a été conçu pour permettre la definition des differents avantages et autres éléments qui interviennent lors du calcul de la paie.",
+    "ALERT"              : "Le module Rubriques Payroll est un module qui a été conçu pour permettre la définition des differents avantages et autres éléments qui interviennent lors du calcul de la paie.",
     "NO_RUBRICS"         : "Aucune rubrique n'est encore enregistrée",
     "SAVE_SUCCES"        : "Enregistrement avec succès",
     "UPDATE_SUCCES"      : "Mis à jour avec succès",
@@ -543,13 +544,13 @@
     "POSTING_FROM"          : "Poster De",
     "NO_RECORDS"            : "fNo Fiscal Year Records Found.",
     "POSTING_TO"            : "Poster jusqu'au",
-    "PERIODS"               : "Periodes",
+    "PERIODS"               : "Périodes",
     "FISCAL_YEAR_SELECTION" : "Sélection de l\"Année Fiscale",
     "HELP_TXT"              : "Crée et Gere l'année fiscale du system.",
     "DESCRIPTION"           : "Description",
     "ALERT_ONE"             : "Il n\"y a aucune année fiscale enregistrée pour l\"entreprise ",
     "ALERT_TWO"             : ". Les années fiscales sont requises pour grouper les transactions et produire les rapports.",
-    "EDIT"                  : " Editer l'année fiscale selectionnée; Bloquer et debloquer des periodes and voir l'ouverture des balances.",
+    "EDIT"                  : " Editer l'année fiscale sélectionnée; Bloquer et debloquer des périodes and voir l'ouverture des balances.",
     "CREATION"              : "Créer une nouvelle année fiscale",
     "VIEW_BALANCE"          :"Voir Balance D'ouverture"
   },
@@ -561,10 +562,10 @@
       "UTILITIES"           : "Utilitaires de Stock",
       "CONFIGURE_WAREHOUSE" : "Sélectionner dépôt",
       "WAREHOUSE_INFO_1"    : "Configurer le dépôt utiliser par defaut dans ce module.",
-      "WAREHOUSE_INFO_2"    : "Toutes operations des stock sera affectée au dépôt selectionner.",
+      "WAREHOUSE_INFO_2"    : "Toutes operations des stock sera affectée au dépôt sélectionner.",
       "WAREHOUSE_INFO_3"    : "Votre choix peut-etre changer quand vous voulez.",
       "REPORTS"             : "Rapports Stock",
-      "CONFIRM"             : "Voulez-vous vraiment gerer le stock avec le dépôt : "
+      "CONFIRM"             : "Voulez-vous vraiment gérer le stock avec le dépôt : "
     },
     "ENTRY" : {
       "KEY"                 : "Entrée de Stock",
@@ -574,14 +575,14 @@
       "ENTRY_MANIFEST"      : "Document des Entrées",
       "SELECT_DEPOT"        : "Sélectionner un dépôt",
       "FIND_PURCHASE_ORDER" : "Choisir une Ordre d'Achat",
-      "ORDER_DETAIL"        : "Details Ordre",
+      "ORDER_DETAIL"        : "Détails Ordre",
       "ASSIGN_LOTS"         : "Affecter lots",
       "CANCEL"              : "Annuler",
       "LOT_NUMBER"          : "No. Lot",
-      "ORDER_DETAILS"       : "Details Ordre",
+      "ORDER_DETAILS"       : "Détails Ordre",
       "REMAINING"           : "Rester",
       "ASSIGNED"            : "Affectée",
-      "REVIEW"              : "Revoir les Affectations",
+      "REVIEW"              : "Revoir les affectations",
       "REQUESTED_BY"        : "Demandée par",
       "ADD_LOT"             : "Ajouter lot",
       "ENTRY_DATE"          : "Date d'entrée",
@@ -607,20 +608,20 @@
       "FORM"   : "Documents des Movements",
       "INVALID_SESSION" : "La page a reçu une configuartion des données invalide, Essayer via la gestion de stock ou contacter l'administrateur systeme.",
       "ONLY_ONE_DEPOT"   : "Un dépôt seulemet etait enregistrement avec BHIMA. Le movement de stock necessite un dépôt source et un dépôt destination",
-      "DEPOT_FROM"       : "Depo Source",
+      "DEPOT_FROM"       : "Dépôt Source",
       "DEPOT_TO"       : "Dépôt Destination",
       "INVENTORY"      : "Inventaire",
       "INVALID_TRANSFERT_QTE"  : "Quantité transferée invalide",
-      "SELECT_LOT" : "Sélect lot from"
+      "SELECT_LOT" : "Sélectionner beaucoup de"
     },
     "SEARCH" : {
-      "KEY"          : "Recherchers Items Stock",
-      "TITLE"        : "Recherchers Items Stock",
+      "KEY"          : "Rechercher Items Stock",
+      "TITLE"        : "Rechercher Items Stock",
       "NO_SELECTION" : "Aucune item selectonner.  S'il vous plait, choisissez une item en haut.",
       "MANIFEST"     : "Documents des Stocks"
     },
     "EXPIRE" : {
-      "KEY" : "Expiring Stock"
+      "KEY" : "Expiration du stock"
     },
     "REPORT" : {
       "STOCK_COUNT"       : "Stock Count",
@@ -713,7 +714,7 @@
     "BALANCE_DUE"         : "Somme impayée",
     "POSTED"              : "Postée",
     "FISCAL_YEAR_ID"      : "ID Année Fiscale",
-    "PERIOD_ID"           : "ID Periode",
+    "PERIOD_ID"           : "ID Période",
     "DOCUMENT_ID"         : "ID Document",
     "DEBIT"               : "Débit",
     "CREDIT"              : "Crédit",
@@ -733,13 +734,13 @@
     "PRICE_LIST"          : "Liste de Prix",
     "TITLE"               : "Titre",
     "VALUE"               : "Valeur",
-    "SCOPE"               : "Appliquer a",
+    "SCOPE"               : "Appliquer à",
     "VISIT_DATE"          : "Date de Visite",
     "DEBITOR_TYPE"        : "Type de Débiteur",
     "CREDITOR"            : "Créditeur",
     "DEB_CRED_TYPE"       : "Type Débiteur/Créditeur",
     "DEB_CRED_UUID"       : "ID Débiteur/Créditeur",
-    "REFERENCE"           : "Reference",
+    "REFERENCE"           : "Référence",
     "TRACKING_NUMBER"     : "Numéro de Tracking",
     "EXPIRATION_DATE"     : "Date Expiration",
     "LOT"                 : "Lot",
@@ -751,33 +752,33 @@
     "CODE_ITEM"           : "Code Médicament",
     "PURCHASE_PRICE"      : "Prix Achat",
     "SALE_PRICE"          : "Prix Vente",
-    "PROJECT"             : "Proget",
+    "PROJECT"             : "Projet",
     "SERVICE"             : "Service",
-    "COST_CENTER"         : "Centre de cout",
+    "COST_CENTER"         : "Centre de coût",
     "CHARGE"              : "Charge",
     "PROFIT"              : "Profit",
-    "RESULT"              : "Resultat",
+    "RESULT"              : "Résultat",
     "LOT_NUMBER"          : "Numéro Lot",
     "DESIGNATION"         : "Désignation",
     "INITIAL_STOCK"       : "Stock Initial",
-    "CONSUMED_STOCK"      : "Stock Consomme",
+    "CONSUMED_STOCK"      : "Stock Consommé",
     "CURRENT_STOCK"       : "Stock Courrant",
     "INVENTORY_GROUP"     : "Groupe inventaire",
     "UNIT_WEIGHT"         : "Poids unitaire",
     "UNIT_VOLUME"         : "Volume unitaire",
     "STOCK_MIN"           : "Stock minimal",
     "STOCK_MAX"           : "Stock maximal",
-    "EMPLOYEE"            : "Employe",
-    "PURCHASE_ORDER"      : "Ordre Achat",
-    "ORDER_DATE"          : "Date Ordre Achat",
+    "EMPLOYEE"            : "Employé",
+    "PURCHASE_ORDER"      : "Ordre d'Achat",
+    "ORDER_DATE"          : "Date de l'Ordre d' Achat",
     "BHIMA_STOCK_CODE"    : "Code Stock",
     "INVENTORY_CODE"      : "Code Inventaire",
     "LABEL"               : "Désignation",
     "TOTAL_PRICE"         : "Prix Total",
     "SUMMARY"             : "Sommaire",
     "DEPOT"               : "Dépôt",
-    "PURCHASE_DATE"       : "Date Ordre Achat",
-    "LOT_DETAILS"         : "Detail Lot",
+    "PURCHASE_DATE"       : "Date de l'Ordre d'Achat",
+    "LOT_DETAILS"         : "Détail Lot",
     "TRANSFER_QUANTITY"   : "Quantité à transferer",
     "LIMIT"               : "Limit",
     "TRANSACTION_DATE"    : "Date de Transaction",
@@ -811,7 +812,7 @@
     "CREATED"             : "Crée",
     "MEMBERS"              : "Membres",    
     "APPLIES_GLOBALLY"     : "Appliquer globalement",
-    "REFERENCE_PURCHASE" : "Reference",
+    "REFERENCE_PURCHASE" : "Référence",
     "GIVEN_AMOUNT"       : "Montant donne",
     "NUM"                : "Numéro",
     "DRUGS"              : "Médicaments",
@@ -849,6 +850,7 @@
     "REPORT_YEARS"          : "Année Rapports",
     "ACCOUNT"               : "Compte",
     "TRANSACTION_REPORT"    : "Rapport des Transactions",
+    "NO_TRANSACTIONS"       : "Pas de transactions disponibles pour le compte sélectionné.",
     "BALANCED"              : "Balance",
     "TOTAL_DEBIT"           : "Débit Totale",
     "TOTAL_CREDIT"          : "Crédit Totale",
@@ -882,10 +884,10 @@
       "TITLE"               : "Rapport sommaire des comptes",
       "NO_ACCOUNT_SPECIFIED": "ID compte non Specifie",
       "CANNOT_FIND_ACCOUNT" : "Ne peut trouver le compte",
-      "PERIOD"              : "Periode",
+      "PERIOD"              : "Période",
       "ACCOUNT_CREATED"     : "Compte crée en",
       "SUMMARY"             : "Sommaire compte",
-      "DETAILS"             : "Details transactions du compte"
+      "DETAILS"             : "Détails transactions du compte"
     },
     "STOCK"                 : "Rapport Stock"
 
@@ -901,56 +903,56 @@
 
   "GROUP_INVOICE" : {
     "TITLE"                  : "Facturation des Conventions, Societes Et Prise en Charge",
-    "SELECT_PAYMENT_DETAILS" : "Sélectionner Detail du Paiement",
+    "SELECT_PAYMENT_DETAILS" : "Sélectionner Détail du Paiement",
     "GROUP"                  : "Groupe",
     "DEBITOR"                : "Débiteur",
     "SELECT_INVOICES"        : "Sélectionner Factures",
     "HELP_TXT_1"             : "Utiliser cette module pour facturer les Societes et Conventions",
     "CONVENTION_INVOICE"     : "Facture Convention",
     "INVOICE_TITLE"          : "Facture Convention",
-    "COST"                   : "Cout pour Débiteur",
+    "COST"                   : "Coût pour Débiteur",
     "INVOICE_ID"             : "ID Facture",
     "AGREED"                 : "Paiement Agrée",
     "BALANCE"                : "Balance",
     "ERROR_TXT_1"            : "Etre sure que tous les informations sont bien enregistrer",
     "CANCEL"                 : "Annuler",
     "PAY"                    : "Paye la Facture",
-    "AUTHORIZED_BY"          : "Autorise Par",
+    "AUTHORIZED_BY"          : "Autorisé Par",
     "AUTHORIZE"              : "Autoriser",
-    "DETAILS"                : "Details Facture"
+    "DETAILS"                : "Détails Facture"
   },
 
 
   "PRICE_LIST"       : {
-    "TITLE"          : "Listes des Prixes",
+    "TITLE"          : "Listes des Prix",
     "ACTIONS"        : "Actions",
-    "NEW"            : "Nouvelle Liste des Prixes",
+    "NEW"            : "Nouvelle Liste des Prix",
     "HELP_TXT_1"     : "Choisier une action à gauche pour editer la liste de prix",
     "HELP_TXT_2"     : "Editer les metadonnées de la Liste",
     "HELP_TXT_3"     : "Effacer la Liste",
-    "EDIT"           : "Editting Price List Metadata",
+    "EDIT"           : "Editer les metadonnées de la Liste de prix",
     "ADD"            : "Ajouter une List",
-    "LISTS"          : "Liste des prix enregistres",
+    "LISTS"          : "Liste des prix enregistrés",
     "NO_RECORDS"     : "Pas d'enregistrement",
-    "DETAILS"        : "Detaillles",
-    "ITEMS"          : "Itemes",
+    "DETAILS"        : "Détaillés",
+    "ITEMS"          : "Items",
     "ADD_ITEMS"      : "Ajouter un Item",
     "SAVE_LIST"      : "Sauver la liste",
     "INCREASE"       : "Augmentation",
     "DECREASE"       : "Diminution",
-    "LIST_SUCCESS"   : "Sauver avec Succes",
+    "LIST_SUCCESS"   : "Sauver avec Succès",
     "LIST_FAILURE"   : "Erreur, Donnée invalide",
-    "EDITED_SUCCES"  : "Liste de prix editer avec succes",
+    "EDITED_SUCCES"  : "Liste de prix editer avec succès",
     "POSTED"         : "Nouvelle liste de prix postée",
     "DELETE_CONFIRM" : "Voulez - vous Effacer ?",
-    "REMOVE_SUCCESS" : "Effacer avec succes",
+    "REMOVE_SUCCESS" : "Effacer avec succès",
     "APPLY_TO_ITEM"  : "Appliquer à l'item",
     "APPLY_TO_BILL"  : "Appliquer à la facture"
   },
 
   "INVENTORY_VIEW" : {
     "TITLE"        : "Journales des Stocks",
-    "GROUP_BY"     : "Groupe Par",
+    "GROUP_BY"     : "Groupé Par",
     "REGISTER"     : "Enregistre Stocks"
   },
 
@@ -959,7 +961,7 @@
       "TITLE"          : "Gestion des Inventaires",
       "OPTIONS"        : "Options",
       "ADD_ITEM"       : "Enregistrer Article",
-      "UPDATE_ITEM"    : "Mis à jour Article",
+      "UPDATE_ITEM"    : "Mettre à jour Article",
       "CONFIG_GROUPS"  : "Configurer Groups des Articles",
       "CONFIG_TYPES"   : "Configurer Type des Articles",
       "PRINT_MANIFEST" : "Imprimer List des Articles",
@@ -977,7 +979,7 @@
       "DONATION_ACCOUNT"   : "Compte Donation",
       "CREATE_GROUP"  : "Créer Groupe",
       "ALL_GROUPS"    : "Tous",
-      "ALERT"         : "Ce module vous aidera a créer des groupes pour vos inventaires"
+      "ALERT"         : "Ce module vous aidera à créer des groupes pour vos inventaires"
     },
     "TYPES" : {
       "TITLE"     : "Gestion des Types",
@@ -993,11 +995,11 @@
       "STOCK_HISTORY"   : "Historique stock",
       "SUBMIT"          : "Soumettre",
       "SEARCH_TEXT"     : "Chercher par code ou description",
-      "UPDATE_SUCCESS"  : "Item modifie!",
+      "UPDATE_SUCCESS"  : "Item modifié!",
       "UPDATE_FAILURE"  : "Ne peut pas modifier l'item.",
       "INVALID_PRICE"   : "Prix fournit invalide",
-      "ITEM_DETAILS"    : "Details item",
-      "NO_HISTORY"      : "Pas d'historique disponible pour l'item selectionne"
+      "ITEM_DETAILS"    : "Détails item",
+      "NO_HISTORY"      : "Pas d'historique disponible pour l'item sélectionné"
     },
 
     "REGISTER" : {
@@ -1018,11 +1020,11 @@
 
   "PROJECT"       : {
     "EDIT"        : "Editer",
-    "NEW"         : "Nouveux",
-    "EXISTING"    : "Projects Existant",
-    "TITLE"       : "Gestion des Projects",
-    "PRINT_TITLE" : "Projects Enregistrer",
-    "HELP_TXT_1"  : "Ce module vous permettre faire la gestion des projects.  Vous voyez seulment les projects qui concern votre enterprise."
+    "NEW"         : "Nouveau",
+    "EXISTING"    : "Projets Existants",
+    "TITLE"       : "Gestion des Projets",
+    "PRINT_TITLE" : "Projets Enregistrer",
+    "HELP_TXT_1"  : "Ce module vous permettre faire la gestion des projets.  Vous voyez seulment les projets qui concerne votre enterprise."
   },
 
   "PERMISSION"    : {
@@ -1049,7 +1051,7 @@
     "FILTER"     : "Filtrer Le Groupe de Débiteur",
     "HELP_TXT_1" : "Cette interface vous permet de visualiser, trouver, et configurer un groupe de debiteur",
     "HELP_TXT_2" : "Editer le Groupe de debiteur Sélectionnée",
-    "HELP_TXT_3" : "Bloquer le Groupe de debiteur selectionne. Aucune transaction ne pourra etre Effectuée avec ce groupe",
+    "HELP_TXT_3" : "Bloquer le Groupe de debiteur sélectionné. Aucune transaction ne pourra etre Effectuée avec ce groupe",
     "HELP_TXT_4" : "Crée un nouveau groupe de debiteur",
     "INFO"       : "Information du Groupe"
   },
@@ -1061,13 +1063,13 @@
     "SUBMIT_BALANCES" : "Sauver Balances",
     "SUBMIT"          : "Soumettre",
     "DISCARD"         : "Annuler",
-    "RESET_BALANCES"  : "Reinitialiser Balances",
+    "RESET_BALANCES"  : "Réinitialiser Balances",
     "CLEAR"           : "Effacer",
     "CLOSE_FORM"      : "Annuler",
     "CLEAR_FORM"      : "Effacer Formulaire",
-    "RESET"           : "Reinitilaiser",
+    "RESET"           : "Réinitiaiser",
     "DELETE"          : "Effacer",
-    "RESET_FORM"      : "Reinitilaiser Formulaire",
+    "RESET_FORM"      : "Réinitiaiser Formulaire",
     "CANCEL"          : "Annuler",
     "OK"              : "Ok",
     "CONTINUE"        : "Continuer",
@@ -1101,11 +1103,11 @@
 
   "EXCHANGE"     : {
     "TITLE"      : "Configurer le taux de change",
-    "SET"        : "Definir le Taux de Change pour Aujourd'hui",
-    "HELP_TXT_1" : "Le module de taux de change, donne la possibilite de definir le taux d'echange du jour. Par souci d'integrite des données, Le taux d'echange doit etre defini par jour",
-    "PREV"       : "Taux Precedent",
+    "SET"        : "Définir le Taux de Change pour Aujourd'hui",
+    "HELP_TXT_1" : "Le module de taux de change, donne la possibilite de définir le taux d'echange du jour. Par souci d'Intégrité des données, Le taux d'echange doit être défini par jour",
+    "PREV"       : "Taux Précédent ",
     "NEW"        : "Nouveau Taux",
-    "NO_RATES"   : "Il n'y a pas des taux defini pour aujourd'hui!",
+    "NO_RATES"   : "Il n'y a pas des taux défini pour aujourd'hui!",
     "REVIEW"     : "Revoir le taux d'aujourd'hui",
     "TODAY_RATE" : "Taux de change pour"
   },
@@ -1117,7 +1119,7 @@
     "HELP_TXT"        : "La page de gestion des Groupe des Créditeurs",
     "SAVE_CHANGES"    : "Sauver Changements",
     "NEW_FORM"        : "Nouveau Formulaire",
-    "DETAILS"         : "Details Groupe Créditeur"
+    "DETAILS"         : "Détails Groupe Créditeur"
   },
 
   "LOCATION" : {
@@ -1156,7 +1158,7 @@
     "FRENCH_NAME"          : "Nom Français",
     "ACTIONS"              : "Actions",
     "CONFIGURATION"        : "Configuration de gestion des pays",
-    "DESCRIPTION"          : "Ce module vous aidera a gerer les pays, A gauche vous voyez les pays disponibles dans le systeme. Utiliser ce module pour",
+    "DESCRIPTION"          : "Ce module vous aidera à gérer les pays, à gauche vous voyez les pays disponibles dans le systeme. Utiliser ce module pour",
     "CREATE"               : "créer",
     "MODIFY"               : "modifier",
     "AND"                  : "et",
@@ -1181,7 +1183,7 @@
     "TITLE"        : "Enregistrements des Factures des Patients",
     "SHOWING"      : "Vue de derniers enregistrements",
     "ADVANCE"      : "Recherches Avancée",
-    "UNFOUND"      : "Aucune transaction des patients trouvée. Reference",
+    "UNFOUND"      : "Aucune transaction des patients trouvée. Référence",
     "PATIENT_SALE" : "Ventes",
     "GENERATE"     : "Pour créer une facture.",
     "RECEIPT"      : "Facture",
@@ -1202,8 +1204,8 @@
     "DATE_REGISTRATION" : "Date d'enregistrement",
     "DATE_RECEIPT"      : "Date de la facture",
     "PATIENT_INVOICE"   : "Facture du Patient",
-    "TO"                : "A",
-    "INVOICE_ID"        : "Facture No.",
+    "TO"                : "À",
+    "INVOICE_ID"        : "Facture N°",
     "CLIENT_ID"         : "Code Client",
     "DATE"              : "Date",
     "DESCRIPTION"       : "Description",
@@ -1216,7 +1218,7 @@
     "NOTE"              : "Note",
     "DEBTOR_ID"         : "# Débiteur",
     "TOTAL_CREDITED"    : "Total Crédite",
-    "ADDRESS"           : "Addresse",
+    "ADDRESS"           : "Adresse",
     "ID"                : "Id",
     "PHONE"             : "Phone",
     "CASH_RECEIPT"      : "Recette de Caisse",
@@ -1225,13 +1227,13 @@
     "TRANSACTION_PRICE" : "Prix Transaction",
     "CAUTION"           : "Caution",
     "CAUTION_ID"        : "# Caution",
-    "LIBELLE_CAUTION"   : "Reception Caution",
+    "LIBELLE_CAUTION"   : "Réception Caution",
     "TOTAL_CAUTION"     : "Total",
     "BY"                           : "Transfert realise par : ",
     "TRANSFERT"                    : "Transfert caisse principal",
     "DESIGNATION"                  : "Désignation",
     "LIBELLE_TRANSFERT_FROM"       : "Transfert de ",
-    "PCASH"                        : "caisse Principale",
+    "PCASH"                        : "Caisse Principale",
     "TOTAL_TRANSFERT"              : "Total Transfert",
     "SIGN_HEADER_BILLING"          : "Signature Charge Facturation",
     "SIGN_CLIENT"                  : "Signature Client",
@@ -1239,20 +1241,20 @@
     "SIGN_HEADER_PRI"              : "Signature Charge Caisse Principale",
     "PURCHASE_ID"                  : "ID Ordre Achat",
     "PURCHASE_DATE"                : "Date ordre achat",
-    "EMPLOYEE_CONTACT"             : "Contact Employe",
-    "EMPLOYEE_CODE"                : "Code Employe",
+    "EMPLOYEE_CONTACT"             : "Contact Employé",
+    "EMPLOYEE_CODE"                : "Code Employé",
     "PURCHASE_TOTAL"               : "Total",
     "PURCHASE_ORDER"               : "Ordre D'Achat",
     "DISTRIBUTION_SERVICE" : "Distribution Service",
     "CONVENTION"                   : "Reçu pour convention",
-    "NUM_CONVENTION_PAY"           : "Reference",
-    "GENERIC_INCOME"               : "Recette Genarale",
+    "NUM_CONVENTION_PAY"           : "Référence",
+    "GENERIC_INCOME"               : "Recette Générale",
     "GENERIC_EXPENSE"              : "Dépense Générale",
     "LOSS"                         : "Document de perte de stock",
     "DATE_DOCUMENT"                : "Date document",
     "STOCK_MOVEMENT"               : "Mouvement de stock",
     "NAME" : "Nom",
-    "REFERENCE" : "Reference",
+    "REFERENCE" : "Référence",
     "TRANSFERT_DATE" : "Date transfert",
     "ITEM" : "Item",
     "EXPIRATION_DATE" : "Date expiration",
@@ -1262,14 +1264,14 @@
     "ORIGIN_DEPOT" : "Dépôt Origine",
     "LOT" : "Lot",
     "INDIRECT_PURCHASE" : "Preuve paiement indirect de l'ordre d'achat",
-    "COST" : "Cout",
+    "COST" : "Coût",
     "RECIPIENT" : "Recepteur",
     "CONFIRM_PURCHASE" : "Confirmation paiement",
     "CONFIRMED_BY" : "Confirmer par ",
     "SIGN_EMPLOYEE" : "Signature employé",
     "PROOF_OF_PATIENT_CONSUMPTION" : "Preuve de consommation du patient",
-    "DOCUMENT_REF" : "Reference vente",
-    "DEPOT_REF" : "Reference dépôt",
+    "DOCUMENT_REF" : "Référence vente",
+    "DEPOT_REF" : "Référence dépôt",
     "PURCHASE_RECIPIENT" : "Fournisseur"
 
   },
@@ -1278,12 +1280,12 @@
     "TITLE"            : "Gestionnaire Secteur",
     "LOCATION_MANAGER" : "Gestion des Emplacement",
     "NEW_SECTOR"       : "Ajouter Secteur",
-    "REGISTERED"       : "Secteurs enregistres",
+    "REGISTERED"       : "Secteurs enregistrés",
     "NAME"             : "Nom",
     "PROVINCE"         : "Province",
     "ACTIONS"          : "Actions",
     "CONFIG"           : "Configuration Gestionnaire de Secteurs",
-    "INFO"             : "Ce module vous aidera a gerer les secteurs, a gauche la liste des secteurs enregistres, utiliser ce module pour créer, modifier et effecer les secteurs",
+    "INFO"             : "Ce module vous aidera à gérer les secteurs, à gauche la liste des secteurs enregistrés, utiliser ce module pour créer, modifier et effecer les secteurs",
     "REGISTER"         : "Enregistrement Secteur",
     "NAME_SECTOR"      : "Nom Secteur",
     "EDIT"             : "Editer Secteur"
@@ -1293,12 +1295,12 @@
     "TITLE"            : "GESTION DES PROVINCES",
     "LOCATION_MANAGER" : "Gestion des Emplacements",
     "ADD"              : "Ajouter Nouveau Province",
-    "REGISTERED"       : "Provinces Enregistres",
+    "REGISTERED"       : "Provinces Enregistrées",
     "NAME"             : "Nom",
     "COUNTRY"          : "Pays",
     "ACTIONS"          : "Actions",
     "CONFIGURATION"    : "Configuration de Gestion des Provinces",
-    "DESCRIPTION"      : "Ce module vous aider a gerer les provinces, A gauche vous voyez les provinces enregistrées. utiliser ce module pour créer, modifier Et Effacer des provinces. ",
+    "DESCRIPTION"      : "Ce module vous aider à gérer les provinces, A gauche vous voyez les provinces enregistrées. utiliser ce module pour créer, modifier Et Effacer des provinces. ",
     "REGISTER"         : "Enregistrer une Province",
     "PROVINCE_NAME"    : "Nom Province",
     "EDIT"             : "Editer Province"
@@ -1308,12 +1310,12 @@
     "TITLE"            : "Gestion des Villages",
     "LOCATION_MANAGER" : "Gestion des Emplacement",
     "NEW_VILLAGE"      : "Ajouter Village",
-    "REGISTERED"       : "Villages Enregistres",
+    "REGISTERED"       : "Villages Enregistrés",
     "NAME"             : "Nom",
     "SECTOR"           : "Commune",
     "ACTIONS"          : "Actions",
     "CONFIG"           : "Configuration de Gestion des Villages",
-    "INFO"             : "Ce module vous aider a gerer les villages.",
+    "INFO"             : "Ce module vous aider à gérer les villages.",
     "REGISTER"         : "Enregistrer une Village",
     "NAME_VILLAGE"     : "Nom de Village",
     "EDIT"             : "Editer Village"
@@ -1343,8 +1345,8 @@
     "PATIENT_REGISTRATION" : "Enregistrement Patient",
     "DANGER"               : "Erreur pendant le changement de groupe de debiteur",
     "ERR_HTTP"             : "Erreur pendant le changement de groupe de debiteur",
-    "ERR_MISSING"          : "Erreur, il n'y a pas un debiteur selectionner",
-    "SUCCESS"              : "Changement avec succes"
+    "ERR_MISSING"          : "Erreur, il n'y a pas un debiteur sélectionner",
+    "SUCCESS"              : "Changement avec succès"
   },
 
   "ALLTRANSACTIONS" : {
@@ -1385,10 +1387,10 @@
     "CRUMB_PCASH"        : "caisse principale",
     "CRUMB_CONVENTION"   : "convention",
     "DEFAULT_CASHBOX"    : "Caisse",
-    "EXCHANGE_RATE_OPT"  : "Voulez - vous definir le taux ?",
-    "LOADING_ERROR"      : "Erreur durant le chargement, verifier que le taux d'echange est defini, si lprobleme persiste constacter l'administrateur",
+    "EXCHANGE_RATE_OPT"  : "Voulez - vous définir le taux ?",
+    "LOADING_ERROR"      : "Erreur durant le chargement, verifier que le taux d'echange est défini, si lprobleme persiste constacter l'administrateur",
     "DEFAULT_CURRENCY"   : "Monnaie",
-    "NO_CONVENTION"      : "Pas des convention selectionnée",
+    "NO_CONVENTION"      : "Pas des convention sélectionnée",
     "NO_RECORD"          : "Pas d'enregistrement pour cette convention"
   },
 
@@ -1398,7 +1400,7 @@
     "EXPENSE"               : "Dépense",
     "SOME_REPORT"           : "Rapport sommaire des activites (20 derniers)",
     "MANAGER_CONFIGURATION" : "Gestion de la Caisse Principale",
-    "DESCRIPTION"           : "Ce module vous permettra de realiser de facoun automatisée toutes les operations liéesa la caisse pricipale. Utiliser ce module pour gerer les recettes et depenses avec aisance."
+    "DESCRIPTION"           : "Ce module vous permettra de realiser de facoun automatisée toutes les operations liéesa la caisse pricipale. Utiliser ce module pour gérer les recettes et depenses avec aisance."
   },
 
   "INCOME"        : {
@@ -1418,8 +1420,8 @@
   "JOURNAL_VOUCHER"  : {
       "TITLE"                 : "Ajout Transaction",
       "ADD_ROW"               : "Ajouter Ligne",
-      "ADD_COMMENT"           : "Ajouter commentaire",
-      "ADD_REFERENCE_DOCUMENT": "Ajouter reference document",
+      "ADD_COMMENT"           : "Ajouter un Commentaire",
+      "ADD_REFERENCE_DOCUMENT" : "Ajouter la référence du document",      
       "POSTING_JOURNAL"       : "Posting Journal",
       "TAB_LOCK_COLONNE"      : "Colonne par Colonne",
       "TAB_LOCK_LINE"         : "Ligne par Ligne",
@@ -1446,19 +1448,19 @@
     "CAISSE"      : "Caisse",
     "CURRENCY"    : "Monnaie",
     "NAVIGATION"  : "Naviguation",
-    "NO_CURRENCY" : "Pas de monnaie selectionnée",
+    "NO_CURRENCY" : "Pas de monnaie sélectionnée",
     "DATA_ERROR"  : "Erreur des données"
   },
 
   "CASH_PURCHASE" : {
     "TITLE"       : "Dépense de l'ordre d'achat",
-    "NOT_FOUND"   : "Aucun ordre d'achat trouve !",
+    "NOT_FOUND"   : "Aucun ordre d'achat trouvé !",
     "FILTER"      : "Filtrer les ordres d'achats",
     "SELECT_PURCHASE" : "Sélectionner ordre d'achat",
     "CONFIRM_PAY"  : "Confirmer payement",
-    "DETAILS"      : "Details",
+    "DETAILS"      : "Détails",
     "CONFIRM_PAY_OF" : "Confirmer payement de  ",
-    "TO"             : "a ",
+    "TO"             : "à ",
     "DISCARD"        : "Annuler l'ordre d'achat"
   },
 
@@ -1467,7 +1469,7 @@
   },
 
   "SETTINGS"    : {
-    "TITLE"     : "BHIMA Parametres",
+    "TITLE"     : "BHIMA Paramètres",
     "LANGUAGE"  : "Langue",
     "LAST_PAGE" : "Dernier Page Visite",
     "HOME_PAGE" : "Page Defaut"
@@ -1476,7 +1478,7 @@
   "PURCHASE"        : {
     "TITLE"         : "Ordre Achat",
     "ADD_SUPPLIER"  : "Ajouter Fournisseur",
-    "CONFIGURE"     : "Parametrage",
+    "CONFIGURE"     : "Paramétrage",
     "SALE_DATE"     : "Date de creation",
     "SUPPLIER"      : "Fournisseur",
     "RESPONSIBLE"   : "Employé Responsable",
@@ -1489,7 +1491,7 @@
     "SUBMIT"        : "Soumettre",
     "SUBMIT_ORDER"  : "Soumettre Ordre Achat",
     "RESPONSABLE"   : "Responsable",
-    "TOTAL_COST"    : "Cout total"
+    "TOTAL_COST"    : "Coût total"
   },
 
   "PRIMARY_CASH" : {
@@ -1510,7 +1512,7 @@
       "PURCHASE"                : "Achat",
       "GENERIC_TITLE"           : "Dépenses Génériques",
       "GENERIC_RECEIPT"         : "Recettes Génériques",
-      "REFERENCE_DOCUMENT_ID"   : "Reference Document ID",
+      "REFERENCE_DOCUMENT_ID"   : "Référence Document ID",
       "RECIPIENT"               : "Destinataire",
       "PURPOSE"                 : "Motif",
       "CREDITOR"                : "Créditeur",
@@ -1527,18 +1529,18 @@
       "SENIORITY"               : "Ancienete",
       "ADVANTAGES"              : "Avantages",
       "SALARY"                  : "Salaire net",
-      "TAXES_OTHERS"            : "Taxes employé et autres deductions",
+      "TAXES_OTHERS"            : "Taxes employé et autres déductions",
       "SALARY_AV"               : "Avance sur salaire",
       "INSS"                    : "Cot. INSS",
       "IPR"                     : "IPR",
-      "OTHER_DEDUCT"            : "Autres deductions" ,
-      "SELECT_PERIOD"           : "Sélectionner une periode de paiement",
+      "OTHER_DEDUCT"            : "Autres déductions" ,
+      "SELECT_PERIOD"           : "Sélectionner une période de paiement",
       "DAYS"                    : "Jours",
       "RUBRICS"                 : "Rubriques",
       "ONEM"                    : "ONEM",
       "IERE"                    : "IERE",
       "INPP"                    : "INPP",
-      "TAXES_OTHERS_ENTERPRISE" : "Taxes entreprise et autres deductions",
+      "TAXES_OTHERS_ENTERPRISE" : "Taxes entreprise et autres déductions",
       "TAX_PAYMENT"             : "Paiement Taxes",
       "SELECT_ACCOUNT"          : "Sélectionner un compte",
       "ACCOUNT"                 : "Compte",
@@ -1548,7 +1550,7 @@
     "INCOME" : {
       "TRANSFER"              : "Transfert",
       "CONVENTION"            : "Convention",
-      "REFERENCE_DOCUMENT_ID" : "Reference Document ID",
+      "REFERENCE_DOCUMENT_ID" : "Référence Document ID",
       "RECIPIENT"             : "Destinataire",
       "LABEL"                 : "Label",
       "DEBTOR"                : "Débiteur",
@@ -1556,7 +1558,7 @@
       "AMOUNT"                : "Montant",
       "GENERIC" : {
         "TITLE"   : "Recette Générique",
-        "RECEIPT" : "Reception"
+        "RECEIPT" : "Réception"
       },
       "SELECT_ACCOUNT"        : "Sélectionner un compte",
       "ACCOUNT"               : "Compte"
@@ -1564,18 +1566,18 @@
     "REPORT" : {
         "INCOME" : {
             "TITLE" : "Rapport des Recettes",
-            "EMPTY_REPORT" : "Aucun enregistrement trouve !"
+            "EMPTY_REPORT" : "Aucun enregistrement trouvé !"
         },
         "EXPENSE" : {
             "TITLE" : "Rapport des Dépenses",
-            "EMPTY_REPORT" : "Aucun enregistrement trouve !"
+            "EMPTY_REPORT" : "Aucun enregistrement trouvé !"
         }
     }
   },
 
   "DISTRIBUTION" : {
-    "TITLE"                 : "Distribution Médicament s aux malades",
-    "SALE_DETAILS"          : "Details des ventes",
+    "TITLE"                 : "Distribution des Médicaments aux malades",
+    "SALE_DETAILS"          : "Détails des ventes",
     "ADD_ROW"               : "Ajouter Item",
     "DESCRIPTION"           : "Description",
     "SUBMIT"                : "Soumettre",
@@ -1583,12 +1585,12 @@
     "APPLIES_GLOBALLY"      : "Appliquer globalement",
     "APPLIES_TO_ITEM"       : "Appliquer par item",
     "TOTAL"                 : "Total",
-    "SELECTED_SALE_DETAILS" : "Detail de la vente",
+    "SELECTED_SALE_DETAILS" : "Détail de la vente",
     "NUM_FACTURE"           : "Numéro Facture ",
     "SALE_DATE"             : "Date de Vente",
-    "COST"                  : "Cout",
-    "LOT_DETAILS"           : "Details des Lots",
-    "EMPTY_MESSAGE"         : "Aucune vente selectionnée !",
+    "COST"                  : "Coût",
+    "LOT_DETAILS"           : "Détails des Lots",
+    "EMPTY_MESSAGE"         : "Aucune vente sélectionnée !",
     "INVOICE_NOT_PAID"      : "Cette vente n'a pa été payée !",
     "INVOICE_PAID"          : "Cette vente a été totalement payée !",
     "INVOICE_PARTIALLY_PAID" : "Cette vente a été partiellement payée !",
@@ -1596,7 +1598,7 @@
     "DATE"                   : "Date",
     "SALE_STATUS"            : "Etat de la vente",
     "SALE_BALANCE"           : "Balance de la vente",
-    "VIEW_SALE"              : "Voir details vente",
+    "VIEW_SALE"              : "Voir détails vente",
     "NOT_CONSUMED"           : "Non consommée",
     "CONSUMED"               : "Consommée",
     "ASSIGN"                 : "Assignation lots",
@@ -1609,10 +1611,10 @@
     "EXP_DATE"               : "Date d'expiration",
     "LOCATE_PATIENT"         : "Chercher le patient",
     "SLECT_PRESCRIPTION"     : "Sélectionner la vente",
-    "ALLOCATE_MEDECINE"      : "Allouer les medicamnets",
+    "ALLOCATE_MEDECINE"      : "Allouer les médicaments",
     "NONE"                   : "Cet item n'existe dans le stock du dépôt, contacter l'administrateur",
-    "LIMITED_STOCK"          : "Il n ' y a pas assesz de stock pour couvrir la vente, contacter l'administrateur",
-    "EXPIRED"                : "Le stock disponible ne peut pas etre utilise comme il est expire, contacter l'administrateur.",
+    "LIMITED_STOCK"          : "Il n'y a pas assez de stock pour couvrir la vente, contacter l'administrateur",
+    "EXPIRED"                : "Le stock disponible ne peut pas etre utilisé comme il est expire, contacter l'administrateur.",
     "AVAILABLE"              : "Prescriptions disponibles"
 
   },
@@ -1625,11 +1627,11 @@
     "APPLIES_GLOBALLY"      : "Appliquer globalement",
     "APPLIES_TO_ITEM"       : "Appliquer par item",
     "TOTAL"                 : "Total",
-    "COST"                  : "Cout",
-    "LOT_DETAILS"           : "Details des Lots",
+    "COST"                  : "Coût",
+    "LOT_DETAILS"           : "Détails des Lots",
     "CHOOSE"                : "Sélectionner le service",
     "SUMMARY"               : "Sommaire",
-    "TAPE"                  : "Taper code nom medicament",
+    "TAPE"                  : "Taper code, nom médicament",
     "LOT_NUMBER"            : "Numéro lot",
     "EXPIRING_DATE"         : "Date expiration",
     "REMAINING_QTY"         : "Quantité restante",
@@ -1648,16 +1650,17 @@
     "EMAIL"             : "Email",
     "FAX"               : "Fax",
     "REGISTERED"        : "Les fournisseurs inscrits",
-    "SUPPLIER_DETAILS"  : "Details",
+    "SUPPLIER_DETAILS"  : "Détails",
     "CREATE_SUPPLIER"   : "Créer Fournisseur"
   },
 
   "DEPOT" : {
-    "TITLE"     : "Gestionn des Dépôt",
-    "NO_DEPOTS" : "Aucun dépôt trouve",
+    "TITLE"     : "Gestion des Dépôt",
+    "NO_DEPOTS" : "Aucun dépôt trouvé",
     "ADD" : "Ajouter",
-    "ALERT" : "Ce module vous permet de gerer vos dépôt",
-    "NEW"   : "Nouveau dépôt"
+    "ALERT" : "Ce module vous permet de gérer vos dépôt",
+    "NEW"   : "Nouveau dépôt",
+    "ALL"   : "Tous les Dépôts"
   },
 
   "EMPLOYEE" : {
@@ -1690,15 +1693,15 @@
     "ADDRESS"            : "Adresse",
     "LOCATION"           : "Localisation",
     "NAME"               : "Nom",
-    "EDITED_SUCCES"      : "Mise à jour avec succes "
+    "EDITED_SUCCES"      : "Mise à jour avec succès "
   },
 
   "COST_CENTER" : {
-    "TITLE"         : "Gestion de Centre de Couts",
+    "TITLE"         : "Gestion de Centre de Coûts",
     "NAVIGATION"    : "Naviguation",
     "OPERATION"     : "operations",
     "OPERATIONS" : {
-      "CC"        : "Centre de couts",
+      "CC"        : "Centre de coûts",
       "ASSIGN"    : "Assignation",
       "VERSEMENT" : "Versement"
     }
@@ -1716,55 +1719,55 @@
   },
 
   "ANALYSIS_CENTER" : {
-    "TITLE"                  : "Centre de couts",
-    "PARENT"                 : "Gestion de centre de couts",
+    "TITLE"                  : "Centre de coûts",
+    "PARENT"                 : "Gestion de centre de coûts",
     "NAVIGATION"             : "Naviguation",
-    "REGISTERED"             : "Centre des couts enregistres",
-    "INFO"                   : "Information sur le centre des couts",
-    "INFO_DESCRIPTION"       : "Ce module vous permet de gerer vos centre des couts (leur creation, modification et suppression ainsi que leur consultation)",
+    "REGISTERED"             : "Centre des coûts enregistrés",
+    "INFO"                   : "Information sur le centre des coûts",
+    "INFO_DESCRIPTION"       : "Ce module vous permet de gérer vos centre des coûts (leur creation, modification et suppression ainsi que leur consultation)",
     "TEXT"                   : "Text",
-    "COST"                   : "Cout",
+    "COST"                   : "Coût",
     "IS_PROFIT"              : "Principal",
     "NOTE"                   : "Note",
     "REGISTER"               : "Enregistrement",
     "NEW"                    : "Nouveau centre",
-    "INSERT_SUCCESS_MESSAGE" : "Insertion avec succes !",
+    "INSERT_SUCCESS_MESSAGE" : "Insertion avec succès !",
     "INSERT_FAIL_MESSAGE"    : "Erreur durant l'insertion !",
-    "NONE_FOUND"             : "Aucun centre de frais trouve !",
+    "NONE_FOUND"             : "Aucun centre de frais trouvé !",
     "MODIFYING"              : "Modification",
-    "UPDATE_SUCCESS_MESSAGE" : "Mise à jour avec succes !",
+    "UPDATE_SUCCESS_MESSAGE" : "Mise à jour avec succès !",
     "UPDATE_FAIL_MESSAGE"    : "Erreur durant la mise à jour !",
     "REMOVE_FAIL_MESSAGE"    : "Erreur durant la suppression !",
-    "REMOVE_SUCCESS_MESSAGE" : "Suppression avec succes !"
+    "REMOVE_SUCCESS_MESSAGE" : "Suppression avec succès !"
   },
 
 "ANALYSIS_PROFIT_CENTER"              :{
     "TITLE"                    :   "Centre de profits",
     "PARENT"                   :   "Gestion de centre de profit",
-    "NAVIGATION"               :   "Naviguation",
-    "REGISTERED"               :   "Centre des profits enregistres",
+    "NAVIGATION"               :   "Navigation",
+    "REGISTERED"               :   "Centre des profits enregistrés",
     "INFO"                     :   "Information sur le centre des profits",
-    "INFO_DESCRIPTION"         :   "Ce module vous permet de gerer vos centre des profits (leur creation, modification et suppression ainsi que leur consultation)",
+    "INFO_DESCRIPTION"         :   "Ce module vous permet de gérer vos centre des profits (leur creation, modification et suppression ainsi que leur consultation)",
     "TEXT"                     :   "Text",
     "COST"                     :   "profit",
     "IS_PROFIT"                :   "Centre de profit",
     "NOTE"                     :   "Note",
     "REGISTER"                 :   "Enregistrement",
     "NEW"                      :   "Nouveau centre",
-    "INSERT_SUCCESS_MESSAGE"   :   "Insertion avec succes !",
+    "INSERT_SUCCESS_MESSAGE"   :   "Insertion avec succès !",
     "INSERT_FAIL_MESSAGE"      :   "Erreur durant l'insertion !",
-    "NONE_FOUND"               :   "Aucun centre de profit trouve !",
+    "NONE_FOUND"               :   "Aucun centre de profit trouvé !",
     "MODIFYING"                :   "Modification",
-    "UPDATE_SUCCESS_MESSAGE"   :   "Mise à jour avec succes !",
+    "UPDATE_SUCCESS_MESSAGE"   :   "Mise à jour avec succès !",
     "UPDATE_FAIL_MESSAGE"      :   "Erreur durant la mise à jour !",
     "REMOVE_FAIL_MESSAGE"      :   "Erreur durant la suppression !",
-    "REMOVE_SUCCESS_MESSAGE"   :   "Suppression avec succes !"
+    "REMOVE_SUCCESS_MESSAGE"   :   "Suppression avec succès !"
   },
 
   "VERSEMENT" : {
     "TITLE"                  : "Versement des comptes",
-    "PARENT"                 : "Gestion de centre de couts",
-    "CHOOSE"                 : "Sélectionner centre de couts",
+    "PARENT"                 : "Gestion de centre de coûts",
+    "CHOOSE"                 : "Sélectionner centre de coûts",
     "AVAILABLE_ACCOUNT"      : "Les comptes disponibles",
     "VERSER"                 : "Verser",
     "REMOVE"                 : "Retirer",
@@ -1786,18 +1789,18 @@
 
   "SERVICE" : {
     "TITLE"                    : "Gestion des Services",
-    "REGISTERED"               : "Services enregistres",
-    "NONE_FOUND"               : "Aucun service trouve",
+    "REGISTERED"               : "Services enregistrés",
+    "NONE_FOUND"               : "Aucun service trouvé",
     "REGISTER"                 : "Enregistrement",
     "COST_CENTER_SELECT"       : "Centre de frais",
-    "SUCCESS_MESSAGE"          : "Insertion avec succes !",
+    "SUCCESS_MESSAGE"          : "Insertion avec succès !",
     "INSERT_FAIL_MESSAGE"      : "Erreur durant l'insertion",
-    "INSERT_SUCCESS_MESSAGE"   :  "Insertion avec succes !",
+    "INSERT_SUCCESS_MESSAGE"   :  "Insertion avec succès !",
     "NEW"                      :  "Nouveau Service",
     "INFO"                     :  "Information sur le service",
-    "INFO_DESCRIPTION"         :  "Ce module vous permet de gerer vos services (leur creation, modification et suppression ainsi que leur consultation)",
+    "INFO_DESCRIPTION"         :  "Ce module vous permet de gérer vos services (leur creation, modification et suppression ainsi que leur consultation)",
     "MODIFYING"                :  "Modification",
-    "OVERVIEW_SERVICE"         : "Resultat synthetique du service :",
+    "OVERVIEW_SERVICE"         : "Résultat synthétique du service :",
     "PROJECT_SELECT"           : "Sélectionner un projet",
     "PROFIT_CENTER_SELECT"     : "Centre de profit"
   },
@@ -1805,24 +1808,24 @@
   "ASSIGNING" : {
     "TITLE"                  : "Assignation",
     "NAVIG"                  : "Navigation",
-    "PARENT"                 : "Gestion de centre de couts",
-    "CHOOSE"                 : "Sélectionner un centre de couts secondaire",
-    "INFO_COST_CENTER"       : "Details sur le centre de couts",
+    "PARENT"                 : "Gestion de centre de coûts",
+    "CHOOSE"                 : "Sélectionner un centre de coûts secondaire",
+    "INFO_COST_CENTER"       : "Détails sur le centre de coûts",
     "ASSOCIATED_TO"          : "Les centres correspondants à :",
     "PLEASE_SELECT"          : "(Sélectionner centre frais SVP!)",
     "NEXT"                   : "Suivant",
     "TEXT_COST"              : "Désignation",
     "AUX_CENTER"             : "Centre Auxilliaire",
-    "COST"                   : "Cout",
-    "PRI_CENTERS"            : "Centres des couts principaux",
-    "INITIAL_COST"           : "Cout initial",
-    "COEFF"                  : "Coeffiscient de repartition",
-    "AL_COST"                : "Cout alloue",
+    "COST"                   : "Coût",
+    "PRI_CENTERS"            : "Centres des coûts principaux",
+    "INITIAL_COST"           : "Coût initial",
+    "COEFF"                  : "Coeffiscient de répartition",
+    "AL_COST"                : "Coût alloue",
     "TOTAL"                  : "Total",
     "TOTALS"                 : "TOTAUX",
-    "INSERT_SUCCES_MESSAGE"  : "Insertion avec succes !",
+    "INSERT_SUCCES_MESSAGE"  : "Insertion avec succès !",
     "INSERT_FAIL_MESSAGE"    : "Erreur durant l'insertion",
-    "NO_CHOOSEN"             : "Aucun centredes couts selectionne !",
+    "NO_CHOOSEN"             : "Aucun centre des coûts n'est sélectionné !",
     "AUX_CC"                 : "Centre Auxilliaire",
     "LABEL_CC"               : "Désignation",
     "TYPE_CC"                : "Type",
@@ -1830,21 +1833,21 @@
   },
 
   "EXPIRING_REPORT"  : {
-    "TITLE"        : "Rapport d'Expiration de medicaments",
+    "TITLE"        : "Rapport d'Expiration de médicaments",
     "ALL_DEPOTS"   : "Tous les dépôts",
-    "DAY"          : "Aujourd'ui",
+    "DAY"          : "Aujourd'hui",
     "MONTH"        : "Ce mois",
     "WEEK"         : "Cette semaine",
-    "EMPTY_REPORT" : "Aucun enregistrement trouve !"
+    "EMPTY_REPORT" : "Aucun enregistrement trouvé !"
   },
 
 "SIGNATURES"            : {
-    "WAREHOUSE_MANAGER" : "Gerant de l'entrepot",
+    "WAREHOUSE_MANAGER" : "Gerant de l'entrepôt",
     "CHIEF_ACCOUNTANT"  : "Chef comptable",
     "FINANCE_OFFICER"   : "Officier Finance",
     "ADMINISTRATOR"     : "Adminstrateur",
     "RESPONSABLE"       : "Responsable",
-    "BENEFICIARY"       : "Beneficiare",
+    "BENEFICIARY"       : "Bénéficiaire",
     "EMPLOYEE"          : "Employé",
     "CLIENT"            : "Client",
     "CREDITOR"          : "Créditeur",
@@ -1856,18 +1859,18 @@
     "DAY"          : "Aujourd'ui",
     "MONTH"        : "Ce mois",
     "WEEK"         : "Cette semaine",
-    "EMPTY_REPORT" : "Aucun enregistrement trouve !",
+    "EMPTY_REPORT" : "Aucun enregistrement trouvé !",
     "GROUP_BY"     : "Grouper Par"
   },
 
   "PURCHASE_RECORDS"       : {
     "TITLE"                : "Liste des Ordres d'Achats",
     "ADVANCE_SEARCH"       : "Recherche Avancée",
-    "NO_PURCHASE_FOUND"    : "Aucun ordre d'Achat trouve",
-    "REFERENCE"            : "Reference",
+    "NO_PURCHASE_FOUND"    : "Aucun ordre d'Achat trouvé",
+    "REFERENCE"            : "Référence",
     "PURCHASE_ORDER"       : "Ordres des achats",
     "TO_REQUEST"           : " pour demander un ordre d'achat",
-    "VIEW_PURCHASE_DETAIL" : "Voir Details"
+    "VIEW_PURCHASE_DETAIL" : "Voir Détails"
   },
 
   "PURCHASE_MENU"      : {
@@ -1883,9 +1886,9 @@
     "PARENT" : "Gestion des ordres d'achats",
     "SELECT_PURCHASE" : "Sélectionner ordre achat",
     "FILTER" : "Filtrer les ordre d'achats",
-    "NOT_FOUND" : "Aucun ordre d'achat trouve",
+    "NOT_FOUND" : "Aucun ordre d'achat trouvé",
     "CONFIRM_PAY" : "Confirmer le paiement",
-    "DETAILS" : "Details",
+    "DETAILS" : "Détails",
     "CONFIRM_PAY "  : "Confirmer payement",
     "CONFIRM_PAY_OF" : "Confirmer payement de  ",
     "BY"             : "par ",
@@ -1899,6 +1902,7 @@
 	"ALERT"		   : "Le module gestion de grade est un module qui a été conçu pour permettre l'administration des grades existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'un grade ainsi que la suppression.",
     "NO_GRADES"    : "Aucun grade n'est encore enregistré",
     "NEW_GRADE"    : "Nouveau Grade",
+    "UPD_GRADE"    : "Modifier un Grade",
     "SAVE_SUCCES"  : "Enregistrement avec succès",
     "UPDATE_SUCCES" : "Mis à jour avec succès",
     "DELETE_SUCCESS" : "Suppression avec succès",
@@ -1907,7 +1911,7 @@
 
   "TAXE_MANAGEMENT" : {
     "TITLE" : "Gestion des taxes",
-    "CREATE_TAXE" : "Creation des taxes",
+    "CREATE_TAXE" : "Création des taxes",
     "CONFIGURE_IPR" : "Configuration IPR",
     "OPTIONS" : "Options"
   },
@@ -1923,7 +1927,7 @@
     "ADD"             : "Ajouter un jour férié",
     "REGISTERED"      : "jours fériés enregistrés",
     "ALERT"           : "Le module gestion des jours fériés permet de configurer les différents types de jours fériés qui sont prises en charge dans l'organisation",
-    "CREATE_TAXE"     : "Creation des taxes",
+    "CREATE_TAXE"     : "Création des taxes",
     "SAVE_FAILURE"    : "Ce jour férié existe deja"
   },
 
@@ -1949,7 +1953,7 @@
     "EDIT"           : "Editer période",
     "DELETE"         : "Supprimer période",
     "CONFIRM"        : "Voulez-vous vraiment effectuer cette operation ?",
-    "REGISTERED"     : "Periodes enregistrées",
+    "REGISTERED"     : "Périodes enregistrées",
     "SAVE_PERIOD"    : "Sauver",
     "SAVE_SUCCES"    : "Enregistrement avec succès",
     "DELETE_SUCCESS" : "Supprimé(e) avec succès",
@@ -1964,7 +1968,7 @@
     "CONFIG"         : "Configurer semaines",
     "WEEKS"          : "Les Semaines",
     "ADD_WEEK"       : "Ajouter",
-    "WARNING_WEEK"   : "Les semaines doivent appartenir à la periode",
+    "WARNING_WEEK"   : "Les semaines doivent appartenir à la période",
     "ACCOUNT"        : "Compte",
     "CONFIGURATIONS" : "Les configurations"
   },
@@ -1980,7 +1984,7 @@
     "UPDATE"              : "Modifier",
     "CONFIRM"             : "Voulez-vous vraiment effectuer cette operation ?",
     "DELETE_SUCCESS"      : "Suppression avec succès",
-    "ALERT"               : "Le module gestion de taxes est un module qui a été conçu pour permettre l'administration des taxes existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'une taxe ainsi que la suppression.",
+    "ALERT"               : "Le module création de taxes est un module qui a été conçu pour permettre l'administration des taxes existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'une taxe ainsi que la suppression.",
     "IPR"                 : "Taxe IPR",
     "ADD_TRANCHE"         : "Ajouter Tranche",
     "NOT_EMPTY"           : "ABR. ne peut être vide",
@@ -1993,7 +1997,7 @@
     "FROM"                : "Début",
     "TO"                  : "Fin",
     "NO_TRANCHES"         : "Aucune tranche n'a été enregistrée",
-    "INFO_IPR"            : "Cette interface permet de gerer les tranches pour le calcul de l'IPR",
+    "INFO_IPR"            : "Cette interface permet de gérer les tranches pour le calcul de l'IPR",
     "NEW_TRANCH"          : "Nouvelle Tranche",
     "EDIT_TRANCH"         : "Editer Tranche",
     "SEE_TABLE"           : "Voir le tableau complet",
@@ -2074,7 +2078,7 @@
     "ADD_LINE_ITEM"     : "Ajouter article",
     "SUBMIT_DONATION"   : "Soumettre le Don",
     "ENTRY_DONATION"    : "Entrer Don dans le Stock par Lots",
-    "TOTAL_COST"        : "Cout Total",
+    "TOTAL_COST"        : "Coût Total",
     "SAVE_BY_LOT"       : "Enregistrement des lots",
     "CANCEL"            : "Annuler",
     "SEE_ALL"           : "Voir toutes les donations",
@@ -2140,7 +2144,7 @@
     "UPDATE"           : "Mettre à jour une configuration",
     "ADD"              : "Créer une nouvelle configuration",
     "REGISTERED"       : "Configuration des comptes enregistrées",
-    "ALERT"            : "Le module configuration des comptes, permet le paramétrage du compte qui sera prise utilisé lors du payroll",
+    "ALERT"            : "Le module configuration des comptes, permet le paramétrage du compte qui sera utilisé lors du payroll",
     "CONFIG"           : "Configuration",
     "RUBRIC"           : "Rubriques Payroll",
     "DELETE_SUCCESS"   : "Suppression avec succès",
@@ -2166,7 +2170,7 @@
     "PAID"             : "Payé",
     "SUBMIT_PAID_TAX"  : "Payé la taxe",
     "CONFIRM_SUBMIT"   : "Confirmez-vous le paiement de la taxe ?",
-    "NONE_PERIOD"      : "Aucune periode de paiement séléctionnée"
+    "NONE_PERIOD"      : "Aucune période de paiement séléctionnée"
   },
 
   "STOCK_STATUS"     :{
@@ -2183,6 +2187,23 @@
   "AUTH"             : {
     "LOGIN"          : "Bhima Login",
     "LOGIN_ERROR"    : "Erreur                    : Nom de utilisateur et mots de pass ne sont pas correct",
-    "LOGOUT_SUCCESS" : "Vous n'etes pas connecte"
-  }
+    "LOGOUT_SUCCESS" : "Vous n'etes pas connecté"
+  },
+
+  "FONCTION"  : {
+    "TITLE"            : "Gestion des fonctions",
+    "ADD"              : "Ajouter une fonction",
+    "NEW"              : "Nouvelle fonction",
+    "SAVE_SUCCES"      : "Enregistrement avec succès",
+    "UPDATE_SUCCES"    : "Mis à jour avec succès",
+    "CONFIRM"          : "Etes vous sure de vouloir supprimer cette fonction",
+    "UPDATE"           : "Mettre à jour une fonction",
+    "REGISTERED"       : "Liste des fonctions existants",
+    "ALERT"            : "Le module gestion de fonction est un module qui a été conçu pour permettre l'administration des fonctions existantes au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'une fonction ainsi que la suppression.",
+    "CONFIG"           : "Configuration",
+    "RUBRIC"           : "Rubriques Payroll",
+    "DELETE_SUCCESS"   : "Suppression avec succès",
+    "NO_FONCTION"      : "Aucune fonction n'est enregistrée",
+    "ABBR"             : "Abr."
+  } 
 }
