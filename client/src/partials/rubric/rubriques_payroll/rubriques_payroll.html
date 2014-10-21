@@ -3,7 +3,14 @@
 </header>
 
 <nav>
-  <button class="btn btn-sm btn-default" ng-click="new()">
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a href="#/rubric_management/">{{"CONFIG_RUBRIC.RUBRIC_MANAGEMENT" | translate}}</a></li>
+    </ol>
+  </div>
+  
+  <button class="btn btn-sm btn-default pull-right" ng-click="new()">
     <span class="glyphicon glyphicon-file"></span>
     {{ "RUBRIC_PAYROLL.ADD" | translate }}
   </button>

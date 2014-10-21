@@ -851,7 +851,8 @@
     "DAILY_CONSUMPTION"         : "Daily Consumption",
     "CONFIG_ACCOUNTING"         : "Configuration accounting",
     "PAYROLL_REPORT"            : "Payroll Reports",
-    "STOCK_STATUS"              : "Stock Status"
+    "STOCK_STATUS"              : "Stock Status",
+    "FONCTION"                  : "Job titles management"
   },
 
   "RUBRIC_PAYROLL"       : {
@@ -1271,7 +1272,8 @@
     "NEW" : "Register a new Depot",
     "EDIT" : "Edit depot information",
     "ADD" : "Add a Depot",
-    "NO_DEPOTS" : "No depots have been registered."
+    "NO_DEPOTS" : "No depots have been registered.",
+    "ALL"       : "All Depots"
   },
 
   "PRICE_LIST"         : {
@@ -1340,7 +1342,7 @@
     "RECOVER_INFO"    : "[Sale Recovered] It is important to note ONLY sale items and quantities are recovered, previously set prices are reset to the inventory default",
     "APPLIES_GLOBALLY" : "Appliquer globallemement",
     "APPLIES_TO_ITEM"  : "Appliquer par item",
-    "CHOOSE"           : "Choose the service"
+    "CHOOSE"           : "Assign a service"
   },
 
   "FIND"              : {
@@ -1878,9 +1880,10 @@
     "TITLE"        : "Grade management",
     "ADD"          : "Add a grade",
     "REGISTERED"   : "Registered Grades",
-    "ALERT"      : "Grade management module is a module that has been designed to allow administration of existing grades within the organization, the table is left to record, to update the attributes of a grade and the deletion.",
+    "ALERT"        : "Grade management module is a module that has been designed to allow administration of existing grades within the organization, the table is left to record, to update the attributes of a grade and the deletion.",
     "NO_GRADES"    : "No grave have been registered.",
     "NEW_GRADE"    : "New Grade",
+    "UPD_GRADE"    : "Update Grade",
     "SAVE_SUCCES"  : "Successfully saving grade",
     "UPDATE_SUCCES" : "Updated successfully",
     "DELETE_SUCCESS" : "Deleted successfully",
@@ -2164,6 +2167,20 @@
     "LOGIN"  : "Login to Bhima",
     "LOGIN_ERROR" : "Login Error: Username and password combination are incorrect.",
     "LOGOUT_SUCCESS" : "You are now logged out."
-  }
+  },
+
+  "FONCTION"  : {
+    "TITLE"         : "Job title management",
+    "ADD"           : "Add a Job title",
+    "NEW"           : "New job title",
+    "SAVE_SUCCES"   : "Successfully saving Configuration",
+    "CONFIRM"       : "Are you sure to delete this job title",
+    "UPDATE_SUCCES" : "Updated successfully",
+    "UPDATE"        : "Modify a Job title",
+    "REGISTERED"    : "Registered Job title",
+    "ALERT"         : "Fonction management module is a module that has been designed to allow administration of existing Job titles within the organization, the table is left to record, to update the attributes of a Job title and the deletion.",
+    "DELETE_SUCCESS" : "Deleted successfully",
+    "NO_FONCTION"    : "No job title saving"
+  }  
 
 }

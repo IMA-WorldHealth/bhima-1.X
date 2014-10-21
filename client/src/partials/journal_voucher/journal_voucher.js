@@ -89,7 +89,7 @@ angular.module('bhima.controllers')
           }
         }
       }
-    }
+    };
 
     function startup(models) {
       var entities;
