@@ -18,23 +18,36 @@
 
   <div class="row">
     <div class="col-xs-12">
-      <div find-patient on-search-complete="initialiseSaleDetails"></div>
+      <div find-patient on-search-complete="initialiseSaleDetails" enable-refresh="false"></div>
     </div>
   </div>
-  <div class="panel panel-default">
+  <div 
+    class="panel" 
+    ng-if="invoice.debtor"
+    ng-class="{'panel-success' : serviceComponent.selected, 'panel-default' : !serviceComponent.selected}">
     <div class="panel-heading">
-      {{'SALE.CHOOSE' | translate}}
+      <span class="glyphicon glyphicon-tag"> </span> 
+      
+      <!-- Hacky UI unifying fill for Tshikaji trip - all of these components need to standardised-->
+      {{ invoice.service ? invoice.service.name : ('SALE.CHOOSE' | translate)}}
     </div>
-    <div class="panel-body">
+    <div class="panel-body" ng-if="!invoice.service">
+
       <form class="form">
-        <div class="form-group">
+        <div class="input-group">
           <select
             class="col-xs-2 form-bhima"
-            ng-model="invoice.service"
+            ng-model="serviceComponent.selected"
             ng-options="service as service.name  for service in model.services.data"
-            ng-change="SelectService()"
           >
+            <option value="" disabled selected>...</option>
           </select>
+          <span class="input-group-btn">
+            <button 
+              class="btn btn-default"
+              ng-disabled="!serviceComponent.selected"
+              ng-click="assignService()">Submit</button>
+          </span>
         </div>
       </form>
     </div>
