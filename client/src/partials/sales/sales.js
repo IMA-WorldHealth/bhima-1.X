@@ -1,5 +1,12 @@
-// TODO Global charges currently don't hit an invetory item || account,
-// no way of tracing this back to a reason for being
+/**
+ * TODO Global charges currently don't hit an invetory item || account,
+ * no way of tracing this back to a reason for being
+ *
+ * FIXME State currently relies on random variables, there should be a clear state object that 
+ * controls and verifies the current state
+ *
+ * FIXME All sale details are still downloaded on patient select, hidden until service assignment, this should all be reuqested at once - ties in with state
+ */
 angular.module('bhima.controllers')
 .controller('sales', [
   '$scope',
@@ -13,6 +20,7 @@ angular.module('bhima.controllers')
   'precision',
   'uuid',
   function ($scope, $location, $http, validate, connect, appstate, messenger, Appcache, precision, uuid) {
+
     var dependencies = {},
         invoice = {},
         inventory = [];
@@ -22,6 +30,11 @@ angular.module('bhima.controllers')
 
     var session = $scope.session = {
       tablock : -1
+    };
+
+    var serviceComponent = $scope.serviceComponent = { 
+      selected : null,
+      complete : false
     };
 
     dependencies.inventory = {
@@ -58,7 +71,14 @@ angular.module('bhima.controllers')
     }
 
     validate.process(dependencies).then(sales);
+    
+    function assignService() { 
+      var selectedService = serviceComponent.selected;
 
+      if (!selectedService) { return messenger.danger('No service selected'); }
+      invoice.service = selectedService;
+    }
+    
     function initialiseSaleDetails(selectedDebtor) {
       if (!selectedDebtor) { return messenger.danger('No invoice debtor selected'); }
 
@@ -140,6 +160,8 @@ angular.module('bhima.controllers')
 
         invoice.note = formatNote(invoice);
         invoice.displayId = invoice.uuid.substr(0, 13);
+
+        console.log('result invoice', invoice);
         $scope.invoice = invoice;
 
       });
@@ -202,8 +224,11 @@ angular.module('bhima.controllers')
       $scope.model.inventory.remove(inventoryReference.uuid);
 
       $scope.model.inventory.recalculateIndex();
-
-      updateSessionRecover();
+  
+      // Do not update the recovery object for items added during recovery 
+      if (!session.recovering) { 
+        updateSessionRecover();
+      }
     }
 
     function removeInvoiceItem(index) {
@@ -438,17 +463,21 @@ angular.module('bhima.controllers')
     function processRecover(recoveredSession) {
       if (!session) { return; }
       $scope.session.recovered = recoveredSession;
-      console.log('on a', $scope.session.recovered);
     }
 
     function selectRecover() {
       $scope.session.recovering = true;
-      //console.log($scope.session.recovered);
-      //invoice.service = $scope.session.recovered.service;
+      
       $scope.findPatient.forceSelect($scope.session.recovered.patientId);
+    
+      serviceComponent.selected = $scope.session.recovered.service;
+      assignService();
     }
 
     function recover() {
+      
+      invoice.service = $scope.session.recovered.service || null;
+      
       $scope.session.recovered.items.forEach(function (item) {
         var currentItem = addInvoiceItem(), invItem = $scope.model.inventory.get(item.uuid);
         currentItem.selectedReference = invItem.code;
@@ -456,7 +485,6 @@ angular.module('bhima.controllers')
         currentItem.quantity = item.quantity;
       });
 
-      //invoice.service = $scope.session.recovered.service || null;
 
       // FIXME this is stupid
       session.displayRecover = true;
@@ -466,10 +494,11 @@ angular.module('bhima.controllers')
     }
 
     function updateSessionRecover() {
+
       //FIXME currently puts new object on every item, this could be improved
       var recoverObject = session.recoverObject || {
         patientId : invoice.debtor.uuid,
-        //service : invoice.service,
+        service : invoice.service,
         items : []
       };
 
@@ -524,6 +553,8 @@ angular.module('bhima.controllers')
     $scope.selectRecover = selectRecover;
     $scope.cacheQuantity = cacheQuantity;
     $scope.verifySubmission = verifySubmission;
+
+    $scope.assignService = assignService;
     //$scope.SelectService = SelectService;
   }
 ]);

@@ -39,9 +39,11 @@ angular.module('bhima.directives')
       scope.findPatient = {
         state : 'id',
         submitSuccess : false,
-        enableRefresh : attrs.enableRefresh || true
+        
+        // #Sorry - string hack
+        enableRefresh : attrs.enableRefresh==='false' ? false : true
       };
-
+    
       var stateMap = {
         'name' : searchName,
         'id' : searchId
