@@ -849,6 +849,7 @@
     "REPORT_YEARS"          : "Année Rapports",
     "ACCOUNT"               : "Compte",
     "TRANSACTION_REPORT"    : "Rapport des Transactions",
+    "NO_TRANSACTIONS"       : "Pas de transactions disponibles pour le compte sélectionné.",
     "BALANCED"              : "Balance",
     "TOTAL_DEBIT"           : "Débit Totale",
     "TOTAL_CREDIT"          : "Crédit Totale",
@@ -1018,11 +1019,11 @@
 
   "PROJECT"       : {
     "EDIT"        : "Editer",
-    "NEW"         : "Nouvaux",
-    "EXISTING"    : "Projects Existant",
-    "TITLE"       : "Gestion des Projects",
-    "PRINT_TITLE" : "Projects Enregistrer",
-    "HELP_TXT_1"  : "Ce module vous permettre faire la gestion des projects.  Vous voyez seulment les projects qui concern votre enterprise."
+    "NEW"         : "Nouveau",
+    "EXISTING"    : "Projets Existants",
+    "TITLE"       : "Gestion des Projets",
+    "PRINT_TITLE" : "Projets Enregistrer",
+    "HELP_TXT_1"  : "Ce module vous permettre faire la gestion des projets.  Vous voyez seulment les projets qui concerne votre enterprise."
   },
 
   "PERMISSION"    : {
@@ -1900,6 +1901,7 @@
 	"ALERT"		   : "Le module gestion de grade est un module qui a été conçu pour permettre l'administration des grades existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'un grade ainsi que la suppression.",
     "NO_GRADES"    : "Aucun grade n'est encore enregistré",
     "NEW_GRADE"    : "Nouveau Grade",
+    "UPD_GRADE"    : "Modifier un Grade",
     "SAVE_SUCCES"  : "Enregistrement avec succès",
     "UPDATE_SUCCES" : "Mis à jour avec succès",
     "DELETE_SUCCESS" : "Suppression avec succès",
@@ -1908,7 +1910,7 @@
 
   "TAXE_MANAGEMENT" : {
     "TITLE" : "Gestion des taxes",
-    "CREATE_TAXE" : "Creation des taxes",
+    "CREATE_TAXE" : "Création des taxes",
     "CONFIGURE_IPR" : "Configuration IPR",
     "OPTIONS" : "Options"
   },
@@ -1924,7 +1926,7 @@
     "ADD"             : "Ajouter un jour férié",
     "REGISTERED"      : "jours fériés enregistrés",
     "ALERT"           : "Le module gestion des jours fériés permet de configurer les différents types de jours fériés qui sont prises en charge dans l'organisation",
-    "CREATE_TAXE"     : "Creation des taxes",
+    "CREATE_TAXE"     : "Création des taxes",
     "SAVE_FAILURE"    : "Ce jour férié existe deja"
   },
 
@@ -1981,7 +1983,7 @@
     "UPDATE"              : "Modifier",
     "CONFIRM"             : "Voulez-vous vraiment effectuer cette operation ?",
     "DELETE_SUCCESS"      : "Suppression avec succès",
-    "ALERT"               : "Le module gestion de taxes est un module qui a été conçu pour permettre l'administration des taxes existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'une taxe ainsi que la suppression.",
+    "ALERT"               : "Le module création de taxes est un module qui a été conçu pour permettre l'administration des taxes existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'une taxe ainsi que la suppression.",
     "IPR"                 : "Taxe IPR",
     "ADD_TRANCHE"         : "Ajouter Tranche",
     "NOT_EMPTY"           : "ABR. ne peut être vide",
