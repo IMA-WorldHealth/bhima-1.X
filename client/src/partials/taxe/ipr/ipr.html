@@ -3,7 +3,14 @@
 </header>
 
 <nav>
-  <button class="btn btn-sm btn-default" ng-click="new()">
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a href="#/taxes_management/">{{"TAXE_MANAGEMENT.TITLE" | translate}}</a></li>
+    </ol>
+  </div>
+  	
+  <button class="btn btn-sm btn-default pull-right" ng-click="new()">
     <span class="glyphicon glyphicon-file"></span>
      {{ "TAXES.ADD" | translate }}
   </button>
