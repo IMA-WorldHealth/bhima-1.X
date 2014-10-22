@@ -180,15 +180,15 @@ app.get('/employee_list/', function (req, res, next) {
     "`employee`.`id`, `employee`.`code` AS `code_employee`, `employee`.`prenom`, `employee`.`name`, " +
     "`employee`.`postnom`, `employee`.`sexe`, `employee`.`dob`, `employee`.`date_embauche`, `employee`.`service_id`, " +
     "`employee`.`nb_spouse`, `employee`.`nb_enfant`, `employee`.`grade_id`, `grade`.`text`, `grade`.`basic_salary`, " +
+    "`fonction`.`id` AS `fonction_id`, `fonction`.`fonction_txt`, " +
     "`employee`.`phone`, `employee`.`email`, `employee`.`adresse`, `employee`.`bank`, `employee`.`bank_account`, `employee`.`daily_salary`, `employee`.`location_id`, " +  
     "`grade`.`code` AS `code_grade`, `debitor`.`uuid` as `debitor_uuid`, `debitor`.`text` AS `debitor_text`,`debitor`.`group_uuid` as `debitor_group_uuid`, " + 
     "`creditor`.`uuid` as `creditor_uuid`, `creditor`.`text` AS `creditor_text`, `creditor`.`group_uuid` as `creditor_group_uuid` " +
-    "FROM " +
-    "`employee`, `grade`, `debitor`, `creditor` " +
-    "WHERE " +
-    "`employee`.`grade_id` = `grade`.`uuid` AND " + 
-    "`employee`.`debitor_uuid` = `debitor`.`uuid` AND " +
-    "`employee`.`creditor_uuid` = `creditor`.`uuid` "
+    "FROM `employee` " +
+    " JOIN `grade` ON `employee`.`grade_id` = `grade`.`uuid` " +
+    " JOIN `fonction` ON `employee`.`fonction_id` = `fonction`.`id` " +
+    " JOIN `debitor` ON `employee`.`debitor_uuid` = `debitor`.`uuid` " +
+    " JOIN `creditor` ON `employee`.`creditor_uuid` = `creditor`.`uuid` ";
 
 
   db.exec(sql)

@@ -399,13 +399,14 @@
     "PRIMARY_CASH"    : "Select a Primary cash",
     "EMPLOYEE"        : "Select an employee",
     "EMPLOYEE_SEX"    : "Select Sex",
-    "EMPLOYEE_SERVICE"    : "Select a Service",
-    "EMPLOYEE_GRADE"      : "Select a grade",
+    "EMPLOYEE_SERVICE"      : "Select a Service",
+    "EMPLOYEE_GRADE"        : "Select a grade",
+    "EMPLOYEE_FUNCTION"     : "Select a fonction",
     "PERIOD_ACCOUNT_CONFIG" : "Select an accounting config",
-    "DONOR"               : "Select a donor",
-    "PERIOD_PAYMENT"      : "Select a payment period",
-    "PROFIT_CENTER"       : "Select a Profit Center",
-    "DEB_CRED"            : "Select a debtor or creditor"
+    "DONOR"                 : "Select a donor",
+    "PERIOD_PAYMENT"        : "Select a payment period",
+    "PROFIT_CENTER"         : "Select a Profit Center",
+    "DEB_CRED"              : "Select a debtor or creditor"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -663,6 +664,7 @@
     "NR"                  : "Nr",
     "BASIC_SALARY"        : "Basic salary",
     "GRADE"               : "Grade",
+    "FUNCTION"            : "Function",
     "STAFF_COST"          : "Is Staff Cost",
     "IS_PERCENT"          : "Is Percent",
     "OFFDAYS"             : "Offdays",
@@ -1525,23 +1527,27 @@
     "SUBMIT_EDIT"     : "Submit Details",
     "CREDITOR_REFERENCE" : "BHIMA Creditor ID",
     "SERVICE"            : "Service",
+    "FIRST_NAME"         : "First Name",
     "LAST_NAME"          : "Last Name",
     "POST_NAME"          : "Post Name",
+    "NAME"               : "Name",
     "CODE"               : "Code/Matricule",
     "SEX"                : "Sex",
     "NB_SPOUSE"          : "Nb Spouse(s)",
     "NB_CHILDREN"        : "Nb Children",
     "GRADE"              : "Grade",
+    "FUNCTION"           : "Function",
     "DATE_EMBAUCHE"      : "Starting Date",
     "ASSIGNMENT"         : "Assignment",
     "DAILY_SALARY"       : "Daily Salary",
     "BANK"               : "Bank",
     "BANK_ACCOUNT"       : "Bank Account",
     "PHONE"              : "Phone",
-    "EMAIL"               : "Mail",
+    "EMAIL"              : "Mail",
     "ADDRESS"            : "Address",
     "LOCATION"           : "Location",
-    "EDIT_SUCCES"      : "Update successfully"
+    "EDIT_SUCCESS"       : "Update successfully",
+    "REGISTER_SUCCESS"   : "Register successfully"
   },
 
   "SERVICE" : {
