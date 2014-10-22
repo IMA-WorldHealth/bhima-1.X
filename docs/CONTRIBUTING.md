@@ -1,0 +1,4 @@
+Bhima Contributing Guide
+=======================
+
+TODO
