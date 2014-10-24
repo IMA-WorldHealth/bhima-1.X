@@ -104,16 +104,16 @@ angular.module('bhima.controllers')
     function edit() {
       var data = {
         id                : $scope.choosen.id,
-        name              : $scope.choosen.name,
+        name              : $scope.choosen.service,
         cost_center_id    : $scope.choosen.cost_center_id,
         profit_center_id  : $scope.choosen.profit_center_id
       };
 
       if(isValid(data.cost_center_id, data.profit_center_id)){
         connect.basicPost('service', [connect.clean(data)], ['id'])
-        .then(function () { 
+        .then(function () {
           $scope.choosen.cost_center = $scope.choosen.cost_center_id ? getCostcenterText($scope.choosen.cost_center_id) : $scope.choosen.cost_center;
-          $scope.choosen.profit_center = $scope.choosen.profit_center_id ? getProfitCenterText($scope.choosen.profit_center_id) : $scope.choosen.profit_center;       
+          $scope.choosen.profit_center = $scope.choosen.profit_center_id ? getProfitCenterText($scope.choosen.profit_center_id) : $scope.choosen.profit_center;
           $scope.model.services.put(connect.clean($scope.choosen));
           $scope.action = '';
           $scope.choosen = {}; // reset
