@@ -429,13 +429,13 @@ angular.module('bhima.controllers')
         manager.session.userId = res.id;
         newRecords.forEach(function (rec) { rec.user_id = res.id; });
         editedRecords.forEach(function (rec) { rec.user_id = res.id; });
-        return newRecords.length ? connect.basicPut('posting_journal', newRecords) : $q.when(1);
+        return newRecords.length ? connect.post('posting_journal', newRecords) : $q.when(1);
       })
       .then(function () {
-        return editedRecords.length ? editedRecords.map(function (record) { return connect.basicPost('posting_journal', [record], ['uuid']); }) : $q.when(1);
+        return editedRecords.length ? editedRecords.map(function (record) { return connect.put('posting_journal', [record], ['uuid']); }) : $q.when(1);
       })
       .then(function () {
-        return removedRecords.length ? connect.basicDelete('posting_journal', removedRecords, 'uuid') : $q.when(1);
+        return removedRecords.length ? connect.delete('posting_journal', 'uuid', removedRecords) : $q.when(1);
       })
       .then(function () {
         return writeJournalLog(manager.session);
@@ -462,7 +462,7 @@ angular.module('bhima.controllers')
         user_id        : session.userId
       };
 
-      return connect.basicPut('journal_log', [packagedLog]);
+      return connect.post('journal_log', [packagedLog]);
     }
 
     function normalizeDate (date) {
