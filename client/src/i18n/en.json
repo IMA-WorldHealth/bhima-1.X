@@ -1398,7 +1398,7 @@
     "GENERATE"        : "to generate an invoice.",
     "RECEIPT"         : "Receipt",
     "POSTING"         : "Posting Journal",
-    "CREDIT_NOTE"     : "Credit Note",
+    "CREDIT_NOTE"     : "Cancel sale",
     "POST"            : "Post to Journal",
     "ALL_PROJECTS"    : "All Projects",
     "TOTAL_OF"        : "Total of",
