@@ -275,7 +275,6 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     })
     .then(function (trans_id) {
 
-      console.log('this is pur trans_id :::', trans_id);
       // we can begin copying data from SALE -> JOURNAL
 
       // First, copy the data from sale into the journal.
