@@ -20,7 +20,7 @@ angular.module('bhima.controllers')
     var sortColumn;
 
     var journalError =  liberror.namespace('JOURNAL');
-    
+
     $scope.editing = false;
 
     function isNull (t) { return t === null; }
@@ -125,8 +125,8 @@ angular.module('bhima.controllers')
         'deb_cred_uuid' : DebCredEditor,
         'deb_cred_type' : DebCredTypeEditor,
         'inv_po_id'     : InvoiceEditor,
-        'cc'            : CostCenterEditor,
-        'pc'            : ProfitCenterEditor
+        'cc_id'         : CostCenterEditor,
+        'pc_id'         : ProfitCenterEditor
       };
 
       columns.forEach(function (column) {
@@ -269,7 +269,7 @@ angular.module('bhima.controllers')
       journalError.throw(desc);
     }
 
-    function packager (record) {
+    function packager(record) {
       var data = {}, cpProperties, prop;
       cpProperties = [
         'uuid', 'project_id', 'trans_id', 'trans_date', 'period_id', 'description', 'account_id',
@@ -285,13 +285,28 @@ angular.module('bhima.controllers')
         }
       }
 
+      // FIXME : This will no longer work if we have non-unique account
+      // numbers.
       if (record.account_number) { data.account_id = $scope.account.get(record.account_number).id; }
+
+      // Transfer values from cc over to posting journal cc_id and pc_id fields
+      // This is because we are doing a join, similar to the account_number field
+      // above.
+      // We check for NaNs because we don't have unique identifers like the account number
+      // for an account.
+      if (record.cc && !Number.isNaN(Number(record.cc))) { data.cc_id = record.cc; }
+      if (record.pc && !Number.isNaN(Number(record.pc))) { data.pc_id = record.pc; }
+
+      // FIXME : Hack to get deletion to work with parser.js
+      // This is probably pretty damn insecure
+      if (record.cc === 'null') { data.cc_id = null; }
+      if (record.pc === 'null') { data.pc_id = null; }
+
       // FIXME : Review this decision
       data.project_id = $scope.project.id;
       data.origin_id = 4;
 
       return data;
-
     }
 
     function validDate (item) {
@@ -492,7 +507,6 @@ angular.module('bhima.controllers')
       var defaultValue;
 
       this.init = function () {
-        console.log('trans_date', args.item.trans_date);
         defaultValue = args.item.trans_date.split('T')[0]; // If the date encodes timezone info, strip it.
         this.$input = $('<input class="editor-text" type="date">');
         this.$input.appendTo(args.container);
@@ -501,7 +515,6 @@ angular.module('bhima.controllers')
 
       this.applyValue = function (item, state) {
         var dateInfo = getDateInfo(state);
-        console.log(state);
         item.fiscal_year_id = dateInfo.fiscal_year_id;
         item.period_id = dateInfo.period_id;
         item[args.column.field] = state;
@@ -666,7 +679,7 @@ angular.module('bhima.controllers')
 
       this.loadValue = function () { this.$input.val(defaultValue); };
 
-      this.applyValue = function (item,state) {
+      this.applyValue = function (item, state) {
         if (state === 'cancel') { return; }
         item[args.column.field] = state === 'clear' ? '' : state;
       };
@@ -701,7 +714,7 @@ angular.module('bhima.controllers')
 
       this.applyValue = function (item, state) {
         if (state === 'cancel') { return; }
-        item[args.column.field] = state === 'clear' ? 'null' : state;
+        item[args.column.field] = (state === 'clear') ? 'null' : state;
       };
 
       this.init();
@@ -735,7 +748,7 @@ angular.module('bhima.controllers')
 
       this.applyValue = function (item, state) {
         if (state === 'cancel') { return; }
-        item[args.column.field] = state === 'clear' ? 'null' : state;
+        item[args.column.field] = (state === 'clear') ? 'null' : state;
       };
 
       this.init();
