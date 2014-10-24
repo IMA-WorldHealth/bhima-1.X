@@ -2,6 +2,7 @@
   "Header" : {
     "overview" : "Overview",
     "accounts" : "Accounts",
+    "principal" : "Principal Cash",
     "experimental" : "Experimental Reports"
   },
   "Overview" : {

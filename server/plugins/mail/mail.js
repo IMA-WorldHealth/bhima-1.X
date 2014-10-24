@@ -30,7 +30,8 @@ var include = [
   paxFinanceOverview,
   accounts,
   // fiche,
-  subsidyIMA
+  subsidyIMA,
+  categoryPrincipal
 ];
 
 parseParams()
@@ -42,6 +43,8 @@ parseParams()
 function parseParams() {
   service = process.argv[2] || service;
   language = process.argv[3] || language;
+
+  console.log('got here');
   return q.resolve();
 }
 
@@ -71,20 +74,27 @@ function buildQuery()  {
 }
 
 function settup () {
-  
+ 
+  console.log('got here settup');
   // Initialise modules
+  try { 
   data.process(reportQuery)
   .then(template.load(language))
   .then(configureReport)
   .then(collateReports)
   .catch(handleError);
+  } catch (e) { 
+    console.log('i/o error', e);
+  }
 }
 
 function configureReport () { 
   
+  console.log('configure report');
   // Configuration, currently only header
   var header = enterprise + " | " + timestamp;
   
+  console.log('configureReport', header);
   template.writeHeader(header, reportReference);
   return q.resolve();  
 }
@@ -106,9 +116,12 @@ function collateReports() {
   var path = 'out/'.concat(file, '.html');
 
   try {
+    console.log('started trying  to execute commands');
     include.forEach(function (templateMethod) {
       sessionTemplate.push(templateMethod());
     });
+
+    console.log('executed every command');
   }catch(e) {
     console.log(e);
   }
@@ -270,6 +283,12 @@ function accounts() {
   return template.fetch('header').replace(/{{HEADER_TEXT}}/g, template.reports("Header", "accounts"));
 }
 
+function categoryPrincipal() { 
+  // FIXME Temporary
+  return template.fetch('header').replace(/{{HEADER_TEXT}}/g, template.reports("Header", "principal"));
+
+}
+
 function subsidyIMA() { 
   var totalCost = data.lookup('IMA_Total')[0].total || 0;
   var totalPatients = data.lookup('IMA_Patients')[0].total;
@@ -340,7 +359,9 @@ function filterCurrency (value) {
 }
 
 function handleError(error) {
-  throw error;
+  console.log('handleError', error);
+  
+  // Stop termination
 }
 
 // Temporary - ensure out exists

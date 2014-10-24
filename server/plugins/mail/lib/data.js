@@ -1,18 +1,25 @@
 var mysql = require('mysql');
+var path = require('path');
 var q = require('q');
 
 var data = exports;
 
+// TODO Set up absalute path to top of server structure
+var cfg = require(path.join(__dirname, '../../../config/server.json'));
+
 // TODO extract to config file ignored by git
 var session = mysql.createConnection({
-  host : 'localhost',
-  user : 'kpk',
-  password : 'HISCongo2013',
-  database : 'kpk'
+  host : cfg.db.host,
+  user : cfg.db.user,
+  password : cfg.db.password,
+  database : cfg.db.database
 });
+
 var results = {};
 
 data.process = function (query) { 
+
+  console.log('data.process');
   var deferred = q.defer();
   var requests = [], keys = Object.keys(query);
   
@@ -48,7 +55,7 @@ function dbQuery(request) {
   var deferred = q.defer();
   
   session.query(request, function (error, result) { 
-    if(error) return q.reject(error);
+    if(error) return deferred.reject(error);
     
     deferred.resolve(result);
   });
