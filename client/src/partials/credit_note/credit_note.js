@@ -9,7 +9,8 @@ angular.module('bhima.controllers')
   'connect',
   'messenger',
   'uuid',
-  function ($scope, $routeParams, $filter, $location,  validate, connect, messenger, uuid) {
+  'appstate',
+  function ($scope, $routeParams, $filter, $location,  validate, connect, messenger, uuid, appstate) {
     var invoiceId = $routeParams.invoiceId, dependencies = {};
 
     dependencies.sale = {
@@ -50,7 +51,10 @@ angular.module('bhima.controllers')
       }
     };
 
-    if (invoiceId) { buildSaleQuery(); }
+    appstate.register('project', function (project) {
+      $scope.project = project;
+      if (invoiceId) { buildSaleQuery(); }
+    });
 
     function buildSaleQuery() {
       dependencies.sale.query.where = ['sale.uuid=' + invoiceId];
@@ -66,7 +70,7 @@ angular.module('bhima.controllers')
     }
 
     function packageCreditNote() {
-      var defaultDescription = 'Credit matching transaction #' + $scope.sale.uuid + ' from ' + $filter('date')($scope.sale.invoice_date);
+      var defaultDescription = $scope.project.abbr + '_VENTE_ANNULATION_VENTE' + $scope.sale.uuid + ' from ' + $filter('date')($scope.sale.invoice_date);
       var noteObject = {
         uuid : uuid(),
         project_id: $scope.sale.project_id,

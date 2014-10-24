@@ -784,7 +784,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       references.forEach(function (row) {
         get.transactionId(cfg.project_id)
           .then(function  (trans_id) {
-            cfg.descript = trans_id.substring(0,4) + '_CHARITE/' + new Date().toISOString().slice(0, 10).toString();
+            cfg.descript = trans_id.substring(0,4) + '_VENTE_CHARITE/' + new Date().toISOString().slice(0, 10).toString();
             var debit_sql=
               'INSERT INTO `posting_journal` ' +
               '  (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
@@ -1100,7 +1100,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       return get.transactionId(reference.project_id);
     })
     .then(function (transId) {
-      var descrip =  'PCT/'+new Date().toISOString().slice(0, 10).toString();
+      var descrip =  trans_id.substring(0,4) + '_CAISSEPRINCIPALE_TRANSFERT' + new Date().toISOString().slice(0, 10).toString();
       queries.credit =
         'INSERT INTO posting_journal (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
           '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
@@ -1171,7 +1171,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
 
     function getTransId (trans_id) {
       cfg.trans_id = trans_id;
-      cfg.descrip =  'COVP/'+new Date().toISOString().slice(0, 10).toString();
+      cfg.descrip =  trans_id.substring(0,4) + '_CAISSEPRINCIPALE_CONVENTION' + new Date().toISOString().slice(0, 10).toString();
       return q.when();
     }
 
