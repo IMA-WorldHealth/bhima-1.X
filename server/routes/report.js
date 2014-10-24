@@ -111,9 +111,9 @@ module.exports = function (db, sanitize, util) {
       query :
         'SELECT COUNT(uuid) as `count`, SUM(debit_equiv) as `debit`, SUM(credit_equiv) as `credit`, SUM(debit_equiv - credit_equiv) as `balance` ' +
         'FROM ( ' +
-        'SELECT `posting_journal`.`uuid`, `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`trans_date` FROM `posting_journal` WHERE' + 
-        ' `posting_journal`.`account_id`=' + params.accountId + ' UNION SELECT `general_ledger`.`uuid`, `general_ledger`.`debit_equiv`, ' + 
-        '`general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`trans_date` FROM `general_ledger` WHERE `general_ledger`.`account_id` =' + params.accountId + ')' + 
+        'SELECT `posting_journal`.`uuid`, `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`trans_date` FROM `posting_journal` WHERE' +
+        ' `posting_journal`.`account_id`=' + params.accountId + ' UNION SELECT `general_ledger`.`uuid`, `general_ledger`.`debit_equiv`, ' +
+        '`general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`trans_date` FROM `general_ledger` WHERE `general_ledger`.`account_id` =' + params.accountId + ')' +
         'as `pg`, account as `a` WHERE `a`.`id` = `pg`.`account_id` AND `pg`.`account_id` = ' + params.accountId + ' AND trans_date >= ' + params.dateFrom + ' AND trans_date <= ' + params.dateTo + ';',
       singleResult : true
     };
@@ -137,9 +137,9 @@ module.exports = function (db, sanitize, util) {
       query :
         'SELECT debit_equiv, credit_equiv, trans_date, description, inv_po_id ' +
         'FROM ( ' +
-        'SELECT `posting_journal`.`uuid`, `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`trans_date`, `posting_journal`.`description`, `posting_journal`.`inv_po_id` FROM `posting_journal` WHERE' + 
-        ' `posting_journal`.`account_id`=' + params.accountId + ' UNION SELECT `general_ledger`.`uuid`, `general_ledger`.`debit_equiv`, ' + 
-        '`general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`trans_date`, `general_ledger`.`description`, `general_ledger`.`inv_po_id` FROM `general_ledger` WHERE `general_ledger`.`account_id` =' + params.accountId + ')' + 
+        'SELECT `posting_journal`.`uuid`, `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`trans_date`, `posting_journal`.`description`, `posting_journal`.`inv_po_id` FROM `posting_journal` WHERE' +
+        ' `posting_journal`.`account_id`=' + params.accountId + ' UNION SELECT `general_ledger`.`uuid`, `general_ledger`.`debit_equiv`, ' +
+        '`general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`trans_date`, `general_ledger`.`description`, `general_ledger`.`inv_po_id` FROM `general_ledger` WHERE `general_ledger`.`account_id` =' + params.accountId + ')' +
         'as `pg`, account as `a` WHERE `a`.`id` = `pg`.`account_id` AND `pg`.`account_id` = ' + params.accountId + ' AND trans_date >= ' + params.dateFrom + ' AND trans_date <= ' + params.dateTo + ' ORDER BY trans_date DESC LIMIT ' + params.limit + ';',
       singleResult : false
     };
@@ -288,26 +288,25 @@ module.exports = function (db, sanitize, util) {
       // last payment date
       sql =
         'SELECT trans_date FROM (' +
-        ' SELECT trans_date FROM `posting_journal` WHERE `posting_journal`.`deb_cred_uuid`=' + id + ' AND `posting_journal`.`deb_cred_type`=\'D\' ' + 
-        'AND `posting_journal`.`origin_id`=(SELECT `transaction_type`.`id` FROM `transaction_type` WHERE `transaction_type`.`service_txt`=\'cash\' OR `transaction_type`.`service_txt`=\'caution\' LIMIT 1)' + 
-        ' UNION ' + 
-        'SELECT trans_date FROM `general_ledger` WHERE `general_ledger`.`deb_cred_uuid`=' + id + ' AND `general_ledger`.`deb_cred_type`=\'D\' ' + 
-        'AND `general_ledger`.`origin_id`=(SELECT `transaction_type`.`id` FROM `transaction_type` WHERE `transaction_type`.`service_txt`=\'cash\' OR `transaction_type`.`service_txt`=\'caution\' LIMIT 1)' + 
+        ' SELECT trans_date FROM `posting_journal` WHERE `posting_journal`.`deb_cred_uuid`=' + id + ' AND `posting_journal`.`deb_cred_type`=\'D\' ' +
+        'AND `posting_journal`.`origin_id`=(SELECT `transaction_type`.`id` FROM `transaction_type` WHERE `transaction_type`.`service_txt`=\'cash\' OR `transaction_type`.`service_txt`=\'caution\' LIMIT 1)' +
+        ' UNION ' +
+        'SELECT trans_date FROM `general_ledger` WHERE `general_ledger`.`deb_cred_uuid`=' + id + ' AND `general_ledger`.`deb_cred_type`=\'D\' ' +
+        'AND `general_ledger`.`origin_id`=(SELECT `transaction_type`.`id` FROM `transaction_type` WHERE `transaction_type`.`service_txt`=\'cash\' OR `transaction_type`.`service_txt`=\'caution\' LIMIT 1)' +
         ') as aggregate ORDER BY trans_date DESC LIMIT 1;';
 
       return db.exec(sql);
     })
     .then(function (rows) {
-      var row = rows.pop();
-      patient.last_payment_date = row.trans_date;
+      if (!rows.length) { patient.last_payment_date = undefined } else {var row = rows.pop(); patient.last_payment_date = row.trans_date;}
 
       sql =
         'SELECT trans_date FROM (' +
-        ' SELECT trans_date FROM `posting_journal` WHERE `posting_journal`.`deb_cred_uuid`=' + id + ' AND `posting_journal`.`deb_cred_type`=\'D\' ' + 
-        'AND `posting_journal`.`origin_id`=(SELECT `transaction_type`.`id` FROM `transaction_type` WHERE `transaction_type`.`service_txt`=\'sale\' OR `transaction_type`.`service_txt`=\'group_invoice\' LIMIT 1)' + 
-        ' UNION ' + 
-        'SELECT trans_date FROM `general_ledger` WHERE `general_ledger`.`deb_cred_uuid`=' + id + ' AND `general_ledger`.`deb_cred_type`=\'D\' ' + 
-        'AND `general_ledger`.`origin_id`=(SELECT `transaction_type`.`id` FROM `transaction_type` WHERE `transaction_type`.`service_txt`=\'sale\' OR `transaction_type`.`service_txt`=\'group_invoice\' LIMIT 1)' + 
+        ' SELECT trans_date FROM `posting_journal` WHERE `posting_journal`.`deb_cred_uuid`=' + id + ' AND `posting_journal`.`deb_cred_type`=\'D\' ' +
+        'AND `posting_journal`.`origin_id`=(SELECT `transaction_type`.`id` FROM `transaction_type` WHERE `transaction_type`.`service_txt`=\'sale\' OR `transaction_type`.`service_txt`=\'group_invoice\' LIMIT 1)' +
+        ' UNION ' +
+        'SELECT trans_date FROM `general_ledger` WHERE `general_ledger`.`deb_cred_uuid`=' + id + ' AND `general_ledger`.`deb_cred_type`=\'D\' ' +
+        'AND `general_ledger`.`origin_id`=(SELECT `transaction_type`.`id` FROM `transaction_type` WHERE `transaction_type`.`service_txt`=\'sale\' OR `transaction_type`.`service_txt`=\'group_invoice\' LIMIT 1)' +
         ') as aggregate ORDER BY trans_date DESC LIMIT 1;';
 
       return db.exec(sql);
@@ -423,7 +422,7 @@ module.exports = function (db, sanitize, util) {
             '`general_ledger`.`doc_num`, general_ledger.trans_id, `general_ledger`.`description`, `general_ledger`.`comment`, `general_ledger`.`origin_id`, `general_ledger`.`user_id` ' +
           'FROM `general_ledger` ' +
         ')' +
-      ') AS `t`, account AS a, transaction_type as o, user as u WHERE `t`.`account_id` = `a`.`id` AND `t`.`origin_id` = `o`.`id` AND `t`.`user_id` = `u`.`id` AND `t`.`account_id`=' + sanitize.escape(params.account_id) + 
+      ') AS `t`, account AS a, transaction_type as o, user as u WHERE `t`.`account_id` = `a`.`id` AND `t`.`origin_id` = `o`.`id` AND `t`.`user_id` = `u`.`id` AND `t`.`account_id`=' + sanitize.escape(params.account_id) +
       ' AND `t`.`trans_date` >=' + sanitize.escape(params.dateFrom) + ' AND `t`.`trans_date` <= ' + sanitize.escape(params.dateTo) + ';';
 
     db.exec(requette)
@@ -457,7 +456,7 @@ module.exports = function (db, sanitize, util) {
             '`general_ledger`.`doc_num`, general_ledger.trans_id, `general_ledger`.`description`, `general_ledger`.`comment`, `general_ledger`.`origin_id`, `general_ledger`.`user_id` ' +
           'FROM `general_ledger` ' +
         ')' +
-      ') AS `t`, account AS a, transaction_type as o, user as u WHERE `t`.`account_id` = `a`.`id` AND `t`.`origin_id` = `o`.`id` AND `t`.`user_id` = `u`.`id` AND `t`.`account_id`=' + sanitize.escape(params.account_id) + 
+      ') AS `t`, account AS a, transaction_type as o, user as u WHERE `t`.`account_id` = `a`.`id` AND `t`.`origin_id` = `o`.`id` AND `t`.`user_id` = `u`.`id` AND `t`.`account_id`=' + sanitize.escape(params.account_id) +
       ' AND `t`.`trans_date` >=' + sanitize.escape(params.dateFrom) + ' AND `t`.`trans_date` <= ' + sanitize.escape(params.dateTo) + ';';
 
     db.exec(requette)

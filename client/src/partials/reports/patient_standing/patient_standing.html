@@ -88,7 +88,9 @@
                   {{ "PATIENT_STANDING.LAST_PAYMENT_DATE" | translate }}
                 </label>
                 <div class="col-xs-4">
-                  <p class="form-control-static">{{ session.patient.last_payment_date | date }}</p>
+                  <p class="form-control-static" ng-if="session.patient.last_payment_date">{{ session.patient.last_payment_date | date}}</p>
+                  <p class="form-control-static" ng-if="!session.patient.last_payment_date">None</p>
+
                 </div>
               </div>
 
