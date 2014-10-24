@@ -754,7 +754,6 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       cfg.enterprise_id = results[0].enterprise_id;
       cfg.project_id = results[0].project_id;
       cfg.date = results[0].date;
-      cfg.descript = 'Paiement charite/'+new Date().toISOString().slice(0, 10).toString();
       return check.validPeriod(cfg.enterprise_id, cfg.date);
     }
 
@@ -785,6 +784,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       references.forEach(function (row) {
         get.transactionId(cfg.project_id)
           .then(function  (trans_id) {
+            cfg.descript = trans_id.substring(0,4) + '_CHARITE/' + new Date().toISOString().slice(0, 10).toString();
             var debit_sql=
               'INSERT INTO `posting_journal` ' +
               '  (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
