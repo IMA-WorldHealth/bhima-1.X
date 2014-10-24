@@ -142,6 +142,7 @@ angular.module('bhima.controllers')
     appstate.register('project', function (project) {
       $scope.project = project;
       dependencies.accounts.query.where = ['account.enterprise_id='+project.enterprise_id];
+      dependencies.cashboxes.query.where = ['cash_box.is_auxillary=1', 'AND', 'cash_box.project_id='+project.id];
       validate.process(dependencies)
       .then(startup);
     });
@@ -166,7 +167,6 @@ angular.module('bhima.controllers')
     };
 
     function loadDefaultCurrency(currency) {
-      console.log('[Loading Default]', currency);
       if (!currency) { return; }
       defaultCurrency = currency;
 
@@ -175,7 +175,6 @@ angular.module('bhima.controllers')
     }
 
     function loadDefaultCashBox(cashBox) {
-      console.log('[Loading Default]', cashBox);
       if (!cashBox) { return; }
       defaultCashBox = cashBox;
 
