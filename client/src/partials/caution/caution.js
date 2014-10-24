@@ -111,7 +111,7 @@ angular.module('bhima.controllers')
         debitor_uuid : $scope.debtor.debitor_uuid,
         currency_id  : $scope.currency.currency_id,
         cash_box_id  : $scope.cashbox.id,
-        description  : ['CAP', $scope.debtor.debitor_uuid, $scope.debtor.first_name, util.sqlDate(new Date())].join('/')
+        description  : [$scope.project.abbr + '_CAUTION', $scope.debtor.debitor_uuid, $scope.debtor.first_name, util.sqlDate(new Date())].join('/')
       };
 
       connect.fetch('/user_session')
