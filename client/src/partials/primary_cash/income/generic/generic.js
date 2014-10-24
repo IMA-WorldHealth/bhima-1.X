@@ -55,7 +55,7 @@ angular.module('bhima.controllers')
         }
       }
     };
- 
+
     dependencies.projects = {
       query : {
         tables : {
@@ -161,7 +161,7 @@ angular.module('bhima.controllers')
           currency_id   : session.currency.id,
           cost          : receipt.cost,
           user_id       : user.id,
-          description   : receipt.description,
+          description   : 'HBB' + '_CAISSEPRINCIPALE_RECETTEGENEREIQUE/' + receipt.description,
           cash_box_id   : receipt.cash_box_id,
           origin_id     : 5,
         };
@@ -198,13 +198,13 @@ angular.module('bhima.controllers')
     function setCurrency (obj) {
       $scope.session.currency=obj;
       cache.put('currency', obj);
-    }  
+    }
 
     $scope.formatAccount = function (ac) {
       return ac.account_number + ' - ' + ac.account_txt;
     };
 
-    $scope.reconfigure = function () {      
+    $scope.reconfigure = function () {
       session.ac = null;
       session.configured = false;
       session.complete = false;
@@ -216,7 +216,7 @@ angular.module('bhima.controllers')
         session.configured = true;
         session.ac = ac;
         session.complete = true;
-      } 
+      }
     };
 
     $scope.update = update;
