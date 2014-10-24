@@ -1190,7 +1190,7 @@
     "GENERATE"     : "Pour créer une facture.",
     "RECEIPT"      : "Facture",
     "POSTING"      : "Postage au Journal",
-    "CREDIT_NOTE"  : "Note de Crédit",
+    "CREDIT_NOTE"  : "Annuler vente",
     "POST"         : "Poster au Journal",
     "ALL_PROJECTS" : "Tous les Projets",
     "TOTAL_OF" : "Total de",
