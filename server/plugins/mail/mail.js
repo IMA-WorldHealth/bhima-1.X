@@ -21,17 +21,16 @@ var reportReference = util.generateUuid();
 var reportQuery = {};
 
 var include = [
-  linkDown,
+  updateProgress,
   overview,
   breakdown,
-  // patientTotalReport,
-  // sale,
   hbbFinanceOverview,
   paxFinanceOverview,
   accounts,
-  // fiche,
   subsidyIMA,
-  categoryPrincipal
+  categoryPrincipal,
+  principalIncomeExpense,
+  principalBalance,
 ];
 
 parseParams()
@@ -67,7 +66,13 @@ function buildQuery()  {
     "HBB_Basic_Sale" : "SELECT COUNT(uuid) as 'total' FROM sale WHERE invoice_date = " + util.date.from + " AND sale.project_id = 1;",
     "PAX_Basic_Sale" : "SELECT COUNT(uuid) as 'total' FROM sale WHERE invoice_date = " + util.date.from + " AND sale.project_id = 2;",
     "HBB_Sale_Items" : "SELECT COUNT(sale_item.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid and invoice_date = " + util.date.from + " AND project_id = 1;",
-    "PAX_Sale_Items" : "SELECT COUNT(sale_item.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid and invoice_date = " + util.date.from + " AND project_id = 2;"
+    "PAX_Sale_Items" : "SELECT COUNT(sale_item.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid and invoice_date = " + util.date.from + " AND project_id = 2;",
+   
+    // Command was rushed TODO Union to remove duplication of conditional
+    // Account ID is currently set to 487 (principal dollar account) and 486 (principal franc account), debit and creit equivalent is used so the value returned is always dollars
+    "HBB_Principal_Cash_Income_Expense" : "SELECT SUM(debit_equiv) as debit, SUM(credit_equiv) as credit FROM posting_journal WHERE account_id IN (486, 487) AND trans_date = " + util.date.from + " " +  
+                                  "UNION ALL " + 
+                                  "SELECT SUM(debit_equiv), SUM(credit_equiv) FROM general_ledger WHERE account_id IN (486, 487) AND trans_date = " + util.date.from + ";",
   };
 
   return q.resolve();
@@ -134,17 +139,13 @@ function collateReports() {
   data.end();
 }
 
-// Temporary methods for initial email
-// function messageInfo() {
-//   return template.fetch('message').replace(/{{ALERT_MESSAGE}}/g, template.reports("Section", "alert_one").content);
-// }
-//
-// function messagePax() {
-//   return template.fetch('message').replace(/{{ALERT_MESSAGE}}/g, template.reports("Section", "alert_two").content);
-// }
-
 function linkDown() { 
   var message = template.reports("Section", "network_warning");
+  return template.fetch('message').replace(/{{ALERT_MESSAGE}}/g, message.heading + " " + message.content);
+}
+
+function updateProgress() { 
+  var message = template.reports("Section", "system_update");
   return template.fetch('message').replace(/{{ALERT_MESSAGE}}/g, message.heading + " " + message.content);
 }
 
@@ -286,7 +287,25 @@ function accounts() {
 function categoryPrincipal() { 
   // FIXME Temporary
   return template.fetch('header').replace(/{{HEADER_TEXT}}/g, template.reports("Header", "principal"));
+}
 
+function principalIncomeExpense() { 
+  var result = data.lookup('HBB_Principal_Cash_Income_Expense');
+
+  var journal_debit = result[0].debit;
+  var journal_credit = result[0].credit;
+  
+  var ledger_debit = result[1].debit;
+  var ledger_credit = result[1].credit;
+
+  console.log('pc got', journal_debit, journal_credit, 'ledger', ledger_debit, ledger_credit);
+
+  return "not implemented";
+}
+
+function principalBalance() { 
+
+  return "not implemneted";
 }
 
 function subsidyIMA() { 

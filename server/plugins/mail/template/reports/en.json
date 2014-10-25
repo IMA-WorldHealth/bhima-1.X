@@ -32,6 +32,9 @@
       "heading" : "IMA Subsidy",
       "content" : "The IMA subsidy was charged a total of %s enabling %s patients to receive health care."
     },
+    "principal_income_expense" : { 
+      
+    },
     "sale" : {
       "heading" : "Invoice",
       "content" : "%s invoice transactions were submitted consisting of %s line items, this includes both hospitalised and outpatient invoices."
@@ -51,6 +54,10 @@
     "network_warning" : {
       "heading" : "[Network Manager]",
       "content" : "The radio connection between HBB and PAX could not be established today."
+    },
+    "system_update" : { 
+      "heading" : "[ADMIN]",
+      "content" : "The system is currently being upgraded."
     }
   }
 }
