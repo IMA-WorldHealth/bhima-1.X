@@ -114,7 +114,9 @@
       "/payTax/",
       "/getDistinctInventories/",
       "/partials/",
-      "/getEnterprisePayment/"
+      "/getEnterprisePayment/",
+      "/getPeriodeFiscalYear/",
+      "/getExploitationAccount/"
     ]
   }
 }

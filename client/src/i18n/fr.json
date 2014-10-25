@@ -434,7 +434,8 @@
     "CONFIG_ACCOUNTING"         : "Configuration des comptes",
     "PAYROLL_REPORT"            : "Rapports du Payroll",
     "STOCK_STATUS"              : "Situation du stock",
-    "FONCTION"                  : "Gestion des fonctions"
+    "FONCTION"                  : "Gestion des fonctions",
+    "OPERATING_ACCOUNT"         : "Compte d'exploitation"
 },
 
 
@@ -2210,5 +2211,16 @@
     "DELETE_SUCCESS"   : "Suppression avec succès",
     "NO_FONCTION"      : "Aucune fonction n'est enregistrée",
     "ABBR"             : "Abr."
-  } 
+  },
+
+  "OPERATING_ACCOUNT" : {
+    "TITLE"         : "Compte d'exploitation",
+    "ALL"           : "Toute l'annee fiscale",
+    "PAYSLIP"       : "Feuille de paie",
+    "VIEW"          : "Vue",
+    "SELECT_PERIOD" : "Sélectionner une année fiscale",
+    "SELECT_OPTION" : "Sélectionner une option",
+    "TOTAL_CHARGE"  : "Total Charge",
+    "TOTAL_PROFIT"  : "Totall profit"
+  }   
 }
