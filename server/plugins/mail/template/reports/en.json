@@ -33,7 +33,12 @@
       "content" : "The IMA subsidy was charged a total of %s enabling %s patients to receive health care."
     },
     "principal_income_expense" : { 
-      
+      "heading" : "Income/ Expenditure",
+      "content" : "Today, a value of %s was recorded as entering the principal cash box; a value of %s was recorded as expense."
+    },
+    "principal_balance" : { 
+      "heading" : "Balance", 
+      "content" : "The balance reported by the principal cash box has a value of %s."
     },
     "sale" : {
       "heading" : "Invoice",
