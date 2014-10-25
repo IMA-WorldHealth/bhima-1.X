@@ -83,7 +83,10 @@
     "AGGREGATES"        : "Agregats",
     "SIGNATURES"        : "Signature",
     "CURRENCY"          : "Monnaie",
-    "SEARCH"            : "Chercher"
+    "SEARCH"            : "Chercher",
+    "IMCK"              : "IMCK",
+    "IMCK_LONG"         : "Institut Médical Chrétien du Kasaï",
+    "TSHIKAJI"          : "TSHIKAJI"
   },
 
   "ENTERPRISE"                 : {
