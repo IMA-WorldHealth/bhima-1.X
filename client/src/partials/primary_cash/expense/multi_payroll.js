@@ -219,6 +219,10 @@ angular.module('bhima.controllers')
           self.hollyday = hl; 
         }*/
         self.working_day = session.data.max_day - (hl + session.data.off_day);
+        console.log('Nomb jour Max',session.data.max_day);
+        console.log('Jour ferie',session.data.off_day);
+        console.log('Jour ferie dans l application',hl);
+        console.log('Working Days',self.working_day);
 
         self.hollydays = hl;
         self.offdays = session.data.off_day;
@@ -380,9 +384,11 @@ angular.module('bhima.controllers')
       };     
       validate.process(dependencies, ['offDays'])
       .then(function (model) {
+        console.log('Pas des probleme dans cette base de donnees');
         var offdays = model.offDays.data;
         var pp_confs = model.paiement_period_conf.data;
         var nb_offdays = 0;
+        //console.log('Periode Configurer',pp_confs);
         session.data.max_day = getMaxDays(pp_confs);
         offdays.forEach(function (offDay) {
           for(var i = 0; i < pp_confs.length; i++){
@@ -406,8 +412,14 @@ angular.module('bhima.controllers')
     function getMaxDays (ppcs) {
       var nb = 0;
       ppcs.forEach(function (item) {
-        nb += (new Date(item.weekTo).getDate() - new Date(item.weekFrom).getDate()) + 1;
-      });
+        //console.log(new Date(item.weekTo).getDate(),'et',new Date(item.weekFrom).getDate());
+
+        var t2 = new Date(item.weekTo).getTime();
+        var t1 = new Date(item.weekFrom).getTime();
+
+        nb += (parseInt((t2-t1)/(24*3600*1000))) + 1;
+
+        });
 
       return nb;
     }

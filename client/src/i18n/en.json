@@ -852,7 +852,8 @@
     "CONFIG_ACCOUNTING"         : "Configuration accounting",
     "PAYROLL_REPORT"            : "Payroll Reports",
     "STOCK_STATUS"              : "Stock Status",
-    "FONCTION"                  : "Job titles management"
+    "FONCTION"                  : "Job titles management",
+    "OPERATING_ACCOUNT"         : "Operating Account"
   },
 
   "RUBRIC_PAYROLL"       : {
@@ -2181,6 +2182,17 @@
     "ALERT"         : "Fonction management module is a module that has been designed to allow administration of existing Job titles within the organization, the table is left to record, to update the attributes of a Job title and the deletion.",
     "DELETE_SUCCESS" : "Deleted successfully",
     "NO_FONCTION"    : "No job title saving"
-  }  
+  },
+
+  "OPERATING_ACCOUNT" : {
+    "TITLE"         : "Operating Account",
+    "ALL"           : "All fiscal year",
+    "PAYSLIP"       : "Payslip",
+    "VIEW"          : "View",
+    "SELECT_PERIOD" : "Select a fiscal year",
+    "SELECT_OPTION" : "Select option",
+    "TOTAL_CHARGE"  : "Total Charge",
+    "TOTAL_PROFIT"  : "Totall profit"
+  }    
 
 }

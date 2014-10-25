@@ -1215,7 +1215,10 @@ angular.module('bhima.controllers')
         function getMaxDays (ppcs) {
           var nb = 0;
           ppcs.forEach(function (item) {
-            nb += (new Date(item.weekTo).getDate() - new Date(item.weekFrom).getDate()) + 1;
+            var t2 = new Date(item.weekTo).getTime();
+            var t1 = new Date(item.weekFrom).getTime();
+
+            nb += (parseInt((t2-t1)/(24*3600*1000))) + 1;
           });
           return nb;
         }         

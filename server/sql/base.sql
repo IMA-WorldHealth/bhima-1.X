@@ -118,7 +118,8 @@ INSERT INTO `unit` VALUES
 (68,'Daily consumption', 'TREE.DAILY_CONSUMPTION', '', 10, 0, '/partials/reports/daily_consumption', '/reports/daily_consumption/'),
 (69,'Configuration des comptes','TREE.CONFIG_ACCOUNTING','',1,0,'/partials/config_accounting/','/config_accounting/'),
 (70,'Paycheck', 'TREE.PAYROLL_REPORT', '', 10, 0, '/partials/reports/payroll_report', '/reports/payroll_report/'),
-(71,'Stock Status', 'TREE.STOCK_STATUS', '', 10, 0, '/partials/reports/stock_status', '/reports/stock_status/');
+(71,'Stock Status', 'TREE.STOCK_STATUS', '', 10, 0, '/partials/reports/stock_status', '/reports/stock_status/'),
+(72,'Operating account', 'TREE.OPERATING_ACCOUNT', '', 10, 0, '/partials/reports/operating_account', '/reports/operating_account/');
 -- references language .json files
 INSERT INTO `language` (id, name, `key`) VALUES
   (1, 'Francais', 'fr'),
