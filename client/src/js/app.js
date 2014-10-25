@@ -187,6 +187,10 @@
       controller: 'reportIncomeExpensive',
       templateUrl: 'partials/reports/income_expensive/income_expensive.html'
     })
+    .when('/reports/service_exploitation/', {
+      controller: 'report.service_exploitation',
+      templateUrl: 'partials/reports/service_exploitation/service_exploitation.html'
+    })
     .when('/location', {
       controller : 'location',
       templateUrl: 'partials/location/location.html'
