@@ -19,7 +19,7 @@ var results = {};
 
 data.process = function (query) { 
 
-  console.log('data.process');
+  console.log('Requesting information from database');
   var deferred = q.defer();
   var requests = [], keys = Object.keys(query);
   

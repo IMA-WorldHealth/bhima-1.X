@@ -43,7 +43,6 @@ function parseParams() {
   service = process.argv[2] || service;
   language = process.argv[3] || language;
 
-  console.log('got here');
   return q.resolve();
 }
 
@@ -71,6 +70,7 @@ function buildQuery()  {
     // Command was rushed
     //  - Union to remove duplication of conditional
     //  - Currently split up to allow seperation of posted and pending finances
+    
     // Account ID is currently set to 487 (principal dollar account) and 486 (principal franc account), debit and creit equivalent is used so the value returned is always dollars
     "HBB_Principal_Cash_Income_Expense" : 
                                   "SELECT SUM(debit_equiv) as debit, SUM(credit_equiv) as credit FROM posting_journal WHERE account_id IN (486, 487) AND trans_date = " + util.date.from + " " +  
@@ -87,26 +87,19 @@ function buildQuery()  {
 
 function settup () {
  
-  console.log('got here settup');
   // Initialise modules
-  try { 
   data.process(reportQuery)
   .then(template.load(language))
   .then(configureReport)
   .then(collateReports)
   .catch(handleError);
-  } catch (e) { 
-    console.log('i/o error', e);
-  }
 }
 
 function configureReport () { 
   
-  console.log('configure report');
   // Configuration, currently only header
   var header = enterprise + " | " + timestamp;
   
-  console.log('configureReport', header);
   template.writeHeader(header, reportReference);
   return q.resolve();  
 }
@@ -128,21 +121,17 @@ function collateReports() {
   var path = 'out/'.concat(file, '.html');
 
   try {
-    console.log('started trying  to execute commands');
     include.forEach(function (templateMethod) {
       sessionTemplate.push(templateMethod());
     });
-
-    console.log('executed every command');
   }catch(e) {
     console.log(e);
   }
   
-
   template.produceReport(sessionTemplate.join("\n"), path);
   
   // Write the name of the file written to standard out
-  console.log(path);
+  console.log('Writing', path);
   data.end();
 }
 
