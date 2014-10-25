@@ -434,7 +434,8 @@
     "CONFIG_ACCOUNTING"         : "Configuration des comptes",
     "PAYROLL_REPORT"            : "Rapports du Payroll",
     "STOCK_STATUS"              : "Situation du stock",
-    "FONCTION"                  : "Gestion des fonctions"
+    "FONCTION"                  : "Gestion des fonctions",
+    "SERVICE_EXPLOITATION"      : "Exploitation par Service"
 },
 
 
@@ -2210,5 +2211,9 @@
     "DELETE_SUCCESS"   : "Suppression avec succès",
     "NO_FONCTION"      : "Aucune fonction n'est enregistrée",
     "ABBR"             : "Abr."
-  } 
+  },
+
+  "SERVICE_EXPLOITATION" : {
+    "TITLE"              : "Exploitation par service"
+  }
 }
