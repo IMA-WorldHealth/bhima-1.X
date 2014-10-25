@@ -114,7 +114,9 @@
       "/payTax/",
       "/getDistinctInventories/",
       "/partials/",
-      "/getEnterprisePayment/"
+      "/getEnterprisePayment/",
+      "/cost_periodic/",
+      "/profit_periodic/"
     ]
   }
 }

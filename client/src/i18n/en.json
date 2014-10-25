@@ -283,7 +283,10 @@
     "TOGGLE_AGGREGATES" : "Toggle Aggregates",
     "ON"                : "On",
     "OFF"               : "Off",
-    "AGGREGATES"        : "Aggregates"
+    "AGGREGATES"        : "Aggregates",
+    "IMCK"              : "IMCK",
+    "IMCK_LONG"         : "Christian Medical Institue of Kasai",
+    "TSHIKAJI"          : "TSHIKAJI"
   },
 
   "PATIENT_STANDING"     : {
