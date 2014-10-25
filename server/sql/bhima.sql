@@ -275,6 +275,7 @@ create table `account` (
   `cc_id`               smallint null,
   `pc_id`               smallint null,
   `created`             timestamp null default CURRENT_TIMESTAMP,
+  `classe`              int null,
   primary key (`id`),
   key `account_type_id` (`account_type_id`),
   key `enterprise_id` (`enterprise_id`),
