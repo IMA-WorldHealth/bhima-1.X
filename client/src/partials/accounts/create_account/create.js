@@ -180,13 +180,16 @@ angular.module('bhima.controllers')
       }
 
       //format account
+      var classe = account.number.substr(0,1);
+
       var formatAccount = {
         account_type_id: account.type.id,
         account_number: account.number,
         account_txt: account.title,
         fixed: account.fixed === 'true' ? 1 : 0,
         enterprise_id: appstate.get('enterprise').id,
-        parent: 0 //set default parent (root)
+        parent: 0, //set default parent (root)
+        classe: account.number.substr(0,1)
       };
 
       if (account.parent) {
