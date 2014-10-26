@@ -1398,7 +1398,7 @@
     "GENERATE"        : "to generate an invoice.",
     "RECEIPT"         : "Receipt",
     "POSTING"         : "Posting Journal",
-    "CREDIT_NOTE"     : "Credit Note",
+    "CREDIT_NOTE"     : "Cancel sale",
     "POST"            : "Post to Journal",
     "ALL_PROJECTS"    : "All Projects",
     "TOTAL_OF"        : "Total of",
@@ -2128,7 +2128,9 @@
     "CONFIG"        : "Configuration",
     "RUBRIC"        : "Taxes Payroll",
     "DELETE_SUCCESS" : "Deleted successfully",
-    "NO_CONFIG_TAX" : "No Configuration Accounting"
+    "NO_CONFIG_TAX" : "No Configuration Accounting",
+    "NO_CONFIG_ACCOUNTING" : "No configuration registered"
+
   },
 
   "PAYCHECK" : {
@@ -2181,6 +2183,6 @@
     "ALERT"         : "Fonction management module is a module that has been designed to allow administration of existing Job titles within the organization, the table is left to record, to update the attributes of a Job title and the deletion.",
     "DELETE_SUCCESS" : "Deleted successfully",
     "NO_FONCTION"    : "No job title saving"
-  }  
+  }
 
 }
