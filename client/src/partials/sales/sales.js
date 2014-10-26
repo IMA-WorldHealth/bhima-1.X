@@ -2,7 +2,7 @@
  * TODO Global charges currently don't hit an invetory item || account,
  * no way of tracing this back to a reason for being
  *
- * FIXME State currently relies on random variables, there should be a clear state object that 
+ * FIXME State currently relies on random variables, there should be a clear state object that
  * controls and verifies the current state
  *
  * FIXME All sale details are still downloaded on patient select, hidden until service assignment, this should all be reuqested at once - ties in with state
@@ -32,7 +32,7 @@ angular.module('bhima.controllers')
       tablock : -1
     };
 
-    var serviceComponent = $scope.serviceComponent = { 
+    var serviceComponent = $scope.serviceComponent = {
       selected : null,
       complete : false
     };
@@ -71,14 +71,14 @@ angular.module('bhima.controllers')
     }
 
     validate.process(dependencies).then(sales);
-    
-    function assignService() { 
+
+    function assignService() {
       var selectedService = serviceComponent.selected;
 
       if (!selectedService) { return messenger.danger('No service selected'); }
       invoice.service = selectedService;
     }
-    
+
     function initialiseSaleDetails(selectedDebtor) {
       if (!selectedDebtor) { return messenger.danger('No invoice debtor selected'); }
 
@@ -224,9 +224,9 @@ angular.module('bhima.controllers')
       $scope.model.inventory.remove(inventoryReference.uuid);
 
       $scope.model.inventory.recalculateIndex();
-  
-      // Do not update the recovery object for items added during recovery 
-      if (!session.recovering) { 
+
+      // Do not update the recovery object for items added during recovery
+      if (!session.recovering) {
         updateSessionRecover();
       }
     }
@@ -352,7 +352,7 @@ angular.module('bhima.controllers')
 
     function formatNote(invoice) {
       var noteDebtor = invoice.debtor || '';
-      return 'PI' + '/' + invoice.date + '/' + noteDebtor.name;
+      return $scope.project.abbr + '_VENTE/' + invoice.date + '/' + noteDebtor.name;
     }
 
     //TODO Refactor code
@@ -467,17 +467,17 @@ angular.module('bhima.controllers')
 
     function selectRecover() {
       $scope.session.recovering = true;
-      
+
       $scope.findPatient.forceSelect($scope.session.recovered.patientId);
-    
+
       serviceComponent.selected = $scope.session.recovered.service;
       assignService();
     }
 
     function recover() {
-      
+
       invoice.service = $scope.session.recovered.service || null;
-      
+
       $scope.session.recovered.items.forEach(function (item) {
         var currentItem = addInvoiceItem(), invItem = $scope.model.inventory.get(item.uuid);
         currentItem.selectedReference = invItem.code;

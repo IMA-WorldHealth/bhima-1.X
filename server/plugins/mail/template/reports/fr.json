@@ -2,6 +2,7 @@
   "Header" : {
     "overview" : "Sommaire",
     "accounts" : "Comptes",
+    "principal" : "TODO - (Principal Cash)",
     "experimental" : "Rapport Experimental"
   },
   "Overview"             : {
@@ -33,6 +34,15 @@
       "heading" : "Compte IMA",
       "content" : "Le compte d'IMA etait charge avec un total de %s aidant %s pour recevoir des soins."
     },
+    "principal_income_expense" : { 
+      "heading" : "TODO - (Income/ Expenditure)",
+      "content" : "TODO - (Today, a value of %s was recorded as entering the principal cash box; a value of %s was recorded as expense.)"
+    },
+    "principal_balance" : { 
+      "heading" : "TODO - (Balance)", 
+      "content" : "TODO - (The balance reported by the principal cash box has a value of %s.)"
+    },
+
     "sale" : {
       "heading" : "Facture",
       "content" : "%s des factures ont ete envoyees correspondant aux %s lignes d'item, Ceci concerne les factures des patients ambulatoires et hospitalises."
@@ -52,6 +62,11 @@
     "network_warning" : {
       "heading" : "[Gestion du Reseau]",
       "content" : "La connexion entre HBB and PAX ne pouvait pas etre etabli aujourd'hui."
+    },
+    "system_update" : { 
+      "heading" : "TODO - ([ADMIN])",
+      "content" : "TODO - (The system is currently being upgraded.)"
     }
+
   }
 }
