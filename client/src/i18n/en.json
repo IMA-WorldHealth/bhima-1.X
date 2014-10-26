@@ -856,7 +856,8 @@
     "PAYROLL_REPORT"            : "Payroll Reports",
     "STOCK_STATUS"              : "Stock Status",
     "FONCTION"                  : "Job titles management",
-    "SERVICE_EXPLOITATION"      : "Exploitation per Service"
+    "SERVICE_EXPLOITATION"      : "Exploitation per Service",
+    "GLOBAL_TRANSACTION"        : "Account Movement"
   },
 
   "RUBRIC_PAYROLL"       : {

@@ -553,8 +553,9 @@ module.exports = function (db, sanitize, util) {
     }
     return deferred.promise;
   }
+ */
 
-  function allTrans (params){
+ function allTrans (params){
     var source = {
       '1' : 'posting_journal',
       '2' : 'general_ledger'
@@ -562,9 +563,8 @@ module.exports = function (db, sanitize, util) {
     var def = q.defer();
     params = JSON.parse(params);
     var requette;
-    var suite_account = (params.account_id && params.account_id !== 0)? ' AND `t`.`account_id`=''+params.account_id+''' : '';
-    var suite_dates   = (params.datef && params.datet)? ' AND `t`.`trans_date`>= ''+params.datef+'' AND `t`.`trans_date` <= ''+params.datet+''' : '';
-    //var suite_enterprise = ' AND `t`.`enterprise_id`=''+params.enterprise_id+''';
+    var suite_account = (params.account_id && params.account_id !== 0)? ' AND `t`.`account_id`=' + sanitize.escape(params.account_id) : '';
+    var suite_dates = (params.datef && params.datet)? ' AND `t`.`trans_date`>= ' + sanitize.escape(params.datef) + ' AND `t`.`trans_date`<= ' + sanitize.escape(params.datet) : '';
 
     if (!params.source || params.source === 0) {
       requette =
@@ -574,15 +574,15 @@ module.exports = function (db, sanitize, util) {
           '(' +
             'SELECT `posting_journal`.`project_id`, `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, ' +
               '`posting_journal`.`credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`deb_cred_uuid`, `posting_journal`.`currency_id`, ' +
-              '`posting_journal`.`doc_num`, posting_journal.trans_id, `posting_journal`.`description`, `posting_journal`.`comment` ' +
+              '`posting_journal`.`doc_num`, `posting_journal`.`trans_id`, `posting_journal`.`description`, `posting_journal`.`comment` ' +
             'FROM `posting_journal` ' +
           ') UNION (' +
             'SELECT `general_ledger`.`project_id`, `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, ' +
               '`general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`deb_cred_uuid`, `general_ledger`.`currency_id`, ' +
-              '`general_ledger`.`doc_num`, general_ledger.trans_id, `general_ledger`.`description`, `general_ledger`.`comment` ' +
+              '`general_ledger`.`doc_num`, `general_ledger`.`trans_id`, `general_ledger`.`description`, `general_ledger`.`comment` ' +
             'FROM `general_ledger` ' +
           ')' +
-        ') AS `t`, account AS ac WHERE `t`.`account_id` = `ac`.`id`'+suite_account+suite_dates;
+        ') AS `t`, `account` AS `ac` WHERE `t`.`account_id` = `ac`.`id`' + suite_account + suite_dates;
 
     } else {
       var sub_chaine = [
@@ -597,8 +597,8 @@ module.exports = function (db, sanitize, util) {
         'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `ac`.`account_number`, `t`.`debit_equiv` AS `debit`,  ' +
         '`t`.`credit_equiv` AS `credit`, `t`.`currency_id`, `t`.`description`, `t`.`comment` ' +
         'FROM (' +
-          'SELECT '+sub_chaine+'FROM '+source[params.source]+
-        ') AS `t`, account AS ac WHERE `AND `t`.`account_id` = `ac`.`id`'+suite_account+suite_dates;
+          'SELECT ' + sub_chaine + 'FROM ' + source[params.source] +
+        ') AS `t`, `account` AS `ac` WHERE `t`.`account_id` = `ac`.`id`' + suite_account + suite_dates;
     }
 
     db.execute(requette, function(err, ans) {
@@ -607,10 +607,8 @@ module.exports = function (db, sanitize, util) {
       }
       def.resolve(ans);
     });
-
     return def.promise;
   }
- */
 
   return function generate(request, params, done) {
     /*summary
@@ -625,7 +623,7 @@ module.exports = function (db, sanitize, util) {
       'payments'         : paymentRecords,
       'patientStanding'  : patientStanding,
       'accountStatement' : accountStatement,
-      //'allTrans'         : allTrans,
+      'allTrans'         : allTrans,
       'prices'           : priceReport,
       'stock_location'   : stockLocation,
       'stock_count'      : stockCount,
