@@ -98,7 +98,17 @@ module.exports = function (options) {
     var expressions = [], templ = self.templates.update;
     var identifier = sanitize.escapeid(id); // temporarily defaults to 'id'
     for (var d in data) {
-      if (d != id) expressions.push([sanitize.escapeid(d), '=', sanitize.escape(data[d])].join(''));
+      if (d !== id) {
+        // FIXME : Everything is miserable.
+        // This is a hack to get 'null' values to insert into the database
+        // due to an error in posting cost center and profit center ids at
+        // Tshikaji.  This is why we need to migrate to a real database engine.
+        if (data[d] !== null) {
+          expressions.push([sanitize.escapeid(d), '=', sanitize.escape(data[d])].join(''));
+        } else {
+          expressions.push([sanitize.escapeid(d), '=', 'NULL'].join(''));
+        }
+      }
     }
 
     return templ.replace('%table%', sanitize.escapeid(table))
@@ -114,7 +124,7 @@ module.exports = function (options) {
         templ = self.templates.insert;
 
     // FIXME HACK HACK HACK to make behavoir the same across everything
-    if (!dataList.length) dataList = [dataList];
+    if (!dataList.length) { dataList = [dataList]; }
 
     // find the maximum number of keys for a row object
     max = 0;
@@ -207,5 +217,4 @@ module.exports = function (options) {
   };
 
   return self;
-
 };
