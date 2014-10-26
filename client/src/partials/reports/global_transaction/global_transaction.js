@@ -128,7 +128,6 @@ angular.module('bhima.controllers')
     }
 
     function getValue (obj, val, cVal) {
-      console.log('obj', obj);
       if (cVal === $scope.model.c) { return val; }
       return (obj.c_id === cVal)? 1 : (obj.rate) * val; //not good because it supporte only two currency, I will fix it very soon
     }
