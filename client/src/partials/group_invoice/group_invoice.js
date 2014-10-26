@@ -180,7 +180,6 @@ angular.module('bhima.controllers')
         item.invoice_uuid = i.inv_po_id;
         item.payment_uuid = id;
         items.push(item);
-        console.log('[inserted item]', item);
       });
 
       return items;

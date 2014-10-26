@@ -170,7 +170,7 @@ angular.module('bhima.controllers')
         currency_id   : $scope.selectedItem.currency_id,
         value         : $scope.data.value,
         cashier_id    : $scope.model.cashier.data.id,
-        description   : 'CT ' + new Date().toString(),
+        description   : 'HBB' + '_CAISSEPRINCIPALE_RECETTEGENEREIQUE' + new Date().toString(),
         istransfer    : 1,
         reference     : 1,
       };
