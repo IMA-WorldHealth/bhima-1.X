@@ -11,6 +11,17 @@
     </select>
   </div>
 
+  <!--div class="hidden-print input-group">
+    <input
+      class="form-bhima"
+      type="text"
+      ng-model="model.account_id"
+      placeholder="Selectionner une compte"
+      typeahead="acc.id as formatAccount(acc) for acc in accounts.data | filter:$viewValue | limitTo:10" typeahead-template-url="AccountList.html"
+      typeahead-on-select="requestAccount(session.requestID)"
+      >
+  </div-->
+
   <div>
     <div class="col-xs-2">
       <input class="form-bhima" type="date" ng-model="dates.from" rows="20">
