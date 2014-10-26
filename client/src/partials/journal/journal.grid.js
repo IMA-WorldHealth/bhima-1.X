@@ -53,8 +53,8 @@ angular.module('bhima.controllers')
         {id: 'deb_cred_type'  , name: $translate.instant('COLUMNS.DC_TYPE')        , field: 'deb_cred_type'},
         {id: 'inv_po_id'      , name: $translate.instant('COLUMNS.INVPO_ID')       , field: 'inv_po_id'},
         {id: 'comment'        , name: $translate.instant('COLUMNS.COMMENT')        , field: 'comment'        , sortable : true, editor: Slick.Editors.Text} ,
-        {id: 'cc'             , name: $translate.instant('COLUMNS.COST_CENTER')    , field: 'cc'          , sortable : true},
-        {id: 'pc'             , name: $translate.instant('COLUMNS.PROFIT_CENTER')  , field: 'pc'          , sortable : true}
+        {id: 'cc_id'          , name: $translate.instant('COLUMNS.COST_CENTER')    , field: 'cc'          , sortable : true},
+        {id: 'pc_id'          , name: $translate.instant('COLUMNS.PROFIT_CENTER')  , field: 'pc'          , sortable : true}
       ];
 
       options = {
