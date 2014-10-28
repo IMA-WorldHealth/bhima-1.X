@@ -21,17 +21,17 @@ var reportReference = util.generateUuid();
 var reportQuery = {};
 
 var include = [
-  linkDown,
+  updateProgress,
   overview,
   breakdown,
-  // patientTotalReport,
-  // sale,
   hbbFinanceOverview,
   paxFinanceOverview,
+  categoryPrincipal,
+  principalIncomeExpense,
+  principalBalance,
   accounts,
-  // fiche,
-  subsidyIMA
-];
+  subsidyIMA,
+  ];
 
 parseParams()
 .then(configureEnvironment)
@@ -42,6 +42,7 @@ parseParams()
 function parseParams() {
   service = process.argv[2] || service;
   language = process.argv[3] || language;
+
   return q.resolve();
 }
 
@@ -64,14 +65,28 @@ function buildQuery()  {
     "HBB_Basic_Sale" : "SELECT COUNT(uuid) as 'total' FROM sale WHERE invoice_date = " + util.date.from + " AND sale.project_id = 1;",
     "PAX_Basic_Sale" : "SELECT COUNT(uuid) as 'total' FROM sale WHERE invoice_date = " + util.date.from + " AND sale.project_id = 2;",
     "HBB_Sale_Items" : "SELECT COUNT(sale_item.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid and invoice_date = " + util.date.from + " AND project_id = 1;",
-    "PAX_Sale_Items" : "SELECT COUNT(sale_item.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid and invoice_date = " + util.date.from + " AND project_id = 2;"
+    "PAX_Sale_Items" : "SELECT COUNT(sale_item.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid and invoice_date = " + util.date.from + " AND project_id = 2;",
+   
+    // Command was rushed
+    //  - Union to remove duplication of conditional
+    //  - Currently split up to allow seperation of posted and pending finances
+    
+    // Account ID is currently set to 487 (principal dollar account) and 486 (principal franc account), debit and creit equivalent is used so the value returned is always dollars
+    "HBB_Principal_Cash_Income_Expense" : 
+                                  "SELECT SUM(debit_equiv) as debit, SUM(credit_equiv) as credit FROM posting_journal WHERE account_id IN (486, 487) AND trans_date = " + util.date.from + " " +  
+                                  "UNION ALL " + 
+                                  "SELECT SUM(debit_equiv), SUM(credit_equiv) FROM general_ledger WHERE account_id IN (486, 487) AND trans_date = " + util.date.from + ";",
+    "HBB_Principal_Cash_Balance" : 
+                                  "SELECT SUM(debit_equiv - credit_equiv) as balance FROM posting_journal WHERE account_id IN (486, 487) " +  
+                                  "UNION ALL " + 
+                                  "SELECT SUM(debit_equiv - credit_equiv) FROM general_ledger WHERE account_id IN (486, 487);"
   };
 
   return q.resolve();
 }
 
 function settup () {
-  
+ 
   // Initialise modules
   data.process(reportQuery)
   .then(template.load(language))
@@ -113,25 +128,20 @@ function collateReports() {
     console.log(e);
   }
   
-
   template.produceReport(sessionTemplate.join("\n"), path);
   
   // Write the name of the file written to standard out
-  console.log(path);
+  console.log('Writing', path);
   data.end();
 }
 
-// Temporary methods for initial email
-// function messageInfo() {
-//   return template.fetch('message').replace(/{{ALERT_MESSAGE}}/g, template.reports("Section", "alert_one").content);
-// }
-//
-// function messagePax() {
-//   return template.fetch('message').replace(/{{ALERT_MESSAGE}}/g, template.reports("Section", "alert_two").content);
-// }
-
 function linkDown() { 
   var message = template.reports("Section", "network_warning");
+  return template.fetch('message').replace(/{{ALERT_MESSAGE}}/g, message.heading + " " + message.content);
+}
+
+function updateProgress() { 
+  var message = template.reports("Section", "system_update");
   return template.fetch('message').replace(/{{ALERT_MESSAGE}}/g, message.heading + " " + message.content);
 }
 
@@ -270,6 +280,48 @@ function accounts() {
   return template.fetch('header').replace(/{{HEADER_TEXT}}/g, template.reports("Header", "accounts"));
 }
 
+function categoryPrincipal() { 
+  // FIXME Temporary
+  return template.fetch('header').replace(/{{HEADER_TEXT}}/g, template.reports("Header", "principal"));
+}
+
+function principalIncomeExpense() { 
+  var result = data.lookup('HBB_Principal_Cash_Income_Expense');
+
+  var journal_debit = result[0].debit;
+  var journal_credit = result[0].credit;
+  
+  var ledger_debit = result[1].debit;
+  var ledger_credit = result[1].credit;
+    
+  var sectionTemplate = template.reports("Section", "principal_income_expense");
+
+  var report = 
+    template.compile(
+        sectionTemplate.content, 
+        template.insertStrong('$'.concat((journal_debit + ledger_debit).toFixed(2))),
+        template.insertStrong('$'.concat((journal_credit + ledger_credit).toFixed(2)))
+        );
+  return template.compileSection(sectionTemplate.heading, report);
+}
+
+function principalBalance() { 
+  
+  var result = data.lookup('HBB_Principal_Cash_Balance');
+  
+  var journal_balance = result[0].balance;
+  var ledger_balance = result[1].balance;
+
+  var sectionTemplate = template.reports("Section", "principal_balance");
+
+  var report = 
+    template.compile(
+        sectionTemplate.content, 
+        template.insertStrong('$'.concat((journal_balance + ledger_balance).toFixed(2)))
+        );
+  return template.compileSection(sectionTemplate.heading, report);
+}
+
 function subsidyIMA() { 
   var totalCost = data.lookup('IMA_Total')[0].total || 0;
   var totalPatients = data.lookup('IMA_Patients')[0].total;
@@ -340,7 +392,9 @@ function filterCurrency (value) {
 }
 
 function handleError(error) {
-  throw error;
+  console.log('handleError', error);
+  
+  // Stop termination
 }
 
 // Temporary - ensure out exists

@@ -32,3 +32,12 @@ utilities/migrate/*
 *.log
 /symmetric/*
 /log.html
+
+# ignore latex files
+*.pdf
+*.aux
+*.bbl
+*.ist
+*.lot
+*.toc
+*.out

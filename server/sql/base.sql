@@ -46,7 +46,7 @@ delete from `config_tax_item`;
 delete from `paiement_period`;
 delete from `offday`;
 delete from `config_paiement_period`;
-delete from `language`;	
+delete from `language`;
 
 -- registered units
 INSERT INTO `unit` VALUES
@@ -119,7 +119,12 @@ INSERT INTO `unit` VALUES
 (69,'Configuration des comptes','TREE.CONFIG_ACCOUNTING','',1,0,'/partials/config_accounting/','/config_accounting/'),
 (70,'Paycheck', 'TREE.PAYROLL_REPORT', '', 10, 0, '/partials/reports/payroll_report', '/reports/payroll_report/'),
 (71,'Stock Status', 'TREE.STOCK_STATUS', '', 10, 0, '/partials/reports/stock_status', '/reports/stock_status/'),
+<<<<<<< HEAD
 (72,'Operating account', 'TREE.OPERATING_ACCOUNT', '', 10, 0, '/partials/reports/operating_account', '/reports/operating_account/');
+=======
+(72,'Exploitation Service', 'TREE.SERVICE_EXPLOITATION', '', 10, 0, '/partials/reports/service_exploitation/', '/reports/service_exploitation/'),
+(73,'Toutes transactions', 'TREE.GLOBAL_TRANSACTION', '', 10, 0, '/partials/reports/global_transaction/', '/reports/global_transaction/');
+>>>>>>> dev
 -- references language .json files
 INSERT INTO `language` (id, name, `key`) VALUES
   (1, 'Francais', 'fr'),
@@ -1832,30 +1837,30 @@ INSERT INTO `profit_center` VALUES
 INSERT INTO `service` VALUES
 (1, 1, "Nursing Service", 1, 1);
 
-INSERT INTO `config_rubric` VALUES 
+INSERT INTO `config_rubric` VALUES
 (1, "configuration des rubrique par defaut");
 
-INSERT INTO `config_accounting` VALUES 
+INSERT INTO `config_accounting` VALUES
 (1, "configuration de comptabilite de paie par defaut", 721);
 
-INSERT INTO `rubric` VALUES 
+INSERT INTO `rubric` VALUES
 (1, "Logement", "HOUS", 0, 1, 30),
 (2, "Allocation Familliale", "ALLO", 0, 0, 0),
 (3, "Transport", "TRAN", 0, 0, 0),
 (4, "Ancienete", "SENI", 0, 1, 0),
 (5, "Avance sur salaire", "ADVA", 1, 0, 0);
 
-INSERT INTO `config_rubric_item` VALUES 
+INSERT INTO `config_rubric_item` VALUES
 (1, 1, 1, 1),
 (2, 1, 2, 1),
 (3, 1, 3, 1),
 (4, 1, 4, 1),
 (5, 1, 5, 1);
 
-INSERT INTO `config_tax` VALUES 
+INSERT INTO `config_tax` VALUES
 (1, "configuration des taxes par defaut");
 
-INSERT INTO `tax` VALUES 
+INSERT INTO `tax` VALUES
 (1, "INSS Employee", "INS1", 1, 1, 707, 3.5),
 (2, "IPR", "IPR1", 1, 0, 886, 0),
 (3, "INSS Entreprise", "INS2", 0, 1, 886, 9),
@@ -1863,7 +1868,7 @@ INSERT INTO `tax` VALUES
 (5, "ONEM", "ONEM", 0, 1, 886, 0.5),
 (6, "INPP", "INPP", 0, 1, 886, 1.5);
 
-INSERT INTO `config_tax_item` VALUES 
+INSERT INTO `config_tax_item` VALUES
 (1, 1, 1, 1),
 (2, 1, 2, 1),
 (3, 1, 3, 1),

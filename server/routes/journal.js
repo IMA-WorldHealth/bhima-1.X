@@ -206,6 +206,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
 
   // TODO Only has project ID passed from sale reference, need to look up enterprise ID
   function handleSales (id, user_id, done, caution) {
+    console.log('notre user_id ::::', user_id);
     // sale posting requests enter here.
     var sql, data, reference, cfg = {}, queries = {};
 
@@ -275,7 +276,6 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     })
     .then(function (trans_id) {
 
-      console.log('this is pur trans_id :::', trans_id);
       // we can begin copying data from SALE -> JOURNAL
 
       // First, copy the data from sale into the journal.
@@ -755,7 +755,6 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       cfg.enterprise_id = results[0].enterprise_id;
       cfg.project_id = results[0].project_id;
       cfg.date = results[0].date;
-      cfg.descript = 'Paiement charite/'+new Date().toISOString().slice(0, 10).toString();
       return check.validPeriod(cfg.enterprise_id, cfg.date);
     }
 
@@ -786,6 +785,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       references.forEach(function (row) {
         get.transactionId(cfg.project_id)
           .then(function  (trans_id) {
+            cfg.descript = trans_id.substring(0,4) + "_VENTE_CHARITE/" + new Date().toISOString().slice(0, 10).toString();
             var debit_sql=
               'INSERT INTO `posting_journal` ' +
               '  (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
@@ -1101,12 +1101,12 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       return get.transactionId(reference.project_id);
     })
     .then(function (transId) {
-      var descrip =  'PCT/'+new Date().toISOString().slice(0, 10).toString();
+      var descrip =  transId.substring(0,4) + '_CAISSEPRINCIPALE_TRANSFERT' + new Date().toISOString().slice(0, 10).toString();
       queries.credit =
         'INSERT INTO posting_journal (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
           '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
           '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
-          'VALUES (' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'', '\''+descrip+'\'', reference.account_id].join(',') + ', ' +
+          'VALUES (' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'', sanitize.escape(descrip), reference.account_id].join(',') + ', ' +
           [ reference.cost, 0, cfg.valueExchanged, 0, reference.currency_id ].join(',')+', null, null, '+[sanitize.escape(id), cfg.originId, user_id].join(',') +
         ');';
 
@@ -1115,7 +1115,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
           '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
           '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
           '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-          'SELECT ' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'', '\''+descrip+'\''].join(',') +
+          'SELECT ' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'', sanitize.escape(descrip)].join(',') +
           ', `account_id`, ' + [0, reference.cost, 0, cfg.valueExchanged, reference.currency_id ].join(',')+', null, null, ' +
           [sanitize.escape(id), cfg.originId, user_id].join(',') + ' ' +
           'FROM cash_box_account_currency WHERE `cash_box_account_currency`.`cash_box_id`='+sanitize.escape(reference.cash_box_id) + ' ' +
@@ -1129,6 +1129,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       done(null, rows);
     })
     .catch(function (err) {
+      console.log('voici erreur ', err);
       // FIXME: Need to delete the primary_cash_items before primary cash
       var discard =
         'DELETE FROM primary_cash WHERE uuid = ' + sanitize.escape(id) + ';';
@@ -1172,7 +1173,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
 
     function getTransId (trans_id) {
       cfg.trans_id = trans_id;
-      cfg.descrip =  'COVP/'+new Date().toISOString().slice(0, 10).toString();
+      cfg.descrip =  trans_id.substring(0,4)  + '_CAISSEPRINCIPALE_CONVENTION' + new Date().toISOString().slice(0, 10).toString();
       return q.when();
     }
 
@@ -1190,7 +1191,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
                                     reference.reference_pcash.project_id,
                                     cfg.fiscalYearId,
                                     cfg.periodId,
-                                    cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\''
+                                    cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip)
                                   ].join(',') + ', `account_id`, ' +
                                   [
                                     0, ref_pcash_item.debit,
@@ -1220,7 +1221,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
                 reference.reference_pcash.project_id,
                 cfg.fiscalYearId,
                 cfg.periodId,
-                cfg.trans_id, '\''+get.date()+'\'', '\''+cfg.descrip+'\'', reference.reference_pcash.account_id
+                cfg.trans_id, '\''+get.date()+'\'',  sanitize.escape(cfg.descrip), reference.reference_pcash.account_id
               ].join(',') + ' , ' +
               [
                 ref_pcash_item.debit,0,

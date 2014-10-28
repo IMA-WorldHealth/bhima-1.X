@@ -55,7 +55,7 @@ angular.module('bhima.controllers')
         }
       }
     };
- 
+
     dependencies.projects = {
       query : {
         tables : {
@@ -66,9 +66,19 @@ angular.module('bhima.controllers')
       }
     };
 
-    dependencies.account7 = {
-      query : '/getAccount7/'
+    dependencies.accounts = {
+      query : {
+        tables : {
+          'account' :{
+            columns : ['id', 'account_txt', 'account_number']
+          }
+        }
+      }
     };
+
+    // dependencies.account7 = {
+    //   query : '/getAccount7/'
+    // };
 
     cache.fetch('currency').then(load);
     cache.fetch('account').then(getAccount);
@@ -97,7 +107,7 @@ angular.module('bhima.controllers')
         session.receipt.date = new Date();
         session.receipt.cost = 0.00;
         session.receipt.cash_box_id = $routeParams.id;
-        session.account7 = models.account7.data;
+        session.accounts = models.accounts.data;
       })
       .catch(function (err) {
         messenger.error(err);
@@ -161,7 +171,7 @@ angular.module('bhima.controllers')
           currency_id   : session.currency.id,
           cost          : receipt.cost,
           user_id       : user.id,
-          description   : receipt.description,
+          description   : 'HBB' + '_CAISSEPRINCIPALE_RECETTEGENEREIQUE/' + receipt.description, //fix me
           cash_box_id   : receipt.cash_box_id,
           origin_id     : 5,
         };
@@ -198,13 +208,13 @@ angular.module('bhima.controllers')
     function setCurrency (obj) {
       $scope.session.currency=obj;
       cache.put('currency', obj);
-    }  
+    }
 
-    $scope.formatAccount = function (ac) {
-      return ac.account_number + ' - ' + ac.account_txt;
+    function formatAccount (ac) {
+      if(ac){return ac.account_number + ' - ' + ac.account_txt;}
     };
 
-    $scope.reconfigure = function () {      
+    $scope.reconfigure = function () {
       session.ac = null;
       session.configured = false;
       session.complete = false;
@@ -216,10 +226,11 @@ angular.module('bhima.controllers')
         session.configured = true;
         session.ac = ac;
         session.complete = true;
-      } 
+      }
     };
 
     $scope.update = update;
     $scope.setCurrency = setCurrency;
+    $scope.formatAccount = formatAccount;
   }
 ]);

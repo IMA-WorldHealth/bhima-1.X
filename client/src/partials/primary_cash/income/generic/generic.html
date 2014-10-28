@@ -54,10 +54,19 @@
             </span>
           </div>
           <br>
-          <div class="configure">
-            <select ng-model="session.ac" ng-options="ac as formatAccount(ac) for ac in session.account7" ng-change="setConfiguration(session.ac)">
-              <option value="" ng-disabled="disabled" disabled="true">-- {{'PRIMARY_CASH.INCOME.SELECT_ACCOUNT' | translate}} -- </option>
-            </select>
+
+          <div class="input-group">
+            <input
+              class="form-bhima"
+              type="text"
+              ng-model="session.ac"
+              placeholder="Selectionner compte"
+              typeahead="ac as formatAccount(ac) for ac in session.accounts | filter:$viewValue | limitTo:10" typeahead-template-url="AccountList.html"
+              typeahead-on-select="setConfiguration(session.ac)"
+              >
+            <span class="input-group-btn">
+              <button ng-click="setConfiguration(session.ac)" class="btn btn-default btn-sm square">{{ "FORM.SUBMIT" | translate }}</button>
+            </span>
           </div>
         </div>
       </div>
@@ -94,7 +103,7 @@
             <div class="form-group">
               <label>{{ "PRIMARY_CASH.INCOME.LABEL" | translate }}</label>
               <input class="form-bhima" ng-model="session.receipt.description" required>
-            </div>            
+            </div>
 
             <div class="form-group">
               <label>{{ "PRIMARY_CASH.INCOME.AMOUNT" | translate }}</label>
@@ -128,6 +137,13 @@
   <a>
     <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
     <span><i>{{match.model.first_name}} {{match.model.last_name}}</i></span>
+  </a>
+</script>
+
+<script type="text/ng-template" id="AccountList.html">
+  <a>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+    <span><b>[{{ match.model.account_number }}]</b></span>
   </a>
 </script>
 

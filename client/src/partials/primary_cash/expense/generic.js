@@ -53,8 +53,18 @@ angular.module('bhima.controllers')
       }
     };
 
-    dependencies.account6 = {
-      query : '/getAccount6/'
+    // dependencies.account6 = {
+    //   query : '/getAccount6/'
+    // };
+
+    dependencies.accounts = {
+      query : {
+        tables : {
+          'account' :{
+            columns : ['id', 'account_txt', 'account_number']
+          }
+        }
+      }
     };
 
     cache.fetch('currency').then(load);
@@ -81,7 +91,7 @@ angular.module('bhima.controllers')
         session.receipt.cost = 0.00;
         session.receipt.cash_box_id = $routeParams.id;
 
-        session.account6 = models.account6.data;
+        session.accounts = models.accounts.data;
       })
       .catch(function (err) {
         messenger.danger(err);
@@ -133,7 +143,7 @@ angular.module('bhima.controllers')
           currency_id   : session.currency.id,
           cost          : receipt.cost,
           user_id       : user.id,
-          description   : receipt.description,
+          description   : 'HBB' + '_CAISSEPRINCIPALE_DEPENSEGENEREIQUE/' + receipt.description, //fix me
           cash_box_id   : receipt.cash_box_id,
           origin_id     : 4,
         };
@@ -163,14 +173,14 @@ angular.module('bhima.controllers')
     function setCurrency (obj) {
       session.currency=obj;
       cache.put('currency', obj);
-    }  
+    }
 
     function update (value) {
       session.receipt.recipient = value;
     }
 
     $scope.formatAccount = function (ac) {
-      return ac.account_number + ' - ' + ac.account_txt;
+      if(ac){return ac.account_number + ' - ' + ac.account_txt;}
     };
 
     $scope.reconfigure = function () {
@@ -185,7 +195,7 @@ angular.module('bhima.controllers')
         session.configured = true;
         session.ac = ac;
         session.complete = true;
-      } 
+      }
     };
 
     $scope.update = update;

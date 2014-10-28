@@ -83,7 +83,10 @@
     "AGGREGATES"        : "Agregats",
     "SIGNATURES"        : "Signature",
     "CURRENCY"          : "Monnaie",
-    "SEARCH"            : "Chercher"
+    "SEARCH"            : "Chercher",
+    "IMCK"              : "IMCK",
+    "IMCK_LONG"         : "Institut Médical Chrétien du Kasaï",
+    "TSHIKAJI"          : "TSHIKAJI"
   },
 
   "ENTERPRISE"                 : {
@@ -435,7 +438,9 @@
     "PAYROLL_REPORT"            : "Rapports du Payroll",
     "STOCK_STATUS"              : "Situation du stock",
     "FONCTION"                  : "Gestion des fonctions",
-    "OPERATING_ACCOUNT"         : "Compte d'exploitation"
+    "OPERATING_ACCOUNT"         : "Compte d'exploitation",
+    "SERVICE_EXPLOITATION"      : "Exploitation par Service",
+    "GLOBAL_TRANSACTION"        : "Mouvement des comptes"
 },
 
 
@@ -813,7 +818,7 @@
     "NB_SPOUSE"           : "Nombre epoux (se)",
     "BASE_SALARY"         : "Salaire de base",
     "CREATED"             : "Crée",
-    "MEMBERS"              : "Membres",    
+    "MEMBERS"              : "Membres",
     "APPLIES_GLOBALLY"     : "Appliquer globalement",
     "REFERENCE_PURCHASE" : "Référence",
     "GIVEN_AMOUNT"       : "Montant donne",
@@ -1191,7 +1196,7 @@
     "GENERATE"     : "Pour créer une facture.",
     "RECEIPT"      : "Facture",
     "POSTING"      : "Postage au Journal",
-    "CREDIT_NOTE"  : "Note de Crédit",
+    "CREDIT_NOTE"  : "Annuler vente",
     "POST"         : "Poster au Journal",
     "ALL_PROJECTS" : "Tous les Projets",
     "TOTAL_OF" : "Total de",
@@ -1424,7 +1429,7 @@
       "TITLE"                 : "Ajout Transaction",
       "ADD_ROW"               : "Ajouter Ligne",
       "ADD_COMMENT"           : "Ajouter un Commentaire",
-      "ADD_REFERENCE_DOCUMENT" : "Ajouter la référence du document",      
+      "ADD_REFERENCE_DOCUMENT" : "Ajouter la référence du document",
       "POSTING_JOURNAL"       : "Posting Journal",
       "TAB_LOCK_COLONNE"      : "Colonne par Colonne",
       "TAB_LOCK_LINE"         : "Ligne par Ligne",
@@ -2156,7 +2161,8 @@
     "RUBRIC"           : "Rubriques Payroll",
     "DELETE_SUCCESS"   : "Suppression avec succès",
     "NO_CONFIG_RUBRIC" : "Aucune configuration de comptes",
-    "ABBR"             : "Abr."
+    "ABBR"             : "Abr.",
+    "NO_CONFIG_ACCOUNTING" : "Aucune configuration enregistree"
   },
 
   "PAYCHECK" : {
@@ -2235,5 +2241,9 @@
     "OCTOBER"       : "Octobre",
     "NOVEMBER"      : "Novembre",
     "DECEMBER"      : "Décembre"    
-  }   
+  },   
+
+  "SERVICE_EXPLOITATION" : {
+    "TITLE"              : "Exploitation par service"
+  }
 }
