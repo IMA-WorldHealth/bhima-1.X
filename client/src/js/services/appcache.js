@@ -1,5 +1,65 @@
 angular.module('bhima.services')
-.factory('appcache', ['$rootScope', '$q', function ($rootScope, $q) {
+.factory('appcache', ['$rootScope', '$q', '$localForage', function ($rootScope, $q, $localForage) {
+
+  // default driver is indexedDB
+  var defaultDriver = 'asyncStorage';
+
+  var mod = {};
+
+  function LFWrapper (name) {
+    this.namespace = name;
+    try {
+      this._storage = $localForage.instance(name);
+    }
+    catch(err) {
+      this._storage = $localForage.createInstance({
+        name : name,
+        driver : defaultDriver
+      });
+    }
+  }
+
+  function convertToNumber(n) {
+    var cn = Number(n);
+    return Number.isNaN(cn) ? n : cn;
+  }
+
+  LFWrapper.prototype.fetchAll = function () {
+    var storage = this._storage,
+        namespace = this.namespace;
+
+    return storage.keys()
+      .then(function (keys) {
+        return $q.all(keys.map(function (k) {
+          return storage.getItem(k)
+          .then(function (value) {
+            return angular.extend(value, {
+              key : convertToNumber(k),
+              namespace : namespace
+            });
+          });
+        }));
+      })
+      .then(function (values) {
+        return values;
+      });
+  };
+
+  LFWrapper.prototype.put = function (key, value) {
+    return this._storage.setItem(key, value);
+  };
+
+  LFWrapper.prototype.fetch = function (key) {
+    return this._storage.getItem(key);
+  };
+
+  LFWrapper.prototype.remove = function (key) {
+    return this._storage.removeItem(key);
+  };
+
+  return LFWrapper;
+
+ /*
   var DB_NAME = 'bhima', VERSION = 21;
   var db, cacheSupported, dbdefer = $q.defer();
 
@@ -23,15 +83,6 @@ angular.module('bhima.services')
       throw new Error(error);
     });
   }
-
-  /*
-  //generic request method allow all calls to be queued if the database is not initialised
-  function request (method) {
-    console.log(method, arguments);
-    if (!requestMap[method]) return false;
-    requestMap[method](value);
-  }
-  */
 
   //TODO This isn't readable, try common request (queue) method with accessor methods
   function fetch(key) {
@@ -128,6 +179,7 @@ angular.module('bhima.services')
           store.push(cursor.value);
           cursor.continue();
         } else {
+          console.log('CACHE: FetchALL()', store);
           $rootScope.$apply(deferred.resolve(store));
         }
       };
@@ -175,5 +227,7 @@ angular.module('bhima.services')
     console.log('application cache is not supported in this context');
   }
   return cacheInstance;
+//  */
+
 }]);
 
