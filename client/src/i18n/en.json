@@ -2192,7 +2192,19 @@
     "SELECT_PERIOD" : "Select a fiscal year",
     "SELECT_OPTION" : "Select option",
     "TOTAL_CHARGE"  : "Total Charge",
-    "TOTAL_PROFIT"  : "Totall profit"
+    "TOTAL_PROFIT"  : "Totall profit",
+    "JANUARY"       : "January",
+    "FEBRUARY"      : "February",
+    "MARCH"         : "March",
+    "APRIL"         : "April",
+    "MAY"           : "May",
+    "JUNE"          : "June",
+    "JULY"          : "July",
+    "AUGUST"        : "August",
+    "SEPTEMBER"     : "September",
+    "OCTOBER"       : "October",
+    "NOVEMBER"      : "Novembre",
+    "DECEMBER"      : "December"
   }    
 
 }

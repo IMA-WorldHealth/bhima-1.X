@@ -1946,6 +1946,7 @@
     "CONFIRM"           : "Etes vous sure de vouloir supprimer cette période de vacance",
     "UPDATE"            : "Mettre à jour une période de vacance",
     "NO_HOLLYDAY"       : "Aucune période de vacance n'est encore enregistrée",
+    "DELETE_SUCCESS"    : "Suppression avec succès",
     "ADD"               : "Créer une période de vacance",
     "REGISTERED"        : "Période des vacances enregistrées",
     "ALERT"             : "Le module gestion des vacances, permet de standardiser et de sécuriser les demandes et la gestion des vacances (congés payés, repos compensateur…). Il favorise leur intégration automatique en paie, depuis la demande, sa validation et jusqu’à son traitement.",
@@ -2221,6 +2222,18 @@
     "SELECT_PERIOD" : "Sélectionner une année fiscale",
     "SELECT_OPTION" : "Sélectionner une option",
     "TOTAL_CHARGE"  : "Total Charge",
-    "TOTAL_PROFIT"  : "Totall profit"
+    "TOTAL_PROFIT"  : "Totall profit",
+    "JANUARY"       : "Janvier",
+    "FEBRUARY"      : "Février",
+    "MARCH"         : "Mars",
+    "APRIL"         : "Avril",
+    "MAY"           : "Mai",
+    "JUNE"          : "Juin",
+    "JULY"          : "Juillet",
+    "AUGUST"        : "Août",
+    "SEPTEMBER"     : "Septembre",
+    "OCTOBER"       : "Octobre",
+    "NOVEMBER"      : "Novembre",
+    "DECEMBER"      : "Décembre"    
   }   
 }

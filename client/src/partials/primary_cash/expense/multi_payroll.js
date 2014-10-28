@@ -202,7 +202,6 @@ angular.module('bhima.controllers')
       var def = $q.defer();      
       getHollyDayCount(emp)
       .then(function (hl){
-        self.hollyday = hl;
         self.off_day = session.data.off_day;
         self.emp = emp;
         self.emp.basic_salary = 
@@ -218,29 +217,61 @@ angular.module('bhima.controllers')
           hl -= session.data.off_day;
           self.hollyday = hl; 
         }*/
+        //console.log('Vacance',hl);
         self.working_day = session.data.max_day - (hl + session.data.off_day);
-        console.log('Nomb jour Max',session.data.max_day);
-        console.log('Jour ferie',session.data.off_day);
-        console.log('Jour ferie dans l application',hl);
-        console.log('Working Days',self.working_day);
-
         self.hollydays = hl;
         self.offdays = session.data.off_day;
         self.daily_salary = self.emp.basic_salary / session.data.max_day;
-        self.ALLO = 0;
-        self.TRAN = 0;
-        self.SENI = 0;
-        self.ADVA = 0;
-        self.other = 0;
-        self.ONEM = 0;
-        self.INPP = 0;
-        self.IERE = 0;       
+        // self.ALLO = 0;
+        //self.TRAN = 1000;
+        // self.SENI = 0;
+        // self.ADVA = 0;
+        // self.other = 0;
+        // self.ONEM = 0;
+        // self.INPP = 0;
+        // self.IERE = 0;       
+        var taxes = session.model.tax_config.data;
+        var taxEmp = taxes.filter(function (item) {
+          return item.is_employee  === 1;
+        });
+
+        var taxComp = taxes.filter(function (item) {
+          return item.is_employee  == 0;
+        });
+
+        if(taxEmp){
+          $scope.taxEmp = taxEmp;
+        }
+
+        if(taxComp){
+          $scope.taxComp = taxComp;  
+        }
+
+
+
+
         self.visible = false;
-        return getHousing(self);        
-      })
-      .then(function (hous) {
-        self.HOUS = hous;
-        return getEmployeeINSS(self);
+        var rubrics = session.model.rubric_config.data;
+
+        rubrics.forEach(function (rub) {
+          /*console.log('Text',rub.label);
+          console.log('Pourcentage',rub.is_percent);
+          console.log('Valuer',rub.value);*/
+          dataRubric = (rub.is_percent) ? 
+          ((self.daily_salary * (self.working_day + self.hollydays + self.offdays)) * rub.value) / 100 : rub.value;  
+          self[rub.abbr] = dataRubric;
+        });
+
+        taxes.forEach(function (tax) {
+          /*console.log('Text',rub.label);
+          console.log('Pourcentage',rub.is_percent);
+          console.log('Valuer',rub.value);*/
+          dataTaxes = (tax.is_percent) ? 
+          ((self.daily_salary * (self.working_day + self.hollydays + self.offdays)) * tax.value) / 100 : tax.value;  
+          self[tax.abbr] = dataTaxes;
+        });
+        //return getHousing(self);  // Mis en commentaire
+        return getEmployeeINSS(self);     
       })
       .then(function (employee_INSS) {
         self.INS1 = employee_INSS;
@@ -329,7 +360,7 @@ angular.module('bhima.controllers')
               columns : ['rubric_id', 'payable']
             },
             'rubric' : {
-              columns : ['id', 'abbr', 'is_percent', 'is_discount', 'value']
+              columns : ['id', 'abbr', 'label', 'is_percent', 'is_discount', 'value']
             }
           },
           join : [
@@ -353,7 +384,7 @@ angular.module('bhima.controllers')
               columns : ['tax_id', 'payable']
             },
             'tax' : {
-              columns : ['id', 'abbr', 'is_percent', 'value', 'account_id']
+              columns : ['id', 'abbr','label', 'is_percent', 'value', 'account_id', 'is_employee']
             }
           },
           join : [
@@ -384,11 +415,9 @@ angular.module('bhima.controllers')
       };     
       validate.process(dependencies, ['offDays'])
       .then(function (model) {
-        console.log('Pas des probleme dans cette base de donnees');
         var offdays = model.offDays.data;
         var pp_confs = model.paiement_period_conf.data;
         var nb_offdays = 0;
-        //console.log('Periode Configurer',pp_confs);
         session.data.max_day = getMaxDays(pp_confs);
         offdays.forEach(function (offDay) {
           for(var i = 0; i < pp_confs.length; i++){
@@ -412,7 +441,6 @@ angular.module('bhima.controllers')
     function getMaxDays (ppcs) {
       var nb = 0;
       ppcs.forEach(function (item) {
-        //console.log(new Date(item.weekTo).getDate(),'et',new Date(item.weekFrom).getDate());
 
         var t2 = new Date(item.weekTo).getTime();
         var t1 = new Date(item.weekFrom).getTime();
@@ -457,7 +485,7 @@ angular.module('bhima.controllers')
               var num_hdateto = date_hdateto.setHours(0,0,0,0);
 
               var minus_right = 0, minus_left = 0;
-
+/*
               if(num_pweekto > num_hdateto){
                 minus_right = date_pweekto.getDate() - date_hdateto.getDate();
               }
@@ -466,19 +494,31 @@ angular.module('bhima.controllers')
                 minus_left = date_hdatefrom.getDate() - date_pweekfrom.getDate();
               }
 
-              //console.log('Le nombre total de Offdays:',session.data.offdays.length);
+*/              //console.log('Le nombre total de Offdays:',session.data.offdays.length);
+              if(num_pweekto > num_hdateto){
+                minus_right = num_pweekto - num_hdateto;
+                minus_right /= (24*3600*1000);
+                minus_right = parseInt(minus_right);
+              }
+
+              if(num_pweekfrom < num_hdatefrom){
+                minus_left = num_hdatefrom - num_pweekfrom;
+                minus_left /= (24*3600*1000);
+                minus_left = parseInt(minus_left);
+              }
               var nbOffDaysPos = 0; 
+              
               for(var i = 0; i < session.data.offdays.length; i++){
                 var dateOff = new Date(session.data.offdays[i].date);
                 var num_dateOff = dateOff.setHours(0,0,0,0);
-                //console.log(util.sqlDate(dateOff),util.sqlDate(date_pweekfrom),util.sqlDate(date_pweekto));
                 if(((num_dateOff >= num_hdatefrom) && (num_dateOff <= num_hdateto)) && 
                   ((num_dateOff >= num_pweekfrom) && (num_dateOff <= num_pweekto))){
                   nbOffDaysPos++;
                 }
               }
-
-              var total = date_pweekto.getDate() - date_pweekfrom.getDate() + 1 - nbOffDaysPos;
+              var t2 = date_pweekto.getTime(); 
+              var t1 = date_pweekfrom.getTime();
+              var total = (parseInt((t2-t1)/(24*3600*1000))) + 1 - nbOffDaysPos;
               if(minus_left > total) { return 0; }
               if(minus_right > total) { return 0; } 
               return total - (minus_left + minus_right);
@@ -486,11 +526,7 @@ angular.module('bhima.controllers')
 
             pp_confs.forEach(function (ppc) {
               nb += getValue(ppc);
-              
             });
-
-
-            
             soms.push(nb);
           });
 
@@ -506,7 +542,20 @@ angular.module('bhima.controllers')
       return defer.promise;
     }
 
-    function getHousing (row) {
+    function getRubricPayroll (row) {
+      var rubrics = session.model.rubric_config.data, housing = 0;
+      console.log('MySql Data Base');
+      console.log(session.model.rubric_config.data);
+
+      rubrics.forEach(function (rub) {
+        dataRubric = (rub.is_percent) ? 
+        ((row.daily_salary * (row.working_day + row.hollydays + row.offdays)) * rub.value) / 100 : rub.value;  
+        self[rub.abbr] = dataRubric; 
+      });
+    }
+
+
+/*    function getHousing (row) {
       var rubrics = session.model.rubric_config.data, housing = 0;
 
       if(!rubrics.length){
@@ -523,7 +572,7 @@ angular.module('bhima.controllers')
       }
       return $q.when(housing);      
     }
-
+*/
     function getEmployeeINSS (row) {
       var taxes = session.model.tax_config.data, employee_inss = 0;
       if(!taxes.length) {
@@ -626,16 +675,44 @@ angular.module('bhima.controllers')
     }
 
     function submit (list) {
+
       var rubric_config_list = session.model.rubric_config.data;
       var tax_config_list = session.model.tax_config.data;
 
       return $q.all(list.map(function (elmt) {
         var rc_records = [];
-        var tc_records = [];        
+        var tc_records = [];       
         //elmt.net_after_taxe = elmt.net_before_taxe - elmt.IPR1 - elmt.ONEM - elmt.IERE - elmt.INPP;
         elmt.net_after_taxe = elmt.net_before_taxe - elmt.IPR1;
 
-        elmt.net_salary = elmt.net_after_taxe + (elmt.HOUS + elmt.TRAN + elmt.ALLO + elmt.SENI - (elmt.ADVA + (elmt.daily_salary * elmt.off_day))) + elmt.offdays_cost; 
+        var somRub = 0,
+            SomTax = 0;
+
+        tax_config_list.forEach(function (tax) {
+          if(tax.is_employee && (tax.abbr != 'IPR1' && tax.abbr != 'INS1')){
+            SomTax = elmt[tax.abbr];           
+          }  
+        });
+
+        elmt.net_after_taxe -= SomTax; 
+
+        rubric_config_list.forEach(function (rub) {
+          change = elmt[rub.abbr];
+          if(rub.is_discount){
+            change *= -1;           
+          } 
+          console.log(rub.abbr,elmt[rub.abbr])
+          somRub += change;
+        });
+
+
+
+
+        console.log('Le net apres tax',elmt.net_after_taxe,somRub);
+        //elmt.net_salary = elmt.net_after_taxe + (elmt.HOUS + elmt.TRAN + elmt.ALLO - (elmt.ADVA + (elmt.daily_salary * elmt.off_day))) + elmt.offdays_cost; 
+        elmt.net_salary = elmt.net_after_taxe + somRub - (elmt.daily_salary * elmt.off_day) + elmt.offdays_cost;  
+        console.log('Le salaire Net',elmt.net_salary); 
+
         var paiement = {
           uuid : uuid(),
           employee_id : elmt.emp.id,
@@ -725,6 +802,22 @@ angular.module('bhima.controllers')
       }
 
       if((row.working_day) && (totaldays <= row.max_day)){
+        var taxes = session.model.tax_config.data;   
+        var rubrics = session.model.rubric_config.data;
+
+        rubrics.forEach(function (rub) {
+          dataRubric = (rub.is_percent) ? 
+          ((row.daily_salary * (row.working_day + row.hollydays + row.offdays)) * rub.value) / 100 : rub.value;  
+          row[rub.abbr] = dataRubric;
+        });
+
+        taxes.forEach(function (tax) {
+          dataTaxes = (tax.is_percent) ? 
+          ((row.daily_salary * (row.working_day + row.hollydays + row.offdays)) * tax.value) / 100 : tax.value;  
+          row[tax.abbr] = dataTaxes;
+        });
+
+
         getEmployeeINSS(row)
         .then(function (val) {
           row.INS1 = val;
@@ -738,14 +831,25 @@ angular.module('bhima.controllers')
           row.INS2 = val;
         });   
 
-        getHousing(row)
-        .then(function (val) {
-          row.HOUS = val;
-        });
-
       } else if (totaldays > row.max_day) {
         messenger.danger($translate.instant('RUBRIC_PAYROLL.NOT_SUP_MAXDAY'));  
         row.working_day = 0;
+        var taxes = session.model.tax_config.data;   
+        var rubrics = session.model.rubric_config.data;
+
+        rubrics.forEach(function (rub) {
+          dataRubric = (rub.is_percent) ? 
+          ((row.daily_salary * (row.working_day + row.hollydays + row.offdays)) * rub.value) / 100 : rub.value;  
+          row[rub.abbr] = dataRubric;
+        });
+
+        taxes.forEach(function (tax) {
+          dataTaxes = (tax.is_percent) ? 
+          ((row.daily_salary * (row.working_day + row.hollydays + row.offdays)) * tax.value) / 100 : tax.value;  
+          row[tax.abbr] = dataTaxes;
+        });
+
+
         getEmployeeINSS(row)
         .then(function (val) {
           row.INS1 = val;
@@ -759,10 +863,7 @@ angular.module('bhima.controllers')
           row.INS2 = val;
         }); 
 
-        getHousing(row)
-        .then(function (val) {
-          row.HOUS = val;
-        });   
+        getHollyDayCount(row);
 
       } 
     }
@@ -787,7 +888,29 @@ angular.module('bhima.controllers')
                 util.sqlDate(new Date())
             );   
 
-            row.HOUS = exchange.convertir(
+            var taxes = session.model.tax_config.data;   
+            var rubrics = session.model.rubric_config.data;
+
+            rubrics.forEach(function (rub) {
+              row[rub.abbr] = exchange.convertir(
+                row[rub.abbr],
+                session.loading_currency_id,
+                session.selectedItem.currency_id,
+                util.sqlDate(new Date())
+              );
+            });
+
+            taxes.forEach(function (tax) {
+              row[tax.abbr] = exchange.convertir(
+                row[tax.abbr],
+                session.loading_currency_id,
+                session.selectedItem.currency_id,
+                util.sqlDate(new Date())
+              );
+            });
+
+
+/*            row.HOUS = exchange.convertir(
               row.HOUS,
               session.loading_currency_id,
               session.selectedItem.currency_id,
@@ -843,7 +966,7 @@ angular.module('bhima.controllers')
               util.sqlDate(new Date())
             );
 
-
+*/
             row.net_before_taxe = 
               exchange.convertir(
                 row.net_before_taxe,
