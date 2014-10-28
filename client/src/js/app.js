@@ -510,6 +510,10 @@
       controller : 'fonction',
       templateUrl : 'partials/fonction/fonction.html'
     })
+    .when('/reports/operating_account/', {
+      controller : 'operating_account',
+      templateUrl : 'partials/reports/operating_account/operating_account.html'
+    })               
     .otherwise('/');
   }
 
