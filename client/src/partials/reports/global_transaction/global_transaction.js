@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('allTransactions', [
+.controller('report.global_transaction', [
   '$scope',
   'connect',
   'appstate',
@@ -8,9 +8,9 @@ angular.module('bhima.controllers')
   'util',
   function ($scope, connect, appstate, $translate, validate, util) {
 
-    //variables inits
-
     var dependencies = {}, map = {};
+    $scope.model = {};
+    $scope.model.sources = [$translate.instant('SELECT.ALL'), $translate.instant('SELECT.POSTING_JOURNAL'), $translate.instant('SELECT.GENERAL_LEDGER')];
     $scope.somDebit = 0;
     $scope.somCredit = 0;
 
@@ -44,10 +44,7 @@ angular.module('bhima.controllers')
     $scope.dates = {};
     $scope.state = {};
     $scope.account = {};
-    $scope.model = {};
-    $scope.model.sources = [$translate.instant('SELECT.ALL'), $translate.instant('SELECT.POSTING_JOURNAL'), $translate.instant('SELECT.GENERAL_LEDGER')];
 
-    //fonctions
     function formatAccount(account) {
       return [
         account.account_number, account.account_txt
@@ -60,33 +57,27 @@ angular.module('bhima.controllers')
         account.account_number = String(account.account_number);
       });
       $scope.model.c = $scope.enterprise.currency_id;
-      // console.log('enterprise id', $scope.model.c)
       $scope.exchange_rate.data.forEach(function (item) {
         map[util.sqlDate(item.date)] = {c_id : item.foreign_currency_id, rate : item.rate};
       });
     }
 
-
     function fill() {
-     // var f = (account_id && account_id != 0)? selective(account_id) : all ();
-      if (!$scope.model.account_id) { all(); }
+      if(!$scope.enterprise || !$scope.exchange_rate) {return;}
+     var f = ($scope.model.account_id && $scope.model.account_id != 0)? selective($scope.model.account_id) : all ();
     }
 
-    /*
     function selective() {
       $scope.mode = 'selected';
       var qo = {
         source : $scope.model.source_id,
         enterprise_id : $scope.enterprise.id,
         account_id : $scope.model.account_id,
-        datef : $scope.dates.from,
-        datet : $scope.dates.to
+        datef : util.sqlDate($scope.dates.from),
+        datet : util.sqlDate($scope.dates.to)
       };
 
-      $scope.model.account_number = $scope.accounts.data.filter(function(value) {
-        return value.id === $scope.model.account_id;
-      })[0].account_number;
-
+      $scope.model.account_number = $scope.accounts.get($scope.model.account_id).account_number;
       connect.fetch('/reports/allTrans/?'+JSON.stringify(qo))
       .then(function(res) {
         if (res.length > 0) {
@@ -104,7 +95,6 @@ angular.module('bhima.controllers')
         }
       });
     }
-    */
 
     function all() {
       $scope.mode = 'all';
@@ -112,8 +102,8 @@ angular.module('bhima.controllers')
         source : $scope.model.source_id,
         enterprise_id : $scope.enterprise.id,
         account_id : 0,
-        datef : $scope.state.from,
-        datet : $scope.state.to
+        datef : util.sqlDate($scope.state.from),
+        datet : util.sqlDate($scope.state.to)
       };
       connect.fetch(
         '/reports/allTrans/?'+JSON.stringify(qo)
@@ -139,7 +129,7 @@ angular.module('bhima.controllers')
 
     function getValue (obj, val, cVal) {
       if (cVal === $scope.model.c) { return val; }
-      return (obj.c_id === cVal)? 1 : (obj.rate)*val; //not good because it supporte only two currency, I will fix it very soon
+      return (obj.c_id === cVal)? 1 : (obj.rate) * val; //not good because it supporte only two currency, I will fix it very soon
     }
 
     function search () {
@@ -149,17 +139,14 @@ angular.module('bhima.controllers')
         source : $scope.model.source_id,
         enterprise_id : $scope.enterprise.id,
         account_id : $scope.model.account_id,
-        datef : $scope.state.from,
-        datet : $scope.state.to
+        datef : util.sqlDate($scope.state.from),
+        datet : util.sqlDate($scope.state.to)
       };
 
       if ($scope.model.account_id && $scope.model.account_id === 0) {
         $scope.model.account_number = 'Tous';
       } else {
-        $scope.model.account_number = $scope.accounts.data.filter(function (value) {
-          return value.id === $scope.model.account_id;
-        })[0]
-        .account_number;
+        $scope.model.account_number = $scope.accounts.get($scope.model.account_id).account_number;
       }
 
       connect.fetch('/reports/allTrans/?'+JSON.stringify(qo))

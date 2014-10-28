@@ -23,13 +23,19 @@
 
 <div class="reportBody" style="margin-top: 87px">
   <div class="reportFrame">
+    <h3 class="visible-print" style="margin:0px;text-align:center;width:35%;line-height:0.8em;">
+    {{ "UTIL.IMCK" | translate }} <br>
+    <small> {{ "UTIL.IMCK_LONG" | translate }}</small><br>
+    <small> {{ "UTIL.TSHIKAJI" | translate }}</small>
+    </h3>
     
+
     <div style="margin-bottom : 15px">
-      <div style="margin-bottom : 15px">
+      <div ng-if="!session.requestId" class="hidden-print" style="margin-bottom : 15px">
         {{ "REPORT.ACCOUNT_STATEMENT.NO_ACCOUNT_SPECIFIED" | translate }}
       </div>
       
-      <div class="input-group"> 
+      <div class="hidden-print input-group"> 
         <input 
           class="form-bhima"
           type="text"

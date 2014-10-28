@@ -115,8 +115,13 @@
       "/getDistinctInventories/",
       "/partials/",
       "/getEnterprisePayment/",
+<<<<<<< HEAD
       "/getPeriodeFiscalYear/",
       "/getExploitationAccount/"
+=======
+      "/cost_periodic/",
+      "/profit_periodic/"
+>>>>>>> dev
     ]
   }
 }

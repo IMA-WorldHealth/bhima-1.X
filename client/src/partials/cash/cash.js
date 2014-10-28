@@ -261,7 +261,7 @@ angular.module('bhima.controllers')
       invoice = {
         date : date,
         document_id : id,
-        description : ['CP E', id, $scope.patient.last_name, date].join('/')
+        description : [$scope.project.abbr + '_CAISSEAUX', id, $scope.patient.last_name, date].join('/')
       };
 
       if ($scope.data.overdue) {

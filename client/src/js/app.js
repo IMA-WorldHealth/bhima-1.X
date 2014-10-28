@@ -187,6 +187,14 @@
       controller: 'reportIncomeExpensive',
       templateUrl: 'partials/reports/income_expensive/income_expensive.html'
     })
+    .when('/reports/service_exploitation/', {
+      controller: 'report.service_exploitation',
+      templateUrl: 'partials/reports/service_exploitation/service_exploitation.html'
+    })
+    .when('/reports/global_transaction/', {
+      controller: 'report.global_transaction',
+      templateUrl: 'partials/reports/global_transaction/global_transaction.html'
+    })
     .when('/location', {
       controller : 'location',
       templateUrl: 'partials/location/location.html'
@@ -429,11 +437,11 @@
     .when('/reports/expense_report/', {
       controller : 'primary_cash.expenseReport',
       templateUrl : 'partials/reports/primary_cash/expense/expense_report.html'
-    }) 
+    })
     .when('/reports/stock_report/', {
       controller : 'stock_report',
       templateUrl : 'partials/reports/stock/stock_report.html'
-    })       
+    })
     .when('/grade_employers/', {
       controller : 'grade',
       templateUrl : 'partials/grade_employers/grade_employers.html'
@@ -453,7 +461,7 @@
     .when('/taxes_management/config_tax/', {
       controller : 'config_tax',
       templateUrl : 'partials/taxe/config_tax/config_tax.html'
-    })    
+    })
     .when('/offday_management/', {
       controller : 'offdays',
       templateUrl : 'partials/offdays/offdays.html'
@@ -473,11 +481,11 @@
     .when('/rubric_management/config_rubric/', {
       controller : 'config_rubric',
       templateUrl : 'partials/rubric/config_rubric/config_rubric.html'
-    }) 
+    })
     .when('/rubric_management/rubriques_payroll/', {
       controller : 'rubriques_payroll',
       templateUrl : 'partials/rubric/rubriques_payroll/rubriques_payroll.html'
-    })       
+    })
     .when('/reports/daily_consumption/', {
       controller : 'daily_consumption',
       templateUrl : 'partials/reports/daily_consumption/daily_consumption.html'
@@ -508,7 +516,7 @@
     })               
     .otherwise('/');
   }
- 
+
   function translateConfig($translateProvider) {
     //TODO Review i18n and determine if this it the right solution/grade_employers/
     $translateProvider.useStaticFilesLoader({
