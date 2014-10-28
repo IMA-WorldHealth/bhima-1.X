@@ -81,7 +81,7 @@ angular.module('bhima.controllers')
     function getAccount(currencyId, cashBoxId) {
       var accountId;
       $scope.cash_box_account_currencies.data.forEach(function (box) {
-        if (box.currency_id === currencyId && box.cash_box_id == cashBoxId) {
+        if (box.currency_id === currencyId && box.cash_box_id === cashBoxId) {
           accountId = box.account_id;
         }
       });
