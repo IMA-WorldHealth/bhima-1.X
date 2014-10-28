@@ -133,7 +133,7 @@
                   <div class="form-group col-xs-4">
                     <label class="col-xs-4">{{"PRIMARY_CASH.EXPENSE.HOLLY_DAY" | translate}}</label>
                     <div class="input-group col-xs-8">
-                      <input type="number" ng-model="row.hollyday" disabled  class="form-bhima" min="0" required>
+                      <input type="number" ng-model="row.hollydays" disabled  class="form-bhima" min="0" required>
                       <span class="input-group-addon">{{"PRIMARY_CASH.EXPENSE.DAYS" | translate}} </span>
                     </div>
                   </div>
@@ -143,7 +143,20 @@
                   <legend>
                     {{"PRIMARY_CASH.EXPENSE.RUBRICS" | translate}}                    
                   </legend>
+                  <div ng-repeat='rubrics in session.model.rubric_config.data'>
+                    <div class="form-group col-xs-6">
+                      <div class="col-xs-4">
+                        <label class="control-label">{{rubrics.label}}</label>
+                      </div>
 
+                      <div class="input-group col-xs-8">
+                        <input type="number" ng-model="row[rubrics.abbr]" ng-value="0" class="form-bhima" min="0" required>
+                        <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
+                      </div>
+                    </div> 
+                  </div>
+
+<!--                
                   <div class="form-group col-xs-3">
                     <div class="col-xs-4">
                       <label class="control-label">{{"PRIMARY_CASH.EXPENSE.HOUSING" | translate}}</label>
@@ -187,6 +200,7 @@
                       <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
                     </div>
                   </div>
+ -->                
                 </fieldset>
 
                 <fieldset>
@@ -194,7 +208,20 @@
                     {{"PRIMARY_CASH.EXPENSE.TAXES_OTHERS" | translate}}
                   </legend>
 
-                  <div class="form-group col-xs-3">
+                  <div ng-repeat='taxesEmp in taxEmp'>
+                    <div class="form-group col-xs-6">
+                      <div class="col-xs-4">
+                        <label class="control-label">{{taxesEmp.label}}</label>
+                      </div>
+
+                      <div class="input-group col-xs-8">
+                        <input type="number" ng-model="row[taxesEmp.abbr]" ng-value="0" class="form-bhima" min="0" required>
+                        <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
+                      </div>
+                    </div> 
+                  </div>                  
+
+<!--                   <div class="form-group col-xs-3">
                     <div class="col-xs-4">
                       <label class="control-label">{{"PRIMARY_CASH.EXPENSE.INSS" | translate}}</label>
                     </div>
@@ -237,14 +264,27 @@
                       <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
                     </div>
                   </div>
+ -->                
                 </fieldset>
 
                 <fieldset>
                   <legend>
                     {{"PRIMARY_CASH.EXPENSE.TAXES_OTHERS_ENTERPRISE" | translate}}
                   </legend>
+                  <div ng-repeat='taxesComp in taxComp'>
+                    <div class="form-group col-xs-6">
+                      <div class="col-xs-4">
+                        <label class="control-label">{{taxesComp.label}}</label>
+                      </div>
 
-                  <div class="form-group col-xs-3">
+                      <div class="input-group col-xs-8">
+                        <input type="number" ng-model="row[taxesComp.abbr]" ng-value="0" class="form-bhima" min="0" required>
+                        <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
+                      </div>
+                    </div> 
+                  </div>                  
+
+<!--                   <div class="form-group col-xs-3">
                     <div class="col-xs-4">
                       <label class="control-label">{{"PRIMARY_CASH.EXPENSE.INSS" | translate}}</label>
                     </div>
@@ -286,7 +326,7 @@
                       <input type="number" ng-model="row.INPP"  class="form-bhima" min="0" required>
                       <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
                     </div>
-                  </div>
+                  </div> -->
                 </fieldset>
                 <hr/>
                 <div class="pull-right">

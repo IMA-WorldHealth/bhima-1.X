@@ -115,6 +115,8 @@
       "/getDistinctInventories/",
       "/partials/",
       "/getEnterprisePayment/",
+      "/getPeriodeFiscalYear/",
+      "/getExploitationAccount/",
       "/cost_periodic/",
       "/profit_periodic/"
     ]

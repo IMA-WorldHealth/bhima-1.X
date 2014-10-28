@@ -856,6 +856,7 @@
     "PAYROLL_REPORT"            : "Payroll Reports",
     "STOCK_STATUS"              : "Stock Status",
     "FONCTION"                  : "Job titles management",
+    "OPERATING_ACCOUNT"         : "Operating Account",
     "SERVICE_EXPLOITATION"      : "Exploitation per Service",
     "GLOBAL_TRANSACTION"        : "Account Movement"
   },
@@ -2190,6 +2191,29 @@
     "NO_FONCTION"    : "No job title saving",
     "ABBR"           : "Abr."
   },
+
+  "OPERATING_ACCOUNT" : {
+    "TITLE"         : "Operating Account",
+    "ALL"           : "All fiscal year",
+    "PAYSLIP"       : "Payslip",
+    "VIEW"          : "View",
+    "SELECT_PERIOD" : "Select a fiscal year",
+    "SELECT_OPTION" : "Select option",
+    "TOTAL_CHARGE"  : "Total Charge",
+    "TOTAL_PROFIT"  : "Totall profit",
+    "JANUARY"       : "January",
+    "FEBRUARY"      : "February",
+    "MARCH"         : "March",
+    "APRIL"         : "April",
+    "MAY"           : "May",
+    "JUNE"          : "June",
+    "JULY"          : "July",
+    "AUGUST"        : "August",
+    "SEPTEMBER"     : "September",
+    "OCTOBER"       : "October",
+    "NOVEMBER"      : "Novembre",
+    "DECEMBER"      : "December"
+  },    
 
   "SERVICE_EXPLOITATION" : {
     "TITLE"              : "Exploitation per service"
