@@ -1062,11 +1062,17 @@ angular.module('bhima.controllers')
                   var minus_right = 0, minus_left = 0;
 
                   if(num_pweekto > num_hdateto){
-                    minus_right = date_pweekto.getDate() - date_hdateto.getDate();
+                    //minus_right = date_pweekto.getDate() - date_hdateto.getDate();
+                    minus_right = num_pweekto - num_hdateto;
+                    minus_right /= (24*3600*1000);
+                    minus_right = parseInt(minus_right);
                   }
 
                   if(num_pweekfrom < num_hdatefrom){
-                    minus_left = date_hdatefrom.getDate() - date_pweekfrom.getDate();
+                    //minus_left = date_hdatefrom.getDate() - date_pweekfrom.getDate();
+                    minus_left = num_hdatefrom - num_pweekfrom;
+                    minus_left /= (24*3600*1000);
+                    minus_left = parseInt(minus_left);                    
                   }
 
                   var nbOffDaysPos = 0; 
@@ -1079,7 +1085,9 @@ angular.module('bhima.controllers')
                     }
                   }                  
 
-                  var total = date_pweekto.getDate() - date_pweekfrom.getDate() + 1 - nbOffDaysPos;
+                  var t2 = date_pweekto.getTime(); 
+                  var t1 = date_pweekfrom.getTime();
+                  var total = (parseInt((t2-t1)/(24*3600*1000))) + 1 - nbOffDaysPos;
                   if(minus_left > total) { return 0; }
                   if(minus_right > total) { return 0; } 
                   return total - (minus_left + minus_right);
