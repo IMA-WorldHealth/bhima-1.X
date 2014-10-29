@@ -1381,6 +1381,7 @@ create table `paiement` (
   `net_before_tax`          float default 0,
   `net_after_tax`           float default 0,
   `net_salary`              float default 0,
+  `is_paid`                 tinyint null default 0,
   primary key (`uuid`),
   key `employee_id` (`employee_id`),
   key `paiement_period_id` (`paiement_period_id`),
