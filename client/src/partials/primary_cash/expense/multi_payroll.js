@@ -202,7 +202,19 @@ angular.module('bhima.controllers')
       var self = this;
       var def = $q.defer();
       getHollyDayCount(emp)
-      .then(function (hl){
+      .then(function (hld){
+        var hl = 0;
+        self.coefhl = 0;
+        console.log(hld);
+        if(hld){
+          //console.log('Nombre de jour',hld.nb);
+          //console.log('Coeficient',hld.coeff[0]); 
+          hl = hld.nb;
+          self.coefhl = hld.coeff;
+          //console.log('Coef HolyDays',self.coefhl);
+        }
+        console.log('Le coefficient',self.coefhl);
+
         self.off_day = session.data.off_day;
         self.emp = emp;
         self.emp.basic_salary =
@@ -214,6 +226,7 @@ angular.module('bhima.controllers')
         );
         self.max_day = session.data.max_day;
         self.working_day = session.data.max_day - (hl + session.data.off_day);
+
         self.hollydays = hl;
         self.offdays = session.data.off_day;
         self.daily_salary = self.emp.basic_salary / session.data.max_day;
@@ -238,22 +251,22 @@ angular.module('bhima.controllers')
         var rubrics = session.model.rubric_config.data;
 
         rubrics.forEach(function (rub) {
-          dataRubric = (rub.is_percent) ?
-          ((self.daily_salary * (self.working_day + self.hollydays + self.offdays)) * rub.value) / 100 : rub.value;
+          dataRubric = (rub.is_percent) ? 
+          ((self.daily_salary * (self.working_day + self.coefhl + self.offdays)) * rub.value) / 100 : rub.value;  
           self[rub.abbr] = dataRubric;
         });
 
         taxes.forEach(function (tax) {
-          dataTaxes = (tax.is_percent) ?
-          ((self.daily_salary * (self.working_day + self.hollydays + self.offdays)) * tax.value) / 100 : tax.value;
+          dataTaxes = (tax.is_percent) ? 
+          ((self.daily_salary * (self.working_day + self.coefhl + self.offdays)) * tax.value) / 100 : tax.value;  
           self[tax.abbr] = dataTaxes;
         });
-        return getEmployeeINSS(self);
+        return getEmployeeINSS(self);     
       })
       .then(function (employee_INSS) {
         self.INS1 = employee_INSS;
-        self.net_before_taxe = ((self.working_day + self.hollydays + self.offdays) * self.daily_salary) - self.INS1;
-        return getIPR(self);
+        self.net_before_taxe = ((self.working_day + self.coefhl + self.offdays) * self.daily_salary) - self.INS1;       
+        return getIPR(self);        
       })
       .then(function (IPR){
         self.IPR1 = IPR;
@@ -436,6 +449,7 @@ angular.module('bhima.controllers')
         if(hollydays.length) {
           var pp_confs = session.model.paiement_period_conf.data;
           var soms = [];
+          var config = [];
 
           hollydays.forEach(function (h) {
             var nb = 0, nbOf = 0;
@@ -485,13 +499,19 @@ angular.module('bhima.controllers')
               nb += getValue(ppc);
             });
             soms.push(nb);
+            var valeur = nb * (h.percentage / 100); 
+            config.push(valeur); 
           });
 
           som = soms.reduce(function (x, y){
             return x+y;
           }, 0);
 
-          defer.resolve(som);
+          somConfig = config.reduce(function (x, y){
+            return x+y;
+          }, 0);
+
+          defer.resolve({nb : som, coeff : somConfig}); 
         }else{
           defer.resolve(0);
         }
@@ -618,7 +638,7 @@ angular.module('bhima.controllers')
 
       return $q.all(list.map(function (elmt) {
         var rc_records = [];
-        var tc_records = [];
+        var tc_records = [];       
         elmt.net_after_taxe = elmt.net_before_taxe - elmt.IPR1;
 
         var somRub = 0, SomTax = 0;
@@ -638,7 +658,7 @@ angular.module('bhima.controllers')
           }
           somRub += change;
         });
-        elmt.net_salary = elmt.net_after_taxe + somRub - (elmt.daily_salary * elmt.off_day) + elmt.offdays_cost;
+        elmt.net_salary = elmt.net_after_taxe + somRub - (elmt.daily_salary * elmt.off_day) + elmt.offdays_cost;  
 
         var paiement = {
           uuid : uuid(),
@@ -733,14 +753,14 @@ angular.module('bhima.controllers')
         var rubrics = session.model.rubric_config.data;
 
         rubrics.forEach(function (rub) {
-          dataRubric = (rub.is_percent) ?
-          ((row.daily_salary * (row.working_day + row.hollydays + row.offdays)) * rub.value) / 100 : rub.value;
+          dataRubric = (rub.is_percent) ? 
+          ((row.daily_salary * (row.working_day + row.coefhl + row.offdays)) * rub.value) / 100 : rub.value;  
           row[rub.abbr] = dataRubric;
         });
 
         taxes.forEach(function (tax) {
-          dataTaxes = (tax.is_percent) ?
-          ((row.daily_salary * (row.working_day + row.hollydays + row.offdays)) * tax.value) / 100 : tax.value;
+          dataTaxes = (tax.is_percent) ? 
+          ((row.daily_salary * (row.working_day + row.coefhl + row.offdays)) * tax.value) / 100 : tax.value;  
           row[tax.abbr] = dataTaxes;
         });
 
@@ -748,7 +768,7 @@ angular.module('bhima.controllers')
         getEmployeeINSS(row)
         .then(function (val) {
           row.INS1 = val;
-          row.net_before_taxe = ((row.working_day + row.hollydays + row.offdays) * row.daily_salary) - row.INS1;
+          row.net_before_taxe = ((row.working_day + row.coefhl + row.offdays) * row.daily_salary) - row.INS1; 
           var IPR = getIPR(row);
           row.IPR1 = IPR;
         });
@@ -765,14 +785,14 @@ angular.module('bhima.controllers')
         var rubrics = session.model.rubric_config.data;
 
         rubrics.forEach(function (rub) {
-          dataRubric = (rub.is_percent) ?
-          ((row.daily_salary * (row.working_day + row.hollydays + row.offdays)) * rub.value) / 100 : rub.value;
+          dataRubric = (rub.is_percent) ? 
+          ((row.daily_salary * (row.working_day + row.coefhl + row.offdays)) * rub.value) / 100 : rub.value;  
           row[rub.abbr] = dataRubric;
         });
 
         taxes.forEach(function (tax) {
-          dataTaxes = (tax.is_percent) ?
-          ((row.daily_salary * (row.working_day + row.hollydays + row.offdays)) * tax.value) / 100 : tax.value;
+          dataTaxes = (tax.is_percent) ? 
+          ((row.daily_salary * (row.working_day + row.coefhl + row.offdays)) * tax.value) / 100 : tax.value;  
           row[tax.abbr] = dataTaxes;
         });
 
@@ -780,7 +800,7 @@ angular.module('bhima.controllers')
         getEmployeeINSS(row)
         .then(function (val) {
           row.INS1 = val;
-          row.net_before_taxe = ((row.working_day + row.hollydays + row.offdays) * row.daily_salary) - row.INS1;
+          row.net_before_taxe = ((row.working_day + row.coefhl + row.offdays) * row.daily_salary) - row.INS1;
           var IPR = getIPR(row);
           row.IPR1 = IPR;
         });
@@ -835,7 +855,7 @@ angular.module('bhima.controllers')
                 util.sqlDate(new Date())
               );
             });
-            row.net_before_taxe =
+            row.net_before_taxe = 
               exchange.convertir(
                 row.net_before_taxe,
                 session.loading_currency_id,
