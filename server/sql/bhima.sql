@@ -1433,6 +1433,7 @@ drop table if exists `hollyday`;
 create table `hollyday` (
   `id`                      int unsigned auto_increment not null,
   `employee_id`             int unsigned not null,
+  `percentage`              float default 0,
   `label`                   text,
   `dateFrom`                date,
   `dateTo`                  date,

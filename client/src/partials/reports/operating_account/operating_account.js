@@ -62,6 +62,7 @@ angular.module('bhima.controllers')
       if(record.period_id == 'all'){
         $scope.fiscal_precisonD = '';
         $scope.fiscal_precison1 = $translate.instant('OPERATING_ACCOUNT.ALL'); 
+        
       } else {
         $scope.fiscal_precison1 = '';
         var precision = $scope.Periods.filter(function (item) {
