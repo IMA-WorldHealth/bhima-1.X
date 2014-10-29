@@ -181,18 +181,22 @@ app.get('/employee_list/', function (req, res, next) {
     "`employee`.`postnom`, `employee`.`sexe`, `employee`.`dob`, `employee`.`date_embauche`, `employee`.`service_id`, " +
     "`employee`.`nb_spouse`, `employee`.`nb_enfant`, `employee`.`grade_id`, `grade`.`text`, `grade`.`basic_salary`, " +
     "`fonction`.`id` AS `fonction_id`, `fonction`.`fonction_txt`, " +
-    "`employee`.`phone`, `employee`.`email`, `employee`.`adresse`, `employee`.`bank`, `employee`.`bank_account`, `employee`.`daily_salary`, `employee`.`location_id`, " +  
-    "`grade`.`code` AS `code_grade`, `debitor`.`uuid` as `debitor_uuid`, `debitor`.`text` AS `debitor_text`,`debitor`.`group_uuid` as `debitor_group_uuid`, " + 
-    "`creditor`.`uuid` as `creditor_uuid`, `creditor`.`text` AS `creditor_text`, `creditor`.`group_uuid` as `creditor_group_uuid` " +
+    "`employee`.`phone`, `employee`.`email`, `employee`.`adresse`, `employee`.`bank`, `employee`.`bank_account`, `employee`.`daily_salary`, `employee`.`location_id`, " +
+    "`grade`.`code` AS `code_grade`, `debitor`.`uuid` as `debitor_uuid`, `debitor`.`text` AS `debitor_text`,`debitor`.`group_uuid` as `debitor_group_uuid`, " +
+    "`creditor`.`uuid` as `creditor_uuid`, `creditor`.`text` AS `creditor_text`, `creditor`.`group_uuid` as `creditor_group_uuid`, " +
+    "`creditor_group`.`account_id` AS `creditor_account`, `debitor_group`.`account_id` AS `debitor_account`" +
     "FROM `employee` " +
     " JOIN `grade` ON `employee`.`grade_id` = `grade`.`uuid` " +
     " JOIN `fonction` ON `employee`.`fonction_id` = `fonction`.`id` " +
     " JOIN `debitor` ON `employee`.`debitor_uuid` = `debitor`.`uuid` " +
-    " JOIN `creditor` ON `employee`.`creditor_uuid` = `creditor`.`uuid` ";
+    " JOIN `creditor` ON `employee`.`creditor_uuid` = `creditor`.`uuid` " +
+    " JOIN `debitor_group` ON `debitor`.`group_uuid` = `debitor_group`.`uuid` " +
+    " JOIN `creditor_group` ON `creditor`.`group_uuid` = `creditor_group`.`uuid`";
 
 
   db.exec(sql)
   .then(function (result) {
+    console.log("EMPLOYEES :::", result);
     res.send(result);
   })
   .catch(function (err) { next(err); })
@@ -202,20 +206,20 @@ app.get('/employee_list/', function (req, res, next) {
 app.get('/journal_list/', function (req, res, next) {
 
   var sql =
-    "SELECT `posting_journal`.`uuid`, `posting_journal`.`fiscal_year_id`, `posting_journal`.`period_id`, " + 
-    "`posting_journal`.`trans_id`, `posting_journal`.`trans_date`, `posting_journal`.`doc_num`, " + 
+    "SELECT `posting_journal`.`uuid`, `posting_journal`.`fiscal_year_id`, `posting_journal`.`period_id`, " +
+    "`posting_journal`.`trans_id`, `posting_journal`.`trans_date`, `posting_journal`.`doc_num`, " +
     "`posting_journal`.`description`, `posting_journal`.`account_id`, `posting_journal`.`debit`, " +
     "`posting_journal`.`credit`, `posting_journal`.`currency_id`, `posting_journal`.`deb_cred_uuid`, " +
     "`posting_journal`.`deb_cred_type`, `posting_journal`.`inv_po_id`, " +
-    "`posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`currency_id`, " + 
-    "`posting_journal`.`comment`, `posting_journal`.`user_id`, `posting_journal`.`pc_id`, " + 
+    "`posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`currency_id`, " +
+    "`posting_journal`.`comment`, `posting_journal`.`user_id`, `posting_journal`.`pc_id`, " +
     "`posting_journal`.`cc_id`, `account`.`account_number`, `user`.`first`, " +
     "`user`.`last`, `currency`.`symbol`, `cost_center`.`text` AS `cc`, " +
     "`profit_center`.`text` AS `pc` " +
-    "FROM `posting_journal` JOIN `account` ON `posting_journal`.`account_id`=`account`.`id` " + 
-    "JOIN `user` ON `posting_journal`.`user_id`=`user`.`id` " + 
-    "JOIN `currency` ON `posting_journal`.`currency_id`=`currency`.`id` " + 
-    "LEFT JOIN `cost_center` ON `posting_journal`.`cc_id`=`cost_center`.`id` " + 
+    "FROM `posting_journal` JOIN `account` ON `posting_journal`.`account_id`=`account`.`id` " +
+    "JOIN `user` ON `posting_journal`.`user_id`=`user`.`id` " +
+    "JOIN `currency` ON `posting_journal`.`currency_id`=`currency`.`id` " +
+    "LEFT JOIN `cost_center` ON `posting_journal`.`cc_id`=`cost_center`.`id` " +
     "LEFT JOIN `profit_center` ON `posting_journal`.`pc_id`=`profit_center`.`id`"
 
   db.exec(sql)
@@ -229,15 +233,15 @@ app.get('/journal_list/', function (req, res, next) {
 app.get('/hollyday_list/:pp/:employee_id', function (req, res, next) {
   var pp = JSON.parse(req.params.pp);
   var sql =
-    "SELECT `hollyday`.`id`, `hollyday`.`label`, `hollyday`.`dateFrom`, `hollyday`.`dateTo` " + 
-    "FROM `hollyday` WHERE " + 
+    "SELECT `hollyday`.`id`, `hollyday`.`label`, `hollyday`.`dateFrom`, `hollyday`.`dateTo` " +
+    "FROM `hollyday` WHERE " +
     "((`hollyday`.`dateFrom`>=" + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + " AND " +
     "`hollyday`.`dateFrom`<=" + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ") OR " +
     "(`hollyday`.`dateTo`>=" + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + " AND " +
-    "`hollyday`.`dateTo`<=" + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ") OR " + 
+    "`hollyday`.`dateTo`<=" + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ") OR " +
     "(`hollyday`.`dateFrom`<=" + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + " AND " +
     "`hollyday`.`dateTo`>=" + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ")) AND " +
-    "`hollyday`.`employee_id`=" + sanitize.escape(req.params.employee_id) + ";"; 
+    "`hollyday`.`employee_id`=" + sanitize.escape(req.params.employee_id) + ";";
 
   db.exec(sql)
   .then(function (result) {
@@ -256,7 +260,7 @@ app.get('/period_paiement/', function (req, res, next) {
   //   "FROM " +
   //   "`employee`, `grade`, `debitor`, `creditor` " +
   //   "WHERE " +
-  //   "`employee`.`grade_id` = `grade`.`uuid` AND " + 
+  //   "`employee`.`grade_id` = `grade`.`uuid` AND " +
   //   "`employee`.`debitor_uuid` = `debitor`.`uuid` AND " +
   //   "`employee`.`creditor_uuid` = `creditor`.`uuid` "
 
@@ -522,7 +526,7 @@ app.get('/availableAccounts_profit/:id_enterprise/', function(req, res, next) {
 app.get('/cost/:id_project/:cc_id', function(req, res, next) {
   var sql =
     'SELECT `account`.`id`, `account`.`account_number`, `account`.`account_txt` FROM `account` '+
-    'WHERE `account`.`cc_id`=' + sanitize.escape(req.params.cc_id) + 
+    'WHERE `account`.`cc_id`=' + sanitize.escape(req.params.cc_id) +
     ' AND `account`.`account_type_id` <> 3';
 
   function process(accounts) {
@@ -554,7 +558,7 @@ app.get('/cost/:id_project/:cc_id', function(req, res, next) {
 app.get('/cost_periodic/:id_project/:cc_id/:start/:end', function(req, res, next) {
   var sql =
     'SELECT `account`.`id`, `account`.`account_number`, `account`.`account_txt` FROM `account` '+
-    'WHERE `account`.`cc_id`=' + sanitize.escape(req.params.cc_id) + 
+    'WHERE `account`.`cc_id`=' + sanitize.escape(req.params.cc_id) +
     ' AND `account`.`account_type_id` <> 3';
 
   function process(accounts) {
@@ -588,7 +592,7 @@ app.get('/profit/:id_project/:pc_id', function(req, res, next) {
 
   var sql =
     'SELECT `account`.`id`, `account`.`account_number`, `account`.`account_txt` FROM `account` '+
-    'WHERE `account`.`pc_id`=' + sanitize.escape(req.params.pc_id) + 
+    'WHERE `account`.`pc_id`=' + sanitize.escape(req.params.pc_id) +
     ' AND `account`.`account_type_id` <> 3';
 
   function process(accounts) {
@@ -620,7 +624,7 @@ app.get('/profit_periodic/:id_project/:pc_id/:start/:end', function(req, res, ne
 
   var sql =
     'SELECT `account`.`id`, `account`.`account_number`, `account`.`account_txt` FROM `account` '+
-    'WHERE `account`.`pc_id`=' + sanitize.escape(req.params.pc_id) + 
+    'WHERE `account`.`pc_id`=' + sanitize.escape(req.params.pc_id) +
     ' AND `account`.`account_type_id` <> 3';
 
   function process(accounts) {
@@ -1241,15 +1245,15 @@ app.get('/getTop10Consumption/', function (req, res, next) {
 app.get('/getPurchaseOrders/', function (req, res, next) {
   var sql;
   if(req.query.request == 'OrdersPayed'){
-    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE paid = '1'";  
+    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE paid = '1'";
   } else if (req.query.request == 'OrdersWatingPayment'){
-    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE paid = '0'";  
+    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE paid = '0'";
   } else if (req.query.request == 'OrdersReceived'){
-    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE closed = '1'";  
+    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE closed = '1'";
   } else if (req.query.request == 'InWatingReception'){
-    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE closed = '0' AND confirmed = '1'";  
-  }  
-  
+    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE closed = '0' AND confirmed = '1'";
+  }
+
   db.exec(sql)
   .then(function (result) {
     res.send(result);
@@ -1262,7 +1266,7 @@ app.get('/getTop10Donor/', function (req, res, next) {
   var sql = "SELECT donor.id, donor.name, donations.date, COUNT(date) AS 'dates' "
           + " FROM donations JOIN donor ON donor.id = donations.donor_id"
           + " GROUP BY donations.date, donor.id ORDER BY donations.date DESC Limit 10";
-          
+
   db.exec(sql)
   .then(function (result) {
     res.send(result);
@@ -1274,7 +1278,7 @@ app.get('/getTop10Donor/', function (req, res, next) {
 app.get('/getConsumptionTrackingNumber/', function (req, res, next) {
   var sql = "SELECT consumption.tracking_number, SUM(consumption.quantity) AS 'quantity'"
           + " FROM consumption"
-          + " GROUP BY consumption.tracking_number";   
+          + " GROUP BY consumption.tracking_number";
 
   db.exec(sql)
   .then(function (result) {
@@ -1291,7 +1295,7 @@ app.get('/getExpiredTimes/', function (req, res, next) {
         + " FROM stock"
         + " JOIN inventory ON inventory.uuid = stock.inventory_uuid"
         + " WHERE stock.expiration_date <= CURDATE()"
-        + " GROUP BY stock.tracking_number";  
+        + " GROUP BY stock.tracking_number";
 
   } else if(req.query.request == 'expiredDellai'){
     sql = "SELECT inventory.text, stock.lot_number, stock.tracking_number, stock.expiration_date,"
@@ -1299,15 +1303,15 @@ app.get('/getExpiredTimes/', function (req, res, next) {
         + " FROM stock JOIN inventory ON inventory.uuid = stock.inventory_uuid"
         + " WHERE ((DATEDIFF(stock.expiration_date ,CURDATE()) > '" + req.query.inf + "')"
         + " AND ((DATEDIFF(stock.expiration_date ,CURDATE()) <  '" + req.query.sup + "')))"
-        + " GROUP BY stock.tracking_number";  
+        + " GROUP BY stock.tracking_number";
   } else if(req.query.request == 'oneYear'){
     sql = "SELECT inventory.text, stock.lot_number, stock.tracking_number, stock.expiration_date,"
         + " SUM(stock.quantity) AS quantity"
         + " FROM stock JOIN inventory ON inventory.uuid = stock.inventory_uuid"
         + " WHERE (DATEDIFF(stock.expiration_date ,CURDATE()) > '365')"
-        + " GROUP BY stock.tracking_number";  
-  }     
-    
+        + " GROUP BY stock.tracking_number";
+  }
+
   db.exec(sql)
   .then(function (result) {
     res.send(result);
@@ -1391,7 +1395,7 @@ app.get('/getDataRubrics/', function (req, res, next) {
           + " FROM rubric_paiement"
           + " JOIN rubric ON rubric.id = rubric_paiement.rubric_id"
           + " WHERE rubric_paiement.paiement_uuid= " + sanitize.escape(req.query.invoiceId);
-          
+
   db.exec(sql)
   .then(function (result) {
     res.send(result);
@@ -1406,7 +1410,7 @@ app.get('/getDataTaxes/', function (req, res, next) {
           + " FROM tax_paiement"
           + " JOIN tax ON tax.id = tax_paiement.tax_id"
           + " WHERE tax.is_employee = '1' AND tax_paiement.paiement_uuid = " + sanitize.escape(req.query.invoiceId);
-          
+
   db.exec(sql)
   .then(function (result) {
     res.send(result);
@@ -1453,7 +1457,7 @@ app.get('/monthlyConsumptions/:inventory_uuid/:nb', function (req, res, next) {
 
 app.get('/getDelaiLivraison/:id', function (req, res, next) {
 
-  var sql = "SELECT " + 
+  var sql = "SELECT " +
   "ROUND(AVG(ROUND(DATEDIFF(s.entry_date, p.purchase_date) / 30))) AS dl " +
   "FROM purchase p " +
   "JOIN stock s ON p.uuid=s.purchase_order_uuid " +
@@ -1587,7 +1591,7 @@ app.get('/getExploitationAccount/', function (req, res, next) {
             + " WHERE period_total.fiscal_year_id = " + sanitize.escape(req.query.fiscal_year_id)
             + " AND (account.account_number LIKE '6%' OR account.account_number LIKE '7%')"
             + " GROUP BY account.account_number"
-            + " ORDER BY account.account_number ASC";    
+            + " ORDER BY account.account_number ASC";
   }
 
   req.query.fiscal_year_id
