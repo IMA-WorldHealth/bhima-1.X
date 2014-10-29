@@ -16,7 +16,7 @@ angular.module('bhima.controllers')
       query : {
         identifier : 'id',
         tables : {
-          'hollyday' : { columns : ['id', 'employee_id', 'label', 'dateFrom', 'dateTo'] },
+          'hollyday' : { columns : ['id', 'employee_id', 'label', 'percentage', 'dateFrom', 'dateTo'] },
           'employee' : { columns : ['name', 'postnom', 'prenom']}
         },
         join : ['hollyday.employee_id=employee.id']

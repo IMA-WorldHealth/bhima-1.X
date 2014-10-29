@@ -1039,6 +1039,7 @@ angular.module('bhima.controllers')
           }).
           success(function(res) {
             var hollydays = res;
+            $scope.dataHollydays = hollydays;
             if(hollydays.length) {
               var soms = [];
               hollydays.forEach(function (h) {
@@ -1097,6 +1098,14 @@ angular.module('bhima.controllers')
                   nb += getValue(ppc);
                   
                 });
+                h.nbJour = nb; 
+
+                var dailyRate = data[0].basic_salary / $scope.max_day;
+                h.dailyHollyd = dailyRate * (h.percentage /100); 
+                h.somHolly = h.dailyHollyd * h.nbJour;
+                $scope.TotalPaid += h.somHolly;
+                $scope.TotalNet += h.somHolly;
+                
                 soms.push(nb);
               });
 
@@ -1104,7 +1113,9 @@ angular.module('bhima.controllers')
                 return x+y;
               }, 0);
 
-              $scope.total_day = data[0].working_day + som;
+               
+              //$scope.total_day = data[0].working_day + som;
+              $scope.total_day = data[0].working_day;
 
               if($scope.max_day > 0){
 
@@ -1113,8 +1124,8 @@ angular.module('bhima.controllers')
                                 data[0].currency_id,
                                 util.sqlDate(new Date())
                               );
-
                 $scope.daly_rate = data[0].basic_salary / $scope.max_day;
+                
 
                 $scope.amont_payable = $scope.daly_rate * $scope.total_day; 
                 $scope.TotalPaid += $scope.amont_payable;
