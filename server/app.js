@@ -46,7 +46,8 @@ var report            = require('./routes/report')(db, sanitize, util),
     serviceDist       = require('./routes/serviceDist')(db, parser, journal, uuid),
     consumptionLoss   = require('./routes/consumptionLoss')(db, parser, journal, uuid),
     taxPayment        = require('./routes/taxPayment')(db, parser, journal, uuid),
-    donation          = require('./routes/postingDonation')(db, parser, journal, uuid);
+    donation          = require('./routes/postingDonation')(db, parser, journal, uuid),
+    promesse_payment  = require('./routes/postingPromessePayment')(db, parser, journal, uuid);
 
 // create app
 var app = express();
@@ -135,6 +136,13 @@ app.post('/payTax/', function (req, res, next) {
 
 app.post('/posting_donation/', function (req, res, next) {
   donation.execute(req.body, req.session.user_id, function (err, ans) {
+    if (err) { return next(err); }
+    res.send({resp: ans});
+  });
+});
+
+app.post('/posting_promesse_payment/', function (req, res, next) {
+  promesse_payment.execute(req.body, req.session.user_id, function (err, ans) {
     if (err) { return next(err); }
     res.send({resp: ans});
   });
@@ -1508,7 +1516,7 @@ app.get('/getEmployeePayment/:id', function (req, res, next) {
           + " JOIN paiement p ON e.id=p.employee_id "
           + " JOIN tax_paiement z ON z.paiement_uuid=p.uuid "
           + " JOIN tax t ON t.id=z.tax_id "
-          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.id) + " AND t.is_employee=1 ";
+          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.id) + " AND t.is_employee=1 AND p.is_paid=1 ";
 
   db.exec(sql)
   .then(function (result) {
@@ -1548,7 +1556,7 @@ app.get('/getEnterprisePayment/:employee_id', function (req, res, next) {
           + " JOIN paiement p ON e.id=p.employee_id "
           + " JOIN tax_paiement z ON z.paiement_uuid=p.uuid "
           + " JOIN tax t ON t.id=z.tax_id "
-          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.employee_id) + " AND t.is_employee=0 ";
+          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.employee_id) + " AND t.is_employee=0 AND p.is_paid=1 ";
 
   db.exec(sql)
   .then(function (result) {
@@ -1560,7 +1568,6 @@ app.get('/getEnterprisePayment/:employee_id', function (req, res, next) {
 
 
 //Obtention de periode d'une annee fiscal'
-
 app.get('/getPeriodeFiscalYear/', function (req, res, next) {
   console.log(req.query.fiscal_year_id);
   var sql = "SELECT * FROM period WHERE fiscal_year_id = " + sanitize.escape(req.query.fiscal_year_id);
@@ -1572,6 +1579,7 @@ app.get('/getPeriodeFiscalYear/', function (req, res, next) {
   .catch(function (err) { next(err); })
   .done();
 });
+
 // temporary error handling for development!
 app.get('/getExploitationAccount/', function (req, res, next) {
   console.log(req.query.fiscal_year_id);
