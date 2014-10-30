@@ -704,7 +704,9 @@
     "STOCK_QTE"          : "Stock Quantity",
     "STOCK_QTE_MIN"      : "Stock Minimum Quantity",
     "STOCK_QTE_MAX"      : "Stock Maximum Quantity",
-    "STOCK_QTE_SEC"      : "Security Stock Quantity"
+    "STOCK_QTE_SEC"      : "Security Stock Quantity",
+    "FOUR_ACCOUNT"       : "Four Account",
+    "SIX_ACCOUNT"        : "Charge Account"
   },
 
   "INVENTORY" : {
@@ -2214,7 +2216,7 @@
     "OCTOBER"       : "October",
     "NOVEMBER"      : "Novembre",
     "DECEMBER"      : "December"
-  },    
+  },
 
   "SERVICE_EXPLOITATION" : {
     "TITLE"              : "Exploitation per service"
