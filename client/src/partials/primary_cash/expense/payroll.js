@@ -29,6 +29,10 @@ angular.module('bhima.controllers')
         link : '/primary_cash/expense/multi_payroll/'
       },
       {
+        key : 'PRIMARY_CASH.EXPENSE.SALARY_PAYMENT',
+        link : '/primary_cash/expense/salary_payment/'
+      },
+      {
         key : 'PRIMARY_CASH.EXPENSE.TAX_PAYMENT',
         link : '/primary_cash/expense/tax_payment/'
       },

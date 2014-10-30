@@ -118,7 +118,8 @@
       "/getPeriodeFiscalYear/",
       "/getExploitationAccount/",
       "/cost_periodic/",
-      "/profit_periodic/"
+      "/profit_periodic/",
+      "/posting_promesse_payment/"
     ]
   }
 }
