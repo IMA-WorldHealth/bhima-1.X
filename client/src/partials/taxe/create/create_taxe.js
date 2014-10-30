@@ -15,18 +15,20 @@ angular.module('bhima.controllers')
       query : {
         identifier : 'id',
         tables : {
-          'tax' : { columns : ['id', 'label', 'abbr', 'is_employee', 'is_percent', 'account_id', 'value'] },
-          'account' : { columns : ['account_number', 'account_txt'] }
-        },
-        join : ['tax.account_id=account.id']
+          'tax' : { columns : ['id', 'label', 'abbr', 'is_employee', 'is_percent', 'four_account_id', 'six_account_id', 'value'] }
+        }
       }
     };
 
-    // Add by Chris Lomame for filtering accounts of class 6
-    $http.get('/getAccount6/').
-      success(function(data) {
-        $scope.accounts = data;
-    });
+    dependencies.accounts = {
+      query : {
+        tables : {
+          'account' : {
+            columns : ['id', 'account_number', 'account_txt']
+          }
+        }
+      }
+    };
 
     function startup (models) {
       angular.extend($scope, models);
@@ -40,7 +42,7 @@ angular.module('bhima.controllers')
 
     $scope.delete = function (taxes) {
       var result = confirm($translate.instant('TAXES.CONFIRM'));
-      if (result) {  
+      if (result) {
         connect.basicDelete('tax', taxes.id, 'id')
         .then(function () {
           $scope.taxes.remove(taxes.id);
@@ -83,14 +85,14 @@ angular.module('bhima.controllers')
               messenger.success($translate.instant('TAXES.UPDATE_SUCCES'));
               session.action = '';
               session.edit = {};
-            });        
+            });
           });
         } else if (record.abbr.length > 4){
-          messenger.danger($translate.instant('TAXES.NOT_SUP4'));  
-        }   
+          messenger.danger($translate.instant('TAXES.NOT_SUP4'));
+        }
       }  else {
-        messenger.danger($translate.instant('TAXES.NOT_EMPTY'));  
-      }  
+        messenger.danger($translate.instant('TAXES.NOT_EMPTY'));
+      }
     };
 
     $scope.save.new = function () {
@@ -110,11 +112,11 @@ angular.module('bhima.controllers')
             session.new = {};
           });
         } else if (record.abbr.length > 4){
-          messenger.danger($translate.instant('TAXES.NOT_SUP4'));  
-        }   
+          messenger.danger($translate.instant('TAXES.NOT_SUP4'));
+        }
       }  else {
-        messenger.danger($translate.instant('TAXES.NOT_EMPTY'));  
-      }  
-    }; 
-  } 
+        messenger.danger($translate.instant('TAXES.NOT_EMPTY'));
+      }
+    };
+  }
 ]);

@@ -844,7 +844,9 @@
     "STOCK_QTE"          : "Quantité en Stock",
     "STOCK_QTE_MIN"      : "Quantité Minimum",
     "STOCK_QTE_MAX"      : "Quantité Maximum",
-    "STOCK_QTE_SEC"      : "Stock de securité"
+    "STOCK_QTE_SEC"      : "Stock de securité",
+    "FOUR_ACCOUNT"       : "Compte de tier",
+    "SIX_ACCOUNT"        : "Compte charge"
   },
 
   "REPORT"                  : {
@@ -2241,8 +2243,8 @@
     "SEPTEMBER"     : "Septembre",
     "OCTOBER"       : "Octobre",
     "NOVEMBER"      : "Novembre",
-    "DECEMBER"      : "Décembre"    
-  },   
+    "DECEMBER"      : "Décembre"
+  },
 
   "SERVICE_EXPLOITATION" : {
     "TITLE"              : "Exploitation par service"

@@ -1304,11 +1304,14 @@ create table `tax` (
   `abbr`                    varchar(4) null,
   `is_employee`             boolean,
   `is_percent`              boolean,
-  `account_id`              int unsigned not null,
+  `four_account_id`         int unsigned null,
+  `six_account_id`          int unsigned null,
   `value`                   float default 0,
   primary key (`id`),
-  key `account_id` (`account_id`),
-  constraint foreign key (`account_id`) references `account` (`id`)
+  key `four_account_id` (`four_account_id`),
+  key `six_account_id` (`six_account_id`),
+  constraint foreign key (`four_account_id`) references `account` (`id`),
+  constraint foreign key (`six_account_id`) references `account` (`id`)
 ) engine=innodb;
 
 drop table if exists `config_tax`;
