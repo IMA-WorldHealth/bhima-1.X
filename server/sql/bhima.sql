@@ -1334,6 +1334,43 @@ create table `config_tax_item` (
   constraint foreign key (`tax_id`) references `tax` (`id`)
 ) engine=innodb;
 
+drop table if exists `cotisation`;
+create table `cotisation` (
+  `id`                      int unsigned auto_increment not null,
+  `label`                   text,
+  `abbr`                    varchar(4) null,
+  `is_employee`             boolean,
+  `is_percent`              boolean,
+  `four_account_id`         int unsigned null,
+  `six_account_id`          int unsigned null,
+  `value`                   float default 0,
+  primary key (`id`),
+  key `four_account_id` (`four_account_id`),
+  key `six_account_id` (`six_account_id`),
+  constraint foreign key (`four_account_id`) references `account` (`id`),
+  constraint foreign key (`six_account_id`) references `account` (`id`)
+) engine=innodb;
+
+drop table if exists `config_cotisation`;
+create table `config_cotisation` (
+  `id`                      int unsigned auto_increment not null,
+  `label`                   text,
+  primary key (`id`)
+) engine=innodb;
+
+drop table if exists `config_cotisation_item`;
+create table `config_cotisation_item` (
+  `id`                      int unsigned auto_increment not null,
+  `config_cotisation_id`    int unsigned not null,
+  `cotisation_id`           int unsigned not null,
+  `payable`                 boolean,
+  primary key (`id`),
+  key `config_cotisation_id` (`config_cotisation_id`),
+  key `cotisation_id` (`cotisation_id`),
+  constraint foreign key (`config_cotisation_id`) references `config_cotisation` (`id`),
+  constraint foreign key (`cotisation_id`) references `cotisation` (`id`)
+) engine=innodb;
+
 drop table if exists `config_accounting`;
 create table `config_accounting` (
   `id`                      int unsigned auto_increment not null,

@@ -861,7 +861,8 @@
     "FONCTION"                  : "Job titles management",
     "OPERATING_ACCOUNT"         : "Operating Account",
     "SERVICE_EXPLOITATION"      : "Exploitation per Service",
-    "GLOBAL_TRANSACTION"        : "Account Movement"
+    "GLOBAL_TRANSACTION"        : "Account Movement",
+    "COTISATION_MANAGEMENT"     : "Cotization management"
   },
 
   "RUBRIC_PAYROLL"       : {
@@ -1901,8 +1902,14 @@
 
   "TAXE_MANAGEMENT" : {
     "TITLE" : "Taxes management",
-    "CREATE_TAXE" : "taxes creation",
+    "CREATE_COTISATION" : "taxes creation",
     "CONFIGURE_IPR" : "IPR configuration",
+    "OPTIONS" : "Options"
+  },
+
+  "COTISATION_MANAGEMENT" : {
+    "TITLE" : "Cotisations management",
+    "CREATE_COTISATION" : "cotisation creation",
     "OPTIONS" : "Options"
   } ,
 
@@ -2002,6 +2009,23 @@
     "CURRENCY"            : "Currency"
   },
 
+  "COTISATIONS" : {
+    "TITLE"        : "cotisations management",
+    "REGISTERED"   : "Registered Cotisations",
+    "NEW_COTISATION"      : "New Cotisation",
+    "SAVE_SUCCES"  : "Successfully saving cotisation",
+    "NO_COTISATIONS"     : "No cotisation have been registred",
+    "ADD"          : "Add a cotisation",
+    "UPDATE_SUCCES": "Updated successfully",
+    "UPDATE"       : "Modify a Cotisation",
+    "CONFIRM"      : "Are you sure you want to delete this Cotisation",
+    "DELETE_SUCCESS" : "Deleted successfully",
+    "ALERT"        : "Cotisation management module is a module that has been designed to allow administration of existing cotisation within the organization, the table is left to record, to update the attributes of a cotisation and the deletion.",
+    "NOT_EMPTY"           : "Abbr. Can not be empty",
+    "NOT_SUP4"            : "Can not be more than 4 characters",
+    "CURRENCY"            : "Currency"
+  },
+
   "CONFIG_RUBRIC" : {
     "TITLE"         : "Configuration Rubrics",
     "NEW_CONFIG"    : "New configuration",
@@ -2039,6 +2063,43 @@
     "NO_CONFIG_TAX" : "No Configuration Taxes",
     "MESSAGE"       : "Please check the different taxes that will be payable for this configuration"
   },
+
+  "CONFIG_COTISATION" : {
+    "TITLE"         : "Configuration Cotisations",
+    "NEW_CONFIG"    : "New configuration",
+    "SAVE_SUCCES"  : "Successfully saving Configuration",
+    "UPDATE_SUCCES" : "Updated successfully",
+    "UPDATE"        : "Modify a Configuration",
+    "ADD"           : "Create a new configuration",
+    "CONFIRM"       : "Are you sure you want to delete this Configuration",
+    "REGISTERED"    : "Registered Configuration Cotisations",
+    "ALERT"         : "The configuration of Cotisations allows setting different kinds Cotisations that are taken during a pay period",
+    "CONFIG"        : "Configuration",
+    "RUBRIC"        : "Cotisations Payroll",
+    "PAYABLE"       : "Payable",
+    "DELETE_SUCCESS" : "Deleted successfully",
+    "NO_CONFIG_COTISATION" : "No Configuration Cotisations",
+    "MESSAGE"       : "Please check the different cotisations that will be payable for this configuration"
+  },
+
+    "CONFIG_COTISATION" : {
+    "TITLE"         : "Configuration Cotisations",
+    "NEW_CONFIG"    : "New configuration",
+    "SAVE_SUCCES"  : "Successfully saving Configuration",
+    "UPDATE_SUCCES" : "Updated successfully",
+    "UPDATE"        : "Modify a Configuration",
+    "ADD"           : "Create a new configuration",
+    "CONFIRM"       : "Are you sure you want to delete this Configuration",
+    "REGISTERED"    : "Registered Configuration Cotisations",
+    "ALERT"         : "The configuration of Cotisations allows setting different kinds Cotisations that are taken during a pay period",
+    "CONFIG"        : "Configuration",
+    "RUBRIC"        : "Cotisations Payroll",
+    "PAYABLE"       : "Payable",
+    "DELETE_SUCCESS" : "Deleted successfully",
+    "NO_CONFIG_COTISATION" : "No Configuration Cotisations",
+    "MESSAGE"       : "Please check the different cotisations that will be payable for this configuration"
+  },
+
 
   "DAILY_CONSUMPTION" : {
     "TITLE"         : "Daily Consumption",
