@@ -4,8 +4,6 @@ module.exports = function(db, parser, journal, uuid) {
   'use strict';
 
   function execute(data, userId, callback) {
-
-    console.log('voici les data : ', data);
     return writePrimary(data.primary)
       .then(function () {
         return writeItem(data.primary_details);
@@ -15,8 +13,6 @@ module.exports = function(db, parser, journal, uuid) {
       })
       .then(function(){ 
         var res = {};
-        // res.docId = data.main_consumptions[0].document_id;    
-        // console.log('res :::', res);
         callback(null, res);
       })
       .catch(function (err) {

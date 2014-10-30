@@ -154,7 +154,7 @@ angular.module('bhima.controllers')
         currency_id   : emp.currency_id,
         cost          : emp.net_salary,
         user_id       : session.model.cashier.data.id,
-        description   : 'Salary Payment ' + '(' + emp.label + ') : ' + emp.name + emp.postnom,
+        description   : 'Salary Payment ' + '(' + emp.name + emp.postnom + ') : ',
         cash_box_id   : session.cashbox,
         origin_id     : 6,
       };

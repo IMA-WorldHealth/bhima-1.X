@@ -2390,10 +2390,11 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     function getRecord (records) {
       if (records.length === 0) { throw new Error('pas enregistrement'); }
       reference = records[0];
-      console.log("other :::", details);
       var sql2 =
-      "SELECT account_id FROM `tax`" +
-      "WHERE `tax`.`id`=" + sanitize.escape(details.tax_id) + ";";
+              'SELECT `creditor_group`.`account_id`, `creditor`.`uuid` FROM `primary_cash`' +
+              ' JOIN `creditor` ON `creditor`.`uuid`=`primary_cash`.`deb_cred_uuid` ' +
+              ' JOIN `creditor_group` ON `creditor_group`.`uuid`=`creditor`.`group_uuid` ' +
+              ' WHERE `primary_cash`.`deb_cred_uuid`=' + sanitize.escape(reference.deb_cred_uuid) + ';';
       var date = util.toMysqlDate(get.date());
       return q([get.origin('tax_payment'), get.period(get.date()), get.exchangeRate(date), db.exec(sql2)]);
     }
@@ -2402,7 +2403,8 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       cfg.originId = originId;
       cfg.periodId = periodObject.id;
       cfg.fiscalYearId = periodObject.fiscal_year_id;
-      cfg.tax_account_id = res[0].account_id;
+      cfg.employee_account_id = res[0].account_id;
+      cfg.creditor_uuid = res[0].uuid;
       cfg.store = store;
       rate = cfg.store.get(reference.currency_id).rate;
       return get.transactionId(reference.project_id);
@@ -2426,13 +2428,13 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
             reference.project_id,
             cfg.fiscalYearId,
             cfg.periodId,
-            cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', cfg.tax_account_id
+            cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', cfg.employee_account_id
           ].join(',') + ', ' +
           [
             0, (reference.cost).toFixed(4),
             0, (reference.cost / rate).toFixed(4),
             reference.currency_id,
-            sanitize.escape(reference.deb_cred_uuid)
+            sanitize.escape(cfg.creditor_uuid)
           ].join(',') +
         ', \'C\', ' +
           [
@@ -2466,6 +2468,8 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       return db.exec(credit_sql);
     }
   }
+
+  
 
   // router for incoming requests
   table_router = {
