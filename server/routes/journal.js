@@ -2058,10 +2058,10 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       if (records.length === 0) { throw new Error('pas enregistrement'); }
       reference = records[0];
       var sql2 =
-      "SELECT account_id FROM `config_accounting`, `paiement_period`, `paiement` " +
-      "WHERE `paiement`.`paiement_period_id` = `paiement_period`.`id` AND " +
-      "`paiement_period`.`config_accounting_id` = `config_accounting`.`id` AND " +
-      "`paiement`.`uuid` = " + sanitize.escape(reference.document_uuid) + ";";
+      "SELECT `creditor_group`.`account_id`, `creditor`.`uuid` FROM `primary_cash`" +
+      " JOIN `creditor` ON `creditor`.`uuid`=`primary_cash`.`deb_cred_uuid`" +
+      " JOIN `creditor_group` ON `creditor_group`.`uuid`=`creditor`.`group_uuid` " +
+      " WHERE `primary_cash`.`uuid` = " + sanitize.escape(reference.primary_cash_uuid) + ";";
 
 
       var date = util.toMysqlDate(get.date());
@@ -2073,6 +2073,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       cfg.periodId = periodObject.id;
       cfg.fiscalYearId = periodObject.fiscal_year_id;
       cfg.account_id = res[0].account_id;
+      cfg.creditor_uuid = res[0].uuid;
       cfg.store = store;
       rate = cfg.store.get(reference.currency_id).rate;
       return get.transactionId(reference.project_id);
@@ -2096,13 +2097,13 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
             reference.project_id,
             cfg.fiscalYearId,
             cfg.periodId,
-            cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.account_id
+            cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', cfg.account_id
           ].join(',') + ', ' +
           [
             0, (reference.cost).toFixed(4),
             0, (reference.cost / rate).toFixed(4),
             reference.currency_id,
-            sanitize.escape(reference.deb_cred_uuid)
+            sanitize.escape(cfg.creditor_uuid)
           ].join(',') +
         ', \'C\', ' +
           [
@@ -2125,7 +2126,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
             reference.project_id,
             cfg.fiscalYearId,
             cfg.periodId,
-            cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', cfg.account_id
+            cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.account_id
           ].join(',') + ', ' +
           [
             reference.cost.toFixed(4), 0,
