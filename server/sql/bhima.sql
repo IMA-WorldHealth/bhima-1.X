@@ -1462,6 +1462,20 @@ create table `tax_paiement` (
   constraint foreign key (`tax_id`) references `tax` (`id`)
 ) engine=innodb;
 
+drop table if exists `cotisation_paiement`;
+create table `cotisation_paiement` (
+  `id`                      int unsigned auto_increment not null,
+  `paiement_uuid`           char(36) not null,
+  `cotisation_id`           int unsigned not null,
+  `value`                   float default 0,
+  `posted`                  boolean,
+  primary key (`id`),
+  key `paiement_uuid` (`paiement_uuid`),
+  key `cotisation_id` (`cotisation_id`),
+  constraint foreign key (`paiement_uuid`) references `paiement` (`uuid`),
+  constraint foreign key (`cotisation_id`) references `cotisation` (`id`)
+) engine=innodb;
+
 
 drop table if exists `offday`;
 create table `offday` (
