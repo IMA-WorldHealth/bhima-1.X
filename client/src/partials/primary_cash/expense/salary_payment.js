@@ -179,10 +179,13 @@ angular.module('bhima.controllers')
       .then(function () {
         var param = { uuid : emp.uuid, is_paid : 1 };
         return connect.put('paiement', [param], ['uuid'])
-        .then(init());
+        .then(function () { validate.refresh(dependencies); });
       })
       .then(function () {
-        return connect.fetch('/journal/payroll/' + package.primary.uuid);
+        return connect.fetch('/journal/salary_payment/' + package.primary.uuid);
+      })
+      .then(function () {
+        messenger.success('Paiement effectif de ' + emp.prenom + ' ' + emp.name + ' ' + emp.postnom + ' reussi', true);
       })
       .catch(function (err){ console.log(err); });
     }

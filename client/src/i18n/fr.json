@@ -1553,7 +1553,8 @@
       "SELECT_ACCOUNT"          : "Sélectionner un compte",
       "ACCOUNT"                 : "Compte",
       "ENTERPRISE_TAX_PAYMENT"  : "Paiement Taxes Entreprise",
-      "NO_DATA"                 : "Aucune donnée disponible"
+      "NO_DATA"                 : "Aucune donnée disponible",
+      "SALARY_PAYMENT"          : "Paiement Effectif du Salaire"
     },
     "INCOME" : {
       "TRANSFER"              : "Transfert",
@@ -2245,5 +2246,15 @@
 
   "SERVICE_EXPLOITATION" : {
     "TITLE"              : "Exploitation par service"
+  },
+
+  "SALARY_PAYMENT" : {
+    "TITLE"            : "Paiement Effectif du Salaire",
+    "EMPLOYEE"         : "Nom de l'employé",
+    "NET_SALARY"       : "Salaire Net",
+    "NET_BEFORE_TAX"   : "Net Avant Taxes",
+    "NET_AFTER_TAX"    : "Net Après Taxes",
+    "PAID"             : "Payé",
+    "SUBMIT_PAY"       : "Payer le salaire"
   }
 }
