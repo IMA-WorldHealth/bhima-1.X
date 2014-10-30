@@ -606,23 +606,27 @@ angular.module('bhima.controllers')
       var def = $q.defer();
 
       connect.basicPut('paiement', [packagePay.paiement], ['uuid'])
-        .then(function () {
-          return connect.basicPut('primary_cash', [packagePay.primary], ['uuid']);
-        })
-        .then(function () {
-          return connect.basicPut('primary_cash_item', [packagePay.primary_details], ['uuid']);
-        })
+        // .then(function () {
+        //   return connect.basicPut('primary_cash', [packagePay.primary], ['uuid']);
+        // })
+        // .then(function () {
+        //   return connect.basicPut('primary_cash_item', [packagePay.primary_details], ['uuid']);
+        // })
         .then(function () {
           return connect.basicPut('rubric_paiement', packagePay.rc_records, ['id']);
         })
         .then(function () {
           return connect.basicPut('tax_paiement', packagePay.tc_records, ['id']);
         })
-        .then(function () {
-          return connect.fetch('/journal/payroll/' + packagePay.primary.uuid);
-        })
         .then(function (res){
           def.resolve(res);
+        })
+        .then(function () {
+          var params = { 
+            paiement_uuid : packagePay.paiement.uuid,
+            project_id : $scope.project.id 
+          };
+          return $http.post('/posting_promesse_payment/', params);
         })
         .catch(function (err){
           def.reject(err);
@@ -691,34 +695,34 @@ angular.module('bhima.controllers')
           tc_records.push(record);
         });
 
-        var primary = {
-          uuid          : uuid(),
-          project_id    : $scope.project.id,
-          type          : 'S',
-          date          : util.sqlDate(new Date()),
-          deb_cred_uuid : elmt.emp.creditor_uuid,
-          deb_cred_type : 'C',
-          account_id    : session.selectedItem.account_id,
-          currency_id   : session.selectedItem.currency_id,
-          cost          : paiement.net_salary,
-          user_id       : session.model.user.data.id,
-          description   : 'Payroll : ' + elmt.emp.name + elmt.emp.postnom,
-          cash_box_id   : session.cashbox,
-          origin_id     : 6
-        };
+        // var primary = {
+        //   uuid          : uuid(),
+        //   project_id    : $scope.project.id,
+        //   type          : 'S',
+        //   date          : util.sqlDate(new Date()),
+        //   deb_cred_uuid : elmt.emp.creditor_uuid,
+        //   deb_cred_type : 'C',
+        //   account_id    : session.selectedItem.account_id,
+        //   currency_id   : session.selectedItem.currency_id,
+        //   cost          : paiement.net_salary,
+        //   user_id       : session.model.user.data.id,
+        //   description   : 'Payroll : ' + elmt.emp.name + elmt.emp.postnom,
+        //   cash_box_id   : session.cashbox,
+        //   origin_id     : 6
+        // };
 
-        var primary_details = {
-          uuid              : uuid(),
-          primary_cash_uuid : primary.uuid,
-          debit             : 0,
-          credit            : primary.cost,
-          document_uuid     : paiement.uuid
-        };
+        // var primary_details = {
+        //   uuid              : uuid(),
+        //   primary_cash_uuid : primary.uuid,
+        //   debit             : 0,
+        //   credit            : primary.cost,
+        //   document_uuid     : paiement.uuid
+        // };
 
         var packagePay = {
           paiement : paiement,
-          primary : primary,
-          primary_details : primary_details,
+          // primary : primary,
+          // primary_details : primary_details,
           rc_records : rc_records,
           tc_records : tc_records
         };
