@@ -2084,8 +2084,8 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       return debit();
     }
 
-    function credit () {
-      var credit_sql =
+    function debit () {
+      var debit_sql =
         'INSERT INTO posting_journal ' +
         '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
         '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
@@ -2110,11 +2110,11 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
             cfg.originId,
             user_id
           ].join(',') + ');';
-      return db.exec(credit_sql);
+      return db.exec(debit_sql);
     }
 
-    function debit () {
-      var debit_sql =
+    function credit () {
+      var credit_sql =
         'INSERT INTO posting_journal ' +
         '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
         '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
@@ -2133,21 +2133,22 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
             reference.currency_id
           ].join(',') + ', null, null, ' + [sanitize.escape(id), cfg.originId, user_id].join(',') +
         ');';
-      return db.exec(debit_sql);
+      return db.exec(credit_sql);
     }
   }
 
   function handlePromessePayment (id, user_id, data, done) {
-    // A FIXE : recuperer le project_id, document_uuid
     // Cette fonction ecrit dans le journal la promesse d'un paiment de salaire
     // mais le salaire n'est pas encore payE effectivement.
-    var sql, rate, state = {}, data, reference, cfg = {};
+    var sql, rate, state = {}, reference, cfg = {};
     state.user_id = user_id;
 
     sql =
-      'SELECT `paiement`.`uuid`, `paiement`.`employee_id`,`paiement`.`net_salary`, `paiement`.`currency_id`' +
+      'SELECT `config_accounting`.`account_id`, `paiement`.`uuid`, `paiement`.`employee_id`,`paiement`.`net_salary`, `paiement`.`currency_id`' +
       ' FROM `paiement`' +
-      ' WHERE `paiement`.`uuid` = ' + sanitize.escape(id) + ';';
+      ' JOIN `paiement_period` ON `paiement_period`.`id`=`paiement`.`paiement_period_id`' +
+      ' JOIN `config_accounting` ON `config_accounting`.`id`=`paiement_period`.`config_accounting_id`' +
+      ' WHERE `paiement`.`uuid` = ' + sanitize.escape(data.paiement_uuid) + ';';
 
     db.exec(sql)
     .then(getRecord)
@@ -2165,11 +2166,11 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       if (records.length === 0) { throw new Error('pas enregistrement'); }
       reference = records[0];
       var sql2 =
-      "SELECT account_id FROM `paiement`, `employee`, `creditor`, `creditor_group` " +
+      "SELECT account_id FROM `paiement`" +
       " JOIN `employee` ON `employee`.`id`=`paiement`.`employee_id`" +
       " JOIN `creditor` ON `creditor`.`uuid`=`employee`.`creditor_uuid`" +
       " JOIN `creditor_group` ON `creditor_group`.`uuid`=`creditor`.`group_uuid` " +
-      "`paiement`.`uuid` = " + sanitize.escape(reference.uuid) + ";";
+      " WHERE `paiement`.`uuid` = " + sanitize.escape(reference.uuid) + ";";
 
 
       var date = util.toMysqlDate(get.date());
@@ -2192,8 +2193,8 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
       return debit();
     }
 
-    function credit () {
-      var credit_sql =
+    function debit () {
+      var debit_sql =
         'INSERT INTO posting_journal ' +
         '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
         '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
@@ -2204,25 +2205,25 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
             data.project_id,
             cfg.fiscalYearId,
             cfg.periodId,
-            cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', cfg.account_id
+            cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.account_id
           ].join(',') + ', ' +
           [
             0, (reference.net_salary).toFixed(4),
             0, (reference.net_salary / rate).toFixed(4),
             reference.currency_id,
-            null // A FIXE : il faut un uuid
+            sanitize.escape(reference.uuid)
           ].join(',') +
         ', \'C\', ' +
           [
-            sanitize.escape(id),
+            sanitize.escape(data.paiement_uuid),
             cfg.originId,
             user_id
           ].join(',') + ');';
-      return db.exec(credit_sql);
+      return db.exec(debit_sql);
     }
 
-    function debit () {
-      var debit_sql =
+    function credit () {
+      var credit_sql =
         'INSERT INTO posting_journal ' +
         '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
         '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
@@ -2239,9 +2240,9 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
             reference.net_salary.toFixed(4), 0,
             (reference.net_salary / rate).toFixed(4), 0,
             reference.currency_id
-          ].join(',') + ', null, null, ' + [sanitize.escape(id), cfg.originId, user_id].join(',') +
+          ].join(',') + ', null, null, ' + [sanitize.escape(data.paiement_uuid), cfg.originId, user_id].join(',') +
         ');';
-      return db.exec(debit_sql);
+      return db.exec(credit_sql);
     }
   }
 
@@ -2485,7 +2486,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
     'consumption_loss'      : handleDistributionLoss,
     'payroll'               : handlePayroll,
     'salary_payment'        : handleSalaryPayment,
-    'salary_promesse'       : handlePromessePayment,
+    'promesse_payment'      : handlePromessePayment,
     'donation'              : handleDonation,
     'tax_payment'           : handleTaxPayment
   };

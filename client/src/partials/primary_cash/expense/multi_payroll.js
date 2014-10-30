@@ -618,11 +618,15 @@ angular.module('bhima.controllers')
         .then(function () {
           return connect.basicPut('tax_paiement', packagePay.tc_records, ['id']);
         })
-        // .then(function () {
-        //   return connect.fetch('/journal/promesse_payment/' + packagePay.paiement.uuid);
-        // })
         .then(function (res){
           def.resolve(res);
+        })
+        .then(function () {
+          var params = { 
+            paiement_uuid : packagePay.paiement.uuid,
+            project_id : $scope.project.id 
+          };
+          return $http.post('/posting_promesse_payment/', params);
         })
         .catch(function (err){
           def.reject(err);
