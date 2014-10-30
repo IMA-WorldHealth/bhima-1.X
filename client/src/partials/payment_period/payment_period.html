@@ -36,6 +36,7 @@
 	              	<table class="table table-condensed table-bordered table-striped" style="margin:0px;">
 	              		<tr><th>{{ "PAYMENT_PERIOD.RUBRIC" | translate}}</th><td>{{period.RUBRIC}}</td></tr>
 	              		<tr><th>{{ "PAYMENT_PERIOD.TAX" | translate}}</th><td>{{period.TAX}}</td></tr>
+	              		<tr><th>{{ "PAYMENT_PERIOD.COTISATION" | translate}}</th><td>{{period.COTISATION}}</td></tr>
 	              		<tr><th>{{ "PAYMENT_PERIOD.ACCOUNT" | translate}}</th><td>{{period.ACCOUNT}}</td></tr>
 	              	</table>
 	              </td>
@@ -101,6 +102,15 @@
 	          </div>
 
 	          <div class="form-group">
+	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.COTISATION" | translate }}</label>
+	            <div class="col-xs-8">
+	              <select ng-model="session.new.config_cotisation_id" class="form-bhima" ng-options="cotisation.id as cotisation.label for cotisation in config_cotisation.data" required="required">
+	              	<option>{{ "SELECT.PERIOD_COTISATION_CONFIG" | translate }}</option>
+	              </select>
+	            </div>
+	          </div>
+
+	          <div class="form-group">
 	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.ACCOUNT" | translate }}</label>
 	            <div class="col-xs-8">
 	              <select ng-model="session.new.config_accounting_id" class="form-bhima" ng-options="acc.id as acc.label for acc in config_accounting.data" required="required">
@@ -112,7 +122,7 @@
 	          <div class="form-group">
 	            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
 	            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
-	          </div>   
+	          </div>
 	        </form>
 	      </div>
 
@@ -160,6 +170,15 @@
 	          </div>
 
 	          <div class="form-group">
+	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.COTISATION" | translate }}</label>
+	            <div class="col-xs-8">
+	              <select ng-model="session.edit.config_cotisation_id" class="form-bhima" ng-options="cotisation.id as cotisation.label for cotisation in config_cotisation.data" required="required">
+	              	<option>{{ "SELECT.PERIOD_COTISATION_CONFIG" | translate }}</option>
+	              </select>
+	            </div>
+	          </div>
+
+	          <div class="form-group">
 	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.ACCOUNT" | translate }}</label>
 	            <div class="col-xs-8">
 	              <select ng-model="session.edit.config_accounting_id" class="form-bhima" ng-options="acc.id as acc.label for acc in config_accounting.data" required="required">
@@ -171,14 +190,14 @@
 	          <div class="form-group">
 	            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
 	            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
-	          </div>   
+	          </div>
 	        </form>
 	      </div>
 
 	      <div ng-switch-when="config">
 	      	<div class="panel panel-default">
 	      		<div class="panel-heading">
-	              <span class="glyphicon glyphicon-cog"></span> 
+	              <span class="glyphicon glyphicon-cog"></span>
 	              <span><strong>{{ "PAYMENT_PERIOD.CONFIG" | translate }}</strong></span>
 	              <span class="pull-right">
 	                <a ng-click="save.config()" class="clk">

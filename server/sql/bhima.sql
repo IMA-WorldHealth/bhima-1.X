@@ -1386,6 +1386,7 @@ create table `paiement_period` (
   `id`                      int unsigned auto_increment not null,
   `config_tax_id`           int unsigned not null,
   `config_rubric_id`        int unsigned not null,
+  `config_cotisation_id`    int unsigned not null,
   `config_accounting_id`    int unsigned not null,
   `label`                   text,
   `dateFrom`                date not null,
@@ -1393,9 +1394,11 @@ create table `paiement_period` (
   primary key (`id`),
   key `config_tax_id` (`config_tax_id`),
   key `config_rubric_id` (`config_rubric_id`),
+  key `config_cotisation_id` (`config_cotisation_id`),
   key `config_accounting_id` (`config_accounting_id`),
   constraint foreign key (`config_tax_id`) references `config_tax` (`id`),
   constraint foreign key (`config_rubric_id`) references `config_rubric` (`id`),
+  constraint foreign key (`config_cotisation_id`) references `config_cotisation` (`id`),
   constraint foreign key (`config_accounting_id`) references `config_accounting` (`id`)
 ) engine=innodb;
 

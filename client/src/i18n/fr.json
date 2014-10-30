@@ -1926,7 +1926,7 @@
 
   "TAXE_MANAGEMENT" : {
     "TITLE" : "Gestion des taxes",
-    "CREATE_COTISATION" : "Création des taxes",
+    "CREATE_TAXE" : "Création des taxes",
     "CONFIGURE_IPR" : "Configuration IPR",
     "OPTIONS" : "Options"
   },
@@ -1986,6 +1986,7 @@
     "FROM"           : "debut",
     "TO"             : "fin",
     "TAX"            : "Config. Tax.",
+    "COTISATION"            : "Config. Cotis.",
     "RUBRIC"         : "Config. Rub.",
     "NO_PERIODS"     : "Aucune période enregistrées",
     "CONFIG"         : "Configurer semaines",
