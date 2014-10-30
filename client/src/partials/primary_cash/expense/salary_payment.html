@@ -83,8 +83,8 @@
               <thead>
                 <tr>
                   <th>{{ "SALARY_PAYMENT.EMPLOYEE" | translate }}</th>
-                  <th>{{ "SALARY_PAYMENT.NET_BEFORE_TAXES" | translate }}</th>
-                  <th>{{ "SALARY_PAYMENT.NET_AFTER_TAXES" | translate }}</th>
+                  <th>{{ "SALARY_PAYMENT.NET_BEFORE_TAX" | translate }}</th>
+                  <th>{{ "SALARY_PAYMENT.NET_AFTER_TAX" | translate }}</th>
                   <th>{{ "SALARY_PAYMENT.NET_SALARY" | translate }}</th>
                   <th>{{ "SALARY_PAYMENT.PAID" | translate }}</th>
                   <th></th>
@@ -109,7 +109,7 @@
                   </td>
                   <td>
                     <button class="btn btn-success" ng-disabled="emp.is_paid==1" style="padding:0px 10px;" ng-click="submit(emp)">
-                      {{ "SALARY_PAYMENT.SUBMIT_PAID_SALARY" | translate }}
+                      {{ "SALARY_PAYMENT.SUBMIT_PAY" | translate }}
                     </button>
                   </td>
                 </tr>

@@ -1508,7 +1508,7 @@ app.get('/getEmployeePayment/:id', function (req, res, next) {
           + " JOIN paiement p ON e.id=p.employee_id "
           + " JOIN tax_paiement z ON z.paiement_uuid=p.uuid "
           + " JOIN tax t ON t.id=z.tax_id "
-          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.id) + " AND t.is_employee=1 ";
+          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.id) + " AND t.is_employee=1 AND p.is_paid=1 ";
 
   db.exec(sql)
   .then(function (result) {
@@ -1548,7 +1548,7 @@ app.get('/getEnterprisePayment/:employee_id', function (req, res, next) {
           + " JOIN paiement p ON e.id=p.employee_id "
           + " JOIN tax_paiement z ON z.paiement_uuid=p.uuid "
           + " JOIN tax t ON t.id=z.tax_id "
-          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.employee_id) + " AND t.is_employee=0 ";
+          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.employee_id) + " AND t.is_employee=0 AND p.is_paid=1 ";
 
   db.exec(sql)
   .then(function (result) {
