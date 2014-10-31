@@ -1304,11 +1304,14 @@ create table `tax` (
   `abbr`                    varchar(4) null,
   `is_employee`             boolean,
   `is_percent`              boolean,
-  `account_id`              int unsigned not null,
+  `four_account_id`         int unsigned null,
+  `six_account_id`          int unsigned null,
   `value`                   float default 0,
   primary key (`id`),
-  key `account_id` (`account_id`),
-  constraint foreign key (`account_id`) references `account` (`id`)
+  key `four_account_id` (`four_account_id`),
+  key `six_account_id` (`six_account_id`),
+  constraint foreign key (`four_account_id`) references `account` (`id`),
+  constraint foreign key (`six_account_id`) references `account` (`id`)
 ) engine=innodb;
 
 drop table if exists `config_tax`;
@@ -1331,6 +1334,43 @@ create table `config_tax_item` (
   constraint foreign key (`tax_id`) references `tax` (`id`)
 ) engine=innodb;
 
+drop table if exists `cotisation`;
+create table `cotisation` (
+  `id`                      int unsigned auto_increment not null,
+  `label`                   text,
+  `abbr`                    varchar(4) null,
+  `is_employee`             boolean,
+  `is_percent`              boolean,
+  `four_account_id`         int unsigned null,
+  `six_account_id`          int unsigned null,
+  `value`                   float default 0,
+  primary key (`id`),
+  key `four_account_id` (`four_account_id`),
+  key `six_account_id` (`six_account_id`),
+  constraint foreign key (`four_account_id`) references `account` (`id`),
+  constraint foreign key (`six_account_id`) references `account` (`id`)
+) engine=innodb;
+
+drop table if exists `config_cotisation`;
+create table `config_cotisation` (
+  `id`                      int unsigned auto_increment not null,
+  `label`                   text,
+  primary key (`id`)
+) engine=innodb;
+
+drop table if exists `config_cotisation_item`;
+create table `config_cotisation_item` (
+  `id`                      int unsigned auto_increment not null,
+  `config_cotisation_id`    int unsigned not null,
+  `cotisation_id`           int unsigned not null,
+  `payable`                 boolean,
+  primary key (`id`),
+  key `config_cotisation_id` (`config_cotisation_id`),
+  key `cotisation_id` (`cotisation_id`),
+  constraint foreign key (`config_cotisation_id`) references `config_cotisation` (`id`),
+  constraint foreign key (`cotisation_id`) references `cotisation` (`id`)
+) engine=innodb;
+
 drop table if exists `config_accounting`;
 create table `config_accounting` (
   `id`                      int unsigned auto_increment not null,
@@ -1346,6 +1386,7 @@ create table `paiement_period` (
   `id`                      int unsigned auto_increment not null,
   `config_tax_id`           int unsigned not null,
   `config_rubric_id`        int unsigned not null,
+  `config_cotisation_id`    int unsigned not null,
   `config_accounting_id`    int unsigned not null,
   `label`                   text,
   `dateFrom`                date not null,
@@ -1353,9 +1394,11 @@ create table `paiement_period` (
   primary key (`id`),
   key `config_tax_id` (`config_tax_id`),
   key `config_rubric_id` (`config_rubric_id`),
+  key `config_cotisation_id` (`config_cotisation_id`),
   key `config_accounting_id` (`config_accounting_id`),
   constraint foreign key (`config_tax_id`) references `config_tax` (`id`),
   constraint foreign key (`config_rubric_id`) references `config_rubric` (`id`),
+  constraint foreign key (`config_cotisation_id`) references `config_cotisation` (`id`),
   constraint foreign key (`config_accounting_id`) references `config_accounting` (`id`)
 ) engine=innodb;
 
@@ -1417,6 +1460,20 @@ create table `tax_paiement` (
   key `tax_id` (`tax_id`),
   constraint foreign key (`paiement_uuid`) references `paiement` (`uuid`),
   constraint foreign key (`tax_id`) references `tax` (`id`)
+) engine=innodb;
+
+drop table if exists `cotisation_paiement`;
+create table `cotisation_paiement` (
+  `id`                      int unsigned auto_increment not null,
+  `paiement_uuid`           char(36) not null,
+  `cotisation_id`           int unsigned not null,
+  `value`                   float default 0,
+  `posted`                  boolean,
+  primary key (`id`),
+  key `paiement_uuid` (`paiement_uuid`),
+  key `cotisation_id` (`cotisation_id`),
+  constraint foreign key (`paiement_uuid`) references `paiement` (`uuid`),
+  constraint foreign key (`cotisation_id`) references `cotisation` (`id`)
 ) engine=innodb;
 
 

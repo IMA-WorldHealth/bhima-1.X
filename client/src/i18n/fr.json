@@ -440,7 +440,8 @@
     "FONCTION"                  : "Gestion des fonctions",
     "OPERATING_ACCOUNT"         : "Compte d'exploitation",
     "SERVICE_EXPLOITATION"      : "Exploitation par Service",
-    "GLOBAL_TRANSACTION"        : "Mouvement des comptes"
+    "GLOBAL_TRANSACTION"        : "Mouvement des comptes",
+    "COTISATION_MANAGEMENT"     : "Gestion des cotisations"
 },
 
 
@@ -844,7 +845,9 @@
     "STOCK_QTE"          : "Quantité en Stock",
     "STOCK_QTE_MIN"      : "Quantité Minimum",
     "STOCK_QTE_MAX"      : "Quantité Maximum",
-    "STOCK_QTE_SEC"      : "Stock de securité"
+    "STOCK_QTE_SEC"      : "Stock de securité",
+    "FOUR_ACCOUNT"       : "Compte de tier",
+    "SIX_ACCOUNT"        : "Compte charge"
   },
 
   "REPORT"                  : {
@@ -1928,6 +1931,13 @@
     "OPTIONS" : "Options"
   },
 
+  "COTISATION_MANAGEMENT" : {
+    "TITLE" : "Gestion des cotisations",
+    "CREATE_COTISATION" : "Création des cotisations",
+    "OPTIONS" : "Options"
+  }
+  ,
+
   "OFFDAY_MANAGEMENT" : {
     "TITLE"           : "Gestion des jours fériés",
     "NEW_OFFDAY"      : "Nouveau Jour férié",
@@ -1976,6 +1986,7 @@
     "FROM"           : "debut",
     "TO"             : "fin",
     "TAX"            : "Config. Tax.",
+    "COTISATION"            : "Config. Cotis.",
     "RUBRIC"         : "Config. Rub.",
     "NO_PERIODS"     : "Aucune période enregistrées",
     "CONFIG"         : "Configurer semaines",
@@ -2026,6 +2037,23 @@
     "CURRENCY"            : "Monnaie"
   },
 
+  "COTISATIONS"                 : {
+    "TITLE"               : "Gestion des cotisations",
+    "REGISTERED"          : "Cotisations enregistrées",
+    "NEW_COTISATION"             : "Nouvelle cotisation",
+    "SAVE_SUCCES"         : "Cotisation enregistrée avec succès",
+    "NO_COTISATIONS"            : "Aucune cotisation n'a été enregistrée",
+    "ADD"                 : "Ajouter ",
+    "UPDATE_SUCCES"       : "Mise à jour avec succès",
+    "UPDATE"              : "Modifier",
+    "CONFIRM"             : "Voulez-vous vraiment effectuer cette operation ?",
+    "DELETE_SUCCESS"      : "Suppression avec succès",
+    "ALERT"               : "Le module création de cotisations est un module qui a été conçu pour permettre l'administration des cotisations existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'une cotisation ainsi que la suppression.",
+    "NOT_EMPTY"           : "ABR. ne peut être vide",
+    "NOT_SUP4"            : "Ne peut avoir plus de 4 caractères",
+    "CURRENCY"            : "Monnaie"
+  },
+
    "CONFIG_RUBRIC" : {
     "TITLE"         : "Configuration des rubriques",
     "NEW_CONFIG"    : "Nouvelle configuration",
@@ -2062,6 +2090,42 @@
     "DELETE_SUCCESS" : "Suppression avec succès",
     "NO_CONFIG_TAX"  : "Aucune configuration de taxes",
     "MESSAGE"        : "Veuillez cocher les différentes taxes qui seront payable pour cette configuration"
+  },
+
+  "CONFIG_COTISATION"      : {
+    "TITLE"          : "Configuration des cotisations",
+    "NEW_CONFIG"     : "Nouvelle configuration",
+    "SAVE_SUCCES"    : "Enregistrement avec succès",
+    "UPDATE_SUCCES"  : "Mis à jour avec succès",
+    "CONFIRM"        : "Etes vous sure de vouloir supprimer cette configuration",
+    "UPDATE"         : "Mettre à jour une configuration",
+    "ADD"            : "Créer une nouvelle configuration",
+    "REGISTERED"     : "Configuration des cotisations enregistrées",
+    "ALERT"          : "Le module configuration des cotisations, permet le paramétrage des différentes types cotisations qui sont prises pendant une période de paie",
+    "CONFIG"         : "Configuration",
+    "RUBRIC"         : "Cotisations Payroll",
+    "PAYABLE"        : "Payable",
+    "DELETE_SUCCESS" : "Suppression avec succès",
+    "NO_CONFIG_COTISATION"  : "Aucune configuration de cotisations",
+    "MESSAGE"        : "Veuillez cocher les différentes cotisations qui seront payable pour cette configuration"
+  },
+
+  "CONFIG_COTISATION"      : {
+    "TITLE"          : "Configuration des cotisations",
+    "NEW_CONFIG"     : "Nouvelle configuration",
+    "SAVE_SUCCES"    : "Enregistrement avec succès",
+    "UPDATE_SUCCES"  : "Mis à jour avec succès",
+    "CONFIRM"        : "Etes vous sure de vouloir supprimer cette configuration",
+    "UPDATE"         : "Mettre à jour une configuration",
+    "ADD"            : "Créer une nouvelle configuration",
+    "REGISTERED"     : "Configuration des cotisations enregistrées",
+    "ALERT"          : "Le module configuration des cotisations, permet le paramétrage des différentes types cotisations qui sont prises pendant une période de paie",
+    "CONFIG"         : "Configuration",
+    "RUBRIC"         : "Cotisations Payroll",
+    "PAYABLE"        : "Payable",
+    "DELETE_SUCCESS" : "Suppression avec succès",
+    "NO_CONFIG_COTISATION"  : "Aucune configuration de cotisations",
+    "MESSAGE"        : "Veuillez cocher les différentes cotisations qui seront payable pour cette configuration"
   },
 
   "DAILY_CONSUMPTION" : {
@@ -2241,8 +2305,8 @@
     "SEPTEMBER"     : "Septembre",
     "OCTOBER"       : "Octobre",
     "NOVEMBER"      : "Novembre",
-    "DECEMBER"      : "Décembre"    
-  },   
+    "DECEMBER"      : "Décembre"
+  },
 
   "SERVICE_EXPLOITATION" : {
     "TITLE"              : "Exploitation par service"

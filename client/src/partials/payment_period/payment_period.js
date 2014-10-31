@@ -11,7 +11,7 @@ angular.module('bhima.controllers')
 function($scope, $translate, validate, messenger, connect, appstate, uuid, util){
 	var dependencies = {},
 		session = $scope.session = {};
-	
+
 	dependencies.config_rubric = {
 		query : {
 			tables : {
@@ -28,6 +28,14 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
 		}
 	};
 
+  dependencies.config_cotisation = {
+    query : {
+      tables : {
+        config_cotisation : { columns : ['id', 'label']}
+      }
+    }
+  };
+
   dependencies.config_accounting = {
     query : {
       tables : {
@@ -41,6 +49,7 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
 	};
 
 	function startup (models) {
+    console.log(models);
       angular.extend($scope, models);
     }
 
@@ -52,7 +61,7 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
 
     $scope.delete = function (period) {
       var result = confirm($translate.instant('PAYMENT_PERIOD.CONFIRM'));
-      if (result) {  
+      if (result) {
       	connect.delete('config_paiement_period','paiement_period_id',period.id)
       	.then(function (){
       		connect.delete('paiement_period','id',period.id)
@@ -71,6 +80,7 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
       session.edit.dateTo = new Date(session.edit.dateTo);
       delete session.edit.RUBRIC;
       delete session.edit.TAX;
+      delete session.edit.COTISATION;
       delete session.edit.ACCOUNT;
     };
 
@@ -97,7 +107,7 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
       record.dateTo = util.sqlDate(record.dateTo);
       connect.basicPost('paiement_period', [record], ['id'])
       .then(function () {
-        messenger.success($translate.instant('PAYMENT_PERIOD.UPDATE_SUCCES')); 
+        messenger.success($translate.instant('PAYMENT_PERIOD.UPDATE_SUCCES'));
         $scope.paiement_period.put(record);
         session.action = '';
         session.edit = {};
@@ -176,13 +186,13 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
     	if (result && record.id && session.weeks.length) {
     		if (isValidWeeks(session.weeks)) {
     			connect.delete('config_paiement_period','paiement_period_id',record.id)
-	    		.then(function(){            
+	    		.then(function(){
 	    			insertConfigPaiementPeriod(angular.copy(session.weeks));
 	    		});
     		} else {
     			messenger.danger($translate.instant('PAYMENT_PERIOD.WARNING_WEEK'));
     		}
-    		
+
     	}
 
     	function insertConfigPaiementPeriod (data) {
@@ -213,7 +223,6 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
     	var r = false;
     	if (util.sqlDate(week.weekFrom) >= util.sqlDate(session.config.dateFrom) && util.sqlDate(week.weekTo) <= util.sqlDate(session.config.dateTo) && util.sqlDate(week.weekFrom) <= util.sqlDate(week.weekTo)) {r = true;}
     	else {r = false;}
-    	console.log(r);
     	return r;
     }
 

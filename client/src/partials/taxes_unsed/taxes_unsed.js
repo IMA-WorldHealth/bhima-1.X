@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('taxes_management.create', [
+.controller('taxes', [
   '$scope',
   '$translate',
   '$http',
@@ -8,6 +8,7 @@ angular.module('bhima.controllers')
   'connect',
   'appstate',
   function ($scope, $translate, $http, validate, messenger, connect, appstate) {
+    console.log("on est la");
     var dependencies = {},
         session = $scope.session = {};
 
@@ -15,7 +16,7 @@ angular.module('bhima.controllers')
       query : {
         identifier : 'id',
         tables : {
-          'tax' : { columns : ['id', 'label', 'abbr', 'is_employee', 'is_percent', 'four_account_id', 'six_account_id', 'value'] }
+          'tax' : { columns : ['id', 'label', 'is_employee', 'is_percent', 'four_account_id', 'six_account_id', 'value'] }
         }
       }
     };
@@ -32,9 +33,11 @@ angular.module('bhima.controllers')
 
     function startup (models) {
       angular.extend($scope, models);
+      console.log('startup', models);
     }
 
     appstate.register('enterprise', function (enterprise) {
+      console.log('appstate');
       $scope.enterprise = enterprise;
       validate.process(dependencies)
       .then(startup);
@@ -75,48 +78,38 @@ angular.module('bhima.controllers')
       delete record.account_number;
       delete record.account_txt;
 
-      if(record.abbr){
-        if(record.abbr.length <= 4){
-          connect.basicPost('tax', [record], ['id'])
-          .then(function () {
-            validate.refresh(dependencies)
-            .then(function (models) {
-              angular.extend($scope, models);
-              messenger.success($translate.instant('TAXES.UPDATE_SUCCES'));
-              session.action = '';
-              session.edit = {};
-            });
-          });
-        } else if (record.abbr.length > 4){
-          messenger.danger($translate.instant('TAXES.NOT_SUP4'));
-        }
-      }  else {
-        messenger.danger($translate.instant('TAXES.NOT_EMPTY'));
-      }
+      connect.basicPost('tax', [record], ['id'])
+      .then(function () {
+        validate.refresh(dependencies)
+        .then(function (models) {
+          angular.extend($scope, models);
+          messenger.success($translate.instant('TAXES.UPDATE_SUCCES'));
+          session.action = '';
+        session.edit = {};
+
+        });
+
+        // $scope.taxes.put(record);
+
+      });
     };
 
     $scope.save.new = function () {
       $scope.session.new.is_employee = ($scope.session.new.is_employee)? 1 : 0;
       $scope.session.new.is_percent = ($scope.session.new.is_percent)? 1 : 0;
-      var record = connect.clean(session.new);
-      if(record.abbr){
-        if(record.abbr.length <= 4){
-          connect.basicPut('tax', [record])
-          .then(function (res) {
 
-            validate.refresh(dependencies)
-            .then(function (models) {
-              angular.extend($scope, models);
-            });
-            session.action = '';
-            session.new = {};
-          });
-        } else if (record.abbr.length > 4){
-          messenger.danger($translate.instant('TAXES.NOT_SUP4'));
-        }
-      }  else {
-        messenger.danger($translate.instant('TAXES.NOT_EMPTY'));
-      }
+      var record = connect.clean(session.new);
+      record.id = '';
+      connect.basicPut('tax', [record])
+      .then(function (res) {
+
+        validate.refresh(dependencies)
+        .then(function (models) {
+          angular.extend($scope, models);
+        });
+        session.action = '';
+        session.new = {};
+      });
     };
   }
 ]);
