@@ -2502,7 +2502,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
               ' JOIN `creditor_group` ON `creditor_group`.`uuid`=`creditor`.`group_uuid` ' +
               ' WHERE `primary_cash`.`deb_cred_uuid`=' + sanitize.escape(reference.deb_cred_uuid) + ';';
       var date = util.toMysqlDate(get.date());
-      return q([get.origin('cotisation_payment'), get.period(get.date()), get.exchangeRate(date), db.exec(sql2)]);
+      return q([get.origin('cotisation_paiement'), get.period(get.date()), get.exchangeRate(date), db.exec(sql2)]);
     }
 
     function getDetails (originId, periodObject, store, res) {
@@ -2518,7 +2518,7 @@ module.exports = function (db, sanitize, util, validate, Store, uuid) {
 
     function getTransId (trans_id) {
       cfg.trans_id = trans_id;
-      cfg.descrip =  'Cotisation Payment/' + new Date().toISOString().slice(0, 10).toString();
+      cfg.descrip =  'PayCotisation/' + new Date().toISOString().slice(0, 10).toString();
       return debit();
     }
 
