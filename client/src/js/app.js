@@ -454,9 +454,17 @@
       controller : 'taxes_management.menu',
       templateUrl : 'partials/taxe/taxe_management.html'
     })
+    .when('/cotisations_management/', {
+      controller : 'cotisations_management.menu',
+      templateUrl : 'partials/cotisation/cotisation_management.html'
+    })
     .when('/taxes_management/create/', {
       controller : 'taxes_management.create',
       templateUrl : 'partials/taxe/create/create_taxe.html'
+    })
+    .when('/cotisations_management/create/', {
+      controller : 'cotisations_management.create',
+      templateUrl : 'partials/cotisation/create/create_cotisation.html'
     })
     .when('/taxes_management/ipr/', {
       controller : 'taxes_management.ipr',
@@ -465,6 +473,10 @@
     .when('/taxes_management/config_tax/', {
       controller : 'config_tax',
       templateUrl : 'partials/taxe/config_tax/config_tax.html'
+    })
+    .when('/cotisations_management/config_cotisation/', {
+      controller : 'config_cotisation',
+      templateUrl : 'partials/cotisation/config_cotisation/config_cotisation.html'
     })
     .when('/offday_management/', {
       controller : 'offdays',
@@ -517,7 +529,7 @@
     .when('/reports/operating_account/', {
       controller : 'operating_account',
       templateUrl : 'partials/reports/operating_account/operating_account.html'
-    })               
+    })
     .otherwise('/');
   }
 
