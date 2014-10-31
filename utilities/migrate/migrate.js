@@ -26,7 +26,7 @@ var keys = {
   '`fiscal_year`'                  : ' (enterprise_id, id, number_of_months, fiscal_year_txt, transaction_start_number, transaction_stop_number, fiscal_year_number, start_month, start_year, previous_fiscal_year, locked) ',
   '`period`'                       : ' (`id`, `fiscal_year_id`, `period_number`, `period_start`, `period_stop`, `locked`) ',
   '`account_type`'                 : ' (`id`, `type`) ',
-  '`account`'                      : ' (`id`, `account_type_id`, `enterprise_id`, `account_number`, `account_txt`, `parent`, `fixed`, `locked`, `cc_id`, `pc_id`, `created`) ',
+  '`account`'                      : ' (`id`, `account_type_id`, `enterprise_id`, `account_number`, `account_txt`, `parent`, `fixed`, `locked`, `cc_id`, `pc_id`, `created`, `classe`) ',
   '`period_total`'                 : ' (`enterprise_id`, `fiscal_year_id`, `period_id`, `account_id`, `credit`, `debit`, `locked`) ',
   '`inventory_group`'              : ' (`uuid`, `name`, `code`, `sales_account`, `cogs_account`, `stock_account`, `donation_account`) ',
   '`inventory_type`'               : ' (`id`, `text`) ',

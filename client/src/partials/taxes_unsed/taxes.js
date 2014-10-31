@@ -8,6 +8,7 @@ angular.module('bhima.controllers')
   'connect',
   'appstate',
   function ($scope, $translate, $http, validate, messenger, connect, appstate) {
+    console.log("on est la");
     var dependencies = {},
         session = $scope.session = {};
 
@@ -15,24 +16,28 @@ angular.module('bhima.controllers')
       query : {
         identifier : 'id',
         tables : {
-          'tax' : { columns : ['id', 'label', 'is_employee', 'is_percent', 'account_id', 'value'] },
-          'account' : { columns : ['account_number', 'account_txt'] }
-        },
-        join : ['tax.account_id=account.id']
+          'tax' : { columns : ['id', 'label', 'is_employee', 'is_percent', 'four_account_id', 'six_account_id', 'value'] }
+        }
       }
     };
 
-    // Add by Chris Lomame for filtering accounts of class 6
-    $http.get('/getAccount6/').
-      success(function(data) {
-        $scope.accounts = data;
-    });
+    dependencies.accounts = {
+      query : {
+        tables : {
+          'account' : {
+            columns : ['id', 'account_number', 'account_txt']
+          }
+        }
+      }
+    };
 
     function startup (models) {
       angular.extend($scope, models);
+      console.log('startup', models);
     }
 
     appstate.register('enterprise', function (enterprise) {
+      console.log('appstate');
       $scope.enterprise = enterprise;
       validate.process(dependencies)
       .then(startup);
@@ -40,7 +45,7 @@ angular.module('bhima.controllers')
 
     $scope.delete = function (taxes) {
       var result = confirm($translate.instant('TAXES.CONFIRM'));
-      if (result) {  
+      if (result) {
         connect.basicDelete('tax', taxes.id, 'id')
         .then(function () {
           $scope.taxes.remove(taxes.id);
@@ -83,9 +88,9 @@ angular.module('bhima.controllers')
         session.edit = {};
 
         });
-         
+
         // $scope.taxes.put(record);
-        
+
       });
     };
 
@@ -105,6 +110,6 @@ angular.module('bhima.controllers')
         session.action = '';
         session.new = {};
       });
-    }; 
-  } 
+    };
+  }
 ]);
