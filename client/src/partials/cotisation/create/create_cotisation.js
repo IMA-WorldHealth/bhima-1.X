@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('taxes_management.create', [
+.controller('cotisations_management.create', [
   '$scope',
   '$translate',
   '$http',
@@ -11,11 +11,11 @@ angular.module('bhima.controllers')
     var dependencies = {},
         session = $scope.session = {};
 
-    dependencies.taxes = {
+    dependencies.cotisations = {
       query : {
         identifier : 'id',
         tables : {
-          'tax' : { columns : ['id', 'label', 'abbr', 'is_employee', 'is_percent', 'four_account_id', 'six_account_id', 'value'] }
+          'cotisation' : { columns : ['id', 'label', 'abbr', 'is_employee', 'is_percent', 'four_account_id', 'six_account_id', 'value'] }
         }
       }
     };
@@ -40,21 +40,20 @@ angular.module('bhima.controllers')
       .then(startup);
     });
 
-    $scope.delete = function (taxes) {
-      var result = confirm($translate.instant('TAXES.CONFIRM'));
+    $scope.delete = function (cotisations) {
+      var result = confirm($translate.instant('COTISATIONS.CONFIRM'));
       if (result) {
-        connect.basicDelete('tax', taxes.id, 'id')
+        connect.basicDelete('cotisation', cotisations.id, 'id')
         .then(function () {
-          $scope.taxes.remove(taxes.id);
-          messenger.info($translate.instant('TAXES.DELETE_SUCCESS'));
+          $scope.cotisations.remove(cotisations.id);
+          messenger.info($translate.instant('COTISATIONS.DELETE_SUCCESS'));
         });
       }
     };
 
-    $scope.edit = function (taxes) {
-      console.log(taxes);
+    $scope.edit = function (cotisations) {
       session.action = 'edit';
-      session.edit = angular.copy(taxes);
+      session.edit = angular.copy(cotisations);
       session.edit.is_employee = session.edit.is_employee !== 0;
       session.edit.is_percent = session.edit.is_percent !== 0;
     };
@@ -77,21 +76,21 @@ angular.module('bhima.controllers')
 
       if(record.abbr){
         if(record.abbr.length <= 4){
-          connect.basicPost('tax', [record], ['id'])
+          connect.basicPost('cotisation', [record], ['id'])
           .then(function () {
             validate.refresh(dependencies)
             .then(function (models) {
               angular.extend($scope, models);
-              messenger.success($translate.instant('TAXES.UPDATE_SUCCES'));
+              messenger.success($translate.instant('COTISATIONS.UPDATE_SUCCES'));
               session.action = '';
               session.edit = {};
             });
           });
         } else if (record.abbr.length > 4){
-          messenger.danger($translate.instant('TAXES.NOT_SUP4'));
+          messenger.danger($translate.instant('COTISATIONS.NOT_SUP4'));
         }
       }  else {
-        messenger.danger($translate.instant('TAXES.NOT_EMPTY'));
+        messenger.danger($translate.instant('COTISATIONS.NOT_EMPTY'));
       }
     };
 
@@ -101,7 +100,7 @@ angular.module('bhima.controllers')
       var record = connect.clean(session.new);
       if(record.abbr){
         if(record.abbr.length <= 4){
-          connect.basicPut('tax', [record])
+          connect.basicPut('cotisation', [record])
           .then(function (res) {
 
             validate.refresh(dependencies)
@@ -112,10 +111,10 @@ angular.module('bhima.controllers')
             session.new = {};
           });
         } else if (record.abbr.length > 4){
-          messenger.danger($translate.instant('TAXES.NOT_SUP4'));
+          messenger.danger($translate.instant('COTISATIONS.NOT_SUP4'));
         }
       }  else {
-        messenger.danger($translate.instant('TAXES.NOT_EMPTY'));
+        messenger.danger($translate.instant('COTISATIONS.NOT_EMPTY'));
       }
     };
   }

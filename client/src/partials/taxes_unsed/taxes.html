@@ -21,22 +21,22 @@
         <table class="table table-condensed">
           <thead>
             <tr>
-              <th>{{ "COLUMNS.NR" | translate}}</th>
               <th>{{ "COLUMNS.LABEL" | translate}}</th>
               <th>{{ "COLUMNS.STAFF_COST" | translate}}</th>
               <th>{{ "COLUMNS.IS_PERCENT" | translate}}</th>
-              <th>{{ "COLUMNS.ACCOUNT" | translate}}</th>
+              <th>{{ "COLUMNS.FOUR_ACCOUNT" | translate}}</th>
+              <th>{{ "COLUMNS.SIX_ACCOUNT" | translate}}</th>
               <th>{{ "COLUMNS.VALUE" | translate}}</th>
               <th colspan="4">{{ "COLUMNS.ACTIONS" | translate }}</th>
             </tr>
           </thead>
           <tbody>
             <tr ng-repeat="tax in taxes.data">
-              <td>{{$index + 1}}</td>
               <td>{{ tax.label }}</td>
               <td>{{ tax.is_employee }}</td>
               <td>{{ tax.is_percent }}</td>
-              <td>{{ tax.account_number }}</td>
+              <td>{{ accounts.get(tax.four_account_id).account_number }}</td>
+              <td>{{ accounts.get(tax.six_account_id).account_number }}</td>
               <td>{{ tax.value }}</td>
               <td><a class="action" ng-click="edit(tax)"><span class="glyphicon glyphicon-pencil"></span></a></td>
               <td><a class="action danger" ng-click="delete(tax)"><span class="glyphicon glyphicon-trash"></span></a></td>
@@ -97,12 +97,12 @@
               </select>
 
             </div>
-          </div>          
+          </div>
 
           <div class="form-group">
             <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
             <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
-          </div>   
+          </div>
         </form>
       </div>
 
@@ -145,12 +145,12 @@
                 <option></option>
               </select>
             </div>
-          </div>   
+          </div>
 
           <div class="form-group">
             <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
             <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
-          </div>   
+          </div>
         </form>
       </div>
     </div>

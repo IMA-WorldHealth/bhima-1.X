@@ -40,7 +40,7 @@ angular.module('bhima.controllers')
         identifier : 'id',
         tables : {
           'tax' : {
-            columns : ['id', 'label', 'is_employee', 'is_percent', 'value', 'account_id', 'value']
+            columns : ['id', 'label', 'abbr', 'is_employee', 'is_percent', 'value', 'four_account_id', 'six_account_id', 'value']
           }
         }
       }
@@ -117,7 +117,7 @@ angular.module('bhima.controllers')
       var promises = removals.map(function (id) {
         return connect.delete('config_tax_item', 'id', id);
       });
-     
+
       // add the (newly) checked tax permissions
       if (additions.length > 0) { promises.push(connect.post('config_tax_item', additions)); }
 
@@ -197,7 +197,6 @@ angular.module('bhima.controllers')
           submitConfig();
           break;
         default:
-          console.log('current.state', current.state);
           console.log('[ERR]', 'I don\'t know what I\'m doing!');
       }
     };
@@ -216,7 +215,6 @@ angular.module('bhima.controllers')
           break;
 
         default:
-          console.log('current.state', current.state);
           console.log('[ERR]', 'I don\'t know what I\'m doing!');
           break;
       }
@@ -228,6 +226,6 @@ angular.module('bhima.controllers')
       angular.extend($scope, models);
       // order the data
     });
-	
+
   }
 ]);
