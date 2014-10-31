@@ -1803,7 +1803,8 @@ INSERT INTO `primary_cash_module` VALUES
 (4, "Generic Expense"),
 (5, "Generic Income"),
 (6, "Payroll"),
-(7, "Tax Payment");
+(7, "Tax Payment"),
+(8, "Cotisation Payment");
 
 INSERT INTO `fiscal_year` VALUES (200,1,11,'Tshikaji 2014',NULL,NULL,NULL,1,2014,NULL,0);
 

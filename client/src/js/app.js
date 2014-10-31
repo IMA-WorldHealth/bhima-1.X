@@ -354,6 +354,10 @@
       controller : 'primary_cash.enterprise_tax_payment',
       templateUrl : 'partials/primary_cash/expense/enterprise_tax_payment.html'
     })
+    .when('/primary_cash/expense/cotisation_payment/:cashbox', {
+      controller : 'primary_cash.cotisation_payment',
+      templateUrl : 'partials/primary_cash/expense/cotisation_payment.html'
+    })
     .when('/primary_cash/expense/salary_payment/:cashbox', {
       controller : 'primary_cash.salary_payment',
       templateUrl : 'partials/primary_cash/expense/salary_payment.html'

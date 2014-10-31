@@ -46,6 +46,7 @@ var report            = require('./routes/report')(db, sanitize, util),
     serviceDist       = require('./routes/serviceDist')(db, parser, journal, uuid),
     consumptionLoss   = require('./routes/consumptionLoss')(db, parser, journal, uuid),
     taxPayment        = require('./routes/taxPayment')(db, parser, journal, uuid),
+    cotisationPayment = require('./routes/cotisationPayment')(db, parser, journal, uuid),
     donation          = require('./routes/postingDonation')(db, parser, journal, uuid),
     promesse_payment  = require('./routes/postingPromessePayment')(db, parser, journal, uuid);
 
@@ -129,6 +130,13 @@ app.post('/consumption_loss/', function (req, res, next) {
 
 app.post('/payTax/', function (req, res, next) {
   taxPayment.execute(req.body, req.session.user_id, function (err, ans) {
+    if (err) { return next(err); }
+    res.send({resp: ans});
+  });
+});
+
+app.post('/payCotisation/', function (req, res, next) {
+  cotisationPayment.execute(req.body, req.session.user_id, function (err, ans) {
     if (err) { return next(err); }
     res.send({resp: ans});
   });
@@ -1538,6 +1546,18 @@ app.put('/setTaxPayment/', function (req, res, next) {
   .done();
 });
 
+app.put('/setCotisationPayment/', function (req, res, next) {
+  var sql = "UPDATE cotisation_paiement SET posted=1"
+          + " WHERE cotisation_paiement.paiement_uuid=" + sanitize.escape(req.body.paiement_uuid) + " AND cotisation_paiement.cotisation_id=" + sanitize.escape(req.body.cotisation_id);
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
 app.get('/getDistinctInventories/', function (req, res, next) {
   var sql = "SELECT DISTINCT inventory.code, inventory.text, stock.inventory_uuid FROM stock"
           + " JOIN inventory ON stock.inventory_uuid=inventory.uuid";
@@ -1603,6 +1623,22 @@ app.get('/getExploitationAccount/', function (req, res, next) {
   }
 
   req.query.fiscal_year_id
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getEmployeeCotisationPayment/:id', function (req, res, next) {
+  var sql = "SELECT e.id, e.code, e.prenom, e.name, e.postnom, e.creditor_uuid, p.uuid as paiement_uuid, p.currency_id, t.label, t.abbr, z.cotisation_id, z.value, z.posted"
+          + " FROM employee e "
+          + " JOIN paiement p ON e.id=p.employee_id "
+          + " JOIN cotisation_paiement z ON z.paiement_uuid=p.uuid "
+          + " JOIN cotisation t ON t.id=z.cotisation_id "
+          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.id) + " AND p.is_paid=1 ";
+
   db.exec(sql)
   .then(function (result) {
     res.send(result);
