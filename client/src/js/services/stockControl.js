@@ -2,6 +2,11 @@ angular.module('bhima.services')
 .service('stockControl', ['validate', '$q', 'connect','util', function (validate, $q, connect, util){
 	// Summary :
 	// Ce service calcul les qte moyennes de consommation des inventories
+	// A FAIRE : recuperer les consommations mensuelles de chaque lot
+	// A FAIRE : calculer les peremptions de chaque lots d'un inventory
+	// A FAIRE : des dimunaltion concrete pour DL
+	// A FAIRE : des dimunaltion concrete pour IC
+	// A FAIRE : gerer les cas de valeur null
 	var dependencies = {},
 		inventory = {};
 
@@ -23,6 +28,7 @@ angular.module('bhima.services')
 
 		function calculMois (models) {
 			var nb = models.nombreMois.data.nb;
+			if(nb > 6) nb = 6;
 			inventory.nb = nb;
 			deff.resolve(nb);
 		}
@@ -212,11 +218,48 @@ angular.module('bhima.services')
 		return deff.promise;
 	}
 
+	function getExpirationRisk (uuid) {
+		// Summary :
+		// Cette fonction calcul les risques a perimer RP des lots
+		var deff = $q.defer();
+		dependencies.monthsBeforeExpiration = {};
+		dependencies.monthsBeforeExpiration.query = '/getMonthsBeforeExpiration/'+uuid;
+
+		function calculRP (models) {
+			var months_before_expiration = models.monthsBeforeExpiration.data;
+			inventory.lots_expiration = months_before_expiration;
+			deff.resolve(months_before_expiration);
+		}
+
+		return validate.refresh(dependencies)
+			.then(calculRP)
+			.then(function(){ return deff.promise; });
+
+	}
+
 	function inventoryData (uuid,dl,ic) {
 		// Summary :
 		// uuid : le uuid de l'inventory
-		// dl : le delai de livraison ! important
-		// ic : l'intervalle de commande
+		// dl : (optionel) le delai de livraison ! important
+		// ic : (optionel) l'intervalle de commande
+
+		// cette fonction retourne un objet json
+		// Exemple : 
+		// {
+		//	cm: 26250 //Consommation mensuelle
+		// 	dl: 3 //Delai de livraison
+		// 	ic: 4 //Intervalle de Commande
+		// 	lots_expiration: Array[2] //Les lots de cette inventory
+		// 	mois_stock: 0.3047619047619048 // Le mois de stock (a arrondir)
+		// 	nb: 4 // Le nombre de mois pour le calcul de la consommation mensuelle (nb doit etre < 6)
+		// 	q: 254500 //
+		// 	s_max: 262500 // Stock Max
+		// 	s_min: 157500 // Stock Min
+		// 	ss: 78750 // Stock de securite
+		// 	stock: 8000 // L'etat du stock
+		//  stock_init: 113000 // Le cumul des differentes entrees dans le stock
+		// }
+
 		var deff = $q.defer();
 
 		getNombreMoisAVG(uuid)
@@ -226,19 +269,22 @@ angular.module('bhima.services')
 				getDelaiLivraison(uuid,dl)
 				.then(function () {
 					getIntervalleCommande(uuid,ic)
-					.then(function() {
+					.then(function () {
 						getStockSecurity(uuid,dl)
 						.then(function (ss) {
-							ic = ic || 1;
-							inventory.s_min = inventory.ss * 2;
-							inventory.s_max = inventory.cm * ic + inventory.s_min;
-							if(inventory.cm > 0) {
-								inventory.mois_stock = inventory.stock / inventory.cm;
-							}else {
-								inventory.mois_stock = 0;
-							}
-							inventory.q = inventory.s_max - inventory.stock;
-							deff.resolve(inventory);
+							getExpirationRisk(uuid)
+							.then(function () {
+								ic = ic || 1;
+								inventory.s_min = inventory.ss * 2;
+								inventory.s_max = inventory.cm * ic + inventory.s_min;
+								if(inventory.cm > 0) {
+									inventory.mois_stock = inventory.stock / inventory.cm;
+								}else {
+									inventory.mois_stock = 0;
+								}
+								inventory.q = inventory.s_max - inventory.stock;
+								deff.resolve(inventory);
+							});
 						});
 					});
 				});
@@ -249,11 +295,6 @@ angular.module('bhima.services')
 	}
 
 	//Output
-	this.getMonthlyConsumption = getMonthlyConsumption;
-	this.getDelaiLivraison = getDelaiLivraison;
-	this.getStockSecurity = getStockSecurity;
-	this.getNombreMoisAVG = getNombreMoisAVG;
 	this.inventoryData = inventoryData;
-	this.getIntervalleCommande = getIntervalleCommande;
 	
 }]);
