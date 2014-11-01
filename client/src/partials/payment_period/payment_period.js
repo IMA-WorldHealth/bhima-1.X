@@ -28,6 +28,14 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
 		}
 	};
 
+  dependencies.config_accounting = {
+    query : {
+      tables : {
+        config_accounting : { columns : ['id', 'label']}
+      }
+    }
+  };
+
 	dependencies.paiement_period = {
 		query : '/available_payment_period/'
 	};
@@ -63,6 +71,7 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
       session.edit.dateTo = new Date(session.edit.dateTo);
       delete session.edit.RUBRIC;
       delete session.edit.TAX;
+      delete session.edit.ACCOUNT;
     };
 
     $scope.config = function (period) {
@@ -84,6 +93,8 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
     $scope.save.edit = function () {
       var record = connect.clean(session.edit);
       delete record.reference;
+      record.dateFrom = util.sqlDate(record.dateFrom);
+      record.dateTo = util.sqlDate(record.dateTo);
       connect.basicPost('paiement_period', [record], ['id'])
       .then(function () {
         messenger.success($translate.instant('PAYMENT_PERIOD.UPDATE_SUCCES')); 
@@ -99,6 +110,8 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
 
     $scope.save.new = function () {
       var record = connect.clean(session.new);
+      record.dateFrom = util.sqlDate(record.dateFrom);
+      record.dateTo = util.sqlDate(record.dateTo);
       connect.basicPut('paiement_period', [record])
       .then(function () {
         messenger.success($translate.instant('PAYMENT_PERIOD.SAVE_SUCCES'));

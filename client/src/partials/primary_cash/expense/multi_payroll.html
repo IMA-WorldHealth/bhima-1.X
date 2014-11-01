@@ -61,7 +61,7 @@
   <div class="col-xs-12" ng-show="session.complete">
     <div class="panel panel-default">
       <div class="panel-heading" >
-        <b>{{ "PRIMARY_CASH.EXPENSE.MULTI_PAYROLL" | translate}}</b>
+        <b>{{ "PRIMARY_CASH.EXPENSE.PAYABLE_EMPLOYEE" | translate}} {{session.pp.dateFrom | date}} / {{session.pp.dateTo | date}}</b>
       </div>
       <div class="panel-body">
 
@@ -148,7 +148,7 @@
                     </div>
 
                     <div class="input-group col-xs-8">
-                      <input type="number" ng-model="row.housing"  class="form-bhima" min="0" required>
+                      <input type="number" ng-model="row.HOUS"  class="form-bhima" min="0" required>
                       <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
                     </div>
                   </div>          
@@ -159,7 +159,7 @@
                     </div>
 
                     <div class="input-group col-xs-8">
-                      <input type="number" ng-model="row.fam_allow"  class="form-bhima" min="0" required>
+                      <input type="number" ng-model="row.ALLO"  class="form-bhima" min="0" required>
                       <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
                     </div>
                   </div>         
@@ -170,7 +170,7 @@
                     </div>
 
                     <div class="input-group col-xs-8">
-                      <input type="number" ng-model="row.transport"  class="form-bhima" min="0" required>
+                      <input type="number" ng-model="row.TRAN"  class="form-bhima" min="0" required>
                       <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
                     </div>
                   </div>          
@@ -181,7 +181,7 @@
                     </div>
 
                     <div class="input-group col-xs-8">
-                      <input type="number" ng-model="row.seniority"  class="form-bhima" min="0" required>
+                      <input type="number" ng-model="row.SENI"  class="form-bhima" min="0" required>
                       <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
                     </div>
                   </div>
@@ -198,7 +198,7 @@
                     </div>
 
                     <div class="input-group col-xs-8">
-                      <input type="number" ng-model="row.employee_inss"  class="form-bhima" min="0" required>
+                      <input type="number" ng-model="row.INS1"  class="form-bhima" min="0" required>
                       <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
                     </div>
                   </div>          
@@ -209,7 +209,7 @@
                     </div>
 
                     <div class="input-group col-xs-8">
-                      <input type="number" ng-model="row.ipr"  class="form-bhima" min="0" required>
+                      <input type="number" ng-model="row.IPR1"  class="form-bhima" min="0" required>
                       <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
                     </div>
                   </div> 
@@ -220,7 +220,7 @@
                     </div>
 
                     <div class="input-group col-xs-8">
-                      <input type="number" ng-model="row.av_salary"  class="form-bhima" min="0" required>
+                      <input type="number" ng-model="row.ADVA"  class="form-bhima" min="0" required>
                       <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
                     </div>
                   </div>        
@@ -248,7 +248,7 @@
                     </div>
 
                     <div class="input-group col-xs-8">
-                      <input type="number" ng-model="row.enterprise_inss"  class="form-bhima" min="0" required>
+                      <input type="number" ng-model="row.INS2"  class="form-bhima" min="0" required>
                       <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
                     </div>
                   </div> 
@@ -259,7 +259,7 @@
                     </div>
 
                     <div class="input-group col-xs-8">
-                      <input type="number" ng-model="row.onem"  class="form-bhima" min="0" required>
+                      <input type="number" ng-model="row.ONEM"  class="form-bhima" min="0" required>
                       <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
                     </div>
                   </div>        
@@ -270,7 +270,7 @@
                     </div>
 
                     <div class="input-group col-xs-8">
-                      <input type="number" ng-model="row.iere"  class="form-bhima" min="0" required>
+                      <input type="number" ng-model="row.IERE"  class="form-bhima" min="0" required>
                       <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
                     </div>
                   </div>
@@ -281,16 +281,27 @@
                     </div>
 
                     <div class="input-group col-xs-8">
-                      <input type="number" ng-model="row.inpp"  class="form-bhima" min="0" required>
+                      <input type="number" ng-model="row.INPP"  class="form-bhima" min="0" required>
                       <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
                     </div>
                   </div>
                 </fieldset>
+                <hr/>
+                <div class="pull-right">
+                  <button class="btn btn-sm btn-success" type="button" ng-click="submit([row])" ng-disabled="depotNew.$invalid">
+                    {{ "FORM.SUBMIT" | translate }}
+                  </button>
+                </div>
               </form>
             </div>
           </div>
         </div>
-        <hr ng-repeat-end>         
+        <hr ng-repeat-end>
+        <div class="pull-right">
+          <button class="btn btn-sm btn-success" type="button" ng-click="submit(session.rows)" ng-disabled="!session.rows.length">
+            {{ "FORM.SUBMIT" | translate }}
+          </button>
+        </div>
       </div>
     </div>
   </div>
