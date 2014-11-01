@@ -441,7 +441,8 @@
     "OPERATING_ACCOUNT"         : "Compte d'exploitation",
     "SERVICE_EXPLOITATION"      : "Exploitation par Service",
     "GLOBAL_TRANSACTION"        : "Mouvement des comptes",
-    "COTISATION_MANAGEMENT"     : "Gestion des cotisations"
+    "COTISATION_MANAGEMENT"     : "Gestion des cotisations",
+    "EMPLOYEE_STANDING"         : "Rapport des employés"
 },
 
 
@@ -2320,5 +2321,19 @@
     "NET_AFTER_TAX"    : "Net Après Taxes",
     "PAID"             : "Payé",
     "SUBMIT_PAY"       : "Payer le salaire"
-  }
+  },
+
+  "EMPLOYEE_STANDING"     : {
+    "TITLE"              : "Etat Financier d'un employé",
+    "PLACEHOLDER"        : "Chercher un employé ...",
+    "CREATED_ON"         : "Crée en",
+    "ACCOUNT_NUMBER"     : "Numéro de Compte",
+    "ACCOUNT_BALANCE"    : "Balance Compte",
+    "LAST_PURCHASE_DATE" : "Dernier date d'achat",
+    "LAST_PAYMENT_DATE"  : "Dernier date payement",
+    "OUTSTANDING_BILLS"  : "Factures impayées et autres paiements",
+    "IMG"                : "Photo du patient",
+    "NO_TRANSACTION"     : "pas des transaction"
+  }   
+  
 }
