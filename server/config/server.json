@@ -93,7 +93,8 @@
       "/getNombreMoisStockControl/",
       "/getDelaiLivraison/",
       "/monthlyConsumptions/",
-      "/getCommandes/"
+      "/getCommandes/",
+      "/getMonthsBeforeExpiration/"
     ]
   }
 }
