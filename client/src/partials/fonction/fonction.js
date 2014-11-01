@@ -88,7 +88,7 @@ angular.module('bhima.controllers')
       connect.basicPut('fonction', [record])
       .then(function () {
         messenger.success($translate.instant('FONCTION.SAVE_SUCCES'));        
-        record.id = '';
+        //record.id = '';
         record.reference = generateReference(); // this is simply to make the ui look pretty;
         $scope.fonctions.post(record);
         session.action = '';
