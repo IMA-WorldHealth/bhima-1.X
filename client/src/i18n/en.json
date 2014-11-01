@@ -862,7 +862,9 @@
     "OPERATING_ACCOUNT"         : "Operating Account",
     "SERVICE_EXPLOITATION"      : "Exploitation per Service",
     "GLOBAL_TRANSACTION"        : "Account Movement",
-    "COTISATION_MANAGEMENT"     : "Cotization management"
+    "COTISATION_MANAGEMENT"     : "Cotization management",
+    "EMPLOYEE_STANDING"         : "Patient Standing Report"
+
   },
 
   "RUBRIC_PAYROLL"       : {
@@ -2292,5 +2294,18 @@
     "NET_AFTER_TAX"    : "Net After Taxes",
     "PAID"             : "Paid",
     "SUBMIT_PAY"       : "Pay the salary"
-  }
+  },
+
+  "EMPLOYEE_STANDING"     : {
+    "TITLE"              : "Employee Standing Report",
+    "PLACEHOLDER"        : "Find a employee...",
+    "CREATED_ON"         : "Created On",
+    "ACCOUNT_NUMBER"     : "Account Number",
+    "ACCOUNT_BALANCE"    : "Account Balance",
+    "LAST_PURCHASE_DATE" : "Last Purchase Date",
+    "LAST_PAYMENT_DATE"  : "Last Payment Date",
+    "OUTSTANDING_BILLS"  : "Outstanding Bills and Other payments",
+    "IMG"                : "Patient picture",
+    "NO_TRANSACTION"     : "No transaction"
+  }   
 }

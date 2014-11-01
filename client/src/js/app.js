@@ -167,6 +167,10 @@
       controller : 'reportPatientStanding',
       templateUrl : '/partials/reports/patient_standing/patient_standing.html'
     })
+    .when('/reports/employee_standing/', {
+      controller : 'reportEmployeeStanding',
+      templateUrl : '/partials/reports/employee_standing/employee_standing.html'
+    })    
     .when('/reports/ledger/general_ledger', {
       controller: 'reportGeneralLedger',
       templateUrl: '/partials/reports/ledger/general_ledger.html'
