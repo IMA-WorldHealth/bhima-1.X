@@ -38,9 +38,9 @@
       controller: 'patientRegistration',
       templateUrl: 'partials/patient_registration/patient.html'
     })
-    .when('/debitor/debitor_group', {
-      controller : 'debitorGroup',
-      templateUrl: 'partials/debitor/debitor_group.html'
+    .when('/debtor/debtor_group', {
+      controller : 'group.debtor',
+      templateUrl: 'partials/debtor/debtor_group.html'
     })
     .when('/journal_voucher', {
       controller: 'journalVoucher',
@@ -95,7 +95,7 @@
       templateUrl: '/partials/creditor/creditor.html'
     })
     .when('/creditors/creditor_group', {
-      controller: 'creditorGroup',
+      controller: 'group.creditor',
       templateUrl: 'partials/creditor/group/creditor_group.html'
     }).
     when('/purchase/create/', {
@@ -158,9 +158,9 @@
       controller: 'summary',
       templateUrl: 'partials/reports/summary/summary.html'
     })
-    .when('/reports/debitor_aging/', {
+    .when('/reports/debtor_aging/', {
       controller: 'reportDebitorAging',
-      templateUrl: 'partials/reports/debitor_aging/debitor_aging.html'
+      templateUrl: 'partials/reports/debtor_aging/debtor_aging.html'
     })
     .when('/reports/account_statement/:id?', {
       controller: 'accountStatement',
@@ -257,9 +257,9 @@
       controller: 'reportCashPayments',
       templateUrl: 'partials/reports/cash_payments/cash_payments.html'
     })
-    .when('/swap_debitor', {
-      controller : 'swapDebitor',
-      templateUrl : 'partials/swap_debitor/swap_debitor.html'
+    .when('/swap_debtor', {
+      controller : 'group.debtor.reassignment',
+      templateUrl : 'partials/swap_debtor/swap_debtor.html'
     })
     .when('/reports/all_transactions', {
       controller : 'allTransactions',
@@ -452,7 +452,11 @@
     .when('/consumptions/:code_drugs/:dateFrom/:dateTo', {
       controller: 'daily_consumption',
       templateUrl: 'partials/reports/daily_consumption/consumptions.html'
-    });           
+    })
+    .when('/config_accounting/', {
+      controller: 'config_accounting',
+      templateUrl: 'partials/config_accounting/config_accounting.html'
+    });               
   }
   
   function translateConfig($translateProvider) {

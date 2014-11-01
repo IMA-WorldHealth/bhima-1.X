@@ -4,7 +4,7 @@
     "LINES"                 : "Lines",
     "GROUP_BY"              : "Group By",
     "RECORDS"               : "Records",
-    "DEB_CRED"              : "Debitor / Creditor",
+    "DEB_CRED"              : "Debtor / Creditor",
     "ABOLISH_GROUPS"        : "Abolish Groups",
     "TRANSACTION"           : "Transaction",
     "ACCOUNT"               : "Account",
@@ -62,6 +62,7 @@
     "EXPENSE"     : {
       "PAYROLL"               : "Payroll",
       "MULTI_PAYROLL"         : "Multiple Payroll",
+      "PAYABLE_EMPLOYEE"      : "Payable employee list",
       "GENERIC_TITLE"         : "Generic Expense",
       "GENERIC_RECEIPT"       : "Generic Receipt",
       "REFERENCE_DOCUMENT_ID" : "Reference Document ID",
@@ -226,7 +227,7 @@
     "ERR_ACCNT_LOCKED"    : "Locked Account Error",
     "ERR_ACCNT_NULL"      : "Null Account Error",
     "ERR_INVALID_DATE"    : "Invalid Date Error",
-    "ERR_DEB_CRED_DNE"    : "Debitor/Creditor Does Not Exist Error",
+    "ERR_DEB_CRED_DNE"    : "Debtor/Creditor Does Not Exist Error",
     "ERR_EXPIRED_SESSION" : "Session Expired Error"
   },
 
@@ -345,7 +346,7 @@
     "PROVINCE"        : "Select a Province",
     "SECTOR"          : "Select a Sector",
     "VILLAGE"         : "Select a Village",
-    "DEBITOR_GROUP"   : "Select a Debitor Group",
+    "DEBITOR_GROUP"   : "Select a Debtor Group",
     "PATIENT_GROUP"   : "Select a Patient Group",
     "CREDITOR_GROUP"  : "Select a Creditor Group",
     "PRICE_LIST"      : "Select a Price List",
@@ -355,7 +356,7 @@
     "INVENTORY_GROUP" : "Select an Inventory Group",
     "UNIT"            : "Select a Unit",
     "INVENTORY_ITEM"  : "Select an Inventory Item",
-    "DEBITOR"         : "Select a Debitor",
+    "DEBITOR"         : "Select a Debtor",
     "ENTERPRISE"      : "Select an Enterprise",
     "CODE"            : "Select a Code",
     "DEPOT"           : "Select a Depot",
@@ -373,6 +374,7 @@
     "EMPLOYEE_SEX"    : "Select Sex",
     "EMPLOYEE_SERVICE"    : "Select a Service",
     "EMPLOYEE_GRADE"      : "Select a grade",
+    "PERIOD_ACCOUNT_CONFIG" : "Select an accounting config",
     "DONOR"               : "Select a donor"
   },
 
@@ -432,7 +434,7 @@
     "GROUP_DETAIL"          : "Group Detail",
     "FISCAL_YEAR"           : "Fiscal Year",
     "REPORT"                : "Report",
-    "DEBITOR_AGING"         : "Debitor Aging",
+    "DEBITOR_AGING"         : "Debtor Aging",
     "CHOOSE_FISCAL_YEAR"    : "Choose Fiscal Year",
     "VISIBLE_FISCAL_YEAR"   : "Visible Fiscal Year",
     "VISIBLE_PERIODS"       : "Visible Periods",
@@ -502,9 +504,9 @@
     "INVOICE_DATE"        : "Invoice Date",
     "TOTAL"               : "Total",
     "ACCOUNT_ID"          : "Account ID",
-    "DEBITOR_NAME"        : "Debitor Name",
-    "DEBITOR_TYPE"        : "Debitor Type",
-    "DEB_CRED_TYPE"       : "Debitor/Creditor Type",
+    "DEBITOR_NAME"        : "Debtor Name",
+    "DEBITOR_TYPE"        : "Debtor Type",
+    "DEB_CRED_TYPE"       : "Debtor/Creditor Type",
     "COMMENT"             : "Comment",
     "ACCOUNT"             : "Account",
     "PARENT"              : "Parent",
@@ -529,7 +531,7 @@
     "NAME"                : "Name",
     "SYMBOL"              : "Symbol",
     "SEPARATOR"           : "Separator",
-    "DEBITOR_ID"          : "Debitor ID",
+    "DEBITOR_ID"          : "Debtor ID",
     "TOTAL_CREDIT"        : "Total Credit",
     "DECIMAL"             : "Decimal",
     "ACTIONS"             : "Actions",
@@ -591,7 +593,7 @@
     "PRICE_LIST"          : "Price List",
     "TITLE"               : "Title",
     "VALUE"               : "Value",
-    "DEB_CRED_UUID"       : "Debitor/Creditor ID",
+    "DEB_CRED_UUID"       : "Debtor/Creditor ID",
     "SALE_PRICE"          : "Sale Price",
     "PURCHASE_PRICE"      : "Purchase Price",
     "BHIMA_STOCK_CODE"    : "Stock Reference",
@@ -753,7 +755,7 @@
     "LOCATION"                  : "Location Management",
     "ACCOUNT_BALANCE_STATEMENT" : "Account Balance Statement",
     "CHART_OF_ACCOUNTS"         : "Chart of Accounts",
-    "DEBTOR_AGING"              : "Debitor Aging",
+    "DEBTOR_AGING"              : "Debtor Aging",
     "ACCOUNT_STATEMENT"         : "Account Statement",
     "INCOME_EXPENSE"            : "Income/Expense Report",
     "PATIENT_GRP_ASSIGNMENT"    : "Patient Group Assignment",
@@ -800,7 +802,8 @@
     "DONATION_MANAGEMENT"       : "Donation Management",
     "STOCK_DASHBOARD"           : "Stock Dashboard",
     "DAILY_CONSUMPTION"         : "Daily Consumption",     
-    "DONATION_MANAGEMENT"       : "Donation Management"
+    "DONATION_MANAGEMENT"       : "Donation Management",
+    "CONFIG_ACCOUNTING"         : "Configuration accounting"
   },
 
   "RUBRIC_PAYROLL"       : {
@@ -914,8 +917,7 @@
     "INFO_CAUTION" : "Information on the Caution",
     "CAUTION"      : "Caution",
     "PAY"          : "Pay",
-    "SUCCES"       : "Operation Successfully Completed",
-    "DANGER"       : "Error. Pleases see a system administrator or try again."
+    "UNIT_ERROR"   : "The caution amount is less than the smallest unit of the selected currency!"
   },
 
   "PCASH"                   : {
@@ -981,7 +983,7 @@
     "TITLE"                    : "Patient Registration",
     "PATIENT_DETAILS"          : "Patient Details",
     "INVALID_DATE"             : "Warning                    : Date of Birth is in the Future! Are you sure it is correct?",
-    "CREATE_DEBTOR_GROUP"      : "Create Debitor Group",
+    "CREATE_DEBTOR_GROUP"      : "Create Debtor Group",
     "VIEW_PATIENT_RECORDS"     : "View Patient Records",
     "PATIENT_GROUP_ASSIGNMENT" : "Patient Group Assignment",
     "PATIENT"                  : "Patient",
@@ -998,7 +1000,7 @@
     "FEMALE"                   : "Female",
     "FINANCE"                  : "Finance",
     "PATIENT_GROUP"            : "Patient Group",
-    "DEBTOR_GROUP"             : "Debitor Group",
+    "DEBTOR_GROUP"             : "Debtor Group",
     "OPTIONAL_INFO"            : "Optional Information",
     "PHONE_NO"                 : "Phone Number",
     "EMAIL"                    : "Email",
@@ -1082,12 +1084,12 @@
     "TITLE"                  : "Debtor Group Invoicing",
     "SELECT_PAYMENT_DETAILS" : "Select Payment Details",
     "GROUP"                  : "Group",
-    "DEBITOR"                : "Debitor",
+    "DEBITOR"                : "Debtor",
     "SELECT_INVOICES"        : "Select Invoices",
     "HELP_TXT_1"             : "Choose a convention from the upper left hand corner of the screen",
     "CONVENTION_INVOICE"     : "Convention Invoice",
-    "INVOICE_TITLE"          : "Convention Invoice for Debitor",
-    "COST"                   : "Cost to Debitor",
+    "INVOICE_TITLE"          : "Convention Invoice for Debtor",
+    "COST"                   : "Cost to Debtor",
     "INVOICE_ID"             : "Invoice ID",
     "AGREED"                 : "Agreed Payment",
     "BALANCE"                : "Balance",
@@ -1131,7 +1133,7 @@
     "DEFAULT_CASHBOX"      : "Caisse",
     "HELP_TXT_1"           : "The module allows debitors to pay against existing invoices",
     "HELP_TXT_2"           : "To begin, search for a debitor using the search bar above",
-    "DEBITOR_INVOICES"     : "Debitor Invoices",
+    "DEBITOR_INVOICES"     : "Debtor Invoices",
     "PAYMENT"              : "Payment",
     "TOTAL_DUE"            : "Total Due",
     "TOTAL_PAYING"         : "Total Paying",
@@ -1193,10 +1195,10 @@
   },
 
   "DEBITOR_GRP" : {
-    "TITLE"      : "Debitor Group Management",
-    "GROUPS"     : "Debitor Groups",
-    "NEW"        : "New Debitor Group",
-    "FILTER"     : "Filter Debitor Groups",
+    "TITLE"      : "Debtor Group Management",
+    "GROUPS"     : "Debtor Groups",
+    "NEW"        : "New Debtor Group",
+    "FILTER"     : "Filter Debtor Groups",
     "HELP_TXT_1" : "This interface allows you to review, find, and configure debitor groups",
     "HELP_TXT_2" : "Edit selected debitor group",
     "HELP_TXT_3" : "Lock the selected debitor group.  No new transactions can be recorded for a locked group",
@@ -1710,7 +1712,7 @@
   },
 
   "SWAPDEBITOR"            : {
-    "TITLE"                : "Debitor Group Reassignment",
+    "TITLE"                : "Debtor Group Reassignment",
     "PATIENT"              : "Patient",
     "NAME"                 : "Name",
     "AGE"                  : "Age",
@@ -1890,7 +1892,9 @@
     "CONFIG"       : "Configure Weeks",
     "WEEKS"        : "Weeks",
     "ADD_WEEK"     : "Add",
-    "WARNING_WEEK" : "Weeks must be in the period"
+    "WARNING_WEEK" : "Weeks must be in the period",
+    "ACCOUNT"      : "Account",
+    "CONFIGURATIONS" : "Configurations"
   },
 
    "TAXES" : {
@@ -2008,13 +2012,13 @@
 
   "STOCK_DASHBOARD"     : {
     "TITLE"             : "Stock Dashboard",
-    "MOST_CONSUMED"     : "Most consumed",
+    "MOST_CONSUMED"     : "Most consumed (top 10)",
     "PURCHASE_ORDER"    : {
             "TITLE"     : "Purchase Order",
-            "IN_WATING" : "Orders in wating payment",
-            "PAYED"     : "Orders payed",
-            "RECEIVED"  : "Orders received",
-            "WATING_RECEPTION" : "In wating reception"
+            "IN_WATING" : "in wating payment",
+            "PAYED"     : "payed",
+            "RECEIVED"  : "received",
+            "WATING_RECEPTION" : "in wating reception"
         },
     "MOVEMENT"          : {
             "TITLE"     : "Movement",
@@ -2025,26 +2029,44 @@
             "TITLE"          : "Stock by product",
             "OUT_OF_STOCK"   : "Out of stock",
             "UNDER_MIN"      : "Under minimum",
-            "OVER_MAX"       : "Over minimum",
+            "OVER_MAX"       : "Over maximum",
             "IN_STOCK"       : "In stock",
-            "NO_LONGER"      : "No longer in stock"
+            "NO_LONGER"      : "No longer in stock",
+            "OPTIMAL_LEVEL"  : "Optimal level of stock"
         },
     "EXPIRING_INVENTORY"     : {
             "TITLE"          : "Expiring Inventory",
             "EXPIRED"        : "Expired",
             "WITHIN_30"      : "Expiring within 30 days",
-            "WITHIN_90"      : "Expiring within 90 days",
-            "WITHIN_180"     : "Expiring within 180 days",
-            "WITHIN_365"     : "Expiring within 365 days"
+            "WITHIN_90"      : "Expiring between 30 and 90 days",
+            "WITHIN_180"     : "Expiring between 90 and 180 days",
+            "WITHIN_365"     : "Expiring between 180 and 365 days",
+            "WITHIN_1YEAR"   : "Expiring in over a year"
         },
     "DONATIONS"          : {
-            "TITLE"      : "Donations"
+            "TITLE"      : "The last 10 Donations"
         },
     "REPORTS"           : {
             "TITLE"     : "Reports",
             "SITUATION_STOCK"   : "Stock status",
             "EXPIRING_STOCK"    : "Expiring Stock"
         }
+  },
+
+  "CONFIG_ACCOUNTING" : {
+    "TITLE"        : "Configuration accounting",
+    "NEW_CONFIG"    : "New configuration",
+    "SAVE_SUCCES"   : "Successfully saving Configuration",    
+    "UPDATE_SUCCES" : "Updated successfully",
+    "UPDATE"        : "Modify a Configuration",    
+    "ADD"           : "Create a new configuration",
+    "CONFIRM"       : "Are you sure you want to delete this Configuration",    
+    "REGISTERED"    : "Registered Configuration Accounting",
+    "ALERT"         : "The account setup module allows setting the account to be used when making payroll",
+    "CONFIG"        : "Configuration",
+    "RUBRIC"        : "Taxes Payroll",
+    "DELETE_SUCCESS" : "Deleted successfully",
+    "NO_CONFIG_TAX" : "No Configuration Accounting"
   }
 }
 

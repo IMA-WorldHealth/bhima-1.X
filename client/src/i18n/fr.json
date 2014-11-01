@@ -287,11 +287,12 @@
     "PRIMARY_CASH"    : "Selectionner Caisse principale",
     "EMPLOYEE"        : "Selectionner un employé",
     "EMPLOYEE_SEX"    : "Selectionner Sexe",
-    "EMPLOYEE_SERVICE"    : "Selectionner un Service",
-    "EMPLOYEE_GRADE"      : "Selectionner un Grade",
-    "PERIOD_RUBRIC_CONFIG": "Selectionner une configuration des rubriques",
-    "PERIOD_TAX_CONFIG"   : "Selectionner une configuration des taxes",
-    "DONOR"               : "Selectionner un Donateur"
+    "EMPLOYEE_SERVICE"      : "Selectionner un Service",
+    "EMPLOYEE_GRADE"        : "Selectionner un Grade",
+    "PERIOD_RUBRIC_CONFIG"  : "Selectionner une configuration des rubriques",
+    "PERIOD_TAX_CONFIG"     : "Selectionner une configuration des taxes",
+    "PERIOD_ACCOUNT_CONFIG" : "Selectionner une configuration des comptes",
+    "DONOR"                 : "Selectionner un Donateur"
   },
 
   "RENEWAL"           : {
@@ -429,7 +430,9 @@
     "DONATION_MANAGEMENT"       : "Gestion des Dons",
     "STOCK_DASHBOARD"           : "Tableau de bord du Stock",
     "DAILY_CONSUMPTION"         : "Consommation journaliere",    
-    "DONATION_MANAGEMENT"       : "Gestion des Dons" 
+    "DONATION_MANAGEMENT"       : "Gestion des Dons",
+    "CONFIG_ACCOUNTING"         : "Configuration des comptes"
+
 },
 
   "RUBRIC_PAYROLL"       : {
@@ -1343,8 +1346,7 @@
     "INFO_CAUTION" : "Information sur la caution",
     "CAUTION"      : "Caution",
     "PAY"          : "Payer",
-    "SUCCES"       : "Operation reussie !",
-    "DANGER"       : "Erreur ! Une erreur se produite pendant le posting !"
+    "UNIT_ERROR"   : "La quantite est trop grande!"
   },
 
  "CONVENTION"            : {
@@ -1481,6 +1483,7 @@
     "EXPENSE" : {
       "PAYROLL"      : "Paie des employees",
       "MULTI_PAYROLL"   : "Payroll Multiple",
+      "PAYABLE_EMPLOYEE" : "Liste des employees payables",
       "PURCHASE"        : "Achat",
       "GENERIC_TITLE"   : "Depenses Generiques",
       "GENERIC_RECEIPT" : "Recettes Generiques",
@@ -1948,7 +1951,9 @@
     "CONFIG"       : "Configurer semaines",
     "WEEKS"        : "Les Semaines",
     "ADD_WEEK"     : "Ajouter",
-    "WARNING_WEEK" : "Les semaines doivent appartenir à la periode"
+    "WARNING_WEEK" : "Les semaines doivent appartenir à la periode",
+    "ACCOUNT"      : "Compte",
+    "CONFIGURATIONS" : "Les configurations"
   },
 
    "TAXES" : {
@@ -2066,13 +2071,13 @@
 
   "STOCK_DASHBOARD"     : {
     "TITLE"             : "Tableau de bord du Stock",
-    "MOST_CONSUMED"     : "Produits les plus consommes",
+    "MOST_CONSUMED"     : "Produits les plus consommes (10 premiers)",
     "PURCHASE_ORDER"    : {
             "TITLE"     : "Commandes",
-            "IN_WATING" : "Commandes en attente",
-            "PAYED"     : "Commandes payées",
-            "RECEIVED"  : "Commandes reçues",
-            "WATING_RECEPTION" : "En Attente de reception"
+            "IN_WATING" : "en attente de paiement",
+            "PAYED"     : "payées",
+            "RECEIVED"  : "reçues",
+            "WATING_RECEPTION" : "en attente de reception"
         },
     "MOVEMENT"          : {
             "TITLE"     : "Mouvement",
@@ -2085,24 +2090,42 @@
             "UNDER_MIN"      : "En dessous du minimum",
             "OVER_MAX"       : "Au dessus du maximum",
             "IN_STOCK"       : "En stock",
-            "NO_LONGER"      : "Tend vers épuisement"
+            "NO_LONGER"      : "Tend vers épuisement",
+            "OPTIMAL_LEVEL"  : "Niveau de stock optimale"
         },
     "EXPIRING_INVENTORY"     : {
             "TITLE"          : "Expirations produits",
             "EXPIRED"        : "Expirés",
-            "WITHIN_30"      : "Expiration dans 30 jours",
-            "WITHIN_90"      : "Expiration dans 90 jours",
-            "WITHIN_180"     : "Expiration dans 180 jours",
-            "WITHIN_365"     : "Expiration dans 365 jours"
+            "WITHIN_30"      : "Expiration dans moins 30 jours",
+            "WITHIN_90"      : "Expiration entre 30 et 90 jours",
+            "WITHIN_180"     : "Expiration entre 90 et 180 jours",
+            "WITHIN_365"     : "Expiration entre 180 et 365 jours",
+            "WITHIN_1YEAR"   : "Expiration dans plus d'une année"
         },
     "DONATIONS"          : {
-            "TITLE"      : "Donations"
+            "TITLE"      : "le 10 derniers dons"
         },
     "REPORTS"           : {
             "TITLE"             : "Rapports",
             "SITUATION_STOCK"   : "Stock status",
             "EXPIRING_STOCK"    : "Expiring Stock"
         }
-  }
+  },
 
+  "CONFIG_ACCOUNTING" : {
+    "TITLE"        : "Configuration des comptes",
+    "NEW_CONFIG"    : "Nouvelle configuration",
+    "SAVE_SUCCES"  : "Enregistrement avec succès",    
+    "UPDATE_SUCCES" : "Mis à jour avec succès",
+    "CONFIRM"       : "Etes vous sure de vouloir supprimer cette configuration",      
+    "UPDATE"        : "Mettre à jour une configuration",    
+    "ADD"           : "Créer une nouvelle configuration",
+    "REGISTERED"    : "Configuration des comptes enregistrées",
+    "ALERT"         : "Le module configuration des comptes, permet le paramétrage du compte qui sera prise utilisé lors du payroll",
+    "CONFIG"        : "Configuration",
+    "RUBRIC"        : "Rubriques Payroll",
+    "DELETE_SUCCESS" : "Suppression avec succès",
+    "NO_CONFIG_RUBRIC" : "Aucune configuration de comptes",
+    "ABBR"          : "Abr."
+  }  
 }

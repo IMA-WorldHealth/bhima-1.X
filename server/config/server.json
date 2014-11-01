@@ -94,7 +94,14 @@
       "/getDelaiLivraison/",
       "/monthlyConsumptions/",
       "/getCommandes/",
-      "/getMonthsBeforeExpiration/"
+      "/getMonthsBeforeExpiration/",
+      "/getTop10Consumption/",
+      "/getPurchaseOrders/",
+      "/getTop10Donor/",
+      "/getExpiredTimes/",
+      "/getConsumptionTrackingNumber/",
+      "/getStockEntry/",
+      "/getStockConsumption/"
     ]
   }
 }
