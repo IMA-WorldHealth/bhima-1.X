@@ -323,6 +323,66 @@ module.exports = function (db, sanitize, util) {
     return defer.promise;
   }
 
+  function employeeStanding(params) {
+    params = querystring.parse(params);
+    var id = sanitize.escape(params.id),
+        patient = {},
+        defer = q.defer(),
+        sql =
+        'SELECT `aggregate`.`uuid`, `aggregate`.`trans_id`, `aggregate`.`trans_date`, sum(`aggregate`.`credit_equiv`) as credit, sum(`aggregate`.`debit_equiv`) as debit, `aggregate`.`description`, `aggregate`.`inv_po_id` ' +
+        'FROM (' +
+          'SELECT `posting_journal`.`uuid`, `posting_journal`.`trans_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`description`, `posting_journal`.`inv_po_id` ' +
+          'FROM `posting_journal` WHERE `posting_journal`.`deb_cred_uuid`=' + id + ' AND `posting_journal`.`deb_cred_type`=\'C\' ' +
+        'UNION ' +
+          'SELECT `general_ledger`.`uuid`, `general_ledger`.`trans_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, `general_ledger`.`description`, `general_ledger`.`inv_po_id` ' +
+          'FROM `general_ledger` WHERE `general_ledger`.`deb_cred_uuid`=' + id + ' AND `general_ledger`.`deb_cred_type`=\'C\') as aggregate ' +
+        'GROUP BY `aggregate`.`inv_po_id` ORDER BY `aggregate`.`trans_date` DESC;';
+
+    db.exec(sql)
+    .then(function (rows) {
+      if (!rows.length) { return defer.resolve([]); }
+
+      patient.receipts = rows;
+
+      // last payment date
+      sql =
+        'SELECT trans_date FROM (' +
+        ' SELECT trans_date FROM `posting_journal` WHERE `posting_journal`.`deb_cred_uuid`=' + id + ' AND `posting_journal`.`deb_cred_type`=\'C\' ' +
+        'AND `posting_journal`.`origin_id`=(SELECT `transaction_type`.`id` FROM `transaction_type` WHERE `transaction_type`.`service_txt`=\'cash\' OR `transaction_type`.`service_txt`=\'caution\' LIMIT 1)' +
+        ' UNION ' +
+        'SELECT trans_date FROM `general_ledger` WHERE `general_ledger`.`deb_cred_uuid`=' + id + ' AND `general_ledger`.`deb_cred_type`=\'C\' ' +
+        'AND `general_ledger`.`origin_id`=(SELECT `transaction_type`.`id` FROM `transaction_type` WHERE `transaction_type`.`service_txt`=\'cash\' OR `transaction_type`.`service_txt`=\'caution\' LIMIT 1)' +
+        ') as aggregate ORDER BY trans_date DESC LIMIT 1;';
+
+      return db.exec(sql);
+    })
+/*    .then(function (rows) {
+      if (!rows.length) { patient.last_payment_date = undefined } else {var row = rows.pop(); patient.last_payment_date = row.trans_date;}
+
+      sql =
+        'SELECT trans_date FROM (' +
+        ' SELECT trans_date FROM `posting_journal` WHERE `posting_journal`.`deb_cred_uuid`=' + id + ' AND `posting_journal`.`deb_cred_type`=\'C\' ' +
+        'AND `posting_journal`.`origin_id`=(SELECT `transaction_type`.`id` FROM `transaction_type` WHERE `transaction_type`.`service_txt`=\'sale\' OR `transaction_type`.`service_txt`=\'group_invoice\' LIMIT 1)' +
+        ' UNION ' +
+        'SELECT trans_date FROM `general_ledger` WHERE `general_ledger`.`deb_cred_uuid`=' + id + ' AND `general_ledger`.`deb_cred_type`=\'C\' ' +
+        'AND `general_ledger`.`origin_id`=(SELECT `transaction_type`.`id` FROM `transaction_type` WHERE `transaction_type`.`service_txt`=\'sale\' OR `transaction_type`.`service_txt`=\'group_invoice\' LIMIT 1)' +
+        ') as aggregate ORDER BY trans_date DESC LIMIT 1;';
+
+      return db.exec(sql);
+    })*/
+    .then(function (rows) {
+      var row = rows.pop();
+      patient.last_purchase_date = row.trans_date;
+      defer.resolve(patient);
+    })
+    .catch(function (err) {
+      defer.reject(err);
+    });
+
+    return defer.promise;
+  }
+
+
   function stockLocation (params) {
     var p = querystring.parse(params);
     var sql, id = sanitize.escape(p.id);
@@ -622,6 +682,7 @@ module.exports = function (db, sanitize, util) {
       'patients'         : patientRecords,
       'payments'         : paymentRecords,
       'patientStanding'  : patientStanding,
+      'employeeStanding' : employeeStanding,
       'accountStatement' : accountStatement,
       'allTrans'         : allTrans,
       'prices'           : priceReport,
