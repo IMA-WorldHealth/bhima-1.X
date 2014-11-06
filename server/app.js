@@ -29,7 +29,7 @@ require('./lib/db').initialise(cfg.db, logger, uuid);
 var db = require('./lib/db');
 var parser = require('./lib/parser');
 
-//require('./lib/store');
+require('./lib/store');
 
 var sanitize     = require('./lib/sanitize'),
     util         = require('./lib/util'),
