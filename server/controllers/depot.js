@@ -17,10 +17,12 @@ module.exports = function (db, sanitize, Store) {
     // reduce quantities in an array of entry, exit depots
     // to give a total quantity for each depot for each
     // tracking_number
-
+  
+    console.log('\n\n Has reference to Store', Store, '\n\n');
     // contains { tracking_number, quantity, expiration_date }
     var _depot, store = new Store({ identifier : 'tracking_number' });
-
+  
+    console.log('created new store instance', store, '\n\n');
     // depot ID is now a UUID
     _depot = depot;
     // _depot = Number(depot);
@@ -149,7 +151,8 @@ module.exports = function (db, sanitize, Store) {
 
   return function router (url, depot) {
     var routes, match, defer = q.defer();
-
+    
+    console.log('\n\n Got initial depot router request for', url, depot, '\n\n');
     routes = [
       { re : /lot\/([0-9a-z\-]+)/ , fn : byLot },
       { re : /drug\/([0-9a-z\-]+)/, fn : byCode },
