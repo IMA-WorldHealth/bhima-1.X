@@ -1,8 +1,11 @@
 // scripts/lib/logic/depot.js
+var db = require('./../lib/db');
+var sanitize = require('./../lib/sanitize');
+var Store = require('./../lib/store');
 
 var q = require('q');
 
-module.exports = function (db, sanitize, Store) {
+module.exports = function () {
   'use strict';
 
   // These routes are to investigate drugs in particular depots (or all).

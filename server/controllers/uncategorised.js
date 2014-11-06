@@ -5,6 +5,7 @@ var uuid = require('./../lib/guid');
 
 // Route specific requirements
 var synthetic = require('./synthetic');
+var depot = require('./depot')();
 
 exports.services = function (req, res, next) { 
   var sql =
@@ -709,6 +710,28 @@ exports.inventoryByDepot = function (req, res, next) {
             'WHERE stock.depot_uuid='+sanitize.escape(req.params.depot_uuid);
 
   db.exec(sql)
+  .then(function (ans) {
+    res.send(ans);
+  })
+  .catch(function (err) {
+    next(err);
+  })
+  .done();
+};
+
+exports.routeDepotQuery = function (req, res, next) { 
+  depot(req.url, req.params.depot)
+  .then(function (ans) {
+    res.send(ans);
+  })
+  .catch(function (err) {
+    next(err);
+  })
+  .done();
+};
+
+exports.routeDrugQuery = function (req, res, next) { 
+  drugRouter(req.params.code)
   .then(function (ans) {
     res.send(ans);
   })
