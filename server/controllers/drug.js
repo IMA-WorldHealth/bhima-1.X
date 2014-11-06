@@ -1,4 +1,6 @@
 // scripts/lib/logic/drug.js
+var db = require('./../lib/db');
+var sanitize = require('./../lib/sanitize');
 
 module.exports = function (db, sanitize) {
   'use strict';

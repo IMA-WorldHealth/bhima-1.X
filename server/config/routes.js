@@ -92,19 +92,7 @@ exports.initialise = function (app) {
   app.get('/expiring_complete/:tracking_number/:depot_uuid', uncategorised.stockExpiringComplete);
   app.get('/serv_dist_stock/:depot_uuid', uncategorised.distributeStockDepot);
   app.get('/inv_in_depot/:depot_uuid', uncategorised.inventoryByDepot);
+  app.get('/inventory/depot/:depot/*', uncategorised.routeDepotQuery);
+  app.get('/inventory/drug/:code', uncategorised.routeDrugQuery);  
 
-  // +Resolve store issue (ref. github)
-  // +Finish get paths 
-  // +Merge 
-  //
 };
-
-//Temporary (for C + V) 
-/*
-var db = require('./../lib/db');
-var parser = require('./../lib/parser');
-var journal = require('./journal');
-var uuid = require('./../lib/guid');
-*/
-
-
