@@ -18,7 +18,6 @@ var cfg = require('./config/server.json'),
 //var parser       = require('./lib/parser')(),
 var uuid         = require('./lib/guid'),
     logger       = require('./lib/logger')(cfg.log, uuid);
-    //db           = require('./lib/db')(cfg.db, logger, uuid),
 
 // TODO Temporary layout for transitioning structure
 require('./lib/parser').initialise();
@@ -32,7 +31,7 @@ var liberror     = require('./lib/liberror')();
 
 // import middleware
 var authorize    = require('./middleware/authorization')(cfg.auth.paths),
-    authenticate = require('./middleware/authentication')(db, sanitize),
+    authenticate = require('./middleware/authentication')(),
     projects     = require('./middleware/projects')(db);
 
 // create app
