@@ -93,12 +93,9 @@ exports.initialise = function (app) {
   app.get('/inv_in_depot/:depot_uuid', uncategorised.inventoryByDepot);
   app.get('/inventory/depot/:depot/*', uncategorised.routeDepotQuery);
   app.get('/inventory/drug/:code', uncategorised.routeDrugQuery);  
-  
   app.get('/errorcodes', uncategorised.listErrorCodes);
-  
   app.get('/getAccount6', uncategorised.listIncomeAccounts);
   app.get('/available_payment_period/', uncategorised.availablePaymentPeriod);
-  
   app.get('/getConsumptionDrugs/', uncategorised.listConsumptionDrugs);
   app.get('/getItemInConsumption/', uncategorised.listItemByConsumption);
   app.get('/getTop10Consumption/', uncategorised.listTopConsumption);

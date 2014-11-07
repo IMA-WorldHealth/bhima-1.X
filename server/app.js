@@ -28,11 +28,7 @@ require('./lib/db').initialise(cfg.db, logger, uuid);
 var db = require('./lib/db');
 var parser = require('./lib/parser');
 
-var sanitize     = require('./lib/sanitize'),
-    util         = require('./lib/util'),
-    validate     = require('./lib/validate')(),
-    store        = require('./lib/store'),
-    liberror     = require('./lib/liberror')();
+var liberror     = require('./lib/liberror')();
 
 // import middleware
 var authorize    = require('./middleware/authorization')(cfg.auth.paths),
