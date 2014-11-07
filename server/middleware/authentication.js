@@ -1,6 +1,8 @@
 // scripts/lib/auth/authentication.js
 
 // Middleware: authenticate
+var sanitize = require('./../lib/sanitize');
+var db = require('./../lib/db');
 
 module.exports = function (db, sanitize) {
   'use strict';
