@@ -17,7 +17,6 @@ var tree = require('./../controllers/tree');
 
 var uncategorised = require('./../controllers/uncategorised');
 
-
 /**
  * Initialise link between server paths and controller logic
  *
@@ -94,5 +93,24 @@ exports.initialise = function (app) {
   app.get('/inv_in_depot/:depot_uuid', uncategorised.inventoryByDepot);
   app.get('/inventory/depot/:depot/*', uncategorised.routeDepotQuery);
   app.get('/inventory/drug/:code', uncategorised.routeDrugQuery);  
-
+  
+  app.get('/errorcodes', uncategorised.listErrorCodes);
+  
+  app.get('/getAccount6', uncategorised.listIncomeAccounts);
+  app.get('/available_payment_period/', uncategorised.availablePaymentPeriod);
+  
+  app.get('/getConsumptionDrugs/', uncategorised.listConsumptionDrugs);
+  app.get('/getItemInConsumption/', uncategorised.listItemByConsumption);
+  app.get('/getTop10Consumption/', uncategorised.listTopConsumption);
+  app.get('/getPurchaseOrders/', uncategorised.listPurchaseOrders);
+  app.get('/getTop10Donor/', uncategorised.listTopDonors);
+  app.get('/getConsumptionTrackingNumber/', uncategorised.listConsumptionByTrackingNumber);
+  app.get('/getExpiredTimes/', uncategorised.listExpiredTimes);
+  app.get('/getStockEntry/', uncategorised.listStockEntry);
+  app.get('/getStockConsumption/', uncategorised.listStockConsumption);
+  app.get('/getNombreMoisStockControl/:inventory_uuid', uncategorised.frenchEnglishRoute);
+  app.get('/monthlyConsumptions/:inventory_uuid/:nb', uncategorised.listMonthlyConsumption);
+  app.get('/getDelaiLivraison/:id', uncategorised.frenchRoute);
+  app.get('/getCommandes/:id', uncategorised.listCommandes);
+  app.get('/getMonthsBeforeExpiration/:id', uncategorised.formatLotsForExpiration);
 };
