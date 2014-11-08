@@ -1,5 +1,5 @@
 /**
- * #Application Routing 
+ * Application Routing 
  *   
  * Initialise link between server paths and controller logic
  *
@@ -13,25 +13,25 @@
  */
 
 // Require application controllers
-var data = require('./../controllers/data');
-var location = require('./../controllers/location');
+var data            = require('./../controllers/data');
+var location        = require('./../controllers/location');
 
-var createPurchase = require ('./../controllers/createPurchase');
-var createSale = require('./../controllers/createSale');
+var createPurchase  = require ('./../controllers/createPurchase');
+var createSale      = require('./../controllers/createSale');
 
-var serviceDist = require('./../controllers/serviceDist');
+var serviceDist     = require('./../controllers/serviceDist');
 var consumptionLoss = require('./../controllers/consumptionLoss');
-var trialbalance = require('./../controllers/trialbalance');
-var journal = require('./../controllers/journal');
-var ledger = require('./../controllers/ledger');
-var fiscal = require('./../controllers/fiscal');
-var report = require('./../controllers/report');
-var tree = require('./../controllers/tree');
+var trialbalance    = require('./../controllers/trialbalance');
+var journal         = require('./../controllers/journal');
+var ledger          = require('./../controllers/ledger');
+var fiscal          = require('./../controllers/fiscal');
+var report          = require('./../controllers/report');
+var tree            = require('./../controllers/tree');
 
-var uncategorised = require('./../controllers/uncategorised');
+var uncategorised   = require('./../controllers/uncategorised');
 
 exports.initialise = function (app) { 
-  console.log('[config/routes] Initialise routes');
+  console.log('[config/routes] Configure routes');
   
   app.get('/', uncategorised.exposeRoot);
 
