@@ -59,8 +59,8 @@ module.exports = function dataRouter(db, parser, router) {
     })
     .catch(next)
     .done();
-  });
 
+  });
   return router;
 };
 
