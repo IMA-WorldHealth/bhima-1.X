@@ -1,4 +1,6 @@
 var q = require('q');
+var journal = require('./../controllers/journal');
+var uuid = require('./../lib/guid');
 
 module.exports = function(db, parser, journal, uuid) {
   'use strict';
