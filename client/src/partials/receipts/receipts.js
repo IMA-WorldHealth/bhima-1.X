@@ -96,7 +96,7 @@ angular.module('bhima.controllers')
     function buildCaution (model) {
       dependencies.location = {
         required: true,
-        query: '/location/village/' + model.caution.data[0].current_location_id
+        query: '/location/detail/village/' + model.caution.data[0].current_location_id
       };
 
       validate.process(dependencies, ['location'])
@@ -104,7 +104,7 @@ angular.module('bhima.controllers')
     }
 
     function getLocation(locationUuid) {
-      return validate.process({ query : 'location/' + locationUuid});
+      return validate.process({ query : 'location/detail/' + locationUuid});
     }
 
     function processTransfer(uuid) {
@@ -138,14 +138,14 @@ angular.module('bhima.controllers')
 
       function buildTransferInvoice (model) {
         depends.location = {};
-        depends.location.query = 'location/' + model.enterprise.data[0].location_id;
+        depends.location.query = 'location/detail/' + model.enterprise.data[0].location_id;
         validate.process(depends, ['location'])
         .then(transfertInvoice);
       }
 
       function getLocations (model) {
         dependencies.location = {};
-        dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id;
+        dependencies.location.query = 'location/detail/' +  model.enterprise.data[0].location_id;
         return validate.process(dependencies, ['location']);
       }
 
@@ -182,7 +182,7 @@ angular.module('bhima.controllers')
         .then(buildConventionInvoice);
 
       function buildConventionInvoice (model) {
-        dependencies.location.query = 'location/' + model.convention.data[0].location_id;
+        dependencies.location.query = 'location/detail/' + model.convention.data[0].location_id;
         validate.process(dependencies, ['location'])
         .then(conventionInvoice);
       }
@@ -450,7 +450,7 @@ angular.module('bhima.controllers')
         var locationId = model.supplier.data[0].location_id;
 
         dependencies.supplierLocation = {
-          query : '/location/village/' + locationId
+          query : '/location/detail/village/' + locationId
         };
 
         validate.process(dependencies, ['supplierLocation']).then(initialisePurchase);
@@ -544,7 +544,7 @@ angular.module('bhima.controllers')
 
       function getLocations (model) {
         dependencies.location = {};
-        dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id;
+        dependencies.location.query = 'location/detail/' +  model.enterprise.data[0].location_id;
         return validate.process(dependencies, ['location']);
       }
 
@@ -602,7 +602,7 @@ angular.module('bhima.controllers')
       function getLocations (model) {
         console.log('notre model', model);
         dependencies.location = {};
-        dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id;
+        dependencies.location.query = 'location/detail/' +  model.enterprise.data[0].location_id;
         return validate.process(dependencies, ['location']);
       }
 
@@ -658,7 +658,7 @@ angular.module('bhima.controllers')
       function getLocations (model) {
         console.log('notre model', model);
         dependencies.location = {};
-        dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id;
+        dependencies.location.query = 'location/detail/' +  model.enterprise.data[0].location_id;
         return validate.process(dependencies, ['location']);
       }
 
@@ -680,7 +680,7 @@ angular.module('bhima.controllers')
     function buildPatientLocation(model) {
       dependencies.location = {
         required: true,
-        query: '/location/village/' + model.recipient.data[0].current_location_id
+        query: '/location/detail/village/' + model.recipient.data[0].current_location_id
       };
 
       validate.process(dependencies, ['location'])
@@ -721,7 +721,7 @@ angular.module('bhima.controllers')
 
       function getLocations (model) {
         dependencies.location = {};
-        dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id;
+        dependencies.location.query = 'location/detail/' +  model.enterprise.data[0].location_id;
         return validate.process(dependencies, ['location']);
       }
 
@@ -777,7 +777,7 @@ angular.module('bhima.controllers')
 
       function getLocations (model) {
         dependencies.location = {};
-        dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id;
+        dependencies.location.query = 'location/detail/' +  model.enterprise.data[0].location_id;
         return validate.process(dependencies, ['location']);
       }
 
@@ -836,7 +836,7 @@ angular.module('bhima.controllers')
 
       function getLocations (model) {
         dependencies.location = {};
-        dependencies.location.query = 'location/' +  model.enterprise.data[0].location_id;
+        dependencies.location.query = 'location/detail/' +  model.enterprise.data[0].location_id;
         return validate.process(dependencies, ['location']);
       }
 
@@ -889,7 +889,7 @@ angular.module('bhima.controllers')
     function buildCreditRecipient(model) {
       dependencies.location = {
         required: true,
-        query: '/location/village/' + model.credit.data[0].current_location_id
+        query: '/location/detail/village/' + model.credit.data[0].current_location_id
       };
 
       validate.process(dependencies).then(creditInvoice);
@@ -931,7 +931,7 @@ angular.module('bhima.controllers')
     function buildLocationQuery(model) {
       var recipient_data = model.recipient.data[0];
 
-      dependencies.location.query = 'location/' + recipient_data.current_location_id;
+      dependencies.location.query = 'location/detail/' + recipient_data.current_location_id;
       return validate.process(dependencies).then(invoice);
     }
 
@@ -1348,7 +1348,7 @@ angular.module('bhima.controllers')
       $scope.project = project;
 
       // FIXME : Load the location information for templates
-      connect.fetch('/location/village/' + project.location_id)
+      connect.fetch('/location/detail/village/' + project.location_id)
       .then(function (res) {
         var locationInfo = res[0];
         project.village  = locationInfo.name;
