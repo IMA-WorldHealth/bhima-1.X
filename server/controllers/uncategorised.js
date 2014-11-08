@@ -19,6 +19,12 @@ var donation = require('./postingDonation')();
 // TODO delegate to configuration serving controller
 var errorCodes = require('./../config/errors.json');
 
+exports.exposeRoot = function (req, res, next) { 
+  /* jshint unused : false */
+  // This is to preserve the /#/ path in the url
+  res.sendfile(cfg.rootFile);
+};
+
 exports.services = function (req, res, next) { 
   var sql =
     'SELECT `service`.`id`, `service`.`name` AS `service`, `service`.`project_id`, `service`.`cost_center_id`, `service`.`profit_center_id`, `cost_center`.`text` AS `cost_center`, `profit_center`.`text` AS `profit_center`, `project`.`name` AS `project` '+

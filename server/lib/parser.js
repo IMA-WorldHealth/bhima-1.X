@@ -1,16 +1,16 @@
-// TODO rewrite to allow single initialisation any import any stage in the application
-
-// builds the sql queries that a store will use
-
+/**
+ * Parser
+ *
+ * Builds the sql queries that a store will use
+ *
+ * TODO Create config/parser to configure the parser from app.js - this should call initialise etc.
+ */
 var sanitize = require('./sanitize'),
     util = require('./util');
 
-// FIXME Hacky self assigning object - simply upgrading to allow new routing structure - needs refactor
-var self = {
-  initialise : initialise
-};
+var self = {};
 
-console.log('[parser] Configuring parser');
+initialise(null);
 
 function initialise(options) { 
   // The parser module is the composer for all SQL queries

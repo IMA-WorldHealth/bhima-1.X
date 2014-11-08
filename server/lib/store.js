@@ -1,8 +1,5 @@
 // /scripts/lib/util/store.js
 // the data store, similar to Dojo's Memory Store.
-
-console.log('[store] Configuring store');
-
 module.exports = function Store(options) {
   'use strict';
 

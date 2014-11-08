@@ -1,7 +1,6 @@
 var express      = require('express'),
     https        = require('https'),
     fs           = require('fs'),
-    url          = require('url'),
     compress     = require('compression'),
     bodyParser   = require('body-parser'),
     session      = require('express-session'),
@@ -15,8 +14,8 @@ var cfg = require('./config/server.json'),
 var uuid         = require('./lib/guid'),
     logger       = require('./lib/logger')(cfg.log, uuid);
 
-// TODO Temporary structure - move to config/database files etc.
-require('./lib/parser').initialise();
+// Configure database 
+// TODO @sfount - Move database initialisation to a config/ file, DB continues to sit in lib
 require('./lib/db').initialise(cfg.db, logger, uuid);
 
 var liberror     = require('./lib/liberror')();
@@ -39,22 +38,15 @@ app.use('/i18n', express.static('client/dest/i18n', { maxAge : 10000 }));
 // app.use('/assets', express.static('client/dest/assets', {maxAge:10000}));
 app.use(authenticate);
 app.use(express.static(cfg.static, { maxAge : 10000 }));
-
-app.get('/', function (req, res, next) {
-  /* jshint unused : false */
-  // This is to preserve the /#/ path in the url
-  res.sendfile(cfg.rootFile);
-});
-
-// Initialise router
-require('./config/routes').initialise(app);
-
 app.use(logger.error());
 app.use(liberror.middleware);
 
+// Configure router
+require('./config/routes').initialise(app);
+
 https.createServer(options, app)
 .listen(cfg.port, function () {
-  console.log('[app] Secure application running on localhost:' + cfg.port);
+  console.log('[app] BHIMA server running on port ' + cfg.port);
 });
 
 // temporary error handling for development!
