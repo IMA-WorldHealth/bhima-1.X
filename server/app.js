@@ -33,8 +33,7 @@ var liberror     = require('./lib/liberror')();
 var authenticate = require('./middleware/authentication')();
   
 // Routes not factored in to server_structure branch
-var locationRouter    = require('./controllers/location')(db, express.Router()),
-    taxPayment        = require('./routes/taxPayment')(db, parser),
+var taxPayment        = require('./routes/taxPayment')(db, parser),
     donation          = require('./routes/postingDonation')(db, parser);
 
 // create app
@@ -54,8 +53,7 @@ app.use(authenticate);
 app.use(express.static(cfg.static, { maxAge : 10000 }));
 
 // routers
-//app.use('/data', dataRouter);
-app.use('/location', locationRouter);
+//app.use('/location', locationRouter);
 
 app.get('/', function (req, res, next) {
   /* jshint unused : false */
@@ -63,30 +61,8 @@ app.get('/', function (req, res, next) {
   res.sendfile(cfg.rootFile);
 });
 
-/* this is required for location select */
-app.get('/location/:villageId?', function (req, res, next) {
-  var specifyVillage = req.params.villageId ? ' AND `village`.`uuid`=\'' + req.params.villageId + '\'' : '';
-
-  var sql =
-    'SELECT `village`.`uuid` as `uuid`, village.uuid as village_uuid, `village`.`name` as `village`, ' +
-      '`sector`.`name` as `sector`, sector.uuid as sector_uuid, `province`.`name` as `province`, province.uuid as province_uuid, ' +
-      '`country`.`country_en` as `country`, country.uuid as country_uuid ' +
-    'FROM `village`, `sector`, `province`, `country` ' +
-    'WHERE village.sector_uuid = sector.uuid AND ' +
-      'sector.province_uuid = province.uuid AND ' +
-      'province.country_uuid=country.uuid ' + specifyVillage + ';';
-
-  db.exec(sql)
-  .then(function (rows) {
-    res.send(rows);
-  })
-  .catch(next)
-  .done();
-});
-
-
 /* new locations API */
-app.use('/location', locationRouter);
+//app.use('/location', locationRouter);
 
 // Initialise router
 require('./config/routes').initialise(app);

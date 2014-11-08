@@ -1,8 +1,19 @@
-// Controllers 
+/**
+ * #Application Routing 
+ *   
+ * Initialise link between server paths and controller logic
+ *
+ * TODO Pass authenticate and authorize middleware down through 
+ * controllers, allowing for modules to subscribe to different 
+ * levels of authority
+ *
+ * TODO createPurhcase, createSale, serviceDist are all almost
+ * identicale modules - they should all be encapsulated as one 
+ * module. For Example finance.createSale, finance.createPurchase
+ */
 var data = require('./../controllers/data');
+var location = require('./../controllers/location');
 
-// TODO createPurchase, createSale etc. could be combined in one module named finance 
-// finance.createSale
 var createPurchase = require ('./../controllers/createPurchase');
 var createSale = require('./../controllers/createSale');
 
@@ -17,23 +28,25 @@ var tree = require('./../controllers/tree');
 
 var uncategorised = require('./../controllers/uncategorised');
 
-/**
- * Initialise link between server paths and controller logic
- *
- * TODO Pass authenticate and authorize middleware down through 
- * controllers, allowing for modules to subscribe to different 
- * levels of authority
-*/
 exports.initialise = function (app) { 
   console.log('[routes.js] Initialise routes');
-
+  
+  // Application data
   app.post('/data/', data.create);
   app.get('/data/', data.read);
   app.put('/data/', data.update);
   app.delete('/data/:table/:column/:value', data.deleteRecord);
+  
+  // Locations 
+  app.get('/location/villages', location.allVillages);
+  app.get('/location/sectors', location.allSectors);
+  app.get('/location/provinces', location.allProvinces);
 
-  // TODO All of these methods should be operations on a module
-  // /i.e finance.createSale
+  app.get('/location/village/:uuid', location.lookupVillage);
+  app.get('/location/sector/:uuid', location.lookupSector);
+  app.get('/location/province/:uuid', location.lookupProvince);
+  app.get('/location/detail/:uuid', location.lookupDetail);
+
   app.post('/purchase', createPurchase.execute);
   app.post('/sale/', createSale.execute);
   app.post('/service_dist/', serviceDist.execute);

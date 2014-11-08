@@ -56,7 +56,3 @@ exports.deleteRecord = function deleteRecord(req, res, next) {
   .catch(next)
   .done();
 };
-
-/*
- * Utility Methods 
-*/
