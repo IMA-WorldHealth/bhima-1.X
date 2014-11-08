@@ -17,10 +17,14 @@
 
 var q = require('q');
 
+var cfg = require('./../config/environment/server').db;
+var logger = require('./logger');
+var uuid = require('./guid');
+
 var db, con, supportedDatabases, log, dbms;
 
 // Initiliase module on startup - create once and allow db to be required anywhere
-function initialise(cfg, logger, uuid) { 
+function initialise() { 
   'use strict';
 
   cfg = cfg || {};
