@@ -95,7 +95,7 @@ angular.module('bhima.controllers')
     $scope.loadDebtor = function loadDebtor(debtor) {
       if (!debtor) { return messenger.danger('No debtor selected'); }
       $scope.debtor = debtor;
-      connect.fetch('/location/' + debtor.origin_location_id)
+      connect.fetch('/location/detail/' + debtor.origin_location_id)
       .then(function (data) {
         $scope.location = data[0];
         $scope.noEmpty = true;
