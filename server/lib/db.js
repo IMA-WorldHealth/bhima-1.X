@@ -19,8 +19,6 @@ var q = require('q');
 
 var db, con, supportedDatabases, log, dbms;
 
-console.log('[db] Configuring database');
-
 // Initiliase module on startup - create once and allow db to be required anywhere
 function initialise(cfg, logger, uuid) { 
   'use strict';
@@ -31,7 +29,6 @@ function initialise(cfg, logger, uuid) {
   // Select the system's database with this variable.
   dbms = cfg.dbms || 'mysql';
 
-
   // All supported dabases and their initializations
   supportedDatabases = {
     mysql    : mysqlInit
@@ -41,7 +38,7 @@ function initialise(cfg, logger, uuid) {
   };
 
   // The database connection for all data interactions
-  log(uuid(), 'Creating connection pool', null);
+  // log(uuid(), 'Creating connection pool', null);
   con = supportedDatabases[dbms](cfg);
 
   //  FIXME reset all logged in users on event of server crashing / terminating - this should be removed/ implemented into the error/ loggin module before shipping
@@ -194,7 +191,7 @@ function executeAsTransaction(querries) {
 function mysqlInit (config) {
   'use strict';
   var db = require('mysql');
-  console.log('Creating connection pool...');
+  
   return db.createPool(config);
 }
 
@@ -203,6 +200,7 @@ function flushUsers (db_con) {
   var permissions, reset;
 
   // Disable safe mode #420blazeit
+  // TODO  This should be optionally set as a flag - and reported (logged)
   permissions = 'SET SQL_SAFE_UPDATES = 0;';
   reset = 'UPDATE `user` SET `logged_in`=\'0\' WHERE `logged_in`=\'1\';';
 
@@ -215,7 +213,9 @@ function flushUsers (db_con) {
         if (err) { throw err; }
         con.query(reset, function (err) {
           if (err) { throw err; }
-          console.log('[db] (*) user . logged_in set to 0');
+          
+
+          // console.log('[db] (*) user . logged_in set to 0');
         });
       });
     });

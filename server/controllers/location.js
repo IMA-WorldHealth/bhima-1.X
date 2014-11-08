@@ -116,7 +116,7 @@ exports.lookupProvince = function (req, res, next) {
 
 // TODO use exec templating '?' vs. string concatination 
 exports.lookupDetail = function (req, res, next) { 
-  var specifyVillage = req.params.villageId ? ' AND `village`.`uuid`=\'' + req.params.villageId + '\'' : '';
+  var specifyVillage = req.params.uuid ? ' AND `village`.`uuid`=\'' + req.params.uuid + '\'' : '';
 
   var sql =
     'SELECT `village`.`uuid` as `uuid`, village.uuid as village_uuid, `village`.`name` as `village`, ' +

@@ -31,8 +31,10 @@ var tree = require('./../controllers/tree');
 var uncategorised = require('./../controllers/uncategorised');
 
 exports.initialise = function (app) { 
-  console.log('[routes.js] Initialise routes');
+  console.log('[config/routes] Initialise routes');
   
+  app.get('/', uncategorised.exposeRoot);
+
   // Application data
   app.post('/data/', data.create);
   app.get('/data/', data.read);
@@ -40,10 +42,10 @@ exports.initialise = function (app) {
   app.delete('/data/:table/:column/:value', data.deleteRecord);
   
   // Locations 
+  // -> /location/:scope(list || lookup)/:target(village || sector || province)/:id(optional)
   app.get('/location/villages', location.allVillages);
   app.get('/location/sectors', location.allSectors);
   app.get('/location/provinces', location.allProvinces);
-
   app.get('/location/village/:uuid', location.lookupVillage);
   app.get('/location/sector/:uuid', location.lookupSector);
   app.get('/location/province/:uuid', location.lookupProvince);

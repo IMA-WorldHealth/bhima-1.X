@@ -10,7 +10,6 @@ var validate = require('./../lib/validate')();
 var util = require('./../lib/util');
 
 var table_router, check, get;
-console.log('[journal] Configuring journal');
 
 /*
  * HTTP Controllers
@@ -26,6 +25,7 @@ function lookupTable(req, res, next) {
 /*
 /* Utility Methods
 */
+
 // validity checks
 check = {
   validPeriod : function (enterprise_id, date) {
