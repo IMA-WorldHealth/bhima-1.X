@@ -11,6 +11,8 @@
  * identicale modules - they should all be encapsulated as one 
  * module. For Example finance.createSale, finance.createPurchase
  */
+
+// Require application controllers
 var data = require('./../controllers/data');
 var location = require('./../controllers/location');
 
@@ -123,4 +125,24 @@ exports.initialise = function (app) {
   app.get('/getDelaiLivraison/:id', uncategorised.frenchRoute);
   app.get('/getCommandes/:id', uncategorised.listCommandes);
   app.get('/getMonthsBeforeExpiration/:id', uncategorised.formatLotsForExpiration);
+
+  // Added since route structure development 
+  app.post('/payTax/', uncategorised.submitTaxPayment);
+  app.post('/posting_donation', uncategorised.submitDonation);
+
+  app.put('/setTaxPayment/', uncategorised.setTaxPayment);
+
+  app.get('/cost_periodic/:id_project/:cc_id/:start/:end', uncategorised.costByPeriod);
+  app.get('/profit_periodic/:id_project/:pc_id/:start/:end', uncategorised.profitByPeriod);
+  app.get('/getAccount7', uncategorised.listExpenseAccounts);
+  app.get('/taxe_ipr_currency/', uncategorised.listTaxCurrency);
+  app.get('/getReportPayroll/', uncategorised.buildPayrollReport);
+  app.get('/getDataPaiment/', uncategorised.listPaimentData);
+  app.get('/getDataRubrics/', uncategorised.listRubricsData);
+  app.get('/getDataTaxes/', uncategorised.listTaxesData);
+  app.get('/getEmployeePayment/:id', uncategorised.listPaymentByEmployee);
+  app.get('/getDistinctInventories/', uncategorised.listDistinctInventory);
+  app.get('/getEnterprisePayment/:employee_id', uncategorised.listPaymentByEnterprise);
+  app.get('/getPeriodeFiscalYear/', uncategorised.lookupPeriod);
+  app.get('/getExploitationAccount/', uncategorised.listExploitationAccount);
 };

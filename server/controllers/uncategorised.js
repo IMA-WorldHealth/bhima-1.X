@@ -1,3 +1,10 @@
+/**
+ * Uncategorised HTTP Controllers
+ *
+ * This file should not exists, it can be removed once all routes have been standardised 
+ * and categorised
+ */
+
 var db = require('./../lib/db');
 var sanitize = require('./../lib/sanitize');
 var util = require('./../lib/util');
@@ -6,6 +13,8 @@ var uuid = require('./../lib/guid');
 // Route specific requirements
 var synthetic = require('./synthetic');
 var depot = require('./depot')();
+var taxPayment = require('./taxPayment')();
+var donation = require('./postingDonation')();
 
 // TODO delegate to configuration serving controller
 var errorCodes = require('./../config/errors.json');
@@ -1072,5 +1081,68 @@ exports.formatLotsForExpiration = function (req, res, next) {
   })
   .catch(function (err) { next(err); })
   .done();
+};
+
+exports.submitTaxPayment = function (req, res, next) { 
+
+};
+
+exports.submitDonation = function (req, res, next) { 
+
+};
+
+exports.setTaxPayment = function (req, res, next) { 
+
+};
+
+exports.costByPeriod = function (req, res, next) { 
+
+};
+
+exports.profitByPeriod = function (req, res, next) { 
+
+};
+
+exports.listExpenseAccounts = function (req, res, next) { 
+
+};
+
+exports.listTaxCurrency = function (req, res, next) { 
+
+};
+
+exports.buildPayrollReport = function (req, res, next) { 
+
+};
+
+exports.listPaimentData = function (req, res, next) { 
+
+};
+
+exports.listRubricsData = function (req, res, next) { 
+
+};
+
+exports.listTaxesData = function (req, res, next) { 
+
+};
+
+exports.listPaymentByEmployee = function (req, res, next) { 
+
+};
+
+exports.listDistinctInventory = function (req, res, next) { 
+
+};
+
+exports.listPaymentByEnterprise = function (req, res, next) { 
+
+};
+
+exports.lookupPeriod = function (req, res, next) { 
+
+};
+
+exports.listExploitationAccount = function (req, res, next) { 
 
 };

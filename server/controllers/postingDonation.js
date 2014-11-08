@@ -1,8 +1,11 @@
-var q = require('q');
-var journal = require('./../controllers/journal');
+var db = require('./../lib/db');
+var parser = require('./../lib/parser');
 var uuid = require('./../lib/guid');
+var journal = require('./../controllers/journal');
 
-module.exports = function(db, parser, journal, uuid) {
+var q = require('q');
+
+module.exports = function() {
   'use strict';
 
   function execute(data, userId, callback) {
