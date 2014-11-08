@@ -1,13 +1,9 @@
 var express      = require('express'),
     https        = require('https'),
-    fs           = require('fs'),
-    compress     = require('compression'),
-    bodyParser   = require('body-parser'),
-    session      = require('express-session'),
-    cookieParser = require('cookie-parser');
+    fs           = require('fs');
 
 // import configuration
-var cfg = require('./config/server.json'),
+var cfg = require('./config/environment/server.json'),
     options = { key : fs.readFileSync(cfg.tls.key, 'utf8'), cert : fs.readFileSync(cfg.tls.cert, 'utf8') };
 
 // import lib dependencies
@@ -25,6 +21,8 @@ var authenticate = require('./middleware/authentication')();
 
 // create app
 var app = express();
+
+require('./config/express');
 
 // middleware configuration
 app.use(compress());

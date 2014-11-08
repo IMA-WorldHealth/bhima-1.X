@@ -17,7 +17,7 @@ var taxPayment = require('./taxPayment')();
 var donation = require('./postingDonation')();
 
 // TODO delegate to configuration serving controller
-var errorCodes = require('./../config/errors.json');
+var errorCodes = require('./../config/environment/errors.json');
 
 exports.exposeRoot = function (req, res, next) { 
   /* jshint unused : false */
