@@ -14,15 +14,17 @@
 var fs    = require('fs'),
     os    = require('os');
 
-var cfg   = require('./../config/environment/server.json').log;
+var cfg   = require('./../config/environment/server').log;
 var uuid  = require('./guid');
+
+var loggerInstance;
 
 /* Writers */
 function getTime() {
   return new Date().toLocaleTimeString();
 }
 
-module.exports = function Logger (options) {
+loggerInstance = (function Logger (options) {
   'use strict';
   var types, headers, io, writer;
 
@@ -92,4 +94,6 @@ module.exports = function Logger (options) {
     external : external,
     error    : error
   };
-};
+})();
+
+module.exports = loggerInstance;

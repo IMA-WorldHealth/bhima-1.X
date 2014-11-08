@@ -4,20 +4,20 @@
  * This file should not exist, it can be removed once all routes have been standardised 
  * and categorised
  */
-
-var db = require('./../lib/db');
-var sanitize = require('./../lib/sanitize');
-var util = require('./../lib/util');
-var uuid = require('./../lib/guid');
+var db          = require('./../lib/db');
+var sanitize    = require('./../lib/sanitize');
+var util        = require('./../lib/util');
+var uuid        = require('./../lib/guid');
+var cfg         = require('./../config/environment/server');
 
 // Route specific requirements
-var synthetic = require('./synthetic');
-var depot = require('./depot')();
-var taxPayment = require('./taxPayment')();
-var donation = require('./postingDonation')();
+var synthetic   = require('./synthetic');
+var depot       = require('./depot')();
+var taxPayment  = require('./taxPayment')();
+var donation    = require('./postingDonation')();
 
 // TODO delegate to configuration serving controller
-var errorCodes = require('./../config/environment/errors.json');
+var errorCodes  = require('./../config/environment/errors.json');
 
 exports.exposeRoot = function (req, res, next) { 
   /* jshint unused : false */
