@@ -133,7 +133,7 @@ exports.listAvailableProfitCenters = function (req, res, next) {
 };
 
 exports.currentProject = function (req, res, next) { 
-
+  //req.session.project_id = req.session.project_id || 1;
   console.log('request with', req.session);
   var sql =
     'SELECT `project`.`id`, `project`.`name`, `project`.`abbr`, `project`.`enterprise_id`, `enterprise`.`currency_id`, `enterprise`.`location_id`, `enterprise`.`name` as \'enterprise_name\', `enterprise`.`phone`, `enterprise`.`email`, `village`.`name` as \'village\', `sector`.`name` as \'sector\' ' +
