@@ -33,8 +33,8 @@ var liberror     = require('./lib/liberror')();
 var authenticate = require('./middleware/authentication')();
   
 // Routes not factored in to server_structure branch
-var taxPayment        = require('./routes/taxPayment')(db, parser),
-    donation          = require('./routes/postingDonation')(db, parser);
+//var taxPayment        = require('./routes/taxPayment')(db, parser),
+//    donation          = require('./routes/postingDonation')(db, parser);
 
 // create app
 var app = express();
@@ -61,12 +61,8 @@ app.get('/', function (req, res, next) {
   res.sendfile(cfg.rootFile);
 });
 
-/* new locations API */
-//app.use('/location', locationRouter);
-
 // Initialise router
 require('./config/routes').initialise(app);
-
 
 app.use(logger.error());
 app.use(liberror.middleware);
@@ -80,6 +76,8 @@ https.createServer(options, app)
 //------------------
 // New methods to server_structure
 // -------------------------------
+
+/*
 app.post('/payTax/', function (req, res, next) {
   taxPayment.execute(req.body, req.session.user_id, function (err, ans) {
     if (err) { return next(err); }
@@ -93,6 +91,7 @@ app.post('/posting_donation/', function (req, res, next) {
     res.send({resp: ans});
   });
 });
+*/
 
 app.get('/cost_periodic/:id_project/:cc_id/:start/:end', function(req, res, next) {
   var sql =
