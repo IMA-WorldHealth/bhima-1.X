@@ -29,7 +29,7 @@ function logApplicationStart () {
   console.log('[app] BHIMA server started on port :', config.port);
 }
 
-function forceExit () { 
+function forceExit (err) { 
   console.error('[uncaughtException]', err.message);
   console.error(err.stack);
   process.exit(1);

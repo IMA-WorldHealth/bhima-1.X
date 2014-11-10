@@ -16,7 +16,7 @@
 var data            = require('./../controllers/data');
 var location        = require('./../controllers/location');
 
-var createPurchase  = require ('./../controllers/createPurchase');
+var createPurchase  = require('./../controllers/createPurchase');
 var createSale      = require('./../controllers/createSale');
 
 var serviceDist     = require('./../controllers/serviceDist');
