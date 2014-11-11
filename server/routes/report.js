@@ -247,19 +247,43 @@ module.exports = function (db, sanitize, util) {
         _end =  sanitize.escape(util.toMysqlDate(new Date(p.end))),
         _id = sanitize.escape(p.id);
 
+    // var sql =
+    //   'SELECT c.uuid, c.document_id, c.reference, s.reference AS sale_reference, s.project_id AS sale_project, ' +
+    //     'pr.abbr, c.cost, cr.name, c.type, p.first_name, c.description, p.project_id AS debtor_project, p.reference AS debtor_reference , ' +
+    //     'p.last_name, c.deb_cred_uuid, c.deb_cred_type, c.currency_id, ci.invoice_uuid, c.date ' +
+    //   'FROM `cash` AS c JOIN project AS pr JOIN `currency` as cr JOIN `cash_item` AS ci ' +
+    //     'JOIN `debitor` AS d JOIN `patient` as p JOIN sale AS s ' +
+    //     'ON ci.cash_uuid = c.uuid AND c.currency_id = cr.id AND ' +
+    //     'c.project_id = pr.id AND ' +
+    //     'c.deb_cred_uuid = d.uuid AND d.uuid = p.debitor_uuid AND ' +
+    //     'ci.invoice_uuid = s.uuid ' +
+    //   'WHERE c.project_id IN (' + _id + ') AND c.date >= ' + _start + ' AND ' +
+    //     'c.date <= ' + _end + ' ' +
+    //   'GROUP BY c.document_id;';
+
     var sql =
-      'SELECT c.uuid, c.document_id, c.reference, s.reference AS sale_reference, s.project_id AS sale_project, ' +
-        'pr.abbr, c.cost, cr.name, c.type, p.first_name, c.description, p.project_id AS debtor_project, p.reference AS debtor_reference , ' +
-        'p.last_name, c.deb_cred_uuid, c.deb_cred_type, c.currency_id, ci.invoice_uuid, c.date ' +
+      '(SELECT c.uuid, c.document_id, c.reference, s.reference AS sale_reference, s.project_id AS sale_project, ' +
+        'pr.abbr, c.cost, cr.name, p.first_name, c.description, p.project_id AS debtor_project, p.reference AS debtor_reference , ' +
+        'p.last_name, c.deb_cred_uuid, c.currency_id, ci.invoice_uuid, c.date ' +
       'FROM `cash` AS c JOIN project AS pr JOIN `currency` as cr JOIN `cash_item` AS ci ' +
         'JOIN `debitor` AS d JOIN `patient` as p JOIN sale AS s ' +
         'ON ci.cash_uuid = c.uuid AND c.currency_id = cr.id AND ' +
         'c.project_id = pr.id AND ' +
         'c.deb_cred_uuid = d.uuid AND d.uuid = p.debitor_uuid AND ' +
         'ci.invoice_uuid = s.uuid ' +
-      'WHERE c.project_id IN (' + _id + ') AND c.date >= ' + _start + ' AND ' +
-        'c.date <= ' + _end + ' ' +
-      'GROUP BY c.document_id;';
+      'WHERE c.project_id IN (' + _id + ') AND DATE(c.date) BETWEEN DATE(' + _start + ') AND DATE(' + _end + ') ' +
+      'GROUP BY c.document_id) ' +
+      'UNION ALL ' +
+      '(SELECT caution.uuid, caution.uuid AS document_id, caution.reference, caution.reference AS sale_reference, caution.project_id, ' +
+      ' project.abbr, caution.value, currency.name, p.first_name, caution.description, p.project_id AS debtor_project, p.reference AS debtor_reference, ' +
+      ' p.last_name, caution.debitor_uuid AS deb_cred_uuid, caution.currency_id, caution.uuid AS invoice_uuid, caution.date ' +
+      ' FROM `caution` ' +
+      ' JOIN `project` ON project.id=caution.project_id ' +
+      ' JOIN `currency` ON currency.id=caution.currency_id ' +
+      ' JOIN `debitor` AS d ON d.uuid=caution.debitor_uuid ' +
+      ' JOIN `patient` AS p ON p.debitor_uuid=d.uuid ' +
+      'WHERE caution.project_id IN (' + _id + ') AND DATE(caution.date) BETWEEN DATE(' + _start + ') AND DATE(' + _end + ') ' +
+      'GROUP BY caution.uuid); ';
 
     return db.exec(sql);
   }

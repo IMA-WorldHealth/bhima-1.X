@@ -49,9 +49,17 @@
         </thead>
         <tbody>
           <tr ng-repeat='payment in payments'>
-            <td><a ng-href="/#/invoice/cash/{{payment.uuid}}">{{ payment.abbr + payment.reference }}</a></td>
+            <td>
+              <!-- A FIXE : Naive Method for distinguish caution payment or cash payment -->
+              <a ng-if="payment.uuid != payment.document_id" ng-href="/#/invoice/cash/{{payment.uuid}}">{{ payment.abbr + payment.reference }}</a>
+              <a ng-if="payment.uuid === payment.document_id" ng-href="/#/invoice/caution/{{payment.uuid}}">{{ payment.abbr + payment.reference }}</a>
+            </td>
             <td> {{ payment.first_name + ' ' + payment.last_name }} </td>
-            <td><a ng-href="/#/invoice/sale/{{payment.invoice_uuid}}">{{ projects.get(payment.sale_project).abbr + payment.sale_reference }}</a></td>
+            <td>
+              <!-- A FIXE : Naive Method for distinguish caution payment or cash payment -->
+              <a ng-if="payment.uuid != payment.document_id" ng-href="/#/invoice/sale/{{payment.invoice_uuid}}">{{ projects.get(payment.sale_project).abbr + payment.sale_reference }}</a>
+              <a ng-if="payment.uuid === payment.document_id" ng-href="/#/invoice/caution/{{payment.invoice_uuid}}">{{ projects.get(payment.sale_project).abbr + payment.sale_reference }}</a>
+            </td>
             <td> {{ projects.get(payment.debtor_project).abbr + payment.debtor_reference }} </td>
             <td ng-bind-html="payment.cost | intlcurrency:payment.currency_id"></td>
             <td> {{ payment.description }} </td>
