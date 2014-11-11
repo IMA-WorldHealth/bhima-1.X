@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('primary_cash.salary_payment', [
+.controller('primary_cash.cotisation_payment', [
   '$scope',
   '$routeParams',
   '$translate',
@@ -15,7 +15,7 @@ angular.module('bhima.controllers')
   'uuid',
   function ($scope, $routeParams, $translate, $http, messenger, validate, appstate, Appcache, connect, util, exchange, $q, uuid) {
     var dependencies = {},
-        cache = new Appcache('salary_payment'),
+        cache = new Appcache('cotisation_payment'),
         session = $scope.session = {
           configured : false, 
           complete : false, 
@@ -84,25 +84,18 @@ angular.module('bhima.controllers')
           session.pp = pp; 
           session.pp_label = formatPeriod (pp);
         }
-
-        dependencies.salary_payment = {
-          query : {
-            tables : {
-              employee : { columns : ['code', 'prenom', 'postnom', 'name', 'creditor_uuid'] },
-              paiement : { columns : ['uuid', 'currency_id', 'net_before_tax', 'net_after_tax', 'net_salary', 'is_paid'] }
-            },
-            join : ['paiement.employee_id=employee.id'],
-            where : ['paiement.paiement_period_id='+ session.pp.id]
-          }
+        
+        dependencies.employees_payment = {
+          query : '/getEmployeeCotisationPayment/' + session.pp.id
         };
         
-        return validate.process(dependencies, ['salary_payment']);
+        return validate.process(dependencies, ['employees_payment']);
       })
       .then(function (model) {
         session.model = model;
         session.configured = (session.pp.id > 0) ? true : false ;
         session.complete = true;
-        session.available = (session.model.salary_payment.data.length > 0) ? true : false ;
+        session.available = (session.model.employees_payment.data.length > 0) ? true : false ;
       })
       .catch(function (err) {
         console.log('err', err);
@@ -152,11 +145,11 @@ angular.module('bhima.controllers')
         deb_cred_type : 'C',
         account_id    : getCashAccountID(emp.currency_id),
         currency_id   : emp.currency_id,
-        cost          : emp.net_salary,
+        cost          : emp.value,
         user_id       : session.model.cashier.data.id,
-        description   : 'Salary Payment ' + '(' + emp.name + emp.postnom + ') : ',
+        description   : 'Cotisation Payment ' + '(' + emp.label + ') : ' + emp.name + emp.postnom,
         cash_box_id   : session.cashbox,
-        origin_id     : 6,
+        origin_id     : 8,
       };
 
       var primary_details = {
@@ -164,30 +157,34 @@ angular.module('bhima.controllers')
         primary_cash_uuid : primary.uuid,
         debit             : 0,
         credit            : primary.cost,
-        document_uuid     : emp.uuid
+        inv_po_id         : emp.paiement_uuid,
+        document_uuid     : document_uuid
+      };
+
+      var other = {
+        cotisation_id : emp.cotisation_id
       };
 
       var package = {
         primary : primary,
-        primary_details : primary_details
+        primary_details : primary_details,
+        other : other
       };
 
-      connect.post('primary_cash', [package.primary], ['uuid'])
-      .then(function () {
-        return connect.post('primary_cash_item', [package.primary_details], ['uuid']);
-      })
-      .then(function () {
-        var param = { uuid : emp.uuid, is_paid : 1 };
-        return connect.put('paiement', [param], ['uuid'])
-        .then(function () { validate.refresh(dependencies); });
-      })
-      .then(function () {
-        return connect.fetch('/journal/salary_payment/' + package.primary.uuid);
-      })
-      .then(function () {
-        messenger.success('Paiement effectif de ' + emp.prenom + ' ' + emp.name + ' ' + emp.postnom + ' reussi', true);
-      })
-      .catch(function (err){ console.log(err); });
+      $http.post('payCotisation/', package)
+      .then(function (res){
+         // A FIXE : Using $http instead connect
+        var formatObject = {
+          table : 'cotisation_paiement',
+          paiement_uuid : emp.paiement_uuid,
+          cotisation_id : emp.cotisation_id
+        };
+        return $http.put('/setCotisationPayment/', formatObject)
+        .success(function (res) {
+          emp.posted = 1;
+          console.log('Update Cotisation Payment success');
+        });
+      });
     }
 
     $scope.formatPeriod = formatPeriod;

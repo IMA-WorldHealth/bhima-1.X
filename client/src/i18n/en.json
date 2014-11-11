@@ -100,7 +100,9 @@
       "ACCOUNT"                 : "Account",
       "ENTERPRISE_TAX_PAYMENT"  : "Entreprise Taxes Payment",
       "NO_DATA"                 : "No data available",
-      "SALARY_PAYMENT"          : "Salary Payment"
+      "SALARY_PAYMENT"          : "Salary Payment",
+      "COTISATIONS"             : "Cotisations",
+      "COTISATION_PAYMENT"      : "Cotisation Payment"
     },
     "INCOME" : {
       "TRANSFER"              : "Transfert",
@@ -2296,6 +2298,11 @@
     "SUBMIT_PAY"       : "Pay the salary"
   },
 
+  "COTISATION_PAYMENT" : {
+    "TITLE"            : "Cotisation payment",
+    "SUBMIT_PAID"      : "Pay cotisation"
+  },
+
   "EMPLOYEE_STANDING"     : {
     "TITLE"              : "Employee Standing Report",
     "PLACEHOLDER"        : "Find a employee...",
@@ -2307,5 +2314,5 @@
     "OUTSTANDING_BILLS"  : "Outstanding Bills and Other payments",
     "IMG"                : "Patient picture",
     "NO_TRANSACTION"     : "No transaction"
-  }   
+  }
 }
