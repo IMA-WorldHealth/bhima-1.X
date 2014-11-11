@@ -117,7 +117,6 @@ angular.module('bhima.controllers')
       connect.fetch('/user_session')
       .then(function (user) {
         record.user_id = user.id;
-        console.log('[record]', record);
         return connect.post('caution', record);
       })
       .then(function () {
