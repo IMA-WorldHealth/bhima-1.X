@@ -1558,7 +1558,9 @@
       "ACCOUNT"                 : "Compte",
       "ENTERPRISE_TAX_PAYMENT"  : "Paiement Taxes Entreprise",
       "NO_DATA"                 : "Aucune donnée disponible",
-      "SALARY_PAYMENT"          : "Paiement Effectif du Salaire"
+      "SALARY_PAYMENT"          : "Paiement Effectif du Salaire",
+      "COTISATIONS"             : "Cotisations",
+      "COTISATION_PAYMENT"      : "Paiement Cotisations"
     },
     "INCOME" : {
       "TRANSFER"              : "Transfert",
@@ -2321,6 +2323,11 @@
     "NET_AFTER_TAX"    : "Net Après Taxes",
     "PAID"             : "Payé",
     "SUBMIT_PAY"       : "Payer le salaire"
+  },
+
+  "COTISATION_PAYMENT" : {
+    "TITLE"            : "Paiement des cotisations",
+    "SUBMIT_PAID"      : "Payer cotisation"
   },
 
   "EMPLOYEE_STANDING"     : {

@@ -30,7 +30,7 @@ module.exports = function(db, parser, journal, uuid) {
 
   function writeToJournal (id, userId, details) {
     var deferred = q.defer();
-    journal.request('tax_payment', id, userId, function (error, result) {
+    journal.request('cotisation_payment', id, userId, function (error, result) {
       if (error) {
         return deferred.reject(error);
       }

@@ -641,6 +641,9 @@ angular.module('bhima.controllers')
         .then(function () {
           return connect.basicPut('tax_paiement', packagePay.tc_records, ['id']);
         })
+        .then(function () {
+          return connect.basicPut('cotisation_paiement', packagePay.cc_records, ['id']);
+        })
         .then(function (res){
           def.resolve(res);
         })
