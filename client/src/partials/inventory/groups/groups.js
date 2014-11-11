@@ -61,7 +61,7 @@ angular.module('bhima.controllers')
     $scope.submitEdit = function submitEdit() {
       var data = connect.clean($scope.group);
 
-      connect.basicPost('inventory_group', [data], [uuid])
+      connect.basicPost('inventory_group', [data], ['uuid'])
       .then(function () {
         $scope.action = '';
         $scope.groups.put(data);
