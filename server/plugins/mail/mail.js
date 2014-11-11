@@ -31,7 +31,9 @@ var include = [
   principalBalance,
   accounts,
   subsidyIMA,
-  ];
+];
+
+console.log("Initialization done");
 
 parseParams()
 .then(configureEnvironment)
@@ -40,9 +42,9 @@ parseParams()
 
 // Naive parmeter parsing, should have the following format -l language -s service
 function parseParams() {
+  console.log("parsing ...")
   service = process.argv[2] || service;
   language = process.argv[3] || language;
-
   return q.resolve();
 }
 
@@ -66,19 +68,19 @@ function buildQuery()  {
     "PAX_Basic_Sale" : "SELECT COUNT(uuid) as 'total' FROM sale WHERE invoice_date = " + util.date.from + " AND sale.project_id = 2;",
     "HBB_Sale_Items" : "SELECT COUNT(sale_item.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid and invoice_date = " + util.date.from + " AND project_id = 1;",
     "PAX_Sale_Items" : "SELECT COUNT(sale_item.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid and invoice_date = " + util.date.from + " AND project_id = 2;",
-   
+
     // Command was rushed
     //  - Union to remove duplication of conditional
     //  - Currently split up to allow seperation of posted and pending finances
-    
+
     // Account ID is currently set to 487 (principal dollar account) and 486 (principal franc account), debit and creit equivalent is used so the value returned is always dollars
-    "HBB_Principal_Cash_Income_Expense" : 
-                                  "SELECT SUM(debit_equiv) as debit, SUM(credit_equiv) as credit FROM posting_journal WHERE account_id IN (486, 487) AND trans_date = " + util.date.from + " " +  
-                                  "UNION ALL " + 
+    "HBB_Principal_Cash_Income_Expense" :
+                                  "SELECT SUM(debit_equiv) as debit, SUM(credit_equiv) as credit FROM posting_journal WHERE account_id IN (486, 487) AND trans_date = " + util.date.from + " " +
+                                  "UNION ALL " +
                                   "SELECT SUM(debit_equiv), SUM(credit_equiv) FROM general_ledger WHERE account_id IN (486, 487) AND trans_date = " + util.date.from + ";",
-    "HBB_Principal_Cash_Balance" : 
-                                  "SELECT SUM(debit_equiv - credit_equiv) as balance FROM posting_journal WHERE account_id IN (486, 487) " +  
-                                  "UNION ALL " + 
+    "HBB_Principal_Cash_Balance" :
+                                  "SELECT SUM(debit_equiv - credit_equiv) as balance FROM posting_journal WHERE account_id IN (486, 487) " +
+                                  "UNION ALL " +
                                   "SELECT SUM(debit_equiv - credit_equiv) FROM general_ledger WHERE account_id IN (486, 487);"
   };
 
@@ -86,7 +88,7 @@ function buildQuery()  {
 }
 
 function settup () {
- 
+
   // Initialise modules
   data.process(reportQuery)
   .then(template.load(language))
@@ -95,17 +97,17 @@ function settup () {
   .catch(handleError);
 }
 
-function configureReport () { 
-  
+function configureReport () {
+
   // Configuration, currently only header
   var header = enterprise + " | " + timestamp;
-  
-  template.writeHeader(header, reportReference);
-  return q.resolve();  
-}
-  
 
-function collateReports() {  
+  template.writeHeader(header, reportReference);
+  return q.resolve();
+}
+
+
+function collateReports() {
   var sessionTemplate = [];
 
   // TODO move to util
@@ -127,40 +129,40 @@ function collateReports() {
   }catch(e) {
     console.log(e);
   }
-  
+
   template.produceReport(sessionTemplate.join("\n"), path);
-  
+
   // Write the name of the file written to standard out
   console.log('Writing', path);
   data.end();
 }
 
-function linkDown() { 
+function linkDown() {
   var message = template.reports("Section", "network_warning");
   return template.fetch('message').replace(/{{ALERT_MESSAGE}}/g, message.heading + " " + message.content);
 }
 
-function updateProgress() { 
+function updateProgress() {
   var message = template.reports("Section", "system_update");
   return template.fetch('message').replace(/{{ALERT_MESSAGE}}/g, message.heading + " " + message.content);
 }
 
-function overview() { 
+function overview() {
   return template.fetch('header').replace(/{{HEADER_TEXT}}/g, template.reports("Header", "overview"));
 }
 
-function breakdown() { 
+function breakdown() {
   var paxNew = data.lookup('PAX_New_Patients')[0].total;
   var paxReturning = data.lookup('PAX_Renewal_Patients')[0].total;
   var hbbNew = data.lookup('HBB_New_Patients')[0].total;
   var hbbReturning = data.lookup('HBB_Renewal_Patients')[0].total;
-  
+
   var paxNewFiche = data.lookup('PAX_New_Fiche')[0].total;
   var paxOldFiche = data.lookup('PAX_Old_Fiche')[0].total;
 
   var hbbNewFiche = data.lookup('HBB_New_Fiche')[0].total;
   var hbbOldFiche = data.lookup('HBB_Old_Fiche')[0].total;
-  
+
   var hbbTotalSale = data.lookup('HBB_Basic_Sale')[0].total;
   var paxTotalSale = data.lookup('PAX_Basic_Sale')[0].total;
 
@@ -170,20 +172,20 @@ function breakdown() {
   var structureTemplate = template.fetch('table');
   var headerTemplate = template.fetch('tableHeader');
   var rowTemplate = template.fetch('tableRow');
-  
+
   var row = [], table, header, body;
-  
-  // Populate Header 
+
+  // Populate Header
   header = template.replace(headerTemplate, "{{DATA_ONE}}", "");
   header = template.replace(header, "{{DATA_TWO}}", "IMCK HBB");
   header = template.replace(header, "{{DATA_THREE}}", "IMCK PAX");
-  
+
   // Populate Body
   row[0] = template.replace(rowTemplate, "{{DATA_ONE}}", template.reports("Overview", "new_patients"));
   row[0] = template.replace(row[0], "{{DATA_TWO}}", hbbNew);
   row[0] = template.replace(row[0], "{{DATA_THREE}}", paxNew);
   row[0] = template.replace(row[0], "{{ROW_STYLE}}", "");
-  
+
   row[1] = template.replace(rowTemplate, "{{DATA_ONE}}", template.reports("Overview", "returning_patients"));
   row[1] = template.replace(row[1], "{{DATA_TWO}}", hbbReturning);
   row[1] = template.replace(row[1], "{{DATA_THREE}}", paxReturning);
@@ -193,12 +195,12 @@ function breakdown() {
   row[2] = template.replace(row[2], "{{DATA_TWO}}", hbbNew + hbbReturning);
   row[2] = template.replace(row[2], "{{DATA_THREE}}", paxNew + paxReturning);
   row[2] = template.replace(row[2], "{{ROW_STYLE}}", "style='font-weight: bold'");
-  
+
   row[3] = template.replace(rowTemplate, "{{DATA_ONE}}", template.reports("Overview", "new_fiche"));
   row[3] = template.replace(row[3], "{{DATA_TWO}}", hbbNewFiche);
   row[3] = template.replace(row[3], "{{DATA_THREE}}", paxNewFiche);
   row[3] = template.replace(row[3], "{{ROW_STYLE}}", "");
-  
+
   row[4] = template.replace(rowTemplate, "{{DATA_ONE}}", template.reports("Overview", "old_fiche"));
   row[4] = template.replace(row[4], "{{DATA_TWO}}", hbbOldFiche);
   row[4] = template.replace(row[4], "{{DATA_THREE}}", paxOldFiche);
@@ -208,7 +210,7 @@ function breakdown() {
   row[5] = template.replace(row[5], "{{DATA_TWO}}", hbbNewFiche + hbbOldFiche);
   row[5] = template.replace(row[5], "{{DATA_THREE}}", paxNewFiche + paxOldFiche);
   row[5] = template.replace(row[5], "{{ROW_STYLE}}", "style='font-weight: bold'");
-  
+
   row[6] = template.replace(rowTemplate, "{{DATA_ONE}}", template.reports("Overview", "total_invoice"));
   row[6] = template.replace(row[6], "{{DATA_TWO}}", hbbTotalSale);
   row[6] = template.replace(row[6], "{{DATA_THREE}}", paxTotalSale);
@@ -231,7 +233,7 @@ function breakdown() {
 function patientTotalReport() {
   var totalNew = data.lookup('New_Patients')[0].total;
   var totalReturning = data.lookup('Renewal_Patients')[0].total;
-  
+
   var sectionTemplate = template.reports("Section", "registration");
   var report =
     template.compile(
@@ -247,7 +249,7 @@ function patientTotalReport() {
 function hbbFinanceOverview() {
   var totalCash = data.lookup('HBB_Sum_Cash')[0].total;
   var totalInvoices = data.lookup('HBB_Cash_Total_Invoice')[0].total;
-  
+
   var sectionTemplate = template.reports("Section", "cash_hbb");
   var report =
     template.compile(
@@ -255,14 +257,14 @@ function hbbFinanceOverview() {
         template.insertStrong(filterCurrency(totalCash)),
         template.insertStrong(totalInvoices)
         );
-  
+
   return template.compileSection(sectionTemplate.heading, report);
 }
 
 function paxFinanceOverview() {
   var totalCash = data.lookup('PAX_Sum_Cash')[0].total;
   var totalInvoices = data.lookup('PAX_Cash_Total_Invoice')[0].total;
-  
+
   var sectionTemplate = template.reports("Section", "cash_pax");
   var report =
     template.compile(
@@ -270,62 +272,62 @@ function paxFinanceOverview() {
         template.insertStrong(filterCurrency(totalCash)),
         template.insertStrong(totalInvoices)
         );
-  
+
   return template.compileSection(sectionTemplate.heading, report);
 }
 
 function accounts() {
-  
+
   // FIXME Temporary
   return template.fetch('header').replace(/{{HEADER_TEXT}}/g, template.reports("Header", "accounts"));
 }
 
-function categoryPrincipal() { 
+function categoryPrincipal() {
   // FIXME Temporary
   return template.fetch('header').replace(/{{HEADER_TEXT}}/g, template.reports("Header", "principal"));
 }
 
-function principalIncomeExpense() { 
+function principalIncomeExpense() {
   var result = data.lookup('HBB_Principal_Cash_Income_Expense');
 
   var journal_debit = result[0].debit;
   var journal_credit = result[0].credit;
-  
+
   var ledger_debit = result[1].debit;
   var ledger_credit = result[1].credit;
-    
+
   var sectionTemplate = template.reports("Section", "principal_income_expense");
 
-  var report = 
+  var report =
     template.compile(
-        sectionTemplate.content, 
+        sectionTemplate.content,
         template.insertStrong('$'.concat((journal_debit + ledger_debit).toFixed(2))),
         template.insertStrong('$'.concat((journal_credit + ledger_credit).toFixed(2)))
         );
   return template.compileSection(sectionTemplate.heading, report);
 }
 
-function principalBalance() { 
-  
+function principalBalance() {
+
   var result = data.lookup('HBB_Principal_Cash_Balance');
-  
+
   var journal_balance = result[0].balance;
   var ledger_balance = result[1].balance;
 
   var sectionTemplate = template.reports("Section", "principal_balance");
 
-  var report = 
+  var report =
     template.compile(
-        sectionTemplate.content, 
+        sectionTemplate.content,
         template.insertStrong('$'.concat((journal_balance + ledger_balance).toFixed(2)))
         );
   return template.compileSection(sectionTemplate.heading, report);
 }
 
-function subsidyIMA() { 
+function subsidyIMA() {
   var totalCost = data.lookup('IMA_Total')[0].total || 0;
   var totalPatients = data.lookup('IMA_Patients')[0].total;
-  
+
   var sectionTemplate = template.reports("Section", "subsidy");
   var report =
     template.compile(
@@ -337,10 +339,10 @@ function subsidyIMA() {
   return template.compileSection(sectionTemplate.heading, report);
 }
 
-function sale() { 
+function sale() {
   var saleNumber = data.lookup('Basic_Sale')[0].total;
   var saleItems = data.lookup('Sale_Items')[0].total;
-  
+
   var sectionTemplate = template.reports("Section", "sale");
   var report =
     template.compile(
@@ -352,10 +354,10 @@ function sale() {
   return template.compileSection(sectionTemplate.heading, report);
 }
 
-function fiche() { 
+function fiche() {
   var newFicheCount = data.lookup('New_Fiche')[0].total;
   var oldFicheCount = data.lookup('Old_Fiche')[0].total;
-  
+
   var sectionTemplate = template.reports("Section", "fiche");
   var report =
     template.compile(
@@ -364,7 +366,7 @@ function fiche() {
         template.insertStrong(newFicheCount),
         template.insertStrong(oldFicheCount)
         );
-  
+
   return template.compileSection(sectionTemplate.heading, report);
 }
 
@@ -377,9 +379,9 @@ function filterCurrency (value) {
   var symbol = "FC";
   var separator = ".";
   var decimal = ",";
-  
+
   var decimalDigits, template;
-  
+
   //From application filter.js
   value = (value || 0).toFixed(2);
   decimalDigits = value.slice(value.indexOf('.')+1, value.indexOf('.') + 3);
@@ -387,23 +389,23 @@ function filterCurrency (value) {
   if (decimalDigits) value = value.slice(0, value.indexOf('.'));
   template = value.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1"+separator);
   template += decimal + decimalDigits + symbol;
-  
+
   return template;
 }
 
 function handleError(error) {
   console.log('handleError', error);
-  
+
   // Stop termination
 }
 
 // Temporary - ensure out exists
 function configureEnvironment() {
   var deferred = q.defer();
-    
+
   fs.exists('./out', function (result) {
     if (result) return deferred.resolve();
-    
+
     fs.mkdir('out', function () {
       return deferred.resolve();
     });

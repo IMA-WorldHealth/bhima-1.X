@@ -1,4 +1,5 @@
 #!/usr/local/bin/node
+console.log("distribute");
 var q = require('q');
 var childProcess = require('child_process');
 var util = require('util');
@@ -8,7 +9,7 @@ var template = require('./lib/template.js');
 var addressSource = './conf/address_list.json';
 var address = [];
 
-// Move to configuration? 
+// Move to configuration?
 var defaultLanguage = 'en';
 var compiledReference = {};
 
@@ -21,13 +22,13 @@ initialise();
 
 function initialise() {
   util.log('[send.js] bhima mail deamon initialised.');
-  
+
   template.read(addressSource)
   // .readConfiguration(configSource)
   .then(parseAddress)
   .then(sendMail)
   .catch(handleError);
-  
+
   // TODO Clean up files etc.
 }
 
@@ -35,7 +36,7 @@ function initialise() {
 
 function parseAddress(fileContent) {
   var content = JSON.parse(fileContent);
-  
+
   util.log('[send.js] parsed address list [' + addressSource + ']');
   address = content;
   return q.resolve(address);
@@ -50,7 +51,7 @@ function sendMail(details) {
 
   allRecipients.forEach(function (recipient) {
     var userLanguage = details[recipient].language;
-    
+
     // Validate recipient is subscribed to this service
     var subscribed = details[recipient].subscription.some(function (subscribedService) {
       return subscribedService === service;
@@ -59,12 +60,12 @@ function sendMail(details) {
     if (!subscribed) {
       return util.log('[send.js] [WARNING] recipient ' + recipient + ' is not to subscribed to this service');
     }
-      
+
     // Add user and language preference
     recipients.push(recipient);
     if (languages.indexOf(userLanguage) < 0) { languages.push(userLanguage); }
   });
-  
+
   compileReport(languages).then(function () {
     distributeStatus = recipients.map(function (recipient) {
       return distribute(recipient, details[recipient]);
@@ -75,15 +76,15 @@ function sendMail(details) {
 function compileReport(languages) {
   var deferred = q.defer();
   var compileStatus = [];
-  
+
   // TODO should check if the file exists before compiling - this should never be the case
   compileStatus = languages.map(function (language) {
     util.log('[send.js] compiling report [' + service + '] [' + language + ']');
-    return exec('./mail.js ' + service + ' ' + language);
+    return exec('./mail.js ' + service + ' ' + language + '> ~/Mail.js_Log_' + new Date().toLocaleDateString());
   });
 
   q.all(compileStatus).then(function (result) {
-  
+
     // Read in compiled file locations
     languages.forEach(function (language, index) {
       compiledReference[language] = result[index].trim();
@@ -96,22 +97,22 @@ function compileReport(languages) {
 }
 
 function distribute(recipient, details) {
-  
+
   // Verification
   if (!details.language) { details.language = defaultLanguage; }
   if (!details.address) { throw new Error('Recipient ' + recipient + ' has no assigned address'); }
-  
-  // TODO improve send command, this is just a proof of concept 
+
+  // TODO improve send command, this is just a proof of concept
   var command = 'mail -a \'Content-type: text/html;\' -s \'' + reportDate.toLocaleDateString() + '\' ' + details.address + ' < ' + compiledReference[details.language];
-  
+
   util.log('[send.js] [' + service + '] [' + details.language + '] -> ' + details.address);
   return exec(command);
 }
 
-// Utilities 
+// Utilities
 function exec(command) {
   var deferred = q.defer();
-    
+
   childProcess.exec(command, function (error, result) {
     if (error) { return deferred.reject(error); }
     deferred.resolve(result);
