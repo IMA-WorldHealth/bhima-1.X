@@ -17,8 +17,8 @@ var config = {
     "secret" : "xopen blowfish"
   },
   "tls" : {
-    "key" : "server/keys/key.pem",
-    "cert" : "server/keys/ssl.crt"
+    "key" : "server/config/keys/key.pem",
+    "cert" : "server/config/keys/ssl.crt"
   },
   "auth" : {
     "paths" : [
