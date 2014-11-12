@@ -94,7 +94,7 @@ angular.module('bhima.directives')
       }
 
       function fetchInitialLocation(villageUuid) {
-        return connect.fetch('/location/' + villageUuid);
+        return connect.fetch('/location/detail/' + villageUuid);
       }
 
       function initialiseLocation(defaultLocation) {

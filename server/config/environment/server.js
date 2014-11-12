@@ -1,4 +1,5 @@
-{
+// Export the same configuration object for use throughout modules
+var config = {
   "static": "client/dest/",
   "rootFile" : "/index.html",
   "port" : 8080,
@@ -125,4 +126,6 @@
       "/setCotisationPayment/"
     ]
   }
-}
+};
+
+module.exports = config;

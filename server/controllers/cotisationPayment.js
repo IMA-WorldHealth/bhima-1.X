@@ -1,6 +1,12 @@
-var q = require('q');
+var q       = require('q');
 
-module.exports = function(db, parser, journal, uuid) {
+var db      = require('./../lib/db');
+var parser  = require('./../lib/parser');
+var uuid    = require('./../lib/guid');
+
+var journal = require('./journal');
+
+module.exports = function() {
   'use strict';
 
   function execute(data, userId, callback) {
@@ -30,7 +36,7 @@ module.exports = function(db, parser, journal, uuid) {
 
   function writeToJournal (id, userId, details) {
     var deferred = q.defer();
-    journal.request('tax_payment', id, userId, function (error, result) {
+    journal.request('cotisation_payment', id, userId, function (error, result) {
       if (error) {
         return deferred.reject(error);
       }

@@ -5,7 +5,7 @@ angular.module('bhima.services')
 	// A FAIRE : des simulations concretes pour DL
 	// A FAIRE : des simulations concretes pour IC
 	// A FAIRE : gerer les cas de valeur null
-	
+
 	var dependencies = {},
 		inventory = {};
 
@@ -31,7 +31,7 @@ angular.module('bhima.services')
 			if(nb > 6) {
 				nb = 6;
 			}
-			
+		
 			inventory.nb = nb;
 			deff.resolve(nb);
 		}
@@ -86,7 +86,7 @@ angular.module('bhima.services')
 
 				if(cons.length){
 					cons.forEach(function (item) {
-						CM += item.quantity; 
+						CM += item.quantity;
 					});
 					if(nb > 0){ CM = CM / nb; }else{ CM = 0; }
 				}
@@ -105,7 +105,7 @@ angular.module('bhima.services')
 	}
 
 	function getDelaiLivraison (uuid,default_dl) {
-		// Le delais de livraison 
+		// Le delais de livraison
 		var deff = $q.defer();
 		dependencies.delaiLivraison = {};
 		dependencies.delaiLivraison.query = '/getDelaiLivraison/'+uuid;
@@ -119,7 +119,7 @@ angular.module('bhima.services')
 				inventory.dl = dl;
 				deff.resolve(dl);
 			}
-			
+		
 		}
 
 		return validate.refresh(dependencies)
@@ -148,19 +148,19 @@ angular.module('bhima.services')
 				var sMonth = 0;
 				var sAvg = 0;
 
-				if(dates.length > 1){ 
+				if(dates.length > 1){
 					for(var i = 1 ; i < dates.length ; i++){
 						sMonth += DateDiff.inMonths(dates[i],dates[i-1]);
 					}
 					sAvg = sMonth / (dates.length - 1);
 				}
-				else if(dates.length == 1){ sAvg = sMonth; }
+				else if(dates.length === 1){ sAvg = sMonth; }
 				else { sAvg = 0; }
 
 				inventory.ic = sAvg;
 				deff.resolve(sAvg);
 			}
-			
+		
 		}
 
 		var DateDiff = {
@@ -247,7 +247,7 @@ angular.module('bhima.services')
 		// ic : (optionel) l'intervalle de commande
 
 		// cette fonction retourne un objet json
-		// Exemple : 
+		// Exemple :
 		// {
 		//	cm: 26250 //Consommation mensuelle
 		// 	dl: 3 //Delai de livraison
@@ -299,5 +299,5 @@ angular.module('bhima.services')
 
 	//Output
 	this.inventoryData = inventoryData;
-	
+
 }]);
