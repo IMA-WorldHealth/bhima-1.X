@@ -5,6 +5,12 @@ var Store = require('./../lib/store');
 
 var q = require('q');
 
+// FIXME
+//  (1) Using regexp in the router here is almost a crime
+//      against humanity -- it means we haven't gotten a good
+//      rest API down.  See how to correctly design a rest API
+//      here: http://www.restapitutorial.com/
+
 module.exports = function () {
   'use strict';
 

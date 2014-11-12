@@ -4,12 +4,15 @@ var q = require('q');
 var db = require('./../lib/db');
 var parser = require('./../lib/parser');
 
-// This module is responsible for constructing each
-// person's tree based on their permissions in the
-// database.
-//
-// FIXME: there seems to be some code repetition.
-// TODO : Use db.exec() instead of db.execute()
+// FIXME
+//  (1) This module should use db.exec(), with parameter
+//      passing and escaping taken care of by mysql.
+//  (2) Formal documentation of how this process works
+//      would be welcome in the future.
+//  (3) We need a uniform structure among server controllers.
+//      Is exports.exposedFn an anti-pattern?  Or are we going
+//      to work with it?  Do some research, pick one, and use
+//      it throughout the appplication
 
 /*
  * HTTP Controllers
@@ -90,6 +93,6 @@ function load (userid) {
   }
 
   return main();
-};
+}
 
 exports.load = load;

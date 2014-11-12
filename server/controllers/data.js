@@ -3,6 +3,10 @@ var qs = require('querystring');
 var db = require('../lib/db');
 var parser = require('../lib/parser');
 
+// FIXME
+//  (1) This API needs to be stablized and brought in sync
+//      with the connect() service in the client.
+
 /* 
  * HTTP Controllers
 */

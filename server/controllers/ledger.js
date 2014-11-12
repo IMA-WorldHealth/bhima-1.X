@@ -1,17 +1,13 @@
-// scripts/lib/logic/ledger.js
-
-// Module: ledger
-//
-// This module exposes three methods:
-//  (1) debitor
-//  (2) credior
-//  (3) general
-// which encapsulate reporting the ledgers
-// for each group, respectively.
-
 var q =  require('q');
 var db = require('./../lib/db');
 var sanitize = require('./../lib/sanitize');
+
+// FIXME
+//    (1) There are lots of micro-routes.  If possible, we should
+//      condense these into a clean API
+//    (2) Ensure the code abides by the project synatx and style
+//      guidelines.
+//    (3) 'use strict'
 
 /*
  * HTTP Controllers
@@ -283,14 +279,6 @@ function distributableSale(id) {
 
   return defer.promise;
 }
-
-/*
-return {
-  debitor: debitor,
-  debitor_group : debitorGroup,
-  distributableSale : distributableSale
-};
-*/
 
 exports.debitor = debitor;
 exports.debitor_group = debitorGroup;
