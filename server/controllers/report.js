@@ -6,6 +6,11 @@ var db = require('./../lib/db');
 var sanitize = require('./../lib/sanitize');
 var util = require('./../lib/util');
 
+// FIXME
+//  (1) 'use strict' needs to be implimented.  If it takes a closure,
+//      so be it.
+//  (2) Formal way of injecting requires - use AMD style syntax -> require('db')
+
 /*
  * HTTP Controllers
 */

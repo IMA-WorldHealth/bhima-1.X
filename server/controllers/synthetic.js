@@ -1,6 +1,17 @@
 var db = require('./../lib/db');
 var sanitize = require('./../lib/sanitize');
 
+// FIXME:
+// This module needs significant refactoring.
+//  (1) Eliminate `` in the SQL statements
+//  (2) Declare all local variables at the top of their function scope,
+//      they will be hoisted anyway.
+//  (3) Semantic names for routes.  What does "aB" do?  We can afford
+//      to be descriptive.  We cannot afford to be unclear. (maintainability)
+//  (4) API redesign: use URL parameters to do things like select a certain 
+//      account group.
+//  (5) Proper capitalization and camelcase a must.
+
 //aB : accountBalance
 //pcR : principal caisse balance report by date
 //pcRI : principal caisse total income by date

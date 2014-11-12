@@ -2,6 +2,10 @@
 var db = require('./../lib/db');
 var sanitize = require('./../lib/sanitize');
 
+// FIXME
+//  (1) Use db.js escapes, not sanitize.js
+//  (2) expand this to a semantic API
+
 module.exports = function (db, sanitize) {
   'use strict';
 
