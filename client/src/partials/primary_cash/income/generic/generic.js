@@ -211,8 +211,8 @@ angular.module('bhima.controllers')
     }
 
     function formatAccount (ac) {
-      if(ac){return ac.account_number + ' - ' + ac.account_txt;}
-    };
+      if (ac) {return ac.account_number + ' - ' + ac.account_txt;}
+    }
 
     $scope.reconfigure = function () {
       session.ac = null;
@@ -221,7 +221,7 @@ angular.module('bhima.controllers')
     };
 
     $scope.setConfiguration = function (ac) {
-      if(ac){
+      if (ac) {
         cache.put('account', ac);
         session.configured = true;
         session.ac = ac;

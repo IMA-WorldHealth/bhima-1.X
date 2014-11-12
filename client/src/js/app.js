@@ -1,7 +1,7 @@
 (function (angular) {
   'use strict';
 
-  var bhima = angular.module('bhima', ['bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate']);
+  var bhima = angular.module('bhima', ['bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate', 'LocalForageModule']);
 
   // application events
   // Contains constants for use in the application by
@@ -570,12 +570,20 @@
     });
   }
 
+  function localForageConfig($localForageProvider) {
+    $localForageProvider.config({
+      name : 'bhima-v1',
+      version : 1.0
+    });
+  }
+
   // Event constants
   bhima.constant('EVENTS', events);
   // configuration
   bhima.config(['$routeProvider', bhimaconfig]);
   bhima.config(['$translateProvider', translateConfig]);
   bhima.config(['$httpProvider', authConfig]);
+  bhima.config(['$localForageProvider', localForageConfig]);
   // run
   bhima.run(['$rootScope', 'EVENTS', 'appauth', startupConfig]);
 
