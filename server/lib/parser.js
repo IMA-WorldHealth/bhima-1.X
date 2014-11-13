@@ -5,168 +5,186 @@
  *
  * TODO Create config/parser to configure the parser from app.js - this should call initialise etc.
  */
+
 var sanitize = require('./sanitize'),
     util = require('./util');
 
-var self = {};
+// Key:
+//  %T%  tables
+//  %C%  columns
+//  %G%  group by
+//  %W%  where conditions
+//  %I%  id(s)
+//  %V%  values
+//  %E%  expressions
+//  %L%  limit
+var templates = {
+  select: 'SELECT %distinct% %C% FROM %T% WHERE %W% GROUP BY %G% ORDER BY %O% LIMIT %L%;',
+  update: 'UPDATE %T% SET %E% WHERE %key%;',
+  delete: 'DELETE FROM %T% WHERE %key%;',
+  insert: 'INSERT INTO %T% %V% VALUES %E%;',
+  insert_ref : 'INSERT INTO %T% %V% SELECT %E% FROM %T% WHERE project_id = %project_id%;'
+};
 
-initialise(null);
-
-function initialise(options) { 
-  // The parser module is the composer for all SQL queries
-  // to the backend.  Query objects are decoded from the URL
-  // and passed into composer's methods.
+exports.delete = function (table, column, id) {
   'use strict';
-  
-  options = options || {};
+  var _id, sql, template = templates.delete;
 
-  self.templates = options.templates || {
-    select: 'SELECT %distinct% %columns% FROM %table% WHERE %conditions% GROUP BY %groups% ORDER BY %order% LIMIT %limit%;',
-    update: 'UPDATE %table% SET %expressions% WHERE %key%;',
-    delete: 'DELETE FROM %table% WHERE %key%;',
-    insert: 'INSERT INTO %table% %values% VALUES %expressions%;',
-    insert_ref : 'INSERT INTO %table% %values% SELECT %expressions% from %table% where project_id=%project_id%;'
-  };
+  // split the ids, escape, and rejoin in pretty fmt
+  _id = id.split(',')
+          .map(sanitize.escape)
+          .join(', ');
 
-  // delete
-  self.delete = function (table, column, id) {
-    var templ = self.templates.delete,
-        _id;
+  // SQL closure
+  _id = '(' + _id + ')';
 
-    _id = id.split(',');  // FIXME: this is an unreasonable hack
-    _id = util.isArray(_id) ?
-      '(' + _id.map(function (i) { return sanitize.escape(i); }).join(', ') + ')':
-      sanitize.escape(id);
-
-    return templ.replace('%table%', sanitize.escapeid(table))
+  // format the query
+  sql = template.replace('%T%', sanitize.escapeid(table))
                 .replace('%key%', [sanitize.escapeid(column), 'IN', _id].join(' '));
-  };
+  return sql;
+};
 
-  // update
-  self.update = function (table, data, id) {
-    var expressions = [], templ = self.templates.update;
-    var identifier = sanitize.escapeid(id); // temporarily defaults to 'id'
-    for (var d in data) {
-      if (d !== id) {
-        // FIXME : Everything is miserable.
-        // This is a hack to get 'null' values to insert into the database
-        // due to an error in posting cost center and profit center ids at
-        // Tshikaji.  This is why we need to migrate to a real database engine.
-        if (data[d] !== null) {
-          expressions.push([sanitize.escapeid(d), '=', sanitize.escape(data[d])].join(''));
-        } else {
-          expressions.push([sanitize.escapeid(d), '=', 'NULL'].join(''));
-        }
+exports.update = function (table, data, id) {
+  'use strict';
+  var _key, value, sql, expressions = [],
+      template = templates.update,
+      _id = sanitize.escapeid(id);
+
+  // For each property, escape both the key and value and push it into
+  // the sql values array
+  for (var key in data) {
+    if (key !== id) {
+      value = data[key];
+      _key = sanitize.escapeid(key);
+
+      // FIXME : This function allows values to be null.
+      // Is that really what we want?
+
+      if (value === null) {
+        expressions.push([_key, '=', 'NULL'].join(''));
+      } else {
+        expressions.push([_key, '=', sanitize.escape(value)].join(''));
       }
     }
+  }
 
-    return templ.replace('%table%', sanitize.escapeid(table))
-                .replace('%expressions%', expressions.join(', '))
-                .replace('%key%', [identifier, '=', sanitize.escape(data[id])].join(''));
-  };
+  sql = template.replace('%T%', sanitize.escapeid(table))
+              .replace('%E%', expressions.join(', '))
+              .replace('%key%', [_id, '=', sanitize.escape(data[id])].join(''));
 
-  // insert
-  self.insert = function (table, dataList) {
-    // insert allows insertion of multiple rows
-    var values = [], k, max, idx,
-        expressions = [],
-        templ = self.templates.insert;
+  return sql;
+};
 
-    // FIXME HACK HACK HACK to make behavoir the same across everything
-    if (!dataList.length) { dataList = [dataList]; }
+// FIXME
+//    This function is confusing because data can either by an array
+//    of objects or a single object.  We can correct this with proper API
+//    design.
+exports.insert = function (table, data) {
+  'use strict';
+  var sql, key, max, idx, values = [],
+      expressions = [],
+      template = templates.insert;
 
-    // find the maximum number of keys for a row object
-    max = 0;
-    dataList.forEach(function (row, index) {
-      var l = Object.keys(row).length;
-      if (l > max) {
-        max = l;
-        idx = index;
+  // TODO
+  //   This checks if data is an array and stuffs it
+  //   into an array if it is not.  This should be done either on the
+  //   client (by Connect) or before this point (in the /data/ routes)
+  if (!util.isArray(data)) { data = [data]; }
+
+  // find the maximum number of keys for a row object
+  max = 0;
+  data.forEach(function (row, index) {
+    var l = Object.keys(row).length;
+    if (l > max) {
+      max = l;
+      idx = index;
+    }
+  });
+
+  // calculate values
+  for (key in data[idx]) {
+    values.push(key);
+  }
+
+  var hasReference = values.indexOf('reference') > -1;
+  var project_id;
+
+  if (hasReference) {
+    template = templates.insert_ref;
+  }
+
+  data.forEach(function (row) {
+    var line = [];
+    for (var key in values) {
+      // default to null
+      if (values[key] !== 'reference') {
+        line.push(row[values[key]] !== null ? sanitize.escape(row[values[key]]) : 'null');
+      } else {
+        line.push('IF(ISNULL(MAX(reference)), 1, MAX(reference) + 1)');
       }
-    });
-
-    // calculate values
-    for (k in dataList[idx]) {
-      values.push(k);
+      if (values[key] === 'project_id') { project_id = sanitize.escape(row[values[key]]); }
     }
+    var concat = hasReference ? line.join(', ') : '(' + line.join(', ') + ')';
+    expressions.push(concat);
+  });
 
-    var hasReference = values.indexOf('reference') > -1;
-    var project_id;
+  sql = template.replace(/%T%/g, sanitize.escapeid(table))
+          .replace('%V%', '(' + values.join(', ') + ')')
+          .replace('%E%', expressions.join(', '))
+          .replace('%project_id%', project_id);
 
-    if (hasReference) { templ = self.templates.insert_ref; }
+  return sql;
 
-    dataList.forEach(function (row) {
-      var line = [];
-      for (var k in values) {
-        // default to null
-        if (values[k] !== 'reference') {
-          line.push(row[values[k]] !== null ? sanitize.escape(row[values[k]]) : 'null');
-        } else {
-          line.push('IF(ISNULL(max(reference)), 1, max(reference) + 1)');
-        }
-        if (values[k] === 'project_id') { project_id = sanitize.escape(row[values[k]]); }
-      }
-      var concat = hasReference ? line.join(', ') : '(' + line.join(', ') + ')';
-      expressions.push(concat);
-    });
+};
 
-    return templ
-      .replace(/%table%/g, sanitize.escapeid(table))
-      .replace('%values%', '(' + values.join(', ') + ')')
-      .replace('%expressions%', expressions.join(', '))
-      .replace('%project_id%', project_id);
+exports.select = function (def) {
+  'use strict';
+  var identifier, table, conditions,
+    columns = [],
+    template = templates.select,
+    join = def.join,
+    tables = Object.keys(def.tables).map(function (t) { return sanitize.escapeid(t); });
 
-  };
+  for (var t in def.tables) {
+    columns.push(cdm(sanitize.escapeid(t), def.tables[t].columns));
+  }
 
-  // select
-  self.select = function (def) {
-    var identifier, table, conditions,
-      columns = [],
-      templ = self.templates.select,
-      join = def.join,
-      tables = Object.keys(def.tables).map(function (t) { return sanitize.escapeid(t); });
+  if (join) {
+    // parse the join condition
+    table = tables.join(' JOIN ') + ' ON ';
+    // escape column specification
+    table += join.map(function (exp) {
+      // first split on equality
+      return exp.split('=').map(function (col) {
+        // then on the full stop
+        return col.split('.').map(function(value) {
+          // then escape the values
+          return sanitize.escapeid(value);
+        }).join('.');
+      }).join('=');
+    }).join(' AND ');
+  } else {
+    table = tables.join('');
+  }
 
-    for (var t in def.tables) {
-      columns.push(cdm(sanitize.escapeid(t), def.tables[t].columns));
-    }
+  // default to 1
+  conditions = (def.where) ? parseWhere(def.where) : 1;
 
-    if (join) {
-      // parse the join condition
-      table = tables.join(' JOIN ') + ' ON ';
-      // escape column specification
-      table += join.map(function (exp) {
-        // first split on equality
-        return exp.split('=').map(function (col) {
-          // then on the full stop
-          return col.split('.').map(function(value) {
-            // then escape the values
-            return sanitize.escapeid(value);
-          }).join('.');
-        }).join('=');
-      }).join(' AND ');
-    } else {
-      table = tables.join('');
-    }
+  var groups = def.groupby ?
+    def.groupby.split('.').map(function (i) { return sanitize.escapeid(i); }) :
+    null;
 
-    // default to 1
-    conditions = (def.where) ? parseWhere(def.where) : 1;
+  var order = def.order;
+  return template.replace('%distinct% ', def.distinct ? 'DISTINCT ' : '')
+    .replace('%C%', columns.join(', '))
+    .replace('%T%', table)
+    .replace('%W%', conditions)
+    .replace(' GROUP BY %G%', groups ? ' GROUP BY ' + groups.join('.') : '')
+    .replace(' ORDER BY %O%', order ? ' ORDER BY ' + order.join('.') : '')
+    .replace(' LIMIT %L%', def.limit ? ' LIMIT ' + def.limit : '');
+};
 
-    var groups = def.groupby ?
-      def.groupby.split('.').map(function (i) { return sanitize.escapeid(i); }) :
-      null;
-
-    var order = def.order;
-    return templ.replace('%distinct% ', def.distinct ? 'DISTINCT ' : '')
-      .replace('%columns%', columns.join(', '))
-      .replace('%table%', table)
-      .replace('%conditions%', conditions)
-      .replace(' GROUP BY %groups%', groups ? ' GROUP BY ' + groups.join('.') : '')
-      .replace(' ORDER BY %order%', order ? ' ORDER BY ' + order.join('.') : '')
-      .replace(' LIMIT %limit%', def.limit ? ' LIMIT ' + def.limit : '');
-  };
-}
-
-function cdm (table, columns) {
+function cdm(table, columns) {
   // creates a 'dot map' mapping on table
   // to multiple columns.
   // e.g. `table`.`column1`, `table`.`column2`
@@ -175,14 +193,16 @@ function cdm (table, columns) {
   }).join(', ');
 }
 
-function parseWhere (list) {
+function parseWhere(array) {
   var ops = ['AND', 'OR'];
-  return list.map(function (cond) {
-    return ~ops.indexOf(cond) ? cond : subroutine(cond);
-  }).join(' ');
+  return array
+    .map(function (cond) {
+      return ~ops.indexOf(cond) ? cond : subroutine(cond);
+    })
+    .join(' ');
 }
 
-function subroutine (cond) {
+function subroutine(cond) {
   // summary:
   //    Parses and escapes all components of a where
   //    clause separated by an equals sign.
@@ -190,17 +210,16 @@ function subroutine (cond) {
   //  expr = 'a.id=b.id';
   //  parsewhr(expr)
   //    => '`a`.`id`=`b`.`id`'
-  var ops = ['>=', '<=', '!=', '<>', '=', '<', '>'],
-    conditions,
-    operator;
+  var conditions, operator,
+      operators = ['>=', '<=', '!=', '<>', '=', '<', '>'];
 
-  if (sanitize.isArray(cond)) {
+  if (util.isArray(cond)) {
     // recursively compile the condition
     return '(' + parseWhere(cond) + ')';
   }
 
   // halts on true
-  ops.some(function (op) {
+  operators.some(function (op) {
     if (~cond.indexOf(op)) {
       conditions = cond.split(op);
       operator = op;
@@ -209,19 +228,17 @@ function subroutine (cond) {
   });
 
   // escape values
-  return conditions.map(function (exp) {
-    return ~exp.indexOf('.') ? exp.split('.').map(function (e) { return sanitize.escapeid(e); }).join('.') : sanitize.escape(exp);
-  }).join(operator);
+  return conditions
+    .map(function (exp) {
+      return ~exp.indexOf('.') ? exp.split('.').map(sanitize.escapeid).join('.') : sanitize.escape(exp);
+    })
+    .join(operator);
 }
 
-function arrayToIn (id, ids) {
-  var templ = ' %id% IN (%ids%) ';
-  ids = ids.map(function (v) {
-    return sanitize.escape(v);
-  });
+function arrayToIn(id, ids) {
+  var _ids, template = ' %id% IN (%ids%) ';
+  _ids = ids.map(sanitize.escape).toString();
 
-  return templ.replace('%id%', id)
-              .replace('%ids%', ids.toString());
+  return template.replace('%id%', id)
+                 .replace('%ids%', _ids);
 }
-
-module.exports = self;
