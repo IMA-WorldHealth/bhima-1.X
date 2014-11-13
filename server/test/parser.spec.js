@@ -134,6 +134,25 @@ describe('parser', function () {
       expect(results).to.equal(answer);
     });
 
+    it('should compose a DISTINCT SELECT query on a single table', function () {
+      var query, results, answer;
+
+      query = {
+        tables : {
+          'creditor' : { columns : ['id', 'name', 'group_id'] }
+        },
+        distinct : true
+      };
+
+      results = parser.select(query);
+
+      answer =
+        'SELECT DISTINCT `creditor`.`id`, `creditor`.`name`, `creditor`.`group_id` ' +
+        'FROM `creditor` WHERE 1;';
+
+      expect(results).to.equal(answer);
+    });
+
     it('should compose high complexity SELECT queries', function () {
       var query, results, answer;
 
