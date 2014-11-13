@@ -79,12 +79,6 @@ exports.insert = function (table, data) {
       expressions = [],
       template = templates.insert;
 
-  // TODO
-  //   This checks if data is an array and stuffs it
-  //   into an array if it is not.  This should be done either on the
-  //   client (by Connect) or before this point (in the /data/ routes)
-  if (!util.isArray(data)) { data = [data]; }
-
   // find the maximum number of keys for a row object
   max = 0;
   data.forEach(function (row, index) {
@@ -139,6 +133,7 @@ exports.select = function (def) {
     join = def.join,
     tables = Object.keys(def.tables).map(function (t) { return sanitize.escapeid(t); });
 
+  // convert to dot notation "table.column"
   for (var t in def.tables) {
     columns.push(cdm(sanitize.escapeid(t), def.tables[t].columns));
   }
@@ -150,7 +145,7 @@ exports.select = function (def) {
     table += join.map(function (exp) {
       // first split on equality
       return exp.split('=').map(function (col) {
-        // then on the full stop
+        // then on the full stop, escape, and recreate
         return col.split('.').map(sanitize.escapeid).join('.');
       }).join('=');
     }).join(' AND ');
@@ -167,8 +162,7 @@ exports.select = function (def) {
 
   // TODO
   //    Order by should support ASC, DESC notation
-  //    Perhaps orderby : ['+date', '-project'] or
-  //    something like that.
+  //    API? orderby : ['+date', '-project']
   var order;
   if (def.orderby) {
     order = def.orderby.map(function (o) {

@@ -1,14 +1,21 @@
 var url = require('url'),
     qs = require('querystring'),
     db = require('../lib/db'),
+    util = require('../lib/util'),
     parser = require('../lib/parser');
 
 /*
  * HTTP Controllers
 */
 exports.create = function create(req, res, next) {
-  // TODO: change the client to stop packaging data in an array...
-  var sql = parser.insert(req.body.table, req.body.data);
+  var sql, data;
+
+  // TODO
+  //   This checks if data is an array and stuffs it
+  //   into an array if it is not.  This should be done on the
+  //   client (by connect).
+  data = util.isArray(req.body.data) ? req.body.data : [req.body.data];
+  sql = parser.insert(req.body.table, data);
 
   db.exec(sql)
   .then(function (ans) {
@@ -34,7 +41,7 @@ exports.read = function read(req, res, next) {
 };
 
 exports.update = function update(req, res, next) {
-  // TODO: change the client to stop packaging data in an array...
+  // TODO : change the client to stop packaging data in an array...
   var sql = parser.update(req.body.table, req.body.data[0], req.body.pk[0]);
 
   db.exec(sql)
