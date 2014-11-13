@@ -1,11 +1,3 @@
-/**
- * Parser
- *
- * Builds the sql queries that a store will use
- *
- * TODO Create config/parser to configure the parser from app.js - this should call initialise etc.
- */
-
 var sanitize = require('./sanitize'),
     util = require('./util');
 
@@ -19,7 +11,7 @@ var sanitize = require('./sanitize'),
 //  %E%  expressions
 //  %L%  limit
 var templates = {
-  select: 'SELECT %distinct% %C% FROM %T% WHERE %W% GROUP BY %G% ORDER BY %O% LIMIT %L%;',
+  select: 'SELECT %DISTINCT% %C% FROM %T% WHERE %W% GROUP BY %G% ORDER BY %O% LIMIT %L%;',
   update: 'UPDATE %T% SET %E% WHERE %key%;',
   delete: 'DELETE FROM %T% WHERE %key%;',
   insert: 'INSERT INTO %T% %V% VALUES %E%;',
@@ -184,7 +176,7 @@ exports.select = function (def) {
     });
   }
 
-  return template.replace('%distinct% ', def.distinct ? 'DISTINCT ' : '')
+  return template.replace('%DISTINCT% ', def.distinct ? 'DISTINCT ' : '')
     .replace('%C%', columns.join(', '))
     .replace('%T%', table)
     .replace('%W%', conditions)
