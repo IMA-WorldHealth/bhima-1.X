@@ -115,7 +115,7 @@ describe('parser', function () {
       expect(results).to.equal(answer);
     });
 
-    it('should compose a SELECT query on a single table with LIMITed rows', function () {
+    it('should compose a SELECT query on a single table with ORDER BY statement', function () {
       var query, results, answer;
 
       query = {
@@ -156,8 +156,9 @@ describe('parser', function () {
           '`account_group`.`ordering` ' +
         'FROM `enterprise` JOIN `account_group` ON ' +
           '`enterprise`.`account_group_id`=`account_group`.`id` ' +
-        'WHERE `enterprise`.`id`=1 AND (`account_group`.`account_number`<100 OR ' +
-          '`account_group`.`account_number`>150) ' +
+        'WHERE `enterprise`.`id`="1" AND ' +
+          '(`account_group`.`account_number`<"100" OR ' +
+          '`account_group`.`account_number`>="150") ' +
         'ORDER BY `account_group`.`account_number` ' +
         'LIMIT 5;';
 
@@ -174,7 +175,7 @@ describe('parser', function () {
       results = parser.delete('account', 'id', 3);
 
       answer =
-        'DELETE FROM `account` WHERE `id` = "3";';
+        'DELETE FROM `account` WHERE `id` IN ("3");';
 
       expect(results).to.equal(answer);
     });
