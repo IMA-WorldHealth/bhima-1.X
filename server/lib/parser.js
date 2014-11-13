@@ -31,7 +31,9 @@ exports.delete = function (table, column, id) {
   var _id, sql, template = templates.delete;
 
   // split the ids, escape, and rejoin in pretty fmt
-  _id = id.split(',')
+  // Must use string in case id is an integer
+  _id = String(id)
+          .split(',')
           .map(sanitize.escape)
           .join(', ');
 
@@ -157,10 +159,7 @@ exports.select = function (def) {
       // first split on equality
       return exp.split('=').map(function (col) {
         // then on the full stop
-        return col.split('.').map(function(value) {
-          // then escape the values
-          return sanitize.escapeid(value);
-        }).join('.');
+        return col.split('.').map(sanitize.escapeid).join('.');
       }).join('=');
     }).join(' AND ');
   } else {
@@ -171,16 +170,26 @@ exports.select = function (def) {
   conditions = (def.where) ? parseWhere(def.where) : 1;
 
   var groups = def.groupby ?
-    def.groupby.split('.').map(function (i) { return sanitize.escapeid(i); }) :
+    def.groupby.split('.').map(sanitize.escapeid) :
     null;
 
-  var order = def.order;
+  // TODO
+  //    Order by should support ASC, DESC notation
+  //    Perhaps orderby : ['+date', '-project'] or
+  //    something like that.
+  var order;
+  if (def.orderby) {
+    order = def.orderby.map(function (o) {
+      return o.split('.').map(sanitize.escapeid).join('.');
+    });
+  }
+
   return template.replace('%distinct% ', def.distinct ? 'DISTINCT ' : '')
     .replace('%C%', columns.join(', '))
     .replace('%T%', table)
     .replace('%W%', conditions)
     .replace(' GROUP BY %G%', groups ? ' GROUP BY ' + groups.join('.') : '')
-    .replace(' ORDER BY %O%', order ? ' ORDER BY ' + order.join('.') : '')
+    .replace(' ORDER BY %O%', order ? ' ORDER BY ' + order.join(', ') : '')
     .replace(' LIMIT %L%', def.limit ? ' LIMIT ' + def.limit : '');
 };
 
