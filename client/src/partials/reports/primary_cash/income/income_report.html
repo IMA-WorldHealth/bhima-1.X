@@ -36,6 +36,7 @@
             <th>{{ "COLUMNS.DATE" | translate }}</th>
             <th>{{ "COLUMNS.SOURCE" | translate }}</th>
             <th>{{ "COLUMNS.BY" | translate }}</th>
+            <th class="hidden-print">{{ "COLUMNS.ACTION" | translate }}</th>
           </tr>
         </thead>
         <tbody>
@@ -46,6 +47,9 @@
             <td>{{ record.trans_date | date }}</td>
             <td>{{ record.service_txt }}</td>
             <td>{{ record.first }} {{record.last}}</td>
+            <td class="hidden-print">
+              <a ng-href="/#/invoice/{{record.service_txt}}/{{record.primary_cash_uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}</a>
+            </td>            
           </tr>
           <tr ng-if="!session.model.records.data.length">
             <td colspan="6">
