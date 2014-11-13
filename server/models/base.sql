@@ -91,8 +91,6 @@ INSERT INTO `unit` VALUES
 (41,'Journal Voucher','TREE.JOURNAL_VOUCHER','',30,0,'/partials/journal_voucher/','/journal_voucher'),
 (42,'Project','TREE.PROJECT','',1,0,'/partials/projects/','/projects'),
 (43,'Patient Standing','TREE.PATIENT_STANDING','',10,0,'/partials/reports/patient_standing/','/reports/patient_standing'),
-(44,'Fonction', 'TREE.FONCTION', 'Fonction management', 1, 0, 'partials/fonction/', '/fonction'),
-(45,'Employee', 'TREE.EMPLOYEE', 'Employee management', 1, 0, 'partials/employee/', '/employee'),
 (46,'Depot Management','TREE.DEPOT','',1,0,'/partials/inventory/depot/','inventory/depot'),
 (47,'Stock Management','TREE.STOCK_MANAGEMENT','',11,0,'partials/stock','/stock'),
 -- (47,'Stock Distribution','TREE.STOCK_DISTRIBUTION','',11,0,'/partials/inventory/distribution/','inventory/distribution'),
@@ -108,12 +106,6 @@ INSERT INTO `unit` VALUES
 (57,'Expense Report','TREE.EXPENSE_REPORT','',10,0,'/partials/reports/primary_cash/expense/','/reports/expense_report/'),
 (59,'Canevas SNIS', 'Canevas SNIS', '', 0, 1, 'partials/snis/', '/canevas_snis/'),
 (60,'Rapports SNIS', 'Rapports SNIS', '', 59, 0, 'partials/snis/index.html', '/snis/'),
-(61,'Grade Employers','TREE.GRADE_EMPLOYERS','',1,0,'/partials/grade_employers/','/grade_employers/'),
-(62,'Gestions des taxes','TREE.TAXE_MANAGEMENT','',1,0,'/partials/taxe/','/taxes_management/'),
-(63,'Rubriques Management','TREE.RUBRIC_MANAGEMENT','',1,0,'/partials/rubric/','/rubric_management/'),
-(64,'Gestions des jours ferries','TREE.OFFDAY_MANAGEMENT','',1,0,'/partials/offdays/','/offday_management/'),
-(65,'Gestion des vacances','TREE.HOLLYDAY_MANAGEMENT','',1,0,'/partials/hollydays/','/hollyday_management/'),
-(66,'Gestion des periodes','TREE.PAYMENT_PERIOD','',1,0,'/partials/payment_period/','/payment_period/'),
 (67,'Stock Dashboard','TREE.STOCK_DASHBOARD','',11,0,'/partials/stock/stock_dashboard/','/stock_dashboard/'),
 (68,'Daily consumption', 'TREE.DAILY_CONSUMPTION', '', 10, 0, '/partials/reports/daily_consumption', '/reports/daily_consumption/'),
 (69,'Configuration des comptes','TREE.CONFIG_ACCOUNTING','',1,0,'/partials/config_accounting/','/config_accounting/'),
@@ -123,7 +115,18 @@ INSERT INTO `unit` VALUES
 (73,'Exploitation Service', 'TREE.SERVICE_EXPLOITATION', '', 10, 0, '/partials/reports/service_exploitation/', '/reports/service_exploitation/'),
 (74,'Toutes transactions', 'TREE.GLOBAL_TRANSACTION', '', 10, 0, '/partials/reports/global_transaction/', '/reports/global_transaction/'),
 (75,'Cotisation management','TREE.COTISATION_MANAGEMENT','',1,0,'/partials/cotisation/cotisation_management.html/','/cotisations_management/'),
-(76,'Employee Standing','TREE.EMPLOYEE_STANDING','',10,0,'/partials/reports/employee_standing/','/reports/employee_standing');
+(76,'Employee Standing','TREE.EMPLOYEE_STANDING','',10,0,'/partials/reports/employee_standing/','/reports/employee_standing'),
+(77,'Payroll', 'TREE.PAYROLL', '', 0, 1, 'partials/payroll/', '/payroll/'),
+(61,'Grade Employers','TREE.GRADE_EMPLOYERS','',77,0,'/partials/grade_employers/','/grade_employers/'),
+(44,'Fonction', 'TREE.FONCTION', 'Fonction management', 1, 0, 'partials/fonction/', '/fonction'),
+(45,'Employee', 'TREE.EMPLOYEE', 'Employee management', 1, 0, 'partials/employee/', '/employee'),
+(62,'Gestions des taxes','TREE.TAXE_MANAGEMENT','',77,0,'/partials/taxe/','/taxes_management/'),
+(63,'Rubriques Management','TREE.RUBRIC_MANAGEMENT','',77,0,'/partials/rubric/','/rubric_management/'),
+(64,'Gestions des jours ferries','TREE.OFFDAY_MANAGEMENT','',77,0,'/partials/offdays/','/offday_management/'),
+(65,'Gestion des vacances','TREE.HOLLYDAY_MANAGEMENT','',77,0,'/partials/hollydays/','/hollyday_management/'),
+(66,'Gestion des periodes','TREE.PAYMENT_PERIOD','',77,0,'/partials/payment_period/','/payment_period/');
+
+
 -- references language .json files
 INSERT INTO `language` (id, name, `key`) VALUES
   (1, 'Francais', 'fr'),
