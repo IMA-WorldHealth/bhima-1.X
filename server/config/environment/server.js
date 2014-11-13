@@ -1,4 +1,5 @@
-{
+// Export the same configuration object for use throughout modules
+var config = {
   "static": "client/dest/",
   "rootFile" : "/index.html",
   "port" : 8080,
@@ -16,8 +17,8 @@
     "secret" : "xopen blowfish"
   },
   "tls" : {
-    "key" : "server/keys/key.pem",
-    "cert" : "server/keys/ssl.crt"
+    "key" : "server/config/keys/key.pem",
+    "cert" : "server/config/keys/ssl.crt"
   },
   "auth" : {
     "paths" : [
@@ -125,4 +126,6 @@
       "/setCotisationPayment/"
     ]
   }
-}
+};
+
+module.exports = config;

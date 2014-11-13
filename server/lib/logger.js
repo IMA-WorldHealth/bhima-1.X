@@ -11,15 +11,20 @@
 // | source | ip | uuid | timestamp | type |  description | status | userID |
 // --------------------------------------------------------------------------
 
-var fs = require('fs'),
-    os = require('os');
+var fs    = require('fs'),
+    os    = require('os');
+
+var cfg   = require('./../config/environment/server').log;
+var uuid  = require('./guid');
+
+var loggerInstance;
 
 /* Writers */
 function getTime() {
   return new Date().toLocaleTimeString();
 }
 
-module.exports = function Logger (cfg, uuid) {
+loggerInstance = (function Logger (options) {
   'use strict';
   var types, headers, io, writer;
 
@@ -89,4 +94,6 @@ module.exports = function Logger (cfg, uuid) {
     external : external,
     error    : error
   };
-};
+})();
+
+module.exports = loggerInstance;
