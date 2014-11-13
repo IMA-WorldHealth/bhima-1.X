@@ -25,10 +25,6 @@ angular.module('bhima.controllers')
 
     configuration.operations = [
       {
-        key : 'PRIMARY_CASH.EXPENSE.MULTI_PAYROLL',
-        link : '/primary_cash/expense/multi_payroll/'
-      },
-      {
         key : 'PRIMARY_CASH.EXPENSE.SALARY_PAYMENT',
         link : '/primary_cash/expense/salary_payment/'
       },
