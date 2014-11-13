@@ -1,7 +1,7 @@
-var url = require('url');
-var qs = require('querystring');
-var db = require('../lib/db');
-var parser = require('../lib/parser');
+var url = require('url'),
+    qs = require('querystring'),
+    db = require('../lib/db'),
+    parser = require('../lib/parser');
 
 /* 
  * HTTP Controllers
