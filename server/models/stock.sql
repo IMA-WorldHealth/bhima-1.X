@@ -12,7 +12,7 @@ set @location_uuid = (SELECT uuid from village where name = "TSHIKAJI");
 set @debitor_group_uuid = (SELECT uuid from debitor_group LIMIT 1);
 
 insert into grade values (@grade_uuid, "C1", "Docteur", 100);
-
+insert into fonction values (1,'Docteur');
 insert into creditor_group values (200, @group_uuid, 'Employees', 187, 0);
 
 insert into creditor values (@employee_creditor_uuid, @group_uuid, "Creditor for Employee A");

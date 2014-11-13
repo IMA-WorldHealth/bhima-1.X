@@ -442,7 +442,9 @@
     "SERVICE_EXPLOITATION"      : "Exploitation par Service",
     "GLOBAL_TRANSACTION"        : "Mouvement des comptes",
     "COTISATION_MANAGEMENT"     : "Gestion des cotisations",
-    "EMPLOYEE_STANDING"         : "Rapport des employés"
+    "EMPLOYEE_STANDING"         : "Rapport des employés",
+    "PAYROLL"                   : "Payroll",
+    "MULTI_PAYROLL"             : "Payroll Multiple"        
 },
 
 
