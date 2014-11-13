@@ -1,259 +1,249 @@
-var parser = require('../lib/database/parser')();
+var expect = require('chai').expect,
+    parser = require('../lib/parser');
 
-var _select = {
-  simple : {
-    query : {
-      'tables' : {
-        'account' : {
-          'columns' : [ 'id', 'number']
-        }
-      }
-    },
-    fail : 'Parser.js fails to compose simple SELECT queries',
-    result : 'SELECT `account`.`id`, `account`.`number` FROM `account` WHERE 1;'
-  },
+//var describe, it;
 
-  join : {
-    query : {
-      tables : {
-        'permission' : {
-          columns : ['id', 'id_unit', 'id_user']
+describe('parser', function () {
+
+  // TODO : How should these fail?
+  describe('#select()', function () {
+
+    it('should compose a SELECT query on a single table', function () {
+      var query, results, answer;
+
+      query = {
+        'tables' : { 'account' : { 'columns' : [ 'id', 'number'] } }
+      };
+
+      results = parser.select(query);
+      answer = 'SELECT `account`.`id`, `account`.`number` FROM `account` WHERE 1;';
+
+      expect(results).to.equal(answer);
+    });
+
+    it('should compose a SELECT query on three tables with two JOIN conditions', function () {
+      var query, results, answer;
+
+      query = {
+        tables : {
+          'permission' : { columns : ['id', 'id_unit', 'id_user'] },
+          'unit' : { columns : ['name', 'key', 'label'] },
+          'user' : { columns : ['username', 'email'] }
         },
-        'unit' : {
-          columns : ['name', 'key', 'label']
+        join : ['permission.id_unit=unit.id', 'permission.id_user=user.id']
+      };
+
+      results = parser.select(query);
+
+      answer =
+        'SELECT `permission`.`id`, `permission`.`id_unit`, `permission`.`id_user`, ' +
+          '`unit`.`name`, `unit`.`key`, `unit`.`label`, `user`.`username`, ' +
+          '`user`.`email` ' +
+        'FROM `permission` JOIN `unit` JOIN `user` ON ' +
+          '`permission`.`id_unit`=`unit`.`id` AND ' +
+          '`permission`.`id_user`=`user`.`id` WHERE 1;';
+
+      expect(results).to.equal(answer);
+    });
+
+    it('should compose a SELECT query on a single table with WHERE conditions', function () {
+      var query, results, answer;
+
+      query = {
+        tables : {
+          'account' : { columns : ['id', 'account_number', 'account_txt', 'locked'] }
         },
-        'user' : {
-          columns : ['username', 'email']
-        }
-      },
-      join : ['permission.id_unit=unit.id', 'permission.id_user=user.id']
-    },
-    fail : 'Parser.js fails to compose 3-way JOIN queries',
-    result :
-      'SELECT `permission`.`id`, `permission`.`id_unit`, `permission`.`id_user`, ' +
-        '`unit`.`name`, `unit`.`key`, `unit`.`label`, `user`.`username`, ' +
-        '`user`.`email` ' +
-      'FROM `permission` JOIN `unit` JOIN `user` ON ' +
-        '`permission`.`id_unit`=`unit`.`id` AND ' +
-        '`permission`.`id_user`=`user`.`id` WHERE 1;'
-  },
+        where : ['account.locked<>0', 'AND', 'account.account_number>=100']
+      };
 
-  where : {
-    query : {
-      tables : {
-        'account' : {
-          columns : ['id', 'account_number', 'account_txt', 'locked']
-        }
-      },
-      where : ['account.locked<>0', 'AND', 'account.account_number>=100']
-    },
-    fail: 'Parser.js fails to compose simple WHERE conditions',
-    result :
-      'SELECT `account`.`id`, `account`.`account_number`, `account`.`account_txt`, ' +
-        '`account`.`locked` ' +
-      'FROM `account` ' +
-      'WHERE `account`.`locked`<>"0" AND `account`.`account_number`>="100";'
-  },
+      results = parser.select(query);
 
-  where_complex : {
-    query : {
-      tables : {
-        'enterprise' : {
-          columns : ['id', 'name', 'location_id', 'phone', 'email', 'account_group_id']
+      answer =
+        'SELECT `account`.`id`, `account`.`account_number`, `account`.`account_txt`, ' +
+          '`account`.`locked` ' +
+        'FROM `account` ' +
+        'WHERE `account`.`locked`<>"0" AND `account`.`account_number`>="100";';
+
+      expect(results).to.equal(answer);
+    });
+
+    it('should compose a SELECT query on two JOINed tables with nested WHERE conditions', function () {
+      var query, results, answer;
+
+      query = {
+        tables : {
+          'enterprise' : {
+            columns : ['id', 'name', 'location_id', 'phone', 'email', 'account_group_id']
+          },
+          'account_group' : { columns : ['account_number', 'ordering'] }
         },
-        'account_group' : {
-          columns : ['account_number', 'ordering']
-        }
-      },
-      where : ['enterprise.id=1', 'AND', ['account_group.account_number<100', 'OR',
-        'account_group.account_number>150']],
-      join : ['enterprise.account_group_id=account_group.id']
-    },
-    fail : 'Parser.js fails to compose complex (joined & nested) WHERE conditions',
-    result :
-      'SELECT `enterprise`.`id`, `enterprise`.`name`, `enterprise`.`location_id`, ' +
-        '`enterprise`.`phone`, `enterprise`.`email`, `enterprise`.`account_group_id`, ' +
-        '`account_group`.`account_number`, `account_group`.`ordering` ' +
-      'FROM `enterprise` JOIN `account_group` ON ' +
-        '`enterprise`.`account_group_id`=`account_group`.`id` ' +
-      'WHERE `enterprise`.`id`="1" AND (`account_group`.`account_number`<"100" OR ' +
-        '`account_group`.`account_number`>"150");'
-  },
+        where : ['enterprise.id=1', 'AND', ['account_group.account_number<100', 'OR',
+          'account_group.account_number>150']],
+        join : ['enterprise.account_group_id=account_group.id']
+      };
 
-  limit: {
-    query : {
-      tables : {
-        'debtor' : {
-          columns : ['id', 'name', 'location_id', 'group_id']
-        }
-      },
-      limit : 30
-    },
-    fail : 'Parser.js fails to compose simple LIMIT requests',
-    result :
-      'SELECT `debtor`.`id`, `debtor`.`name`, `debtor`.`location_id`, ' +
-        '`debtor`.`group_id` ' +
-      'FROM `debtor` ' +
-      'WHERE 1 ' +
-      'LIMIT 30;'
-  },
+      results = parser.select(query);
 
-  orderby : {
-    query : {
-      tables : {
-        'creditor' : {
-          columns : ['id', 'name', 'group_id']
-        }
-      },
-      orderby: ['creditor.group_id']
-    },
-    fail : 'Parser.js fails to compose simple ORDER BY requests',
-    result :
-      'SELECT `creditor`.`id`, `creditor`.`name`, `creditor`.`group_id` ' +
-      'FROM `creditor` ' +
-      'WHERE 1 ' +
-      'ORDER BY `creditor`.`group_id`;'
-  },
+      answer =
+        'SELECT `enterprise`.`id`, `enterprise`.`name`, `enterprise`.`location_id`, ' +
+          '`enterprise`.`phone`, `enterprise`.`email`, `enterprise`.`account_group_id`, ' +
+          '`account_group`.`account_number`, `account_group`.`ordering` ' +
+        'FROM `enterprise` JOIN `account_group` ON ' +
+          '`enterprise`.`account_group_id`=`account_group`.`id` ' +
+        'WHERE `enterprise`.`id`="1" AND (`account_group`.`account_number`<"100" OR ' +
+          '`account_group`.`account_number`>"150");';
 
-  combination : {
-    query : {
-      tables : {
-        'enterprise' : {
-          columns : ['id', 'name', 'location_id', 'account_group_id']
+      expect(results).to.equal(answer);
+    });
+
+    it('should compose a SELECT query on a single table with LIMITed rows', function () {
+      var query, results, answer;
+
+      query = {
+        tables : {
+          'debtor' : { columns : ['id', 'name', 'location_id', 'group_id'] }
         },
-        'account_group' : {
-          columns : ['account_number', 'ordering']
-        }
-      },
-      where : ['enterprise.id=1', 'AND', ['account_group.account_number<100', 'OR', 'account_group.account_number>=150']],
-      join : ['enterprise.account_group_id=account_group.id'],
-      orderby : ['account_group.account_number'],
-      limit: 5
-    },
-    fail : 'Parser.js fails to properly compose a maximum complexity query',
-    result :
-      'SELECT `enterprise`.`id`, `enterprise`.`name`, `enterprise`.`location_id`, ' +
-        '`enterprise`.`account_group_id`, `account_group`.`account_number`, ' +
-        '`account_group`.`ordering` ' +
-      'FROM `enterprise` JOIN `account_group` ON ' +
-        '`enterprise`.`account_group_id`=`account_group`.`id` ' +
-      'WHERE `enterprise`.`id`=1 AND (`account_group`.`account_number`<100 OR ' +
-        '`account_group`.`account_number`>150) ' +
-      'ORDER BY `account_group`.`account_number` ' +
-      'LIMIT 5;'
-  }
+        limit : 30
+      };
 
-};
+      results = parser.select(query);
 
-var _update = {
+      answer =
+        'SELECT `debtor`.`id`, `debtor`.`name`, `debtor`.`location_id`, `debtor`.`group_id` ' +
+        'FROM `debtor` WHERE 1 LIMIT 30;';
 
-  simple : {
-    table : 'unit',
-    data : { id : 1, url : '/some/url/content/', parent: 23 },
-    key : 'id',
-    fail : 'Parser.js cannot compose simple update queries',
-    result :
-      'UPDATE `unit` SET `url`="/some/url/content/", `parent`=23 ' +
-      'WHERE `id`=1;'
-  },
+      expect(results).to.equal(answer);
+    });
 
-  // TODO : this test is a work in progress.
-  multi : {
-    table : 'unit',
-    data : [
-      { id : 2, name : 'modified'},
-      { id : 3, name : 'another'}
-    ],
-    key : 'id',
-    fail : 'Parser.js cannot compose multi update queries',
-    result :
-      'UPDATE `unit` set `name`="modified" WHERE `id`=2;'
-  }
-};
+    it('should compose a SELECT query on a single table with LIMITed rows', function () {
+      var query, results, answer;
 
-var _insert = {
-  simple : {
-    table: 'user',
-    data : { username : 'axelroad', email : 'axel@gmail.com' },
-    fail : 'Parser.js cannot compose simple insert queries',
-    result :
-      'INSERT INTO `user` (`username`, `email`) VALUES ' +
-        '("axelroad", "axel@gmail.com");'
-  },
+      query = {
+        tables : {
+          'creditor' : { columns : ['id', 'name', 'group_id'] }
+        },
+        orderby: ['creditor.group_id']
+      };
 
-  multi : {
-    table : 'inventory',
-    data : [
-      { code : 'CHGRAN', price : 100, text : 'Chirgerie' },
-      { code : 'EXPYAN', price : 20, text : 'Extra Pain'}
-    ],
-    fail : 'Parser.js cannot compose multi insert queries',
-    result :
-      'INSERT INTO `inventory` (`code`, `price`, `text`) VALUES ' +
-        '("CHGRAN", 100, "Chirgerie"), ' +
-        '("EXPYAN", 20, "Extra Pain");'
-  }
-};
+      results = parser.select(query);
 
-var _delete = {
-  simple : {
-    table : 'account',
-    key : 'id',
-    value : 3,
-    fail: 'Parser.js cannot compose simple delete queries',
-    result:
-      'DELETE FROM `account` WHERE `id` = "3";'
-  },
+      answer =
+        'SELECT `creditor`.`id`, `creditor`.`name`, `creditor`.`group_id` ' +
+        'FROM `creditor` WHERE 1 ORDER BY `creditor`.`group_id`;';
 
-  multi : {
-    table : 'account',
-    key : 'id',
-    value : [1,2,3,4],
-    fail : 'Parser.js cannot compose mutli delete queries',
-    result :
-      'DELETE FROM `account` WHERE `id` IN ("1", "2", "3", "4");'
-  }
+      expect(results).to.equal(answer);
+    });
 
-};
+    it('should compose high complexity SELECT queries', function () {
+      var query, results, answer;
 
-exports.testSelect = function (test) {
+      query = {
+        tables : {
+          'enterprise' : { columns : ['id', 'name', 'location_id', 'account_group_id'] },
+          'account_group' : { columns : ['account_number', 'ordering'] }
+        },
+        where : ['enterprise.id=1', 'AND', ['account_group.account_number<100', 'OR', 'account_group.account_number>=150']],
+        join : ['enterprise.account_group_id=account_group.id'],
+        orderby : ['account_group.account_number'],
+        limit: 5
+      };
 
-  for (var _key in _select) {
-    var _test = _select[_key];
-    test.equal(parser.select(_test.query), _test.result, _test.fail);
-  }
+      results = parser.select(query);
 
-  test.done();
+      answer =
+        'SELECT `enterprise`.`id`, `enterprise`.`name`, `enterprise`.`location_id`, ' +
+          '`enterprise`.`account_group_id`, `account_group`.`account_number`, ' +
+          '`account_group`.`ordering` ' +
+        'FROM `enterprise` JOIN `account_group` ON ' +
+          '`enterprise`.`account_group_id`=`account_group`.`id` ' +
+        'WHERE `enterprise`.`id`=1 AND (`account_group`.`account_number`<100 OR ' +
+          '`account_group`.`account_number`>150) ' +
+        'ORDER BY `account_group`.`account_number` ' +
+        'LIMIT 5;';
 
-};
+      expect(results).to.equal(answer);
 
-exports.testUpdate = function (test) {
+    });
+  });
 
-  for (var _key in _update) {
-    var _test = _update[_key];
-    test.equal(parser.update(_test.table, [_test.data], [_test.key]), _test.result, _test.fail);
-  }
+  describe('#delete()', function () {
 
-  test.done();
+    it('should compose a DELETE query on a single table with a numeric id', function () {
+      var results, answer;
 
-};
+      results = parser.delete('account', 'id', 3);
 
-exports.testDelete = function (test) {
+      answer =
+        'DELETE FROM `account` WHERE `id` = "3";';
 
-  for (var _key in _delete) {
-    var _test = _delete[_key];
-    test.equal(parser.delete(_test.table, _test.key, _test.value), _test.result, _test.fail);
-  }
+      expect(results).to.equal(answer);
+    });
 
-  test.done();
-};
+    it('should compose a DELETE query on a single table with multiple ids', function () {
+      var results, answer;
 
-exports.testInsert = function (test) {
+      results = parser.delete('account', 'id', [1,2,3,4]);
 
-  for (var _key in _insert) {
-    var _test = _insert[_key];
-    test.equal(parser.insert(_test.table, _test.data), _test.result, _test.fail);
-  }
+      answer =
+        'DELETE FROM `account` WHERE `id` IN ("1", "2", "3", "4");';
 
-  test.done();
-};
+      expect(results).to.equal(answer);
+    });
+  });
+
+  // TODO
+  //  Are there more complex test cases of updates?
+  describe('#update()', function () {
+
+    it('should compose an UPDATE query for a single table on an id', function () {
+      var data, results, answer;
+
+      data = { id : 1, url : '/some/url/content/', parent: 23 };
+
+      results = parser.update('unit', data, 'id');
+
+      answer =
+        'UPDATE `unit` SET `url`="/some/url/content/", `parent`="23" ' +
+        'WHERE `id`="1";';
+
+      expect(results).to.equal(answer);
+    });
+
+  });
+
+  describe('#insert()', function () {
+
+    it('should compose an INSERT query on a single table for one row', function () {
+      var data, results, answer;
+      data = { username : 'axelroad', email : 'axel@gmail.com' };
+
+      results = parser.insert('user', data);
+
+      answer =
+        'INSERT INTO `user` (username, email) VALUES ' +
+          '("axelroad", "axel@gmail.com");';
+
+      expect(results).to.equal(answer);
+    });
+
+    it('should compose an INSERT query on a single table for multiple rows', function () {
+      var data, results, answer;
+
+      data = [
+        { code : 'CHGRAN', price : 100, text : 'Chirgerie' },
+        { code : 'EXPYAN', price : 20, text : 'Extra Pain'}
+      ];
+
+      results = parser.insert('inventory', data);
+
+      answer =
+      'INSERT INTO `inventory` (code, price, text) VALUES ' +
+        '("CHGRAN", "100", "Chirgerie"), ' +
+        '("EXPYAN", "20", "Extra Pain");';
+
+      expect(results).to.equal(answer);
+
+    });
+
+  });
+});
