@@ -222,7 +222,7 @@ angular.module('bhima.controllers')
         });
 
         var taxComp = taxes.filter(function (item) {
-          return item.is_employee  == 0;
+          return item.is_employee  === 0;
         });
 
         if(taxEmp){
@@ -238,7 +238,7 @@ angular.module('bhima.controllers')
         });
 
         var cotisationComp = cotisations.filter(function (item) {
-          return item.is_employee  == 0;
+          return item.is_employee  === 0;
         });
 
         if(cotisationEmp){
@@ -251,13 +251,13 @@ angular.module('bhima.controllers')
         var rubrics = session.model.rubric_config.data;
 
         rubrics.forEach(function (rub) {
-          dataRubric = (rub.is_percent) ?
+          var dataRubric = (rub.is_percent) ?
           ((self.daily_salary * (self.working_day + self.coefhl + self.offdays)) * rub.value) / 100 : rub.value;
           self[rub.abbr] = dataRubric;
         });
 
         taxes.forEach(function (tax) {
-          dataTaxes = (tax.is_percent) ?
+          var dataTaxes = (tax.is_percent) ?
           ((self.daily_salary * (self.working_day + self.coefhl + self.offdays)) * tax.value) / 100 : tax.value;
           self[tax.abbr] = dataTaxes;
         });
@@ -265,10 +265,10 @@ angular.module('bhima.controllers')
         var employee_cotisation = 0;
 
         cotisations.forEach(function (cotisation) {
-          dataCotisations = (cotisation.is_percent) ?
+          var dataCotisations = (cotisation.is_percent) ?
         ((self.daily_salary * (self.working_day + self.hollydays + self.offdays)) * cotisation.value) / 100 : cotisation.value;
           self[cotisation.abbr] = dataCotisations;
-          if(cotisation.is_employee) {employee_cotisation += dataCotisations;}
+          if (cotisation.is_employee) {employee_cotisation += dataCotisations;}
         });
 
         self.net_before_taxe = ((self.working_day + self.coefhl + self.offdays) * self.daily_salary) - employee_cotisation;
@@ -535,11 +535,15 @@ angular.module('bhima.controllers')
             config.push(valeur);
           });
 
+          // TODO
+          //  This anonymous function is used twice!
+          //  Using the DRY principle, we can reduce this
+          //  to one function!
           som = soms.reduce(function (x, y){
             return x+y;
           }, 0);
 
-          somConfig = config.reduce(function (x, y){
+          var somConfig = config.reduce(function (x, y) {
             return x+y;
           }, 0);
 
@@ -555,9 +559,11 @@ angular.module('bhima.controllers')
       var rubrics = session.model.rubric_config.data, housing = 0;
       console.log(session.model.rubric_config.data);
 
+      // FIXME SELF IS GLOBAL?!?!
+      // FIXME What does self refer to here??
       rubrics.forEach(function (rub) {
-        dataRubric = (rub.is_percent) ?
-        ((row.daily_salary * (row.working_day + row.hollydays + row.offdays)) * rub.value) / 100 : rub.value;
+        var dataRubric = (rub.is_percent) ?
+          ((row.daily_salary * (row.working_day + row.hollydays + row.offdays)) * rub.value) / 100 : rub.value;
         self[rub.abbr] = dataRubric;
       });
     }
@@ -691,14 +697,13 @@ angular.module('bhima.controllers')
         elmt.net_after_taxe = elmt.net_before_taxe - SomTax;
 
         rubric_config_list.forEach(function (rub) {
-          change = elmt[rub.abbr];
+          var change = elmt[rub.abbr];
           if(rub.is_discount){
             change *= -1;
           }
           somRub += change;
         });
         elmt.net_salary = elmt.net_after_taxe + somRub - (elmt.daily_salary * elmt.off_day) + elmt.offdays_cost;
-        // console.log("on a comme salaire :", elmt.net_salary);
 
         var paiement = {
           uuid : uuid(),
@@ -798,30 +803,33 @@ angular.module('bhima.controllers')
       if(!row.working_day){
         row.working_day = 0;
       }
+    
+      var taxes, rubrics, cotisations;
+      var employee_cotisation;
 
-      if((row.working_day) && (totaldays <= row.max_day)){
-        var taxes = session.model.tax_config.data;
-        var rubrics = session.model.rubric_config.data;
-        var cotisations = session.model.cotisation_config.data;
+      if ((row.working_day) && (totaldays <= row.max_day)){
+        taxes = session.model.tax_config.data;
+        rubrics = session.model.rubric_config.data;
+        cotisations = session.model.cotisation_config.data;
 
         rubrics.forEach(function (rub) {
-          dataRubric = (rub.is_percent) ?
+          var dataRubric = (rub.is_percent) ?
           ((row.daily_salary * (row.working_day + row.coefhl + row.offdays)) * rub.value) / 100 : rub.value;
           row[rub.abbr] = dataRubric;
         });
 
         taxes.forEach(function (tax) {
-          dataTaxes = (tax.is_percent) ?
+          var dataTaxes = (tax.is_percent) ?
           ((row.daily_salary * (row.working_day + row.coefhl + row.offdays)) * tax.value) / 100 : tax.value;
           row[tax.abbr] = dataTaxes;
         });
 
-        var employee_cotisation = 0;
+        employee_cotisation = 0;
 
         cotisations.forEach(function (cotisation) {
-          dataCotisations = (cotisation.is_percent) ?
+          var dataCotisations = (cotisation.is_percent) ?
           ((row.daily_salary * (row.working_day + row.coefhl + row.offdays)) * cotisation.value) / 100 : cotisation.value;
-          if(cotisation.is_employee) {employee_cotisation += dataCotisations;}
+          if (cotisation.is_employee) { employee_cotisation += dataCotisations; }
           row[cotisation.abbr] = dataCotisations;
         });
 
@@ -832,28 +840,29 @@ angular.module('bhima.controllers')
       } else if (totaldays > row.max_day) {
         messenger.danger($translate.instant('RUBRIC_PAYROLL.NOT_SUP_MAXDAY'));
         row.working_day = 0;
-        var taxes = session.model.tax_config.data;
-        var rubrics = session.model.rubric_config.data;
-        var cotisations = session.model.cotisation_config.data;
+        taxes = session.model.tax_config.data;
+        rubrics = session.model.rubric_config.data;
+        cotisations = session.model.cotisation_config.data;
 
         rubrics.forEach(function (rub) {
-          dataRubric = (rub.is_percent) ?
+          var dataRubric = (rub.is_percent) ?
           ((row.daily_salary * (row.working_day + row.coefhl + row.offdays)) * rub.value) / 100 : rub.value;
           row[rub.abbr] = dataRubric;
         });
 
         taxes.forEach(function (tax) {
-          dataTaxes = (tax.is_percent) ?
+          var dataTaxes = (tax.is_percent) ?
           ((row.daily_salary * (row.working_day + row.coefhl + row.offdays)) * tax.value) / 100 : tax.value;
           row[tax.abbr] = dataTaxes;
         });
 
-        var employee_cotisation = 0;
+        employee_cotisation = 0;
 
         cotisations.forEach(function (cotisation) {
-          dataCotisations = (cotisation.is_percent) ?
-          ((row.daily_salary * (row.working_day + row.coefhl + row.offdays)) * cotisation.value) / 100 : cotisation.value;
-          if(cotisation.is_employee) {employee_cotisation += dataCotisations;}
+          var dataCotisations = (cotisation.is_percent) ?
+            ((row.daily_salary * (row.working_day + row.coefhl + row.offdays)) * cotisation.value) / 100 :
+            cotisation.value;
+          if (cotisation.is_employee) {employee_cotisation += dataCotisations;}
           row[cotisation.abbr] = dataCotisations;
         });
 
