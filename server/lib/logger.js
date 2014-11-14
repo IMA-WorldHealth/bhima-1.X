@@ -57,7 +57,7 @@ loggerInstance = (function Logger (options) {
   writer.writeHeader();
 
   function request() {
-    var source = 'HTTP';
+    var source = 'HTTPS';
     return function (req, res, next) {
       req.uuid = uuid();
       var userId = req.session ? req.session.user_id : null;

@@ -19,7 +19,7 @@ module.exports = function () {
   //
   // All other paths are welcome to continue on to be
   // validated by the authorization middleware.
-  
+
   function protect(req, res, next) {
     if (!req.session || !req.session.token) {
       next(new Error('Not Logged In'));
@@ -48,7 +48,7 @@ module.exports = function () {
 
       user = results.pop();
       sql = 'UPDATE user SET user.logged_in = 1 WHERE user.id = ?;';
-   
+
       return db.exec(sql, [user.id]);
     })
     .then(function () {
