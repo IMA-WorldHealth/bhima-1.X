@@ -81,7 +81,8 @@ angular.module('bhima.controllers')
     function getAccount(currencyId, cashBoxId) {
       var accountId;
       $scope.cash_box_account_currencies.data.forEach(function (box) {
-        if (box.currency_id === currencyId && box.cash_box_id == cashBoxId) {
+        // FIXME I changed box.cash_box_id == cashBoxId to a strict equality.  Does it still hold?
+        if (box.currency_id === currencyId && box.cash_box_id === cashBoxId) {
           accountId = box.account_id;
         }
       });
