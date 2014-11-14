@@ -1108,7 +1108,7 @@ function handleTransfert (id, user_id, done) {
     var dailyExchange = exchangeRateStore.get(reference.currency_id);
     cfg.valueExchanged = parseFloat((1/dailyExchange.rate) * reference.cost).toFixed(4);
 
-    return q([get.origin('pcash'), get.period(reference.date)]); // should be get.origin(pcash_transfert);
+    return q([get.origin('pcash_transfert'), get.period(reference.date)]); // should be get.origin(pcash_transfert);
   })
   .spread(function (originId, periodObject) {
     cfg.originId = originId;
@@ -1178,7 +1178,7 @@ function handleConvention (id, user_id, done) {
 
   function getExchange (exchangeStore) {
     dayExchange = exchangeStore.get(reference.reference_pcash.currency_id);
-    return q([get.origin('primary_cash'), get.period(reference.date)]);
+    return q([get.origin('pcash_convention'), get.period(reference.date)]);
   }
 
   function getDetails (originId, periodObject) {
@@ -1295,7 +1295,7 @@ function handleGenericExpense(id, user_id, done) {
   .then(function (store) {
     state.store = store;
 
-    return q([get.origin('primary_cash'), get.period(reference.invoice_date)]);
+    return q([get.origin('generic_expense'), get.period(reference.invoice_date)]);
   })
   .spread(function (originId, periodObject) {
 
@@ -1374,7 +1374,7 @@ function handleGenericIncome (id, user_id, done) {
   .then(function (store) {
     state.store = store;
 
-    return q([get.origin('primary_cash'), get.period(reference.invoice_date)]);
+    return q([get.origin('generic_income'), get.period(reference.invoice_date)]);
   })
   .spread(function (originId, periodObject) {
     cfg.periodId = periodObject.id;
@@ -1450,7 +1450,7 @@ function handleIndirectPurchase (id, user_id, done){
   function getRecord (records) {
     if (records.length === 0) { throw new Error('pas enregistrement'); }
     reference = records[0];
-    return q([get.origin('primary_cash'), get.period(reference.date)]);
+    return q([get.origin('indirect_purchase'), get.period(reference.date)]);
   }
 
   function getDetails (originId, periodObject) {
