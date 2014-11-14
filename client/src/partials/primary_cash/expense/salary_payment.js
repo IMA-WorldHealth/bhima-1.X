@@ -167,7 +167,7 @@ angular.module('bhima.controllers')
         inv_po_id         : emp.uuid, // uuid du paiement
         document_uuid     : document_uuid
       };
-
+      
       var package = {
         primary : primary,
         primary_details : primary_details
