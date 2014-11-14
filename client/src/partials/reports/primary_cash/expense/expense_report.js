@@ -90,7 +90,6 @@ angular.module('bhima.controllers')
       .then(convert)
       .catch(function (err) {
        messenger.danger(err.toString());
-
       });
     }
 

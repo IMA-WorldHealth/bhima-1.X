@@ -99,6 +99,7 @@ INSERT INTO `unit` VALUES
 (49, 'Expiring Stock Report', 'TREE.EXPIRING', '', 10, 0, '/partials/reports/expiring_stock', '/reports/expiring'),
 (50,'Inventory Management', 'TREE.INVENTORY_MANAGEMENT', '', 11, 0, 'partials/inventory/', '/inventory/'),
 -- (52,'Purchase Order','TREE.PURCHASE_ORDER','Create a new Purchase Order',11,0,'/partials/purchase_order/','/inventory/purchase'),
+
 (51,'Budget by Account','TREE.BUDGET_BY_ACCOUNT','Budgeting by account',8,0,'/partials/budget/','/budgeting/'),
 (53,'Purchase Order Management', 'TREE.PURCHASE_ORDER_MANAGEMENT', '', 11, 0, 'partials/purchase_order/', '/purchase_menu/'),
 (54,'Profit center management', 'TREE.PROFIT_CENTER_MGMNT', '', 30, 0, 'partials/profit_center/', '/profit_center/'),
@@ -126,8 +127,6 @@ INSERT INTO `unit` VALUES
 (76,'Exploitation Service', 'TREE.SERVICE_EXPLOITATION', '', 10, 0, '/partials/reports/service_exploitation/', '/reports/service_exploitation/'),
 (77,'Toutes transactions', 'TREE.GLOBAL_TRANSACTION', '', 10, 0, '/partials/reports/global_transaction/', '/reports/global_transaction/'),
 (78,'Employee Standing','TREE.EMPLOYEE_STANDING','',10,0,'/partials/reports/employee_standing/','/reports/employee_standing');
-
-
 -- references language .json files
 INSERT INTO `language` (id, name, `key`) VALUES
   (1, 'Francais', 'fr'),

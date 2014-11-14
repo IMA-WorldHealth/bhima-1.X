@@ -27,5 +27,15 @@ insert into depot (uuid, text, enterprise_id) values
   (UUID(), "Pharmacy 1", 200),
   (UUID(), "Pharmacy 2", 200);
 
+UPDATE `account` SET `classe`=1 WHERE LEFT(`account_number`,1)=1;
+UPDATE `account` SET `classe`=2 WHERE LEFT(`account_number`,1)=2;
+UPDATE `account` SET `classe`=3 WHERE LEFT(`account_number`,1)=3;
+UPDATE `account` SET `classe`=4 WHERE LEFT(`account_number`,1)=4;
+UPDATE `account` SET `classe`=5 WHERE LEFT(`account_number`,1)=5;
+UPDATE `account` SET `classe`=6 WHERE LEFT(`account_number`,1)=6;
+UPDATE `account` SET `classe`=7 WHERE LEFT(`account_number`,1)=7;
+UPDATE `account` SET `classe`=8 WHERE LEFT(`account_number`,1)=8;
+UPDATE `account` SET `classe`=9 WHERE LEFT(`account_number`,1)=9;
+
 INSERT INTO `hollyday` VALUES
 (1, 1, "vancances employe A", '2014-09-10', '2014-09-20');
