@@ -1,13 +1,18 @@
+var db = require('./../lib/db');
+var parser = require('./../lib/parser');
+var uuid = require('./../lib/guid');
+var journal = require('./../controllers/journal');
+
 var q = require('q');
 
-module.exports = function(db, parser, journal, uuid) {
+module.exports = function() {
   'use strict';
 
   function execute(data, userId, callback) {
-    return writeToJournal(data.paiement_uuid, userId, data)
+    return writeToJournal(data.movement.document_id, userId, data)
     .then(function(){ 
       var res = {};
-      res.docId = data.paiement_uuid;    
+      res.docId = data.movement.document_id;    
       callback(null, res);
     })
     .catch(function (err) {
@@ -17,7 +22,7 @@ module.exports = function(db, parser, journal, uuid) {
 
   function writeToJournal (id, userId, data) {
     var deferred = q.defer();
-    journal.request('promesse_payment', id, userId, function (error, result) {
+    journal.request('donation', id, userId, function (error, result) {
       if (error) {
         return deferred.reject(error);
       }

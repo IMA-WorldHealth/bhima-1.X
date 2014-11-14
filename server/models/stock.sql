@@ -12,7 +12,7 @@ set @location_uuid = (SELECT uuid from village where name = "TSHIKAJI");
 set @debitor_group_uuid = (SELECT uuid from debitor_group LIMIT 1);
 
 insert into grade values (@grade_uuid, "C1", "Docteur", 100);
-
+insert into fonction values (1,'Docteur');
 insert into creditor_group values (200, @group_uuid, 'Employees', 187, 0);
 
 insert into creditor values (@employee_creditor_uuid, @group_uuid, "Creditor for Employee A");
@@ -26,6 +26,16 @@ insert into depot (uuid, text, enterprise_id) values
   (UUID(), "Warehouse", 200), 
   (UUID(), "Pharmacy 1", 200),
   (UUID(), "Pharmacy 2", 200);
+
+UPDATE `account` SET `classe`=1 WHERE LEFT(`account_number`,1)=1;
+UPDATE `account` SET `classe`=2 WHERE LEFT(`account_number`,1)=2;
+UPDATE `account` SET `classe`=3 WHERE LEFT(`account_number`,1)=3;
+UPDATE `account` SET `classe`=4 WHERE LEFT(`account_number`,1)=4;
+UPDATE `account` SET `classe`=5 WHERE LEFT(`account_number`,1)=5;
+UPDATE `account` SET `classe`=6 WHERE LEFT(`account_number`,1)=6;
+UPDATE `account` SET `classe`=7 WHERE LEFT(`account_number`,1)=7;
+UPDATE `account` SET `classe`=8 WHERE LEFT(`account_number`,1)=8;
+UPDATE `account` SET `classe`=9 WHERE LEFT(`account_number`,1)=9;
 
 INSERT INTO `hollyday` VALUES
 (1, 1, "vancances employe A", '2014-09-10', '2014-09-20');
