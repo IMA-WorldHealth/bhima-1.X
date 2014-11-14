@@ -63,8 +63,8 @@ angular.module('bhima.controllers')
     }
 
     function fill() {
-      if(!$scope.enterprise || !$scope.exchange_rate) {return;}
-     var f = ($scope.model.account_id && $scope.model.account_id != 0)? selective($scope.model.account_id) : all ();
+      if (!$scope.enterprise || !$scope.exchange_rate) {return;}
+      var f = ($scope.model.account_id && $scope.model.account_id !== 0) ? selective($scope.model.account_id) : all();
     }
 
     function selective() {
@@ -79,7 +79,7 @@ angular.module('bhima.controllers')
 
       $scope.model.account_number = $scope.accounts.get($scope.model.account_id).account_number;
       connect.fetch('/reports/allTrans/?'+JSON.stringify(qo))
-      .then(function(res) {
+      .then(function (res) {
         if (res.length > 0) {
           if (res.length > 0) {
             res.map(function (item) {
@@ -107,7 +107,7 @@ angular.module('bhima.controllers')
       };
       connect.fetch(
         '/reports/allTrans/?'+JSON.stringify(qo)
-      ).then(function(res) {
+      ).then(function (res) {
           if (res.length > 0) {
             res.map(function (item) {
               item.debit = getValue(map[util.sqlDate(item.trans_date)], item.debit, $scope.enterprise.currency_id);
@@ -150,7 +150,7 @@ angular.module('bhima.controllers')
       }
 
       connect.fetch('/reports/allTrans/?'+JSON.stringify(qo))
-      .then(function(res) {
+      .then(function (res) {
         if (res.length > 0) {
           res.map(function (item) {
             item.debit = getValue(map[util.sqlDate(item.trans_date)], item.debit, $scope.enterprise.currency_id);

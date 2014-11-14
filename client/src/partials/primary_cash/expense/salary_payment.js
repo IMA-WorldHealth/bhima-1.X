@@ -164,9 +164,10 @@ angular.module('bhima.controllers')
         primary_cash_uuid : primary.uuid,
         debit             : 0,
         credit            : primary.cost,
-        document_uuid     : emp.uuid
+        inv_po_id         : emp.uuid, // uuid du paiement
+        document_uuid     : document_uuid
       };
-
+      
       var package = {
         primary : primary,
         primary_details : primary_details

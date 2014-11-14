@@ -1,8 +1,11 @@
 // scripts/lib/auth/authentication.js
 
 // Middleware: authenticate
+var sanitize = require('./../lib/sanitize');
+var db = require('./../lib/db');
+var uuid = require('./../lib/guid');
 
-module.exports = function (db, uuid) {
+module.exports = function () {
   'use strict';
 
   // This is the first middleware hit by any incoming

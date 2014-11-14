@@ -124,6 +124,7 @@ angular.module('bhima.controllers')
           uuid              : uuid(),
           primary_cash_uuid : pcash.uuid,
           debit             : data.value,
+          document_uuid     : pcash.uuid,
           credit            : 0 // LOL wot?
         };
         return connect.post('primary_cash_item', item);
