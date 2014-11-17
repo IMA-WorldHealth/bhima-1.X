@@ -4,13 +4,14 @@ angular.module('bhima.controllers')
   'connect',
   'validate',
   'uuid',
-  function ($scope, connect, validate, uuid) {
+  'messenger',
+  function ($scope, connect, validate, uuid, messenger) {
 
     var dependencies = {};
 
     dependencies.countries = {
-      identifer : 'uuid',
       query : {
+        identifier : 'uuid',
         tables: {
           'country' : {
             columns : ['uuid','code', 'country_en', 'country_fr']
@@ -37,9 +38,13 @@ angular.module('bhima.controllers')
       };
 
       connect.basicPut('country', [country])
-      .then(function () {
+      .then(function (suc) {
+        console.log(suc);
         $scope.countries.post(country);
-        obj = {};
+        $scope.op = '';
+      })
+      .catch(function (err) {
+        messenger.danger('error during adding', err);
       });
     }
 
@@ -55,13 +60,20 @@ angular.module('bhima.controllers')
       .then(function () {
         $scope.countries.put($scope.country);
         $scope.country = {};
-      });
+      })
+      .catch(function (err) {
+        messenger.danger('error during editing', err);
+      });;
     }
 
-    $scope.removeCountry = function removeCountry(uuid){
-      connect.basicDelete('country', uuid, 'uuid')
-      .then(function(){
-        $scope.country.remove(uuid);
+    $scope.removeCountry = function removeCountry(country_uuid){
+      connect.delete('country', 'uuid', country_uuid)
+      .then(function (suc){
+        $scope.countries.remove(country_uuid);
+        $scope.countries.recalculateIndex();
+      })
+      .catch(function (err) {
+        messenger.danger('error during removing', err);
       });
     };
 

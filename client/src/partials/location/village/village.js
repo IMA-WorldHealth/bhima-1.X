@@ -4,7 +4,8 @@ angular.module('bhima.controllers')
   'connect',
   'validate',
   'uuid',
-  function ($scope, connect, validate, uuid) {
+  'messenger',
+  function ($scope, connect, validate, uuid, messenger) {
     var dependencies = {};
 
     dependencies.sectors = {
@@ -20,7 +21,7 @@ angular.module('bhima.controllers')
 
     dependencies.villages = {
       identifier:'uuid',
-      query : '/village/'
+      query : '/location/villages'
     };
 
     function manageVillage (model) {
@@ -40,33 +41,42 @@ angular.module('bhima.controllers')
         sector_uuid : obj.sector_uuid,
       };
 
-      connect.basicPut('village', [v])
-      .then(function () {
-        v.village = v.name;
-        v.sector = $scope.sectors.get(v.sector_uuid).name;
+      connect.post('village', [v])
+      .then(function (suc) {
+        v.sector_name = $scope.sectors.get(v.sector_uuid).name;
         $scope.villages.post(v);
         $scope.op='';
+      })
+      .catch(function (err) {
+        messenger.danger('error during deleting', err);
       });
     }
 
-    function editVillage(){
+    function editVillage(obj){
       var village = {
-        uuid : $scope.village.uuid,
-        name : $scope.village.village,
-        sector_uuid :$scope.village.sector_uuid
+        uuid : obj.uuid,
+        name : obj.name,
+        sector_uuid : obj.sector_uuid
       };
 
-      connect.basicPost('village', [village], ['uuid'])
+      connect.put('village', [village], ['uuid'])
       .then(function () {
+        village.sector_name = $scope.sectors.get(village.sector_uuid).name;
         $scope.villages.put(village);
         $scope.op='';
+      })
+      .catch(function (err) {
+        messenger.danger('error during updating', err);
       });
     }
 
     function removeVillage(uuid){
-      connect.basicDelete('village', [uuid], 'uuid')
-      .then(function(){
+      connect.delete('village', 'uuid', [uuid])
+      .then(function (suc){
         $scope.villages.remove(uuid);
+      })
+      .catch(function (err) {
+        messenger.danger('error during deleting', err);
       });
     }
 
