@@ -21,25 +21,12 @@ angular.module('bhima.controllers')
 
     dependencies.provinces = {
       identifier : 'uuid',
-      query : '/province/'
+      query : 'location/provinces/'
     };
 
 
     function manageProvince (model) {
       angular.extend($scope, model);
-
-      // connect.fetch('/province/')
-      // .success(function (data) {
-      //   $scope.provinces = new Store({
-      //     identifier: 'uuid',
-      //   });
-      //   $scope.provinces.setData(data);
-      //   console.log($scope.provinces.data);
-      // })
-      // .catch(function (err) {
-      //   messenger.danger('Did not load provinces');
-      // });
-
     }
 
     $scope.setOp = function setOp(action, province){
@@ -55,12 +42,12 @@ angular.module('bhima.controllers')
         uuid         : uuid()
       };
 
-      connect.basicPut('province', [prov])
+      connect.post('province', [prov])
       .then(function () {
         var clientSideProv = {};
         clientSideProv.uuid = prov.uuid;
-        clientSideProv.province = prov.name;
-        clientSideProv.country_en = $scope.countries.get(prov.country_uuid).country_en;
+        clientSideProv.name = prov.name;
+        clientSideProv.country_name = $scope.countries.get(prov.country_uuid).country_en;
         $scope.provinces.post(clientSideProv);
         $scope.op = '';
       })
@@ -69,23 +56,31 @@ angular.module('bhima.controllers')
       });
     }
 
-    function editProvince () {
+    function editProvince (obj) {
       var province  = {
-        uuid         : $scope.province.uuid,
-        name         : $scope.province.province,
-        country_uuid : $scope.province.country_uuid
+        uuid         : obj.uuid,
+        name         : obj.name,
+        country_uuid : obj.country_uuid
       };
 
-      connect.basicPost('province', [province], ['uuid'])
-      .then(function () {
+      connect.put('province', [province], ['uuid'])
+      .then(function (suc) {
+        province.country_name = $scope.countries.get(province.country_uuid).country_en;
         $scope.provinces.put(province);
+        $scope.op = '';
+      })
+      .catch(function (err) {
+        console.log('error during deleting', err);
       });
     }
 
     function removeProvince(uuid){
-      connect.basicDelete('province', [uuid], 'uuid')
-      .then(function(){
+      connect.delete('province', 'uuid', [uuid])
+      .then(function (suc){
         $scope.provinces.remove(uuid);
+      })
+      .catch(function (err) {
+        console.log('error during deleting', err);
       });
     }
 
