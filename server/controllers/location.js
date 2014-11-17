@@ -17,9 +17,9 @@ var db = require('../lib/db');
 */
 
 // HTTP Controllers
-exports.allVillages = function (req, res, next) { 
+exports.allVillages = function (req, res, next) {
   var sql =
-    'SELECT village.uuid, village.name, sector.name as sector_name, ' +
+    'SELECT village.uuid, village.name, sector.name as sector_name, sector.uuid as sector_uuid, ' +
       'province.name as province_name, country.country_en as country_name ' +
     'FROM village JOIN sector JOIN province JOIN country ON ' +
       'village.sector_uuid = sector.uuid AND ' +
@@ -34,10 +34,10 @@ exports.allVillages = function (req, res, next) {
   .done();
 };
 
-exports.allSectors = function (req, res, next) { 
+exports.allSectors = function (req, res, next) {
   var sql =
     'SELECT sector.uuid, sector.name, ' +
-      'province.name as province_name, country.country_en as country_name ' +
+      'province.name as province_name, province.uuid as province_uuid, country.country_en as country_name ' +
     'FROM sector JOIN province JOIN country ON ' +
       'sector.province_uuid = province.uuid AND ' +
       'province.country_uuid = country.uuid;';
@@ -50,9 +50,9 @@ exports.allSectors = function (req, res, next) {
   .done();
 };
 
-exports.allProvinces = function (req, res, next) { 
+exports.allProvinces = function (req, res, next) {
   var sql =
-    'SELECT province.uuid, province.name, country.country_en as country_name ' +
+    'SELECT province.uuid, province.name, country.country_en as country_name, country.uuid as country_uuid ' +
     'FROM province JOIN country ON ' +
       'province.country_uuid = country.uuid;';
 
@@ -64,16 +64,16 @@ exports.allProvinces = function (req, res, next) {
   .done();
 };
 
-exports.lookupVillage = function (req, res, next) { 
+exports.lookupVillage = function (req, res, next) {
   var sql =
-    'SELECT village.uuid, village.name, sector.name as sector_name, ' +
+    'SELECT village.uuid, village.name, sector.name as sector_name, sector.uuid as sector_uuid ' +
       'province.name as province_name, country.country_en as country_name ' +
     'FROM village JOIN sector JOIN province JOIN country ON ' +
       'village.sector_uuid = sector.uuid AND ' +
       'sector.province_uuid = province.uuid AND ' +
       'province.country_uuid = country.uuid ' +
     'WHERE village.uuid = ?;';
-  
+
   db.exec(sql, [req.params.uuid])
   .then(function (data) {
     res.send(data);
@@ -82,7 +82,7 @@ exports.lookupVillage = function (req, res, next) {
   .done();
 };
 
-exports.lookupSector = function (req, res, next) { 
+exports.lookupSector = function (req, res, next) {
   var sql =
     'SELECT sector.uuid, sector.name, ' +
       'province.name as province_name, country.country_en as country_name ' +
@@ -99,7 +99,7 @@ exports.lookupSector = function (req, res, next) {
   .done();
 };
 
-exports.lookupProvince = function (req, res, next) { 
+exports.lookupProvince = function (req, res, next) {
   var sql =
     'SELECT province.uuid, province.name, country.country_en as country_name ' +
     'FROM province JOIN country ON ' +
@@ -114,8 +114,8 @@ exports.lookupProvince = function (req, res, next) {
   .done();
 };
 
-// TODO use exec templating '?' vs. string concatination 
-exports.lookupDetail = function (req, res, next) { 
+// TODO use exec templating '?' vs. string concatination
+exports.lookupDetail = function (req, res, next) {
   var specifyVillage = req.params.uuid ? ' AND `village`.`uuid`=\'' + req.params.uuid + '\'' : '';
 
   var sql =
