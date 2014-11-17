@@ -9,8 +9,8 @@ angular.module('bhima.controllers')
     var dependencies = {};
 
     dependencies.countries = {
-      identifer : 'uuid',
       query : {
+        identifier : 'uuid',
         tables: {
           'country' : {
             columns : ['uuid','code', 'country_en', 'country_fr']
@@ -37,9 +37,13 @@ angular.module('bhima.controllers')
       };
 
       connect.basicPut('country', [country])
-      .then(function () {
+      .then(function (suc) {
+        console.log(suc);
         $scope.countries.post(country);
-        obj = {};
+        $scope.op = '';
+      })
+      .catch(function (err) {
+        console.log('error during posting');
       });
     }
 
@@ -58,10 +62,14 @@ angular.module('bhima.controllers')
       });
     }
 
-    $scope.removeCountry = function removeCountry(uuid){
-      connect.basicDelete('country', uuid, 'uuid')
-      .then(function(){
-        $scope.country.remove(uuid);
+    $scope.removeCountry = function removeCountry(country_uuid){
+      connect.delete('country', 'uuid', country_uuid)
+      .then(function (suc){
+        $scope.countries.remove(country_uuid);
+        $scope.countries.recalculateIndex();
+      })
+      .catch(function (err) {
+        console.log('error during deleting');
       });
     };
 

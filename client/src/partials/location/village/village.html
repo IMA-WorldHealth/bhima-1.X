@@ -28,8 +28,8 @@
           </thead>
           <tbody>
             <tr ng-repeat="village in villages.data | orderBy:'village'">
-              <td>{{ village.village }}</td>
-              <td>{{ village.sector }}</td>
+              <td>{{ village.name }}</td>
+              <td>{{ village.sector_name }}</td>
               <td><a ng-click="setOp('Edit', village)" ><i class="glyphicon glyphicon-pencil"></i></a></td>
               <td><a class="danger" ng-click="removeVillage(village.uuid)" ><i class="glyphicon glyphicon-trash"></i></a></td>
             </tr>
