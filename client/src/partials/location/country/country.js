@@ -4,7 +4,8 @@ angular.module('bhima.controllers')
   'connect',
   'validate',
   'uuid',
-  function ($scope, connect, validate, uuid) {
+  'messenger',
+  function ($scope, connect, validate, uuid, messenger) {
 
     var dependencies = {};
 
@@ -43,7 +44,7 @@ angular.module('bhima.controllers')
         $scope.op = '';
       })
       .catch(function (err) {
-        console.log('error during posting');
+        messenger.danger('error during adding', err);
       });
     }
 
@@ -59,7 +60,10 @@ angular.module('bhima.controllers')
       .then(function () {
         $scope.countries.put($scope.country);
         $scope.country = {};
-      });
+      })
+      .catch(function (err) {
+        messenger.danger('error during editing', err);
+      });;
     }
 
     $scope.removeCountry = function removeCountry(country_uuid){
@@ -69,7 +73,7 @@ angular.module('bhima.controllers')
         $scope.countries.recalculateIndex();
       })
       .catch(function (err) {
-        console.log('error during deleting');
+        messenger.danger('error during removing', err);
       });
     };
 

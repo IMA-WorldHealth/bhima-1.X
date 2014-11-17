@@ -19,7 +19,7 @@ var db = require('../lib/db');
 // HTTP Controllers
 exports.allVillages = function (req, res, next) {
   var sql =
-    'SELECT village.uuid, village.name, sector.name as sector_name, ' +
+    'SELECT village.uuid, village.name, sector.name as sector_name, sector.uuid as sector_uuid, ' +
       'province.name as province_name, country.country_en as country_name ' +
     'FROM village JOIN sector JOIN province JOIN country ON ' +
       'village.sector_uuid = sector.uuid AND ' +
@@ -37,7 +37,7 @@ exports.allVillages = function (req, res, next) {
 exports.allSectors = function (req, res, next) {
   var sql =
     'SELECT sector.uuid, sector.name, ' +
-      'province.name as province_name, country.country_en as country_name ' +
+      'province.name as province_name, province.uuid as province_uuid, country.country_en as country_name ' +
     'FROM sector JOIN province JOIN country ON ' +
       'sector.province_uuid = province.uuid AND ' +
       'province.country_uuid = country.uuid;';
@@ -66,7 +66,7 @@ exports.allProvinces = function (req, res, next) {
 
 exports.lookupVillage = function (req, res, next) {
   var sql =
-    'SELECT village.uuid, village.name, sector.name as sector_name, ' +
+    'SELECT village.uuid, village.name, sector.name as sector_name, sector.uuid as sector_uuid ' +
       'province.name as province_name, country.country_en as country_name ' +
     'FROM village JOIN sector JOIN province JOIN country ON ' +
       'village.sector_uuid = sector.uuid AND ' +

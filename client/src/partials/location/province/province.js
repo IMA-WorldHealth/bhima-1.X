@@ -52,7 +52,7 @@ angular.module('bhima.controllers')
         $scope.op = '';
       })
       .catch(function (err) {
-        messenger.danger(err);
+        messenger.danger('error during adding', err);
       });
     }
 
@@ -70,7 +70,7 @@ angular.module('bhima.controllers')
         $scope.op = '';
       })
       .catch(function (err) {
-        console.log('error during deleting', err);
+        messenger.danger('error during editing', err);
       });
     }
 
@@ -80,7 +80,7 @@ angular.module('bhima.controllers')
         $scope.provinces.remove(uuid);
       })
       .catch(function (err) {
-        console.log('error during deleting', err);
+        messenger.danger('error during removing', err);
       });
     }
 
