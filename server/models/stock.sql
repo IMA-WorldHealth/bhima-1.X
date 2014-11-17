@@ -18,12 +18,12 @@ insert into creditor_group values (200, @group_uuid, 'Employees', 187, 0);
 insert into creditor values (@employee_creditor_uuid, @group_uuid, "Creditor for Employee A");
 insert into creditor values (@supplier_creditor_uuid, @group_uuid, "Creditor for Supplier A");
 insert into debitor values (@employee_debitor_uuid, @debitor_group_uuid, "Debitor for Employee A");
-insert into employee (code, name, sexe, dob, nb_spouse, nb_enfant, grade_id, daily_salary, creditor_uuid, debitor_uuid) values ("0100", "Employee A", "M", "1993-06-06", 1, 1, @grade_uuid, 1.5,  @employee_creditor_uuid, @employee_debitor_uuid);
+-- insert into employee (code, name, sexe, dob, nb_spouse, nb_enfant, grade_id, daily_salary, creditor_uuid, debitor_uuid) values ("0100", "Employee A", "M", "1993-06-06", 1, 1, @grade_uuid, 1.5,  @employee_creditor_uuid, @employee_debitor_uuid);
 
 insert into supplier (uuid, creditor_uuid, name, location_id, international, locked) values (@supplier_uuid, @supplier_creditor_uuid, "Supplier A", @location_uuid, 0, 0);
 
-insert into depot (uuid, text, enterprise_id) values 
-  (UUID(), "Warehouse", 200), 
+insert into depot (uuid, text, enterprise_id) values
+  (UUID(), "Warehouse", 200),
   (UUID(), "Pharmacy 1", 200),
   (UUID(), "Pharmacy 2", 200);
 
@@ -37,5 +37,5 @@ UPDATE `account` SET `classe`=7 WHERE LEFT(`account_number`,1)=7;
 UPDATE `account` SET `classe`=8 WHERE LEFT(`account_number`,1)=8;
 UPDATE `account` SET `classe`=9 WHERE LEFT(`account_number`,1)=9;
 
-INSERT INTO `hollyday` VALUES
-(1, 1, "vancances employe A", '2014-09-10', '2014-09-20');
+-- INSERT INTO `hollyday` VALUES
+-- (1, 1, "vancances employe A", '2014-09-10', '2014-09-20');
