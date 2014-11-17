@@ -20,10 +20,11 @@ angular.module('bhima.controllers')
 
     dependencies.villages = {
       identifier:'uuid',
-      query : '/village/'
+      query : '/location/villages'
     };
 
     function manageVillage (model) {
+      console.log('models', model);
       angular.extend($scope, model);
     }
 
