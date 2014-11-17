@@ -98,6 +98,8 @@ angular.module('bhima.controllers')
       //Currencies
       $scope.currencies = session.model.currencies;
       session.currency = session.project.currency_id;
+
+      console.log('records : ',model.records.data);
     }
 
     $scope.setSelectedCash = setSelectedCash;
