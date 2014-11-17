@@ -109,7 +109,9 @@ angular.module('bhima.controllers')
       session.sum_credit = 0;
       if(session.model.records.data) {   
         session.model.records.data.forEach(function (transaction) {
-          if((transaction.service_txt === 'indirect_purchase')){
+          if(transaction.service_txt === 'indirect_purchase'){
+            transaction.primary_cash_uuid = transaction.document_uuid;
+          } else if (transaction.service_txt === 'payslip'){
             transaction.primary_cash_uuid = transaction.document_uuid;
           }
 
