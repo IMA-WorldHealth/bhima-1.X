@@ -2124,7 +2124,7 @@ function handleSalaryPayment (id, user_id, done) {
         ].join(',') +
       ', \'C\', ' +
         [
-          sanitize.escape(id),
+          sanitize.escape(reference.document_uuid),
           cfg.originId,
           user_id
         ].join(',') + ');';
@@ -2149,7 +2149,7 @@ function handleSalaryPayment (id, user_id, done) {
           reference.cost.toFixed(4), 0,
           (reference.cost / rate).toFixed(4), 0,
           reference.currency_id
-        ].join(',') + ', null, null, ' + [sanitize.escape(id), cfg.originId, user_id].join(',') +
+        ].join(',') + ', null, null, ' + [sanitize.escape(reference.document_uuid), cfg.originId, user_id].join(',') +
       ');';
     return db.exec(credit_sql);
   }
@@ -2456,11 +2456,11 @@ function handleTaxPayment (id, user_id, details, done) {
           0, (reference.cost).toFixed(4),
           0, (reference.cost / rate).toFixed(4),
           reference.currency_id,
-          sanitize.escape(reference.creditor_uuid)
+          sanitize.escape(cfg.creditor_uuid)
         ].join(',') +
       ', \'C\', ' +
         [
-          sanitize.escape(id),
+          sanitize.escape(reference.document_uuid),
           cfg.originId,
           user_id
         ].join(',') + ');';
@@ -2485,7 +2485,7 @@ function handleTaxPayment (id, user_id, details, done) {
           reference.cost.toFixed(4), 0,
           (reference.cost / rate).toFixed(4), 0,
           reference.currency_id
-        ].join(',') + ', null, null, ' + [sanitize.escape(id), cfg.originId, user_id].join(',') +
+        ].join(',') + ', null, null, ' + [sanitize.escape(reference.document_uuid), cfg.originId, user_id].join(',') +
       ');';
     return db.exec(credit_sql);
   }
@@ -2565,7 +2565,7 @@ function handleCotisationPayment (id, user_id, details, done) {
         ].join(',') +
       ', \'C\', ' +
         [
-          sanitize.escape(id),
+          sanitize.escape(reference.document_uuid),
           cfg.originId,
           user_id
         ].join(',') + ');';
@@ -2590,7 +2590,7 @@ function handleCotisationPayment (id, user_id, details, done) {
           reference.cost.toFixed(4), 0,
           (reference.cost / rate).toFixed(4), 0,
           reference.currency_id
-        ].join(',') + ', null, null, ' + [sanitize.escape(id), cfg.originId, user_id].join(',') +
+        ].join(',') + ', null, null, ' + [sanitize.escape(reference.document_uuid), cfg.originId, user_id].join(',') +
       ');';
     return db.exec(credit_sql);
   }

@@ -10,7 +10,7 @@ var certificate   = fs.readFileSync(config.tls.cert, 'utf8');
 var credentials   = {key : privateKey, cert : certificate};
 
 // Session configuration
-var db            = require('./lib/db').initialise();
+var db            = require('./lib/db').initialise(); //why we need to keep the null reference in db ?
 var authenticate  = require('./middleware/authentication')();
 
 var app = express();
@@ -25,11 +25,11 @@ https.createServer(credentials, app).listen(config.port, logApplicationStart);
 
 process.on('uncaughtException', forceExit);
 
-function logApplicationStart() { 
+function logApplicationStart() {
   console.log('[app] BHIMA server started on port :', config.port);
 }
 
-function forceExit(err) { 
+function forceExit(err) {
   console.error('[uncaughtException]', err.message);
   console.error(err.stack);
   process.exit(1);
