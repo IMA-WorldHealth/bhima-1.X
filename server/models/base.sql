@@ -1864,36 +1864,36 @@ INSERT INTO `config_rubric_item` VALUES
 INSERT INTO `config_tax` VALUES
 (1, "configuration des taxes par defaut");
 
-INSERT INTO `tax` VALUES
-(1, "INSS Employee", "INS1", 1, 1, 707, 3.5),
-(2, "IPR", "IPR1", 1, 0, 886, 0),
-(3, "INSS Entreprise", "INS2", 0, 1, 886, 9),
-(4, "IERE", "IERE", 0, 1, 886, 2.5),
-(5, "ONEM", "ONEM", 0, 1, 886, 0.5),
-(6, "INPP", "INPP", 0, 1, 886, 1.5);
+-- INSERT INTO `tax` VALUES
+-- (1, "INSS Employee", "INS1", 1, 1, 707, 3.5),
+-- (2, "IPR", "IPR1", 1, 0, 886, 0),
+-- (3, "INSS Entreprise", "INS2", 0, 1, 886, 9),
+-- (4, "IERE", "IERE", 0, 1, 886, 2.5),
+-- (5, "ONEM", "ONEM", 0, 1, 886, 0.5),
+-- (6, "INPP", "INPP", 0, 1, 886, 1.5);
 
-INSERT INTO `config_tax_item` VALUES
-(1, 1, 1, 1),
-(2, 1, 2, 1),
-(3, 1, 3, 1),
-(4, 1, 4, 1),
-(5, 1, 5, 1),
-(6, 1, 6, 1);
+-- INSERT INTO `config_tax_item` VALUES
+-- (1, 1, 1, 1),
+-- (2, 1, 2, 1),
+-- (3, 1, 3, 1),
+-- (4, 1, 4, 1),
+-- (5, 1, 5, 1),
+-- (6, 1, 6, 1);
 
-INSERT INTO `paiement_period` VALUES
-(1, 1, 1, 1, "period de paiement par defaut", '2014-09-01', '2014-09-30');
+-- INSERT INTO `paiement_period` VALUES
+-- (1, 1, 1, 1, "period de paiement par defaut", '2014-09-01', '2014-09-30');
 
 INSERT INTO `offday` VALUES
 (1, "ferrie 1", '2014-09-17', 100),
 (2, "ferrie 2", '2014-09-25', 25),
 (3, "ferrie 3", '2014-10-05', 100);
 
-INSERT INTO `config_paiement_period` VALUES
-(1, 1, '2014-09-01', '2014-09-05'),
-(2, 1, '2014-09-08', '2014-09-12'),
-(3, 1, '2014-09-15', '2014-09-19'),
-(4, 1, '2014-09-22', '2014-09-26'),
-(5, 1, '2014-09-29', '2014-09-30');
+-- INSERT INTO `config_paiement_period` VALUES
+-- (1, 1, '2014-09-01', '2014-09-05'),
+-- (2, 1, '2014-09-08', '2014-09-12'),
+-- (3, 1, '2014-09-15', '2014-09-19'),
+-- (4, 1, '2014-09-22', '2014-09-26'),
+-- (5, 1, '2014-09-29', '2014-09-30');
 
 INSERT INTO `donor` VALUES
 (1, 'IMA World Health'),
