@@ -1496,7 +1496,12 @@
     "INDIRECT_PURCHASE"             : "Indirect proof payment for purchase order",
     "CONFIRM_PURCHASE"              : "Payment confirmation",
     "CONFIRMED_BY"                  : "Confirmed by ",
-    "SIGN_EMPLOYEE"                 : "Employee signature"
+    "SIGN_EMPLOYEE"                 : "Employee signature",
+    "ENTERPRISE_TAX_PAYMENT"        : "Entreprise Taxes Payment",
+    "SALARY_PAYMENT"                : "Salary Payment",
+    "COTISATIONS"                   : "Cotisations",
+    "COTISATION_PAYMENT"            : "Cotisation Payment"
+
   },
 
   "SECTOR"             : {
