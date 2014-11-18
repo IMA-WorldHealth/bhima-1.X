@@ -564,7 +564,7 @@ angular.module('bhima.controllers')
       rubrics.forEach(function (rub) {
         var dataRubric = (rub.is_percent) ?
           ((row.daily_salary * (row.working_day + row.hollydays + row.offdays)) * rub.value) / 100 : rub.value;
-        self[rub.abbr] = dataRubric;
+        row[rub.abbr] = dataRubric;
       });
     }
 
