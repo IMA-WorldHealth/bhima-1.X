@@ -46,7 +46,7 @@ angular.module('bhima.controllers')
       })
       .catch(function (err) {
         messenger.danger('error during deleting', err);
-      });;
+      });
     }
 
     function editSector(obj){
@@ -64,7 +64,7 @@ angular.module('bhima.controllers')
       })
       .catch(function (err) {
         messenger.danger('error during editing', err);
-      });;
+      });
     }
 
     function removeSector(uuid){
