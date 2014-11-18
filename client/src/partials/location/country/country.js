@@ -63,7 +63,7 @@ angular.module('bhima.controllers')
       })
       .catch(function (err) {
         messenger.danger('error during editing', err);
-      });;
+      });
     }
 
     $scope.removeCountry = function removeCountry(country_uuid){
