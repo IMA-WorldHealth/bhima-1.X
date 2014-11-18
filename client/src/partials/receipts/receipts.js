@@ -1422,7 +1422,10 @@ angular.module('bhima.controllers')
       }
 
       function polish (model) {
-        var invoice;
+        var invoice,
+            location = model.location.data[0], 
+            record = model.record.data[0], 
+            enterprise = model.enterprise.data[0];
         $scope.invoice = invoice = {
           uuid : identifiant,
           enterprise_name : model.enterprise.data[0].name,
