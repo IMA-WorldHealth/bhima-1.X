@@ -48,8 +48,8 @@ angular.module('bhima.controllers')
     };
 
     $scope.confirmPayment = function confirmPayment () {
-    	updatePurchase()
-    	.then(writeToJournal)
+    	writeToJournal()
+      .then(updatePurchase)
     	.then(generateDocument)
     	.catch(handleError);
     };
