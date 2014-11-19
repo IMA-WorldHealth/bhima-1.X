@@ -85,7 +85,6 @@ angular.module('bhima.controllers')
     }
 
     function assignSupplier(supplier) {
-      console.log()
       session.supplier = supplier;
       session.creditor = { group_uuid : supplier.group_uuid };      
       $scope.defaultVillage = supplier.location_id;
