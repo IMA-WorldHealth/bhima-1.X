@@ -78,7 +78,6 @@ angular.module('bhima.controllers')
     function editSupplier(uuid) {
 
       // Verify there is nothing in the current session
-      //
 
       assignSupplier($scope.supplier.get(uuid));
       session.state = route.edit;
@@ -86,9 +85,9 @@ angular.module('bhima.controllers')
     }
 
     function assignSupplier(supplier) {
+      console.log()
       session.supplier = supplier;
-      session.creditor = { group_uuid : supplier.group_uuid };
-      
+      session.creditor = { group_uuid : supplier.group_uuid };      
       $scope.defaultVillage = supplier.location_id;
     }
 
@@ -97,7 +96,7 @@ angular.module('bhima.controllers')
   
       // Assign uuid and note to creditor
       session.creditor.uuid = creditor_uuid;
-      session.creditor.text = 'Supplier [' + session.supplier.name + ']';
+      session.creditor.text = $translate.instant('SUPPLIER.SUPPLIER') + '[' + session.supplier.name + ']';
 
       // Assign uuid, location and creditor id to supplier
       session.supplier.uuid = uuid();
@@ -111,15 +110,17 @@ angular.module('bhima.controllers')
     }
 
     function requestCreditor(creditor) {
-      return connect.basicPut('creditor', [creditor]);
+      return connect.post('creditor', [creditor]);
     }
 
     function writeSupplier(supplier) {  
-      return connect.basicPut('supplier', [supplier]);
+      //supplier.international = supplier.international? 1 : 0;
+      return connect.post('supplier', [supplier]);
     }
 
     function requestSupplier(supplier) {
-      return connect.basicPost('supplier', [supplier], ['uuid']);
+      //supplier.international = supplier.international? 1 : 0;
+      return connect.put('supplier', [supplier], ['uuid']);
     }
 
     function handleRegistration() {

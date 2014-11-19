@@ -1044,7 +1044,8 @@
     "FAX"               : "Fax",
     "REGISTERED"        : "Registered Suppliers",
     "SUPPLIER_DETAILS"  : "Details",
-    "CREATE_SUPPLIER"   : "Create Supplier"
+    "CREATE_SUPPLIER"   : "Create Supplier",
+    "SUPPLIER"          : "supplier"
   },
 
   "PATIENT_REG"                : {
