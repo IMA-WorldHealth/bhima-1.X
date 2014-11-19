@@ -465,9 +465,6 @@ angular.module('bhima.controllers')
 
       function initialisePurchase(model) {
         $scope.model = model;
-        console.log('voici notre model', model);
-        // FIXME : This is not ideal  Why download all data
-        // if we are only going to use data[0]?
         $scope.supplier = model.supplier.data[0];
         $scope.employee = model.employee.data[0];
         $scope.purchase = model.purchase.data[0];
@@ -612,7 +609,6 @@ angular.module('bhima.controllers')
       });
 
       function getLocations (model) {
-        console.log('notre model', model);
         dependencies.location = {};
         dependencies.location.query = 'location/detail/' +  model.enterprise.data[0].location_id;
         return validate.process(dependencies, ['location']);
@@ -668,7 +664,6 @@ angular.module('bhima.controllers')
       });
 
       function getLocations (model) {
-        console.log('notre model', model);
         dependencies.location = {};
         dependencies.location.query = 'location/detail/' +  model.enterprise.data[0].location_id;
         return validate.process(dependencies, ['location']);
@@ -739,7 +734,6 @@ angular.module('bhima.controllers')
 
       function polish (model) {
         $scope.invoice = {};
-        console.log('polish ', model);
         $scope.invoice.uuid = identifiant;
         $scope.invoice.enterprise_name = model.enterprise.data[0].name;
         $scope.invoice.village = model.location.data[0].village;
@@ -795,7 +789,6 @@ angular.module('bhima.controllers')
 
       function polish (model) {
         $scope.invoice = {};
-        console.log('polish ', model);
         $scope.invoice.uuid = identifiant;
         $scope.invoice.enterprise_name = model.enterprise.data[0].name;
         $scope.invoice.village = model.location.data[0].village;
@@ -854,7 +847,6 @@ angular.module('bhima.controllers')
 
       function polish (model) {
         $scope.invoice = {};
-        console.log('polish ', model);
         $scope.invoice.uuid = identifiant;
         $scope.invoice.enterprise_name = model.enterprise.data[0].name;
         $scope.invoice.village = model.location.data[0].village;
@@ -1365,7 +1357,6 @@ angular.module('bhima.controllers')
     };
 
     appstate.register('project', function (project) {
-      console.log('project', project);
       // FIXME : Hack to get project to behave like it used ot
       project.enterprise_name = project.name;
       $scope.project = project;

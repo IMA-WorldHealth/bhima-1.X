@@ -1669,7 +1669,8 @@
     "REGISTERED"        : "Les fournisseurs inscrits",
     "SUPPLIER_DETAILS"  : "Détails",
     "CREATE_SUPPLIER"   : "Créer Fournisseur",
-    "SUPPLIER"          : "Fournisseur"
+    "SUPPLIER"          : "Fournisseur",
+    "EDIT_SUPPLIER"     : "Editer"
   },
 
   "DEPOT" : {
