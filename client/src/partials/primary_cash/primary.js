@@ -83,10 +83,9 @@ angular.module('bhima.controllers')
 
     function parseConfiguration(cashbox) {
       var currentModel = $scope.cashBox;
-      var configurationExists, validConfiguration;
+      var validConfiguration;
     
-      configurationExists = angular.isDefined(cashbox);
-      if (!configurationExists) {
+      if (!cashbox) {
         session.configure = true;
         return;
       }
