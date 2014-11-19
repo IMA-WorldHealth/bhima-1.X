@@ -13,7 +13,7 @@ Note: This is far from complete.  But it touches on some issues we've had thus f
 ## Coding Conventions
 - Indent: Two spaces, no tabs.
 - All code must be linted, if possible
-- camelCase for all variables and functions, except Classes, which are capitalized
+- mixedCase for all variables and functions, except Classes, which are capitalized or CamelCase 
 
 ## Javascript
 
@@ -37,7 +37,7 @@ if (false) {
 ```
 
 Use mixedCase for all variable and function declarations, except classes.  Classes must
-be declared using CamelCase.  Be as conscise and descriptive as possible.
+be declared using CamelCase.  Be as concise and descriptive as possible.
 
 ```javascript
 // good
