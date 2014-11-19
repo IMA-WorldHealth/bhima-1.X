@@ -1045,7 +1045,8 @@
     "REGISTERED"        : "Registered Suppliers",
     "SUPPLIER_DETAILS"  : "Details",
     "CREATE_SUPPLIER"   : "Create Supplier",
-    "SUPPLIER"          : "supplier"
+    "SUPPLIER"          : "supplier",
+    "EDIT_SUPPLIER"     : "Edit"
   },
 
   "PATIENT_REG"                : {
