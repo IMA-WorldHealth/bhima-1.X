@@ -154,7 +154,7 @@ angular.module('bhima.controllers')
 
             }
           } else {
-            messenger.danger('Lot ' + lot.lot_number + ' has expired and cannot be used, contact the stock administrator.', true);
+            messenger.danger('Lot ' + lot.lot_number + $translate.instant('DISTRIBUTION.HAS_EXPIRED'), true);
           }
         });
 

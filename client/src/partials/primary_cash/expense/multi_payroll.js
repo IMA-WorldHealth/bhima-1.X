@@ -276,15 +276,9 @@ angular.module('bhima.controllers')
       })
       .then(function (IPR){
         self.IPR1 = IPR;
-        // return getEnterpriseINSS(self);
         self.offdays_cost = getOffDayCost(self);
         def.resolve(self);
       });
-      // .then(function (enterprise_INSS){
-      //   self.INS2 = enterprise_INSS;
-      //   self.offdays_cost = getOffDayCost(self);
-      //   def.resolve(self);
-      // });
       return def.promise;
     }
 
@@ -557,21 +551,19 @@ angular.module('bhima.controllers')
 
     function getRubricPayroll (row) {
       var rubrics = session.model.rubric_config.data, housing = 0;
-      console.log(session.model.rubric_config.data);
 
       // FIXME SELF IS GLOBAL?!?!
       // FIXME What does self refer to here??
       rubrics.forEach(function (rub) {
         var dataRubric = (rub.is_percent) ?
           ((row.daily_salary * (row.working_day + row.hollydays + row.offdays)) * rub.value) / 100 : rub.value;
-        self[rub.abbr] = dataRubric;
+        row[rub.abbr] = dataRubric;
       });
     }
 
     function getEmployeeINSS (row) {
       var taxes = session.model.tax_config.data, employee_inss = 0;
       if(!taxes.length) {
-
         return $q.when(employee_inss);
       }
 
