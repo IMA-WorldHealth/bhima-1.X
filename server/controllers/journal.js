@@ -1542,7 +1542,7 @@ function handleConfirm (id, user_id, done){
     if (records.length === 0) { throw new Error('pas enregistrement'); }
     references = records;
     var date = util.toMysqlDate(get.date());
-    return q([get.origin('primary_cash'), get.period(get.date())]);
+    return q([get.origin('confirm_purchase'), get.period(get.date())]);
   }
 
   function getDetails (originId, periodObject) {
