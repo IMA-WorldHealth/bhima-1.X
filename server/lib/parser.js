@@ -1,4 +1,4 @@
-var sanitize = require('./sanitize'),
+var sanitize = require('./db'),
     util = require('./util');
 
 // Key:
@@ -33,8 +33,8 @@ exports.delete = function (table, column, id) {
   _id = '(' + _id + ')';
 
   // format the query
-  sql = template.replace('%T%', sanitize.escapeid(table))
-                .replace('%key%', [sanitize.escapeid(column), 'IN', _id].join(' '));
+  sql = template.replace('%T%', sanitize.escape(table))
+                .replace('%key%', [sanitize.escape(column), 'IN', _id].join(' '));
   return sql;
 };
 
@@ -42,14 +42,14 @@ exports.update = function (table, data, id) {
   'use strict';
   var _key, value, sql, expressions = [],
       template = templates.update,
-      _id = sanitize.escapeid(id);
+      _id = sanitize.escape(id);
 
   // For each property, escape both the key and value and push it into
   // the sql values array
   for (var key in data) {
     if (key !== id) {
       value = data[key];
-      _key = sanitize.escapeid(key);
+      _key = sanitize.escape(key);
 
       // FIXME : This function allows values to be null.
       // Is that really what we want?
@@ -62,7 +62,7 @@ exports.update = function (table, data, id) {
     }
   }
 
-  sql = template.replace('%T%', sanitize.escapeid(table))
+  sql = template.replace('%T%', sanitize.escape(table))
               .replace('%E%', expressions.join(', '))
               .replace('%key%', [_id, '=', sanitize.escape(data[id])].join(''));
 
@@ -116,7 +116,7 @@ exports.insert = function (table, data) {
     expressions.push(concat);
   });
 
-  sql = template.replace(/%T%/g, sanitize.escapeid(table))
+  sql = template.replace(/%T%/g, sanitize.escape(table))
           .replace('%V%', '(' + values.join(', ') + ')')
           .replace('%E%', expressions.join(', '))
           .replace('%project_id%', project_id);
@@ -131,11 +131,11 @@ exports.select = function (def) {
     columns = [],
     template = templates.select,
     join = def.join,
-    tables = Object.keys(def.tables).map(function (t) { return sanitize.escapeid(t); });
+    tables = Object.keys(def.tables).map(function (t) { return sanitize.escape(t); });
 
   // convert to dot notation "table.column"
   for (var t in def.tables) {
-    columns.push(cdm(sanitize.escapeid(t), def.tables[t].columns));
+    columns.push(cdm(sanitize.escape(t), def.tables[t].columns));
   }
 
   if (join) {
@@ -146,7 +146,7 @@ exports.select = function (def) {
       // first split on equality
       return exp.split('=').map(function (col) {
         // then on the full stop, escape, and recreate
-        return col.split('.').map(sanitize.escapeid).join('.');
+        return col.split('.').map(sanitize.escape).join('.');
       }).join('=');
     }).join(' AND ');
   } else {
@@ -157,7 +157,7 @@ exports.select = function (def) {
   conditions = (def.where) ? parseWhere(def.where) : 1;
 
   var groups = def.groupby ?
-    def.groupby.split('.').map(sanitize.escapeid) :
+    def.groupby.split('.').map(sanitize.escape) :
     null;
 
   // TODO
@@ -166,7 +166,7 @@ exports.select = function (def) {
   var order;
   if (def.orderby) {
     order = def.orderby.map(function (o) {
-      return o.split('.').map(sanitize.escapeid).join('.');
+      return o.split('.').map(sanitize.escape).join('.');
     });
   }
 
@@ -184,7 +184,7 @@ function cdm(table, columns) {
   // to multiple columns.
   // e.g. `table`.`column1`, `table`.`column2`
   return columns.map(function (c) {
-    return [table, '.', sanitize.escapeid(c)].join('');
+    return [table, '.', sanitize.escape(c)].join('');
   }).join(', ');
 }
 
@@ -225,7 +225,7 @@ function subroutine(cond) {
   // escape values
   return conditions
     .map(function (exp) {
-      return ~exp.indexOf('.') ? exp.split('.').map(sanitize.escapeid).join('.') : sanitize.escape(exp);
+      return ~exp.indexOf('.') ? exp.split('.').map(sanitize.escape).join('.') : sanitize.escape(exp);
     })
     .join(operator);
 }
