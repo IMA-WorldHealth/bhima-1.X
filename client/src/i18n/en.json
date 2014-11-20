@@ -936,7 +936,10 @@
     "NONE"                   : "This item is not in stock in the depot, contact the stock administrator",
     "LIMITED_STOCK"          : "There is not enough valid stock available to fulfill the order, contact the stock administrator.",
     "EXPIRED"                : "Available stock CANNOT be used as it has expired, contact the stock administrator.",
-    "AVAILABLE"              : "Available prescriptions"
+    "AVAILABLE"              : "Available prescriptions",
+    "NO_SALE_FOUND"          : "No sale data found for patient",
+    "SHOW_ALL_SALES"         : "Showing all sales for patient",
+    "HAS_EXPIRED"            : "has expired and cannot be used, contact the stock administrator"
   },
 
   "DISTRIBUTION_SERVICE" : {
@@ -1498,7 +1501,12 @@
     "INDIRECT_PURCHASE"             : "Indirect proof payment for purchase order",
     "CONFIRM_PURCHASE"              : "Payment confirmation",
     "CONFIRMED_BY"                  : "Confirmed by ",
-    "SIGN_EMPLOYEE"                 : "Employee signature"
+    "SIGN_EMPLOYEE"                 : "Employee signature",
+    "ENTERPRISE_TAX_PAYMENT"        : "Entreprise Taxes Payment",
+    "SALARY_PAYMENT"                : "Salary Payment",
+    "COTISATIONS"                   : "Cotisations",
+    "COTISATION_PAYMENT"            : "Cotisation Payment"
+
   },
 
   "SECTOR"             : {
@@ -1809,7 +1817,8 @@
     "RESPONSABLE"       : "Responsable",
     "BENEFICIARY"       : "Beneficiary",
     "EMPLOYEE"          : "Employee",
-    "CREDITOR"          : "Creditor"
+    "CREDITOR"          : "Creditor",
+    "THIRD"             : "Third"
   },
 
   "CONVENTION" : {
@@ -2147,7 +2156,8 @@
     "TRACKING_NB"       : "Tracking Nb",
     "PROOF"             : "Proof of registering in Stock",
     "REPORT"            : "Report",
-    "DATE_REGISTER"     : "Register Date"
+    "DATE_REGISTER"     : "Register Date",
+    "PERFORM_BY"        : "Perform by"    
   },
 
   "STOCK_DASHBOARD"     : {
