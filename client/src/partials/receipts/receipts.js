@@ -391,33 +391,40 @@ angular.module('bhima.controllers')
     //   .finally();
 
     function processPurchase (invoiceId) {
-      var dependencies = {};
+      var dependencies = {};     
 
-      dependencies.purchase = {
-        query : {
-          identifier : 'uuid',
-          tables : {
-            'purchase' : {
-              columns : ['uuid', 'reference', 'project_id', 'cost', 'currency_id', 'creditor_uuid', 'purchase_date', 'note', 'employee_id']
+      function wrapper () {
+        dependencies.purchase = {
+          query : {
+            identifier : 'uuid',
+            tables : {
+              'purchase' : {
+                columns : ['uuid', 'reference', 'project_id', 'cost', 'currency_id', 'creditor_uuid', 'purchase_date', 'note', 'employee_id']
+              },
+              'purchase_item' : {
+                columns : ['inventory_uuid', 'purchase_uuid', 'quantity', 'unit_price', 'total']
+              },
+              'inventory' : {
+                columns : ['code', 'text']
+              },
+              'project' : {
+                columns : ['abbr']
+              }
             },
-            'purchase_item' : {
-              columns : ['inventory_uuid', 'purchase_uuid', 'quantity', 'unit_price', 'total']
-            },
-            'inventory' : {
-              columns : ['code', 'text']
-            },
-            'project' : {
-              columns : ['abbr']
-            }
-          },
-          join : [
-            'purchase.uuid=purchase_item.purchase_uuid',
-            'purchase_item.inventory_uuid=inventory.uuid',
-            'purchase.project_id=project.id'
-          ],
-          where : ['purchase_item.purchase_uuid=' + invoiceId]
-        }
-      };
+            join : [
+              'purchase.uuid=purchase_item.purchase_uuid',
+              'purchase_item.inventory_uuid=inventory.uuid',
+              'purchase.project_id=project.id'
+            ],
+            where : ['purchase_item.purchase_uuid=' + invoiceId]
+          }
+        };
+        return $q.when();
+      }
+
+      function downloadPurchase () {
+        return validate.process(dependencies);
+      }
 
       function processPurchaseParties(model) {
         var creditor = model.purchase.data[0].creditor_uuid;
@@ -443,7 +450,7 @@ angular.module('bhima.controllers')
           }
         };
 
-        validate.process(dependencies, ['supplier', 'employee']).then(processPurchaseDetails);
+        return validate.process(dependencies, ['supplier', 'employee']);
       }
 
       function processPurchaseDetails(model) {
@@ -453,20 +460,22 @@ angular.module('bhima.controllers')
           query : '/location/village/' + locationId
         };
 
-        validate.process(dependencies, ['supplierLocation']).then(initialisePurchase);
+        return validate.process(dependencies, ['supplierLocation']);
       }
 
       function initialisePurchase(model) {
         $scope.model = model;
-        console.log('tout ce quo a', model);
-        // FIXME : This is not ideal  Why download all data
-        // if we are only going to use data[0]?
         $scope.supplier = model.supplier.data[0];
         $scope.employee = model.employee.data[0];
         $scope.purchase = model.purchase.data[0];
         $scope.supplierLocation = model.supplierLocation.data[0];
       }
-      validate.process(dependencies).then(processPurchaseParties);      
+
+      wrapper()
+      .then(downloadPurchase)
+      .then(processPurchaseParties)
+      .then(processPurchaseDetails)
+      .then(initialisePurchase);
     }
     
 
@@ -600,7 +609,6 @@ angular.module('bhima.controllers')
       });
 
       function getLocations (model) {
-        console.log('notre model', model);
         dependencies.location = {};
         dependencies.location.query = 'location/detail/' +  model.enterprise.data[0].location_id;
         return validate.process(dependencies, ['location']);
@@ -656,7 +664,6 @@ angular.module('bhima.controllers')
       });
 
       function getLocations (model) {
-        console.log('notre model', model);
         dependencies.location = {};
         dependencies.location.query = 'location/detail/' +  model.enterprise.data[0].location_id;
         return validate.process(dependencies, ['location']);
@@ -727,7 +734,6 @@ angular.module('bhima.controllers')
 
       function polish (model) {
         $scope.invoice = {};
-        console.log('polish ', model);
         $scope.invoice.uuid = identifiant;
         $scope.invoice.enterprise_name = model.enterprise.data[0].name;
         $scope.invoice.village = model.location.data[0].village;
@@ -783,7 +789,6 @@ angular.module('bhima.controllers')
 
       function polish (model) {
         $scope.invoice = {};
-        console.log('polish ', model);
         $scope.invoice.uuid = identifiant;
         $scope.invoice.enterprise_name = model.enterprise.data[0].name;
         $scope.invoice.village = model.location.data[0].village;
@@ -842,7 +847,6 @@ angular.module('bhima.controllers')
 
       function polish (model) {
         $scope.invoice = {};
-        console.log('polish ', model);
         $scope.invoice.uuid = identifiant;
         $scope.invoice.enterprise_name = model.enterprise.data[0].name;
         $scope.invoice.village = model.location.data[0].village;
@@ -1353,7 +1357,6 @@ angular.module('bhima.controllers')
     };
 
     appstate.register('project', function (project) {
-      console.log('project', project);
       // FIXME : Hack to get project to behave like it used ot
       project.enterprise_name = project.name;
       $scope.project = project;
