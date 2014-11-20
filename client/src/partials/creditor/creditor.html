@@ -40,7 +40,7 @@
 
               <div class="checkbox">
                 <label> {{ "SUPPLIER.INTL" | translate }}
-                  <input type="checkbox" id="internationalID" ng-model="session.supplier.international">
+                  <input type="checkbox" id="internationalID" ng-true-value="1" ng-false-value="0" ng-model="session.supplier.international">
                 </label>
               </div>
 
@@ -50,8 +50,8 @@
               </div>
 
               <div class="form-group">
-                <label for="email" class="control-label required">{{ "SUPPLIER.EMAIL" | translate }}</label>
-                <input required type="email" class="form-bhima" id="emailID" ng-model="session.supplier.email">
+                <label for="email" class="control-label">{{ "SUPPLIER.EMAIL" | translate }}</label>
+                <input type="email" class="form-bhima" id="emailID" ng-model="session.supplier.email">
               </div>
 
             </fieldset>
