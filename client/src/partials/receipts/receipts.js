@@ -559,18 +559,22 @@ angular.module('bhima.controllers')
       }
 
       function polish (model) {
-        $scope.invoice = {};
-        $scope.invoice.uuid = identifiant;
-        $scope.invoice.enterprise_name = model.enterprise.data[0].name;
-        $scope.invoice.village = model.location.data[0].village;
-        $scope.invoice.sector = model.location.data[0].sector;
-        $scope.invoice.phone = model.enterprise.data[0].phone;
-        $scope.invoice.email = model.enterprise.data[0].email;
-        $scope.invoice.name = model.purchase.data[0].name;
-        $scope.invoice.purchase_date = model.purchase.data[0].purchase_date;
-        $scope.invoice.reference = model.purchase.data[0].abbr + model.purchase.data[0].reference;
-        $scope.invoice.employee_code = model.purchase.data[0].code;
-        $scope.invoice.cost = model.purchase.data[0].cost;
+        var invoice = $scope.invoice = {},
+            location = model.location.data[0], 
+            purchase = model.purchase.data[0], 
+            enterprise = model.enterprise.data[0];
+
+        invoice.uuid = identifiant;
+        invoice.enterprise_name = enterprise.name;
+        invoice.village = location.village;
+        invoice.sector = location.sector;
+        invoice.phone = enterprise.phone;
+        invoice.email = enterprise.email;
+        invoice.name = purchase.name;
+        invoice.purchase_date = purchase.purchase_date;
+        invoice.reference = purchase.abbr + purchase.reference;
+        invoice.employee_code = purchase.code;
+        invoice.cost = purchase.cost;
       }
     }
 
@@ -616,15 +620,19 @@ angular.module('bhima.controllers')
 
       function polish (model) {
         $scope.records = model.distribution.data;
-        $scope.invoice = {};
-        $scope.invoice.uuid = identifiant;
-        $scope.invoice.enterprise_name = model.enterprise.data[0].name;
-        $scope.invoice.village = model.location.data[0].village;
-        $scope.invoice.sector = model.location.data[0].sector;
-        $scope.invoice.phone = model.enterprise.data[0].phone;
-        $scope.invoice.email = model.enterprise.data[0].email;
-        $scope.invoice.name = model.distribution.data[0].name;
-        $scope.invoice.date = model.distribution.data[0].date;
+        var invoice = $scope.invoice = {},
+            location = model.location.data[0], 
+            distribution = model.distribution.data[0], 
+            enterprise = model.enterprise.data[0];
+
+        invoice.uuid = identifiant;
+        invoice.enterprise_name = enterprise.name;
+        invoice.village = location.village;
+        invoice.sector = location.sector;
+        invoice.phone = enterprise.phone;
+        invoice.email = enterprise.email;
+        invoice.name = distribution.name;
+        invoice.date = distribution.date;
       }
 
     }
@@ -670,15 +678,19 @@ angular.module('bhima.controllers')
 
       function polish (model) {
         $scope.records = model.loss.data;
-        $scope.invoice = {};
-        $scope.invoice.uuid = identifiant;
-        $scope.invoice.enterprise_name = model.enterprise.data[0].name;
-        $scope.invoice.village = model.location.data[0].village;
-        $scope.invoice.sector = model.location.data[0].sector;
-        $scope.invoice.phone = model.enterprise.data[0].phone;
-        $scope.invoice.email = model.enterprise.data[0].email;
-        $scope.invoice.name = model.loss.data[0].name;
-        $scope.invoice.date = model.loss.data[0].date;
+        var invoice = $scope.invoice = {},
+            location = model.location.data[0], 
+            loss = model.loss.data[0], 
+            enterprise = model.enterprise.data[0];
+
+        invoice.uuid = identifiant;
+        invoice.enterprise_name = enterprise.name;
+        invoice.village = location.village;
+        invoice.sector = location.sector;
+        invoice.phone = enterprise.phone;
+        invoice.email = enterprise.email;
+        invoice.name = loss.name;
+        invoice.date = loss.date;
       }
 
     }
@@ -731,18 +743,22 @@ angular.module('bhima.controllers')
       }
 
       function polish (model) {
-        $scope.invoice = {};
-        $scope.invoice.uuid = identifiant;
-        $scope.invoice.enterprise_name = model.enterprise.data[0].name;
-        $scope.invoice.village = model.location.data[0].village;
-        $scope.invoice.sector = model.location.data[0].sector;
-        $scope.invoice.phone = model.enterprise.data[0].phone;
-        $scope.invoice.email = model.enterprise.data[0].email;
-        $scope.invoice.name = model.purchase.data[0].name;
-        $scope.invoice.purchase_date = model.purchase.data[0].purchase_date;
-        $scope.invoice.reference = model.purchase.data[0].abbr + model.purchase.data[0].reference;
-        $scope.invoice.employee_code = model.purchase.data[0].code;
-        $scope.invoice.cost = model.purchase.data[0].cost;
+        var invoice = $scope.invoice = {},
+            location = model.location.data[0], 
+            purchase = model.purchase.data[0], 
+            enterprise = model.enterprise.data[0];
+
+        invoice.uuid = identifiant;
+        invoice.enterprise_name = enterprise.name;
+        invoice.village = location.village;
+        invoice.sector = location.sector;
+        invoice.phone = enterprise.phone;
+        invoice.email = enterprise.email;
+        invoice.name = purchase.name;
+        invoice.purchase_date = purchase.purchase_date;
+        invoice.reference = purchase.abbr + purchase.reference;
+        invoice.employee_code = purchase.code;
+        invoice.cost = purchase.cost;
       }
     }
 
@@ -785,21 +801,25 @@ angular.module('bhima.controllers')
       }
 
       function polish (model) {
-        $scope.invoice = {};
-        $scope.invoice.uuid = identifiant;
-        $scope.invoice.enterprise_name = model.enterprise.data[0].name;
-        $scope.invoice.village = model.location.data[0].village;
-        $scope.invoice.sector = model.location.data[0].sector;
-        $scope.invoice.phone = model.enterprise.data[0].phone;
-        $scope.invoice.email = model.enterprise.data[0].email;
-        $scope.invoice.name = model.record.data[0].account_txt;
-        $scope.invoice.date = model.record.data[0].date;
-        $scope.invoice.reference = model.enterprise.data[0].abbr + model.record.data[0].reference;
-        $scope.invoice.cost = model.record.data[0].cost;
-        $scope.invoice.description = model.record.data[0].description;
-        $scope.invoice.currency_id = model.record.data[0].currency_id;
-        $scope.invoice.by = model.record.data[0].first + '  ' + model.record.data[0].last;
-        $scope.invoice.document_uuid =  model.record.data[0].document_uuid;
+        var invoice = $scope.invoice = {},
+            enterprise = model.enterprise.data[0],
+            location = model.location.data[0], 
+            record = model.record.data[0];
+
+        invoice.uuid = identifiant;
+        invoice.enterprise_name = enterprise.name;
+        invoice.village = location.village;
+        invoice.sector = location.sector;
+        invoice.phone = enterprise.phone;
+        invoice.email = enterprise.email;
+        invoice.name = record.account_txt;
+        invoice.date = record.date;
+        invoice.reference = enterprise.abbr + record.reference;
+        invoice.cost = record.cost;
+        invoice.description = record.description;
+        invoice.currency_id = record.currency_id;
+        invoice.by = record.first + '  ' + record.last;
+        invoice.document_uuid =  record.document_uuid;
       }
     }
 
@@ -842,21 +862,25 @@ angular.module('bhima.controllers')
       }
 
       function polish (model) {
-        $scope.invoice = {};
-        $scope.invoice.uuid = identifiant;
-        $scope.invoice.enterprise_name = model.enterprise.data[0].name;
-        $scope.invoice.village = model.location.data[0].village;
-        $scope.invoice.sector = model.location.data[0].sector;
-        $scope.invoice.phone = model.enterprise.data[0].phone;
-        $scope.invoice.email = model.enterprise.data[0].email;
-        $scope.invoice.name = model.record.data[0].account_txt;
-        $scope.invoice.date = model.record.data[0].date;
-        $scope.invoice.reference = model.enterprise.data[0].abbr + model.record.data[0].reference;
-        $scope.invoice.cost = model.record.data[0].cost;
-        $scope.invoice.description = model.record.data[0].description;
-        $scope.invoice.currency_id = model.record.data[0].currency_id;
-        $scope.invoice.by = model.record.data[0].first + '  ' + model.record.data[0].last;
-        $scope.invoice.document_uuid =  model.record.data[0].document_uuid;
+        var invoice = $scope.invoice = {},
+            enterprise = model.enterprise.data[0],
+            location = model.location.data[0], 
+            record = model.record.data[0];
+
+        invoice.uuid = identifiant;
+        invoice.enterprise_name = enterprise.name;
+        invoice.village = model.location.data[0].village;
+        invoice.sector = model.location.data[0].sector;
+        invoice.phone = enterprise.phone;
+        invoice.email = enterprise.email;
+        invoice.name = record.account_txt;
+        invoice.date = record.date;
+        invoice.reference = enterprise.abbr + enterprise.reference;
+        invoice.cost = record.cost;
+        invoice.description = record.description;
+        invoice.currency_id = record.currency_id;
+        invoice.by = record.first + '  ' + record.last;
+        invoice.document_uuid =  record.document_uuid;
       }
     }
 
@@ -1320,21 +1344,25 @@ angular.module('bhima.controllers')
       }
 
       function polish (model) {
-        $scope.invoice = {};
-        $scope.invoice.uuid = identifiant;
-        $scope.invoice.enterprise_name = model.enterprise.data[0].name;
-        $scope.invoice.village = model.location.data[0].village;
-        $scope.invoice.sector = model.location.data[0].sector;
-        $scope.invoice.phone = model.enterprise.data[0].phone;
-        $scope.invoice.email = model.enterprise.data[0].email;
-        $scope.invoice.name = model.record.data[0].account_txt;
-        $scope.invoice.date = model.record.data[0].date;
-        $scope.invoice.reference = model.enterprise.data[0].abbr + model.record.data[0].reference;
-        $scope.invoice.cost = model.record.data[0].cost;
-        $scope.invoice.description = model.record.data[0].description;
-        $scope.invoice.currency_id = model.record.data[0].currency_id;
-        $scope.invoice.by = model.record.data[0].first + '  ' + model.record.data[0].last;
-        $scope.invoice.document_uuid =  model.record.data[0].document_uuid;
+        var invoice = $scope.invoice = {},
+            enterprise = model.enterprise.data[0],
+            location = model.location.data[0], 
+            record = model.record.data[0];
+
+        invoice.uuid = identifiant;
+        invoice.enterprise_name = enterprise.name;
+        invoice.village = location.village;
+        invoice.sector = location.sector;
+        invoice.phone = enterprise.phone;
+        invoice.email = enterprise.email;
+        invoice.name = record.account_txt;
+        invoice.date = record.date;
+        invoice.reference = enterprise.abbr + record.reference;
+        invoice.cost = record.cost;
+        invoice.description = record.description;
+        invoice.currency_id = record.currency_id;
+        invoice.by = record.first + '  ' + record.last;
+        invoice.document_uuid =  record.document_uuid;
       }
     }
 
@@ -1377,21 +1405,25 @@ angular.module('bhima.controllers')
       }
 
       function polish (model) {
-        $scope.invoice = {};
-        $scope.invoice.uuid = identifiant;
-        $scope.invoice.enterprise_name = model.enterprise.data[0].name;
-        $scope.invoice.village = model.location.data[0].village;
-        $scope.invoice.sector = model.location.data[0].sector;
-        $scope.invoice.phone = model.enterprise.data[0].phone;
-        $scope.invoice.email = model.enterprise.data[0].email;
-        $scope.invoice.name = model.record.data[0].account_txt;
-        $scope.invoice.date = model.record.data[0].date;
-        $scope.invoice.reference = model.enterprise.data[0].abbr + model.record.data[0].reference;
-        $scope.invoice.cost = model.record.data[0].cost;
-        $scope.invoice.description = model.record.data[0].description;
-        $scope.invoice.currency_id = model.record.data[0].currency_id;
-        $scope.invoice.by = model.record.data[0].first + '  ' + model.record.data[0].last;
-        $scope.invoice.document_uuid =  model.record.data[0].document_uuid;
+        var invoice = $scope.invoice = {},
+            enterprise = model.enterprise.data[0],
+            location = model.location.data[0], 
+            record = model.record.data[0];
+        
+        invoice.uuid = identifiant;
+        invoice.enterprise_name = enterprise.name;
+        invoice.village = location.village;
+        invoice.sector = location.sector;
+        invoice.phone = enterprise.phone;
+        invoice.email = enterprise.email;
+        invoice.name = record.account_txt;
+        invoice.date = record.date;
+        invoice.reference = enterprise.abbr + record.reference;
+        invoice.cost = record.cost;
+        invoice.description = record.description;
+        invoice.currency_id = record.currency_id;
+        invoice.by = record.first + '  ' + record.last;
+        invoice.document_uuid =  record.document_uuid;
       }
     }
 
@@ -1434,43 +1466,25 @@ angular.module('bhima.controllers')
       }
 
       function polish (model) {
-        var invoice,
+        var invoice = $scope.invoice = {},
             location = model.location.data[0], 
             record = model.record.data[0], 
             enterprise = model.enterprise.data[0];
-        $scope.invoice = invoice = {
-          uuid : identifiant,
-          enterprise_name : model.enterprise.data[0].name,
-          village : model.location.data[0].village,
-          sector : model.location.data[0].sector,
-          phone : model.enterprise.data[0].phone,
-          email : model.enterprise.data[0].email,
-          name : model.record.data[0].account_txt,
-          date : model.record.data[0].date,
-          reference : model.enterprise.data[0].abbr + model.record.data[0].reference,
-          cost : model.record.data[0].cost,
-          description : model.record.data[0].description,
-          currency_id : model.record.data[0].currency_id,
-          by : model.record.data[0].first + '  ' + model.record.data[0].last,
-          document_uuid :  model.record.data[0].document_uuid
-        };
-        console.log('FACTURES PAR',$scope.invoice);
-        /*$scope.invoice = {};
 
-        $scope.invoice.uuid = identifiant;
-        $scope.invoice.enterprise_name = model.enterprise.data[0].name;
-        $scope.invoice.village = model.location.data[0].village;
-        $scope.invoice.sector = model.location.data[0].sector;
-        $scope.invoice.phone = model.enterprise.data[0].phone;
-        $scope.invoice.email = model.enterprise.data[0].email;
-        $scope.invoice.name = model.record.data[0].account_txt;
-        $scope.invoice.date = model.record.data[0].date;
-        $scope.invoice.reference = model.enterprise.data[0].abbr + model.record.data[0].reference;
-        $scope.invoice.cost = model.record.data[0].cost;
-        $scope.invoice.description = model.record.data[0].description;
-        $scope.invoice.currency_id = model.record.data[0].currency_id;
-        $scope.invoice.by = model.record.data[0].first + '  ' + model.record.data[0].last;
-        $scope.invoice.document_uuid =  model.record.data[0].document_uuid;*/
+        invoice.uuid = identifiant;
+        invoice.enterprise_name = enterprise.name;
+        invoice.village = location.village;
+        invoice.sector = location.sector;
+        invoice.phone = enterprise.phone;
+        invoice.email = enterprise.email;
+        invoice.name = record.account_txt;
+        invoice.date = record.date;
+        invoice.reference = enterprise.abbr + record.reference;
+        invoice.cost = record.cost;
+        invoice.description = record.description;
+        invoice.currency_id = record.currency_id;
+        invoice.by = record.first + '  ' + record.last;
+        invoice.document_uuid =  record.document_uuid;
       }
     }
 
