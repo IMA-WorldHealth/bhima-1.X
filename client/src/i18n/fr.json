@@ -642,7 +642,8 @@
       "ITEM_IN_STOCK"     : "Article en stock"
     },
     "DONATION" : {
-      "KEY" : "Entrer Donation"
+      "KEY"     : "Entrer Donation",
+      "TITLE"   : "Entrer Donation"
     }
   },
 
@@ -1262,32 +1263,36 @@
     "DISTRIBUTION_SERVICE" : "Distribution Service",
     "CONVENTION"                   : "Reçu pour convention",
     "NUM_CONVENTION_PAY"           : "Référence",
-    "GENERIC_INCOME"               : "Recette Générale",
-    "GENERIC_EXPENSE"              : "Dépense Générale",
+    "GENERIC_INCOME"               : "Recette Générique",
+    "GENERIC_EXPENSE"              : "Dépense Générique",
     "LOSS"                         : "Document de perte de stock",
     "DATE_DOCUMENT"                : "Date document",
     "STOCK_MOVEMENT"               : "Mouvement de stock",
-    "NAME" : "Nom",
-    "REFERENCE" : "Référence",
-    "TRANSFERT_DATE" : "Date transfert",
-    "ITEM" : "Item",
-    "EXPIRATION_DATE" : "Date expiration",
-    "TRANSFERED_QTE" : "Quantité transferée",
-    "TRACKING_NUMBER" : "Numéro tracking",
-    "DESTINATION_DEPOT" : "Dépôt destination",
-    "ORIGIN_DEPOT" : "Dépôt Origine",
-    "LOT" : "Lot",
-    "INDIRECT_PURCHASE" : "Preuve paiement indirect de l'ordre d'achat",
-    "COST" : "Coût",
-    "RECIPIENT" : "Recepteur",
-    "CONFIRM_PURCHASE" : "Confirmation paiement",
-    "CONFIRMED_BY" : "Confirmer par ",
-    "SIGN_EMPLOYEE" : "Signature employé",
-    "PROOF_OF_PATIENT_CONSUMPTION" : "Preuve de consommation du patient",
-    "DOCUMENT_REF" : "Référence vente",
-    "DEPOT_REF" : "Référence dépôt",
-    "PURCHASE_RECIPIENT" : "Fournisseur"
-
+    "NAME"                         : "Nom",
+    "REFERENCE"                    : "Référence",
+    "TRANSFERT_DATE"                : "Date transfert",
+    "ITEM"                          : "Item",
+    "EXPIRATION_DATE"               : "Date expiration",
+    "TRANSFERED_QTE"                : "Quantité transferée",
+    "TRACKING_NUMBER"               : "Numéro tracking",
+    "DESTINATION_DEPOT"             : "Dépôt destination",
+    "ORIGIN_DEPOT"                  : "Dépôt Origine",
+    "LOT"                           : "Lot",
+    "INDIRECT_PURCHASE"             : "Preuve paiement indirect de l'ordre d'achat",
+    "COST"                          : "Coût",
+    "RECIPIENT"                     : "Recepteur",
+    "CONFIRM_PURCHASE"              : "Confirmation paiement",
+    "CONFIRMED_BY"                  : "Confirmer par ",
+    "SIGN_EMPLOYEE"                 : "Signature employé",
+    "PROOF_OF_PATIENT_CONSUMPTION"  : "Preuve de consommation du patient",
+    "DOCUMENT_REF"                  : "Référence vente",
+    "DEPOT_REF"                     : "Référence dépôt",
+    "PURCHASE_RECIPIENT"            : "Fournisseur",
+    "TAX_PAYMENT"                   : "Paiement Taxes",
+    "ENTERPRISE_TAX_PAYMENT"        : "Paiement Taxes Entreprise",
+    "SALARY_PAYMENT"                : "Paiement Effectif du Salaire",
+    "COTISATIONS"                   : "Cotisations",
+    "COTISATION_PAYMENT"            : "Paiement Cotisations"
   },
 
   "SECTOR"             : {
@@ -1632,8 +1637,10 @@
     "NONE"                   : "Cet item n'existe dans le stock du dépôt, contacter l'administrateur",
     "LIMITED_STOCK"          : "Il n'y a pas assez de stock pour couvrir la vente, contacter l'administrateur",
     "EXPIRED"                : "Le stock disponible ne peut pas etre utilisé comme il est expire, contacter l'administrateur.",
-    "AVAILABLE"              : "Prescriptions disponibles"
-
+    "AVAILABLE"              : "Prescriptions disponibles",
+    "NO_SALE_FOUND"          : "Aucune données trouvés concernant la vente pour le patient",
+    "SHOW_ALL_SALES"         : "Afficher toutes les ventes pour ce patient",
+    "HAS_EXPIRED"            : " a expriré et ne peut être utilisé, contacter le Gestionnaire de Stock"
   },
 
     "DISTRIBUTION_SERVICE" : {
@@ -1668,7 +1675,9 @@
     "FAX"               : "Fax",
     "REGISTERED"        : "Les fournisseurs inscrits",
     "SUPPLIER_DETAILS"  : "Détails",
-    "CREATE_SUPPLIER"   : "Créer Fournisseur"
+    "CREATE_SUPPLIER"   : "Créer Fournisseur",
+    "SUPPLIER"          : "Fournisseur",
+    "EDIT_SUPPLIER"     : "Editer"
   },
 
   "DEPOT" : {
@@ -1871,7 +1880,8 @@
     "EMPLOYEE"          : "Employé",
     "CLIENT"            : "Client",
     "CREDITOR"          : "Créditeur",
-    "CUSTOMER"          : "Client"
+    "CUSTOMER"          : "Client",
+    "THIRD"             : "Tiers"
   },
 
   "EXPIRING_UTIL"    : {
@@ -1917,9 +1927,9 @@
 
    "GRADE" : {
     "TITLE"        : "Gestion de grades des employés",
-	"ADD"		   : "Ajouter un grade",
-	"REGISTERED"   : "Grades enregistrés",
-	"ALERT"		   : "Le module gestion de grade est un module qui a été conçu pour permettre l'administration des grades existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'un grade ainsi que la suppression.",
+    "ADD"          : "Ajouter un grade",
+    "REGISTERED"   : "Grades enregistrés",
+    "ALERT"        : "Le module gestion de grade est un module qui a été conçu pour permettre l'administration des grades existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'un grade ainsi que la suppression.",
     "NO_GRADES"    : "Aucun grade n'est encore enregistré",
     "NEW_GRADE"    : "Nouveau Grade",
     "UPD_GRADE"    : "Modifier un Grade",
@@ -2171,7 +2181,8 @@
     "TRACKING_NB"       : "N° Tracking",
     "PROOF"             : "Preuve d'enregistrement du don dans le Stock",
     "REPORT"            : "Rapport",
-    "DATE_REGISTER"     : "Date d'enregistrement"
+    "DATE_REGISTER"     : "Date d'enregistrement",
+    "PERFORM_BY"        : "Effectuer par"
   },
 
   "STOCK_DASHBOARD"     : {

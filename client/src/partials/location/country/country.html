@@ -48,64 +48,64 @@
       </div>
 
       <div ng-switch-when="add">
-        <form class="form-horizontal">                                                                      
-          <fieldset>                                                                                        
-            <legend>{{ 'COUNTRY.REGISTER' | translate}}</legend>                                                       
-            <div class="form-group">                                                               
-              <label class="col-xs-2 control-label">{{ 'COUNTRY.CODE' | translate}}</label>                                            
-              <div class="col-xs-10">                                                                       
-                <input type="number" class="form-bhima" ng-model="add.code" required>                                        
-              </div>                                                                                        
+        <form class="form-horizontal" name="addForm" novalidate>
+          <fieldset>
+            <legend>{{ 'COUNTRY.REGISTER' | translate}}</legend>
+            <div class="form-group">
+              <label class="col-xs-2 control-label">{{ 'COUNTRY.CODE' | translate}}</label>
+              <div class="col-xs-10">
+                <input type="number" class="form-bhima" ng-model="add.code" required>
+              </div>
             </div>
 
-            <div class="form-group">                                                               
-              <label class="col-xs-2 control-label">{{ 'COUNTRY.ENGLISH_NAME' | translate}}</label>                                            
-              <div class="col-xs-10">                                                                       
-                <input class="form-bhima" ng-model="add.country_en" required>                                        
-              </div>                                                                                        
+            <div class="form-group">
+              <label class="col-xs-2 control-label">{{ 'COUNTRY.ENGLISH_NAME' | translate}}</label>
+              <div class="col-xs-10">
+                <input class="form-bhima" ng-model="add.country_en" required>
+              </div>
             </div>
 
-            <div class="form-group">                                                               
-              <label class="col-xs-2 control-label">{{ 'COUNTRY.FRENCH_NAME' | translate}}</label>                                            
-              <div class="col-xs-10">                                                                       
-                <input class="form-bhima" ng-model="add.country_fr" required>                                        
-              </div>                                                                                        
-            </div> 
+            <div class="form-group">
+              <label class="col-xs-2 control-label">{{ 'COUNTRY.FRENCH_NAME' | translate}}</label>
+              <div class="col-xs-10">
+                <input class="form-bhima" ng-model="add.country_fr" required>
+              </div>
+            </div>
 
           </fieldset>
-          <input class="btn btn-default btn-success" ng-click="addCountry(add)" ng-disabled="form.$invalid" type="submit" value="{{ 'FORM.ADD' | translate }}">
+          <input class="btn btn-default btn-success" ng-click="addCountry(add)" ng-disabled="addForm.$invalid" type="submit" value="{{ 'FORM.ADD' | translate }}">
           <input class="btn btn-default btn-sm" type="reset" value="{{ 'FORM.NEW_FORM' | translate }}">
         </form>
       </div>
 
       <div ng-switch-when="edit">
-        <form class="form-horizontal">                                                                      
-          <fieldset>                                                                                        
-            <legend>{{ 'COUNTRY.EDIT' | translate}}</legend>                                                       
-          
-            <div class="form-group">                                                               
-               <label class="col-xs-2 control-label">{{ 'COUNTRY.CODE' | translate}}</label>                                            
-               <div class="col-xs-10">                                                                       
-                  <input class="form-bhima" ng-model="country.code" required>                                        
-               </div>                                                                                        
+        <form class="form-horizontal" name="editForm" novalidate>
+          <fieldset>
+            <legend>{{ 'COUNTRY.EDIT' | translate}}</legend>
+
+            <div class="form-group">
+               <label class="col-xs-2 control-label">{{ 'COUNTRY.CODE' | translate}}</label>
+               <div class="col-xs-10">
+                  <input type="number" class="form-bhima" ng-model="country.code" required>
+               </div>
             </div>
 
-            <div class="form-group">                                                               
-               <label class="col-xs-2 control-label">{{ 'COUNTRY.ENGLISH_NAME' | translate}}</label>                                            
-               <div class="col-xs-10">                                                                       
-                  <input class="form-bhima" ng-model="country.country_en" required>                                        
-               </div>                                                                                        
+            <div class="form-group">
+               <label class="col-xs-2 control-label">{{ 'COUNTRY.ENGLISH_NAME' | translate}}</label>
+               <div class="col-xs-10">
+                  <input class="form-bhima" ng-model="country.country_en" required>
+               </div>
             </div>
 
-            <div class="form-group">                                                               
-               <label class="col-xs-2 control-label">{{ 'COUNTRY.FRENCH_NAME' | translate}}</label>                                            
-               <div class="col-xs-10">                                                                       
-                  <input class="form-bhima" ng-model="country.country_fr" required>                                        
-               </div>                                                                                        
-            </div> 
+            <div class="form-group">
+               <label class="col-xs-2 control-label">{{ 'COUNTRY.FRENCH_NAME' | translate}}</label>
+               <div class="col-xs-10">
+                  <input class="form-bhima" ng-model="country.country_fr" required>
+               </div>
+            </div>
 
           </fieldset>
-          <input class="btn btn-default btn-success" ng-click="editCountry(country)" ng-disabled="form.$invalid " type="submit" value="{{ 'FORM.SAVE' | translate }}">
+          <input class="btn btn-default btn-success" ng-click="editCountry(country)" ng-disabled="editForm.$invalid" type="submit" value="{{ 'FORM.SAVE' | translate }}">
           <input class="btn btn-default btn-sm" type="reset" value="{{ 'FORM.NEW_FORM' | translate }}">
         </form>
       </div>

@@ -27,8 +27,8 @@
           </thead>
           <tbody>
             <tr ng-repeat="province in provinces.data | orderBy:'name'">
-              <td>{{ province.province }}</td>
-              <td>{{ province.country_en }}</td>
+              <td>{{ province.name }}</td>
+              <td>{{ province.country_name }}</td>
               <td><a ng-click="setOp('Edit', province)"><i class="glyphicon glyphicon-pencil"></i></a></td>
               <td><a ng-click="removeProvince(province.uuid)" class="danger"><i class="glyphicon glyphicon-trash"></i></a></td>
             </tr>
@@ -47,7 +47,7 @@
        </div>
 
        <div ng-switch-when="Add">
-         <form class="form-horizontal">
+          <form class="form-horizontal" name="addForm" novalidate>
             <fieldset>
               <legend>{{'PROVINCE.REGISTER' | translate}}</legend>
               <div class="form-group">
@@ -67,7 +67,7 @@
               </div>
             </fieldset>
 
-            <button class="btn btn-default btn-success" ng-click="addProvince(add)" ng-disabled="form.$invalid">
+            <button class="btn btn-default btn-success" ng-click="addProvince(add)" ng-disabled="addForm.$invalid">
               {{'FORM.ADD' | translate}}
             </button>
             <button class="btn btn-default btn-sm">
@@ -77,7 +77,7 @@
         </div>
 
         <div ng-switch-when="Edit">
-          <form class="form-horizontal">
+          <form class="form-horizontal" name="editForm" novalidate>
             <fieldset>
               <legend>{{'PROVINCE.EDIT' | translate}}</legend>
               <div class="form-group">
@@ -92,11 +92,11 @@
               <div class="form-group">
                 <label class="col-xs-2 control-label">{{'PROVINCE.PROVINCE_NAME' | translate}}</label>
                 <div class="col-xs-10">
-                  <input class="form-bhima" ng-model="province.province" required>
+                  <input class="form-bhima" ng-model="province.name" required>
                 </div>
               </div>
             </fieldset>
-            <button class="btn btn-default btn-success" ng-click="editProvince(province)" ng-disabled="form.$invalid">
+            <button class="btn btn-default btn-success" ng-click="editProvince(province)" ng-disabled="editForm.$invalid">
               {{'FORM.ADD' | translate}}
             </button>
             <button class="btn btn-default btn-sm">
