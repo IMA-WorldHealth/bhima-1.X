@@ -45,7 +45,7 @@
             <div class="form-group">
               <label>{{ 'TRANSFER.AMOUNT' | translate}}</label>
               <div class="input-group">
-                <input type="number" ng-model="data.value" class="form-bhima"  min="0" required>
+                <input type="number" step="any" ng-model="data.value" class="form-bhima"  min="0" required>
                 <span class="input-group-addon">{{ labelCurrency(data.currency_id) }}</span>
               </div>
             </div>
