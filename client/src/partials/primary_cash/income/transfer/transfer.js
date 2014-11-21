@@ -51,9 +51,7 @@ angular.module('bhima.controllers')
       required : true,
       query : {
         tables : {
-          'cash_box_account_currency' : {
-            columns : ['id', 'currency_id', 'account_id', 'cash_box_id']
-          }
+          'cash_box_account_currency' : { columns : ['id', 'currency_id', 'account_id', 'cash_box_id'] }
         }
       }
     };
