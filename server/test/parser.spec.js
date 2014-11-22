@@ -262,8 +262,6 @@ describe('parser', function () {
         '(\'EXPYAN\', 20, \'Extra Pain\');';
 
       expect(results).to.equal(answer);
-
     });
-
   });
 });
