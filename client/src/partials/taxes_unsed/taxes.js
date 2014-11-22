@@ -8,7 +8,6 @@ angular.module('bhima.controllers')
   'connect',
   'appstate',
   function ($scope, $translate, $http, validate, messenger, connect, appstate) {
-    console.log("on est la");
     var dependencies = {},
         session = $scope.session = {};
 

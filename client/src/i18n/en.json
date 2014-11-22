@@ -865,8 +865,9 @@
     "SERVICE_EXPLOITATION"      : "Exploitation per Service",
     "GLOBAL_TRANSACTION"        : "Account Movement",
     "COTISATION_MANAGEMENT"     : "Cotization management",
-    "EMPLOYEE_STANDING"         : "Patient Standing Report"
-
+    "EMPLOYEE_STANDING"         : "Patient Standing Report",
+    "PAYROLL"                   : "Payroll",
+    "MULTI_PAYROLL"             : "Multiple Payroll"    
   },
 
   "RUBRIC_PAYROLL"       : {

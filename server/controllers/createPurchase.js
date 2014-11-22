@@ -81,9 +81,9 @@ function writeCashItems(primaryCashId, data) {
 
   sql =
     'INSERT INTO `primary_cash_item` ' +
-      '(inv_po_id, debit, credit, uuid, primary_cash_uuid) ' +
+      '(inv_po_id, debit, credit, document_uuid, uuid, primary_cash_uuid) ' +
     'VALUES ' +
-      '(?, ?, ?, ?, ?)';
+      '(?, ?, ?, ?, ?, ?)';
 
   queries = data.map(function (item) {
     params = values(item);
