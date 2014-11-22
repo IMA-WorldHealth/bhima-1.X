@@ -16,7 +16,7 @@ describe('parser', function () {
       };
 
       results = parser.select(query);
-      answer = 'SELECT `account`.`id`, `account`.`number` FROM `account` WHERE 1;';
+      answer = 'SELECT account.id, account.number FROM account WHERE 1;';
 
       expect(results).to.equal(answer);
     });
@@ -36,12 +36,12 @@ describe('parser', function () {
       results = parser.select(query);
 
       answer =
-        'SELECT `permission`.`id`, `permission`.`id_unit`, `permission`.`id_user`, ' +
-          '`unit`.`name`, `unit`.`key`, `unit`.`label`, `user`.`username`, ' +
-          '`user`.`email` ' +
-        'FROM `permission` JOIN `unit` JOIN `user` ON ' +
-          '`permission`.`id_unit`=`unit`.`id` AND ' +
-          '`permission`.`id_user`=`user`.`id` WHERE 1;';
+        'SELECT permission.id, permission.id_unit, permission.id_user, ' +
+          'unit.name, unit.key, unit.label, user.username, ' +
+          'user.email ' +
+        'FROM permission JOIN unit JOIN user ON ' +
+          'permission.id_unit=unit.id AND ' +
+          'permission.id_user=user.id WHERE 1;';
 
       expect(results).to.equal(answer);
     });
@@ -59,10 +59,10 @@ describe('parser', function () {
       results = parser.select(query);
 
       answer =
-        'SELECT `account`.`id`, `account`.`account_number`, `account`.`account_txt`, ' +
-          '`account`.`locked` ' +
-        'FROM `account` ' +
-        'WHERE `account`.`locked`<>"0" AND `account`.`account_number`>="100";';
+        'SELECT account.id, account.account_number, account.account_txt, ' +
+          'account.locked ' +
+        'FROM account ' +
+        'WHERE account.locked<>\'0\' AND account.account_number>=\'100\';';
 
       expect(results).to.equal(answer);
     });
@@ -85,13 +85,13 @@ describe('parser', function () {
       results = parser.select(query);
 
       answer =
-        'SELECT `enterprise`.`id`, `enterprise`.`name`, `enterprise`.`location_id`, ' +
-          '`enterprise`.`phone`, `enterprise`.`email`, `enterprise`.`account_group_id`, ' +
-          '`account_group`.`account_number`, `account_group`.`ordering` ' +
-        'FROM `enterprise` JOIN `account_group` ON ' +
-          '`enterprise`.`account_group_id`=`account_group`.`id` ' +
-        'WHERE `enterprise`.`id`="1" AND (`account_group`.`account_number`<"100" OR ' +
-          '`account_group`.`account_number`>"150");';
+        'SELECT enterprise.id, enterprise.name, enterprise.location_id, ' +
+          'enterprise.phone, enterprise.email, enterprise.account_group_id, ' +
+          'account_group.account_number, account_group.ordering ' +
+        'FROM enterprise JOIN account_group ON ' +
+          'enterprise.account_group_id=account_group.id ' +
+        'WHERE enterprise.id=\'1\' AND (account_group.account_number<\'100\' OR ' +
+          'account_group.account_number>\'150\');';
 
       expect(results).to.equal(answer);
     });
@@ -109,8 +109,8 @@ describe('parser', function () {
       results = parser.select(query);
 
       answer =
-        'SELECT `debtor`.`id`, `debtor`.`name`, `debtor`.`location_id`, `debtor`.`group_id` ' +
-        'FROM `debtor` WHERE 1 LIMIT 30;';
+        'SELECT debtor.id, debtor.name, debtor.location_id, debtor.group_id ' +
+        'FROM debtor WHERE 1 LIMIT 30;';
 
       expect(results).to.equal(answer);
     });
@@ -128,8 +128,8 @@ describe('parser', function () {
       results = parser.select(query);
 
       answer =
-        'SELECT `creditor`.`id`, `creditor`.`name`, `creditor`.`group_id` ' +
-        'FROM `creditor` WHERE 1 ORDER BY `creditor`.`group_id`;';
+        'SELECT creditor.id, creditor.name, creditor.group_id ' +
+        'FROM creditor WHERE 1 ORDER BY creditor.group_id;';
 
       expect(results).to.equal(answer);
     });
@@ -147,8 +147,8 @@ describe('parser', function () {
       results = parser.select(query);
 
       answer =
-        'SELECT DISTINCT `creditor`.`id`, `creditor`.`name`, `creditor`.`group_id` ' +
-        'FROM `creditor` WHERE 1;';
+        'SELECT DISTINCT creditor.id, creditor.name, creditor.group_id ' +
+        'FROM creditor WHERE 1;';
 
       expect(results).to.equal(answer);
     });
@@ -170,15 +170,15 @@ describe('parser', function () {
       results = parser.select(query);
 
       answer =
-        'SELECT `enterprise`.`id`, `enterprise`.`name`, `enterprise`.`location_id`, ' +
-          '`enterprise`.`account_group_id`, `account_group`.`account_number`, ' +
-          '`account_group`.`ordering` ' +
-        'FROM `enterprise` JOIN `account_group` ON ' +
-          '`enterprise`.`account_group_id`=`account_group`.`id` ' +
-        'WHERE `enterprise`.`id`="1" AND ' +
-          '(`account_group`.`account_number`<"100" OR ' +
-          '`account_group`.`account_number`>="150") ' +
-        'ORDER BY `account_group`.`account_number` ' +
+        'SELECT enterprise.id, enterprise.name, enterprise.location_id, ' +
+          'enterprise.account_group_id, account_group.account_number, ' +
+          'account_group.ordering ' +
+        'FROM enterprise JOIN account_group ON ' +
+          'enterprise.account_group_id=account_group.id ' +
+        'WHERE enterprise.id=\'1\' AND ' +
+          '(account_group.account_number<\'100\' OR ' +
+          'account_group.account_number>=\'150\') ' +
+        'ORDER BY account_group.account_number ' +
         'LIMIT 5;';
 
       expect(results).to.equal(answer);
@@ -194,7 +194,7 @@ describe('parser', function () {
       results = parser.delete('account', 'id', 3);
 
       answer =
-        'DELETE FROM `account` WHERE `id` IN ("3");';
+        'DELETE FROM account WHERE id IN (\'3\');';
 
       expect(results).to.equal(answer);
     });
@@ -205,7 +205,7 @@ describe('parser', function () {
       results = parser.delete('account', 'id', [1,2,3,4]);
 
       answer =
-        'DELETE FROM `account` WHERE `id` IN ("1", "2", "3", "4");';
+        'DELETE FROM account WHERE id IN (\'1\', \'2\', \'3\', \'4\');';
 
       expect(results).to.equal(answer);
     });
@@ -223,8 +223,8 @@ describe('parser', function () {
       results = parser.update('unit', data, 'id');
 
       answer =
-        'UPDATE `unit` SET `url`="/some/url/content/", `parent`="23" ' +
-        'WHERE `id`="1";';
+        'UPDATE unit SET url=\'/some/url/content/\', parent=23 ' +
+        'WHERE id=1;';
 
       expect(results).to.equal(answer);
     });
@@ -235,13 +235,13 @@ describe('parser', function () {
 
     it('should compose an INSERT query on a single table for one row', function () {
       var data, results, answer;
-      data = { username : 'axelroad', email : 'axel@gmail.com' };
+      data = [{ username : 'axelroad', email : 'axel@gmail.com' }];
 
       results = parser.insert('user', data);
 
       answer =
-        'INSERT INTO `user` (username, email) VALUES ' +
-          '("axelroad", "axel@gmail.com");';
+        'INSERT INTO user (username, email) VALUES ' +
+          '(\'axelroad\', \'axel@gmail.com\');';
 
       expect(results).to.equal(answer);
     });
@@ -257,9 +257,9 @@ describe('parser', function () {
       results = parser.insert('inventory', data);
 
       answer =
-      'INSERT INTO `inventory` (code, price, text) VALUES ' +
-        '("CHGRAN", "100", "Chirgerie"), ' +
-        '("EXPYAN", "20", "Extra Pain");';
+      'INSERT INTO inventory (code, price, text) VALUES ' +
+        '(\'CHGRAN\', 100, \'Chirgerie\'), ' +
+        '(\'EXPYAN\', 20, \'Extra Pain\');';
 
       expect(results).to.equal(answer);
 
