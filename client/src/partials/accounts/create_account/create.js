@@ -54,8 +54,7 @@ angular.module('bhima.controllers')
         {id: 'ACCOUNT.NO', name: 'No.', field: 'account_number'},
         {id: 'ACCOUNT.TYPE', name: 'Type', field: 'account_type_id', maxWidth: 60},
         {id: 'ACCOUNT.FIXED', name: 'Fixed', field: 'fixed', maxWidth: 60},
-        {id: 'COLUMNS.EDIT', name: 'Edit', maxWidth: 50, formatter: EditFormatter},
-        {id: 'COLUMNS.DELETE', name: 'Delete', maxWidth: 70, formatter: DeleteFormatter}
+        {id: 'COLUMNS.EDIT', name: 'Edit', maxWidth: 50, formatter: EditFormatter}
       ];
 
       columns.forEach(function (col) {
