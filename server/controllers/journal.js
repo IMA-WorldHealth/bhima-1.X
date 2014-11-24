@@ -1519,12 +1519,15 @@ function handleIndirectPurchase (id, user_id, done){
 }
 
 function handleConfirm (id, user_id, done){
-  var references, dayExchange, cfg = {};
-  var sql = 'SELECT `purchase`.`uuid`, `purchase`.`cost`, `purchase`.`currency_id`, `purchase`.`project_id`, `purchase`.`creditor_uuid`, ' +
-            '`purchase`.`purchaser_id`, `purchase`.`employee_id`, `purchase_item`.`inventory_uuid`, `purchase_item`.`total`, `purchase`.`paid_uuid`, ' +
-            '`creditor`.`group_uuid` ' +
-            'FROM `purchase` JOIN `purchase_item` JOIN `creditor` ON `purchase`.`uuid` = `purchase_item`.`purchase_uuid` AND ' +
-            '`purchase`.`creditor_uuid` = `creditor`.`uuid` WHERE `purchase`.`paid_uuid`=' + sanitize.escape(id) + ';';
+  var references, dayExchange, cfg = {}; 
+
+  var sql = 'SELECT `purchase`.`uuid`, `purchase`.`cost`, `purchase`.`currency_id`, `purchase`.`project_id`,' +
+            ' `purchase`.`purchaser_id`, `purchase`.`employee_id`, `employee`.`creditor_uuid`,' +
+            ' `purchase_item`.`inventory_uuid`, `purchase_item`.`total`, `purchase`.`paid_uuid` FROM' +
+            ' `purchase`, `purchase_item`, `employee` WHERE' + 
+            ' `purchase`.`uuid` = `purchase_item`.`purchase_uuid` AND' +
+            ' `purchase`.`employee_id` = `employee`.`id` AND' +
+            ' `purchase`.`paid_uuid`=' + sanitize.escape(id) + ';';
 
   db.exec(sql)
   .then(getRecord)
@@ -1554,7 +1557,8 @@ function handleConfirm (id, user_id, done){
 
   function getTransId (trans_id) {
     cfg.trans_id = trans_id;
-    cfg.descrip =  'PP/'+new Date().toISOString().slice(0, 10).toString();
+    //FIX ME : must get the project abbr by the sql request.
+    cfg.descrip =  'HBB_CONFIRMATION_ACHAT/' + new Date().toISOString().slice(0, 10).toString(); 
     return debit();
   }
 
@@ -1617,7 +1621,8 @@ function handleConfirm (id, user_id, done){
           sanitize.escape(reference.paid_uuid),
           cfg.originId,
           user_id
-        ].join(',') + ' FROM `creditor_group` WHERE `creditor_group`.`uuid`=' + sanitize.escape(reference.group_uuid) + ';';
+        ].join(',') + ' FROM `creditor_group` WHERE `creditor_group`.`uuid`=' + 
+        '(SELECT `creditor`.`group_uuid` FROM `creditor` WHERE `creditor`.`uuid`=' + sanitize.escape(reference.creditor_uuid) + ')';
     return db.exec(credit_sql);
   }
 }
