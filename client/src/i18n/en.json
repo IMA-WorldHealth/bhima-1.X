@@ -102,7 +102,9 @@
       "NO_DATA"                 : "No data available",
       "SALARY_PAYMENT"          : "Salary Payment",
       "COTISATIONS"             : "Cotisations",
-      "COTISATION_PAYMENT"      : "Cotisation Payment"
+      "COTISATION_PAYMENT"      : "Cotisation Payment",
+      "CURRENCY_NOT_FOUND"      : "Currency not found !",
+      "PAYMENT_PERIOD_NOT_FOUND" : "payment period not found !"
     },
     "INCOME" : {
       "TRANSFER"              : "Transfert",

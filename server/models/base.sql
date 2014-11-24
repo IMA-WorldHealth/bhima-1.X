@@ -105,7 +105,7 @@ INSERT INTO `unit` VALUES
 (55,'Income Report','TREE.INCOME_REPORT','',10,0,'/partials/reports/primary_cash/income/','/reports/income_report/'),
 (56,'Expense Report','TREE.EXPENSE_REPORT','',10,0,'/partials/reports/primary_cash/expense/','/reports/expense_report/'),
 (57,'Payroll', 'TREE.PAYROLL', '', 0, 1, 'partials/payroll/', '/payroll/'),
-(58,'Payroll Multiple','TREE.MULTI_PAYROLL','',57,0,'partials/primary_cash/expense/','/primary_cash/expense/multi_payroll/1'),
+(58,'Payroll Multiple','TREE.MULTI_PAYROLL','',57,0,'partials/primary_cash/expense/','/primary_cash/expense/multi_payroll/'),
 (59,'Grade Employers','TREE.GRADE_EMPLOYERS','',57,0,'/partials/grade_employers/','/grade_employers/'),
 (60,'Fonction', 'TREE.FONCTION', 'Fonction management',57, 0, 'partials/fonction/', '/fonction'),
 (61,'Employee', 'TREE.EMPLOYEE', 'Employee management',57, 0, 'partials/employee/', '/employee'),
