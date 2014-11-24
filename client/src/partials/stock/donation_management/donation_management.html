@@ -15,48 +15,14 @@
     	<a ng-click="toggleView()" class="btn btn-sm btn-default">
     		<span class="glyphicon glyphicon-th"></span> {{ session.view }}
     	</a>
-    	<span class="btn btn-sm btn-default">
+    	<span style="margin-left:7px;">
     	<b>[{{ session.depot.reference }}]</b> {{ session.depot.text }}
     	</span>
-
-    	<!--button
-      		style="margin-left: 5px;"
-      		ng-click="reconfigure()"
-      		class="btn btn-sm btn-default">
-      		<span class="glyphicon glyphicon-repeat"></span>
-    	</button-->
     </div>
 </nav>
 
 <main>
   	<div class="row">
-
-	  	<!--div ng-if="!session.configured">
-		    <div class="col-xs-12">
-		      	<div class="panel panel-default">
-			        <div class="panel-heading">
-			          {{ "SELECT.ACCOUNT" | translate }}
-			        </div>
-
-			        <div class="panel-body">
-			          	<div class="configure">
-				            <span
-				              style="font-size: 70px"
-				              class="glyphicon glyphicon-usd">
-				            </span>
-
-				            <select 
-				            	ng-model="session.account" 
-				            	ng-options="acc as formatAccount(acc) for acc in accounts.data" 
-				            	ng-change="setConfiguration(session.account)"
-				            	class="form-bhima">
-			              		<option value="" ng-disabled="disabled">-- {{"SELECT.ACCOUNT" | translate}}-- </option>
-			            	</select>
-			          	</div>		          	
-			        </div>
-		      	</div>
-		    </div>
-	  	</div-->
 
 	    <div ng-show="session.configured" class="col-xs-3">
 	      	<div class="panel panel-default square">
