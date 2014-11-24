@@ -158,7 +158,7 @@
 							              				<input ng-show="donationItem.isSet" class="form-invoice" disabled value="{{donationItem.text}}">
 							              			</td>
 							              			<td>
-							              				<input ng-change="cacheQuantity(donationItem)" tabindex="{{session.tablock}}" ng-show="donationItem.isSet" class="form-invoice" ng-model="donationItem.quantity">
+							              				<input type="number" ng-change="cacheQuantity(donationItem)" tabindex="{{session.tablock}}" ng-show="donationItem.isSet" class="form-invoice" ng-model="donationItem.quantity">
 							              			</td>
 							              			<td>
 							              				<input tabindex="{{session.tablock}}" ng-show="donationItem.isSet" class="form-invoice" ng-model="donationItem.purchase_price" ng-disabled="true">
