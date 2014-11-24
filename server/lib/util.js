@@ -46,6 +46,8 @@ module.exports = {
 
   isNull : function (a) { return a === null; },
 
-  exists : function (a) { return this.isDefined(a) && !this.isNull(a); }
+  exists : function (a) { return this.isDefined(a) && !this.isNull(a); },
+
+  toDistinctValues : function(a) { return a.reduce(function(p, c) { if (p.indexOf(c) < 0) { p.push(c); return p;}}, []); }
 
 };
