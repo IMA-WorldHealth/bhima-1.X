@@ -209,7 +209,6 @@ get = {
 
     return defer.promise;
   }
-
 };
 
 function authorize (user_id, done) {
@@ -223,7 +222,6 @@ function authorize (user_id, done) {
 
 // TODO Only has project ID passed from sale reference, need to look up enterprise ID
 function handleSales (id, user_id, done, caution) {
-  console.log('notre user_id ::::', user_id);
   // sale posting requests enter here.
   var sql, data, reference, cfg = {}, queries = {};
 
@@ -280,9 +278,6 @@ function handleSales (id, user_id, done, caution) {
     return q([get.origin('sale'), get.period(reference.invoice_date)]);
   })
   .spread(function (originId, periodObject) {
-    // we now have the origin!
-    // we now have the relevant period!
-
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
     cfg.originId = originId;
@@ -322,10 +317,10 @@ function handleSales (id, user_id, done, caution) {
         'SELECT `sale`.`project_id`, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
           '`sale`.`note`, `inventory_group`.`sales_account`, `sale_item`.`debit`, `sale_item`.`credit`, ' +
           '`sale_item`.`debit`, `sale_item`.`credit`, `sale`.`currency_id`, null, ' +
-          ' null, `sale`.`uuid`, ' + [cfg.originId, user_id, item.profit_center_id].join(', ') + ' ' +
-        'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inventory_group` ON ' +
+          ' null, `sale`.`uuid`, ' + [cfg.originId, user_id].join(', ') + ', if(ISNULL(`account`.`pc_id`), \'' + item.profit_center_id + '\', `account`.`pc_id`) ' +
+        'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inventory_group` JOIN `account` ON ' +
           '`sale_item`.`sale_uuid`=`sale`.`uuid` AND `sale_item`.`inventory_uuid`=`inventory`.`uuid` AND ' +
-          '`inventory`.`group_uuid`=`inventory_group`.`uuid` ' +
+          '`inventory`.`group_uuid`=`inventory_group`.`uuid` AND `account`.`id`=`inventory_group`.`sales_account` ' +
         'WHERE `sale_item`.`uuid` = ' + sanitize.escape(item.item_uuid) + ';';
       queries.items.push(sql);
     });
