@@ -598,7 +598,10 @@
       "ADD_LOT"             : "Ajouter lot",
       "ENTRY_DATE"          : "Date d'entrée",
       "ENTER_STOCK"         : "Faire entrer les Stock",
-      "REPORT"              : "Rapport d'entrer"
+      "REPORT"              : "Rapport d'entrer",
+      "ERR_EMPTY_PARAMTER"  : "Erreur paramétre manquant",
+      "WRITE_SUCCESS"       : "Enregistrement avec succès",
+      "WRITE_ERROR"         : "Enregitrement sans succès"
     },
     "EXIT" : {
       "KEY" : "Stock Distribution"
@@ -623,7 +626,8 @@
       "DEPOT_TO"       : "Dépôt Destination",
       "INVENTORY"      : "Inventaire",
       "INVALID_TRANSFERT_QTE"  : "Quantité transferée invalide",
-      "SELECT_LOT" : "Sélectionner beaucoup de"
+      "SELECT_LOT" : "Sélectionner beaucoup de",
+      "SUCCESS"    : "Succès"
     },
     "SEARCH" : {
       "KEY"          : "Rechercher Items Stock",
@@ -904,8 +908,10 @@
       "SUMMARY"             : "Sommaire compte",
       "DETAILS"             : "Détails transactions du compte"
     },
-    "STOCK"                 : "Rapport Stock"
-
+    "STOCK"                 : "Rapport Stock",
+    "TRANSACTION"           : "Transaction",
+    "ACCOUNT"               : "Compte",
+    "PERIOD"                : "Période"
   },
 
   "PATIENT_GRP_ASSIGNMENT" : {
@@ -979,7 +985,7 @@
       "UPDATE_ITEM"    : "Mettre à jour Article",
       "CONFIG_GROUPS"  : "Configurer Groups des Articles",
       "CONFIG_TYPES"   : "Configurer Type des Articles",
-      "PRINT_MANIFEST" : "Imprimer List des Articles",
+      "PRINT_MANIFEST" : "Imprimer la liste des Articles",
       "VIEW"           : "Voire la liste"
     },
     "GROUPS" : {
@@ -1030,7 +1036,10 @@
       "DEFAULT_PRICE"    : "Prix Unitaire",
       "UNIT_WEIGHT"      : "Poids Unitaire",
       "UNIT_VOLUME"      : "Volume Unitaire"
-    }
+    },
+    "MANIFEST" : {
+      "TITLE" : "Manifeste des inventaires"
+    }    
   },
 
   "PROJECT"       : {
@@ -2191,7 +2200,7 @@
     "PURCHASE_ORDER"    : {
             "TITLE"     : "Commandes",
             "IN_WATING" : "en attente de paiement",
-            "PAYED"     : "payées",
+            "PAYED"     : "payés",
             "RECEIVED"  : "reçues",
             "WATING_RECEPTION" : "en attente de reception"
         },
