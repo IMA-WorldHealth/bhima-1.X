@@ -953,6 +953,7 @@ exports.listExpiredTimes = function (req, res, next) {
         + " WHERE ((DATEDIFF(stock.expiration_date ,CURDATE()) > '" + req.query.inf + "')"
         + " AND ((DATEDIFF(stock.expiration_date ,CURDATE()) <  '" + req.query.sup + "')))"
         + " GROUP BY stock.tracking_number";  
+        
   } else if(req.query.request == 'oneYear'){
     sql = "SELECT inventory.text, stock.lot_number, stock.tracking_number, stock.expiration_date,"
         + " SUM(stock.quantity) AS quantity"
