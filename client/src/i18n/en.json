@@ -491,7 +491,10 @@
       "DETAILS"             : "Account transactions details"
 
     },
-    "STOCK"                 : "Stock Report"
+    "STOCK"                 : "Stock Report",
+    "TRANSACTION"           : "Transaction",
+    "ACCOUNT"               : "Account",
+    "PERIOD"                : "Period"    
   },
 
   "CASH_PAYMENTS" : {
@@ -1745,7 +1748,10 @@
       "ADD_LOT"             : "Add Lot",
       "ENTRY_DATE"          : "Entry Date",
       "ENTER_STOCK"         : "Enter Stock",
-      "REPORT"              : "Entry Report"
+      "REPORT"              : "Entry Report",
+      "ERR_EMPTY_PARAMTER"  : "Error Empty Parameter",
+      "WRITE_SUCCESS"       : "Write success",
+      "WRITE_ERROR"         : "Write error"
     },
     "EXIT" : {
       "KEY" : "Stock Distribution"
@@ -1770,7 +1776,8 @@
       "DEPOT_TO"              : "Destination Depot",
       "INVENTORY"             : "Inventory",
       "INVALID_TRANSFERT_QTE" : "Invalid transfer quantity",
-      "SELECT_LOT"            : "Select lot from"
+      "SELECT_LOT"            : "Select lot from",
+      "SUCCESS"               : "success"
     },
     "SEARCH" : {
       "KEY" : "Find Stock Items",
