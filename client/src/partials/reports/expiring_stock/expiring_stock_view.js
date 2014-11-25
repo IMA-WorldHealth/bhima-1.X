@@ -152,7 +152,7 @@ angular.module('bhima.controllers')
         break;
 
         case 'oneYear' : 
-        $scope.label = $translate.instant('EXPIRING.EX_YEAR');
+          $scope.label = $translate.instant('EXPIRING.EX_YEAR');
           $http.get('/getExpiredTimes/',{params : {
                 'request' : 'oneYear'
               }  
@@ -161,6 +161,7 @@ angular.module('bhima.controllers')
         break;
 
         default :
+          $scope.label = $translate.instant('EXPIRING.TITLE');
           var dateFrom = util.sqlDate($scope.configuration.df),
               dateTo = util.sqlDate($scope.configuration.dt);
 
