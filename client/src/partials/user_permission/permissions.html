@@ -256,19 +256,19 @@
               <li ng-repeat="unit in units.data | filter:filterChildren" >
                 <label class="checkbox">
                   <input type="checkbox" ng-model="unit.checked" ng-change="toggleChildren(unit)">
-                  {{unit.name}}
+                  {{unit.key | translate}}
                 </label>
                 <ul class="k-list" ng-if="unit.has_children">
                   <li ng-repeat="child in unit.children">
                     <label class="checkbox">
                       <input type="checkbox" ng-model="child.checked" ng-change="toggleChildren(child)">
-                      {{child.name}}
+                      {{child.key | translate}}
                     </label>
                     <ul class="k-list" ng-if="child.has_children">
                       <li ng-repeat="final in child.children">
                         <label class="checkbox">
                           <input type="checkbox" ng-model="final.checked" ng-change="toggleChildren(child)">
-                          {{final.name}}
+                          {{final.key | translate}}
                         </label>
                       </li>
                     </ul>

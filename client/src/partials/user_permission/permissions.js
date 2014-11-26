@@ -44,7 +44,7 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           'unit' : {
-            columns : ['id', 'name', 'description', 'has_children', 'parent']
+            columns : ['id', 'name', 'key', 'description', 'has_children', 'parent']
           }
         },
         where : ['unit.id<>0']
