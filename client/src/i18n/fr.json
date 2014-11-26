@@ -507,7 +507,7 @@
 
   "PATIENT_STANDING"     : {
     "TITLE"              : "Etat Financier du Patient",
-    "PLACEHOLDER"        : "Charcher le patient ...",
+    "PLACEHOLDER"        : "Chercher le patient ...",
     "CREATED_ON"         : "Crée en",
     "ACCOUNT_NUMBER"     : "Numéro de Compte",
     "ACCOUNT_BALANCE"    : "Balance Compte",
@@ -808,7 +808,7 @@
     "TRANSACTION_NUMBER"  : "Numéro Transaction",
     "SOURCE"              : "Source",
     "TOTAL_DEBIT"         : "Débit total",
-    "DATE_BILLED"         : "Date creation",
+    "DATE_BILLED"         : "Date création",
     "AMOUNT_BILLED"       : "Montant facture",
     "AMOUNT_DUE"          : "Montant à payer",
     "NR"                  : "N°",
