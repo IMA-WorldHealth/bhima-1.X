@@ -507,7 +507,7 @@
 
   "PATIENT_STANDING"     : {
     "TITLE"              : "Etat Financier du Patient",
-    "PLACEHOLDER"        : "Charcher le patient ...",
+    "PLACEHOLDER"        : "Chercher le patient ...",
     "CREATED_ON"         : "Crée en",
     "ACCOUNT_NUMBER"     : "Numéro de Compte",
     "ACCOUNT_BALANCE"    : "Balance Compte",
@@ -598,7 +598,10 @@
       "ADD_LOT"             : "Ajouter lot",
       "ENTRY_DATE"          : "Date d'entrée",
       "ENTER_STOCK"         : "Faire entrer les Stock",
-      "REPORT"              : "Rapport d'entrer"
+      "REPORT"              : "Rapport d'entrer",
+      "ERR_EMPTY_PARAMTER"  : "Erreur paramétre manquant",
+      "WRITE_SUCCESS"       : "Enregistrement avec succès",
+      "WRITE_ERROR"         : "Enregitrement sans succès"
     },
     "EXIT" : {
       "KEY" : "Stock Distribution"
@@ -623,7 +626,8 @@
       "DEPOT_TO"       : "Dépôt Destination",
       "INVENTORY"      : "Inventaire",
       "INVALID_TRANSFERT_QTE"  : "Quantité transferée invalide",
-      "SELECT_LOT" : "Sélectionner beaucoup de"
+      "SELECT_LOT" : "Sélectionner beaucoup de",
+      "SUCCESS"    : "Succès"
     },
     "SEARCH" : {
       "KEY"          : "Rechercher Items Stock",
@@ -804,7 +808,7 @@
     "TRANSACTION_NUMBER"  : "Numéro Transaction",
     "SOURCE"              : "Source",
     "TOTAL_DEBIT"         : "Débit total",
-    "DATE_BILLED"         : "Date creation",
+    "DATE_BILLED"         : "Date création",
     "AMOUNT_BILLED"       : "Montant facture",
     "AMOUNT_DUE"          : "Montant à payer",
     "NR"                  : "N°",
@@ -904,8 +908,10 @@
       "SUMMARY"             : "Sommaire compte",
       "DETAILS"             : "Détails transactions du compte"
     },
-    "STOCK"                 : "Rapport Stock"
-
+    "STOCK"                 : "Rapport Stock",
+    "TRANSACTION"           : "Transaction",
+    "ACCOUNT"               : "Compte",
+    "PERIOD"                : "Période"
   },
 
   "PATIENT_GRP_ASSIGNMENT" : {
@@ -979,7 +985,7 @@
       "UPDATE_ITEM"    : "Mettre à jour Article",
       "CONFIG_GROUPS"  : "Configurer Groups des Articles",
       "CONFIG_TYPES"   : "Configurer Type des Articles",
-      "PRINT_MANIFEST" : "Imprimer List des Articles",
+      "PRINT_MANIFEST" : "Imprimer la liste des Articles",
       "VIEW"           : "Voire la liste"
     },
     "GROUPS" : {
@@ -1030,7 +1036,10 @@
       "DEFAULT_PRICE"    : "Prix Unitaire",
       "UNIT_WEIGHT"      : "Poids Unitaire",
       "UNIT_VOLUME"      : "Volume Unitaire"
-    }
+    },
+    "MANIFEST" : {
+      "TITLE" : "Manifeste des inventaires"
+    }    
   },
 
   "PROJECT"       : {
@@ -2191,7 +2200,7 @@
     "PURCHASE_ORDER"    : {
             "TITLE"     : "Commandes",
             "IN_WATING" : "en attente de paiement",
-            "PAYED"     : "payées",
+            "PAYED"     : "payés",
             "RECEIVED"  : "reçues",
             "WATING_RECEPTION" : "en attente de reception"
         },
@@ -2309,7 +2318,7 @@
     "SELECT_PERIOD" : "Sélectionner une année fiscale",
     "SELECT_OPTION" : "Sélectionner une option",
     "TOTAL_CHARGE"  : "Total Charge",
-    "TOTAL_PROFIT"  : "Totall profit",
+    "TOTAL_PROFIT"  : "Total profit",
     "JANUARY"       : "Janvier",
     "FEBRUARY"      : "Février",
     "MARCH"         : "Mars",
