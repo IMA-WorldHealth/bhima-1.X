@@ -2,6 +2,7 @@ angular.module('bhima.controllers')
 .controller('stock.movement', [
   '$scope',
   '$location',
+  '$translate',
   '$routeParams',
   'validate',
   'appstate',
@@ -9,7 +10,7 @@ angular.module('bhima.controllers')
   'messenger',
   'uuid',
   'util',
-  function ($scope, $location, $routeParams, validate, appstate, connect, messenger, uuid, util) {
+  function ($scope, $location, $translate, $routeParams, validate, appstate, connect, messenger, uuid, util) {
 
     // TODO Generic requirements for module to load/ warn
     var dependencies = {};
@@ -172,7 +173,7 @@ angular.module('bhima.controllers')
 
       connect.basicPut('movement', rows)
       .then(function () {
-        messenger.success('STOCK.MOVEMENT.SUCCESS');
+        messenger.success($translate.instant('STOCK.MOVEMENT.SUCCESS'));
         $location.path('invoice/movement/' + session.doc.document_id);
       })
       .catch(function (err) {
