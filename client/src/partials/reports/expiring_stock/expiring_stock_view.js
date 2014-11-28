@@ -18,23 +18,6 @@ angular.module('bhima.controllers')
     session.dateFrom = new Date();
     session.dateTo = new Date();
 
-    $scope.options = [
-      {
-        label : 'EXPIRING.DAY',
-        fn : day,
-      },
-      {
-        label : 'EXPIRING.WEEK',
-        fn : week,
-      },
-      {
-        label : 'EXPIRING.MONTH',
-        fn : month
-      }
-    ];
-
-    $scope.selected = null;
-
     dependencies.depots = {
       required: true,
       query : {
@@ -46,44 +29,7 @@ angular.module('bhima.controllers')
       }
     };
 
-
-    function search (selection) {
-      session.selected = selection.label;
-      selection.fn();
-    }
-
-    function day () {
-      session.dateFrom = new Date();
-      session.dateTo = new Date();
-      $scope.configuration = getConfiguration();
-      doSearching();
-    }
-
-    function week () {
-      session.dateFrom = new Date();
-      session.dateFrom.setDate(session.dateFrom.getDate() - session.dateFrom.getDay());
-      session.dateTo = new Date(session.dateFrom.getTime()+(6*3600000));
-      $scope.configuration = getConfiguration();
-      doSearching();
-    }
-
-    function month () {
-      session.dateFrom = new Date();
-      session.dateTo = new Date();
-      session.dateFrom.setDate(1);
-      $scope.configuration = getConfiguration();
-      doSearching();
-    }
-
-    function doSearching (p) {
-      if (p && p===1) {
-        $scope.configuration = getConfiguration();
-      }
-
-      var dateFrom = util.sqlDate($scope.configuration.df),
-          dateTo = util.sqlDate($scope.configuration.dt);
-
-      //connect.fetch('expiring/'+$scope.configuration.depot_uuid+'/'+dateFrom+'/'+dateTo)
+    function doSearching () {
       expiringCase(session.expiring_option)
       .then(complete)
       .then(extendData)
@@ -180,18 +126,6 @@ angular.module('bhima.controllers')
       }));
     }
 
-    function cleanEnterpriseList () {
-      return $scope.uncompletedList.map(function (item) {
-        return {
-          tracking_number  : item.tracking_number,
-          lot_number       : item.lot_number,
-          text             : item.text,
-          expiration_date  : item.expiration_date,
-          quantity         : item.quantity
-        };
-      });
-    }
-
     function cleanDepotList () {
       return $scope.uncompletedList.map(function (item) {
         return {
@@ -199,10 +133,9 @@ angular.module('bhima.controllers')
           lot_number      : item.lot_number,
           text            : item.text,
           expiration_date : item.expiration_date,
-          quantity         : item.quantity
+          quantity        : item.quantity
         };
       });
-
     }
 
     function extendData (results) {
@@ -213,15 +146,12 @@ angular.module('bhima.controllers')
         }
       });
 
-      $scope.configuration.expirings = $scope.configuration.depot_uuid === '*' ?
-        cleanEnterpriseList() :
-        cleanDepotList();
+      $scope.configuration.expirings = cleanDepotList();
     }
 
     function init (model) {
       $scope.model = model;
       session.depot = '*';
-      search($scope.options[0]);
       $scope.configuration = getConfiguration();
       doSearching();
     }
@@ -236,13 +166,11 @@ angular.module('bhima.controllers')
 
     appstate.register('enterprise', function(enterprise) {
       $scope.enterprise = enterprise;
-      dependencies.depots.where =
-        ['depots.enterprise_id=' + enterprise.id];
+      dependencies.depots.where = ['depots.enterprise_id=' + enterprise.id];
       validate.process(dependencies)
       .then(init);
     });
 
-    $scope.search = search;
     $scope.doSearching = doSearching;
   }
 ]);
