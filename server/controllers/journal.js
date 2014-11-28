@@ -2098,7 +2098,7 @@ function handleSalaryPayment (id, user_id, done) {
 
   function getTransId (trans_id) {
     cfg.trans_id = trans_id;
-    cfg.descrip =  'PaySalary/' + new Date().toISOString().slice(0, 10).toString();
+    cfg.descrip =  trans_id.substring(0,4) + '_PaySalary/' + new Date().toISOString().slice(0, 10).toString();
     return debit();
   }
 
@@ -2114,7 +2114,7 @@ function handleSalaryPayment (id, user_id, done) {
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', cfg.account_id
+          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), cfg.account_id
         ].join(',') + ', ' +
         [
           0, (reference.cost).toFixed(4),
@@ -2143,7 +2143,7 @@ function handleSalaryPayment (id, user_id, done) {
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.account_id
+          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.account_id
         ].join(',') + ', ' +
         [
           reference.cost.toFixed(4), 0,
@@ -2230,10 +2230,9 @@ function handlePromessePayment (id, user_id, data, done) {
         [
           0, (reference.net_salary).toFixed(4),
           0, (reference.net_salary / rate).toFixed(4),
-          reference.currency_id,
-          sanitize.escape(reference.uuid)
+          reference.currency_id
         ].join(',') +
-      ', null, ' +
+      ', null, null, ' +
         [
           sanitize.escape(data.paiement_uuid),
           cfg.originId,
@@ -2437,7 +2436,7 @@ function handleTaxPayment (id, user_id, details, done) {
 
   function getTransId (trans_id) {
     cfg.trans_id = trans_id;
-    cfg.descrip =  'Tax Payment/' + new Date().toISOString().slice(0, 10).toString();
+    cfg.descrip =  trans_id.substring(0,4) + '_Tax Payment/' + new Date().toISOString().slice(0, 10).toString();
     return debit();
   }
 
@@ -2453,7 +2452,7 @@ function handleTaxPayment (id, user_id, details, done) {
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', cfg.employee_account_id
+          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip) + '\'', cfg.employee_account_id
         ].join(',') + ', ' +
         [
           0, (reference.cost).toFixed(4),
@@ -2482,7 +2481,7 @@ function handleTaxPayment (id, user_id, details, done) {
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.account_id
+          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.account_id
         ].join(',') + ', ' +
         [
           reference.cost.toFixed(4), 0,
@@ -2542,7 +2541,7 @@ function handleCotisationPayment (id, user_id, details, done) {
 
   function getTransId (trans_id) {
     cfg.trans_id = trans_id;
-    cfg.descrip =  'PayCotisation/' + new Date().toISOString().slice(0, 10).toString();
+    cfg.descrip =  trans_id.substring(0,4) + '_PayCotisation/' + new Date().toISOString().slice(0, 10).toString();
     return debit();
   }
 
@@ -2558,7 +2557,7 @@ function handleCotisationPayment (id, user_id, details, done) {
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', cfg.employee_account_id
+          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), cfg.employee_account_id
         ].join(',') + ', ' +
         [
           0, (reference.cost).toFixed(4),
@@ -2587,7 +2586,7 @@ function handleCotisationPayment (id, user_id, details, done) {
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.account_id
+          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.account_id
         ].join(',') + ', ' +
         [
           reference.cost.toFixed(4), 0,

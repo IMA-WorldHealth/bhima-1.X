@@ -104,7 +104,9 @@
       "COTISATIONS"             : "Cotisations",
       "COTISATION_PAYMENT"      : "Cotisation Payment",
       "CURRENCY_NOT_FOUND"      : "Currency not found !",
-      "PAYMENT_PERIOD_NOT_FOUND" : "payment period not found !"
+      "PAYMENT_PERIOD_NOT_FOUND" : "payment period not found !",
+      "SEARCH_EMPLOYEE"          : "Searching employee ...",
+      "SALARY_SUCCESS"           : "Payment Confirmation of : "
     },
     "INCOME" : {
       "TRANSFER"              : "Transfert",
