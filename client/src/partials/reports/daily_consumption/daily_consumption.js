@@ -43,9 +43,7 @@ angular.module('bhima.controllers')
     success(function(data) {
       $scope.consumptions = data;
     });
-    /****************************************************/
-    // Pour la recherche de la consommation d'un article
-    /***************************************************/
+    
     $http.get('/getItemInConsumption/',{params : {
           'dateFrom' : dateFrom, 
           'dateTo' : dateTo,
@@ -55,7 +53,7 @@ angular.module('bhima.controllers')
     success(function(result) {
       $scope.itemInConsumptions = result;
     });
-    /*********************************************************************/
+
     function startup (models) {
       angular.extend($scope, models);
     }
