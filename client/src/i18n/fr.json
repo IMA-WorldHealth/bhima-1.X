@@ -1578,7 +1578,9 @@
       "COTISATIONS"             : "Cotisations",
       "COTISATION_PAYMENT"      : "Paiement Cotisations",
       "CURRENCY_NOT_FOUND"      : "Monnaie non definie !",
-      "PAYMENT_PERIOD_NOT_FOUND" : "Periode de paiement non definie !"
+      "PAYMENT_PERIOD_NOT_FOUND" : "Periode de paiement non definie !",
+      "SEARCH_EMPLOYEE"          : "Rechercher employé(s) ...",
+      "SALARY_SUCCESS"           : "Paiement effectif de : "
     },
     "INCOME" : {
       "TRANSFER"              : "Transfert",
