@@ -2162,7 +2162,7 @@ function handlePromessePayment (id, user_id, data, done) {
   state.user_id = user_id;
 
   sql =
-    'SELECT `config_accounting`.`account_id`, `paiement`.`uuid`, `paiement`.`employee_id`,`paiement`.`net_salary`, `paiement`.`currency_id`' +
+    'SELECT `config_accounting`.`account_id`, `paiement`.`uuid`, `paiement`.`employee_id`, `paiement`.`net_salary`, `paiement`.`currency_id`' +
     ' FROM `paiement`' +
     ' JOIN `paiement_period` ON `paiement_period`.`id`=`paiement`.`paiement_period_id`' +
     ' JOIN `config_accounting` ON `config_accounting`.`id`=`paiement_period`.`config_accounting_id`' +
@@ -2181,10 +2181,11 @@ function handlePromessePayment (id, user_id, data, done) {
   });
 
   function getRecord (records) {
+    var sql2;
     if (records.length === 0) { throw new Error('pas enregistrement'); }
     reference = records[0];
-    var sql2 =
-    "SELECT account_id FROM `paiement`" +
+    sql2 =
+    "SELECT `creditor_group`.`account_id`, `creditor`.`uuid` AS `creditor_uuid` FROM `paiement`" +
     " JOIN `employee` ON `employee`.`id`=`paiement`.`employee_id`" +
     " JOIN `creditor` ON `creditor`.`uuid`=`employee`.`creditor_uuid`" +
     " JOIN `creditor_group` ON `creditor_group`.`uuid`=`creditor`.`group_uuid` " +
@@ -2200,6 +2201,7 @@ function handlePromessePayment (id, user_id, data, done) {
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
     cfg.account_id = res[0].account_id;
+    cfg.creditor_uuid = res[0].creditor_uuid;
     cfg.store = store;
     rate = cfg.store.get(reference.currency_id).rate;
     return get.transactionId(data.project_id);
@@ -2207,7 +2209,7 @@ function handlePromessePayment (id, user_id, data, done) {
 
   function getTransId (trans_id) {
     cfg.trans_id = trans_id;
-    cfg.descrip =  'PromessePay/' + new Date().toISOString().slice(0, 10).toString();
+    cfg.descrip =  trans_id.substring(0,4) + '_EngagementPay/' + new Date().toISOString().slice(0, 10).toString();
     return debit();
   }
 
@@ -2223,7 +2225,7 @@ function handlePromessePayment (id, user_id, data, done) {
           data.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.account_id
+          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.account_id
         ].join(',') + ', ' +
         [
           0, (reference.net_salary).toFixed(4),
@@ -2231,7 +2233,7 @@ function handlePromessePayment (id, user_id, data, done) {
           reference.currency_id,
           sanitize.escape(reference.uuid)
         ].join(',') +
-      ', \'C\', ' +
+      ', null, ' +
         [
           sanitize.escape(data.paiement_uuid),
           cfg.originId,
@@ -2252,13 +2254,14 @@ function handlePromessePayment (id, user_id, data, done) {
           data.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', cfg.account_id
+          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), cfg.account_id
         ].join(',') + ', ' +
         [
           reference.net_salary.toFixed(4), 0,
           (reference.net_salary / rate).toFixed(4), 0,
-          reference.currency_id
-        ].join(',') + ', null, null, ' + [sanitize.escape(data.paiement_uuid), cfg.originId, user_id].join(',') +
+          reference.currency_id,
+          sanitize.escape(cfg.creditor_uuid)
+        ].join(',') + ', \'C\', ' + [sanitize.escape(data.paiement_uuid), cfg.originId, user_id].join(',') +
       ');';
     return db.exec(credit_sql);
   }
