@@ -721,8 +721,8 @@
     "OTHER_CURRENCY"      : "Autre Monnaie",
     "RATE"                : "Taux",
     "TRANS_ID"            : "# Transaction",
-    "DEB_EQUIV"           : "Equiv Débit",
-    "CRE_EQUIV"           : "Equiv Crédit",
+    "DEB_EQUIV"           : "Débit",
+    "CRE_EQUIV"           : "Crédit",
     "DC_TYPE"             : "Type D/C",
     "INVPO_ID"            : "# Fact/OA",
     "PATIENT"             : "Patient",
@@ -1576,7 +1576,11 @@
       "NO_DATA"                 : "Aucune donnée disponible",
       "SALARY_PAYMENT"          : "Paiement Effectif du Salaire",
       "COTISATIONS"             : "Cotisations",
-      "COTISATION_PAYMENT"      : "Paiement Cotisations"
+      "COTISATION_PAYMENT"      : "Paiement Cotisations",
+      "CURRENCY_NOT_FOUND"      : "Monnaie non definie !",
+      "PAYMENT_PERIOD_NOT_FOUND" : "Periode de paiement non definie !",
+      "SEARCH_EMPLOYEE"          : "Rechercher employé(s) ...",
+      "SALARY_SUCCESS"           : "Paiement effectif de : "
     },
     "INCOME" : {
       "TRANSFER"              : "Transfert",

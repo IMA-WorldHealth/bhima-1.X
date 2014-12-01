@@ -209,7 +209,6 @@ get = {
 
     return defer.promise;
   }
-
 };
 
 function authorize (user_id, done) {
@@ -223,7 +222,6 @@ function authorize (user_id, done) {
 
 // TODO Only has project ID passed from sale reference, need to look up enterprise ID
 function handleSales (id, user_id, done, caution) {
-  console.log('notre user_id ::::', user_id);
   // sale posting requests enter here.
   var sql, data, reference, cfg = {}, queries = {};
 
@@ -280,9 +278,6 @@ function handleSales (id, user_id, done, caution) {
     return q([get.origin('sale'), get.period(reference.invoice_date)]);
   })
   .spread(function (originId, periodObject) {
-    // we now have the origin!
-    // we now have the relevant period!
-
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
     cfg.originId = originId;
@@ -322,10 +317,10 @@ function handleSales (id, user_id, done, caution) {
         'SELECT `sale`.`project_id`, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
           '`sale`.`note`, `inventory_group`.`sales_account`, `sale_item`.`debit`, `sale_item`.`credit`, ' +
           '`sale_item`.`debit`, `sale_item`.`credit`, `sale`.`currency_id`, null, ' +
-          ' null, `sale`.`uuid`, ' + [cfg.originId, user_id, item.profit_center_id].join(', ') + ' ' +
-        'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inventory_group` ON ' +
+          ' null, `sale`.`uuid`, ' + [cfg.originId, user_id].join(', ') + ', if(ISNULL(`account`.`pc_id`), \'' + item.profit_center_id + '\', `account`.`pc_id`) ' +
+        'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inventory_group` JOIN `account` ON ' +
           '`sale_item`.`sale_uuid`=`sale`.`uuid` AND `sale_item`.`inventory_uuid`=`inventory`.`uuid` AND ' +
-          '`inventory`.`group_uuid`=`inventory_group`.`uuid` ' +
+          '`inventory`.`group_uuid`=`inventory_group`.`uuid` AND `account`.`id`=`inventory_group`.`sales_account` ' +
         'WHERE `sale_item`.`uuid` = ' + sanitize.escape(item.item_uuid) + ';';
       queries.items.push(sql);
     });
@@ -2103,7 +2098,7 @@ function handleSalaryPayment (id, user_id, done) {
 
   function getTransId (trans_id) {
     cfg.trans_id = trans_id;
-    cfg.descrip =  'PaySalary/' + new Date().toISOString().slice(0, 10).toString();
+    cfg.descrip =  trans_id.substring(0,4) + '_PaySalary/' + new Date().toISOString().slice(0, 10).toString();
     return debit();
   }
 
@@ -2119,7 +2114,7 @@ function handleSalaryPayment (id, user_id, done) {
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', cfg.account_id
+          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), cfg.account_id
         ].join(',') + ', ' +
         [
           0, (reference.cost).toFixed(4),
@@ -2148,7 +2143,7 @@ function handleSalaryPayment (id, user_id, done) {
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.account_id
+          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.account_id
         ].join(',') + ', ' +
         [
           reference.cost.toFixed(4), 0,
@@ -2167,7 +2162,7 @@ function handlePromessePayment (id, user_id, data, done) {
   state.user_id = user_id;
 
   sql =
-    'SELECT `config_accounting`.`account_id`, `paiement`.`uuid`, `paiement`.`employee_id`,`paiement`.`net_salary`, `paiement`.`currency_id`' +
+    'SELECT `config_accounting`.`account_id`, `paiement`.`uuid`, `paiement`.`employee_id`, `paiement`.`net_salary`, `paiement`.`currency_id`' +
     ' FROM `paiement`' +
     ' JOIN `paiement_period` ON `paiement_period`.`id`=`paiement`.`paiement_period_id`' +
     ' JOIN `config_accounting` ON `config_accounting`.`id`=`paiement_period`.`config_accounting_id`' +
@@ -2186,10 +2181,11 @@ function handlePromessePayment (id, user_id, data, done) {
   });
 
   function getRecord (records) {
+    var sql2;
     if (records.length === 0) { throw new Error('pas enregistrement'); }
     reference = records[0];
-    var sql2 =
-    "SELECT account_id FROM `paiement`" +
+    sql2 =
+    "SELECT `creditor_group`.`account_id`, `creditor`.`uuid` AS `creditor_uuid` FROM `paiement`" +
     " JOIN `employee` ON `employee`.`id`=`paiement`.`employee_id`" +
     " JOIN `creditor` ON `creditor`.`uuid`=`employee`.`creditor_uuid`" +
     " JOIN `creditor_group` ON `creditor_group`.`uuid`=`creditor`.`group_uuid` " +
@@ -2205,6 +2201,7 @@ function handlePromessePayment (id, user_id, data, done) {
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
     cfg.account_id = res[0].account_id;
+    cfg.creditor_uuid = res[0].creditor_uuid;
     cfg.store = store;
     rate = cfg.store.get(reference.currency_id).rate;
     return get.transactionId(data.project_id);
@@ -2212,7 +2209,7 @@ function handlePromessePayment (id, user_id, data, done) {
 
   function getTransId (trans_id) {
     cfg.trans_id = trans_id;
-    cfg.descrip =  'PromessePay/' + new Date().toISOString().slice(0, 10).toString();
+    cfg.descrip =  trans_id.substring(0,4) + '_EngagementPay/' + new Date().toISOString().slice(0, 10).toString();
     return debit();
   }
 
@@ -2228,15 +2225,14 @@ function handlePromessePayment (id, user_id, data, done) {
           data.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.account_id
+          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.account_id
         ].join(',') + ', ' +
         [
           0, (reference.net_salary).toFixed(4),
           0, (reference.net_salary / rate).toFixed(4),
-          reference.currency_id,
-          sanitize.escape(reference.uuid)
+          reference.currency_id
         ].join(',') +
-      ', \'C\', ' +
+      ', null, null, ' +
         [
           sanitize.escape(data.paiement_uuid),
           cfg.originId,
@@ -2257,13 +2253,14 @@ function handlePromessePayment (id, user_id, data, done) {
           data.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', cfg.account_id
+          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), cfg.account_id
         ].join(',') + ', ' +
         [
           reference.net_salary.toFixed(4), 0,
           (reference.net_salary / rate).toFixed(4), 0,
-          reference.currency_id
-        ].join(',') + ', null, null, ' + [sanitize.escape(data.paiement_uuid), cfg.originId, user_id].join(',') +
+          reference.currency_id,
+          sanitize.escape(cfg.creditor_uuid)
+        ].join(',') + ', \'C\', ' + [sanitize.escape(data.paiement_uuid), cfg.originId, user_id].join(',') +
       ');';
     return db.exec(credit_sql);
   }
@@ -2439,7 +2436,7 @@ function handleTaxPayment (id, user_id, details, done) {
 
   function getTransId (trans_id) {
     cfg.trans_id = trans_id;
-    cfg.descrip =  'Tax Payment/' + new Date().toISOString().slice(0, 10).toString();
+    cfg.descrip =  trans_id.substring(0,4) + '_Tax Payment/' + new Date().toISOString().slice(0, 10).toString();
     return debit();
   }
 
@@ -2455,7 +2452,7 @@ function handleTaxPayment (id, user_id, details, done) {
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', cfg.employee_account_id
+          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip) + '\'', cfg.employee_account_id
         ].join(',') + ', ' +
         [
           0, (reference.cost).toFixed(4),
@@ -2484,7 +2481,7 @@ function handleTaxPayment (id, user_id, details, done) {
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.account_id
+          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.account_id
         ].join(',') + ', ' +
         [
           reference.cost.toFixed(4), 0,
@@ -2544,7 +2541,7 @@ function handleCotisationPayment (id, user_id, details, done) {
 
   function getTransId (trans_id) {
     cfg.trans_id = trans_id;
-    cfg.descrip =  'PayCotisation/' + new Date().toISOString().slice(0, 10).toString();
+    cfg.descrip =  trans_id.substring(0,4) + '_PayCotisation/' + new Date().toISOString().slice(0, 10).toString();
     return debit();
   }
 
@@ -2560,7 +2557,7 @@ function handleCotisationPayment (id, user_id, details, done) {
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', cfg.employee_account_id
+          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), cfg.employee_account_id
         ].join(',') + ', ' +
         [
           0, (reference.cost).toFixed(4),
@@ -2589,7 +2586,7 @@ function handleCotisationPayment (id, user_id, details, done) {
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.account_id
+          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.account_id
         ].join(',') + ', ' +
         [
           reference.cost.toFixed(4), 0,
