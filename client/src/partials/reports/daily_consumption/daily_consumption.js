@@ -35,7 +35,7 @@ angular.module('bhima.controllers')
     record.dateFrom = util.sqlDate(record.dateFrom);
     record.dateTo = util.sqlDate(record.dateTo);
 
-    $http.get('/getConsuptionDrugs/',{params : {
+    $http.get('/getConsumptionDrugs/',{params : {
           'dateFrom' : record.dateFrom, 
           'dateTo' : record.dateTo
         }  
@@ -69,7 +69,7 @@ angular.module('bhima.controllers')
       record.dateFrom = util.sqlDate(record.dateFrom);
       record.dateTo = util.sqlDate(record.dateTo);
 
-      $http.get('/getConsuptionDrugs/',{params : {
+      $http.get('/getConsumptionDrugs/',{params : {
             'dateFrom' : record.dateFrom, 
             'dateTo' : record.dateTo
           }  
