@@ -155,6 +155,5 @@ exports.initialise = function (app) {
   app.put('/setCotisationPayment/', uncategorised.setCotisationPayment);
 
   app.get('/getEmployeeCotisationPayment/:id', uncategorised.listEmployeeCotisationPayments);
-  app.get('/getConsuptionDrugs/', uncategorised.listConsuptionDrugs);
-
+  
 };
