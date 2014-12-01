@@ -2367,6 +2367,16 @@
     "OUTSTANDING_BILLS"  : "Factures impayées et autres paiements",
     "IMG"                : "Photo du patient",
     "NO_TRANSACTION"     : "pas des transaction"
-  }   
+  },
+
+  "EXPIRING" : {
+    "TITLE"  : "Expiration des produits",
+    "EXPIRED": "Articles expirés",
+    "EX_30"  : "Expiration dans moins de 30 jours",
+    "EX_90"  : "Expiration entre 30 et 90 jours",
+    "EX_180" : "Expiration entre 90 et 180 jours",
+    "EX_365" : "Expiration entre 180 et 365 jours",
+    "EX_YEAR": "Expiration dans au-dela d'une année"
+  }  
   
 }
