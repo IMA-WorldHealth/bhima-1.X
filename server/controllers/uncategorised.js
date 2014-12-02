@@ -840,13 +840,13 @@ exports.availablePaymentPeriod = function (req, res, next) {
 };
 
 exports.listConsumptionDrugs = function (req, res, next) { 
-  var sql = "SELECT consumption.uuid,  SUM(consumption.quantity) AS quantity, consumption.date, inventory.code, inventory.text"
-          + " FROM consumption"
-          + " JOIN stock ON stock.tracking_number = consumption.tracking_number"
-          + " JOIN inventory ON inventory.uuid = stock.inventory_uuid"
-          + " WHERE consumption.uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss )"
-          + " AND ((consumption.date >= '"+ req.query.dateFrom +"') AND (consumption.date <= '" + req.query.dateTo + "'))"
-          + " GROUP BY inventory.uuid ORDER BY inventory.text ASC";
+  var sql = "SELECT consumption.uuid,  SUM(consumption.quantity) AS quantity, consumption.date, inventory.code, inventory.text " +
+    "FROM consumption " +
+    "JOIN stock ON stock.tracking_number = consumption.tracking_number " +
+    "JOIN inventory ON inventory.uuid = stock.inventory_uuid " +
+    "WHERE consumption.uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss ) " +
+    "AND ((consumption.date >= '"+ req.query.dateFrom +"') AND (consumption.date <= '" + req.query.dateTo + "')) " +
+    "GROUP BY inventory.uuid ORDER BY inventory.text ASC";
 
   db.exec(sql)
   .then(function (result) {
@@ -1381,3 +1381,5 @@ exports.listEmployeeCotisationPayments = function (req, res, next) {
   .catch(function (err) { next(err); })
   .done();
 };
+
+
