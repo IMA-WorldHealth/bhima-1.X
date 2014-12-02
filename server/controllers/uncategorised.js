@@ -1288,7 +1288,7 @@ exports.listPaymentByEnterprise = function (req, res, next) {
           + " JOIN paiement p ON e.id=p.employee_id "
           + " JOIN tax_paiement z ON z.paiement_uuid=p.uuid "
           + " JOIN tax t ON t.id=z.tax_id "
-          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.employee_id) + " AND t.is_employee=0 AND p.is_paid=1";
+          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.employee_id) + " AND t.is_employee=0";
 
   db.exec(sql)
   .then(function (result) {
@@ -1372,7 +1372,7 @@ exports.listEmployeeCotisationPayments = function (req, res, next) {
           + " JOIN paiement p ON e.id=p.employee_id "
           + " JOIN cotisation_paiement z ON z.paiement_uuid=p.uuid "
           + " JOIN cotisation t ON t.id=z.cotisation_id "
-          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.id) + " AND p.is_paid=1 ";
+          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.id);
 
   db.exec(sql)
   .then(function (result) {
