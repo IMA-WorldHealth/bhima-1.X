@@ -715,7 +715,8 @@
     "STOCK_QTE_MAX"      : "Stock Maximum Quantity",
     "STOCK_QTE_SEC"      : "Security Stock Quantity",
     "FOUR_ACCOUNT"       : "Four Account",
-    "SIX_ACCOUNT"        : "Charge Account"
+    "SIX_ACCOUNT"        : "Charge Account",
+    "IS_IPR"             : "Is IPR ?"    
   },
 
   "INVENTORY" : {

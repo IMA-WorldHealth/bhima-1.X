@@ -112,7 +112,7 @@ exports.listJournal = function (req, res, next) {
 exports.listHolidays = function (req, res, next) { 
   var pp = JSON.parse(req.params.pp);
   var sql =
-    "SELECT `hollyday`.`id`, `hollyday`.`label`, `hollyday`.`dateFrom`, `hollyday`.`dateTo` " + 
+    "SELECT `hollyday`.`id`, `hollyday`.`label`, `hollyday`.`dateFrom`, `hollyday`.`percentage`, `hollyday`.`dateTo` " + 
     "FROM `hollyday` WHERE " + 
     "((`hollyday`.`dateFrom`>=" + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + " AND " +
     "`hollyday`.`dateFrom`<=" + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ") OR " +
@@ -480,7 +480,7 @@ exports.auxCenterAccount = function (req, res, next) {
 };
 
 exports.checkHoliday = function (req, res, next) { 
-  var sql = "SELECT id, employee_id, label, dateTo, dateFrom FROM hollyday WHERE employee_id = '"+ req.query.employee_id +"'"
+  var sql = "SELECT id, employee_id, label, dateTo, percentage, dateFrom FROM hollyday WHERE employee_id = '"+ req.query.employee_id +"'"
           + " AND ((dateFrom >= '" + req.query.dateFrom +"') OR (dateTo >= '" + req.query.dateFrom + "') OR (dateFrom >= '"+ req.query.dateTo +"')"
           + " OR (dateTo >= '" + req.query.dateTo + "'))"
           + " AND ((dateFrom <= '" + req.query.dateFrom +"') OR (dateTo <= '" + req.query.dateFrom + "') OR (dateFrom <= '"+ req.query.dateTo +"')"
