@@ -2452,7 +2452,7 @@ function handleTaxPayment (id, user_id, details, done) {
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip) + '\'', cfg.employee_account_id
+          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), cfg.employee_account_id
         ].join(',') + ', ' +
         [
           0, (reference.cost).toFixed(4),
