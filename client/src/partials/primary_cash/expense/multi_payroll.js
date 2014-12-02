@@ -18,9 +18,8 @@ angular.module('bhima.controllers')
   function ($scope, $routeParams, $translate, $http, messenger, validate, appstate, connect, $location, util, Appcache, exchange, $q, ipr, uuid) {
     var dependencies = {},
         cache = new Appcache('payroll'),
-        session = $scope.session = {configured : false, complete : false, data : {}, selectedItem : {}, rows : []};
+        session = $scope.session = {configured : false, complete : false, data : {}, SelectedCurrency : {}, rows : []};
 
-    session.cashbox = $routeParams.cashbox;
 
     dependencies.currencies = {
       required : true,
@@ -64,18 +63,6 @@ angular.module('bhima.controllers')
       }
     };
 
-    dependencies.pcash_module = {
-      required : true,
-      query : {
-        tables : {
-          'primary_cash_module' : {
-            columns : ['id']
-          }
-        },
-        where : ['primary_cash_module.text=Payroll']
-      }
-    };
-
     dependencies.enterprise = {
       query : {
         tables : {
@@ -98,7 +85,7 @@ angular.module('bhima.controllers')
 
     appstate.register('project', function (project) {
       $scope.project = project;
-        validate.process(dependencies, ['enterprise', 'pcash_module', 'paiement_period', 'user', 'exchange_rate', 'currencies'])
+        validate.process(dependencies, ['enterprise', 'paiement_period', 'user', 'exchange_rate', 'currencies'])
         .then(init, function (err) {
           messenger.danger(err.message + ' ' + err.reference);
           return;
@@ -114,16 +101,16 @@ angular.module('bhima.controllers')
 
     function init (model) {
       session.model = model;
-      cache.fetch('selectedItem')
-      .then(function (selectedItem){
-        if (!selectedItem) { throw new Error('Monnaie non definie !'); }
-        session.loading_currency_id = selectedItem.id;
-        session.selectedItem = selectedItem;
+      cache.fetch('SelectedCurrency')
+      .then(function (SelectedCurrency){
+        if (!SelectedCurrency) { throw new Error($translate.instant('PRIMARY_CASH.EXPENSE.CURRENCY_NOT_FOUND')); }
+        session.loading_currency_id = SelectedCurrency.id;
+        session.SelectedCurrency = SelectedCurrency;
         return cache.fetch('paiement_period');
       })
       .then(function (pp) {
         if(!pp) {
-          throw new Error('Periode de paiement non definie !');
+          throw new Error($translate.instant('PRIMARY_CASH.EXPENSE.PAYMENT_PERIOD_NOT_FOUND'));
         }
         session.pp = pp;
         dependencies.paiements.query.where = ['paiement.paiement_period_id=' + session.pp.id];
@@ -141,7 +128,7 @@ angular.module('bhima.controllers')
         session.model = model;
         session.configured = true;
         session.complete = true;
-        return getPPConf();
+        return fetchConfigurations();
       })
       .then(getOffDayCount)
       .then(getTrancheIPR)
@@ -187,24 +174,21 @@ angular.module('bhima.controllers')
 
     function EmployeeRow (emp) {
       //FIX ME : clean this function
-      var self = this;
       var def = $q.defer();
+      var self = this;      
+      self.emp = emp;
       getHollyDayCount(emp)
       .then(function (hld){
-        var hl = 0;
-        self.coefhl = 0;
-        if(hld){
-          hl = hld.nb;
-          self.coefhl = hld.coeff;
-        }
 
+        var hl = (hld)? hld.nb : 0;
+        self.coefhl = (hld)? hld.nb : 0;
         self.off_day = session.data.off_day;
-        self.emp = emp;
+
         self.emp.basic_salary =
         exchange.convertir(
           self.emp.basic_salary,
           session.model.enterprise.data[0].currency_id,
-          session.selectedItem.id,
+          session.SelectedCurrency.id,
           util.sqlDate(new Date())
         );
         self.max_day = session.data.max_day;
@@ -248,6 +232,7 @@ angular.module('bhima.controllers')
         if(cotisationComp){
           $scope.cotisationComp = cotisationComp;
         }
+
         var rubrics = session.model.rubric_config.data;
 
         rubrics.forEach(function (rub) {
@@ -266,7 +251,7 @@ angular.module('bhima.controllers')
 
         cotisations.forEach(function (cotisation) {
           var dataCotisations = (cotisation.is_percent) ?
-        ((self.daily_salary * (self.working_day + self.hollydays + self.offdays)) * cotisation.value) / 100 : cotisation.value;
+        ((self.daily_salary * (self.working_day + self.coefhl + self.offdays)) * cotisation.value) / 100 : cotisation.value;
           self[cotisation.abbr] = dataCotisations;
           if (cotisation.is_employee) {employee_cotisation += dataCotisations;}
         });
@@ -288,7 +273,7 @@ angular.module('bhima.controllers')
 
       var net_imposable = exchange.convertir(
         row.net_before_taxe,
-        session.selectedItem.id,
+        session.SelectedCurrency.id,
         tranches[0].currency_id,
         util.sqlDate(new Date())
       );
@@ -316,7 +301,7 @@ angular.module('bhima.controllers')
         value -= (value * (row.emp.nb_enfant * 2)) / 100;
       }
 
-      return exchange.convertir(value, tranches[0].currency_id, session.selectedItem.id, util.sqlDate(new Date()));
+      return exchange.convertir(value, tranches[0].currency_id, session.SelectedCurrency.id, util.sqlDate(new Date()));
     }
 
     function getOffDayCost (row) {
@@ -327,7 +312,7 @@ angular.module('bhima.controllers')
       return cost;
     }
 
-    function getPPConf() {
+    function fetchConfigurations() {
 
       dependencies.paiement_period_conf = {
         required : true,
@@ -342,7 +327,6 @@ angular.module('bhima.controllers')
       };
 
       dependencies.rubric_config = {
-        required : true,
         query : {
           tables : {
             'config_rubric' : {
@@ -366,7 +350,6 @@ angular.module('bhima.controllers')
       };
 
       dependencies.tax_config = {
-        required : true,
         query : {
           tables : {
             'config_tax' : {
@@ -390,7 +373,6 @@ angular.module('bhima.controllers')
       };
 
       dependencies.cotisation_config = {
-        required : true,
         query : {
           tables : {
             'config_cotisation' : {
@@ -456,7 +438,6 @@ angular.module('bhima.controllers')
     function getMaxDays (ppcs) {
       var nb = 0;
       ppcs.forEach(function (item) {
-
         var t2 = new Date(item.weekTo).getTime();
         var t1 = new Date(item.weekFrom).getTime();
         nb += (parseInt((t2-t1)/(24*3600*1000))) + 1;
@@ -551,9 +532,6 @@ angular.module('bhima.controllers')
 
     function getRubricPayroll (row) {
       var rubrics = session.model.rubric_config.data, housing = 0;
-
-      // FIXME SELF IS GLOBAL?!?!
-      // FIXME What does self refer to here??
       rubrics.forEach(function (rub) {
         var dataRubric = (rub.is_percent) ?
           ((row.daily_salary * (row.working_day + row.hollydays + row.offdays)) * rub.value) / 100 : rub.value;
@@ -561,48 +539,12 @@ angular.module('bhima.controllers')
       });
     }
 
-    function getEmployeeINSS (row) {
-      var taxes = session.model.tax_config.data, employee_inss = 0;
-      if(!taxes.length) {
-        return $q.when(employee_inss);
-      }
-
-      var item = taxes.filter(function (item) {
-        return item.abbr === 'INS1';
-      })[0];
-
-      if(item) {
-        employee_inss = (item.is_percent) ?
-        ((row.daily_salary * (row.working_day + row.hollydays + row.offdays)) * item.value) / 100 : item.value;
-      }
-      return $q.when(employee_inss);
-    }
-
-    function getEnterpriseINSS (row) {
-      var taxes = session.model.tax_config.data, enterprise_inss = 0;
-
-      if(!taxes.length) {
-        return $q.when(enterprise_inss);
-      }
-
-      var item = taxes.filter(function (item) {
-        return item.abbr === 'INS2';
-      })[0];
-
-      if(item) {
-        enterprise_inss = (item.is_percent) ?
-        ((row.daily_salary * (row.working_day + row.hollydays + row.offdays)) * item.value) / 100 : item.value;
-      }
-      return $q.when(enterprise_inss);
-    }
-
-
     function setCurrency(currency) {
       if (currency) {
-        session.loading_currency_id = session.selectedItem.id || session.model.enterprise.data[0].currency_id;
-        var reload = session.selectedItem.id ? false : true;
-        session.selectedItem = currency;
-        cache.put('selectedItem', currency);
+        session.loading_currency_id = session.SelectedCurrency.id || session.model.enterprise.data[0].currency_id;
+        var reload = session.SelectedCurrency.id ? false : true;
+        session.SelectedCurrency = currency;
+        cache.put('SelectedCurrency', currency);
         if(reload){
           init(session.model);
         }
@@ -627,20 +569,14 @@ angular.module('bhima.controllers')
       var def = $q.defer();
 
       connect.basicPut('paiement', [packagePay.paiement], ['uuid'])
-        // .then(function () {
-        //   return connect.basicPut('primary_cash', [packagePay.primary], ['uuid']);
-        // })
-        // .then(function () {
-        //   return connect.basicPut('primary_cash_item', [packagePay.primary_details], ['uuid']);
-        // })
         .then(function () {
-          return connect.basicPut('rubric_paiement', packagePay.rc_records, ['id']);
+          return (packagePay.rc_records.length > 0) ? connect.post('rubric_paiement', packagePay.rc_records) : $q.when();
         })
         .then(function () {
-          return connect.basicPut('tax_paiement', packagePay.tc_records, ['id']);
+          return (packagePay.tc_records.length > 0) ? connect.post('tax_paiement', packagePay.tc_records) : $q.when();
         })
         .then(function () {
-          return connect.basicPut('cotisation_paiement', packagePay.cc_records, ['id']);
+          return (packagePay.cc_records.length > 0) ? connect.post('cotisation_paiement', packagePay.cc_records) : $q.when();
         })
         .then(function (res){
           def.resolve(res);
@@ -701,7 +637,7 @@ angular.module('bhima.controllers')
           uuid : uuid(),
           employee_id : elmt.emp.id,
           paiement_period_id : session.pp.id,
-          currency_id : session.selectedItem.id,
+          currency_id : session.SelectedCurrency.id,
           paiement_date : util.sqlDate(new Date()),
           working_day : elmt.working_day,
           net_before_tax : elmt.net_before_taxe,
@@ -738,34 +674,8 @@ angular.module('bhima.controllers')
           cc_records.push(record);
         });
 
-        // var primary = {
-        //   uuid          : uuid(),
-        //   project_id    : $scope.project.id,
-        //   type          : 'S',
-        //   date          : util.sqlDate(new Date()),
-        //   deb_cred_uuid : elmt.emp.creditor_uuid,
-        //   deb_cred_type : 'C',
-        //   account_id    : session.selectedItem.account_id,
-        //   currency_id   : session.selectedItem.id,
-        //   cost          : paiement.net_salary,
-        //   user_id       : session.model.user.data.id,
-        //   description   : 'Payroll : ' + elmt.emp.name + elmt.emp.postnom,
-        //   cash_box_id   : session.cashbox,
-        //   origin_id     : 6
-        // };
-
-        // var primary_details = {
-        //   uuid              : uuid(),
-        //   primary_cash_uuid : primary.uuid,
-        //   debit             : 0,
-        //   credit            : primary.cost,
-        //   document_uuid     : paiement.uuid
-        // };
-
         var packagePay = {
           paiement : paiement,
-          // primary : primary,
-          // primary_details : primary_details,
           rc_records : rc_records,
           tc_records : tc_records,
           cc_records : cc_records
@@ -792,6 +702,8 @@ angular.module('bhima.controllers')
 
     function refresh(row){
       var totaldays = row.working_day + row.hollydays + row.offdays;
+
+      //row.working_day is already used, this dangerous
       if(!row.working_day){
         row.working_day = 0;
       }
@@ -799,6 +711,7 @@ angular.module('bhima.controllers')
       var taxes, rubrics, cotisations;
       var employee_cotisation;
 
+      //row.working_day is defined, why this test?
       if ((row.working_day) && (totaldays <= row.max_day)){
         taxes = session.model.tax_config.data;
         rubrics = session.model.rubric_config.data;
@@ -831,6 +744,7 @@ angular.module('bhima.controllers')
 
       } else if (totaldays > row.max_day) {
         messenger.danger($translate.instant('RUBRIC_PAYROLL.NOT_SUP_MAXDAY'));
+        //repeating twice tax, rubric and cotisation processing, we can use a dedicated function for that
         row.working_day = 0;
         taxes = session.model.tax_config.data;
         rubrics = session.model.rubric_config.data;
@@ -864,7 +778,7 @@ angular.module('bhima.controllers')
       }
     }
 
-    $scope.$watch('session.selectedItem', function (nval, oval) {
+    $scope.$watch('session.SelectedCurrency', function (nval, oval) {
 
        if(session.rows.length) {
           session.rows.forEach(function (row) {
@@ -872,7 +786,7 @@ angular.module('bhima.controllers')
               exchange.convertir(
                 row.emp.basic_salary,
                 session.loading_currency_id,
-                session.selectedItem.id,
+                session.SelectedCurrency.id,
                 util.sqlDate(new Date())
             );
 
@@ -880,7 +794,7 @@ angular.module('bhima.controllers')
               exchange.convertir(
                 row.daily_salary,
                 session.loading_currency_id,
-                session.selectedItem.id,
+                session.SelectedCurrency.id,
                 util.sqlDate(new Date())
             );
 
@@ -892,7 +806,7 @@ angular.module('bhima.controllers')
               row[rub.abbr] = exchange.convertir(
                 row[rub.abbr],
                 session.loading_currency_id,
-                session.selectedItem.id,
+                session.SelectedCurrency.id,
                 util.sqlDate(new Date())
               );
             });
@@ -901,7 +815,7 @@ angular.module('bhima.controllers')
               row[tax.abbr] = exchange.convertir(
                 row[tax.abbr],
                 session.loading_currency_id,
-                session.selectedItem.id,
+                session.SelectedCurrency.id,
                 util.sqlDate(new Date())
               );
             });
@@ -910,7 +824,7 @@ angular.module('bhima.controllers')
               row[cotisation.abbr] = exchange.convertir(
                 row[cotisation.abbr],
                 session.loading_currency_id,
-                session.selectedItem.id,
+                session.SelectedCurrency.id,
                 util.sqlDate(new Date())
               );
             });
@@ -918,7 +832,7 @@ angular.module('bhima.controllers')
               exchange.convertir(
                 row.net_before_taxe,
                 session.loading_currency_id,
-                session.selectedItem.id,
+                session.SelectedCurrency.id,
                 util.sqlDate(new Date())
             );
 
@@ -926,7 +840,7 @@ angular.module('bhima.controllers')
               exchange.convertir(
                 row.net_after_taxe,
                 session.loading_currency_id,
-                session.selectedItem.id,
+                session.SelectedCurrency.id,
                 util.sqlDate(new Date())
             );
 
@@ -934,7 +848,7 @@ angular.module('bhima.controllers')
               exchange.convertir(
                 row.offdays_cost,
                 session.loading_currency_id,
-                session.selectedItem.id,
+                session.SelectedCurrency.id,
                 util.sqlDate(new Date())
             );
 
@@ -942,7 +856,7 @@ angular.module('bhima.controllers')
               exchange.convertir(
                 row.net_salary,
                 session.loading_currency_id,
-                session.selectedItem.id,
+                session.SelectedCurrency.id,
                 util.sqlDate(new Date())
             );
           });

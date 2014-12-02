@@ -28,6 +28,7 @@ angular.module('bhima.controllers')
     function reset () {
       var record = connect.clean(session);
       var fiscalYear = $scope.getFiscalYears.data.filter(function (item) {
+        record.fiscal_year_id = parseInt (record.fiscal_year_id);
         return item.id === record.fiscal_year_id;
       });
 
@@ -44,7 +45,6 @@ angular.module('bhima.controllers')
 
     function reset2 () {
       var record = connect.clean(session);
-      console.log('La liste des annees fiscal',record.period_id);
       var tabMonth = ['OPERATING_ACCOUNT.JANUARY',
         'OPERATING_ACCOUNT.FEBRUARY',
         'OPERATING_ACCOUNT.MARCH',
@@ -66,10 +66,9 @@ angular.module('bhima.controllers')
       } else {
         $scope.fiscal_precison1 = '';
         var precision = $scope.Periods.filter(function (item) {
+          record.period_id = parseInt (record.period_id);
           return item.id === record.period_id;
         });
-        //console.log(precision[0].period_start);
-        // FIXME : Do not start variables with capital letters -  these are reserved for classes.
         var Month = util.sqlDate(precision[0].period_start);
         var Months = Month.split('-');
         var MontRap = Months[1] - 1; 

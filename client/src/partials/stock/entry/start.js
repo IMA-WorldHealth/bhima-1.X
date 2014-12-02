@@ -315,10 +315,10 @@ angular.module('bhima.controllers')
         return connect.basicPost('purchase', [{ uuid : session.cfg.purchase_uuid, closed : 1 }], ['uuid']);
       })
       .then(function () {
-        messenger.success('STOCK.ENTRY.WRITE_SUCCESS');
+        messenger.success($translate.instant('STOCK.ENTRY.WRITE_SUCCESS'));
       })
       .catch(function () {
-        messenger.error('STOCK.ENTRY.WRITE_ERROR');
+        messenger.error($translate.instant('STOCK.ENTRY.WRITE_ERROR'));
       })
       .finally(function () {
         $location.path('/stock/entry/report/' + document_id);

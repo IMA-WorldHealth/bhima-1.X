@@ -346,7 +346,7 @@
       controller : 'payroll',
       templateUrl : 'partials/primary_cash/expense/payroll.html'
     })
-    .when('/primary_cash/expense/multi_payroll/:cashbox', {
+    .when('/primary_cash/expense/multi_payroll/', {
       controller : 'multi_payroll',
       templateUrl : 'partials/primary_cash/expense/multi_payroll.html'
     })
