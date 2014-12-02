@@ -185,7 +185,7 @@ angular.module('bhima.controllers')
         return connect.fetch('/journal/salary_payment/' + package.primary.uuid);
       })
       .then(function () {
-        messenger.success($translate.instant("PRIMARY_CASH.EXPENSE.SALARY_SUCCESS") + emp.prenom + ' ' + emp.name + ' ' + emp.postnom + ' reussi', true);
+        messenger.success($translate.instant('PRIMARY_CASH.EXPENSE.SALARY_SUCCESS') + emp.prenom + ' ' + emp.name + ' ' + emp.postnom + ' reussi', true);
       })
       .catch(function (err){ console.log(err); });
     }
