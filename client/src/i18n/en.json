@@ -2338,5 +2338,15 @@
     "OUTSTANDING_BILLS"  : "Outstanding Bills and Other payments",
     "IMG"                : "Patient picture",
     "NO_TRANSACTION"     : "No transaction"
+  },
+
+  "EXPIRING" : {
+    "TITLE"  : "Expirations",
+    "EXPIRED": "Expired inventories",
+    "EX_30"  : "Expiration within 1 month or less",
+    "EX_90"  : "Expiration within 30 or 90 days",
+    "EX_180" : "Expiration within 90 or 180 days",
+    "EX_365" : "Expiration within 180 or 365 days",
+    "EX_YEAR": "Expiration over 1 year"
   }
 }
