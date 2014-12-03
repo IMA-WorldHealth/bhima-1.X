@@ -251,11 +251,12 @@ angular.module('bhima.controllers')
 
     function getIPR(row) {
       var tranches = session.tranches_ipr;
+      if(!tranches.length) {return 0;}
 
       var net_imposable = exchange.convertir(
         row.net_before_taxe,
         session.selectedItem.currency_id,                                                                    
-        1,  // will be the ipr currency                  
+        tranches[0].currency_id,                 
         util.sqlDate(new Date())
       );
 
@@ -270,20 +271,19 @@ angular.module('bhima.controllers')
         }
       }
 
+
       if(ind < 0) { return 0; }
       var initial = tranches[ind].tranche_annuelle_debut;
       var taux = tranches[ind].taux / 100;
 
       var cumul = (tranches[ind - 1]) ? tranches[ind - 1].cumul_annuel : 0;
-
       var value = (((montant_annuel - initial) * taux) + cumul) / 12;
 
       if(row.emp.nb_enfant > 0) {
-        value -= value * (row.emp.nb_enfant * 2) / 100;
+        value -= (value * (row.emp.nb_enfant * 2)) / 100;
       }
-      //FIX ME : currency hard coded     
 
-      return exchange.convertir(value, 1, session.selectedItem.currency_id, util.sqlDate(new Date()));
+      return exchange.convertir(value, tranches[0].currency_id, session.selectedItem.currency_id, util.sqlDate(new Date()));
     }
 
     function getOffDayCost (row) {
@@ -480,7 +480,7 @@ angular.module('bhima.controllers')
 
       if(item) {
         housing = (item.is_percent) ? 
-        (row.emp.basic_salary * item.value) / 100 : item.value;    
+        ((row.daily_salary * (row.working_day + row.hollydays + row.offdays)) * item.value) / 100 : item.value;    
       }
       return $q.when(housing);      
     }
@@ -494,8 +494,6 @@ angular.module('bhima.controllers')
       })[0];
 
       if(item) {
-        //console.log("La valeur du pourcentage",item.value,"Le salaire de base",row.working_day,row.hollydays,row.offdays);
-        //console.log("INSS EMPLOYER",((row.daily_salary * (row.working_day + row.hollydays + row.offdays)) * item.value) / 100 );
         employee_inss = (item.is_percent) ? 
         ((row.daily_salary * (row.working_day + row.hollydays + row.offdays)) * item.value) / 100 : item.value;    
       }
@@ -551,6 +549,41 @@ angular.module('bhima.controllers')
         session.complete = true;
         init(session.model);
       }            
+    }
+
+    function payEmployee (packagePay) {
+      var def = $q.defer();
+
+      connect.basicPut('paiement', [packagePay.paiement], ['uuid'])
+        .then(function () {
+          console.log('debut primary');
+          return connect.basicPut('primary_cash', [packagePay.primary], ['uuid']);
+        })
+        .then(function () {
+          console.log('debut primary_cash_item');
+          return connect.basicPut('primary_cash_item', [packagePay.primary_details], ['uuid']);
+        })
+        .then(function () {
+          console.log('debut rc_records');
+          return connect.basicPut('rubric_paiement', packagePay.rc_records, ['id']);
+        })
+        .then(function () {
+          console.log('debut tax_paiement');
+          return connect.basicPut('tax_paiement', packagePay.tc_records, ['id']);
+        })
+        .then(function () {
+          console.log('debut journal');
+          return connect.fetch('/journal/payroll/' + packagePay.primary.uuid);
+        })
+        .then(function (res){
+          console.log('le resultat renvoye est ', res);
+          def.resolve(res);
+        })
+        .catch(function (err){
+          def.reject(err)
+        });
+
+        return def.promise;
     }
 
     function submit (list) {
@@ -617,27 +650,23 @@ angular.module('bhima.controllers')
           document_uuid     : paiement.uuid
         };
 
-        connect.basicPut('paiement', [paiement], ['uuid'])
-        .then(function () {
-          return connect.basicPut('primary_cash', [primary], ['uuid']);
-        })
-        .then(function () {
-          return connect.basicPut('primary_cash_item', [primary_details], ['uuid']);
-        })
-        .then(function () {
-          return connect.basicPut('rubric_paiement', rc_records, ['id']);
-        })
-        .then(function () {
-          return connect.basicPut('tax_paiement', tc_records, ['id']);
-        })
-        .then(function () {
-          return connect.fetch('/journal/payroll/' + primary.uuid);
-        })
-        .catch(function (err){
-          console.log(err);
-        })
+        var packagePay = {
+          paiement : paiement,
+          primary : primary,
+          primary_details : primary_details,
+          rc_records : rc_records,
+          tc_records : tc_records
+        }
+
+        var def = $q.defer();
+        payEmployee(packagePay)
+        .then(function (val) {
+          def.resolve(val);
+        });
+        return def.promise;
       }))
-      .then(function () {
+      .then(function (tab) {
+        console.log('tableau de promesse', tab);
         messenger.success("success");
         validate.refresh(dependencies, ['paiements'])
         .then(function () {

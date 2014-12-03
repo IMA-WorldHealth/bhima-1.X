@@ -94,20 +94,7 @@
             <div class="form-group">
               <label>{{ "PRIMARY_CASH.INCOME.LABEL" | translate }}</label>
               <input class="form-bhima" ng-model="session.receipt.description" required>
-            </div>
-
-            <div class="form-group">
-              <input
-                class="form-bhima"
-                type="text"
-                typeahead-template-url="DebtorList.html"
-                ng-model="session.receipt.recipient"
-                typeahead="debtor as debtor.first_name + '  ' + debtor.last_name for debtor in debtors.data | orderBy : ['project_id', 'reference'] | filter:$viewValue | limitTo:8"
-                typeahead-on-select="update(session.receipt.recipient)"
-                placeholder="{{ 'SELECT.DEBTOR' | translate }}"
-                >
-            </div>
-            
+            </div>            
 
             <div class="form-group">
               <label>{{ "PRIMARY_CASH.INCOME.AMOUNT" | translate }}</label>
