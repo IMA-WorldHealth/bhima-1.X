@@ -855,7 +855,8 @@
     "STOCK_QTE_MAX"      : "Quantité Maximum",
     "STOCK_QTE_SEC"      : "Stock de securité",
     "FOUR_ACCOUNT"       : "Compte de tier",
-    "SIX_ACCOUNT"        : "Compte charge"
+    "SIX_ACCOUNT"        : "Compte charge",
+    "IS_IPR"             : "Est-ce l'IPR"
   },
 
   "REPORT"                  : {
