@@ -179,9 +179,8 @@ angular.module('bhima.controllers')
       self.emp = emp;
       getHollyDayCount(emp)
       .then(function (hld){
-
         var hl = (hld)? hld.nb : 0;
-        self.coefhl = (hld)? hld.nb : 0;
+        self.coefhl = (hld)? hld.coeff : 0;
         self.off_day = session.data.off_day;
 
         self.emp.basic_salary =
@@ -256,11 +255,18 @@ angular.module('bhima.controllers')
           if (cotisation.is_employee) {employee_cotisation += dataCotisations;}
         });
 
-        self.net_before_taxe = ((self.working_day + self.coefhl + self.offdays) * self.daily_salary) - employee_cotisation;
+        self.net_before_taxe = (self.working_day + self.coefhl + self.offdays) * self.daily_salary;
         return getIPR(self);
       })
       .then(function (IPR){
+        var taxes = session.model.tax_config.data;
         self.IPR1 = IPR;
+        taxes.forEach(function (tax) {
+          var dataTaxes = (tax.is_ipr) ? IPR : tax.value;
+          self[tax.abbr] = dataTaxes;
+        });
+
+
         self.offdays_cost = getOffDayCost(self);
         def.resolve(self);
       });
@@ -277,7 +283,6 @@ angular.module('bhima.controllers')
         tranches[0].currency_id,
         util.sqlDate(new Date())
       );
-
 
       var montant_annuel = net_imposable * 12;
 
@@ -296,11 +301,9 @@ angular.module('bhima.controllers')
 
       var cumul = (tranches[ind - 1]) ? tranches[ind - 1].cumul_annuel : 0;
       var value = (((montant_annuel - initial) * taux) + cumul) / 12;
-
       if(row.emp.nb_enfant > 0) {
         value -= (value * (row.emp.nb_enfant * 2)) / 100;
       }
-
       return exchange.convertir(value, tranches[0].currency_id, session.SelectedCurrency.id, util.sqlDate(new Date()));
     }
 
@@ -359,7 +362,7 @@ angular.module('bhima.controllers')
               columns : ['tax_id', 'payable']
             },
             'tax' : {
-              columns : ['id', 'abbr','label', 'is_percent', 'value', 'four_account_id', 'six_account_id', 'is_employee']
+              columns : ['id', 'abbr','label', 'is_percent', 'is_ipr', 'value', 'four_account_id', 'six_account_id', 'is_employee']
             }
           },
           join : [
@@ -614,15 +617,13 @@ angular.module('bhima.controllers')
           }
         });
 
-        elmt.net_before_taxe -= somCot;
-
         tax_config_list.forEach(function (tax) {
           if(tax.is_employee){
             SomTax += elmt[tax.abbr];
           }
         });
 
-        elmt.net_after_taxe = elmt.net_before_taxe - SomTax;
+        elmt.net_after_taxe = elmt.net_before_taxe - somCot - SomTax;
 
         rubric_config_list.forEach(function (rub) {
           var change = elmt[rub.abbr];
@@ -632,6 +633,7 @@ angular.module('bhima.controllers')
           somRub += change;
         });
         elmt.net_salary = elmt.net_after_taxe + somRub - (elmt.daily_salary * elmt.off_day) + elmt.offdays_cost;
+
 
         var paiement = {
           uuid : uuid(),
@@ -738,7 +740,7 @@ angular.module('bhima.controllers')
           row[cotisation.abbr] = dataCotisations;
         });
 
-        row.net_before_taxe = ((row.working_day + row.coefhl + row.offdays) * row.daily_salary) - employee_cotisation;
+        row.net_before_taxe = ((row.working_day + row.coefhl + row.offdays) * row.daily_salary);
 
         row.IPR1 = getIPR(row);
 
@@ -772,7 +774,7 @@ angular.module('bhima.controllers')
           row[cotisation.abbr] = dataCotisations;
         });
 
-        row.net_before_taxe = ((row.working_day + row.coefhl + row.offdays) * row.daily_salary) - employee_cotisation;
+        row.net_before_taxe = ((row.working_day + row.coefhl + row.offdays) * row.daily_salary);
         row.IPR1 = getIPR(row);
         getHollyDayCount(row); //why?
       }
