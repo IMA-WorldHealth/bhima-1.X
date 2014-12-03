@@ -111,28 +111,28 @@
 										<i class="glyphicon glyphicon-asterisk" style="color:green;"></i>
 										<a href="">
 											{{ "STOCK_DASHBOARD.STOCK_BY_PRODUCT.OUT_OF_STOCK" | translate }}
-											<span class="pull-right"><strong>{{ stocksOut }}</strong></span>
+											<span class="pull-right"><strong>{{ count_stock }}</strong></span>
 										</a>
 									</div>
 									<div>
 										<i class="glyphicon glyphicon-asterisk" style="color:green;"></i>
 										<a href="">
 											{{ "STOCK_DASHBOARD.STOCK_BY_PRODUCT.UNDER_MIN" | translate }}
-											<span class="pull-right"><strong>#</strong></span>
+											<span class="pull-right"><strong>{{ count_stock_min }}</strong></span>
 										</a>
 									</div>
 									<div>
 										<i class="glyphicon glyphicon-asterisk" style="color:green;"></i>
 										<a href="">
 											{{ "STOCK_DASHBOARD.STOCK_BY_PRODUCT.OVER_MAX" | translate }}
-											<span class="pull-right"><strong>#</strong></span>
+											<span class="pull-right"><strong>{{ count_stock_max }}</strong></span>
 										</a>
 									</div>
 									<div>
 										<i class="glyphicon glyphicon-asterisk" style="color:green;"></i>
 										<a href="">
 											{{ "STOCK_DASHBOARD.STOCK_BY_PRODUCT.OPTIMAL_LEVEL" | translate }}
-											<span class="pull-right"><strong>{{ stocksIn }}</strong></span>
+											<span class="pull-right"><strong>{{ count_stock_ok }}</strong></span>
 										</a>
 									</div>
 								</div>
@@ -228,14 +228,12 @@
 										<i class="glyphicon glyphicon-asterisk" style="color:green;"></i>
 										<a href="">
 											{{ "STOCK_DASHBOARD.REPORTS.SITUATION_STOCK" | translate }}
-											<span class="pull-right"><strong>#</strong></span>
 										</a>
 									</div>
 									<div>
 										<i class="glyphicon glyphicon-asterisk" style="color:green;"></i>
 										<a href="">
 											{{ "STOCK_DASHBOARD.REPORTS.EXPIRING_STOCK" | translate }}
-											<span class="pull-right"><strong>#</strong></span>
 										</a>
 									</div>
 								</div>

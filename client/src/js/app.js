@@ -408,6 +408,10 @@
     .when('/reports/expense_report/', {
       controller : 'primary_cash.expenseReport',
       templateUrl : 'partials/reports/primary_cash/expense/expense_report.html'
+    }) 
+    .when('/reports/stock_report/', {
+      controller : 'stock_report',
+      templateUrl : 'partials/reports/stock/stock_report.html'
     })       
     .when('/grade_employers/', {
       controller : 'grade',
