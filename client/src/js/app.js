@@ -302,6 +302,10 @@
       controller : 'expiring',
       templateUrl : 'partials/reports/expiring_stock/expiring_stock.html'
     })
+    .when('/reports/expiring/:option', {
+      controller : 'expiring.option',
+      templateUrl : 'partials/reports/expiring_stock/expiring_stock_view.html'
+    })
     .when('/caution', {
       controller : 'caution',
       templateUrl : 'partials/caution/caution.html'
