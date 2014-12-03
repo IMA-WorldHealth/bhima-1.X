@@ -1208,7 +1208,7 @@ angular.module('bhima.controllers')
             $scope.TotalPaid += item.value;
             item.valueP = item.value;
             item.valueR = 0;
-            $scope.TotalNet += item.value;;
+            $scope.TotalNet += item.value;
           } else if(item.is_discount === 1){
             $scope.TotalWithheld += item.value;
             item.valueP = 0;

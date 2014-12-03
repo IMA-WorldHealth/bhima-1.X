@@ -1454,6 +1454,18 @@ app.put('/setTaxPayment/', function (req, res, next) {
   .done();
 });
 
+app.get('/getDistinctInventories/', function (req, res, next) {
+  var sql = "SELECT DISTINCT inventory.code, inventory.text, stock.inventory_uuid FROM stock"
+          + " JOIN inventory ON stock.inventory_uuid=inventory.uuid";
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
 // temporary error handling for development!
 process.on('uncaughtException', function (err) {
   console.log('[uncaughtException]', err);
