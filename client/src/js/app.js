@@ -123,6 +123,10 @@
       controller: 'purchaseRecords',
       templateUrl: 'partials/purchase/view/purchase_records.html'
     })
+    .when('/purchase/view/:option', {
+      controller: 'purchase_view',
+      templateUrl: 'partials/purchase/view/purchase_view.html'
+    })
     .when('/purchase/confirm/', {
       controller: 'purchaseConfirm',
       templateUrl: 'partials/purchase/confirm/confirm.html'
