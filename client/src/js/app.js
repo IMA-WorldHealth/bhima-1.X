@@ -123,6 +123,10 @@
       controller: 'purchaseRecords',
       templateUrl: 'partials/purchase/view/purchase_records.html'
     })
+    .when('/purchase/view/:option', {
+      controller: 'purchase_view',
+      templateUrl: 'partials/purchase/view/purchase_view.html'
+    })
     .when('/purchase/confirm/', {
       controller: 'purchaseConfirm',
       templateUrl: 'partials/purchase/confirm/confirm.html'
@@ -297,6 +301,10 @@
     .when('/reports/expiring', {
       controller : 'expiring',
       templateUrl : 'partials/reports/expiring_stock/expiring_stock.html'
+    })
+    .when('/reports/expiring/:option', {
+      controller : 'expiring.option',
+      templateUrl : 'partials/reports/expiring_stock/expiring_stock_view.html'
     })
     .when('/caution', {
       controller : 'caution',
