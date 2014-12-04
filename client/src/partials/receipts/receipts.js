@@ -101,7 +101,6 @@ angular.module('bhima.controllers')
     }
 
     function expose (data) {
-      console.log('notre data', data);
       $scope.template = templates[origin];
       data.origin = origin;
       data.invoiceId = invoiceId;
