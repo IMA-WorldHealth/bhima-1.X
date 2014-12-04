@@ -15,7 +15,7 @@ angular.module('bhima.controllers')
       query : {
         identifier : 'id',
         tables : {
-          'tax' : { columns : ['id', 'label', 'abbr', 'is_employee', 'is_percent', 'four_account_id', 'six_account_id', 'value'] }
+          'tax' : { columns : ['id', 'label', 'abbr', 'is_employee', 'is_ipr', 'is_percent', 'four_account_id', 'six_account_id', 'value'] }
         }
       }
     };
@@ -57,6 +57,7 @@ angular.module('bhima.controllers')
       session.edit = angular.copy(taxes);
       session.edit.is_employee = session.edit.is_employee !== 0;
       session.edit.is_percent = session.edit.is_percent !== 0;
+      session.edit.is_ipr = session.edit.is_ipr !== 0;
     };
 
     $scope.new = function () {
@@ -69,6 +70,7 @@ angular.module('bhima.controllers')
     $scope.save.edit = function () {
       $scope.session.edit.is_employee = ($scope.session.edit.is_employee)? 1 : 0;
       $scope.session.edit.is_percent = ($scope.session.edit.is_percent)? 1 : 0;
+      $scope.session.edit.is_ipr = ($scope.session.edit.is_ipr)? 1 : 0;      
 
       var record = angular.copy(connect.clean(session.edit));
       delete record.reference;

@@ -98,6 +98,13 @@
           </div>
 
           <div class="form-group">
+            <label class="control-label col-xs-4">{{ "COLUMNS.IS_IPR" | translate }}</label>
+            <div class="col-xs-7">
+              <input type="checkbox" id="internationalID" ng-model="session.new.is_ipr">
+            </div>
+          </div>
+
+          <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.VALUE" | translate }}</label>
             <div class="col-xs-7">
               <input ng-model="session.new.value" class="form-bhima" required="required">
@@ -158,6 +165,13 @@
             <label class="control-label col-xs-4">{{ "COLUMNS.IS_PERCENT" | translate }}</label>
             <div class="col-xs-7">
               <input type="checkbox" id="internationalID" ng-model="session.edit.is_percent">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4">{{ "COLUMNS.IS_IPR" | translate }}</label>
+            <div class="col-xs-7">
+              <input type="checkbox" id="internationalID" ng-model="session.edit.is_ipr">
             </div>
           </div>
 
