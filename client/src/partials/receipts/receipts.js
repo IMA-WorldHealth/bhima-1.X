@@ -42,7 +42,10 @@ angular.module('bhima.controllers')
       },
       'convention' : {
         url : '/partials/receipts/templates/receipt_convention.html'
-      }//,
+      },
+      'generic_income' : {
+        url : '/partials/receipts/templates/receipt_generic_income.html'
+      }
       // 'cash' : {
       //   url : '/partials/receipts/templates/cash.html'
       // },
@@ -73,9 +76,7 @@ angular.module('bhima.controllers')
       // 'service_distribution' : {
       //   url : '/partials/receipts/templates/distribution.html'
       // },
-      // 'generic_income' : {
-      //   url : '/partials/receipts/templates/generic.income.html'
-      // },
+      // ,
       // 'generic_expense' : {
       //   url : '/partials/receipts/templates/generic.income.html'
       // },

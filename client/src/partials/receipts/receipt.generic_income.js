@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('receipt.convention', [
+.controller('receipt.generic_income', [
   '$scope',
   '$routeParams',
   '$q',
@@ -11,23 +11,23 @@ angular.module('bhima.controllers')
   'connect',
   'messenger',
   function ($scope, $routeParams, $q, $http, validate, exchange, appstate, util, connect, messenger) {
-    var dependencies = {}, model = $scope.model = {common : {}};
+    var dependencies = {}, model = $scope.model = {common : {}};    
 
-    dependencies.convention = {
-      required: true,
-      query:  {
-        tables: {
-          primary_cash: { columns: ['reference', 'cost', 'project_id', 'currency_id', 'date'] },
-          primary_cash_item : {columns : ['debit', 'credit']},
-          account : {columns : ['account_txt']},
-          sale       : {columns : ['note']}
+    dependencies.generic_income = {
+      query : {
+        identifier : 'uuid',
+        tables : {
+          primary_cash : { columns : ['reference', 'description', 'cost', 'currency_id', 'date'] },
+          primary_cash_item : { columns : ['document_uuid'] },
+          user : { columns : ['first', 'last'] },
+          account : { columns : ['account_txt'] }
         },
-        join : ['primary_cash.account_id=account.id', 'primary_cash.uuid=primary_cash_item.primary_cash_uuid', 'sale.uuid=primary_cash_item.inv_po_id']
+        join : ['primary_cash.user_id=user.id', 'primary_cash.account_id=account.id', 'primary_cash.uuid=primary_cash_item.primary_cash_uuid']
       }
     };
 
     function buildInvoice (res) {
-      model.conventions = res.convention.data;
+      model.generic_income = res.generic_income.data.pop();
     }
 
   	appstate.register('receipts.commonData', function (commonData) {
@@ -35,7 +35,7 @@ angular.module('bhima.controllers')
         model.common.location = values.location.data.pop();
         model.common.InvoiceId = values.invoiceId;
         model.common.enterprise = values.enterprise.data.pop();
-        dependencies.convention.query.where = ['primary_cash.uuid=' + values.invoiceId];
+        dependencies.generic_income.query.where = ['primary_cash.uuid=' + values.invoiceId];
         validate.process(dependencies)
         .then(buildInvoice)
         .catch(function (err){
