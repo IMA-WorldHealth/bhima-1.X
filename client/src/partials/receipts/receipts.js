@@ -39,6 +39,9 @@ angular.module('bhima.controllers')
       },
       'transfer' : {
         url : '/partials/receipts/templates/receipt_transfer.html'
+      },
+      'convention' : {
+        url : '/partials/receipts/templates/receipt_convention.html'
       }//,
       // 'cash' : {
       //   url : '/partials/receipts/templates/cash.html'
@@ -54,9 +57,6 @@ angular.module('bhima.controllers')
       // },
       // 'purchase' : {
       //   url : '/partials/receipts/templates/purchase.html'
-      // },
-      // 'pcash_convention' : {
-      //   url : '/partials/receipts/templates/convention.html'
       // },
       // 'movement' : {
       //   url : '/partials/receipts/templates/movement.html'
