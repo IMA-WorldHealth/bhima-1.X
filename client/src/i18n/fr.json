@@ -1302,7 +1302,9 @@
     "ENTERPRISE_TAX_PAYMENT"        : "Paiement Taxes Entreprise",
     "SALARY_PAYMENT"                : "Paiement Effectif du Salaire",
     "COTISATIONS"                   : "Cotisations",
-    "COTISATION_PAYMENT"            : "Paiement Cotisations"
+    "COTISATION_PAYMENT"            : "Paiement Cotisations",
+    "CONFIRM_DIRECT_PURCHASE"       : "Confirmation Achat Direct",
+    "ACCOUNT"                       : "Compte"
   },
 
   "SECTOR"             : {
@@ -1520,7 +1522,21 @@
     "SUBMIT"        : "Soumettre",
     "SUBMIT_ORDER"  : "Soumettre Ordre Achat",
     "RESPONSABLE"   : "Responsable",
-    "TOTAL_COST"    : "Coût total"
+    "TOTAL_COST"    : "Coût total",
+    "CREATE"        : "Créer un ordre d'achat",
+    "BANK_ACCOUNT"  : "Compte banque",
+    "PURCHASE_TYPE" : "Type d'ordre d'achat",
+    "DIRECT"        : "Direct",
+    "INDIRECT"      : "Indirect",
+    "NEXT"          : "Suivant",
+    "VIEW"          : "Voir les ordres d'achats",
+    "CONFIRM"       : "Confirmation ordre d'achats",
+    "FILTER"        : "Filtre de recherche",
+    "CONFIRM_PAY"   : "Confirmation paiement",
+    "CONFIRM_PAY_OF": "Confirmation paiement de",
+    "BY"            : "par",
+    "DETAILS"       : "Details du paiement",
+    "NOT_FOUND"     : "Aucun enregistrement trouvé"
   },
 
   "PRIMARY_CASH" : {
