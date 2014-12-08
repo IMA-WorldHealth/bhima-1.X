@@ -75,7 +75,7 @@ angular.module('bhima.controllers')
     }
 
     function generateDocument(res) {
-       $location.path('/invoice/confirm_purchase/' + session.selected.uuid);
+       $location.path('/invoice/confirm_indirect_purchase/' + session.selected.uuid);
     }
 
     function handleError(error) {
