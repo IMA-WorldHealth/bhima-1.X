@@ -1351,7 +1351,21 @@
     "WRITE_SUCCESS"   : "Purchase order submitted successfully.",
     "ORDER"           : "Numero Ordre",
     "DATE"            : "Date",
-    "NOTE"            : "Note"
+    "NOTE"            : "Note",
+    "CREATE"          : "Create purchase order",
+    "BANK_ACCOUNT"    : "Bank Account",
+    "PURCHASE_TYPE"   : "Purchase type",
+    "DIRECT"          : "Direct",
+    "INDIRECT"        : "Indirect",
+    "NEXT"            : "Next",
+    "VIEW"            : "View purchase order",
+    "CONFIRM"         : "Confirm purchase order",
+    "FILTER"          : "Search filter",
+    "CONFIRM_PAY"     : "Confirm payment",
+    "CONFIRM_PAY_OF"  : "Confirm payment of",
+    "BY"              : "by",
+    "DETAILS"         : "Details of payment",
+    "NOT_FOUND"       : "Not found"
   },
 
   "SALE"              : {
@@ -1513,8 +1527,9 @@
     "ENTERPRISE_TAX_PAYMENT"        : "Entreprise Taxes Payment",
     "SALARY_PAYMENT"                : "Salary Payment",
     "COTISATIONS"                   : "Cotisations",
-    "COTISATION_PAYMENT"            : "Cotisation Payment"
-
+    "COTISATION_PAYMENT"            : "Cotisation Payment",
+    "CONFIRM_DIRECT_PURCHASE"       : "Direct purchase order confirmation",
+    "ACCOUNT"                       : "Account"
   },
 
   "SECTOR"             : {

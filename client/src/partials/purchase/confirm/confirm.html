@@ -1,5 +1,5 @@
 <header data-header>
-  {{ 'CONFIRM.TITLE' | translate }}
+  {{ 'PURCHASE.CONFIRM' | translate }}
 </header>
 
 <nav>
@@ -7,7 +7,7 @@
     <ol class="breadcrumb">
       <span class="glyphicon glyphicon-home"></span>
       <li><a href="#/purchase_menu/">{{ "CONFIRM.PARENT" | translate }}</a></li>
-      <li class="active">{{ "CONFIRM.TITLE" | translate }}</li>
+      <li class="active">{{ "PURCHASE.CONFIRM" | translate }}</li>
     </ol>
   </div>
 </nav>
@@ -18,18 +18,28 @@
 
       <div class="panel panel-default square">
         <div class="panel-heading square">
-          {{ "CONFIRM.SELECT_PURCHASE" | translate }}
+          {{ "PURCHASE.CONFIRM" | translate }}
         </div>
 
         <div class="panel-body">
+
+          <div class="alert alert-info po-alert">
+            <strong>{{ 'PURCHASE.PURCHASE_TYPE' | translate }} : </strong>
+            <input type="radio" id="indirectPO" ng-model="session.purchase_type" value="indirect" ng-click="resetSelected()">
+            <label for="indirectPO">{{ 'PURCHASE.INDIRECT' | translate }}</label>
+            <span class="po-type-space"></span>
+            <input type="radio" id="directPO" ng-model="session.purchase_type" value="direct"  ng-click="resetSelected()">
+            <label for="directPO">{{ 'PURCHASE.DIRECT' | translate }}</label>
+          </div>
+
           <div class="input-group" style="margin-bottom: 15px">
             <span class="input-group-btn">
               <button disabled class="btn btn-default btn-sm"><span class="glyphicon glyphicon-search"></span></button>
             </span>
-             <input class="form-bhima" placeholder="{{'CONFIRM.FILTER' | translate }}" ng-model="session.filter">
+             <input class="form-bhima" placeholder="{{'PURCHASE.FILTER' | translate }}" ng-model="session.filter">
           </div>
 
-          <table class="table table-bordered table-condensed">
+          <table ng-if="session.purchase_type==='indirect'" class="table table-bordered table-condensed">
             <thead>
               <tr>
                 <th>{{"COLUMNS.DATE" | translate}}</th>
@@ -39,17 +49,44 @@
               </tr>
             </thead>
 
-            <tr ng-if="!purchase.data.length">
+            <tr ng-if="!indirect_purchase.data.length">
               <td colspan="4">
-                <div class="alert alert-warning square">{{ "CONFIRM.NOT_FOUND" | translate }}</div>
+                <div class="alert alert-warning square">{{ "PURCHASE.NOT_FOUND" | translate }}</div>
               </td>
             </tr>
 
-            <tr ng-repeat="item in purchase.data | filter : session.filter"
+            <tr ng-repeat="item in indirect_purchase.data | filter : session.filter"
                 ng-class="{'selected-success': session.selected.uuid===item.uuid}">
                 <td>{{item.purchase_date | date}}</td>
                 <td><a href="/#/invoice/purchase/{{item.uuid}}">{{item.abbr}}{{item.reference}}</td>
                 <td>{{item.name}}</td>
+                <td><a class="menu-item" ng-click="confirmPurchase(item.uuid)"><span class="glyphicon glyphicon-arrow-right"></span></a></td>
+            </tr>
+            <tbody>
+            </tbody>
+          </table>
+
+          <table ng-if="session.purchase_type==='direct'" class="table table-bordered table-condensed">
+            <thead>
+              <tr>
+                <th>{{"COLUMNS.DATE" | translate}}</th>
+                <th>{{"COLUMNS.REFERENCE" | translate}}</th>
+                <th>{{"COLUMNS.ACCOUNT" | translate}}</th>
+                <th>{{ "COLUMNS.ACTIONS" | translate }}</th>
+              </tr>
+            </thead>
+
+            <tr ng-if="!direct_purchase.data.length">
+              <td colspan="4">
+                <div class="alert alert-warning square">{{ "PURCHASE.NOT_FOUND" | translate }}</div>
+              </td>
+            </tr>
+
+            <tr ng-repeat="item in direct_purchase.data | filter : session.filter"
+                ng-class="{'selected-success': session.selected.uuid===item.uuid}">
+                <td>{{item.purchase_date | date}}</td>
+                <td><a href="/#/invoice/purchase/{{item.uuid}}">{{item.abbr}}{{item.reference}}</td>
+                <td><strong>{{item.account_number}}</strong> - {{ item.account_txt }}</td>
                 <td><a class="menu-item" ng-click="confirmPurchase(item.uuid)"><span class="glyphicon glyphicon-arrow-right"></span></a></td>
             </tr>
             <tbody>
@@ -63,14 +100,14 @@
       <div class="panel square" ng-class="{'panel-success': session.selected, 'panel-default' : !session.selected}">
         <div class="panel-heading square">
           <span class="glyphicon glyphicon-list-alt"></span>
-          {{ "CONFIRM.CONFIRM_PAY" | translate }}<small>{{session.selected.uuid}}</small>
+          {{ "PURCHASE.CONFIRM_PAY" | translate }} <small>{{session.selected.uuid}}</small>
         </div>
 
         <div class="panel-body" ng-if="session.selected">
           <table class="table table-bordered table-condensed">
             <thead>
               <tr>
-                <th colspan="2">{{ "CONFIRM.DETAILS" | translate }}</th>
+                <th colspan="2">{{ "PURCHASE.DETAILS" | translate }}</th>
               </tr>
             </thead>
             <tbody>
@@ -80,8 +117,11 @@
               <tr>
                 <td>{{"COLUMNS.NOTE" | translate}}</td><td>{{session.selected.note}}</td>
               </tr>
-              <tr>
+              <tr ng-if="session.purchase_type==='indirect'">
                 <td>{{"COLUMNS.EMPLOYEE" | translate}}</td><td>{{session.selected.name}}</td>
+              </tr>
+              <tr ng-if="session.purchase_type==='direct'">
+                <td>{{"COLUMNS.ACCOUNT" | translate}}</td><td><strong>{{session.selected.account_number}}</strong> - {{session.selected.account_txt}}</td>
               </tr>
               <tr>
                 <td>{{"COLUMNS.COST" | translate}}</td><td><b>{{session.selected.cost | currency}}</b></td>
@@ -89,7 +129,10 @@
             </tbody>
           </table>
 
-          <button ng-click="confirmPayment()" class="square btn btn-success btn-sm">  {{ "CONFIRM.CONFIRM_PAY_OF" | translate }}<b>{{session.selected.cost | currency}}</b> {{ "CONFIRM.BY" | translate }} <b>{{session.selected.name}}</b></button>
+          <button ng-click="confirmPayment()" class="square btn btn-success btn-sm">  {{ "PURCHASE.CONFIRM_PAY_OF" | translate }} <b>{{session.selected.cost | currency}}</b> {{ "PURCHASE.BY" | translate }} 
+          <b ng-if="session.purchase_type==='indirect'">{{session.selected.name}}</b>
+          <b ng-if="session.purchase_type==='direct'">{{session.selected.account_number}}</b>
+          </button>
         </div>
       </div>
     </div>

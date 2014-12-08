@@ -1622,6 +1622,115 @@ function handleConfirm (id, user_id, done){
   }
 }
 
+function handleConfirmDirectPurchase (id, user_id, done){
+  var references, dayExchange, cfg = {}; 
+
+  var sql = 'SELECT `purchase`.`uuid`, `purchase`.`creditor_uuid` , `purchase`.`cost`, `purchase`.`currency_id`, `purchase`.`project_id`,' +
+            ' `purchase`.`purchaser_id`, `purchase`.`employee_id`, `account`.`id`, `account`.`account_number`,' +
+            ' `purchase_item`.`inventory_uuid`, `purchase_item`.`total` FROM' +
+            ' `purchase`, `purchase_item`, `account` WHERE' + 
+            ' `purchase`.`uuid` = `purchase_item`.`purchase_uuid` AND' +
+            ' `purchase`.`employee_id` = `account`.`id` AND' +
+            ' `purchase`.`uuid`=' + sanitize.escape(id) + ';';
+
+  db.exec(sql)
+  .then(getRecord)
+  .spread(getDetails)
+  .then(getTransId)
+  .then(credit)
+  .then(function (res){
+    console.log('REFERENCES: ', references);
+    return done(null, res);
+  })
+  .catch(function (err){
+    return done(err, null);
+  });
+
+  function getRecord (records) {
+    if (records.length === 0) { throw new Error('pas enregistrement'); }
+    references = records;
+    var date = util.toMysqlDate(get.date());
+    return q([get.origin('confirm_purchase'), get.period(get.date())]);
+  }
+
+  function getDetails (originId, periodObject) {
+    cfg.originId = originId;
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+    return get.transactionId(references[0].project_id);
+  }
+
+  function getTransId (trans_id) {
+    cfg.trans_id = trans_id;
+    cfg.descrip =  'PO/DIRECT/CONFIRM/' + new Date().toISOString().slice(0, 10).toString(); 
+    return debit();
+  }
+
+  function debit () {
+    return q.all(
+      references.map(function (reference) {
+        var sql = 'INSERT INTO posting_journal '+
+                  '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                  '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+                  '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
+                  'SELECT '+
+                    [
+                      sanitize.escape(uuid()),
+                      reference.project_id,
+                      cfg.fiscalYearId,
+                      cfg.periodId,
+                      cfg.trans_id, '\''+get.date()+'\'', '\''+cfg.descrip+'\''
+                    ].join(',') + ', `inventory_group`.`stock_account`, '+
+                    [
+                      0, reference.total.toFixed(4),
+                      0, reference.total.toFixed(4),
+                      reference.currency_id, sanitize.escape(reference.inventory_uuid)
+                    ].join(',') +
+                    ', null, ' +
+                    [
+                      sanitize.escape(reference.uuid),
+                      cfg.originId,
+                      user_id
+                    ].join(',') +
+                  ' FROM `inventory_group` WHERE `inventory_group`.`uuid`= ' +
+                  '(SELECT `inventory`.`group_uuid` FROM `inventory` WHERE `inventory`.`uuid`=' + sanitize.escape(reference.inventory_uuid) + ')';
+        return db.exec(sql);
+      })
+    );
+  }
+
+  function credit () {
+    var reference = references[0];
+    var credit_sql =
+      'INSERT INTO posting_journal ' +
+      '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+      '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+      '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
+      'SELECT ' +
+        [
+          sanitize.escape(uuid()),
+          reference.project_id,
+          cfg.fiscalYearId,
+          cfg.periodId,
+          cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\''
+        ].join(',') + ', `creditor_group`.`account_id`, ' +
+        [
+          reference.cost.toFixed(4),0,
+          reference.cost.toFixed(4),0,
+          reference.currency_id,
+          sanitize.escape(reference.creditor_uuid),
+          '"C"'
+        ].join(',') + ', ' +
+        [
+          sanitize.escape(reference.uuid),
+          cfg.originId,
+          user_id
+        ].join(',') + ' FROM `creditor_group` WHERE `creditor_group`.`uuid`=' + 
+        '(SELECT `creditor`.`group_uuid` FROM `creditor` WHERE `creditor`.`uuid`=' + sanitize.escape(reference.creditor_uuid) + ')';
+    return db.exec(credit_sql);
+  }
+}
+
 function handleDistributionPatient (id, user_id, done) {
 
   var references, dayExchange, cfg = {};
@@ -2599,27 +2708,28 @@ function handleCotisationPayment (id, user_id, details, done) {
 }
 
 table_router = {
-  'sale'                  : handleSales,
-  'cash'                  : handleCash,
-  'purchase'              : handlePurchase,
-  'group_invoice'         : handleGroupInvoice,
-  'credit_note'           : handleCreditNote,
-  'caution'               : handleCaution,
-  'transfert'             : handleTransfert,
-  'pcash_convention'      : handleConvention,
-  'primary_expense'       : handleGenericExpense,
-  'primary_income'        : handleGenericIncome,
-  'indirect_purchase'     : handleIndirectPurchase,
-  'confirm'               : handleConfirm,
-  'distribution_patient'  : handleDistributionPatient,
-  'distribution_service'  : handleDistributionService,
-  'consumption_loss'      : handleDistributionLoss,
-  'payroll'               : handlePayroll,
-  'salary_payment'        : handleSalaryPayment,
-  'promesse_payment'      : handlePromessePayment,
-  'donation'              : handleDonation,
-  'tax_payment'           : handleTaxPayment,
-  'cotisation_payment'    : handleCotisationPayment
+  'sale'                    : handleSales,
+  'cash'                    : handleCash,
+  'purchase'                : handlePurchase,
+  'group_invoice'           : handleGroupInvoice,
+  'credit_note'             : handleCreditNote,
+  'caution'                 : handleCaution,
+  'transfert'               : handleTransfert,
+  'pcash_convention'        : handleConvention,
+  'primary_expense'         : handleGenericExpense,
+  'primary_income'          : handleGenericIncome,
+  'indirect_purchase'       : handleIndirectPurchase,
+  'confirm'                 : handleConfirm,
+  'confirm_direct_purchase' : handleConfirmDirectPurchase,
+  'distribution_patient'    : handleDistributionPatient,
+  'distribution_service'    : handleDistributionService,
+  'consumption_loss'        : handleDistributionLoss,
+  'payroll'                 : handlePayroll,
+  'salary_payment'          : handleSalaryPayment,
+  'promesse_payment'        : handlePromessePayment,
+  'donation'                : handleDonation,
+  'tax_payment'             : handleTaxPayment,
+  'cotisation_payment'      : handleCotisationPayment
 };
 
 

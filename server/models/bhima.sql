@@ -1207,6 +1207,7 @@ create table `purchase` (
   `paid_uuid`         char(36),
   `confirmed`         boolean not null default 0,
   `closed`            boolean not null default 0,
+  `is_direct`         boolean not null default 0,
   primary key (`uuid`),
   key `project_id` (`project_id`),
   key `reference` (`reference`),
