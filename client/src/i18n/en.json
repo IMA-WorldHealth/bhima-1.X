@@ -873,7 +873,7 @@
     "SERVICE_EXPLOITATION"      : "Exploitation per Service",
     "GLOBAL_TRANSACTION"        : "Account Movement",
     "COTISATION_MANAGEMENT"     : "Cotization management",
-    "EMPLOYEE_STANDING"         : "Patient Standing Report",
+    "EMPLOYEE_STANDING"         : "Employee Standing Report",
     "PAYROLL"                   : "Payroll",
     "MULTI_PAYROLL"             : "Multiple Payroll"    
   },
@@ -2334,8 +2334,7 @@
     "CREATED_ON"         : "Created On",
     "ACCOUNT_NUMBER"     : "Account Number",
     "ACCOUNT_BALANCE"    : "Account Balance",
-    "LAST_PURCHASE_DATE" : "Last Purchase Date",
-    "LAST_PAYMENT_DATE"  : "Last Payment Date",
+    "LAST_DATE"          : "Last Date",
     "OUTSTANDING_BILLS"  : "Outstanding Bills and Other payments",
     "IMG"                : "Patient picture",
     "NO_TRANSACTION"     : "No transaction"
