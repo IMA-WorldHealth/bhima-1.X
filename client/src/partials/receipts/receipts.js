@@ -45,6 +45,9 @@ angular.module('bhima.controllers')
       },
       'generic_income' : {
         url : '/partials/receipts/templates/receipt_generic_income.html'
+      },
+      'purchase' : {
+        url : '/partials/receipts/templates/receipt_purchase.html'
       }
       // 'cash' : {
       //   url : '/partials/receipts/templates/cash.html'
@@ -58,9 +61,7 @@ angular.module('bhima.controllers')
       // 'patient' : {
       //   url : '/partials/receipts/templates/patient.html'
       // },
-      // 'purchase' : {
-      //   url : '/partials/receipts/templates/purchase.html'
-      // },
+      // ,
       // 'movement' : {
       //   url : '/partials/receipts/templates/movement.html'
       // },
@@ -103,6 +104,7 @@ angular.module('bhima.controllers')
 
     function expose (data) {
       $scope.template = templates[origin];
+      $scope.timestamp = new Date();
       data.origin = origin;
       data.invoiceId = invoiceId;
       data.convert = convert;
