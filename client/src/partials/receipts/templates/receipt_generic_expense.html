@@ -1,8 +1,8 @@
-<div ng-controller="receipt.generic_income">
+<div ng-controller="receipt.generic_expense">
   <div class="row customer-details">
     <div class="col-xs-12">
-      <small style="float: right; color: grey; font-size: 8px">{{ model.common.InvoiceId }}</small>
-      <h4 class="invoice-header">{{ 'INVOICE.GENERIC_INCOME' | translate }}</h4>
+      <small style="float: right; color: grey; font-size: 8px">{{ model.genericExpense.uuid}}</small>
+      <h4 class="invoice-header">{{ 'INVOICE.GENERIC_EXPENSE' | translate }}</h4>
     </div>
   </div>
 
@@ -20,15 +20,15 @@
       <br>
       <i>TEL</i> {{model.common.enterprise.phone}}
       <br>
-      <i>FAX</i> {{model.common.enterprise.email}}
+      <i>MAIL</i> {{model.common.enterprise.email}}
     </div>
 
     <div class="col-xs-6">
-      <b>{{model.genericIncome.account_txt}} </b>
+      <b>{{model.genericExpense.account_txt}} </b>
       <br>
       <i>{{ 'INVOICE.DATE_REGISTRATION' | translate }}</i>
       <br>
-      {{model.genericIncome.date | date}}
+      {{model.genericExpense.date | date}}
     </div>          
   </div>
 
@@ -45,10 +45,10 @@
         </thead>
         <tbody class="items">
           <tr>
-            <td>{{ model.genericIncome.reference }}</td>
-            <td>{{ model.genericIncome.description }}</td>
-            <td><span ng-bind-html="model.genericIncome.cost | intlcurrency:model.genericIncome.currency_id"></span></td>
-            <td>{{model.genericIncome.first + '  ' + model.genericIncome.last}}</td>
+            <td>{{ model.genericExpense.reference }}</td>
+            <td>{{ model.genericExpense.description }}</td>
+            <td><span ng-bind-html="model.genericExpense.cost | intlcurrency:model.genericExpense.currency_id"></span></td>
+            <td>{{ model.genericExpense.first + '  ' + model.genericExpense.last}}</td>
           </tr>
         </tbody>
       </table>
@@ -57,19 +57,19 @@
 
   <div class="row">
     <div class="col-xs-4">
-      <div>
+      <div class="pull-right">
         <b>{{"INVOICE.SIGN_HEADER_PRI" | translate}}</b>
       </div>
     </div>
     <div class="col-xs-4">
-      <div>
+      <div class="pull-left">
        <b>{{"SIGNATURES.THIRD" | translate}}</b>
       </div>
     </div>
     <div class="col-xs-4">
-      <div>
+      <div class="pull-left">
        <b>{{"SIGNATURES.CHIEF_ACCOUNTANT" | translate}}</b>
       </div>
-    </div>  
+    </div>
   </div>
 </div>
