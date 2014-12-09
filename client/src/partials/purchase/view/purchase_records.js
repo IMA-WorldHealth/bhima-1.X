@@ -90,8 +90,8 @@ angular.module('bhima.controllers')
           'creditor' : {
             'columns' : ['text']
           },
-          'account' : {
-            'columns' : ['id', 'account_number', 'account_txt']
+          'supplier' : {
+            'columns' : ['name']
           },
           'user' : {
             'columns' : ['first', 'last']
@@ -100,7 +100,7 @@ angular.module('bhima.controllers')
         join : [
           'purchase.creditor_uuid=creditor.uuid',
           'purchase.purchaser_id=user.id',
-          'purchase.employee_id=account.id'
+          'creditor.uuid=supplier.creditor_uuid'
         ],
         where : ['purchase.is_direct=1']
       };

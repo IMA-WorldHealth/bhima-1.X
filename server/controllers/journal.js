@@ -1626,11 +1626,11 @@ function handleConfirmDirectPurchase (id, user_id, done){
   var references, dayExchange, cfg = {}; 
 
   var sql = 'SELECT `purchase`.`uuid`, `purchase`.`creditor_uuid` , `purchase`.`cost`, `purchase`.`currency_id`, `purchase`.`project_id`,' +
-            ' `purchase`.`purchaser_id`, `purchase`.`employee_id`, `account`.`id`, `account`.`account_number`,' +
+            ' `purchase`.`purchaser_id`, `purchase`.`employee_id`, ' +
             ' `purchase_item`.`inventory_uuid`, `purchase_item`.`total` FROM' +
-            ' `purchase`, `purchase_item`, `account` WHERE' + 
+            ' `purchase`, `purchase_item` WHERE' + 
             ' `purchase`.`uuid` = `purchase_item`.`purchase_uuid` AND' +
-            ' `purchase`.`employee_id` = `account`.`id` AND' +
+            ' `purchase`.`is_direct` = 1 AND ' +
             ' `purchase`.`uuid`=' + sanitize.escape(id) + ';';
 
   db.exec(sql)
@@ -1639,7 +1639,6 @@ function handleConfirmDirectPurchase (id, user_id, done){
   .then(getTransId)
   .then(credit)
   .then(function (res){
-    console.log('REFERENCES: ', references);
     return done(null, res);
   })
   .catch(function (err){

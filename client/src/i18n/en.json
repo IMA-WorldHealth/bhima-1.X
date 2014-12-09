@@ -717,7 +717,8 @@
     "FOUR_ACCOUNT"       : "Four Account",
     "SIX_ACCOUNT"        : "Charge Account",
     "IS_IPR"             : "Is IPR ?",
-    "CONFIRMED"          : "Confirmed"   
+    "CONFIRMED"          : "Confirmed",
+    "SUPPLIER"           : "Supplier"   
   },
 
   "INVENTORY" : {
@@ -1540,7 +1541,8 @@
     "COTISATIONS"                   : "Cotisations",
     "COTISATION_PAYMENT"            : "Cotisation Payment",
     "CONFIRM_DIRECT_PURCHASE"       : "Direct purchase order confirmation",
-    "ACCOUNT"                       : "Account"
+    "ACCOUNT"                       : "Account",
+    "SUPPLIER"                      : "Supplier"
   },
 
   "SECTOR"             : {

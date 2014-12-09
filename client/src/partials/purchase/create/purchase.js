@@ -45,13 +45,14 @@ angular.module('bhima.controllers')
       }
     };
 
-    dependencies.accounts = {
-      query : {
-        tables : {
-          account : { columns : ['id', 'account_number', 'account_txt'] }
-        }
-      }
-    };
+    // FIXME: Direct Purchase order don't need an account
+    // dependencies.accounts = {
+    //   query : {
+    //     tables : {
+    //       account : { columns : ['id', 'account_number', 'account_txt'] }
+    //     }
+    //   }
+    // };
 
     dependencies.creditorLocation = {
       identifier : 'uuid',
@@ -110,6 +111,7 @@ angular.module('bhima.controllers')
     function selectCreditor(creditor) {
       session.location = $scope.creditorLocation.get(creditor.location_id);
       session.purchase.note = formatPurchaseDescription();
+      if(session.purchase_type === 'direct') { initPanelSuccess(); }
       settupPurchase();
     }
 
@@ -222,7 +224,7 @@ angular.module('bhima.controllers')
       purchase.creditor_uuid = session.creditor.creditor_uuid;
       purchase.purchaser_id = $scope.user.data.id;
       purchase.project_id = $scope.project.id;
-      purchase.employee_id = session.purchase_type === 'direct' ? session.account.id : session.employee.id;
+      purchase.employee_id = session.purchase_type === 'direct' ? null : session.employee.id;
       purchase.is_direct = session.purchase_type === 'direct' ? 1 : 0;
 
       writePurchaseLine(purchase)
@@ -277,16 +279,17 @@ angular.module('bhima.controllers')
       return now.getFullYear() + '-' + ('0' + (now.getMonth() + 1)).slice(-2) + '-' + ('0' + now.getDate()).slice(-2);
     }
 
-    $scope.formatAccount = function (ac) { return ac.account_number + ' - ' + ac.account_txt; };
+    // $scope.formatAccount = function (ac) { return ac.account_number + ' - ' + ac.account_txt; };
 
-    $scope.getAccount = function (item) { 
-      session.account = item;
-      initPanelSuccess();
-    };
+    // $scope.getAccount = function (item) { 
+    //   session.account = item;
+    //   initPanelSuccess();
+    // };
 
     function initPanelSuccess() {
       session.panel_success = {
-        direct   : Boolean(session.creditor && session.account),
+        // direct   : Boolean(session.creditor && session.account),
+        direct   : Boolean(session.creditor),
         indirect : Boolean(session.creditor && session.employee)
       };
       session.panel_success.direct_and_indirect = session.panel_success.direct && session.panel_success.indirect;

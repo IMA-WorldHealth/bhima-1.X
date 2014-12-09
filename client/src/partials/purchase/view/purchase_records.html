@@ -93,7 +93,7 @@
               <th>{{ "COLUMNS.AMOUNT" | translate }}</th>
               <th>{{ "COLUMNS.DISCOUNT" | translate }}</th>
               <th>{{ "COLUMNS.CREDITOR" | translate }}</th>
-              <th>{{ "COLUMNS.ACCOUNT" | translate }}</th>
+              <th>{{ "COLUMNS.SUPPLIER" | translate }}</th>
               <th>{{ "COLUMNS.EMPLOYER" | translate }}</th>
               <th>{{ "COLUMNS.CONFIRMED" | translate }}</th>
               <th></th>
@@ -107,7 +107,7 @@
               <td>{{purchase.cost | currency}}</td>
               <td>{{purchase.discount}}</td>
               <td>{{purchase.text}}</td>
-              <td><strong>{{purchase.account_number}}</strong> - {{purchase.account_txt}}</td>
+              <td><strong>{{purchase.name}}</strong></td>
               <td>{{purchase.first}} {{purchase.last}}</td>
               <!--Multiple ng-shows - mutually exclusive but not good practice-->
               <td>
