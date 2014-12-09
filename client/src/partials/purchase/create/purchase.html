@@ -1,5 +1,5 @@
 <header data-header>
-  {{ 'PURCHASE.TITLE' | translate }}
+  {{ 'PURCHASE.CREATE.TITLE' | translate }}
 </header>
 
 <nav>
@@ -7,12 +7,12 @@
     <ol class="breadcrumb">
       <li><span class="glyphicon glyphicon-home"></span></li>
       <li><a href="#/purchase_menu">{{ "PURCHASE_MENU.TITLE" | translate }}</a></li>
-      <li class="active">{{ "PURCHASE.CREATE" | translate }}</li>
+      <li class="active">{{ "PURCHASE.CREATE.TITLE" | translate }}</li>
     </ol>
   </div>
 
   <div class="pull-right">
-    <a class="btn btn-sm btn-default square" ng-href="/#/creditor/">{{ 'PURCHASE.ADD_SUPPLIER' | translate }}</a>
+    <a class="btn btn-sm btn-default square" ng-href="/#/creditor/">{{ 'PURCHASE.CREATE.ADD_SUPPLIER' | translate }}</a>
   </div>
 </nav>
 
@@ -22,7 +22,7 @@
       <div class="panel panel-default square">
 
         <div class="panel-heading square">
-          <span class="glyphicon glyphicon-cog"></span> {{ 'PURCHASE.CONFIGURE' | translate }}
+          <span class="glyphicon glyphicon-cog"></span> {{ 'PURCHASE.CREATE.CONFIGURE' | translate }}
         </div>
 
         <div class="panel-body purchase-header">
@@ -37,14 +37,14 @@
           </div>
 
           <div class="form-group">
-            <label for="saledate">{{ 'PURCHASE.DATE' | translate }}</label>
+            <label for="saledate">{{ 'PURCHASE.CREATE.DATE' | translate }}</label>
             <input type="date" id="purchaseDate" class="form-bhima" ng-model="session.purchase.purchase_date">
           </div>
 
           <div class="form-group">
-            <label for="select-cred">{{ 'PURCHASE.SUPPLIER' | translate }}</label>
+            <label for="select-cred">{{ 'PURCHASE.CREATE.SUPPLIER' | translate }}</label>
             <select id="select-cred" ng-change="selectCreditor(session.creditor)" ng-model="session.creditor" ng-options="c as c.name for c in creditor.data" class="form-bhima">
-              <option value="" disabled="disabled">--Select Creditor--</option>
+              <option value="" disabled="disabled">--{{ 'PURCHASE.CREATE.SELECT_CREDITOR' | translate }}--</option>
             </select>
           </div>
 
@@ -52,16 +52,16 @@
 
             <div ng-switch-when="indirect">
               <div class="form-group">
-                <label for="select-employee">{{ 'PURCHASE.RESPONSABLE' | translate}}</label>
+                <label for="select-employee">{{ 'PURCHASE.CREATE.RESPONSIBLE' | translate}}</label>
                 <select id="select-employee" ng-model="session.employee" ng-options="e as e.name for e in employee.data" class="form-bhima" ng-change="initPanelSuccess()">
-                  <option value="" disabled="disabled">--Select Employee--</option>
+                  <option value="" disabled="disabled">--{{ 'PURCHASE.CREATE.SELECT_EMPLOYEE' | translate }}--</option>
                 </select>
               </div>
             </div>
 
             <div ng-switch-when="direct">
               <div class="form-group">
-                <label for="select-employee">{{ 'PURCHASE.BANK_ACCOUNT' | translate}}</label>
+                <label for="select-employee">{{ 'PURCHASE.CREATE.BANK_ACCOUNT' | translate}}</label>
                 <input type="text" ng-model="session.account_object" typeahead="formatAccount(account) as account.account_txt for account in accounts.data | filter:$viewValue | limitTo:8" typeahead-on-select="getAccount($item)" class="form-control">
               </div>
             </div>
@@ -114,9 +114,9 @@
               <table class="table table-bordered">
                 <thead>
                 <tr>
-                  <th>{{ 'PURCHASE.ORDER' | translate }}</th>
-                  <th> {{ 'PURCHASE.DATE' | translate }}</th>
-                  <th> {{ 'PURCHASE.NOTE' | translate }}</th>
+                  <th>{{ 'PURCHASE.CREATE.ORDER' | translate }}</th>
+                  <th> {{ 'PURCHASE.CREATE.DATE' | translate }}</th>
+                  <th> {{ 'PURCHASE.CREATE.NOTE' | translate }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -135,7 +135,7 @@
               <table ng-if="session.creditor" class="table table-bordered">
                 <thead>
                 <tr>
-                  <th> {{ 'PURCHASE.SUPPLIER' | translate }}</th>
+                  <th> {{ 'PURCHASE.CREATE.SUPPLIER' | translate }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -154,7 +154,7 @@
               <table ng-if="session.account" class="table table-bordered">
                 <thead>
                 <tr>
-                  <th> {{ 'PURCHASE.BANK_ACCOUNT' | translate }}</th>
+                  <th> {{ 'PURCHASE.CREATE.BANK_ACCOUNT' | translate }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -174,7 +174,7 @@
               <table ng-if="session.employee && !session.account" class="table table-bordered">
                 <thead>
                 <tr>
-                  <th> {{ 'PURCHASE.RESPONSABLE' | translate }}</th>
+                  <th> {{ 'PURCHASE.CREATE.RESPONSIBLE' | translate }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -205,9 +205,9 @@
 
       <div class="panel panel-default square" ng-class="{'panel-success' : session.panel_success.direct_or_indirect}">
         <div class="panel-heading square">
-          <span class="glyphicon glyphicon-list"></span> {{ 'PURCHASE.PURCHASE_ITEM' | translate }}
+          <span class="glyphicon glyphicon-list"></span> {{ 'PURCHASE.CREATE.PURCHASE_ITEM' | translate }}
           <!-- FIXME style hack -->
-          <a ng-class="{'disabled' : !(session.panel_success.direct_or_indirect)}" class="pull-right menu-item" ng-click="addPurchaseItem()" style="margin-top: 0px"><span class="glyphicon glyphicon&#45;plus"></span> {{ "PURCHASE.ADD_LINE_ITEM" | translate }}</a>
+          <a ng-class="{'disabled' : !(session.panel_success.direct_or_indirect)}" class="pull-right menu-item" ng-click="addPurchaseItem()" style="margin-top: 0px"><span class="glyphicon glyphicon&#45;plus"></span> {{ "PURCHASE.CREATE.ADD_LINE_ITEM" | translate }}</a>
         </div>
 
 
@@ -247,7 +247,7 @@
 
             <tr>
               <!-- Style hack -->
-              <td colspan="4" style="margin-right = 50px; text-align: right;"><b> {{ "PURCHASE.TOTAL_COST" | translate }}</b></td>
+              <td colspan="4" style="margin-right = 50px; text-align: right;"><b> {{ "PURCHASE.CREATE.TOTAL_COST" | translate }}</b></td>
               <td colspan="2"><b>{{ purchaseTotal() | currency }}</b></td>
             </tr>
 
@@ -260,6 +260,6 @@
 
 <footer>
   <div class="pull-right">
-    <a ng-disabled="verifyPurchase(session.items)" ng-click="submitPurchase()" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "PURCHASE.SUBMIT_ORDER" | translate }}</a>
+    <a ng-disabled="verifyPurchase(session.items)" ng-click="submitPurchase()" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "PURCHASE.CREATE.SUBMIT_ORDER" | translate }}</a>
   </div>
 </footer>
