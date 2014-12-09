@@ -85,7 +85,7 @@ angular.module('bhima.controllers')
       var direct = {
         'tables' : {
           'purchase' : {
-            'columns' : ['uuid', 'reference', 'cost', 'discount', 'purchase_date', 'paid']
+            'columns' : ['uuid', 'reference', 'cost', 'discount', 'purchase_date', 'confirmed']
           },
           'creditor' : {
             'columns' : ['text']

@@ -1,5 +1,5 @@
 <header data-header>
-  {{ 'PURCHASE.CONFIRM' | translate }}
+  {{ 'PURCHASE.CONFIRM.TITLE' | translate }}
 </header>
 
 <nav>
@@ -7,7 +7,7 @@
     <ol class="breadcrumb">
       <span class="glyphicon glyphicon-home"></span>
       <li><a href="#/purchase_menu/">{{ "CONFIRM.PARENT" | translate }}</a></li>
-      <li class="active">{{ "PURCHASE.CONFIRM" | translate }}</li>
+      <li class="active">{{ "PURCHASE.CONFIRM.TITLE" | translate }}</li>
     </ol>
   </div>
 </nav>
@@ -18,7 +18,7 @@
 
       <div class="panel panel-default square">
         <div class="panel-heading square">
-          {{ "PURCHASE.CONFIRM" | translate }}
+          {{ "PURCHASE.CONFIRM.TITLE" | translate }}
         </div>
 
         <div class="panel-body">
@@ -36,7 +36,7 @@
             <span class="input-group-btn">
               <button disabled class="btn btn-default btn-sm"><span class="glyphicon glyphicon-search"></span></button>
             </span>
-             <input class="form-bhima" placeholder="{{'PURCHASE.FILTER' | translate }}" ng-model="session.filter">
+             <input class="form-bhima" placeholder="{{'PURCHASE.CONFIRM.FILTER' | translate }}" ng-model="session.filter">
           </div>
 
           <table ng-if="session.purchase_type==='indirect'" class="table table-bordered table-condensed">
@@ -100,14 +100,14 @@
       <div class="panel square" ng-class="{'panel-success': session.selected, 'panel-default' : !session.selected}">
         <div class="panel-heading square">
           <span class="glyphicon glyphicon-list-alt"></span>
-          {{ "PURCHASE.CONFIRM_PAY" | translate }} <small>{{session.selected.uuid}}</small>
+          {{ "PURCHASE.CONFIRM.CONFIRM_PAY" | translate }} <small>{{session.selected.uuid}}</small>
         </div>
 
         <div class="panel-body" ng-if="session.selected">
           <table class="table table-bordered table-condensed">
             <thead>
               <tr>
-                <th colspan="2">{{ "PURCHASE.DETAILS" | translate }}</th>
+                <th colspan="2">{{ "PURCHASE.CONFIRM.DETAILS" | translate }}</th>
               </tr>
             </thead>
             <tbody>
@@ -129,7 +129,7 @@
             </tbody>
           </table>
 
-          <button ng-click="confirmPayment()" class="square btn btn-success btn-sm">  {{ "PURCHASE.CONFIRM_PAY_OF" | translate }} <b>{{session.selected.cost | currency}}</b> {{ "PURCHASE.BY" | translate }} 
+          <button ng-click="confirmPayment()" class="square btn btn-success btn-sm">  {{ "PURCHASE.CONFIRM.CONFIRM_PAY_OF" | translate }} <b>{{session.selected.cost | currency}}</b> {{ "PURCHASE.CONFIRM.BY" | translate }} 
           <b ng-if="session.purchase_type==='indirect'">{{session.selected.name}}</b>
           <b ng-if="session.purchase_type==='direct'">{{session.selected.account_number}}</b>
           </button>

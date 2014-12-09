@@ -716,7 +716,8 @@
     "STOCK_QTE_SEC"      : "Security Stock Quantity",
     "FOUR_ACCOUNT"       : "Four Account",
     "SIX_ACCOUNT"        : "Charge Account",
-    "IS_IPR"             : "Is IPR ?"    
+    "IS_IPR"             : "Is IPR ?",
+    "CONFIRMED"          : "Confirmed"   
   },
 
   "INVENTORY" : {
@@ -1337,35 +1338,45 @@
     "REGISTERED"  : "Registered"
   },
 
-  "PURCHASE"          : {
-    "TITLE"           : "Purchase Order",
-    "CONFIGURE"       : "Configure",
-    "SUPPLIER"        : "Supplier",
-    "RESPONSABLE"     : "Employee Responsable",
-    "SALE_DATE"       : "Creation Date",
-    "ADD_LINE_ITEM"   : "Add line Item",
-    "ADD_SUPPLIER"    : "Register Supplier",
-    "PURCHASE_ITEM"   : "Purchase Items",
-    "TOTAL_COST"      : "Total Cost",
-    "SUBMIT_ORDER"    : "Submit Purchase Request",
-    "WRITE_SUCCESS"   : "Purchase order submitted successfully.",
-    "ORDER"           : "Numero Ordre",
-    "DATE"            : "Date",
-    "NOTE"            : "Note",
-    "CREATE"          : "Create purchase order",
-    "BANK_ACCOUNT"    : "Bank Account",
-    "PURCHASE_TYPE"   : "Purchase type",
-    "DIRECT"          : "Direct",
-    "INDIRECT"        : "Indirect",
-    "NEXT"            : "Next",
-    "VIEW"            : "View purchase order",
-    "CONFIRM"         : "Confirm purchase order",
-    "FILTER"          : "Search filter",
-    "CONFIRM_PAY"     : "Confirm payment",
-    "CONFIRM_PAY_OF"  : "Confirm payment of",
-    "BY"              : "by",
-    "DETAILS"         : "Details of payment",
-    "NOT_FOUND"       : "Not found"
+  "PURCHASE"        : {
+    "TITLE"         : "Purchase order",
+    "PURCHASE_TYPE" : "Purchase type",
+    "DIRECT"        : "Direct",
+    "INDIRECT"      : "Indirect",
+    "NOT_FOUND"     : "Not found",
+    "CREATE"        : {
+        "TITLE"           : "Create a purchase order",
+        "ADD_SUPPLIER"    : "Add supplier",
+        "CONFIGURE"       : "Configure",
+        "SALE_DATE"       : "Date",
+        "SUPPLIER"        : "Supplier",
+        "RESPONSIBLE"     : "Employee responsible",
+        "ORDER"           : "Order",
+        "DATE"            : "Date",
+        "NOTE"            : "Note",
+        "PURCHASE_ITEM"   : "Purchase item",
+        "ADD_LINE_ITEM"   : "Add line item",
+        "TOTAL"           : "Total",
+        "SUBMIT"          : "Submit",
+        "SUBMIT_ORDER"    : "Submit purchase request",
+        "WRITE_SUCCESS"   : "Purchase order submitted successfully.",
+        "RESPONSABLE"     : "Responsible",
+        "TOTAL_COST"      : "Total cost",
+        "BANK_ACCOUNT"    : "Bank account",
+        "SELECT_CREDITOR" : "Select a supplier",
+        "SELECT_EMPLOYEE" : "Select an employee"
+    },
+    "CONFIRM"       : {
+        "TITLE"         : "Confirm a purchase order",
+        "FILTER"        : "Search filter",
+        "CONFIRM_PAY"   : "Confirm payment",
+        "CONFIRM_PAY_OF": "Confirm payment of",
+        "BY"            : "by",
+        "DETAILS"       : "Details of payment"
+    },
+    "VIEW"        : {
+        "TITLE"          : "View purchase orders"
+    }
   },
 
   "SALE"              : {

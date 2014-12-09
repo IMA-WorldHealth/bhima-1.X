@@ -1,5 +1,5 @@
 <header data-header>
-  {{"PURCHASE_RECORDS.TITLE" | translate}}
+  {{"PURCHASE.VIEW.TITLE" | translate}}
 </header>
 
 <nav>
@@ -7,7 +7,7 @@
     <ol class="breadcrumb">
       <li><span class="glyphicon glyphicon-home"></span></li>
       <li><a href="#/purchase_menu">{{ "PURCHASE_MENU.TITLE" | translate }}</a></li>
-      <li class="active">{{ "PURCHASE.VIEW" | translate }}</li>
+      <li class="active">{{ "PURCHASE.VIEW.TITLE" | translate }}</li>
     </ol>
   </div>
 
@@ -95,7 +95,7 @@
               <th>{{ "COLUMNS.CREDITOR" | translate }}</th>
               <th>{{ "COLUMNS.ACCOUNT" | translate }}</th>
               <th>{{ "COLUMNS.EMPLOYER" | translate }}</th>
-              <th>{{ "COLUMNS.PAID" | translate }}</th>
+              <th>{{ "COLUMNS.CONFIRMED" | translate }}</th>
               <th></th>
             </tr>
           </thead>
@@ -111,8 +111,8 @@
               <td>{{purchase.first}} {{purchase.last}}</td>
               <!--Multiple ng-shows - mutually exclusive but not good practice-->
               <td>
-                <span ng-show="purchase.paid==1" class="glyphicon glyphicon-hand-right"></span>
-                <span ng-show="purchase.paid==0" class="glyphicon glyphicon-hand-down"></span>
+                <span ng-show="purchase.confirmed==1" class="glyphicon glyphicon-hand-right"></span>
+                <span ng-show="purchase.confirmed==0" class="glyphicon glyphicon-hand-down"></span>
               </td>
               <td><a ng-href="#/invoice/purchase/{{purchase.uuid}}"><span class="glyphicon glyphicon-list-alt"></span> {{"PURCHASE_RECORDS.VIEW_PURCHASE_DETAIL" | translate}}</a></td>
             </tr>
