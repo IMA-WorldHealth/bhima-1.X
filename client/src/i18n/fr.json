@@ -857,7 +857,8 @@
     "FOUR_ACCOUNT"       : "Compte de tier",
     "SIX_ACCOUNT"        : "Compte charge",
     "IS_IPR"             : "Est-ce l'IPR",
-    "CONFIRMED"          : "Confirmé"
+    "CONFIRMED"          : "Confirmé",
+    "SUPPLIER"           : "Fournisseur"
   },
 
   "REPORT"                  : {
@@ -1305,7 +1306,8 @@
     "COTISATIONS"                   : "Cotisations",
     "COTISATION_PAYMENT"            : "Paiement Cotisations",
     "CONFIRM_DIRECT_PURCHASE"       : "Confirmation Achat Direct",
-    "ACCOUNT"                       : "Compte"
+    "ACCOUNT"                       : "Compte",
+    "SUPPLIER"                      : "Fournisseur"
   },
 
   "SECTOR"             : {

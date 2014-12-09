@@ -595,10 +595,10 @@ angular.module('bhima.controllers')
           identifier : 'uuid',
           tables : {
             purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'employee_id', 'project_id', 'purchase_date', 'note'] },
-            account : { columns : ['id', 'account_number', 'account_txt'] },
-            project : { columns : ['abbr'] }
+            supplier : { columns : ['name'] },
+            project  : { columns : ['abbr'] }
           },
-          join : ['purchase.project_id=project.id', 'purchase.employee_id=account.id'],
+          join : ['purchase.project_id=project.id', 'purchase.creditor_uuid=supplier.creditor_uuid'],
           where : ['purchase.uuid='+identifiant]
         }
       };
@@ -627,10 +627,9 @@ angular.module('bhima.controllers')
         invoice.sector = location.sector;
         invoice.phone = enterprise.phone;
         invoice.email = enterprise.email;
-        invoice.account_txt = purchase.account_txt;
+        invoice.supplier = purchase.name;
         invoice.purchase_date = purchase.purchase_date;
         invoice.reference = purchase.abbr + purchase.reference;
-        invoice.account_number = purchase.account_number;
         invoice.cost = purchase.cost;
       }
     }

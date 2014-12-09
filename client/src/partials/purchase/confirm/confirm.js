@@ -30,10 +30,10 @@ angular.module('bhima.controllers')
         identifier : 'uuid',
         tables : {
           purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'employee_id', 'project_id', 'purchase_date', 'note', 'is_direct'] },
-          account : { columns : ['id', 'account_number', 'account_txt'] },
+          supplier : { columns : ['name'] },
           project : { columns : ['abbr'] }
         },
-        join : ['purchase.project_id=project.id', 'purchase.employee_id=account.id'],
+        join : ['purchase.project_id=project.id', 'purchase.creditor_uuid=supplier.creditor_uuid'],
         where : ['purchase.confirmed=' + 0, 'AND', 'purchase.is_direct=1']
       }
     };
