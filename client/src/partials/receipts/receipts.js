@@ -46,6 +46,9 @@ angular.module('bhima.controllers')
       'generic_income' : {
         url : '/partials/receipts/templates/receipt_generic_income.html'
       },
+      'generic_expense' : {
+        url : '/partials/receipts/templates/receipt_generic_expense.html'
+      },
       'purchase' : {
         url : '/partials/receipts/templates/receipt_purchase.html'
       },
@@ -83,9 +86,7 @@ angular.module('bhima.controllers')
       //   url : '/partials/receipts/templates/distribution.html'
       // },
       // ,
-      // 'generic_expense' : {
-      //   url : '/partials/receipts/templates/generic.income.html'
-      // },
+      // ,
       // 'loss' : {
       //   url : '/partials/receipts/templates/loss.html'
       // },
