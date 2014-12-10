@@ -60,7 +60,11 @@ angular.module('bhima.controllers')
       },
       'confirm_direct_purchase' : {
         url : '/partials/receipts/templates/receipt_confirm_direct_purchase.html'
+      },
+      'consumption' : {
+        url : '/partials/receipts/templates/receipt_consumption.html'
       }
+
       // 'cash' : {
       //   url : '/partials/receipts/templates/cash.html'
       // },
@@ -77,9 +81,7 @@ angular.module('bhima.controllers')
       // 'movement' : {
       //   url : '/partials/receipts/templates/movement.html'
       // },
-      // 'consumption' : {
-      //   url : '/partials/receipts/templates/consumption.html'
-      // },
+      
       // 
       // ,
       // 'service_distribution' : {
