@@ -1,73 +1,78 @@
-<div class="row customer-details">
-  <div class="col-xs-12">
-    <small style="float: right; color: grey; font-size: 8px">{{ invoice.document_uuid }}</small>
-    <h4 class="invoice-header">{{ 'INVOICE.TAX_PAYMENT' | translate }}</h4>
-  </div>
-</div>
-
-<div class="row customer-details">
-  <div class="col-xs-6">
-    <span>
-      <b>{{invoice.enterprise_name}}</b>
-    </span>
-    <br>
-    {{invoice.village}}
-    <br>
-    {{ invoice.postal || 'B.P. 205'}}
-    <br>
-    {{invoice.sector}}
-    <br>
-    <i>TEL</i> {{invoice.phone}}
-    <br>
-    <i>FAX</i> {{invoice.email}}
-  </div>
-
-  <div class="col-xs-6">
-    <b>{{invoice.name}} </b>
-    <br>
-    <i>{{ 'INVOICE.DATE_REGISTRATION' | translate }}</i>
-    <br>
-    {{invoice.date | date}}
-  </div>          
-</div>
-
-<div class="row">
-  <div class="col-xs-12">
-    <table class="invoiceTable">
-      <thead>
-        <tr>
-          <th>{{ 'COLUMNS.REFERENCE' | translate }}</th>
-          <th>{{ 'INVOICE.DESCRIPTION' | translate}}</th>
-          <th>{{ 'COLUMNS.COST' | translate }}</th>
-          <th>{{ 'COLUMNS.BY' | translate }}</th>
-        </tr>
-      </thead>
-      <tbody class="items">
-        <tr>
-          <td>{{ invoice.reference }}</td>
-          <td>{{ invoice.description }}</td>
-          <td><span ng-bind-html="invoice.cost | intlcurrency:invoice.currency_id"></span></td>
-          <td>{{ invoice.by}}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-xs-4">
-    <div class="pull-right">
-      <b>{{"INVOICE.SIGN_HEADER_PRI" | translate}}</b>
+<!-- tax payment template -->
+<div ng-controller="receipt.tax_payment">
+  <div class="row customer-details">
+    <div class="col-xs-12">
+      <small style="float: right; color: grey; font-size: 8px">{{ model.taxPayment.document_uuid }}</small>
+      <h4 class="invoice-header">{{ 'INVOICE.TAX_PAYMENT' | translate }}</h4>
     </div>
   </div>
-  <div class="col-xs-4">
-    <div class="pull-left">
-     <b>{{"SIGNATURES.THIRD" | translate}}</b>
+
+  <div class="row customer-details">
+    <div class="col-xs-6">
+      <span>
+        <b>{{model.common.enterprise.name}}</b>
+      </span>
+      <br>
+      {{model.common.location.name}}
+      <br>
+      <!-- hah -->
+      {{ model.common.enterprise.postal || 'B.P. 205'}}
+      <br>
+      {{model.common.location.sector_name}}
+      <br>
+      <i>TEL</i> {{model.common.enterprise.phone}}
+      <br>
+      <i>MAIL</i> {{model.common.enterprise.email}}
+    </div>
+
+    <div class="col-xs-6">
+      <b>{{model.taxPayment.account_txt}} </b>
+      <br>
+      <i>{{ 'INVOICE.DATE_REGISTRATION' | translate }}</i>
+      <br>
+      {{model.taxPayment.date | date}}
+    </div>          
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <table class="invoiceTable">
+        <thead>
+          <tr>
+            <th>{{ 'COLUMNS.REFERENCE' | translate }}</th>
+            <th>{{ 'INVOICE.DESCRIPTION' | translate}}</th>
+            <th>{{ 'COLUMNS.COST' | translate }}</th>
+            <th>{{ 'COLUMNS.BY' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody class="items">
+          <tr>
+            <td>{{ model.common.enterprise.abbr }} {{ model.taxPayment.reference }}</td>
+            <td>{{ model.taxPayment.description }}</td>
+            <td><span ng-bind-html="model.taxPayment.cost | intlcurrency:model.taxPayment.currency_id"></span></td>
+            <td>{{ model.taxPayment.first}} &nbsp; {{ model.taxPayment.last}}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
-  <div class="col-xs-4">
-    <div class="pull-left">
-     <b>{{"SIGNATURES.CHIEF_ACCOUNTANT" | translate}}</b>
+
+  <div class="row">
+    <div class="col-xs-4">
+      <div class="pull-right">
+        <b>{{"INVOICE.SIGN_HEADER_PRI" | translate}}</b>
+      </div>
     </div>
-  </div>  
+    <div class="col-xs-4">
+      <div class="pull-left">
+       <b>{{"SIGNATURES.THIRD" | translate}}</b>
+      </div>
+    </div>
+    <div class="col-xs-4">
+      <div class="pull-left">
+       <b>{{"SIGNATURES.CHIEF_ACCOUNTANT" | translate}}</b>
+      </div>
+    </div>  
+  </div>
 </div>
+<!-- End tax payment template -->
