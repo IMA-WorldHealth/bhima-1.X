@@ -54,6 +54,9 @@ angular.module('bhima.controllers')
       },
       'confirm_indirect_purchase' : {
         url : '/partials/receipts/templates/receipt_confirm_indirect_purchase.html'
+      },
+      'confirm_direct_purchase' : {
+        url : '/partials/receipts/templates/receipt_confirm_direct_purchase.html'
       }
       // 'cash' : {
       //   url : '/partials/receipts/templates/cash.html'

@@ -1513,8 +1513,8 @@
     "ENTERPRISE_TAX_PAYMENT"        : "Entreprise Taxes Payment",
     "SALARY_PAYMENT"                : "Salary Payment",
     "COTISATIONS"                   : "Cotisations",
-    "COTISATION_PAYMENT"            : "Cotisation Payment"
-
+    "COTISATION_PAYMENT"            : "Cotisation Payment",
+    "SUPPLIER"                      : "Supplier"
   },
 
   "SECTOR"             : {

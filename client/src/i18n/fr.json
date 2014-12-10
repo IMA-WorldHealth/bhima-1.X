@@ -1302,7 +1302,8 @@
     "ENTERPRISE_TAX_PAYMENT"        : "Paiement Taxes Entreprise",
     "SALARY_PAYMENT"                : "Paiement Effectif du Salaire",
     "COTISATIONS"                   : "Cotisations",
-    "COTISATION_PAYMENT"            : "Paiement Cotisations"
+    "COTISATION_PAYMENT"            : "Paiement Cotisations",
+    "SUPPLIER"                      : "Fournisseur"
   },
 
   "SECTOR"             : {
