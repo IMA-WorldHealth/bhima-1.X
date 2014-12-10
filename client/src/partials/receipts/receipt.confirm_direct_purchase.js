@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('receipt.generic_income', [
+.controller('receipt.confirm_direct_purchase', [
   '$scope',
   '$routeParams',
   '$q',
@@ -11,23 +11,21 @@ angular.module('bhima.controllers')
   'connect',
   'messenger',
   function ($scope, $routeParams, $q, $http, validate, exchange, appstate, util, connect, messenger) {
-    var dependencies = {}, model = $scope.model = {common : {}};    
+    var dependencies = {}, model = $scope.model = {common : {}};
 
-    dependencies.genericIncome = {
+    dependencies.confirmDirectPurchase = {
       query : {
         identifier : 'uuid',
         tables : {
-          primary_cash : { columns : ['reference', 'description', 'cost', 'currency_id', 'date'] },
-          primary_cash_item : { columns : ['document_uuid'] },
-          user : { columns : ['first', 'last'] },
-          account : { columns : ['account_txt'] }
+          purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'project_id', 'purchase_date', 'note'] },
+          supplier : { columns : ['name'] }
         },
-        join : ['primary_cash.user_id=user.id', 'primary_cash.account_id=account.id', 'primary_cash.uuid=primary_cash_item.primary_cash_uuid']
+        join : ['purchase.creditor_uuid=supplier.creditor_uuid']
       }
     };
 
     function buildInvoice (res) {
-      model.genericIncome = res.genericIncome.data.pop();
+      model.confirmDirectPurchase = res.confirmDirectPurchase.data.pop();
     }
 
   	appstate.register('receipts.commonData', function (commonData) {
@@ -35,7 +33,7 @@ angular.module('bhima.controllers')
         model.common.location = values.location.data.pop();
         model.common.InvoiceId = values.invoiceId;
         model.common.enterprise = values.enterprise.data.pop();
-        dependencies.genericIncome.query.where = ['primary_cash.uuid=' + values.invoiceId];
+        dependencies.confirmDirectPurchase.query.where =  ['purchase.uuid=' + values.invoiceId];
         validate.process(dependencies)
         .then(buildInvoice)
         .catch(function (err){
