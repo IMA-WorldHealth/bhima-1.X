@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('receipt.generic_income', [
+.controller('receipt.generic_expense', [
   '$scope',
   '$routeParams',
   '$q',
@@ -13,11 +13,11 @@ angular.module('bhima.controllers')
   function ($scope, $routeParams, $q, $http, validate, exchange, appstate, util, connect, messenger) {
     var dependencies = {}, model = $scope.model = {common : {}};    
 
-    dependencies.genericIncome = {
+    dependencies.genericExpense = {
       query : {
         identifier : 'uuid',
         tables : {
-          primary_cash : { columns : ['reference', 'description', 'cost', 'currency_id', 'date'] },
+          primary_cash : { columns : ['uuid', 'reference', 'description', 'cost', 'currency_id', 'date'] },
           primary_cash_item : { columns : ['document_uuid'] },
           user : { columns : ['first', 'last'] },
           account : { columns : ['account_txt'] }
@@ -27,7 +27,7 @@ angular.module('bhima.controllers')
     };
 
     function buildInvoice (res) {
-      model.genericIncome = res.genericIncome.data.pop();
+      model.genericExpense = res.genericExpense.data.pop();
     }
 
   	appstate.register('receipts.commonData', function (commonData) {
@@ -35,7 +35,7 @@ angular.module('bhima.controllers')
         model.common.location = values.location.data.pop();
         model.common.InvoiceId = values.invoiceId;
         model.common.enterprise = values.enterprise.data.pop();
-        dependencies.genericIncome.query.where = ['primary_cash.uuid=' + values.invoiceId];
+        dependencies.genericExpense.query.where = ['primary_cash.uuid=' + values.invoiceId];
         validate.process(dependencies)
         .then(buildInvoice)
         .catch(function (err){
