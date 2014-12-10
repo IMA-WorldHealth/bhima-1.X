@@ -46,6 +46,9 @@ angular.module('bhima.controllers')
       'generic_income' : {
         url : '/partials/receipts/templates/receipt_generic_income.html'
       },
+      'generic_expense' : {
+        url : '/partials/receipts/templates/receipt_generic_expense.html'
+      },
       'purchase' : {
         url : '/partials/receipts/templates/receipt_purchase.html'
       },
@@ -57,7 +60,11 @@ angular.module('bhima.controllers')
       },
       'confirm_direct_purchase' : {
         url : '/partials/receipts/templates/receipt_confirm_direct_purchase.html'
+      },
+      'consumption' : {
+        url : '/partials/receipts/templates/receipt_consumption.html'
       }
+
       // 'cash' : {
       //   url : '/partials/receipts/templates/cash.html'
       // },
@@ -74,18 +81,14 @@ angular.module('bhima.controllers')
       // 'movement' : {
       //   url : '/partials/receipts/templates/movement.html'
       // },
-      // 'consumption' : {
-      //   url : '/partials/receipts/templates/consumption.html'
-      // },
+      
       // 
       // ,
       // 'service_distribution' : {
       //   url : '/partials/receipts/templates/distribution.html'
       // },
       // ,
-      // 'generic_expense' : {
-      //   url : '/partials/receipts/templates/generic.income.html'
-      // },
+      // ,
       // 'loss' : {
       //   url : '/partials/receipts/templates/loss.html'
       // },
