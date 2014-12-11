@@ -609,6 +609,22 @@
     "EXIT_SERVICE" : {
         "KEY" : "Distribution stock au services"
     },
+    "DISTRIBUTION_RECORDS" : {
+        "KEY"                       : "Historique des distributions aux patients",
+        "REVERSING_DISTRIBUTION"    : "Annuler la distribution",
+        "REVERSING_TITLE"           : "Annulation de la distribution",
+        "SUBMIT"                    : "Soumettre",
+        "ERROR"                     : "Cette consommation a déjà été inversée dans le stock",
+        "SUCCESS"                   : "Opération avec succès"
+    },  
+    "DISTRIBUTION_SERVICE_RECORDS" : {
+        "KEY"                       : "Historique des distributions aux services",
+        "REVERSING_DISTRIBUTION"    : "Annuler la distribution",
+        "REVERSING_TITLE"           : "Annulation de la distribution",
+        "SUBMIT"                    : "Soumettre",
+        "ERROR"                     : "Cette consommation a déjà été inversée dans le stock",
+        "SUCCESS"                   : "Opération avec succès"
+    },        
     "LOSS"     : {
       "KEY"    : "Perte stock",
       "TITLE"  : "Perte stock",
@@ -856,7 +872,8 @@
     "STOCK_QTE_SEC"      : "Stock de securité",
     "FOUR_ACCOUNT"       : "Compte de tier",
     "SIX_ACCOUNT"        : "Compte charge",
-    "IS_IPR"             : "Est-ce l'IPR"
+    "IS_IPR"             : "Est-ce l'IPR",
+    "NUM_ITEMS"          : "Nombre Items"
   },
 
   "REPORT"                  : {
@@ -1654,7 +1671,8 @@
     "AVAILABLE"              : "Prescriptions disponibles",
     "NO_SALE_FOUND"          : "Aucune données trouvés concernant la vente pour le patient",
     "SHOW_ALL_SALES"         : "Afficher toutes les ventes pour ce patient",
-    "HAS_EXPIRED"            : " a expriré et ne peut être utilisé, contacter le Gestionnaire de Stock"
+    "HAS_EXPIRED"            : " a expriré et ne peut être utilisé, contacter le Gestionnaire de Stock",
+    "NO_DISTRIB_PATIENT"     : "Aucune distribution aux patients dans cette plage de temps"
   },
 
     "DISTRIBUTION_SERVICE" : {

@@ -226,6 +226,70 @@ function saleRecords(params) {
   return deferred.promise;
 }
 
+function distributionPatients(params) {
+  var deferred = q.defer();
+  params = JSON.parse(params);
+
+  if (!params.dateFrom || !params.dateTo) {
+    return q.reject(new Error('Invalid date parameters'));
+  }
+
+  var requestSql =
+    'SELECT COUNT(`consumption_patient`.`sale_uuid`) AS nr_item, `consumption_patient`.`sale_uuid`, `consumption_patient`.`patient_uuid`, ' +
+    '`patient`.`first_name`,`patient`.`last_name`, `patient`.`reference`, `consumption`.`date`,' +
+    '`depot`.`text`, (`sale`.`reference`) AS refSale, `project`.`abbr`,(`consumption_reversing`.`consumption_uuid`) AS reversingUuid ' +
+    'FROM `consumption_patient` ' + 
+    'JOIN `consumption` ON `consumption`.`uuid` =  `consumption_patient`.`consumption_uuid` ' + 
+    'JOIN `patient` ON `patient`.`uuid` =  `consumption_patient`.`patient_uuid` ' +
+    'JOIN `depot` ON `depot`.`uuid` = `consumption`.`depot_uuid` ' +
+    'JOIN `sale` ON `sale`.`uuid` = `consumption`.`document_id` ' +
+    'JOIN `project` ON `project`.`id` = `sale`.`project_id` ' +
+    'JOIN `stock` ON `stock`.`tracking_number` = `consumption`.`tracking_number` ' +
+    'LEFT JOIN `consumption_reversing` ON `consumption_reversing`.`document_id` = `consumption`.`document_id` ' +
+    'WHERE `depot`.`uuid` = \'' + params.depotId + '\' AND `consumption`.`date` >= \'' + params.dateTo + '\' AND `consumption`.`date` <= \'' + params.dateFrom + '\' ' +
+    'GROUP BY `consumption_patient`.`sale_uuid` ORDER BY `consumption`.`date` DESC, `patient`.`first_name` ASC, `patient`.`last_name` ASC';
+  db.execute(requestSql, function(error, result) {
+    if (error) {
+      return deferred.reject(error);
+    }
+    deferred.resolve(result);
+  });
+  return deferred.promise;
+}
+
+function distributionServices(params) {
+  var deferred = q.defer();
+  params = JSON.parse(params);
+
+  if (!params.dateFrom || !params.dateTo) {
+    return q.reject(new Error('Invalid date parameters'));
+  }
+
+  var requestSql =
+    'SELECT `consumption_service`.`consumption_uuid`, `consumption_service`.`service_id`, `service`.`name`, ' +
+    '`consumption`.`date`, `consumption`.`quantity`, `depot`.`text`, `stock`.`lot_number`, (`inventory`.`text`) AS inventoryText, ' +
+    '(`consumption_reversing`.`consumption_uuid`) AS reversingUuid ' +
+    'FROM `consumption_service` ' +
+    'JOIN `consumption` ON `consumption`.`uuid` =  `consumption_service`.`consumption_uuid` ' + 
+    'JOIN `service` ON `service`.`id` =  `consumption_service`.`service_id` ' +
+    'JOIN `depot` ON `depot`.`uuid` = `consumption`.`depot_uuid` ' +
+    'JOIN `stock` ON `stock`.`tracking_number` = `consumption`.`tracking_number` ' +
+    'JOIN `inventory` ON `inventory`.`uuid` = `stock`.`inventory_uuid` ' +
+    'LEFT JOIN `consumption_reversing` ON `consumption_reversing`.`consumption_uuid` = `consumption`.`uuid` ' +    
+    'WHERE `depot`.`uuid` = \'' + params.depotId + '\' AND `consumption`.`date` >= \'' + params.dateTo + '\' AND `consumption`.`date` <= \'' + params.dateFrom + '\' ' +
+    'ORDER BY `consumption`.`date` DESC, `service`.`name` ASC';
+
+  db.execute(requestSql, function(error, result) {
+    if (error) {
+      return deferred.reject(error);
+    }
+    deferred.resolve(result);
+  });
+  return deferred.promise;
+}
+
+
+
 function patientRecords(params) {
   var p = querystring.parse(params),
       deferred = q.defer();
@@ -721,23 +785,25 @@ function generate(request, params, done) {
   *   Route request for reports, if no report matches given request, return null
   */
   var route = {
-    'finance'          : finance,
+    'finance'               : finance,
     //'transReport'      : transReport,
-    'debitorAging'     : debitorAging,
-    'saleRecords'      : saleRecords,
-    'patients'         : patientRecords,
-    'payments'         : paymentRecords,
-    'patientStanding'  : patientStanding,
-    'employeeStanding' : employeeStanding,
-    'accountStatement' : accountStatement,
-    'allTrans'         : allTrans,
-    'prices'           : priceReport,
-    'stock_location'   : stockLocation,
-    'stock_count'      : stockCount,
-    'transactions'     : transactionsByAccount,
-    'income_report'    : incomeReport,
-    'expense_report'   : expenseReport,
-    'patient_group'    : require('./reports/patient_group')(db)
+    'debitorAging'          : debitorAging,
+    'saleRecords'           : saleRecords,
+    'distributionPatients'  : distributionPatients,
+    'distributionServices'  : distributionServices,        
+    'patients'              : patientRecords,
+    'payments'              : paymentRecords,
+    'patientStanding'       : patientStanding,
+    'employeeStanding'      : employeeStanding,
+    'accountStatement'      : accountStatement,
+    'allTrans'              : allTrans,
+    'prices'                : priceReport,
+    'stock_location'        : stockLocation,
+    'stock_count'           : stockCount,
+    'transactions'          : transactionsByAccount,
+    'income_report'         : incomeReport,
+    'expense_report'        : expenseReport,
+    'patient_group'         : require('./reports/patient_group')(db)
   };
 
   route[request](params)
