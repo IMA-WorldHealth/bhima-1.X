@@ -2381,8 +2381,7 @@
     "CREATED_ON"         : "Crée en",
     "ACCOUNT_NUMBER"     : "Numéro de Compte",
     "ACCOUNT_BALANCE"    : "Balance Compte",
-    "LAST_PURCHASE_DATE" : "Dernier date d'achat",
-    "LAST_PAYMENT_DATE"  : "Dernier date payement",
+    "LAST_DATE"          : "Dernière date",
     "OUTSTANDING_BILLS"  : "Factures impayées et autres paiements",
     "IMG"                : "Photo du patient",
     "NO_TRANSACTION"     : "pas des transaction"
