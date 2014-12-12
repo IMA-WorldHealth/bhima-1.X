@@ -78,14 +78,7 @@
 
               <div class="form-group">
                 <label class="control-label col-xs-2">
-                  {{ "EMPLOYEE_STANDING.LAST_PURCHASE_DATE" | translate }}
-                </label>
-                <div class="col-xs-4">
-                  <p class="form-control-static">{{ session.employee.last_purchase_date | date }}</p>
-                </div>
-
-                <label class="control-label col-xs-2">
-                  {{ "EMPLOYEE_STANDING.LAST_PAYMENT_DATE" | translate }}
+                  {{ "EMPLOYEE_STANDING.LAST_DATE" | translate }}
                 </label>
                 <div class="col-xs-4">
                   <p class="form-control-static" ng-if="session.employee.last_payment_date">{{ session.employee.last_payment_date | date}}</p>
