@@ -103,6 +103,9 @@ angular.module('bhima.controllers')
       // 'payroll' : {
       //   url : '/partials/receipts/templates/payroll.html'
       // },
+      // 'cotisation_paiement' : {
+      //   url : '/partials/receipts/templates/cotisation_paiement.html'
+      // }
                              
     };
 
