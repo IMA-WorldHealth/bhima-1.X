@@ -64,6 +64,12 @@ angular.module('bhima.controllers')
       'consumption' : {
         url : '/partials/receipts/templates/receipt_consumption.html'
       },
+      'tax_payment' : {
+        url : '/partials/receipts/templates/receipt_tax_payment.html'
+      },
+      'cotisation_paiement' : {
+        url : '/partials/receipts/templates/receipt_cotisation_paiement.html'
+      }
       // 'cash' : {
       //   url : '/partials/receipts/templates/cash.html'
       // },
@@ -96,13 +102,7 @@ angular.module('bhima.controllers')
       // },
       // 'payroll' : {
       //   url : '/partials/receipts/templates/payroll.html'
-      // },
-      // 'cotisation_paiement' : {
-      //   url : '/partials/receipts/templates/cotisation_paiement.html'
-      // },
-      'tax_payment' : {
-        url : '/partials/receipts/templates/tax_payment.html'
-      }                        
+      // },                      
     };
 
     function convert (value, currency_id, date) {
