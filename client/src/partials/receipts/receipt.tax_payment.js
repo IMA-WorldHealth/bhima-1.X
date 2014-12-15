@@ -27,7 +27,6 @@ angular.module('bhima.controllers')
     };
 
     function buildInvoice (res) {
-      console.log('RES: ', res);
       model.taxPayment = res.taxPayment.data[0];
     }
 
