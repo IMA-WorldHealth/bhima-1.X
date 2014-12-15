@@ -1,7 +1,9 @@
+<!-- payslip template -->
+<div ng-controller="receipt.payslip">
 <div class="row customer-details">
   <div class="col-xs-12">
 
-    <small style="float: right; color: grey; font-size: 8px">{{ invoice.uuid }}</small>
+    <small style="float: right; color: grey; font-size: 8px">{{ model.common.InvoiceId }}</small>
     <h4 class="invoice-header">{{ 'PAYCHECK.PAYSLIP' | translate }} : {{ dataPaiements[0].paiement_date | date}}</h4>
   </div>
 </div>
@@ -9,19 +11,18 @@
 <div class="row customer-details">
   <div class="col-xs-4">
     <span>
-      <b>{{project.enterprise_name}}</b>
-    </span>
-    <br>
-    {{project.village}}
-    <br>
-    {{ project.postal || 'B.P. 205'}}
-    <br>
-    {{project.sector}}
-    <br>
-    <i>TEL</i> {{project.phone}}
-    <br>
-    <i>FAX</i> {{project.email}}
-
+      <b>{{model.common.enterprise.name}}</b>
+      </span>
+      <br>
+      {{model.common.location.name}}
+      <br>
+      {{ model.common.enterprise.postal || 'B.P. 205'}}
+      <br>
+      {{model.common.location.sector_name}}
+      <br>
+      <i>TEL</i> {{model.common.enterprise.phone}}
+      <br>
+      <i>MAIL</i> {{model.common.enterprise.email}}
   </div>
   <div class="col-xs-4">
 
@@ -112,3 +113,5 @@
     </table>
   </div>
 </div>
+</div>
+<!-- End payslip template -->
