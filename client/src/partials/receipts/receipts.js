@@ -5,13 +5,11 @@ angular.module('bhima.controllers')
   '$scope',
   '$routeParams',
   '$q',
-  '$http',
   'validate',
   'exchange',
   'appstate',
-  'util',
   'connect',
-  function ($scope, $routeParams, $q, $http, validate, exchange, appstate, util, connect) {
+  function ($scope, $routeParams, $q, validate, exchange, appstate, connect) {
     var templates,
       dependencies = {},
       origin = $routeParams.originId,
@@ -102,9 +100,6 @@ angular.module('bhima.controllers')
       // ,
       // 'loss' : {
       //   url : '/partials/receipts/templates/loss.html'
-      // },
-      // 'cotisation_paiement' : {
-      //   url : '/partials/receipts/templates/cotisation_paiement.html'
       // }
                              
     };
