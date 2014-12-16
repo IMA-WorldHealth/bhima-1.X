@@ -102,7 +102,7 @@ angular.module('bhima.controllers')
       // ,
       // 'loss' : {
       //   url : '/partials/receipts/templates/loss.html'
-      // }                  
+      // }
     };
 
     function convert (value, currency_id, date) {
