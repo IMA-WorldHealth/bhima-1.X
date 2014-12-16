@@ -55,30 +55,32 @@ angular.module('bhima.controllers')
     });
 
     function submit(consumption) {
-      var date = new Date(),
-        description = consumption.description,
-        item = consumption.data[0];
-      
-      item.consumption_uuid = item.uuid;      
-      item.inventory_uuid = null;
-      item.lot_number = null; 
-      item.text = null;
-      
-      item.uuid = uuid();
-      item.date = util.sqlDate(date);   
-      item.description = description;
-      item.document_id = consumptionId;    
- 
       if($scope.dataReversing.length >= 1){
-          messenger.danger($translate.instant('STOCK.DISTRIBUTION_RECORDS.ERROR'));                
-      } else if ($scope.dataReversing.length === 0) {          
+          messenger.danger($translate.instant('STOCK.DISTRIBUTION_RECORDS.ERROR'));     
+          $location.path('/stock/');           
+      } else if ($scope.dataReversing.length === 0) {
+        var date = new Date(),
+          description = consumption.description,
+          item = consumption.data[0];
+        
+        item.consumption_uuid = item.uuid;      
+        item.inventory_uuid = null;
+        item.lot_number = null; 
+        item.text = null;
+
+        item.uuid = uuid();
+        item.date = util.sqlDate(date);   
+        item.description = description;
+        item.document_id = consumptionId;    
+
         connect.post('consumption_reversing', [connect.clean(item)])
         .then(function () {
-          messenger.success($translate.instant('STOCK.DISTRIBUTION_RECORDS.SUCCESS'));          
+          messenger.success($translate.instant('STOCK.DISTRIBUTION_RECORDS.SUCCESS'));   
+          $location.path('/stock/');       
         });          
-      }              
-
-      $location.path('/stock/');
+      } else {
+        messenger.danger($translate.instant('ERROR.ERR_SQL'));  
+      }                    
     }  
 
     $scope.submit = submit;

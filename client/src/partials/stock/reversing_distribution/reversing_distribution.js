@@ -54,33 +54,34 @@ angular.module('bhima.controllers')
     });
 
     function submit(consumption) {
-      var date = new Date(),
-        description = consumption.description, 
-        records = [];
-
-      consumption.data.forEach(function (item) {
-        records.push({
-          uuid : uuid(),
-          consumption_uuid : item.uuid,
-          depot_uuid : item.depot_uuid,
-          document_id : consumptionId, 
-          date : util.sqlDate(date),
-          tracking_number : item.tracking_number,
-          quantity : item.quantity,
-          description : description
-        });            
-      });
-      console.log(records);
       if($scope.dataReversing.length >= 1){
           messenger.danger($translate.instant('STOCK.DISTRIBUTION_RECORDS.ERROR'));  
           $location.path('/stock/');              
-      } else if ($scope.dataReversing.length === 0) {          
+      } else if ($scope.dataReversing.length === 0) {  
+        var date = new Date(),
+          description = consumption.description;
+        
+        var records =  consumption.data.map(function (item) {
+          return {
+            uuid : uuid(),
+            consumption_uuid : item.uuid,
+            depot_uuid : item.depot_uuid,
+            document_id : consumptionId,
+            date : util.sqlDate(date),
+            tracking_number : item.tracking_number,
+            quantity : item.quantity,
+            description : description
+          };
+        });
+
         connect.post('consumption_reversing', records)
         .then(function () {
           messenger.success($translate.instant('STOCK.DISTRIBUTION_RECORDS.SUCCESS')); 
           $location.path('/stock/');         
-        });          
-      }        
+        });         
+      } else {
+        messenger.danger($translate.instant('ERROR.ERR_SQL'));  
+      }
     }  
 
     $scope.submit = submit;
