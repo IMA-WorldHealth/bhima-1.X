@@ -26,7 +26,7 @@ angular.module('bhima.controllers')
     dependencies.enterprise = {
       query : {
         tables : {
-          'enterprise' : {columns : ['id', 'name', 'phone', 'email', 'location_id' ]},
+          'enterprise' : {columns : ['id', 'name', 'phone', 'email', 'location_id', 'currency_id' ]},
           'project'    : {columns : ['name', 'abbr']}
         },
         join : ['enterprise.id=project.enterprise_id']
@@ -75,12 +75,12 @@ angular.module('bhima.controllers')
       },
       'payroll' : {
         url : '/partials/receipts/templates/receipt_payroll.html'
+      },
+      'sale' : {
+        url : '/partials/receipts/templates/receipt_sale.html'
       }
       // 'cash' : {
       //   url : '/partials/receipts/templates/cash.html'
-      // },
-      // 'sale' : {
-      //   url : '/partials/receipts/templates/sale.html'
       // },
       // 'credit' : {
       //   url : '/partials/receipts/templates/credit.html'
