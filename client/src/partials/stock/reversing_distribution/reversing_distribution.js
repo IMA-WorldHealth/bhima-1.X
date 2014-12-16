@@ -2,16 +2,14 @@ angular.module('bhima.controllers')
 .controller('stock.reversing_distribution', [
   '$scope',
   '$routeParams',
-  '$filter',
   '$location',
   '$translate',
   'validate',
   'connect',
   'messenger',
   'uuid',
-  'appstate',
   'util',
-  function ($scope, $routeParams, $filter, $location, $translate, validate, connect, messenger, uuid, appstate, util) {
+  function ($scope, $routeParams, $location, $translate, validate, connect, messenger, uuid, util) {
     var consumptionId = $scope.consumptionId = $routeParams.consumptionId, invoiceId, dependencies = {};
 
     dependencies.consumption = {
@@ -57,29 +55,32 @@ angular.module('bhima.controllers')
 
     function submit(consumption) {
       var date = new Date(),
-        description = consumption.description;
+        description = consumption.description, 
+        records = [];
 
       consumption.data.forEach(function (item) {
-        item.consumption_uuid = item.uuid;
-        delete item.inventory_uuid;
-        delete item.lot_number; 
-        delete item.text;
-
-        item.uuid = uuid();
-        item.date = util.sqlDate(date);   
-        item.description = description;
-        item.document_id = consumptionId;    
-
-        if($scope.dataReversing.length >= 1){
-            messenger.danger($translate.instant('STOCK.DISTRIBUTION_RECORDS.ERROR'));                
-        } else {         
-          connect.basicPut('consumption_reversing', [item])
-          .then(function () {
-            messenger.success($translate.instant('STOCK.DISTRIBUTION_RECORDS.SUCCESS'));          
-          });          
-        }              
+        records.push({
+          uuid : uuid(),
+          consumption_uuid : item.uuid,
+          depot_uuid : item.depot_uuid,
+          document_id : consumptionId, 
+          date : util.sqlDate(date),
+          tracking_number : item.tracking_number,
+          quantity : item.quantity,
+          description : description
+        });            
       });
-      $location.path('/stock/'); 
+      console.log(records);
+      if($scope.dataReversing.length >= 1){
+          messenger.danger($translate.instant('STOCK.DISTRIBUTION_RECORDS.ERROR'));  
+          $location.path('/stock/');              
+      } else if ($scope.dataReversing.length === 0) {          
+        connect.post('consumption_reversing', records)
+        .then(function () {
+          messenger.success($translate.instant('STOCK.DISTRIBUTION_RECORDS.SUCCESS')); 
+          $location.path('/stock/');         
+        });          
+      }        
     }  
 
     $scope.submit = submit;
