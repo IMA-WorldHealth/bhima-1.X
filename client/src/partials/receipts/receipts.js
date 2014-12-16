@@ -102,11 +102,7 @@ angular.module('bhima.controllers')
       // ,
       // 'loss' : {
       //   url : '/partials/receipts/templates/loss.html'
-      // },
-      // 'cotisation_paiement' : {
-      //   url : '/partials/receipts/templates/cotisation_paiement.html'
       // }
-                             
     };
 
     function convert (value, currency_id, date) {
