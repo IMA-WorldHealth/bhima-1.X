@@ -73,6 +73,9 @@ angular.module('bhima.controllers')
       },
       'payroll' : {
         url : '/partials/receipts/templates/receipt_payroll.html'
+      },
+      'credit' : {
+        url : '/partials/receipts/templates/receipt_credit_note.html'
       }
       // 'cash' : {
       //   url : '/partials/receipts/templates/cash.html'
@@ -80,9 +83,7 @@ angular.module('bhima.controllers')
       // 'sale' : {
       //   url : '/partials/receipts/templates/sale.html'
       // },
-      // 'credit' : {
-      //   url : '/partials/receipts/templates/credit.html'
-      // },
+      // ,
       // 'patient' : {
       //   url : '/partials/receipts/templates/patient.html'
       // },
