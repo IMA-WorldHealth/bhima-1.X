@@ -278,6 +278,35 @@ angular.module('bhima.controllers')
         });
       });
 
+      dependencies.get_cotisation = {
+        query : {
+          tables : {
+            'cotisation_paiement' : {
+              columns : ['id', 'paiement_uuid', 'value', 'cotisation_id']
+            },
+            'cotisation' : {
+              columns : ['id', 'label', 'is_employee']
+            }
+          },
+          join : [
+            'cotisation_paiement.cotisation_id=cotisation.id'
+          ],
+          where : [
+            'cotisation.is_employee=' + 1, 'AND' ,'cotisation_paiement.paiement_uuid=' + invoiceId
+          ]
+        }
+      };
+      validate.process(dependencies, ['get_cotisation'])
+      .then(function (model) {
+        console.log('Les donnees',model.get_cotisation.data);
+        $scope.dataCotisation = model.get_cotisation.data;
+        var cotisationValue = model.get_cotisation.data;
+        cotisationValue.forEach(function (item) {
+          $scope.TotalWithheld += item.value;
+          $scope.TotalNet -= item.value;
+        });
+      });
+
     } 
 
     function promiseInvoiceId (invoiceId) {
