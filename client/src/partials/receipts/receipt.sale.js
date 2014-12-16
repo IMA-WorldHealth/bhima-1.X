@@ -1,16 +1,11 @@
 angular.module('bhima.controllers')
 .controller('receipt.sale', [
   '$scope',
-  '$routeParams',
-  '$q',
-  '$http',
   'validate',
   'exchange',
   'appstate',
-  'util',
-  'connect',
   'messenger',
-  function ($scope, $routeParams, $q, $http, validate, exchange, appstate, util, connect, messenger) {
+  function ($scope, validate, exchange, appstate, messenger) {
     var dependencies = {}, model = $scope.model = {common : {}};
 
     function processSale(invoiceId) {
