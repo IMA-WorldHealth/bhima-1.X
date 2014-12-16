@@ -1,16 +1,14 @@
 angular.module('bhima.controllers')
 .controller('receipt.payslip', [
   '$scope',
-  '$routeParams',
   '$q',
   '$http',
   'validate',
   'exchange',
   'appstate',
   'util',
-  'connect',
   'messenger',
-  function ($scope, $routeParams, $q, $http, validate, exchange, appstate, util, connect, messenger) {
+  function ($scope, $q, $http, validate, exchange, appstate, util, messenger) {
     var dependencies = {}, model = $scope.model = {common : {}};
 
     function processPayslip (invoiceId) {

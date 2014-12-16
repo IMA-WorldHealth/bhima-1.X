@@ -1,16 +1,10 @@
 angular.module('bhima.controllers')
 .controller('receipt.caution', [
   '$scope',
-  '$routeParams',
-  '$q',
-  '$http',
   'validate',
-  'exchange',
   'appstate',
-  'util',
-  'connect',
   'messenger',
-  function ($scope, $routeParams, $q, $http, validate, exchange, appstate, util, connect, messenger) {
+  function ($scope, validate, appstate, messenger) {
     var dependencies = {}, model = $scope.model = {common : {}}, utility = $scope.utility = {};
 
     dependencies.caution = {
