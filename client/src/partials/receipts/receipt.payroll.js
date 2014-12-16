@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('receipt.tax_payment', [
+.controller('receipt.payroll', [
   '$scope',
   '$routeParams',
   '$q',
@@ -13,7 +13,7 @@ angular.module('bhima.controllers')
   function ($scope, $routeParams, $q, $http, validate, exchange, appstate, util, connect, messenger) {
     var dependencies = {}, model = $scope.model = {common : {}};
 
-    dependencies.taxPayment = {
+    dependencies.payroll = {
       query : {
         identifier : 'uuid',
         tables : {
@@ -27,7 +27,7 @@ angular.module('bhima.controllers')
     };
 
     function buildInvoice (res) {
-      model.taxPayment = res.taxPayment.data[0];
+      model.payroll = res.payroll.data[0];
     }
 
   	appstate.register('receipts.commonData', function (commonData) {
@@ -35,7 +35,7 @@ angular.module('bhima.controllers')
         model.common.location = values.location.data.pop();
         model.common.InvoiceId = values.invoiceId;
         model.common.enterprise = values.enterprise.data.pop();
-        dependencies.taxPayment.query.where =  ['primary_cash.uuid=' + values.invoiceId];
+        dependencies.payroll.query.where =  ['primary_cash.uuid=' + values.invoiceId];
         validate.process(dependencies)
         .then(buildInvoice)
         .catch(function (err){

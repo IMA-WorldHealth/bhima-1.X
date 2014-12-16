@@ -69,6 +69,12 @@ angular.module('bhima.controllers')
       },
       'cotisation_paiement' : {
         url : '/partials/receipts/templates/receipt_cotisation_paiement.html'
+      },
+      'payslip' : {
+        url : '/partials/receipts/templates/receipt_payslip.html'
+      },
+      'payroll' : {
+        url : '/partials/receipts/templates/receipt_payroll.html'
       }
       // 'cash' : {
       //   url : '/partials/receipts/templates/cash.html'
@@ -96,13 +102,7 @@ angular.module('bhima.controllers')
       // ,
       // 'loss' : {
       //   url : '/partials/receipts/templates/loss.html'
-      // },
-      // 'payslip' : {
-      //   url : '/partials/receipts/templates/payslip.html'
-      // },
-      // 'payroll' : {
-      //   url : '/partials/receipts/templates/payroll.html'
-      // },                      
+      // }
     };
 
     function convert (value, currency_id, date) {
