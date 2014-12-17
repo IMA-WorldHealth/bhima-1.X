@@ -85,12 +85,7 @@ function finance(reportParameters) {
   requiredFiscalYears = financeParams.fiscal;
   initialQuery = buildFinanceQuery(requiredFiscalYears);
 
-  db.exec(initialQuery, function(err, ans) {
-    if (err) { return deferred.reject(err); }
-    deferred.resolve(ans);
-  });
-
-  return deferred.promise;
+  return db.exec(initialQuery);
 }
 
 function debitorAging (params){
@@ -101,12 +96,7 @@ function debitorAging (params){
     'FROM debitor, debitor_group, general_ledger, period WHERE debitor_group.uuid = debitor.group_uuid AND debitor.uuid = general_ledger.deb_cred_uuid ' +
     'AND general_ledger.`deb_cred_type`=\'D\' AND general_ledger.`period_id` = period.`id` AND general_ledger.account_id = debitor_group.account_id AND general_ledger.`fiscal_year_id`=\''+params.fiscal_id +'\'';
 
-  db.exec(requette, function(err, ans) {
-    if (err) { return def.reject(err); }
-    def.resolve(ans);
-  });
-
-  return def.promise;
+  return db.exec(requette);
 }
 
 function accountStatement(params){
@@ -216,14 +206,7 @@ function saleRecords(params) {
   }
 
   requestSql += 'ORDER BY sale.timestamp DESC;';
-
-  db.exec(requestSql, function(error, result) {
-    if (error) {
-      return deferred.reject(error);
-    }
-    deferred.resolve(result);
-  });
-  return deferred.promise;
+  return db.exec(requestSql);
 }
 
 function distributionPatients(params) {
@@ -248,13 +231,8 @@ function distributionPatients(params) {
     'LEFT JOIN `consumption_reversing` ON `consumption_reversing`.`document_id` = `consumption`.`document_id` ' +
     'WHERE `depot`.`uuid` = \'' + params.depotId + '\' AND `consumption`.`date` >= \'' + params.dateTo + '\' AND `consumption`.`date` <= \'' + params.dateFrom + '\' ' +
     'GROUP BY `consumption_patient`.`sale_uuid` ORDER BY `consumption`.`date` DESC, `patient`.`first_name` ASC, `patient`.`last_name` ASC';
-  db.exec(requestSql, function(error, result) {
-    if (error) {
-      return deferred.reject(error);
-    }
-    deferred.resolve(result);
-  });
-  return deferred.promise;
+  
+  return db.exec(requestSql);  
 }
 
 function distributionServices(params) {
@@ -279,13 +257,7 @@ function distributionServices(params) {
     'WHERE `depot`.`uuid` = \'' + params.depotId + '\' AND `consumption`.`date` >= \'' + params.dateTo + '\' AND `consumption`.`date` <= \'' + params.dateFrom + '\' ' +
     'ORDER BY `consumption`.`date` DESC, `service`.`name` ASC';
 
-  db.exec(requestSql, function(error, result) {
-    if (error) {
-      return deferred.reject(error);
-    }
-    deferred.resolve(result);
-  });
-  return deferred.promise;
+  return db.exec(requestSql);
 }
 
 
@@ -313,12 +285,8 @@ function patientRecords(params) {
         '`patient_visit`.`registered_by` = `user`.`id` ' +
       'WHERE `date` >= ' + _start + ' AND ' +
         ' `date` <= ' + _end + ' AND `project_id` IN (' + _id + ');';
-  db.exec(sql, function (err, res) {
-    if (err) { return deferred.reject(err); }
-    deferred.resolve(res);
-  });
-
-  return deferred.promise;
+  
+  return db.exec(sql);
 }
 
 function paymentRecords(params) {
@@ -633,89 +601,6 @@ function expenseReport (params) {
   return defer.promise;
 }
 
-/*
-function transReport(params) {
-  params = JSON.parse(params);
-  var deferred = q.defer();
-
-  function getElementIds(id){
-    var table, cle, def = q.defer();
-
-    if(params.type.toUpperCase() === 'C'){
-      table = 'creditor';
-      cle = 'group_id';
-    }else if(params.type.toUpperCase() === 'D'){
-      table = 'debitor';
-      cle = 'group_id';
-    }
-    var sql = 'SELECT id FROM '+table+' Where '+cle+' =''+id+''';
-    db.exec(sql, function(err, ans){
-      if(err){
-        throw err;
-        return;
-      }else{
-        def.resolve(ans);
-      }
-    });
-    return def.promise;
-  }
-
-  function getArrayOf(obj){
-    var tab = [];
-    obj.forEach(function(item){
-      tab.push(item.id);
-    });
-    return tab;
-  }
-
-  if(params.ig === 'I'){
-    var sql = 'SELECT general_ledger.id, general_ledger.trans_id, '+
-            'general_ledger.trans_date, general_ledger.credit, general_ledger.debit, '+
-            'account.account_number, currency.name, transaction_type.service_txt, CONCAT(user.first,' ', user.last) as \'names\''+
-            'FROM general_ledger, account, currency, transaction_type, user '+
-            'WHERE general_ledger.account_id = account.id AND currency.id = general_ledger.currency_id AND'+
-            ' transaction_type.id = general_ledger.origin_id and user.id = general_ledger.user_id AND general_ledger.deb_cred_uuid = ''+params.id+
-            '' AND general_ledger.deb_cred_type = ''+params.type+'' AND general_ledger.trans_date <= ''+params.dt+'' AND general_ledger.trans_date >= ''+params.df+''';
-
-            db.exec(sql, function(err, ans) {
-              if(err) {
-                throw err;
-                // deferred.reject(err);
-                return;
-              }
-              deferred.resolve(ans);
-            });
-  }else if(params.ig == 'G'){
-    q.all([getElementIds(params.id)]).then(function(res){
-      var tabIds = getArrayOf(res[0]);
-      if(tabIds.length!=0){
-      var sql = 'SELECT general_ledger.id, general_ledger.trans_id, '+
-                'general_ledger.trans_date, general_ledger.credit, general_ledger.debit, '+
-                'account.account_number, currency.name, transaction_type.service_txt, '+
-                'CONCAT(user.first, ' ', user.last) as \'names\' FROM general_ledger, '+
-                'account, currency, transaction_type, user WHERE general_ledger.account_id = '+
-                'account.id AND currency.id = general_ledger.currency_id AND transaction_type.id = '+
-                ' general_ledger.origin_id AND user.id = general_ledger.user_id AND general_ledger.deb_cred_type = ''+params.type+'' AND '+
-                'general_ledger.deb_cred_uuid IN ('+tabIds.toString()+') AND general_ledger.trans_date <= ''+params.dt+'' AND general_ledger.trans_date >= ''+params.df+''';
-
-      db.exec(sql, function(err, ans) {
-        if(err) {
-          throw err;
-          // deferred.reject(err);
-          return;
-        }
-        deferred.resolve(ans);
-      });
-
-      } else {
-        deffered.resolve(tabIds); //un tableau vide
-      }
-    });
-  }
-  return deferred.promise;
-}
-*/
-
 function allTrans (params){
   var source = {
     '1' : 'posting_journal',
@@ -762,13 +647,7 @@ function allTrans (params){
       ') AS `t`, `account` AS `ac` WHERE `t`.`account_id` = `ac`.`id`' + suite_account + suite_dates;
   }
 
-  db.exec(requette, function(err, ans) {
-    if (err) {
-      throw err;
-    }
-    def.resolve(ans);
-  });
-  return def.promise;
+  return db.exec(requette);
 }
 
 function generate(request, params, done) {
