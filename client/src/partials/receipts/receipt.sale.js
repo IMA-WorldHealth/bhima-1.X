@@ -2,10 +2,9 @@ angular.module('bhima.controllers')
 .controller('receipt.sale', [
   '$scope',
   'validate',
-  'exchange',
   'appstate',
   'messenger',
-  function ($scope, validate, exchange, appstate, messenger) {
+  function ($scope, validate, appstate, messenger) {
     var dependencies = {}, model = $scope.model = {common : {}};
 
     function processSale(invoiceId) {
@@ -92,22 +91,20 @@ angular.module('bhima.controllers')
       };
 
       dependencies.ledger.query = 'ledgers/debitor/' + invoiceData.debitor_uuid;
-      return validate.process(dependencies)
+      
+      return validate.process(dependencies, ['recipient','currency','ledger'])
       .then(invoice);
     }
 
     function invoice(invoiceModel) {
-      //Expose data to template
       model.sale = { allData : invoiceModel, invoice : {}, recipient : {} };
       model.sale.currentCurrency = model.sale.allData.currency.get(model.common.enterprise.currency_id);
 
-      //Default sale receipt should only contain one invoice record - kind of a hack for multi-invoice cash payments
       model.sale.invoice = model.sale.allData.invoice.data[model.sale.allData.invoice.data.length-1];
       model.sale.invoice.totalSum = model.sale.allData.invoice.data.reduce(sum, 0) || 0;
       model.sale.invoice.ledger = model.sale.allData.ledger.get(model.sale.invoice.uuid);
       model.sale.recipient = model.sale.allData.recipient.data[0];
       
-      // Human readable ID
       model.sale.recipient.hr_id = model.sale.recipient.abbr.concat(model.sale.recipient.reference);
       model.sale.invoice.hr_id = model.sale.invoice.abbr.concat(model.sale.invoice.reference);
 
@@ -117,17 +114,17 @@ angular.module('bhima.controllers')
     function sum (a,b) { return a + b.cost; }
 
     function updateCost(currency_id) {
-      model.sale.invoice.localeCost = exchange(model.sale.invoice.cost, currency_id, model.sale.invoice.invoice_date);
+      model.sale.invoice.localeCost = model.common.convert(model.sale.invoice.cost, currency_id, model.sale.invoice.invoice_date);
       if (model.sale.invoice.ledger)  {
-        model.sale.invoice.localeBalance = exchange(model.sale.invoice.ledger.balance, currency_id, model.sale.invoice.invoice_date);
-        model.sale.invoice.ledger.localeCredit = exchange(model.sale.invoice.ledger.credit, currency_id, model.sale.invoice.invoice_date);
+        model.sale.invoice.localeBalance = model.common.convert(model.sale.invoice.ledger.balance, currency_id, model.sale.invoice.invoice_date);
+        model.sale.invoice.ledger.localeCredit = model.common.convert(model.sale.invoice.ledger.credit, currency_id, model.sale.invoice.invoice_date);
       }
 
-      model.sale.invoice.localeTotalSum = exchange(model.sale.invoice.totalSum, currency_id, model.sale.invoice.invoice_date);
+      model.sale.invoice.localeTotalSum = model.common.convert(model.sale.invoice.totalSum, currency_id, model.sale.invoice.invoice_date);
 
       model.sale.allData.invoiceItem.data.forEach(function (item) {
-        item.localeTransaction = exchange(item.transaction_price, currency_id, model.sale.invoice.invoice_date);
-        item.localeCost = exchange((item.credit - item.debit), currency_id, model.sale.invoice.invoice_date);
+        item.localeTransaction = model.common.convert(item.transaction_price, currency_id, model.sale.invoice.invoice_date);
+        item.localeCost = model.common.convert((item.credit - item.debit), currency_id, model.sale.invoice.invoice_date);
       });
     }
 
@@ -135,6 +132,7 @@ angular.module('bhima.controllers')
   		commonData.then(function (values) {
         model.common.location = values.location.data.pop();
         model.common.enterprise = values.enterprise.data.pop();
+        model.common.convert = values.convert;
         processSale(values.invoiceId)
         .catch(function (err){
           messenger.danger('error', err);
