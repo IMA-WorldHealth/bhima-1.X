@@ -1,60 +1,93 @@
 angular.module('bhima.controllers')
 .controller('receipt.cash', [
   '$scope',
-  '$routeParams',
-  '$q',
-  '$http',
   'validate',
-  'exchange',
   'appstate',
-  'util',
-  'connect',
   'messenger',
-  function ($scope, $routeParams, $q, $http, validate, exchange, appstate, util, connect, messenger) {
+  function ($scope, validate, appstate, messenger) {
     var dependencies = {}, model = $scope.model = {common : {}};
 
-    dependencies.cash = {
-      query : {
-        identifier : 'uuid',
-        tables: {
-          cash: { columns: ['uuid', 'date', 'cost', 'deb_cred_uuid', 'currency_id'] },
-          cash_item: { columns: ['cash_uuid', 'allocated_cost', 'invoice_uuid'] },
-          sale: { columns : ['reference']}
-        },
-        join: ['cash_item.cash_uuid=cash.uuid', 'cash_item.invoice_uuid=sale.uuid']
-      }
-    };
+    function processCash(invoiceId) {
+      dependencies.cash = {
+        required: true,
+        query:  {
+          tables: {
+            cash: { columns: ['uuid', 'date', 'cost', 'deb_cred_uuid', 'currency_id'] },
+            cash_item: { columns: ['cash_uuid', 'allocated_cost', 'invoice_uuid'] },
+            sale: { columns : ['reference']}
+          },
+          join: ['cash_item.cash_uuid=cash.uuid', 'cash_item.invoice_uuid=sale.uuid'],
+          where: ['cash_item.cash_uuid=' + invoiceId]
+        }
+      };
+
+      dependencies.recipient = {
+        required: true
+      };
+
+      dependencies.location = {
+        required: true
+      };
+
+      return validate.process(dependencies, ['cash'])
+      .then(buildInvoiceQuery);
+    }
 
     function buildInvoiceQuery(model) {
-      var invoiceCondition = dependencies.invoice.query.where = [];
-      var invoiceItemCondition = dependencies.invoiceItem.query.where = [];
+      var invoiceCondition = [],
+          invoiceItemCondition = [];
 
       model.cash.data.forEach(function(invoiceRef, index) {
-
-        if (index!==0) {
+        if (index !== 0) {
           invoiceCondition.push('OR');
         }
 
         invoiceCondition.push('sale.uuid=' + invoiceRef.invoice_uuid);
         invoiceItemCondition.push('sale_item.sale_uuid=' + invoiceRef.invoice_uuid);
+
         if (index !== model.cash.data.length - 1) {
           invoiceItemCondition.push('OR');
         }
       });
 
-      dependencies.invoice.query.where = invoiceCondition;
-      dependencies.invoiceItem.query.where = invoiceItemCondition;
+      dependencies.invoice = {
+        required: true,
+        query: {
+          tables: {
+            'sale' : {
+              columns: ['uuid', 'cost', 'currency_id', 'debitor_uuid', 'seller_id', 'invoice_date', 'note', 'project_id', 'reference']
+            },
+            'project' : {
+              columns : ['abbr']
+            }
+          },
+          join : ['sale.project_id=project.id'],
+          where: invoiceCondition
+        }
+      };
 
-      processSale();
-    }
+      dependencies.invoiceItem = {
+        required: true,
+        query: {
+          tables: {
+            inventory : {
+              columns: ['uuid', 'code', 'text']
+            },
+            sale_item : {
+              columns: ['uuid', 'quantity', 'debit', 'credit', 'transaction_price', 'sale_uuid']
+            }
+          },
+          join: ['sale_item.inventory_uuid=inventory.uuid'],
+          where: invoiceItemCondition
+        }
+      };
 
-    function processSale() {
-      validate.process(dependencies, ['invoice', 'invoiceItem'])
+      return validate.process(dependencies, ['invoice', 'invoiceItem'])
       .then(buildRecipientQuery);
     }
 
     function buildRecipientQuery(model) {
-      var invoice_data = model.invoice.data[0];
+      var invoiceData = model.invoice.data[0];
 
       dependencies.recipient.query = {
         tables: {
@@ -72,7 +105,7 @@ angular.module('bhima.controllers')
           }
         },
         where: [
-          'patient.debitor_uuid=' + invoice_data.debitor_uuid,
+          'patient.debitor_uuid=' + invoiceData.debitor_uuid,
         ],
         join : [
           'patient.project_id=project.id',
@@ -81,7 +114,22 @@ angular.module('bhima.controllers')
         ]
       };
 
-      dependencies.ledger.query = 'ledgers/debitor/' + invoice_data.debitor_uuid;
+      dependencies.currency = {
+        query : {
+          tables : {
+            'currency' : {
+              columns : ['id', 'symbol']
+            }
+          }
+        }
+      };
+
+      dependencies.ledger = {
+        identifier: 'inv_po_id'
+      };
+
+      dependencies.ledger.query = 'ledgers/debitor/' + invoiceData.debitor_uuid;
+      
       return validate.process(dependencies, ['recipient'])
       .then(buildLocationQuery);
     }
@@ -93,67 +141,48 @@ angular.module('bhima.controllers')
       return validate.process(dependencies).then(invoice);
     }
 
-    function invoice(model) {
-      var routeCurrencyId;
-      //Expose data to template
-      $scope.model = model;
+    function invoice(invoiceModel) {
+      model.cash = { allData : invoiceModel, invoice : {}, recipient : {} };
+      model.cash.currentCurrency = model.cash.allData.currency.get(model.common.enterprise.currency_id);
 
-      $scope.session = {};
-      $scope.session.currentCurrency = $scope.model.currency.get($scope.project.currency_id);
-      routeCurrencyId = $scope.session.currentCurrency.currency_id;
+      model.cash.cashTransaction = model.cash.allData.cash.data[model.cash.allData.cash.data.length-1];
+      model.cash.invoice = model.cash.allData.invoice.data[model.cash.allData.invoice.data.length-1];
+      model.cash.invoice.ledger = model.cash.allData.ledger.get(model.cash.invoice.uuid);
+      model.cash.invoice.totalSum = model.cash.allData.invoice.data.reduce(sum, 0) || 0;
 
-      //Default sale receipt should only contain one invoice record - kind of a hack for multi-invoice cash payments
-      $scope.invoice = $scope.model.invoice.data[$scope.model.invoice.data.length-1];
-      $scope.invoice.totalSum = 0;
-      $scope.invoice.ledger = $scope.model.ledger.get($scope.invoice.uuid);
+      model.cash.recipient = model.cash.allData.recipient.data[0];
+      model.cash.recipient.location = model.cash.allData.location.data[0];
 
-      $scope.recipient = $scope.model.recipient.data[0];
-      $scope.recipient.location = $scope.model.location.data[0];
-      //FIXME huge total hack
-      $scope.model.invoice.data.forEach(function(invoiceRef) {
-        $scope.invoice.totalSum += invoiceRef.cost;
-      });
-      // Human readable ID
-      $scope.recipient.hr_id = $scope.recipient.abbr.concat($scope.recipient.reference);
-      $scope.invoice.hr_id = $scope.invoice.abbr.concat($scope.invoice.reference);
-
-
-      //FIXME hacks for meeting
-      if (model.cash) {
-        $scope.cashTransaction  = $scope.model.cash.data[0];
-        routeCurrencyId = $scope.cashTransaction.currency_id;
-      }
-
-      updateCost(routeCurrencyId);
+      updateCost(model.cash.currentCurrency.currency_id);
     }
 
+    function sum (a,b) { return a + b.cost; }
+
     function updateCost(currency_id) {
-      $scope.invoice.localeCost = exchange($scope.invoice.cost, currency_id, $scope.invoice.invoice_date);
-      if ($scope.invoice.ledger)  {
-        $scope.invoice.localeBalance = exchange($scope.invoice.ledger.balance, currency_id, $scope.invoice.invoice_date);
-        $scope.invoice.ledger.localeCredit = exchange($scope.invoice.ledger.credit, currency_id, $scope.invoice.invoice_date);
+      model.cash.invoice.localeCost = model.common.convert(model.cash.invoice.cost, currency_id, model.cash.invoice.invoice_date);
+      if (model.cash.invoice.ledger)  {
+        model.cash.invoice.localeBalance = model.common.convert(model.cash.invoice.ledger.balance, currency_id, model.cash.invoice.invoice_date);
+        model.cash.invoice.ledger.localeCredit = model.common.convert(model.cash.invoice.ledger.credit, currency_id, model.cash.invoice.invoice_date);
       }
 
-      $scope.invoice.localeTotalSum = exchange($scope.invoice.totalSum, currency_id, $scope.invoice.invoice_date);
+      model.cash.invoice.localeTotalSum = model.common.convert(model.cash.invoice.totalSum, currency_id, model.cash.invoice.invoice_date);
 
-      $scope.model.invoiceItem.data.forEach(function (item) {
-        item.localeTransaction = exchange(item.transaction_price, currency_id, $scope.invoice.invoice_date);
-        item.localeCost = exchange((item.credit - item.debit), currency_id, $scope.invoice.invoice_date);
+      model.cash.allData.invoiceItem.data.forEach(function (item) {
+        item.localeTransaction = model.common.convert(item.transaction_price, currency_id, model.cash.invoice.invoice_date);
+        item.localeCost = model.common.convert((item.credit - item.debit), currency_id, model.cash.invoice.invoice_date);
       });
-    };
+    }
 
-  	appstate.register('receipts.commonData', function (commonData) {
-  		commonData.then(function (values) {
+    appstate.register('receipts.commonData', function (commonData) {
+      commonData.then(function (values) {
         model.common.location = values.location.data.pop();
-        model.common.InvoiceId = values.invoiceId;
         model.common.enterprise = values.enterprise.data.pop();
-        dependencies.cash.query.where = ['cash_item.cash_uuid=' + values.invoiceId];
-        validate.process(dependencies)
-        .then(buildInvoice)
+        model.common.convert = values.convert;
+        processCash(values.invoiceId)
         .catch(function (err){
           messenger.danger('error', err);
         });
-  		});     
+      });     
     });    
   }
 ]);
