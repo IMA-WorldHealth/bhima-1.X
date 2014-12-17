@@ -76,12 +76,12 @@ angular.module('bhima.controllers')
       },
       'sale' : {
         url : '/partials/receipts/templates/receipt_sale.html'
+      },
+      'credit' : {
+        url : '/partials/receipts/templates/receipt_credit_note.html'
       }
       // 'cash' : {
       //   url : '/partials/receipts/templates/cash.html'
-      // },
-      // 'credit' : {
-      //   url : '/partials/receipts/templates/credit.html'
       // },
       // 'patient' : {
       //   url : '/partials/receipts/templates/patient.html'
@@ -90,8 +90,6 @@ angular.module('bhima.controllers')
       // 'movement' : {
       //   url : '/partials/receipts/templates/movement.html'
       // },
-      
-      // 
       // ,
       // 'service_distribution' : {
       //   url : '/partials/receipts/templates/distribution.html'
