@@ -22,39 +22,39 @@ angular.module('bhima.controllers')
       }).
       success(function(data) {
         getPPConf();
-      function getHollyDayCount(paiement_period_confs) {        
-        dependencies.get_hollydayCount = {
-          query : {
-            tables : {
-              'hollyday_paiement' : {
-                columns : ['hollyday_id', 'hollyday_nbdays', 'hollyday_percentage', 'paiement_uuid']
+        function getHollyDayCount(paiement_period_confs) {        
+          dependencies.get_hollydayCount = {
+            query : {
+              tables : {
+                'hollyday_paiement' : {
+                  columns : ['hollyday_id', 'hollyday_nbdays', 'hollyday_percentage', 'paiement_uuid']
+                },
+                'hollyday' : {
+                  columns : ['id', 'label']
+                }
               },
-              'hollyday' : {
-                columns : ['id', 'label']
-              }
-            },
-            join : [
-              'hollyday.id=hollyday_paiement.hollyday_id'
-            ],
-            where : [
-              'hollyday_paiement.paiement_uuid=' + invoiceId
-            ]
-          }
-        };
-        validate.process(dependencies, ['get_hollydayCount'])
-        .then(function (model) {
-          $scope.total_day = data[0].working_day;
-          $scope.daly_rate = data[0].basic_salary / $scope.max_day;
+              join : [
+                'hollyday.id=hollyday_paiement.hollyday_id'
+              ],
+              where : [
+                'hollyday_paiement.paiement_uuid=' + invoiceId
+              ]
+            }
+          };
+          validate.process(dependencies, ['get_hollydayCount'])
+          .then(function (model) {
+            $scope.total_day = data[0].working_day;
+            $scope.daly_rate = data[0].basic_salary / $scope.max_day;
 
-          $scope.amont_payable = $scope.daly_rate * $scope.total_day; 
-          $scope.TotalPaid += $scope.amont_payable;
-          $scope.TotalNet += $scope.amont_payable;
-                  
-          var dataHollydays = $scope.dataHollydays = model.get_hollydayCount.data,
-            cotisationValue = model.get_cotisation.data,
-            dailyRate = data[0].basic_salary / $scope.max_day;
+            $scope.amont_payable = $scope.daly_rate * $scope.total_day; 
+            $scope.TotalPaid += $scope.amont_payable;
+            $scope.TotalNet += $scope.amont_payable;
+                    
+            var dataHollydays = $scope.dataHollydays = model.get_hollydayCount.data,
+              cotisationValue = model.get_cotisation.data,
+              dailyRate = data[0].basic_salary / $scope.max_day;
 
-          dataHollydays.forEach(function (item) {
+            dataHollydays.forEach(function (item) {
             item.dailyHollyd = dailyRate * (item.hollyday_percentage /100); 
             item.somHolly = item.dailyHollyd * item.hollyday_nbdays;
 
@@ -63,7 +63,6 @@ angular.module('bhima.controllers')
           });       
         });
       }  
-
       function getOffDayCount() {          
         dependencies.offDays = {
           query : {
@@ -99,12 +98,10 @@ angular.module('bhima.controllers')
         .then(function (model) {
           $scope.dataOffDays = model.offDays;
           for(var i = 0; i < model.offDays.data.length; i++){
-
             model.offDays.data[i].rate_offDay = (model.offDays.data[i].percent_pay) * ($scope.daly_rate / 100);
             $scope.TotalPaid += model.offDays.data[i].rate_offDay;
             $scope.TotalNet += model.offDays.data[i].rate_offDay;
           }
-
         });
       }
 
@@ -136,7 +133,6 @@ angular.module('bhima.controllers')
         ppcs.forEach(function (item) {
           var t2 = new Date(item.weekTo).getTime();
           var t1 = new Date(item.weekFrom).getTime();
-
           nb += (parseInt((t2-t1)/(24*3600*1000))) + 1;
         });
         return nb;
@@ -144,13 +140,29 @@ angular.module('bhima.controllers')
       $scope.dataPaiements = data;
     });
 
-    $http.get('/getDataRubrics/',{params : {
-          'invoiceId' : invoiceId
-        }  
-    }).
-    success(function(data) {
-      $scope.dataRubrics = data;
-      data.forEach(function (item) {
+
+    dependencies.get_rubric = {
+      query : {
+        tables : {
+          'rubric_paiement' : {
+            columns : ['id', 'paiement_uuid', 'value', 'rubric_id']
+          },
+          'rubric' : {
+            columns : ['id', 'label', 'is_discount']
+          }
+        },
+        join : [
+          'rubric_paiement.rubric_id=rubric.id'
+        ],
+        where : [
+          'rubric_paiement.paiement_uuid=' + invoiceId
+        ]
+      }
+    };
+    validate.process(dependencies, ['get_rubric'])
+    .then(function (model) {
+      var dataRubrics = $scope.dataRubrics = model.get_rubric.data;
+      dataRubrics.forEach(function (item) {
         if(item.is_discount === 0){
           $scope.TotalPaid += item.value;
           item.valueP = item.value;
@@ -162,67 +174,82 @@ angular.module('bhima.controllers')
           item.valueR = item.value;
           $scope.TotalNet -= item.value;
         } 
-        
-      });  
-      
+      });
     });
 
-      $http.get('/getDataTaxes/',{params : {
-            'invoiceId' : invoiceId
-          }  
-      }).
-      success(function(data) {
-        $scope.dataTaxes = data;
-        data.forEach(function (item) {
-          $scope.TotalWithheld += item.value;
-          $scope.TotalNet -= item.value;
-        });
-      });
-
-      dependencies.get_cotisation = {
-        query : {
-          tables : {
-            'cotisation_paiement' : {
-              columns : ['id', 'paiement_uuid', 'value', 'cotisation_id']
-            },
-            'cotisation' : {
-              columns : ['id', 'label', 'is_employee']
-            }
+    dependencies.get_tax = {
+      query : {
+        tables : {
+          'tax_paiement' : {
+            columns : ['id', 'paiement_uuid', 'value', 'tax_id']
           },
-          join : [
-            'cotisation_paiement.cotisation_id=cotisation.id'
-          ],
-          where : [
-            'cotisation.is_employee=' + 1, 'AND' ,'cotisation_paiement.paiement_uuid=' + invoiceId
-          ]
-        }
-      };
-      validate.process(dependencies, ['get_cotisation'])
-      .then(function (model) {
-        $scope.dataCotisation = model.get_cotisation.data;
-        var cotisationValue = model.get_cotisation.data;
-        cotisationValue.forEach(function (item) {
-          $scope.TotalWithheld += item.value;
-          $scope.TotalNet -= item.value;
-        });
+          'tax' : {
+            columns : ['id', 'label', 'is_employee']
+          }
+        },
+        join : [
+          'tax_paiement.tax_id=tax.id'
+        ],
+        where : [
+          'tax.is_employee=' + 1, 'AND' ,'tax_paiement.paiement_uuid=' + invoiceId
+        ]
+      }
+    };
+    validate.process(dependencies, ['get_tax'])
+    .then(function (model) {
+      var dataTaxes = $scope.dataTaxes = model.get_tax.data;
+      dataTaxes.forEach(function (item) {
+        $scope.TotalWithheld += item.value;
+        $scope.TotalNet -= item.value;
       });
-    } 
+    });
 
-    function promiseInvoiceId (invoiceId) {
-      return $q.when(invoiceId);
-    }
 
-  	appstate.register('receipts.commonData', function (commonData) {
-  		commonData.then(function (values) {
-        model.common.location = values.location.data.pop();
-        model.common.InvoiceId = values.invoiceId;
-        model.common.enterprise = values.enterprise.data.pop();
-        promiseInvoiceId(values.invoiceId)
-        .then(processPayslip)
-        .catch(function (err){
-          messenger.danger('error', err);
-        });
-  		});     
-    });    
+
+    dependencies.get_cotisation = {
+      query : {
+        tables : {
+          'cotisation_paiement' : {
+            columns : ['id', 'paiement_uuid', 'value', 'cotisation_id']
+          },
+          'cotisation' : {
+            columns : ['id', 'label', 'is_employee']
+          }
+        },
+        join : [
+          'cotisation_paiement.cotisation_id=cotisation.id'
+        ],
+        where : [
+          'cotisation.is_employee=' + 1, 'AND' ,'cotisation_paiement.paiement_uuid=' + invoiceId
+        ]
+      }
+    };
+    validate.process(dependencies, ['get_cotisation'])
+    .then(function (model) {
+      $scope.dataCotisation = model.get_cotisation.data;
+      var cotisationValue = model.get_cotisation.data;
+      cotisationValue.forEach(function (item) {
+        $scope.TotalWithheld += item.value;
+        $scope.TotalNet -= item.value;
+      });
+    });
+  } 
+
+  function promiseInvoiceId (invoiceId) {
+    return $q.when(invoiceId);
+  }
+
+	appstate.register('receipts.commonData', function (commonData) {
+		commonData.then(function (values) {
+      model.common.location = values.location.data.pop();
+      model.common.InvoiceId = values.invoiceId;
+      model.common.enterprise = values.enterprise.data.pop();
+      promiseInvoiceId(values.invoiceId)
+      .then(processPayslip)
+      .catch(function (err){
+        messenger.danger('error', err);
+      });
+		});     
+  });    
   }
 ]);
