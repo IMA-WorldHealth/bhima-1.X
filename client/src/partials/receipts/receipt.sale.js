@@ -59,10 +59,6 @@ angular.module('bhima.controllers')
         identifier: 'inv_po_id'
       };
 
-      dependencies.location = {
-        required: true
-      };
-
       return validate.process(dependencies, ['invoice', 'invoiceItem'])
       .then(buildRecipientQuery);
     }
@@ -96,15 +92,8 @@ angular.module('bhima.controllers')
       };
 
       dependencies.ledger.query = 'ledgers/debitor/' + invoiceData.debitor_uuid;
-      return validate.process(dependencies, ['recipient'])
-      .then(buildLocationQuery);
-    }
-
-    function buildLocationQuery(model) {
-      var recipientData = model.recipient.data[0];
-
-      dependencies.location.query = 'location/detail/' + recipientData.current_location_id;
-      return validate.process(dependencies).then(invoice);
+      return validate.process(dependencies)
+      .then(invoice);
     }
 
     function invoice(invoiceModel) {
@@ -116,9 +105,7 @@ angular.module('bhima.controllers')
       model.sale.invoice = model.sale.allData.invoice.data[model.sale.allData.invoice.data.length-1];
       model.sale.invoice.totalSum = model.sale.allData.invoice.data.reduce(sum, 0) || 0;
       model.sale.invoice.ledger = model.sale.allData.ledger.get(model.sale.invoice.uuid);
-
       model.sale.recipient = model.sale.allData.recipient.data[0];
-      model.sale.recipient.location = model.sale.allData.location.data[0];
       
       // Human readable ID
       model.sale.recipient.hr_id = model.sale.recipient.abbr.concat(model.sale.recipient.reference);
