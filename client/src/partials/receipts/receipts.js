@@ -5,13 +5,11 @@ angular.module('bhima.controllers')
   '$scope',
   '$routeParams',
   '$q',
-  '$http',
   'validate',
   'exchange',
   'appstate',
-  'util',
   'connect',
-  function ($scope, $routeParams, $q, $http, validate, exchange, appstate, util, connect) {
+  function ($scope, $routeParams, $q, validate, exchange, appstate, connect) {
     var templates,
       dependencies = {},
       origin = $routeParams.originId,
@@ -75,6 +73,9 @@ angular.module('bhima.controllers')
       },
       'payroll' : {
         url : '/partials/receipts/templates/receipt_payroll.html'
+      },
+      'credit' : {
+        url : '/partials/receipts/templates/receipt_credit_note.html'
       }
       // 'cash' : {
       //   url : '/partials/receipts/templates/cash.html'
@@ -82,9 +83,7 @@ angular.module('bhima.controllers')
       // 'sale' : {
       //   url : '/partials/receipts/templates/sale.html'
       // },
-      // 'credit' : {
-      //   url : '/partials/receipts/templates/credit.html'
-      // },
+      // ,
       // 'patient' : {
       //   url : '/partials/receipts/templates/patient.html'
       // },
