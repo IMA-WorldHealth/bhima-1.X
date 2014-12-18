@@ -1,7 +1,8 @@
 <!-- distribution.html template -->
+<div ng-controller="receipt.service_distribution">
 <div class="row customer-details">
   <div class="col-xs-12">
-    <small style="float: right; color: grey; font-size: 8px">{{ invoice.uuid }}</small>
+    <small style="float: right; color: grey; font-size: 8px">{{ model.service_distribution.uuid }}</small>
     <h4 class="invoice-header">{{ 'INVOICE.DISTRIBUTION_SERVICE' | translate }}</h4>
   </div>
 </div>
@@ -10,33 +11,33 @@
   <!-- Temporary style; needs official markup and CSS -->
   <div class="col-xs-4">
     <span>
-      <b>{{invoice.enterprise_name}}</b>
+      <b>{{model.common.enterprise.name}}</b>
     </span>
     <br>
-    {{invoice.village}}
+    {{model.common.location.name}}
     <br>
     <!-- hah -->
-    {{ invoice.postal || 'B.P. 205'}}
+    {{ model.common.enterprise.postal || 'B.P. 205'}}
     <br>
-    {{invoice.sector}}
+    {{model.common.location.sector_name}}
     <br>
-    <i>TEL</i> {{invoice.phone}}
+    <i>TEL</i> {{model.common.enterprise.phone}}
     <br>
-    <i>FAX</i> {{invoice.email}}
+    <i>MAIL</i> {{model.common.enterprise.email}}
   </div>
 
   <div class="col-xs-4">
-    <b>{{invoice.name}} </b>
+    <b>{{model.service_distribution[0].name}} </b>
     <br>
     <i>{{'INVOICE.DATE_REGISTRATION' | translate }}</i>
     <br>
-    {{invoice.date | date}}
+    {{model.service_distribution[0].date | date}}
   </div>
 
   <div class="col-xs-4">
     <i>{{ 'INVOICE.DATE_RECEIPT' | translate }}</i>
     <br>
-    {{invoice.date | date}}
+    {{model.service_distribution[0].date | date}}
     <br>
   </div>
 </div>
@@ -53,7 +54,7 @@
         </tr>
       </thead>
       <tbody class="items">
-        <tr ng-repeat="rec in records">
+        <tr ng-repeat="rec in model.service_distribution">
           <td>{{ rec.text }}</td>
           <td>{{ rec.quantity}}</td>
           <td>{{ rec.purchase_price | currency }}</td>
@@ -74,5 +75,6 @@
      <b>{{"SIGNATURES.BENEFICIARY" | translate}}</b>
     </div>
   </div>
+</div>
 </div>
 <!-- end distribution.html template  -->
