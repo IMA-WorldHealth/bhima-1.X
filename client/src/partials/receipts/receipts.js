@@ -88,13 +88,13 @@ angular.module('bhima.controllers')
       },
       'loss' : {
         url : '/partials/receipts/templates/receipt_loss.html'
+      },
+      'movement' : {
+        url : '/partials/receipts/templates/receipt_movement.html'
       }
       // ,
       // 'patient' : {
       //   url : '/partials/receipts/templates/patient.html'
-      // },
-      // 'movement' : {
-      //   url : '/partials/receipts/templates/movement.html'
       // }
     };
 
