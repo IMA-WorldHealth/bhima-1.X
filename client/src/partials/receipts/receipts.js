@@ -85,6 +85,9 @@ angular.module('bhima.controllers')
       },
       'service_distribution' : {
         url : '/partials/receipts/templates/receipt_service_distribution.html'
+      },
+      'loss' : {
+        url : '/partials/receipts/templates/receipt_loss.html'
       }
       // ,
       // 'patient' : {
@@ -92,9 +95,6 @@ angular.module('bhima.controllers')
       // },
       // 'movement' : {
       //   url : '/partials/receipts/templates/movement.html'
-      // },
-      // 'loss' : {
-      //   url : '/partials/receipts/templates/loss.html'
       // }
     };
 
