@@ -85,14 +85,14 @@ angular.module('bhima.controllers')
       },
       'service_distribution' : {
         url : '/partials/receipts/templates/receipt_service_distribution.html'
-      }
+      },
       // ,
       // 'patient' : {
       //   url : '/partials/receipts/templates/patient.html'
       // },
-      // 'movement' : {
-      //   url : '/partials/receipts/templates/movement.html'
-      // },
+      'movement' : {
+        url : '/partials/receipts/templates/receipt_movement.html'
+      },
       // 'loss' : {
       //   url : '/partials/receipts/templates/loss.html'
       // }
