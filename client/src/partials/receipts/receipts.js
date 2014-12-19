@@ -86,10 +86,9 @@ angular.module('bhima.controllers')
       'service_distribution' : {
         url : '/partials/receipts/templates/receipt_service_distribution.html'
       },
-      // ,
-      // 'patient' : {
-      //   url : '/partials/receipts/templates/patient.html'
-      // },
+      'patient' : {
+        url : '/partials/receipts/templates/receipt_patient.html'
+      },
       'movement' : {
         url : '/partials/receipts/templates/receipt_movement.html'
       },
