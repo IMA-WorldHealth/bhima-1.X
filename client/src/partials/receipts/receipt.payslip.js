@@ -204,8 +204,6 @@ angular.module('bhima.controllers')
       });
     });
 
-
-
     dependencies.get_cotisation = {
       query : {
         tables : {
