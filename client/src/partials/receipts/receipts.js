@@ -12,9 +12,10 @@ angular.module('bhima.controllers')
   function ($scope, $routeParams, $q, validate, exchange, appstate, connect) {
     var templates,
       dependencies = {},
-      origin = $routeParams.originId,
+      origin = $scope.origin = $routeParams.originId,
       invoiceId = $routeParams.invoiceId,
-      commonData = $q.defer();
+      commonData = $q.defer(),
+      session = $scope.session = {};
 
     if (!(origin && invoiceId)) { throw new Error('Invalid parameters'); }
 
@@ -24,7 +25,7 @@ angular.module('bhima.controllers')
     dependencies.enterprise = {
       query : {
         tables : {
-          'enterprise' : {columns : ['id', 'name', 'phone', 'email', 'location_id' ]},
+          'enterprise' : {columns : ['id', 'name', 'phone', 'email', 'location_id', 'currency_id' ]},
           'project'    : {columns : ['name', 'abbr']}
         },
         join : ['enterprise.id=project.enterprise_id']
@@ -74,6 +75,9 @@ angular.module('bhima.controllers')
       'payroll' : {
         url : '/partials/receipts/templates/receipt_payroll.html'
       },
+      'sale' : {
+        url : '/partials/receipts/templates/receipt_sale.html'
+      },
       'credit' : {
         url : '/partials/receipts/templates/receipt_credit_note.html'
       },
@@ -91,7 +95,8 @@ angular.module('bhima.controllers')
       },
       'movement' : {
         url : '/partials/receipts/templates/receipt_movement.html'
-      },
+      }
+
       // 'loss' : {
       //   url : '/partials/receipts/templates/loss.html'
       // }
@@ -101,12 +106,17 @@ angular.module('bhima.controllers')
       return value / exchange.rate(value, currency_id, date);
     }
 
+    function doConvert (value, currency_id, date) {
+      return exchange(value, currency_id, date);
+    }
+
     function expose (data) {
       $scope.template = templates[origin];
       $scope.timestamp = new Date();
       data.origin = origin;
       data.invoiceId = invoiceId;
       data.convert = convert;
+      data.doConvert = doConvert;
       commonData.resolve(data);
     }
 
