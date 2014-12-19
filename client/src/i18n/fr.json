@@ -507,7 +507,7 @@
 
   "PATIENT_STANDING"     : {
     "TITLE"              : "Etat Financier du Patient",
-    "PLACEHOLDER"        : "Charcher le patient ...",
+    "PLACEHOLDER"        : "Chercher le patient ...",
     "CREATED_ON"         : "Crée en",
     "ACCOUNT_NUMBER"     : "Numéro de Compte",
     "ACCOUNT_BALANCE"    : "Balance Compte",
@@ -598,7 +598,10 @@
       "ADD_LOT"             : "Ajouter lot",
       "ENTRY_DATE"          : "Date d'entrée",
       "ENTER_STOCK"         : "Faire entrer les Stock",
-      "REPORT"              : "Rapport d'entrer"
+      "REPORT"              : "Rapport d'entrer",
+      "ERR_EMPTY_PARAMTER"  : "Erreur paramétre manquant",
+      "WRITE_SUCCESS"       : "Enregistrement avec succès",
+      "WRITE_ERROR"         : "Enregitrement sans succès"
     },
     "EXIT" : {
       "KEY" : "Stock Distribution"
@@ -623,7 +626,8 @@
       "DEPOT_TO"       : "Dépôt Destination",
       "INVENTORY"      : "Inventaire",
       "INVALID_TRANSFERT_QTE"  : "Quantité transferée invalide",
-      "SELECT_LOT" : "Sélectionner beaucoup de"
+      "SELECT_LOT" : "Sélectionner beaucoup de",
+      "SUCCESS"    : "Succès"
     },
     "SEARCH" : {
       "KEY"          : "Rechercher Items Stock",
@@ -717,8 +721,8 @@
     "OTHER_CURRENCY"      : "Autre Monnaie",
     "RATE"                : "Taux",
     "TRANS_ID"            : "# Transaction",
-    "DEB_EQUIV"           : "Equiv Débit",
-    "CRE_EQUIV"           : "Equiv Crédit",
+    "DEB_EQUIV"           : "Débit",
+    "CRE_EQUIV"           : "Crédit",
     "DC_TYPE"             : "Type D/C",
     "INVPO_ID"            : "# Fact/OA",
     "PATIENT"             : "Patient",
@@ -804,7 +808,7 @@
     "TRANSACTION_NUMBER"  : "Numéro Transaction",
     "SOURCE"              : "Source",
     "TOTAL_DEBIT"         : "Débit total",
-    "DATE_BILLED"         : "Date creation",
+    "DATE_BILLED"         : "Date création",
     "AMOUNT_BILLED"       : "Montant facture",
     "AMOUNT_DUE"          : "Montant à payer",
     "NR"                  : "N°",
@@ -851,7 +855,8 @@
     "STOCK_QTE_MAX"      : "Quantité Maximum",
     "STOCK_QTE_SEC"      : "Stock de securité",
     "FOUR_ACCOUNT"       : "Compte de tier",
-    "SIX_ACCOUNT"        : "Compte charge"
+    "SIX_ACCOUNT"        : "Compte charge",
+    "IS_IPR"             : "Est-ce l'IPR"
   },
 
   "REPORT"                  : {
@@ -904,8 +909,10 @@
       "SUMMARY"             : "Sommaire compte",
       "DETAILS"             : "Détails transactions du compte"
     },
-    "STOCK"                 : "Rapport Stock"
-
+    "STOCK"                 : "Rapport Stock",
+    "TRANSACTION"           : "Transaction",
+    "ACCOUNT"               : "Compte",
+    "PERIOD"                : "Période"
   },
 
   "PATIENT_GRP_ASSIGNMENT" : {
@@ -979,7 +986,7 @@
       "UPDATE_ITEM"    : "Mettre à jour Article",
       "CONFIG_GROUPS"  : "Configurer Groups des Articles",
       "CONFIG_TYPES"   : "Configurer Type des Articles",
-      "PRINT_MANIFEST" : "Imprimer List des Articles",
+      "PRINT_MANIFEST" : "Imprimer la liste des Articles",
       "VIEW"           : "Voire la liste"
     },
     "GROUPS" : {
@@ -1030,7 +1037,10 @@
       "DEFAULT_PRICE"    : "Prix Unitaire",
       "UNIT_WEIGHT"      : "Poids Unitaire",
       "UNIT_VOLUME"      : "Volume Unitaire"
-    }
+    },
+    "MANIFEST" : {
+      "TITLE" : "Manifeste des inventaires"
+    }    
   },
 
   "PROJECT"       : {
@@ -1567,7 +1577,11 @@
       "NO_DATA"                 : "Aucune donnée disponible",
       "SALARY_PAYMENT"          : "Paiement Effectif du Salaire",
       "COTISATIONS"             : "Cotisations",
-      "COTISATION_PAYMENT"      : "Paiement Cotisations"
+      "COTISATION_PAYMENT"      : "Paiement Cotisations",
+      "CURRENCY_NOT_FOUND"      : "Monnaie non definie !",
+      "PAYMENT_PERIOD_NOT_FOUND" : "Periode de paiement non definie !",
+      "SEARCH_EMPLOYEE"          : "Rechercher employé(s) ...",
+      "SALARY_SUCCESS"           : "Paiement effectif de : "
     },
     "INCOME" : {
       "TRANSFER"              : "Transfert",
@@ -2191,7 +2205,7 @@
     "PURCHASE_ORDER"    : {
             "TITLE"     : "Commandes",
             "IN_WATING" : "en attente de paiement",
-            "PAYED"     : "payées",
+            "PAYED"     : "payés",
             "RECEIVED"  : "reçues",
             "WATING_RECEPTION" : "en attente de reception"
         },
@@ -2309,7 +2323,7 @@
     "SELECT_PERIOD" : "Sélectionner une année fiscale",
     "SELECT_OPTION" : "Sélectionner une option",
     "TOTAL_CHARGE"  : "Total Charge",
-    "TOTAL_PROFIT"  : "Totall profit",
+    "TOTAL_PROFIT"  : "Total profit",
     "JANUARY"       : "Janvier",
     "FEBRUARY"      : "Février",
     "MARCH"         : "Mars",
@@ -2349,11 +2363,20 @@
     "CREATED_ON"         : "Crée en",
     "ACCOUNT_NUMBER"     : "Numéro de Compte",
     "ACCOUNT_BALANCE"    : "Balance Compte",
-    "LAST_PURCHASE_DATE" : "Dernier date d'achat",
-    "LAST_PAYMENT_DATE"  : "Dernier date payement",
+    "LAST_DATE"          : "Dernière date",
     "OUTSTANDING_BILLS"  : "Factures impayées et autres paiements",
     "IMG"                : "Photo du patient",
     "NO_TRANSACTION"     : "pas des transaction"
+  },
+
+  "EXPIRING" : {
+    "TITLE"  : "Expiration des produits",
+    "EXPIRED": "Articles expirés",
+    "EX_30"  : "Expiration dans moins de 30 jours",
+    "EX_90"  : "Expiration entre 30 et 90 jours",
+    "EX_180" : "Expiration entre 90 et 180 jours",
+    "EX_365" : "Expiration entre 180 et 365 jours",
+    "EX_YEAR": "Expiration dans au-dela d'une année"
   }   
   
 }
