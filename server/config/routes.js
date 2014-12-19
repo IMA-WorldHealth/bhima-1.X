@@ -27,6 +27,7 @@ var ledger          = require('./../controllers/ledger');
 var fiscal          = require('./../controllers/fiscal');
 var report          = require('./../controllers/report');
 var tree            = require('./../controllers/tree');
+var exchange        = require('./../controllers/exchange');
 
 var uncategorised   = require('./../controllers/uncategorised');
 
@@ -50,6 +51,8 @@ exports.initialise = function (app) {
   app.get('/location/sector/:uuid', location.lookupSector);
   app.get('/location/province/:uuid', location.lookupProvince);
   app.get('/location/detail/:uuid', location.lookupDetail);
+
+  app.get('/exchange/:date/:fromCurrencyId/:toCurrencyId', exchange.getExchangeRate);
 
   app.post('/purchase', createPurchase.execute);
   app.post('/sale/', createSale.execute);
