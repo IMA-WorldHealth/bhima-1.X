@@ -47,7 +47,7 @@ function initialise() {
 
   //  FIXME reset all logged in users on event of server crashing / terminating - this should be removed/ implemented into the error/ loggin module before shipping
   flushUsers(con);
-};
+}
 
 function exec(sql, params) {
   var defer = q.defer();
@@ -195,7 +195,6 @@ function executeAsTransaction(querries) {
 function mysqlInit (config) {
   'use strict';
   var db = require('mysql');
-  
   return db.createPool(config);
 }
 
@@ -259,12 +258,17 @@ function promiseQuery(connection, sql) {
   return deferred.promise;
 }
 
+function sanitize(x) {
+  return con.escape(x);
+}
+
 module.exports = { 
   initialise : initialise,
   requestTransactionConnection : requestTransactionConnection,
   executeAsTransaction : executeAsTransaction,
   exec : exec,
-  execute : execute
+  execute : execute,
+  sanitize : sanitize //  for sanitization
 };
 
 //module.exports = db;
