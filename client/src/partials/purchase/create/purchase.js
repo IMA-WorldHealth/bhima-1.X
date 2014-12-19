@@ -18,7 +18,8 @@ angular.module('bhima.controllers')
     // FIXME Everything currently waits on validate to process (download) models
     // begin settup etc. before that
     var dependencies = {};
-    var session = $scope.session = { purchase_type : 'indirect' }, warnings = $scope.warnings = {};
+    var session = $scope.session = { is_direct : false, label_purchase_type : 'indirect' }, 
+        warnings = $scope.warnings = {};
 
     dependencies.inventory = {
       query : {
@@ -44,15 +45,6 @@ angular.module('bhima.controllers')
         }
       }
     };
-
-    // FIXME: Direct Purchase order don't need an account
-    // dependencies.accounts = {
-    //   query : {
-    //     tables : {
-    //       account : { columns : ['id', 'account_number', 'account_txt'] }
-    //     }
-    //   }
-    // };
 
     dependencies.creditorLocation = {
       identifier : 'uuid',
@@ -99,9 +91,10 @@ angular.module('bhima.controllers')
 
     function formatPurchaseDescription() {
       if (!session.creditor) { return '...'; }
+
       return [
         'PO',
-        (session.purchase_type).toUpperCase(),
+        (session.label_purchase_type).toUpperCase(),
         session.hr_id,
         getDate(), //session.date,
         session.creditor.name
@@ -111,7 +104,7 @@ angular.module('bhima.controllers')
     function selectCreditor(creditor) {
       session.location = $scope.creditorLocation.get(creditor.location_id);
       session.purchase.note = formatPurchaseDescription();
-      if(session.purchase_type === 'direct') { initPanelSuccess(); }
+      if(session.is_direct) { initPanelSuccess(); }
       settupPurchase();
     }
 
@@ -224,8 +217,8 @@ angular.module('bhima.controllers')
       purchase.creditor_uuid = session.creditor.creditor_uuid;
       purchase.purchaser_id = $scope.user.data.id;
       purchase.project_id = $scope.project.id;
-      purchase.employee_id = session.purchase_type === 'direct' ? null : session.employee.id;
-      purchase.is_direct = session.purchase_type === 'direct' ? 1 : 0;
+      purchase.employee_id = session.is_direct === true ? null : session.employee.id;
+      purchase.is_direct = session.is_direct === true ? 1 : 0;
 
       writePurchaseLine(purchase)
       .then(writePurchaseItems(purchase.uuid))
@@ -234,7 +227,7 @@ angular.module('bhima.controllers')
     }
 
     function writePurchaseLine(purchase) {
-      return connect.basicPut('purchase', [purchase], ['uuid']);
+      return connect.post('purchase', [purchase], ['uuid']);
     }
 
     function writePurchaseItems(purchase_uuid) {
@@ -250,7 +243,7 @@ angular.module('bhima.controllers')
           unit_price     : item.purchase_price,
           total          : item.quantity * item.purchase_price
         };
-        return connect.basicPut('purchase_item', [writeItem], ['uuid']);
+        return connect.post('purchase_item', [writeItem], ['uuid']);
       });
 
       $q.all(writeRequest)
@@ -279,21 +272,18 @@ angular.module('bhima.controllers')
       return now.getFullYear() + '-' + ('0' + (now.getMonth() + 1)).slice(-2) + '-' + ('0' + now.getDate()).slice(-2);
     }
 
-    // $scope.formatAccount = function (ac) { return ac.account_number + ' - ' + ac.account_txt; };
-
-    // $scope.getAccount = function (item) { 
-    //   session.account = item;
-    //   initPanelSuccess();
-    // };
-
     function initPanelSuccess() {
       session.panel_success = {
-        // direct   : Boolean(session.creditor && session.account),
         direct   : Boolean(session.creditor),
         indirect : Boolean(session.creditor && session.employee)
       };
       session.panel_success.direct_and_indirect = session.panel_success.direct && session.panel_success.indirect;
       session.panel_success.direct_or_indirect = session.panel_success.direct || session.panel_success.indirect;
+    }
+
+    function getPurchaseType() {
+      session.label_purchase_type = session.is_direct === true ? $translate.instant('PURCHASE.DIRECT') : $translate.instant('PURCHASE.INDIRECT');
+      session.purchase.note = formatPurchaseDescription();
     }
 
     $scope.selectCreditor = selectCreditor;
@@ -304,5 +294,6 @@ angular.module('bhima.controllers')
     $scope.verifyPurchase = verifyPurchase;
     $scope.submitPurchase = submitPurchase;
     $scope.initPanelSuccess = initPanelSuccess;
+    $scope.getPurchaseType = getPurchaseType;
   }
 ]);

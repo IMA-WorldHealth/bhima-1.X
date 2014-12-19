@@ -29,10 +29,10 @@
 
           <div class="alert alert-info po-alert">
             <strong>{{ 'PURCHASE.PURCHASE_TYPE' | translate }} : </strong>
-            <input type="radio" id="indirectPO" ng-model="session.purchase_type" value="indirect">
+            <input type="radio" id="indirectPO" ng-model="session.is_direct" ng-value="false" ng-change="getPurchaseType()">
             <label for="indirectPO">{{ 'PURCHASE.INDIRECT' | translate }}</label>
             <span class="po-type-space"></span>
-            <input type="radio" id="directPO" ng-model="session.purchase_type" value="direct">
+            <input type="radio" id="directPO" ng-model="session.is_direct" ng-value="true" ng-change="getPurchaseType()">
             <label for="directPO">{{ 'PURCHASE.DIRECT' | translate }}</label>
           </div>
 
@@ -48,9 +48,9 @@
             </select>
           </div>
 
-          <div ng-switch on="session.purchase_type">
+          <div ng-switch on="session.is_direct">
 
-            <div ng-switch-when="indirect">
+            <div ng-switch-when="false">
               <div class="form-group">
                 <label for="select-employee">{{ 'PURCHASE.CREATE.RESPONSIBLE' | translate}}</label>
                 <select id="select-employee" ng-model="session.employee" ng-options="e as e.name for e in employee.data" class="form-bhima" ng-change="initPanelSuccess()">
@@ -58,41 +58,8 @@
                 </select>
               </div>
             </div>
-
-            <!-- An account textfield -->
-            <!-- <div ng-switch-when="direct">
-              <div class="form-group">
-                <label for="select-employee">{{ 'PURCHASE.CREATE.BANK_ACCOUNT' | translate}}</label>
-                <input type="text" ng-model="session.account_object" typeahead="formatAccount(account) as account.account_txt for account in accounts.data | filter:$viewValue | limitTo:8" typeahead-on-select="getAccount($item)" class="form-control">
-              </div>
-            </div> -->
           </div>
 
-          <!-- Determine validity period of payment -->
-
-          <!-- <div class="form&#45;group"> -->
-          <!--   <div class="radio"> -->
-          <!--     <label> -->
-          <!--       <input type="radio" name="option_payable" id="immediate" value="true" ng&#45;model="session.payable"> -->
-          <!--       Payable Immediately -->
-          <!--     </label> -->
-          <!--   </div> -->
-          <!--   <div class="radio"> -->
-          <!--     <label> -->
-          <!--       <input type="radio" name="option_payable" id="pay" value="false" checked -->
-          <!--              ng&#45;model="session.payable"> -->
-          <!--       Payable by -->
-          <!--     </label> -->
-          <!--   </div>
-          <!--   <div class="input&#45;group"> -->
-          <!--     <select id="payable" class="form&#45;bhima" ng&#45;disabled="isPayable()"> -->
-          <!--       <!&#45;&#45;FIXME Currently hardcoded &#45; should these be pulled from a data set?&#45;&#45;> -->
-          <!--       <option>14</option> -->
-          <!--       <option>30</option> -->
-          <!--     </select> -->
-          <!--     <span class="input&#45;group&#45;addon">days</span> -->
-          <!--   </div> -->
-          <!-- </div> -->
         </div>        
       </div>
     </div>
@@ -101,8 +68,7 @@
         <div class="panel-heading square">
           <span class="glyphicon glyphicon-list-alt"></span> 
           <strong>
-            <span ng-if="session.purchase_type=='direct'">{{ 'PURCHASE.DIRECT' | translate }}</span>
-            <span ng-if="session.purchase_type=='indirect'">{{ 'PURCHASE.INDIRECT' | translate }}</span>
+            <span>{{ session.label_purchase_type }}</span>
           </strong>
           {{ 'PURCHASE.TITLE' | translate }}
         </div>
