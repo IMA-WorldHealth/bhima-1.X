@@ -27,23 +27,24 @@ angular.module('bhima.controllers')
     };
 
     validate.process(dependencies, ['recipient'])
-    .then(patientReceipt);
+    .then(buildPatientLocation);
 
-/*    function buildPatientLocation(model) {
-      console.log('Le donnees du Data',model.recipient.data[0]);
+    function buildPatientLocation(model) {
+      console.log('Le donnees du Data',model.recipient.data[0].current_location_id);
       dependencies.location = {
         required: true,
-        query: '/location/' + model.recipient.data[0].current_location_id
+        query: '/location/village/' + model.recipient.data[0].current_location_id
       };
 
       validate.process(dependencies, ['location'])
       .then(patientReceipt);
-    }*/
+    }
 
     function patientReceipt(model) {
       $scope.model = model;
       $scope.recipient = $scope.model.recipient.data[0];
-
+      $scope.location = $scope.model.location.data[0];
+      console.log($scope.location);
       // Human readable ID
       $scope.recipient.hr_id = $scope.recipient.abbr.concat($scope.recipient.reference);
     }
