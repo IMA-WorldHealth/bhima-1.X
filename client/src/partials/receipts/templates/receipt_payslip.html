@@ -67,7 +67,7 @@
         <tr ng-repeat="item in dataHollydays | orderBy:'label'">
           <td> </td>
           <td>{{ item.label }}</td>
-          <td>{{ item.nbJour }} </td>
+          <td>{{ item.hollyday_nbdays }} </td>
           <td><span ng-bind-html="item.dailyHollyd | intlcurrency:dataPaiements[0].currency_id"></span></td>
           <td><span ng-bind-html="item.somHolly | intlcurrency:dataPaiements[0].currency_id"></td>
           <td></td>
@@ -91,6 +91,15 @@
           <td><span ng-bind-html="item.valueR | intlcurrency:dataPaiements[0].currency_id"></span></td>
           <td></td>
         </tr>
+        <tr ng-repeat="cotisation in dataCotisation | orderBy:'label'">
+          <td> </td>
+          <td>{{ cotisation.label }}</td>
+          <td> </td>
+          <td></td>
+          <td></span></td>
+          <td><span ng-bind-html="cotisation.value | intlcurrency:dataPaiements[0].currency_id"></span></td>
+          <td></td>
+        </tr> 
         <tr ng-repeat="tax in dataTaxes | orderBy:'label'">
           <td> </td>
           <td>{{ tax.label }}</td>
