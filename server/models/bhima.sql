@@ -1304,6 +1304,7 @@ create table `tax` (
   `abbr`                    varchar(4) null,
   `is_employee`             boolean,
   `is_percent`              boolean,
+  `is_ipr`                  boolean,            
   `four_account_id`         int unsigned null,
   `six_account_id`          int unsigned null,
   `value`                   float default 0,

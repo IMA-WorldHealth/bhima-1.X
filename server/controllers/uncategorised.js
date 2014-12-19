@@ -112,7 +112,7 @@ exports.listJournal = function (req, res, next) {
 exports.listHolidays = function (req, res, next) { 
   var pp = JSON.parse(req.params.pp);
   var sql =
-    "SELECT `hollyday`.`id`, `hollyday`.`label`, `hollyday`.`dateFrom`, `hollyday`.`dateTo` " + 
+    "SELECT `hollyday`.`id`, `hollyday`.`label`, `hollyday`.`dateFrom`, `hollyday`.`percentage`, `hollyday`.`dateTo` " + 
     "FROM `hollyday` WHERE " + 
     "((`hollyday`.`dateFrom`>=" + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + " AND " +
     "`hollyday`.`dateFrom`<=" + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ") OR " +
@@ -480,7 +480,7 @@ exports.auxCenterAccount = function (req, res, next) {
 };
 
 exports.checkHoliday = function (req, res, next) { 
-  var sql = "SELECT id, employee_id, label, dateTo, dateFrom FROM hollyday WHERE employee_id = '"+ req.query.employee_id +"'"
+  var sql = "SELECT id, employee_id, label, dateTo, percentage, dateFrom FROM hollyday WHERE employee_id = '"+ req.query.employee_id +"'"
           + " AND ((dateFrom >= '" + req.query.dateFrom +"') OR (dateTo >= '" + req.query.dateFrom + "') OR (dateFrom >= '"+ req.query.dateTo +"')"
           + " OR (dateTo >= '" + req.query.dateTo + "'))"
           + " AND ((dateFrom <= '" + req.query.dateFrom +"') OR (dateTo <= '" + req.query.dateFrom + "') OR (dateFrom <= '"+ req.query.dateTo +"')"
@@ -840,13 +840,13 @@ exports.availablePaymentPeriod = function (req, res, next) {
 };
 
 exports.listConsumptionDrugs = function (req, res, next) { 
-  var sql = "SELECT consumption.uuid,  SUM(consumption.quantity) AS quantity, consumption.date, inventory.code, inventory.text"
-          + " FROM consumption"
-          + " JOIN stock ON stock.tracking_number = consumption.tracking_number"
-          + " JOIN inventory ON inventory.uuid = stock.inventory_uuid"
-          + " WHERE consumption.uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss )"
-          + " AND ((consumption.date >= '"+ req.query.dateFrom +"') AND (consumption.date <= '" + req.query.dateTo + "'))"
-          + " GROUP BY inventory.uuid ORDER BY inventory.text ASC";
+  var sql = "SELECT consumption.uuid,  SUM(consumption.quantity) AS quantity, consumption.date, inventory.code, inventory.text " +
+    "FROM consumption " +
+    "JOIN stock ON stock.tracking_number = consumption.tracking_number " +
+    "JOIN inventory ON inventory.uuid = stock.inventory_uuid " +
+    "WHERE consumption.uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss ) " +
+    "AND ((consumption.date >= '"+ req.query.dateFrom +"') AND (consumption.date <= '" + req.query.dateTo + "')) " +
+    "GROUP BY inventory.uuid ORDER BY inventory.text ASC";
 
   db.exec(sql)
   .then(function (result) {
@@ -1288,7 +1288,7 @@ exports.listPaymentByEnterprise = function (req, res, next) {
           + " JOIN paiement p ON e.id=p.employee_id "
           + " JOIN tax_paiement z ON z.paiement_uuid=p.uuid "
           + " JOIN tax t ON t.id=z.tax_id "
-          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.employee_id) + " AND t.is_employee=0 AND p.is_paid=1";
+          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.employee_id) + " AND t.is_employee=0";
 
   db.exec(sql)
   .then(function (result) {
@@ -1372,7 +1372,7 @@ exports.listEmployeeCotisationPayments = function (req, res, next) {
           + " JOIN paiement p ON e.id=p.employee_id "
           + " JOIN cotisation_paiement z ON z.paiement_uuid=p.uuid "
           + " JOIN cotisation t ON t.id=z.cotisation_id "
-          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.id) + " AND p.is_paid=1 ";
+          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.id);
 
   db.exec(sql)
   .then(function (result) {
@@ -1381,3 +1381,5 @@ exports.listEmployeeCotisationPayments = function (req, res, next) {
   .catch(function (err) { next(err); })
   .done();
 };
+
+

@@ -39,7 +39,7 @@ angular.module('bhima.controllers')
           'request' : 'OrdersPayed'
         }  
     }).
-    success(function(data) {   
+    success(function(data) {
       $scope.orderpayed = data;
     });
 
@@ -287,8 +287,6 @@ angular.module('bhima.controllers')
                                 $scope.count_stock_min = count_stock_min;
                                 $scope.count_stock_max = count_stock_max;
                                 $scope.count_stock_ok = count_stock_ok;
-
-                                console.log(stock_inventory);
                               // End process
                             })
                           )
