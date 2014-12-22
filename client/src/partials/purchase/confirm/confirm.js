@@ -1,16 +1,12 @@
 angular.module('bhima.controllers')
 .controller('purchaseConfirm', [
   '$scope',
-  '$routeParams',
-  '$translate',
-  '$http',
-  'messenger',
   'validate',
   'appstate',
   'connect',
   '$location',
-  function ($scope, $routeParams, $translate, $http, messenger, validate, appstate, connect, $location) {
-    var dependencies = {}, session = $scope.session = { purchase_type : 'indirect' };
+  function ($scope, validate, appstate, connect, $location) {
+    var dependencies = {}, session = $scope.session = { is_direct : false };
 
     dependencies.indirect_purchase = {
       query : {
@@ -57,7 +53,7 @@ angular.module('bhima.controllers')
     }
 
     $scope.confirmPurchase = function confirmPurchase(purchaseId) {
-      session.selected = (session.purchase_type === 'direct') ? $scope.direct_purchase.get(purchaseId) : $scope.indirect_purchase.get(purchaseId);
+      session.selected = (session.is_direct) ? $scope.direct_purchase.get(purchaseId) : $scope.indirect_purchase.get(purchaseId);
     };
 
     $scope.confirmPayment = function confirmPayment () {
@@ -72,11 +68,12 @@ angular.module('bhima.controllers')
         	uuid : session.selected.uuid,
         	confirmed : 1
       };
-      return connect.basicPost('purchase', [purchase], ['uuid']);
+      return connect.put('purchase', [purchase], ['uuid']);
     }
 
     function writeToJournal () {
-    	return (session.purchase_type === 'direct') ? connect.fetch('/journal/confirm_direct_purchase/' + session.selected.uuid) : connect.fetch('/journal/confirm/' + session.selected.paid_uuid);
+      var query = (session.is_direct) ? '/confirm_direct_purchase/' + session.selected.uuid : '/confirm/' + session.selected.paid_uuid;
+    	return connect.fetch('/journal' + query);
     }
 
     function paymentSuccess(result) {
@@ -84,19 +81,12 @@ angular.module('bhima.controllers')
         uuid : session.selected.uuid,
         paid : 1
       };
-      return connect.basicPost('purchase', [purchase], ['uuid']);
+      return connect.put('purchase', [purchase], ['uuid']);
     }
 
     function generateDocument(res) {
-      switch(session.purchase_type) {
-        case 'direct':
-          $location.path('/invoice/confirm_direct_purchase/' + session.selected.uuid);
-        break;
-
-        default:
-          $location.path('/invoice/confirm_purchase/' + session.selected.uuid);
-        break;
-      }
+      var query = (session.is_direct) ? '/confirm_direct_purchase/' + session.selected.uuid : '/confirm_purchase/' + session.selected.uuid;
+      $location.path('/invoice' + query);
     }
 
     function handleError(error) {
@@ -109,8 +99,7 @@ angular.module('bhima.controllers')
     }
 
     $scope.resetSelected = function () {
-      delete session.selected;
+      session.selected = null;
     };
   }
 ]);
-

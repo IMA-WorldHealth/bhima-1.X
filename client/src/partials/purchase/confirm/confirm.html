@@ -25,10 +25,10 @@
 
           <div class="alert alert-info po-alert">
             <strong>{{ 'PURCHASE.PURCHASE_TYPE' | translate }} : </strong>
-            <input type="radio" id="indirectPO" ng-model="session.purchase_type" value="indirect" ng-click="resetSelected()">
+            <input type="radio" id="indirectPO" ng-model="session.is_direct" ng-value="false" ng-click="resetSelected()">
             <label for="indirectPO">{{ 'PURCHASE.INDIRECT' | translate }}</label>
             <span class="po-type-space"></span>
-            <input type="radio" id="directPO" ng-model="session.purchase_type" value="direct"  ng-click="resetSelected()">
+            <input type="radio" id="directPO" ng-model="session.is_direct" ng-value="true"  ng-click="resetSelected()">
             <label for="directPO">{{ 'PURCHASE.DIRECT' | translate }}</label>
           </div>
 
@@ -39,7 +39,7 @@
              <input class="form-bhima" placeholder="{{'PURCHASE.CONFIRM.FILTER' | translate }}" ng-model="session.filter">
           </div>
 
-          <table ng-if="session.purchase_type==='indirect'" class="table table-bordered table-condensed">
+          <table ng-if="!session.is_direct" class="table table-bordered table-condensed">
             <thead>
               <tr>
                 <th>{{"COLUMNS.DATE" | translate}}</th>
@@ -66,7 +66,7 @@
             </tbody>
           </table>
 
-          <table ng-if="session.purchase_type==='direct'" class="table table-bordered table-condensed">
+          <table ng-if="session.is_direct" class="table table-bordered table-condensed">
             <thead>
               <tr>
                 <th>{{"COLUMNS.DATE" | translate}}</th>
@@ -117,10 +117,10 @@
               <tr>
                 <td>{{"COLUMNS.NOTE" | translate}}</td><td>{{session.selected.note}}</td>
               </tr>
-              <tr ng-if="session.purchase_type==='indirect'">
+              <tr ng-if="!session.is_direct">
                 <td>{{"COLUMNS.EMPLOYEE" | translate}}</td><td>{{session.selected.name}}</td>
               </tr>
-              <tr ng-if="session.purchase_type==='direct'">
+              <tr ng-if="session.is_direct">
                 <td>{{"COLUMNS.SUPPLIER" | translate}}</td><td><strong>{{session.selected.name}}</strong></td>
               </tr>
               <tr>
@@ -130,8 +130,8 @@
           </table>
 
           <button ng-click="confirmPayment()" class="square btn btn-success btn-sm">  {{ "PURCHASE.CONFIRM.CONFIRM_PAY_OF" | translate }} <b>{{session.selected.cost | currency}}</b> {{ "PURCHASE.CONFIRM.BY" | translate }} 
-          <b ng-if="session.purchase_type==='indirect'">{{session.selected.name}}</b>
-          <b ng-if="session.purchase_type==='direct'">{{session.selected.name}}</b>
+          <b ng-if="!session.is_direct">{{session.selected.name}}</b>
+          <b ng-if="session.is_direct">{{session.selected.name}}</b>
           </button>
         </div>
       </div>
