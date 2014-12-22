@@ -44,7 +44,7 @@
           <div class="form-group">
             <label for="select-cred">{{ 'PURCHASE.CREATE.SUPPLIER' | translate }}</label>
             <select id="select-cred" ng-change="selectCreditor(session.creditor)" ng-model="session.creditor" ng-options="c as c.name for c in creditor.data" class="form-bhima">
-              <option value="" disabled="disabled">--{{ 'PURCHASE.CREATE.SELECT_CREDITOR' | translate }}--</option>
+              <option value="" ng-value="" disabled="disabled">--{{ 'PURCHASE.CREATE.SELECT_CREDITOR' | translate }}--</option>
             </select>
           </div>
 
@@ -54,7 +54,8 @@
               <div class="form-group">
                 <label for="select-employee">{{ 'PURCHASE.CREATE.RESPONSIBLE' | translate}}</label>
                 <select id="select-employee" ng-model="session.employee" ng-options="e as e.name for e in employee.data" class="form-bhima" ng-change="initPanelSuccess()">
-                  <option value="" disabled="disabled">--{{ 'PURCHASE.CREATE.SELECT_EMPLOYEE' | translate }}--</option>
+                  <!-- hack default select value to force a selection of an item -->
+                  <option ng-value="" disabled="disabled">--{{ 'PURCHASE.CREATE.SELECT_EMPLOYEE' | translate }}--</option>
                 </select>
               </div>
             </div>
@@ -115,26 +116,6 @@
               </table>
             </div>
           </div>
-
-          <!-- <div class="row">
-            <div class="col-xs-12">
-              <table ng-if="session.account" class="table table-bordered">
-                <thead>
-                <tr>
-                  <th> {{ 'PURCHASE.CREATE.BANK_ACCOUNT' | translate }}</th>
-                </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <strong>{{session.account.account_number}}</strong>
-                      <span>{{session.account.account_txt}}</span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div> -->
 
           <div class="row">
             <div class="col-xs-12">

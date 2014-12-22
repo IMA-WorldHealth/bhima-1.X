@@ -111,6 +111,7 @@ angular.module('bhima.controllers')
     function settupPurchase() {
       session.items = [];
       addPurchaseItem();
+      if(!session.is_direct && session.employee) { initPanelSuccess(); }
     }
 
     function addPurchaseItem() {
@@ -284,6 +285,9 @@ angular.module('bhima.controllers')
     function getPurchaseType() {
       session.label_purchase_type = session.is_direct === true ? $translate.instant('PURCHASE.DIRECT') : $translate.instant('PURCHASE.INDIRECT');
       session.purchase.note = formatPurchaseDescription();
+      session.creditor = null;
+      session.employee = null;
+      session.panel_success = null;
     }
 
     $scope.selectCreditor = selectCreditor;
