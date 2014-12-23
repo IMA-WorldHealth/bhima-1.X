@@ -578,6 +578,62 @@ angular.module('bhima.controllers')
       }
     }
 
+    function processConfirmDirectPurchase (identifiant){
+      var dependencies = {};
+      dependencies.enterprise = {
+        query : {
+          tables : {
+            'enterprise' : {columns : ['id', 'name', 'phone', 'email', 'location_id' ]},
+            'project'    : {columns : ['name', 'abbr']}
+          },
+          join : ['enterprise.id=project.enterprise_id']
+        }
+      };
+
+      dependencies.purchase = {
+        query : {
+          identifier : 'uuid',
+          tables : {
+            purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'employee_id', 'project_id', 'purchase_date', 'note'] },
+            supplier : { columns : ['name'] },
+            project  : { columns : ['abbr'] }
+          },
+          join : ['purchase.project_id=project.id', 'purchase.creditor_uuid=supplier.creditor_uuid'],
+          where : ['purchase.uuid='+identifiant]
+        }
+      };
+
+      validate.process(dependencies)
+      .then(getLocations)
+      .then(polish)
+      .catch(function (err) {
+      });
+
+      function getLocations (model) {
+        dependencies.location = {};
+        dependencies.location.query = 'location/detail/' +  model.enterprise.data[0].location_id;
+        return validate.process(dependencies, ['location']);
+      }
+
+      function polish (model) {
+        var invoice = $scope.invoice = {},
+            location = model.location.data[0], 
+            purchase = model.purchase.data[0], 
+            enterprise = model.enterprise.data[0];
+
+        invoice.uuid = identifiant;
+        invoice.enterprise_name = enterprise.name;
+        invoice.village = location.village;
+        invoice.sector = location.sector;
+        invoice.phone = enterprise.phone;
+        invoice.email = enterprise.email;
+        invoice.supplier = purchase.name;
+        invoice.purchase_date = purchase.purchase_date;
+        invoice.reference = purchase.abbr + purchase.reference;
+        invoice.cost = purchase.cost;
+      }
+    }
+
     function processServiceDist (identifiant){
       var dependencies = {};
       dependencies.enterprise = {
@@ -634,7 +690,6 @@ angular.module('bhima.controllers')
         invoice.name = distribution.name;
         invoice.date = distribution.date;
       }
-
     }
 
 
@@ -692,7 +747,6 @@ angular.module('bhima.controllers')
         invoice.name = loss.name;
         invoice.date = loss.date;
       }
-
     }
 
     function buildPatientLocation(model) {
@@ -1330,8 +1384,6 @@ angular.module('bhima.controllers')
           $scope.TotalNet -= item.value;
         });
       });
-
-
     }   
 
     function processPayroll (identifiant){
@@ -1565,6 +1617,10 @@ angular.module('bhima.controllers')
       'confirm_purchase' : {
         fn  : processConfirmPurchase,
         url : '/partials/receipts/templates/confirm.purchase.html'
+      },
+      'confirm_direct_purchase' : {
+        fn  : processConfirmDirectPurchase,
+        url : '/partials/receipts/templates/confirm_direct.purchase.html'
       },
       'service_distribution' : {
         fn  : processServiceDist,
