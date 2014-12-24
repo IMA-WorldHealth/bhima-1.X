@@ -1,3 +1,7 @@
+--
+-- Build a neutral schema for public demonstration
+--
+
 source bhima.sql;
 use bhima;
 
