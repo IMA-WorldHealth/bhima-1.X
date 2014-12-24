@@ -51,8 +51,6 @@ exports.initialise = function (app) {
   app.get('/location/province/:uuid', location.lookupProvince);
   app.get('/location/detail/:uuid', location.lookupDetail);
 
-  app.get('/exchange/:date/:fromCurrencyId/:toCurrencyId', exchange.getExchangeRate);
-
   app.post('/purchase', createPurchase.execute);
   app.post('/sale/', createSale.execute);
   app.post('/service_dist/', serviceDist.execute);
