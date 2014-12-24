@@ -1,13 +1,12 @@
 var q = require('q');
 var db = require('./../lib/db');
-var parser = require('./../lib/parser');
 var uuid = require('./../lib/guid');
 var journal = require('./journal');
 
 /*
- * HTTP Controllers 
+ * HTTP Controllers
 */
-exports.execute = function (req, res, next) { 
+exports.execute = function (req, res, next) {
   executePurchase(req.session.user_id, req.body)
   .then(function (id) {
     res.status(200).send({ purchaseId : id });
@@ -56,7 +55,7 @@ function executePurchase(userId, data) {
     .then(function () {
       return q(primaryCashId);
     });
-};
+}
 
 function writeCash(primaryCashId, userId, data) {
   // write items to the primary_cash table
@@ -96,7 +95,7 @@ function writeCashItems(primaryCashId, data) {
 }
 
 function postToJournal(primaryCashId, userId) {
-  console.log('posting to journal ...');
+  //console.log('posting to journal ...');
   var dfd = q.defer();
   journal.request('indirect_purchase', primaryCashId, userId, function (err, result) {
     if (err) { return dfd.reject(err); }
