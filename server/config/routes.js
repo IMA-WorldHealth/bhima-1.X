@@ -27,7 +27,6 @@ var ledger          = require('./../controllers/ledger');
 var fiscal          = require('./../controllers/fiscal');
 var report          = require('./../controllers/report');
 var tree            = require('./../controllers/tree');
-var exchange        = require('./../controllers/exchange');
 
 var uncategorised   = require('./../controllers/uncategorised');
 
