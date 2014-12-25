@@ -1,5 +1,6 @@
 var q = require('q');
 var db = require('./../lib/db');
+var util = require('./../lib/util');
 
 /*summary
 *   Handle the creation of fiscal years, given start date, end date and description (currently assumed to have period length of 1 month)
@@ -15,10 +16,10 @@ var db = require('./../lib/db');
  * HTTP Controllers
 */
 exports.writeYear = function (req, res, next) { 
-  var enterprise = req.params.enterprise;
-  var startDate = new Date(Number(req.params.startDate));
-  var endDate = new Date(Number(req.params.endDate));
-  var description = req.params.description;
+  var enterprise = req.params.enterprise,
+      startDate = new Date(Number(req.params.startDate)),
+      endDate = new Date(Number(req.params.endDate)),
+      description = req.params.description;
 
   create(enterprise, startDate, endDate, description)
   .then(function (status) {
@@ -50,13 +51,17 @@ function create(enterprise, start, end, description) {
     return q.reject(validData);
   }
 
+  console.log('[FISCAL] Recieved query:', enterprise, start, end, description);
+
   //Create line in fiscal_year
   return createFiscalRecord(enterprise, startObj, endObj, description)
   .then(function (fiscalSuccess) {
+    console.log('[FISCAL] Created Fiscal record:', fiscalSuccess);
     fiscalInsertId = fiscalSuccess.insertId;
     return createPeriodRecords(fiscalInsertId, startObj, endObj);
   })
   .then(function (records) {
+    console.log('[FISCAL] Created Period Records', records);
     return q({
       'fiscalInsertId' : fiscalInsertId,
       'periodZeroId'   : records[0].id,
@@ -84,21 +89,21 @@ function verifyData(start, end) {
 
 function createFiscalRecord(enterprise, start, end, description) {
   var monthNo, startMonth, startYear,
-      previousFiscal;
+      previousFiscal, sql;
 
   monthNo = monthDiff(start, end);
   startMonth = start.getMonth() + 1;
   startYear = start.getFullYear();
 
-  //Get previous fiscal year, then insert fiscal year into DB
+  // Get previous fiscal year, then insert fiscal year into DB
   return getLatestFiscal()
   .then(function (previousFiscal) {
 
-    var fiscalSql =
+    sql =
       'INSERT INTO fiscal_year (enterprise_id, number_of_months, fiscal_year_txt, start_month, start_year, previous_fiscal_year) VALUES ' +
-      '(' + enterprise + ',' + monthNo + ',\'' + description + '\',' + startMonth + ',' + startYear + ',' + previousFiscal + ');';
+        '(?, ?, ?, ?, ?, ?);';
 
-    return db.exec(fiscalSql);
+    return db.exec(sql, [enterprise, monthNo, description, startMonth, startYear, previousFiscal]);
   });
 }
 
@@ -111,13 +116,13 @@ function createPeriodRecords(fiscalYearId, start, end) {
   // create an opening balances period
 
   var ps = new Date(start.getFullYear(), start.getMonth());
-  periodSqlBody.push('(' + fiscalYearId + ',' + 0 +', \'' + sqlDate(ps) + '\' , \'' + sqlDate(ps) + '\')');
+  periodSqlBody.push('(' + fiscalYearId + ',' + 0 +', \'' + util.toMysqlDate(ps) + '\' , \'' + util.toMysqlDate(ps) + '\')');
   totalMonths = monthDiff(start, end) + 1;
 
   for (var i = 0; i < totalMonths; i++) {
     var currentPeriodStart = new Date(start.getFullYear(), start.getMonth() + i);
     var currentPeriodStop = new Date(currentPeriodStart.getFullYear(), currentPeriodStart.getMonth() + 1, 0);
-    periodSqlBody.push('(' + fiscalYearId + ',' + Number(i) + 1 + ',\'' + sqlDate(currentPeriodStart) + '\',\'' + sqlDate(currentPeriodStop) + '\')');
+    periodSqlBody.push('(' + fiscalYearId + ',' + Number(i) + 1 + ',\'' + util.toMysqlDate(currentPeriodStart) + '\',\'' + util.toMysqlDate(currentPeriodStop) + '\')');
   }
 
   periodSql = periodSqlHead + periodSqlBody.join(',');
@@ -158,20 +163,23 @@ function createBudgetRecords(enterprise, insertedPeriodId, totalPeriodsInserted)
   });
 }
 
-function getAccountList(enterprise) {
+function getAccountList(enterpriseId) {
   var accountSql =
-    'SELECT id FROM account WHERE enterprise_id = ' + enterprise + ';';
-  return db.exec(accountSql);
+    'SELECT id FROM account WHERE enterprise_id = ?;';
+  return db.exec(accountSql, [enterpriseId]);
 }
 
 function getLatestFiscal() {
   // Recursively determine latest fiscal year
   // Can be swapped for simple maxId request if generation time is too long
-  var deferred = q.defer();
-  var initialRequest =
-    'SELECT id FROM fiscal_year WHERE previous_fiscal_year IS NULL';
-  var iterateRequest =
-    'SELECT id, previous_fiscal_year FROM fiscal_year WHERE previous_fiscal_year = ';
+  var deferred = q.defer(),
+      initialRequest,
+      iterateRequest;
+
+  initialRequest =
+    'SELECT id FROM fiscal_year WHERE previous_fiscal_year IS NULL;';
+  iterateRequest =
+    'SELECT id, previous_fiscal_year FROM fiscal_year WHERE previous_fiscal_year = ?;';
 
   // find head of list (if it exists)
   db.exec(initialRequest)
@@ -191,7 +199,7 @@ function getLatestFiscal() {
   .done();
 
   function iterateList(id) {
-    db.exec(iterateRequest + id)
+    db.exec(iterateRequest, [id])
     .then(function (rows) {
       if (rows.length === 0) {
         deferred.resolve(id);
@@ -211,8 +219,4 @@ function monthDiff(firstDate, secondDate) {
   diff += (secondDate.getFullYear() - firstDate.getFullYear()) * 12;
   diff = Math.abs(diff);
   return diff <= 0 ? 0 : diff; // FIXME : This should throw an error if diff <= 0.
-}
-
-function sqlDate(date) {
-  return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
 }
