@@ -15,7 +15,7 @@ var util = require('./../lib/util');
 /*
  * HTTP Controllers
 */
-exports.writeYear = function (req, res, next) { 
+exports.writeYear = function (req, res, next) {
   var enterprise = req.params.enterprise,
       startDate = new Date(Number(req.params.startDate)),
       endDate = new Date(Number(req.params.endDate)),
@@ -53,7 +53,7 @@ function create(enterprise, start, end, description) {
 
   console.log('[FISCAL] Recieved query:', enterprise, start, end, description);
 
-  //Create line in fiscal_year
+  // Create line in fiscal_year
   return createFiscalRecord(enterprise, startObj, endObj, description)
   .then(function (fiscalSuccess) {
     console.log('[FISCAL] Created Fiscal record:', fiscalSuccess);
@@ -122,15 +122,15 @@ function createPeriodRecords(fiscalYearId, start, end) {
   for (var i = 0; i < totalMonths; i++) {
     var currentPeriodStart = new Date(start.getFullYear(), start.getMonth() + i);
     var currentPeriodStop = new Date(currentPeriodStart.getFullYear(), currentPeriodStart.getMonth() + 1, 0);
-    periodSqlBody.push('(' + fiscalYearId + ',' + Number(i) + 1 + ',\'' + util.toMysqlDate(currentPeriodStart) + '\',\'' + util.toMysqlDate(currentPeriodStop) + '\')');
+    periodSqlBody.push('(' + fiscalYearId + ',' + (i + 1) + ',\'' + util.toMysqlDate(currentPeriodStart) + '\',\'' + util.toMysqlDate(currentPeriodStop) + '\')');
   }
 
   periodSql = periodSqlHead + periodSqlBody.join(',');
   return db.exec(periodSql)
   .then(function (rows) {
     var periodZeroSql =
-      'SELECT id FROM period WHERE fiscal_year_id = ' + fiscalYearId + ' AND period_number = 0';
-    return db.exec(periodZeroSql);
+      'SELECT id FROM period WHERE fiscal_year_id = ? AND period_number = 0';
+    return db.exec(periodZeroSql, [fiscalYearId]);
   });
 }
 
