@@ -1,0 +1,23 @@
+<head>
+    <link href="server/controllers/reports_proposed/templates/style/reports.css" rel="stylesheet">
+</head>
+<body>
+    <table style="color : red;">
+        <thead>
+            <tr>
+                <th>Number</th>
+                <th>Letter</th>
+            </tr>
+        </thead>
+        <tbody>
+        
+        {{ for (var row in it.rows) { }} 
+            <tr>
+                <td>{{=row}}</td>
+                <td>'a'</td>
+            </tr>
+        {{ } }}
+        </tbody>
+    </table>
+</body>
+                
