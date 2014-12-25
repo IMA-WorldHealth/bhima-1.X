@@ -36,32 +36,26 @@ exports.writeYear = function (req, res, next) {
 */
 
 //This is a pretty gross function declaration, too many parameters etc. pass a JSON object through?
-function create(enterprise, start, end, description) {
+function create(enterprise, startObj, endObj, description) {
 
   //TODO discuss: Passing variables down through all the functions vs. declaring them at the top, testing/ coupling vs. readability/ clarity?
   //              this version seems very tightly coupled
   var fiscalInsertId,
       periodZeroId,
       defer = q.defer(),
-      startObj = new Date(start),
-      endObj = new Date(end),
       validData = verifyData(startObj, endObj, enterprise);
 
   if (!validData.valid) {
     return q.reject(validData);
   }
 
-  console.log('[FISCAL] Recieved query:', enterprise, start, end, description);
-
   // Create line in fiscal_year
   return createFiscalRecord(enterprise, startObj, endObj, description)
   .then(function (fiscalSuccess) {
-    console.log('[FISCAL] Created Fiscal record:', fiscalSuccess);
     fiscalInsertId = fiscalSuccess.insertId;
     return createPeriodRecords(fiscalInsertId, startObj, endObj);
   })
   .then(function (records) {
-    console.log('[FISCAL] Created Period Records', records);
     return q({
       'fiscalInsertId' : fiscalInsertId,
       'periodZeroId'   : records[0].id,
@@ -143,7 +137,7 @@ function createBudgetRecords(enterprise, insertedPeriodId, totalPeriodsInserted)
 
   var budgetOptions = [0, 10, 20, 30, 50];
 
-  //FIXME - this is so Bad. Periods are inserted as a group returning the inital insert value,
+  // FIXME - this is so Bad. Periods are inserted as a group returning the inital insert value,
   // extrapolating period Ids from this and number of rows affected
   for (var i = insertedPeriodId, l = (totalPeriodsInserted + insertedPeriodId); i < l; i++) {
     console.log('[DEBUG]', 'Pushing value of i:', i);
