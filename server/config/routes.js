@@ -30,7 +30,7 @@ var tree            = require('./../controllers/tree');
 
 var uncategorised   = require('./../controllers/uncategorised');
 
-var compileReport   = require('./../controllers/reports_gen/report.js');
+var compileReport   = require('./../controllers/reports_proposed/reports.js');
 
 exports.initialise = function (app) { 
   console.log('[config/routes] Configure routes');
@@ -54,7 +54,8 @@ exports.initialise = function (app) {
   app.get('/location/detail/:uuid', location.lookupDetail);
   
   app.get('/proof/of/concept/report/', compileReport.build);
-  
+  app.get('/proof/of/concept/report/serve/:target', compileReport.serve);
+
   app.post('/purchase', createPurchase.execute);
   app.post('/sale/', createSale.execute);
   app.post('/service_dist/', serviceDist.execute);

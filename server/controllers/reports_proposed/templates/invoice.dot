@@ -1,0 +1,38 @@
+<head>
+    <link rel="stylesheet" href="{{=it.path}}/templates/style/reports.css">
+    <!--style>
+        table { 
+            font-size : 100;
+            width : 100%;
+        }
+
+        table > thead > tr { 
+            border : 1px solid black;
+        }
+
+        table > tbody > tr { 
+            border : 1px solid black;
+        }
+    </style-->
+</head>
+
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>Number</th>
+                <th>Letter</th>
+            </tr>
+        </thead>
+        <tbody>
+        
+        {{ for (var row in it.rows) { }} 
+            <tr>
+                <td>{{=row}}</td>
+                <td>'a'</td>
+            </tr>
+        {{ } }}
+        </tbody>
+    </table>
+</body>
+                

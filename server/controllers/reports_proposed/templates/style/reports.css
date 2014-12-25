@@ -1,0 +1,14 @@
+table { 
+  color : red;
+  font-size : 100;
+  width : 100%;
+}
+
+table > thead > tr { 
+  border : 1px solid black;
+}
+
+table > tbody > tr { 
+  border : 1px solid black;
+}
+ 
