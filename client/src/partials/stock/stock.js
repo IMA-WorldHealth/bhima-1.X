@@ -37,6 +37,18 @@ angular.module('bhima.controllers')
       },
 
       {
+        key : 'STOCK.DISTRIBUTION_RECORDS.KEY',
+        ico : 'glyphicon-list-alt',
+        link : '/stock/distribution_record'
+      },
+
+      {
+        key : 'STOCK.DISTRIBUTION_SERVICE_RECORDS.KEY',
+        ico : 'glyphicon-list-alt',
+        link : '/stock/distribution_service_record'
+      },
+
+      {
         key : 'STOCK.LOSS.KEY',
         ico : 'glyphicon-cloud',
         link : '/stock/loss'
@@ -144,7 +156,6 @@ angular.module('bhima.controllers')
         return messenger.danger('NO_DEPOT_SELECTED');
       }*/
 
-      console.log($scope.depot);
       var path = config.modules.indexOf(defn) > -1 ? defn.link + '/' + $scope.depot.uuid
         : (config.utilities.indexOf(defn) > -1 ) ? defn.link+ '/' + $scope.depot.uuid : defn.link;
       $location.path(path);
