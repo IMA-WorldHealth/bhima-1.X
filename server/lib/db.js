@@ -56,6 +56,7 @@ function exec(sql, params) {
   con.getConnection(function (err, connection) {
     if (err) { return defer.reject(err); }
     connection.query(sql, params, function (err, results) {
+
       if (err) { return defer.reject(err); }
       connection.release();          
       defer.resolve(results);
@@ -216,9 +217,6 @@ function flushUsers (db_con) {
         if (err) { throw err; }
         con.query(reset, function (err) {
           if (err) { throw err; }
-          
-
-          // console.log('[db] (*) user . logged_in set to 0');
         });
       });
     });
