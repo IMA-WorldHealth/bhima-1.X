@@ -1,7 +1,8 @@
 <!-- distribution.html template -->
+<div ng-controller="receipt.loss">
 <div class="row customer-details">
   <div class="col-xs-12">
-    <small style="float: right; color: grey; font-size: 8px">{{ invoice.uuid }}</small>
+    <small style="float: right; color: grey; font-size: 8px">{{ model.loss[0].document_uuid }}</small>
     <h4 class="invoice-header">{{ 'INVOICE.LOSS' | translate }}</h4>
   </div>
 </div>
@@ -10,35 +11,30 @@
   <!-- Temporary style; needs official markup and CSS -->
   <div class="col-xs-4">
     <span>
-      <b>{{invoice.enterprise_name}}</b>
+      <b>{{model.common.enterprise.name}}</b>
     </span>
     <br>
-    {{invoice.village}}
+    {{model.common.location.name}}
     <br>
-    <!-- hah -->
-    {{ invoice.postal || 'B.P. 205'}}
+    {{ model.common.enterprise.postal || 'B.P. 205'}}
     <br>
-    {{invoice.sector}}
+    {{model.common.location.sector_name}}
     <br>
-    <i>TEL</i> {{invoice.phone}}
+    <i>TEL</i> {{model.common.enterprise.phone}}
     <br>
-    <i>FAX</i> {{invoice.email}}
+    <i>MAIL</i> {{model.common.enterprise.email}}
   </div>
 
   <div class="col-xs-4">
-    <b>{{invoice.name}} </b>
+    {{ 'INVOICE.DOCUMENT_NUMBER' | translate }} : <b> <br>
+    {{model.loss[0].document_uuid}}</b> <br>
     <br>
-    <i>{{'INVOICE.DATE_REGISTRATION' | translate }}</i>
-    <br>
-    {{invoice.date | date}}
+    <i>{{'INVOICE.DATE_REGISTRATION' | translate }}</i> <br>
+    {{model.loss[0].date | date}}
   </div>
 
-  <div class="col-xs-4">
-    <i>{{ 'INVOICE.DATE_DOCUMENT' | translate }}</i>
-    <br>
-    {{invoice.date | date}}
-    <br>
-  </div>
+  <div class="col-xs-4"></div>
+
 </div>
 
 <div class="row">
@@ -46,6 +42,9 @@
     <table class="invoiceTable">
       <thead>
         <tr>
+          <th>{{'COLUMNS.ENTRY_DATE' | translate}}</th>
+          <th>{{'COLUMNS.LOT_NUMBER' | translate}}</th>
+          <th>{{'COLUMNS.TRACKING_NUMBER' | translate}}</th>
           <th>{{'COLUMNS.MEDECINE' | translate}}</th>
           <th>{{'COLUMNS.QTY' | translate}}</th>
           <th>{{'COLUMNS.UNIT_PRICE' | translate}}</th>
@@ -53,7 +52,10 @@
         </tr>
       </thead>
       <tbody class="items">
-        <tr ng-repeat="rec in records">
+        <tr ng-repeat="rec in model.loss">
+          <td>{{ rec.entry_date | date }}</td>
+          <td>{{ rec.lot_number }}</td>
+          <td>{{ rec.tracking_number }}</td>
           <td>{{ rec.text }}</td>
           <td>{{ rec.quantity}}</td>
           <td>{{ rec.purchase_price | currency }}</td>
@@ -69,10 +71,7 @@
       <b>{{"SIGNATURES.RESPONSABLE" | translate}}</b>
     </div>
   </div>
-  <div class="col-xs-6">
-    <!--div class="pull-left">
-     <b>{{"SIGNATURES.BENEFICIARY" | translate}}</b>
-    </div>
-  </div-->
+  <div class="col-xs-6"></div>
+</div>
 </div>
 <!-- end distribution.html template  -->
