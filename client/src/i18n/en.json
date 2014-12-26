@@ -1511,6 +1511,7 @@
     "CONFIRM_PURCHASE"              : "Payment confirmation",
     "CONFIRMED_BY"                  : "Confirmed by ",
     "SIGN_EMPLOYEE"                 : "Employee signature",
+    "TAX_PAYMENT"                   : "Taxes Payment",
     "ENTERPRISE_TAX_PAYMENT"        : "Entreprise Taxes Payment",
     "SALARY_PAYMENT"                : "Salary Payment",
     "COTISATIONS"                   : "Cotisations",
