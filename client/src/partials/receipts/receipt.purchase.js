@@ -7,7 +7,7 @@ angular.module('bhima.controllers')
   function ($scope, validate, appstate, messenger) {
     var dependencies = {}, model = $scope.model = {common : {}};
 
-    dependencies.purchase = {
+    dependencies.indirectPurchases = {
       query : {
         identifier : 'uuid',
         tables : {
@@ -24,7 +24,7 @@ angular.module('bhima.controllers')
             columns : ['group_uuid']
           },
           'supplier' : {
-            columns : ['location_id', 'email', 'fax', 'note', 'phone', 'international']
+            columns : ['email', 'phone']
           },
           'employee' : {
             columns : ['prenom', 'name', 'postnom', 'creditor_uuid']
@@ -40,9 +40,37 @@ angular.module('bhima.controllers')
       }
     };
 
-    dependencies.supplier = {
+    dependencies.directPurchases = {
       query : {
         identifier : 'uuid',
+        tables : {
+          'purchase' : {
+            columns : ['uuid', 'reference', 'project_id', 'cost', 'currency_id', 'creditor_uuid', 'purchase_date', 'note', 'employee_id', 'is_direct']
+          },
+          'purchase_item' : {
+            columns : ['inventory_uuid', 'purchase_uuid', 'quantity', 'unit_price', 'total']
+          },
+          'inventory' : {
+            columns : ['code', 'text']
+          },
+          'creditor' : {
+            columns : ['group_uuid']
+          },
+          'supplier' : {
+            columns : ['email', 'phone']
+          }
+        },
+        join : [
+          'purchase.uuid=purchase_item.purchase_uuid',
+          'purchase_item.inventory_uuid=inventory.uuid',
+          'purchase.creditor_uuid=creditor.uuid',
+          'creditor.uuid=supplier.creditor_uuid'
+        ]
+      }
+    };
+
+    dependencies.supplier = {
+      query : {
         tables : {
           'purchase' : {
             columns : ['creditor_uuid']
@@ -51,7 +79,7 @@ angular.module('bhima.controllers')
             columns : ['text']
           },
           'supplier' : {
-            columns : ['uuid', 'name', 'email', 'fax', 'note', 'phone', 'address_1','address_2']
+            columns : ['name', 'email', 'phone']
           }
         },
         join : [
@@ -62,17 +90,19 @@ angular.module('bhima.controllers')
     };
 
     function buildInvoice (res) {
-      model.common.purchases = res.purchase.data;
+      model.common.purchases = (res.indirectPurchases.data.length) ? res.indirectPurchases.data : res.directPurchases.data;
       model.common.supplier = res.supplier.data;
     }
 
   	appstate.register('receipts.commonData', function (commonData) {
   		commonData.then(function (values) {
         model.common.location = values.location.data.pop();
-        model.common.InvoiceId = values.invoiceId;
         model.common.enterprise = values.enterprise.data.pop();
-        dependencies.purchase.query.where =  ['purchase_item.purchase_uuid=' + values.invoiceId];
+
+        dependencies.indirectPurchases.query.where =  ['purchase_item.purchase_uuid=' + values.invoiceId];
+        dependencies.directPurchases.query.where =  ['purchase_item.purchase_uuid=' + values.invoiceId,'AND','purchase.is_direct=1'];
         dependencies.supplier.query.where =  ['purchase.uuid=' + values.invoiceId];
+
         validate.process(dependencies)
         .then(buildInvoice)
         .catch(function (err){
