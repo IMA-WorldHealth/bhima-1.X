@@ -717,6 +717,7 @@
     "FOUR_ACCOUNT"       : "Four Account",
     "SIX_ACCOUNT"        : "Charge Account",
     "IS_IPR"             : "Is IPR ?",
+    "ENTRY_DATE"         : "Entry date",
     "CONFIRMED"          : "Confirmed",
     "SUPPLIER"           : "Supplier"   
   },
@@ -1541,9 +1542,14 @@
     "SALARY_PAYMENT"                : "Salary Payment",
     "COTISATIONS"                   : "Cotisations",
     "COTISATION_PAYMENT"            : "Cotisation Payment",
+    "SUPPLIER"                      : "Supplier",
+    "LOT_NUMBER"                    : "Lot",
+    "DATE_DOCUMENT"                 : "Document date",
+    "LOSS"                          : "Proof of stock loss",
+    "DOCUMENT_NUMBER"               : "Document number",
+    "ENTRY_DATE"                    : "Entry date",
     "CONFIRM_DIRECT_PURCHASE"       : "Direct purchase order confirmation",
-    "ACCOUNT"                       : "Account",
-    "SUPPLIER"                      : "Supplier"
+    "ACCOUNT"                       : "Account"
   },
 
   "SECTOR"             : {

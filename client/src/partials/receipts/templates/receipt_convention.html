@@ -1,0 +1,77 @@
+<div ng-controller="receipt.convention">
+  <div class="row customer-details">
+    <div class="col-xs-12">
+      <h4 class="invoice-header">{{'INVOICE.CONVENTION' | translate}}</h4>
+    </div>
+  </div>
+
+  <div class="row customer-details">
+    <div class="col-xs-4">
+      <span>
+        <b>{{model.common.enterprise.abbr}}</b>
+      </span>
+      <br>
+      {{model.common.location.name}}
+      <br>
+      {{ model.common.enterprise.postal || 'B.P. 205'}}
+      <br>
+      {{model.common.location.sector_name}}
+      <br>
+      <i>TEL</i> {{model.common.enterprise.phone}}
+      <br>
+      <i>Email</i> {{model.common.enterprise.email}}
+    </div>
+
+    <div class="col-xs-4">
+      <span><b>{{ 'INVOICE.CONVENTION' | translate }}</b></span>
+      <br>
+      {{model.conventions[0].account_txt}}
+      <br>
+      <i>{{ 'INVOICE.DATE' | translate }}</i>
+      <br>
+      {{model.conventions[0].date | date}}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <table class="invoiceTable">
+        <thead>
+          <tr>
+            <th>{{'COLUMNS.NUM' | translate}}</th>
+            <th>{{'INVOICE.DESIGNATION' | translate}}</th>
+            <th>{{'INVOICE.AMOUNT' | translate}}</th>
+          </tr>
+        </thead>
+        <tbody class="items">
+          <tr ng-repeat="convention in model.conventions">
+            <td>{{$index + 1}}</td>
+            <td>{{convention.note}}</td>
+            <td><span ng-bind-html="convention.debit  | intlcurrency:convention.currency_id"></span></td>
+          </tr>
+        </tbody>
+        <tbody class="totals">
+          <tr><td colspan="2" class="no-border">{{'INVOICE.TOTAL' | translate}}</td><td><span ng-bind-html="model.conventions[0].cost  | intlcurrency:model.conventions[0].currency_id"></span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-6">
+      <div class="pull-right">
+        <b>{{"INVOICE.SIGN_HEADER_PRI" | translate}}</b>
+      </div>
+    </div>
+    <!--div class="col-xs-4">
+      <div class="pull-left">
+       <b>{{"INVOICE.SIGN_HEADER_AUXI" | translate}}</b>
+      </div>
+    </div-->
+    <div class="col-xs-6">
+      <div class="pull-left">
+       <b>{{"SIGNATURES.CHIEF_ACCOUNTANT" | translate}}</b>
+      </div>
+    </div>  
+  </div>
+</div>
