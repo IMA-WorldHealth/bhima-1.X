@@ -1,38 +1,28 @@
 <head>
-    <link rel="stylesheet" href="{{=it.path}}/templates/style/reports.css">
-    <!--style>
-        table { 
-            font-size : 100;
-            width : 100%;
-        }
-
-        table > thead > tr { 
-            border : 1px solid black;
-        }
-
-        table > tbody > tr { 
-            border : 1px solid black;
-        }
-    </style-->
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/reports.css">
 </head>
-
 <body>
-    <table>
-        <thead>
-            <tr>
-                <th>Number</th>
-                <th>Letter</th>
-            </tr>
-        </thead>
-        <tbody>
-        
-        {{ for (var row in it.rows) { }} 
-            <tr>
-                <td>{{=row}}</td>
-                <td>'a'</td>
-            </tr>
-        {{ } }}
-        </tbody>
-    </table>
+  <table>
+    <thead>
+      <tr>
+        <th>Code</th>
+        <th>Description</th>
+        <th>Quanity</th>
+        <th>Transaction Price</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+    
+    {{~it.invoice :saleLine:index}} 
+      <tr>
+        <td>{{=saleLine.code}}</td>
+        <td>{{=saleLine.text}}</td>
+        <td>{{=saleLine.quantity}}</td>
+        <td>{{=saleLine.transaction_price}}</td>
+        <td>{{=saleLine.transaction_price * saleLine.quantity}}</td>
+      </tr>
+    {{~}}
+    </tbody>
+  </table>
 </body>
-                
