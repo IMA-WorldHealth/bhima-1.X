@@ -18,42 +18,6 @@ angular.module('bhima.controllers')
       promise.then(function(model) {
         $scope.purchase_model = model;
       });
-
-      $scope.post = function() {
-        var selected = $scope.selected,
-            request = [];
-
-        if(selected) { request.push(selected.id); }
-
-        connect.journal(request)
-        .then(function(res) {
-          if (res.status === 200) {
-            invoicePosted(request);
-          }
-        });
-      };
-    }
-
-    $scope.select = function(id) {
-      $scope.selected = $scope.purchase_model.get(id);
-    };
-
-    function invoicePosted(ids) {
-      var deferred = $q.defer();
-      var promise_update = [];
-      ids.forEach(function(invoice_id) {
-        var current_invoice = $scope.invoice_model.get(invoice_id);
-        current_invoice.posted = 1;
-        promise_update.push(connect.basicPost('sale', [current_invoice], ['id']));
-      });
-
-      $q.all(promise_update)
-        .then(function(res) {
-          console.log('All ids posted');
-          deferred.resolve(res);
-        });
-
-      return deferred.promise;
     }
 
     function fetchRecords() {

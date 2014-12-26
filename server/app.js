@@ -9,6 +9,8 @@ var privateKey    = fs.readFileSync(config.tls.key, 'utf8');
 var certificate   = fs.readFileSync(config.tls.cert, 'utf8');
 var credentials   = {key : privateKey, cert : certificate};
 
+process.env.TZ = 'UTC';
+
 // Session configuration
 var db            = require('./lib/db').initialise(); //why we need to keep the null reference in db ?
 var authenticate  = require('./middleware/authentication')();

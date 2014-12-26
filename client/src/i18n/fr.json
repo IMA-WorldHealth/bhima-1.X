@@ -444,7 +444,8 @@
     "COTISATION_MANAGEMENT"     : "Gestion des cotisations",
     "EMPLOYEE_STANDING"         : "Rapport des employés",
     "PAYROLL"                   : "Payroll",
-    "MULTI_PAYROLL"             : "Payroll Multiple"        
+    "MULTI_PAYROLL"             : "Payroll Multiple",
+    "BALANCE_MENSUELLE"         : "Rapport Balance Mensuelle"       
 },
 
 
@@ -857,7 +858,9 @@
     "FOUR_ACCOUNT"       : "Compte de tier",
     "SIX_ACCOUNT"        : "Compte charge",
     "IS_IPR"             : "Est-ce l'IPR",
-    "ENTRY_DATE"         : "Date d'entrée"
+    "ENTRY_DATE"         : "Date d'entrée",
+    "CONFIRMED"          : "Confirmé",
+    "SUPPLIER"           : "Fournisseur"
   },
 
   "REPORT"                  : {
@@ -1304,6 +1307,7 @@
     "SALARY_PAYMENT"               : "Paiement Effectif du Salaire",
     "COTISATIONS"                  : "Cotisations",
     "COTISATION_PAYMENT"           : "Paiement Cotisations",
+    "ACCOUNT"                       : "Compte",
     "SUPPLIER"                     : "Fournisseur",
     "LOT_NUMBER"                   : "Lot",
     "DATE_DOCUMENT"                : "Date du document",
@@ -1513,21 +1517,42 @@
 
   "PURCHASE"        : {
     "TITLE"         : "Ordre Achat",
-    "ADD_SUPPLIER"  : "Ajouter Fournisseur",
-    "CONFIGURE"     : "Paramétrage",
-    "SALE_DATE"     : "Date de creation",
-    "SUPPLIER"      : "Fournisseur",
-    "RESPONSIBLE"   : "Employé Responsable",
-    "ORDER"         : "Ordre",
-    "DATE"          : "Date",
-    "NOTE"          : "Note",
-    "PURCHASE_ITEM" : "Items Ordonnes",
-    "ADD_LINE_ITEM" : "Ajouter item",
-    "TOTAL"         : "Total",
-    "SUBMIT"        : "Soumettre",
-    "SUBMIT_ORDER"  : "Soumettre Ordre Achat",
-    "RESPONSABLE"   : "Responsable",
-    "TOTAL_COST"    : "Coût total"
+    "PURCHASE_TYPE" : "Type d'ordre d'achat",
+    "DIRECT"        : "Direct",
+    "INDIRECT"      : "Indirect",
+    "NOT_FOUND"     : "Aucun enregistrement trouvé",
+    "CREATE"        : {
+        "TITLE"           : "Créer un ordre d'achat",
+        "ADD_SUPPLIER"    : "Ajouter Fournisseur",
+        "CONFIGURE"       : "Paramétrage",
+        "SALE_DATE"       : "Date de creation",
+        "SUPPLIER"        : "Fournisseur",
+        "RESPONSIBLE"     : "Employé Responsable",
+        "ORDER"           : "Ordre",
+        "DATE"            : "Date",
+        "NOTE"            : "Note",
+        "PURCHASE_ITEM"   : "Items Ordonnes",
+        "ADD_LINE_ITEM"   : "Ajouter item",
+        "TOTAL"           : "Total",
+        "SUBMIT"          : "Soumettre",
+        "SUBMIT_ORDER"    : "Soumettre Ordre Achat",
+        "RESPONSABLE"     : "Responsable",
+        "TOTAL_COST"      : "Coût total",
+        "BANK_ACCOUNT"    : "Compte banque",
+        "SELECT_CREDITOR" : "Séléctionner un fournisseur",
+        "SELECT_EMPLOYEE" : "Séléctionner un employé"
+    },
+    "CONFIRM"       : {
+        "TITLE"         : "Confirmation ordre d'achats",
+        "FILTER"        : "Filtre de recherche",
+        "CONFIRM_PAY"   : "Confirmation paiement",
+        "CONFIRM_PAY_OF": "Confirmation paiement de",
+        "BY"            : "par",
+        "DETAILS"       : "Details du paiement"
+    },
+    "VIEW"        : {
+        "TITLE"         : "Voir les ordres d'achats"
+    }
   },
 
   "PRIMARY_CASH" : {
@@ -2370,8 +2395,7 @@
     "CREATED_ON"         : "Crée en",
     "ACCOUNT_NUMBER"     : "Numéro de Compte",
     "ACCOUNT_BALANCE"    : "Balance Compte",
-    "LAST_PURCHASE_DATE" : "Dernier date d'achat",
-    "LAST_PAYMENT_DATE"  : "Dernier date payement",
+    "LAST_DATE"          : "Dernière date",
     "OUTSTANDING_BILLS"  : "Factures impayées et autres paiements",
     "IMG"                : "Photo du patient",
     "NO_TRANSACTION"     : "pas des transaction"
@@ -2385,6 +2409,25 @@
     "EX_180" : "Expiration entre 90 et 180 jours",
     "EX_365" : "Expiration entre 180 et 365 jours",
     "EX_YEAR": "Expiration dans au-dela d'une année"
-  }   
+  },
+
+  "BALANCE_MENSUELLE" : {
+    "TITLE"           : "Balance Mensuelle par classe",
+    "REPORT"          : "Rapport balance mensuelle",
+    "CLASS"           : "Classe",
+    "ACCOUNT"         : "Compte",
+    "LABEL"           : "Intitulé",
+    "OLD_SOLD"        : "Ancien solde",
+    "MONTH_MOVEMENT"  : "Mouvement du mois",
+    "NEW_SOLD"        : "Nouveau solde",
+    "DEBIT"           : "Débit",
+    "CREDIT"          : "Crédit",
+    "DEBITOR"         : "Débiteur",
+    "CREDITOR"        : "Créditeur",
+    "TOTALS"          : "TOTAUX",
+    "INFO_FILL_INPUT" : "Veuillez selectionner la periode et la classe",
+    "CHOOSE_PERIOD"   : "Choisissez une periode",
+    "CHOOSE_CLASS"    : "Choisissez une classe"
+  }  
   
 }
