@@ -1,0 +1,116 @@
+<header data-header>
+  {{ "STOCK.DISTRIBUTION_RECORDS.KEY" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb" style="float: right;">
+      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a tabindex="-1" href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
+      <li><a tabindex="-1" >{{ "STOCK.DISTRIBUTION_RECORDS.KEY" | translate }}</a></li>
+    </ol>
+  </div>
+
+  <div class="pull-right" style="margin-top: 1px">
+    <span ><b>{{depot.reference ? '[' + depot.reference + ']' : ''}} </b>
+      {{depot.text}}</span>
+  </div>
+
+  <div class="pull-left">
+    <span class="btn-group">
+      <button ng-click="select(session.selected)" class="btn btn-sm btn-default">{{(session.selected.key | translate) || "..."}}</button>
+      <button class="btn btn-sm btn-default dropdown-toggle"><span class="caret" data-caret="&#9660;"></span></button>
+
+      <ul class="dropdown-menu">
+        <li ng-repeat="item in period">
+          <a class="clk" ng-click="select(item)">{{item.key | translate}}</a>
+        </li>
+      </ul>
+    </span>
+  </div>
+
+  <div>
+    <div class="col-xs-2" style="padding-right: 0px;">
+      <input class="form-bhima" ng-change="reset()" type="date" ng-model="session.param.dateTo" rows="20">
+    </div>
+    <div class="col-xs-2">
+      <input class="form-bhima" ng-change="reset()" type="date" ng-model="session.param.dateFrom" rows="20">
+    </div>
+  </div>
+</nav>
+
+<div class="report report-compressed">
+  <div class="reportBody">
+    <div class="reportFrame" style="padding-top: 10px;">
+      <h4 class="visible-print">{{ "SALERECORD.TITLE" | translate }} <small>{{session.param.dateFrom | date}} - {{session.param.dateTo | date}}</small></h4>
+      <p class="visible-print">{{ "SALERECORD.TOTAL_OF" | translate }} <b>{{total.result.sales}}</b> {{ "SALERECORD.INVOICES" | translate }}, {{ "SALERECORD.CHARGED_AGAINST" | translate }} <b>{{total.result.patients}}</b> {{ "SALERECORD.PATIENTS" | translate}}</p>
+        <table class="reportTable">
+          <thead>
+            <tr>
+              <th width="15%">{{'COLUMNS.DATE' | translate}}</th>
+              <th width="10%">{{'COLUMNS.DEPOT' | translate}}</th>
+              <th width="20%">{{'COLUMNS.PATIENT' | translate}}</th>
+              <th width="10%">{{'COLUMNS.REFERENCE' | translate}}</th>
+              <th width="10%">{{'COLUMNS.NUM_ITEMS' | translate}}</th>              
+              <th  width="40%" class="hidden-print">{{ 'COLUMNS.ACTIONS' | translate }}</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr ng-if="model.consumption.data.length===0 && !session.searching">
+              <td colspan="8"><strong> {{'DISTRIBUTION.NO_DISTRIB_PATIENT' | translate}} </strong></td>
+            </tr>
+
+            <tr ng-if="session.searching">
+              <td colspan="8"> <span style="color: #428bca" class="glyphicon glyphicon-signal"></span></td>
+            </tr>
+            <tr ng-class="{'creditInvoice': cons.reversingUuid}" ng-repeat="cons in model.consumption.data">
+              <td width="15%">{{cons.date | date : 'EEEE, dd/MM/yyyy'}}</td>
+              <td width="10%">{{cons.text}}</td>
+              <td width="20%">[{{cons.reference}}] {{cons.first_name}} {{cons.last_name}}</td>
+              <td width="10%">{{cons.abbr}}-{{cons.refSale}}</td>               
+              <td width="10%">{{cons.nr_item}}</td>
+              <td width="40%" class="hidden-print">
+                <a ng-href="/#/stock/reversing_distribution/{{cons.sale_uuid}}/"><span class="glyphicon glyphicon-repeat"></span> {{ 'STOCK.DISTRIBUTION_RECORDS.REVERSING_DISTRIBUTION' | translate }}</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <table style="width: 99%" >
+    <tbody>
+      <td width="50%">
+        <span style="margin-right: 10px;">
+          <span class="glyphicon glyphicon-list-alt" style="color: #428bca"></span>
+          <b>{{total.result.sales}}</b>
+          <span ng-if="session.searching">...</span>
+        </span>
+
+        <span class="glyphicon glyphicon-user" style="color: #428bca"></span>
+        <b>{{total.result.patients}}</b>
+        <span ng-if="session.searching">...</span>
+
+        <span style="float: right; margin-right: 5px;">
+          <b>{{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: </b>
+        </span>
+      </td>
+      <td width="20%">
+        <b>{{total.result.cost | currency}}</b>
+        <span ng-if="session.searching">...</span>
+      </td>
+      <td width="20%"></td>
+      <td></td>
+    </tbody>
+  </table>
+</footer>
+
+<script type="text/ng-template" id="lotList.html">
+  <a>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+    <span><i>{{match.model.text}}</i></span>
+  </a>
+</script>
