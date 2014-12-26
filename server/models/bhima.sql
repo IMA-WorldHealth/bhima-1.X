@@ -2,7 +2,7 @@ drop database if exists`bhima`;
 create database `bhima`;
 use `bhima`;
 
---grant all privileges on *.* to 'bhima'@'%' identified by 'HISCongo2013' with grant option;
+-- grant all privileges on *.* to 'bhima'@'%' identified by 'HISCongo2013' with grant option;
 grant all privileges on *.* to 'bhima'@'localhost' identified by 'HISCongo2013' with grant option;
 flush privileges;
 

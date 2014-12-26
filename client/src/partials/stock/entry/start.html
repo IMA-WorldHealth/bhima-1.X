@@ -56,8 +56,13 @@
 
         <div class="col-xs-6">
           <div class="form-group">
-            <label class="control-label col-xs-6">{{ "STOCK.ENTRY.REQUESTED_BY" | translate }}</label>
-            <p class="form-control-static col-xs-6">{{ session.cfg.employee_name }}</p>
+            <div ng-if="!session.cfg.is_direct">
+              <label class="control-label col-xs-6">{{ "STOCK.ENTRY.REQUESTED_BY" | translate }}</label>
+              <p class="form-control-static col-xs-6">{{ session.cfg.employee_name }}</p>
+            </div>
+            <div ng-if="session.cfg.is_direct">
+              <label class="control-label col-xs-6">{{ "STOCK.ENTRY.DIRECT_PURCHASE_TYPE" | translate | uppercase }}</label>
+            </div>
           </div>
 
           <div class="form-group">
