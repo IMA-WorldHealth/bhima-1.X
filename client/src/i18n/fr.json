@@ -444,7 +444,8 @@
     "COTISATION_MANAGEMENT"     : "Gestion des cotisations",
     "EMPLOYEE_STANDING"         : "Rapport des employés",
     "PAYROLL"                   : "Payroll",
-    "MULTI_PAYROLL"             : "Payroll Multiple"        
+    "MULTI_PAYROLL"             : "Payroll Multiple",
+    "BALANCE_MENSUELLE"         : "Rapport Balance Mensuelle"       
 },
 
 
@@ -2403,6 +2404,25 @@
     "EX_180" : "Expiration entre 90 et 180 jours",
     "EX_365" : "Expiration entre 180 et 365 jours",
     "EX_YEAR": "Expiration dans au-dela d'une année"
-  }   
+  },
+
+  "BALANCE_MENSUELLE" : {
+    "TITLE"           : "Balance Mensuelle par classe",
+    "REPORT"          : "Rapport balance mensuelle",
+    "CLASS"           : "Classe",
+    "ACCOUNT"         : "Compte",
+    "LABEL"           : "Intitulé",
+    "OLD_SOLD"        : "Ancien solde",
+    "MONTH_MOVEMENT"  : "Mouvement du mois",
+    "NEW_SOLD"        : "Nouveau solde",
+    "DEBIT"           : "Débit",
+    "CREDIT"          : "Crédit",
+    "DEBITOR"         : "Débiteur",
+    "CREDITOR"        : "Créditeur",
+    "TOTALS"          : "TOTAUX",
+    "INFO_FILL_INPUT" : "Veuillez selectionner la periode et la classe",
+    "CHOOSE_PERIOD"   : "Choisissez une periode",
+    "CHOOSE_CLASS"    : "Choisissez une classe"
+  }  
   
 }
