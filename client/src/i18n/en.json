@@ -716,7 +716,8 @@
     "STOCK_QTE_SEC"      : "Security Stock Quantity",
     "FOUR_ACCOUNT"       : "Four Account",
     "SIX_ACCOUNT"        : "Charge Account",
-    "IS_IPR"             : "Is IPR ?"    
+    "IS_IPR"             : "Is IPR ?",
+    "ENTRY_DATE"         : "Entry date"  
   },
 
   "INVENTORY" : {
@@ -1514,7 +1515,12 @@
     "SALARY_PAYMENT"                : "Salary Payment",
     "COTISATIONS"                   : "Cotisations",
     "COTISATION_PAYMENT"            : "Cotisation Payment",
-    "SUPPLIER"                      : "Supplier"
+    "SUPPLIER"                      : "Supplier",
+    "LOT_NUMBER"                    : "Lot",
+    "DATE_DOCUMENT"                 : "Document date",
+    "LOSS"                          : "Proof of stock loss",
+    "DOCUMENT_NUMBER"               : "Document number",
+    "ENTRY_DATE"                    : "Entry date"
   },
 
   "SECTOR"             : {

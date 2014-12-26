@@ -96,12 +96,12 @@ angular.module('bhima.controllers')
       'patient' : {
         url : '/partials/receipts/templates/receipt_patient.html'
       },
+      'loss' : {
+        url : '/partials/receipts/templates/receipt_loss.html'
+      },
       'movement' : {
         url : '/partials/receipts/templates/receipt_movement.html'
       }
-      // 'loss' : {
-      //   url : '/partials/receipts/templates/loss.html'
-      // }
     };
 
     function convert (value, currency_id, date) {
