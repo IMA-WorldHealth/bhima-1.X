@@ -36,6 +36,3 @@ UPDATE `account` SET `classe`=6 WHERE LEFT(`account_number`,1)=6;
 UPDATE `account` SET `classe`=7 WHERE LEFT(`account_number`,1)=7;
 UPDATE `account` SET `classe`=8 WHERE LEFT(`account_number`,1)=8;
 UPDATE `account` SET `classe`=9 WHERE LEFT(`account_number`,1)=9;
-
--- INSERT INTO `hollyday` VALUES
--- (1, 1, "vancances employe A", '2014-09-10', '2014-09-20');

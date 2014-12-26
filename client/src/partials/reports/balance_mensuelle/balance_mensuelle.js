@@ -20,14 +20,6 @@ angular.module('bhima.controllers')
       { number : 7, name : 'Produits et Profits'}
     ];
 
-    dependencies.currencies = {
-      query : {
-        tables : {
-          'currency' : { columns : ['id', 'name', 'symbol'] }
-        }
-      }
-    };
-
     appstate.register('project', function (project) {
       session.project = project.id;
     });
