@@ -84,12 +84,6 @@ angular.module('bhima.controllers')
       'credit' : {
         url : '/partials/receipts/templates/receipt_credit_note.html'
       },
-      'cash' : {
-        url : '/partials/receipts/templates/receipt_cash.html'
-      },
-      'sale' : {
-        url : '/partials/receipts/templates/receipt_sale.html'
-      },
       'service_distribution' : {
         url : '/partials/receipts/templates/receipt_service_distribution.html'
       },
