@@ -1,0 +1,90 @@
+<header>
+  {{ "BALANCE_MENSUELLE.TITLE" | translate }} 
+  <small ng-if="session.periode">{{ session.periode | date: "MMMM, yyyy" }}</small>
+  <small ng-if="session.classe"> / {{ "BALANCE_MENSUELLE.CLASS" | translate }} [{{ session.classe.number }}] {{ session.classe.name}}</small>
+</header>
+
+<nav>
+  <div>
+    <div class="col-xs-4 pull-left">
+      <div class="input-group">
+        <label class="input-group-addon" for="period">Choisissez une periode</label>
+        <input id="periode" class="form-bhima" type="month" ng-model="session.periode" rows="20" ng-change="">
+      </div>
+    </div>
+    <div class="col-xs-4">
+      <div class="input-group">
+        <label class="input-group-addon" for="period">Choisissez une classe</label>
+        <select class="form-bhima" ng-model="session.classe" ng-options="classe as formatAccount(classe) for classe in session.classes" ng-change="getAccountBalance()"></select>
+      </div>
+    </div>
+
+    <div class="col-xs-1">
+      <button class="form-bhima btn pull-right" ng-click="getAccountBalance()"><i class="glyphicon glyphicon-search"></i></button>
+    </div>
+    
+    <div class="pull-right">
+      <a class="btn btn-sm btn-default" ng-click="print()"><span class="glyphicon glyphicon-print"></span> {{ "UTIL.PRINT" | translate }}</a>
+    </div>
+  </div>
+</nav>
+
+<div class="report">
+  <div class="reportBody">
+    <div id="balance-mensuelle" class="reportFrame">
+      <h3 class="visible-print" style="margin:0px;text-align:center;width:35%;line-height:0.8em;">
+        {{ "UTIL.IMCK" | translate }} <br>
+        <small> {{ "UTIL.IMCK_LONG" | translate }}</small><br>
+        <small> {{ "UTIL.TSHIKAJI" | translate }}</small>
+      </h3>
+      <h4 class="visible-print">{{ "BALANCE_MENSUELLE.TITLE" | translate }} 
+        <small ng-if="session.periode">: {{ session.periode | date: "MMMM, yyyy" }}</small>
+        <small ng-if="session.classe"> / {{ "BALANCE_MENSUELLE.CLASS" | translate }} [{{ session.classe.number }}] {{ session.classe.name}}</small>
+      </h4>
+      <table id="patientTable" class="reportTable balance-mensuelle-table">
+        <thead>
+          <tr>
+            <th>{{ "BALANCE_MENSUELLE.ACCOUNT" | translate }}</th>
+            <th>{{ "BALANCE_MENSUELLE.LABEL" | translate }}</th>
+            <th colspan="2">{{ "BALANCE_MENSUELLE.OLD_SOLD" | translate }}</th>
+            <th colspan="2">{{ "BALANCE_MENSUELLE.MONTH_MOVEMENT" | translate }}</th>
+            <th colspan="2">{{ "BALANCE_MENSUELLE.NEW_SOLD" | translate }}</th>
+          </tr>
+          <tr>
+            <th colspan="2"></th>
+            <th>{{ "BALANCE_MENSUELLE.DEBITOR" | translate }}</th>
+            <th>{{ "BALANCE_MENSUELLE.CREDITOR" | translate }}</th>
+            <th>{{ "BALANCE_MENSUELLE.DEBIT" | translate }}</th>
+            <th>{{ "BALANCE_MENSUELLE.CREDIT" | translate }}</th>
+            <th>{{ "BALANCE_MENSUELLE.DEBITOR" | translate }}</th>
+            <th>{{ "BALANCE_MENSUELLE.CREDITOR" | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat='item in balance_mensuelle.data'>
+            <td> {{ item.account_number }} </td>
+            <td> {{ item.account_txt }} </td>
+            <td> {{ item.old_debit | currency }} </td>
+            <td> {{ item.old_credit | currency }} </td>
+            <td> {{ item.debit | currency }} </td>
+            <td> {{ item.credit | currency }} </td>
+            <td> {{ item.debit + item.old_debit | currency}}</td>
+            <td> {{ item.credit + item.old_credit | currency}}</td>
+          </tr>
+        </tbody>
+        <hr>
+        <tfoot class="balance-mensuelle-footer">
+          <tr>
+            <td colspan="2"><strong>{{ "BALANCE_MENSUELLE.TOTALS" | translate }}</strong></td>
+            <td>{{ session.sum_old_debit | currency }}</td>
+            <td>{{ session.sum_old_credit | currency }}</td>
+            <td>{{ session.sum_debit | currency }}</td>
+            <td>{{ session.sum_credit | currency }}</td>
+            <td>{{ session.sum_old_debit + session.sum_debit | currency }}</td>
+            <td>{{ session.sum_old_credit + session.sum_credit | currency }}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>

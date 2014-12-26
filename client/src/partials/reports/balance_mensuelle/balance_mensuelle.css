@@ -1,0 +1,12 @@
+#balance-mensuelle hr { display: none; }
+
+.balance-mensuelle-table th, 
+.balance-mensuelle-table td { 
+	text-align: center !important ; 
+}
+
+.balance-mensuelle-footer { font-weight: bold; }
+.balance-mensuelle-footer tr { 
+	margin-top: 10px !important; 
+	background-color: #eee;
+}
