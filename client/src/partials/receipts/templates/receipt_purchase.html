@@ -19,16 +19,16 @@
       <br>
       {{model.common.location.sector_name}}
       <br>
-      <i>TEL</i> {{model.common.enterprise.phone}}
+      <i>TEL. : </i> {{model.common.enterprise.phone}}
       <br>
-      <i>MAIL</i> {{model.common.enterprise.email}}
+      <i>EMAIL : </i> {{model.common.enterprise.email}}
     </div>
     <div class="col-xs-4">
       <i>{{ "INVOICE.PURCHASE_RECIPIENT" | translate }}</i><br>
       <span><b>{{model.common.supplier[0].name}}</b></span><br>
       <br>
-      <i>TEL</i> {{model.common.supplier[0].phone}}<br>
-      <i>MAIL</i> {{model.common.supplier[0].email}}
+      <i>TEL. : </i> {{model.common.supplier[0].phone}}<br>
+      <i>EMAIL : </i> {{model.common.supplier[0].email}}
     </div>
     <div class="col-xs-4">
       <i>{{'INVOICE.PURCHASE_ID' | translate}}</i> <b>{{ model.common.enterprise.abbr + model.common.purchases[0].reference}}</b>
