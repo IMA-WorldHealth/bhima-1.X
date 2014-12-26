@@ -78,6 +78,9 @@ angular.module('bhima.controllers')
       'sale' : {
         url : '/partials/receipts/templates/receipt_sale.html'
       },
+      'cash' : {
+        url : '/partials/receipts/templates/receipt_cash.html'
+      },
       'credit' : {
         url : '/partials/receipts/templates/receipt_credit_note.html'
       },
@@ -96,7 +99,6 @@ angular.module('bhima.controllers')
       'movement' : {
         url : '/partials/receipts/templates/receipt_movement.html'
       }
-
       // 'loss' : {
       //   url : '/partials/receipts/templates/loss.html'
       // }
