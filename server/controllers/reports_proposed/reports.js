@@ -1,19 +1,18 @@
+var path        = require('path');
+var fs          = require('fs');
+var q           = require('q');
 
-var path = require('path');
-var dots        = require('dot').process(
-        {path : path.join(__dirname, 'templates')});
+var dots        = require('dot').process({path : path.join(__dirname, 'templates')});
 var wkhtmltopdf = require('wkhtmltopdf');
-var config = require('./config');
-var q = require('q');
-var fs = require('fs');
 
-// TODO Convert to node module or specify relative path
 var uuid = require('./../../lib/guid');
+var db = require('./../../lib/db');
+
+var config      = require('./config');
 
 var writePath = path.join(__dirname, 'out/');
 
-console.log('reports write path : ', writePath);
-
+// HTTP Controllers 
 exports.serve = function (req, res, next) {
   var target = req.params.target;
   var options = { 
@@ -36,9 +35,10 @@ exports.serve = function (req, res, next) {
   });
 };
 
-// HTTP Controller 
 exports.build = function (req, res, next) {  
-  
+ 
+  // Invoice receipt to test break point
+  var saleQuery = "SELECT * FROM sale WHERE ...";
   var reportData = { 
       rows : new Array(100).toString().split(',').map(function (value, index) { return index; }),
       path : __dirname
@@ -49,7 +49,7 @@ exports.build = function (req, res, next) {
   var hash = uuid();
   var context = buildContext(hash); 
    
-  // TODO Note this silently fails to write if an 'out' folder does not exist
+  // TOD Note this silently fails to write if an 'out' folder does not exist
   var pdf = wkhtmltopdf(compiledReport, context, function (code, signal) { 
     res.send('<a href="/proof/of/concept/report/serve/' + hash + '">Generated PDF</a');
   });
