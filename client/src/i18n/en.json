@@ -717,7 +717,9 @@
     "FOUR_ACCOUNT"       : "Four Account",
     "SIX_ACCOUNT"        : "Charge Account",
     "IS_IPR"             : "Is IPR ?",
-    "ENTRY_DATE"         : "Entry date"  
+    "ENTRY_DATE"         : "Entry date",
+    "CONFIRMED"          : "Confirmed",
+    "SUPPLIER"           : "Supplier"   
   },
 
   "INVENTORY" : {
@@ -874,9 +876,10 @@
     "SERVICE_EXPLOITATION"      : "Exploitation per Service",
     "GLOBAL_TRANSACTION"        : "Account Movement",
     "COTISATION_MANAGEMENT"     : "Cotization management",
-    "EMPLOYEE_STANDING"         : "Patient Standing Report",
+    "EMPLOYEE_STANDING"         : "Employee Standing Report",
     "PAYROLL"                   : "Payroll",
-    "MULTI_PAYROLL"             : "Multiple Payroll"    
+    "MULTI_PAYROLL"             : "Multiple Payroll",
+    "BALANCE_MENSUELLE"         : "Monthly balance report"  
   },
 
   "RUBRIC_PAYROLL"       : {
@@ -1338,21 +1341,45 @@
     "REGISTERED"  : "Registered"
   },
 
-  "PURCHASE"          : {
-    "TITLE"           : "Purchase Order",
-    "CONFIGURE"       : "Configure",
-    "SUPPLIER"        : "Supplier",
-    "RESPONSABLE"     : "Employee Responsable",
-    "SALE_DATE"       : "Creation Date",
-    "ADD_LINE_ITEM"   : "Add line Item",
-    "ADD_SUPPLIER"    : "Register Supplier",
-    "PURCHASE_ITEM"   : "Purchase Items",
-    "TOTAL_COST"      : "Total Cost",
-    "SUBMIT_ORDER"    : "Submit Purchase Request",
-    "WRITE_SUCCESS"   : "Purchase order submitted successfully.",
-    "ORDER"           : "Numero Ordre",
-    "DATE"            : "Date",
-    "NOTE"            : "Note"
+  "PURCHASE"        : {
+    "TITLE"         : "Purchase order",
+    "PURCHASE_TYPE" : "Purchase type",
+    "DIRECT"        : "Direct",
+    "INDIRECT"      : "Indirect",
+    "NOT_FOUND"     : "Not found",
+    "CREATE"        : {
+        "TITLE"           : "Create a purchase order",
+        "ADD_SUPPLIER"    : "Add supplier",
+        "CONFIGURE"       : "Configure",
+        "SALE_DATE"       : "Date",
+        "SUPPLIER"        : "Supplier",
+        "RESPONSIBLE"     : "Employee responsible",
+        "ORDER"           : "Order",
+        "DATE"            : "Date",
+        "NOTE"            : "Note",
+        "PURCHASE_ITEM"   : "Purchase item",
+        "ADD_LINE_ITEM"   : "Add line item",
+        "TOTAL"           : "Total",
+        "SUBMIT"          : "Submit",
+        "SUBMIT_ORDER"    : "Submit purchase request",
+        "WRITE_SUCCESS"   : "Purchase order submitted successfully.",
+        "RESPONSABLE"     : "Responsible",
+        "TOTAL_COST"      : "Total cost",
+        "BANK_ACCOUNT"    : "Bank account",
+        "SELECT_CREDITOR" : "Select a supplier",
+        "SELECT_EMPLOYEE" : "Select an employee"
+    },
+    "CONFIRM"       : {
+        "TITLE"         : "Confirm a purchase order",
+        "FILTER"        : "Search filter",
+        "CONFIRM_PAY"   : "Confirm payment",
+        "CONFIRM_PAY_OF": "Confirm payment of",
+        "BY"            : "by",
+        "DETAILS"       : "Details of payment"
+    },
+    "VIEW"        : {
+        "TITLE"          : "View purchase orders"
+    }
   },
 
   "SALE"              : {
@@ -1520,7 +1547,9 @@
     "DATE_DOCUMENT"                 : "Document date",
     "LOSS"                          : "Proof of stock loss",
     "DOCUMENT_NUMBER"               : "Document number",
-    "ENTRY_DATE"                    : "Entry date"
+    "ENTRY_DATE"                    : "Entry date",
+    "CONFIRM_DIRECT_PURCHASE"       : "Direct purchase order confirmation",
+    "ACCOUNT"                       : "Account"
   },
 
   "SECTOR"             : {
@@ -2340,8 +2369,7 @@
     "CREATED_ON"         : "Created On",
     "ACCOUNT_NUMBER"     : "Account Number",
     "ACCOUNT_BALANCE"    : "Account Balance",
-    "LAST_PURCHASE_DATE" : "Last Purchase Date",
-    "LAST_PAYMENT_DATE"  : "Last Payment Date",
+    "LAST_DATE"          : "Last Date",
     "OUTSTANDING_BILLS"  : "Outstanding Bills and Other payments",
     "IMG"                : "Patient picture",
     "NO_TRANSACTION"     : "No transaction"
@@ -2355,5 +2383,24 @@
     "EX_180" : "Expiration within 90 or 180 days",
     "EX_365" : "Expiration within 180 or 365 days",
     "EX_YEAR": "Expiration over 1 year"
-  }
+  },
+
+  "BALANCE_MENSUELLE" : {
+    "TITLE"           : "Monthly balance per class",
+    "REPORT"          : "MOnthly balance report",
+    "CLASS"           : "Class",
+    "ACCOUNT"         : "Compte",
+    "LABEL"           : "Label",
+    "OLD_SOLD"        : "Old solde",
+    "MONTH_MOVEMENT"  : "Month Movement",
+    "NEW_SOLD"        : "New solde",
+    "DEBIT"           : "Debit",
+    "CREDIT"          : "Credit",
+    "DEBITOR"         : "Debitor",
+    "CREDITOR"        : "Creditor",
+    "TOTALS"          : "Totals",
+    "INFO_FILL_INPUT" : "Please select periode and class",
+    "CHOOSE_PERIOD"   : "Choose a periode",
+    "CHOOSE_CLASS"    : "Choose a class"
+  } 
 }
