@@ -203,6 +203,10 @@
       controller: 'report.global_transaction',
       templateUrl: 'partials/reports/global_transaction/global_transaction.html'
     })
+    .when('/reports/balance_mensuelle/', {
+      controller: 'report.balance_mensuelle',
+      templateUrl: 'partials/reports/balance_mensuelle/balance_mensuelle.html'
+    })
     .when('/location', {
       controller : 'location',
       templateUrl: 'partials/location/location.html'
