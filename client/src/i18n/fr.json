@@ -2420,7 +2420,9 @@
     "DEBITOR"         : "Débiteur",
     "CREDITOR"        : "Créditeur",
     "TOTALS"          : "TOTAUX",
-    "INFO_FILL_INPUT" : "Veuillez selectionner la periode et la classe"
+    "INFO_FILL_INPUT" : "Veuillez selectionner la periode et la classe",
+    "CHOOSE_PERIOD"   : "Choisissez une periode",
+    "CHOOSE_CLASS"    : "Choisissez une classe"
   }  
   
 }
