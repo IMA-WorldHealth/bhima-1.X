@@ -52,10 +52,10 @@ angular.module('bhima.controllers')
     function print() { $window.print(); }
 
     function calculTotaux() {
-      session.sum_old_debit = $scope.balance_mensuelle.data.reduce(function sum(a, b) { return a + b.old_debit; },0);
-      session.sum_old_credit = $scope.balance_mensuelle.data.reduce(function sum(a, b) { return a + b.old_credit; },0);
-      session.sum_debit = $scope.balance_mensuelle.data.reduce(function sum(a, b) { return a + b.debit; },0);
-      session.sum_credit = $scope.balance_mensuelle.data.reduce(function sum(a, b) { return a + b.credit; },0);
+      session.sumOldDebit = $scope.balance_mensuelle.data.reduce(function sum(a, b) { return a + b.old_debit; },0);
+      session.sumOldCredit = $scope.balance_mensuelle.data.reduce(function sum(a, b) { return a + b.old_credit; },0);
+      session.sumDebit = $scope.balance_mensuelle.data.reduce(function sum(a, b) { return a + b.debit; },0);
+      session.sumCredit = $scope.balance_mensuelle.data.reduce(function sum(a, b) { return a + b.credit; },0);
     }
     
 

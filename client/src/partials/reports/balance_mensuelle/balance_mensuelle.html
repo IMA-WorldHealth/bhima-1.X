@@ -8,13 +8,13 @@
   <div>
     <div class="col-xs-4 pull-left">
       <div class="input-group">
-        <label class="input-group-addon" for="period">Choisissez une periode</label>
+        <label class="input-group-addon" for="period">{{ "BALANCE_MENSUELLE.CHOOSE_PERIOD" | translate }}</label>
         <input id="periode" class="form-bhima" type="month" ng-model="session.periode" rows="20" ng-change="">
       </div>
     </div>
     <div class="col-xs-4">
       <div class="input-group">
-        <label class="input-group-addon" for="period">Choisissez une classe</label>
+        <label class="input-group-addon" for="period">{{ "BALANCE_MENSUELLE.CHOOSE_CLASS" | translate }}</label>
         <select class="form-bhima" ng-model="session.classe" ng-options="classe as formatAccount(classe) for classe in session.classes" ng-change="getAccountBalance()"></select>
       </div>
     </div>
@@ -76,12 +76,12 @@
         <tfoot class="balance-mensuelle-footer">
           <tr>
             <td colspan="2"><strong>{{ "BALANCE_MENSUELLE.TOTALS" | translate }}</strong></td>
-            <td>{{ session.sum_old_debit | currency }}</td>
-            <td>{{ session.sum_old_credit | currency }}</td>
-            <td>{{ session.sum_debit | currency }}</td>
-            <td>{{ session.sum_credit | currency }}</td>
-            <td>{{ session.sum_old_debit + session.sum_debit | currency }}</td>
-            <td>{{ session.sum_old_credit + session.sum_credit | currency }}</td>
+            <td>{{ session.sumOldDebit | currency }}</td>
+            <td>{{ session.sumOldCredit | currency }}</td>
+            <td>{{ session.sumDebit | currency }}</td>
+            <td>{{ session.sumCredit | currency }}</td>
+            <td>{{ session.sumOldDebit + session.sumDebit | currency }}</td>
+            <td>{{ session.sumOldCredit + session.sumCredit | currency }}</td>
           </tr>
         </tfoot>
       </table>
