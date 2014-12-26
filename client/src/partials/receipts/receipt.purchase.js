@@ -12,7 +12,7 @@ angular.module('bhima.controllers')
         identifier : 'uuid',
         tables : {
           'purchase' : {
-            columns : ['uuid', 'reference', 'project_id', 'cost', 'currency_id', 'creditor_uuid', 'purchase_date', 'note', 'employee_id']
+            columns : ['uuid', 'reference', 'project_id', 'cost', 'currency_id', 'creditor_uuid', 'purchase_date', 'note', 'employee_id', 'is_direct']
           },
           'purchase_item' : {
             columns : ['inventory_uuid', 'purchase_uuid', 'quantity', 'unit_price', 'total']
@@ -40,8 +40,30 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.supplier = {
+      query : {
+        identifier : 'uuid',
+        tables : {
+          'purchase' : {
+            columns : ['creditor_uuid']
+          },
+          'creditor' : {
+            columns : ['text']
+          },
+          'supplier' : {
+            columns : ['uuid', 'name', 'email', 'fax', 'note', 'phone', 'address_1','address_2']
+          }
+        },
+        join : [
+          'purchase.creditor_uuid=creditor.uuid',
+          'creditor.uuid=supplier.creditor_uuid'
+        ]
+      }
+    };
+
     function buildInvoice (res) {
-      model.purchases = res.purchase.data;
+      model.common.purchases = res.purchase.data;
+      model.common.supplier = res.supplier.data;
     }
 
   	appstate.register('receipts.commonData', function (commonData) {
@@ -50,6 +72,7 @@ angular.module('bhima.controllers')
         model.common.InvoiceId = values.invoiceId;
         model.common.enterprise = values.enterprise.data.pop();
         dependencies.purchase.query.where =  ['purchase_item.purchase_uuid=' + values.invoiceId];
+        dependencies.supplier.query.where =  ['purchase.uuid=' + values.invoiceId];
         validate.process(dependencies)
         .then(buildInvoice)
         .catch(function (err){

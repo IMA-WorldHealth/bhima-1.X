@@ -2,7 +2,7 @@
 <div ng-controller="receipt.purchase">
   <div class="row customer-details">
     <div class="col-xs-12">
-      <small style="float: right; color: grey; font-size: 8px">{{ model.purchases[0].uuid }}</small>
+      <small style="float: right; color: grey; font-size: 8px">{{ model.common.purchases[0].uuid }}</small>
       <h4 class="invoice-header">{{ 'INVOICE.PURCHASE_ORDER' | translate }}</h4>
     </div>
   </div>
@@ -24,26 +24,23 @@
       <i>MAIL</i> {{model.common.enterprise.email}}
     </div>
     <div class="col-xs-4">
-      <i>{{ "INVOICE.PURCHASE_RECIPIENT" | translate }}</i>
+      <i>{{ "INVOICE.PURCHASE_RECIPIENT" | translate }}</i><br>
+      <span><b>{{model.common.supplier[0].name}}</b></span><br>
       <br>
-      <span>
-        <b>{{model.common.purchases[0].name}}</b>
-      </span>      
-      <br>
-      <i>TEL</i> {{model.purchases[0].phone}}
-      <br>
-      <i>MAIL</i> {{model.purchases[0].email}}
+      <i>TEL</i> {{model.common.supplier[0].phone}}<br>
+      <i>MAIL</i> {{model.common.supplier[0].email}}
     </div>
     <div class="col-xs-4">
-      <i>{{'INVOICE.PURCHASE_ID' | translate}}</i> <b>{{ model.common.enterprise.abbr + model.purchases[0].reference}}</b>
+      <i>{{'INVOICE.PURCHASE_ID' | translate}}</i> <b>{{ model.common.enterprise.abbr + model.common.purchases[0].reference}}</b>
       <br>
-      <i>{{ 'INVOICE.PURCHASE_DATE' | translate }}</i> <b>{{ model.purchases[0].purchase_date | date }}</b>
+      <i>{{ 'INVOICE.PURCHASE_DATE' | translate }}</i> <b>{{ model.common.purchases[0].purchase_date | date }}</b>
       <br>
       <i>{{ 'INVOICE.DATE_RECEIPT' | translate}}</i> <b>{{ timestamp | date }}</b>
       <br>
-      {{ 'INVOICE.EMPLOYEE_CONTACT' | translate }}</i>
-      <br>
-      <b>{{model.purchases[0].prenom + ' ' + model.purchases[0].name + ' '+  model.purchases[0].postnom}}</b>
+      <div ng-if="model.common.purchases[0].is_direct === 0">
+        <i>{{ 'INVOICE.EMPLOYEE_CONTACT' | translate }}</i><br>
+        <b>{{model.common.purchases[0].prenom + ' ' + model.common.purchases[0].name + ' '+  model.common.purchases[0].postnom}}</b>
+      </div>
     </div>
   </div>
 
@@ -60,7 +57,7 @@
           </tr>
         </thead>
         <tbody class="items">
-          <tr ng-repeat="item in model.purchases | orderBy : 'code'">
+          <tr ng-repeat="item in model.common.purchases | orderBy : 'code'">
             <td>{{ item.code }}</td>
             <td>{{ item.text }}</td>
             <td>{{ item.quantity }}</td>
@@ -73,7 +70,7 @@
           <tr>
             <td colspan="4" class="no-border">{{'INVOICE.PURCHASE_TOTAL' | translate}}</td>
             <td>
-              <span ng-bind-html="model.purchases[0].cost | intlcurrency:model.purchases[0].currency_id"></span>
+              <span ng-bind-html="model.common.purchases[0].cost | intlcurrency:model.common.purchases[0].currency_id"></span>
             </td>
           </tr>
         </tbody>
