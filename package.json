@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "body-parser": "~1.2.0",
+    "chai": "^1.10.0",
     "compression": "~1.0.2",
     "cookie-parser": "~1.1.0",
     "express-session": "~1.2.0",
@@ -44,6 +45,7 @@
     "gulp-uncss": "~0.4.3",
     "gulp-yuidoc": "~0.1.2",
     "jsdoc": "~3.3.0-alpha5",
+    "mocha": "^2.0.1",
     "qunit": "~0.5.18",
     "vhost": "^2.0.0"
   }

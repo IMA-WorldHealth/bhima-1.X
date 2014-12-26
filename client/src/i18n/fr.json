@@ -856,7 +856,9 @@
     "STOCK_QTE_SEC"      : "Stock de securité",
     "FOUR_ACCOUNT"       : "Compte de tier",
     "SIX_ACCOUNT"        : "Compte charge",
-    "IS_IPR"             : "Est-ce l'IPR"
+    "IS_IPR"             : "Est-ce l'IPR",
+    "CONFIRMED"          : "Confirmé",
+    "SUPPLIER"           : "Fournisseur"
   },
 
   "REPORT"                  : {
@@ -1302,7 +1304,10 @@
     "ENTERPRISE_TAX_PAYMENT"        : "Paiement Taxes Entreprise",
     "SALARY_PAYMENT"                : "Paiement Effectif du Salaire",
     "COTISATIONS"                   : "Cotisations",
-    "COTISATION_PAYMENT"            : "Paiement Cotisations"
+    "COTISATION_PAYMENT"            : "Paiement Cotisations",
+    "CONFIRM_DIRECT_PURCHASE"       : "Confirmation Achat Direct",
+    "ACCOUNT"                       : "Compte",
+    "SUPPLIER"                      : "Fournisseur"
   },
 
   "SECTOR"             : {
@@ -1506,21 +1511,42 @@
 
   "PURCHASE"        : {
     "TITLE"         : "Ordre Achat",
-    "ADD_SUPPLIER"  : "Ajouter Fournisseur",
-    "CONFIGURE"     : "Paramétrage",
-    "SALE_DATE"     : "Date de creation",
-    "SUPPLIER"      : "Fournisseur",
-    "RESPONSIBLE"   : "Employé Responsable",
-    "ORDER"         : "Ordre",
-    "DATE"          : "Date",
-    "NOTE"          : "Note",
-    "PURCHASE_ITEM" : "Items Ordonnes",
-    "ADD_LINE_ITEM" : "Ajouter item",
-    "TOTAL"         : "Total",
-    "SUBMIT"        : "Soumettre",
-    "SUBMIT_ORDER"  : "Soumettre Ordre Achat",
-    "RESPONSABLE"   : "Responsable",
-    "TOTAL_COST"    : "Coût total"
+    "PURCHASE_TYPE" : "Type d'ordre d'achat",
+    "DIRECT"        : "Direct",
+    "INDIRECT"      : "Indirect",
+    "NOT_FOUND"     : "Aucun enregistrement trouvé",
+    "CREATE"        : {
+        "TITLE"           : "Créer un ordre d'achat",
+        "ADD_SUPPLIER"    : "Ajouter Fournisseur",
+        "CONFIGURE"       : "Paramétrage",
+        "SALE_DATE"       : "Date de creation",
+        "SUPPLIER"        : "Fournisseur",
+        "RESPONSIBLE"     : "Employé Responsable",
+        "ORDER"           : "Ordre",
+        "DATE"            : "Date",
+        "NOTE"            : "Note",
+        "PURCHASE_ITEM"   : "Items Ordonnes",
+        "ADD_LINE_ITEM"   : "Ajouter item",
+        "TOTAL"           : "Total",
+        "SUBMIT"          : "Soumettre",
+        "SUBMIT_ORDER"    : "Soumettre Ordre Achat",
+        "RESPONSABLE"     : "Responsable",
+        "TOTAL_COST"      : "Coût total",
+        "BANK_ACCOUNT"    : "Compte banque",
+        "SELECT_CREDITOR" : "Séléctionner un fournisseur",
+        "SELECT_EMPLOYEE" : "Séléctionner un employé"
+    },
+    "CONFIRM"       : {
+        "TITLE"         : "Confirmation ordre d'achats",
+        "FILTER"        : "Filtre de recherche",
+        "CONFIRM_PAY"   : "Confirmation paiement",
+        "CONFIRM_PAY_OF": "Confirmation paiement de",
+        "BY"            : "par",
+        "DETAILS"       : "Details du paiement"
+    },
+    "VIEW"        : {
+        "TITLE"         : "Voir les ordres d'achats"
+    }
   },
 
   "PRIMARY_CASH" : {
