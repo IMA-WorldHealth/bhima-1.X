@@ -2,6 +2,11 @@
   <link rel="stylesheet" href="{{=it.path}}/templates/style/reports.css">
 </head>
 <body>
+
+  <section>
+    <h1>Order Number : {{=it.invoice.id}}</h1>
+  </section>
+  
   <table>
     <thead>
       <tr>
@@ -14,7 +19,7 @@
     </thead>
     <tbody>
     
-    {{~it.invoice :saleLine:index}} 
+    {{~it.invoice.items :saleLine:index}} 
       <tr>
         <td>{{=saleLine.code}}</td>
         <td>{{=saleLine.text}}</td>
@@ -23,6 +28,13 @@
         <td>{{=saleLine.transaction_price * saleLine.quantity}}</td>
       </tr>
     {{~}}
+
+    </tbody>
+    <tbody>
+      <tr>
+        <td colspan="4">Total</td>
+        <td>{{=it.invoice.totalCost}}</td>
+      </tr>
     </tbody>
   </table>
 </body>

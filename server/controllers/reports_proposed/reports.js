@@ -5,8 +5,8 @@ var q           = require('q');
 var dots        = require('dot').process({path : path.join(__dirname, 'templates')});
 var wkhtmltopdf = require('wkhtmltopdf');
 
-var uuid = require('./../../lib/guid');
-var db = require('./../../lib/db');
+var uuid        = require('./../../lib/guid');
+var db          = require('./../../lib/db');
 
 var config      = require('./config');
 
@@ -17,64 +17,110 @@ var writePath = path.join(__dirname, 'out/');
 // Serve a generated PDF - allowing cleanup of files following
 exports.serve = function (req, res, next) {
   var target = req.params.target;
-  var options = { 
-    root : writePath
-  };
+  var options = {root : writePath};
 
   res.sendFile(target.concat('.pdf'), options, function (err) { 
     if (err) { 
-        console.log(err);
-        res.status(err.status).end();
+      console.log(err);
+      res.status(err.status).end();
     } else { 
-        console.log('Sent :', target);
+      console.log('Sent :', target);
 
-        // Delete file now
-        fs.unlink(path.join(__dirname, 'out/').concat(target, '.pdf'), function (err) { 
-            if (err) throw err;
-            console.log('Removed and cleaned up report');
-        });
+      // Delete file now
+      fs.unlink(path.join(__dirname, 'out/').concat(target, '.pdf'), function (err) { 
+        if (err) throw err;
+        console.log('Removed and cleaned up report');
+      });
     }
   });
 };
 
 exports.build = function (req, res, next) {  
- 
-  // Invoice receipt to test break point
-  var saleQuery = "SELECT * FROM sale_item LEFT JOIN sale ON sale_item.sale_uuid = sale.uuid LEFT JOIN inventory ON sale_item.inventory_uuid = inventory.uuid WHERE sale.uuid = '1e012f69-c615-4df8-a85c-878099b857c1'";
-
-  db.exec(saleQuery)
-    .then(compileReport)
-    .catch(function (err) { 
-      console.log('err', err);
-    });
   
-  function compileReport(result) { 
-    
-    var reportData = { 
-        invoice : result,
-        path : __dirname
-    };
+  collectInvoiceData()
+  .then(compileReport)
+  .catch(function (err) { 
+    console.log('top level', err);
+  });
 
-    console.log(reportData.invoice);
+     
+  function compileReport(reportData) { 
+     
+    console.log('[compileReport]');
 
     var compiledReport = dots.invoice(reportData);
     
     var hash = uuid();
-    var context = buildConfiguration(hash); 
+    var configuration = buildConfiguration(hash); 
      
-    var pdf = wkhtmltopdf(compiledReport, context, function (code, signal) { 
-      res.send('<a href="/proof/of/concept/report/serve/' + hash + '">Generated PDF</a');
+    var pdf = wkhtmltopdf(compiledReport, configuration, function (code, signal) { 
+      res.send('<a target="_blank" href="/proof/of/concept/report/serve/' + hash + '">Generated PDF</a');
     });
   }
 };
 
+function collectInvoiceData() { 
+  var deferred = q.defer();
+  var reportData = {};
+  
+  console.log('[collectInvoiceData]');
+
+  // TODO This should be provided by the session (req)
+  var enterpriseId = 200;
+  
+  // TODO This should be provided in the request
+  var saleId = '1e012f69-c615-4df8-a85c-878099b857c1';
+
+  reportData.path = __dirname;
+
+  // Invoice receipt to test break point
+  var saleQuery = 'SELECT * FROM sale_item LEFT JOIN sale ON sale_item.sale_uuid = sale.uuid LEFT JOIN inventory ON sale_item.inventory_uuid = inventory.uuid LEFT JOIN project ON sale.project_id = project.id WHERE sale.uuid = ? ORDER BY inventory.code';
+  
+  var enterpriseQuery = 'SELECT * FROM enterprise WHERE id = ?';
+
+  var recipientQuery = 'SELECT * FROM debitor JOIN patient ON debitor.uuid = patient.debitor_uuid WHERE debitor.uuid = ?'; 
+
+  // Query for sale information 
+  db.exec(saleQuery, [saleId])
+    .then(function (result) { 
+      reportData.invoice = {items : result};
+      reportData.invoice.totalCost = sumCosts(result);
+    
+      console.log(result);
+      // Query for enterprise information 
+      return db.exec(enterpriseQuery, [enterpriseId]);
+    })
+    .then(function (result) { 
+      var initialLineItem = reportData.invoice.items[0];
+      reportData.enterprise = result;
+      reportData.invoice.reference = initialLineItem.reference; 
+      reportData.invoice.id = initialLineItem.abbr.concat(initialLineItem.reference);
+      // Query for recipient information 
+      return db.exec(recipientQuery, [initialLineItem.debitor_uuid]);
+    })
+    .then(function (result) { 
+      reportData.recipient = result;
+      
+      deferred.resolve(reportData); 
+    })
+    .catch(function (err) { 
+      deferred.reject(err);
+    });
+  
+  function sumCosts(lineItems) { 
+    return lineItems.reduce(function (a, b) { return a + b.credit - b.debit; }, 0); 
+  }
+
+  return deferred.promise;
+}
+
 // Return configuration object for wkhtmltopdf process
 function buildConfiguration(hash, size) { 
-    var context = config[size] || config.standard;
-    var hash = hash || uuid();
+  var context = config[size] || config.compact;
+  var hash = hash || uuid();
     
-    context.output = writePath.concat(hash, '.pdf');
-    return context;
+  context.output = writePath.concat(hash, '.pdf');
+  return context;
 }
 
 function initialise() { 
