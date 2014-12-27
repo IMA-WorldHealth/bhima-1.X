@@ -90,7 +90,6 @@ angular.module('bhima.controllers')
       .then(convert)
       .catch(function (err) {
        messenger.danger(err.toString());
-
       });
     }
 
@@ -99,15 +98,20 @@ angular.module('bhima.controllers')
       //Currencies
       $scope.currencies = session.model.currencies;
       session.currency = session.project.currency_id;
+
+      console.log('records : ',model.records.data);
     }
 
     $scope.setSelectedCash = setSelectedCash;
     $scope.fill = fill;
 
     function convert (){
-      session.sum_credit = 0; 
+      session.sum_credit = 0;
       if(session.model.records.data) {   
         session.model.records.data.forEach(function (transaction) {
+          if(transaction.service_txt === 'indirect_purchase'){
+            transaction.primary_cash_uuid = transaction.document_uuid;
+          } 
           console.log('trans :::', transaction);
           session.sum_credit += exchange.convertir(transaction.credit, transaction.currency_id, session.currency, new Date()); // FIX ME : appstate return only the dailyexchange rate, it should be transaction.trans_date
           console.log('From '+transaction.currency_id+' To '+session.currency);

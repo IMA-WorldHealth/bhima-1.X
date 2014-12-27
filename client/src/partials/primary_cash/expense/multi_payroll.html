@@ -5,7 +5,7 @@
 <nav>
   <div style="position: absolute; right: 5px;">
     <button class="btn btn-sm btn-primary dropdown-toggle">
-      {{ session.selectedItem.symbol || "PRIMARY_CASH.DEFAULT_CURRENCY" | translate }}
+      {{ session.SelectedCurrency.symbol || "PRIMARY_CASH.DEFAULT_CURRENCY" | translate }}
       <span class="caret" data-caret="&#9660;"></span>
     </button>
 
@@ -24,12 +24,6 @@
   </div>
 
   <div class="pull-left">
-    <ol class="breadcrumb">
-      <li><span class="glyphicon glyphicon-home"></span></li>
-      <li><a href="#/primary_cash/">{{"PRIMARY_CASH.TITLE" | translate}}</a></li>
-      <li><a ng-href="#/primary_cash/expense/payroll/{{session.cashbox}}">{{"PRIMARY_CASH.EXPENSE.PAYROLL" | translate}}</a></li>
-      <li class="active">{{"PRIMARY_CASH.EXPENSE.MULTI_PAYROLL" | translate}}</li>
-    </ol>
   </div>
 </nav>
 

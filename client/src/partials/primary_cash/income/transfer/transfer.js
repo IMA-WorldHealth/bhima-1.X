@@ -51,9 +51,7 @@ angular.module('bhima.controllers')
       required : true,
       query : {
         tables : {
-          'cash_box_account_currency' : {
-            columns : ['id', 'currency_id', 'account_id', 'cash_box_id']
-          }
+          'cash_box_account_currency' : { columns : ['id', 'currency_id', 'account_id', 'cash_box_id'] }
         }
       }
     };
@@ -81,7 +79,8 @@ angular.module('bhima.controllers')
     function getAccount(currencyId, cashBoxId) {
       var accountId;
       $scope.cash_box_account_currencies.data.forEach(function (box) {
-        if (box.currency_id === currencyId && box.cash_box_id == cashBoxId) {
+        // FIXME I changed box.cash_box_id == cashBoxId to a strict equality.  Does it still hold?
+        if (box.currency_id === currencyId && box.cash_box_id === cashBoxId) {
           accountId = box.account_id;
         }
       });
@@ -124,6 +123,7 @@ angular.module('bhima.controllers')
           uuid              : uuid(),
           primary_cash_uuid : pcash.uuid,
           debit             : data.value,
+          document_uuid     : pcash.uuid,
           credit            : 0 // LOL wot?
         };
         return connect.post('primary_cash_item', item);
@@ -134,7 +134,7 @@ angular.module('bhima.controllers')
       })
       .then(function () {
         // navigate to invoice
-        $location.path('/invoice/pcash_transfert/' + pcash.uuid);
+        $location.path('/invoice/transfer/' + pcash.uuid);
       })
       .finally();
     };

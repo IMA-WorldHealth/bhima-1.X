@@ -442,7 +442,10 @@
     "SERVICE_EXPLOITATION"      : "Exploitation par Service",
     "GLOBAL_TRANSACTION"        : "Mouvement des comptes",
     "COTISATION_MANAGEMENT"     : "Gestion des cotisations",
-    "EMPLOYEE_STANDING"         : "Rapport des employés"
+    "EMPLOYEE_STANDING"         : "Rapport des employés",
+    "PAYROLL"                   : "Payroll",
+    "MULTI_PAYROLL"             : "Payroll Multiple",
+    "BALANCE_MENSUELLE"         : "Rapport Balance Mensuelle"       
 },
 
 
@@ -505,7 +508,7 @@
 
   "PATIENT_STANDING"     : {
     "TITLE"              : "Etat Financier du Patient",
-    "PLACEHOLDER"        : "Charcher le patient ...",
+    "PLACEHOLDER"        : "Chercher le patient ...",
     "CREATED_ON"         : "Crée en",
     "ACCOUNT_NUMBER"     : "Numéro de Compte",
     "ACCOUNT_BALANCE"    : "Balance Compte",
@@ -577,26 +580,30 @@
       "CONFIRM"             : "Voulez-vous vraiment gérer le stock avec le dépôt : "
     },
     "ENTRY" : {
-      "KEY"                 : "Entrée de Stock",
-      "TITLE"               : "Entrée de Stock",
-      "SELECT"              : "Sélectionner",
-      "NUM_ITEMS"           : "Nombre Items",
-      "ENTRY_MANIFEST"      : "Document des Entrées",
-      "SELECT_DEPOT"        : "Sélectionner un dépôt",
-      "FIND_PURCHASE_ORDER" : "Choisir une Ordre d'Achat",
-      "ORDER_DETAIL"        : "Détails Ordre",
-      "ASSIGN_LOTS"         : "Affecter lots",
-      "CANCEL"              : "Annuler",
-      "LOT_NUMBER"          : "No. Lot",
-      "ORDER_DETAILS"       : "Détails Ordre",
-      "REMAINING"           : "Rester",
-      "ASSIGNED"            : "Affectée",
-      "REVIEW"              : "Revoir les affectations",
-      "REQUESTED_BY"        : "Demandée par",
-      "ADD_LOT"             : "Ajouter lot",
-      "ENTRY_DATE"          : "Date d'entrée",
-      "ENTER_STOCK"         : "Faire entrer les Stock",
-      "REPORT"              : "Rapport d'entrer"
+      "KEY"                  : "Entrée de Stock",
+      "TITLE"                : "Entrée de Stock",
+      "SELECT"               : "Sélectionner",
+      "NUM_ITEMS"            : "Nombre Items",
+      "ENTRY_MANIFEST"       : "Document des Entrées",
+      "SELECT_DEPOT"         : "Sélectionner un dépôt",
+      "FIND_PURCHASE_ORDER"  : "Choisir une Ordre d'Achat",
+      "ORDER_DETAIL"         : "Détails Ordre",
+      "ASSIGN_LOTS"          : "Affecter lots",
+      "CANCEL"               : "Annuler",
+      "LOT_NUMBER"           : "No. Lot",
+      "ORDER_DETAILS"        : "Détails Ordre",
+      "REMAINING"            : "Rester",
+      "ASSIGNED"             : "Affectée",
+      "REVIEW"               : "Revoir les affectations",
+      "REQUESTED_BY"         : "Demandée par",
+      "ADD_LOT"              : "Ajouter lot",
+      "ENTRY_DATE"           : "Date d'entrée",
+      "ENTER_STOCK"          : "Faire entrer les Stock",
+      "REPORT"               : "Rapport d'entrer",
+      "ERR_EMPTY_PARAMTER"   : "Erreur paramétre manquant",
+      "WRITE_SUCCESS"        : "Enregistrement avec succès",
+      "WRITE_ERROR"          : "Enregitrement sans succès",
+      "DIRECT_PURCHASE_TYPE" : "Cette Ordre d'Achat est DIRECT"
     },
     "EXIT" : {
       "KEY" : "Stock Distribution"
@@ -621,7 +628,8 @@
       "DEPOT_TO"       : "Dépôt Destination",
       "INVENTORY"      : "Inventaire",
       "INVALID_TRANSFERT_QTE"  : "Quantité transferée invalide",
-      "SELECT_LOT" : "Sélectionner beaucoup de"
+      "SELECT_LOT" : "Sélectionner beaucoup de",
+      "SUCCESS"    : "Succès"
     },
     "SEARCH" : {
       "KEY"          : "Rechercher Items Stock",
@@ -640,7 +648,8 @@
       "ITEM_IN_STOCK"     : "Article en stock"
     },
     "DONATION" : {
-      "KEY" : "Entrer Donation"
+      "KEY"     : "Entrer Donation",
+      "TITLE"   : "Entrer Donation"
     }
   },
 
@@ -714,8 +723,8 @@
     "OTHER_CURRENCY"      : "Autre Monnaie",
     "RATE"                : "Taux",
     "TRANS_ID"            : "# Transaction",
-    "DEB_EQUIV"           : "Equiv Débit",
-    "CRE_EQUIV"           : "Equiv Crédit",
+    "DEB_EQUIV"           : "Débit",
+    "CRE_EQUIV"           : "Crédit",
     "DC_TYPE"             : "Type D/C",
     "INVPO_ID"            : "# Fact/OA",
     "PATIENT"             : "Patient",
@@ -801,7 +810,7 @@
     "TRANSACTION_NUMBER"  : "Numéro Transaction",
     "SOURCE"              : "Source",
     "TOTAL_DEBIT"         : "Débit total",
-    "DATE_BILLED"         : "Date creation",
+    "DATE_BILLED"         : "Date création",
     "AMOUNT_BILLED"       : "Montant facture",
     "AMOUNT_DUE"          : "Montant à payer",
     "NR"                  : "N°",
@@ -848,7 +857,11 @@
     "STOCK_QTE_MAX"      : "Quantité Maximum",
     "STOCK_QTE_SEC"      : "Stock de securité",
     "FOUR_ACCOUNT"       : "Compte de tier",
-    "SIX_ACCOUNT"        : "Compte charge"
+    "SIX_ACCOUNT"        : "Compte charge",
+    "IS_IPR"             : "Est-ce l'IPR",
+    "ENTRY_DATE"         : "Date d'entrée",
+    "CONFIRMED"          : "Confirmé",
+    "SUPPLIER"           : "Fournisseur"
   },
 
   "REPORT"                  : {
@@ -901,8 +914,10 @@
       "SUMMARY"             : "Sommaire compte",
       "DETAILS"             : "Détails transactions du compte"
     },
-    "STOCK"                 : "Rapport Stock"
-
+    "STOCK"                 : "Rapport Stock",
+    "TRANSACTION"           : "Transaction",
+    "ACCOUNT"               : "Compte",
+    "PERIOD"                : "Période"
   },
 
   "PATIENT_GRP_ASSIGNMENT" : {
@@ -976,7 +991,7 @@
       "UPDATE_ITEM"    : "Mettre à jour Article",
       "CONFIG_GROUPS"  : "Configurer Groups des Articles",
       "CONFIG_TYPES"   : "Configurer Type des Articles",
-      "PRINT_MANIFEST" : "Imprimer List des Articles",
+      "PRINT_MANIFEST" : "Imprimer la liste des Articles",
       "VIEW"           : "Voire la liste"
     },
     "GROUPS" : {
@@ -1027,7 +1042,10 @@
       "DEFAULT_PRICE"    : "Prix Unitaire",
       "UNIT_WEIGHT"      : "Poids Unitaire",
       "UNIT_VOLUME"      : "Volume Unitaire"
-    }
+    },
+    "MANIFEST" : {
+      "TITLE" : "Manifeste des inventaires"
+    }    
   },
 
   "PROJECT"       : {
@@ -1240,7 +1258,7 @@
     "CAUTION"           : "Caution",
     "CAUTION_ID"        : "# Caution",
     "LIBELLE_CAUTION"   : "Réception Caution",
-    "TOTAL_CAUTION"     : "Total",
+    "TOTAL_CAUTION"                : "Total",
     "BY"                           : "Transfert realise par : ",
     "TRANSFERT"                    : "Transfert caisse principal",
     "DESIGNATION"                  : "Désignation",
@@ -1257,35 +1275,46 @@
     "EMPLOYEE_CODE"                : "Code Employé",
     "PURCHASE_TOTAL"               : "Total",
     "PURCHASE_ORDER"               : "Ordre D'Achat",
-    "DISTRIBUTION_SERVICE" : "Distribution Service",
+    "DISTRIBUTION_SERVICE"         : "Distribution Service",
     "CONVENTION"                   : "Reçu pour convention",
     "NUM_CONVENTION_PAY"           : "Référence",
-    "GENERIC_INCOME"               : "Recette Générale",
-    "GENERIC_EXPENSE"              : "Dépense Générale",
+    "GENERIC_INCOME"               : "Recette Générique",
+    "GENERIC_EXPENSE"              : "Dépense Générique",
     "LOSS"                         : "Document de perte de stock",
     "DATE_DOCUMENT"                : "Date document",
     "STOCK_MOVEMENT"               : "Mouvement de stock",
-    "NAME" : "Nom",
-    "REFERENCE" : "Référence",
-    "TRANSFERT_DATE" : "Date transfert",
-    "ITEM" : "Item",
-    "EXPIRATION_DATE" : "Date expiration",
-    "TRANSFERED_QTE" : "Quantité transferée",
-    "TRACKING_NUMBER" : "Numéro tracking",
-    "DESTINATION_DEPOT" : "Dépôt destination",
-    "ORIGIN_DEPOT" : "Dépôt Origine",
-    "LOT" : "Lot",
-    "INDIRECT_PURCHASE" : "Preuve paiement indirect de l'ordre d'achat",
-    "COST" : "Coût",
-    "RECIPIENT" : "Recepteur",
-    "CONFIRM_PURCHASE" : "Confirmation paiement",
-    "CONFIRMED_BY" : "Confirmer par ",
-    "SIGN_EMPLOYEE" : "Signature employé",
+    "NAME"                         : "Nom",
+    "REFERENCE"                    : "Référence",
+    "TRANSFERT_DATE"               : "Date transfert",
+    "ITEM"                         : "Item",
+    "EXPIRATION_DATE"              : "Date expiration",
+    "TRANSFERED_QTE"               : "Quantité transferée",
+    "TRACKING_NUMBER"              : "Numéro tracking",
+    "DESTINATION_DEPOT"            : "Dépôt destination",
+    "ORIGIN_DEPOT"                 : "Dépôt Origine",
+    "LOT"                          : "Lot",
+    "INDIRECT_PURCHASE"            : "Preuve paiement indirect de l'ordre d'achat",
+    "COST"                         : "Coût",
+    "RECIPIENT"                    : "Recepteur",
+    "CONFIRM_PURCHASE"             : "Confirmation paiement",
+    "CONFIRMED_BY"                 : "Confirmer par ",
+    "SIGN_EMPLOYEE"                : "Signature employé",
     "PROOF_OF_PATIENT_CONSUMPTION" : "Preuve de consommation du patient",
-    "DOCUMENT_REF" : "Référence vente",
-    "DEPOT_REF" : "Référence dépôt",
-    "PURCHASE_RECIPIENT" : "Fournisseur"
-
+    "DOCUMENT_REF"                 : "Référence vente",
+    "DEPOT_REF"                    : "Référence dépôt",
+    "PURCHASE_RECIPIENT"           : "Fournisseur",
+    "TAX_PAYMENT"                  : "Paiement Taxes",
+    "ENTERPRISE_TAX_PAYMENT"       : "Paiement Taxes Entreprise",
+    "SALARY_PAYMENT"               : "Paiement Effectif du Salaire",
+    "COTISATIONS"                  : "Cotisations",
+    "COTISATION_PAYMENT"           : "Paiement Cotisations",
+    "ACCOUNT"                       : "Compte",
+    "SUPPLIER"                     : "Fournisseur",
+    "LOT_NUMBER"                   : "Lot",
+    "DATE_DOCUMENT"                : "Date du document",
+    "LOSS"                         : "Preuve de perte de stock",
+    "DOCUMENT_NUMBER"              : "Numéro du document",
+    "ENTRY_DATE"                   : "Date d'entrée"
   },
 
   "SECTOR"             : {
@@ -1489,21 +1518,42 @@
 
   "PURCHASE"        : {
     "TITLE"         : "Ordre Achat",
-    "ADD_SUPPLIER"  : "Ajouter Fournisseur",
-    "CONFIGURE"     : "Paramétrage",
-    "SALE_DATE"     : "Date de creation",
-    "SUPPLIER"      : "Fournisseur",
-    "RESPONSIBLE"   : "Employé Responsable",
-    "ORDER"         : "Ordre",
-    "DATE"          : "Date",
-    "NOTE"          : "Note",
-    "PURCHASE_ITEM" : "Items Ordonnes",
-    "ADD_LINE_ITEM" : "Ajouter item",
-    "TOTAL"         : "Total",
-    "SUBMIT"        : "Soumettre",
-    "SUBMIT_ORDER"  : "Soumettre Ordre Achat",
-    "RESPONSABLE"   : "Responsable",
-    "TOTAL_COST"    : "Coût total"
+    "PURCHASE_TYPE" : "Type d'ordre d'achat",
+    "DIRECT"        : "Direct",
+    "INDIRECT"      : "Indirect",
+    "NOT_FOUND"     : "Aucun enregistrement trouvé",
+    "CREATE"        : {
+        "TITLE"           : "Créer un ordre d'achat",
+        "ADD_SUPPLIER"    : "Ajouter Fournisseur",
+        "CONFIGURE"       : "Paramétrage",
+        "SALE_DATE"       : "Date de creation",
+        "SUPPLIER"        : "Fournisseur",
+        "RESPONSIBLE"     : "Employé Responsable",
+        "ORDER"           : "Ordre",
+        "DATE"            : "Date",
+        "NOTE"            : "Note",
+        "PURCHASE_ITEM"   : "Items Ordonnes",
+        "ADD_LINE_ITEM"   : "Ajouter item",
+        "TOTAL"           : "Total",
+        "SUBMIT"          : "Soumettre",
+        "SUBMIT_ORDER"    : "Soumettre Ordre Achat",
+        "RESPONSABLE"     : "Responsable",
+        "TOTAL_COST"      : "Coût total",
+        "BANK_ACCOUNT"    : "Compte banque",
+        "SELECT_CREDITOR" : "Séléctionner un fournisseur",
+        "SELECT_EMPLOYEE" : "Séléctionner un employé"
+    },
+    "CONFIRM"       : {
+        "TITLE"         : "Confirmation ordre d'achats",
+        "FILTER"        : "Filtre de recherche",
+        "CONFIRM_PAY"   : "Confirmation paiement",
+        "CONFIRM_PAY_OF": "Confirmation paiement de",
+        "BY"            : "par",
+        "DETAILS"       : "Details du paiement"
+    },
+    "VIEW"        : {
+        "TITLE"         : "Voir les ordres d'achats"
+    }
   },
 
   "PRIMARY_CASH" : {
@@ -1560,7 +1610,11 @@
       "NO_DATA"                 : "Aucune donnée disponible",
       "SALARY_PAYMENT"          : "Paiement Effectif du Salaire",
       "COTISATIONS"             : "Cotisations",
-      "COTISATION_PAYMENT"      : "Paiement Cotisations"
+      "COTISATION_PAYMENT"      : "Paiement Cotisations",
+      "CURRENCY_NOT_FOUND"      : "Monnaie non definie !",
+      "PAYMENT_PERIOD_NOT_FOUND" : "Periode de paiement non definie !",
+      "SEARCH_EMPLOYEE"          : "Rechercher employé(s) ...",
+      "SALARY_SUCCESS"           : "Paiement effectif de : "
     },
     "INCOME" : {
       "TRANSFER"              : "Transfert",
@@ -1630,8 +1684,10 @@
     "NONE"                   : "Cet item n'existe dans le stock du dépôt, contacter l'administrateur",
     "LIMITED_STOCK"          : "Il n'y a pas assez de stock pour couvrir la vente, contacter l'administrateur",
     "EXPIRED"                : "Le stock disponible ne peut pas etre utilisé comme il est expire, contacter l'administrateur.",
-    "AVAILABLE"              : "Prescriptions disponibles"
-
+    "AVAILABLE"              : "Prescriptions disponibles",
+    "NO_SALE_FOUND"          : "Aucune données trouvés concernant la vente pour le patient",
+    "SHOW_ALL_SALES"         : "Afficher toutes les ventes pour ce patient",
+    "HAS_EXPIRED"            : " a expriré et ne peut être utilisé, contacter le Gestionnaire de Stock"
   },
 
     "DISTRIBUTION_SERVICE" : {
@@ -1666,7 +1722,9 @@
     "FAX"               : "Fax",
     "REGISTERED"        : "Les fournisseurs inscrits",
     "SUPPLIER_DETAILS"  : "Détails",
-    "CREATE_SUPPLIER"   : "Créer Fournisseur"
+    "CREATE_SUPPLIER"   : "Créer Fournisseur",
+    "SUPPLIER"          : "Fournisseur",
+    "EDIT_SUPPLIER"     : "Editer"
   },
 
   "DEPOT" : {
@@ -1869,7 +1927,8 @@
     "EMPLOYEE"          : "Employé",
     "CLIENT"            : "Client",
     "CREDITOR"          : "Créditeur",
-    "CUSTOMER"          : "Client"
+    "CUSTOMER"          : "Client",
+    "THIRD"             : "Tiers"
   },
 
   "EXPIRING_UTIL"    : {
@@ -1915,9 +1974,9 @@
 
    "GRADE" : {
     "TITLE"        : "Gestion de grades des employés",
-	"ADD"		   : "Ajouter un grade",
-	"REGISTERED"   : "Grades enregistrés",
-	"ALERT"		   : "Le module gestion de grade est un module qui a été conçu pour permettre l'administration des grades existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'un grade ainsi que la suppression.",
+    "ADD"          : "Ajouter un grade",
+    "REGISTERED"   : "Grades enregistrés",
+    "ALERT"        : "Le module gestion de grade est un module qui a été conçu pour permettre l'administration des grades existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'un grade ainsi que la suppression.",
     "NO_GRADES"    : "Aucun grade n'est encore enregistré",
     "NEW_GRADE"    : "Nouveau Grade",
     "UPD_GRADE"    : "Modifier un Grade",
@@ -2169,7 +2228,8 @@
     "TRACKING_NB"       : "N° Tracking",
     "PROOF"             : "Preuve d'enregistrement du don dans le Stock",
     "REPORT"            : "Rapport",
-    "DATE_REGISTER"     : "Date d'enregistrement"
+    "DATE_REGISTER"     : "Date d'enregistrement",
+    "PERFORM_BY"        : "Effectuer par"
   },
 
   "STOCK_DASHBOARD"     : {
@@ -2178,7 +2238,7 @@
     "PURCHASE_ORDER"    : {
             "TITLE"     : "Commandes",
             "IN_WATING" : "en attente de paiement",
-            "PAYED"     : "payées",
+            "PAYED"     : "payés",
             "RECEIVED"  : "reçues",
             "WATING_RECEPTION" : "en attente de reception"
         },
@@ -2296,7 +2356,7 @@
     "SELECT_PERIOD" : "Sélectionner une année fiscale",
     "SELECT_OPTION" : "Sélectionner une option",
     "TOTAL_CHARGE"  : "Total Charge",
-    "TOTAL_PROFIT"  : "Totall profit",
+    "TOTAL_PROFIT"  : "Total profit",
     "JANUARY"       : "Janvier",
     "FEBRUARY"      : "Février",
     "MARCH"         : "Mars",
@@ -2336,11 +2396,39 @@
     "CREATED_ON"         : "Crée en",
     "ACCOUNT_NUMBER"     : "Numéro de Compte",
     "ACCOUNT_BALANCE"    : "Balance Compte",
-    "LAST_PURCHASE_DATE" : "Dernier date d'achat",
-    "LAST_PAYMENT_DATE"  : "Dernier date payement",
+    "LAST_DATE"          : "Dernière date",
     "OUTSTANDING_BILLS"  : "Factures impayées et autres paiements",
     "IMG"                : "Photo du patient",
     "NO_TRANSACTION"     : "pas des transaction"
-  }   
+  },
+
+  "EXPIRING" : {
+    "TITLE"  : "Expiration des produits",
+    "EXPIRED": "Articles expirés",
+    "EX_30"  : "Expiration dans moins de 30 jours",
+    "EX_90"  : "Expiration entre 30 et 90 jours",
+    "EX_180" : "Expiration entre 90 et 180 jours",
+    "EX_365" : "Expiration entre 180 et 365 jours",
+    "EX_YEAR": "Expiration dans au-dela d'une année"
+  },
+
+  "BALANCE_MENSUELLE" : {
+    "TITLE"           : "Balance Mensuelle par classe",
+    "REPORT"          : "Rapport balance mensuelle",
+    "CLASS"           : "Classe",
+    "ACCOUNT"         : "Compte",
+    "LABEL"           : "Intitulé",
+    "OLD_SOLD"        : "Ancien solde",
+    "MONTH_MOVEMENT"  : "Mouvement du mois",
+    "NEW_SOLD"        : "Nouveau solde",
+    "DEBIT"           : "Débit",
+    "CREDIT"          : "Crédit",
+    "DEBITOR"         : "Débiteur",
+    "CREDITOR"        : "Créditeur",
+    "TOTALS"          : "TOTAUX",
+    "INFO_FILL_INPUT" : "Veuillez selectionner la periode et la classe",
+    "CHOOSE_PERIOD"   : "Choisissez une periode",
+    "CHOOSE_CLASS"    : "Choisissez une classe"
+  }  
   
 }

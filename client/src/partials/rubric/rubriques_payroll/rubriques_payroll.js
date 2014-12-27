@@ -33,7 +33,7 @@ angular.module('bhima.controllers')
 
     $scope.delete = function (rubric) {
       var result = confirm($translate.instant('RUBRIC_PAYROLL.CONFIRM'));
-      if (result) {  
+      if (result) {
         connect.basicDelete('rubric', rubric.id, 'id')
         .then(function () {
           $scope.rubrics.remove(rubric.id);
@@ -64,29 +64,29 @@ angular.module('bhima.controllers')
       var record = connect.clean(session.edit);
       console.log('Save Edit Session: ',session.edit);
       delete record.reference;
-      if(record.abbr){
-        if(record.abbr.length <= 4){
+      if (record.abbr) {
+        if (record.abbr.length <= 4) {
           connect.basicPost('rubric', [record], ['id'])
           .then(function () {
-            messenger.success($translate.instant('RUBRIC_PAYROLL.UPDATE_SUCCES')); 
+            messenger.success($translate.instant('RUBRIC_PAYROLL.UPDATE_SUCCES'));
             $scope.rubrics.put(record);
             session.action = '';
             session.edit = {};
           });
-        } else if (record.abbr.length > 4){
-          messenger.danger($translate.instant('RUBRIC_PAYROLL.NOT_SUP4'));  
-        }  
+        } else if (record.abbr.length > 4) {
+          messenger.danger($translate.instant('RUBRIC_PAYROLL.NOT_SUP4'));
+        }
       } else {
-        messenger.danger($translate.instant('RUBRIC_PAYROLL.NOT_EMPTY'));  
-      } 
+        messenger.danger($translate.instant('RUBRIC_PAYROLL.NOT_EMPTY'));
+      }
     };
 
     $scope.save.new = function () {
       session.new.is_percent = (session.new.is_percent)?1:0;
       session.new.is_discount = (session.new.is_discount)?1:0;
       var record = connect.clean(session.new);
-      if(record.abbr){
-        if(record.abbr.length <= 4){
+      if (record.abbr) {
+        if (record.abbr.length <= 4) {
           connect.basicPut('rubric', [record])
           .then(function () {
             messenger.success($translate.instant('RUBRIC_PAYROLL.SAVE_SUCCES'));
@@ -95,12 +95,12 @@ angular.module('bhima.controllers')
             session.action = '';
             session.new = {};
           });
-        } else if (record.abbr.length > 4){
-          messenger.danger($translate.instant('RUBRIC_PAYROLL.NOT_SUP4'));  
-        }  
+        } else if (record.abbr.length > 4) {
+          messenger.danger($translate.instant('RUBRIC_PAYROLL.NOT_SUP4'));
+        }
       } else {
-        messenger.danger($translate.instant('RUBRIC_PAYROLL.NOT_EMPTY'));  
-      }   
+        messenger.danger($translate.instant('RUBRIC_PAYROLL.NOT_EMPTY'));
+      }
     };
 
     function generateReference () {
@@ -109,9 +109,9 @@ angular.module('bhima.controllers')
       return Number.isNaN(max) ? 1 : max + 1;
     }
 
-    $scope.checkedYesOrNo = function(value){
-    	if(value == 1) {return $translate.instant('RUBRIC_PAYROLL.YES');}
+    $scope.checkedYesOrNo = function (value) {
+    	if (value === 1) {return $translate.instant('RUBRIC_PAYROLL.YES');}
     	else {return $translate.instant('RUBRIC_PAYROLL.NO');}
     };
-  }  
+  }
 ]);

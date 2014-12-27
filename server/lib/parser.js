@@ -1,220 +1,247 @@
-// builds the sql queries that a store will use
+require('./db').initialise();
 
-var sanitize = require('./sanitize'),
+var sanitize = require('./db').sanitize,
     util = require('./util');
 
-//module: Parser
-module.exports = function (options) {
-  // The parser module is the composer for all SQL queries
-  // to the backend.  Query objects are decoded from the URL
-  // and passed into composer's methods.
-  'use strict';
-
-  var self = {};
-  options = options || {};
-
-  self.templates = options.templates || {
-    select: 'SELECT %distinct% %columns% FROM %table% WHERE %conditions% GROUP BY %groups% ORDER BY %order% LIMIT %limit%;',
-    update: 'UPDATE %table% SET %expressions% WHERE %key%;',
-    delete: 'DELETE FROM %table% WHERE %key%;',
-    insert: 'INSERT INTO %table% %values% VALUES %expressions%;',
-    insert_ref : 'INSERT INTO %table% %values% SELECT %expressions% from %table% where project_id=%project_id%;'
-  };
-
-  function cdm (table, columns) {
-    // creates a 'dot map' mapping on table
-    // to multiple columns.
-    // e.g. `table`.`column1`, `table`.`column2`
-    return columns.map(function (c) {
-      return [table, '.', sanitize.escapeid(c)].join('');
-    }).join(', ');
-  }
-
-  function parseWhere (list) {
-    var ops = ['AND', 'OR'];
-    return list.map(function (cond) {
-      return ~ops.indexOf(cond) ? cond : subroutine(cond);
-    }).join(' ');
-  }
-
-  function subroutine (cond) {
-    // summary:
-    //    Parses and escapes all components of a where
-    //    clause separated by an equals sign.
-    // eg:
-    //  expr = 'a.id=b.id';
-    //  parsewhr(expr)
-    //    => '`a`.`id`=`b`.`id`'
-    var ops = ['>=', '<=', '!=', '<>', '=', '<', '>'],
-      conditions,
-      operator;
-
-    if (sanitize.isArray(cond)) {
-      // recursively compile the condition
-      return '(' + parseWhere(cond) + ')';
-    }
-
-    // halts on true
-    ops.some(function (op) {
-      if (~cond.indexOf(op)) {
-        conditions = cond.split(op);
-        operator = op;
-        return true;
-      }
-    });
-
-    // escape values
-    return conditions.map(function (exp) {
-      return ~exp.indexOf('.') ? exp.split('.').map(function (e) { return sanitize.escapeid(e); }).join('.') : sanitize.escape(exp);
-    }).join(operator);
-  }
-
-  function arrayToIn (id, ids) {
-    var templ = ' %id% IN (%ids%) ';
-    ids = ids.map(function (v) {
-      return sanitize.escape(v);
-    });
-
-    return templ.replace('%id%', id)
-                .replace('%ids%', ids.toString());
-  }
-
-  // delete
-  self.delete = function (table, column, id) {
-    var templ = self.templates.delete,
-        _id;
-
-    _id = id.split(',');  // FIXME: this is an unreasonable hack
-    _id = util.isArray(_id) ?
-      '(' + _id.map(function (i) { return sanitize.escape(i); }).join(', ') + ')':
-      sanitize.escape(id);
-
-    return templ.replace('%table%', sanitize.escapeid(table))
-                .replace('%key%', [sanitize.escapeid(column), 'IN', _id].join(' '));
-  };
-
-  // update
-  self.update = function (table, data, id) {
-    var expressions = [], templ = self.templates.update;
-    var identifier = sanitize.escapeid(id); // temporarily defaults to 'id'
-    for (var d in data) {
-      if (d !== id) {
-        // FIXME : Everything is miserable.
-        // This is a hack to get 'null' values to insert into the database
-        // due to an error in posting cost center and profit center ids at
-        // Tshikaji.  This is why we need to migrate to a real database engine.
-        if (data[d] !== null) {
-          expressions.push([sanitize.escapeid(d), '=', sanitize.escape(data[d])].join(''));
-        } else {
-          expressions.push([sanitize.escapeid(d), '=', 'NULL'].join(''));
-        }
-      }
-    }
-
-    return templ.replace('%table%', sanitize.escapeid(table))
-                .replace('%expressions%', expressions.join(', '))
-                .replace('%key%', [identifier, '=', sanitize.escape(data[id])].join(''));
-  };
-
-  // insert
-  self.insert = function (table, dataList) {
-    // insert allows insertion of multiple rows
-    var values = [], k, max, idx,
-        expressions = [],
-        templ = self.templates.insert;
-
-    // FIXME HACK HACK HACK to make behavoir the same across everything
-    if (!dataList.length) { dataList = [dataList]; }
-
-    // find the maximum number of keys for a row object
-    max = 0;
-    dataList.forEach(function (row, index) {
-      var l = Object.keys(row).length;
-      if (l > max) {
-        max = l;
-        idx = index;
-      }
-    });
-
-    // calculate values
-    for (k in dataList[idx]) {
-      values.push(k);
-    }
-
-    var hasReference = values.indexOf('reference') > -1;
-    var project_id;
-
-    if (hasReference) { templ = self.templates.insert_ref; }
-
-    dataList.forEach(function (row) {
-      var line = [];
-      for (var k in values) {
-        // default to null
-        if (values[k] !== 'reference') {
-          line.push(row[values[k]] !== null ? sanitize.escape(row[values[k]]) : 'null');
-        } else {
-          line.push('IF(ISNULL(max(reference)), 1, max(reference) + 1)');
-        }
-        if (values[k] === 'project_id') { project_id = sanitize.escape(row[values[k]]); }
-      }
-      var concat = hasReference ? line.join(', ') : '(' + line.join(', ') + ')';
-      expressions.push(concat);
-    });
-
-    return templ
-      .replace(/%table%/g, sanitize.escapeid(table))
-      .replace('%values%', '(' + values.join(', ') + ')')
-      .replace('%expressions%', expressions.join(', '))
-      .replace('%project_id%', project_id);
-
-  };
-
-  // select
-  self.select = function (def) {
-    var identifier, table, conditions,
-      columns = [],
-      templ = self.templates.select,
-      join = def.join,
-      tables = Object.keys(def.tables).map(function (t) { return sanitize.escapeid(t); });
-
-    for (var t in def.tables) {
-      columns.push(cdm(sanitize.escapeid(t), def.tables[t].columns));
-    }
-
-    if (join) {
-      // parse the join condition
-      table = tables.join(' JOIN ') + ' ON ';
-      // escape column specification
-      table += join.map(function (exp) {
-        // first split on equality
-        return exp.split('=').map(function (col) {
-          // then on the full stop
-          return col.split('.').map(function(value) {
-            // then escape the values
-            return sanitize.escapeid(value);
-          }).join('.');
-        }).join('=');
-      }).join(' AND ');
-    } else {
-      table = tables.join('');
-    }
-
-    // default to 1
-    conditions = (def.where) ? parseWhere(def.where) : 1;
-
-    var groups = def.groupby ?
-      def.groupby.split('.').map(function (i) { return sanitize.escapeid(i); }) :
-      null;
-
-    var order = def.order;
-    return templ.replace('%distinct% ', def.distinct ? 'DISTINCT ' : '')
-      .replace('%columns%', columns.join(', '))
-      .replace('%table%', table)
-      .replace('%conditions%', conditions)
-      .replace(' GROUP BY %groups%', groups ? ' GROUP BY ' + groups.join('.') : '')
-      .replace(' ORDER BY %order%', order ? ' ORDER BY ' + order.join('.') : '')
-      .replace(' LIMIT %limit%', def.limit ? ' LIMIT ' + def.limit : '');
-  };
-
-  return self;
+// Key:
+//  %T%  tables
+//  %C%  columns
+//  %G%  group by
+//  %W%  where conditions
+//  %I%  id(s)
+//  %V%  values
+//  %E%  expressions
+//  %L%  limit
+var templates = {
+  select: 'SELECT %DISTINCT% %C% FROM %T% WHERE %W% GROUP BY %G% ORDER BY %O% LIMIT %L%;',
+  update: 'UPDATE %T% SET %E% WHERE %key%;',
+  delete: 'DELETE FROM %T% WHERE %key%;',
+  insert: 'INSERT INTO %T% %V% VALUES %E%;',
+  insert_ref : 'INSERT INTO %T% %V% SELECT %E% FROM %T% WHERE project_id = %project_id%;'
 };
+
+exports.delete = function (table, column, id) {
+  'use strict';
+  var _id, sql, template = templates.delete;
+
+  // split the ids, escape, and rejoin in pretty fmt
+  // Must use string in case id is an integer
+  _id = String(id)
+          .split(',')
+          .map(sanitize)
+          .join(', ');
+
+  // SQL closure
+  _id = '(' + _id + ')';
+
+  // format the query
+  sql = template.replace('%T%', table)
+                .replace('%key%', [column, 'IN', _id].join(' '));
+  return sql;
+};
+
+exports.update = function (table, data, id) {
+  'use strict';
+  var value, sql, expressions = [],
+      template = templates.update;
+
+  // For each property, escape both the key and value and push it into
+  // the sql values array
+  for (var key in data) {
+    if (key !== id) {
+      value = data[key];
+
+      // FIXME : This function allows values to be null.
+      // Is that really what we want?
+
+      if (value === null) {
+        expressions.push([key, '=', 'NULL'].join(''));
+      } else {
+        expressions.push([key, '=', sanitize(value)].join(''));
+      }
+    }
+  }
+
+  sql = template.replace('%T%', table)
+              .replace('%E%', expressions.join(', '))
+              .replace('%key%', [id, '=', sanitize(data[id])].join(''));
+
+  return sql;
+};
+
+// FIXME
+//    This function is confusing because data can either by an array
+//    of objects or a single object.  We can correct this with proper API
+//    design.
+exports.insert = function (table, data) {
+  'use strict';
+  var sql, key, max, idx, values = [],
+      expressions = [],
+      template = templates.insert;
+
+  // find the maximum number of keys for a row object
+  max = 0;
+  data.forEach(function (row, index) {
+    var l = Object.keys(row).length;
+    if (l > max) {
+      max = l;
+      idx = index;
+    }
+  });
+
+  // calculate values
+  for (key in data[idx]) {
+    values.push(key);
+  }
+
+  var hasReference = values.indexOf('reference') > -1;
+  var project_id;
+
+  if (hasReference) {
+    template = templates.insert_ref;
+  }
+
+  data.forEach(function (row) {
+    var line = [];
+    for (var key in values) {
+      // default to null
+      if (values[key] !== 'reference') {
+        line.push(row[values[key]] !== null ? sanitize(row[values[key]]) : 'null');
+      } else {
+        line.push('IF(ISNULL(MAX(reference)), 1, MAX(reference) + 1)');
+      }
+      if (values[key] === 'project_id') { project_id = sanitize(row[values[key]]); }
+    }
+    var concat = hasReference ? line.join(', ') : '(' + line.join(', ') + ')';
+    expressions.push(concat);
+  });
+
+  sql = template.replace(/%T%/g, table)
+          .replace('%V%', '(' + values.join(', ') + ')')
+          .replace('%E%', expressions.join(', '))
+          .replace('%project_id%', project_id);
+
+  return sql;
+
+};
+
+exports.select = function (defn) {
+  'use strict';
+  var identifier, table, joinConditions, conditions,
+    template = templates.select,
+    tables = defn.tables,
+    tableNames = Object.keys(defn.tables),
+    columns = [],
+    join = defn.join;
+
+  // form the columns of the query by iterating through
+  // the 'table' object and gluing the table to the column
+  tables = defn.tables;
+  columns = Object.keys(tables).map(function (table) {
+    return mkColumns(table, tables[table].columns);
+  });
+
+  // form the join portion of the query
+  if (!join) { joinConditions = tableNames.join(''); }
+  else {
+    joinConditions = tableNames.join(' JOIN ') + ' ON ';
+    joinConditions += join.join(' AND ');
+  }
+
+  // default to 1
+  conditions = (defn.where) ? parseWhereStatement(defn.where) : 1;
+
+  var groups = defn.groupby ?
+    defn.groupby.split('.').map(sanitize) :
+    null;
+
+  // TODO
+  //    Order by should support ASC, DESC notation
+  //    API? orderby : ['+date', '-project']
+  var order = defn.orderby;
+
+  return template.replace('%DISTINCT% ', defn.distinct ? 'DISTINCT ' : '')
+    .replace('%C%', columns.join(', '))
+    .replace('%T%', joinConditions)
+    .replace('%W%', conditions)
+    .replace(' GROUP BY %G%', groups ? ' GROUP BY ' + groups.join('.') : '')
+    .replace(' ORDER BY %O%', order ? ' ORDER BY ' + order.join(', ') : '')
+    .replace(' LIMIT %L%', defn.limit ? ' LIMIT ' + defn.limit : '');
+};
+
+function cdm(table, columns) {
+  // creates a 'dot map' mapping on table
+  // to multiple columns.
+  // e.g. `table`.`column1`, `table`.`column2`
+  return columns.map(function (c) {
+    return [table, '.', sanitize(c)].join('');
+  }).join(', ');
+}
+
+function parseWhereStatement(array) {
+  // This is the full set of valid MySQL expressions
+  // ref: http://dev.mysql.com/doc/refman/5.7/en/expressions.html
+  var expressions;
+  expressions = ['OR', '||', 'XOR', 'AND', '&&'];
+  return array
+    .map(function (expr) {
+      return ~expressions.indexOf(expr) ? expr : escapeWhereCondition(expr);
+    })
+  .join(' ');
+}
+
+function getOperator(condition) {
+  // These are all the valid MySQL comparions.
+  // ref: http://dev.mysql.com/doc/refman/5.7/en/expressions.html
+  //
+  // NOTE : Order of comparisons is important! These expressions
+  // are ordered so that we find '>=' before '=', since both can
+  // technically exist in an expression.
+  var expression,
+      comparisons = ['>=', '<=', '!=', '<>', '=', '<', '>'];
+
+  expression = comparisons.filter(function (operator) {
+    return condition.match(operator);
+  });
+
+  return expression.shift();
+}
+
+function escapeWhereCondition(condition) {
+  // summary:
+  //    Parses and escapes all components of a where
+  //    clause separated by an equals sign.
+  // eg:
+  //  expr = 'a.id=b.id';
+  //  parsewhr(expr)
+  //    => '`a`.`id`=`b`.`id`'
+  var collection, operator;
+
+  // We allow nested where conditions, in the form of nested
+  // arrays.  If 'conditon' is an array, we recursively call the
+  // parseWhere function on it!
+  if (util.isArray(condition)) { return '(' + parseWhereStatement(condition) + ')';  }
+
+  operator = getOperator(condition);
+
+  // the first part of a where condition is a column definition
+  // and will not be escaped.  We assume it is correct.  The second
+  // portion is the condition, which may contain user-defined
+  // variables, and we should escape it.
+  collection = condition.split(operator);
+  // escape the second part of the conditon
+  collection[1] = sanitize(collection[1]);
+
+  return collection.join(operator);
+}
+
+// Makes the columns of a table object.
+// We don't actually have to escape the tables,
+// it is up to the website designer to compose
+// the proper query.
+function mkColumns(table /* String */, columns /* Array */) {
+  return columns.map(function (col) {
+    return table + '.' + col;
+  })
+  .join(', ');
+}

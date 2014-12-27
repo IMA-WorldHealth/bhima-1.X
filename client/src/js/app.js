@@ -1,7 +1,7 @@
 (function (angular) {
   'use strict';
 
-  var bhima = angular.module('bhima', ['bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate']);
+  var bhima = angular.module('bhima', ['bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate', 'LocalForageModule']);
 
   // application events
   // Contains constants for use in the application by
@@ -123,6 +123,10 @@
       controller: 'purchaseRecords',
       templateUrl: 'partials/purchase/view/purchase_records.html'
     })
+    .when('/purchase/view/:option', {
+      controller: 'purchase_view',
+      templateUrl: 'partials/purchase/view/purchase_view.html'
+    })
     .when('/purchase/confirm/', {
       controller: 'purchaseConfirm',
       templateUrl: 'partials/purchase/confirm/confirm.html'
@@ -198,6 +202,10 @@
     .when('/reports/global_transaction/', {
       controller: 'report.global_transaction',
       templateUrl: 'partials/reports/global_transaction/global_transaction.html'
+    })
+    .when('/reports/balance_mensuelle/', {
+      controller: 'report.balance_mensuelle',
+      templateUrl: 'partials/reports/balance_mensuelle/balance_mensuelle.html'
     })
     .when('/location', {
       controller : 'location',
@@ -298,6 +306,10 @@
       controller : 'expiring',
       templateUrl : 'partials/reports/expiring_stock/expiring_stock.html'
     })
+    .when('/reports/expiring/:option', {
+      controller : 'expiring.option',
+      templateUrl : 'partials/reports/expiring_stock/expiring_stock_view.html'
+    })
     .when('/caution', {
       controller : 'caution',
       templateUrl : 'partials/caution/caution.html'
@@ -346,7 +358,7 @@
       controller : 'payroll',
       templateUrl : 'partials/primary_cash/expense/payroll.html'
     })
-    .when('/primary_cash/expense/multi_payroll/:cashbox', {
+    .when('/primary_cash/expense/multi_payroll/', {
       controller : 'multi_payroll',
       templateUrl : 'partials/primary_cash/expense/multi_payroll.html'
     })
@@ -570,12 +582,20 @@
     });
   }
 
+  function localForageConfig($localForageProvider) {
+    $localForageProvider.config({
+      name : 'bhima-v1',
+      version : 1.0
+    });
+  }
+
   // Event constants
   bhima.constant('EVENTS', events);
   // configuration
   bhima.config(['$routeProvider', bhimaconfig]);
   bhima.config(['$translateProvider', translateConfig]);
   bhima.config(['$httpProvider', authConfig]);
+  bhima.config(['$localForageProvider', localForageConfig]);
   // run
   bhima.run(['$rootScope', 'EVENTS', 'appauth', startupConfig]);
 
