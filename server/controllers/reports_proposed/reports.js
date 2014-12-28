@@ -4,6 +4,7 @@ var q           = require('q');
 
 var dots        = require('dot').process({path : path.join(__dirname, 'templates')});
 var wkhtmltopdf = require('wkhtmltopdf');
+var numeral     = require('numeral');
 
 var uuid        = require('./../../lib/guid');
 var db          = require('./../../lib/db');
@@ -18,6 +19,8 @@ var writePath = path.join(__dirname, 'out/');
 exports.serve = function (req, res, next) {
   var target = req.params.target;
   var options = {root : writePath};
+  
+  console.log('serving a file');
 
   res.sendFile(target.concat('.pdf'), options, function (err) { 
     if (err) { 
@@ -37,6 +40,7 @@ exports.serve = function (req, res, next) {
 
 exports.build = function (req, res, next) {  
   
+
   collectInvoiceData()
   .then(compileReport)
   .catch(function (err) { 
@@ -45,16 +49,13 @@ exports.build = function (req, res, next) {
 
      
   function compileReport(reportData) { 
-     
-    console.log('[compileReport]');
-
     var compiledReport = dots.invoice(reportData);
     
     var hash = uuid();
-    var configuration = buildConfiguration(hash); 
+    var configuration = buildConfiguration(hash, req.params.size); 
      
     var pdf = wkhtmltopdf(compiledReport, configuration, function (code, signal) { 
-      res.send('<a target="_blank" href="/proof/of/concept/report/serve/' + hash + '">Generated PDF</a');
+      res.send('<a target="_blank" href="/report/serve/' + hash + '">Generated PDF</a');
     });
   }
 };
@@ -85,21 +86,26 @@ function collectInvoiceData() {
     .then(function (result) { 
       reportData.invoice = {items : result};
       reportData.invoice.totalCost = sumCosts(result);
-    
+      formatCurrency(reportData.invoice.items);
+
       console.log(result);
+      
       // Query for enterprise information 
       return db.exec(enterpriseQuery, [enterpriseId]);
     })
     .then(function (result) { 
       var initialLineItem = reportData.invoice.items[0];
-      reportData.enterprise = result;
+      reportData.enterprise = result[0];
+      
       reportData.invoice.reference = initialLineItem.reference; 
       reportData.invoice.id = initialLineItem.abbr.concat(initialLineItem.reference);
+      reportData.invoice.date = initialLineItem.invoice_date;
+
       // Query for recipient information 
       return db.exec(recipientQuery, [initialLineItem.debitor_uuid]);
     })
     .then(function (result) { 
-      reportData.recipient = result;
+      reportData.recipient = result[0];
       
       deferred.resolve(reportData); 
     })
@@ -111,12 +117,19 @@ function collectInvoiceData() {
     return lineItems.reduce(function (a, b) { return a + b.credit - b.debit; }, 0); 
   }
 
+  function formatCurrency(lineItems) { 
+    lineItems.forEach(function (lineItem) { 
+      lineItem.formattedPrice = numeral(lineItem.transaction_price).format('$0,0.00');
+      lineItem.formattedTotal = numeral(lineItem.credit - lineItem.debit).format('$0,0.00');
+    });
+  }
+
   return deferred.promise;
 }
 
 // Return configuration object for wkhtmltopdf process
 function buildConfiguration(hash, size) { 
-  var context = config[size] || config.compact;
+  var context = config[size] || config.standard;
   var hash = hash || uuid();
     
   context.output = writePath.concat(hash, '.pdf');

@@ -3,8 +3,8 @@ var standard = {
   'orientation'   : 'Portrait', 
   'margin-left'   : '2mm',
   'margin-right'  : '2mm', 
-  'margin-top'    : '2mm', 
-  'margin-bottom' : '2mm'
+  'margin-top'    : '4mm', 
+  'margin-bottom' : '4mm'
 };
 
 var compact = { 
