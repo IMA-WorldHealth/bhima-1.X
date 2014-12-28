@@ -52,9 +52,10 @@ exports.initialise = function (app) {
   app.get('/location/sector/:uuid', location.lookupSector);
   app.get('/location/province/:uuid', location.lookupProvince);
   app.get('/location/detail/:uuid', location.lookupDetail);
-  
-  app.get('/proof/of/concept/report/', compileReport.build);
-  app.get('/proof/of/concept/report/serve/:target', compileReport.serve);
+ 
+  // -> Add :route
+  app.get('/report/build/:language/:size', compileReport.build);
+  app.get('/report/serve/:target', compileReport.serve);
   
   app.post('/purchase', createPurchase.execute);
   app.post('/sale/', createSale.execute);

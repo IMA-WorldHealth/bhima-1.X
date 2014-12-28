@@ -4,7 +4,11 @@
 <body>
 
   <section>
+    <h1>{{=it.enterprise.name}}</h1>
     <h1>Order Number : {{=it.invoice.id}}</h1>
+    <h4>{{=it.invoice.date}}</h4>
+    <h1>Bill to :</h1>
+    <h1>{{=it.recipient.first_name}} {{=it.recipient.last_name}}</h1>
   </section>
   
   <table>
@@ -24,8 +28,8 @@
         <td>{{=saleLine.code}}</td>
         <td>{{=saleLine.text}}</td>
         <td>{{=saleLine.quantity}}</td>
-        <td>{{=saleLine.transaction_price}}</td>
-        <td>{{=saleLine.transaction_price * saleLine.quantity}}</td>
+        <td>{{=saleLine.formattedPrice}}</td>
+        <td>{{=saleLine.formattedTotal}}</td>
       </tr>
     {{~}}
 
