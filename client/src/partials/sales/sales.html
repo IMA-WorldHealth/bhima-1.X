@@ -55,16 +55,20 @@
 
   <!-- Distributable or not -->
   <div 
-    class="alert distributable-panel"
-    ng-class="{'alert-success' : session.is_distributable, 'alert-warning' : !session.is_distributable}"
+    class="panel"
+    ng-class="{'panel-success' : session.is_distributable, 'panel-warning' : !session.is_distributable}"
   >
-    <i class="glyphicon glyphicon-export"></i> 
-    <strong>{{ 'SALE.IS_DISTRIBUTABLE' | translate }} : </strong>
-    <input type="radio" id="distributable" ng-model="session.is_distributable" ng-value="1" ng-change="getDistributable()">
-    <label for="distributable">{{ 'SALE.DISTRIBUTABLE' | translate }}</label>
-    <span class="po-type-space"></span>
-    <input type="radio" id="no_distributable" ng-model="session.is_distributable" ng-value="0" ng-change="getDistributable()">
-    <label for="no_distributable">{{ 'SALE.NO_DISTRIBUTABLE' | translate }}</label>
+    <div class="panel-heading">
+      <i class="glyphicon glyphicon-export"></i> 
+      <strong>{{ 'SALE.IS_DISTRIBUTABLE' | translate }} : </strong>
+    </div>
+    <div class="panel-body">
+      <input type="radio" id="distributable" ng-model="session.is_distributable" ng-value="1" ng-change="getDistributable()">
+      <label for="distributable">{{ 'SALE.DISTRIBUTABLE' | translate }}</label>
+      <span class="po-type-space"></span>
+      <input type="radio" id="no_distributable" ng-model="session.is_distributable" ng-value="0" ng-change="getDistributable()">
+      <label for="no_distributable">{{ 'SALE.NO_DISTRIBUTABLE' | translate }}</label>
+    </div>
   </div>
   <!-- End distributable or not -->
 
