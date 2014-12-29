@@ -1,27 +1,27 @@
-// Module: lib/util/util.js
+// Module: lib/util.js
 
 // This modules adds utilities available throughout the
 // server.
 
 module.exports = {
-  
+
   isInt : function (i) { return Math.floor(i) === Number(i); },
 
   // this also works for hexadecimal ('0x12')
-  isNumber: function (n) { return !Number.isNaN(Number(i)); },
+  isNumber: function (n) { return !Number.isNaN(Number(n)); },
 
-  isArray: function (arr) { return Object.prototype.toString.call(arr) == '[object Array]'; },
+  isArray: function (arr) { return Object.prototype.toString.call(arr) === '[object Array]'; },
 
-  isString: function (str) { return typeof str == 'string'; },
+  isString: function (str) { return typeof str === 'string'; },
 
-  isObject: function (obj) { return Object.prototype.toString.call(obj) == '[object Object]'; },
+  isObject: function (obj) { return Object.prototype.toString.call(obj) === '[object Object]'; },
 
   //convertToMysqlDate: function convertToMysqlDate(dateString){ return toMySqlDate(dateString); }
 
   toMysqlDate : function (dateString) {
     // This style of convert to MySQL date avoids changing
     // the prototype of the global Date object
-    if (!dateString) return new Date().toISOString().slice(0, 10);
+    if (!dateString) { return new Date().toISOString().slice(0, 10); }
 
     var date = new Date(dateString),
       year = String(date.getFullYear()),
@@ -33,7 +33,7 @@ module.exports = {
 
     return [year, month, day].join('-');
   },
-  
+
   isPositive : function (number) { return this.isValidNumber(number) && Number(number) >= 0; },
 
   isNegative : function (number) { return !this.isPositive(number); },

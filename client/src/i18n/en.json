@@ -717,6 +717,7 @@
     "FOUR_ACCOUNT"       : "Four Account",
     "SIX_ACCOUNT"        : "Charge Account",
     "IS_IPR"             : "Is IPR ?",
+    "ENTRY_DATE"         : "Entry date",
     "CONFIRMED"          : "Confirmed",
     "SUPPLIER"           : "Supplier"   
   },
@@ -877,7 +878,8 @@
     "COTISATION_MANAGEMENT"     : "Cotization management",
     "EMPLOYEE_STANDING"         : "Employee Standing Report",
     "PAYROLL"                   : "Payroll",
-    "MULTI_PAYROLL"             : "Multiple Payroll"    
+    "MULTI_PAYROLL"             : "Multiple Payroll",
+    "BALANCE_MENSUELLE"         : "Monthly balance report"  
   },
 
   "RUBRIC_PAYROLL"       : {
@@ -1536,13 +1538,19 @@
     "CONFIRM_PURCHASE"              : "Payment confirmation",
     "CONFIRMED_BY"                  : "Confirmed by ",
     "SIGN_EMPLOYEE"                 : "Employee signature",
+    "TAX_PAYMENT"                   : "Taxes Payment",
     "ENTERPRISE_TAX_PAYMENT"        : "Entreprise Taxes Payment",
     "SALARY_PAYMENT"                : "Salary Payment",
     "COTISATIONS"                   : "Cotisations",
     "COTISATION_PAYMENT"            : "Cotisation Payment",
+    "SUPPLIER"                      : "Supplier",
+    "LOT_NUMBER"                    : "Lot",
+    "DATE_DOCUMENT"                 : "Document date",
+    "LOSS"                          : "Proof of stock loss",
+    "DOCUMENT_NUMBER"               : "Document number",
+    "ENTRY_DATE"                    : "Entry date",
     "CONFIRM_DIRECT_PURCHASE"       : "Direct purchase order confirmation",
-    "ACCOUNT"                       : "Account",
-    "SUPPLIER"                      : "Supplier"
+    "ACCOUNT"                       : "Account"
   },
 
   "SECTOR"             : {
@@ -1762,29 +1770,30 @@
       "CONFIRM" : "Are you sure you want to select this warehouse?"
     },
     "ENTRY" : {
-      "KEY"                 : "Stock Entry",
-      "TITLE"               : "Stock Entry",
-      "SELECT"              : "Select",
-      "NUM_ITEMS"           : "Number of Items",
-      "ENTRY_MANIFEST"      : "Entry Manifest",
-      "SELECT_DEPOT"        : "Select a Depot",
-      "FIND_PURCHASE_ORDER" : "Find a Purchase Order",
-      "ORDER_DETAIL"        : "Order Details",
-      "ASSIGN_LOTS"         : "Assign Lots",
-      "CANCEL"              : "Cancel",
-      "LOT_NUMBER"          : "Lot No.",
-      "ORDER_DETAILS"       : "Order Details",
-      "REMAINING"           : "Remaining",
-      "ASSIGNED"            : "Assigned",
-      "REVIEW"              : "Review Manifest",
-      "REQUESTED_BY"        : "Requested By",
-      "ADD_LOT"             : "Add Lot",
-      "ENTRY_DATE"          : "Entry Date",
-      "ENTER_STOCK"         : "Enter Stock",
-      "REPORT"              : "Entry Report",
-      "ERR_EMPTY_PARAMTER"  : "Error Empty Parameter",
-      "WRITE_SUCCESS"       : "Write success",
-      "WRITE_ERROR"         : "Write error"
+      "KEY"                  : "Stock Entry",
+      "TITLE"                : "Stock Entry",
+      "SELECT"               : "Select",
+      "NUM_ITEMS"            : "Number of Items",
+      "ENTRY_MANIFEST"       : "Entry Manifest",
+      "SELECT_DEPOT"         : "Select a Depot",
+      "FIND_PURCHASE_ORDER"  : "Find a Purchase Order",
+      "ORDER_DETAIL"         : "Order Details",
+      "ASSIGN_LOTS"          : "Assign Lots",
+      "CANCEL"               : "Cancel",
+      "LOT_NUMBER"           : "Lot No.",
+      "ORDER_DETAILS"        : "Order Details",
+      "REMAINING"            : "Remaining",
+      "ASSIGNED"             : "Assigned",
+      "REVIEW"               : "Review Manifest",
+      "REQUESTED_BY"         : "Requested By",
+      "ADD_LOT"              : "Add Lot",
+      "ENTRY_DATE"           : "Entry Date",
+      "ENTER_STOCK"          : "Enter Stock",
+      "REPORT"               : "Entry Report",
+      "ERR_EMPTY_PARAMTER"   : "Error Empty Parameter",
+      "WRITE_SUCCESS"        : "Write success",
+      "WRITE_ERROR"          : "Write error",
+      "DIRECT_PURCHASE_TYPE" : "This Purchase Order is DIRECT"
     },
     "EXIT" : {
       "KEY" : "Stock Distribution"
@@ -2376,5 +2385,24 @@
     "EX_180" : "Expiration within 90 or 180 days",
     "EX_365" : "Expiration within 180 or 365 days",
     "EX_YEAR": "Expiration over 1 year"
-  }
+  },
+
+  "BALANCE_MENSUELLE" : {
+    "TITLE"           : "Monthly balance per class",
+    "REPORT"          : "MOnthly balance report",
+    "CLASS"           : "Class",
+    "ACCOUNT"         : "Compte",
+    "LABEL"           : "Label",
+    "OLD_SOLD"        : "Old solde",
+    "MONTH_MOVEMENT"  : "Month Movement",
+    "NEW_SOLD"        : "New solde",
+    "DEBIT"           : "Debit",
+    "CREDIT"          : "Credit",
+    "DEBITOR"         : "Debitor",
+    "CREDITOR"        : "Creditor",
+    "TOTALS"          : "Totals",
+    "INFO_FILL_INPUT" : "Please select periode and class",
+    "CHOOSE_PERIOD"   : "Choose a periode",
+    "CHOOSE_CLASS"    : "Choose a class"
+  } 
 }
