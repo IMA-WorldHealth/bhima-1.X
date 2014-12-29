@@ -58,7 +58,7 @@ angular.module('bhima.controllers')
       Object.keys(params)
       .forEach(function(key) {
         if (params[key].length) {
-          condition.push('patient.' + key + '=' + searchParams[key], 'AND');
+            condition.push('patient.' + key + ' LIKE ' + searchParams[key], 'AND');
         }
       });
 
