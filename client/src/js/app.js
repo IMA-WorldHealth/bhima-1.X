@@ -545,7 +545,11 @@
     .when('/fonction', {
       controller : 'fonction',
       templateUrl : 'partials/fonction/fonction.html'
-    })
+    })  
+    .when('/donor_management/', {
+      controller: 'donor',
+      templateUrl: '/partials/donor_management/donor_management.html'
+    })       
     .when('/reports/operating_account/', {
       controller : 'operating_account',
       templateUrl : 'partials/reports/operating_account/operating_account.html'
