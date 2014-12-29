@@ -122,7 +122,7 @@ angular.module('bhima.controllers')
           buildFiscalQuery({id: $scope.enterpriseId});
           $scope.active = 'select';
         })
-        .catc(function (err) {
+        .catch(function (err) {
           messenger.danger('Error:' + JSON.stringify(err));
         })
         .finally();

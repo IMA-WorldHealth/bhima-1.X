@@ -2,7 +2,7 @@ drop database if exists`bhima`;
 create database `bhima`;
 use `bhima`;
 
---grant all privileges on *.* to 'bhima'@'%' identified by 'HISCongo2013' with grant option;
+-- grant all privileges on *.* to 'bhima'@'%' identified by 'HISCongo2013' with grant option;
 grant all privileges on *.* to 'bhima'@'localhost' identified by 'HISCongo2013' with grant option;
 flush privileges;
 
@@ -1496,6 +1496,17 @@ create table `hollyday` (
   key `employee_id` (`employee_id`),
   constraint foreign key (`employee_id`) references `employee` (`id`)
 ) engine=innodb;
+
+drop table if exists `hollyday_paiement`;
+create table `hollyday_paiement` (
+  `hollyday_id`             int unsigned not null,
+  `hollyday_nbdays`         int unsigned not null,
+  `hollyday_percentage`     float default 0,
+  `paiement_uuid`           char(36) not null,
+  constraint foreign key (`paiement_uuid`) references `paiement` (`uuid`),
+  constraint foreign key (`hollyday_id`) references `hollyday` (`id`)
+) engine=innodb;
+
 
 drop table if exists `taxe_ipr`;
 create table `taxe_ipr` (
