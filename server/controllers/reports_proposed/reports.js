@@ -16,13 +16,15 @@ var invoice     = require('./data/invoice');
 // Module configuration 
 var writePath = path.join(__dirname, 'out/');
 
+// Perform initial settup
+initialise();
+
 exports.serve = function (req, res, next) {
   var target = req.params.target;
   var options = {root : writePath};
   
   res.sendFile(target.concat('.pdf'), options, function (err) { 
     if (err) { 
-      console.log(err);
       res.status(err.status).end();
     } else { 
 
@@ -34,9 +36,23 @@ exports.serve = function (req, res, next) {
   });
 };
 
+// Proof of concept report - invoice data request and template generated
 exports.build = function (req, res, next) {  
   
-  //var report = map[request]; report.buildContext()
+  /* 
+   * TODO Resource POST request, options parameter passed through POST body
+   * 
+   * var route = req.params.route;
+   * var options = req.body;
+   *
+   * var size = options.size || config.standard;
+   * var language = options.language || defaultReportLanguage;
+   *
+   * var template = map[route].template;
+   * var context = map[route].context;
+   */
+
+  //var report = map[route]; report.buildContext(options)
   invoice.buildContext()
   .then(renderPDF)
   .catch(function (err) { 
@@ -44,7 +60,6 @@ exports.build = function (req, res, next) {
     res.status(500).end();
   });
 
-     
   function renderPDF(reportData) { 
     var compiledReport;
     var hash = uuid();
@@ -53,8 +68,8 @@ exports.build = function (req, res, next) {
     // Ensure templates have path data
     reportData.path = reportData.path || __dirname;
     compiledReport = dots.invoice(reportData);
-    
-    // TODO Handle exceptions
+   
+    // wkhtmltopdf exceptions not handled
     var pdf = wkhtmltopdf(compiledReport, configuration, function (code, signal) { 
       res.send('<a target="_blank" href="/report/serve/' + hash + '">Generated PDF</a');
     });
@@ -74,4 +89,14 @@ function buildConfiguration(hash, size) {
 function initialise() { 
   
   // Ensure write folder exists - wkhtmltopdf will silently fail without this
+  fs.exists(writePath, function (exists) { 
+    
+    if (!exists) { 
+      fs.mkdir(writePath, function (err) { 
+        if (err) throw err;
+
+        console.log('[controllers/report] output folder written :', writePath);
+      });
+    }
+  });
 }
