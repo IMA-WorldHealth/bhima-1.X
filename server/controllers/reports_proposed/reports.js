@@ -71,7 +71,7 @@ exports.build = function (req, res, next) {
    
     // wkhtmltopdf exceptions not handled
     var pdf = wkhtmltopdf(compiledReport, configuration, function (code, signal) { 
-      res.send('<a target="_blank" href="/report/serve/' + hash + '">Generated PDF</a');
+      res.send('/report/serve/' + hash);
     });
   }
 };

@@ -546,6 +546,12 @@
       controller : 'operating_account',
       templateUrl : 'partials/reports/operating_account/operating_account.html'
     })
+
+    // Proposed formal report building structure
+    .when('/report/invoice/:target', { 
+      controller : 'configureInvoice', 
+      templateUrl : 'partials/reports_proposed/invoice/invoice.html'
+    })
     .otherwise('/');
   }
 
