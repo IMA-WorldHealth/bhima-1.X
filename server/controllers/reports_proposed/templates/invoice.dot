@@ -4,8 +4,8 @@
 <body>
 
   <section>
-    <h1>{{=it.enterprise.name}}</h1>
-    <h1>Order Number : {{=it.invoice.id}}</h1>
+    <h4>{{=it.enterprise.name}}</h4>
+    <h4>Order Number : {{=it.invoice.id}}</h4>
     <h4>{{=it.invoice.date}}</h4>
     <h1>Bill to :</h1>
     <h1>{{=it.recipient.first_name}} {{=it.recipient.last_name}}</h1>
