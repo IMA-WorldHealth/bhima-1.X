@@ -222,7 +222,10 @@
     "TAB_LOCK_ITEM"    : "Tabuler par item",
     "RECOVER"          : "Retrouver Vente",
     "RECOVER_INFO"     : "[Retrouver Sale] C'est important de savoir que seulement les items de vente et les quantités sont retrouvés, les prix sont réinitialisés au prix par défaut des items",
-    "CHOOSE"           : "Choisir le service"
+    "CHOOSE"           : "Choisir le service",
+    "IS_DISTRIBUTABLE" : "Distribuable via le stock ?",
+    "DISTRIBUTABLE"    : "Distribuable",
+    "NO_DISTRIBUTABLE" : "Non distribuable"
   },
 
   "FIND"              : {
@@ -2429,6 +2432,6 @@
     "INFO_FILL_INPUT" : "Veuillez selectionner la periode et la classe",
     "CHOOSE_PERIOD"   : "Choisissez une periode",
     "CHOOSE_CLASS"    : "Choisissez une classe"
-  }  
+  } 
   
 }
