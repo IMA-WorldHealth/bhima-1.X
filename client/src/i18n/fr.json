@@ -721,6 +721,7 @@
     "FOUR_ACCOUNT"       : "Compte de tier",
     "SIX_ACCOUNT"        : "Compte charge",
     "IS_IPR"             : "Est-ce l'IPR",
+    "ENTRY_DATE"         : "Date d'entrée",
     "CONFIRMED"          : "Confirmé",
     "SUPPLIER"           : "Fournisseur"
   },
@@ -996,6 +997,7 @@
       "TRANS_ID"              : "Transaction ID ",
       "LOG"                   : "Log Journal ID "
   },
+
   "CAUTION"        : {
     "TITLE"        : "Gestion des Cautions",
     "CASH"         : "Caisse Auxilliaire",
@@ -1561,9 +1563,13 @@
     "SALARY_PAYMENT"                : "Paiement Effectif du Salaire",
     "COTISATIONS"                   : "Cotisations",
     "COTISATION_PAYMENT"            : "Paiement Cotisations",
+    "SUPPLIER"                      : "Fournisseur",
+    "LOT_NUMBER"                    : "Numéro de lot",
+    "DATE_DOCUMENT"                 : "Date du document",
+    "DOCUMENT_NUMBER"               : "Numéro du document",
+    "ENTRY_DATE"                    : "Date d'entré",  
     "CONFIRM_DIRECT_PURCHASE"       : "Confirmation Achat Direct",
-    "ACCOUNT"                       : "Compte",
-    "SUPPLIER"                      : "Fournisseur"
+    "ACCOUNT"                       : "Compte"    
   },
 
   "SECTOR"             : {

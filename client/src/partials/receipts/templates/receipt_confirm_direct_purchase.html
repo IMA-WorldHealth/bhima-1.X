@@ -1,8 +1,8 @@
 <!-- confirm.purchase template -->
-<div ng-controller="confirm_indirect_purchase">
+<div ng-controller="receipt.confirm_direct_purchase">
   <div class="row customer-details">
     <div class="col-xs-12">
-      <small style="float: right; color: grey; font-size: 8px">{{ invoice.uuid }}</small>
+      <small style="float: right; color: grey; font-size: 8px">{{ model.confirmDirectPurchase.uuid }}</small>
       <h4 class="invoice-header">{{ 'INVOICE.CONFIRM_PURCHASE' | translate }}</h4>
     </div>
   </div>
@@ -10,38 +10,40 @@
     <!-- Temporary style; needs official markup and CSS -->
     <div class="col-xs-4">
       <span>
-        <b>{{invoice.enterprise_name}}</b>
+        <b>{{model.common.enterprise.name}}</b>
       </span>
       <br>
-      {{invoice.village}}
+      {{model.common.location.name}}
       <br>
       <!-- hah -->
-      {{ invoice.postal || 'B.P. 205'}}
+      {{ model.common.enterprise.postal || 'B.P. 205'}}
       <br>
-      {{invoice.sector}}
+      {{model.common.location.sector_name}}
       <br>
-      <i>TEL</i> {{invoice.phone}}
+      <i>TEL</i> {{model.common.enterprise.phone}}
       <br>
-      <i>FAX</i> {{invoice.email}}
+      <i>MAIL</i> {{model.common.enterprise.email}}
     </div>
 
     <div class="col-xs-4">
-      <b>{{invoice.name}} </b>
+      <b>{{model.confirmDirectPurchase.name}} </b>
       <br>
       <i>{{ 'INVOICE.DATE_REGISTRATION' | translate }}</i>
       <br>
-      {{invoice.purchase_date | date}}
+      {{model.confirmDirectPurchase.purchase_date | date}}
     </div>
 
     <div class="col-xs-4">
-      <i>{{'INVOICE.INVOICE_ID' | translate}}</i> <b>{{invoice.reference}}</b>
+      <i>{{'INVOICE.INVOICE_ID' | translate}}</i> <b>{{model.confirmDirectPurchase.reference}}</b>
       <br>
-      <i>{{'INVOICE.EMPLOYEE_CODE' | translate}}</i> <b>{{invoice.employee_code}}</b>
+      <i>{{'INVOICE.SUPPLIER' | translate}}</i>
+      <br>
+      <strong>{{model.confirmDirectPurchase.creditor_uuid}}</strong>
       <br>
       <br>
       <i>{{ 'INVOICE.DATE_RECEIPT' | translate }}</i>
       <br>
-      {{invoice.purchase_date | date}}
+      {{timestamp | date}}
       <br>
     </div>
   </div>
@@ -59,10 +61,10 @@
         </thead>
         <tbody class="items">
           <tr>
-            <td>{{ invoice.reference }}</td>
-            <td>{{ invoice.cost | currency }}</td>
-            <td>{{ invoice.cost | currency }}</td>
-            <td>{{ invoice.name }}</td>
+            <td>{{ model.confirmDirectPurchase.reference }}</td>
+            <td>{{ model.confirmDirectPurchase.cost | currency }}</td>
+            <td>{{ model.confirmDirectPurchase.cost | currency }}</td>
+            <td>{{ model.confirmDirectPurchase.name }}</td>
           </tr>
         </tbody>
       </table>
