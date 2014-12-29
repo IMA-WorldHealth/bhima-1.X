@@ -44,7 +44,7 @@ angular.module('bhima.controllers')
           validate.process(dependencies, ['get_hollydayCount'])
           .then(function (model) {
             $scope.total_day = data[0].working_day;
-            $scope.daly_rate = data[0].basic_salary / $scope.max_day;
+            $scope.daly_rate = data[0].net_before_tax  / $scope.max_day;
 
             $scope.amont_payable = $scope.daly_rate * $scope.total_day; 
             $scope.TotalPaid += $scope.amont_payable;
