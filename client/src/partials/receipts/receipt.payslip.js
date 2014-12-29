@@ -52,7 +52,7 @@ angular.module('bhima.controllers')
                     
             var dataHollydays = $scope.dataHollydays = model.get_hollydayCount.data,
               cotisationValue = model.get_cotisation.data,
-              dailyRate = data[0].basic_salary / $scope.max_day;
+              dailyRate = $scope.daly_rate = data[0].net_before_tax / $scope.max_day;
 
             dataHollydays.forEach(function (item) {
             item.dailyHollyd = dailyRate * (item.hollyday_percentage /100); 
