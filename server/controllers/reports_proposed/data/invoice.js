@@ -13,7 +13,7 @@ var querry = {
 
 };
 
-exports.buildContext = function () { 
+exports.buildContext = function (options) { 
   var deferred = q.defer();
   var reportData = {};
 
