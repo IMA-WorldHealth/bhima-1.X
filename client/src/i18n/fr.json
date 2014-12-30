@@ -2315,9 +2315,11 @@
   },
 
   "AUTH"             : {
-    "LOGIN"          : "Bhima Login",
+    "LOGIN"          : "Se connecter",
     "LOGIN_ERROR"    : "Erreur : Nom de utilisateur et mots de pass ne sont pas correct",
-    "LOGOUT_SUCCESS" : "Vous n'etes pas connecté"
+    "LOGIN_TO_BHIMA" : "Bhima Login",    
+    "LOGOUT_SUCCESS" : "Vous n'etes pas connecté",
+    "RESET"          : "Annuler"
   },
 
   "FONCTION"  : {

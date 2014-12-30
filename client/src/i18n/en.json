@@ -2315,9 +2315,11 @@
   },
 
   "AUTH" :  {
-    "LOGIN"  : "Login to Bhima",
+    "LOGIN"  : "Login",
     "LOGIN_ERROR" : "Login Error: Username and password combination are incorrect.",
-    "LOGOUT_SUCCESS" : "You are now logged out."
+    "LOGIN_TO_BHIMA" : "Login to Bhima",
+    "LOGOUT_SUCCESS" : "You are now logged out.",
+    "RESET"          : "Reset"
   },
 
   "FONCTION"  : {
