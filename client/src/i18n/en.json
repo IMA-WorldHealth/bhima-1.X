@@ -59,6 +59,7 @@
     "GENERIC"     : "Generic",
     "NAVIGATION"  : "Navigation",
     "CONFIGURE"   : "Configure Cash Box",
+    "HOME"         : "Primary Cash",    
     "EXPENSE"     : {
       "PAYROLL"                 : "Payroll",
       "MULTI_PAYROLL"           : "Multiple Payroll",
@@ -90,11 +91,11 @@
       "IPR"                     : "IPR",
       "OTHER_DEDUCT"            : "Others deductions" ,
       "SELECT_PERIOD"           : "Select a payment period",
+      "RUBRICS"                 : "Rubrics",          
       "ONEM"                    : "ONEM",
       "IERE"                    : "IERE",
       "INPP"                    : "INPP",
       "TAXES_OTHERS_ENTERPRISE" : "Enterprise Taxes et others deductions",
-      "RUBRICS"                 : "Rubrics",
       "TAX_PAYMENT"             : "Taxes Payment",
       "SELECT_ACCOUNT"          : "Select an account",
       "ACCOUNT"                 : "Account",
@@ -244,11 +245,13 @@
     "SHOW"             : "Show",
     "HIDE"             : "Hide",
     "POST_TO_LEDGER"   : "Post to General Ledger",
+    "BTN_TEXT"         : "Post to General Ledger",    
     "TRANSACTIONS"     : "Transactions",
     "ERRORS"           : "Errors",
     "ERROR"            : "Error",
     "DESCRIPTION"      : "Description",
     "AFFECTED_ROWS"    : "Affected Rows",
+    "SIGNATURES"       : "Signatures",    
     "SUMMARY"          : "Summary",
     "CHIEF_ACCOUNTANT" : "Chief accountant",
     "FINANCE_OFFICER" : "Finance officer"
@@ -484,7 +487,6 @@
     "GENERATED_ON"          : "Generated on",
     "TRANSACTIONS_BY_ACCOUNT" : "Transactions by Account",
     "TOTAL" : "Total",
-
     "ACCOUNT_STATEMENT"     : {
       "TITLE"               : "Account Summary Report",
       "NO_ACCOUNT_SPECIFIED": "Account ID not specified",
@@ -493,7 +495,6 @@
       "ACCOUNT_CREATED"     : "Account created on",
       "SUMMARY"             : "Account Summary",
       "DETAILS"             : "Account transactions details"
-
     },
     "STOCK"                 : "Stock Report",
     "TRANSACTION"           : "Transaction",
@@ -656,6 +657,7 @@
     "COST_CENTER"         : "Cost center",
     "PROJECT"             : "Project",
     "CHARGE"              : "Charge",
+    "SCOPE"               : "Scope",    
     "PROFIT"              : "Profit",
     "RESULT"              : "Result",
     "EMPLOYEE"            : "Employee",
@@ -672,6 +674,7 @@
     "QTY_LOSS"            : "Loss Quantity",
     "DOCUMENT_UUID"       : "Document Number",
     "REFERENCE_PURCHASE"  : "Purchase Order Reference",
+    "CONSUMED_STOCK"      : "Consumed Stock",    
     "SOURCE"              : "Source",
     "TOTAL_DEBIT"         : "Total debit",
     "NR"                  : "Nr",
@@ -710,6 +713,7 @@
     "MAXIMUM_STOCK"         : "Maximum Stock",
     "MONTH_OF_STOCK"        : "Months of stock",
     "QUANTITY_ORDER"        : "Quantity to Order",
+    "WORKING_DAY"        : "Jours prestés",    
     "STOCK_QTE"          : "Stock Quantity",
     "STOCK_QTE_MIN"      : "Stock Minimum Quantity",
     "STOCK_QTE_MAX"      : "Stock Maximum Quantity",
@@ -735,13 +739,15 @@
     },
     "GROUPS" : {
       "TITLE" : "Inventory Group Management",
+      "ADD" : "Creating Inventory Group",
       "CREATE_GROUP" : "Create Group",
       "ALL_GROUPS" : "All Groups",
+      "CODE"          : "Code",
+      "NAME"          : "Nom",      
       "SALES_ACCOUNT" : "Sales Accnt",
       "COGS_ACCOUNT" : "COGS Accnt",
       "STOCK_ACCOUNT" : "Stock Accnt",
       "DONATION_ACCOUNT" : "Donation Accnt",
-      "ADD" : "Creating Inventory Group",
       "EDIT" : "Edit Inventory Group",
       "ALERT" : "This module will help you to create groupe for your inventories"
     },
@@ -799,6 +805,7 @@
     "REPORTS"                   : "Reports",
     "INVENTORY"                 : "Inventory",
     "HOSPITAL"                  : "Hospital",
+    "SWAP_DEBITOR"              : "Update Debtor",
     "FISCAL_YEAR"               : "Fiscal Year",
     "PATIENT_REG"               : "Patient Registration",
     "PATIENT_SEARCH"            : "Patient Search",
@@ -833,7 +840,6 @@
     "RENEWAL"                   : "Patient Renewal",
     "PATIENT_REGISTRATION"      : "Patient Registration Report",
     "CASH_PAYMENTS"             : "Cash Payments",
-    "SWAP_DEBITOR"              : "Update Debtor",
     "PATIENT_STANDING"          : "Patient Standing Report",
     "TRANSACTIONS_BY_ACCOUNT"   : "Transactions by Account",
     "CAUTION"                   : "Caution",
@@ -879,7 +885,10 @@
     "EMPLOYEE_STANDING"         : "Employee Standing Report",
     "PAYROLL"                   : "Payroll",
     "MULTI_PAYROLL"             : "Multiple Payroll",
-    "BALANCE_MENSUELLE"         : "Monthly balance report"  
+    "BALANCE_MENSUELLE"         : "Monthly balance report",
+    "DONOR_MANAGEMENT"          : "Donor management",
+    "UPDATE_STOCK"              : "Update stock",
+    "CREDIT_NOTE"               : "Credit note"       
   },
 
   "RUBRIC_PAYROLL"       : {
@@ -1100,8 +1109,8 @@
     "SPOUSE"                   : "Spouse's Name",
     "SPOUSE_EMPLOYER"          : "Spouse's Employer",
     "SPOUSE_PROFESSION"        : "Spouse's Occupation",
-    "AVENUE"                   : "Avenue",
-    "RUE"                      : "Rue",
+    "AVENUE"                   : "Street",
+    "RUE"                      : "Street",
     "LOCATION"                 : "Location Management"
   },
 
@@ -1225,6 +1234,7 @@
     "OVERDUE"              : "Over Due",
     "PAY_INVOICES"         : "Pay Invoices",
     "CLEAR_SELECTION"      : "Clear Selection",
+    "NO_EXCHANGE_RATE"      : "Error : No exchange rate!",    
     "OVER" : {
       "TITLE"              : "Justification for Payment",
       "REASON"             : "Reason",
@@ -1331,9 +1341,10 @@
     "POSTED"           : "Posted new price list!",
     "DELETE_CONFIRM"   : "Are you sure, to erase ?",
     "REMOVE_SUCCESS"   : "Erased succefully !",
-    "UNABLE_TO_DELETE" : "Price list cannot be deleted - it may currently be assigned to patient/ debtor groups"
+    "UNABLE_TO_DELETE" : "Price list cannot be deleted - it may currently be assigned to patient/ debtor groups",
+    "APPLY_TO_ITEM"    : "Apply to item",
+    "APPLY_TO_BILL"    : "Apply to bill"    
   },
-
   "UNIT_TYPE"     : {
     "ADD"         : "Add a Unit Type",
     "NEW"         : "New Unit",
@@ -1362,6 +1373,7 @@
         "TOTAL"           : "Total",
         "SUBMIT"          : "Submit",
         "SUBMIT_ORDER"    : "Submit purchase request",
+        "RESPONSABLE"     : "Responsable",        
         "WRITE_SUCCESS"   : "Purchase order submitted successfully.",
         "RESPONSABLE"     : "Responsible",
         "TOTAL_COST"      : "Total cost",
@@ -1412,7 +1424,8 @@
   "EFIND" : {
     "TITLE"           : "Find employee",
     "SEARCH"          : "Search by name",
-    "PLACEHOLDER"     : "Search an employee"
+    "PLACEHOLDER"     : "Search an employee",
+    "ENTER_EMPLOYEE_ID" : "Enter employee Id"
   },
 
   "COUNTRY" : {
@@ -1426,6 +1439,11 @@
     "ACTIONS"              : "Actions",
     "CONFIGURATION"        : "Country Manager Configuration ",
     "DESCRIPTION"          : "This module will help you to manage countries. At the left you see available countries and their locations. Use this module to create, modify, and remove countries.",
+    "CREATE"               : "create",
+    "MODIFY"               : "modify",
+    "AND"                  : "and",
+    "REMOVE"               : "Remove",
+    "COUNTRY"              : "country",
     "REGISTER"             : "Register a Country",
     "EDIT"                 : "Edit a Country"
   },
@@ -1538,7 +1556,9 @@
     "CONFIRM_PURCHASE"              : "Payment confirmation",
     "CONFIRMED_BY"                  : "Confirmed by ",
     "SIGN_EMPLOYEE"                 : "Employee signature",
-    "TAX_PAYMENT"                   : "Taxes Payment",
+    "LOSS"                          : "Proof of stock loss",
+    "DATE_DOCUMENT"                 : "Date du document",
+    "TAX_PAYMENT"                   : "Taxes payment",    
     "ENTERPRISE_TAX_PAYMENT"        : "Entreprise Taxes Payment",
     "SALARY_PAYMENT"                : "Salary Payment",
     "COTISATIONS"                   : "Cotisations",
@@ -1546,7 +1566,6 @@
     "SUPPLIER"                      : "Supplier",
     "LOT_NUMBER"                    : "Lot",
     "DATE_DOCUMENT"                 : "Document date",
-    "LOSS"                          : "Proof of stock loss",
     "DOCUMENT_NUMBER"               : "Document number",
     "ENTRY_DATE"                    : "Entry date",
     "CONFIRM_DIRECT_PURCHASE"       : "Direct purchase order confirmation",
@@ -1679,7 +1698,7 @@
     "VERSER"            : "Deposit",
     "REMOVE"            : "Retirer",
     "NAVIG"             : "Browsing",
-    "ASSOCIATED_TO"     : "Accounts associated to         : ",
+    "ASSOCIATED_TO"     : "Accounts associated to : ",
     "PLEASE_SELECT"     : "(choose cost center pleaase!)"
   },
 
@@ -1852,6 +1871,7 @@
     "ORIGIN"               : "Origin",
     "DEBTOR_GROUP"         : "Choose a new debtor group for the debtor",
     "PATIENT_REGISTRATION" : "Patient Registration",
+    "DANGER"               : "Error changing debtor group",
     "ERR_HTTP"             : "Error changing debtor group",
     "ERR_MISSING"          : "Error no debtor selected",
     "SUCCESS"              : "Changing successfully"
@@ -1866,6 +1886,7 @@
     "RESPONSABLE"       : "Responsable",
     "BENEFICIARY"       : "Beneficiary",
     "EMPLOYEE"          : "Employee",
+    "CLIENT"            : "Customer",    
     "CREDITOR"          : "Creditor",
     "THIRD"             : "Third"
   },
@@ -1948,7 +1969,16 @@
 
   "CONFIRM" : {
     "TITLE" : "Purchase order payment confirmation",
-    "PARENT" : "Purchase order management"
+    "PARENT" : "Purchase order management",
+    "SELECT_PURCHASE" : "Select purchase",
+    "FILTER" : "Filter purchase order",
+    "NOT_FOUND" : "No purchase order found",
+    "CONFIRM_PAY" : "Confirm pay",
+    "DETAILS" : "Details",
+    "CONFIRM_PAY "  : "Confirm pay",
+    "CONFIRM_PAY_OF" : "Confirm pay of ",
+    "BY"             : "by ",
+    "DISCARD"        : "Discard"    
   },
 
   "GRADE" : {
@@ -1976,9 +2006,9 @@
     "TITLE" : "Cotisations management",
     "CREATE_COTISATION" : "cotisation creation",
     "OPTIONS" : "Options"
-  } ,
+  },
 
-   "HOLLYDAY_MANAGEMENT" : {
+  "HOLLYDAY_MANAGEMENT" : {
     "TITLE"         : "Hollydays Management",
     "NEW_HOLLYDAY"  : "Create a hollyday period",
     "SAVE_SUCCES"  : "Successfully saving Offday",
@@ -1992,7 +2022,7 @@
     "REGISTERED"    : "Registered Hollydays",
     "ALERT"         : "The management of hollyday standardizes and secure applications and management of vacation (paid leave, compensatory time off ...). It supports automatic introduction pays from request, validation and to its treatment.",
     "EMPLOYEE"      : "Employee"
-  } ,
+  },
 
   "OFFDAY_MANAGEMENT" : {
     "TITLE"         : "Offdays Management",
@@ -2016,6 +2046,7 @@
     "ADD"          : "Add period",
     "EDIT"         : "Edit period",
     "DELETE"       : "Delete period",
+    "CONFIRM"      : "Are you sure you want to delete this Payment Period ?",
     "REGISTERED"   : "Registered periods",
     "SAVE_PERIOD"  : "Save",
     "SAVE_SUCCES"  : "Successfully saving period",
@@ -2037,7 +2068,7 @@
     "CONFIGURATIONS" : "Configurations"
   },
 
-   "TAXES" : {
+  "TAXES" : {
     "TITLE"        : "Taxes management",
     "REGISTERED"   : "Registered Taxes",
     "NEW_TAX"      : "New Tax",
@@ -2051,6 +2082,8 @@
     "ALERT"        : "Taxes management module is a module that has been designed to allow administration of existing tas within the organization, the table is left to record, to update the attributes of a tax and the deletion.",
     "IPR"          : "IPR Tax",
     "ADD_TRANCHE"  : "Ajouter Tranche",
+    "NOT_EMPTY"           : "ABR. can be empty",
+    "NOT_SUP4"            : "Can not be more than 4 characters",
     "REGISTERED_TRANCHES" : "Slices Registred",
     "TAUX"                : "Rate",
     "ANNUAL_TRANCH"       : "Annual Tranch",
@@ -2148,25 +2181,6 @@
     "MESSAGE"       : "Please check the different cotisations that will be payable for this configuration"
   },
 
-    "CONFIG_COTISATION" : {
-    "TITLE"         : "Configuration Cotisations",
-    "NEW_CONFIG"    : "New configuration",
-    "SAVE_SUCCES"  : "Successfully saving Configuration",
-    "UPDATE_SUCCES" : "Updated successfully",
-    "UPDATE"        : "Modify a Configuration",
-    "ADD"           : "Create a new configuration",
-    "CONFIRM"       : "Are you sure you want to delete this Configuration",
-    "REGISTERED"    : "Registered Configuration Cotisations",
-    "ALERT"         : "The configuration of Cotisations allows setting different kinds Cotisations that are taken during a pay period",
-    "CONFIG"        : "Configuration",
-    "RUBRIC"        : "Cotisations Payroll",
-    "PAYABLE"       : "Payable",
-    "DELETE_SUCCESS" : "Deleted successfully",
-    "NO_CONFIG_COTISATION" : "No Configuration Cotisations",
-    "MESSAGE"       : "Please check the different cotisations that will be payable for this configuration"
-  },
-
-
   "DAILY_CONSUMPTION" : {
     "TITLE"         : "Daily Consumption",
     "DAY"           : "Today",
@@ -2257,17 +2271,15 @@
     "NEW_CONFIG"    : "New configuration",
     "SAVE_SUCCES"   : "Successfully saving Configuration",
     "UPDATE_SUCCES" : "Updated successfully",
-    "UPDATE"        : "Modify a Configuration",
-    "ADD"           : "Create a new configuration",
     "CONFIRM"       : "Are you sure you want to delete this Configuration",
+    "UPDATE"        : "Modify a Configuration",
+    "ADD"           : "Create a new configuration",    
     "REGISTERED"    : "Registered Configuration Accounting",
     "ALERT"         : "The account setup module allows setting the account to be used when making payroll",
     "CONFIG"        : "Configuration",
     "RUBRIC"        : "Taxes Payroll",
     "DELETE_SUCCESS" : "Deleted successfully",
-    "NO_CONFIG_TAX" : "No Configuration Accounting",
     "NO_CONFIG_ACCOUNTING" : "No configuration registered"
-
   },
 
   "PAYCHECK" : {
@@ -2319,7 +2331,7 @@
     "UPDATE_SUCCES" : "Updated successfully",
     "UPDATE"        : "Modify a Job title",
     "REGISTERED"    : "Registered Job title",
-    "ALERT"         : "Fonction management module is a module that has been designed to allow administration of existing Job titles within the organization, the table is left to record, to update the attributes of a Job title and the deletion.",
+    "ALERT"         : "Job title management module is a module that has been designed to allow administration of existing Job titles within the organization, the table is left to record, to update the attributes of a Job title and the deletion.",
     "DELETE_SUCCESS" : "Deleted successfully",
     "NO_FONCTION"    : "No job title saving",
     "ABBR"           : "Abr."
@@ -2406,5 +2418,41 @@
     "INFO_FILL_INPUT" : "Please select periode and class",
     "CHOOSE_PERIOD"   : "Choose a periode",
     "CHOOSE_CLASS"    : "Choose a class"
-  } 
+  },
+
+  "UPDATE_STOCK"     : {
+    "TITLE"          : "Update stock",
+    "TIMESTAMP"      : "Date",
+    "FIND_STOCK"     : "Find stock",
+    "STOCK_HISTORY"  : "history Stock",
+    "SUBMIT"         : "Submit",
+    "SEARCH_TEXT"    : "Search by code or description",
+    "UPDATE_SUCCESS" : "Updating success",
+    "UPDATE_FAILURE" : "Updating failure",
+    "INVALID_PRICE"  : "Invalide price",
+    "EMPTY_HISTORY"  : "Empty History !"
+  },
+
+  "EXPIRING_UTIL"    : {
+    "TITLE"        : "Liste des Lots Expirants",
+    "DAY"          : "Day",
+    "MONTH"        : "Month",
+    "WEEK"         : "This Week",
+    "EMPTY_REPORT" : "Empty report found !",
+    "GROUP_BY"     : "Group by"
+  },
+
+  "DONOR_MANAGEMENT"  : {
+    "TITLE"         : "Donor management",
+    "ADD"           : "Add a Donor",
+    "NEW"           : "New Donor",
+    "SAVE_SUCCES"   : "Successfully saving Configuration",
+    "CONFIRM"       : "Are you sure to delete this Donor",
+    "UPDATE_SUCCES" : "Updated successfully",
+    "UPDATE"        : "Modify a Donor",
+    "REGISTERED"    : "Registered Donor",
+    "ALERT"         : "Donor management module is a module that has been designed to allow administration of existing Donor within the organization, the table is left to record, to update the attributes of a Donor and the deletion.",
+    "DELETE_SUCCESS" : "Deleted successfully",
+    "NO_DONOR"    : "No Donor saving"
+  }   
 }

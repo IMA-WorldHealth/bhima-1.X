@@ -4,11 +4,10 @@ angular.module('bhima.controllers')
   '$q',
   '$http',
   'validate',
-  'exchange',
   'appstate',
   'util',
   'messenger',
-  function ($scope, $q, $http, validate, exchange, appstate, util, messenger) {
+  function ($scope, $q, $http, validate, appstate, util, messenger) {
     var dependencies = {}, model = $scope.model = {common : {}};
 
     function processPayslip (invoiceId) {
@@ -43,6 +42,10 @@ angular.module('bhima.controllers')
           };
           validate.process(dependencies, ['get_hollydayCount'])
           .then(function (model) {
+            if(data[0].enterprise_currency_id !== data[0].currency_id){
+              data[0].basic_salary *= data[0].rate; 
+            }
+            
             $scope.total_day = data[0].working_day;
             $scope.daly_rate = data[0].basic_salary / $scope.max_day;
 

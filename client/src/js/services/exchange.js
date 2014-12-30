@@ -78,6 +78,11 @@ angular.module('bhima.services')
         id : rate.foreign_currency_id,
         rate : rate.rate,
       });
+
+      store.rates.post({
+        id : rate.enterprise_currency_id,
+        rate: 1
+      });
     }
 
     function loadRates(rates) {

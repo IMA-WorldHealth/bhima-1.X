@@ -244,9 +244,8 @@ angular.module('bhima.controllers')
         });
 
         taxes.forEach(function (tax) {
-          var dataTaxes = (tax.is_percent) ?
+          self[tax.abbr] = (tax.is_percent) ?
           ((self.daily_salary * (self.working_day + self.coefhl + self.offdays)) * tax.value) / 100 : tax.value;
-          self[tax.abbr] = dataTaxes;
         });
 
         var employee_cotisation = 0;
@@ -265,8 +264,7 @@ angular.module('bhima.controllers')
         var taxes = session.model.tax_config.data;
         self.IPR1 = IPR;
         taxes.forEach(function (tax) {
-          var dataTaxes = (tax.is_ipr) ? IPR : tax.value;
-          self[tax.abbr] = dataTaxes;
+          self[tax.abbr] = (tax.is_ipr) ? IPR : tax.value;
         });
 
 
