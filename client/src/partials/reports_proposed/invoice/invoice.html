@@ -1,3 +1,5 @@
+<!-- TODO Add translation keys -->
+
 <header data-header>
   Build Invoice
 </header>
@@ -18,6 +20,7 @@
                 ng-click="selectConfiguration('format', format)">{{format.label}}</button>
             </span>
           </div>
+
         </div>
         <div class="form-group">
           <label>Language</label>
@@ -43,24 +46,17 @@
                 ng-click="selectConfiguration('currency', currency)">{{currency.label}}</button>
             </span>
           </div>
+
         </div>
+        
+        <!-- Links swapped out to allow target _blank (open PDF in new tab) -->
         <button 
           class="btn btn-default"
           ng-disabled="session.building"
-          ng-click="generateDocument()" ng-if="!generatedPath">{{session.building ? 'Loading...' : 'Generate Document'}}</button>
+          ng-click="generateDocument()" ng-if="!generatedDocumentPath">{{session.building ? 'Loading...' : 'Generate Document'}}</button>
 
-        <a class="btn btn-success" href="{{generatedPath}}" target="_blank" ng-if="generatedPath" ng-click="clearDocument()">Document Build Success - Open Document</a>
-
+        <a class="btn btn-success" href="{{generatedDocumentPath}}" target="_blank" ng-if="generatedDocumentPath" ng-click="clearPath()">Document Build Success - Open Document</a>
       </div>
     </div>
-
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        PDF Render 
-
-      </div>
-      <div class="panel-body">
-        <object data="{{pdfContent}}" type="application/pdf" width="100%" height="100%"></object>
-      </div>
-    </div>
+  </div>
 </main>
