@@ -48,4 +48,15 @@ angular.module('bhima.services')
 
   this.sqlDate = this.convertToMysqlDate;
 
+  // Normalize a name:
+  //  - remove all extra whitespace
+  //  - capitalize the first letter of each word in the name (lowercase the rest of each word)
+  this.normalizeName = function (name) {
+    var names = name.trim().split(/\s+/);
+    for(var i = 0; i < names.length; i++) {
+	names[i] = names[i].charAt(0).toUpperCase() + names[i].slice(1).toLowerCase();
+    }
+    return names.join(' ');
+  };
+
 }]);
