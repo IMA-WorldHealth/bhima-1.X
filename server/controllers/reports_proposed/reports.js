@@ -78,6 +78,8 @@ exports.build = function (req, res, next) {
    
     // wkhtmltopdf exceptions not handled
     var pdf = wkhtmltopdf(compiledReport, configuration, function (code, signal) { 
+
+      // Return path to file service
       res.send('/report/serve/' + hash);
     });
   }

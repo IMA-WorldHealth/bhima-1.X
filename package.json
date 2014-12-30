@@ -31,6 +31,7 @@
     "chai": "^1.10.0",
     "compression": "~1.0.2",
     "cookie-parser": "~1.1.0",
+    "dot": "^1.0.3",
     "express-session": "~1.2.0",
     "gulp": "~3.6.2",
     "gulp-clean": "~0.2.4",
@@ -48,6 +49,7 @@
     "mocha": "^2.0.1",
     "numeral": "^1.5.3",
     "qunit": "~0.5.18",
-    "vhost": "^2.0.0"
+    "vhost": "^2.0.0",
+    "wkhtmltopdf": "^0.1.5"
   }
 }

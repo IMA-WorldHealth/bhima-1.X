@@ -26,9 +26,6 @@ exports.compile = function (options) {
     return q.reject('Document requires valid sale reference');
   }
 
-  // TODO This should be provided in the request
-  //var saleId = '1e012f69-c615-4df8-a85c-878099b857c1';
-
   // Query for sale information 
   db.exec(querry.sale, [saleId])
     .then(function (result) { 
