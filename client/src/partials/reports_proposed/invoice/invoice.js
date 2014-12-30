@@ -1,121 +1,98 @@
 angular.module('bhima.controllers')
 .controller('configureInvoice', [
   '$scope', 
-  '$q',
   '$http',
-  '$sce',
-  'appcache',
-  function ($scope, $q, $http, $sce, appcache) { 
-      
+
+  // Prototype document building module, requests document given configuration obejct
+  function ($scope, $http) { 
+    
+    // Configuration objects optionally passed to /report/build - drives configuration UI
     var configuration = { 
       format : {
-        
         options : [ 
-          { 
-            value : 'compact', 
-            label : 'Compact'
-          },
-          { 
-            value : 'standard', 
-            label : 'Standard'
-          }
+          {value : 'compact', label : 'Compact'},
+          {value : 'standard', label : 'Standard'}
         ]
-
       },
-      
       language : { 
-
         options : [
-          { 
-            value : 'en', 
-            label : 'English'
-          },
-          {
-            value : 'fr',
-            label : 'French'
-          }
+          {value : 'en', label : 'English'},
+          {value : 'fr', label : 'French'}
         ]
-      
       },
-    
-      // Could be populated from the currency table
       currency : {
-
         options : [
-          { 
-            value : 'dollars', 
-            label : 'Dollars', 
-          },
-          { 
-            value : 'francs',
-            label : 'Francs'
-          }
+          {value : 'dollars', label : 'Dollars'},
+          {value : 'francs', label : 'Francs'}
         ]
-
       }
     };
   
-    var generatedPath = $scope.generatedPath = null;
-  
+    var serverUtilityPath = '/report/build/';
+    var generatedDocumentPath = null;
     var session = $scope.session = {};
+   
+    // Expose configuration to scope - set module state
     session.building = false;
-
     $scope.configuration = configuration;
 
-    configuration.format.selected = configuration.format.options[0];
-    configuration.language.selected = configuration.language.options[0];
-    configuration.currency.selected = configuration.currency.options[0];
-    
-    console.log('invoice controller initialised');
-    
-    $scope.selectConfiguration = function (key, value) { 
+    // TODO Load default configuration from appcache if it exists before selecting default
+    setDefaultConfiguration();
+        
+    function selectConfiguration (key, value) { 
       configuration[key].selected = value;
-    };
+    }
 
-    $scope.generateDocument = function () { 
-
-      var path = '/report/build/';
-
+    function setDefaultConfiguration () { 
+      selectConfiguration('format', configuration.format.options[0]);
+      selectConfiguration('language', configuration.language.options[0]);
+      selectConfiguration('currency', configuration.currency.options[0]);
+    }
+  
+    // POST configuration object to /report/build/:target
+    function generateDocument () { 
+      var path = serverUtilityPath;
+    
+      // Temporarily set configuration options - this will eventually be passed through post
       path = path.concat(configuration.language.selected.value, '/');
       path = path.concat(configuration.format.selected.value);
-  
+ 
+      // Update state
       session.building = true;
 
       $http.get(path)
       .success(function (result) { 
-        console.log('get request returned', result);
         
+        // Expose generated document path to template
         session.building = false;
-        $scope.generatedPath = result;
-  
-        // Temporary 
-        $http.get(result)
-        .success(function (pdfResult) { 
-      
-          var file = new Blob([pdfResult], {type: 'application/pdf'});
-          var fileURL = URL.createObjectURL(file);
-
-          $scope.pdfContent = $sce.trustAsResourceUrl(fileURL);
-          console.log($scope.pdfContent)
-        });
+        $scope.generatedDocumentPath = result;
       })
       .error(function (code) { 
         session.building = false; 
         
-        // Handle error
+        // TODO Handle error
       });
+    }
 
-    };
+    // Utility method - GET PDF blob displaying embedded object
+    function downloadDocument () { 
+      
+      $http.get(result, {responseType : 'arraybuffer'})
+      .success(function (pdfResult) { 
+        var file = new Blob([pdfResult], {type: 'application/pdf'});
+        var fileURL = URL.createObjectURL(file);
+      
+        // Expose document to scope
+        $scope.pdfContent = $sce.trustAsResourceUrl(fileURL);
+      });
+    }
 
-    $scope.clearDocument = function () { 
-      $scope.generatedPath = null;
-    };
+    function clearPath () { 
+      $scope.generatedDocumentPath = null;
+    }
 
-    // Verify that requested sale exists 
-    
-    // Allow configuration 
-    
-    // Send request for compilation
+    $scope.selectConfiguration = selectConfiguration;
+    $scope.generateDocument = generateDocument;
+    $scope.clearPath = clearPath;
   }
 ]);
-
