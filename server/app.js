@@ -1120,6 +1120,37 @@ app.get('/getItemInConsumption/', function (req, res, next) {
   .done();
 });
 
+app.get('/getNombreMoisStockControl/', function (req, res, next) {
+  var sql = "SELECT COUNT(DISTINCT(MONTH(consumption.date))) AS nb"
+          + " FROM consumption "
+          + " WHERE consumption.date BETWEEN DATE_SUB(CURDATE(),INTERVAL 6 MONTH) AND CURDATE()";
+
+  db.exec(sql)
+  .then(function (result) {
+    console.log(result);
+    res.send(result[0]);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
+app.get('/getDelaiLivraison/:id', function (req, res, next) {
+  var sql = "SELECT CEIL(DATEDIFF(s.entry_date,p.purchase_date)/30) AS dl"
+          + " FROM purchase AS p,stock AS s, purchase_item AS z, inventory AS i"
+          + " WHERE p.uuid=s.purchase_order_uuid"
+          + " AND p.uuid=z.purchase_uuid"
+          + " AND z.inventory_uuid=s.inventory_uuid"
+          + " AND s.inventory_uuid=i.uuid"
+          + " AND i.uuid=" + sanitize.escape(req.params.id);
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result[0]);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+});
+
 // temporary error handling for development!
 process.on('uncaughtException', function (err) {
   console.log('[uncaughtException]', err);
