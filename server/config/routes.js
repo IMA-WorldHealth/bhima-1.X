@@ -54,7 +54,7 @@ exports.initialise = function (app) {
   app.get('/location/detail/:uuid', location.lookupDetail);
  
   // -> Add :route
-  app.get('/report/build/:language/:size', compileReport.build);
+  app.post('/report/build/:route', compileReport.build);
   app.get('/report/serve/:target', compileReport.serve);
   
   app.post('/purchase', createPurchase.execute);

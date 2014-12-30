@@ -1,20 +1,27 @@
-var path        = require('path');
-var fs          = require('fs');
-var q           = require('q');
+var path            = require('path');
+var fs              = require('fs');
+var q               = require('q');
 
 // Import and compile template files
-var dots        = require('dot').process({path : path.join(__dirname, 'templates')});
+var dots            = require('dot').process({path : path.join(__dirname, 'templates')});
 
-var wkhtmltopdf = require('wkhtmltopdf');
-var numeral     = require('numeral');
-var uuid        = require('./../../lib/guid');
-var config      = require('./config');
+var wkhtmltopdf     = require('wkhtmltopdf');
+var uuid            = require('./../../lib/guid');
+var config          = require('./config');
 
-// Model compilation controllers 
-var invoice     = require('./data/invoice');
+// Document contexts
+var invoiceContext  = require('./data/invoice');
 
 // Module configuration 
 var writePath = path.join(__dirname, 'out/');
+
+// Map templates and context compilation to request targets
+var documentHandler = { 
+  invoice : { 
+    template : dots.invoice,
+    context : invoiceContext
+  }
+};
 
 // Perform initial settup
 initialise();
@@ -36,34 +43,34 @@ exports.serve = function (req, res, next) {
   });
 };
 
-// Proof of concept report - invoice data request and template generated
 exports.build = function (req, res, next) {  
+  var target = req.params.route; 
+  var renderTarget = renderPDF;
   
-  /* 
-   * TODO Resource POST request, options parameter passed through POST body
-   * 
-   * var route = req.params.route;
-   * var options = req.body;
-   *
-   * var size = options.size || config.standard;
-   * var language = options.language || defaultReportLanguage;
-   *
-   * var template = map[route].template;
-   * var context = map[route].context;
-   */
+  var handler = documentHandler[target];
+  var options = req.body;
 
-  //var report = map[route]; report.buildContext(options)
-  invoice.buildContext()
-  .then(renderPDF)
-  .catch(function (err) { 
-    console.log(err);
-    res.status(500).end();
-  });
-
+  // Module does not support the requested document
+  if (!handler) { 
+    res.status(500).end('Invalid document target');
+  } else { 
+        
+    handler.context.compile(options)
+    .then(renderTarget)
+    .catch(function (err) { 
+      console.log(err);
+      res.status(500).end(err);
+    });
+    
+  }
+  
   function renderPDF(reportData) { 
     var compiledReport;
     var hash = uuid();
-    var configuration = buildConfiguration(hash, req.params.size); 
+    
+    var format = options.format || 'standard';
+    var language = options.language || 'en';
+    var configuration = buildConfiguration(hash, format); 
     
     // Ensure templates have path data
     reportData.path = reportData.path || __dirname;
@@ -76,7 +83,6 @@ exports.build = function (req, res, next) {
   }
 };
 
-// Utility methods
 // Return configuration object for wkhtmltopdf process
 function buildConfiguration(hash, size) { 
   var context = config[size] || config.standard;

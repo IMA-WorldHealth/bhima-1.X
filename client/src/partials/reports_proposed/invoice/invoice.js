@@ -2,9 +2,10 @@ angular.module('bhima.controllers')
 .controller('configureInvoice', [
   '$scope', 
   '$http',
+  '$routeParams',
 
   // Prototype document building module, requests document given configuration obejct
-  function ($scope, $http) { 
+  function ($scope, $http, $routeParams) { 
     
     // Configuration objects optionally passed to /report/build - drives configuration UI
     var configuration = { 
@@ -28,10 +29,13 @@ angular.module('bhima.controllers')
       }
     };
   
-    var serverUtilityPath = '/report/build/';
+    var serverUtilityPath = '/report/build/invoice';
     var generatedDocumentPath = null;
     var session = $scope.session = {};
-   
+    
+    // TODO Validate sale target is valid before requesting document
+    var target = $routeParams.target; 
+    
     // Expose configuration to scope - set module state
     session.building = false;
     $scope.configuration = configuration;
@@ -52,15 +56,16 @@ angular.module('bhima.controllers')
     // POST configuration object to /report/build/:target
     function generateDocument () { 
       var path = serverUtilityPath;
-    
-      // Temporarily set configuration options - this will eventually be passed through post
-      path = path.concat(configuration.language.selected.value, '/');
-      path = path.concat(configuration.format.selected.value);
- 
+      var configurationObject = {};
+
+      // Temporarily set configuration options - This shouldn't be manually compiled
+      configurationObject.language = configuration.language.selected.value;
+      configurationObject.format = configuration.format.selected.value;
+      configurationObject.sale = target; 
       // Update state
       session.building = true;
 
-      $http.get(path)
+      $http.post(path, configurationObject)
       .success(function (result) { 
         
         // Expose generated document path to template
