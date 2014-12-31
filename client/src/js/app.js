@@ -406,6 +406,22 @@
       controller : 'stock.distribution_service',
       templateUrl : 'partials/stock/exit_service/distribution_service.html'
     })
+    .when('/stock/distribution_record/:depotId', {
+      controller : 'stock.distribution_record',
+      templateUrl : 'partials/stock/distribution_record/distribution_record.html'
+    })
+    .when('/stock/distribution_service_record/:depotId', {
+      controller : 'stock.distribution_service_record',
+      templateUrl : 'partials/stock/distribution_service_record/distribution_service_record.html'
+    })        
+    .when('/stock/reversing_service_distribution/:consumptionId', {
+      controller : 'stock.reversing_service_distribution',
+      templateUrl : 'partials/stock/reversing_service_distribution/reversing_service_distribution.html'
+    }) 
+    .when('/stock/reversing_distribution/:consumptionId', {
+      controller : 'stock.reversing_distribution',
+      templateUrl : 'partials/stock/reversing_distribution/reversing_distribution.html'
+    })            
     .when('/stock/loss/:depotId', {
       controller : 'stock.loss',
       templateUrl : 'partials/stock/loss/loss.html'
