@@ -3,9 +3,10 @@ angular.module('bhima.controllers')
   '$scope', 
   '$http',
   '$routeParams',
+  '$sce',
 
   // Prototype document building module, requests document given configuration obejct
-  function ($scope, $http, $routeParams) { 
+  function ($scope, $http, $routeParams, $sce) { 
     
     // Configuration objects optionally passed to /report/build - drives configuration UI
     var configuration = { 
@@ -43,18 +44,18 @@ angular.module('bhima.controllers')
     // TODO Load default configuration from appcache if it exists before selecting default
     setDefaultConfiguration();
         
-    function selectConfiguration (key, value) { 
+    function selectConfiguration(key, value) { 
       configuration[key].selected = value;
     }
 
-    function setDefaultConfiguration () { 
+    function setDefaultConfiguration() { 
       selectConfiguration('format', configuration.format.options[0]);
       selectConfiguration('language', configuration.language.options[0]);
       selectConfiguration('currency', configuration.currency.options[0]);
     }
   
     // POST configuration object to /report/build/:target
-    function generateDocument () { 
+    function generateDocument() { 
       var path = serverUtilityPath;
       var configurationObject = {};
 
@@ -80,9 +81,9 @@ angular.module('bhima.controllers')
     }
 
     // Utility method - GET PDF blob displaying embedded object
-    function downloadDocument () { 
+    function downloadDocument(url) { 
       
-      $http.get(result, {responseType : 'arraybuffer'})
+      $http.get(url, {responseType : 'arraybuffer'})
       .success(function (pdfResult) { 
         var file = new Blob([pdfResult], {type: 'application/pdf'});
         var fileURL = URL.createObjectURL(file);
@@ -92,7 +93,7 @@ angular.module('bhima.controllers')
       });
     }
 
-    function clearPath () { 
+    function clearPath() { 
       $scope.generatedDocumentPath = null;
     }
 
