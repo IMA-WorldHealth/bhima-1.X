@@ -115,7 +115,7 @@ angular.module('bhima.controllers')
           text            : item.text,
           expiration_date : item.expiration_date,
           initial         : item.initial,
-          current         : item.current
+          current         : item.current - item.consumed
         };
       });
 

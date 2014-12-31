@@ -721,6 +721,7 @@
     "FOUR_ACCOUNT"       : "Four Account",
     "SIX_ACCOUNT"        : "Charge Account",
     "IS_IPR"             : "Is IPR ?",
+    "NUM_ITEMS"          : "Number of Items",     
     "ENTRY_DATE"         : "Entry date",
     "CONFIRMED"          : "Confirmed",
     "SUPPLIER"           : "Supplier"   
@@ -960,7 +961,8 @@
     "AVAILABLE"              : "Available prescriptions",
     "NO_SALE_FOUND"          : "No sale data found for patient",
     "SHOW_ALL_SALES"         : "Showing all sales for patient",
-    "HAS_EXPIRED"            : "has expired and cannot be used, contact the stock administrator"
+    "HAS_EXPIRED"            : "has expired and cannot be used, contact the stock administrator",
+    "NO_DISTRIB_PATIENT"     : "No distribution to patients in this time range"
   },
 
   "DISTRIBUTION_SERVICE" : {
@@ -1820,6 +1822,22 @@
     "EXIT_SERVICE" : {
         "KEY" : "Stock distribution to services"
     },
+    "DISTRIBUTION_RECORDS" : {
+        "KEY"                       : "Distribution patients records",
+        "REVERSING_DISTRIBUTION"    : "Reversing distribution",
+        "REVERSING_TITLE"           : "Cancellation distribution",
+        "SUBMIT"                    : "Submit",
+        "ERROR"                     : "This consumption has been reversed in the stock",
+        "SUCCESS"                   : "Reversing with succes"
+    },
+    "DISTRIBUTION_SERVICE_RECORDS" : {
+        "KEY"                       : "Distribution Services Records",
+        "REVERSING_DISTRIBUTION"    : "Reversing distribution",
+        "REVERSING_TITLE"           : "Cancellation distribution",
+        "SUBMIT"                    : "Submit",
+        "ERROR"                     : "This consumption has been reversed in the stock",
+        "SUCCESS"                   : "Reversing with succes"
+    },         
     "LOSS"     : {
       "KEY"    : "Stock loss",
       "TITLE"  : "Stock loss",

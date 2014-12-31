@@ -776,6 +776,22 @@ create table `consumption_rummage` (
   -- constraint foreign key (`consumption_uuid`) references `consumption` (`uuid`)
 ) engine=innodb;
 
+drop table if exists `consumption_reversing`;
+create table `consumption_reversing` (
+  `uuid`             char(36) not null,
+  `consumption_uuid`        char(36) not null,  
+  `depot_uuid`       char(36) not null,
+  `document_id`       char(36) not null,
+  `date`             date,
+  `tracking_number`  char(50) not null,
+  `quantity`           int,
+  `description`        text,    
+  primary key (`uuid`),
+  key `consumption_uuid` (`consumption_uuid`),
+  key `depot_uuid`   (`depot_uuid`),
+  constraint foreign key (`consumption_uuid`) references `consumption` (`uuid`),
+  constraint foreign key (`depot_uuid`) references `depot` (`uuid`) on delete cascade on update cascade
+) engine=innodb;
 
 
 
