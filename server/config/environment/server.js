@@ -49,6 +49,7 @@ var config = {
       "/inventory",
       "/account_balance",
       "/ledger",
+      "/exchange",
       "/sale",
       "/purchase",
       "/user_session",

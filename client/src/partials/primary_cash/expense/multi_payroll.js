@@ -179,7 +179,9 @@ angular.module('bhima.controllers')
       self.emp = emp;
       getHollyDayCount(emp)
       .then(function (hld){
-        var hl = (hld)? hld.nb : 0;
+        var hl = (hld)? hld.nb : 0; //hl contains the number of hollydays
+        self.datahl = (hld)? hld.data : null;
+
         self.coefhl = (hld)? hld.coeff : 0;
         self.off_day = session.data.off_day;
 
@@ -194,6 +196,7 @@ angular.module('bhima.controllers')
         self.working_day = session.data.max_day - (hl + session.data.off_day);
         self.hollydays = hl;
         self.offdays = session.data.off_day;
+
         self.daily_salary = self.emp.basic_salary / session.data.max_day;
         self.visible = false;
 
@@ -241,9 +244,9 @@ angular.module('bhima.controllers')
         });
 
         taxes.forEach(function (tax) {
-          var dataTaxes = (tax.is_percent) ?
+          var dataTax = (tax.is_percent) ?
           ((self.daily_salary * (self.working_day + self.coefhl + self.offdays)) * tax.value) / 100 : tax.value;
-          self[tax.abbr] = dataTaxes;
+          self[tax.abbr] = dataTax;
         });
 
         var employee_cotisation = 0;
@@ -262,11 +265,10 @@ angular.module('bhima.controllers')
         var taxes = session.model.tax_config.data;
         self.IPR1 = IPR;
         taxes.forEach(function (tax) {
-          var dataTaxes = (tax.is_ipr) ? IPR : tax.value;
-          self[tax.abbr] = dataTaxes;
+          if(tax.is_ipr){
+            self[tax.abbr] = IPR;
+          }
         });
-
-
         self.offdays_cost = getOffDayCost(self);
         def.resolve(self);
       });
@@ -457,9 +459,10 @@ angular.module('bhima.controllers')
       .then(function (res) {
         var hollydays = res;
         if(hollydays.length) {
-          var pp_confs = session.model.paiement_period_conf.data;
-          var soms = [];
-          var config = [];
+          var pp_confs = session.model.paiement_period_conf.data,
+            soms = [],
+            configs = [],
+            dataHollydays = [];
 
           hollydays.forEach(function (h) {
             var nb = 0, nbOf = 0;
@@ -509,8 +512,15 @@ angular.module('bhima.controllers')
               nb += getValue(ppc);
             });
             soms.push(nb);
+            
+            dataHollydays.push({
+              'id_hdays' : h.id,
+              'nbdays' : nb,
+              'percentage' : h.percentage
+            });          
+            
             var valeur = nb * (h.percentage / 100);
-            config.push(valeur);
+            configs.push(valeur);
           });
 
           // TODO
@@ -521,11 +531,11 @@ angular.module('bhima.controllers')
             return x+y;
           }, 0);
 
-          var somConfig = config.reduce(function (x, y) {
+          var somConfig = configs.reduce(function (x, y) {
             return x+y;
           }, 0);
 
-          defer.resolve({nb : som, coeff : somConfig});
+          defer.resolve({nb : som, coeff : somConfig, data : dataHollydays});
         }else{
           defer.resolve(0);
         }
@@ -581,6 +591,9 @@ angular.module('bhima.controllers')
         .then(function () {
           return (packagePay.cc_records.length > 0) ? connect.post('cotisation_paiement', packagePay.cc_records) : $q.when();
         })
+        .then(function () {
+          return (packagePay.hollydaysData.length > 0) ? connect.post('hollyday_paiement', packagePay.hollydaysData) : $q.when();
+        })        
         .then(function (res){
           def.resolve(res);
         })
@@ -602,13 +615,13 @@ angular.module('bhima.controllers')
 
       var rubric_config_list = session.model.rubric_config.data;
       var tax_config_list = session.model.tax_config.data;
-      var cotisation_config_list = session.model.cotisation_config.data;
-
+      var cotisation_config_list = session.model.cotisation_config.data;     
 
       return $q.all(list.map(function (elmt) {
         var rc_records = [];
         var tc_records = [];
         var cc_records = [];
+        var hollydaysData = [];
         var somRub = 0, SomTax = 0, somCot = 0;
 
         cotisation_config_list.forEach(function (cotisation) {
@@ -632,8 +645,7 @@ angular.module('bhima.controllers')
           }
           somRub += change;
         });
-        elmt.net_salary = elmt.net_after_taxe + somRub - (elmt.daily_salary * elmt.off_day) + elmt.offdays_cost;
-
+        elmt.net_salary = elmt.net_after_taxe + somRub - (elmt.daily_salary * elmt.off_day) + elmt.offdays_cost; 
 
         var paiement = {
           uuid : uuid(),
@@ -676,11 +688,23 @@ angular.module('bhima.controllers')
           cc_records.push(record);
         });
 
+        if(elmt.datahl){
+          hollydaysData =  elmt.datahl.map(function (item) {
+            return {
+              hollyday_id : item.id_hdays,
+              hollyday_nbdays : item.nbdays,
+              hollyday_percentage : item.percentage,
+              paiement_uuid : paiement.uuid
+            };
+          });
+        } 
+
         var packagePay = {
           paiement : paiement,
           rc_records : rc_records,
           tc_records : tc_records,
-          cc_records : cc_records
+          cc_records : cc_records,
+          hollydaysData : hollydaysData
         };
 
         var def = $q.defer();

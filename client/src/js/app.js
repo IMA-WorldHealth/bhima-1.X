@@ -203,6 +203,10 @@
       controller: 'report.global_transaction',
       templateUrl: 'partials/reports/global_transaction/global_transaction.html'
     })
+    .when('/reports/balance_mensuelle/', {
+      controller: 'report.balance_mensuelle',
+      templateUrl: 'partials/reports/balance_mensuelle/balance_mensuelle.html'
+    })
     .when('/location', {
       controller : 'location',
       templateUrl: 'partials/location/location.html'
@@ -557,10 +561,20 @@
     .when('/fonction', {
       controller : 'fonction',
       templateUrl : 'partials/fonction/fonction.html'
-    })
+    })  
+    .when('/donor_management/', {
+      controller: 'donor',
+      templateUrl: '/partials/donor_management/donor_management.html'
+    })       
     .when('/reports/operating_account/', {
       controller : 'operating_account',
       templateUrl : 'partials/reports/operating_account/operating_account.html'
+    })
+
+    // Proposed formal report building structure
+    .when('/report/invoice/:target', { 
+      controller : 'configureInvoice', 
+      templateUrl : 'partials/reports_proposed/invoice/invoice.html'
     })
     .otherwise('/');
   }

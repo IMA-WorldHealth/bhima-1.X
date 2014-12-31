@@ -68,7 +68,7 @@ INSERT INTO `unit` VALUES
 (17,'Sale Records','TREE.SALE_RECORDS','Search for a sale',5,0,'/partials/records/sales_records/','/sale_records/'),
 (18,'Cash Box','TREE.CASH','Pay invoices',5,0,'/partials/cash/','/cash'),
 (19,'Register Supplier','TREE.REGISTER_SUPPLIER','',11,0,'/partials/creditor/','/creditor'),
--- (20,'Purchase Order Records','TREE.PURCHASE_ORDER_RECORDS','',5,0,'/partials/records/purchase_order_records','/purchase_records/'),
+(20,'Donor management','TREE.DONOR_MANAGEMENT','',11,0,'/partials/donor_management/','/donor_management/'),
 (21,'Price List','TREE.PRICE_LIST','Configure price lists!',1,0,'/partials/price_list/','/inventory/price_list'),
 (22,'Exchange Rate','TREE.EXCHANGE','Set todays exchange rate!',1,0,'/partials/exchange_rate/','/exchange_rate'),
 (23,'Creditor Groups','TREE.CREDITOR_GRP','',1,0,'/partials/creditor/group/','/creditors/creditor_group'),
@@ -125,7 +125,8 @@ INSERT INTO `unit` VALUES
 (75,'Operating account', 'TREE.OPERATING_ACCOUNT', '', 10, 0, '/partials/reports/operating_account', '/reports/operating_account/'),
 (76,'Exploitation Service', 'TREE.SERVICE_EXPLOITATION', '', 10, 0, '/partials/reports/service_exploitation/', '/reports/service_exploitation/'),
 (77,'Toutes transactions', 'TREE.GLOBAL_TRANSACTION', '', 10, 0, '/partials/reports/global_transaction/', '/reports/global_transaction/'),
-(78,'Employee Standing','TREE.EMPLOYEE_STANDING','',10,0,'/partials/reports/employee_standing/','/reports/employee_standing');
+(78,'Employee Standing','TREE.EMPLOYEE_STANDING','',10,0,'/partials/reports/employee_standing/','/reports/employee_standing'),
+(79,'Balance Mensuelle','TREE.BALANCE_MENSUELLE','',10,0,'/partials/reports/balance_mensuelle/','/reports/balance_mensuelle');
 
 
 -- references language .json files

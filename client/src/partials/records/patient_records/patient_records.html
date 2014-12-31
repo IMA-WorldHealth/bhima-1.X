@@ -102,7 +102,8 @@
           <button 
             class="btn btn-default btn-sm"
             ng-click="session.locationSearch=!session.locationSearch">
-            {{session.locationSearch ? 'Enlever la localisation dans la recherche' : 'Inclure la localisation dans la recherche'}}</button>
+            {{session.locationSearch ? "PATIENT_RECORDS.REMOVE_LOCATION_SEARCH" :  
+            "PATIENT_RECORDS.INCLUDE_LOCATION_SEARCH" | translate }}</button>
           </div>
         </div>
       </div>

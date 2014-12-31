@@ -79,7 +79,7 @@ function submitSaleJournal(saleRecordId, caution, userId) {
 
 function generateSaleRecord(saleRecord, userId) {
   saleRecord.seller_id = userId;
-  return parser.insert('sale', saleRecord);
+  return parser.insert('sale', [saleRecord]);
 }
 
 function generateSaleItems(saleRecordId, saleItems) {

@@ -588,7 +588,7 @@ function expenseReport (params) {
           'FROM `general_ledger` ' +
       'LEFT JOIN `primary_cash_item` ON `primary_cash_item`.`document_uuid` = `general_ledger`.`inv_po_id`  ' +      
         ')' +
-      ') AS `t`, account AS a, transaction_type as o, user as u WHERE `t`.`account_id` = `a`.`id` AND `t`.`origin_id` = `o`.`id` AND `t`.`user_id` = `u`.`id` AND `t`.`account_id`= ?'  
+      ') AS `t`, account AS a, transaction_type as o, user as u WHERE `t`.`account_id` = `a`.`id` AND `t`.`origin_id` = `o`.`id` AND `t`.`user_id` = `u`.`id` AND `t`.`account_id`= ?'   +
       ' AND `t`.`trans_date` >=? AND `t`.`trans_date` <=?;';
 
 
@@ -654,6 +654,70 @@ function allTrans (params){
   return db.exec(requette);
 }
 
+function balanceMensuelle (params){
+  params = JSON.parse(params);
+  var requette, oldTable, currentTable, unionTable,
+      classe = params.classe,
+      periode = params.periode,
+      project = params.project;
+
+  oldTable =
+      '(SELECT `ac`.`account_number`, `ac`.`account_txt`, `t`.`debit`, `t`.`credit`, `t`.`old_debit`, `t`.`old_credit`, `t`.`currency_id` ' +
+      'FROM (' +
+        '(' +
+          'SELECT `posting_journal`.`project_id`, `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, ' +
+            0 + ' AS debit, ' + 0 + ' AS credit, ' +
+            'SUM(`posting_journal`.`debit_equiv`) AS `old_debit`,' +
+            'SUM(`posting_journal`.`credit_equiv`) AS `old_credit`, `posting_journal`.`account_id`, `posting_journal`.`deb_cred_uuid`, `posting_journal`.`currency_id`, ' +
+            '`posting_journal`.`doc_num`, `posting_journal`.`trans_id`, `posting_journal`.`description`, `posting_journal`.`comment` ' +
+          'FROM `posting_journal` WHERE MONTH(`posting_journal`.`trans_date`) < MONTH(?) GROUP BY `posting_journal`.`account_id` ' +
+        ') UNION ALL (' +
+          'SELECT `general_ledger`.`project_id`, `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, '+
+            0 + ' AS credit, ' + 0 + ' AS debit, ' +
+            'SUM(`general_ledger`.`debit_equiv`) AS `old_debit`, ' +
+            'SUM(`general_ledger`.`credit_equiv`) AS `old_credit`, `general_ledger`.`account_id`, `general_ledger`.`deb_cred_uuid`, `general_ledger`.`currency_id`, ' +
+            '`general_ledger`.`doc_num`, `general_ledger`.`trans_id`, `general_ledger`.`description`, `general_ledger`.`comment` ' +
+          'FROM `general_ledger` WHERE MONTH(`general_ledger`.`trans_date`) < MONTH(?) GROUP BY `general_ledger`.`account_id`' +
+        ')' +
+      ') AS `t`, `account` AS `ac`, `period` AS `p` ' + 
+      'WHERE `t`.`account_id` = `ac`.`id` AND `ac`.`classe`=?' + 
+      ' AND MONTH(t.trans_date) < MONTH(?) AND (? BETWEEN `p`.`period_start` AND `p`.`period_stop`) AND `p`.`locked`=0 ' +
+      ' AND t.project_id = ?) ';
+
+  currentTable =
+      '(SELECT `ac`.`account_number`, `ac`.`account_txt`, `t`.`debit`, `t`.`credit`, `t`.`old_debit`, `t`.`old_credit`, `t`.`currency_id` ' +
+      'FROM (' +
+        '(' +
+          'SELECT `posting_journal`.`project_id`, `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, ' +
+            'SUM(`posting_journal`.`debit_equiv`) AS `debit`,' +
+            'SUM(`posting_journal`.`credit_equiv`) AS `credit`, ' +
+            0 + ' AS old_debit, ' + 0 + ' AS old_credit, ' +
+            '`posting_journal`.`account_id`, `posting_journal`.`deb_cred_uuid`, `posting_journal`.`currency_id`, ' +
+            '`posting_journal`.`doc_num`, `posting_journal`.`trans_id`, `posting_journal`.`description`, `posting_journal`.`comment` ' +
+          'FROM `posting_journal` WHERE MONTH(`posting_journal`.`trans_date`) = MONTH(?) GROUP BY `posting_journal`.`account_id` ' +
+        ') UNION ALL (' +
+          'SELECT `general_ledger`.`project_id`, `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, ' +
+            'SUM(`general_ledger`.`debit_equiv`) AS `debit`, ' +
+            'SUM(`general_ledger`.`credit_equiv`) AS `credit`, '+
+            0 + ' AS old_debit, ' + 0 + ' AS old_credit, ' +
+            '`general_ledger`.`account_id`, `general_ledger`.`deb_cred_uuid`, `general_ledger`.`currency_id`, ' +
+            '`general_ledger`.`doc_num`, `general_ledger`.`trans_id`, `general_ledger`.`description`, `general_ledger`.`comment` ' +
+          'FROM `general_ledger` WHERE MONTH(`general_ledger`.`trans_date`) = MONTH(?) GROUP BY `general_ledger`.`account_id`' +
+        ')' +
+      ') AS `t`, `account` AS `ac`, `period` AS `p` ' + 
+      'WHERE `t`.`account_id` = `ac`.`id` AND `ac`.`classe`=?' + 
+      ' AND MONTH(t.trans_date) = MONTH(?) AND (? BETWEEN `p`.`period_start` AND `p`.`period_stop`) AND `p`.`locked`=0 ' +
+      ' AND t.project_id = ?) ';
+
+  unionTable = '(' + oldTable + ' UNION ALL ' + currentTable + ') AS `union` ';
+
+  requette = 'SELECT `union`.`account_number`, `union`.`account_txt`, SUM(`union`.`debit`) AS `debit`, SUM(`union`.`credit`) AS `credit`, SUM(`union`.`old_debit`) AS `old_debit`, SUM(`union`.`old_credit`) AS `old_credit`, `union`.`currency_id` ' +
+           ' FROM ' + unionTable +
+           ' GROUP BY `union`.`account_number`';
+
+  return db.exec(requette, [periode,  periode, classe, periode, periode, project, periode, periode, classe, periode, periode, project]);
+}
+
 function generate(request, params, done) {
   /*summary
   *   Route request for reports, if no report matches given request, return null
@@ -677,7 +741,8 @@ function generate(request, params, done) {
     'transactions'          : transactionsByAccount,
     'income_report'         : incomeReport,
     'expense_report'        : expenseReport,
-    'patient_group'         : require('./reports/patient_group')(db)
+    'patient_group'         : require('./reports/patient_group')(db),
+    'balance_mensuelle'     : balanceMensuelle
   };
 
   route[request](params)
@@ -688,4 +753,4 @@ function generate(request, params, done) {
     done(null, err);
   })
   .done();
-};
+}
