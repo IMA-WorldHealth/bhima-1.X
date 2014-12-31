@@ -1,5 +1,8 @@
 // lib/util/sanitize.js
 
+// FIXME
+//    These are mostly duplicates of util.js.  Remove them from here and
+//    inject util.js into the application where it is needed.
 module.exports = {
 
   // this is not incredibly secure
@@ -14,13 +17,13 @@ module.exports = {
   isFloat : function (f) { return parseFloat(f) !== undefined && ~f.toString().indexOf('.'); },
 
   // this also works for hexadecimal ('0x12')
-  isNumber: function (n) { return !Number.isNaN(Number(i)); },
+  isNumber: function (n) { return !Number.isNaN(Number(n)); },
 
-  isArray: function (arr) { return Object.prototype.toString.call(arr) == '[object Array]'; },
+  isArray: function (arr) { return Object.prototype.toString.call(arr) === '[object Array]'; },
 
-  isString: function (str) { return typeof str == 'string'; },
+  isString: function (str) { return typeof str === 'string'; },
 
-  isObject: function (obj) { return Object.prototype.toString.call(obj) == '[object Object]'; },
+  isObject: function (obj) { return Object.prototype.toString.call(obj) === '[object Object]'; },
 
   // is there a better way to do this?
   isUndefined : function (u) { return u === undefined; },

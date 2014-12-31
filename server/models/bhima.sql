@@ -2,11 +2,8 @@ drop database if exists`bhima`;
 create database `bhima`;
 use `bhima`;
 
--- grant all on `bhima`.* to 'bhima'@'%' identified by 'HISCongo2013';
--- grant all on `bhima`.* to 'bhima'@'localhost' identified by 'HISCongo2013';
-grant all privileges on *.* to 'bhima'@'%' identified by 'HISCongo2013' with grant option;
+-- grant all privileges on *.* to 'bhima'@'%' identified by 'HISCongo2013' with grant option;
 grant all privileges on *.* to 'bhima'@'localhost' identified by 'HISCongo2013' with grant option;
--- grant super on *.* to 'bhima'@'%';
 flush privileges;
 
 drop table if exists `language`;
@@ -16,7 +13,6 @@ create table `language` (
   `key`       text not null,
   primary key (`id`)
 );
-
 
 drop table if exists `currency`;
 create table `currency` (
@@ -1214,7 +1210,7 @@ create table `purchase` (
   `currency_id`       tinyint unsigned not null,
   `creditor_uuid`     char(36) not null,
   `purchaser_id`      smallint unsigned not null,
-  `employee_id`       int unsigned not null,
+  `employee_id`       int unsigned null,
   `discount`          mediumint unsigned default '0',
   `purchase_date`     date not null,
   `timestamp`         timestamp default current_timestamp,
@@ -1223,6 +1219,7 @@ create table `purchase` (
   `paid_uuid`         char(36),
   `confirmed`         boolean not null default 0,
   `closed`            boolean not null default 0,
+  `is_direct`         boolean not null default 0,
   primary key (`uuid`),
   key `project_id` (`project_id`),
   key `reference` (`reference`),
@@ -1515,6 +1512,17 @@ create table `hollyday` (
   key `employee_id` (`employee_id`),
   constraint foreign key (`employee_id`) references `employee` (`id`)
 ) engine=innodb;
+
+drop table if exists `hollyday_paiement`;
+create table `hollyday_paiement` (
+  `hollyday_id`             int unsigned not null,
+  `hollyday_nbdays`         int unsigned not null,
+  `hollyday_percentage`     float default 0,
+  `paiement_uuid`           char(36) not null,
+  constraint foreign key (`paiement_uuid`) references `paiement` (`uuid`),
+  constraint foreign key (`hollyday_id`) references `hollyday` (`id`)
+) engine=innodb;
+
 
 drop table if exists `taxe_ipr`;
 create table `taxe_ipr` (
