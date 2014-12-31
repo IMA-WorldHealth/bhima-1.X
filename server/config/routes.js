@@ -30,6 +30,8 @@ var tree            = require('./../controllers/tree');
 
 var uncategorised   = require('./../controllers/uncategorised');
 
+var compileReport   = require('./../controllers/reports_proposed/reports.js');
+
 exports.initialise = function (app) { 
   console.log('[config/routes] Configure routes');
   
@@ -50,7 +52,11 @@ exports.initialise = function (app) {
   app.get('/location/sector/:uuid', location.lookupSector);
   app.get('/location/province/:uuid', location.lookupProvince);
   app.get('/location/detail/:uuid', location.lookupDetail);
-
+ 
+  // -> Add :route
+  app.post('/report/build/:route', compileReport.build);
+  app.get('/report/serve/:target', compileReport.serve);
+  
   app.post('/purchase', createPurchase.execute);
   app.post('/sale/', createSale.execute);
   app.post('/service_dist/', serviceDist.execute);
