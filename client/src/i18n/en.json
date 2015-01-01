@@ -810,6 +810,7 @@
     "FISCAL_YEAR"               : "Fiscal Year",
     "PATIENT_REG"               : "Patient Registration",
     "PATIENT_SEARCH"            : "Patient Search",
+    "EDIT_PATIENT"              : "Edit Patient Information",
     "SALES"                     : "Sales",
     "SALE_RECORDS"              : "Sale Records",
     "PURCHASE_ORDER"            : "Purchase Order",
@@ -1073,6 +1074,10 @@
     "CREATE_SUPPLIER"   : "Create Supplier",
     "SUPPLIER"          : "supplier",
     "EDIT_SUPPLIER"     : "Edit"
+  },
+
+  "PATIENT_EDIT"               : {
+      "TITLE"                  : "Edit Patient Information:"
   },
 
   "PATIENT_REG"                : {
