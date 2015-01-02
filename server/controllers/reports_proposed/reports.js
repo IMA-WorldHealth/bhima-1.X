@@ -11,7 +11,7 @@ var config          = require('./config');
 
 // Document contexts
 var invoiceContext  = require('./data/invoice');
-var balanceContext  = require('./data/balance');
+var balanceContext  = require('./data/balance_sheet');
 
 // Module configuration 
 var writePath = path.join(__dirname, 'out/');
@@ -62,11 +62,7 @@ exports.build = function (req, res, next) {
         
     handler.context.compile(options)
     .then(renderTarget)
-    .catch(function (err) { 
-      console.log(err);
-      res.status(500).end('Build failed');
-    });
-    
+    .catch(next);
   }
   
   function renderPDF(reportData) { 
@@ -81,6 +77,8 @@ exports.build = function (req, res, next) {
     reportData.path = reportData.path || __dirname;
     compiledReport = handler.template(reportData);
     
+    console.log('completed report data', reportData);
+
     // wkhtmltopdf exceptions not handled
     var pdf = wkhtmltopdf(compiledReport, configuration, function (code, signal) { 
 

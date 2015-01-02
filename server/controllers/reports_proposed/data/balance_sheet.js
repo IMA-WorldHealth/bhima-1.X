@@ -1,7 +1,7 @@
-// reports/balance_sheet.js
+// reports_proposed/data/balance_sheet.js
 // Collects and aggregates data for the enterprise balance sheet
-
-var db = require('../../lib/db');
+var q   = require('q');
+var db  = require('../../../lib/db');
 
 // Constant: root account id
 var ROOT_ACCOUNT_ID = 0;
@@ -47,10 +47,13 @@ function aggregate(value, account) {
 }
 
 // expose the http route
-module.exports = function (req, res, next) {
+exports.compile = function (options) {
   'use strict';
-
-  var fiscalYearId = req.body.fiscalYearId;
+  
+  var deferred = q.defer();
+  var context = {};
+  var fiscalYearId = options.fiscalYearId;
+  
 
   var sql =
     'SELECT account.id, account.account_number, account.account_type_id, account.parent, totals.balance, totals.period_id ' +
@@ -67,7 +70,9 @@ module.exports = function (req, res, next) {
 
     // pull out the account type id for the balance accounts
     var balanceId = rows[0].id;
+    
 
+    console.log('querrying with', fiscalYearId, balanceId);
     return db.exec(sql, [fiscalYearId, balanceId]);
   })
   .then(function (accounts) {
@@ -82,10 +87,12 @@ module.exports = function (req, res, next) {
     accountTree.forEach(function (account) {
       account.balance = account.children.reduce(aggregate, 0);
     });
-
-    // TODO use this to render a report and serve it
-
+    
+    context.data = accountTree;
+    deferred.resolve(context);
   })
-  .catch(next)
+  .catch(deferred.reject)
   .done();
+
+  return deferred.promise;
 };
