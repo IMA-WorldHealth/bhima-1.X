@@ -7,4 +7,4 @@ function uuid () {
   });
 }
 
-exports.uuid = uuid;
+module.exports = uuid;
