@@ -1,6 +1,11 @@
 // Utility for generating fake patients in the database.
 // USAGE: node patient.js
 
+// TODO
+//   Each patient really needs to have one or multiple visits
+//   associated with them.  This can either be done from this
+//   utility or by a separate visit.js utility.
+
 var q = require('q');
 var fs = require('fs');
 var uuid = require('./uuid'); // uuid generator
