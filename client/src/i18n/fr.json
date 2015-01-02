@@ -1238,7 +1238,9 @@
   },
 
   "PATIENT_EDIT"               : {
-      "TITLE"                  : "Modifier les Détails du Patient:"
+      "TITLE"                  : "Modifier les Détails du Patient:",
+      "UPDATE_PATIENT"         : "Réviser Patient",
+      "CHANGE_DEBITOR_GROUP"   : "Modifier Groupe de Débiteurs"
   },
 
   "PATIENT_REG"                : {
