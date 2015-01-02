@@ -11,6 +11,7 @@ var config          = require('./config');
 
 // Document contexts
 var invoiceContext  = require('./data/invoice');
+var balanceContext  = require('./data/balance');
 
 // Module configuration 
 var writePath = path.join(__dirname, 'out/');
@@ -20,6 +21,10 @@ var documentHandler = {
   invoice : { 
     template : dots.invoice,
     context : invoiceContext
+  }, 
+  balance : { 
+    template : dots.balance_sheet,
+    context : balanceContext
   }
 };
 
@@ -59,7 +64,7 @@ exports.build = function (req, res, next) {
     .then(renderTarget)
     .catch(function (err) { 
       console.log(err);
-      res.status(500).end(err);
+      res.status(500).end('Build failed');
     });
     
   }
@@ -74,8 +79,8 @@ exports.build = function (req, res, next) {
     
     // Ensure templates have path data
     reportData.path = reportData.path || __dirname;
-    compiledReport = dots.invoice(reportData);
-   
+    compiledReport = handler.template(reportData);
+    
     // wkhtmltopdf exceptions not handled
     var pdf = wkhtmltopdf(compiledReport, configuration, function (code, signal) { 
 
