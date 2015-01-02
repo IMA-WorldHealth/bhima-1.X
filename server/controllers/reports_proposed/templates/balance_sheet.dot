@@ -11,9 +11,9 @@
   <section id="letterhead"></section>
 
   <section id="title" class="center">
-      <h6>IMCK Hopital Bon Berger</h6>
-      <h6>Balance Sheet</h6>
-      <h6>As of January 2 2015</h6>
+      <h5>IMCK Hopital Bon Berger</h5>
+      <h5>Balance Sheet</h5>
+      <h5>As of January 2nd 2015</h5>
   </section>
   
   <section>
@@ -24,15 +24,13 @@
           <th>Total</th>
         </tr>
       </thead>
+
+      <tbody>
+        <tr>
+          <td>Account Name</td>
+          <td>Balance</td>
+        </tr>
+      </tbody>
     </table>
   </section>
-  
-  <!--div class="row">
-    <div class="six columns">
-      <h4>Balance Sheet</h4>    
-    </div>
-    <div class="six columns">
-      <h4>Balance Sheet</h4>    
-    </div>
-  </div-->
 </body>

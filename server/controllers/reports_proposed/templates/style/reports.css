@@ -2,12 +2,15 @@ body {
   font-size : 12px;
 }
 
+table {
+  width : 100%;
+}
+
 .invoice {
   border-collapse : collapse;
   border-spacing : 0;
   border : 1px solid #9F9F9F;
   border-top : 0;
-  width      : 100%;
 }
 
 .invoice thead > tr > th {
