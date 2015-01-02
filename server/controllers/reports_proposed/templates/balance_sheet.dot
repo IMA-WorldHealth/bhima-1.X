@@ -1,0 +1,38 @@
+<head>
+  
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/normalize.css">
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/skeleton.css">
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/reports.css">
+
+</head>
+
+<body>
+
+  <section id="letterhead"></section>
+
+  <section id="title" class="center">
+      <h6>IMCK Hopital Bon Berger</h6>
+      <h6>Balance Sheet</h6>
+      <h6>As of January 2 2015</h6>
+  </section>
+  
+  <section>
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>Total</th>
+        </tr>
+      </thead>
+    </table>
+  </section>
+  
+  <!--div class="row">
+    <div class="six columns">
+      <h4>Balance Sheet</h4>    
+    </div>
+    <div class="six columns">
+      <h4>Balance Sheet</h4>    
+    </div>
+  </div-->
+</body>
