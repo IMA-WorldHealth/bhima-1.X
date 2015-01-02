@@ -742,7 +742,8 @@ function generate(request, params, done) {
     'income_report'         : incomeReport,
     'expense_report'        : expenseReport,
     'patient_group'         : require('./reports/patient_group')(db),
-    'balance_mensuelle'     : balanceMensuelle
+    'balance_mensuelle'     : balanceMensuelle,
+    'balance_sheet'         : require('./reports/balance_sheet')
   };
 
   route[request](params)
