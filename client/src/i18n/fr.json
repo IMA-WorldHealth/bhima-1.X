@@ -972,7 +972,7 @@
     "FISCAL_YEAR"               : "Année Fiscale",
     "PATIENT_REG"               : "Enregistrement Patients",
     "PATIENT_SEARCH"            : "Recherche des Patients",
-    "EDIT_PATIENT"              : "Modifier les Données du Patient",
+    "EDIT_PATIENT"              : "Modifier les Détails du Patient",
     "SALES"                     : "Ventes",
     "SALE_RECORDS"              : "Historique Ventes",
     "PURCHASE_ORDER"            : "Bon de Commande",
@@ -1238,7 +1238,7 @@
   },
 
   "PATIENT_EDIT"               : {
-      "TITLE"                  : "Modifier les Données du Patient:"
+      "TITLE"                  : "Modifier les Détails du Patient:"
   },
 
   "PATIENT_REG"                : {
