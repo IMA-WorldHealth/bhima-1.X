@@ -53,17 +53,21 @@ exports.compile = function (options) {
   var deferred = q.defer();
   var context = {};
   var fiscalYearId = options.fiscalYearId;
+
+  // TODO Query for balance and title account IDs
+  var balanceAccountId = 2;
+  var titleAccountId = 3; 
   
 
   var sql =
-    'SELECT account.id, account.account_number, account.account_type_id, account.parent, totals.balance, totals.period_id ' +
+    'SELECT account.id, account.account_number, account.account_txt, account.account_type_id, account.parent, totals.balance, totals.period_id ' +
     'FROM account LEFT JOIN (' +
       'SELECT period_total.account_id, SUM(period_total.debit - period_total.credit) as balance, period_total.period_id ' +
       'FROM period_total ' +
       'WHERE period_total.fiscal_year_id = ? ' +
       'GROUP BY period_total.account_id ' +
     ') AS totals ON totals.account_id = account.id ' +
-    'WHERE account.account_type_id = ?;';
+    'WHERE account.account_type_id IN (?, ?);';
 
   db.exec('SELECT id FROM account_type WHERE type="balance";')
   .then(function (rows) {
@@ -71,9 +75,7 @@ exports.compile = function (options) {
     // pull out the account type id for the balance accounts
     var balanceId = rows[0].id;
     
-
-    console.log('querrying with', fiscalYearId, balanceId);
-    return db.exec(sql, [fiscalYearId, balanceId]);
+    return db.exec(sql, [fiscalYearId, balanceAccountId, titleAccountId]);
   })
   .then(function (accounts) {
     var accountTree;

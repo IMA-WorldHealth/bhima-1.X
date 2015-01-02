@@ -26,10 +26,22 @@
       </thead>
 
       <tbody>
+      
+      {{ function displayRow(accounts) { 
+          accounts.forEach(function (line) {  }}
         <tr>
-          <td>Account Name</td>
-          <td>Balance</td>
-        </tr>
+          <td style="padding-left: {{=line.depth * 50}}px;">{{=line.account_txt}}</td>
+          <td>{{=line.balance}}</td>
+        </tr> 
+
+      {{ if (line.children.length) displayRow(line.children); }}
+      
+      {{ }); }}
+      {{ } }}
+
+      {{ displayRow(it.data); }}
+
+
       </tbody>
     </table>
   </section>
