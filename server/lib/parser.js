@@ -256,7 +256,14 @@ function escapeWhereCondition(condition) {
 // the proper query.
 function mkColumns(table /* String */, columns /* Array */) {
   return columns.map(function (col) {
-    return table + '.' + col;
+    // Handle aliasing
+    if (col.indexOf('::') < 0) {
+      return table + '.' + col;
+      }
+    else {
+      var cparts = col.split('::');
+      return table + '.' + cparts[0] + ' as ' + cparts[1];
+    }
   })
   .join(', ');
 }
