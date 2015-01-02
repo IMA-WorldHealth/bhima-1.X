@@ -35,15 +35,15 @@ exports.serve = function (req, res, next) {
   var target = req.params.target;
   var options = {root : writePath};
   
-  res.sendFile(target.concat('.pdf'), options, function (err) { 
+  res.sendFile(target.concat('.pdf'), options, function (err, res) { 
     if (err) { 
       res.status(err.status).end();
     } else { 
-
+  
       // Delete (unlink) served file
-      fs.unlink(path.join(__dirname, 'out/').concat(target, '.pdf'), function (err) { 
+      /*fs.unlink(path.join(__dirname, 'out/').concat(target, '.pdf'), function (err) { 
         if (err) throw err;
-      });
+      });*/
     }
   });
 };
@@ -76,12 +76,10 @@ exports.build = function (req, res, next) {
     // Ensure templates have path data
     reportData.path = reportData.path || __dirname;
     compiledReport = handler.template(reportData);
-    
-    console.log('completed report data', reportData);
 
     // wkhtmltopdf exceptions not handled
-    var pdf = wkhtmltopdf(compiledReport, configuration, function (code, signal) { 
-
+    var pdf = wkhtmltopdf(compiledReport, configuration, function (code, signal, a) { 
+      
       // Return path to file service
       res.send('/report/serve/' + hash);
     });
