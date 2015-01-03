@@ -1076,10 +1076,11 @@
     "EDIT_SUPPLIER"     : "Edit"
   },
 
-  "PATIENT_EDIT"               : {
-      "TITLE"                  : "Edit Patient Details:",
-      "UPDATE_PATIENT"         : "Update Patient",
-      "CHANGE_DEBITOR_GROUP"   : "Change Debitor Group"
+  "PATIENT_EDIT"             : {
+    "TITLE"                  : "Edit Patient Details:",
+    "UPDATE_PATIENT"         : "Update Patient",
+    "CHANGE_DEBITOR_GROUP"   : "Change Debitor Group",
+    "UPDATE_SUCCESS"         : "Patient details updated"
   },
 
   "PATIENT_REG"                : {

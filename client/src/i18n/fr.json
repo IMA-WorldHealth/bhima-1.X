@@ -1237,10 +1237,11 @@
     "EDIT_SUPPLIER"     : "Editer"
   },
 
-  "PATIENT_EDIT"               : {
-      "TITLE"                  : "Modifier les Détails du Patient:",
-      "UPDATE_PATIENT"         : "Réviser Patient",
-      "CHANGE_DEBITOR_GROUP"   : "Modifier Groupe de Débiteurs"
+  "PATIENT_EDIT"             : {
+    "TITLE"                  : "Modifier les Détails du Patient:",
+    "UPDATE_PATIENT"         : "Réviser Patient",
+    "CHANGE_DEBITOR_GROUP"   : "Modifier Groupe de Débiteurs",
+    "UPDATE_SUCCESS"         : "Détails du patient mis à jour"
   },
 
   "PATIENT_REG"                : {
