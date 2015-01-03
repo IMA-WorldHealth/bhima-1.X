@@ -10,10 +10,16 @@ angular.module('bhima.controllers')
   'appstate',
   function ($scope, $routeParams, $translate, connect, validate, messenger, util, appstate) {
     var dependencies = {},
+        original_patient_data = null,
         patient_uuid = $scope.patient_uuid = $routeParams.patientID,
-        session = $scope.session = {};
-
-    session.mode = 'edit';
+        session = $scope.session = {},
+        editable_fields = [
+	  'first_name', 'last_name', 'dob', 'sex', 'father_name', 'mother_name',
+	  'profession', 'employer', 'marital_status', 'spouse', 'spouse_profession', 'spouse_employer',
+	  'religion', 'phone', 'email', 'addr_1', 'origin_location_id', 'current_location_id'
+	  ];
+    
+    session.mode = 'search';
 
     session.timestamp = new Date();
     session.current_year = session.timestamp.getFullYear();
@@ -58,16 +64,7 @@ angular.module('bhima.controllers')
         identifier : 'uuid',
 	tables : {
 	  'patient' : {
-	    columns : ['uuid', 'reference',
-		       'first_name', 'last_name', 'dob', 'sex',
-		       'father_name', 'mother_name',
-		       'profession', 'employer',
-		       'marital_status', 'spouse', 'spouse_profession', 'spouse_employer',
-		       'religion',
-		       'phone', 'email', 'addr_1',
-		       'origin_location_id', 'current_location_id',
-		       'registration_date'
-		      ]
+	    columns : editable_fields.concat(['uuid', 'reference', 'registration_date'])
 	  },
 	  'debitor' : { 
 	    columns : ['group_uuid::debitor_group_id', 'text::debitor_name']
@@ -104,6 +101,7 @@ angular.module('bhima.controllers')
     };
 
     $scope.setOriginLocation = function (uuid) {
+      // TODO: Switch from session.originLocationUuid to patient
       // ??? $scope.patient.origin_location_id = uuid;
       session.originLocationUuid = uuid;
     };
@@ -151,14 +149,14 @@ angular.module('bhima.controllers')
 
       if (year) {
         if (isNaN(year)) {
-	  // ??? Probably not necessary any more since the form only allows digits
+	  // TODO: Probably not necessary any more since the form only allows digits ???
           validation.dates.flag = validation.dates.tests.type;
           return true;
         }
 
         // Sensible year limits - may need to change to accomodate legacy patients
         if (year > session.current_year || year < 1900) {
-	  // ??? Maybe not necessary any more since the form/angular validates Date on the fly
+	  // TODO: Maybe not necessary any more since the form/angular validates Date on the fly ???
           validation.dates.flag = validation.dates.tests.limit;
           return true;
         }
@@ -207,6 +205,13 @@ angular.module('bhima.controllers')
       delete patient.project_abbr;
       delete patient.hr_id;
 
+      // Enable blank overwrites
+      editable_fields.forEach(function (fname) {
+	if (original_patient_data[fname] && !(patient[fname])) {
+	  patient[fname] = null;
+	}
+      });
+
       // Save the patient data
       connect.put('patient', [patient], ['uuid'])
 	.then(function () {
@@ -220,9 +225,23 @@ angular.module('bhima.controllers')
       session.mode = 'edit';
     };
 
+    $scope.initialiseEditing = function initialiseEditing (selectedPatient) {
+      if (selectedPatient && 'uuid' in selectedPatient && selectedPatient.uuid) {
+        patient_uuid = $scope.patient_uuid = selectedPatient.uuid;
+	dependencies.patient.query.where[0] = 'patient.uuid=' + patient_uuid;
+	validate.process(dependencies)
+	  .then(startup);
+	session.mode = 'edit';
+      }
+      else {
+	messenger.danger($translate('ERR_MISSING'));
+      }
+    };
 
     function startup (models) {
       var patient = $scope.patient = models.patient.data[0];
+      original_patient_data = angular.copy(patient);
+
       patient.dob = new Date(patient.dob);
       patient.hr_id = patient.project_abbr.concat(patient.reference);
 
@@ -237,7 +256,9 @@ angular.module('bhima.controllers')
 
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
+      session.mode = 'search';
       if (patient_uuid) {
+	session.mode = 'edit';
 	validate.process(dependencies)
 	  .then(startup);
       }
