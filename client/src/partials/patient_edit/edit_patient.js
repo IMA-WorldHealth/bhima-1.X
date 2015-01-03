@@ -135,7 +135,7 @@ angular.module('bhima.controllers')
       return false;
     }
 
-    // Conveluted date validation
+    // Convoluted date validation
     function validateDates() {
       validation.dates.flag = false;
 
@@ -185,8 +185,8 @@ angular.module('bhima.controllers')
       console.log(patient);
 
       // Update the locations
-      patient.current_location_id = session.originLocationUuid;
-      patient.origin_location_id = session.currentLocationUuid;
+      patient.origin_location_id = session.originLocationUuid;
+      patient.current_location_id = session.currentLocationUuid;
 
       // Make sure the DOB is in SQL format
       patient.dob = util.sqlDate(patient.dob);
