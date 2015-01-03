@@ -64,7 +64,7 @@ angular.module('bhima.controllers')
 		       'profession', 'employer',
 		       'marital_status', 'spouse', 'spouse_profession', 'spouse_employer',
 		       'religion',
-		       'phone', 'email', 'addr_1','addr_2',
+		       'phone', 'email', 'addr_1',
 		       'origin_location_id', 'current_location_id',
 		       'registration_date'
 		      ]
@@ -181,6 +181,12 @@ angular.module('bhima.controllers')
 
     $scope.updatePatient = function () {
       var patient = connect.clean(angular.copy($scope.patient));
+
+      console.log(patient);
+
+      // Update the locations
+      patient.current_location_id = session.originLocationUuid;
+      patient.origin_location_id = session.currentLocationUuid;
 
       // Make sure the DOB is in SQL format
       patient.dob = util.sqlDate(patient.dob);
