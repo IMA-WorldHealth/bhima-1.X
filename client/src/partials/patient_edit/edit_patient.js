@@ -104,10 +104,12 @@ angular.module('bhima.controllers')
     };
 
     $scope.setOriginLocation = function (uuid) {
+      // ??? $scope.patient.origin_location_id = uuid;
       session.originLocationUuid = uuid;
     };
     
     $scope.setCurrentLocation = function (uuid) {
+      // ??? $scope.patient.current_location_id = uuid;
       session.currentLocationUuid = uuid;
     };
 
@@ -182,8 +184,6 @@ angular.module('bhima.controllers')
     $scope.updatePatient = function () {
       var patient = connect.clean(angular.copy($scope.patient));
 
-      console.log(patient);
-
       // Update the locations
       patient.origin_location_id = session.originLocationUuid;
       patient.current_location_id = session.currentLocationUuid;
@@ -225,6 +225,12 @@ angular.module('bhima.controllers')
       var patient = $scope.patient = models.patient.data[0];
       patient.dob = new Date(patient.dob);
       patient.hr_id = patient.project_abbr.concat(patient.reference);
+
+      $scope.initialOriginLocation = patient.origin_location_id;
+      $scope.setOriginLocation(patient.origin_location_id);
+
+      $scope.initialCurrentLocation = patient.current_location_id;
+      $scope.setCurrentLocation(patient.current_location_id);
 
       $scope.debtorGroup = models.debtorGroup;
     }

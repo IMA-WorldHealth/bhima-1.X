@@ -1,5 +1,5 @@
 <header data-header>
-  {{ "PATIENT_EDIT.TITLE" | translate }} <small>{{ patient.first_name }} {{ patient.last_name }} {{ patient.addr_1 }}</small>
+  {{ "PATIENT_EDIT.TITLE" | translate }} <small>{{ patient.first_name }} {{ patient.last_name }}</small>
 </header>
 
 <main>
@@ -89,7 +89,7 @@
                       <!-- Temporary required work around -->
                       <legend>{{ "LOCATION.ORIGIN" | translate }} <small style="color : red;">*</small></legend>
 
-                      <div location-select select-village="setOriginLocation"></div>
+                      <div location-select select-village="setOriginLocation" initial-location="initialOriginLocation"></div>
                     </fieldset>
                   </div>
 
@@ -99,7 +99,7 @@
                       <!-- Temporary required work around -->
                       <legend> {{ "LOCATION.CURRENT" | translate }} <small style="color : red;">*</small></legend>
 
-                      <div location-select select-village="setCurrentLocation"></div>
+                      <div location-select select-village="setCurrentLocation" initial-location="initialCurrentLocation"></div>
                     </fieldset>
                   </div>
                 </fieldset>
