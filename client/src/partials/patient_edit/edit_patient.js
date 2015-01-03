@@ -10,10 +10,10 @@ angular.module('bhima.controllers')
   'appstate',
   function ($scope, $routeParams, $translate, connect, validate, messenger, util, appstate) {
     var dependencies = {},
-        original_patient_data = null,
-        patient_uuid = $scope.patient_uuid = $routeParams.patientID,
+        originalPatientData = null,
+        patientUuid = $scope.patientUuid = $routeParams.patientID,
         session = $scope.session = {},
-        editable_fields = [
+        editableFields = [
 	  'first_name', 'last_name', 'dob', 'sex', 'father_name', 'mother_name',
 	  'profession', 'employer', 'marital_status', 'spouse', 'spouse_profession', 'spouse_employer',
 	  'religion', 'phone', 'email', 'addr_1', 'origin_location_id', 'current_location_id'
@@ -22,7 +22,7 @@ angular.module('bhima.controllers')
     session.mode = 'search';
 
     session.timestamp = new Date();
-    session.current_year = session.timestamp.getFullYear();
+    session.currentYear = session.timestamp.getFullYear();
 
     session.originLocationUuid = null;
     session.currentLocationUuid = null;
@@ -64,7 +64,7 @@ angular.module('bhima.controllers')
         identifier : 'uuid',
 	tables : {
 	  'patient' : {
-	    columns : editable_fields.concat(['uuid', 'reference', 'registration_date'])
+	    columns : editableFields.concat(['uuid', 'reference', 'registration_date'])
 	  },
 	  'debitor' : { 
 	    columns : ['group_uuid::debitor_group_id', 'text::debitor_name']
@@ -80,7 +80,7 @@ angular.module('bhima.controllers')
 		 'debitor.group_uuid=debitor_group.uuid',
 		 'patient.project_id=project.id'
 	       ],
-	where : [ 'patient.uuid=' +  patient_uuid ]
+	where : [ 'patient.uuid=' +  patientUuid ]
       }
     };
 
@@ -155,7 +155,7 @@ angular.module('bhima.controllers')
         }
 
         // Sensible year limits - may need to change to accomodate legacy patients
-        if (year > session.current_year || year < 1900) {
+        if (year > session.currentYear || year < 1900) {
 	  // TODO: Maybe not necessary any more since the form/angular validates Date on the fly ???
           validation.dates.flag = validation.dates.tests.limit;
           return true;
@@ -206,8 +206,8 @@ angular.module('bhima.controllers')
       delete patient.hr_id;
 
       // Enable blank overwrites
-      editable_fields.forEach(function (fname) {
-	if (original_patient_data[fname] && !(patient[fname])) {
+      editableFields.forEach(function (fname) {
+	if (originalPatientData[fname] && !(patient[fname])) {
 	  patient[fname] = null;
 	}
       });
@@ -227,20 +227,21 @@ angular.module('bhima.controllers')
 
     $scope.initialiseEditing = function initialiseEditing (selectedPatient) {
       if (selectedPatient && 'uuid' in selectedPatient && selectedPatient.uuid) {
-        patient_uuid = $scope.patient_uuid = selectedPatient.uuid;
-	dependencies.patient.query.where[0] = 'patient.uuid=' + patient_uuid;
+        patientUuid = $scope.patientUuid = selectedPatient.uuid;
+	dependencies.patient.query.where[0] = 'patient.uuid=' + patientUuid;
 	validate.process(dependencies)
 	  .then(startup);
 	session.mode = 'edit';
       }
       else {
-	messenger.danger($translate('ERR_MISSING'));
+	// TODO: Do we need a translation for an internal/hopefully-rare error ???
+	messenger.danger($translate('PATIENT_EDIT.ERROR_MISSING_UUID'));
       }
     };
 
     function startup (models) {
       var patient = $scope.patient = models.patient.data[0];
-      original_patient_data = angular.copy(patient);
+      originalPatientData = angular.copy(patient);
 
       patient.dob = new Date(patient.dob);
       patient.hr_id = patient.project_abbr.concat(patient.reference);
@@ -257,7 +258,7 @@ angular.module('bhima.controllers')
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
       session.mode = 'search';
-      if (patient_uuid) {
+      if (patientUuid) {
 	session.mode = 'edit';
 	validate.process(dependencies)
 	  .then(startup);
