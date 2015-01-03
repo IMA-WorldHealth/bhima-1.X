@@ -60,7 +60,22 @@
                         </label>
                       </div>
                     </div>
-                  </div>
+                  </div> <!-- form group -->
+
+                  <div class="form-group">
+                    <label class="control-label col-xs-3"> {{ "INVOICE.PATIENT_ID" | translate }}</label>
+                    <div class="col-xs-9">
+		      <label>{{ patient.hr_id }}</label>
+		    </div> 
+		  </div> <!-- form group -->
+
+                  <div class="form-group">
+                    <label class="control-label col-xs-3"> {{ "INVOICE.DATE_REGISTRATION" | translate }}</label>
+                    <div class="col-xs-9">
+		      <label>{{ patient.registration_date }}</label>
+		    </div> 
+		  </div> <!-- form group -->
+
                 </fieldset>
               </form>
 
@@ -133,7 +148,7 @@
 
                 <div class="form-group">
                   <label for="email">{{ "PATIENT_REG.AVENUE" | translate }}</label>
-                  <input type="email" class="form-bhima" id="avenue" ng-model="patient.address_1">
+                  <input type="email" class="form-bhima" id="avenue" ng-model="patient.addr_1">
                 </div>
 
                 <div class="form-group">

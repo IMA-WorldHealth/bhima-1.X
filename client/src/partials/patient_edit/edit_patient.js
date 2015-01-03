@@ -3,14 +3,15 @@ angular.module('bhima.controllers')
   '$scope',
   '$routeParams',  
   '$translate',
+  'connect',
   'validate',
   'messenger',
   'util',
   'appstate',
-  function ($scope, $routeParams, $translate, validate, messenger, util, appstate) {
+  function ($scope, $routeParams, $translate, connect, validate, messenger, util, appstate) {
     var dependencies = {},
-    patient_uuid = $scope.patient_uuid = $routeParams.patientID,
-    session = $scope.session = {};
+        patient_uuid = $scope.patient_uuid = $routeParams.patientID,
+        session = $scope.session = {};
 
     session.mode = 'edit';
 
@@ -57,27 +58,30 @@ angular.module('bhima.controllers')
         identifier : 'uuid',
 	tables : {
 	  'patient' : {
-	    columns : ['uuid', 'project_id', 'reference', 'debitor_uuid', 'creditor_uuid',
+	    columns : ['uuid', 'reference',
 		       'first_name', 'last_name', 'dob', 'sex',
 		       'father_name', 'mother_name',
 		       'profession', 'employer',
 		       'marital_status', 'spouse', 'spouse_profession', 'spouse_employer',
 		       'religion',
 		       'phone', 'email', 'addr_1','addr_2',
-		       'renewal',
-		       'origin_location_id',
-		       'current_location_id',
-		       'registration_date']
+		       'origin_location_id', 'current_location_id',
+		       'registration_date'
+		      ]
 	  },
 	  'debitor' : { 
 	    columns : ['group_uuid::debitor_group_id', 'text::debitor_name']
 	  },
 	  'debitor_group' : { 
 	    columns : ['name::debitor_group_name']
-	  }
+	  },
+          'project' : {
+            columns : ['abbr::project_abbr']
+          }
 	},
 	join : [ 'patient.debitor_uuid=debitor.uuid',
-		 'debitor.group_uuid=debitor_group.uuid'
+		 'debitor.group_uuid=debitor_group.uuid',
+		 'patient.project_id=project.id'
 	       ],
 	where : [ 'patient.uuid=' +  patient_uuid ]
       }
@@ -152,6 +156,7 @@ angular.module('bhima.controllers')
 
         // Sensible year limits - may need to change to accomodate legacy patients
         if (year > session.current_year || year < 1900) {
+	  // ??? Maybe not necessary any more since the form/angular validates Date on the fly
           validation.dates.flag = validation.dates.tests.limit;
           return true;
         }
@@ -169,18 +174,52 @@ angular.module('bhima.controllers')
     }, true);
 
     $scope.changeDebitor = function () {
-      session.mode = 'change_debitor';
+      // session.mode = 'change_debitor';
+      // TODO Needs to be implemented!
+      alert('Not implemented yet!');
     };
 
     $scope.updatePatient = function () {
-      alert('Updating');
+      var patient = connect.clean(angular.copy($scope.patient));
+
+      // Make sure the DOB is in SQL format
+      patient.dob = util.sqlDate(patient.dob);
+
+      // Normalize the patient names (just in case they have been changed)
+      patient.first_name = util.normalizeName(patient.first_name);
+      patient.last_name = util.normalizeName(patient.last_name);
+      patient.father_name = util.normalizeName(patient.father_name);
+      patient.mother_name = util.normalizeName(patient.mother_name);
+      patient.spouse = util.normalizeName(patient.spouse);
+      
+      // Get rid of any extraneous fields
+      delete patient.reference;
+      delete patient.registration_date;
+      delete patient.debitor_group_id;
+      delete patient.debitor_name;
+      delete patient.debitor_group_name;
+      delete patient.project_abbr;
+      delete patient.hr_id;
+
+      // Save the patient data
+      connect.put('patient', [patient], ['uuid'])
+	.then(function () {
+	  messenger.success($translate.instant('PATIENT_EDIT.UPDATE_SUCCESS'));
+	})
+	.catch(function (err) {
+	  messenger.danger($translate.instant('PATIENT_EDIT.UPDATE_FAILED'));
+	  console.log(err);
+	});
+
       session.mode = 'edit';
     };
 
 
     function startup (models) {
-      $scope.patient = models.patient.data[0];
-      $scope.patient.dob = new Date($scope.patient.dob);
+      var patient = $scope.patient = models.patient.data[0];
+      patient.dob = new Date(patient.dob);
+      patient.hr_id = patient.project_abbr.concat(patient.reference);
+
       $scope.debtorGroup = models.debtorGroup;
     }
 
