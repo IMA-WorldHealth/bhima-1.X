@@ -810,6 +810,7 @@
     "FISCAL_YEAR"               : "Fiscal Year",
     "PATIENT_REG"               : "Patient Registration",
     "PATIENT_SEARCH"            : "Patient Search",
+    "EDIT_PATIENT"              : "Edit Patient Details",
     "SALES"                     : "Sales",
     "SALE_RECORDS"              : "Sale Records",
     "PURCHASE_ORDER"            : "Purchase Order",
@@ -1073,6 +1074,14 @@
     "CREATE_SUPPLIER"   : "Create Supplier",
     "SUPPLIER"          : "supplier",
     "EDIT_SUPPLIER"     : "Edit"
+  },
+
+  "PATIENT_EDIT"             : {
+    "TITLE"                  : "Edit Patient Details:",
+    "UPDATE_PATIENT"         : "Update Patient",
+    "CHANGE_DEBITOR_GROUP"   : "Change Debitor Group",
+    "UPDATE_SUCCESS"         : "Patient details updated",
+    "ERROR_MISSING_UUID"     : "Error: Missing patient UUID"
   },
 
   "PATIENT_REG"                : {

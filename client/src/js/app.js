@@ -51,6 +51,10 @@
       controller: 'fiscal',
       templateUrl: 'partials/fiscal/fiscal.html'
     })
+    .when('/patient/edit/:patientID?', {
+      controller: 'patientEdit',
+      templateUrl: 'partials/patient_edit/edit_patient.html'
+    })
     .when('/patient', {
       controller: 'patientRegistration',
       templateUrl: 'partials/patient_registration/patient.html'

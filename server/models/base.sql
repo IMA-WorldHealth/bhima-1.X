@@ -125,8 +125,8 @@ INSERT INTO `unit` VALUES
 (76,'Exploitation Service', 'TREE.SERVICE_EXPLOITATION', '', 10, 0, '/partials/reports/service_exploitation/', '/reports/service_exploitation/'),
 (77,'Toutes transactions', 'TREE.GLOBAL_TRANSACTION', '', 10, 0, '/partials/reports/global_transaction/', '/reports/global_transaction/'),
 (78,'Employee Standing','TREE.EMPLOYEE_STANDING','',10,0,'/partials/reports/employee_standing/','/reports/employee_standing'),
-(79,'Balance Mensuelle','TREE.BALANCE_MENSUELLE','',10,0,'/partials/reports/balance_mensuelle/','/reports/balance_mensuelle');
-
+(79,'Balance Mensuelle','TREE.BALANCE_MENSUELLE','',10,0,'/partials/reports/balance_mensuelle/','/reports/balance_mensuelle'),
+(80,'Edit Patient','TREE.EDIT_PATIENT','',12,0,'/partials/patient_edit/','/patient/edit/');
 
 -- references language .json files
 INSERT INTO `language` (id, name, `key`) VALUES

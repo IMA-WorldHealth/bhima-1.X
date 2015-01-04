@@ -972,6 +972,7 @@
     "FISCAL_YEAR"               : "Année Fiscale",
     "PATIENT_REG"               : "Enregistrement Patients",
     "PATIENT_SEARCH"            : "Recherche des Patients",
+    "EDIT_PATIENT"              : "Modifier les Détails du Patient",
     "SALES"                     : "Ventes",
     "SALE_RECORDS"              : "Historique Ventes",
     "PURCHASE_ORDER"            : "Bon de Commande",
@@ -1234,6 +1235,14 @@
     "CREATE_SUPPLIER"   : "Créer Fournisseur",
     "SUPPLIER"          : "Fournisseur",
     "EDIT_SUPPLIER"     : "Editer"
+  },
+
+  "PATIENT_EDIT"             : {
+    "TITLE"                  : "Modifier les Détails du Patient:",
+    "UPDATE_PATIENT"         : "Réviser Patient",
+    "CHANGE_DEBITOR_GROUP"   : "Modifier Groupe de Débiteurs",
+    "UPDATE_SUCCESS"         : "Détails du patient mis à jour",
+    "ERROR_MISSING_UUID"     : "Erreur, il n'y a pas un UUID du patient"
   },
 
   "PATIENT_REG"                : {
