@@ -18,7 +18,7 @@ angular.module('bhima.controllers')
         editableFields = [
 	  'first_name', 'last_name', 'dob', 'sex', 'father_name', 'mother_name', 'title',
 	  'profession', 'employer', 'marital_status', 'spouse', 'spouse_profession', 'spouse_employer',
-	  'religion', 'phone', 'email', 'addr_1', 'addr_2', 'origin_location_id', 'current_location_id'
+	  'religion', 'phone', 'email', 'address_1', 'address_2', 'origin_location_id', 'current_location_id'
 	  ];
     
     // Initialise the session
