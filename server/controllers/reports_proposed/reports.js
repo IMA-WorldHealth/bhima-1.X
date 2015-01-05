@@ -11,6 +11,7 @@ var config          = require('./config');
 
 // Document contexts
 var invoiceContext  = require('./data/invoice');
+var balanceContext  = require('./data/balance_sheet');
 
 // Module configuration 
 var writePath = path.join(__dirname, 'out/');
@@ -20,6 +21,10 @@ var documentHandler = {
   invoice : { 
     template : dots.invoice,
     context : invoiceContext
+  }, 
+  balance : { 
+    template : dots.balance_sheet,
+    context : balanceContext
   }
 };
 
@@ -30,15 +35,15 @@ exports.serve = function (req, res, next) {
   var target = req.params.target;
   var options = {root : writePath};
   
-  res.sendFile(target.concat('.pdf'), options, function (err) { 
+  res.sendFile(target.concat('.pdf'), options, function (err, res) { 
     if (err) { 
       res.status(err.status).end();
     } else { 
-
+  
       // Delete (unlink) served file
-      fs.unlink(path.join(__dirname, 'out/').concat(target, '.pdf'), function (err) { 
+      /*fs.unlink(path.join(__dirname, 'out/').concat(target, '.pdf'), function (err) { 
         if (err) throw err;
-      });
+      });*/
     }
   });
 };
@@ -57,11 +62,7 @@ exports.build = function (req, res, next) {
         
     handler.context.compile(options)
     .then(renderTarget)
-    .catch(function (err) { 
-      console.log(err);
-      res.status(500).end(err);
-    });
-    
+    .catch(next);
   }
   
   function renderPDF(reportData) { 
@@ -74,11 +75,11 @@ exports.build = function (req, res, next) {
     
     // Ensure templates have path data
     reportData.path = reportData.path || __dirname;
-    compiledReport = dots.invoice(reportData);
-   
-    // wkhtmltopdf exceptions not handled
-    var pdf = wkhtmltopdf(compiledReport, configuration, function (code, signal) { 
+    compiledReport = handler.template(reportData);
 
+    // wkhtmltopdf exceptions not handled
+    var pdf = wkhtmltopdf(compiledReport, configuration, function (code, signal, a) { 
+      
       // Return path to file service
       res.send('/report/serve/' + hash);
     });

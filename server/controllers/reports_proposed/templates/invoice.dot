@@ -11,7 +11,7 @@
     <h1>{{=it.recipient.first_name}} {{=it.recipient.last_name}}</h1>
   </section>
   
-  <table>
+  <table class="invoice">
     <thead>
       <tr>
         <th>Code</th>
