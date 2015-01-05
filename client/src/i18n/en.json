@@ -340,7 +340,7 @@
     "ALERT_TWO"             : ". Fiscal Years are required to group transactions and provide reports.",
     "EDIT"                  : " Edit selected fiscal year; lock and unlock periods and view opening balances.",
     "CREATION"              : "Create a new fiscal year ",
-    "VIEW_BALANCE"          :"View Opening Balance"
+    "VIEW_BALANCE"          :"View Opening Balances"
   },
 
   "OPENING_BALANCE" : {
