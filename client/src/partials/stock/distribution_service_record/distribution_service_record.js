@@ -110,14 +110,14 @@ angular.module('bhima.controllers')
     function week() {
       $scope.session.param.dateFrom = new Date();
       $scope.session.param.dateTo = new Date();
-      $scope.session.param.dateTo.setDate($scope.session.param.dateTo.getDate() - 7);
+      $scope.session.param.dateFrom.setDate($scope.session.param.dateTo.getDate() - $scope.session.param.dateTo.getDay());
       reset();
     }
 
     function month() {
       $scope.session.param.dateFrom = new Date();
       $scope.session.param.dateTo = new Date();
-      $scope.session.param.dateTo.setDate($scope.session.param.dateTo.getMonth() - 1);
+      $scope.session.param.dateFrom.setDate(1);
       reset();
     }
 
