@@ -174,6 +174,11 @@ angular.module('bhima.controllers')
       writePatient(patient);
     };
 
+    $scope.getMinDate = function getMinDate() {
+      // TODO: Define this globally somewhere (same for patient edit)
+      return '1900-01-01';
+    };
+
     $scope.getMaxDate = function getMaxDate () {
       return util.htmlDate(session.timestamp);
     };

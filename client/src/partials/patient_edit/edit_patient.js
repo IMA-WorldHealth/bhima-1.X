@@ -100,7 +100,8 @@ angular.module('bhima.controllers')
 
     // Various functions for the form
     $scope.getMinDate = function getMinDate() {
-      return util.htmlDate(new Date('1900-01-01'));
+      // TODO: Define this globally somewhere (same for patient register)
+      return '1900-01-01';
     };
 
     $scope.getMaxDate = function getMaxDate() {
