@@ -119,15 +119,15 @@ angular.module('bhima.controllers')
 
     // Validate the dates and locations
     function customValidation() {
-      var dates = validateDates();
-      var locations = validateLocations();
+      var badDOB = invalidDOB();
+      var badLocations = invalidLocations();
 
-      session.failedSessionValidation = dates || locations;
+      session.failedSessionValidation = badDOB || badLocations;
       return;
     }
 
     // Validate the origin/current locations
-    function validateLocations() {
+    function invalidLocations() {
       validation.locations.flag = false;
 
       if (!$scope.patient.origin_location_id) {
@@ -145,7 +145,7 @@ angular.module('bhima.controllers')
 
 
     // Convoluted date validation
-    function validateDates() {
+    function invalidDOB() {
       validation.dates.flag = false;
 
       if (typeof $scope.patient === 'undefined' || 
@@ -176,28 +176,21 @@ angular.module('bhima.controllers')
 
 
     // Tests in an ng-disabled method often got called in the wrong order/ scope was not updated
-    $scope.$watch('patient.dob', function (nval, oval) {
-      customValidation();
-    }, true);
-
     $scope.$watch('session', function (nval, oval) {
       customValidation();
     }, true);
 
-    $scope.$watch('patient.current_location_id', function (nval, oval) {
+    $scope.$watch('patient.dob', function (nval, oval) {
+      customValidation();
+    }, true);
+
+    $scope.$watch('patient.origin_location_id', function (nval, oval) {
       customValidation();
     });
 
     $scope.$watch('patient.current_location_id', function (nval, oval) {
       customValidation();
     });
-
-    // Function to change the debitor
-    $scope.changeDebitor = function () {
-      // session.mode = 'change_debitor';
-      // TODO Needs to be implemented!
-      alert('Not implemented yet!');
-    };
 
 
     // Define the function that switches to the edit mode
@@ -215,6 +208,8 @@ angular.module('bhima.controllers')
     // Main function to save the updated patient data to the database
     $scope.updatePatient = function () {
       var patient = connect.clean(angular.copy($scope.patient));
+
+      console.log($scope.location);
 
       // Make sure the DOB is in SQL format
       patient.dob = util.sqlDate(patient.dob);
