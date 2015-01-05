@@ -16,8 +16,8 @@ angular.module('bhima.controllers')
   'appcache',
   '$http',
   function ($scope, $q, $translate, $location, $routeParams, validate, connect, appstate, messenger, precision, Store, uuid, util, Appcache, $http) {
-    var dependencies = {}, 
-        session = $scope.session = {cfg : {}, totals : [], selectedAccount : {}, configured : true}, 
+    var dependencies = {},
+        session = $scope.session = {cfg : {}, totals : [], selectedAccount : {}, configured : true},
         warnings = $scope.warnings = {};
 
     var cache = new Appcache('donation');
@@ -100,15 +100,15 @@ angular.module('bhima.controllers')
 
     appstate.register('project', function (project) {
       $scope.project = project;
-      validate.process(dependencies)      
+      validate.process(dependencies)
       .then(startup)
       // .then(function (sacc) {
-      //   if(!sacc) {
+      //   if (!sacc) {
       //     session.configured = false;
       //     return;
       //   }
       //   session.configured = true;
-        
+
       // })
       .catch(error);
     });
@@ -162,7 +162,7 @@ angular.module('bhima.controllers')
       return item;
     }
 
-    $scope.updateDonationItem = function(donationItem, inventoryReference) {
+    $scope.updateDonationItem = function (donationItem, inventoryReference) {
       if (donationItem.inventoryReference) {
         $scope.inventory.post(donationItem.inventoryReference);
         $scope.inventory.recalculateIndex();
@@ -185,13 +185,13 @@ angular.module('bhima.controllers')
       session.donation.items.splice(index, 1);
     }
 
-    $scope.donationTotal = function() {
+    $scope.donationTotal = function () {
       return session.donation.items.reduce(priceMultiplyQuantity, 0);
     };
 
     function nextStep() {
-      if(session.donation.items.length > 0){
-        
+      if (session.donation.items.length > 0) {
+
         session.donation.items.forEach(function (donation) {
           donation.lots = new Store({ identifier : 'tracking_number', data : [] });
           angular.extend(donation, { isCollapsed : false });
@@ -267,7 +267,7 @@ angular.module('bhima.controllers')
         totals.price += Math.round(donation.purchase_price * donation.quantity);
 
         donation.totalQuantity = donation.lots.data.reduce(sum, 0);
-        donation.validLots = donation.totalQuantity == donation.quantity;
+        donation.validLots = donation.totalQuantity === donation.quantity;
       });
     }
 
@@ -298,7 +298,7 @@ angular.module('bhima.controllers')
       session.lots = lots;
     };
 
-    $scope.accept = function (){
+    $scope.accept = function () {
       var document_id = uuid();
       var lots = processLots();
       var don = processDonations();
@@ -352,16 +352,15 @@ angular.module('bhima.controllers')
         .then(function () {
           return connect.post('donation_item', donation_items);
         })
-        .then(function(){ 
+        .then(function () {
           // return $q.all(synthese.map(function (postingEntry) {
           //   return $http.post('posting_donation/', postingEntry);
           // }));
 
           return $q.all(synthese.map(function (postingEntry) {
-            console.log('Posting : ', postingEntry);
             // A FIXE   : L'affichage des transactions dans le journal n'est pas en ordre
             // A FIXE   : Ecrire chaque 'postingEntry' dans le journal de facon singuliere
-            // OBJECTIF : Ecrire pour chaque inventory de la donation comme une transaction dans le journal  
+            // OBJECTIF : Ecrire pour chaque inventory de la donation comme une transaction dans le journal
             return $http.post('posting_donation/', postingEntry);
           }));
 
@@ -432,12 +431,12 @@ angular.module('bhima.controllers')
       return don;
     }
 
-    $scope.toggleView = function(){
-      if(session.crud_or_read == 'crud'){
+    $scope.toggleView = function () {
+      if (session.crud_or_read === 'crud') {
         session.crud_or_read = 'read';
         session.view = $translate.instant('DONATION_MANAGEMENT.NEW');
         session.crud = true;
-      }else if(session.crud_or_read == 'read'){
+      } else if (session.crud_or_read === 'read') {
         session.crud_or_read = 'crud';
         session.view = $translate.instant('DONATION_MANAGEMENT.SEE_ALL');
         session.read = true;
@@ -449,18 +448,18 @@ angular.module('bhima.controllers')
     }
 
     function setConfiguration (acc) {
-      if(acc){
+      if (acc) {
         cache.put('selectedAccount', acc);
         session.configured = true;
         session.acc = acc;
-      }            
+      }
     }
 
     function reconfigure() {
       cache.remove('selectedAccount');
       session.acc = null;
       session.configured = false;
-    } 
+    }
 
     $scope.formatAccount = formatAccount;
     $scope.setConfiguration = setConfiguration;

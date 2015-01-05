@@ -5,7 +5,7 @@
 <nav>
   <div style="position: absolute; right: 5px;">
     <button class="btn btn-sm btn-primary dropdown-toggle">
-      {{ session.selectedItem.symbol || "PRIMARY_CASH.DEFAULT_CURRENCY" | translate }}
+      {{ session.SelectedCurrency.symbol || "PRIMARY_CASH.DEFAULT_CURRENCY" | translate }}
       <span class="caret" data-caret="&#9660;"></span>
     </button>
 
@@ -24,12 +24,6 @@
   </div>
 
   <div class="pull-left">
-    <ol class="breadcrumb">
-      <li><span class="glyphicon glyphicon-home"></span></li>
-      <li><a href="#/primary_cash/">{{"PRIMARY_CASH.TITLE" | translate}}</a></li>
-      <li><a ng-href="#/primary_cash/expense/payroll/{{session.cashbox}}">{{"PRIMARY_CASH.EXPENSE.PAYROLL" | translate}}</a></li>
-      <li class="active">{{"PRIMARY_CASH.EXPENSE.MULTI_PAYROLL" | translate}}</li>
-    </ol>
   </div>
 </nav>
 
@@ -100,7 +94,7 @@
                       <td>{{row.emp.text}}</td>
                       <td>{{row.emp.nb_enfant}}</td>
                       <td>{{row.emp.nb_spouse}}</td>
-                      <td><b ng-bind-html="row.emp.basic_salary | intlcurrency:session.selectedItem.currency_id"></b></td>
+                      <td><b ng-bind-html="row.emp.basic_salary | intlcurrency:session.SelectedCurrency.currency_id"></b></td>
                     </tr>
                   </tbody>
                 </table>
@@ -150,7 +144,7 @@
 
                       <div class="input-group col-xs-8">
                         <input type="number" ng-model="row[cotisation.abbr]" class="form-bhima" min="0" required>
-                        <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
+                        <span class="input-group-addon"> {{ session.SelectedCurrency.symbol }} </span>
                       </div>
                     </div>
                   </div>
@@ -168,7 +162,7 @@
 
                       <div class="input-group col-xs-8">
                         <input type="number" ng-model="row[rubrics.abbr]" class="form-bhima" min="0" required>
-                        <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
+                        <span class="input-group-addon"> {{ session.SelectedCurrency.symbol }} </span>
                       </div>
                     </div>
                   </div>
@@ -187,7 +181,7 @@
 
                       <div class="input-group col-xs-8">
                         <input type="number" ng-model="row[taxesEmp.abbr]" class="form-bhima" min="0" required>
-                        <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
+                        <span class="input-group-addon"> {{ session.SelectedCurrency.symbol }} </span>
                       </div>
                     </div>
                   </div>
@@ -205,7 +199,7 @@
 
                       <div class="input-group col-xs-8">
                         <input type="number" ng-model="row[taxesComp.abbr]" class="form-bhima" min="0" required>
-                        <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
+                        <span class="input-group-addon"> {{ session.SelectedCurrency.symbol }} </span>
                       </div>
                     </div>
                   </div>

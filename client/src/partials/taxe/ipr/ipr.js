@@ -7,48 +7,46 @@ angular.module('bhima.controllers')
   'validate',
   'ipr',
   '$translate',
-  '$q',
-  '$modal',
-  function ($scope, connect, appstate, messenger, validate, ipr, $translate, $q, $modal) {
+  function ($scope, connect, appstate, messenger, validate, ipr, $translate) {
   	var session = $scope.session = {};
   	session.show = 'crud';
   	session.view = $translate.instant('TAXES.SEE_TABLE');
 
   	var dependencies = {};
-	dependencies.taxe_ipr = {
-		query : '/taxe_ipr_currency/'
-	};
+    dependencies.taxe_ipr = {
+      query : '/taxe_ipr_currency/'
+    };
 
-  dependencies.currency = {
-    query : {
-      tables : {
-        'currency' : { columns : ['id','symbol']}
+    dependencies.currency = {
+      query : {
+        tables : {
+          'currency' : { columns : ['id','symbol']}
+        }
+      }
+    };
+
+    function startup (models) {
+      angular.extend($scope, models);
+
+      var taxe_ipr_data = models.taxe_ipr.data;
+      loadIprData(taxe_ipr_data);
+      checkFirstCurrency(taxe_ipr_data);
+    }
+
+    function loadIprData(data) {
+      ipr.calculate()
+      .then(function (data) {
+        session.table_ipr = data;
+      });
+    }
+
+    function checkFirstCurrency (taxe_ipr_data) {
+      if (taxe_ipr_data.length > 0) {
+        session.currency_id = taxe_ipr_data[0].currency_id;
       }
     }
-  };
 
-	function startup (models) {
-    angular.extend($scope, models);
-
-    var taxe_ipr_data = models.taxe_ipr.data;
-    loadIprData(taxe_ipr_data);
-    checkFirstCurrency(taxe_ipr_data);
-  }
-
-  function loadIprData(data){
-  	ipr.calculate()
-    .then(function(data){
-    	session.table_ipr = data;
-    });
-  }
-
-  function checkFirstCurrency (taxe_ipr_data) {
-    if(taxe_ipr_data.length > 0){
-      session.currency_id = taxe_ipr_data[0].currency_id;
-    }
-  }
-
-	appstate.register('enterprise', function (enterprise) {
+    appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
       validate.process(dependencies)
       .then(startup);
@@ -56,7 +54,7 @@ angular.module('bhima.controllers')
 
     $scope.delete = function (taxe_ipr) {
       var result = confirm($translate.instant('TAXES.CONFIRM'));
-      if (result) {  
+      if (result) {
         connect.delete('taxe_ipr', 'id', taxe_ipr.id)
         .then(function () {
           $scope.taxe_ipr.remove(taxe_ipr.id);
@@ -77,7 +75,7 @@ angular.module('bhima.controllers')
       session.action = 'new';
       session.new = {};
       session.show = 'crud';
-      if(session.currency_id){
+      if (session.currency_id) {
         session.new.currency_id = session.currency_id;
       }
     };
@@ -93,13 +91,13 @@ angular.module('bhima.controllers')
       delete record.symbol;
       connect.put('taxe_ipr', [record], ['id'])
       .then(function () {
-        messenger.success($translate.instant('TAXES.UPDATE_SUCCES')); 
+        messenger.success($translate.instant('TAXES.UPDATE_SUCCES'));
         $scope.taxe_ipr.put(record);
         session.action = '';
         session.edit = {};
-        
+
         validate.refresh(dependencies)
-      	.then(startup);
+        .then(startup);
 
       });
     };
@@ -116,29 +114,27 @@ angular.module('bhima.controllers')
         $scope.taxe_ipr.post(record);
         session.action = '';
         session.new = {};
-        
+
         validate.refresh(dependencies)
-      	.then(startup);
-        
+        .then(startup);
+
       });
     };
 
     function generateReference () {
-      window.data = $scope.taxe_ipr.data;
       var max = Math.max.apply(Math.max, $scope.taxe_ipr.data.map(function (o) { return o.reference; }));
       return Number.isNaN(max) ? 1 : max + 1;
     }
 
-  	$scope.toggleView = function(){
-  		if(session.show == 'tableau'){
-  			session.show = 'crud';
-  			session.view = $translate.instant('TAXES.SEE_TABLE');
-  		}
-  		else if(session.show == 'crud'){
-  			session.show = 'tableau';
-  			session.view = $translate.instant('TAXES.TOGGLE_VIEW');
-  		}
-  	};
+    $scope.toggleView = function () {
+      if (session.show === 'tableau') {
+        session.show = 'crud';
+        session.view = $translate.instant('TAXES.SEE_TABLE');
+      }
+      else if (session.show === 'crud') {
+        session.show = 'tableau';
+        session.view = $translate.instant('TAXES.TOGGLE_VIEW');
+      }
+    };
   }
-
 ]);

@@ -1,7 +1,7 @@
 (function (angular) {
   'use strict';
 
-  var bhima = angular.module('bhima', ['bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate']);
+  var bhima = angular.module('bhima', ['bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate', 'LocalForageModule']);
 
   // application events
   // Contains constants for use in the application by
@@ -50,6 +50,10 @@
     .when('/fiscal', {
       controller: 'fiscal',
       templateUrl: 'partials/fiscal/fiscal.html'
+    })
+    .when('/patient/edit/:patientID?', {
+      controller: 'patientEdit',
+      templateUrl: 'partials/patient_edit/edit_patient.html'
     })
     .when('/patient', {
       controller: 'patientRegistration',
@@ -122,6 +126,10 @@
     .when('/purchase/view/', {
       controller: 'purchaseRecords',
       templateUrl: 'partials/purchase/view/purchase_records.html'
+    })
+    .when('/purchase/view/:option', {
+      controller: 'purchase_view',
+      templateUrl: 'partials/purchase/view/purchase_view.html'
     })
     .when('/purchase/confirm/', {
       controller: 'purchaseConfirm',
@@ -198,6 +206,10 @@
     .when('/reports/global_transaction/', {
       controller: 'report.global_transaction',
       templateUrl: 'partials/reports/global_transaction/global_transaction.html'
+    })
+    .when('/reports/balance_mensuelle/', {
+      controller: 'report.balance_mensuelle',
+      templateUrl: 'partials/reports/balance_mensuelle/balance_mensuelle.html'
     })
     .when('/location', {
       controller : 'location',
@@ -298,6 +310,10 @@
       controller : 'expiring',
       templateUrl : 'partials/reports/expiring_stock/expiring_stock.html'
     })
+    .when('/reports/expiring/:option', {
+      controller : 'expiring.option',
+      templateUrl : 'partials/reports/expiring_stock/expiring_stock_view.html'
+    })
     .when('/caution', {
       controller : 'caution',
       templateUrl : 'partials/caution/caution.html'
@@ -346,7 +362,7 @@
       controller : 'payroll',
       templateUrl : 'partials/primary_cash/expense/payroll.html'
     })
-    .when('/primary_cash/expense/multi_payroll/:cashbox', {
+    .when('/primary_cash/expense/multi_payroll/', {
       controller : 'multi_payroll',
       templateUrl : 'partials/primary_cash/expense/multi_payroll.html'
     })
@@ -394,6 +410,22 @@
       controller : 'stock.distribution_service',
       templateUrl : 'partials/stock/exit_service/distribution_service.html'
     })
+    .when('/stock/distribution_record/:depotId', {
+      controller : 'stock.distribution_record',
+      templateUrl : 'partials/stock/distribution_record/distribution_record.html'
+    })
+    .when('/stock/distribution_service_record/:depotId', {
+      controller : 'stock.distribution_service_record',
+      templateUrl : 'partials/stock/distribution_service_record/distribution_service_record.html'
+    })        
+    .when('/stock/reversing_service_distribution/:consumptionId', {
+      controller : 'stock.reversing_service_distribution',
+      templateUrl : 'partials/stock/reversing_service_distribution/reversing_service_distribution.html'
+    }) 
+    .when('/stock/reversing_distribution/:consumptionId', {
+      controller : 'stock.reversing_distribution',
+      templateUrl : 'partials/stock/reversing_distribution/reversing_distribution.html'
+    })            
     .when('/stock/loss/:depotId', {
       controller : 'stock.loss',
       templateUrl : 'partials/stock/loss/loss.html'
@@ -533,10 +565,20 @@
     .when('/fonction', {
       controller : 'fonction',
       templateUrl : 'partials/fonction/fonction.html'
-    })
+    })  
+    .when('/donor_management/', {
+      controller: 'donor',
+      templateUrl: '/partials/donor_management/donor_management.html'
+    })       
     .when('/reports/operating_account/', {
       controller : 'operating_account',
       templateUrl : 'partials/reports/operating_account/operating_account.html'
+    })
+
+    // Proposed formal report building structure
+    .when('/report/invoice/:target', { 
+      controller : 'configureInvoice', 
+      templateUrl : 'partials/reports_proposed/invoice/invoice.html'
     })
     .otherwise('/');
   }
@@ -570,12 +612,20 @@
     });
   }
 
+  function localForageConfig($localForageProvider) {
+    $localForageProvider.config({
+      name : 'bhima-v1',
+      version : 1.0
+    });
+  }
+
   // Event constants
   bhima.constant('EVENTS', events);
   // configuration
   bhima.config(['$routeProvider', bhimaconfig]);
   bhima.config(['$translateProvider', translateConfig]);
   bhima.config(['$httpProvider', authConfig]);
+  bhima.config(['$localForageProvider', localForageConfig]);
   // run
   bhima.run(['$rootScope', 'EVENTS', 'appauth', startupConfig]);
 

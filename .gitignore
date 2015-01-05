@@ -2,9 +2,8 @@
 *.swo
 *.swn
 .idea/
-*.min.js
+#*.min.js
 *.min.css
-*.png
 log.*
 
 node_modules/

@@ -28,7 +28,8 @@ angular.module('bhima.controllers')
     function reset () {
       var record = connect.clean(session);
       var fiscalYear = $scope.getFiscalYears.data.filter(function (item) {
-        return item.id == record.fiscal_year_id;
+        record.fiscal_year_id = parseInt (record.fiscal_year_id);
+        return item.id === record.fiscal_year_id;
       });
 
       $scope.fiscal_year_report = fiscalYear[0].fiscal_year_txt;
@@ -44,7 +45,6 @@ angular.module('bhima.controllers')
 
     function reset2 () {
       var record = connect.clean(session);
-      console.log('La liste des annees fiscal',record.period_id);
       var tabMonth = ['OPERATING_ACCOUNT.JANUARY',
         'OPERATING_ACCOUNT.FEBRUARY',
         'OPERATING_ACCOUNT.MARCH',
@@ -59,23 +59,23 @@ angular.module('bhima.controllers')
         'OPERATING_ACCOUNT.DECEMBER'
       ];
 
-      if(record.period_id == 'all'){
+      if (record.period_id === 'all'){
         $scope.fiscal_precisonD = '';
         $scope.fiscal_precison1 = $translate.instant('OPERATING_ACCOUNT.ALL'); 
         
       } else {
         $scope.fiscal_precison1 = '';
         var precision = $scope.Periods.filter(function (item) {
-          return item.id == record.period_id;
+          record.period_id = parseInt (record.period_id);
+          return item.id === record.period_id;
         });
-        //console.log(precision[0].period_start);
         var Month = util.sqlDate(precision[0].period_start);
-        Months = Month.split("-");;
-        MontRap = Months[1] - 1; 
+        var Months = Month.split('-');
+        var MontRap = Months[1] - 1; 
         $scope.fiscal_precisonD = $translate.instant(tabMonth[MontRap]); 
       }
       
-      $scope.Reports = "";
+      $scope.Reports = '';
       $http.get('/getExploitationAccount/',{params : {
             'period_id' : record.period_id,
             'fiscal_year_id' : record.fiscal_year_id
@@ -95,7 +95,6 @@ angular.module('bhima.controllers')
         }
 
       });
-  
     }
 
     function startup (models) {
