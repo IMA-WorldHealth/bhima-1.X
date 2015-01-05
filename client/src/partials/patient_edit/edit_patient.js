@@ -149,26 +149,24 @@ angular.module('bhima.controllers')
       validation.dates.flag = false;
 
       if (typeof $scope.patient === 'undefined' || 
-	  typeof $scope.patient.dob === 'undefined' || !$scope.patient.dob) {
+          typeof $scope.patient.dob === 'undefined' || !$scope.patient.dob) {
         validation.dates.flag = validation.dates.tests.type;
         return true;
       }
 
       var year = $scope.patient.dob.getFullYear();
 
-      if (year) {
-        if (isNaN(year)) {
-	  // TODO: Probably not necessary any more since the form only allows digits ???
-          validation.dates.flag = validation.dates.tests.type;
-          return true;
-        }
+      if (isNaN(year)) {
+        // TODO: Probably not necessary any more since the form only allows digits ???
+        validation.dates.flag = validation.dates.tests.type;
+        return true;
+      }
 
-        // Sensible year limits - may need to change to accomodate legacy patients
-        if (year > currentYear || year < 1900) {
-	  // TODO: Maybe not necessary any more since the form/angular validates Date on the fly ???
-          validation.dates.flag = validation.dates.tests.limit;
-          return true;
-        }
+      // Sensible year limits - may need to change to accomodate legacy patients
+      if (year > currentYear || year < 1900) {
+        // TODO: Maybe not necessary any more since the form/angular validates Date on the fly ???
+        validation.dates.flag = validation.dates.tests.limit;
+        return true;
       }
 
       return false;
@@ -182,6 +180,7 @@ angular.module('bhima.controllers')
 
     $scope.$watch('patient.dob', function (nval, oval) {
       customValidation();
+      console.log('DOB: ', $scope.patient.dob);
     }, true);
 
     $scope.$watch('patient.origin_location_id', function (nval, oval) {
@@ -208,8 +207,6 @@ angular.module('bhima.controllers')
     // Main function to save the updated patient data to the database
     $scope.updatePatient = function () {
       var patient = connect.clean(angular.copy($scope.patient));
-
-      console.log($scope.location);
 
       // Make sure the DOB is in SQL format
       patient.dob = util.sqlDate(patient.dob);
