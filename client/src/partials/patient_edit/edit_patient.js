@@ -190,6 +190,19 @@ angular.module('bhima.controllers')
       alert('Not implemented yet!');
     };
 
+
+    // Define the function that switches to the edit mode
+    $scope.initialiseEditing = function initialiseEditing (selectedPatient) {
+      if (selectedPatient && 'uuid' in selectedPatient && selectedPatient.uuid) {
+        patientUuid = selectedPatient.uuid;
+	dependencies.patient.query.where[0] = 'patient.uuid=' + patientUuid;
+	validate.process(dependencies)
+	  .then(startup);
+	session.mode = 'edit';
+      }
+    };
+
+
     // Main function to save the updated patient data to the database
     $scope.updatePatient = function () {
       var patient = connect.clean(angular.copy($scope.patient));
@@ -233,16 +246,6 @@ angular.module('bhima.controllers')
       session.mode = 'edit';
     };
 
-    // Define the function that switches to the edit mode
-    $scope.initialiseEditing = function initialiseEditing (selectedPatient) {
-      if (selectedPatient && 'uuid' in selectedPatient && selectedPatient.uuid) {
-        patientUuid = selectedPatient.uuid;
-	dependencies.patient.query.where[0] = 'patient.uuid=' + patientUuid;
-	validate.process(dependencies)
-	  .then(startup);
-	session.mode = 'edit';
-      }
-    };
 
     // Basic setup function when the models are loaded
     function startup (models) {
@@ -257,6 +260,7 @@ angular.module('bhima.controllers')
 
       $scope.debtorGroup = models.debtorGroup;
     }
+
 
     // Register this controller
     appstate.register('enterprise', function (enterprise) {
