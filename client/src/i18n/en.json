@@ -1096,6 +1096,7 @@
     "NO"                       : "No",
     "FIRST_NAME"               : "First Name",
     "SECOND_NAME"              : "Second Name",
+    "TITLE"                    : "Title",
     "YOB"                      : "Year of Birth",
     "ENTER_FULL_DATE"          : "Enter Full Date",
     "DOB"                      : "Date of Birth",

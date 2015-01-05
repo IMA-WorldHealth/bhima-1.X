@@ -1257,6 +1257,7 @@
     "NO"                       : "Non",
     "FIRST_NAME"               : "Prénom",
     "SECOND_NAME"              : "Nom",
+    "TITLE"                    : "Titre",
     "YOB"                      : "Année de Naissance",
     "ENTER_FULL_DATE"          : "Saisie Date Exact",
     "DOB"                      : "Date de Naissance",

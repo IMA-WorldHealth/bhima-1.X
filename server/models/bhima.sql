@@ -575,6 +575,7 @@ create table `patient` (
   `creditor_uuid`     char(36) null,
   `first_name`        varchar(150) not null,
   `last_name`         varchar(150) not null,
+  `title`             varchar(30),
   `dob`               date,
   `father_name`       varchar(150),
   `mother_name`       varchar(150),
