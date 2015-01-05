@@ -41,7 +41,7 @@
                   <div class="form-group" >
                     <label for="patient-dob" class="col-xs-3 control-label">{{ "PATIENT_REG.DOB" | translate }}</label>
                     <div class="col-xs-9">
-                      <input required id="patient-dob" type="date" class="form-bhima" ng-model="patient.dob" min="1900-01-01" max="{{ getMaxDate() }}">
+                      <input required id="patient-dob" type="date" class="form-bhima" ng-model="patient.dob" min="{{ getMinDate() }}" max="{{ getMaxDate() }}">
                     </div>
                   </div>
 
