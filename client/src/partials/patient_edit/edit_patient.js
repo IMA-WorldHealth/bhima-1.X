@@ -11,7 +11,9 @@ angular.module('bhima.controllers')
   function ($scope, $routeParams, $translate, connect, validate, messenger, util, appstate) {
     var dependencies = {},
         originalPatientData = null,
-        patientUuid = $scope.patientUuid = $routeParams.patientID,
+        patientUuid = $routeParams.patientID,
+        timestamp = new Date(),
+        currentYear = timestamp.getFullYear(),
         session = $scope.session = {},
         editableFields = [
 	  'first_name', 'last_name', 'dob', 'sex', 'father_name', 'mother_name',
@@ -19,14 +21,14 @@ angular.module('bhima.controllers')
 	  'religion', 'phone', 'email', 'addr_1', 'origin_location_id', 'current_location_id'
 	  ];
     
+    // Initialise the session
     session.mode = 'search';
-
-    session.timestamp = new Date();
-    session.currentYear = session.timestamp.getFullYear();
-
-    session.originLocationUuid = null;
-    session.currentLocationUuid = null;
     session.failedSessionValidation = false;
+
+    // Add fake initial values to keep the form happy before the real values are available
+    $scope.patient = { origin_location_id: null, current_location_id: null };
+    $scope.initialOriginLocation = null;
+    $scope.initialCurrentLocation = null;
 
     // Validation configuration objects
     var validation = $scope.validation = {};
@@ -84,6 +86,7 @@ angular.module('bhima.controllers')
       }
     };
 
+    // We need the debitor group info
     dependencies.debtorGroup = {
       query : {
         identifier : 'uuid',
@@ -97,20 +100,18 @@ angular.module('bhima.controllers')
 
     // Various functions for the form
     $scope.getMaxDate = function getMaxDate() {
-      return util.htmlDate(session.timestamp);
+      return util.htmlDate(timestamp);
     };
 
     $scope.setOriginLocation = function (uuid) {
-      // TODO: Switch from session.originLocationUuid to patient
-      // ??? $scope.patient.origin_location_id = uuid;
-      session.originLocationUuid = uuid;
+      $scope.patient.origin_location_id = uuid;
     };
     
     $scope.setCurrentLocation = function (uuid) {
-      // ??? $scope.patient.current_location_id = uuid;
-      session.currentLocationUuid = uuid;
+      $scope.patient.current_location_id = uuid;
     };
 
+    // Validate the dates and locations
     function customValidation() {
       var dates = validateDates();
       var locations = validateLocations();
@@ -119,15 +120,16 @@ angular.module('bhima.controllers')
       return;
     }
 
+    // Validate the origin/current locations
     function validateLocations() {
       validation.locations.flag = false;
 
-      if (!session.originLocationUuid) {
+      if (!$scope.patient.origin_location_id) {
         validation.locations.flag = validation.locations.tests.origin;
         return true;
       }
 
-      if (!session.currentLocationUuid) {
+      if (!$scope.patient.current_location_id) {
         validation.locations.flag = validation.locations.tests.current;
         return true;
       }
@@ -155,7 +157,7 @@ angular.module('bhima.controllers')
         }
 
         // Sensible year limits - may need to change to accomodate legacy patients
-        if (year > session.currentYear || year < 1900) {
+        if (year > currentYear || year < 1900) {
 	  // TODO: Maybe not necessary any more since the form/angular validates Date on the fly ???
           validation.dates.flag = validation.dates.tests.limit;
           return true;
@@ -173,18 +175,24 @@ angular.module('bhima.controllers')
       customValidation();
     }, true);
 
+    $scope.$watch('patient.current_location_id', function (nval, oval) {
+      customValidation();
+    });
+
+    $scope.$watch('patient.current_location_id', function (nval, oval) {
+      customValidation();
+    });
+
+    // Function to change the debitor
     $scope.changeDebitor = function () {
       // session.mode = 'change_debitor';
       // TODO Needs to be implemented!
       alert('Not implemented yet!');
     };
 
+    // Main function to save the updated patient data to the database
     $scope.updatePatient = function () {
       var patient = connect.clean(angular.copy($scope.patient));
-
-      // Update the locations
-      patient.origin_location_id = session.originLocationUuid;
-      patient.current_location_id = session.currentLocationUuid;
 
       // Make sure the DOB is in SQL format
       patient.dob = util.sqlDate(patient.dob);
@@ -225,9 +233,10 @@ angular.module('bhima.controllers')
       session.mode = 'edit';
     };
 
+    // Define the function that switches to the edit mode
     $scope.initialiseEditing = function initialiseEditing (selectedPatient) {
       if (selectedPatient && 'uuid' in selectedPatient && selectedPatient.uuid) {
-        patientUuid = $scope.patientUuid = selectedPatient.uuid;
+        patientUuid = selectedPatient.uuid;
 	dependencies.patient.query.where[0] = 'patient.uuid=' + patientUuid;
 	validate.process(dependencies)
 	  .then(startup);
@@ -239,6 +248,7 @@ angular.module('bhima.controllers')
       }
     };
 
+    // Basic setup function when the models are loaded
     function startup (models) {
       var patient = $scope.patient = models.patient.data[0];
       originalPatientData = angular.copy(patient);
@@ -247,14 +257,12 @@ angular.module('bhima.controllers')
       patient.hr_id = patient.project_abbr.concat(patient.reference);
 
       $scope.initialOriginLocation = patient.origin_location_id;
-      $scope.setOriginLocation(patient.origin_location_id);
-
       $scope.initialCurrentLocation = patient.current_location_id;
-      $scope.setCurrentLocation(patient.current_location_id);
 
       $scope.debtorGroup = models.debtorGroup;
     }
 
+    // Register this controller
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
       session.mode = 'search';
