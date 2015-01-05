@@ -1,10 +1,14 @@
 // reports_proposed/data/balance_sheet.js
 // Collects and aggregates data for the enterprise balance sheet
-var q   = require('q');
-var db  = require('../../../lib/db');
+var q       = require('q');
+var db      = require('../../../lib/db');
+var numeral = require('numeral');
 
 // Constant: root account id
 var ROOT_ACCOUNT_ID = 0;
+
+var formatDollar = '$0,0.00';
+var balanceDate = new Date();
 
 // This method builds a tree data structure of
 // accounts and children of a specified parentId.
@@ -58,6 +62,7 @@ exports.compile = function (options) {
   var balanceAccountId = 2;
   var titleAccountId = 3; 
   
+  context.reportDate = balanceDate.toDateString();
 
   var sql =
     'SELECT account.id, account.account_number, account.account_txt, account.account_type_id, account.parent, totals.balance, totals.period_id ' +
@@ -88,6 +93,7 @@ exports.compile = function (options) {
     // the parent account
     accountTree.forEach(function (account) {
       account.balance = account.children.reduce(aggregate, 0);
+      account.formattedBalance = numeral(account.balance).format(formatDollar);
     });
     
     context.data = accountTree;
