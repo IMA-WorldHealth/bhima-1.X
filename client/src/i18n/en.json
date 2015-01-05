@@ -724,7 +724,8 @@
     "NUM_ITEMS"          : "Number of Items",     
     "ENTRY_DATE"         : "Entry date",
     "CONFIRMED"          : "Confirmed",
-    "SUPPLIER"           : "Supplier"   
+    "SUPPLIER"           : "Supplier",
+    "RECEIPT"            : "Receipt"   
   },
 
   "INVENTORY" : {
@@ -1848,11 +1849,13 @@
         "SUCCESS"                   : "Reversing with succes"
     },         
     "LOSS"     : {
-      "KEY"    : "Stock loss",
-      "TITLE"  : "Stock loss",
-      "NO_DEPOT" : "No depot",
+      "KEY"               : "Stock loss",
+      "TITLE"             : "Stock loss",
+      "NO_DEPOT"          : "No depot",
       "LOSS_GENERAL_INFO" : "Summary",
-      "SUBMIT"              : "Submit"
+      "SUBMIT"            : "Submit",
+      "LOSS_RECORDS"      : "Stock loss records",
+      "NO_LOSS_RECORDS"   : "No stock loss recorded"
     },
     "MOVEMENT" : {
       "KEY"                   : "Stock Movement",

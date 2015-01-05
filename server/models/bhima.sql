@@ -723,7 +723,7 @@ create table `consumption` (
   `date`             date,
   `document_id`      char(36) not null,
   `tracking_number`  char(50) not null,
-  `quantity`           int unsigned,
+  `quantity`         int unsigned,
   primary key (`uuid`),
   key `depot_uuid`   (`depot_uuid`),
   constraint foreign key (`depot_uuid`) references `depot` (`uuid`) on delete cascade on update cascade

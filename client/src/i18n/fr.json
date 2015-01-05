@@ -632,11 +632,13 @@
         "SUCCESS"                   : "Opération avec succès"
     },        
     "LOSS"     : {
-      "KEY"    : "Perte stock",
-      "TITLE"  : "Perte stock",
-      "NO_DEPOT" : "Pas de dépôt",
+      "KEY"               : "Perte stock",
+      "TITLE"             : "Perte stock",
+      "NO_DEPOT"          : "Pas de dépôt",
       "LOSS_GENERAL_INFO" : "Sommaire",
-      "SUBMIT"              : "Soumettre"
+      "SUBMIT"            : "Soumettre",
+      "LOSS_RECORDS"      : "Rapport perte de stock",
+      "NO_LOSS_RECORDS"   : "Aucune perte de stock"
     },
     "MOVEMENT" : {
       "KEY"    : "Movements des Stock",
@@ -886,7 +888,8 @@
     "NUM_ITEMS"          : "Nombre Items",
     "ENTRY_DATE"         : "Date d'entrée",
     "CONFIRMED"          : "Confirmé",
-    "SUPPLIER"           : "Fournisseur"
+    "SUPPLIER"           : "Fournisseur",
+    "RECEIPT"            : "Reçu" 
   },
 
   "INVENTORY" : {
