@@ -10,6 +10,10 @@ var ROOT_ACCOUNT_ID = 0;
 var formatDollar = '$0,0.00';
 var balanceDate = new Date();
 
+// TODO Query for balance and title account IDs
+var balanceAccountId = 2;
+var titleAccountId = 3; 
+
 // This method builds a tree data structure of
 // accounts and children of a specified parentId.
 function getChildren(accounts, parentId, depth) {
@@ -35,11 +39,41 @@ function getChildren(accounts, parentId, depth) {
   return children;
 }
 
+
+// FIXME Whatever - Jog on CS 101 - oh man 
+function filterEmptyAccounts(accounts) { 
+  var removedAccount = true;
+    
+  while (removedAccount) { 
+    removedAccount = false;
+    accounts = accounts.filter(emptyFilter);
+  }
+
+  function emptyFilter(account) { 
+    var hasNoChildren = account.children.length === 0; 
+ 
+    if (account.account_type_id === titleAccountId && hasNoChildren) { 
+      removedAccount = true;
+    } else { 
+      account.children = account.children.filter(emptyFilter);
+      return account;
+    }
+  }
+
+  return accounts;
+}
+
 // Adds the balance of a list of accounts to
 // an aggregate value
 function aggregate(value, account) {
 
   var isLeaf = account.children.length === 0;
+    
+  // FIXME MySQL querry should never return NULL - normalization should not have to be done
+  account.balance = account.balance || 0;
+  
+  // FIXME Balances are ONLY ever assigned to the very top level accounts, not for every title account
+  account.formattedBalance = numeral(account.balance).format(formatDollar);
 
   // if the account has children, recursively
   // recursively call aggregate on the array of accounts
@@ -58,16 +92,13 @@ exports.compile = function (options) {
   var context = {};
   var fiscalYearId = options.fiscalYearId;
 
-  // TODO Query for balance and title account IDs
-  var balanceAccountId = 2;
-  var titleAccountId = 3; 
-  
+    
   context.reportDate = balanceDate.toDateString();
 
   var sql =
     'SELECT account.id, account.account_number, account.account_txt, account.account_type_id, account.parent, totals.balance, totals.period_id ' +
     'FROM account LEFT JOIN (' +
-      'SELECT period_total.account_id, SUM(period_total.debit - period_total.credit) as balance, period_total.period_id ' +
+      'SELECT period_total.account_id, IFNULL(SUM(period_total.debit - period_total.credit), 0) as balance, period_total.period_id ' +
       'FROM period_total ' +
       'WHERE period_total.fiscal_year_id = ? ' +
       'GROUP BY period_total.account_id ' +
@@ -92,9 +123,11 @@ exports.compile = function (options) {
     // aggregate the account balances of child accounts into
     // the parent account
     accountTree.forEach(function (account) {
-      account.balance = account.children.reduce(aggregate, 0);
-      account.formattedBalance = numeral(account.balance).format(formatDollar);
+      account.balance = account.children.reduce(aggregate, 0); 
+      account.formattedBalance = numeral(account.balance).format(formatDollar); 
     });
+
+    accountTree = filterEmptyAccounts(accountTree);    
     
     context.data = accountTree;
     deferred.resolve(context);
