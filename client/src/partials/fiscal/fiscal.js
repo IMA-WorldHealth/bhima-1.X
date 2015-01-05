@@ -9,6 +9,7 @@ angular.module('bhima.controllers')
   function ($scope, $modal, connect, appstate, messenger, validate) {
     var dependencies = {};
 
+    // register dependencies
     dependencies.fiscal = {
       query : {
         tables : {
@@ -19,37 +20,29 @@ angular.module('bhima.controllers')
       }
     };
 
+    // expose bindings to the view
+    $scope.selectYear = selectYear;
+
+    // get the enterprise information
     appstate.register('enterprise', buildFiscalQuery);
 
     function buildFiscalQuery(enterprise) {
-      var enterpriseId = $scope.enterpriseId = enterprise.id;
       $scope.enterprise = enterprise;
-      dependencies.fiscal.where = ['fiscal_year.enterprise_id=' + enterpriseId];
+      dependencies.fiscal.where = ['fiscal_year.enterprise_id=' + enterprise.id];
       validate.refresh(dependencies)
-      .then(fiscal);
+      .then(startup);
     }
 
-    function fiscal(model) {
-      $scope.model = model;
+    function startup(models) {
+      angular.extend($scope, models);
     }
 
-    $scope.select = function (fiscalId) {
-      if ($scope.model.fiscal) {
-        $scope.selected = $scope.model.fiscal.get(fiscalId);
-        $scope.active = 'update';
-      }
-    };
-
-    $scope.delete = function (fiscalId) {
-      // validate deletion before performing
-      $scope.active = 'select';
-      $scope.selected = null;
-      $scope.model.fiscal.delete(fiscalId);
-    };
-
-    $scope.isSelected = function isSelected() {
-      return !!$scope.selected;
-    };
+    function selectYear(id) {
+      $scope.selected = id;
+      $scope.active = 'update';
+      $scope.$emit('fiscalYearChange', id);
+      $scope.$broadcast('fiscalYearChange', id);
+    }
 
     $scope.createFiscalYear = function createFiscalYear() {
       // Do some session checking to see if any values need to be saved/ flushed to server
@@ -57,20 +50,5 @@ angular.module('bhima.controllers')
       $scope.selected = null;
     };
 
-    $scope.getFiscalStart = function getFiscalStart() {
-      if ($scope.periodModel && $scope.periodModel[0]) {
-        return $scope.periodModel[0].period_start;
-      }
-    };
-
-    $scope.getFiscalEnd = function () {
-      if ($scope.periodModel) {
-        var l = $scope.periodModel;
-        var t = l[l.length-1];
-        if (t) {
-          return t.period_stop;
-        }
-      }
-    };
   }
 ]);

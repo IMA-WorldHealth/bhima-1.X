@@ -24,16 +24,16 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-if="model.fiscal.data.length === 0">
+            <tr ng-if="fiscal.data.length === 0">
               <td colspan="3">
                 <i>{{ 'FISCAL_YEAR.NO_RECORDS' | translate }}</i>
               </tr>
             </tr>
-            <tr ng-repeat="year in model.fiscal.data" ng-class="{'btn-primary': year.id === selected.id}">
+            <tr ng-repeat="year in fiscal.data" ng-class="{'btn-primary': year.id === selected }">
               <td>{{ year.fiscal_year_txt }}</td>
               <td>{{ year.start_month}}/{{year.start_year }}</td>
               <td>
-                <a ng-click="select(year.id)"><span class="glyphicon glyphicon-pencil"></span></a>
+                <a ng-click="selectYear(year.id)"><span class="glyphicon glyphicon-pencil"></span></a>
               </td>
             </tr>
           </tbody>
