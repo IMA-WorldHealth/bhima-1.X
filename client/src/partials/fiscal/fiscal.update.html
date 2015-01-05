@@ -1,0 +1,91 @@
+<div class="panel panel-primary" ng-controller="fiscal.update">
+
+  <div class="panel-heading" ng-if="fiscal">
+    {{ fiscal.fiscal_year_txt }}
+  </div>
+
+  <div class="panel-body">
+    <form role="form" class="col-xs-6">
+
+      <div class="form-group">
+        <label for="fiscal-name">
+          {{ 'FISCAL_YEAR.NAME' | translate }}
+        </label>
+        <input type="text" class="form-bhima" id="fiscal-name" ng-model="fiscal.fiscal_year_txt">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" ng-model="fiscal.locked">
+            {{ 'FISCAL_YEAR.LOCK' | translate }}
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="fiscal-months">
+          {{ 'FISCAL_YEAR.TOTAL_MONTH' | translate }}
+        </label>
+        <input type="text" class="form-bhima" id="fiscal-months" ng-model="fiscal.number_of_months">
+      </div>
+
+      <div class="form-group">
+        <label for="first-voucher">
+          {{ 'FISCAL_YEAR.FIRST_VOUCHER' | translate }}
+        </label>
+        <input type="text" class="form-bhima" id="first-voucher" ng-model="fiscal.transaction_start_number">
+      </div>
+
+      <div class="form-group">
+        <label for="last-voucher">
+          {{ 'FISCAL_YEAR.LAST_VOUCHER' | translate }}
+        </label>
+        <input type="text" class="form-bhima" id="last-voucher" ng-model="fiscal.transaction_stop_number">
+      </div>
+
+      <div class="form-group">
+        <label for="posting-from">
+          {{ 'FISCAL_YEAR.POSTING_FROM' | translate }}
+        </label>
+        <!-- TODO: This is temporary data - logic should be implemented -->
+        <!-- FIXME: Logic should all be taken care of in controller -->
+        <input type="text" class="form-bhima" id="posting-from" readonly value="{{ getFiscalStart() | date:'dd/MM/yyyy' }}">
+      </div>
+
+      <div class="form-group">
+        <label for="posting-to">
+          {{ 'FISCAL_YEAR.POSTING_TO' | translate }}
+        </label>
+        <input type="text" class="form-bhima" id="posting-to" readonly value="{{ getFiscalEnd() | date:'dd/MM/yyyy' }}">
+      </div>
+
+      <div class="form-group">
+        <button class="btn btn-sm btn-success" ng-click="submitEdits()">
+          {{ 'UTIL.SUBMIT' | translate }}
+        </button>
+      </div>
+    </form>
+
+    <div class="col-xs-6">
+      <table class="table table-hover table-bordered">
+        <thead>
+          <tr>
+            <th colspan="3">{{ 'FISCAL_YEAR.PERIODS' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="period in periods.data" class="primary">
+            <td>{{ period.period_start | date: 'MMM' }}</td>
+            <td>{{ period.period_start | date:'dd/MM/yyyy' }}</td>
+            <td>{{ period.period_stop | date:'dd/MM/yyyy' }}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3">
+              <button class="btn btn-sm btn-default" ng-click="viewOpeningBalance()">{{ 'FISCAL_YEAR.VIEW_BALANCE' | translate }}</button>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>
