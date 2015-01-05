@@ -31,6 +31,16 @@ exports.writeYear = function (req, res, next) {
   .done();
 };
 
+exports.createFiscalYear = function (req, res, next) {
+  var enterprise = req.body.enterprise,
+      startDate = new Date(Number(req.body.startDate)),
+      endDate = new Date(Number(req.body.endDate)),
+      description = req.body.description;
+
+  // ensure valid data
+
+};
+
 /*
  * Utility Methods
 */

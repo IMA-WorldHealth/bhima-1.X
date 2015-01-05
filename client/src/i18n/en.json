@@ -315,6 +315,7 @@
   "FISCAL_YEAR"             : {
     "TITLE"                 : "Fiscal Year",
     "MANAGEMENT"            : "Management",
+    "CREATE"                : "Create a New Fiscal Year",
     "RECORDS"               : "Fiscal Year Records",
     "NEW"                   : "New Fiscal Year",
     "DESC"                  : "Year Description",

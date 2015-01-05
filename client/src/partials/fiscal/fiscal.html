@@ -3,9 +3,9 @@
 </header>
 
 <nav>
-  <div class="pull-right">
-    <button id="createFiscal" ng-click="createFiscal()" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus"></span> {{ 'UTIL.CREATE' | translate }} {{ 'FISCAL_YEAR.TITLE' | translate }}</button>
-  </div>
+  <button id="createFiscal" ng-click="createFiscalYear()" class="btn btn-success btn-sm">
+    <span class="glyphicon glyphicon-plus"></span> {{ 'FISCAL_YEAR.CREATE' | translate }}
+  </button>
 </nav>
 
 <main>
@@ -25,7 +25,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-if="model.fiscal.data.length===0">
+              <tr ng-if="model.fiscal.data.length === 0">
                 <td colspan="3">
                   <i>{{ 'FISCAL_YEAR.NO_RECORDS' | translate }}</i>
                 </tr>
@@ -66,12 +66,12 @@
               <div class="panel-body">
                 <form novalidate name="form" class="col-xs-6">
                   <div class="form-group">
-                    <label for="fiscalNote">{{ 'FISCAL_YEAR.DESC' | translate }}</label>
-                    <input id="fiscalDescription" class="form-bhima" ng-model="newModel.description" required >
+                    <label for="fiscalNote" class="required">{{ 'FISCAL_YEAR.DESC' | translate }}</label>
+                    <input id="fiscalDescription" class="form-bhima" ng-model="newModel.description" required>
                   </div>
 
                   <div class="form-group">
-                    <label for="startMonth">{{ 'FISCAL_YEAR.START_MONTH' | translate }}</label>
+                    <label for="startMonth" class="required">{{ 'FISCAL_YEAR.START_MONTH' | translate }}</label>
                     <input type="month" id="startMonth" class="form-bhima" ng-model="newModel.start" ng-change="updateDates()" required >
                   </div>
 
@@ -91,7 +91,7 @@
                   </div>
 
                   <div class="form-group">
-                    <label for="endMonth">{{ 'FISCAL_YEAR.END_MONTH' | translate }}</label>
+                    <label for="endMonth" class="required">{{ 'FISCAL_YEAR.END_MONTH' | translate }}</label>
                     <input ng-disabled="isFullYear()" type="month" id="endMonth" class="form-bhima" ng-model="newModel.end" required >
                   </div>
 
