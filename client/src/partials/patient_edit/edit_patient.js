@@ -99,6 +99,10 @@ angular.module('bhima.controllers')
     };
 
     // Various functions for the form
+    $scope.getMinDate = function getMinDate() {
+      return util.htmlDate(new Date('1900-01-01'));
+    };
+
     $scope.getMaxDate = function getMaxDate() {
       return util.htmlDate(timestamp);
     };
@@ -110,6 +114,7 @@ angular.module('bhima.controllers')
     $scope.setCurrentLocation = function (uuid) {
       $scope.patient.current_location_id = uuid;
     };
+
 
     // Validate the dates and locations
     function customValidation() {
@@ -137,6 +142,7 @@ angular.module('bhima.controllers')
       return false;
     }
 
+
     // Convoluted date validation
     function validateDates() {
       validation.dates.flag = false;
@@ -163,8 +169,10 @@ angular.module('bhima.controllers')
           return true;
         }
       }
+
       return false;
     }
+
 
     // Tests in an ng-disabled method often got called in the wrong order/ scope was not updated
     $scope.$watch('patient.dob', function (nval, oval) {
