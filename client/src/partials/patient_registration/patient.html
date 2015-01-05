@@ -1,5 +1,5 @@
 <header data-header>
-  {{ "PATIENT_REG.TITLE" | translate }} <small>{{ patient.first_name }} {{ patient.last_name }}</small>
+  {{ "PATIENT_REG.TITLE" | translate }} <small>{{ patient.title }} {{ patient.first_name }} {{ patient.last_name }}</small>
 </header>
 
 <nav>
@@ -143,6 +143,11 @@
             <div class="panel-heading">{{ "PATIENT_REG.OPTIONAL_INFO" | translate }}</div>
             <div class="panel-body">
               <form role="form">
+
+                <div class="form-group">
+                  <label for="title">{{ "PATIENT_REG.TITLE" | translate }}</label>
+                  <input type="text" class="form-bhima" id="title" ng-model="patient.title">
+                </div>
 
                 <div class="form-group">
                   <label for="phone">{{ "PATIENT_REG.PHONE_NO" | translate }}</label>

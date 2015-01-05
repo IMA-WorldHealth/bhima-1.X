@@ -16,7 +16,7 @@ angular.module('bhima.controllers')
         currentYear = timestamp.getFullYear(),
         session = $scope.session = {},
         editableFields = [
-	  'first_name', 'last_name', 'dob', 'sex', 'father_name', 'mother_name',
+	  'first_name', 'last_name', 'dob', 'sex', 'father_name', 'mother_name', 'title',
 	  'profession', 'employer', 'marital_status', 'spouse', 'spouse_profession', 'spouse_employer',
 	  'religion', 'phone', 'email', 'addr_1', 'origin_location_id', 'current_location_id'
 	  ];
