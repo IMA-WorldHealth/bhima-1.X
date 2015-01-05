@@ -13,11 +13,11 @@
   <section id="title" class="center">
       <h5>IMCK Hopital Bon Berger</h5>
       <h5>Balance Sheet</h5>
-      <h5>As of January 2nd 2015</h5>
+      <h5>As of {{=it.reportDate}}</h5>
   </section>
   
   <section>
-    <table>
+    <table class="balance">
       <thead>
         <tr>
           <th></th>
@@ -27,15 +27,23 @@
 
       <tbody>
       
+      <!-- TODO Minimise inline styles - confusing templates -->
+      
       {{ function displayRow(accounts) { 
           accounts.forEach(function (line) {  }}
         <tr>
-          <td style="padding-left: {{=line.depth * 50}}px;">{{=line.account_txt}}</td>
-          <td>{{=line.balance}}</td>
+          <td style="padding-left: {{=line.depth * 50}}px; {{? line.account_type_id === 3}}font-weight : bold;{{?}}">{{=line.account_txt}}</td>
+          <td>{{? line.account_type_id !== 3}}{{=line.balance}}{{?}}</td>
         </tr> 
 
       {{ if (line.children.length) displayRow(line.children); }}
-      
+        
+        {{? line.account_type_id === 3}} 
+        <tr class="outline">
+          <td style="padding-left : {{=line.depth * 50}}px; font-weight : bold;">Total {{=line.account_txt}}</td>
+          <td style="font-weight : bold;">{{=line.balance}}</td>
+        </tr>
+        {{?}}
       {{ }); }}
       {{ } }}
 

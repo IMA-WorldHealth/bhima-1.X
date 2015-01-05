@@ -6,6 +6,9 @@ table {
   width : 100%;
 }
 
+/* 
+ * Invoice table style
+ */
 .invoice {
   border-collapse : collapse;
   border-spacing : 0;
@@ -23,9 +26,23 @@ table {
   vertical-align : right;
 }
 
+/* 
+ * Balance sheet style
+ */
+.balance thead > tr > th { 
+  border-bottom : 1px solid #9f9f9f;
+}
+
+tr.outline { 
+  border-top : 1px solid #9f9f9f;
+  border-bottom : 1px solid #9f9f9f;
+}
+
 .center > * { 
   text-align : center;
   display : block;
   margin : 0;
   padding : 0;
 }
+
+
