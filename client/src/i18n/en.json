@@ -319,6 +319,7 @@
     "RECORDS"               : "Fiscal Year Records",
     "NEW"                   : "New Fiscal Year",
     "DESC"                  : "Year Description",
+    "STEP"                  : "Step",
     "START_DATE"            : "Start Date",
     "START_MONTH"           : "Start Month",
     "ONE_YEAR"              : "One Year",
@@ -340,7 +341,8 @@
     "ALERT_TWO"             : ". Fiscal Years are required to group transactions and provide reports.",
     "EDIT"                  : " Edit selected fiscal year; lock and unlock periods and view opening balances.",
     "CREATION"              : "Create a new fiscal year ",
-    "VIEW_BALANCE"          :"View Opening Balances"
+    "CREATE_YEAR_DETAILS"   : "Configure the new year details",
+    "CREATE_BEGINNING_BALANCES" : "Create beginning balances"
   },
 
   "OPENING_BALANCE" : {
