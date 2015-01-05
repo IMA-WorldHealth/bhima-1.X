@@ -10,7 +10,6 @@ angular.module('bhima.controllers')
     var dependencies = {};
 
     dependencies.fiscal = {
-      // required: true,
       query : {
         tables : {
           fiscal_year : {
@@ -59,8 +58,8 @@ angular.module('bhima.controllers')
       return $scope.newModel.year === 'true';
     };
 
-    $scope.createFiscal = function createFiscal() {
-      //Do some session checking to see if any values need to be saved/ flushed to server
+    $scope.createFiscalYear = function createFiscalYear() {
+      // Do some session checking to see if any values need to be saved/ flushed to server
       $scope.active = 'create';
       $scope.selected = null;
     };
