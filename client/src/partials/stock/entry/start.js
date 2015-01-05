@@ -72,7 +72,7 @@ angular.module('bhima.controllers')
         identifier : 'code',
         tables : {
           'purchase' : {
-            columns : ['project_id', 'reference', 'cost', 'currency_id', 'creditor_uuid', 'purchaser_id', 'employee_id', 'timestamp', 'purchase_date']
+            columns : ['project_id', 'reference', 'cost', 'currency_id', 'creditor_uuid', 'purchaser_id', 'employee_id', 'timestamp', 'purchase_date', 'is_direct']
           },
           'purchase_item' : {
             columns : ['uuid', 'inventory_uuid', 'quantity', 'unit_price', 'total']
@@ -178,10 +178,14 @@ angular.module('bhima.controllers')
       session.order = models.orders;
 
       // set up session properties
+      session.cfg.is_direct = models.orders.data[0].is_direct;
       session.cfg.order_date = new Date(models.orders.data[0].purchase_date);
-      session.cfg.employee_id = models.orders.data[0].employee_id;
-      session.cfg.employee_name = ($scope.employees.get(session.cfg.employee_id).prenom || '') + ' ' + ($scope.employees.get(session.cfg.employee_id).name || '');
 
+      if(!session.cfg.is_direct){
+        session.cfg.employee_id = models.orders.data[0].employee_id;
+        session.cfg.employee_name = ($scope.employees.get(session.cfg.employee_id).prenom || '') + ' ' + ($scope.employees.get(session.cfg.employee_id).name || '');
+      }
+      
       // modify paramters
       session.order.data.forEach(function (drug) {
         drug.lots = new Store({ identifier : 'tracking_number', data : [] });
@@ -315,10 +319,10 @@ angular.module('bhima.controllers')
         return connect.basicPost('purchase', [{ uuid : session.cfg.purchase_uuid, closed : 1 }], ['uuid']);
       })
       .then(function () {
-        messenger.success('STOCK.ENTRY.WRITE_SUCCESS');
+        messenger.success($translate.instant('STOCK.ENTRY.WRITE_SUCCESS'));
       })
       .catch(function () {
-        messenger.error('STOCK.ENTRY.WRITE_ERROR');
+        messenger.error($translate.instant('STOCK.ENTRY.WRITE_ERROR'));
       })
       .finally(function () {
         $location.path('/stock/entry/report/' + document_id);

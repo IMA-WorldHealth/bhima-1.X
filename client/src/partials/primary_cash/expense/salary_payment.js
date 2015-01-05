@@ -105,7 +105,6 @@ angular.module('bhima.controllers')
         session.available = (session.model.salary_payment.data.length > 0) ? true : false ;
       })
       .catch(function (err) {
-        console.log('err', err);
         messenger.danger(err.message);
       });
     }
@@ -156,7 +155,7 @@ angular.module('bhima.controllers')
         user_id       : session.model.cashier.data.id,
         description   : 'Salary Payment ' + '(' + emp.name + emp.postnom + ') : ',
         cash_box_id   : session.cashbox,
-        origin_id     : 6,
+        origin_id     : 6 //FIX ME : Find a way to generate it automatically
       };
 
       var primary_details = {
@@ -164,9 +163,10 @@ angular.module('bhima.controllers')
         primary_cash_uuid : primary.uuid,
         debit             : 0,
         credit            : primary.cost,
-        document_uuid     : emp.uuid
+        inv_po_id         : emp.uuid, // uuid du paiement
+        document_uuid     : document_uuid
       };
-
+      
       var package = {
         primary : primary,
         primary_details : primary_details
@@ -185,7 +185,7 @@ angular.module('bhima.controllers')
         return connect.fetch('/journal/salary_payment/' + package.primary.uuid);
       })
       .then(function () {
-        messenger.success('Paiement effectif de ' + emp.prenom + ' ' + emp.name + ' ' + emp.postnom + ' reussi', true);
+        messenger.success($translate.instant('PRIMARY_CASH.EXPENSE.SALARY_SUCCESS') + emp.prenom + ' ' + emp.name + ' ' + emp.postnom + ' reussi', true);
       })
       .catch(function (err){ console.log(err); });
     }

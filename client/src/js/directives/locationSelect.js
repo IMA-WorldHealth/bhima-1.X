@@ -16,6 +16,7 @@ angular.module('bhima.directives')
       
       var submitCallback = attrs.selectVillage;
       var defaultVillageTag = attrs.defaultVillage;
+      var initialLocationTag = attrs.initialLocation;
   
       // Verify location parameters
       if (!submitCallback) { 
@@ -64,22 +65,33 @@ angular.module('bhima.directives')
       function settup(enterprise) {
         var metaTemplate;
         var defaultLocation = scope[defaultVillageTag] || enterprise.location_id;
-
         indexLocationDependencies();
         defineLocationRequests();
       
         metaTemplate = generateTemplate('locationConfig');
         element.html($compile(metaTemplate)(scope));
-        
+
         scope.$watch(defaultVillageTag, refreshDefaultVillage);
-        
+        scope.$watch(initialLocationTag, setInitialLocation);
+
         fetchInitialLocation(defaultLocation)
-        .then(function (result) { 
-          return initialiseLocation(result);          
-        });
+          .then(function (result) { 
+            return initialiseLocation(result);          
+          });
       }
-      
+
+      function setInitialLocation(nval, oval) {
+	if (nval) {
+          // Request new location 
+          fetchInitialLocation(nval)
+            .then(function (result) { 
+              return initialiseLocation(result);          
+            });
+	}
+      }
+
       function refreshDefaultVillage(nval, oval) { 
+
         if (initialised) { 
           
           if (nval) { 
@@ -94,7 +106,7 @@ angular.module('bhima.directives')
       }
 
       function fetchInitialLocation(villageUuid) {
-        return connect.fetch('/location/' + villageUuid);
+        return connect.fetch('/location/detail/' + villageUuid);
       }
 
       function initialiseLocation(defaultLocation) {

@@ -27,9 +27,9 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="village in villages.data | orderBy:'village'">
-              <td>{{ village.village }}</td>
-              <td>{{ village.sector }}</td>
+            <tr ng-repeat="village in villages.data | orderBy:'name'">
+              <td>{{ village.name }}</td>
+              <td>{{ village.sector_name }}</td>
               <td><a ng-click="setOp('Edit', village)" ><i class="glyphicon glyphicon-pencil"></i></a></td>
               <td><a class="danger" ng-click="removeVillage(village.uuid)" ><i class="glyphicon glyphicon-trash"></i></a></td>
             </tr>
@@ -48,14 +48,14 @@
       </div>
 
       <div ng-switch-when="add">
-        <form class="form-horizontal">
+        <form class="form-horizontal" name="addForm" novalidate>
           <fieldset>
             <legend>{{ 'VILLAGE.REGISTER' | translate }}</legend>
 
             <div class="form-group">
               <label class="col-xs-2 control-label"> {{ 'VILLAGE.SECTOR' | translate }}</label>
               <div class="col-xs-10">
-                <select class="form-bhima" ng-model="add.sector_uuid" ng-options="sec.uuid as sec.name for sec in sectors.data | orderBy:'name'">
+                <select required class="form-bhima" ng-model="add.sector_uuid" ng-options="sec.uuid as sec.name for sec in sectors.data | orderBy:'name'">
                   <option value="" disable="disabled">-- {{'SELECT.SECTOR' | translate}} -- </option>
                 </select>
               </div>
@@ -68,20 +68,20 @@
                </div>
             </div>
           </fieldset>
-          <input class="btn btn-sm btn-success" ng-click="addVillage(add)" type="submit" value="{{ 'FORM.SUBMIT' | translate }}">
+          <input class="btn btn-sm btn-success" ng-click="addVillage(add)" ng-disabled="addForm.$invalid" type="submit" value="{{ 'FORM.SUBMIT' | translate }}">
           <input class="btn btn-default btn-sm" type="reset" value="{{ 'FORM.CANCEL' | translate }}">
         </form>
       </div>
 
       <div ng-switch-when="Edit">
-        <form class="form-horizontal">
+        <form class="form-horizontal" name="editForm" novalidate>
           <fieldset>
             <legend>{{ 'VILLAGE.EDIT' | translate }}</legend>
 
             <div class="form-group">
               <label class="col-xs-2 control-label">{{'VILLAGE.SECTOR' | translate}}</label>
               <div class="col-xs-10">
-                <select class="form-bhima" ng-model="village.sector_uuid" ng-options="sec.uuid as sec.name for sec in model.sector.data | orderBy:'name'" required>
+                <select class="form-bhima" ng-model="village.sector_uuid" ng-options="sec.uuid as sec.name for sec in sectors.data | orderBy:'name'" required>
                   <option value="" disable="disabled">-- {{'SELECT.SECTOR' | translate}} -- </option>
                 </select>
               </div>
@@ -90,11 +90,11 @@
             <div class="form-group">
                 <label class="col-xs-2 control-label">{{'VILLAGE.NAME_VILLAGE' | translate}}</label>
                 <div class="col-xs-10">
-                  <input class="form-bhima" ng-model="village.village" required>
+                  <input class="form-bhima" ng-model="village.name" required>
                 </div>
             </div>
           </fieldset>
-          <input class="btn btn-sm btn-success" ng-click="editVillage(village)" ng-disabled="form.$invalid" type="submit" value="{{ 'FORM.SUBMIT' | translate }}">
+          <input class="btn btn-sm btn-success" ng-click="editVillage(village)" ng-disabled="editForm.$invalid" type="submit" value="{{ 'FORM.SUBMIT' | translate }}">
           <input class="btn btn-sm btn-default" type="reset" value="{{ 'FORM.NEW_FORM' | translate }}">
         </form>
       </div>

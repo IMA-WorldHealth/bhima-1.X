@@ -1,0 +1,85 @@
+<!-- confirm.purchase template -->
+<div ng-controller="receipt.confirm_indirect_purchase">
+  <div class="row customer-details">
+    <div class="col-xs-12">
+      <small style="float: right; color: grey; font-size: 8px">{{ model.confirmIndirectPurchase.uuid }}</small>
+      <h4 class="invoice-header">{{ 'INVOICE.CONFIRM_PURCHASE' | translate }}</h4>
+    </div>
+  </div>
+  <div class="row customer-details">
+    <!-- Temporary style; needs official markup and CSS -->
+    <div class="col-xs-4">
+      <span>
+        <b>{{model.common.enterprise.name}}</b>
+      </span>
+      <br>
+      {{model.common.location.name}}
+      <br>
+      <!-- hah -->
+      {{ model.common.enterprise.postal || 'B.P. 205'}}
+      <br>
+      {{model.common.location.sector_name}}
+      <br>
+      <i>TEL</i> {{model.common.enterprise.phone}}
+      <br>
+      <i>MAIL</i> {{model.common.enterprise.email}}
+    </div>
+
+    <div class="col-xs-4">
+      <b>{{model.confirmIndirectPurchase.name}} </b>
+      <br>
+      <i>{{ 'INVOICE.DATE_REGISTRATION' | translate }}</i>
+      <br>
+      {{model.confirmIndirectPurchase.purchase_date | date}}
+    </div>
+
+    <div class="col-xs-4">
+      <i>{{'INVOICE.INVOICE_ID' | translate}}</i> <b>{{model.confirmIndirectPurchase.reference}}</b>
+      <br>
+      <i>{{'INVOICE.EMPLOYEE_CODE' | translate}}</i> <b>{{model.confirmIndirectPurchase.code}}</b>
+      <br>
+      <br>
+      <i>{{ 'INVOICE.DATE_RECEIPT' | translate }}</i>
+      <br>
+      {{timestamp | date}}
+      <br>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12">
+      <table class="invoiceTable">
+        <thead>
+          <tr>
+            <th>{{'COLUMNS.REFERENCE_PURCHASE' | translate}}</th>
+            <th>{{'INVOICE.COST' | translate}}</th>
+            <th>{{'COLUMNS.GIVEN_AMOUNT' | translate}}</th>
+            <th>{{'INVOICE.CONFIRMED_BY' | translate}}</th>
+          </tr>
+        </thead>
+        <tbody class="items">
+          <tr>
+            <td>{{ model.confirmIndirectPurchase.reference }}</td>
+            <td>{{ model.confirmIndirectPurchase.cost | currency }}</td>
+            <td>{{ model.confirmIndirectPurchase.cost | currency }}</td>
+            <td>{{ model.confirmIndirectPurchase.prenom + '  ' + model.confirmIndirectPurchase.name + '  ' + model.confirmIndirectPurchase.postnom}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-6">
+      <div class="pull-right">
+        <b>{{"INVOICE.SIGN_HEADER_PRI" | translate}}</b>
+      </div>
+    </div>
+    <div class="col-xs-6">
+      <div class="pull-left">
+       <b>{{"INVOICE.SIGN_EMPLOYEE" | translate}}</b>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End confirm.purchase template -->

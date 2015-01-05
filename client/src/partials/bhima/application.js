@@ -128,8 +128,7 @@ angular.module('bhima.controllers')
           'exchange_rate' : {
             'columns' : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'rate', 'date']
           }
-        },
-        'where' : ['exchange_rate.date=' + util.sqlDate()]
+        }
       };
 
       fiscalYear = {

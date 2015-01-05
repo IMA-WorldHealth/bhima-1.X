@@ -1,0 +1,44 @@
+<head>
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/reports.css">
+</head>
+<body>
+
+  <section>
+    <h4>{{=it.enterprise.name}}</h4>
+    <h4>Order Number : {{=it.invoice.id}}</h4>
+    <h4>{{=it.invoice.date}}</h4>
+    <h1>Bill to :</h1>
+    <h1>{{=it.recipient.first_name}} {{=it.recipient.last_name}}</h1>
+  </section>
+  
+  <table>
+    <thead>
+      <tr>
+        <th>Code</th>
+        <th>Description</th>
+        <th>Quanity</th>
+        <th>Transaction Price</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+    
+    {{~it.invoice.items :saleLine:index}} 
+      <tr>
+        <td>{{=saleLine.code}}</td>
+        <td>{{=saleLine.text}}</td>
+        <td>{{=saleLine.quantity}}</td>
+        <td>{{=saleLine.formattedPrice}}</td>
+        <td>{{=saleLine.formattedTotal}}</td>
+      </tr>
+    {{~}}
+
+    </tbody>
+    <tbody>
+      <tr>
+        <td colspan="4">Total</td>
+        <td>{{=it.invoice.totalCost}}</td>
+      </tr>
+    </tbody>
+  </table>
+</body>

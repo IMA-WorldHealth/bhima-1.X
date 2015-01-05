@@ -192,6 +192,13 @@ angular.module('bhima.controllers')
       packagePatient.project_id = $scope.project.id;
       packagePatient.reference = 1; // FIXME/TODO : This is a hack
 
+      // Normalize the patient names
+      packagePatient.first_name = util.normalizeName(packagePatient.first_name);
+      packagePatient.last_name = util.normalizeName(packagePatient.last_name);
+      packagePatient.father_name = util.normalizeName(packagePatient.father_name);
+      packagePatient.mother_name = util.normalizeName(packagePatient.mother_name);
+      packagePatient.spouse = util.normalizeName(packagePatient.spouse);
+
       connect.basicPut('debitor', [packageDebtor])
       .then(function () {
         packagePatient.debitor_uuid = debtorId;

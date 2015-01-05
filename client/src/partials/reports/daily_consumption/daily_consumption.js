@@ -35,7 +35,7 @@ angular.module('bhima.controllers')
     record.dateFrom = util.sqlDate(record.dateFrom);
     record.dateTo = util.sqlDate(record.dateTo);
 
-    $http.get('/getConsuptionDrugs/',{params : {
+    $http.get('/getConsumptionDrugs/',{params : {
           'dateFrom' : record.dateFrom, 
           'dateTo' : record.dateTo
         }  
@@ -43,9 +43,7 @@ angular.module('bhima.controllers')
     success(function(data) {
       $scope.consumptions = data;
     });
-    /****************************************************/
-    // Pour la recherche de la consommation d'un article
-    /***************************************************/
+    
     $http.get('/getItemInConsumption/',{params : {
           'dateFrom' : dateFrom, 
           'dateTo' : dateTo,
@@ -55,7 +53,7 @@ angular.module('bhima.controllers')
     success(function(result) {
       $scope.itemInConsumptions = result;
     });
-    /*********************************************************************/
+
     function startup (models) {
       angular.extend($scope, models);
     }
@@ -71,7 +69,7 @@ angular.module('bhima.controllers')
       record.dateFrom = util.sqlDate(record.dateFrom);
       record.dateTo = util.sqlDate(record.dateTo);
 
-      $http.get('/getConsuptionDrugs/',{params : {
+      $http.get('/getConsumptionDrugs/',{params : {
             'dateFrom' : record.dateFrom, 
             'dateTo' : record.dateTo
           }  
