@@ -1281,7 +1281,8 @@
     "SPOUSE"                   : "Nom de l'epoux(se)",
     "SPOUSE_EMPLOYER"          : "Employeur (epoux(se))",
     "SPOUSE_PROFESSION"        : "Profession (epoux(se))",
-    "AVENUE"                   : "Avenue",
+    "ADDRESS1"                 : "Adresse",
+    "ADDRESS2"                 : "Complément d'Adresse",
     "RUE"                      : "Rue",    
     "LOCATION"                 : "Gestion Emplacement"
   },

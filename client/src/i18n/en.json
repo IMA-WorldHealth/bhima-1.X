@@ -1120,7 +1120,8 @@
     "SPOUSE"                   : "Spouse's Name",
     "SPOUSE_EMPLOYER"          : "Spouse's Employer",
     "SPOUSE_PROFESSION"        : "Spouse's Occupation",
-    "AVENUE"                   : "Street",
+    "ADDRESS1"                 : "Address 1",
+    "ADDRESS2"                 : "Address 2",
     "RUE"                      : "Street",
     "LOCATION"                 : "Location Management"
   },
