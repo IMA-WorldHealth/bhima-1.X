@@ -242,10 +242,6 @@ angular.module('bhima.controllers')
 	  .then(startup);
 	session.mode = 'edit';
       }
-      else {
-	// TODO: Do we need a translation for an internal/hopefully-rare error ???
-	messenger.danger($translate('PATIENT_EDIT.ERROR_MISSING_UUID'));
-      }
     };
 
     // Basic setup function when the models are loaded
