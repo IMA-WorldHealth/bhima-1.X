@@ -41,7 +41,7 @@
         {{? line.account_type_id === 3}} 
         <tr class="outline">
           <td style="padding-left : {{=line.depth * 50}}px; font-weight : bold;">Total {{=line.account_txt}}</td>
-          <td style="font-weight : bold;">{{=line.balance}}</td>
+          <td style="font-weight : bold;">{{=line.formattedBalance}}</td>
         </tr>
         {{?}}
       {{ }); }}
