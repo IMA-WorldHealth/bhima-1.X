@@ -280,6 +280,27 @@ angular.module('bhima.controllers')
       });
     }
 
+    function getItemPrice(item, index) {
+      dependencies.itemPrice = {
+        query : {
+          tables : {
+            'consumption' : { columns : ['tracking_number']},
+            'stock' : { columns : ['purchase_order_uuid']},
+            'purchase' : { columns : ['uuid']},
+            'purchase_item' : { columns : ['purchase_uuid', 'quantity', 'unit_price']}
+          },
+          join : ['stock.purchase_order_uuid=purchase.uuid'],
+          join : ['purchase.uuid=purchase_item.purchase_uuid'],
+          where : ['stock.tracking_number=' + item.tracking_number]
+        }
+      };
+
+      validate.process(dependencies, ['itemPrice'])
+      .then(function (data) {
+        configuration.rows[index].price = data.itemPrice.data[0].unit_price;
+      });
+    }
+
     appstate.register('project', function (project){
       dependencies.project.query.where = ['project.id='+project.id];
       validate.process(dependencies)
@@ -296,5 +317,6 @@ angular.module('bhima.controllers')
     $scope.calculateTotal = calculateTotal;
     $scope.handleQuantity = handleQuantity;
     $scope.verifyLoss = verifyLoss;
+    $scope.getItemPrice = getItemPrice;
   }
 ]);

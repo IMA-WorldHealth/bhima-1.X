@@ -53,6 +53,13 @@ angular.module('bhima.controllers')
         ico : 'glyphicon-cloud',
         link : '/stock/loss'
       },
+
+      {
+        key : 'STOCK.LOSS.LOSS_RECORDS',
+        ico : 'glyphicon-list-alt',
+        link : '/stock/loss_record'
+      },
+
       {
         key : 'STOCK.MOVEMENT.KEY',
         ico : 'glyphicon-transfer',
