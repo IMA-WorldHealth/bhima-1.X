@@ -1,44 +1,100 @@
-<div class="panel panel-success" ng-controller="fiscal.create">
+<div class="panel panel-success" ng-controller="fiscal.create" ng-switch="step.id">
   <div class="panel-heading">
-    <i class="glyphicon glyphicon-calendar"></i> {{ 'FISCAL_YEAR.NEW' | translate }}
+    <i class="glyphicon glyphicon-calendar"></i>
+    <b>{{ 'FISCAL_YEAR.NEW' | translate }}</b> {{ 'FISCAL_YEAR.STEP' | translate }} {{ step.id }}: {{ step.key | translate }}
   </div>
 
-  <div class="panel-body">
-    <form novalidate name="form" class="col-xs-6">
+  <div ng-switch-when="1">
+    <div class="panel-body">
 
-      <div class="form-group">
-        <label for="fiscalNote" class="required">{{ 'FISCAL_YEAR.DESC' | translate }}</label>
-        <input id="fiscalDescription" class="form-bhima" ng-model="data.description" required>
-      </div>
+      <form novalidate name="form" class="col-xs-6">
 
-      <div class="form-group">
-        <label for="startMonth" class="required">{{ 'FISCAL_YEAR.START_MONTH' | translate }}</label>
-        <input type="month" id="startMonth" class="form-bhima" ng-model="data.start" ng-change="calculateEndDate()" required >
-      </div>
-
-      <div class="form-group">
-        <div class="radio">
-          <label>
-            <input type="radio" name="option_year" id="one" value="true" ng-model="data.year" checked>
-            {{ 'FISCAL_YEAR.ONE_YEAR' | translate }}
-          </label>
+        <div class="form-group">
+          <label for="fiscalNote" class="required">{{ 'FISCAL_YEAR.DESC' | translate }}</label>
+          <input id="fiscalDescription" class="form-bhima" ng-model="data.description" required>
         </div>
-        <div class="radio">
-          <label>
-            <input type="radio" name="option_year" id="custom" value="false" ng-model="data.year">
-            {{ 'FISCAL_YEAR.SPECIFY' | translate }}
-          </label>
+
+        <div class="form-group">
+          <label for="startMonth" class="required">{{ 'FISCAL_YEAR.START_MONTH' | translate }}</label>
+          <input type="month" id="startMonth" class="form-bhima" ng-model="data.start" ng-change="calculateEndDate()" required >
         </div>
-      </div>
 
-      <div class="form-group">
-        <label for="endMonth" class="required">{{ 'FISCAL_YEAR.END_MONTH' | translate }}</label>
-        <input ng-disabled="isFullYear()" type="month" id="endMonth" class="form-bhima" ng-model="data.end" required >
-      </div>
+        <div class="form-group">
+          <div class="radio">
+            <label>
+              <input type="radio" name="option_year" id="one" value="true" ng-model="data.year" ng-true-value="true" checked>
+              {{ 'FISCAL_YEAR.ONE_YEAR' | translate }}
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" name="option_year" id="custom" value="false" ng-model="data.year">
+              {{ 'FISCAL_YEAR.SPECIFY' | translate }}
+            </label>
+          </div>
+        </div>
 
-      <button id="submitFiscal" ng-disabled="form.$invalid" ng-click="submitNewYear()" class="btn btn-sm btn-success">
-        {{ 'UTIL.SUBMIT' | translate }}
-      </button>
-    </form>
+        <div class="form-group">
+          <label for="endMonth" class="required">{{ 'FISCAL_YEAR.END_MONTH' | translate }}</label>
+          <input ng-disabled="isFullYear()" type="month" id="endMonth" class="form-bhima" ng-model="data.end" required >
+        </div>
+
+        <div class="form-group" ng-if="fiscal.data">
+          <label class="required">{{ 'FISCAL_YEAR.PREVIOUS_YEAR' | translate }}</label>
+          <select class="form-bhima" ng-model="data.previous_fiscal_year" ng-options="year.id as year.fiscal_year_txt for year in fiscal.data">
+            <option value="" disabled="disabled">--- {{ 'SELECT.FISCAL_YEAR' | translate }} ---</option>
+          </select>
+        </div>
+
+        <button id="submitFiscal" ng-disabled="form.$invalid" ng-click="stepTwo()" class="btn btn-sm btn-success">
+          {{ 'UTIL.SUBMIT' | translate }}
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div ng-switch-when="2a">
+    TODO
+  </div>
+
+  <div ng-switch-when="2b">
+    <table class="table table-condensed">
+      <thead>
+        <tr>
+          <th style="width:15%;">{{ 'COLUMNS.ACCOUNT_NUMBER' | translate }}</th>
+          <th style="width:55%;">{{ 'COLUMNS.ACCOUNT_TEXT' | translate }}</th>
+          <th style="width:20%">{{ 'COLUMNS.BALANCE' | translate }}</th>
+        </tr>
+      </thead>
+    </table>
+    <table class="table table-condensed" style="max-height:500px;overflow-y:auto;">
+      <tbody>
+        <tr ng-repeat="account in accounts.data">
+          <td style="width:15%;">{{ account.account_number }}</td>
+          <td style="width:55%;">{{ account.account_txt }}</td>
+          <td style="width:20%">
+            <input type="number" ng-model="account.balance" required>
+          </td>
+        </tr>
+      </thead>
+    </table>
+    <table class="table table-condensed">
+      <tfoot>
+        <tr>
+          <td>
+            <button class="btn btn-sm btn-default" ng-click="stepOne()">
+              {{ 'FISCAL_YEAR.CREATE_YEAR_DETAILS' | translate }}
+            </button>
+            <button class="btn btn-sm btn-default" ng-click="stepThree()">
+              {{ 'FISCAL_YEAR.SUBMIT_YEAR' | translate }}
+            </button>
+          <td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div ng-switch-when="3">
+    TODO
   </div>
 </div>

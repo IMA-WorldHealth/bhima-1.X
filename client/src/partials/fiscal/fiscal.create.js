@@ -4,16 +4,40 @@ angular.module('bhima.controllers')
   'validate',
   'appstate',
   function ($scope, validate, appstate) {
-    var data, dependencies = {};
+    var data,
+        imports = $scope.$parent,
+        dependencies = {};
 
-    // Set up default option for 
+    // Set up default option for year
     data = $scope.data = { year : true };
 
-    // expose methods to the $scope
-    $scope.submitNewYear = submitNewYear;
+    // module steps
+    var steps = [
+      {
+        id : '1',
+        key : 'FISCAL_YEAR.CREATE_YEAR_DETAILS'
+      },
+      {
+        id : '2a',
+        key : 'FISCAL_YEAR.IMPORT_OPENING_BALANCES'
+      },
+      {
+        id : '2b',
+        key : 'FISCAL_YEAR.CREATE_BEGINNING_BALANCES'
+      },
+      {
+        id : '3',
+        key : 'FISCAL_YEAR.CREATE_SUCCESS'
+      }
+    ];
+
+    // expose methods and data to the $scope
     $scope.resetBalances = resetBalances;
     $scope.isFullYear = isFullYear;
     $scope.calculateEndDate = calculateEndDate;
+    $scope.stepOne = stepOne;
+    $scope.stepTwo = stepTwo;
+    $scope.stepThree = stepThree;
 
     // dependencies
     dependencies.accounts = {
@@ -32,14 +56,27 @@ angular.module('bhima.controllers')
 
     // fires on controller load
     function onLoad() {
-      console.log('[Validate]', dependencies);
+      // expose the fiscal years from the parent to the view
+      $scope.fiscal = imports.fiscal;
+
+      // Trigger step one
+      stepOne();
+
       validate.process(dependencies)
       .then(function (models) {
-        
+        console.log('[models]', models);
+
+
+        // sort the accounts based on account number
+        sortAccounts(models.accounts);
+
+        // add account depth onto the account list
+        parseAccountDepth(models.accounts.data, models.accounts);
+
         // loads the accounts and exposes to the view
         angular.extend($scope, models);
 
-        // initialise account balancesk
+        // initialise account balances
         resetBalances();
       });
     }
@@ -48,27 +85,62 @@ angular.module('bhima.controllers')
     function resetBalances() {
       $scope.accounts.data.forEach(function (row) {
         row.account_number = String(row.account_number); // required for sorting to work properly
-        row.debit = 0;
-        row.credit = 0;
+        row.balance = 0;
       });
     }
 
-    // TODO - impliment this
-    function submitNewYear() {
-      var d = {
-        enterpriseId : $scope.enterprise.id
-      };
-      
-      // submit to the server for processing
+    // sorts accounts based on account_number
+    function sortAccounts(accountModel) {
+      var data = accountModel.data;
 
-      // connect.fetch('/fiscal/' + $scope.enterpriseId  + '/' + Number(model.start) + '/' + Number(model.end) + '/' + model.description);
+      data.sort(function (a, b) {
+        var left = String(a.account_number), right = String(b.account_number);
+        return (left === right) ? 0 : (left > right ? 1 : -1);
+      });
+
+      accountModel.recalculateIndex();
+    }
+
+    // adds acount depth into the equation
+    function parseAccountDepth(accountData, accountModel) {
+      accountData.forEach(function (account) {
+        var parent, depth = 0;
+
+        //TODO if parent.depth exists, increment and kill the loop (base case is ROOT_NODE)
+        parent = accountModel.get(account.parent);
+        depth = 0;
+        while (parent) {
+          depth += 1;
+          parent = accountModel.get(parent.parent);
+        }
+        account.depth = depth;
+      });
+    }
+
+    // STEP 1: transitions module to create fiscal year details
+    function stepOne() {
+      $scope.step = steps[0];
+    }
+
+    // STEP 2: transitions module state to either
+    //  1) import opening balances from a previous fiscal year
+    //  2) create new opening balances
+    function stepTwo() {
+      var hasPreviousYear = angular.isDefined(data.previous_fiscal_year);
+      $scope.step = steps[hasPreviousYear ?  1 : 2];
+    }
+
+    // STEP 3: submits the year details
+    function stepThree() {
+      $scope.step = steps[3];
     }
 
     // returns true if the fiscal year is for 12 months
     function isFullYear() {
-      return data.year === 'true';
+      return data.year === true;
     }
 
+    // gets the end date of the fiscal year
     function calculateEndDate() {
       if (isFullYear()) {
         var start = data.start;
@@ -79,7 +151,7 @@ angular.module('bhima.controllers')
         }
       }
     }
-    
+
     // collect the enterprise id and load the controller
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
