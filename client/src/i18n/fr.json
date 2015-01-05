@@ -203,7 +203,7 @@
   },
 
   "SEX" : {
-    "M" : "H",
+    "M" : "M",
     "F" : "F"
   },
 
@@ -509,168 +509,6 @@
     "MONTH"       : "Ce Mois",
     "SEARCH"      : "Rechercher",
     "ALL_PROJECTS" : "Tous Projets"
-  },
-
-  "PATIENT_STANDING"     : {
-    "TITLE"              : "Etat Financier du Patient",
-    "PLACEHOLDER"        : "Chercher le patient ...",
-    "CREATED_ON"         : "Crée en",
-    "ACCOUNT_NUMBER"     : "Numéro de Compte",
-    "ACCOUNT_BALANCE"    : "Balance Compte",
-    "LAST_PURCHASE_DATE" : "Dernier date d'achat",
-    "LAST_PAYMENT_DATE"  : "Dernier date payement",
-    "OUTSTANDING_BILLS"  : "Factures impayées et autres paiements",
-    "IMG"                : "Photo du patient",
-    "NO_TRANSACTION"     : "pas des transaction"
-  },
-
-  "PATIENT_RECORDS"     : {
-    "TITLE"             : "Historique des Patients",
-    "ADVANCED_SEARCH"   : "Recherche Détaillée",
-    "FIRST_NAME"        : "Prénom",
-    "LAST_NAME"         : "Nom",
-    "YOB"               : "Année de Naissance",
-    "SEX"               : "Sex",
-    "MALE"              : "Homme",
-    "FEMALE"            : "Femme",
-    "SEARCH"            : "Exécuter",
-    "VIEW_ALL"          : "Voir Tous les Patients",
-    "RESULTS"           : "Résultats",
-    "VIEW_PATIENT_CARD" : "Carte du Patient",
-    "INFO_SEARCH"       : "Tous les champs laissés vides ne seront pas inclus dans la recherche, les champs inclus seront marqués d'un ",
-    "REMOVE_LOCATION_SEARCH"  : "Enlever la localisation dans la recherche",
-    "INCLUDE_LOCATION_SEARCH" : "Inclure la localisation dans la recherche"
-  },
-
-  "FISCAL_YEAR"             : {
-    "TITLE"                 : "Année Fiscale",
-    "MANAGEMENT"            : "Gestion",
-    "RECORDS"               : "Liste des Années Fiscale",
-    "NEW"                   : "Nouvelle Année",
-    "DESC"                  : "Description",
-    "START_DATE"            : "Début Date",
-    "START_MONTH"           : "Début Mois",
-    "ONE_YEAR"              : "Une Année",
-    "SPECIFY"               : "Specifier",
-    "END_MONTH"             : "Fin Mois",
-    "NAME"                  : "Nom",
-    "LOCK"                  : "Bloquer Cette Année Fiscale",
-    "TOTAL_MONTH"           : "Total Months",
-    "FIRST_VOUCHER"         : "Premier No Voucher",
-    "LAST_VOUCHER"          : "Dernier No Voucher",
-    "POSTING_FROM"          : "Poster De",
-    "NO_RECORDS"            : "fNo Fiscal Year Records Found.",
-    "POSTING_TO"            : "Poster jusqu'au",
-    "PERIODS"               : "Périodes",
-    "FISCAL_YEAR_SELECTION" : "Sélection de l\"Année Fiscale",
-    "HELP_TXT"              : "Crée et Gere l'année fiscale du system.",
-    "DESCRIPTION"           : "Description",
-    "ALERT_ONE"             : "Il n\"y a aucune année fiscale enregistrée pour l\"entreprise ",
-    "ALERT_TWO"             : ". Les années fiscales sont requises pour grouper les transactions et produire les rapports.",
-    "EDIT"                  : " Editer l'année fiscale sélectionnée; Bloquer et debloquer des périodes and voir l'ouverture des balances.",
-    "CREATION"              : "Créer une nouvelle année fiscale",
-    "VIEW_BALANCE"          :"Voir Balance D'ouverture"
-  },
-
-  "STOCK" : {
-    "MAIN" : {
-      "TITLE"               : "Gestion de Stock",
-      "MODULES"             : "Modules Disponible",
-      "UTILITIES"           : "Utilitaires de Stock",
-      "CONFIGURE_WAREHOUSE" : "Sélectionner dépôt",
-      "WAREHOUSE_INFO_1"    : "Configurer le dépôt utiliser par defaut dans ce module.",
-      "WAREHOUSE_INFO_2"    : "Toutes operations des stock sera affectée au dépôt sélectionner.",
-      "WAREHOUSE_INFO_3"    : "Votre choix peut-etre changer quand vous voulez.",
-      "REPORTS"             : "Rapports Stock",
-      "CONFIRM"             : "Voulez-vous vraiment gérer le stock avec le dépôt : "
-    },
-    "ENTRY" : {
-      "KEY"                 : "Entrée de Stock",
-      "TITLE"               : "Entrée de Stock",
-      "SELECT"              : "Sélectionner",
-      "NUM_ITEMS"           : "Nombre Items",
-      "ENTRY_MANIFEST"      : "Document des Entrées",
-      "SELECT_DEPOT"        : "Sélectionner un dépôt",
-      "FIND_PURCHASE_ORDER" : "Choisir une Ordre d'Achat",
-      "ORDER_DETAIL"        : "Détails Ordre",
-      "ASSIGN_LOTS"         : "Affecter lots",
-      "CANCEL"              : "Annuler",
-      "LOT_NUMBER"          : "No. Lot",
-      "ORDER_DETAILS"       : "Détails Ordre",
-      "REMAINING"           : "Rester",
-      "ASSIGNED"            : "Affectée",
-      "REVIEW"              : "Revoir les affectations",
-      "REQUESTED_BY"        : "Demandée par",
-      "ADD_LOT"             : "Ajouter lot",
-      "ENTRY_DATE"          : "Date d'entrée",
-      "ENTER_STOCK"         : "Faire entrer les Stock",
-      "REPORT"              : "Rapport d'entrer",
-      "ERR_EMPTY_PARAMTER"  : "Erreur paramétre manquant",
-      "WRITE_SUCCESS"       : "Enregistrement avec succès",
-      "WRITE_ERROR"         : "Enregitrement sans succès"
-    },
-    "EXIT" : {
-      "KEY" : "Stock Distribution"
-    },
-    "EXIT_SERVICE" : {
-        "KEY" : "Distribution stock au services"
-    },
-    "DISTRIBUTION_RECORDS" : {
-        "KEY"                       : "Historique des distributions aux patients",
-        "REVERSING_DISTRIBUTION"    : "Annuler la distribution",
-        "REVERSING_TITLE"           : "Annulation de la distribution",
-        "SUBMIT"                    : "Soumettre",
-        "ERROR"                     : "Cette consommation a déjà été inversée dans le stock",
-        "SUCCESS"                   : "Opération avec succès"
-    },  
-    "DISTRIBUTION_SERVICE_RECORDS" : {
-        "KEY"                       : "Historique des distributions aux services",
-        "REVERSING_DISTRIBUTION"    : "Annuler la distribution",
-        "REVERSING_TITLE"           : "Annulation de la distribution",
-        "SUBMIT"                    : "Soumettre",
-        "ERROR"                     : "Cette consommation a déjà été inversée dans le stock",
-        "SUCCESS"                   : "Opération avec succès"
-    },        
-    "LOSS"     : {
-      "KEY"    : "Perte stock",
-      "TITLE"  : "Perte stock",
-      "NO_DEPOT" : "Pas de dépôt",
-      "LOSS_GENERAL_INFO" : "Sommaire",
-      "SUBMIT"              : "Soumettre"
-    },
-    "MOVEMENT" : {
-      "KEY"    : "Movements des Stock",
-      "TITLE"  : "Movements des Stock",
-      "FORM"   : "Documents des Movements",
-      "INVALID_SESSION" : "La page a reçu une configuartion des données invalide, Essayer via la gestion de stock ou contacter l'administrateur systeme.",
-      "ONLY_ONE_DEPOT"   : "Un dépôt seulemet etait enregistrement avec BHIMA. Le movement de stock necessite un dépôt source et un dépôt destination",
-      "DEPOT_FROM"       : "Dépôt Source",
-      "DEPOT_TO"       : "Dépôt Destination",
-      "INVENTORY"      : "Inventaire",
-      "INVALID_TRANSFERT_QTE"  : "Quantité transferée invalide",
-      "SELECT_LOT" : "Sélectionner beaucoup de",
-      "SUCCESS"    : "Succès"
-    },
-    "SEARCH" : {
-      "KEY"          : "Rechercher Items Stock",
-      "TITLE"        : "Rechercher Items Stock",
-      "NO_SELECTION" : "Aucune item selectonner.  S'il vous plait, choisissez une item en haut.",
-      "MANIFEST"     : "Documents des Stocks"
-    },
-    "EXPIRE" : {
-      "KEY" : "Expiration du stock"
-    },
-    "REPORT" : {
-      "STOCK_COUNT"       : "Stock Count",
-      "DATE"              : "Date",
-      "TITLE"             : "Etat du stock",
-      "EXPIRING_STOCK"    : "Expiration Stock",
-      "ITEM_IN_STOCK"     : "Article en stock"
-    },
-    "DONATION" : {
-      "KEY"     : "Entrer Donation",
-      "TITLE"   : "Entrer Donation"
-    }
   },
 
   "COLUMNS" : {
@@ -1124,7 +962,8 @@
     "AVAILABLE"              : "Prescriptions disponibles",
     "NO_SALE_FOUND"          : "Aucune données trouvés concernant la vente pour le patient",
     "SHOW_ALL_SALES"         : "Afficher toutes les ventes pour ce patient",
-    "HAS_EXPIRED"            : " a expriré et ne peut être utilisé, contacter le Gestionnaire de Stock"
+    "HAS_EXPIRED"            : " a expriré et ne peut être utilisé, contacter le Gestionnaire de Stock",
+    "NO_DISTRIB_PATIENT"     : "Aucune distribution aux patients dans cette plage de temps"
   },
 
   "DISTRIBUTION_SERVICE" : {
@@ -1547,6 +1386,7 @@
         "SUBMIT_ORDER"    : "Soumettre Ordre Achat",
         "RESPONSABLE"     : "Responsable",
         "WRITE_SUCCESS"   : "Ordre d'achat effectuer avec succès.",
+        "RESPONSABLE"     : "Responsable",
         "TOTAL_COST"      : "Coût total",
         "BANK_ACCOUNT"    : "Compte banque",
         "SELECT_CREDITOR" : "Séléctionner un fournisseur",
@@ -1564,7 +1404,6 @@
         "TITLE"         : "Voir les ordres d'achats"
     }
   },
-
 
   "SALE"               : {
     "SALE"             : "Facture",
@@ -1759,21 +1598,6 @@
     "EDIT"             : "Editer Secteur"
   },
 
-  "PROVINCE"           : {
-    "TITLE"            : "GESTION DES PROVINCES",
-    "LOCATION_MANAGER" : "Gestion des Emplacements",
-    "ADD"              : "Ajouter Nouveau Province",
-    "REGISTERED"       : "Provinces Enregistrées",
-    "NAME"             : "Nom",
-    "COUNTRY"          : "Pays",
-    "ACTIONS"          : "Actions",
-    "CONFIGURATION"    : "Configuration de Gestion des Provinces",
-    "DESCRIPTION"      : "Ce module vous aider à gérer les provinces, A gauche vous voyez les provinces enregistrées. utiliser ce module pour créer, modifier Et Effacer des provinces. ",
-    "REGISTER"         : "Enregistrer une Province",
-    "PROVINCE_NAME"    : "Nom Province",
-    "EDIT"             : "Editer Province"
-    },
-
   "VILLAGE"            : {
     "TITLE"            : "Gestion des Villages",
     "LOCATION_MANAGER" : "Gestion des Emplacement",
@@ -1788,350 +1612,6 @@
     "NAME_VILLAGE"     : "Nom de Village",
     "EDIT"             : "Editer Village"
   },
-
-  "UPDATE_STOCK"     : {
-    "TITLE"          : "Mettre à Jour le Stock",
-    "TIMESTAMP"      : "Date",
-    "FIND_STOCK"     : "Rechercher Item",
-    "STOCK_HISTORY"  : "Historique Stock",
-    "SUBMIT"         : "Soumettre",
-    "SEARCH_TEXT"    : "Rechercher par code ou description",
-    "UPDATE_SUCCESS" : "Les stocks sont mettre à jour",
-    "UPDATE_FAILURE" : "La requette ne passe pas",
-    "INVALID_PRICE"  : "Le Prix est invalide",
-    "EMPTY_HISTORY"  : "L'Historique n'est pas dispinible !"
-  },
-
-  "SWAPDEBITOR"            : {
-    "TITLE"                : "Affectation de Groupe des Débiteurs",
-    "PATIENT"              : "Patient",
-    "NAME"                 : "Noms",
-    "AGE"                  : "Age",
-    "GENDER"               : "Sexe",
-    "ORIGIN"               : "Origines",
-    "DEBTOR_GROUP"         : "Sélectionner un nouveau groupe des debiteur",
-    "PATIENT_REGISTRATION" : "Enregistrement Patient",
-    "DANGER"               : "Erreur pendant le changement de groupe de debiteur",
-    "ERR_HTTP"             : "Erreur pendant le changement de groupe de debiteur",
-    "ERR_MISSING"          : "Erreur, il n'y a pas un debiteur sélectionner",
-    "SUCCESS"              : "Changement avec succès"
-  },
-
-  "ALLTRANSACTIONS" : {
-    "TITLE"         : "ETAT DES TOUTES LES TRANSACTIONS",
-    "SEARCH"        : "valider",
-    "DAY"           : "Aujoird'hui",
-    "WEEK"          : "Cette Semaine",
-    "MONTH"         : "Ce mois",
-    "FISCAL_YEAR"   : "Cette Année Fiscale",
-    "FROMSTARTING"  : "Depuis le Début",
-    "SELECTED"      : "ETAT DES TRANSACTIONS POUR LES COMPTES : ",
-    "DEFAULT"       : "ETAT DES TOUTES LES TRANSACTIONS"
-  },
-
-  "CAUTION"        : {
-    "TITLE"        : "Gestion des Cautions",
-    "CASH"         : "Caisse Auxilliaire",
-    "PATIENT"      : "Informations Patient",
-    "NAME"         : "Noms",
-    "AGE"          : "Age",
-    "GENDER"       : "GENDER",
-    "ORIGIN"       : "Origines",
-    "INFO_CAUTION" : "Information sur la caution",
-    "CAUTION"      : "Caution",
-    "PAY"          : "Payer",
-    "UNIT_ERROR"   : "La quantite est trop grande!"
-  },
-
- "CONVENTION"            : {
-    "TITLE"              : "Convention",
-    "CASH"               : "Caisse Principale",
-    "INFO"               : "Informations financiere sommaire",
-    "PAYEMENT"           : "Boite de paie",
-    "MONTANT"            : "Montant",
-    "SUCCES"             : "Operation reussie !",
-    "DANGER"             : "Erreur  Une erreur se produite pendant le posting",
-    "TOT"                : "Total",
-    "CRUMB_PCASH"        : "caisse principale",
-    "CRUMB_CONVENTION"   : "convention",
-    "DEFAULT_CASHBOX"    : "Caisse",
-    "EXCHANGE_RATE_OPT"  : "Voulez - vous définir le taux ?",
-    "LOADING_ERROR"      : "Erreur durant le chargement, verifier que le taux d'echange est défini, si lprobleme persiste constacter l'administrateur",
-    "DEFAULT_CURRENCY"   : "Monnaie",
-    "NO_CONVENTION"      : "Pas des convention sélectionnée",
-    "NO_RECORD"          : "Pas d'enregistrement pour cette convention"
-  },
-
-  "PCASH"                   : {
-    "TITLE"                 : "Gestion de la Caisse Principale",
-    "INCOME"                : "Recette",
-    "EXPENSE"               : "Dépense",
-    "SOME_REPORT"           : "Rapport sommaire des activites (20 derniers)",
-    "MANAGER_CONFIGURATION" : "Gestion de la Caisse Principale",
-    "DESCRIPTION"           : "Ce module vous permettra de realiser de facoun automatisée toutes les operations liéesa la caisse pricipale. Utiliser ce module pour gérer les recettes et depenses avec aisance."
-  },
-
-  "INCOME"        : {
-    "TITLE"       : "Caisse Principale: Dépense",
-    "TRANSFER"    : "Transfert",
-    "CONVENTION"  : "Convention",
-    "OTHER"       : "Autre",
-    "PCASH"       : "Caisse Principale",
-    "SOME_REPORT" : "Rapport Sommaire de Recettes (20 derniers)",
-    "OVERVIEW"    : "Caisse Principale                                                                                                                                                                        : Gestion des Recettes",
-    "INFO"        : "Ce sous module de la caisse principale, se charge de l'automatisation des recettes. Utiliser ce modules pour debuter la caisse principale par transfert, et autre forme d'encaissement",
-    "SOURCE"      : "Source",
-    "EXPECTED"    : "Attendu",
-    "RECEIVED"    : "Recu"
-  },
-
-  "JOURNAL_VOUCHER"  : {
-      "TITLE"                 : "Ajout Transaction",
-      "ADD_ROW"               : "Ajouter Ligne",
-      "ADD_COMMENT"           : "Ajouter un Commentaire",
-      "ADD_REFERENCE_DOCUMENT" : "Ajouter la référence du document",
-      "POSTING_JOURNAL"       : "Posting Journal",
-      "TAB_LOCK_COLONNE"      : "Colonne par Colonne",
-      "TAB_LOCK_LINE"         : "Ligne par Ligne",
-      "DATE"                  : "Date Transaction",
-      "DESCRIPTION"           : "Description",
-      "SUBMIT"                : "Soumettre",
-      "DEFAULT_CURRENCY"      : "Monnaie",
-      "TRANS_ID"              : "Transaction ID ",
-      "LOG"                   : "Log Journal ID "
-  },
-
-  "TRANSFER"        : {
-    "TITLE"       : "Transfert",
-    "TRANSFER"    : "Transfert",
-    "CONVENTION"  : "Convention",
-    "PCASH"       : "Caisse Principale",
-    "SOME_REPORT" : "Rapport Sommaire de Recettes (20 derniers)",
-    "OVERVIEW"    : "Caisse Principale                                                                                                                                                                        : Gestion des Recettes",
-    "INFO"        : "Ce sous module de la caisse principale, se charge de l'automatisation des recettes. Utiliser ce modules pour debuter la caisse principale par transfert, et autre forme d'encaissement",
-    "SOURCE"      : "Source",
-    "EXPECTED"    : "Attendu",
-    "AMOUNT"      : "Montant",
-    "PROJECT"     : "Projet",
-    "CAISSE"      : "Caisse",
-    "CURRENCY"    : "Monnaie",
-    "NAVIGATION"  : "Naviguation",
-    "NO_CURRENCY" : "Pas de monnaie sélectionnée",
-    "DATA_ERROR"  : "Erreur des données"
-  },
-
-  "CASH_PURCHASE" : {
-    "TITLE"       : "Dépense de l'ordre d'achat",
-    "NOT_FOUND"   : "Aucun ordre d'achat trouvé !",
-    "FILTER"      : "Filtrer les ordres d'achats",
-    "SELECT_PURCHASE" : "Sélectionner ordre d'achat",
-    "CONFIRM_PAY"  : "Confirmer payement",
-    "DETAILS"      : "Détails",
-    "CONFIRM_PAY_OF" : "Confirmer payement de  ",
-    "TO"             : "à ",
-    "DISCARD"        : "Annuler l'ordre d'achat"
-  },
-
-  "DASHBOARD" : {
-    "TITLE" : "Tableau de bord"
-  },
-
-  "SETTINGS"    : {
-    "TITLE"     : "BHIMA Paramètres",
-    "LANGUAGE"  : "Langue",
-    "LAST_PAGE" : "Dernier Page Visite",
-    "HOME_PAGE" : "Page Defaut"
-  },
-
-  "PURCHASE"        : {
-    "TITLE"         : "Ordre Achat",
-    "ADD_SUPPLIER"  : "Ajouter Fournisseur",
-    "CONFIGURE"     : "Paramétrage",
-    "SALE_DATE"     : "Date de creation",
-    "SUPPLIER"      : "Fournisseur",
-    "RESPONSIBLE"   : "Employé Responsable",
-    "ORDER"         : "Ordre",
-    "DATE"          : "Date",
-    "NOTE"          : "Note",
-    "PURCHASE_ITEM" : "Items Ordonnes",
-    "ADD_LINE_ITEM" : "Ajouter item",
-    "TOTAL"         : "Total",
-    "SUBMIT"        : "Soumettre",
-    "SUBMIT_ORDER"  : "Soumettre Ordre Achat",
-    "RESPONSABLE"   : "Responsable",
-    "TOTAL_COST"    : "Coût total"
-  },
-
-  "PRIMARY_CASH" : {
-    "DEFAULT_CURRENCY" : "Monnaie",
-    "SELECT_CASHBOX" : "Sélectionner une Caisse",
-    "TITLE"        : "Caisse Principale",
-    "EXPENSES"     : "Dépenses",
-    "INCOMES"      : "Recettes",
-    "GENERIC"      : "Générique",
-    "NAVIGATION"   : "Naviguation",
-    "CONFIGURE"    : "Configuration",
-    "HOME"         : "Caisse Principale",
-    "LOADING_ERROR" : "Erreur lors du chargement des dependances",
-    "EXPENSE" : {
-      "PAYROLL"                 : "Paie des employés",
-      "MULTI_PAYROLL"           : "Payroll Multiple",
-      "PAYABLE_EMPLOYEE"        : "Liste des employés payables",
-      "PURCHASE"                : "Achat",
-      "GENERIC_TITLE"           : "Dépenses Génériques",
-      "GENERIC_RECEIPT"         : "Recettes Génériques",
-      "REFERENCE_DOCUMENT_ID"   : "Référence Document ID",
-      "RECIPIENT"               : "Destinataire",
-      "PURPOSE"                 : "Motif",
-      "CREDITOR"                : "Créditeur",
-      "EXPENSE_DATE"            : "Date",
-      "AMOUNT"                  : "Montant",
-      "SUMMARY"                 : "Sommaire",
-      "INFO_GLOBAL"             : "Informations globales",
-      "WORKING_DAY"             : "Jours prestés",
-      "HOLLY_DAY"               : "Vacances",
-      "OFF_DAY"                 : "Férié",
-      "HOUSING"                 : "Logement",
-      "FAM_ALLOW"               : "Alloc. Fam",
-      "TRANSPORT"               : "Transport",
-      "SENIORITY"               : "Ancienete",
-      "ADVANTAGES"              : "Avantages",
-      "SALARY"                  : "Salaire net",
-      "TAXES_OTHERS"            : "Taxes employé et autres déductions",
-      "SALARY_AV"               : "Avance sur salaire",
-      "INSS"                    : "Cot. INSS",
-      "IPR"                     : "IPR",
-      "OTHER_DEDUCT"            : "Autres déductions" ,
-      "SELECT_PERIOD"           : "Sélectionner une période de paiement",
-      "DAYS"                    : "Jours",
-      "RUBRICS"                 : "Rubriques",
-      "ONEM"                    : "ONEM",
-      "IERE"                    : "IERE",
-      "INPP"                    : "INPP",
-      "TAXES_OTHERS_ENTERPRISE" : "Taxes entreprise et autres déductions",
-      "TAX_PAYMENT"             : "Paiement Taxes",
-      "SELECT_ACCOUNT"          : "Sélectionner un compte",
-      "ACCOUNT"                 : "Compte",
-      "ENTERPRISE_TAX_PAYMENT"  : "Paiement Taxes Entreprise",
-      "NO_DATA"                 : "Aucune donnée disponible",
-      "SALARY_PAYMENT"          : "Paiement Effectif du Salaire",
-      "COTISATIONS"             : "Cotisations",
-      "COTISATION_PAYMENT"      : "Paiement Cotisations",
-      "CURRENCY_NOT_FOUND"      : "Monnaie non definie !",
-      "PAYMENT_PERIOD_NOT_FOUND" : "Periode de paiement non definie !",
-      "SEARCH_EMPLOYEE"          : "Rechercher employé(s) ...",
-      "SALARY_SUCCESS"           : "Paiement effectif de : "
-    },
-    "INCOME" : {
-      "TRANSFER"              : "Transfert",
-      "CONVENTION"            : "Convention",
-      "REFERENCE_DOCUMENT_ID" : "Référence Document ID",
-      "RECIPIENT"             : "Destinataire",
-      "LABEL"                 : "Label",
-      "DEBTOR"                : "Débiteur",
-      "DATE"                  : "Date recette",
-      "AMOUNT"                : "Montant",
-      "GENERIC" : {
-        "TITLE"   : "Recette Générique",
-        "RECEIPT" : "Réception"
-      },
-      "SELECT_ACCOUNT"        : "Sélectionner un compte",
-      "ACCOUNT"               : "Compte"
-    },
-    "REPORT" : {
-        "INCOME" : {
-            "TITLE" : "Rapport des Recettes",
-            "EMPTY_REPORT" : "Aucun enregistrement trouvé !"
-        },
-        "EXPENSE" : {
-            "TITLE" : "Rapport des Dépenses",
-            "EMPTY_REPORT" : "Aucun enregistrement trouvé !"
-        }
-    }
-  },
-
-  "DISTRIBUTION" : {
-    "TITLE"                 : "Distribution des Médicaments aux malades",
-    "SALE_DETAILS"          : "Détails des ventes",
-    "ADD_ROW"               : "Ajouter Item",
-    "DESCRIPTION"           : "Description",
-    "SUBMIT"                : "Soumettre",
-    "PATIENT_COVERED"       : "Patient est couvert par la convention",
-    "APPLIES_GLOBALLY"      : "Appliquer globalement",
-    "APPLIES_TO_ITEM"       : "Appliquer par item",
-    "TOTAL"                 : "Total",
-    "SELECTED_SALE_DETAILS" : "Détail de la vente",
-    "NUM_FACTURE"           : "Numéro Facture ",
-    "SALE_DATE"             : "Date de Vente",
-    "COST"                  : "Coût",
-    "LOT_DETAILS"           : "Détails des Lots",
-    "EMPTY_MESSAGE"         : "Aucune vente sélectionnée !",
-    "INVOICE_NOT_PAID"      : "Cette vente n'a pa été payée !",
-    "INVOICE_PAID"          : "Cette vente a été totalement payée !",
-    "INVOICE_PARTIALLY_PAID" : "Cette vente a été partiellement payée !",
-    "SALE"                   : "Vente",
-    "DATE"                   : "Date",
-    "SALE_STATUS"            : "Etat de la vente",
-    "SALE_BALANCE"           : "Balance de la vente",
-    "VIEW_SALE"              : "Voir détails vente",
-    "NOT_CONSUMED"           : "Non consommée",
-    "CONSUMED"               : "Consommée",
-    "ASSIGN"                 : "Assignation lots",
-    "SELECT"                 : "Choisir vente pour distribution",
-    "RECOMANDED"             : "Lot recommande",
-    "NOT_CONSUMABLE"         : "Non consommable",
-    "SELECT_FROM"            : "Sélectionne du lot",
-    "LOT_NUMBER"             : "Numéro lot",
-    "REMAINING_QUANTITY"     : "Quantité restante",
-    "EXP_DATE"               : "Date d'expiration",
-    "LOCATE_PATIENT"         : "Chercher le patient",
-    "SLECT_PRESCRIPTION"     : "Sélectionner la vente",
-    "ALLOCATE_MEDECINE"      : "Allouer les médicaments",
-    "NONE"                   : "Cet item n'existe dans le stock du dépôt, contacter l'administrateur",
-    "LIMITED_STOCK"          : "Il n'y a pas assez de stock pour couvrir la vente, contacter l'administrateur",
-    "EXPIRED"                : "Le stock disponible ne peut pas etre utilisé comme il est expire, contacter l'administrateur.",
-    "AVAILABLE"              : "Prescriptions disponibles",
-    "NO_SALE_FOUND"          : "Aucune données trouvés concernant la vente pour le patient",
-    "SHOW_ALL_SALES"         : "Afficher toutes les ventes pour ce patient",
-    "HAS_EXPIRED"            : " a expriré et ne peut être utilisé, contacter le Gestionnaire de Stock",
-    "NO_DISTRIB_PATIENT"     : "Aucune distribution aux patients dans cette plage de temps"
-  },
-
-    "DISTRIBUTION_SERVICE" : {
-    "TITLE"                 : "Distribution au service",
-    "ADD_ROW"               : "Ajouter Item",
-    "DESCRIPTION"           : "Description",
-    "SUBMIT"                : "Soumettre",
-    "APPLIES_GLOBALLY"      : "Appliquer globalement",
-    "APPLIES_TO_ITEM"       : "Appliquer par item",
-    "TOTAL"                 : "Total",
-    "COST"                  : "Coût",
-    "LOT_DETAILS"           : "Détails des Lots",
-    "CHOOSE"                : "Sélectionner le service",
-    "SUMMARY"               : "Sommaire",
-    "TAPE"                  : "Taper code, nom médicament",
-    "LOT_NUMBER"            : "Numéro lot",
-    "EXPIRING_DATE"         : "Date expiration",
-    "REMAINING_QTY"         : "Quantité restante",
-    "DISTRIBUTE"            : "Distribuer"
-  },
-
-  "VILLAGE"            : {
-    "TITLE"            : "Gestion des Villages",
-    "LOCATION_MANAGER" : "Gestion des Emplacement",
-    "NEW_VILLAGE"      : "Ajouter Village",
-    "REGISTERED"       : "Villages Enregistrés",
-    "NAME"             : "Nom",
-    "SECTOR"           : "Commune",
-    "ACTIONS"          : "Actions",
-    "CONFIG"           : "Configuration de Gestion des Villages",
-    "INFO"             : "Ce module vous aider à gérer les villages.",
-    "REGISTER"         : "Enregistrer une Village",
-    "NAME_VILLAGE"     : "Nom de Village",
-    "EDIT"             : "Editer Village"
-  },
-
-
 
   "EMPLOYEE" : {
     "TITLE" : "Gestion des employés",
@@ -2342,7 +1822,8 @@
       "REPORT"              : "Rapport d'entrer",
       "ERR_EMPTY_PARAMTER"  : "Erreur paramétre manquant",
       "WRITE_SUCCESS"       : "Enregistrement avec succès",
-      "WRITE_ERROR"         : "Enregitrement sans succès"
+      "WRITE_ERROR"         : "Enregitrement sans succès",
+      "DIRECT_PURCHASE_TYPE" : "C'est un ordre d'achat direct"
     },
     "EXIT" : {
       "KEY" : "Stock Distribution"
@@ -2350,6 +1831,22 @@
     "EXIT_SERVICE" : {
         "KEY" : "Distribution stock au services"
     },
+    "DISTRIBUTION_RECORDS" : {
+        "KEY"                       : "Historique des distributions aux patients",
+        "REVERSING_DISTRIBUTION"    : "Annuler la distribution",
+        "REVERSING_TITLE"           : "Annulation de la distribution",
+        "SUBMIT"                    : "Soumettre",
+        "ERROR"                     : "Cette consommation a déjà été inversée dans le stock",
+        "SUCCESS"                   : "Opération avec succès"
+    },  
+    "DISTRIBUTION_SERVICE_RECORDS" : {
+        "KEY"                       : "Historique des distributions aux services",
+        "REVERSING_DISTRIBUTION"    : "Annuler la distribution",
+        "REVERSING_TITLE"           : "Annulation de la distribution",
+        "SUBMIT"                    : "Soumettre",
+        "ERROR"                     : "Cette consommation a déjà été inversée dans le stock",
+        "SUCCESS"                   : "Opération avec succès"
+    },            
     "LOSS"     : {
       "KEY"    : "Perte stock",
       "TITLE"  : "Perte stock",
@@ -2498,17 +1995,17 @@
   },
 
   "CONFIRM" : {
-    "TITLE" : "Confirmation paiement ordre achat",
-    "PARENT" : "Gestion des ordres d'achats",
-    "SELECT_PURCHASE" : "Sélectionner ordre achat",
-    "FILTER" : "Filtrer les ordre d'achats",
-    "NOT_FOUND" : "Aucun ordre d'achat trouvé",
-    "CONFIRM_PAY" : "Confirmer le paiement",
-    "DETAILS" : "Détails",
-    "CONFIRM_PAY "  : "Confirmer payement",
-    "CONFIRM_PAY_OF" : "Confirmer payement de  ",
-    "BY"             : "par ",
-    "DISCARD"        : "Annuler l'ordre d'achat"
+    "TITLE" : "Purchase order payment confirmation",
+    "PARENT" : "Purchase order management",
+    "SELECT_PURCHASE" : "Select purchase",
+    "FILTER" : "Filter purchase order",
+    "NOT_FOUND" : "No purchase order found",
+    "CONFIRM_PAY" : "Confirm pay",
+    "DETAILS" : "Details",
+    "CONFIRM_PAY "  : "Confirm pay",
+    "CONFIRM_PAY_OF" : "Confirm pay of ",
+    "BY"             : "by ",
+    "DISCARD"        : "Discard"    
   },
 
    "GRADE" : {
@@ -2832,6 +2329,7 @@
     "CONFIRM_SUBMIT"   : "Confirmez-vous le paiement de la taxe ?",
     "NONE_PERIOD"      : "Aucune période de paiement séléctionnée"
   },
+
   "STOCK_STATUS"     :{
     "TITLE"                 : "Situation de stock",
     "NO_CONSUMPTION"        : "Aucun produits en stock",
