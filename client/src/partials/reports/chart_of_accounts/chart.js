@@ -9,7 +9,6 @@ angular.module('bhima.controllers')
     dependencies.account = {
       required: true,
       query: {
-        identifier: 'account_number',
         tables: {
           'account': {
             columns: ['id', 'account_txt', 'account_number', 'parent', 'account_type_id']
