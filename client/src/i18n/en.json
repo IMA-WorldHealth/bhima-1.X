@@ -343,7 +343,11 @@
     "CREATION"              : "Create a new fiscal year ",
     "CREATE_YEAR_DETAILS"   : "Configure the new year details",
     "CREATE_BEGINNING_BALANCES" : "Create beginning balances",
-    "SUBMIT_YEAR"           : "Submit the fiscal year"
+    "IMPORT_OPENING_BALANCES" : "Import opening balances",
+    "SUBMIT_YEAR"           : "Submit the fiscal year",
+    "CONFIG_CLOSING_ACCOUNT" : "Choose the closing balance account",
+    "CLOSING_ACCOUNT"       : "Closing Account",
+    "CLOSING_ACCOUNT_MESSAGE" : "The new fiscal year is next in a series.  Please specify a balance account which will recieve the balances of the enterprise's income and expense accounts at the close of the previous fiscal year."
   },
 
   "OPENING_BALANCE" : {
