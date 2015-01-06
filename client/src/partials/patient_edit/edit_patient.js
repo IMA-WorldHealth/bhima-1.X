@@ -98,15 +98,10 @@ angular.module('bhima.controllers')
       }
     };
 
-    // Various functions for the form
-    $scope.getMinDate = function getMinDate() {
-      // TODO: Define this globally somewhere (same for patient register)
-      return '1900-01-01';
-    };
-
-    $scope.getMaxDate = function getMaxDate() {
-      return util.htmlDate(timestamp);
-    };
+    // Various functions/data for the form
+    // TODO: Define these globally somewhere (same for patient register)
+    $scope.minDOB = '1900-01-01';
+    $scope.maxDOB = util.htmlDate(timestamp);
 
     $scope.setOriginLocation = function (uuid) {
       $scope.patient.origin_location_id = uuid;
@@ -180,7 +175,6 @@ angular.module('bhima.controllers')
 
     $scope.$watch('patient.dob', function (nval, oval) {
       customValidation();
-      console.log('DOB: ', $scope.patient.dob);
     }, true);
 
     $scope.$watch('patient.origin_location_id', function (nval, oval) {
