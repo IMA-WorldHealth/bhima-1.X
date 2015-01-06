@@ -70,8 +70,8 @@
               <td>{{ rec.tracking_number }}</td>
               <td>{{ rec.text }}</td>
               <td>{{ rec.quantity}}</td>
-              <td>{{ rec.purchase_price | currency }}</td>
-              <td>{{ rec.quantity * rec.purchase_price | currency}}</td>
+              <td>{{ rec.unit_price | currency }}</td>
+              <td>{{ rec.quantity * rec.unit_price | currency}}</td>
               <td>
                 <a ng-href="#/invoice/loss/{{ rec.document_uuid}}">
                   <i class="glyphicon glyphicon-list-alt"></i> {{'COLUMNS.RECEIPT' | translate}}
