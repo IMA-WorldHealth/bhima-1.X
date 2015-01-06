@@ -185,7 +185,6 @@ angular.module('bhima.controllers')
       console.log('The data to be submitted is:', bundle);
 
       // submit data the server
-      /*
       $http.post('/fiscal/create', bundle)
       .success(function (results) {
         console.log('[Success]', results);
@@ -194,7 +193,6 @@ angular.module('bhima.controllers')
       .error(function (err) {
         throw err;
       });
-      */
     }
 
     // collect the enterprise id and load the controller

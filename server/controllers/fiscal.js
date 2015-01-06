@@ -38,6 +38,10 @@ exports.createFiscalYear = function (req, res, next) {
       description = req.body.description;
 
   // ensure valid data
+  console.log(req.body);
+
+  // send status
+  res.status(200).send();
 
 };
 
