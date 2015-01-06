@@ -31,6 +31,12 @@ db.exec('SELECT uuid, ' + names.join(', ') + ' FROM patient')
 
     if (nameChanged(patient, origPatient)) {
 
+      var query = 'UPDATE patient ';
+      names.forEach(function (name) {
+	// ???
+	});
+
+// UPDATE patient SET first_name='Joe', last_name='Blow', dob='1981-06-01', sex='M', father_name='Bill Blow', mother_name='Sandra Smith Blow', title='Dr', profession='Doctor', employer='HBB', marital_status='married', spouse='Jane Doe', spouse_profession='Engineer', spouse_employer='IMCK', religion='Presbyterian', phone='111-222-1234', email='test@gmail.com', address_1='100 Elm Stree', origin_location_id='6c5b6b00-1e11-4522-b553-7047fe7723fa', current_location_id='bda70b4b-8143-47cf-a683-e4ea7ddd4cff' WHERE uuid='606d2d3b-1e05-4193-ac5d-e54c7fe0e8de';
       
       }
 
