@@ -157,7 +157,46 @@ angular.module('bhima.controllers')
       return $scope.model.loss.data.length;
     }
 
+    function groupingLoss(data){
+    	var loss_array = [];
+
+    	for(var i in data){
+    		var new_line = [];
+    		var temp = data[i].document_uuid;
+
+    		new_line.push(data[i]);
+
+    		for(var j in data){
+    			if(j !== i) {
+    				if(data[j].document_uuid === temp) {
+    					new_line.push(data[j]);
+    				}
+    			}
+    		}
+
+    		if(!isInside(new_line, loss_array)) {
+    			loss_array.push(new_line);
+    		}
+    	}
+
+    	session.loss = loss_array;
+    }
+
+    function isInside(element, tableau){
+    	var result = false;
+    	for(var i in tableau){
+    		for(var j in element){
+    			if(tableau[i][j].document_uuid === element[j].document_uuid){
+	    			result = true;
+	    			break;
+	    		}
+    		}
+    	}
+    	return result;
+    }
+
     $scope.select = select;
     $scope.reset = reset;
+    $scope.groupingLoss = groupingLoss;
   }
 ]);
