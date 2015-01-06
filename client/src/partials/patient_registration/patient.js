@@ -203,6 +203,7 @@ angular.module('bhima.controllers')
       packagePatient.father_name = util.normalizeName(packagePatient.father_name);
       packagePatient.mother_name = util.normalizeName(packagePatient.mother_name);
       packagePatient.spouse = util.normalizeName(packagePatient.spouse);
+      packagePatient.title = util.normalizeName(packagePatient.title);
 
       connect.basicPut('debitor', [packageDebtor])
       .then(function () {
