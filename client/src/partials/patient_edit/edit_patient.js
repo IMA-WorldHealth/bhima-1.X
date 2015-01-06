@@ -211,6 +211,7 @@ angular.module('bhima.controllers')
       patient.father_name = util.normalizeName(patient.father_name);
       patient.mother_name = util.normalizeName(patient.mother_name);
       patient.spouse = util.normalizeName(patient.spouse);
+      patient.title = util.normalizeName(patient.title);
       
       // Get rid of any extraneous fields
       delete patient.reference;
