@@ -8,7 +8,7 @@
   <div ng-switch-when="1">
     <div class="panel-body">
 
-      <form novalidate name="form" class="col-xs-6">
+      <form novalidate name="detailsForm" class="col-xs-6">
 
         <div class="form-group">
           <label for="fiscalNote" class="required">{{ 'FISCAL_YEAR.DESC' | translate }}</label>
@@ -43,11 +43,11 @@
         <div class="form-group" ng-if="fiscal.data">
           <label class="required">{{ 'FISCAL_YEAR.PREVIOUS_YEAR' | translate }}</label>
           <select class="form-bhima" ng-model="data.previous_fiscal_year" ng-options="year.id as year.fiscal_year_txt for year in fiscal.data">
-            <option value="" disabled="disabled">--- {{ 'SELECT.FISCAL_YEAR' | translate }} ---</option>
+            <option value="" disabled="disabled" selected="selected">--- {{ 'SELECT.FISCAL_YEAR' | translate }} ---</option>
           </select>
         </div>
 
-        <button id="submitFiscal" ng-disabled="form.$invalid" ng-click="stepTwo()" class="btn btn-sm btn-success">
+        <button class="btn btn-sm btn-success" ng-disabled="detailsForm.$invalid" ng-click="stepTwo()">
           {{ 'UTIL.SUBMIT' | translate }}
         </button>
       </form>
@@ -56,12 +56,35 @@
 
   <!-- step 2a: Import beginning balances from previous fiscal year -->
   <div ng-switch-when="2a">
-    TODO
+    <form class="form-horizontal" name="balanceForm">
+      <div style="padding:10px;">
+        <h4>{{ 'FISCAL_YEAR.CONFIG_CLOSING_ACCOUNT' | translate }}</h4>
+        <p>{{ 'FISCAL_YEAR.CLOSING_ACCOUNT_MESSAGE' | translate }}</p>
+      </div>
+
+      <div class="form-group">
+        <label class="col-xs-3 control-label">{{ 'FISCAL_YEAR.CLOSING_ACCOUNT' | translate }}</label>
+        <div class="col-xs-5">
+          <select class="form-bhima" ng-model="data.closing_account" ng-options="account.id as labelAccount(account) for account in accounts.data" rows="20" required>
+            <option value="" disabled="disabled" selected="selected">--- {{ 'SELECT.ACCOUNT' | translate }} ---</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-offset-1 col-xs-11">
+          <button class="btn btn-sm btn-success" ng-disabled="balanceForm.$invalid" ng-click="submitFiscalYearData()">
+            {{ 'UTIL.SUBMIT' | translate }}
+          </button>
+        </div>
+      </div>
+
+    </form>
   </div>
 
   <!-- step 2b: Create new beginning balances for a new fiscal year -->
   <div ng-switch-when="2b">
-    <table class="table table-condensed">
+    <table class="table table-condensed" style="margin-bottom:0">
       <thead>
         <tr>
           <th style="width:15%;">{{ 'COLUMNS.ACCOUNT_NUMBER' | translate }}</th>
@@ -70,35 +93,32 @@
         </tr>
       </thead>
     </table>
-    <table class="table table-condensed" style="max-height:500px;overflow-y:auto;">
-      <tbody>
-        <tr ng-repeat="account in accounts.data">
-          <td style="width:15%;">{{ account.account_number }}</td>
-          <td style="width:55%;">{{ account.account_txt }}</td>
-          <td style="width:20%">
-            <input type="number" ng-model="account.balance" required>
-          </td>
-        </tr>
-      </thead>
-    </table>
-    <table class="table table-condensed">
-      <tfoot>
-        <tr>
-          <td>
-            <button class="btn btn-sm btn-default" ng-click="stepOne()">
-              {{ 'FISCAL_YEAR.CREATE_YEAR_DETAILS' | translate }}
-            </button>
-            <button class="btn btn-sm btn-default" ng-click="stepThree()">
-              {{ 'FISCAL_YEAR.SUBMIT_YEAR' | translate }}
-            </button>
-          </td>
-        </tr>
-      </tfoot>
-    </table>
+    <div class="panel-body" style="max-height:450px;overflow-y:scroll;padding:0;">
+      <table class="table table-condensed" style="font-size: 10px;">
+        <tbody>
+          <tr ng-repeat="account in accounts.data">
+            <th style="width:15%; border-right: 1px solid #ddd;">{{ account.account_number }}</th>
+            <td style="width:70%;">
+              <span ng-style="{'padding-left': (account.depth * 20) + 'px'}">{{ account.account_txt }}</span>
+            </td>
+            <td style="width:15%" ng-if="account.type !== 'title'">
+              <input type="number" ng-model="account.balance" required>
+            </td>
+            <td style="width:15%" ng-if="account.type === 'title'">
+            </td>
+          </tr>
+        </thead>
+      </table>
+    </div>
+    <div class="panel-footer">
+      <button class="btn btn-sm btn-success" ng-click="submitFiscalYearData()">
+        {{ 'FISCAL_YEAR.SUBMIT_YEAR' | translate }}
+      </button>
+    </div>
   </div>
 
   <!-- step 3: report success or error -->
   <div ng-switch-when="3">
-    TODO
+    YAY! All done!
   </div>
 </div>

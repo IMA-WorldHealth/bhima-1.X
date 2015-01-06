@@ -3,7 +3,9 @@ angular.module('bhima.controllers')
   '$scope',
   'validate',
   'appstate',
-  function ($scope, validate, appstate) {
+  'connect',
+  '$http',
+  function ($scope, validate, appstate, connect, $http) {
     var data,
         imports = $scope.$parent,
         dependencies = {};
@@ -38,20 +40,23 @@ angular.module('bhima.controllers')
     $scope.stepOne = stepOne;
     $scope.stepTwo = stepTwo;
     $scope.stepThree = stepThree;
+    $scope.labelAccount = labelAccount;
+    $scope.submitFiscalYearData = submitFiscalYearData;
 
     // dependencies
     dependencies.accounts = {
       query : {
         tables : {
           'account' : {
-            columns : ['id', 'account_txt', 'account_number']
+            columns : ['id', 'account_txt', 'account_number', 'parent']
           },
           'account_type' : {
             columns : ['type']
           }
         },
         join : ['account.account_type_id=account_type.id'],
-        where : ['account_type.type=balance', 'AND']
+        where : [['account_type.type=balance', 'OR', 'account_type.type=title'],
+                'AND']
       }
     };
 
@@ -72,7 +77,7 @@ angular.module('bhima.controllers')
         sortAccounts(models.accounts);
 
         // add account depth onto the account list
-        parseAccountDepth(models.accounts.data, models.accounts);
+        parseAccountDepth(models.accounts);
 
         // loads the accounts and exposes to the view
         angular.extend($scope, models);
@@ -103,13 +108,12 @@ angular.module('bhima.controllers')
     }
 
     // adds acount depth into the equation
-    function parseAccountDepth(accountData, accountModel) {
-      accountData.forEach(function (account) {
+    function parseAccountDepth(accountModel) {
+      accountModel.data.forEach(function (account) {
         var parent, depth = 0;
 
-        //TODO if parent.depth exists, increment and kill the loop (base case is ROOT_NODE)
+        // TODO if parent.depth exists, increment and kill the loop (base case is ROOT_NODE)
         parent = accountModel.get(account.parent);
-        depth = 0;
         while (parent) {
           depth += 1;
           parent = accountModel.get(parent.parent);
@@ -151,6 +155,46 @@ angular.module('bhima.controllers')
           data.end = iterate;
         }
       }
+    }
+
+    // label the account select nicely
+    // NOTE : This exposes a function to the view which is recalculated each
+    // time.  Is there a better way?
+    function labelAccount(account) {
+      return account.account_number + ' ' + account.account_txt;
+    }
+
+    // submits the fiscal year to the server all at once
+    function submitFiscalYearData() {
+      var bundle = connect.clean(data);
+      var hasPreviousYear = angular.isDefined(bundle.previous_fiscal_year);
+
+      // if no previous fiscal year is selected, we must ship back
+      // the opening balances for each account to be inserted into
+      // period 0 on the server.
+      if (!hasPreviousYear) {
+        bundle.balances = $scope.accounts.data
+          .filter(function (account) {
+            return account.type !== 'title';
+          })
+          .map(function (account) {
+            return { 'account_id' : account.id, 'balance' : account.balance };
+          });
+      }
+
+      console.log('The data to be submitted is:', bundle);
+
+      // submit data the server
+      /*
+      $http.post('/fiscal/create', bundle)
+      .success(function (results) {
+        console.log('[Success]', results);
+        $scope.stepThree();
+      })
+      .error(function (err) {
+        throw err;
+      });
+      */
     }
 
     // collect the enterprise id and load the controller
