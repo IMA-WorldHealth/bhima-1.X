@@ -111,19 +111,19 @@ angular.module('bhima.controllers')
 
     var groupDefinitions = [
       {
-        title : 'Transaction',
+        title : $translate.instant('REPORT.TRANSACTION'),
         getter : 'trans_id',
         formatter : formatTransactionGroup,
         aggregators : ['debit_equiv', 'credit_equiv']
       },
       {
-        title : 'Account',
+        title : $translate.instant('REPORT.ACCOUNT'),
         getter : 'account_id',
         formatter : formatAccountGroup,
         aggregators : []
       },
       {
-        title : 'Period',
+        title : $translate.instant('REPORT.PERIOD'),
         getter : 'period_id',
         formatter : formatPeriodGroup,
         aggregators : []

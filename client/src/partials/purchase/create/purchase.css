@@ -20,3 +20,6 @@
 .filter {
   max-width: 10px;
 }
+
+.po-alert { padding: 1px 5px !important; }
+.po-type-space { margin-right: 25px; }
