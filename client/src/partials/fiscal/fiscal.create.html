@@ -40,9 +40,9 @@
           <input ng-disabled="isFullYear()" type="month" id="endMonth" class="form-bhima" ng-model="data.end" required >
         </div>
 
-        <div class="form-group" ng-if="fiscal.data">
+        <div class="form-group" ng-if="fiscal.data.length > 0">
           <label class="required">{{ 'FISCAL_YEAR.PREVIOUS_YEAR' | translate }}</label>
-          <select class="form-bhima" ng-model="data.previous_fiscal_year" ng-options="year.id as year.fiscal_year_txt for year in fiscal.data">
+          <select class="form-bhima" ng-model="data.previous_fiscal_year" ng-options="year.id as year.fiscal_year_txt for year in fiscal.data" required>
             <option value="" disabled="disabled" selected="selected">--- {{ 'SELECT.FISCAL_YEAR' | translate }} ---</option>
           </select>
         </div>
@@ -94,7 +94,7 @@
       </thead>
     </table>
     <div class="panel-body" style="max-height:450px;overflow-y:scroll;padding:0;">
-      <table class="table table-condensed" style="font-size: 10px;">
+      <table class="table table-condensed" style="font-size: 10px; margin-bottom:0;">
         <tbody>
           <tr ng-repeat="account in accounts.data">
             <th style="width:15%; border-right: 1px solid #ddd;">{{ account.account_number }}</th>

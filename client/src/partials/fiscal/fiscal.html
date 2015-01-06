@@ -20,21 +20,18 @@
           <thead>
             <tr>
               <th>{{ 'FISCAL_YEAR.DESCRIPTION' | translate }}</th>
-              <th colspan="2">{{ 'FISCAL_YEAR.START_DATE' | translate }}</th>
+              <th>{{ 'FISCAL_YEAR.START_DATE' | translate }}</th>
             </tr>
           </thead>
           <tbody>
             <tr ng-if="fiscal.data.length === 0">
-              <td colspan="3">
+              <td colspan="2">
                 <i>{{ 'FISCAL_YEAR.NO_RECORDS' | translate }}</i>
               </tr>
             </tr>
-            <tr ng-repeat="year in fiscal.data" ng-class="{'btn-primary': year.id === selected }">
+            <tr ng-repeat="year in fiscal.data" ng-class="{'btn-primary': year.id === selected }" ng-click="selectYear(year.id)" style="cursor:pointer">
               <td>{{ year.fiscal_year_txt }}</td>
               <td>{{ year.start_month}}/{{year.start_year }}</td>
-              <td>
-                <a ng-click="selectYear(year.id)"><span class="glyphicon glyphicon-pencil"></span></a>
-              </td>
             </tr>
           </tbody>
         </table>
