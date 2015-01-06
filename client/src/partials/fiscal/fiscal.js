@@ -1,12 +1,9 @@
 angular.module('bhima.controllers')
 .controller('fiscal', [
   '$scope',
-  '$modal',
-  'connect',
   'appstate',
-  'messenger',
   'validate',
-  function ($scope, $modal, connect, appstate, messenger, validate) {
+  function ($scope, appstate, validate) {
     var dependencies = {};
 
     // register dependencies
@@ -23,36 +20,35 @@ angular.module('bhima.controllers')
     // expose bindings to the view
     $scope.selectYear = selectYear;
 
-    // get the enterprise information
-    appstate.register('enterprise', buildFiscalQuery);
-
-    function buildFiscalQuery(enterprise) {
+    // start up the module
+    function startup(enterprise) {
       $scope.enterprise = enterprise;
       dependencies.fiscal.where = ['fiscal_year.enterprise_id=' + enterprise.id];
       validate.refresh(dependencies)
-      .then(startup);
+      .then(function (models) {
+        angular.extend($scope, models);
+      });
     }
 
-    function startup(models) {
-      angular.extend($scope, models);
-    }
-
+    // select a fiscal year for editting
     function selectYear(id) {
       $scope.selected = id;
       $scope.active = 'update';
-      $scope.$broadcast('fiscalYearChange', id);
+      $scope.$broadcast('fiscal-year-selection-change', id);
     }
 
+    // activate create template and deselect selection
     $scope.createFiscalYear = function createFiscalYear() {
-      // Do some session checking to see if any values need to be saved/ flushed to server
       $scope.active = 'create';
       $scope.selected = null;
     };
 
-    // listen for create event and refresh
-    $scope.$on('fiscalYearCreation', function (e, id) {
-      console.log('got refresh id', id);
-      buildFiscalQuery($scope.enterprise);
+    // listen for create event and refresh fiscal year data
+    $scope.$on('fiscal-year-creation', function (e, id) {
+      startup($scope.enterprise);
     });
+
+    // get the enterprise information and startup
+    appstate.register('enterprise', startup);
   }
 ]);

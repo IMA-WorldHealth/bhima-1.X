@@ -13,7 +13,7 @@ angular.module('bhima.controllers')
         dependencies = {};
 
     // pull in data from the parent controller to use
-    // in child requests
+    // in child requests.
     imports = $scope.$parent;
 
     // expose bindings to the scope
@@ -79,8 +79,6 @@ angular.module('bhima.controllers')
     // Fires on load of this controller
     function onLoad() {
 
-      console.log('[loading...]');
-
       // copy the fiscal year id from the parent controller
       var id = imports.selected;
 
@@ -100,8 +98,8 @@ angular.module('bhima.controllers')
       });
     }
 
-
     // Submits the edits made to the fiscal year
+    // TODO Formalize the validation and save features herein
     function submitEdits() {
       var edits = connect.clean($scope.fiscal);
       connect.put('fiscal_year', [edits], ['id'])
@@ -147,6 +145,6 @@ angular.module('bhima.controllers')
     onLoad();
 
     // Reload the controller on selection change
-    $scope.$on('fiscalYearChange', onLoad);
+    $scope.$on('fiscal-year-selection-change', onLoad);
   }
 ]);
