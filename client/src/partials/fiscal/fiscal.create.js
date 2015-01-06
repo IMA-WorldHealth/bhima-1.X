@@ -9,7 +9,7 @@ angular.module('bhima.controllers')
         dependencies = {};
 
     // Set up default option for year
-    data = $scope.data = { year : true };
+    data = $scope.data = { year : 'true' };
 
     // module steps
     var steps = [
@@ -51,6 +51,7 @@ angular.module('bhima.controllers')
           }
         },
         join : ['account.account_type_id=account_type.id'],
+        where : ['account_type.type=balance', 'AND']
       }
     };
 
@@ -137,7 +138,7 @@ angular.module('bhima.controllers')
 
     // returns true if the fiscal year is for 12 months
     function isFullYear() {
-      return data.year === true;
+      return data.year === 'true';
     }
 
     // gets the end date of the fiscal year
@@ -155,7 +156,7 @@ angular.module('bhima.controllers')
     // collect the enterprise id and load the controller
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
-      dependencies.accounts.query.where = ['account.enterprise_id=' + enterprise.id];
+      dependencies.accounts.query.where[2] = 'account.enterprise_id=' + enterprise.id;
       onLoad();
     });
   }
