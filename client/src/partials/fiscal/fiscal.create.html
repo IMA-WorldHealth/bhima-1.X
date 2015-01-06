@@ -122,6 +122,11 @@
 
   <!-- step 3: report success or error -->
   <div ng-switch-when="3">
-    YAY! All done!
+    <div class="panel-body">
+      <div class="alert alert-success">
+        <i class="glyphicon glyphicon-ok-circle"></i>
+        {{ 'FISCAL_YEAR.CREATE_SUCCESS_MESSAGE' | translate }}
+      </div>
+    </div>
   </div>
 </div>

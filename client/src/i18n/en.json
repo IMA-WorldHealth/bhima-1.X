@@ -348,7 +348,10 @@
     "CONFIG_CLOSING_ACCOUNT" : "Choose the closing balance account",
     "CLOSING_ACCOUNT"       : "Closing Account",
     "CLOSING_ACCOUNT_MESSAGE" : "The new fiscal year is next in a series.  Please specify a balance account which will recieve the balances of the enterprise's income and expense accounts at the close of the previous fiscal year.",
-    "PREVIOUS_YEAR"         : "Previous fiscal year"
+    "PREVIOUS_YEAR"         : "Previous fiscal year",
+    "CREATE_SUCCESS"        : "Fiscal year creation successful",
+    "CREATE_SUCCESS_MESSAGE" : "You have successfully created a new fiscal year!"
+
   },
 
   "OPENING_BALANCE" : {
