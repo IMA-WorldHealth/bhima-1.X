@@ -180,7 +180,6 @@ angular.module('bhima.controllers')
 
     $scope.$watch('patient.dob', function (nval, oval) {
       customValidation();
-      console.log('DOB: ', $scope.patient.dob);
     }, true);
 
     $scope.$watch('patient.origin_location_id', function (nval, oval) {
