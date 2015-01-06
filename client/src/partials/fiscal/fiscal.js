@@ -40,7 +40,6 @@ angular.module('bhima.controllers')
     function selectYear(id) {
       $scope.selected = id;
       $scope.active = 'update';
-      $scope.$emit('fiscalYearChange', id);
       $scope.$broadcast('fiscalYearChange', id);
     }
 
@@ -50,5 +49,10 @@ angular.module('bhima.controllers')
       $scope.selected = null;
     };
 
+    // listen for create event and refresh
+    $scope.$on('fiscalYearCreation', function (e, id) {
+      console.log('got refresh id', id);
+      buildFiscalQuery($scope.enterprise);
+    });
   }
 ]);
