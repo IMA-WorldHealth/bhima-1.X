@@ -1,11 +1,12 @@
-var q = require('q');
-var db = require('./../lib/db');
-var util = require('./../lib/util');
+var db = require('./../lib/db'),
+    util = require('./../lib/util');
 
 /*
- * HTTP Controllers
+ * HTTP Controller
 */
 exports.createFiscalYear = function (req, res, next) {
+  'use strict';
+
   var hasBalances, data, fiscalYearId;
 
   // check if we need to create opening balances or not.
@@ -16,7 +17,6 @@ exports.createFiscalYear = function (req, res, next) {
   data.start = new Date(data.start);
   data.end = new Date(data.end);
 
-  console.log('[FISCAL]', 'Creating new year...');
   // create the new year record
   createNewYear(data)
   .then(function (result) {
@@ -24,41 +24,41 @@ exports.createFiscalYear = function (req, res, next) {
     // retrieve the newly inserted ID
     fiscalYearId = result.insertId;
     data.fiscalYearId = fiscalYearId;
-    console.log('[FISCAL]', 'New Year ID:', fiscalYearId);
 
-    console.log('[FISCAL]', 'Creating Periods...');
     // create periods corresponding to the fiscal year
     return createPeriods(fiscalYearId, data.start, data.end);
   })
   .then(function (result) {
 
-    console.log('[FISCAL]', 'Making the choice to either create balances or carry forward old balances...');
     // if the fiscal year has balances,
     // it means it is the first fiscal year,
     // and we need to create opening balances
     if (hasBalances) {
-      console.log('[FISCAL]', 'Creating opening balances...');
       return createOpeningBalances(data);
+    }
 
     // otherwise, we must tabulate and carry forward
     // the income and expense accounts from last fiscal
-    // year, and put them in the closing_account;
-    } else  {
-      console.log('[FISCAL]', 'Carrying forward old balances...');
-      return carryForwardBalances(data);
-    }
-
+    // year, and put them in the closing_account.
+    // closing the previous fiscal year happens as
+    // a seperate utility.
   })
   .then(function (results) {
-    console.log('[FISCAL]', 'Completed everything with success.');
     res.status(200).send({ id : fiscalYearId });
   })
   .catch(function (error) {
-    console.log('[FISCAL]', 'An error occurred.', error);
     next(error);
   })
   .done();
 };
+
+// calculate the positive integer difference between two dates in months
+function monthDiff(firstDate, secondDate) {
+  var diff = secondDate.getMonth() - firstDate.getMonth();
+  diff += (secondDate.getFullYear() - firstDate.getFullYear()) * 12;
+  diff = Math.abs(diff);
+  return diff <= 0 ? 0 : diff; // FIXME : This should throw an error if diff <= 0.
+}
 
 // only triggered when it is the first fiscal year
 // this creates opening balances using the balances
@@ -76,7 +76,6 @@ function createOpeningBalances(data) {
   return db.exec(sql, [data.fiscalYearId])
   .then(function (periods) {
     periodId = periods[0].id;
-    console.log('[FOUND]', periodId);
 
     sql =
       'INSERT INTO period_total (enterprise_id, fiscal_year_id, period_id, account_id, credit, debit) VALUES ';
@@ -100,23 +99,6 @@ function createOpeningBalances(data) {
   });
 }
 
-// triggered for all fiscal years except the first
-// sums the balances from the previous fiscal year
-// and puts in them in the opening balances (period 0)
-function carryForwardBalances(data) {
-
-  var previousId = data.previous_fiscal_year;
-
-}
-
-// calculate the positive integer difference between two dates in months
-function monthDiff(firstDate, secondDate) {
-  var diff = secondDate.getMonth() - firstDate.getMonth();
-  diff += (secondDate.getFullYear() - firstDate.getFullYear()) * 12;
-  diff = Math.abs(diff);
-  return diff <= 0 ? 0 : diff; // FIXME : This should throw an error if diff <= 0.
-}
-
 // creates a fiscal year record
 function createNewYear(data) {
   var sql, monthNo, startMonth, startYear,
@@ -133,8 +115,6 @@ function createNewYear(data) {
   monthNo = monthDiff(startDate, endDate) + 1; // FIXME Why is the plus one?
   startMonth = startDate.getMonth() + 1;
   startYear = startDate.getFullYear();
-
-  console.log('[FISCAL] createNewYear values:', enterpriseId, monthNo, fiscalYearText, startMonth, startYear, previousFiscalYear, closingAccount);
 
   // template the fiscal year query
   sql =
@@ -171,8 +151,6 @@ function createPeriods(fiscalYearId, start, end) {
   }
 
   sql += db.sanitize(template) + ';';
-
-  console.log('FISCAL', 'sql', sql);
 
   // sanitize turns the template into (a,b), (c,d) ..
   return db.exec(sql);

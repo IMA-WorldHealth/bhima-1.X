@@ -65,7 +65,7 @@
       <div class="form-group">
         <label class="col-xs-3 control-label">{{ 'FISCAL_YEAR.CLOSING_ACCOUNT' | translate }}</label>
         <div class="col-xs-5">
-          <select class="form-bhima" ng-model="data.closing_account" ng-options="account.id as labelAccount(account) for account in accounts.data" rows="20" required>
+          <select class="form-bhima" ng-model="data.closing_account" ng-options="account.id as labelAccount(account) for account in accounts.data | filter: {type : 'balance'}" rows="20" required>
             <option value="" disabled="disabled" selected="selected">--- {{ 'SELECT.ACCOUNT' | translate }} ---</option>
           </select>
         </div>
