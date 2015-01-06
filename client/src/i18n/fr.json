@@ -724,7 +724,8 @@
     "NUM_ITEMS"          : "Nombre Items",
     "ENTRY_DATE"         : "Date d'entrée",
     "CONFIRMED"          : "Confirmé",
-    "SUPPLIER"           : "Fournisseur"
+    "SUPPLIER"           : "Fournisseur",
+    "LOCKED"             : "Verrouillé"
   },
 
   "INVENTORY" : {
@@ -1012,7 +1013,7 @@
     "INFO_CAUTION" : "Information sur la caution",
     "CAUTION"      : "Caution",
     "PAY"          : "Payer",
-    "UNIT_ERROR"   : "La quantite est trop grande!"
+    "UNIT_ERROR"   : "Le montant de la caution est inférieure à la plus petite unité de la monnaie choisie!"
   },
 
   "PCASH"                   : {
@@ -1421,7 +1422,8 @@
     "TAB_LOCK_ITEM"    : "Tabuler par item",
     "RECOVER"          : "Retrouver Vente",
     "RECOVER_INFO"     : "[Retrouver Sale] C'est important de savoir que seulement les items de vente et les quantités sont retrouvés, les prix sont réinitialisés au prix par défaut des items",
-    "CHOOSE"           : "Choisir le service"
+    "CHOOSE"           : "Choisir le service",
+    "DEBITOR_GROUP_LOCK" : "Le groupe de débiteur de ce patient est verrouillé"
   },
 
   "FIND"              : {
