@@ -342,7 +342,8 @@
     "EDIT"                  : " Edit selected fiscal year; lock and unlock periods and view opening balances.",
     "CREATION"              : "Create a new fiscal year ",
     "CREATE_YEAR_DETAILS"   : "Configure the new year details",
-    "CREATE_BEGINNING_BALANCES" : "Create beginning balances"
+    "CREATE_BEGINNING_BALANCES" : "Create beginning balances",
+    "SUBMIT_YEAR"           : "Submit the fiscal year"
   },
 
   "OPENING_BALANCE" : {

@@ -4,6 +4,7 @@
     <b>{{ 'FISCAL_YEAR.NEW' | translate }}</b> {{ 'FISCAL_YEAR.STEP' | translate }} {{ step.id }}: {{ step.key | translate }}
   </div>
 
+  <!-- step one : set up fiscal year details -->
   <div ng-switch-when="1">
     <div class="panel-body">
 
@@ -22,7 +23,7 @@
         <div class="form-group">
           <div class="radio">
             <label>
-              <input type="radio" name="option_year" id="one" value="true" ng-model="data.year" ng-true-value="true" checked>
+              <input type="radio" name="option_year" id="one" value="true" ng-model="data.year" checked>
               {{ 'FISCAL_YEAR.ONE_YEAR' | translate }}
             </label>
           </div>
@@ -53,17 +54,19 @@
     </div>
   </div>
 
+  <!-- step 2a: Import beginning balances from previous fiscal year -->
   <div ng-switch-when="2a">
     TODO
   </div>
 
+  <!-- step 2b: Create new beginning balances for a new fiscal year -->
   <div ng-switch-when="2b">
     <table class="table table-condensed">
       <thead>
         <tr>
           <th style="width:15%;">{{ 'COLUMNS.ACCOUNT_NUMBER' | translate }}</th>
-          <th style="width:55%;">{{ 'COLUMNS.ACCOUNT_TEXT' | translate }}</th>
-          <th style="width:20%">{{ 'COLUMNS.BALANCE' | translate }}</th>
+          <th style="width:70%;">{{ 'COLUMNS.LABEL' | translate }}</th>
+          <th style="width:15%">{{ 'COLUMNS.BALANCE' | translate }}</th>
         </tr>
       </thead>
     </table>
@@ -88,12 +91,13 @@
             <button class="btn btn-sm btn-default" ng-click="stepThree()">
               {{ 'FISCAL_YEAR.SUBMIT_YEAR' | translate }}
             </button>
-          <td>
+          </td>
         </tr>
       </tfoot>
     </table>
   </div>
 
+  <!-- step 3: report success or error -->
   <div ng-switch-when="3">
     TODO
   </div>
