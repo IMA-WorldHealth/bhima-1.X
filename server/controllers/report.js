@@ -205,10 +205,10 @@ function saleRecords(params) {
     requestSql += ('AND sale.project_id= ? ');    
     requestSql += 'ORDER BY sale.timestamp DESC;';
     
-    return db.exec(requestSql, [params.dateTo, params.dateFrom, params.project]);
+    return db.exec(requestSql, [params.dateFrom, params.dateTo, params.project]);
   } else {
     requestSql += 'ORDER BY sale.timestamp DESC;';
-    return db.exec(requestSql, [params.dateTo, params.dateFrom]);
+    return db.exec(requestSql, [params.dateFrom, params.dateTo]);
   }
 
 }
@@ -236,7 +236,7 @@ function distributionPatients(params) {
     'WHERE `depot`.`uuid` = ? AND `consumption`.`date` >= ? AND `consumption`.`date` <= ? ' +
     'GROUP BY `consumption_patient`.`sale_uuid` ORDER BY `consumption`.`date` DESC, `patient`.`first_name` ASC, `patient`.`last_name` ASC';
   
-  return db.exec(requestSql, [params.depotId, params.dateTo, params.dateFrom]);  
+  return db.exec(requestSql, [params.depotId, params.dateFrom, params.dateTo]);  
 }
 
 function distributionServices(params) {
@@ -261,7 +261,7 @@ function distributionServices(params) {
     'WHERE `depot`.`uuid` = ? AND `consumption`.`date` >= ? AND `consumption`.`date` <= ? ' +
     'ORDER BY `consumption`.`date` DESC, `service`.`name` ASC';
 
-  return db.exec(requestSql, [params.depotId, params.dateTo, params.dateFrom]);
+  return db.exec(requestSql, [params.depotId, params.dateFrom, params.dateTo]);
 }
 
 
@@ -742,8 +742,8 @@ function generate(request, params, done) {
     'income_report'         : incomeReport,
     'expense_report'        : expenseReport,
     'patient_group'         : require('./reports/patient_group')(db),
-    'balance_mensuelle'     : balanceMensuelle,
-    'balance_sheet'         : require('./reports/balance_sheet')
+    'balance_mensuelle'     : balanceMensuelle
+    //'balance_sheet'         : require('./reports/balance_sheet')
   };
 
   route[request](params)
