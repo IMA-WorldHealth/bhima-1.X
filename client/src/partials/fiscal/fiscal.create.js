@@ -1,11 +1,11 @@
 angular.module('bhima.controllers')
 .controller('fiscal.create', [
   '$scope',
+  '$http',
   'validate',
   'appstate',
   'connect',
-  '$http',
-  function ($scope, validate, appstate, connect, $http) {
+  function ($scope, $http, validate, appstate, connect) {
     var data,
         imports = $scope.$parent,
         dependencies = {};
@@ -88,13 +88,15 @@ angular.module('bhima.controllers')
     // set the account balance to 0 for all accounts
     function resetBalances() {
       $scope.accounts.data.forEach(function (row) {
-        row.account_number = String(row.account_number); // required for sorting to work properly
+        
+        // make account_number a string to sort properly
+        row.account_number = String(row.account_number);
         row.debit = 0;
         row.credit = 0;
       });
     }
 
-    // sorts accounts based on account_number
+    // sorts accounts based on account_number (string)
     function sortAccounts(accountModel) {
       var data = accountModel.data;
 
@@ -111,7 +113,6 @@ angular.module('bhima.controllers')
       accountModel.data.forEach(function (account) {
         var parent, depth = 0;
 
-        // TODO if parent.depth exists, increment and kill the loop (base case is ROOT_NODE)
         parent = accountModel.get(account.parent);
         while (parent) {
           depth += 1;
@@ -164,6 +165,7 @@ angular.module('bhima.controllers')
     }
 
     // normalizes a date to a UTC date for the server
+    // TODO Put this functionality in a service
     function normalizeUTCDate(date) {
       var year = date.getFullYear(),
           month = date.getMonth(),
@@ -199,8 +201,8 @@ angular.module('bhima.controllers')
       // submit data the server
       $http.post('/fiscal/create', bundle)
       .success(function (results) {
-        $scope.stepThree();
-        $scope.$emit('fiscalYearCreation', results.id);
+        stepThree();
+        $scope.$emit('fiscal-year-creation', results.id);
       })
       .error(function (err) {
         throw err;
