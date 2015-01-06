@@ -79,6 +79,8 @@ angular.module('bhima.controllers')
     // Fires on load of this controller
     function onLoad() {
 
+      console.log('[loading...]');
+
       // copy the fiscal year id from the parent controller
       var id = imports.selected;
 

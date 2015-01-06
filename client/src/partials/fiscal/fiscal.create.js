@@ -199,8 +199,8 @@ angular.module('bhima.controllers')
       // submit data the server
       $http.post('/fiscal/create', bundle)
       .success(function (results) {
-        console.log('[Success]', results);
         $scope.stepThree();
+        $scope.$emit('fiscalYearCreation', results.id);
       })
       .error(function (err) {
         throw err;

@@ -88,8 +88,9 @@
       <thead>
         <tr>
           <th style="width:15%;">{{ 'COLUMNS.ACCOUNT_NUMBER' | translate }}</th>
-          <th style="width:70%;">{{ 'COLUMNS.LABEL' | translate }}</th>
-          <th style="width:15%" colspan="2">{{ 'COLUMNS.BALANCE' | translate }}</th>
+          <th style="width:55%;">{{ 'COLUMNS.LABEL' | translate }}</th>
+          <th style="width:15%">{{ 'COLUMNS.DEBIT' | translate }}</th>
+          <th style="width:15%">{{ 'COLUMNS.CREDIT' | translate }}</th>
         </tr>
       </thead>
     </table>
@@ -98,14 +99,14 @@
         <tbody>
           <tr ng-repeat="account in accounts.data">
             <th style="width:15%; border-right: 1px solid #ddd;">{{ account.account_number }}</th>
-            <td style="width:70%;">
+            <td style="width:55%;">
               <span ng-style="{'padding-left': (account.depth * 20) + 'px'}">{{ account.account_txt }}</span>
             </td>
             <td style="width:15%" ng-if="account.type !== 'title'">
-              <input type="number" ng-model="account.credit" required>
+              <input type="number" ng-model="account.debit" required>
             </td>
             <td style="width:15%" ng-if="account.type !== 'title'">
-              <input type="number" ng-model="account.debit" required>
+              <input type="number" ng-model="account.credit" required>
             </td>
             <td style="width:15%" ng-if="account.type === 'title'" colspan="2"></td>
           </tr>

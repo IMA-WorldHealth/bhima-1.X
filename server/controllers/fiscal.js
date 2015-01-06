@@ -51,7 +51,7 @@ exports.createFiscalYear = function (req, res, next) {
   })
   .then(function (results) {
     console.log('[FISCAL]', 'Completed everything with success.');
-    res.status(200).send(results);
+    res.status(200).send({ id : fiscalYearId });
   })
   .catch(function (error) {
     console.log('[FISCAL]', 'An error occurred.', error);
@@ -130,7 +130,7 @@ function createNewYear(data) {
       closingAccount = data.closingAccount || null;
 
   // date math to get the month number, start month, and start year
-  monthNo = monthDiff(startDate, endDate);
+  monthNo = monthDiff(startDate, endDate) + 1; // FIXME Why is the plus one?
   startMonth = startDate.getMonth() + 1;
   startYear = startDate.getFullYear();
 
@@ -159,12 +159,15 @@ function createPeriods(fiscalYearId, start, end) {
   sql =
     'INSERT INTO period (fiscal_year_id, period_number, period_start, period_stop) VALUES ';
 
+  // create the zero period
+  template.push([fiscalYearId, 0, periodStart, periodStart]);
+
   // create a period for each month, calculating the
   // first day and last day of the month
-  for (var i = 0; i < totalMonths + 1; i++) {
+  for (var i = 0; i < totalMonths; i++) {
     periodStart = new Date(start.getFullYear(), start.getMonth() + i);
     periodStop = new Date(periodStart.getFullYear(), periodStart.getMonth() + 1, 0);
-    template.push([fiscalYearId, i, periodStart, periodStop]);
+    template.push([fiscalYearId, i+1, periodStart, periodStop]);
   }
 
   sql += db.sanitize(template) + ';';
