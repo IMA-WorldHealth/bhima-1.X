@@ -724,7 +724,8 @@
     "NUM_ITEMS"          : "Number of Items",     
     "ENTRY_DATE"         : "Entry date",
     "CONFIRMED"          : "Confirmed",
-    "SUPPLIER"           : "Supplier"   
+    "SUPPLIER"           : "Supplier",
+    "LOCKED"             : "Locked"   
   },
 
   "INVENTORY" : {
@@ -1421,7 +1422,8 @@
     "RECOVER_INFO"    : "[Sale Recovered] It is important to note ONLY sale items and quantities are recovered, previously set prices are reset to the inventory default",
     "APPLIES_GLOBALLY" : "Appliquer globallemement",
     "APPLIES_TO_ITEM"  : "Appliquer par item",
-    "CHOOSE"           : "Assign a service"
+    "CHOOSE"           : "Assign a service",
+    "DEBITOR_GROUP_LOCK" : "The debitor group of this patient is locked"
   },
 
   "FIND"              : {
