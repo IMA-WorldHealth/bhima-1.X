@@ -1,8 +1,8 @@
 var standard = { 
   'page-size'     : 'A4', 
   'orientation'   : 'Portrait', 
-  'margin-left'   : '2mm',
-  'margin-right'  : '2mm', 
+  'margin-left'   : '8mm',
+  'margin-right'  : '8mm', 
   'margin-top'    : '4mm', 
   'margin-bottom' : '4mm'
 };
