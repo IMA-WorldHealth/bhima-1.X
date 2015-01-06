@@ -42,9 +42,18 @@ angular.module('bhima.controllers')
             consumption : { columns : ['quantity', 'date', 'uuid'] },
             consumption_loss : { columns : ['document_uuid'] },
             stock : {columns : ['tracking_number', 'lot_number', 'entry_date']},
-            inventory : {columns : ['text', 'purchase_price']}
+            inventory : {columns : ['text', 'purchase_price']},
+            purchase : { columns : ['purchase_date']},
+            purchase_item : { columns : ['unit_price']}
           },
-          join : ['consumption.uuid=consumption_loss.consumption_uuid', 'consumption.tracking_number=stock.tracking_number', 'stock.inventory_uuid=inventory.uuid']
+          join : [
+            'consumption.uuid=consumption_loss.consumption_uuid', 
+            'consumption.tracking_number=stock.tracking_number', 
+            'stock.inventory_uuid=inventory.uuid',
+            'stock.purchase_order_uuid=purchase.uuid', 
+            'purchase.uuid=purchase_item.purchase_uuid',
+            'purchase_item.inventory_uuid=inventory.uuid'
+          ]
       }
     };
 
@@ -84,17 +93,29 @@ angular.module('bhima.controllers')
       }
 
       session.searching = true;
-      dependencies.loss.query = {
-        identifier : 'uuid',
-          tables : {
-            consumption : { columns : ['quantity', 'date', 'uuid'] },
-            consumption_loss : { columns : ['document_uuid'] },
-            stock : {columns : ['tracking_number', 'lot_number', 'entry_date']},
-            inventory : {columns : ['text', 'purchase_price']}
-          },
-          join : ['consumption.uuid=consumption_loss.consumption_uuid', 'consumption.tracking_number=stock.tracking_number', 'stock.inventory_uuid=inventory.uuid'],
-          where: ['stock.entry_date>=' + request.dateFrom,'AND','stock.entry_date<=' + request.dateTo]
-      };
+
+      dependencies.loss = {
+	      query : {
+	        identifier : 'uuid',
+	          tables : {
+	            consumption : { columns : ['quantity', 'date', 'uuid'] },
+	            consumption_loss : { columns : ['document_uuid'] },
+	            stock : {columns : ['tracking_number', 'lot_number', 'entry_date']},
+	            inventory : {columns : ['text', 'purchase_price']},
+	            purchase : { columns : ['purchase_date']},
+	            purchase_item : { columns : ['unit_price']}
+	          },
+	          join : [
+	            'consumption.uuid=consumption_loss.consumption_uuid', 
+	            'consumption.tracking_number=stock.tracking_number', 
+	            'stock.inventory_uuid=inventory.uuid',
+	            'stock.purchase_order_uuid=purchase.uuid', 
+	            'purchase.uuid=purchase_item.purchase_uuid',
+	            'purchase_item.inventory_uuid=inventory.uuid'
+	          ],
+	          where: ['consumption.date>=' + request.dateFrom,'AND','consumption.date<=' + request.dateTo]
+	      }
+	    };
 
       total.result = {};
       if ($scope.model.loss) {
@@ -129,7 +150,7 @@ angular.module('bhima.controllers')
     }
 
     function sum(a, b) {
-    	return a + (b.purchase_price * b.quantity);
+    	return a + (b.unit_price * b.quantity);
     }
 
     function totalLoss() {

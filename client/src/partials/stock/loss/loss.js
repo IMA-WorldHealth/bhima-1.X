@@ -284,13 +284,10 @@ angular.module('bhima.controllers')
       dependencies.itemPrice = {
         query : {
           tables : {
-            'consumption' : { columns : ['tracking_number']},
             'stock' : { columns : ['purchase_order_uuid']},
-            'purchase' : { columns : ['uuid']},
-            'purchase_item' : { columns : ['purchase_uuid', 'quantity', 'unit_price']}
+            'purchase_item' : { columns : ['quantity', 'unit_price']}
           },
-          join : ['stock.purchase_order_uuid=purchase.uuid'],
-          join : ['purchase.uuid=purchase_item.purchase_uuid'],
+          join : ['stock.inventory_uuid=purchase_item.inventory_uuid'],
           where : ['stock.tracking_number=' + item.tracking_number]
         }
       };
