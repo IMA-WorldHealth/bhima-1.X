@@ -89,7 +89,7 @@
         <tr>
           <th style="width:15%;">{{ 'COLUMNS.ACCOUNT_NUMBER' | translate }}</th>
           <th style="width:70%;">{{ 'COLUMNS.LABEL' | translate }}</th>
-          <th style="width:15%">{{ 'COLUMNS.BALANCE' | translate }}</th>
+          <th style="width:15%" colspan="2">{{ 'COLUMNS.BALANCE' | translate }}</th>
         </tr>
       </thead>
     </table>
@@ -102,10 +102,12 @@
               <span ng-style="{'padding-left': (account.depth * 20) + 'px'}">{{ account.account_txt }}</span>
             </td>
             <td style="width:15%" ng-if="account.type !== 'title'">
-              <input type="number" ng-model="account.balance" required>
+              <input type="number" ng-model="account.credit" required>
             </td>
-            <td style="width:15%" ng-if="account.type === 'title'">
+            <td style="width:15%" ng-if="account.type !== 'title'">
+              <input type="number" ng-model="account.debit" required>
             </td>
+            <td style="width:15%" ng-if="account.type === 'title'" colspan="2"></td>
           </tr>
         </thead>
       </table>

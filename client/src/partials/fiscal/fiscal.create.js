@@ -70,8 +70,6 @@ angular.module('bhima.controllers')
 
       validate.process(dependencies)
       .then(function (models) {
-        console.log('[models]', models);
-
 
         // sort the accounts based on account number
         sortAccounts(models.accounts);
@@ -91,7 +89,8 @@ angular.module('bhima.controllers')
     function resetBalances() {
       $scope.accounts.data.forEach(function (row) {
         row.account_number = String(row.account_number); // required for sorting to work properly
-        row.balance = 0;
+        row.debit = 0;
+        row.credit = 0;
       });
     }
 
@@ -164,10 +163,22 @@ angular.module('bhima.controllers')
       return account.account_number + ' ' + account.account_txt;
     }
 
+    // normalizes a date to a UTC date for the server
+    function normalizeUTCDate(date) {
+      var year = date.getFullYear(),
+          month = date.getMonth(),
+          day = date.getDate();
+      return Date.UTC(year, month, day);
+    }
+
     // submits the fiscal year to the server all at once
     function submitFiscalYearData() {
       var bundle = connect.clean(data);
       var hasPreviousYear = angular.isDefined(bundle.previous_fiscal_year);
+
+      // normalize the dates to UTC timezone
+      bundle.start = normalizeUTCDate(bundle.start);
+      bundle.end = normalizeUTCDate(bundle.end);
 
       // if no previous fiscal year is selected, we must ship back
       // the opening balances for each account to be inserted into
@@ -178,11 +189,12 @@ angular.module('bhima.controllers')
             return account.type !== 'title';
           })
           .map(function (account) {
-            return { 'account_id' : account.id, 'balance' : account.balance };
+            return { 'account_id' : account.id, 'debit' : account.debit, 'credit' : account.credit };
           });
       }
 
-      console.log('The data to be submitted is:', bundle);
+      // attach the enterprise id to the request
+      bundle.enterprise_id = $scope.enterprise.id;
 
       // submit data the server
       $http.post('/fiscal/create', bundle)
