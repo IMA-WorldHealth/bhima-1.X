@@ -39,6 +39,11 @@ angular.module('bhima.controllers')
 
     // activate create template and deselect selection
     $scope.createFiscalYear = function createFiscalYear() {
+      
+      // FIXME : force refresh when clicking the button multiple
+      // times.
+      $scope.$broadcast('fiscal-year-create-refresh');
+
       $scope.active = 'create';
       $scope.selected = null;
     };
