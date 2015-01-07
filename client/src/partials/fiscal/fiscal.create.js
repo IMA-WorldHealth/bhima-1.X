@@ -5,6 +5,7 @@ angular.module('bhima.controllers')
   'validate',
   'appstate',
   'connect',
+  'store',
   function ($scope, $http, validate, appstate, connect) {
     var data,
         imports = $scope.$parent,
@@ -59,10 +60,36 @@ angular.module('bhima.controllers')
       }
     };
 
+    // returns true if the years array contains a
+    // year with previous_fiscal_year matching the
+    // year's id.
+    function hasChild(year, years) {
+      return years.some(function (otherYear) {
+        return otherYear.previous_fiscal_year === year.id;
+      });
+    }
+
+    // Make sure that only years without children show
+    // up in the view for selection as previous_fiscal_year
+    function filterParentYears() {
+      // copy the fiscal year store from the parent
+      var years = angular.copy(imports.fiscal.data);
+
+      // filter out years that have children
+      var childless = years.filter(function (year) {
+        return !hasChild(year, years);
+      });
+
+      // expose the years to the view
+      $scope.years = childless;
+    }
+
     // fires on controller load
     function onLoad() {
-      // expose the fiscal years from the parent to the view
-      $scope.fiscal = imports.fiscal;
+
+      // filter years that are parents out of the selection
+      // in the view
+      filterParentYears();
 
       // Trigger step one
       stepOne();
@@ -200,10 +227,20 @@ angular.module('bhima.controllers')
         throw err;
       });
     }
-    
+
     // force refresh of the page
     function forceRefresh() {
+
+      // refresh the form
       data = $scope.data = { year : 'true' };
+
+      // refresh the imports, in case the parent has
+      // loaded new data
+      imports = $scope.$parent;
+
+      // refresh parent filter
+      filterParentYears();
+
       stepOne();
     }
 
