@@ -724,7 +724,8 @@
     "NUM_ITEMS"          : "Number of Items",     
     "ENTRY_DATE"         : "Entry date",
     "CONFIRMED"          : "Confirmed",
-    "SUPPLIER"           : "Supplier"   
+    "SUPPLIER"           : "Supplier",
+    "IS_WAREHOUSE"       : "Is warehouse ?"  
   },
 
   "INVENTORY" : {
@@ -1426,12 +1427,12 @@
     "CHOOSE"           : "Assign a service"
   },
 
-  "FIND"              : {
-    "TITLE"           : "Find a patient",
-    "ENTER_DEBTOR_ID" : "Find by Patient ID",
-    "PLACEHOLDER"     : "Search patient name",
-    "SEARCH"          : "Find by Name",
-    "PATIENT_ID"      : "Patient ID"
+  "FIND"               : {
+    "ENTER_PATIENT_ID" : "Find by Patient ID",
+    "PATIENT_ID"       : "Patient ID",
+    "PLACEHOLDER"      : "Search patient name",
+    "SEARCH"           : "Find by Name",
+    "TITLE"            : "Find a patient"
   },
 
   "EFIND" : {
