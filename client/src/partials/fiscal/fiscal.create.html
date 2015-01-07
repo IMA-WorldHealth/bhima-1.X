@@ -42,7 +42,7 @@
 
         <div class="form-group" ng-if="fiscal.data.length > 0">
           <label class="required">{{ 'FISCAL_YEAR.PREVIOUS_YEAR' | translate }}</label>
-          <select class="form-bhima" ng-model="data.previous_fiscal_year" ng-options="year.id as year.fiscal_year_txt for year in fiscal.data" required>
+          <select class="form-bhima" ng-model="data.previous_fiscal_year" ng-options="year.id as year.fiscal_year_txt for year in years" required>
             <option value="" disabled="disabled" selected="selected">--- {{ 'SELECT.FISCAL_YEAR' | translate }} ---</option>
           </select>
         </div>
