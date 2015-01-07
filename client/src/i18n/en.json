@@ -725,7 +725,8 @@
     "ENTRY_DATE"         : "Entry date",
     "CONFIRMED"          : "Confirmed",
     "SUPPLIER"           : "Supplier",
-    "LOCKED"             : "Locked"   
+    "LOCKED"             : "Locked",   
+    "IS_WAREHOUSE"       : "Is warehouse ?"  
   },
 
   "INVENTORY" : {
@@ -1078,52 +1079,54 @@
   },
 
   "PATIENT_EDIT"             : {
-    "TITLE"                  : "Edit Patient Details:",
-    "UPDATE_PATIENT"         : "Update Patient",
     "CHANGE_DEBITOR_GROUP"   : "Change Debitor Group",
-    "UPDATE_SUCCESS"         : "Patient details updated",
-    "ERROR_MISSING_UUID"     : "Error: Missing patient UUID"
+    "TITLE"                  : "Edit Patient Details:",
+    "UPDATE_FAILED"          : "Patient update failed!",
+    "UPDATE_PATIENT"         : "Update Patient",
+    "UPDATE_SUCCESS"         : "Patient details updated"
   },
 
   "PATIENT_REG"                : {
-    "TITLE"                    : "Patient Registration",
-    "PATIENT_DETAILS"          : "Patient Details",
-    "INVALID_DATE"             : "Warning                    : Date of Birth is in the Future! Are you sure it is correct?",
+    "ADDRESS1"                 : "Address 1",
+    "ADDRESS2"                 : "Address 2",
     "CREATE_DEBTOR_GROUP"      : "Create Debtor Group",
-    "VIEW_PATIENT_RECORDS"     : "View Patient Records",
-    "PATIENT_GROUP_ASSIGNMENT" : "Patient Group Assignment",
-    "PATIENT"                  : "Patient",
-    "RENEWAL"                  : "Renewal Registration",
-    "YES"                      : "Yes",
-    "NO"                       : "No",
-    "FIRST_NAME"               : "First Name",
-    "SECOND_NAME"              : "Second Name",
-    "YOB"                      : "Year of Birth",
-    "ENTER_FULL_DATE"          : "Enter Full Date",
+    "DEBTOR_GROUP"             : "Debtor Group",
     "DOB"                      : "Date of Birth",
-    "SEX"                      : "Sex",
-    "MALE"                     : "Male",
+    "EMAIL"                    : "Email",
+    "EMPLOYER"                 : "Employer",
+    "ENTER_FULL_DATE"          : "Enter Full Date",
+    "FATHER_NAME"              : "Father's Name",
     "FEMALE"                   : "Female",
     "FINANCE"                  : "Finance",
-    "PATIENT_GROUP"            : "Patient Group",
-    "DEBTOR_GROUP"             : "Debtor Group",
-    "OPTIONAL_INFO"            : "Optional Information",
-    "PHONE_NO"                 : "Phone Number",
-    "EMAIL"                    : "Email",
-    "PARENT_NAME"              : "Parent Name",
-    "RELIGION"                 : "Religion",
+    "FIRST_NAME"               : "First Name",
+    "INVALID_DATE"             : "Warning                    : Date of Birth is in the Future! Are you sure it is correct?",
+    "LOCATION"                 : "Location Management",
+    "MALE"                     : "Male",
     "MARITAL_STATUS"           : "Marital Status",
-    "PATIENT_NOTES"            : "Patient Notes",
-    "REGISTER_PATIENT"         : "Register Patient",
-    "PROFESSION"               : "Occupation",
-    "EMPLOYER"                 : "Employer",
     "MOTHER_NAME"              : "Mother's Name",
+    "NO"                       : "No",
+    "OPTIONAL_INFO"            : "Optional Information",
+    "PATIENT"                  : "Patient",
+    "PATIENT_DETAILS"          : "Patient Details",
+    "PATIENT_GROUP"            : "Patient Group",
+    "PATIENT_GROUP_ASSIGNMENT" : "Patient Group Assignment",
+    "PATIENT_NOTES"            : "Patient Notes",
+    "PHONE_NO"                 : "Phone Number",
+    "PROFESSION"               : "Occupation",
+    "REGISTER_PATIENT"         : "Register Patient",
+    "RELIGION"                 : "Religion",
+    "RENEWAL"                  : "Renewal Registration",
+    "RUE"                      : "Street",
+    "SECOND_NAME"              : "Second Name",
+    "SEX"                      : "Sex",
     "SPOUSE"                   : "Spouse's Name",
     "SPOUSE_EMPLOYER"          : "Spouse's Employer",
     "SPOUSE_PROFESSION"        : "Spouse's Occupation",
-    "AVENUE"                   : "Street",
-    "RUE"                      : "Street",
-    "LOCATION"                 : "Location Management"
+    "TITLE"                    : "Patient Registration",
+    "TITLE"                    : "Title",
+    "VIEW_PATIENT_RECORDS"     : "View Patient Records",
+    "YES"                      : "Yes",
+    "YOB"                      : "Year of Birth"
   },
 
   "CREDITOR_GRP" : {
@@ -1426,12 +1429,12 @@
     "DEBITOR_GROUP_LOCK" : "The debitor group of this patient is locked"
   },
 
-  "FIND"              : {
-    "TITLE"           : "Find a patient",
-    "ENTER_DEBTOR_ID" : "Find by Patient ID",
-    "PLACEHOLDER"     : "Search patient name",
-    "SEARCH"          : "Find by Name",
-    "PATIENT_ID"      : "Patient ID"
+  "FIND"               : {
+    "ENTER_PATIENT_ID" : "Find by Patient ID",
+    "PATIENT_ID"       : "Patient ID",
+    "PLACEHOLDER"      : "Search patient name",
+    "SEARCH"           : "Find by Name",
+    "TITLE"            : "Find a patient"
   },
 
   "EFIND" : {

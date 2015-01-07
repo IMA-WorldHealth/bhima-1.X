@@ -16,7 +16,7 @@ angular.module('bhima.controllers')
         identifier : 'uuid',
         tables : {
           'depot' : {
-            columns : ['uuid', 'text', 'reference']
+            columns : ['uuid', 'text', 'reference','is_warehouse']
           }
         }
       }
