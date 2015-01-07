@@ -4,7 +4,7 @@
      <div ng-switch-when="false">
        <span class="glyphicon glyphicon-search"></span> {{ "FIND.TITLE" | translate }}
        <div class="pull-right">
-         <a id="findById" style="cursor:pointer;" ng-class="{'link-selected': findPatient.state==='id'}" ng-click="findPatient.updateState('id')" class="patient-find"><span class="glyphicon glyphicon-pencil"></span> {{ "FIND.ENTER_DEBTOR_ID" | translate }} </a>
+         <a id="findById" style="cursor:pointer;" ng-class="{'link-selected': findPatient.state==='id'}" ng-click="findPatient.updateState('id')" class="patient-find"><span class="glyphicon glyphicon-pencil"></span> {{ "FIND.ENTER_PATIENT_ID" | translate }} </a>
          <a id="findByName" style="cursor:pointer;" ng-class="{'link-selected': findPatient.state==='name'}" ng-click="findPatient.updateState('name')" class="patient-find"><span class="glyphicon glyphicon-user"></span> {{ "FIND.SEARCH" | translate }} </a>
        </div>
      </div>
