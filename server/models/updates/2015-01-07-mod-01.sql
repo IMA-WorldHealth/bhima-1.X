@@ -10,7 +10,4 @@ ALTER TABLE `account`
 DROP `fixed`;
 
 ALTER TABLE `account` 
-DROP `locked`;
-
-ALTER TABLE `account` 
 ADD `is_asset` BOOLEAN NULL
