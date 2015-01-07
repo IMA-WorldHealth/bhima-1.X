@@ -174,6 +174,11 @@ angular.module('bhima.controllers')
       writePatient(patient);
     };
 
+    $scope.getMinDate = function getMinDate() {
+      // TODO: Define this globally somewhere (same for patient edit)
+      return '1900-01-01';
+    };
+
     $scope.getMaxDate = function getMaxDate () {
       return util.htmlDate(session.timestamp);
     };
@@ -191,6 +196,14 @@ angular.module('bhima.controllers')
       packagePatient.uuid = patientId;
       packagePatient.project_id = $scope.project.id;
       packagePatient.reference = 1; // FIXME/TODO : This is a hack
+
+      // Normalize the patient names
+      packagePatient.first_name = util.normalizeName(packagePatient.first_name);
+      packagePatient.last_name = util.normalizeName(packagePatient.last_name);
+      packagePatient.father_name = util.normalizeName(packagePatient.father_name);
+      packagePatient.mother_name = util.normalizeName(packagePatient.mother_name);
+      packagePatient.spouse = util.normalizeName(packagePatient.spouse);
+      packagePatient.title = util.normalizeName(packagePatient.title);
 
       connect.basicPut('debitor', [packageDebtor])
       .then(function () {

@@ -179,7 +179,7 @@ angular.module('bhima.controllers')
       self.emp = emp;
       getHollyDayCount(emp)
       .then(function (hld){
-        var hl = (hld)? hld.nb : 0;
+        var hl = (hld)? hld.nb : 0; //hl contains the number of hollydays
         self.datahl = (hld)? hld.data : null;
 
         self.coefhl = (hld)? hld.coeff : 0;
@@ -244,9 +244,9 @@ angular.module('bhima.controllers')
         });
 
         taxes.forEach(function (tax) {
-          var dataTaxes = (tax.is_percent) ?
+          var dataTax = (tax.is_percent) ?
           ((self.daily_salary * (self.working_day + self.coefhl + self.offdays)) * tax.value) / 100 : tax.value;
-          self[tax.abbr] = dataTaxes;
+          self[tax.abbr] = dataTax;
         });
 
         var employee_cotisation = 0;
@@ -265,11 +265,10 @@ angular.module('bhima.controllers')
         var taxes = session.model.tax_config.data;
         self.IPR1 = IPR;
         taxes.forEach(function (tax) {
-          var dataTaxes = (tax.is_ipr) ? IPR : tax.value;
-          self[tax.abbr] = dataTaxes;
+          if(tax.is_ipr){
+            self[tax.abbr] = IPR;
+          }
         });
-
-
         self.offdays_cost = getOffDayCost(self);
         def.resolve(self);
       });
@@ -462,7 +461,7 @@ angular.module('bhima.controllers')
         if(hollydays.length) {
           var pp_confs = session.model.paiement_period_conf.data,
             soms = [],
-            config = [],
+            configs = [],
             dataHollydays = [];
 
           hollydays.forEach(function (h) {
@@ -521,7 +520,7 @@ angular.module('bhima.controllers')
             });          
             
             var valeur = nb * (h.percentage / 100);
-            config.push(valeur);
+            configs.push(valeur);
           });
 
           // TODO
@@ -532,7 +531,7 @@ angular.module('bhima.controllers')
             return x+y;
           }, 0);
 
-          var somConfig = config.reduce(function (x, y) {
+          var somConfig = configs.reduce(function (x, y) {
             return x+y;
           }, 0);
 

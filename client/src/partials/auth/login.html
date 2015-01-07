@@ -2,7 +2,7 @@
   <div class="col-sm-offset-4 col-xs-4" style="margin-top:5%;">
     <div class="panel" ng-class="{ 'panel-default' : !session.loginFailure, 'panel-danger' : !!session.loginFailure }">
       <div class="panel-heading">
-        {{ "AUTH.LOGIN" | translate }}
+        {{ "AUTH.LOGIN_TO_BHIMA" | translate }}
         <span class="pull-right dropdown">
           <a class="clk dropdown-toggle"><i class="glyphicon glyphicon-cog"></i></a>
           <ul class="dropdown-menu">
@@ -51,8 +51,8 @@
               </div>
             </div>
 
-            <input class="btn btn-sm btn-success" type="submit"/>
-            <input class="btn btn-sm btn-default" type="reset"/>
+            <input class="btn btn-sm btn-success" type="submit" value="{{'AUTH.LOGIN' | translate}}"/>
+            <input class="btn btn-sm btn-default" type="reset" value="{{'AUTH.RESET' | translate}}"/>
           </fieldset>
         </form>
       </div>

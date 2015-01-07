@@ -198,7 +198,7 @@ function getOperator(condition) {
   // are ordered so that we find '>=' before '=', since both can
   // technically exist in an expression.
   var expression,
-      comparisons = ['>=', '<=', '!=', '<>', '=', '<', '>'];
+      comparisons = ['>=', '<=', '!=', '<>', '=', '<', '>', 'LIKE'];
 
   expression = comparisons.filter(function (operator) {
     return condition.match(operator);
@@ -229,8 +229,23 @@ function escapeWhereCondition(condition) {
   // portion is the condition, which may contain user-defined
   // variables, and we should escape it.
   collection = condition.split(operator);
-  // escape the second part of the conditon
+
+  // Clean up whitespace for LIKE operator
+  if (operator === 'LIKE') {
+      collection[1] = collection[1].trim();
+  }
+
+  // Escape the second part of the conditon
   collection[1] = sanitize(collection[1]);
+
+  // Fix up terms for LIKE operator
+  if (operator === 'LIKE') {
+      var patstr = collection[1].trim().toLowerCase();
+      // Insert % SQL wildcard at both ends to generalize the search
+      patstr = patstr.replace(/^'/, '\'%');
+      patstr = patstr.replace(/'$/, '%\'');
+      collection[1] = ' ' + patstr;
+  }
 
   return collection.join(operator);
 }
@@ -241,7 +256,14 @@ function escapeWhereCondition(condition) {
 // the proper query.
 function mkColumns(table /* String */, columns /* Array */) {
   return columns.map(function (col) {
-    return table + '.' + col;
+    if (col.indexOf('::') < 0) {
+      return table + '.' + col;
+    }
+    else {
+      // Handle aliasing
+      var cparts = col.split('::');
+      return table + '.' + cparts[0] + ' as ' + cparts[1];
+    }
   })
   .join(', ');
 }
