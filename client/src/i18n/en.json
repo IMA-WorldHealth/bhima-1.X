@@ -738,7 +738,9 @@
     "ENTRY_DATE"         : "Entry date",
     "CONFIRMED"          : "Confirmed",
     "SUPPLIER"           : "Supplier",
-    "IS_WAREHOUSE"       : "Is warehouse ?"  
+    "IS_WAREHOUSE"       : "Is warehouse ?",
+    "RECEIPT"            : "Receipt",
+    "PROOF"              : "Proof"
   },
 
   "INVENTORY" : {
