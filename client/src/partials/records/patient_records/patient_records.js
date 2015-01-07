@@ -17,7 +17,7 @@ angular.module('bhima.controllers')
         identifier : 'uuid',
         tables : {
           patient : {
-            columns : ['uuid', 'first_name', 'last_name', 'dob', 'father_name', 'mother_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'addr_1', 'addr_2', 'current_location_id', 'debitor_uuid', 'registration_date', 'reference']
+            columns : ['uuid', 'first_name', 'last_name', 'dob', 'father_name', 'mother_name', 'sex', 'religion', 'marital_status', 'phone', 'email', 'address_1', 'address_2', 'current_location_id', 'debitor_uuid', 'registration_date', 'reference']
           },
           project : {
             columns : ['abbr']
@@ -58,7 +58,7 @@ angular.module('bhima.controllers')
       Object.keys(params)
       .forEach(function(key) {
         if (params[key].length) {
-          condition.push('patient.' + key + '=' + searchParams[key], 'AND');
+            condition.push('patient.' + key + ' LIKE ' + searchParams[key], 'AND');
         }
       });
 

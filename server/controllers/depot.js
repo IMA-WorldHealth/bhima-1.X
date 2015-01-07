@@ -87,7 +87,10 @@ module.exports = function () {
       'FROM movement ' +
       'UNION ' +
       'SELECT uuid, null as depot_entry, depot_uuid as depot_exit, tracking_number, quantity, date  ' +
-      'FROM consumption) as calculateMovement ON ' +
+      'FROM consumption ' +
+      'UNION ' +
+      'SELECT uuid, null as depot_entry, depot_uuid as depot_exit, tracking_number, (quantity * (-1)) AS quantity, date ' +
+      'FROM consumption_reversing ) as calculateMovement ON ' +
         'inventory.uuid = stock.inventory_uuid AND stock.tracking_number = calculateMovement.tracking_number ' +
       'WHERE (calculateMovement.depot_entry = ' + _depot + ' OR calculateMovement.depot_exit = ' + _depot + ') ' +
       'AND inventory.code = ' + _code +
@@ -117,7 +120,10 @@ module.exports = function () {
       'FROM movement ' +
       'UNION ' +
       'SELECT uuid, null as depot_entry, depot_uuid as depot_exit, tracking_number, quantity, date  ' +
-      'FROM consumption) as calculateMovement ON ' +
+      'FROM consumption ' + 
+      'UNION ' +
+      'SELECT uuid, null as depot_entry, depot_uuid as depot_exit, tracking_number, (quantity * (-1)) AS quantity, date ' +
+      'FROM consumption_reversing ) as calculateMovement ON ' +
         'inventory.uuid = stock.inventory_uuid AND stock.tracking_number = calculateMovement.tracking_number ' +
       'WHERE calculateMovement.depot_entry = ' + _depot + ' OR calculateMovement.depot_exit = ' + _depot + ' ' +
       'GROUP BY stock.tracking_number ' +

@@ -45,6 +45,20 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.currency = {
+      query : {
+        tables : {
+          'currency' : {
+            columns : ['symbol']
+          },
+          'enterprise' : {
+            columns : ['id']
+          }
+        },
+        join : ['currency.id=enterprise.currency_id']
+      }
+    };
+
     dependencies.avail_stocks = {
       identifier:'tracking_number',
       query : '/serv_dist_stock/' + depotId

@@ -51,6 +51,10 @@
       controller: 'fiscal',
       templateUrl: 'partials/fiscal/fiscal.html'
     })
+    .when('/patient/edit/:patientID?', {
+      controller: 'patientEdit',
+      templateUrl: 'partials/patient_edit/edit_patient.html'
+    })
     .when('/patient', {
       controller: 'patientRegistration',
       templateUrl: 'partials/patient_registration/patient.html'
@@ -406,6 +410,22 @@
       controller : 'stock.distribution_service',
       templateUrl : 'partials/stock/exit_service/distribution_service.html'
     })
+    .when('/stock/distribution_record/:depotId', {
+      controller : 'stock.distribution_record',
+      templateUrl : 'partials/stock/distribution_record/distribution_record.html'
+    })
+    .when('/stock/distribution_service_record/:depotId', {
+      controller : 'stock.distribution_service_record',
+      templateUrl : 'partials/stock/distribution_service_record/distribution_service_record.html'
+    })        
+    .when('/stock/reversing_service_distribution/:consumptionId', {
+      controller : 'stock.reversing_service_distribution',
+      templateUrl : 'partials/stock/reversing_service_distribution/reversing_service_distribution.html'
+    }) 
+    .when('/stock/reversing_distribution/:consumptionId', {
+      controller : 'stock.reversing_distribution',
+      templateUrl : 'partials/stock/reversing_distribution/reversing_distribution.html'
+    })            
     .when('/stock/loss/:depotId', {
       controller : 'stock.loss',
       templateUrl : 'partials/stock/loss/loss.html'
@@ -545,10 +565,20 @@
     .when('/fonction', {
       controller : 'fonction',
       templateUrl : 'partials/fonction/fonction.html'
-    })
+    })  
+    .when('/donor_management/', {
+      controller: 'donor',
+      templateUrl: '/partials/donor_management/donor_management.html'
+    })       
     .when('/reports/operating_account/', {
       controller : 'operating_account',
       templateUrl : 'partials/reports/operating_account/operating_account.html'
+    })
+
+    // Proposed formal report building structure
+    .when('/report/invoice/:target', { 
+      controller : 'configureInvoice', 
+      templateUrl : 'partials/reports_proposed/invoice/invoice.html'
     })
     .otherwise('/');
   }

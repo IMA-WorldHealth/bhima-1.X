@@ -117,7 +117,25 @@
                         </div>
                       </td>
                       <td>
-                        {{row.price | currency}}
+
+                        <div class="input-group">
+                          <span class="input-group-addon">
+                            <span
+                            ng-class=
+                            "{
+                              'glyphicon-remove-circle error' : !row.price || row.price < 0,
+                              'glyphicon-ok-circle correct' : row.price >= 0 && row.price
+                            }"
+                            class="glyphicon">
+                            </span>
+                          </span>
+
+                          <input class="form-bhima" ng-disabled="!row.code" ng-model="row.price" type="number" min="0" required>
+
+                          <span class="input-group-addon">
+                            {{model.currency.data[0].symbol}}
+                          </span>
+                        </div>
                       </td>
 
                       <td>

@@ -161,24 +161,6 @@ create table `project_permission` (
   constraint foreign key (`project_id`) references `project` (`id`)
 ) engine=innodb;
 
-drop table if exists `fiscal_year`;
-create table `fiscal_year` (
-  `enterprise_id`             smallint unsigned not null,
-  `id`                        mediumint unsigned not null auto_increment,
-  `number_of_months`          mediumint unsigned not null,
-  `fiscal_year_txt`           text not null,
-  `transaction_start_number`  int unsigned,
-  `transaction_stop_number`   int unsigned,
-  `fiscal_year_number`        mediumint unsigned,
-  `start_month`               int unsigned not null,
-  `start_year`                int unsigned not null,
-  `previous_fiscal_year`      mediumint unsigned,
-  `locked`                    boolean not null default 0,
-  primary key (`id`),
-  key `enterprise_id` (`enterprise_id`),
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`)
-) engine=innodb;
-
 drop table if exists `budget`;
 create table `budget` (
   `id` int not null auto_increment,
@@ -368,6 +350,27 @@ create table `caution_box_account_currency` (
   constraint foreign key (`caution_box_id`) references `caution_box` (`id`),
   constraint foreign key (`account_id`) references `account` (`id`)
 ) engine=innodb;
+
+drop table if exists `fiscal_year`;
+create table `fiscal_year` (
+  `enterprise_id`             smallint unsigned not null,
+  `id`                        mediumint unsigned not null auto_increment,
+  `number_of_months`          mediumint unsigned not null,
+  `fiscal_year_txt`           text not null,
+  `transaction_start_number`  int unsigned,
+  `transaction_stop_number`   int unsigned,
+  `fiscal_year_number`        mediumint unsigned,
+  `start_month`               int unsigned not null,
+  `start_year`                int unsigned not null,
+  `previous_fiscal_year`      mediumint unsigned,
+  `closing_account`           int unsigned null,
+  `locked`                    boolean not null default 0,
+  primary key (`id`),
+  key `enterprise_id` (`enterprise_id`),
+  constraint foreign key (`closing_account`) references `account` (`id`),
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`)
+) engine=innodb;
+
 
 drop table if exists `period`;
 create table `period` (
@@ -576,6 +579,7 @@ create table `patient` (
   `first_name`        varchar(150) not null,
   `last_name`         varchar(150) not null,
   `dob`               date,
+  `title`             varchar(30),
   `father_name`       varchar(150),
   `mother_name`       varchar(150),
   `profession`        varchar(150),
@@ -587,9 +591,9 @@ create table `patient` (
   `religion`          varchar(50),
   `marital_status`    varchar(50),
   `phone`             varchar(12),
-  `email`             varchar(20),
-  `addr_1`            varchar(100),
-  `addr_2`            varchar(100),
+  `email`             varchar(40),
+  `address_1`         varchar(100),
+  `address_2`         varchar(100),
   `renewal`           boolean not null default 0,
   `origin_location_id`        char(36) not null,
   `current_location_id`       char(36) not null,
@@ -713,6 +717,7 @@ create table `depot` (
   `reference`          int unsigned not null auto_increment,
   `text`               text,
   `enterprise_id`      smallint unsigned not null,
+  `is_warehouse`       smallint unsigned not null default 0,
   primary key (`uuid`),
   key `reference` (`reference`)
 ) engine=innodb;
@@ -777,6 +782,22 @@ create table `consumption_rummage` (
   -- constraint foreign key (`consumption_uuid`) references `consumption` (`uuid`)
 ) engine=innodb;
 
+drop table if exists `consumption_reversing`;
+create table `consumption_reversing` (
+  `uuid`             char(36) not null,
+  `consumption_uuid`        char(36) not null,  
+  `depot_uuid`       char(36) not null,
+  `document_id`       char(36) not null,
+  `date`             date,
+  `tracking_number`  char(50) not null,
+  `quantity`           int,
+  `description`        text,    
+  primary key (`uuid`),
+  key `consumption_uuid` (`consumption_uuid`),
+  key `depot_uuid`   (`depot_uuid`),
+  constraint foreign key (`consumption_uuid`) references `consumption` (`uuid`),
+  constraint foreign key (`depot_uuid`) references `depot` (`uuid`) on delete cascade on update cascade
+) engine=innodb;
 
 
 

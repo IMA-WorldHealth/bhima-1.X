@@ -100,6 +100,7 @@ angular.module('bhima.controllers')
     $scope.save.new = function () {
       $scope.session.new.is_employee = ($scope.session.new.is_employee)? 1 : 0;
       $scope.session.new.is_percent = ($scope.session.new.is_percent)? 1 : 0;
+      $scope.session.new.is_ipr = ($scope.session.new.is_ipr)? 1 : 0;
       var record = connect.clean(session.new);
       if(record.abbr){
         if(record.abbr.length <= 4){
