@@ -317,6 +317,7 @@
     "MANAGEMENT"            : "Gestion",
     "RECORDS"               : "Liste des Années Fiscale",
     "NEW"                   : "Nouvelle Année",
+    "CREATE"                : "Cree une Nouvelle Année",
     "DESC"                  : "Description",
     "START_DATE"            : "Début Date",
     "START_MONTH"           : "Début Mois",
