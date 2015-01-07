@@ -724,7 +724,8 @@
     "NUM_ITEMS"          : "Number of Items",     
     "ENTRY_DATE"         : "Entry date",
     "CONFIRMED"          : "Confirmed",
-    "SUPPLIER"           : "Supplier"   
+    "SUPPLIER"           : "Supplier",
+    "IS_WAREHOUSE"       : "Is warehouse ?"  
   },
 
   "INVENTORY" : {
