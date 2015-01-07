@@ -446,7 +446,7 @@
     "MONTH"               : "This Month",
     "SEARCH"              : "Search",
     "INCORRECT_DATE_TYPE" : "Provided date value is invalid",
-    "INCORRECT_DATE_LIMIT" : "Year of birth must be between 1900 and 2014",
+    "INCORRECT_DATE_LIMIT" : "Year of birth must be between <min> and <max>",
     "INCORRECT_LOCATION_CURRENT" : "Current village not specified",
     "INCORRECT_LOCATION_ORIGIN" : "Origin village not specified",
     "STATUS_NEW_TITLE" : "Patient is new to the hospital",
