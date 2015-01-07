@@ -11,22 +11,24 @@ angular.module('bhima.controllers')
   function ($scope, $routeParams, $translate, connect, validate, messenger, util, appstate) {
     var dependencies = {},
         originalPatientData = null,
-        patientUuid = $scope.patientUuid = $routeParams.patientID,
+        patientUuid = $routeParams.patientID,
+        timestamp = new Date(),
+        currentYear = timestamp.getFullYear(),
         session = $scope.session = {},
         editableFields = [
-	  'first_name', 'last_name', 'dob', 'sex', 'father_name', 'mother_name',
+	  'first_name', 'last_name', 'dob', 'sex', 'father_name', 'mother_name', 'title',
 	  'profession', 'employer', 'marital_status', 'spouse', 'spouse_profession', 'spouse_employer',
-	  'religion', 'phone', 'email', 'addr_1', 'origin_location_id', 'current_location_id'
+	  'religion', 'phone', 'email', 'address_1', 'address_2', 'origin_location_id', 'current_location_id'
 	  ];
     
+    // Initialise the session
     session.mode = 'search';
-
-    session.timestamp = new Date();
-    session.currentYear = session.timestamp.getFullYear();
-
-    session.originLocationUuid = null;
-    session.currentLocationUuid = null;
     session.failedSessionValidation = false;
+
+    // Add fake initial values to keep the form happy before the real values are available
+    $scope.patient = { origin_location_id: null, current_location_id: null };
+    $scope.initialOriginLocation = null;
+    $scope.initialCurrentLocation = null;
 
     // Validation configuration objects
     var validation = $scope.validation = {};
@@ -84,6 +86,7 @@ angular.module('bhima.controllers')
       }
     };
 
+    // We need the debitor group info
     dependencies.debtorGroup = {
       query : {
         identifier : 'uuid',
@@ -95,39 +98,39 @@ angular.module('bhima.controllers')
       }
     };
 
-    // Various functions for the form
-    $scope.getMaxDate = function getMaxDate() {
-      return util.htmlDate(session.timestamp);
-    };
+    // Various functions/data for the form
+    // TODO: Define these globally somewhere (same for patient register)
+    $scope.minDOB = '1900-01-01';
+    $scope.maxDOB = util.htmlDate(timestamp);
 
     $scope.setOriginLocation = function (uuid) {
-      // TODO: Switch from session.originLocationUuid to patient
-      // ??? $scope.patient.origin_location_id = uuid;
-      session.originLocationUuid = uuid;
+      $scope.patient.origin_location_id = uuid;
     };
     
     $scope.setCurrentLocation = function (uuid) {
-      // ??? $scope.patient.current_location_id = uuid;
-      session.currentLocationUuid = uuid;
+      $scope.patient.current_location_id = uuid;
     };
 
-    function customValidation() {
-      var dates = validateDates();
-      var locations = validateLocations();
 
-      session.failedSessionValidation = dates || locations;
+    // Validate the dates and locations
+    function customValidation() {
+      var badDOB = invalidDOB();
+      var badLocations = invalidLocations();
+
+      session.failedSessionValidation = badDOB || badLocations;
       return;
     }
 
-    function validateLocations() {
+    // Validate the origin/current locations
+    function invalidLocations() {
       validation.locations.flag = false;
 
-      if (!session.originLocationUuid) {
+      if (!$scope.patient.origin_location_id) {
         validation.locations.flag = validation.locations.tests.origin;
         return true;
       }
 
-      if (!session.currentLocationUuid) {
+      if (!$scope.patient.current_location_id) {
         validation.locations.flag = validation.locations.tests.current;
         return true;
       }
@@ -135,56 +138,69 @@ angular.module('bhima.controllers')
       return false;
     }
 
+
     // Convoluted date validation
-    function validateDates() {
+    function invalidDOB() {
       validation.dates.flag = false;
 
       if (typeof $scope.patient === 'undefined' || 
-	  typeof $scope.patient.dob === 'undefined' || !$scope.patient.dob) {
+          typeof $scope.patient.dob === 'undefined' || !$scope.patient.dob) {
         validation.dates.flag = validation.dates.tests.type;
         return true;
       }
 
       var year = $scope.patient.dob.getFullYear();
 
-      if (year) {
-        if (isNaN(year)) {
-	  // TODO: Probably not necessary any more since the form only allows digits ???
-          validation.dates.flag = validation.dates.tests.type;
-          return true;
-        }
-
-        // Sensible year limits - may need to change to accomodate legacy patients
-        if (year > session.currentYear || year < 1900) {
-	  // TODO: Maybe not necessary any more since the form/angular validates Date on the fly ???
-          validation.dates.flag = validation.dates.tests.limit;
-          return true;
-        }
+      if (isNaN(year)) {
+        // TODO: Probably not necessary any more since the form only allows digits ???
+        validation.dates.flag = validation.dates.tests.type;
+        return true;
       }
+
+      // Sensible year limits - may need to change to accomodate legacy patients
+      if (year > currentYear || year < 1900) {
+        // TODO: Maybe not necessary any more since the form/angular validates Date on the fly ???
+        validation.dates.flag = validation.dates.tests.limit;
+        return true;
+      }
+
       return false;
     }
 
-    // Tests in an ng-disabled method often got called in the wrong order/ scope was not updated
-    $scope.$watch('patient.dob', function (nval, oval) {
-      customValidation();
-    }, true);
 
+    // Tests in an ng-disabled method often got called in the wrong order/ scope was not updated
     $scope.$watch('session', function (nval, oval) {
       customValidation();
     }, true);
 
-    $scope.changeDebitor = function () {
-      // session.mode = 'change_debitor';
-      // TODO Needs to be implemented!
-      alert('Not implemented yet!');
+    $scope.$watch('patient.dob', function (nval, oval) {
+      customValidation();
+    }, true);
+
+    $scope.$watch('patient.origin_location_id', function (nval, oval) {
+      customValidation();
+    });
+
+    $scope.$watch('patient.current_location_id', function (nval, oval) {
+      customValidation();
+    });
+
+
+    // Define the function that switches to the edit mode
+    $scope.initialiseEditing = function initialiseEditing (selectedPatient) {
+      if (selectedPatient && 'uuid' in selectedPatient && selectedPatient.uuid) {
+        patientUuid = selectedPatient.uuid;
+	dependencies.patient.query.where[0] = 'patient.uuid=' + patientUuid;
+	validate.process(dependencies)
+	  .then(startup);
+	session.mode = 'edit';
+      }
     };
 
+
+    // Main function to save the updated patient data to the database
     $scope.updatePatient = function () {
       var patient = connect.clean(angular.copy($scope.patient));
-
-      // Update the locations
-      patient.origin_location_id = session.originLocationUuid;
-      patient.current_location_id = session.currentLocationUuid;
 
       // Make sure the DOB is in SQL format
       patient.dob = util.sqlDate(patient.dob);
@@ -195,6 +211,7 @@ angular.module('bhima.controllers')
       patient.father_name = util.normalizeName(patient.father_name);
       patient.mother_name = util.normalizeName(patient.mother_name);
       patient.spouse = util.normalizeName(patient.spouse);
+      patient.title = util.normalizeName(patient.title);
       
       // Get rid of any extraneous fields
       delete patient.reference;
@@ -225,20 +242,8 @@ angular.module('bhima.controllers')
       session.mode = 'edit';
     };
 
-    $scope.initialiseEditing = function initialiseEditing (selectedPatient) {
-      if (selectedPatient && 'uuid' in selectedPatient && selectedPatient.uuid) {
-        patientUuid = $scope.patientUuid = selectedPatient.uuid;
-	dependencies.patient.query.where[0] = 'patient.uuid=' + patientUuid;
-	validate.process(dependencies)
-	  .then(startup);
-	session.mode = 'edit';
-      }
-      else {
-	// TODO: Do we need a translation for an internal/hopefully-rare error ???
-	messenger.danger($translate('PATIENT_EDIT.ERROR_MISSING_UUID'));
-      }
-    };
 
+    // Basic setup function when the models are loaded
     function startup (models) {
       var patient = $scope.patient = models.patient.data[0];
       originalPatientData = angular.copy(patient);
@@ -247,14 +252,13 @@ angular.module('bhima.controllers')
       patient.hr_id = patient.project_abbr.concat(patient.reference);
 
       $scope.initialOriginLocation = patient.origin_location_id;
-      $scope.setOriginLocation(patient.origin_location_id);
-
       $scope.initialCurrentLocation = patient.current_location_id;
-      $scope.setCurrentLocation(patient.current_location_id);
 
       $scope.debtorGroup = models.debtorGroup;
     }
 
+
+    // Register this controller
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
       session.mode = 'search';

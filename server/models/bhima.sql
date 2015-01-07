@@ -576,6 +576,7 @@ create table `patient` (
   `first_name`        varchar(150) not null,
   `last_name`         varchar(150) not null,
   `dob`               date,
+  `title`             varchar(30),
   `father_name`       varchar(150),
   `mother_name`       varchar(150),
   `profession`        varchar(150),
@@ -587,9 +588,9 @@ create table `patient` (
   `religion`          varchar(50),
   `marital_status`    varchar(50),
   `phone`             varchar(12),
-  `email`             varchar(20),
-  `addr_1`            varchar(100),
-  `addr_2`            varchar(100),
+  `email`             varchar(40),
+  `address_1`         varchar(100),
+  `address_2`         varchar(100),
   `renewal`           boolean not null default 0,
   `origin_location_id`        char(36) not null,
   `current_location_id`       char(36) not null,
@@ -712,6 +713,7 @@ create table `depot` (
   `reference`          int unsigned not null auto_increment,
   `text`               text,
   `enterprise_id`      smallint unsigned not null,
+  `is_warehouse`       smallint unsigned not null default 0,
   primary key (`uuid`),
   key `reference` (`reference`)
 ) engine=innodb;
