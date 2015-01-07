@@ -7,18 +7,31 @@ angular.module('bhima.controllers')
   'messenger',
   'connect',
   'appstate',
-  function ($scope, $translate, $http, validate, messenger, connect, appstate) {
+  'uuid',
+  function ($scope, $translate, $http, validate, messenger, connect, appstate, uuid) {
     var dependencies = {},
         session = $scope.session = {};
 
-    dependencies.subsudies = {
+    dependencies.subsidies = {
+      query : '/getSubsidies/'
+    };
+
+    dependencies.debitorGroups = {
       query : {
         identifier : 'uuid',
         tables : {
-          'subsidy' : { columns : ['uuid', 'value', 'text', 'is_percent'] },
-          'debitor_group' : {columns : ['text']}
+          'debitor_group' : {columns : ['uuid', 'name']}
+        }
+      }
+    };
+
+    dependencies.enterprise = {
+      query : {
+        tables : {
+          'enterprise' : { columns : ['id'] },
+          'currency' : {columns : ['symbol']}
         },
-        join : ['debitor_group.uuid=subsidy.debitor_group_uuid']
+        join : ['enterprise.currency_id=currency.id']
       }
     };
 
@@ -28,24 +41,22 @@ angular.module('bhima.controllers')
 
     validate.process(dependencies).then(startup);
 
-    $scope.delete = function (taxes) {
-      var result = confirm($translate.instant('TAXES.CONFIRM'));
+    $scope.delete = function (subsidy) {
+      var result = confirm($translate.instant('SUBSIDY.CONFIRM'));
       if (result) {
-        connect.basicDelete('tax', taxes.id, 'id')
+        connect.delete('subsidy', susidy.uuidd, 'uuid')
         .then(function () {
-          $scope.taxes.remove(taxes.id);
-          messenger.info($translate.instant('TAXES.DELETE_SUCCESS'));
+          $scope.taxes.remove(subsidy.uuid);
+          messenger.info($translate.instant('SUBSIDY.DELETE_SUCCESS'));
         });
       }
     };
 
-    $scope.edit = function (taxes) {
-      console.log(taxes);
+    $scope.edit = function (subsidy) {
+      console.log(subsidy);
       session.action = 'edit';
-      session.edit = angular.copy(taxes);
-      session.edit.is_employee = session.edit.is_employee !== 0;
-      session.edit.is_percent = session.edit.is_percent !== 0;
-      session.edit.is_ipr = session.edit.is_ipr !== 0;
+      session.edit = angular.copy(subsidy);
+      session.edit.debitor_group_uuid = "44dbeb19-f4ce-4d0f-9c6c-a684bda89e40";
     };
 
     $scope.new = function () {
@@ -56,18 +67,8 @@ angular.module('bhima.controllers')
     $scope.save = {};
 
     $scope.save.edit = function () {
-      $scope.session.edit.is_employee = ($scope.session.edit.is_employee)? 1 : 0;
-      $scope.session.edit.is_percent = ($scope.session.edit.is_percent)? 1 : 0;
-      $scope.session.edit.is_ipr = ($scope.session.edit.is_ipr)? 1 : 0;
-
       var record = angular.copy(connect.clean(session.edit));
-      delete record.reference;
-      delete record.account_number;
-      delete record.account_txt;
-
-      if(record.abbr){
-        if(record.abbr.length <= 4){
-          connect.basicPost('tax', [record], ['id'])
+       connect.put('subsidy', [record], ['uuid'])
           .then(function () {
             validate.refresh(dependencies)
             .then(function (models) {
@@ -76,38 +77,21 @@ angular.module('bhima.controllers')
               session.action = '';
               session.edit = {};
             });
-          });
-        } else if (record.abbr.length > 4){
-          messenger.danger($translate.instant('TAXES.NOT_SUP4'));
-        }
-      }  else {
-        messenger.danger($translate.instant('TAXES.NOT_EMPTY'));
-      }
+        });
     };
 
     $scope.save.new = function () {
-      $scope.session.new.is_employee = ($scope.session.new.is_employee)? 1 : 0;
-      $scope.session.new.is_percent = ($scope.session.new.is_percent)? 1 : 0;
-      $scope.session.new.is_ipr = ($scope.session.new.is_ipr)? 1 : 0;
       var record = connect.clean(session.new);
-      if(record.abbr){
-        if(record.abbr.length <= 4){
-          connect.basicPut('tax', [record])
-          .then(function (res) {
-
-            validate.refresh(dependencies)
-            .then(function (models) {
-              angular.extend($scope, models);
-            });
-            session.action = '';
-            session.new = {};
-          });
-        } else if (record.abbr.length > 4){
-          messenger.danger($translate.instant('TAXES.NOT_SUP4'));
-        }
-      }  else {
-        messenger.danger($translate.instant('TAXES.NOT_EMPTY'));
-      }
+      if(record.value < 0 || (record.is_percent === 1 && record.value > 100)) {return messenger.danger($translate.instant("SUBSIDY.WRONG_VALUE"));}
+      record.uuid = uuid();
+      connect.post('subsidy', [record])
+        .then(function (res) {
+          record.name = $scope.debitorGroups.get(record.debitor_group_uuid).name;
+          $scope.subsidies.post(record);
+          record = {};
+          session.action = '';
+          session.new = {};
+      });
     };
   }
 ]);
