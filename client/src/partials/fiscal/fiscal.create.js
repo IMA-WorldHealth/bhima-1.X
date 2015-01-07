@@ -21,11 +21,11 @@ angular.module('bhima.controllers')
       },
       {
         id : '2a',
-        key : 'FISCAL_YEAR.IMPORT_OPENING_BALANCES'
+        key : 'FISCAL_YEAR.CLOSE_NOTICE'
       },
       {
         id : '2b',
-        key : 'FISCAL_YEAR.CREATE_BEGINNING_BALANCES'
+        key : 'FISCAL_YEAR.CREATE_OPENING_BALANCES'
       },
       {
         id : '3',
@@ -40,7 +40,6 @@ angular.module('bhima.controllers')
     $scope.stepOne = stepOne;
     $scope.stepTwo = stepTwo;
     $scope.stepThree = stepThree;
-    $scope.labelAccount = labelAccount;
     $scope.submitFiscalYearData = submitFiscalYearData;
 
     // dependencies
@@ -88,7 +87,7 @@ angular.module('bhima.controllers')
     // set the account balance to 0 for all accounts
     function resetBalances() {
       $scope.accounts.data.forEach(function (row) {
-        
+
         // make account_number a string to sort properly
         row.account_number = String(row.account_number);
         row.debit = 0;
@@ -155,13 +154,6 @@ angular.module('bhima.controllers')
           data.end = iterate;
         }
       }
-    }
-
-    // label the account select nicely
-    // NOTE : This exposes a function to the view which is recalculated each
-    // time.  Is there a better way?
-    function labelAccount(account) {
-      return account.account_number + ' ' + account.account_txt;
     }
 
     // normalizes a date to a UTC date for the server

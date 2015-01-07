@@ -363,11 +363,9 @@ create table `fiscal_year` (
   `start_month`               int unsigned not null,
   `start_year`                int unsigned not null,
   `previous_fiscal_year`      mediumint unsigned,
-  `closing_account`           int unsigned null,
   `locked`                    boolean not null default 0,
   primary key (`id`),
   key `enterprise_id` (`enterprise_id`),
-  constraint foreign key (`closing_account`) references `account` (`id`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`)
 ) engine=innodb;
 
