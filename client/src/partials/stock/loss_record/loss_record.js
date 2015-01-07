@@ -160,11 +160,13 @@ angular.module('bhima.controllers')
     }
 
     function groupingLoss(data){
+      // Grouping loss data by document_uuid
+      // In the case where we have more than one item in a loss document
     	var loss_array = [];
 
     	for(var i in data){
-    		var new_line = [];
-    		var temp = data[i].document_uuid;
+    		var new_line = [],
+            temp = data[i].document_uuid;
 
     		new_line.push(data[i]);
 
