@@ -200,6 +200,15 @@ angular.module('bhima.controllers')
         throw err;
       });
     }
+    
+    // force refresh of the page
+    function forceRefresh() {
+      data = $scope.data = { year : 'true' };
+      stepOne();
+    }
+
+    // listen for refresh chime
+    $scope.$on('fiscal-year-create-refresh', forceRefresh);
 
     // collect the enterprise id and load the controller
     appstate.register('enterprise', function (enterprise) {
