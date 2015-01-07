@@ -931,7 +931,7 @@
     "NOT_EMPTY"          : "Abbr. Can not be empty",
     "NOT_SUP4"           : "Can not be more than 4 characters",
     "NOT_SUP_MAXDAY"     : "Can not be greater than the total working days"
-},
+  },
 
   "DISTRIBUTION" : {
     "TITLE"                  : "Stock Distribution",
@@ -1170,7 +1170,10 @@
     "VARIABLE"       : "Variable",
     "ACCOUNT_GROUP"  : "Account Group (Title Account)",
     "TITLE_ACCOUNT"  : "Title Account",
-    "ROOT_ACCOUNT"   : "Root Account"
+    "ROOT_ACCOUNT"   : "Root Account",
+    "IS_ASSET"       : "Is asset",
+    "IS_PASSIVE"     : "Est un passif",
+    "IS_NOTHING"     : "Nothing"        
   },
 
   "LOCATION"                : {
