@@ -713,6 +713,7 @@ create table `depot` (
   `reference`          int unsigned not null auto_increment,
   `text`               text,
   `enterprise_id`      smallint unsigned not null,
+  `is_warehouse`       smallint unsigned not null default 0,
   primary key (`uuid`),
   key `reference` (`reference`)
 ) engine=innodb;

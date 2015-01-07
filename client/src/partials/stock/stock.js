@@ -20,11 +20,6 @@ angular.module('bhima.controllers')
 
     config.modules = [
       {
-        key : 'STOCK.ENTRY.KEY',
-        ico : 'glyphicon-import',
-        link : '/stock/entry/start'
-      },
-      {
         key : 'STOCK.EXIT.KEY',
         ico : 'glyphicon-export',
         link : '/stock/distribution'
@@ -37,31 +32,30 @@ angular.module('bhima.controllers')
       },
 
       {
-        key : 'STOCK.DISTRIBUTION_RECORDS.KEY',
-        ico : 'glyphicon-list-alt',
-        link : '/stock/distribution_record'
-      },
-
-      {
-        key : 'STOCK.DISTRIBUTION_SERVICE_RECORDS.KEY',
-        ico : 'glyphicon-list-alt',
-        link : '/stock/distribution_service_record'
-      },
-
-      {
         key : 'STOCK.LOSS.KEY',
         ico : 'glyphicon-cloud',
         link : '/stock/loss'
       },
+
       {
         key : 'STOCK.MOVEMENT.KEY',
         ico : 'glyphicon-transfer',
         link : '/stock/movement'
-      },
+      }
+      
+    ];
+
+    config.modules_warehouse = [
       {
-        key : 'STOCK.DONATION.KEY',
-        ico : 'glyphicon-heart',
-        link : '/stock/donation_management'
+        key       : 'STOCK.ENTRY.KEY',
+        ico       : 'glyphicon-import',
+        link      : '/stock/entry/start'
+      },
+
+      {
+        key       : 'STOCK.DONATION.KEY',
+        ico       : 'glyphicon-heart',
+        link      : '/stock/donation_management'
       }
     ];
 
@@ -82,6 +76,18 @@ angular.module('bhima.controllers')
       {
         key : 'STOCK.REPORT.STOCK_COUNT',
         link : '/count/'
+      },
+
+      {
+        key : 'STOCK.DISTRIBUTION_RECORDS.KEY',
+        ico : 'glyphicon-list-alt',
+        link : '/stock/distribution_record'
+      },
+
+      {
+        key : 'STOCK.DISTRIBUTION_SERVICE_RECORDS.KEY',
+        ico : 'glyphicon-list-alt',
+        link : '/stock/distribution_service_record'
       }
     ];
 
@@ -91,7 +97,7 @@ angular.module('bhima.controllers')
         identifier : 'uuid',
         tables : {
           'depot' : {
-            columns : [ 'uuid', 'reference', 'text']
+            columns : [ 'uuid', 'reference', 'text', 'is_warehouse']
           }
         }
       }
@@ -125,6 +131,9 @@ angular.module('bhima.controllers')
           }
           $scope.depot = depot;
           session.configured = true;
+
+          warehouseModules();
+
         } else {
           session.configure = true;
         }
@@ -138,6 +147,12 @@ angular.module('bhima.controllers')
 
     function error (err) {
       messenger.danger(JSON.stringify(err));
+    }
+
+    function warehouseModules(){
+      if($scope.depot && $scope.depot.is_warehouse) {
+        config.modules = config.modules_warehouse.concat(config.modules);
+      }
     }
 
     appstate.register('project', function (project) {
@@ -161,13 +176,14 @@ angular.module('bhima.controllers')
       $location.path(path);
     };
 
-    $scope.setDepot = function setDepot (depot) {
+    $scope.setDepot = function (depot) {
       var message = $translate.instant('STOCK.MAIN.CONFIRM');
       var verifySet = $window.confirm(message + ' ' + depot.text);
       if (!verifySet) { return; }
 
       cache.put('depot', depot);
       $scope.depot = depot;
+      warehouseModules();
       session.configured = true;
       session.configure = false;
     };
@@ -177,6 +193,33 @@ angular.module('bhima.controllers')
       if (!verifyConfigure) { return; }
 
       $scope.depot = null;
+
+      config.modules = [
+        {
+          key : 'STOCK.EXIT.KEY',
+          ico : 'glyphicon-export',
+          link : '/stock/distribution'
+        },
+
+        {
+          key : 'STOCK.EXIT_SERVICE.KEY',
+          ico : 'glyphicon-export',
+          link : '/stock/distribution_service'
+        },
+
+        {
+          key : 'STOCK.LOSS.KEY',
+          ico : 'glyphicon-cloud',
+          link : '/stock/loss'
+        },
+
+        {
+          key : 'STOCK.MOVEMENT.KEY',
+          ico : 'glyphicon-transfer',
+          link : '/stock/movement'
+        }
+      ];
+
       cache.remove('depot');
       session.configured = false;
       session.configure = true;
