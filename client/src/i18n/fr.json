@@ -2627,6 +2627,5 @@
     "ALERT"            : "Le module gestion des donateurs est un module qui a été conçu pour permettre l'administration des donateurs de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'un donateur ainsi que la suppression.",
     "DELETE_SUCCESS"   : "Suppression avec succès",
     "NO_DONOR"      : "Aucun donateur n'est enregistrée"
-  }    
->>>>>>> de16580add8c9ac8d7fc169253efbf311ceb87d8
+  }
 }
