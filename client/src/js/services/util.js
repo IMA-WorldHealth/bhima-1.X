@@ -64,4 +64,7 @@ angular.module('bhima.services')
     return names.join(' ');
   };
 
+  // Define the minimum date for any patient data
+  this.minPatientDate = new Date('1900-01-01');
+
 }]);
