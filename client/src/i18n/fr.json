@@ -1426,12 +1426,12 @@
     "CHOOSE"           : "Choisir le service"
   },
 
-  "FIND"              : {
-    "TITLE"           : "Trouver Malade",
-    "ENTER_DEBTOR_ID" : "Chercher ID Débiteur",
-    "SEARCH"          : "Chercher Par Nom",
-    "PLACEHOLDER"     : "Chercher un Débiteur",
-    "PATIENT_ID"      : "ID Patient"
+  "FIND"               : {
+    "ENTER_PATIENT_ID" : "Chercher ID Patient",
+    "PATIENT_ID"       : "ID Patient",
+    "PLACEHOLDER"      : "Chercher un Patient",
+    "SEARCH"           : "Chercher Par Nom",
+    "TITLE"            : "Trouver Malade"
   },
 
   "EFIND" : {
