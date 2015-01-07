@@ -434,7 +434,7 @@
     "MONTH"               : "Ce Mois",
     "SEARCH"              : "Rechercher",
     "INCORRECT_DATE_TYPE"         : "la valeur de la date est invalide",
-    "INCORRECT_DATE_LIMIT"        : "Année de naissance doit être comprise entre 1900 et 2014",
+    "INCORRECT_DATE_LIMIT"        : "Année de naissance doit être comprise entre <min> et <max>",
     "INCORRECT_LOCATION_CURRENT"  : "village actuel non spécifiée",
     "INCORRECT_LOCATION_ORIGIN"   : "village d'origine non spécifiée",
     "STATUS_NEW_TITLE"            : "Le patient est de nouveau à l'hôpital",
