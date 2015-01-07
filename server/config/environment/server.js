@@ -82,7 +82,7 @@ var config = {
       "/available_profit_center/",
       "/service_dist/",
       "/consumption_loss/",
-      "/getAccount6/",      
+      "/getAccount6/",
       "/employee_list/",
       "/period_paiement/",
       "/available_payment_period/",
@@ -124,7 +124,8 @@ var config = {
       "/posting_promesse_payment/",
       "/getEmployeeCotisationPayment/",
       "/payCotisation/",
-      "/setCotisationPayment/"
+      "/setCotisationPayment/",
+      "/getSubsidies/"
     ]
   }
 };
