@@ -42,7 +42,6 @@ angular.module('bhima.controllers')
         ico : 'glyphicon-transfer',
         link : '/stock/movement'
       }
-      
     ];
 
     config.modules_warehouse = [
@@ -75,6 +74,7 @@ angular.module('bhima.controllers')
     config.reports = [
       {
         key : 'STOCK.REPORT.STOCK_COUNT',
+        ico : 'glyphicon-list-alt',
         link : '/count/'
       },
 
@@ -95,6 +95,7 @@ angular.module('bhima.controllers')
         ico : 'glyphicon-list-alt',
         link : '/stock/loss_record'
       }
+      
     ];
 
     dependencies.depots = {
@@ -178,7 +179,8 @@ angular.module('bhima.controllers')
       }*/
 
       var path = config.modules.indexOf(defn) > -1 ? defn.link + '/' + $scope.depot.uuid
-        : (config.utilities.indexOf(defn) > -1 ) ? defn.link+ '/' + $scope.depot.uuid : defn.link;
+        : (config.utilities.indexOf(defn) > -1 ) ? defn.link+ '/' + $scope.depot.uuid 
+        : (config.reports.indexOf(defn) > -1 ) ? defn.link+ '/' + $scope.depot.uuid : defn.link;
       $location.path(path);
     };
 
