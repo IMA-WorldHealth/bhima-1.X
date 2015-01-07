@@ -75,6 +75,7 @@ angular.module('bhima.controllers')
 
     function updateSession(model) {
       $scope.model = model;
+      groupingLoss(model.loss.data);
       updateTotals();
       session.searching = false;
     }
@@ -120,6 +121,7 @@ angular.module('bhima.controllers')
       total.result = {};
       if ($scope.model.loss) {
         $scope.model.loss.data = [];
+        session.loss = [];
       }
       validate.refresh(dependencies, ['loss']).then(updateSession);
     }
@@ -184,14 +186,16 @@ angular.module('bhima.controllers')
 
     function isInside(element, tableau){
     	var result = false;
-    	for(var i in tableau){
-    		for(var j in element){
-    			if(tableau[i][j].document_uuid === element[j].document_uuid){
-	    			result = true;
-	    			break;
-	    		}
-    		}
-    	}
+      if(element.length && tableau.length){
+        for(var i in tableau){
+          for(var j in element){
+            if(tableau[i][j] && tableau[i][j].document_uuid === element[j].document_uuid){
+              result = true;
+              break;
+            }
+          }
+        }
+      }
     	return result;
     }
 

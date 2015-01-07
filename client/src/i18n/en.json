@@ -1855,7 +1855,8 @@
       "LOSS_GENERAL_INFO" : "Summary",
       "SUBMIT"            : "Submit",
       "LOSS_RECORDS"      : "Stock loss records",
-      "NO_LOSS_RECORDS"   : "No stock loss recorded"
+      "NO_LOSS_RECORDS"   : "No stock loss recorded",
+      "SEE_RECEIPT"       : "See"
     },
     "MOVEMENT" : {
       "KEY"                   : "Stock Movement",

@@ -64,7 +64,9 @@
             <tr ng-if="session.searching">
               <td colspan="8"> <span style="color: #428bca" class="glyphicon glyphicon-signal"></span></td>
             </tr>
-            <tr ng-repeat="rec in model.loss.data">
+            
+            <tr ng-repeat-start="lossData in session.loss"></tr>
+            <tr ng-repeat="rec in lossData">
               <td>{{ rec.entry_date | date }}</td>
               <td>{{ rec.lot_number }}</td>
               <td>{{ rec.tracking_number }}</td>
@@ -73,11 +75,14 @@
               <td>{{ rec.unit_price | currency }}</td>
               <td>{{ rec.quantity * rec.unit_price | currency}}</td>
               <td>
+                <!-- FIXME Get one receipt cell by row -->
                 <a ng-href="#/invoice/loss/{{ rec.document_uuid}}">
                   <i class="glyphicon glyphicon-list-alt"></i> {{'COLUMNS.RECEIPT' | translate}}
                 </a>
               </td>
             </tr>
+            <tr class="loss-record-line"><td colspan="8"></td></tr>
+            <tr ng-repeat-end></tr>
           </tbody>
         </table>
     </div>
