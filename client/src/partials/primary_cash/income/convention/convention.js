@@ -12,7 +12,8 @@ angular.module('bhima.controllers')
   'uuid',
   'appcache',
   '$translate',
-  function ($scope, $q, $location, $routeParams, validate, connect, appstate, messenger, util, uuid, Appcache, $translate) {
+  'precision',
+  function ($scope, $q, $location, $routeParams, validate, connect, appstate, messenger, util, uuid, Appcache, $translate, precision) {
 
     var dependencies = {}, record_uuid = -1,
         cache = new Appcache('convention');
@@ -85,8 +86,8 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           'enterprise' : {
-          columns : ['currency_id']
-        }
+            columns : ['currency_id']
+          }
         }
       }
     };
@@ -109,6 +110,7 @@ angular.module('bhima.controllers')
         }
         return situation.balance>0;
       });
+      $scope.som = precision.round($scope.som,2);
       $scope.noEmpty = true;
     }
 
@@ -241,9 +243,9 @@ angular.module('bhima.controllers')
         }else{
           return $scope.data.payment < $scope.selectedItem.min_monentary_unit || $scope.data.payment > $scope.som;
         }        
-      }else{
+      } else {
          return true;
-       }     
+      }     
     }
 
     $scope.initialiseConvention = initialiseConvention;
