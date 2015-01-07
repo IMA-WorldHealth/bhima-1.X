@@ -127,7 +127,8 @@ INSERT INTO `unit` VALUES
 (78,'Depot Management','TREE.DEPOT','',1,0,'/partials/inventory/depot/','inventory/depot'),
 (79,'Balance Mensuelle','TREE.BALANCE_MENSUELLE','',10,0,'/partials/reports/balance_mensuelle/','/reports/balance_mensuelle'),
 (80,'Edit Patient','TREE.EDIT_PATIENT','',12,0,'/partials/patient_edit/','/patient/edit/'),
-(81,'Stock Dashboard','TREE.STOCK_DASHBOARD','',11,0,'/partials/stock/stock_dashboard/','/stock_dashboard/');
+(81,'Stock Dashboard','TREE.STOCK_DASHBOARD','',11,0,'/partials/stock/stock_dashboard/','/stock_dashboard/'),
+(82,'Sudsudy','TREE.SUBSIDY','Handles the subsidy situation',1,0,'/partials/subsidy/','/subsidy');
 
 -- references language .json files
 INSERT INTO `language` (id, name, `key`) VALUES
