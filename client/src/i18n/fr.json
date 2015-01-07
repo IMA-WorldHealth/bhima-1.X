@@ -1160,7 +1160,10 @@
     "VARIABLE"       : "Variable",
     "ACCOUNT_GROUP"  : "Groupe des Comptes (Comptes Titres)",
     "TITLE_ACCOUNT"  : "Comptes Titre",
-    "ROOT_ACCOUNT"   : "Compte Parent"
+    "ROOT_ACCOUNT"   : "Compte Parent",
+    "IS_ASSET"       : "Est un actif",
+    "IS_PASSIVE"     : "Est un passif",
+    "IS_NOTHING"     : "Rien"
   },
 
   "LOCATION" : {
