@@ -725,7 +725,10 @@
     "NUM_ITEMS"          : "Nombre Items",
     "ENTRY_DATE"         : "Date d'entrée",
     "CONFIRMED"          : "Confirmé",
-    "SUPPLIER"           : "Fournisseur"
+    "SUPPLIER"           : "Fournisseur",
+    "IS_WAREHOUSE"       : "Est-ce un entrepot ?",
+    "RECEIPT"            : "Reçu",
+    "PROOF"              : "Preuve"
   },
 
   "INVENTORY" : {
