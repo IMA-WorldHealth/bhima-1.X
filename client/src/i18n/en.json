@@ -315,9 +315,11 @@
   "FISCAL_YEAR"             : {
     "TITLE"                 : "Fiscal Year",
     "MANAGEMENT"            : "Management",
+    "CREATE"                : "Create a New Fiscal Year",
     "RECORDS"               : "Fiscal Year Records",
     "NEW"                   : "New Fiscal Year",
     "DESC"                  : "Year Description",
+    "STEP"                  : "Step",
     "START_DATE"            : "Start Date",
     "START_MONTH"           : "Start Month",
     "ONE_YEAR"              : "One Year",
@@ -339,7 +341,17 @@
     "ALERT_TWO"             : ". Fiscal Years are required to group transactions and provide reports.",
     "EDIT"                  : " Edit selected fiscal year; lock and unlock periods and view opening balances.",
     "CREATION"              : "Create a new fiscal year ",
-    "VIEW_BALANCE"          :"View Opening Balance"
+    "CREATE_YEAR_DETAILS"   : "Configure the new year details",
+    "CREATE_BEGINNING_BALANCES" : "Create beginning balances",
+    "IMPORT_OPENING_BALANCES" : "Import opening balances",
+    "SUBMIT_YEAR"           : "Submit the fiscal year",
+    "CONFIG_CLOSING_ACCOUNT" : "Choose the closing balance account",
+    "CLOSING_ACCOUNT"       : "Closing Account",
+    "CLOSING_ACCOUNT_MESSAGE" : "The new fiscal year is next in a series.  Please specify a balance account which will recieve the balances of the enterprise's income and expense accounts at the close of the previous fiscal year.",
+    "PREVIOUS_YEAR"         : "Previous fiscal year",
+    "CREATE_SUCCESS"        : "Fiscal year creation successful",
+    "CREATE_SUCCESS_MESSAGE" : "You have successfully created a new fiscal year!"
+
   },
 
   "OPENING_BALANCE" : {
@@ -419,7 +431,8 @@
     "DONOR"                 : "Select a donor",
     "PERIOD_PAYMENT"        : "Select a payment period",
     "PROFIT_CENTER"         : "Select a Profit Center",
-    "DEB_CRED"              : "Select a debtor or creditor"
+    "DEB_CRED"              : "Select a debtor or creditor",
+    "FISCAL_YEAR"           : "Select a fiscal year"
   },
 
   "PATIENT_REGISTRATIONS" : {
@@ -433,7 +446,7 @@
     "MONTH"               : "This Month",
     "SEARCH"              : "Search",
     "INCORRECT_DATE_TYPE" : "Provided date value is invalid",
-    "INCORRECT_DATE_LIMIT" : "Year of birth must be between 1900 and 2014",
+    "INCORRECT_DATE_LIMIT" : "Year of birth must be between <min> and <max>",
     "INCORRECT_LOCATION_CURRENT" : "Current village not specified",
     "INCORRECT_LOCATION_ORIGIN" : "Origin village not specified",
     "STATUS_NEW_TITLE" : "Patient is new to the hospital",
@@ -726,7 +739,9 @@
     "CONFIRMED"          : "Confirmed",
     "SUPPLIER"           : "Supplier",
     "LOCKED"             : "Locked",   
-    "IS_WAREHOUSE"       : "Is warehouse ?"  
+    "IS_WAREHOUSE"       : "Is warehouse ?",
+    "RECEIPT"            : "Receipt",
+    "PROOF"              : "Proof"
   },
 
   "INVENTORY" : {
@@ -919,7 +934,7 @@
     "NOT_EMPTY"          : "Abbr. Can not be empty",
     "NOT_SUP4"           : "Can not be more than 4 characters",
     "NOT_SUP_MAXDAY"     : "Can not be greater than the total working days"
-},
+  },
 
   "DISTRIBUTION" : {
     "TITLE"                  : "Stock Distribution",
@@ -1158,7 +1173,10 @@
     "VARIABLE"       : "Variable",
     "ACCOUNT_GROUP"  : "Account Group (Title Account)",
     "TITLE_ACCOUNT"  : "Title Account",
-    "ROOT_ACCOUNT"   : "Root Account"
+    "ROOT_ACCOUNT"   : "Root Account",
+    "IS_ASSET"       : "Is asset",
+    "IS_PASSIVE"     : "Est un passif",
+    "IS_NOTHING"     : "Nothing"        
   },
 
   "LOCATION"                : {
