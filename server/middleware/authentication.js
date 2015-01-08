@@ -1,8 +1,11 @@
 // scripts/lib/auth/authentication.js
 
 // Middleware: authenticate
+var sanitize = require('./../lib/sanitize');
+var db = require('./../lib/db');
+var uuid = require('./../lib/guid');
 
-module.exports = function (db, uuid) {
+module.exports = function () {
   'use strict';
 
   // This is the first middleware hit by any incoming
@@ -16,7 +19,7 @@ module.exports = function (db, uuid) {
   //
   // All other paths are welcome to continue on to be
   // validated by the authorization middleware.
-  
+
   function protect(req, res, next) {
     if (!req.session || !req.session.token) {
       next(new Error('Not Logged In'));
@@ -45,7 +48,7 @@ module.exports = function (db, uuid) {
 
       user = results.pop();
       sql = 'UPDATE user SET user.logged_in = 1 WHERE user.id = ?;';
-   
+
       return db.exec(sql, [user.id]);
     })
     .then(function () {

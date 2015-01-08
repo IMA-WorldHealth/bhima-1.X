@@ -5,7 +5,7 @@ var q = require('q');
 var data = exports;
 
 // TODO Set up absalute path to top of server structure
-var cfg = require(path.join(__dirname, '../../../config/server.json'));
+var cfg = require(path.join(__dirname, '../../../config/server'));
 
 // TODO extract to config file ignored by git
 var session = mysql.createConnection({

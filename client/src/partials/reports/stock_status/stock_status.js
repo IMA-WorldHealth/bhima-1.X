@@ -19,6 +19,7 @@ angular.module('bhima.controllers')
     $http.get('/getStockEntry/').
     success(function(data) {
       data.forEach(function (item2) {
+        console.log(item2);
         stockControler.getStock(item2.inventory_uuid)
         .then(function (val) {
           item2.total = val;

@@ -166,14 +166,14 @@ angular.module('bhima.controllers')
       var items = [];
       var cost_received = max_amount;
 
-      if ($scope.selectedItem.currency_id == $scope.model.enterprise.data[0].currency_id) {
+      if ($scope.selectedItem.currency_id === $scope.model.enterprise.data[0].currency_id) {
         for (var i = 0; i < $scope.overviews.length; i += 1){
           cost_received -= $scope.overviews[i].balance;
           if(cost_received >= 0) {
-            items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : $scope.overviews[i].balance, credit : 0, inv_po_id : $scope.overviews[i].inv_po_id});
+            items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : $scope.overviews[i].balance, credit : 0, inv_po_id : $scope.overviews[i].inv_po_id, document_uuid : $scope.overviews[i].inv_po_id });
           }else{
             cost_received+=$scope.overviews[i].balance;
-            items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : cost_received, credit : 0, inv_po_id : $scope.overviews[i].inv_po_id});
+            items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : cost_received, credit : 0, inv_po_id : $scope.overviews[i].inv_po_id, document_uuid : $scope.overviews[i].inv_po_id});
             break;
           }
         }
@@ -182,11 +182,11 @@ angular.module('bhima.controllers')
         for (var j = 0; j < $scope.overviews.length; j += 1){
           var value = ($scope.overviews[j].balance * rate.rate);
           cost_received -= value;
-          if(cost_received >= 0) {
-            items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : value, credit : 0, inv_po_id : $scope.overviews[j].inv_po_id});
-          }else{
+          if (cost_received >= 0) {
+            items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : value, credit : 0, inv_po_id : $scope.overviews[j].inv_po_id, document_uuid : $scope.overviews[j].inv_po_id});
+          } else {
             cost_received += value;
-            items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : cost_received, credit : 0, inv_po_id : $scope.overviews[j].inv_po_id});
+            items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : cost_received, credit : 0, inv_po_id : $scope.overviews[j].inv_po_id, document_uuid : $scope.overviews[j].inv_po_id});
             break;
           }
         }
@@ -206,7 +206,7 @@ angular.module('bhima.controllers')
       $scope.data = {};
       $scope.noEmpty = false;
       if (record_uuid !== -1) {
-        $location.path('/invoice/pcash_convention/' + record_uuid);
+        $location.path('/invoice/convention/' + record_uuid);
       }
     }
 

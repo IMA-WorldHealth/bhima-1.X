@@ -1,0 +1,157 @@
+var db = require('./../lib/db'),
+    util = require('./../lib/util');
+
+/*
+ * HTTP Controller
+*/
+exports.createFiscalYear = function (req, res, next) {
+  'use strict';
+
+  var hasBalances, data, fiscalYearId;
+
+  // check if we need to create opening balances or not.
+  hasBalances = util.isDefined(req.body.balances);
+
+  // parse dates from client into date objects
+  data = req.body;
+  data.start = new Date(data.start);
+  data.end = new Date(data.end);
+
+  // create the new year record
+  createNewYear(data)
+  .then(function (result) {
+
+    // retrieve the newly inserted ID
+    fiscalYearId = result.insertId;
+    data.fiscalYearId = fiscalYearId;
+
+    // create periods corresponding to the fiscal year
+    return createPeriods(fiscalYearId, data.start, data.end);
+  })
+  .then(function (result) {
+
+    // if the fiscal year has balances,
+    // it means it is the first fiscal year,
+    // and we need to create opening balances
+    if (hasBalances) {
+      return createOpeningBalances(data);
+    }
+
+    // otherwise, we must tabulate and carry forward
+    // the income and expense accounts from last fiscal
+    // year, and put them in the closing_account.
+    // closing the previous fiscal year happens as
+    // a seperate utility.
+  })
+  .then(function (results) {
+    res.status(200).send({ id : fiscalYearId });
+  })
+  .catch(function (error) {
+    next(error);
+  })
+  .done();
+};
+
+// calculate the positive integer difference between two dates in months
+function monthDiff(firstDate, secondDate) {
+  var diff = secondDate.getMonth() - firstDate.getMonth();
+  diff += (secondDate.getFullYear() - firstDate.getFullYear()) * 12;
+  diff = Math.abs(diff);
+  return diff <= 0 ? 0 : diff; // FIXME : This should throw an error if diff <= 0.
+}
+
+// only triggered when it is the first fiscal year
+// this creates opening balances using the balances
+// shipped back from the client.
+function createOpeningBalances(data) {
+  var sql,
+      periodId,
+      balances = data.balances,
+      totals;
+
+  sql =
+    'SELECT id FROM period WHERE period_number = 0 AND fiscal_year_id = ?;';
+
+  // first, get the id of the 0 period
+  return db.exec(sql, [data.fiscalYearId])
+  .then(function (periods) {
+    periodId = periods[0].id;
+
+    sql =
+      'INSERT INTO period_total (enterprise_id, fiscal_year_id, period_id, account_id, credit, debit) VALUES ';
+
+    // copy over debits and credits for period_total
+    totals = balances.map(function (account) {
+      return [
+        data.enterprise_id,
+        data.fiscalYearId,
+        periodId,                  // opening balances stored in period 0
+        account.account_id,
+        account.credit,
+        account.debit
+      ];
+    });
+
+    // sanitize the input
+    sql += db.sanitize(totals) + ';';
+
+    return db.exec(sql);
+  });
+}
+
+// creates a fiscal year record
+function createNewYear(data) {
+  var sql, monthNo, startMonth, startYear,
+      enterpriseId = data.enterprise_id,
+      startDate = data.start,
+      endDate = data.end,
+      previousFiscalYear = data.previous_fiscal_year || null,
+      fiscalYearText = data.fiscal_year_txt,
+
+      // if there is no closing account, we are on the first fiscal year.
+      closingAccount = data.closingAccount || null;
+
+  // date math to get the month number, start month, and start year
+  monthNo = monthDiff(startDate, endDate) + 1; // FIXME Why is the plus one?
+  startMonth = startDate.getMonth() + 1;
+  startYear = startDate.getFullYear();
+
+  // template the fiscal year query
+  sql =
+    'INSERT INTO fiscal_year (enterprise_id, number_of_months, fiscal_year_txt, start_month, start_year, previous_fiscal_year, closing_account) VALUES ' +
+      '(?, ?, ?, ?, ?, ?, ?);';
+
+  return db.exec(sql, [enterpriseId, monthNo, fiscalYearText, startMonth, startYear, previousFiscalYear, closingAccount]);
+}
+
+// creates the periods (including period 0) for a fiscal year
+function createPeriods(fiscalYearId, start, end) {
+  var sql,
+      totalMonths,
+      periodStart,
+      periodStop,
+      template = [];
+
+  // calculate the total months in the fiscal year to be inserted
+  totalMonths = monthDiff(start, end) + 1;
+
+  // Initial SQL query without template
+  sql =
+    'INSERT INTO period (fiscal_year_id, period_number, period_start, period_stop) VALUES ';
+
+  // create the zero period
+  template.push([fiscalYearId, 0, periodStart, periodStart]);
+
+  // create a period for each month, calculating the
+  // first day and last day of the month
+  for (var i = 0; i < totalMonths; i++) {
+    periodStart = new Date(start.getFullYear(), start.getMonth() + i);
+    periodStop = new Date(periodStart.getFullYear(), periodStart.getMonth() + 1, 0);
+    template.push([fiscalYearId, i+1, periodStart, periodStop]);
+  }
+
+  sql += db.sanitize(template) + ';';
+
+  // sanitize turns the template into (a,b), (c,d) ..
+  return db.exec(sql);
+}
