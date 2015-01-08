@@ -317,6 +317,7 @@
     "MANAGEMENT"            : "Gestion",
     "RECORDS"               : "Liste des Années Fiscale",
     "NEW"                   : "Nouvelle Année",
+    "CREATE"                : "Cree une Nouvelle Année",
     "DESC"                  : "Description",
     "START_DATE"            : "Début Date",
     "START_MONTH"           : "Début Mois",
@@ -433,7 +434,7 @@
     "MONTH"               : "Ce Mois",
     "SEARCH"              : "Rechercher",
     "INCORRECT_DATE_TYPE"         : "la valeur de la date est invalide",
-    "INCORRECT_DATE_LIMIT"        : "Année de naissance doit être comprise entre 1900 et 2014",
+    "INCORRECT_DATE_LIMIT"        : "Année de naissance doit être comprise entre <min> et <max>",
     "INCORRECT_LOCATION_CURRENT"  : "village actuel non spécifiée",
     "INCORRECT_LOCATION_ORIGIN"   : "village d'origine non spécifiée",
     "STATUS_NEW_TITLE"            : "Le patient est de nouveau à l'hôpital",
@@ -724,7 +725,10 @@
     "NUM_ITEMS"          : "Nombre Items",
     "ENTRY_DATE"         : "Date d'entrée",
     "CONFIRMED"          : "Confirmé",
-    "SUPPLIER"           : "Fournisseur"
+    "SUPPLIER"           : "Fournisseur",
+    "IS_WAREHOUSE"       : "Est-ce un entrepot ?",
+    "RECEIPT"            : "Reçu",
+    "PROOF"              : "Preuve"
   },
 
   "INVENTORY" : {
@@ -1156,7 +1160,10 @@
     "VARIABLE"       : "Variable",
     "ACCOUNT_GROUP"  : "Groupe des Comptes (Comptes Titres)",
     "TITLE_ACCOUNT"  : "Comptes Titre",
-    "ROOT_ACCOUNT"   : "Compte Parent"
+    "ROOT_ACCOUNT"   : "Compte Parent",
+    "IS_ASSET"       : "Est un actif",
+    "IS_PASSIVE"     : "Est un passif",
+    "IS_NOTHING"     : "Rien"
   },
 
   "LOCATION" : {
