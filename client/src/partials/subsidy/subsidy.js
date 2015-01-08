@@ -13,6 +13,7 @@ angular.module('bhima.controllers')
         session = $scope.session = {};
 
     dependencies.subsidies = {
+      identifier:'uuid',
       query : '/getSubsidies/'
     };
 
@@ -44,19 +45,18 @@ angular.module('bhima.controllers')
     $scope.delete = function (subsidy) {
       var result = confirm($translate.instant('SUBSIDY.CONFIRM'));
       if (result) {
-        connect.delete('subsidy', susidy.uuidd, 'uuid')
+        connect.delete('subsidy', 'uuid', [subsidy.uuid])
         .then(function () {
-          $scope.taxes.remove(subsidy.uuid);
+          $scope.subsidies.remove(subsidy.uuid);
           messenger.info($translate.instant('SUBSIDY.DELETE_SUCCESS'));
         });
       }
     };
 
     $scope.edit = function (subsidy) {
-      console.log(subsidy);
+      console.log('le voici', subsidy);
       session.action = 'edit';
       session.edit = angular.copy(subsidy);
-      session.edit.debitor_group_uuid = "44dbeb19-f4ce-4d0f-9c6c-a684bda89e40";
     };
 
     $scope.new = function () {
@@ -67,22 +67,28 @@ angular.module('bhima.controllers')
     $scope.save = {};
 
     $scope.save.edit = function () {
+
       var record = angular.copy(connect.clean(session.edit));
-       connect.put('subsidy', [record], ['uuid'])
-          .then(function () {
-            validate.refresh(dependencies)
-            .then(function (models) {
-              angular.extend($scope, models);
-              messenger.success($translate.instant('TAXES.UPDATE_SUCCES'));
-              session.action = '';
-              session.edit = {};
-            });
-        });
+      console.log(session.edit);
+      var editedSubsidy = {
+        uuid : record.uuid,
+        is_percent : record.is_percent,
+        value : record.value,
+        text : record.text,
+        debitor_group_uuid : record.debitor_group_uuid
+      };
+      connect.put('subsidy', [editedSubsidy], ['uuid'])
+        .then(function (res) {
+          $scope.subsidies.put(record);
+          record = {};
+          session.action = '';
+          session.edit = {};
+      });
     };
 
     $scope.save.new = function () {
       var record = connect.clean(session.new);
-      if(record.value < 0 || (record.is_percent === 1 && record.value > 100)) {return messenger.danger($translate.instant("SUBSIDY.WRONG_VALUE"));}
+      if(record.value < 0 || (record.is_percent === 1 && record.value > 100)) {return messenger.danger($translate.instant('SUBSIDY.WRONG_VALUE'));}
       record.uuid = uuid();
       connect.post('subsidy', [record])
         .then(function (res) {
