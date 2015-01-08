@@ -132,14 +132,14 @@
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.DEBITOR_GROUP" | translate }}</label>
             <div class="col-xs-7">
-              <select class="form-bhima" ng-model="session.edit.debitor_group_uuid">
-                <option ng-repeat="debitorGroup in debitorGroups.data" ng-value="debitorGroup.uuid">{{debitorGroup.name}}</option>
+              <select class="form-bhima" ng-model="session.edit.debitor_group_uuid" ng-options="debitorGroup.uuid as debitorGroup.name for debitorGroup in debitorGroups.data">
+                <option value="" disable="disabled">-- {{'SELECT.SUBSIDY' | translate}} -- </option>
               </select>
             </div>
           </div>
 
           <div class="form-group">
-            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
+            <input type="submit" id="editButtonID" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
             <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
           </div>
         </form>
