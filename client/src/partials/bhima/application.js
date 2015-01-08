@@ -58,15 +58,6 @@ angular.module('bhima.controllers')
       });
     }
 
-    // load the tree
-    function loadTree() {
-      connect.fetch('/tree')
-      .then(function (data) {
-        $scope.treeData = data;
-      })
-      .finally();
-    }
-
     // define dependencies for before login initially happens
     function beforeLogin() {
       var languages, enterprises, projects;
