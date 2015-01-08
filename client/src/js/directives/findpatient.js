@@ -17,7 +17,7 @@ angular.module('bhima.directives')
             patient : {columns : ['uuid', 'project_id', 'debitor_uuid', 'first_name', 'last_name', 'sex', 'dob', 'origin_location_id', 'reference']},
             project : { columns : ['abbr'] },
             debitor : { columns : ['text']},
-            debitor_group : { columns : ['account_id', 'price_list_uuid', 'is_convention']}
+            debitor_group : { columns : ['account_id', 'price_list_uuid', 'is_convention', 'locked']}
           },
           join : [
             'patient.debitor_uuid=debitor.uuid',
