@@ -248,7 +248,7 @@ create table `account` (
   `account_number`      int not null,
   `account_txt`         text,
   `parent`              int unsigned not null,
-  `fixed`               boolean default 0,
+  `is_asset`            boolean null,
   `locked`              tinyint unsigned default 0,
   `cc_id`               smallint null,
   `pc_id`               smallint null,
