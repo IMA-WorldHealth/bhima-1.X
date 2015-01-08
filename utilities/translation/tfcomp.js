@@ -2,9 +2,9 @@
 //
 // USAGE:  node tfcomp.js f1.json f2.json
 
-"use strict";
+'use strict';
 
-var fs = require("fs");
+var fs = require('fs');
 
 
 // Get the filenames
@@ -12,11 +12,11 @@ var filename1 = process.argv[2];
 var filename2 = process.argv[3];
 
 // Load the data for filename1
-var data1 = fs.readFileSync(filename1, "utf8");
+var data1 = fs.readFileSync(filename1, 'utf8');
 var dict1 = JSON.parse(data1);
 
 // Load the data for filename2
-var data2 = fs.readFileSync(filename2, "utf8");
+var data2 = fs.readFileSync(filename2, 'utf8');
 var dict2 = JSON.parse(data2);
 
 // Arrays to save differences in
@@ -47,10 +47,10 @@ var checkSubDict = function (d1, d2, path) {
     if (missing1.length > 0) {
         for (i = 0; i < missing1.length; i++) {
             if (path.length > 0) {
-                miss1.push("    " + path + "." + missing1[i]);
+                miss1.push('    ' + path + '.' + missing1[i]);
             }
             else {
-                miss1.push("    " + missing1[i]);
+                miss1.push('    ' + missing1[i]);
             }
         }
     }
@@ -59,10 +59,10 @@ var checkSubDict = function (d1, d2, path) {
     if (missing2.length > 0) {
         for (i = 0; i < missing2.length; i++) {
             if (path.length > 0) {
-                miss2.push("    " + path + "." + missing2[i]);
+                miss2.push('    ' + path + '.' + missing2[i]);
             }
             else {
-                miss2.push("    " + missing2[i]);
+                miss2.push('    ' + missing2[i]);
             }
         }
     }
@@ -73,7 +73,7 @@ var checkSubDict = function (d1, d2, path) {
         val = d1[key];
         if (typeof(val) === typeof({})) {
             if (path.length > 0) {
-                checkSubDict(d1[key], d2[key], path + "." + key);
+                checkSubDict(d1[key], d2[key], path + '.' + key);
                 }
             else {
                 checkSubDict(d1[key], d2[key], key);
@@ -83,23 +83,29 @@ var checkSubDict = function (d1, d2, path) {
 };
 
 // Do the work of comparing the dictionaries
-checkSubDict(dict1, dict2, "");
+checkSubDict(dict1, dict2, '');
+
+var errMsg = '';
 
 // Report items in filename2 but missing from filename1
 if (miss1.length > 0) {
-    console.log("Missing from " + filename1 + ": ");
+    errMsg += '\nMissing from ' + filename1 + ':';
     miss1.sort();
     for (var i1 = 0; i1 < miss1.length; i1++) {
-	console.log(miss1[i1]);
+	errMsg += '\n' + miss1[i1];
     }
-    console.log();
+    errMsg += '\n\n';
 }
 
 // Report items in filename1 but missing from filename2
 if (miss2.length > 0) {
-    console.log("Missing from " + filename2 + ": ");
+    errMsg += 'Missing from ' + filename2 + ':';
     miss2.sort();
     for (var i2 = 0; i2 < miss2.length; i2++) {
-	console.log(miss2[i2]);
+	errMsg += '\n' + miss2[i2];
     }
+}
+
+if (errMsg) {
+    console.error(errMsg);
 }
