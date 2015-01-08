@@ -90,7 +90,7 @@ INSERT INTO `unit` VALUES
 (41,'Journal Voucher','TREE.JOURNAL_VOUCHER','',30,0,'/partials/journal_voucher/','/journal_voucher'),
 (42,'Project','TREE.PROJECT','',1,0,'/partials/projects/','/projects'),
 (43,'Patient Standing','TREE.PATIENT_STANDING','',10,0,'/partials/reports/patient_standing/','/reports/patient_standing'),
-(44,'Depot Management','TREE.DEPOT','',1,0,'/partials/inventory/depot/','inventory/depot'),
+(44,'Employee Standing','TREE.EMPLOYEE_STANDING','',10,0,'/partials/reports/employee_standing/','/reports/employee_standing'),
 (45,'Stock Management','TREE.STOCK_MANAGEMENT','',11,0,'partials/stock','/stock'),
 -- (47,'Stock Distribution','TREE.STOCK_DISTRIBUTION','',11,0,'/partials/inventory/distribution/','inventory/distribution'),
 (46,'Account Statement', 'TREE.ACCOUNT_STATEMENT', '', 10, 0, 'partials/reports/account_statement', '/reports/account_statement'),
@@ -117,16 +117,17 @@ INSERT INTO `unit` VALUES
 (68,'Configuration des comptes','TREE.CONFIG_ACCOUNTING','',57,0,'/partials/config_accounting/','/config_accounting/'),
 (69,'Canevas SNIS', 'Canevas SNIS', '', 0, 1, 'partials/snis/', '/canevas_snis/'),
 (70,'Rapports SNIS', 'Rapports SNIS', '', 69, 0, 'partials/snis/index.html', '/snis/'),
-(71,'Stock Dashboard','TREE.STOCK_DASHBOARD','',11,0,'/partials/stock/stock_dashboard/','/stock_dashboard/'),
+(71,'Confirm a purchase order', 'TREE.CONFIRM_PURCHASE_ORDER', '', 11, 0, 'partials/purchase/confirm/', '/purchase/confirm/'),
 (72,'Daily consumption', 'TREE.DAILY_CONSUMPTION', '', 10, 0, '/partials/reports/daily_consumption', '/reports/daily_consumption/'),
 (73,'Paycheck', 'TREE.PAYROLL_REPORT', '', 10, 0, '/partials/reports/payroll_report', '/reports/payroll_report/'),
 (74,'Stock Status', 'TREE.STOCK_STATUS', '', 10, 0, '/partials/reports/stock_status', '/reports/stock_status/'),
 (75,'Operating account', 'TREE.OPERATING_ACCOUNT', '', 10, 0, '/partials/reports/operating_account', '/reports/operating_account/'),
 (76,'Exploitation Service', 'TREE.SERVICE_EXPLOITATION', '', 10, 0, '/partials/reports/service_exploitation/', '/reports/service_exploitation/'),
 (77,'Toutes transactions', 'TREE.GLOBAL_TRANSACTION', '', 10, 0, '/partials/reports/global_transaction/', '/reports/global_transaction/'),
-(78,'Employee Standing','TREE.EMPLOYEE_STANDING','',10,0,'/partials/reports/employee_standing/','/reports/employee_standing'),
+(78,'Depot Management','TREE.DEPOT','',1,0,'/partials/inventory/depot/','inventory/depot'),
 (79,'Balance Mensuelle','TREE.BALANCE_MENSUELLE','',10,0,'/partials/reports/balance_mensuelle/','/reports/balance_mensuelle'),
-(80,'Edit Patient','TREE.EDIT_PATIENT','',12,0,'/partials/patient_edit/','/patient/edit/');
+(80,'Edit Patient','TREE.EDIT_PATIENT','',12,0,'/partials/patient_edit/','/patient/edit/'),
+(81,'Stock Dashboard','TREE.STOCK_DASHBOARD','',11,0,'/partials/stock/stock_dashboard/','/stock_dashboard/');
 
 -- references language .json files
 INSERT INTO `language` (id, name, `key`) VALUES

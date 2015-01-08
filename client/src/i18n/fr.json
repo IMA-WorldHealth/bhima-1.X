@@ -907,7 +907,8 @@
     "BALANCE_MENSUELLE"         : "Rapport Balance Mensuelle",
     "DONOR_MANAGEMENT"          : "Gestion des donateurs",       
     "UPDATE_STOCK"              : "Mettre à Jour les Stocks",
-    "CREDIT_NOTE"               : "Note de Crédit"
+    "CREDIT_NOTE"               : "Note de Crédit",
+    "CONFIRM_PURCHASE_ORDER"    : "Confirmation ordre d'achats"
 },
 
   "RUBRIC_PAYROLL"       : {

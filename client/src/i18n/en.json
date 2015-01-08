@@ -906,7 +906,8 @@
     "BALANCE_MENSUELLE"         : "Monthly balance report",
     "DONOR_MANAGEMENT"          : "Donor management",
     "UPDATE_STOCK"              : "Update stock",
-    "CREDIT_NOTE"               : "Credit note"       
+    "CREDIT_NOTE"               : "Credit note",
+    "CONFIRM_PURCHASE_ORDER"    : "Confirm a purchase order"       
   },
 
   "RUBRIC_PAYROLL"       : {
