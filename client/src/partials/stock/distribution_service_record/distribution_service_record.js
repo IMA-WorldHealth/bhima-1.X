@@ -32,9 +32,7 @@ angular.module('bhima.controllers')
 
     var total = $scope.total = {
       method : {
-        'sales' : totalSales,
-        'patients' : totalPatients,
-        'cost' : totalCost
+        'totalItems' : totalItems
       },
       result : {}
     };
@@ -60,9 +58,6 @@ angular.module('bhima.controllers')
 
     function loadProjects(model) {
       $scope.model = model;
-      // session.project = model.project.data[0].id;
-
-      // TODO Determine best way to wait for page load before requesting data
       select(period[0]);
     }
 
@@ -127,26 +122,8 @@ angular.module('bhima.controllers')
       }
     }
 
-    function totalSales() {
+    function totalItems() {
       return $scope.model.sale.data.length;
-    }
-
-    function totalPatients() {
-      var total = 0, evaluated = {};
-
-      $scope.model.sale.data.forEach(function (sale) {
-        if (evaluated[sale.debitor_uuid]) { return; }
-        total++;
-        evaluated[sale.debitor_uuid] = true;
-      });
-
-      return total;
-    }
-
-    function totalCost() {
-      return $scope.model.sale.data.reduce(function (a, b) {
-        return a + b.cost;
-      }, 0);
     }
 
     $scope.select = select;
