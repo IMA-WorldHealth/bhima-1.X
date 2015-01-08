@@ -292,7 +292,7 @@ angular.module('bhima.controllers')
         }
       };
 
-      validate.process(dependencies, ['itemPrice'])
+      validate.refresh(dependencies, ['itemPrice'])
       .then(function (data) {
         configuration.rows[index].price = data.itemPrice.data[0].unit_price;
       });
