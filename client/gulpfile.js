@@ -3,7 +3,8 @@ var gulp = require('gulp'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify'),
     minifycss = require('gulp-minify-css'),
-    jshint = require('gulp-jshint');
+    jshint = require('gulp-jshint'),
+    exec = require('child_process').exec;
 
 var jshintrcPath = '../.jshintrc';
 
@@ -87,6 +88,19 @@ gulp.task('lint', function () {
     .pipe(jshint.reporter('default'));
 });
 
+gulp.task('comptrans', function () {
+    // Compare the English and French for missing tokens
+    var progPath = '../utilities/translation/tfcomp.js',
+        enPath = 'src/i18n/en.json',
+        frPath = 'src/i18n/fr.json';
+    exec('node ' + [progPath, enPath, frPath].join(' '), function(err, _, warning) {
+	if (warning) {
+	    console.error(warning);
+	    }
+ 	});
+    return;
+});
+
 gulp.task('default', [], function () {
-  gulp.start('lint', 'scripts', 'styles', 'assets', 'vendor', 'minjquery', 'minslickgrid', 'static');
+  gulp.start('lint', 'comptrans', 'scripts', 'styles', 'assets', 'vendor', 'minjquery', 'minslickgrid', 'static');
 });
