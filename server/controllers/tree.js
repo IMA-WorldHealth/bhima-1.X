@@ -27,26 +27,40 @@ exports.generate = function (req, res, next) {
   .done();
 };
 
-function load (userid) {
+function load(userId) {
 
-  function getChildren (parent_id) {
-    var d = q.defer();
-    var sql = parser.select({
-      tables : {
-        'permission' : { columns : ['id', 'user_id'] },
-        'unit' : { columns: ['name', 'description', 'parent', 'has_children', 'url', 'path', 'key']}
-      },
-      join : ['permission.unit_id=unit.id'],
-      where : ['permission.user_id='+userid, 'AND', 'unit.parent='+parent_id]
-    });
+  // we assume the root node/unit has id 0
+  var ROOT_NODE = 0;
+
+  // TODO
+  // These two functions look like they could
+  // be combined into a single recursive function
+  // something like `return getChildren(ROOT);`
+
+  function getChildren(parentId) {
+    var sql, d = q.defer();
+
+    sql = 
+      'SELECT permission.id, permission.unit_id, unit.name, unit.parent, unit.has_children, ' +
+        'unit.url, unit.path, unit.key ' +
+      'FROM permission JOIN unit ON ' +
+        'permission.unit_id = unit.id ' + 
+      'WHERE permission.user_id = ' + userId + ' AND ' +
+        'unit.parent = ' + parentId + ';';
 
     db.execute(sql, function (err, result) {
-      if (err) { throw err; }
-      var have_children = result.filter(function (row) {
+      // FIXME / TODO
+      // Impliment proper error handling
+      if (err) { console.log(err); }
+
+      var haveChildren, promises;
+
+      haveChildren = result.filter(function (row) {
         return row.has_children;
       });
-      if (have_children.length) {
-        var promises = have_children.map(function (row) {
+
+      if (haveChildren.length > 0) {
+        promises = haveChildren.map(function (row) {
           return getChildren(row.unit_id);
         });
         d.resolve(q.all(promises));
@@ -58,20 +72,24 @@ function load (userid) {
     return d.promise;
   }
 
-  function main () {
-    var d = q.defer();
-    var query = parser.select({
-      tables : {
-        'permission' : { columns : ['id', 'unit_id']},
-        'unit': { columns : ['name', 'description', 'parent', 'has_children', 'url', 'path', 'key']}
-      },
-      join : ['permission.unit_id=unit.id'],
-      where : ['permission.user_id=' + userid, 'AND', 'unit.parent=0'] // This assumes root is always "0"
-    });
+  function main() {
+    var sql,  d = q.defer();
+
+    sql = 
+      'SELECT permission.id, permission.unit_id, unit.name, unit.parent, unit.has_children, ' +
+        'unit.url, unit.path, unit.key ' +
+      'FROM permission JOIN unit ON ' +
+        'permission.unit_id = unit.id ' + 
+      'WHERE permission.user_id = ' + userId + ' AND ' +
+        'unit.parent = ' + ROOT_NODE + ';';
 
     // this is freakin' complex. DO NOT TOUCH.
-    db.execute(query, function (err, result) {
-      if (err) { throw err; }
+    db.execute(sql, function (err, result) {
+      
+      // FIXME / TODO
+      // Impliment proper error handling
+      if (err) { console.log(err); }
+
       d.resolve(q.all(result.map(function (row) {
         var p = q.defer();
         if (row.has_children) {
@@ -86,10 +104,11 @@ function load (userid) {
       })));
     });
 
+
     return d.promise;
   }
 
   return main();
-};
+}
 
 exports.load = load;
