@@ -6,7 +6,7 @@ angular.module('bhima.controllers')
   'connect',
   function($scope, $location, AppCache, connect) {
 
-    // TODO:
+    // TODO
     //   Theoretically, the users and permissions depend on an
     //   enterprise, so do we need it or not?
     var moduleNamespace = 'tree', applicationNamespace = 'application';
@@ -73,13 +73,35 @@ angular.module('bhima.controllers')
       });
     }
 
-    (function init () {
+    // alphabetically sort tree nodes
+    function sortTreeNodes(data) {
+
+      data.sort(function (a, b) {
+        return a.name > b.name ? 1 : -1;
+      });
+
+      // for each node, recursively sort children 
+      // if they exist
+      data.forEach(function (node) {
+        if (angular.isDefined(node.children)) {
+          sortTreeNodes(node.children);
+        }
+      });
+    }
+
+    function init () {
       connect.fetch('/tree')
       .then(function (data) {
-        $scope.treeData = data; // FIX: new connect.fetch() api
-        // $scope.treeData = res.data;
+
+        // sort the tree nodes alphabetically
+        sortTreeNodes(data);
+
+        // expose to view
+        $scope.treeData = data;
         loadTreeOptions();
       });
-    })();
+    }
+
+    init();
   }
 ]);
