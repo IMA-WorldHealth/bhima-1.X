@@ -14,7 +14,12 @@ var config = {
     "file" : "log"
   },
   "session" : {
-    "secret" : "xopen blowfish"
+    "secret" : "xopen blowfishes",
+    "resave" : "false",
+    "saveUninitialized" : "true"
+  },
+  "bodyParser" : {
+    "extended" : "true"
   },
   "tls" : {
     "key" : "server/config/keys/key.pem",

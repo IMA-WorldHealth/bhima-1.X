@@ -18,7 +18,8 @@ module.exports = function (app, authentication) {
 
   app.use(compress());
   app.use(logger.request());
-  app.use(bodyParser());
+  app.use(bodyParser.urlencoded(cfg.bodyParser));
+  app.use(bodyParser.json());
   app.use(cookieParser());
   app.use(session(cfg.session));
    
