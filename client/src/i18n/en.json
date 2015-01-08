@@ -341,6 +341,7 @@
     "ALERT_TWO"             : ". Fiscal Years are required to group transactions and provide reports.",
     "EDIT"                  : " Edit selected fiscal year; lock and unlock periods and view opening balances.",
     "CREATION"              : "Create a new fiscal year ",
+    "VIEW_BALANCE"          : "View opening balances",
     "CREATE_YEAR_DETAILS"   : "Configure the new year details",
     "CREATE_BEGINNING_BALANCES" : "Create beginning balances",
     "IMPORT_OPENING_BALANCES" : "Import opening balances",
@@ -351,7 +352,6 @@
     "PREVIOUS_YEAR"         : "Previous fiscal year",
     "CREATE_SUCCESS"        : "Fiscal year creation successful",
     "CREATE_SUCCESS_MESSAGE" : "You have successfully created a new fiscal year!"
-
   },
 
   "OPENING_BALANCE" : {
@@ -853,7 +853,7 @@
     "PATIENT_GRP"               : "Patient Groups",
     "ACCOUNTING"                : "Accounting",
     "COST_CENTER_MGMT"          : "Cost Center Management",
-    "GRP_INVOICING"             : "Group Invoicing",
+    "GRP_INVOICING"             : "Billing Conventions",
     "CURRENCY"                  : "Currency",
     "RENEWAL"                   : "Patient Renewal",
     "PATIENT_REGISTRATION"      : "Patient Registration Report",
