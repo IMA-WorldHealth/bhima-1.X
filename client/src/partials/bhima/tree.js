@@ -1,10 +1,12 @@
 angular.module('bhima.controllers')
 .controller('tree', [
   '$scope',
+  '$rootScope',
   '$location',
+  '$translate',
   'appcache',
   'connect',
-  function($scope, $location, AppCache, connect) {
+  function($scope, $rootScope, $location, $translate, AppCache, connect) {
 
     // TODO
     //   Theoretically, the users and permissions depend on an
@@ -73,11 +75,18 @@ angular.module('bhima.controllers')
       });
     }
 
+    // when the translation changes, sort the data in
+    // the tree nodes
+    $rootScope.$on('$translateChangeSuccess', function () {
+      sortTreeNodes($scope.treeData);
+    });
+
+
     // alphabetically sort tree nodes
     function sortTreeNodes(data) {
 
       data.sort(function (a, b) {
-        return a.name > b.name ? 1 : -1;
+        return $translate.instant(a.key) > $translate.instant(b.key) ? 1 : -1;
       });
 
       // for each node, recursively sort children 
