@@ -9,9 +9,9 @@ var config = {
     "password" : "HISCongo2013",
     "database" : "bhima"
   },
-  "log" : {
-    "type" : "html",
-    "file" : "log"
+  "morgan" : {
+    "format" : "combined",
+    "logFile" : "access.log"
   },
   "session" : {
     "secret" : "xopen blowfishes",

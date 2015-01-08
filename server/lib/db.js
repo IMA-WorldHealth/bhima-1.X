@@ -18,7 +18,6 @@
 var q = require('q');
 
 var cfg = require('./../config/environment/server').db;
-var logger = require('./logger');
 var uuid = require('./guid');
 
 var db, con, supportedDatabases, log, dbms;
@@ -28,7 +27,6 @@ function initialise() {
   'use strict';
 
   cfg = cfg || {};
-  log = logger.external('DB');
 
   // Select the system's database with this variable.
   dbms = cfg.dbms || 'mysql';
