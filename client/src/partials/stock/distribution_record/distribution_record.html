@@ -47,12 +47,13 @@
         <table class="reportTable">
           <thead>
             <tr>
-              <th width="15%">{{'COLUMNS.DATE' | translate}}</th>
-              <th width="10%">{{'COLUMNS.DEPOT' | translate}}</th>
-              <th width="20%">{{'COLUMNS.PATIENT' | translate}}</th>
-              <th width="10%">{{'COLUMNS.REFERENCE' | translate}}</th>
-              <th width="10%">{{'COLUMNS.NUM_ITEMS' | translate}}</th>              
-              <th  width="40%" class="hidden-print">{{ 'COLUMNS.ACTIONS' | translate }}</th>
+              <th>{{'COLUMNS.DATE' | translate}}</th>
+              <th>{{'COLUMNS.DEPOT' | translate}}</th>
+              <th>{{'COLUMNS.PATIENT' | translate}}</th>
+              <th>{{'COLUMNS.REFERENCE' | translate}}</th>
+              <th>{{'COLUMNS.NUM_ITEMS' | translate}}</th>              
+              <th class="hidden-print">{{ 'COLUMNS.ACTIONS' | translate }}</th>
+              <th class="hidden-print">{{ 'COLUMNS.PROOF' | translate }}</th>
             </tr>
           </thead>
 
@@ -65,13 +66,16 @@
               <td colspan="8"> <span style="color: #428bca" class="glyphicon glyphicon-signal"></span></td>
             </tr>
             <tr ng-class="{'creditInvoice': cons.reversingUuid}" ng-repeat="cons in model.consumption.data">
-              <td width="15%">{{cons.date | date : 'EEEE, dd/MM/yyyy'}}</td>
-              <td width="10%">{{cons.text}}</td>
-              <td width="20%">[{{cons.reference}}] {{cons.first_name}} {{cons.last_name}}</td>
-              <td width="10%">{{cons.abbr}}-{{cons.refSale}}</td>               
-              <td width="10%">{{cons.nr_item}}</td>
-              <td width="40%" class="hidden-print">
+              <td>{{cons.date | date : 'EEEE, dd/MM/yyyy'}}</td>
+              <td>{{cons.text}}</td>
+              <td>[{{cons.reference}}] {{cons.first_name}} {{cons.last_name}}</td>
+              <td>{{cons.abbr}}-{{cons.refSale}}</td>               
+              <td>{{cons.nr_item}}</td>
+              <td class="hidden-print">
                 <a ng-href="/#/stock/reversing_distribution/{{cons.sale_uuid}}/"><span class="glyphicon glyphicon-repeat"></span> {{ 'STOCK.DISTRIBUTION_RECORDS.REVERSING_DISTRIBUTION' | translate }}</a>
+              </td>
+              <td class="hidden-print">
+                <a ng-href="/#/invoice/consumption/{{cons.sale_uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{ 'COLUMNS.PROOF' | translate }}</a>
               </td>
             </tr>
           </tbody>
@@ -86,31 +90,10 @@
       <td width="50%">
         <span style="margin-right: 10px;">
           <span class="glyphicon glyphicon-list-alt" style="color: #428bca"></span>
-          <b>{{total.result.sales}}</b>
+          <b>{{total.result.totalItems}}</b>
           <span ng-if="session.searching">...</span>
         </span>
-
-        <span class="glyphicon glyphicon-user" style="color: #428bca"></span>
-        <b>{{total.result.patients}}</b>
-        <span ng-if="session.searching">...</span>
-
-        <span style="float: right; margin-right: 5px;">
-          <b>{{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: </b>
-        </span>
       </td>
-      <td width="20%">
-        <b>{{total.result.cost | currency}}</b>
-        <span ng-if="session.searching">...</span>
-      </td>
-      <td width="20%"></td>
-      <td></td>
     </tbody>
   </table>
 </footer>
-
-<script type="text/ng-template" id="lotList.html">
-  <a>
-    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-    <span><i>{{match.model.text}}</i></span>
-  </a>
-</script>
