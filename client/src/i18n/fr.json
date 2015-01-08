@@ -341,16 +341,16 @@
     "ALERT_TWO"             : ". Les années fiscales sont requises pour grouper les transactions et produire les rapports.",
     "EDIT"                  : "Editer l'année fiscale sélectionnée; Bloquer et debloquer des périodes and voir l'ouverture des balances.",
     "CREATION"              : "Créer une nouvelle année fiscale",
-    "CREATE_YEAR_DETAILS"     : "???Configure the new year details",
-    "CREATE_BEGINNING_BALANCES" : "???Create beginning balances",
-    "IMPORT_OPENING_BALANCES" : "???Import opening balances",
-    "SUBMIT_YEAR"             : "???Submit the fiscal year",
-    "CONFIG_CLOSING_ACCOUNT"  : "???Choose the closing balance account",
-    "CLOSING_ACCOUNT"         : "???Closing Account",
-    "CLOSING_ACCOUNT_MESSAGE" : "???The new fiscal year is next in a series.  Please specify a balance account which will recieve the balances of the enterprise's income and expense accounts at the close of the previous fiscal year.",
-    "PREVIOUS_YEAR"           : "???Previous fiscal year",
-    "CREATE_SUCCESS"          : "???Fiscal year creation successful",
-    "CREATE_SUCCESS_MESSAGE"  : "???You have successfully created a new fiscal year!"
+    "CREATE_YEAR_DETAILS"   : "Configurer les details de la nouvelle annee fiscale",
+    "CREATE_BEGINNING_BALANCES" : "Creer une balance d'ouverture",
+    "IMPORT_OPENING_BALANCES" : "Importer une balance d'ouverture",
+    "SUBMIT_YEAR"             : "Soumettre l'annee fiscale",
+    "CONFIG_CLOSING_ACCOUNT"  : "Choisir le compte de fermeture",
+    "CLOSING_ACCOUNT"         : "Compte de fermeture",
+    "CLOSING_ACCOUNT_MESSAGE" : "L'annee fiscale est la prochaine dans la serie. Preciser le compte du bilan qui recevra le solde des comptes d'exploitation de l'entreprise lors fermeture de l'annee fiscale precedente.",
+    "PREVIOUS_YEAR"           : "Annee fiscale precedente",
+    "CREATE_SUCCESS"          : "Creation d'annee fiscale reussie",
+    "CREATE_SUCCESS_MESSAGE"  : "vous avez creer une annee fiscale avec succes!"
   },
 
   "OPENING_BALANCE" : {
