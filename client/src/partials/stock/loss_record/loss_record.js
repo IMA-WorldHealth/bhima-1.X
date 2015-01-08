@@ -162,32 +162,36 @@ angular.module('bhima.controllers')
     function groupingLoss(data){
       // Grouping loss data by document_uuid
       // In the case where we have more than one item in a loss document
-    	var loss_array = [];
+    	var lossArray = [];
 
-    	for(var i in data){
-    		var new_line = [],
-            temp = data[i].document_uuid;
+      data.forEach(function (iItem) {
+        var newLine = [],
+            temp = iItem.document_uuid;
 
-    		new_line.push(data[i]);
+        newLine.push(iItem);
 
-    		for(var j in data){
-    			if(j !== i) {
-    				if(data[j].document_uuid === temp) {
-    					new_line.push(data[j]);
-    				}
-    			}
-    		}
+        data.forEach(function (jItem) {
 
-    		if(!isInside(new_line, loss_array)) {
-    			loss_array.push(new_line);
-    		}
-    	}
+          if( data.indexOf(jItem) !== data.indexOf(iItem) ) {
+            if( jItem.document_uuid === temp ) {
+              newLine.push(jItem);
+            }
+          }
 
-    	session.loss = loss_array;
+          if( !isInside(newLine, lossArray) ) {
+            lossArray.push(newLine);
+          }
+
+        });
+
+      });
+
+    	session.loss = lossArray;
     }
 
     function isInside(element, tableau){
     	var result = false;
+
       if(element.length && tableau.length){
         for(var i in tableau){
           for(var j in element){
@@ -198,11 +202,11 @@ angular.module('bhima.controllers')
           }
         }
       }
+
     	return result;
     }
 
     $scope.select = select;
     $scope.reset = reset;
-    $scope.groupingLoss = groupingLoss;
   }
 ]);

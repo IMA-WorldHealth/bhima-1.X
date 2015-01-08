@@ -178,9 +178,15 @@ angular.module('bhima.controllers')
         return messenger.danger('NO_DEPOT_SELECTED');
       }*/
 
-      var path = config.modules.indexOf(defn) > -1 ? defn.link + '/' + $scope.depot.uuid
-        : (config.utilities.indexOf(defn) > -1 ) ? defn.link+ '/' + $scope.depot.uuid 
-        : (config.reports.indexOf(defn) > -1 ) ? defn.link+ '/' + $scope.depot.uuid : defn.link;
+      // build dynamically the report list links in report panel
+      var isModules = (config.modules.indexOf(defn) > -1),
+          isUtilities = (config.utilities.indexOf(defn) > -1),
+          isReports = (config.reports.indexOf(defn) > -1 );
+
+      var path = isModules ? defn.link + '/' + $scope.depot.uuid
+        : isUtilities ? defn.link+ '/' + $scope.depot.uuid 
+        : isReports ? defn.link+ '/' + $scope.depot.uuid : defn.link;
+        
       $location.path(path);
     };
 
