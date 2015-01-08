@@ -11,6 +11,7 @@
 USE bhima;
 
 ALTER TABLE `patient`
+
 CHANGE `addr_1` `address_1` varchar(100);
 
 ALTER TABLE `patient`
