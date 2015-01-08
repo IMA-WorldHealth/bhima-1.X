@@ -446,7 +446,7 @@
     "MONTH"               : "This Month",
     "SEARCH"              : "Search",
     "INCORRECT_DATE_TYPE" : "Provided date value is invalid",
-    "INCORRECT_DATE_LIMIT" : "Year of birth must be between 1900 and 2014",
+    "INCORRECT_DATE_LIMIT" : "Year of birth must be between <min> and <max>",
     "INCORRECT_LOCATION_CURRENT" : "Current village not specified",
     "INCORRECT_LOCATION_ORIGIN" : "Origin village not specified",
     "STATUS_NEW_TITLE" : "Patient is new to the hospital",
@@ -738,7 +738,9 @@
     "ENTRY_DATE"         : "Entry date",
     "CONFIRMED"          : "Confirmed",
     "SUPPLIER"           : "Supplier",
-    "IS_WAREHOUSE"       : "Is warehouse ?"  
+    "IS_WAREHOUSE"       : "Is warehouse ?",
+    "RECEIPT"            : "Receipt",
+    "PROOF"              : "Proof"
   },
 
   "INVENTORY" : {
@@ -931,7 +933,7 @@
     "NOT_EMPTY"          : "Abbr. Can not be empty",
     "NOT_SUP4"           : "Can not be more than 4 characters",
     "NOT_SUP_MAXDAY"     : "Can not be greater than the total working days"
-},
+  },
 
   "DISTRIBUTION" : {
     "TITLE"                  : "Stock Distribution",
@@ -1170,7 +1172,10 @@
     "VARIABLE"       : "Variable",
     "ACCOUNT_GROUP"  : "Account Group (Title Account)",
     "TITLE_ACCOUNT"  : "Title Account",
-    "ROOT_ACCOUNT"   : "Root Account"
+    "ROOT_ACCOUNT"   : "Root Account",
+    "IS_ASSET"       : "Is asset",
+    "IS_PASSIVE"     : "Est un passif",
+    "IS_NOTHING"     : "Nothing"        
   },
 
   "LOCATION"                : {
