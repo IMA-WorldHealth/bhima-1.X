@@ -53,8 +53,7 @@ angular.module('bhima.controllers')
         {id: 'ACCOUNT.TXT', name: 'Text', field: 'account_txt', formatter: AccountFormatter},
         {id: 'ACCOUNT.NO', name: 'No.', field: 'account_number'},
         {id: 'ACCOUNT.TYPE', name: 'Type', field: 'account_type_id', maxWidth: 60},
-        {id: 'ACCOUNT.IS_ASSET', name: 'IsAsset', field: 'is_asset', maxWidth: 80},
-        {id: 'COLUMNS.EDIT', name: 'Edit', maxWidth: 50, formatter: EditFormatter}
+        {id: 'ACCOUNT.IS_ASSET', name: 'IsAsset', field: 'is_asset', maxWidth: 90}
       ];
 
       columns.forEach(function (col) {
