@@ -315,10 +315,11 @@
   "FISCAL_YEAR"             : {
     "TITLE"                 : "Année Fiscale",
     "MANAGEMENT"            : "Gestion",
+    "CREATE"                : "Cree une Nouvelle Année",    
     "RECORDS"               : "Liste des Années Fiscale",
     "NEW"                   : "Nouvelle Année",
-    "CREATE"                : "Cree une Nouvelle Année",
     "DESC"                  : "Description",
+    "STEP"                  : "Etape",
     "START_DATE"            : "Début Date",
     "START_MONTH"           : "Début Mois",
     "ONE_YEAR"              : "Une Année",
@@ -340,7 +341,18 @@
     "ALERT_TWO"             : ". Les années fiscales sont requises pour grouper les transactions et produire les rapports.",
     "EDIT"                  : " Editer l'année fiscale sélectionnée; Bloquer et debloquer des périodes and voir l'ouverture des balances.",
     "CREATION"              : "Créer une nouvelle année fiscale",
-    "VIEW_BALANCE"          :"Voir Balance D'ouverture"
+    "VIEW_BALANCE"          :"Voir Balance D'ouverture",
+    "CREATE_YEAR_DETAILS"   : "Configurer les détails de la nouvelle année",
+    "CREATE_BEGINNING_BALANCES" : "Créer la balance d'ouverture",
+    "IMPORT_OPENING_BALANCES" : "Importer la balance d'ouverture",
+    "SUBMIT_YEAR"           : "Soumettre l'année fiscale",
+    "CONFIG_CLOSING_ACCOUNT" : "Choissiser la balance de fermeture des comptes",
+    "CLOSING_ACCOUNT"       : "Choissiser un compte",
+    "CLOSING_ACCOUNT_MESSAGE" : "La nouvelle année fiscale est la prochaine dans une serie. Veuiller spécifier un compte de balance qui recevera les balances des profits et des charges de l'entreprise à la cloture de l'année fiscale précédent.",
+    "PREVIOUS_YEAR"         : "Année Fiscale précédent",
+    "CREATE_SUCCESS"        : "Année fiscale créé avec succès",
+    "CREATE_SUCCESS_MESSAGE" : "Vous avez créé une nouvelle année fiscale avec succès!"
+
   },
 
   "OPENING_BALANCE" : {
@@ -420,7 +432,8 @@
     "PERIOD_ACCOUNT_CONFIG" : "Sélectionner une configuration des comptes",
     "DONOR"                 : "Sélectionner un Donateur",
     "PERIOD_PAYMENT"        : "Sélectionner une période de paiement",
-    "PROFIT_CENTER"         : "Sélectionner un centre de profits"
+    "PROFIT_CENTER"         : "Sélectionner un centre de profits",
+    "FISCAL_YEAR"           : "Sélectionner une année fiscale"
   },
 
   "PATIENT_REGISTRATIONS" : {
