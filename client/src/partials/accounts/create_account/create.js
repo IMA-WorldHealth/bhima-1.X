@@ -22,9 +22,11 @@ angular.module('bhima.controllers')
       query : {
         identifier : 'account_number',
         tables : {
-          account : { columns : ['id', 'account_number', 'account_txt', 'account_type_id', 'is_asset', 'parent'] }
-        }
-      },
+          account : { columns : ['id', 'account_number', 'account_txt', 'account_type_id', 'is_asset', 'parent'] },
+	  account_type : { columns : ['type::account_type'] }
+        },
+	join: [ 'account.account_type_id=account_type.id' ]
+      }
     };
 
     dependencies.accountType = {
@@ -50,10 +52,10 @@ angular.module('bhima.controllers')
     function defineGridOptions() {
 
       columns = [
-        {id: 'ACCOUNT.TXT', name: 'Text', field: 'account_txt', formatter: AccountFormatter},
+        {id: 'ACCOUNT.LABEL', name: 'Label', field: 'account_txt', formatter: AccountFormatter},
         {id: 'ACCOUNT.NO', name: 'No.', field: 'account_number'},
-        {id: 'ACCOUNT.TYPE', name: 'Type', field: 'account_type_id', maxWidth: 60},
-        {id: 'ACCOUNT.IS_ASSET', name: 'IsAsset', field: 'is_asset', maxWidth: 90}
+        {id: 'ACCOUNT.TYPE', name: 'Type', field: 'account_type', maxWidth: 90},
+        {id: 'ACCOUNT.IS_ASSET_TITLE', name: 'IsAsset', field: 'is_asset', maxWidth: 90}
       ];
 
       columns.forEach(function (col) {
