@@ -22,8 +22,9 @@
     "url": "https://github.com/IMA-WorldHealth/bhima/issues"
   },
   "dependencies": {
-    "mysql": "2.x.x",
+    "csv": "^0.4.1",
     "express": "4.x.x",
+    "mysql": "2.x.x",
     "q": "~1.0.0"
   },
   "devDependencies": {
