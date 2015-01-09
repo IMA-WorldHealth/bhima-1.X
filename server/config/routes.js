@@ -71,7 +71,7 @@ exports.initialise = function (app) {
   app.get('/ledgers/debitor_group/:id', ledger.compileGroupLedger);
   app.get('/ledgers/distributableSale/:id', ledger.compileSaleLedger);
 
-  app.get('/fiscal/:enterprise/:startDate/:endDate/:description', fiscal.writeYear);
+  app.post('/fiscal/create', fiscal.createFiscalYear);
 
   app.get('/reports/:route/', report.buildReport);
 

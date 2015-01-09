@@ -14,7 +14,7 @@ angular.module('bhima.controllers')
         identifier : 'uuid',
         tables : {
           'debitor_group' : {
-            columns : ['uuid', 'name', 'account_id', 'location_id', 'payment_id', 'phone', 'email', 'note', 'locked', 'tax_id', 'max_credit', 'is_convention', 'price_list_uuid']
+            columns : ['uuid', 'name', 'account_id', 'location_id', 'phone', 'email', 'note', 'locked', 'max_credit', 'is_convention', 'price_list_uuid']
           }
         }
       }
@@ -26,16 +26,6 @@ angular.module('bhima.controllers')
         tables : {
           'account' : {
             columns : ['id', 'account_number', 'account_txt', 'account_type_id']
-          }
-        }
-      }
-    };
-
-    dependencies.payment = {
-      query : {
-        tables : {
-          'payment' : {
-            columns: ['id', 'text']
           }
         }
       }

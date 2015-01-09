@@ -161,24 +161,6 @@ create table `project_permission` (
   constraint foreign key (`project_id`) references `project` (`id`)
 ) engine=innodb;
 
-drop table if exists `fiscal_year`;
-create table `fiscal_year` (
-  `enterprise_id`             smallint unsigned not null,
-  `id`                        mediumint unsigned not null auto_increment,
-  `number_of_months`          mediumint unsigned not null,
-  `fiscal_year_txt`           text not null,
-  `transaction_start_number`  int unsigned,
-  `transaction_stop_number`   int unsigned,
-  `fiscal_year_number`        mediumint unsigned,
-  `start_month`               int unsigned not null,
-  `start_year`                int unsigned not null,
-  `previous_fiscal_year`      mediumint unsigned,
-  `locked`                    boolean not null default 0,
-  primary key (`id`),
-  key `enterprise_id` (`enterprise_id`),
-  constraint foreign key (`enterprise_id`) references `enterprise` (`id`)
-) engine=innodb;
-
 drop table if exists `budget`;
 create table `budget` (
   `id` int not null auto_increment,
@@ -369,6 +351,27 @@ create table `caution_box_account_currency` (
   constraint foreign key (`account_id`) references `account` (`id`)
 ) engine=innodb;
 
+drop table if exists `fiscal_year`;
+create table `fiscal_year` (
+  `enterprise_id`             smallint unsigned not null,
+  `id`                        mediumint unsigned not null auto_increment,
+  `number_of_months`          mediumint unsigned not null,
+  `fiscal_year_txt`           text not null,
+  `transaction_start_number`  int unsigned,
+  `transaction_stop_number`   int unsigned,
+  `fiscal_year_number`        mediumint unsigned,
+  `start_month`               int unsigned not null,
+  `start_year`                int unsigned not null,
+  `previous_fiscal_year`      mediumint unsigned,
+  `closing_account`           int unsigned null,
+  `locked`                    boolean not null default 0,
+  primary key (`id`),
+  key `enterprise_id` (`enterprise_id`),
+  constraint foreign key (`closing_account`) references `account` (`id`),
+  constraint foreign key (`enterprise_id`) references `enterprise` (`id`)
+) engine=innodb;
+
+
 drop table if exists `period`;
 create table `period` (
   `id`              mediumint unsigned not null auto_increment,
@@ -498,12 +501,10 @@ create table `debitor_group` (
   `name`                varchar(100) not null,
   `account_id`          int unsigned not null,
   `location_id`         char(36) not null,
-  `payment_id`          tinyint unsigned not null default '3',
   `phone`               varchar(10) default '',
   `email`               varchar(30) default '',
   `note`                text,
   `locked`              boolean not null default 0,
-  `tax_id`              smallint unsigned null,
   `max_credit`          mediumint unsigned default '0',
   `is_convention`        boolean not null default 0,
   `price_list_uuid`      char(36) null,
