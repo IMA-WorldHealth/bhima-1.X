@@ -72,7 +72,6 @@ angular.module('bhima.controllers')
     });
 
     function init (model) {
-      session.model = model;
       cache.fetch('paiement_period')
       .then(function (pp) {
         if(!pp){
@@ -96,7 +95,7 @@ angular.module('bhima.controllers')
           }
         };
         
-        return validate.process(dependencies, ['salary_payment']);
+        return validate.refresh(dependencies, ['salary_payment']);
       })
       .then(function (model) {
         session.model = model;
@@ -123,14 +122,17 @@ angular.module('bhima.controllers')
     }
 
     function setConfiguration (pp) {
+
       if(pp){
-        cache.put('paiement_period', pp);
-        session.pp = pp;
-        session.configured = true;
-        session.complete = true;
-        session.available = true;
-        init(session.model);
-      }            
+        cache.put('paiement_period', pp)
+        .then(function (value) {
+          session.pp = pp;
+          session.configured = true;
+          session.complete = true;
+          session.available = true;
+          init(session.model);
+        });
+      }     
     }
 
     function getCashAccountID (currency_id) {
