@@ -258,7 +258,6 @@
   },
 
   "ERROR"                 : {
-    "HTTP_STATUS_CODE" : "HTTP Status Code",
     "ERR_IMBALANCE"       : "Imbalancing Error",
     "ERR_SQL"             : "SQL Error",
     "ERR_ACCNT_LOCKED"    : "Locked Account Error",
@@ -349,10 +348,6 @@
     "CONFIG_CLOSING_ACCOUNT"  : "Choose the closing balance account",
     "CLOSING_ACCOUNT"         : "Closing Account",
     "CLOSING_ACCOUNT_MESSAGE" : "The new fiscal year is next in a series.  Please specify a balance account which will recieve the balances of the enterprise's income and expense accounts at the close of the previous fiscal year.",
-    "CLOSE_NOTICE"          : "Close notice for previous years",
-    "CLOSE_PREVIOUS_YEAR"   : "Reminder: close previous fiscal years",
-    "CLOSE_PREVIOUS_YEAR_MESSAGE" : "A previous fiscal year exists.  You must close the last fiscal year to properly carry forward balances.  Any reports generated before closing the previous fiscal year will be inaccurate.",
-    "ACCEPT"                : "I understand",
     "SUBMIT_YEAR"           : "Submit the fiscal year",
     "PREVIOUS_YEAR"         : "Previous fiscal year",
     "CREATE_SUCCESS"        : "Fiscal year creation successful",
@@ -1189,7 +1184,7 @@
     "ROOT_ACCOUNT"   : "Root Account",
     "IS_ASSET"       : "Is asset",
     "IS_PASSIVE"     : "Is passive",
-    "IS_NOTHING"     : "Neither"
+    "IS_NOTHING"     : "Other"
   },
 
   "LOCATION"                : {
