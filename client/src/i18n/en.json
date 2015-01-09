@@ -1179,16 +1179,17 @@
     "ACCOUNT_TYPE"   : "Account Type",
     "ACCOUNT_NUMBER" : "Account Number",
     "FIXED"          : "Fixed",
+    "LABEL"          : "Label",
     "NO"             : "No.",
-    "TXT"            : "Text",
     "TYPE"           : "Type",
+    "IS_ASSET_TITLE" : "Asset?",
     "VARIABLE"       : "Variable",
     "ACCOUNT_GROUP"  : "Account Group (Title Account)",
     "TITLE_ACCOUNT"  : "Title Account",
     "ROOT_ACCOUNT"   : "Root Account",
     "IS_ASSET"       : "Is asset",
-    "IS_PASSIVE"     : "Est un passif",
-    "IS_NOTHING"     : "Nothing"        
+    "IS_PASSIVE"     : "Is passive",
+    "IS_NOTHING"     : "Neither"
   },
 
   "LOCATION"                : {
