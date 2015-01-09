@@ -70,8 +70,8 @@ angular.module('bhima.controllers')
         session.sum_debit = 0;
         session.sum_credit = 0;      
         $scope.transactions.forEach(function (transaction) {
-          session.sum_debit += exchange.convertir(transaction.debit, transaction.currency_id, session.currency, transaction.trans_date);
-          session.sum_credit += exchange.convertir(transaction.credit, transaction.currency_id, session.currency, transaction.trans_date);
+          session.sum_debit += exchange.convertir(transaction.debit, transaction.currency_id, session.currency,new Date());
+          session.sum_credit += exchange.convertir(transaction.credit, transaction.currency_id, session.currency,new Date());
         });        
       }
     }

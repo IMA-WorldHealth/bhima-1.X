@@ -132,7 +132,8 @@
         },
         "EXPENSE" : {
             "TITLE" : "Rapport des Dépenses",
-            "EMPTY_REPORT" : "Aucun enregistrement trouvé !"
+            "EMPTY_REPORT" : "Aucun enregistrement trouvé !",
+            "TOTAL_EXPENSE" : "Total dépenses"
         }
     }
   },
