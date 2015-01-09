@@ -13,7 +13,8 @@ angular.module('bhima.controllers')
         originalPatientData = null,
         patientUuid = $routeParams.patientID,
         timestamp = new Date(),
-        currentYear = timestamp.getFullYear(),
+        minYear = util.minPatientDate.getFullYear(),
+        maxYear = timestamp.getFullYear(),
         session = $scope.session = {},
         editableFields = [
 	  'first_name', 'last_name', 'dob', 'sex', 'father_name', 'mother_name', 'title',
@@ -98,11 +99,11 @@ angular.module('bhima.controllers')
       }
     };
 
-    // Various functions/data for the form
-    // TODO: Define these globally somewhere (same for patient register)
-    $scope.minDOB = '1900-01-01';
+    // Define limits for DOB
+    $scope.minDOB = util.htmlDate(util.minPatientDate);
     $scope.maxDOB = util.htmlDate(timestamp);
 
+    // Location methods
     $scope.setOriginLocation = function (uuid) {
       $scope.patient.origin_location_id = uuid;
     };
@@ -149,17 +150,20 @@ angular.module('bhima.controllers')
         return true;
       }
 
-      var year = $scope.patient.dob.getFullYear();
+      // NOTE: The following checks on the yearOfBirth are never executed with
+      //       the html5+angular date input field since the form value becomes
+      //       undefined when invalid and is caught by the previous check.
+      //       Leaving them in as a precaution in case the input form behavior
+      //       changes in the future.
+      var yearOfBirth = $scope.patient.dob.getFullYear();
 
-      if (isNaN(year)) {
-        // TODO: Probably not necessary any more since the form only allows digits ???
+      if (isNaN(yearOfBirth)) {
         validation.dates.flag = validation.dates.tests.type;
         return true;
       }
 
-      // Sensible year limits - may need to change to accomodate legacy patients
-      if (year > currentYear || year < 1900) {
-        // TODO: Maybe not necessary any more since the form/angular validates Date on the fly ???
+      // Sensible yearOfBirth limits - may need to change to accomodate legacy patients
+      if (yearOfBirth > maxYear || yearOfBirth < 1900) {
         validation.dates.flag = validation.dates.tests.limit;
         return true;
       }
@@ -255,8 +259,12 @@ angular.module('bhima.controllers')
       $scope.initialCurrentLocation = patient.current_location_id;
 
       $scope.debtorGroup = models.debtorGroup;
-    }
 
+      // Update the year limit message (has to be done late to use current language)
+      validation.dates.tests.limit.message = $translate.instant(validation.dates.tests.limit.message)
+        .replace('<min>', minYear)
+	.replace('<max>', maxYear);
+    }
 
     // Register this controller
     appstate.register('enterprise', function (enterprise) {
