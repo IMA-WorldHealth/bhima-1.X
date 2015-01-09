@@ -49,7 +49,6 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
 	};
 
 	function startup (models) {
-    console.log(models);
       angular.extend($scope, models);
     }
 
@@ -78,6 +77,7 @@ function($scope, $translate, validate, messenger, connect, appstate, uuid, util)
       session.edit = angular.copy(period);
       session.edit.dateFrom = new Date(session.edit.dateFrom);
       session.edit.dateTo = new Date(session.edit.dateTo);
+      console.log('session.edit: ', session.edit);
       delete session.edit.RUBRIC;
       delete session.edit.TAX;
       delete session.edit.COTISATION;
