@@ -132,7 +132,8 @@
         },
         "EXPENSE" : {
             "TITLE" : "Expenses Reports",
-            "EMPTY_REPORT" : "No record found !"
+            "EMPTY_REPORT" : "No record found !",
+            "TOTAL_EXPENSE" : "Total Expenses"
         }
     }
   },
