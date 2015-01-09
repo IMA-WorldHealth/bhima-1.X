@@ -11,7 +11,7 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           fiscal_year : {
-            columns : ['id', 'fiscal_year_txt', 'start_month', 'start_year']
+            columns : ['id', 'fiscal_year_txt', 'start_month', 'start_year', 'previous_fiscal_year']
           }
         }
       }
@@ -39,6 +39,11 @@ angular.module('bhima.controllers')
 
     // activate create template and deselect selection
     $scope.createFiscalYear = function createFiscalYear() {
+
+      // FIXME : force refresh when clicking the button multiple
+      // times.
+      $scope.$broadcast('fiscal-year-create-refresh');
+
       $scope.active = 'create';
       $scope.selected = null;
     };
