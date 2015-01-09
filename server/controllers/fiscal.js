@@ -39,8 +39,8 @@ exports.createFiscalYear = function (req, res, next) {
 
     // otherwise, we must tabulate and carry forward
     // the income and expense accounts from last fiscal
-    // year, and put them in the closing_account.
-    // closing the previous fiscal year happens as
+    // year, and put them in closing accounts.
+    // Closing the previous fiscal year happens as
     // a seperate utility.
   })
   .then(function (results) {
@@ -106,10 +106,7 @@ function createNewYear(data) {
       startDate = data.start,
       endDate = data.end,
       previousFiscalYear = data.previous_fiscal_year || null,
-      fiscalYearText = data.fiscal_year_txt,
-
-      // if there is no closing account, we are on the first fiscal year.
-      closingAccount = data.closingAccount || null;
+      fiscalYearText = data.fiscal_year_txt;
 
   // date math to get the month number, start month, and start year
   monthNo = monthDiff(startDate, endDate) + 1; // FIXME Why is the plus one?
@@ -118,10 +115,10 @@ function createNewYear(data) {
 
   // template the fiscal year query
   sql =
-    'INSERT INTO fiscal_year (enterprise_id, number_of_months, fiscal_year_txt, start_month, start_year, previous_fiscal_year, closing_account) VALUES ' +
-      '(?, ?, ?, ?, ?, ?, ?);';
+    'INSERT INTO fiscal_year (enterprise_id, number_of_months, fiscal_year_txt, start_month, start_year, previous_fiscal_year) VALUES ' +
+      '(?, ?, ?, ?, ?, ?);';
 
-  return db.exec(sql, [enterpriseId, monthNo, fiscalYearText, startMonth, startYear, previousFiscalYear, closingAccount]);
+  return db.exec(sql, [enterpriseId, monthNo, fiscalYearText, startMonth, startYear, previousFiscalYear]);
 }
 
 // creates the periods (including period 0) for a fiscal year
