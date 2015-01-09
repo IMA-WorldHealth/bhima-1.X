@@ -67,9 +67,8 @@ angular.module('bhima.controllers')
 
     function startup(model) {
       angular.extend($scope, model);
-
+      $scope.ledger.data = $scope.ledger.data.filter(function (data) { return data.is_distributable[0] === 1; });
       moduleStep();
-      console.log('model', model);
     }
 
     function moduleStep() {
@@ -91,11 +90,8 @@ angular.module('bhima.controllers')
         });
 
         $q.all(detailsRequest).then(function (result) {
-          console.log('got all lot details');
           session.sale.details.forEach(function (saleItem, index) {
             var itemModel = result[index];
-
-            console.log('assigning', result);
             if (itemModel.data.length) { saleItem.lots = itemModel; }
           });
 
@@ -121,8 +117,6 @@ angular.module('bhima.controllers')
         var validUnits = 0;
         var sessionLots = [];
 
-        console.log('Determining lots for ', saleItem);
-
         // Ignore non consumable items
         if (!saleItem.consumable) { return; }
 
@@ -131,8 +125,6 @@ angular.module('bhima.controllers')
           saleItem.stockStatus = stock.NONE;
           return;
         }
-
-        console.log('Found lots for sale item');
 
         // If lots exist, order them by experiation and quantity
         saleItem.lots.data.sort(orderLotsByUsability);
@@ -168,7 +160,6 @@ angular.module('bhima.controllers')
 
     function orderLotsByUsability(a, b) {
       // Order first by expiration date, then by quantity
-
       var aDate = new Date(a.expirationDate),
           bDate = new Date(b.expirationDate);
 
@@ -182,22 +173,14 @@ angular.module('bhima.controllers')
     function verifyValidLots(saleDetails) {
       var invalidLots = false;
 
-      console.log('checking valid lots');
-
       //Ensure each item has a lot
       invalidLots = saleDetails.some(function (item) {
-        console.log('validating lot', item);
-
         // ignore non consumables (FIXME better way tod do this across everything)
         if (!item.consumable) { return false; }
 
         // FIXME hack - if a status has been reported, cannot be submitted
         if (item.stockStatus) { return true; }
-
-        // console.log('item has lots assigned');
       });
-
-      console.log('looped through lots, found invalid', invalidLots);
 
       // Update on failed attempt - EVERY validation
       session.lotSelectionFailure = invalidLots;
@@ -205,7 +188,6 @@ angular.module('bhima.controllers')
     }
 
     function getSaleDetails(sale) {
-      console.log('sale', sale);
       var query = {
         tables : {
           sale_item : {
