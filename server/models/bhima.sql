@@ -723,6 +723,19 @@ create table `sale_item` (
   constraint foreign key (`inventory_uuid`) references `inventory` (`uuid`)
 ) engine=innodb;
 
+drop table if exists `sale_subsidy`;
+create table `sale_subsidy` (
+  `uuid`              char(36) not null,
+  `sale_uuid`         char(36) not null,
+  `subsidy_uuid`      char(36) not null,
+  `value`             decimal(19,4) default '0',
+  primary key (`uuid`),
+  key `sale_uuid` (`sale_uuid`),
+  key `subsidy_uuid` (`subsidy_uuid`),
+  constraint foreign key (`sale_uuid`) references `sale` (`uuid`) on delete cascade,
+  constraint foreign key (`subsidy_uuid`) references `subsidy` (`uuid`)
+) engine=innodb;
+
 drop table if exists `depot`;
 create table `depot` (
   `uuid`               char(36) not null,
