@@ -153,13 +153,50 @@ describe('parser', function () {
       expect(results).to.equal(answer);
     });
 
+    it('should compose a SELECT query with the LIKE syntax in the WHERE clause', function () {
+      var query, results, answer;
+
+      query = {
+        tables : {
+          'patient' : { columns : ['uuid', 'first_name', 'last_name'] }
+        },
+	where : [ 'patient.last_name LIKE john smith' ]
+      };
+
+      results = parser.select(query);
+
+      answer =
+        'SELECT patient.uuid, patient.first_name, patient.last_name ' +
+        'FROM patient WHERE patient.last_name LIKE \'%john smith%\';';
+
+      expect(results).to.equal(answer);
+    });
+
+    it('should compose a SELECT query with the :: for AS syntax in the selector', function () {
+      var query, results, answer;
+
+      query = {
+        tables : {
+          'patient' : { columns : ['uuid', 'first_name', 'last_name', 'dob::dateOfBirth'] }
+        },
+      };
+
+      results = parser.select(query);
+
+      answer =
+        'SELECT patient.uuid, patient.first_name, patient.last_name, patient.dob as dateOfBirth ' +
+        'FROM patient WHERE 1;';
+
+      expect(results).to.equal(answer);
+    });
+
     it('should compose high complexity SELECT queries', function () {
       var query, results, answer;
 
       query = {
         tables : {
           'enterprise' : { columns : ['id', 'name', 'location_id', 'account_group_id'] },
-          'account_group' : { columns : ['account_number', 'ordering'] }
+          'account_group' : { columns : ['account_number', 'ordering::account_ordering'] }
         },
         where : ['enterprise.id=1', 'AND', ['account_group.account_number<100', 'OR', 'account_group.account_number>=150']],
         join : ['enterprise.account_group_id=account_group.id'],
@@ -172,7 +209,7 @@ describe('parser', function () {
       answer =
         'SELECT enterprise.id, enterprise.name, enterprise.location_id, ' +
           'enterprise.account_group_id, account_group.account_number, ' +
-          'account_group.ordering ' +
+          'account_group.ordering as account_ordering ' +
         'FROM enterprise JOIN account_group ON ' +
           'enterprise.account_group_id=account_group.id ' +
         'WHERE enterprise.id=\'1\' AND ' +
