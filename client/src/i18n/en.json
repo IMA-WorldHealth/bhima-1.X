@@ -1456,7 +1456,10 @@
     "APPLIES_GLOBALLY" : "Appliquer globallemement",
     "APPLIES_TO_ITEM"  : "Appliquer par item",
     "CHOOSE"           : "Assign a service",
-    "DEBITOR_GROUP_LOCK" : "The debitor group of this patient is locked"
+    "DEBITOR_GROUP_LOCK" : "The debitor group of this patient is locked",
+    "IS_DISTRIBUTABLE" : "Distributable via stock ?",
+    "DISTRIBUTABLE"    : "Distributable",
+    "NO_DISTRIBUTABLE" : "Not distributable"
   },
 
   "FIND"               : {
@@ -1464,7 +1467,11 @@
     "PATIENT_ID"       : "Patient ID",
     "PLACEHOLDER"      : "Search patient name",
     "SEARCH"           : "Find by Name",
-    "TITLE"            : "Find a patient"
+    "TITLE"            : "Find a patient",
+    "ENTER_DEBTOR_ID"  : "Enter Debitor ID",
+    "SEARCH"           : "Search",
+    "PLACEHOLDER"      : "Search debitor",
+    "PATIENT_ID"       : "Patient ID"
   },
 
   "EFIND" : {
