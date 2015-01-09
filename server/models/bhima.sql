@@ -652,6 +652,7 @@ create table `sale` (
   `note`          text,
   `posted`        boolean not null default '0',
   `timestamp`     timestamp default current_timestamp,
+  `is_distributable`        bit(1) not null default b'1',
   primary key (`uuid`),
   key `reference` (`reference`),
   key `project_id` (`project_id`),

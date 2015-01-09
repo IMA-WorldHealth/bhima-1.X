@@ -29,7 +29,8 @@ angular.module('bhima.controllers')
         priceListSource = [];
 
     var session = $scope.session = {
-      tablock : -1
+      tablock : -1,
+      is_distributable : true
     };
 
     var serviceComponent = $scope.serviceComponent = {
@@ -253,13 +254,14 @@ angular.module('bhima.controllers')
 
       //Seller ID will be inserted on the server
       requestContainer.sale = {
-        project_id   : $scope.project.id,
-        cost         : calculateTotal().total,
-        currency_id  : $scope.project.currency_id,
-        debitor_uuid : invoice.debtor.debitor_uuid,
-        invoice_date : invoice.date,
-        note         : invoice.note,
-        service_id   : invoice.service.id
+        project_id       : $scope.project.id,
+        cost             : calculateTotal().total,
+        currency_id      : $scope.project.currency_id,
+        debitor_uuid     : invoice.debtor.debitor_uuid,
+        invoice_date     : invoice.date,
+        note             : invoice.note,
+        service_id       : invoice.service.id,
+        is_distributable : session.is_distributable
       };
 
       requestContainer.saleItems = [];
