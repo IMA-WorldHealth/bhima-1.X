@@ -112,8 +112,8 @@ INSERT INTO `employee` (`id`, `code`, `prenom`, `name`, `postnom`, `sexe`, `dob`
 (5, '1005', 'Dedrick', 'Kitamuka', 'DedK', 'M', '2000-01-01', '2000-01-01', 0, 0, @grade_uuid, 0, NULL, NULL, NULL, NULL, NULL, 1, NULL, '827082bb-7e3a-4966-8717-1cc5342548fd', 'b638d8b7-4e1d-48d5-83b7-cd8db73a8c76', '9b74dcdb-11ed-444e-9dba-2829938f7eac');
 
 
-INSERT INTO `fiscal_year` (`enterprise_id`, `id`, `number_of_months`, `fiscal_year_txt`, `transaction_start_number`, `transaction_stop_number`, `fiscal_year_number`, `start_month`, `start_year`, `previous_fiscal_year`, `closing_account`, `locked`) VALUES
-(200, 2, 12, 'FY 2015', NULL, NULL, NULL, 1, 2015, 1, NULL, 0);
+INSERT INTO `fiscal_year` (`enterprise_id`, `id`, `number_of_months`, `fiscal_year_txt`, `transaction_start_number`, `transaction_stop_number`, `fiscal_year_number`, `start_month`, `start_year`, `previous_fiscal_year`, `locked`) VALUES
+(200, 2, 12, 'FY 2015', NULL, NULL, NULL, 1, 2015, 1, 0);
 
 
 INSERT INTO `period` (`id`, `fiscal_year_id`, `period_number`, `period_start`, `period_stop`, `locked`) VALUES
