@@ -905,7 +905,7 @@
     "STOCK_STATUS"              : "Stock Status",
     "FONCTION"                  : "Job titles management",
     "OPERATING_ACCOUNT"         : "Operating Account",
-    "SERVICE_EXPLOITATION"      : "Exploitation per Service",
+    "SERVICE_EXPLOITATION"      : "Services Status",
     "GLOBAL_TRANSACTION"        : "Account Movement",
     "COTISATION_MANAGEMENT"     : "Cotization management",
     "EMPLOYEE_STANDING"         : "Employee Standing Report",
@@ -2427,7 +2427,7 @@
   },
 
   "SERVICE_EXPLOITATION" : {
-    "TITLE"              : "Exploitation per service"
+    "TITLE"              : "Service Income/Expense Summary"
   },
 
   "SALARY_PAYMENT" : {
