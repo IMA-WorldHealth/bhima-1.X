@@ -122,10 +122,9 @@ angular.module('bhima.controllers')
     }
 
     function setConfiguration (pp) {
-
       if(pp){
         cache.put('paiement_period', pp)
-        .then(function (value) {
+        .then(function () {
           session.pp = pp;
           session.configured = true;
           session.complete = true;
