@@ -38,7 +38,7 @@ angular.module('bhima.controllers')
       query : {
         identifier : 'account_number',
         tables : {
-          account : { columns : ['id', 'account_number', 'account_txt', 'account_type_id', 'fixed', 'parent'] },
+          account : { columns : ['id', 'account_number', 'account_txt', 'account_type_id', 'parent'] },
           account_type : { columns : ['type'] }
         },
         join: ['account.account_type_id=account_type.id']
