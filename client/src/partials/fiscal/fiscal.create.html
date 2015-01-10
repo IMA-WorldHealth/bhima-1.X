@@ -42,7 +42,7 @@
 
         <div class="form-group" ng-if="fiscal.data.length > 0">
           <label class="required">{{ 'FISCAL_YEAR.PREVIOUS_YEAR' | translate }}</label>
-          <select class="form-bhima" ng-model="data.previous_fiscal_year" ng-options="year.id as year.fiscal_year_txt for year in fiscal.data" required>
+          <select class="form-bhima" ng-model="data.previous_fiscal_year" ng-options="year.id as year.fiscal_year_txt for year in years" required>
             <option value="" disabled="disabled" selected="selected">--- {{ 'SELECT.FISCAL_YEAR' | translate }} ---</option>
           </select>
         </div>
@@ -56,30 +56,23 @@
 
   <!-- step 2a: Import beginning balances from previous fiscal year -->
   <div ng-switch-when="2a">
-    <form class="form-horizontal" name="balanceForm">
-      <div style="padding:10px;">
-        <h4>{{ 'FISCAL_YEAR.CONFIG_CLOSING_ACCOUNT' | translate }}</h4>
-        <p>{{ 'FISCAL_YEAR.CLOSING_ACCOUNT_MESSAGE' | translate }}</p>
-      </div>
-
-      <div class="form-group">
-        <label class="col-xs-3 control-label">{{ 'FISCAL_YEAR.CLOSING_ACCOUNT' | translate }}</label>
-        <div class="col-xs-5">
-          <select class="form-bhima" ng-model="data.closing_account" ng-options="account.id as labelAccount(account) for account in accounts.data | filter: {type : 'balance'}" rows="20" required>
-            <option value="" disabled="disabled" selected="selected">--- {{ 'SELECT.ACCOUNT' | translate }} ---</option>
-          </select>
+    <div class="panel-body">
+      <form name="balanceForm">
+        <div>
+          <h4>
+            <i class="glyphicon glyphicon-exclamation-sign"></i>
+            {{ 'FISCAL_YEAR.CLOSE_PREVIOUS_YEAR' | translate }}
+          </h4>
+          <p>{{ 'FISCAL_YEAR.CLOSE_PREVIOUS_YEAR_MESSAGE' | translate }}</p>
         </div>
-      </div>
 
-      <div class="form-group">
-        <div class="col-sm-offset-1 col-xs-11">
-          <button class="btn btn-sm btn-success" ng-disabled="balanceForm.$invalid" ng-click="submitFiscalYearData()">
-            {{ 'UTIL.SUBMIT' | translate }}
-          </button>
-        </div>
-      </div>
-
-    </form>
+        <!-- A temporary message until we impliment closing fiscal years -->
+        <button class="btn btn-sm btn-success" ng-click="submitFiscalYearData()">
+          <i class="glyphicon glyphicon-ok-circle"></i>
+          {{ 'FISCAL_YEAR.ACCEPT' | translate }}
+        </button>
+      </form>
+    </div>
   </div>
 
   <!-- step 2b: Create new beginning balances for a new fiscal year -->

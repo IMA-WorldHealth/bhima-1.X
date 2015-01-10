@@ -5,6 +5,7 @@ angular.module('bhima.controllers')
   'validate',
   'appstate',
   'connect',
+  'store',
   function ($scope, $http, validate, appstate, connect) {
     var data,
         imports = $scope.$parent,
@@ -21,11 +22,11 @@ angular.module('bhima.controllers')
       },
       {
         id : '2a',
-        key : 'FISCAL_YEAR.IMPORT_OPENING_BALANCES'
+        key : 'FISCAL_YEAR.CLOSE_NOTICE'
       },
       {
         id : '2b',
-        key : 'FISCAL_YEAR.CREATE_BEGINNING_BALANCES'
+        key : 'FISCAL_YEAR.CREATE_OPENING_BALANCES'
       },
       {
         id : '3',
@@ -40,7 +41,6 @@ angular.module('bhima.controllers')
     $scope.stepOne = stepOne;
     $scope.stepTwo = stepTwo;
     $scope.stepThree = stepThree;
-    $scope.labelAccount = labelAccount;
     $scope.submitFiscalYearData = submitFiscalYearData;
 
     // dependencies
@@ -60,10 +60,36 @@ angular.module('bhima.controllers')
       }
     };
 
+    // returns true if the years array contains a
+    // year with previous_fiscal_year matching the
+    // year's id.
+    function hasChild(year, years) {
+      return years.some(function (otherYear) {
+        return otherYear.previous_fiscal_year === year.id;
+      });
+    }
+
+    // Make sure that only years without children show
+    // up in the view for selection as previous_fiscal_year
+    function filterParentYears() {
+      // copy the fiscal year store from the parent
+      var years = angular.copy(imports.fiscal.data);
+
+      // filter out years that have children
+      var childless = years.filter(function (year) {
+        return !hasChild(year, years);
+      });
+
+      // expose the years to the view
+      $scope.years = childless;
+    }
+
     // fires on controller load
     function onLoad() {
-      // expose the fiscal years from the parent to the view
-      $scope.fiscal = imports.fiscal;
+
+      // filter years that are parents out of the selection
+      // in the view
+      filterParentYears();
 
       // Trigger step one
       stepOne();
@@ -88,7 +114,7 @@ angular.module('bhima.controllers')
     // set the account balance to 0 for all accounts
     function resetBalances() {
       $scope.accounts.data.forEach(function (row) {
-        
+
         // make account_number a string to sort properly
         row.account_number = String(row.account_number);
         row.debit = 0;
@@ -157,13 +183,6 @@ angular.module('bhima.controllers')
       }
     }
 
-    // label the account select nicely
-    // NOTE : This exposes a function to the view which is recalculated each
-    // time.  Is there a better way?
-    function labelAccount(account) {
-      return account.account_number + ' ' + account.account_txt;
-    }
-
     // normalizes a date to a UTC date for the server
     // TODO Put this functionality in a service
     function normalizeUTCDate(date) {
@@ -208,6 +227,25 @@ angular.module('bhima.controllers')
         throw err;
       });
     }
+
+    // force refresh of the page
+    function forceRefresh() {
+
+      // refresh the form
+      data = $scope.data = { year : 'true' };
+
+      // refresh the imports, in case the parent has
+      // loaded new data
+      imports = $scope.$parent;
+
+      // refresh parent filter
+      filterParentYears();
+
+      stepOne();
+    }
+
+    // listen for refresh chime
+    $scope.$on('fiscal-year-create-refresh', forceRefresh);
 
     // collect the enterprise id and load the controller
     appstate.register('enterprise', function (enterprise) {
