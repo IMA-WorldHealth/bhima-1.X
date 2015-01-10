@@ -1,8 +1,8 @@
 // Module: scripts/tree.js
 
-var q = require('q');
-var db = require('./../lib/db');
-var parser = require('./../lib/parser');
+var q = require('q'),
+    db = require('../lib/db'),
+    util = require('../lib/util');
 
 // This module is responsible for constructing each
 // person's tree based on their permissions in the
@@ -75,34 +75,45 @@ function load(userId) {
   function main() {
     var sql,  d = q.defer();
 
-    sql = 
-      'SELECT permission.id, permission.unit_id, unit.name, unit.parent, unit.has_children, ' +
-        'unit.url, unit.path, unit.key ' +
-      'FROM permission JOIN unit ON ' +
-        'permission.unit_id = unit.id ' + 
-      'WHERE permission.user_id = ' + userId + ' AND ' +
-        'unit.parent = ' + ROOT_NODE + ';';
+    // FIXME
+    // This is the worst code known to mankind.  We should
+    // really just create a tree here, but that will await
+    // another pull request
 
-    // this is freakin' complex. DO NOT TOUCH.
-    db.execute(sql, function (err, result) {
-      
-      // FIXME / TODO
-      // Impliment proper error handling
-      if (err) { console.log(err); }
+    // if you have no user, reject the request
+    if (!util.isDefined(userId)) {
+      d.reject('No user');
+    } else {
 
-      d.resolve(q.all(result.map(function (row) {
-        var p = q.defer();
-        if (row.has_children) {
-          getChildren(row.unit_id)
-          .then(function (children) {
-            row.children = children;
-            p.resolve(row);
-          });
-        }
-        else { p.resolve(row); }
-        return p.promise;
-      })));
-    });
+      sql = 
+        'SELECT permission.id, permission.unit_id, unit.name, unit.parent, unit.has_children, ' +
+          'unit.url, unit.path, unit.key ' +
+        'FROM permission JOIN unit ON ' +
+          'permission.unit_id = unit.id ' + 
+        'WHERE permission.user_id = ' + userId + ' AND ' +
+          'unit.parent = ' + ROOT_NODE + ';';
+
+      // this is freakin' complex. DO NOT TOUCH.
+      db.execute(sql, function (err, result) {
+        
+        // FIXME / TODO
+        // Impliment proper error handling
+        if (err) { console.log(err); }
+
+        d.resolve(q.all(result.map(function (row) {
+          var p = q.defer();
+          if (row.has_children) {
+            getChildren(row.unit_id)
+            .then(function (children) {
+              row.children = children;
+              p.resolve(row);
+            });
+          }
+          else { p.resolve(row); }
+          return p.promise;
+        })));
+      });
+    }
 
 
     return d.promise;

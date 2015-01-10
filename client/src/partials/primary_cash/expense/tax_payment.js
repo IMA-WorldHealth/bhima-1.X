@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('primary_cash.enterprise_tax_payment', [
+.controller('primary_cash.tax_payment', [
   '$scope',
   '$routeParams',
   '$translate',
@@ -15,7 +15,7 @@ angular.module('bhima.controllers')
   'uuid',
   function ($scope, $routeParams, $translate, $http, messenger, validate, appstate, Appcache, connect, util, exchange, $q, uuid) {
     var dependencies = {},
-        cache = new Appcache('enterprise_tax_payment'),
+        cache = new Appcache('tax_payment'),
         session = $scope.session = {
           configured : false, 
           complete : false, 
@@ -79,23 +79,23 @@ angular.module('bhima.controllers')
           // throw new Error('period paiement not defined');
           // A FIXE : ASTUCE POUR NE PAS AFFICHER LE MESSAGE D'ERREUR ET NE RIEN AFFICHER         
           session.pp = {};
-          session.pp.id = -1;
+          session.pp.id = -1;        
         }else{
           session.pp = pp; 
           session.pp_label = formatPeriod (pp);
         }
         
-        dependencies.enterprise_payment = {
-          query : '/getEnterprisePayment/' + session.pp.id
+        dependencies.employees_payment = {
+          query : '/getEmployeePayment/' + session.pp.id
         };
         
-        return validate.process(dependencies, ['enterprise_payment']);
+        return validate.process(dependencies, ['employees_payment']);
       })
       .then(function (model) {
         session.model = model;
         session.configured = (session.pp.id > 0) ? true : false ;
         session.complete = true;
-        session.available = (session.model.enterprise_payment.data.length > 0) ? true : false ;
+        session.available = (session.model.employees_payment.data.length > 0) ? true : false ;
       })
       .catch(function (err) {
         console.log('err', err);
@@ -126,7 +126,7 @@ angular.module('bhima.controllers')
           session.available = true;
           init(session.model);
         });
-      }            
+      }           
     }
 
     function getCashAccountID (currency_id) {
@@ -149,9 +149,9 @@ angular.module('bhima.controllers')
         currency_id   : emp.currency_id,
         cost          : emp.value,
         user_id       : session.model.cashier.data.id,
-        description   : 'Enterprise Tax Payment ' + '(' + emp.label + ') : ' + emp.name + emp.postnom,
+        description   : 'Tax Payment ' + '(' + emp.label + ') : ' + emp.name + emp.postnom,
         cash_box_id   : session.cashbox,
-        origin_id     : 7
+        origin_id     : 7,
       };
 
       var primary_details = {
