@@ -327,7 +327,8 @@
     "END_MONTH"             : "End Month",
     "HELP_TXT"              : "This utility facilitates the creation and management of fiscal years. The following operations are available",
     "NAME"                  : "Name",
-    "LOCK"                  : "Lock this Fiscal Year",
+    "LOCKED"                : "This fiscal year is locked.",
+    "OPEN"                  : "This fiscal year is open.",
     "TOTAL_MONTH"           : "Total Months",
     "FIRST_VOUCHER"         : "First Voucher No.",
     "LAST_VOUCHER"          : "Last Voucher No.",
@@ -345,13 +346,17 @@
     "CREATE_YEAR_DETAILS"   : "Configure the new year details",
     "CREATE_BEGINNING_BALANCES" : "Create beginning balances",
     "IMPORT_OPENING_BALANCES" : "Import opening balances",
-    "SUBMIT_YEAR"             : "Submit the fiscal year",
     "CONFIG_CLOSING_ACCOUNT"  : "Choose the closing balance account",
     "CLOSING_ACCOUNT"         : "Closing Account",
     "CLOSING_ACCOUNT_MESSAGE" : "The new fiscal year is next in a series.  Please specify a balance account which will recieve the balances of the enterprise's income and expense accounts at the close of the previous fiscal year.",
-    "PREVIOUS_YEAR"          : "Previous fiscal year",
-    "CREATE_SUCCESS"         : "Fiscal year creation successful",
-    "CREATE_SUCCESS_MESSAGE" : "You have successfully created a new fiscal year!"
+    "CLOSE_NOTICE"          : "Close notice for previous years",
+    "CLOSE_PREVIOUS_YEAR"   : "Reminder: close previous fiscal years",
+    "CLOSE_PREVIOUS_YEAR_MESSAGE" : "A previous fiscal year exists.  You must close the last fiscal year to properly carry forward balances.  Any reports generated before closing the previous fiscal year will be inaccurate.",
+    "ACCEPT"                : "I understand",
+    "SUBMIT_YEAR"           : "Submit the fiscal year",
+    "PREVIOUS_YEAR"         : "Previous fiscal year",
+    "CREATE_SUCCESS"        : "Fiscal year creation successful",
+    "CREATE_SUCCESS_MESSAGE": "You have successfully created a new fiscal year!"
   },
 
   "OPENING_BALANCE" : {
@@ -1451,7 +1456,10 @@
     "APPLIES_GLOBALLY" : "Appliquer globallemement",
     "APPLIES_TO_ITEM"  : "Appliquer par item",
     "CHOOSE"           : "Assign a service",
-    "DEBITOR_GROUP_LOCK" : "The debitor group of this patient is locked"
+    "DEBITOR_GROUP_LOCK" : "The debitor group of this patient is locked",
+    "IS_DISTRIBUTABLE" : "Distributable via stock ?",
+    "DISTRIBUTABLE"    : "Distributable",
+    "NO_DISTRIBUTABLE" : "Not distributable"
   },
 
   "FIND"               : {
@@ -1459,7 +1467,11 @@
     "PATIENT_ID"       : "Patient ID",
     "PLACEHOLDER"      : "Search patient name",
     "SEARCH"           : "Find by Name",
-    "TITLE"            : "Find a patient"
+    "TITLE"            : "Find a patient",
+    "ENTER_DEBTOR_ID"  : "Enter Debitor ID",
+    "SEARCH"           : "Search",
+    "PLACEHOLDER"      : "Search debitor",
+    "PATIENT_ID"       : "Patient ID"
   },
 
   "EFIND" : {
