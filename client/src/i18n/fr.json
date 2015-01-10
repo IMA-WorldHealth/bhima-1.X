@@ -417,28 +417,6 @@
     "REGISTERED" : "Enregistrées"
   },
 
-  "SALE"               : {
-    "SALE"             : "Facture",
-    "TITLE"            : "Facturation",
-    "IMPORT"           : "Importer Perscription",
-    "UPDATE"           : "Mis à Jour les Defaults",
-    "SUBMIT"           : "Soumettre La Facture",
-    "ADD_LINE_ITEM"    : "Ajouter une Item",
-    "EDIT_SALE"        : "Editer la Facture",
-    "TOTAL"            : "Totale",
-    "PATIENT_COVERED"  : "Patient est couvert par la convention",
-    "APPLIES_GLOBALLY" : "Appliquer globalement",
-    "APPLIES_TO_ITEM"  : "Appliquer par item",
-    "TAB_LOCK_LINE"    : "Tabuler par ligne",
-    "TAB_LOCK_ITEM"    : "Tabuler par item",
-    "RECOVER"          : "Retrouver Vente",
-    "RECOVER_INFO"     : "[Retrouver Sale] C'est important de savoir que seulement les items de vente et les quantités sont retrouvés, les prix sont réinitialisés au prix par défaut des items",
-    "CHOOSE"           : "Choisir le service",
-    "IS_DISTRIBUTABLE" : "Distribuable via le stock ?",
-    "DISTRIBUTABLE"    : "Distribuable",
-    "NO_DISTRIBUTABLE" : "Non distribuable"
-  },
-
   "PATIENT_STANDING"     : {
     "TITLE"              : "Etat Financier du Patient",
     "PLACEHOLDER"        : "Chercher le patient ...",
@@ -1575,6 +1553,7 @@
     }
   },
 
+
   "SALE"               : {
     "SALE"             : "Facture",
     "TITLE"            : "Facturation",
@@ -1592,7 +1571,10 @@
     "RECOVER"          : "Retrouver Vente",
     "RECOVER_INFO"     : "[Retrouver Sale] C'est important de savoir que seulement les items de vente et les quantités sont retrouvés, les prix sont réinitialisés au prix par défaut des items",
     "CHOOSE"           : "Choisir le service",
-    "DEBITOR_GROUP_LOCK" : "Le groupe de débiteur de ce patient est verrouillé"
+    "DEBITOR_GROUP_LOCK" : "Le groupe de débiteur de ce patient est verrouillé",
+    "IS_DISTRIBUTABLE" : "Distribuable via le stock ?",
+    "DISTRIBUTABLE"    : "Distribuable",
+    "NO_DISTRIBUTABLE" : "Non distribuable"
   },
 
   "FIND"               : {
