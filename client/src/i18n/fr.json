@@ -300,6 +300,145 @@
     "TSHIKAJI"          : "TSHIKAJI"
   },
 
+  "ENTERPRISE"                 : {
+    "TITLE"                    : "Gestion de l'Entreprise",
+    "REGISTERED_ENTERPRISE"    : "Entreprises Enregistrées",
+    "NEW"                      : "Nouvelle Entreprise",
+    "NAME"                     : "Nom",
+    "ABBREVIATION"             : "Abréviation",
+    "EMAIL"                    : "Email",
+    "PHONE"                    : "Telephone",
+    "LOCATION_ID"              : "ID Emplacement",
+    "CURRENCY"                 : "Monnaie",
+    "EXISTING_ENTERPRISES"     : "Entreprises Existantes",
+    "EDIT"                     : "Modifier",
+    "HELP_TEXT_1"              : "Gerer les entreprises de l'application A partir d'ici.  Pour l'instant effacement de l'entrerpise n'est pas prise en compte.",
+    "HELP_TEXT_2"              : "Modifier l'enterprise sélectionner",
+    "HELP_TEXT_3"              : "Ajouter une nouvelle entreprises",
+    "CONFIGURATION"            : "Configuration de l'Entreprise",
+    "LOCATION"                 : "Emplacement",
+    "CURRENCY_CASH_MANAGEMENT" : "Gestion de la Tresorerie",
+    "EDIT_ENTERPRISE"          : "Modifier Entreprise",
+    "REGISTERED_RELATIONS"     : "Relations Enregistrées",
+    "ACTIONS"                  : "Acts",
+    "CASH_ACCOUNT"             : "Compte de Tresorerie",
+    "BANK_ACCOUNT"             : "Compte Banque",
+    "ADD_CURRENCY_ACCOUNT"     : "Ajouter une Compte Monnaie",
+    "MANAGE_CASH_ACCOUNTS"     : "Gerer Le Compte de Caisse"
+  },
+
+  "CASH"               : {
+    "TITLE"            : "Caisse Auxillaire",
+    "DEFAULT_CASHBOX"  : "Caisse",
+    "HELP_TXT_1"       : "Cette module permettre des payer contre plusiers factures",
+    "HELP_TXT_2"       : "Trouver un Débiteur avec le ",
+    "DEBITOR_INVOICES" : "Factures Impaye de Débiteur",
+    "PAYMENT"          : "Paiement",
+    "TOTAL_DUE"        : "Total Débiter",
+    "TOTAL_PAYING"     : "Total Paye",
+    "OVERDUE"          : "Excedent",
+    "PAY_INVOICES"     : "Paye les Factures",
+    "CLEAR_SELECTION"  : "Recommencer",
+    "NO_EXCHANGE_RATE" : "Erreur                                                      : Taux d'Exchange n'existe pas!",
+    "OVER"             : {
+      "TITLE"          : "Justification De Payment",
+      "REASON"         : "Raison",
+      "DANGER"         : "Attention!",
+      "CUED"           : "Le debiteur doit cette montant",
+      "PAYMENT"        : "Le debiteur va payer cette montant",
+      "MIN"            : "Minimum 25 caracteres",
+      "JUSTIFICATION"  : "S'il vous plait, indiquer la cause du payment"
+    }
+  },
+
+  "CREDIT_NOTE" : {
+    "TITLE"        : "Note de Crédit",
+    "SALE_DETAILS" : "Détaille de la Facture",
+    "TOTAL_DEBIT"  : "Total Débiter",
+    "DESCRIPTION"  : "Description",
+    "SUBMIT"       : "Soumettre Note de Crédit"
+  },
+
+  "CURRENCY" : {
+    "TITLE"         : "Gestion des Monaies",
+    "ADD"           : "Ajouter un Monaies",
+    "HELP_TXT_1"    : "Gerer et ajouter des monies de l'application",
+    "DEFN"          : "Definitions",
+    "SYMBOL"        : "Signe",
+    "SEPARATOR"     : "Seperateur",
+    "DECIMAL"       : "Decimal",
+    "SYMBOL_TXT"    : "La signe qui va demarquer le monaie",
+    "SEPARATOR_TXT" : "Le delimiteur pour la place milles",
+    "DECIMAL_TXT"   : "Le delimiteur pour la place decimal",
+    "ACTIONS"       : "Actions",
+    "ACTION_TXT_1"  : "Editer la monaie",
+    "ACTION_TXT_2"  : "Soupplimer la monaie",
+    "CURRENCY_DEFN" : "Definition de la Monaie"
+  },
+
+  "TRIAL_BALANCE" : {
+    "TITLE"            : "Rapprochement",
+    "ERROR_TEXT"       : "Vous avez des Erreurs!",
+    "ACCOUNT"          : "Compte",
+    "BEFORE"           : "Avant",
+    "AFTER"            : "Apres",
+    "RESULTS"          : "Résultats",
+    "DEBIT"            : "Débit",
+    "SHOW"             : "Voire",
+    "HIDE"             : "Cacher",
+    "CREDIT"           : "Crédit",
+    "BTN_TEXT"         : "Poster au Grand Livre",
+    "TRANSACTIONS"     : "Transactions",
+    "ERRORS"           : "Erreurs",
+    "ERROR"            : "Erreur",
+    "DESCRIPTION"      : "Description",
+    "AFFECTED_ROWS"    : "Lignes",
+    "SIGNATURES"       : "Signées",
+    "SUMMARY"          : "Summaire",
+    "FINANCE_OFFICER"  : "Chef Finance",
+    "CHIEF_ACCOUNTANT" : "Chef Comptable",
+    "POST_TO_LEDGER"   : "Poster dans le grand livre"
+  },
+
+  "ERROR"                 : {
+    "ERR_IMBALANCE"       : "Imbalance Erreur",
+    "ERR_SQL"             : "SQL Erreur",
+    "ERR_ACCNT_LOCKED"    : "Erreur Compte Barre",
+    "ERR_ACCNT_NULL"      : "Erreur Compte NULL",
+    "ERR_INVALID_DATE"    : "Erreur Date Invalid",
+    "ERR_DEB_CRED_DNE"    : "Erreur Débiteur/Créditeur N'Existe Pas",
+    "ERR_EXPIRED_SESSION" : "Erreur Session Expirer"
+  },
+
+  "UNIT_TYPE" : {
+    "ADD" : "Ajouter",
+    "NEW" : "Nouveau",
+    "PLACEHOLDER" : "e.g. 'Boite'",
+    "REGISTERED" : "Enregistrées"
+  },
+
+  "SALE"               : {
+    "SALE"             : "Facture",
+    "TITLE"            : "Facturation",
+    "IMPORT"           : "Importer Perscription",
+    "UPDATE"           : "Mis à Jour les Defaults",
+    "SUBMIT"           : "Soumettre La Facture",
+    "ADD_LINE_ITEM"    : "Ajouter une Item",
+    "EDIT_SALE"        : "Editer la Facture",
+    "TOTAL"            : "Totale",
+    "PATIENT_COVERED"  : "Patient est couvert par la convention",
+    "APPLIES_GLOBALLY" : "Appliquer globalement",
+    "APPLIES_TO_ITEM"  : "Appliquer par item",
+    "TAB_LOCK_LINE"    : "Tabuler par ligne",
+    "TAB_LOCK_ITEM"    : "Tabuler par item",
+    "RECOVER"          : "Retrouver Vente",
+    "RECOVER_INFO"     : "[Retrouver Sale] C'est important de savoir que seulement les items de vente et les quantités sont retrouvés, les prix sont réinitialisés au prix par défaut des items",
+    "CHOOSE"           : "Choisir le service",
+    "IS_DISTRIBUTABLE" : "Distribuable via le stock ?",
+    "DISTRIBUTABLE"    : "Distribuable",
+    "NO_DISTRIBUTABLE" : "Non distribuable"
+  },
+
   "PATIENT_STANDING"     : {
     "TITLE"              : "Etat Financier du Patient",
     "PLACEHOLDER"        : "Chercher le patient ...",
@@ -328,7 +467,8 @@
     "END_MONTH"             : "Fin Mois",
     "HELP_TXT"              : "Crée et Gere l'année fiscale du system.",
     "NAME"                  : "Nom",
-    "LOCK"                  : "Bloquer Cette Année Fiscale",
+    "LOCKED"                : "Cette année fiscal est fermer",
+    "OPEN"                  : "Cette année fiscal est overt",
     "TOTAL_MONTH"           : "Total Months",
     "FIRST_VOUCHER"         : "Premier No Voucher",
     "LAST_VOUCHER"          : "Dernier No Voucher",
@@ -1175,15 +1315,16 @@
     "ACCOUNT_NUMBER" : "Numéro de Compte",
     "FIXED"          : "Fixe",
     "NO"             : "No.",
-    "TXT"            : "Texte",
+    "LABEL"          : "Label",
     "TYPE"           : "Type",
+    "IS_ASSET_TITLE" : "Est ce actif?",
     "VARIABLE"       : "Variable",
     "ACCOUNT_GROUP"  : "Groupe des Comptes (Comptes Titres)",
     "TITLE_ACCOUNT"  : "Comptes Titre",
     "ROOT_ACCOUNT"   : "Compte Parent",
     "IS_ASSET"       : "Est un actif",
     "IS_PASSIVE"     : "Est un passif",
-    "IS_NOTHING"     : "Rien"
+    "IS_NOTHING"     : "Autre"
   },
 
   "LOCATION" : {
@@ -1459,7 +1600,11 @@
     "PATIENT_ID"       : "ID Patient",
     "PLACEHOLDER"      : "Chercher un Patient",
     "SEARCH"           : "Chercher Par Nom",
-    "TITLE"            : "Trouver Malade"
+    "TITLE"            : "Trouver Malade",
+    "ENTER_DEBTOR_ID"  : "Chercher ID Débiteur",
+    "SEARCH"           : "Chercher Par Nom",
+    "PLACEHOLDER"      : "Chercher un Débiteur",
+    "PATIENT_ID"       : "ID Patient"
   },
 
   "EFIND" : {
@@ -2512,5 +2657,5 @@
     "ALERT"            : "Le module gestion des donateurs est un module qui a été conçu pour permettre l'administration des donateurs de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'un donateur ainsi que la suppression.",
     "DELETE_SUCCESS"   : "Suppression avec succès",
     "NO_DONOR"      : "Aucun donateur n'est enregistrée"
-  }    
+  }
 }
