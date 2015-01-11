@@ -1219,7 +1219,7 @@
   },
 
   "PATIENT_EDIT"             : {
-    "CHANGE_DEBITOR_GROUP"   : "Modifier Groupe de Débiteurs",
+    "RESTART_SEARCH"         : "Trouver un autre patient",
     "TITLE"                  : "Modifier Patient:",
     "UPDATE_FAILED"          : "Echec durant le mise à jour du patient!",
     "UPDATE_PATIENT"         : "Modifier Patient",

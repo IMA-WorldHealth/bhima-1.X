@@ -1102,7 +1102,7 @@
   },
 
   "PATIENT_EDIT"             : {
-    "CHANGE_DEBITOR_GROUP"   : "Change Debitor Group",
+    "RESTART_SEARCH"         : "Find another patient",
     "TITLE"                  : "Edit Patient Details:",
     "UPDATE_FAILED"          : "Patient update failed!",
     "UPDATE_PATIENT"         : "Update Patient",

@@ -189,9 +189,23 @@ angular.module('bhima.controllers')
       customValidation();
     });
 
+    // Restart the search
+    $scope.restartSearch = function () {
+      originalPatientData = null;
+      $scope.patient = { origin_location_id: null, current_location_id: null };
+      $scope.initialOriginLocation = null;
+      $scope.initialCurrentLocation = null;
+
+      // Make sure the patient query gets processed
+      if ('processed' in dependencies.patient) {
+	dependencies.patient.processed = false;
+      }
+
+      session.mode = 'search';
+    };
 
     // Define the function that switches to the edit mode
-    $scope.initialiseEditing = function initialiseEditing (selectedPatient) {
+    $scope.initialiseEditing = function initialiseEditing(selectedPatient) {
       if (selectedPatient && 'uuid' in selectedPatient && selectedPatient.uuid) {
         patientUuid = selectedPatient.uuid;
 	dependencies.patient.query.where[0] = 'patient.uuid=' + patientUuid;
