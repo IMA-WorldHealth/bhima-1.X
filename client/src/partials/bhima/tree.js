@@ -36,7 +36,7 @@ angular.module('bhima.controllers')
 
       return group.map(function (element) {
         collapsedModel.some(function (item) {
-          if (item.key === element.unit_id) {
+          if (item.key === element.id) {
             element.collapsed = item.collapsed;
             return true;
           }

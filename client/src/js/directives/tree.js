@@ -12,10 +12,8 @@ angular.module('bhima.directives')
       var nodeLabel = attrs.nodeLabel || 'name';
       var nodeChildren = attrs.nodeChildren || 'children';
 
-
       var template =
         '<ul>' +
-          //'<li data-ng-repeat=\'node in ' + treeModel + ' | orderBy:"name"\'>' +
           '<li data-ng-repeat=\'node in ' + treeModel + '\'>' +
             '<i name=\'{{node.' + nodeLabel + '}}\' ng-class="{\'glyphicon-folder-close collapsed\': node.' + nodeChildren + '.length && node.collapsed, \'glyphicon-folder-open expanded\': node.' + nodeChildren + '.length && !node.collapsed }" class=\'glyphicon\' data-ng-click=\'' + treeId + '.selectNodeHead(node)\'></i> ' +
             '<i class=\'normal glyphicon glyphicon-file\' data-ng-hide=\'node.' + nodeChildren + '.length\' data-ng-click=\'' + treeId + '.selectNodeHead(node)\'></i> ' +
@@ -24,31 +22,31 @@ angular.module('bhima.directives')
           '</li>' +
         '</ul>';
 
-      //Collapse by default
+      // Collapse by default
       if (scope.node) {
         scope.node.collapsed = true;
       }
 
-      //Assign select/ collapse methods - should only occur once
+      // Assign select/collapse methods - should only occur once
       if (treeId && treeModel) {
         if (attrs.angularTreeview) {
           scope[treeId] = scope[treeId] || {};
           scope[treeId].selectNodeHead = scope[treeId].selectNodeHead || function (selectedNode) {
 
             // Select nodes without children
-            if (!selectedNode.has_children) {
+            if (!selectedNode.children) {
               return scope[treeId].selectNodeLabel(selectedNode);
             }
 
             selectedNode.collapsed = !selectedNode.collapsed;
 
             // Update cache
-            cache.put(selectedNode.unit_id, {collapsed: selectedNode.collapsed});
+            cache.put(selectedNode.id, {collapsed: selectedNode.collapsed});
           };
           scope[treeId].selectNodeLabel = scope[treeId].selectNodeLabel || function (selectedNode) {
 
             // Open nodes with children
-            if (selectedNode.has_children) {
+            if (selectedNode.children) {
               return scope[treeId].selectNodeHead(selectedNode);
             }
 
