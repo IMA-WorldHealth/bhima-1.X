@@ -535,7 +535,7 @@ drop table if exists `patient_group`;
 create table `patient_group` (
   enterprise_id     smallint unsigned not null,
   uuid              char(36) not null,
-  price_list_uuid   char(36) not null,
+  price_list_uuid   char(36) null,
   subsidy_uuid      char(36) null,
   name              varchar(60) not null,
   note              text,
