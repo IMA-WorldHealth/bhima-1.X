@@ -14,7 +14,8 @@ angular.module('bhima.directives')
         required : true,
         query : {
           tables : {
-            patient : {columns : ['uuid', 'project_id', 'debitor_uuid', 'first_name', 'last_name', 'sex', 'dob', 'origin_location_id', 'reference']},
+            patient : {columns : ['uuid', 'project_id', 'debitor_uuid', 'first_name', 'last_name', 
+				  'sex', 'dob', 'origin_location_id', 'reference']},
             project : { columns : ['abbr'] },
             debitor : { columns : ['text']},
             debitor_group : { columns : ['account_id', 'price_list_uuid', 'is_convention', 'locked']}
@@ -37,7 +38,7 @@ angular.module('bhima.directives')
       };
 
       scope.findPatient = {
-        state : 'id',
+        state : 'name',
         submitSuccess : false,
         
         // #Sorry - string hack
