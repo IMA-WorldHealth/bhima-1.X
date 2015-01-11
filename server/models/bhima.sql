@@ -60,7 +60,6 @@ create table `unit` (
   `key`           varchar(70) not null,
   `description`   text not null,
   `parent`        smallint default 0,
-  `has_children`  boolean not null default 0,
   `url`           tinytext,
   `path`          tinytext,
   primary key (`id`)
