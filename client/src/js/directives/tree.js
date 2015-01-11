@@ -33,8 +33,10 @@ angular.module('bhima.directives')
           scope[treeId] = scope[treeId] || {};
           scope[treeId].selectNodeHead = scope[treeId].selectNodeHead || function (selectedNode) {
 
+            var hasChildren = selectedNode.children && selectedNode.children.length > 0;
+
             // Select nodes without children
-            if (!selectedNode.children) {
+            if (!hasChildren) {
               return scope[treeId].selectNodeLabel(selectedNode);
             }
 
@@ -45,8 +47,11 @@ angular.module('bhima.directives')
           };
           scope[treeId].selectNodeLabel = scope[treeId].selectNodeLabel || function (selectedNode) {
 
+            var hasChildren = selectedNode.children && selectedNode.children.length > 0;
+
+
             // Open nodes with children
-            if (selectedNode.children) {
+            if (hasChildren) {
               return scope[treeId].selectNodeHead(selectedNode);
             }
 
