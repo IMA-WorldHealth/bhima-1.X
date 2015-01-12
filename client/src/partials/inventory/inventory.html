@@ -2,17 +2,26 @@
   {{ "INVENTORY.MAIN.TITLE" | translate }}
 </header>
 
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li class="active">{{ "INVENTORY.MAIN.TITLE" | translate }}</li>
+    </ol>
+  </div>
+</nav>
+
 <main>
   <div class="row">
     <div class="col-xs-12">
-      <div class="panel panel-primary"> 
+      <div class="panel panel-default"> 
         <div class="panel-heading">
           <span class="glyphicon glyphicon-cog"></span> {{ "INVENTORY.MAIN.OPTIONS" | translate }}
         </div>
         <div class="panel-body">
           <ul class="plain-list">
             <li ng-repeat="item in config">
-              <span class="glyphicon {{ item.ico }}"></span>
+              <span class="glyphicon {{ item.ico }} asterisk-green"></span>
               <a class="menu-item" ng-click="loadPath(item)">{{ item.key | translate }}</a>
             </li>
           </ul>
