@@ -41,11 +41,12 @@
           type="text"
           ng-model="session.requestId"
           placeholder="Account ID"
-          typeahead="account.id as formatAccount(account) for account in session.accounts.data | filter:$viewValue | limitTo:10" typeahead-template-url="AccountList.html"
-          typeahead-on-select="requestAccount(session.requestID)"
+          typeahead="account.id as formatAccount(account) for account in session.accounts.data | filter:$viewValue | limitTo:10" 
+          typeahead-template-url="AccountList.html"
+          typeahead-on-select="requestAccount()"
           >
         <span class="input-group-btn">
-          <button ng-click="requestAccount(session.requestId)" class="btn btn-default btn-sm square">{{ "FORM.SUBMIT" | translate }}</button>
+          <button ng-click="requestAccount(session.requestId)" class="btn-sm-bhima btn-default square">{{ "FORM.SUBMIT" | translate }}</button>
         </span>
       </div>      
     </div>
