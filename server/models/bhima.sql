@@ -590,6 +590,7 @@ create table `patient` (
   `email`             varchar(40),
   `address_1`         varchar(100),
   `address_2`         varchar(100),
+  `notes`             text,
   `renewal`           boolean not null default 0,
   `origin_location_id`        char(36) not null,
   `current_location_id`       char(36) not null,
