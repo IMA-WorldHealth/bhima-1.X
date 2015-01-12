@@ -20,7 +20,6 @@ client/dest/
 misc/migrate/out/
 
 server/plugins/mail/conf/address_list.json
-utilities/migrate/*
 
 # ignore build tool generated files
 /*app/js/controllers/controllers.js*/
