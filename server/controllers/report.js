@@ -170,7 +170,7 @@ function accountStatement(params){
 
       // Ensure we found an account
       if (!report.account.result) {
-        return deferred.reject(new Error('Unkown account ' + params.accountId));
+        return deferred.reject(new Error('Unknown account ' + params.accountId));
       }
 
       console.log('packageResponse :::', packageResponse);

@@ -132,7 +132,8 @@
         },
         "EXPENSE" : {
             "TITLE" : "Expenses Reports",
-            "EMPTY_REPORT" : "No record found !"
+            "EMPTY_REPORT" : "No record found !",
+            "TOTAL_EXPENSE" : "Total Expenses"
         }
     }
   },
@@ -258,7 +259,6 @@
   },
 
   "ERROR"                 : {
-    "HTTP_STATUS_CODE" : "HTTP Status Code",
     "ERR_IMBALANCE"       : "Imbalancing Error",
     "ERR_SQL"             : "SQL Error",
     "ERR_ACCNT_LOCKED"    : "Locked Account Error",
@@ -349,10 +349,6 @@
     "CONFIG_CLOSING_ACCOUNT"  : "Choose the closing balance account",
     "CLOSING_ACCOUNT"         : "Closing Account",
     "CLOSING_ACCOUNT_MESSAGE" : "The new fiscal year is next in a series.  Please specify a balance account which will recieve the balances of the enterprise's income and expense accounts at the close of the previous fiscal year.",
-    "CLOSE_NOTICE"          : "Close notice for previous years",
-    "CLOSE_PREVIOUS_YEAR"   : "Reminder: close previous fiscal years",
-    "CLOSE_PREVIOUS_YEAR_MESSAGE" : "A previous fiscal year exists.  You must close the last fiscal year to properly carry forward balances.  Any reports generated before closing the previous fiscal year will be inaccurate.",
-    "ACCEPT"                : "I understand",
     "SUBMIT_YEAR"           : "Submit the fiscal year",
     "PREVIOUS_YEAR"         : "Previous fiscal year",
     "CREATE_SUCCESS"        : "Fiscal year creation successful",
@@ -909,7 +905,7 @@
     "STOCK_STATUS"              : "Stock Status",
     "FONCTION"                  : "Job titles management",
     "OPERATING_ACCOUNT"         : "Operating Account",
-    "SERVICE_EXPLOITATION"      : "Exploitation per Service",
+    "SERVICE_EXPLOITATION"      : "Services Status",
     "GLOBAL_TRANSACTION"        : "Account Movement",
     "COTISATION_MANAGEMENT"     : "Cotization management",
     "EMPLOYEE_STANDING"         : "Employee Standing Report",
@@ -1106,7 +1102,7 @@
   },
 
   "PATIENT_EDIT"             : {
-    "CHANGE_DEBITOR_GROUP"   : "Change Debitor Group",
+    "RESTART_SEARCH"         : "Find another patient",
     "TITLE"                  : "Edit Patient Details:",
     "UPDATE_FAILED"          : "Patient update failed!",
     "UPDATE_PATIENT"         : "Update Patient",
@@ -1179,16 +1175,17 @@
     "ACCOUNT_TYPE"   : "Account Type",
     "ACCOUNT_NUMBER" : "Account Number",
     "FIXED"          : "Fixed",
+    "LABEL"          : "Label",
     "NO"             : "No.",
-    "TXT"            : "Text",
     "TYPE"           : "Type",
+    "IS_ASSET_TITLE" : "Asset?",
     "VARIABLE"       : "Variable",
     "ACCOUNT_GROUP"  : "Account Group (Title Account)",
     "TITLE_ACCOUNT"  : "Title Account",
     "ROOT_ACCOUNT"   : "Root Account",
     "IS_ASSET"       : "Is asset",
-    "IS_PASSIVE"     : "Est un passif",
-    "IS_NOTHING"     : "Nothing"        
+    "IS_PASSIVE"     : "Is passive",
+    "IS_NOTHING"     : "Other"
   },
 
   "LOCATION"                : {
@@ -2430,7 +2427,7 @@
   },
 
   "SERVICE_EXPLOITATION" : {
-    "TITLE"              : "Exploitation per service"
+    "TITLE"              : "Service Income/Expense Summary"
   },
 
   "SALARY_PAYMENT" : {
