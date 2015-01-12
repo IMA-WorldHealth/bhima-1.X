@@ -56,6 +56,7 @@ update account as a JOIN account as b on a.id = b.id set a.account_type_id = 2 w
 
 -- set up income accounts as OHADA
 update account as a JOIN account as b on a.id = b.id set a.account_type_id = 1 where b.account_type_id != 3 and b.account_number like '6%';
+
 -- set up expense accounts as OHADA
 update account as a JOIN account as b on a.id = b.id set a.account_type_id = 4 where b.account_type_id != 3 and b.account_number like '7%';
 -- Updates to fiscal year data
