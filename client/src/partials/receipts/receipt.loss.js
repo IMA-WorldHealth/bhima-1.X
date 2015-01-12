@@ -14,9 +14,18 @@ angular.module('bhima.controllers')
             consumption : { columns : ['quantity', 'date', 'uuid'] },
             consumption_loss : { columns : ['document_uuid'] },
             stock : {columns : ['tracking_number', 'lot_number', 'entry_date']},
-            inventory : {columns : ['text', 'purchase_price']}
+            inventory : {columns : ['text', 'purchase_price']},
+            purchase : { columns : ['purchase_date']},
+            purchase_item : { columns : ['unit_price']}
           },
-          join : ['consumption.uuid=consumption_loss.consumption_uuid', 'consumption.tracking_number=stock.tracking_number', 'stock.inventory_uuid=inventory.uuid']
+          join : [
+            'consumption.uuid=consumption_loss.consumption_uuid', 
+            'consumption.tracking_number=stock.tracking_number', 
+            'stock.inventory_uuid=inventory.uuid',
+            'stock.purchase_order_uuid=purchase.uuid', 
+            'purchase.uuid=purchase_item.purchase_uuid',
+            'purchase_item.inventory_uuid=inventory.uuid'
+          ]
       }
     };
 
@@ -29,7 +38,7 @@ angular.module('bhima.controllers')
         model.common.location = values.location.data.pop();
         model.common.InvoiceId = values.invoiceId;
         model.common.enterprise = values.enterprise.data.pop();
-        dependencies.loss.query.where =  ['consumption.document_id=' + values.invoiceId];
+        dependencies.loss.query.where =  ['consumption_loss.document_uuid=' + values.invoiceId];
         validate.process(dependencies)
         .then(buildInvoice)
         .catch(function (err){

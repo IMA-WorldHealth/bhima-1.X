@@ -2006,11 +2006,14 @@
         "SUCCESS"                   : "Opération avec succès"
     },            
     "LOSS"     : {
-      "KEY"    : "Perte stock",
-      "TITLE"  : "Perte stock",
-      "NO_DEPOT" : "Pas de dépôt",
+      "KEY"               : "Perte stock",
+      "TITLE"             : "Perte stock",
+      "NO_DEPOT"          : "Pas de dépôt",
       "LOSS_GENERAL_INFO" : "Sommaire",
-      "SUBMIT"              : "Soumettre"
+      "SUBMIT"            : "Soumettre",
+      "LOSS_RECORDS"      : "Rapport de pertes de stock",
+      "NO_LOSS_RECORDS"   : "Aucune perte enregistrée",
+      "SEE_RECEIPT"       : "Voir le reçu"
     },
     "MOVEMENT" : {
       "KEY"    : "Movements des Stock",
