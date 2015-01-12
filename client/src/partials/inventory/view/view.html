@@ -3,6 +3,14 @@
 </header>
 
 <nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li class="active"><a href="#/inventory/">{{ "INVENTORY.MAIN.TITLE" | translate }}</a></li>
+      <li>{{ "INVENTORY.REGISTER.VIEW" | translate }}</li>
+    </ol>
+  </div>
+
   <div class="pull-left dropdown">
     <button class="btn btn-sm dropdown-toggle btn-default">
       <span class="glyphicon glyphicon-signal"></span> {{ "INVENTORY_VIEW.GROUP_BY" | translate }}
