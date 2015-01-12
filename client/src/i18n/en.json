@@ -1460,16 +1460,12 @@
     "NO_DISTRIBUTABLE" : "Not distributable"
   },
 
-  "FIND"               : {
-    "ENTER_PATIENT_ID" : "Find by Patient ID",
-    "PATIENT_ID"       : "Patient ID",
-    "PLACEHOLDER"      : "Search patient name",
-    "SEARCH"           : "Find by Name",
-    "TITLE"            : "Find a patient",
-    "ENTER_DEBTOR_ID"  : "Enter Debitor ID",
-    "SEARCH"           : "Search",
-    "PLACEHOLDER"      : "Search debitor",
-    "PATIENT_ID"       : "Patient ID"
+  "FIND"                : {
+    "PATIENT_ID"        : "Patient ID",
+    "PATIENT_NAME"      : "Patient name",
+    "SEARCH_NAME"       : "Search by Name",
+    "SEARCH_PATIENT_ID" : "Search by Patient ID",
+    "TITLE"             : "Find a patient"
   },
 
   "EFIND" : {
