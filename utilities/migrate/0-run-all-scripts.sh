@@ -19,3 +19,5 @@ sh 3-drop-sym-tables.sh $USER $PASS $DB
 
 echo "Running upgrade scripts on database."
 sh 4-upgrade-to-v1.sh $USER $PASS $DB
+
+echo "Completed migration."
