@@ -4,7 +4,7 @@ Bhima Models
 This document describes the contents of the `/models` directory.
 
 The directory contents are listed below:
-```bash
+
 - models/
   - base.sql
   - bhima.sql
@@ -12,9 +12,8 @@ The directory contents are listed below:
   - generic.sql
   - README      # This README
   - updates/
-    - mod-1.sql 
-    # etc ...
-```
+    - mod-1.sql
+    # ...etc ...
 
 #### bhima.sql
 
@@ -29,13 +28,13 @@ one from scratch if executed multiple times.
 application is currently undergoing testing in a remote hospital.
 Data from that test is included in `base.sql` to avoid repetative tasks,
 such as creating enterprise, projects, wards, fiscal years, and so on
-for ever schema change.
+for every schema change.
 
 #### stock.sql (Deprecated)
 
 `stock.sql` is a deprecated file.  It's purpose is now overshadowed by
-`base.sql`; however, it is often still used for addition to the database
-on the fly.  Historically, it filled in stock tables while inventory 
+`base.sql`; however, it is often still used for additions to the database
+on the fly.  Historically, it filled in stock tables while inventory
 management features in BHIMA were under development.
 
 #### build.sql
