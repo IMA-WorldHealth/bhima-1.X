@@ -189,22 +189,17 @@ angular.module('bhima.controllers')
       customValidation();
     });
 
-    // Restart the search
+    // Function to switch back to search mode (and reset the search)
     $scope.restartSearch = function () {
       originalPatientData = null;
       $scope.patient = { origin_location_id: null, current_location_id: null };
       $scope.initialOriginLocation = null;
       $scope.initialCurrentLocation = null;
-
-      // Make sure the patient query gets processed
-      if ('processed' in dependencies.patient) {
-	dependencies.patient.processed = false;
-      }
-
+      validate.clear(dependencies, ['patient']); // So future patient query gets processed
       session.mode = 'search';
     };
 
-    // Define the function that switches to the edit mode
+    // Function to switch to the edit mode
     $scope.initialiseEditing = function initialiseEditing(selectedPatient) {
       if (selectedPatient && 'uuid' in selectedPatient && selectedPatient.uuid) {
         patientUuid = selectedPatient.uuid;
@@ -214,7 +209,6 @@ angular.module('bhima.controllers')
 	session.mode = 'edit';
       }
     };
-
 
     // Main function to save the updated patient data to the database
     $scope.updatePatient = function () {
@@ -260,7 +254,6 @@ angular.module('bhima.controllers')
       session.mode = 'edit';
     };
 
-
     // Basic setup function when the models are loaded
     function startup (models) {
       var patient = $scope.patient = models.patient.data[0];
@@ -279,6 +272,7 @@ angular.module('bhima.controllers')
         .replace('<min>', minYear)
 	.replace('<max>', maxYear);
     }
+
 
     // Register this controller
     appstate.register('enterprise', function (enterprise) {
