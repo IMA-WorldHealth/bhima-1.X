@@ -174,9 +174,10 @@ angular.module('bhima.directives')
       }
 
       function resetSearch() {
-        scope.findPatient.valid = false;
+        scope.findPatient.valid = null;
         scope.findPatient.submitSuccess = false;
-	scope.findPatient.state = 'name';
+	scope.findPatient.selectedDebtor = null;
+	scope.findPatient.debtorId = null;
         scope.findPatient.debtor = '';
       }
 
