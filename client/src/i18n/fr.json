@@ -1220,7 +1220,7 @@
 
   "PATIENT_EDIT"             : {
     "RESTART_SEARCH"         : "Trouver un autre patient",
-    "TITLE"                  : "Modifier Patient:",
+    "PAGE_TITLE"             : "Modifier Patient:",
     "UPDATE_FAILED"          : "Echec durant le mise à jour du patient!",
     "UPDATE_PATIENT"         : "Modifier Patient",
     "UPDATE_SUCCESS"         : "Patient modifier avec succès"
@@ -1262,8 +1262,9 @@
     "SPOUSE"                   : "Nom de l'epoux(se)",
     "SPOUSE_EMPLOYER"          : "Employeur (epoux(se))",
     "SPOUSE_PROFESSION"        : "Profession (epoux(se))",
-    "TITLE"                    : "Enregistrement Patient",
+    "PAGE_TITLE"               : "Enregistrement Patient",
     "TITLE"                    : "Titre",
+    "NOTES"                    : "Notes",
     "VIEW_PATIENT_RECORDS"     : "Voire Tous les enregistrements",
     "YES"                      : "Oui",
     "YOB"                      : "Année de Naissance"
