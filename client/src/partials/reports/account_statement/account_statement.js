@@ -24,6 +24,7 @@ angular.module('bhima.controllers')
     };
     session.config.dateFrom = new Date();
     session.config.dateTo = new Date();
+    session.selectedRequestId = null;
 
     dependencies.accounts = {
       query : {
@@ -41,20 +42,33 @@ angular.module('bhima.controllers')
       .then(init, handleError);
     });
 
-    function init (models) {
+    function init(models) {
       angular.extend(session, models);
     }
 
-    function handleError (err) {
+    function handleError(err) {
        messenger.danger($translate.instant('REPORT.ACCOUNT_STATEMENT.CANNOT_FIND_ACCOUNT') + ' ' + session.requestId);      
     }
 
-    function formatAccount (account) {
+    function formatAccount(account) {
+      if (account) {
+	if (!isNaN(account)) {
+	  var data = session.accounts.data.filter(function (obj) { 
+	    return obj.id === session.requestId; 
+	  })[0];
+	  session.selectedRequestId = session.requestId;
+	  session.requestId = data.account_txt + ' [' + data.account_number + ']';
+	}
+      }
       return account ? [account.account_txt].join(' ') : '';
     }
 
-    function requestAccount(accountId) {
-      if (accountId) { fetchReport(accountId); }
+    function requestAccount() {
+      if (session.selectedRequestId) { 
+	fetchReport(session.selectedRequestId); 
+	session.selectedRequestId = null;
+	session.requestId = null;
+      }
     }
 
     function fetchReport(accountId) {
@@ -86,7 +100,6 @@ angular.module('bhima.controllers')
 
     function initialise(model) {
       $scope.report = model.data;
-      console.log($scope.report);
       $scope.report.uuid = uuid();
     }
 
@@ -130,9 +143,9 @@ angular.module('bhima.controllers')
     //   throw error;
     // }
 
-    
 
     function print () { $window.print(); }
+
     $scope.print = print;
     $scope.requestAccount = requestAccount;
     $scope.formatAccount = formatAccount;
