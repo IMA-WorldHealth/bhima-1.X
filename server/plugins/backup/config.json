@@ -1,0 +1,20 @@
+{
+  "targets" : [
+    "/home/jniles/code/bhima/access.log"
+  ],
+  "mysqldump" :  {
+    "credentials" : {
+      "user" : "bhima",
+      "password" : "Mbote2001",
+      "database" : "bhima"
+    },
+    "args" : [
+      "--skip-triggers",
+      "--add-drop-database",
+      "--single-transaction",
+      "--skip-comments",
+      "--complete-insert"
+    ]
+  },
+  "destination" : "/home/jniles/backup/"
+}
