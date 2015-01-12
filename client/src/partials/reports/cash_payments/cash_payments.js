@@ -98,7 +98,7 @@ angular.module('bhima.controllers')
         $timeout(function () {
           convert();
           session.searching = false;
-        }, exchange.hasExchange() ? 0 : 100);
+        });
       });
 
     }
@@ -117,16 +117,28 @@ angular.module('bhima.controllers')
       });
     });
 
+    appstate.register('enterprise', function (enterprise) {
+      $scope.enterprise = enterprise; 
+    });    
+
     function convert () {
       var s = 0;
+      var sum_convert = 0;
       $scope.payments.forEach(function (payment) {
-        if (payment.currency_id === session.currency) {
-          s += payment.cost;
+        if($scope.enterprise.currency_id !== payment.currency_id){
+          var convert = payment.cost / exchange.rate(payment.cost, payment.currency_id,new Date());  
+          s += convert;
         } else {
-          s += payment.cost / exchange.rate(payment.cost, payment.currency_id, payment.date);
+          s += payment.cost; 
+        }
+
+        if ($scope.enterprise.currency_id === session.currency) {
+          sum_convert = s; 
+        } else {
+          sum_convert = s * exchange.rate(payment.cost,session.currency,new Date());
         }
       });
-      session.sum = s;
+      session.sum = sum_convert;
     }
 
     $scope.$watch('payments', function () {

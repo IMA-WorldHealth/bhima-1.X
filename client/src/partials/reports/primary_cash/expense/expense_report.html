@@ -53,7 +53,7 @@
           <tr ng-if="!session.model.records.data.length">
             <td colspan="6">
               <span class="glyphicon glyphicon-stats"></span>
-              {{ "PRIMARY_CASH.REPORT.EXPENSE.EMPTY_REPORT" | translate }}
+              {{ "PRIMARY_CASH.REPORT.EXPENSE.TOTAL_EXPENSE" | translate }}
             </td>
           </tr>
         </tbody>
@@ -73,7 +73,7 @@
 
       <td style="width:30%;">
         <span style="margin-right: 20px;">
-          <span class="glyphicon glyphicon-money" style="color: #428bca"></span> Total D&eacute;pense(s) : <b ng-bind-html="session.sum_credit | intlcurrency:session.currency"></b>
+          <span class="glyphicon glyphicon-money" style="color: #428bca"></span>  {{ "PRIMARY_CASH.REPORT.EXPENSE.TOTAL_EXPENSE" | translate }} : <b ng-bind-html="session.sum_credit | intlcurrency:session.currency"></b>
         </span>
       </td>
 
