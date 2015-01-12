@@ -118,13 +118,15 @@ angular.module('bhima.controllers')
 
     function setConfiguration (pp) {
       if(pp){
-        cache.put('paiement_period', pp);
-        session.pp = pp;
-        session.configured = true;
-        session.complete = true;
-        session.available = true;
-        init(session.model);
-      }            
+        cache.put('paiement_period', pp)
+        .then(function () {
+          session.pp = pp;
+          session.configured = true;
+          session.complete = true;
+          session.available = true;
+          init(session.model);
+        });
+      }           
     }
 
     function getCashAccountID (currency_id) {
