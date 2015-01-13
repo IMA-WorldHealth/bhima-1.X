@@ -185,13 +185,14 @@ angular.module('bhima.controllers')
       if (items.length > 0) {
         items.forEach(function (item) {
           if($scope.enterprise.currency_id !== item.currency_id){
-            item.credit /= exchange.rate(item.credit,item.currency_id,new Date()); 
-            item.debit /= exchange.rate(item.debit,item.currency_id,new Date());
+            sCredit += item.credit / exchange.rate(item.credit,item.currency_id,new Date()); 
+            sDebit += item.debit / exchange.rate(item.debit,item.currency_id,new Date());
+          } else {
+            sCredit += item.credit;
+            sDebit += item.debit;
           }
           
-          sCredit += item.credit;
-          sDebit += item.debit;
-
+          
           if($scope.enterprise.currency_id === $scope.model.c){
             $scope.somCredit = sCredit;
             $scope.somDebit = sDebit;
