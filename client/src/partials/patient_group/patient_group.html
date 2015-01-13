@@ -55,14 +55,14 @@
             <div class="form-group required">
               <label class="col-xs-2 control-label">{{ "COLUMNS.NAME" | translate }}</label>
               <div class="col-xs-10">
-                <input class="form-bhima" ng-model="register.name">
+                <input class="form-bhima" ng-model="register.name" required>
               </div>
             </div>
 
             <div class="form-group required">
               <label class="col-xs-2 control-label">{{ "PATIENT_GRP.PRICE_LIST" | translate }}</label>
               <div class="col-xs-10">
-                <select class="form-bhima" ng-model="register.price_list_uuid" ng-options="list.uuid as list.title for list in list.data" required>
+                <select class="form-bhima" ng-model="register.price_list_uuid" ng-options="list.uuid as list.title for list in list.data">
                   <option value="">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
                 </select>
               </div>
