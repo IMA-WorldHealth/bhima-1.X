@@ -300,123 +300,6 @@
     "TSHIKAJI"          : "TSHIKAJI"
   },
 
-  "ENTERPRISE"                 : {
-    "TITLE"                    : "Gestion de l'Entreprise",
-    "REGISTERED_ENTERPRISE"    : "Entreprises Enregistrées",
-    "NEW"                      : "Nouvelle Entreprise",
-    "NAME"                     : "Nom",
-    "ABBREVIATION"             : "Abréviation",
-    "EMAIL"                    : "Email",
-    "PHONE"                    : "Telephone",
-    "LOCATION_ID"              : "ID Emplacement",
-    "CURRENCY"                 : "Monnaie",
-    "EXISTING_ENTERPRISES"     : "Entreprises Existantes",
-    "EDIT"                     : "Modifier",
-    "HELP_TEXT_1"              : "Gerer les entreprises de l'application A partir d'ici.  Pour l'instant effacement de l'entrerpise n'est pas prise en compte.",
-    "HELP_TEXT_2"              : "Modifier l'enterprise sélectionner",
-    "HELP_TEXT_3"              : "Ajouter une nouvelle entreprises",
-    "CONFIGURATION"            : "Configuration de l'Entreprise",
-    "LOCATION"                 : "Emplacement",
-    "CURRENCY_CASH_MANAGEMENT" : "Gestion de la Tresorerie",
-    "EDIT_ENTERPRISE"          : "Modifier Entreprise",
-    "REGISTERED_RELATIONS"     : "Relations Enregistrées",
-    "ACTIONS"                  : "Acts",
-    "CASH_ACCOUNT"             : "Compte de Tresorerie",
-    "BANK_ACCOUNT"             : "Compte Banque",
-    "ADD_CURRENCY_ACCOUNT"     : "Ajouter une Compte Monnaie",
-    "MANAGE_CASH_ACCOUNTS"     : "Gerer Le Compte de Caisse"
-  },
-
-  "CASH"               : {
-    "TITLE"            : "Caisse Auxillaire",
-    "DEFAULT_CASHBOX"  : "Caisse",
-    "HELP_TXT_1"       : "Cette module permettre des payer contre plusiers factures",
-    "HELP_TXT_2"       : "Trouver un Débiteur avec le ",
-    "DEBITOR_INVOICES" : "Factures Impaye de Débiteur",
-    "PAYMENT"          : "Paiement",
-    "TOTAL_DUE"        : "Total Débiter",
-    "TOTAL_PAYING"     : "Total Paye",
-    "OVERDUE"          : "Excedent",
-    "PAY_INVOICES"     : "Paye les Factures",
-    "CLEAR_SELECTION"  : "Recommencer",
-    "NO_EXCHANGE_RATE" : "Erreur                                                      : Taux d'Exchange n'existe pas!",
-    "OVER"             : {
-      "TITLE"          : "Justification De Payment",
-      "REASON"         : "Raison",
-      "DANGER"         : "Attention!",
-      "CUED"           : "Le debiteur doit cette montant",
-      "PAYMENT"        : "Le debiteur va payer cette montant",
-      "MIN"            : "Minimum 25 caracteres",
-      "JUSTIFICATION"  : "S'il vous plait, indiquer la cause du payment"
-    }
-  },
-
-  "CREDIT_NOTE" : {
-    "TITLE"        : "Note de Crédit",
-    "SALE_DETAILS" : "Détaille de la Facture",
-    "TOTAL_DEBIT"  : "Total Débiter",
-    "DESCRIPTION"  : "Description",
-    "SUBMIT"       : "Soumettre Note de Crédit"
-  },
-
-  "CURRENCY" : {
-    "TITLE"         : "Gestion des Monaies",
-    "ADD"           : "Ajouter un Monaies",
-    "HELP_TXT_1"    : "Gerer et ajouter des monies de l'application",
-    "DEFN"          : "Definitions",
-    "SYMBOL"        : "Signe",
-    "SEPARATOR"     : "Seperateur",
-    "DECIMAL"       : "Decimal",
-    "SYMBOL_TXT"    : "La signe qui va demarquer le monaie",
-    "SEPARATOR_TXT" : "Le delimiteur pour la place milles",
-    "DECIMAL_TXT"   : "Le delimiteur pour la place decimal",
-    "ACTIONS"       : "Actions",
-    "ACTION_TXT_1"  : "Editer la monaie",
-    "ACTION_TXT_2"  : "Soupplimer la monaie",
-    "CURRENCY_DEFN" : "Definition de la Monaie"
-  },
-
-  "TRIAL_BALANCE" : {
-    "TITLE"            : "Rapprochement",
-    "ERROR_TEXT"       : "Vous avez des Erreurs!",
-    "ACCOUNT"          : "Compte",
-    "BEFORE"           : "Avant",
-    "AFTER"            : "Apres",
-    "RESULTS"          : "Résultats",
-    "DEBIT"            : "Débit",
-    "SHOW"             : "Voire",
-    "HIDE"             : "Cacher",
-    "CREDIT"           : "Crédit",
-    "BTN_TEXT"         : "Poster au Grand Livre",
-    "TRANSACTIONS"     : "Transactions",
-    "ERRORS"           : "Erreurs",
-    "ERROR"            : "Erreur",
-    "DESCRIPTION"      : "Description",
-    "AFFECTED_ROWS"    : "Lignes",
-    "SIGNATURES"       : "Signées",
-    "SUMMARY"          : "Summaire",
-    "FINANCE_OFFICER"  : "Chef Finance",
-    "CHIEF_ACCOUNTANT" : "Chef Comptable",
-    "POST_TO_LEDGER"   : "Poster dans le grand livre"
-  },
-
-  "ERROR"                 : {
-    "ERR_IMBALANCE"       : "Imbalance Erreur",
-    "ERR_SQL"             : "SQL Erreur",
-    "ERR_ACCNT_LOCKED"    : "Erreur Compte Barre",
-    "ERR_ACCNT_NULL"      : "Erreur Compte NULL",
-    "ERR_INVALID_DATE"    : "Erreur Date Invalid",
-    "ERR_DEB_CRED_DNE"    : "Erreur Débiteur/Créditeur N'Existe Pas",
-    "ERR_EXPIRED_SESSION" : "Erreur Session Expirer"
-  },
-
-  "UNIT_TYPE" : {
-    "ADD" : "Ajouter",
-    "NEW" : "Nouveau",
-    "PLACEHOLDER" : "e.g. 'Boite'",
-    "REGISTERED" : "Enregistrées"
-  },
-
   "PATIENT_STANDING"     : {
     "TITLE"              : "Etat Financier du Patient",
     "PLACEHOLDER"        : "Chercher le patient ...",
@@ -595,7 +478,7 @@
     "ROWS"                  : "Lignes",
     "BALANCED"              : "Balance",
     "TOTAL_DEBIT"           : "Débit Totale",
-    "PATIENT_GROUP"         : "Groupe des patients",    
+    "PATIENT_GROUP"         : "Rapport de groupe des patients",    
     "TOTAL_CREDIT"          : "Crédit Totale",
     "BALANCE"               : "Balance",
     "INDIVIDUAL"            : "Individuel",
@@ -607,7 +490,6 @@
     "CHOICE"                : "Sélectionner Un",
     "GENERAL_LEDGER_REPORT" : "Rapport Grand Livre",
     "GENERAL_LEDGER"        : "Grand Livre",
-    "GENERATED_ON"          : "Généré sur",
     "GROUPING"              : "Groupement",
     "GROUP_ROWS"            : "Groupement des Lignes",
     "COLUMNS"               : "Columns",
@@ -621,8 +503,8 @@
     "VISIBLE_PERIODS"       : "Periods Visible",
     "CHOOSE_PERIOD"         : "Choissir Period",
     "INCOME_EXPENSE_REPORT" : "Rapport des Revenues et Dépense",
+    "GENERATED_ON"          : "Généré sur",
     "TRANSACTIONS_BY_ACCOUNT" : "Transactions par Compte",
-    "PATIENT_GROUP"         : "Rapport de groupe des patients",
     "TOTAL" : "Total",
     "ACCOUNT_STATEMENT"     : {
       "TITLE"               : "Rapport sommaire des comptes",
@@ -1033,7 +915,7 @@
     "UPDATE_STOCK"              : "Mettre à Jour les Stocks",
     "CREDIT_NOTE"               : "Note de Crédit",
     "CONFIRM_PURCHASE_ORDER"    : "Confirmation ordre d'achats"
-},
+  },
 
   "RUBRIC_PAYROLL"       : {
     "TITLE"              : "Rubriques Payroll",
@@ -1059,7 +941,7 @@
     "NOT_EMPTY"          : "ABR. ne peut être vide",
     "NOT_SUP4"           : "Ne peut avoir plus de 4 caractères",
     "NOT_SUP_MAXDAY"     : "Ne peut être supérieur au total des jours ouvrables"
-},
+  },
 
   "DISTRIBUTION" : {
     "TITLE"                 : "Distribution des Médicaments aux malades",
@@ -1394,7 +1276,7 @@
     "OVERDUE"          : "Excedent",
     "PAY_INVOICES"     : "Paye les Factures",
     "CLEAR_SELECTION"  : "Recommencer",
-    "NO_EXCHANGE_RATE" : "Erreur : Taux d'Exchange n'existe pas!",
+    "NO_EXCHANGE_RATE" : "Erreur                                                      : Taux d'Exchange n'existe pas!",
     "OVER"             : {
       "TITLE"          : "Justification De Payment",
       "REASON"         : "Raison",
@@ -1405,6 +1287,7 @@
       "JUSTIFICATION"  : "S'il vous plait, indiquer la cause du payment"
     }
   },
+
   "CREDIT_NOTE" : {
     "TITLE"        : "Note de Crédit",
     "SALE_DETAILS" : "Détaille de la Facture",
@@ -1553,7 +1436,6 @@
         "TITLE"         : "Voir les ordres d'achats"
     }
   },
-
 
   "SALE"               : {
     "SALE"             : "Facture",
@@ -2213,11 +2095,10 @@
     "NEW_OFFDAY"      : "Nouveau Jour férié",
     "SAVE_SUCCES"     : "Enregistrement avec succès",
     "UPDATE_SUCCES"   : "Mis à jour avec succès",
-    "UPDATE"          : "Modifier un jour férié",    
+    "UPDATE"          : "Mettre à jour un jour férié",    
     "DELETE_SUCCESS"  : "Supprimé avec succès",
     "NO_OFFDAY"       : "Aucun jour férié n'est encore enregistré",
     "CONFIRM"         : "Etes vous sure de vouloir supprimer ce jour férié",
-    "UPDATE"          : "Mettre à jour un jour férié",
     "ADD"             : "Ajouter un jour férié",
     "REGISTERED"      : "jours fériés enregistrés",
     "ALERT"           : "Le module gestion des jours fériés permet de configurer les différents types de jours fériés qui sont prises en charge dans l'organisation",
