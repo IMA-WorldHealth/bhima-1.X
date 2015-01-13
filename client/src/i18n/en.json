@@ -259,6 +259,7 @@
   },
 
   "ERROR"                 : {
+    "HTTP_STATUS_CODE"    : "HTTP status code",    
     "ERR_IMBALANCE"       : "Imbalancing Error",
     "ERR_SQL"             : "SQL Error",
     "ERR_ACCNT_LOCKED"    : "Locked Account Error",
@@ -410,7 +411,6 @@
     "EMPLOYEE_SERVICE"   : "Select a Service",
     "EMPLOYEE_SEX"    : "Select Sex",
     "ENTERPRISE"      : "Select an Enterprise",
-    "DEB_CRED"        : "Select a debtor or creditor",
     "FISCAL_YEAR"     : "Select a fiscal year",
     "GENERAL_LEDGER"  : "General Ledger",
     "GROUP_TYPE"      : "Select a Group Type",
@@ -424,7 +424,6 @@
     "PAYMENT"         : "Select a Payment Type",
     "PERIOD_ACCOUNT_CONFIG" : "Select an accounting config",
     "PERIOD_PAYMENT"        : "Select a payment period",
-    "PROFIT_CENTER"         : "Select a Profit Center",
     "PERIOD_RUBRIC_CONFIG"  : "Select rubric config",
     "PERIOD_TAX_CONFIG"     : "Select tax config",
     "POSTING_JOURNAL" : "Posting Journal",
@@ -1288,6 +1287,7 @@
       "JUSTIFICATION"      : "Please include a justification for the payment on the debitor's account"
     }
   },
+  
   "CREDIT_NOTE"    : {
     "TITLE"        : "Credit Note",
     "SALE_DETAILS" : "Sale Details",
