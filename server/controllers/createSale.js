@@ -65,7 +65,11 @@ function submitSaleRecords(saleRecord, saleItems, saleApplyableSubsidies, userId
     return db.exec(generateSaleItems(saleRecord.uuid, saleItems));
   })
   .then(function (res) {
-    return db.exec(generateSubsidies(saleRecord, saleApplyableSubsidies));
+    if (saleApplyableSubsidies.length){
+      return db.exec(generateSubsidies(saleRecord, saleApplyableSubsidies));
+    }else{
+      return q();
+    }
   });
 }
 
