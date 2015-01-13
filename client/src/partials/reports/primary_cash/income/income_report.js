@@ -30,7 +30,8 @@ angular.module('bhima.controllers')
             columns : ['symbol']
           }
         },
-        join : ['cash_box.id=cash_box_account_currency.cash_box_id', 'currency.id=cash_box_account_currency.currency_id' ]
+        join : ['cash_box.id=cash_box_account_currency.cash_box_id', 
+		'currency.id=cash_box_account_currency.currency_id' ]
       }
     };
     
@@ -79,21 +80,22 @@ angular.module('bhima.controllers')
 
     function fill () {
       var request;
+      if (session.selectedCash) {
 
-      request = {
-        dateFrom : util.sqlDate(session.dateFrom),
-        dateTo : util.sqlDate(session.dateTo),
-        account_id : session.selectedCash.account_id
-      };
+	request = {
+          dateFrom : util.sqlDate(session.dateFrom),
+          dateTo : util.sqlDate(session.dateTo),
+          account_id : session.selectedCash.account_id
+	};
 
-      dependencies.records.query = '/reports/income_report/?' + JSON.stringify(request);      
-      validate.refresh(dependencies, ['records','currencies'])
-      .then(prepareReport)
-      .then(convert)
-      .catch(function (err) {
-       messenger.danger(err.toString());
-
-      });
+	dependencies.records.query = '/reports/income_report/?' + JSON.stringify(request);      
+	validate.refresh(dependencies, ['records','currencies'])
+	  .then(prepareReport)
+	  .then(convert)
+	  .catch(function (err) {
+	    messenger.danger(err.toString());
+	  });
+      }
     }
 
     function prepareReport (model) {
