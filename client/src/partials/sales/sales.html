@@ -21,13 +21,13 @@
       <div find-patient on-search-complete="initialiseSaleDetails" enable-refresh="false"></div>
     </div>
   </div>
-  <div 
-    class="panel" 
+  <div
+    class="panel"
     ng-if="invoice.debtor"
     ng-class="{'panel-success' : serviceComponent.selected, 'panel-default' : !serviceComponent.selected}">
     <div class="panel-heading">
-      <span class="glyphicon glyphicon-tag"> </span> 
-      
+      <span class="glyphicon glyphicon-tag"> </span>
+
       <!-- Hacky UI unifying fill for Tshikaji trip - all of these components need to standardised-->
       {{ invoice.service ? invoice.service.name : ('SALE.CHOOSE' | translate)}}
     </div>
@@ -43,7 +43,7 @@
             <option value="" disabled selected>...</option>
           </select>
           <span class="input-group-btn">
-            <button 
+            <button
               class="btn btn-default"
               ng-disabled="!serviceComponent.selected"
               ng-click="assignService()">Submit</button>
@@ -106,15 +106,24 @@
           </div>
 
          <!-- FIXME style hacks -->
-         <div ng-if="!invoice.debtor.locked" ng-class="{'alert alert-warning' : invoice.debtor.is_convention || invoice.priceList.length || invoice.debitorCaution >0}">
-         <p ng-show="invoice.debitorCaution>0">Caution {{invoice.debitorCaution | currency}}</p>
-         <p ng-show="invoice.debtor.is_convention">{{'SALE.PATIENT_COVERED' | translate}} {{invoice.debtor.account_id}}</p>
-         <p ng-repeat="charge in invoice.priceList"><b> {{charge.is_discount ? '-' : '+'}} {{charge.value}}% '{{charge.description}}' - {{charge.is_global ? ('SALE.APPLIES_GLOBALLY' | translate) : ('SALE.APPLIES_TO_ITEM' | translate)}}</b></p>
-         </div>
+        <div ng-if="!invoice.debtor.locked" ng-class="{'alert alert-warning' : invoice.debtor.is_convention || invoice.priceList.length || invoice.debitorCaution >0 || invoice.applyableSubsidies.length}">
+           <p ng-show="invoice.debitorCaution>0"><b>Caution {{invoice.debitorCaution | currency}}</b></p>
+           <p ng-show="invoice.debtor.is_convention">{{'SALE.PATIENT_COVERED' | translate}} {{invoice.debtor.account_id}}</p>
+           <p ng-repeat="charge in invoice.priceList"><b> {{charge.is_discount ? '-' : '+'}} {{charge.value}}% '{{charge.description}}' - {{charge.is_global ? ('SALE.APPLIES_GLOBALLY' | translate) : ('SALE.APPLIES_TO_ITEM' | translate)}}</b></p>
+
+           <div ng-show="invoice.applyableSubsidies.length">
+            <span> {{"SALE.APPLYABLE_SUBSIDY_LIST" | translate}}</span>
+              <p ng-repeat="applyableSubsidy in invoice.applyableSubsidies">
+                <b>
+                  - {{applyableSubsidy.is_percent == 1 ? applyableSubsidy.value + '%' : applyableSubsidy.value + '$'}} - {{applyableSubsidy.text}} - {{'SALE.APPLIES_GLOBALLY' | translate}}
+                </b>
+              </p>
+           </div>
+        </div>
 
          <div ng-class="{'alert alert-danger' : invoice.debtor.locked }">
-         <p ng-show="invoice.debtor.locked"> <b> {{ 'SALE.DEBITOR_GROUP_LOCK' | translate }}</b> </p>
-         </div>         
+            <p ng-show="invoice.debtor.locked"> <b> {{ 'SALE.DEBITOR_GROUP_LOCK' | translate }}</b> </p>
+         </div>
 
          <div class="alert alert-info" ng-if="session.displayRecover">
             {{"SALE.RECOVER_INFO" | translate}}
