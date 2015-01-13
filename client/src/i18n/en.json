@@ -259,6 +259,7 @@
   },
 
   "ERROR"                 : {
+    "HTTP_STATUS_CODE"    : "Statut du code HTTP",
     "ERR_IMBALANCE"       : "Imbalancing Error",
     "ERR_SQL"             : "SQL Error",
     "ERR_ACCNT_LOCKED"    : "Locked Account Error",

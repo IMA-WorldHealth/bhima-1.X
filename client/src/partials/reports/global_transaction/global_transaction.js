@@ -6,7 +6,8 @@ angular.module('bhima.controllers')
   '$translate',
   'validate',
   'util',
-  function ($scope, connect, appstate, $translate, validate, util) {
+  'exchange',
+  function ($scope, connect, appstate, $translate, validate, util, exchange) {
 
     var dependencies = {}, map = {};
     $scope.model = {};
@@ -57,7 +58,9 @@ angular.module('bhima.controllers')
         account.account_number = String(account.account_number);
       });
       $scope.model.c = $scope.enterprise.currency_id;
-      
+      $scope.model.account_id = 0;
+      $scope.model.source_id = 0;
+
       $scope.exchange_rate.data.forEach(function (item) {
         map[util.sqlDate(new Date())] = {c_id : item.foreign_currency_id, rate : item.rate};
       });
@@ -83,8 +86,10 @@ angular.module('bhima.controllers')
       .then(function (res) {
         if (res.length > 0) {
           res.map(function (item) {
-            item.debit = getValue(map[util.sqlDate(item.trans_date)], item.debit, $scope.enterprise.currency_id);
-            item.credit = getValue(map[util.sqlDate(item.trans_date)], item.credit, $scope.enterprise.currency_id);
+            if($scope.enterprise.currency_id !== item.currency_id){
+              item.debit *= exchange.rate(item.debit,item.currency_id,new Date());
+              item.credit *= exchange.rate(item.debit,item.currency_id,new Date()); 
+            }           
           });
           $scope.records = res;
           getTotal(res);
@@ -111,8 +116,10 @@ angular.module('bhima.controllers')
       ).then(function (res) {
           if (res.length > 0) {
             res.map(function (item) {
-              item.debit = getValue(map[util.sqlDate(item.trans_date)], item.debit, $scope.enterprise.currency_id);
-              item.credit = getValue(map[util.sqlDate(item.trans_date)], item.credit, $scope.enterprise.currency_id);
+              if($scope.enterprise.currency_id !== item.currency_id){
+                item.debit *= exchange.rate(item.debit,item.currency_id,new Date());
+                item.credit *= exchange.rate(item.debit,item.currency_id,new Date()); 
+              }
             });
             $scope.records = res;
             getTotal(res);
@@ -135,7 +142,6 @@ angular.module('bhima.controllers')
     }
 
     function search () {
-      console.log('Le modele de la source ID',$scope.model.source_id);
       $scope.mode = ($scope.model.account_id && $scope.model.account_id > 0) ? 'selected' : 'all';
       
       if ($scope.model.account_id && $scope.model.account_id > 0) {
@@ -156,8 +162,10 @@ angular.module('bhima.controllers')
       .then(function (res) {
         if (res.length > 0) {
           res.map(function (item) {
-            item.debit = getValue(map[util.sqlDate(item.trans_date)], item.debit, $scope.enterprise.currency_id);
-            item.credit = getValue(map[util.sqlDate(item.trans_date)], item.credit, $scope.enterprise.currency_id);
+              if($scope.enterprise.currency_id !== item.currency_id){
+                item.debit *= exchange.rate(item.debit,item.currency_id,new Date());
+                item.credit *= exchange.rate(item.debit,item.currency_id,new Date()); 
+              }
           });
           $scope.records = res;
           getTotal(res);
@@ -170,12 +178,27 @@ angular.module('bhima.controllers')
     }
 
     function getTotal(items) {
+      var sCredit = 0, 
+        sDebit = 0;
       $scope.somCredit = 0;
       $scope.somDebit = 0;
       if (items.length > 0) {
         items.forEach(function (item) {
-          $scope.somDebit+=item.debit;
-          $scope.somCredit+=item.credit;
+          if($scope.enterprise.currency_id !== item.currency_id){
+            item.credit /= exchange.rate(item.credit,item.currency_id,new Date()); 
+            item.debit /= exchange.rate(item.debit,item.currency_id,new Date());
+          }
+          
+          sCredit += item.credit;
+          sDebit += item.debit;
+
+          if($scope.enterprise.currency_id === $scope.model.c){
+            $scope.somCredit = sCredit;
+            $scope.somDebit = sDebit;
+          } else {
+            $scope.somCredit = sCredit * exchange.rate(item.credit,$scope.model.c,new Date());
+            $scope.somDebit = sDebit * exchange.rate(item.debit,$scope.model.c,new Date());
+          }
         });
       }
     }
