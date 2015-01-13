@@ -2469,20 +2469,20 @@
 
   "BALANCE_MENSUELLE" : {
     "TITLE"           : "Monthly balance per class",
-    "REPORT"          : "MOnthly balance report",
+    "REPORT"          : "Monthly balance report",
     "CLASS"           : "Class",
-    "ACCOUNT"         : "Compte",
+    "ACCOUNT"         : "Account",
     "LABEL"           : "Label",
-    "OLD_SOLD"        : "Old solde",
+    "OLD_SOLD"        : "Old balance",
     "MONTH_MOVEMENT"  : "Month Movement",
-    "NEW_SOLD"        : "New solde",
+    "NEW_SOLD"        : "New balance",
     "DEBIT"           : "Debit",
     "CREDIT"          : "Credit",
     "DEBITOR"         : "Debitor",
     "CREDITOR"        : "Creditor",
     "TOTALS"          : "Totals",
-    "INFO_FILL_INPUT" : "Please select periode and class",
-    "CHOOSE_PERIOD"   : "Choose a periode",
+    "INFO_FILL_INPUT" : "Please select period and class",
+    "CHOOSE_PERIOD"   : "Choose a period",
     "CHOOSE_CLASS"    : "Choose a class"
   },
 
