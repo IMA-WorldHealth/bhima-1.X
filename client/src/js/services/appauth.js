@@ -3,8 +3,9 @@ angular.module('bhima.services')
   '$q',
   '$http',
   '$window',
+  '$location',
   'appstate',
-  function ($q, $http, $window, appstate) {
+  function ($q, $http, $window, $location, appstate) {
     var session,
         mod = {};
 
@@ -56,6 +57,9 @@ angular.module('bhima.services')
     mod.destroySession = function () {
       delete $window.sessionStorage.session;
       session = null;
+
+      // Jump back to the root
+      $location.path('/');
     };
 
     return mod;
