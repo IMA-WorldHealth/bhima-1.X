@@ -80,24 +80,19 @@ angular.module('bhima.controllers')
         datef : util.sqlDate($scope.dates.from),
         datet : util.sqlDate($scope.dates.to)
       };
+      var url = '/reports/allTransactions/?source=' + $scope.model.source_id +'&enterprise_id=' + $scope.enterprise.id + '&account_id=' + $scope.model.account_id + '&datef=' + util.sqlDate($scope.dates.from) + '&datet=' + util.sqlDate($scope.dates.to);
 
       $scope.model.account_number = $scope.accounts.get($scope.model.account_id).account_number;
-      connect.fetch('/reports/allTrans/?'+JSON.stringify(qo))
+      connect.fetch(url)
       .then(function (res) {
-        if (res.length > 0) {
-          res.map(function (item) {
-            if($scope.enterprise.currency_id !== item.currency_id){
-              item.debit *= exchange.rate(item.debit,item.currency_id,new Date());
-              item.credit *= exchange.rate(item.debit,item.currency_id,new Date()); 
-            }           
-          });
-          $scope.records = res;
-          getTotal(res);
-        } else {
-          $scope.somCredit = 0;
-          $scope.somDebit = 0;
-          $scope.records = [];
-        }
+        res.map(function (item) {
+          if($scope.enterprise.currency_id !== item.currency_id){
+            item.debit *= exchange.rate(item.debit,item.currency_id,new Date());
+            item.credit *= exchange.rate(item.debit,item.currency_id,new Date()); 
+          }           
+        });
+        $scope.records = res;
+        getTotal(res);
       });
     }
 
@@ -110,24 +105,18 @@ angular.module('bhima.controllers')
         datef : util.sqlDate($scope.state.from),
         datet : util.sqlDate($scope.state.to)
       };
+      var url = '/reports/allTransactions/?source=' + $scope.model.source_id +'&enterprise_id=' + $scope.enterprise.id + '&account_id=0' + '&datef=' + util.sqlDate($scope.state.from) + '&datet=' + util.sqlDate($scope.state.to);
 
-      connect.fetch(
-        '/reports/allTrans/?'+JSON.stringify(qo)
-      ).then(function (res) {
-          if (res.length > 0) {
-            res.map(function (item) {
-              if($scope.enterprise.currency_id !== item.currency_id){
-                item.debit *= exchange.rate(item.debit,item.currency_id,new Date());
-                item.credit *= exchange.rate(item.debit,item.currency_id,new Date()); 
-              }
-            });
-            $scope.records = res;
-            getTotal(res);
-          }else{
-            $scope.records = [];
-            $scope.somCredit = 0;
-            $scope.somDebit = 0;
-          }
+      connect.fetch(url)
+      .then(function (res) {
+          res.map(function (item) {
+            if($scope.enterprise.currency_id !== item.currency_id){
+              item.debit *= exchange.rate(item.debit,item.currency_id,new Date());
+              item.credit *= exchange.rate(item.debit,item.currency_id,new Date()); 
+            }
+          });
+          $scope.records = res;
+          getTotal(res);
         });
     }
 
@@ -143,8 +132,8 @@ angular.module('bhima.controllers')
 
     function search () {
       $scope.mode = ($scope.model.account_id && $scope.model.account_id > 0) ? 'selected' : 'all';
-      
-      if ($scope.model.account_id && $scope.model.account_id > 0) {
+      var hasSelectedAccount = $scope.model.account_id && $scope.model.account_id > 0;
+      if (hasSelectedAccount) {
         $scope.model.account_number = $scope.accounts.get($scope.model.account_id).account_number;       
       } else {
         $scope.model.account_number = 0;
@@ -157,23 +146,18 @@ angular.module('bhima.controllers')
         datef : util.sqlDate($scope.dates.from),
         datet : util.sqlDate($scope.dates.to)
       };
+      var url = '/reports/allTransactions/?source=' + $scope.model.source_id +'&enterprise_id=' + $scope.enterprise.id + '&account_id=0' + '&datef=' + util.sqlDate($scope.dates.from) + '&datet=' + util.sqlDate($scope.dates.to);
 
-      connect.fetch('/reports/allTrans/?'+JSON.stringify(qo))
+      connect.fetch(url)
       .then(function (res) {
-        if (res.length > 0) {
-          res.map(function (item) {
-              if($scope.enterprise.currency_id !== item.currency_id){
-                item.debit *= exchange.rate(item.debit,item.currency_id,new Date());
-                item.credit *= exchange.rate(item.debit,item.currency_id,new Date()); 
-              }
-          });
-          $scope.records = res;
-          getTotal(res);
-        } else {
-          $scope.somCredit = 0;
-          $scope.somDebit = 0;
-          $scope.records = [];
-        }
+        res.map(function (item) {
+            if($scope.enterprise.currency_id !== item.currency_id){
+              item.debit *= exchange.rate(item.debit,item.currency_id,new Date());
+              item.credit *= exchange.rate(item.debit,item.currency_id,new Date()); 
+            }
+        });
+        $scope.records = res;
+        getTotal(res);
       });
     }
 
@@ -182,26 +166,23 @@ angular.module('bhima.controllers')
         sDebit = 0;
       $scope.somCredit = 0;
       $scope.somDebit = 0;
-      if (items.length > 0) {
-        items.forEach(function (item) {
-          if($scope.enterprise.currency_id !== item.currency_id){
-            sCredit += item.credit / exchange.rate(item.credit,item.currency_id,new Date()); 
-            sDebit += item.debit / exchange.rate(item.debit,item.currency_id,new Date());
-          } else {
-            sCredit += item.credit;
-            sDebit += item.debit;
-          }
-          
-          
-          if($scope.enterprise.currency_id === $scope.model.c){
-            $scope.somCredit = sCredit;
-            $scope.somDebit = sDebit;
-          } else {
-            $scope.somCredit = sCredit * exchange.rate(item.credit,$scope.model.c,new Date());
-            $scope.somDebit = sDebit * exchange.rate(item.debit,$scope.model.c,new Date());
-          }
-        });
-      }
+      items.forEach(function (item) {
+        if($scope.enterprise.currency_id !== item.currency_id){
+          sCredit += item.credit / exchange.rate(item.credit,item.currency_id,new Date()); 
+          sDebit += item.debit / exchange.rate(item.debit,item.currency_id,new Date());
+        } else {
+          sCredit += item.credit;
+          sDebit += item.debit;
+        }
+                
+        if($scope.enterprise.currency_id === $scope.model.c){
+          $scope.somCredit = sCredit;
+          $scope.somDebit = sDebit;
+        } else {
+          $scope.somCredit = sCredit * exchange.rate(item.credit,$scope.model.c,new Date());
+          $scope.somDebit = sDebit * exchange.rate(item.debit,$scope.model.c,new Date());
+        }
+      });
     }
 
     appstate.register('enterprise', function (enterprise) {
