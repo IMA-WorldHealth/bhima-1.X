@@ -1,6 +1,8 @@
 BHIMA
 =================
 
+[![Build Status](https://travis-ci.org/jniles/bhima.svg?branch=features%2Ftest-framework)](https://travis-ci.org/jniles/bhima)
+
 _Bhima is alpha version software. Please do not use this in a commerical context._
 
 Bhima is a free, open source accounting and hospital information management system
