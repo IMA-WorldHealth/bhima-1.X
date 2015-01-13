@@ -825,6 +825,7 @@
     "FINANCE"                   : "Finance",
     "ACCOUNT"                   : "Account",
     "BUDGETING"                 : "Budget",
+    "EDIT_BUDGET"               : "Edit Account Budget",
     "POSTING_JOURNAL"           : "Posting Journal",
     "REPORTS"                   : "Reports",
     "INVENTORY"                 : "Inventory",
@@ -1261,7 +1262,7 @@
     "NEW_FORM"        : "New Form",
     "REVIEW"          : "Review",
     "BACK"            : "Back",
-    "NEW_TRANSFER"   : "New transfer"
+    "NEW_TRANSFER"    : "New transfer"
   },
 
   "CASH"                   : {
@@ -1344,7 +1345,6 @@
     "INFO"       : "Group Information"
   },
 
-
   "INVENTORY_VIEW" : {
     "TITLE"        : "Inventory View",
     "GROUP_BY"     : "Group By",
@@ -1388,6 +1388,7 @@
     "APPLY_TO_ITEM"    : "Apply to item",
     "APPLY_TO_BILL"    : "Apply to bill"    
   },
+
   "UNIT_TYPE"     : {
     "ADD"         : "Add a Unit Type",
     "NEW"         : "New Unit",
@@ -1461,6 +1462,11 @@
   },
 
   "FIND"                : {
+    "ACCOUNT" : {
+      "ACCOUNT"         : "Account",
+      "ENTER_ACCOUNT"   : "Enter Account",
+      "PLACEHOLDER"     : "Account Name or Number"
+      },
     "PATIENT_ID"        : "Patient ID",
     "PATIENT_NAME"      : "Patient name",
     "SEARCH_NAME"       : "Search by Name",
@@ -2520,5 +2526,40 @@
     "ALERT"         : "Donor management module is a module that has been designed to allow administration of existing Donor within the organization, the table is left to record, to update the attributes of a Donor and the deletion.",
     "DELETE_SUCCESS" : "Deleted successfully",
     "NO_DONOR"    : "No Donor saving"
-  }   
+  },
+
+  "BUDGET" : {
+    "EDIT" : {
+      "ACCOUNT_LABEL"     : "Account:",
+      "AUTO_ADJUST"       : "Auto adjust totals",
+      "BUDGET"            : "Budget",
+      "BUDGET_DETAILS"    : "Budget Details",
+      "CREATE"            : "Create Budget",
+      "CREATE_FAIL"       : "Error creating budget",
+      "CREATE_OK"         : "Budget created",
+      "CREATE_QUESTION"   : "Create a new budget for this account for this fiscal year?",
+      "END"	          : "End",
+      "FISCAL_YEAR_LABEL" : "Fiscal Year:",
+      "FREEZE"            : "Freeze",
+      "PAGE_TITLE"        : "Edit Account Budget",
+      "PERIOD"            : "Period",
+      "RESTART_SEARCH"    : "Find another account",
+      "START"	          : "Start",
+      "TOTAL"             : "TOTAL:",
+      "UPDATE_BUDGET"     : "Update Budget",
+      "UPDATE_OK"         : "Budget updated",
+      "UPDATE_FAIL"       : "Budget update failed",
+      "WARN_BAD_TOTALS"   : "The sum of the budget numbers for the periods does not match the total!",
+      "WARN_ZERO_TOTAL"   : "You must enter a total for the year before proceeding!",
+      "WARNING"           : "WARNING!"
+      }
+    }
 }
+
+
+
+
+
+
+
+
