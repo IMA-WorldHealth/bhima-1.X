@@ -2096,7 +2096,7 @@
 
   "ALLTRANSACTIONS" : {
     "TITLE"         : "ETAT DES TOUTES LES TRANSACTIONS",
-    "SEARCH"        : "valider",
+    "SEARCH"        : "Valider",
     "DAY"           : "Aujoird'hui",
     "WEEK"          : "Cette Semaine",
     "MONTH"         : "Ce mois",
