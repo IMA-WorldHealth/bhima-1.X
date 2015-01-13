@@ -79,23 +79,26 @@ angular.module('bhima.controllers')
     }
 
     function fill () {
-      var request;
+      var request = {
+        dateFrom : util.sqlDate(session.dateFrom),
+        dateTo : util.sqlDate(session.dateTo),
+      };
+
+      // Make sure the account_id has a valid value
       if (session.selectedCash) {
-
-	request = {
-          dateFrom : util.sqlDate(session.dateFrom),
-          dateTo : util.sqlDate(session.dateTo),
-          account_id : session.selectedCash.account_id
-	};
-
-	dependencies.records.query = '/reports/income_report/?' + JSON.stringify(request);      
-	validate.refresh(dependencies, ['records','currencies'])
-	  .then(prepareReport)
-	  .then(convert)
-	  .catch(function (err) {
-	    messenger.danger(err.toString());
-	  });
+        request.account_id = session.selectedCash.account_id;
       }
+      else {
+	request.account_id = null;
+      }
+
+      dependencies.records.query = '/reports/income_report/?' + JSON.stringify(request);      
+      validate.refresh(dependencies, ['records','currencies'])
+	.then(prepareReport)
+	.then(convert)
+	.catch(function (err) {
+	  messenger.danger(err.toString());
+	});
     }
 
     function prepareReport (model) {
@@ -117,7 +120,7 @@ angular.module('bhima.controllers')
             transaction.primary_cash_uuid = transaction.document_uuid;
           }          
           session.sum_debit += exchange.convertir(transaction.debit, transaction.currency_id, session.currency, new Date()); //transaction.trans_date
-          console.log('From '+transaction.currency_id+' To '+session.currency);
+          // console.log('From '+transaction.currency_id+' To '+session.currency);
         });        
       }
     }
