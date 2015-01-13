@@ -590,6 +590,7 @@ create table `patient` (
   `email`             varchar(40),
   `address_1`         varchar(100),
   `address_2`         varchar(100),
+  `notes`             text,
   `renewal`           boolean not null default 0,
   `origin_location_id`        char(36) not null,
   `current_location_id`       char(36) not null,
@@ -725,7 +726,7 @@ create table `consumption` (
   `date`             date,
   `document_id`      char(36) not null,
   `tracking_number`  char(50) not null,
-  `quantity`           int unsigned,
+  `quantity`         int unsigned,
   primary key (`uuid`),
   key `depot_uuid`   (`depot_uuid`),
   constraint foreign key (`depot_uuid`) references `depot` (`uuid`) on delete cascade on update cascade

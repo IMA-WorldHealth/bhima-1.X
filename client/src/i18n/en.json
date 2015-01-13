@@ -1103,7 +1103,7 @@
 
   "PATIENT_EDIT"             : {
     "RESTART_SEARCH"         : "Find another patient",
-    "TITLE"                  : "Edit Patient Details:",
+    "PAGE_TITLE"             : "Edit Patient Details:",
     "UPDATE_FAILED"          : "Patient update failed!",
     "UPDATE_PATIENT"         : "Update Patient",
     "UPDATE_SUCCESS"         : "Patient details updated"
@@ -1145,8 +1145,9 @@
     "SPOUSE"                   : "Spouse's Name",
     "SPOUSE_EMPLOYER"          : "Spouse's Employer",
     "SPOUSE_PROFESSION"        : "Spouse's Occupation",
-    "TITLE"                    : "Patient Registration",
+    "PAGE_TITLE"               : "Patient Registration",
     "TITLE"                    : "Title",
+    "NOTES"                    : "Notes",
     "VIEW_PATIENT_RECORDS"     : "View Patient Records",
     "YES"                      : "Yes",
     "YOB"                      : "Year of Birth"
@@ -1887,11 +1888,14 @@
         "SUCCESS"                   : "Reversing with succes"
     },         
     "LOSS"     : {
-      "KEY"    : "Stock loss",
-      "TITLE"  : "Stock loss",
-      "NO_DEPOT" : "No depot",
+      "KEY"               : "Stock loss",
+      "TITLE"             : "Stock loss",
+      "NO_DEPOT"          : "No depot",
       "LOSS_GENERAL_INFO" : "Summary",
-      "SUBMIT"              : "Submit"
+      "SUBMIT"            : "Submit",
+      "LOSS_RECORDS"      : "Stock loss records",
+      "NO_LOSS_RECORDS"   : "No stock loss recorded",
+      "SEE_RECEIPT"       : "See"
     },
     "MOVEMENT" : {
       "KEY"                   : "Stock Movement",

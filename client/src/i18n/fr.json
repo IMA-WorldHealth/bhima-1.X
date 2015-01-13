@@ -1220,7 +1220,7 @@
 
   "PATIENT_EDIT"             : {
     "RESTART_SEARCH"         : "Trouver un autre patient",
-    "TITLE"                  : "Modifier Patient:",
+    "PAGE_TITLE"             : "Modifier Patient:",
     "UPDATE_FAILED"          : "Echec durant le mise à jour du patient!",
     "UPDATE_PATIENT"         : "Modifier Patient",
     "UPDATE_SUCCESS"         : "Patient modifier avec succès"
@@ -1262,8 +1262,9 @@
     "SPOUSE"                   : "Nom de l'epoux(se)",
     "SPOUSE_EMPLOYER"          : "Employeur (epoux(se))",
     "SPOUSE_PROFESSION"        : "Profession (epoux(se))",
-    "TITLE"                    : "Enregistrement Patient",
+    "PAGE_TITLE"               : "Enregistrement Patient",
     "TITLE"                    : "Titre",
+    "NOTES"                    : "Notes",
     "VIEW_PATIENT_RECORDS"     : "Voire Tous les enregistrements",
     "YES"                      : "Oui",
     "YOB"                      : "Année de Naissance"
@@ -2005,11 +2006,14 @@
         "SUCCESS"                   : "Opération avec succès"
     },            
     "LOSS"     : {
-      "KEY"    : "Perte stock",
-      "TITLE"  : "Perte stock",
-      "NO_DEPOT" : "Pas de dépôt",
+      "KEY"               : "Perte stock",
+      "TITLE"             : "Perte stock",
+      "NO_DEPOT"          : "Pas de dépôt",
       "LOSS_GENERAL_INFO" : "Sommaire",
-      "SUBMIT"              : "Soumettre"
+      "SUBMIT"            : "Soumettre",
+      "LOSS_RECORDS"      : "Rapport de pertes de stock",
+      "NO_LOSS_RECORDS"   : "Aucune perte enregistrée",
+      "SEE_RECEIPT"       : "Voir le reçu"
     },
     "MOVEMENT" : {
       "KEY"    : "Movements des Stock",
