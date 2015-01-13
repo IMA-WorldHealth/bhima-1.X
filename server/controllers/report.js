@@ -607,16 +607,34 @@ function expenseReport (params) {
 
 function allTrans (params){
   var source = {
+    '0' : 0,
     '1' : 'posting_journal',
     '2' : 'general_ledger'
   };
   var def = q.defer();
   params = JSON.parse(params);
   var requette;
-  var suite_account = (params.account_id && params.account_id !== 0)? ' AND `t`.`account_id`=' + sanitize.escape(params.account_id) : '';
+  var suite_account = (params.account_id && params.account_id > 0)? ' AND `t`.`account_id`=' + sanitize.escape(params.account_id) : '';
   var suite_dates = (params.datef && params.datet)? ' AND `t`.`trans_date`>= ' + sanitize.escape(params.datef) + ' AND `t`.`trans_date`<= ' + sanitize.escape(params.datet) : '';
 
-  if (!params.source || params.source === 0) {
+  if (params.source && params.source > 0) {
+    var sub_chaine = [
+      '`uuid`, ', '`inv_po_id`, ',
+      '`trans_date`, ', '`debit_equiv`, ',
+      '`credit_equiv`, ', '`account_id`, ',
+      '`deb_cred_uuid`, ', '`currency_id`, ', '`doc_num`, ',
+      '`trans_id`, ', '`description`, ', '`comment` '
+    ].join(source[params.source] + '.');
+    sub_chaine = source[params.source] + '.' + sub_chaine;
+
+    requette =
+      'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `ac`.`account_number`, `t`.`debit_equiv` AS `debit`,  ' +
+      '`t`.`credit_equiv` AS `credit`, `t`.`currency_id`, `t`.`description`, `t`.`comment` ' +
+      'FROM (' +
+        'SELECT ' + sub_chaine + 'FROM ' + source[params.source] +
+      ') AS `t`, `account` AS `ac` WHERE `t`.`account_id` = `ac`.`id`' + suite_account + suite_dates;
+
+  } else {
     requette =
       'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `ac`.`account_number`, `t`.`debit_equiv` AS `debit`,  ' +
       '`t`.`credit_equiv` AS `credit`, `t`.`currency_id`, `t`.`description`, `t`.`comment` ' +
@@ -632,22 +650,6 @@ function allTrans (params){
             '`general_ledger`.`doc_num`, `general_ledger`.`trans_id`, `general_ledger`.`description`, `general_ledger`.`comment` ' +
           'FROM `general_ledger` ' +
         ')' +
-      ') AS `t`, `account` AS `ac` WHERE `t`.`account_id` = `ac`.`id`' + suite_account + suite_dates;
-
-  } else {
-    var sub_chaine = [
-      '`enterprise_id`, ','`id`, ', '`inv_po_id`, ',
-      '`trans_date`, ', '`debit_equiv`, ',
-      '`credit_equiv`, ', '`account_id`, ',
-      '`deb_cred_uuid`, ', '`currency_id`, ', '`doc_num`, ',
-      '`trans_id`, ', '`description`, ', '`comment` '
-    ].join(source[params.source] + '.');
-    sub_chaine = source[params.source] + '.' + sub_chaine;
-    requette =
-      'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `ac`.`account_number`, `t`.`debit_equiv` AS `debit`,  ' +
-      '`t`.`credit_equiv` AS `credit`, `t`.`currency_id`, `t`.`description`, `t`.`comment` ' +
-      'FROM (' +
-        'SELECT ' + sub_chaine + 'FROM ' + source[params.source] +
       ') AS `t`, `account` AS `ac` WHERE `t`.`account_id` = `ac`.`id`' + suite_account + suite_dates;
   }
 
