@@ -3,7 +3,7 @@
 # date   : January 12, 2015
 
 # performs a complete dump of the database, as a backup
-# USAGE: 0-backup-current-DB.sh [USER] [PASS] [db]
+# USAGE: 1-backup-current-DB.sh [USER] [PASS] [db]
 
 # get params
 USER=$1

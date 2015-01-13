@@ -3,7 +3,7 @@
 # date   : January 12, 2015
 
 # drops the triggers in a database
-# USAGE: 1-dump-with-cols.sh [USER] [PASS] [DB]
+# USAGE: 2-drop-triggers.sh [USER] [PASS] [DB]
 
 # get params
 USER=$1

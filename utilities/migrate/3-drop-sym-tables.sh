@@ -3,7 +3,7 @@
 # date   : January 12, 2015
 
 # drops sym-tables from the existing database
-# USAGE: 2-drop-sym-tables.sh
+# USAGE: 3-drop-sym-tables.sh [USER] [PASS] [DB]
 
 # get params
 USER=$1

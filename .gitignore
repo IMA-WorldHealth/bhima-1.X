@@ -11,6 +11,9 @@ test/reports/
 server/sql/backup/
 server/plugins/mail/out/
 
+# ignore migration backups
+utilities/migrate/backups/*
+
 #Ignore build
 client/dest/
 
