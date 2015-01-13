@@ -883,6 +883,11 @@
    "WEEK"         : "This Week"
    },
 "FIND": {
+   "ACCOUNT": {
+      "ACCOUNT"       : "Account",
+      "ENTER_ACCOUNT" : "Enter Account",
+      "PLACEHOLDER"   : "Account Name or Number"
+      },
    "PATIENT_ID"        : "Patient ID",
    "PATIENT_NAME"      : "Patient name",
    "SEARCH_NAME"       : "Search by Name",
