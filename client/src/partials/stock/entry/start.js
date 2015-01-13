@@ -49,11 +49,9 @@ angular.module('bhima.controllers')
       query : {
         identifier : 'uuid',
         tables : {
-          'purchase' : {
-            columns : ['uuid', 'reference', 'project_id']
-          }
+          'purchase' : { columns : ['uuid', 'reference', 'project_id', 'purchase_date'] }
         },
-        where : ['purchase.closed=0']
+        where : ['purchase.closed=0','AND','purchase.confirmed=1']
       }
     };
 
@@ -101,6 +99,7 @@ angular.module('bhima.controllers')
       // PAX2 or HBB1235
       if (!order || !order.label || order.label.length < 1) { return messenger.danger($translate('STOCK.ENTRY.ERR_EMPTY_PARAMTER')); }
 
+      session.selected = order;
       session.cfg.purchase_uuid = order.uuid;
       session.cfg.label = order.label;
 
