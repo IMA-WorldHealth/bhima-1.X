@@ -97,7 +97,8 @@
                           <select
                             class="col-xs-2 form-bhima"
                             ng-model="row.lot"
-                            ng-options="lot as '(' + lot.lot_number + ')' + '  ' + lot.text  for lot in configuration.rows[$index].lots"
+                            ng-options="lot as '(' + lot.lot_number + ')' + '  ' + lot.text  for lot in configuration.rows[$index].lots" 
+                            ng-change="getItemPrice(row.lot, $index)"
                           >
                           </select>
                         </div>
@@ -130,7 +131,7 @@
                             </span>
                           </span>
 
-                          <input class="form-bhima" ng-disabled="!row.code" ng-model="row.price" type="number" min="0" required>
+                          <input class="form-bhima" ng-disabled="true" ng-model="row.price" type="number" min="0" required>
 
                           <span class="input-group-addon">
                             {{model.currency.data[0].symbol}}
