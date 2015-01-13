@@ -44,7 +44,7 @@
               </tr>
             </thead>
 
-            <tr ng-if="!names.data">
+            <tr ng-if="!names.data.length">
               <td colspan="4">
                 <div class="alert alert-warning square">{{ "PURCHASE.NOT_FOUND" | translate }}</div>
               </td>
@@ -100,7 +100,7 @@
         <!-- FIXME Hack floating -->
         <div class="clearfix"></div>
       </div>
-      <hr>
+      
       <div class="aprecu">
         <div class="row" ng-if="!find.active && !session.review" style="padding:0 15px;">
           <table class="table table-condensed">
