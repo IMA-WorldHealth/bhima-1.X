@@ -8,4 +8,4 @@
 USE bhima;
 
 INSERT INTO `unit` VALUES
-(7,'Edit Account Budget','TREE.EDIT_BUDGET','',8,0,'/partials/budget/edit/','/budget/edit');
+(7,'Edit Account Budget','TREE.EDIT_BUDGET','',8,0,'/partials/budget/edit/','/budgeting/edit');

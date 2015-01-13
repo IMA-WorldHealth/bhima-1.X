@@ -825,6 +825,7 @@
     "FINANCE"                   : "Finances",
     "ACCOUNT"                   : "Compte",
     "BUDGETING"                 : "Budget",
+    "EDIT_BUDGET"               : "Modifier Budget de Compte???",
     "POSTING_JOURNAL"           : "Journal de Saisie",
     "REPORTS"                   : "Rapports",
     "INVENTORY"                 : "Stock",
@@ -1461,6 +1462,11 @@
   },
 
   "FIND"                : {
+    "ACCOUNT" : {
+      "ACCOUNT"         : "Compte???",
+      "ENTER_ACCOUNT"   : "Entrez Compte???",
+      "PLACEHOLDER"     : "Compte Nom ou Numéro???"
+      },
     "PATIENT_ID"        : "ID Patient",
     "PATIENT_NAME"      : "Nom du Patient",
     "SEARCH_NAME"       : "Chercher Par Nom",
@@ -2520,5 +2526,33 @@
     "ALERT"            : "Le module gestion des donateurs est un module qui a été conçu pour permettre l'administration des donateurs de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'un donateur ainsi que la suppression.",
     "DELETE_SUCCESS"   : "Suppression avec succès",
     "NO_DONOR"      : "Aucun donateur n'est enregistrée"
-  }
+  },
+
+  "BUDGET" : {
+    "EDIT" : {
+      "ACCOUNT_LABEL"     : "Account: ???",
+      "AUTO_ADJUST"       : "Auto adjust totals ???",
+      "BUDGET"            : "Budget ???",
+      "BUDGET_DETAILS"    : "Budget Details ???",
+      "CREATE"            : "Create Budget ???",
+      "CREATE_FAIL"       : "Error creating budget ???",
+      "CREATE_OK"         : "Budget created ???",
+      "CREATE_QUESTION"   : "Create a new budget for this account for this fiscal year? ???",
+      "END"	          : "End ???",
+      "FISCAL_YEAR_LABEL" : "Fiscal Year: ???",
+      "FREEZE"            : "Freeze ???",
+      "PAGE_TITLE"        : "Edit Account Budget ???",
+      "PERIOD"            : "Period ???",
+      "RESTART_SEARCH"    : "Find another account ???",
+      "START"	          : "Start ???",
+      "TOTAL"             : "TOTAL: ???",
+      "UPDATE_BUDGET"     : "Update Budget ???",
+      "UPDATE_OK"         : "Budget updated ???",
+      "UPDATE_FAIL"       : "Budget update failed ???",
+      "WARN_BAD_TOTALS"   : "The sum of the budget numbers for the periods does not match the total! ???",
+      "WARN_ZERO_TOTAL"   : "You must enter a total for the year before proceeding! ???",
+      "WARNING"           : "WARNING! ???"
+      }
+    }
+
 }
