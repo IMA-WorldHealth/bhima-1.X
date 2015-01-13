@@ -57,14 +57,15 @@ angular.module('bhima.controllers')
         account.account_number = String(account.account_number);
       });
       $scope.model.c = $scope.enterprise.currency_id;
+      
       $scope.exchange_rate.data.forEach(function (item) {
-        map[util.sqlDate(item.date)] = {c_id : item.foreign_currency_id, rate : item.rate};
+        map[util.sqlDate(new Date())] = {c_id : item.foreign_currency_id, rate : item.rate};
       });
     }
 
     function fill() {
       if (!$scope.enterprise || !$scope.exchange_rate) {return;}
-      var f = ($scope.model.account_id && $scope.model.account_id !== 0) ? selective($scope.model.account_id) : all();
+      var f = ($scope.model.account_id && $scope.model.account_id > 0) ? selective($scope.model.account_id) : all();
     }
 
     function selective() {
@@ -81,17 +82,16 @@ angular.module('bhima.controllers')
       connect.fetch('/reports/allTrans/?'+JSON.stringify(qo))
       .then(function (res) {
         if (res.length > 0) {
-          if (res.length > 0) {
-            res.map(function (item) {
-              item.debit = getValue(map[util.sqlDate(item.trans_date)], item.debit, $scope.enterprise.currency_id);
-              item.credit = getValue(map[util.sqlDate(item.trans_date)], item.credit, $scope.enterprise.currency_id);
-            });
-            $scope.records = res;
-            getTotal(res);
-          } else {
-            getTotal(res);
-            $scope.records = [];
-          }
+          res.map(function (item) {
+            item.debit = getValue(map[util.sqlDate(item.trans_date)], item.debit, $scope.enterprise.currency_id);
+            item.credit = getValue(map[util.sqlDate(item.trans_date)], item.credit, $scope.enterprise.currency_id);
+          });
+          $scope.records = res;
+          getTotal(res);
+        } else {
+          $scope.somCredit = 0;
+          $scope.somDebit = 0;
+          $scope.records = [];
         }
       });
     }
@@ -105,6 +105,7 @@ angular.module('bhima.controllers')
         datef : util.sqlDate($scope.state.from),
         datet : util.sqlDate($scope.state.to)
       };
+
       connect.fetch(
         '/reports/allTrans/?'+JSON.stringify(qo)
       ).then(function (res) {
@@ -117,7 +118,8 @@ angular.module('bhima.controllers')
             getTotal(res);
           }else{
             $scope.records = [];
-            getTotal(res);
+            $scope.somCredit = 0;
+            $scope.somDebit = 0;
           }
         });
     }
@@ -133,21 +135,22 @@ angular.module('bhima.controllers')
     }
 
     function search () {
-      if (!$scope.model.account_id) { return; }
-      $scope.mode = $scope.model.account_id !== 0 ? 'selected' : 'all';
+      console.log('Le modele de la source ID',$scope.model.source_id);
+      $scope.mode = ($scope.model.account_id && $scope.model.account_id > 0) ? 'selected' : 'all';
+      
+      if ($scope.model.account_id && $scope.model.account_id > 0) {
+        $scope.model.account_number = $scope.accounts.get($scope.model.account_id).account_number;       
+      } else {
+        $scope.model.account_number = 0;
+      }
+
       var qo = {
         source : $scope.model.source_id,
         enterprise_id : $scope.enterprise.id,
         account_id : $scope.model.account_id,
-        datef : util.sqlDate($scope.state.from),
-        datet : util.sqlDate($scope.state.to)
+        datef : util.sqlDate($scope.dates.from),
+        datet : util.sqlDate($scope.dates.to)
       };
-
-      if ($scope.model.account_id && $scope.model.account_id === 0) {
-        $scope.model.account_number = 'Tous';
-      } else {
-        $scope.model.account_number = $scope.accounts.get($scope.model.account_id).account_number;
-      }
 
       connect.fetch('/reports/allTrans/?'+JSON.stringify(qo))
       .then(function (res) {
@@ -159,7 +162,8 @@ angular.module('bhima.controllers')
           $scope.records = res;
           getTotal(res);
         } else {
-          getTotal(res);
+          $scope.somCredit = 0;
+          $scope.somDebit = 0;
           $scope.records = [];
         }
       });
