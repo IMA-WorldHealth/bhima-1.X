@@ -37,7 +37,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="subsidy in subsidies.data">
+            <tr ng-repeat="subsidy in subsidies.data | orderBy:'text'">
               <td>{{ subsidy.text }}</td>
               <td>{{ subsidy.value }}</td>
               <td><span class="glyphicon" ng-class="{'glyphicon-ok' : !!subsidy.is_percent}"></td>
