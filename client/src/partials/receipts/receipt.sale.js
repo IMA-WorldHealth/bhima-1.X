@@ -6,6 +6,7 @@ angular.module('bhima.controllers')
   'messenger',
   function ($scope, validate, appstate, messenger) {
     var dependencies = {}, model = $scope.model = {common : {}, total : {}};
+    $scope.updateCurrency = updateCurrency;
 
     dependencies.recipient = {
       required: true,
@@ -67,6 +68,22 @@ angular.module('bhima.controllers')
       }
     };
 
+    function updateCurrency (currency) {
+      model.total.localeCost = model.common.doConvert(model.saleRecords[0].cost, currency, model.saleRecords[0].invoice_date);
+
+      if (model.ledger)  {
+        model.total.localeBalance = model.common.doConvert(model.ledger.balance, currency, model.saleRecords[0].invoice_date);
+        model.ledger.localeCredit = model.common.doConvert(model.ledger.credit, currency, model.saleRecords[0].invoice_date);
+      }
+
+      model.total.localeTotalSum = model.common.convert(model.total.totalSum, currency, model.saleRecords[0].invoice_date);
+
+      model.saleRecords.forEach(function (item) {
+        item.localeTransaction = model.common.doConvert(item.transaction_price, currency, model.saleRecords[0].invoice_date);
+        item.localeCost = model.common.doConvert((item.credit - item.debit), currency, model.saleRecords[0].invoice_date);
+      });
+    }
+
     function sum (a,b) { return a + b.cost; }
 
     function getRecipientDetail(result) {
@@ -78,7 +95,7 @@ angular.module('bhima.controllers')
       return validate.process(dependencies, ['recipient','ledger']);
     }
 
-    function buildInvoice(invoiceModel) {
+    function buildInvoice(invoiceModel) {      
       model.saleRecords = invoiceModel.saleRecords.data;
       model.total.totalSum = model.saleRecords.reduce(sum, 0) || 0;
       model.ledger = invoiceModel.ledger.get(model.saleRecords[0].uuid);
@@ -87,7 +104,6 @@ angular.module('bhima.controllers')
     }
 
     function updateCost(currency_id) {
-
       model.total.localeCost = model.common.doConvert(model.saleRecords[0].cost, currency_id, model.saleRecords[0].invoice_date);
 
       if (model.ledger)  {
