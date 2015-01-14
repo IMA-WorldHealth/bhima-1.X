@@ -73,14 +73,11 @@ angular.module('bhima.controllers')
 
     function selective() {
       $scope.mode = 'selected';
-      var qo = {
-        source : $scope.model.source_id,
-        enterprise_id : $scope.enterprise.id,
-        account_id : $scope.model.account_id,
-        datef : util.sqlDate($scope.dates.from),
-        datet : util.sqlDate($scope.dates.to)
-      };
-      var url = '/reports/allTransactions/?source=' + $scope.model.source_id +'&enterprise_id=' + $scope.enterprise.id + '&account_id=' + $scope.model.account_id + '&datef=' + util.sqlDate($scope.dates.from) + '&datet=' + util.sqlDate($scope.dates.to);
+      var url = '/reports/allTransactions/?source=' + $scope.model.source_id +
+        '&enterprise_id=' + $scope.enterprise.id + 
+        '&account_id=' + $scope.model.account_id + 
+        '&datef=' + util.sqlDate($scope.dates.from) + 
+        '&datet=' + util.sqlDate($scope.dates.to);
 
       $scope.model.account_number = $scope.accounts.get($scope.model.account_id).account_number;
       connect.fetch(url)
@@ -98,14 +95,11 @@ angular.module('bhima.controllers')
 
     function all() {
       $scope.mode = 'all';
-      var qo = {
-        source : $scope.model.source_id,
-        enterprise_id : $scope.enterprise.id,
-        account_id : 0,
-        datef : util.sqlDate($scope.state.from),
-        datet : util.sqlDate($scope.state.to)
-      };
-      var url = '/reports/allTransactions/?source=' + $scope.model.source_id +'&enterprise_id=' + $scope.enterprise.id + '&account_id=0' + '&datef=' + util.sqlDate($scope.state.from) + '&datet=' + util.sqlDate($scope.state.to);
+      var url = '/reports/allTransactions/?source=' + $scope.model.source_id +
+        '&enterprise_id=' + $scope.enterprise.id + 
+        '&account_id=0' + 
+        '&datef=' + util.sqlDate($scope.state.from) + 
+        '&datet=' + util.sqlDate($scope.state.to);
 
       connect.fetch(url)
       .then(function (res) {
@@ -131,22 +125,20 @@ angular.module('bhima.controllers')
     }
 
     function search () {
-      $scope.mode = ($scope.model.account_id && $scope.model.account_id > 0) ? 'selected' : 'all';
       var hasSelectedAccount = $scope.model.account_id && $scope.model.account_id > 0;
+      $scope.mode = (hasSelectedAccount) ? 'selected' : 'all';
+      
       if (hasSelectedAccount) {
         $scope.model.account_number = $scope.accounts.get($scope.model.account_id).account_number;       
       } else {
         $scope.model.account_number = 0;
       }
 
-      var qo = {
-        source : $scope.model.source_id,
-        enterprise_id : $scope.enterprise.id,
-        account_id : $scope.model.account_id,
-        datef : util.sqlDate($scope.dates.from),
-        datet : util.sqlDate($scope.dates.to)
-      };
-      var url = '/reports/allTransactions/?source=' + $scope.model.source_id +'&enterprise_id=' + $scope.enterprise.id + '&account_id=0' + '&datef=' + util.sqlDate($scope.dates.from) + '&datet=' + util.sqlDate($scope.dates.to);
+      var url = '/reports/allTransactions/?source=' + $scope.model.source_id +
+        '&enterprise_id=' + $scope.enterprise.id + 
+        '&account_id=' + $scope.model.account_id + 
+        '&datef=' + util.sqlDate($scope.dates.from) + 
+        '&datet=' + util.sqlDate($scope.dates.to);
 
       connect.fetch(url)
       .then(function (res) {
@@ -173,16 +165,16 @@ angular.module('bhima.controllers')
         } else {
           sCredit += item.credit;
           sDebit += item.debit;
-        }
-                
-        if($scope.enterprise.currency_id === $scope.model.c){
-          $scope.somCredit = sCredit;
-          $scope.somDebit = sDebit;
-        } else {
-          $scope.somCredit = sCredit * exchange.rate(item.credit,$scope.model.c,new Date());
-          $scope.somDebit = sDebit * exchange.rate(item.debit,$scope.model.c,new Date());
-        }
+        }                
       });
+      if($scope.enterprise.currency_id === $scope.model.c){
+        $scope.somCredit = sCredit;
+        $scope.somDebit = sDebit;
+      } else {
+        $scope.somCredit = sCredit * exchange.rate(sCredit,$scope.model.c,new Date());
+        $scope.somDebit = sDebit * exchange.rate(sDebit,$scope.model.c,new Date());
+      }
+
     }
 
     appstate.register('enterprise', function (enterprise) {
