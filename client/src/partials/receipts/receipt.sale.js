@@ -13,7 +13,7 @@ angular.module('bhima.controllers')
         tables: {
           'patient' : {
             columns: ['first_name', 'last_name', 'dob', 'reference', 'registration_date']
-          },          
+          },
           'debitor' : {
             columns: ['text']
           },
@@ -23,7 +23,7 @@ angular.module('bhima.controllers')
           'project' : {
             columns : ['abbr']
           }
-        },        
+        },
         join : [
           'patient.debitor_uuid=debitor.uuid',
           'debitor.group_uuid=debitor_group.uuid',
@@ -51,9 +51,26 @@ angular.module('bhima.controllers')
           },
           'currency' : {
             columns : ['id', 'symbol']
-          }          
+          }
         },
         join: ['sale.uuid=sale_item.sale_uuid','sale_item.inventory_uuid=inventory.uuid', 'sale.currency_id=currency.id']
+      }
+    };
+
+    dependencies.saleSubsidy = {
+      query: {
+        tables: {
+          'sale' : {
+            columns: ['cost']
+          },
+          'sale_subsidy' : {
+            columns: ['uuid', 'sale_uuid', 'value']
+          },
+          'subsidy' : {
+            columns : ['text']
+          }
+        },
+        join: ['sale.uuid=sale_subsidy.sale_uuid', 'sale_subsidy.subsidy_uuid=subsidy.uuid']
       }
     };
 
@@ -63,13 +80,14 @@ angular.module('bhima.controllers')
           'currency' : {
             columns : ['id', 'symbol']
           }
-        }        
+        }
       }
     };
 
     function sum (a,b) { return a + b.cost; }
 
     function getRecipientDetail(result) {
+      console.log('result', result);
       model.currency = result.currency;
       model.initialCurrency = model.selectedCurrency = model.currency.get(model.common.enterprise.currency_id);
       var debtor_uuid = result.saleRecords.data[0].debitor_uuid;
@@ -80,6 +98,7 @@ angular.module('bhima.controllers')
 
     function buildInvoice(invoiceModel) {
       model.saleRecords = invoiceModel.saleRecords.data;
+      model.saleSubsidies = invoiceModel.saleSubsidy.data;
       model.total.totalSum = model.saleRecords.reduce(sum, 0) || 0;
       model.ledger = invoiceModel.ledger.get(model.saleRecords[0].uuid);
       model.recipient = invoiceModel.recipient.data[0];
@@ -110,13 +129,14 @@ angular.module('bhima.controllers')
         model.common.convert = values.convert;
         model.common.doConvert = values.doConvert;
         dependencies.saleRecords.query.where = ['sale.uuid=' + values.invoiceId];
-        validate.process(dependencies, ['saleRecords', 'currency'])
+        dependencies.saleSubsidy.query.where  = ['sale_subsidy.sale_uuid=' + values.invoiceId];
+        validate.process(dependencies, ['saleRecords', 'saleSubsidy', 'currency'])
         .then(getRecipientDetail)
         .then(buildInvoice)
         .catch(function (err){
           messenger.danger('error', err);
         });
-  		});     
-    });    
+  		});
+    });
   }
 ]);

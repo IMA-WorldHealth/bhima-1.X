@@ -178,7 +178,7 @@
     .when('/reports/employee_standing/', {
       controller : 'reportEmployeeStanding',
       templateUrl : '/partials/reports/employee_standing/employee_standing.html'
-    })    
+    })
     .when('/reports/ledger/general_ledger', {
       controller: 'reportGeneralLedger',
       templateUrl: '/partials/reports/ledger/general_ledger.html'
@@ -417,15 +417,15 @@
     .when('/stock/distribution_service_record/:depotId', {
       controller : 'stock.distribution_service_record',
       templateUrl : 'partials/stock/distribution_service_record/distribution_service_record.html'
-    })        
+    })
     .when('/stock/reversing_service_distribution/:consumptionId', {
       controller : 'stock.reversing_service_distribution',
       templateUrl : 'partials/stock/reversing_service_distribution/reversing_service_distribution.html'
-    }) 
+    })
     .when('/stock/reversing_distribution/:consumptionId', {
       controller : 'stock.reversing_distribution',
       templateUrl : 'partials/stock/reversing_distribution/reversing_distribution.html'
-    })            
+    })
     .when('/stock/loss/:depotId', {
       controller : 'stock.loss',
       templateUrl : 'partials/stock/loss/loss.html'
@@ -569,19 +569,23 @@
     .when('/fonction', {
       controller : 'fonction',
       templateUrl : 'partials/fonction/fonction.html'
-    })  
+    })
     .when('/donor_management/', {
       controller: 'donor',
       templateUrl: '/partials/donor_management/donor_management.html'
-    })       
+    })
     .when('/reports/operating_account/', {
       controller : 'operating_account',
       templateUrl : 'partials/reports/operating_account/operating_account.html'
     })
+    .when('/subsidy', {
+      controller : 'subsidy',
+      templateUrl : 'partials/subsidy/subsidy.html'
+    })
 
     // Proposed formal report building structure
-    .when('/report/invoice/:target', { 
-      controller : 'configureInvoice', 
+    .when('/report/invoice/:target', {
+      controller : 'configureInvoice',
       templateUrl : 'partials/reports_proposed/invoice/invoice.html'
     })
     .otherwise('/');

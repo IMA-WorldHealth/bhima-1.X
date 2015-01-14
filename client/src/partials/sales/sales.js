@@ -126,6 +126,25 @@ angular.module('bhima.controllers')
         }
       };
 
+      dependencies.patientApplyableSubsidyList = {
+        query : {
+          tables : {
+            assignation_patient : {columns : ['patient_uuid', 'patient_group_uuid']},
+            patient_group : {columns : ['note', 'subsidy_uuid']},
+            subsidy : {columns : ['text', 'value', 'is_percent', 'debitor_group_uuid']},
+            debitor_group : {columns : ['account_id']}
+          },
+          join : [
+            'assignation_patient.patient_group_uuid=patient_group.uuid',
+            'patient_group.subsidy_uuid=subsidy.uuid',
+            'subsidy.debitor_group_uuid=debitor_group.uuid'
+          ],
+          where : [
+            'assignation_patient.patient_uuid=' + selectedDebtor.uuid
+          ]
+        }
+      };
+
       priceListSource = ['patientGroupList', 'debtorGroupList'];
       validate.refresh(dependencies, priceListSource).then(processPriceList);
     }
@@ -161,8 +180,6 @@ angular.module('bhima.controllers')
 
         invoice.note = formatNote(invoice);
         invoice.displayId = invoice.uuid.substr(0, 13);
-
-        console.log('result invoice', invoice);
         $scope.invoice = invoice;
 
       });
@@ -195,6 +212,15 @@ angular.module('bhima.controllers')
         if (listItem.is_global) {
           invoice.applyGlobal.push(listItem);
         }
+      });
+
+      validate.refresh(dependencies, ['patientApplyableSubsidyList']).then(processPatientApplyableSubsidy);
+    }
+
+    function processPatientApplyableSubsidy (model) {
+      invoice.applyableSubsidies = [];
+      model.patientApplyableSubsidyList.data.forEach(function (subsidy) {
+        invoice.applyableSubsidies.push(subsidy);
       });
     }
 
@@ -280,18 +306,17 @@ angular.module('bhima.controllers')
         requestContainer.saleItems.push(formatSaleItem);
       });
 
-      // Patient Groups
-      // if (invoice.priceList) {
-      //   //TODO Placeholder discount item select, this should be in enterprise settings
-      //   var formatDiscountItem, enterpriseDiscountId=12;
-      //   formatDiscountItem = {
-      //     inventory_id : enterpriseDiscountId,
-      //     quantity : 1,
-      //     transaction_price : netDiscountPrice,
-      //     debit : netDiscountPrice,
-      //     credit : 0, //FIXME default values because parser cannot insert records with different columns
-      //     inventory_price : 0
-      //   };
+      var sale_cost = requestContainer.sale.cost;
+      requestContainer.applyableSaleSubsidies = [];
+
+      invoice.applyableSubsidies.forEach(function (subsidy) {
+        var amount = subsidy.is_percent ? (sale_cost * subsidy.value) / 100 : subsidy.value;
+        var applyableSubsidy = {
+          uuid : subsidy.subsidy_uuid,
+          value : amount
+        };
+        requestContainer.applyableSaleSubsidies.push(applyableSubsidy);
+      });
 
       invoice.applyGlobal.forEach(function (listItem) {
 
@@ -310,7 +335,6 @@ angular.module('bhima.controllers')
       });
 
       requestContainer.caution = (invoice.debitorCaution)? invoice.debitorCaution : 0;
-
 
       return requestContainer;
     }

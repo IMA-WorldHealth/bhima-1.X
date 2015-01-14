@@ -519,19 +519,34 @@ create table `debitor_group` (
 --  constraint foreign key (`tax_id`) references `tax` (`id`),
 ) engine=innodb;
 
+drop table if exists `subsidy`;
+create table `subsidy` (
+  `uuid`                   char(36) not null,
+  `text`                   text,
+  `value`                  float default 0,
+  `is_percent`             boolean,
+  `debitor_group_uuid`     char(36) not null,
+  primary key (`uuid`),
+  key `debitor_group_uuid` (`debitor_group_uuid`),
+  constraint foreign key (`debitor_group_uuid`) references `debitor_group` (`uuid`)
+) engine=innodb;
+
 drop table if exists `patient_group`;
 create table `patient_group` (
   enterprise_id     smallint unsigned not null,
   uuid              char(36) not null,
-  price_list_uuid   char(36) not null,
+  price_list_uuid   char(36) null,
+  subsidy_uuid      char(36) null,
   name              varchar(60) not null,
   note              text,
   created           timestamp null default CURRENT_TIMESTAMP,
   primary key (`uuid`),
   key `enterprise_id` (`enterprise_id`),
   key `price_list_uuid` (`price_list_uuid`),
+  key `subsidy_uuid` (`subsidy_uuid`),
   constraint foreign key (`enterprise_id`) references `enterprise` (`id`),
-  constraint foreign key (`price_list_uuid`) references `price_list` (`uuid`)
+  constraint foreign key (`price_list_uuid`) references `price_list` (`uuid`),
+  constraint foreign key (`subsidy_uuid`) references `subsidy` (`uuid`)
 ) engine=innodb;
 
 drop table if exists `debitor`;
@@ -708,6 +723,19 @@ create table `sale_item` (
   constraint foreign key (`inventory_uuid`) references `inventory` (`uuid`)
 ) engine=innodb;
 
+drop table if exists `sale_subsidy`;
+create table `sale_subsidy` (
+  `uuid`              char(36) not null,
+  `sale_uuid`         char(36) not null,
+  `subsidy_uuid`      char(36) not null,
+  `value`             decimal(19,4) default '0',
+  primary key (`uuid`),
+  key `sale_uuid` (`sale_uuid`),
+  key `subsidy_uuid` (`subsidy_uuid`),
+  constraint foreign key (`sale_uuid`) references `sale` (`uuid`) on delete cascade,
+  constraint foreign key (`subsidy_uuid`) references `subsidy` (`uuid`)
+) engine=innodb;
+
 drop table if exists `depot`;
 create table `depot` (
   `uuid`               char(36) not null,
@@ -782,13 +810,13 @@ create table `consumption_rummage` (
 drop table if exists `consumption_reversing`;
 create table `consumption_reversing` (
   `uuid`             char(36) not null,
-  `consumption_uuid`        char(36) not null,  
+  `consumption_uuid`        char(36) not null,
   `depot_uuid`       char(36) not null,
   `document_id`       char(36) not null,
   `date`             date,
   `tracking_number`  char(50) not null,
   `quantity`           int,
-  `description`        text,    
+  `description`        text,
   primary key (`uuid`),
   key `consumption_uuid` (`consumption_uuid`),
   key `depot_uuid`   (`depot_uuid`),
@@ -1320,7 +1348,7 @@ create table `tax` (
   `abbr`                    varchar(4) null,
   `is_employee`             boolean,
   `is_percent`              boolean,
-  `is_ipr`                  boolean,            
+  `is_ipr`                  boolean,
   `four_account_id`         int unsigned null,
   `six_account_id`          int unsigned null,
   `value`                   float default 0,
