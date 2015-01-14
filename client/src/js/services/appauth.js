@@ -61,6 +61,7 @@ angular.module('bhima.services')
       // Jump back to the root
       // FIXME : This gets into an infinite loop!
       //$location.path('/');
+
     };
 
     return mod;
