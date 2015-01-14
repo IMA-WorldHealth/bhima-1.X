@@ -569,6 +569,7 @@
     "INVOICE_DATE"        : "Invoice Date",
     "TOTAL"               : "Total",
     "ACCOUNT_ID"          : "Account ID",
+    "DEBITOR_GROUP"       : "Debitor group",
     "DEBITOR_NAME"        : "Debtor Name",
     "DEBITOR_TYPE"        : "Debtor Type",
     "DEB_CRED_TYPE"       : "Debtor/Creditor Type",
@@ -915,7 +916,8 @@
     "DONOR_MANAGEMENT"          : "Donor management",
     "UPDATE_STOCK"              : "Update stock",
     "CREDIT_NOTE"               : "Credit note",
-    "CONFIRM_PURCHASE_ORDER"    : "Confirm a purchase order"       
+    "CONFIRM_PURCHASE_ORDER"    : "Confirm a purchase order",
+    "SUBSIDY"                   : "Subsidy Management"      
   },
 
   "RUBRIC_PAYROLL"       : {
@@ -1455,7 +1457,7 @@
     "APPLIES_TO_ITEM"  : "Appliquer par item",
     "CHOOSE"           : "Assign a service",
     "DEBITOR_GROUP_LOCK" : "The debitor group of this patient is locked",
-    "IS_DISTRIBUTABLE" : "Distributable via stock ?",
+    "TYPE"             : "Sale type",
     "DISTRIBUTABLE"    : "Distributable",
     "NO_DISTRIBUTABLE" : "Not distributable"
   },
@@ -2520,5 +2522,19 @@
     "ALERT"         : "Donor management module is a module that has been designed to allow administration of existing Donor within the organization, the table is left to record, to update the attributes of a Donor and the deletion.",
     "DELETE_SUCCESS" : "Deleted successfully",
     "NO_DONOR"    : "No Donor saving"
-  }   
+  },
+
+  "SUBSIDY" : {
+    "TITLE"          : "Subsidy Management",
+    "NO_SUBSIDY"     : "Subsidy not found",
+    "REGISTERED"     : "Registered subsidy",
+    "CREATE_SUBSIDY" : "Create subsidy",
+    "ALERT"          : "Alert",
+    "INFO"           : "A subsidy is, in a first approach, financial aid in real gift (not loan or cash advance) from public funds;",
+    "DETAILS"        : "In this module, you can : create a subsidy, edit a subsidy or delete a subsidy",
+    "ADD"            : "Add",
+    "NEW_SUBSIDY"    : "New subsidy",
+    "UPDATE"         : "Update subsidy",
+    "CONFIRM"        : "Do you really want to perform this action ?"
+  }
 }
