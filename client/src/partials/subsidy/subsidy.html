@@ -1,5 +1,5 @@
 <header data-header>
-  {{ "SUBSIDY.CREATE_TAXE" | translate }}
+  {{ "SUBSIDY.TITLE" | translate }}
 </header>
 
 <nav>
@@ -12,7 +12,7 @@
   <div class="pull-right">
     <button class="btn btn-sm btn-default" ng-click="new()">
       <span class="glyphicon glyphicon-plus"></span>
-       {{ "SUBSIDY.ADD" | translate }}
+       {{ "SUBSIDY.NEW_SUBSIDY" | translate }}
     </button>
   </div>
 </nav>
@@ -55,8 +55,9 @@
 
     <div class="col-xs-5" ng-switch="session.action">
       <div class="alert alert-info" ng-switch-default>
-        <h4>{{ "SUBSIDY.CREATE_SUBSIDY" | translate }}</h4>
-        <p>{{ "SUBSIDY.ALERT" | translate }}</p>
+        <h4>{{ "SUBSIDY.TITLE" | translate }}</h4>
+        <p>{{ "SUBSIDY.INFO" | translate }}</p>
+        <p>{{ "SUBSIDY.DETAILS" | translate }}</p>
       </div>
 
       <div ng-switch-when="new">
