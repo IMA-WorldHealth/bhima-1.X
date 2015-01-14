@@ -686,6 +686,7 @@
     "INVOICE_DATE"        : "Date Facture",
     "TOTAL"               : "Total",
     "ACCOUNT_ID"          : "ID Compte",
+    "DEBITOR_GROUP"       : "Groupe Débiteur",
     "DEBITOR_NAME"        : "Nom Débiteur",
     "DEBITOR_TYPE"        : "Type de Débiteur",
     "DEB_CRED_TYPE"       : "Type Débiteur/Créditeur",    
@@ -1032,7 +1033,8 @@
     "DONOR_MANAGEMENT"          : "Gestion des donateurs",       
     "UPDATE_STOCK"              : "Mettre à Jour les Stocks",
     "CREDIT_NOTE"               : "Note de Crédit",
-    "CONFIRM_PURCHASE_ORDER"    : "Confirmation ordre d'achats"
+    "CONFIRM_PURCHASE_ORDER"    : "Confirmation ordre d'achats",
+    "SUBSIDY"                   : "Gestion de Subvention"
 },
 
   "RUBRIC_PAYROLL"       : {
@@ -1573,7 +1575,7 @@
     "RECOVER_INFO"     : "[Retrouver Sale] C'est important de savoir que seulement les items de vente et les quantités sont retrouvés, les prix sont réinitialisés au prix par défaut des items",
     "CHOOSE"           : "Choisir le service",
     "DEBITOR_GROUP_LOCK" : "Le groupe de débiteur de ce patient est verrouillé",
-    "IS_DISTRIBUTABLE" : "Distribuable via le stock ?",
+    "TYPE"             : "Type de vente",
     "DISTRIBUTABLE"    : "Distribuable",
     "NO_DISTRIBUTABLE" : "Non distribuable"
   },
@@ -2639,5 +2641,19 @@
     "ALERT"            : "Le module gestion des donateurs est un module qui a été conçu pour permettre l'administration des donateurs de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'un donateur ainsi que la suppression.",
     "DELETE_SUCCESS"   : "Suppression avec succès",
     "NO_DONOR"      : "Aucun donateur n'est enregistrée"
+  },
+
+  "SUBSIDY" : {
+    "TITLE"          : "Gestion des subventions",
+    "NO_SUBSIDY"     : "Aucune subvention trouvée",
+    "REGISTERED"     : "Subventions enregistrées",
+    "CREATE_SUBSIDY" : "Créer subvention",
+    "ALERT"          : "Alert",
+    "INFO"           : "Une subvention est, en première approche, une aide financière en don réel (et non en prêt ou avance de trésorerie) à partir de fonds publics.",
+    "DETAILS"        : "Dans ce module, vous pouvez : créer une subvention, l'éditer ou la supprimer",
+    "ADD"            : "Ajouter",
+    "NEW_SUBSIDY"    : "Nouvelle subvention",
+    "UPDATE"         : "Mise à jour subvention",
+    "CONFIRM"        : "Voulez-vous vraiment effectuer cette action ?"
   }
 }
