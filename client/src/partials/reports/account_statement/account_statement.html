@@ -25,37 +25,23 @@
   <div class="reportFrame">
     <h3 class="visible-print" style="margin:0px;text-align:center;width:35%;line-height:0.8em;">
     {{ "UTIL.IMCK" | translate }} <br>
-    <small> {{ "UTIL.IMCK_LONG" | translate }}</small><br>
-    <small> {{ "UTIL.TSHIKAJI" | translate }}</small>
+    <small>{{ "UTIL.IMCK_LONG" | translate }}</small><br>
+    <small>{{ "UTIL.TSHIKAJI" | translate }}</small>
     </h3>
-    
 
-    <div style="margin-bottom : 15px">
-      <div ng-if="!session.requestId" class="hidden-print" style="margin-bottom : 15px">
-        {{ "REPORT.ACCOUNT_STATEMENT.NO_ACCOUNT_SPECIFIED" | translate }}
+    <div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div find-account on-submit="submitAccount" on-reset="resetAccountSearch" enable-reset></div>
+	</div>
       </div>
-      
-      <div class="hidden-print input-group"> 
-        <input 
-          class="form-bhima"
-          type="text"
-          ng-model="session.requestId"
-          placeholder="Account ID"
-          typeahead="account.id as formatAccount(account) for account in session.accounts.data | filter:$viewValue | limitTo:10" 
-          typeahead-template-url="AccountList.html"
-          typeahead-on-select="requestAccount()"
-          >
-        <span class="input-group-btn">
-          <button ng-click="requestAccount(session.requestId)" class="btn btn-sm btn-default square">{{ "FORM.SUBMIT" | translate }}</button>
-        </span>
-      </div>      
     </div>
-  
+    
     <div>
       <div class="row">
         <div class="col-xs-12">
           <div class="pull-left">
-            <h3>{{"REPORT.ACCOUNT_STATEMENT.TITLE" | translate}} <small> {{report.account.account_txt}}</small></h3>
+            <h3>{{"REPORT.ACCOUNT_STATEMENT.TITLE" | translate}} <span style="font-size: 14px">{{report.account.account_txt}}</span></h3>
           </div>
           <div class="pull-right">
             {{session.timestamp | date}}
@@ -80,6 +66,7 @@
             <thead>
               <tr>
                 <th>{{"COLUMNS.ACCOUNT_NUMBER" | translate}}</th>
+                <th>{{"COLUMNS.ACCOUNT" | translate}}</th>
                 <th>{{"REPORT.ACCOUNT_STATEMENT.PERIOD" | translate}}</th>
               </tr>
             </thead>
@@ -87,6 +74,7 @@
             <tbody>
               <tr>
                 <td>{{report.account.account_number}}</td>
+                <td>{{report.account.account_txt}}</td>
                 <td>{{session.config.dateFrom | date}} -- {{session.config.dateTo | date}}</td>
               </td>
             </tbody>
@@ -177,11 +165,3 @@
     </div>
   </div>
 </div>
-
-<script type="text/ng-template" id="AccountList.html">
-  <a>
-    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-    <span><b>[{{ match.model.account_number }}]</b></span>
-  </a>
-</script>
-
