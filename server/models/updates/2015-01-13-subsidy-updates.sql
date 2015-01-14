@@ -8,8 +8,8 @@
 
 USE bhima;
 
-DROP TABLE if exists `subsidy`;
-CREATE TABLE `subsidy` (
+drop table if exists `subsidy`;
+create table `subsidy` (
   `uuid`                   char(36) not null,
   `text`                   text,
   `value`                  float default 0,
@@ -20,6 +20,7 @@ CREATE TABLE `subsidy` (
   constraint foreign key (`debitor_group_uuid`) references `debitor_group` (`uuid`)
 ) engine=innodb;
 
+
 ALTER TABLE `patient_group`
 MODIFY `price_list_uuid` char(36) null;
 
@@ -29,8 +30,8 @@ ADD `subsidy_uuid` char(36) null;
 ALTER TABLE `patient_group`
 ADD FOREIGN KEY (`subsidy_uuid`) references `subsidy` (`uuid`);
 
-DROP TABLE if exists `sale_subsidy`;
-CREATE TABLE `sale_subsidy` (
+drop table if exists `sale_subsidy`;
+create table `sale_subsidy` (
   `uuid`              char(36) not null,
   `sale_uuid`         char(36) not null,
   `subsidy_uuid`      char(36) not null,
@@ -41,5 +42,3 @@ CREATE TABLE `sale_subsidy` (
   constraint foreign key (`sale_uuid`) references `sale` (`uuid`) on delete cascade,
   constraint foreign key (`subsidy_uuid`) references `subsidy` (`uuid`)
 ) engine=innodb;
-
-
