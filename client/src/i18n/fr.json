@@ -1978,7 +1978,7 @@
 
   "ALLTRANSACTIONS" : {
     "TITLE"         : "ETAT DES TOUTES LES TRANSACTIONS",
-    "SEARCH"        : "Valider",
+    "SEARCH"        : "valider",
     "DAY"           : "Aujoird'hui",
     "WEEK"          : "Cette Semaine",
     "MONTH"         : "Ce mois",
