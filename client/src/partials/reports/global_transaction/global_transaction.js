@@ -6,7 +6,8 @@ angular.module('bhima.controllers')
   '$translate',
   'validate',
   'util',
-  function ($scope, connect, appstate, $translate, validate, util) {
+  'exchange',
+  function ($scope, connect, appstate, $translate, validate, util, exchange) {
 
     var dependencies = {}, map = {};
     $scope.model = {};
@@ -57,7 +58,9 @@ angular.module('bhima.controllers')
         account.account_number = String(account.account_number);
       });
       $scope.model.c = $scope.enterprise.currency_id;
-      
+      $scope.model.account_id = 0;
+      $scope.model.source_id = 0;
+
       $scope.exchange_rate.data.forEach(function (item) {
         map[util.sqlDate(new Date())] = {c_id : item.foreign_currency_id, rate : item.rate};
       });
@@ -70,57 +73,44 @@ angular.module('bhima.controllers')
 
     function selective() {
       $scope.mode = 'selected';
-      var qo = {
-        source : $scope.model.source_id,
-        enterprise_id : $scope.enterprise.id,
-        account_id : $scope.model.account_id,
-        datef : util.sqlDate($scope.dates.from),
-        datet : util.sqlDate($scope.dates.to)
-      };
+      var url = '/reports/allTransactions/?source=' + $scope.model.source_id +
+        '&enterprise_id=' + $scope.enterprise.id + 
+        '&account_id=' + $scope.model.account_id + 
+        '&datef=' + util.sqlDate($scope.dates.from) + 
+        '&datet=' + util.sqlDate($scope.dates.to);
 
       $scope.model.account_number = $scope.accounts.get($scope.model.account_id).account_number;
-      connect.fetch('/reports/allTrans/?'+JSON.stringify(qo))
+      connect.fetch(url)
       .then(function (res) {
-        if (res.length > 0) {
-          res.map(function (item) {
-            item.debit = getValue(map[util.sqlDate(item.trans_date)], item.debit, $scope.enterprise.currency_id);
-            item.credit = getValue(map[util.sqlDate(item.trans_date)], item.credit, $scope.enterprise.currency_id);
-          });
-          $scope.records = res;
-          getTotal(res);
-        } else {
-          $scope.somCredit = 0;
-          $scope.somDebit = 0;
-          $scope.records = [];
-        }
+        res.map(function (item) {
+          if($scope.enterprise.currency_id !== item.currency_id){
+            item.debit *= exchange.rate(item.debit,item.currency_id,new Date());
+            item.credit *= exchange.rate(item.debit,item.currency_id,new Date()); 
+          }           
+        });
+        $scope.records = res;
+        getTotal(res);
       });
     }
 
     function all() {
       $scope.mode = 'all';
-      var qo = {
-        source : $scope.model.source_id,
-        enterprise_id : $scope.enterprise.id,
-        account_id : 0,
-        datef : util.sqlDate($scope.state.from),
-        datet : util.sqlDate($scope.state.to)
-      };
+      var url = '/reports/allTransactions/?source=' + $scope.model.source_id +
+        '&enterprise_id=' + $scope.enterprise.id + 
+        '&account_id=0' + 
+        '&datef=' + util.sqlDate($scope.state.from) + 
+        '&datet=' + util.sqlDate($scope.state.to);
 
-      connect.fetch(
-        '/reports/allTrans/?'+JSON.stringify(qo)
-      ).then(function (res) {
-          if (res.length > 0) {
-            res.map(function (item) {
-              item.debit = getValue(map[util.sqlDate(item.trans_date)], item.debit, $scope.enterprise.currency_id);
-              item.credit = getValue(map[util.sqlDate(item.trans_date)], item.credit, $scope.enterprise.currency_id);
-            });
-            $scope.records = res;
-            getTotal(res);
-          }else{
-            $scope.records = [];
-            $scope.somCredit = 0;
-            $scope.somDebit = 0;
-          }
+      connect.fetch(url)
+      .then(function (res) {
+          res.map(function (item) {
+            if($scope.enterprise.currency_id !== item.currency_id){
+              item.debit *= exchange.rate(item.debit,item.currency_id,new Date());
+              item.credit *= exchange.rate(item.debit,item.currency_id,new Date()); 
+            }
+          });
+          $scope.records = res;
+          getTotal(res);
         });
     }
 
@@ -135,49 +125,56 @@ angular.module('bhima.controllers')
     }
 
     function search () {
-      console.log('Le modele de la source ID',$scope.model.source_id);
-      $scope.mode = ($scope.model.account_id && $scope.model.account_id > 0) ? 'selected' : 'all';
+      var hasSelectedAccount = $scope.model.account_id && $scope.model.account_id > 0;
+      $scope.mode = (hasSelectedAccount) ? 'selected' : 'all';
       
-      if ($scope.model.account_id && $scope.model.account_id > 0) {
+      if (hasSelectedAccount) {
         $scope.model.account_number = $scope.accounts.get($scope.model.account_id).account_number;       
       } else {
         $scope.model.account_number = 0;
       }
 
-      var qo = {
-        source : $scope.model.source_id,
-        enterprise_id : $scope.enterprise.id,
-        account_id : $scope.model.account_id,
-        datef : util.sqlDate($scope.dates.from),
-        datet : util.sqlDate($scope.dates.to)
-      };
+      var url = '/reports/allTransactions/?source=' + $scope.model.source_id +
+        '&enterprise_id=' + $scope.enterprise.id + 
+        '&account_id=' + $scope.model.account_id + 
+        '&datef=' + util.sqlDate($scope.dates.from) + 
+        '&datet=' + util.sqlDate($scope.dates.to);
 
-      connect.fetch('/reports/allTrans/?'+JSON.stringify(qo))
+      connect.fetch(url)
       .then(function (res) {
-        if (res.length > 0) {
-          res.map(function (item) {
-            item.debit = getValue(map[util.sqlDate(item.trans_date)], item.debit, $scope.enterprise.currency_id);
-            item.credit = getValue(map[util.sqlDate(item.trans_date)], item.credit, $scope.enterprise.currency_id);
-          });
-          $scope.records = res;
-          getTotal(res);
-        } else {
-          $scope.somCredit = 0;
-          $scope.somDebit = 0;
-          $scope.records = [];
-        }
+        res.map(function (item) {
+            if($scope.enterprise.currency_id !== item.currency_id){
+              item.debit *= exchange.rate(item.debit,item.currency_id,new Date());
+              item.credit *= exchange.rate(item.debit,item.currency_id,new Date()); 
+            }
+        });
+        $scope.records = res;
+        getTotal(res);
       });
     }
 
     function getTotal(items) {
+      var sCredit = 0, 
+        sDebit = 0;
       $scope.somCredit = 0;
       $scope.somDebit = 0;
-      if (items.length > 0) {
-        items.forEach(function (item) {
-          $scope.somDebit+=item.debit;
-          $scope.somCredit+=item.credit;
-        });
+      items.forEach(function (item) {
+        if($scope.enterprise.currency_id !== item.currency_id){
+          sCredit += item.credit / exchange.rate(item.credit,item.currency_id,new Date()); 
+          sDebit += item.debit / exchange.rate(item.debit,item.currency_id,new Date());
+        } else {
+          sCredit += item.credit;
+          sDebit += item.debit;
+        }                
+      });
+      if($scope.enterprise.currency_id === $scope.model.c){
+        $scope.somCredit = sCredit;
+        $scope.somDebit = sDebit;
+      } else {
+        $scope.somCredit = sCredit * exchange.rate(sCredit,$scope.model.c,new Date());
+        $scope.somDebit = sDebit * exchange.rate(sDebit,$scope.model.c,new Date());
       }
+
     }
 
     appstate.register('enterprise', function (enterprise) {
