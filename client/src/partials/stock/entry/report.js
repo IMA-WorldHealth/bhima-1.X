@@ -47,6 +47,7 @@ angular.module('bhima.controllers')
     function startup(models) {
       angular.extend($scope, models);
 
+      session.depotEntry = $scope.receipt.data.length ? $scope.receipt.data[0].depot_entry : null;
       session.total = $scope.receipt.data.reduce(sum, 0);
     }
 
