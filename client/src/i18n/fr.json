@@ -12,15 +12,15 @@
     "ADD_TRANSACTION"       : "Ajouter une Transation",
     "DELETE_TRANSACTION"    : "Supprimer une transaction",
     "EDIT_TRANSACTION"      : "Editer une transaction",
-    "ADD_ROW"               : "Add Row", 
-    "SAVE_TRANSACTION"      : "Enregistrer une transaction",       
+    "ADD_ROW"               : "Add Row",
+    "SAVE_TRANSACTION"      : "Enregistrer une transaction",
     "GENERAL_LEDGER"        : "Grand Livre",
     "DEBIT"                 : "Débit",
-    "CREDIT"                : "Crédit",  
-    "REFRESH"               : "Raffraichir",      
+    "CREDIT"                : "Crédit",
+    "REFRESH"               : "Raffraichir",
     "FISCAL_YEAR"           : "Année Fiscal",
-    "ENTERPRISE"            : "Entreprise", 
-    "ENTERPRISE_MANAGEMENT" : "Gestion de l'Entreprise",       
+    "ENTERPRISE"            : "Entreprise",
+    "ENTERPRISE_MANAGEMENT" : "Gestion de l'Entreprise",
     "IN_PROGRESS"           : "En Cours",
     "CONFIGURE"             : "Configurer",
     "JUSTIFICATION"         : "Justification",
@@ -72,7 +72,7 @@
       "RECIPIENT"               : "Destinataire",
       "AMOUNT"                  : "Montant",
       "PURPOSE"                 : "Motif",
-      "DAYS"                    : "Jours",      
+      "DAYS"                    : "Jours",
       "CREDITOR"                : "Créditeur",
       "SUMMARY"                 : "Sommaire",
       "INFO_GLOBAL"             : "Informations globales",
@@ -241,11 +241,11 @@
     "RESULTS"          : "Résultats",
     "BEFORE"           : "Avant",
     "DEBIT"            : "Débit",
-    "CREDIT"           : "Crédit",    
+    "CREDIT"           : "Crédit",
     "AFTER"            : "Apres",
     "SHOW"             : "Voire",
     "HIDE"             : "Cacher",
-    "POST_TO_LEDGER"   : "Poster dans le grand livre",    
+    "POST_TO_LEDGER"   : "Poster dans le grand livre",
     "BTN_TEXT"         : "Poster au Grand Livre",
     "TRANSACTIONS"     : "Transactions",
     "ERRORS"           : "Erreurs",
@@ -255,7 +255,7 @@
     "SIGNATURES"       : "Signées",
     "SUMMARY"          : "Summaire",
     "CHIEF_ACCOUNTANT" : "Chef Comptable",
-    "FINANCE_OFFICER"  : "Chef Finance"  
+    "FINANCE_OFFICER"  : "Chef Finance"
   },
 
   "ERROR"                 : {
@@ -272,9 +272,9 @@
   "UTIL"                : {
     "CONFIGURE"         : "Configurer",
     "TOTAL"             : "Total",
-    "SIGNATURES"        : "Signature",    
+    "SIGNATURES"        : "Signature",
     "BACK"              : "Retourner",
-    "NAVIGATION"        : "Navigation",    
+    "NAVIGATION"        : "Navigation",
     "DATE"              : "Date",
     "PRINT"             : "Imprimer",
     "CREATE"            : "Créer",
@@ -316,7 +316,7 @@
   "FISCAL_YEAR"             : {
     "TITLE"                 : "Année Fiscale",
     "MANAGEMENT"            : "Gestion",
-    "CREATE"                : "Cree une Nouvelle Année",    
+    "CREATE"                : "Cree une Nouvelle Année",
     "RECORDS"               : "Liste des Années Fiscale",
     "NEW"                   : "Nouvelle Année",
     "DESC"                  : "Description",
@@ -478,7 +478,7 @@
     "ROWS"                  : "Lignes",
     "BALANCED"              : "Balance",
     "TOTAL_DEBIT"           : "Débit Totale",
-    "PATIENT_GROUP"         : "Rapport de groupe des patients",    
+    "PATIENT_GROUP"         : "Rapport de groupe des patients",
     "TOTAL_CREDIT"          : "Crédit Totale",
     "BALANCE"               : "Balance",
     "INDIVIDUAL"            : "Individuel",
@@ -532,33 +532,33 @@
 
   "COLUMNS" : {
     "COLUMNS"             : "Colonnes",
-    "VISIT_DATE"          : "Date de Visite",    
+    "VISIT_DATE"          : "Date de Visite",
     "TRANSACTION_ID"      : "ID Transaction",
     "ENTERPRISE"          : "Entreprise",
     "NUM"                 : "Numéro",
     "REGISTERED_BY"       : "Enregistrer par",
     "ORDER_DATE"          : "Date de l'Ordre d' Achat",
-    "LABEL"               : "Désignation",  
-    "SUMMARY"             : "Sommaire",    
+    "LABEL"               : "Désignation",
+    "SUMMARY"             : "Sommaire",
     "CREDITOR"            : "Créditeur",
-    "CREDITOR_ID"         : "ID Créditeur",      
-    "RATE"                : "Taux",    
+    "CREDITOR_ID"         : "ID Créditeur",
+    "RATE"                : "Taux",
     "EXPIRATION_DATE"     : "Date Expiration",
-    "TRACKING_NUMBER"     : "Numéro de Tracking", 
-    "INVENTORY_CODE"      : "Code Inventaire",  
-    "LINE_ID"             : "ID Ligne",         
-    "LIMIT"               : "Limit",       
+    "TRACKING_NUMBER"     : "Numéro de Tracking",
+    "INVENTORY_CODE"      : "Code Inventaire",
+    "LINE_ID"             : "ID Ligne",
+    "LIMIT"               : "Limit",
     "LOT_NUMBER"          : "Numéro Lot",
-    "PURCHASE_DATE"       : "Date de l'Ordre d'Achat",    
+    "PURCHASE_DATE"       : "Date de l'Ordre d'Achat",
     "EXPLANATION"         : "Explication",
     "ABBR"                : "Abr.",
     "ENTERPRISE_ID"       : "ID Enterprise",
-    "FIX"                 : "Fix",     
+    "FIX"                 : "Fix",
     "CREATED"             : "Crée",
     "SALE_ID"             : "ID Vente",
     "APPLIES_GLOBALLY"    : "Appliquer globalement",
     "MEMBERS"             : "Membres",
-    "PASSWORD"            : "Mot de passe", 
+    "PASSWORD"            : "Mot de passe",
     "ID"                  : "ID",
     "TRANSACTION_DATE"    : "Date de Transaction",
     "PURCHASE_ORDER"      : "Ordre d'Achat",
@@ -568,9 +568,10 @@
     "INVOICE_DATE"        : "Date Facture",
     "TOTAL"               : "Total",
     "ACCOUNT_ID"          : "ID Compte",
+    "DEBITOR_GROUP"       : "Groupe Débiteur",
     "DEBITOR_NAME"        : "Nom Débiteur",
     "DEBITOR_TYPE"        : "Type de Débiteur",
-    "DEB_CRED_TYPE"       : "Type Débiteur/Créditeur",    
+    "DEB_CRED_TYPE"       : "Type Débiteur/Créditeur",
     "COMMENT"             : "Commentaire",
     "ACCOUNT"             : "Compte",
     "PARENT"              : "Parent",
@@ -673,9 +674,9 @@
     "QTY_AVAIL"           : "Quantité Disponible",
     "QTY_IN_LOT"          : "Nombre item dans Lot",
     "SERVICE"             : "Service",
-    "COST_CENTER"         : "Centre de coût",    
+    "COST_CENTER"         : "Centre de coût",
     "PROJECT"             : "Projet",
-    "CHARGE"              : "Charge",        
+    "CHARGE"              : "Charge",
     "SCOPE"               : "Appliquer à",
     "PROFIT"              : "Profit",
     "RESULT"              : "Résultat",
@@ -692,7 +693,7 @@
     "MEDECINE"            : "Médicament",
     "QTY_LOSS"            : "Quantité perdue",
     "DOCUMENT_UUID"       : "Numéro Document",
-    "REFERENCE_PURCHASE"  : "Référence",    
+    "REFERENCE_PURCHASE"  : "Référence",
     "CONSUMED_STOCK"      : "Stock Consommé",
     "SOURCE"              : "Source",
     "TOTAL_DEBIT"         : "Débit total",
@@ -764,8 +765,8 @@
     "GROUPS" : {
       "TITLE"         : "Gestions des Groupes des Stocks",
       "ADD"           : "Ajouter Groupe des Stocks",
-      "CREATE_GROUP"  : "Créer Groupe", 
-      "ALL_GROUPS"    : "Tous",           
+      "CREATE_GROUP"  : "Créer Groupe",
+      "ALL_GROUPS"    : "Tous",
       "CODE"          : "Code",
       "NAME"          : "Nom",
       "SALES_ACCOUNT" : "Compte Produit",
@@ -796,9 +797,9 @@
     },
     "REGISTER" : {
       "TITLE"            : "Enregistrement des Stocks",
-      "VIEW"             : "Voire tous les items", 
-      "ADD_TYPE"         : "Ajouter type d'unité",   
-      "ADD_GROUP"        : "Ajouter groupe d'inventaire",              
+      "VIEW"             : "Voire tous les items",
+      "ADD_TYPE"         : "Ajouter type d'unité",
+      "ADD_GROUP"        : "Ajouter groupe d'inventaire",
       "GENERAL"          : "Général",
       "CODE"             : "Code",
       "DESCRIPTION"      : "Description",
@@ -813,7 +814,7 @@
     },
     "MANIFEST" : {
       "TITLE" : "Manifeste des inventaires"
-    }    
+    }
   },
 
   "TREE" : {
@@ -821,7 +822,7 @@
     "ADMIN"                     : "Admin",
     "ENTERPRISE"                : "Entreprise",
     "PERMISSION"                : "Utilisateurs & Permissions",
-    "PATIENT_REGISTRATIONS"     : "Enregistrement des patients",  
+    "PATIENT_REGISTRATIONS"     : "Enregistrement des patients",
     "FINANCE"                   : "Finances",
     "ACCOUNT"                   : "Compte",
     "BUDGETING"                 : "Budget",
@@ -911,12 +912,12 @@
     "PAYROLL"                   : "Payroll",
     "MULTI_PAYROLL"             : "Payroll Multiple",
     "BALANCE_MENSUELLE"         : "Rapport Balance Mensuelle",
-    "DONOR_MANAGEMENT"          : "Gestion des donateurs",       
+    "DONOR_MANAGEMENT"          : "Gestion des donateurs",
     "UPDATE_STOCK"              : "Mettre à Jour les Stocks",
     "CREDIT_NOTE"               : "Note de Crédit",
-    "CONFIRM_PURCHASE_ORDER"    : "Confirmation ordre d'achats"
-  },
-
+    "CONFIRM_PURCHASE_ORDER"    : "Confirmation ordre d'achats",
+    "SUBSIDY"                   : "Gestion de Subvention"
+},
   "RUBRIC_PAYROLL"       : {
     "TITLE"              : "Rubriques Payroll",
     "NEW"                : "Nouvelle Rubrique",
@@ -1138,7 +1139,7 @@
     "REGISTER_PATIENT"         : "Enregistrer le Patient",
     "RELIGION"                 : "Religion",
     "RENEWAL"                  : "Renouveller Fiche",
-    "RUE"                      : "Rue",    
+    "RUE"                      : "Rue",
     "SECOND_NAME"              : "Nom",
     "SEX"                      : "Sex",
     "SPOUSE"                   : "Nom de l'epoux(se)",
@@ -1213,7 +1214,7 @@
     "REGISTER"              : "Enregistrer un Emplacement",
     "VILLAGE_NAME"          : "Nom du Village",
     "ADD"                   : "Ajouter",
-    "NEW_FORM"              : "Nouveau formulaire"    
+    "NEW_FORM"              : "Nouveau formulaire"
   },
 
   "GROUP_INVOICE" : {
@@ -1243,8 +1244,8 @@
     "SAVE_CHANGES"    : "Sauver Changement",
     "SUBMIT_BALANCES" : "Sauver Balances",
     "SUBMIT"          : "Soumettre",
-    "SIGN_AND_SUBMIT" : "Confirmer et soumettre",  
-    "SEARCH"          : "Rechercher",      
+    "SIGN_AND_SUBMIT" : "Confirmer et soumettre",
+    "SEARCH"          : "Rechercher",
     "DISCARD"         : "Annuler",
     "RESET_BALANCES"  : "Réinitialiser Balances",
     "CLEAR"           : "Effacer",
@@ -1260,7 +1261,7 @@
     "EDIT"            : "Editer",
     "NEW_FORM"        : "Nouveau Formulaire",
     "REVIEW"          : "Suivant",
-    "BACK"            : "Précédent",    
+    "BACK"            : "Précédent",
     "NEW_TRANSFER"    : "Nouveau Transfert"
   },
 
@@ -1384,7 +1385,7 @@
     "POSTED"         : "Nouvelle liste de prix postée",
     "DELETE_CONFIRM" : "Voulez - vous Effacer ?",
     "REMOVE_SUCCESS" : "Effacer avec succès",
-    "UNABLE_TO_DELETE" : "La liste de prix ne peut être supprimer - car elle peut être courament assignée à un groupe de patient / groupes débiteurs",    
+    "UNABLE_TO_DELETE" : "La liste de prix ne peut être supprimer - car elle peut être courament assignée à un groupe de patient / groupes débiteurs",
     "APPLY_TO_ITEM"  : "Appliquer à l'item",
     "APPLY_TO_BILL"  : "Appliquer à la facture"
   },
@@ -1455,7 +1456,7 @@
     "RECOVER_INFO"     : "[Retrouver Sale] C'est important de savoir que seulement les items de vente et les quantités sont retrouvés, les prix sont réinitialisés au prix par défaut des items",
     "CHOOSE"           : "Choisir le service",
     "DEBITOR_GROUP_LOCK" : "Le groupe de débiteur de ce patient est verrouillé",
-    "IS_DISTRIBUTABLE" : "Distribuable via le stock ?",
+    "TYPE"             : "Type de vente",
     "DISTRIBUTABLE"    : "Distribuable",
     "NO_DISTRIBUTABLE" : "Non distribuable"
   },
@@ -1559,7 +1560,7 @@
     "CASH_ID"           : "# Transaction de Caisse",
     "AMOUNT_RECEIVED"   : "Montant Paye",
     "TRANSACTION_PRICE" : "Prix Transaction",
-    "PURCHASE_ORDER"    : "Ordre D'Achat",    
+    "PURCHASE_ORDER"    : "Ordre D'Achat",
     "PURCHASE_RECIPIENT"            : "Fournisseur",
     "PURCHASE_ID"                  : "ID Ordre Achat",
     "PURCHASE_DATE"                : "Date ordre achat",
@@ -1614,9 +1615,9 @@
     "LOT_NUMBER"                    : "Numéro de lot",
     "DATE_DOCUMENT"                 : "Date du document",
     "DOCUMENT_NUMBER"               : "Numéro du document",
-    "ENTRY_DATE"                    : "Date d'entré",  
+    "ENTRY_DATE"                    : "Date d'entré",
     "CONFIRM_DIRECT_PURCHASE"       : "Confirmation Achat Direct",
-    "ACCOUNT"                       : "Compte"    
+    "ACCOUNT"                       : "Compte"
   },
 
   "SECTOR"             : {
@@ -1659,7 +1660,7 @@
     "INFO"            : "L'outil de gestion du personnel peut être utilisé pour créer, afficher et mettre à jour les employés et leurs informations. Les employés inscrits ici sont disponibles pour l'intégration dans des modules tels que / Payroll (Gestion de paiment) /.",
     "SUBMIT_NEW"      : "Soumettre l'enregistrement",
     "EDIT"            : "Mise à jour employé",
-    "SUBMIT_EDIT"     : "Envoyer les détails",    
+    "SUBMIT_EDIT"     : "Envoyer les détails",
     "CREDITOR_REFERENCE" : "BHIMA créanciers ID",
     "SERVICE"            : "Service",
     "FIRST_NAME"         : "Prenom",
@@ -1874,7 +1875,7 @@
         "SUBMIT"                    : "Soumettre",
         "ERROR"                     : "Cette consommation a déjà été inversée dans le stock",
         "SUCCESS"                   : "Opération avec succès"
-    },  
+    },
     "DISTRIBUTION_SERVICE_RECORDS" : {
         "KEY"                       : "Historique des distributions aux services",
         "REVERSING_DISTRIBUTION"    : "Annuler la distribution",
@@ -1882,7 +1883,7 @@
         "SUBMIT"                    : "Soumettre",
         "ERROR"                     : "Cette consommation a déjà été inversée dans le stock",
         "SUCCESS"                   : "Opération avec succès"
-    },            
+    },
     "LOSS"     : {
       "KEY"               : "Perte stock",
       "TITLE"             : "Perte stock",
@@ -1948,7 +1949,7 @@
     "CHIEF_ACCOUNTANT"  : "Chef comptable",
     "FINANCE_OFFICER"   : "Officier Finance",
     "ADMINISTRATOR"     : "Adminstrateur",
-    "CUSTOMER"          : "Client",    
+    "CUSTOMER"          : "Client",
     "RESPONSABLE"       : "Responsable",
     "BENEFICIARY"       : "Bénéficiaire",
     "EMPLOYEE"          : "Employé",
@@ -2044,7 +2045,7 @@
     "CONFIRM_PAY "  : "Confirm pay",
     "CONFIRM_PAY_OF" : "Confirm pay of ",
     "BY"             : "by ",
-    "DISCARD"        : "Discard"    
+    "DISCARD"        : "Discard"
   },
 
    "GRADE" : {
@@ -2095,7 +2096,7 @@
     "NEW_OFFDAY"      : "Nouveau Jour férié",
     "SAVE_SUCCES"     : "Enregistrement avec succès",
     "UPDATE_SUCCES"   : "Mis à jour avec succès",
-    "UPDATE"          : "Mettre à jour un jour férié",    
+    "UPDATE"          : "Mettre à jour un jour férié",
     "DELETE_SUCCESS"  : "Supprimé avec succès",
     "NO_OFFDAY"       : "Aucun jour férié n'est encore enregistré",
     "CONFIRM"         : "Etes vous sure de vouloir supprimer ce jour férié",
@@ -2383,7 +2384,7 @@
   "AUTH"             : {
     "LOGIN"          : "Se connecter",
     "LOGIN_ERROR"    : "Erreur : Nom de utilisateur et mots de pass ne sont pas correct",
-    "LOGIN_TO_BHIMA" : "Bhima Login",    
+    "LOGIN_TO_BHIMA" : "Bhima Login",
     "LOGOUT_SUCCESS" : "Vous n'etes pas connecté",
     "RESET"          : "Annuler"
   },
@@ -2520,5 +2521,19 @@
     "ALERT"            : "Le module gestion des donateurs est un module qui a été conçu pour permettre l'administration des donateurs de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'un donateur ainsi que la suppression.",
     "DELETE_SUCCESS"   : "Suppression avec succès",
     "NO_DONOR"      : "Aucun donateur n'est enregistrée"
+  },
+
+  "SUBSIDY" : {
+    "TITLE"          : "Gestion des subventions",
+    "NO_SUBSIDY"     : "Aucune subvention trouvée",
+    "REGISTERED"     : "Subventions enregistrées",
+    "CREATE_SUBSIDY" : "Créer subvention",
+    "ALERT"          : "Alert",
+    "INFO"           : "Une subvention est, en première approche, une aide financière en don réel (et non en prêt ou avance de trésorerie) à partir de fonds publics.",
+    "DETAILS"        : "Dans ce module, vous pouvez : créer une subvention, l'éditer ou la supprimer",
+    "ADD"            : "Ajouter",
+    "NEW_SUBSIDY"    : "Nouvelle subvention",
+    "UPDATE"         : "Mise à jour subvention",
+    "CONFIRM"        : "Voulez-vous vraiment effectuer cette action ?"
   }
 }
