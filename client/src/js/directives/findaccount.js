@@ -36,12 +36,17 @@ angular.module('bhima.directives')
 	query : {
           tables : {
             'account' :{
-              columns : ['id', 'account_txt', 'account_number']
+              columns : ['*']
             }
           }
 	}
       };
  
+      // See if where clauses are given
+      if ('where' in attrs) {
+	dependencies.accounts.query.where = scope[attrs.where]();
+	}
+
       //TODO Downloads all accounts for now - this should be swapped for an asynchronous search
       validate.process(dependencies).then(function (models) {
 	scope.accounts = models.accounts.data;

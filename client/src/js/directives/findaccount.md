@@ -35,3 +35,20 @@ Optional attributes:
     rejected.  Add the attribute as follows:
 
        on-reset="resetFunction"
+
+  * `where` sets a callback function that will add a 'where' clause to the
+    database search for accounts to be shown in the account selection
+    typeahead drop-down area.  The `where` callback function should return a
+    list of strings, each representing a SQL where clause.  Example usage:
+
+       where="whereClause"
+
+    If you want to restrict the search to income and expense accounts, the
+    `whereClause()` function would look like this:
+
+       function whereClause() {
+          return [ 'account.account_type_id in (1,4)' ];
+       }
+
+    Note that all fields are included in the query for accounts so the 'WHERE'
+    clauses can use any of the `account` table fields.
