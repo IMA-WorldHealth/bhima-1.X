@@ -70,20 +70,25 @@ angular.module('bhima.controllers')
 
     function updateCurrency (currency) {
       var totals = model.total,
-        saleRecords = model.saleRecords[0];
-        
-      totals.localeCost = model.common.doConvert(saleRecords.cost, currency, saleRecords.invoice_date);
+        saleRecord = model.saleRecords,
+        saleRecords = model.saleRecords[0],
+        doConvert = model.common.doConvert,
+        convert = model.common.convert,
+        ledgers = model.ledger;
 
-      if (model.ledger)  {
-        totals.localeBalance = model.common.doConvert(model.ledger.balance, currency, saleRecords.invoice_date);
-        model.ledger.localeCredit = model.common.doConvert(model.ledger.credit, currency, saleRecords.invoice_date);
+      
+      totals.localeCost = doConvert(saleRecords.cost, currency, saleRecords.invoice_date);
+
+      if (ledgers)  {
+        totals.localeBalance = doConvert(ledgers.balance, currency, saleRecords.invoice_date);
+        ledgers.localeCredit = doConvert(model.ledger.credit, currency, saleRecords.invoice_date);
       }
 
       totals.localeTotalSum = model.common.convert(totals.totalSum, currency, saleRecords.invoice_date);
 
-      model.saleRecords.forEach(function (item) {
-        item.localeTransaction = model.common.doConvert(item.transaction_price, currency, saleRecords.invoice_date);
-        item.localeCost = model.common.doConvert((item.credit - item.debit), currency, saleRecords.invoice_date);
+      saleRecord.forEach(function (item) {
+        item.localeTransaction = doConvert(item.transaction_price, currency, saleRecords.invoice_date);
+        item.localeCost = doConvert((item.credit - item.debit), currency, saleRecords.invoice_date);
       });
     }
 
@@ -108,20 +113,24 @@ angular.module('bhima.controllers')
 
     function updateCost(currency_id) {
       var totals = model.total,
-        saleRecords = model.saleRecords[0];
+        saleRecord = model.saleRecords,
+        saleRecords = model.saleRecords[0],
+        doConvert = model.common.doConvert,
+        convert = model.common.convert,
+        ledgers = model.ledger;
         
-      totals.localeCost = model.common.doConvert(saleRecords.cost, currency_id, saleRecords.invoice_date);
+      totals.localeCost = doConvert(saleRecords.cost, currency_id, saleRecords.invoice_date);
 
-      if (model.ledger)  {
-        totals.localeBalance = model.common.doConvert(model.ledger.balance, currency_id, saleRecords.invoice_date);
-        model.ledger.localeCredit = model.common.doConvert(model.ledger.credit, currency_id, saleRecords.invoice_date);
+      if (ledgers)  {
+        totals.localeBalance = doConvert(ledgers.balance, currency_id, saleRecords.invoice_date);
+        ledgers.localeCredit = doConvert(model.ledger.credit, currency_id, saleRecords.invoice_date);
       }
 
-      totals.localeTotalSum = model.common.convert(totals.totalSum, currency_id, saleRecords.invoice_date);
+      totals.localeTotalSum = convert(totals.totalSum, currency_id, saleRecords.invoice_date);
 
-      model.saleRecords.forEach(function (item) {
-        item.localeTransaction = model.common.doConvert(item.transaction_price, currency_id, saleRecords.invoice_date);
-        item.localeCost = model.common.doConvert((item.credit - item.debit), currency_id, saleRecords.invoice_date);
+      saleRecord.forEach(function (item) {
+        item.localeTransaction = doConvert(item.transaction_price, currency_id, saleRecords.invoice_date);
+        item.localeCost = doConvert((item.credit - item.debit), currency_id, saleRecords.invoice_date);
       });
     }
 
