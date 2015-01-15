@@ -39,7 +39,11 @@
           <tbody>
             <tr ng-repeat="subsidy in subsidies.data | orderBy:'text'">
               <td>{{ subsidy.text }}</td>
-              <td>{{ subsidy.value }}</td>
+              <td>
+                {{ subsidy.value }}
+                <span ng-show="subsidy.is_percent">%</span>
+                <span ng-hide="subsidy.is_percent">{{enterprise.data[0].symbol}}</span>
+              </td>
               <td><span class="glyphicon" ng-class="{'glyphicon-ok' : !!subsidy.is_percent}"></td>
               <td>{{ subsidy.name }}</td>
               <td><a class="action" ng-click="edit(subsidy)"><span class="glyphicon glyphicon-pencil"></span></a></td>
@@ -125,8 +129,12 @@
 
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.VALUE" | translate }}</label>
-            <div class="col-xs-7">
+            <div class="input-group col-xs-7">
               <input ng-model="session.edit.value" class="form-bhima" required="required">
+              <span class="input-group-addon">
+                <span ng-show="session.edit.is_percent">%</span>
+                <span ng-hide="session.edit.is_percent">{{enterprise.data[0].symbol}}</span>
+              </span>
             </div>
           </div>
 
