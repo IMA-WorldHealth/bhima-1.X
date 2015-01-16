@@ -17,11 +17,26 @@ var newFilename = process.argv[3];
 var data = fs.readFileSync(oldFilename, 'utf8');
 var dict = JSON.parse(data);
 
+// Crude but sure how else to do this in Javascrip
+function nspaces(n) {
+    var spaces = '';
+    for(var i = 0; i < n; i++) {
+	spaces += ' ';
+    }
+    return spaces;
+}
+
 // Define the function to write out a sorted dictionary (recursively)
 var writeSortedDict = function (f, d, indent) {
     var keys = Object.keys(d).sort();
+    var maxKeyLen = 0;
     var key, val;
     
+    // Figure out the maximum key length
+    keys.forEach(function (k) {
+	maxKeyLen = Math.max(k.length, maxKeyLen);
+	});
+
     fs.writeSync(f, '{\n');
     for(var i = 0; i < keys.length; i++) {
 	key = keys[i];
@@ -40,7 +55,7 @@ var writeSortedDict = function (f, d, indent) {
 	else {
 	    // Deal with simple string values
 	    val = val.replace(/\"/g, "'");
-	    fs.writeSync(f, indent + '"' + key + '": "' + val + '"');
+	    fs.writeSync(f, indent + '"' + key + '"'+ nspaces(maxKeyLen - key.length + 1) + ': "' + val + '"');
 	    if (i == keys.length - 1) {
 		fs.writeSync(f, '\n');
 	    }
