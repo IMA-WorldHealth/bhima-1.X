@@ -18,7 +18,7 @@ angular.module('bhima.controllers')
         session = $scope.session = {},
         editableFields = [
 	  'first_name', 'last_name', 'dob', 'sex', 'father_name', 'mother_name', 'title',
-	  'profession', 'employer', 'marital_status', 'spouse', 'spouse_profession', 'spouse_employer',
+	  'profession', 'employer', 'marital_status', 'spouse', 'spouse_profession', 'spouse_employer', 'notes',
 	  'religion', 'phone', 'email', 'address_1', 'address_2', 'origin_location_id', 'current_location_id'
 	  ];
     
@@ -189,9 +189,18 @@ angular.module('bhima.controllers')
       customValidation();
     });
 
+    // Function to switch back to search mode (and reset the search)
+    $scope.restartSearch = function () {
+      originalPatientData = null;
+      $scope.patient = { origin_location_id: null, current_location_id: null };
+      $scope.initialOriginLocation = null;
+      $scope.initialCurrentLocation = null;
+      validate.clear(dependencies, ['patient']); // So future patient query gets processed
+      session.mode = 'search';
+    };
 
-    // Define the function that switches to the edit mode
-    $scope.initialiseEditing = function initialiseEditing (selectedPatient) {
+    // Function to switch to the edit mode
+    $scope.initialiseEditing = function initialiseEditing(selectedPatient) {
       if (selectedPatient && 'uuid' in selectedPatient && selectedPatient.uuid) {
         patientUuid = selectedPatient.uuid;
 	dependencies.patient.query.where[0] = 'patient.uuid=' + patientUuid;
@@ -200,7 +209,6 @@ angular.module('bhima.controllers')
 	session.mode = 'edit';
       }
     };
-
 
     // Main function to save the updated patient data to the database
     $scope.updatePatient = function () {
@@ -246,7 +254,6 @@ angular.module('bhima.controllers')
       session.mode = 'edit';
     };
 
-
     // Basic setup function when the models are loaded
     function startup (models) {
       var patient = $scope.patient = models.patient.data[0];
@@ -265,6 +272,7 @@ angular.module('bhima.controllers')
         .replace('<min>', minYear)
 	.replace('<max>', maxYear);
     }
+
 
     // Register this controller
     appstate.register('enterprise', function (enterprise) {

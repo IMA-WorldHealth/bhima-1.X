@@ -4,7 +4,7 @@
   "description": "A rural hospital information management system.",
   "main": "server/app.js",
   "scripts": {
-    "test": "node server/app.js"
+    "test": "mocha server/test/"
   },
   "repository": {
     "type": "git",
@@ -30,6 +30,7 @@
     "morgan": "^1.5.1",
     "mysql": "^2.5.4",
     "q": "^1.0.1"
+    "csv": "^0.4.1",
   },
   "devDependencies": {
     "chai": "^1.10.0",

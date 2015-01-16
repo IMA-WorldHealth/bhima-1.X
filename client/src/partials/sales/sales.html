@@ -53,6 +53,25 @@
     </div>
   </div>
 
+  <!-- Distributable or not -->
+  <div 
+    class="panel"
+    ng-class="{'panel-success' : session.is_distributable, 'panel-warning' : !session.is_distributable}"
+  >
+    <div class="panel-heading">
+      <i class="glyphicon glyphicon-export"></i> 
+      <strong>{{ 'SALE.IS_DISTRIBUTABLE' | translate }} : </strong>
+    </div>
+    <div class="panel-body">
+      <input type="radio" id="distributable" ng-model="session.is_distributable" ng-value="1" ng-change="getDistributable()">
+      <label for="distributable">{{ 'SALE.DISTRIBUTABLE' | translate }}</label>
+      <span class="po-type-space"></span>
+      <input type="radio" id="no_distributable" ng-model="session.is_distributable" ng-value="0" ng-change="getDistributable()">
+      <label for="no_distributable">{{ 'SALE.NO_DISTRIBUTABLE' | translate }}</label>
+    </div>
+  </div>
+  <!-- End distributable or not -->
+
   <div class="row">
     <div class="col-xs-12">
         <div ng-show="invoice.service && invoice.debtor">
@@ -87,17 +106,21 @@
           </div>
 
          <!-- FIXME style hacks -->
-         <div ng-class="{'alert alert-warning' : invoice.debtor.is_convention || invoice.priceList.length || invoice.debitorCaution >0}">
+         <div ng-if="!invoice.debtor.locked" ng-class="{'alert alert-warning' : invoice.debtor.is_convention || invoice.priceList.length || invoice.debitorCaution >0}">
          <p ng-show="invoice.debitorCaution>0">Caution {{invoice.debitorCaution | currency}}</p>
          <p ng-show="invoice.debtor.is_convention">{{'SALE.PATIENT_COVERED' | translate}} {{invoice.debtor.account_id}}</p>
          <p ng-repeat="charge in invoice.priceList"><b> {{charge.is_discount ? '-' : '+'}} {{charge.value}}% '{{charge.description}}' - {{charge.is_global ? ('SALE.APPLIES_GLOBALLY' | translate) : ('SALE.APPLIES_TO_ITEM' | translate)}}</b></p>
          </div>
 
+         <div ng-class="{'alert alert-danger' : invoice.debtor.locked }">
+         <p ng-show="invoice.debtor.locked"> <b> {{ 'SALE.DEBITOR_GROUP_LOCK' | translate }}</b> </p>
+         </div>         
+
          <div class="alert alert-info" ng-if="session.displayRecover">
             {{"SALE.RECOVER_INFO" | translate}}
          </div>
 
-         <div class="row">
+         <div class="row" ng-if="!invoice.debtor.locked">
 
             <div class="col-xs-12">
                 <div class="pull-right">

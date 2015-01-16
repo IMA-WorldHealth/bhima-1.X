@@ -42,7 +42,6 @@ angular.module('bhima.controllers')
         ico : 'glyphicon-transfer',
         link : '/stock/movement'
       }
-      
     ];
 
     config.modules_warehouse = [
@@ -75,6 +74,7 @@ angular.module('bhima.controllers')
     config.reports = [
       {
         key : 'STOCK.REPORT.STOCK_COUNT',
+        ico : 'glyphicon-list-alt',
         link : '/count/'
       },
 
@@ -88,7 +88,14 @@ angular.module('bhima.controllers')
         key : 'STOCK.DISTRIBUTION_SERVICE_RECORDS.KEY',
         ico : 'glyphicon-list-alt',
         link : '/stock/distribution_service_record'
+      },
+
+      {
+        key : 'STOCK.LOSS.LOSS_RECORDS',
+        ico : 'glyphicon-list-alt',
+        link : '/stock/loss_record'
       }
+      
     ];
 
     dependencies.depots = {
@@ -171,8 +178,15 @@ angular.module('bhima.controllers')
         return messenger.danger('NO_DEPOT_SELECTED');
       }*/
 
-      var path = config.modules.indexOf(defn) > -1 ? defn.link + '/' + $scope.depot.uuid
-        : (config.utilities.indexOf(defn) > -1 ) ? defn.link+ '/' + $scope.depot.uuid : defn.link;
+      // build dynamically the report list links in report panel
+      var isModules = (config.modules.indexOf(defn) > -1),
+          isUtilities = (config.utilities.indexOf(defn) > -1),
+          isReports = (config.reports.indexOf(defn) > -1 );
+
+      var path = isModules ? defn.link + '/' + $scope.depot.uuid
+        : isUtilities ? defn.link+ '/' + $scope.depot.uuid 
+        : isReports ? defn.link+ '/' + $scope.depot.uuid : defn.link;
+        
       $location.path(path);
     };
 
