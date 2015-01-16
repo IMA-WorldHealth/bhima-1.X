@@ -38,7 +38,7 @@ angular.module('bhima.controllers')
 	    columns : ['fiscal_year_id', 'period_number', 'period_start', 'period_stop', 'locked' ]
 	    }
 	  },
-	join : [ 'period.id=budget.period_id' ]
+	join : [ 'period.id=budget.period_id' ],
 	}
     };
 
@@ -49,6 +49,7 @@ angular.module('bhima.controllers')
 	    columns : ['id', 'fiscal_year_id', 'period_number', 'period_start', 'period_stop', 'locked' ]
 	    }
 	  },
+	where : [ 'period.period_number<>0' ]
 	}
     };
 
@@ -105,9 +106,11 @@ angular.module('bhima.controllers')
 	session.account = newAccount;
 	// ??? Should this override the where?
         dependencies.account.query.where = ['account.id=' + newAccount.id];
-	dependencies.budgets.query.where = [ 'period.fiscal_year_id=' + session.fiscal_year.id, 'AND',
-					     'budget.account_id=' + session.account.id ];
-	dependencies.periods.query.where = [ 'period.fiscal_year_id=' + session.fiscal_year.id ];
+	dependencies.budgets.query.where = ['period.fiscal_year_id=' + session.fiscal_year.id, 'AND',
+					    'budget.account_id=' + session.account.id, 'AND',
+					    'period.period_number<>0'];
+	dependencies.periods.query.where = ['period.fiscal_year_id=' + session.fiscal_year.id, 'AND',
+					    'period.period_number<>0'];
         validate.refresh(dependencies, ['account', 'budgets', 'periods'])
           .then(startup);
 	session.state = 'edit';
