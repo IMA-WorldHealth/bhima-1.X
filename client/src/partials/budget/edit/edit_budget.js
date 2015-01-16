@@ -73,6 +73,7 @@ angular.module('bhima.controllers')
     session.totalBudget = 0.0;
     session.validTotal = false;
     session.autoAdjust = false;
+    session.no_data_msg = null;
 
     // Basic setup function when the models are loaded
     function startup(models) {
@@ -87,6 +88,12 @@ angular.module('bhima.controllers')
  	total += Number(b.budget);
       });
       session.totalBudget = total;
+
+      if (!session.found) {
+	session.no_data_msg = $translate.instant('BUDGET.EDIT.DATA_NOT_FOUND')
+          .replace('<acct>', session.account.account_txt)
+	  .replace('<fyname>', session.fiscal_year.fiscal_year_txt);
+      }
     }
 
     // Initialize editing the selected account
