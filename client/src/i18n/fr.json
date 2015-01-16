@@ -2256,6 +2256,7 @@
    "DEPOT"                     : "Dépôt",
    "DONATION_MANAGEMENT"       : "Gestion des Dons",
    "DONOR_MANAGEMENT"          : "Gestion des donateurs",
+   "EDIT_BUDGET"               : "Modifir le Budget d'un Compte???",
    "EDIT_PATIENT"              : "Modifier Patient",
    "EMPLOYEE"                  : "Gestion des Employés",
    "EMPLOYEE_STANDING"         : "Rapport des employés",
