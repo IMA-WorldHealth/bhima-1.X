@@ -2256,6 +2256,7 @@
    "DEPOT"                     : "Depot",
    "DONATION_MANAGEMENT"       : "Donation Management",
    "DONOR_MANAGEMENT"          : "Donor management",
+   "EDIT_BUDGET"               : "Edit Account Budget",
    "EDIT_PATIENT"              : "Edit Patient Details",
    "EMPLOYEE"                  : "Employee",
    "EMPLOYEE_STANDING"         : "Employee Standing Report",
