@@ -2520,5 +2520,32 @@
     "ALERT"         : "Donor management module is a module that has been designed to allow administration of existing Donor within the organization, the table is left to record, to update the attributes of a Donor and the deletion.",
     "DELETE_SUCCESS" : "Deleted successfully",
     "NO_DONOR"    : "No Donor saving"
-  }   
+  },
+
+  "BUDGET" : {
+    "EDIT" : {
+      "ACCOUNT_LABEL"     : "Account:",
+      "AUTO_ADJUST"       : "Auto adjust totals",
+      "BUDGET"            : "Budget",
+      "BUDGET_DETAILS"    : "Budget Details",
+      "CREATE"            : "Create Budget",
+      "CREATE_FAIL"       : "Error creating budget",
+      "CREATE_OK"         : "Budget created",
+      "CREATE_QUESTION"   : "Create a new budget for this account for this fiscal year?",
+      "END"	          : "End",
+      "FISCAL_YEAR_LABEL" : "Fiscal Year:",
+      "FREEZE"            : "Freeze",
+      "PAGE_TITLE"        : "Edit Account Budget",
+      "PERIOD"            : "Period",
+      "RESTART_SEARCH"    : "Find another account",
+      "START"	          : "Start",
+      "TOTAL"             : "TOTAL:",
+      "UPDATE_BUDGET"     : "Update Budget",
+      "UPDATE_OK"         : "Budget updated",
+      "UPDATE_FAIL"       : "Budget update failed",
+      "WARN_BAD_TOTALS"   : "The sum of the budget numbers for the periods does not match the total!",
+      "WARN_ZERO_TOTAL"   : "You must enter a total for the year before proceeding!",
+      "WARNING"           : "WARNING!"
+      }
+    }
 }
