@@ -8,15 +8,12 @@
     
     <div class="row">
       <div class="col-xs-4">
-        <div class="panel-heading">
-	  {{ "BUDGET.EDIT.BUDGET_DETAILS" | translate }}
-	</div>
 	<h4>{{ "SELECT.FISCAL_YEAR" | translate }}</h4>
 	<table class="table form-bhima-border" summary="{{SELECT.FISCAL_YEAR}}">
           <thead>
 	    <tr>
-	      <th>{{ 'FISCAL_YEAR.DESCRIPTION' | translate }}</th>
-	      <th>{{ 'FISCAL_YEAR.START_DATE' | translate }}</th>
+	      <th>{{ "FISCAL_YEAR.DESCRIPTION" | translate }}</th>
+	      <th>{{ "FISCAL_YEAR.START_DATE" | translate }}</th>
 	      <th>&nbsp;</th>
 	    </tr>
           </thead>
@@ -43,14 +40,11 @@
   </div> <!-- end of search area -->
 
   <div ng-if="session.state === 'edit'">
-
     <div class="row" ng-if="!session.found">
       <div class="col-xs-1"></div>
       <div class="col-xs-5">
 	<div>
-	  <h3>No Budget data found for account '{{ session.account.account_txt }}' 
-	    for fiscal year '{{ session.fiscal_year.fiscal_year_txt }}'.
-	  </h3>
+	  <h3>{{ session.no_data_msg }}</h3>
 	  <h3>{{ "BUDGET.EDIT.CREATE_QUESTION" | translate }}</h3>
 	  <h3 class="center">
 	    <button class="btn btn-sm btn-default" ng-click="createBudget()">
@@ -59,11 +53,14 @@
 	  </h3>
 	</div>
       </div>
-    </div>
+    </div> <!-- end create budget row -->
 
-    <div class="row" ng-if="session.found" style="margin-top: 16px">
+    <div class="row panel panel-primary" ng-if="session.found" style="margin: 4px 4px auto 4px">
+      <div class="panel-heading">
+	<b>{{ "BUDGET.EDIT.BUDGET_DETAILS" | translate }}</b>
+      </div>
       <div class="col-xs-5">
-	<form name="budget">
+	<form name="budget" style="margin-top: 10px">
 	  <table class="table form-bhima-border" summary="{{ 'EDIT.BUDGET.EDIT' | translate }}">
             <thead>
 	      <tr>
@@ -135,7 +132,7 @@
 	</h4>
       </div>
 
-    </div> <!-- end row -->
+    </div> <!-- end edit row -->
 
   </div> <!-- end of edit area -->
 
