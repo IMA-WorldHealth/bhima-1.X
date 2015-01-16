@@ -89,7 +89,10 @@ angular.module('bhima.controllers')
       });
       session.totalBudget = total;
 
-      if (!session.found) {
+      if (session.found) {
+	recompute();
+      }
+      else {
 	session.no_data_msg = $translate.instant('BUDGET.EDIT.DATA_NOT_FOUND')
           .replace('<acct>', session.account.account_txt)
 	  .replace('<fyname>', session.fiscal_year.fiscal_year_txt);
@@ -149,7 +152,7 @@ angular.module('bhima.controllers')
 		      [{'id' : bud.id,
 			'account_id' : session.account.id,
 			'period_id' : bud.period_id,
-			'budget' : bud.budget}],
+			'budget' : precision.round(bud.budget, 4)}],
 		      ['id']));
       });
 
