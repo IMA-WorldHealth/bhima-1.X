@@ -605,50 +605,52 @@ function expenseReport (params) {
   return defer.promise;
 }
 
-function allTrans (params){
+function allTransactions (params){
   var source = {
+    '0' : 0,
     '1' : 'posting_journal',
     '2' : 'general_ledger'
   };
   var def = q.defer();
-  params = JSON.parse(params);
+  params = querystring.parse(params);
   var requette;
-  var suite_account = (params.account_id && params.account_id !== 0)? ' AND `t`.`account_id`=' + sanitize.escape(params.account_id) : '';
-  var suite_dates = (params.datef && params.datet)? ' AND `t`.`trans_date`>= ' + sanitize.escape(params.datef) + ' AND `t`.`trans_date`<= ' + sanitize.escape(params.datet) : '';
+  var suite_account = (params.account_id && params.account_id > 0)? ' AND transact.account_id=' + sanitize.escape(params.account_id) : '';
+  var suite_dates = (params.datef && params.datet)? ' AND transact.trans_date >= ' + sanitize.escape(params.datef) + ' AND transact.trans_date <= ' + sanitize.escape(params.datet) : '';
 
-  if (!params.source || params.source === 0) {
-    requette =
-      'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `ac`.`account_number`, `t`.`debit_equiv` AS `debit`,  ' +
-      '`t`.`credit_equiv` AS `credit`, `t`.`currency_id`, `t`.`description`, `t`.`comment` ' +
-      'FROM (' +
-        '(' +
-          'SELECT `posting_journal`.`project_id`, `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, ' +
-            '`posting_journal`.`credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`deb_cred_uuid`, `posting_journal`.`currency_id`, ' +
-            '`posting_journal`.`doc_num`, `posting_journal`.`trans_id`, `posting_journal`.`description`, `posting_journal`.`comment` ' +
-          'FROM `posting_journal` ' +
-        ') UNION (' +
-          'SELECT `general_ledger`.`project_id`, `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, ' +
-            '`general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`deb_cred_uuid`, `general_ledger`.`currency_id`, ' +
-            '`general_ledger`.`doc_num`, `general_ledger`.`trans_id`, `general_ledger`.`description`, `general_ledger`.`comment` ' +
-          'FROM `general_ledger` ' +
-        ')' +
-      ') AS `t`, `account` AS `ac` WHERE `t`.`account_id` = `ac`.`id`' + suite_account + suite_dates;
-
-  } else {
+  if (params.source && params.source > 0) {
     var sub_chaine = [
-      '`enterprise_id`, ','`id`, ', '`inv_po_id`, ',
-      '`trans_date`, ', '`debit_equiv`, ',
-      '`credit_equiv`, ', '`account_id`, ',
-      '`deb_cred_uuid`, ', '`currency_id`, ', '`doc_num`, ',
-      '`trans_id`, ', '`description`, ', '`comment` '
+      'uuid, ', 'inv_po_id, ',
+      'trans_date, ', 'debit_equiv, ',
+      'credit_equiv, ', 'account_id, ',
+      'deb_cred_uuid, ', 'currency_id, ', 'doc_num, ',
+      'trans_id, ', 'description, ', 'comment '
     ].join(source[params.source] + '.');
     sub_chaine = source[params.source] + '.' + sub_chaine;
+
     requette =
-      'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `ac`.`account_number`, `t`.`debit_equiv` AS `debit`,  ' +
-      '`t`.`credit_equiv` AS `credit`, `t`.`currency_id`, `t`.`description`, `t`.`comment` ' +
+      'SELECT transact.uuid, transact.trans_id, transact.trans_date, ac.account_number, transact.debit_equiv AS debit,  ' +
+      'transact.credit_equiv AS credit, transact.currency_id, transact.description, transact.comment ' +
       'FROM (' +
         'SELECT ' + sub_chaine + 'FROM ' + source[params.source] +
-      ') AS `t`, `account` AS `ac` WHERE `t`.`account_id` = `ac`.`id`' + suite_account + suite_dates;
+      ') AS transact, account AS ac WHERE transact.account_id = ac.id' + suite_account + suite_dates;
+
+  } else {
+    requette =
+      'SELECT transact.uuid, transact.trans_id, transact.trans_date, ac.account_number, transact.debit_equiv AS debit,  ' +
+      'transact.credit_equiv AS credit, transact.currency_id, transact.description, transact.comment ' +
+      'FROM (' +
+        '(' +
+          'SELECT posting_journal.project_id, posting_journal.uuid, posting_journal.inv_po_id, posting_journal.trans_date, posting_journal.debit_equiv, ' +
+            'posting_journal.credit_equiv, posting_journal.account_id, posting_journal.deb_cred_uuid, posting_journal.currency_id, ' +
+            'posting_journal.doc_num, posting_journal.trans_id, posting_journal.description, posting_journal.comment ' +
+          'FROM posting_journal ' +
+        ') UNION (' +
+          'SELECT general_ledger.project_id, general_ledger.uuid, general_ledger.inv_po_id, general_ledger.trans_date, general_ledger.debit_equiv, ' +
+            'general_ledger.credit_equiv, general_ledger.account_id, general_ledger.deb_cred_uuid, general_ledger.currency_id, ' +
+            'general_ledger.doc_num, general_ledger.trans_id, general_ledger.description, general_ledger.comment ' +
+          'FROM general_ledger ' +
+        ')' +
+      ') AS transact, account AS ac WHERE transact.account_id = ac.id' + suite_account + suite_dates;
   }
 
   return db.exec(requette);
@@ -734,7 +736,7 @@ function generate(request, params, done) {
     'patientStanding'       : patientStanding,
     'employeeStanding'      : employeeStanding,
     'accountStatement'      : accountStatement,
-    'allTrans'              : allTrans,
+    'allTransactions'       : allTransactions,
     'prices'                : priceReport,
     'stock_location'        : stockLocation,
     'stock_count'           : stockCount,

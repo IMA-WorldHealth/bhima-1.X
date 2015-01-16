@@ -458,6 +458,10 @@
       controller : 'donation_management.report',
       templateUrl : 'partials/stock/donation_management/report.html'
     })
+    .when('/stock/loss_record/:depotId', {
+      controller : 'stock.loss_record',
+      templateUrl : 'partials/stock/loss_record/loss_record.html'
+    }) 
     .when('/stock_dashboard/', {
       controller : 'stock_dashboard',
       templateUrl : 'partials/stock_dashboard/stock_dashboard.html'

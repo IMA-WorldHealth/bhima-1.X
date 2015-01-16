@@ -19,11 +19,12 @@ angular.module('bhima.controllers')
   '$scope',
   '$q',
   '$window',
+  '$translate',
   'store',
   'connect',
   'messenger',
   'validate',
-  function($scope, $q, $window, Store, connect, messenger, validate) {
+  function($scope, $q, $window, $translate, Store, connect, messenger, validate) {
     var dependencies = {};
     var isDefined = angular.isDefined;
 
@@ -254,6 +255,7 @@ angular.module('bhima.controllers')
       if (!current.permissions.data || !$scope.units) { return; }
       var units = $scope.units.data;
       units.forEach(function (unit) {
+        unit.key = $translate.instant(unit.key);
         // loop through permissions and check each module that
         // the user has permission to.
         unit.checked = !!current.permissions.get(unit.id);

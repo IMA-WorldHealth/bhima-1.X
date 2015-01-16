@@ -253,16 +253,16 @@
               {{ "PERMISSION.SUPER" | translate }}
             </label>
             <ul class="k-list" style="margin-left: 25px;">
-              <li ng-repeat="unit in units.data | filter:filterChildren" >
+              <li ng-repeat="unit in units.data | filter:filterChildren | orderBy:'key'" >
                 <label class="checkbox">
                   <input type="checkbox" ng-model="unit.checked" ng-change="toggleChildren(unit)">
-                  {{unit.key | translate}}
+                  {{ unit.key }}
                 </label>
                 <ul class="k-list" ng-if="unit.children">
-                  <li ng-repeat="child in unit.children">
+                  <li ng-repeat="child in unit.children | orderBy:'key'">
                     <label class="checkbox">
                       <input type="checkbox" ng-model="child.checked" ng-change="toggleChildren(child)">
-                      {{child.key | translate}}
+                      {{ child.key }}
                     </label>
                     <ul class="k-list" ng-if="child.children">
                       <li ng-repeat="final in child.children">

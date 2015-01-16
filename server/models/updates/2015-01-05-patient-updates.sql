@@ -1,5 +1,5 @@
 -- Updates to patient data
----
+-- 
 -- RENAME addr_1 to address_1
 -- RENAME addr_2 to address_2
 -- CHANGE length of email column to 40 characters

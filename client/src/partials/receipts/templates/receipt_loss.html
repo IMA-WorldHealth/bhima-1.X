@@ -58,8 +58,8 @@
           <td>{{ rec.tracking_number }}</td>
           <td>{{ rec.text }}</td>
           <td>{{ rec.quantity}}</td>
-          <td>{{ rec.purchase_price | currency }}</td>
-          <td>{{ rec.quantity * rec.purchase_price | currency}}</td>
+          <td>{{ rec.unit_price | currency }}</td>
+          <td>{{ rec.quantity * rec.unit_price | currency}}</td>
         </tr>
       </tbody>
     </table>
