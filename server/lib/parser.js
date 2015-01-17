@@ -191,14 +191,14 @@ function parseWhereStatement(array) {
 }
 
 function getOperator(condition) {
-  // These are all the valid MySQL comparions.
+  // These are all the valid MySQL comparisons.
   // ref: http://dev.mysql.com/doc/refman/5.7/en/expressions.html
   //
   // NOTE : Order of comparisons is important! These expressions
   // are ordered so that we find '>=' before '=', since both can
   // technically exist in an expression.
   var expression,
-      comparisons = ['>=', '<=', '!=', '<>', '=', '<', '>', 'LIKE'];
+      comparisons = ['>=', '<=', '!=', '<>', '=', '<', '>', 'LIKE', 'IN'];
 
   expression = comparisons.filter(function (operator) {
     return condition.match(operator);
@@ -231,12 +231,18 @@ function escapeWhereCondition(condition) {
   collection = condition.split(operator);
 
   // Clean up whitespace for LIKE operator
-  if (operator === 'LIKE') {
+  if (operator === 'LIKE' || operator === 'IN') {
       collection[1] = collection[1].trim();
   }
 
-  // Escape the second part of the conditon
-  collection[1] = sanitize(collection[1]);
+  if (operator === 'IN') {
+    // A space after IN
+    collection[1] = ' ' + collection[1].trim();
+  }
+  else {
+    // Escape the second part of the conditon
+    collection[1] = sanitize(collection[1]);
+  }
 
   // Fix up terms for LIKE operator
   if (operator === 'LIKE') {

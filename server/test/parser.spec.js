@@ -67,6 +67,51 @@ describe('parser', function () {
       expect(results).to.equal(answer);
     });
 
+    it('should compose a SELECT query on a single table with WHERE conditions including an IN', function () {
+      var query, results, answer;
+
+      query = {
+        tables : {
+          'account' : { columns : ['id', 'account_type_id', 'account_number', 'account_txt', 'locked'] }
+        },
+        where : ['account.account_type_id IN (1,4)', 'AND', 'account.locked=0']
+      };
+
+      results = parser.select(query);
+
+      answer =
+        'SELECT account.id, account.account_type_id, account.account_number, ' +
+	'account.account_txt, account.locked ' +
+        'FROM account ' +
+        'WHERE account.account_type_id IN (1,4) AND account.locked=\'0\';';
+
+      expect(results).to.equal(answer);
+    });
+
+    it('should compose a SELECT query on a single table with WHERE conditions including an IN with strings', function () {
+      var query, results, answer;
+
+      query = {
+        tables : {
+          'account' : { columns : ['id', 'account_type_id', 'account_number', 'account_txt'] },
+	  'account_type' : { columns : ['type::account_type'] }
+        },
+	join : ['account_type.id = acount.account_type_id'],
+        where : ['account.account_type IN (\'income\',\'expense\')']
+      };
+
+      results = parser.select(query);
+
+      answer =
+	"SELECT account.id, account.account_type_id, account.account_number, account.account_txt, " + 
+	"account_type.type as account_type " + 
+	"FROM account " + 
+	"JOIN account_type ON account_type.id = acount.account_type_id " + 
+	"WHERE account.account_type IN ('income','expense');"
+
+      expect(results).to.equal(answer);
+    });
+
     it('should compose a SELECT query on two JOINed tables with nested WHERE conditions', function () {
       var query, results, answer;
 
