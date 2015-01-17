@@ -10,6 +10,7 @@ angular.module('bhima.controllers')
   'appstate',
   function ($scope, $translate, $q, connect, validate, precision, messenger, appstate) {
     var dependencies = {},
+        enterprise_id = null,
         session = $scope.session = {};
 
     // Set up for the database queries
@@ -53,7 +54,7 @@ angular.module('bhima.controllers')
 	}
     };
 
-    dependencies.fiscal = {
+    dependencies.fiscal_years = {
       query : {
         tables : {
           'fiscal_year' : {
@@ -66,7 +67,7 @@ angular.module('bhima.controllers')
     };
 
     // Initialize the session
-    session.state = 'search';
+    session.mode = 'search';
     session.found = false;
     session.account = null;
     session.fiscal_year = null;
@@ -104,16 +105,20 @@ angular.module('bhima.controllers')
     function submitAccount(newAccount) {
       if (newAccount) { 
 	session.account = newAccount;
-	// ??? Should this override the where?
         dependencies.account.query.where = ['account.id=' + newAccount.id];
 	dependencies.budgets.query.where = ['period.fiscal_year_id=' + session.fiscal_year.id, 'AND',
 					    'budget.account_id=' + session.account.id, 'AND',
+					    'period.fiscal_year_id=' + session.fiscal_year.id, 'AND',
 					    'period.period_number<>0'];
+	// NOTE: Restricting the periods to the selected fiscal year
+	//       automatically limits the budget items to ones for this
+	//       enterprise since the specific FY is tied to a particular
+	//       enterprise.
 	dependencies.periods.query.where = ['period.fiscal_year_id=' + session.fiscal_year.id, 'AND',
 					    'period.period_number<>0'];
         validate.refresh(dependencies, ['account', 'budgets', 'periods'])
           .then(startup);
-	session.state = 'edit';
+	session.mode = 'edit';
       }
     }
 
@@ -171,7 +176,7 @@ angular.module('bhima.controllers')
     }
 
     function selectYear(id) {
-      session.fiscal_year = $scope.fiscal.data.filter(function (obj) {
+      session.fiscal_year = $scope.fiscal_years.data.filter(function (obj) {
 	return obj.id === id;
 	})[0];
     }
@@ -182,7 +187,8 @@ angular.module('bhima.controllers')
     }
 
     function restartSearch() {
-      session.state = 'search';
+      session.mode = 'search';
+      session.autoAdjust = false;
     }
 
     function toggleFreeze(budget) {
@@ -246,13 +252,15 @@ angular.module('bhima.controllers')
     function loadFiscalYears(models) {
       angular.extend($scope, models);
       // Default to the last fiscal year
-      session.fiscal_year = $scope.fiscal.data[$scope.fiscal.data.length - 1];
+      session.fiscal_year = $scope.fiscal_years.data[$scope.fiscal_years.data.length - 1];
     }
 
     // Register this controller
     appstate.register('enterprise', function (enterprise) {
+      enterprise_id = Number(enterprise.id);
       $scope.enterprise = enterprise;
-      validate.process(dependencies, ['fiscal'])
+      dependencies.fiscal_years.query.where = [ 'fiscal_year.enterprise_id=' + enterprise_id ];
+      validate.process(dependencies, ['fiscal_years'])
         .then(loadFiscalYears);
     });
 
