@@ -131,6 +131,9 @@
    "TOTALS"          : "Totals"
    },
 "BUDGET": {
+   "DISPLAY" : {
+     "PAGE_TITLE"   : "Display Budget Data"
+   },
    "EDIT": {
       "ACCOUNT_LABEL"     : "Account:",
       "AUTO_ADJUST"       : "Auto adjust totals",
