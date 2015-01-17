@@ -41,7 +41,7 @@ angular.module('bhima.controllers')
       .then(function (res) {
         $scope.action = '';
         $scope.newCurrency.id = res.data.insertId;
-        $scope.currendy.post($scope.newCurrency);
+        $scope.currency.post($scope.newCurrency);
       });
     };
 

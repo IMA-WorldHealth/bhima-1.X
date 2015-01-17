@@ -283,6 +283,19 @@ describe('parser', function () {
       expect(results).to.equal(answer);
     });
 
+    it('should compose an INSERT query with reserved words', function () {
+      var data, results, answer;
+      data = [{ key: '1', index: '12', text : 'hello world'}];
+
+      results = parser.insert('table', data);
+
+      answer =
+        'INSERT INTO table (`key`, `index`, text) VALUES ' +
+          '(\'1\', \'12\', \'hello world\');';
+
+      expect(results).to.equal(answer);
+    });
+
     it('should compose an INSERT query on a single table for multiple rows', function () {
       var data, results, answer;
 
