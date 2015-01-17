@@ -66,14 +66,14 @@ angular.module('bhima.controllers')
       // Insert the budget totals into the account data
       $scope.accounts.data.forEach(function (acct) {
 	if (acct.id in totals) {
-	  acct.budget = precision.round(totals[acct.id], 4);
+	  acct.budget = precision.round(totals[acct.id], 2);
 	  }
 	else {
 	  if (acct.type === 'title') {
 	    acct.budget = null;
 	    }
 	  else {
-	    acct.budget = 'NA';
+	    acct.budget = 0; // No budget means 0 budget!
 	    }
 	  }
 	});
@@ -124,7 +124,8 @@ angular.module('bhima.controllers')
       $scope.accounts.data.forEach(function (a) {
 	data.push([a.id, a.account_number, a.account_txt, a.budget, a.balance, a.type]);
 	});
-      
+
+      // TODO: Convert to CSV and download it to the user
     }
 
     function print() {
