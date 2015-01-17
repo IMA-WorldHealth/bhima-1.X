@@ -4,7 +4,10 @@
 
 <nav ng-if="session.mode === 'display'">
   <div class="pull-right" style="padding-right: 20px">
-    <button ng-click="exportToCSV()" class="btn btn-default btn-sm square" style="margin-right: 20px"><span class="glyphicon glyphicon-print"></span> {{'UTIL.EXPORT_TO_CSV' | translate}}</button> 
+    <button ng-click="exportToCSV()" 
+	    class="btn btn-default btn-sm square" 
+	    ng-if="false"
+	    style="margin-right: 20px"><span class="glyphicon glyphicon-print"></span> {{'UTIL.EXPORT_TO_CSV' | translate}}</button> 
     <button ng-click="print()" class="btn btn-default btn-sm square"><span class="glyphicon glyphicon-print"></span> {{'UTIL.PRINT' | translate}}</button>
   </div>
 </nav>
@@ -58,7 +61,7 @@
 	<table class="reportTable">
           <thead>
             <tr>
-	      <th> ACT NUM </th>
+	      <th>{{ "BUDGET.DISPLAY.LINE" | translate }}</th>
               <th style="padding: 0 4px">{{ "ACCOUNT.ACCOUNT_NUMBER" | translate }}</th>
               <th style="padding: 0 4px">{{ "COLUMNS.DESCRIPTION"    | translate }}</th>
 	      <th style="padding: 0 6px; text-align: right">{{ "BUDGET.EDIT.BUDGET"     | translate }}</th>
@@ -67,7 +70,7 @@
 	  </thead>
 	  <tbody>
 	    <tr ng-repeat="account in accounts.data">
-	      <td style="padding: 0 4px">{{ account.id }}</td>
+	      <td style="padding: 0 4px">{{ $index + 1 }}</td>
 	      <td style="padding: 0 4px">{{ account.account_number }}</td>
 	      <td style="padding: 0 4px">{{ account.account_txt }}</td>
 	      <td style="padding: 0 6px; text-align: right">{{ account.budget }}</td>

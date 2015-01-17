@@ -132,7 +132,8 @@
    },
 "BUDGET": {
    "DISPLAY" : {
-     "PAGE_TITLE"   : "Display Budget Data"
+     "PAGE_TITLE" : "Display Budget Data",
+     "LINE"       : "Line"
    },
    "EDIT": {
       "ACCOUNT_LABEL"     : "Account:",
