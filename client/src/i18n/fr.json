@@ -144,6 +144,7 @@
       "CREATE_FAIL"       : "Error creating budget ???",
       "CREATE_OK"         : "Budget created ???",
       "CREATE_QUESTION"   : "Create a new budget for this account for this fiscal year? ???",
+      "DATA_NOT_FOUND"    : "No Budget data found for account '<acct>' for fiscal year '<fyname>'",
       "END"               : "End ???",
       "FISCAL_YEAR_LABEL" : "Fiscal Year: ???",
       "FREEZE"            : "Freeze ???",
@@ -887,10 +888,10 @@
    "WEEK"         : "Cette semaine"
    },
 "FIND": {
-    "ACCOUNT" : {
-      "ACCOUNT"         : "Compte???",
-      "ENTER_ACCOUNT"   : "Entrez Compte???",
-      "PLACEHOLDER"     : "Compte Nom ou Numéro???"
+   "ACCOUNT": {
+      "ACCOUNT"       : "Compte???",
+      "ENTER_ACCOUNT" : "Entrez Compte???",
+      "PLACEHOLDER"   : "Compte Nom ou Numéro???"
       },
    "PATIENT_ID"        : "ID Patient",
    "PATIENT_NAME"      : "Nom du Patient",
@@ -2260,6 +2261,7 @@
    "DEPOT"                     : "Dépôt",
    "DONATION_MANAGEMENT"       : "Gestion des Dons",
    "DONOR_MANAGEMENT"          : "Gestion des donateurs",
+   "EDIT_BUDGET"               : "Modifir le Budget d'un Compte???",
    "EDIT_PATIENT"              : "Modifier Patient",
    "EMPLOYEE"                  : "Gestion des Employés",
    "EMPLOYEE_STANDING"         : "Rapport des employés",
