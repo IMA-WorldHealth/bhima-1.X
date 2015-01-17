@@ -126,14 +126,15 @@ angular.module('bhima.controllers')
 	data.push([a.id, a.account_number, a.account_txt, a.budget, a.balance, a.type]);
 	});
 
+      var today = new Date();
+      var date = today.toISOString().slice(0, 19)
+	.replace('T', '-').replace(':', '-').replace(':', '-');
       var str = JSON.stringify(data);
-      var path = '/exportCSV/budget.csv';
+      var path = '/exportCSV/budget-' + date + '.csv';
 
-      var test = JSON.stringify({data: 'test'});
-
-      $http.post(path, test)
+      $http.post(path, JSON.stringify(data))
 	.success(function (result) { 
-	  
+	  // Do nothing?
 	})
 	.error(function (code) { 
 	  messenger.danger($translate.instant('BUDGET.DISPLAY.CSV_EXPORT_FAIL'));
