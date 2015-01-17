@@ -93,17 +93,19 @@ angular.module('bhima.directives')
 	}
       }
 
+      function clearForm() {
+	  scope.accountId = null;
+	  selectedAccount = null;
+	  scope.findAccount.valid = false;
+	}
+
       function submitAccount() {
 	submitCallback(selectedAccount);
-	scope.accountId = null;
-	selectedAccount = null;
-	scope.findAccount.valid = false;
+	clearForm();
       }
 
       function resetSearch() {
-	scope.accountId = null;
-	selectedAccount = null;
-	scope.findAccount.valid = false;
+	clearForm();
 	if (resetCallback) {
 	  resetCallback();
 	}
