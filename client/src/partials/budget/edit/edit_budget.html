@@ -4,7 +4,7 @@
 
 <main>
   
-  <div ng-if="session.state === 'search'">
+  <div ng-if="session.mode === 'search'">
     
     <div class="row">
       <div class="col-xs-4">
@@ -18,7 +18,7 @@
 	    </tr>
           </thead>
           <tbody>
-	    <tr ng-repeat="year in fiscal.data" ng-class="{'btn-primary': year.id === selected }" ng-click="selectYear(year.id)" style="cursor:pointer">
+	    <tr ng-repeat="year in fiscal_years.data" ng-class="{'btn-primary': year.id === selected }" ng-click="selectYear(year.id)" style="cursor:pointer">
 	      <td>{{ year.fiscal_year_txt }}</td>
 	      <td>{{ year.start_month}}/{{year.start_year }}</td>
 	      <td><span class="glyphicon glyphicon-ok" ng-if="year.id === session.fiscal_year.id"></span></td>
@@ -39,7 +39,7 @@
 
   </div> <!-- end of search area -->
 
-  <div ng-if="session.state === 'edit'">
+  <div ng-if="session.mode === 'edit'">
     <div class="row" ng-if="!session.found">
       <div class="col-xs-1"></div>
       <div class="col-xs-5">
@@ -138,7 +138,7 @@
 
 </main>
 <footer>
-  <div class="pull-right" ng-if="session.state === 'edit'">
+  <div class="pull-right" ng-if="session.mode === 'edit'">
     <button class="btn btn-default" 
 	    style="margin-right: 20px"
 	    ng-click="restartSearch()">
