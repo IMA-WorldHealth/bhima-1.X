@@ -95,6 +95,9 @@ angular.module('bhima.directives')
 
       function submitAccount() {
 	submitCallback(selectedAccount);
+	scope.accountId = null;
+	selectedAccount = null;
+	scope.findAccount.valid = false;
       }
 
       function resetSearch() {
