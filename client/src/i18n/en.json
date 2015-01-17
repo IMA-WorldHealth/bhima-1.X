@@ -2375,6 +2375,7 @@
    "CURRENCY"          : "Currency",
    "DATE"              : "Date",
    "ERROR"             : "Error",
+   "EXPORT_TO_CSV"     : "Export to CSV",
    "IMCK"              : "IMCK",
    "IMCK_LONG"         : "Christian Medical Institue of Kasai",
    "ITEMS"             : "Items",

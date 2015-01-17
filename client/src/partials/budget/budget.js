@@ -118,6 +118,14 @@ angular.module('bhima.controllers')
         .then(loadFiscalYears);
     });
 
+    function exportToCSV() {
+      // Construct the json object with the data
+      var data = [['AccountId', 'AccountNum', 'AccountName', 'Budget', 'Balance', 'Type']];
+      $scope.accounts.data.forEach(function (a) {
+	data.push([a.id, a.account_number, a.account_txt, a.budget, a.balance, a.type]);
+	});
+      
+    }
 
     function print() {
       $window.print();
@@ -126,6 +134,7 @@ angular.module('bhima.controllers')
     // Set up the exported functions
     $scope.selectYear = selectYear;
     $scope.displayAccounts = displayAccounts;
+    $scope.exportToCSV = exportToCSV;
     $scope.print = print;
 
 }]);

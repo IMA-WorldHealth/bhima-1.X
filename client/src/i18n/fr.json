@@ -2375,6 +2375,7 @@
    "CURRENCY"          : "Monnaie",
    "DATE"              : "Date",
    "ERROR"             : "Erreur",
+   "EXPORT_TO_CSV"     : "Export to CSV ???",
    "IMCK"              : "IMCK",
    "IMCK_LONG"         : "Institut Médical Chrétien du Kasaï",
    "ITEMS"             : "Articles",
