@@ -4,6 +4,7 @@
 
 <nav ng-if="session.mode === 'display'">
   <div class="pull-right" style="padding-right: 20px">
+    <button ng-click="exportToCSV()" class="btn btn-default btn-sm square" style="margin-right: 20px"><span class="glyphicon glyphicon-print"></span> {{'UTIL.EXPORT_TO_CSV' | translate}}</button> 
     <button ng-click="print()" class="btn btn-default btn-sm square"><span class="glyphicon glyphicon-print"></span> {{'UTIL.PRINT' | translate}}</button>
   </div>
 </nav>
