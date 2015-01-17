@@ -131,6 +131,10 @@
    "TOTALS"          : "TOTAUX"
    },
 "BUDGET": {
+   "DISPLAY" : {
+     "PAGE_TITLE" : "Display Budget Data ???",
+     "LINE"       : "Ligne"
+   },
    "EDIT": {
       "ACCOUNT_LABEL"     : "Account: ???",
       "AUTO_ADJUST"       : "Auto adjust totals ???",
@@ -2377,6 +2381,7 @@
    "CURRENCY"          : "Monnaie",
    "DATE"              : "Date",
    "ERROR"             : "Erreur",
+   "EXPORT_TO_CSV"     : "Export to CSV ???",
    "IMCK"              : "IMCK",
    "IMCK_LONG"         : "Institut Médical Chrétien du Kasaï",
    "ITEMS"             : "Articles",
