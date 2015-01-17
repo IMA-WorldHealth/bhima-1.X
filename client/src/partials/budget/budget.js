@@ -2,12 +2,13 @@ angular.module('bhima.controllers')
 .controller('budget', [
   '$scope', 
   '$window',
+  '$http',
   '$translate',
   'validate',
   'precision',
   'messenger',
   'appstate',
-  function($scope, $window, $translate, validate, precision, messenger, appstate) {
+  function($scope, $window, $http, $translate, validate, precision, messenger, appstate) {
     var dependencies = {},
         enterprise_id = null,
         session = $scope.session = {};
@@ -125,7 +126,18 @@ angular.module('bhima.controllers')
 	data.push([a.id, a.account_number, a.account_txt, a.budget, a.balance, a.type]);
 	});
 
-      // TODO: Convert to CSV and download it to the user
+      var str = JSON.stringify(data);
+      var path = '/exportCSV/budget.csv';
+
+      var test = JSON.stringify({data: 'test'});
+
+      $http.post(path, test)
+	.success(function (result) { 
+	  
+	})
+	.error(function (code) { 
+	  messenger.danger($translate.instant('BUDGET.DISPLAY.CSV_EXPORT_FAIL'));
+	});
     }
 
     function print() {
