@@ -303,17 +303,21 @@ exports.delete = function (table, column, id) {
 
 exports.update = function (table, data, id) {
   'use strict';
-  var value, sql, expressions = [],
+  var key, value, isReserved, sql,
+      expressions = [],
       template = templates.update;
 
   // For each property, escape both the key and value and push it into
   // the sql values array
-  for (var key in data) {
+  for (key in data) {
     if (key !== id) {
       value = data[key];
 
       // FIXME : This function allows values to be null.
       // Is that really what we want?
+
+      isReserved = reservedWords.indexOf(key.toUpperCase()) > -1;
+      key = isReserved ? '`' + key + '`' : key;
 
       if (value === null) {
         expressions.push([key, '=', 'NULL'].join(''));
@@ -381,7 +385,6 @@ exports.insert = function (table, data) {
   // escape columns that are mysql reserved words
   columns = values.map(function (column) {
     var isReserved = reservedWords.indexOf(column.toUpperCase()) > -1;
-    console.log(column, isReserved,reservedWords.indexOf(column.toUpperCase()));
     return isReserved ? '`' + column +'`' : column;
   });
 

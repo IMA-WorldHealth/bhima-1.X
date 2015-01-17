@@ -266,6 +266,20 @@ describe('parser', function () {
       expect(results).to.equal(answer);
     });
 
+    it('should compose an UPDATE query with reserved words', function () {
+      var data, results, answer;
+
+      data = { id : 1, key : 23, title : 'hi'};
+
+      results = parser.update('table', data, 'id');
+
+      answer =
+        'UPDATE table SET `key`=23, title=\'hi\' ' +
+        'WHERE id=1;';
+
+      expect(results).to.equal(answer);
+    });
+
   });
 
   describe('#insert()', function () {
