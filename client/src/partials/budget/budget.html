@@ -1,20 +1,86 @@
 <header data-header> 
-  Budget
+  {{ "BUDGET.DISPLAY.PAGE_TITLE" | translate }}
 </header>
 
-<nav></nav>
+<nav ng-if="session.mode === 'display'">
+  <div class="pull-right" style="padding-right: 20px">
+    <button ng-click="exportToCSV()" 
+	    ng-disabled="true"
+	    class="btn btn-default btn-sm square" 
+	    style="margin-right: 20px"><span class="glyphicon glyphicon-print"></span> {{'UTIL.EXPORT_TO_CSV' | translate}}</button> 
+    <button ng-click="print()" class="btn btn-default btn-sm square"><span class="glyphicon glyphicon-print"></span> {{'UTIL.PRINT' | translate}}</button>
+  </div>
+</nav>
 
 <main>
-  <div class="row">
-    <div class="col-xs-12">
-      Budget table goes here
-      <table class="table table-condensed table-bordered">
-        <thead>
-          <tr>
-            <th>Account Number</th>
-            <th>Account Description</th>
-          </tr>
-      </table>
+  
+  <div ng-if="session.mode === 'select'">
+    
+    <div class="row">
+      <div class="col-xs-4">
+	<h4>{{ "SELECT.FISCAL_YEAR" | translate }}</h4>
+	<table class="table form-bhima-border" summary="{{SELECT.FISCAL_YEAR}}">
+          <thead>
+	    <tr>
+	      <th>{{ "FISCAL_YEAR.DESCRIPTION" | translate }}</th>
+	      <th>{{ "FISCAL_YEAR.START_DATE" | translate }}</th>
+	      <th>&nbsp;</th>
+	    </tr>
+          </thead>
+          <tbody>
+	    <tr ng-repeat="year in fiscal_years.data" ng-class="{'btn-primary': year.id === selected }" ng-click="selectYear(year.id)" style="cursor:pointer">
+	      <td>{{ year.fiscal_year_txt }}</td>
+	      <td>{{ year.start_month}}/{{year.start_year }}</td>
+	      <td><span class="glyphicon glyphicon-ok" ng-if="year.id === session.fiscal_year.id"></span></td>
+	    </tr>
+	  </tbody>
+	</table>
+      </div>
+      <div class="col-xs-7">
+	<!-- right column -->
+      </div>
     </div>
-  </div>
+
+    <div class="row">
+      <div class="col-xs-4">
+	<h3>
+	  <button class="btn btn-sm btn-default" ng-click="displayAccounts()">
+	     {{ "FORM.SUBMIT" | translate }}
+	  </button>
+	</h3>
+      </div>
+    </div>
+
+  </div> <!-- end of select area -->
+
+
+  <div ng-if="session.mode === 'display'">
+
+    <div class="row">
+      <div class="col-xs-12">
+	<table class="reportTable">
+          <thead>
+            <tr>
+	      <th>{{ "BUDGET.DISPLAY.LINE" | translate }}</th>
+              <th style="padding: 0 4px">{{ "ACCOUNT.ACCOUNT_NUMBER" | translate }}</th>
+              <th style="padding: 0 4px">{{ "COLUMNS.DESCRIPTION"    | translate }}</th>
+	      <th style="padding: 0 6px; text-align: right">{{ "BUDGET.EDIT.BUDGET"     | translate }}</th>
+	      <th style="padding: 0 6px; text-align: right">{{ "COLUMNS.BALANCE"        | translate }}</th>
+            </tr>
+	  </thead>
+	  <tbody>
+	    <tr ng-repeat="account in accounts.data">
+	      <td style="padding: 0 4px">{{ $index + 1 }}</td>
+	      <td style="padding: 0 4px">{{ account.account_number }}</td>
+	      <td style="padding: 0 4px">{{ account.account_txt }}</td>
+	      <td style="padding: 0 6px; text-align: right">{{ account.budget }}</td>
+	      <td style="padding: 0 6px; text-align: right">{{ account.balance }}</td>
+	    </tr>
+	  </tbody>
+	</table>
+      </div>
+    </div>
+
+  </div> <!-- end of display area -->
+  
 </main>

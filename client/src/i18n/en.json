@@ -131,6 +131,10 @@
    "TOTALS"          : "Totals"
    },
 "BUDGET": {
+   "DISPLAY" : {
+     "PAGE_TITLE" : "Display Budget Data",
+     "LINE"       : "Line"
+   },
    "EDIT": {
       "ACCOUNT_LABEL"     : "Account:",
       "AUTO_ADJUST"       : "Auto adjust totals",
@@ -2377,6 +2381,7 @@
    "CURRENCY"          : "Currency",
    "DATE"              : "Date",
    "ERROR"             : "Error",
+   "EXPORT_TO_CSV"     : "Export to CSV",
    "IMCK"              : "IMCK",
    "IMCK_LONG"         : "Christian Medical Institue of Kasai",
    "ITEMS"             : "Items",
