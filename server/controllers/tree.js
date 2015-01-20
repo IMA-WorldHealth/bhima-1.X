@@ -1,125 +1,77 @@
-// Module: scripts/tree.js
-
-var q = require('q'),
-    db = require('../lib/db'),
-    util = require('../lib/util');
-
+// Module: server/controllers/tree.js
 // This module is responsible for constructing each
 // person's tree based on their permissions in the
 // database.
-//
-// FIXME: there seems to be some code repetition.
-// TODO : Use db.exec() instead of db.execute()
+
+var q = require('q'),
+    db = require('../lib/db');
 
 /*
  * HTTP Controllers
 */
-exports.generate = function (req, res, next) { 
+exports.generate = function (req, res, next) {
   /* jshint unused : false*/
 
-  load(req.session.user_id)
+  // builds a unit tree
+  buildTree(req.session.user_id)
   .then(function (treeData) {
     res.send(treeData);
   })
-  .catch(function (err) {
-    res.send(301, err);
-  })
+  .catch(next)
   .done();
 };
 
-function load(userId) {
 
-  // we assume the root node/unit has id 0
-  var ROOT_NODE = 0;
+// This method builds a tree data structure of
+// units and children of a specified parentId.
+function getChildren(units, parentId) {
+  var children;
 
-  // TODO
-  // These two functions look like they could
-  // be combined into a single recursive function
-  // something like `return getChildren(ROOT);`
+  // Base case: There are no child units
+  // Return null
+  if (units.length === 0) { return null; }
 
-  function getChildren(parentId) {
-    var sql, d = q.defer();
+  // Returns all units where the parent is the
+  // parentId
+  children = units.filter(function (unit) {
+    return unit.parent === parentId;
+  });
 
-    sql = 
-      'SELECT permission.id, permission.unit_id, unit.name, unit.parent, unit.has_children, ' +
-        'unit.url, unit.path, unit.key ' +
-      'FROM permission JOIN unit ON ' +
-        'permission.unit_id = unit.id ' + 
-      'WHERE permission.user_id = ' + userId + ' AND ' +
-        'unit.parent = ' + parentId + ';';
+  // Recursively call getChildren on all child units
+  // and attach them as childen of their parent unit
+  children.forEach(function (unit) {
+    unit.children = getChildren(units, unit.id);
+  });
 
-    db.execute(sql, function (err, result) {
-      // FIXME / TODO
-      // Impliment proper error handling
-      if (err) { console.log(err); }
-
-      var haveChildren, promises;
-
-      haveChildren = result.filter(function (row) {
-        return row.has_children;
-      });
-
-      if (haveChildren.length > 0) {
-        promises = haveChildren.map(function (row) {
-          return getChildren(row.unit_id);
-        });
-        d.resolve(q.all(promises));
-      } else {
-        d.resolve(result);
-      }
-    });
-
-    return d.promise;
-  }
-
-  function main() {
-    var sql,  d = q.defer();
-
-    // FIXME
-    // This is the worst code known to mankind.  We should
-    // really just create a tree here, but that will await
-    // another pull request
-
-    // if you have no user, reject the request
-    if (!util.isDefined(userId)) {
-      d.reject('No user');
-    } else {
-
-      sql = 
-        'SELECT permission.id, permission.unit_id, unit.name, unit.parent, unit.has_children, ' +
-          'unit.url, unit.path, unit.key ' +
-        'FROM permission JOIN unit ON ' +
-          'permission.unit_id = unit.id ' + 
-        'WHERE permission.user_id = ' + userId + ' AND ' +
-          'unit.parent = ' + ROOT_NODE + ';';
-
-      // this is freakin' complex. DO NOT TOUCH.
-      db.execute(sql, function (err, result) {
-        
-        // FIXME / TODO
-        // Impliment proper error handling
-        if (err) { console.log(err); }
-
-        d.resolve(q.all(result.map(function (row) {
-          var p = q.defer();
-          if (row.has_children) {
-            getChildren(row.unit_id)
-            .then(function (children) {
-              row.children = children;
-              p.resolve(row);
-            });
-          }
-          else { p.resolve(row); }
-          return p.promise;
-        })));
-      });
-    }
-
-
-    return d.promise;
-  }
-
-  return main();
+  return children;
 }
 
-exports.load = load;
+
+// builds a unit tree based of a user's permissions
+// level and returns it
+function buildTree(userId) {
+  'use strict';
+
+  var sql, ROOT_NODE, tree;
+
+  // we assume the root node/unit has id 0
+  ROOT_NODE = 0;
+
+  // NOTE
+  // For this query to render properly on the client, the user
+  // must also have permission to access the parents of leaf nodes
+  sql =
+      'SELECT unit.id, unit.name, unit.parent, ' +
+        'unit.url, unit.path, unit.key ' +
+      'FROM permission JOIN unit ON ' +
+        'permission.unit_id = unit.id ' +
+      'WHERE permission.user_id = ?';
+
+  return db.exec(sql, [userId])
+  .then(function (units) {
+
+    // builds a tree of units on the ROOT_NODE
+    tree = getChildren(units, ROOT_NODE);
+    return q(tree);
+  });
+}

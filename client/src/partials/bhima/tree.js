@@ -36,7 +36,7 @@ angular.module('bhima.controllers')
 
       return group.map(function (element) {
         collapsedModel.some(function (item) {
-          if (item.key === element.unit_id) {
+          if (item.key === element.id) {
             element.collapsed = item.collapsed;
             return true;
           }
@@ -67,11 +67,12 @@ angular.module('bhima.controllers')
       list.some(function (element) {
         var sanitiseElement = element.path.replace(/\//g, '');
         var sanitiseLocation = locationPath ? locationPath.replace(/\//g, '') : '';
+        var hasChildren = element.children && element.children.length > 0;
 
         if (sanitiseElement === sanitiseLocation) {
           $scope.navtree.selectNodeLabel(element);
         }
-        if (element.has_children) { selectTreeNode(element.children, locationPath); }
+        if (hasChildren) { selectTreeNode(element.children, locationPath); }
       });
     }
 
