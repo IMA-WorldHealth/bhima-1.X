@@ -461,7 +461,7 @@
     .when('/stock/loss_record/:depotId', {
       controller : 'stock.loss_record',
       templateUrl : 'partials/stock/loss_record/loss_record.html'
-    }) 
+    })
     .when('/stock_dashboard/', {
       controller : 'stock_dashboard',
       templateUrl : 'partials/stock_dashboard/stock_dashboard.html'
@@ -587,6 +587,10 @@
     .when('/report/invoice/:target', {
       controller : 'configureInvoice',
       templateUrl : 'partials/reports_proposed/invoice/invoice.html'
+    })
+    .when('/reports/bilan/', {
+      controller : 'configureBilan',
+      templateUrl : 'partials/reports_proposed/bilan/bilan.html'
     })
     .otherwise('/');
   }
