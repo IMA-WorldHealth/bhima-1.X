@@ -1,22 +1,22 @@
 angular.module('bhima.controllers')
 .controller('daily_consumption', [
   '$scope',
-  '$translate',
   '$http',
-  '$routeParams',  
+  '$routeParams',
   'validate',
   'messenger',
   'connect',
   'appstate',
   'util',
-  function ($scope, $translate, $http, $routeParams, validate, messenger, connect, appstate, util) {
+  function ($scope, $http, $routeParams, validate, messenger, connect, appstate, util) {
     var dependencies = {},
         session = $scope.session = {},
-        code_drugs       = $scope.code_drugs = $routeParams.code_drugs,
-        dateFrom       = $scope.dateFrom = $routeParams.dateFrom,
-        dateTo       = $scope.dateTo = $routeParams.dateTo;
+        code_drugs = $scope.code_drugs,
+        dateFrom = $scope.dateFrom,
+        dateTo = $scope.dateTo,
+        state = $scope.state;
 
-    dependencies.getDrugs = {
+    dependencies.drugs = {
       query : {
         identifier : 'id',
         tables : {
@@ -28,34 +28,58 @@ angular.module('bhima.controllers')
 
     session.dateFrom = new Date();
     session.dateTo = new Date();
-    session.From = dateFrom;
-    session.To = dateTo;
 
-    var record = connect.clean(session);
-    record.dateFrom = util.sqlDate(record.dateFrom);
-    record.dateTo = util.sqlDate(record.dateTo);
+    // $http.get('/getConsumptionDrugs/',{params : {
+    //       'dateFrom' : record.dateFrom,
+    //       'dateTo' : record.dateTo
+    //     }
+    // }).
+    // success(function(data) {
+    //   $scope.consumptions = data;
+    // });
 
-    $http.get('/getConsumptionDrugs/',{params : {
-          'dateFrom' : record.dateFrom, 
-          'dateTo' : record.dateTo
-        }  
-    }).
-    success(function(data) {
-      $scope.consumptions = data;
-    });
-    
-    $http.get('/getItemInConsumption/',{params : {
-          'dateFrom' : dateFrom, 
-          'dateTo' : dateTo,
-          'code' : code_drugs
-        }  
-    }).
-    success(function(result) {
-      $scope.itemInConsumptions = result;
-    });
+    // $http.get('/getItemInConsumption/',{params : {
+    //       'dateFrom' : dateFrom,
+    //       'dateTo' : dateTo,
+    //       'code' : code_drugs
+    //     }
+    // }).
+    // success(function(result) {
+    //   $scope.itemInConsumptions = result;
+    // });
 
     function startup (models) {
       angular.extend($scope, models);
+    }
+
+    function generate () {
+      $http.get(
+        '/getConsumptionDrugs/',
+        {params : {'dateFrom' : util.sqlDate(session.dateFrom), 'dateTo' : util.sqlDate(session.dateTo)}}
+      ).success(function(data) {
+        $scope.consumptions = data;
+        $scope.state = 'generate';
+      });
+    }
+
+    function reconfigure () {
+      $scope.state = null;
+      session.fiscal_year_id = null;
+      session.period_id = null;
+    }
+
+    function printReport () {
+      print();
+    }
+
+    function generateItem (code) {
+      $http.get(
+        '/getItemInConsumption/',
+        {params : {'dateFrom' : util.sqlDate(session.dateFrom), 'dateTo' : util.sqlDate(session.dateTo), 'code' : code}}
+      ).success(function(result) {
+        $scope.itemInConsumptions = result;
+        $scope.state = 'generateItem';
+      });
     }
 
     appstate.register('enterprise', function (enterprise) {
@@ -64,28 +88,9 @@ angular.module('bhima.controllers')
       .then(startup);
     });
 
-    function reset () {
-      record = connect.clean(session);
-      record.dateFrom = util.sqlDate(record.dateFrom);
-      record.dateTo = util.sqlDate(record.dateTo);
-
-      $http.get('/getConsumptionDrugs/',{params : {
-            'dateFrom' : record.dateFrom, 
-            'dateTo' : record.dateTo
-          }  
-      }).
-      success(function(data) {
-        console.log(data.length);
-        $scope.consumptions = data;
-      });      
-    }
-
-    $scope.reset = reset;
-
-    function generateReference () {
-      window.data = $scope.getDrugs.data;
-      var max = Math.max.apply(Math.max, $scope.getDrugs.data.map(function (o) { return o.reference; }));
-      return Number.isNaN(max) ? 1 : max + 1;
-    }
-  }  
+    $scope.generate = generate;
+    $scope.reconfigure = reconfigure;
+    $scope.printReport = printReport;
+    $scope.generateItem = generateItem;
+  }
 ]);
