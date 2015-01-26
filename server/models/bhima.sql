@@ -1060,6 +1060,7 @@ create table  `employee` (
   `location_id` char(36) default null,
   `creditor_uuid` char(36) default null,
   `debitor_uuid` char(36) default null,
+  `locked` boolean default 0,
   primary key (`id`),
   key `fonction_id` (`fonction_id`),
   key `service_id` (`service_id`),
