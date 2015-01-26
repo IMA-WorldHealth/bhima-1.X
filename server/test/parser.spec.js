@@ -311,6 +311,20 @@ describe('parser', function () {
       expect(results).to.equal(answer);
     });
 
+    it('should compose an UPDATE query with reserved words', function () {
+      var data, results, answer;
+
+      data = { id : 1, key : 23, title : 'hi'};
+
+      results = parser.update('table', data, 'id');
+
+      answer =
+        'UPDATE table SET `key`=23, title=\'hi\' ' +
+        'WHERE id=1;';
+
+      expect(results).to.equal(answer);
+    });
+
   });
 
   describe('#insert()', function () {
@@ -324,6 +338,19 @@ describe('parser', function () {
       answer =
         'INSERT INTO user (username, email) VALUES ' +
           '(\'axelroad\', \'axel@gmail.com\');';
+
+      expect(results).to.equal(answer);
+    });
+
+    it('should compose an INSERT query with reserved words', function () {
+      var data, results, answer;
+      data = [{ key: '1', index: '12', text : 'hello world'}];
+
+      results = parser.insert('table', data);
+
+      answer =
+        'INSERT INTO table (`key`, `index`, text) VALUES ' +
+          '(\'1\', \'12\', \'hello world\');';
 
       expect(results).to.equal(answer);
     });
