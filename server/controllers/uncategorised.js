@@ -64,7 +64,7 @@ exports.listEmployees = function (req, res, next) {
     "SELECT " +
     "`employee`.`id`, `employee`.`code` AS `code_employee`, `employee`.`prenom`, `employee`.`name`, " +
     "`employee`.`postnom`, `employee`.`sexe`, `employee`.`dob`, `employee`.`date_embauche`, `employee`.`service_id`, " +
-    "`employee`.`nb_spouse`, `employee`.`nb_enfant`, `employee`.`grade_id`, `grade`.`text`, `grade`.`basic_salary`, " +
+    "`employee`.`nb_spouse`, `employee`.`nb_enfant`, `employee`.`grade_id`, `employee`.`locked`, `grade`.`text`, `grade`.`basic_salary`, " +
     "`fonction`.`id` AS `fonction_id`, `fonction`.`fonction_txt`, " + 
     "`employee`.`phone`, `employee`.`email`, `employee`.`adresse`, `employee`.`bank`, `employee`.`bank_account`, `employee`.`daily_salary`, `employee`.`location_id`, " +  
     "`grade`.`code` AS `code_grade`, `debitor`.`uuid` as `debitor_uuid`, `debitor`.`text` AS `debitor_text`,`debitor`.`group_uuid` as `debitor_group_uuid`, " + 

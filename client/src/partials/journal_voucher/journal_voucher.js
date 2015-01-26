@@ -63,9 +63,11 @@ angular.module('bhima.controllers')
         'tables' : {
           'creditor' : { 'columns' : ['uuid', 'text'] },
           'creditor_group' : { 'columns' : ['name'] },
-          'account' : { 'columns' : ['account_number'] }
+          'account' : { 'columns' : ['account_number'] },
+          'employee' : {'columns' : ['locked']}
         },
-        join: ['creditor.group_uuid=creditor_group.uuid','creditor_group.account_id=account.id']
+        join: ['creditor.group_uuid=creditor_group.uuid','creditor_group.account_id=account.id', 'employee.creditor_uuid=creditor.uuid'],
+        where : ['employee.locked<>1']
       }
     };
 

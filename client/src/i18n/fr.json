@@ -786,6 +786,7 @@
    "INFO"               : "L'outil de gestion du personnel peut être utilisé pour créer, afficher et mettre à jour les employés et leurs informations. Les employés inscrits ici sont disponibles pour l'intégration dans des modules tels que / Payroll (Gestion de paiment) /.",
    "LAST_NAME"          : "Postnom",
    "LOCATION"           : "Localisation",
+   "LOCKED"             : "Verrouillé",
    "NAME"               : "Nom",
    "NB_CHILDREN"        : "Nb Enfant(s)",
    "NB_SPOUSE"          : "Nb Epoux/Epouse(s)",
