@@ -1,5 +1,5 @@
 <header data-header>
-  {{ "STOCK.DISTRIBUTION_SERVICE_RECORDS.REVERSING_TITLE_SERVICE" | translate }}
+  {{ "STOCK.DISTRIBUTION_RECORDS.KEY" | translate }}
 </header>
 
 <nav>
@@ -7,7 +7,7 @@
     <ol class="breadcrumb" style="float: right;">
       <li><span class="glyphicon glyphicon-home"></span></li>
       <li><a tabindex="-1" href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
-      <li><a tabindex="-1" >{{ "STOCK.DISTRIBUTION_SERVICE_RECORDS.REVERSING_TITLE_SERVICE" | translate }}</a></li>
+      <li><a tabindex="-1" >{{ "STOCK.DISTRIBUTION_RECORDS.KEY" | translate }}</a></li>
     </ol>
   </div>
 
@@ -42,43 +42,35 @@
 <div class="report report-compressed">
   <div class="reportBody">
     <div class="reportFrame" style="padding-top: 10px;">
-      <h4 class="visible-print">{{ "STOCK.DISTRIBUTION_SERVICE_RECORDS.KEY" | translate }} <small>{{session.param.dateFrom | date}} - {{session.param.dateTo | date}}</small></h4>
+      <h4 class="visible-print">{{ "STOCK.DISTRIBUTION_RECORDS.KEY" | translate }} <small>{{session.param.dateFrom | date}} - {{session.param.dateTo | date}}</small></h4>
         <table class="reportTable">
           <thead>
             <tr>
               <th>{{'COLUMNS.DATE' | translate}}</th>
               <th>{{'COLUMNS.DEPOT' | translate}}</th>
-              <th>{{'COLUMNS.SERVICE' | translate}}</th>
-              <th>{{'COLUMNS.ITEM' | translate}}</th>
-              <th>{{'COLUMNS.LOT_NUMBER' | translate}}</th>              
-              <th>{{'COLUMNS.QUANTITY' | translate}}</th>
-              <th class="hidden-print">{{ 'COLUMNS.ACTIONS' | translate }}</th>
+              <th>{{'COLUMNS.PATIENT' | translate}}</th>
+              <th>{{'COLUMNS.REFERENCE' | translate}}</th>
+              <th>{{'COLUMNS.NUM_ITEMS' | translate}}</th>              
               <th class="hidden-print">{{ 'COLUMNS.PROOF' | translate }}</th>
             </tr>
           </thead>
 
           <tbody>
-            <tr ng-if="model.sale.data.length===0 && !session.searching">
-              <td colspan="8">{{'SALERECORD.UNFOUND' | translate}} <strong><a href="/#/sales">{{'SALERECORD.PATIENT_SALE' | translate}}</a></strong> {{'SALERECORD.GENERATE' | translate}}</td>
+            <tr ng-if="model.consumption.data.length===0 && !session.searching">
+              <td colspan="8"><strong> {{'DISTRIBUTION.NO_DISTRIB_PATIENT' | translate}} </strong></td>
             </tr>
 
             <tr ng-if="session.searching">
               <td colspan="8"> <span style="color: #428bca" class="glyphicon glyphicon-signal"></span></td>
             </tr>
-            <tr ng-class="{'creditInvoice': invoice.reversingUuid}" ng-repeat="invoice in model.sale.data">
-            <!-- <tr ng-repeat="invoice in model.sale.data">   -->
-              <td>{{invoice.date | date : 'EEEE, dd/MM/yyyy'}}</td>
-              <td>{{invoice.text}}</td>
-              <td>{{invoice.name}}</td>
-              <td>{{invoice.inventoryText}}</td>
-              <td>{{invoice.lot_number}}</td>
-              <td>{{invoice.quantity}}</td>
+            <tr ng-class="{'creditInvoice': cons.reversingUuid}" ng-repeat="cons in model.consumption.data">
+              <td>{{cons.date | date : 'EEEE, dd/MM/yyyy'}}</td>
+              <td>{{cons.text}}</td>
+              <td>[{{cons.reference}}] {{cons.first_name}} {{cons.last_name}}</td>
+              <td>{{cons.abbr}}-{{cons.refSale}}</td>               
+              <td>{{cons.nr_item}}</td>
               <td class="hidden-print">
-                <a ng-href="/#/stock/reversing_service_distribution/{{invoice.consumption_uuid}}/"><span class="glyphicon glyphicon-repeat"></span> {{ 'STOCK.DISTRIBUTION_RECORDS.REVERSING_DISTRIBUTION' | translate }}</a>
-              </td>
-              <td class="hidden-print">
-                <!-- FIXME get correct path to the receipt -->
-                <a><span class="glyphicon glyphicon-list-alt"></span> {{ 'COLUMNS.PROOF' | translate }}</a>
+                <a ng-href="/#/invoice/consumption/{{cons.sale_uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{ 'COLUMNS.PROOF' | translate }}</a>
               </td>
             </tr>
           </tbody>
