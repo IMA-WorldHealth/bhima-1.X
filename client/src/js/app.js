@@ -461,7 +461,7 @@
     .when('/stock/loss_record/:depotId', {
       controller : 'stock.loss_record',
       templateUrl : 'partials/stock/loss_record/loss_record.html'
-    }) 
+    })
     .when('/stock_dashboard/', {
       controller : 'stock_dashboard',
       templateUrl : 'partials/stock_dashboard/stock_dashboard.html'
@@ -549,10 +549,6 @@
     .when('/reports/daily_consumption/', {
       controller : 'daily_consumption',
       templateUrl : 'partials/reports/daily_consumption/daily_consumption.html'
-    })
-    .when('/consumptions/:code_drugs/:dateFrom/:dateTo', {
-      controller: 'daily_consumption',
-      templateUrl: 'partials/reports/daily_consumption/consumptions.html'
     })
     .when('/config_accounting/', {
       controller: 'config_accounting',
