@@ -1,16 +1,8 @@
 <header data-header>
-  {{ "STOCK.DISTRIBUTION_SERVICE_RECORDS.REVERSING_TITLE_SERVICE" | translate }}
+  {{ "STOCK.DISTRIBUTION_SERVICE_RECORDS.KEY" | translate }}
 </header>
 
 <nav>
-  <div class="pull-left">
-    <ol class="breadcrumb" style="float: right;">
-      <li><span class="glyphicon glyphicon-home"></span></li>
-      <li><a tabindex="-1" href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
-      <li><a tabindex="-1" >{{ "STOCK.DISTRIBUTION_SERVICE_RECORDS.REVERSING_TITLE_SERVICE" | translate }}</a></li>
-    </ol>
-  </div>
-
   <div class="pull-right" style="margin-top: 1px">
     <span ><b>{{depot.reference ? '[' + depot.reference + ']' : ''}} </b>
       {{depot.text}}</span>
@@ -37,6 +29,14 @@
       <input class="form-bhima" ng-change="reset()" type="date" ng-model="session.param.dateTo" rows="20">
     </div>
   </div>
+
+  <div class="col-xs-4 pull-right">
+    <select class="form-bhima" ng-model="session.depot" ng-change="reset()">
+      <option selected >{{ 'STOCK.ENTRY.SELECT_DEPOT' | translate}}</option>
+      <option ng-repeat="depot in model.depots.data" value="{{ depot.uuid }}">{{ depot.text}}</option>
+    </select>
+  </div>
+
 </nav>
 
 <div class="report report-compressed">
@@ -52,14 +52,13 @@
               <th>{{'COLUMNS.ITEM' | translate}}</th>
               <th>{{'COLUMNS.LOT_NUMBER' | translate}}</th>              
               <th>{{'COLUMNS.QUANTITY' | translate}}</th>
-              <th class="hidden-print">{{ 'COLUMNS.ACTIONS' | translate }}</th>
               <th class="hidden-print">{{ 'COLUMNS.PROOF' | translate }}</th>
             </tr>
           </thead>
 
           <tbody>
             <tr ng-if="model.sale.data.length===0 && !session.searching">
-              <td colspan="8">{{'SALERECORD.UNFOUND' | translate}} <strong><a href="/#/sales">{{'SALERECORD.PATIENT_SALE' | translate}}</a></strong> {{'SALERECORD.GENERATE' | translate}}</td>
+              <td colspan="8"><strong> {{'DISTRIBUTION.NO_DISTRIB_SERVICE' | translate}} </strong></td>
             </tr>
 
             <tr ng-if="session.searching">
@@ -73,9 +72,6 @@
               <td>{{invoice.inventoryText}}</td>
               <td>{{invoice.lot_number}}</td>
               <td>{{invoice.quantity}}</td>
-              <td class="hidden-print">
-                <a ng-href="/#/stock/reversing_service_distribution/{{invoice.consumption_uuid}}/"><span class="glyphicon glyphicon-repeat"></span> {{ 'STOCK.DISTRIBUTION_RECORDS.REVERSING_DISTRIBUTION' | translate }}</a>
-              </td>
               <td class="hidden-print">
                 <!-- FIXME get correct path to the receipt -->
                 <a><span class="glyphicon glyphicon-list-alt"></span> {{ 'COLUMNS.PROOF' | translate }}</a>
