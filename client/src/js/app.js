@@ -550,10 +550,6 @@
       controller : 'daily_consumption',
       templateUrl : 'partials/reports/daily_consumption/daily_consumption.html'
     })
-    .when('/consumptions/:code_drugs/:dateFrom/:dateTo', {
-      controller: 'daily_consumption',
-      templateUrl: 'partials/reports/daily_consumption/consumptions.html'
-    })
     .when('/config_accounting/', {
       controller: 'config_accounting',
       templateUrl: 'partials/config_accounting/config_accounting.html'
