@@ -130,9 +130,9 @@ INSERT INTO `unit` VALUES
 (81,'Stock Dashboard','TREE.STOCK_DASHBOARD','',11,0,'/partials/stock/stock_dashboard/','/stock_dashboard/'),
 (82,'Sudsudy','TREE.SUBSIDY','Handles the subsidy situation',1,0,'/partials/subsidy/','/subsidy'),
 (83,'Bilan','TREE.BILAN','Bilan report',10,0,'/partials/reports/bilan','/reports/bilan/'),
-(83,'distribution record', 'TREE.DISTRIBUTION_PATIENTS', '', 10, 0, '/partials/reports/distribution_record', '/reports/distribution_record/'),
-(84,'distribution service record', 'TREE.DISTRIBUTION_SERVICES', '', 10, 0, '/partials/reports/distribution_service_record', '/reports/distribution_service_record/'),
-(85,'loss record', 'TREE.LOSS_RECORDS', '', 10, 0, '/partials/stock/loss_record', '/reports/loss_record/');
+(84,'distribution record', 'TREE.DISTRIBUTION_PATIENTS', '', 10, 0, '/partials/reports/distribution_record', '/reports/distribution_record/'),
+(85,'distribution service record', 'TREE.DISTRIBUTION_SERVICES', '', 10, 0, '/partials/reports/distribution_service_record', '/reports/distribution_service_record/'),
+(86,'loss record', 'TREE.LOSS_RECORDS', '', 10, 0, '/partials/stock/loss_record', '/reports/loss_record/');
 
 -- references language .json files
 INSERT INTO `language` (id, name, `key`) VALUES
