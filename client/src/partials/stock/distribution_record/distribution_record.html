@@ -1,5 +1,5 @@
 <header data-header>
-  {{ "STOCK.DISTRIBUTION_RECORDS.KEY" | translate }}
+  {{ "STOCK.DISTRIBUTION_RECORDS.REVERSING_TITLE_PATIENT" | translate }}
 </header>
 
 <nav>
@@ -7,7 +7,7 @@
     <ol class="breadcrumb" style="float: right;">
       <li><span class="glyphicon glyphicon-home"></span></li>
       <li><a tabindex="-1" href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
-      <li><a tabindex="-1" >{{ "STOCK.DISTRIBUTION_RECORDS.KEY" | translate }}</a></li>
+      <li><a tabindex="-1" >{{ "STOCK.DISTRIBUTION_RECORDS.REVERSING_TITLE_PATIENT" | translate }}</a></li>
     </ol>
   </div>
 
@@ -42,7 +42,7 @@
 <div class="report report-compressed">
   <div class="reportBody">
     <div class="reportFrame" style="padding-top: 10px;">
-      <h4 class="visible-print">{{ "SALERECORD.TITLE" | translate }} <small>{{session.param.dateFrom | date}} - {{session.param.dateTo | date}}</small></h4>
+      <h4 class="visible-print">{{ "STOCK.DISTRIBUTION_RECORDS.KEY" | translate }} <small>{{session.param.dateFrom | date}} - {{session.param.dateTo | date}}</small></h4>
       <p class="visible-print">{{ "SALERECORD.TOTAL_OF" | translate }} <b>{{total.result.sales}}</b> {{ "SALERECORD.INVOICES" | translate }}, {{ "SALERECORD.CHARGED_AGAINST" | translate }} <b>{{total.result.patients}}</b> {{ "SALERECORD.PATIENTS" | translate}}</p>
         <table class="reportTable">
           <thead>

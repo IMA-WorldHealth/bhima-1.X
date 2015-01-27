@@ -645,13 +645,14 @@
    "TITLE"      : "Debtor Group Management"
    },
 "DEPOT": {
-   "ADD"       : "Add a Depot",
-   "ALERT"     : "Manage your depots from here",
-   "ALL"       : "All Depots",
-   "EDIT"      : "Edit depot information",
-   "NEW"       : "Register a new Depot",
-   "NO_DEPOTS" : "No depots have been registered.",
-   "TITLE"     : "Depot Management"
+   "ADD"          : "Add a Depot",
+   "ALERT"        : "Manage your depots from here",
+   "ALL"          : "All Depots",
+   "EDIT"         : "Edit depot information",
+   "EDIT_SUCCESS" : "Update successfully",
+   "NEW"          : "Register a new Depot",
+   "NO_DEPOTS"    : "No depots have been registered.",
+   "TITLE"        : "Depot Management"
    },
 "DISTRIBUTION": {
    "ADD_ROW"                : "Add an Item",
@@ -678,7 +679,8 @@
    "NONE"                   : "This item is not in stock in the depot, contact the stock administrator",
    "NOT_CONSUMABLE"         : "Not consumable",
    "NOT_CONSUMED"           : "This prescription is unfufilled",
-   "NO_DISTRIB_PATIENT"     : "No distribution to patients in this time range",
+   "NO_DISTRIB_PATIENT"     : "No distribution to Patients in this time range",
+   "NO_DISTRIB_SERVICE"     : "No distribution to Services in this time range",   
    "NO_SALE_FOUND"          : "No sale data found for patient",
    "NUM_FACTURE"            : "Invoice Number",
    "PATIENT_COVERED"        : "Patient is convered by a Convention",
@@ -786,6 +788,7 @@
    "INFO"               : "The employee management tool can be used to create, view and update employees and their information. Employees listed here are implicitly settup for credit and available for integration to modules such as /payroll/",
    "LAST_NAME"          : "Last Name",
    "LOCATION"           : "Location",
+   "LOCKED"             : "Locked",
    "NAME"               : "Name",
    "NB_CHILDREN"        : "Nb Children",
    "NB_SPOUSE"          : "Nb Spouse(s)",
@@ -1969,20 +1972,22 @@
    },
 "STOCK": {
    "DISTRIBUTION_RECORDS": {
-      "ERROR"                  : "This consumption has been reversed in the stock",
-      "KEY"                    : "Distribution patients records",
-      "REVERSING_DISTRIBUTION" : "Reversing distribution",
-      "REVERSING_TITLE"        : "Cancellation distribution",
-      "SUBMIT"                 : "Submit",
-      "SUCCESS"                : "Reversing with succes"
+      "ERROR"                    : "This consumption has been reversed in the stock",
+      "KEY"                      : "Distribution patients records",
+      "REVERSING_DISTRIBUTION"   : "Reversing distribution",
+      "REVERSING_TITLE"          : "Cancellation distribution",
+      "REVERSING_TITLE_PATIENT"  : "Cancellation Patients distribution",
+      "SUBMIT"                   : "Submit",
+      "SUCCESS"                  : "Reversing with succes"
       },
    "DISTRIBUTION_SERVICE_RECORDS": {
-      "ERROR"                  : "This consumption has been reversed in the stock",
-      "KEY"                    : "Distribution Services Records",
-      "REVERSING_DISTRIBUTION" : "Reversing distribution",
-      "REVERSING_TITLE"        : "Cancellation distribution",
-      "SUBMIT"                 : "Submit",
-      "SUCCESS"                : "Reversing with succes"
+      "ERROR"                    : "This consumption has been reversed in the stock",
+      "KEY"                      : "Distribution Services Records",
+      "REVERSING_DISTRIBUTION"   : "Reversing distribution",
+      "REVERSING_TITLE"          : "Cancellation distribution",
+      "REVERSING_TITLE_SERVICE"  : "Cancellation Services distribution",
+      "SUBMIT"                   : "Submit",
+      "SUCCESS"                  : "Reversing with succes"
       },
    "DONATION": {
       "KEY"   : "Entry Donation",
@@ -2256,6 +2261,8 @@
    "DEPOT"                     : "Depot",
    "DONATION_MANAGEMENT"       : "Donation Management",
    "DONOR_MANAGEMENT"          : "Donor management",
+   "DISTRIBUTION_PATIENTS"     : "Distribution patients records",
+   "DISTRIBUTION_SERVICES"     : "Distribution Services Records",
    "EDIT_PATIENT"              : "Edit Patient Details",
    "EMPLOYEE"                  : "Employee",
    "EMPLOYEE_STANDING"         : "Employee Standing Report",
@@ -2280,6 +2287,7 @@
    "INVENTORY_VIEW"            : "Stock Report",
    "JOURNAL_VOUCHER"           : "Journal Voucher",
    "LOCATION"                  : "Location Management",
+   "LOSS_RECORDS"              : "Stock loss records",
    "MAIN_CASH"                 : "Principal Cashbox",
    "MULTI_PAYROLL"             : "Multiple Payroll",
    "OFFDAY_MANAGEMENT"         : "Offday management",
