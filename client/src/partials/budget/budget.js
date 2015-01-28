@@ -16,10 +16,11 @@ angular.module('bhima.controllers')
     // Set up session defaults
     session.mode = 'select';
     session.fiscal_year = null;
+
+    $scope.timestamp = new Date();
     
     // Define the database queries
     dependencies.accounts = {
-      query : '/InExAccounts/'
     };
 
     // TODO: Convert this into a server-side get query that does totals
@@ -54,6 +55,8 @@ angular.module('bhima.controllers')
       // Insert the budget numbers into the account data
       // TODO: The following procedural hacks can be simplified by better SQL queries...
       // First compute the totals for any accounts with budgets
+      var totalBudget = 0.0;
+      var totalBalance = 0.0;
       var totals = {};
       $scope.budgets.data.forEach(function (bud) {
 	if (bud.account_id in totals) {
@@ -62,6 +65,7 @@ angular.module('bhima.controllers')
 	else {
 	  totals[bud.account_id] = bud.budget;
 	  }
+	totalBudget += bud.budget;
 	});
 
       // Insert the budget totals into the account data
@@ -77,7 +81,30 @@ angular.module('bhima.controllers')
 	    acct.budget = 0; // No budget means 0 budget!
 	    }
 	  }
+	// Increment total balance
+	if (!isNaN(acct.balance)) {
+	  totalBalance += acct.balance;
+	  }
 	});
+
+      $scope.totalBudget = precision.round(totalBudget, 2);
+      $scope.totalBalance = precision.round(totalBalance, 2);
+    }
+
+    function parseAccountDepth(accountData, accountModel) {
+      // Copied from chart of accounts, should refactor
+      accountData.forEach(function (account) {
+        var parent, depth = 0;
+
+        //TODO if parent.depth exists, increment and kill the loop (base case is ROOT_NODE)
+        parent = accountModel.get(account.parent);
+        depth = 0;
+        while (parent) {
+          depth += 1;
+          parent = accountModel.get(parent.parent);
+        }
+        account.depth = depth;
+      });
     }
 
     function start(models) {
@@ -88,11 +115,13 @@ angular.module('bhima.controllers')
 	  }
 	});
       addBudgetData();
+      parseAccountDepth($scope.accounts.data, $scope.accounts);
+
       session.mode = 'display';
     }
 
     function displayAccounts() {
-      dependencies.accounts.query += enterprise_id;
+      dependencies.accounts.query = '/InExAccounts/' +enterprise_id;
       dependencies.budgets.query.where = ['period.fiscal_year_id=' + session.fiscal_year.id];
       validate.refresh(dependencies, ['accounts', 'budgets'])
  	.then(start);
@@ -141,6 +170,10 @@ angular.module('bhima.controllers')
 	});
     }
 
+    function selectFiscalYear() {
+      session.mode = 'select';
+    }
+
     function print() {
       $window.print();
     }
@@ -148,6 +181,7 @@ angular.module('bhima.controllers')
     // Set up the exported functions
     $scope.selectYear = selectYear;
     $scope.displayAccounts = displayAccounts;
+    $scope.selectFiscalYear = selectFiscalYear;
     $scope.exportToCSV = exportToCSV;
     $scope.print = print;
 

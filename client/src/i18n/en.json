@@ -132,8 +132,9 @@
    },
 "BUDGET": {
    "DISPLAY" : {
-     "PAGE_TITLE" : "Display Budget Data",
-     "LINE"       : "Line"
+     "LINE"         : "Line",
+     "REPORT_TITLE" : "Accounts Budgets and Balances",
+     "TOTALS"       : "TOTALS:"
    },
    "EDIT": {
       "ACCOUNT_LABEL"     : "Account:",
