@@ -651,13 +651,14 @@
    "TITLE"      : "Gestion des Groupes des Débiteurs"
    },
 "DEPOT": {
-   "ADD"       : "Ajouter",
-   "ALERT"     : "Ce module vous permet de gérer vos dépôt",
-   "ALL"       : "Tous les Dépôts",
-   "EDIT"      : "Editer les informations d'un dépôt",
-   "NEW"       : "Nouveau dépôt",
-   "NO_DEPOTS" : "Aucun dépôt trouvé",
-   "TITLE"     : "Gestion des Dépôt"
+   "ADD"          : "Ajouter",
+   "ALERT"        : "Ce module vous permet de gérer vos dépôt",
+   "ALL"          : "Tous les Dépôts",
+   "EDIT"         : "Editer les informations d'un dépôt",
+   "EDIT_SUCCESS" : "Données du dépôt mise à jour avec succes ",
+   "NEW"          : "Nouveau dépôt",
+   "NO_DEPOTS"    : "Aucun dépôt trouvé",
+   "TITLE"        : "Gestion des Dépôt"
    },
 "DISTRIBUTION": {
    "ADD_ROW"                : "Ajouter Item",
@@ -685,6 +686,7 @@
    "NOT_CONSUMABLE"         : "Non consommable",
    "NOT_CONSUMED"           : "Non consommée",
    "NO_DISTRIB_PATIENT"     : "Aucune distribution aux patients dans cette plage de temps",
+   "NO_DISTRIB_SERVICE"     : "Aucune distribution aux services dans cette plage de temps",
    "NO_SALE_FOUND"          : "Aucune données trouvés concernant la vente pour le patient",
    "NUM_FACTURE"            : "Numéro Facture ",
    "PATIENT_COVERED"        : "Patient est couvert par la convention",
@@ -792,6 +794,7 @@
    "INFO"               : "L'outil de gestion du personnel peut être utilisé pour créer, afficher et mettre à jour les employés et leurs informations. Les employés inscrits ici sont disponibles pour l'intégration dans des modules tels que / Payroll (Gestion de paiment) /.",
    "LAST_NAME"          : "Postnom",
    "LOCATION"           : "Localisation",
+   "LOCKED"             : "Verrouillé",
    "NAME"               : "Nom",
    "NB_CHILDREN"        : "Nb Enfant(s)",
    "NB_SPOUSE"          : "Nb Epoux/Epouse(s)",
@@ -1975,20 +1978,22 @@
    },
 "STOCK": {
    "DISTRIBUTION_RECORDS": {
-      "ERROR"                  : "Cette consommation a déjà été inversée dans le stock",
-      "KEY"                    : "Historique des distributions aux patients",
-      "REVERSING_DISTRIBUTION" : "Annuler la distribution",
-      "REVERSING_TITLE"        : "Annulation de la distribution",
-      "SUBMIT"                 : "Soumettre",
-      "SUCCESS"                : "Opération avec succès"
+      "ERROR"                    : "Cette consommation a déjà été inversée dans le stock",
+      "KEY"                      : "Historique des distributions aux patients",
+      "REVERSING_DISTRIBUTION"   : "Annuler la distribution",
+      "REVERSING_TITLE"          : "Annulation de la distribution",
+      "REVERSING_TITLE_PATIENT"  : "Annulation de la distribution aux patients",
+      "SUBMIT"                   : "Soumettre",
+      "SUCCESS"                  : "Opération avec succès"
       },
    "DISTRIBUTION_SERVICE_RECORDS": {
-      "ERROR"                  : "Cette consommation a déjà été inversée dans le stock",
-      "KEY"                    : "Historique des distributions aux services",
-      "REVERSING_DISTRIBUTION" : "Annuler la distribution",
-      "REVERSING_TITLE"        : "Annulation de la distribution",
-      "SUBMIT"                 : "Soumettre",
-      "SUCCESS"                : "Opération avec succès"
+      "ERROR"                    : "Cette consommation a déjà été inversée dans le stock",
+      "KEY"                      : "Historique des distributions aux services",
+      "REVERSING_DISTRIBUTION"   : "Annuler la distribution",
+      "REVERSING_TITLE"          : "Annulation de la distribution",
+      "REVERSING_TITLE_SERVICE"  : "Annulation de la distribution aux services",
+      "SUBMIT"                   : "Soumettre",
+      "SUCCESS"                  : "Opération avec succès"
       },
    "DONATION": {
       "KEY"   : "Entrer Donation",
@@ -2263,6 +2268,8 @@
    "DONATION_MANAGEMENT"       : "Gestion des Dons",
    "DONOR_MANAGEMENT"          : "Gestion des donateurs",
    "EDIT_BUDGET"               : "Modifir le Budget d'un Compte???",
+   "DISTRIBUTION_PATIENTS"     : "Historique des distributions aux patients",
+   "DISTRIBUTION_SERVICES"     : "Historique des distributions aux services",
    "EDIT_PATIENT"              : "Modifier Patient",
    "EMPLOYEE"                  : "Gestion des Employés",
    "EMPLOYEE_STANDING"         : "Rapport des employés",
@@ -2287,6 +2294,7 @@
    "INVENTORY_VIEW"            : "Rapport Stocks",
    "JOURNAL_VOUCHER"           : "Ajout Transactions",
    "LOCATION"                  : "Localisation",
+   "LOSS_RECORDS"              : "Rapport de pertes de stock",
    "MAIN_CASH"                 : "Caisse Principale",
    "MULTI_PAYROLL"             : "Payroll Multiple",
    "OFFDAY_MANAGEMENT"         : "Gestion des jours fériés",
