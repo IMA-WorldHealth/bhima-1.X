@@ -72,7 +72,7 @@ INSERT INTO `unit` VALUES
 (22,'Exchange Rate','TREE.EXCHANGE','Set todays exchange rate!',1,0,'/partials/exchange_rate/','/exchange_rate'),
 (23,'Creditor Groups','TREE.CREDITOR_GRP','',1,0,'/partials/creditor/group/','/creditors/creditor_group'),
 (24,'Debitor Groups','TREE.DEBTOR_GRP','',1,0,'/partials/debtor/','/debtor/debtor_group'),
-(25,'General Ledger','TREE.GENERAL_LEDGER','',10,0,'/partials/reports/ledger/','/reports/ledger/general_ledger'),
+(25,'General Ledger','TREE.GENERAL_LEDGER','',30,0,'/partials/reports/ledger/','/reports/ledger/general_ledger'),
 (26,'Location Manager','TREE.LOCATION','',1,0,'/partials/location/location.html','/location'),
 (27,'Chart of Accounts','TREE.CHART_OF_ACCOUNTS','',10,0,'/partials/reports/chart_of_accounts/','/reports/chart_of_accounts/'),
 (28,'Patient Group Assignment','TREE.PATIENT_GRP_ASSIGNMENT','',12,0,'/partials/patient_group_assignment/','/patient_group_assignment/'),
@@ -127,7 +127,10 @@ INSERT INTO `unit` VALUES
 (78,'Depot Management','TREE.DEPOT','',1,0,'/partials/inventory/depot/','inventory/depot'),
 (79,'Balance Mensuelle','TREE.BALANCE_MENSUELLE','',10,0,'/partials/reports/balance_mensuelle/','/reports/balance_mensuelle'),
 (80,'Edit Patient','TREE.EDIT_PATIENT','',12,0,'/partials/patient_edit/','/patient/edit/'),
-(81,'Stock Dashboard','TREE.STOCK_DASHBOARD','',11,0,'/partials/stock/stock_dashboard/','/stock_dashboard/');
+(81,'Stock Dashboard','TREE.STOCK_DASHBOARD','',11,0,'/partials/stock/stock_dashboard/','/stock_dashboard/'),
+(82,'distribution record', 'TREE.DISTRIBUTION_PATIENTS', '', 10, 0, '/partials/reports/distribution_record', '/reports/distribution_record/'),
+(83,'distribution service record', 'TREE.DISTRIBUTION_SERVICES', '', 10, 0, '/partials/reports/distribution_service_record', '/reports/distribution_service_record/'),
+(84,'loss record', 'TREE.LOSS_RECORDS', '', 10, 0, '/partials/stock/loss_record', '/reports/loss_record/');
 
 -- references language .json files
 INSERT INTO `language` (id, name, `key`) VALUES

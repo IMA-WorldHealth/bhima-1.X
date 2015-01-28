@@ -421,7 +421,23 @@
     .when('/stock/distribution_service_record/:depotId', {
       controller : 'stock.distribution_service_record',
       templateUrl : 'partials/stock/distribution_service_record/distribution_service_record.html'
-    })        
+    })
+    .when('/reports/distribution_record/:depotId', {
+      controller : 'distribution_record',
+      templateUrl : 'partials/reports/distribution_record/distribution_record.html'
+    })      
+    .when('/reports/distribution_service_record/:depotId', {
+      controller : 'distribution_service_record',
+      templateUrl : 'partials/reports/distribution_service_record/distribution_service_record.html'
+    }) 
+    .when('/reports/distribution_record', {
+      controller : 'distribution_record_view',
+      templateUrl : 'partials/reports/distribution_record/distribution_record_view.html'
+    })      
+    .when('/reports/distribution_service_record', {
+      controller : 'distribution_service_record_view',
+      templateUrl : 'partials/reports/distribution_service_record/distribution_service_record_view.html'
+    })                
     .when('/stock/reversing_service_distribution/:consumptionId', {
       controller : 'stock.reversing_service_distribution',
       templateUrl : 'partials/stock/reversing_service_distribution/reversing_service_distribution.html'
@@ -466,6 +482,10 @@
       controller : 'stock.loss_record',
       templateUrl : 'partials/stock/loss_record/loss_record.html'
     }) 
+    .when('/reports/loss_record', {
+      controller : 'loss_record',
+      templateUrl : 'partials/reports/loss_record/loss_record.html'
+    })     
     .when('/stock_dashboard/', {
       controller : 'stock_dashboard',
       templateUrl : 'partials/stock_dashboard/stock_dashboard.html'

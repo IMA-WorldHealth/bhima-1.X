@@ -59,7 +59,7 @@ angular.module('bhima.controllers')
     ];
 
     config.utilities = [
-      {
+/*      {
         key : 'STOCK.SEARCH.KEY',
         ico : 'glyphicon-search',
         link : '/stock/search'
@@ -68,26 +68,37 @@ angular.module('bhima.controllers')
         key : 'STOCK.EXPIRE.KEY',
         ico : 'glyphicon-exclamation-sign',
         link : '/stock/expiring'
+      }*/
+      {
+        key : 'STOCK.DISTRIBUTION_RECORDS.REVERSING_TITLE_PATIENT',
+        ico : 'glyphicon-refresh',
+        link : '/stock/distribution_record'
+      },
+
+      {
+        key : 'STOCK.DISTRIBUTION_SERVICE_RECORDS.REVERSING_TITLE_SERVICE',
+        ico : 'glyphicon-refresh',
+        link : '/stock/distribution_service_record'
       }
     ];
 
     config.reports = [
-      {
+      /*{
         key : 'STOCK.REPORT.STOCK_COUNT',
         ico : 'glyphicon-list-alt',
         link : '/count/'
-      },
+      },*/
 
       {
         key : 'STOCK.DISTRIBUTION_RECORDS.KEY',
         ico : 'glyphicon-list-alt',
-        link : '/stock/distribution_record'
+        link : '/reports/distribution_record'
       },
 
       {
         key : 'STOCK.DISTRIBUTION_SERVICE_RECORDS.KEY',
         ico : 'glyphicon-list-alt',
-        link : '/stock/distribution_service_record'
+        link : '/reports/distribution_service_record'
       },
 
       {
