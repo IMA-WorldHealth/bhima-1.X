@@ -424,3 +424,7 @@ a.danger {
 td.bhima {
     padding: 0 4px;
 }
+
+.right {
+    text-align: right;
+}
