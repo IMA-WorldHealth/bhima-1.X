@@ -132,8 +132,9 @@
    },
 "BUDGET": {
    "DISPLAY" : {
-     "PAGE_TITLE" : "Display Budget Data ???",
-     "LINE"       : "Ligne"
+     "LINE"         : "Ligne",
+     "REPORT_TITLE" : "Accounts Budgets and Balances ???",
+     "TOTALS"       : "TOTAUX: ???"
    },
    "EDIT": {
       "ACCOUNT_LABEL"     : "Account: ???",
