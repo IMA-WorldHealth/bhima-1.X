@@ -2384,6 +2384,7 @@
    "CREATE"            : "Create",
    "CURRENCY"          : "Currency",
    "DATE"              : "Date",
+   "DEPOT"             : "Depot",
    "ERROR"             : "Error",
    "IMCK"              : "IMCK",
    "IMCK_LONG"         : "Christian Medical Institue of Kasai",
