@@ -71,7 +71,6 @@ exports.build = function (req, res, next) {
   }
 
   function renderPDF(reportData) {
-    console.log('compiled report **********', reportData);
     var compiledReport;
     var hash = uuid();
 
@@ -87,7 +86,6 @@ exports.build = function (req, res, next) {
 
     // wkhtmltopdf exceptions not handled
     var pdf = wkhtmltopdf(compiledReport, configuration, function (code, signal, a) {
-
       // Return path to file service
       res.send('/report/serve/' + hash);
     });

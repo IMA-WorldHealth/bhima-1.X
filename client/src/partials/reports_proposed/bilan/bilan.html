@@ -20,22 +20,7 @@
                 ng-click="selectConfiguration('language', language)">{{language.label}}</button>
             </span>
           </div>
-
         </div>
-        <div class="form-group">
-          <label>{{'BILAN.CURRENCY' | translate}}</label>
-
-          <div>
-            <span ng-repeat="currency in configuration.currency.options">
-              <button
-                class="btn btn-default btn-lg"
-                ng-class="{'active' : configuration.currency.selected===currency}"
-                ng-click="selectConfiguration('currency', currency)">{{currency.label}}</button>
-            </span>
-          </div>
-
-        </div>
-
         <!-- Links swapped out to allow target _blank (open PDF in new tab) -->
         <button
           class="btn btn-default"

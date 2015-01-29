@@ -15,12 +15,6 @@ angular.module('bhima.controllers')
           {value : 'en', label : 'English'},
           {value : 'fr', label : 'French'}
         ]
-      },
-      currency : {
-        options : [
-          {value : 'dollars', label : 'Dollars'},
-          {value : 'francs', label : 'Francs'}
-        ]
       }
     };
 
@@ -41,7 +35,6 @@ angular.module('bhima.controllers')
 
     function setDefaultConfiguration() {
       selectConfiguration('language', configuration.language.options[0]);
-      selectConfiguration('currency', configuration.currency.options[0]);
     }
 
     // POST configuration object to /report/build/:target
