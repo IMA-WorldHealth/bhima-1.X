@@ -1,20 +1,18 @@
 var csv = require('csv');
 
 module.exports.exportCSV = function (req, res, next) {
-  var filename = req.params.filename;
-  var data = req.body;
+  var filename = req.params.filename;  // filename MUST end in .csv
 
-  csv.stringify(data, function(err, csvstr) {
+  csv.stringify(req.body, function(err, csvstr) {
 
     if (err) { 
-      res.status(400).send('BAD CSV SYNTAX');
-      }
+      res.status(400).send('BAD CSV SYNTAX' + err);
+    }
 
-    // Good data, send it to the user
-    res.setHeader('Content-disposition', 'attachment; filename=' + filename);
-    res.writeHead(200, { 'Content-Type': 'text/csv' });
-    res.write(csvstr);
-    res.end();
+    // ??? csvstr = csvstr.replace(/"/g, '&quot;').replace(/\n/g, '<br/>');
+
+    // Good data, send it to the user (as json)
+    res.end(csvstr, 'UTF-8');
     });
 
 };

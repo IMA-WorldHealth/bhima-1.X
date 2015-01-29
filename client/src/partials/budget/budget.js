@@ -149,25 +149,34 @@ angular.module('bhima.controllers')
     });
 
     function exportToCSV() {
-      // Construct the json object with the data
-      var data = [['AccountId', 'AccountNum', 'AccountName', 'Budget', 'Balance', 'Type']];
+      // Construct the raw CSV string with the account budget/balance data
+      var lf = '%0A';
+      var sp = '%20';
+      var csvStr = '"AccountId", "AccountNum", "AccountName", "Budget", "Balance", "Type"' + lf;
       $scope.accounts.data.forEach(function (a) {
-	data.push([a.id, a.account_number, a.account_txt, a.budget, a.balance, a.type]);
+	var budget = a.budget;
+	if (budget === null) {
+	  budget = '';
+	  }
+	var balance = a.balance;
+	if (balance === null) {
+	  balance = '';
+	  }
+	var title = a.account_txt.replace(/"/g, '\'').replace(/ /g, sp);
+	csvStr += a.id + ', ' + a.account_number + ', "' + title + '", ' + budget + ', ' + balance + ', "' + a.type + '"' + lf;
 	});
 
       var today = new Date();
-      var date = today.toISOString().slice(0, 19)
-	.replace('T', '-').replace(':', '-').replace(':', '-');
-      var str = JSON.stringify(data);
-      var path = '/exportCSV/budget-' + date + '.csv';
+      var date = today.toISOString().slice(0, 19).replace('T', '-').replace(':', '-').replace(':', '-');
+      var path = 'budget-' + date + '.csv';
 
-      $http.post(path, JSON.stringify(data))
-	.success(function (result) { 
-	  // Do nothing?
-	})
-	.error(function (code) { 
-	  messenger.danger($translate.instant('BUDGET.DISPLAY.CSV_EXPORT_FAIL'));
-	});
+      // Construct a HTML 'download' element to download the CSV data
+      var elt         = document.createElement('a');
+      elt.href        = 'data:attachment/csv,' + csvStr;
+      elt.target      = '_blank';
+      elt.download    = path;
+      document.body.appendChild(elt);
+      elt.click();
     }
 
     function selectFiscalYear() {
