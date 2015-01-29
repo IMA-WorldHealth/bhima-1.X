@@ -170,13 +170,13 @@ angular.module('bhima.controllers')
       var date = today.toISOString().slice(0, 19).replace('T', '-').replace(':', '-').replace(':', '-');
       var path = 'budget-' + date + '.csv';
 
-      // Construct a HTML 'download' element to download the CSV data
-      var elt         = document.createElement('a');
-      elt.href        = 'data:attachment/csv,' + csvStr;
-      elt.target      = '_blank';
-      elt.download    = path;
-      document.body.appendChild(elt);
-      elt.click();
+      // Construct a HTML 'download' element to download the CSV data (at the end of the body)
+      var e         = document.createElement('a');
+      e.href        = 'data:attachment/csv,' + csvStr;
+      e.target      = '_blank';
+      e.download    = path;
+      document.body.appendChild(e);
+      e.click();
     }
 
     function selectFiscalYear() {
