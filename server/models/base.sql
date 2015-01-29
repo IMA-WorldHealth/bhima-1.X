@@ -132,7 +132,15 @@ INSERT INTO `unit` VALUES
 (83,'Bilan','TREE.BILAN','Bilan report',10,0,'/partials/reports/bilan','/reports/bilan/'),
 (84,'distribution record', 'TREE.DISTRIBUTION_PATIENTS', '', 10, 0, '/partials/reports/distribution_record', '/reports/distribution_record/'),
 (85,'distribution service record', 'TREE.DISTRIBUTION_SERVICES', '', 10, 0, '/partials/reports/distribution_service_record', '/reports/distribution_service_record/'),
-(86,'loss record', 'TREE.LOSS_RECORDS', '', 10, 0, '/partials/stock/loss_record', '/reports/loss_record/');
+(86,'loss record', 'TREE.LOSS_RECORDS', '', 10, 0, '/partials/stock/loss_record', '/reports/loss_record/'),
+(87,'Balance Sheet','TREE.BALANCE_SHEET','Balance Sheet report', 10, 0, '/partials/reports/balance', '/reports/balance/'),
+(88,'Journal','TREE.JOURNAL','Journal report', 10, 0, '/partials/reports/journal', '/reports/journal/'),
+(89,'Tableau formation resultat','TREE.TFR','TFR report', 10, 0, '/partials/reports/tfr', '/reports/tfr/'),
+(90,'Grand livre','TREE.GRAND_LIVRE','Grand livre report', 10, 0, '/partials/reports/grand_livre', '/reports/grand_livre/'),
+(91,'Employee State','TREE.EMPLOYEE_STATE','Employee State report', 10, 0, '/partials/reports/employee_state', '/reports/employee_state/'),
+(92,'Service state','TREE.SERVICE_STATE','Service state report', 10, 0, '/partials/reports/service_state', '/reports/service_state/'),
+(93,'Income expense report','TREE.INCOME_EXPENSE','Income expense report ', 10, 0, '/partials/reports/income_expense', '/reports/income_expense/');
+
 
 -- references language .json files
 INSERT INTO `language` (id, name, `key`) VALUES
