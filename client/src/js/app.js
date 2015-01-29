@@ -608,6 +608,10 @@
       controller : 'configureBilan',
       templateUrl : 'partials/reports_proposed/bilan/bilan.html'
     })
+    .when('/reports/balance/', {
+      controller : 'configureBalance',
+      templateUrl : 'partials/reports_proposed/balance/balance.html'
+    })
     .otherwise('/');
   }
 
