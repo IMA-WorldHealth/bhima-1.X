@@ -45,8 +45,27 @@ angular.module('bhima.controllers')
     };
 
     dependencies.employees = {
-      required : true,
-      query : 'employee_list/'
+      query : {
+        tables : {
+          employee : { 
+            columns : [
+              'id', 'code::code_employee', 'prenom', 'name', 'postnom', 'sexe', 'dob',
+              'date_embauche', 'service_id', 'nb_spouse', 'nb_enfant', 'grade_id', 'locked',
+              'daily_salary', 'phone', 'email', 'adresse', 'bank', 'bank_account', 'location_id'
+            ]
+          },
+          grade : { columns : ['text', 'basic_salary', 'code::code_grade']},
+          fonction : { columns : ['id::fonction_id', 'fonction_txt']},
+          debitor : { columns : ['uuid::debitor_uuid', 'text::debitor_text', 'group_uuid::debitor_group_uuid']},
+          creditor : { columns : ['uuid::creditor_uuid', 'text::creditor_text', 'group_uuid::creditor_group_uuid']}
+        },
+        join : ['employee.grade_id=grade.uuid',
+          'employee.fonction_id=fonction.id',
+          'employee.debitor_uuid=debitor.uuid',
+          'employee.creditor_uuid=creditor.uuid'
+        ],
+        where : ['employee.locked<>1']
+      }
     };
 
     dependencies.user = {
