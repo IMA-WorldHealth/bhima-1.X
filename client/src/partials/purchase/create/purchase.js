@@ -42,7 +42,8 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           employee : { columns : ['id', 'code', 'prenom', 'name', 'postnom', 'dob', 'creditor_uuid'] }
-        }
+        },
+        where : ['employee.locked<>1']
       }
     };
 
