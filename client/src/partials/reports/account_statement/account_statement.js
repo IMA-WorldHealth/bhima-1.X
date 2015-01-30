@@ -38,6 +38,7 @@ angular.module('bhima.controllers')
     };
 
     appstate.register('project', function (project) {
+      console.log('For the project',project);
       $scope.project = project;
       validate.process(dependencies)
       .then(init, handleError);
@@ -132,11 +133,16 @@ angular.module('bhima.controllers')
     //   throw error;
     // }
 
+    $scope.print = function print() {
+      $window.print();
+    };
 
-    function print () { $window.print(); }
+   function reconfigure () {
+      $scope.state = null;
+    }
 
-    $scope.print = print;
 
+    $scope.reconfigure = reconfigure;
     $scope.submitAccount = submitAccount;
     $scope.resetAccountSearch = resetAccountSearch;
   }
