@@ -2389,6 +2389,7 @@
    "DATE"              : "Date",
    "DATE_FROM"         : "Du",
    "DATE_TO"           : "Au",
+   "DEPOT"             : "Depot",
    "ERROR"             : "Erreur",
    "GENERATE"          : "Générer",
    "IMCK"              : "IMCK",
