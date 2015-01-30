@@ -131,6 +131,11 @@
    "TOTALS"          : "Totals"
    },
 "BUDGET": {
+   "DISPLAY" : {
+     "LINE"         : "Line",
+     "REPORT_TITLE" : "Accounts Budgets and Balances",
+     "TOTALS"       : "TOTALS:"
+   },
    "EDIT": {
       "ACCOUNT_LABEL"     : "Account:",
       "AUTO_ADJUST"       : "Auto adjust totals",
@@ -140,6 +145,7 @@
       "CREATE_FAIL"       : "Error creating budget",
       "CREATE_OK"         : "Budget created",
       "CREATE_QUESTION"   : "Create a new budget for this account for this fiscal year?",
+      "DATA_NOT_FOUND"    : "No Budget data found for account '<acct>' for fiscal year '<fyname>'",
       "END"               : "End",
       "FISCAL_YEAR_LABEL" : "Fiscal Year:",
       "FREEZE"            : "Freeze",
@@ -886,10 +892,10 @@
    "WEEK"         : "This Week"
    },
 "FIND": {
-    "ACCOUNT" : {
-      "ACCOUNT"         : "Account",
-      "ENTER_ACCOUNT"   : "Enter Account",
-      "PLACEHOLDER"     : "Account Name or Number"
+   "ACCOUNT": {
+      "ACCOUNT"       : "Account",
+      "ENTER_ACCOUNT" : "Enter Account",
+      "PLACEHOLDER"   : "Account Name or Number"
       },
    "PATIENT_ID"        : "Patient ID",
    "PATIENT_NAME"      : "Patient name",
@@ -2261,6 +2267,7 @@
    "DEPOT"                     : "Depot",
    "DONATION_MANAGEMENT"       : "Donation Management",
    "DONOR_MANAGEMENT"          : "Donor management",
+   "EDIT_BUDGET"               : "Edit Account Budget",
    "DISTRIBUTION_PATIENTS"     : "Distribution patients records",
    "DISTRIBUTION_SERVICES"     : "Distribution Services Records",
    "EDIT_PATIENT"              : "Edit Patient Details",
@@ -2385,6 +2392,7 @@
    "CURRENCY"          : "Currency",
    "DATE"              : "Date",
    "ERROR"             : "Error",
+   "EXPORT_TO_CSV"     : "Export to CSV",
    "IMCK"              : "IMCK",
    "IMCK_LONG"         : "Christian Medical Institue of Kasai",
    "ITEMS"             : "Items",
