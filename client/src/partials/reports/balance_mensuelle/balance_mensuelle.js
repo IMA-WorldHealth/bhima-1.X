@@ -8,7 +8,8 @@ angular.module('bhima.controllers')
   'util',
   'messenger',
   function ($scope, $translate, $window, validate, appstate, util, messenger) {
-    var dependencies = {}, session = $scope.session = {};
+    var dependencies = {}, session = $scope.session = {},
+      state = $scope.state;
 
     session.classes = [
       { number : 1, name : 'Fonds propres'},
@@ -29,6 +30,7 @@ angular.module('bhima.controllers')
     }
 
     function getAccountBalance() {
+      $scope.state = 'generate';
       if(session.classe && session.periode){
         var params = {
           project : session.project,
