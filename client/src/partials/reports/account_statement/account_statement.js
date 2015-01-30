@@ -12,7 +12,8 @@ angular.module('bhima.controllers')
   '$window',
   'validate',
   function ($scope, $q, $http, $routeParams, $translate, appstate, uuid, util, messenger, $window, validate) {
-    var dependencies = {};
+    var dependencies = {},
+      state = $scope.state;
     var session = $scope.session = {
       reportDate : new Date(),
       timestamp : new Date(),
@@ -49,6 +50,9 @@ angular.module('bhima.controllers')
 
     // Define the callbacks for the findAccount dialog
     function submitAccount(account) {
+      $scope.state = 'generate'; 
+      console.log('Tozali Awa na Barcelano pona kolokota');
+
       fetchReport(account.id);
     }
 
