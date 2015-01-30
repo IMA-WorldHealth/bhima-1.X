@@ -1,79 +1,142 @@
-<header>
-  {{ "PATIENT_REGISTRATIONS.TITLE" | translate }}
-</header>
+<div ng-switch="state">
+  <div ng-switch-default>
+    <main>
+      <div class="col-xs-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <b> {{ "REPORT.CONFIGURE_REPORT" | translate }} : </b> {{ "PATIENT_REGISTRATIONS.TITLE" | translate }}
+          </div>
 
-<nav>
-  <div class="pull-left">
-    <span class="btn-group">
-      <button class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : session.active }" ng-click="search(session.selected)">{{ (session.selected.label | translate) || "..." }}</button>
-      <button class="btn btn-sm btn-default dropdown-toggle btn-sq"><span class="caret" data-caret="&#9660;"></span></button>
-      <ul class="dropdown-menu menu-sq">
-        <li ng-repeat="opt in options">
-          <a ng-click="search(opt)">{{ opt.label | translate }}</a>
-        </li>
-      </ul>
-    </span>
+          <div class="panel-body">
+            
+            <form name="configForm" novalidate>              
+              <div class="pull-left input-group col-xs-12">
+                <span class="input-group-addon">
+                  {{ 'SELECT.PROJECT' | translate }}
+                </span>
+                  <select class="form-bhima" ng-model="session.project" ng-options="project.id as project.name for project in projects.data">
+                  </select>
+              </div>
+              <div class="pull-left input-group col-xs-12">
+              </div>                
+
+              <div class="pull-left input-group col-xs-12">            
+                <span class="btn-group">
+                  <button class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : session.active }" >{{ (session.selected.label | translate) || "..." }}</button>
+                  <button class="btn btn-sm btn-default dropdown-toggle btn-sq"><span class="caret" data-caret="&#9660;"></span></button>
+                  <ul class="dropdown-menu menu-sq">
+                    <li ng-repeat="opt in options">
+                      <a ng-click="search(opt)">{{ opt.label | translate }}</a>
+                    </li>
+                  </ul>
+                </span>
+              </div>  
+              <div class="pull-left input-group col-xs-12">
+              </div>
+
+              <div class="pull-left input-group col-xs-4">
+                <span class="input-group-addon">
+                  {{ 'COLUMNS.DATE_FROM' | translate }}
+                </span>
+                <input class="form-bhima" type="date" ng-model="session.dateFrom" rows="20" >
+              </div>
+              <div class="pull-left input-group col-xs-12">
+              </div>
+
+              <div class="pull-left input-group col-xs-4">
+                <span class="input-group-addon">
+                  {{ 'COLUMNS.DATE_TO' | translate }}
+                </span>
+                <input class="form-bhima" type="date" ng-model="session.dateTo" rows="20" >
+              </div>
+              <div class="pull-left input-group col-xs-12">
+              </div>
+
+              <div class="pull-right">
+                <button class="btn btn-sm btn-success" type="button" ng-click="reset()" ng-disabled="configForm.$invalid">
+                  {{ "REPORT.GENERATE" | translate }}
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>  
   </div>
+  <div ng-switch-when="generate">  
+    <header>
 
-  <div>
-    <div class="col-xs-2">
-      <input class="form-bhima" type="date" ng-model="session.dateFrom" rows="20" ng-change="reset(1)">
+      {{ projectSelected }} <small> {{ "PATIENT_REGISTRATIONS.TITLE" | translate }} {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small>
+    </header>
+
+    <nav>
+
+      <div class="pull-right">        
+        <button class="btn btn-sm btn-default" ng-click="print()">
+          <span class="glyphicon glyphicon-print"></span>
+          {{ "UTIL.PRINT" | translate }}
+        </button>
+
+        <button
+          style="margin-left: 5px;"
+          ng-click="reconfigure()"
+          class="btn btn-sm btn-default pull-right">
+          <span class="glyphicon glyphicon-repeat"></span>
+        </button>
+      </div>
+    
+    </nav>
+
+    <div class="report">
+      <div class="reportBody">
+        <div class="reportFrame">
+          <h4 class="visible-print"> {{ projectSelected }} </h4>
+          <h4 class="visible-print">
+            {{ "PATIENT_REGISTRATIONS.TITLE" | translate }} <small> {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small>
+          </h4>
+          <table class="reportTable">
+            <thead>
+              <tr>
+                <th>{{ "COLUMNS.NR" | translate }}</th>
+                <th>{{ "COLUMNS.ID" | translate }}</th>
+                <th>{{ "COLUMNS.NAME" | translate }}</th>
+                <th>{{ "COLUMNS.DOB" | translate }}</th>
+                <th>{{ "COLUMNS.SEX" | translate }}</th>
+                <th>{{ "COLUMNS.DEBITOR_ID" | translate }}</th>
+                <th>{{ "COLUMNS.DATE_REGISTERED" | translate }}</th>
+                <th>{{ "COLUMNS.VISIT_DATE" | translate }}</th>
+                <th>{{ "COLUMNS.REGISTERED_BY" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat='patient in patients'>
+                <td> {{$index + 1}} </td>
+                <td> {{ patient.abbr + patient.reference }} </td>
+                <td> {{ patient.first_name + ' ' + patient.last_name }} </td>
+                <td> {{ patient.dob | date }} </td>
+                <td> {{ patient.sex }} </td>
+                <td ng-show="!patient.expand"><a ng-click="patient.expand=!patient.expand">{{ "UTIL.SHOW" | translate }}</a></td>
+                <td ng-show="patient.expand"> <a ng-click="patient.expand=!patient.expand">{{ patient.debitor_uuid }}</a></td>
+                <td> {{ patient.registration_date | date }} </td>
+                <td> {{ patient.date | date }} </td>
+                <td> {{ patient.registrar }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-    <div class="col-xs-2">
-      <input class="form-bhima" type="date" ng-model="session.dateTo" rows="20" ng-change="reset(1)">
-    </div>
-    <div class="col-xs-3 pull-right">
-      <select class="form-bhima" ng-model="session.project" ng-change="reset()" ng-options="project.id as project.name for project in projects.data">
-      </select>
-    </div>
-  </div>
 
-  <div class="pull-right">
-    <button ng-click="printReport()" class="btn btn-default btn-sm square"><span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}</button>
-  </div>
-</nav>
+    <footer style="background-color:#fff;">
+      <span style="margin-right: 10px;">
+      <span class="glyphicon glyphicon-user" style="color: #428bca"></span> <b>{{ patients.length }}</b>
+        <span ng-if="session.searching">...</span>
+      </span>
 
-<div class="report">
-  <div class="reportBody">
-    <div class="reportFrame">
-      <h4 class="visible-print">{{ "PATIENT_REGISTRATIONS.TITLE" | translate }} <small> {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small></h4>
-        <table id="patientTable" class="reportTable">
-          <thead>
-            <tr>
-              <th>{{ "COLUMNS.ID" | translate }}</th>
-              <th>{{ "COLUMNS.NAME" | translate }}</th>
-              <th>{{ "COLUMNS.DOB" | translate }}</th>
-              <th>{{ "COLUMNS.SEX" | translate }}</th>
-              <th>{{ "COLUMNS.DEBITOR_ID" | translate }}</th>
-              <th>{{ "COLUMNS.DATE_REGISTERED" | translate }}</th>
-              <th>{{ "COLUMNS.VISIT_DATE" | translate }}</th>
-              <th>{{ "COLUMNS.REGISTERED_BY" | translate }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat='patient in patients'>
-              <td> {{ patient.abbr + patient.reference }} </td>
-              <td> {{ patient.first_name + ' ' + patient.last_name }} </td>
-              <td> {{ patient.dob | date }} </td>
-              <td> {{ patient.sex }} </td>
-              <td ng-show="!patient.expand"><a ng-click="patient.expand=!patient.expand">{{ "UTIL.SHOW" | translate }}</a></td>
-              <td ng-show="patient.expand"> <a ng-click="patient.expand=!patient.expand">{{ patient.debitor_uuid }}</a></td>
-              <td> {{ patient.registration_date | date }} </td>
-              <td> {{ patient.date | date }} </td>
-              <td> {{ patient.registrar }}</td>
-            </tr>
-          </tbody>
-        </table>
-    </div>
-  </div>
-</div>
+      <span><b>{{ "SEX.M" | translate }}: {{ session.count.male }}</b></span>
+      <span><b>{{ "SEX.F" | translate }}: {{ session.count.female }}</b></span>
+    </footer>
+  </div>    
+</div>  
 
-<footer style="background-color:#fff;">
-  <span style="margin-right: 10px;">
-  <span class="glyphicon glyphicon-user" style="color: #428bca"></span> <b>{{ patients.length }}</b>
-    <span ng-if="session.searching">...</span>
-  </span>
-
-  <span><b>{{ "SEX.M" | translate }}: {{ session.count.male }}</b></span>
-  <span><b>{{ "SEX.F" | translate }}: {{ session.count.female }}</b></span>
-</footer>
