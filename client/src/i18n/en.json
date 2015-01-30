@@ -1,7 +1,14 @@
 {
 "ACCOUNT": {
+   "ACCOUNT_ASSET"  : "Asset Accounts",
+   "ACCOUNT_COST"   : "Costs Accounts",
+   "ACCOUNT_EQUITY" : "Accounts of equity and borrowing more than a year",
+   "ACCOUNT_FINC"   : "Financial Accounts",
    "ACCOUNT_GROUP"  : "Account Group (Title Account)",
    "ACCOUNT_NUMBER" : "Account Number",
+   "ACCOUNT_REV"    : "Revenues Accounts",
+   "ACCOUNT_STOCKS" : "Stocks Accounts",
+   "ACCOUNT_THPART" : "Third-party accounts and regularize",
    "ACCOUNT_TITLE"  : "Account Text",
    "ACCOUNT_TYPE"   : "Account Type",
    "ADD"            : "Add Account",
