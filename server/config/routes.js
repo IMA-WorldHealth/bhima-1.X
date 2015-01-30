@@ -32,6 +32,7 @@ var uncategorised   = require('./../controllers/uncategorised');
 
 var compileReport   = require('./../controllers/reports_proposed/reports.js');
 
+
 exports.initialise = function (app) { 
   console.log('[config/routes] Configure routes');
   
@@ -161,5 +162,4 @@ exports.initialise = function (app) {
   app.put('/setCotisationPayment/', uncategorised.setCotisationPayment);
 
   app.get('/getEmployeeCotisationPayment/:id', uncategorised.listEmployeeCotisationPayments);
-  
 };

@@ -420,3 +420,11 @@ a.danger {
 .note {
   min-height: 10em;
 }
+
+td.bhima {
+    padding: 0 4px;
+}
+
+.right {
+    text-align: right;
+}
