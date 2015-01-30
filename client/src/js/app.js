@@ -23,6 +23,10 @@
       controller : 'auth.login',
       templateUrl : 'partials/auth/login.html'
     })
+    .when('/budgeting/edit', {
+      controller: 'editAccountBudget',
+      templateUrl: 'partials/budget/edit/edit_budget.html'
+    })
     .when('/budgeting/:accountID?', {
       controller: 'budget',
       templateUrl: 'partials/budget/budget.html'
