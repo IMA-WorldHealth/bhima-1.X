@@ -7,7 +7,11 @@ angular.module('bhima.controllers')
   'connect',
   'appstate',
   function ($scope, $filter, $translate, validate, connect, appstate) {
-    var session = $scope.session = { count : {} };
+    var session = $scope.session = { count : {} },
+      state = $scope.state,
+      allProjectIds = $scope.allProjectIds = '';
+
+
     var dependencies = {};
     $scope.selected = null;
 
@@ -24,21 +28,18 @@ angular.module('bhima.controllers')
     function day () {
       session.dateFrom = new Date();
       session.dateTo = new Date();
-      reset();
     }
 
     function week () {
       session.dateFrom = new Date();
       session.dateTo = new Date();
       session.dateFrom.setDate(session.dateTo.getDate() - session.dateTo.getDay());
-      reset();
     }
 
     function month () {
       session.dateFrom = new Date();
       session.dateTo = new Date();
       session.dateFrom.setDate(1);
-      reset();
     }
 
     $scope.options = [
@@ -62,8 +63,33 @@ angular.module('bhima.controllers')
     }
 
     function reset (p) {
-      var req, url;
+      var req, url,
+        projectSelected = $scope.projectSelected,
+        selected = $scope.selected = (session.project === $scope.allProjectIds)?$translate.instant('CASH_PAYMENTS.ALL_PROJECTS'):'selected';
+
+      if(selected === 'selected'){
+        dependencies.project = {
+          required: true,
+          query : {
+            tables : {
+              'project' : {
+                columns : ['id', 'abbr', 'name']
+              }
+            },
+            where : ['project.id=' + session.project]
+          }
+        };  
+        validate.process(dependencies, ['project'])
+        .then(function (model) {
+          var dataproject = model.project.data[0];
+          $scope.projectSelected = dataproject.name;
+        });      
+      } else {
+        $scope.projectSelected = selected;
+      }
+ 
       session.searching = true;
+      $scope.state = 'generate';
 
       // toggle off active
       session.active = !p;
@@ -72,8 +98,6 @@ angular.module('bhima.controllers')
         dateFrom : $filter('date')(session.dateFrom, 'yyyy-MM-dd'),
         dateTo : $filter('date')(session.dateTo, 'yyyy-MM-dd')
       };
-
-      console.log('session.project', session.project);
 
       url = '/reports/patients/?id=' + session.project;
       url += '&start=' + req.dateFrom;
@@ -91,17 +115,25 @@ angular.module('bhima.controllers')
       validate.process(dependencies)
       .then(function (models) {
         $scope.projects = models.projects;
-        var allProjectIds =
+        $scope.allProjectIds =
           models.projects.data.reduce(function (a,b) { return a + ',' + b.id ; }, '')
           .substr(1);
         $scope.projects.post({
-          id : allProjectIds,
+          id : $scope.allProjectIds,
           name : $translate.instant('CASH_PAYMENTS.ALL_PROJECTS')
         });
         session.project = project.id;
         search($scope.options[0]);
       });
     });
+
+    $scope.print = function print() {
+      window.print();
+    };
+
+   function reconfigure () {
+      $scope.state = null;
+    }
 
     $scope.$watch('patients', function () {
       if (!$scope.patients) { return; }
@@ -114,5 +146,6 @@ angular.module('bhima.controllers')
 
     $scope.search = search;
     $scope.reset = reset;
+    $scope.reconfigure = reconfigure;
   }
 ]);
