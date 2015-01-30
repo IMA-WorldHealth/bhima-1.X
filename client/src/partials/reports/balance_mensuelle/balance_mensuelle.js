@@ -12,13 +12,13 @@ angular.module('bhima.controllers')
       state = $scope.state;
 
     session.classes = [
-      { number : 1, name : 'Fonds propres'},
-      { number : 2, name : 'Valeurs immob. & Eng.'},
-      { number : 3, name : 'Valeurs d\'exploitation'},
-      { number : 4, name : 'Fournisseurs, Tiers & Regular.'},
-      { number : 5, name : 'Comptes Financiers'},
-      { number : 6, name : 'Charges et Pertes'},
-      { number : 7, name : 'Produits et Profits'}
+      { number : 1, name : $translate.instant('ACCOUNT.ACCOUNT_EQUITY')},
+      { number : 2, name : $translate.instant('ACCOUNT.ACCOUNT_ASSET')},
+      { number : 3, name : $translate.instant('ACCOUNT.ACCOUNT_STOCKS')},
+      { number : 4, name : $translate.instant('ACCOUNT.ACCOUNT_THPART')},
+      { number : 5, name : $translate.instant('ACCOUNT.ACCOUNT_FINC')},
+      { number : 6, name : $translate.instant('ACCOUNT.ACCOUNT_COST')},
+      { number : 7, name : $translate.instant('ACCOUNT.ACCOUNT_REV')}
     ];
 
     appstate.register('project', function (project) {
@@ -60,8 +60,14 @@ angular.module('bhima.controllers')
       session.sumCredit = $scope.balance_mensuelle.data.reduce(function sum(a, b) { return a + b.credit; },0);
     }
     
+   function reconfigure () {
+      $scope.state = null;
+      $scope.session.classe = null;
+      $scope.session.periode = null;
+    }    
 
     // Exports
+    $scope.reconfigure = reconfigure;
     $scope.getAccountBalance = getAccountBalance;
     $scope.formatAccount = formatAccount;
     $scope.print = print;
