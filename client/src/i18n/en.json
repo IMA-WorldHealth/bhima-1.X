@@ -2377,6 +2377,7 @@
    "UPDATE_SUCCESS" : "Updating success"
    },
 "UTIL": {
+   "ACCOUNT"           : "Account",
    "AGGREGATES"        : "Aggregates",
    "BACK"              : "Back",
    "CANCEL"            : "Cancel",
@@ -2405,6 +2406,7 @@
    "SEARCH"            : "Search",
    "SHOW"              : "Show",
    "SIGNATURES"        : "Signatures",
+   "SOURCE"            : "Source",
    "SUBMIT"            : "Submit",
    "TOGGLE"            : "Toggle",
    "TOGGLE_AGGREGATES" : "Toggle Aggregates",

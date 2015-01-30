@@ -2377,6 +2377,7 @@
    "UPDATE_SUCCESS" : "Les stocks sont mettre à jour"
    },
 "UTIL": {
+   "ACCOUNT"           : "Compte",
    "AGGREGATES"        : "Agregats",
    "BACK"              : "Retourner",
    "CANCEL"            : "Annuler",
@@ -2405,6 +2406,7 @@
    "SEARCH"            : "Chercher",
    "SHOW"              : "Voire",
    "SIGNATURES"        : "Signature",
+   "SOURCE"            : "Source",
    "SUBMIT"            : "Enregistrer",
    "TOGGLE"            : "Basculer",
    "TOGGLE_AGGREGATES" : "Montrer Agregats",
