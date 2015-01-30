@@ -12,7 +12,8 @@ angular.module('bhima.controllers')
   function ($scope, $q, connect, appstate, validate, messenger, util, Appcache,exchange) {
     var session = $scope.session = {};
     var dependencies = {};
-    var cache = new Appcache('expense_report');
+    var cache = new Appcache('expense_report'),
+      state = $scope.state;
     session.dateFrom = new Date();
     session.dateTo = new Date();
 
@@ -70,6 +71,7 @@ angular.module('bhima.controllers')
     }
 
     function setSelectedCash (obj) {
+      $scope.state = 'generate';
       session.selectedCash = obj;
       cache.put('selectedCash', obj);
       fill();
@@ -105,6 +107,17 @@ angular.module('bhima.controllers')
     $scope.setSelectedCash = setSelectedCash;
     $scope.fill = fill;
 
+    $scope.print = function print() {
+      window.print();
+    };
+
+   function reconfigure () {
+      $scope.state = null;
+      session.selectedCash = null;
+      session.dateFrom = null;
+      session.dateTo = null;
+    }
+
     function convert (){
       session.sum_credit = 0;
       if(session.model.records.data) {   
@@ -119,5 +132,6 @@ angular.module('bhima.controllers')
       }
     }
     $scope.convert = convert;
+    $scope.reconfigure = reconfigure;
   }
 ]);

@@ -12,7 +12,8 @@ angular.module('bhima.controllers')
   function ($scope, $q, connect, appstate, validate, messenger, util, Appcache,exchange) {
     var session = $scope.session = {};
     var dependencies = {};
-    var cache = new Appcache('income_report');
+    var cache = new Appcache('income_report'),
+      state = $scope.state;
     session.dateFrom = new Date();
     session.dateTo = new Date();
 
@@ -31,7 +32,7 @@ angular.module('bhima.controllers')
           }
         },
         join : ['cash_box.id=cash_box_account_currency.cash_box_id', 
-		'currency.id=cash_box_account_currency.currency_id' ]
+    'currency.id=cash_box_account_currency.currency_id' ]
       }
     };
     
@@ -73,12 +74,14 @@ angular.module('bhima.controllers')
     }
 
     function setSelectedCash (obj) {
+      $scope.state = 'generate';
       session.selectedCash = obj;
       cache.put('selectedCash', obj);
       fill();
     }
 
     function fill () {
+
       var request = {
         dateFrom : util.sqlDate(session.dateFrom),
         dateTo : util.sqlDate(session.dateTo),
@@ -89,16 +92,16 @@ angular.module('bhima.controllers')
         request.account_id = session.selectedCash.account_id;
       }
       else {
-	request.account_id = null;
+  request.account_id = null;
       }
 
       dependencies.records.query = '/reports/income_report/?' + JSON.stringify(request);      
       validate.refresh(dependencies, ['records','currencies'])
-	.then(prepareReport)
-	.then(convert)
-	.catch(function (err) {
-	  messenger.danger(err.toString());
-	});
+      .then(prepareReport)
+      .then(convert)
+      .catch(function (err) {
+        messenger.danger(err.toString());
+      });
     }
 
     function prepareReport (model) {
@@ -124,7 +127,19 @@ angular.module('bhima.controllers')
         });        
       }
     }
+
+    $scope.print = function print() {
+      window.print();
+    };
+
+   function reconfigure () {
+      $scope.state = null;
+      $scope.session.selectedCash = null;
+      $scope.session.dateFrom = null;
+      $scope.session.dateTo = null;
+    }
+
     $scope.convert = convert;
-    
+    $scope.reconfigure = reconfigure;
   }
 ]);
