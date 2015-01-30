@@ -46,3 +46,11 @@ select.form-bhima {
 a[ng-click] {
   cursor : pointer;
 }
+
+.form-bhima-border {
+    border: 1px solid #cccccc;
+}
+
+.form-bhima-red-border {
+    border: 2px solid #ff0000;
+}
