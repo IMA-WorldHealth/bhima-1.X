@@ -133,6 +133,7 @@ angular.module('bhima.controllers')
     }
 
     function writeEmployee(creditor_uuid, debitor_uuid) {
+      session.employee.locked = (session.employee.locked)? 1 : 0;
       session.employee.creditor_uuid = creditor_uuid;
       session.employee.debitor_uuid = debitor_uuid;      
       session.employee.dob = util.sqlDate(session.employee.dob);
@@ -210,7 +211,8 @@ angular.module('bhima.controllers')
         email : session.employee.email,
         fonction_id : session.employee.fonction_id,
         service_id : session.employee.service_id,
-        location_id : session.employee.location_id
+        location_id : session.employee.location_id,
+        locked : session.employee.locked
       };
       
       submitCreditorEdit(creditor)
