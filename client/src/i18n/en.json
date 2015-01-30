@@ -680,7 +680,7 @@
    "NOT_CONSUMABLE"         : "Not consumable",
    "NOT_CONSUMED"           : "This prescription is unfufilled",
    "NO_DISTRIB_PATIENT"     : "No distribution to Patients in this time range",
-   "NO_DISTRIB_SERVICE"     : "No distribution to Services in this time range",   
+   "NO_DISTRIB_SERVICE"     : "No distribution to Services in this time range",
    "NO_SALE_FOUND"          : "No sale data found for patient",
    "NUM_FACTURE"            : "Invoice Number",
    "PATIENT_COVERED"        : "Patient is convered by a Convention",
