@@ -173,6 +173,7 @@ angular.module('bhima.controllers')
       // Construct a HTML 'download' element to download the CSV data (at the end of the body)
       var e         = document.createElement('a');
       e.href        = 'data:attachment/csv,' + csvStr;
+      e.className   = 'no-print';
       e.target      = '_blank';
       e.download    = path;
       document.body.appendChild(e);
