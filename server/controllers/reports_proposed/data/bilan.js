@@ -134,13 +134,19 @@ exports.compile = function (options) {
     });
 
     var selectedAccounts = [];
+    var actif_total = 0;
+    var passif_total = 0;
 
     accountTree.forEach(function (account){
       account.subs.forEach(function (sub) {
+        sub.is_asset === 1 ? actif_total += sub.balance : passif_total += sub.balance;
         selectedAccounts.push(sub);
       });
     });
 
+    context.actif_total = numeral(actif_total).format(formatDollar);
+    context.passif_total = numeral(passif_total).format(formatDollar);
+    context.sold = numeral(actif_total - passif_total).format(formatDollar);
     context.data = selectedAccounts;
     deferred.resolve(context);
   })
