@@ -8,43 +8,62 @@
           </div>
 
           <div class="panel-body">
-            
-            <form name="configForm" novalidate>              
-              <div class="pull-left input-group col-xs-12">
-                <span class="input-group-addon">
+
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
                   {{ 'SELECT.ACCOUNT' | translate }}
-                </span>
-                <div find-account on-submit="submitAccount" on-reset="resetAccountSearch" enable-reset></div>
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group col-xs-12">
+                  <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-folder-open"></span>
+                  </span>  
+                  <div find-account on-submit="submitAccount" on-reset="resetAccountSearch" enable-reset></div>
+                  </div>
+                </div>
               </div>
-              <div class="pull-left input-group col-xs-12">
-              </div>                
 
-              <div class="pull-left input-group col-xs-4">
-                <span class="input-group-addon">
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
                   {{ 'COLUMNS.LIMIT' | translate }}
-                </span>
-                <input ng-model="session.config.limit" type="number" class="form-bhima"/>
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-ban-circle"></span>
+                    </span>  
+                    <input ng-model="session.config.limit" type="number" class="form-bhima"/>
+                  </div>
+                </div>
               </div>
-              <div class="pull-left input-group col-xs-12">
-              </div>  
 
-              <div class="pull-left input-group col-xs-4">
-                <span class="input-group-addon">
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
                   {{ 'COLUMNS.DATE_FROM' | translate }}
-                </span>
-                <input class="form-bhima" type="date" ng-model="session.config.dateFrom" rows="20" >
-              </div>
-              <div class="pull-left input-group col-xs-12">
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>  
+                    <input class="form-bhima" type="date" ng-model="session.config.dateFrom" rows="20" >
+                  </div>
+                </div>
               </div>
 
-              <div class="pull-left input-group col-xs-4">
-                <span class="input-group-addon">
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
                   {{ 'COLUMNS.DATE_TO' | translate }}
-                </span>
-                <input class="form-bhima" type="date" ng-model="session.config.dateTo" rows="20" >
-              </div>
-              <div class="pull-left input-group col-xs-12">
-              </div>
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>  
+                    <input class="form-bhima" type="date" ng-model="session.config.dateTo" rows="20" >
+                  </div>
+                </div>
+              </div>              
 
               <div class="pull-right">
                 <button class="btn btn-sm btn-success" ng-click="findAccount.submit()" ng-disabled="!findAccount.valid" class="btn btn-sm btn-default square">{{ "FORM.SUBMIT" | translate }}</button>
