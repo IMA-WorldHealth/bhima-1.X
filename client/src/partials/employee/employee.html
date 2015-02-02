@@ -27,6 +27,7 @@
               </th>
               <th>{{ "COLUMNS.FUNCTION" | translate }}</th>
               <th>{{ "COLUMNS.GRADE" | translate }}</th>
+              <th><i class="glyphicon glyphicon-lock"></i></th>
               <th>{{ "COLUMNS.ACTIONS" | translate }}
             </tr>
           </thead>
@@ -40,6 +41,7 @@
               <td>{{ item.prenom }}<span ng-if="item.prenom && item.name">,</span> {{ item.name }} <span ng-if="item.name && item.postnom"> - </span> {{ item.postnom }}</td>
               <td>{{ item.fonction_txt }}</td>
               <td>{{ item.code_grade }}</td>
+              <td> <span class="glyphicon" ng-class="{'glyphicon-ok' : !!item.locked}"> </td>
               <td><span ng-click="editEmployee(item)" class="btn-link glyphicon glyphicon-circle-arrow-right"></span></td>
             </tr>
 
@@ -115,6 +117,13 @@
                 <label class="col-xs-3 control-label">{{ "EMPLOYEE.NB_CHILDREN" | translate }}:</label>
                 <div class="col-xs-9">
                   <input class="form-bhima" type="number" ng-model="session.employee.nb_enfant">
+                </div>
+              </div>
+
+              <div class="form-group" >
+                <label for="employee-dob" class="col-xs-3 control-label">{{ "EMPLOYEE.LOCKED" | translate }}</label>
+                <div class="col-xs-9">
+                  <input type="checkbox" ng-model="session.employee.locked"  ng-true-value="1" ng-false-value="0" ng-checked="session.employee.locked">
                 </div>
               </div>
 
