@@ -10,24 +10,34 @@
           <div class="panel-body">
             
             <form name="configForm" novalidate>              
-              <div class="pull-left input-group col-xs-12">
-                <span class="input-group-addon">
-                  {{ 'BALANCE_MENSUELLE.CHOOSE_PERIOD' | translate }}
-                </span>
-                <input id="periode" class="form-bhima" required type="month" ng-model="session.periode" rows="20" ng-change="">
+              
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ "BALANCE_MENSUELLE.CHOOSE_PERIOD" | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                  <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                  </span>  
+                  <input id="periode" class="form-bhima" required type="month" ng-model="session.periode" rows="20" ng-change="">
+                  </div>
+                </div>
               </div>
-              <div class="pull-left input-group col-xs-12">
-              </div>                
 
-              <div class="pull-left input-group col-xs-12">
-                <span class="input-group-addon">
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
                   {{ 'BALANCE_MENSUELLE.CHOOSE_CLASS' | translate }}
-                </span>
-                <select class="form-bhima" required ng-model="session.classe" ng-options="classe as formatAccount(classe) for classe in session.classes" ></select>
-              </div>
-              <div class="pull-left input-group col-xs-12">
-              </div>
-
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                  <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-stats"></span>
+                  </span>  
+                  <select class="form-bhima" required ng-model="session.classe" ng-options="classe as formatAccount(classe) for classe in session.classes" ></select>
+                  </div>
+                </div>
+              </div>   
 
               <div class="pull-right input-group">
                 <button class="btn btn-sm btn-success" type="button" ng-click="getAccountBalance()" ng-disabled="configForm.$invalid">
