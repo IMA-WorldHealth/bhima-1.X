@@ -11,7 +11,7 @@ angular.module('bhima.controllers')
   function ($scope, $translate, $http, $routeParams, connect, validate, appstate, util) {
     var dependencies = {},
         session = $scope.session = {},
-        state = $scope.state;;
+        state = $scope.state;
 
    dependencies.getPeriods = {
       query : {
