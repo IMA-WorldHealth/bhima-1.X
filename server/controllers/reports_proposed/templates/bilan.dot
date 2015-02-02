@@ -15,7 +15,7 @@
   </section>
 
   <section>
-    <table class="balance">
+    <table class="balance" border="1">
       <thead>
         <tr>
           <th>Actif</th>
@@ -23,6 +23,31 @@
         </tr>
       </thead>
       <tbody>
+        <tr>
+          <!--partie actif-->
+          <td valign="top">
+            <table>
+              {{~it.data : value : index}}
+                <tr>
+                  <td>{{? value.is_asset === 1 }} [{{=value.account_number}}] {{=value.account_txt}} {{?}}</td>
+                  <td>{{? value.is_asset === 1 }} {{=value.formattedBalance}} {{?}}</td>
+                </tr>
+              {{~}}
+            </table>
+          </td>
+
+          <!-- partie passif-->
+          <td valign="top">
+            <table>
+              {{~it.data : value : index}}
+                <tr >
+                  <td>{{? value.is_asset === 0 }} [{{=value.account_number}}] {{=value.account_txt}} {{?}}</td>
+                  <td>{{? value.is_asset === 0 }} {{=value.formattedBalance}} {{?}}</td>
+                </tr>
+              {{~}}
+            </table>
+          </td>
+        </tr>
       </tbody>
     </table>
   </section>
