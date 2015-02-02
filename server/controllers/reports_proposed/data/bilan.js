@@ -141,6 +141,8 @@ exports.compile = function (options) {
       });
     });
 
+    console.log('le resultat est : ', selectedAccounts);
+
     context.data = selectedAccounts;
     deferred.resolve(context);
   })
