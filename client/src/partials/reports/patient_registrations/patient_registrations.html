@@ -9,18 +9,24 @@
 
           <div class="panel-body">
             
-            <form name="configForm" novalidate>              
-              <div class="pull-left input-group col-xs-12">
-                <span class="input-group-addon">
+            <form name="configForm" novalidate>    
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
                   {{ 'SELECT.PROJECT' | translate }}
-                </span>
-                  <select class="form-bhima" ng-model="session.project" ng-options="project.id as project.name for project in projects.data">
-                  </select>
-              </div>
-              <div class="pull-left input-group col-xs-12">
-              </div>                
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-home"></span>
+                    </span>  
 
-              <div class="pull-left input-group col-xs-12">            
+                    <select class="form-bhima" ng-model="session.project" ng-options="project.id as project.name for project in projects.data">
+                    </select>                    
+                  </div>
+                </div>
+              </div>
+
+              <div class="pull-left form-group col-xs-12">
                 <span class="btn-group">
                   <button class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : session.active }" >{{ (session.selected.label | translate) || "..." }}</button>
                   <button class="btn btn-sm btn-default dropdown-toggle btn-sq"><span class="caret" data-caret="&#9660;"></span></button>
@@ -30,27 +36,36 @@
                     </li>
                   </ul>
                 </span>
-              </div>  
-              <div class="pull-left input-group col-xs-12">
+
               </div>
 
-              <div class="pull-left input-group col-xs-4">
-                <span class="input-group-addon">
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
                   {{ 'COLUMNS.DATE_FROM' | translate }}
-                </span>
-                <input class="form-bhima" type="date" ng-model="session.dateFrom" rows="20" >
-              </div>
-              <div class="pull-left input-group col-xs-12">
-              </div>
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>  
+                    <input class="form-bhima" type="date" ng-model="session.dateFrom" rows="20" >
+                  </div>
+                </div>
+              </div>              
 
-              <div class="pull-left input-group col-xs-4">
-                <span class="input-group-addon">
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
                   {{ 'COLUMNS.DATE_TO' | translate }}
-                </span>
-                <input class="form-bhima" type="date" ng-model="session.dateTo" rows="20" >
-              </div>
-              <div class="pull-left input-group col-xs-12">
-              </div>
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>  
+                    <input class="form-bhima" type="date" ng-model="session.dateTo" rows="20" >
+                  </div>
+                </div>
+              </div>               
 
               <div class="pull-right">
                 <button class="btn btn-sm btn-success" type="button" ng-click="reset()" ng-disabled="configForm.$invalid">
