@@ -10,7 +10,7 @@
 
   <section id="title" class="center">
       <h5>IMCK Hopital Bon Berger</h5>
-      <h5>Balance Sheet</h5>
+      <h5>Bilan</h5>
       <h5>As of {{=it.reportDate}}</h5>
   </section>
 
@@ -33,6 +33,10 @@
                   <td>{{? value.is_asset === 1 }} {{=value.formattedBalance}} {{?}}</td>
                 </tr>
               {{~}}
+              <tr border="1" valign="bottom">
+                <td>Total</td>
+                <td>{{=it.actif_total}}</td>
+              </tr>
             </table>
           </td>
 
@@ -45,8 +49,16 @@
                   <td>{{? value.is_asset === 0 }} {{=value.formattedBalance}} {{?}}</td>
                 </tr>
               {{~}}
+              <tr border="1" valign="bottom">
+                <td>Total</td>
+                <td>{{=it.passif_total}}</td>
+              </tr>
             </table>
           </td>
+        </tr>
+        <tr>
+          <td>Solde</td>
+          <td>{{=it.sold}}</td>
         </tr>
       </tbody>
     </table>
