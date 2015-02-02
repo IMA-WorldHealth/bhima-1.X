@@ -116,6 +116,9 @@ UPDATE `account` SET `parent`=@ID_7615 WHERE LEFT(`account_number`,4)=7615 AND `
 UPDATE `account` SET `parent`=@ID_7614 WHERE LEFT(`account_number`,4)=7614 AND `account_number`<>7614;
 UPDATE `account` SET `parent`=@ID_78 WHERE LEFT(`account_number`,2)=78 AND `account_number`<>78;
 
+-- Uppercase 1 and 2 digits account class
+UPDATE `account` SET `account_txt`=UPPER(`account_txt`) WHERE `parent` IN (0, 1, 25, 89, 184, 473, 535, 888, 1046);
+
 -- update active or passive
 -- TRUE for active or FALSE for passive
 UPDATE `account` SET `is_asset`=FALSE WHERE `classe`=1;
