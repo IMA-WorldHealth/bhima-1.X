@@ -68,7 +68,7 @@ angular.module('bhima.controllers')
         join: ['creditor.group_uuid=creditor_group.uuid','creditor_group.account_id=account.id']
       }
     };
-
+    
     dependencies.currencies = {
       required : true,
       query : {

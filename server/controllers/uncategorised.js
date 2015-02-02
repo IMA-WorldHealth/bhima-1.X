@@ -64,7 +64,7 @@ exports.listEmployees = function (req, res, next) {
     "SELECT " +
     "`employee`.`id`, `employee`.`code` AS `code_employee`, `employee`.`prenom`, `employee`.`name`, " +
     "`employee`.`postnom`, `employee`.`sexe`, `employee`.`dob`, `employee`.`date_embauche`, `employee`.`service_id`, " +
-    "`employee`.`nb_spouse`, `employee`.`nb_enfant`, `employee`.`grade_id`, `grade`.`text`, `grade`.`basic_salary`, " +
+    "`employee`.`nb_spouse`, `employee`.`nb_enfant`, `employee`.`grade_id`, `employee`.`locked`, `grade`.`text`, `grade`.`basic_salary`, " +
     "`fonction`.`id` AS `fonction_id`, `fonction`.`fonction_txt`, " +
     "`employee`.`phone`, `employee`.`email`, `employee`.`adresse`, `employee`.`bank`, `employee`.`bank_account`, `employee`.`daily_salary`, `employee`.`location_id`, " +
     "`grade`.`code` AS `code_grade`, `debitor`.`uuid` as `debitor_uuid`, `debitor`.`text` AS `debitor_text`,`debitor`.`group_uuid` as `debitor_group_uuid`, " +
@@ -225,13 +225,23 @@ exports.lookupMaxTableId = function (req, res, next) {
   .done();
 };
 
+
 exports.listInExAccounts = function (req, res, next) {
-  // var sql = 'SELECT TRUNCATE(account.account_number * 0.1, 0) AS dedrick, account.id, account.account_number, account.account_txt, parent FROM account WHERE account.enterprise_id = ''+req.params.id_enterprise+'''+
-  // ' AND TRUNCATE(account.account_number * 0.1, 0)='6' OR TRUNCATE(account.account_number * 0.1, 0)='7'';
+  var enterprise_id = sanitize.escape(req.params.id_enterprise);
   var sql =
-    'SELECT account.id, account.account_number, account.account_txt, parent ' +
-    'FROM account ' +
-    'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ';';
+    'SELECT temp.`id`, temp.`account_number`, temp.`account_txt`, account_type.`type`, ' +
+           'temp.`parent`, temp.`balance`' +  // , temp.`fixed`
+    ' FROM (' +
+        'SELECT account.id, account.account_number, account.account_txt, account.account_type_id, ' +
+               'account.parent, period_total.credit - period_total.debit as balance ' +  // account.fixed,
+        'FROM account LEFT JOIN period_total ' +
+        'ON account.id=period_total.account_id ' +
+        'WHERE account.enterprise_id = ' + enterprise_id +
+    ' ) ' +
+    'AS temp JOIN account_type ' +
+    'ON temp.account_type_id = account_type.id ' +
+    'ORDER BY CAST(temp.account_number AS CHAR(10));';
+
   function process(accounts) {
     var InExAccounts = accounts.filter(function(item) {
       return item.account_number.toString().indexOf('6') === 0 || item.account_number.toString().indexOf('7') === 0;
