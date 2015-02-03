@@ -10,27 +10,37 @@
           <div class="panel-body">
             
             <form name="configForm" novalidate>
-              
-              <div class="pull-left input-group col-xs-12">
-                <span class="input-group-addon">
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
                   {{ "COLUMNS.LIMIT" | translate }}
-                </span>
-                <select class="form-bhima" ng-model="session.limit" ng-options="limit as limit for limit in session.limits" required>
-                  <option disabled="disabled" value="">-- {{ "SELECT.VALUE" | translate }} -- </option>
-                </select>
-              </div>
-              <div class="pull-left input-group col-xs-12">
-              </div>  
-              <div class="pull-left input-group col-xs-12">
-                <span class="input-group-addon">
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                  <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-ban-circle"></span>
+                  </span>  
+                  <select class="form-bhima" ng-model="session.limit" ng-options="limit as limit for limit in session.limits" required>
+                    <option disabled="disabled" value="">-- {{ "SELECT.VALUE" | translate }} -- </option>
+                  </select>
+                  </div>
+                </div>
+              </div> 
+
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
                   {{ "COLUMNS.ACCOUNT_NUMBER" | translate }}
-                </span>
-                <select class="form-bhima" ng-model="session.account" ng-options="account as account.account_number + ' - ' + account.account_txt for account in accounts.data | orderBy:'account_number'" required>
-                  <option disabled="disabled" value="">-- {{ "SELECT.ACCOUNT" | translate }} -- </option>
-                </select>
-              </div>
-              <div class="pull-left input-group col-xs-12">
-              </div>                
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                  <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-folder-open"></span>
+                  </span>  
+                    <select class="form-bhima" ng-model="session.account" ng-options="account as account.account_number + ' - ' + account.account_txt for account in accounts.data | orderBy:'account_number'" required>
+                      <option disabled="disabled" value="">-- {{ "SELECT.ACCOUNT" | translate }} -- </option>
+                    </select>
+                  </div>
+                </div>
+              </div>                        
 
               <div class="pull-right">
                 <button class="btn btn-sm btn-success" type="button" ng-click="search()" ng-disabled="configForm.$invalid">

@@ -9,8 +9,54 @@
 
           <div class="panel-body">
             
-            <form name="configForm" novalidate>              
-              <div class="pull-left input-group col-xs-12">
+            <form name="configForm" novalidate>
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ 'SELECT.PRIMARY_CASH' | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-briefcase"></span>
+                    </span>  
+                    <select
+                      class="form-bhima"
+                      ng-model="session.selectedCash"
+                      ng-options="cash as cash.text + ' ' + cash.symbol for cash in session.model.cashes.data" >
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ 'COLUMNS.DATE_FROM' | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>  
+                    <input class="form-bhima" type="date" ng-model="session.dateFrom" rows="20" >
+                  </div>
+                </div>
+              </div>              
+
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ 'COLUMNS.DATE_TO' | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>  
+                    <input class="form-bhima" type="date" ng-model="session.dateTo" rows="20" >
+                  </div>
+                </div>
+              </div> 
+
+<!--               <div class="pull-left input-group col-xs-12">
                 <span class="input-group-addon">
                   {{ 'SELECT.PRIMARY_CASH' | translate }}
                 </span>
@@ -39,7 +85,7 @@
                 <input class="form-bhima" type="date" ng-model="session.dateTo" rows="20" >
               </div>
               <div class="pull-left input-group col-xs-12">
-              </div>
+              </div> -->
 
               <div class="pull-right">
                 <button class="btn btn-sm btn-success" type="button" ng-click="setSelectedCash(session.selectedCash)" ng-disabled="configForm.$invalid">
