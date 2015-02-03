@@ -896,7 +896,7 @@
     "ACCOUNT" : {
       "ACCOUNT"         : "Compte???",
       "ENTER_ACCOUNT"   : "Entrez Compte???",
-      "PLACEHOLDER"     : "Compte Nom ou Numéro???"
+      "PLACEHOLDER"     : "Par le numéro de Compte ou bien par le nom"
       },
    "PATIENT_ID"        : "ID Patient",
    "PATIENT_NAME"      : "Nom du Patient",
