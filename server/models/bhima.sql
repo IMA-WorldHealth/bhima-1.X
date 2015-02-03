@@ -126,6 +126,7 @@ create table `enterprise` (
   `id`                  smallint unsigned not null auto_increment,
   `name`                text not null,
   `abbr`                varchar(50),
+  `po_box`              varchar(70),
   `phone`               varchar(20),
   `email`               varchar(70),
   `location_id`         char(36),

@@ -13,7 +13,7 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           'enterprise' : {
-            columns : ['id', 'name', 'abbr', 'email', 'phone', 'location_id', 'logo', 'currency_id']
+            columns : ['id', 'name', 'abbr', 'email', 'po_box', 'phone', 'location_id', 'logo', 'currency_id']
           }
         }
       }
