@@ -8,41 +8,63 @@
           </div>
 
           <div class="panel-body">
-            <form name="configForm" novalidate> 
+            <form name="configForm" novalidate>
               <div class="form-group">
-                <div class="input-group">
-                  <span class="input-group-addon">
-                    {{ 'SELECT.PROJECT' | translate }}
-                  </span>
-                  <select class="form-bhima" ng-model="session.project" ng-options="project.id as project.name for project in projects.data">
-                  </select>
-                </div>
-              </div>                
-
-              <div class="row">
-                <div class="col-xs-2">
-                  <div class="input-group">            
-                    <span class="btn-group">
-                      <button class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : session.active }" >{{ (session.selected.label | translate) || "..." }}</button>
-                      <button class="btn btn-sm btn-default dropdown-toggle btn-sq"><span class="caret" data-caret="&#9660;"></span></button>
-                      <ul class="dropdown-menu menu-sq">
-                        <li ng-repeat="opt in options">
-                          <a ng-click="search(opt)">{{ opt.label | translate }}</a>
-                        </li>
-                      </ul>
+                <label class="control-label col-xs-4 required">
+                  {{ 'SELECT.PROJECT' | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-home"></span>
                     </span>
+
+                    <select class="form-bhima" ng-model="session.project" ng-options="project.id as project.name for project in projects.data">
+                    </select>
                   </div>
                 </div>
+              </div>
 
-                <div class="col-xs-5">
-                  <div class="input-group">
+              <div class="pull-left form-group col-xs-12">
+                <span class="btn-group">
+                  <button class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : session.active }" >{{ (session.selected.label | translate) || "..." }}</button>
+                  <button class="btn btn-sm btn-default dropdown-toggle btn-sq"><span class="caret" data-caret="&#9660;"></span></button>
+                  <ul class="dropdown-menu menu-sq">
+                    <li ng-repeat="opt in options">
+                      <a ng-click="search(opt)">{{ opt.label | translate }}</a>
+                    </li>
+                  </ul>
+                </span>
+
+              </div>
+
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ 'COLUMNS.DATE_FROM' | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
                     <span class="input-group-addon">
-                      {{ 'COLUMNS.DATE_FROM' | translate }}
+                      <span class="glyphicon glyphicon-calendar"></span>
                     </span>
                     <input class="form-bhima" type="date" ng-model="session.dateFrom" rows="20" >
                   </div>
                 </div>
+              </div>
 
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ 'COLUMNS.DATE_TO' | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                    <input class="form-bhima" type="date" ng-model="session.dateTo" rows="20" >
+                  </div>
+                </div>
+              </div>
                 <div class="col-xs-5">
                   <div class="input-group">
                     <span class="input-group-addon">
@@ -65,9 +87,9 @@
           </div>
         </div>
       </div>
-    </main>  
+    </main>
   </div>
-  <div ng-switch-when="generate">  
+  <div ng-switch-when="generate">
     <header>
       {{ projectSelected }} <small> {{ "PATIENT_REGISTRATIONS.TITLE" | translate }} {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small>
     </header>
@@ -140,6 +162,6 @@
       <span><b>{{ "SEX.M" | translate }}: {{ session.count.male }}</b></span>
       <span><b>{{ "SEX.F" | translate }}: {{ session.count.female }}</b></span>
     </footer>
-  </div>    
-</div>  
+  </div>
+</div>
 
