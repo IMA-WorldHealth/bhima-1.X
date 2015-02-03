@@ -11,16 +11,22 @@
             
             <form name="configForm" novalidate>
               
-              <div class="pull-left input-group col-xs-12">
-                <span class="input-group-addon">
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
                   {{ "PAYCHECK.SELECT_PERIOD" | translate }}
-                </span>
-                <select class="form-bhima" ng-model="session.period_id">
-                  <option ng-repeat="getPeriod in getPeriods.data" ng-value="getPeriod.id">{{getPeriod.label}} :: {{getPeriod.dateFrom | date }} - {{getPeriod.dateTo | date }}</option>
-                </select>
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-folder-open"></span>
+                    </span>  
+                    <select class="form-bhima" ng-model="session.period_id">
+                      <option ng-repeat="getPeriod in getPeriods.data" ng-value="getPeriod.id">{{getPeriod.label}} :: {{getPeriod.dateFrom | date }} - {{getPeriod.dateTo | date }}</option>
+                    </select>
+                  </div>
+                </div>
               </div>
-              <div class="pull-left input-group col-xs-12">
-              </div>              
+            
               <div class="pull-right">
                 <button class="btn btn-sm btn-success" type="button" ng-click="reset()" ng-disabled="configForm.$invalid">
                   {{ "REPORT.GENERATE" | translate }}

@@ -9,37 +9,51 @@
 
           <div class="panel-body">
             
-            <form name="configForm" novalidate>              
-              <div class="pull-left input-group col-xs-12">
-                <span class="input-group-addon">
+            <form name="configForm" novalidate> 
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
                   {{ 'SELECT.DEPOT' | translate }}
-                </span>
-                <select class="form-bhima" ng-model="session.depot" >
-                  <option selected value="{{'*'}}">{{ 'EXPIRING_REPORT.ALL_DEPOTS' | translate }}</option>
-                  <option ng-repeat="depot in model.depots.data" value="{{ depot.uuid }}">{{ depot.text}}</option>
-                </select>
-              </div>
-              <div class="pull-left input-group col-xs-12">
-              </div>                
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-inbox"></span>
+                    </span>  
+                    <select class="form-bhima" ng-model="session.depot" >
+                      <option selected value="{{'*'}}">{{ 'EXPIRING_REPORT.ALL_DEPOTS' | translate }}</option>
+                      <option ng-repeat="depot in model.depots.data" value="{{ depot.uuid }}">{{ depot.text}}</option>
+                    </select>                    
+                  </div>
+                </div>
+              </div>                         
 
-              <div class="pull-left input-group col-xs-4">
-                <span class="input-group-addon">
+               <div class="form-group">
+                <label class="control-label col-xs-4 required">
                   {{ 'COLUMNS.DATE_FROM' | translate }}
-                </span>
-                <input class="form-bhima" type="date" ng-model="session.dateFrom" rows="20" >
-              </div>
-              <div class="pull-left input-group col-xs-12">
-              </div>
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>  
+                    <input class="form-bhima" type="date" ng-model="session.dateFrom" rows="20" >
+                  </div>
+                </div>
+              </div>              
 
-              <div class="pull-left input-group col-xs-4">
-                <span class="input-group-addon">
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
                   {{ 'COLUMNS.DATE_TO' | translate }}
-                </span>
-                <input class="form-bhima" type="date" ng-model="session.dateTo" rows="20" >
-              </div>
-              <div class="pull-left input-group col-xs-12">
-              </div>
-
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>  
+                    <input class="form-bhima" type="date" ng-model="session.dateTo" rows="20" >
+                  </div>
+                </div>
+              </div> 
               <div class="pull-right">
                 <button class="btn btn-sm btn-success" type="button" ng-click="doSearching(1)" ng-disabled="configForm.$invalid">
                   {{ "REPORT.GENERATE" | translate }}
