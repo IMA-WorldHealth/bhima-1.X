@@ -836,6 +836,7 @@
    "NAME"                     : "Name",
    "NEW"                      : "New Enterprise",
    "PHONE"                    : "Phone",
+   "PO_BOX"                   : "PO Box",      
    "REGISTERED_ENTERPRISE"    : "Registered Enterprises",
    "REGISTERED_RELATIONS"     : "Registered Relations",
    "TITLE"                    : "Enterprise Management"
