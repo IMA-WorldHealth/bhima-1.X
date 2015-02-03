@@ -616,6 +616,10 @@
       controller : 'configureBalance',
       templateUrl : 'partials/reports_proposed/balance/balance.html'
     })
+    .when('/reports/grand_livre/', {
+      controller : 'configureGrandLivre',
+      templateUrl : 'partials/reports_proposed/grand_livre/grand_livre.html'
+    })
     .otherwise('/');
   }
 
