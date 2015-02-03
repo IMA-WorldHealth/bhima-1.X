@@ -16,6 +16,7 @@
       <tr>
         <th>{{ 'ENTERPRISE.NAME' | translate }}</th>
         <th>{{ 'ENTERPRISE.ABBREVIATION' | translate }}</th>
+        <th>{{ 'ENTERPRISE.PO_BOX' | translate }}</th>
         <th>{{ 'ENTERPRISE.EMAIL' | translate }}</th>
         <th>{{ 'ENTERPRISE.PHONE' | translate }}</th>
         <th>{{ 'ENTERPRISE.LOCATION_ID' | translate }}</th>
@@ -26,6 +27,7 @@
       <tr ng-repeat="e in enterprise.data">
         <td>{{ e.name }}</td>
         <td>{{ e.abbr }}</td>
+        <td>{{ e.po_box }}</td>
         <td>{{ e.email }}</td>
         <td>{{ e.phone }}</td>
         <td>{{ e.location_id.slice(0,8) }}</td>
@@ -47,6 +49,7 @@
             <tr>
               <th>{{ 'ENTERPRISE.NAME' | translate }}</th>
               <th>{{ 'ENTERPRISE.ABBREVIATION' | translate }}</th>
+              <th>{{ 'ENTERPRISE.PO_BOX' | translate }}</th>
               <th>{{ 'ENTERPRISE.EMAIL' | translate }}</th>
               <th>{{ 'ENTERPRISE.PHONE' | translate }}</th>
               <th>{{ 'ENTERPRISE.EDIT' | translate }}</th>
@@ -56,6 +59,7 @@
             <tr ng-repeat="e in enterprise.data" ng-click="load(e)">
               <td>{{ e.name }}</td>
               <td>{{ e.abbr }}</td>
+              <td>{{ e.po_box }}</td>
               <td>{{ e.email }}</td>
               <td>{{ e.phone }}</td>
               <td><a class="action" ng-click="editEnterprise(e)"><i class="glyphicon glyphicon-pencil"></i></a></td>
@@ -91,6 +95,11 @@
             <div class="form-group">
               <label for="bhima-enterprise-abbr" >{{ 'ENTERPRISE.ABBREVIATION' | translate }} </label>
               <input type="text" class="form-bhima" name="bhima-enterprise-abbr" id="bhima-enterprise-abbr" ng-model="add.abbr">
+            </div>
+
+            <div class="form-group">
+              <label for="bhima-enterprise-po_box">{{ 'ENTERPRISE.PO_BOX' | translate }} </label>
+              <input class="form-bhima" name="bhima-enterprise-po_box" id="bhima-enterprise-email" ng-model="add.po_box">
             </div>
 
             <div class="form-group">
@@ -142,6 +151,11 @@
             <div class="form-group">
               <label for="bhima-enterprise-abbr" >{{ 'ENTERPRISE.ABBREVIATION' | translate }} </label>
               <input class="form-bhima" name="bhima-enterprise-abbr" id="bhima-enterprise-abbr" ng-model="edit.abbr">
+            </div>
+
+            <div class="form-group">
+              <label for="bhima-enterprise-po_box" >{{ 'ENTERPRISE.PO_BOX' | translate }} </label>
+              <input class="form-bhima" name="bhima-enterprise-po_box" id="bhima-enterprise-po_box" ng-model="edit.po_box">
             </div>
 
             <div class="form-group">
