@@ -88,8 +88,6 @@ function aggregate(value, account) {
 exports.compile = function (options) {
   'use strict';
 
-  console.log('les options', options);
-
   var deferred = q.defer();
   var context = {};
   var fiscalYearId = options.fy;
