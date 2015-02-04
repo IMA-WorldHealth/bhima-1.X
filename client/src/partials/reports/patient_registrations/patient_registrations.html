@@ -25,7 +25,7 @@
                 </div>
               </div>
 
-              <div class="pull-left form-group col-xs-12">
+              <div class="form-group">
                 <span class="btn-group">
                   <button class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : session.active }" >{{ (session.selected.label | translate) || "..." }}</button>
                   <button class="btn btn-sm btn-default dropdown-toggle btn-sq"><span class="caret" data-caret="&#9660;"></span></button>
@@ -35,7 +35,6 @@
                     </li>
                   </ul>
                 </span>
-
               </div>
 
               <div class="form-group">
@@ -60,15 +59,6 @@
                   <div class="pull-left form-group input-group">
                     <span class="input-group-addon">
                       <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
-                    <input class="form-bhima" type="date" ng-model="session.dateTo" rows="20" >
-                  </div>
-                </div>
-              </div>
-                <div class="col-xs-5">
-                  <div class="input-group">
-                    <span class="input-group-addon">
-                      {{ 'COLUMNS.DATE_TO' | translate }}
                     </span>
                     <input class="form-bhima" type="date" ng-model="session.dateTo" rows="20" >
                   </div>
