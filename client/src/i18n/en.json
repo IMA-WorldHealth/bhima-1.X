@@ -1861,6 +1861,7 @@
    "TAB_LOCK_LINE"      : "Tab lock Line",
    "TITLE"              : "Create Patient Invoice",
    "TOTAL"              : "Total",
+   "TYPE"               : "Sale type",
    "UPDATE"             : "Update Defaults"
    },
 "SALERECORD": {
@@ -1925,6 +1926,7 @@
    "LOCATION"              : "Select a Location",
    "NAME"                  : "Select a Name",
    "OTHER"                 : "OTHER",
+   "PATIENT"               : "Select a Patient",
    "PATIENT_GROUP"         : "Select a Patient Group",
    "PAYMENT"               : "Select a Payment Type",
    "PERIOD_ACCOUNT_CONFIG" : "Select an accounting config",
