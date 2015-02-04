@@ -1,0 +1,48 @@
+<head>
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/normalize.css">
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/skeleton.css">
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/reports.css">
+</head>
+
+<body>
+
+  <section id="title" class="center">
+      <h5>IMCK Hopital Bon Berger</h5>
+      <h5>Grand Livre</h5>
+      <h5>As of {{=it.reportDate}}</h5>
+  </section>
+
+  <section>
+    <table class="balance" border="1">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Compte</th>
+          <th>Debit</th>
+          <th>credit</th>
+          <th>Centre de cout</th>
+          <th>Centre de profit</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{~it.data : value : index}}
+          <tr>
+            <td colspan="7"><b>Transaction : {{=value[0].trans_id}}</b></td>
+          </tr>
+          {{~value : v : i}}
+            <tr>
+              <td>{{=v.trans_date}}</td>
+              <td>{{=v.description}}</td>
+              <td>{{=v.account_number}}</td>
+              <td>{{=v.debit_equiv}}</td>
+              <td>{{=v.credit_equiv}}</td>
+              <td>{{?v.cc}}{{=v.cc}}{{?}}</td>
+              <td>{{?v.pc}}{{=v.pc}}{{?}}</td>
+            </tr>
+          {{~}}
+        {{~}}
+      </tbody>
+    </table>
+  </section>
+</body>
