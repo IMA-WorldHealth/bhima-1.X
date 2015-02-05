@@ -3,6 +3,7 @@ angular.module('bhima.controllers')
   '$scope',
   '$routeParams',
   '$translate',
+  '$location',
   '$http',
   'messenger',
   'validate',
@@ -13,9 +14,10 @@ angular.module('bhima.controllers')
   'exchange',
   '$q',
   'uuid',
-  function ($scope, $routeParams, $translate, $http, messenger, validate, appstate, Appcache, connect, util, exchange, $q, uuid) {
+  function ($scope, $routeParams, $translate, $location, $http, messenger, validate, appstate, Appcache, connect, util, exchange, $q, uuid) {
     var dependencies = {},
-        session = $scope.session = {};
+        session = $scope.session = {},
+        cache = new Appcache('salary_advance');
 
     session.primaryCashBox = $routeParams.cashbox;
 
@@ -44,7 +46,8 @@ angular.module('bhima.controllers')
           'cash_box_account_currency.currency_id=currency.id',
           'cash_box_account_currency.cash_box_id=cash_box.id',
           'account.id=cash_box_account_currency.account_id'
-        ]
+        ],
+        where : ['cash_box.id=' + session.primaryCashBox]
       }
     };
 
@@ -78,6 +81,13 @@ angular.module('bhima.controllers')
       .then(init);     
     });
 
+    function setCashAccount(cashAccount) {
+      if (cashAccount) {
+        session.selectedItem = cashAccount;
+        cache.put('selectedItem', cashAccount);
+      }
+    }
+
     function formatEmployee (employee) {
       return employee.prenom + ', ' + employee.name + ' - ' + employee.postnom;
     }
@@ -88,7 +98,7 @@ angular.module('bhima.controllers')
     }
 
     function submit () {
-      if (session.creditor_uuid && session.cashBox.id && session.cashBox.account_id && session.montant && session.motif) {
+      if (session.selectedItem && session.creditor_uuid && session.montant && session.motif) {
         var document_uuid = uuid();
 
         var primary = {
@@ -98,13 +108,13 @@ angular.module('bhima.controllers')
           date          : util.sqlDate(new Date()),
           deb_cred_uuid : session.creditor_uuid,
           deb_cred_type : 'C',
-          account_id    : session.cashBox.account_id,
-          currency_id   : session.cashBox.currency_id,
+          account_id    : session.selectedItem.account_id,
+          currency_id   : session.selectedItem.currency_id,
           cost          : session.montant,
           user_id       : $scope.cashier.data.id,
           description   : session.motif,
-          cash_box_id   : session.cashBox.id,
-          origin_id     : 6 //FIX ME : Find a way to generate it automatically
+          cash_box_id   : session.selectedItem.id,
+          origin_id     : 9 //FIX ME : Find a way to generate it automatically
         };
 
         var primary_details = {
@@ -132,12 +142,12 @@ angular.module('bhima.controllers')
             return connect.fetch('/journal/salary_advance/' + package.primary.uuid);
           })
           .then(function () {
-            messenger.success($translate.instant('PRIMARY_CASH.EXPENSE.SALARY_AV') + ' ' + session.employee + ' ' + $translate.instant('UTIL.SUCCESS'), true);
             session.employee = null;
             session.creditor_uuid = null;
-            session.cashBox = null;
+            session.selectedItem = null;
             session.montant = null;
             session.motif = null;
+            $location.path('/invoice/salary_advance/' + package.primary.uuid);
           })
           .catch(function (err) { console.log(err); });
 
@@ -148,6 +158,7 @@ angular.module('bhima.controllers')
 
     }
 
+    $scope.setCashAccount = setCashAccount;
     $scope.formatEmployee = formatEmployee;
     $scope.getEmployee = getEmployee;
     $scope.submit = submit;
