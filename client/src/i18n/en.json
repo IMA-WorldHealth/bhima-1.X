@@ -1188,6 +1188,7 @@
    "PURCHASE_TOTAL"               : "Total Purchase Cost",
    "RECIPIENT"                    : "Recipient",
    "REFERENCE"                    : "Reference",
+   "SALARY_ADVANCE"               : "Salary Advance",
    "SALARY_PAYMENT"               : "Salary Payment",
    "SIGN_CLIENT"                  : "Customer Signature ",
    "SIGN_EMPLOYEE"                : "Employee signature",

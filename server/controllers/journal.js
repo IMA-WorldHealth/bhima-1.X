@@ -2408,7 +2408,7 @@ function handleSalaryAdvance (id, user_id, done) {
 
 
     var date = util.toMysqlDate(get.date());
-    return q([get.origin('payroll'), get.period(get.date()), get.exchangeRate(date), db.exec(sql2)]);
+    return q([get.origin('salary_advance'), get.period(get.date()), get.exchangeRate(date), db.exec(sql2)]);
   }
 
   function getDetails (originId, periodObject, store, res) {

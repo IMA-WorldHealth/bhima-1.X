@@ -11,6 +11,18 @@
       <li class="active">{{"PRIMARY_CASH.EXPENSE.PAYDAY_ADVANCE" | translate}}</li>
     </ol>
   </div>
+
+  <div class="pull-right dropdown">
+    <button class="btn btn-sm btn-primary dropdown-toggle">
+      {{ session.selectedItem.symbol || "CONVENTION.DEFAULT_CURRENCY" | translate }}
+      <span class="caret" data-caret="&#9660;"></span>
+    </button>
+    <ul class="dropdown-menu">
+      <li ng-repeat="box in cashBox.data">
+        <a ng-click="setCashAccount(box)">{{ box.symbol }}</a>
+      </li>
+    </ul>
+  </div>
 </nav>
 
 <main>	
@@ -39,23 +51,10 @@
           </div>
 
           <div class="form-group required">
-            <label class="required">{{ 'COLUMNS.CASHBOX' | translate }}</label>
-            <div class="input-group">
-              <span class="input-group-addon"><i class="glyphicon glyphicon-inbox"></i></span>
-              <input 
-              ng-model="session.cashBox"
-              type="text" 
-              class="form-control" 
-              typeahead="cash as cash.account_txt for cash in cashBox.data | filter:$viewValue | limitTo:8"
-              typeahead-template-url="cashBoxListItem.tmpl.html">
-            </div>
-          </div>
-
-          <div class="form-group required">
             <label class="required">{{ 'COLUMNS.MONTANT' | translate }}</label>
             <div class="input-group">
               <input class="form-control" type="text" ng-model="session.montant" required>
-              <span class="input-group-addon">{{ session.cashBox.symbol }}</span>
+              <span class="input-group-addon">{{ session.selectedItem.symbol }}</span>
             </div>
           </div>
 
@@ -65,7 +64,7 @@
           </div>
 
           <div class="form-group required">
-            <button class="pull-right btn btn-success" ng-disabled="paydayAdvance.$invalid" ng-click="submit()">{{ 'UTIL.SUBMIT' | translate }}</button>
+            <button class="pull-right btn btn-success" ng-disabled="paydayAdvance.$invalid || !session.selectedItem" ng-click="submit()">{{ 'UTIL.SUBMIT' | translate }}</button>
           </div>
 
          </form>
