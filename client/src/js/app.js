@@ -386,6 +386,10 @@
       controller : 'primary_cash.salary_payment',
       templateUrl : 'partials/primary_cash/expense/salary_payment.html'
     })
+    .when('/primary_cash/expense/payday_advance/:cashbox', {
+      controller : 'primary_cash.payday_advance',
+      templateUrl : 'partials/primary_cash/expense/payday_advance.html'
+    })
     .when('/inventory/depot', {
       controller : 'inventory.depot',
       templateUrl : 'partials/inventory/depot/depot.html'
