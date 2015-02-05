@@ -94,7 +94,8 @@
       <div class="report report-compressed">
         <div class="reportBody">
           <div class="reportFrame" ng-switch="mode">
-
+              <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
+              
               <div ng-switch-default>
                 <h4>{{ "ALLTRANSACTIONS.DEFAULT" | translate }}</small></h4>
                 <h4 class="visible-print"> {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small></h4>

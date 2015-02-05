@@ -25,7 +25,7 @@
                 </div>
               </div>
 
-              <div class="pull-left form-group col-xs-12">
+              <div class="form-group">
                 <span class="btn-group">
                   <button class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : session.active }" >{{ (session.selected.label | translate) || "..." }}</button>
                   <button class="btn btn-sm btn-default dropdown-toggle btn-sq"><span class="caret" data-caret="&#9660;"></span></button>
@@ -103,10 +103,8 @@
     <div class="report">
       <div class="reportBody">
         <div class="reportFrame">
-          <h3 class="visible-print" style="margin:0px;text-align:center;width:35%;line-height:0.8em;">
-            {{ "UTIL.IMCK" | translate }} <br>
-            <small> {{ "UTIL.IMCK_LONG" | translate }}</small><br>
-            <small> {{ "UTIL.TSHIKAJI" | translate }}</small>
+          <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
+          
           <h4 class="visible-print">
             {{ "PATIENT_REGISTRATIONS.TITLE" | translate }} <small> ({{ projectSelected }}) {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small>
           </h4>
