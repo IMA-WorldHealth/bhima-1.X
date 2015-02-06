@@ -95,6 +95,9 @@ angular.module('bhima.controllers')
       },
       'movement' : {
         url : '/partials/receipts/templates/receipt_movement.html'
+      },
+      'salary_advance' : {
+        url : '/partials/receipts/templates/receipt_salary_advance.html'
       }
     };
 
