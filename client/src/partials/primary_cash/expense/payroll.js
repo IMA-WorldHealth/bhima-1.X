@@ -43,7 +43,11 @@ angular.module('bhima.controllers')
       {
         key : 'PRIMARY_CASH.EXPENSE.ENTERPRISE_TAX_PAYMENT',
         link : '/primary_cash/expense/enterprise_tax_payment/'
-      }    
+      },
+      {
+        key : 'PRIMARY_CASH.EXPENSE.PAYDAY_ADVANCE_PAYMENT',
+        link : '/primary_cash/expense/payday_advance/'
+      }     
     ];
     
     validate.process(dependencies)
