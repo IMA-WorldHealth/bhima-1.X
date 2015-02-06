@@ -10,7 +10,7 @@ var grandLivreDate = new Date();
 function splitByTransaction (gls) {
   var tapon_gls = gls;
   var formated_gls = [];
-  gls.forEach(function (gl, i){
+  gls.forEach(function (gl){
     var grouped_gls = getGroup(tapon_gls, gl.trans_id);
     tapon_gls = refresh(tapon_gls, grouped_gls[0].trans_id); //removing selected elements
     formated_gls.push(grouped_gls);
@@ -21,7 +21,8 @@ function splitByTransaction (gls) {
 function refresh (tapon_gls, motif){
   var arr = tapon_gls;
   for(var i = 0; i<arr.length; i++){
-    if(arr[i].trans_id == motif) {arr.splice(i, 1); refresh(arr, motif);}
+    arr[i].trans_date = new Date(arr[i].trans_date).toDateString();
+    if(arr[i].trans_id == motif) {arr.splice(i, 1); refresh(arr, motif);};
   }
   return arr;
 }
@@ -55,8 +56,20 @@ exports.compile = function (options) {
 
   db.exec(sql, [fiscalYearId])
   .then(function (gls) {
+    gls.sort(function (a, b) {
+      var x = parseInt(a.trans_id.substring(3, a.trans_id.length));
+      var xx = a.trans_id.substring(0, 3);
+      var y = parseInt(b.trans_id.substring(3, b.trans_id.length));
+      var yy = b.trans_id.substring(0, 3);
+
+      var d = x - y;
+
+      if(d == 0){
+        (xx <= yy) ? d = -1 : 0;
+      }
+      return d;
+    });
     var splited_gls = splitByTransaction(gls);
-    console.log('le gl est ', splited_gls);
     context.data = splited_gls;
     deferred.resolve(context);
   })

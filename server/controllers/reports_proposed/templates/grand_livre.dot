@@ -31,7 +31,7 @@
             <td colspan="7"><b>Transaction : {{=value[0].trans_id}}</b></td>
           </tr>
           {{~value : v : i}}
-            <tr>
+            <tr class="contenu">
               <td>{{=v.trans_date}}</td>
               <td>{{=v.description}}</td>
               <td>{{=v.account_number}}</td>
