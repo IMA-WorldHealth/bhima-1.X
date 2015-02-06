@@ -76,7 +76,6 @@ exports.build = function (req, res, next) {
   }
 
   function renderPDF(reportData) {
-    console.log('voici le data', reportData);
     var compiledReport;
     var hash = uuid();
 
