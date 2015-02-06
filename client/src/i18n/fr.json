@@ -1581,6 +1581,7 @@
       "OFF_DAY"                  : "Férié",
       "ONEM"                     : "ONEM",
       "OTHER_DEDUCT"             : "Autres déductions",
+      "PARTIAL_PAYMENT"          : "Paiement partiel du salaire",
       "PAYABLE_EMPLOYEE"         : "Liste des employés payables",
       "PAYMENT_PERIOD_NOT_FOUND" : "Periode de paiement non definie !",
       "PAYROLL"                  : "Paie des employés",
@@ -1821,13 +1822,17 @@
    "YES"            : "Oui"
    },
 "SALARY_PAYMENT": {
-   "EMPLOYEE"       : "Nom de l'employé",
-   "NET_AFTER_TAX"  : "Net Après Taxes",
-   "NET_BEFORE_TAX" : "Net Avant Taxes",
-   "NET_SALARY"     : "Salaire Net",
-   "PAID"           : "Payé",
-   "SUBMIT_PAY"     : "Payer le salaire",
-   "TITLE"          : "Paiement Effectif du Salaire"
+   "EMPLOYEE"              : "Nom de l'employé",
+   "NET_AFTER_TAX"         : "Net Après Taxes",
+   "NET_BEFORE_TAX"        : "Net Avant Taxes",
+   "NET_SALARY"            : "Salaire Net",
+   "PAID"                  : "Payé",
+   "SALARY_REMAINING"      : "Le salaire restante",
+   "SUBMIT_PAY"            : "Payer le salaire",
+   "SUBMIT_PAY_PARTIAL"    : "Payer le salaire partial",
+   "TITLE"                 : "Paiement Effectif du Salaire",
+   "TOTAL_RECEIVED_SALARY" : "Salaire partiel reçu",
+   "WARNING"               : "Attention le salaire partielle ne doit pas être supérieur au salaire net"
    },
 "SALE": {
    "ADD_LINE_ITEM"      : "Ajouter une Item",
