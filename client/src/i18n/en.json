@@ -1581,6 +1581,7 @@
       "OFF_DAY"                  : "Off day",
       "ONEM"                     : "ONEM",
       "OTHER_DEDUCT"             : "Others deductions",
+      "PARTIAL_PAYMENT"          : "Partial payment of salary",
       "PAYABLE_EMPLOYEE"         : "Payable employee list",
       "PAYMENT_PERIOD_NOT_FOUND" : "payment period not found !",
       "PAYROLL"                  : "Payroll",
@@ -1821,13 +1822,17 @@
    "YES"            : "Yes"
    },
 "SALARY_PAYMENT": {
-   "EMPLOYEE"       : "Employee name",
-   "NET_AFTER_TAX"  : "Net After Taxes",
-   "NET_BEFORE_TAX" : "Net Before Taxes",
-   "NET_SALARY"     : "Net Salary",
-   "PAID"           : "Paid",
-   "SUBMIT_PAY"     : "Pay the salary",
-   "TITLE"          : "Effective Payment Salary"
+   "EMPLOYEE"              : "Employee name",
+   "NET_AFTER_TAX"         : "Net After Taxes",
+   "NET_BEFORE_TAX"        : "Net Before Taxes",
+   "NET_SALARY"            : "Net Salary",
+   "PAID"                  : "Paid",
+   "SALARY_REMAINING"      : "Salary remaining",
+   "SUBMIT_PAY"            : "Pay the salary",
+   "SUBMIT_PAY_PARTIAL"    : "Pay the partial salary",
+   "TITLE"                 : "Effective Payment Salary",
+   "TOTAL_RECEIVED_SALARY" : "Received partial salary",
+   "WARNING"               :  "Warning partial wage should not be higher than the net salary"
    },
 "SALE": {
    "ADD_LINE_ITEM"      : "Add a Line Item",
