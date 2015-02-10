@@ -3,13 +3,16 @@ angular.module('bhima.controllers')
   '$scope',
   '$timeout',
   '$routeParams',
+  '$translate',
+  'appstate',
   'util',
   'validate',
   'exchange',
-  function ($scope, $timeout, $routeParams, util, validate, exchange) {
+  function ($scope, $timeout, $routeParams, $translate, appstate, util, validate, exchange) {
     // TODO add search (filter)
     // TODO add sortable (clickable) columns
-    var dependencies = {};
+    var dependencies = {},
+      state = $scope.state;
 
     dependencies.depots = {
       required: true,
@@ -45,8 +48,6 @@ angular.module('bhima.controllers')
 
     var total = $scope.total = {};
 
-    //var depotId = $routeParams.depotId;
-
     dependencies.loss = {
       query : {
         identifier : 'uuid',
@@ -73,6 +74,7 @@ angular.module('bhima.controllers')
 
     function init() {
       validate.process(dependencies).then(loadProjects);
+      session.depot = '*';
     }
 
     function loadProjects(model) {
@@ -93,9 +95,9 @@ angular.module('bhima.controllers')
     }
 
     function reset() {
+      $scope.state = 'generate';
       var request;
-      console.log('La session',session.depot);
-
+      console.log('Origin',session.depot);
       request = {
         dateFrom : util.sqlDate(session.param.dateFrom),
         dateTo : util.sqlDate(session.param.dateTo),
@@ -126,10 +128,34 @@ angular.module('bhima.controllers')
 	            'stock.purchase_order_uuid=purchase.uuid', 
 	            'purchase.uuid=purchase_item.purchase_uuid',
 	            'purchase_item.inventory_uuid=inventory.uuid'
-	          ],
-	          where: ['consumption.date>=' + request.dateFrom,'AND','consumption.date<=' + request.dateTo]
+	          ]
 	      }
 	    };
+
+      if(request.depotId === '*'){
+        $scope.depotSelected = $translate.instant('EXPIRING_REPORT.ALL_DEPOTS');
+        dependencies.loss.query.where = ['consumption.date>=' + request.dateFrom,'AND','consumption.date<=' + request.dateTo];  
+      } else {
+        dependencies.store = {
+          required: true,
+          query : {
+            tables : {
+              'depot' : {
+                columns : ['uuid', 'text', 'reference', 'enterprise_id']
+              }
+            },
+            where : ['depot.uuid=' + session.depot]
+          }
+        };
+        validate.process(dependencies, ['store'])
+        .then(function (model) {
+          var dataDepot = model.store.data[0];
+          $scope.depotSelected = dataDepot.text;
+        });       
+
+
+        dependencies.loss.query.where = ['consumption.depot_uuid=' + request.depotId,'AND','consumption.date>=' + request.dateFrom,'AND','consumption.date<=' + request.dateTo]; 
+      }
 
       total.result = {};
       if ($scope.model.loss) {
@@ -142,21 +168,18 @@ angular.module('bhima.controllers')
     function today() {
       session.param.dateFrom = new Date();
       session.param.dateTo = new Date();
-      reset();
     }
 
     function week() {
       session.param.dateFrom = new Date();
       session.param.dateTo = new Date();
       session.param.dateFrom.setDate(session.param.dateTo.getDate() - session.param.dateTo.getDay());
-      reset();
     }
 
     function month() {
       session.param.dateFrom = new Date();
       session.param.dateTo = new Date();
       session.param.dateFrom.setDate(1);
-      reset();
     }
 
     function updateTotals() {
@@ -219,7 +242,22 @@ angular.module('bhima.controllers')
     	return result;
     }
 
+    $scope.print = function print() {
+      window.print();
+    };
+
+    function reconfigure () {
+      $scope.state = null;
+      $scope.session.depot = '*';
+      $scope.depotSelected = null;
+    }    
+
+    appstate.register('enterprise', function(enterprise) {
+      $scope.enterprise = enterprise;
+    });
+
     $scope.select = select;
     $scope.reset = reset;
+    $scope.reconfigure = reconfigure;
   }
 ]);

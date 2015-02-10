@@ -1,90 +1,136 @@
-<header>
-  {{ "BALANCE_MENSUELLE.TITLE" | translate }} 
-  <small ng-if="session.periode">{{ session.periode | date: "MMMM, yyyy" }}</small>
-  <small ng-if="session.classe"> / {{ "BALANCE_MENSUELLE.CLASS" | translate }} [{{ session.classe.number }}] {{ session.classe.name}}</small>
-</header>
+<div ng-switch="state">
+  <div ng-switch-default>
+    <main>
+      <div class="col-xs-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <b> {{ "REPORT.CONFIGURE_REPORT" | translate }} : </b> {{ "BALANCE_MENSUELLE.TITLE" | translate }} 
+          </div>
 
-<nav>
-  <div>
-    <div class="col-xs-4 pull-left">
-      <div class="input-group">
-        <label class="input-group-addon" for="period">{{ "BALANCE_MENSUELLE.CHOOSE_PERIOD" | translate }}</label>
-        <input id="periode" class="form-bhima" type="month" ng-model="session.periode" rows="20" ng-change="">
-      </div>
-    </div>
-    <div class="col-xs-4">
-      <div class="input-group">
-        <label class="input-group-addon" for="period">{{ "BALANCE_MENSUELLE.CHOOSE_CLASS" | translate }}</label>
-        <select class="form-bhima" ng-model="session.classe" ng-options="classe as formatAccount(classe) for classe in session.classes" ng-change="getAccountBalance()"></select>
-      </div>
-    </div>
+          <div class="panel-body">
+            
+            <form name="configForm" novalidate>              
+              
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ "BALANCE_MENSUELLE.CHOOSE_PERIOD" | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                  <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                  </span>  
+                  <input id="periode" class="form-bhima" required type="month" ng-model="session.periode" rows="20" ng-change="">
+                  </div>
+                </div>
+              </div>
 
-    <div class="col-xs-1">
-      <button class="form-bhima btn pull-right" ng-click="getAccountBalance()"><i class="glyphicon glyphicon-search"></i></button>
-    </div>
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ 'BALANCE_MENSUELLE.CHOOSE_CLASS' | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                  <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-stats"></span>
+                  </span>  
+                  <select class="form-bhima" required ng-model="session.classe" ng-options="classe as formatAccount(classe) for classe in session.classes" ></select>
+                  </div>
+                </div>
+              </div>   
+
+              <div class="pull-right input-group">
+                <button class="btn btn-sm btn-success" type="button" ng-click="getAccountBalance()" ng-disabled="configForm.$invalid">
+                  {{ "REPORT.GENERATE" | translate }}
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>  
+  </div>
+  <div ng-switch-when="generate">  
+    <header>
+      {{ "BALANCE_MENSUELLE.TITLE" | translate }} 
+      <small ng-if="session.periode">{{ session.periode | date: "MMMM, yyyy" }}</small>
+      <small ng-if="session.classe"> / {{ "BALANCE_MENSUELLE.CLASS" | translate }} [{{ session.classe.number }}] {{ session.classe.name}}</small>    
+    </header>
+
+    <nav>
+      <div class="pull-right">        
+        <button class="btn btn-sm btn-default" ng-click="print()">
+          <span class="glyphicon glyphicon-print"></span>
+          {{ "UTIL.PRINT" | translate }}
+        </button>
+
+        <button
+          style="margin-left: 5px;"
+          ng-click="reconfigure()"
+          class="btn btn-sm btn-default pull-right">
+          <span class="glyphicon glyphicon-repeat"></span>
+        </button>
+      </div>
     
-    <div class="pull-right">
-      <a class="btn btn-sm btn-default" ng-click="print()"><span class="glyphicon glyphicon-print"></span> {{ "UTIL.PRINT" | translate }}</a>
-    </div>
-  </div>
-</nav>
+    </nav>
 
-<div class="report">
-  <div class="reportBody">
-    <div id="balance-mensuelle" class="reportFrame">
-      <h3 class="visible-print" style="margin:0px;text-align:center;width:35%;line-height:0.8em;">
-        {{ "UTIL.IMCK" | translate }} <br>
-        <small> {{ "UTIL.IMCK_LONG" | translate }}</small><br>
-        <small> {{ "UTIL.TSHIKAJI" | translate }}</small>
-      </h3>
-      <h4 class="visible-print">{{ "BALANCE_MENSUELLE.TITLE" | translate }} 
-        <small ng-if="session.periode">: {{ session.periode | date: "MMMM, yyyy" }}</small>
-        <small ng-if="session.classe"> / {{ "BALANCE_MENSUELLE.CLASS" | translate }} [{{ session.classe.number }}] {{ session.classe.name}}</small>
-      </h4>
-      <table id="patientTable" class="reportTable balance-mensuelle-table">
-        <thead>
-          <tr>
-            <th>{{ "BALANCE_MENSUELLE.ACCOUNT" | translate }}</th>
-            <th>{{ "BALANCE_MENSUELLE.LABEL" | translate }}</th>
-            <th colspan="2">{{ "BALANCE_MENSUELLE.OLD_SOLD" | translate }}</th>
-            <th colspan="2">{{ "BALANCE_MENSUELLE.MONTH_MOVEMENT" | translate }}</th>
-            <th colspan="2">{{ "BALANCE_MENSUELLE.NEW_SOLD" | translate }}</th>
-          </tr>
-          <tr>
-            <th colspan="2"></th>
-            <th>{{ "BALANCE_MENSUELLE.DEBITOR" | translate }}</th>
-            <th>{{ "BALANCE_MENSUELLE.CREDITOR" | translate }}</th>
-            <th>{{ "BALANCE_MENSUELLE.DEBIT" | translate }}</th>
-            <th>{{ "BALANCE_MENSUELLE.CREDIT" | translate }}</th>
-            <th>{{ "BALANCE_MENSUELLE.DEBITOR" | translate }}</th>
-            <th>{{ "BALANCE_MENSUELLE.CREDITOR" | translate }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat='item in balance_mensuelle.data'>
-            <td> {{ item.account_number }} </td>
-            <td> {{ item.account_txt }} </td>
-            <td> {{ item.old_debit | currency }} </td>
-            <td> {{ item.old_credit | currency }} </td>
-            <td> {{ item.debit | currency }} </td>
-            <td> {{ item.credit | currency }} </td>
-            <td> {{ item.debit + item.old_debit | currency}}</td>
-            <td> {{ item.credit + item.old_credit | currency}}</td>
-          </tr>
-        </tbody>
-        <hr>
-        <tfoot class="balance-mensuelle-footer">
-          <tr>
-            <td colspan="2"><strong>{{ "BALANCE_MENSUELLE.TOTALS" | translate }}</strong></td>
-            <td>{{ session.sumOldDebit | currency }}</td>
-            <td>{{ session.sumOldCredit | currency }}</td>
-            <td>{{ session.sumDebit | currency }}</td>
-            <td>{{ session.sumCredit | currency }}</td>
-            <td>{{ session.sumOldDebit + session.sumDebit | currency }}</td>
-            <td>{{ session.sumOldCredit + session.sumCredit | currency }}</td>
-          </tr>
-        </tfoot>
-      </table>
+    <div class="report">
+      <div class="reportBody">
+        <div id="balance-mensuelle" class="reportFrame">
+          <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
+          
+          <h4 class="visible-print">{{ "BALANCE_MENSUELLE.TITLE" | translate }} 
+            <small ng-if="session.periode">: {{ session.periode | date: "MMMM, yyyy" }}</small>
+            <small ng-if="session.classe"> / {{ "BALANCE_MENSUELLE.CLASS" | translate }} [{{ session.classe.number }}] {{ session.classe.name}}</small>
+          </h4>
+          <table id="patientTable" class="reportTable balance-mensuelle-table">
+            <thead>
+              <tr>
+                <th>{{ "BALANCE_MENSUELLE.ACCOUNT" | translate }}</th>
+                <th>{{ "BALANCE_MENSUELLE.LABEL" | translate }}</th>
+                <th colspan="2">{{ "BALANCE_MENSUELLE.OLD_SOLD" | translate }}</th>
+                <th colspan="2">{{ "BALANCE_MENSUELLE.MONTH_MOVEMENT" | translate }}</th>
+                <th colspan="2">{{ "BALANCE_MENSUELLE.NEW_SOLD" | translate }}</th>
+              </tr>
+              <tr>
+                <th colspan="2"></th>
+                <th>{{ "BALANCE_MENSUELLE.DEBITOR" | translate }}</th>
+                <th>{{ "BALANCE_MENSUELLE.CREDITOR" | translate }}</th>
+                <th>{{ "BALANCE_MENSUELLE.DEBIT" | translate }}</th>
+                <th>{{ "BALANCE_MENSUELLE.CREDIT" | translate }}</th>
+                <th>{{ "BALANCE_MENSUELLE.DEBITOR" | translate }}</th>
+                <th>{{ "BALANCE_MENSUELLE.CREDITOR" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat='item in balance_mensuelle.data'>
+                <td> {{ item.account_number }} </td>
+                <td> {{ item.account_txt }} </td>
+                <td> {{ item.old_debit | currency }} </td>
+                <td> {{ item.old_credit | currency }} </td>
+                <td> {{ item.debit | currency }} </td>
+                <td> {{ item.credit | currency }} </td>
+                <td> {{ item.debit + item.old_debit | currency}}</td>
+                <td> {{ item.credit + item.old_credit | currency}}</td>
+              </tr>
+            </tbody>
+            <hr>
+            <tfoot class="balance-mensuelle-footer">
+              <tr>
+                <td colspan="2"><strong>{{ "BALANCE_MENSUELLE.TOTALS" | translate }}</strong></td>
+                <td>{{ session.sumOldDebit | currency }}</td>
+                <td>{{ session.sumOldCredit | currency }}</td>
+                <td>{{ session.sumDebit | currency }}</td>
+                <td>{{ session.sumCredit | currency }}</td>
+                <td>{{ session.sumOldDebit + session.sumDebit | currency }}</td>
+                <td>{{ session.sumOldCredit + session.sumCredit | currency }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+      </div>
     </div>
-  </div>
-</div>
+  </div>    
+</div>  
