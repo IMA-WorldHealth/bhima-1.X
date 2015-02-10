@@ -1,11 +1,11 @@
 <div id="findAccount" class="hidden-print">
   <div ng-if="findAccount.valid">
-    <h4>{{ "FIND.ACCOUNT.ACCOUNT" | translate }}</h4>
+    <!-- <h4>{{ "FIND.ACCOUNT.ACCOUNT" | translate }}</h4> -->
   </div>
   <div ng-if="!findAccount.valid">
     <h4><b>{{ "FIND.ACCOUNT.ENTER_ACCOUNT" | translate }}</b></h4>
   </div>
-  <div style="margin-bottom: 15px">
+  <div >
     <div class="hidden-print input-group">
       <input class="form-bhima" type="text"
              ng-model="accountId"
@@ -17,11 +17,11 @@
              >
       <span class="input-group-btn" ng-if="findAccount.enableReset">
         <button ng-click="findAccount.reset()"
-                ng-disabled="!findAccount.valid" 
+                ng-disabled="!findAccount.valid"
                 class="btn btn-sm btn-default square"><span class="glyphicon glyphicon-refresh"></span></button>
       </span>
       <span class="input-group-btn">
-        <button ng-click="findAccount.submit()" ng-disabled="!findAccount.valid" class="btn btn-sm btn-default square">{{ "FORM.SUBMIT" | translate }}</button>
+        <!-- <button ng-click="findAccount.submit()" ng-disabled="!findAccount.valid" class="btn btn-sm btn-default square">{{ "FORM.SUBMIT" | translate }}</button> -->
       </span>
     </div>
   </div>
