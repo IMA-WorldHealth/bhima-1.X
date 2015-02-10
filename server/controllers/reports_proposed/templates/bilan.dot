@@ -33,10 +33,6 @@
                   <td>{{? value.is_asset === 1 }} {{=value.formattedBalance}} {{?}}</td>
                 </tr>
               {{~}}
-              <tr border="1" valign="bottom">
-                <td>Total</td>
-                <td>{{=it.actif_total}}</td>
-              </tr>
             </table>
           </td>
 
@@ -49,12 +45,12 @@
                   <td>{{? value.is_asset === 0 }} {{=value.formattedBalance}} {{?}}</td>
                 </tr>
               {{~}}
-              <tr border="1" valign="bottom">
-                <td>Total</td>
-                <td>{{=it.passif_total}}</td>
-              </tr>
             </table>
           </td>
+        </tr>
+        <tr>
+          <td>Total Actif  {{=it.actif_total}}</td>
+          <td>Total Passif  {{=it.passif_total}}</td>
         </tr>
         <tr>
           <td>Solde</td>
