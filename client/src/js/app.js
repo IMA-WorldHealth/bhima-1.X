@@ -620,6 +620,10 @@
       controller : 'configureGrandLivre',
       templateUrl : 'partials/reports_proposed/grand_livre/grand_livre.html'
     })
+    .when('/reports/employee_state/', {
+      controller : 'configureEmployeeState',
+      templateUrl : 'partials/reports_proposed/employee_state/employee_state.html'
+    })
     .otherwise('/');
   }
 

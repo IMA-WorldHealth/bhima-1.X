@@ -134,12 +134,11 @@ INSERT INTO `unit` VALUES
 (85,'distribution service record', 'TREE.DISTRIBUTION_SERVICES', '', 10, 0, '/partials/reports/distribution_service_record', '/reports/distribution_service_record/'),
 (86,'loss record', 'TREE.LOSS_RECORDS', '', 10, 0, '/partials/stock/loss_record', '/reports/loss_record/'),
 (87,'Balance Sheet','TREE.BALANCE_SHEET','Balance Sheet report', 10, 0, '/partials/reports/balance', '/reports/balance/'),
-(88,'Journal','TREE.JOURNAL','Journal report', 10, 0, '/partials/reports/journal', '/reports/journal/'),
-(89,'Tableau formation resultat','TREE.TFR','TFR report', 10, 0, '/partials/reports/tfr', '/reports/tfr/'),
-(90,'Grand livre','TREE.GRAND_LIVRE','Grand livre report', 10, 0, '/partials/reports/grand_livre', '/reports/grand_livre/'),
-(91,'Employee State','TREE.EMPLOYEE_STATE','Employee State report', 10, 0, '/partials/reports/employee_state', '/reports/employee_state/'),
-(92,'Service state','TREE.SERVICE_STATE','Service state report', 10, 0, '/partials/reports/service_state', '/reports/service_state/'),
-(93,'Income expense report','TREE.INCOME_EXPENSE','Income expense report ', 10, 0, '/partials/reports/income_expense', '/reports/income_expense/');
+(88,'Tableau formation resultat','TREE.TFR','TFR report', 10, 0, '/partials/reports/tfr', '/reports/tfr/'),
+(89,'Grand livre','TREE.GRAND_LIVRE','Grand livre report', 10, 0, '/partials/reports/grand_livre', '/reports/grand_livre/'),
+(90,'Employee State','TREE.EMPLOYEE_STATE','Employee State report', 10, 0, '/partials/reports/employee_state', '/reports/employee_state/'),
+(91,'Service state','TREE.SERVICE_STATE','Service state report', 10, 0, '/partials/reports/service_state', '/reports/service_state/'),
+(92,'Income expense report','TREE.INCOME_EXPENSE','Income expense report ', 10, 0, '/partials/reports/income_expense', '/reports/income_expense/');
 
 
 -- references language .json files
