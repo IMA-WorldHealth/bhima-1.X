@@ -74,7 +74,8 @@
     <div class="report">
       <div class="reportBody">
         <div class="reportFrame">
-          <h4 class="visible-print">{{enterprise.name}}</h4>
+          <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
+          
           <h4 class="visible-print">
             {{ "OPERATING_ACCOUNT.TITLE" | translate }} :
             <small>

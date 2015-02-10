@@ -35,7 +35,7 @@
     </div>
 
     <input type="button" class="btn btn btn-success" value="{{ 'FORM.SEARCH' | translate }}">
-  </div> 
+  </div>
 
   <div class="pull-right">
     <button ng-click="print()" class="btn btn-default btn-sm">
@@ -48,7 +48,9 @@
 
   <div class="reportBody">
     <div class="reportFrame">
-      <div ng-switch-default class="no-print">
+      <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
+
+      <div ng-switch-default class="hide-print">
         <h3>Please select something.</h3>
       </div>
 
