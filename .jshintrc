@@ -25,7 +25,7 @@
   "esnext"        : false,
   "evil"          : false,
   "expr"          : false,
-  "eqeqeq"        : true,
+  "eqeqeq"        : false,
   "funcscope"     : false,
   "globalstrict"  : false,
   "iterator"      : false,

@@ -17,7 +17,7 @@ module.exports = function() {
       .then(function () {
         return writeToJournal(data.primary.uuid, userId, data.other)
       })
-      .then(function(){ 
+      .then(function(){
         var res = {};
         callback(null, res);
       })
@@ -27,11 +27,11 @@ module.exports = function() {
   }
 
   function writePrimary (primary) {
-    return db.exec(generate ('primary_cash', primary));
+    return db.exec(generate ('primary_cash', [primary]));
   }
 
   function writeItem (details) {
-    return db.exec(generate ('primary_cash_item', details));
+    return db.exec(generate ('primary_cash_item', [details]));
   }
 
   function writeToJournal (id, userId, details) {
