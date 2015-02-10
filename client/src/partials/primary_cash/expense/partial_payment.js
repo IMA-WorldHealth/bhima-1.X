@@ -18,8 +18,8 @@ angular.module('bhima.controllers')
         state = $scope.state,
         cache = new Appcache('salary_payment'),
         session = $scope.session = {
-          configured : false, 
-          complete : false, 
+          configured : false,
+          complete : false,
           data : {},
           rows : []
         };
@@ -76,14 +76,14 @@ angular.module('bhima.controllers')
     validate.process(dependencies, ['currencies'])
     .then(function (model) {
       var currencies = $scope.currencies = model.currencies;
-    });  
+    });
 
     appstate.register('project', function (project) {
-      $scope.project = project;               
+      $scope.project = project;
         validate.process(dependencies, ['paiement_period', 'cashier', 'cash_box'])
         .then(init, function (err) {
           messenger.danger(err.message + ' ' + err.reference);
-        });     
+        });
     });
 
     function init (model) {
@@ -91,11 +91,11 @@ angular.module('bhima.controllers')
       .then(function (pp) {
         if(!pp){
           // throw new Error('period paiement not defined');
-          // A FIXE : ASTUCE POUR NE PAS AFFICHER LE MESSAGE D'ERREUR ET NE RIEN AFFICHER         
+          // A FIXE : ASTUCE POUR NE PAS AFFICHER LE MESSAGE D'ERREUR ET NE RIEN AFFICHER
           session.pp = {};
-          session.pp.id = -1;        
+          session.pp.id = -1;
         }else{
-          session.pp = pp; 
+          session.pp = pp;
           session.pp_label = formatPeriod (pp);
         }
 
@@ -110,7 +110,7 @@ angular.module('bhima.controllers')
           messenger.danger('An error occured:' + JSON.stringify(err));
         });
 
-        
+
       dependencies.salary_payment = {
           query : {
             tables : {
@@ -121,7 +121,7 @@ angular.module('bhima.controllers')
             where : ['paiement.paiement_period_id='+ session.pp.id]
           }
         };
-        
+
         return validate.refresh(dependencies, ['salary_payment']);
       })
       .then(function (model) {
@@ -158,7 +158,7 @@ angular.module('bhima.controllers')
           session.available = true;
           init(session.model);
         });
-      }     
+      }
     }
 
     function getCashAccountID (currency_id) {
@@ -170,19 +170,20 @@ angular.module('bhima.controllers')
     function submit (emp) {
       $scope.state = 'generate';
       var employee = $scope.employee = emp;
-    }  
+    }
 
     function cash (emp) {
       var document_uuid = uuid(),
         currentDate = util.sqlDate(new Date()),
         amount_enterprise = 0,
         verification = 0;
+      var primary = {}, partial_paiement = {}, primary_details = {}, package = {};
 
-      verification = emp.net_salary - (session.amount + emp.amount);  
+      verification = emp.net_salary - (session.amount + emp.amount);
 
       if(verification > 0){
         $scope.state = null;
-        var primary = {
+        primary = {
           uuid          : uuid(),
           project_id    : $scope.project.id,
           type          : 'S',
@@ -198,7 +199,7 @@ angular.module('bhima.controllers')
           origin_id     : 6 //FIX ME : Find a way to generate it automatically
         };
 
-        var partial_paiement = {
+        partial_paiement = {
           uuid              : uuid(),
           paiement_uuid     : emp.uuid,
           paiement_date     : currentDate,
@@ -206,7 +207,7 @@ angular.module('bhima.controllers')
           amount            : session.amount
         };
 
-        var primary_details = {
+        primary_details = {
           uuid              : uuid(),
           primary_cash_uuid : primary.uuid,
           debit             : 0,
@@ -214,8 +215,8 @@ angular.module('bhima.controllers')
           inv_po_id         : emp.uuid, // uuid du paiement
           document_uuid     : document_uuid
         };
-        
-        var package = {
+
+        package = {
           primary          : primary,
           primary_details  : primary_details,
           partial_paiement : partial_paiement
@@ -232,7 +233,7 @@ angular.module('bhima.controllers')
         })
         .then(function () {
           return connect.post('partial_paiement', [package.partial_paiement], ['uuid']);
-        })      
+        })
         .then(function () {
           return connect.fetch('/journal/salary_payment/' + package.primary.uuid);
         })
@@ -241,10 +242,10 @@ angular.module('bhima.controllers')
           init(session.model);
           messenger.success($translate.instant('PRIMARY_CASH.EXPENSE.SALARY_SUCCESS') + emp.prenom + ' ' + emp.name + ' ' + emp.postnom + ' reussi', true);
         })
-        .catch(function (err){ console.log(err); });      
+        .catch(function (err){ console.log(err); });
       } else if (verification === 0){
         $scope.state = null;
-        var primary = {
+        primary = {
           uuid          : uuid(),
           project_id    : $scope.project.id,
           type          : 'S',
@@ -260,7 +261,7 @@ angular.module('bhima.controllers')
           origin_id     : 6 //FIX ME : Find a way to generate it automatically
         };
 
-        var partial_paiement = {
+        partial_paiement = {
           uuid              : uuid(),
           paiement_uuid     : emp.uuid,
           paiement_date     : currentDate,
@@ -268,7 +269,7 @@ angular.module('bhima.controllers')
           amount            : session.amount
         };
 
-        var primary_details = {
+        primary_details = {
           uuid              : uuid(),
           primary_cash_uuid : primary.uuid,
           debit             : 0,
@@ -276,8 +277,8 @@ angular.module('bhima.controllers')
           inv_po_id         : emp.uuid, // uuid du paiement
           document_uuid     : document_uuid
         };
-        
-        var package = {
+
+        package = {
           primary          : primary,
           primary_details  : primary_details,
           partial_paiement : partial_paiement
@@ -294,7 +295,7 @@ angular.module('bhima.controllers')
         })
         .then(function () {
           return connect.post('partial_paiement', [package.partial_paiement], ['uuid']);
-        })      
+        })
         .then(function () {
           return connect.fetch('/journal/salary_payment/' + package.primary.uuid);
         })
@@ -303,15 +304,15 @@ angular.module('bhima.controllers')
           init(session.model);
           messenger.success($translate.instant('PRIMARY_CASH.EXPENSE.SALARY_SUCCESS') + emp.prenom + ' ' + emp.name + ' ' + emp.postnom + ' reussi', true);
         })
-        .catch(function (err){ console.log(err); });          
+        .catch(function (err){ console.log(err); });
       } else if (verification < 0) {
-        messenger.success($translate.instant('SALARY_PAYMENT.WARNING'));   
+        messenger.success($translate.instant('SALARY_PAYMENT.WARNING'));
       }
     }
 
     function reconfigure2 () {
       $scope.state = null;
-    } 
+    }
 
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
