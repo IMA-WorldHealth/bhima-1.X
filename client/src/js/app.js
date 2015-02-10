@@ -182,7 +182,7 @@
     .when('/reports/employee_standing/', {
       controller : 'reportEmployeeStanding',
       templateUrl : '/partials/reports/employee_standing/employee_standing.html'
-    })    
+    })
     .when('/reports/ledger/general_ledger', {
       controller: 'reportGeneralLedger',
       templateUrl: '/partials/reports/ledger/general_ledger.html'
@@ -429,27 +429,27 @@
     .when('/reports/distribution_record/:depotId', {
       controller : 'distribution_record',
       templateUrl : 'partials/reports/distribution_record/distribution_record.html'
-    })      
+    })
     .when('/reports/distribution_service_record/:depotId', {
       controller : 'distribution_service_record',
       templateUrl : 'partials/reports/distribution_service_record/distribution_service_record.html'
-    }) 
+    })
     .when('/reports/distribution_record', {
       controller : 'distribution_record_view',
       templateUrl : 'partials/reports/distribution_record/distribution_record_view.html'
-    })      
+    })
     .when('/reports/distribution_service_record', {
       controller : 'distribution_service_record_view',
       templateUrl : 'partials/reports/distribution_service_record/distribution_service_record_view.html'
-    })                
+    })
     .when('/stock/reversing_service_distribution/:consumptionId', {
       controller : 'stock.reversing_service_distribution',
       templateUrl : 'partials/stock/reversing_service_distribution/reversing_service_distribution.html'
-    }) 
+    })
     .when('/stock/reversing_distribution/:consumptionId', {
       controller : 'stock.reversing_distribution',
       templateUrl : 'partials/stock/reversing_distribution/reversing_distribution.html'
-    })            
+    })
     .when('/stock/loss/:depotId', {
       controller : 'stock.loss',
       templateUrl : 'partials/stock/loss/loss.html'
@@ -485,11 +485,11 @@
     .when('/stock/loss_record/:depotId', {
       controller : 'stock.loss_record',
       templateUrl : 'partials/stock/loss_record/loss_record.html'
-    }) 
+    })
     .when('/reports/loss_record', {
       controller : 'loss_record',
       templateUrl : 'partials/reports/loss_record/loss_record.html'
-    })     
+    })
     .when('/stock_dashboard/', {
       controller : 'stock_dashboard',
       templateUrl : 'partials/stock_dashboard/stock_dashboard.html'
@@ -578,10 +578,6 @@
       controller : 'daily_consumption',
       templateUrl : 'partials/reports/daily_consumption/daily_consumption.html'
     })
-    .when('/consumptions/:code_drugs/:dateFrom/:dateTo', {
-      controller: 'daily_consumption',
-      templateUrl: 'partials/reports/daily_consumption/consumptions.html'
-    })
     .when('/config_accounting/', {
       controller: 'config_accounting',
       templateUrl: 'partials/config_accounting/config_accounting.html'
@@ -597,20 +593,40 @@
     .when('/fonction', {
       controller : 'fonction',
       templateUrl : 'partials/fonction/fonction.html'
-    })  
+    })
     .when('/donor_management/', {
       controller: 'donor',
       templateUrl: '/partials/donor_management/donor_management.html'
-    })       
+    })
     .when('/reports/operating_account/', {
       controller : 'operating_account',
       templateUrl : 'partials/reports/operating_account/operating_account.html'
     })
+    .when('/subsidy', {
+      controller : 'subsidy',
+      templateUrl : 'partials/subsidy/subsidy.html'
+    })
 
     // Proposed formal report building structure
-    .when('/report/invoice/:target', { 
-      controller : 'configureInvoice', 
+    .when('/report/invoice/:target', {
+      controller : 'configureInvoice',
       templateUrl : 'partials/reports_proposed/invoice/invoice.html'
+    })
+    .when('/reports/bilan/', {
+      controller : 'configureBilan',
+      templateUrl : 'partials/reports_proposed/bilan/bilan.html'
+    })
+    .when('/reports/balance/', {
+      controller : 'configureBalance',
+      templateUrl : 'partials/reports_proposed/balance/balance.html'
+    })
+    .when('/reports/grand_livre/', {
+      controller : 'configureGrandLivre',
+      templateUrl : 'partials/reports_proposed/grand_livre/grand_livre.html'
+    })
+    .when('/reports/employee_state/', {
+      controller : 'configureEmployeeState',
+      templateUrl : 'partials/reports_proposed/employee_state/employee_state.html'
     })
     .otherwise('/');
   }

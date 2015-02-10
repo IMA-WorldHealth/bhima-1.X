@@ -8,7 +8,7 @@ var numeral = require('numeral');
 var ROOT_ACCOUNT_ID = 0;
 
 var formatDollar = '$0,0.00';
-var balanceDate = new Date();
+var bilanDate = new Date();
 
 // TODO Query for balance and title account IDs
 var balanceAccountId = 2;
@@ -80,8 +80,16 @@ function aggregate(value, account) {
   if (!isLeaf) {
     return value + account.children.reduce(aggregate, 0);
   }
-
   return value + account.balance;
+}
+
+function getBalance(account) {
+  var som = 0;
+  account.children.forEach(function (child) {
+    som += child.balance + getBalance(child);
+  });
+
+  return som;
 }
 
 // expose the http route
@@ -90,17 +98,16 @@ exports.compile = function (options) {
 
   var deferred = q.defer();
   var context = {};
-  var fiscalYearId = options.fy;
+  // var fiscalYearId = options.fiscalYearId;
 
 
-  context.reportDate = balanceDate.toDateString();
+  context.reportDate = bilanDate.toDateString();
 
   var sql =
-    'SELECT account.id, account.account_number, account.account_txt, account.account_type_id, account.parent, totals.debit, totals.credit, totals.balance, totals.period_id ' +
+    'SELECT account.id, account.account_number, account.account_txt, account.account_type_id, account.is_asset, account.parent, totals.balance, totals.period_id ' +
     'FROM account LEFT JOIN (' +
-      'SELECT period_total.account_id, IFNULL(period_total.debit, 0) as debit, IFNULL(period_total.credit, 0) as credit, IFNULL(SUM(period_total.debit - period_total.credit), 0) as balance, period_total.period_id ' +
+      'SELECT period_total.account_id, IFNULL(SUM(period_total.debit - period_total.credit), 0) as balance, period_total.period_id ' +
       'FROM period_total ' +
-      'WHERE period_total.fiscal_year_id = ? ' +
       'GROUP BY period_total.account_id ' +
     ') AS totals ON totals.account_id = account.id ' +
     'WHERE account.account_type_id IN (?, ?);';
@@ -111,25 +118,36 @@ exports.compile = function (options) {
     // pull out the account type id for the balance accounts
     var balanceId = rows[0].id;
 
-    return db.exec(sql, [fiscalYearId, balanceAccountId, titleAccountId]);
+    return db.exec(sql, [balanceAccountId, titleAccountId]);
   })
   .then(function (accounts) {
     var accountTree;
 
-    // Create the accounts and balances into a tree
-    // data structure
     accountTree = getChildren(accounts, ROOT_ACCOUNT_ID, 0);
 
-    // aggregate the account balances of child accounts into
-    // the parent account
     accountTree.forEach(function (account) {
-      account.balance = account.children.reduce(aggregate, 0);
-      account.formattedBalance = numeral(account.balance).format(formatDollar);
+      account.subs = [];
+      account.subs = account.children.map(function (child) {
+        var balance = getBalance(child);
+        return {id : child.id, account_number : child.account_number, account_txt : child.account_txt, is_asset : child.is_asset, balance : balance, formattedBalance : numeral(balance).format(formatDollar)};
+      });
     });
 
-    accountTree = filterEmptyAccounts(accountTree);
+    var selectedAccounts = [];
+    var actif_total = 0;
+    var passif_total = 0;
 
-    context.data = accountTree;
+    accountTree.forEach(function (account){
+      account.subs.forEach(function (sub) {
+        sub.is_asset === 1 ? actif_total += sub.balance : passif_total += sub.balance;
+        selectedAccounts.push(sub);
+      });
+    });
+
+    context.actif_total = numeral(actif_total).format(formatDollar);
+    context.passif_total = numeral(passif_total).format(formatDollar);
+    context.sold = numeral(actif_total - passif_total).format(formatDollar);
+    context.data = selectedAccounts;
     deferred.resolve(context);
   })
   .catch(deferred.reject)

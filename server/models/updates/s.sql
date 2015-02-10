@@ -1,3 +1,152 @@
+-- Updates to patient data
+-- 
+-- RENAME addr_1 to address_1
+-- RENAME addr_2 to address_2
+-- CHANGE length of email column to 40 characters
+-- ADD 'title' field
+--
+-- Date: 2015-01-05
+-- By: Jonathan Cameron
+
+USE bhima;
+
+ALTER TABLE `patient`
+
+CHANGE `addr_1` `address_1` varchar(100);
+
+ALTER TABLE `patient`
+CHANGE `addr_2` `address_2` varchar(100);
+
+ALTER TABLE `patient`
+CHANGE `email` `email` varchar(40);
+
+ALTER TABLE `patient`
+ADD `title` VARCHAR(30);
+-- Updates to debitor_group data
+-- Removal of the column `payment_id` and `tax_id` from the table debitor_group
+--
+-- Date: 2015-01-07
+-- By: Chris LOMAME
+
+USE bhima;
+
+ALTER TABLE `debitor_group` 
+DROP `payment_id`;
+
+ALTER TABLE `debitor_group` 
+DROP `tax_id`;-- Updates to account data
+-- Removal of the column `fixed` and `locked` from the table account
+--
+-- Date: 2015-01-07
+-- By: CHRIS LOMAME
+
+USE bhima;
+
+ALTER TABLE `account` 
+DROP `fixed`;
+
+ALTER TABLE `account` 
+ADD `is_asset` BOOLEAN NULL-- written by jniles
+-- Jan 7 2015
+
+use bhima;
+
+-- remove poorly labeled income accounts
+update account as a JOIN account as b on a.id = b.id set a.account_type_id = 2 where b.account_type_id = 1;
+
+-- set up income accounts as OHADA
+update account as a JOIN account as b on a.id = b.id set a.account_type_id = 1 where b.account_type_id != 3 and b.account_number like '6%';
+-- set up expense accounts as OHADA
+update account as a JOIN account as b on a.id = b.id set a.account_type_id = 4 where b.account_type_id != 3 and b.account_number like '7%';
+-- Updates to fiscal year data
+---
+-- DROP 'closing_account' field
+--
+-- Date: 2015-01-07
+-- By: Jonathan Niles
+
+USE bhima;
+
+ALTER TABLE `fiscal_year`
+DROP FOREIGN KEY `fiscal_year_ibfk_1`;
+
+ALTER TABLE `fiscal_year`
+DROP `closing_account`;
+-- Updates to patient data
+--
+-- Add patient 'notes' field
+--
+-- Date: 2015-01-12
+-- By: Jonathan Cameron
+
+USE bhima;
+
+ALTER TABLE `patient`
+ADD `notes` text;
+-- Update to units/menu
+--
+-- Add add menu/unit item for the budget menu item.
+--
+-- Date: 2015-01-13
+-- By: Jonathan Cameron
+
+USE bhima;
+
+INSERT INTO `unit` VALUES
+(7,'Edit Account Budget','TREE.EDIT_BUDGET','',8,0,'/partials/budget/edit/','/budgeting/edit');
+-- Subsidy updating
+--
+-- CHANGE price_list_uuid, subsidy_uuid to be not requirement
+-- ADD subsidy and sale_subsidy tables
+--
+-- Date: 2015-01-13
+-- By: Dedrick Kitamuka
+
+USE bhima;
+
+drop table if exists `subsidy`;
+create table `subsidy` (
+  `uuid`                   char(36) not null,
+  `text`                   text,
+  `value`                  float default 0,
+  `is_percent`             boolean,
+  `debitor_group_uuid`     char(36) not null,
+  primary key (`uuid`),
+  key `debitor_group_uuid` (`debitor_group_uuid`),
+  constraint foreign key (`debitor_group_uuid`) references `debitor_group` (`uuid`)
+) engine=innodb;
+
+
+ALTER TABLE `patient_group`
+MODIFY `price_list_uuid` char(36) null;
+
+ALTER TABLE `patient_group`
+ADD `subsidy_uuid` char(36) null;
+
+ALTER TABLE `patient_group`
+ADD FOREIGN KEY (`subsidy_uuid`) references `subsidy` (`uuid`);
+
+drop table if exists `sale_subsidy`;
+create table `sale_subsidy` (
+  `uuid`              char(36) not null,
+  `sale_uuid`         char(36) not null,
+  `subsidy_uuid`      char(36) not null,
+  `value`             decimal(19,4) default '0',
+  primary key (`uuid`),
+  key `sale_uuid` (`sale_uuid`),
+  key `subsidy_uuid` (`subsidy_uuid`),
+  constraint foreign key (`sale_uuid`) references `sale` (`uuid`) on delete cascade,
+  constraint foreign key (`subsidy_uuid`) references `subsidy` (`uuid`)
+) engine=innodb;
+-- Allow an employee lock
+--
+-- Date: 2015-01-26
+-- By: Chris LOMAME
+
+USE bhima;
+
+ALTER TABLE `employee`
+ADD `locked` boolean;
 -- Updates to accounts data
 -- 
 -- INSERT new parents class and UPDATE depending accounts
