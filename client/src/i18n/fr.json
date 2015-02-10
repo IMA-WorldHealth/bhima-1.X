@@ -2431,11 +2431,8 @@
    "DATE_TO"           : "Au",
    "DEPOT"             : "Depot",
    "ERROR"             : "Erreur",
-<<<<<<< HEAD
-   "EXPORT_TO_CSV"     : "Export to CSV ???",
-=======
+   "EXPORT_TO_CSV"     : "Export to CSV",
    "GENERATE"          : "Générer",
->>>>>>> 5dea8f65771ac3082eb643e4e9a1a633f8d29fba
    "IMCK"              : "IMCK",
    "IMCK_LONG"         : "Institut Médical Chrétien du Kasaï",
    "ITEMS"             : "Articles",
