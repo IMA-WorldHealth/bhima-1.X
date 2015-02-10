@@ -86,12 +86,14 @@
                   <th>{{ "SALARY_PAYMENT.NET_BEFORE_TAX" | translate }}</th>
                   <th>{{ "SALARY_PAYMENT.NET_AFTER_TAX" | translate }}</th>
                   <th>{{ "SALARY_PAYMENT.NET_SALARY" | translate }}</th>
+                  <th>{{ "SALARY_PAYMENT.TOTAL_RECEIVED_SALARY" | translate }}</th>
+                  <th>{{ "SALARY_PAYMENT.SALARY_REMAINING" | translate }}</th>
                   <th>{{ "SALARY_PAYMENT.PAID" | translate }}</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="emp in session.model.salary_payment.data | orderBy : 'code' | filter : search">
+                <tr ng-repeat="emp in session.partialSalary | orderBy : 'code' | filter : search">
                   <td>
                     <span ng-show="emp.prenom">{{ emp.prenom }}, </span> 
                     <span ng-show="emp.name">{{ emp.name }}</span> 
@@ -103,6 +105,12 @@
                   <td>
                     <strong><span ng-bind-html="emp.net_salary | intlcurrency:emp.currency_id"></span></strong>
                   </td>
+                  <td>
+                    <strong><span ng-bind-html="emp.amount | intlcurrency:emp.currency_id"></span></strong>
+                  </td>
+                  <td>
+                    <strong><span ng-bind-html="emp.net_salary_paid | intlcurrency:emp.currency_id"></span></strong>
+                  </td>                                    
                   <td>
                     <span ng-if="emp.is_paid==0" class="label label-danger">{{ "RUBRIC_PAYROLL.NO" | translate }}</span>
                     <span ng-if="emp.is_paid==1" class="label label-success">{{ "RUBRIC_PAYROLL.YES" | translate }}</span>

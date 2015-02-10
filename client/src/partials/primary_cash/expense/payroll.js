@@ -29,6 +29,10 @@ angular.module('bhima.controllers')
         link : '/primary_cash/expense/salary_payment/'
       },
       {
+        key : 'PRIMARY_CASH.EXPENSE.PARTIAL_PAYMENT',
+        link : '/primary_cash/expense/partial_payment/'
+      },      
+      {
         key : 'PRIMARY_CASH.EXPENSE.COTISATION_PAYMENT',
         link : '/primary_cash/expense/cotisation_payment/'
       },
