@@ -122,6 +122,8 @@ var config = {
       "/cost_periodic/",
       "/profit_periodic/",
       "/posting_promesse_payment/",
+      "/posting_promesse_cotisation/",
+      "/posting_promesse_tax/",
       "/getEmployeeCotisationPayment/",
       "/payCotisation/",
       "/setCotisationPayment/",
