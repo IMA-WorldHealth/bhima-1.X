@@ -171,7 +171,7 @@ INSERT INTO `village` VALUES ('03b44338-a38b-4450-b12d-3acc4f3d3465','CAMP  BOBO
 
 -- Configure base enterprise
 INSERT INTO `enterprise` VALUES
-(200,'Hopital Bon Berger','GSH','243 81 604 0540','imckbusiness@yahoo.fr','bda70b4b-8143-47cf-a683-e4ea7ddd4cff','/assets/logos/tsh.jpg',2);
+(200,'Hopital Bon Berger','GSH', '205 Kananga', '243 81 604 0540','imckbusiness@yahoo.fr','bda70b4b-8143-47cf-a683-e4ea7ddd4cff','/assets/logos/tsh.jpg',2);
 
 -- Configure base projects
 INSERT INTO `project` VALUES
