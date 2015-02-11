@@ -1,21 +1,19 @@
 angular.module('bhima.controllers')
 .controller('multi_payroll', [
   '$scope',
-  '$routeParams',
   '$translate',
   '$http',
   'messenger',
   'validate',
   'appstate',
   'connect',
-  '$location',
   'util',
   'appcache',
   'exchange',
   '$q',
   'ipr',
   'uuid',
-  function ($scope, $routeParams, $translate, $http, messenger, validate, appstate, connect, $location, util, Appcache, exchange, $q, ipr, uuid) {
+  function ($scope, $translate, $http, messenger, validate, appstate, connect, util, Appcache, exchange, $q, ipr, uuid) {
     var dependencies = {},
         cache = new Appcache('payroll'),
         session = $scope.session = {configured : false, complete : false, data : {}, SelectedCurrency : {}, rows : []};
@@ -40,14 +38,14 @@ angular.module('bhima.controllers')
             columns : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'date', 'rate']
           }
         },
-        where : ['exchange_rate.date='+util.sqlDate(new Date())]
+        where : ['exchange_rate.date=' + util.sqlDate(new Date())]
       }
     };
 
     dependencies.employees = {
       query : {
         tables : {
-          employee : { 
+          employee : {
             columns : [
               'id', 'code::code_employee', 'prenom', 'name', 'postnom', 'sexe', 'dob',
               'date_embauche', 'service_id', 'nb_spouse', 'nb_enfant', 'grade_id', 'locked',
@@ -194,7 +192,7 @@ angular.module('bhima.controllers')
     function EmployeeRow (emp) {
       //FIX ME : clean this function
       var def = $q.defer();
-      var self = this;      
+      var self = this;
       self.emp = emp;
       getHollyDayCount(emp)
       .then(function (hld){
@@ -531,13 +529,13 @@ angular.module('bhima.controllers')
               nb += getValue(ppc);
             });
             soms.push(nb);
-            
+
             dataHollydays.push({
               'id_hdays' : h.id,
               'nbdays' : nb,
               'percentage' : h.percentage
-            });          
-            
+            });
+
             var valeur = nb * (h.percentage / 100);
             configs.push(valeur);
           });
@@ -612,7 +610,7 @@ angular.module('bhima.controllers')
         })
         .then(function () {
           return (packagePay.hollydaysData.length > 0) ? connect.post('hollyday_paiement', packagePay.hollydaysData) : $q.when();
-        })        
+        })
         .then(function (res){
           def.resolve(res);
         })
@@ -634,7 +632,7 @@ angular.module('bhima.controllers')
 
       var rubric_config_list = session.model.rubric_config.data;
       var tax_config_list = session.model.tax_config.data;
-      var cotisation_config_list = session.model.cotisation_config.data;     
+      var cotisation_config_list = session.model.cotisation_config.data;
 
       return $q.all(list.map(function (elmt) {
         var rc_records = [];
@@ -664,7 +662,7 @@ angular.module('bhima.controllers')
           }
           somRub += change;
         });
-        elmt.net_salary = elmt.net_after_taxe + somRub - (elmt.daily_salary * elmt.off_day) + elmt.offdays_cost; 
+        elmt.net_salary = elmt.net_after_taxe + somRub - (elmt.daily_salary * elmt.off_day) + elmt.offdays_cost;
 
         var paiement = {
           uuid : uuid(),
@@ -716,7 +714,7 @@ angular.module('bhima.controllers')
               paiement_uuid : paiement.uuid
             };
           });
-        } 
+        }
 
         var packagePay = {
           paiement : paiement,
@@ -752,7 +750,7 @@ angular.module('bhima.controllers')
       if(!row.working_day){
         row.working_day = 0;
       }
-    
+
       var taxes, rubrics, cotisations;
       var employee_cotisation;
 
