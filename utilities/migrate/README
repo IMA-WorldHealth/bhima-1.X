@@ -1,0 +1,11 @@
+DATABASE MIGRATION UTILITY
+========================
+
+This folder contains script files to migrate the current enterprise build without
+need for external data manipulation. The steps are enumerated below:
+
+1) Backup databases to /backups with a current timestamp
+2) Drop all database triggers
+3) Drop all symmetric tables (LIKE sym_%)
+4) Run the upgrade script in sql/upgrade.sql
+
