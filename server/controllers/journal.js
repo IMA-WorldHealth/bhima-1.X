@@ -910,24 +910,29 @@ function handleEmployeeInvoice (id, user_id, done) {
       get.transactionId(cfg.project_id)
         .then(function  (trans_id) {
           cfg.descript = trans_id.substring(0,4) + "_SUPPORTED/" + new Date().toISOString().slice(0, 10).toString();
+
           var debit_sql=
             'INSERT INTO `posting_journal` ' +
-            '  (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+            '  (`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
             '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-            '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-            'SELECT ' +
-              [sanitize.escape(uuid()), cfg.project_id, cfg.fiscal_year_id, cfg.period_id, trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descript)].join(', ') + ', ' +
-            '`debitor_group`.`account_id`, `employee_invoice_item`.`cost`, ' +
-            '  0, `employee_invoice_item`.`cost`, 0, `enterprise`.`currency_id`, ' +
-            '  null, null, `employee_invoice_item`.`invoice_uuid`, ' +
-            [cfg.originId, user_id].join(', ') + ' ' +
-            'FROM `employee_invoice` JOIN `employee_invoice_item` JOIN `debitor_group` JOIN `sale` JOIN `project` JOIN `enterprise` ON ' +
+            '  `currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+            'SELECT `employee_invoice`.`project_id`, ' +
+              [sanitize.escape(uuid()), cfg.fiscal_year_id, cfg.period_id, trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descript)].join(', ') + ', ' +
+            '`creditor_group`.`account_id`, `employee_invoice_item`.`cost`, 0, ' +
+            '`employee_invoice_item`.`cost`, 0, `enterprise`.`currency_id`,  ' +
+            '`employee_invoice`.`creditor_uuid`, \'C\', `employee_invoice_item`.`invoice_uuid`, ' +
+            [ cfg.originId, user_id].join(', ') + ' ' +
+            'FROM `employee_invoice` JOIN `employee_invoice_item` JOIN `debitor` JOIN `creditor` JOIN `debitor_group` JOIN `creditor_group` JOIN `sale` JOIN `project` JOIN `enterprise` ON ' +
             '  `employee_invoice`.`uuid` = `employee_invoice_item`.`payment_uuid` AND ' +
-            '  `employee_invoice`.`creditor_uuid` = `creditor`.`uuid`  AND ' +
+            '  `employee_invoice`.`debitor_uuid` = `debitor`.`uuid`  AND ' +
+            '  `employee_invoice`.`creditor_uuid` = `creditor`.`uuid`  AND ' +            
+            '  `debitor`.`group_uuid` = `debitor_group`.`uuid` AND ' +
+            '  `creditor`.`group_uuid` = `creditor_group`.`uuid` AND ' +
             '  `employee_invoice_item`.`invoice_uuid` = `sale`.`uuid` AND ' +
             '  `employee_invoice`.`project_id` = `project`.`id` AND ' +
             '  `project`.`enterprise_id` = `enterprise`.`id` ' +
             'WHERE `employee_invoice_item`.`uuid` = ' + sanitize.escape(row.gid);
+
           var credit_sql=
             'INSERT INTO `posting_journal` ' +
             '  (`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
@@ -946,8 +951,10 @@ function handleEmployeeInvoice (id, user_id, done) {
             '  `employee_invoice_item`.`invoice_uuid` = `sale`.`uuid` AND ' +
             '  `employee_invoice`.`project_id` = `project`.`id` AND ' +
             '  `project`.`enterprise_id` = `enterprise`.`id` ' +
-            'WHERE `employee_invoice_item`.`uuid` = ' + sanitize.escape(row.gid);
+            'WHERE `employee_invoice_item`.`uuid` = ' + sanitize.escape(row.gid);  
+
           return q.all([db.exec(debit_sql), db.exec(credit_sql)]);
+          //return q.all([db.exec(credit_sql)]);
         })
         .catch(function(err) {
           console.log('erreur', err);
@@ -1373,6 +1380,116 @@ function handleConvention (id, user_id, done) {
     return done(null, res);
   })
   .catch(handleError);
+}
+
+function handleEmployee (id, user_id, done) {
+  var dayExchange = {}, reference = {}, cfg = {};
+  var sql = 'SELECT * FROM `primary_cash` WHERE `primary_cash`.`uuid`='+sanitize.escape(id)+';';
+  function getRecord (records) {
+    if (records.length === 0) { throw new Error('pas enregistrement'); }
+    reference.reference_pcash = records[0];
+    sql = 'SELECT * FROM `primary_cash_item` WHERE `primary_cash_item`.`primary_cash_uuid`='+sanitize.escape(id)+';';
+    return db.exec(sql);
+  }
+
+  function getItems (records) {
+    if (records.length === 0) { throw new Error('pas enregistrement'); }
+    reference.reference_pcash_items = records;
+    var date = util.toMysqlDate(reference.reference_pcash.date);
+    return get.myExchangeRate(date);
+  }
+
+  function getExchange (exchangeStore) {
+    dayExchange = exchangeStore.get(reference.reference_pcash.currency_id);
+    return q([get.origin('pcash_employee'), get.period(reference.date)]);
+  }
+
+  function getDetails (originId, periodObject) {
+    cfg.originId = originId;
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+    return get.transactionId(reference.reference_pcash.project_id);
+  }
+
+  function getTransId (trans_id) {
+    cfg.trans_id = trans_id;
+    cfg.descrip =  trans_id.substring(0,4)  + '_CAISSEPRINCIPALE_EMPLOYEE' + new Date().toISOString().slice(0, 10).toString();
+    return q.when();
+  }
+
+  function debit () {
+    return q.all(
+                  reference.reference_pcash_items.map(function (ref_pcash_item) {
+                    var valueExchanged = parseFloat((1/dayExchange.rate) * ref_pcash_item.debit).toFixed(4);
+                    var sql = 'INSERT INTO posting_journal ' +
+                              '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+                              '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+                              '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+                              'SELECT ' +
+                                [
+                                  sanitize.escape(uuid()),
+                                  reference.reference_pcash.project_id,
+                                  cfg.fiscalYearId,
+                                  cfg.periodId,
+                                  cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip)
+                                ].join(',') + ', `account_id`, ' +
+                                [
+                                  0, ref_pcash_item.debit,
+                                  0, valueExchanged,
+                                  reference.reference_pcash.currency_id
+                                ].join(',') +
+                              ' , null, null, ' + [sanitize.escape(ref_pcash_item.inv_po_id), cfg.originId, user_id].join(',') +
+                              ' FROM cash_box_account_currency WHERE `cash_box_account_currency`.`cash_box_id`=' + sanitize.escape(reference.reference_pcash.cash_box_id) +
+                              ' AND `cash_box_account_currency`.`currency_id`=' + sanitize.escape(reference.reference_pcash.currency_id);
+                    return db.exec(sql);
+                  })
+    );
+  }
+
+  function credit () {
+    return q.all(
+      reference.reference_pcash_items.map(function (ref_pcash_item) {
+        var valueExchanged = parseFloat((1/dayExchange.rate) * ref_pcash_item.debit).toFixed(4);
+        var credit_sql =
+          'INSERT INTO posting_journal ' +
+          '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+          '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+          '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+          'VALUES (' +
+            [
+              sanitize.escape(uuid()),
+              reference.reference_pcash.project_id,
+              cfg.fiscalYearId,
+              cfg.periodId,
+              cfg.trans_id, '\''+get.date()+'\'',  sanitize.escape(cfg.descrip), reference.reference_pcash.account_id
+            ].join(',') + ' , ' +
+            [
+              ref_pcash_item.debit,0,
+              valueExchanged,0,
+              reference.reference_pcash.currency_id
+            ].join(',') + ', null, null, ' + [sanitize.escape(ref_pcash_item.inv_po_id), cfg.originId, user_id].join(',') + ');';
+        return db.exec(credit_sql);
+      })
+    );
+  }
+
+  function handleError (err) {
+    console.log('[voici errer]', err);
+  }
+
+  db.exec(sql)
+  .then(getRecord)
+  .then(getItems)
+  .then(getExchange)
+  .spread(getDetails)
+  .then(getTransId)
+  .then(debit)
+  .then(credit)
+  .then(function (res) {
+    return done(null, res);
+  })
+  .catch(handleError);
+
 }
 
 function handleGenericExpense(id, user_id, done) {
@@ -2935,6 +3052,7 @@ table_router = {
   'caution'                 : handleCaution,
   'transfert'               : handleTransfert,
   'pcash_convention'        : handleConvention,
+  'pcash_employee'          : handleEmployee,  
   'primary_expense'         : handleGenericExpense,
   'primary_income'          : handleGenericIncome,
   'indirect_purchase'       : handleIndirectPurchase,

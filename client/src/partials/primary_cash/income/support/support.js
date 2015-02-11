@@ -115,9 +115,10 @@ angular.module('bhima.controllers')
           return messenger.danger(value);
         });        
       }
-      $scope.selectedConvention = selectedEmployee;
-      console.log('La convention dans la presentation PLusieur',$scope.selectedConvention);
-      dependencies.situations = { query : '/ledgers/employee_invoice/' + $scope.selectedConvention.creditor_uuid};
+      $scope.selectedEmployee = selectedEmployee;
+      console.log(selectedEmployee);
+      console.log('La convention dans la presentation PLusieur',$scope.selectedEmployee.creditor_uuid);
+      dependencies.situations = { query : '/ledgers/employee_invoice/' + $scope.selectedEmployee.creditor_uuid};
       validate.process(dependencies, ['situations'])
       .then(ready); 
     }
@@ -129,10 +130,10 @@ angular.module('bhima.controllers')
         type            : 'E',
         date            : util.sqlDate(new Date().toString()),
         currency_id     : $scope.selectedItem.currency_id,
-        account_id      : $scope.selectedConvention.account_id,
+        account_id      : $scope.selectedEmployee.account_id,
         cost            : $scope.data.payment,
         user_id         : $scope.model.cashier.data.id,
-        description     : ['COVP', $scope.selectedConvention.name, util.sqlDate(new Date().toString())].join('/'),
+        description     : ['EMPLOYE', $scope.selectedEmployee.name, util.sqlDate(new Date().toString())].join('/'),
         cash_box_id     : $scope.cashbox_id,
         origin_id       : $scope.model.pcash_module.data[0].id
       };
@@ -145,7 +146,7 @@ angular.module('bhima.controllers')
 
     function postToJournal (resu) {
       record_uuid = resu[0].config.data.data[0].primary_cash_uuid;
-      return connect.fetch('/journal/pcash_convention/' + record_uuid);
+      return connect.fetch('/journal/pcash_employee/' + record_uuid);
     }
 
     function writePay(record){
@@ -199,11 +200,11 @@ angular.module('bhima.controllers')
     }
 
     function handleSucces() {
-      $scope.selectedConvention = {};
+      $scope.selectedEmployee = {};
       $scope.data = {};
       $scope.noEmpty = false;
       if (record_uuid !== -1) {
-        $location.path('/invoice/convention/' + record_uuid);
+        $location.path('/invoice/employee_support/' + record_uuid);
       }
     }
 
