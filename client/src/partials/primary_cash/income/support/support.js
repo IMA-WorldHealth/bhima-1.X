@@ -108,17 +108,18 @@ angular.module('bhima.controllers')
       $scope.noEmpty = true;
     }
 
-    function initialiseEmployee (selectedConvention) {
-      if(!selectedConvention) {
+    function initialiseEmployee (selectedEmployee) {
+      if(!selectedEmployee) {
         $translate('CONVENTION.NO_CONVENTION')
         .then(function (value) {
           return messenger.danger(value);
         });        
       }
-      $scope.selectedConvention = selectedConvention;
-      dependencies.situations = { query : '/ledgers/debitor_group/' + $scope.selectedConvention.uuid};
+      $scope.selectedConvention = selectedEmployee;
+      console.log('La convention dans la presentation PLusieur',$scope.selectedConvention);
+      dependencies.situations = { query : '/ledgers/employee_invoice/' + $scope.selectedConvention.creditor_uuid};
       validate.process(dependencies, ['situations'])
-      .then(ready);
+      .then(ready); 
     }
 
     function pay () {
@@ -242,7 +243,7 @@ angular.module('bhima.controllers')
       }     
     }
 
-    $scope.initialiseConvention = initialiseConvention;
+    $scope.initialiseEmployee = initialiseEmployee;
     $scope.pay = pay;
     $scope.setCashAccount = setCashAccount;
     $scope.check = check;
