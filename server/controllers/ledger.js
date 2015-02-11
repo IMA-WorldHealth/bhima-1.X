@@ -238,16 +238,12 @@ function employeeInvoice(id) {
       'SELECT c.inv_po_id, c.trans_id, c.trans_date, c.account_id FROM (' +
         'SELECT p.inv_po_id, p.trans_id, p.trans_date, p.account_id ' +
         'FROM posting_journal AS p ' +
-        'WHERE p.account_id = ' + account + ' ' +
+        'WHERE p.account_id = ' + account + ' AND p.deb_cred_uuid = ' + id + ' ' +
       'UNION ' +
         'SELECT g.inv_po_id, g.trans_date, g.trans_id, g.account_id ' +
         'FROM general_ledger AS g ' +
-        'WHERE g.account_id = ' + account + ') ' +
-      ' AS c;';
-
-    console.log('----------------------------------');      
-    console.log(query);
-    console.log('----------------------------------');      
+        'WHERE g.account_id = ' + account + ' AND g.deb_cred_uuid = ' + id + ')  ' +
+      ' AS c;';    
 
     return db.exec(query);
   })
