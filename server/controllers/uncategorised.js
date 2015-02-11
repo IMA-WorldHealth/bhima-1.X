@@ -11,12 +11,14 @@ var uuid        = require('./../lib/guid');
 var cfg         = require('./../config/environment/server');
 
 // Route specific requirements
-var synthetic         = require('./synthetic');
-var depot             = require('./depot')();
-var taxPayment        = require('./taxPayment')();
-var donation          = require('./postingDonation')();
-var cotisationPayment = require('./cotisationPayment')();
-var promessePayment   = require('./postingPromessePayment')();
+var synthetic                  = require('./synthetic');
+var depot                      = require('./depot')();
+var taxPayment                 = require('./taxPayment')();
+var donation                   = require('./postingDonation')();
+var cotisationPayment          = require('./cotisationPayment')();
+var promessePayment            = require('./postingPromessePayment')();
+var promesseCotisation         = require('./postingPromesseCotisation')();
+var promesseTax                = require('./postingPromesseTax')();
 
 // TODO delegate to configuration serving controller
 var errorCodes  = require('./../config/environment/errors.json');
@@ -1423,6 +1425,20 @@ exports.payCotisation = function (req, res, next) {
 
 exports.payPromesse = function (req, res, next) {
   promessePayment.execute(req.body, req.session.user_id, function (err, ans) {
+    if (err) { return next(err); }
+    res.send({resp: ans});
+  });
+};
+
+exports.payPromesseCotisation = function (req, res, next) {
+  promesseCotisation.execute(req.body, req.session.user_id, function (err, ans) {
+    if (err) { return next(err); }
+    res.send({resp: ans});
+  });
+};
+
+exports.payPromesseTax = function (req, res, next) {
+  promesseTax.execute(req.body, req.session.user_id, function (err, ans) {
     if (err) { return next(err); }
     res.send({resp: ans});
   });

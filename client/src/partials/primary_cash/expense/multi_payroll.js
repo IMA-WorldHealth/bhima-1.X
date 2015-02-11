@@ -597,6 +597,10 @@ angular.module('bhima.controllers')
 
     function payEmployee (packagePay) {
       var def = $q.defer();
+      var params = {
+        paiement_uuid : packagePay.paiement.uuid,
+        project_id : $scope.project.id
+      };
 
       connect.basicPut('paiement', [packagePay.paiement], ['uuid'])
         .then(function () {
@@ -615,11 +619,13 @@ angular.module('bhima.controllers')
           def.resolve(res);
         })
         .then(function () {
-          var params = {
-            paiement_uuid : packagePay.paiement.uuid,
-            project_id : $scope.project.id
-          };
           return $http.post('/posting_promesse_payment/', params);
+        })
+        .then(function (){
+          return $http.post('/posting_promesse_cotisation/', params);
+        })
+        .then(function (){
+          return $http.post('/posting_promesse_tax/', params);
         })
         .catch(function (err){
           def.reject(err);
