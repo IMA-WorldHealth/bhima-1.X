@@ -2418,6 +2418,248 @@ function handlePromessePayment (id, user_id, data, done) {
   }
 }
 
+function handlePromesseCotisation (id, user_id, data, done) {
+  // Cette fonction ecrit dans le journal la promesse d'un paiment de cotisation
+  // mais la cotisation n'est pas encore payE effectivement.
+  var sql, rate, state = {}, reference, cfg = {}, references;
+  state.user_id = user_id;
+
+  sql =
+    'SELECT `cotisation`.`label`, `cotisation`.`abbr`, `cotisation`.`is_employee`, `cotisation`.`four_account_id`, `cotisation`.`six_account_id`, ' +
+    '`paiement`.`employee_id`, `paiement`.`paiement_date`, `paiement`.`currency_id`, `cotisation_paiement`.`value` FROM `cotisation`, `paiement`, `cotisation_paiement` ' +
+    'WHERE `cotisation`.`id` = `cotisation_paiement`.`cotisation_id` AND `paiement`.`uuid` = `cotisation_paiement`.`paiement_uuid` AND `paiement`.`uuid`=' + sanitize.escape(data.paiement_uuid) + ';';
+
+  db.exec(sql)
+  .then(getRecord)
+  .spread(getDetails)
+  .then(getTransId)
+  .then(credit)
+  .then(function (res){
+    return done(null, res);
+  })
+  .catch(function (err){
+    return done(err, null);
+  });
+
+  function getRecord (records) {
+    var sql2;
+    if (records.length === 0) { throw new Error('pas enregistrement'); }
+    reference = records[0];
+    references = records;
+    sql2 =
+    "SELECT `creditor_group`.`account_id`, `creditor`.`uuid` AS `creditor_uuid` FROM `paiement`" +
+    " JOIN `employee` ON `employee`.`id`=`paiement`.`employee_id`" +
+    " JOIN `creditor` ON `creditor`.`uuid`=`employee`.`creditor_uuid`" +
+    " JOIN `creditor_group` ON `creditor_group`.`uuid`=`creditor`.`group_uuid` " +
+    " WHERE `paiement`.`uuid` = " + sanitize.escape(data.paiement_uuid) + ";";
+
+    var date = util.toMysqlDate(get.date());
+    return q([get.origin('payroll'), get.period(get.date()), get.exchangeRate(date), db.exec(sql2)]);
+  }
+
+  function getDetails (originId, periodObject, store, res) {
+    cfg.originId = originId;
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+    // cfg.account_id = res[0].account_id;
+    cfg.creditor_uuid = res[0].creditor_uuid;
+    cfg.store = store;
+    rate = cfg.store.get(reference.currency_id).rate;
+    return get.transactionId(data.project_id);
+  }
+
+  function getTransId (trans_id) {
+    cfg.trans_id = trans_id;
+    cfg.descrip =  trans_id.substring(0,4) + '_EngagementCotisation/' + new Date().toISOString().slice(0, 10).toString();
+    return debit();
+  }
+
+  function debit () {
+
+    return q.all(
+      references.map(function (reference) {
+        cfg.descrip += '/' + references.label + '/' + reference.abbr;
+        var debit_sql =
+          'INSERT INTO posting_journal ' +
+          '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+          '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+          '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
+          'VALUES (' +
+            [
+              sanitize.escape(uuid()),
+              data.project_id,
+              cfg.fiscalYearId,
+              cfg.periodId,
+              cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.six_account_id
+            ].join(',') + ', ' +
+            [
+              0, (reference.value).toFixed(4),
+              0, (reference.value / rate).toFixed(4),
+              reference.currency_id
+            ].join(',') +
+          ', null, null, ' +
+            [
+              sanitize.escape(data.paiement_uuid),
+              cfg.originId,
+              user_id
+            ].join(',') + ');';
+        return db.exec(debit_sql);
+      })
+    );
+  }
+
+  function credit () {
+
+    return q.all(
+      references.map(function (reference) {
+        cfg.descrip += '/' + references.label + '/' + reference.abbr;
+        var credit_sql =
+          'INSERT INTO posting_journal ' +
+          '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+          '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+          '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+          'VALUES (' +
+            [
+              sanitize.escape(uuid()),
+              data.project_id,
+              cfg.fiscalYearId,
+              cfg.periodId,
+              cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.four_account_id
+            ].join(',') + ', ' +
+            [
+              reference.value.toFixed(4), 0,
+              (reference.value / rate).toFixed(4), 0,
+              reference.currency_id,
+              sanitize.escape(cfg.creditor_uuid)
+            ].join(',') + ', \'C\', ' + [sanitize.escape(data.paiement_uuid), cfg.originId, user_id].join(',') +
+          ');';
+        return db.exec(credit_sql);
+      })
+    );
+  }
+}
+
+function handlePromesseTax (id, user_id, data, done) {
+  // Cette fonction ecrit dans le journal la promesse d'un paiment de cotisation
+  // mais la cotisation n'est pas encore payE effectivement.
+  var sql, rate, state = {}, reference, cfg = {}, references;
+  state.user_id = user_id;
+
+  sql =
+    'SELECT `tax`.`label`, `tax`.`abbr`, `tax`.`is_employee`, `tax`.`four_account_id`, `tax`.`six_account_id`, ' +
+    '`paiement`.`employee_id`, `paiement`.`paiement_date`, `paiement`.`currency_id`, `tax_paiement`.`value` FROM `tax`, `paiement`, `tax_paiement` ' +
+    'WHERE `tax`.`id` = `tax_paiement`.`tax_id` AND `paiement`.`uuid` = `tax_paiement`.`paiement_uuid` AND `paiement`.`uuid`=' + sanitize.escape(data.paiement_uuid) + ';';
+
+  db.exec(sql)
+  .then(getRecord)
+  .spread(getDetails)
+  .then(getTransId)
+  .then(credit)
+  .then(function (res){
+    return done(null, res);
+  })
+  .catch(function (err){
+    return done(err, null);
+  });
+
+  function getRecord (records) {
+    var sql2;
+    if (records.length === 0) { throw new Error('pas enregistrement'); }
+    reference = records[0];
+    references = records;
+    sql2 =
+    "SELECT `creditor_group`.`account_id`, `creditor`.`uuid` AS `creditor_uuid` FROM `paiement`" +
+    " JOIN `employee` ON `employee`.`id`=`paiement`.`employee_id`" +
+    " JOIN `creditor` ON `creditor`.`uuid`=`employee`.`creditor_uuid`" +
+    " JOIN `creditor_group` ON `creditor_group`.`uuid`=`creditor`.`group_uuid` " +
+    " WHERE `paiement`.`uuid` = " + sanitize.escape(data.paiement_uuid) + ";";
+
+    var date = util.toMysqlDate(get.date());
+    return q([get.origin('payroll'), get.period(get.date()), get.exchangeRate(date), db.exec(sql2)]);
+  }
+
+  function getDetails (originId, periodObject, store, res) {
+    cfg.originId = originId;
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+    // cfg.account_id = res[0].account_id;
+    cfg.creditor_uuid = res[0].creditor_uuid;
+    cfg.store = store;
+    rate = cfg.store.get(reference.currency_id).rate;
+    return get.transactionId(data.project_id);
+  }
+
+  function getTransId (trans_id) {
+    cfg.trans_id = trans_id;
+    cfg.descrip =  trans_id.substring(0,4) + '_EngagementTax/' + new Date().toISOString().slice(0, 10).toString();
+    return debit();
+  }
+
+  function debit () {
+
+    return q.all(
+      references.map(function (reference) {
+        cfg.descrip += '/' + references.label + '/' + reference.abbr;
+        var debit_sql =
+          'INSERT INTO posting_journal ' +
+          '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+          '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+          '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
+          'VALUES (' +
+            [
+              sanitize.escape(uuid()),
+              data.project_id,
+              cfg.fiscalYearId,
+              cfg.periodId,
+              cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.six_account_id
+            ].join(',') + ', ' +
+            [
+              0, (reference.value).toFixed(4),
+              0, (reference.value / rate).toFixed(4),
+              reference.currency_id
+            ].join(',') +
+          ', null, null, ' +
+            [
+              sanitize.escape(data.paiement_uuid),
+              cfg.originId,
+              user_id
+            ].join(',') + ');';
+        return db.exec(debit_sql);
+      })
+    );
+  }
+
+  function credit () {
+
+    return q.all(
+      references.map(function (reference) {
+        cfg.descrip += '/' + references.label + '/' + reference.abbr;
+        var credit_sql =
+          'INSERT INTO posting_journal ' +
+          '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+          '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+          '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+          'VALUES (' +
+            [
+              sanitize.escape(uuid()),
+              data.project_id,
+              cfg.fiscalYearId,
+              cfg.periodId,
+              cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.four_account_id
+            ].join(',') + ', ' +
+            [
+              reference.value.toFixed(4), 0,
+              (reference.value / rate).toFixed(4), 0,
+              reference.currency_id,
+              sanitize.escape(cfg.creditor_uuid)
+            ].join(',') + ', \'C\', ' + [sanitize.escape(data.paiement_uuid), cfg.originId, user_id].join(',') +
+          ');';
+        return db.exec(credit_sql);
+      })
+    );
+  }
+}
+
 function handleSalaryAdvance (id, user_id, done) {
   var sql, rate, state = {}, data, reference, cfg = {};
   state.user_id = user_id;
@@ -2877,6 +3119,8 @@ table_router = {
   'payroll'                 : handlePayroll,
   'salary_payment'          : handleSalaryPayment,
   'promesse_payment'        : handlePromessePayment,
+  'promesse_cotisation'     : handlePromesseCotisation,
+  'promesse_tax'            : handlePromesseTax,
   'donation'                : handleDonation,
   'tax_payment'             : handleTaxPayment,
   'cotisation_payment'      : handleCotisationPayment,

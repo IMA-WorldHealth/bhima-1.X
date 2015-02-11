@@ -159,6 +159,8 @@ exports.initialise = function (app) {
   // Added since server structure <--> v1 merge
   app.post('/payCotisation/', uncategorised.payCotisation);
   app.post('/posting_promesse_payment/', uncategorised.payPromesse);
+  app.post('/posting_promesse_cotisation/', uncategorised.payPromesseCotisation);
+  app.post('/posting_promesse_tax/', uncategorised.payPromesseTax);
 
   app.put('/setCotisationPayment/', uncategorised.setCotisationPayment);
 
