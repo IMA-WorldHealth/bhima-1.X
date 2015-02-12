@@ -281,6 +281,7 @@
    "DEBCRED_ID"            : "ID Deb/Cred",
    "DEBIT"                 : "Débit",
    "DEBITOR"               : "Débiteur",
+   "DEBITOR_GROUP"         : "Groupe Débiteur",
    "DEBITOR_ID"            : "ID Débiteur",
    "DEBITOR_NAME"          : "Nom Débiteur",
    "DEBITOR_TYPE"          : "Type de Débiteur",
@@ -2167,6 +2168,14 @@
    "SAFETY_STOCK"          : "Stock de sécurité",
    "TITLE"                 : "Situation de stock"
    },
+"SUBSIDY" : {
+   "DETAILS"     : "",
+   "INFO"        : "Module de gestion des subventions",
+   "NEW_SUBSIDY" : "Nouvelle subvention",
+   "REGISTERED"  : "Subvention(s) enregistrée(s)",
+   "TITLE"       : "Subvention",
+   "UPDATE"      : "Mise à jour"
+   },
 "SUPPLIER": {
    "ADDR_1"           : "Adresse 1",
    "ADDR_2"           : "Adresse 2",
@@ -2367,6 +2376,7 @@
    "STOCK_DISTRIBUTION"        : "Distribution Stock",
    "STOCK_MANAGEMENT"          : "Gestion de Stock",
    "STOCK_STATUS"              : "Situation du stock",
+   "SUBSIDY"                   : "Subventions",
    "SWAP_DEBITOR"              : "Changer Groupe Débiteur",
    "TAXES"                     : "Taxes",
    "TAXE_MANAGEMENT"           : "Gestion des taxes",
