@@ -25,7 +25,7 @@ angular.module('bhima.controllers')
     dependencies.enterprise = {
       query : {
         tables : {
-          'enterprise' : {columns : ['id', 'name', 'phone', 'email', 'location_id', 'currency_id' ]},
+          'enterprise' : {columns : ['id', 'name', 'po_box', 'phone', 'email', 'location_id', 'currency_id' ]},
           'project'    : {columns : ['name', 'abbr']}
         },
         join : ['enterprise.id=project.enterprise_id']

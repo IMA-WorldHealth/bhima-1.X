@@ -6,8 +6,9 @@ angular.module('bhima.controllers')
   'appstate',
   'exchange',
   function ($scope, validate, connect, appstate, exchange) {
-    var session = $scope.session = {};
-    var dependencies = {};
+    var session = $scope.session = {},
+      dependencies = {},
+      state = $scope.state;
 
     dependencies.accounts = {
       query : {
@@ -45,6 +46,7 @@ angular.module('bhima.controllers')
     }
 
     $scope.search = function search() {
+      $scope.state = 'generate';
       if (!session.account || !session.limit) { return; }
       var query = '?account=' + session.account.id;
       query += '&limit=' + session.limit;
@@ -55,15 +57,25 @@ angular.module('bhima.controllers')
       });
     };
 
+    function initialize (models) {
+      angular.extend($scope, models);
+    }
+
     appstate.register('enterprise', function (enterprise) {
-      session.enterprise = enterprise;
+      $scope.enterprise = enterprise;
       validate.process(dependencies)
-      .then(startup);
+      .then(initialize);
     });
 
     $scope.print = function print() {
       window.print();
     };
+
+   function reconfigure () {
+      $scope.state = null;
+      $scope.session.account = null;
+      $scope.session.limit = null;
+    }
 
     function convert () {
       if($scope.transactions) {
@@ -77,5 +89,6 @@ angular.module('bhima.controllers')
     }
 
     $scope.convert = convert;
+    $scope.reconfigure = reconfigure;
   }
 ]);

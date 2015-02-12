@@ -84,6 +84,28 @@ angular.module('bhima.controllers')
           session.pp_label = formatPeriod (pp);
         }
 
+        connect.fetch('/reports/employeePaiement/?id=' + session.pp.id)
+        .then(function (data) {
+          session.partialSalary = data;
+
+          session.partialSalary.forEach(function (salary) {
+            if(salary.is_paid){
+              salary.net_salary_paid = 0;
+            } else {
+              salary.net_salary_paid = salary.net_salary - salary.amount;   
+            }
+            
+          });
+
+          session.configured = (session.pp.id > 0) ? true : false ;
+          session.complete = true;
+          session.available = (session.partialSalary) ? true : false ;
+        })
+        .catch(function (err) {
+          messenger.danger('An error occured:' + JSON.stringify(err));
+        });
+
+
         dependencies.salary_payment = {
           query : {
             tables : {
@@ -152,7 +174,7 @@ angular.module('bhima.controllers')
         deb_cred_type : 'C',
         account_id    : getCashAccountID(emp.currency_id),
         currency_id   : emp.currency_id,
-        cost          : emp.net_salary,
+        cost          : emp.net_salary_paid,
         user_id       : session.model.cashier.data.id,
         description   : 'Salary Payment ' + '(' + emp.name + emp.postnom + ') : ',
         cash_box_id   : session.cashbox,
@@ -186,6 +208,7 @@ angular.module('bhima.controllers')
         return connect.fetch('/journal/salary_payment/' + package.primary.uuid);
       })
       .then(function () {
+        init(session.model);
         messenger.success($translate.instant('PRIMARY_CASH.EXPENSE.SALARY_SUCCESS') + emp.prenom + ' ' + emp.name + ' ' + emp.postnom + ' reussi', true);
       })
       .catch(function (err){ console.log(err); });

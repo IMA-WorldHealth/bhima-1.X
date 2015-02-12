@@ -6,21 +6,9 @@ angular.module('bhima.controllers')
   'util',
   'validate',
   function ($scope, $timeout, $routeParams, util, validate) {
-    // TODO add search (filter)
-    // TODO add sortable (clickable) columns
-    var dependencies = {};
-
-    dependencies.depots = {
-      required: true,
-      query : {
-        tables : {
-          'depot' : {
-            columns : ['uuid', 'text', 'reference', 'enterprise_id']
-          }
-        }
-      }
-    };
-    validate.process(dependencies, ['depots']);    
+    var dependencies = {},
+        state = $scope.state,
+        session = $scope.session = { param : {}, searching : true }; 
 
     var period = $scope.period = [
       {
@@ -37,11 +25,6 @@ angular.module('bhima.controllers')
       }
     ];
 
-    var session = $scope.session = {
-      param : {},
-      searching : true
-    };
-
     var total = $scope.total = {
       method : {
         'totalItems' : totalItems
@@ -49,7 +32,17 @@ angular.module('bhima.controllers')
       result : {}
     };
 
-    dependencies.sale = {};
+    dependencies.depots = {
+      required: true,
+      query : {
+        tables : {
+          'depot' : {
+            columns : ['uuid', 'text', 'reference', 'enterprise_id']
+          }
+        }
+      }
+    };
+
     dependencies.project = {
       query : {
         tables : {
@@ -60,6 +53,9 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.sale = {};
+
+    validate.process(dependencies, ['depots']); 
     $timeout(init, 100);
 
     function init() {
@@ -108,22 +104,18 @@ angular.module('bhima.controllers')
     function today() {
       $scope.session.param.dateFrom = new Date();
       $scope.session.param.dateTo = new Date();
-      // $scope.session.param.dateTo.setDate($scope.session.param.dateTo.getDate() - 1);
-      reset();
     }
 
     function week() {
       $scope.session.param.dateFrom = new Date();
       $scope.session.param.dateTo = new Date();
       $scope.session.param.dateFrom.setDate($scope.session.param.dateTo.getDate() - $scope.session.param.dateTo.getDay());
-      reset();
     }
 
     function month() {
       $scope.session.param.dateFrom = new Date();
       $scope.session.param.dateTo = new Date();
       $scope.session.param.dateFrom.setDate(1);
-      reset();
     }
 
     function updateTotals() {
@@ -136,7 +128,23 @@ angular.module('bhima.controllers')
       return $scope.model.sale.data.length;
     }
 
+    function generate() {
+      reset();
+      $scope.state = 'generate';
+    }
+
+    function reconfigure() {
+      $scope.state = null;
+    }
+
+    function printReport() {
+      print();
+    }
+
     $scope.select = select;
     $scope.reset = reset;
+    $scope.generate = generate;
+    $scope.reconfigure = reconfigure;
+    $scope.printReport = printReport;
   }
 ]);

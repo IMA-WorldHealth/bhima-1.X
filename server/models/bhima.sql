@@ -126,6 +126,7 @@ create table `enterprise` (
   `id`                  smallint unsigned not null auto_increment,
   `name`                text not null,
   `abbr`                varchar(50),
+  `po_box`              varchar(70),
   `phone`               varchar(20),
   `email`               varchar(70),
   `location_id`         char(36),
@@ -523,7 +524,7 @@ drop table if exists `patient_group`;
 create table `patient_group` (
   enterprise_id     smallint unsigned not null,
   uuid              char(36) not null,
-  price_list_uuid   char(36) not null,
+  price_list_uuid   char(36),
   name              varchar(60) not null,
   note              text,
   created           timestamp null default CURRENT_TIMESTAMP,
@@ -708,6 +709,8 @@ create table `sale_item` (
   constraint foreign key (`inventory_uuid`) references `inventory` (`uuid`)
 ) engine=innodb;
 
+
+
 drop table if exists `depot`;
 create table `depot` (
   `uuid`               char(36) not null,
@@ -782,13 +785,13 @@ create table `consumption_rummage` (
 drop table if exists `consumption_reversing`;
 create table `consumption_reversing` (
   `uuid`             char(36) not null,
-  `consumption_uuid`        char(36) not null,  
+  `consumption_uuid`        char(36) not null,
   `depot_uuid`       char(36) not null,
   `document_id`       char(36) not null,
   `date`             date,
   `tracking_number`  char(50) not null,
   `quantity`           int,
-  `description`        text,    
+  `description`        text,
   primary key (`uuid`),
   key `consumption_uuid` (`consumption_uuid`),
   key `depot_uuid`   (`depot_uuid`),
@@ -1354,7 +1357,7 @@ create table `tax` (
   `abbr`                    varchar(4) null,
   `is_employee`             boolean,
   `is_percent`              boolean,
-  `is_ipr`                  boolean,            
+  `is_ipr`                  boolean,
   `four_account_id`         int unsigned null,
   `six_account_id`          int unsigned null,
   `value`                   float default 0,
@@ -1485,6 +1488,19 @@ create table `paiement` (
   constraint foreign key (`currency_id`) references `currency` (`id`)
 ) engine=innodb;
 
+drop table if exists `partial_paiement`;
+create table `partial_paiement` (
+  `uuid`                    char(36) not null,
+  `paiement_uuid`           char(36) not null,
+  `currency_id`             tinyint unsigned,
+  `paiement_date`           date,
+  `amount`                  float default 0,
+  primary key (`uuid`),
+  key `paiement_uuid` (`paiement_uuid`),
+  key `currency_id` (`currency_id`),
+  constraint foreign key (`paiement_uuid`) references `paiement` (`uuid`),
+  constraint foreign key (`currency_id`) references `currency` (`id`)
+) engine=innodb;
 
 drop table if exists `rubric_paiement`;
 create table `rubric_paiement` (

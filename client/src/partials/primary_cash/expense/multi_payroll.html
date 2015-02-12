@@ -22,9 +22,6 @@
       <span class="glyphicon glyphicon-repeat"></span>
     </button>
   </div>
-
-  <div class="pull-left">
-  </div>
 </nav>
 
 <main>
@@ -94,7 +91,7 @@
                       <td>{{row.emp.text}}</td>
                       <td>{{row.emp.nb_enfant}}</td>
                       <td>{{row.emp.nb_spouse}}</td>
-                      <td><b ng-bind-html="row.emp.basic_salary | intlcurrency:session.SelectedCurrency.currency_id"></b></td>
+                      <td><b ng-bind-html="row.emp.basic_salary | intlcurrency:session.SelectedCurrency.id"></b></td>
                     </tr>
                   </tbody>
                 </table>
