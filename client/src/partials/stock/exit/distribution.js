@@ -191,7 +191,7 @@ angular.module('bhima.controllers')
       var query = {
         tables : {
           sale_item : {
-            columns : ['sale_uuid', 'uuid', 'inventory_uuid', 'quantity']
+            columns : ['sale_uuid', 'uuid', 'inventory_uuid', 'quantity', 'transaction_price']
           },
           inventory : {
             columns : ['code', 'text', 'consumable']
@@ -220,6 +220,7 @@ angular.module('bhima.controllers')
             date : util.convertToMysqlDate(new Date()),
             document_id : consumptionItem.sale_uuid,
             tracking_number : lot.details.tracking_number,
+            unit_price : consumptionItem.transaction_price,
             quantity : lot.quantity
           });
 
