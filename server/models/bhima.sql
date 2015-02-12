@@ -729,6 +729,7 @@ create table `consumption` (
   `date`             date,
   `document_id`      char(36) not null,
   `tracking_number`  char(50) not null,
+  `unit_price`       float unsigned,
   `quantity`         int unsigned,
   primary key (`uuid`),
   key `depot_uuid`   (`depot_uuid`),
