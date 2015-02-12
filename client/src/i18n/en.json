@@ -119,6 +119,12 @@
    "LOGOUT_SUCCESS" : "You are now logged out.",
    "RESET"          : "Reset"
    },
+"BALANCE" : {
+  "BUILD_BALANCE"   : "Build Balance",
+  "DOCUMENT_CONFIG" : "Document configuration",
+  "FISCAL_YEAR"     : "Fiscal year",
+  "LANGUAGE"        : "Language"
+  },
 "BALANCE_MENSUELLE": {
    "ACCOUNT"         : "Account",
    "CHOOSE_CLASS"    : "Choose a class",
@@ -137,6 +143,11 @@
    "TITLE"           : "Monthly balance per class",
    "TOTALS"          : "Totals"
    },
+"BILAN" : {
+  "BUILD_BILAN"     : "Build bilan",
+  "DOCUMENT_CONFIG" : "Document configuration",
+  "LANGUAGE"        : "Language"
+  },
 "BUDGET": {
    "DISPLAY" : {
      "LINE"         : "Line",
@@ -281,6 +292,7 @@
    "DEBCRED_ID"            : "Deb/Cred ID",
    "DEBIT"                 : "Debit",
    "DEBITOR"               : "Debtor",
+   "DEBITOR_GROUP"         : "Debtor group",
    "DEBITOR_ID"            : "Debtor ID",
    "DEBITOR_NAME"          : "Debtor Name",
    "DEBITOR_TYPE"          : "Debtor Type",
@@ -835,6 +847,11 @@
    "PLACEHOLDER"       : "Find a employee...",
    "TITLE"             : "Employee Standing Report"
    },
+"EMPLOYEE_STATE" : {
+  "BUILD_EMPLOYEE_STATE" : "Build Employee State",
+  "DOCUMENT_CONFIG"      : "Document configuration",
+  "LANGUAGE"             : "Language"
+  },
 "ENTERPRISE": {
    "ABBREVIATION"             : "Abbreviation",
    "ACTIONS"                  : "Actions",
@@ -1014,6 +1031,12 @@
    "UPDATE_SUCCES"  : "Updated successfully",
    "UPD_GRADE"      : "Update Grade"
    },
+"GRAND_LIVRE" : {
+  "BUILD_GRAND_LIVRE"    : "Build General Ledger",
+  "DOCUMENT_CONFIG"      : "Document configuration",
+  "FISCAL_YEAR"          : "Fiscal year",
+  "LANGUAGE"             : "Language"
+  },
 "GROUP_INVOICE": {
    "AGREED"                 : "Agreed Payment",
    "AUTHORIZE"              : "Authorize",
@@ -1337,6 +1360,7 @@
    "PRICE_LIST"    : "Price List",
    "REGISTER"      : "Register a Patient Group",
    "REGISTERED"    : "Registered Patient Groups",
+   "SUBSIDY"       : "Subsidy",
    "TITLE"         : "Patient Group Management"
    },
 "PATIENT_GRP_ASSIGNMENT": {
@@ -1961,6 +1985,7 @@
    "RECIPIENT"             : "Select a Recipient",
    "SECTOR"                : "Select a Sector",
    "SOURCE"                : "Select a source",
+   "SUBSIDY"               : "Select a subsidy",
    "TRACKING_NUMBER"       : "Select a Tracking Number",
    "UNIT"                  : "Select a Unit",
    "VALUE"                 : "Select a value",
@@ -2167,6 +2192,14 @@
    "SAFETY_STOCK"          : "Safety stock",
    "TITLE"                 : "Stock Situation"
    },
+"SUBSIDY" : {
+   "DETAILS"     : "",
+   "INFO"        : "Subsidy management module",
+   "NEW_SUBSIDY" : "New subsidy",
+   "REGISTERED"  : "Registered subsidy",
+   "TITLE"       : "Subsidy",
+   "UPDATE"      : "Update"
+   },
 "SUPPLIER": {
    "ADDR_1"           : "Address 1",
    "ADDR_2"           : "Address 2",
@@ -2277,7 +2310,9 @@
    "ADMIN"                     : "Admin",
    "ALL_TRANSACTIONS"          : "All Transactions",
    "BALANCE_MENSUELLE"         : "Monthly balance report",
+   "BALANCE_SHEET"             : "Balance sheet",
    "BENEFICIARY"               : "Beneficaries",
+   "BILAN"                     : "Bilan",
    "BUDGETING"                 : "Budget",
    "BUDGET_BY_ACCOUNT"         : "Budget by Account",
    "CASH"                      : "Cash Payments",
@@ -2305,6 +2340,7 @@
    "DISTRIBUTION_SERVICES"     : "Distribution Services Records",
    "EDIT_PATIENT"              : "Edit Patient Details",
    "EMPLOYEE"                  : "Employee",
+   "EMPLOYEE_STATE"            : "Employee state",
    "EMPLOYEE_STANDING"         : "Employee Standing Report",
    "ENTERPRISE"                : "Enterprise",
    "EXCHANGE"                  : "Exchange Rate",
@@ -2317,6 +2353,7 @@
    "GENERAL_LEDGER"            : "General Ledger",
    "GLOBAL_TRANSACTION"        : "Account Movement",
    "GRADE_EMPLOYERS"           : "Grade Employees",
+   "GRAND_LIVRE"               : "General Ledger",
    "GRP_INVOICING"             : "Billing Conventions",
    "HOLLYDAY_MANAGEMENT"       : "Holiday Management",
    "HOSPITAL"                  : "Hospital",
@@ -2363,13 +2400,16 @@
    "SALE_RECORDS"              : "Sale Records",
    "SERVICE"                   : "Services",
    "SERVICE_EXPLOITATION"      : "Services Status",
+   "SERVICE_STATE"             : "Service State",
    "STOCK_DASHBOARD"           : "Stock Dashboard",
    "STOCK_DISTRIBUTION"        : "Stock Distribution",
    "STOCK_MANAGEMENT"          : "Stock Management",
    "STOCK_STATUS"              : "Stock Status",
+   "SUBSIDY"                   : "Subsidy management",
    "SWAP_DEBITOR"              : "Update Debtor",
    "TAXES"                     : "Taxes",
    "TAXE_MANAGEMENT"           : "Taxes management",
+   "TFR"                       : "Results Table",
    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions by Account",
    "UPDATE_STOCK"              : "Update stock"
    },
