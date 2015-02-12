@@ -12,7 +12,8 @@ angular.module('bhima.controllers')
   '$window',
   'validate',
   function ($scope, $q, $http, $routeParams, $translate, appstate, uuid, util, messenger, $window, validate) {
-    var dependencies = {};
+    var dependencies = {},
+      state = $scope.state;
     var session = $scope.session = {
       reportDate : new Date(),
       timestamp : new Date(),
@@ -37,6 +38,7 @@ angular.module('bhima.controllers')
     };
 
     appstate.register('project', function (project) {
+      console.log('For the project',project);
       $scope.project = project;
       validate.process(dependencies)
       .then(init, handleError);
@@ -49,6 +51,9 @@ angular.module('bhima.controllers')
 
     // Define the callbacks for the findAccount dialog
     function submitAccount(account) {
+      $scope.state = 'generate'; 
+      console.log('Tozali Awa na Barcelano pona kolokota');
+
       fetchReport(account.id);
     }
 
@@ -128,11 +133,16 @@ angular.module('bhima.controllers')
     //   throw error;
     // }
 
+    $scope.print = function print() {
+      $window.print();
+    };
 
-    function print () { $window.print(); }
+   function reconfigure () {
+      $scope.state = null;
+    }
 
-    $scope.print = print;
 
+    $scope.reconfigure = reconfigure;
     $scope.submitAccount = submitAccount;
     $scope.resetAccountSearch = resetAccountSearch;
   }

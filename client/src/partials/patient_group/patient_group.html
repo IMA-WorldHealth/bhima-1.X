@@ -20,13 +20,15 @@
             <tr>
               <th>{{ "PATIENT_GRP.PATIENT_GROUP" | translate }}</th>
               <th>{{ "PATIENT_GRP.PRICE_LIST" | translate }}</th>
+              <th>{{ "PATIENT_GRP.SUBSIDY" | translate }}</th>
               <th colspan="3" width="10%">Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr ng-class="{'selected-primary' : session.selected.uuid === grp.uuid}" ng-repeat="grp in group.data">
               <td>{{ grp.name }}</td>
-              <td>{{ list.get(grp.price_list_uuid).title }} [{{ grp.price_list_uuid }}]</td>
+              <td>{{ list.get(grp.price_list_uuid).title }}</td>
+              <td>{{ subsidies.get(grp.subsidy_uuid).text }}</td>
               <td><a class="action" ng-click="showReport(grp)"><span class="glyphicon glyphicon-eye-open"></span></a></td>
               <td><a class="action" ng-click="edit(grp)"><i class="glyphicon glyphicon-pencil"></i></a></td>
               <td><a class="action" ng-click="remove(grp)"><i class="glyphicon glyphicon-trash uif-red"></i></a></td>
@@ -46,17 +48,17 @@
       </div>
 
       <div ng-switch-when="register">
-        <form class="form-horizontal">
+        <form class="form-horizontal" name="add" novalidate>
           <fieldset>
             <legend>{{ "PATIENT_GRP.REGISTER" | translate }}</legend>
-      
+
             <div class="form-group required">
               <label class="col-xs-2 control-label">{{ "COLUMNS.NAME" | translate }}</label>
               <div class="col-xs-10">
-                <input class="form-bhima" ng-model="register.name">
+                <input class="form-bhima" ng-model="register.name" required>
               </div>
             </div>
-          
+
             <div class="form-group required">
               <label class="col-xs-2 control-label">{{ "PATIENT_GRP.PRICE_LIST" | translate }}</label>
               <div class="col-xs-10">
@@ -65,7 +67,16 @@
                 </select>
               </div>
             </div>
-      
+
+            <div class="form-group">
+              <label class="col-xs-2 control-label">{{ "PATIENT_GRP.SUBSIDY" | translate }}</label>
+              <div class="col-xs-10">
+                <select class="form-bhima" ng-model="register.subsidy_uuid" ng-options="subsidy.uuid as subsidy.text for subsidy in subsidies.data">
+                  <option value="">-- {{ "SELECT.SUBSIDY" | translate }} --</option>
+                </select>
+              </div>
+            </div>
+
 
             <div class="form-group">
               <label class="col-xs-2 control-label">{{ "COLUMNS.NOTE" | translate }}</label>
@@ -75,7 +86,7 @@
               </div>
             </div>
 
-            <input ng-click="saveRegistration()" class="btn btn-sm btn-success" type="submit" value="{{ 'FORM.SAVE' | translate }}">
+            <input ng-click="saveRegistration()" class="btn btn-sm btn-success" type="submit" value="{{ 'FORM.SAVE' | translate }}" ng-disabled="add.$invalid">
             <input ng-click="resetRegistration()" class="btn btn-sm btn-default" type="button" value="{{ 'FORM.RESET_FORM' | translate }}">
 
           </fieldset>
@@ -86,14 +97,14 @@
         <form class="form-horizontal">
           <fieldset>
             <legend>{{ "PATIENT_GRP.MODIFY" |  translate }}</legend>
-      
+
             <div class="form-group required">
               <label class="col-xs-2 control-label">{{ "COLUMNS.NAME" | translate }}</label>
               <div class="col-xs-10">
                 <input class="form-bhima" ng-model="modify.name">
               </div>
             </div>
-          
+
             <div class="form-group required">
               <label class="col-xs-2 control-label">{{ "PATIENT_GRP.PRICE_LIST" | translate }}</label>
               <div class="col-xs-10">
@@ -102,7 +113,16 @@
                 </select>
               </div>
             </div>
-      
+
+            <div class="form-group">
+              <label class="col-xs-2 control-label">{{ "PATIENT_GRP.SUBSIDY" | translate }}</label>
+              <div class="col-xs-10">
+                <select class="form-bhima" ng-model="modify.subsidy_uuid" ng-options="subsidy.uuid as subsidy.text for subsidy in subsidies.data">
+                  <option value="">-- {{ "SELECT.SUBSIDY" | translate }} --</option>
+                </select>
+              </div>
+            </div>
+
 
             <div class="form-group">
               <label class="col-xs-2 control-label">{{ "COLUMNS.NOTE" | translate }}</label>

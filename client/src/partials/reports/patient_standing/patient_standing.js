@@ -9,7 +9,8 @@ angular.module('bhima.controllers')
   function ($scope, $window, validate, appstate, messenger, connect) {
     var dependencies = {};
     $scope.img = 'placeholder.gif';
-    var session = $scope.session = {};
+    var session = $scope.session = {},
+      state = $scope.state;
     session.isSearched = false;
     session.noRecord = false;
 
@@ -51,6 +52,7 @@ angular.module('bhima.controllers')
     }
 
     function search() {
+      $scope.state = 'generate';
       session.patient = session.selected;
       var id = session.patient.debitor_uuid;
       connect.fetch('/reports/patientStanding/?id=' + id)
@@ -97,9 +99,15 @@ angular.module('bhima.controllers')
       .then(processModels, handleErrors);
     });
 
+    function reconfigure () {
+      $scope.state = null;
+      session.selected = null;
+    }
+
     function print () { $window.print(); }
     $scope.search = search;
     $scope.print = print;
+    $scope.reconfigure = reconfigure;
 
   }
 ]);

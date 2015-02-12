@@ -298,7 +298,7 @@ function paymentRecords(params) {
 
   var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
       _end =  sanitize.escape(util.toMysqlDate(new Date(p.end))),
-      _id = sanitize.escape(p.id);
+      _id = p.id;
 
   // var sql =
   //   'SELECT c.uuid, c.document_id, c.reference, s.reference AS sale_reference, s.project_id AS sale_project, ' +
@@ -449,6 +449,23 @@ function employeeStanding(params) {
   });
 
   return defer.promise;
+}
+
+function employeePaiement(params) {
+  params = querystring.parse(params);
+  var sql, id = sanitize.escape(params.id);
+  sql =
+    'SELECT employee.code, employee.prenom, employee.postnom, employee.name, employee.creditor_uuid, ' +
+    'paiement.uuid, paiement.currency_id, paiement.net_before_tax, paiement.net_after_tax, ' + 
+    'paiement.net_salary, paiement.is_paid, currency.symbol, SUM(partial_paiement.amount) AS amount ' +
+    'FROM employee ' + 
+    'JOIN paiement ON paiement.employee_id = employee.id ' +
+    'JOIN currency ON currency.id = paiement.currency_id ' +
+    'LEFT JOIN partial_paiement ON partial_paiement.paiement_uuid = paiement.uuid ' +
+    'WHERE paiement.paiement_period_id = ' + id +
+    'GROUP BY partial_paiement.paiement_uuid, paiement.employee_id';
+ 
+  return db.exec(sql);
 }
 
 
@@ -734,6 +751,7 @@ function generate(request, params, done) {
     'patients'              : patientRecords,
     'payments'              : paymentRecords,
     'patientStanding'       : patientStanding,
+    'employeePaiement'      : employeePaiement,
     'employeeStanding'      : employeeStanding,
     'accountStatement'      : accountStatement,
     'allTransactions'       : allTransactions,

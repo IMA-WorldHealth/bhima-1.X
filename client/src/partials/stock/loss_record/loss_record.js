@@ -114,7 +114,7 @@ angular.module('bhima.controllers')
 	            'purchase.uuid=purchase_item.purchase_uuid',
 	            'purchase_item.inventory_uuid=inventory.uuid'
 	          ],
-	          where: ['consumption.date>=' + request.dateFrom,'AND','consumption.date<=' + request.dateTo]
+	          where: ['consumption.depot_uuid=' + request.depotId,'AND','consumption.date>=' + request.dateFrom,'AND','consumption.date<=' + request.dateTo]
 	      }
 	    };
 

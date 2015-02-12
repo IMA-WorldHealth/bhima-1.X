@@ -56,10 +56,9 @@ INSERT INTO `account` VALUES
 (@ID_30, 3, 200, 30, 'STOCKS  MEDICAMENTS', 89, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 3),
 (@ID_32, 3, 200, 32, 'Emballages commerciaux', 89, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 3),
 (@ID_34, 3, 200, 34, 'Produits ophtalmologie', 89, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 3),
-(@ID_36, 3, 200, 36, 'Stocks à l\'extérieur', 89, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 3),
-(@ID_38, 3, 200, 38, 'Provisions pour dépréciation', 89, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 3),
+(@ID_36, 3, 200, 36, 'SPROVISION POUR DEPRECIATION', 89, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 3),
 (@ID_35, 3, 200, 35, 'ACCOUCHEMENT', 89, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 3),
-(@ID_33, 3, 200, 33, 'Externe', 89, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 3),
+(@ID_33, 3, 200, 33, 'EXTERNE', 89, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 3),
 (@ID_46, 3, 200, 46, 'DEBITEURS ET CREDITEURS DIVERS', 184, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 4),
 (@ID_466, 3, 200, 466, 'AUTRES DEBITEURS ET CREDITEURS', @ID_46, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 4),
 (@ID_48, 3, 200, 48, 'PROVISIONS POUR IMPAYES MALADES', 184, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 4),
@@ -81,7 +80,7 @@ INSERT INTO `account` VALUES
 (@ID_72, 3, 200, 72, 'PRODUCTIONS STOCKEES', 888, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 7),
 (@ID_7615, 3, 200, 7615, 'DIVERS', 989, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 7),
 (@ID_7614, 3, 200, 7614, 'ROW', 989, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 7),
-(@ID_78, 3, 200, 78, 'Reprise subvention d\'équipement', 888, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 7);
+(@ID_78, 3, 200, 78, 'REPRISE SUBVENTION D\'EQUIPEMENT', 888, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 7);
 
 -- update accounts which dont't have parent or a correct parent
 UPDATE `account` SET `parent`=@ID_18 WHERE LEFT(`account_number`,2)=18 AND `account_number`<>18;
@@ -117,6 +116,7 @@ UPDATE `account` SET `parent`=@ID_7614 WHERE LEFT(`account_number`,4)=7614 AND `
 UPDATE `account` SET `parent`=@ID_78 WHERE LEFT(`account_number`,2)=78 AND `account_number`<>78;
 
 -- Uppercase 1 and 2 digits account class
+UPDATE `account` SET `account_txt`='MATIERES ET FOURNITURES CONSOMMEES' WHERE `account_number`=31;
 UPDATE `account` SET `account_txt`=UPPER(`account_txt`) WHERE `parent` IN (0, 1, 25, 89, 184, 473, 535, 888, 1046);
 
 -- update active or passive
