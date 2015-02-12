@@ -44,7 +44,7 @@
                 <span ng-show="subsidy.is_percent">%</span>
                 <span ng-hide="subsidy.is_percent">{{enterprise.data[0].symbol}}</span>
               </td>
-              <td><span class="glyphicon" ng-class="{'glyphicon-ok' : !!subsidy.is_percent}"></td>
+              <td><span class="glyphicon" ng-class="{'glyphicon-ok' : !!subsidy.is_percent, 'glyphicon-minus' : !subsidy.is_percent}"></td>
               <td>{{ subsidy.name }}</td>
               <td><a class="action" ng-click="edit(subsidy)"><span class="glyphicon glyphicon-pencil"></span></a></td>
               <td><a class="action danger" ng-click="delete(subsidy)"><span class="glyphicon glyphicon-trash"></span></a></td>
