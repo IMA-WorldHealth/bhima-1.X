@@ -7,7 +7,7 @@ angular.module('bhima.controllers')
   function ($scope, validate, appstate, messenger) {
     var dependencies = {}, model = $scope.model = {common : {}};
 
-    dependencies.convention = {
+    dependencies.employee = {
       required: true,
       query:  {
         tables: {
@@ -21,7 +21,8 @@ angular.module('bhima.controllers')
     };
 
     function buildInvoice (res) {
-      model.conventions = res.convention.data;
+      model.employee = res.employee.data;
+      console.log(model.employee);
     }
 
   	appstate.register('receipts.commonData', function (commonData) {
@@ -29,7 +30,7 @@ angular.module('bhima.controllers')
         model.common.location = values.location.data.pop();
         model.common.InvoiceId = values.invoiceId;
         model.common.enterprise = values.enterprise.data.pop();
-        dependencies.convention.query.where = ['primary_cash.uuid=' + values.invoiceId];
+        dependencies.employee.query.where = ['primary_cash.uuid=' + values.invoiceId];
         validate.process(dependencies)
         .then(buildInvoice)
         .catch(function (err){
