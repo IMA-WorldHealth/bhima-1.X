@@ -204,7 +204,7 @@ angular.module('bhima.controllers')
       $scope.data = {};
       $scope.noEmpty = false;
       if (record_uuid !== -1) {
-        $location.path('/invoice/employee_support/' + record_uuid);
+        $location.path('/invoice/pcash_employee/' + record_uuid);
       }
     }
 

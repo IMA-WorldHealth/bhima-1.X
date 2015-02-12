@@ -39,9 +39,12 @@ angular.module('bhima.controllers')
       'transfer' : {
         url : '/partials/receipts/templates/receipt_transfer.html'
       },
-      'convention' : {
+      'pcash_convention' : {
         url : '/partials/receipts/templates/receipt_convention.html'
       },
+      'pcash_employee' : {
+        url : '/partials/receipts/templates/receipt_employee.html'
+      },      
       'generic_income' : {
         url : '/partials/receipts/templates/receipt_generic_income.html'
       },
