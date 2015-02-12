@@ -10,11 +10,11 @@
           <div class="panel-body">
             <form name="configForm" novalidate>              
               <div class="form-group">
-                <label class="control-label col-xs-4 required">
+                <label class="control-label required">
                   {{ 'SELECT.PROJECT' | translate }}
                 </label>
                 <div>
-                  <div class="pull-left form-group input-group">
+                  <div class="input-group">
                     <span class="input-group-addon">
                       <span class="glyphicon glyphicon-home"></span>
                     </span>  
@@ -31,7 +31,7 @@
                 </div>
               </div>
 
-              <div class="pull-left form-group col-xs-12">
+              <div class="form-group">
                 <span class="btn-group">
                   <button class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : session.active }">{{ (session.selected | translate) || "..." }}</button>
                   <button class="btn btn-sm btn-default dropdown-toggle btn-sq"><span class="caret" data-caret="&#9660;"></span></button>
