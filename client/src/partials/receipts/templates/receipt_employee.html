@@ -1,7 +1,7 @@
 <div ng-controller="receipt.employee">
   <div class="row customer-details">
     <div class="col-xs-12">
-      <h4 class="invoice-header">{{'INVOICE.CONVENTION' | translate}}</h4>
+      <h4 class="invoice-header">{{'INVOICE.SUPPORT' | translate}}</h4>
     </div>
   </div>
 
@@ -13,7 +13,7 @@
       <br>
       {{model.common.location.name}}
       <br>
-      {{ model.common.enterprise.postal || 'B.P. 205'}}
+      {{ model.common.enterprise.po_box || 'B.P. 205'}}
       <br>
       {{model.common.location.sector_name}}
       <br>
@@ -23,13 +23,13 @@
     </div>
 
     <div class="col-xs-4">
-      <span><b>{{ 'INVOICE.CONVENTION' | translate }}</b></span>
+      <span><b>{{ 'INVOICE.SUPPORT' | translate }}</b></span>
       <br>
-      {{model.conventions[0].account_txt}}
+      {{model.employee[0].account_txt}}
       <br>
       <i>{{ 'INVOICE.DATE' | translate }}</i>
       <br>
-      {{model.conventions[0].date | date}}
+      {{model.employee[0].date | date}}
     </div>
   </div>
 
@@ -44,14 +44,14 @@
           </tr>
         </thead>
         <tbody class="items">
-          <tr ng-repeat="convention in model.conventions">
+          <tr ng-repeat="convention in model.employee">
             <td>{{$index + 1}}</td>
             <td>{{convention.note}}</td>
             <td><span ng-bind-html="convention.debit  | intlcurrency:convention.currency_id"></span></td>
           </tr>
         </tbody>
         <tbody class="totals">
-          <tr><td colspan="2" class="no-border">{{'INVOICE.TOTAL' | translate}}</td><td><span ng-bind-html="model.conventions[0].cost  | intlcurrency:model.conventions[0].currency_id"></span></td></tr>
+          <tr><td colspan="2" class="no-border">{{'INVOICE.TOTAL' | translate}}</td><td><span ng-bind-html="model.employee[0].cost  | intlcurrency:model.employee[0].currency_id"></span></td></tr>
         </tbody>
       </table>
     </div>

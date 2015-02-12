@@ -1430,7 +1430,11 @@ function handleConvention (id, user_id, done) {
 function handleEmployee (id, user_id, done) {
   var dayExchange = {}, reference = {}, cfg = {};
   var sql = 'SELECT * FROM `primary_cash` WHERE `primary_cash`.`uuid`='+sanitize.escape(id)+';';
+
   function getRecord (records) {
+    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++');
+    console.log(records);
+    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++');
     if (records.length === 0) { throw new Error('pas enregistrement'); }
     reference.reference_pcash = records[0];
     sql = 'SELECT * FROM `primary_cash_item` WHERE `primary_cash_item`.`primary_cash_uuid`='+sanitize.escape(id)+';';

@@ -116,8 +116,6 @@ angular.module('bhima.controllers')
         });        
       }
       $scope.selectedEmployee = selectedEmployee;
-      console.log(selectedEmployee);
-      console.log('La convention dans la presentation PLusieur',$scope.selectedEmployee.creditor_uuid);
       dependencies.situations = { query : '/ledgers/employee_invoice/' + $scope.selectedEmployee.creditor_uuid};
       validate.process(dependencies, ['situations'])
       .then(ready); 
@@ -130,6 +128,7 @@ angular.module('bhima.controllers')
         type            : 'E',
         date            : util.sqlDate(new Date().toString()),
         currency_id     : $scope.selectedItem.currency_id,
+        deb_cred_uuid   : $scope.selectedEmployee.creditor_uuid,
         account_id      : $scope.selectedEmployee.account_id,
         cost            : $scope.data.payment,
         user_id         : $scope.model.cashier.data.id,
@@ -137,6 +136,8 @@ angular.module('bhima.controllers')
         cash_box_id     : $scope.cashbox_id,
         origin_id       : $scope.model.pcash_module.data[0].id
       };
+      console.log('Examen National de l emploie');
+      console.log(record);
 
       writePay(record)
       .then(writeItem)
@@ -146,6 +147,7 @@ angular.module('bhima.controllers')
 
     function postToJournal (resu) {
       record_uuid = resu[0].config.data.data[0].primary_cash_uuid;
+      console.log('VOici Reccord UUID',record_uuid);
       return connect.fetch('/journal/pcash_employee/' + record_uuid);
     }
 

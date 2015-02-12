@@ -73,7 +73,6 @@ angular.module('bhima.controllers')
         return messenger.danger('Error: No debitor selected');
       }
 
-      console.log('[selected debitor]', $scope.selected.debitor);
       dependencies.invoices.query += $scope.selected.debitor.uuid;
       validate.process(dependencies).then(setUpModels);
       $scope.hasDebitor = true;
@@ -92,7 +91,6 @@ angular.module('bhima.controllers')
     }
 
     $scope.examineInvoice = function (invoice) {
-      console.log('examine', invoice, 'debitor', $scope.selected.debitor);
       $scope.examine = invoice;
       $scope.old_action = $scope.action;
       $scope.action = 'examine';
@@ -152,9 +150,6 @@ angular.module('bhima.controllers')
     $scope.authorize = function () {
       var id, items, payment = connect.clean($scope.payment);
       payment.uuid = uuid();
-      console.log('PAYEMENT EYE NA TERRAIN__________');
-      console.log(payment);
-
 
       connect.basicPut('employee_invoice', [payment])
       .then(function () {
