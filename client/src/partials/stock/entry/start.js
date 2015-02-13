@@ -119,6 +119,7 @@ angular.module('bhima.controllers')
         find.valid = false;
         error(err);
       });
+
     };
 
     find.fn.activate = function activate () {
@@ -277,7 +278,6 @@ angular.module('bhima.controllers')
       session.lots.forEach(function (stock) {
         stocks.push({
           inventory_uuid      : stock.inventory_uuid,
-          //purchase_price      : stock.purchase_price,
           expiration_date     : util.sqlDate(stock.expiration_date),
           entry_date          : util.sqlDate(new Date()),
           lot_number          : stock.lot_number,
@@ -306,6 +306,16 @@ angular.module('bhima.controllers')
       return movements;
     }
 
+    function setPurchasePrice () {
+      session.order.data.forEach(function (item) {
+        var obj = {
+          uuid           : item.inventory_uuid,
+          purchase_price : item.unit_price
+        };
+        connect.put('inventory', [obj], ['uuid']);
+      });
+    }
+
     $scope.accept = function () {
       var document_id = uuid();
       var stock = processStock();
@@ -317,6 +327,7 @@ angular.module('bhima.controllers')
       .then(function () {
         return connect.basicPost('purchase', [{ uuid : session.cfg.purchase_uuid, closed : 1 }], ['uuid']);
       })
+      .then(setPurchasePrice)
       .then(function () {
         messenger.success($translate.instant('STOCK.ENTRY.WRITE_SUCCESS'));
       })

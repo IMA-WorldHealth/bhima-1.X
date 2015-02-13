@@ -194,7 +194,7 @@ angular.module('bhima.controllers')
             columns : ['sale_uuid', 'uuid', 'inventory_uuid', 'quantity', 'transaction_price']
           },
           inventory : {
-            columns : ['code', 'text', 'consumable']
+            columns : ['code', 'text', 'consumable', 'purchase_price']
           }
         },
         where : ['sale_item.sale_uuid=' + sale.inv_po_id],
@@ -220,7 +220,7 @@ angular.module('bhima.controllers')
             date : util.convertToMysqlDate(new Date()),
             document_id : consumptionItem.sale_uuid,
             tracking_number : lot.details.tracking_number,
-            unit_price : consumptionItem.transaction_price,
+            unit_price : consumptionItem.purchase_price,
             quantity : lot.quantity
           });
 
