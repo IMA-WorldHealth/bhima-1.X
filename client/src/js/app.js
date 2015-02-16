@@ -294,6 +294,10 @@
       controller : 'groupInvoice',
       templateUrl : 'partials/group_invoice/group_invoice.html'
     })
+    .when('/support/:id?', {
+      controller : 'support',
+      templateUrl : 'partials/support/support.html'
+    })    
     .when('/reports/patient_registrations', {
       controller : 'reportPatientRegistrations',
       templateUrl : 'partials/reports/patient_registrations/patient_registrations.html'
@@ -330,6 +334,10 @@
       controller : 'primaryCash.convention',
       templateUrl : 'partials/primary_cash/income/convention/convention.html'
     })
+     .when('/primary_cash/support/:cashbox_id', {
+      controller : 'primaryCash.support',
+      templateUrl : 'partials/primary_cash/income/support/support.html'
+    })     
     .when('/primary_cash/income/generic/:id', {
       controller : 'primaryCash.income.generic',
       templateUrl : 'partials/primary_cash/income/generic/generic.html'
