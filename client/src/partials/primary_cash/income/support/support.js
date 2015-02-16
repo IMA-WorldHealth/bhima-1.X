@@ -136,8 +136,6 @@ angular.module('bhima.controllers')
         cash_box_id     : $scope.cashbox_id,
         origin_id       : $scope.model.pcash_module.data[0].id
       };
-      console.log('Examen National de l emploie');
-      console.log(record);
 
       writePay(record)
       .then(writeItem)
@@ -147,7 +145,6 @@ angular.module('bhima.controllers')
 
     function postToJournal (resu) {
       record_uuid = resu[0].config.data.data[0].primary_cash_uuid;
-      console.log('VOici Reccord UUID',record_uuid);
       return connect.fetch('/journal/pcash_employee/' + record_uuid);
     }
 
