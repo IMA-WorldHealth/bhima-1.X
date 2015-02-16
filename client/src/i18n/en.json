@@ -2196,6 +2196,7 @@
    "DETAILS"     : "",
    "INFO"        : "Subsidy management module",
    "NEW_SUBSIDY" : "New subsidy",
+   "NO_SUBSIDY"  : "No subsidy have been registered",   
    "REGISTERED"  : "Registered subsidy",
    "TITLE"       : "Subsidy",
    "UPDATE"      : "Update"

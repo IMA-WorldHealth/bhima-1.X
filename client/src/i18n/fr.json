@@ -2196,6 +2196,7 @@
    "DETAILS"     : "",
    "INFO"        : "Module de gestion des subventions",
    "NEW_SUBSIDY" : "Nouvelle subvention",
+   "NO_SUBSIDY"  : "Aucune subvention n'est enregistrée",
    "REGISTERED"  : "Subvention(s) enregistrée(s)",
    "TITLE"       : "Subvention",
    "UPDATE"      : "Mise à jour"
