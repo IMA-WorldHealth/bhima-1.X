@@ -92,7 +92,7 @@ angular.module('bhima.controllers')
         request.account_id = session.selectedCash.account_id;
       }
       else {
-  request.account_id = null;
+        request.account_id = null;
       }
 
       dependencies.records.query = '/reports/income_report/?' + JSON.stringify(request);      

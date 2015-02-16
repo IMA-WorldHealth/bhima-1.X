@@ -1,0 +1,45 @@
+<head>
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/normalize.css">
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/skeleton.css">
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/reports.css">
+</head>
+
+<body>
+
+  <section id="letterhead">
+  </section>
+
+  <section id="title" class="center">
+      <h5>IMCK Hopital Bon Berger</h5>
+      <h5>Etat Employee</h5>
+      <h5>As of {{=it.reportDate}}</h5>
+  </section>
+
+  <section>
+    <table class="balance" border="1">
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Prenom</th>
+          <th>Nom</th>
+          <th>Postnom</th>
+          <th>Debit</th>
+          <th>Credit</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {{~it.data :value : index}}
+          <tr class="contenu">
+            <td>{{=value.code}}</td>
+            <td>{{=value.prenom}}</td>
+            <td>{{=value.name}}</td>
+            <td>{{=value.postnom}}</td>
+            <td>{{?value.debit}}{{=value.debit}}{{?}}</td>
+            <td>{{?value.credit}}{{=value.credit}}{{?}}</td>
+          </tr>
+        {{~}}
+      </tbody>
+    </table>
+  </section>
+</body>
