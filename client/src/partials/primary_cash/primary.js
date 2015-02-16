@@ -33,6 +33,10 @@ angular.module('bhima.controllers')
         link : '/primary_cash/convention/'
       },
       {
+        key : 'PRIMARY_CASH.INCOME.SUPPORT',
+        link : '/primary_cash/support/'
+      },      
+      {
         key : 'PRIMARY_CASH.INCOME.GENERIC.TITLE',
         link : '/primary_cash/income/generic/'
       }

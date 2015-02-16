@@ -411,12 +411,12 @@ function employeeStanding(params) {
         'SELECT `posting_journal`.`uuid`, `posting_journal`.`trans_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`description`, `posting_journal`.`inv_po_id` ' +
         'FROM `posting_journal` ' + 
         'JOIN `transaction_type` ON `transaction_type`.`id`= `posting_journal`.`origin_id` '+
-        ' WHERE `posting_journal`.`deb_cred_uuid`= ? AND `posting_journal`.`deb_cred_type`=\'C\' AND `transaction_type`.`service_txt` NOT IN (\'cotisation_paiement\',\'tax_payment\') ' +
+        ' WHERE `posting_journal`.`deb_cred_uuid`= ? AND `posting_journal`.`deb_cred_type`=\'C\' AND `transaction_type`.`service_txt` NOT IN (\'cotisation_paiement\',\'tax_payment\',\'payroll\') ' +
       'UNION ' +
         'SELECT `general_ledger`.`uuid`, `general_ledger`.`trans_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, `general_ledger`.`description`, `general_ledger`.`inv_po_id` ' +
         'FROM `general_ledger` ' + 
         'JOIN `transaction_type` ON `transaction_type`.`id`= `general_ledger`.`origin_id` '+
-        'WHERE `general_ledger`.`deb_cred_uuid`=? AND `general_ledger`.`deb_cred_type`=\'C\'  AND `transaction_type`.`service_txt` NOT IN (\'cotisation_paiement\',\'tax_payment\')) as aggregate ' +
+        'WHERE `general_ledger`.`deb_cred_uuid`=? AND `general_ledger`.`deb_cred_type`=\'C\'  AND `transaction_type`.`service_txt` NOT IN (\'cotisation_paiement\',\'tax_payment\',\'payroll\')) as aggregate ' +
       'GROUP BY `aggregate`.`inv_po_id` ORDER BY `aggregate`.`trans_date` DESC;';
 
   db.exec(sql,[params.id, params.id])
@@ -562,16 +562,16 @@ function incomeReport (params) {
             '`posting_journal`.`credit_equiv`, `posting_journal`.`debit`, `posting_journal`.`credit`, `posting_journal`.`account_id`, `posting_journal`.`deb_cred_uuid`, '+
             '`posting_journal`.`currency_id`, `posting_journal`.`doc_num`, posting_journal.trans_id, `posting_journal`.`description`, `posting_journal`.`comment`, `posting_journal`.`origin_id`, `posting_journal`.`user_id` ' +
           'FROM `posting_journal` ' +
-      'LEFT JOIN `primary_cash_item` ON `primary_cash_item`.`document_uuid` = `posting_journal`.`inv_po_id`  ' +
+      'JOIN `primary_cash_item` ON `primary_cash_item`.`document_uuid` = `posting_journal`.`inv_po_id`  ' +
       ') UNION (' +
           'SELECT `general_ledger`.`project_id`, `general_ledger`.`uuid`,`primary_cash_item`.`primary_cash_uuid`,`primary_cash_item`.`document_uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, ' +
             '`general_ledger`.`credit_equiv`, `general_ledger`.`debit`, `general_ledger`.`credit`, `general_ledger`.`account_id`, `general_ledger`.`deb_cred_uuid`, `general_ledger`.`currency_id`, ' +
             '`general_ledger`.`doc_num`, general_ledger.trans_id, `general_ledger`.`description`, `general_ledger`.`comment`, `general_ledger`.`origin_id`, `general_ledger`.`user_id` ' +
           'FROM `general_ledger` ' +
-      'LEFT JOIN `primary_cash_item` ON `primary_cash_item`.`document_uuid` = `general_ledger`.`inv_po_id`  ' +      
+      'JOIN `primary_cash_item` ON `primary_cash_item`.`document_uuid` = `general_ledger`.`inv_po_id`  ' +      
         ')' +
       ') AS `t`, account AS a, transaction_type as o, user as u WHERE `t`.`account_id` = `a`.`id` AND `t`.`origin_id` = `o`.`id` AND `t`.`user_id` = `u`.`id` AND `t`.`account_id`= ?'  + 
-      ' AND `t`.`trans_date` >=? AND `t`.`trans_date` <= ?;';
+      ' AND `t`.`trans_date` >=? AND `t`.`trans_date` <= ? GROUP BY `t`.`trans_id`;';
   db.exec(requette,[params.account_id, params.dateFrom, params.dateTo])
    .then(function (results) {
     results = results.filter(function (item) {
