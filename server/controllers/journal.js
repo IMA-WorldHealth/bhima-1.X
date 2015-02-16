@@ -2478,7 +2478,7 @@ function handlePromesseCotisation (id, user_id, data, done) {
 
     return q.all(
       references.map(function (reference) {
-        cfg.descrip += '/' + references.label + '/' + reference.abbr;
+        cfg.note = cfg.descrip + '/' + references.label + '/' + reference.abbr;
         var debit_sql =
           'INSERT INTO posting_journal ' +
           '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
@@ -2490,7 +2490,7 @@ function handlePromesseCotisation (id, user_id, data, done) {
               data.project_id,
               cfg.fiscalYearId,
               cfg.periodId,
-              cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.six_account_id
+              cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.note), reference.six_account_id
             ].join(',') + ', ' +
             [
               0, (reference.value).toFixed(4),
@@ -2512,7 +2512,7 @@ function handlePromesseCotisation (id, user_id, data, done) {
 
     return q.all(
       references.map(function (reference) {
-        cfg.descrip += '/' + references.label + '/' + reference.abbr;
+        cfg.note = cfg.descrip + '/' + reference.label + '/' + reference.abbr;
         var credit_sql =
           'INSERT INTO posting_journal ' +
           '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
@@ -2524,7 +2524,7 @@ function handlePromesseCotisation (id, user_id, data, done) {
               data.project_id,
               cfg.fiscalYearId,
               cfg.periodId,
-              cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.four_account_id
+              cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.note), reference.four_account_id
             ].join(',') + ', ' +
             [
               reference.value.toFixed(4), 0,
@@ -2599,7 +2599,7 @@ function handlePromesseTax (id, user_id, data, done) {
 
     return q.all(
       references.map(function (reference) {
-        cfg.descrip += '/' + references.label + '/' + reference.abbr;
+        cfg.note = cfg.descrip + '/' + reference.label + '/' + reference.abbr;
         var debit_sql =
           'INSERT INTO posting_journal ' +
           '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
@@ -2611,7 +2611,7 @@ function handlePromesseTax (id, user_id, data, done) {
               data.project_id,
               cfg.fiscalYearId,
               cfg.periodId,
-              cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.six_account_id
+              cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.note), reference.six_account_id
             ].join(',') + ', ' +
             [
               0, (reference.value).toFixed(4),
@@ -2633,7 +2633,7 @@ function handlePromesseTax (id, user_id, data, done) {
 
     return q.all(
       references.map(function (reference) {
-        cfg.descrip += '/' + references.label + '/' + reference.abbr;
+        cfg.note = cfg.descrip + '/' + reference.label + '/' + reference.abbr;
         var credit_sql =
           'INSERT INTO posting_journal ' +
           '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
@@ -2645,7 +2645,7 @@ function handlePromesseTax (id, user_id, data, done) {
               data.project_id,
               cfg.fiscalYearId,
               cfg.periodId,
-              cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.four_account_id
+              cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.note), reference.four_account_id
             ].join(',') + ', ' +
             [
               reference.value.toFixed(4), 0,
