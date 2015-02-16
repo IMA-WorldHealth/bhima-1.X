@@ -119,6 +119,12 @@
    "LOGOUT_SUCCESS" : "Vous n'etes pas connecté",
    "RESET"          : "Annuler"
    },
+"BALANCE" : {
+  "BUILD_BALANCE"   : "Génération Balance",
+  "DOCUMENT_CONFIG" : "Configuration document",
+  "FISCAL_YEAR"     : "Année fiscale",
+  "LANGUAGE"        : "Langue"
+  },
 "BALANCE_MENSUELLE": {
    "ACCOUNT"         : "Compte",
    "CHOOSE_CLASS"    : "Choisissez une classe",
@@ -137,6 +143,11 @@
    "TITLE"           : "Balance Mensuelle par classe",
    "TOTALS"          : "TOTAUX"
    },
+"BILAN" : {
+  "BUILD_BILAN"     : "Génération bilan",
+  "DOCUMENT_CONFIG" : "Configuration document",
+  "LANGUAGE"        : "Langue"
+  },
 "BUDGET": {
    "DISPLAY" : {
      "LINE"         : "Ligne",
@@ -281,6 +292,7 @@
    "DEBCRED_ID"            : "ID Deb/Cred",
    "DEBIT"                 : "Débit",
    "DEBITOR"               : "Débiteur",
+   "DEBITOR_GROUP"         : "Groupe Débiteur",
    "DEBITOR_ID"            : "ID Débiteur",
    "DEBITOR_NAME"          : "Nom Débiteur",
    "DEBITOR_TYPE"          : "Type de Débiteur",
@@ -835,6 +847,11 @@
    "PLACEHOLDER"       : "Chercher un employé ...",
    "TITLE"             : "Etat Financier d'un employé"
    },
+"EMPLOYEE_STATE" : {
+  "BUILD_EMPLOYEE_STATE" : "Génération Etat Employé",
+  "DOCUMENT_CONFIG"      : "Configuration document",
+  "LANGUAGE"             : "Langue"
+  },
 "ENTERPRISE": {
    "ABBREVIATION"             : "Abréviation",
    "ACTIONS"                  : "Acts",
@@ -1014,6 +1031,12 @@
    "UPDATE_SUCCES"  : "Mis à jour avec succès",
    "UPD_GRADE"      : "Modifier un Grade"
    },
+"GRAND_LIVRE" : {
+  "BUILD_GRAND_LIVRE"    : "Génération du Grand Livre",
+  "DOCUMENT_CONFIG"      : "Configuration document",
+  "FISCAL_YEAR"          : "Année fiscale",
+  "LANGUAGE"             : "Langue"
+  },
 "GROUP_INVOICE": {
    "AGREED"                 : "Paiement Agrée",
    "AUTHORIZE"              : "Autoriser",
@@ -1339,6 +1362,7 @@
    "PRICE_LIST"    : "Liste des Prix",
    "REGISTER"      : "Enregistrer Groupe Patient",
    "REGISTERED"    : "Groupes Patients Enregistrées",
+   "SUBSIDY"       : "Subvention",
    "TITLE"         : "Gestion des Groupes Patients"
    },
 "PATIENT_GRP_ASSIGNMENT": {
@@ -1964,6 +1988,7 @@
    "RECIPIENT"             : "Sélectionner un destinataire",
    "SECTOR"                : "Sélectionner une Secteur",
    "SOURCE"                : "Sélectionner source",
+   "SUBSIDY"               : "Sélectionner subvention",
    "TRACKING_NUMBER"       : "Select un Numéro de Suivi",
    "UNIT"                  : "Sélectionner Unit",
    "VALUE"                 : "Sélectionner une valeur",
@@ -2170,6 +2195,14 @@
    "SAFETY_STOCK"          : "Stock de sécurité",
    "TITLE"                 : "Situation de stock"
    },
+"SUBSIDY" : {
+   "DETAILS"     : "",
+   "INFO"        : "Module de gestion des subventions",
+   "NEW_SUBSIDY" : "Nouvelle subvention",
+   "REGISTERED"  : "Subvention(s) enregistrée(s)",
+   "TITLE"       : "Subvention",
+   "UPDATE"      : "Mise à jour"
+   },
 "SUPPLIER": {
    "ADDR_1"           : "Adresse 1",
    "ADDR_2"           : "Adresse 2",
@@ -2318,7 +2351,9 @@
    "ADMIN"                     : "Admin",
    "ALL_TRANSACTIONS"          : "Toutes les Transactions",
    "BALANCE_MENSUELLE"         : "Rapport Balance Mensuelle",
+   "BALANCE_SHEET"             : "Feuille de Balance",
    "BENEFICIARY"               : "Bénéficiaire",
+   "BILAN"                     : "Bilan",
    "BUDGETING"                 : "Budget",
    "BUDGET_BY_ACCOUNT"         : "Budget par Compte",
    "CASH"                      : "Caisse Auxilliaire",
@@ -2346,6 +2381,7 @@
    "DISTRIBUTION_SERVICES"     : "Historique des distributions aux services",
    "EDIT_PATIENT"              : "Modifier Patient",
    "EMPLOYEE"                  : "Gestion des Employés",
+   "EMPLOYEE_STATE"            : "Etat Employé",
    "EMPLOYEE_STANDING"         : "Rapport des employés",
    "ENTERPRISE"                : "Entreprise",
    "EXCHANGE"                  : "Taux de change",
@@ -2358,6 +2394,7 @@
    "GENERAL_LEDGER"            : "Grand Livre",
    "GLOBAL_TRANSACTION"        : "Mouvement des comptes",
    "GRADE_EMPLOYERS"           : "Gestion des Grades",
+   "GRAND_LIVRE"               : "Grand Livre",
    "GRP_INVOICING"             : "Facturation des Conventions",
    "HOLLYDAY_MANAGEMENT"       : "Gestion des vacances",
    "HOSPITAL"                  : "Hôpital",
@@ -2404,14 +2441,17 @@
    "SALE_RECORDS"              : "Historique Ventes",
    "SERVICE"                   : "Gestion des Services",
    "SERVICE_EXPLOITATION"      : "Exploitation par Service",
+   "SERVICE_STATE"             : "Etat Service",
    "STOCK_DASHBOARD"           : "Tableau de bord du Stock",
    "STOCK_DISTRIBUTION"        : "Distribution Stock",
    "STOCK_MANAGEMENT"          : "Gestion de Stock",
    "STOCK_STATUS"              : "Situation du stock",
+   "SUBSIDY"                   : "Subventions",
    "SUPPORT"                   : "Prise en charge",   
    "SWAP_DEBITOR"              : "Changer Groupe Débiteur",
    "TAXES"                     : "Taxes",
    "TAXE_MANAGEMENT"           : "Gestion des taxes",
+   "TFR"                       : "Tableau de Formation des Résultats",
    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions par Compte",
    "UPDATE_STOCK"              : "Mettre à Jour les Stocks"
    },
