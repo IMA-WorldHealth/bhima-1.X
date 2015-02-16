@@ -387,7 +387,7 @@ function handleSales (id, user_id, done, caution) {
   .spread(function (rows, transId) {
 
     if (caution !== 0) {
-      var descript = 'CAD/' + reference.debitor_uuid + '/' + get.date();
+      var descript = 'CAUTION/' + reference.debitor_uuid + '/' + get.date();
       var transAmount = caution - reference.cost > 0 ? reference.cost : caution;
       queries.cautionDebiting =
         'INSERT INTO posting_journal '+
@@ -2454,7 +2454,7 @@ function handlePromesseCotisation (id, user_id, data, done) {
     " WHERE `paiement`.`uuid` = " + sanitize.escape(data.paiement_uuid) + ";";
 
     var date = util.toMysqlDate(get.date());
-    return q([get.origin('payroll'), get.period(get.date()), get.exchangeRate(date), db.exec(sql2)]);
+    return q([get.origin('cotisation_engagement'), get.period(get.date()), get.exchangeRate(date), db.exec(sql2)]);
   }
 
   function getDetails (originId, periodObject, store, res) {
@@ -2575,7 +2575,7 @@ function handlePromesseTax (id, user_id, data, done) {
     " WHERE `paiement`.`uuid` = " + sanitize.escape(data.paiement_uuid) + ";";
 
     var date = util.toMysqlDate(get.date());
-    return q([get.origin('payroll'), get.period(get.date()), get.exchangeRate(date), db.exec(sql2)]);
+    return q([get.origin('tax_engagement'), get.period(get.date()), get.exchangeRate(date), db.exec(sql2)]);
   }
 
   function getDetails (originId, periodObject, store, res) {

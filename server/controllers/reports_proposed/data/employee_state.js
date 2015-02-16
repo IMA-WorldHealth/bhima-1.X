@@ -38,7 +38,7 @@ exports.compile = function (options) {
     'sum(`aggregate`.`debit_equiv`) as debit FROM `employee` LEFT JOIN (SELECT `posting_journal`.`deb_cred_uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`debit_equiv`, ' +
     '`posting_journal`.`credit_equiv` FROM `posting_journal` ' +
     'JOIN `transaction_type` ON `transaction_type`.`id`= `posting_journal`.`origin_id` WHERE `posting_journal`.`deb_cred_uuid` IN (' + uuids.join(', ') + ') ' +
-    'AND `posting_journal`.`deb_cred_type`=\'C\' AND `transaction_type`.`service_txt` NOT IN (\'cotisation_paiement\',\'tax_payment\') ' +
+    'AND `posting_journal`.`deb_cred_type`=\'C\' AND `transaction_type`.`service_txt` NOT IN (\'cotisation_paiement\', \'tax_payment\', \'cotisation_engagement\',\'tax_engagement\') ' +
     'UNION ' +
     'SELECT `general_ledger`.`deb_cred_uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv` FROM `general_ledger` JOIN `transaction_type` ' +
     'ON `transaction_type`.`id`= `general_ledger`.`origin_id` WHERE `general_ledger`.`deb_cred_uuid` IN (' + uuids.join(', ') + ') AND `general_ledger`.`deb_cred_type`=\'C\' ' +
@@ -47,14 +47,14 @@ exports.compile = function (options) {
     return db.exec(sql);
   })
   .then(function (rows) {
-    console.log('le rows sont **** :', rows);
-  })
-  .then(function (accounts) {
-    context.data = selectedAccounts;
+    rows.forEach(function (item){
+      item.debit = numeral(item.debit).format(formatDollar);
+      item.credit = numeral(item.credit).format(formatDollar);
+    });
+    context.data = rows;
     deferred.resolve(context);
   })
   .catch(deferred.reject)
   .done();
-
   return deferred.promise;
 };
