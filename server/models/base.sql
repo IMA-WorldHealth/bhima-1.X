@@ -138,7 +138,8 @@ INSERT INTO `unit` VALUES
 (89,'Grand livre','TREE.GRAND_LIVRE','Grand livre report', 10, 0, '/partials/reports/grand_livre', '/reports/grand_livre/'),
 (90,'Employee State','TREE.EMPLOYEE_STATE','Employee State report', 10, 0, '/partials/reports/employee_state', '/reports/employee_state/'),
 (91,'Service state','TREE.SERVICE_STATE','Service state report', 10, 0, '/partials/reports/service_state', '/reports/service_state/'),
-(92,'Income expense report','TREE.INCOME_EXPENSE','Income expense report ', 10, 0, '/partials/reports/income_expense', '/reports/income_expense/');
+(92,'Income expense report','TREE.INCOME_EXPENSE','Income expense report ', 10, 0, '/partials/reports/income_expense', '/reports/income_expense/'),
+(93,'Prise en charge', 'TREE.SUPPORT', '', 5, 0, '/partials/support', '/support/');
 
 
 -- references language .json files
@@ -1824,7 +1825,7 @@ INSERT INTO `fiscal_year` (`enterprise_id`, `id`, `number_of_months`, `fiscal_ye
 
 INSERT INTO `period` VALUES (1,1,0,'2015-01-01','2015-01-01',0),(2,1,1,'2015-01-01','2015-01-31',0),(3,1,11,'2015-02-01','2015-02-28',0),(4,1,21,'2015-03-01','2015-03-31',0),(5,1,31,'2015-04-01','2015-04-30',0),(6,1,41,'2015-05-01','2015-05-31',0),(7,1,51,'2015-06-01','2015-06-30',0),(8,1,61,'2015-07-01','2015-07-31',0),(9,1,71,'2015-08-01','2015-08-31',0),(10,1,81,'2015-09-01','2015-09-30',0),(11,1,91,'2015-10-01','2015-10-31',0),(12,1,101,'2015-11-01','2015-11-30',0),(13,1,111,'2015-12-01','2015-12-31',0);
 
-INSERT INTO `transaction_type`  (`id`, `service_txt`) VALUES  (1,'cash'),(2,'sale'),(3,'purchase'),(4,'journal'),(5,'group_invoice'),(6,'credit_note'),(7,'caution'),(8,'pcash_convention'),(9,'autre'),(10,'pcash_transfert'),(11,'generic_income'),(12,'distribution'),(13,'loss'),(14,'payroll'),(15,'donation'),(16,'tax_payment'),(17,'cotisation_paiement'),(18,'generic_expense'),(19,'indirect_purchase'), (20, 'confirm_purchase'), (21, 'salary_advance');
+INSERT INTO `transaction_type`  (`id`, `service_txt`) VALUES  (1,'cash'),(2,'sale'),(3,'purchase'),(4,'journal'),(5,'group_invoice'),(6,'credit_note'),(7,'caution'),(8,'pcash_convention'),(9,'autre'),(10,'pcash_transfert'),(11,'generic_income'),(12,'distribution'),(13,'loss'),(14,'payroll'),(15,'donation'),(16,'tax_payment'),(17,'cotisation_paiement'),(18,'generic_expense'),(19,'indirect_purchase'), (20, 'confirm_purchase'), (21, 'salary_advance'), (22, 'employee_invoice'), (23, 'pcash_employee');
 
 INSERT INTO `price_list` VALUES (200,'61dcf7f0-b4a8-4f45-8eac-cf41e56dce2b','Malade hospitalisé','Interné'),(200,'71b5b0ad-bffd-4d92-bc20-1cf961a804b8','Reduction IMA',NULL),(200,'82865bba-3800-4cfc-bf0a-8087b3463608','Riduction IMA pour hospitalise',NULL),(200,'d3728cfb-61c5-46b0-9afd-48ba807f0fe0','Convention',NULL);
 

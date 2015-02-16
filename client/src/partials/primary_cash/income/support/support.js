@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('primaryCash.convention', [
+.controller('primaryCash.support', [
   '$scope',
   '$q',
   '$location',
@@ -108,17 +108,17 @@ angular.module('bhima.controllers')
       $scope.noEmpty = true;
     }
 
-    function initialiseConvention (selectedConvention) {
-      if(!selectedConvention) {
+    function initialiseEmployee (selectedEmployee) {
+      if(!selectedEmployee) {
         $translate('CONVENTION.NO_CONVENTION')
         .then(function (value) {
           return messenger.danger(value);
         });        
       }
-      $scope.selectedConvention = selectedConvention;
-      dependencies.situations = { query : '/ledgers/debitor_group/' + $scope.selectedConvention.uuid};
+      $scope.selectedEmployee = selectedEmployee;
+      dependencies.situations = { query : '/ledgers/employee_invoice/' + $scope.selectedEmployee.creditor_uuid};
       validate.process(dependencies, ['situations'])
-      .then(ready);
+      .then(ready); 
     }
 
     function pay () {
@@ -128,10 +128,11 @@ angular.module('bhima.controllers')
         type            : 'E',
         date            : util.sqlDate(new Date().toString()),
         currency_id     : $scope.selectedItem.currency_id,
-        account_id      : $scope.selectedConvention.account_id,
+        deb_cred_uuid   : $scope.selectedEmployee.creditor_uuid,
+        account_id      : $scope.selectedEmployee.account_id,
         cost            : $scope.data.payment,
         user_id         : $scope.model.cashier.data.id,
-        description     : ['COVP', $scope.selectedConvention.name, util.sqlDate(new Date().toString())].join('/'),
+        description     : ['EMPLOYE', $scope.selectedEmployee.name, util.sqlDate(new Date().toString())].join('/'),
         cash_box_id     : $scope.cashbox_id,
         origin_id       : $scope.model.pcash_module.data[0].id
       };
@@ -144,7 +145,7 @@ angular.module('bhima.controllers')
 
     function postToJournal (resu) {
       record_uuid = resu[0].config.data.data[0].primary_cash_uuid;
-      return connect.fetch('/journal/pcash_convention/' + record_uuid);
+      return connect.fetch('/journal/pcash_employee/' + record_uuid);
     }
 
     function writePay(record){
@@ -198,11 +199,11 @@ angular.module('bhima.controllers')
     }
 
     function handleSucces() {
-      $scope.selectedConvention = {};
+      $scope.selectedEmployee = {};
       $scope.data = {};
       $scope.noEmpty = false;
       if (record_uuid !== -1) {
-        $location.path('/invoice/pcash_convention/' + record_uuid);
+        $location.path('/invoice/pcash_employee/' + record_uuid);
       }
     }
 
@@ -242,7 +243,7 @@ angular.module('bhima.controllers')
       }     
     }
 
-    $scope.initialiseConvention = initialiseConvention;
+    $scope.initialiseEmployee = initialiseEmployee;
     $scope.pay = pay;
     $scope.setCashAccount = setCashAccount;
     $scope.check = check;
