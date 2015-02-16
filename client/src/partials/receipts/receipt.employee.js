@@ -14,15 +14,20 @@ angular.module('bhima.controllers')
           primary_cash: { columns: ['reference', 'cost', 'project_id', 'currency_id', 'date'] },
           primary_cash_item : {columns : ['debit', 'credit']},
           account : {columns : ['account_txt']},
+          employee : { columns: ['name', 'postnom', 'prenom', 'creditor_uuid'] },
           sale       : {columns : ['note']}
         },
-        join : ['primary_cash.account_id=account.id', 'primary_cash.uuid=primary_cash_item.primary_cash_uuid', 'sale.uuid=primary_cash_item.inv_po_id']
+        join : [
+          'primary_cash.account_id=account.id', 
+          'primary_cash.uuid=primary_cash_item.primary_cash_uuid', 
+          'sale.uuid=primary_cash_item.inv_po_id', 
+          'employee.creditor_uuid=primary_cash.deb_cred_uuid'
+        ]
       }
     };
 
     function buildInvoice (res) {
       model.employee = res.employee.data;
-      console.log(model.employee);
     }
 
   	appstate.register('receipts.commonData', function (commonData) {
