@@ -67,15 +67,16 @@ exports.listEmployees = function (req, res, next) {
     "`employee`.`id`, `employee`.`code` AS `code_employee`, `employee`.`prenom`, `employee`.`name`, " +
     "`employee`.`postnom`, `employee`.`sexe`, `employee`.`dob`, `employee`.`date_embauche`, `employee`.`service_id`, " +
     "`employee`.`nb_spouse`, `employee`.`nb_enfant`, `employee`.`grade_id`, `employee`.`locked`, `grade`.`text`, `grade`.`basic_salary`, " +
-    "`fonction`.`id` AS `fonction_id`, `fonction`.`fonction_txt`, " +
-    "`employee`.`phone`, `employee`.`email`, `employee`.`adresse`, `employee`.`bank`, `employee`.`bank_account`, `employee`.`daily_salary`, `employee`.`location_id`, " +
-    "`grade`.`code` AS `code_grade`, `debitor`.`uuid` as `debitor_uuid`, `debitor`.`text` AS `debitor_text`,`debitor`.`group_uuid` as `debitor_group_uuid`, " +
-    "`creditor`.`uuid` as `creditor_uuid`, `creditor`.`text` AS `creditor_text`, `creditor`.`group_uuid` as `creditor_group_uuid` " +
+    "`fonction`.`id` AS `fonction_id`, `fonction`.`fonction_txt`, " + 
+    "`employee`.`phone`, `employee`.`email`, `employee`.`adresse`, `employee`.`bank`, `employee`.`bank_account`, `employee`.`daily_salary`, `employee`.`location_id`, " +  
+    "`grade`.`code` AS `code_grade`, `debitor`.`uuid` as `debitor_uuid`, `debitor`.`text` AS `debitor_text`,`debitor`.`group_uuid` as `debitor_group_uuid`, " + 
+    "`creditor`.`uuid` as `creditor_uuid`, `creditor`.`text` AS `creditor_text`, `creditor`.`group_uuid` as `creditor_group_uuid`, `creditor_group`.`account_id` " +
     "FROM `employee` " +
     " JOIN `grade` ON `employee`.`grade_id` = `grade`.`uuid` " +
     " JOIN `fonction` ON `employee`.`fonction_id` = `fonction`.`id` " +
     " JOIN `debitor` ON `employee`.`debitor_uuid` = `debitor`.`uuid` " +
-    " JOIN `creditor` ON `employee`.`creditor_uuid` = `creditor`.`uuid` ";
+    " JOIN `creditor` ON `employee`.`creditor_uuid` = `creditor`.`uuid` " +
+    " JOIN `creditor_group` ON `creditor_group`.`uuid` = `creditor`.`group_uuid` ";
 
   db.exec(sql)
   .then(function (result) {
