@@ -451,6 +451,24 @@ function employeeStanding(params) {
   return defer.promise;
 }
 
+function cotisation_payment(params) {
+  params = querystring.parse(params);
+  var id = sanitize.escape(params.id),
+    sql;
+
+  sql =
+    'SELECT e.id, e.code, e.prenom, e.name, e.postnom, e.creditor_uuid, p.uuid as paiement_uuid, ' +
+    'p.currency_id, t.label, t.abbr, z.cotisation_id, z.value, z.posted ' +
+    'FROM employee e ' +
+    'JOIN paiement p ON e.id=p.employee_id ' +
+    'JOIN cotisation_paiement z ON z.paiement_uuid=p.uuid ' +
+    'JOIN cotisation t ON t.id=z.cotisation_id ' +
+    'WHERE p.paiement_period_id= ' + id +
+    ' ORDER BY e.name ASC, e.postnom ASC, e.prenom ASC';
+
+  return db.exec(sql);
+}
+
 function employeePaiement(params) {
   params = querystring.parse(params);
   var sql, id = sanitize.escape(params.id);
@@ -758,6 +776,7 @@ function generate(request, params, done) {
     'prices'                : priceReport,
     'stock_location'        : stockLocation,
     'stock_count'           : stockCount,
+    'cotisation_payment'    : cotisation_payment,
     'transactions'          : transactionsByAccount,
     'income_report'         : incomeReport,
     'expense_report'        : expenseReport,

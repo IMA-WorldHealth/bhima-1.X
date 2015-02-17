@@ -598,6 +598,10 @@
       controller : 'payroll_report',
       templateUrl : 'partials/reports/payroll_report/payroll_report.html'
     })
+    .when('/reports/cotisation_payment/', {
+      controller : 'cotisation_payment',
+      templateUrl : 'partials/reports/cotisation_payment/cotisation_payment.html'
+    })    
     .when('/reports/stock_status/', {
       controller : 'stock_status',
       templateUrl : 'partials/reports/stock_status/stock_status.html'
