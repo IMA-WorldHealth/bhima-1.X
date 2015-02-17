@@ -62,7 +62,8 @@ angular.module('bhima.controllers')
           'employee.debitor_uuid=debitor.uuid',
           'employee.creditor_uuid=creditor.uuid'
         ],
-        where : ['employee.locked<>1']
+        where : ['employee.locked<>1'],
+        orderby: ['employee.name','employee.postnom']
       }
     };
 
