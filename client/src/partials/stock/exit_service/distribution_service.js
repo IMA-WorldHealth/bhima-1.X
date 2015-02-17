@@ -166,6 +166,8 @@ angular.module('bhima.controllers')
         selectLot(distribution_ligne);
         configuration.rows[index] = distribution_ligne;
       }
+
+      getItemPrice(distribution_ligne.lots[0], index);
     }
 
     function getInventoryPrice (distribution_ligne) {
@@ -279,6 +281,7 @@ angular.module('bhima.controllers')
             date                : $scope.model.date,
             document_id         : $scope.model.uuid,
             tracking_number     : lot.tracking_number,
+            unit_price          : row.price,
             quantity            : qte
           };
 
@@ -309,6 +312,26 @@ angular.module('bhima.controllers')
         total = total + (item.price * item.quantity);
       });
       return total;
+    }
+
+    function getItemPrice (firstLot, index) {
+      if (!firstLot) { return; }
+
+      dependencies.itemPrice = {
+        query : {
+          tables : {
+            'stock' : { columns : ['purchase_order_uuid']},
+            'purchase_item' : { columns : ['quantity', 'unit_price']}
+          },
+          join : ['stock.inventory_uuid=purchase_item.inventory_uuid'],
+          where : ['stock.tracking_number=' + firstLot.tracking_number]
+        }
+      };
+
+      validate.refresh(dependencies, ['itemPrice'])
+      .then(function (data) {
+        configuration.rows[index].price = data.itemPrice.data[0].unit_price;
+      });
     }
 
 

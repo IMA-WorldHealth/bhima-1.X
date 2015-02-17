@@ -36,7 +36,7 @@ angular.module('bhima.controllers')
       'caution' : {
         url : '/partials/receipts/templates/receipt_caution.html'
       },
-      'transfer' : {
+      'pcash_transfert' : {
         url : '/partials/receipts/templates/receipt_transfer.html'
       },
       'pcash_convention' : {

@@ -5,8 +5,14 @@
   <div ng-if="!findAccount.valid">
     <h4><b>{{ "FIND.ACCOUNT.ENTER_ACCOUNT" | translate }}</b></h4>
   </div>
+  <div ng-if="findAccount.valid">
+    <h4><b>{{ "FIND.ACCOUNT.ACCOUNT" | translate }}</b></h4>
+  </div>
   <div >
     <div class="hidden-print input-group">
+      <span class="input-group-addon">
+        <span class="glyphicon glyphicon-folder-open"></span>
+      </span>
       <input class="form-bhima" type="text"
              ng-model="accountId"
              ng-readonly="findAccount.valid"
@@ -20,8 +26,10 @@
                 ng-disabled="!findAccount.valid"
                 class="btn btn-sm btn-default square"><span class="glyphicon glyphicon-refresh"></span></button>
       </span>
-      <span class="input-group-btn">
-        <button ng-click="findAccount.submit()" ng-disabled="!findAccount.valid" class="btn btn-sm btn-default square">{{ "FORM.SUBMIT" | translate }}</button>
+      <span class="input-group-btn" ng-if="findAccount.enableSubmit">
+        <button ng-click="findAccount.submit()" 
+		ng-disabled="!findAccount.valid" 
+		class="btn btn-sm btn-default square">{{ "FORM.SUBMIT" | translate }}</button>
       </span>
     </div>
   </div>
