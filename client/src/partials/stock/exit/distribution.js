@@ -204,23 +204,42 @@ angular.module('bhima.controllers')
       return connect.req(query);
     }
 
+    function getLotPurchasePrice (tracking_number) {
+      var query = {
+        tables : {
+          stock : { columns : ['lot_number'] },
+          purchase : { columns : ['cost'] },
+          purchase_item : { columns : ['unit_price'] }
+        },
+        join : [
+          'stock.purchase_order_uuid=purchase.uuid',
+          'purchase.uuid=purchase_item.purchase_uuid',
+          'stock.inventory_uuid=purchase_item.inventory_uuid'
+        ],
+        where : ['stock.tracking_number=' + tracking_number]
+      };
+
+      return connect.req(query);
+    }
+
     function submitConsumption() {
       var submitItem = [];
       var consumption_patients = [];
       if (!session.lotSelectionSuccess) { return messenger.danger('Cannot verify lot allocation'); }
-      session.sale.details.forEach(function (consumptionItem) {
 
+      session.sale.details.forEach(function (consumptionItem) {
         if (!angular.isDefined(consumptionItem.recomendedLots)) { return; }
 
         consumptionItem.recomendedLots.forEach(function (lot) {
           var consumption_uuid = uuid();
+
           submitItem.push({
             uuid : consumption_uuid,
             depot_uuid : session.depot,
             date : util.convertToMysqlDate(new Date()),
             document_id : consumptionItem.sale_uuid,
             tracking_number : lot.details.tracking_number,
-            unit_price : consumptionItem.purchase_price,
+            unit_price : null,
             quantity : lot.quantity
           });
 
@@ -230,9 +249,32 @@ angular.module('bhima.controllers')
             sale_uuid : session.sale.inv_po_id,
             patient_uuid : session.patient.uuid
           });
+
         });
       });
-      connect.basicPut('consumption', submitItem)
+
+      function updateLotPrice () {
+        var def = $q.defer(), 
+            counter = 0;
+
+        submitItem.forEach(function (item) {
+          getLotPurchasePrice(item.tracking_number)
+          .then(function (price) {
+            item.unit_price = price.data[0].unit_price;
+            counter++;
+            if (counter === submitItem.length) {
+              def.resolve(submitItem);
+            }
+          });
+        });
+
+        return def.promise;
+      }
+      
+      updateLotPrice()
+      .then(function (resultSubmitItem) {
+        return connect.basicPut('consumption', resultSubmitItem);
+      })
       .then(function (){
         return connect.basicPut('consumption_patient', consumption_patients);
       })
