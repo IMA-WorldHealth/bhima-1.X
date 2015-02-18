@@ -469,6 +469,34 @@ function cotisation_payment(params) {
   return db.exec(sql);
 }
 
+function taxes_payment(params) {
+  params = querystring.parse(params);
+  
+  console.log('+++++++++++++++++++++++++++++++');
+  console.log(params);
+  console.log('+++++++++++++++++++++++++++++++'); 
+
+  var id = sanitize.escape(params.id),
+      tax_id = sanitize.escape(params.tax_id),
+    sql;
+
+  sql =
+    'SELECT e.id, e.code, e.prenom, e.name, e.postnom, e.creditor_uuid, p.uuid as paiement_uuid, ' +
+    'p.currency_id, t.label, t.abbr, z.tax_id, z.value, z.posted ' +
+    'FROM employee e ' +
+    'JOIN paiement p ON e.id=p.employee_id ' +
+    'JOIN tax_paiement z ON z.paiement_uuid=p.uuid ' +
+    'JOIN tax t ON t.id=z.tax_id ' +
+    'WHERE p.paiement_period_id= ' + id + ' AND z.tax_id=' + tax_id +
+    ' ORDER BY e.name ASC, e.postnom ASC, e.prenom ASC';
+
+console.log('+++++++++++++++++++++++++++++++++');
+console.log(sql);
+console.log('+++++++++++++++++++++++++++++++++'); 
+
+  return db.exec(sql);
+}
+
 function employeePaiement(params) {
   params = querystring.parse(params);
   var sql, id = sanitize.escape(params.id);
@@ -481,7 +509,8 @@ function employeePaiement(params) {
     'JOIN currency ON currency.id = paiement.currency_id ' +
     'LEFT JOIN partial_paiement ON partial_paiement.paiement_uuid = paiement.uuid ' +
     'WHERE paiement.paiement_period_id = ' + id +
-    'GROUP BY partial_paiement.paiement_uuid, paiement.employee_id';
+    'GROUP BY partial_paiement.paiement_uuid, paiement.employee_id ' +
+    'ORDER BY employee.name ASC, employee.postnom ASC, employee.prenom ASC';
  
   return db.exec(sql);
 }
@@ -777,6 +806,7 @@ function generate(request, params, done) {
     'stock_location'        : stockLocation,
     'stock_count'           : stockCount,
     'cotisation_payment'    : cotisation_payment,
+    'taxes_payment'         : taxes_payment,
     'transactions'          : transactionsByAccount,
     'income_report'         : incomeReport,
     'expense_report'        : expenseReport,

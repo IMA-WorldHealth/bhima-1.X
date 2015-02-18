@@ -4,7 +4,7 @@
       <div class="col-xs-12">
         <div class="panel panel-default">
           <div class="panel-heading">
-            <b> {{ "REPORT.CONFIGURE_REPORT" | translate }} : </b> {{ "REPORT.REPORT_COTISATION" | translate }}
+            <b> {{ "REPORT.CONFIGURE_REPORT" | translate }} : </b> {{ "REPORT.REPORT_TAXES" | translate }}
           </div>
 
           <div class="panel-body">
@@ -20,8 +20,24 @@
                     <span class="input-group-addon">
                       <span class="glyphicon glyphicon-folder-open"></span>
                     </span>  
-                    <select class="form-bhima" ng-model="session.period_id">
+                    <select class="form-bhima" required ng-click="selecTaxes()" ng-model="session.period_id">
                       <option ng-repeat="getPeriod in getPeriods.data" ng-value="getPeriod.id">{{getPeriod.label}} :: {{getPeriod.dateFrom | date }} - {{getPeriod.dateTo | date }}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ "SELECT.TAXES" | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-briefcase"></span>
+                    </span>  
+                    <select class="form-bhima" required ng-model="session.tax_id">
+                      <option ng-repeat="tax in taxes_period" ng-value="tax.id"> [ {{tax.abbr}} ] {{ tax.label }}</option>
                     </select>
                   </div>
                 </div>
@@ -41,7 +57,7 @@
   </div>
   <div ng-switch-when="generate">  
     <header>
-      {{ "REPORT.REPORT_COTISATION" | translate }} <small> : {{period.label}} :: {{period.dateFrom | date }} - {{period.dateTo | date }} </small>
+      {{ "REPORT.REPORT_TAXES" | translate }} :: {{taxes.label}} <small> : {{period.label}} :: {{period.dateFrom | date }} - {{period.dateTo | date }} </small>
     </header>
 
     <nav>
@@ -67,7 +83,7 @@
         <div class="reportFrame">
           <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
 
-          <h4 class="visible-print">{{ "REPORT.REPORT_COTISATION" | translate }} <small> {{period.label}} :: {{period.dateFrom | date }} - {{period.dateTo | date }} </small>
+          <h4 class="visible-print">{{ "REPORT.REPORT_TAXES" | translate }} :: {{taxes.label}} <small> : {{period.label}} :: {{period.dateFrom | date }} - {{period.dateTo | date }} </small>
           </h4>
           <table id="patientTable" class="reportTable">
             <thead>
@@ -76,7 +92,6 @@
                 <th>{{ "COLUMNS.CODE" | translate }}</th>
                 <th>{{ "COLUMNS.NAME" | translate }}</th>
                 <th>{{ "COLUMNS.FIRST_NAME" | translate }}</th>
-                <th>{{ "COLUMNS.LABEL" | translate }}</th>
                 <th>{{ "COLUMNS.AMOUNT_PAYABLE" | translate }}</th>
                 <th>{{ "COLUMNS.AMOUNT_PAID" | translate }}</th>
               </tr>
@@ -87,7 +102,6 @@
                 <td> {{ report.code }} </td>
                 <td> {{ report.name }}  {{ report.postnom }} </td>
                 <td> {{ report.prenom }} </td>  
-                <td> {{ report.label }} </td>
                 <td><span ng-bind-html="report.value | intlcurrency:report.currency_id"></span></td>
                 <td><span ng-bind-html="report.amount_paid | intlcurrency:report.currency_id"></td>
               </tr>

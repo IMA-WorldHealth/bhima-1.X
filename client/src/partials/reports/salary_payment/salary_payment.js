@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('cotisation_payment', [
+.controller('salary_payment', [
   '$scope',
   '$translate',
   '$http',
@@ -57,28 +57,36 @@ angular.module('bhima.controllers')
         var period = $scope.period =model.periods.data[0];
       });
 
-      connect.fetch('/reports/cotisation_payment/?id=' + record.period_id)
+      connect.fetch('/reports/employeePaiement/?id=' + record.period_id)
       .then(function (data) {
         $scope.Reports = data;
-        
         data.forEach(function (item) {
-          var itemCurrency = 0;
+          var net_salaryCurrency = 0,
+            amountCurrency = 0,
+            balanceCurrency = 0;
+          
+          item.balance = item.net_salary - item.amount;
           if($scope.enterprise.currency_id !== item.currency_id){
-            itemCurrency = item.value / exchange.rate(item.value, item.currency_id,new Date());  
+            net_salaryCurrency = item.net_salary / exchange.rate(item.net_salary, item.currency_id,new Date());
+            amountCurrency = item.amount / exchange.rate(item.amount, item.currency_id,new Date());    
           } else {
-            itemCurrency = item.value;
+            net_salaryCurrency = item.net_salary;
+            amountCurrency = item.amount;   
           }
 
-          $scope.total += itemCurrency;
+          $scope.total += net_salaryCurrency;
 
-
-          if (!item.posted){
-            item.amount_paid = 0;
-            $scope.sum_due += itemCurrency;          
+          if (item.is_paid){
+            item.balance = 0;
+            item.amount = item.net_salary;
+            $scope.sum_paid += net_salaryCurrency;
+            $scope.sum_due += 0;          
           } else {
-            item.amount_paid = item.value;
-            $scope.sum_paid += itemCurrency;
-          }          
+            balanceCurrency = net_salaryCurrency - amountCurrency;
+            $scope.sum_paid += amountCurrency;
+            $scope.sum_due += balanceCurrency;
+          }
+                      
         });
       });
       $scope.state = 'generate';
@@ -108,20 +116,25 @@ angular.module('bhima.controllers')
       var sumTotal = 0,
         sumDue = 0,
         sumPaie = 0,
-        item = 0;
+        itemNet = 0,
+        itemPay = 0;
 
       $scope.Reports.forEach(function (payment) {
-        if($scope.enterprise.currency_id !== item.currency_id){
-          item = payment.value / exchange.rate(payment.value, payment.currency_id,new Date());  
+        if($scope.enterprise.currency_id !== payment.currency_id){
+          itemNet = payment.net_salary / exchange.rate(payment.net_salary, payment.currency_id,new Date());
+          itemPay = payment.amount / exchange.rate(payment.amount, payment.currency_id,new Date());    
         } else {
-          item = payment.value;
+          itemNet = payment.net_salary;
+          itemPay = payment.amount;   
         }
-        sumTotal += item;
-        if (!payment.posted){
-          sumDue += item;          
+        sumTotal += itemNet;  
+        if (payment.is_paid){
+          sumPaie += itemPay;
+          sumDue += 0;          
         } else {
-          sumPaie += item;
-        }          
+          $scope.sum_paid += itemPay;
+          sumDue += itemNet - itemPay;
+        }
       });
 
       if($scope.enterprise.currency_id !== session.currency){
@@ -134,7 +147,7 @@ angular.module('bhima.controllers')
         $scope.sum_paid = sumPaie;  
       }  
     }
-
+ 
     $scope.convert = convert;
     $scope.reset = reset;
     function generateReference () {
