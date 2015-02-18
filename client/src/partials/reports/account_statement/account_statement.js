@@ -38,7 +38,6 @@ angular.module('bhima.controllers')
     };
 
     appstate.register('project', function (project) {
-      console.log('For the project',project);
       $scope.project = project;
       validate.process(dependencies)
       .then(init, handleError);
@@ -52,7 +51,6 @@ angular.module('bhima.controllers')
     // Define the callbacks for the findAccount dialog
     function submitAccount(account) {
       $scope.state = 'generate'; 
-      console.log('Tozali Awa na Barcelano pona kolokota');
 
       fetchReport(account.id);
     }

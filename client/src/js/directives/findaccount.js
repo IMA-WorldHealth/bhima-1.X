@@ -8,27 +8,33 @@ angular.module('bhima.directives')
       var dependencies = {},
           searchCallback = null,
           resetCallback = null,
-          submitCallback = scope[attrs.onSubmit],
-          selectedAccount = null;
+          selectedAccount = null,
+          submitCallback = scope[attrs.onSubmit];
 
       if (!submitCallback) { throw new Error('Account search account directive must implement onSubmit callback function'); }
+
+      scope.findAccount = {
+	valid : null,
+	enableReset : false,
+	enableSubmit : true
+	};
 
       // Get optional callback functions
       if ('onSearchComplete' in attrs) {
 	searchCallback = scope[attrs.onSearchComplete];
 	}
       if ('onReset' in attrs) {
-	resetCallback = scope[attrs.getReset];
+	resetCallback = scope[attrs.onReset];
 	}
-
-      scope.findAccount = {
-	valid : null,
-	enableReset : false
-	};
 
       // See if the reset button should be shown
       if ('enableReset' in attrs) {
 	scope.findAccount.enableReset = true;
+	}
+
+      // See if the submit button should be shown
+      if ('hideSubmit' in attrs) {
+	scope.findAccount.enableSubmit = false;
 	}
 
       // Define the database query
