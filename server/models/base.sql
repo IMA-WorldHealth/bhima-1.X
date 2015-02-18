@@ -142,8 +142,7 @@ INSERT INTO `unit` VALUES
 (93,'Prise en charge', 'TREE.SUPPORT', '', 5, 0, '/partials/support', '/support/'),
 (94,'Report salary payment','TREE.REPORT_SALARY','Report salary payment', 10, 0, '/partials/reports/salary_payment', '/reports/salary_payment/'),
 (95,'Report Cotisations payment','TREE.REPORT_COTISATION','Report Cotisation payment', 10, 0, '/partials/reports/cotisation_payment', '/reports/cotisation_payment/'),
-(96,'Report Taxes payment','TREE.REPORT_TAXES','Report taxes payment', 10, 0, '/partials/reports/taxes_payment', '/reports/taxes_payment/'),
-(97,'Report Entreprise taxes payment','TREE.REPORT_ENTREPRISE_TAXES','Report Entreprise taxes payment', 10, 0, '/partials/reports/entreprises_taxes_payment', '/reports/entreprises_taxes_payment/');
+(96,'Report Taxes payment','TREE.REPORT_TAXES','Report taxes payment', 10, 0, '/partials/reports/taxes_payment', '/reports/taxes_payment/');
 
 
 

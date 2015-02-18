@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('cotisation_payment', [
+.controller('taxes_payment', [
   '$scope',
   '$translate',
   '$http',
@@ -52,12 +52,26 @@ angular.module('bhima.controllers')
           where : ['paiement_period.id=' + record.period_id]
         }
       };
-      validate.process(dependencies, ['periods'])
+
+      dependencies.taxes = {
+        query : {
+          identifier : 'id',
+          tables : {
+            'tax' : { 
+              columns : ['id', 'label', 'abbr', 'is_employee']
+            }
+          },
+          where : ['tax.id=' + record.tax_id]
+        }
+      };
+
+      validate.process(dependencies, ['periods', 'taxes'])
       .then(function (model) {
         var period = $scope.period =model.periods.data[0];
+        var taxes = $scope.taxes =model.taxes.data[0];
       });
 
-      connect.fetch('/reports/cotisation_payment/?id=' + record.period_id)
+      connect.fetch('/reports/taxes_payment/?id=' + record.period_id + '&tax_id=' + record.tax_id)
       .then(function (data) {
         $scope.Reports = data;
         
@@ -99,9 +113,40 @@ angular.module('bhima.controllers')
       .then(startup);
     });
 
-   function reconfigure () {
+    function reconfigure () {
       $scope.state = null;
       session.period_id = null;
+    }
+
+    function selecTaxes(){
+      if(session.period_id){        
+        session.tax_id = null;
+
+        dependencies.taxes_period = {
+          query : {
+            tables : {
+              tax : {
+                columns : [
+                  'id', 'label', 'abbr', 'is_employee'
+                ]
+              },
+              config_tax_item : { columns : ['config_tax_id', 'tax_id']},
+              config_tax : { columns : ['id::config_tax', 'label::config_label']},
+              paiement_period : { columns : ['id::period_id','config_tax_id::tax_period']}
+            },
+            join : ['config_tax_item.tax_id=tax.id',
+              'config_tax.id=config_tax_item.config_tax_id',
+              'paiement_period.config_tax_id=config_tax.id'
+            ],
+            where : ['paiement_period.id=' + session.period_id ]
+          }
+        };
+        validate.process(dependencies, ['taxes_period'])
+        .then(function (model) {
+          var taxes_period = $scope.taxes_period = model.taxes_period.data;
+        });        
+
+      }
     }
 
     function convert () {
@@ -137,6 +182,7 @@ angular.module('bhima.controllers')
 
     $scope.convert = convert;
     $scope.reset = reset;
+    $scope.selecTaxes = selecTaxes;
     function generateReference () {
       window.data = $scope.getPeriods.data;
       var max = Math.max.apply(Math.max, $scope.getPeriods.data.map(function (o) { return o.reference; }));
