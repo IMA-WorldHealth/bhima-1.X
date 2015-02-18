@@ -76,7 +76,8 @@ exports.listEmployees = function (req, res, next) {
     " JOIN `fonction` ON `employee`.`fonction_id` = `fonction`.`id` " +
     " JOIN `debitor` ON `employee`.`debitor_uuid` = `debitor`.`uuid` " +
     " JOIN `creditor` ON `employee`.`creditor_uuid` = `creditor`.`uuid` " +
-    " JOIN `creditor_group` ON `creditor_group`.`uuid` = `creditor`.`group_uuid` ";
+    " JOIN `creditor_group` ON `creditor_group`.`uuid` = `creditor`.`group_uuid` " +
+    " ORDER BY employee.name ASC, employee.postnom ASC, employee.prenom ASC";
 
   db.exec(sql)
   .then(function (result) {
@@ -1337,7 +1338,8 @@ exports.listPaymentByEmployee = function (req, res, next) {
           + " JOIN paiement p ON e.id=p.employee_id "
           + " JOIN tax_paiement z ON z.paiement_uuid=p.uuid "
           + " JOIN tax t ON t.id=z.tax_id "
-          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.id) + " AND t.is_employee=1 ";
+          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.id) + " AND t.is_employee=1 "
+          + " ORDER BY e.name ASC, e.postnom ASC, e.prenom ASC";
 
   db.exec(sql)
   .then(function (result) {
@@ -1365,7 +1367,8 @@ exports.listPaymentByEnterprise = function (req, res, next) {
           + " JOIN paiement p ON e.id=p.employee_id "
           + " JOIN tax_paiement z ON z.paiement_uuid=p.uuid "
           + " JOIN tax t ON t.id=z.tax_id "
-          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.employee_id) + " AND t.is_employee=0";
+          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.employee_id) + " AND t.is_employee=0 "
+          + " ORDER BY e.name ASC, e.postnom ASC, e.prenom ASC";
 
   db.exec(sql)
   .then(function (result) {
@@ -1463,7 +1466,7 @@ exports.listEmployeeCotisationPayments = function (req, res, next) {
           + " JOIN paiement p ON e.id=p.employee_id "
           + " JOIN cotisation_paiement z ON z.paiement_uuid=p.uuid "
           + " JOIN cotisation t ON t.id=z.cotisation_id "
-          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.id);
+          + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.id) + " ORDER BY e.name ASC, e.postnom ASC, e.prenom ASC";
 
   db.exec(sql)
   .then(function (result) {
