@@ -471,10 +471,6 @@ function cotisation_payment(params) {
 
 function taxes_payment(params) {
   params = querystring.parse(params);
-  
-  console.log('+++++++++++++++++++++++++++++++');
-  console.log(params);
-  console.log('+++++++++++++++++++++++++++++++'); 
 
   var id = sanitize.escape(params.id),
       tax_id = sanitize.escape(params.tax_id),
@@ -489,11 +485,6 @@ function taxes_payment(params) {
     'JOIN tax t ON t.id=z.tax_id ' +
     'WHERE p.paiement_period_id= ' + id + ' AND z.tax_id=' + tax_id +
     ' ORDER BY e.name ASC, e.postnom ASC, e.prenom ASC';
-
-console.log('+++++++++++++++++++++++++++++++++');
-console.log(sql);
-console.log('+++++++++++++++++++++++++++++++++'); 
-
   return db.exec(sql);
 }
 
