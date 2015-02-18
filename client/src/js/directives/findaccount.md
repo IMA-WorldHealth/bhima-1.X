@@ -14,6 +14,16 @@ The required attributes are:
     an account is selected.
 
 Optional attributes:
+  
+  * `hide-submit` tells the directive to hide the findAccount
+    directive submit button.  The page will need to provide an
+    [Submit] button elsewhere on the page.  Note that the page
+    should still call the findAccount.submit() function when the
+    account is to be processed (to pass in the account ID to the
+    users 'onSubmit' function and clear the form).  Add it as an
+    attribute like this:
+
+       hide-submit
 
   * `selectAccount` is an optional callback function that will be
     called by the *findAccount* directive when an account is

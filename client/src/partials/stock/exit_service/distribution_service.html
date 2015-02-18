@@ -109,7 +109,13 @@
                         }"
                       class="glyphicon"></span>
                     </span>
-                    <input class="form-bhima" ng-disabled="!row.code" ng-model="row.quantity" type="number" min="0" ng-change="handleChange(row, $index)" required>
+                    <input 
+                    class="form-bhima" 
+                    ng-disabled="!row.code" 
+                    ng-model="row.quantity" 
+                    type="number" 
+                    min="0" 
+                    ng-change="handleChange(row, $index)" required>
                 </div>
               </td>
               <td width="35%">
@@ -146,7 +152,11 @@
                 </div>
               </td>
               <td>
-                {{row.price | currency}}
+                <input
+                  class="form-invoice"
+                  type="text"
+                  ng-model="row.price"
+                >
               </td>
 
               <td>

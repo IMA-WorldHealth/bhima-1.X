@@ -10,17 +10,7 @@
           <div class="panel-body">
 
               <div class="form-group">
-                <!-- DIRECTIVE GET ALREADY LABEL
-                <label class="control-label required">
-                  {{ 'SELECT.ACCOUNT' | translate }}
-                </label>
-                <div class="input-group">
-                  <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-folder-open"></span>
-                  </span>
-                </div>
-                -->
-                <div find-account on-submit="submitAccount" on-reset="resetAccountSearch" enable-reset></div>
+                <div find-account on-submit="submitAccount" hide-submit on-reset="resetAccountSearch" enable-reset></div>
               </div>
 
               <div class="form-group">

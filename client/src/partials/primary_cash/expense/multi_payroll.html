@@ -60,7 +60,7 @@
 
         <div ng-repeat-start="row in session.rows" class="panel panel-primary">
           <div ng-click="row.visible=!row.visible" class="panel-heading">
-            {{row.emp.prenom}} {{row.emp.name}} {{row.emp.postnom}}
+            {{row.emp.name}} {{row.emp.postnom}} {{row.emp.prenom}}
             <div class="pull-right">
               <span  class="glyphicon" ng-class="{'glyphicon-eye-close': !row.visible, 'glyphicon-eye-open': row.visible}"></span>
             </div>
