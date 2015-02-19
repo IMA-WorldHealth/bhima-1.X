@@ -93,11 +93,11 @@
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="emp in session.partialSalary | orderBy : 'code' | filter : search">
+                <tr ng-repeat="emp in session.partialSalary |  filter : search">
                   <td>
-                    <span ng-show="emp.prenom">{{ emp.prenom }}, </span> 
-                    <span ng-show="emp.name">{{ emp.name }}</span> 
-                    <span ng-show="emp.postnom"> - {{ emp.postnom }}</span>
+                    <span ng-show="emp.prenom">{{ emp.name }} </span> 
+                    <span ng-show="emp.name">{{ emp.postnom }},</span> 
+                    <span ng-show="emp.postnom"> - {{ emp.prenom }}</span>
                     <strong ng-show="emp.code"> ({{ emp.code }})</strong>
                   </td>
                   <td><span ng-bind-html="emp.net_before_tax | intlcurrency:emp.currency_id"></span></td>
