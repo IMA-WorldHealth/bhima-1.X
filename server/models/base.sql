@@ -139,7 +139,11 @@ INSERT INTO `unit` VALUES
 (90,'Employee State','TREE.EMPLOYEE_STATE','Employee State report', 10, 0, '/partials/reports/employee_state', '/reports/employee_state/'),
 (91,'Service state','TREE.SERVICE_STATE','Service state report', 10, 0, '/partials/reports/service_state', '/reports/service_state/'),
 (92,'Income expense report','TREE.INCOME_EXPENSE','Income expense report ', 10, 0, '/partials/reports/income_expense', '/reports/income_expense/'),
-(93,'Prise en charge', 'TREE.SUPPORT', '', 5, 0, '/partials/support', '/support/');
+(93,'Prise en charge', 'TREE.SUPPORT', '', 5, 0, '/partials/support', '/support/'),
+(94,'Report salary payment','TREE.REPORT_SALARY','Report salary payment', 10, 0, '/partials/reports/salary_payment', '/reports/salary_payment/'),
+(95,'Report Cotisations payment','TREE.REPORT_COTISATION','Report Cotisation payment', 10, 0, '/partials/reports/cotisation_payment', '/reports/cotisation_payment/'),
+(96,'Report Taxes payment','TREE.REPORT_TAXES','Report taxes payment', 10, 0, '/partials/reports/taxes_payment', '/reports/taxes_payment/');
+
 
 
 -- references language .json files
