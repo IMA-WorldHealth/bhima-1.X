@@ -165,6 +165,9 @@
               </tr>
             </tbody>
           </table>
+          <h6 class="visible-print">
+            {{ "PRIMARY_CASH.REPORT.INCOME.TOTAL_INCOME" | translate }} : <b ng-bind-html="session.sum_debit | intlcurrency:session.currency"></b>
+          </h6>          
         </div>
       </div>
     </div>
@@ -180,7 +183,7 @@
 
           <td style="width:30%;">
             <span style="margin-right: 10px;">
-              <span class="glyphicon glyphicon-money" style="color: #428bca"></span> Total Recette(s) : <b ng-bind-html="session.sum_debit | intlcurrency:session.currency"></b>
+              <span class="glyphicon glyphicon-money" style="color: #428bca"></span>  {{ "PRIMARY_CASH.REPORT.INCOME.TOTAL_INCOME" | translate }} : <b ng-bind-html="session.sum_debit | intlcurrency:session.currency"></b>
             </span>
           </td>
 

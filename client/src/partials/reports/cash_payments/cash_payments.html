@@ -142,7 +142,7 @@
                 <td> {{ payment.description }} </td>
                 <td> {{ payment.date | date }} </td>
               </tr>
-              <tr ng-if="!session.model.records.data.length">
+              <tr ng-if="!payments.length">
                 <td colspan="7">
                   <span class="glyphicon glyphicon-stats"></span>
                   {{ "PRIMARY_CASH.REPORT.INCOME.EMPTY_REPORT" | translate }}
@@ -150,6 +150,9 @@
               </tr>
             </tbody>
           </table>
+          <h6 class="visible-print">
+            {{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: <b ng-bind-html="session.sum | intlcurrency:session.currency"></b>  
+          </h6>          
         </div>
       </div>
     </div>
