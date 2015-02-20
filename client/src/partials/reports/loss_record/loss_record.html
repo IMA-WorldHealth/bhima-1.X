@@ -153,6 +153,9 @@
               <tr ng-repeat-end></tr>
             </tbody>
           </table>
+          <h6 class="visible-print">
+            {{ 'STOCK.ENTRY.NUM_ITEMS' | translate }}: <b>{{total.loss}}</b>  | {{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: <b>{{total.loss_amount | currency}}</b>
+          </h6>            
         </div>        
       </div>
     </div> 

@@ -1687,8 +1687,9 @@
          "TOTAL_EXPENSE" : "Total Expenses"
          },
       "INCOME": {
-         "EMPTY_REPORT" : "No record found !",
-         "TITLE"        : "Incomes Reports"
+         "EMPTY_REPORT"  : "No record found !",
+         "TITLE"         : "Incomes Reports",
+         "TOTAL_INCOME"  : "Total incomes"
          }
       },
    "SELECT_CASHBOX"   : "Select a Cash box",

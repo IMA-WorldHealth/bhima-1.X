@@ -103,6 +103,9 @@
               </tr>
             </tbody>
           </table>
+          <h6 class="visible-print">
+            {{ 'OPERATING_ACCOUNT.TOTAL_CHARGE' | translate }}: <b ng-bind-html=" debitTotal | intlcurrency:session.currency"></b> | {{ 'OPERATING_ACCOUNT.TOTAL_PROFIT' | translate }}: <b ng-bind-html=" creditTotal | intlcurrency:session.currency"></b> | {{ 'COLUMNS.RESULT' | translate }} : <b ng-bind-html=" Result | intlcurrency:session.currency"></b>
+          </h6>
         </div>
       </div>
     </div>
