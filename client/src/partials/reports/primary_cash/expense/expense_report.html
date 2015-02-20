@@ -133,6 +133,9 @@
               </tr>
             </tbody>
           </table>
+          <h6 class="visible-print">
+            {{ "PRIMARY_CASH.REPORT.EXPENSE.TOTAL_EXPENSE" | translate }} : <b ng-bind-html="session.sum_credit | intlcurrency:session.currency"></b>  
+          </h6>          
         </div>
       </div>
     </div>

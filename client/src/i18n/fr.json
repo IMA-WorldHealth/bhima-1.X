@@ -1684,11 +1684,12 @@
       "EXPENSE": {
          "EMPTY_REPORT"  : "Aucun enregistrement trouvé !",
          "TITLE"         : "Rapport des Dépenses",
-         "TOTAL_EXPENSE" : "Total dépenses"
+         "TOTAL_EXPENSE" : "Total des dépenses"
          },
       "INCOME": {
-         "EMPTY_REPORT" : "Aucun enregistrement trouvé !",
-         "TITLE"        : "Rapport des Recettes"
+         "EMPTY_REPORT"  : "Aucun enregistrement trouvé !",
+         "TITLE"         : "Rapport des Recettes",
+         "TOTAL_INCOME"  : "Total des Recettes"
          }
       },
    "SELECT_CASHBOX"   : "Sélectionner une Caisse",
