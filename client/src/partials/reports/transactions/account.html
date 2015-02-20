@@ -115,6 +115,9 @@
               </tr>
             </tfoot>
           </table>
+          <h6 class="visible-print">
+            {{ 'COLUMNS.TOTAL_DEBIT' | translate }}: <b ng-bind-html=" session.sum_debit | intlcurrency:session.currency"></b> | {{ 'COLUMNS.TOTAL_CREDIT' | translate }}: <b ng-bind-html=" session.sum_credit | intlcurrency:session.currency"></b> |  
+          </h6>          
         </div>
       </div>
     </div>
@@ -148,4 +151,5 @@
         </tbody>
       </table>
     </footer>
-</div>  
+  </div>  
+</div>

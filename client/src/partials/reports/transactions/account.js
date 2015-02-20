@@ -45,6 +45,13 @@ angular.module('bhima.controllers')
       angular.extend($scope, models);
     }
 
+    appstate.register('enterprise', function (enterprise) {
+      $scope.enterprise = enterprise;
+      session.currency = $scope.enterprise.currency_id;
+      validate.process(dependencies)
+      .then(startup);
+    });
+
     $scope.search = function search() {
       $scope.state = 'generate';
       if (!session.account || !session.limit) { return; }
