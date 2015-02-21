@@ -652,6 +652,14 @@
       controller : 'configureEmployeeState',
       templateUrl : 'partials/reports_proposed/employee_state/employee_state.html'
     })
+    .when('/home', {
+      controller : 'home',
+      templateUrl : 'partials/home/home.html'
+    })
+    .when('/', {
+      controller : 'home',
+      templateUrl : 'partials/home/home.html'
+    })
     .otherwise('/');
   }
 
