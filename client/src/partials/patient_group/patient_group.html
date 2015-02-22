@@ -3,9 +3,18 @@
 </header>
 
 <nav>
-  <button ng-click="newGroup()" class="btn btn-sm btn-default pull-right">
-    <i class="glyphicon glyphicon-plus-sign"></i> {{ "PATIENT_GRP.NEW" | translate }}
-  </button>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "PATIENT_GRP.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right">
+    <button ng-click="newGroup()" class="btn btn-sm btn-default pull-right">
+      <i class="glyphicon glyphicon-plus-sign"></i> {{ "PATIENT_GRP.NEW" | translate }}
+    </button>
+  </div>
 </nav>
 
 <main>

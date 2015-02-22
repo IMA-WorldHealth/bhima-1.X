@@ -3,20 +3,15 @@
 </header>
 
 <nav>
-  <!-- split button -->
-  <!--
-  <div class="btn-group">
-    <button class="btn btn btn-primary" ng-class="{active : !!invoice.convention_id }">{{conventions.get(invoice.convention_id).name || "Choose Convention"}}</button>
-    <button class="btn btn-sm btn-primary dropdown-toggle"><i class="glyphicon glyphicon-chevron-down"></i></button>
-    <ul class="dropdown-menu">
-      <li ng-repeat="convention in conventions.data">
-        <a ng-click="setConvention(convention)" >{{convention.name}}</a>
-      </li>
-    </ul>
+  <div class="pull-left">
+      <ol class="breadcrumb">
+        <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+        <li class="active">{{ "GROUP_INVOICE.TITLE" | translate }}</li>
+      </ol>
   </div>
-  -->
-
-  <span class="btn btn-sm btn-default" ng-show="!!selected.convention">{{ selected.convention.name }}</span>
+  <div class="pull-right">
+    <span class="btn btn-sm btn-default" ng-show="!!selected.convention">{{ selected.convention.name }}</span>
+  </div>
 </nav>
 
 <main>

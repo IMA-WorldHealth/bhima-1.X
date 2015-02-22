@@ -3,6 +3,13 @@
 </header>
 
 <nav>
+	<div class="pull-left">
+	    <ol class="breadcrumb">
+	      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+	      <li class="active">{{ "INCOME.TITLE" | translate }}</li>
+	    </ol>
+	</div>
+
   <div class="pull-right">
     <a class="btn btn-default btn-sm" ng-click="setAction('transfer')"><span class="glyphicon glyphicon-tag"></span> {{ 'INCOME.TRANSFER' | translate }}</a>
     <a class="btn btn-default btn-sm" ng-click="setAction('convention')"><span class="glyphicon glyphicon-tag"></span> {{ 'INCOME.CONVENTION' | translate }}</a>
