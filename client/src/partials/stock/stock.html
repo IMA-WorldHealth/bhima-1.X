@@ -5,9 +5,8 @@
 <nav>
   <div class="pull-left">
     <ol class="breadcrumb" style="float: right;">
-      <li><span class="glyphicon glyphicon-home"></span></li>
-      <!-- <span class="label label&#45;success square">{{ "UTIL.NAVIGATION" | translate }}</span> -->
-      <li><a href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "STOCK.MAIN.TITLE" | translate }}</li>
     </ol>
   </div>
 
@@ -17,17 +16,6 @@
 
     <button style="margin-left: 5px;" ng-disabled="session.configure" ng-click="reconfigure()" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-repeat"></span></button>
   </div>
-  <!-- <div class="pull&#45;right dropdown"> -->
-    <!-- <button class="btn btn&#45;sm btn&#45;primary square dropdown&#45;toggle"> -->
-      <!-- {{ depot.text || "STOCK.ENTRY.SELECT_DEPOT" | translate }} -->
-      <!-- <span class="caret" data&#45;caret="&#38;#9660;"></span> -->
-    <!-- </button> -->
-    <!-- <ul class="dropdown&#45;menu square"> -->
-      <!-- <li ng&#45;repeat="depot in depots.data"> -->
-        <!-- <a ng&#45;click="setDepot(depot)" class="action">{{ depot.text }}</a> -->
-      <!-- </li> -->
-    <!-- </ul> -->
-  <!-- </div> -->
 </nav>
 
 <main>

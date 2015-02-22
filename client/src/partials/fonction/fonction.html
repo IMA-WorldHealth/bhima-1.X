@@ -3,10 +3,19 @@
 </header>
 
 <nav>
-  <button class="btn btn-sm btn-default" ng-click="new()">
-    <span class="glyphicon glyphicon-paperclip"></span>
-     {{ "FONCTION.ADD" | translate }}
-  </button>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "FONCTION.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right">
+    <button class="btn btn-sm btn-default" ng-click="new()">
+      <span class="glyphicon glyphicon-plus-sign"></span>
+       {{ "FONCTION.ADD" | translate }}
+    </button>
+  </div>
 </nav>
 
 <main>

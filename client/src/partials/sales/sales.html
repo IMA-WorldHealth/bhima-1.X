@@ -3,6 +3,13 @@
 </header>
 
 <nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "SALE.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
   <div class="pull-right">
     <a ng-click="toggleTablock()" class="btn btn-default">
       <span ng-class="{'glyphicon-th': session.tablock===0, 'glyphicon-th-list' : session.tablock===-1}" class="glyphicon"></span> {{(session.tablock==-1) ? ("SALE.TAB_LOCK_LINE" | translate) : ("SALE.TAB_LOCK_ITEM" | translate)}}

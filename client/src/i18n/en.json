@@ -1350,7 +1350,7 @@
    "VIEW"               : "View"
    },
 "PATIENT_EDIT": {
-   "PAGE_TITLE"     : "Edit Patient Details:",
+   "PAGE_TITLE"     : "Edit Patient Details",
    "RESTART_SEARCH" : "Find another patient",
    "UPDATE_FAILED"  : "Patient update failed!",
    "UPDATE_PATIENT" : "Update Patient",

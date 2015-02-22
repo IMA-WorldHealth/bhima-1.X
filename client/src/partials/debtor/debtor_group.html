@@ -4,6 +4,12 @@
 
 <nav>
   <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "DEBITOR_GRP.TITLE" | translate }}</li>
+    </ol>
+  </div>
+  <div class="pull-left">
     <input type="search" class="form-bhima" ng-model="data.search" placeholder="{{ 'DEBITOR_GRP.FILTER' | translate }}" size="25">
   </div>
   <div class="pull-right">

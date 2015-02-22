@@ -5,13 +5,14 @@
 <nav>
   <div class="pull-left">
     <ol class="breadcrumb">
-      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
       <li><a href="#/cotisations_management/">{{"COTISATION_MANAGEMENT.TITLE" | translate}}</a></li>
+      <li class="active">{{ "COTISATION_MANAGEMENT.CREATE_COTISATION" | translate }}</li>
     </ol>
   </div>
   <div class="pull-right">
     <button class="btn btn-sm btn-default" ng-click="new()">
-      <span class="glyphicon glyphicon-briefcase"></span>
+      <span class="glyphicon glyphicon-plus-sign"></span>
        {{ "COTISATIONS.ADD" | translate }}
     </button>
   </div>
