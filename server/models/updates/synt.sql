@@ -1,5 +1,7 @@
+USE bhima;
+
 -- Updates to patient data
--- 
+--
 -- RENAME addr_1 to address_1
 -- RENAME addr_2 to address_2
 -- CHANGE length of email column to 40 characters
@@ -7,11 +9,7 @@
 --
 -- Date: 2015-01-05
 -- By: Jonathan Cameron
-
-USE bhima;
-
 ALTER TABLE `patient`
-
 CHANGE `addr_1` `address_1` varchar(100);
 
 ALTER TABLE `patient`
@@ -22,78 +20,76 @@ CHANGE `email` `email` varchar(40);
 
 ALTER TABLE `patient`
 ADD `title` VARCHAR(30);
+
+
 -- Updates to debitor_group data
 -- Removal of the column `payment_id` and `tax_id` from the table debitor_group
 --
 -- Date: 2015-01-07
 -- By: Chris LOMAME
-
-USE bhima;
-
-ALTER TABLE `debitor_group` 
+ALTER TABLE `debitor_group`
 DROP `payment_id`;
 
-ALTER TABLE `debitor_group` 
+ALTER TABLE `debitor_group`
 DROP `tax_id`;-- Updates to account data
--- Removal of the column `fixed` and `locked` from the table account
+
+ALTER TABLE `account`
+ADD `is_asset` BOOLEAN NULL;-- written by jniles
+-- Jan 7 2015
+
 --
--- Date: 2015-01-07
--- By: CHRIS LOMAME
+-- Date: 2015-02-23
+-- By: Chris LOMAME
 
 USE bhima;
 
-ALTER TABLE `account` 
-DROP `fixed`;
+INSERT INTO `account_type` VALUES (4,'expense');
 
-ALTER TABLE `account` 
-ADD `is_asset` BOOLEAN NULL-- written by jniles
--- Jan 7 2015
-
-use bhima;
+ALTER TABLE `account`
+ADD FOREIGN KEY (`account_type_id`) REFERENCES `account_type` (`id`);
 
 -- remove poorly labeled income accounts
-update account as a JOIN account as b on a.id = b.id set a.account_type_id = 2 where b.account_type_id = 1;
-
+UPDATE account AS a JOIN account AS b ON a.id = b.id SET a.account_type_id = 2 WHERE b.account_type_id = 1;
 -- set up income accounts as OHADA
-update account as a JOIN account as b on a.id = b.id set a.account_type_id = 1 where b.account_type_id != 3 and b.account_number like '6%';
+UPDATE account AS a JOIN account AS b ON a.id = b.id SET a.account_type_id = 1 WHERE b.account_type_id != 3 AND b.account_number LIKE '6%';
 -- set up expense accounts as OHADA
-update account as a JOIN account as b on a.id = b.id set a.account_type_id = 4 where b.account_type_id != 3 and b.account_number like '7%';
+UPDATE account AS a JOIN account AS b ON a.id = b.id SET a.account_type_id = 4 WHERE b.account_type_id != 3 AND b.account_number LIKE '7%';
+
+
+
 -- Updates to fiscal year data
----
+--
 -- DROP 'closing_account' field
 --
 -- Date: 2015-01-07
 -- By: Jonathan Niles
 
-USE bhima;
+-- ALTER TABLE `fiscal_year`
+-- DROP FOREIGN KEY `fiscal_year_ibfk_1`;
 
-ALTER TABLE `fiscal_year`
-DROP FOREIGN KEY `fiscal_year_ibfk_1`;
+-- ALTER TABLE `fiscal_year`
+-- DROP `closing_account`;
 
-ALTER TABLE `fiscal_year`
-DROP `closing_account`;
+
 -- Updates to patient data
 --
 -- Add patient 'notes' field
 --
 -- Date: 2015-01-12
 -- By: Jonathan Cameron
-
-USE bhima;
-
 ALTER TABLE `patient`
 ADD `notes` text;
+
+
 -- Update to units/menu
 --
 -- Add add menu/unit item for the budget menu item.
---
 -- Date: 2015-01-13
 -- By: Jonathan Cameron
-
-USE bhima;
-
 INSERT INTO `unit` VALUES
 (7,'Edit Account Budget','TREE.EDIT_BUDGET','',8,0,'/partials/budget/edit/','/budgeting/edit');
+
+
 -- Subsidy updating
 --
 -- CHANGE price_list_uuid, subsidy_uuid to be not requirement
@@ -102,10 +98,8 @@ INSERT INTO `unit` VALUES
 -- Date: 2015-01-13
 -- By: Dedrick Kitamuka
 
-USE bhima;
-
 drop table if exists `subsidy`;
-create table `subsidy` (
+CREATE TABLE `subsidy` (
   `uuid`                   char(36) not null,
   `text`                   text,
   `value`                  float default 0,
@@ -116,7 +110,6 @@ create table `subsidy` (
   constraint foreign key (`debitor_group_uuid`) references `debitor_group` (`uuid`)
 ) engine=innodb;
 
-
 ALTER TABLE `patient_group`
 MODIFY `price_list_uuid` char(36) null;
 
@@ -126,8 +119,8 @@ ADD `subsidy_uuid` char(36) null;
 ALTER TABLE `patient_group`
 ADD FOREIGN KEY (`subsidy_uuid`) references `subsidy` (`uuid`);
 
-drop table if exists `sale_subsidy`;
-create table `sale_subsidy` (
+DROP TABLE IF EXISTS `sale_subsidy`;
+CREATE TABLE `sale_subsidy` (
   `uuid`              char(36) not null,
   `sale_uuid`         char(36) not null,
   `subsidy_uuid`      char(36) not null,
@@ -138,24 +131,19 @@ create table `sale_subsidy` (
   constraint foreign key (`sale_uuid`) references `sale` (`uuid`) on delete cascade,
   constraint foreign key (`subsidy_uuid`) references `subsidy` (`uuid`)
 ) engine=innodb;
+
+
 -- Allow an employee lock
---
 -- Date: 2015-01-26
 -- By: Chris LOMAME
-
-USE bhima;
-
 ALTER TABLE `employee`
 ADD `locked` boolean;
--- Updates to accounts data
--- 
+
+
 -- INSERT new parents class and UPDATE depending accounts
 -- UPDATE is_asset (passive or active)
---
 -- Date: 2015-01-29
 -- By: Bruce Mbayo
-
-use bhima;
 
 -- Get the last id
 SET @AUTO_ID = NULL;
@@ -199,37 +187,37 @@ SET @ID_7615 = @AUTO_ID + 29;
 SET @ID_78 = @AUTO_ID + 30;
 
 -- adding missing parent class
-INSERT INTO `account` VALUES 
-(@ID_18, 3, 200, 18, 'PROVISIONS', 1, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 1),
-(@ID_29, 3, 200, 29, 'IMMOBILISATIONS', 25, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 2),
-(@ID_30, 3, 200, 30, 'STOCKS  MEDICAMENTS', 89, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 3),
-(@ID_32, 3, 200, 32, 'Emballages commerciaux', 89, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 3),
-(@ID_34, 3, 200, 34, 'Produits ophtalmologie', 89, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 3),
-(@ID_36, 3, 200, 36, 'SPROVISION POUR DEPRECIATION', 89, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 3),
-(@ID_35, 3, 200, 35, 'ACCOUCHEMENT', 89, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 3),
-(@ID_33, 3, 200, 33, 'EXTERNE', 89, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 3),
-(@ID_46, 3, 200, 46, 'DEBITEURS ET CREDITEURS DIVERS', 184, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 4),
-(@ID_466, 3, 200, 466, 'AUTRES DEBITEURS ET CREDITEURS', @ID_46, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 4),
-(@ID_48, 3, 200, 48, 'PROVISIONS POUR IMPAYES MALADES', 184, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 4),
-(@ID_49, 3, 200, 49, 'COMPTE D\'ATTENTE (ACTIF)', 184, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 4),
-(@ID_42, 3, 200, 42, 'MALADES HOSPITALISES', 184, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 4),
-(@ID_5734, 3, 200, 5734, 'ROW', 490, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 5),
-(@ID_5735, 3, 200, 5735, 'UNICEF', 490, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 5),
-(@ID_61, 3, 200, 61, 'CONSOMMATIONS FOURNITURES', 535, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 6),
-(@ID_613, 3, 200, 613, 'MATERIELS ET EQUIPEMENTS', @ID_61, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 6),
-(@ID_6131, 3, 200, 6131, 'Matériel et équipement administratif', @ID_613, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 6),
-(@ID_616, 3, 200, 616, 'Consommable et matériel d\'entretien hospitalier', @ID_61, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 6),
-(@ID_619, 3, 200, 619, 'AUTRES FOURNITURES', @ID_61, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 6),
-(@ID_62, 3, 200, 62, 'TRANSPORT CONSOMME', 535, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 6),
-(@ID_628, 3, 200, 628, 'DIVERS FRAIS DE VOYAGE', @ID_62, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 6),
-(@ID_6334, 3, 200, 6334, 'ROW', 660, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 6),
-(@ID_68, 3, 200, 68, 'DOTATIONS', 535, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 6),
-(@ID_70, 3, 200, 70, 'VENTE MEDICAMENTS', 888, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 7),
-(@ID_71, 3, 200, 71, 'ACTES/PRODUCTIONS VENDUES', 888, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 7),
-(@ID_72, 3, 200, 72, 'PRODUCTIONS STOCKEES', 888, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 7),
-(@ID_7615, 3, 200, 7615, 'DIVERS', 989, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 7),
-(@ID_7614, 3, 200, 7614, 'ROW', 989, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 7),
-(@ID_78, 3, 200, 78, 'REPRISE SUBVENTION D\'EQUIPEMENT', 888, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 7);
+INSERT INTO `account` VALUES
+(@ID_18, 3, 200, 18, 'PROVISIONS', 1, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 1, NULL),
+(@ID_29, 3, 200, 29, 'IMMOBILISATIONS', 25, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 2, NULL),
+(@ID_30, 3, 200, 30, 'STOCKS  MEDICAMENTS', 89, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 3, NULL),
+(@ID_32, 3, 200, 32, 'Emballages commerciaux', 89, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 3, NULL),
+(@ID_34, 3, 200, 34, 'Produits ophtalmologie', 89, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 3, NULL),
+(@ID_36, 3, 200, 36, 'SPROVISION POUR DEPRECIATION', 89, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 3, NULL),
+(@ID_35, 3, 200, 35, 'ACCOUCHEMENT', 89, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 3, NULL),
+(@ID_33, 3, 200, 33, 'EXTERNE', 89, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 3, NULL),
+(@ID_46, 3, 200, 46, 'DEBITEURS ET CREDITEURS DIVERS', 184, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 4, NULL),
+(@ID_466, 3, 200, 466, 'AUTRES DEBITEURS ET CREDITEURS', @ID_46, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 4, NULL),
+(@ID_48, 3, 200, 48, 'PROVISIONS POUR IMPAYES MALADES', 184, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 4, NULL),
+(@ID_49, 3, 200, 49, 'COMPTE D\'ATTENTE (ACTIF)', 184, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 4, NULL),
+(@ID_42, 3, 200, 42, 'MALADES HOSPITALISES', 184, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 4, NULL),
+(@ID_5734, 3, 200, 5734, 'ROW', 490, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 5, NULL),
+(@ID_5735, 3, 200, 5735, 'UNICEF', 490, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 5, NULL),
+(@ID_61, 3, 200, 61, 'CONSOMMATIONS FOURNITURES', 535, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 6, NULL),
+(@ID_613, 3, 200, 613, 'MATERIELS ET EQUIPEMENTS', @ID_61, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 6, NULL),
+(@ID_6131, 3, 200, 6131, 'Matériel et équipement administratif', @ID_613, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 6, NULL),
+(@ID_616, 3, 200, 616, 'Consommable et matériel d\'entretien hospitalier', @ID_61, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 6, NULL),
+(@ID_619, 3, 200, 619, 'AUTRES FOURNITURES', @ID_61, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 6, NULL),
+(@ID_62, 3, 200, 62, 'TRANSPORT CONSOMME', 535, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 6, NULL),
+(@ID_628, 3, 200, 628, 'DIVERS FRAIS DE VOYAGE', @ID_62, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 6, NULL),
+(@ID_6334, 3, 200, 6334, 'ROW', 660, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 6, NULL),
+(@ID_68, 3, 200, 68, 'DOTATIONS', 535, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 6, NULL),
+(@ID_70, 3, 200, 70, 'VENTE MEDICAMENTS', 888, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 7, NULL),
+(@ID_71, 3, 200, 71, 'ACTES/PRODUCTIONS VENDUES', 888, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 7, NULL),
+(@ID_72, 3, 200, 72, 'PRODUCTIONS STOCKEES', 888, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 7, NULL),
+(@ID_7615, 3, 200, 7615, 'DIVERS', 989, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 7, NULL),
+(@ID_7614, 3, 200, 7614, 'ROW', 989, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 7, NULL),
+(@ID_78, 3, 200, 78, 'REPRISE SUBVENTION D\'EQUIPEMENT', 888, NULL, 0, NULL, NULL, '2014-07-10 08:13:00', 7, NULL);
 
 -- update accounts which dont't have parent or a correct parent
 UPDATE `account` SET `parent`=@ID_18 WHERE LEFT(`account_number`,2)=18 AND `account_number`<>18;
@@ -285,28 +273,21 @@ UPDATE `account` SET `is_asset`=FALSE WHERE LEFT(`account_number`,2)=48;
 UPDATE `account` SET `is_asset`=FALSE WHERE LEFT(`account_number`,2)=49;
 UPDATE `account` SET `is_asset`=FALSE WHERE LEFT(`account_number`,3)=466;
 UPDATE `account` SET `is_asset`=TRUE WHERE `classe`=5;
+UPDATE `account` SET `is_asset`=NULL WHERE `parent`=0;
 
-UPDATE `account` SET `is_asset`=NULL WHERE `parent`=0;-- Updates to enterprise data
--- 
+
 -- ADD 'po_box' field
---
 -- Date: 2015-02-03
 -- By: Chris LOMAME
-
-USE bhima;
-
 ALTER TABLE `enterprise`
 ADD `po_box` VARCHAR(30);
+
+
 -- Add a new table partial_paiement
--- 
---
 -- Date: 2015-02-06
 -- By: Chris LOMAME
-
-use bhima;
-
 drop table if exists `partial_paiement`;
-create table `partial_paiement` (
+CREATE TABLE `partial_paiement` (
   `uuid`                    char(36) not null,
   `paiement_uuid`           char(36) not null,
   `currency_id`             tinyint unsigned,
@@ -318,17 +299,63 @@ create table `partial_paiement` (
   constraint foreign key (`paiement_uuid`) references `paiement` (`uuid`),
   constraint foreign key (`currency_id`) references `currency` (`id`)
 ) engine=innodb;
--- Update to units/menu
---
--- Add add menu/unit item for the budget menu item.
---
--- Date: 2015-01-13
--- By: Jonathan Cameron
 
-USE bhima;
+
+-- Add a new table employee_invoice AND employee_invoice_item
+-- Date: 2015-02-16
+-- By: Chris LOMAME
+drop table if exists `employee_invoice`;
+CREATE TABLE `employee_invoice` (
+  uuid            char(36) not null,
+  project_id      smallint unsigned not null,
+  debitor_uuid    char(36) not null,
+  creditor_uuid   char(36) not null,
+  note            text,
+  authorized_by   varchar(80) not null,
+  date            date not null,
+  total           decimal(14, 4) not null default 0,
+  primary key (`uuid`),
+  key `debitor_uuid` (`debitor_uuid`),
+  key `project_id` (`project_id`),
+  key `creditor_uuid` (`creditor_uuid`),
+  constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`),
+  constraint foreign key (`project_id`) references `project` (`id`),
+  constraint foreign key (`creditor_uuid`) references `creditor` (`uuid`)
+) engine=innodb;
+
+DROP TABLE IF EXISTS `employee_invoice_item`;
+CREATE TABLE `employee_invoice_item` (
+  uuid              char(36) not null,
+  payment_uuid        char(36) not null,
+  invoice_uuid        char(36) not null,
+  cost              decimal(16, 4) unsigned not null,
+  primary key (`uuid`),
+  key `payment_uuid` (`payment_uuid`),
+  key `invoice_uuid` (`invoice_uuid`),
+  constraint foreign key (`payment_uuid`) references `employee_invoice` (`uuid`) on delete cascade,
+  constraint foreign key (`invoice_uuid`) references `sale` (`uuid`)
+) engine=innodb;
+
 
 INSERT INTO `transaction_type` (`service_txt`) VALUES
 ('cotisation_engagement'), ('tax_engagement');
+
+USE bhima;
+
+ALTER TABLE `depot`
+ADD `is_warehouse` smallint unsigned not null default 0;
+
+
+-- Removal of the column `fixed` and `locked` from the table account
+-- Date: 2015-01-07
+-- By: CHRIS LOMAME
+-- ALTER TABLE `account`
+-- DROP `fixed`;
+
+-- Updates data base
+--
+-- Date: 2015-02-20
+-- By: Chris LOMAME 
 
 USE bhima;
 
@@ -348,8 +375,6 @@ create table `consumption_reversing` (
   constraint foreign key (`consumption_uuid`) references `consumption` (`uuid`),
   constraint foreign key (`depot_uuid`) references `depot` (`uuid`) on delete cascade on update cascade
 ) engine=innodb;
-
-USE bhima;
 
 drop table if exists `hollyday_paiement`;
 create table `hollyday_paiement` (
