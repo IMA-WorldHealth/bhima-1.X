@@ -11,7 +11,7 @@
 \usepackage{graphicx}
 \usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
 \author{IMA World Health Web Developer Team}
-\title{\includegraphics[width=12cm]{ima.png} \\Hospital Management System\\ (HMS) \\ Manuel d'utilisation}
+\title{\includegraphics[width=12cm]{ima.png} \\BASIC HOSPITAL INFORMATION MANAGEMENT APPLICATION\\ (BHIMA) \\ Manuel d'utilisation}
 
 \begin{document}
 %Page de garde
@@ -47,8 +47,8 @@ Dans sa partie gauche de la figure ci-dessous on retrouve le logo IMA World Heat
 \label{Interface principale pour le changement de langue}
 \end{figure} 
 \newpage
-\section{Les modules du système HMS}
-Le système d'information HMS possède plusieurs modules qui sont représenté par l'arborescence ci-dessous.
+\section{Les modules du système BHIMA}
+Le système d'information BHIMA possède plusieurs modules qui sont représenté par l'arborescence ci-dessous.
 \begin{figure}[h]
 \begin{center}
 \includegraphics[width=4.5cm]{pic/arbo.png}
@@ -60,14 +60,18 @@ Voici les différentes rubriques qui existent dans le système:
 % Liste des modules
 \begin{itemize}
 \item Admin. %•
-\item Finance
 \item Budget
-\item Rapports
-\item Stock
+\item Canevas SNIS
+\item Comptabilité
+\item Finances
 \item Hôpital
 \item Payroll
-\item Comptabilité
-\item Canevas SNIS
+\item Rapports
+\item Stock
+
+
+
+
 \end{itemize}
 Nous allons à présent détailler chacun d'entre eux.
 \newpage
@@ -220,9 +224,11 @@ Lorsque l'utilisateur click sur le bouton \includegraphics[scale=1]{pic/AjouterC
 \begin{itemize}
 \item \textbf{Le libelle de compte}: permet de nomme un compte \\
 \item \textbf{Le type de Compte}: permet de dire si un compte est du type incom/expense, balance, title.\\
-\item \textbf{Numero de compte]}: permet de donner un numéro à un compte \\
+\item \textbf{Numero de compte}: permet de donner un numéro à un compte \\
 \item \textbf{Groupe de comptes (Comptes titres)}: permet d'affilier un compte à un groupe de compte.\\
 \end{itemize}
+
+Si le compte est du type \textbf{Title}, un groupe de bouton radio apparait pour permettre de sélectionner dans quelle categorie des titres se trouve le compte, un compte de type title peut être soit \textbf{un actif}, \textbf{un passif} ou bien dans une autre catégorie.
 
 Après avoir renseigner tous ce champ, un clic sur le bouton soumettre permet d'ajouter un compte dans la liste des comptes.
  
@@ -242,10 +248,10 @@ Après la création du plan comptable, ainsi que l'ajout de compte, le plan comp
 Dans l'entête Texte on retrouve les noms des différents comptes ainsi que ceux de groupe de comptes, dans l'entête No on retrouve le différent numéro des comptes, l'entête Type permet de savoir si le compte est un Income /expence, Balance ou bien un titre et l'entête effacer permet de supprimé un compte.  Il y a aussi le bouton \includegraphics[scale=0.7]{pic/GenereRapportCompt.png} qui permet d'afficher une version imprimable du plan comptable.
 
 Comme nous le montre l'image ci-après, on affiche le plan comptable de l'organisation par rapport à une date bien précise.\\
-\newpage
+
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=14cm]{pic/AnneeFiscal.png}
+\includegraphics[width=14cm]{pic/PlanComptable.png}
 \end{center}
 \caption{Aperçue du plan Comptable}
 \label{Aperçue du plan Comptable}
@@ -277,9 +283,14 @@ Lorsque l'utilisateur click sur le bouton \includegraphics[scale=0.7]{pic/CreeAn
 \item \textbf{Description}: permet de décrire l'année fiscale.
 \item \textbf{Début Mois}: permet de préciser le premier mois de l'année fiscale
 \end{itemize}
-\textbf{Il existe aussi deux boutons radio une année et Spécifier }: si l'on clique sur le bouton radio une année, l'année fiscale commencera à partir du \textbf{début mois} jusqu'au mois précisé de l'année prochaine. Mais si l'on clique sur le bouton \textbf{spécifier} dans ce cas l'utilisateur devra préciser le champ \textbf{Fin Mois}.
+\textbf{Il existe aussi deux boutons radio une année et Spécifier }: si l'on clique sur le bouton radio \textbf{une année}, l'année fiscale commencera à partir de la période préciser et couvrira une période de douze mois mais si l'on clique sur le bouton \textbf{spécifier} dans ce cas l'utilisateur devra préciser le champ \textbf{Fin Mois} qui marquera la fin de l'année fiscale.
+
+Le champ \textbf{Année Fiscale précédent} n'apparait que s'il existe au moins une année fiscale déjà enregistrer dans le système. 
 
 Après avoir renseigné tous ce champ, un clic sur le bouton \textbf{Enregistrer} permet d'ajouter Une année fiscale dans ladite liste.
+
+\newpage
+
 \subsection{Liste des années fiscale}
 Voici comment se présente la liste des années fiscale
 
@@ -2038,7 +2049,7 @@ Dans l'entête de cette interface on retrouve l'identité du patient, la date, l
 
 Pour confirmer la livraison des produits, il suffit de cliquer sur le bouton \includegraphics[scale=0.7]{pic/SoumettreDistribution.png}.
 
-Le système HMS detecte la péremption des produits pharmaceutiques lors de l'opération de livraison des produits pharmaceutiques en affichant des messages d'alerte à l'écran de l'ordinateur comme le montre la figure suivante.
+Le système BHIMA detecte la péremption des produits pharmaceutiques lors de l'opération de livraison des produits pharmaceutiques en affichant des messages d'alerte à l'écran de l'ordinateur comme le montre la figure suivante.
 
 \begin{figure}[h]
 \begin{center}
