@@ -1341,12 +1341,101 @@ Le module paie des employées permet permet de déterminer les différentes él�
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=14cm]{pic/paieEmp.png}
+\includegraphics[width=16cm]{pic/paieEmp.png}
 \end{center}
 \caption{Interface principale du module paie des employés}
 \label{Interface principale du module paie des employés}
 \end{figure}
 
+
+\subsection{Dépenses : Paie des employés : Paiement Effectif du Salaire}
+Le module paiement des effectifs du salaire n'est utilisable que si il existe une période de paiment pour laquelle ce module n'est pas encore utilisée. ce module dispose ainsi d'une interface principale possédant une liste de choix.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/selectPeriodPaiSal.png}
+\end{center}
+\caption{Interface principale permettant de choisir la période de paiement }
+\label{Interface principale permettant de choisir la période de paiement }
+\end{figure}
+
+Une fois qu'une période de paiement est choisi, l'utilisateur est alors dirigé vers l' interface principale du paiement effectifs des salaires. Cette interface se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/paiementSalaire.png}
+\end{center}
+\caption{Interface principale permettant de confirmer le paiement}
+\label{Interface principale permettant de confirmer le paiement}
+\end{figure}
+
+
+Voici les différents éléments de l'interface. Un bouton sélectionner une période de paiement qui permet de revenir vers l'interface permettant de choisir une période de paiement, une barre de recherche permettant de filtrer les différents éléments composant le tableau des employés.
+
+Le tableau est divisé en colonne, il existe les noms des employés, Le net après taxes, le salaire net, le salaire partiel perçu dans le cas où il y'a eu des avances sur salaires, le salaire restante qui est égale au salaire net dans le cas il n'y a pas eu d'avance sur salaire, le status du paiement qui par défaut est \includegraphics[scale=0.7]{pic/NonTaxes.png} si l'employé n'est pas encore payée et \includegraphics[scale=0.7]{pic/OuiTaxes.png} si elle est payée. pour confirmer le paiement d'un employé, il faudrait cliquer sur le bouton \includegraphics[scale=0.7]{pic/PayeSalary.png}
+
+\subsection{Dépenses : Paie des employés : Paiement partiel du salaire}
+Le module Paiement partiel du salaire permet de verser à l'employé une partie de son salaire, l'interface principale de ce module se ressemble à celui permettant le paiement effectif à la différence que celui ci permet une redirection vers la page permettant le paiement partiel du salaire.
+Le paiement partiel peut se faire en plusieur phase pour vue la somme total perçue ne puissent pas dépasser le salaire net à payer. L'interface d'accueil se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/PaiePartSalaire.png}
+\end{center}
+\caption{Interface d'accueil du paiement partiel du salaire}
+\label{Interface d'accueil du paiement partiel du salaire}
+\end{figure}
+
+Le tableau est divisé en colonne, il existe les noms des employés, Le net après taxes, le salaire net, le salaire partiel perçu dans le cas où il y'a eu des avances sur salaires, le salaire restante, le status du paiement qui par défaut est \includegraphics[scale=0.7]{pic/NonTaxes.png} si l'employé n'est pas encore payée et \includegraphics[scale=0.7]{pic/OuiTaxes.png} si elle est payée. pour pouvoir procéder au paiement partial du salaire, il suffit de cliquer sur le bouton  \includegraphics[scale=0.7]{pic/salaryPartial.png} pour visualiser le formulaire du paiement partiel du salaire.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/FormPartPaiement.png}
+\end{center}
+\caption{Formulaire permettant le paiement partiel du salaire}
+\label{Formulaire permettant le paiement partiel du salaire}
+\end{figure}
+
+Dans la figure ci haute on retrouve dans la partie supérieur les éléments sommaires sur le paiement, la zone montant permet de spécifier le montant du paiement partiel qu'on voudrait effectuer et le bouton soumettre permet de declancher le processus.
+
+Si le montant du salaire partiel est supérieur au salaire net ou bien supérieur au salaire restant un message d'alerte s'affiche pour le signaler.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/errorPartialPaiement.png}
+\end{center}
+\caption{Message d'erreur en cas de paiement partiel impossible}
+\label{Message d'erreur en cas de paiement partiel impossible}
+\end{figure}
+
+
+Les répercutions du paiement partiel du salaire sont visibles dans le module paiement effectif du salaire car le patient ayant bénéficier du salaire partiel du salaire n'obtiendront que leur salaire restant lorsqu'il faudrait procéder au paiement du salaire effectif.
+
+\newpage
+\subsection{Dépenses : Paie des employés : Paiement Cotisations}
+Le module paiement des cotisations, ce module n'est utilisable que si il existe une période de paiement pour laquelle ce module n'est pas encore utilisé. ce module dispose ainsi d'une interface principale possédant une liste de choix.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/paiemCotisations.png}
+\end{center}
+\caption{Interface principale permettant sélectionner une période de paiement}
+\label{Interface principale permettant sélectionner une période de paiement}
+\end{figure}
+
+Une fois qu'une période de paiement est choisi, l'utilisateur est alors dirigé vers une interface principale de paiement de des cotisations. Cette interface se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/PaiemCoInterface.png}
+\end{center}
+\caption{Interface principale permettant de confirmer le paiement des cotisations}
+\label{Interface principale permettant de confirmer le paiement des cotisations}
+\end{figure}
+
+Voici les différents éléments de l'interface. Un bouton sélectionner une période de paiement qui permet de revenir vers l'interface permettant de choisir une période de paiement, une barre de recherche permettant de filtrer les différents éléments composant le tableau des employés ainsi que des différentes cotisations.
+
+Le tableau est divisé en colonne, il existe le nom des employés, les différentes types de cotisations, la valeur, le status du paiement qui par défaut est \includegraphics[scale=0.7]{pic/NonTaxes.png} si la cotisation n'est pas encore payée et \includegraphics[scale=0.7]{pic/OuiTaxes.png} si elle est payée. pour confirmer le paiement d'un cotisation, il faudrait cliquer sur le bouton \includegraphics[scale=0.7]{pic/CotPayBouton.png}
 
 \subsection{Dépenses : Paie des employés : Paiement Taxes}
 Le module paiement des taxes n'est utilisable que si il existe une période de paiment pour laquelle ce module n'est pas encore utilisé. ce module dispose ainsi d'une interface principale possédant une liste de choix.
@@ -1373,6 +1462,8 @@ Une fois qu'une période de paiement est choisi, l'utilisateur est alors dirigé
 Voici les différents éléments de l'interface. Un bouton sélectionner une période de paiement qui permet de revenir vers l'interface permettant de choisir une période de paiement, une barre de recherche permettant de filtrer les différents éléments composant le tableau des employés ainsi que des différentes taxes.
 
 Le tableau est divisé en colonne, il existe le nom des employés, les types de taxes, la valeur, le status du paiement qui par défaut est \includegraphics[scale=0.7]{pic/NonTaxes.png} si la taxe n'est pas encore payée et \includegraphics[scale=0.7]{pic/OuiTaxes.png} si elle est payée. pour confirmer le paiement d'une taxe, il faudrait cliquer sur le bouton \includegraphics[scale=0.7]{pic/PayeTaxe.png}
+
+
 \newpage
 \subsection{Dépenses : Paie des employés : Paiement Taxes Entreprise}
 Le module paiement des taxes Entreprise est similaire à celui permettant le paiement de taxes,  ce module n'est utilisable que si il existe une période de paiement pour laquelle ce module n'est pas encore utilisé. ce module dispose ainsi d'une interface principale possédant une liste de choix.
