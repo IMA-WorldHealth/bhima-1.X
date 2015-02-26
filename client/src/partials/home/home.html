@@ -5,7 +5,7 @@
     <h4>{{ "HOME.BHIMA_LONG" | translate }}</h4>
   </div> 
 
-  <div id="status" class="row alert alert-success">
+  <div id="status" ng-class="{'row alert alert-success': session.hasDailyRate, 'row alert alert-danger': !session.hasDailyRate}">
     <div class="col-xs-3">{{ "HOME.PROJECT" | translate }}: <br><strong>{{ project.name }}</strong></div>
     <div class="col-xs-3">{{ "HOME.DATE" | translate }}: <br><strong>{{ session.date | date }}</strong></div>
     <div class="col-xs-3">{{ "HOME.EXCHANGE_RATE" | translate }}: <br><strong>{{ session.exchangeRate }}</strong></div>

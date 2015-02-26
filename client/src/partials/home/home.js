@@ -34,7 +34,8 @@ angular.module('bhima.controllers')
     function init (model) {
     	angular.extend($scope, model);
     	session.date = new Date();
-    	session.exchangeRate = exchange.hasDailyRate() ? '1 $ = ' + exchange.rate(100, 1, session.date) + ' Fc' : $translate.instant('HOME.UNDEFINED');
+      session.hasDailyRate = exchange.hasDailyRate();
+    	session.exchangeRate = session.hasDailyRate ? '1 $ = ' + exchange.rate(100, 1, session.date) + ' Fc' : $translate.instant('HOME.UNDEFINED');
 
     	handleTreeNavigation();
     	handleTreeUrl();
