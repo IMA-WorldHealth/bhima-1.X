@@ -17,7 +17,7 @@
     <div class="reportFrame">
       <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
       
-      <h4 class="visible-print">{{ "STOCK_STATUS.TITLE" | translate }} <small> {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small></h4>
+      <h4 class="visible-print">{{ "STOCK_STATUS.TITLE" | translate }} <small> : {{ session.date | date }}</small></h4>
         <table id="patientTable" class="reportTable">
           <thead>
             <tr>

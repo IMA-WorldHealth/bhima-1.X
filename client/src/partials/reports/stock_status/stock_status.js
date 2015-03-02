@@ -15,11 +15,11 @@ angular.module('bhima.controllers')
         session = $scope.session = {},
         code_drugs       = $scope.code_drugs = $routeParams.code_drugs;
 
-
+    session.date = new Date();
+        
     $http.get('/getStockEntry/').
     success(function(data) {
       data.forEach(function (item2) {
-        console.log(item2);
         stockControler.getStock(item2.inventory_uuid)
         .then(function (val) {
           item2.total = val;
@@ -76,29 +76,5 @@ angular.module('bhima.controllers')
       validate.process(dependencies)
       .then(startup);
     });
-
-/*    function reset () {
-      record = connect.clean(session);
-      record.dateFrom = util.sqlDate(record.dateFrom);
-      record.dateTo = util.sqlDate(record.dateTo);
-
-      $http.get('/getStockSituation/',{params : {
-            'dateFrom' : record.dateFrom, 
-            'dateTo' : record.dateTo
-          }  
-      }).
-      success(function(data) {
-        console.log(data.length);
-        $scope.consumptions = data;
-      });      
-    }
-
-    $scope.reset = reset;
-*/
-/*    function generateReference () {
-      window.data = $scope.getDrugs.data;
-      var max = Math.max.apply(Math.max, $scope.getDrugs.data.map(function (o) { return o.reference; }));
-      return Number.isNaN(max) ? 1 : max + 1;
-    }*/
   }  
 ]);

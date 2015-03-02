@@ -36,7 +36,7 @@
 
 <main>
   <div class="row">
-    <div class="col-xs-6" ng-switch="!!patient">
+    <div class="col-xs-6" ng-switch="session.patient">
 
       <!-- patient search panel -->
       <div find-patient on-search-complete="loadInvoices"></div>
@@ -49,7 +49,14 @@
         </div>
       </div>
 
-      <div class="panel panel-primary" ng-switch-when="true">
+      <div ng-switch-when="is_convention">
+        <div class="alert alert-danger">  
+          <h4>{{ "CASH.WARNING" | translate }}</h4>
+          <p>{{ "CASH.WARNING_2" | translate }}.</p>
+        </div>
+      </div>
+
+      <div class="panel panel-primary" ng-switch-when="not_convention">
         <div class="panel-heading">
           <span><i class="glyphicon glyphicon-list"></i> {{ "CASH.DEBITOR_INVOICES" | translate }}</span>
         </div>
