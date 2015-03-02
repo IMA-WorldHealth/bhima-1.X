@@ -108,7 +108,7 @@ CREATE TABLE `subsidy` (
   primary key (`uuid`),
   key `debitor_group_uuid` (`debitor_group_uuid`),
   constraint foreign key (`debitor_group_uuid`) references `debitor_group` (`uuid`)
-) engine=innodb;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 ALTER TABLE `patient_group`
 MODIFY `price_list_uuid` char(36) null;
@@ -130,7 +130,7 @@ CREATE TABLE `sale_subsidy` (
   key `subsidy_uuid` (`subsidy_uuid`),
   constraint foreign key (`sale_uuid`) references `sale` (`uuid`) on delete cascade,
   constraint foreign key (`subsidy_uuid`) references `subsidy` (`uuid`)
-) engine=innodb;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
 -- Allow an employee lock
@@ -298,7 +298,7 @@ CREATE TABLE `partial_paiement` (
   key `currency_id` (`currency_id`),
   constraint foreign key (`paiement_uuid`) references `paiement` (`uuid`),
   constraint foreign key (`currency_id`) references `currency` (`id`)
-) engine=innodb;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
 -- Add a new table employee_invoice AND employee_invoice_item
@@ -321,7 +321,7 @@ CREATE TABLE `employee_invoice` (
   constraint foreign key (`debitor_uuid`) references `debitor` (`uuid`),
   constraint foreign key (`project_id`) references `project` (`id`),
   constraint foreign key (`creditor_uuid`) references `creditor` (`uuid`)
-) engine=innodb;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `employee_invoice_item`;
 CREATE TABLE `employee_invoice_item` (
@@ -334,7 +334,7 @@ CREATE TABLE `employee_invoice_item` (
   key `invoice_uuid` (`invoice_uuid`),
   constraint foreign key (`payment_uuid`) references `employee_invoice` (`uuid`) on delete cascade,
   constraint foreign key (`invoice_uuid`) references `sale` (`uuid`)
-) engine=innodb;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
 INSERT INTO `transaction_type` (`service_txt`) VALUES
@@ -374,7 +374,7 @@ create table `consumption_reversing` (
   key `depot_uuid`   (`depot_uuid`),
   constraint foreign key (`consumption_uuid`) references `consumption` (`uuid`),
   constraint foreign key (`depot_uuid`) references `depot` (`uuid`) on delete cascade on update cascade
-) engine=innodb;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 drop table if exists `hollyday_paiement`;
 create table `hollyday_paiement` (
@@ -384,5 +384,5 @@ create table `hollyday_paiement` (
   `paiement_uuid`           char(36) not null,
   constraint foreign key (`paiement_uuid`) references `paiement` (`uuid`),
   constraint foreign key (`hollyday_id`) references `hollyday` (`id`)
-) engine=innodb;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
