@@ -970,7 +970,7 @@ function handleEmployeeInvoice (id, user_id, done) {
             'FROM `employee_invoice` JOIN `employee_invoice_item` JOIN `debitor` JOIN `creditor` JOIN `debitor_group` JOIN `creditor_group` JOIN `sale` JOIN `project` JOIN `enterprise` ON ' +
             '  `employee_invoice`.`uuid` = `employee_invoice_item`.`payment_uuid` AND ' +
             '  `employee_invoice`.`debitor_uuid` = `debitor`.`uuid`  AND ' +
-            '  `employee_invoice`.`creditor_uuid` = `creditor`.`uuid`  AND ' +            
+            '  `employee_invoice`.`creditor_uuid` = `creditor`.`uuid`  AND ' +
             '  `debitor`.`group_uuid` = `debitor_group`.`uuid` AND ' +
             '  `creditor`.`group_uuid` = `creditor_group`.`uuid` AND ' +
             '  `employee_invoice_item`.`invoice_uuid` = `sale`.`uuid` AND ' +
@@ -996,7 +996,7 @@ function handleEmployeeInvoice (id, user_id, done) {
             '  `employee_invoice_item`.`invoice_uuid` = `sale`.`uuid` AND ' +
             '  `employee_invoice`.`project_id` = `project`.`id` AND ' +
             '  `project`.`enterprise_id` = `enterprise`.`id` ' +
-            'WHERE `employee_invoice_item`.`uuid` = ' + sanitize.escape(row.gid);  
+            'WHERE `employee_invoice_item`.`uuid` = ' + sanitize.escape(row.gid);
 
           return q.all([db.exec(debit_sql), db.exec(credit_sql)]);
           //return q.all([db.exec(credit_sql)]);
@@ -1465,10 +1465,10 @@ function handleEmployee (id, user_id, done) {
 
   function debit () {
     return q.all(
-      reference.reference_pcash_items.map(function (ref_pcash_item) {                    
+      reference.reference_pcash_items.map(function (ref_pcash_item) {
         var valueExchanged = parseFloat((1/dayExchange.rate) * ref_pcash_item.debit).toFixed(4);
 
-        var sql = 
+        var sql =
           'INSERT INTO posting_journal ' +
           '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
           '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
@@ -3035,7 +3035,7 @@ function handleDonation (id, user_id, data, done) {
 
   function getTransId (trans_id) {
     cfg.trans_id = trans_id;
-    cfg.descrip =  'Donation/' + new Date().toISOString().slice(0, 10).toString();
+    cfg.descrip =  trans_id.substring(0,4) + '_Donation/' + new Date().toISOString().slice(0, 10).toString();
     return debit();
   }
 
@@ -3051,7 +3051,7 @@ function handleDonation (id, user_id, data, done) {
           data.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\''
+          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip)
         ].join(',') + ', `inventory_group`.`stock_account`, ' +
         [
           0, cfg.cost,
@@ -3080,7 +3080,7 @@ function handleDonation (id, user_id, data, done) {
           data.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\''
+          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip)
         ].join(',') + ', `inventory_group`.`donation_account`, ' +
         [
           cfg.cost, 0,
@@ -3098,10 +3098,14 @@ function handleDonation (id, user_id, data, done) {
   }
 
   function catchError (err) {
+
+    var tracks = data.tracking_numbers.map(function (item){
+      return sanitize.escape(item);
+    });
     var donation_deleting = "DELETE FROM `donations` WHERE `donations`.`uuid`=" + sanitize.escape(data.donation.uuid),
         donation_item_deleting = "DELETE FROM `donation_item` WHERE `donation_item`.`donation_uuid`=" + sanitize.escape(data.donation.uuid),
         movement_deleting = "DELETE FROM `movement` WHERE `movement`.`document_id`=" + sanitize.escape(data.movement.document_id),
-        stock_deleting = "DELETE FROM `stock` WHERE `stock`.`tracking_number` IN (" + data.tracking_numbers.join() + ')';
+        stock_deleting = "DELETE FROM `stock` WHERE `stock`.`tracking_number` IN (" + tracks.join() + ')';
 
     db.exec(donation_item_deleting)
     .then(function () {
@@ -3340,12 +3344,12 @@ table_router = {
   'cash'                    : handleCash,
   'purchase'                : handlePurchase,
   'group_invoice'           : handleGroupInvoice,
-  'employee_invoice'        : handleEmployeeInvoice,  
+  'employee_invoice'        : handleEmployeeInvoice,
   'credit_note'             : handleCreditNote,
   'caution'                 : handleCaution,
   'transfert'               : handleTransfert,
   'pcash_convention'        : handleConvention,
-  'pcash_employee'          : handleEmployee,  
+  'pcash_employee'          : handleEmployee,
   'primary_expense'         : handleGenericExpense,
   'primary_income'          : handleGenericIncome,
   'indirect_purchase'       : handleIndirectPurchase,
