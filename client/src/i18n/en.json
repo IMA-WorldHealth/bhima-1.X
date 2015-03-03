@@ -201,7 +201,9 @@
    "PAY_INVOICES"     : "Pay Invoices",
    "TITLE"            : "Cash Payment Module",
    "TOTAL_DUE"        : "Total Due",
-   "TOTAL_PAYING"     : "Total Paying"
+   "TOTAL_PAYING"     : "Total Paying",
+   "WARNING"          : "This patient is a contracted and can not pay checkout in Cash Payments",
+   "WARNING_2"        : "For the payment of old bills would have to change his debtor group"
    },
 "CASH_PAYMENTS": {
    "ALL_PROJECTS" : "All Projects",
@@ -681,14 +683,16 @@
    "TITLE"      : "Debtor Group Management"
    },
 "DEPOT": {
-   "ADD"          : "Add a Store",
-   "ALERT"        : "Manage your stores from here",
-   "ALL"          : "All Stores",
-   "EDIT"         : "Edit store information",
-   "EDIT_SUCCESS" : "Update successfully",
-   "NEW"          : "Register a new Store",
-   "NO_DEPOTS"    : "No stores have been registered.",
-   "TITLE"        : "Store Management"
+   "ADD"             : "Add a Store",
+   "ALERT"           : "Manage your stores from here",
+   "ALL"             : "All Stores",
+   "DELETE_SUCCESS"  : "Delete success",
+   "EDIT"            : "Edit store information",
+   "EDIT_SUCCESS"    : "Update successfully",
+   "NEW"             : "Register a new Store",
+   "NEW_SUCCESS"     : "New store saving with success",
+   "NO_DEPOTS"       : "No stores have been registered.",
+   "TITLE"           : "Store Management"
    },
 "DISTRIBUTION": {
    "ADD_ROW"                : "Add an Item",
@@ -1688,7 +1692,7 @@
       "RECIPIENT"             : "Recipient",
       "REFERENCE_DOCUMENT_ID" : "Reference Document ID",
       "SELECT_ACCOUNT"        : "Select an account",
-      "SUPPORT"               : "Paiement des prises en charges",  
+      "SUPPORT"               : "Support paiement",  
       "TRANSFER"              : "Transfert"
       },
    "INCOMES"          : "Income",
@@ -2226,21 +2230,22 @@
    "UPDATE"      : "Update"
    },
 "SUPPLIER": {
-   "ADDR_1"           : "Address 1",
-   "ADDR_2"           : "Address 2",
-   "CREATE"           : "Create Creditor Group",
-   "CREATE_SUPPLIER"  : "Create Supplier",
-   "EDIT_SUPPLIER"    : "Edit",
-   "EMAIL"            : "Email",
-   "FAX"              : "Fax",
-   "GROUP"            : "Group",
-   "INTL"             : "International",
-   "OPTIONAL_INFO"    : "Optional Information",
-   "PHONE"            : "Phone",
-   "REGISTERED"       : "Registered Suppliers",
-   "SUPPLIER"         : "supplier",
-   "SUPPLIER_DETAILS" : "Details",
-   "TITLE"            : "Register Supplier"
+   "ADDR_1"                : "Address 1",
+   "ADDR_2"                : "Address 2",
+   "CREATE"                : "Create Creditor Group",
+   "CREATE_SUPPLIER"       : "Create Supplier",
+   "EDIT_SUPPLIER"         : "Edit",
+   "EMAIL"                 : "Email",
+   "FAX"                   : "Fax",
+   "GROUP"                 : "Group",
+   "INTL"                  : "International",
+   "OPTIONAL_INFO"         : "Optional Information",
+   "PHONE"                 : "Phone",
+   "REGISTERED"            : "Registered Suppliers",
+   "REGISTRATION_SUCCESS"  : "Registration success",
+   "SUPPLIER"              : "supplier",
+   "SUPPLIER_DETAILS"      : "Details",
+   "TITLE"                 : "Register Supplier"
    },
 "SUPPORT": {
    "AGREED"                 : "Agreed Payment",

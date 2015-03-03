@@ -50,18 +50,17 @@ angular.module('bhima.controllers')
           })
           .then(function() {
             var mstock = (item2.consumption_avg > 0) ? item2.total / item2.consumption_avg : 0,
-                command = (item2.consumption_max - item2.total > 0 ) ? item2.consumption_max - item2.total : 0 ; 
+                command = (item2.consumption_max - item2.total > 0 ) ? item2.consumption_max - item2.total : 0 ;
 
             item2.consumption_mstock = Math.floor(mstock);
             item2.consumption_command = Math.round(command);
           });
 
-        }); 
+        });
 
         $scope.consumptions = data;
       });
 
     }
-
-  }  
+  }
 ]);

@@ -16,7 +16,6 @@
   <div class="reportBody">
     <div class="reportFrame">
       <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
-      
       <h4 class="visible-print">{{ "STOCK_STATUS.TITLE" | translate }} <small> {{ session.date | date }}</small></h4>
         <table id="patientTable" class="reportTable">
           <thead>
@@ -25,11 +24,11 @@
               <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
               <th>{{ "COLUMNS.QUANTITY" | translate }} : {{ "COLUMNS.STOCK" | translate }}</th>
               <th>{{ "COLUMNS.CONSUMPTION_PER_MONTH" | translate }} </th>
-              <th>{{ "COLUMNS.SAFETY_STOCK" | translate }} </th> 
-              <th>{{ "COLUMNS.MINIMUM_STOCK" | translate }} </th>   
-              <th>{{ "COLUMNS.MAXIMUM_STOCK" | translate }} </th> 
-              <th>{{ "COLUMNS.MONTH_OF_STOCK" | translate }} </th> 
-              <th>{{ "COLUMNS.QUANTITY_ORDER" | translate }} </th>                                          
+              <th>{{ "COLUMNS.SAFETY_STOCK" | translate }} </th>
+              <th>{{ "COLUMNS.MINIMUM_STOCK" | translate }} </th>
+              <th>{{ "COLUMNS.MAXIMUM_STOCK" | translate }} </th>
+              <th>{{ "COLUMNS.MONTH_OF_STOCK" | translate }} </th>
+              <th>{{ "COLUMNS.QUANTITY_ORDER" | translate }} </th>
             </tr>
           </thead>
           <tbody>
@@ -38,11 +37,11 @@
               <td>{{ consumption.text }}</td>
               <td>{{ consumption.total }}</td>
               <td>{{ consumption.consumption_avg }}</td>
-              <td>{{ consumption.consumption_security }}</td> 
-              <td>{{ consumption.consumption_min }}</td>   
-              <td>{{ consumption.consumption_max }}</td> 
-              <td>{{ consumption.consumption_mstock }}</td> 
-              <td>{{ consumption.consumption_command }}</td> 
+              <td>{{ consumption.consumption_security }}</td>
+              <td>{{ consumption.consumption_min }}</td>
+              <td>{{ consumption.consumption_max }}</td>
+              <td>{{ consumption.consumption_mstock }}</td>
+              <td>{{ consumption.consumption_command }}</td>
             </tr>
             <tr ng-if="!consumptions.length">
               <td colspan="9">{{ "STOCK_STATUS.NO_CONSUMPTION" | translate }}</td>
