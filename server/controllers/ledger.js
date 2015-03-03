@@ -107,7 +107,7 @@ function debitor(id) {
       'SELECT s.reference, s.project_id, s.is_distributable, `t`.`inv_po_id`, `t`.`trans_date`, SUM(`t`.`debit_equiv`) AS `debit`,  ' +
       'SUM(`t`.`credit_equiv`) AS `credit`, SUM(`t`.`debit_equiv` - `t`.`credit_equiv`) as balance, ' +
       '`t`.`account_id`, `t`.`deb_cred_uuid`, `t`.`currency_id`, `t`.`doc_num`, `t`.`description`, `t`.`account_id`, ' +
-      '`t`.`comment`, `p`.`abbr`, `c`.`document_id` ' +
+      '`t`.`comment`, `t`.`canceled`, `p`.`abbr`, `c`.`document_id` ' +
       ', IF(NOT(ISNULL(`c`.`document_id`)), 1, 0) as `consumed` ' +
       // TODO Check if sale exists in consumption_sale table, validate if it has been distributed
       // 'CASE(WHEN `t`.`consumption_id` THEN true ELSE false) as consumed ' +
@@ -116,14 +116,16 @@ function debitor(id) {
           'SELECT `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit`, ' +
             '`posting_journal`.`credit`, `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, ' +
             '`posting_journal`.`account_id`, `posting_journal`.`deb_cred_uuid`, `posting_journal`.`currency_id`, ' +
-            '`posting_journal`.`doc_num`, posting_journal.trans_id, `posting_journal`.`description`, `posting_journal`.`comment` ' +
+            '`posting_journal`.`doc_num`, posting_journal.trans_id, `posting_journal`.`description`, `posting_journal`.`comment`, `credit_note`.`sale_uuid` AS `canceled`' +
           'FROM `posting_journal` ' +
+          'LEFT JOIN `credit_note` ON `credit_note`.`sale_uuid` = `posting_journal`.`inv_po_id` ' +
         ') UNION (' +
           'SELECT `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit`, ' +
             '`general_ledger`.`credit`, `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, ' +
             '`general_ledger`.`account_id`, `general_ledger`.`deb_cred_uuid`, `general_ledger`.`currency_id`, ' +
-            '`general_ledger`.`doc_num`, general_ledger.trans_id, `general_ledger`.`description`, `general_ledger`.`comment` ' +
+            '`general_ledger`.`doc_num`, general_ledger.trans_id, `general_ledger`.`description`, `general_ledger`.`comment`, `credit_note`.`sale_uuid` AS `canceled` ' +
           'FROM `general_ledger` ' +
+          'LEFT JOIN `credit_note` ON `credit_note`.`sale_uuid` = `general_ledger`.`inv_po_id` ' +
         ')' +
       ') AS `t` JOIN sale AS s on t.inv_po_id = s.uuid JOIN project AS p on s.project_id = p.id LEFT JOIN consumption as c on t.inv_po_id = c.document_id ' +
       'WHERE `t`.`inv_po_id` IN ("' + invoices.join('","') + '") ' +

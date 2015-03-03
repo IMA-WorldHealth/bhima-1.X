@@ -66,7 +66,7 @@ angular.module('bhima.controllers')
     }
 
     function startup(model) {
-      angular.extend($scope, model);
+      angular.extend($scope, model);   
       $scope.ledger.data = $scope.ledger.data.filter(function (data) { return data.is_distributable[0] === 1; });
       moduleStep();
     }
