@@ -3,14 +3,17 @@
 </header>
 
 <nav>
-  <a class="btn btn-sm btn-default" ng-click="new()">
-    <span class="glyphicon glyphicon-file"></span> {{ 'PROJECT.NEW' | translate }}
-  </a>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "PROJECT.TITLE" | translate }}</li>
+    </ol>
+  </div>
 
   <div class="pull-right">
-    <a class="btn btn-sm btn-default" ng-click="print()">
-      <span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}
-    </a>
+    <button class="btn btn-sm btn-default" ng-click="new()">
+      <span class="glyphicon glyphicon-plus-sign"></span> {{ 'PROJECT.NEW' | translate }}
+    </button>
   </div>
 </nav>
 

@@ -3,9 +3,18 @@
 </header>
 
 <nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li><a href="#/purchase_menu">{{ "PURCHASE_MENU.TITLE" | translate }}</a></li>
+      <li class="active">{{ "PURCHASE_RECORDS.TITLE" | translate }}</li>
+    </ol>
+  </div>
+  
   <div class="col-xs-4 hack-left">
     <input type="search" ng-model="purchase_filter.filter" class="form-bhima" placeholder="Filter Purchase Orders">
   </div>
+
   <div class="pull-right">
     <a class="btn btn-sm btn-default"><span class="glyphicon glyphicon-search"></span> {{"PURCHASE_RECORDS.ADVANCE_SEARCH" | translate}}</a>
   </div>

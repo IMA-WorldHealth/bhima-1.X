@@ -5,13 +5,14 @@
 <nav>
   <div class="pull-left">
     <ol class="breadcrumb">
-      <li><span class="glyphicon glyphicon-home"></span></li>
-      <li><a href="#/subsidy/">{{"SUBSIDY.TITLE" | translate}}</a></li>
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{"SUBSIDY.TITLE" | translate}}</li>
     </ol>
   </div>
+
   <div class="pull-right">
     <button class="btn btn-sm btn-default" ng-click="new()">
-      <span class="glyphicon glyphicon-plus"></span>
+      <span class="glyphicon glyphicon-plus-sign"></span>
        {{ "SUBSIDY.NEW_SUBSIDY" | translate }}
     </button>
   </div>

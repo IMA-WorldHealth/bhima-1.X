@@ -3,9 +3,18 @@
 </header>
 
 <nav>
-  <button id="createFiscal" ng-click="createFiscalYear()" class="btn btn-success btn-sm">
-    <span class="glyphicon glyphicon-plus"></span> {{ 'FISCAL_YEAR.CREATE' | translate }}
-  </button>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "FISCAL_YEAR.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right">
+    <button id="createFiscal" ng-click="createFiscalYear()" class="btn btn-sm btn-default">
+      <span class="glyphicon glyphicon-plus-sign"></span> {{ 'FISCAL_YEAR.CREATE' | translate }}
+    </button>
+  </div>
 </nav>
 
 <main class="extend">
