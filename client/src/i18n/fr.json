@@ -201,7 +201,9 @@
    "PAY_INVOICES"     : "Paye les Factures",
    "TITLE"            : "Caisse Auxillaire",
    "TOTAL_DUE"        : "Total Débiter",
-   "TOTAL_PAYING"     : "Total Paye"
+   "TOTAL_PAYING"     : "Total Paye",
+   "WARNING"          : "Ce patient est un conventionné et ne peut payer a la caisse auxilliare",
+   "WARNING_2"        : "Pour le paiement des anciennes factures il faudrait changer son groupe débiteur "
    },
 "CASH_PAYMENTS": {
    "ALL_PROJECTS" : "Tous Projets",
@@ -681,14 +683,16 @@
    "TITLE"      : "Gestion des Groupes des Débiteurs"
    },
 "DEPOT": {
-   "ADD"          : "Ajouter",
-   "ALERT"        : "Ce module vous permet de gérer vos dépôt",
-   "ALL"          : "Tous les Dépôts",
-   "EDIT"         : "Editer les informations d'un dépôt",
-   "EDIT_SUCCESS" : "Données du dépôt mise à jour avec succes ",
-   "NEW"          : "Nouveau dépôt",
-   "NO_DEPOTS"    : "Aucun dépôt trouvé",
-   "TITLE"        : "Gestion des Dépôt"
+   "ADD"             : "Ajouter",
+   "ALERT"           : "Ce module vous permet de gérer vos dépôt",
+   "ALL"             : "Tous les Dépôts",
+   "DELETE_SUCCESS"  : "Suppression avec succès",
+   "EDIT"            : "Editer les informations d'un dépôt",
+   "EDIT_SUCCESS"    : "Données du dépôt mise à jour avec succes ",
+   "NEW"             : "Nouveau dépôt",
+   "NEW_SUCCESS"     : "Nouveau dépôt enregistré avec succès",
+   "NO_DEPOTS"       : "Aucun dépôt trouvé",
+   "TITLE"           : "Gestion des Dépôt"
    },
 "DISTRIBUTION": {
    "ADD_ROW"                : "Ajouter Item",
@@ -1688,7 +1692,7 @@
       "RECIPIENT"             : "Destinataire",
       "REFERENCE_DOCUMENT_ID" : "Référence Document ID",
       "SELECT_ACCOUNT"        : "Sélectionner un compte",
-      "SUPPORT"               : "Support paiement",
+      "SUPPORT"               : "Paiement des prises en charges",
       "TRANSFER"              : "Transfert"
       },
    "INCOMES"          : "Recettes",
@@ -2226,21 +2230,22 @@
    "UPDATE"      : "Mise à jour"
    },
 "SUPPLIER": {
-   "ADDR_1"           : "Adresse 1",
-   "ADDR_2"           : "Adresse 2",
-   "CREATE"           : "Créer un groupe de créditeur",
-   "CREATE_SUPPLIER"  : "Créer Fournisseur",
-   "EDIT_SUPPLIER"    : "Editer",
-   "EMAIL"            : "Email",
-   "FAX"              : "Fax",
-   "GROUP"            : "Groupe",
-   "INTL"             : "Internationale",
-   "OPTIONAL_INFO"    : "Informations optionnelles",
-   "PHONE"            : "Téléphone",
-   "REGISTERED"       : "Les fournisseurs inscrits",
-   "SUPPLIER"         : "Fournisseur",
-   "SUPPLIER_DETAILS" : "Détails",
-   "TITLE"            : "Enregistrer Fournisseur"
+   "ADDR_1"                : "Adresse 1",
+   "ADDR_2"                : "Adresse 2",
+   "CREATE"                : "Créer un groupe de créditeur",
+   "CREATE_SUPPLIER"       : "Créer Fournisseur",
+   "EDIT_SUPPLIER"         : "Editer",
+   "EMAIL"                 : "Email",
+   "FAX"                   : "Fax",
+   "GROUP"                 : "Groupe",
+   "INTL"                  : "Internationale",
+   "OPTIONAL_INFO"         : "Informations optionnelles",
+   "PHONE"                 : "Téléphone",
+   "REGISTERED"            : "Les fournisseurs inscrits",
+   "REGISTRATION_SUCCESS"  : "Enregitrement avec succès",
+   "SUPPLIER"              : "Fournisseur",
+   "SUPPLIER_DETAILS"      : "Détails",
+   "TITLE"                 : "Enregistrer Fournisseur"
    },
 "SUPPORT": {
    "AGREED"                 : "Paiement Agrée",
