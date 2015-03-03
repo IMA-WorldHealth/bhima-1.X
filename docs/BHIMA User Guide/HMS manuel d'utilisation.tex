@@ -11,7 +11,7 @@
 \usepackage{graphicx}
 \usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
 \author{IMA World Health Web Developer Team}
-\title{\includegraphics[width=12cm]{ima.png} \\Hospital Management System\\ (HMS) \\ Manuel d'utilisation}
+\title{\includegraphics[width=12cm]{ima.png} \\BASIC HOSPITAL INFORMATION MANAGEMENT APPLICATION\\ (BHIMA) \\ Manuel d'utilisation}
 
 \begin{document}
 %Page de garde
@@ -47,8 +47,8 @@ Dans sa partie gauche de la figure ci-dessous on retrouve le logo IMA World Heat
 \label{Interface principale pour le changement de langue}
 \end{figure} 
 \newpage
-\section{Les modules du système HMS}
-Le système d'information HMS possède plusieurs modules qui sont représenté par l'arborescence ci-dessous.
+\section{Les modules du système BHIMA}
+Le système d'information BHIMA possède plusieurs modules qui sont représenté par l'arborescence ci-dessous.
 \begin{figure}[h]
 \begin{center}
 \includegraphics[width=4.5cm]{pic/arbo.png}
@@ -60,14 +60,18 @@ Voici les différentes rubriques qui existent dans le système:
 % Liste des modules
 \begin{itemize}
 \item Admin. %•
-\item Finance
 \item Budget
-\item Rapports
-\item Stock
+\item Canevas SNIS
+\item Comptabilité
+\item Finances
 \item Hôpital
 \item Payroll
-\item Comptabilité
-\item Canevas SNIS
+\item Rapports
+\item Stock
+
+
+
+
 \end{itemize}
 Nous allons à présent détailler chacun d'entre eux.
 \newpage
@@ -220,9 +224,11 @@ Lorsque l'utilisateur click sur le bouton \includegraphics[scale=1]{pic/AjouterC
 \begin{itemize}
 \item \textbf{Le libelle de compte}: permet de nomme un compte \\
 \item \textbf{Le type de Compte}: permet de dire si un compte est du type incom/expense, balance, title.\\
-\item \textbf{Numero de compte]}: permet de donner un numéro à un compte \\
+\item \textbf{Numero de compte}: permet de donner un numéro à un compte \\
 \item \textbf{Groupe de comptes (Comptes titres)}: permet d'affilier un compte à un groupe de compte.\\
 \end{itemize}
+
+Si le compte est du type \textbf{Title}, un groupe de bouton radio apparait pour permettre de sélectionner dans quelle categorie des titres se trouve le compte, un compte de type title peut être soit \textbf{un actif}, \textbf{un passif} ou bien dans une autre catégorie.
 
 Après avoir renseigner tous ce champ, un clic sur le bouton soumettre permet d'ajouter un compte dans la liste des comptes.
  
@@ -242,10 +248,10 @@ Après la création du plan comptable, ainsi que l'ajout de compte, le plan comp
 Dans l'entête Texte on retrouve les noms des différents comptes ainsi que ceux de groupe de comptes, dans l'entête No on retrouve le différent numéro des comptes, l'entête Type permet de savoir si le compte est un Income /expence, Balance ou bien un titre et l'entête effacer permet de supprimé un compte.  Il y a aussi le bouton \includegraphics[scale=0.7]{pic/GenereRapportCompt.png} qui permet d'afficher une version imprimable du plan comptable.
 
 Comme nous le montre l'image ci-après, on affiche le plan comptable de l'organisation par rapport à une date bien précise.\\
-\newpage
+
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=14cm]{pic/AnneeFiscal.png}
+\includegraphics[width=14cm]{pic/PlanComptable.png}
 \end{center}
 \caption{Aperçue du plan Comptable}
 \label{Aperçue du plan Comptable}
@@ -277,33 +283,54 @@ Lorsque l'utilisateur click sur le bouton \includegraphics[scale=0.7]{pic/CreeAn
 \item \textbf{Description}: permet de décrire l'année fiscale.
 \item \textbf{Début Mois}: permet de préciser le premier mois de l'année fiscale
 \end{itemize}
-\textbf{Il existe aussi deux boutons radio une année et Spécifier }: si l'on clique sur le bouton radio une année, l'année fiscale commencera à partir du \textbf{début mois} jusqu'au mois précisé de l'année prochaine. Mais si l'on clique sur le bouton \textbf{spécifier} dans ce cas l'utilisateur devra préciser le champ \textbf{Fin Mois}.
+\textbf{Il existe aussi deux boutons radio une année et Spécifier }: si l'on clique sur le bouton radio \textbf{une année}, l'année fiscale commencera à partir de la période préciser et couvrira une période de douze mois mais si l'on clique sur le bouton \textbf{spécifier} dans ce cas l'utilisateur devra préciser le champ \textbf{Fin Mois} qui marquera la fin de l'année fiscale.
 
-Après avoir renseigné tous ce champ, un clic sur le bouton \textbf{Enregistrer} permet d'ajouter Une année fiscale dans ladite liste.
+Le champ \textbf{Année Fiscale précédent} n'apparait que s'il existe au moins une année fiscale déjà enregistrer dans le système. 
+
+Après avoir renseigné tous ce champ, un clic sur le bouton \textbf{Enregistrer} redirige vers la deuxième étape de la création d'année fiscale qu'au cas ou il existait une année fiscale précédente à celle qui est en train d'être créer. Cette interface permet juste la confirmation de la fermeture de l'année fiscale précédente.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/CloseFiscYear.png}
+\end{center}
+\caption{Aperçue de l'interface permettant la fermeture de l'année fiscale précédente}
+\label{Aperçue de l'interface permettant la fermeture de l'année fiscale précédente}
+\end{figure}
+
+La troisième étape de la création d'une année fiscale n'est juste qu'une interface de confirmation de la fermeture de l'année fiscale, cette troisième étape devient la deuxième étape de la création d'une année fiscale dans le cas ou il n'existait pas encore d'autres années fiscale.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/ConfirSucces.png}
+\end{center}
+\caption{Message de confirmation de la création de la nouvelle année fiscale}
+\label{Message de confirmation de la création de la nouvelle année fiscale}
+\end{figure}
+
+\newpage
+
 \subsection{Liste des années fiscale}
 Voici comment se présente la liste des années fiscale
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=16cm]{pic/ListeAnnFisc.png}
+\includegraphics[width=9cm]{pic/ListeAnnFisc.png}
 \end{center}
 \caption{Aperçue de la liste des années fiscales}
 \label{Aperçue de la liste des années fiscaux}
 \end{figure}
 
-
-La liste des années fiscale possède deux entêtes Description et Début année, pour chaque année fiscale de la liste existe l'icône \includegraphics[scale=0.7]{pic/EditUser.png} qui permet d'éditer l'année fiscal, le bloquer, le débloquer permet aussi de voir l'ouverture des balances. La figure ci-après permet de voir le formulaire qui permet de faire toutes ces opérations.
+Pour pouvoir visualiser les détailles d'une année fiscale il suffit de cliquer sur cette année fiscale dans la liste des années fiscaux.
 
 \begin{figure}[h]
 \begin{center}
 \includegraphics[width=12cm]{pic/FormAddFiscYear.png}
 \end{center}
-\caption{Formulaire d'administration des années fiscaux}
-\label{Formulaire d'administration des années fiscaux}
+\caption{Interface principale de management d'une année fiscal}
+\label{Interface principale de management d'une année fiscal}
 \end{figure}
 
-Dans la partie gauche de l'image ci-haut on retrouve la description de l'année fiscale, le bouton permettant de bloquer une année fiscale, le total des mois, le premier No Voucher, le dernier Voucher No, la date à laquelle la dite année fiscale avait été posté ainsi que la date à laquelle l'année fiscale prend fin.
-Dans la partie droite est affichée les différentes périodes de l'année fiscale. En dessous de ce tableau se trouve le bouton voir la balance d'ouverture.
+Dans la partie gauche de l'image ci-haut on retrouve la liste des années fiscales, on peut aussi , modifier la designation d'une année fiscale, visualiser les différentes périodes qui constituent cette année fiscale. 
 
 \newpage
 \section{Liste des prix}
@@ -497,10 +524,10 @@ Pour faire l'administration des secteurs, il suffit de cliquer sur le bouton \in
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=14cm]{pic/FormulaireGestionSecteur.png}
+\includegraphics[width=12cm]{pic/FormulaireGestionSecteur.png}
 \end{center}
-\caption{Aperçue du plan Comptable}
-\label{Aperçue du plan Comptable}
+\caption{Aperçue de l'interface permettant la gestion des secteurs}
+\label{Aperçue de l'interface permettant la gestion des secteurs}
 \end{figure}
 
 Le bouton \includegraphics[scale=0.7]{pic/GestionEmplacement.png} redirige vers la page principale de la gestion des emplacements.
@@ -508,7 +535,7 @@ Le bouton \includegraphics[scale=0.7]{pic/AddSecteur.png} permet d'ajouter un se
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=14cm]{pic/FormAddSecteur.png}
+\includegraphics[width=10cm]{pic/FormAddSecteur.png}
 \end{center}
 \caption{Formulaire permettant d'ajouter les secteurs}
 \label{Formulaire permettant d'ajouter les secteurs}
@@ -525,16 +552,15 @@ Pour faire l'administration des provinces, il suffit de cliquer sur le bouton \i
 \includegraphics[width=14cm]{pic/InterfaceGestionProvince.png}
 \end{center}
 \caption{Interface principale permettant la gestion des provinces}
-\label{Aperçue du plan Comptable}
+\label{Interface principale permettant la gestion des provinces}
 \end{figure}
 
 Le bouton \includegraphics[scale=0.7]{pic/GestionEmplacement.png} redirige vers la page principale de la gestion des emplacements.
 
 Le bouton \includegraphics[scale=0.7]{pic/AddNewProvince.png} permet d'ajouter une province dans ladite liste.
-\newpage
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=14cm]{pic/FormNewProvince.png}
+\includegraphics[width=10cm]{pic/FormNewProvince.png}
 \end{center}
 \caption{Formulaire permettant d'ajouter une province}
 \label{Formulaire permettant d'ajouter une province}
@@ -560,7 +586,7 @@ Le bouton \includegraphics[scale=0.7]{pic/AddCountry.png} permet d'ajouter un pa
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=16cm]{pic/SaveCountry.png}
+\includegraphics[width=10cm]{pic/SaveCountry.png}
 \end{center}
 \caption{Enregistrer un pays}
 \label{Enregistrer un pays}
@@ -569,6 +595,107 @@ Le bouton \includegraphics[scale=0.7]{pic/AddCountry.png} permet d'ajouter un pa
 Le formulaire ci-haut apparait lorsqu'un utilisateur clique sur le bouton \textbf{ajouter Nouveau pays}. Ce formulaire possède trois champs, le premier \textbf{Code} permet de donner un code à un pays ensuite un champ pour donner le nom du pays en \textbf{Anglais} et l'autre pour le \textbf{Français}.
 L'enregistrement est effectif seulement si l'utilisateur clique sur le bouton Ajouter. La liste des pays apparait sous forme de tableau. Ce tableau a trois rubriques. Le premier \textbf{Code} renseigne sur le code qui a été attribué au pays, le second \textbf{Nom en anglais} suivi de \textbf{Nom}  et le dernier \textbf{Actions} renferme deux icônes le premier \includegraphics[scale=0.7]{pic/EditUser.png}  permet de modifier les informations sur un pays et le second \includegraphics[scale=0.7]{pic/DeleteWRed.png}  permet de supprimer un pays.
 
+
+\section{Subventions}
+La figure ci-dessous représente l'interface principale permettant la Gestion des subventions. 
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/MainSubvention.png}
+\end{center}
+\caption{Interface permettant l'administration des subventions}
+\label{Interface permettant l'administration des subventions}
+\end{figure}
+
+Dans la figure ci-haute on retrouve dans la partie gauche la liste des différents subventions enregistrées dans le système, au dessus de ce tableau existe le bouton \includegraphics[scale=1]{pic/NewSubvention.png} qui permet d'ajouter un nouveau grade dans le système, le formulaire permettant d'enregistrer une nouvelle subvention se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/FormSubvention.png}
+\end{center}
+\caption{Formulaire permettant l'enregistrement des subventions}
+\label{Formulaire permettant l'enregistrement des subventions}
+\end{figure} 
+
+Le formulaire permettant l'enregistrement des subventions comporte quatre zones de saisie rélative à la désignation de la subvention, le champ en pourcentage permet de spécifier si la subvention s'exprime en terme  de pourcentage, le champ valeur permet de renseigner la valeur de la subvention soit en pourcentage ou bien à l'unité monnetaire et le dernier permet de spécifier le débiteur qui prend en charge la subvention. 
+
+Les tableaux réprésentant les subventions enregistrées donne la possibilité de pouvoir mettre à jour les informations rélative à une subventions, dans la zone action de ce tableau on retrouve deux icônes, l'icône \includegraphics[scale=0.7]{pic/EditBlack.png} qui permet de mettre à jour une subventions et \includegraphics[scale=0.7]{pic/DeleteWRed.png} permet de supprimer une subvention dans le système.
+Voici un apperçu du formulaire permettant la mise à jour des informations d'une subvention, la mise à jour est effective que si l'on modifier les informations dont on a besoin en validant grace au bouton soumettre. 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/FormUpSubventions.png}
+\end{center}
+\caption{Formulaire permettant de mettre à jour les informations d'une subvention}
+\label{Formulaire permettant de mettre à jour les informations d'une subvention}
+\end{figure} 
+
+\newpage
+\section{Taux d'échange}
+Le module de taux de change, donne la possibilité de définir le taux d'échange du jour. Par souci d'intégrité des données, Le taux d'échange doit être défini chaque jour.
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=16cm]{pic/FormulaireConfigRate.png}
+\end{center}
+\caption{Formulaire permettant de configurer le taux de change}
+\label{Formulaire permettant de configurer le taux de change}
+\end{figure}
+
+\subsection{Nouveau Taux}
+Lorsque l'utilisateur click sur le bouton \includegraphics[scale=0.7]{pic/NouveauTaux.png}
+ Le formulaire ci-après apparait.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/DefinirTaux.png}
+\end{center}
+\caption{Formulaire permettant de definir le taux}
+\label{Formulaire permettant de definir le taux}
+\end{figure}
+\begin{itemize}
+\item \textbf{United States Dollars}: est la monnaie principale de l'application, l'équivalence avec d'autres monnaies ne doit se faire qu'avec la somme de 100 Dollars,
+\item \textbf{Sélectionner Monnaie}: Affiche la liste des monnaies qui existe dans le système et la zone de saisie qui se retrouve en bas permet de préciser l'équivalence avec la monnaie principale.
+\end{itemize}
+Après avoir renseigné ce deux champs, un clique sur le bouton \textbf{Soumettre} permet de définir les taux du jour.
+
+\subsection{Revoir le taux d'aujourd'hui}
+Un clic sur le bouton \includegraphics[scale=0.7]{pic/RevoirTaux.png} permet d'afficher toutes les informations sur le taux du jour, comme la montre la figure ci-dessous.
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/ShowRate.png}
+\end{center}
+\caption{Aperçue du taux du jour}
+\label{Aperçue du taux du jour}
+\end{figure}
+\newpage
+\section{Groupe Créditeur}
+Ce module permet de faire la gestion des groupes créditeurs, l'interface principale de ce module se présente de la manière que voici.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/AdminGroupCredit.png}
+\end{center}
+\caption{Interface principale permettant d'administrer le groupe créditeur}
+\label{Interface principale permettant d'administrer le groupe créditeur}
+\end{figure}
+
+
+Le bouton \includegraphics[scale=0.7]{pic/NewGroupCredit.png} permet d'ajouter un nouveau groupe créditeur dans ladite liste.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/AddNewGroupCred.png}
+\end{center}
+\caption{Ajouter un nouveau groupe créditeur}
+\label{Ajouter un nouveau groupe créditeur}
+\end{figure}
+
+Le formulaire ci-haut apparait lorsqu'un utilisateur clique sur le bouton \textbf{Nouveau groupe Créditeur}. Ce formulaire possède deux champs, le premier \textbf{Nom du groupe} permet de spécifier le nom du groupe et \textbf{Numéro de compte}  le numéro de compte permet de choisir dans la liste de compte, celui correspondant au groupe créditeur.
+L'enregistrement est effectif seulement si l'utilisateur clique sur le bouton Sauver changement.
+La liste des groupes créditeurs apparait sous forme de tableau. Ce tableau possède quatre rubriques. Le premier \textbf{Nom du groupe} renseigne sur le nom du groupe, le second renseigne sur le numéro de compte, en troisième lieu il y'a une rubrique qui est représenté par l'icône \includegraphics[scale=0.7]{pic/Locked.png}  qui permet de verrouiller mais aussi de déverrouillé un groupe créditeur à l'aide de case à coché et denier lieu il y'a \textbf{Editer} qui contient l'icône  \includegraphics[scale=0.7]{pic/EditUser.png} permet de modifier les informations sur un groupe créditeur.
+
+
 \newpage
 \section{Groupe des Patients}
 Ce menu permet d'enregistrer toutes les groupes permettant des catégorisés les différents type des patients. Qui sont admis au sein de l'hôpital. 
@@ -576,7 +703,7 @@ L'interface principale se présente comme de la manière suivante.
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=14cm]{pic/AdminGroupPatient.png}
+\includegraphics[width=16cm]{pic/AdminGroupPatient.png}
 \end{center}
 \caption{Interface principale de la gestion des groupes des malades}
 \label{Interface principale de la gestion des groupes des malades}
@@ -588,7 +715,7 @@ Pour ajouter un nouveau groupe des patients, il suffit de cliquer sur le bouton 
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=14cm]{pic/FormGroupPatient.png}
+\includegraphics[width=10cm]{pic/FormGroupPatient.png}
 \end{center}
 \caption{Formulaire permettant d'enregistrer un groupe des patients}
 \label{Formulaire permettant d'enregistrer un groupe des patients}
@@ -596,15 +723,24 @@ Pour ajouter un nouveau groupe des patients, il suffit de cliquer sur le bouton 
 
 Le formulaire ci-haut apparait lorsqu'un utilisateur clique sur le bouton \textbf{Nouveau groupe patients}. Ce formulaire possède trois champs le premier \textbf{Nom} permet de donner un nom au groupe des malades et le second Liste des prix fait référence à la \textbf{liste de prix} relative à la dite groupe le dernier \textbf{Note} permet d'ajouter des informations supplémentaire au groupe des patients.
 
-L'enregistrement est effectif seulement si l'utilisateur clique sur le bouton Sauver. La liste \textbf{Groupes Patients Enregistrées} apparait sous forme de tableau. Ce tableau a trois rubriques. Le premier \textbf{Patient group} renseigne sur le nom du groupe, le second \textbf{Liste de prix} permet de savoir dans quelles liste de prix fait référence un groupe. Le dernier \textbf{Actions} renferme deux icônes le premier \includegraphics[scale=0.7]{pic/EditBlack.png}  permet de modifier les informations sur un pays et le second \includegraphics[scale=0.7]{pic/DeleteRed.png}  permet de supprimer un groupe.
+L'enregistrement est effectif seulement si l'utilisateur clique sur le bouton Sauver. La liste \textbf{Groupes Patients Enregistrées} apparait sous forme de tableau. Ce tableau a trois rubriques. Le premier \textbf{Patient group} renseigne sur le nom du groupe, le second \textbf{Liste de prix} permet de savoir dans quelles liste de prix fait référence un groupe. Le dernier \textbf{Actions} renferme deux icônes le premier \includegraphics[scale=0.7]{pic/blackEyes.png}  permet de visualiser les spécificités d'un groupe des patients, le premier \includegraphics[scale=0.7]{pic/EditBlack.png}  permet de modifier les informations sur un groupe des patients et le troisième \includegraphics[scale=0.7]{pic/DeleteRed.png}  permet de supprimer un groupe.
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/DetaiGrouPAtient.png}
+\end{center}
+\caption{Aperçue de l'interface permettant la visualisation des données d'un groupe des patients}
+\label{Aperçue de l'interface permettant la visualisation des données d'un groupe des patients}
+\end{figure}
 
 
 \begin{figure}[h]
 \begin{center}
 \includegraphics[width=12cm]{pic/TabGroupMalade.png}
 \end{center}
-\caption{Aperçue du tableau des groupes des malades}
-\label{Aperçue du tableau des groupes des malades}
+\caption{Aperçue du tableau des groupes des patients}
+\label{Aperçue du tableau des groupes des patients}
 \end{figure}
 \newpage
 
@@ -673,13 +809,13 @@ Dans la partie gauche l'on trouve un bouton qui permet d'ajouter un nouveau dép
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=14cm]{pic/NewStore.png}
+\includegraphics[width=10cm]{pic/NewStore.png}
 \end{center}
 \caption{Formulaire permettant d'ajouter un dépôt}
 \label{Formulaire permettant d'ajouter un dépôt}
 \end{figure}
 
-Le formulaire ci-haut apparait lorsqu'un utilisateur clique sur le bouton \textbf{Ajouter}. Ce formulaire possède le champ \textbf{Nom} qui permet d'attribuer un nom à un dépôt.
+Le formulaire ci-haut apparait lorsqu'un utilisateur clique sur le bouton \textbf{Ajouter}. Ce formulaire possède le champ \textbf{Nom} qui permet d'attribuer un nom à un dépôt, la case à cocher est ce un entrepôt permet de spécifier si le dépôt qui est entrain d'être enregistrer sera la principale dans l'organisation.
 L'enregistrement est effectif seulement si l'utilisateur clique sur le bouton Soumettre. \textbf{La liste de tous les dépôts} apparait sous forme de tableau. Ce tableau afficher toutes les informations relatives entre autre le numéro de référence, le nom et La zone \textbf{Acte} renferme deux icônes le premier \includegraphics[scale=0.7]{pic/EditUser.png}  permet de modifier le nom d'un dépôt le second \includegraphics[scale=0.7]{pic/DeleteWRed.png}  permet de supprimer un dépôt.
 \newpage
 
@@ -767,6 +903,16 @@ En dessous de cette zone réservé au bouton, il y'a une zone qui permet de rech
 \end{center}
 \caption{Aperçue de la zone permettant de rechercher un patient}
 \label{Aperçue de la zone permettant de rechercher un patient}
+\end{figure}
+
+Il existe une aussi une zone qui permet de spécifier le type de vente à opérer, il peut s'agir d'une vente distribuable et non distribuable. Une vente est dite distribuable si le patient pourrai aller se servir en produits pharmaceutiques et non distribuable si le patient à déjà consommer les dites produits. Par défaut c'est l'option \textbf{Distribuable} qui est coché par défaut.  
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/TypeVente.png}
+\end{center}
+\caption{Aperçue de la zone permettant de spécifier le type de vente}
+\label{Aperçue de la zone permettant de spécifier le type de vente}
 \end{figure}
 
 Après avoir lancer la recherche, les patients apparaissent sous forme d'une liste, une fois qu'on a retrouvé celui dont on a besoin, on le sélectionne et on clique sur le bouton soumettre, après cette étape il faudrait preciser dans quelle service est pris en charge le patient.
@@ -1036,6 +1182,7 @@ Cet interface permet aussi de prendre en charge plusieur facture appartenant à 
 \caption{Apperçue de l'interface permettant de renseigner la personne qui a autorisée le paiement}
 \label{Apperçue de l'interface permettant de renseigner la personne qui a autorisée le paiement}
 \end{figure}
+
 \newpage
 \section{Caution}
 Le module Caution est un module qui permet aux patients privés, de pouvoir payer une caution à l'hôpital, cette caution leur donne la possibilité de pour bénéficier des différents services, jusqu'à ce que les motants de la caution s'épuise.
@@ -1132,6 +1279,35 @@ une fois que cette opération est effectué un spéciment de reçu pour les conv
 
 
 \newpage
+\subsection{Recettes : Support paiement}
+Ce modules permet à des employés ayant prise en charge des patients de pouvoir s'acquiter de leur charges,l'interface principale de ce module se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/InterFacePriseCharge.png}
+\end{center}
+\caption{Interface principale de paiement de prise en charge}
+\label{Interface principale de paiement de prise en charge}
+\end{figure}
+
+Dans le coin superieur gauche il y'a un bouton qui permet de préciser la monnaie qui sera utilisée lors de l'opération du paiement.
+
+En suite il y'a une zone de recherche qui permet de rechercher l'employé qui procéde aux paiements, une fois qu'on a retrouver la dite employé, il suffit de cliquer sur le bouton soumettre pour que s'affiche la situation des tous les patients prisent en charge par l'employé, comme le montre la figure ci-après.
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/PaiemPriseChargeEmploy.png}
+\end{center}
+\caption{Illustration d'un cas de paiement pour un employé}
+\label{Illustration d'un cas de paiement pour un employé}
+\end{figure}
+ 
+Dans cette interface nous avons un tableau à gauche qui renseigne sur les informations financières sommaire et en bas du tableau, la totalité de ce que doit le groupe débiteur à l'hôpitale, la zone boite de paiement permet de préciser le montant à payer.
+
+une fois que cette opération est effectué un spéciment de reçu pour les conventions sera généré automatiquement par le système.
+
+\newpage
 \subsection{Recettes : Recette Générique}
 Les modules recette générique est un module qui a été ajouter au système enfin de pour traquer toutes les recettes générées par l'organisation en dehors des activités liées à l'hôpital, pour l'enregistrement de ce genre des recettes, il faudrait prémierement choisir le compte qui sera utiliser pour l'enregistrement des recettes.
 
@@ -1165,12 +1341,101 @@ Le module paie des employées permet permet de déterminer les différentes él�
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=14cm]{pic/paieEmp.png}
+\includegraphics[width=16cm]{pic/paieEmp.png}
 \end{center}
 \caption{Interface principale du module paie des employés}
 \label{Interface principale du module paie des employés}
 \end{figure}
 
+
+\subsection{Dépenses : Paie des employés : Paiement Effectif du Salaire}
+Le module paiement des effectifs du salaire n'est utilisable que si il existe une période de paiment pour laquelle ce module n'est pas encore utilisée. ce module dispose ainsi d'une interface principale possédant une liste de choix.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/selectPeriodPaiSal.png}
+\end{center}
+\caption{Interface principale permettant de choisir la période de paiement }
+\label{Interface principale permettant de choisir la période de paiement }
+\end{figure}
+
+Une fois qu'une période de paiement est choisi, l'utilisateur est alors dirigé vers l' interface principale du paiement effectifs des salaires. Cette interface se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/paiementSalaire.png}
+\end{center}
+\caption{Interface principale permettant de confirmer le paiement}
+\label{Interface principale permettant de confirmer le paiement}
+\end{figure}
+
+
+Voici les différents éléments de l'interface. Un bouton sélectionner une période de paiement qui permet de revenir vers l'interface permettant de choisir une période de paiement, une barre de recherche permettant de filtrer les différents éléments composant le tableau des employés.
+
+Le tableau est divisé en colonne, il existe les noms des employés, Le net après taxes, le salaire net, le salaire partiel perçu dans le cas où il y'a eu des avances sur salaires, le salaire restante qui est égale au salaire net dans le cas il n'y a pas eu d'avance sur salaire, le status du paiement qui par défaut est \includegraphics[scale=0.7]{pic/NonTaxes.png} si l'employé n'est pas encore payée et \includegraphics[scale=0.7]{pic/OuiTaxes.png} si elle est payée. pour confirmer le paiement d'un employé, il faudrait cliquer sur le bouton \includegraphics[scale=0.7]{pic/PayeSalary.png}
+
+\subsection{Dépenses : Paie des employés : Paiement partiel du salaire}
+Le module Paiement partiel du salaire permet de verser à l'employé une partie de son salaire, l'interface principale de ce module se ressemble à celui permettant le paiement effectif à la différence que celui ci permet une redirection vers la page permettant le paiement partiel du salaire.
+Le paiement partiel peut se faire en plusieur phase pour vue la somme total perçue ne puissent pas dépasser le salaire net à payer. L'interface d'accueil se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/PaiePartSalaire.png}
+\end{center}
+\caption{Interface d'accueil du paiement partiel du salaire}
+\label{Interface d'accueil du paiement partiel du salaire}
+\end{figure}
+
+Le tableau est divisé en colonne, il existe les noms des employés, Le net après taxes, le salaire net, le salaire partiel perçu dans le cas où il y'a eu des avances sur salaires, le salaire restante, le status du paiement qui par défaut est \includegraphics[scale=0.7]{pic/NonTaxes.png} si l'employé n'est pas encore payée et \includegraphics[scale=0.7]{pic/OuiTaxes.png} si elle est payée. pour pouvoir procéder au paiement partial du salaire, il suffit de cliquer sur le bouton  \includegraphics[scale=0.7]{pic/salaryPartial.png} pour visualiser le formulaire du paiement partiel du salaire.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/FormPartPaiement.png}
+\end{center}
+\caption{Formulaire permettant le paiement partiel du salaire}
+\label{Formulaire permettant le paiement partiel du salaire}
+\end{figure}
+
+Dans la figure ci haute on retrouve dans la partie supérieur les éléments sommaires sur le paiement, la zone montant permet de spécifier le montant du paiement partiel qu'on voudrait effectuer et le bouton soumettre permet de declancher le processus.
+
+Si le montant du salaire partiel est supérieur au salaire net ou bien supérieur au salaire restant un message d'alerte s'affiche pour le signaler.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/errorPartialPaiement.png}
+\end{center}
+\caption{Message d'erreur en cas de paiement partiel impossible}
+\label{Message d'erreur en cas de paiement partiel impossible}
+\end{figure}
+
+
+Les répercutions du paiement partiel du salaire sont visibles dans le module paiement effectif du salaire car le patient ayant bénéficier du salaire partiel du salaire n'obtiendront que leur salaire restant lorsqu'il faudrait procéder au paiement du salaire effectif.
+
+\newpage
+\subsection{Dépenses : Paie des employés : Paiement Cotisations}
+Le module paiement des cotisations, ce module n'est utilisable que si il existe une période de paiement pour laquelle ce module n'est pas encore utilisé. ce module dispose ainsi d'une interface principale possédant une liste de choix.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/paiemCotisations.png}
+\end{center}
+\caption{Interface principale permettant sélectionner une période de paiement}
+\label{Interface principale permettant sélectionner une période de paiement}
+\end{figure}
+
+Une fois qu'une période de paiement est choisi, l'utilisateur est alors dirigé vers une interface principale de paiement de des cotisations. Cette interface se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/PaiemCoInterface.png}
+\end{center}
+\caption{Interface principale permettant de confirmer le paiement des cotisations}
+\label{Interface principale permettant de confirmer le paiement des cotisations}
+\end{figure}
+
+Voici les différents éléments de l'interface. Un bouton sélectionner une période de paiement qui permet de revenir vers l'interface permettant de choisir une période de paiement, une barre de recherche permettant de filtrer les différents éléments composant le tableau des employés ainsi que des différentes cotisations.
+
+Le tableau est divisé en colonne, il existe le nom des employés, les différentes types de cotisations, la valeur, le status du paiement qui par défaut est \includegraphics[scale=0.7]{pic/NonTaxes.png} si la cotisation n'est pas encore payée et \includegraphics[scale=0.7]{pic/OuiTaxes.png} si elle est payée. pour confirmer le paiement d'un cotisation, il faudrait cliquer sur le bouton \includegraphics[scale=0.7]{pic/CotPayBouton.png}
 
 \subsection{Dépenses : Paie des employés : Paiement Taxes}
 Le module paiement des taxes n'est utilisable que si il existe une période de paiment pour laquelle ce module n'est pas encore utilisé. ce module dispose ainsi d'une interface principale possédant une liste de choix.
@@ -1197,6 +1462,8 @@ Une fois qu'une période de paiement est choisi, l'utilisateur est alors dirigé
 Voici les différents éléments de l'interface. Un bouton sélectionner une période de paiement qui permet de revenir vers l'interface permettant de choisir une période de paiement, une barre de recherche permettant de filtrer les différents éléments composant le tableau des employés ainsi que des différentes taxes.
 
 Le tableau est divisé en colonne, il existe le nom des employés, les types de taxes, la valeur, le status du paiement qui par défaut est \includegraphics[scale=0.7]{pic/NonTaxes.png} si la taxe n'est pas encore payée et \includegraphics[scale=0.7]{pic/OuiTaxes.png} si elle est payée. pour confirmer le paiement d'une taxe, il faudrait cliquer sur le bouton \includegraphics[scale=0.7]{pic/PayeTaxe.png}
+
+
 \newpage
 \subsection{Dépenses : Paie des employés : Paiement Taxes Entreprise}
 Le module paiement des taxes Entreprise est similaire à celui permettant le paiement de taxes,  ce module n'est utilisable que si il existe une période de paiement pour laquelle ce module n'est pas encore utilisé. ce module dispose ainsi d'une interface principale possédant une liste de choix.
@@ -2038,7 +2305,7 @@ Dans l'entête de cette interface on retrouve l'identité du patient, la date, l
 
 Pour confirmer la livraison des produits, il suffit de cliquer sur le bouton \includegraphics[scale=0.7]{pic/SoumettreDistribution.png}.
 
-Le système HMS detecte la péremption des produits pharmaceutiques lors de l'opération de livraison des produits pharmaceutiques en affichant des messages d'alerte à l'écran de l'ordinateur comme le montre la figure suivante.
+Le système BHIMA detecte la péremption des produits pharmaceutiques lors de l'opération de livraison des produits pharmaceutiques en affichant des messages d'alerte à l'écran de l'ordinateur comme le montre la figure suivante.
 
 \begin{figure}[h]
 \begin{center}
