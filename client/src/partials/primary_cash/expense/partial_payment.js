@@ -306,7 +306,7 @@ angular.module('bhima.controllers')
         })
         .catch(function (err){ console.log(err); });
       } else if (verification < 0) {
-        messenger.success($translate.instant('SALARY_PAYMENT.WARNING'));
+        messenger.danger($translate.instant('SALARY_PAYMENT.WARNING'));
       }
     }
 
