@@ -1075,6 +1075,16 @@
    "UPDATE"         : "Modify a hollyday period",
    "UPDATE_SUCCES"  : "Updated successfully"
    },
+"HOME" : {
+  "BHIMA"         : "BHIMA",
+  "BHIMA_LONG"    : "Hospital Management System",
+  "DATE"          : "Date",
+  "EXCHANGE_RATE" : "Exchange Rate",
+  "FISCAL_YEAR"   : "Fiscal Year",
+  "PROJECT"       : "Project",
+  "UNDEFINED"     : "Undefined",
+  "USER"          : "User name"
+  },
 "INCOME": {
    "CONVENTION"  : "Convention",
    "EXPECTED"    : "Excpected",

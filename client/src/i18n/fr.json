@@ -1075,6 +1075,16 @@
    "UPDATE"         : "Mettre à jour une période de vacance",
    "UPDATE_SUCCES"  : "Mis à jour avec succès"
    },
+"HOME" : {
+  "BHIMA"         : "BHIMA",
+  "BHIMA_LONG"    : "Hospital Management System",
+  "DATE"          : "Date",
+  "EXCHANGE_RATE" : "Taux de change",
+  "FISCAL_YEAR"   : "Année Fiscale",
+  "PROJECT"       : "Projet",
+  "UNDEFINED"     : "Non défini",
+  "USER"          : "Utilisateur"
+  },
 "INCOME": {
    "CONVENTION"  : "Convention",
    "EXPECTED"    : "Attendu",
