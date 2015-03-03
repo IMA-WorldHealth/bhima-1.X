@@ -71,7 +71,7 @@
       controller: 'journal.voucher',
       templateUrl: 'partials/journal_voucher/journal_voucher.html'
     })
-    .when('/inventory', {
+    .when('/inventory/', {
       controller: 'inventory',
       templateUrl: '/partials/inventory/inventory.html'
     })
@@ -242,7 +242,7 @@
       controller: 'settings',
       templateUrl: 'partials/settings/settings.html'
     })
-    .when('/patient_group_assignment', {
+    .when('/patient_group_assignment/', {
       controller: 'AssignPatientGroup',
       templateUrl: 'partials/patient_group_assignment/patient_group_assign.html'
     })
@@ -258,11 +258,11 @@
       controller: 'creditNote',
       templateUrl: 'partials/credit_note/credit_note.html'
     })
-    .when('/cost_center', {
+    .when('/cost_center/', {
       controller: 'costCenter',
       templateUrl: 'partials/cost_center/cost_center.html'
     })
-    .when('/profit_center', {
+    .when('/profit_center/', {
       controller: 'profitCenter',
       templateUrl: 'partials/profit_center/profit_center.html'
     })
@@ -286,7 +286,7 @@
       controller: 'profitCenter.allocation',
       templateUrl: 'partials/profit_center/allocation/allocation.html'
     })
-    .when('/patient_group', {
+    .when('/patient_group/', {
       controller: 'patientGroup',
       templateUrl: 'partials/patient_group/patient_group.html'
     })
@@ -306,7 +306,7 @@
       controller: 'reportCashPayments',
       templateUrl: 'partials/reports/cash_payments/cash_payments.html'
     })
-    .when('/swap_debtor', {
+    .when('/swap_debtor/', {
       controller : 'group.debtor.reassignment',
       templateUrl : 'partials/swap_debtor/swap_debtor.html'
     })
@@ -446,11 +446,11 @@
       controller : 'distribution_service_record',
       templateUrl : 'partials/reports/distribution_service_record/distribution_service_record.html'
     })
-    .when('/reports/distribution_record', {
+    .when('/reports/distribution_record/', {
       controller : 'distribution_record_view',
       templateUrl : 'partials/reports/distribution_record/distribution_record_view.html'
     })
-    .when('/reports/distribution_service_record', {
+    .when('/reports/distribution_service_record/', {
       controller : 'distribution_service_record_view',
       templateUrl : 'partials/reports/distribution_service_record/distribution_service_record_view.html'
     })
@@ -498,7 +498,7 @@
       controller : 'stock.loss_record',
       templateUrl : 'partials/stock/loss_record/loss_record.html'
     })
-    .when('/reports/loss_record', {
+    .when('/reports/loss_record/', {
       controller : 'loss_record',
       templateUrl : 'partials/reports/loss_record/loss_record.html'
     })
@@ -651,6 +651,14 @@
     .when('/reports/employee_state/', {
       controller : 'configureEmployeeState',
       templateUrl : 'partials/reports_proposed/employee_state/employee_state.html'
+    })
+    .when('/home', {
+      controller : 'home',
+      templateUrl : 'partials/home/home.html'
+    })
+    .when('/', {
+      controller : 'home',
+      templateUrl : 'partials/home/home.html'
     })
     .otherwise('/');
   }
