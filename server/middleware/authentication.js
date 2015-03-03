@@ -33,17 +33,18 @@ module.exports = function () {
     if (req.method !== 'POST') { return next(); }
     var sql, id, user,
         usr = req.body.username,
-        pwd = req.body.password;
+        pwd = req.body.password,
+        pro = req.body.project;
 
     sql =
-      'SELECT user.id, user.username, user.first, user.last, user.email ' +
-      'FROM user WHERE user.username = ? ' +
-      'AND user.password = ?;';
+      'SELECT user.id, user.username, user.first, user.last, user.email, project_permission.id ' +
+      'FROM user, project_permission WHERE user.username = ? ' +
+      'AND user.password = ? AND project_permission.id = ?;';
 
-    db.exec(sql, [usr, pwd])
+    db.exec(sql, [usr, pwd, pro])
     .then(function (results) {
       if (results.length < 1) {
-        throw 'No user found';
+        throw 'No user found for this project';
       }
 
       user = results.pop();
