@@ -3,6 +3,13 @@
 </header>
 
 <nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "PRIMARY_CASH.EXPENSE.MULTI_PAYROLL" | translate }}</li>
+    </ol>
+  </div>
+  
   <div style="position: absolute; right: 5px;">
     <button class="btn btn-sm btn-primary dropdown-toggle">
       {{ session.SelectedCurrency.symbol || "PRIMARY_CASH.DEFAULT_CURRENCY" | translate }}

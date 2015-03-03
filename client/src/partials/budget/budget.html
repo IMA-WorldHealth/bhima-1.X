@@ -2,16 +2,23 @@
   {{ "BUDGET.DISPLAY.REPORT_TITLE" | translate }}
 </header>
 
-<nav ng-if="session.mode === 'display'">
-  <div class="pull-right" style="padding-right: 20px">
-    <button ng-click="selectFiscalYear()" class="btn btn-default btn-sm square" style="margin-right: 20px"><span class="glyphicon glyphicon-circle-arrow-left"></span> {{'UTIL.BACK' | translate}}</button>
+<nav>
+	<div class="pull-left">
+	    <ol class="breadcrumb">
+	      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+	      <li class="active">{{ "BUDGET.DISPLAY.REPORT_TITLE" | translate }}</li>
+	    </ol>
+	</div>
 
-    <button ng-click="exportToCSV()" 
+  	<div class="pull-right" style="padding-right: 20px"  ng-if="session.mode === 'display'">
+    	<button ng-click="selectFiscalYear()" class="btn btn-default btn-sm square" style="margin-right: 20px"><span class="glyphicon glyphicon-circle-arrow-left"></span> {{'UTIL.BACK' | translate}}</button>
+
+    	<button ng-click="exportToCSV()" 
 	    class="btn btn-default btn-sm square" 
 	    style="margin-right: 20px"><span class="glyphicon glyphicon-file"></span> {{'UTIL.EXPORT_TO_CSV' | translate}}</button> 
 
-    <button ng-click="print()" class="btn btn-default btn-sm square"><span class="glyphicon glyphicon-print"></span> {{'UTIL.PRINT' | translate}}</button>
-  </div>
+    	<button ng-click="print()" class="btn btn-default btn-sm square"><span class="glyphicon glyphicon-print"></span> {{'UTIL.PRINT' | translate}}</button>
+  	</div>
 </nav>
 
 <div class="report" style="margin-top: 8px">

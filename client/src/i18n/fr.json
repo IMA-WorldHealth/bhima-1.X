@@ -1360,7 +1360,7 @@
    "VIEW"               : "Vue"
    },
 "PATIENT_EDIT": {
-   "PAGE_TITLE"     : "Modifier Patient:",
+   "PAGE_TITLE"     : "Modifier Patient",
    "RESTART_SEARCH" : "Trouver un autre patient",
    "UPDATE_FAILED"  : "Echec durant le mise à jour du patient!",
    "UPDATE_PATIENT" : "Modifier Patient",

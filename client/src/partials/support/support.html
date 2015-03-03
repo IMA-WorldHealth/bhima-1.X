@@ -3,8 +3,15 @@
 </header>
 
 <nav>
-
-  <span class="btn btn-sm btn-default" ng-show="!!selected.employee">{{ selected.employee.name }}</span>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "SUPPORT.TITLE" | translate }}</li>
+    </ol>
+  </div>
+  <div class="pull-right">
+    <span class="btn btn-sm btn-default" ng-show="!!selected.employee">{{ selected.employee.name }}</span>
+  </div>
 </nav>
 
 <main>

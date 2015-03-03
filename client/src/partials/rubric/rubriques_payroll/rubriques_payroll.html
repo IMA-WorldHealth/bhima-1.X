@@ -5,13 +5,14 @@
 <nav>
   <div class="pull-left">
     <ol class="breadcrumb">
-      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
       <li><a href="#/rubric_management/">{{"CONFIG_RUBRIC.RUBRIC_MANAGEMENT" | translate}}</a></li>
+      <li class="active">{{ "RUBRIC_PAYROLL.TITLE" | translate }}</li>
     </ol>
   </div>
   
   <button class="btn btn-sm btn-default pull-right" ng-click="new()">
-    <span class="glyphicon glyphicon-file"></span>
+    <span class="glyphicon glyphicon-plus-sign"></span>
     {{ "RUBRIC_PAYROLL.ADD" | translate }}
   </button>
 </nav>

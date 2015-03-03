@@ -3,6 +3,12 @@
 </header>
 
 <nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "CREDITOR_GRP.TITLE" | translate }}</li>
+    </ol>
+  </div>
   <div class="pull-right">
     <button class="btn btn-sm btn-default" ng-click="newGroup()">
       <i class="glyphicon glyphicon-plus-sign"></i> {{ "CREDITOR_GRP.NEW" | translate }}

@@ -2,6 +2,15 @@
   {{ "BUDGET.EDIT.PAGE_TITLE" | translate }} <small><span ng-if="session.account.account_txt"> - {{session.account.account_txt}}</span></small>
 </header>
 
+<nav>
+	<div class="pull-left">
+	    <ol class="breadcrumb">
+	      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+	      <li class="active">{{ "BUDGET.EDIT.PAGE_TITLE" | translate }}</li>
+	    </ol>
+	</div>
+</nav>
+
 <main>
   
   <div ng-if="session.mode === 'search'">
