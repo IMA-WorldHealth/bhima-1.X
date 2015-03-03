@@ -87,7 +87,6 @@ angular.module('bhima.controllers')
 
     function init(models) {
       angular.extend($scope, models);
-      console.log('Models', models);
     }
 
     (function startup() {
@@ -97,6 +96,9 @@ angular.module('bhima.controllers')
 
     function selectStock(uuid) {
       selectedItem = $scope.selectedItem = $scope.inventory.get(uuid);
+
+      selectedItem.consumable = selectedItem.consumable !== 0;
+      
       $scope.cachePrice = angular.copy(selectedItem.price);
       $scope.cachePurchasePrice = angular.copy(selectedItem.purchase_price);
     }
@@ -141,6 +143,8 @@ angular.module('bhima.controllers')
     function submitUpdate() {
       var updateLine, history;
       updateLine = connect.clean(selectedItem);
+
+      updateLine.consumable = (updateLine.consumable)? 1 : 0;
 
       if (detectErrors(updateLine)) { return; }
 

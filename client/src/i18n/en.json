@@ -701,6 +701,7 @@
    "APPLIES_TO_ITEM"        : "Applies to individual items",
    "ASSIGN"                 : "Assign lots",
    "AVAILABLE"              : "Available prescriptions",
+   "CANCELED"               : "Canceled",
    "CONSUMED"               : "This prescription has already been consumed",
    "COST"                   : "Cost",
    "DATE"                   : "Date",
