@@ -409,18 +409,3 @@ ADD `is_distributable` bit(1) not null default b'1';-- written by lomamech
 ALTER TABLE `tax`
 ADD `is_ipr` boolean;-- written by lomamech
 
-INSERT INTO `transaction_type` (`id`, `service_txt`) VALUES
-  (19,'cotisation_paiement'),
-  (20,'generic_expense'),
-  (21,'indirect_purchase'), 
-  (22, 'confirm_purchase'), 
-  (23, 'salary_advance'), 
-  (24, 'employee_invoice'), 
-  (25, 'pcash_employee');
-
--- Update service text for transaction type
-UPDATE `transaction_type` SET `service_txt` = 'pcash_convention' WHERE `transaction_type`.`id` = 8;
-
-UPDATE `transaction_type` SET `service_txt` = 'pcash_transfert' WHERE `transaction_type`.`id` = 10;
-
-UPDATE `transaction_type` SET `service_txt` = 'generic_income' WHERE `transaction_type`.`id` = 11;
