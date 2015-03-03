@@ -386,3 +386,41 @@ create table `hollyday_paiement` (
   constraint foreign key (`hollyday_id`) references `hollyday` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+
+--
+-- Date: 2015-02-25
+-- By: Chris LOMAME 
+
+USE bhima;
+
+
+ALTER TABLE `account`
+DROP `fixed`;-- Updates to account data
+
+ALTER TABLE `consumption`
+ADD `unit_price` float unsigned;-- written by lomamech
+
+ALTER TABLE `purchase`
+ADD `is_direct` boolean not null default 0;-- written by lomamech
+
+ALTER TABLE `sale`
+ADD `is_distributable` bit(1) not null default b'1';-- written by lomamech
+
+ALTER TABLE `tax`
+ADD `is_ipr` boolean;-- written by lomamech
+
+INSERT INTO `transaction_type` (`id`, `service_txt`) VALUES
+  (19,'cotisation_paiement'),
+  (20,'generic_expense'),
+  (21,'indirect_purchase'), 
+  (22, 'confirm_purchase'), 
+  (23, 'salary_advance'), 
+  (24, 'employee_invoice'), 
+  (25, 'pcash_employee');
+
+-- Update service text for transaction type
+UPDATE `transaction_type` SET `service_txt` = 'pcash_convention' WHERE `transaction_type`.`id` = 8;
+
+UPDATE `transaction_type` SET `service_txt` = 'pcash_transfert' WHERE `transaction_type`.`id` = 10;
+
+UPDATE `transaction_type` SET `service_txt` = 'generic_income' WHERE `transaction_type`.`id` = 11;
