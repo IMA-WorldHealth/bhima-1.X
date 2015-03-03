@@ -127,7 +127,7 @@
 							              				<input type="number" ng-change="cacheQuantity(donationItem)" tabindex="{{session.tablock}}" ng-show="donationItem.isSet" class="form-invoice" ng-model="donationItem.quantity">
 							              			</td>
 							              			<td>
-							              				<input tabindex="{{session.tablock}}" ng-show="donationItem.isSet" class="form-invoice" ng-model="donationItem.purchase_price" ng-disabled="true">
+							              				<input tabindex="{{session.tablock}}" ng-show="donationItem.isSet" class="form-invoice" ng-model="donationItem.purchase_price">
 							              			</td>
 							              			<td>
 							              				<input tabindex="{{session.tablock}}" ng-show="donationItem.isSet" class="form-invoice" disabled value="{{donationItem.quantity * donationItem.purchase_price | currency}}">
