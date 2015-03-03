@@ -3051,7 +3051,7 @@ function handleDonation (id, user_id, data, done) {
           data.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\''
+          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip)
         ].join(',') + ', `inventory_group`.`stock_account`, ' +
         [
           0, cfg.cost,
@@ -3080,7 +3080,7 @@ function handleDonation (id, user_id, data, done) {
           data.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\''
+          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip)
         ].join(',') + ', `inventory_group`.`donation_account`, ' +
         [
           cfg.cost, 0,
