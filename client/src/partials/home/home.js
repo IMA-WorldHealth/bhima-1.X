@@ -21,15 +21,15 @@ angular.module('bhima.controllers')
       }
     };
 
-    dependencies.units = {
-      query : {
-      	tables : {
-      		'unit' : { columns : ['id', 'name', 'key', 'parent', 'url', 'path'] },
-      		'permission' : { columns : ['id::permission_id'] }
-      	},
-      	join : ['unit.id=permission.unit_id']
-      }
-    };
+    // dependencies.units = {
+    //   query : {
+    //   	tables : {
+    //   		'unit' : { columns : ['id', 'name', 'key', 'parent', 'url', 'path'] },
+    //   		'permission' : { columns : ['id::permission_id'] }
+    //   	},
+    //   	join : ['unit.id=permission.unit_id']
+    //   }
+    // };
 
     function init (model) {
     	angular.extend($scope, model);
@@ -37,9 +37,9 @@ angular.module('bhima.controllers')
       session.hasDailyRate = exchange.hasDailyRate();
     	session.exchangeRate = session.hasDailyRate ? '1 $ = ' + exchange.rate(100, 1, session.date) + ' Fc' : $translate.instant('HOME.UNDEFINED');
 
-    	handleTreeNavigation();
-    	handleTreeUrl();
-    	handleSortAlphabetically();
+    	// handleTreeNavigation();
+    	// handleTreeUrl();
+    	// handleSortAlphabetically();
     	handleUserInfo();
     }
 
@@ -99,16 +99,16 @@ angular.module('bhima.controllers')
 
     function treePermission (model) {
     	angular.extend($scope, model);
-    	dependencies.units.where = ['permission.user_id=' + $scope.register.data.id];
-    	dependencies.user.where = ['user.id=' + $scope.register.data.id];       
+    	// dependencies.units.where = ['permission.user_id=' + $scope.register.data.id];
+    	dependencies.user.where = ['user.id=' + $scope.register.data.id];
 	    validate.process(dependencies)
 	    .then(init);
     }
 
     appstate.register('project', function (project) {
-      $scope.project = project;   
+      $scope.project = project;
       validate.process(dependencies)
-      .then(treePermission);   
+      .then(treePermission);
     });
 
   }
