@@ -631,7 +631,7 @@ function handleCash (id, user_id, done) {
         [0, state.roundedRemainder, 0, state.roundedRemainder].join(', ') ;   // credit
 
       var description =
-        '\'Rounding correction on exchange rate data for ' + state.id + '\'';
+        '\'Rounding Exchange Rate \'';
 
       state.roundingUUID = uuid();
 
@@ -660,7 +660,7 @@ function handleCash (id, user_id, done) {
       state.roundingUUID2 = uuid();
 
       var description =
-        '\'Rounding correction on exchange rate data for ' + id + '\'';
+        '\'Rounding Exchange Rate \'';
 
       query =
         'INSERT INTO `posting_journal` ' +
