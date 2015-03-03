@@ -945,7 +945,7 @@ exports.listTopConsumption = function (req, res, next) {
       "JOIN stock ON stock.tracking_number = consumption_reversing.tracking_number " +
       "JOIN inventory ON inventory.uuid = stock.inventory_uuid " +
       "GROUP BY stock.inventory_uuid " +
-    ") AS topcons GROUP BY topcons.inventory_uuid ORDER BY topcons.quantity DESC, topcons.text ASC LIMIT 10";
+    ") AS topcons GROUP BY topcons.inventory_uuid ORDER BY quantity DESC, text ASC LIMIT 10";
   db.exec(sql)
   .then(function (result) {
     res.send(result);
