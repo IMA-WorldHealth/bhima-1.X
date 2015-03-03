@@ -58,7 +58,7 @@ angular.module('bhima.controllers')
       delete record.reference;
       connect.basicPost('depot', [record], ['uuid'])
       .then(function () {
-        messenger.info('DEPOT.EDIT_SUCCESS');
+        messenger.info($translate.instant('DEPOT.EDIT_SUCCESS'));
         $scope.depots.put(record);
         session.action = '';
         session.edit = {};
@@ -71,7 +71,7 @@ angular.module('bhima.controllers')
       record.uuid = uuid();
       connect.basicPut('depot', [record])
       .then(function () {
-        messenger.info('DEPOT.NEW_SUCCESS');
+        messenger.info($translate.instant('DEPOT.NEW_SUCCESS'));
         // record.id = res.data.insertId;
         record.reference = generateReference(); // this is simply to make the ui look pretty;
         $scope.depots.post(record);
