@@ -20,11 +20,11 @@ module.exports = function () {
     // reduce quantities in an array of entry, exit depots
     // to give a total quantity for each depot for each
     // tracking_number
-  
+
     console.log('\n\n Has reference to Store', Store, '\n\n');
     // contains { tracking_number, quantity, expiration_date }
     var _depot, store = new Store({ identifier : 'tracking_number' });
-  
+
     console.log('created new store instance', store, '\n\n');
     // depot ID is now a UUID
     _depot = depot;
@@ -107,20 +107,20 @@ module.exports = function () {
     var sql, _depot;
 
     _depot = sanitize.escape(depot);
-    
+
     sql =
       'SELECT stock.tracking_number, stock.lot_number, calculateMovement.depot_entry, calculateMovement.depot_exit, ' +
         'SUM(CASE WHEN calculateMovement.depot_entry =' + _depot + ' THEN calculateMovement.quantity ELSE -calculateMovement.quantity END) AS quantity, ' +
         'stock.expiration_date, code, inventory.text as stock_description ' +
       'FROM inventory JOIN stock ' +
       'JOIN ' +
-      
+
       // Model consumption as a movement from nothing, would be useful to know the difference between moved and consumed
       '(SELECT uuid, depot_entry, depot_exit, tracking_number, quantity, date ' +
       'FROM movement ' +
       'UNION ' +
       'SELECT uuid, null as depot_entry, depot_uuid as depot_exit, tracking_number, quantity, date  ' +
-      'FROM consumption ' + 
+      'FROM consumption ' +
       'UNION ' +
       'SELECT uuid, null as depot_entry, depot_uuid as depot_exit, tracking_number, (quantity * (-1)) AS quantity, date ' +
       'FROM consumption_reversing ) as calculateMovement ON ' +
@@ -155,16 +155,15 @@ module.exports = function () {
       var store = findDrugsInDepot(rows, depot);
       return q(store.data);
     });
-
   }
 
   return function router (url, depot) {
     var routes, match, defer = q.defer();
-    
+
     console.log('\n\n Got initial depot router request for', url, depot, '\n\n');
     routes = [
-      { re : /lot\/([0-9a-z\-]+)/ , fn : byLot },
-      { re : /drug\/([0-9a-z\-]+)/, fn : byCode },
+      { re : /lot\/([0-9a-z\-|0-9A-Z\-]+)/ , fn : byLot },
+      { re : /drug\/([0-9a-z\-|0-9A-Z\-]+)/, fn : byCode },
       { re : /lots/, fn : byAllLots },
       { re : /drugs/ , fn : byAllDrugs }
     ];
