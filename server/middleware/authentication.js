@@ -37,15 +37,22 @@ module.exports = function () {
         pro = req.body.project;
 
     sql =
-      'SELECT user.id, user.username, user.first, user.last, user.email, project_permission.id ' +
-      'FROM user, project_permission WHERE user.username = ? ' +
-      'AND user.password = ? AND project_permission.id = ?;';
+      'SELECT user.id, user.username, user.first, user.last, user.email FROM user JOIN project_permission ON ' +
+      'user.id = project_permission.user_id WHERE user.username = ? AND user.password = ? AND project_permission.project_id = ?;';
+
+
+    // sql =
+    //   'SELECT user.id, user.username, user.first, user.last, user.email, project_permission.project_id ' +
+    //   'FROM user, project_permission WHERE user.username = ? ' +
+    //   'AND user.password = ? AND project_permission.id = ?;';
 
     db.exec(sql, [usr, pwd, pro])
     .then(function (results) {
       if (results.length < 1) {
         throw 'No user found for this project';
       }
+
+      console.log('voici le user', results);
 
       user = results.pop();
       sql = 'UPDATE user SET user.logged_in = 1 WHERE user.id = ?;';
