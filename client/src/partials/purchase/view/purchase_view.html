@@ -34,15 +34,15 @@
               <th>{{ "COLUMNS.AMOUNT" | translate }}</th>
               <th>{{ "COLUMNS.DISCOUNT" | translate }}</th>
               <th>{{ "COLUMNS.CREDITOR" | translate }}</th>
-              <th>{{ "COLUMNS.PURCHASER" | translate }}</th>
+              <th>{{ "COLUMNS.PURCHASER" | translate }} / {{ "COLUMNS.SUPPLIER" | translate }}</th>
               <th>{{ "COLUMNS.EMPLOYER" | translate }}</th>
               <th>{{ "COLUMNS.PAID" | translate }}</th>
               <th></th>
             </tr>
           </thead>
 
-          <tbody ng-if="purchase_model.data.length">
-            <tr ng-repeat="purchase in purchase_model.data | filter: purchase_filter.filter">
+          <tbody ng-if="purchase_model.length">
+            <tr ng-repeat="purchase in purchase_model | filter: purchase_filter.filter">
               <td>{{purchase.reference}}</td>
               <td>{{purchase.purchase_date | date : 'EEEE, dd/MM/yyyy'}}</td>
               <td>{{purchase.cost | currency}}</td>
@@ -59,7 +59,7 @@
             </tr>
           </tbody>
 
-          <tbody ng-if="!purchase_model.data.length">
+          <tbody ng-if="!purchase_model.length">
             <tr>
             <td colspan="9" class="alert alert-info">
               {{"PURCHASE_RECORDS.NO_PURCHASE_FOUND" | translate}}. 

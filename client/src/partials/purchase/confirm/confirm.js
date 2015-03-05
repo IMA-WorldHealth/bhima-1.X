@@ -65,8 +65,9 @@ angular.module('bhima.controllers')
 
     function updatePurchase () {
     	var purchase = {
-        	uuid : session.selected.uuid,
-        	confirmed : 1
+        	uuid      : session.selected.uuid,
+        	confirmed : 1,
+          paid      : 1
       };
       return connect.put('purchase', [purchase], ['uuid']);
     }
