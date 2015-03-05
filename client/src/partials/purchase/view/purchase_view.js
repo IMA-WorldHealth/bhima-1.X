@@ -46,7 +46,7 @@ angular.module('bhima.controllers')
             'purchase.purchaser_id=user.id',
             'purchase.employee_id=employee.id'
           ],
-          where : ['purchase.paid=1']
+          where : ['purchase.paid=1', 'AND', 'purchase.is_donation=0']
         };
       break;
 
@@ -71,7 +71,7 @@ angular.module('bhima.controllers')
             'purchase.purchaser_id=user.id',
             'purchase.employee_id=employee.id'
           ],
-          where : ['purchase.paid=0']
+          where : ['purchase.paid=0', 'AND', 'purchase.confirmed=0', 'AND', 'purchase.is_donation=0']
         };
       break;
 
@@ -96,7 +96,7 @@ angular.module('bhima.controllers')
             'purchase.purchaser_id=user.id',
             'purchase.employee_id=employee.id'
           ],
-          where : ['purchase.closed=1']
+          where : ['purchase.closed=1', 'AND', 'purchase.confirmed=1', 'AND', 'purchase.is_donation=0']
         };
       break;
 
@@ -121,7 +121,7 @@ angular.module('bhima.controllers')
             'purchase.purchaser_id=user.id',
             'purchase.employee_id=employee.id'
           ],
-          where : ['purchase.closed=0','AND','purchase.confirmed=1']
+          where : ['purchase.closed=0','AND','purchase.confirmed=1', 'AND', 'purchase.is_donation=0']
         };
       break;
 
@@ -145,7 +145,8 @@ angular.module('bhima.controllers')
             'purchase.creditor_uuid=creditor.uuid',
             'purchase.purchaser_id=user.id',
             'purchase.employee_id=employee.id'
-          ]
+          ],
+          where : ['purchase.is_donation=0']
         };
       break;
 
