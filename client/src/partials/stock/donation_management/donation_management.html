@@ -208,52 +208,54 @@
 
 										        	<!-- header row -->
 										        	<tr ng-class="{ 'row-collapse' : don.isCollapsed, 'success' : don.validLots }">
-										         		<th colspan="3">
-										            		<div collapse="don.isCollapsed"><span class="glyphicon" ng-class="{ 'glyphicon-ok-circle' : don.validLots }"></span></div>
-										          		</th>
-										          		<th>
-										          			<div collapse="don.isCollapsed">{{ "COLUMNS.LOT_NUMBER" | translate }}</div>
-										          		</th>
-										          		<th>
-										          			<div collapse="don.isCollapsed">{{ "COLUMNS.QUANTITY" | translate }}</div>
-										          		</th>
-										          		<th colspan="3">
-										          			<div collapse="don.isCollapsed">{{ "COLUMNS.EXPIRATION_DATE" | translate }}</div>
-										          		</th>
+										         		<th colspan="2">
+									            		<div collapse="don.isCollapsed">
+									            			<span class="glyphicon" ng-class="{ 'glyphicon-ok-circle' : don.validLots }"></span>
+									            		</div>
+									          		</th>
+									          		<th>
+									          			<div collapse="don.isCollapsed">{{ "COLUMNS.LOT_NUMBER" | translate }}</div>
+									          		</th>
+									          		<th>
+									          			<div collapse="don.isCollapsed">{{ "COLUMNS.QUANTITY" | translate }}</div>
+									          		</th>
+									          		<th colspan="3">
+									          			<div collapse="don.isCollapsed">{{ "COLUMNS.EXPIRATION_DATE" | translate }}</div>
+									          		</th>
 										        	</tr>
 
 										        	<!-- data rows -->
 											        <tr ng-repeat="lot in don.lots.data" ng-class="{ 'row-collapse' : don.isCollapsed, 'success' : don.validLots }">
-											          	<td colspan="3"></td>
-											          	<td>
-											            	<div collapse="don.isCollapsed">
-											              		<input ng-model="lot.lot_number" >
-											            	</div>
-											          	</td>
-											          	<td>
-											            	<div collapse="don.isCollapsed">
-											              		<input ng-model="lot.quantity" type="number" >
-											            	</div>
-											          	</td>
-											          	<td colspan="2">
-											            	<div collapse="don.isCollapsed">
-											              		<input ng-model="lot.expiration_date" type="date">
-											            	</div>
-											          	</td>
-											          	<td style="text-align: right;">
-											            	<div collapse="don.isCollapsed">
-											              		<a ng-click="removeLot(don, $index)" class="action danger">
-											                		<span class="glyphicon glyphicon-trash"></span>
-											              		</a>
-											            	</div>
-											          	</td>
+										          	<td colspan="2"></td>
+										          	<td>
+										            	<div collapse="don.isCollapsed">
+										              		<input ng-model="lot.lot_number" >
+										            	</div>
+										          	</td>
+										          	<td>
+										            	<div collapse="don.isCollapsed">
+										              		<input ng-model="lot.quantity" type="number" >
+										            	</div>
+										          	</td>
+										          	<td colspan="2">
+										            	<div collapse="don.isCollapsed">
+										              		<input ng-model="lot.expiration_date" type="date">
+										            	</div>
+										          	</td>
+										          	<td>
+										            	<div collapse="don.isCollapsed">
+										              		<a ng-click="removeLot(don, $index)" class="action danger">
+										                		<span class="glyphicon glyphicon-trash"></span>
+										              		</a>
+										            	</div>
+										          	</td>
 											        </tr>
 
 										        	<!-- footer row -->
 											        <tr ng-class="{ 'row-collapse' : don.isCollapsed, 'success' : don.validLots }">
-											          	<th colspan="4">
+											          	<th colspan="3">
 											          		<div collapse="don.isCollapsed"><span class="glyphicon glyphicon-stats"></span></div>
-											         	</th>
+											         		</th>
 											          	<th>
 											            	<div collapse="don.isCollapsed" ng-class="{ 'error' : don.totalQuantity > don.quantity }">
 											              		{{ don.totalQuantity }}
@@ -268,7 +270,7 @@
 									      		</tbody>
 									      		<tfoot>
 									        		<tr>
-									          			<th colspan="4">{{ "COLUMNS.SUMMARY" | translate }}</th>
+									          			<th colspan="3">{{ "COLUMNS.SUMMARY" | translate }}</th>
 									          			<th colspan="2">{{ session.totals.quantity }}</th>
 									          			<th colspan="2">{{ session.totals.price | currency }}</th>
 									        		</tr>
@@ -315,7 +317,7 @@
 									      		</tbody>
 									      		<tbody ng-repeat-end>
 									        		<tr>
-									          			<th colspan="3"></th>
+									          			<th colspan="2"></th>
 									          			<th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>
 									          			<th>{{ "COLUMNS.QUANTITY" | translate }}</th>
 									          			<th colspan="3">
@@ -324,7 +326,7 @@
 									          			</th>
 									        		</tr>
 									        		<tr ng-repeat="lot in don.lots.data">
-									          			<td colspan="3"></td>
+									          			<td colspan="2"></td>
 									          			<td>{{ lot.lot_number }}</td>
 									          			<td>{{ lot.quantity }}</td>
 									          			<td colspan="3">{{ lot.expiration_date | date }}</td>
@@ -332,7 +334,7 @@
 									      		</tbody>
 									      		<tfoot>
 									        		<tr>
-									          			<th colspan="4">{{ "COLUMNS.SUMMARY" | translate }}</th>
+									          			<th colspan="3">{{ "COLUMNS.SUMMARY" | translate }}</th>
 									          			<th colspan="2">{{ session.totals.quantity }}</th>
 									          			<th colspan="2">{{ session.totals.price | currency }}</th>
 									        		</tr>
