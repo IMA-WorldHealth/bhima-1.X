@@ -15,27 +15,12 @@ angular.module('bhima.controllers')
 
     appstate.set('journal.ready', ready.promise);
 
-    // dependencies.journal = {
-    //   query : {
-    //     identifier : 'uuid',
-    //     tables : {
-    //       'posting_journal' : {
-    //         'columns' : ['uuid', 'fiscal_year_id', 'period_id', 'trans_id', 'trans_date', 'doc_num', 'description', 'account_id', 'debit', 'credit', 'currency_id', 'deb_cred_uuid', 'deb_cred_type', 'inv_po_id', 'debit_equiv', 'credit_equiv', 'currency_id', 'comment', 'user_id', 'pc_id', 'cc_id']
-    //       },
-    //       'account' : { 'columns' : ['account_number'] },
-    //     },
-    //     join: ['posting_journal.account_id=account.id']
-    //   }
-    // };
-
     dependencies.journal_bis = {
       identifier : 'uuid',
       query : 'journal_list/'
     };
 
     function initialise (models) {
-
-      console.log('notre model', models);
       angular.extend($scope, models);
 
       // set up grid properties
