@@ -3022,7 +3022,7 @@ function handleDonation (id, user_id, data, done) {
   function getRecord (records) {
     if (records.length === 0) { throw new Error('pas enregistrement'); }
     reference = records[0];
-    cfg.cost = (reference.purchase_price * data.quantity).toFixed(4);
+    cfg.cost = (data.purchase_price * data.quantity).toFixed(4);
     return q([get.origin('donation'), get.period(get.date())]);
   }
 

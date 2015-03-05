@@ -24,12 +24,6 @@
   <div class="row">
     <div class="col-xs-12">
 
-      <div ng-switch on="invoice_model.data.length">
-        <div class="alert alert-info" ng-switch-when="0">
-          {{"PURCHASE_RECORDS.NO_PURCHASE_FOUND" | translate}}. {{"PURCHASE_RECORDS.REFERENCE" | translate}}<strong><a href="/#/inventory/purchase">{{"PURCHASE_RECORDS.PURCHASE_ORDER" | translate}}</a></strong> {{"PURCHASE_RECORDS.TO_REQUEST" | translate}}.
-        </div>
-        <div ng-switch-default></div>
-      </div>
       <div class="invoice-table">
         <table class="table table-bordered" ng-table>
 
@@ -47,7 +41,7 @@
             </tr>
           </thead>
 
-          <tbody>
+          <tbody ng-if="purchase_model.data.length">
             <tr ng-repeat="purchase in purchase_model.data | filter: purchase_filter.filter">
               <td>{{purchase.reference}}</td>
               <td>{{purchase.purchase_date | date : 'EEEE, dd/MM/yyyy'}}</td>
@@ -62,6 +56,16 @@
                 <span ng-show="purchase.paid==0" class="glyphicon glyphicon-hand-down"></span>
               </td>
               <td><a ng-href="#/invoice/purchase/{{purchase.uuid}}"><span class="glyphicon glyphicon-list-alt"></span> {{"PURCHASE_RECORDS.VIEW_PURCHASE_DETAIL" | translate}}</a></td>
+            </tr>
+          </tbody>
+
+          <tbody ng-if="!purchase_model.data.length">
+            <tr>
+            <td colspan="9" class="alert alert-info">
+              {{"PURCHASE_RECORDS.NO_PURCHASE_FOUND" | translate}}. 
+              {{"PURCHASE_RECORDS.REFERENCE" | translate}}
+              {{"PURCHASE_RECORDS.PURCHASE_ORDER" | translate}} {{"PURCHASE_RECORDS.TO_REQUEST" | translate}}.
+            </td>
             </tr>
           </tbody>
         </table>

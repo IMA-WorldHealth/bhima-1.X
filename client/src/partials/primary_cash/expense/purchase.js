@@ -29,7 +29,7 @@ angular.module('bhima.controllers')
           project : { columns : ['abbr'] }
         },
         join : ['purchase.project_id=project.id', 'purchase.employee_id=employee.id'],
-        where : ['purchase.paid='+0]
+        where : ['purchase.paid=0','AND','purchase.is_donation=0']
       }
     };
 
