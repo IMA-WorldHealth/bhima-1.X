@@ -1,13 +1,14 @@
 angular.module('bhima.controllers')
 .controller('inventoryRegister', [
   '$scope',
+  '$translate',
   'appstate',
   'connect',
   '$modal',
   'messenger',
   'validate',
   'uuid',
-  function ($scope, appstate, connect, $modal, messenger, validate, uuid) {
+  function ($scope, $translate, appstate, connect, $modal, messenger, validate, uuid) {
 
     var dependencies = {};
 
@@ -114,7 +115,7 @@ angular.module('bhima.controllers')
       .then(function () {
         // $scope.item.uuid = packated.uuid;
         // $scope.inventory.post($scope.item);
-        messenger.success('Posted item successfully');
+        messenger.success($translate.instant('ALLTRANSACTIONS.POSTED_ITEM'));
       }, function (err) {
         messenger.danger('An error occured' + err);
       });

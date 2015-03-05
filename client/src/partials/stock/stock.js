@@ -142,7 +142,7 @@ angular.module('bhima.controllers')
           var validDepot = model.depots.get(depot.uuid);
 
           if (!validDepot) {
-            messenger.danger('The stored depot could not be found. Please select the correct depot or contact the system administrator.', 8000);
+            messenger.danger($translate.instant('DEPOT.NOT_FOUND'), 8000);
             cache.remove('depot', depot);
             session.configure = true;
             return;

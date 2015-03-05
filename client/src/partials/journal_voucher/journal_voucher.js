@@ -1,6 +1,7 @@
 angular.module('bhima.controllers')
 .controller('journal.voucher', [
   '$scope',
+  '$translate',
   'validate',
   'connect',
   'appstate',
@@ -9,7 +10,7 @@ angular.module('bhima.controllers')
   'uuid',
   'util',
   'exchange',
-  function ($scope, validate, connect, appstate, AppCache, messenger, uuid, util, exchange) {
+  function ($scope, $translate, validate, connect, appstate, AppCache, messenger, uuid, util, exchange) {
     var dependencies = {},
         db = new AppCache('journal.voucher'),
         data = $scope.data = { rows : [] },
@@ -206,7 +207,7 @@ angular.module('bhima.controllers')
         return connect.post('journal_log', log);
       })
       .then(function () {
-        messenger.success('Data Posted Successfully.');
+        messenger.success($translate.instant('ALLTRANSACTIONS.DATA_POSTED'));
       })
       .catch(function (err) {
         console.error(err);

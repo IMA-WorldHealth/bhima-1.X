@@ -36,7 +36,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="fonction in fonctions.data">
+            <tr ng-repeat="fonction in fonctions.data | orderBy:'fonction_txt'">
               <td>{{$index + 1}}</td>
               <td>{{ fonction.fonction_txt }}</td>
               <td><a class="action" ng-click="edit(fonction)"><span class="glyphicon glyphicon-pencil"></span></a></td>
