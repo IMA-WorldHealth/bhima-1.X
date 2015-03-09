@@ -10,7 +10,8 @@ angular.module('bhima.controllers')
   'messenger',
   'uuid',
   'appstate',
-  function ($scope, $routeParams, $filter, $location,  validate, connect, messenger, uuid, appstate) {
+  'exchange',
+  function ($scope, $routeParams, $filter, $location,  validate, connect, messenger, uuid, appstate, exchange) {
     var invoiceId = $routeParams.invoiceId, dependencies = {};
 
     dependencies.sale = {
@@ -43,6 +44,20 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.cashItem = {
+      query: {
+        tables: {
+          cash_item: {
+            columns: ['uuid', 'invoice_uuid', 'allocated_cost']
+          },
+          cash: {
+            columns: ['currency_id']
+          }
+        },
+        join: ['cash.uuid=cash_item.cash_uuid']
+      }
+    };
+
     dependencies.creditNote = {
       query: {
         tables: {
@@ -56,10 +71,15 @@ angular.module('bhima.controllers')
       if (invoiceId) { buildSaleQuery(); }
     });
 
+    appstate.register('enterprise', function (enterprise) {
+      $scope.enterprise = enterprise; 
+    }); 
+
     function buildSaleQuery() {
       dependencies.sale.query.where = ['sale.uuid=' + invoiceId];
       dependencies.saleItem.query.where = ['sale_item.sale_uuid=' + invoiceId];
       dependencies.creditNote.query.where = ['credit_note.sale_uuid=' + invoiceId];
+      dependencies.cashItem.query.where = ['cash_item.invoice_uuid=' + invoiceId];
       return validate.process(dependencies).then(creditNote);
     }
 
@@ -67,6 +87,19 @@ angular.module('bhima.controllers')
       $scope.model = model;
       $scope.sale = $scope.model.sale.data[0];
       $scope.creditNote = packageCreditNote();
+      //var cashItem = $scope.cashItem = $scope.model.cashItem.data;
+      var  sumItem = $scope.sumItem = 0;
+
+      if($scope.model.cashItem.data){
+        var cashItem = $scope.cashItem = $scope.model.cashItem.data;
+
+        cashItem.forEach(function (item) {
+          if($scope.enterprise.currency_id !== item.currency_id){
+            item.allocated_cost /= exchange.rate(item.allocated_cost, item.currency_id,new Date());
+          }
+          $scope.sumItem += item.allocated_cost;
+        });              
+      }  
     }
 
     function packageCreditNote() {
