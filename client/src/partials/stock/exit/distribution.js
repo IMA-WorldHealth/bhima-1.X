@@ -260,6 +260,7 @@ angular.module('bhima.controllers')
         submitItem.forEach(function (item) {
           getLotPurchasePrice(item.tracking_number)
           .then(function (price) {
+            console.log('PRICE: ', price);
             item.unit_price = price.data[0].unit_price;
             counter++;
             if (counter === submitItem.length) {
