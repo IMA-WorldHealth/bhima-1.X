@@ -115,6 +115,10 @@
       controller: 'cash',
       templateUrl: '/partials/cash/cash.html'
     })
+    .when('/auxillary_cash_records/:recordID?', {
+      controller: 'auxillaryRecords',
+      templateUrl: '/partials/records/auxillary_cash_records/auxillary_cash_records.html'
+    })
     .when('/creditor', {
       controller: 'creditors',
       templateUrl: '/partials/creditor/creditor.html'
@@ -297,7 +301,7 @@
     .when('/support/:id?', {
       controller : 'support',
       templateUrl : 'partials/support/support.html'
-    })    
+    })
     .when('/reports/patient_registrations', {
       controller : 'reportPatientRegistrations',
       templateUrl : 'partials/reports/patient_registrations/patient_registrations.html'
@@ -337,7 +341,7 @@
      .when('/primary_cash/support/:cashbox_id', {
       controller : 'primaryCash.support',
       templateUrl : 'partials/primary_cash/income/support/support.html'
-    })     
+    })
     .when('/primary_cash/income/generic/:id', {
       controller : 'primaryCash.income.generic',
       templateUrl : 'partials/primary_cash/income/generic/generic.html'
@@ -397,7 +401,7 @@
     .when('/primary_cash/expense/partial_payment/:cashbox', {
       controller : 'primary_cash.partial_payment',
       templateUrl : 'partials/primary_cash/expense/partial_payment.html'
-    })    
+    })
     .when('/primary_cash/expense/payday_advance/:cashbox', {
       controller : 'primary_cash.payday_advance',
       templateUrl : 'partials/primary_cash/expense/payday_advance.html'
@@ -601,15 +605,15 @@
     .when('/reports/cotisation_payment/', {
       controller : 'cotisation_payment',
       templateUrl : 'partials/reports/cotisation_payment/cotisation_payment.html'
-    }) 
+    })
     .when('/reports/salary_payment/', {
       controller : 'salary_payment',
       templateUrl : 'partials/reports/salary_payment/salary_payment.html'
-    })  
+    })
     .when('/reports/taxes_payment/', {
       controller : 'taxes_payment',
       templateUrl : 'partials/reports/taxes_payment/taxes_payment.html'
-    })             
+    })
     .when('/reports/stock_status/', {
       controller : 'stock_status',
       templateUrl : 'partials/reports/stock_status/stock_status.html'

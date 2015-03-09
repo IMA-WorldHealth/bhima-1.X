@@ -87,7 +87,8 @@ ADD `notes` text;
 -- Date: 2015-01-13
 -- By: Jonathan Cameron
 INSERT INTO `unit` VALUES
-(7,'Edit Account Budget','TREE.EDIT_BUDGET','',8,0,'/partials/budget/edit/','/budgeting/edit');
+(7,'Edit Account Budget','TREE.EDIT_BUDGET','',8,0,'/partials/budget/edit/','/budgeting/edit'),
+(34,'Auxillary cash records','TREE.AUXILLARY_CASH_RECORD','',5,0,'/partials/records/auxillary_cash_records/','/auxillary_cash_records/');
 
 
 -- Subsidy updating
@@ -355,7 +356,7 @@ ADD `is_warehouse` smallint unsigned not null default 0;
 -- Updates data base
 --
 -- Date: 2015-02-20
--- By: Chris LOMAME 
+-- By: Chris LOMAME
 
 USE bhima;
 
@@ -389,7 +390,7 @@ create table `hollyday_paiement` (
 
 --
 -- Date: 2015-02-25
--- By: Chris LOMAME 
+-- By: Chris LOMAME
 
 USE bhima;
 
@@ -412,10 +413,10 @@ ADD `is_ipr` boolean;-- written by lomamech
 INSERT INTO `transaction_type` (`id`, `service_txt`) VALUES
   (19,'cotisation_paiement'),
   (20,'generic_expense'),
-  (21,'indirect_purchase'), 
-  (22, 'confirm_purchase'), 
-  (23, 'salary_advance'), 
-  (24, 'employee_invoice'), 
+  (21,'indirect_purchase'),
+  (22, 'confirm_purchase'),
+  (23, 'salary_advance'),
+  (24, 'employee_invoice'),
   (25, 'pcash_employee');
 
 -- Update service text for transaction type
