@@ -34,7 +34,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="group in groups.data | filter:flags.search">
+            <tr ng-repeat="group in groups.data | filter:flags.search | orderBy:'name'">
               <td>{{ group.name }}</td>
               <td>{{ accounts.get(group.account_id).account_number }}</td>
               <td><input type="checkbox" ng-model="group.locked" ng-change="lock(group)" ng-true-value="1" ng-false-value="0" ng-checked="group.locked"></td>

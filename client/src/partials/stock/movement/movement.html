@@ -145,7 +145,7 @@
                               class="form-bhima"
                               ng-model="row.lot"
                               ng-change="stockSelected(row)"
-                              ng-options="lot as (lot.lot_number + ' (' + lot.stock_description + ')') for lot in lots.data"
+                              ng-options="lot as (lot.stock_description + ' (' + lot.lot_number + ')') for lot in lots.data | orderBy : 'stock_description' "
                               >
                               <option value="">--{{"STOCK.MOVEMENT.SELECT_LOT" | translate}} {{session.from.text}}-- {{$scope}}</option>
                             </select>

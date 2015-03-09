@@ -32,11 +32,13 @@
    "VARIABLE"       : "Variable"
    },
 "ALLTRANSACTIONS": {
+   "DATA_POSTED"  : "Données postées avec succès",
    "DAY"          : "Aujoird'hui",
    "DEFAULT"      : "ETAT DES TOUTES LES TRANSACTIONS",
    "FISCAL_YEAR"  : "Cette Année Fiscale",
    "FROMSTARTING" : "Depuis le Début",
    "MONTH"        : "Ce mois",
+   "POSTED_ITEM"  : "Article posté avec succès",
    "SEARCH"       : "valider",
    "SELECTED"     : "ETAT DES TRANSACTIONS POUR LES COMPTES : ",
    "TITLE"        : "ETAT DES TOUTES LES TRANSACTIONS",
@@ -202,7 +204,7 @@
    "TITLE"            : "Caisse Auxillaire",
    "TOTAL_DUE"        : "Total Débiter",
    "TOTAL_PAYING"     : "Total Paye",
-   "WARNING"          : "Ce patient est un conventionné et ne peut payer a la caisse auxilliare",
+   "WARNING"          : "Ce patient est un conventionné et ne peut payer à la caisse auxilliare",
    "WARNING_2"        : "Pour le paiement des anciennes factures il faudrait changer son groupe débiteur "
    },
 "CASH_PAYMENTS": {
@@ -692,6 +694,7 @@
    "NEW"             : "Nouveau dépôt",
    "NEW_SUCCESS"     : "Nouveau dépôt enregistré avec succès",
    "NO_DEPOTS"       : "Aucun dépôt trouvé",
+   "NOT_FOUND"       : "Aucun dépôt enregistrés n'a pu être trouvée. Veuillez sélectionner le bon dépôt ou contacter l'administrateur du système.",
    "TITLE"           : "Gestion des Dépôt"
    },
 "DISTRIBUTION": {
@@ -701,7 +704,7 @@
    "APPLIES_TO_ITEM"        : "Appliquer par item",
    "ASSIGN"                 : "Assignation lots",
    "AVAILABLE"              : "Prescriptions disponibles",
-   "CANCELED"               : "Annulé",
+   "CANCELED"               : "Annulée",
    "CONSUMED"               : "Consommée",
    "COST"                   : "Coût",
    "DATE"                   : "Date",
@@ -710,6 +713,7 @@
    "EXPIRED"                : "Le stock disponible ne peut pas etre utilisé comme il est expire, contacter l'administrateur.",
    "EXP_DATE"               : "Date d'expiration",
    "HAS_EXPIRED"            : " a expriré et ne peut être utilisé, contacter le Gestionnaire de Stock",
+   "INVOICE_CONVENTION"     : "Cette vente est prise en charge par une convention",
    "INVOICE_NOT_PAID"       : "Cette vente n'a pa été payée !",
    "INVOICE_PAID"           : "Cette vente a été totalement payée !",
    "INVOICE_PARTIALLY_PAID" : "Cette vente a été partiellement payée !",

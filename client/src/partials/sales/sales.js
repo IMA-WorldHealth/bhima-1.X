@@ -43,9 +43,12 @@ angular.module('bhima.controllers')
         identifier : 'uuid',
         tables: {
           'inventory' : {
-            columns: ['uuid', 'code', 'text', 'price']
-          }
-        }
+            columns: ['uuid', 'code', 'text', 'price', 'group_uuid']
+          },
+          inventory_group : { columns : ['sales_account', 'stock_account', 'donation_account'] },
+        },
+        join : ['inventory_group.uuid=inventory.group_uuid'],
+        where : ['inventory_group.sales_account<>null']        
       }
     };
 
