@@ -2054,7 +2054,7 @@ function handleDistributionPatient (id, user_id, done) {
 
   function debit () {
     return q.all(
-      references.map(function (reference) {
+      referenc es.map(function (reference) {
         var sql = 'INSERT INTO posting_journal ' +
                   '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                   '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
@@ -2115,6 +2115,18 @@ function handleDistributionPatient (id, user_id, done) {
         return db.exec(sql);
       })
     );
+  }
+
+  function catchError (err) {
+    // var posting_deleting = "DELETE FROM `posting_journal` WHERE `posting_journal`.`inv_po_id`=" + sanitize.escape(id);
+
+    // db.exec(posting_deleting)
+    // .catch(function (err) {
+    //   console.log('erreur pendant la suppression ::: ', err);
+    // })
+    // .finally(function () {
+    //   return done(err, null);
+    // });
   }
 }
 
@@ -3342,7 +3354,7 @@ function handleCotisationPayment (id, user_id, details, done) {
 table_router = {
   'sale'                    : handleSales,
   'cash'                    : handleCash,
-  'purchase'                : handlePurchase,
+  // 'purchase'                : handlePurchase,
   'group_invoice'           : handleGroupInvoice,
   'employee_invoice'        : handleEmployeeInvoice,
   'credit_note'             : handleCreditNote,
