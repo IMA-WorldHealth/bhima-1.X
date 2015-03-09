@@ -67,9 +67,9 @@ exports.listEmployees = function (req, res, next) {
     "`employee`.`id`, `employee`.`code` AS `code_employee`, `employee`.`prenom`, `employee`.`name`, " +
     "`employee`.`postnom`, `employee`.`sexe`, `employee`.`dob`, `employee`.`date_embauche`, `employee`.`service_id`, " +
     "`employee`.`nb_spouse`, `employee`.`nb_enfant`, `employee`.`grade_id`, `employee`.`locked`, `grade`.`text`, `grade`.`basic_salary`, " +
-    "`fonction`.`id` AS `fonction_id`, `fonction`.`fonction_txt`, " + 
-    "`employee`.`phone`, `employee`.`email`, `employee`.`adresse`, `employee`.`bank`, `employee`.`bank_account`, `employee`.`daily_salary`, `employee`.`location_id`, " +  
-    "`grade`.`code` AS `code_grade`, `debitor`.`uuid` as `debitor_uuid`, `debitor`.`text` AS `debitor_text`,`debitor`.`group_uuid` as `debitor_group_uuid`, " + 
+    "`fonction`.`id` AS `fonction_id`, `fonction`.`fonction_txt`, " +
+    "`employee`.`phone`, `employee`.`email`, `employee`.`adresse`, `employee`.`bank`, `employee`.`bank_account`, `employee`.`daily_salary`, `employee`.`location_id`, " +
+    "`grade`.`code` AS `code_grade`, `debitor`.`uuid` as `debitor_uuid`, `debitor`.`text` AS `debitor_text`,`debitor`.`group_uuid` as `debitor_group_uuid`, " +
     "`creditor`.`uuid` as `creditor_uuid`, `creditor`.`text` AS `creditor_text`, `creditor`.`group_uuid` as `creditor_group_uuid`, `creditor_group`.`account_id` " +
     "FROM `employee` " +
     " JOIN `grade` ON `employee`.`grade_id` = `grade`.`uuid` " +
@@ -99,7 +99,7 @@ exports.listJournal = function (req, res, next) {
     "`posting_journal`.`cc_id`, `account`.`account_number`, `user`.`first`, " +
     "`user`.`last`, `currency`.`symbol`, `cost_center`.`text` AS `cc`, " +
     "`profit_center`.`text` AS `pc` " +
-    "FROM `posting_journal` JOIN `account` ON `posting_journal`.`account_id`=`account`.`id` " +
+    "FROM `posting_journal` LEFT JOIN `account` ON `posting_journal`.`account_id`=`account`.`id` " +
     "JOIN `user` ON `posting_journal`.`user_id`=`user`.`id` " +
     "JOIN `currency` ON `posting_journal`.`currency_id`=`currency`.`id` " +
     "LEFT JOIN `cost_center` ON `posting_journal`.`cc_id`=`cost_center`.`id` " +
