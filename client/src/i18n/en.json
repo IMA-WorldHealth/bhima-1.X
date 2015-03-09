@@ -634,6 +634,7 @@
    },
 "CREDIT_NOTE": {
    "DESCRIPTION"  : "Description",
+   "PLEASE_DISTR" : "Please note that invoice was already distributed. To cancel this sale should first cancel the distribution of Products",
    "PLEASE_NOTE"  : "Please note that invoice has already been paid in case of cancellation the box must remboursser to patient the sum of:",
    "SALE_DETAILS" : "Sale Details",
    "SUBMIT"       : "Submit Credit Note",

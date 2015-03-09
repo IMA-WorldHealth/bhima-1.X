@@ -66,6 +66,23 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.consumption = {
+      query: {
+        tables: {
+          'consumption' : { columns: ['uuid', 'document_id'] }
+        }
+      }
+    };
+
+    dependencies.reversing = {
+      query: {
+        tables: {
+          'consumption_reversing' : { columns: ['uuid', 'document_id'] }
+        }
+      }
+    };
+
+
     appstate.register('project', function (project) {
       $scope.project = project;
       if (invoiceId) { buildSaleQuery(); }
@@ -80,6 +97,8 @@ angular.module('bhima.controllers')
       dependencies.saleItem.query.where = ['sale_item.sale_uuid=' + invoiceId];
       dependencies.creditNote.query.where = ['credit_note.sale_uuid=' + invoiceId];
       dependencies.cashItem.query.where = ['cash_item.invoice_uuid=' + invoiceId];
+      dependencies.consumption.query.where = ['consumption.document_id=' + invoiceId];
+      dependencies.reversing.query.where = ['consumption_reversing.document_id=' + invoiceId];
       return validate.process(dependencies).then(creditNote);
     }
 
@@ -87,8 +106,22 @@ angular.module('bhima.controllers')
       $scope.model = model;
       $scope.sale = $scope.model.sale.data[0];
       $scope.creditNote = packageCreditNote();
-      //var cashItem = $scope.cashItem = $scope.model.cashItem.data;
-      var  sumItem = $scope.sumItem = 0;
+
+      var  sumItem = $scope.sumItem = 0,
+        consumed = $scope.consumed = 0,
+        reversing = $scope.reversing = 0;
+
+      if($scope.model.consumption.data.length){
+        $scope.consumed = 1;        
+      } else {
+        $scope.consumed = 0;      
+      }  
+
+      if($scope.model.reversing.data.length){
+        $scope.reversing = 1;
+      } else {
+        $scope.reversing = 0;   
+      }
 
       if($scope.model.cashItem.data){
         var cashItem = $scope.cashItem = $scope.model.cashItem.data;

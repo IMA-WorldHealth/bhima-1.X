@@ -634,7 +634,8 @@
    },
 "CREDIT_NOTE": {
    "DESCRIPTION"  : "Description",
-   "PLEASE_NOTE"  : "Attention cette facture à déjà été payé en cas d'annulation la caisse doit remboursser au patient la somme de :",
+   "PLEASE_DISTR" : "Attention cette facturation à été déjà distribuée. Pour l'annuler il faudrait d'abord annuler la distribution des produits",
+   "PLEASE_NOTE"  : "Attention cette facture à déjà été payée en cas d'annulation la caisse doit remboursser au patient la somme de :",
    "SALE_DETAILS" : "Détaille de la Facture",
    "SUBMIT"       : "Soumettre Note de Crédit",
    "TITLE"        : "Note de Crédit",
