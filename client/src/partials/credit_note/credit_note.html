@@ -67,6 +67,26 @@
     </div>
   </div>
 
+  <div class="row" ng-if="sumItem">
+    <div class="col-xs-12">
+      <label> 
+        <h4>
+          <span class="glyphicon" ng-class="{'glyphicon-warning-sign error' : true }"></span> {{ "CREDIT_NOTE.PLEASE_NOTE" | translate }} {{sumItem | currency}}
+        </h4>
+      </label>
+    </div>
+  </div>
+
+  <div class="row" ng-if="consumed&&!reversing">
+    <div class="col-xs-12">
+      <label> 
+        <h4>
+          <span class="glyphicon" ng-class="{'glyphicon-warning-sign error' : true }"></span> {{ "CREDIT_NOTE.PLEASE_DISTR" | translate }} 
+        </h4>
+      </label>
+    </div>
+  </div>
+
   <div class="row">
     <div class="col-xs-12">
       <label>{{ "CREDIT_NOTE.DESCRIPTION" | translate }}</label>
@@ -74,7 +94,7 @@
     </div>
   </div>
 
-  <div class="row creditSubmit">
+  <div class="row creditSubmit" ng-if="!consumed||reversing">
     <div class="col-xs-12">
     <button ng-click="submitNote(creditNote)" class="btn btn-sm btn-success">
       {{ "CREDIT_NOTE.SUBMIT" | translate }}
