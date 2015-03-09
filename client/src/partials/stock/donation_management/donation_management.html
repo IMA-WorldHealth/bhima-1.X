@@ -192,8 +192,8 @@
 									          			<td>{{ don.code }}</td>
 									          			<td>{{ don.text }}</td>
 									          			<td>{{ don.quantity }}</td>
-									          			<td>{{ don.purchase_price }}</td>
-									          			<td>{{ don.quantity * don.purchase_price }}</td>
+									          			<td>{{ don.purchase_price | currency }}</td>
+									          			<td>{{ don.quantity * don.purchase_price | currency }}</td>
 											          	<td>
 												            <div ng-show="!don.isCollapsed" class="pull-right">
 												              <a ng-click="addLot(don)" class="action"><span class="glyphicon glyphicon-plus">&nbsp;</span></a>

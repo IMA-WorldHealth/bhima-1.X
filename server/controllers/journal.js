@@ -2228,7 +2228,7 @@ function handleDistributionLoss (id, user_id, details, done) {
 
   var references, dayExchange, cfg = {};
   var sql =
-    'SELECT `consumption`.`uuid`, `consumption`.`date`, `consumption`.`quantity`, `stock`.`inventory_uuid`, `inventory`.`purchase_price`, `inventory_group`.`uuid` AS group_uuid, ' +
+    'SELECT `consumption`.`uuid`, `consumption`.`date`, `consumption`.`quantity`, `consumption`.`unit_price`, `stock`.`inventory_uuid`, `inventory`.`purchase_price`, `inventory_group`.`uuid` AS group_uuid, ' +
     '`inventory_group`.`cogs_account`, `inventory_group`.`stock_account` FROM `consumption`, `consumption_loss`, `stock`, `inventory`,`inventory_group` ' +
     'WHERE `consumption`.`tracking_number`=`stock`.`tracking_number` AND `consumption_loss`.`consumption_uuid`=`consumption`.`uuid` AND `stock`.`inventory_uuid`=`inventory`.`uuid` AND `inventory`.`group_uuid`=`inventory_group`.`uuid` ' +
     'AND `consumption`.`document_id` =' + sanitize.escape(id) + ';';
@@ -2281,8 +2281,8 @@ function handleDistributionLoss (id, user_id, details, done) {
                       cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.cogs_account
                     ].join(',') + ', ' +
                     [
-                      0, (reference.quantity * reference.purchase_price).toFixed(4),
-                      0, (reference.quantity * reference.purchase_price).toFixed(4),
+                      0, (reference.quantity * reference.unit_price).toFixed(4),
+                      0, (reference.quantity * reference.unit_price).toFixed(4),
                       details.currency_id
                     ].join(',') +
                     ', null, null, ' +
@@ -2313,8 +2313,8 @@ function handleDistributionLoss (id, user_id, details, done) {
                       cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.stock_account
                     ].join(',') + ', ' +
                     [
-                      (reference.quantity * reference.purchase_price).toFixed(4), 0,
-                      (reference.quantity * reference.purchase_price).toFixed(4), 0,
+                      (reference.quantity * reference.unit_price).toFixed(4), 0,
+                      (reference.quantity * reference.unit_price).toFixed(4), 0,
                       details.currency_id, sanitize.escape(reference.inventory_uuid)
                     ].join(',') +
                     ', null, ' +
