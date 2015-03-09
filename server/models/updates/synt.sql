@@ -424,3 +424,20 @@ UPDATE `transaction_type` SET `service_txt` = 'pcash_convention' WHERE `transact
 UPDATE `transaction_type` SET `service_txt` = 'pcash_transfert' WHERE `transaction_type`.`id` = 10;
 
 UPDATE `transaction_type` SET `service_txt` = 'generic_income' WHERE `transaction_type`.`id` = 11;
+
+
+-- Title : POPULATE LANGUAGE
+-- By    : Bruce Mbayo
+-- Date  : 04 mars 2015
+INSERT INTO `language` (id, name, `key`) VALUES
+  (1, 'Francais', 'fr'),
+  (2, 'English', 'en'),
+  (3, 'Lingala', 'lg');
+
+-- Title : ALTER PURCHASE TABLE
+-- By    : Bruce Mbayo
+-- Date  : 04 mars 2015
+ALTER TABLE `purchase`
+ADD `is_donation` tinyint(1) NOT NULL DEFAULT '0',
+MODIFY `creditor_uuid` char(36) NULL,
+MODIFY `employee_id` int(10) unsigned NULL;

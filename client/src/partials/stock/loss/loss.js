@@ -171,6 +171,7 @@ angular.module('bhima.controllers')
       consumptions.loss_consumptions = [];
 
       configuration.rows.forEach(function (row) {
+
         var qte = 0, loss_qte = row.quantity;
         var current_qte = (row.lot.entered - row.lot.moved - row.lot.consumed);
         if(loss_qte <= current_qte) {
@@ -185,7 +186,8 @@ angular.module('bhima.controllers')
           date                : util.sqlDate(session.date),
           document_id         : session.document_id,
           tracking_number     : row.lot.tracking_number,
-          quantity            : qte
+          quantity            : qte,
+          unit_price          : row.price
         };
 
         var loss_consumption_item = {
