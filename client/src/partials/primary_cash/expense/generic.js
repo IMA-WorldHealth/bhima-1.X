@@ -2,6 +2,7 @@ angular.module('bhima.controllers')
 .controller('primaryCash.expense.generic', [
   '$scope',
   '$routeParams',
+  '$translate',
   'validate',
   'messenger',
   'appstate',
@@ -10,7 +11,7 @@ angular.module('bhima.controllers')
   'util',
   'appcache',
   '$location',
-  function ($scope, $routeParams, validate, messenger, appstate, connect, uuid, util, Appcache, $location) {
+  function ($scope, $routeParams, $translate, validate, messenger, appstate, connect, uuid, util, Appcache, $location) {
     var isDefined, dependencies = {};
     var session = $scope.session = { receipt : { date : new Date() }, configure : false, complete : false };
     var cache = new Appcache('expense');
@@ -165,7 +166,7 @@ angular.module('bhima.controllers')
       })
        .then(function () {
         // invoice
-        messenger.success('Posted data successfully.');
+        messenger.success($translate.instant('ALLTRANSACTIONS.DATA_POSTED'));
         $location.path('/invoice/generic_expense/' + data.uuid);
       });
     };

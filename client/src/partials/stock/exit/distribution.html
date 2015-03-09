@@ -92,13 +92,22 @@
           <td width="20%">{{session.sale.trans_date | date}}</td>
           <td width="50%">
             <div>
-              <div ng-if="session.sale.balance===session.sale.debit">
+              <div ng-if="session.sale.balance===session.sale.debit&&!session.patient.is_convention">
                 <span
                 class="glyphicon"
                 ng-class="{
                   'glyphicon-remove-sign error' : true
                 }"
                 ></span> {{ "DISTRIBUTION.INVOICE_NOT_PAID" | translate }}
+              </div>
+
+              <div ng-if="session.sale.balance===session.sale.debit&&session.patient.is_convention">
+                <span
+                class="glyphicon"
+                ng-class="{
+                  'glyphicon-ok-sign correct' : true
+                }"
+                ></span> {{ "DISTRIBUTION.INVOICE_CONVENTION" | translate }}
               </div>
 
               <div ng-if="session.sale.balance===0">
@@ -185,13 +194,22 @@
                       <td width="20%">{{item.trans_date | date}}</td>
                       <td width="50%">
                         <div>
-                          <div ng-if="item.balance===item.debit">
+                          <div ng-if="item.balance===item.debit&&!session.patient.is_convention">
                             <span
                             class="glyphicon"
                             ng-class="{
                               'glyphicon-remove-sign error' : true
                             }"
                             ></span> {{ "DISTRIBUTION.INVOICE_NOT_PAID" | translate }}
+                          </div>
+
+                          <div ng-if="item.balance===item.debit&&session.patient.is_convention">
+                            <span
+                            class="glyphicon"
+                            ng-class="{
+                              'glyphicon-ok-sign correct' : true
+                            }"
+                            ></span> {{ "DISTRIBUTION.INVOICE_CONVENTION" | translate }}
                           </div>
 
                           <div ng-if="item.balance===0&&!item.canceled">
