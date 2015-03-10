@@ -2120,6 +2120,7 @@ function handleDistributionPatient (id, user_id, done) {
 
 function handleDistributionService (id, user_id, details, done) {
 
+  var array_uuid_credit = [], array_uuid_debit = [];
   var references, dayExchange, cfg = {};
   var sql =
     'SELECT `consumption`.`uuid`, `consumption`.`date`, `consumption`.`unit_price`, `consumption`.`quantity`, `consumption_service`.`service_id`, `stock`.`inventory_uuid`, `inventory`.`purchase_price`, `inventory_group`.`uuid` AS group_uuid, ' +
@@ -2135,9 +2136,7 @@ function handleDistributionService (id, user_id, details, done) {
   .then(function (res){
     return done(null, res);
   })
-  .catch(function (err){
-    return done(err, null);
-  });
+  .catch(catchError);
 
   function getRecord (records) {
     if (records.length === 0) { throw new Error('pas enregistrement'); }
@@ -2162,13 +2161,16 @@ function handleDistributionService (id, user_id, details, done) {
   function debit () {
     return q.all(
       references.map(function (reference) {
+        var uuid_debit = sanitize.escape(uuid());
+        array_uuid_debit.push(uuid_debit);
+
         var sql = 'INSERT INTO posting_journal ' +
                   '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                   '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
                   '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`, `cc_id`) ' +
                   'SELECT ' +
                     [
-                      sanitize.escape(uuid()),
+                      uuid_debit,
                       details.id,
                       cfg.fiscalYearId,
                       cfg.periodId,
@@ -2194,13 +2196,16 @@ function handleDistributionService (id, user_id, details, done) {
   function credit () {
     return q.all(
       references.map(function (reference) {
+        var uuid_credit = sanitize.escape(uuid());
+        array_uuid_credit.push(uuid_credit);
+
         var sql = 'INSERT INTO posting_journal ' +
                   '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                   '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
                   '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
                   'SELECT ' +
                     [
-                      sanitize.escape(uuid()),
+                      uuid_credit,
                       details.id,
                       cfg.fiscalYearId,
                       cfg.periodId,
@@ -2221,6 +2226,27 @@ function handleDistributionService (id, user_id, details, done) {
         return db.exec(sql);
       })
     );
+  }
+
+  function catchError (err) {
+    var condition = array_uuid_credit.concat(array_uuid_debit).join(',');
+    var posting_deleting = condition.length > 0 ? 'DELETE FROM `posting_journal` WHERE `posting_journal`.`uuid`' + ' IN (' + condition + ')' : 'SELECT 1+1';
+    var consumption_service_deleting = 'DELETE FROM `consumption_service` WHERE `consumption_service`.`consumption_uuid` IN (SELECT DISTINCT `consumption`.`uuid` FROM `consumption` WHERE `consumption`.`document_id`=' + sanitize.escape(id) + ')';
+    var consumption_deleting = 'DELETE FROM `consumption` WHERE `consumption`.`document_id`=' + sanitize.escape(id);
+
+    db.exec(posting_deleting)
+    .then(function () {
+      return db.exec(consumption_service_deleting);
+    })
+    .then(function () {
+      return db.exec(consumption_deleting);
+    })
+    .catch(function (err) {
+      console.log('erreur pendant la suppression ::: ', err);
+    })
+    .finally(function () {
+      return done(err, null);
+    });
   }
 }
 
