@@ -395,23 +395,21 @@ function handleSales (id, user_id, done, caution) {
           '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
           '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
           'SELECT ' + ['\'' + uuid() + '\'', reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'', '\''+descript+'\''].join(',') + ', ' +
-            '`caution_box_account_currency`.`account_id`, ' +
-            [0, transAmount, 0, transAmount, reference.currency_id, '\''+reference.debitor_uuid+'\''].join(',') +
-            ', \'D\', ' + ['\''+reference.uuid+'\'', cfg.originId, user_id].join(',') + ' ' +
-          'FROM `caution_box_account_currency` WHERE `caution_box_account_currency`.`currency_id`='+reference.currency_id+
-          ' AND `caution_box_account_currency`.`caution_box_id`= (SELECT distinct `caution_box`.`id` FROM `caution_box` WHERE `caution_box`.`project_id`='+ reference.project_id +');';
+            '`debitor_group`.`account_id`, ' + [0, transAmount, 0, transAmount, reference.currency_id, '\'' + reference.debitor_uuid + '\''].join(',') +
+            ', \'D\', null, ' + [cfg.originId, user_id].join(',') + ' ' +
+          'FROM `debitor_group` WHERE `debitor_group`.`uuid`= (' +
+          'SELECT `debitor`.`group_uuid` FROM `debitor` WHERE `debitor`.`uuid`='+ sanitize.escape(reference.debitor_uuid) +');';
 
       queries.DebitorCrediting =
-      'INSERT INTO `posting_journal` ' +
-        '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-        '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-      'SELECT `sale`.`project_id`, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
-        '`sale`.`note`, `debitor_group`.`account_id`, 0, '+transAmount+', 0,'+transAmount+', ' + // last three: credit, debit_equiv, credit_equiv.  Note that debit === debit_equiv since we use enterprise currency.
-        '`sale`.`currency_id`, `sale`.`debitor_uuid`, \'D\', `sale`.`uuid`, ' + [cfg.originId, user_id].join(', ') + ' ' +
-      'FROM `sale` JOIN `debitor` JOIN `debitor_group` ON ' +
-        '`sale`.`debitor_uuid`=`debitor`.`uuid` AND `debitor`.`group_uuid`=`debitor_group`.`uuid` ' +
-      'WHERE `sale`.`uuid`=' + sanitize.escape(id) + ';';
+        'INSERT INTO posting_journal '+
+          '(`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+          '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+          '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
+          'SELECT ' + ['\'' + uuid() + '\'', reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'', '\''+descript+'\''].join(',') + ', ' +
+            '`debitor_group`.`account_id`, ' + [transAmount, 0, transAmount, 0, reference.currency_id, '\'' + reference.debitor_uuid + '\''].join(',') +
+            ', \'D\', ' + [sanitize.escape(reference.uuid), cfg.originId, user_id].join(',') + ' ' +
+          'FROM `debitor_group` WHERE `debitor_group`.`uuid`= (' +
+          'SELECT `debitor`.`group_uuid` FROM `debitor` WHERE `debitor`.`uuid`='+ sanitize.escape(reference.debitor_uuid) +');';
 
       return q.all([
         db.exec(queries.cautionDebiting),
@@ -424,7 +422,7 @@ function handleSales (id, user_id, done, caution) {
     done(null, res);
   })
   .catch(function (err) {
-    done(err);
+    done(err, null);
   })
   .done();
 }
@@ -1175,8 +1173,7 @@ function handleCaution(id, user_id, done) {
   var sql, reference, cfg = {}, queries = {};
 
   sql =
-    'SELECT `caution`.`project_id`, `caution`.`value`, `caution`.`date`, `caution`.`debitor_uuid`, `caution`.`currency_id`, `caution`.`user_id`, `caution`.`description`, `caution`.`cash_box_id` '+
-    'FROM `caution` WHERE `caution`.`uuid` = ' + sanitize.escape(id) + ';';
+    'SELECT * FROM `cash` JOIN `cash_item` ON `cash`.`uuid` = `cash_item`.`cash_uuid` WHERE `cash`.`uuid` = ' + sanitize.escape(id) + ';';
 
   db.exec(sql)
   .then(function (results) {
@@ -1192,7 +1189,7 @@ function handleCaution(id, user_id, done) {
   .then(function (exchangeRateStore) {
     var dailyExchange = exchangeRateStore.get(reference.currency_id);
     cfg.debit_equiv = dailyExchange.rate * 0;
-    cfg.credit_equiv = (1/dailyExchange.rate) * reference.value;
+    cfg.credit_equiv = (1/dailyExchange.rate) * reference.cost;
 
     return q([get.origin('caution'), get.period(reference.date)]);
   })
@@ -1209,23 +1206,19 @@ function handleCaution(id, user_id, done) {
       'INSERT INTO posting_journal '+
       '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
       '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-      '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) '+
-      'SELECT ' + [reference.project_id, sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'','\''+reference.description + '\''].join(', ') +
-        ', `caution_box_account_currency`.`account_id`, ' + [reference.value, 0, cfg.credit_equiv, cfg.debit_equiv, reference.currency_id, '\''+reference.debitor_uuid+'\''].join(', ') +
-        ', \'D\', '+['\''+id+'\'', cfg.originId, user_id].join(', ')+' '+
-      'FROM `caution_box_account_currency`, `caution_box` WHERE `caution_box`.`id` =`caution_box_account_currency`.`caution_box_id` AND `caution_box_account_currency`.`currency_id`='+reference.currency_id+
-      ' AND `caution_box`.`project_id`='+reference.project_id;
+      '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) VALUES ('+
+      [reference.project_id, sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId, '\'' + get.date() + '\'','\'' + reference.description + '\'', reference.credit_account,
+       reference.cost, 0, cfg.credit_equiv, cfg.debit_equiv, reference.currency_id, '\'' + reference.deb_cred_uuid + '\''].join(', ') +
+        ', \'D\', ' + ['\'' + id + '\'', cfg.originId, user_id].join(', ') + ');';
 
     queries.debitingRequest =
       'INSERT INTO posting_journal '+
       '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
       '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-      '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
-      'SELECT ' + [reference.project_id, sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'', '\''+reference.description+'\''].join(',') +
-        ', `cash_box_account_currency`.`account_id`, ' + [0, reference.value, cfg.debit_equiv, cfg.credit_equiv, reference.currency_id].join(',') +
-        ', null, null, ' + ['\''+id+'\'', cfg.originId, user_id].join(', ') + ' ' +
-      'FROM `cash_box_account_currency`, `cash_box` WHERE `cash_box`.`id` =`cash_box_account_currency`.`cash_box_id` AND `cash_box_account_currency`.`currency_id`='+reference.currency_id+
-      ' AND `cash_box_account_currency`.`cash_box_id`='+reference.cash_box_id+' AND `cash_box`.`project_id`='+reference.project_id;
+      '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) VALUES (' +
+      [reference.project_id, sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId, '\'' + get.date() + '\'', '\'' + reference.description + '\'',
+       reference.debit_account, 0, reference.cost, cfg.debit_equiv, cfg.credit_equiv, reference.currency_id].join(',') +
+        ', null, null, ' + ['\'' + id + '\'', cfg.originId, user_id].join(', ') + ');';
 
     return db.exec(queries.creditingRequest);
   })
@@ -1236,11 +1229,7 @@ function handleCaution(id, user_id, done) {
     done(null, rows);
   })
   .catch(function (err) {
-    var discard = 'DELETE FROM caution WHERE uuid = ' + sanitize.escape(id) + ';';
-    return db.exec(discard)
-    .done(function () {
-      done(err);
-    });
+    done(err, null);
   })
   .done();
 }

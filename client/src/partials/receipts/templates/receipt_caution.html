@@ -48,11 +48,11 @@
         <tbody class="items">
           <tr>
             <td>{{'INVOICE.LIBELLE_CAUTION' | translate}}</td>
-            <td>{{utility.convert(model.caution.value, model.caution.currency_id) | currency}}</td>
+            <td>{{utility.convert(model.caution.cost, model.caution.currency_id) | currency}}</td>
           </tr>
         </tbody>
         <tbody class="totals">
-          <tr><td colspan="1" class="no-border">{{'INVOICE.TOTAL_CAUTION' | translate}}</td><td>{{utility.convert(model.caution.value, model.caution.currency_id) | currency}}</td></tr>
+          <tr><td colspan="1" class="no-border">{{'INVOICE.TOTAL_CAUTION' | translate}}</td><td>{{utility.convert(model.caution.cost, model.caution.currency_id) | currency}}</td></tr>
         </tbody>
       </table>
     </div>
