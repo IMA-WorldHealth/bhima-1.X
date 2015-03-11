@@ -172,15 +172,19 @@ values ('cash_box_account_currency', 'cash_box_account_currency', 'enterprise_da
 
 insert into sym_trigger
 (trigger_id, source_table_name, channel_id, last_update_time, create_time)
-values ('caution', 'caution', 'enterprise_data', current_timestamp, current_timestamp);
+values ('cash_discard', 'cash_discard', 'enterprise_data', current_timestamp, current_timestamp);
 
-insert into sym_trigger
-(trigger_id, source_table_name, channel_id, last_update_time, create_time)
-values ('caution_box', 'caution_box', 'enterprise_data', current_timestamp, current_timestamp);
+-- insert into sym_trigger
+-- (trigger_id, source_table_name, channel_id, last_update_time, create_time)
+-- values ('caution', 'caution', 'enterprise_data', current_timestamp, current_timestamp);
 
-insert into sym_trigger
-(trigger_id, source_table_name, channel_id, last_update_time, create_time)
-values ('caution_box_account_currency', 'caution_box_account_currency', 'enterprise_data', current_timestamp, current_timestamp);
+-- insert into sym_trigger
+-- (trigger_id, source_table_name, channel_id, last_update_time, create_time)
+-- values ('caution_box', 'caution_box', 'enterprise_data', current_timestamp, current_timestamp);
+
+-- insert into sym_trigger
+-- (trigger_id, source_table_name, channel_id, last_update_time, create_time)
+-- values ('caution_box_account_currency', 'caution_box_account_currency', 'enterprise_data', current_timestamp, current_timestamp);
 
 insert into sym_trigger
 (trigger_id, source_table_name, channel_id, last_update_time, create_time)
@@ -418,9 +422,13 @@ values('sale_subsidy', 'sale_subsidy', 'enterprise_data', current_timestamp, cur
 --
 
 
+-- insert into sym_trigger
+-- (trigger_id, source_table_name, channel_id, last_update_time, create_time)
+-- values ('caution_dead', 'caution', 'enterprise_data', current_timestamp, current_timestamp);
+
 insert into sym_trigger
 (trigger_id, source_table_name, channel_id, last_update_time, create_time)
-values ('caution_dead', 'caution', 'enterprise_data', current_timestamp, current_timestamp);
+values ('cash_discard_dead', 'cash_discard', 'enterprise_data', current_timestamp, current_timestamp);
 
 insert into sym_trigger
 (trigger_id, source_table_name, channel_id, sync_on_insert, sync_on_update, sync_on_delete, last_update_time, create_time)
@@ -619,6 +627,14 @@ values('cash_item', 'master_to_client', 100, current_timestamp, current_timestam
 
 insert into sym_trigger_router
 (trigger_id,router_id,initial_load_order,last_update_time,create_time)
+values('cash_discard', 'client_to_master', 100, current_timestamp, current_timestamp);
+
+insert into sym_trigger_router
+(trigger_id,router_id,initial_load_order,last_update_time,create_time)
+values('cash_discard', 'master_to_client', 100, current_timestamp, current_timestamp);
+
+insert into sym_trigger_router
+(trigger_id,router_id,initial_load_order,last_update_time,create_time)
 values('posting_journal', 'client_to_master', 100, current_timestamp, current_timestamp);
 
 insert into sym_trigger_router
@@ -664,6 +680,10 @@ values('sale_item_dead', 'client_to_master', 200, current_timestamp, current_tim
 insert into sym_trigger_router
 (trigger_id,router_id,initial_load_order,last_update_time,create_time)
 values('cash_dead', 'client_to_master', 200, current_timestamp, current_timestamp);
+
+insert into sym_trigger_router
+(trigger_id,router_id,initial_load_order,last_update_time,create_time)
+values('cash_discard_dead', 'client_to_master', 200, current_timestamp, current_timestamp);
 
 insert into sym_trigger_router
 (trigger_id,router_id,initial_load_order,last_update_time,create_time)
@@ -901,21 +921,21 @@ insert into sym_trigger_router
 (trigger_id,router_id,initial_load_order,last_update_time,create_time)
 values('cash_box_account_currency', 'master_to_client', 100, current_timestamp, current_timestamp);
 
-insert into sym_trigger_router
-(trigger_id,router_id,initial_load_order,last_update_time,create_time)
-values('caution', 'client_to_master', 100, current_timestamp, current_timestamp);
+-- insert into sym_trigger_router
+-- (trigger_id,router_id,initial_load_order,last_update_time,create_time)
+-- values('caution', 'client_to_master', 100, current_timestamp, current_timestamp);
 
-insert into sym_trigger_router
-(trigger_id,router_id,initial_load_order,last_update_time,create_time)
-values('caution', 'master_to_client', 100, current_timestamp, current_timestamp);
+-- insert into sym_trigger_router
+-- (trigger_id,router_id,initial_load_order,last_update_time,create_time)
+-- values('caution', 'master_to_client', 100, current_timestamp, current_timestamp);
 
-insert into sym_trigger_router
-(trigger_id,router_id,initial_load_order,last_update_time,create_time)
-values('caution_box', 'master_to_client', 100, current_timestamp, current_timestamp);
+-- insert into sym_trigger_router
+-- (trigger_id,router_id,initial_load_order,last_update_time,create_time)
+-- values('caution_box', 'master_to_client', 100, current_timestamp, current_timestamp);
 
-insert into sym_trigger_router
-(trigger_id,router_id,initial_load_order,last_update_time,create_time)
-values('caution_box_account_currency', 'master_to_client', 100, current_timestamp, current_timestamp);
+-- insert into sym_trigger_router
+-- (trigger_id,router_id,initial_load_order,last_update_time,create_time)
+-- values('caution_box_account_currency', 'master_to_client', 100, current_timestamp, current_timestamp);
 
 insert into sym_trigger_router
 (trigger_id,router_id,initial_load_order,last_update_time,create_time)
@@ -1135,9 +1155,9 @@ insert into sym_trigger_router
 (trigger_id,router_id,initial_load_order,last_update_time,create_time)
 values('donation_item_dead', 'client_to_master', 100, current_timestamp, current_timestamp);
 
-insert into sym_trigger_router
-(trigger_id,router_id,initial_load_order,last_update_time,create_time)
-values('caution_dead', 'client_to_master', 200, current_timestamp, current_timestamp);
+-- insert into sym_trigger_router
+-- (trigger_id,router_id,initial_load_order,last_update_time,create_time)
+-- values('caution_dead', 'client_to_master', 200, current_timestamp, current_timestamp);
 
 insert into sym_trigger_router
 (trigger_id,router_id,initial_load_order,last_update_time,create_time)
