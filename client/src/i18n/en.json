@@ -2534,6 +2534,7 @@
 "UTIL": {
    "ACCOUNT"           : "Account",
    "AGGREGATES"        : "Aggregates",
+   "ALL"               : "All",
    "BACK"              : "Back",
    "CANCEL"            : "Cancel",
    "COLUMNS"           : "Columns",
