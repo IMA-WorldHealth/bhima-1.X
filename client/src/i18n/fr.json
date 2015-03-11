@@ -2534,6 +2534,7 @@
 "UTIL": {
    "ACCOUNT"           : "Compte",
    "AGGREGATES"        : "Agregats",
+   "ALL"               : "Tous",
    "BACK"              : "Retourner",
    "CANCEL"            : "Annuler",
    "COLUMNS"           : "Colonnes",
