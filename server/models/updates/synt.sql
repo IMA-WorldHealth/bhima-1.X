@@ -134,6 +134,49 @@ CREATE TABLE `sale_subsidy` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+-- cash canceling
+--
+-- ADD cash_discard table
+--
+-- Date: 2015-03-11
+-- By: Dedrick Kitamuka
+
+DROP TABLE IF EXISTS `cash_discard`;
+
+CREATE TABLE `cash_discard` (
+  `project_id` smallint(5) unsigned NOT NULL,
+  `reference` int(10) unsigned NOT NULL,
+  `uuid` char(36) NOT NULL,
+  `cost` decimal(19,4) unsigned NOT NULL,
+  `debitor_uuid` char(36) NOT NULL,
+  `cashier_id` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `cash_uuid` char(36) NOT NULL,
+  `date` date NOT NULL,
+  `description` text,
+  `posted` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`uuid`),
+  KEY `reference` (`reference`),
+  KEY `project_id` (`project_id`),
+  KEY `debitor_uuid` (`debitor_uuid`),
+  KEY `cash_uuid` (`cash_uuid`),
+  CONSTRAINT `cash_discard_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
+  CONSTRAINT `cash_discard_ibfk_2` FOREIGN KEY (`debitor_uuid`) REFERENCES `debitor` (`uuid`),
+  CONSTRAINT `cash_discard_ibfk_3` FOREIGN KEY (`cash_uuid`) REFERENCES `cash` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- deleting tables relatives to caution
+--
+-- DROP TABLES caution, caution_box, caution_box_account_currency
+--
+-- Date: 2015-03-11
+-- By: Dedrick Kitamuka
+
+DROP TABLE IF EXISTS `caution_box_account_currency`;
+DROP TABLE IF EXISTS `caution_box`;
+DROP TABLE IF EXISTS `caution`;
+
+
+
 -- Allow an employee lock
 -- Date: 2015-01-26
 -- By: Chris LOMAME

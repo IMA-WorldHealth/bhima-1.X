@@ -172,63 +172,63 @@ CREATE TABLE `cash_item` (
 
 /*Table structure for table `caution` */
 
--- DROP TABLE IF EXISTS `caution`;
+DROP TABLE IF EXISTS `caution`;
 
--- CREATE TABLE `caution` (
---   `reference` int(10) unsigned NOT NULL AUTO_INCREMENT,
---   `uuid` char(36) NOT NULL,
---   `value` decimal(19,4) unsigned NOT NULL,
---   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
---   `project_id` smallint(5) unsigned NOT NULL,
---   `debitor_uuid` char(36) NOT NULL,
---   `currency_id` tinyint(3) unsigned NOT NULL,
---   `user_id` smallint(5) unsigned NOT NULL,
---   `cash_box_id` mediumint(8) unsigned DEFAULT NULL,
---   `description` text,
---   PRIMARY KEY (`uuid`),
---   KEY `project_id` (`project_id`),
---   KEY `reference` (`reference`),
---   KEY `debitor_uuid` (`debitor_uuid`),
---   KEY `currency_id` (`currency_id`),
---   KEY `cash_box_id` (`cash_box_id`),
---   KEY `user_id` (`user_id`),
---   CONSTRAINT `caution_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
---   CONSTRAINT `caution_ibfk_2` FOREIGN KEY (`debitor_uuid`) REFERENCES `debitor` (`uuid`),
---   CONSTRAINT `caution_ibfk_3` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
---   CONSTRAINT `caution_ibfk_4` FOREIGN KEY (`cash_box_id`) REFERENCES `cash_box` (`id`),
---   CONSTRAINT `caution_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
--- ) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=latin1;
+CREATE TABLE `caution` (
+  `reference` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `uuid` char(36) NOT NULL,
+  `value` decimal(19,4) unsigned NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `project_id` smallint(5) unsigned NOT NULL,
+  `debitor_uuid` char(36) NOT NULL,
+  `currency_id` tinyint(3) unsigned NOT NULL,
+  `user_id` smallint(5) unsigned NOT NULL,
+  `cash_box_id` mediumint(8) unsigned DEFAULT NULL,
+  `description` text,
+  PRIMARY KEY (`uuid`),
+  KEY `project_id` (`project_id`),
+  KEY `reference` (`reference`),
+  KEY `debitor_uuid` (`debitor_uuid`),
+  KEY `currency_id` (`currency_id`),
+  KEY `cash_box_id` (`cash_box_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `caution_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
+  CONSTRAINT `caution_ibfk_2` FOREIGN KEY (`debitor_uuid`) REFERENCES `debitor` (`uuid`),
+  CONSTRAINT `caution_ibfk_3` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
+  CONSTRAINT `caution_ibfk_4` FOREIGN KEY (`cash_box_id`) REFERENCES `cash_box` (`id`),
+  CONSTRAINT `caution_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=latin1;
 
--- /*Table structure for table `caution_box` */
+/*Table structure for table `caution_box` */
 
--- DROP TABLE IF EXISTS `caution_box`;
+DROP TABLE IF EXISTS `caution_box`;
 
--- CREATE TABLE `caution_box` (
---   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
---   `text` text NOT NULL,
---   `project_id` smallint(5) unsigned NOT NULL,
---   PRIMARY KEY (`id`),
---   KEY `project_id` (`project_id`),
---   CONSTRAINT `caution_box_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
--- ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+CREATE TABLE `caution_box` (
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `text` text NOT NULL,
+  `project_id` smallint(5) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `project_id` (`project_id`),
+  CONSTRAINT `caution_box_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
--- /*Table structure for table `caution_box_account_currency` */
+/*Table structure for table `caution_box_account_currency` */
 
--- DROP TABLE IF EXISTS `caution_box_account_currency`;
+DROP TABLE IF EXISTS `caution_box_account_currency`;
 
--- CREATE TABLE `caution_box_account_currency` (
---   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
---   `currency_id` tinyint(3) unsigned NOT NULL,
---   `caution_box_id` mediumint(8) unsigned NOT NULL,
---   `account_id` int(10) unsigned DEFAULT NULL,
---   PRIMARY KEY (`id`),
---   KEY `currency_id` (`currency_id`),
---   KEY `caution_box_id` (`caution_box_id`),
---   KEY `account_id` (`account_id`),
---   CONSTRAINT `caution_box_account_currency_ibfk_1` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
---   CONSTRAINT `caution_box_account_currency_ibfk_2` FOREIGN KEY (`caution_box_id`) REFERENCES `caution_box` (`id`),
---   CONSTRAINT `caution_box_account_currency_ibfk_3` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
--- ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+CREATE TABLE `caution_box_account_currency` (
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `currency_id` tinyint(3) unsigned NOT NULL,
+  `caution_box_id` mediumint(8) unsigned NOT NULL,
+  `account_id` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `currency_id` (`currency_id`),
+  KEY `caution_box_id` (`caution_box_id`),
+  KEY `account_id` (`account_id`),
+  CONSTRAINT `caution_box_account_currency_ibfk_1` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
+  CONSTRAINT `caution_box_account_currency_ibfk_2` FOREIGN KEY (`caution_box_id`) REFERENCES `caution_box` (`id`),
+  CONSTRAINT `caution_box_account_currency_ibfk_3` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `client` */
 
