@@ -3339,6 +3339,86 @@ function handleCotisationPayment (id, user_id, details, done) {
   }
 }
 
+function handleCreateFiscalYear (id, user_id, details, done) {
+
+  var rate, cfg = {},
+      array_journal_uuid = [];
+
+  getOrigin()
+  .spread(getDetails)
+  .then(getTransId)
+  .then(postingEntry)
+  .then(function (res) {
+    done(null, res);
+  })
+  .catch(catchError);
+
+  function getOrigin () {
+    var date = util.toMysqlDate(get.date());
+    return q([get.origin('journal'), get.period(get.date()), get.exchangeRate(date)]);
+  }
+
+  function getDetails (originId, periodObject, store) {
+    cfg.balance = details[0];
+    cfg.originId = originId;
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+    cfg.store = store;
+    rate = cfg.store.get(cfg.balance.currencyId).rate;
+    return get.transactionId(cfg.balance.projectId);
+  }
+
+  function getTransId (transId) {
+    cfg.transId = transId;
+    cfg.description =  transId.substring(0,4) + '/' + cfg.balance.description;
+  }
+
+  function postingEntry () {
+    return q.all(
+      details.map(function (balance) {
+        var journal_uuid = sanitize.escape(uuid());
+        array_journal_uuid.push(journal_uuid);
+
+        var sql =
+          'INSERT INTO posting_journal ' +
+          '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+          '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+          '`currency_id`, `origin_id`, `user_id` ) ' +
+          'VALUES (' +
+            [
+              journal_uuid,
+              balance.projectId,
+              cfg.fiscalYearId,
+              cfg.periodId,
+              cfg.transId, '\'' + get.date() + '\'', sanitize.escape(cfg.description), balance.accountId
+            ].join(',') + ', ' +
+            [
+              balance.credit.toFixed(4), balance.debit.toFixed(4),
+              (balance.credit / rate).toFixed(4), (balance.debit / rate).toFixed(4),
+              balance.currencyId,
+              cfg.originId, 
+              user_id
+            ].join(',') +
+          ');';
+        return db.exec(sql);
+      })
+    );
+  }
+
+  function catchError (err) {
+    var sql = array_journal_uuid.length > 0 ? 'DELETE FROM `posting_journal` WHERE `posting_journal`.`uuid` IN (' + array_journal_uuid.join(',') + '); ' : 'SELECT 1+1;';
+
+    db.exec(sql)
+    .then(function () {
+      console.error('[ROLLBACK]: deleting last entries in posting journal, Because => ', err);
+      return done(err);
+    })
+    .catch(function (err2) {
+      console.error('[ERR2]:', err2);
+    });
+  }
+}
+
 table_router = {
   'sale'                    : handleSales,
   'cash'                    : handleCash,
@@ -3366,7 +3446,8 @@ table_router = {
   'donation'                : handleDonation,
   'tax_payment'             : handleTaxPayment,
   'cotisation_payment'      : handleCotisationPayment,
-  'salary_advance'          : handleSalaryAdvance
+  'salary_advance'          : handleSalaryAdvance,
+  'create_fiscal_year'      : handleCreateFiscalYear
 };
 
 
