@@ -262,6 +262,10 @@
       controller: 'creditNote',
       templateUrl: 'partials/credit_note/credit_note.html'
     })
+    .when('/cash_discard/:receiptId?/', {
+      controller: 'cashDiscard',
+      templateUrl: 'partials/cash_discard/cash_discard.html'
+    })
     .when('/cost_center/', {
       controller: 'costCenter',
       templateUrl: 'partials/cost_center/cost_center.html'
