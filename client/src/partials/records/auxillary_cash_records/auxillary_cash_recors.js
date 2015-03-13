@@ -5,7 +5,8 @@ angular.module('bhima.controllers')
   'util',
   'validate',
   'connect',
-  function ($scope, $timeout, util, validate, connect) {
+  'exchange',
+  function ($scope, $timeout, util, validate, connect, exchange) {
     // TODO add search (filter)
     // TODO add sortable (clickable) columns
     var dependencies = {};
@@ -50,10 +51,21 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.currencies = {
+      required : true,
+      query : {
+        tables : {
+          'currency' : {
+            columns : ['id', 'symbol']
+          }
+        }
+      }
+    };
+
     $timeout(init, 100);
 
     function init() {
-      validate.process(dependencies, ['project']).then(loadProjects);
+      validate.process(dependencies, ['project', 'currencies']).then(loadProjects);
     }
 
     function loadProjects(model) {
@@ -69,13 +81,14 @@ angular.module('bhima.controllers')
 
     function updateSession(model) {
       $scope.model = model;
+      session.currency = model.currencies.data[0].id;
+      convert();
       updateTotals();
       session.searching = false;
     }
 
     function reset() {
       var request;
-
       request = {
         dateFrom : util.sqlDate(session.param.dateFrom),
         dateTo : util.sqlDate(session.param.dateTo),
@@ -85,33 +98,14 @@ angular.module('bhima.controllers')
         request.project = session.project;
       }
 
-      console.log('session.project', session.project);
-      console.log('request.project', request.project);
-      console.log('session.selected', session.selected);
-
       session.searching = true;
-      var url = '/reports/payments/?id=%project%&start=%start%&end=%end%'
-      .replace('%project%', session.selected.id)
-      .replace('%start%', request.dateFrom)
-      .replace('%end%', request.dateTo);
+      dependencies.cash.query = '/reports/cashAuxillaryRecords/?' + JSON.stringify(request);
+      total.result = {};
 
-      connect.fetch(url)
-      .then(function (model) {
-        console.log('le model est :', model);
-        // if (!model) { return; }
-        // $scope.payments = model;
-        // $timeout(function () {
-        //   convert();
-        //   session.searching = false;
-        // });
-      });
-
-
-      // total.result = {};
-      // if ($scope.model.sale) {
-      //   $scope.model.sale.data = [];
-      // }
-      // validate.refresh(dependencies, ['sale']).then(updateSession);
+      if ($scope.model.cash) {
+        $scope.model.cash.data = [];
+      }
+      validate.refresh(dependencies, ['cash']).then(updateSession);
     }
 
     function today() {
@@ -142,27 +136,37 @@ angular.module('bhima.controllers')
     }
 
     function totalCash() {
-      return $scope.model.sale.data.length;
+      return $scope.model.cash.data.length;
     }
 
     function totalPatients() {
       var total = 0, evaluated = {};
 
-      $scope.model.sale.data.forEach(function (sale) {
-        if (evaluated[sale.debitor_uuid]) { return; }
+      $scope.model.cash.data.forEach(function (cash) {
+        if (evaluated[cash.deb_cred_uuid]) { return; }
         total++;
-        evaluated[sale.debitor_uuid] = true;
+        evaluated[cash.deb_cred_uuid] = true;
       });
 
       return total;
     }
 
     function totalCost() {
-      return $scope.model.sale.data.reduce(function (a, b) {
+      return $scope.model.cash.data.reduce(function (a, b) {
         return a + b.cost;
       }, 0);
     }
 
+    function convert (){
+      console.log('ok');
+      session.sum = 0;
+      if($scope.model.cash.data) {
+        $scope.model.cash.data.forEach(function (cash) {
+          session.sum += exchange.convertir(cash.cost, cash.currency_id, session.currency, new Date());
+        });
+      }
+    }
+    $scope.convert = convert;
     $scope.select = select;
     $scope.reset = reset;
   }

@@ -36,7 +36,7 @@
   <div class="reportBody">
     <div class="reportFrame" style="padding-top: 10px;">
       <h4 class="visible-print">{{ "AUXILLARY_CASH_RECORD.TITLE" | translate }} <small>{{session.param.dateFrom | date}} - {{session.param.dateTo | date}}</small></h4>
-      <p class="visible-print">{{ "AUXILLARY_CASH_RECORD.TOTAL_OF" | translate }} <b>{{total.result.sales}}</b> {{ "AUXILLARY_CASH_RECORD.INVOICES" | translate }}, {{ "AUXILLARY_CASH_RECORD.CHARGED_AGAINST" | translate }} <b>{{total.result.patients}}</b> {{ "AUXILLARY_CASH_RECORD.PATIENTS" | translate}}</p>
+      <p class="visible-print">{{ "AUXILLARY_CASH_RECORD.TOTAL_OF" | translate }} <b>{{total.result.cash}}</b> {{ "AUXILLARY_CASH_RECORD.INVOICES" | translate }}, {{ "AUXILLARY_CASH_RECORD.CHARGED_AGAINST" | translate }} <b>{{total.result.patients}}</b> {{ "AUXILLARY_CASH_RECORD.PATIENTS" | translate}}</p>
         <table class="reportTable">
           <thead>
             <tr>
@@ -50,23 +50,22 @@
           </thead>
 
           <tbody>
-            <tr ng-if="model.sale.data.length===0 && !session.searching">
-              <td colspan="5">{{'AUXILLARY_CASH_RECORD.UNFOUND' | translate}} <strong><a href="/#/sales">{{'AUXILLARY_CASH_RECORD.PATIENT_SALE' | translate}}</a></strong> {{'AUXILLARY_CASH_RECORD.GENERATE' | translate}}</td>
+            <tr ng-if="model.cash.data.length===0 && !session.searching">
+              <td colspan="5">{{'AUXILLARY_CASH_RECORD.UNFOUND' | translate}} <strong><a href="/#/cash">{{'AUXILLARY_CASH_RECORD.PATIENT_CASH' | translate}}</a></strong> {{'AUXILLARY_CASH_RECORD.GENERATE' | translate}}</td>
             </tr>
 
             <tr ng-if="session.searching">
               <td colspan="5"> <span style="color: #428bca" class="glyphicon glyphicon-signal"></span></td>
             </tr>
 
-            <tr ng-class="{'rowSelected': selected.uuid==invoice.uuid, 'creditInvoice': invoice.creditId}" ng-repeat="invoice in model.sale.data">
-              <td width="20%">{{invoice.invoice_date | date : 'EEEE, dd/MM/yyyy'}}</td>
-              <td width="10%">{{invoice.hr_id}}</td>
-              <td width="20%">[{{invoice.patientReference}}] {{invoice.first_name}} {{invoice.last_name}}</td>
-              <td width="20%">{{invoice.cost | currency}}</td>
+            <tr ng-class="{'rowSelected': selected.uuid==receipt.uuid, 'creditInvoice': receipt.cashDiscardId}" ng-repeat="receipt in model.cash.data">
+              <td width="20%">{{receipt.date | date : 'EEEE, dd/MM/yyyy'}}</td>
+              <td width="10%">{{receipt.hr_id}}</td>
+              <td width="20%">[{{receipt.patientReference}}] {{receipt.first_name}} {{receipt.last_name}}</td>
+              <td width="20%"><span ng-bind-html="receipt.cost | intlcurrency:receipt.currency_id"></td>
               <td width="30%" class="hidden-print">
-                <a ng-href="/#/invoice/sale/{{invoice.uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{'AUXILLARY_CASH_RECORD.RECEIPT' | translate}}</a>
-                | <a ng-href="/#/report/invoice/{{invoice.uuid}}/" style="color : red;"><span class="glyphicon glyphicon-list-alt"></span> Proof of Concept Document</a>
-                | <a ng-href="/#/credit_note/{{invoice.uuid}}/"><span class="glyphicon glyphicon-repeat"></span> {{ 'AUXILLARY_CASH_RECORD.CREDIT_NOTE' | translate }}</a>
+                <a ng-href="/#/invoice/cash/{{receipt.uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{'AUXILLARY_CASH_RECORD.RECEIPT' | translate}}</a>
+                | <a ng-href="/#/cash_discard/{{receipt.uuid}}/"><span class="glyphicon glyphicon-repeat"></span> {{ 'AUXILLARY_CASH_RECORD.CREDIT_NOTE' | translate }}</a>
               </td>
             </tr>
           </tbody>
@@ -81,7 +80,7 @@
       <td width="50%">
         <span style="margin-right: 10px;">
           <span class="glyphicon glyphicon-list-alt" style="color: #428bca"></span>
-          <b>{{total.result.sales}}</b>
+          <b><span ng-bind-html="session.sum | intlcurrency:session.currency"></b>
           <span ng-if="session.searching">...</span>
         </span>
 
@@ -94,10 +93,12 @@
         </span>
       </td>
       <td width="20%">
-        <b>{{total.result.cost | currency}}</b>
+        <b><span ng-bind-html="session.sum | intlcurrency:session.currency"></b>
         <span ng-if="session.searching">...</span>
       </td>
-      <td width="20%"></td>
+      <td width="20%">
+        <select class="form-bhima" ng-model="session.currency" ng-options="currency.id as currency.symbol for currency in model.currencies.data" ng-change="convert()"></select>
+      </td>
       <td></td>
     </tbody>
   </table>

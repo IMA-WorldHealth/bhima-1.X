@@ -123,7 +123,7 @@ angular.module('bhima.controllers')
         uuid    : uuid(),
         cash_uuid      : record.uuid,
         allocated_cost : record.cost
-      }
+      };
 
       connect.fetch('/user_session')
       .then(function (user) {
@@ -131,7 +131,7 @@ angular.module('bhima.controllers')
         return connect.post('cash', record);
       })
       .then(function () {
-        return connect.post('cash_item', record_item)
+        return connect.post('cash_item', record_item);
       })
       .then(function () {
         return connect.fetch('/journal/caution/' + record.uuid);
