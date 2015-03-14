@@ -639,10 +639,10 @@ function handleCash (id, user_id, done) {
         '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
         '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
       'SELECT `cash`.`project_id`, ' + [sanitize.escape(state.roundingUUID), state.period.fiscal_year_id, state.period.id, state.transId, '\'' + get.date() + '\''].join(', ') + ', ' +
-        description + ', `cash`.`document_id`, ' + 534  + ', ' + creditOrDebit + ', ' +
+        description + ', `cash`.`document_id`, `cash_box_account_currency`.`exchange_account_id`, ' + creditOrDebit + ', ' +
         '`cash`.`currency_id`, null, null, `cash_item`.`invoice_uuid`, ' +
         [state.originId, state.userId].join(', ') + ' ' +
-      'FROM `cash` JOIN `cash_item` ON `cash`.`uuid` = `cash_item`.`cash_uuid` ' +
+      'FROM `cash` JOIN `cash_item` JOIN `cash_box_account_currency` ON `cash`.`uuid` = `cash_item`.`cash_uuid` AND `cash_box_account_currency`.`id`=`cash`.`cashbox_id` ' +
       'WHERE `cash`.`uuid`=' + sanitize.escape(state.id) + ' LIMIT 1;';
     }
     return query ? db.exec(query) : q();

@@ -175,6 +175,23 @@ DROP TABLE IF EXISTS `caution_box_account_currency`;
 DROP TABLE IF EXISTS `caution_box`;
 DROP TABLE IF EXISTS `caution`;
 
+-- adding a columns for exchange operation and foreign key
+--
+-- ALTER TABLE cash_box_account_currency
+--
+-- Date: 2015-03-14
+-- By: Dedrick Kitamuka
+
+ALTER TABLE `cash_box_account_currency`
+ADD `exchange_account_id` int(10) unsigned default 534;
+
+ALTER TABLE `cash_box_account_currency`
+ADD FOREIGN KEY (`exchange_account_id`) REFERENCES `account` (`id`);
+
+
+
+
+
 
 
 -- Allow an employee lock
