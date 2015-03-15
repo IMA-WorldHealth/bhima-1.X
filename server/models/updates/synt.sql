@@ -477,7 +477,8 @@ INSERT INTO `transaction_type` (`id`, `service_txt`) VALUES
   (22, 'confirm_purchase'),
   (23, 'salary_advance'),
   (24, 'employee_invoice'),
-  (25, 'pcash_employee');
+  (25, 'pcash_employee'),
+  (26, 'cash_discard');
 
 -- Update service text for transaction type
 UPDATE `transaction_type` SET `service_txt` = 'pcash_convention' WHERE `transaction_type`.`id` = 8;
