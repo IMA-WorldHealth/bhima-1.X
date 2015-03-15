@@ -90,7 +90,7 @@ angular.module('bhima.controllers')
 
       noteObject.reference = 1;
       if ($scope.model.cashDiscard.data.length >= 1) { return messenger.danger('Receipt has already been reversed'); }
-      connect.basicPut('cash_discard', [noteObject])
+      connect.post('cash_discard', [noteObject])
       .then(function () {
         return connect.fetch('journal/cash_discard/' + noteObject.uuid);
       })
