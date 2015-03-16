@@ -17,7 +17,7 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           'consumption' : {
-            columns : ['uuid', 'depot_uuid', 'date', 'tracking_number', 'quantity']
+            columns : ['uuid', 'depot_uuid', 'date', 'document_id', 'tracking_number', 'quantity']
           },
           'stock' : {
             columns : ['lot_number', 'inventory_uuid']
@@ -31,7 +31,7 @@ angular.module('bhima.controllers')
           'stock.inventory_uuid=inventory.uuid'
         ],
         where : [
-          'consumption.uuid=' + consumptionId
+          'consumption.document_id=' + consumptionId
         ]
       }
     };
@@ -44,7 +44,7 @@ angular.module('bhima.controllers')
           }          
         },
         where : [
-          'consumption_reversing.consumption_uuid=' + consumptionId
+          'consumption_reversing.document_id=' + consumptionId
         ]
       }
     };
@@ -60,29 +60,38 @@ angular.module('bhima.controllers')
           $location.path('/stock/');           
       } else if ($scope.dataReversing.length === 0) {
         var date = new Date(),
-          description = consumption.description,
-          item = consumption.data[0];
+          description = consumption.description;
         
-        item.consumption_uuid = item.uuid;      
-        item.inventory_uuid = null;
-        item.lot_number = null; 
-        item.text = null;
+        var records =  consumption.data.map(function (item) {
+          return {
+            uuid : uuid(),
+            consumption_uuid : item.uuid,
+            depot_uuid : item.depot_uuid,
+            document_id : consumptionId,
+            date : util.sqlDate(date),
+            tracking_number : item.tracking_number,
+            quantity : item.quantity,
+            description : description
+          };
+        });
 
-        item.uuid = uuid();
-        item.date = util.sqlDate(date);   
-        item.description = description;
-        item.document_id = consumptionId;    
-
-        connect.post('consumption_reversing', [connect.clean(item)])
-        .then(function () {
-          messenger.success($translate.instant('STOCK.DISTRIBUTION_RECORDS.SUCCESS'));   
-          $location.path('/stock/');       
-        });          
+        connect.post('consumption_reversing', records)
+        .then(function() {
+          connect.fetch('journal/reversing_stock/' + consumptionId); 
+          messages();
+        });
       } else {
         messenger.danger($translate.instant('ERROR.ERR_SQL'));  
       }                    
     }  
 
+    function messages() {
+      messenger.success($translate.instant('STOCK.DISTRIBUTION_RECORDS.SUCCESS')); 
+      $location.path('/stock/');      
+    }
+    
     $scope.submit = submit;
+    $scope.messages = messages;
+
   }
 ]);

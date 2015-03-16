@@ -3339,6 +3339,118 @@ function handleCotisationPayment (id, user_id, details, done) {
   }
 }
 
+  //sql = 'SELECT * FROM `posting_journal` WHERE `posting_journal`.`inv_po_id`=' + sanitize.escape(id);   
+
+function handleReversingStock (id, user_id, details, done) { 
+  var sql, rate, transact, state = {}, queries = {}, data, reference, postingJournal, cfg = {};
+  state.user_id = user_id;
+  sql =
+    'SELECT `uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
+    '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, ' +
+    '`deb_cred_uuid`, `inv_po_id`, `cost_ctrl_id`, `origin_id`, '+
+    '`user_id`, `cc_id`, `pc_id` ' +
+    'FROM `posting_journal`' +
+    'WHERE `posting_journal`.`inv_po_id`=' + sanitize.escape(id) +
+    'UNION ' +
+    'SELECT `uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
+    '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, ' +
+    '`deb_cred_uuid`, `inv_po_id`, `cost_ctrl_id`, `origin_id`, '+
+    '`user_id`, `cc_id`, `pc_id` ' +
+    'FROM `general_ledger`' +
+    'WHERE `general_ledger`.`inv_po_id`=' + sanitize.escape(id) ; 
+
+  db.exec(sql)
+  .then(getRecord)
+  .spread(getDetails)
+  .then(getTransId)
+  .then(function (res){
+    return done(null, res);
+  })
+  .then(function (res) {
+    done(null, res);
+  })
+  .catch(function (err) {
+    done(err);
+  });
+
+  function getRecord (records) {
+    if (records.length === 0) { throw new Error('pas enregistrement'); }
+    reference = records[0];
+    postingJournal = records;
+    var date = util.toMysqlDate(get.date());
+    return q([get.origin('reversing'), get.origin('distribution'), get.period(get.date()), get.exchangeRate(date)]);
+  }
+
+  function getDetails (originId, distributionId, periodObject, store, res) {
+    cfg.originId = originId;
+    cfg.distributionId = distributionId;
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+    cfg.store = store;
+
+    rate = cfg.store.get(reference.currency_id).rate;
+    transact = get.transactionId(reference.project_id);
+    return get.transactionId(reference.project_id);
+  }
+
+  function getTransId (trans_id) {
+    cfg.trans_id = trans_id;
+    cfg.descrip =  'REVERSING STOCK ' + new Date().toISOString().slice(0, 10).toString();
+    return debit();
+  }
+
+  function debit () {
+    queries.items = [];
+    var date = get.date();
+    postingJournal.forEach(function (item) {
+      if(item.origin_id === cfg.distributionId) {
+        item.uuid = sanitize.escape(uuid());
+        item.origin_id = cfg.originId;
+        item.description = cfg.descrip;
+        item.period_id = cfg.periodId;
+        item.fiscal_year_id = cfg.fiscalYearId;
+        item.trans_id = cfg.trans_id;
+        item.trans_date = util.toMysqlDate(get.date());
+        //FIX ME deb_cred_uuid when is empty the text 'null' is inserted in the table posting_journal
+        var sql =
+          'INSERT INTO `posting_journal` ' +
+            '(`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
+            '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, ' +
+            '`deb_cred_uuid`, `inv_po_id`, `cost_ctrl_id`, `origin_id`, '+
+            '`user_id`, `cc_id`, `pc_id`) ' +  
+          'VALUES (' +
+            item.uuid + ', ' +
+            item.project_id + ', ' +
+            item.fiscal_year_id + ', ' +
+            item.period_id + ', ' +
+            item.trans_id + ', ' +
+            sanitize.escape(item.trans_date) + ', ' +
+            item.doc_num + ', ' +
+            sanitize.escape(item.description) + ', ' +
+            item.account_id + ', ' +
+            item.credit + ', ' +
+            item.debit + ', ' +
+            item.credit_equiv + ', ' +
+            item.debit_equiv + ', ' +
+            item.currency_id + ', ' +
+            sanitize.escape(item.deb_cred_uuid) + ', ' +
+            sanitize.escape(item.inv_po_id) + ', ' +
+            item.cost_ctrl_id + ', ' +
+            item.origin_id + ', ' +
+            item.user_id + ', ' +
+            item.cc_id + ', ' +
+            item.pc_id +                                                                      
+          ');';
+        queries.items.push(sql);        
+      }
+    });
+
+    return q.all(queries.items.map(function (sql) {
+      return db.exec(sql);
+    }));
+  }
+}
+
 table_router = {
   'sale'                    : handleSales,
   'cash'                    : handleCash,
@@ -3366,7 +3478,8 @@ table_router = {
   'donation'                : handleDonation,
   'tax_payment'             : handleTaxPayment,
   'cotisation_payment'      : handleCotisationPayment,
-  'salary_advance'          : handleSalaryAdvance
+  'salary_advance'          : handleSalaryAdvance,
+  'reversing_stock'         : handleReversingStock
 };
 
 

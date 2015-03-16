@@ -424,3 +424,13 @@ UPDATE `transaction_type` SET `service_txt` = 'pcash_convention' WHERE `transact
 UPDATE `transaction_type` SET `service_txt` = 'pcash_transfert' WHERE `transaction_type`.`id` = 10;
 
 UPDATE `transaction_type` SET `service_txt` = 'generic_income' WHERE `transaction_type`.`id` = 11;
+
+
+-- Date: 2015-03-10
+-- By: Chris LOMAME
+
+USE bhima;
+
+INSERT INTO `transaction_type` (`service_txt`) VALUES
+('reversing');
+
