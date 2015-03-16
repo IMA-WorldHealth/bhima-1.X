@@ -183,10 +183,16 @@ DROP TABLE IF EXISTS `caution`;
 -- By: Dedrick Kitamuka
 
 ALTER TABLE `cash_box_account_currency`
-ADD `exchange_account_id` int(10) unsigned default 534;
+ADD `gain_exchange_account_id` int(10) unsigned default 981;
 
 ALTER TABLE `cash_box_account_currency`
-ADD FOREIGN KEY (`exchange_account_id`) REFERENCES `account` (`id`);
+ADD `loss_exchange_account_id` int(10) unsigned default 718;
+
+ALTER TABLE `cash_box_account_currency`
+ADD FOREIGN KEY (`gain_exchange_account_id`) REFERENCES `account` (`id`);
+
+ALTER TABLE `cash_box_account_currency`
+ADD FOREIGN KEY (`loss_exchange_account_id`) REFERENCES `account` (`id`);
 
 
 
