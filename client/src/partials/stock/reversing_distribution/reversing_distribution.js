@@ -75,15 +75,21 @@ angular.module('bhima.controllers')
         });
 
         connect.post('consumption_reversing', records)
-        .then(function () {
-          messenger.success($translate.instant('STOCK.DISTRIBUTION_RECORDS.SUCCESS')); 
-          $location.path('/stock/');         
-        });         
+        .then(function() {
+          connect.fetch('journal/reversing_stock/' + consumptionId); 
+          messages();
+        });       
       } else {
         messenger.danger($translate.instant('ERROR.ERR_SQL'));  
       }
     }  
 
+    function messages() {
+      messenger.success($translate.instant('STOCK.DISTRIBUTION_RECORDS.SUCCESS')); 
+      $location.path('/stock/');      
+    }
+
     $scope.submit = submit;
+    $scope.messages = messages;
   }
 ]);
