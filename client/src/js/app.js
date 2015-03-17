@@ -215,6 +215,10 @@
       controller: 'report.balance_mensuelle',
       templateUrl: 'partials/reports/balance_mensuelle/balance_mensuelle.html'
     })
+    .when('/reports/donation/', {
+      controller: 'report.donation',
+      templateUrl: 'partials/reports/donation/donation.html'
+    })
     .when('/location', {
       controller : 'location',
       templateUrl: 'partials/location/location.html'

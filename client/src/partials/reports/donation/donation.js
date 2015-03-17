@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('donation_record', [
+.controller('report.donation', [
   '$scope',
   '$timeout',
   '$routeParams',
@@ -14,178 +14,52 @@ angular.module('bhima.controllers')
         state = $scope.state,
         session = $scope.session = { param : {}, searching : true };
 
-    dependencies.depots = {
+    dependencies.donor = {
       required: true,
       query : {
         tables : {
-          'depot' : {
-            columns : ['uuid', 'text', 'reference', 'enterprise_id']
+          'donor' : {
+            columns : ['id', 'name']
           }
         }
       }
     };
-    validate.process(dependencies, ['depots']);       
 
-    var period = $scope.period = [
-      {
-        key : 'UTIL.ALL',
-        method : all
-      },
-      {
-        key : 'CASH_PAYMENTS.DAY',
-        method : today
-      },
-      {
-        key : 'CASH_PAYMENTS.WEEK',
-        method : week
-      },
-      {
-        key : 'CASH_PAYMENTS.MONTH',
-        method : month
-      }
-    ];
-
-    
-
-    var total = $scope.total = {};
-
-    dependencies.loss = {
+    dependencies.donation = {
       query : {
-        identifier : 'uuid',
-          tables : {
-            consumption : { columns : ['quantity', 'date', 'uuid'] },
-            consumption_loss : { columns : ['document_uuid'] },
-            stock : {columns : ['tracking_number', 'lot_number', 'entry_date']},
-            inventory : {columns : ['text', 'purchase_price']},
-            purchase : { columns : ['purchase_date']},
-            purchase_item : { columns : ['unit_price']}
-          },
-          join : [
-            'consumption.uuid=consumption_loss.consumption_uuid', 
-            'consumption.tracking_number=stock.tracking_number', 
-            'stock.inventory_uuid=inventory.uuid',
-            'stock.purchase_order_uuid=purchase.uuid', 
-            'purchase.uuid=purchase_item.purchase_uuid',
-            'purchase_item.inventory_uuid=inventory.uuid'
-          ]
+        tables : {
+          'donations'     : { columns : ['date'] },
+          'donation_item' : { columns : ['tracking_number'] },
+          'stock'         : { columns : ['inventory_uuid', 'quantity', 'lot_number', 'entry_date', 'expiration_date'] },
+          'inventory'     : { columns : ['text'] },
+          'donor'         : { columns : ['name::donorName'] },
+          'employee'      : { columns : ['name::employeeName'] }
+        },
+        join : [
+          'donation_item.donation_uuid=donations.uuid',
+          'donation_item.tracking_number=stock.tracking_number',
+          'inventory.uuid=stock.inventory_uuid',
+          'donor.id=donations.donor_id',
+          'employee.id=donations.employee_id',
+        ]
       }
     };
 
-    init();
+    validate.process(dependencies, ['donor'])
+    .then(init);       
 
-    function init() {
-      validate.process(dependencies).then(loadProjects);
-      session.depot = '*';
+    function init (model) {
+      angular.extend($scope, model);
     }
 
-    function loadProjects(model) {
-      $scope.model = model;
-      select(period[0]);
-    }
-
-    function select(period) {
-      session.selected = period;
-      period.method();
-    }
-
-    function updateSession(model) {
-      $scope.model = model;
-      groupingLoss(model.loss.data);
-      updateTotals();
-      session.searching = false;
-    }
-
-    function reset() {
-      $scope.state = 'generate';
-      var request;
-      console.log('Origin',session.depot);
-      request = {
-        dateFrom : util.sqlDate(session.param.dateFrom),
-        dateTo : util.sqlDate(session.param.dateTo),
-        depotId : session.depot
-      };
-
-      if (!isNaN(Number(session.project))) {
-        request.project = session.project;
-      }
-
-      session.searching = true;
-
-      dependencies.loss = {
-	      query : {
-	        identifier : 'uuid',
-	          tables : {
-	            consumption : { columns : ['quantity', 'date', 'uuid'] },
-	            consumption_loss : { columns : ['document_uuid'] },
-	            stock : {columns : ['tracking_number', 'lot_number', 'entry_date']},
-	            inventory : {columns : ['text', 'purchase_price']},
-	            purchase : { columns : ['purchase_date']},
-	            purchase_item : { columns : ['unit_price']}
-	          },
-	          join : [
-	            'consumption.uuid=consumption_loss.consumption_uuid', 
-	            'consumption.tracking_number=stock.tracking_number', 
-	            'stock.inventory_uuid=inventory.uuid',
-	            'stock.purchase_order_uuid=purchase.uuid', 
-	            'purchase.uuid=purchase_item.purchase_uuid',
-	            'purchase_item.inventory_uuid=inventory.uuid'
-	          ]
-	      }
-	    };
-
-      if(request.depotId === '*'){
-        $scope.depotSelected = $translate.instant('EXPIRING_REPORT.ALL_DEPOTS');
-        dependencies.loss.query.where = ['consumption.date>=' + request.dateFrom,'AND','consumption.date<=' + request.dateTo];  
+    function getDonor () {
+      if (session.donor === '*') {
+        session.labelDonor = '' + $translate.instant('UTIL.ALL_DONORS');
       } else {
-        dependencies.store = {
-          required: true,
-          query : {
-            tables : {
-              'depot' : {
-                columns : ['uuid', 'text', 'reference', 'enterprise_id']
-              }
-            },
-            where : ['depot.uuid=' + session.depot]
-          }
-        };
-        validate.process(dependencies, ['store'])
-        .then(function (model) {
-          var dataDepot = model.store.data[0];
-          $scope.depotSelected = dataDepot.text;
-        });       
-
-
-        dependencies.loss.query.where = ['consumption.depot_uuid=' + request.depotId,'AND','consumption.date>=' + request.dateFrom,'AND','consumption.date<=' + request.dateTo]; 
+        session.donorObject = JSON.parse(session.donor);
+        session.labelDonor = session.donorObject.name;
+        session.donor_id = session.donorObject.id;
       }
-
-      total.result = {};
-      if ($scope.model.loss) {
-        $scope.model.loss.data = [];
-        session.loss = [];
-      }
-      validate.refresh(dependencies, ['loss']).then(updateSession);
-    }
-
-    function today() {
-      session.param.dateFrom = new Date();
-      session.param.dateTo = new Date();
-    }
-
-    function week() {
-      session.param.dateFrom = new Date();
-      session.param.dateTo = new Date();
-      session.param.dateFrom.setDate(session.param.dateTo.getDate() - session.param.dateTo.getDay());
-    }
-
-    function month() {
-      session.param.dateFrom = new Date();
-      session.param.dateTo = new Date();
-      session.param.dateFrom.setDate(1);
-    }
-
-    function updateTotals() {
-      total.loss = totalLoss();
-      total.loss_amount = $scope.model.loss.data.reduce(sum,0);
     }
 
     function sum(a, b) {
@@ -198,16 +72,25 @@ angular.module('bhima.controllers')
 
     function reconfigure () {
       $scope.state = null;
-      $scope.session.depot = '*';
-      $scope.depotSelected = null;
-    }    
+    }
+
+    function generate () {
+      $scope.state = 'generate';
+
+      if (session.donor_id) {
+        dependencies.donation.query.where = ['donor.id=' + session.donor_id];
+      }
+
+      validate.refresh(dependencies, ['donation'])
+      .then(init);
+    } 
 
     appstate.register('enterprise', function(enterprise) {
       $scope.enterprise = enterprise;
     });
 
-    $scope.select = select;
-    $scope.reset = reset;
     $scope.reconfigure = reconfigure;
+    $scope.getDonor = getDonor;
+    $scope.generate = generate;
   }
 ]);
