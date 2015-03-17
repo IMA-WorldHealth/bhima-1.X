@@ -11,15 +11,15 @@ angular.module('bhima.controllers')
       required: true,
       query:  {
         tables: {
-          caution: { columns: ['reference', 'value', 'debitor_uuid', 'project_id', 'currency_id', 'date'] },
+          cash: { columns: ['reference', 'cost', 'deb_cred_uuid', 'project_id', 'currency_id', 'date'] },
           patient : {columns : ['first_name', 'last_name', 'current_location_id']}
         },
-        join : ['caution.debitor_uuid=patient.debitor_uuid']
+        join : ['cash.deb_cred_uuid=patient.debitor_uuid']
       }
     };
 
     function buildInvoice (res) {
-      model.caution = res.caution.data.pop();
+      model.caution = res.caution.data[0];
     }
 
   	appstate.register('receipts.commonData', function (commonData) {
@@ -27,13 +27,13 @@ angular.module('bhima.controllers')
         model.common.location = values.location.data.pop();
         model.common.InvoiceId = values.invoiceId;
         utility.convert = values.convert;
-        dependencies.caution.query.where = ['caution.uuid=' + values.invoiceId];
+        dependencies.caution.query.where = ['cash.uuid=' + values.invoiceId];
         validate.process(dependencies)
         .then(buildInvoice)
         .catch(function (err){
           messenger.danger('error', err);
         });
-  		});     
-    });    
+  		});
+    });
   }
 ]);
