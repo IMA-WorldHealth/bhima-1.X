@@ -87,7 +87,8 @@ ADD `notes` text;
 -- Date: 2015-01-13
 -- By: Jonathan Cameron
 INSERT INTO `unit` VALUES
-(7,'Edit Account Budget','TREE.EDIT_BUDGET','',8,0,'/partials/budget/edit/','/budgeting/edit');
+(7,'Edit Account Budget','TREE.EDIT_BUDGET','',8,0,'/partials/budget/edit/','/budgeting/edit'),
+(34,'Auxillary cash records','TREE.AUXILLARY_CASH_RECORD','',5,0,'/partials/records/auxillary_cash_records/','/auxillary_cash_records/');
 
 
 -- Subsidy updating
@@ -131,6 +132,72 @@ CREATE TABLE `sale_subsidy` (
   constraint foreign key (`sale_uuid`) references `sale` (`uuid`) on delete cascade,
   constraint foreign key (`subsidy_uuid`) references `subsidy` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+-- cash canceling
+--
+-- ADD cash_discard table
+--
+-- Date: 2015-03-11
+-- By: Dedrick Kitamuka
+
+DROP TABLE IF EXISTS `cash_discard`;
+
+CREATE TABLE `cash_discard` (
+  `project_id` smallint(5) unsigned NOT NULL,
+  `reference` int(10) unsigned NOT NULL,
+  `uuid` char(36) NOT NULL,
+  `cost` decimal(19,4) unsigned NOT NULL,
+  `debitor_uuid` char(36) NOT NULL,
+  `cashier_id` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `cash_uuid` char(36) NOT NULL,
+  `date` date NOT NULL,
+  `description` text,
+  `posted` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`uuid`),
+  KEY `reference` (`reference`),
+  KEY `project_id` (`project_id`),
+  KEY `debitor_uuid` (`debitor_uuid`),
+  KEY `cash_uuid` (`cash_uuid`),
+  CONSTRAINT `cash_discard_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
+  CONSTRAINT `cash_discard_ibfk_2` FOREIGN KEY (`debitor_uuid`) REFERENCES `debitor` (`uuid`),
+  CONSTRAINT `cash_discard_ibfk_3` FOREIGN KEY (`cash_uuid`) REFERENCES `cash` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- deleting tables relatives to caution
+--
+-- DROP TABLES caution, caution_box, caution_box_account_currency
+--
+-- Date: 2015-03-11
+-- By: Dedrick Kitamuka
+
+DROP TABLE IF EXISTS `caution_box_account_currency`;
+DROP TABLE IF EXISTS `caution_box`;
+DROP TABLE IF EXISTS `caution`;
+
+-- adding a columns for exchange operation and foreign key
+--
+-- ALTER TABLE cash_box_account_currency
+--
+-- Date: 2015-03-14
+-- By: Dedrick Kitamuka
+
+ALTER TABLE `cash_box_account_currency`
+ADD `gain_exchange_account_id` int(10) unsigned default 981;
+
+ALTER TABLE `cash_box_account_currency`
+ADD `loss_exchange_account_id` int(10) unsigned default 718;
+
+ALTER TABLE `cash_box_account_currency`
+ADD FOREIGN KEY (`gain_exchange_account_id`) REFERENCES `account` (`id`);
+
+ALTER TABLE `cash_box_account_currency`
+ADD FOREIGN KEY (`loss_exchange_account_id`) REFERENCES `account` (`id`);
+
+
+
+
+
 
 
 -- Allow an employee lock
@@ -355,7 +422,7 @@ ADD `is_warehouse` smallint unsigned not null default 0;
 -- Updates data base
 --
 -- Date: 2015-02-20
--- By: Chris LOMAME 
+-- By: Chris LOMAME
 
 USE bhima;
 
@@ -389,7 +456,7 @@ create table `hollyday_paiement` (
 
 --
 -- Date: 2015-02-25
--- By: Chris LOMAME 
+-- By: Chris LOMAME
 
 USE bhima;
 
@@ -412,11 +479,12 @@ ADD `is_ipr` boolean;-- written by lomamech
 INSERT INTO `transaction_type` (`id`, `service_txt`) VALUES
   (19,'cotisation_paiement'),
   (20,'generic_expense'),
-  (21,'indirect_purchase'), 
-  (22, 'confirm_purchase'), 
-  (23, 'salary_advance'), 
-  (24, 'employee_invoice'), 
-  (25, 'pcash_employee');
+  (21,'indirect_purchase'),
+  (22, 'confirm_purchase'),
+  (23, 'salary_advance'),
+  (24, 'employee_invoice'),
+  (25, 'pcash_employee'),
+  (26, 'cash_discard');
 
 -- Update service text for transaction type
 UPDATE `transaction_type` SET `service_txt` = 'pcash_convention' WHERE `transaction_type`.`id` = 8;
@@ -424,7 +492,6 @@ UPDATE `transaction_type` SET `service_txt` = 'pcash_convention' WHERE `transact
 UPDATE `transaction_type` SET `service_txt` = 'pcash_transfert' WHERE `transaction_type`.`id` = 10;
 
 UPDATE `transaction_type` SET `service_txt` = 'generic_income' WHERE `transaction_type`.`id` = 11;
-
 
 -- Title : POPULATE LANGUAGE
 -- By    : Bruce Mbayo
@@ -441,3 +508,4 @@ ALTER TABLE `purchase`
 ADD `is_donation` tinyint(1) NOT NULL DEFAULT '0',
 MODIFY `creditor_uuid` char(36) NULL,
 MODIFY `employee_id` int(10) unsigned NULL;
+
