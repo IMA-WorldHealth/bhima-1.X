@@ -563,9 +563,8 @@ exports.cautionDebtor = function (req, res, next) {
           'FROM `general_ledger` WHERE `general_ledger`.`deb_cred_uuid` = ' + debitor_uuid +
         ') AS `t` JOIN `account` ON `t`.`account_id` = `account`.`id` ' +
         'WHERE `t`.`account_id` IN (' +
-          'SELECT `caution_box_account_currency`.`account_id` FROM `caution_box_account_currency` ' +
-          'WHERE `caution_box_account_currency`.`currency_id`=' +currency_id +
-          ' AND `caution_box_account_currency`.`caution_box_id`= (SELECT distinct `caution_box`.`id` FROM `caution_box` WHERE `caution_box`.`project_id`='+ project_id +'));';
+          'SELECT `debitor_group`.`account_id` FROM `debitor_group` WHERE `debitor_group`.`uuid`= ' +
+          '(SELECT `group_uuid` FROM `debitor` WHERE `debitor`.`uuid`=' + debitor_uuid + ' LIMIT 1));';
     return db.exec(sql);
   })
   .then(function (ans) {
