@@ -260,6 +260,7 @@ angular.module('bhima.controllers')
         submitItem.forEach(function (item) {
           getLotPurchasePrice(item.tracking_number)
           .then(function (price) {
+            console.log('PRICE: ', price);
             item.unit_price = price.data[0].unit_price;
             counter++;
             if (counter === submitItem.length) {
@@ -273,7 +274,6 @@ angular.module('bhima.controllers')
       
       updateLotPrice()
       .then(function (resultSubmitItem) {
-        submitItem = resultSubmitItem;
         return connect.basicPut('consumption', resultSubmitItem);
       })
       .then(function (){
@@ -285,11 +285,9 @@ angular.module('bhima.controllers')
       .then(function () {
         $location.path('/invoice/consumption/' + session.sale.inv_po_id);
       })
-      .catch(handleError);
-
-      function handleError (error) {
-        console.log('[ERROR]');
-      }
+      .catch(function (error) {
+        messenger.error(error);
+      });
     }
 
     $scope.selectSale = selectSale;
