@@ -31,9 +31,10 @@
         <thead>
           <tr>
             <th>{{ "COLUMNS.DEPOT" | translate }}</th>
-            <th>{{ "COLUMNS.TRACKING_NUMBER" | translate }}</th>
-            <th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>
+            <th>{{ "COLUMNS.ITEM" | translate }}</th>
             <th>{{ "COLUMNS.INVENTORY_CODE" | translate }}</th>
+            <th>{{ "COLUMNS.TRACKING_NUMBER" | translate }}</th>
+            <th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>            
             <th>{{ "COLUMNS.PURCHASE_DATE" | translate }}</th>
             <th>{{ "COLUMNS.EXPIRATION_DATE" | translate }}</th>
             <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
@@ -42,9 +43,10 @@
         <tbody>
           <tr ng-repeat="movement in receipt.data | orderBy:'code'">
             <td>{{ movement.text }}</td>
-            <td>{{ movement.tracking_number }}</td>
-            <td>{{ movement.lot_number }}</td>
+            <td>{{ movement.inventory_text }}</td>
             <td>{{ movement.code }}</td>
+            <td>{{ movement.tracking_number }}</td>
+            <td>{{ movement.lot_number }}</td>            
             <td>{{ movement.date | date }}</td>
             <td>{{ movement.expiration_date | date }}</td>
             <td>{{ movement.quantity }}</td>
