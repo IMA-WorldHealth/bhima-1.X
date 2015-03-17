@@ -273,6 +273,7 @@ angular.module('bhima.controllers')
       
       updateLotPrice()
       .then(function (resultSubmitItem) {
+        submitItem = resultSubmitItem;
         return connect.basicPut('consumption', resultSubmitItem);
       })
       .then(function (){
@@ -284,9 +285,11 @@ angular.module('bhima.controllers')
       .then(function () {
         $location.path('/invoice/consumption/' + session.sale.inv_po_id);
       })
-      .catch(function (error) {
-        messenger.error(error);
-      });
+      .catch(handleError);
+
+      function handleError (error) {
+        console.log('[ERROR]');
+      }
     }
 
     $scope.selectSale = selectSale;

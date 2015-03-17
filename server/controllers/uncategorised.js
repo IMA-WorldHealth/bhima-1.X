@@ -956,13 +956,13 @@ exports.listTopConsumption = function (req, res, next) {
 exports.listPurchaseOrders = function (req, res, next) {
   var sql;
   if(req.query.request == 'OrdersPayed'){
-    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE paid = '1'";
+    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE paid = '1' AND is_donation = 0";
   } else if (req.query.request == 'OrdersWatingPayment'){
-    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE paid = '0'";
+    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE paid = '0' AND confirmed = '0' AND is_donation = 0";
   } else if (req.query.request == 'OrdersReceived'){
-    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE closed = '1'";
+    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE closed = '1' AND confirmed = '1' AND is_donation = 0";
   } else if (req.query.request == 'InWatingReception'){
-    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE closed = '0' AND confirmed = '1'";
+    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE closed = '0' AND confirmed = '1' AND is_donation = 0";
   }
 
   db.exec(sql)

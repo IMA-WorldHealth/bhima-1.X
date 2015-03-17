@@ -39,7 +39,7 @@ angular.module('bhima.controllers')
           'purchase.purchaser_id=user.id',
           'purchase.employee_id=employee.id'
         ],
-        where : ['purchase.is_direct=0']
+        where : ['purchase.is_direct=0', 'AND', 'purchase.is_donation=0']
       };
 
       var direct = {
@@ -62,7 +62,7 @@ angular.module('bhima.controllers')
           'purchase.purchaser_id=user.id',
           'creditor.uuid=supplier.creditor_uuid'
         ],
-        where : ['purchase.is_direct=1']
+        where : ['purchase.is_direct=1', 'AND', 'purchase.is_donation=0']
       };
       
       var d = connect.req(direct);

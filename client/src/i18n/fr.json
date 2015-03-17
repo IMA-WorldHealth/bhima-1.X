@@ -950,6 +950,7 @@
    },
 "FISCAL_YEAR": {
    "ACCEPT"                      : "J'accepte",
+   "ALERT_BALANCE"               : "Les données saisies ne sont pas balancées",
    "ALERT_ONE"                   : "Il n'y a aucune année fiscale enregistrée pour l'entreprise ",
    "ALERT_TWO"                   : ". Les années fiscales sont requises pour grouper les transactions et produire les rapports.",
    "CLOSING_ACCOUNT"             : "Choissiser un compte",
