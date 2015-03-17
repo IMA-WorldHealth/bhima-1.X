@@ -470,43 +470,6 @@ function handleRounding (cash_id) {
   });
 }
 
-// handles rounding reverse for cash discard
-
-function handleRoundingReverse (cash_id) {
-  var sql, row;
-
-  // find out what the current balance is on the invoice to find out if we are paying it all.
-  sql =
-    'SELECT c.uuid, c.date, c.cost, c.currency_id, sum(p.debit_equiv - p.credit_equiv) AS balance, cu.min_monentary_unit ' +
-    'FROM cash AS c JOIN cash_item AS ci JOIN currency as cu JOIN sale AS s JOIN ' +
-      '(SELECT credit_equiv, debit_equiv, account_id, inv_po_id, deb_cred_uuid FROM posting_journal ' +
-      'UNION ' +
-      'SELECT credit_equiv, debit_equiv, account_id, inv_po_id, deb_cred_uuid FROM general_ledger) AS p ' +
-    'JOIN debitor AS d JOIN debitor_group as dg ' +
-    'ON c.uuid = ci.cash_uuid AND c.currency_id = cu.id AND ci.invoice_uuid = s.uuid AND ci.invoice_uuid = p.inv_po_id AND p.deb_cred_uuid = s.debitor_uuid ' +
-    'AND  p.account_id = dg.account_id ' +
-    'AND d.uuid = s.debitor_uuid AND d.group_uuid = dg.uuid WHERE c.uuid = ' + sanitize.escape(cash_id) + ' ' +
-    'GROUP BY c.uuid;';
-
-  return db.exec(sql)
-  .then(function (rows) {
-    console.log('voici le row', rows);
-    row = rows.pop();
-    if (!row) {
-      throw new Error('No debtor invoices found.  Internal system error in handling rounding.');
-    }
-    return get.exchangeRate(row.date);
-  })
-  .then(function (store) {
-    var paidValue = precision(row.cost / store.get(row.currency_id).rate, 4);
-    var remainder = precision((row.balance - paidValue) * store.get(row.currency_id).rate, 4);
-    // if the absolute value of the remainder is less than the min_monentary_unit
-    // then they have paid in full
-    var isPaidInFull = Math.abs(remainder) - row.min_monentary_unit < row.min_monentary_unit;
-    return { isPaidInFull : isPaidInFull, remainder : row.balance - paidValue };
-  });
-}
-
 function handleCash (id, user_id, done) {
   // posting from cash to the journal.
   // TODO: refactor this into one 'state' object
@@ -612,8 +575,8 @@ function handleCash (id, user_id, done) {
         '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
         '`inv_po_id`, `currency_id`, `deb_cred_uuid`, `deb_cred_type`, `origin_id`, `user_id` ) ' +
       'SELECT `cash`.`project_id`, ' + [sanitize.escape(state.cashUUID), state.period.fiscal_year_id, state.period.id , state.transId, '\'' + get.date() + '\''].join(', ') + ', ' +
-        '`cash`.`description`, `cash`.`document_id`, `cash`.`' + account_type + '`, ' + money +
-        'null, `cash`.`currency_id`, null, null, ' +
+        '`cash`.`description`, `cash`.`document_id`, `cash`.`' + account_type + '`, ' + money + sanitize.escape(state.id) +
+        ', `cash`.`currency_id`, null, null, ' +
         [state.originId, state.userId].join(', ') + ' ' +
       'FROM `cash` JOIN `cash_item` ON ' +
         ' `cash`.`uuid` = `cash_item`.`cash_uuid` ' +
@@ -1209,8 +1172,10 @@ function handleCreditNote (id, user_id, done) {
 }
 
 function handleCashDiscard (id, user_id, done) {
+  console.log("ID", id);
   var sql, reference, cfg = {}, queries = {}, state = {};
-
+  state.id = id;
+  cfg.rows = [];
   sql =
     'SELECT `cash_discard`.`project_id`, `cash_discard`.`reference`, `cash_discard`.`uuid`, `cash_discard`.`cost`,' +
     ' `cash_discard`.`debitor_uuid`, `cash_discard`.`cash_uuid`, `cash_discard`.`date`,' +
@@ -1222,6 +1187,7 @@ function handleCashDiscard (id, user_id, done) {
 
   db.exec(sql)
   .then(function (results) {
+
     if (results.length === 0) {
       throw new Error('No cash discard by the id: ' + id);
     }
@@ -1234,159 +1200,58 @@ function handleCashDiscard (id, user_id, done) {
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
-
     var sql =
-    'SELECT `cash`.`uuid`, `cash_item`.`uuid` AS `cash_item_uuid`, `cash`.`project_id`, `project`.`enterprise_id`, `cash`.`date`, `cash`.`debit_account`, `cash`.`credit_account`, '  +
-      '`cash`.`deb_cred_uuid`, `cash`.`deb_cred_type`, `cash`.`currency_id`, `cash`.`cost`, `cash`.`user_id`, ' +
-      '`cash`.`cashbox_id`, `cash`.`description`, `cash_item`.`cash_uuid`, `cash_item`.`allocated_cost`, `cash_item`.`invoice_uuid`, ' +
-      '`cash`.`type`, `cash`.`document_id` ' +
-    'FROM `cash` JOIN `cash_item` JOIN `project` ON ' +
-      '`cash`.`uuid`=`cash_item`.`cash_uuid` ' +
-      'AND `cash`.`project_id`=`project`.`id` ' +
-    'WHERE `cash`.`uuid`=' + sanitize.escape(reference.cash_uuid) + ';';
-
+    "SELECT trans_id FROM (SELECT trans_id, inv_po_id FROM posting_journal UNION SELECT trans_id, inv_po_id FROM general_ledger) as `pg` WHERE `pg`.`inv_po_id`=" + sanitize.escape(reference.cash_uuid) + " LIMIT 1";
     return db.exec(sql);
   })
-  .then(function (results) {
-    if (results.length === 0) {
-      throw new Error('No cash value by the id :' + reference.cash_uuid);
-    }
-
-    state.items = results;
-    state.reference = results[0];
-    return get.exchangeRate(reference.date);
+  .then(function (t) {
+    var token_sql =
+    "SELECT `project_id`, `fiscal_year_id`, `period_id`, `trans_date`, `trans_id`, `account_id`, `debit`, `credit`, `debit_equiv`, " +
+    "`credit_equiv`, `inv_po_id`, `currency_id`, `deb_cred_uuid`, `deb_cred_type`, `origin_id`, `user_id` FROM posting_journal " +
+    "UNION SELECT `project_id`, `fiscal_year_id`, `period_id`, `trans_date`, `trans_id`, `account_id`, `debit`, `credit`, `debit_equiv`, " +
+    "`credit_equiv`, `inv_po_id`, `currency_id`, `deb_cred_uuid`, `deb_cred_type`, `origin_id`, `user_id` FROM general_ledger";
+    var sql =
+    "SELECT `project_id`, `fiscal_year_id`, `period_id`, `trans_date`, `account_id`, `debit`, `credit`, `debit_equiv`," +
+    " `credit_equiv`, `inv_po_id`, `currency_id`, `deb_cred_uuid`, `deb_cred_type`, `origin_id`, `user_id` " +
+    "FROM (" + token_sql + ") as `pg` WHERE `pg`.`trans_id`=" + sanitize.escape(t.pop().trans_id);
+    return db.exec(sql);
   })
-  .then(function (store) {
-    state.store = store;
+  .then(function (rows) {
+
+    rows.forEach(function (item){
+      var tapon = item.debit;
+      item.debit = item.credit;
+      item.credit = tapon;
+      var tapon_equiv = item.debit_equiv;
+      item.debit_equiv = item.credit_equiv;
+      item.credit_equiv = tapon_equiv;
+      cfg.rows.push(item);
+    });
+
     return get.transactionId(reference.project_id);
   })
-  .then(function (id) {
-    state.transId = id;
-    return handleRoundingReverse(reference.cash_uuid);
-  })
-  .then(function (rounding) {
-    console.log('le rounding est :', rounding);
-    state.remainder = rounding.remainder;
-    state.isPaidInFull = rounding.isPaidInFull;
-
-    var account_type = state.reference.type !== 'E' ? 'credit_account' : 'debit_account' ;
-
-    // Are they a debitor or a creditor?
-    state.deb_cred_type = state.reference.type === 'E' ? '\'D\'' : '\'C\'';
-
-    // calculate exchange rate.  If money coming in, credit is cash.cost,
-    // credit_equiv is rate*cash.cost and vice versa.
-    var money = state.reference.type === 'E' ?
-      '0, `cash`.`cost`, 0, ' + 1/state.store.get(state.reference.currency_id).rate + '*`cash`.`cost`, ' :
-      '`cash`.`cost`, 0, ' + 1/state.store.get(state.reference.currency_id).rate + '*`cash`.`cost`, 0, ' ;
-
-    state.cashUUID = uuid();
-
-    // copy the data from cash into the journal with care to convert exchange rates.
-    var sql =
-      'INSERT INTO `posting_journal` ' +
-        '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-        '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-        '`inv_po_id`, `currency_id`, `deb_cred_uuid`, `deb_cred_type`, `origin_id`, `user_id` ) ' +
-      'SELECT `cash_discard`.`project_id`, ' + [sanitize.escape(state.cashUUID), cfg.fiscalYearId, cfg.periodId , state.transId, '\'' + get.date() + '\''].join(', ') + ', ' +
-        '`cash_discard`.`description`, null, `cash`.`' + account_type + '`, ' + money +
-        'null, `cash`.`currency_id`, null, null, ' +
-        [cfg.originId, user_id].join(', ') + ' ' +
-      'FROM `cash` JOIN `cash_discard` ON `cash`.`uuid`=`cash_discard`.`cash_uuid` WHERE `cash_discard`.`cash_uuid`=' + sanitize.escape(reference.cash_uuid) + ' ' +
-      'LIMIT 1;'; // just in case
-
-    return db.exec(sql);
-  })
-  .then(function () {
-
-    // Then copy data from CASH_ITEM -> JOURNAL
-    var cash_item_money = state.reference.type === 'E' ?
-      '`cash_item`.`allocated_cost`, 0, ' + 1/state.store.get(state.reference.currency_id).rate + '*`cash_item`.`allocated_cost`, 0, ' :
-      '0, `cash_item`.`allocated_cost`,0, '+ 1/state.store.get(state.reference.currency_id).rate + '*`cash_item`.`allocated_cost`' ;
-
-    state.cash_item_account_id = state.reference.type !== 'E' ? 'debit_account' : 'credit_account';
-
+  .then(function (transId) {
     var sqls = [];
-
-    state.itemUUIDs = [];
-    state.items.forEach(function (item) {
+    cfg.rows.forEach(function (item) {
       var id = uuid();
-      state.itemUUIDs.push(id);
       var sql =
         'INSERT INTO `posting_journal` ' +
         '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
         '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
         '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-      'SELECT `cash_discard`.`project_id`, ' + [sanitize.escape(id), cfg.fiscalYearId, cfg.periodId, state.transId, '\'' + get.date() + '\''].join(', ') + ', ' +
-        '`cash_discard`.`description`, null, `cash`.`' + state.cash_item_account_id  + '`, ' + cash_item_money +
-        '`cash`.`currency_id`, `cash`.`deb_cred_uuid`, ' + state.deb_cred_type + ', ' +
-        '`cash_item`.`invoice_uuid`, ' + [cfg.originId, user_id].join(', ') + ' ' +
-      'FROM `cash` JOIN `cash_item` JOIN cash_discard ON ' +
-        '`cash`.`uuid`=`cash_item`.`cash_uuid` AND `cash`.`uuid`=`cash_discard`.`cash_uuid` '+
-      'WHERE `cash_item`.`uuid`=' + sanitize.escape(item.cash_item_uuid) + ';';
+        'SELECT `cash_discard`.`project_id`, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
+        '`cash_discard`.`description`, null, ' + [item.account_id, item.debit, item.credit, item.debit_equiv, item.credit_equiv].join(', ') + ', ' +
+        '`cash`.`currency_id`, ' + ((item.deb_cred_uuid) ? sanitize.escape(item.deb_cred_uuid) : 'null') + ', ' +
+        ((item.deb_cred_type) ? sanitize.escape(item.deb_cred_type) : 'null') + ', ' + sanitize.escape(item.inv_po_id) + ', ' +
+        [cfg.originId, user_id].join(', ') + ' ' +
+        'FROM `cash_discard` JOIN `cash` ON `cash`.`uuid`=`cash_discard`.`cash_uuid` '+
+        'WHERE `cash_discard`.`uuid`=' + sanitize.escape(state.id) + ';';
       sqls.push(sql);
     });
 
     return q.all(sqls.map(function (sql) {
       return db.exec(sql);
     }));
-  })
-  .then(function () {
-    var query;
-
-    if (state.isPaidInFull && state.remainder !== 0) {
-
-      state.creditOrDebitBool = state.remainder > 0;
-      state.roundedRemainder = precision(Math.abs(state.remainder), 4);
-      var creditOrDebit = state.creditOrDebitBool ?
-        [0, state.roundedRemainder, 0, state.roundedRemainder].join(', ') :   // credit
-        [state.roundedRemainder, 0, state.roundedRemainder, 0].join(', ') ; // debit
-
-      var description =
-        '\'Reversing Rounding Exchange Rate \'';
-
-      state.roundingUUID = uuid();
-
-      query=
-        'INSERT INTO `posting_journal` ' +
-        '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-        '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-      'SELECT `cash_discard`.`project_id`, ' + [sanitize.escape(state.roundingUUID), cfg.fiscalYearId, cfg.periodId, state.transId, '\'' + get.date() + '\''].join(', ') + ', ' +
-        description + ', null, `cash_box_account_currency`.`exchange_account_id`, ' + creditOrDebit + ', ' +
-        '`cash`.`currency_id`, null, null, `cash_item`.`invoice_uuid`, ' +
-        [cfg.originId, user_id].join(', ') + ' ' +
-      'FROM `cash` JOIN `cash_item` JOIN `cash_discard` JOIN `cash_box_account_currency` ON `cash`.`uuid` = `cash_item`.`cash_uuid` AND `cash`.`uuid` = `cash_discard`.`cash_uuid` AND `cash_box_account_currency`.`id`=`cash`.`cashbox_id` ' +
-      'WHERE `cash`.`uuid`=' + sanitize.escape(reference.cash_uuid) + ' LIMIT 1;';
-    }
-    return query ? db.exec(query) : q();
-  })
-  .then(function () {
-    var query;
-    if (state.creditOrDebitBool) {
-
-      var balance = state.creditOrDebitBool ?
-        [state.roundedRemainder, 0, state.roundedRemainder,  0].join(', ') : // debit
-        [0, state.roundedRemainder, 0, state.roundedRemainder].join(', ') ;   // credit
-
-      state.roundingUUID2 = uuid();
-
-      var description =
-        '\'Reversing Rounding Exchange Rate \'';
-
-      query =
-        'INSERT INTO `posting_journal` ' +
-        '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-        '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-      'SELECT `cash_discard`.`project_id`, ' + [sanitize.escape(state.roundingUUID2), cfg.fiscalYearId, cfg.periodId, state.transId, '\'' + get.date() + '\''].join(', ') + ', ' +
-        description +', null, `cash`.`' + state.cash_item_account_id  + '`, ' + balance + ', ' +
-        '`cash`.`currency_id`, `cash`.`deb_cred_uuid`, `cash`.`deb_cred_type`, `cash_item`.`invoice_uuid`, ' +
-        [cfg.originId, user_id].join(', ') + ' ' +
-      'FROM `cash` JOIN `cash_item` JOIN cash_discard ON `cash`.`uuid` = `cash_item`.`cash_uuid` AND `cash`.`uuid`=`cash_discard`.`cash_uuid` ' +
-      'WHERE `cash`.`uuid`=' + sanitize.escape(reference.cash_uuid) + ' LIMIT 1;';
-    }
-    return query ? db.exec(query) : q();
   })
   .then(function () {
     done();
