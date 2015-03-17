@@ -2095,6 +2095,7 @@ function handleConfirmDirectPurchase (id, user_id, done){
 
 function handleDistributionPatient (id, user_id, done) {
 
+  var array_uuid_credit = [], array_uuid_debit = [];
   var references, dayExchange, cfg = {};
   var sql =
     'SELECT `consumption`.`uuid`, `consumption`.`date`,`consumption`.`unit_price`, `consumption`.`quantity`, `stock`.`inventory_uuid`, `inventory`.`purchase_price`, `inventory_group`.`uuid` AS group_uuid, ' +
@@ -2110,9 +2111,7 @@ function handleDistributionPatient (id, user_id, done) {
   .then(function (res){
     return done(null, res);
   })
-  .catch(function (err){
-    return done(err, null);
-  });
+  .catch(catchError);
 
   function getRecord (records) {
     if (records.length === 0) { throw new Error('pas enregistrement'); }
@@ -2137,13 +2136,16 @@ function handleDistributionPatient (id, user_id, done) {
   function debit () {
     return q.all(
       references.map(function (reference) {
+        var uuid_debit = sanitize.escape(uuid());
+        array_uuid_debit.push(uuid_debit);
+
         var sql = 'INSERT INTO posting_journal ' +
                   '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                   '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
                   '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`, `cc_id` ) ' +
                   'SELECT ' +
                     [
-                      sanitize.escape(uuid()),
+                      uuid_debit,
                       reference.project_id,
                       cfg.fiscalYearId,
                       cfg.periodId,
@@ -2170,13 +2172,16 @@ function handleDistributionPatient (id, user_id, done) {
   function credit () {
     return q.all(
       references.map(function (reference) {
+        var uuid_credit = sanitize.escape(uuid());
+        array_uuid_credit.push(uuid_credit);
+
         var sql = 'INSERT INTO posting_journal ' +
                   '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                   '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
                   '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
                   'SELECT ' +
                     [
-                      sanitize.escape(uuid()),
+                      uuid_credit,
                       reference.project_id,
                       cfg.fiscalYearId,
                       cfg.periodId,
@@ -2198,10 +2203,32 @@ function handleDistributionPatient (id, user_id, done) {
       })
     );
   }
+
+  function catchError (err) {
+    var condition = array_uuid_credit.concat(array_uuid_debit).join(',');
+    var posting_deleting = condition.length > 0 ? 'DELETE FROM `posting_journal` WHERE `posting_journal`.`uuid`' + ' IN (' + condition + ')' : 'SELECT 1+1';
+    var consumption_patient_deleting = 'DELETE FROM `consumption_patient` WHERE `consumption_patient`.`sale_uuid`=' + sanitize.escape(id);
+    var consumption_deleting = 'DELETE FROM `consumption` WHERE `consumption`.`document_id`=' + sanitize.escape(id);
+
+    db.exec(posting_deleting)
+    .then(function () {
+      return db.exec(consumption_patient_deleting);
+    })
+    .then(function () {
+      return db.exec(consumption_deleting);
+    })
+    .catch(function (err) {
+      console.log('erreur pendant la suppression ::: ', err);
+    })
+    .finally(function () {
+      return done(err, null);
+    });
+  }
 }
 
 function handleDistributionService (id, user_id, details, done) {
 
+  var array_uuid_credit = [], array_uuid_debit = [];
   var references, dayExchange, cfg = {};
   var sql =
     'SELECT `consumption`.`uuid`, `consumption`.`date`, `consumption`.`unit_price`, `consumption`.`quantity`, `consumption_service`.`service_id`, `stock`.`inventory_uuid`, `inventory`.`purchase_price`, `inventory_group`.`uuid` AS group_uuid, ' +
@@ -2217,9 +2244,7 @@ function handleDistributionService (id, user_id, details, done) {
   .then(function (res){
     return done(null, res);
   })
-  .catch(function (err){
-    return done(err, null);
-  });
+  .catch(catchError);
 
   function getRecord (records) {
     if (records.length === 0) { throw new Error('pas enregistrement'); }
@@ -2244,13 +2269,16 @@ function handleDistributionService (id, user_id, details, done) {
   function debit () {
     return q.all(
       references.map(function (reference) {
+        var uuid_debit = sanitize.escape(uuid());
+        array_uuid_debit.push(uuid_debit);
+
         var sql = 'INSERT INTO posting_journal ' +
                   '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                   '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
                   '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`, `cc_id`) ' +
                   'SELECT ' +
                     [
-                      sanitize.escape(uuid()),
+                      uuid_debit,
                       details.id,
                       cfg.fiscalYearId,
                       cfg.periodId,
@@ -2276,13 +2304,16 @@ function handleDistributionService (id, user_id, details, done) {
   function credit () {
     return q.all(
       references.map(function (reference) {
+        var uuid_credit = sanitize.escape(uuid());
+        array_uuid_credit.push(uuid_credit);
+
         var sql = 'INSERT INTO posting_journal ' +
                   '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                   '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
                   '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
                   'SELECT ' +
                     [
-                      sanitize.escape(uuid()),
+                      uuid_credit,
                       details.id,
                       cfg.fiscalYearId,
                       cfg.periodId,
@@ -2304,13 +2335,35 @@ function handleDistributionService (id, user_id, details, done) {
       })
     );
   }
+
+  function catchError (err) {
+    var condition = array_uuid_credit.concat(array_uuid_debit).join(',');
+    var posting_deleting = condition.length > 0 ? 'DELETE FROM `posting_journal` WHERE `posting_journal`.`uuid`' + ' IN (' + condition + ')' : 'SELECT 1+1';
+    var consumption_service_deleting = 'DELETE FROM `consumption_service` WHERE `consumption_service`.`consumption_uuid` IN (SELECT DISTINCT `consumption`.`uuid` FROM `consumption` WHERE `consumption`.`document_id`=' + sanitize.escape(id) + ')';
+    var consumption_deleting = 'DELETE FROM `consumption` WHERE `consumption`.`document_id`=' + sanitize.escape(id);
+
+    db.exec(posting_deleting)
+    .then(function () {
+      return db.exec(consumption_service_deleting);
+    })
+    .then(function () {
+      return db.exec(consumption_deleting);
+    })
+    .catch(function (err) {
+      console.log('erreur pendant la suppression ::: ', err);
+    })
+    .finally(function () {
+      return done(err, null);
+    });
+  }
 }
 
 function handleDistributionLoss (id, user_id, details, done) {
 
+  var array_uuid_credit = [], array_uuid_debit = [];
   var references, dayExchange, cfg = {};
   var sql =
-    'SELECT `consumption`.`uuid`, `consumption`.`date`, `consumption`.`quantity`, `stock`.`inventory_uuid`, `inventory`.`purchase_price`, `inventory_group`.`uuid` AS group_uuid, ' +
+    'SELECT `consumption`.`uuid`, `consumption`.`date`, `consumption`.`quantity`, `consumption`.`unit_price`, `stock`.`inventory_uuid`, `inventory`.`purchase_price`, `inventory_group`.`uuid` AS group_uuid, ' +
     '`inventory_group`.`cogs_account`, `inventory_group`.`stock_account` FROM `consumption`, `consumption_loss`, `stock`, `inventory`,`inventory_group` ' +
     'WHERE `consumption`.`tracking_number`=`stock`.`tracking_number` AND `consumption_loss`.`consumption_uuid`=`consumption`.`uuid` AND `stock`.`inventory_uuid`=`inventory`.`uuid` AND `inventory`.`group_uuid`=`inventory_group`.`uuid` ' +
     'AND `consumption`.`document_id` =' + sanitize.escape(id) + ';';
@@ -2323,9 +2376,7 @@ function handleDistributionLoss (id, user_id, details, done) {
   .then(function (res){
     return done(null, res);
   })
-  .catch(function (err){
-    return done(err, null);
-  });
+  .catch(catchError);
 
   function getRecord (records) {
     if (records.length === 0) { throw new Error('pas enregistrement'); }
@@ -2350,21 +2401,24 @@ function handleDistributionLoss (id, user_id, details, done) {
   function debit () {
     return q.all(
       references.map(function (reference) {
+        var uuid_debit = sanitize.escape(uuid());
+        array_uuid_debit.push(uuid_debit);
+
         var sql = 'INSERT INTO posting_journal ' +
                   '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                   '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
                   '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
                   'SELECT ' +
                     [
-                      sanitize.escape(uuid()),
+                      uuid_debit,
                       details.id,
                       cfg.fiscalYearId,
                       cfg.periodId,
                       cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.cogs_account
                     ].join(',') + ', ' +
                     [
-                      0, (reference.quantity * reference.purchase_price).toFixed(4),
-                      0, (reference.quantity * reference.purchase_price).toFixed(4),
+                      0, (reference.quantity * reference.unit_price).toFixed(4),
+                      0, (reference.quantity * reference.unit_price).toFixed(4),
                       details.currency_id
                     ].join(',') +
                     ', null, null, ' +
@@ -2382,21 +2436,24 @@ function handleDistributionLoss (id, user_id, details, done) {
   function credit () {
     return q.all(
       references.map(function (reference) {
+        var uuid_credit = sanitize.escape(uuid());
+        array_uuid_credit.push(uuid_credit);
+
         var sql = 'INSERT INTO posting_journal ' +
                   '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
                   '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
                   '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
                   'SELECT ' +
                     [
-                      sanitize.escape(uuid()),
+                      uuid_credit,
                       details.id,
                       cfg.fiscalYearId,
                       cfg.periodId,
                       cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.stock_account
                     ].join(',') + ', ' +
                     [
-                      (reference.quantity * reference.purchase_price).toFixed(4), 0,
-                      (reference.quantity * reference.purchase_price).toFixed(4), 0,
+                      (reference.quantity * reference.unit_price).toFixed(4), 0,
+                      (reference.quantity * reference.unit_price).toFixed(4), 0,
                       details.currency_id, sanitize.escape(reference.inventory_uuid)
                     ].join(',') +
                     ', null, ' +
@@ -2409,6 +2466,27 @@ function handleDistributionLoss (id, user_id, details, done) {
         return db.exec(sql);
       })
     );
+  }
+
+  function catchError (err) {
+    var condition = array_uuid_credit.concat(array_uuid_debit).join(',');
+    var posting_deleting = condition.length > 0 ? 'DELETE FROM `posting_journal` WHERE `posting_journal`.`uuid`' + ' IN (' + condition + ')' : 'SELECT 1+1';
+    var consumption_loss_deleting = 'DELETE FROM `consumption_loss` WHERE `consumption_loss`.`document_uuid`=' + sanitize.escape(id);
+    var consumption_deleting = 'DELETE FROM `consumption` WHERE `consumption`.`document_id`=' + sanitize.escape(id);
+
+    db.exec(posting_deleting)
+    .then(function () {
+      return db.exec(consumption_loss_deleting);
+    })
+    .then(function () {
+      return db.exec(consumption_deleting);
+    })
+    .catch(function (err) {
+      console.log('erreur pendant la suppression ::: ', err);
+    })
+    .finally(function () {
+      return done(err, null);
+    });
   }
 }
 
@@ -3104,7 +3182,7 @@ function handleDonation (id, user_id, data, done) {
   function getRecord (records) {
     if (records.length === 0) { throw new Error('pas enregistrement'); }
     reference = records[0];
-    cfg.cost = (reference.purchase_price * data.quantity).toFixed(4);
+    cfg.cost = (data.purchase_price * data.quantity).toFixed(4);
     return q([get.origin('donation'), get.period(get.date())]);
   }
 
@@ -3421,10 +3499,90 @@ function handleCotisationPayment (id, user_id, details, done) {
   }
 }
 
+function handleCreateFiscalYear (id, user_id, details, done) {
+
+  var rate, cfg = {},
+      array_journal_uuid = [];
+
+  getOrigin()
+  .spread(getDetails)
+  .then(getTransId)
+  .then(postingEntry)
+  .then(function (res) {
+    done(null, res);
+  })
+  .catch(catchError);
+
+  function getOrigin () {
+    var date = util.toMysqlDate(get.date());
+    return q([get.origin('journal'), get.period(get.date()), get.exchangeRate(date)]);
+  }
+
+  function getDetails (originId, periodObject, store) {
+    cfg.balance = details[0];
+    cfg.originId = originId;
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+    cfg.store = store;
+    rate = cfg.store.get(cfg.balance.currencyId).rate;
+    return get.transactionId(cfg.balance.projectId);
+  }
+
+  function getTransId (transId) {
+    cfg.transId = transId;
+    cfg.description =  transId.substring(0,4) + '/' + cfg.balance.description;
+  }
+
+  function postingEntry () {
+    return q.all(
+      details.map(function (balance) {
+        var journal_uuid = sanitize.escape(uuid());
+        array_journal_uuid.push(journal_uuid);
+
+        var sql =
+          'INSERT INTO posting_journal ' +
+          '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+          '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+          '`currency_id`, `origin_id`, `user_id` ) ' +
+          'VALUES (' +
+            [
+              journal_uuid,
+              balance.projectId,
+              cfg.fiscalYearId,
+              cfg.periodId,
+              cfg.transId, '\'' + get.date() + '\'', sanitize.escape(cfg.description), balance.accountId
+            ].join(',') + ', ' +
+            [
+              balance.credit.toFixed(4), balance.debit.toFixed(4),
+              (balance.credit / rate).toFixed(4), (balance.debit / rate).toFixed(4),
+              balance.currencyId,
+              cfg.originId, 
+              user_id
+            ].join(',') +
+          ');';
+        return db.exec(sql);
+      })
+    );
+  }
+
+  function catchError (err) {
+    var sql = array_journal_uuid.length > 0 ? 'DELETE FROM `posting_journal` WHERE `posting_journal`.`uuid` IN (' + array_journal_uuid.join(',') + '); ' : 'SELECT 1+1;';
+
+    db.exec(sql)
+    .then(function () {
+      console.error('[ROLLBACK]: deleting last entries in posting journal, Because => ', err);
+      return done(err);
+    })
+    .catch(function (err2) {
+      console.error('[ERR2]:', err2);
+    });
+  }
+}
+
 table_router = {
   'sale'                    : handleSales,
   'cash'                    : handleCash,
-  'purchase'                : handlePurchase,
+  // 'purchase'                : handlePurchase,
   'group_invoice'           : handleGroupInvoice,
   'employee_invoice'        : handleEmployeeInvoice,
   'credit_note'             : handleCreditNote,
@@ -3449,7 +3607,8 @@ table_router = {
   'donation'                : handleDonation,
   'tax_payment'             : handleTaxPayment,
   'cotisation_payment'      : handleCotisationPayment,
-  'salary_advance'          : handleSalaryAdvance
+  'salary_advance'          : handleSalaryAdvance,
+  'create_fiscal_year'      : handleCreateFiscalYear
 };
 
 

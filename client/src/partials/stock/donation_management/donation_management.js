@@ -41,6 +41,10 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.user = {
+      query : 'user_session'
+    };
+
     dependencies.inventory = {
       query : {
         identifier : 'uuid',
@@ -105,14 +109,6 @@ angular.module('bhima.controllers')
       $scope.project = project;
       validate.process(dependencies)
       .then(startup)
-      // .then(function (sacc) {
-      //   if (!sacc) {
-      //     session.configured = false;
-      //     return;
-      //   }
-      //   session.configured = true;
-
-      // })
       .catch(error);
     });
 
@@ -232,6 +228,7 @@ angular.module('bhima.controllers')
       this.lot_number = null;
       this.tracking_number = uuid();
       this.quantity = 0;
+      this.purchase_order_uuid = null;
     }
 
     function addLot (drug) {
@@ -339,6 +336,7 @@ angular.module('bhima.controllers')
           donation         : donation,
           tracking_numbers : inventory_lots,
           quantity         : sum_lots,
+          purchase_price   : inventoryReference.purchase_price,
           currency_id      : $scope.enterprise.data[0].currency_id,
           project_id       : $scope.project.id
         });
@@ -355,6 +353,7 @@ angular.module('bhima.controllers')
         .then(function () {
           return connect.post('donation_item', donation_items);
         })
+        .then(simulatePurchase)
         .then(function () {
           // return $q.all(synthese.map(function (postingEntry) {
           //   return $http.post('posting_donation/', postingEntry);
@@ -406,7 +405,8 @@ angular.module('bhima.controllers')
           entry_date          : util.sqlDate(new Date()),
           lot_number          : lot.lot_number,
           tracking_number     : lot.tracking_number,
-          quantity            : lot.quantity
+          quantity            : lot.quantity,
+          purchase_order_uuid : lot.purchase_order_uuid
         });
       });
 
@@ -462,6 +462,86 @@ angular.module('bhima.controllers')
       cache.remove('selectedAccount');
       session.acc = null;
       session.configured = false;
+    }
+
+    function simulatePurchase() {
+      if (session.donation.items.length > 0) {
+
+        var purchase = {
+          uuid          : uuid(),
+          cost          : simulatePurchaseTotal(),
+          purchase_date : util.sqlDate(session.config.date),
+          currency_id   : $scope.project.currency_id,
+          creditor_uuid : null,
+          purchaser_id  : $scope.user.data.id,
+          project_id    : $scope.project.currency_id,
+          employee_id   : session.config.employee.id,
+          note          : 'DONATION ' + session.config.donor.name + '/' + util.sqlDate(session.config.date),
+          paid          : 0,
+          confirmed     : 1,
+          closed        : 1,
+          is_donation   : 1,
+          is_direct     : 1
+        };
+
+        simulateWritePurchaseLine(purchase)
+        .then(simulateWritePurchaseItems(purchase.uuid))
+        .then(updateStockPurchaseOrder(purchase.uuid))
+        .catch(handleError);
+      }
+      
+    }
+
+    function updateStockPurchaseOrder (purchase_uuid) {
+      session.lots.forEach(function (lot) {
+        var stockEntry = { 
+          tracking_number     : lot.tracking_number,
+          purchase_order_uuid : purchase_uuid 
+        };
+        connect.put('stock',[stockEntry], ['tracking_number']);
+      });
+    }
+
+    function simulatePurchaseTotal() {
+      return session.donation.items.reduce(priceMultiplyQuantity, 0);
+    }
+
+    
+    function simulateWritePurchaseLine(purchase) {
+      return connect.post('purchase', [purchase], ['uuid']);
+    }
+
+    function simulateWritePurchaseItems(purchase_uuid) {
+      var deferred = $q.defer();
+      var writeRequest = [];
+
+      writeRequest = session.donation.items.map(function (item) {
+        var writeItem = {
+          uuid           : uuid(),
+          purchase_uuid  : purchase_uuid,
+          inventory_uuid : item.inventoryId,
+          quantity       : item.quantity,
+          unit_price     : item.purchase_price,
+          total          : item.quantity * item.purchase_price
+        };
+        return connect.post('purchase_item', [writeItem], ['uuid']);
+      });
+
+      $q.all(writeRequest)
+      .then(function (result) {
+        deferred.resolve(result);
+      })
+      .catch(function (error) {
+        deferred.reject(error);
+      });
+      return deferred.promise;
+    }
+
+    function handleError(error) {
+      $translate('PURCHASE.WRITE_FAILED')
+      .then(function (value) {
+         messenger.danger(value);
+      });     
     }
 
     $scope.formatAccount = formatAccount;

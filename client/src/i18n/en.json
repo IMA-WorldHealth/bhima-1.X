@@ -950,6 +950,7 @@
    },
 "FISCAL_YEAR": {
    "ACCEPT"                      : "I accepte",
+   "ALERT_BALANCE"               : "Please... Data are not balanced",
    "ALERT_ONE"                   : "There are no Fiscal Years recorded for the enterprise ",
    "ALERT_TWO"                   : ". Fiscal Years are required to group transactions and provide reports.",
    "CLOSING_ACCOUNT"             : "Closing Account",
