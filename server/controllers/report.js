@@ -9,12 +9,12 @@ var util = require('./../lib/util');
 /*
  * HTTP Controllers
 */
-exports.buildReport = function (req, res, next) { 
+exports.buildReport = function (req, res, next) {
   var route = req.params.route;
 
   //parse the URL for data following the '?' character
   var query = decodeURIComponent(url.parse(req.url).query);
-  
+
   generate(route, query, function(report, err) {
     if (err) { return next(err); }
     res.send(report);
@@ -202,15 +202,42 @@ function saleRecords(params) {
     'WHERE sale.invoice_date >= ? AND sale.invoice_date <= ? ';
 
   if (params.project) {
-    requestSql += ('AND sale.project_id= ? ');    
+    requestSql += ('AND sale.project_id= ? ');
     requestSql += 'ORDER BY sale.timestamp DESC;';
-    
+
     return db.exec(requestSql, [params.dateFrom, params.dateTo, params.project]);
   } else {
     requestSql += 'ORDER BY sale.timestamp DESC;';
     return db.exec(requestSql, [params.dateFrom, params.dateTo]);
   }
+}
 
+function cashAuxillaryRecords(params) {
+  var deferred = q.defer();
+  params = JSON.parse(params);
+
+  if (!params.dateFrom || !params.dateTo) {
+    return q.reject(new Error('Invalid date parameters'));
+  }
+
+  var requestSql =
+    'SELECT cash.uuid, cash.reference, cash.cost, cash.currency_id, cash.deb_cred_uuid, cash.date, ' +
+    'cash.description, cash_discard.uuid as `cashDiscardId`, cash_discard.description as `cashDiscardDescription`, ' +
+    'cash_discard.posted, first_name, last_name, patient.reference as `patientReference`, CONCAT(project.abbr, cash.reference) as `hr_id` ' +
+    'FROM cash LEFT JOIN cash_discard on cash.uuid = cash_discard.cash_uuid ' +
+    'LEFT JOIN patient on cash.deb_cred_uuid = patient.debitor_uuid ' +
+    'LEFT JOIN project on cash.project_id = project.id ' +
+    'WHERE cash.date >= ? AND cash.date <= ? ';
+
+  if (params.project) {
+    requestSql += ('AND cash.project_id= ? ');
+    requestSql += 'ORDER BY cash.date DESC;';
+
+    return db.exec(requestSql, [params.dateFrom, params.dateTo, params.project]);
+  } else {
+    requestSql += 'ORDER BY cash.date DESC;';
+    return db.exec(requestSql, [params.dateFrom, params.dateTo]);
+  }
 }
 
 function distributionPatients(params) {
@@ -225,8 +252,8 @@ function distributionPatients(params) {
     'SELECT COUNT(`consumption_patient`.`sale_uuid`) AS nr_item, `consumption_patient`.`sale_uuid`, `consumption_patient`.`patient_uuid`, ' +
     '`patient`.`first_name`,`patient`.`last_name`, `patient`.`reference`, `consumption`.`date`,' +
     '`depot`.`text`, (`sale`.`reference`) AS refSale, `project`.`abbr`,(`consumption_reversing`.`consumption_uuid`) AS reversingUuid ' +
-    'FROM `consumption_patient` ' + 
-    'JOIN `consumption` ON `consumption`.`uuid` =  `consumption_patient`.`consumption_uuid` ' + 
+    'FROM `consumption_patient` ' +
+    'JOIN `consumption` ON `consumption`.`uuid` =  `consumption_patient`.`consumption_uuid` ' +
     'JOIN `patient` ON `patient`.`uuid` =  `consumption_patient`.`patient_uuid` ' +
     'JOIN `depot` ON `depot`.`uuid` = `consumption`.`depot_uuid` ' +
     'JOIN `sale` ON `sale`.`uuid` = `consumption`.`document_id` ' +
@@ -235,8 +262,8 @@ function distributionPatients(params) {
     'LEFT JOIN `consumption_reversing` ON `consumption_reversing`.`document_id` = `consumption`.`document_id` ' +
     'WHERE `depot`.`uuid` = ? AND `consumption`.`date` >= ? AND `consumption`.`date` <= ? ' +
     'GROUP BY `consumption_patient`.`sale_uuid` ORDER BY `consumption`.`date` DESC, `patient`.`first_name` ASC, `patient`.`last_name` ASC';
-  
-  return db.exec(requestSql, [params.depotId, params.dateFrom, params.dateTo]);  
+
+  return db.exec(requestSql, [params.depotId, params.dateFrom, params.dateTo]);
 }
 
 function distributionServices(params) {
@@ -252,12 +279,12 @@ function distributionServices(params) {
     '`consumption`.`date`, `depot`.`text`, ' +
     '(`consumption_reversing`.`consumption_uuid`) AS reversingUuid, `consumption_reversing`.`description`' +
     'FROM `consumption_service` ' +
-    'JOIN `consumption` ON `consumption`.`uuid` =  `consumption_service`.`consumption_uuid` ' + 
+    'JOIN `consumption` ON `consumption`.`uuid` =  `consumption_service`.`consumption_uuid` ' +
     'JOIN `service` ON `service`.`id` =  `consumption_service`.`service_id` ' +
     'JOIN `depot` ON `depot`.`uuid` = `consumption`.`depot_uuid` ' +
     'JOIN `stock` ON `stock`.`tracking_number` = `consumption`.`tracking_number` ' +
     'JOIN `inventory` ON `inventory`.`uuid` = `stock`.`inventory_uuid` ' +
-    'LEFT JOIN `consumption_reversing` ON `consumption_reversing`.`consumption_uuid` = `consumption`.`uuid` ' +    
+    'LEFT JOIN `consumption_reversing` ON `consumption_reversing`.`consumption_uuid` = `consumption`.`uuid` ' +
     'WHERE `depot`.`uuid` = ? AND `consumption`.`date` >= ? AND `consumption`.`date` <= ? ' +
     'GROUP BY `consumption`.`document_id` ' +
     'ORDER BY `consumption`.`date` DESC, `service`.`name` ASC';
@@ -290,7 +317,7 @@ function patientRecords(params) {
         '`patient_visit`.`registered_by` = `user`.`id` ' +
       'WHERE `date` >= ' + _start + ' AND ' +
         ' `date` <= ' + _end + ' AND `project_id` IN (' + _id + ');';
-  
+
   return db.exec(sql);
 }
 
@@ -355,8 +382,8 @@ function patientStanding(params) {
         'JOIN `debitor_group` ON `debitor_group`.`account_id` =  `posting_journal`.`account_id` ' +
         'WHERE `posting_journal`.`deb_cred_uuid`= ? AND `posting_journal`.`deb_cred_type`=\'D\' AND `debitor_group`.`is_convention` = 0 ' +
       'UNION ' +
-        'SELECT `general_ledger`.`uuid`, `general_ledger`.`trans_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, `general_ledger`.`description`, `general_ledger`.`inv_po_id`, `general_ledger`.`account_id`, `debitor_group`.`is_convention` ' + 
-        'FROM `general_ledger` ' + 
+        'SELECT `general_ledger`.`uuid`, `general_ledger`.`trans_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, `general_ledger`.`description`, `general_ledger`.`inv_po_id`, `general_ledger`.`account_id`, `debitor_group`.`is_convention` ' +
+        'FROM `general_ledger` ' +
         'JOIN `debitor_group` ON `debitor_group`.`account_id` =  `general_ledger`.`account_id` ' +
         'WHERE `general_ledger`.`deb_cred_uuid`= ? AND `general_ledger`.`deb_cred_type`=\'D\' AND `debitor_group`.`is_convention` = 0) as aggregate ' +
       'GROUP BY `aggregate`.`inv_po_id` ORDER BY `aggregate`.`trans_date` DESC;';
@@ -416,12 +443,12 @@ function employeeStanding(params) {
       'SELECT `aggregate`.`uuid`, `aggregate`.`trans_id`, `aggregate`.`trans_date`, sum(`aggregate`.`credit_equiv`) as credit, sum(`aggregate`.`debit_equiv`) as debit, `aggregate`.`description`, `aggregate`.`inv_po_id` ' +
       'FROM (' +
         'SELECT `posting_journal`.`uuid`, `posting_journal`.`trans_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`description`, `posting_journal`.`inv_po_id` ' +
-        'FROM `posting_journal` ' + 
+        'FROM `posting_journal` ' +
         'JOIN `transaction_type` ON `transaction_type`.`id`= `posting_journal`.`origin_id` '+
         ' WHERE `posting_journal`.`deb_cred_uuid`= ? AND `posting_journal`.`deb_cred_type`=\'C\' AND `transaction_type`.`service_txt` NOT IN (\'cotisation_paiement\',\'tax_payment\',\'payroll\',\'cotisation_engagement\',\'tax_engagement\') ' +
       'UNION ' +
         'SELECT `general_ledger`.`uuid`, `general_ledger`.`trans_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, `general_ledger`.`description`, `general_ledger`.`inv_po_id` ' +
-        'FROM `general_ledger` ' + 
+        'FROM `general_ledger` ' +
         'JOIN `transaction_type` ON `transaction_type`.`id`= `general_ledger`.`origin_id` '+
         'WHERE `general_ledger`.`deb_cred_uuid`=? AND `general_ledger`.`deb_cred_type`=\'C\'  AND `transaction_type`.`service_txt` NOT IN (\'cotisation_paiement\',\'tax_payment\',\'payroll\',\'cotisation_engagement\',\'tax_engagement\')) as aggregate ' +
       'GROUP BY `aggregate`.`inv_po_id` ORDER BY `aggregate`.`trans_date` DESC;';
@@ -443,10 +470,10 @@ function employeeStanding(params) {
     return db.exec(sql, [params.id, params.id]);
   })
   .then(function (rows) {
-    if (!rows.length) { 
-      employee.last_payment_date = undefined 
+    if (!rows.length) {
+      employee.last_payment_date = undefined
     } else {
-      var row = rows.pop(); 
+      var row = rows.pop();
       employee.last_payment_date = row.trans_date;
     }
     defer.resolve(employee);
@@ -500,16 +527,16 @@ function employeePaiement(params) {
   var sql, id = sanitize.escape(params.id);
   sql =
     'SELECT employee.code, employee.prenom, employee.postnom, employee.name, employee.creditor_uuid, ' +
-    'paiement.uuid, paiement.currency_id, paiement.net_before_tax, paiement.net_after_tax, ' + 
+    'paiement.uuid, paiement.currency_id, paiement.net_before_tax, paiement.net_after_tax, ' +
     'paiement.net_salary, paiement.is_paid, currency.symbol, SUM(partial_paiement.amount) AS amount ' +
-    'FROM employee ' + 
+    'FROM employee ' +
     'JOIN paiement ON paiement.employee_id = employee.id ' +
     'JOIN currency ON currency.id = paiement.currency_id ' +
     'LEFT JOIN partial_paiement ON partial_paiement.paiement_uuid = paiement.uuid ' +
     'WHERE paiement.paiement_period_id = ' + id +
     'GROUP BY partial_paiement.paiement_uuid, paiement.employee_id ' +
     'ORDER BY employee.name ASC, employee.postnom ASC, employee.prenom ASC';
- 
+
   return db.exec(sql);
 }
 
@@ -613,9 +640,9 @@ function incomeReport (params) {
             '`general_ledger`.`credit_equiv`, `general_ledger`.`debit`, `general_ledger`.`credit`, `general_ledger`.`account_id`, `general_ledger`.`deb_cred_uuid`, `general_ledger`.`currency_id`, ' +
             '`general_ledger`.`doc_num`, general_ledger.trans_id, `general_ledger`.`description`, `general_ledger`.`comment`, `general_ledger`.`origin_id`, `general_ledger`.`user_id` ' +
           'FROM `general_ledger` ' +
-      'JOIN `primary_cash_item` ON `primary_cash_item`.`document_uuid` = `general_ledger`.`inv_po_id`  ' +      
+      'JOIN `primary_cash_item` ON `primary_cash_item`.`document_uuid` = `general_ledger`.`inv_po_id`  ' +
         ')' +
-      ') AS `t`, account AS a, transaction_type as o, user as u WHERE `t`.`account_id` = `a`.`id` AND `t`.`origin_id` = `o`.`id` AND `t`.`user_id` = `u`.`id` AND `t`.`account_id`= ?'  + 
+      ') AS `t`, account AS a, transaction_type as o, user as u WHERE `t`.`account_id` = `a`.`id` AND `t`.`origin_id` = `o`.`id` AND `t`.`user_id` = `u`.`id` AND `t`.`account_id`= ?'  +
       ' AND `t`.`trans_date` >=? AND `t`.`trans_date` <= ? GROUP BY `t`.`trans_id`;';
   db.exec(requette,[params.account_id, params.dateFrom, params.dateTo])
    .then(function (results) {
@@ -648,7 +675,7 @@ function expenseReport (params) {
             '`general_ledger`.`credit_equiv`, `general_ledger`.`debit`, `general_ledger`.`credit`, `general_ledger`.`account_id`, `general_ledger`.`deb_cred_uuid`, `general_ledger`.`currency_id`, ' +
             '`general_ledger`.`doc_num`, general_ledger.trans_id, `general_ledger`.`description`, `general_ledger`.`comment`, `general_ledger`.`origin_id`, `general_ledger`.`user_id` ' +
           'FROM `general_ledger` ' +
-      'LEFT JOIN `primary_cash_item` ON `primary_cash_item`.`document_uuid` = `general_ledger`.`inv_po_id`  ' +      
+      'LEFT JOIN `primary_cash_item` ON `primary_cash_item`.`document_uuid` = `general_ledger`.`inv_po_id`  ' +
         ')' +
       ') AS `t`, account AS a, transaction_type as o, user as u WHERE `t`.`account_id` = `a`.`id` AND `t`.`origin_id` = `o`.`id` AND `t`.`user_id` = `u`.`id` AND `t`.`account_id`= ?'   +
       ' AND `t`.`trans_date` >=? AND `t`.`trans_date` <=?;';
@@ -743,8 +770,8 @@ function balanceMensuelle (params){
             '`general_ledger`.`doc_num`, `general_ledger`.`trans_id`, `general_ledger`.`description`, `general_ledger`.`comment` ' +
           'FROM `general_ledger` WHERE MONTH(`general_ledger`.`trans_date`) < MONTH(?) GROUP BY `general_ledger`.`account_id`' +
         ')' +
-      ') AS `t`, `account` AS `ac`, `period` AS `p` ' + 
-      'WHERE `t`.`account_id` = `ac`.`id` AND `ac`.`classe`=?' + 
+      ') AS `t`, `account` AS `ac`, `period` AS `p` ' +
+      'WHERE `t`.`account_id` = `ac`.`id` AND `ac`.`classe`=?' +
       ' AND MONTH(t.trans_date) < MONTH(?) AND (? BETWEEN `p`.`period_start` AND `p`.`period_stop`) AND `p`.`locked`=0 ' +
       ' AND t.project_id = ?) ';
 
@@ -768,8 +795,8 @@ function balanceMensuelle (params){
             '`general_ledger`.`doc_num`, `general_ledger`.`trans_id`, `general_ledger`.`description`, `general_ledger`.`comment` ' +
           'FROM `general_ledger` WHERE MONTH(`general_ledger`.`trans_date`) = MONTH(?) GROUP BY `general_ledger`.`account_id`' +
         ')' +
-      ') AS `t`, `account` AS `ac`, `period` AS `p` ' + 
-      'WHERE `t`.`account_id` = `ac`.`id` AND `ac`.`classe`=?' + 
+      ') AS `t`, `account` AS `ac`, `period` AS `p` ' +
+      'WHERE `t`.`account_id` = `ac`.`id` AND `ac`.`classe`=?' +
       ' AND MONTH(t.trans_date) = MONTH(?) AND (? BETWEEN `p`.`period_start` AND `p`.`period_stop`) AND `p`.`locked`=0 ' +
       ' AND t.project_id = ?) ';
 
@@ -792,7 +819,7 @@ function generate(request, params, done) {
     'debitorAging'          : debitorAging,
     'saleRecords'           : saleRecords,
     'distributionPatients'  : distributionPatients,
-    'distributionServices'  : distributionServices,        
+    'distributionServices'  : distributionServices,
     'patients'              : patientRecords,
     'payments'              : paymentRecords,
     'patientStanding'       : patientStanding,
@@ -809,7 +836,8 @@ function generate(request, params, done) {
     'income_report'         : incomeReport,
     'expense_report'        : expenseReport,
     'patient_group'         : require('./reports/patient_group')(db),
-    'balance_mensuelle'     : balanceMensuelle
+    'balance_mensuelle'     : balanceMensuelle,
+    'cashAuxillaryRecords'  : cashAuxillaryRecords
     //'balance_sheet'         : require('./reports/balance_sheet')
   };
 

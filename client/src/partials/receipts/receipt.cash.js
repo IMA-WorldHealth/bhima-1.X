@@ -5,7 +5,8 @@ angular.module('bhima.controllers')
   'appstate',
   'messenger',
   function ($scope, validate, appstate, messenger) {
-    var dependencies = {}, model = $scope.model = {common : {}};
+    var dependencies = {}, model = $scope.model = {common : {}}, session = $scope.session = {};
+    $scope.updateCurrency = updateCurrency;
 
     function processCash(invoiceId) {
       dependencies.cash = {
@@ -130,12 +131,13 @@ angular.module('bhima.controllers')
 
       dependencies.ledger.query = 'ledgers/debitor/' + invoiceData.debitor_uuid;
       
-      return validate.process(dependencies, ['recipient'])
+      return validate.process(dependencies, ['recipient', 'currency'])
       .then(buildLocationQuery);
     }
 
     function buildLocationQuery(model) {
       var recipient_data = model.recipient.data[0];
+      $scope.model.currency = model.currency;
 
       dependencies.location.query = 'location/detail/' + recipient_data.current_location_id;
       return validate.process(dependencies).then(invoice);
@@ -153,24 +155,51 @@ angular.module('bhima.controllers')
       model.cash.recipient = model.cash.allData.recipient.data[0];
       model.cash.recipient.location = model.cash.allData.location.data[0];
 
-      updateCost(model.cash.currentCurrency.currency_id);
+      session.currency_id = model.cash.cashTransaction.currency_id;
+      session.cashTransactionCost = model.cash.cashTransaction.cost;
+      model.selectedCurrency = model.currency.get(session.currency_id);
+
+      updateCost(session.currency_id);
     }
 
     function sum (a,b) { return a + b.cost; }
 
     function updateCost(currency_id) {
-      model.cash.invoice.localeCost = model.common.convert(model.cash.invoice.cost, currency_id, model.cash.invoice.invoice_date);
+      model.cash.invoice.localeCost = model.common.doConvert(model.cash.invoice.cost, currency_id, model.cash.invoice.invoice_date);
       if (model.cash.invoice.ledger)  {
-        model.cash.invoice.localeBalance = model.common.convert(model.cash.invoice.ledger.balance, currency_id, model.cash.invoice.invoice_date);
-        model.cash.invoice.ledger.localeCredit = model.common.convert(model.cash.invoice.ledger.credit, currency_id, model.cash.invoice.invoice_date);
+        model.cash.invoice.localeBalance = model.common.doConvert(model.cash.invoice.ledger.balance, currency_id, model.cash.invoice.invoice_date);
+        model.cash.invoice.ledger.localeCredit = model.common.doConvert(model.cash.invoice.ledger.credit, currency_id, model.cash.invoice.invoice_date);
       }
 
-      model.cash.invoice.localeTotalSum = model.common.convert(model.cash.invoice.totalSum, currency_id, model.cash.invoice.invoice_date);
+      model.cash.invoice.localeTotalSum = model.common.doConvert(model.cash.invoice.totalSum, currency_id, model.cash.invoice.invoice_date);
 
       model.cash.allData.invoiceItem.data.forEach(function (item) {
-        item.localeTransaction = model.common.convert(item.transaction_price, currency_id, model.cash.invoice.invoice_date);
-        item.localeCost = model.common.convert((item.credit - item.debit), currency_id, model.cash.invoice.invoice_date);
+        item.localeTransaction = model.common.doConvert(item.transaction_price, currency_id, model.cash.invoice.invoice_date);
+        item.localeCost = model.common.doConvert((item.credit - item.debit), currency_id, model.cash.invoice.invoice_date);
       });
+
+    }
+
+    function updateCurrency (currency_id) {
+      session.currency_id = currency_id;
+      updateCost(session.currency_id);
+      updateCashTransaction(session.currency_id);
+    } 
+
+    function updateCashTransaction (currency_id) {
+      session.cashTransaction = model.cash.cashTransaction;
+      /* FIXME handle Fc currency (currency_id===1) differently */
+      if (session.cashTransaction.currency_id === 1) {
+        // Selected currency equals cash transaction currency ? 
+        if (session.cashTransaction.currency_id !== currency_id) {
+          session.cashTransactionCost = model.common.convert(session.cashTransaction.cost, session.cashTransaction.currency_id, model.cash.invoice.invoice_date);
+        } else {
+          session.cashTransactionCost = session.cashTransaction.cost;
+        }
+        
+      } else {
+        session.cashTransactionCost = model.common.doConvert(session.cashTransaction.cost, currency_id, model.cash.invoice.invoice_date);
+      }
     }
 
     appstate.register('receipts.commonData', function (commonData) {
@@ -178,6 +207,7 @@ angular.module('bhima.controllers')
         model.common.location = values.location.data.pop();
         model.common.enterprise = values.enterprise.data.pop();
         model.common.convert = values.convert;
+        model.common.doConvert = values.doConvert;
         processCash(values.invoiceId)
         .catch(function (err){
           messenger.danger('error', err);
