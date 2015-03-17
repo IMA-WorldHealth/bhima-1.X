@@ -2,13 +2,15 @@ angular.module('bhima.controllers')
 .controller('fiscal.create', [
   '$scope',
   '$http',
+  '$translate',
   'validate',
   'appstate',
   'connect',
-  'store',
-  function ($scope, $http, validate, appstate, connect) {
+  'messenger',
+  function ($scope, $http, $translate, validate, appstate, connect, messenger) {
     var data,
         imports = $scope.$parent,
+        session = $scope.session = {},
         dependencies = {};
 
     // Set up default option for year
@@ -60,6 +62,10 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.user = {
+      query : '/user_session'
+    };
+
     // returns true if the years array contains a
     // year with previous_fiscal_year matching the
     // year's id.
@@ -105,6 +111,9 @@ angular.module('bhima.controllers')
 
         // loads the accounts and exposes to the view
         angular.extend($scope, models);
+
+        // get user id
+        session.user_id = models.user.data.id;
 
         // initialise account balances
         resetBalances();
@@ -207,7 +216,7 @@ angular.module('bhima.controllers')
       if (!hasPreviousYear) {
         bundle.balances = $scope.accounts.data
           .filter(function (account) {
-            return account.type !== 'title';
+            return account.type !== 'title' && (account.debit > 0 || account.credit > 0);
           })
           .map(function (account) {
             return { 'account_id' : account.id, 'debit' : account.debit, 'credit' : account.credit };
@@ -217,15 +226,48 @@ angular.module('bhima.controllers')
       // attach the enterprise id to the request
       bundle.enterprise_id = $scope.enterprise.id;
 
-      // submit data the server
-      $http.post('/fiscal/create', bundle)
-      .success(function (results) {
-        stepThree();
-        $scope.$emit('fiscal-year-creation', results.id);
-      })
-      .error(function (err) {
-        throw err;
-      });
+      // attach the user id to the request
+      bundle.user_id = session.user_id;
+
+      // attach the currency id to the request
+      bundle.currency_id = $scope.enterprise.currency_id;
+
+      if (hasPreviousYear) {
+        // Not first Fiscal year
+        // submit data the server
+        postCreateFiscalYear();
+
+      } else if (!hasPreviousYear) {
+        // First Fiscal year
+        if (checkEquilibrium(bundle.balances)) {
+          // submit data the server
+          postCreateFiscalYear();
+          
+        } else {
+          messenger.info($translate.instant('FISCAL_YEAR.ALERT_BALANCE'), true);
+        }
+      }
+
+      function postCreateFiscalYear () {
+        $http.post('/fiscal/create', bundle)
+        .success(function (results) {
+          stepThree();
+          $scope.$emit('fiscal-year-creation', results.id);
+        })
+        .error(function (err) {
+          throw err;
+        });
+      }
+    }
+
+    function sumObjectProperty (objArray, property) {
+      return objArray.reduce(function (a, b) {
+        return a + b[property];
+      }, 0);
+    }
+
+    function checkEquilibrium (objArray) {
+      return (sumObjectProperty(objArray, 'debit') === sumObjectProperty(objArray, 'credit')) ? true : false;
     }
 
     // force refresh of the page
