@@ -731,6 +731,7 @@
    "PATIENT_COVERED"        : "Patient is convered by a Convention",
    "RECOMANDED"             : "Recomended Lot",
    "REMAINING_QUANTITY"     : "Remaining quantity",
+   "REVERSE_CONSUMPTION"    : "Reverse consumption",
    "SALE"                   : "Sale",
    "SALE_BALANCE"           : "Sale balance",
    "SALE_DATE"              : "Sale Date",
