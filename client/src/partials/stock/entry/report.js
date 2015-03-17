@@ -22,7 +22,7 @@ angular.module('bhima.controllers')
             columns : ['expiration_date', 'entry_date', 'lot_number', 'purchase_order_uuid']
           },
           inventory : {
-            columns : ['code']
+            columns : ['code', 'text::inventory_text']
           },
           depot : {
             columns : ['reference', 'text']
