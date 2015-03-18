@@ -121,6 +121,12 @@
    "LOGOUT_SUCCESS" : "You are now logged out.",
    "RESET"          : "Reset"
    },
+"AUXILLARY_CASH_RECORD" : {
+    "ALL_PROJECTS"   : "All projects",
+    "CREDIT_NOTE"    : "Credit note",
+    "RECEIPT"        : "Receipt",
+    "TITLE"          : "Auxillary cash record"
+},
 "BALANCE" : {
   "BUILD_BALANCE"   : "Build Balance",
   "DOCUMENT_CONFIG" : "Document configuration",
@@ -207,6 +213,12 @@
    "WARNING"          : "This patient is a contracted and can not pay checkout in Cash Payments",
    "WARNING_2"        : "For the payment of old bills would have to change his debtor group"
    },
+"CASH_DISCARD" : {
+  "CASH_DETAILS"     : "Details",
+  "DESCRIPTION"      : "Description",
+  "SUBMIT"           : "Submit",
+  "TITLE"            : "Cash discard"
+},
 "CASH_PAYMENTS": {
    "ALL_PROJECTS" : "All Projects",
    "DAY"          : "Today",
