@@ -1,18 +1,14 @@
 angular.module('bhima.controllers')
 .controller('report.donation', [
   '$scope',
-  '$timeout',
-  '$routeParams',
   '$translate',
   'appstate',
-  'util',
   'validate',
-  'exchange',
-  function ($scope, $timeout, $routeParams, $translate, appstate, util, validate, exchange) {
+  function ($scope, $translate, appstate, validate) {
     
     var dependencies = {},
         state = $scope.state,
-        session = $scope.session = { param : {}, searching : true };
+        session = $scope.session = {};
 
     dependencies.donor = {
       required: true,
@@ -30,10 +26,12 @@ angular.module('bhima.controllers')
         tables : {
           'donations'     : { columns : ['date'] },
           'donation_item' : { columns : ['tracking_number'] },
-          'stock'         : { columns : ['inventory_uuid', 'quantity', 'lot_number', 'entry_date', 'expiration_date'] },
+          'stock'         : { columns : ['inventory_uuid', 'quantity', 'lot_number', 'expiration_date'] },
           'inventory'     : { columns : ['text'] },
           'donor'         : { columns : ['name::donorName'] },
-          'employee'      : { columns : ['name::employeeName'] }
+          'employee'      : { columns : ['name::employeeName'] },
+          'purchase'      : { columns : ['uuid::purchaseUuid'] },
+          'purchase_item' : { columns : ['unit_price'] }
         },
         join : [
           'donation_item.donation_uuid=donations.uuid',
@@ -41,6 +39,9 @@ angular.module('bhima.controllers')
           'inventory.uuid=stock.inventory_uuid',
           'donor.id=donations.donor_id',
           'employee.id=donations.employee_id',
+          'stock.purchase_order_uuid=purchase.uuid',
+          'purchase_item.purchase_uuid=purchase.uuid',
+          'purchase_item.inventory_uuid=inventory.uuid'
         ]
       }
     };
@@ -50,10 +51,14 @@ angular.module('bhima.controllers')
 
     function init (model) {
       angular.extend($scope, model);
+
+      if (model.donation) {
+        session.stockValue = model.donation.data.reduce(sum, 0);
+      }
     }
 
     function getDonor () {
-      if (session.donor === '*') {
+      if (session.donor === '') {
         session.labelDonor = '' + $translate.instant('UTIL.ALL_DONORS');
       } else {
         session.donorObject = JSON.parse(session.donor);
@@ -72,13 +77,16 @@ angular.module('bhima.controllers')
 
     function reconfigure () {
       $scope.state = null;
+      session.donor_id = null;
     }
 
     function generate () {
       $scope.state = 'generate';
 
       if (session.donor_id) {
-        dependencies.donation.query.where = ['donor.id=' + session.donor_id];
+        dependencies.donation.query.where = ['donor.id=' + session.donor_id,'AND','purchase.is_donation=1'];
+      } else {
+        delete dependencies.donation.query.where;
       }
 
       validate.refresh(dependencies, ['donation'])
