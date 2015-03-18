@@ -42,7 +42,6 @@
             <tr>
               <th width="20%">{{'COLUMNS.DATE' | translate}}</th>
               <th width="10%">{{'COLUMNS.ID' | translate}}</th>
-
               <th width="20%">{{'COLUMNS.PATIENT' | translate}}</th>
               <th width="20%">{{'COLUMNS.AMOUNT' | translate}}</th>
               <th  width="30%" class="hidden-print">{{ 'COLUMNS.ACTIONS' | translate }}</th>
@@ -65,7 +64,7 @@
               <td width="20%"><span ng-bind-html="receipt.cost | intlcurrency:receipt.currency_id"></td>
               <td width="30%" class="hidden-print">
                 <a ng-href="/#/invoice/{{receipt.receiptLocation}}/{{receipt.uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{'AUXILLARY_CASH_RECORD.RECEIPT' | translate}}</a>
-                | <a ng-href="/#/cash_discard/{{receipt.uuid}}/"><span class="glyphicon glyphicon-repeat"></span> {{ 'AUXILLARY_CASH_RECORD.CREDIT_NOTE' | translate }}</a>
+                | <a ng-href="/#/cash_discard/{{receipt.uuid}}/"><span class="glyphicon glyphicon-repeat"></span> {{ 'AUXILLARY_CASH_RECORD.CANCEL' | translate }}</a>
               </td>
             </tr>
           </tbody>

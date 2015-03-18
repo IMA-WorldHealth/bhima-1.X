@@ -123,12 +123,13 @@
    },
 "AUXILLARY_CASH_RECORD" : {
    "ALL_PROJECTS"   : "Tous les projets",
+   "CANCEL"         : "Annuler l'operation",
    "CREDIT_NOTE"    : "Note de Crédit",
+   "GENERATE"       : "Générée",
+   "PATIENT_CASH"   : "Caisse auxiliaire",
    "RECEIPT"        : "Reçu",
    "TITLE"          : "Historique caisse auxilliaire",
-   "UNFOUND"        : "Aucune données trouvées",
-   "PATIENT_CASH"   : "Caisse auxiliaire",
-   "GENERATE"       : "Générée"
+   "UNFOUND"        : "Aucune données trouvées"
 },
 "BALANCE" : {
   "BUILD_BALANCE"   : "Génération Balance",
