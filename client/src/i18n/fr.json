@@ -439,6 +439,7 @@
    "STOCK_QTE_MAX"         : "Quantité Maximum",
    "STOCK_QTE_MIN"         : "Quantité Minimum",
    "STOCK_QTE_SEC"         : "Stock de securité",
+   "STOCK_VALUE"           : "Valeur du stock",
    "SUMMARY"               : "Sommaire",
    "SUPPLIER"              : "Fournisseur",
    "SYMBOL"                : "Symbole",

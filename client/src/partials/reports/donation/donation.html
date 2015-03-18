@@ -13,8 +13,8 @@
 
                 <div class="form-group">
                   <label class="control-label col-xs-4 required">{{ "UTIL.DONOR" | translate }}</label>
-                  <select class="form-bhima" ng-model="session.donor" ng-change="getDonor()" required>
-                    <option value="*" selected>{{ "UTIL.ALL_DONORS" | translate }}</option>
+                  <select class="form-bhima" ng-model="session.donor" ng-change="getDonor()">
+                    <option value="" selected>{{ "UTIL.ALL_DONORS" | translate }}</option>
                     <option value="{{ donor }}" ng-repeat="donor in donor.data">{{ donor.name }}</option>
                   </select>
                 </div>
@@ -24,7 +24,7 @@
 
             <div class="panel-footer">
               <div class="pull-right">
-                <button class="btn btn-sm btn-success" type="button" ng-click="generate()" ng-disabled="configForm.$invalid">
+                <button class="btn btn-sm btn-success" type="button" ng-click="generate()">
                   {{ "UTIL.GENERATE" | translate }}
                 </button>
               </div>
@@ -69,9 +69,9 @@
                     <th>{{ "COLUMNS.DONOR" | translate }}</th>
                     <th>{{ "COLUMNS.INVENTORY_ITEM" | translate }}</th>
                     <th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>
-                    <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
-                    <th>{{ "COLUMNS.DATE_IN" | translate }}</th>
                     <th>{{ "COLUMNS.DATE_EXPIRE" | translate }}</th>
+                    <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
+                    <th>{{ "COLUMNS.UNIT_PRICE" | translate }}</th>
                     <th>{{ "COLUMNS.BY" | translate }}</th>
                   </tr>
                 </thead>
@@ -81,21 +81,20 @@
                     <td> {{ item.donorName }} </td>
                     <td> {{ item.text }} </td>
                     <td> {{ item.lot_number }} </td>
-                    <td> {{ item.quantity }} </td>
-                    <td> {{ item.entry_date | date }} </td>
                     <td> {{ item.expiration_date | date }} </td>
+                    <td> {{ item.quantity }} </td>
+                    <td> {{ item.unit_price | currency }} </td>
                     <td> {{ item.employeeName }}</td>
                   </tr>
                 </tbody>
               </table>
               <hr>
               <table class="reportTable">
-                <!-- <tr>
-                  <td>{{ "UTIL.TOTAL" | translate }}</td>
-                  <td><span><b>{{ "COLUMNS.CHARGE" | translate }}: {{ session.charge | currency }}</b></span></td>
-                  <td><span><b>{{ "COLUMNS.PROFIT" | translate }}: {{ session.profit | currency }}</b></span></td>
-                  <td><span><b>{{ "COLUMNS.RESULT" | translate }}: {{ session.profit + session.charge | currency }}</b></span></td>
-                </tr> -->
+                <tr>
+                  <td>
+                    <span class="pull-right"><b>{{ "COLUMNS.STOCK_VALUE" | translate }} : {{ session.stockValue | currency }}</b></span>
+                  </td>
+                </tr>
               </table>
           </div>
         </div>
