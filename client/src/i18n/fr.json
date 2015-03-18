@@ -125,7 +125,10 @@
    "ALL_PROJECTS"   : "Tous les projets",
    "CREDIT_NOTE"    : "Note de Crédit",
    "RECEIPT"        : "Reçu",
-   "TITLE"          : "Historique caisse auxilliaire"
+   "TITLE"          : "Historique caisse auxilliaire",
+   "UNFOUND"        : "Aucune données trouvées",
+   "PATIENT_CASH"   : "Caisse auxiliaire",
+   "GENERATE"       : "Générée"
 },
 "BALANCE" : {
   "BUILD_BALANCE"   : "Génération Balance",

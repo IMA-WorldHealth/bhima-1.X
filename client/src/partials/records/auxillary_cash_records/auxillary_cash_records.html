@@ -64,7 +64,7 @@
               <td width="20%">[{{receipt.patientReference}}] {{receipt.first_name}} {{receipt.last_name}}</td>
               <td width="20%"><span ng-bind-html="receipt.cost | intlcurrency:receipt.currency_id"></td>
               <td width="30%" class="hidden-print">
-                <a ng-href="/#/invoice/cash/{{receipt.uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{'AUXILLARY_CASH_RECORD.RECEIPT' | translate}}</a>
+                <a ng-href="/#/invoice/{{receipt.receiptLocation}}/{{receipt.uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{'AUXILLARY_CASH_RECORD.RECEIPT' | translate}}</a>
                 | <a ng-href="/#/cash_discard/{{receipt.uuid}}/"><span class="glyphicon glyphicon-repeat"></span> {{ 'AUXILLARY_CASH_RECORD.CREDIT_NOTE' | translate }}</a>
               </td>
             </tr>
