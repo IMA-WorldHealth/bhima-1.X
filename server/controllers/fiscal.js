@@ -1,5 +1,6 @@
 var db = require('./../lib/db'),
-    util = require('./../lib/util');
+    util = require('./../lib/util'),
+    journal = require('./journal');
 
 /*
  * HTTP Controller
@@ -77,25 +78,24 @@ function createOpeningBalances(data) {
   .then(function (periods) {
     periodId = periods[0].id;
 
-    sql =
-      'INSERT INTO period_total (enterprise_id, fiscal_year_id, period_id, account_id, credit, debit) VALUES ';
-
-    // copy over debits and credits for period_total
     totals = balances.map(function (account) {
-      return [
-        data.enterprise_id,
-        data.fiscalYearId,
-        periodId,                  // opening balances stored in period 0
-        account.account_id,
-        account.credit,
-        account.debit
-      ];
+      return {
+        projectId    : 1,                            // Set to HBB project ID
+        description  : 'Initialisation Fiscal Year',
+        accountId    : account.account_id,
+        debit        : account.debit,
+        credit       : account.credit,
+        currencyId   : data.currency_id,              // Default currency is dollars us
+      };
     });
 
-    // sanitize the input
-    sql += db.sanitize(totals) + ';';
+    return journal.request('create_fiscal_year', periodId, data.user_id, function (error, result) {
+      if (error) {
+        return error;
+      }
+      return result;
+    }, -1, totals);
 
-    return db.exec(sql);
   });
 }
 
