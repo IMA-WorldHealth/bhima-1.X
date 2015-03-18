@@ -125,7 +125,10 @@
     "ALL_PROJECTS"   : "All projects",
     "CREDIT_NOTE"    : "Credit note",
     "RECEIPT"        : "Receipt",
-    "TITLE"          : "Auxillary cash record"
+    "TITLE"          : "Auxillary cash record",
+    "UNFOUND"        : "Data Not Found",
+    "PATIENT_CASH"   : "Patient Cash",
+    "GENERATE"       : "Generate"
 },
 "BALANCE" : {
   "BUILD_BALANCE"   : "Build Balance",
