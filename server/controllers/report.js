@@ -275,9 +275,9 @@ function distributionServices(params) {
   }
 
   var requestSql =
-    'SELECT `consumption_service`.`consumption_uuid`, `consumption_service`.`service_id`, `service`.`name`, ' +
-    '`consumption`.`date`, `consumption`.`quantity`, `depot`.`text`, `stock`.`lot_number`, (`inventory`.`text`) AS inventoryText, ' +
-    '(`consumption_reversing`.`consumption_uuid`) AS reversingUuid ' +
+    'SELECT `consumption_service`.`consumption_uuid`, `consumption`.`document_id`, COUNT(`consumption`.`document_id`) AS `itemNumers`, `consumption_service`.`service_id`, `service`.`name`, ' +
+    '`consumption`.`date`, `depot`.`text`, ' +
+    '(`consumption_reversing`.`consumption_uuid`) AS reversingUuid, `consumption_reversing`.`description`' +
     'FROM `consumption_service` ' +
     'JOIN `consumption` ON `consumption`.`uuid` =  `consumption_service`.`consumption_uuid` ' +
     'JOIN `service` ON `service`.`id` =  `consumption_service`.`service_id` ' +
@@ -286,6 +286,7 @@ function distributionServices(params) {
     'JOIN `inventory` ON `inventory`.`uuid` = `stock`.`inventory_uuid` ' +
     'LEFT JOIN `consumption_reversing` ON `consumption_reversing`.`consumption_uuid` = `consumption`.`uuid` ' +
     'WHERE `depot`.`uuid` = ? AND `consumption`.`date` >= ? AND `consumption`.`date` <= ? ' +
+    'GROUP BY `consumption`.`document_id` ' +
     'ORDER BY `consumption`.`date` DESC, `service`.`name` ASC';
 
   return db.exec(requestSql, [params.depotId, params.dateFrom, params.dateTo]);

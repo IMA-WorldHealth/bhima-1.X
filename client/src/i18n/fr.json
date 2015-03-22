@@ -743,6 +743,7 @@
    "PATIENT_COVERED"        : "Patient est couvert par la convention",
    "RECOMANDED"             : "Lot recommande",
    "REMAINING_QUANTITY"     : "Quantité restante",
+   "REVERSE_CONSUMPTION"    : "Distribution annulée",
    "SALE"                   : "Vente",
    "SALE_BALANCE"           : "Balance de la vente",
    "SALE_DATE"              : "Date de Vente",

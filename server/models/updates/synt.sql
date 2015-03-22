@@ -509,3 +509,10 @@ ADD `is_donation` tinyint(1) NOT NULL DEFAULT '0',
 MODIFY `creditor_uuid` char(36) NULL,
 MODIFY `employee_id` int(10) unsigned NULL;
 
+-- Date: 2015-03-10
+-- By: Chris LOMAME
+USE bhima;
+
+INSERT INTO `transaction_type` (`service_txt`) VALUES
+('reversing');
+
