@@ -11,7 +11,7 @@ angular.module('bhima.controllers')
   'appstate',
   'util',
   function ($scope, $routeParams, $location, $translate, validate, connect, messenger, uuid, appstate, util) {
-    var consumptionId = $scope.consumptionId = $routeParams.consumptionId, invoiceId, dependencies = {};
+    var consumptionId = $scope.consumptionId = $routeParams.consumptionId, invoiceId, dependencies = {}, service_txt = 'distribution';
 
     dependencies.consumption = {
       query : {
@@ -36,6 +36,25 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.consumption_journal = {
+      query : {
+        tables : {
+          'posting_journal' : {
+            columns : ['uuid', 'trans_id']
+          },
+          'transaction_type' : {
+            columns : ['id', 'service_txt']
+          }          
+        },
+        join : [
+          'posting_journal.origin_id=transaction_type.id'
+        ],
+        where : [
+          'posting_journal.inv_po_id=' + consumptionId ,'AND','transaction_type.service_txt=' + service_txt 
+        ]
+      }
+    };
+
     dependencies.consumption_reversing = {
       query : {
         tables : {
@@ -48,10 +67,11 @@ angular.module('bhima.controllers')
         ]
       }
     };
-    validate.process(dependencies, ['consumption', 'consumption_reversing'])
+    validate.process(dependencies, ['consumption', 'consumption_reversing', 'consumption_journal'])
     .then(function (model) {
       $scope.consumption = model.consumption;
       $scope.dataReversing = model.consumption_reversing.data;
+      $scope.trans_id = model.consumption_journal.data[0].trans_id;
     });
 
     function submit(consumption) {
@@ -77,7 +97,7 @@ angular.module('bhima.controllers')
 
         connect.post('consumption_reversing', records)
         .then(function() {
-          connect.fetch('journal/reversing_stock/' + consumptionId); 
+          connect.fetch('journal/reversing_stock/' + $scope.trans_id); 
           messages();
         });
       } else {

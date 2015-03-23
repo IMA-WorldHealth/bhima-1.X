@@ -65,8 +65,51 @@ angular.module('bhima.controllers')
       session.selected = period;
       period.method();
     }
-
+/*
+     dataDebitor.forEach(function (item) {
+ 
+*/
     function updateSession(model) {
+      var dataConsumptionData = model.consumption.data;
+      console.log('Donne de la consomation',dataConsumptionData);
+      
+      dataConsumptionData.forEach(function (item) {
+        console.log('COnsoMATION ITEM',item);
+        console.log(item.sale_uuid);
+
+        dependencies.get_consumption = {
+          query : {
+            tables : {
+              'consumption' : {
+                columns : ['document_id'] }
+            },
+            where : [
+              'document_id=' + item.sale_uuid
+            ]
+          }
+        };
+
+        dependencies.get_reversing = {
+          query : {
+            tables : {
+              'consumption_reversing' : {
+                columns : ['document_id'] }
+            },
+            where : [
+              'document_id=' + item.sale_uuid
+            ]
+          }
+        };
+
+        validate.process(dependencies, ['get_consumption','get_reversing'])
+        .then(function (model) {
+          var nbConsumption = model.get_consumption.data.length;
+          var nbReversing = model.get_reversing.data.length;
+          if(nbConsumption > nbReversing){
+            item.reversingUuid = null;
+          }
+        });        
+      }); 
       $scope.model = model;
       updateTotals();
       session.searching = false;
