@@ -66,7 +66,44 @@ angular.module('bhima.controllers')
     }
 
     function startup(model) {
-      angular.extend($scope, model);   
+      angular.extend($scope, model); 
+      var dataDebitor = $scope.ledger.data;
+
+      dataDebitor.forEach(function (item) {
+        dependencies.get_consumption = {
+          query : {
+            tables : {
+              'consumption' : {
+                columns : ['document_id'] }
+            },
+            where : [
+              'document_id=' + item.document_id
+            ]
+          }
+        };
+
+        dependencies.get_reversing = {
+          query : {
+            tables : {
+              'consumption_reversing' : {
+                columns : ['document_id'] }
+            },
+            where : [
+              'document_id=' + item.document_id
+            ]
+          }
+        };
+
+        validate.process(dependencies, ['get_consumption','get_reversing'])
+        .then(function (model) {
+          var nbConsumption = model.get_consumption.data.length;
+          var nbReversing = model.get_reversing.data.length;
+          if(nbConsumption > nbReversing){
+            item.reversing_stock = null;
+          }
+
+        });        
+      }); 
       $scope.ledger.data = $scope.ledger.data.filter(function (data) { return data.is_distributable[0] === 1; });
       moduleStep();
     }
@@ -200,7 +237,6 @@ angular.module('bhima.controllers')
         where : ['sale_item.sale_uuid=' + sale.inv_po_id],
         join : ['sale_item.inventory_uuid=inventory.uuid']
       };
-
       return connect.req(query);
     }
 
@@ -249,7 +285,6 @@ angular.module('bhima.controllers')
             sale_uuid : session.sale.inv_po_id,
             patient_uuid : session.patient.uuid
           });
-
         });
       });
 
@@ -260,7 +295,6 @@ angular.module('bhima.controllers')
         submitItem.forEach(function (item) {
           getLotPurchasePrice(item.tracking_number)
           .then(function (price) {
-            console.log('PRICE: ', price);
             item.unit_price = price.data[0].unit_price;
             counter++;
             if (counter === submitItem.length) {

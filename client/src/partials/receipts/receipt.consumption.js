@@ -53,10 +53,41 @@ angular.module('bhima.controllers')
       }
     };    
 
+    dependencies.reversings = {
+      query : {
+        tables : {
+          'consumption_reversing' : {
+            columns : ['consumption_uuid']
+          }
+        }
+      }
+    };    
+
     function getConsumptions (res) {
-      model.consumptions = res.consumptions.data;      
+      var data_consumptions = [];
+      model.consumptions = res.consumptions.data;
+      if(res.reversings.data.length){        
+        res.consumptions.data.forEach(function (item) {
+          var is_reversing = 0; 
+          res.reversings.data.forEach(function (revers) {
+            if(item.uuid === revers.consumption_uuid){
+              is_reversing = 1;
+            }
+          });
+          if(is_reversing === 0){
+            data_consumptions.push(item);  
+          }
+        });
+      } else {
+        data_consumptions = res.consumptions.data;
+      }
+      if(!data_consumptions.length){
+        data_consumptions = res.consumptions.data;
+      }
+
       var reference = model.reference = model.consumptions[0];
       dependencies.depot.query.where = ['depot.uuid=' + reference.depot_uuid];
+      model.consumptions = data_consumptions;
       return validate.refresh(dependencies);
     }
 
@@ -70,6 +101,7 @@ angular.module('bhima.controllers')
         model.common.invoiceId = values.invoiceId;
         model.common.enterprise = values.enterprise.data.pop();
         dependencies.consumptions.query.where = ['consumption.document_id=' + values.invoiceId];
+        dependencies.reversings.query.where = ['consumption_reversing.document_id=' + values.invoiceId];
         validate.process(dependencies)
         .then(getConsumptions)
         .then(getDepot)
