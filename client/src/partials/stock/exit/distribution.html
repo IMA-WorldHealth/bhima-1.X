@@ -183,7 +183,7 @@
                     class="glyphicon"
                     ng-class="{
                       'glyphicon-ok-sign correct' : !item.reversing_stock,
-                      'glyphicon-share correct' : item.reversing_stock}">
+                      'glyphicon-share error' : item.reversing_stock}">
                    </span>
                   <span>{{'DISTRIBUTION.REVERSE_CONSUMPTION' | translate}} </span>
                 </div>                
@@ -253,18 +253,13 @@
                     </tr>
                   </tbody>
                 </table>
+
                 <div ng-if="!item.consumed&&!item.canceled">
                   <button
                     ng-click="selectSale(item)"
                     class="btn btn-default btn-sm"><span class="glyphicon glyphicon-circle-arrow-right correct"></span>{{ "DISTRIBUTION.SELECT" | translate }}</button>
                   <a ng-href="#/invoice/sale/{{item.inv_po_id}}" class="btn btn-default btn-sm">{{ "DISTRIBUTION.VIEW_SALE" | translate }}</a>
                 </div>
-                <div ng-if="item.reversing_stock">
-                  <button
-                    ng-click="selectSale(item)"
-                    class="btn btn-default btn-sm"><span class="glyphicon glyphicon-circle-arrow-right correct"></span>{{ "DISTRIBUTION.SELECT" | translate }}</button>
-                  <a ng-href="#/invoice/sale/{{item.inv_po_id}}" class="btn btn-default btn-sm">{{ "DISTRIBUTION.VIEW_SALE" | translate }}</a>
-                </div>                
               </div>
             </div>
           </div>
