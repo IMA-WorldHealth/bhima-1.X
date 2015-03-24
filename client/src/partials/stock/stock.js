@@ -20,6 +20,12 @@ angular.module('bhima.controllers')
 
     config.modules = [
       {
+        key : 'STOCK.INTEGRATION.KEY',
+        ico : 'glyphicon-th-large',
+        link : '/stock/integration'
+      },
+
+      {
         key : 'STOCK.EXIT.KEY',
         ico : 'glyphicon-export',
         link : '/stock/distribution'
@@ -220,6 +226,12 @@ angular.module('bhima.controllers')
       $scope.depot = null;
 
       config.modules = [
+        {
+          key : 'STOCK.INTEGRATION.KEY',
+          ico : 'glyphicon-th-large',
+          link : '/stock/integration'
+        },
+        
         {
           key : 'STOCK.EXIT.KEY',
           ico : 'glyphicon-export',
