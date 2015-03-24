@@ -15,7 +15,7 @@
 
 \begin{document}
 %Page de garde
-\maketitle 
+ \maketitle 
 \chapter{Présentation}
 \section{Accès au système}
 \large{Pour accéder au système, la première de chose à faire est de lancer un navigateur web, en suite saisir l'adresse web de server dans la barre d'adresse du navigateur.}
@@ -31,7 +31,7 @@ La première interface de l'application est un formulaire qui demande à chaque 
 \\ L'accès au système n'est garanti que pour ceux qui possèdent un compte utilisateur, si l'utilisateur s'est authentifié alors il sera dirigé vers l'interface principale de l'application qui se présente de la manière suivante.
 \newpage
 \begin{figure}[h]
-\begin{center}
+\begin{center} 
 \includegraphics[width=10cm]{pic/mainInterface.png}
 \end{center}
 \caption{Interface principale de l'application}
@@ -128,7 +128,7 @@ Les tableaux réprésentant les entreprises existante donne la possibilité de p
 \newpage
 %/////////////% UTILISATEUR ET PERMISSION
 \section{Utilisateur \& Permissions}
-Le sous modules Utilisateur \& permissions d'ajouter des utilisateurs au système, d'administrer l'attributionde leur niveau d'accès, leur affiliation à des projets ainsi que l'administration du compte d'un utilisateur.
+Le sous modules Utilisateur \& permissions d'ajouter des utilisateurs au système, d'administrer l'attribution de leur niveau d'accès, leur affiliations à des projets ainsi que l'administration de leur compte d'un utilisateur.
 
 \begin{figure}[h]
 \begin{center}
@@ -137,7 +137,7 @@ Le sous modules Utilisateur \& permissions d'ajouter des utilisateurs au systèm
 \caption{Interface principale de la gestion des utilisateurs}
 \label{Interface principale de la gestion des utilisateurs}
 \end{figure} 
-La figure ci haute résume à lui seule l'étendu de ce sous menu à savoir l'ajout d'un utilisateur. L'attribution de son niveau d'accès, son affiliation à un projet ainsi que la suppression du compte d'un utilisateur.
+La figure ci haute résume à lui seule l'étendu de ce sous menu à savoir l'ajout d'un utilisateur. L'attribution à des niveaux  d'accès, son affiliation à des projets ainsi que la suppression des comptes.
 
 \subsection{Ajouter un utilisateur}
 Lorsque l'utilisateur appuis sur le bouton \includegraphics[scale=1]{pic/AddUser.png}, le formulaire ci-après apparait.
@@ -149,7 +149,7 @@ Lorsque l'utilisateur appuis sur le bouton \includegraphics[scale=1]{pic/AddUser
 \label{Formulaire permettant d'ajouter un utilisateur}
 \end{figure}
 \newpage
-Après avoir rempli les différents champs de ce formulaire, la création n'est effective qu'après la validation du bouton Soumettre.
+Après avoir rempli les différents champs du formulaire, la création n'est effective qu'après la validation du bouton Soumettre.
 Une fois que le compte de l'utilisateur est créé, son compte s'ajoute dans la liste des comptes existant dans le système.
 
 \subsection{Gestion des utilisateurs}
@@ -247,7 +247,7 @@ Après la création du plan comptable, ainsi que l'ajout de compte, le plan comp
 
 Dans l'entête Texte on retrouve les noms des différents comptes ainsi que ceux de groupe de comptes, dans l'entête No on retrouve le différent numéro des comptes, l'entête Type permet de savoir si le compte est un Income /expence, Balance ou bien un titre et l'entête effacer permet de supprimé un compte.  Il y a aussi le bouton \includegraphics[scale=0.7]{pic/GenereRapportCompt.png} qui permet d'afficher une version imprimable du plan comptable.
 
-Comme nous le montre l'image ci-après, on affiche le plan comptable de l'organisation par rapport à une date bien précise.\\
+Comme nous le montre l'image ci-après, le plan comptable est affiché par rapport à la date du jour.\\
 
 \begin{figure}[h]
 \begin{center}
@@ -376,7 +376,7 @@ Dans l'image ci-après est illustré le formulaire utilisé pour le mis à jour.
 L'édition des métadonnées des éléments d'une liste est très important car ce grâce à ces informations qu'on peut distinguer un élément de la liste de prix à un autre.
 
 Le formulaire d'édition de métadonnées ce présente comme suit.
-
+\newpage
 \begin{figure}[h]
 \begin{center}
 \includegraphics[width=14cm]{pic/EditionMetaDonneListeP.png}
@@ -387,7 +387,7 @@ Le formulaire d'édition de métadonnées ce présente comme suit.
 
 Dans l'entête à gauche est repris le nom de la liste de prix et à droite il y'a un bouton qui permet d'ajouter un item pour les particularités de ladite liste initialement il existe un autre bouton Sauver la liste qui se retrouve à côté de celui-ci.
 
-En dessous de l'entête se trouve les divers champs qui permet d'enrichir un item en premier il y'a \textbf{Item Description} qui permet de décrire un item, en second lieu il y'a \textbf{Valeur} qui s'exprime en Pourcentage par rapport au prix du bien ou service consommé par le patient, Discompte permet de déterminer l'action à effectuer aux pourcentage qui a était fourni dans le champ valeur dans la liste de choix du champ Discompte il y'a \textbf{l'augmentation et la diminution}, \textbf{Appliquer à} permet de déterminer si les informations fourni   aux champs Valeur et discompte s'appliquera à un item ou bien à la facture, en dessous de cette zone de configuration on retrouve une liste de choix qui permet de sélection le item qui fera partie de la liste de prix. L'entête Actions possède une série d'icône dont le deux premiers permet de modifier l'ordre d'affichage des éléments d'une liste « seule pour les listes des prix qui possède plusieurs item », le dernier icône permet de supprimer un item de la liste de prix.
+En dessous de l'entête se trouve les divers champs qui permet d'enrichir un item en premier il y'a \textbf{Item Description} qui permet de décrire un item, en second lieu il y'a \textbf{Valeur} qui s'exprime en Pourcentage par rapport au prix du bien ou service consommé par le patient, Discompte permet de déterminer l'action à effectuer aux pourcentage qui a était fourni dans le champ valeur dans la liste de choix du champ Discompte il y'a \textbf{l'augmentation et la diminution}, \textbf{Appliquer à} permet de déterminer si les informations fourni   aux champs Valeur et discompte s'appliquera à un item ou bien à la facture, en dessous de cette zone de configuration on retrouve une liste de choix qui permet de sélectionner l'item qui sera directement sélectionner à la liste de prix. L'entête Actions possède une série d'icône dont le deux premiers permet de modifier l'ordre d'affichage des éléments d'une liste « seule pour les listes des prix qui possède plusieurs item », le dernier icône permet de supprimer un item de la liste de prix.
 \newpage
 \section{Taux d'échange}
 Le module de taux de change, donne la possibilité de définir le taux d'échange du jour. Par souci d'intégrité des données, Le taux d'échange doit être défini chaque jour.
@@ -444,7 +444,7 @@ Le bouton \includegraphics[scale=0.7]{pic/NewGroupCredit.png} permet d'ajouter u
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=12cm]{pic/AddNewGroupCred.png}
+\includegraphics[width=8cm]{pic/AddNewGroupCred.png}
 \end{center}
 \caption{Ajouter un nouveau groupe créditeur}
 \label{Ajouter un nouveau groupe créditeur}
@@ -628,72 +628,6 @@ Voici un apperçu du formulaire permettant la mise à jour des informations d'un
 \caption{Formulaire permettant de mettre à jour les informations d'une subvention}
 \label{Formulaire permettant de mettre à jour les informations d'une subvention}
 \end{figure} 
-
-\newpage
-\section{Taux d'échange}
-Le module de taux de change, donne la possibilité de définir le taux d'échange du jour. Par souci d'intégrité des données, Le taux d'échange doit être défini chaque jour.
-
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=16cm]{pic/FormulaireConfigRate.png}
-\end{center}
-\caption{Formulaire permettant de configurer le taux de change}
-\label{Formulaire permettant de configurer le taux de change}
-\end{figure}
-
-\subsection{Nouveau Taux}
-Lorsque l'utilisateur click sur le bouton \includegraphics[scale=0.7]{pic/NouveauTaux.png}
- Le formulaire ci-après apparait.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=12cm]{pic/DefinirTaux.png}
-\end{center}
-\caption{Formulaire permettant de definir le taux}
-\label{Formulaire permettant de definir le taux}
-\end{figure}
-\begin{itemize}
-\item \textbf{United States Dollars}: est la monnaie principale de l'application, l'équivalence avec d'autres monnaies ne doit se faire qu'avec la somme de 100 Dollars,
-\item \textbf{Sélectionner Monnaie}: Affiche la liste des monnaies qui existe dans le système et la zone de saisie qui se retrouve en bas permet de préciser l'équivalence avec la monnaie principale.
-\end{itemize}
-Après avoir renseigné ce deux champs, un clique sur le bouton \textbf{Soumettre} permet de définir les taux du jour.
-
-\subsection{Revoir le taux d'aujourd'hui}
-Un clic sur le bouton \includegraphics[scale=0.7]{pic/RevoirTaux.png} permet d'afficher toutes les informations sur le taux du jour, comme la montre la figure ci-dessous.
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=12cm]{pic/ShowRate.png}
-\end{center}
-\caption{Aperçue du taux du jour}
-\label{Aperçue du taux du jour}
-\end{figure}
-\newpage
-\section{Groupe Créditeur}
-Ce module permet de faire la gestion des groupes créditeurs, l'interface principale de ce module se présente de la manière que voici.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=12cm]{pic/AdminGroupCredit.png}
-\end{center}
-\caption{Interface principale permettant d'administrer le groupe créditeur}
-\label{Interface principale permettant d'administrer le groupe créditeur}
-\end{figure}
-
-
-Le bouton \includegraphics[scale=0.7]{pic/NewGroupCredit.png} permet d'ajouter un nouveau groupe créditeur dans ladite liste.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=12cm]{pic/AddNewGroupCred.png}
-\end{center}
-\caption{Ajouter un nouveau groupe créditeur}
-\label{Ajouter un nouveau groupe créditeur}
-\end{figure}
-
-Le formulaire ci-haut apparait lorsqu'un utilisateur clique sur le bouton \textbf{Nouveau groupe Créditeur}. Ce formulaire possède deux champs, le premier \textbf{Nom du groupe} permet de spécifier le nom du groupe et \textbf{Numéro de compte}  le numéro de compte permet de choisir dans la liste de compte, celui correspondant au groupe créditeur.
-L'enregistrement est effectif seulement si l'utilisateur clique sur le bouton Sauver changement.
-La liste des groupes créditeurs apparait sous forme de tableau. Ce tableau possède quatre rubriques. Le premier \textbf{Nom du groupe} renseigne sur le nom du groupe, le second renseigne sur le numéro de compte, en troisième lieu il y'a une rubrique qui est représenté par l'icône \includegraphics[scale=0.7]{pic/Locked.png}  qui permet de verrouiller mais aussi de déverrouillé un groupe créditeur à l'aide de case à coché et denier lieu il y'a \textbf{Editer} qui contient l'icône  \includegraphics[scale=0.7]{pic/EditUser.png} permet de modifier les informations sur un groupe créditeur.
 
 
 \newpage
