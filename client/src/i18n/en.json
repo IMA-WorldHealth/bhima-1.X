@@ -123,9 +123,13 @@
    },
 "AUXILLARY_CASH_RECORD" : {
     "ALL_PROJECTS"   : "All projects",
+    "CANCEL"         : "Cancel Operation",
     "CREDIT_NOTE"    : "Credit note",
+    "GENERATE"       : "Generate",
+    "PATIENT_CASH"   : "Patient Cash",
     "RECEIPT"        : "Receipt",
-    "TITLE"          : "Auxillary cash record"
+    "TITLE"          : "Auxillary cash record",
+    "UNFOUND"        : "Data Not Found"
 },
 "BALANCE" : {
   "BUILD_BALANCE"   : "Build Balance",

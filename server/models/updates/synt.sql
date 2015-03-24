@@ -509,3 +509,8 @@ ADD `is_donation` tinyint(1) NOT NULL DEFAULT '0',
 MODIFY `creditor_uuid` char(36) NULL,
 MODIFY `employee_id` int(10) unsigned NULL;
 
+-- Title : ALTER CASH TABLE
+-- By    : Bruce Mbayo
+-- Date  : 18 mars 2015
+ALTER TABLE  `cash` 
+ADD  `is_caution` TINYINT( 1 ) NOT NULL DEFAULT  '0';

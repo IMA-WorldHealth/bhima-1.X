@@ -116,7 +116,8 @@ angular.module('bhima.controllers')
         currency_id     : $scope.currency.currency_id,
         cost            : session.payment,
         cashbox_id      : $scope.cashbox.id,
-        description     : [$scope.project.abbr + '_CAISSEAUX_CAUTION', $scope.debtor.first_name + ' - '+ $scope.debtor.name + ' - ' + $scope.debtor.last_name, util.sqlDate(new Date())].join('/')
+        description     : [$scope.project.abbr + '_CAISSEAUX_CAUTION', $scope.debtor.first_name + ' - '+ $scope.debtor.name + ' - ' + $scope.debtor.last_name, util.sqlDate(new Date())].join('/'),
+        is_caution      : 1
       };
 
       record_item = {

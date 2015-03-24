@@ -221,7 +221,7 @@ function cashAuxillaryRecords(params) {
   }
 
   var requestSql =
-    'SELECT cash.uuid, cash.reference, cash.cost, cash.currency_id, cash.deb_cred_uuid, cash.date, ' +
+    'SELECT cash.uuid, cash.reference, cash.cost, cash.currency_id, cash.deb_cred_uuid, cash.date, cash.is_caution, ' +
     'cash.description, cash_discard.uuid as `cashDiscardId`, cash_discard.description as `cashDiscardDescription`, ' +
     'cash_discard.posted, first_name, last_name, patient.reference as `patientReference`, CONCAT(project.abbr, cash.reference) as `hr_id` ' +
     'FROM cash LEFT JOIN cash_discard on cash.uuid = cash_discard.cash_uuid ' +
