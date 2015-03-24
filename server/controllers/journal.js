@@ -3788,11 +3788,8 @@ table_router = {
   'cotisation_payment'      : handleCotisationPayment,
   'salary_advance'          : handleSalaryAdvance,
   'create_fiscal_year'      : handleCreateFiscalYear,
-<<<<<<< HEAD
-  'reversing_stock'         : handleReversingStock
-=======
+  'reversing_stock'         : handleReversingStock,
   'cash_return'             : handleCashReturn
->>>>>>> development
 };
 
 
