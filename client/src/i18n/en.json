@@ -238,6 +238,15 @@
    "TITLE"           : "Purchase Order Dispense",
    "TO"              : "to "
    },
+"CASH_RETURN"          : {
+    "DEFAULT_CURRENCY" : "Currency",
+    "DESC"             : "Description",
+    "DESCRIPTION"      : "Cash return module will help you to return cash money that you get before to creditor or debitor",
+    "TAPE_VALUE"       : "Enter value",
+    "TITLE"            : "Cash return",
+    "SUBMIT_FAILED"    : "Error during submit, the operation is failed",
+    "SUBMIT_SUCCESS"   : "Congratulation, the operation is a success"
+  },
 "CAUTION": {
    "AGE"          : "Age",
    "CASH"         : "Cash Payments",
@@ -1648,6 +1657,7 @@
       "ACCOUNT"                  : "Account",
       "ADVANTAGES"               : "Advantages",
       "AMOUNT"                   : "Amount Dispensed",
+      "CASH_RETURN"              : "Cash Return",
       "COTISATIONS"              : "Cotisations",
       "COTISATION_PAYMENT"       : "Cotisation Payment",
       "CREDITOR"                 : "Creditor",

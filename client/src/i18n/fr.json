@@ -238,6 +238,14 @@
    "TITLE"           : "Dépense de l'ordre d'achat",
    "TO"              : "à "
    },
+"CASH_RETURN"          : {
+   "DEFAULT_CURRENCY" : "Monnaie",
+   "DESCRIPTION"      : "Ce module vous permet de retourner à un créditeur ou débiteur de l'argent (cash) perçu",
+   "TAPE_VALUE"       : "Valeur",
+   "TITLE"            : "Retour caisse",
+   "SUBMIT_FAILED"    : "Erreur durant la soumission, l'opération a échouée",
+   "SUBMIT_SUCCESS"   : "Félicitation, l'opération est un succès"
+  },
 "CAUTION": {
    "AGE"          : "Age",
    "CASH"         : "Caisse Auxilliaire",
@@ -1648,6 +1656,7 @@
       "ACCOUNT"                  : "Compte",
       "ADVANTAGES"               : "Avantages",
       "AMOUNT"                   : "Montant",
+      "CASH_RETURN"              : "Retour Caisse",
       "COTISATIONS"              : "Cotisations",
       "COTISATION_PAYMENT"       : "Paiement Cotisations",
       "CREDITOR"                 : "Créditeur",
