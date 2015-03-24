@@ -219,6 +219,10 @@
       controller: 'report.balance_mensuelle',
       templateUrl: 'partials/reports/balance_mensuelle/balance_mensuelle.html'
     })
+    .when('/reports/donation/', {
+      controller: 'report.donation',
+      templateUrl: 'partials/reports/donation/donation.html'
+    })
     .when('/location', {
       controller : 'location',
       templateUrl: 'partials/location/location.html'
@@ -381,6 +385,10 @@
     .when('/primary_cash/expense/payroll/:cashbox', {
       controller : 'payroll',
       templateUrl : 'partials/primary_cash/expense/payroll.html'
+    })
+    .when('/primary_cash/expense/cash_return/:cashbox', {
+      controller : 'cashReturn',
+      templateUrl : 'partials/primary_cash/expense/cash_return.html'
     })
     .when('/primary_cash/expense/multi_payroll/', {
       controller : 'multi_payroll',
