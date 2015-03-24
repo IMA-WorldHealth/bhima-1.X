@@ -513,3 +513,5 @@ ADD `is_donation` tinyint(1) NOT NULL DEFAULT '0',
 MODIFY `creditor_uuid` char(36) NULL,
 MODIFY `employee_id` int(10) unsigned NULL;
 
+INSERT INTO `unit` VALUES 
+(97,'Report Donation','TREE.REPORT_DONATION','Report donation', 10, 0, '/partials/reports/donation', '/reports/donation/');
