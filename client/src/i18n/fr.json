@@ -2113,7 +2113,7 @@
       "ASSIGN_LOTS"          : "Affecter lots",
       "CANCEL"               : "Annuler",
       "DIRECT_PURCHASE_TYPE" : "C'est un ordre d'achat direct",
-      "ENTER_STOCK"          : "Faire entrer les Stock",
+      "ENTER_STOCK"          : "Entrer les Stocks",
       "ENTRY_DATE"           : "Date d'entrée",
       "ENTRY_MANIFEST"       : "Document des Entrées",
       "ERR_EMPTY_PARAMTER"   : "Erreur paramétre manquant",
@@ -2141,6 +2141,24 @@
       },
    "EXPIRE": {
       "KEY" : "Expiration du stock"
+      },
+   "INTEGRATION" : {
+      "DESCRIPTION"       : "Utilisez ce module pour integrer dans le systeme BHIMA un stock qui existait deja physiquement",
+      "CANCEL"            : "Annuler",
+      "EXPIRATION_DATE"   : "Date d'Expiration",
+      "EXPIRATION_INFO"   : "Veuillez introduire des dates d'expirations valides",
+      "EXPIRATION_ALERT"  : "Le système n'accepte pas des produits périmés",
+      "ITEMS"             : "Stock Item(s)",
+      "KEY"               : "Stock Integration",
+      "LOT_QTY"           : "Lot et Quantité",
+      "LOT_QTY_DESC"      : "Veuillez introduire le numero du lot et la quantité",
+      "MADE_BY"           : "Effectuée par",
+      "NEW"               : "Nouvelle integration de stock",
+      "PREVIEW"           : "Apercu",
+      "STOCK_VOID"        : "Aucun stock",
+      "STOCK_VOID_DESC"   : "Veuillez selectionner des produits",
+      "TITLE"             : "Intergration de Stock",
+      "SUBMIT"            : "Soumettre"
       },
    "LOSS": {
       "KEY"               : "Perte stock",
@@ -2580,6 +2598,7 @@
    "ON"                : "On",
    "PRINT"             : "Imprimer",
    "PROJECT"           : "Project",
+   "REGISTER_NEW_STOCK": "Enregistrer un stock",
    "RESET_FORM"        : "Remettre",
    "SAVE_SELECTION"    : "Enregistrer la Sélection",
    "SEARCH"            : "Chercher",
@@ -2591,7 +2610,8 @@
    "TOGGLE"            : "Basculer",
    "TOGGLE_AGGREGATES" : "Montrer Agregats",
    "TOTAL"             : "Total",
-   "TSHIKAJI"          : "TSHIKAJI"
+   "TSHIKAJI"          : "TSHIKAJI",
+   "VALIDATE"          : "Accepter"
    },
 "VERSEMENT": {
    "ASSOCIATED_TO"     : "Les comptes associe à : ",
