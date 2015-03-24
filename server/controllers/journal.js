@@ -304,7 +304,6 @@ function handleSales (id, user_id, done, caution) {
 
     // First, copy the data from sale into the journal.
 
-    console.log('on trans_id***********', trans_id);
 
     queries.subsidies = [];
     var subsidies_cost = 0;
@@ -1378,6 +1377,80 @@ function handleTransfert (id, user_id, done) {
         [sanitize.escape(id), cfg.originId, user_id].join(',') + ' ' +
         'FROM cash_box_account_currency WHERE `cash_box_account_currency`.`cash_box_id`='+sanitize.escape(reference.cash_box_id) + ' ' +
           'AND `cash_box_account_currency`.`currency_id`='+sanitize.escape(reference.currency_id);
+    return db.exec(queries.credit);
+  })
+  .then(function () {
+    return db.exec(queries.debit);
+  })
+  .then(function (rows) {
+    done(null, rows);
+  })
+  .catch(function (err) {
+    console.log('voici erreur ', err);
+    // FIXME: Need to delete the primary_cash_items before primary cash
+    var discard =
+      'DELETE FROM primary_cash WHERE uuid = ' + sanitize.escape(id) + ';';
+    return db.exec(discard)
+    .then(function () {
+      done(err);
+    })
+    .done();
+  })
+  .done();
+}
+
+function handleCashReturn (id, user_id, done) {
+  var sql, data, reference, cfg = {}, queries = {};
+
+  // TODO : Formalize this
+  sql = 'SELECT * FROM `primary_cash` WHERE `primary_cash`.`uuid` = ' + sanitize.escape(id) + ';';
+
+  db.exec(sql)
+  .then(function (results) {
+    if (results.length === 0) {
+      throw new Error('No primary_cash by the uuid: ' + id);
+    }
+
+    reference = results[0];
+    data = results;
+    var date = util.toMysqlDate(reference.date);
+
+    return get.myExchangeRate(date);
+  })
+  .then(function (exchangeRateStore) {
+    var dailyExchange = exchangeRateStore.get(reference.currency_id);
+    cfg.valueExchanged = parseFloat((1/dailyExchange.rate) * reference.cost).toFixed(4);
+
+    return q([get.origin('cash_return'), get.period(reference.date)]); // should be get.origin(pcash_transfert);
+  })
+  .spread(function (originId, periodObject) {
+    cfg.originId = originId;
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+
+    return get.transactionId(reference.project_id);
+  })
+  .then(function (transId) {
+
+    queries.credit =
+      'INSERT INTO posting_journal '+
+        '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+        '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+        'SELECT ' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'', sanitize.escape(reference.description)].join(',') +
+        ', `account_id`, ' + [reference.cost, 0, cfg.valueExchanged, 0, reference.currency_id].join(',')+',null, null, ' +
+        [sanitize.escape(id), cfg.originId, user_id].join(',') + ' ' +
+        'FROM cash_box_account_currency WHERE `cash_box_account_currency`.`cash_box_id`='+sanitize.escape(reference.cash_box_id) + ' ' +
+          'AND `cash_box_account_currency`.`currency_id`='+sanitize.escape(reference.currency_id);
+
+    queries.debit =
+      'INSERT INTO posting_journal (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+        '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
+        'VALUES (' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'', sanitize.escape(reference.description), reference.account_id].join(',') + ', ' +
+        [ 0, reference.cost, 0, cfg.valueExchanged, reference.currency_id, sanitize.escape(reference.deb_cred_uuid), sanitize.escape(reference.deb_cred_type)].join(',')+', '+[sanitize.escape(id), cfg.originId, user_id].join(',') +
+      ');';
+
     return db.exec(queries.credit);
   })
   .then(function () {
@@ -3556,7 +3629,7 @@ function handleCreateFiscalYear (id, user_id, details, done) {
               balance.credit.toFixed(4), balance.debit.toFixed(4),
               (balance.credit / rate).toFixed(4), (balance.debit / rate).toFixed(4),
               balance.currencyId,
-              cfg.originId, 
+              cfg.originId,
               user_id
             ].join(',') +
           ');';
@@ -3608,7 +3681,8 @@ table_router = {
   'tax_payment'             : handleTaxPayment,
   'cotisation_payment'      : handleCotisationPayment,
   'salary_advance'          : handleSalaryAdvance,
-  'create_fiscal_year'      : handleCreateFiscalYear
+  'create_fiscal_year'      : handleCreateFiscalYear,
+  'cash_return'             : handleCashReturn
 };
 
 
