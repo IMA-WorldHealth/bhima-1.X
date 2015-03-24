@@ -506,6 +506,10 @@
       controller : 'stock.loss_record',
       templateUrl : 'partials/stock/loss_record/loss_record.html'
     })
+    .when('/stock/integration/:depotId', {
+      controller : 'stock.integration',
+      templateUrl : 'partials/stock/integration/integration.html'
+    })
     .when('/reports/loss_record/', {
       controller : 'loss_record',
       templateUrl : 'partials/reports/loss_record/loss_record.html'
