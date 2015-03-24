@@ -238,6 +238,15 @@
    "TITLE"           : "Purchase Order Dispense",
    "TO"              : "to "
    },
+"CASH_RETURN"          : {
+    "DEFAULT_CURRENCY" : "Currency",
+    "DESC"             : "Description",
+    "DESCRIPTION"      : "Cash return module will help you to return cash money that you get before to creditor or debitor",
+    "TAPE_VALUE"       : "Enter value",
+    "TITLE"            : "Cash return",
+    "SUBMIT_FAILED"    : "Error during submit, the operation is failed",
+    "SUBMIT_SUCCESS"   : "Congratulation, the operation is a success"
+  },
 "CAUTION": {
    "AGE"          : "Age",
    "CASH"         : "Cash Payments",
@@ -1644,6 +1653,7 @@
       "ACCOUNT"                  : "Account",
       "ADVANTAGES"               : "Advantages",
       "AMOUNT"                   : "Amount Dispensed",
+      "CASH_RETURN"              : "Cash Return",
       "COTISATIONS"              : "Cotisations",
       "COTISATION_PAYMENT"       : "Cotisation Payment",
       "CREDITOR"                 : "Creditor",
@@ -2138,6 +2148,24 @@
    "EXPIRE": {
       "KEY" : "Expiring Stock"
       },
+   "INTEGRATION" : {
+      "DESCRIPTION"       : "Use this module to integrate into the system BHIMA a stock that already existed physically",
+      "CANCEL"            : "Cancel",
+      "EXPIRATION_DATE"   : "Expiration date",
+      "EXPIRATION_INFO"   : "Please enter the valid expirations dates",
+      "EXPIRATION_ALERT"  : "The system does not accept expired product",
+      "ITEMS"             : "Stock Item(s)",
+      "KEY"               : "Stock Integration",
+      "LOT_QTY"           : "Lot and Quantity",
+      "LOT_QTY_DESC"      : "Please enter the lot number and quantity",
+      "MADE_BY"           : "Made By",
+      "NEW"               : "New Stock Integration",
+      "PREVIEW"           : "Preview",
+      "STOCK_VOID"        : "No Stock",
+      "STOCK_VOID_DESC"   : "Please add products",
+      "TITLE"             : "Stock Integration",
+      "SUBMIT"            : "Submit"
+      },
    "LOSS": {
       "KEY"               : "Stock loss",
       "LOSS_GENERAL_INFO" : "Summary",
@@ -2572,6 +2600,7 @@
    "ON"                : "On",
    "PRINT"             : "Print",
    "PROJECT"           : "Current Project",
+   "REGISTER_NEW_STOCK": "Register a Stock",
    "RESET_FORM"        : "Reset Form",
    "SAVE_SELECTION"    : "Save Selection",
    "SEARCH"            : "Search",
@@ -2583,7 +2612,8 @@
    "TOGGLE"            : "Toggle",
    "TOGGLE_AGGREGATES" : "Toggle Aggregates",
    "TOTAL"             : "Total",
-   "TSHIKAJI"          : "TSHIKAJI"
+   "TSHIKAJI"          : "TSHIKAJI",
+   "VALIDATE"          : "Accept"
    },
 "VERSEMENT": {
    "ASSOCIATED_TO"     : "Accounts associated to         : ",
