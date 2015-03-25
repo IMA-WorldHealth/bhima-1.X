@@ -814,7 +814,7 @@ Le module finance est composé des sous modules qui permettent d'administrer le 
 
 
 \section{Vente}
-Le module de la vente permet de faire la facturation des produits et services à un client. Son interface d'utilisation est simple et se présente de cette façon.
+Le module de la vente permet de faire la facturation des produits et services à un patient. Son interface d'utilisation est simple et se présente de cette façon.
 
 \begin{figure}[h]
 \begin{center}
@@ -839,7 +839,7 @@ En dessous de cette zone réservé au bouton, il y'a une zone qui permet de rech
 \label{Aperçue de la zone permettant de rechercher un patient}
 \end{figure}
 
-Il existe une aussi une zone qui permet de spécifier le type de vente à opérer, il peut s'agir d'une vente distribuable et non distribuable. Une vente est dite distribuable si le patient pourrai aller se servir en produits pharmaceutiques et non distribuable si le patient à déjà consommer les dites produits. Par défaut c'est l'option \textbf{Distribuable} qui est coché par défaut.  
+Il existe une aussi une zone qui permet de spécifier le type de vente à opérer, il peut s'agir d'une vente distribuable ou bien d'une vente non distribuable. Une vente est dite distribuable si le patient pourrai aller se servir en produits pharmaceutiques et non distribuable si le patient à déjà consommer les dites produits. Par défaut c'est l'option \textbf{Distribuable} qui est coché par défaut.  
 
 \begin{figure}[h]
 \begin{center}
@@ -933,7 +933,7 @@ L'historique de vente permet de connaitre l'historique des toutes les opération
 \label{Interface principale du module Historique des ventes}
 \end{figure}
 
-Les données qui se présente par défaut et celui du jour en cours mais il y'a la possibilité le modifie soit en sélectionnant dans la liste de choix, un autre critère d'affichage, sur cette liste de choix comme le montre la figure ci-après, on a le choix \textbf{entre Aujourd'hui, Cette semaine et ce mois} 
+Les données qui se présente par défaut et celui du jour en cours mais il y'a la possibilité de le modifier soit en sélectionnant dans la liste de choix, un autre critère d'affichage, sur cette liste de choix comme le montre la figure ci-après, on a le choix \textbf{entre Aujourd'hui, Cette semaine et ce mois} 
 
 
 \begin{figure}[h]
@@ -1006,7 +1006,7 @@ Une fois qu'on a retrouvé un patient et qu'on cliqué sur le bouton soumettre, 
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=14cm]{pic/ViewInvoice.png}
+\includegraphics[width=8cm]{pic/ViewInvoice.png}
 \end{center}
 \caption{Aperçue des factures impayées}
 \label{Aperçue des factures impayées}
@@ -1052,6 +1052,75 @@ Une fois que le \textbf{bouton payer les factures} est cliqué une facture appar
 \caption{Aperçue d'une facture résultant du paiement des plusieurs factures à la fois}
 \label{Aperçue d'une facture résultant du paiement des plusieurs factures à la fois}
 \end{figure}
+\newpage
+\section{Historique de la caisse auxilliaire}
+Historique de la caisse auxilliaire permet de connaitre l'historique des toutes les opérations liée aux paiements des factures des patients, voici un aperçue de son interface principale.
+
+\newpage
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/HistCaAux.png}
+\end{center}
+\caption{Interface principale du module Historique de la caisse auxilliaire}
+\label{Interface principale du module Historique de la caisse auxilliaire}
+\end{figure}
+
+Les données qui se présente par défaut et celui du jour en cours mais il y'a la possibilité de le modifier soit en sélectionnant dans la liste de choix, un autre critère d'affichage, sur cette liste de choix comme le montre la figure ci-après, on a le choix \textbf{entre Aujourd'hui, Cette semaine et ce mois} 
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=4cm]{pic/SelectJour.png}
+\end{center}
+\caption{Aperçue de l'option permettant de rechercher une période de paiement}
+\label{Aperçue de l'option permettant de rechercher une période de paiement}
+\end{figure}
+
+Mais juste à côté de cette liste de choix, on a la possibilité de préciser une plage de valeur en précisant pour ce cas la date initiale et la date terminale.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/SelectPlageValeur.png}
+\end{center}
+\caption{Aperçue de l'option permettant de rechercher l'historique des paiements dans une plage de temps}
+\label{Aperçue de l'option permettant de rechercher l'historique des paiement dans une plage de temps}
+\end{figure}
+
+Le tableau de l'historique de paiement comporte 5 colonnes dont l'une pour la\textbf{ date} de de la vente, le second pour \textbf{ID }de la vente, le \textbf{nom du patient}, le \textbf{montant} de la vente ainsi qu'une dernière colonne consacrée à \textbf{l'actions}. Cette dernière permet comporte deux options \includegraphics[scale=0.7]{pic/FactureF.png}  et \includegraphics[scale=0.7]{pic/NoteCredit.png}, Le premier facture permet de visualiser la facture concernée par le paiement, le second note de crédit permet d'annuler le paiement. 
+
+Lorsqu'on clique sur \includegraphics[scale=0.7]{pic/NoteCredit.png}  l'interface ci-dessous apparait.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/AnnulationCaisseAux.png}
+\end{center}
+\caption{Interface permettant d'annuler l'encaissement dans la caisse auxilliaire}
+\label{Interface permettant d'annuler l'encaissement dans la caisse auxilliaire}
+\end{figure}
+
+Pour voir le détaille de la facture il suffit de cliquer sur le bouton \includegraphics[scale=0.7]{pic/SeeInvoice.png} qui se trouve dans le coin droit de la zone Détaille de facture   
+
+
+Et pour annuler un encaissement, il suffit de cliquer sur le bouton \includegraphics[scale=0.7]{pic/soumettreGreen.png}  pour que s'affiche sur l'écran l'interface ci-dessous.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/InvoAnnCaiAux.png}
+\end{center}
+\caption{Aperçue d'un encaissement qui a été annulé}
+\label{Aperçue d'un encaissement qui a été annulé}
+\end{figure}
+
+Et quand on revient sur la page principale de l'historique de la caisse auxilliaire on peut se rendre compte que les ventes annulés se colorent différemment des autres, comme on peut le constaté dans la figure ci-dessous.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/HisCaissDellOk.png}
+\end{center}
+\caption{Aperçue de l'Historique de la caisse auxilliaire avec des encaissements annulées}
+\label{Aperçue de l'Historique de la caisse auxilliaire avec des encaissements annulées}
+\end{figure}
+
 
 \newpage
 \section{Facturation des conventions}
@@ -1065,7 +1134,7 @@ Le module facturations des conventions est un modules qui permet à un groupe d�
 \label{Interface principale de la facturation des conventions}
 \end{figure}
 
-Quand à l'utilisation de cette interface, il suffit de preciser le groupe débiteur qui accepte de prendre en charge un patient, et en suite recherche le patient en question dans la liste de débiteur, après avoir retrouver le patient en question il faudrait cliquer sut le bouton  \textbf{Continuer} pour faire apparaitre le bouton l'interface qui permet de la prise en charge.
+Quand à l'utilisation de cette interface, il suffit de preciser le groupe débiteur qui accepte de prendre en charge un patient, et en suite recherche le patient en question dans la liste de débiteur, après avoir retrouver le patient en question il faudrait cliquer sut le bouton  \textbf{Continuer} pour faire apparaitre l'interface qui permet de la prise en charge.
 
 \begin{figure}[h]
 \begin{center}
@@ -1100,6 +1169,8 @@ Cette interface permet de payer le montant de la prise en charge du patient, par
 
 Cet interface permet aussi de prendre en charge plusieur facture appartenant à un même patient en une seul fois, pour cela il suffit simplement de les ajoutant grace à un clic sur l'icône \includegraphics[scale=0.7]{pic/plusBlack.png}, et une fois que les factures concernant la prise en charge sont sélectionner, il suffit de cliquer sur le bouton \textbf{Payer la facture} pour être diriger vers une autre interface qui permet de préciser la qui a autorisé le paiement.
 
+\newpage
+
 \begin{figure}[h]
 \begin{center}
 \includegraphics[width=8cm]{pic/DoubleConvention.png}
@@ -1115,6 +1186,66 @@ Cet interface permet aussi de prendre en charge plusieur facture appartenant à 
 \end{center}
 \caption{Apperçue de l'interface permettant de renseigner la personne qui a autorisée le paiement}
 \label{Apperçue de l'interface permettant de renseigner la personne qui a autorisée le paiement}
+\end{figure}
+
+
+\newpage
+\section{ Prise en charge}
+Le module  Prise en charge est un modules qui permet aux employés de prendre en charge la totalité ou bien une partie de ce que doit un patient à l'hôpital. 
+
+Son interface d'utilisation se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/InterPrinPrisCharge.png}
+\end{center}
+\caption{Interface principale du module des prises en charges}
+\label{Interface principale du module des prises en charges}
+\end{figure}
+
+Quand à l'utilisation de cette interface, il suffit de preciser premierement l'employé qui accepte de prendre en charge un patient, et en suite recherche le patient en question dans la liste de débiteur, après avoir retrouver le patient en question il faudrait cliquer sut le bouton  \textbf{Continuer} pour faire apparaitre l'interface qui permet de la prise en charge.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/PriChPatientFact.png}
+\end{center}
+\caption{Apperçue de l'interface de prise en charge}
+\label{Apperçue de l'interface de prise en charge}
+\end{figure}
+
+Dans la figure précedante nous pouvons appercevoir une illustration de la prises en charge, dans cette exemple un patient a deux factures en attente de paiement, la zone action possède pour les différentes factures deux icônes \includegraphics[scale=0.7]{pic/LoopBlack.png} qui permet d'avoir un aperçue de la facture et \includegraphics[scale=0.7]{pic/plusBlack.png} permet d'aller à l'interface permettant la prise en charge proprement dit de la facture. 
+Voici l'interface permettant à un débiteur de prendre en charge un patient.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=9cm]{pic/SupportPatient.png}
+\end{center}
+\caption{Apperçue de l'interface permettant d'effectue une prise en charge}
+\label{Apperçue de l'interface permettant d'effectue une prise en charge}
+\end{figure}
+
+
+Cette interface permet de payer le montant de la prise en charge du patient, par défaut le montant à payer se trouve déjà dans la zone de saisie réservée à cet effet \includegraphics[scale=0.7]{pic/editableDeb.png}, cette zone de saisie est editable et donne la possibilité de modifier le montant à payer. 
+
+Cet interface permet aussi de prendre en charge plusieur facture appartenant à un même patient en une seul fois, pour cela il suffit simplement de les ajoutant grace à un clic sur l'icône \includegraphics[scale=0.7]{pic/plusBlack.png}, et une fois que les factures concernant la prise en charge sont sélectionner, il suffit de cliquer sur le bouton \textbf{Payer la facture} pour être diriger vers une autre interface qui permet de préciser la qui a autorisé le paiement.
+
+\newpage
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/DoubleSupport.png}
+\end{center}
+\caption{Apperçue de l'interface permettant le paiement de deux factures à la fois}
+\label{Apperçue de l'interface permettant le paiement de deux factures à la fois}
+\end{figure}
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/AutPrCharge.png}
+\end{center}
+\caption{Apperçue de l'interface permettant de renseigner la personne qui a autorisée la prise en charge}
+\label{Apperçue de l'interface permettant de renseigner la personne qui a autorisée la prise en charge}
 \end{figure}
 
 \newpage
@@ -1137,7 +1268,7 @@ Il existe aussi la zone qui permet de rechercher le patient. Une fois qu'on a tr
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=14cm]{pic/formGestionCaution.png}
+\includegraphics[width=10cm]{pic/formGestionCaution.png}
 \end{center}
 \caption{Interface principale permettant le paiement d'une caution}
 \label{Interface principale permettant le paiement d'une caution}
@@ -1145,7 +1276,8 @@ Il existe aussi la zone qui permet de rechercher le patient. Une fois qu'on a tr
 
 Il faudrait saisir dans la zone de saisie qui se trouve dans \textbf{Information de la caution} pour préciser le montant que paie le patient, en suite cliquer sur le bouton Payer, pout permettre la génération du reçu du paiement de la caution.
 
-\newpage
+
+\newpage 
 \section{Caisse Principale}
 Le module caisse principale, est l'un des principaux modules de cette application, ce module permet d'administrer les recettes ainsi que les dépenses qui s'oppere au sein de l'organisation.
 
@@ -1516,6 +1648,126 @@ Le module rapports permet de pouvoir visualiser plusieurs types des rapports ré
 \caption{Arborescence du module Rapports}
 \label{Arborescence du module Rapports}
 \end{figure}
+
+\newpage
+\section{Bilan}
+Un bilan comptable est un document qui synthétise à un moment donné ce que l'entreprise possède, appelé l'« actif » (terrains, immeubles, etc.) et ses ressources, appelées le « passif » (capital, réserves, crédits, etc.). Le bilan est l'un des documents composant les états financiers.
+
+L'interface permettant de visualiser le bilan se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/confBilan.png}
+\end{center}
+\caption{Interface principale de configuration du bilan}
+\label{Interface principale de configuration du bilan}
+\end{figure}
+
+Il existe deux boutons rélatives aux langages qui sera utilisée pour le bilan, par défaut c'est l'anglais qui est sélectionner, pour changer la langue de la configuration du bilan il suffit de cliquer sur le bouton de la dite langue.
+
+Il existe aussi \textbf{Générer le document} le bouton qui permet de générer le bilan, si la génération du bilan  réussi ce bouton se change en \textbf{Document généré avec succès - Ouvrir le document} qui permet d'ouvrir le bilan au format PDF.
+
+Voici un apperçu du bilan qui est générer par le système.
+ 
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/bilanOverView.png}
+\end{center}
+\caption{Aperçu du bilan en format PDF}
+\label{Aperçu du bilan en format PDF}
+\end{figure}
+
+
+\newpage
+\section{Compte d'exploitation}
+Le module compte d'exploitation permet de lister les comptes d'exploitations qui ont été mouvementé durant une année fiscale ou bien une période de l'année fiscale. L'interface principale de ce module se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/ComptExploitation.png}
+\end{center}
+\caption{Interface principale du module compte d'exploitation}
+\label{Interface principale du module compte d'exploitation}
+\end{figure}
+
+L'interface principale du module compte d'exploitation possède deux liste de choix, la première permet de rechercher une année fiscale dans la liste, et la seconde liste permet de choisir soit toute l'année fiscale ou bien une période dans la liste des périodes de l'année fiscale, le bouton \textbf{Générer} permet de générer le rapport.
+
+L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
+\includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png}.
+
+La figure ci-après donne un apperçue du rapport compte d'exploitation pour toute une année fiscale.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/ComptExploitaApp.png}
+\end{center}
+\caption{Interface principale du module compte d'exploitation}
+\label{Interface principale du module compte d'exploitation}
+\end{figure}
+
+Dans le bas de page de la figure ci-haute est répertorié le total de charge, le total de profit ainsi que la résultat (si le résultat est négative il sera mis entre parenthèse).
+
+\newpage
+\section{Consommation journalière}
+Le module consommation journalière permet de lister la consommation journalière des produits pharmaceutiques dans le système.
+son interface principale se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/ConsoJournProd.png}
+\end{center}
+\caption{Interface principale du module consommation journalière}
+\label{Interface principale du module consommation journalière}
+\end{figure}
+
+La figure ci haute est une illustration du rapport de consommations des produits entre deux dates différents. La zone  \includegraphics[scale=0.7]{pic/PlageTimes.png} qui permet visualiser le rapport de la consommation des produits pharmaceutiques en précisant une plage de temps par rapport aux dates.
+
+Le tableau du rapport de la consommation journalière possède trois entête Code, Médicaments et Quantité total. Le code du médicament est un lien hypertexte qui permet une redirection vers un autre rapport qui détaille la consommation effective d'un médicament par jour. La figure ci-après donne un apperçue du rapport de consommation regulier d'un produit par jour.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/ConsoDetJourn.png}
+\end{center}
+\caption{Apperçue de la consommation détaillée d'un produit}
+\label{Apperçue de la consommation détaillée d'un produit}
+\end{figure}
+
+\newpage
+\section{Etat employée}
+
+\newpage
+\section{Etat service}
+
+
+
+\newpage
+\section{Exploitation par service}
+Le rapport d'exploitation par service permet de visualiser l'historique des charges et profits qu'engendre un service. Son interface principale se présente de la manière suivante. 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/ExploService.png}
+\end{center}
+\caption{Interface principale du module exploitation par service}
+\label{Interface principale du module exploitation par service}
+\end{figure}
+
+Par défaut le rapport d'exploitation par service affiche les résultats d'exploitation du jour courant, l'interface du rapport d'exploitation dispose des plusieurs outils permettant de visualiser les anciens résultats.
+
+Le bouton \includegraphics[scale=0.7]{pic/Todays.png} donne la possibilité de visualiser l'exploitation du jour courant, de la semaine courante mais aussi ceux du mois courant. 
+
+Il existe aussi  \includegraphics[scale=0.7]{pic/PlageTimes.png} qui permet visualiser le rapport d'exploitation en precisant une plage de valeur entre deux dates.
+
+Il existe aussi une liste de choix qui donne la possibilité de visualiser le rapport d'enregistrement par projets ou bien de tous le projet à la fois.
+
+Le bouton \includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport d'enregistrement des patients
+
+En bas de page on retrouve les indicateurs sur le rapport d'exploitations glôbal des services, il y'a le total de charge, le total de profit ainsi que la résultat (si le résultat est négative il sera mis entre parenthèse). 
+
+\newpage
+\section{Feuille de Balance}
+
+
 \newpage
 \section{Grand Livre}
 Le grand livre affiche tous les éléments contenu dans le grand livre, ces éléments proviennent préalablement du journal de saisie. L'interface principale du module Grand livre se présente de la manière suivante.
@@ -1579,6 +1831,33 @@ Le bouton  \includegraphics[scale=0.7]{pic/ColumnsLedger.png} permet de determin
 \end{figure}
 
 \newpage
+\section{Historique des distributions aux patients}
+
+\newpage
+\section{Historique des distributions aux services}
+
+\newpage
+\section{Mouvement des comptes}
+Le rapport Mouvement des comptes donne un apperçue global des toutes les transactions qui ont été realiser dans le système. Son interface principale se présente de la manière suivante. 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/EtatToutesTrans.png}
+\end{center}
+\caption{Interface principale du module Mouvement des comptes}
+\label{Interface principale du module Mouvement des comptes}
+\end{figure}
+
+Par défaut le rapport Mouvement des comptes affiche les résultats du jour courant, l'interface du rapport d'exploitation dispose des plusieurs outils permettant de visualiser les anciens résultats. En haut de page à gauche on retrouve la liste de choix des comptes qui permet de spécifier les comptes pour lequel on voudrait connaitre le mouvement
+
+
+Il existe aussi  \includegraphics[scale=0.7]{pic/PlageTimes.png} qui permet visualiser le rapport du mouvement des comptes en precisant une plage de valeur entre deux dates, il est possible aussi de spécifier l'origine de la transaction qu'il s'agisse soit du grand livre ou bien du posting journal ou bien de tous le deux en même temps. Une autre liste de choix permet de spécifier une monnaie pour la visualisation du mouvement de comptes.
+
+Le bouton \includegraphics[scale=0.7]{pic/ValiderBlue.png} permet lancer l'affichage du rapport du mouvement des comptes en se basant sur les critaires spécifiés.
+
+
+
+\newpage
 \section{Plan Comptable}
 Le plan comptable permet la visualisation du plan comptable et donne la possibilité de pouvoit imprimer le plan comptable. L'interface principale de ce module se présente de la manière suivante. 
 
@@ -1589,6 +1868,39 @@ Le plan comptable permet la visualisation du plan comptable et donne la possibil
 \caption{Aperçue du Plan Comptable}
 \label{Aperçue du Plan Comptable}
 \end{figure}
+
+\newpage
+\section{Rapport Balance Mensuelle}
+
+\newpage
+\section{Rapport Compte}
+Le rapport sommaire des comptes permet d'avoir un bref apperçue d'un compte. Son interface principale se présente de la manière suivante. 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=10cm]{pic/RapSomComptes.png}
+\end{center}
+\caption{Aperçue de l'interface principale rapport de comptes}
+\label{Aperçue de l'interface principale rapport de comptes}
+\end{figure}
+
+La zone  \includegraphics[scale=0.7]{pic/LineAndDate.png} permet de spécifier les nombres des lignes à afficher dans le rapport mais aussi de spécifier la date du début et celle de la fin de la recherche. 
+
+Le bouton \includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer la situation financière d'un patient.
+
+La zone  \includegraphics[scale=0.7]{pic/SelectedAccount.png} permet de rechecher dans la liste de comptes, celui pour lequel on voudrait afficher le rapport sommaire.
+
+
+Voici un apperçue du rapport sommaire d'un compte.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=10cm]{pic/RapSomComptess.png}
+\end{center}
+\caption{Aperçue du rapport sommaire d'un compte}
+\label{Aperçue du rapport sommaire d'un compte}
+\end{figure}
+
 
 \newpage
 \section{Rapport Enregistrement des Patients}
@@ -1623,6 +1935,23 @@ En bas de page on retrouve les indicateurs sur le résultat de la recherche perm
 \end{figure}
 
 \newpage
+\section{Rapport Expiration Stocks}
+Le rapport Expiration Stocks permet d'avoir un bref apperçue sur la péremption des produits pharmaceutiques, l'interface principale de ce module se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=10cm]{pic/RappExMedi.png}
+\end{center}
+\caption{Interface principale du module Rapport Expiration Stocks}
+\label{Interface principale du module Rapport Expiration Stocks}
+\end{figure}
+
+La zone  \includegraphics[scale=0.7]{pic/PlageTimes.png} qui permet visualiser le rapport des péremptions des produits pharmaceutiques en précisant une plage de temps par rapport aux dates.
+
+Il est aussi possible de pouvoir spécifier le dépôt pour lequel on voudriait connaitre le rapport des péremptions.
+
+
+\newpage
 \section{Rapport Paiements}
 Le rapport de paiement permet de visualiser l'historique de paiement s'éffectuant aux niveaux des caisses auxilliaires dans le système. L'interface principale permettant de voire le rapport de paiements se présente de la manière suivante. 
 
@@ -1653,35 +1982,59 @@ En bas de page on retrouve les indicateurs sur le rapport de paiements, on retro
 \end{figure}
 
 \newpage
-\section{Transactions par Compte}
-Le rapport des transactions par compte permet de visualiser toutes les transactions pour lequel un compte a éte mouvementer. son interface principale se présente de la manière suivante. 
+\section{Rapport Recettes/Dépense}
+
+\newpage
+\section{Rapport de pertes de stock}
+
+\newpage
+\section{Rapport des Dépenses}
+Le rapport des dépenses permet de visualiser toutes les sorties en caisse qui s'éffectue aux niveaux de la caisse principale, l'interface principale de ce module se présente de la manière suivante.
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=10cm]{pic/TransacCompte.png}
+\includegraphics[width=14cm]{pic/RapDepenses.png}
 \end{center}
-\caption{Aperçue de l'interface principale du module Transactions par Compte}
-\label{Aperçue de l'interface principale du module Transactions par Compte}
+\caption{Interface principale du module Rapport des dépenses}
+\label{Interface principale du module Rapport des dépenses}
 \end{figure}
 
+La zone  \includegraphics[scale=0.7]{pic/PlageTimes.png} qui permet visualiser le rapport des dépenses en précisant une plage de temps par rapport aux dates.
 
-Le bouton \includegraphics[scale=0.7]{pic/Limit10T.png} donne la possibilité de préciser le nomble de ligne à affiché dans le resultat de la recherche. 
+Dans le tableau des dépenses il existe le lien \includegraphics[scale=0.7]{pic/FactureRePrint.png} qui permet de réafficher les détailles d'une dépense.
 
-La zone  \includegraphics[scale=0.7]{pic/RechCompte.png} permet de rechecher dans la liste de comptes, celui pour lequel on voudrait visualiser les transactions.
+Il est aussi possible de pouvoir choisir les depenses respectivement par rapport à la monnaie qui a été utilisé au moment de la transaction grace à la liste de choix \includegraphics[scale=0.7]{pic/SelecPriCash.png}.
 
-Il existe aussi une liste de choix qui donne la possibilité de visualiser le rapport d'enregistrement par projets ou bien de tous le projet à la fois.
+En bas de page on retrouve les indicateurs permettant de connaitre le nombre des recettes qui ont été réaliser ainsi que le montant total des recettes ainsi que la possibilité de le visualiser avec différentes monnaies. 
 
-Le bouton \includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport de transaction par compte.
-
-En bas de page on retrouve les indicateurs des transactions d'un compte, on retrouve le débit total, le crédit, la balance ainsi que la possibilité de visualier tous ses éléments avec différentes monnaies. 
+\newpage
+\section{Rapport des employés}
+Le rapport des Rapport des employés permet de visualiser l'état financier d'un employé. son interface principale se présente de la manière suivante. 
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=12cm]{pic/TraByAccount.png}
+\includegraphics[width=10cm]{pic/EtFinEMp.png}
 \end{center}
-\caption{Aperçue des résultats des transaction pour un compte}
-\label{Aperçue des résultats des transaction pour un compte}
+\caption{Aperçue de l'interface principale de l'état financier d'un employé}
+\label{Aperçue de l'interface principale de l'état financier d'un employé}
 \end{figure}
+
+
+La zone  \includegraphics[scale=0.7]{pic/ChechEmp.png} permet la recherche d'un employé dans la liste des employés enregistrés, et le bouton chercher permet l'affichage de la situation financière.
+
+Le bouton \includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer la situation financière d'un employé.
+
+Voici un apperçue de la situation financière d'un employé.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/EtatFinEmpl.png}
+\end{center}
+\caption{Aperçue du rapport financier d'un employé}
+\label{Aperçue du rapport financier d'un employé}
+\end{figure}
+
+Dans la figure ci haut on peut se rendre compte que l'employé doit à l'entreprise une certaine somme d'argent.
 
 \newpage
 \section{Rapport Patient}
@@ -1710,50 +2063,6 @@ Voici un apperçue de la situation financière d'un patient.
 \label{Aperçue du rapport financier d'un patient}
 \end{figure}
 
-\newpage
-\section{Rapport Compte}
-Le rapport sommaire des comptes permet d'avoir un bref apperçue d'un compte. Son interface principale se présente de la manière suivante. 
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=10cm]{pic/RapSomComptes.png}
-\end{center}
-\caption{Aperçue de l'interface principale rapport de comptes}
-\label{Aperçue de l'interface principale rapport de comptes}
-\end{figure}
-
-La zone  \includegraphics[scale=0.7]{pic/LineAndDate.png} permet de spécifier les nombres des lignes à afficher dans le rapport mais aussi de spécifier la date du début et celle de la fin de la recherche. 
-
-Le bouton \includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer la situation financière d'un patient.
-
-La zone  \includegraphics[scale=0.7]{pic/SelectedAccount.png} permet de rechecher dans la liste de comptes, celui pour lequel on voudrait afficher le rapport sommaire.
-
-
-Voici un apperçue du rapport sommaire d'un compte.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=10cm]{pic/RapSomComptess.png}
-\end{center}
-\caption{Aperçue du rapport sommaire d'un compte}
-\label{Aperçue du rapport sommaire d'un compte}
-\end{figure}
-
-\newpage
-\section{Rapport Expiration Stocks}
-Le rapport Expiration Stocks permet d'avoir un bref apperçue sur la péremption des produits pharmaceutiques, l'interface principale de ce module se présente de la manière suivante.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=10cm]{pic/RappExMedi.png}
-\end{center}
-\caption{Interface principale du module Rapport Expiration Stocks}
-\label{Interface principale du module Rapport Expiration Stocks}
-\end{figure}
-
-La zone  \includegraphics[scale=0.7]{pic/PlageTimes.png} qui permet visualiser le rapport des péremptions des produits pharmaceutiques en précisant une plage de temps par rapport aux dates.
-
-Il est aussi possible de pouvoir spécifier le dépôt pour lequel on voudriait connaitre le rapport des péremptions.
 
 \newpage
 \section{Rapport des Recettes}
@@ -1774,51 +2083,6 @@ Dans le tableau des recettes il existe le lien \includegraphics[scale=0.7]{pic/F
 Il est aussi possible de pouvoir choisir les recettes respectivement par rapport à la monnaie qui a été utilisé au moment de la transaction grace à la liste de choix \includegraphics[scale=0.7]{pic/SelecPriCash.png}.
 
 En bas de page on retrouve les indicateurs permettant de connaitre le nombre des recettes qui ont été réaliser ainsi que le montant total des recettes ainsi que la possibilité de le visualiser avec différentes monnaies. 
-
-\newpage
-\section{Rapport des Dépenses}
-Le rapport des dépenses permet de visualiser toutes les sorties en caisse qui s'éffectue aux niveaux de la caisse principale, l'interface principale de ce module se présente de la manière suivante.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=14cm]{pic/RapDepenses.png}
-\end{center}
-\caption{Interface principale du module Rapport des dépenses}
-\label{Interface principale du module Rapport des dépenses}
-\end{figure}
-
-La zone  \includegraphics[scale=0.7]{pic/PlageTimes.png} qui permet visualiser le rapport des dépenses en précisant une plage de temps par rapport aux dates.
-
-Dans le tableau des dépenses il existe le lien \includegraphics[scale=0.7]{pic/FactureRePrint.png} qui permet de réafficher les détailles d'une dépense.
-
-Il est aussi possible de pouvoir choisir les depenses respectivement par rapport à la monnaie qui a été utilisé au moment de la transaction grace à la liste de choix \includegraphics[scale=0.7]{pic/SelecPriCash.png}.
-
-En bas de page on retrouve les indicateurs permettant de connaitre le nombre des recettes qui ont été réaliser ainsi que le montant total des recettes ainsi que la possibilité de le visualiser avec différentes monnaies. 
-
-\newpage
-\section{Consommation journalière}
-Le module consommation journalière permet de lister la consommation journalière des produits pharmaceutiques dans le système.
-son interface principale se présente de la manière suivante.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=14cm]{pic/ConsoJournProd.png}
-\end{center}
-\caption{Interface principale du module consommation journalière}
-\label{Interface principale du module consommation journalière}
-\end{figure}
-
-La figure ci haute est une illustration du rapport de consommations des produits entre deux dates différents. La zone  \includegraphics[scale=0.7]{pic/PlageTimes.png} qui permet visualiser le rapport de la consommation des produits pharmaceutiques en précisant une plage de temps par rapport aux dates.
-
-Le tableau du rapport de la consommation journalière possède trois entête Code, Médicaments et Quantité total. Le code du médicament est un lien hypertexte qui permet une redirection vers un autre rapport qui détaille la consommation effective d'un médicament par jour. La figure ci-après donne un apperçue du rapport de consommation regulier d'un produit par jour.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=14cm]{pic/ConsoDetJourn.png}
-\end{center}
-\caption{Apperçue de la consommation détaillée d'un produit}
-\label{Apperçue de la consommation détaillée d'un produit}
-\end{figure}
 
 \newpage
 \section{Rapports du Payroll}
@@ -1842,6 +2106,7 @@ Le tableau du rapport du payroll possède plusieurs colonne mais la dernière \t
 \caption{Apperçue d'un prototype de fiche de paie générer par le système}
 \label{Apperçue d'un prototype de fiche de paie générer par le système}
 \end{figure}
+
 
 \newpage
 \section{Situation de stock}
@@ -1904,103 +2169,42 @@ Le mois de stock est le rapport entre niveau de stock d'un produit par la niveau
 \subsection{Quantité à commander}
 La quantité à commander optimale à utilisé pour chaque produits lors de l'établissement des ordres d'achat, cette quantité est obtenue en établissant la différence entre le niveau de stock maximum d'un produit avec le niveau en stock.
 
-\newpage
-\section{Compte d'exploitation}
-Le module compte d'exploitation permet de lister les comptes d'exploitations qui ont été mouvementé durant une année fiscale ou bien une période de l'année fiscale. L'interface principale de ce module se présente de la manière suivante.
 
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=10cm]{pic/ComptExploitation.png}
-\end{center}
-\caption{Interface principale du module compte d'exploitation}
-\label{Interface principale du module compte d'exploitation}
-\end{figure}
-
-L'interface principale du module compte d'exploitation possède deux liste de choix, la première permet de rechercher une année fiscale dans la liste, et la seconde liste permet de choisir soit toute l'année fiscale ou bien une période dans la liste des périodes de l'année fiscale. La figure ci-après donne un apperçue du rapport compte d'exploitation pour toute une année fiscale.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=14cm]{pic/ComptExploitaApp.png}
-\end{center}
-\caption{Interface principale du module compte d'exploitation}
-\label{Interface principale du module compte d'exploitation}
-\end{figure}
-
-Dans le bas de page de la figure ci-haute est répertorié le total de charge, le total de profit ainsi que la résultat (si le résultat est négative il sera mis entre parenthèse).
 
 \newpage
-\section{Exploitation par service}
-Le rapport d'exploitation par service permet de visualiser l'historique des charges et profits qu'engendre un service. Son interface principale se présente de la manière suivante. 
+\section{Transactions par Compte}
+Le rapport des transactions par compte permet de visualiser toutes les transactions pour lequel un compte a éte mouvementer. son interface principale se présente de la manière suivante. 
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=14cm]{pic/ExploService.png}
+\includegraphics[width=10cm]{pic/TransacCompte.png}
 \end{center}
-\caption{Interface principale du module exploitation par service}
-\label{Interface principale du module exploitation par service}
+\caption{Aperçue de l'interface principale du module Transactions par Compte}
+\label{Aperçue de l'interface principale du module Transactions par Compte}
 \end{figure}
 
-Par défaut le rapport d'exploitation par service affiche les résultats d'exploitation du jour courant, l'interface du rapport d'exploitation dispose des plusieurs outils permettant de visualiser les anciens résultats.
 
-Le bouton \includegraphics[scale=0.7]{pic/Todays.png} donne la possibilité de visualiser l'exploitation du jour courant, de la semaine courante mais aussi ceux du mois courant. 
+Le bouton \includegraphics[scale=0.7]{pic/Limit10T.png} donne la possibilité de préciser le nomble de ligne à affiché dans le resultat de la recherche. 
 
-Il existe aussi  \includegraphics[scale=0.7]{pic/PlageTimes.png} qui permet visualiser le rapport d'exploitation en precisant une plage de valeur entre deux dates.
+La zone  \includegraphics[scale=0.7]{pic/RechCompte.png} permet de rechecher dans la liste de comptes, celui pour lequel on voudrait visualiser les transactions.
 
 Il existe aussi une liste de choix qui donne la possibilité de visualiser le rapport d'enregistrement par projets ou bien de tous le projet à la fois.
 
-Le bouton \includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport d'enregistrement des patients
+Le bouton \includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport de transaction par compte.
 
-En bas de page on retrouve les indicateurs sur le rapport d'exploitations glôbal des services, il y'a le total de charge, le total de profit ainsi que la résultat (si le résultat est négative il sera mis entre parenthèse). 
-
-\newpage
-\section{Mouvement des comptes}
-Le rapport Mouvement des comptes donne un apperçue global des toutes les transactions qui ont été realiser dans le système. Son interface principale se présente de la manière suivante. 
+En bas de page on retrouve les indicateurs des transactions d'un compte, on retrouve le débit total, le crédit, la balance ainsi que la possibilité de visualier tous ses éléments avec différentes monnaies. 
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=14cm]{pic/EtatToutesTrans.png}
+\includegraphics[width=12cm]{pic/TraByAccount.png}
 \end{center}
-\caption{Interface principale du module Mouvement des comptes}
-\label{Interface principale du module Mouvement des comptes}
-\end{figure}
-
-Par défaut le rapport Mouvement des comptes affiche les résultats du jour courant, l'interface du rapport d'exploitation dispose des plusieurs outils permettant de visualiser les anciens résultats. En haut de page à gauche on retrouve la liste de choix des comptes qui permet de spécifier les comptes pour lequel on voudrait connaitre le mouvement
-
-
-Il existe aussi  \includegraphics[scale=0.7]{pic/PlageTimes.png} qui permet visualiser le rapport du mouvement des comptes en precisant une plage de valeur entre deux dates, il est possible aussi de spécifier l'origine de la transaction qu'il s'agisse soit du grand livre ou bien du posting journal ou bien de tous le deux en même temps. Une autre liste de choix permet de spécifier une monnaie pour la visualisation du mouvement de comptes.
-
-Le bouton \includegraphics[scale=0.7]{pic/ValiderBlue.png} permet lancer l'affichage du rapport du mouvement des comptes en se basant sur les critaires spécifiés.
-
-
-
-\newpage
-\section{Rapport des employés}
-Le rapport des Rapport des employés permet de visualiser l'état financier d'un employé. son interface principale se présente de la manière suivante. 
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=10cm]{pic/EtFinEMp.png}
-\end{center}
-\caption{Aperçue de l'interface principale de l'état financier d'un employé}
-\label{Aperçue de l'interface principale de l'état financier d'un employé}
+\caption{Aperçue des résultats des transaction pour un compte}
+\label{Aperçue des résultats des transaction pour un compte}
 \end{figure}
 
 
-La zone  \includegraphics[scale=0.7]{pic/ChechEmp.png} permet la recherche d'un employé dans la liste des employés enregistrés, et le bouton chercher permet l'affichage de la situation financière.
 
-Le bouton \includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer la situation financière d'un employé.
 
-Voici un apperçue de la situation financière d'un employé.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=14cm]{pic/EtatFinEmpl.png}
-\end{center}
-\caption{Aperçue du rapport financier d'un employé}
-\label{Aperçue du rapport financier d'un employé}
-\end{figure}
-
-Dans la figure ci haut on peut se rendre compte que l'employé doit à l'entreprise une certaine somme d'argent.
 
 \newpage
 \chapter{Stock}        
