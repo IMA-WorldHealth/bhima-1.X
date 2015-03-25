@@ -407,6 +407,9 @@ CREATE TABLE `employee_invoice_item` (
 INSERT INTO `transaction_type` (`service_txt`) VALUES
 ('cotisation_engagement'), ('tax_engagement');
 
+INSERT INTO `primary_cash_module` (`text`) VALUES
+('cash_return');
+
 USE bhima;
 
 ALTER TABLE `depot`
@@ -484,7 +487,8 @@ INSERT INTO `transaction_type` (`id`, `service_txt`) VALUES
   (23, 'salary_advance'),
   (24, 'employee_invoice'),
   (25, 'pcash_employee'),
-  (26, 'cash_discard');
+  (26, 'cash_discard'),
+  (27, 'cash_return');
 
 -- Update service text for transaction type
 UPDATE `transaction_type` SET `service_txt` = 'pcash_convention' WHERE `transaction_type`.`id` = 8;
@@ -512,5 +516,8 @@ MODIFY `employee_id` int(10) unsigned NULL;
 -- Title : ALTER CASH TABLE
 -- By    : Bruce Mbayo
 -- Date  : 18 mars 2015
-ALTER TABLE  `cash` 
+ALTER TABLE  `cash`
 ADD  `is_caution` TINYINT( 1 ) NOT NULL DEFAULT  '0';
+
+INSERT INTO `unit` VALUES
+(97,'Report Donation','TREE.REPORT_DONATION','Report donation', 10, 0, '/partials/reports/donation', '/reports/donation/');
