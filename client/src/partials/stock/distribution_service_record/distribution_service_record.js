@@ -68,6 +68,7 @@ angular.module('bhima.controllers')
 
     function updateSession(model) {
       $scope.model = model;
+      console.log('Model',$scope.model.sale.data);
       updateTotals();
       session.searching = false;
     }

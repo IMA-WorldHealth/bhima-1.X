@@ -521,3 +521,10 @@ ADD  `is_caution` TINYINT( 1 ) NOT NULL DEFAULT  '0';
 
 INSERT INTO `unit` VALUES
 (97,'Report Donation','TREE.REPORT_DONATION','Report donation', 10, 0, '/partials/reports/donation', '/reports/donation/');
+
+-- Date: 2015-03-10
+-- By: Chris LOMAME
+
+INSERT INTO `transaction_type` (`service_txt`) VALUES
+('reversing');
+
