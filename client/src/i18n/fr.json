@@ -244,6 +244,7 @@
    },
 "CASH_RETURN"          : {
    "DEFAULT_CURRENCY" : "Monnaie",
+   "DESC"             : "Description",
    "DESCRIPTION"      : "Ce module vous permet de retourner à un créditeur ou débiteur de l'argent (cash) perçu",
    "TAPE_VALUE"       : "Valeur",
    "TITLE"            : "Retour caisse",
