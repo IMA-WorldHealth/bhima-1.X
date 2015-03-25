@@ -242,6 +242,14 @@
    "TITLE"           : "Dépense de l'ordre d'achat",
    "TO"              : "à "
    },
+"CASH_RETURN"          : {
+   "DEFAULT_CURRENCY" : "Monnaie",
+   "DESCRIPTION"      : "Ce module vous permet de retourner à un créditeur ou débiteur de l'argent (cash) perçu",
+   "TAPE_VALUE"       : "Valeur",
+   "TITLE"            : "Retour caisse",
+   "SUBMIT_FAILED"    : "Erreur durant la soumission, l'opération a échouée",
+   "SUBMIT_SUCCESS"   : "Félicitation, l'opération est un succès"
+  },
 "CAUTION": {
    "AGE"          : "Age",
    "CASH"         : "Caisse Auxilliaire",
@@ -306,7 +314,9 @@
    "DATE"                  : "Date",
    "DATE_BILLED"           : "Date création",
    "DATE_EMBAUCHE"         : "Date embauche",
+   "DATE_EXPIRE"           : "Date d'expiration",
    "DATE_FROM"             : "Date du début",
+   "DATE_IN"               : "Date entrée en stock",
    "DATE_REGISTERED"       : "Date Enregistrement",
    "DATE_TO"               : "Date de la fin",
    "DC_TYPE"               : "Type D/C",
@@ -332,6 +342,7 @@
    "DOB"                   : "Date de Naissance",
    "DOCUMENT_ID"           : "ID Document",
    "DOCUMENT_UUID"         : "Numéro Document",
+   "DONOR"                 : "Donateur",
    "DRUGS"                 : "Médicaments",
    "DURABLE"               : "Durable",
    "EDIT"                  : "Editer",
@@ -452,6 +463,7 @@
    "STOCK_QTE_MAX"         : "Quantité Maximum",
    "STOCK_QTE_MIN"         : "Quantité Minimum",
    "STOCK_QTE_SEC"         : "Stock de securité",
+   "STOCK_VALUE"           : "Valeur du stock",
    "SUMMARY"               : "Sommaire",
    "SUPPLIER"              : "Fournisseur",
    "SYMBOL"                : "Symbole",
@@ -1648,6 +1660,7 @@
       "ACCOUNT"                  : "Compte",
       "ADVANTAGES"               : "Avantages",
       "AMOUNT"                   : "Montant",
+      "CASH_RETURN"              : "Retour Caisse",
       "COTISATIONS"              : "Cotisations",
       "COTISATION_PAYMENT"       : "Paiement Cotisations",
       "CREDITOR"                 : "Créditeur",
@@ -2113,7 +2126,7 @@
       "ASSIGN_LOTS"          : "Affecter lots",
       "CANCEL"               : "Annuler",
       "DIRECT_PURCHASE_TYPE" : "C'est un ordre d'achat direct",
-      "ENTER_STOCK"          : "Faire entrer les Stock",
+      "ENTER_STOCK"          : "Entrer les Stocks",
       "ENTRY_DATE"           : "Date d'entrée",
       "ENTRY_MANIFEST"       : "Document des Entrées",
       "ERR_EMPTY_PARAMTER"   : "Erreur paramétre manquant",
@@ -2141,6 +2154,24 @@
       },
    "EXPIRE": {
       "KEY" : "Expiration du stock"
+      },
+   "INTEGRATION" : {
+      "DESCRIPTION"       : "Utilisez ce module pour integrer dans le systeme BHIMA un stock qui existait deja physiquement",
+      "CANCEL"            : "Annuler",
+      "EXPIRATION_DATE"   : "Date d'Expiration",
+      "EXPIRATION_INFO"   : "Veuillez introduire des dates d'expirations valides",
+      "EXPIRATION_ALERT"  : "Le système n'accepte pas des produits périmés",
+      "ITEMS"             : "Stock Item(s)",
+      "KEY"               : "Stock Integration",
+      "LOT_QTY"           : "Lot et Quantité",
+      "LOT_QTY_DESC"      : "Veuillez introduire le numero du lot et la quantité",
+      "MADE_BY"           : "Effectuée par",
+      "NEW"               : "Nouvelle integration de stock",
+      "PREVIEW"           : "Apercu",
+      "STOCK_VOID"        : "Aucun stock",
+      "STOCK_VOID_DESC"   : "Veuillez selectionner des produits",
+      "TITLE"             : "Intergration de Stock",
+      "SUBMIT"            : "Soumettre"
       },
    "LOSS": {
       "KEY"               : "Perte stock",
@@ -2483,6 +2514,7 @@
    "RENEWAL"                   : "Renouveller Fiche",
    "REPORTS"                   : "Rapports",
    "REPORT_COTISATION"         : "Rapport de paiement des cotisations",
+   "REPORT_DONATION"           : "Rapport Donation",
    "REPORT_FINANCE"            : "Rapport Financier",
    "REPORT_SALARY"             : "Rapport de paiement des salaires",
    "REPORT_TAXES"              : "Rapport de paiement des taxes",
@@ -2552,6 +2584,8 @@
 "UTIL": {
    "ACCOUNT"           : "Compte",
    "AGGREGATES"        : "Agregats",
+   "ALL"               : "Tous",
+   "ALL_DONORS"        : "Tous les donateurs",
    "BACK"              : "Retourner",
    "CANCEL"            : "Annuler",
    "COLUMNS"           : "Colonnes",
@@ -2565,6 +2599,7 @@
    "DATE_FROM"         : "Du",
    "DATE_TO"           : "Au",
    "DEPOT"             : "Depot",
+   "DONOR"             : "Donateur",
    "ERROR"             : "Erreur",
    "EXPORT_TO_CSV"     : "Export to CSV",
    "GENERATE"          : "Générer",
@@ -2576,6 +2611,7 @@
    "ON"                : "On",
    "PRINT"             : "Imprimer",
    "PROJECT"           : "Project",
+   "REGISTER_NEW_STOCK": "Enregistrer un stock",
    "RESET_FORM"        : "Remettre",
    "SAVE_SELECTION"    : "Enregistrer la Sélection",
    "SEARCH"            : "Chercher",
@@ -2587,7 +2623,8 @@
    "TOGGLE"            : "Basculer",
    "TOGGLE_AGGREGATES" : "Montrer Agregats",
    "TOTAL"             : "Total",
-   "TSHIKAJI"          : "TSHIKAJI"
+   "TSHIKAJI"          : "TSHIKAJI",
+   "VALIDATE"          : "Accepter"
    },
 "VERSEMENT": {
    "ASSOCIATED_TO"     : "Les comptes associe à : ",

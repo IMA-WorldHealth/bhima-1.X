@@ -242,6 +242,15 @@
    "TITLE"           : "Purchase Order Dispense",
    "TO"              : "to "
    },
+"CASH_RETURN"          : {
+    "DEFAULT_CURRENCY" : "Currency",
+    "DESC"             : "Description",
+    "DESCRIPTION"      : "Cash return module will help you to return cash money that you get before to creditor or debitor",
+    "TAPE_VALUE"       : "Enter value",
+    "TITLE"            : "Cash return",
+    "SUBMIT_FAILED"    : "Error during submit, the operation is failed",
+    "SUBMIT_SUCCESS"   : "Congratulation, the operation is a success"
+  },
 "CAUTION": {
    "AGE"          : "Age",
    "CASH"         : "Cash Payments",
@@ -306,8 +315,10 @@
    "DATE"                  : "Date",
    "DATE_BILLED"           : "Date Created",
    "DATE_EMBAUCHE"         : "Hiring date",
+   "DATE_EXPIRE"           : "Expiring date",
    "DATE_FROM"             : "Date From",
    "DATE_REGISTERED"       : "Date Registered",
+   "DATE_IN"               : "Entry date",
    "DATE_TO"               : "Date To",
    "DC_TYPE"               : "D/C Type",
    "DEBCRED_ID"            : "Deb/Cred ID",
@@ -332,6 +343,7 @@
    "DOB"                   : "Date of Birth",
    "DOCUMENT_ID"           : "Document ID",
    "DOCUMENT_UUID"         : "Document Number",
+   "DONOR"                 : "Donor",
    "DRUGS"                 : "Drugs",
    "DURABLE"               : "Durable",
    "EDIT"                  : "Edit",
@@ -452,6 +464,7 @@
    "STOCK_QTE_MAX"         : "Stock Maximum Quantity",
    "STOCK_QTE_MIN"         : "Stock Minimum Quantity",
    "STOCK_QTE_SEC"         : "Security Stock Quantity",
+   "STOCK_VALUE"           : "Stock value",
    "SUMMARY"               : "Summary",
    "SUPPLIER"              : "Supplier",
    "SYMBOL"                : "Symbol",
@@ -1648,6 +1661,7 @@
       "ACCOUNT"                  : "Account",
       "ADVANTAGES"               : "Advantages",
       "AMOUNT"                   : "Amount Dispensed",
+      "CASH_RETURN"              : "Cash Return",
       "COTISATIONS"              : "Cotisations",
       "COTISATION_PAYMENT"       : "Cotisation Payment",
       "CREDITOR"                 : "Creditor",
@@ -2142,6 +2156,24 @@
    "EXPIRE": {
       "KEY" : "Expiring Stock"
       },
+   "INTEGRATION" : {
+      "DESCRIPTION"       : "Use this module to integrate into the system BHIMA a stock that already existed physically",
+      "CANCEL"            : "Cancel",
+      "EXPIRATION_DATE"   : "Expiration date",
+      "EXPIRATION_INFO"   : "Please enter the valid expirations dates",
+      "EXPIRATION_ALERT"  : "The system does not accept expired product",
+      "ITEMS"             : "Stock Item(s)",
+      "KEY"               : "Stock Integration",
+      "LOT_QTY"           : "Lot and Quantity",
+      "LOT_QTY_DESC"      : "Please enter the lot number and quantity",
+      "MADE_BY"           : "Made By",
+      "NEW"               : "New Stock Integration",
+      "PREVIEW"           : "Preview",
+      "STOCK_VOID"        : "No Stock",
+      "STOCK_VOID_DESC"   : "Please add products",
+      "TITLE"             : "Stock Integration",
+      "SUBMIT"            : "Submit"
+      },
    "LOSS": {
       "KEY"               : "Stock loss",
       "LOSS_GENERAL_INFO" : "Summary",
@@ -2483,6 +2515,7 @@
    "RENEWAL"                   : "Patient Renewal",
    "REPORTS"                   : "Reports",
    "REPORT_COTISATION"         : "Reports cotisations payment",
+   "REPORT_DONATION"           : "Donation report",
    "REPORT_FINANCE"            : "Finance Report",
    "REPORT_SALARY"             : "Report Salary Payment",
    "REPORT_TAXES"              : "Report of Taxes Payment",
@@ -2552,6 +2585,8 @@
 "UTIL": {
    "ACCOUNT"           : "Account",
    "AGGREGATES"        : "Aggregates",
+   "ALL"               : "All",
+   "ALL_DONORS"        : "All donators",
    "BACK"              : "Back",
    "CANCEL"            : "Cancel",
    "COLUMNS"           : "Columns",
@@ -2565,6 +2600,7 @@
    "DATE_FROM"         : "From",
    "DATE_TO"           : "To",
    "DEPOT"             : "Store",
+   "DONOR"             : "Donor",
    "ERROR"             : "Error",
    "EXPORT_TO_CSV"     : "Export to CSV",
    "GENERATE"          : "Generate",
@@ -2576,6 +2612,7 @@
    "ON"                : "On",
    "PRINT"             : "Print",
    "PROJECT"           : "Current Project",
+   "REGISTER_NEW_STOCK": "Register a Stock",
    "RESET_FORM"        : "Reset Form",
    "SAVE_SELECTION"    : "Save Selection",
    "SEARCH"            : "Search",
@@ -2587,7 +2624,8 @@
    "TOGGLE"            : "Toggle",
    "TOGGLE_AGGREGATES" : "Toggle Aggregates",
    "TOTAL"             : "Total",
-   "TSHIKAJI"          : "TSHIKAJI"
+   "TSHIKAJI"          : "TSHIKAJI",
+   "VALIDATE"          : "Accept"
    },
 "VERSEMENT": {
    "ASSOCIATED_TO"     : "Accounts associated to         : ",
