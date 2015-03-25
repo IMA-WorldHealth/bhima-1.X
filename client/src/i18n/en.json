@@ -154,7 +154,9 @@
 "BILAN" : {
   "BUILD_BILAN"     : "Build bilan",
   "DOCUMENT_CONFIG" : "Document configuration",
-  "LANGUAGE"        : "Language"
+  "LANGUAGE"        : "Language",
+  "GENERATE_DOC"    : "Generate Document",
+  "DOC_SUCCES"      : "Document Build Success - Open Document"
   },
 "BUDGET": {
    "DISPLAY" : {
