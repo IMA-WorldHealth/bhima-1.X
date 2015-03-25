@@ -101,9 +101,7 @@
                     <th>{{'COLUMNS.DATE' | translate}}</th>
                     <th>{{'COLUMNS.DEPOT' | translate}}</th>
                     <th>{{'COLUMNS.SERVICE' | translate}}</th>
-                    <th>{{'COLUMNS.ITEM' | translate}}</th>
-                    <th>{{'COLUMNS.LOT_NUMBER' | translate}}</th>              
-                    <th>{{'COLUMNS.QUANTITY' | translate}}</th>
+                    <th>{{'COLUMNS.NUM_ITEMS' | translate}}</th>
                     <th class="hidden-print">{{ 'COLUMNS.PROOF' | translate }}</th>
                   </tr>
                 </thead>
@@ -121,12 +119,9 @@
                     <td>{{invoice.date | date : 'EEEE, dd/MM/yyyy'}}</td>
                     <td>{{invoice.text}}</td>
                     <td>{{invoice.name}}</td>
-                    <td>{{invoice.inventoryText}}</td>
-                    <td>{{invoice.lot_number}}</td>
-                    <td>{{invoice.quantity}}</td>
+                    <td>{{invoice.itemNumers}}</td>
                     <td class="hidden-print">
-                      <!-- FIXME get correct path to the receipt -->
-                      <a><span class="glyphicon glyphicon-list-alt"></span> {{ 'COLUMNS.PROOF' | translate }}</a>
+                      <a ng-href="/#/invoice/service_distribution/{{invoice.document_id}}/"><span class="glyphicon glyphicon-list-alt"></span> {{ 'COLUMNS.PROOF' | translate }}</a>
                     </td>
                   </tr>
                 </tbody>

@@ -249,20 +249,23 @@ function distributionPatients(params) {
   }
 
   var requestSql =
-    'SELECT COUNT(`consumption_patient`.`sale_uuid`) AS nr_item, `consumption_patient`.`sale_uuid`, `consumption_patient`.`patient_uuid`, ' +
-    '`patient`.`first_name`,`patient`.`last_name`, `patient`.`reference`, `consumption`.`date`,' +
-    '`depot`.`text`, (`sale`.`reference`) AS refSale, `project`.`abbr`,(`consumption_reversing`.`consumption_uuid`) AS reversingUuid ' +
-    'FROM `consumption_patient` ' +
+    'SELECT `consumption_patient`.`consumption_uuid`, `consumption`.`document_id`, COUNT(`consumption`.`document_id`) AS `nr_item`, ' +
+    ' `consumption_patient`.`patient_uuid`, `patient`.`uuid`, `patient`.`first_name`,`patient`.`last_name`, `patient`.`reference`, ' +
+    '`consumption`.`date`, `depot`.`text`, (`sale`.`reference`) AS refSale, `consumption_patient`.`sale_uuid`, ' + 
+    '(`consumption_reversing`.`consumption_uuid`) AS reversingUuid, `consumption_reversing`.`description`, `project`.`abbr` ' +
+    'FROM `consumption_patient` ' + 
     'JOIN `consumption` ON `consumption`.`uuid` =  `consumption_patient`.`consumption_uuid` ' +
     'JOIN `patient` ON `patient`.`uuid` =  `consumption_patient`.`patient_uuid` ' +
-    'JOIN `depot` ON `depot`.`uuid` = `consumption`.`depot_uuid` ' +
+    'JOIN `depot` ON `depot`.`uuid` = `consumption`.`depot_uuid` ' + 
+    'JOIN `stock` ON `stock`.`tracking_number` = `consumption`.`tracking_number` ' + 
+    'JOIN `inventory` ON `inventory`.`uuid` = `stock`.`inventory_uuid` ' +
     'JOIN `sale` ON `sale`.`uuid` = `consumption`.`document_id` ' +
     'JOIN `project` ON `project`.`id` = `sale`.`project_id` ' +
-    'JOIN `stock` ON `stock`.`tracking_number` = `consumption`.`tracking_number` ' +
-    'LEFT JOIN `consumption_reversing` ON `consumption_reversing`.`document_id` = `consumption`.`document_id` ' +
+    'LEFT JOIN `consumption_reversing` ON `consumption_reversing`.`consumption_uuid` = `consumption`.`uuid` ' + 
     'WHERE `depot`.`uuid` = ? AND `consumption`.`date` >= ? AND `consumption`.`date` <= ? ' +
-    'GROUP BY `consumption_patient`.`sale_uuid` ORDER BY `consumption`.`date` DESC, `patient`.`first_name` ASC, `patient`.`last_name` ASC';
-
+    'GROUP BY `consumption`.`document_id` ' + 
+    'ORDER BY `consumption`.`date` DESC, `patient`.`first_name` ASC, `patient`.`last_name` ASC ';
+    
   return db.exec(requestSql, [params.depotId, params.dateFrom, params.dateTo]);
 }
 
@@ -275,9 +278,9 @@ function distributionServices(params) {
   }
 
   var requestSql =
-    'SELECT `consumption_service`.`consumption_uuid`, `consumption_service`.`service_id`, `service`.`name`, ' +
-    '`consumption`.`date`, `consumption`.`quantity`, `depot`.`text`, `stock`.`lot_number`, (`inventory`.`text`) AS inventoryText, ' +
-    '(`consumption_reversing`.`consumption_uuid`) AS reversingUuid ' +
+    'SELECT `consumption_service`.`consumption_uuid`, `consumption`.`document_id`, COUNT(`consumption`.`document_id`) AS `itemNumers`, `consumption_service`.`service_id`, `service`.`name`, ' +
+    '`consumption`.`date`, `depot`.`text`, ' +
+    '(`consumption_reversing`.`consumption_uuid`) AS reversingUuid, `consumption_reversing`.`description`' +
     'FROM `consumption_service` ' +
     'JOIN `consumption` ON `consumption`.`uuid` =  `consumption_service`.`consumption_uuid` ' +
     'JOIN `service` ON `service`.`id` =  `consumption_service`.`service_id` ' +
@@ -286,6 +289,7 @@ function distributionServices(params) {
     'JOIN `inventory` ON `inventory`.`uuid` = `stock`.`inventory_uuid` ' +
     'LEFT JOIN `consumption_reversing` ON `consumption_reversing`.`consumption_uuid` = `consumption`.`uuid` ' +
     'WHERE `depot`.`uuid` = ? AND `consumption`.`date` >= ? AND `consumption`.`date` <= ? ' +
+    'GROUP BY `consumption`.`document_id` ' +
     'ORDER BY `consumption`.`date` DESC, `service`.`name` ASC';
 
   return db.exec(requestSql, [params.depotId, params.dateFrom, params.dateTo]);
