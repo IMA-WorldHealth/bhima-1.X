@@ -43,7 +43,7 @@
               </div>
               <br>
               <div class="configure">
-                <select ng-model="session.pp" ng-options="pp as formatPeriod(pp) for pp in session.model.paiement_period.data" ng-change="setConfiguration(session.pp)">
+                <select ng-model="session.pp" ng-options="pp as formatPeriod(pp) for pp in session.model.paiement_period.data | orderBy:'-dateTo'" ng-change="setConfiguration(session.pp)">
                   <option value="" ng-disabled="disabled" disabled="true">-- {{'SELECT.PERIOD_PAYMENT' | translate}} -- </option>
                 </select>
               </div>
