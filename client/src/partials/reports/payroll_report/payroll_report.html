@@ -21,7 +21,7 @@
                       <span class="glyphicon glyphicon-folder-open"></span>
                     </span>  
                     <select class="form-bhima" ng-model="session.period_id">
-                      <option ng-repeat="getPeriod in getPeriods.data" ng-value="getPeriod.id">{{getPeriod.label}} :: {{getPeriod.dateFrom | date }} - {{getPeriod.dateTo | date }}</option>
+                      <option ng-repeat="getPeriod in getPeriods.data | orderBy:'-dateTo'" ng-value="getPeriod.id">{{getPeriod.label}} :: {{getPeriod.dateFrom | date }} - {{getPeriod.dateTo | date }}</option>
                     </select>
                   </div>
                 </div>
