@@ -66,7 +66,8 @@ angular.module('bhima.controllers')
         advance_exist = 0;
 
       rubrics.forEach(function (rub) {
-        if(rub.is_advance){
+
+        if(rub.is_advance && rub.id !== session.edit.id){
           advance_exist = 1;          
         }
       });

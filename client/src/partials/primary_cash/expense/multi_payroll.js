@@ -597,7 +597,6 @@ angular.module('bhima.controllers')
     }
 
     function payEmployee (packagePay) {
-      console.log('Ici le paiement generale dans la base de donnees OK ::: ',packagePay);
       var def = $q.defer();
       var params = {
         paiement_uuid : packagePay.paiement.uuid,
