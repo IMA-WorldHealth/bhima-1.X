@@ -528,3 +528,8 @@ INSERT INTO `unit` VALUES
 INSERT INTO `transaction_type` (`service_txt`) VALUES
 ('reversing');
 
+-- Title : ADD A PRIMARY CASH MODULE (with id=9 for payday_advance)
+-- By    : Bruce Mbayo
+-- Date  : 25 mars 2015
+INSERT INTO `primary_cash_module` (`id`, `text`) VALUES
+(9, 'payday_advance');
