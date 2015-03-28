@@ -76,7 +76,7 @@ angular.module('bhima.controllers')
      
       if(taxes.length){
         taxes.forEach(function (tax) {
-          if(tax.is_ipr){
+          if(tax.is_ipr && tax.id !== $scope.session.edit.id){
             ipr_exist = 1;          
           }
         });
