@@ -599,9 +599,10 @@
    "TOT"               : "Total"
    },
 "COST_CENTER": {
-   "NAVIGATION" : "Browsing",
-   "OPERATION"  : "operations",
-   "OPERATIONS": {
+   "DESCRIPTION" : "This module help you to manage cost center",
+   "NAVIGATION"  : "Browsing",
+   "OPERATION"   : "operations",
+   "OPERATIONS"  : {
       "ASSIGN"    : "Assigning",
       "CC"        : "Cost center",
       "VERSEMENT" : "Injection"
@@ -625,7 +626,8 @@
    "UPDATE_SUCCES"  : "Updated successfully"
    },
 "COTISATION_MANAGEMENT": {
-   "CREATE_COTISATION" : "cotisation creation",
+   "CREATE_COTISATION" : "Cotisation creation",
+   "DESCRIPTION"       : "This modle help you to manage cotisations",
    "OPTIONS"           : "Options",
    "TITLE"             : "Cotisations management"
    },
@@ -1093,6 +1095,7 @@
    "CONVENTION_INVOICE"     : "Convention Invoice",
    "COST"                   : "Cost to Debtor",
    "DEBITOR"                : "Debtor",
+   "DESCRIPTION_LONG"       : "This module help you in convention billing",
    "DETAILS"                : "Invoice Details",
    "ERROR_TXT_1"            : "Check that everything is correctly entered",
    "GROUP"                  : "Group",
@@ -1100,6 +1103,7 @@
    "INVOICE_ID"             : "Invoice ID",
    "INVOICE_TITLE"          : "Convention Invoice for Debtor",
    "PAY"                    : "Pay Invoices",
+   "PAYMENT_AUTHORIZATION"  : "Payment authorization",
    "SELECT_INVOICES"        : "Select Invoices",
    "SELECT_PAYMENT_DETAILS" : "Select Payment Details",
    "TITLE"                  : "Debtor Group Invoicing"
@@ -1161,6 +1165,7 @@
       "ADD_ITEM"       : "Register Item",
       "CONFIG_GROUPS"  : "Configure Groups",
       "CONFIG_TYPES"   : "Configure Item Types",
+      "DESCRIPTION"    : "This module help you to manage inventories",
       "OPTIONS"        : "Options",
       "PRINT_MANIFEST" : "Print Inventory Manifest",
       "TITLE"          : "Inventory Management",
@@ -1310,6 +1315,7 @@
    "DATE"                   : "Date Transaction",
    "DEFAULT_CURRENCY"       : "Currency",
    "DESCRIPTION"            : "Description",
+   "DESCRIPTION_LONG"       : "This module help you to make intantaneous transaction to posting journal",
    "LOG"                    : "Log Journal ID ",
    "POSTING_JOURNAL"        : "Posting Journal",
    "SUBMIT"                 : "Submit",
@@ -1692,6 +1698,7 @@
       "PAYDAY_DETAILS"           : "Make the payment of employee salary advances",
       "PAYMENT_PERIOD_NOT_FOUND" : "payment period not found !",
       "PAYROLL"                  : "Payroll",
+      "PAYROLL_DESC"             : "This module help you to manage Payroll",
       "PURCHASE"                 : "Pay Purchase Order",
       "PURPOSE"                  : "Purpose of Expense",
       "RECIPIENT"                : "Recipient",
@@ -1751,9 +1758,10 @@
    "TITLE"            : "Primary Cash"
    },
 "PROFIT_CENTER": {
-   "NAVIGATION" : "Browsing",
-   "OPERATION"  : "operations",
-   "OPERATIONS": {
+   "DESCRIPTION" : "This module help you to manage profit center",
+   "NAVIGATION"  : "Browsing",
+   "OPERATION"   : "operations",
+   "OPERATIONS"  : {
       "ASSIGN"    : "Assigning",
       "CC"        : "Profit center",
       "VERSEMENT" : "Injection"
@@ -1824,6 +1832,7 @@
    },
 "PURCHASE_MENU": {
    "CONFIRM"          : "Confirm payment",
+   "DESCRIPTION"      : "This module help you to manage purchase orders",
    "OPERATION"        : "Operations",
    "PUCHASE_CREATION" : "Create purchase order",
    "TITLE"            : "Purchase order management",
@@ -2310,6 +2319,7 @@
    "CANCEL"                 : "Cancel",
    "COST"                   : "Cost to Debtor",
    "DEBITOR"                : "Debtor",
+   "DESCRIPTION_LONG"       : "This module help you to manage support",
    "DETAILS"                : "Invoice Details",
    "EMPLOYEE"               : "Employee",
    "ERROR_TXT_1"            : "Check that everything is correctly entered",
@@ -2413,6 +2423,7 @@
    "CONVENTION"  : "Convention",
    "CURRENCY"    : "Currency",
    "DATA_ERROR"  : "Incorrect Data",
+   "DESCRIPTION" : "This module help you to make transfer",
    "EXPECTED"    : "Expected",
    "INFO"        : "This Primary cash feature, is responsible of the receipt automatisation. Use this module to debit the primary cash by transfer, and so one",
    "NAVIGATION"  : "Browsing",
