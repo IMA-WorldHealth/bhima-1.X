@@ -176,22 +176,21 @@ angular.module('bhima.controllers')
       var document_uuid = uuid(),
         currentDate = util.sqlDate(new Date()),
         amount_enterprise = 0,
-        verification = 0;
+        verification = 0, 
+        primary = {}, 
+        partial_paiement = {},   
+        primary_details = {}, 
+        package = {};
 
       var net_salary = emp.net_salary.toFixed(2),
         amount_paid = 0;
 
       if(emp.amount){
-        amount_paid = emp.amount.toFixed(2)
+        amount_paid = emp.amount.toFixed(2);
       }  
 
-      console.log('Console LOg',net_salary);
-      console.log('Avance',amount_paid);
-
       var diff = net_salary - amount_paid;
-      console.log('The Diff:::',diff);
       verification = diff - session.amount;
-      console.log('Verification sans la base',verification);
 
       if(verification > 0){
         $scope.state = null;
