@@ -47,7 +47,7 @@
             </span>
             <select
               ng-model="session.pp"
-              ng-options="pp as formatPeriod(pp) for pp in session.model.paiement_period.data"
+              ng-options="pp as formatPeriod(pp) for pp in session.model.paiement_period.data | orderBy:'-dateTo'"
               ng-change="setConfiguration(session.pp)"
               class="form-bhima">
               <option value="" ng-disabled="disabled">-- {{"SELECT.PERIOD_PAYMENT" | translate}}-- </option>

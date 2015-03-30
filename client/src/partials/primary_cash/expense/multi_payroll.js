@@ -359,7 +359,7 @@ angular.module('bhima.controllers')
               columns : ['rubric_id', 'payable']
             },
             'rubric' : {
-              columns : ['id', 'abbr', 'label', 'is_percent', 'is_discount', 'value']
+              columns : ['id', 'abbr', 'label', 'is_advance', 'is_percent', 'is_discount', 'value']
             }
           },
           join : [

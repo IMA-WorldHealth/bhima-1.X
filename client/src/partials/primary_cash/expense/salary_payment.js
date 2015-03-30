@@ -189,23 +189,57 @@ angular.module('bhima.controllers')
         inv_po_id         : emp.uuid, // uuid du paiement
         document_uuid     : document_uuid
       };
-      
+
       var package = {
         primary : primary,
         primary_details : primary_details
+      };
+
+      dependencies.advance = {
+        required : true,
+        query : {
+          tables : {
+            'rubric_paiement' : {
+              columns : ['id', 'paiement_uuid', 'rubric_id', 'value']
+            },
+            'rubric' : {
+              columns : ['is_advance']
+            }
+          },
+          join : [
+            'rubric.id=rubric_paiement.rubric_id'
+          ],
+          where : [
+            'rubric_paiement.paiement_uuid=' + primary_details.inv_po_id, 'AND','rubric.is_advance = 1'
+          ]
+        }
       };
 
       connect.post('primary_cash', [package.primary], ['uuid'])
       .then(function () {
         return connect.post('primary_cash_item', [package.primary_details], ['uuid']);
       })
-      .then(function () {
+       .then(function () {
         var param = { uuid : emp.uuid, is_paid : 1 };
         return connect.put('paiement', [param], ['uuid'])
         .then(function () { validate.refresh(dependencies); });
       })
-      .then(function () {
+     .then(function () {
         return connect.fetch('/journal/salary_payment/' + package.primary.uuid);
+      })
+     .then(function () {
+        return validate.process(dependencies, ['advance']);
+      })     
+      .then(function (model) {
+        if(model.advance.data.length){
+          if(model.advance.data[0].value){
+            return connect.fetch('/journal/advance_paiment/' + package.primary_details.inv_po_id);
+          } else {
+            return;
+          } 
+        } else {
+          return;
+        }
       })
       .then(function () {
         init(session.model);
