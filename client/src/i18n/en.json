@@ -662,11 +662,14 @@
    "TITLE"           : "Creditor Group Management"
    },
 "CREDIT_NOTE": {
-   "DESCRIPTION"  : "Description",
-   "SALE_DETAILS" : "Sale Details",
-   "SUBMIT"       : "Submit Credit Note",
-   "TITLE"        : "Credit Note",
-   "TOTAL_DEBIT"  : "Total Debit"
+   "DESCRIPTION"           : "Description",
+   "INVOICE_CONSUMPTION"   : "This invoice may not be canceled because there a product distribution is concerned",
+   "INVOICE_CONSUMPTION_2" : "It would cancel the distribution of products in order to cancel the sale",   
+   "PLEASE_NOTE"           : "Please note that invoice has already been paid, in case of cancellation the box must remboursser to patient the sum of:",
+   "SALE_DETAILS"          : "Sale Details",
+   "SUBMIT"                : "Submit Credit Note",
+   "TITLE"                 : "Credit Note",
+   "TOTAL_DEBIT"           : "Total Debit"
    },
 "CURRENCY": {
    "ACTIONS"       : "Actions",
