@@ -1815,6 +1815,7 @@
       },
    "DIRECT"        : "Direct",
    "INDIRECT"      : "Indirect",
+   "INVALID_PRICE" : "Le prix est invalide",
    "NOT_FOUND"     : "Aucun enregistrement trouvé",
    "PURCHASE_TYPE" : "Type d'ordre d'achat",
    "TITLE"         : "Ordre Achat",
