@@ -115,7 +115,7 @@ angular.module('bhima.controllers')
       connect.put('patient_group', [packaged], ['uuid'])
       .then(function () {
         $scope.group.put(packaged);
-        messenger.success('Successfully modified the group.');
+		messenger.success($translate.instant('PATIENT_GRP.SUCCESS'));
       });
     };
 

@@ -1090,8 +1090,9 @@
    "AUTHORIZED_BY"          : "Authorized By",
    "BALANCE"                : "Balance",
    "CANCEL"                 : "Cancel",
-   "CONVENTION_INVOICE"     : "Convention Invoice",
+   "CONVENTION_INVOICE"     : "Convention Invoice", 
    "COST"                   : "Cost to Debtor",
+   "DATA_SUCCES"            : "Data submitted successfully",
    "DEBITOR"                : "Debtor",
    "DETAILS"                : "Invoice Details",
    "ERROR_TXT_1"            : "Check that everything is correctly entered",
@@ -1171,21 +1172,22 @@
       "TITLE" : "Inventory Manifest"
       },
    "REGISTER": {
-      "ADD_GROUP"     : "Add Inventory Group",
-      "ADD_TYPE"      : "Add Unit Type",
-      "BILLING"       : "Billing & Stock Information",
-      "CODE"          : "Inventory Code",
-      "CONSUMABLE"    : "Consumable",
-      "DEFAULT_PRICE" : "Default Price",
-      "DESCRIPTION"   : "Description",
-      "DURABLE"       : "Durable",
-      "GENERAL"       : "General",
-      "GROUP"         : "Inventory Group",
-      "TITLE"         : "Stock Registration",
-      "UNIT"          : "Unit",
-      "UNIT_VOLUME"   : "Unit Volume",
-      "UNIT_WEIGHT"   : "Unit Weight",
-      "VIEW"          : "View All Items"
+      "ADD_GROUP"      : "Add Inventory Group",
+      "ADD_TYPE"       : "Add Unit Type",
+      "BILLING"        : "Billing & Stock Information",
+      "CODE"           : "Inventory Code",
+      "CONSUMABLE"     : "Consumable",
+      "DEFAULT_PRICE"  : "Default Price",
+      "DESCRIPTION"    : "Description",
+      "DURABLE"        : "Durable",
+      "GENERAL"        : "General",
+      "GROUP"          : "Inventory Group",
+      "SUBMIT_SUCCESS" : "Submitted Successfully",
+      "TITLE"          : "Stock Registration",
+      "UNIT"           : "Unit",
+      "UNIT_VOLUME"    : "Unit Volume",
+      "UNIT_WEIGHT"    : "Unit Weight",
+      "VIEW"           : "View All Items"
       },
    "TYPES": {
       "ADD"       : "Add a new type",
@@ -1415,10 +1417,11 @@
    "MODIFY"        : "Modify a Patient Group",
    "NEW"           : "New Patient Group",
    "PATIENT_GROUP" : "Patient Group",
-   "PRICE_LIST"    : "Price List",
+   "PRICE_LIST"    : "Price List", 
    "REGISTER"      : "Register a Patient Group",
    "REGISTERED"    : "Registered Patient Groups",
    "SUBSIDY"       : "Subsidy",
+   "SUCCESS"       : "Successfully modified the group",
    "TITLE"         : "Patient Group Management"
    },
 "PATIENT_GRP_ASSIGNMENT": {
@@ -1426,6 +1429,7 @@
    "DOB"         : "Date of Birth",
    "FULL_NAME"   : "Full Name",
    "PATIENT_GRP" : "Patient Groups",
+   "SUCCESS_UPD" : "Successfully updated",
    "TITLE"       : "Patient Group Assignment"
    },
 "PATIENT_RECORDS": {
@@ -1625,8 +1629,9 @@
    "TRANSACTION"           : "Transaction",
    "TRANSACTION_DATE"      : "Transacton Date",
    "TRANSACTION_NUMBER"    : "Transaction #",
+   "TRANSACTION_SUCCESS"   : "Transaction edits and logs saved successfully",
    "TRIAL_BALANCE"         : "Trial Balance",
-   "VERIFY_TRANSACTION"    : "Verify Transaction"
+   "VERIFY_TRANSACTION"    : "Verify Transaction" 
    },
 "PRICE_LIST": {
    "ACTIONS"          : "Actions",
@@ -1705,6 +1710,7 @@
       "SELECT_ACCOUNT"           : "Select an account",
       "SELECT_PERIOD"            : "Select a payment period",
       "SENIORITY"                : "Seniority",
+      "SUCCESS"                  : "Success",
       "SUMMARY"                  : "Summary",
       "TAXES_OTHERS"             : "Employee Taxes and others deductions",
       "TAXES_OTHERS_ENTERPRISE"  : "Enterprise Taxes et others deductions",
@@ -2320,6 +2326,7 @@
    "PAYMENT_AUTHORIZATION"  : "Payment Authorization",
    "SELECT_INVOICES"        : "Select Invoices",
    "SELECT_SUPPORT_DETAILS" : "Select Support Details",
+   "SUCCES"                 : "operation successfully !",
    "TITLE"                  : "Patient Support"
    },
 "SUPPORT_PAYEMENT": {
