@@ -388,7 +388,6 @@ function handleSales (id, user_id, done, caution) {
   .spread(function (rows, transId) {
 
     if (caution && caution > 0) {
-      console.log('la caution est de ', caution);
       var descript = 'CAUTION/' + reference.debitor_uuid + '/' + get.date();
       var transAmount = caution - reference.cost > 0 ? reference.cost : caution;
       queries.cautionDebiting =
@@ -2715,6 +2714,7 @@ function handleSalaryPayment (id, user_id, done) {
     cfg.creditor_uuid = res[0].uuid;
     cfg.store = store;
     rate = cfg.store.get(reference.currency_id).rate;
+
     return get.transactionId(reference.project_id);
   }
 
@@ -3758,6 +3758,123 @@ function handleReversingStock (id, user_id, details, done) {
   }
 }
 
+function handleAdvancePaiment (id, user_id, done) {
+  var sql, rate, state = {}, data, reference, cfg = {};
+  state.user_id = user_id;
+
+  sql =
+    'SELECT `rubric_paiement`.`id`, `rubric_paiement`.`rubric_id`, `rubric_paiement`.`paiement_uuid`, `rubric_paiement`.`value`, ' +
+    '`rubric`.`is_advance`, `paiement`.`currency_id`, `paiement`.`employee_id`, `employee`.`prenom`, `employee`.`name`, `employee`.`creditor_uuid`, ' +
+    '`creditor_group`.`account_id` AS `account_creditor`, `config_accounting`.`account_id` AS `account_paiement`, `primary_cash`.`project_id` ' + 
+    'FROM `rubric_paiement` ' +
+    'JOIN `rubric` ON `rubric`.`id` = `rubric_paiement`.`rubric_id` ' +
+    'JOIN `paiement` ON `paiement`.`uuid` = `rubric_paiement`.`paiement_uuid` ' +
+    'JOIN `paiement_period` ON `paiement_period`.`id` = `paiement_period`.`config_accounting_id` ' +
+    'JOIN `config_accounting` ON `config_accounting`.`id` = `paiement_period`.`config_accounting_id` ' +
+    'JOIN `employee` ON `employee`.`id` = `paiement`.`employee_id` ' +
+    'JOIN `creditor` ON `creditor`.`uuid`= `employee`.`creditor_uuid` ' +
+    'JOIN `creditor_group` ON `creditor_group`.`uuid`=`creditor`.`group_uuid` ' +
+    'JOIN `primary_cash_item` ON `primary_cash_item`.`inv_po_id` = `rubric_paiement`.`paiement_uuid` ' +
+    'JOIN `primary_cash` ON `primary_cash`.`uuid` = `primary_cash_item`.`primary_cash_uuid` ' +
+    'WHERE `rubric_paiement`.`paiement_uuid` = ' + sanitize.escape(id) +
+    'AND `rubric`.`is_advance` = 1 ';  
+
+
+  db.exec(sql)
+  .then(getRecord)
+  .spread(getDetails)
+  .then(getTransId)
+  .then(credit)
+  .then(function (res){
+    return done(null, res);
+  })
+  .catch(function (err){
+    return done(err, null);
+  });
+
+  function getRecord (records) {
+    if (records.length === 0) { throw new Error('pas enregistrement'); }
+
+    reference = records[0];
+    var date = util.toMysqlDate(get.date());
+    return q([get.origin('salary_advance'), get.period(get.date()), get.exchangeRate(date)]);
+   
+  }
+
+  function getDetails (originId, periodObject, store) {
+    cfg.originId = originId;
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+    cfg.store = store;
+    rate = cfg.store.get(reference.currency_id).rate;
+
+    return get.transactionId(reference.project_id);
+  }
+
+  function getTransId (trans_id) {
+    cfg.trans_id = trans_id;
+    cfg.descrip =  trans_id.substring(0,4) + '_Pay Advance salary/' + new Date().toISOString().slice(0, 10).toString();
+    return debit();
+  }
+
+  function debit () {
+    if(reference.value > 0) {
+      var debit_sql =
+        'INSERT INTO posting_journal ' +
+        '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+        '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
+        'VALUES (' +
+          [
+            sanitize.escape(uuid()),
+            reference.project_id,
+            cfg.fiscalYearId,
+            cfg.periodId,
+            cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.account_creditor
+          ].join(',') + ', ' +
+          [
+            (reference.value).toFixed(4), 0,
+            (reference.value / rate).toFixed(4), 0,
+            reference.currency_id,
+            sanitize.escape(reference.creditor_uuid)
+          ].join(',') +
+        ', \'C\', ' +
+          [
+            sanitize.escape(reference.paiement_uuid),
+            cfg.originId,
+            user_id
+          ].join(',') + ');';
+        
+      return db.exec(debit_sql);
+    }  
+  }
+
+  function credit () {
+    if(reference.value > 0) {
+      var credit_sql =
+        'INSERT INTO posting_journal ' +
+        '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+        '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+        'VALUES (' +
+          [
+            sanitize.escape(uuid()),
+            reference.project_id,
+            cfg.fiscalYearId,
+            cfg.periodId,
+            cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.account_paiement
+          ].join(',') + ', ' +
+          [
+            0, reference.value.toFixed(4), 
+            0, (reference.value / rate).toFixed(4),
+            reference.currency_id
+          ].join(',') + ', null, null, ' + [sanitize.escape(reference.paiement_uuid), cfg.originId, user_id].join(',') +
+        ');';
+      return db.exec(credit_sql);      
+    }
+  }
+}
+
 table_router = {
   'sale'                    : handleSales,
   'cash'                    : handleCash,
@@ -3789,7 +3906,8 @@ table_router = {
   'salary_advance'          : handleSalaryAdvance,
   'create_fiscal_year'      : handleCreateFiscalYear,
   'reversing_stock'         : handleReversingStock,
-  'cash_return'             : handleCashReturn
+  'cash_return'             : handleCashReturn,
+  'advance_paiment'         : handleAdvancePaiment
 };
 
 

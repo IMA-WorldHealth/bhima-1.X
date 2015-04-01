@@ -169,17 +169,28 @@ angular.module('bhima.controllers')
 
     function submit (emp) {
       $scope.state = 'generate';
-      var employee = $scope.employee = emp;
+      var employee = $scope.employee = emp;  
     }
 
     function cash (emp) {
       var document_uuid = uuid(),
         currentDate = util.sqlDate(new Date()),
         amount_enterprise = 0,
-        verification = 0;
-      var primary = {}, partial_paiement = {}, primary_details = {}, package = {};
+        verification = 0, 
+        primary = {}, 
+        partial_paiement = {},   
+        primary_details = {}, 
+        package = {};
 
-      verification = emp.net_salary - (session.amount + emp.amount);
+      var net_salary = emp.net_salary.toFixed(2),
+        amount_paid = 0;
+
+      if(emp.amount){
+        amount_paid = emp.amount.toFixed(2);
+      }  
+
+      var diff = net_salary - amount_paid;
+      verification = diff - session.amount;
 
       if(verification > 0){
         $scope.state = null;
@@ -284,6 +295,26 @@ angular.module('bhima.controllers')
           partial_paiement : partial_paiement
         };
 
+        dependencies.advance = {
+          required : true,
+          query : {
+            tables : {
+              'rubric_paiement' : {
+                columns : ['id', 'paiement_uuid', 'rubric_id', 'value']
+              },
+              'rubric' : {
+                columns : ['is_advance']
+              }
+            },
+            join : [
+              'rubric.id=rubric_paiement.rubric_id'
+            ],
+            where : [
+              'rubric_paiement.paiement_uuid=' + primary_details.inv_po_id, 'AND','rubric.is_advance = 1'
+            ]
+          }
+        };
+
         connect.post('primary_cash', [package.primary], ['uuid'])
         .then(function () {
           return connect.post('primary_cash_item', [package.primary_details], ['uuid']);
@@ -299,6 +330,20 @@ angular.module('bhima.controllers')
         .then(function () {
           return connect.fetch('/journal/salary_payment/' + package.primary.uuid);
         })
+       .then(function () {
+          return validate.process(dependencies, ['advance']);
+        })     
+        .then(function (model) {
+          if(model.advance.data.length){
+            if(model.advance.data[0].value){
+              return connect.fetch('/journal/advance_paiment/' + package.primary_details.inv_po_id);
+            } else {
+              return;
+            } 
+          } else {
+            return;
+          }
+        })        
         .then(function () {
           session.amount = null;
           init(session.model);

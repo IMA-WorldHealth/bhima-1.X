@@ -2,12 +2,13 @@ angular.module('bhima.controllers')
 .controller('AssignPatientGroup', [
   '$scope',
   '$q',
+  '$translate',
   'connect',
   'validate',
   'appstate',
   'messenger',
   'uuid',
-  function ($scope, $q, connect, validate, appstate, messenger, uuid) {
+  function ($scope, $q, $translate, connect, validate, appstate, messenger, uuid) {
 
     //variables init
     var dependencies = {},

@@ -111,11 +111,11 @@ angular.module('bhima.controllers')
 
     $scope.saveModification = function () {
       // validate that modification is complete
-      packaged = $scope.modify;
+      var packaged = $scope.modify;
       connect.put('patient_group', [packaged], ['uuid'])
       .then(function () {
         $scope.group.put(packaged);
-		messenger.success($translate.instant('PATIENT_GRP.SUCCESS'));
+		    messenger.success($translate.instant('PATIENT_GRP.SUCCESS'));
       });
     };
 
