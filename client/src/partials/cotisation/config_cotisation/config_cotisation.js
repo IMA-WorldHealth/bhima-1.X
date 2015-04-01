@@ -84,7 +84,7 @@ angular.module('bhima.controllers')
     function submitEdit() {
       connect.put('config_cotisation', [connect.clean(current.config_cotisation)], ['id'])
       .then(function (res) {
-        messenger.success($translate.instant('config_cotisation.UPDATE_SUCCES'));
+        messenger.success($translate.instant('CONFIG_COTISATION.UPDATE_SUCCES'));
         $scope.config_cotisations.put(current.config_cotisation);
         $scope.editConfig(current.config_cotisation);
 		current.state = '';

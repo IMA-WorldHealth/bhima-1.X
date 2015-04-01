@@ -123,8 +123,8 @@ angular.module('bhima.controllers')
                 return connect.basicPut('assignation_patient', [assignation], 'uuid');
               })
             )
-            .then(function () {
-              messenger.success('Successfully updated');
+            .then(function () { 
+			  messenger.success($translate.instant('PATIENT_GRP_ASSIGNMENT.SUCCESS_UPD'));
               // $scope.patient = {};
             })
             .catch(function () {
@@ -132,7 +132,7 @@ angular.module('bhima.controllers')
             });
 
           }else{
-            messenger.success('Successfully updated');
+           messenger.success($translate.instant('PATIENT_GRP_ASSIGNMENT.SUCCESS_UPD'));
           }
 
         }
