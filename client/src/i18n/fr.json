@@ -724,7 +724,7 @@
    "ALL"             : "Tous les Dépôts",
    "DELETE_SUCCESS"  : "Suppression avec succès",
    "EDIT"            : "Editer les informations d'un dépôt",
-   "EDIT_SUCCESS"    : "Données du dépôt mise à jour avec succes ",
+   "EDIT_SUCCESS"    : "Données du dépôt mise à jour avec succès ",
    "NEW"             : "Nouveau dépôt",
    "NEW_SUCCESS"     : "Nouveau dépôt enregistré avec succès",
    "NO_DEPOTS"       : "Aucun dépôt trouvé",
@@ -859,7 +859,7 @@
    "DATE_EMBAUCHE"      : "Date d'embauche",
    "DEBITOR_GROUP"      : "Groupe Débiteur",
    "EDIT"               : "Mise à jour employé",
-   "EDIT_SUCCESS"       : "Données de l'employé mise à jour avec succes ",
+   "EDIT_SUCCESS"       : "Données de l'employé mise à jour avec succès ",
    "EMAIL"              : "Email",
    "EMPLOYEES"          : "Les employés enregistrés",
    "FIRST_NAME"         : "Prenom",
@@ -876,7 +876,7 @@
    "PHONE"              : "Téléphone",
    "POST_NAME"          : "Postnom",
    "REGISTER"           : "Nouveau employé",
-   "REGISTER_SUCCESS"   : "Enregistrement de l'employé avec succes ",
+   "REGISTER_SUCCESS"   : "Enregistrement de l'employé avec succès",
    "SERVICE"            : "Service",
    "SEX"                : "Sexe",
    "SUBMIT_EDIT"        : "Envoyer les détails",
@@ -1097,6 +1097,7 @@
    "CANCEL"                 : "Annuler",
    "CONVENTION_INVOICE"     : "Facture Convention",
    "COST"                   : "Coût pour Débiteur",
+   "DATA_SUCCES"            : "Données enregistrées avec succès",
    "DEBITOR"                : "Débiteur",
    "DESCRIPTION_LONG"       : "Ce module vous prmet de faire la facturation des conventions",
    "DETAILS"                : "Détails Facture",
@@ -1179,21 +1180,22 @@
       "TITLE" : "Manifeste des inventaires"
       },
    "REGISTER": {
-      "ADD_GROUP"     : "Ajouter groupe d'inventaire",
-      "ADD_TYPE"      : "Ajouter type d'unité",
-      "BILLING"       : "Informations pour la Facturation et Stocks",
-      "CODE"          : "Code",
-      "CONSUMABLE"    : "Nondurable",
-      "DEFAULT_PRICE" : "Prix Unitaire",
-      "DESCRIPTION"   : "Description",
-      "DURABLE"       : "Durable",
-      "GENERAL"       : "Général",
-      "GROUP"         : "Groupe Inventaire",
-      "TITLE"         : "Enregistrement des Stocks",
-      "UNIT"          : "Unit",
-      "UNIT_VOLUME"   : "Volume Unitaire",
-      "UNIT_WEIGHT"   : "Poids Unitaire",
-      "VIEW"          : "Voire tous les items"
+      "ADD_GROUP"      : "Ajouter groupe d'inventaire",
+      "ADD_TYPE"       : "Ajouter type d'unité",
+      "BILLING"        : "Informations pour la Facturation et Stocks",
+      "CODE"           : "Code",
+      "CONSUMABLE"     : "Nondurable",
+      "DEFAULT_PRICE"  : "Prix Unitaire",
+      "DESCRIPTION"    : "Description",
+      "DURABLE"        : "Durable",
+      "GENERAL"        : "Général",
+      "GROUP"          : "Groupe Inventaire",
+      "SUBMIT_SUCCESS" : "Enregistrement avec succès",
+      "TITLE"          : "Enregistrement des Stocks",
+      "UNIT"           : "Unit",
+      "UNIT_VOLUME"    : "Volume Unitaire",
+      "UNIT_WEIGHT"    : "Poids Unitaire",
+      "VIEW"           : "Voire tous les items"
       },
    "TYPES": {
       "ADD"       : "Ajouter une nouvelle type",
@@ -1428,6 +1430,7 @@
    "REGISTER"      : "Enregistrer Groupe Patient",
    "REGISTERED"    : "Groupes Patients Enregistrées",
    "SUBSIDY"       : "Subvention",
+   "SUCCESS"       : "Le groupe a été modifié avec succès",
    "TITLE"         : "Gestion des Groupes Patients"
    },
 "PATIENT_GRP_ASSIGNMENT": {
@@ -1435,6 +1438,7 @@
    "DOB"         : "Date de Naissance",
    "FULL_NAME"   : "Nom",
    "PATIENT_GRP" : "Groupe de Malades",
+   "SUCCESS_UPD" : "Mise à jour avec succès",
    "TITLE"       : "Assignation des Malades"
    },
 "PATIENT_RECORDS": {
@@ -1634,6 +1638,7 @@
    "TRANSACTION"           : "Transaction",
    "TRANSACTION_DATE"      : "Date de Transaction",
    "TRANSACTION_NUMBER"    : "Numéro de Transaction",
+   "TRANSACTION_SUCCESS"   : " Edition des transaction et logs enregistrés avec succès",
    "TRIAL_BALANCE"         : "Rapprochement",
    "VERIFY_TRANSACTION"    : "Verifier Transaction"
    },
@@ -1715,6 +1720,7 @@
       "SELECT_ACCOUNT"           : "Sélectionner un compte",
       "SELECT_PERIOD"            : "Sélectionner une période de paiement",
       "SENIORITY"                : "Ancienete",
+      "SUCCESS"                  : "Succès",
       "SUMMARY"                  : "Sommaire",
       "TAXES_OTHERS"             : "Taxes employé et autres déductions",
       "TAXES_OTHERS_ENTERPRISE"  : "Taxes entreprise et autres déductions",
@@ -2333,6 +2339,7 @@
    "PAYMENT_AUTHORIZATION"  : "Autorisation de paiement",
    "SELECT_INVOICES"        : "Sélectionner Factures",
    "SELECT_SUPPORT_DETAILS" : "Sélectionner le détail de la prise en charge",
+   "SUCCES"                 : "Operation avec succès !",
    "TITLE"                  : "Prise en Charge des patients"
    },
 "SUPPORT_PAYEMENT": {

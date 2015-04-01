@@ -171,7 +171,7 @@ angular.module('bhima.controllers')
       instance.result.then(function (model) {
         model.uuid = uuid();
         $scope.inventory_group.post(model);
-        messenger.success('Submitted Successfully');
+		messenger.success($translate.instant('INVENTORY.REGISTER.SUBMIT_SUCCESS'));
       }, function () {
       });
     };
