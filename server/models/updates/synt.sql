@@ -528,3 +528,15 @@ INSERT INTO `unit` VALUES
 INSERT INTO `transaction_type` (`service_txt`) VALUES
 ('reversing');
 
+-- INITIALISE ACCOUNT CLASS 
+-- Date 31 Mars 2015
+-- By Bruce Mbayo
+UPDATE `account` SET `classe`=1 WHERE LEFT(`account_number`,1)=1;
+UPDATE `account` SET `classe`=2 WHERE LEFT(`account_number`,1)=2;
+UPDATE `account` SET `classe`=3 WHERE LEFT(`account_number`,1)=3;
+UPDATE `account` SET `classe`=4 WHERE LEFT(`account_number`,1)=4;
+UPDATE `account` SET `classe`=5 WHERE LEFT(`account_number`,1)=5;
+UPDATE `account` SET `classe`=6 WHERE LEFT(`account_number`,1)=6;
+UPDATE `account` SET `classe`=7 WHERE LEFT(`account_number`,1)=7;
+UPDATE `account` SET `classe`=8 WHERE LEFT(`account_number`,1)=8;
+UPDATE `account` SET `classe`=9 WHERE LEFT(`account_number`,1)=9; 
