@@ -111,7 +111,7 @@ angular.module('bhima.controllers')
 
     $scope.saveModification = function () {
       // validate that modification is complete
-      var packaged = connect.clean($scope.modify);
+      packaged = $scope.modify;
       connect.put('patient_group', [packaged], ['uuid'])
       .then(function () {
         $scope.group.put(packaged);
