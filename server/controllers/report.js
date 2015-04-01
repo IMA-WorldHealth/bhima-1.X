@@ -356,18 +356,7 @@ function paymentRecords(params) {
       'c.deb_cred_uuid = d.uuid AND d.uuid = p.debitor_uuid AND ' +
       'ci.invoice_uuid = s.uuid ' +
     'WHERE c.project_id IN (' + _id + ') AND DATE(c.date) BETWEEN DATE(' + _start + ') AND DATE(' + _end + ') ' +
-    'GROUP BY c.document_id) ' +
-    'UNION ALL ' +
-    '(SELECT caution.uuid, caution.uuid AS document_id, caution.reference, caution.reference AS sale_reference, caution.project_id, ' +
-    ' project.abbr, caution.value, currency.name, p.first_name, caution.description, p.project_id AS debtor_project, p.reference AS debtor_reference, ' +
-    ' p.last_name, caution.debitor_uuid AS deb_cred_uuid, caution.currency_id, caution.uuid AS invoice_uuid, caution.date ' +
-    ' FROM `caution` ' +
-    ' JOIN `project` ON project.id=caution.project_id ' +
-    ' JOIN `currency` ON currency.id=caution.currency_id ' +
-    ' JOIN `debitor` AS d ON d.uuid=caution.debitor_uuid ' +
-    ' JOIN `patient` AS p ON p.debitor_uuid=d.uuid ' +
-    'WHERE caution.project_id IN (' + _id + ') AND DATE(caution.date) BETWEEN DATE(' + _start + ') AND DATE(' + _end + ') ' +
-    'GROUP BY caution.uuid); ';
+    'GROUP BY c.document_id);';
 
   return db.exec(sql);
 }
