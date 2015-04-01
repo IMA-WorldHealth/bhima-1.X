@@ -528,6 +528,25 @@ INSERT INTO `unit` VALUES
 INSERT INTO `transaction_type` (`service_txt`) VALUES
 ('reversing');
 
+-- Updates to rubric structure
+-- 
+-- ADD 'is_advance' field
+--
+-- Date: 2015-03-25
+-- By: Chris LOMAME
+
+
+-- Title : ADD A PRIMARY CASH MODULE (with id=9 for payday_advance)
+-- By    : Bruce Mbayo
+-- Date  : 25 mars 2015
+INSERT INTO `primary_cash_module` (`id`, `text`) VALUES
+(9, 'payday_advance');
+
+
+USE bhima;
+
+ALTER TABLE `rubric`
+ADD `is_advance` boolean;
 -- INITIALISE ACCOUNT CLASS
 -- Date 31 Mars 2015
 -- By Bruce Mbayo
@@ -540,8 +559,4 @@ UPDATE `account` SET `classe`=6 WHERE LEFT(`account_number`,1)=6;
 UPDATE `account` SET `classe`=7 WHERE LEFT(`account_number`,1)=7;
 UPDATE `account` SET `classe`=8 WHERE LEFT(`account_number`,1)=8;
 UPDATE `account` SET `classe`=9 WHERE LEFT(`account_number`,1)=9;
--- Title : ADD A PRIMARY CASH MODULE (with id=9 for payday_advance)
--- By    : Bruce Mbayo
--- Date  : 25 mars 2015
-INSERT INTO `primary_cash_module` (`id`, `text`) VALUES
-(9, 'payday_advance');
+
