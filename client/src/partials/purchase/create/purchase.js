@@ -197,12 +197,11 @@ angular.module('bhima.controllers')
           }
         });
 
-        if (!purchaseItem.code) {
+        if (!purchaseItem.code || !purchaseItem.purchase_price) {
           return true;
-        }
+        } 
         return false;
       });
-
       // FIXME
       Object.keys(warnings).forEach(function(key) {
         warnings[key].result = false;
