@@ -599,8 +599,9 @@
    "TOT"               : "Total"
    },
 "COST_CENTER": {
-   "NAVIGATION" : "Naviguation",
-   "OPERATION"  : "operations",
+   "DESCRIPTION" : "Ce module vous aide dans la getion des centres de couts",
+   "NAVIGATION"  : "Naviguation",
+   "OPERATION"   : "operations",
    "OPERATIONS": {
       "ASSIGN"    : "Assignation",
       "CC"        : "Centre de coûts",
@@ -626,6 +627,7 @@
    },
 "COTISATION_MANAGEMENT": {
    "CREATE_COTISATION" : "Création des cotisations",
+   "DESCRIPTION"       : "Ce module vous permet de gerer les cotisations",
    "OPTIONS"           : "Options",
    "TITLE"             : "Gestion des cotisations"
    },
@@ -662,11 +664,14 @@
    "TITLE"           : "Gestion des Groupe des Créditeurs"
    },
 "CREDIT_NOTE": {
-   "DESCRIPTION"  : "Description",
-   "SALE_DETAILS" : "Détaille de la Facture",
-   "SUBMIT"       : "Soumettre Note de Crédit",
-   "TITLE"        : "Note de Crédit",
-   "TOTAL_DEBIT"  : "Total Débiter"
+   "DESCRIPTION"           : "Description",
+   "INVOICE_CONSUMPTION"   : "Cette facturation ne peut pas être annuler, par ce qu'il existe une distribution des produits qui la concerne",
+   "INVOICE_CONSUMPTION_2" : "Il faudrait annuler la distribution des produits pour pouvoir annuler la vente",
+   "PLEASE_NOTE"           : "Attention cette facture à déjà été payé, en cas d'annulation la caisse doit remboursser au patient la somme de :",
+   "SALE_DETAILS"          : "Détaille de la Facture",
+   "SUBMIT"                : "Soumettre Note de Crédit",
+   "TITLE"                 : "Note de Crédit",
+   "TOTAL_DEBIT"           : "Total Débiter"
    },
 "CURRENCY": {
    "ACTIONS"       : "Actions",
@@ -719,7 +724,7 @@
    "ALL"             : "Tous les Dépôts",
    "DELETE_SUCCESS"  : "Suppression avec succès",
    "EDIT"            : "Editer les informations d'un dépôt",
-   "EDIT_SUCCESS"    : "Données du dépôt mise à jour avec succes ",
+   "EDIT_SUCCESS"    : "Données du dépôt mise à jour avec succès ",
    "NEW"             : "Nouveau dépôt",
    "NEW_SUCCESS"     : "Nouveau dépôt enregistré avec succès",
    "NO_DEPOTS"       : "Aucun dépôt trouvé",
@@ -854,7 +859,7 @@
    "DATE_EMBAUCHE"      : "Date d'embauche",
    "DEBITOR_GROUP"      : "Groupe Débiteur",
    "EDIT"               : "Mise à jour employé",
-   "EDIT_SUCCESS"       : "Données de l'employé mise à jour avec succes ",
+   "EDIT_SUCCESS"       : "Données de l'employé mise à jour avec succès ",
    "EMAIL"              : "Email",
    "EMPLOYEES"          : "Les employés enregistrés",
    "FIRST_NAME"         : "Prenom",
@@ -871,7 +876,7 @@
    "PHONE"              : "Téléphone",
    "POST_NAME"          : "Postnom",
    "REGISTER"           : "Nouveau employé",
-   "REGISTER_SUCCESS"   : "Enregistrement de l'employé avec succes ",
+   "REGISTER_SUCCESS"   : "Enregistrement de l'employé avec succès",
    "SERVICE"            : "Service",
    "SEX"                : "Sexe",
    "SUBMIT_EDIT"        : "Envoyer les détails",
@@ -1092,7 +1097,9 @@
    "CANCEL"                 : "Annuler",
    "CONVENTION_INVOICE"     : "Facture Convention",
    "COST"                   : "Coût pour Débiteur",
+   "DATA_SUCCES"            : "Données enregistrées avec succès",
    "DEBITOR"                : "Débiteur",
+   "DESCRIPTION_LONG"       : "Ce module vous prmet de faire la facturation des conventions",
    "DETAILS"                : "Détails Facture",
    "ERROR_TXT_1"            : "Etre sure que tous les informations sont bien enregistrer",
    "GROUP"                  : "Groupe",
@@ -1100,9 +1107,10 @@
    "INVOICE_ID"             : "ID Facture",
    "INVOICE_TITLE"          : "Facture Convention",
    "PAY"                    : "Paye la Facture",
+   "PAYMENT_AUTHORIZATION"  : "Autorisation de paiement",
    "SELECT_INVOICES"        : "Sélectionner Factures",
    "SELECT_PAYMENT_DETAILS" : "Sélectionner Détail du Paiement",
-   "TITLE"                  : "Facturation des Conventions, Societes Et Prise en Charge"
+   "TITLE"                  : "Facturation des Conventions et Sociétés"
    },
 "HOLLYDAY_MANAGEMENT": {
    "ADD"            : "Créer une période de vacance",
@@ -1161,6 +1169,7 @@
       "ADD_ITEM"       : "Enregistrer Article",
       "CONFIG_GROUPS"  : "Configurer Groups des Articles",
       "CONFIG_TYPES"   : "Configurer Type des Articles",
+      "DESCRIPTION"    : "Ce module vous permet de gerer les inventaires",
       "OPTIONS"        : "Options",
       "PRINT_MANIFEST" : "Imprimer la liste des Articles",
       "TITLE"          : "Gestion des Inventaires",
@@ -1171,21 +1180,22 @@
       "TITLE" : "Manifeste des inventaires"
       },
    "REGISTER": {
-      "ADD_GROUP"     : "Ajouter groupe d'inventaire",
-      "ADD_TYPE"      : "Ajouter type d'unité",
-      "BILLING"       : "Informations pour la Facturation et Stocks",
-      "CODE"          : "Code",
-      "CONSUMABLE"    : "Nondurable",
-      "DEFAULT_PRICE" : "Prix Unitaire",
-      "DESCRIPTION"   : "Description",
-      "DURABLE"       : "Durable",
-      "GENERAL"       : "Général",
-      "GROUP"         : "Groupe Inventaire",
-      "TITLE"         : "Enregistrement des Stocks",
-      "UNIT"          : "Unit",
-      "UNIT_VOLUME"   : "Volume Unitaire",
-      "UNIT_WEIGHT"   : "Poids Unitaire",
-      "VIEW"          : "Voire tous les items"
+      "ADD_GROUP"      : "Ajouter groupe d'inventaire",
+      "ADD_TYPE"       : "Ajouter type d'unité",
+      "BILLING"        : "Informations pour la Facturation et Stocks",
+      "CODE"           : "Code",
+      "CONSUMABLE"     : "Nondurable",
+      "DEFAULT_PRICE"  : "Prix Unitaire",
+      "DESCRIPTION"    : "Description",
+      "DURABLE"        : "Durable",
+      "GENERAL"        : "Général",
+      "GROUP"          : "Groupe Inventaire",
+      "SUBMIT_SUCCESS" : "Enregistrement avec succès",
+      "TITLE"          : "Enregistrement des Stocks",
+      "UNIT"           : "Unit",
+      "UNIT_VOLUME"    : "Volume Unitaire",
+      "UNIT_WEIGHT"    : "Poids Unitaire",
+      "VIEW"           : "Voire tous les items"
       },
    "TYPES": {
       "ADD"       : "Ajouter une nouvelle type",
@@ -1310,6 +1320,7 @@
    "DATE"                   : "Date Transaction",
    "DEFAULT_CURRENCY"       : "Monnaie",
    "DESCRIPTION"            : "Description",
+   "DESCRIPTION_LONG"       : "Ce module vous permet de faire des transactions instantannées vers le journal de saisie",
    "LOG"                    : "Log Journal ID ",
    "POSTING_JOURNAL"        : "Posting Journal",
    "SUBMIT"                 : "Soumettre",
@@ -1419,6 +1430,7 @@
    "REGISTER"      : "Enregistrer Groupe Patient",
    "REGISTERED"    : "Groupes Patients Enregistrées",
    "SUBSIDY"       : "Subvention",
+   "SUCCESS"       : "Le groupe a été modifié avec succès",
    "TITLE"         : "Gestion des Groupes Patients"
    },
 "PATIENT_GRP_ASSIGNMENT": {
@@ -1426,6 +1438,7 @@
    "DOB"         : "Date de Naissance",
    "FULL_NAME"   : "Nom",
    "PATIENT_GRP" : "Groupe de Malades",
+   "SUCCESS_UPD" : "Mise à jour avec succès",
    "TITLE"       : "Assignation des Malades"
    },
 "PATIENT_RECORDS": {
@@ -1625,6 +1638,7 @@
    "TRANSACTION"           : "Transaction",
    "TRANSACTION_DATE"      : "Date de Transaction",
    "TRANSACTION_NUMBER"    : "Numéro de Transaction",
+   "TRANSACTION_SUCCESS"   : " Edition des transaction et logs enregistrés avec succès",
    "TRIAL_BALANCE"         : "Rapprochement",
    "VERIFY_TRANSACTION"    : "Verifier Transaction"
    },
@@ -1692,6 +1706,7 @@
       "PAYDAY_DETAILS"           : "Effectuer les paiement des avances sur salaire des employés",
       "PAYMENT_PERIOD_NOT_FOUND" : "Periode de paiement non definie !",
       "PAYROLL"                  : "Paie des employés",
+      "PAYROLL_DESC"             : "Ce module vous aide dans la gestion du Payroll",
       "PURCHASE"                 : "Achat",
       "PURPOSE"                  : "Motif",
       "RECIPIENT"                : "Destinataire",
@@ -1705,6 +1720,7 @@
       "SELECT_ACCOUNT"           : "Sélectionner un compte",
       "SELECT_PERIOD"            : "Sélectionner une période de paiement",
       "SENIORITY"                : "Ancienete",
+      "SUCCESS"                  : "Succès",
       "SUMMARY"                  : "Sommaire",
       "TAXES_OTHERS"             : "Taxes employé et autres déductions",
       "TAXES_OTHERS_ENTERPRISE"  : "Taxes entreprise et autres déductions",
@@ -1751,8 +1767,9 @@
    "TITLE"            : "Caisse Principale"
    },
 "PROFIT_CENTER": {
-   "NAVIGATION" : "Naviguation",
-   "OPERATION"  : "operations",
+   "DESCRIPTION" : "Ce module vous aide dans la gestion des centres de profits",
+   "NAVIGATION"  : "Naviguation",
+   "OPERATION"   : "operations",
    "OPERATIONS": {
       "ASSIGN"    : "Assignation",
       "CC"        : "Centre de profit",
@@ -1815,6 +1832,7 @@
       },
    "DIRECT"        : "Direct",
    "INDIRECT"      : "Indirect",
+   "INVALID_PRICE" : "Le prix est invalide",
    "NOT_FOUND"     : "Aucun enregistrement trouvé",
    "PURCHASE_TYPE" : "Type d'ordre d'achat",
    "TITLE"         : "Ordre Achat",
@@ -1824,6 +1842,7 @@
    },
 "PURCHASE_MENU": {
    "CONFIRM"          : "Confirmer paiement",
+   "DESCRIPTION"      : "Ce module vous permet de gerer les ordres d'achats",
    "OPERATION"        : "Operations",
    "PUCHASE_CREATION" : "Créer ordre achat",
    "TITLE"            : "Gestion des ordres d'achats",
@@ -2313,6 +2332,7 @@
    "CANCEL"                 : "Annuler",
    "COST"                   : "Coût pour Débiteur",
    "DEBITOR"                : "Débiteur",
+   "DESCRIPTION_LONG"       : "Ce module vous permet de gerer les prise en charge",
    "DETAILS"                : "Détails Facture",
    "EMPLOYEE"               : "Employé",
    "ERROR_TXT_1"            : "Etre sure que tous les informations sont bien enregistrer",
@@ -2323,6 +2343,7 @@
    "PAYMENT_AUTHORIZATION"  : "Autorisation de paiement",
    "SELECT_INVOICES"        : "Sélectionner Factures",
    "SELECT_SUPPORT_DETAILS" : "Sélectionner le détail de la prise en charge",
+   "SUCCES"                 : "Operation avec succès !",
    "TITLE"                  : "Prise en Charge des patients"
    },
 "SUPPORT_PAYEMENT": {
@@ -2417,6 +2438,7 @@
    "CONVENTION"  : "Convention",
    "CURRENCY"    : "Monnaie",
    "DATA_ERROR"  : "Erreur des données",
+   "DESCRIPTION" : "Ce module vous aide à faire les transferts",
    "EXPECTED"    : "Attendu",
    "INFO"        : "Ce sous module de la caisse principale, se charge de l'automatisation des recettes. Utiliser ce modules pour debuter la caisse principale par transfert, et autre forme d'encaissement",
    "NAVIGATION"  : "Naviguation",

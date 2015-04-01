@@ -371,7 +371,7 @@ angular.module('bhima.controllers')
           $location.path('/stock/donation_management/report/' + document_id);
         })
         .then(function () {
-          messenger.success('STOCK.ENTRY.WRITE_SUCCESS');
+          messenger.success($translate.instant('STOCK.ENTRY.WRITE_SUCCESS'));
         })
         .catch(function () {
           messenger.error('STOCK.ENTRY.WRITE_ERROR');

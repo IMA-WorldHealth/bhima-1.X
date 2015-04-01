@@ -539,3 +539,8 @@ USE bhima;
 
 ALTER TABLE `rubric`
 ADD `is_advance` boolean;
+-- Title : ADD A PRIMARY CASH MODULE (with id=9 for payday_advance)
+-- By    : Bruce Mbayo
+-- Date  : 25 mars 2015
+INSERT INTO `primary_cash_module` (`id`, `text`) VALUES
+(9, 'payday_advance');
