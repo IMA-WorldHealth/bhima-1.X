@@ -664,11 +664,14 @@
    "TITLE"           : "Gestion des Groupe des Créditeurs"
    },
 "CREDIT_NOTE": {
-   "DESCRIPTION"  : "Description",
-   "SALE_DETAILS" : "Détaille de la Facture",
-   "SUBMIT"       : "Soumettre Note de Crédit",
-   "TITLE"        : "Note de Crédit",
-   "TOTAL_DEBIT"  : "Total Débiter"
+   "DESCRIPTION"           : "Description",
+   "INVOICE_CONSUMPTION"   : "Cette facturation ne peut pas être annuler, par ce qu'il existe une distribution des produits qui la concerne",
+   "INVOICE_CONSUMPTION_2" : "Il faudrait annuler la distribution des produits pour pouvoir annuler la vente",
+   "PLEASE_NOTE"           : "Attention cette facture à déjà été payé, en cas d'annulation la caisse doit remboursser au patient la somme de :",
+   "SALE_DETAILS"          : "Détaille de la Facture",
+   "SUBMIT"                : "Soumettre Note de Crédit",
+   "TITLE"                 : "Note de Crédit",
+   "TOTAL_DEBIT"           : "Total Débiter"
    },
 "CURRENCY": {
    "ACTIONS"       : "Actions",
