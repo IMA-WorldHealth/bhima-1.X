@@ -1832,6 +1832,7 @@
       },
    "DIRECT"        : "Direct",
    "INDIRECT"      : "Indirect",
+   "INVALID_PRICE"  : "Invalide price",
    "NOT_FOUND"     : "Not found",
    "PURCHASE_TYPE" : "Purchase type",
    "TITLE"         : "Purchase order",
