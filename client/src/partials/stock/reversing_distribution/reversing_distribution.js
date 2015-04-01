@@ -131,7 +131,6 @@ angular.module('bhima.controllers')
       });
 
       $scope.trans_id = trans_id;
-      console.log('TTTTTTTTTTTTT',$scope.trans_id);
     });
 
     function submit(consumption) {
