@@ -356,18 +356,7 @@ function paymentRecords(params) {
       'c.deb_cred_uuid = d.uuid AND d.uuid = p.debitor_uuid AND ' +
       'ci.invoice_uuid = s.uuid ' +
     'WHERE c.project_id IN (' + _id + ') AND DATE(c.date) BETWEEN DATE(' + _start + ') AND DATE(' + _end + ') ' +
-    'GROUP BY c.document_id) ' +
-    'UNION ALL ' +
-    '(SELECT caution.uuid, caution.uuid AS document_id, caution.reference, caution.reference AS sale_reference, caution.project_id, ' +
-    ' project.abbr, caution.value, currency.name, p.first_name, caution.description, p.project_id AS debtor_project, p.reference AS debtor_reference, ' +
-    ' p.last_name, caution.debitor_uuid AS deb_cred_uuid, caution.currency_id, caution.uuid AS invoice_uuid, caution.date ' +
-    ' FROM `caution` ' +
-    ' JOIN `project` ON project.id=caution.project_id ' +
-    ' JOIN `currency` ON currency.id=caution.currency_id ' +
-    ' JOIN `debitor` AS d ON d.uuid=caution.debitor_uuid ' +
-    ' JOIN `patient` AS p ON p.debitor_uuid=d.uuid ' +
-    'WHERE caution.project_id IN (' + _id + ') AND DATE(caution.date) BETWEEN DATE(' + _start + ') AND DATE(' + _end + ') ' +
-    'GROUP BY caution.uuid); ';
+    'GROUP BY c.document_id);';
 
   return db.exec(sql);
 }
@@ -378,7 +367,7 @@ function patientStanding(params) {
       patient = {},
       defer = q.defer(),
       sql =
-      'SELECT `aggregate`.`uuid`, `aggregate`.`trans_id`, `aggregate`.`trans_date`, sum(`aggregate`.`credit_equiv`) as credit, sum(`aggregate`.`debit_equiv`) as debit, `aggregate`.`description`, `aggregate`.`inv_po_id`, `aggregate`.`account_id`, `aggregate`.`is_convention` ' +
+      'SELECT `aggregate`.`uuid`, `aggregate`.`trans_id`, `aggregate`.`trans_date`, `aggregate`.`account_id`, sum(`aggregate`.`credit_equiv`) as credit, sum(`aggregate`.`debit_equiv`) as debit, `aggregate`.`description`, `aggregate`.`inv_po_id`, `aggregate`.`account_id`, `aggregate`.`is_convention` ' +
       'FROM ( ' +
         'SELECT `posting_journal`.`uuid`, `posting_journal`.`trans_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`description`, `posting_journal`.`inv_po_id`, `posting_journal`.`account_id`, `debitor_group`.`is_convention` ' +
         'FROM `posting_journal` ' +
@@ -391,44 +380,13 @@ function patientStanding(params) {
         'WHERE `general_ledger`.`deb_cred_uuid`= ? AND `general_ledger`.`deb_cred_type`=\'D\' AND `debitor_group`.`is_convention` = 0) as aggregate ' +
       'GROUP BY `aggregate`.`inv_po_id` ORDER BY `aggregate`.`trans_date` DESC;';
 
-
-
   db.exec(sql, [params.id, params.id])
   .then(function (rows) {
+
     if (!rows.length) { return defer.resolve([]); }
-
     patient.receipts = rows;
-
-    // last payment date
-    sql =
-      'SELECT trans_date FROM (' +
-      ' SELECT trans_date FROM `posting_journal` WHERE `posting_journal`.`deb_cred_uuid`= ? AND `posting_journal`.`deb_cred_type`=\'D\' ' +
-      'AND `posting_journal`.`origin_id`=(SELECT `transaction_type`.`id` FROM `transaction_type` WHERE `transaction_type`.`service_txt`=\'cash\' OR `transaction_type`.`service_txt`=\'caution\' LIMIT 1)' +
-      ' UNION ' +
-      'SELECT trans_date FROM `general_ledger` WHERE `general_ledger`.`deb_cred_uuid`= ? AND `general_ledger`.`deb_cred_type`=\'D\' ' +
-      'AND `general_ledger`.`origin_id`=(SELECT `transaction_type`.`id` FROM `transaction_type` WHERE `transaction_type`.`service_txt`=\'cash\' OR `transaction_type`.`service_txt`=\'caution\' LIMIT 1)' +
-      ') as aggregate ORDER BY trans_date DESC LIMIT 1;';
-
-    return db.exec(sql, [params.id, params.id]);
-  })
-  .then(function (rows) {
-    if (!rows.length) { patient.last_payment_date = undefined } else {var row = rows.pop(); patient.last_payment_date = row.trans_date;}
-
-    sql =
-      'SELECT trans_date FROM (' +
-      ' SELECT trans_date FROM `posting_journal` WHERE `posting_journal`.`deb_cred_uuid`= ? AND `posting_journal`.`deb_cred_type`=\'D\' ' +
-      'AND `posting_journal`.`origin_id`=(SELECT `transaction_type`.`id` FROM `transaction_type` WHERE `transaction_type`.`service_txt`=\'sale\' OR `transaction_type`.`service_txt`=\'group_invoice\' LIMIT 1)' +
-      ' UNION ' +
-      'SELECT trans_date FROM `general_ledger` WHERE `general_ledger`.`deb_cred_uuid`= ? AND `general_ledger`.`deb_cred_type`=\'D\' ' +
-      'AND `general_ledger`.`origin_id`=(SELECT `transaction_type`.`id` FROM `transaction_type` WHERE `transaction_type`.`service_txt`=\'sale\' OR `transaction_type`.`service_txt`=\'group_invoice\' LIMIT 1)' +
-      ') as aggregate ORDER BY trans_date DESC LIMIT 1;';
-
-    return db.exec(sql, [params.id, params.id]);
-  })
-  .then(function (rows) {
-    var row = rows.pop();
-    patient.last_purchase_date = row.trans_date;
     defer.resolve(patient);
+
   })
   .catch(function (err) {
     defer.reject(err);

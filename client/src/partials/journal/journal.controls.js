@@ -4,6 +4,7 @@ angular.module('bhima.controllers')
   '$rootScope',
   '$q',
   '$window',
+  '$translate',
   'uuid',
   'store',
   'util',
@@ -13,7 +14,7 @@ angular.module('bhima.controllers')
   'appstate',
   'liberror',
   'messenger',
-  function ($scope, $rootScope, $q, $window, uuid, Store, util, connect, precision, validate, appstate, liberror, messenger) {
+  function ($scope, $rootScope, $q, $window, $translate, uuid, Store, util, connect, precision, validate, appstate, liberror, messenger) {
     /* jshint unused : true */
     var dependencies = {};
     var columns, options, dataview, grid, manager;
@@ -441,7 +442,7 @@ angular.module('bhima.controllers')
         return writeJournalLog(manager.session);
       })
       .then(function () {
-        messenger.success('Transaction edits and logs saved successfully');
+		messenger.success($translate.instant('POSTING_JOURNAL.TRANSACTION_SUCCESS'));	
         manager.fn.resetManagerSession();
         manager.fn.regroup();
         grid.invalidate();

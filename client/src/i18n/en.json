@@ -599,9 +599,10 @@
    "TOT"               : "Total"
    },
 "COST_CENTER": {
-   "NAVIGATION" : "Browsing",
-   "OPERATION"  : "operations",
-   "OPERATIONS": {
+   "DESCRIPTION" : "This module help you to manage cost center",
+   "NAVIGATION"  : "Browsing",
+   "OPERATION"   : "operations",
+   "OPERATIONS"  : {
       "ASSIGN"    : "Assigning",
       "CC"        : "Cost center",
       "VERSEMENT" : "Injection"
@@ -625,7 +626,8 @@
    "UPDATE_SUCCES"  : "Updated successfully"
    },
 "COTISATION_MANAGEMENT": {
-   "CREATE_COTISATION" : "cotisation creation",
+   "CREATE_COTISATION" : "Cotisation creation",
+   "DESCRIPTION"       : "This modle help you to manage cotisations",
    "OPTIONS"           : "Options",
    "TITLE"             : "Cotisations management"
    },
@@ -662,11 +664,14 @@
    "TITLE"           : "Creditor Group Management"
    },
 "CREDIT_NOTE": {
-   "DESCRIPTION"  : "Description",
-   "SALE_DETAILS" : "Sale Details",
-   "SUBMIT"       : "Submit Credit Note",
-   "TITLE"        : "Credit Note",
-   "TOTAL_DEBIT"  : "Total Debit"
+   "DESCRIPTION"           : "Description",
+   "INVOICE_CONSUMPTION"   : "This invoice may not be canceled because there a product distribution is concerned",
+   "INVOICE_CONSUMPTION_2" : "It would cancel the distribution of products in order to cancel the sale",   
+   "PLEASE_NOTE"           : "Please note that invoice has already been paid, in case of cancellation the box must remboursser to patient the sum of:",
+   "SALE_DETAILS"          : "Sale Details",
+   "SUBMIT"                : "Submit Credit Note",
+   "TITLE"                 : "Credit Note",
+   "TOTAL_DEBIT"           : "Total Debit"
    },
 "CURRENCY": {
    "ACTIONS"       : "Actions",
@@ -1090,9 +1095,11 @@
    "AUTHORIZED_BY"          : "Authorized By",
    "BALANCE"                : "Balance",
    "CANCEL"                 : "Cancel",
-   "CONVENTION_INVOICE"     : "Convention Invoice",
+   "CONVENTION_INVOICE"     : "Convention Invoice", 
    "COST"                   : "Cost to Debtor",
+   "DATA_SUCCES"            : "Data submitted successfully",
    "DEBITOR"                : "Debtor",
+   "DESCRIPTION_LONG"       : "This module help you in convention billing",
    "DETAILS"                : "Invoice Details",
    "ERROR_TXT_1"            : "Check that everything is correctly entered",
    "GROUP"                  : "Group",
@@ -1100,6 +1107,7 @@
    "INVOICE_ID"             : "Invoice ID",
    "INVOICE_TITLE"          : "Convention Invoice for Debtor",
    "PAY"                    : "Pay Invoices",
+   "PAYMENT_AUTHORIZATION"  : "Payment authorization",
    "SELECT_INVOICES"        : "Select Invoices",
    "SELECT_PAYMENT_DETAILS" : "Select Payment Details",
    "TITLE"                  : "Debtor Group Invoicing"
@@ -1161,6 +1169,7 @@
       "ADD_ITEM"       : "Register Item",
       "CONFIG_GROUPS"  : "Configure Groups",
       "CONFIG_TYPES"   : "Configure Item Types",
+      "DESCRIPTION"    : "This module help you to manage inventories",
       "OPTIONS"        : "Options",
       "PRINT_MANIFEST" : "Print Inventory Manifest",
       "TITLE"          : "Inventory Management",
@@ -1171,21 +1180,22 @@
       "TITLE" : "Inventory Manifest"
       },
    "REGISTER": {
-      "ADD_GROUP"     : "Add Inventory Group",
-      "ADD_TYPE"      : "Add Unit Type",
-      "BILLING"       : "Billing & Stock Information",
-      "CODE"          : "Inventory Code",
-      "CONSUMABLE"    : "Consumable",
-      "DEFAULT_PRICE" : "Default Price",
-      "DESCRIPTION"   : "Description",
-      "DURABLE"       : "Durable",
-      "GENERAL"       : "General",
-      "GROUP"         : "Inventory Group",
-      "TITLE"         : "Stock Registration",
-      "UNIT"          : "Unit",
-      "UNIT_VOLUME"   : "Unit Volume",
-      "UNIT_WEIGHT"   : "Unit Weight",
-      "VIEW"          : "View All Items"
+      "ADD_GROUP"      : "Add Inventory Group",
+      "ADD_TYPE"       : "Add Unit Type",
+      "BILLING"        : "Billing & Stock Information",
+      "CODE"           : "Inventory Code",
+      "CONSUMABLE"     : "Consumable",
+      "DEFAULT_PRICE"  : "Default Price",
+      "DESCRIPTION"    : "Description",
+      "DURABLE"        : "Durable",
+      "GENERAL"        : "General",
+      "GROUP"          : "Inventory Group",
+      "SUBMIT_SUCCESS" : "Submitted Successfully",
+      "TITLE"          : "Stock Registration",
+      "UNIT"           : "Unit",
+      "UNIT_VOLUME"    : "Unit Volume",
+      "UNIT_WEIGHT"    : "Unit Weight",
+      "VIEW"           : "View All Items"
       },
    "TYPES": {
       "ADD"       : "Add a new type",
@@ -1310,6 +1320,7 @@
    "DATE"                   : "Date Transaction",
    "DEFAULT_CURRENCY"       : "Currency",
    "DESCRIPTION"            : "Description",
+   "DESCRIPTION_LONG"       : "This module help you to make intantaneous transaction to posting journal",
    "LOG"                    : "Log Journal ID ",
    "POSTING_JOURNAL"        : "Posting Journal",
    "SUBMIT"                 : "Submit",
@@ -1415,10 +1426,11 @@
    "MODIFY"        : "Modify a Patient Group",
    "NEW"           : "New Patient Group",
    "PATIENT_GROUP" : "Patient Group",
-   "PRICE_LIST"    : "Price List",
+   "PRICE_LIST"    : "Price List", 
    "REGISTER"      : "Register a Patient Group",
    "REGISTERED"    : "Registered Patient Groups",
    "SUBSIDY"       : "Subsidy",
+   "SUCCESS"       : "Successfully modified the group",
    "TITLE"         : "Patient Group Management"
    },
 "PATIENT_GRP_ASSIGNMENT": {
@@ -1426,6 +1438,7 @@
    "DOB"         : "Date of Birth",
    "FULL_NAME"   : "Full Name",
    "PATIENT_GRP" : "Patient Groups",
+   "SUCCESS_UPD" : "Successfully updated",
    "TITLE"       : "Patient Group Assignment"
    },
 "PATIENT_RECORDS": {
@@ -1625,8 +1638,9 @@
    "TRANSACTION"           : "Transaction",
    "TRANSACTION_DATE"      : "Transacton Date",
    "TRANSACTION_NUMBER"    : "Transaction #",
+   "TRANSACTION_SUCCESS"   : "Transaction edits and logs saved successfully",
    "TRIAL_BALANCE"         : "Trial Balance",
-   "VERIFY_TRANSACTION"    : "Verify Transaction"
+   "VERIFY_TRANSACTION"    : "Verify Transaction" 
    },
 "PRICE_LIST": {
    "ACTIONS"          : "Actions",
@@ -1692,6 +1706,7 @@
       "PAYDAY_DETAILS"           : "Make the payment of employee salary advances",
       "PAYMENT_PERIOD_NOT_FOUND" : "payment period not found !",
       "PAYROLL"                  : "Payroll",
+      "PAYROLL_DESC"             : "This module help you to manage Payroll",
       "PURCHASE"                 : "Pay Purchase Order",
       "PURPOSE"                  : "Purpose of Expense",
       "RECIPIENT"                : "Recipient",
@@ -1705,6 +1720,7 @@
       "SELECT_ACCOUNT"           : "Select an account",
       "SELECT_PERIOD"            : "Select a payment period",
       "SENIORITY"                : "Seniority",
+      "SUCCESS"                  : "Success",
       "SUMMARY"                  : "Summary",
       "TAXES_OTHERS"             : "Employee Taxes and others deductions",
       "TAXES_OTHERS_ENTERPRISE"  : "Enterprise Taxes et others deductions",
@@ -1751,9 +1767,10 @@
    "TITLE"            : "Primary Cash"
    },
 "PROFIT_CENTER": {
-   "NAVIGATION" : "Browsing",
-   "OPERATION"  : "operations",
-   "OPERATIONS": {
+   "DESCRIPTION" : "This module help you to manage profit center",
+   "NAVIGATION"  : "Browsing",
+   "OPERATION"   : "operations",
+   "OPERATIONS"  : {
       "ASSIGN"    : "Assigning",
       "CC"        : "Profit center",
       "VERSEMENT" : "Injection"
@@ -1815,6 +1832,7 @@
       },
    "DIRECT"        : "Direct",
    "INDIRECT"      : "Indirect",
+   "INVALID_PRICE"  : "Invalide price",
    "NOT_FOUND"     : "Not found",
    "PURCHASE_TYPE" : "Purchase type",
    "TITLE"         : "Purchase order",
@@ -1824,6 +1842,7 @@
    },
 "PURCHASE_MENU": {
    "CONFIRM"          : "Confirm payment",
+   "DESCRIPTION"      : "This module help you to manage purchase orders",
    "OPERATION"        : "Operations",
    "PUCHASE_CREATION" : "Create purchase order",
    "TITLE"            : "Purchase order management",
@@ -2310,6 +2329,7 @@
    "CANCEL"                 : "Cancel",
    "COST"                   : "Cost to Debtor",
    "DEBITOR"                : "Debtor",
+   "DESCRIPTION_LONG"       : "This module help you to manage support",
    "DETAILS"                : "Invoice Details",
    "EMPLOYEE"               : "Employee",
    "ERROR_TXT_1"            : "Check that everything is correctly entered",
@@ -2320,6 +2340,7 @@
    "PAYMENT_AUTHORIZATION"  : "Payment Authorization",
    "SELECT_INVOICES"        : "Select Invoices",
    "SELECT_SUPPORT_DETAILS" : "Select Support Details",
+   "SUCCES"                 : "operation successfully !",
    "TITLE"                  : "Patient Support"
    },
 "SUPPORT_PAYEMENT": {
@@ -2413,6 +2434,7 @@
    "CONVENTION"  : "Convention",
    "CURRENCY"    : "Currency",
    "DATA_ERROR"  : "Incorrect Data",
+   "DESCRIPTION" : "This module help you to make transfer",
    "EXPECTED"    : "Expected",
    "INFO"        : "This Primary cash feature, is responsible of the receipt automatisation. Use this module to debit the primary cash by transfer, and so one",
    "NAVIGATION"  : "Browsing",
