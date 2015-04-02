@@ -2121,6 +2121,22 @@
    "THIRD"             : "Tiers",
    "WAREHOUSE_MANAGER" : "Gerant de l'entrepôt"
    },
+"SNIS" : {
+  "ALL"         : "Tous les rapports SNIS",
+  "DESCRIPTION" : "Gestion des données pour le SNIS",
+  "NEW"         : "Nouveau rapport SNIS ",
+  "NO_DATA"     : "Aucune donnée",
+  "STEP1"       : "Identification",
+  "STEP2"       : "Consultations",
+  "STEP3"       : "Hospitalisations",
+  "STEP4"       : "Labo & Imagerie",
+  "STEP5"       : "Sante de la mere",
+  "STEP6"       : "Sante de l'enfant",
+  "STEP7"       : "Gestion des ressources",
+  "STEP8"       : "Formation",
+  "STEP9"       : "Synthese utilisation service",
+  "TITLE"       : "SNIS (Système National d'Information Sanitaire)"
+  },
 "STOCK": {
    "DISTRIBUTION_RECORDS": {
       "ERROR"                    : "Cette consommation a déjà été inversée dans le stock",

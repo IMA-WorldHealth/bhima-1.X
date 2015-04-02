@@ -534,6 +534,10 @@
       controller : 'snis',
       templateUrl : 'partials/snis/snis.html'
     })
+    .when('/snis/new_report/', {
+      controller : 'snis.new_report',
+      templateUrl : 'partials/snis/snis_new_report.html'
+    })
     .when('/purchase_menu/', {
       controller : 'purchase.menu',
       templateUrl : 'partials/purchase/purchase_menu.html'
