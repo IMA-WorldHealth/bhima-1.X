@@ -2121,6 +2121,22 @@
    "THIRD"             : "Third",
    "WAREHOUSE_MANAGER" : "Warehouse Manager"
    },
+"SNIS" : {
+  "ALL"         : "All SNIS reports",
+  "DESCRIPTION" : "Managing data for SNIS",
+  "NEW"         : "New SNIS report ",
+  "NO_DATA"     : "No data",
+  "STEP1"       : "Identification",
+  "STEP2"       : "Consultations",
+  "STEP3"       : "Hospitalizations",
+  "STEP4"       : "Labo & Imagerie",
+  "STEP5"       : "Mother's health",
+  "STEP6"       : "Child's health",
+  "STEP7"       : "Ressource management",
+  "STEP8"       : "Formation",
+  "STEP9"       : "Service usage",
+  "TITLE"       : "SNIS (Système National d'Information Sanitaire)"
+  },
 "STOCK": {
    "DISTRIBUTION_RECORDS": {
       "ERROR"                    : "This consumption has been reversed in the stock",

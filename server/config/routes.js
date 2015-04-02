@@ -32,6 +32,8 @@ var uncategorised   = require('./../controllers/uncategorised');
 
 var compileReport   = require('./../controllers/reports_proposed/reports.js');
 
+var snis            = require('./../controllers/snis');
+
 
 
 exports.initialise = function (app) {
@@ -79,6 +81,8 @@ exports.initialise = function (app) {
   app.get('/reports/:route/', report.buildReport);
 
   app.get('/tree', tree.generate);
+
+  app.get('/snis/getAllReports', snis.getAllReports);
 
   // TODO These routes all belong somewhere
   app.get('/services/', uncategorised.services);
