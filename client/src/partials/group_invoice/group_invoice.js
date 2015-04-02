@@ -168,7 +168,7 @@ angular.module('bhima.controllers')
         return connect.fetch('/journal/group_invoice/' + id);
       })
       .then(function () {
-		messenger.success($translate.instant('GROUP_INVOICE.UPDATE_SUCCES'));
+		messenger.success($translate.instant('GROUP_INVOICE.SUCCES'));
       });
     };
 
