@@ -3924,15 +3924,11 @@ function handleCancelSupport (id, user_id, details, done) {
     cfg.store = store;
     rate = cfg.store.get(reference.currency_id).rate;
 
-    console.log('La premire ligne dans le developementMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM');
     console.log(postingJournal.length);
 
     postingJournal = postingJournal.filter(function (item) {
       return item.origin_id === cfg.originId;
     });
-
-    console.log('La premire ligne dans le developemenSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS');
-    console.log(postingJournal.length);
 
 
     transact = get.transactionId(reference.project_id);
