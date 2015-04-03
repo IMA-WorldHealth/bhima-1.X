@@ -497,7 +497,8 @@
    "VISIT_DATE"            : "Date de Visite",
    "VOLUME"                : "Volume",
    "WEIGHT"                : "Poids",
-   "WORKING_DAY"           : "Jours prestés"
+   "WORKING_DAY"           : "Jours prestés",
+   "ZS"                    : "Zone de Santé"
    },
 "CONFIG_ACCOUNTING": {
    "ADD"                  : "Créer une nouvelle configuration",
@@ -2076,7 +2077,8 @@
    "TAXES"                 : "Sélectionner une taxe",
    "UNIT"                  : "Sélectionner Unit",
    "VALUE"                 : "Sélectionner une valeur",
-   "VILLAGE"               : "Sélectionner une Village"
+   "VILLAGE"               : "Sélectionner une Village",
+   "ZS"                    : "Sélectionner une zone de santé"
    },
 "SERVICE": {
    "COST_CENTER_SELECT"     : "Centre de frais",
@@ -2124,6 +2126,7 @@
 "SNIS" : {
   "ALL"         : "Tous les rapports SNIS",
   "DESCRIPTION" : "Gestion des données pour le SNIS",
+  "LABEL"       : "SNIS rapport",
   "NEW"         : "Nouveau rapport SNIS ",
   "NO_DATA"     : "Aucune donnée",
   "STEP1"       : "Identification",

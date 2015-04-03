@@ -24,6 +24,7 @@ angular.module('bhima.controllers')
         },
         join : [
           'project.enterprise_id=enterprise.id',
+          'project.zs_id=mod_snis_zs.id',
           'enterprise.location_id=village.uuid',
           'village.sector_uuid=sector.uuid',
           'sector.province_uuid=province.uuid'
@@ -34,8 +35,10 @@ angular.module('bhima.controllers')
     dependencies.employes = {
       query : {
         tables : {
-          'employee' : { columns : ['id', 'prenom', 'name', 'postnom'] }
-        }
+          'employee' : { columns : ['id', 'prenom', 'name', 'postnom'] },
+          'fonction' : { columns : ['fonction_txt']}
+        },
+        join : ['employee.fonction_id=fonction.id']
       }
     };
 
@@ -72,18 +75,14 @@ angular.module('bhima.controllers')
     function loadView (view_id) {
       session.step = view_id;
     }
-
-    function loading () {
-      session.isLoaded = true;
-    }
-
-    function printObject (obj) {
-      console.info(obj, obj.getYear() + 1900, obj.getMonth() + 1);
-    }
+    
+    $scope.getMedecinDir = function (obj) {
+      $scope.identif.medecin_dir_id = obj.id;
+      $scope.identif.medecin_dir = obj.prenom + ', ' + obj.name + ' - ' + obj.postnom;
+      $scope.identif.qualification = obj.fonction_txt;
+    };
 
     $scope.snis_report = {};
     $scope.loadView = loadView;
-    $scope.loading = loading;
-    $scope.printObject = printObject;
   }
 ]);
