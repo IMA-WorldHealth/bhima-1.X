@@ -497,7 +497,8 @@
    "VISIT_DATE"            : "Last Visit",
    "VOLUME"                : "Volume",
    "WEIGHT"                : "Weight",
-   "WORKING_DAY"           : "Working day"
+   "WORKING_DAY"           : "Working day",
+   "ZS"                    : "Health Zone"
    },
 "CONFIG_ACCOUNTING": {
    "ADD"                  : "Create a new configuration",
@@ -2076,7 +2077,8 @@
    "TAXES"                 : "Select a tax",
    "UNIT"                  : "Select a Unit",
    "VALUE"                 : "Select a value",
-   "VILLAGE"               : "Select a Village"
+   "VILLAGE"               : "Select a Village",
+   "ZS"                    : "Select an health zone"
    },
 "SERVICE": {
    "COST_CENTER_SELECT"     : "Cost center",
@@ -2124,6 +2126,7 @@
 "SNIS" : {
   "ALL"         : "All SNIS reports",
   "DESCRIPTION" : "Managing data for SNIS",
+  "LABEL"       : "SNIS report",
   "NEW"         : "New SNIS report ",
   "NO_DATA"     : "No data",
   "STEP1"       : "Identification",

@@ -62,7 +62,7 @@
 							<div class="form-group">
 								<div class="input-group">
 									<label class="input-group-addon">Medecin Dir. </label>
-									<input class="form-control" type="text" ng-model="identif.medecin_dir">
+									<input class="form-control" type="text" ng-model="identif.medecin_dir" typeahead="employe as employe.name for employe in employes.data | filter:$viewValue | limitTo:8" typeahead-on-select="getMedecinDir(identif.medecin_dir)">
 								</div>
 							</div>
 
@@ -85,7 +85,7 @@
 							<div class="form-group">
 								<div class="input-group">
 									<label class="input-group-addon">Signature </label>
-									<input class="form-control" type="text" ng-model="identif.nom_envoi" typeahead="employe as employe.name for employe in employes | filter:$viewValue | limitTo:8" typeahead-on-select="identif.nom_envoi.selected()">
+									<input class="form-control" type="text" ng-model="identif.nom_envoi" typeahead="employe as employe.name for employe in employes.data | filter:$viewValue | limitTo:8" typeahead-on-select="identif.nom_envoi.selected()">
 								</div>
 							</div>
 						</div>
@@ -103,7 +103,7 @@
 							<div class="form-group">
 								<div class="input-group">
 									<label class="input-group-addon">Nom et signature </label>
-									<input class="form-control" type="text" ng-model="identif.nom_reception" typeahead="employe as employe.name for employe in employes | filter:$viewValue | limitTo:8" typeahead-on-select="identif.nom_reception.selected()">
+									<input class="form-control" type="text" ng-model="identif.nom_reception" typeahead="employe as employe.name for employe in employes.data | filter:$viewValue | limitTo:8" typeahead-on-select="identif.nom_reception.selected()">
 								</div>
 							</div>
 						</div>
@@ -118,7 +118,7 @@
 							<div class="form-group">
 								<div class="input-group">
 									<label class="input-group-addon">Nom et signature </label>
-									<input class="form-control" type="text" ng-model="identif.nom_encodage" typeahead="employe as employe.name for employe in employes | filter:$viewValue | limitTo:8" typeahead-on-select="identif.nom_encodage.selected()">
+									<input class="form-control" type="text" ng-model="identif.nom_encodage" typeahead="employe as employe.name for employe in employes.data | filter:$viewValue | limitTo:8" typeahead-on-select="identif.nom_encodage.selected()">
 								</div>
 							</div>
 						</div>
