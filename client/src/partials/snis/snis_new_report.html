@@ -1,4 +1,4 @@
-<nav>
+<nav class="center">
     <ul class="nav nav-pills nav-sm" role="tablist">
 	  <li ng-class="{'active' : session.step==1}"><a ng-click="loadView(1)"><span class="badge">1</span> {{ "SNIS.STEP1" | translate }}</a></li>
 	  <li ng-class="{'active' : session.step==2}"><a ng-click="loadView(2)"><span class="badge">2</span> {{ "SNIS.STEP2" | translate }}</a></li>
@@ -49,10 +49,21 @@
 <footer>
 	<div class="row">
 		<div class="col-xs-6">
-			<a href="#/snis/" class="btn btn-default pull-left"><i class="glyphicon glyphicon-chevron-left"></i> Retour</a>
+			<a href="#/snis/" class="btn btn-default pull-left"><i class="glyphicon glyphicon-chevron-left"></i> {{ "SNIS.BACK" | translate }}</a>
 		</div>
 		<div class="col-xs-6">
-			<a href="#/" class="btn btn-success pull-right">Valider</a>
+			<div class="btn-group pull-right">
+				<button class="btn btn-default" ng-click="previous()" ng-disabled="session.step===1">
+					<i class="glyphicon glyphicon-chevron-left"></i> 
+					{{ "SNIS.PREVIOUS" | translate }} 
+				</button>
+
+				<button class="btn btn-success" ng-click="next()">
+					<span ng-if="session.step<9">{{ "SNIS.NEXT" | translate }}</span>
+					<span ng-if="session.step===9">{{ "SNIS.SUBMIT" | translate }}</span>
+					<i class="glyphicon glyphicon-chevron-right"></i>
+				</button>
+			</div>
 		</div>
 	</div>
 </footer>

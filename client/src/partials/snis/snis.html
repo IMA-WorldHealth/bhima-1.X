@@ -36,10 +36,10 @@
           </thead>
           <tbody>
             <tr ng-repeat="report in reports.data">
-              <td>{{ depot.reference }}</td>
-              <td>{{ depot.text }}</td>
+              <td>{{ report.id }}</td>
+              <td>{{ "SNIS.LABEL" | translate }} - <b>{{ report.date | date:"MMMM yyyy" }}</b></td>
               <td><a class="action" ng-click="edit(report)"><span class="glyphicon glyphicon-pencil"></span></a></td>
-              <td><a class="action" ng-click="print(report)"><span class="glyphicon glyphicon-trash"></span></a></td>
+              <td><a class="action" ng-click="print(report)"><span class="glyphicon glyphicon-print"></span></a></td>
               <td><a class="action danger" ng-click="delete(report)"><span class="glyphicon glyphicon-trash"></span></a></td>
             </tr>
             <tr ng-if="!reports.data.length">

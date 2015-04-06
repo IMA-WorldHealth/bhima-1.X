@@ -2125,10 +2125,13 @@
    },
 "SNIS" : {
   "ALL"         : "Tous les rapports SNIS",
+  "BACK"        : "Retour rapports snis",
   "DESCRIPTION" : "Gestion des données pour le SNIS",
   "LABEL"       : "SNIS rapport",
   "NEW"         : "Nouveau rapport SNIS ",
+  "NEXT"        : "Suivant",
   "NO_DATA"     : "Aucune donnée",
+  "PREVIOUS"    : "Precedant",
   "STEP1"       : "Identification",
   "STEP2"       : "Consultations",
   "STEP3"       : "Hospitalisations",
@@ -2138,6 +2141,7 @@
   "STEP7"       : "Gestion des ressources",
   "STEP8"       : "Formation",
   "STEP9"       : "Synthese utilisation service",
+  "SUBMIT"      : "Soumettre",
   "TITLE"       : "SNIS (Système National d'Information Sanitaire)"
   },
 "STOCK": {
