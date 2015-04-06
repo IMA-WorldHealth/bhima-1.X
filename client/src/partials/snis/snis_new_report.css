@@ -1,3 +1,5 @@
+.no-margin { padding: 0px !important; }
+
 #canvas-snis table td input[type="text"] { width: 6em; }
 .cellmini input[type="text"] { width: 8em; }
 .cellmini-6em input[type="text"] { width: 6em; }
