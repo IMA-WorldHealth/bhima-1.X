@@ -35,7 +35,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="item in model.services.data">
+            <tr ng-repeat="item in model.services.data  | orderBy:'service'">
               <td>{{ item.service }}</td>
               <td>{{ item.project }}</td>
               <td>{{ item.cost_center }}</td>
