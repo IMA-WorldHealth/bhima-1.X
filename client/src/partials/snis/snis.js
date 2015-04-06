@@ -4,11 +4,12 @@ angular.module('bhima.controllers')
   '$q',
   '$translate',
   '$http',
+  '$location',
   'validate',
   'messenger',
   'connect',
   'appstate',
-  function ($scope, $q, $translate, $http, validate, messenger, connect, appstate) {
+  function ($scope, $q, $translate, $http, $location, validate, messenger, connect, appstate) {
     var dependencies = {};
 
     dependencies.reports = {
@@ -27,7 +28,7 @@ angular.module('bhima.controllers')
     };
 
     $scope.edit = function (obj) {
-
+      $location.path('/snis/edit_report/' + obj.id);
     };
 
     $scope.delete = function (obj) {

@@ -83,6 +83,7 @@ exports.initialise = function (app) {
   app.get('/tree', tree.generate);
 
   app.get('/snis/getAllReports', snis.getAllReports);
+  app.get('/snis/getReport/:id', snis.getReport);
   app.post('/snis/createReport', snis.createReport);
   app.delete('/snis/deleteReport/:id', snis.deleteReport);
   app.post('/snis/populateReport', snis.populateReport);
