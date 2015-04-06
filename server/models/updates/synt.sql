@@ -606,11 +606,11 @@ INSERT INTO `mod_snis_domaine` (`id`, `titre`, `nb_jour_travail_prevu_mois`) VAL
 
 CREATE TABLE IF NOT EXISTS `mod_snis_hopital` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `id_project` int(11) NOT NULL,
-  `nom` varchar(50) DEFAULT NULL,
-  `id_zs` int(11) NOT NULL,
-  `adresse` varchar(100) NOT NULL,
-  `id_employe_medecin_directeur` int(11) DEFAULT NULL,
+  `id_project` int(11) NULL,
+  `nom` varchar(50) NULL,
+  `id_zs` int(11) NULL,
+  `adresse` varchar(100) NULL,
+  `id_employe_medecin_directeur` int(11) NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
@@ -632,14 +632,14 @@ CREATE TABLE IF NOT EXISTS `mod_snis_identification` (
   `id_rapport` int(11) NOT NULL,
   `id_hopital` int(11) NOT NULL,
   `id_zs` int(11) NOT NULL,
-  `id_employe_medecin_dir` int(11) DEFAULT NULL,
-  `date_envoie` date DEFAULT NULL,
-  `date_reception` date DEFAULT NULL,
-  `date_encodage` date DEFAULT NULL,
-  `information` text,
-  `id_employe_envoi` int(11) DEFAULT NULL,
-  `id_employe_reception` int(11) DEFAULT NULL,
-  `id_employe_encodage` int(11) DEFAULT NULL,
+  `id_employe_medecin_dir` int(11) NULL,
+  `date_envoie` date NULL,
+  `date_reception` date NULL,
+  `date_encodage` date NULL,
+  `information` text NULL,
+  `id_employe_envoi` int(11) NULL,
+  `id_employe_reception` int(11) NULL,
+  `id_employe_encodage` int(11) NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
@@ -649,8 +649,8 @@ CREATE TABLE IF NOT EXISTS `mod_snis_identification` (
 
 CREATE TABLE IF NOT EXISTS `mod_snis_items` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `libelle` varchar(255) DEFAULT NULL,
-  `rubrique_snis` varchar(20) DEFAULT NULL,
+  `libelle` varchar(255) NULL,
+  `rubrique_snis` varchar(20) NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 

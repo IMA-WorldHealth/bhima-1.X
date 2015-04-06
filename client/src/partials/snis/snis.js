@@ -3,11 +3,12 @@ angular.module('bhima.controllers')
   '$scope',
   '$q',
   '$translate',
+  '$http',
   'validate',
   'messenger',
   'connect',
   'appstate',
-  function ($scope, $q, $translate, validate, messenger, connect, appstate) {
+  function ($scope, $q, $translate, $http, validate, messenger, connect, appstate) {
     var dependencies = {};
 
     dependencies.reports = {
@@ -19,6 +20,25 @@ angular.module('bhima.controllers')
 
     function init(model) {
       angular.extend($scope, model);
-    }   
+    }
+
+    $scope.print = function (obj) {
+
+    };
+
+    $scope.edit = function (obj) {
+
+    };
+
+    $scope.delete = function (obj) {
+      $http.delete('/snis/deleteReport/' + obj.id)
+      .success(function (res) {
+        validate.refresh(dependencies, ['reports'])
+        .then(init)
+        .then(function () {
+          messenger.success('[succes] Rapport supprime avec succes', true);
+        });
+      });
+    };
   }
 ]);
