@@ -32,6 +32,7 @@ function createReport (req, res) {
 			db.exec(sql)
 			.then(function (rows){
 				if (rows.length > 0) {
+					_REPORT_ID = rows[0].id;
 					isNew = false;
 					def.resolve(isNew);
 				} else {
@@ -113,8 +114,8 @@ function createReport (req, res) {
 
 		//Update
 		if(project_id){
-			sql = 'UPDATE mod_snis_identification SET id_hopital="'+project_id+'", id_zs="'+zs_id+'", date_envoie = "'+date_envoi+'", date_reception = "'+date_reception+'", date_encodage = "'+date_encodage+'", information = "'+info+'", id_employe_envoi = "'+id_employe_envoi+'", id_employe_reception = "'+id_employe_reception+'", id_employe_encodage = "'+id_employe_encodage+'"';
-			sql +=' WHERE id_rapport = "' + id_rapport +'"';
+			sql = 'UPDATE mod_snis_identification SET id_hopital="'+project_id+'", id_zs="'+zs_id+'", date_envoie = "'+date_envoi+'", date_reception = "'+date_reception+'", date_encodage = "'+date_encodage+'", information = "'+info+'", id_employe_envoi = "'+id_employe_envoi+'", id_employe_reception = "'+id_employe_reception+'", id_employe_encodage = "'+id_employe_encodage+'" '
+				+ ' WHERE id_rapport = ' + id_rapport;
 
 			db.exec(sql)
 			.then(function(){
@@ -131,6 +132,7 @@ function createReport (req, res) {
 		var sql = 'SELECT * FROM mod_snis_identification WHERE id_rapport = "' + _REPORT_ID +'"';
 		db.exec(sql)
 		.then(function(rows){
+			console.info('IS REPORTS ?: ', rows);
 			if(rows.length > 0){
 				updateDataIdentification(req);
 			}else{
@@ -146,6 +148,9 @@ function createReport (req, res) {
 	.then(function (data) {
 		saveDataIdentification(req);
 		res.sendStatus(200);
+	})
+	.catch(function (err) {
+		console.error('error newReport: ',err);
 	});
 }
 
@@ -162,6 +167,7 @@ function populateReport (req, res) {
 	var insertSnisRapport = function(req){
 		var tabrecuperation = req.body.params.data;
 		var requeteNameAttribut = "SELECT * FROM mod_snis_attribut_form";
+		var idAttribut, nameAttribut;
 
 		db.exec(requeteNameAttribut)
 		.then(function(ans){
@@ -171,8 +177,7 @@ function populateReport (req, res) {
 					idAttribut = Form.id;
 					nameAttribut = Form.attribut_form;
 					if((nameAttribut) && (tabrecuperation[nameAttribut])){
-						var ReqInsertion = "INSERT INTO mod_snis_monthly_report (id_attribut_form,value,id_month) VALUES ('" + idAttribut + "','" + tabrecuperation[nameAttribut] + "','"+_REPORT_ID+"')";
-						db.exec(ReqInsertion);
+						fxReqInsertion();
 					}			
 				}
 			}
@@ -180,12 +185,18 @@ function populateReport (req, res) {
 		.catch(function(err){
 			console.error('[error]: ', err);
 		});
+
+		function fxReqInsertion () {
+			var ReqInsertion = "INSERT INTO mod_snis_monthly_report (id_attribut_form,value,id_month) VALUES ('" + idAttribut + "','" + tabrecuperation[nameAttribut] + "','"+_REPORT_ID+"')";
+			db.exec(ReqInsertion);
+		}
 	};
 
 	//UPDATE DATA
 	var updateSnisRapport = function(req){
 		var tabrecuperation = req.body.params.data;
 		var requeteNameAttribut = "SELECT * FROM mod_snis_attribut_form";
+		var idAttribut, nameAttribut;
 
 		db.exec(requeteNameAttribut)
 		.then(function(ans){
@@ -195,8 +206,7 @@ function populateReport (req, res) {
 					idAttribut = Form.id;
 					nameAttribut = Form.attribut_form;
 					if((nameAttribut) && (tabrecuperation[nameAttribut])){
-						var ReqUpdate = "UPDATE mod_snis_monthly_report SET id_attribut_form = '" + idAttribut + "', value = '" + tabrecuperation[nameAttribut] + "' WHERE id_month = '"+_REPORT_ID+"'";
-						db.exec(ReqUpdate);	
+						fxReqUpdate();
 					}			
 				}
 			}
@@ -204,6 +214,11 @@ function populateReport (req, res) {
 		.catch(function(err){
 			console.error('[error]: ', err);
 		});
+
+		function fxReqUpdate () {
+			var ReqUpdate = "UPDATE mod_snis_monthly_report SET id_attribut_form = '" + idAttribut + "', value = '" + tabrecuperation[nameAttribut] + "' WHERE id_month = '"+_REPORT_ID+"'";
+			db.exec(ReqUpdate);	
+		}
 	};
 
 	//Save Data Rapport
@@ -212,14 +227,15 @@ function populateReport (req, res) {
 			var sql = 'SELECT * FROM mod_snis_monthly_report WHERE id_month = "' + _REPORT_ID +'"';
 			db.exec(sql)
 			.then(function(rows){
-				console.log(rows);
+				console.log('REPORTS : ', rows);
 				if(rows.length > 0){
-					//Iserer d'abord
+					// Iserer d'abord
+					// si certains champs sont vides ils seront ignores
 					insertSnisRapport(req);
-					//Puis Update
+					// Puis Update
 					updateSnisRapport(req);
 				}else{
-					//Insertion data
+					// Insertion data
 					insertSnisRapport(req);
 				}
 			})
@@ -233,10 +249,47 @@ function populateReport (req, res) {
 	res.sendStatus(200);
 }
 
+function getReport (req, res) {
+	var report_id = sanitize.escape(req.params.id),
+		sql, sql2, snisData, identificationData;
+
+	sql = 'SELECT monthly.value, attribut.attribut_form FROM mod_snis_monthly_report monthly '
+		+ ' JOIN mod_snis_attribut_form attribut ON attribut.id=monthly.id_attribut_form '
+		+ ' JOIN mod_snis_rapport report ON report.id=monthly.id_month ' 
+		+ ' WHERE report.id='+report_id;
+
+	db.exec(sql)
+	.then(function (data) {
+		snisData = data;
+	})
+	.then(function () {
+		selectSnisIdentification();
+	})
+	.catch(function (err) {
+		console.error('[error]: ', err);
+	});
+
+	function selectSnisIdentification () {
+		sql2 = 'SELECT * FROM mod_snis_identification WHERE id_rapport='+report_id;
+		db.exec(sql2)
+		.then(function (data2) {
+			identificationData = data2;
+			res.send({
+				'identification' : identificationData,
+				'snisData'       : snisData
+			});
+		})
+		.catch(function (err) {
+			console.error('[error]: ', err);
+		});
+	}
+}
+
 // Expose
 module.exports = {
 	getAllReports : getAllReports,
 	createReport  : createReport,
 	deleteReport  : deleteReport,
-	populateReport: populateReport
+	populateReport: populateReport,
+	getReport     : getReport
 };

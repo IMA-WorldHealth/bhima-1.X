@@ -538,6 +538,10 @@
       controller : 'snis.new_report',
       templateUrl : 'partials/snis/snis_new_report.html'
     })
+    .when('/snis/edit_report/:id', {
+      controller : 'snis.edit_report',
+      templateUrl : 'partials/snis/snis_edit_report.html'
+    })
     .when('/purchase_menu/', {
       controller : 'purchase.menu',
       templateUrl : 'partials/purchase/purchase_menu.html'
