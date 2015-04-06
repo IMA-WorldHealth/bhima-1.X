@@ -1,12 +1,13 @@
 angular.module('bhima.controllers')
 .controller('support', [
   '$scope',
+  '$translate',
   'connect',
   'validate',
   'appstate',
   'messenger',
   'uuid',
-  function ($scope, connect, validate, appstate, messenger, uuid) {
+  function ($scope, $translate, connect, validate, appstate, messenger, uuid) {
 
     var dependencies = {};
     $scope.action = '';
@@ -163,7 +164,7 @@ angular.module('bhima.controllers')
         return connect.fetch('/journal/employee_invoice/' + id);
       })
      .then(function () {
-        messenger.success('Data submitted successfully.');
+        messenger.info($translate.instant('SUPPORT.SUCCES'));
       });
        
     };

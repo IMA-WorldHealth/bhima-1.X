@@ -123,9 +123,13 @@
    },
 "AUXILLARY_CASH_RECORD" : {
     "ALL_PROJECTS"   : "All projects",
+    "CANCEL"         : "Cancel Operation",
     "CREDIT_NOTE"    : "Credit note",
+    "GENERATE"       : "Generate",
+    "PATIENT_CASH"   : "Patient Cash",
     "RECEIPT"        : "Receipt",
-    "TITLE"          : "Auxillary cash record"
+    "TITLE"          : "Auxillary cash record",
+    "UNFOUND"        : "Data Not Found"
 },
 "BALANCE" : {
   "BUILD_BALANCE"   : "Build Balance",
@@ -240,6 +244,15 @@
    "TITLE"           : "Purchase Order Dispense",
    "TO"              : "to "
    },
+"CASH_RETURN"          : {
+    "DEFAULT_CURRENCY" : "Currency",
+    "DESC"             : "Description",
+    "DESCRIPTION"      : "Cash return module will help you to return cash money that you get before to creditor or debitor",
+    "TAPE_VALUE"       : "Enter value",
+    "TITLE"            : "Cash return",
+    "SUBMIT_FAILED"    : "Error during submit, the operation is failed",
+    "SUBMIT_SUCCESS"   : "Congratulation, the operation is a success"
+  },
 "CAUTION": {
    "AGE"          : "Age",
    "CASH"         : "Cash Payments",
@@ -304,8 +317,10 @@
    "DATE"                  : "Date",
    "DATE_BILLED"           : "Date Created",
    "DATE_EMBAUCHE"         : "Hiring date",
+   "DATE_EXPIRE"           : "Expiring date",
    "DATE_FROM"             : "Date From",
    "DATE_REGISTERED"       : "Date Registered",
+   "DATE_IN"               : "Entry date",
    "DATE_TO"               : "Date To",
    "DC_TYPE"               : "D/C Type",
    "DEBCRED_ID"            : "Deb/Cred ID",
@@ -330,6 +345,7 @@
    "DOB"                   : "Date of Birth",
    "DOCUMENT_ID"           : "Document ID",
    "DOCUMENT_UUID"         : "Document Number",
+   "DONOR"                 : "Donor",
    "DRUGS"                 : "Drugs",
    "DURABLE"               : "Durable",
    "EDIT"                  : "Edit",
@@ -450,6 +466,7 @@
    "STOCK_QTE_MAX"         : "Stock Maximum Quantity",
    "STOCK_QTE_MIN"         : "Stock Minimum Quantity",
    "STOCK_QTE_SEC"         : "Security Stock Quantity",
+   "STOCK_VALUE"           : "Stock value",
    "SUMMARY"               : "Summary",
    "SUPPLIER"              : "Supplier",
    "SYMBOL"                : "Symbol",
@@ -584,9 +601,10 @@
    "TOT"               : "Total"
    },
 "COST_CENTER": {
-   "NAVIGATION" : "Browsing",
-   "OPERATION"  : "operations",
-   "OPERATIONS": {
+   "DESCRIPTION" : "This module help you to manage cost center",
+   "NAVIGATION"  : "Browsing",
+   "OPERATION"   : "operations",
+   "OPERATIONS"  : {
       "ASSIGN"    : "Assigning",
       "CC"        : "Cost center",
       "VERSEMENT" : "Injection"
@@ -610,7 +628,8 @@
    "UPDATE_SUCCES"  : "Updated successfully"
    },
 "COTISATION_MANAGEMENT": {
-   "CREATE_COTISATION" : "cotisation creation",
+   "CREATE_COTISATION" : "Cotisation creation",
+   "DESCRIPTION"       : "This modle help you to manage cotisations",
    "OPTIONS"           : "Options",
    "TITLE"             : "Cotisations management"
    },
@@ -647,11 +666,14 @@
    "TITLE"           : "Creditor Group Management"
    },
 "CREDIT_NOTE": {
-   "DESCRIPTION"  : "Description",
-   "SALE_DETAILS" : "Sale Details",
-   "SUBMIT"       : "Submit Credit Note",
-   "TITLE"        : "Credit Note",
-   "TOTAL_DEBIT"  : "Total Debit"
+   "DESCRIPTION"           : "Description",
+   "INVOICE_CONSUMPTION"   : "This invoice may not be canceled because there a product distribution is concerned",
+   "INVOICE_CONSUMPTION_2" : "It would cancel the distribution of products in order to cancel the sale",   
+   "PLEASE_NOTE"           : "Please note that invoice has already been paid, in case of cancellation the box must remboursser to patient the sum of:",
+   "SALE_DETAILS"          : "Sale Details",
+   "SUBMIT"                : "Submit Credit Note",
+   "TITLE"                 : "Credit Note",
+   "TOTAL_DEBIT"           : "Total Debit"
    },
 "CURRENCY": {
    "ACTIONS"       : "Actions",
@@ -745,6 +767,7 @@
    "PATIENT_COVERED"        : "Patient is convered by a Convention",
    "RECOMANDED"             : "Recomended Lot",
    "REMAINING_QUANTITY"     : "Remaining quantity",
+   "REVERSE_CONSUMPTION"    : "Reverse consumption",
    "SALE"                   : "Sale",
    "SALE_BALANCE"           : "Sale balance",
    "SALE_DATE"              : "Sale Date",
@@ -1074,9 +1097,11 @@
    "AUTHORIZED_BY"          : "Authorized By",
    "BALANCE"                : "Balance",
    "CANCEL"                 : "Cancel",
-   "CONVENTION_INVOICE"     : "Convention Invoice",
+   "CONVENTION_INVOICE"     : "Convention Invoice", 
    "COST"                   : "Cost to Debtor",
+   "DATA_SUCCES"            : "Data submitted successfully",
    "DEBITOR"                : "Debtor",
+   "DESCRIPTION_LONG"       : "This module help you in convention billing",
    "DETAILS"                : "Invoice Details",
    "ERROR_TXT_1"            : "Check that everything is correctly entered",
    "GROUP"                  : "Group",
@@ -1084,6 +1109,7 @@
    "INVOICE_ID"             : "Invoice ID",
    "INVOICE_TITLE"          : "Convention Invoice for Debtor",
    "PAY"                    : "Pay Invoices",
+   "PAYMENT_AUTHORIZATION"  : "Payment authorization",
    "SELECT_INVOICES"        : "Select Invoices",
    "SELECT_PAYMENT_DETAILS" : "Select Payment Details",
    "TITLE"                  : "Debtor Group Invoicing"
@@ -1145,6 +1171,7 @@
       "ADD_ITEM"       : "Register Item",
       "CONFIG_GROUPS"  : "Configure Groups",
       "CONFIG_TYPES"   : "Configure Item Types",
+      "DESCRIPTION"    : "This module help you to manage inventories",
       "OPTIONS"        : "Options",
       "PRINT_MANIFEST" : "Print Inventory Manifest",
       "TITLE"          : "Inventory Management",
@@ -1155,21 +1182,22 @@
       "TITLE" : "Inventory Manifest"
       },
    "REGISTER": {
-      "ADD_GROUP"     : "Add Inventory Group",
-      "ADD_TYPE"      : "Add Unit Type",
-      "BILLING"       : "Billing & Stock Information",
-      "CODE"          : "Inventory Code",
-      "CONSUMABLE"    : "Consumable",
-      "DEFAULT_PRICE" : "Default Price",
-      "DESCRIPTION"   : "Description",
-      "DURABLE"       : "Durable",
-      "GENERAL"       : "General",
-      "GROUP"         : "Inventory Group",
-      "TITLE"         : "Stock Registration",
-      "UNIT"          : "Unit",
-      "UNIT_VOLUME"   : "Unit Volume",
-      "UNIT_WEIGHT"   : "Unit Weight",
-      "VIEW"          : "View All Items"
+      "ADD_GROUP"      : "Add Inventory Group",
+      "ADD_TYPE"       : "Add Unit Type",
+      "BILLING"        : "Billing & Stock Information",
+      "CODE"           : "Inventory Code",
+      "CONSUMABLE"     : "Consumable",
+      "DEFAULT_PRICE"  : "Default Price",
+      "DESCRIPTION"    : "Description",
+      "DURABLE"        : "Durable",
+      "GENERAL"        : "General",
+      "GROUP"          : "Inventory Group",
+      "SUBMIT_SUCCESS" : "Submitted Successfully",
+      "TITLE"          : "Stock Registration",
+      "UNIT"           : "Unit",
+      "UNIT_VOLUME"    : "Unit Volume",
+      "UNIT_WEIGHT"    : "Unit Weight",
+      "VIEW"           : "View All Items"
       },
    "TYPES": {
       "ADD"       : "Add a new type",
@@ -1294,6 +1322,7 @@
    "DATE"                   : "Date Transaction",
    "DEFAULT_CURRENCY"       : "Currency",
    "DESCRIPTION"            : "Description",
+   "DESCRIPTION_LONG"       : "This module help you to make intantaneous transaction to posting journal",
    "LOG"                    : "Log Journal ID ",
    "POSTING_JOURNAL"        : "Posting Journal",
    "SUBMIT"                 : "Submit",
@@ -1399,10 +1428,11 @@
    "MODIFY"        : "Modify a Patient Group",
    "NEW"           : "New Patient Group",
    "PATIENT_GROUP" : "Patient Group",
-   "PRICE_LIST"    : "Price List",
+   "PRICE_LIST"    : "Price List", 
    "REGISTER"      : "Register a Patient Group",
    "REGISTERED"    : "Registered Patient Groups",
    "SUBSIDY"       : "Subsidy",
+   "SUCCESS"       : "Successfully modified the group",
    "TITLE"         : "Patient Group Management"
    },
 "PATIENT_GRP_ASSIGNMENT": {
@@ -1410,6 +1440,7 @@
    "DOB"         : "Date of Birth",
    "FULL_NAME"   : "Full Name",
    "PATIENT_GRP" : "Patient Groups",
+   "SUCCESS_UPD" : "Successfully updated",
    "TITLE"       : "Patient Group Assignment"
    },
 "PATIENT_RECORDS": {
@@ -1609,8 +1640,9 @@
    "TRANSACTION"           : "Transaction",
    "TRANSACTION_DATE"      : "Transacton Date",
    "TRANSACTION_NUMBER"    : "Transaction #",
+   "TRANSACTION_SUCCESS"   : "Transaction edits and logs saved successfully",
    "TRIAL_BALANCE"         : "Trial Balance",
-   "VERIFY_TRANSACTION"    : "Verify Transaction"
+   "VERIFY_TRANSACTION"    : "Verify Transaction" 
    },
 "PRICE_LIST": {
    "ACTIONS"          : "Actions",
@@ -1646,6 +1678,7 @@
       "ACCOUNT"                  : "Account",
       "ADVANTAGES"               : "Advantages",
       "AMOUNT"                   : "Amount Dispensed",
+      "CASH_RETURN"              : "Cash Return",
       "COTISATIONS"              : "Cotisations",
       "COTISATION_PAYMENT"       : "Cotisation Payment",
       "CREDITOR"                 : "Creditor",
@@ -1675,6 +1708,7 @@
       "PAYDAY_DETAILS"           : "Make the payment of employee salary advances",
       "PAYMENT_PERIOD_NOT_FOUND" : "payment period not found !",
       "PAYROLL"                  : "Payroll",
+      "PAYROLL_DESC"             : "This module help you to manage Payroll",
       "PURCHASE"                 : "Pay Purchase Order",
       "PURPOSE"                  : "Purpose of Expense",
       "RECIPIENT"                : "Recipient",
@@ -1688,6 +1722,7 @@
       "SELECT_ACCOUNT"           : "Select an account",
       "SELECT_PERIOD"            : "Select a payment period",
       "SENIORITY"                : "Seniority",
+      "SUCCESS"                  : "Success",
       "SUMMARY"                  : "Summary",
       "TAXES_OTHERS"             : "Employee Taxes and others deductions",
       "TAXES_OTHERS_ENTERPRISE"  : "Enterprise Taxes et others deductions",
@@ -1734,9 +1769,10 @@
    "TITLE"            : "Primary Cash"
    },
 "PROFIT_CENTER": {
-   "NAVIGATION" : "Browsing",
-   "OPERATION"  : "operations",
-   "OPERATIONS": {
+   "DESCRIPTION" : "This module help you to manage profit center",
+   "NAVIGATION"  : "Browsing",
+   "OPERATION"   : "operations",
+   "OPERATIONS"  : {
       "ASSIGN"    : "Assigning",
       "CC"        : "Profit center",
       "VERSEMENT" : "Injection"
@@ -1798,6 +1834,7 @@
       },
    "DIRECT"        : "Direct",
    "INDIRECT"      : "Indirect",
+   "INVALID_PRICE"  : "Invalide price",
    "NOT_FOUND"     : "Not found",
    "PURCHASE_TYPE" : "Purchase type",
    "TITLE"         : "Purchase order",
@@ -1807,6 +1844,7 @@
    },
 "PURCHASE_MENU": {
    "CONFIRM"          : "Confirm payment",
+   "DESCRIPTION"      : "This module help you to manage purchase orders",
    "OPERATION"        : "Operations",
    "PUCHASE_CREATION" : "Create purchase order",
    "TITLE"            : "Purchase order management",
@@ -1897,15 +1935,18 @@
    "ABBR"           : "Abbr.",
    "ADD"            : "Add Rubric",
    "ALERT"          : "The Payroll Topics Module is a module that has been designed to allow the definition of different benefits and other elements involved in the calculation of payroll.",
+   "BE_DISCOUNT"    : "The payday advance must necessarily be a discount",
    "CONFIRM"        : "Are you sure to delete this category",
    "DELETE_SUCCESS" : "Deleting successfully",
    "EDIT"           : "Edit Rubric",
+   "IS_ADVANCE"     : "Is an advance?",
    "IS_DISCOUNT"    : "Is a discount?",
    "IS_PERCENT"     : "Is a percent (%)?",
    "LABEL"          : "Rubric",
    "NB"             : "N",
    "NEW"            : "New Rubric",
    "NO"             : "No",
+   "NOT_ADVANCE"    : "The advance salary property can be held by two rubrics",
    "NOT_EMPTY"      : "Abbr. Can not be empty",
    "NOT_SUP4"       : "Can not be more than 4 characters",
    "NOT_SUP_MAXDAY" : "Can not be greater than the total working days",
@@ -2140,6 +2181,24 @@
    "EXPIRE": {
       "KEY" : "Expiring Stock"
       },
+   "INTEGRATION" : {
+      "DESCRIPTION"       : "Use this module to integrate into the system BHIMA a stock that already existed physically",
+      "CANCEL"            : "Cancel",
+      "EXPIRATION_DATE"   : "Expiration date",
+      "EXPIRATION_INFO"   : "Please enter the valid expirations dates",
+      "EXPIRATION_ALERT"  : "The system does not accept expired product",
+      "ITEMS"             : "Stock Item(s)",
+      "KEY"               : "Stock Integration",
+      "LOT_QTY"           : "Lot and Quantity",
+      "LOT_QTY_DESC"      : "Please enter the lot number and quantity",
+      "MADE_BY"           : "Made By",
+      "NEW"               : "New Stock Integration",
+      "PREVIEW"           : "Preview",
+      "STOCK_VOID"        : "No Stock",
+      "STOCK_VOID_DESC"   : "Please add products",
+      "TITLE"             : "Stock Integration",
+      "SUBMIT"            : "Submit"
+      },
    "LOSS": {
       "KEY"               : "Stock loss",
       "LOSS_GENERAL_INFO" : "Summary",
@@ -2275,6 +2334,7 @@
    "CANCEL"                 : "Cancel",
    "COST"                   : "Cost to Debtor",
    "DEBITOR"                : "Debtor",
+   "DESCRIPTION_LONG"       : "This module help you to manage support",
    "DETAILS"                : "Invoice Details",
    "EMPLOYEE"               : "Employee",
    "ERROR_TXT_1"            : "Check that everything is correctly entered",
@@ -2285,6 +2345,7 @@
    "PAYMENT_AUTHORIZATION"  : "Payment Authorization",
    "SELECT_INVOICES"        : "Select Invoices",
    "SELECT_SUPPORT_DETAILS" : "Select Support Details",
+   "SUCCES"                 : "operation successfully !",
    "TITLE"                  : "Patient Support"
    },
 "SUPPORT_PAYEMENT": {
@@ -2341,6 +2402,7 @@
    "NEW_TAX"             : "New Tax",
    "NEW_TRANCH"          : "New Tranch",
    "NOT_EMPTY"           : "Abbr. Can not be empty",
+   "NOT_IPR"             : "The IPR property can be held by two taxes",
    "NOT_SUP4"            : "Can not be more than 4 characters",
    "NO_TAXES"            : "No tax have been registred",
    "NO_TRANCHES"         : "No tranch has been recorded",
@@ -2378,6 +2440,7 @@
    "CONVENTION"  : "Convention",
    "CURRENCY"    : "Currency",
    "DATA_ERROR"  : "Incorrect Data",
+   "DESCRIPTION" : "This module help you to make transfer",
    "EXPECTED"    : "Expected",
    "INFO"        : "This Primary cash feature, is responsible of the receipt automatisation. Use this module to debit the primary cash by transfer, and so one",
    "NAVIGATION"  : "Browsing",
@@ -2481,6 +2544,7 @@
    "RENEWAL"                   : "Patient Renewal",
    "REPORTS"                   : "Reports",
    "REPORT_COTISATION"         : "Reports cotisations payment",
+   "REPORT_DONATION"           : "Donation report",
    "REPORT_FINANCE"            : "Finance Report",
    "REPORT_SALARY"             : "Report Salary Payment",
    "REPORT_TAXES"              : "Report of Taxes Payment",
@@ -2550,6 +2614,8 @@
 "UTIL": {
    "ACCOUNT"           : "Account",
    "AGGREGATES"        : "Aggregates",
+   "ALL"               : "All",
+   "ALL_DONORS"        : "All donators",
    "BACK"              : "Back",
    "CANCEL"            : "Cancel",
    "COLUMNS"           : "Columns",
@@ -2563,6 +2629,7 @@
    "DATE_FROM"         : "From",
    "DATE_TO"           : "To",
    "DEPOT"             : "Store",
+   "DONOR"             : "Donor",
    "ERROR"             : "Error",
    "EXPORT_TO_CSV"     : "Export to CSV",
    "GENERATE"          : "Generate",
@@ -2574,6 +2641,7 @@
    "ON"                : "On",
    "PRINT"             : "Print",
    "PROJECT"           : "Current Project",
+   "REGISTER_NEW_STOCK": "Register a Stock",
    "RESET_FORM"        : "Reset Form",
    "SAVE_SELECTION"    : "Save Selection",
    "SEARCH"            : "Search",
@@ -2585,7 +2653,8 @@
    "TOGGLE"            : "Toggle",
    "TOGGLE_AGGREGATES" : "Toggle Aggregates",
    "TOTAL"             : "Total",
-   "TSHIKAJI"          : "TSHIKAJI"
+   "TSHIKAJI"          : "TSHIKAJI",
+   "VALIDATE"          : "Accept"
    },
 "VERSEMENT": {
    "ASSOCIATED_TO"     : "Accounts associated to         : ",

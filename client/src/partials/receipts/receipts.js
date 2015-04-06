@@ -104,6 +104,9 @@ angular.module('bhima.controllers')
       },
       'salary_advance' : {
         url : '/partials/receipts/templates/receipt_salary_advance.html'
+      },
+      'cash_return' : {
+        url : '/partials/receipts/templates/receipt_cash_return.html'
       }
     };
 

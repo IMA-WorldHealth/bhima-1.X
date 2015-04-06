@@ -27,7 +27,7 @@
     </nav>
 
     <main>  
-      <div ng-if="!session.configured" class="row">
+      <div ng-if="!session.configured" class="row margin-top-10">
         <div class="col-xs-12">
           <div class="panel panel-default">
             <div class="panel-heading">
@@ -43,7 +43,7 @@
               </div>
               <br>
               <div class="configure">
-                <select ng-model="session.pp" ng-options="pp as formatPeriod(pp) for pp in session.model.paiement_period.data" ng-change="setConfiguration(session.pp)">
+                <select ng-model="session.pp" ng-options="pp as formatPeriod(pp) for pp in session.model.paiement_period.data | orderBy:'-dateTo'" ng-change="setConfiguration(session.pp)">
                   <option value="" ng-disabled="disabled" disabled="true">-- {{'SELECT.PERIOD_PAYMENT' | translate}} -- </option>
                 </select>
               </div>
@@ -52,7 +52,7 @@
         </div>
       </div>
 
-      <div ng-if="session.configured && !session.available" class="row">
+      <div ng-if="session.configured && !session.available" class="row margin-top-10">
         <div class="col-xs-12">
           <div class="panel panel-default">
             <div class="panel-heading">
@@ -68,7 +68,7 @@
         </div>
       </div>
 
-      <div ng-if="session.configured && session.available" class="row">
+      <div ng-if="session.configured && session.available" class="row margin-top-10">
         <div class="col-xs-12">
           <div class="panel panel-default">
             <div class="panel-heading">
@@ -165,7 +165,7 @@
     </nav>
 
     <main>  
-      <div ng-if="!session.configured" class="row">
+      <div ng-if="!session.configured" class="row margin-top-10">
         <div class="col-xs-12">
           <div class="panel panel-default">
             <div class="panel-heading">
@@ -190,7 +190,7 @@
         </div>
       </div>
 
-      <div ng-if="session.configured && !session.available" class="row">
+      <div ng-if="session.configured && !session.available" class="row margin-top-10">
         <div class="col-xs-12">
           <div class="panel panel-default">
             <div class="panel-heading">
@@ -206,7 +206,7 @@
         </div>
       </div>
 
-      <div ng-if="session.configured && session.available" class="row">
+      <div ng-if="session.configured && session.available" class="row margin-top-10">
         <div class="col-xs-12">
           <div class="panel panel-default">
             <div class="panel-heading">

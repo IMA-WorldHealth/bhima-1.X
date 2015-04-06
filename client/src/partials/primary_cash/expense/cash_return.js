@@ -3,6 +3,7 @@ angular.module('bhima.controllers')
   '$scope',
   '$routeParams',
   '$translate',
+  '$location',
   'messenger',
   'validate',
   'appstate',
@@ -12,7 +13,7 @@ angular.module('bhima.controllers')
   'exchange',
   '$q',
   'uuid',
-  function ($scope, $routeParams, $translate, messenger, validate, appstate, Appcache, connect, util, exchange, $q, uuid) {
+  function ($scope, $routeParams, $translate, $location, messenger, validate, appstate, Appcache, connect, util, exchange, $q, uuid) {
     var dependencies = {},
         cache = new Appcache('cash_return'),
         session = $scope.session = {data : {}, base : {}};
@@ -128,32 +129,30 @@ angular.module('bhima.controllers')
     }
 
     function submit (){
-      console.log('data', session.data);
-      console.log('base', session.base);
-      console.log('scope', $scope);
+      var document_uuid = uuid();
 
       var primary_cash = {
-        uuid : uuid(),
-        project_id : session.base.project.id,
-        type : 'S',
-        date : util.sqlDate(new Date()),
+        uuid          : uuid(),
+        project_id    : session.base.project.id,
+        type          : 'S',
+        date          : util.sqlDate(new Date()),
         deb_cred_uuid : session.data.deb_cred.uuid,
         deb_cred_type : session.data.type,
-        currency_id : session.base.selectedItem.currency_id,
-        account_id : session.data.deb_cred.id,
-        cost : session.data.value,
-        user_id : $scope.cashier.data.id,
-        description : [session.base.project.abbr, 'RETOUR_CAISSE', session.data.deb_cred.text, session.data.type, util.sqlDate(new Date())].join('/'),
-        cash_box_id : session.base.cashbox,
-        origin_id : $scope.modules.data[0].id
+        currency_id   : session.base.selectedItem.currency_id,
+        account_id    : session.data.deb_cred.id,
+        cost          : session.data.value,
+        user_id       : $scope.cashier.data.id,
+        description   : session.data.description,
+        cash_box_id   : session.base.cashbox,
+        origin_id     : $scope.modules.data[0].id
       };
 
       var primary_cash_item = {
-        uuid : uuid(),
+        uuid              : uuid(),
         primary_cash_uuid : primary_cash.uuid,
-        debit : 0,
-        credit : primary_cash.cost,
-        document_uuid : primary_cash.uuid
+        debit             : 0,
+        credit            : primary_cash.cost,
+        document_uuid     : document_uuid
       };
 
       connect.post('primary_cash', primary_cash)
@@ -162,6 +161,16 @@ angular.module('bhima.controllers')
       })
       .then(function (){
         return connect.fetch('/journal/cash_return/' + primary_cash.uuid);
+      })
+      .then(function () {
+        session.data = {};
+        messenger.success($translate.instant('CASH_RETURN.SUBMIT_SUCCESS'));
+      })
+      .then(function () {
+        $location.path('/invoice/cash_return/' + primary_cash.uuid);
+      })
+      .catch(function (err) {
+        messenger.danger($translate.instant('CASH_RETURN.SUBMIT_FAILED'));
       });
     }
 
@@ -172,9 +181,14 @@ angular.module('bhima.controllers')
       }
     }
 
+    function getCredDeb () {
+      session.data.description = [session.base.project.abbr, 'RETOUR_CAISSE', session.data.deb_cred.text, session.data.type, util.sqlDate(new Date())].join('/');
+    }
+
     $scope.setCashAccount = setCashAccount;
     $scope.valid = valid;
     $scope.setType = setType;
     $scope.submit = submit;
+    $scope.getCredDeb = getCredDeb;
   }
 ]);

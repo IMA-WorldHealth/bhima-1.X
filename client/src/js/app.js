@@ -219,6 +219,10 @@
       controller: 'report.balance_mensuelle',
       templateUrl: 'partials/reports/balance_mensuelle/balance_mensuelle.html'
     })
+    .when('/reports/donation/', {
+      controller: 'report.donation',
+      templateUrl: 'partials/reports/donation/donation.html'
+    })
     .when('/location', {
       controller : 'location',
       templateUrl: 'partials/location/location.html'
@@ -509,6 +513,10 @@
     .when('/stock/loss_record/:depotId', {
       controller : 'stock.loss_record',
       templateUrl : 'partials/stock/loss_record/loss_record.html'
+    })
+    .when('/stock/integration/:depotId', {
+      controller : 'stock.integration',
+      templateUrl : 'partials/stock/integration/integration.html'
     })
     .when('/reports/loss_record/', {
       controller : 'loss_record',

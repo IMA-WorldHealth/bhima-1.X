@@ -14,13 +14,13 @@
 <main>
   <div class="col-xs-12">
 
-    <div class="row" ng-if="session.mode === 'search'" style="margin-top: 10px">
+    <div class="row margin-top-10" ng-if="session.mode === 'search'">
       <div class="col-xs-7">
         <div find-patient on-search-complete="initialiseEditing"></div>
       </div>
     </div>
 
-    <div class="row" ng-if="session.mode === 'edit'">
+    <div class="row margin-top-10" ng-if="session.mode === 'edit'">
       <div class="col-xs-7">
         <div class="row">
           <div id="patientDetails" class="panel panel-primary" ng-class="{'form-disabled' : session.mode != 'edit' }">
