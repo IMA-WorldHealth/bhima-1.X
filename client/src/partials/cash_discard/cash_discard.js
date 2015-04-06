@@ -18,7 +18,7 @@ angular.module('bhima.controllers')
       query: {
         tables: {
           cash: {
-            columns: ['uuid', 'cost', 'deb_cred_uuid', 'date', 'description', 'project_id', 'currency_id']
+            columns: ['uuid', 'cost', 'deb_cred_uuid', 'date', 'description', 'project_id', 'currency_id', 'is_caution']
           },
           patient: {
             columns: ['first_name', 'last_name']
@@ -42,7 +42,7 @@ angular.module('bhima.controllers')
             columns: ['allocated_cost']
           }
         },
-        join: ['cash_item.invoice_uuid = sale_item.sale_uuid', 'sale_item.inventory_uuid=inventory.uuid']
+        join : ['cash_item.invoice_uuid = sale_item.sale_uuid', 'sale_item.inventory_uuid=inventory.uuid']
       }
     };
 
@@ -56,14 +56,36 @@ angular.module('bhima.controllers')
 
     appstate.register('project', function (project) {
       $scope.project = project;
-      if (receiptId) { buildCashQuery(); }
+      if (receiptId) { handleCautionCase(); }
     });
 
-    function buildCashQuery() {
+    function handleCautionCase() {
       dependencies.cash.query.where = ['cash.uuid=' + receiptId];
+      return validate.process(dependencies, ['cash']).then(buildCashQuery);
+    }
+
+    function buildCashQuery(model) {
+      if (model.cash.data[0].is_caution) {
+        $scope.isCaution = true;
+        
+        dependencies.cashItem = {
+          required: true,
+          query: {
+            tables: {
+              cash_item : {
+                columns: ['allocated_cost']
+              }
+            }
+          }
+        };
+
+      } else {
+        $scope.isCaution = false;
+        dependencies.cashItem.query.join = ['cash_item.invoice_uuid = sale_item.sale_uuid', 'sale_item.inventory_uuid=inventory.uuid'];
+      }
       dependencies.cashItem.query.where = ['cash_item.cash_uuid=' + receiptId];
       dependencies.cashDiscard.query.where = ['cash_discard.cash_uuid=' + receiptId];
-      return validate.process(dependencies).then(cashDiscard);
+      return validate.refresh(dependencies).then(cashDiscard);
     }
 
     function cashDiscard(model) {

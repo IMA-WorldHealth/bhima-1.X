@@ -1,5 +1,11 @@
 <!-- Caution template -->
 <div ng-controller="receipt.caution">
+  <header>
+    <div class="pull-right">
+      <select class="form-bhima" ng-change="updateCurrency(model.selectedCurrency.id)" ng-model="model.selectedCurrency" ng-options="currency.symbol for currency in model.currency.data"></select>
+    </div>
+  </header>
+
   <div class="row customer-details">
     <div class="col-xs-12">
       <h4 class="invoice-header">{{'INVOICE.CAUTION' | translate}}</h4>
@@ -48,11 +54,14 @@
         <tbody class="items">
           <tr>
             <td>{{'INVOICE.LIBELLE_CAUTION' | translate}}</td>
-            <td>{{utility.convert(model.caution.cost, model.caution.currency_id) | currency}}</td>
+            <td><span ng-bind-html="session.cost | intlcurrency:session.currency_id"></span></td>
           </tr>
         </tbody>
         <tbody class="totals">
-          <tr><td colspan="1" class="no-border">{{'INVOICE.TOTAL_CAUTION' | translate}}</td><td>{{utility.convert(model.caution.cost, model.caution.currency_id) | currency}}</td></tr>
+          <tr>
+            <td colspan="1" class="no-border">{{'INVOICE.TOTAL_CAUTION' | translate}}</td>
+            <td><span ng-bind-html="session.cost | intlcurrency:session.currency_id"></span></td>
+          </tr>
         </tbody>
       </table>
     </div>

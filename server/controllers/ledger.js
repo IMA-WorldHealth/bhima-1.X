@@ -108,7 +108,7 @@ function debitor(id) {
       'SUM(`t`.`credit_equiv`) AS `credit`, SUM(`t`.`debit_equiv` - `t`.`credit_equiv`) as balance, ' +
       '`t`.`account_id`, `t`.`deb_cred_uuid`, `t`.`currency_id`, `t`.`doc_num`, `t`.`description`, `t`.`account_id`, ' +
       '`t`.`comment`, `t`.`canceled`, `p`.`abbr`, `c`.`document_id` ' +
-      ', IF(NOT(ISNULL(`c`.`document_id`)), 1, 0) as `consumed` ' +
+      ', IF(NOT(ISNULL(`c`.`document_id`)), 1, 0) as `consumed`, `d`.`document_id` as `reversing_stock` ' +
       // TODO Check if sale exists in consumption_sale table, validate if it has been distributed
       // 'CASE(WHEN `t`.`consumption_id` THEN true ELSE false) as consumed ' +
       'FROM (' +
@@ -128,6 +128,7 @@ function debitor(id) {
           'LEFT JOIN `credit_note` ON `credit_note`.`sale_uuid` = `general_ledger`.`inv_po_id` ' +
         ')' +
       ') AS `t` JOIN sale AS s on t.inv_po_id = s.uuid JOIN project AS p on s.project_id = p.id LEFT JOIN consumption as c on t.inv_po_id = c.document_id ' +
+      'LEFT JOIN consumption_reversing as d on t.inv_po_id = d.document_id ' +
       'WHERE `t`.`inv_po_id` IN ("' + invoices.join('","') + '") ' +
       'AND t.account_id = ' + account_id + ' ' +
       'GROUP BY `t`.`inv_po_id`;\n';

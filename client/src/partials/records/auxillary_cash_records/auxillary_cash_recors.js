@@ -85,6 +85,13 @@ angular.module('bhima.controllers')
       convert();
       updateTotals();
       session.searching = false;
+      receiptLocation();
+    }
+
+    function receiptLocation () {
+      $scope.model.cash.data.forEach(function (item) {
+        item.receiptLocation = item.is_caution === 1 ? 'caution' : 'cash';
+      });
     }
 
     function reset() {

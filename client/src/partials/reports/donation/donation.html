@@ -1,0 +1,104 @@
+<div ng-switch="state">
+    <div ng-switch-default>
+      <main>
+        <div class="col-xs-12">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              {{ "UTIL.CONFIGURE_REPORT" | translate }} : 
+              <strong>{{ "TREE.REPORT_DONATION" | translate }}</strong>
+            </div>
+
+            <div class="panel-body">
+              <form name="configForm" novalidate>
+
+                <div class="form-group">
+                  <label class="control-label col-xs-4 required">{{ "UTIL.DONOR" | translate }}</label>
+                  <select class="form-bhima" ng-model="session.donor" ng-change="getDonor()">
+                    <option value="" selected>{{ "UTIL.ALL_DONORS" | translate }}</option>
+                    <option value="{{ donor }}" ng-repeat="donor in donor.data">{{ donor.name }}</option>
+                  </select>
+                </div>
+
+              </form>
+            </div>
+
+            <div class="panel-footer">
+              <div class="pull-right">
+                <button class="btn btn-sm btn-success" type="button" ng-click="generate()">
+                  {{ "UTIL.GENERATE" | translate }}
+                </button>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div ng-switch-when="generate">
+      <header>
+        {{ "TREE.REPORT_DONATION" | translate }} <small> </small>
+      </header>
+
+      <nav>
+        <button
+          style="margin-left: 5px;"
+          ng-click="reconfigure()"
+          class="btn btn-sm btn-default pull-right">
+          <span class="glyphicon glyphicon-repeat"></span>
+        </button>
+
+        <div class="pull-right">
+          <button ng-click="print()" class="btn btn-default btn-sm square">
+            <span class="glyphicon glyphicon-print"></span>
+            {{ 'UTIL.PRINT' | translate }}
+          </button>
+        </div>
+      </nav>
+
+      <div class="report">
+        <div class="reportBody">
+          <div class="reportFrame">
+            <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
+            
+            <h4 class="visible-print">{{ "TREE.REPORT_DONATION" | translate }} <small> {{ session.labelDonor }} </small></h4>
+              <table id="patientTable" class="reportTable">
+                <thead>
+                  <tr>
+                    <th>{{ "COLUMNS.DATE" | translate }}</th>
+                    <th>{{ "COLUMNS.DONOR" | translate }}</th>
+                    <th>{{ "COLUMNS.INVENTORY_ITEM" | translate }}</th>
+                    <th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>
+                    <th>{{ "COLUMNS.DATE_EXPIRE" | translate }}</th>
+                    <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
+                    <th>{{ "COLUMNS.UNIT_PRICE" | translate }}</th>
+                    <th>{{ "COLUMNS.BY" | translate }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat='item in donation.data'>
+                    <td> {{ item.date | date }} </td>
+                    <td> {{ item.donorName }} </td>
+                    <td> {{ item.text }} </td>
+                    <td> {{ item.lot_number }} </td>
+                    <td> {{ item.expiration_date | date }} </td>
+                    <td> {{ item.quantity }} </td>
+                    <td> {{ item.unit_price | currency }} </td>
+                    <td> {{ item.employeeName }}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <hr>
+              <table class="reportTable">
+                <tr>
+                  <td>
+                    <span class="pull-right"><b>{{ "COLUMNS.STOCK_VALUE" | translate }} : {{ session.stockValue | currency }}</b></span>
+                  </td>
+                </tr>
+              </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>

@@ -359,7 +359,7 @@ angular.module('bhima.controllers')
               columns : ['rubric_id', 'payable']
             },
             'rubric' : {
-              columns : ['id', 'abbr', 'label', 'is_percent', 'is_discount', 'value']
+              columns : ['id', 'abbr', 'label', 'is_advance', 'is_percent', 'is_discount', 'value']
             }
           },
           join : [
@@ -738,8 +738,8 @@ angular.module('bhima.controllers')
         });
         return def.promise;
       }))
-      .then(function (tab) {
-        messenger.success('success');
+      .then(function (tab) { 
+		messenger.success($translate.instant('PRIMARY_CASH.EXPENSE.SUCCESS'));
         validate.refresh(dependencies, ['paiements'])
         .then(function () {
           session.rows = refreshList();
