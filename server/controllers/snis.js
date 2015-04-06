@@ -59,7 +59,8 @@ function createReport (req, res) {
 					def.resolve(_REPORT_ID);
 				});
 			} else {
-				console.log("Le rapport pr ce mois [" + period + "] existe deja");
+				console.log("Le rapport pr ce mois [" + period + "] existe deja [%s]", _REPORT_ID);
+				def.resolve(_REPORT_ID);
 			}
 
 			return def.promise;
@@ -81,7 +82,7 @@ function createReport (req, res) {
 			date_reception = req.body.params.date_reception,
 			id_employe_reception = req.body.params.id_employe_reception,
 			date_encodage = req.body.params.date_encodage,
-			id_employe_encodage = req.body.params.id_employe_envoi,
+			id_employe_encodage = req.body.params.id_employe_encodage,
 			info = req.body.params.info;
 
 			//Insertion
@@ -109,12 +110,12 @@ function createReport (req, res) {
 			date_reception = req.body.params.date_reception,
 			id_employe_reception = req.body.params.id_employe_reception,
 			date_encodage = req.body.params.date_encodage,
-			id_employe_encodage = req.body.params.id_employe_envoi,
+			id_employe_encodage = req.body.params.id_employe_encodage,
 			info = req.body.params.info;
 
 		//Update
 		if(project_id){
-			sql = 'UPDATE mod_snis_identification SET id_hopital="'+project_id+'", id_zs="'+zs_id+'", date_envoie = "'+date_envoi+'", date_reception = "'+date_reception+'", date_encodage = "'+date_encodage+'", information = "'+info+'", id_employe_envoi = "'+id_employe_envoi+'", id_employe_reception = "'+id_employe_reception+'", id_employe_encodage = "'+id_employe_encodage+'" '
+			sql = 'UPDATE mod_snis_identification SET id_hopital="'+project_id+'", id_zs="'+zs_id+'", date_envoie = "'+date_envoi+'", date_reception = "'+date_reception+'", date_encodage = "'+date_encodage+'", information = "'+info+'", id_employe_medecin_dir = "'+id_employe_medecin_dir+'", id_employe_envoi = "'+id_employe_envoi+'", id_employe_reception = "'+id_employe_reception+'", id_employe_encodage = "'+id_employe_encodage+'" '
 				+ ' WHERE id_rapport = ' + id_rapport;
 
 			db.exec(sql)
@@ -132,7 +133,6 @@ function createReport (req, res) {
 		var sql = 'SELECT * FROM mod_snis_identification WHERE id_rapport = "' + _REPORT_ID +'"';
 		db.exec(sql)
 		.then(function(rows){
-			console.info('IS REPORTS ?: ', rows);
 			if(rows.length > 0){
 				updateDataIdentification(req);
 			}else{
@@ -150,7 +150,7 @@ function createReport (req, res) {
 		res.sendStatus(200);
 	})
 	.catch(function (err) {
-		console.error('error newReport: ',err);
+		console.error('error newReport: ', err);
 	});
 }
 
@@ -216,7 +216,8 @@ function populateReport (req, res) {
 		});
 
 		function fxReqUpdate () {
-			var ReqUpdate = "UPDATE mod_snis_monthly_report SET id_attribut_form = '" + idAttribut + "', value = '" + tabrecuperation[nameAttribut] + "' WHERE id_month = '"+_REPORT_ID+"'";
+			var ReqUpdate = "UPDATE mod_snis_monthly_report SET value = '" + tabrecuperation[nameAttribut]
+						  + "' WHERE id_month = '"+_REPORT_ID+"' AND id_attribut_form = " + idAttribut;
 			db.exec(ReqUpdate);	
 		}
 	};
@@ -227,7 +228,6 @@ function populateReport (req, res) {
 			var sql = 'SELECT * FROM mod_snis_monthly_report WHERE id_month = "' + _REPORT_ID +'"';
 			db.exec(sql)
 			.then(function(rows){
-				console.log('REPORTS : ', rows);
 				if(rows.length > 0){
 					// Iserer d'abord
 					// si certains champs sont vides ils seront ignores

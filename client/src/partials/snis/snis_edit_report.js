@@ -18,7 +18,7 @@ angular.module('bhima.controllers')
     session.reportId = $routeParams.id;
 
     dependencies.zs = {
-      identifier : "id",
+      identifier : 'id',
       query : {
         tables : {
           'mod_snis_zs' : { columns : ['id', 'zone', 'territoire', 'province'] },
