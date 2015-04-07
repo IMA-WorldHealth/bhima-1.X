@@ -78,6 +78,7 @@ angular.module('bhima.controllers')
     });
 
     function initialise(model) {
+      $scope.idUser = model.user.data.id;
       angular.extend($scope, model);
       settupSession(session);
     }
@@ -221,6 +222,8 @@ angular.module('bhima.controllers')
       purchase.creditor_uuid = session.creditor.creditor_uuid;
       purchase.purchaser_id = $scope.user.data.id;
       purchase.project_id = $scope.project.id;
+      purchase.issuer_id = $scope.idUser;
+      purchase.header_id = session.header.id;
       purchase.employee_id = session.is_direct === true ? null : session.employee.id;
       purchase.is_direct = session.is_direct === true ? 1 : 0;
 
