@@ -560,3 +560,19 @@ UPDATE `account` SET `classe`=7 WHERE LEFT(`account_number`,1)=7;
 UPDATE `account` SET `classe`=8 WHERE LEFT(`account_number`,1)=8;
 UPDATE `account` SET `classe`=9 WHERE LEFT(`account_number`,1)=9;
 
+-- Updates purchase structure
+-- 
+-- ADD 'header_id' field
+-- ADD 'issuer_id' field
+-- 
+-- Date: 2015-04-07
+-- By: Chris LOMAME
+
+USE bhima;
+
+ALTER TABLE `purchase`
+ADD `header_id` int unsigned not null;
+
+ALTER TABLE `purchase`
+ADD `issuer_id` int unsigned not null;
+
