@@ -99,7 +99,7 @@ angular.module('bhima.controllers')
       $scope.identif.id_zs = zone.id;
       $scope.identif.hopital = zone.name;
       $scope.identif.info = identification[0].information;
-      $scope.identif.adresse = zone.villageName + ',' + zone.sectorName + '-' + zone.provinceName;
+      $scope.identif.adresse = zone.zone + ',' + zone.territoire + ' - ' + zone.province;
       $scope.identif.date_envoi = new Date(util.htmlDate(identification[0].date_envoie));
       $scope.identif.date_reception = new Date(util.htmlDate(identification[0].date_reception));
       $scope.identif.date_encodage = new Date(util.htmlDate(identification[0].date_encodage));
