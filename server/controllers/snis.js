@@ -8,6 +8,7 @@ var util = require('./../lib/util');
 
 var _REPORT_ID;
 
+/* FIXME : not necessary when we use dependencies with validate.process() at client side */
 function getAllReports (req, res) {
 
 	var sql = 'SELECT id, date FROM mod_snis_rapport ORDER BY id DESC';
@@ -28,7 +29,7 @@ function createReport (req, res) {
 		var check_rapport = function(){
 			var def = Q.defer();
 
-			sql = 'SELECT * FROM mod_snis_rapport WHERE MONTH(date) LIKE MONTH("' + period + '") AND YEAR(date) LIKE YEAR("' + period + '");';
+			sql = 'SELECT * FROM mod_snis_rapport WHERE MONTH(date) LIKE MONTH("' + period + '") AND YEAR(date) LIKE YEAR("' + period + '") AND id_snis_hopital="'+project_id+'";';
 			db.exec(sql)
 			.then(function (rows){
 				if (rows.length > 0) {

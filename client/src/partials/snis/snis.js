@@ -12,12 +12,26 @@ angular.module('bhima.controllers')
   function ($scope, $q, $translate, $http, $location, validate, messenger, connect, appstate) {
     var dependencies = {};
 
+    // dependencies.reports = {
+    //   query : '/snis/getAllReports'
+    // };
+
     dependencies.reports = {
-      query : '/snis/getAllReports'
+      query : {
+        tables : {
+          'mod_snis_rapport' : { columns : ['id', 'date'] },
+          'project'          : { columns : ['name'] }
+        },
+        join : ['mod_snis_rapport.id_snis_hopital=project.id']
+      }
     };
 
-    validate.process(dependencies, ['reports'])
-    .then(init);
+    appstate.register('project', function (project) {
+      $scope.project = project;
+      dependencies.reports.query.where = ['project.id='+$scope.project.id];
+      validate.process(dependencies, ['reports'])
+      .then(init);
+    });
 
     function init(model) {
       angular.extend($scope, model);
