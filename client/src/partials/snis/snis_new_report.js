@@ -63,7 +63,7 @@ angular.module('bhima.controllers')
         $scope.identif.zone = $scope.zs.data[0].zone;
         $scope.identif.id_zs = $scope.zs.data[0].id;
         $scope.identif.hopital = $scope.zs.data[0].name;
-        $scope.identif.adresse = $scope.zs.data[0].villageName + ',' + $scope.zs.data[0].sectorName + '-' + $scope.zs.data[0].provinceName;
+        $scope.identif.adresse = $scope.zs.data[0].zone + ',' + $scope.zs.data[0].territoire + '-' + $scope.zs.data[0].province;
         $scope.identif.medecin_dir = '';
         $scope.identif.qualification = '';
         $scope.identif.date_envoi = new Date();
