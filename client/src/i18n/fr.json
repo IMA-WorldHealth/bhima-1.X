@@ -2481,6 +2481,7 @@
    "ACCOUNT_STATEMENT"         : "Rapport Compte",
    "ADMIN"                     : "Admin",
    "ALL_TRANSACTIONS"          : "Toutes les Transactions",
+   "AUTHORIZE_PURCHASE"        : "Authorisation Ordre d'Achat",
    "BALANCE_MENSUELLE"         : "Rapport Balance Mensuelle",
    "BALANCE_SHEET"             : "Feuille de Balance",
    "BENEFICIARY"               : "Bénéficiaire",
@@ -2589,7 +2590,8 @@
    "TFR"                       : "Tableau de Formation des Résultats",
    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions par Compte",
    "UPDATE_STOCK"              : "Mettre à Jour les Stocks",
-   "AUXILLARY_CASH_RECORD"     : "Historique caisse auxilliaire"
+   "AUXILLARY_CASH_RECORD"     : "Historique caisse auxilliaire",
+   "VALIDATE_PURCHASE"         : "Validation Ordre d'Achat"
    },
 "TRIAL_BALANCE": {
    "ACCOUNT"          : "Compte",

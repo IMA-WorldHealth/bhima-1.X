@@ -2481,6 +2481,7 @@
    "ACCOUNT_STATEMENT"         : "Account Statement",
    "ADMIN"                     : "Admin",
    "ALL_TRANSACTIONS"          : "All Transactions",
+   "AUTHORIZE_PURCHASE"        : "Authorization purchase order",                  
    "BALANCE_MENSUELLE"         : "Monthly balance report",
    "BALANCE_SHEET"             : "Balance sheet",
    "BENEFICIARY"               : "Beneficaries",
@@ -2589,7 +2590,8 @@
    "TFR"                       : "Results Table",
    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions by Account",
    "UPDATE_STOCK"              : "Update stock",
-   "AUXILLARY_CASH_RECORD"     : "Auxillary cash records"
+   "AUXILLARY_CASH_RECORD"     : "Auxillary cash records",
+   "VALIDATE_PURCHASE"         : "Validation Purchase Order"
    },
 "TRIAL_BALANCE": {
    "ACCOUNT"          : "Account",

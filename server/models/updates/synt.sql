@@ -566,3 +566,7 @@ UPDATE `account` SET `classe`=9 WHERE LEFT(`account_number`,1)=9;
 ALTER TABLE `purchase`
 ADD `is_authorized` tinyint(1) NOT NULL DEFAULT '0',
 ADD `is_validate` tinyint(1) NOT NULL DEFAULT '0';
+
+INSERT INTO `unit` VALUES
+(98,'Validation Purchase Order','TREE.VALIDATE_PURCHASE','',11,0,'/partials/purchase/validate/','purchase/validate/'),
+(99,'Autorization Purchase Order','TREE.AUTHORIZE_PURCHASE','',11,0,'/partials/purchase/authorization/','/purchase/authorization/');
