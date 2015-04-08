@@ -89,7 +89,28 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.header = {
+      query : {
+        tables : {
+          'purchase' : {
+            columns : ['uuid', 'header_id', 'issuer_id']
+          },
+          'employee' : {
+            columns : ['prenom', 'name', 'postnom', 'creditor_uuid']
+          },
+          'user' : {
+            columns : ['first', 'last']
+          }
+        },
+        join : [
+          'purchase.header_id=employee.id',
+          'purchase.issuer_id=user.id'
+        ]
+      }
+    };
+
     function buildInvoice (res) {
+      model.common.header = res.header.data;
       model.common.purchases = (res.indirectPurchases.data.length) ? res.indirectPurchases.data : res.directPurchases.data;
       model.common.supplier = res.supplier.data;
     }
@@ -102,6 +123,7 @@ angular.module('bhima.controllers')
         dependencies.indirectPurchases.query.where =  ['purchase_item.purchase_uuid=' + values.invoiceId];
         dependencies.directPurchases.query.where =  ['purchase_item.purchase_uuid=' + values.invoiceId,'AND','purchase.is_direct=1'];
         dependencies.supplier.query.where =  ['purchase.uuid=' + values.invoiceId];
+        dependencies.header.query.where =  ['purchase.uuid=' + values.invoiceId];
 
         validate.process(dependencies)
         .then(buildInvoice)
