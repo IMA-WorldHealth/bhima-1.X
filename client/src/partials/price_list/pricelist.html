@@ -32,7 +32,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-class="{'selected-primary' : session.selected===list}" ng-repeat="list in model.priceList.data">
+            <tr ng-class="{'selected-primary' : session.selected===list}" ng-repeat="list in model.priceList.data | orderBy:'title'">
               <td> {{ list.title }} </td>
               <td><a ng-click="editMeta(list)"><i class="glyphicon glyphicon-pencil white"></i></a></td>
               <td><a ng-click="editItems(list)"><i class="glyphicon glyphicon-cog white"></i></a></td>
