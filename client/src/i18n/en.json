@@ -1111,6 +1111,7 @@
    "PAYMENT_AUTHORIZATION"  : "Payment authorization",
    "SELECT_INVOICES"        : "Select Invoices",
    "SELECT_PAYMENT_DETAILS" : "Select Payment Details",
+   "SUCCES"                 : "operation successfully !",
    "TITLE"                  : "Debtor Group Invoicing"
    },
 "HOLLYDAY_MANAGEMENT": {
