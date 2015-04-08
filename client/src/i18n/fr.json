@@ -1112,6 +1112,7 @@
    "PAYMENT_AUTHORIZATION"  : "Autorisation de paiement",
    "SELECT_INVOICES"        : "Sélectionner Factures",
    "SELECT_PAYMENT_DETAILS" : "Sélectionner Détail du Paiement",
+   "SUCCES"                 : "Operation avec succès !",
    "TITLE"                  : "Facturation des Conventions et Sociétés"
    },
 "HOLLYDAY_MANAGEMENT": {

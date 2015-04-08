@@ -185,8 +185,11 @@ angular.module('bhima.controllers')
       if ($scope.model.creditNote.data.length >= 1) { return messenger.danger('Invoice has already been reversed with credit'); }
       connect.basicPut('credit_note', [noteObject])
       .then(function () {
-        return connect.fetch('journal/credit_note/' + noteObject.uuid);
+        connect.fetch('journal/credit_note/' + noteObject.uuid);
       })
+      .then(function () {
+        connect.fetch('journal/cancel_support/' + noteObject.sale_uuid);
+      })      
       .then(function () {
         $location.path('/invoice/credit/' + noteObject.uuid);
       });
