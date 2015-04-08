@@ -143,6 +143,14 @@
       controller: 'purchaseConfirm',
       templateUrl: 'partials/purchase/confirm/confirm.html'
     })
+    .when('/purchase/validate/', {
+      controller: 'purchaseValidate',
+      templateUrl: 'partials/purchase/validate/validate.html'
+    })
+    .when('/purchase/authorization/', {
+      controller: 'purchaseAuthorization',
+      templateUrl: 'partials/purchase/authorization/authorization.html'
+    })
     .when('/inventory/price_list', {
       controller: 'priceList',
       templateUrl: 'partials/price_list/pricelist.html'
