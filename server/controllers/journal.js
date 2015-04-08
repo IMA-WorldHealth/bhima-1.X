@@ -2016,7 +2016,7 @@ function handleConfirm (id, user_id, done){
                     ].join(',') +
                     ', null, ' +
                     [
-                      sanitize.escape(reference.paid_uuid),
+                      sanitize.escape(reference.uuid),
                       cfg.originId,
                       user_id
                     ].join(',') +
@@ -2041,20 +2041,20 @@ function handleConfirm (id, user_id, done){
           cfg.fiscalYearId,
           cfg.periodId,
           cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\''
-        ].join(',') + ', `creditor_group`.`account_id`, ' +
+        ].join(',') + ', `inventory_group`.`cogs_account`, ' +
         [
           reference.cost.toFixed(4),0,
           reference.cost.toFixed(4),0,
           reference.currency_id,
-          sanitize.escape(reference.creditor_uuid),
-          '"C"'
+          sanitize.escape(reference.inventory_uuid),
+          '" "'
         ].join(',') + ', ' +
         [
-          sanitize.escape(reference.paid_uuid),
+          sanitize.escape(reference.uuid),
           cfg.originId,
           user_id
-        ].join(',') + ' FROM `creditor_group` WHERE `creditor_group`.`uuid`=' +
-        '(SELECT `creditor`.`group_uuid` FROM `creditor` WHERE `creditor`.`uuid`=' + sanitize.escape(reference.creditor_uuid) + ')';
+        ].join(',') + ' FROM `inventory_group` WHERE `inventory_group`.`uuid`=' +
+        '(SELECT `inventory`.`group_uuid` FROM `inventory` WHERE `inventory`.`uuid`=' + sanitize.escape(reference.inventory_uuid) + ')';
     return db.exec(credit_sql);
   }
 }
