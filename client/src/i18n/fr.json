@@ -238,6 +238,7 @@
    "DISCARD"         : "Annuler l'ordre d'achat",
    "FILTER"          : "Filtrer les ordres d'achats",
    "NOT_FOUND"       : "Aucun ordre d'achat trouvé !",
+   "PAY"             : "Payer",
    "SELECT_PURCHASE" : "Sélectionner ordre d'achat",
    "TITLE"           : "Dépense de l'ordre d'achat",
    "TO"              : "à "
@@ -1813,7 +1814,7 @@
       "CONFIRM_PAY_OF" : "Confirmation paiement de",
       "DETAILS"        : "Details du paiement",
       "FILTER"         : "Filtre de recherche",
-      "TITLE"          : "Confirmation ordre d'achats"
+      "TITLE"          : "Confirmation achats"
       },
    "CREATE": {
       "ADD_LINE_ITEM"   : "Ajouter item",
@@ -2520,7 +2521,7 @@
    "CONFIG_ACCOUNTING"         : "Configuration des comptes",
    "CONFIG_RUBRIC"             : "Configuration des rubriques",
    "CONFIG_TAX"                : "Configuration des taxes",
-   "CONFIRM_PURCHASE_ORDER"    : "Confirmation ordre d'achats",
+   "CONFIRM_PURCHASE_ORDER"    : "Confirmation achats",
    "COST_CENTER_MGMT"          : "Centres des coûts",
    "COTISATION_MANAGEMENT"     : "Gestion des cotisations",
    "CREDITOR_GRP"              : "Groupe Créditeur",
