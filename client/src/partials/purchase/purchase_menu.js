@@ -16,6 +16,16 @@ angular.module('bhima.controllers')
       {
         key : $translate.instant('PURCHASE_MENU.VIEW'),
         link : '/purchase/view/'
+      },
+
+      {
+        key : $translate.instant('PURCHASE_MENU.VALIDATE'),
+        link : '/purchase/validate/'
+      },
+
+      {
+        key : $translate.instant('PURCHASE_MENU.AUTHORIZATION'),
+        link : '/purchase/authorization/'
       }
     ];
 

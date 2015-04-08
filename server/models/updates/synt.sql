@@ -560,3 +560,9 @@ UPDATE `account` SET `classe`=7 WHERE LEFT(`account_number`,1)=7;
 UPDATE `account` SET `classe`=8 WHERE LEFT(`account_number`,1)=8;
 UPDATE `account` SET `classe`=9 WHERE LEFT(`account_number`,1)=9;
 
+-- Title : ALTER PURCHASE TABLE
+-- By    : Bruce Mbayo
+-- Date  : 08 avr 2015
+ALTER TABLE `purchase`
+ADD `is_authorized` tinyint(1) NOT NULL DEFAULT '0',
+ADD `is_validate` tinyint(1) NOT NULL DEFAULT '0';
