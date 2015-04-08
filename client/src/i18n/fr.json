@@ -163,33 +163,33 @@
 "BUDGET": {
    "DISPLAY" : {
      "LINE"         : "Ligne",
-     "REPORT_TITLE" : "Accounts Budgets and Balances ???",
-     "TOTALS"       : "TOTAUX: ???"
+     "REPORT_TITLE" : "Comptes de budgets et de bilans",
+     "TOTALS"       : "TOTAUX: "
    },
    "EDIT": {
-      "ACCOUNT_LABEL"     : "Account: ???",
-      "AUTO_ADJUST"       : "Auto adjust totals ???",
-      "BUDGET"            : "Budget ???",
-      "BUDGET_DETAILS"    : "Budget Details ???",
-      "CREATE"            : "Create Budget ???",
-      "CREATE_FAIL"       : "Error creating budget ???",
-      "CREATE_OK"         : "Budget created ???",
-      "CREATE_QUESTION"   : "Create a new budget for this account for this fiscal year? ???",
-      "DATA_NOT_FOUND"    : "No Budget data found for account '<acct>' for fiscal year '<fyname>'",
-      "END"               : "End ???",
-      "FISCAL_YEAR_LABEL" : "Fiscal Year: ???",
-      "FREEZE"            : "Freeze ???",
-      "PAGE_TITLE"        : "Edit Account Budget ???",
-      "PERIOD"            : "Period ???",
-      "RESTART_SEARCH"    : "Find another account ???",
-      "START"             : "Start ???",
-      "TOTAL"             : "TOTAL: ???",
-      "UPDATE_BUDGET"     : "Update Budget ???",
-      "UPDATE_FAIL"       : "Budget update failed ???",
-      "UPDATE_OK"         : "Budget updated ???",
-      "WARNING"           : "WARNING! ???",
-      "WARN_BAD_TOTALS"   : "The sum of the budget numbers for the periods does not match the total! ???",
-      "WARN_ZERO_TOTAL"   : "You must enter a total for the year before proceeding! ???"
+      "ACCOUNT_LABEL"     : "Compte: ",
+      "AUTO_ADJUST"       : "Ajustement tolalement automatique",
+      "BUDGET"            : "Budget",
+      "BUDGET_DETAILS"    : "Détails du Budget",
+      "CREATE"            : "Créer le Budget",
+      "CREATE_FAIL"       : "Erreur de la creation du Budget",
+      "CREATE_OK"         : "Budget créé",
+      "CREATE_QUESTION"   : "Voulez-vous créer un nouveau budget pour ce compte et pour cette année fiscale ?",
+      "DATA_NOT_FOUND"    : "Aucune données du Budget trouvées pour le compte  '<acct>' pour l'année fiscale '<fyname>'",
+      "END"               : "Terminer",
+      "FISCAL_YEAR_LABEL" : "Année fiscale: ",
+      "FREEZE"            : "Geler",
+      "PAGE_TITLE"        : "Modifier le Budget d'un compte",
+      "PERIOD"            : "Periode ",
+      "RESTART_SEARCH"    : "Trouver un autre compte?",
+      "START"             : "Démarrer ",
+      "TOTAL"             : "TOTAL:",
+      "UPDATE_BUDGET"     : "Mettre à jour le Budget",
+      "UPDATE_FAIL"       : "La mis à jour du Budget a echoué",
+      "UPDATE_OK"         : "Budget mis à jour",
+      "WARNING"           : "ATTENTION! ",
+      "WARN_BAD_TOTALS"   : "La somme des chiffres du budget pour les périodes ne correspond pas au total! ",
+      "WARN_ZERO_TOTAL"   : "Veuillez d'abord entrer le total pour l'année avant de pouvoir procéder! "
       }
    },
 "CASH": {
@@ -1231,6 +1231,7 @@
    "AMOUNT_RECEIVE"               : "Montant reçu",
    "AMOUNT_RECEIVED"              : "Montant Paye",
    "BALANCE_DUE"                  : "Solde",
+   "BENEFICIARY"                  : "Bénéficiaire",
    "BY"                           : "Transfert realise par : ",
    "CASH_ID"                      : "# Transaction de Caisse",
    "CASH_RECEIPT"                 : "Recette de Caisse",
@@ -1247,6 +1248,7 @@
    "CREDIT_NOTE"                  : "Note de Crédit",
    "DATE"                         : "Date",
    "DATE_DOCUMENT"                : "Date du document",
+   "DATE_EMIT"                    : "Date d'emission",
    "DATE_RECEIPT"                 : "Date de la facture",
    "DATE_REGISTRATION"            : "Date d'enregistrement",
    "DEBTOR_ID"                    : "# Débiteur",
@@ -1266,7 +1268,7 @@
    "GENERIC_INCOME"               : "Recette Générique",
    "GIVEN_AMOUNT"                 : "Montant donnée",
    "ID"                           : "Id",
-   "INDIRECT_PURCHASE"            : "Preuve paiement indirect de l'ordre d'achat",
+   "INDIRECT_PURCHASE"            : "Bon de sortie caisse",
    "INVOICE_ID"                   : "Facture N°",
    "ITEM"                         : "Item",
    "LIBELLE_CAUTION"              : "Réception Caution",
@@ -1802,6 +1804,9 @@
    "TITLE"            : "GESTION DES PROVINCES"
    },
 "PURCHASE": {
+   "AUTHORIZATION" : {
+      "TITLE" : "Authorisation Ordre d'Achat"
+    },
    "CONFIRM": {
       "BY"             : "par",
       "CONFIRM_PAY"    : "Confirmation paiement",
@@ -1840,14 +1845,19 @@
    "TITLE"         : "Ordre Achat",
    "VIEW": {
       "TITLE" : "Voir les ordres d'achats"
-      }
+      },
+   "VALIDATE" : {
+      "TITLE" : "Validation Ordre d'Achat"
+    }
    },
 "PURCHASE_MENU": {
+   "AUTHORIZATION"    : "Authorisation ordre d'achat",
    "CONFIRM"          : "Confirmer paiement",
    "DESCRIPTION"      : "Ce module vous permet de gerer les ordres d'achats",
    "OPERATION"        : "Operations",
    "PUCHASE_CREATION" : "Créer ordre achat",
    "TITLE"            : "Gestion des ordres d'achats",
+   "VALIDATE"         : "Validation order d'achat",
    "VIEW"             : "Liste ordres achats"
    },
 "PURCHASE_RECORDS": {
@@ -1858,6 +1868,19 @@
    "TITLE"                : "Liste des Ordres d'Achats",
    "TO_REQUEST"           : " pour demander un ordre d'achat",
    "VIEW_PURCHASE_DETAIL" : "Voir Détails"
+   },
+"RECEIPT" : {
+   "ADMINISTRATOR"      : "Administrateur",
+   "AMOUNT"             : "Montant",
+   "BENEFICIARY"        : "Beneficiaire",
+   "DIGIT"              : "Chiffre",
+   "EMITTER"            : "Emitter",
+   "FINANCE"            : "Finance",
+   "HEAD_PRIMARY_CASH"  : "Charge caisse principale",
+   "ID_BON_SORTI"       : "ID Bon de sortie",
+   "ID_COMMANDE_ACHAT"  : "ID Commande",
+   "LABEL"              : "Libelle",
+   "LETTER"             : "Lettre"
    },
 "RENEWAL": {
    "AGE"             : "Age",
@@ -2482,6 +2505,7 @@
    "ACCOUNT_STATEMENT"         : "Rapport Compte",
    "ADMIN"                     : "Admin",
    "ALL_TRANSACTIONS"          : "Toutes les Transactions",
+   "AUTHORIZE_PURCHASE"        : "Authorisation Ordre d'Achat",
    "BALANCE_MENSUELLE"         : "Rapport Balance Mensuelle",
    "BALANCE_SHEET"             : "Feuille de Balance",
    "BENEFICIARY"               : "Bénéficiaire",
@@ -2508,7 +2532,7 @@
    "DEPOT"                     : "Dépôt",
    "DONATION_MANAGEMENT"       : "Gestion des Dons",
    "DONOR_MANAGEMENT"          : "Gestion des donateurs",
-   "EDIT_BUDGET"               : "Modifir le Budget d'un Compte???",
+   "EDIT_BUDGET"               : "Modifier budget d'un compte",
    "DISTRIBUTION_PATIENTS"     : "Historique des distributions aux patients",
    "DISTRIBUTION_SERVICES"     : "Historique des distributions aux services",
    "EDIT_PATIENT"              : "Modifier Patient",
@@ -2590,7 +2614,8 @@
    "TFR"                       : "Tableau de Formation des Résultats",
    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions par Compte",
    "UPDATE_STOCK"              : "Mettre à Jour les Stocks",
-   "AUXILLARY_CASH_RECORD"     : "Historique caisse auxilliaire"
+   "AUXILLARY_CASH_RECORD"     : "Historique caisse auxilliaire",
+   "VALIDATE_PURCHASE"         : "Validation Ordre d'Achat"
    },
 "TRIAL_BALANCE": {
    "ACCOUNT"          : "Compte",

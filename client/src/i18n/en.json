@@ -1231,6 +1231,7 @@
    "AMOUNT_RECEIVE"               : "Amount Received",
    "AMOUNT_RECEIVED"              : "Amount Recieved",
    "BALANCE_DUE"                  : "Balance Due",
+   "BENEFICIARY"                  : "Beneficiary",
    "BY"                           : "By",
    "CASH_ID"                      : "Cash transaction #",
    "CASH_RECEIPT"                 : "Cash Receipt",
@@ -1247,6 +1248,7 @@
    "CREDIT_NOTE"                  : "Credit Note",
    "DATE"                         : "Date",
    "DATE_DOCUMENT"                : "Document date",
+   "DATE_EMIT"                    : "Emission date",
    "DATE_RECEIPT"                 : "Date of receipt",
    "DATE_REGISTRATION"            : "Date of registration",
    "DEBTOR_ID"                    : "# Debtor",
@@ -1802,6 +1804,9 @@
    "TITLE"            : "Province Manager"
    },
 "PURCHASE": {
+   "AUTHORIZATION" : {
+      "TITLE"          : "Authorization Purchase Order"
+    },
    "CONFIRM": {
       "BY"             : "by",
       "CONFIRM_PAY"    : "Confirm payment",
@@ -1840,14 +1845,19 @@
    "TITLE"         : "Purchase order",
    "VIEW": {
       "TITLE" : "View purchase orders"
-      }
+      },
+    "VALIDATE" : {
+      "TITLE" : "Validate Purchase Order"
+    }
    },
 "PURCHASE_MENU": {
+   "AUTHORIZATION"    : "Authorization purchase order",
    "CONFIRM"          : "Confirm payment",
    "DESCRIPTION"      : "This module help you to manage purchase orders",
    "OPERATION"        : "Operations",
    "PUCHASE_CREATION" : "Create purchase order",
    "TITLE"            : "Purchase order management",
+   "VALIDATE"         : "Validate purchase order",
    "VIEW"             : "View purchase order"
    },
 "PURCHASE_RECORDS": {
@@ -1858,6 +1868,19 @@
    "TITLE"                : "Pruchase Order Records",
    "TO_REQUEST"           : " to request a purchase order",
    "VIEW_PURCHASE_DETAIL" : "View Details"
+   },
+"RECEIPT" : {
+   "ADMINISTRATOR"      : "Administrator",
+   "AMOUNT"             : "Amount",
+   "BENEFICIARY"        : "Beneficiary",
+   "DIGIT"              : "Chiffre",
+   "EMITTER"            : "Emitter",
+   "FINANCE"            : "Finance",
+   "HEAD_PRIMARY_CASH"  : "Charge caisse principale",
+   "ID_BON_SORTI"       : "ID Bon de sortie",
+   "ID_COMMANDE_ACHAT"  : "ID Command",
+   "LABEL"              : "Label",
+   "LETTER"             : "Letter"
    },
 "RENEWAL": {
    "AGE"             : "Age",
@@ -2482,6 +2505,7 @@
    "ACCOUNT_STATEMENT"         : "Account Statement",
    "ADMIN"                     : "Admin",
    "ALL_TRANSACTIONS"          : "All Transactions",
+   "AUTHORIZE_PURCHASE"        : "Authorization purchase order",                  
    "BALANCE_MENSUELLE"         : "Monthly balance report",
    "BALANCE_SHEET"             : "Balance sheet",
    "BENEFICIARY"               : "Beneficaries",
@@ -2590,7 +2614,8 @@
    "TFR"                       : "Results Table",
    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions by Account",
    "UPDATE_STOCK"              : "Update stock",
-   "AUXILLARY_CASH_RECORD"     : "Auxillary cash records"
+   "AUXILLARY_CASH_RECORD"     : "Auxillary cash records",
+   "VALIDATE_PURCHASE"         : "Validation Purchase Order"
    },
 "TRIAL_BALANCE": {
    "ACCOUNT"          : "Account",
