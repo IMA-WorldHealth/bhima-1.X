@@ -141,7 +141,7 @@
 
               <div class="form-group" style="border-top: 1px solid #ddd;">
                 <label class="control-label col-xs-2">{{ "SUPPORT.BALANCE" | translate }}: </label>
-                <p class="col-xs-4 form-control-static">{{ (paymentBalance | currency) || ("SUPPORT.ERROR_TXT_1" | translate) }}</p>
+                <p class="col-xs-4 form-control-static">{{ ( balance | currency) || ("SUPPORT.ERROR_TXT_1" | translate) }}</p>
               </div>
             </form>
           </div>
@@ -178,7 +178,7 @@
 
               <div class="form-group">
                 <label class="control-label col-xs-2">{{ "SUPPORT.BALANCE" | translate }}: </label>
-                <p class="col-xs-2 form-control-static">{{ (paymentBalance | currency) || ("SUPPORT.ERROR_TXT_1" | translate) }}</p>
+                <p class="col-xs-2 form-control-static">{{ ( balance | currency) || ("SUPPORT.ERROR_TXT_1" | translate) }}</p>
                 <label class="control-label col-xs-2">{{ "SUPPORT.AUTHORIZED_BY" | translate }}:</label>
                 <div class="col-xs-6">
                   <input class="form-bhima" ng-model="payment.authorized_by" >
