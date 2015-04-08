@@ -498,7 +498,8 @@
    "VISIT_DATE"            : "Date de Visite",
    "VOLUME"                : "Volume",
    "WEIGHT"                : "Poids",
-   "WORKING_DAY"           : "Jours prestés"
+   "WORKING_DAY"           : "Jours prestés",
+   "ZS"                    : "Zone de Santé"
    },
 "CONFIG_ACCOUNTING": {
    "ADD"                  : "Créer une nouvelle configuration",
@@ -1100,9 +1101,9 @@
    "COST"                   : "Coût pour Débiteur",
    "DATA_SUCCES"            : "Données enregistrées avec succès",
    "DEBITOR"                : "Débiteur",
-   "DESCRIPTION_LONG"       : "Ce module vous prmet de faire la facturation des conventions",
+   "DESCRIPTION_LONG"       : "Ce module vous permet de faire la facturation des conventions",
    "DETAILS"                : "Détails Facture",
-   "ERROR_TXT_1"            : "Etre sure que tous les informations sont bien enregistrer",
+   "ERROR_TXT_1"            : "Vérifiez que tout est correctement saisi",
    "GROUP"                  : "Groupe",
    "HELP_TXT_1"             : "Utiliser cette module pour facturer les Societes et Conventions",
    "INVOICE_ID"             : "ID Facture",
@@ -2085,7 +2086,8 @@
    "TAXES"                 : "Sélectionner une taxe",
    "UNIT"                  : "Sélectionner Unit",
    "VALUE"                 : "Sélectionner une valeur",
-   "VILLAGE"               : "Sélectionner une Village"
+   "VILLAGE"               : "Sélectionner une Village",
+   "ZS"                    : "Sélectionner une zone de santé"
    },
 "SERVICE": {
    "COST_CENTER_SELECT"     : "Centre de frais",
@@ -2130,6 +2132,27 @@
    "THIRD"             : "Tiers",
    "WAREHOUSE_MANAGER" : "Gerant de l'entrepôt"
    },
+"SNIS" : {
+  "ALL"         : "Tous les rapports SNIS",
+  "BACK"        : "Retour rapports snis",
+  "DESCRIPTION" : "Gestion des données pour le SNIS",
+  "LABEL"       : "SNIS rapport",
+  "NEW"         : "Nouveau rapport SNIS ",
+  "NEXT"        : "Suivant",
+  "NO_DATA"     : "Aucune donnée",
+  "PREVIOUS"    : "Precedant",
+  "STEP1"       : "Identification",
+  "STEP2"       : "Consultations",
+  "STEP3"       : "Hospitalisations",
+  "STEP4"       : "Labo & Imagerie",
+  "STEP5"       : "Sante de la mere",
+  "STEP6"       : "Sante de l'enfant",
+  "STEP7"       : "Gestion des ressources",
+  "STEP8"       : "Formation",
+  "STEP9"       : "Synthese utilisation service",
+  "SUBMIT"      : "Soumettre",
+  "TITLE"       : "SNIS (Système National d'Information Sanitaire)"
+  },
 "STOCK": {
    "DISTRIBUTION_RECORDS": {
       "ERROR"                    : "Cette consommation a déjà été inversée dans le stock",
