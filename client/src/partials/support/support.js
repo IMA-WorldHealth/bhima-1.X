@@ -141,10 +141,14 @@ angular.module('bhima.controllers')
     };
 
     $scope.$watch('paying', function () {
-      var s = 0;
+      var s = 0, total_debit = 0, total_credit = 0;
       $scope.paying.forEach(function (i) {
         s = s + i.payment;
+        total_debit += i.debit;
+        total_credit += i.credit;         
       });
+      var balance = total_debit - total_credit;
+      $scope.balance =  balance - s;      
       $scope.paymentBalance = s;
     }, true);
 
