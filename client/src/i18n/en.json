@@ -497,7 +497,8 @@
    "VISIT_DATE"            : "Last Visit",
    "VOLUME"                : "Volume",
    "WEIGHT"                : "Weight",
-   "WORKING_DAY"           : "Working day"
+   "WORKING_DAY"           : "Working day",
+   "ZS"                    : "Health Zone"
    },
 "CONFIG_ACCOUNTING": {
    "ADD"                  : "Create a new configuration",
@@ -2077,7 +2078,8 @@
    "TAXES"                 : "Select a tax",
    "UNIT"                  : "Select a Unit",
    "VALUE"                 : "Select a value",
-   "VILLAGE"               : "Select a Village"
+   "VILLAGE"               : "Select a Village",
+   "ZS"                    : "Select an health zone"
    },
 "SERVICE": {
    "COST_CENTER_SELECT"     : "Cost center",
@@ -2122,6 +2124,27 @@
    "THIRD"             : "Third",
    "WAREHOUSE_MANAGER" : "Warehouse Manager"
    },
+"SNIS" : {
+  "ALL"         : "All SNIS reports",
+  "BACK"        : "Back",
+  "DESCRIPTION" : "Managing data for SNIS",
+  "LABEL"       : "SNIS report",
+  "NEXT"        : "Next",
+  "NEW"         : "New SNIS report ",
+  "NO_DATA"     : "No data",
+  "PREVIOUS"    : "Previous",
+  "STEP1"       : "Identification",
+  "STEP2"       : "Consultations",
+  "STEP3"       : "Hospitalizations",
+  "STEP4"       : "Labo & Imagerie",
+  "STEP5"       : "Mother's health",
+  "STEP6"       : "Child's health",
+  "STEP7"       : "Ressource management",
+  "STEP8"       : "Formation",
+  "STEP9"       : "Service usage",
+  "SUBMIT"      : "Submit",
+  "TITLE"       : "SNIS (Système National d'Information Sanitaire)"
+  },
 "STOCK": {
    "DISTRIBUTION_RECORDS": {
       "ERROR"                    : "This consumption has been reversed in the stock",
