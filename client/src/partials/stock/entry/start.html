@@ -19,7 +19,7 @@
 <main>
   <div class="row">
 
-    <div class="col-xs-3">
+    <div class="col-xs-4">
       <div class="panel panel-default square">
         <div class="panel-heading square">
           {{ "PURCHASE.TITLE" | translate }}
@@ -40,6 +40,7 @@
               <tr>
                 <th>{{"COLUMNS.DATE" | translate}}</th>
                 <th>{{"COLUMNS.REFERENCE" | translate}}</th>
+                <th>{{"COLUMNS.TYPE" | translate}}</th>
                 <th>{{ "COLUMNS.ACTIONS" | translate }}</th>
               </tr>
             </thead>
@@ -54,6 +55,8 @@
                 ng-class="{'selected-success': session.selected.uuid===order.uuid}">
                 <td>{{order.purchase_date | date}}</td>
                 <td><a href="/#/invoice/purchase/{{order.uuid}}">{{order.label}}</td>
+                <td ng-if="!order.is_direct"> {{ "PURCHASE.INDIRECT" | translate }} </td>
+                <td ng-if="order.is_direct"> {{ "PURCHASE.DIRECT" | translate }} </td>
                 <td><a class="menu-item" ng-click="find.fn.commit(order)"><span class="glyphicon glyphicon-arrow-right"></span></a></td>
             </tr>
             <tbody>
@@ -65,7 +68,7 @@
 
     </div>
 
-    <div class="col-xs-9">
+    <div class="col-xs-8">
       <div ng-if="!!session.selected" class="alert alert-info">
         <form class="form-horizontal form-condensed">
           <div class="col-xs-4">
