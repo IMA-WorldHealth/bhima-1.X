@@ -1230,6 +1230,7 @@
    "AMOUNT_RECEIVE"               : "Montant reçu",
    "AMOUNT_RECEIVED"              : "Montant Paye",
    "BALANCE_DUE"                  : "Solde",
+   "BENEFICIARY"                  : "Bénéficiaire",
    "BY"                           : "Transfert realise par : ",
    "CASH_ID"                      : "# Transaction de Caisse",
    "CASH_RECEIPT"                 : "Recette de Caisse",
@@ -1246,6 +1247,7 @@
    "CREDIT_NOTE"                  : "Note de Crédit",
    "DATE"                         : "Date",
    "DATE_DOCUMENT"                : "Date du document",
+   "DATE_EMIT"                    : "Date d'emission",
    "DATE_RECEIPT"                 : "Date de la facture",
    "DATE_REGISTRATION"            : "Date d'enregistrement",
    "DEBTOR_ID"                    : "# Débiteur",
@@ -1265,7 +1267,7 @@
    "GENERIC_INCOME"               : "Recette Générique",
    "GIVEN_AMOUNT"                 : "Montant donnée",
    "ID"                           : "Id",
-   "INDIRECT_PURCHASE"            : "Preuve paiement indirect de l'ordre d'achat",
+   "INDIRECT_PURCHASE"            : "Bon de sortie caisse",
    "INVOICE_ID"                   : "Facture N°",
    "ITEM"                         : "Item",
    "LIBELLE_CAUTION"              : "Réception Caution",
@@ -1801,6 +1803,9 @@
    "TITLE"            : "GESTION DES PROVINCES"
    },
 "PURCHASE": {
+   "AUTHORIZATION" : {
+      "TITLE" : "Authorisation Ordre d'Achat"
+    },
    "CONFIRM": {
       "BY"             : "par",
       "CONFIRM_PAY"    : "Confirmation paiement",
@@ -1839,14 +1844,19 @@
    "TITLE"         : "Ordre Achat",
    "VIEW": {
       "TITLE" : "Voir les ordres d'achats"
-      }
+      },
+   "VALIDATE" : {
+      "TITLE" : "Validation Ordre d'Achat"
+    }
    },
 "PURCHASE_MENU": {
+   "AUTHORIZATION"    : "Authorisation ordre d'achat",
    "CONFIRM"          : "Confirmer paiement",
    "DESCRIPTION"      : "Ce module vous permet de gerer les ordres d'achats",
    "OPERATION"        : "Operations",
    "PUCHASE_CREATION" : "Créer ordre achat",
    "TITLE"            : "Gestion des ordres d'achats",
+   "VALIDATE"         : "Validation order d'achat",
    "VIEW"             : "Liste ordres achats"
    },
 "PURCHASE_RECORDS": {
@@ -1857,6 +1867,19 @@
    "TITLE"                : "Liste des Ordres d'Achats",
    "TO_REQUEST"           : " pour demander un ordre d'achat",
    "VIEW_PURCHASE_DETAIL" : "Voir Détails"
+   },
+"RECEIPT" : {
+   "ADMINISTRATOR"      : "Administrateur",
+   "AMOUNT"             : "Montant",
+   "BENEFICIARY"        : "Beneficiaire",
+   "DIGIT"              : "Chiffre",
+   "EMITTER"            : "Emitter",
+   "FINANCE"            : "Finance",
+   "HEAD_PRIMARY_CASH"  : "Charge caisse principale",
+   "ID_BON_SORTI"       : "ID Bon de sortie",
+   "ID_COMMANDE_ACHAT"  : "ID Commande",
+   "LABEL"              : "Libelle",
+   "LETTER"             : "Lettre"
    },
 "RENEWAL": {
    "AGE"             : "Age",
@@ -2481,6 +2504,7 @@
    "ACCOUNT_STATEMENT"         : "Rapport Compte",
    "ADMIN"                     : "Admin",
    "ALL_TRANSACTIONS"          : "Toutes les Transactions",
+   "AUTHORIZE_PURCHASE"        : "Authorisation Ordre d'Achat",
    "BALANCE_MENSUELLE"         : "Rapport Balance Mensuelle",
    "BALANCE_SHEET"             : "Feuille de Balance",
    "BENEFICIARY"               : "Bénéficiaire",
@@ -2589,7 +2613,8 @@
    "TFR"                       : "Tableau de Formation des Résultats",
    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions par Compte",
    "UPDATE_STOCK"              : "Mettre à Jour les Stocks",
-   "AUXILLARY_CASH_RECORD"     : "Historique caisse auxilliaire"
+   "AUXILLARY_CASH_RECORD"     : "Historique caisse auxilliaire",
+   "VALIDATE_PURCHASE"         : "Validation Ordre d'Achat"
    },
 "TRIAL_BALANCE": {
    "ACCOUNT"          : "Compte",
