@@ -1601,7 +1601,7 @@
    },
 "PLACEHOLDERS": {
    "PRODUCTS"       : "ex. Produits",
-   "PURCHASE_ORDER" : "Entre le ID d'une commande d'achat."
+   "PURCHASE_ORDER" : "Entre la référence d'une commande d'achat."
    },
 "POSTING_JOURNAL": {
    "ABOLISH_GROUPS"        : "Abolir les groupes",
@@ -2158,7 +2158,7 @@
       "ASSIGNED"             : "Affectée",
       "ASSIGN_LOTS"          : "Affecter lots",
       "CANCEL"               : "Annuler",
-      "DIRECT_PURCHASE_TYPE" : "C'est un commande d'achat direct",
+      "DIRECT_PURCHASE_TYPE" : "C'est une commande d'achat direct",
       "ENTER_STOCK"          : "Entrer les Stocks",
       "ENTRY_DATE"           : "Date d'entrée",
       "ENTRY_MANIFEST"       : "Document des Entrées",
