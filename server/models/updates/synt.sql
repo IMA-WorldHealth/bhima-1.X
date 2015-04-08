@@ -576,6 +576,19 @@ ADD `header_id` int unsigned not null;
 ALTER TABLE `purchase`
 ADD `issuer_id` int unsigned not null;
 
+-- Title : ALTER PURCHASE TABLE
+-- By    : Bruce Mbayo
+-- Date  : 08 avr 2015
+ALTER TABLE `purchase`
+ADD `is_authorized` tinyint(1) NOT NULL DEFAULT '0',
+ADD `is_validate` tinyint(1) NOT NULL DEFAULT '0';
+
+-- Title : ADDING UNIT ENTRIES
+-- By    : Bruce Mbayo
+-- Date  : 08 avr 2015
+INSERT INTO `unit` VALUES
+(98,'Validation Purchase Order','TREE.VALIDATE_PURCHASE','',11,0,'/partials/purchase/validate/','purchase/validate/'),
+(99,'Autorization Purchase Order','TREE.AUTHORIZE_PURCHASE','',11,0,'/partials/purchase/authorization/','/purchase/authorization/');
 
 -- SNIS TABLE
 -- Date 2 Avril 2015
@@ -5928,4 +5941,3 @@ CREATE TABLE IF NOT EXISTS `mod_snis_monthly_report` (
 
 ALTER TABLE `project` 
 ADD `zs_id` int(11) DEFAULT 0 NOT NULL ;
-

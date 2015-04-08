@@ -31,7 +31,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="cc in model.cost_centers.data">
+          <tr ng-repeat="cc in model.cost_centers.data  | orderBy:'text'">
             <td>{{cc.text}}</td>
             <td>{{cc.abbr}}</td>
             <td>
