@@ -24,7 +24,8 @@ exports.allVillages = function (req, res, next) {
     'FROM village JOIN sector JOIN province JOIN country ON ' +
       'village.sector_uuid = sector.uuid AND ' +
       'sector.province_uuid = province.uuid AND ' +
-      'province.country_uuid = country.uuid;';
+      'province.country_uuid = country.uuid ' +
+      'ORDER BY country_name ASC, province.name ASC, village.name ASC;';
 
   db.exec(sql)
   .then(function (data) {
