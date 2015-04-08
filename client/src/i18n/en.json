@@ -1232,11 +1232,8 @@
    "AMOUNT_RECEIVE"               : "Amount Received",
    "AMOUNT_RECEIVED"              : "Amount Recieved",
    "BALANCE_DUE"                  : "Balance Due",
-<<<<<<< HEAD
    "BUYER"                        : "Buyer", 
-=======
    "BENEFICIARY"                  : "Beneficiary",
->>>>>>> development
    "BY"                           : "By",
    "CASH_ID"                      : "Cash transaction #",
    "CASH_RECEIPT"                 : "Cash Receipt",
