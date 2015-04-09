@@ -1300,6 +1300,7 @@
    "PURCHASE_DATE"                : "Purchase Date",
    "PURCHASE_ID"                  : "Purchase No.",
    "PURCHASE_ORDER"               : "Purchase Order",
+   "PURCHASE_ORDER_CONFIRMATION"  : "Purchase order confirmation",
    "PURCHASE_RECIPIENT"           : "Supplier",
    "PURCHASE_TOTAL"               : "Total Purchase Cost",
    "RECIPIENT"                    : "Recipient",
