@@ -1300,6 +1300,7 @@
    "PURCHASE_DATE"                : "Date de la commande d'achat",
    "PURCHASE_ID"                  : "ID Commande d'achat",
    "PURCHASE_ORDER"               : "Commande d'achat",
+   "PURCHASE_ORDER_CONFIRMATION"  : "Confirmation Commande d'achat",
    "PURCHASE_RECIPIENT"           : "Fournisseur",
    "PURCHASE_TOTAL"               : "Total",
    "RECIPIENT"                    : "Recepteur",
