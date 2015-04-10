@@ -1851,6 +1851,11 @@
    "INVALID_PRICE" : "Le prix est invalide",
    "NOT_FOUND"     : "Aucun enregistrement trouvé",
    "PURCHASE_TYPE" : "Type de commande d'achat",
+   "REPORT": {
+      "ALL_TYPES"            : "Tous les types",
+      "SELECT_TYPE_PURCHASE" : "Sélectionner type de commande d'achat",
+      "TITLE"                : "Rapport de confirmation de commande d'achat"
+      },
    "TITLE"         : "Commande d'achat",
    "VIEW": {
       "TITLE" : "Voir les commandes d'achats"
@@ -2591,6 +2596,7 @@
    "PRICE_LIST"                : "Liste des Prix",
    "PROFIT_CENTER_MGMNT"       : "Centres de profit",
    "PROJECT"                   : "Projets",
+   "PURCHASE_CONFIRMATION"     : "Confirmation de commande d'achat",   
    "PURCHASE_ORDER"            : "Bon de Commande",
    "PURCHASE_ORDER_MANAGEMENT" : "Gestion des Commande d'achat",
    "PURCHASE_ORDER_RECORDS"    : "Historique Bon de Commande",

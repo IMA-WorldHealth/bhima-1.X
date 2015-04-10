@@ -5941,3 +5941,12 @@ CREATE TABLE IF NOT EXISTS `mod_snis_monthly_report` (
 
 ALTER TABLE `project` 
 ADD `zs_id` int(11) DEFAULT 0 NOT NULL ;
+
+
+-- Title : ADDING UNIT ENTRIES
+-- By    : Chris LOMAME
+-- Date  : 09 avr 2015
+INSERT INTO `unit` VALUES
+(100,'Purchase Order Confirmation','TREE.PURCHASE_CONFIRMATION','',10,0,'/partials/reports/purchase_order/','reports/purchase_order/');
+
+
