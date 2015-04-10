@@ -1851,6 +1851,11 @@
    "INVALID_PRICE"  : "Invalide price",
    "NOT_FOUND"     : "Not found",
    "PURCHASE_TYPE" : "Purchase type",
+   "REPORT": {
+      "ALL_TYPES"            : "All types",
+      "SELECT_TYPE_PURCHASE" : "Select type of purchase order",
+      "TITLE"                : "Purchase Order Confirmation report"
+      },
    "TITLE"         : "Purchase order",
    "VIEW": {
       "TITLE" : "View purchase orders"
@@ -2591,6 +2596,7 @@
    "PRICE_LIST"                : "Price List",
    "PROFIT_CENTER_MGMNT"       : "Profit center management",
    "PROJECT"                   : "Projects",
+   "PURCHASE_CONFIRMATION"     : "Purchase Order Confirmation",   
    "PURCHASE_ORDER"            : "Purchase Order",
    "PURCHASE_ORDER_MANAGEMENT" : "Purchase Order Management",
    "PURCHASE_ORDER_RECORDS"    : "Purchase Order Records",

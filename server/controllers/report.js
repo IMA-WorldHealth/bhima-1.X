@@ -784,6 +784,31 @@ function purchase_order () {
   return db.exec(sql);
 }
 
+function purchaseOrdeRecords(params) {
+  var p = querystring.parse(params);
+
+  var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
+      _end =  sanitize.escape(util.toMysqlDate(new Date(p.end))),
+      _id = p.id;
+
+  var sql =
+    '(SELECT c.uuid, c.document_id, c.reference, s.reference AS sale_reference, s.project_id AS sale_project, ' +
+      'pr.abbr, c.cost, cr.name, p.first_name, c.description, p.project_id AS debtor_project, p.reference AS debtor_reference , ' +
+      'p.last_name, c.deb_cred_uuid, c.currency_id, ci.invoice_uuid, c.date ' +
+    'FROM `cash` AS c JOIN project AS pr JOIN `currency` as cr JOIN `cash_item` AS ci ' +
+      'JOIN `debitor` AS d JOIN `patient` as p JOIN sale AS s ' +
+      'ON ci.cash_uuid = c.uuid AND c.currency_id = cr.id AND ' +
+      'c.project_id = pr.id AND ' +
+      'c.deb_cred_uuid = d.uuid AND d.uuid = p.debitor_uuid AND ' +
+      'ci.invoice_uuid = s.uuid ' +
+    'WHERE c.project_id IN (' + _id + ') AND DATE(c.date) BETWEEN DATE(' + _start + ') AND DATE(' + _end + ') ' +
+    'GROUP BY c.document_id);';
+
+  return db.exec(sql);
+}
+
+
+
 function generate(request, params, done) {
   /*summary
   *   Route request for reports, if no report matches given request, return null
@@ -813,7 +838,7 @@ function generate(request, params, done) {
     'patient_group'         : require('./reports/patient_group')(db),
     'balance_mensuelle'     : balanceMensuelle,
     'cashAuxillaryRecords'  : cashAuxillaryRecords,
-    'purchase_order'        : purchase_order
+    'purchase_order'        : purchaseOrdeRecords,
     //'balance_sheet'         : require('./reports/balance_sheet')
   };
 
