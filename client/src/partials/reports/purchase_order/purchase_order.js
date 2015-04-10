@@ -77,7 +77,6 @@ angular.module('bhima.controllers')
 
     function reset (p) {
       session.searching = true;
-      console.log('LA PROJECTION DU PROJET',session.type);
 
       $scope.state = 'generate';
       // toggle off active
@@ -88,7 +87,7 @@ angular.module('bhima.controllers')
         dateTo : session.dateTo
       };
 
-      url = '/reports/purchase_order/?id=%types%&start=%start%&end=%end%'
+      url = '/reports/purchase_records/?id=%types%&start=%start%&end=%end%'
       .replace('%types%', session.type)
       .replace('%start%', req.dateFrom)
       .replace('%end%', req.dateTo);
@@ -96,11 +95,8 @@ angular.module('bhima.controllers')
       connect.fetch(url)
       .then(function (model) {
         if (!model) { return; }
-        $scope.payments = model;
-        $timeout(function () {
-          convert();
-          session.searching = false;
-        });
+        $scope.purchase_records = model;
+        console.log('OOOOO', $scope.purchase_records);
       });
 
     }
@@ -110,9 +106,12 @@ angular.module('bhima.controllers')
       validate.process(dependencies)
       .then(function (models) {
         $scope.projects = models.projects;
+
         $scope.currencies = models.currencies;
+        $scope.projectAbbr = $scope.projects.data[0].abbr;
+        console.log('ELOUP  PALALAE|||| ',$scope.projectAbbr);
         session.currency = $scope.currencies.data[0].id;
-        $scope.allProjectIds =
+        $scope.allProjectIds = 
           models.projects.data.reduce(function (a,b) { return a + ',' + b.id ; }, '')
           .substr(1); 
         search($scope.options[0]);
@@ -123,49 +122,17 @@ angular.module('bhima.controllers')
       $scope.enterprise = enterprise; 
     });    
 
-    function convert () {
-      var s = 0;
-      var sum_convert = 0;
-      $scope.payments.forEach(function (payment) {
-        if($scope.enterprise.currency_id !== payment.currency_id){
-          var convert = payment.cost / exchange.rate(payment.cost, payment.currency_id,new Date());  
-          s += convert;
-        } else {
-          s += payment.cost; 
-        }
-
-        if ($scope.enterprise.currency_id === session.currency) {
-          sum_convert = s; 
-        } else {
-          sum_convert = s * exchange.rate(payment.cost,session.currency,new Date());
-        }
-      });
-      session.sum = sum_convert;
-    }
-
-    $scope.$watch('payments', function () {
-      if (!$scope.payments) { return; }
-      var unique = [];
-      $scope.payments.forEach(function (payment) {
-        if (unique.indexOf(payment.deb_cred_uuid) < 0) {
-          unique.push(payment.deb_cred_uuid);
-        }
-      });
-
-      session.unique_debitors = unique.length;
-    }, true);
-
     $scope.print = function print() {
       window.print();
     };
 
    function reconfigure () {
       $scope.state = null;
+      $scope.session.type = null;
     }
 
     $scope.search = search;
     $scope.reset = reset;
-    $scope.convert = convert;
     $scope.reconfigure = reconfigure;
   }
 ]);
