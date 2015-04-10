@@ -800,7 +800,7 @@ function purchaseOrdeRecords(params) {
     'JOIN `supplier` ON `supplier`.`creditor_uuid` = `purchase`.`creditor_uuid` ' +
     'LEFT JOIN `employee` ON `employee`.`id` = `purchase`.`employee_id` ' + 
     'WHERE `purchase`.`is_direct` IN (' + _id + ') AND DATE(`purchase`.`purchase_date`) BETWEEN DATE(' + _start + ') AND DATE(' + _end + ') ' +
-    'ORDER BY `purchase`.`purchase_date` DESC ';
+    'ORDER BY `purchase`.`purchase_date` DESC ;';
 
   return db.exec(sql);
 }
