@@ -27,9 +27,21 @@ module.exports = function (db) {
         'pli.price_list_uuid = pl.uuid ' +
       'WHERE pg.uuid = ?';
 
+    // result init null
+    // usefull for catching errors
+    result = {
+      uuid            : null,
+      note            : null,
+      name            : null,
+      created         : null,
+      price_list_uuid : null,
+      title           : null,
+      description     : null
+    };
+
     return db.exec(sql, [groupUuid])
     .then(function (rows) {
-      result = rows[0];  // first row
+      result = rows.length > 0 ? rows[0] : result ;  // first row or null object
      
       // format the data for easy client-side consumption
       data = {};

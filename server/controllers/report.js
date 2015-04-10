@@ -778,7 +778,7 @@ function purchase_order () {
     '`purchase`.`purchase_date`, `purchase`.`closed`, `purchase`.`paid` ' +
     'FROM `purchase` ' +
     'WHERE (`purchase`.`closed` = 0 AND `purchase`.`is_direct` = 0 AND `purchase`.`paid` = 1) OR ' + 
-    '(`purchase`.`closed` = 0 AND `purchase`.`is_direct` = 1 ) ' + 
+    '(`purchase`.`closed` = 0 AND `purchase`.`is_direct` = 1 AND `purchase`.`is_authorized` = 1) ' + 
     'ORDER BY `purchase`.`purchase_date` DESC ';
 
   return db.exec(sql);
