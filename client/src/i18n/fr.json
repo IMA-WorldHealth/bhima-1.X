@@ -232,8 +232,8 @@
    "WEEK"         : "Cette Semaine"
    },
 "CASH_PURCHASE": {
-   "CONFIRM_PAY"     : "Confirmer payement",
-   "CONFIRM_PAY_OF"  : "Confirmer payement de  ",
+   "CONFIRM_PAY"     : "Paiement : ",
+   "CONFIRM_PAY_OF"  : "Paiement de  ",
    "DETAILS"         : "Détails",
    "DISCARD"         : "Annuler la commande d'achat",
    "FILTER"          : "Filtrer les commandes d'achats",
@@ -1232,7 +1232,7 @@
    "AMOUNT_RECEIVE"               : "Montant reçu",
    "AMOUNT_RECEIVED"              : "Montant Paye",
    "BALANCE_DUE"                  : "Solde",
-   "BUYER"                        : "Acheteur", 
+   "BUYER"                        : "Acheteur",
    "BENEFICIARY"                  : "Bénéficiaire",
    "BY"                           : "Transfert realise par : ",
    "CASH_ID"                      : "# Transaction de Caisse",
@@ -1810,15 +1810,15 @@
    },
 "PURCHASE": {
    "AUTHORIZATION" : {
-      "TITLE" : "Authorisation Ordre d'Achat"
+      "TITLE" : "Authorisation Commande Achat"
     },
    "CONFIRM": {
       "BY"             : "par",
       "CONFIRM_PAY"    : "Confirmation paiement",
       "CONFIRM_PAY_OF" : "Confirmation paiement de",
-      "DETAILS"        : "Details du paiement",
+      "DETAILS"        : "Details",
       "FILTER"         : "Filtre de recherche",
-      "TITLE"          : "Confirmation commande d'achats"
+      "TITLE"          : "Confirmation Commande Achats"
       },
    "CREATE": {
       "ADD_LINE_ITEM"      : "Ajouter item",
@@ -1831,7 +1831,7 @@
       "NOTE"               : "Note",
       "ORDER"              : "Commande",
       "PURCHASE_ITEM"      : "Items Ordonnes",
-      "RESPONSABLE"        : "Responsable",  
+      "RESPONSABLE"        : "Responsable",
       "RESPONSIBLE"        : "Employé Responsable",
       "SALE_DATE"          : "Date de creation",
       "SELECT_CREDITOR"    : "Séléctionner un fournisseur",
@@ -1851,23 +1851,23 @@
    "INVALID_PRICE" : "Le prix est invalide",
    "NOT_FOUND"     : "Aucun enregistrement trouvé",
    "PURCHASE_TYPE" : "Type de commande d'achat",
-   "TITLE"         : "Commande d'achat",
+   "TITLE"         : "Commande Achat",
    "VIEW": {
-      "TITLE" : "Voir les commandes d'achats"
+      "TITLE" : "Voir Commandes Achats"
       },
    "VALIDATE" : {
-      "TITLE" : "Validation Ordre d'Achat"
+      "TITLE" : "Validation Commande Achat"
     }
    },
 "PURCHASE_MENU": {
-   "AUTHORIZATION"    : "Authorisation ordre d'achat",
+   "AUTHORIZATION"    : "Authorisation commande achat",
    "CONFIRM"          : "Confirmer paiement",
    "DESCRIPTION"      : "Ce module vous permet de gerer les commandes d'achats",
    "OPERATION"        : "Operations",
-   "PUCHASE_CREATION" : "Créer ordre achat",
-   "TITLE"            : "Gestion des ordres d'achats",
-   "VALIDATE"         : "Validation order d'achat",
-   "VIEW"             : "Liste ordres achats"
+   "PUCHASE_CREATION" : "Créer commande achat",
+   "TITLE"            : "Gestion des commandes achats",
+   "VALIDATE"         : "Validation commande achat",
+   "VIEW"             : "Liste commandes achats"
    },
 "PURCHASE_RECORDS": {
    "ADVANCE_SEARCH"       : "Recherche Avancée",
@@ -1883,7 +1883,7 @@
    "AMOUNT"             : "Montant",
    "BENEFICIARY"        : "Beneficiaire",
    "DIGIT"              : "Chiffre",
-   "EMITTER"            : "Emitter",
+   "EMITTER"            : "Emetteur",
    "FINANCE"            : "Finance",
    "HEAD_PRIMARY_CASH"  : "Charge caisse principale",
    "ID_BON_SORTI"       : "ID Bon de sortie",
@@ -2514,7 +2514,7 @@
    "ACCOUNT_STATEMENT"         : "Rapport Compte",
    "ADMIN"                     : "Admin",
    "ALL_TRANSACTIONS"          : "Toutes les Transactions",
-   "AUTHORIZE_PURCHASE"        : "Authorisation Ordre d'Achat",
+   "AUTHORIZE_PURCHASE"        : "Authorisation Commande Achat",
    "BALANCE_MENSUELLE"         : "Rapport Balance Mensuelle",
    "BALANCE_SHEET"             : "Feuille de Balance",
    "BENEFICIARY"               : "Bénéficiaire",
@@ -2591,9 +2591,9 @@
    "PRICE_LIST"                : "Liste des Prix",
    "PROFIT_CENTER_MGMNT"       : "Centres de profit",
    "PROJECT"                   : "Projets",
-   "PURCHASE_ORDER"            : "Bon de Commande",
+   "PURCHASE_ORDER"            : "Commande Achat",
    "PURCHASE_ORDER_MANAGEMENT" : "Gestion des Commande d'achat",
-   "PURCHASE_ORDER_RECORDS"    : "Historique Bon de Commande",
+   "PURCHASE_ORDER_RECORDS"    : "Historique Commande Achat",
    "REGISTER_STOCK"            : "Enregistrement des Stocks",
    "REGISTER_SUPPLIER"         : "Enregistrement des fournisseurs",
    "RENEWAL"                   : "Renouveller Fiche",
@@ -2624,7 +2624,7 @@
    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions par Compte",
    "UPDATE_STOCK"              : "Mettre à Jour les Stocks",
    "AUXILLARY_CASH_RECORD"     : "Historique caisse auxilliaire",
-   "VALIDATE_PURCHASE"         : "Validation Ordre d'Achat"
+   "VALIDATE_PURCHASE"         : "Validation Commande Achat"
    },
 "TRIAL_BALANCE": {
    "ACCOUNT"          : "Compte",
