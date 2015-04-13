@@ -794,13 +794,14 @@ function purchaseOrdeRecords(params) {
   var sql = 
     ' SELECT `purchase`.`uuid`, `purchase`.`cost`, `purchase`.`currency_id`, `purchase`.`purchase_date`, `purchase`.`is_direct`, ' + 
     '`purchase`.`reference`, `user`.`first`, `user`.`last`, `employee`.`prenom`, `employee`.`name`, `employee`.`postnom`, ' + 
-    '`purchase`.`is_direct`, `supplier`.`name` AS `supplier_name` ' +
+    '`purchase`.`is_direct`, `supplier`.`name` AS `supplier_name`, `u`.`first` AS `confirmed_first`, `u`.`last` AS `confirmed_last` ' +
     'FROM `purchase` ' +
     'JOIN `user` ON `user`.`id` = `purchase`.`issuer_id` ' +
+    'JOIN `user` AS u ON `u`.`id` = `purchase`.`confirmed_by` ' +
     'JOIN `supplier` ON `supplier`.`creditor_uuid` = `purchase`.`creditor_uuid` ' +
     'LEFT JOIN `employee` ON `employee`.`id` = `purchase`.`employee_id` ' + 
     'WHERE `purchase`.`is_direct` IN (' + _id + ') AND DATE(`purchase`.`purchase_date`) BETWEEN DATE(' + _start + ') AND DATE(' + _end + ') ' +
-    'ORDER BY `purchase`.`purchase_date` DESC ;';
+    'AND `purchase`.`confirmed` = 1 ORDER BY `purchase`.`purchase_date` DESC ;';
 
   return db.exec(sql);
 }

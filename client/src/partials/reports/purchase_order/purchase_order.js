@@ -77,7 +77,15 @@ angular.module('bhima.controllers')
 
     function reset (p) {
       session.searching = true;
+      $scope.typePurchase = '';
 
+      if(session.type === '1'){
+        $scope.typePurchase = $translate.instant('COLUMNS.DIRECT');
+      } else if(session.type === '0'){
+        $scope.typePurchase = $translate.instant('COLUMNS.INDIRECT');
+      } 
+      var req, url;
+      
       $scope.state = 'generate';
       // toggle off active
       session.active = !p;
@@ -96,7 +104,6 @@ angular.module('bhima.controllers')
       .then(function (model) {
         if (!model) { return; }
         $scope.purchase_records = model;
-        console.log('OOOOO', $scope.purchase_records);
       });
 
     }
@@ -109,7 +116,6 @@ angular.module('bhima.controllers')
 
         $scope.currencies = models.currencies;
         $scope.projectAbbr = $scope.projects.data[0].abbr;
-        console.log('ELOUP  PALALAE|||| ',$scope.projectAbbr);
         session.currency = $scope.currencies.data[0].id;
         $scope.allProjectIds = 
           models.projects.data.reduce(function (a,b) { return a + ',' + b.id ; }, '')
