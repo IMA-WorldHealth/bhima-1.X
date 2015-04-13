@@ -32,6 +32,8 @@ var uncategorised   = require('./../controllers/uncategorised');
 
 var compileReport   = require('./../controllers/reports_proposed/reports.js');
 
+var snis            = require('./../controllers/snis');
+
 
 
 exports.initialise = function (app) {
@@ -79,6 +81,12 @@ exports.initialise = function (app) {
   app.get('/reports/:route/', report.buildReport);
 
   app.get('/tree', tree.generate);
+
+  app.get('/snis/getAllReports', snis.getAllReports);
+  app.get('/snis/getReport/:id', snis.getReport);
+  app.post('/snis/createReport', snis.createReport);
+  app.delete('/snis/deleteReport/:id', snis.deleteReport);
+  app.post('/snis/populateReport', snis.populateReport);
 
   // TODO These routes all belong somewhere
   app.get('/services/', uncategorised.services);

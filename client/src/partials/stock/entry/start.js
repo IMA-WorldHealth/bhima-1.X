@@ -45,15 +45,7 @@ angular.module('bhima.controllers')
       }
     };
 
-    dependencies.names = {
-      query : {
-        identifier : 'uuid',
-        tables : {
-          'purchase' : { columns : ['uuid', 'reference', 'project_id', 'purchase_date'] }
-        },
-        where : ['purchase.closed=0','AND','purchase.confirmed=1']
-      }
-    };
+    dependencies.names = { query : 'reports/purchase_order/'};
 
     dependencies.employees = {
       query : {
