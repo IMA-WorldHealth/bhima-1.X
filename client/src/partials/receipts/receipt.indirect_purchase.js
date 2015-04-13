@@ -7,6 +7,10 @@ angular.module('bhima.controllers')
   function ($scope, validate, appstate, messenger) {
     var dependencies = {}, model = $scope.model = {common : {}};
 
+    dependencies.user = {
+      query : '/user_session'
+    };
+
     dependencies.indirectPurchase = {
         query : {
           identifier : 'uuid',
@@ -20,6 +24,22 @@ angular.module('bhima.controllers')
 
     function buildInvoice (res) {
       model.indirectPurchase = res.indirectPurchase.data.pop();
+      getUserInfo(res.user.data.id);
+    }
+
+    function getUserInfo (user_id) {
+      dependencies.userInfo = {
+        query : {
+          tables : {
+            'user' : { columns : ['first', 'last']}
+          },
+          where : ['user.id='+user_id]
+        }
+      };
+      validate.refresh(dependencies, ['userInfo'])
+      .then(function (data) {
+        model.userInfo = data.userInfo.data[0];
+      });
     }
 
   	appstate.register('receipts.commonData', function (commonData) {

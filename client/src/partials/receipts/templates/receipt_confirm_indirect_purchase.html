@@ -2,8 +2,8 @@
 <div ng-controller="receipt.confirm_indirect_purchase">
   <div class="row customer-details">
     <div class="col-xs-12">
-      <small style="float: right; color: grey; font-size: 8px">{{ model.confirmIndirectPurchase.uuid }}</small>
-      <h4 class="invoice-header">{{ 'INVOICE.CONFIRM_PURCHASE' | translate }}</h4>
+      <small style="float: right; color: grey; font-size: 14px">{{ model.confirmIndirectPurchase.uuid }}</small>
+      <h4 class="invoice-header">{{ 'INVOICE.PROOF_CASH_EXIT' | translate }}</h4>
     </div>
   </div>
   <div class="row customer-details">
@@ -28,21 +28,18 @@
     <div class="col-xs-4">
       <b>{{model.confirmIndirectPurchase.name}} </b>
       <br>
-      <i>{{ 'INVOICE.DATE_REGISTRATION' | translate }}</i>
+      <i>{{ 'INVOICE.DATE_JUSTIFICATION' | translate }}</i>
       <br>
       {{model.confirmIndirectPurchase.purchase_date | date}}
     </div>
 
     <div class="col-xs-4">
-      <i>{{'INVOICE.INVOICE_ID' | translate}}</i> <b>{{model.confirmIndirectPurchase.reference}}</b>
+      <i>{{'INVOICE.JUSTIFICATION_ID' | translate}}</i>: <b>{{model.confirmIndirectPurchase.reference}}</b>
       <br>
-      <i>{{'INVOICE.EMPLOYEE_CODE' | translate}}</i> <b>{{model.confirmIndirectPurchase.code}}</b>
+      <i>{{'INVOICE.ISSUER' | translate}}</i>: <b>{{model.confirmIndirectPurchase.first}}</b> <b>{{model.confirmIndirectPurchase.last}}</b>
       <br>
       <br>
-      <i>{{ 'INVOICE.DATE_RECEIPT' | translate }}</i>
-      <br>
-      {{timestamp | date}}
-      <br>
+      <i>{{ 'INVOICE.ID_PURCHASE_ORDER' | translate }}</i>:<b> {{ model.common.enterprise.abbr + model.confirmIndirectPurchase.reference}} </b>
     </div>
   </div>
 
@@ -51,35 +48,48 @@
       <table class="invoiceTable">
         <thead>
           <tr>
-            <th>{{'COLUMNS.REFERENCE_PURCHASE' | translate}}</th>
-            <th>{{'INVOICE.COST' | translate}}</th>
-            <th>{{'COLUMNS.GIVEN_AMOUNT' | translate}}</th>
-            <th>{{'INVOICE.CONFIRMED_BY' | translate}}</th>
+            <th>{{'COLUMNS.NR' | translate}}</th>
+            <th>{{'COLUMNS.WORDING' | translate}}</th>
+            <th>{{ 'RECEIPT.AMOUNT' | translate }} ({{ 'RECEIPT.LETTER' | translate }})</th>
+            <th>{{ 'RECEIPT.AMOUNT' | translate}}</th>
           </tr>
         </thead>
         <tbody class="items">
-          <tr>
-            <td>{{ model.confirmIndirectPurchase.reference }}</td>
-            <td>{{ model.confirmIndirectPurchase.cost | currency }}</td>
-            <td>{{ model.confirmIndirectPurchase.cost | currency }}</td>
-            <td>{{ model.confirmIndirectPurchase.prenom + '  ' + model.confirmIndirectPurchase.name + '  ' + model.confirmIndirectPurchase.postnom}}</td>
+          <tr ng-repeat="indirect in model.indirectPurchase | orderBy:'text' ">
+            <td>{{ $index + 1 }}</td>
+            <td>{{ indirect.text }}</td>
+            <td> </td>
+            <td>{{ indirect.quantity * indirect.unit_price | currency }}</td>
           </tr>
         </tbody>
+        <tbody class="totals">
+          <tr>
+            <td colspan="3" class="no-border">{{'INVOICE.PURCHASE_TOTAL' | translate}}</td>
+            <td>
+              <span> {{ model.confirmIndirectPurchase.cost | currency }} </span>
+            </td>
+          </tr>
+        </tbody>        
       </table>
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-xs-6">
-      <div class="pull-right">
-        <b>{{"INVOICE.SIGN_HEADER_PRI" | translate}}</b>
+  <div class="signatures">
+    <h5>{{ "UTIL.SIGNATURES" | translate }}</h5>
+
+    <div class="signature-box-wide">
+      <div class="col-xs-6">
+        <div class="pull-left">
+          <b>{{"INVOICE.STOCK_ADMINISTRATOR" | translate}}</b>
+        </div>
       </div>
+      <div class="col-xs-6">
+        <div class="pull-right">
+         <b>{{"INVOICE.SIGN_EMPLOYEE" | translate}}</b>
+        </div>
+      </div>  
     </div>
-    <div class="col-xs-6">
-      <div class="pull-left">
-       <b>{{"INVOICE.SIGN_EMPLOYEE" | translate}}</b>
-      </div>
-    </div>
-  </div>
+  </div> 
+
 </div>
 <!-- End confirm.purchase template -->

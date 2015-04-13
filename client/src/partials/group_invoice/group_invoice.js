@@ -77,7 +77,6 @@ angular.module('bhima.controllers')
         return messenger.danger('Error: No debitor selected');
       }
 
-      console.log('[selected debitor]', $scope.selected.debitor);
       dependencies.invoices.query += $scope.selected.debitor.uuid;
       validate.process(dependencies).then(setUpModels);
       $scope.hasDebitor = true;
@@ -96,7 +95,6 @@ angular.module('bhima.controllers')
     }
 
     $scope.examineInvoice = function (invoice) {
-      console.log('examine', invoice, 'debitor', $scope.selected.debitor);
       $scope.examine = invoice;
       $scope.old_action = $scope.action;
       $scope.action = 'examine';
@@ -128,8 +126,10 @@ angular.module('bhima.controllers')
     };
 
     $scope.dequeue = function () {
+      var total_payment = $scope.total_payment = 0;
       $scope.paying.forEach(function (i) {
         $scope.invoices.data.push(i);
+        total_payment += i.payment;
       });
       $scope.paying.length = 0;
       $scope.action = '';
@@ -146,11 +146,15 @@ angular.module('bhima.controllers')
     };
 
     $scope.$watch('paying', function () {
-      var s = 0;
+      var s = 0, total_debit = 0, total_credit = 0;
       $scope.paying.forEach(function (i) {
         s = s + i.payment;
+        total_debit += i.debit;
+        total_credit += i.credit; 
       });
-      $scope.paymentBalance = s;
+      var balance = total_debit - total_credit;
+      $scope.balance =  balance - s;
+      $scope.paymentBalance =  s;
     }, true);
 
     $scope.authorize = function () {
@@ -168,7 +172,7 @@ angular.module('bhima.controllers')
         return connect.fetch('/journal/group_invoice/' + id);
       })
       .then(function () {
-		messenger.success($translate.instant('GROUP_INVOICE.UPDATE_SUCCES'));
+		    messenger.success($translate.instant('GROUP_INVOICE.SUCCES'));
       });
     };
 

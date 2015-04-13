@@ -98,7 +98,7 @@
             <label class="control-label col-xs-4 required">{{ "COLUMNS.DEBITOR_GROUP" | translate }}</label>
             <div class="col-xs-7">
               <select class="form-bhima" ng-model="session.new.debitor_group_uuid">
-                <option ng-repeat="debitorGroup in debitorGroups.data" ng-value="debitorGroup.uuid">{{debitorGroup.name}}</option>
+                <option ng-repeat="debitorGroup in debitorGroups.data | orderBy:'name'" ng-value="debitorGroup.uuid">{{debitorGroup.name}}</option>
               </select>
             </div>
           </div>
