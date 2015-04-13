@@ -5950,3 +5950,14 @@ INSERT INTO `unit` VALUES
 (100,'Purchase Order Confirmation','TREE.PURCHASE_CONFIRMATION','',10,0,'/partials/reports/purchase_order/','reports/purchase_order/');
 
 
+-- Updates purchase structure
+-- 
+-- ADD 'confirmed_by' field
+-- 
+-- Date: 2015-04-13
+-- By: Chris LOMAME
+
+USE bhima;
+
+ALTER TABLE `purchase`
+ADD `confirmed_by` int unsigned not null;

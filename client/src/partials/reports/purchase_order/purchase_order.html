@@ -83,7 +83,7 @@
   </div>
   <div ng-switch-when="generate">  
     <header>
-      <b> {{ projectSelected }} </b> : {{ "CASH_PAYMENTS.TITLE" | translate }} <small>  {{ session.dateFrom | date }} - {{ session.dateTo | date }} </small>
+      <b> {{ "PURCHASE.REPORT.TITLE" | translate }} </b> : <i> {{ typePurchase }}</i> <small>  {{ session.dateFrom | date }} - {{ session.dateTo | date }} </small>
     </header>
 
     <nav>
@@ -106,10 +106,10 @@
     <div class="report">
       <div class="reportBody">
         <div class="reportFrame">
-          <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
+          
           
           <h4 class="visible-print">
-            <b> {{ projectSelected }} </b> : {{ "CASH_PAYMENTS.TITLE" | translate }} <small>  {{ session.dateFrom | date }} - {{ session.dateTo | date }} </small>
+            <b> {{ "PURCHASE.REPORT.TITLE" | translate }} </b>  <i> {{ typePurchase }}</i> <small>  {{ session.dateFrom | date }} - {{ session.dateTo | date }} </small>
           </h4>
           <table class="reportTable">
             <thead>
@@ -118,12 +118,8 @@
                 <th>{{ "COLUMNS.ISSUER" | translate }}</th>
                 <th>{{ "COLUMNS.SUPPLIER" | translate }}</th>
                 <th>{{ "COLUMNS.TYPE" | translate }}</th>
-                <th>{{ "COLUMNS.EMPLOYEE_NAME" | translate }}</th>
+                <th>{{ "COLUMNS.CONFIRM_BY" | translate }}</th>
                 <th>{{ "COLUMNS.COST" | translate }}</th>
-                
-                
-                
-                
                 <th>{{ "COLUMNS.DATE" | translate }}</th>
               </tr>
             </thead>
@@ -139,54 +135,21 @@
                 <td> {{ purchase.supplier_name }} </td>
                 <td ng-if="purchase.is_direct"> {{ "COLUMNS.DIRECT" | translate }} </td>
                 <td ng-if="!purchase.is_direct"> {{ "COLUMNS.INDIRECT" | translate }} </td>
-                <td> {{ purchase.name }} {{ purchase.postnom }} {{ purchase.prenom }} </td>
+                <td> {{ purchase.confirmed_first }} {{ purchase.confirmed_last }} </td>
                 <td ng-bind-html="purchase.cost | intlcurrency:purchase.currency_id"></td> 
                 <td> {{ purchase.purchase_date | date }} </td>
               </tr>
               <tr ng-if="!purchase_records.length">
                 <td colspan="7">
                   <span class="glyphicon glyphicon-stats"></span>
-                  {{ "PRIMARY_CASH.REPORT.INCOME.EMPTY_REPORT" | translate }}
+                  {{ "PURCHASE.REPORT.EMPTY_REPORT" | translate }}
                 </td>
               </tr>
             </tbody>
-          </table>
-          <h6 class="visible-print">
-            {{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: <b ng-bind-html="session.sum | intlcurrency:session.currency"></b>  
-          </h6>          
+          </table>      
         </div>
       </div>
     </div>
-
-    <footer>
-      <table style="width: 99%">
-        <tbody>
-          <td style="width:50%;">
-
-            <span style="margin-right: 10px;">
-              <span class="glyphicon glyphicon-list-alt" style="color: #428bca"></span> <b>{{ payments.length }}</b>
-              <span ng-if="session.searching">...</span>
-            </span>
-
-            <span class="glyphicon glyphicon-user" style="color: #428bca"></span> <b>{{ session.unique_debitors }}</b>
-
-            <span ng-if="session.searching">...</span>
-            <span style="float: right; margin-right: 5px;">
-              <b>{{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: </b>
-            </span>
-          </td>
-          <td style="width:20%;">
-            <b ng-bind-html="session.sum | intlcurrency:session.currency"></b>
-            <span ng-if="session.searching">...</span>
-          </td>
-          <td colspan="2">
-            <div class="hidden-print" style="width:25%;">
-              <select class="form-bhima" ng-model="session.currency" ng-options="currency.id as currency.symbol for currency in currencies.data" ng-change="convert()"></select>
-            </div>
-          </td>
-        </tbody>
-      </table>
-    </footer>
   </div>    
 </div>  
 
