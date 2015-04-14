@@ -1320,7 +1320,13 @@
    "TRANSACTION_PRICE"            : "Prix Transaction",
    "TRANSFERED_QTE"               : "Quantité transferée",
    "TRANSFERT"                    : "Transfert caisse principal",
-   "TRANSFERT_DATE"               : "Date transfert"
+   "TRANSFERT_DATE"               : "Date transfert",
+   "YES_AUTHORIZED"               : "Oui",
+   "YES_VALID"                    : "Oui",
+   "NO_VALID"                     : "Non",
+   "NO_AUTHORIZED"                : "Non",
+   "IS_VALID"                     : "Validation",
+   "IS_AUTHORIZED"                : "Autorisation"
    },
 "JOURNAL_VOUCHER": {
    "ADD_COMMENT"            : "Ajouter un Commentaire",
@@ -2154,7 +2160,8 @@
    "FINANCE_OFFICER"   : "Officier Finance",
    "RESPONSABLE"       : "Responsable",
    "THIRD"             : "Tiers",
-   "WAREHOUSE_MANAGER" : "Gerant de l'entrepôt"
+   "WAREHOUSE_MANAGER" : "Gerant de l'entrepôt",
+   "STOCK_MANAGER"     : "Gestionnaire Stock"
    },
 "SNIS" : {
   "ALL"         : "Tous les rapports SNIS",
@@ -2208,7 +2215,7 @@
       "DIRECT_PURCHASE_TYPE" : "C'est une commande d'achat direct",
       "ENTER_STOCK"          : "Entrer les Stocks",
       "ENTRY_DATE"           : "Date d'entrée",
-      "ENTRY_MANIFEST"       : "Document des Entrées",
+      "ENTRY_MANIFEST"       : "Bon d'entrée",
       "ERR_EMPTY_PARAMTER"   : "Erreur paramétre manquant",
       "FIND_PURCHASE_ORDER"  : "Choisir une commande d'Achat",
       "KEY"                  : "Entrée de Stock",
@@ -2219,7 +2226,7 @@
       "REMAINING"            : "Rester",
       "REPORT"               : "Rapport d'entrer",
       "REQUESTED_BY"         : "Demandée par",
-      "REVIEW"               : "Revoir les affectations",
+      "REVIEW"               : "Bon d'Entree",
       "SELECT"               : "Sélectionner",
       "SELECT_DEPOT"         : "Sélectionner un dépôt",
       "TITLE"                : "Entrée de Stock",
