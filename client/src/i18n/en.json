@@ -240,6 +240,7 @@
    "DISCARD"         : "Discard purchase order",
    "FILTER"          : "Filter Purchase Orders",
    "NOT_FOUND"       : "No pending purchase order records found.",
+   "PAY"             : "Pay",
    "SELECT_PURCHASE" : "Select Purchase Order",
    "TITLE"           : "Purchase Order Dispense",
    "TO"              : "to "
@@ -1832,7 +1833,7 @@
       "CONFIRM_PAY_OF" : "Confirm payment of",
       "DETAILS"        : "Details of payment",
       "FILTER"         : "Search filter",
-      "TITLE"          : "Confirm a purchase order"
+      "TITLE"          : "Confirm purchase"
       },
    "CREATE": {
       "ADD_LINE_ITEM"      : "Add line item",
@@ -2549,7 +2550,7 @@
    "CONFIG_ACCOUNTING"         : "Configuration accounting",
    "CONFIG_RUBRIC"             : "Configuration Rubrics",
    "CONFIG_TAX"                : "Configuration Taxes",
-   "CONFIRM_PURCHASE_ORDER"    : "Confirm a purchase order",
+   "CONFIRM_PURCHASE_ORDER"    : "Confirm purchase",
    "COST_CENTER_MGMT"          : "Cost Center Management",
    "COTISATION_MANAGEMENT"     : "Cotization management",
    "CREDITOR_GRP"              : "Creditor Group",
