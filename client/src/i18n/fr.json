@@ -508,7 +508,8 @@
    "WEIGHT"                : "Poids",
    "WORDING"               : "Libellé",
    "WORKING_DAY"           : "Jours prestés",
-   "ZS"                    : "Zone de Santé"
+   "ZS"                    : "Zone de Santé",
+   "DONATION_DATE"         : "Date Donation"
    },
 "CONFIG_ACCOUNTING": {
    "ADD"                  : "Créer une nouvelle configuration",
@@ -827,7 +828,7 @@
    "NEW"             : "Configuration Nouvelle Donation",
    "NOTE"            : "Note",
    "PERFORM_BY"      : "Effectuer par",
-   "PROOF"           : "Preuve d'enregistrement du don dans le Stock",
+   "PROOF"           : "Bon d'entree",
    "QTE"             : "Quantité",
    "REPORT"          : "Rapport",
    "RESPONSABLE"     : "Responsable",
@@ -841,7 +842,10 @@
    "CONFIRM" : {
       "TITLE" : "Confirmation Donation",
       "FILTER" : "Filtrer",
-      "NOT_FOUND" : "Aucune donation trouvee"
+      "NOT_FOUND" : "Aucune donation trouvee",
+      "CONFIRM_RECEPTION" : "Confirmation reception Doination",
+      "DETAILS"           : "Details Confirmation Donation",
+      "CONFIRM_RECEPTION_OF"  : "Confirmer Reception"
 
    }
    },

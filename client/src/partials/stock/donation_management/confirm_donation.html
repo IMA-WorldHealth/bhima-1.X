@@ -34,6 +34,7 @@
               <tr>
                 <th>{{"COLUMNS.DATE" | translate}}</th>
                 <th>{{"COLUMNS.DONOR" | translate}}</th>
+                <th>{{"COLUMNS.EMPLOYEE" | translate}}</th>
                 <th>{{ "COLUMNS.ACTIONS" | translate }}</th>
               </tr>
             </thead>
@@ -46,10 +47,10 @@
 
             <tr ng-repeat="item in donations.data | filter : session.filter"
                 ng-class="{'selected-success': session.selected.uuid===item.uuid}">
-                <td>{{item.purchase_date | date}}</td>
-                <td><a href="/#/invoice/purchase/{{item.uuid}}">{{item.abbr}}{{item.reference}}</td>
+                <td>{{item.date | date}}</td>
                 <td><strong>{{item.name}}</strong></td>
-                <td><a class="menu-item" ng-click="confirmPurchase(item.uuid)"><span class="glyphicon glyphicon-arrow-right"></span></a></td>
+                <td><strong>{{item.prenom + ' ' + item.nom_employee + ' ' + item.postnom}}</strong></td>
+                <td><a class="menu-item" ng-click="confirmDonation(item.uuid)"><span class="glyphicon glyphicon-arrow-right"></span></a></td>
             </tr>
             <tbody>
             </tbody>
@@ -62,7 +63,7 @@
       <div class="panel square" ng-class="{'panel-success': session.selected, 'panel-default' : !session.selected}">
         <div class="panel-heading square">
           <span class="glyphicon glyphicon-list-alt"></span>
-          {{ "DONATION_MANAGEMENT.CONFIRM.CONFIRM_PAY" | translate }} <small>{{session.selected.uuid}}</small>
+          {{ "DONATION_MANAGEMENT.CONFIRM.CONFIRM_RECEPTION" | translate }} <small>{{session.selected.uuid}}</small>
         </div>
 
         <div class="panel-body" ng-if="session.selected">
@@ -77,23 +78,15 @@
                 <td>{{"COLUMNS.ID" | translate}}</td><td>{{session.selected.uuid}}</td>
               </tr>
               <tr>
-                <td>{{"COLUMNS.NOTE" | translate}}</td><td>{{session.selected.note}}</td>
-              </tr>
-              <tr ng-if="!session.is_direct">
-                <td>{{"COLUMNS.EMPLOYEE" | translate}}</td><td>{{session.selected.name}}</td>
-              </tr>
-              <tr ng-if="session.is_direct">
-                <td>{{"COLUMNS.SUPPLIER" | translate}}</td><td><strong>{{session.selected.name}}</strong></td>
+                <td>{{"COLUMNS.EMPLOYEE" | translate}}</td><td>{{session.selected.prenom + ' ' + session.selected.nom_employee}}</td>
               </tr>
               <tr>
-                <td>{{"COLUMNS.COST" | translate}}</td><td><b>{{session.selected.cost | currency}}</b></td>
+                <td>{{"COLUMNS.DONOR" | translate}}</td><td>{{session.selected.name}}</td>
               </tr>
             </tbody>
           </table>
 
-          <button ng-click="confirmPayment()" class="square btn btn-success btn-sm">  {{ "DONATION_MANAGEMENT.CONFIRM.CONFIRM_PAY_OF" | translate }} <b>{{session.selected.cost | currency}}</b> {{ "DONATION_MANAGEMENT.CONFIRM.BY" | translate }}
-          <b ng-if="!session.is_direct">{{session.selected.name}}</b>
-          <b ng-if="session.is_direct">{{session.selected.name}}</b>
+          <button ng-click="confirmReception()" class="square btn btn-success btn-sm">  {{ "DONATION_MANAGEMENT.CONFIRM.CONFIRM_RECEPTION_OF" | translate }}
           </button>
         </div>
       </div>

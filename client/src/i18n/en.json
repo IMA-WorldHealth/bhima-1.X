@@ -508,7 +508,8 @@
    "WEIGHT"                : "Weight",
    "WORDING"               : "Wording",
    "WORKING_DAY"           : "Working day",
-   "ZS"                    : "Health Zone"
+   "ZS"                    : "Health Zone",
+   "DONATION_DATE"         : "Donation Date"
    },
 "CONFIG_ACCOUNTING": {
    "ADD"                  : "Create a new configuration",
