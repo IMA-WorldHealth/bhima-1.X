@@ -4,7 +4,7 @@
       <div class="col-xs-12">
       <div class="panel panel-default">
         <div class="panel-heading">
-          {{ "OPERATING_ACCOUNT.CONFIGURE_REPORT" | translate }}
+          <b> {{ "OPERATING_ACCOUNT.CONFIGURE_REPORT" | translate }} </b>
         </div>
 
         <div class="panel-body">
@@ -52,7 +52,7 @@
 
   <div ng-switch-when="generate">
     <header>
-      {{ "OPERATING_ACCOUNT.TITLE" | translate }} / {{fiscalYears.get(session.fiscal_year_id).fiscal_year_txt}} / {{session.period_id == 'all' ? 'Tous' : (periods.get(session.period_id).period_start | date) + ' -- ' + (periods.get(session.period_id).period_stop | date)}}
+      {{ "OPERATING_ACCOUNT.TITLE" | translate }} / {{fiscalYears.get(session.fiscal_year_id).fiscal_year_txt}} / {{session.period_id == 'all' ? all_period : (periods.get(session.period_id).period_start | date) + ' -- ' + (periods.get(session.period_id).period_stop | date)}}
     </header>
 
     <nav>
