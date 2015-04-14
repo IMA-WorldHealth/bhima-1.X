@@ -25,10 +25,10 @@
         <button
           class="btn btn-default"
           ng-disabled="session.building"
-          ng-click="generateDocument()" ng-if="!generatedDocumentPath">{{session.building ? 'Loading' : 'Generate Document'}}
+          ng-click="generateDocument()" ng-if="!generatedDocumentPath">{{session.building ? 'Loading' : generate_doc}}
         </button>
 
-        <a class="btn btn-success" href="{{generatedDocumentPath}}" target="_blank" ng-if="generatedDocumentPath" ng-click="clearPath()">Document Build Success - Open Document</a>
+        <a class="btn btn-success" href="{{generatedDocumentPath}}" target="_blank" ng-if="generatedDocumentPath" ng-click="clearPath()">{{'BILAN.DOC_SUCCES' | translate}}/a>
       </form>
     </div>
   </div>

@@ -17,7 +17,7 @@ angular.module('bhima.controllers')
           project : { columns : ['abbr'] }
         },
         join : ['purchase.project_id=project.id', 'purchase.employee_id=employee.id'],
-        where : ['purchase.paid=1', 'AND' ,'purchase.confirmed=' + 0, 'AND', 'purchase.is_direct=0', 'AND', 'purchase.is_donation=0']
+        where : ['purchase.paid=1', 'AND' ,'purchase.confirmed=' + 0, 'AND', 'purchase.is_direct=0', 'AND', 'purchase.is_donation=0', 'AND', 'purchase.closed=1']
       }
     };
 
@@ -30,8 +30,12 @@ angular.module('bhima.controllers')
           project : { columns : ['abbr'] }
         },
         join : ['purchase.project_id=project.id', 'purchase.creditor_uuid=supplier.creditor_uuid'],
-        where : ['purchase.confirmed=' + 0, 'AND', 'purchase.is_direct=1', 'AND', 'purchase.is_donation=0']
+        where : ['purchase.confirmed=' + 0, 'AND', 'purchase.is_direct=1', 'AND', 'purchase.is_donation=0', 'AND', 'purchase.closed=1']
       }
+    };
+
+    dependencies.user = {
+      query : 'user_session'
     };
 
     dependencies.enterprise = {
@@ -49,6 +53,7 @@ angular.module('bhima.controllers')
     });
 
     function initialise(model) {
+      $scope.idUser = model.user.data.id;
       angular.extend($scope, model);
     }
 
@@ -65,9 +70,10 @@ angular.module('bhima.controllers')
 
     function updatePurchase () {
     	var purchase = {
-        	uuid      : session.selected.uuid,
-        	confirmed : 1,
-          paid      : 1
+        	uuid         : session.selected.uuid,
+        	confirmed    : 1,
+          confirmed_by : $scope.idUser,
+          paid         : 1
       };
       return connect.put('purchase', [purchase], ['uuid']);
     }

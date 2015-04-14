@@ -2,9 +2,10 @@ angular.module('bhima.controllers')
 .controller('operating_account', [
   '$scope',
   '$http',
+  '$translate',
   'validate',
   'appstate',
-  function ($scope, $http, validate, appstate) {
+  function ($scope, $http, $translate, validate, appstate) {
     var dependencies = {},
         session = $scope.session = {},
         state = $scope.state;
@@ -41,6 +42,10 @@ angular.module('bhima.controllers')
     }
 
     function generate () {
+      if(session.period_id === 'all'){
+        $scope.all_period = $translate.instant('OPERATING_ACCOUNT.ALL');
+      }
+
       $http.get(
         '/getExploitationAccount/',
         {params : {'period_id' : session.period_id, 'fiscal_year_id' : session.fiscal_year_id}
