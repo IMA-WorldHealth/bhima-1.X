@@ -5941,3 +5941,23 @@ CREATE TABLE IF NOT EXISTS `mod_snis_monthly_report` (
 
 ALTER TABLE `project` 
 ADD `zs_id` int(11) DEFAULT 0 NOT NULL ;
+
+
+-- Title : ADDING UNIT ENTRIES
+-- By    : Chris LOMAME
+-- Date  : 09 avr 2015
+INSERT INTO `unit` VALUES
+(100,'Purchase Order Confirmation','TREE.PURCHASE_CONFIRMATION','',10,0,'/partials/reports/purchase_order/','reports/purchase_order/');
+
+
+-- Updates purchase structure
+-- 
+-- ADD 'confirmed_by' field
+-- 
+-- Date: 2015-04-13
+-- By: Chris LOMAME
+
+USE bhima;
+
+ALTER TABLE `purchase`
+ADD `confirmed_by` int unsigned not null;

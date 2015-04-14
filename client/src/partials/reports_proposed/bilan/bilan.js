@@ -3,10 +3,11 @@ angular.module('bhima.controllers')
   '$scope',
   '$http',
   '$routeParams',
+  '$translate',
   '$sce',
 
   // Prototype document building module, requests document given configuration obejct
-  function ($scope, $http, $routeParams, $sce) {
+  function ($scope, $http, $routeParams, $translate, $sce) {
 
     // Configuration objects optionally passed to /report/build - drives configuration UI
     var configuration = {
@@ -21,7 +22,7 @@ angular.module('bhima.controllers')
     var serverUtilityPath = '/report/build/bilan';
     var generatedDocumentPath = null;
     var session = $scope.session = {};
-
+    $scope.generate_doc = $translate.instant('BILAN.GENERATE_DOC');
     // Expose configuration to scope - set module state
     session.building = false;
     $scope.configuration = configuration;

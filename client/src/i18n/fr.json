@@ -128,12 +128,12 @@
    "GENERATE"       : "Générée",
    "PATIENT_CASH"   : "Caisse auxiliaire",
    "RECEIPT"        : "Reçu",
-   "TITLE"          : "Historique caisse auxilliaire",
+   "TITLE"          : "Historique de la caisse auxilliaire",
    "UNFOUND"        : "Aucune données trouvées"
 },
 "BALANCE" : {
   "BUILD_BALANCE"   : "Génération Balance",
-  "DOCUMENT_CONFIG" : "Configuration document",
+  "DOCUMENT_CONFIG" : "Configuration du document",
   "FISCAL_YEAR"     : "Année fiscale",
   "LANGUAGE"        : "Langue"
   },
@@ -157,8 +157,10 @@
    },
 "BILAN" : {
   "BUILD_BILAN"     : "Génération bilan",
-  "DOCUMENT_CONFIG" : "Configuration document",
-  "LANGUAGE"        : "Langue"
+  "DOCUMENT_CONFIG" : "Configuration du document",
+  "LANGUAGE"        : "Langue",
+  "GENERATE_DOC"    : "Générer le document",
+  "DOC_SUCCES"      : "Document généré avec succès - Ouvrir le document"
   },
 "BUDGET": {
    "DISPLAY" : {
@@ -297,6 +299,7 @@
    "CODE_ITEM"             : "Code Médicament",
    "COLUMNS"               : "Colonnes",
    "COMMENT"               : "Commentaire",
+   "CONFIRM_BY"            : "Confirmé par",
    "CONFIRMED"             : "Confirmé",
    "CONSUMABLE"            : "Consommable",
    "CONSUMED_STOCK"        : "Stock Consommé",
@@ -338,6 +341,7 @@
    "DESCRIPTION"           : "Description",
    "DESIGNATION"           : "Désignation",
    "DESTINATION"           : "Destination",
+   "DIRECT"                : "Direct",
    "DIRECTION"             : "Direction",
    "DISCOUNT"              : "Discompte",
    "DOB"                   : "Date de Naissance",
@@ -368,6 +372,7 @@
    "GROUP_NAME"            : "Nom Groupe",
    "ID"                    : "ID",
    "ID_PRODUCT"            : "ID Produit",
+   "INDIRECT"              : "Indirect",
    "INITIAL_STOCK"         : "Stock Initial",
    "INVENTORY_CODE"        : "Code Inventaire",
    "INVENTORY_GROUP"       : "Groupe inventaire",
@@ -379,6 +384,7 @@
    "IS_PERCENT"            : "En pourcentage",
    "IS_WAREHOUSE"          : "Est-ce un entrepot ?",
    "ITEM"                  : "Item",
+   "ISSUER"                : "Émetteur",
    "LABEL"                 : "Désignation",
    "LAST_NAME"             : "Postnom",
    "LIMIT"                 : "Limit",
@@ -459,6 +465,7 @@
    "STAFF_COST"            : "Pour les employés",
    "STATE"                 : "Etat",
    "STOCK"                 : "Stock",
+   "STOCK_ADMINISTRATOR"   : "Gestionnaire de stock",
    "STOCK_MAX"             : "Stock maximal",
    "STOCK_MIN"             : "Stock minimal",
    "STOCK_QTE"             : "Quantité en Stock",
@@ -498,6 +505,7 @@
    "VISIT_DATE"            : "Date de Visite",
    "VOLUME"                : "Volume",
    "WEIGHT"                : "Poids",
+   "WORDING"               : "Libellé",
    "WORKING_DAY"           : "Jours prestés",
    "ZS"                    : "Zone de Santé"
    },
@@ -898,7 +906,7 @@
    },
 "EMPLOYEE_STATE" : {
   "BUILD_EMPLOYEE_STATE" : "Génération Etat Employé",
-  "DOCUMENT_CONFIG"      : "Configuration document",
+  "DOCUMENT_CONFIG"      : "Configuration du document",
   "LANGUAGE"             : "Langue"
   },
 "ENTERPRISE": {
@@ -1087,7 +1095,7 @@
    },
 "GRAND_LIVRE" : {
   "BUILD_GRAND_LIVRE"    : "Génération du Grand Livre",
-  "DOCUMENT_CONFIG"      : "Configuration document",
+  "DOCUMENT_CONFIG"      : "Configuration du document",
   "FISCAL_YEAR"          : "Année fiscale",
   "LANGUAGE"             : "Langue"
   },
@@ -1252,6 +1260,7 @@
    "DATE"                         : "Date",
    "DATE_DOCUMENT"                : "Date du document",
    "DATE_EMIT"                    : "Date d'emission",
+   "DATE_JUSTIFICATION"           : "Date de justification",
    "DATE_RECEIPT"                 : "Date de la facture",
    "DATE_REGISTRATION"            : "Date d'enregistrement",
    "DEBTOR_ID"                    : "# Débiteur",
@@ -1273,7 +1282,9 @@
    "ID"                           : "Id",
    "INDIRECT_PURCHASE"            : "Bon de sortie caisse",
    "INVOICE_ID"                   : "Facture N°",
+   "ID_PURCHASE_ORDER"            : "ID Commande d'achat",
    "ISSUER"                       : "Émetteur",
+   "JUSTIFICATION_ID"             : "ID Justification",
    "ITEM"                         : "Item",
    "LIBELLE_CAUTION"              : "Réception Caution",
    "LIBELLE_TRANSFERT_FROM"       : "Transfert de ",
@@ -1290,21 +1301,24 @@
    "PATIENT_INVOICE"              : "Facture du Patient",
    "PCASH"                        : "Caisse Principale",
    "PHONE"                        : "Phone",
+   "PROOF_CASH_EXIT"              : "Justificatif de bon de sortie caisse",
    "PROOF_OF_PATIENT_CONSUMPTION" : "Preuve de consommation du patient",
    "PURCHASE_DATE"                : "Date de la commande d'achat",
    "PURCHASE_ID"                  : "ID Commande d'achat",
    "PURCHASE_ORDER"               : "Commande d'achat",
+   "PURCHASE_ORDER_CONFIRMATION"  : "Confirmation Commande d'achat",
    "PURCHASE_RECIPIENT"           : "Fournisseur",
    "PURCHASE_TOTAL"               : "Total",
    "RECIPIENT"                    : "Recepteur",
    "REFERENCE"                    : "Référence",
    "SALARY_ADVANCE"               : "Avance sur salaire",
    "SALARY_PAYMENT"               : "Paiement Effectif du Salaire",
-   "SIGN_CLIENT"                  : "Signature Client",
-   "SIGN_EMPLOYEE"                : "Signature employé",
-   "SIGN_HEADER_AUXI"             : "Signature Charge Caisse Auxilliaire",
-   "SIGN_HEADER_BILLING"          : "Signature Charge Facturation",
-   "SIGN_HEADER_PRI"              : "Signature Charge Caisse Principale",
+   "SIGN_CLIENT"                  : "Client",
+   "SIGN_EMPLOYEE"                : "Employé",
+   "SIGN_HEADER_AUXI"             : "Charge Caisse Auxilliaire",
+   "SIGN_HEADER_BILLING"          : "Charge Facturation",
+   "SIGN_HEADER_PRI"              : "Charge Caisse Principale",
+   "STOCK_ADMINISTRATOR"          : "Gestionnaire de stock",
    "STOCK_MOVEMENT"               : "Mouvement de stock",
    "SUPPLIER"                     : "Fournisseur",
    "SUPPORT"                      : "Facture de prise en charge",
@@ -1407,7 +1421,7 @@
    "ALL"                : "Toute l'annee fiscale",
    "APRIL"              : "Avril",
    "AUGUST"             : "Août",
-   "CONFIGURE_REPORT"   : "Configure report : Operating Account ",
+   "CONFIGURE_REPORT"   : "Configuration du rapport : Compte d'exploitation ",
    "DECEMBER"           : "Décembre",
    "FEBRUARY"           : "Février",
    "FISCAL_YEAR"        : "Année Fiscal",
@@ -1774,8 +1788,8 @@
          },
       "INCOME": {
          "EMPTY_REPORT"  : "Aucun enregistrement trouvé !",
-         "TITLE"         : "Rapport des Recettes",
-         "TOTAL_INCOME"  : "Total des Recettes"
+         "TITLE"         : "Rapport des recettes",
+         "TOTAL_INCOME"  : "Total des recettes"
          }
       },
    "SELECT_CASHBOX"   : "Sélectionner une Caisse",
@@ -1857,7 +1871,13 @@
    "INVALID_PRICE" : "Le prix est invalide",
    "NOT_FOUND"     : "Aucun enregistrement trouvé",
    "PURCHASE_TYPE" : "Type de commande d'achat",
-   "TITLE"         : "Commande Achat",
+   "REPORT": {
+      "ALL_TYPES"            : "Toutes les types",
+      "EMPTY_REPORT"         : "Aucune commande d'achat trouvée !",
+      "SELECT_TYPE_PURCHASE" : "Séléctionner le type de commande d'achat",
+      "TITLE"                : "Rapport de commande d'achat"
+      },
+   "TITLE"         : "Commande d'achat",
    "VIEW": {
       "TITLE" : "Voir Commandes Achats"
       },
@@ -1866,14 +1886,14 @@
     }
    },
 "PURCHASE_MENU": {
-   "AUTHORIZATION"    : "Authorisation commande achat",
+   "AUTHORIZATION"    : "Authorisation des commandes d'achats",
    "CONFIRM"          : "Confirmer paiement",
    "DESCRIPTION"      : "Ce module vous permet de gerer les commandes d'achats",
    "OPERATION"        : "Operations",
-   "PUCHASE_CREATION" : "Créer commande achat",
-   "TITLE"            : "Gestion des commandes achats",
-   "VALIDATE"         : "Validation commande achat",
-   "VIEW"             : "Liste commandes achats"
+   "PUCHASE_CREATION" : "Créer une commande d'achat",
+   "TITLE"            : "Gestion des commandes d'achats",
+   "VALIDATE"         : "Validation des commandes d'achats",
+   "VIEW"             : "Liste des commandes d'achats"
    },
 "PURCHASE_RECORDS": {
    "ADVANCE_SEARCH"       : "Recherche Avancée",
@@ -2557,7 +2577,7 @@
    "EMPLOYEE_STANDING"         : "Rapport des employés",
    "ENTERPRISE"                : "Entreprise",
    "EXCHANGE"                  : "Taux de change",
-   "EXPENSE_REPORT"            : "Rapport des Dépenses",
+   "EXPENSE_REPORT"            : "Rapport des dépenses",
    "EXPIRING"                  : "Rapport Expiration Stocks",
    "EXTRA"                     : "Extra",
    "FINANCE"                   : "Finances",
@@ -2571,7 +2591,7 @@
    "HOLLYDAY_MANAGEMENT"       : "Gestion des vacances",
    "HOSPITAL"                  : "Hôpital",
    "INCOME_EXPENSE"            : "Rapport Recettes/Dépense",
-   "INCOME_REPORT"             : "Rapport des Recettes",
+   "INCOME_REPORT"             : "Rapport des recettes",
    "INVENTORY"                 : "Stock",
    "INVENTORY_MANAGEMENT"      : "Gestion de l'Inventaire",
    "INVENTORY_VIEW"            : "Rapport Stocks",
@@ -2599,6 +2619,7 @@
    "PROFIT_CENTER_MGMNT"       : "Centres de profit",
    "PROJECT"                   : "Projets",
    "PURCHASE_ORDER"            : "Commande Achat",
+   "PURCHASE_CONFIRMATION"     : "Confirmation de commande d'achat",
    "PURCHASE_ORDER_MANAGEMENT" : "Gestion des Commande d'achat",
    "PURCHASE_ORDER_RECORDS"    : "Historique Commande Achat",
    "REGISTER_STOCK"            : "Enregistrement des Stocks",
