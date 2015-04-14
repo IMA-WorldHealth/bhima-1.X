@@ -1894,7 +1894,7 @@ function handleIndirectPurchase (id, user_id, done){
 
   function getTransId (trans_id) {
     cfg.trans_id = trans_id;
-    cfg.descrip =  'PP/' + new Date().toISOString().slice(0, 10).toString();
+    cfg.descrip =  'PAIE C.A Indirect/' + new Date().toISOString().slice(0, 10).toString();
     return debit();
   }
 
@@ -3655,7 +3655,7 @@ function handleCreateFiscalYear (id, user_id, details, done) {
   }
 }
 
-function handleReversingStock (id, user_id, details, done) { 
+function handleReversingStock (id, user_id, details, done) {
   var sql, rate, transact, state = {}, queries = {}, data, reference, postingJournal, cfg = {};
   state.user_id = user_id;
   sql =
@@ -3671,7 +3671,7 @@ function handleReversingStock (id, user_id, details, done) {
     '`deb_cred_uuid`, `inv_po_id`, `cost_ctrl_id`, `origin_id`, '+
     '`user_id`, `cc_id`, `pc_id` ' +
     'FROM `general_ledger`' +
-    'WHERE `general_ledger`.`trans_id`=' + sanitize.escape(id) ; 
+    'WHERE `general_ledger`.`trans_id`=' + sanitize.escape(id) ;
 
   db.exec(sql)
   .then(getRecord)
@@ -3728,7 +3728,7 @@ function handleReversingStock (id, user_id, details, done) {
           '(`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
           '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, ' +
           '`deb_cred_uuid`, `inv_po_id`, `cost_ctrl_id`, `origin_id`, '+
-          '`user_id`, `cc_id`, `pc_id`) ' +  
+          '`user_id`, `cc_id`, `pc_id`) ' +
         'VALUES (' +
           item.uuid + ', ' +
           item.project_id + ', ' +
@@ -3750,9 +3750,9 @@ function handleReversingStock (id, user_id, details, done) {
           item.origin_id + ', ' +
           item.user_id + ', ' +
           item.cc_id + ', ' +
-          item.pc_id +                                                                      
+          item.pc_id +
         ');';
-      queries.items.push(sql);        
+      queries.items.push(sql);
     });
     return q.all(queries.items.map(function (sql) {
       return db.exec(sql);
@@ -3767,7 +3767,7 @@ function handleAdvancePaiment (id, user_id, done) {
   sql =
     'SELECT `rubric_paiement`.`id`, `rubric_paiement`.`rubric_id`, `rubric_paiement`.`paiement_uuid`, `rubric_paiement`.`value`, ' +
     '`rubric`.`is_advance`, `paiement`.`currency_id`, `paiement`.`employee_id`, `employee`.`prenom`, `employee`.`name`, `employee`.`creditor_uuid`, ' +
-    '`creditor_group`.`account_id` AS `account_creditor`, `config_accounting`.`account_id` AS `account_paiement`, `primary_cash`.`project_id` ' + 
+    '`creditor_group`.`account_id` AS `account_creditor`, `config_accounting`.`account_id` AS `account_paiement`, `primary_cash`.`project_id` ' +
     'FROM `rubric_paiement` ' +
     'JOIN `rubric` ON `rubric`.`id` = `rubric_paiement`.`rubric_id` ' +
     'JOIN `paiement` ON `paiement`.`uuid` = `rubric_paiement`.`paiement_uuid` ' +
@@ -3779,7 +3779,7 @@ function handleAdvancePaiment (id, user_id, done) {
     'JOIN `primary_cash_item` ON `primary_cash_item`.`inv_po_id` = `rubric_paiement`.`paiement_uuid` ' +
     'JOIN `primary_cash` ON `primary_cash`.`uuid` = `primary_cash_item`.`primary_cash_uuid` ' +
     'WHERE `rubric_paiement`.`paiement_uuid` = ' + sanitize.escape(id) +
-    'AND `rubric`.`is_advance` = 1 ';  
+    'AND `rubric`.`is_advance` = 1 ';
 
 
   db.exec(sql)
@@ -3800,7 +3800,7 @@ function handleAdvancePaiment (id, user_id, done) {
     reference = records[0];
     var date = util.toMysqlDate(get.date());
     return q([get.origin('salary_advance'), get.period(get.date()), get.exchangeRate(date)]);
-   
+
   }
 
   function getDetails (originId, periodObject, store) {
@@ -3846,9 +3846,9 @@ function handleAdvancePaiment (id, user_id, done) {
             cfg.originId,
             user_id
           ].join(',') + ');';
-        
+
       return db.exec(debit_sql);
-    }  
+    }
   }
 
   function credit () {
@@ -3867,17 +3867,17 @@ function handleAdvancePaiment (id, user_id, done) {
             cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.account_paiement
           ].join(',') + ', ' +
           [
-            0, reference.value.toFixed(4), 
+            0, reference.value.toFixed(4),
             0, (reference.value / rate).toFixed(4),
             reference.currency_id
           ].join(',') + ', null, null, ' + [sanitize.escape(reference.paiement_uuid), cfg.originId, user_id].join(',') +
         ');';
-      return db.exec(credit_sql);      
+      return db.exec(credit_sql);
     }
   }
 }
 
-function handleCancelSupport (id, user_id, details, done) { 
+function handleCancelSupport (id, user_id, details, done) {
   var sql, rate, transact, state = {}, queries = {}, data, reference, postingJournal, cfg = {};
   state.user_id = user_id;
   sql =
@@ -3893,7 +3893,7 @@ function handleCancelSupport (id, user_id, details, done) {
     '`deb_cred_uuid`, `inv_po_id`, `cost_ctrl_id`, `origin_id`, '+
     '`user_id`, `cc_id`, `pc_id` ' +
     'FROM `general_ledger`' +
-    'WHERE `general_ledger`.`inv_po_id`=' + sanitize.escape(id) ; 
+    'WHERE `general_ledger`.`inv_po_id`=' + sanitize.escape(id) ;
 
   db.exec(sql)
   .then(getRecord)
@@ -3959,7 +3959,7 @@ function handleCancelSupport (id, user_id, details, done) {
           '(`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
           '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `deb_cred_type`, `currency_id`, ' +
           '`deb_cred_uuid`, `inv_po_id`, `cost_ctrl_id`, `origin_id`, '+
-          '`user_id`, `cc_id`, `pc_id`) ' +  
+          '`user_id`, `cc_id`, `pc_id`) ' +
         'VALUES (' +
           item.uuid + ', ' +
           item.project_id + ', ' +
@@ -3982,9 +3982,9 @@ function handleCancelSupport (id, user_id, details, done) {
           item.origin_id + ', ' +
           item.user_id + ', ' +
           item.cc_id + ', ' +
-          item.pc_id +                                                                      
+          item.pc_id +
         ');';
-      queries.items.push(sql);        
+      queries.items.push(sql);
     });
     return q.all(queries.items.map(function (sql) {
       return db.exec(sql);

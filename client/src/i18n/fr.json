@@ -379,7 +379,7 @@
    "INVENTORY_ITEM"        : "Item du Stock",
    "INVOICE_DATE"          : "Date Facture",
    "INVOICE_ID"            : "ID Facture",
-   "INVPO_ID"              : "# Fact/OA",
+   "INVPO_ID"              : "ID Operation",
    "IS_IPR"                : "Est-ce l'IPR",
    "IS_PERCENT"            : "En pourcentage",
    "IS_WAREHOUSE"          : "Est-ce un entrepot ?",
@@ -836,7 +836,13 @@
    "TITLE"           : "Gestion des Dons",
    "TOTAL_COST"      : "Coût Total",
    "TRACKING_NB"     : "N° Tracking",
-   "UUID"            : "Code"
+   "UUID"            : "Code",
+   "CONFIRM" : {
+      "TITLE" : "Confirmation Donation",
+      "FILTER" : "Filtrer",
+      "NOT_FOUND" : "Aucune donation trouvee"
+
+   }
    },
 "DONOR_MANAGEMENT": {
    "ADD"            : "Ajouter un donateur",
@@ -2652,7 +2658,8 @@
    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions par Compte",
    "UPDATE_STOCK"              : "Mettre à Jour les Stocks",
    "AUXILLARY_CASH_RECORD"     : "Historique caisse auxilliaire",
-   "VALIDATE_PURCHASE"         : "Validation Commande Achat"
+   "VALIDATE_PURCHASE"         : "Validation Commande Achat",
+   "DONATION_CONFIRMATION"     : "Confirmation Donation"
    },
 "TRIAL_BALANCE": {
    "ACCOUNT"          : "Compte",
