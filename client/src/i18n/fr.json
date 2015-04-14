@@ -299,6 +299,7 @@
    "CODE_ITEM"             : "Code Médicament",
    "COLUMNS"               : "Colonnes",
    "COMMENT"               : "Commentaire",
+   "CONFIRM_BY"            : "Confirmé par",
    "CONFIRMED"             : "Confirmé",
    "CONSUMABLE"            : "Consommable",
    "CONSUMED_STOCK"        : "Stock Consommé",
@@ -340,6 +341,7 @@
    "DESCRIPTION"           : "Description",
    "DESIGNATION"           : "Désignation",
    "DESTINATION"           : "Destination",
+   "DIRECT"                : "Direct",
    "DIRECTION"             : "Direction",
    "DISCOUNT"              : "Discompte",
    "DOB"                   : "Date de Naissance",
@@ -370,6 +372,7 @@
    "GROUP_NAME"            : "Nom Groupe",
    "ID"                    : "ID",
    "ID_PRODUCT"            : "ID Produit",
+   "INDIRECT"              : "Indirect",
    "INITIAL_STOCK"         : "Stock Initial",
    "INVENTORY_CODE"        : "Code Inventaire",
    "INVENTORY_GROUP"       : "Groupe inventaire",
@@ -381,6 +384,7 @@
    "IS_PERCENT"            : "En pourcentage",
    "IS_WAREHOUSE"          : "Est-ce un entrepot ?",
    "ITEM"                  : "Item",
+   "ISSUER"                : "Émetteur",
    "LABEL"                 : "Désignation",
    "LAST_NAME"             : "Postnom",
    "LIMIT"                 : "Limit",
@@ -1861,6 +1865,12 @@
    "INVALID_PRICE" : "Le prix est invalide",
    "NOT_FOUND"     : "Aucun enregistrement trouvé",
    "PURCHASE_TYPE" : "Type de commande d'achat",
+   "REPORT": {
+      "ALL_TYPES"            : "Toutes les types",
+      "EMPTY_REPORT"         : "Aucune commande d'achat trouvée !",
+      "SELECT_TYPE_PURCHASE" : "Séléctionner le type de commande d'achat",
+      "TITLE"                : "Rapport de commande d'achat"
+      },
    "TITLE"         : "Commande d'achat",
    "VIEW": {
       "TITLE" : "Voir les commandes d'achats"
@@ -2601,6 +2611,7 @@
    "PRICE_LIST"                : "Liste des Prix",
    "PROFIT_CENTER_MGMNT"       : "Centres de profit",
    "PROJECT"                   : "Projets",
+   "PURCHASE_CONFIRMATION"     : "Confirmation de commande d'achat",  
    "PURCHASE_ORDER"            : "Bon de Commande",
    "PURCHASE_ORDER_MANAGEMENT" : "Gestion des Commande d'achat",
    "PURCHASE_ORDER_RECORDS"    : "Historique Bon de Commande",
