@@ -388,7 +388,8 @@ function handleSales (id, user_id, done, caution) {
   .spread(function (rows, transId) {
 
     if (caution && caution > 0) {
-      var descript = 'CAUTION/' + reference.debitor_uuid + '/' + get.date();
+
+      var descript = '[AVANCE] AJUSTEMENT/' + reference.note;
       var transAmount = caution - reference.cost > 0 ? reference.cost : caution;
       queries.cautionDebiting =
         'INSERT INTO posting_journal '+
