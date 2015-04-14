@@ -240,6 +240,7 @@
    "DISCARD"         : "Annuler la commande d'achat",
    "FILTER"          : "Filtrer les commandes d'achats",
    "NOT_FOUND"       : "Aucune commande d'achat trouvé !",
+   "PAY"             : "Payer",
    "SELECT_PURCHASE" : "Sélectionner commande d'achat",
    "TITLE"           : "Dépense de la commande d'achat",
    "TO"              : "à "
