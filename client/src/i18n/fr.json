@@ -128,12 +128,12 @@
    "GENERATE"       : "Générée",
    "PATIENT_CASH"   : "Caisse auxiliaire",
    "RECEIPT"        : "Reçu",
-   "TITLE"          : "Historique caisse auxilliaire",
+   "TITLE"          : "Historique de la caisse auxilliaire",
    "UNFOUND"        : "Aucune données trouvées"
 },
 "BALANCE" : {
   "BUILD_BALANCE"   : "Génération Balance",
-  "DOCUMENT_CONFIG" : "Configuration document",
+  "DOCUMENT_CONFIG" : "Configuration du document",
   "FISCAL_YEAR"     : "Année fiscale",
   "LANGUAGE"        : "Langue"
   },
@@ -157,8 +157,10 @@
    },
 "BILAN" : {
   "BUILD_BILAN"     : "Génération bilan",
-  "DOCUMENT_CONFIG" : "Configuration document",
-  "LANGUAGE"        : "Langue"
+  "DOCUMENT_CONFIG" : "Configuration du document",
+  "LANGUAGE"        : "Langue",
+  "GENERATE_DOC"    : "Générer le document",
+  "DOC_SUCCES"      : "Document généré avec succès - Ouvrir le document"
   },
 "BUDGET": {
    "DISPLAY" : {
@@ -904,7 +906,7 @@
    },
 "EMPLOYEE_STATE" : {
   "BUILD_EMPLOYEE_STATE" : "Génération Etat Employé",
-  "DOCUMENT_CONFIG"      : "Configuration document",
+  "DOCUMENT_CONFIG"      : "Configuration du document",
   "LANGUAGE"             : "Langue"
   },
 "ENTERPRISE": {
@@ -1093,7 +1095,7 @@
    },
 "GRAND_LIVRE" : {
   "BUILD_GRAND_LIVRE"    : "Génération du Grand Livre",
-  "DOCUMENT_CONFIG"      : "Configuration document",
+  "DOCUMENT_CONFIG"      : "Configuration du document",
   "FISCAL_YEAR"          : "Année fiscale",
   "LANGUAGE"             : "Langue"
   },
@@ -1413,7 +1415,7 @@
    "ALL"                : "Toute l'annee fiscale",
    "APRIL"              : "Avril",
    "AUGUST"             : "Août",
-   "CONFIGURE_REPORT"   : "Configure report : Operating Account ",
+   "CONFIGURE_REPORT"   : "Configuration du rapport : Compte d'exploitation ",
    "DECEMBER"           : "Décembre",
    "FEBRUARY"           : "Février",
    "FISCAL_YEAR"        : "Année Fiscal",
@@ -1780,8 +1782,8 @@
          },
       "INCOME": {
          "EMPTY_REPORT"  : "Aucun enregistrement trouvé !",
-         "TITLE"         : "Rapport des Recettes",
-         "TOTAL_INCOME"  : "Total des Recettes"
+         "TITLE"         : "Rapport des recettes",
+         "TOTAL_INCOME"  : "Total des recettes"
          }
       },
    "SELECT_CASHBOX"   : "Sélectionner une Caisse",
@@ -2568,7 +2570,7 @@
    "EMPLOYEE_STANDING"         : "Rapport des employés",
    "ENTERPRISE"                : "Entreprise",
    "EXCHANGE"                  : "Taux de change",
-   "EXPENSE_REPORT"            : "Rapport des Dépenses",
+   "EXPENSE_REPORT"            : "Rapport des dépenses",
    "EXPIRING"                  : "Rapport Expiration Stocks",
    "EXTRA"                     : "Extra",
    "FINANCE"                   : "Finances",
@@ -2582,7 +2584,7 @@
    "HOLLYDAY_MANAGEMENT"       : "Gestion des vacances",
    "HOSPITAL"                  : "Hôpital",
    "INCOME_EXPENSE"            : "Rapport Recettes/Dépense",
-   "INCOME_REPORT"             : "Rapport des Recettes",
+   "INCOME_REPORT"             : "Rapport des recettes",
    "INVENTORY"                 : "Stock",
    "INVENTORY_MANAGEMENT"      : "Gestion de l'Inventaire",
    "INVENTORY_VIEW"            : "Rapport Stocks",
@@ -2642,7 +2644,7 @@
    "TFR"                       : "Tableau de Formation des Résultats",
    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions par Compte",
    "UPDATE_STOCK"              : "Mettre à Jour les Stocks",
-   "AUXILLARY_CASH_RECORD"     : "Historique caisse auxilliaire",
+   "AUXILLARY_CASH_RECORD"     : "Historique de la caisse auxilliaire",
    "VALIDATE_PURCHASE"         : "Validation Ordre d'Achat"
    },
 "TRIAL_BALANCE": {
