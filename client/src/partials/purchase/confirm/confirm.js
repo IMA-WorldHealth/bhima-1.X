@@ -30,7 +30,7 @@ angular.module('bhima.controllers')
           project : { columns : ['abbr'] }
         },
         join : ['purchase.project_id=project.id', 'purchase.creditor_uuid=supplier.creditor_uuid'],
-        where : ['purchase.confirmed=' + 0, 'AND', 'purchase.is_direct=1', 'AND', 'purchase.is_donation=0', 'AND', 'purchase.closed=0']
+        where : ['purchase.confirmed=' + 0, 'AND', 'purchase.is_direct=1', 'AND', 'purchase.is_donation=0', 'AND', 'purchase.closed=1']
       }
     };
 
