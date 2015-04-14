@@ -770,6 +770,20 @@ function balanceMensuelle (params){
   return db.exec(requette, [periode,  periode, classe, periode, periode, project, periode, periode, classe, periode, periode, project]);
 }
 
+function purchase_order () {
+  var sql;
+
+  sql =
+    'SELECT `purchase`.`uuid`, `purchase`.`reference`, `purchase`.`is_direct`, `purchase`.`project_id`, ' +
+    '`purchase`.`purchase_date`, `purchase`.`closed`, `purchase`.`paid` ' +
+    'FROM `purchase` ' +
+    'WHERE (`purchase`.`closed` = 0 AND `purchase`.`is_direct` = 0 AND `purchase`.`paid` = 1) OR ' + 
+    '(`purchase`.`closed` = 0 AND `purchase`.`is_direct` = 1 AND `purchase`.`is_authorized` = 1) ' + 
+    'ORDER BY `purchase`.`purchase_date` DESC ';
+
+  return db.exec(sql);
+}
+
 function generate(request, params, done) {
   /*summary
   *   Route request for reports, if no report matches given request, return null
@@ -798,7 +812,8 @@ function generate(request, params, done) {
     'expense_report'        : expenseReport,
     'patient_group'         : require('./reports/patient_group')(db),
     'balance_mensuelle'     : balanceMensuelle,
-    'cashAuxillaryRecords'  : cashAuxillaryRecords
+    'cashAuxillaryRecords'  : cashAuxillaryRecords,
+    'purchase_order'        : purchase_order
     //'balance_sheet'         : require('./reports/balance_sheet')
   };
 
