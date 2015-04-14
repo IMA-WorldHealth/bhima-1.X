@@ -668,7 +668,7 @@
 "CREDIT_NOTE": {
    "DESCRIPTION"           : "Description",
    "INVOICE_CONSUMPTION"   : "This invoice may not be canceled because there a product distribution is concerned",
-   "INVOICE_CONSUMPTION_2" : "It would cancel the distribution of products in order to cancel the sale",   
+   "INVOICE_CONSUMPTION_2" : "It would cancel the distribution of products in order to cancel the sale",
    "PLEASE_NOTE"           : "Please note that invoice has already been paid, in case of cancellation the box must remboursser to patient the sum of:",
    "SALE_DETAILS"          : "Sale Details",
    "SUBMIT"                : "Submit Credit Note",
@@ -1097,7 +1097,7 @@
    "AUTHORIZED_BY"          : "Authorized By",
    "BALANCE"                : "Balance",
    "CANCEL"                 : "Cancel",
-   "CONVENTION_INVOICE"     : "Convention Invoice", 
+   "CONVENTION_INVOICE"     : "Convention Invoice",
    "COST"                   : "Cost to Debtor",
    "DATA_SUCCES"            : "Data submitted successfully",
    "DEBITOR"                : "Debtor",
@@ -1232,7 +1232,7 @@
    "AMOUNT_RECEIVE"               : "Amount Received",
    "AMOUNT_RECEIVED"              : "Amount Recieved",
    "BALANCE_DUE"                  : "Balance Due",
-   "BUYER"                        : "Buyer", 
+   "BUYER"                        : "Buyer",
    "BENEFICIARY"                  : "Beneficiary",
    "BY"                           : "By",
    "CASH_ID"                      : "Cash transaction #",
@@ -1320,7 +1320,13 @@
    "TRANSACTION_PRICE"            : "Transaction Price",
    "TRANSFERED_QTE"               : "Transfered Quantity",
    "TRANSFERT"                    : "Transfert",
-   "TRANSFERT_DATE"               : "Transfer date"
+   "TRANSFERT_DATE"               : "Transfer date",
+   "YES_AUTHORIZED"               : "Yes",
+   "YES_VALID"                    : "Yes",
+   "NO_VALID"                     : "No",
+   "NO_AUTHORIZED"                : "No",
+   "IS_VALID"                     : "Validating",
+   "IS_AUTHORIZED"                : "Authorization"
    },
 "JOURNAL_VOUCHER": {
    "ADD_COMMENT"            : "Add Comment",
@@ -1435,7 +1441,7 @@
    "MODIFY"        : "Modify a Patient Group",
    "NEW"           : "New Patient Group",
    "PATIENT_GROUP" : "Patient Group",
-   "PRICE_LIST"    : "Price List", 
+   "PRICE_LIST"    : "Price List",
    "REGISTER"      : "Register a Patient Group",
    "REGISTERED"    : "Registered Patient Groups",
    "SUBSIDY"       : "Subsidy",
@@ -1649,7 +1655,7 @@
    "TRANSACTION_NUMBER"    : "Transaction #",
    "TRANSACTION_SUCCESS"   : "Transaction edits and logs saved successfully",
    "TRIAL_BALANCE"         : "Trial Balance",
-   "VERIFY_TRANSACTION"    : "Verify Transaction" 
+   "VERIFY_TRANSACTION"    : "Verify Transaction"
    },
 "PRICE_LIST": {
    "ACTIONS"          : "Actions",
@@ -2154,7 +2160,8 @@
    "FINANCE_OFFICER"   : "Finance Officer",
    "RESPONSABLE"       : "Responsable",
    "THIRD"             : "Third",
-   "WAREHOUSE_MANAGER" : "Warehouse Manager"
+   "WAREHOUSE_MANAGER" : "Warehouse Manager",
+   "STOCK_MANAGER"     : "Stock Manager"
    },
 "SNIS" : {
   "ALL"         : "All SNIS reports",
@@ -2219,7 +2226,7 @@
       "REMAINING"            : "Remaining",
       "REPORT"               : "Entry Report",
       "REQUESTED_BY"         : "Requested By",
-      "REVIEW"               : "Review Manifest",
+      "REVIEW"               : "Entry prouf",
       "SELECT"               : "Select",
       "SELECT_DEPOT"         : "Select a Store",
       "TITLE"                : "Stock Entry",
@@ -2514,7 +2521,7 @@
    "ACCOUNT_STATEMENT"         : "Account Statement",
    "ADMIN"                     : "Admin",
    "ALL_TRANSACTIONS"          : "All Transactions",
-   "AUTHORIZE_PURCHASE"        : "Authorization purchase order",                  
+   "AUTHORIZE_PURCHASE"        : "Authorization purchase order",
    "BALANCE_MENSUELLE"         : "Monthly balance report",
    "BALANCE_SHEET"             : "Balance sheet",
    "BENEFICIARY"               : "Beneficaries",
