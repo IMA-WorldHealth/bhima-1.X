@@ -34,6 +34,10 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.user = {
+      query : 'user_session'
+    };
+
     dependencies.enterprise = {
       query : {
         tables : {
@@ -49,6 +53,7 @@ angular.module('bhima.controllers')
     });
 
     function initialise(model) {
+      $scope.idUser = model.user.data.id;
       angular.extend($scope, model);
     }
 
@@ -65,9 +70,10 @@ angular.module('bhima.controllers')
 
     function updatePurchase () {
     	var purchase = {
-        	uuid      : session.selected.uuid,
-        	confirmed : 1,
-          paid      : 1
+        	uuid         : session.selected.uuid,
+        	confirmed    : 1,
+          confirmed_by : $scope.idUser,
+          paid         : 1
       };
       return connect.put('purchase', [purchase], ['uuid']);
     }
