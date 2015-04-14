@@ -1,0 +1,104 @@
+<!-- Patient Invoice template -->
+<div ng-controller="receipt.sale">
+  <header>
+    {{'INVOICE.TITLE' | translate}}
+    <div class="pull-right">
+      <select class="form-bhima" ng-change="updateCurrency(model.selectedCurrency.id)" ng-model="model.selectedCurrency" ng-options="currency.symbol for currency in model.currency.data"></select>
+    </div>
+  </header>
+
+  <div class="row customer-details">
+    <div class="col-xs-12">
+      <small style="float: right; color: grey; font-size: 8px">{{ model.saleRecords[0].uuid }}</small>
+      <h4 class="invoice-header">{{ 'INVOICE.PATIENT_INVOICE' | translate }}</h4>
+    </div>
+  </div>
+
+  <div class="row customer-details">
+    <!-- Temporary style; needs official markup and CSS -->
+    <div class="col-xs-4">
+      <span>
+        <b>{{model.common.enterprise.name}}</b>
+      </span>
+      <br>
+      {{model.common.location.name}}
+      <br>
+      {{ model.common.enterprise.po_box || 'B.P. 205'}}
+      <br>
+      {{model.common.location.sector_name}}
+      <br>
+      <i>TEL</i> {{model.common.enterprise.phone}}
+      <br>
+      <i>MAIL</i> {{model.common.enterprise.email}}
+    </div>
+    <div class="col-xs-4">
+      <b>{{model.recipient.first_name}} {{model.recipient.last_name}}</b>
+      <br>
+      <!-- Debtor group name -->
+      {{model.recipient.name}}
+      <br>
+      <br>
+      <i>{{ 'INVOICE.DATE_REGISTRATION' | translate }}</i>
+      <br>
+      {{model.recipient.registration_date | date}}
+    </div>
+    <div class="col-xs-4">
+      <i>{{'INVOICE.INVOICE_ID' | translate}}</i> <b>{{model.common.enterprise.abbr + model.saleRecords[0].reference}}</b>
+      <br>
+      <i>{{'INVOICE.CLIENT_ID' | translate}}</i> <b>{{model.recipient.abbr + model.recipient.reference}}</b>
+      <br>
+      <br>
+      <i>{{ 'INVOICE.DATE_RECEIPT' | translate }}</i>
+      <br>
+      {{model.saleRecords[0].invoice_date | date}}
+      <br>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12">
+
+      <table class="invoiceTable">
+        <thead>
+          <tr>
+            <th>{{'COLUMNS.CODE' | translate}}</th>
+            <th>{{'INVOICE.DESCRIPTION' | translate}}</th>
+            <th>{{'COLUMNS.QUANTITY' | translate}}</th>
+            <th>{{'INVOICE.TRANSACTION_PRICE' | translate}}</th>
+            <th>{{'INVOICE.AMOUNT' | translate}}</th>
+          </tr>
+        </thead>
+        <tbody class="items">
+          <tr ng-repeat="item in model.saleRecords | orderBy : 'code'">
+            <td>{{ item.code }}</td>
+            <td>{{ item.text }}</td>
+            <td>{{ item.quantity }}</td>
+
+            <td><span ng-bind-html="item.localeTransaction | intlcurrency:model.selectedCurrency.id"></span></td>
+            <td><span ng-bind-html="item.localeCost| intlcurrency:model.selectedCurrency.id"></span></td>
+          </tr>
+          <tr ng-show="model.saleSubsidies.length" ng-repeat="subsidy in model.saleSubsidies">
+            <td colspan="2">{{subsidy.text}}</td>
+            <td colspan="3"><span ng-bind-html="subsidy.value | intlcurrency:model.selectedCurrency.id"></span></td>
+          </tr>
+        </tbody>
+        <tbody class="totals">
+          <tr><td colspan="4" class="no-border">{{'INVOICE.TOTAL' | translate}}</td><td><span ng-bind-html="model.total.localeCost | intlcurrency:model.selectedCurrency.id"></span></td></tr>
+          <tr><td colspan="4" class="no-border">{{'INVOICE.AMOUNT_RECEIVED' | translate}}</td><td><span ng-bind-html="model.ledger.localeCredit | intlcurrency:model.selectedCurrency.id"></span></td></tr>
+          <tr><td colspan="4" class="no-border">{{'INVOICE.BALANCE_DUE' | translate}}</td><td><span ng-bind-html="model.total.localeBalance | intlcurrency:model.selectedCurrency.id"></span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="signatures">
+    <h5>{{ "UTIL.SIGNATURES" | translate }}</h5>
+
+    <div class="signature-box-wide">
+      <label>{{ "INVOICE.SIGN_HEADER_BILLING" | translate }}</label> <label style="float: right;">{{ "INVOICE.SIGN_CLIENT" | translate }}</label>
+      <br>
+      <div class="signature-line"></div>
+    </div>
+  </div>
+</div>
+<!-- End Patient Invoice template -->

@@ -37,11 +37,11 @@ angular.module('bhima.controllers')
       if ($scope.newForm.$invalid) {
         return messenger.danger('You have invalid form fields');
       }
-      connect.basicPut('currency', [connect.clean($scope.newCurrency)])
+      connect.post('currency', [connect.clean($scope.newCurrency)])
       .then(function (res) {
         $scope.action = '';
         $scope.newCurrency.id = res.data.insertId;
-        $scope.currendy.post($scope.newCurrency);
+        $scope.currency.post($scope.newCurrency);
       });
     };
 
@@ -51,7 +51,7 @@ angular.module('bhima.controllers')
 
     // remove currency
     $scope.remove = function (id) {
-      connect.basicDelete('currency', id)
+      connect.delete('currency', 'id', id)
       .then(function () {
         $scope.currency.remove(id);
       });
@@ -65,13 +65,20 @@ angular.module('bhima.controllers')
       $scope.edit_id = id;
     };
 
+    // TODO -- error handling
     $scope.submitEdit = function () {
+      var data = connect.clean($scope.editCurrency);
       if ($scope.editForm.$invalid) {
         return messenger.danger('You have invalid form fields.');
       }
-      connect.basicPost('currency', [connect.clean($scope.editCurrency)])
+      connect.put('currency', [data], ['id'])
       .then(function () {
+        messenger.success('Successfully updated currency.  Please refresh the page.');
         $scope.action = '';
+        $scope.currency.put(data);
+      })
+      .catch(function (err) {
+        throw err; 
       });
     };
 
@@ -79,6 +86,5 @@ angular.module('bhima.controllers')
       $scope.editCurrency = {};
       $scope.editCurrency = angular.copy($scope.currency.get($scope.edit_id));
     };
-
   }
 ]);

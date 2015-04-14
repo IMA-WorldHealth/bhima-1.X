@@ -2,6 +2,7 @@ angular.module('bhima.controllers')
 .controller('primaryCash.income.generic', [
   '$scope',
   '$routeParams',
+  '$translate',
   'validate',
   'messenger',
   'appstate',
@@ -10,7 +11,7 @@ angular.module('bhima.controllers')
   'util',
   '$location',
   'appcache',
-  function ($scope, $routeParams, validate, messenger, appstate, connect, uuid, util, $location, Appcache) {
+  function ($scope, $routeParams, $translate, validate, messenger, appstate, connect, uuid, util, $location, Appcache) {
     var isDefined, dependencies = {};
     var session = $scope.session = { receipt : {}, configured : false, complete : false };
     var cache = new Appcache('income');
@@ -193,7 +194,7 @@ angular.module('bhima.controllers')
       })
       .then(function () {
         // invoice
-        messenger.success('Posted data successfully.');
+        messenger.success($translate.instant('ALLTRANSACTIONS.DATA_POSTED'));
         $location.path('/invoice/generic_income/' + data.uuid);
       });
       // .then(function () {
@@ -211,8 +212,8 @@ angular.module('bhima.controllers')
     }
 
     function formatAccount (ac) {
-      if(ac){return ac.account_number + ' - ' + ac.account_txt;}
-    };
+      if (ac) {return ac.account_number + ' - ' + ac.account_txt;}
+    }
 
     $scope.reconfigure = function () {
       session.ac = null;
@@ -221,7 +222,7 @@ angular.module('bhima.controllers')
     };
 
     $scope.setConfiguration = function (ac) {
-      if(ac){
+      if (ac) {
         cache.put('account', ac);
         session.configured = true;
         session.ac = ac;

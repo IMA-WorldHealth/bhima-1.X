@@ -29,7 +29,7 @@ angular.module('bhima.controllers')
           project : { columns : ['abbr'] }
         },
         join : ['purchase.project_id=project.id', 'purchase.employee_id=employee.id'],
-        where : ['purchase.paid='+0]
+        where : ['purchase.paid=0','AND','purchase.is_donation=0','AND', 'purchase.is_authorized=1']
       }
     };
 
@@ -76,7 +76,6 @@ angular.module('bhima.controllers')
 
     function confirmPurchase(purchaseId) {
       session.selected = $scope.purchase.get(purchaseId);
-
     }
 
     function payPurchase() {
@@ -114,7 +113,8 @@ angular.module('bhima.controllers')
           {
             inv_po_id : session.selected.uuid,
             debit : session.selected.cost,
-            credit : 0
+            credit : 0,
+            document_uuid : session.selected.uuid
           }
         ]
       };
@@ -135,11 +135,15 @@ angular.module('bhima.controllers')
     }
 
     function generateDocument (res){
-       $location.path('/invoice/indirect_purchase/' + session.selected.uuid);
+        $location.path('/invoice/indirect_purchase/' + session.selected.uuid);
     }
 
     function handleError(error) {
       throw error;
+    }
+
+    function resetSelected () {
+      delete session.selected;
     }
 
     $scope.confirmPurchase = confirmPurchase;

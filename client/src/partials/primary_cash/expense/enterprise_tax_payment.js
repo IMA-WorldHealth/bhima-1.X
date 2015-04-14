@@ -118,12 +118,14 @@ angular.module('bhima.controllers')
 
     function setConfiguration (pp) {
       if(pp){
-        cache.put('paiement_period', pp);
-        session.pp = pp;
-        session.configured = true;
-        session.complete = true;
-        session.available = true;
-        init(session.model);
+        cache.put('paiement_period', pp)
+        .then(function () {
+          session.pp = pp;
+          session.configured = true;
+          session.complete = true;
+          session.available = true;
+          init(session.model);
+        });
       }            
     }
 
@@ -143,7 +145,7 @@ angular.module('bhima.controllers')
         date          : util.sqlDate(new Date()),
         deb_cred_uuid : emp.creditor_uuid,
         deb_cred_type : 'C',
-        account_id    : getCashAccountID(emp.currency_id), // A FIXE : Il faut le recuperer de facon auto 486
+        account_id    : getCashAccountID(emp.currency_id),
         currency_id   : emp.currency_id,
         cost          : emp.value,
         user_id       : session.model.cashier.data.id,

@@ -3,9 +3,16 @@
 </header>
 
 <nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "PRIMARY_CASH.EXPENSE.MULTI_PAYROLL" | translate }}</li>
+    </ol>
+  </div>
+  
   <div style="position: absolute; right: 5px;">
     <button class="btn btn-sm btn-primary dropdown-toggle">
-      {{ session.selectedItem.symbol || "PRIMARY_CASH.DEFAULT_CURRENCY" | translate }}
+      {{ session.SelectedCurrency.symbol || "PRIMARY_CASH.DEFAULT_CURRENCY" | translate }}
       <span class="caret" data-caret="&#9660;"></span>
     </button>
 
@@ -22,19 +29,10 @@
       <span class="glyphicon glyphicon-repeat"></span>
     </button>
   </div>
-
-  <div class="pull-left">
-    <ol class="breadcrumb">
-      <li><span class="glyphicon glyphicon-home"></span></li>
-      <li><a href="#/primary_cash/">{{"PRIMARY_CASH.TITLE" | translate}}</a></li>
-      <li><a ng-href="#/primary_cash/expense/payroll/{{session.cashbox}}">{{"PRIMARY_CASH.EXPENSE.PAYROLL" | translate}}</a></li>
-      <li class="active">{{"PRIMARY_CASH.EXPENSE.MULTI_PAYROLL" | translate}}</li>
-    </ol>
-  </div>
 </nav>
 
 <main>
-  <div ng-if="!session.configured" class="row">
+  <div ng-if="!session.configured" class="row margin-top-10">
     <div class="col-xs-12">
       <div class="panel panel-default">
         <div class="panel-heading">
@@ -49,7 +47,7 @@
             </span>
             <select
               ng-model="session.pp"
-              ng-options="pp as formatPeriod(pp) for pp in session.model.paiement_period.data"
+              ng-options="pp as formatPeriod(pp) for pp in session.model.paiement_period.data | orderBy:'-dateTo'"
               ng-change="setConfiguration(session.pp)"
               class="form-bhima">
               <option value="" ng-disabled="disabled">-- {{"SELECT.PERIOD_PAYMENT" | translate}}-- </option>
@@ -60,171 +58,173 @@
     </div>
   </div>
 
-  <div class="col-xs-12" ng-show="session.complete">
-    <div class="panel panel-default">
-      <div class="panel-heading" >
-        <b>{{ "PRIMARY_CASH.EXPENSE.PAYABLE_EMPLOYEE" | translate}} {{session.pp.dateFrom | date}} / {{session.pp.dateTo | date}}</b>
-      </div>
-      <div class="panel-body">
-
-        <div ng-repeat-start="row in session.rows" class="panel panel-primary">
-          <div ng-click="row.visible=!row.visible" class="panel-heading">
-            {{row.emp.prenom}} {{row.emp.name}} {{row.emp.postnom}}
-            <div class="pull-right">
-              <span  class="glyphicon" ng-class="{'glyphicon-eye-close': !row.visible, 'glyphicon-eye-open': row.visible}"></span>
-            </div>
-          </div>
-
-          <div ng-show="row.visible" class="panel-body">
-
-            <div class="col-xs-12">
-              <fieldset>
-                <legend>
-                  {{ "PRIMARY_CASH.EXPENSE.SUMMARY" | translate}}
-                </legend>
-                <table class=' table-condensed table table-bordered'>
-                  <thead>
-                    <tr>
-                      <th>{{ "COLUMNS.NAME" | translate}}</th>
-                      <th>{{ "COLUMNS.DATE_EMBAUCHE" | translate}}</th>
-                      <th>{{ "COLUMNS.GRADE" | translate}}</th>
-                      <th>{{ "COLUMNS.NB_CHILD" | translate}}</th>
-                      <th>{{ "COLUMNS.NB_SPOUSE" | translate}}</th>
-                      <th>{{ "COLUMNS.BASE_SALARY" | translate}}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>{{row.emp.name}}</td>
-                      <td>{{row.emp.date_embauche | date}}</td>
-                      <td>{{row.emp.text}}</td>
-                      <td>{{row.emp.nb_enfant}}</td>
-                      <td>{{row.emp.nb_spouse}}</td>
-                      <td><b ng-bind-html="row.emp.basic_salary | intlcurrency:session.selectedItem.currency_id"></b></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </fieldset>
-            </div>
-
-            <div class="col-xs-12">
-              <form class="form-inline" nam="employeeForm" novalidate>
-                <fieldset>
-                  <legend>
-                    {{"PRIMARY_CASH.EXPENSE.DAYS" | translate}}
-                  </legend>
-                  <div class="form-group col-xs-4">
-                    <label class="col-xs-4">{{"PRIMARY_CASH.EXPENSE.WORKING_DAY" | translate}}</label>
-                    <div class="input-group col-xs-8">
-                      <input type="number" ng-model="row.working_day" ng-change="refresh(row)"  class="form-bhima" min="0" required>
-                      <span class="input-group-addon">{{"PRIMARY_CASH.EXPENSE.DAYS" | translate}} </span>
-                    </div>
-                  </div>
-
-                  <div class="form-group col-xs-4">
-                    <label class="col-xs-4">{{"PRIMARY_CASH.EXPENSE.OFF_DAY" | translate}}</label>
-                    <div class="input-group col-xs-8">
-                      <input type="number" ng-model="row.off_day" disabled  class="form-bhima" min="0" required>
-                      <span class="input-group-addon">{{"PRIMARY_CASH.EXPENSE.DAYS" | translate}} </span>
-                    </div>
-                  </div>
-
-                  <div class="form-group col-xs-4">
-                    <label class="col-xs-4">{{"PRIMARY_CASH.EXPENSE.HOLLY_DAY" | translate}}</label>
-                    <div class="input-group col-xs-8">
-                      <input type="number" ng-model="row.hollydays" disabled  class="form-bhima" min="0" required>
-                      <span class="input-group-addon">{{"PRIMARY_CASH.EXPENSE.DAYS" | translate}} </span>
-                    </div>
-                  </div>
-                </fieldset>
-
-                <fieldset>
-                  <legend>
-                    {{"PRIMARY_CASH.EXPENSE.COTISATIONS" | translate}}
-                  </legend>
-                  <div ng-repeat='cotisation in session.model.cotisation_config.data' class="content">
-                    <div class="form-group col-xs-6">
-                      <div class="col-xs-4">
-                        <label class="control-label">{{cotisation.label}}</label>
-                      </div>
-
-                      <div class="input-group col-xs-8">
-                        <input type="number" ng-model="row[cotisation.abbr]" class="form-bhima" min="0" required>
-                        <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
-                      </div>
-                    </div>
-                  </div>
-                </fieldset>
-
-                <fieldset>
-                  <legend>
-                    {{"PRIMARY_CASH.EXPENSE.RUBRICS" | translate}}
-                  </legend>
-                  <div ng-repeat='rubrics in session.model.rubric_config.data' class="content">
-                    <div class="form-group col-xs-6">
-                      <div class="col-xs-4">
-                        <label class="control-label">{{rubrics.label}}</label>
-                      </div>
-
-                      <div class="input-group col-xs-8">
-                        <input type="number" ng-model="row[rubrics.abbr]" class="form-bhima" min="0" required>
-                        <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
-                      </div>
-                    </div>
-                  </div>
-                </fieldset>
-
-                <fieldset>
-                  <legend>
-                    {{"PRIMARY_CASH.EXPENSE.TAXES_OTHERS" | translate}}
-                  </legend>
-
-                  <div ng-repeat='taxesEmp in taxEmp'>
-                    <div class="form-group col-xs-6">
-                      <div class="col-xs-4">
-                        <label class="control-label">{{taxesEmp.label}}</label>
-                      </div>
-
-                      <div class="input-group col-xs-8">
-                        <input type="number" ng-model="row[taxesEmp.abbr]" class="form-bhima" min="0" required>
-                        <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
-                      </div>
-                    </div>
-                  </div>
-                </fieldset>
-
-                <fieldset>
-                  <legend>
-                    {{"PRIMARY_CASH.EXPENSE.TAXES_OTHERS_ENTERPRISE" | translate}}
-                  </legend>
-                  <div ng-repeat='taxesComp in taxComp'>
-                    <div class="form-group col-xs-6">
-                      <div class="col-xs-4">
-                        <label class="control-label">{{taxesComp.label}}</label>
-                      </div>
-
-                      <div class="input-group col-xs-8">
-                        <input type="number" ng-model="row[taxesComp.abbr]" class="form-bhima" min="0" required>
-                        <span class="input-group-addon"> {{ session.selectedItem.symbol }} </span>
-                      </div>
-                    </div>
-                  </div>
-                </fieldset>
-                <hr/>
-                <div class="pull-right">
-                  <button class="btn btn-sm btn-success" type="button" ng-click="submit([row])" ng-disabled="employeeForm.$invalid">
-                    {{ "FORM.SUBMIT" | translate }}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
+  <div class="row margin-top-10">
+    <div class="col-xs-12" ng-show="session.complete">
+      <div class="panel panel-default">
+        <div class="panel-heading" >
+          <b>{{ "PRIMARY_CASH.EXPENSE.PAYABLE_EMPLOYEE" | translate}} {{session.pp.dateFrom | date}} / {{session.pp.dateTo | date}}</b>
         </div>
-        <hr ng-repeat-end>
-        <div class="pull-right">
-          <button class="btn btn-sm btn-success" type="button" ng-click="submit(session.rows)" ng-disabled="!session.rows.length">
-            {{ "FORM.SUBMIT" | translate }}
-          </button>
+        <div class="panel-body">
+
+          <div ng-repeat-start="row in session.rows" class="panel panel-primary">
+            <div ng-click="row.visible=!row.visible" class="panel-heading">
+              {{row.emp.name}} {{row.emp.postnom}} {{row.emp.prenom}}
+              <div class="pull-right">
+                <span  class="glyphicon" ng-class="{'glyphicon-eye-close': !row.visible, 'glyphicon-eye-open': row.visible}"></span>
+              </div>
+            </div>
+
+            <div ng-show="row.visible" class="panel-body">
+
+              <div class="col-xs-12">
+                <fieldset>
+                  <legend>
+                    {{ "PRIMARY_CASH.EXPENSE.SUMMARY" | translate}}
+                  </legend>
+                  <table class=' table-condensed table table-bordered'>
+                    <thead>
+                      <tr>
+                        <th>{{ "COLUMNS.NAME" | translate}}</th>
+                        <th>{{ "COLUMNS.DATE_EMBAUCHE" | translate}}</th>
+                        <th>{{ "COLUMNS.GRADE" | translate}}</th>
+                        <th>{{ "COLUMNS.NB_CHILD" | translate}}</th>
+                        <th>{{ "COLUMNS.NB_SPOUSE" | translate}}</th>
+                        <th>{{ "COLUMNS.BASE_SALARY" | translate}}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>{{row.emp.name}}</td>
+                        <td>{{row.emp.date_embauche | date}}</td>
+                        <td>{{row.emp.text}}</td>
+                        <td>{{row.emp.nb_enfant}}</td>
+                        <td>{{row.emp.nb_spouse}}</td>
+                        <td><b ng-bind-html="row.emp.basic_salary | intlcurrency:session.SelectedCurrency.id"></b></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </fieldset>
+              </div>
+
+              <div class="col-xs-12">
+                <form class="form-inline" nam="employeeForm" novalidate>
+                  <fieldset>
+                    <legend>
+                      {{"PRIMARY_CASH.EXPENSE.DAYS" | translate}}
+                    </legend>
+                    <div class="form-group col-xs-4">
+                      <label class="col-xs-4">{{"PRIMARY_CASH.EXPENSE.WORKING_DAY" | translate}}</label>
+                      <div class="input-group col-xs-8">
+                        <input type="number" ng-model="row.working_day" ng-change="refresh(row)"  class="form-bhima" min="0" required>
+                        <span class="input-group-addon">{{"PRIMARY_CASH.EXPENSE.DAYS" | translate}} </span>
+                      </div>
+                    </div>
+
+                    <div class="form-group col-xs-4">
+                      <label class="col-xs-4">{{"PRIMARY_CASH.EXPENSE.OFF_DAY" | translate}}</label>
+                      <div class="input-group col-xs-8">
+                        <input type="number" ng-model="row.off_day" disabled  class="form-bhima" min="0" required>
+                        <span class="input-group-addon">{{"PRIMARY_CASH.EXPENSE.DAYS" | translate}} </span>
+                      </div>
+                    </div>
+
+                    <div class="form-group col-xs-4">
+                      <label class="col-xs-4">{{"PRIMARY_CASH.EXPENSE.HOLLY_DAY" | translate}}</label>
+                      <div class="input-group col-xs-8">
+                        <input type="number" ng-model="row.hollydays" disabled  class="form-bhima" min="0" required>
+                        <span class="input-group-addon">{{"PRIMARY_CASH.EXPENSE.DAYS" | translate}} </span>
+                      </div>
+                    </div>
+                  </fieldset>
+
+                  <fieldset>
+                    <legend>
+                      {{"PRIMARY_CASH.EXPENSE.COTISATIONS" | translate}}
+                    </legend>
+                    <div ng-repeat='cotisation in session.model.cotisation_config.data' class="content">
+                      <div class="form-group col-xs-6">
+                        <div class="col-xs-4">
+                          <label class="control-label">{{cotisation.label}}</label>
+                        </div>
+
+                        <div class="input-group col-xs-8">
+                          <input type="number" ng-model="row[cotisation.abbr]" class="form-bhima" min="0" required>
+                          <span class="input-group-addon"> {{ session.SelectedCurrency.symbol }} </span>
+                        </div>
+                      </div>
+                    </div>
+                  </fieldset>
+
+                  <fieldset>
+                    <legend>
+                      {{"PRIMARY_CASH.EXPENSE.RUBRICS" | translate}}
+                    </legend>
+                    <div ng-repeat='rubrics in session.model.rubric_config.data' class="content">
+                      <div class="form-group col-xs-6">
+                        <div class="col-xs-4">
+                          <label class="control-label">{{rubrics.label}}</label>
+                        </div>
+
+                        <div class="input-group col-xs-8">
+                          <input type="number" ng-model="row[rubrics.abbr]" class="form-bhima" min="0" required>
+                          <span class="input-group-addon"> {{ session.SelectedCurrency.symbol }} </span>
+                        </div>
+                      </div>
+                    </div>
+                  </fieldset>
+
+                  <fieldset>
+                    <legend>
+                      {{"PRIMARY_CASH.EXPENSE.TAXES_OTHERS" | translate}}
+                    </legend>
+
+                    <div ng-repeat='taxesEmp in taxEmp'>
+                      <div class="form-group col-xs-6">
+                        <div class="col-xs-4">
+                          <label class="control-label">{{taxesEmp.label}}</label>
+                        </div>
+
+                        <div class="input-group col-xs-8">
+                          <input type="number" ng-model="row[taxesEmp.abbr]" class="form-bhima" min="0" required>
+                          <span class="input-group-addon"> {{ session.SelectedCurrency.symbol }} </span>
+                        </div>
+                      </div>
+                    </div>
+                  </fieldset>
+
+                  <fieldset>
+                    <legend>
+                      {{"PRIMARY_CASH.EXPENSE.TAXES_OTHERS_ENTERPRISE" | translate}}
+                    </legend>
+                    <div ng-repeat='taxesComp in taxComp'>
+                      <div class="form-group col-xs-6">
+                        <div class="col-xs-4">
+                          <label class="control-label">{{taxesComp.label}}</label>
+                        </div>
+
+                        <div class="input-group col-xs-8">
+                          <input type="number" ng-model="row[taxesComp.abbr]" class="form-bhima" min="0" required>
+                          <span class="input-group-addon"> {{ session.SelectedCurrency.symbol }} </span>
+                        </div>
+                      </div>
+                    </div>
+                  </fieldset>
+                  <hr/>
+                  <div class="pull-right">
+                    <button class="btn btn-sm btn-success" type="button" ng-click="submit([row])" ng-disabled="employeeForm.$invalid">
+                      {{ "FORM.SUBMIT" | translate }}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <hr ng-repeat-end>
+          <div class="pull-right">
+            <button class="btn btn-sm btn-success" type="button" ng-click="submit(session.rows)" ng-disabled="!session.rows.length">
+              {{ "FORM.SUBMIT" | translate }}
+            </button>
+          </div>
         </div>
       </div>
     </div>

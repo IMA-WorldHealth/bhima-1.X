@@ -60,8 +60,8 @@ Application running on localhost:8080
 ```
 
 ###### Verify the install
-Navigate to localhost:8080 in the browser to verify the installation.  You should
-be greated with a login page.
+Navigate to https://localhost:8080 in the browser to verify the installation.  
+You should be greated with a login page.
 
 ###### Advanced - configuring the application
 All configuration options are found in the configuration file located in

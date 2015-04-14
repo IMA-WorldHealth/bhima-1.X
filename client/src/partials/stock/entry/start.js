@@ -45,17 +45,7 @@ angular.module('bhima.controllers')
       }
     };
 
-    dependencies.names = {
-      query : {
-        identifier : 'uuid',
-        tables : {
-          'purchase' : {
-            columns : ['uuid', 'reference', 'project_id']
-          }
-        },
-        where : ['purchase.closed=0']
-      }
-    };
+    dependencies.names = { query : 'reports/purchase_order/'};
 
     dependencies.employees = {
       query : {
@@ -72,7 +62,7 @@ angular.module('bhima.controllers')
         identifier : 'code',
         tables : {
           'purchase' : {
-            columns : ['project_id', 'reference', 'cost', 'currency_id', 'creditor_uuid', 'purchaser_id', 'employee_id', 'timestamp', 'purchase_date']
+            columns : ['project_id', 'reference', 'cost', 'currency_id', 'creditor_uuid', 'purchaser_id', 'employee_id', 'timestamp', 'purchase_date', 'is_direct']
           },
           'purchase_item' : {
             columns : ['uuid', 'inventory_uuid', 'quantity', 'unit_price', 'total']
@@ -101,6 +91,7 @@ angular.module('bhima.controllers')
       // PAX2 or HBB1235
       if (!order || !order.label || order.label.length < 1) { return messenger.danger($translate('STOCK.ENTRY.ERR_EMPTY_PARAMTER')); }
 
+      session.selected = order;
       session.cfg.purchase_uuid = order.uuid;
       session.cfg.label = order.label;
 
@@ -120,6 +111,7 @@ angular.module('bhima.controllers')
         find.valid = false;
         error(err);
       });
+
     };
 
     find.fn.activate = function activate () {
@@ -178,10 +170,14 @@ angular.module('bhima.controllers')
       session.order = models.orders;
 
       // set up session properties
+      session.cfg.is_direct = models.orders.data[0].is_direct;
       session.cfg.order_date = new Date(models.orders.data[0].purchase_date);
-      session.cfg.employee_id = models.orders.data[0].employee_id;
-      session.cfg.employee_name = ($scope.employees.get(session.cfg.employee_id).prenom || '') + ' ' + ($scope.employees.get(session.cfg.employee_id).name || '');
 
+      if(!session.cfg.is_direct){
+        session.cfg.employee_id = models.orders.data[0].employee_id;
+        session.cfg.employee_name = ($scope.employees.get(session.cfg.employee_id).prenom || '') + ' ' + ($scope.employees.get(session.cfg.employee_id).name || '');
+      }
+      
       // modify paramters
       session.order.data.forEach(function (drug) {
         drug.lots = new Store({ identifier : 'tracking_number', data : [] });
@@ -274,7 +270,6 @@ angular.module('bhima.controllers')
       session.lots.forEach(function (stock) {
         stocks.push({
           inventory_uuid      : stock.inventory_uuid,
-          //purchase_price      : stock.purchase_price,
           expiration_date     : util.sqlDate(stock.expiration_date),
           entry_date          : util.sqlDate(new Date()),
           lot_number          : stock.lot_number,
@@ -303,6 +298,16 @@ angular.module('bhima.controllers')
       return movements;
     }
 
+    function setPurchasePrice () {
+      session.order.data.forEach(function (item) {
+        var obj = {
+          uuid           : item.inventory_uuid,
+          purchase_price : item.unit_price
+        };
+        connect.put('inventory', [obj], ['uuid']);
+      });
+    }
+
     $scope.accept = function () {
       var document_id = uuid();
       var stock = processStock();
@@ -314,11 +319,12 @@ angular.module('bhima.controllers')
       .then(function () {
         return connect.basicPost('purchase', [{ uuid : session.cfg.purchase_uuid, closed : 1 }], ['uuid']);
       })
+      .then(setPurchasePrice)
       .then(function () {
-        messenger.success('STOCK.ENTRY.WRITE_SUCCESS');
+        messenger.success($translate.instant('STOCK.ENTRY.WRITE_SUCCESS'));
       })
       .catch(function () {
-        messenger.error('STOCK.ENTRY.WRITE_ERROR');
+        messenger.error($translate.instant('STOCK.ENTRY.WRITE_ERROR'));
       })
       .finally(function () {
         $location.path('/stock/entry/report/' + document_id);

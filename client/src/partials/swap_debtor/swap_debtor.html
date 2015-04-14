@@ -3,13 +3,20 @@
 </header>
 
 <nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "SWAPDEBITOR.TITLE" | translate }}</li>
+    </ol>
+  </div>
+  
   <div class="pull-right">
     <a href="#/patient" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-file"></span> {{ 'SWAPDEBITOR.PATIENT_REGISTRATION' | translate }}</a>
   </div>
 </nav>
 
 <main>
-  <div class="row">
+  <div class="row margin-top-10">
     <div class="col-xs-6">
       <div find-patient on-search-complete="initialiseSwaping"></div>
     </div>

@@ -1,6 +1,7 @@
 angular.module('bhima.controllers')
 .controller('journal.voucher', [
   '$scope',
+  '$translate',
   'validate',
   'connect',
   'appstate',
@@ -9,7 +10,7 @@ angular.module('bhima.controllers')
   'uuid',
   'util',
   'exchange',
-  function ($scope, validate, connect, appstate, AppCache, messenger, uuid, util, exchange) {
+  function ($scope, $translate, validate, connect, appstate, AppCache, messenger, uuid, util, exchange) {
     var dependencies = {},
         db = new AppCache('journal.voucher'),
         data = $scope.data = { rows : [] },
@@ -38,7 +39,7 @@ angular.module('bhima.controllers')
       query : {
         identifier : 'account_number',
         tables : {
-          account : { columns : ['id', 'account_number', 'account_txt', 'account_type_id', 'fixed', 'parent'] },
+          account : { columns : ['id', 'account_number', 'account_txt', 'account_type_id', 'parent'] },
           account_type : { columns : ['type'] }
         },
         join: ['account.account_type_id=account_type.id']
@@ -68,7 +69,7 @@ angular.module('bhima.controllers')
         join: ['creditor.group_uuid=creditor_group.uuid','creditor_group.account_id=account.id']
       }
     };
-
+    
     dependencies.currencies = {
       required : true,
       query : {
@@ -206,7 +207,7 @@ angular.module('bhima.controllers')
         return connect.post('journal_log', log);
       })
       .then(function () {
-        messenger.success('Data Posted Successfully.');
+        messenger.success($translate.instant('ALLTRANSACTIONS.DATA_POSTED'));
       })
       .catch(function (err) {
         console.error(err);

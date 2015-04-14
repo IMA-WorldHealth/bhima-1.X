@@ -29,7 +29,8 @@ angular.module('bhima.controllers')
         priceListSource = [];
 
     var session = $scope.session = {
-      tablock : -1
+      tablock : -1,
+      is_distributable : true
     };
 
     var serviceComponent = $scope.serviceComponent = {
@@ -42,9 +43,12 @@ angular.module('bhima.controllers')
         identifier : 'uuid',
         tables: {
           'inventory' : {
-            columns: ['uuid', 'code', 'text', 'price']
-          }
-        }
+            columns: ['uuid', 'code', 'text', 'price', 'group_uuid']
+          },
+          inventory_group : { columns : ['sales_account', 'stock_account', 'donation_account'] },
+        },
+        join : ['inventory_group.uuid=inventory.group_uuid'],
+        where : ['inventory_group.sales_account<>null']
       }
     };
 
@@ -125,6 +129,25 @@ angular.module('bhima.controllers')
         }
       };
 
+      dependencies.patientApplyableSubsidyList = {
+        query : {
+          tables : {
+            assignation_patient : {columns : ['patient_uuid', 'patient_group_uuid']},
+            patient_group : {columns : ['note', 'subsidy_uuid']},
+            subsidy : {columns : ['text', 'value', 'is_percent', 'debitor_group_uuid']},
+            debitor_group : {columns : ['account_id']}
+          },
+          join : [
+            'assignation_patient.patient_group_uuid=patient_group.uuid',
+            'patient_group.subsidy_uuid=subsidy.uuid',
+            'subsidy.debitor_group_uuid=debitor_group.uuid'
+          ],
+          where : [
+            'assignation_patient.patient_uuid=' + selectedDebtor.uuid
+          ]
+        }
+      };
+
       priceListSource = ['patientGroupList', 'debtorGroupList'];
       validate.refresh(dependencies, priceListSource).then(processPriceList);
     }
@@ -160,8 +183,6 @@ angular.module('bhima.controllers')
 
         invoice.note = formatNote(invoice);
         invoice.displayId = invoice.uuid.substr(0, 13);
-
-        console.log('result invoice', invoice);
         $scope.invoice = invoice;
 
       });
@@ -194,6 +215,15 @@ angular.module('bhima.controllers')
         if (listItem.is_global) {
           invoice.applyGlobal.push(listItem);
         }
+      });
+
+      validate.refresh(dependencies, ['patientApplyableSubsidyList']).then(processPatientApplyableSubsidy);
+    }
+
+    function processPatientApplyableSubsidy (model) {
+      invoice.applyableSubsidies = [];
+      model.patientApplyableSubsidyList.data.forEach(function (subsidy) {
+        invoice.applyableSubsidies.push(subsidy);
       });
     }
 
@@ -253,13 +283,14 @@ angular.module('bhima.controllers')
 
       //Seller ID will be inserted on the server
       requestContainer.sale = {
-        project_id   : $scope.project.id,
-        cost         : calculateTotal().total,
-        currency_id  : $scope.project.currency_id,
-        debitor_uuid : invoice.debtor.debitor_uuid,
-        invoice_date : invoice.date,
-        note         : invoice.note,
-        service_id   : invoice.service.id
+        project_id       : $scope.project.id,
+        cost             : calculateTotal().total,
+        currency_id      : $scope.project.currency_id,
+        debitor_uuid     : invoice.debtor.debitor_uuid,
+        invoice_date     : invoice.date,
+        note             : invoice.note,
+        service_id       : invoice.service.id,
+        is_distributable : session.is_distributable
       };
 
       requestContainer.saleItems = [];
@@ -278,18 +309,17 @@ angular.module('bhima.controllers')
         requestContainer.saleItems.push(formatSaleItem);
       });
 
-      // Patient Groups
-      // if (invoice.priceList) {
-      //   //TODO Placeholder discount item select, this should be in enterprise settings
-      //   var formatDiscountItem, enterpriseDiscountId=12;
-      //   formatDiscountItem = {
-      //     inventory_id : enterpriseDiscountId,
-      //     quantity : 1,
-      //     transaction_price : netDiscountPrice,
-      //     debit : netDiscountPrice,
-      //     credit : 0, //FIXME default values because parser cannot insert records with different columns
-      //     inventory_price : 0
-      //   };
+      var sale_cost = requestContainer.sale.cost;
+      requestContainer.applyableSaleSubsidies = [];
+
+      invoice.applyableSubsidies.forEach(function (subsidy) {
+        var amount = subsidy.is_percent ? (sale_cost * subsidy.value) / 100 : subsidy.value;
+        var applyableSubsidy = {
+          uuid : subsidy.subsidy_uuid,
+          value : amount
+        };
+        requestContainer.applyableSaleSubsidies.push(applyableSubsidy);
+      });
 
       invoice.applyGlobal.forEach(function (listItem) {
 
@@ -308,7 +338,6 @@ angular.module('bhima.controllers')
       });
 
       requestContainer.caution = (invoice.debitorCaution)? invoice.debitorCaution : 0;
-
 
       return requestContainer;
     }
@@ -388,10 +417,11 @@ angular.module('bhima.controllers')
 
       // Apply caution
       if (invoice.debitorCaution){
-        var remaining = 0;
-        remaining = total - invoice.debitorCaution;
-        totalToPay = remaining < 0 ? 0 : remaining;
-        totalToPay = Number(totalToPay.toFixed(4));
+        // var remaining = 0;
+        // remaining = total - invoice.debitorCaution;
+        // totalToPay = remaining < 0 ? 0 : remaining;
+        // totalToPay = Number(totalToPay.toFixed(4));
+        totalToPay = total;
       }else{
         totalToPay = total;
       }

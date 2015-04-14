@@ -3,9 +3,18 @@
 </header>
 
 <nav>
-  <button ng-click="setAction('register')" class="btn btn-sm btn-default pull-right">
-    <i class="glyphicon glyphicon-file"></i>{{'SERVICE.NEW' | translate}}
-  </button>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "SERVICE.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right">
+    <button ng-click="setAction('register')" class="btn btn-sm btn-default pull-right">
+      <i class="glyphicon glyphicon-plus-sign"></i> {{'SERVICE.NEW' | translate}}
+    </button>
+  </div>
 </nav>
 
 <main>
@@ -26,7 +35,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="item in model.services.data">
+            <tr ng-repeat="item in model.services.data  | orderBy:'service'">
               <td>{{ item.service }}</td>
               <td>{{ item.project }}</td>
               <td>{{ item.cost_center }}</td>

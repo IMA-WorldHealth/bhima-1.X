@@ -22,9 +22,11 @@ angular.module('bhima.controllers')
       query : {
         identifier : 'account_number',
         tables : {
-          account : { columns : ['id', 'account_number', 'account_txt', 'account_type_id', 'fixed', 'parent'] }
-        }
-      },
+          account : { columns : ['id', 'account_number', 'account_txt', 'account_type_id', 'is_asset', 'parent'] },
+	  account_type : { columns : ['type::account_type'] }
+        },
+	join: [ 'account.account_type_id=account_type.id' ]
+      }
     };
 
     dependencies.accountType = {
@@ -50,12 +52,10 @@ angular.module('bhima.controllers')
     function defineGridOptions() {
 
       columns = [
-        {id: 'ACCOUNT.TXT', name: 'Text', field: 'account_txt', formatter: AccountFormatter},
+        {id: 'ACCOUNT.LABEL', name: 'Label', field: 'account_txt', formatter: AccountFormatter},
         {id: 'ACCOUNT.NO', name: 'No.', field: 'account_number'},
-        {id: 'ACCOUNT.TYPE', name: 'Type', field: 'account_type_id', maxWidth: 60},
-        {id: 'ACCOUNT.FIXED', name: 'Fixed', field: 'fixed', maxWidth: 60},
-        {id: 'COLUMNS.EDIT', name: 'Edit', maxWidth: 50, formatter: EditFormatter},
-        {id: 'COLUMNS.DELETE', name: 'Delete', maxWidth: 70, formatter: DeleteFormatter}
+        {id: 'ACCOUNT.TYPE', name: 'Type', field: 'account_type', maxWidth: 90},
+        {id: 'ACCOUNT.IS_ASSET_TITLE', name: 'IsAsset', field: 'is_asset', maxWidth: 90}
       ];
 
       columns.forEach(function (col) {
@@ -181,12 +181,19 @@ angular.module('bhima.controllers')
 
       //format account
       var classe = account.number.substr(0,1);
+      if(account.is_asset === 'true'){
+        account.is_asset = 1;
+      } else if (account.is_asset === 'false'){
+        account.is_asset = 0;
+      } else {
+        account.is_asset = null;
+      }
 
       var formatAccount = {
         account_type_id: account.type.id,
         account_number: account.number,
         account_txt: account.title,
-        fixed: account.fixed === 'true' ? 1 : 0,
+        is_asset: account.is_asset,
         enterprise_id: appstate.get('enterprise').id,
         parent: 0, //set default parent (root)
         classe: account.number.substr(0,1)

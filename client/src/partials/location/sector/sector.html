@@ -3,11 +3,17 @@
 </header>
 
 <nav>
-  <a class="btn btn-default btn-sm" ng-click="setOp('Add')">
-    <span class="glyphicon glyphicon-plus"></span> {{'SECTOR.NEW_SECTOR' | translate}}
-  </a>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "SECTOR.TITLE" | translate }}</li>
+    </ol>
+  </div>
 
   <div class="pull-right">
+    <button class="btn btn-default btn-sm" ng-click="setOp('Add')">
+      <span class="glyphicon glyphicon-plus-sign"></span> {{'SECTOR.NEW_SECTOR' | translate}}
+    </button>
     <a href="#/location/" class="btn btn-default btn-sm">
       <span class="glyphicon glyphicon-globe"></span> {{'SECTOR.LOCATION_MANAGER' | translate}}
     </a>
@@ -30,9 +36,9 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="sector in sectors.data | orderBy:'sector'">
-              <td>{{ sector.sector }}</td>
-              <td>{{ sector.province }}</td>
+            <tr ng-repeat="sector in sectors.data | orderBy:'name'">
+              <td>{{ sector.name }}</td>
+              <td>{{ sector.province_name }}</td>
               <td><a ng-click="setOp('Edit', sector)"><i class="glyphicon glyphicon-pencil"></i></a></td>
               <td><a class="danger" ng-click="removeSector(sector.uuid)"><i class="glyphicon glyphicon-trash"></i></a></td>
             </tr>
@@ -50,7 +56,7 @@
        </div>
 
        <div ng-switch-when="Add">
-         <form class="form-horizontal">
+         <form class="form-horizontal" name="addForm" novalidate>
           <fieldset>
             <legend>{{'SECTOR.REGISTER' | translate}}</legend>
             <div class="form-group">
@@ -76,7 +82,7 @@
                </div>
             </div>
           </fieldset>
-          <button class="btn btn-default btn-success" ng-click="addSector(add)" ng-disabled="form.$invalid " type="submit">{{ 'FORM.ADD' | translate }}</button>
+          <button class="btn btn-default btn-success" ng-click="addSector(add)" ng-disabled="addForm.$invalid " type="submit">{{ 'FORM.ADD' | translate }}</button>
           <button class="btn btn-default btn-sm"  type="reset">{{ 'FORM.NEW_FORM' | translate }}</button>
          </form>
        </div>
@@ -85,10 +91,10 @@
         <form class="form-horizontal">
           <fieldset>
             <legend>{{ 'SECTOR.EDIT' | translate }}</legend>
-            <div class="form-group">
+            <div class="form-group" name="editForm" novalidate>
               <label class="col-xs-2"> {{ 'SECTOR.PROVINCE' | translate }} </label>
               <div class="col-xs-10">
-                <select required class="form-bhima" id="provinceID" ng-model="sector.province_uuid" ng-options="pro.uuid as pro.name for pro in model.province.data | orderBy:'name'">
+                <select required class="form-bhima" id="provinceID" ng-model="sector.province_uuid" ng-options="pro.uuid as pro.name for pro in provinces.data | orderBy:'name'">
                   <option value="" disable="disabled">-- Selectionner un Province -- </option>
                 </select>
               </div>
@@ -97,11 +103,11 @@
             <div class="form-group">
                <label class="col-xs-2 control-label">{{ 'SECTOR.NAME_SECTOR' | translate }}</label>
                <div class="col-xs-10">
-                  <input class="form-bhima" ng-model="sector.sector" required>
+                  <input class="form-bhima" ng-model="sector.name" required>
                </div>
             </div>
           </fieldset>
-          <button class="btn btn-default btn-success" ng-click="editSector(sector)" ng-disabled="form.$invalid " type="submit">{{'FORM.ADD' | translate}}</button>
+          <button class="btn btn-default btn-success" ng-click="editSector(sector)" ng-disabled="editForm.$invalid " type="submit">{{'FORM.ADD' | translate}}</button>
           <button class="btn btn-default btn-sm"  type="reset">{{'FORM.NEW_FORM' | translate}}</button>
         </form>
       </div>

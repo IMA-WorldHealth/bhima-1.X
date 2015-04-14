@@ -3,7 +3,8 @@ var gulp = require('gulp'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify'),
     minifycss = require('gulp-minify-css'),
-    jshint = require('gulp-jshint');
+    jshint = require('gulp-jshint'),
+    exec = require('child_process').exec;
 
 var jshintrcPath = '../.jshintrc';
 
@@ -13,7 +14,9 @@ var paths = {
   styles : ['src/partials/**/*.css', 'src/partials/**/**/*.css', 'src/css/*.css', '!src/css/*.min.css', 'src/css/grid/*.css'],
   assets : ['src/assets/**/*'],
   static : ['src/index.html', 'src/login.html', 'src/error.html', 'src/project.html', 'src/js/app.js', 'src/i18n/*', 'src/css/fonts/*', 'src/partials/**/*.html', 'src/css/images/*'],
-  vendor : ['vendor/**/*']
+  vendor : ['vendor/angular/*', 'vendor/angular-translate/*', 'vendor/*.js'],
+  jqueryui : ['vendor/jquery-ui/*.js'],
+  slickgrid : ['vendor/SlickGrid/*.js', 'vendor/SlickGrid/plugins/*.js']
 };
 
 var destPath = 'dest/';
@@ -51,6 +54,20 @@ gulp.task('vendor', function () {
     //.pipe(notify({ message : 'Completed transfering vendor files'}));
 });
 
+gulp.task('minjquery', function () {
+  return gulp.src(paths.jqueryui)
+    .pipe(uglify())
+    .pipe(concat('jquery.ui.min.js'))
+    .pipe(gulp.dest(destPath+'lib/'));
+});
+
+gulp.task('minslickgrid', function () {
+  return gulp.src(paths.slickgrid)
+    .pipe(uglify())
+    .pipe(concat('slickgrid.min.js'))
+    .pipe(gulp.dest(destPath+'lib/'));
+});
+
 // TODO rename
 gulp.task('static', function () {
   return gulp.src(paths.static, { base : './src/' })
@@ -71,6 +88,19 @@ gulp.task('lint', function () {
     .pipe(jshint.reporter('default'));
 });
 
+gulp.task('comptrans', function () {
+    // Compare the English and French for missing tokens
+    var progPath = '../utilities/translation/tfcomp.js',
+        enPath = 'src/i18n/en.json',
+        frPath = 'src/i18n/fr.json';
+    exec('node ' + [progPath, enPath, frPath].join(' '), function(err, _, warning) {
+	if (warning) {
+	    console.error(warning);
+	    }
+ 	});
+    return;
+});
+
 gulp.task('default', [], function () {
-  gulp.start('lint', 'scripts', 'styles', 'assets', 'vendor', 'static');
+  gulp.start('lint', 'comptrans', 'scripts', 'styles', 'assets', 'vendor', 'minjquery', 'minslickgrid', 'static');
 });

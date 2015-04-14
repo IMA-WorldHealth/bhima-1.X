@@ -4,12 +4,12 @@
 
 <nav>
   <div class="pull-left">
-  <ol class="breadcrumb">
-    <li><span class="glyphicon glyphicon-home"></span></li>
-    <li><a href="#/primary_cash/">{{ "PRIMARY_CASH.TITLE" | translate }}</a></li>
-    <li><a >{{ "PRIMARY_CASH.EXPENSES" | translate }}</a></li>
-    <li class="active">{{ "PRIMARY_CASH.EXPENSE.PURCHASE" | translate }}</li>
-  </ol>
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li><a href="#/primary_cash/">{{ "PRIMARY_CASH.TITLE" | translate }}</a></li>
+      <li><a >{{ "PRIMARY_CASH.EXPENSES" | translate }}</a></li>
+      <li class="active">{{ "PRIMARY_CASH.EXPENSE.PURCHASE" | translate }}</li>
+    </ol>
   </div>
 
   <!-- FIXME style hack -->
@@ -19,7 +19,7 @@
 </nav>
 
 <main>
-  <div class="row" style="margin-top: 10px">
+  <div class="row margin-top-10">
 
     <div class="col-xs-5">
 
@@ -29,6 +29,7 @@
         </div>
 
         <div class="panel-body">
+
           <div class="input-group" style="margin-bottom: 15px">
             <span class="input-group-btn">
               <button disabled class="square btn btn-default btn-sm"><span class="glyphicon glyphicon-search"></span></button>
@@ -63,6 +64,7 @@
 
             </tbody>
           </table>
+
         </div>
       </div>
     </div>
@@ -71,7 +73,7 @@
       <div class="panel square" ng-class="{'panel-success': session.selected, 'panel-default' : !session.selected}">
         <div class="panel-heading square">
           <span class="glyphicon glyphicon-list-alt"></span>
-          {{ "CASH_PURCHASE.CONFIRM_PAY" | translate }}<small>{{session.selected.uuid}}</small>
+          {{ "CASH_PURCHASE.PAY" | translate }} : <small>{{session.selected.uuid}}</small>
         </div>
 
         <div class="panel-body" ng-if="session.selected">
@@ -97,7 +99,9 @@
             </tbody>
           </table>
 
-          <button ng-click="payPurchase()" class="square btn btn-success btn-sm">  {{ "CASH_PURCHASE.CONFIRM_PAY_OF" | translate }}<b>{{session.selected.cost | currency}}</b> {{ "CASH_PURCHASE.TO" | translate }} <b>{{session.selected.name}}</b></button>
+          <button ng-click="payPurchase()" class="square btn btn-success btn-sm">  {{ "CASH_PURCHASE.PAY" | translate }} : <b>{{session.selected.cost | currency}}</b> {{ "CASH_PURCHASE.TO" | translate }} 
+          <b>{{session.selected.name}}</b>
+          </button>
           <button disabled class="square btn btn-danger btn-sm">{{ "CASH_PURCHASE.DISCARD" | translate }} </button>
         </div>
       </div>

@@ -72,7 +72,6 @@ angular.module('bhima.controllers')
     });
 
     function init (model) {
-      session.model = model;
       cache.fetch('paiement_period')
       .then(function (pp) {
         if(!pp){
@@ -85,6 +84,28 @@ angular.module('bhima.controllers')
           session.pp_label = formatPeriod (pp);
         }
 
+        connect.fetch('/reports/employeePaiement/?id=' + session.pp.id)
+        .then(function (data) {
+          session.partialSalary = data;
+
+          session.partialSalary.forEach(function (salary) {
+            if(salary.is_paid){
+              salary.net_salary_paid = 0;
+            } else {
+              salary.net_salary_paid = salary.net_salary - salary.amount;   
+            }
+            
+          });
+
+          session.configured = (session.pp.id > 0) ? true : false ;
+          session.complete = true;
+          session.available = (session.partialSalary) ? true : false ;
+        })
+        .catch(function (err) {
+          messenger.danger('An error occured:' + JSON.stringify(err));
+        });
+
+
         dependencies.salary_payment = {
           query : {
             tables : {
@@ -96,7 +117,7 @@ angular.module('bhima.controllers')
           }
         };
         
-        return validate.process(dependencies, ['salary_payment']);
+        return validate.refresh(dependencies, ['salary_payment']);
       })
       .then(function (model) {
         session.model = model;
@@ -105,7 +126,6 @@ angular.module('bhima.controllers')
         session.available = (session.model.salary_payment.data.length > 0) ? true : false ;
       })
       .catch(function (err) {
-        console.log('err', err);
         messenger.danger(err.message);
       });
     }
@@ -125,13 +145,15 @@ angular.module('bhima.controllers')
 
     function setConfiguration (pp) {
       if(pp){
-        cache.put('paiement_period', pp);
-        session.pp = pp;
-        session.configured = true;
-        session.complete = true;
-        session.available = true;
-        init(session.model);
-      }            
+        cache.put('paiement_period', pp)
+        .then(function () {
+          session.pp = pp;
+          session.configured = true;
+          session.complete = true;
+          session.available = true;
+          init(session.model);
+        });
+      }     
     }
 
     function getCashAccountID (currency_id) {
@@ -152,11 +174,11 @@ angular.module('bhima.controllers')
         deb_cred_type : 'C',
         account_id    : getCashAccountID(emp.currency_id),
         currency_id   : emp.currency_id,
-        cost          : emp.net_salary,
+        cost          : emp.net_salary_paid,
         user_id       : session.model.cashier.data.id,
         description   : 'Salary Payment ' + '(' + emp.name + emp.postnom + ') : ',
         cash_box_id   : session.cashbox,
-        origin_id     : 6,
+        origin_id     : 6 //FIX ME : Find a way to generate it automatically
       };
 
       var primary_details = {
@@ -164,7 +186,8 @@ angular.module('bhima.controllers')
         primary_cash_uuid : primary.uuid,
         debit             : 0,
         credit            : primary.cost,
-        document_uuid     : emp.uuid
+        inv_po_id         : emp.uuid, // uuid du paiement
+        document_uuid     : document_uuid
       };
 
       var package = {
@@ -172,20 +195,55 @@ angular.module('bhima.controllers')
         primary_details : primary_details
       };
 
+      dependencies.advance = {
+        required : true,
+        query : {
+          tables : {
+            'rubric_paiement' : {
+              columns : ['id', 'paiement_uuid', 'rubric_id', 'value']
+            },
+            'rubric' : {
+              columns : ['is_advance']
+            }
+          },
+          join : [
+            'rubric.id=rubric_paiement.rubric_id'
+          ],
+          where : [
+            'rubric_paiement.paiement_uuid=' + primary_details.inv_po_id, 'AND','rubric.is_advance = 1'
+          ]
+        }
+      };
+
       connect.post('primary_cash', [package.primary], ['uuid'])
       .then(function () {
         return connect.post('primary_cash_item', [package.primary_details], ['uuid']);
       })
-      .then(function () {
+       .then(function () {
         var param = { uuid : emp.uuid, is_paid : 1 };
         return connect.put('paiement', [param], ['uuid'])
         .then(function () { validate.refresh(dependencies); });
       })
-      .then(function () {
+     .then(function () {
         return connect.fetch('/journal/salary_payment/' + package.primary.uuid);
       })
+     .then(function () {
+        return validate.process(dependencies, ['advance']);
+      })     
+      .then(function (model) {
+        if(model.advance.data.length){
+          if(model.advance.data[0].value){
+            return connect.fetch('/journal/advance_paiment/' + package.primary_details.inv_po_id);
+          } else {
+            return;
+          } 
+        } else {
+          return;
+        }
+      })
       .then(function () {
-        messenger.success('Paiement effectif de ' + emp.prenom + ' ' + emp.name + ' ' + emp.postnom + ' reussi', true);
+        init(session.model);
+        messenger.success($translate.instant('PRIMARY_CASH.EXPENSE.SALARY_SUCCESS') + emp.prenom + ' ' + emp.name + ' ' + emp.postnom + ' reussi', true);
       })
       .catch(function (err){ console.log(err); });
     }

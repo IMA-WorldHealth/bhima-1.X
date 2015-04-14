@@ -1,8 +1,11 @@
 // scripts/lib/auth/authentication.js
 
 // Middleware: authenticate
+var sanitize = require('./../lib/sanitize');
+var db = require('./../lib/db');
+var uuid = require('./../lib/guid');
 
-module.exports = function (db, uuid) {
+module.exports = function () {
   'use strict';
 
   // This is the first middleware hit by any incoming
@@ -16,7 +19,7 @@ module.exports = function (db, uuid) {
   //
   // All other paths are welcome to continue on to be
   // validated by the authorization middleware.
-  
+
   function protect(req, res, next) {
     if (!req.session || !req.session.token) {
       next(new Error('Not Logged In'));
@@ -30,22 +33,30 @@ module.exports = function (db, uuid) {
     if (req.method !== 'POST') { return next(); }
     var sql, id, user,
         usr = req.body.username,
-        pwd = req.body.password;
+        pwd = req.body.password,
+        pro = req.body.project;
 
     sql =
-      'SELECT user.id, user.username, user.first, user.last, user.email ' +
-      'FROM user WHERE user.username = ? ' +
-      'AND user.password = ?;';
+      'SELECT user.id, user.username, user.first, user.last, user.email FROM user JOIN project_permission ON ' +
+      'user.id = project_permission.user_id WHERE user.username = ? AND user.password = ? AND project_permission.project_id = ?;';
 
-    db.exec(sql, [usr, pwd])
+
+    // sql =
+    //   'SELECT user.id, user.username, user.first, user.last, user.email, project_permission.project_id ' +
+    //   'FROM user, project_permission WHERE user.username = ? ' +
+    //   'AND user.password = ? AND project_permission.id = ?;';
+
+    db.exec(sql, [usr, pwd, pro])
     .then(function (results) {
       if (results.length < 1) {
-        throw 'No user found';
+        throw 'No user found for this project';
       }
+
+      console.log('voici le user', results);
 
       user = results.pop();
       sql = 'UPDATE user SET user.logged_in = 1 WHERE user.id = ?;';
-   
+
       return db.exec(sql, [user.id]);
     })
     .then(function () {
