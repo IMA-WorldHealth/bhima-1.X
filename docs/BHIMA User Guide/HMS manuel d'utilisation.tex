@@ -1787,15 +1787,20 @@ Le rapport d'exploitation par service permet de visualiser l'historique des char
 \label{Interface principale du module exploitation par service}
 \end{figure}
 
-Par défaut le rapport d'exploitation par service affiche les résultats d'exploitation du jour courant, l'interface du rapport d'exploitation dispose des plusieurs outils permettant de visualiser les anciens résultats.
+L'interface permet de sélectionner le projet ainsi que la plage de temps pour laquelle on voudrait visualiser le rapport. 
 
-Le bouton \includegraphics[scale=0.7]{pic/Todays.png} donne la possibilité de visualiser l'exploitation du jour courant, de la semaine courante mais aussi ceux du mois courant. 
+Le bouton générer permet l'affichage du tableau du rapport d'exploitation par service.
+L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
+\includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png}.
 
-Il existe aussi  \includegraphics[scale=0.7]{pic/PlageTimes.png} qui permet visualiser le rapport d'exploitation en precisant une plage de valeur entre deux dates.
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/ExploiService.png}
+\end{center}
+\caption{Tableau du rapport d'exploitation par service}
+\label{Tableau du rapport d'exploitation par service}
+\end{figure}
 
-Il existe aussi une liste de choix qui donne la possibilité de visualiser le rapport d'enregistrement par projets ou bien de tous le projet à la fois.
-
-Le bouton \includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport d'enregistrement des patients
 
 En bas de page on retrouve les indicateurs sur le rapport d'exploitations glôbal des services, il y'a le total de charge, le total de profit ainsi que la résultat (si le résultat est négative il sera mis entre parenthèse). 
 
@@ -1867,9 +1872,64 @@ Le bouton  \includegraphics[scale=0.7]{pic/ColumnsLedger.png} permet de determin
 
 \newpage
 \section{Historique des distributions aux patients}
+Le module historique des distributions aux patients, permet de visualiser la consommation en produits pharmaceutiques des patients dans une plage de temps données.
+
+L'interface principale de ce module se présente de la manière suivante
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/HistDistrPatient.png}
+\end{center}
+\caption{Interface principale du module Historique des distributions aux patients}
+\label{Interface principale du module Historique des distributions aux patients}
+\end{figure}
+
+L'interface permet de sélectionner le dépôt ainsi que la plage de temps pour laquelle on voudriai visualiser le rapport. 
+
+Le bouton générer permet l'affichage du tableau du rapport Historique des distributions aux patients.
+L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
+\includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png}.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/TabHistDistPatient.png}
+\end{center}
+\caption{Rapport Historique des distributions aux patients}
+\label{Rapport Historique des distributions aux patients}
+\end{figure}
+
+Les consommations annulées pour une raison ou une autre se démarque des autres avec une colorations en rouge. La colonne preuve donne la possibilité de pouvoir de revoir les différents éléments faisant partie de la consommation.
 
 \newpage
 \section{Historique des distributions aux services}
+Le module historique des distributions aux services, permet de visualiser la consommation en produits pharmaceutiques des patients dans une plage de temps données.
+
+L'interface principale de ce module se présente de la manière suivante
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/HistDistServices1.png}
+\end{center}
+\caption{Interface principale du module Historique des distributions aux services}
+\label{Interface principale du module Historique des distributions aux services}
+\end{figure}
+
+L'interface permet de sélectionner le dépôt ainsi que la plage de temps pour laquelle on voudriai visualiser le rapport. 
+
+Le bouton générer permet l'affichage du tableau du rapport Historique des distributions aux services.
+L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
+\includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png}.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/tabHistDistServices.png}
+\end{center}
+\caption{Rapport Historique des distributions aux services}
+\label{Rapport Historique des distributions aux services}
+\end{figure}
+
+Les consommations annulées pour une raison ou une autre se démarque des autres avec une colorations en rouge. La colonne preuve donne la possibilité de pouvoir de revoir les différents éléments faisant partie de la consommation.
+
 
 \newpage
 \section{Mouvement des comptes}
@@ -1877,18 +1937,27 @@ Le rapport Mouvement des comptes donne un apperçue global des toutes les transa
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=14cm]{pic/EtatToutesTrans.png}
+\includegraphics[width=14cm]{pic/AllTransaction.png}
 \end{center}
 \caption{Interface principale du module Mouvement des comptes}
 \label{Interface principale du module Mouvement des comptes}
 \end{figure}
 
-Par défaut le rapport Mouvement des comptes affiche les résultats du jour courant, l'interface du rapport d'exploitation dispose des plusieurs outils permettant de visualiser les anciens résultats. En haut de page à gauche on retrouve la liste de choix des comptes qui permet de spécifier les comptes pour lequel on voudrait connaitre le mouvement
+L'interface du rapport d'exploitation dispose des plusieurs outils permettant de visualiser les anciens résultats. En haut de page on retrouve la liste de choix des comptes qui permet de spécifier les comptes pour lequel on voudrait connaitre le mouvement
 
+Il existe aussi deux zones \textbf{Date du} et \textbf{Date au} qui permet visualiser le rapport du mouvement des comptes en precisant une plage de valeur entre deux dates, il est possible aussi de spécifier l'origine de la transaction qu'il s'agisse soit du grand livre ou bien du posting journal ou bien de tous le deux en même temps. Une autre liste de choix permet de spécifier une monnaie pour la visualisation du mouvement de comptes.
 
-Il existe aussi  \includegraphics[scale=0.7]{pic/PlageTimes.png} qui permet visualiser le rapport du mouvement des comptes en precisant une plage de valeur entre deux dates, il est possible aussi de spécifier l'origine de la transaction qu'il s'agisse soit du grand livre ou bien du posting journal ou bien de tous le deux en même temps. Une autre liste de choix permet de spécifier une monnaie pour la visualisation du mouvement de comptes.
+Le bouton générer permet l'affichage du tableau du rapport Historique des distributions aux services.
+L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
+\includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png}.
 
-Le bouton \includegraphics[scale=0.7]{pic/ValiderBlue.png} permet lancer l'affichage du rapport du mouvement des comptes en se basant sur les critaires spécifiés.
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/EtatAllTransaction.png}
+\end{center}
+\caption{Rapport Etat de toutes les transactions}
+\label{Rapport Etat de toutes les transactions}
+\end{figure}
 
 
 
@@ -1906,10 +1975,34 @@ Le plan comptable permet la visualisation du plan comptable et donne la possibil
 
 \newpage
 \section{Rapport Balance Mensuelle}
+Le rapport du balance mensuelle permet de visualiser le rapport pour chaque période d'une année fiscale en précisant la classe de compte pour laquelle on voudrait visualiser les rapports.
+L'interface principale de ce module se présente de la manière suivante:
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/BalanceMensu.png}
+\end{center}
+\caption{Interface principale du rapport Balance mensuelle par classe}
+\label{Interface principale du rapport Balance mensuelle par classe}
+\end{figure}
+
+L'interface permet de spécifier la peride de l'année fiscale ainsi que la classe. Le bouton générer permet l'affichage du tableau du rapport de balance mensuelle par classe.
+L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
+\includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png}.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/RappBalanceMen.png}
+\end{center}
+\caption{Apperçue du rapport de mensuelle de la classe (5) pour le mois d'avril 2015}
+\label{Apperçue du rapport de mensuelle de la classe (5) pour le mois d'avril 2015}
+\end{figure}
+
+
 
 \newpage
 \section{Rapport Compte}
-Le rapport sommaire des comptes permet d'avoir un bref apperçue d'un compte. Son interface principale se présente de la manière suivante. 
+Le rapport sommaire des comptes permet d'avoir un bref apperçue des transactions liées à un compte. Son interface principale se présente de la manière suivante. 
 
 \begin{figure}[h]
 \begin{center}
