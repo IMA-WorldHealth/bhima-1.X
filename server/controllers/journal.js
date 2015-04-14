@@ -388,7 +388,9 @@ function handleSales (id, user_id, done, caution) {
   .spread(function (rows, transId) {
 
     if (caution && caution > 0) {
-      var descript = 'CAUTION/' + reference.debitor_uuid + '/' + get.date();
+
+      // var descript = 'CAUTION/' + reference.debitor_uuid + '/' + get.date();
+      var descript = '[AVANCE] AJUSTEMENT PRISE EN COMPTE VENTE/';
       var transAmount = caution - reference.cost > 0 ? reference.cost : caution;
       queries.cautionDebiting =
         'INSERT INTO posting_journal '+
@@ -398,7 +400,7 @@ function handleSales (id, user_id, done, caution) {
           'SELECT ' + ['\'' + uuid() + '\'', reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'', '\''+descript+'\''].join(',') + ', ' +
             '`debitor_group`.`account_id`, ' + [0, transAmount, 0, transAmount, reference.currency_id, '\'' + reference.debitor_uuid + '\''].join(',') +
             ', \'D\', null, ' + [cfg.originId, user_id].join(',') + ' ' +
-          'FROM `debitor_group` WHERE `debitor_group`.`uuid`= (' +
+          'FROM `debitor_group` JOIN `debitor` ON `debitor`.`group_uuid`=`debitor_group`.`uuid` WHERE `debitor_group`.`uuid`= (' +
           'SELECT `debitor`.`group_uuid` FROM `debitor` WHERE `debitor`.`uuid`='+ sanitize.escape(reference.debitor_uuid) +');';
 
       queries.DebitorCrediting =
