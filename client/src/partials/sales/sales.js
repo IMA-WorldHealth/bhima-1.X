@@ -418,9 +418,11 @@ angular.module('bhima.controllers')
       // Apply caution
       if (invoice.debitorCaution){
         var remaining = 0;
-        remaining = total - invoice.debitorCaution;
-        totalToPay = remaining < 0 ? 0 : remaining;
-        totalToPay = Number(totalToPay.toFixed(4));
+        // FIXME erronus value in total when remaining variable is set
+        // remaining = total - invoice.debitorCaution;
+        // totalToPay = remaining < 0 ? 0 : remaining;
+        // totalToPay = Number(totalToPay.toFixed(4));
+        totalToPay = total;
       }else{
         totalToPay = total;
       }
