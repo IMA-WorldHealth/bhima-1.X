@@ -44,11 +44,13 @@ angular.module('bhima.controllers')
       angular.extend($scope, model);
     }
 
-    function confirmDonation(purchaseId) {
-      session.selected = (session.is_direct) ? $scope.direct_purchase.get(purchaseId) : $scope.indirect_purchase.get(purchaseId);
+    function confirmDonation(donationId) {
+      session.selected = $scope.donations.get(donationId);
     };
 
-    $scope.confirmPayment = function confirmPayment () {
+    function confirmReception () {
+      console.log('a faire par bruce ....');
+      return;
     	writeToJournal()
       .then(updatePurchase)
     	.then(generateDocument)
@@ -66,6 +68,27 @@ angular.module('bhima.controllers')
     }
 
     function writeToJournal () {
+
+      // return $q.all(synthese.map(function (postingEntry) {
+        //   //   return $http.post('posting_donation/', postingEntry);
+        //   // }));
+
+        //   return $q.all(synthese.map(function (postingEntry) {
+        //     // A FIXE   : L'affichage des transactions dans le journal n'est pas en ordre
+        //     // A FIXE   : Ecrire chaque 'postingEntry' dans le journal de facon singuliere
+        //     // OBJECTIF : Ecrire pour chaque inventory de la donation comme une transaction dans le journal
+        //     return $http.post('posting_donation/', postingEntry);
+        //   }));
+
+
+
+
+
+
+
+
+
+
       var query = (session.is_direct) ? '/confirm_direct_purchase/' + session.selected.uuid : '/confirm/' + session.selected.paid_uuid;
     	return connect.fetch('/journal' + query);
     }
@@ -99,5 +122,6 @@ angular.module('bhima.controllers')
     };
 
     $scope.confirmDonation = confirmDonation;
+    $scope.confirmReception = confirmReception;
   }
 ]);
