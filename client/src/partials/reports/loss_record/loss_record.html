@@ -116,7 +116,7 @@
               <tr>
                 <th>{{'COLUMNS.ENTRY_DATE' | translate}}</th>
                 <th>{{'COLUMNS.LOT_NUMBER' | translate}}</th>
-                <th>{{'COLUMNS.TRACKING_NUMBER' | translate}}</th>
+                <!-- <th>{{'COLUMNS.TRACKING_NUMBER' | translate}}</th> -->
                 <th>{{'COLUMNS.MEDECINE' | translate}}</th>
                 <th>{{'COLUMNS.QTY' | translate}}</th>
                 <th>{{'COLUMNS.UNIT_PRICE' | translate}}</th>
@@ -138,7 +138,7 @@
               <tr ng-repeat="rec in lossData | orderBy: 'text'">
                 <td>{{ rec.entry_date | date }}</td>
                 <td>{{ rec.lot_number }}</td>
-                <td>{{ rec.tracking_number }}</td>
+                <!-- <td>{{ rec.tracking_number }}</td> -->
                 <td>{{ rec.text }}</td>
                 <td>{{ rec.quantity}}</td>
                 <td>{{ rec.unit_price | currency }}</td>
