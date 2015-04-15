@@ -226,7 +226,7 @@
    "TITLE"            : "Annulation caisse"
 },
 "CASH_PAYMENTS": {
-   "ALL_PROJECTS" : "Tous Projets",
+   "ALL_PROJECTS" : "Tous les projets",
    "DAY"          : "Aujourd'hui",
    "MONTH"        : "Ce Mois",
    "SEARCH"       : "Rechercher",
@@ -702,7 +702,7 @@
    "TITLE"         : "Gestion des Monaies"
    },
 "DAILY_CONSUMPTION": {
-   "ALL_PROJECTS"       : "Tous Projets",
+   "ALL_PROJECTS"       : "Tous les projets",
    "CONFIGURE_REPORT"   : "Configuration du rapport : Consommation journaliere",
    "DATE_FROM"          : "Date du début",
    "DATE_TO"            : "Date de la fin",

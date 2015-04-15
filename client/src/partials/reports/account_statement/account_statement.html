@@ -212,28 +212,5 @@
       </div>
     </div>
 
-    <footer>
-      <table style="width: 99%">
-        <tbody>
-          <td style="width:20%;">
-            <span style="margin-right: 10px;">
-              <span class="glyphicon glyphicon-list-alt" style="color: #428bca"></span> <b>{{ session.model.records.data.length }}</b>
-            </span>
-          </td>
-
-          <td style="width:30%;">
-            <span style="margin-right: 10px;">
-              <span class="glyphicon glyphicon-money" style="color: #428bca"></span> Total Recette(s) : <b ng-bind-html="session.sum_debit | intlcurrency:session.currency"></b>
-            </span>
-          </td>
-
-          <td colspan="2">
-            <div class="hidden-print" style="width:15%;">
-              <select class="form-bhima" ng-model="session.currency" ng-options="currency.id as currency.symbol for currency in currencies.data" ng-change="convert()"></select>
-            </div>
-          </td>
-        </tbody>
-      </table>
-    </footer>
   </div>    
 </div>  
