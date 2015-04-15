@@ -1787,15 +1787,20 @@ Le rapport d'exploitation par service permet de visualiser l'historique des char
 \label{Interface principale du module exploitation par service}
 \end{figure}
 
-Par défaut le rapport d'exploitation par service affiche les résultats d'exploitation du jour courant, l'interface du rapport d'exploitation dispose des plusieurs outils permettant de visualiser les anciens résultats.
+L'interface permet de sélectionner le projet ainsi que la plage de temps pour laquelle on voudrait visualiser le rapport. 
 
-Le bouton \includegraphics[scale=0.7]{pic/Todays.png} donne la possibilité de visualiser l'exploitation du jour courant, de la semaine courante mais aussi ceux du mois courant. 
+Le bouton générer permet l'affichage du tableau du rapport d'exploitation par service.
+L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
+\includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png}.
 
-Il existe aussi  \includegraphics[scale=0.7]{pic/PlageTimes.png} qui permet visualiser le rapport d'exploitation en precisant une plage de valeur entre deux dates.
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/ExploiService.png}
+\end{center}
+\caption{Tableau du rapport d'exploitation par service}
+\label{Tableau du rapport d'exploitation par service}
+\end{figure}
 
-Il existe aussi une liste de choix qui donne la possibilité de visualiser le rapport d'enregistrement par projets ou bien de tous le projet à la fois.
-
-Le bouton \includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport d'enregistrement des patients
 
 En bas de page on retrouve les indicateurs sur le rapport d'exploitations glôbal des services, il y'a le total de charge, le total de profit ainsi que la résultat (si le résultat est négative il sera mis entre parenthèse). 
 
@@ -1867,9 +1872,64 @@ Le bouton  \includegraphics[scale=0.7]{pic/ColumnsLedger.png} permet de determin
 
 \newpage
 \section{Historique des distributions aux patients}
+Le module historique des distributions aux patients, permet de visualiser la consommation en produits pharmaceutiques des patients dans une plage de temps données.
+
+L'interface principale de ce module se présente de la manière suivante
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/HistDistrPatient.png}
+\end{center}
+\caption{Interface principale du module Historique des distributions aux patients}
+\label{Interface principale du module Historique des distributions aux patients}
+\end{figure}
+
+L'interface permet de sélectionner le dépôt ainsi que la plage de temps pour laquelle on voudriai visualiser le rapport. 
+
+Le bouton générer permet l'affichage du tableau du rapport Historique des distributions aux patients.
+L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
+\includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png}.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/TabHistDistPatient.png}
+\end{center}
+\caption{Rapport Historique des distributions aux patients}
+\label{Rapport Historique des distributions aux patients}
+\end{figure}
+
+Les consommations annulées pour une raison ou une autre se démarque des autres avec une colorations en rouge. La colonne preuve donne la possibilité de pouvoir de revoir les différents éléments faisant partie de la consommation.
 
 \newpage
 \section{Historique des distributions aux services}
+Le module historique des distributions aux services, permet de visualiser la consommation en produits pharmaceutiques des patients dans une plage de temps données.
+
+L'interface principale de ce module se présente de la manière suivante
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/HistDistServices1.png}
+\end{center}
+\caption{Interface principale du module Historique des distributions aux services}
+\label{Interface principale du module Historique des distributions aux services}
+\end{figure}
+
+L'interface permet de sélectionner le dépôt ainsi que la plage de temps pour laquelle on voudriai visualiser le rapport. 
+
+Le bouton générer permet l'affichage du tableau du rapport Historique des distributions aux services.
+L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
+\includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png}.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/tabHistDistServices.png}
+\end{center}
+\caption{Rapport Historique des distributions aux services}
+\label{Rapport Historique des distributions aux services}
+\end{figure}
+
+Les consommations annulées pour une raison ou une autre se démarque des autres avec une colorations en rouge. La colonne preuve donne la possibilité de pouvoir de revoir les différents éléments faisant partie de la consommation.
+
 
 \newpage
 \section{Mouvement des comptes}
@@ -1877,18 +1937,26 @@ Le rapport Mouvement des comptes donne un apperçue global des toutes les transa
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=14cm]{pic/EtatToutesTrans.png}
+\includegraphics[width=14cm]{pic/AllTransaction.png}
 \end{center}
 \caption{Interface principale du module Mouvement des comptes}
 \label{Interface principale du module Mouvement des comptes}
 \end{figure}
 
-Par défaut le rapport Mouvement des comptes affiche les résultats du jour courant, l'interface du rapport d'exploitation dispose des plusieurs outils permettant de visualiser les anciens résultats. En haut de page à gauche on retrouve la liste de choix des comptes qui permet de spécifier les comptes pour lequel on voudrait connaitre le mouvement
+L'interface du rapport d'exploitation dispose des plusieurs outils permettant de visualiser les anciens résultats. En haut de page on retrouve la liste de choix des comptes qui permet de spécifier les comptes pour lequel on voudrait connaitre le mouvement
 
+Il existe aussi deux zones \textbf{Date du} et \textbf{Date au} qui permet visualiser le rapport du mouvement des comptes en precisant une plage de valeur entre deux dates, il est possible aussi de spécifier l'origine de la transaction qu'il s'agisse soit du grand livre ou bien du posting journal ou bien de tous le deux en même temps. Une autre liste de choix permet de spécifier une monnaie pour la visualisation du mouvement de comptes.
 
-Il existe aussi  \includegraphics[scale=0.7]{pic/PlageTimes.png} qui permet visualiser le rapport du mouvement des comptes en precisant une plage de valeur entre deux dates, il est possible aussi de spécifier l'origine de la transaction qu'il s'agisse soit du grand livre ou bien du posting journal ou bien de tous le deux en même temps. Une autre liste de choix permet de spécifier une monnaie pour la visualisation du mouvement de comptes.
+Le bouton générer permet l'affichage du tableau du rapport de mouvement de comptes. L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
+\includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png}.
 
-Le bouton \includegraphics[scale=0.7]{pic/ValiderBlue.png} permet lancer l'affichage du rapport du mouvement des comptes en se basant sur les critaires spécifiés.
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/EtatAllTransaction.png}
+\end{center}
+\caption{Rapport Etat de toutes les transactions}
+\label{Rapport Etat de toutes les transactions}
+\end{figure}
 
 
 
@@ -1905,40 +1973,7 @@ Le plan comptable permet la visualisation du plan comptable et donne la possibil
 \end{figure}
 
 \newpage
-\section{Rapport Balance Mensuelle}
-
-\newpage
-\section{Rapport Compte}
-Le rapport sommaire des comptes permet d'avoir un bref apperçue d'un compte. Son interface principale se présente de la manière suivante. 
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=10cm]{pic/RapSomComptes.png}
-\end{center}
-\caption{Aperçue de l'interface principale rapport de comptes}
-\label{Aperçue de l'interface principale rapport de comptes}
-\end{figure}
-
-La zone  \includegraphics[scale=0.7]{pic/LineAndDate.png} permet de spécifier les nombres des lignes à afficher dans le rapport mais aussi de spécifier la date du début et celle de la fin de la recherche. 
-
-Le bouton \includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer la situation financière d'un patient.
-
-La zone  \includegraphics[scale=0.7]{pic/SelectedAccount.png} permet de rechecher dans la liste de comptes, celui pour lequel on voudrait afficher le rapport sommaire.
-
-
-Voici un apperçue du rapport sommaire d'un compte.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=10cm]{pic/RapSomComptess.png}
-\end{center}
-\caption{Aperçue du rapport sommaire d'un compte}
-\label{Aperçue du rapport sommaire d'un compte}
-\end{figure}
-
-
-\newpage
-\section{Rapport Enregistrement des Patients}
+\section{Rapport d'enregistrement des Patients}
 Le rapport d'enregistrement des patients permet de visualiser l'historique d'enregistremet des patients dans le système. L'interface principale permettant de voire le rapport d'enregistrement des patients se présente de la manière suivante. 
 
 \begin{figure}[h]
@@ -1949,29 +1984,24 @@ Le rapport d'enregistrement des patients permet de visualiser l'historique d'enr
 \label{Aperçue de l'interface principale du rapport d'enregistrement des patients}
 \end{figure}
 
-Par défaut le rapport d'enregistrement des patients affiche la liste des patients enregistrés le jour courant, l'interface du rapport d'enregistrement dispose de plusieurs outils permettant de visualiser les anciennes données enregistrés.
 
-Le bouton \includegraphics[scale=0.7]{pic/Todays.png} donne la possibilité de visualiser les enregistrements du jour courant, de la semaine courante mais aussi ceux du mois courant. 
+La première zone permet de sélectionner le projet pour lequel on voudriai visualiser le rapport d'enregistrement, il y'a aussi une zone qui permet de spécifier l'écheance temporelle  ou bien spécifier directement la date du début et celle de la fin de la recherche. 
 
-Il existe aussi  \includegraphics[scale=0.7]{pic/PlageTimes.png} qui permet visualiser le rapport d'enregistrement en precisant une plage de valeur entre deux dates.
+Le bouton générer permet l'affichage du tableau du rapport d'enregistrement des patients. L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
+\includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png}.
 
-Le bouton \includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport d'enregistrement des patients
-
-Il existe aussi une liste de choix qui donne la possibilité de visualiser le rapport d'enregistrement par projets ou bien de tous le projet à la fois.
-
-En bas de page on retrouve les indicateurs sur le résultat de la recherche permettant de connaitre le nombre des patients trouvés  ainsi que la repartion par sexe. 
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=5cm]{pic/IndicRecherche.png}
+\includegraphics[width=12cm]{pic/PatientSaving.png}
 \end{center}
-\caption{Aperçue des indicateurs sur le résultat de la recherche}
-\label{Aperçue des indicateurs sur le résultat de la recherche}
+\caption{Aperçue du résultat du rapport d'enregistrement des patients}
+\label{Aperçue du résultat du rapport d'enregistrement des patients}
 \end{figure}
 
 \newpage
-\section{Rapport Expiration Stocks}
-Le rapport Expiration Stocks permet d'avoir un bref apperçue sur la péremption des produits pharmaceutiques, l'interface principale de ce module se présente de la manière suivante.
+\section{Rapport d'expiration Stocks}
+Le rapport Expiration Stocks permet d'avoir un brèf apperçue sur la péremption des produits pharmaceutiques, l'interface principale de ce module se présente de la manière suivante.
 
 \begin{figure}[h]
 \begin{center}
@@ -1981,10 +2011,70 @@ Le rapport Expiration Stocks permet d'avoir un bref apperçue sur la péremption
 \label{Interface principale du module Rapport Expiration Stocks}
 \end{figure}
 
-La zone  \includegraphics[scale=0.7]{pic/PlageTimes.png} qui permet visualiser le rapport des péremptions des produits pharmaceutiques en précisant une plage de temps par rapport aux dates.
+La première zone permet de sélectionner le dépôt pour lequel on voudriai visualiser le rapport de péremption, il y'a aussi une zone qui permet de spécifier directement la date du début et celle de la fin de la recherche. 
 
-Il est aussi possible de pouvoir spécifier le dépôt pour lequel on voudriait connaitre le rapport des péremptions.
+Le bouton générer permet l'affichage du tableau du rapport d'expiration de stock. L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
+\includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png}.
 
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/AppRapExMedi.png}
+\end{center}
+\caption{Aperçue du résultat du rapport d'expiration des produits pharmaceutiques}
+\label{Aperçue du résultat du rapport d'expiration des produits pharmaceutiques}
+\end{figure}
+
+\newpage
+\section{Rapport de Balance Mensuelle}
+Le rapport du balance mensuelle permet de visualiser le rapport pour chaque période d'une année fiscale en précisant la classe de compte pour laquelle on voudrait visualiser les rapports.
+L'interface principale de ce module se présente de la manière suivante:
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/BalanceMensu.png}
+\end{center}
+\caption{Interface principale du rapport Balance mensuelle par classe}
+\label{Interface principale du rapport Balance mensuelle par classe}
+\end{figure}
+
+L'interface permet de spécifier la peride de l'année fiscale ainsi que la classe. Le bouton générer permet l'affichage du tableau du rapport de balance mensuelle par classe.
+L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
+\includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png}.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/RappBalanceMen.png}
+\end{center}
+\caption{Apperçue du rapport de mensuelle de la classe (5) pour le mois d'avril 2015}
+\label{Apperçue du rapport de mensuelle de la classe (5) pour le mois d'avril 2015}
+\end{figure}
+
+
+\newpage
+\section{Rapport de Compte}
+Le rapport sommaire des comptes permet d'avoir un bref apperçue des transactions liées à un compte. Son interface principale se présente de la manière suivante. 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=10cm]{pic/RapCompte.png}
+\end{center}
+\caption{Aperçue de l'interface principale rapport de comptes}
+\label{Aperçue de l'interface principale rapport de comptes}
+\end{figure}
+
+La première zone permet de rechercher le compte, il y'a aussi une zone qui permet de spécifier les nombres des lignes à afficher dans le rapport mais aussi de spécifier la date du début et celle de la fin de la recherche. 
+
+
+Le bouton générer permet l'affichage du tableau du rapport de comptes. L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
+\includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png}.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=10cm]{pic/RappSomComptes.png}
+\end{center}
+\caption{Aperçue du rapport sommaire d'un compte}
+\label{Aperçue du rapport sommaire d'un compte}
+\end{figure}
 
 \newpage
 \section{Rapport Paiements}
@@ -2021,6 +2111,56 @@ En bas de page on retrouve les indicateurs sur le rapport de paiements, on retro
 
 \newpage
 \section{Rapport de pertes de stock}
+Le rapport de pertes de stock permet de visualiser l'historique de pertes de stock, qu'ils s'agissent de vol des produits, de la perte, de la peremption ainsi que de la déterioration des produits. L'interface principale permettant de voire le rapport de pertes de stock se présente de la manière suivante. 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=10cm]{pic/ConfPerStock.png}
+\end{center}
+\caption{Aperçue de l'interface principale du rapport de pertes de stock}
+\label{Aperçue de l'interface principale du rapport de pertes de stock}
+\end{figure}
+
+
+La première zone permet de sélectionner le dépôt pour lequel on voudriai visualiser le rapport de pertes de stock, il y'a aussi une zone qui permet de spécifier l'écheance temporelle  ou bien spécifier directement la date du début et celle de la fin de la recherche. 
+
+Le bouton générer permet l'affichage du tableau du rapport de pertes de stock. L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
+\includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png}.
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/PerteStockRapport.png}
+\end{center}
+\caption{Aperçue du résultat du rapport de perte des stock}
+\label{Aperçue du résultat du rapport de perte des stock}
+\end{figure}
+
+\newpage
+\section{Rapport des donations}
+Le rapport des donations permet de visualiser l'historique de toutes les donations effectuer par un donateur spécifique, l'interface pricipale se présente de manière suivante. 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=10cm]{pic/RapDonnInterface.png}
+\end{center}
+\caption{Aperçue de l'interface principale du rapport des donations}
+\label{Aperçue de l'interface principale du rapport des donations}
+\end{figure}
+
+
+Il n'existe qu'une seule zone, celle ci permet de sélectionner directement un donateur dans la liste des donateurs enregistrées. Le bouton générer permet l'affichage du tableau du rapport des donations. L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
+\includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png}.
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/DonationsRapport.png}
+\end{center}
+\caption{Aperçue du résultat du rapport des donations}
+\label{Aperçue du résultat du rapport des donations}
+\end{figure}
+
 
 \newpage
 \section{Rapport des Dépenses}
@@ -2028,19 +2168,28 @@ Le rapport des dépenses permet de visualiser toutes les sorties en caisse qui s
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=14cm]{pic/RapDepenses.png}
+\includegraphics[width=14cm]{pic/RapDepensesInterface.png}
 \end{center}
 \caption{Interface principale du module Rapport des dépenses}
 \label{Interface principale du module Rapport des dépenses}
 \end{figure}
 
-La zone  \includegraphics[scale=0.7]{pic/PlageTimes.png} qui permet visualiser le rapport des dépenses en précisant une plage de temps par rapport aux dates.
+La première zone permet de séléctioner une caisse principale par rapport aux monnaies enregistrés, mais aussi de spécifier la date du début et celle de la fin de la recherche. 
 
-Dans le tableau des dépenses il existe le lien \includegraphics[scale=0.7]{pic/FactureRePrint.png} qui permet de réafficher les détailles d'une dépense.
+Le bouton générer permet l'affichage du tableau du rapport des dépenses. L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
+\includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png}.
 
-Il est aussi possible de pouvoir choisir les depenses respectivement par rapport à la monnaie qui a été utilisé au moment de la transaction grace à la liste de choix \includegraphics[scale=0.7]{pic/SelecPriCash.png}.
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=10cm]{pic/RapDepensesApercue.png}
+\end{center}
+\caption{Aperçue du rapport de dépenses pour une période données}
+\label{Aperçue du rapport de dépenses pour une période données}
+\end{figure}
 
-En bas de page on retrouve les indicateurs permettant de connaitre le nombre des recettes qui ont été réaliser ainsi que le montant total des recettes ainsi que la possibilité de le visualiser avec différentes monnaies. 
+Il est aussi possible de pouvoir choisir les depenses respectivement par rapport à la monnaie qui a été utilisé au moment de la transaction.
+
+En bas de page on retrouve les indicateurs permettant de connaitre le nombre des dépenses qui ont été réalisé ainsi que le montant total des recettes ainsi que la possibilité de le visualiser avec différentes monnaies. 
 
 \newpage
 \section{Rapport des employés}
@@ -2054,25 +2203,21 @@ Le rapport des Rapport des employés permet de visualiser l'état financier d'un
 \label{Aperçue de l'interface principale de l'état financier d'un employé}
 \end{figure}
 
-
-La zone  \includegraphics[scale=0.7]{pic/ChechEmp.png} permet la recherche d'un employé dans la liste des employés enregistrés, et le bouton chercher permet l'affichage de la situation financière.
-
-Le bouton \includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer la situation financière d'un employé.
+Le formulaire possède une zone qui permet la recherche d'un employé dans la liste des employés enregistrés, le bouton générer permet l'affichage du tableau du rapport des employés. L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
+\includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png}.
 
 Voici un apperçue de la situation financière d'un employé.
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=14cm]{pic/EtatFinEmpl.png}
+\includegraphics[width=14cm]{pic/EtFinancierEmployer.png}
 \end{center}
 \caption{Aperçue du rapport financier d'un employé}
 \label{Aperçue du rapport financier d'un employé}
 \end{figure}
 
-Dans la figure ci haut on peut se rendre compte que l'employé doit à l'entreprise une certaine somme d'argent.
-
 \newpage
-\section{Rapport Patient}
+\section{Rapport des patients}
 Le rapport des patiens permet de visualiser l'état financier d'un patient. son interface principale se présente de la manière suivante. 
 
 \begin{figure}[h]
@@ -2083,16 +2228,14 @@ Le rapport des patiens permet de visualiser l'état financier d'un patient. son 
 \label{Aperçue de l'interface principale de l'état financier d'un patient}
 \end{figure}
 
-
-La zone  \includegraphics[scale=0.7]{pic/ChechrPatient.png} permet la recherche d'un patient dans la liste des patienrs enregistrés, et le bouton chercher permet l'affichage de la situation financière.
-
-Le bouton \includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer la situation financière d'un patient.
+Le formulaire possède une zone qui permet la recherche d'un patient dans la liste des patients enregistrés, le bouton générer permet l'affichage du tableau du rapport des employés. L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
+\includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png}.
 
 Voici un apperçue de la situation financière d'un patient.
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=14cm]{pic/EtatFinaApp.png}
+\includegraphics[width=14cm]{pic/RapEtFinPatient.png}
 \end{center}
 \caption{Aperçue du rapport financier d'un patient}
 \label{Aperçue du rapport financier d'un patient}
@@ -2105,42 +2248,28 @@ Le rapport des recettes permet de visualiser toutes les entrés en caisse qui s'
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=14cm]{pic/RapportRecette.png}
+\includegraphics[width=14cm]{pic/RapRecetteCP.png}
 \end{center}
 \caption{Interface principale du module Rapport des recettes}
 \label{Interface principale du module Rapport des recettes}
 \end{figure}
 
-La zone  \includegraphics[scale=0.7]{pic/PlageTimes.png} qui permet visualiser le rapport des recettes en précisant une plage de temps par rapport aux dates.
+La première zone permet de séléctioner une caisse principale par rapport aux monnaies enregistrés, mais aussi de spécifier la date du début et celle de la fin de la recherche. 
 
-Dans le tableau des recettes il existe le lien \includegraphics[scale=0.7]{pic/FactureRePrint.png} qui permet de réafficher les détailles d'une recette.
-
-Il est aussi possible de pouvoir choisir les recettes respectivement par rapport à la monnaie qui a été utilisé au moment de la transaction grace à la liste de choix \includegraphics[scale=0.7]{pic/SelecPriCash.png}.
-
-En bas de page on retrouve les indicateurs permettant de connaitre le nombre des recettes qui ont été réaliser ainsi que le montant total des recettes ainsi que la possibilité de le visualiser avec différentes monnaies. 
-
-\newpage
-\section{Rapports du Payroll}
-Le module Rapports du Payroll permet de lister toutes les périodes des paiments qui ont été produit par le système. son interface est doté d'une liste de choix permettant de rechecher une période de paiment dans la liste enfin d'afficher toutes les fiches des paiement appartenant à cette période.
+Le bouton générer permet l'affichage du tableau du rapport des  recettes. L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
+\includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png}.
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=14cm]{pic/RapPayroll.png}
+\includegraphics[width=10cm]{pic/RapDetRecette.png}
 \end{center}
-\caption{Interface principale du Rapports du Payroll}
-\label{Interface principale du Rapports du Payroll}
+\caption{Aperçue du rapport de recettes pour une période données}
+\label{Aperçue du rapport de recettes pour une période données}
 \end{figure}
 
+Il est aussi possible de pouvoir choisir les recettes respectivement par rapport à la monnaie qui a été utilisé au moment de la transaction.
 
-Le tableau du rapport du payroll possède plusieurs colonne mais la dernière \textbf{Bulletin} possède le lien \includegraphics[scale=0.7]{pic/VuePaieSlip.png} qui permet une redirection vers la Feuille de paie d'un employé.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=14cm]{pic/FeuillePaie.png}
-\end{center}
-\caption{Apperçue d'un prototype de fiche de paie générer par le système}
-\label{Apperçue d'un prototype de fiche de paie générer par le système}
-\end{figure}
+En bas de page on retrouve les indicateurs permettant de connaitre le nombre des recettes qui ont été réalisé ainsi que le montant total des recettes ainsi que la possibilité de le visualiser avec différentes monnaies. 
 
 
 \newpage
@@ -2219,15 +2348,10 @@ Le rapport des transactions par compte permet de visualiser toutes les transacti
 \end{figure}
 
 
-Le bouton \includegraphics[scale=0.7]{pic/Limit10T.png} donne la possibilité de préciser le nomble de ligne à affiché dans le resultat de la recherche. 
+Il existe deux zones sur l'interface ci-haut le premier permet de spécifier le nombre de ligne nécessaire à la recherche et le second permet de choisir un compte dans la liste de comptes.
 
-La zone  \includegraphics[scale=0.7]{pic/RechCompte.png} permet de rechecher dans la liste de comptes, celui pour lequel on voudrait visualiser les transactions.
-
-Il existe aussi une liste de choix qui donne la possibilité de visualiser le rapport d'enregistrement par projets ou bien de tous le projet à la fois.
-
-Le bouton \includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport de transaction par compte.
-
-En bas de page on retrouve les indicateurs des transactions d'un compte, on retrouve le débit total, le crédit, la balance ainsi que la possibilité de visualier tous ses éléments avec différentes monnaies. 
+Le bouton générer permet l'affichage du tableau du rapport des  recettes. L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
+\includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png}.
 
 \begin{figure}[h]
 \begin{center}
@@ -2238,6 +2362,7 @@ En bas de page on retrouve les indicateurs des transactions d'un compte, on retr
 \end{figure}
 
 
+En bas de page on retrouve les indicateurs des transactions d'un compte, on retrouve le débit total, le crédit, la balance ainsi que la possibilité de visualier tous ses éléments avec différentes monnaies. 
 
 
 
