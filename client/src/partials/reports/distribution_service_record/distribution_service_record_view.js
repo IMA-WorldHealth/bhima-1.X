@@ -81,6 +81,23 @@ angular.module('bhima.controllers')
     function reset() {
       var request;
 
+      dependencies.store = {
+        required: true,
+        query : {
+          tables : {
+            'depot' : {
+              columns : ['uuid', 'text', 'reference', 'enterprise_id']
+            }
+          },
+          where : ['depot.uuid=' + session.depot]
+        }
+      };
+      validate.process(dependencies, ['store'])
+      .then(function (model) {
+        var dataDepot = model.store.data[0];
+        $scope.depotSelected = dataDepot.text;
+      }); 
+
       request = {
         dateFrom : util.sqlDate(session.param.dateFrom),
         dateTo : util.sqlDate(session.param.dateTo),
