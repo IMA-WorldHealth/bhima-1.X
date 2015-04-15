@@ -529,7 +529,7 @@ INSERT INTO `transaction_type` (`service_txt`) VALUES
 ('reversing');
 
 -- Updates to rubric structure
--- 
+--
 -- ADD 'is_advance' field
 --
 -- Date: 2015-03-25
@@ -561,10 +561,10 @@ UPDATE `account` SET `classe`=8 WHERE LEFT(`account_number`,1)=8;
 UPDATE `account` SET `classe`=9 WHERE LEFT(`account_number`,1)=9;
 
 -- Updates purchase structure
--- 
+--
 -- ADD 'header_id' field
 -- ADD 'issuer_id' field
--- 
+--
 -- Date: 2015-04-07
 -- By: Chris LOMAME
 
@@ -589,6 +589,16 @@ ADD `is_validate` tinyint(1) NOT NULL DEFAULT '0';
 INSERT INTO `unit` VALUES
 (98,'Validation Purchase Order','TREE.VALIDATE_PURCHASE','',11,0,'/partials/purchase/validate/','purchase/validate/'),
 (99,'Autorization Purchase Order','TREE.AUTHORIZE_PURCHASE','',11,0,'/partials/purchase/authorization/','/purchase/authorization/');
+
+
+-- Title : ALTER DONOTIONS TABLE
+-- By    : Dedrick Kitamuka
+-- Date  : 14 avr 2015
+
+ALTER TABLE `donations`
+ADD `is_received` tinyint(1) NOT NULL DEFAULT '0',
+ADD `is_confirmed` tinyint(1) NOT NULL DEFAULT '0';
+
 
 -- SNIS TABLE
 -- Date 2 Avril 2015
@@ -5939,7 +5949,7 @@ CREATE TABLE IF NOT EXISTS `mod_snis_monthly_report` (
   KEY `id_attribut_form` (`id_attribut_form`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
-ALTER TABLE `project` 
+ALTER TABLE `project`
 ADD `zs_id` int(11) DEFAULT 0 NOT NULL ;
 
 
@@ -5950,10 +5960,19 @@ INSERT INTO `unit` VALUES
 (100,'Purchase Order Confirmation','TREE.PURCHASE_CONFIRMATION','',10,0,'/partials/reports/purchase_order/','reports/purchase_order/');
 
 
+
+-- Title : ADDING UNIT ENTRIES
+-- By    : DEDRICK KITAMUKA
+-- Date  : 14 avr 2015
+INSERT INTO `unit` VALUES
+(101,'Donation Confirmation','TREE.DONATION_CONFIRMATION','',11,0,'/partials/stock/donation_management/','donation/confirm_donation/');
+
+
+
 -- Updates purchase structure
--- 
+--
 -- ADD 'confirmed_by' field
--- 
+--
 -- Date: 2015-04-13
 -- By: Chris LOMAME
 

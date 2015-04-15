@@ -23,33 +23,35 @@
 <div class="report">
   <div class="reportBody">
     <div class="reportFrame">
-      <h4>{{ "STOCK.ENTRY.ENTRY_MANIFEST" | translate }} <small class="pull-right"> {{ session.documentId }}</small></h4>
+      <h4>
+        {{ "STOCK.ENTRY.ENTRY_MANIFEST" | translate }} <small class="pull-right"> {{ session.documentId }}</small>
+      </h4>
 
-      <label>{{ "STOCK.ENTRY.ENTRY_DATE" | translate }}</label>  {{ session.timestamp | date }}
+      <h5>
+        <label>{{ "COLUMNS.DONATION_DATE" | translate }}</label> {{ donations.data[0].date | date}}
+      </h5>
+
+      <h5><label>{{ "STOCK.ENTRY.ENTRY_DATE" | translate }}</label>  {{ session.timestamp | date }}</h5>
 
       <table class="reportTable">
         <thead>
           <tr>
             <th>{{ "COLUMNS.DEPOT" | translate }}</th>
-            <th>{{ "COLUMNS.TRACKING_NUMBER" | translate }}</th>
+            <th>{{ "COLUMNS.INVENTORY_CODE" | translate }}</th>
             <th>{{ "COLUMNS.INVENTORY_ITEM" | translate }}</th>
             <th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>
-            <th>{{ "COLUMNS.INVENTORY_CODE" | translate }}</th>
-            <th>{{ "DONATION_MANAGEMENT.DATE_REGISTER" | translate }}</th>
-            <th>{{ "COLUMNS.EXPIRATION_DATE" | translate }}</th>
             <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
+            <th>{{ "COLUMNS.EXPIRATION_DATE" | translate }}</th>
           </tr>
         </thead>
         <tbody>
           <tr ng-repeat="movement in donations.data | orderBy:'date'">
             <td>{{ movement.reference }}</td>
-            <td>{{ movement.tracking_number }}</td>
+            <td>{{ movement.code }}</td>
             <td>{{ movement.text }}</td>
             <td>{{ movement.lot_number }}</td>
-            <td>{{ movement.code }}</td>
-            <td>{{ movement.date | date }}</td>
-            <td>{{ movement.expiration_date | date }}</td>
             <td>{{ movement.quantity }}</td>
+            <td>{{ movement.expiration_date | date }}</td>
           </tr>
         </tbody>
         <tfoot>
@@ -58,7 +60,6 @@
               <span class="glyphicon glyphicon-list-alt"></span>
               {{ donations.data.length }}
             </th>
-            <th>{{ session.total }}</th>
           </tr>
         </tfoot>
       </table>
@@ -67,9 +68,15 @@
         <h5>{{ "UTIL.SIGNATURES" | translate }}</h5>
 
         <div class="signature-box">
-          <label>{{ "SIGNATURES.WAREHOUSE_MANAGER" | translate }}</label> <label style="float: right;">{{ "UTIL.DATE" | translate }}</label>
+          <label>{{ "SIGNATURES.WAREHOUSE_MANAGER" | translate }}</label>
           <div class="signature-line"></div>
         </div>
+
+        <div class="signature-box pull-right">
+          <label>{{ "SIGNATURES.STOCK_MANAGER" | translate }}</label>
+          <div class="signature-line"></div>
+        </div>
+
       </div>
     </div>
   </div>
