@@ -341,7 +341,7 @@
     .when('/reports/purchase_order', {
       controller : 'purchase_order',
       templateUrl : 'partials/reports/purchase_order/purchase_order.html'
-    })    
+    })
     .when('/reports/expiring/:option', {
       controller : 'expiring.option',
       templateUrl : 'partials/reports/expiring_stock/expiring_stock_view.html'
@@ -513,6 +513,10 @@
     .when('/stock/donation_management/', {
       controller : 'donation_management',
       templateUrl : 'partials/stock/donation_management/donation_management.html'
+    })
+    .when('/donation/confirm_donation/', {
+      controller : 'confirmDonation',
+      templateUrl : 'partials/stock/donation_management/confirm_donation.html'
     })
     .when('/stock/donation_management/:depotId', {
       controller : 'donation_management',
