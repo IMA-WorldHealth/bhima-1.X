@@ -46,7 +46,7 @@ angular.module('bhima.controllers')
 
     function confirmDonation(donationId) {
       session.selected = $scope.donations.get(donationId);
-    };
+    }
 
     function confirmReception () {
       console.log('a faire par bruce ....');
@@ -55,7 +55,7 @@ angular.module('bhima.controllers')
       .then(updatePurchase)
     	.then(generateDocument)
     	.catch(handleError);
-    };
+    }
 
     function updatePurchase () {
     	var purchase = {
