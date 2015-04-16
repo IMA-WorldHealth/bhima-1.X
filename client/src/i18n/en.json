@@ -816,6 +816,7 @@
    "ALL_DONATIONS"   : "Donations",
    "CANCEL"          : "Cancel",
    "CONFIGURE"       : "Configure Donation",
+   "CONFIRM"         : "Confirm Donation",
    "DATE"            : "Date",
    "DATE_REGISTER"   : "Register Date",
    "DONATION"        : "Donation",
