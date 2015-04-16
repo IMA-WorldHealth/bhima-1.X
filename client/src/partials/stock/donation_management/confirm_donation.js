@@ -1,20 +1,23 @@
 angular.module('bhima.controllers')
 .controller('confirmDonation', [
   '$scope',
+  '$q',
+  '$http',
   'validate',
   'appstate',
   'connect',
   '$location',
-  function ($scope, validate, appstate, connect, $location) {
+  'uuid',
+  function ($scope, $q, $http, validate, appstate, connect, $location, uuid) {
     var dependencies = {}, session = $scope.session = {};
 
     dependencies.donations = {
       query : {
         identifier : 'uuid',
         tables : {
-          donations : {columns : ['uuid', 'date', 'is_received']},
-          donor     : {columns : ['name']},
-          employee  : {columns : ['prenom', 'name::nom_employee', 'postnom']}
+          donations     : {columns : ['uuid', 'date', 'is_received']},
+          donor         : {columns : ['id', 'name']},
+          employee      : {columns : ['prenom', 'name::nom_employee', 'postnom']}
         },
         join : ['donor.id=donations.donor_id', 'donations.employee_id=employee.id'],
         where : ['donations.is_received=' + 1, 'AND', 'donations.is_confirmed='+ 0]
@@ -35,7 +38,7 @@ angular.module('bhima.controllers')
 
     appstate.register('project', function (project){
       $scope.project = project;
-       validate.process(dependencies)
+      validate.process(dependencies)
       .then(initialise);
     });
 
@@ -46,14 +49,41 @@ angular.module('bhima.controllers')
 
     function confirmDonation(donationId) {
       session.selected = $scope.donations.get(donationId);
+      loadDetails(donationId);
+    }
+
+    function loadDetails (donationId) {
+      dependencies.donationDetails = {
+        query : {
+          identifier : 'inventory_uuid',
+          tables : {
+            donations     : {columns : ['uuid', 'donor_id', 'employee_id', 'date', 'is_received']},
+            donation_item : {columns : ['uuid::donationItemUuid']},
+            stock         : {columns : ['inventory_uuid', 'tracking_number', 'purchase_order_uuid', 'quantity::stockQuantity', 'lot_number', 'entry_date']},
+            purchase      : {columns : ['uuid::purchaseUuid', 'cost', 'currency_id', 'note']},
+            purchase_item : {columns : ['uuid::purchaseItemUuid', 'unit_price', 'quantity']}
+            
+          },
+          join : [
+            'donations.uuid=donation_item.donation_uuid', 
+            'donation_item.tracking_number=stock.tracking_number',
+            'stock.purchase_order_uuid=purchase.uuid',
+            'stock.inventory_uuid=purchase_item.inventory_uuid',
+            'purchase.uuid=purchase_item.purchase_uuid',
+          ],
+          where : ['donations.uuid=' + donationId]
+        }
+      };
+
+      validate.refresh(dependencies, ['donationDetails'])
+      .then(initialise);
     }
 
     function confirmReception () {
-      console.log('a faire par bruce ....');
-      return;
     	writeToJournal()
-      .then(updatePurchase)
+      .then(updateDonation)
     	.then(generateDocument)
+      .then(resetSelected)
     	.catch(handleError);
     }
 
@@ -67,30 +97,73 @@ angular.module('bhima.controllers')
       return connect.put('purchase', [purchase], ['uuid']);
     }
 
+    function updateDonation () {
+      var donation = {
+          uuid         : session.selected.uuid,
+          is_confirmed : 1
+      };
+      return connect.put('donations', [donation], ['uuid']);
+    }
+
     function writeToJournal () {
+      var document_id = uuid();
+      var synthese = [];
 
-      // return $q.all(synthese.map(function (postingEntry) {
-        //   //   return $http.post('posting_donation/', postingEntry);
-        //   // }));
+      // Distinct inventory
+      var unique = {};
+      var distinctInventory = [];
+      $scope.donationDetails.data.forEach(function (x) {
+        if (!unique[x.inventory_uuid]) {
+          distinctInventory.push(x);
+          unique[x.inventory_uuid] = true;
+        }
+      });
+      // End Distinct inventory
 
-        //   return $q.all(synthese.map(function (postingEntry) {
-        //     // A FIXE   : L'affichage des transactions dans le journal n'est pas en ordre
-        //     // A FIXE   : Ecrire chaque 'postingEntry' dans le journal de facon singuliere
-        //     // OBJECTIF : Ecrire pour chaque inventory de la donation comme une transaction dans le journal
-        //     return $http.post('posting_donation/', postingEntry);
-        //   }));
+      // Grouping by lot
+      var inventoryByLot = [];
+      distinctInventory.forEach(function (x) {
+        var lot = [];
+        lot = $scope.donationDetails.data.filter(function (item) {
+          return item.inventory_uuid === x.inventory_uuid;
+        });
+        inventoryByLot.push({ 
+          inventory_uuid : x.inventory_uuid, 
+          purchase_price : x.unit_price,
+          currency_id    : x.currency_id,
+          quantity       : x.quantity,
+          lots : lot
+        });
+      });
+      // End Grouping by lot
 
+      inventoryByLot.forEach(function (item) {
+        var donation = { uuid : item.lots[0].uuid },
+            inventory_lots = [];
 
+        item.lots.forEach(function (lot) {
+          inventory_lots.push(lot.tracking_number);
+        });
 
+        synthese.push({
+          movement         : { document_id : document_id },
+          inventory_uuid   : item.inventory_uuid,
+          donation         : donation,
+          tracking_numbers : inventory_lots,
+          quantity         : item.quantity,
+          purchase_price   : item.purchase_price,
+          currency_id      : item.currency_id,
+          project_id       : $scope.project.id
+        });
 
+      });
 
+      return $q.all(synthese.map(function (postingEntry) {
+        // REM : Stock Account (3) in Debit and Donation Account (?) in credit
+        // OBJECTIF : Ecrire pour chaque inventory de la donation comme une transaction dans le journal
+        return $http.post('posting_donation/', postingEntry);
+      }));
 
-
-
-
-
-      var query = (session.is_direct) ? '/confirm_direct_purchase/' + session.selected.uuid : '/confirm/' + session.selected.paid_uuid;
-    	return connect.fetch('/journal' + query);
     }
 
     function paymentSuccess(result) {
@@ -102,10 +175,7 @@ angular.module('bhima.controllers')
     }
 
     function generateDocument(res) {
-
-      //$location.path('/invoice/confirm_indirect_purchase/' + session.selected.uuid);
-      var query = (session.is_direct) ? '/confirm_direct_purchase/' + session.selected.uuid : '/confirm_indirect_purchase/' + session.selected.uuid;
-      $location.path('/invoice' + query);
+      console.log('... generate document ...');
     }
 
     function handleError(error) {
@@ -117,11 +187,14 @@ angular.module('bhima.controllers')
       return currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1) + '-' + ('0' + currentDate.getDate()).slice(-2);
     }
 
-    $scope.resetSelected = function () {
+    function resetSelected() {
       session.selected = null;
-    };
+      validate.refresh(dependencies, ['donations'])
+      .then(initialise);
+    }
 
     $scope.confirmDonation = confirmDonation;
     $scope.confirmReception = confirmReception;
+    $scope.resetSelected = resetSelected;
   }
 ]);
