@@ -204,12 +204,9 @@ angular.module('bhima.controllers')
       totals.price = 0;
       totals.purchase_price = 0;
       totals.items = session.order.data.length;
-
       session.order.data.forEach(function (drug) {
-
         totals.quantity += precision.round(drug.quantity);
         totals.price += precision.round(drug.unit_price * drug.quantity);
-
         drug.totalQuantity = drug.lots.data.reduce(sum, 0);
         drug.validLots = valid(drug.lots) && drug.totalQuantity === drug.quantity;
       });
@@ -218,8 +215,12 @@ angular.module('bhima.controllers')
     function valid (lots) {
       var isDef = angular.isDefined;
       return lots.data.every(function (row) {
+        var newDate = new Date().getTime(),
+          expirate = new Date(row.expiration_date).getTime(),
+          diffDays = (parseInt((expirate-newDate)/(24*3600*1000)));
+ 
         var n = parseFloat(row.quantity);
-        return n > 0 && isDef(row.lot_number) &&
+        return n > 0 && (diffDays > 0) && isDef(row.lot_number) &&
           isDef(row.expiration_date) &&
           !!row.lot_number;
       });
