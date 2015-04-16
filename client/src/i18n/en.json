@@ -75,7 +75,7 @@
    "IS_PROFIT"              : "Profit center",
    "MODIFYING"              : "Editing",
    "NAVIGATION"             : "Browsing",
-   "NEW"                    : "New center", 
+   "NEW"                    : "New center",
    "NONE_FOUND"             : "No profit center found !",
    "NOTE"                   : "Note",
    "PARENT"                 : "Profit center Management",
@@ -473,7 +473,7 @@
    "STOCK_QTE_MAX"         : "Stock Maximum Quantity",
    "STOCK_QTE_MIN"         : "Stock Minimum Quantity",
    "STOCK_QTE_SEC"         : "Security Stock Quantity",
-   "STOCK_VALUE"           : "Stock value", 
+   "STOCK_VALUE"           : "Stock value",
    "SUMMARY"               : "Summary",
    "SUPPLIER"              : "Supplier",
    "SYMBOL"                : "Symbol",
@@ -508,7 +508,8 @@
    "WEIGHT"                : "Weight",
    "WORDING"               : "Wording",
    "WORKING_DAY"           : "Working day",
-   "ZS"                    : "Health Zone"
+   "ZS"                    : "Health Zone",
+   "DONATION_DATE"         : "Donation Date"
    },
 "CONFIG_ACCOUNTING": {
    "ADD"                  : "Create a new configuration",
@@ -677,7 +678,7 @@
 "CREDIT_NOTE": {
    "DESCRIPTION"           : "Description",
    "INVOICE_CONSUMPTION"   : "This invoice may not be canceled because there a product distribution is concerned",
-   "INVOICE_CONSUMPTION_2" : "It would cancel the distribution of products in order to cancel the sale",   
+   "INVOICE_CONSUMPTION_2" : "It would cancel the distribution of products in order to cancel the sale",
    "PLEASE_NOTE"           : "Please note that invoice has already been paid, in case of cancellation the box must remboursser to patient the sum of:",
    "SALE_DETAILS"          : "Sale Details",
    "SUBMIT"                : "Submit Credit Note",
@@ -815,6 +816,7 @@
    "ALL_DONATIONS"   : "Donations",
    "CANCEL"          : "Cancel",
    "CONFIGURE"       : "Configure Donation",
+   "CONFIRM"         : "Confirm Donation",
    "DATE"            : "Date",
    "DATE_REGISTER"   : "Register Date",
    "DONATION"        : "Donation",
@@ -1106,7 +1108,7 @@
    "AUTHORIZED_BY"          : "Comment",
    "BALANCE"                : "Balance",
    "CANCEL"                 : "Cancel",
-   "CONVENTION_INVOICE"     : "Support Invoice", 
+   "CONVENTION_INVOICE"     : "Convention Invoice",
    "COST"                   : "Cost to Debtor",
    "DATA_SUCCES"            : "Data submitted successfully",
    "DEBITOR"                : "Debtor",
@@ -1241,7 +1243,7 @@
    "AMOUNT_RECEIVE"               : "Amount Received",
    "AMOUNT_RECEIVED"              : "Amount Recieved",
    "BALANCE_DUE"                  : "Balance Due",
-   "BUYER"                        : "Buyer", 
+   "BUYER"                        : "Buyer",
    "BENEFICIARY"                  : "Beneficiary",
    "BY"                           : "By",
    "CASH_ID"                      : "Cash transaction #",
@@ -1302,7 +1304,7 @@
    "PATIENT_INVOICE"              : "Patient Invoice",
    "PCASH"                        : "Primary cash",
    "PHONE"                        : "Phone",
-   "PROOF_CASH_EXIT"              : "Proof of cash exit",   
+   "PROOF_CASH_EXIT"              : "Proof of cash exit",
    "PROOF_OF_PATIENT_CONSUMPTION" : "Proof of consumption",
    "PURCHASE_DATE"                : "Purchase Date",
    "PURCHASE_ID"                  : "Purchase No.",
@@ -1335,7 +1337,13 @@
    "TRANSACTION_PRICE"            : "Transaction Price",
    "TRANSFERED_QTE"               : "Transfered Quantity",
    "TRANSFERT"                    : "Transfert",
-   "TRANSFERT_DATE"               : "Transfer date"
+   "TRANSFERT_DATE"               : "Transfer date",
+   "YES_AUTHORIZED"               : "Yes",
+   "YES_VALID"                    : "Yes",
+   "NO_VALID"                     : "No",
+   "NO_AUTHORIZED"                : "No",
+   "IS_VALID"                     : "Validating",
+   "IS_AUTHORIZED"                : "Authorization"
    },
 "JOURNAL_VOUCHER": {
    "ADD_COMMENT"            : "Add Comment",
@@ -1450,7 +1458,7 @@
    "MODIFY"        : "Modify a Patient Group",
    "NEW"           : "New Patient Group",
    "PATIENT_GROUP" : "Patient Group",
-   "PRICE_LIST"    : "Price List", 
+   "PRICE_LIST"    : "Price List",
    "REGISTER"      : "Register a Patient Group",
    "REGISTERED"    : "Registered Patient Groups",
    "SUBSIDY"       : "Subsidy",
@@ -1664,7 +1672,7 @@
    "TRANSACTION_NUMBER"    : "Transaction #",
    "TRANSACTION_SUCCESS"   : "Transaction edits and logs saved successfully",
    "TRIAL_BALANCE"         : "Trial Balance",
-   "VERIFY_TRANSACTION"    : "Verify Transaction" 
+   "VERIFY_TRANSACTION"    : "Verify Transaction"
    },
 "PRICE_LIST": {
    "ACTIONS"          : "Actions",
@@ -2175,7 +2183,8 @@
    "FINANCE_OFFICER"   : "Finance Officer",
    "RESPONSABLE"       : "Responsable",
    "THIRD"             : "Third",
-   "WAREHOUSE_MANAGER" : "Warehouse Manager"
+   "WAREHOUSE_MANAGER" : "Warehouse Manager",
+   "STOCK_MANAGER"     : "Stock Manager"
    },
 "SNIS" : {
   "ALL"         : "All SNIS reports",
@@ -2240,7 +2249,7 @@
       "REMAINING"            : "Remaining",
       "REPORT"               : "Entry Report",
       "REQUESTED_BY"         : "Requested By",
-      "REVIEW"               : "Review Manifest",
+      "REVIEW"               : "Entry prouf",
       "SELECT"               : "Select",
       "SELECT_DEPOT"         : "Select a Store",
       "TITLE"                : "Stock Entry",
@@ -2535,7 +2544,7 @@
    "ACCOUNT_STATEMENT"         : "Account Statement",
    "ADMIN"                     : "Admin",
    "ALL_TRANSACTIONS"          : "All Transactions",
-   "AUTHORIZE_PURCHASE"        : "Authorization purchase order",                  
+   "AUTHORIZE_PURCHASE"        : "Authorization purchase order",
    "BALANCE_MENSUELLE"         : "Monthly balance report",
    "BALANCE_SHEET"             : "Balance sheet",
    "BENEFICIARY"               : "Beneficaries",
@@ -2612,7 +2621,7 @@
    "PRICE_LIST"                : "Price List",
    "PROFIT_CENTER_MGMNT"       : "Profit center management",
    "PROJECT"                   : "Projects",
-   "PURCHASE_CONFIRMATION"     : "Purchase Order Confirmation",   
+   "PURCHASE_CONFIRMATION"     : "Purchase Order Confirmation",
    "PURCHASE_ORDER"            : "Purchase Order",
    "PURCHASE_ORDER_MANAGEMENT" : "Purchase Order Management",
    "PURCHASE_ORDER_RECORDS"    : "Purchase Order Records",
@@ -2646,7 +2655,8 @@
    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions by Account",
    "UPDATE_STOCK"              : "Update stock",
    "AUXILLARY_CASH_RECORD"     : "Auxillary cash records",
-   "VALIDATE_PURCHASE"         : "Validation Purchase Order"
+   "VALIDATE_PURCHASE"         : "Validation Purchase Order",
+   "DONATION_CONFIRMATION"     : "Donation Confirm"
    },
 "TRIAL_BALANCE": {
    "ACCOUNT"          : "Account",

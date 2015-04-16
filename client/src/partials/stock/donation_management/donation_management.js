@@ -308,17 +308,6 @@ angular.module('bhima.controllers')
       var movement = processMovements(document_id);
       var synthese = [];
 
-      // lots.forEach(function (lot, index) {
-      //   synthese.push({
-      //     lot : lot,
-      //     movement : movement[index],
-      //     donation : donation,
-      //     donation_item : donation_items[index],
-      //     currency_id : $scope.enterprise.data[0].currency_id,
-      //     project_id : $scope.project.id
-      //   });
-      // });
-
       session.donation.items.forEach(function (inventoryReference) {
         var inventory_lots = [],
             sum_lots = 0;
@@ -354,19 +343,6 @@ angular.module('bhima.controllers')
           return connect.post('donation_item', donation_items);
         })
         .then(simulatePurchase)
-        .then(function () {
-          // return $q.all(synthese.map(function (postingEntry) {
-          //   return $http.post('posting_donation/', postingEntry);
-          // }));
-
-          return $q.all(synthese.map(function (postingEntry) {
-            // A FIXE   : L'affichage des transactions dans le journal n'est pas en ordre
-            // A FIXE   : Ecrire chaque 'postingEntry' dans le journal de facon singuliere
-            // OBJECTIF : Ecrire pour chaque inventory de la donation comme une transaction dans le journal
-            return $http.post('posting_donation/', postingEntry);
-          }));
-
-        })
         .then(function () {
           $location.path('/stock/donation_management/report/' + document_id);
         })
@@ -420,7 +396,8 @@ angular.module('bhima.controllers')
           uuid            : uuid(),
           donor_id        : session.config.donor.id,
           employee_id     : session.config.employee.id,
-          date            : util.sqlDate(session.config.date)
+          date            : util.sqlDate(session.config.date),
+          is_received     : 1
       };
 
       session.lots.forEach(function (lot) {
@@ -473,15 +450,15 @@ angular.module('bhima.controllers')
           purchase_date : util.sqlDate(session.config.date),
           currency_id   : $scope.project.currency_id,
           creditor_uuid : null,
-          purchaser_id  : $scope.user.data.id,
+          purchaser_id  : session.config.employee.id, //$scope.user.data.id,
           project_id    : $scope.project.currency_id,
           employee_id   : session.config.employee.id,
           note          : 'DONATION ' + session.config.donor.name + '/' + util.sqlDate(session.config.date),
           paid          : 0,
-          confirmed     : 1,
-          closed        : 1,
+          confirmed     : 0,
+          closed        : 0,
           is_donation   : 1,
-          is_direct     : 1
+          is_direct     : 0
         };
 
         simulateWritePurchaseLine(purchase)
@@ -489,14 +466,14 @@ angular.module('bhima.controllers')
         .then(updateStockPurchaseOrder(purchase.uuid))
         .catch(handleError);
       }
-      
+
     }
 
     function updateStockPurchaseOrder (purchase_uuid) {
       session.lots.forEach(function (lot) {
-        var stockEntry = { 
+        var stockEntry = {
           tracking_number     : lot.tracking_number,
-          purchase_order_uuid : purchase_uuid 
+          purchase_order_uuid : purchase_uuid
         };
         connect.put('stock',[stockEntry], ['tracking_number']);
       });
@@ -506,7 +483,7 @@ angular.module('bhima.controllers')
       return session.donation.items.reduce(priceMultiplyQuantity, 0);
     }
 
-    
+
     function simulateWritePurchaseLine(purchase) {
       return connect.post('purchase', [purchase], ['uuid']);
     }
@@ -541,7 +518,7 @@ angular.module('bhima.controllers')
       $translate('PURCHASE.WRITE_FAILED')
       .then(function (value) {
          messenger.danger(value);
-      });     
+      });
     }
 
     $scope.formatAccount = formatAccount;

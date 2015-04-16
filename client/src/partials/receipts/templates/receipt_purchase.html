@@ -1,4 +1,5 @@
 <!-- Purchase template -->
+<!--ng-class="{ 'hidden-print' : model.common.purchases[0].is_authorized == 0, 'visible-print':  model.common.purchases[0].is_authorized == 0 }"-->
 <div ng-controller="receipt.purchase">
   <div class="row customer-details">
     <div class="col-xs-12">
@@ -38,7 +39,7 @@
       <div>
         <i>{{ 'INVOICE.ISSUER' | translate }}</i>:
         <b>{{model.common.header[0].first + ' ' + model.common.header[0].last }}</b>
-      </div>        
+      </div>
       <div ng-if="model.common.purchases[0].is_direct === 0">
         <i>{{ 'INVOICE.BUYER' | translate }}</i>:
         <b>{{model.common.purchases[0].prenom + ' ' + model.common.purchases[0].name + ' '+  model.common.purchases[0].postnom}}</b>
@@ -46,10 +47,21 @@
       <div>
         <i>{{ 'INVOICE.TO_DELIVER_TO' | translate }}</i>:
         <b>{{model.common.header[0].prenom + ' ' + model.common.header[0].name + ' '+  model.common.header[0].postnom}}</b>
-      </div>           
+      </div>
+
+      <div>
+        <i>{{ 'INVOICE.IS_VALID' | translate }}</i>:
+        <b ng-show="model.common.purchases[0].is_validate === 1">{{"INVOICE.YES_VALID" | translate}}</b>
+        <b ng-show="model.common.purchases[0].is_validate != 1">{{"INVOICE.NO_VALID" | translate}}</b>
+      </div>
+
+      <div>
+        <i>{{ 'INVOICE.IS_AUTHORIZED' | translate }}</i>:
+        <b ng-show="model.common.purchases[0].is_authorized == 1">{{"INVOICE.YES_AUTHORIZED" | translate}}</b>
+        <b ng-show="model.common.purchases[0].is_authorized != 1">{{"INVOICE.NO_AUTHORIZED" | translate}}</b>
+      </div>
     </div>
   </div>
-
   <div class="row">
     <div class="col-xs-12">
       <table class="invoiceTable">
