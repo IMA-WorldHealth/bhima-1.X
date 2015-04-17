@@ -839,9 +839,11 @@
    "PROOF"           : "Bon d'entree",
    "QTE"             : "Quantité",
    "REPORT"          : "Rapport",
+   "REPORT_CONF"     : "Rapport de confirmation des donations",
    "RESPONSABLE"     : "Responsable",
    "SAVE_BY_LOT"     : "Enregistrement des lots",
    "SEE_ALL"         : "Voir toutes les donations",
+   "SELECT_TIME"     : "Sélectionner la plage de temps",
    "SUBMIT_DONATION" : "Soumettre le Don",
    "TITLE"           : "Gestion des Dons",
    "TOTAL_COST"      : "Coût Total",
@@ -2580,6 +2582,7 @@
    "DEBTOR_AGING"              : "Rapport Débiteur",
    "DEBTOR_GRP"                : "Groupe Débiteur",
    "DEPOT"                     : "Dépôt",
+   "DONATION_CONFIRMATION"     : "Confirmation Donation",   
    "DONATION_MANAGEMENT"       : "Gestion des Dons",
    "DONOR_MANAGEMENT"          : "Gestion des donateurs",
    "EDIT_BUDGET"               : "Modifier budget d'un compte",
@@ -2642,6 +2645,7 @@
    "REPORTS"                   : "Rapports",
    "REPORT_COTISATION"         : "Rapport de paiement des cotisations",
    "REPORT_DONATION"           : "Rapport Donation",
+   "REPORT_DONATION_CONFIRM"   : "Confirmation des donations",      
    "REPORT_FINANCE"            : "Rapport Financier",
    "REPORT_SALARY"             : "Rapport de paiement des salaires",
    "REPORT_TAXES"              : "Rapport de paiement des taxes",
@@ -2666,8 +2670,7 @@
    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions par Compte",
    "UPDATE_STOCK"              : "Mettre à Jour les Stocks",
    "AUXILLARY_CASH_RECORD"     : "Historique caisse auxilliaire",
-   "VALIDATE_PURCHASE"         : "Validation Commande Achat",
-   "DONATION_CONFIRMATION"     : "Confirmation Donation"
+   "VALIDATE_PURCHASE"         : "Validation Commande Achat"
    },
 "TRIAL_BALANCE": {
    "ACCOUNT"          : "Compte",

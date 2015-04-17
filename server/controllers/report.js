@@ -806,6 +806,27 @@ function purchaseOrdeRecords(params) {
   return db.exec(sql);
 }
 
+
+function donation_confirmationRecords(params) {
+  var p = querystring.parse(params);
+
+  var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
+      _end =  sanitize.escape(util.toMysqlDate(new Date(p.end)));
+
+  var sql = 
+    'SELECT `donations`.`uuid`, `donations`.`date`, `user`.`first`, `user`.`last`, `employee`.`prenom`, ' +  
+    '`employee`.`name`, `employee`.`postnom`, `donor`.`name` AS `donor_name` ' +
+    'FROM `donations` ' + 
+    'JOIN `user` ON `user`.`id` = `donations`.`confirmed_by` ' +
+    'JOIN `donor` ON `donor`.`id` = `donations`.`donor_id` ' +
+    'JOIN `employee` ON `employee`.`id` = `donations`.`employee_id` ' +
+    'WHERE DATE(`donations`.`date`) BETWEEN DATE(' + _start + ') AND DATE(' + _end + ') ' +
+    'AND `donations`.`is_confirmed` = 1 ORDER BY `donations`.`date` DESC ;';
+
+  return db.exec(sql);
+}
+
+
 function generate(request, params, done) {
   /*summary
   *   Route request for reports, if no report matches given request, return null
@@ -836,7 +857,8 @@ function generate(request, params, done) {
     'balance_mensuelle'     : balanceMensuelle,
     'cashAuxillaryRecords'  : cashAuxillaryRecords,
     'purchase_order'        : purchase_order,
-    'purchase_records'      : purchaseOrdeRecords
+    'purchase_records'      : purchaseOrdeRecords,
+    'donation_confirmation' : donation_confirmationRecords
     //'balance_sheet'         : require('./reports/balance_sheet')
   };
 
