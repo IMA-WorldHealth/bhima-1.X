@@ -15,7 +15,7 @@ angular.module('bhima.controllers')
       query : {
         identifier : 'uuid',
         tables : {
-          donations     : {columns : ['uuid', 'date', 'is_received']},
+          donations     : {columns : ['uuid', 'date', 'is_received', 'confirmed_by']},
           donor         : {columns : ['id', 'name']},
           employee      : {columns : ['prenom', 'name::nom_employee', 'postnom']}
         },
@@ -100,7 +100,8 @@ angular.module('bhima.controllers')
     function updateDonation () {
       var donation = {
           uuid         : session.selected.uuid,
-          is_confirmed : 1
+          is_confirmed : 1,
+          confirmed_by : $scope.idUser
       };
       return connect.put('donations', [donation], ['uuid']);
     }
@@ -175,7 +176,7 @@ angular.module('bhima.controllers')
     }
 
     function generateDocument(res) {
-      console.log('... generate document ...');
+      $location.path('/invoice/confirm_donation/' + session.selected.uuid);   
     }
 
     function handleError(error) {
