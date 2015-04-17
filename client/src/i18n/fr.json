@@ -816,7 +816,14 @@
    "ALL_DONATIONS"   : "Les Donations",
    "CANCEL"          : "Annuler",
    "CONFIGURE"       : "Configurer la donation",
-   "CONFIRM"         : "Confirm Donation",
+   "CONFIRM" : {
+      "TITLE" : "Confirmation Donation",
+      "FILTER" : "Filtrer",
+      "NOT_FOUND" : "Aucune donation trouvee",
+      "CONFIRM_RECEPTION" : "Confirmation reception Donation",
+      "DETAILS"           : "Détaille sur la confirmation de la donation",
+      "CONFIRM_RECEPTION_OF"  : "Confirmer la réception"
+      },   
    "DATE"            : "Date",
    "DATE_REGISTER"   : "Date d'enregistrement",
    "DONATION"        : "Donation",
@@ -839,16 +846,7 @@
    "TITLE"           : "Gestion des Dons",
    "TOTAL_COST"      : "Coût Total",
    "TRACKING_NB"     : "N° Tracking",
-   "UUID"            : "Code",
-   "CONFIRM" : {
-      "TITLE" : "Confirmation Donation",
-      "FILTER" : "Filtrer",
-      "NOT_FOUND" : "Aucune donation trouvee",
-      "CONFIRM_RECEPTION" : "Confirmation reception Doination",
-      "DETAILS"           : "Details Confirmation Donation",
-      "CONFIRM_RECEPTION_OF"  : "Confirmer Reception"
-
-   }
+   "UUID"            : "Code"
    },
 "DONOR_MANAGEMENT": {
    "ADD"            : "Ajouter un donateur",
@@ -1283,8 +1281,11 @@
    "DISTRIBUTION_SERVICE"         : "Distribution Service",
    "DOCUMENT_NUMBER"              : "Numéro du document",
    "DOCUMENT_REF"                 : "Référence vente",
+   "DONATION_CONFIRMATION"        : "Confirmation de la donation",
+   "DONOR"                        : "Donateur",
    "EMPLOYEE_CODE"                : "Code Employé",
    "EMPLOYEE_CONTACT"             : "Contact Employé",
+   "EMPLOYEE_NAME"                : "Nom de l'employé",
    "ENTERPRISE_TAX_PAYMENT"       : "Paiement Taxes Entreprise",
    "ENTRY_DATE"                   : "Date d'entré",
    "EXPIRATION_DATE"              : "Date expiration",
@@ -1927,7 +1928,8 @@
    "ID_BON_SORTI"       : "ID Bon de sortie",
    "ID_COMMANDE_ACHAT"  : "ID Commande",
    "LABEL"              : "Libelle",
-   "LETTER"             : "Lettre"
+   "LETTER"             : "Lettre",
+   "QUANTITY"           : "Quantité"
    },
 "RENEWAL": {
    "AGE"             : "Age",

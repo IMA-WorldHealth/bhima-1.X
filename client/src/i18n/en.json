@@ -816,7 +816,14 @@
    "ALL_DONATIONS"   : "Donations",
    "CANCEL"          : "Cancel",
    "CONFIGURE"       : "Configure Donation",
-   "CONFIRM"         : "Confirm Donation",
+   "CONFIRM" : {
+      "TITLE" : "Confirm Donation",
+      "FILTER" : "Filter",
+      "NOT_FOUND" : "No donation found",
+      "CONFIRM_RECEPTION" : "Confirm entry Donation",
+      "DETAILS"           : "Details on the confirmation of the donation",
+      "CONFIRM_RECEPTION_OF"  : "Confirm receipt"
+      },    
    "DATE"            : "Date",
    "DATE_REGISTER"   : "Register Date",
    "DONATION"        : "Donation",
@@ -1274,8 +1281,11 @@
    "DISTRIBUTION_SERVICE"         : "Service Distribution",
    "DOCUMENT_NUMBER"              : "Document number",
    "DOCUMENT_REF"                 : "Document Ref.",
+   "DONATION_CONFIRMATION"        : "Donation confirmation",
+   "DONOR"                        : "Donor",
    "EMPLOYEE_CODE"                : "Employee Code",
    "EMPLOYEE_CONTACT"             : "Employee Ref.",
+   "EMPLOYEE_NAME"                : "Employee Name",   
    "ENTERPRISE_TAX_PAYMENT"       : "Entreprise Taxes Payment",
    "ENTRY_DATE"                   : "Entry date",
    "EXPIRATION_DATE"              : "Expiration date",
@@ -1918,7 +1928,8 @@
    "ID_BON_SORTI"       : "ID Bon de sortie",
    "ID_COMMANDE_ACHAT"  : "ID Command",
    "LABEL"              : "Label",
-   "LETTER"             : "Letter"
+   "LETTER"             : "Letter",
+   "QUANTITY"           : "Quantity"
    },
 "RENEWAL": {
    "AGE"             : "Age",
