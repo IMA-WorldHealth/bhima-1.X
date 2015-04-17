@@ -107,7 +107,10 @@ angular.module('bhima.controllers')
       },
       'cash_return' : {
         url : '/partials/receipts/templates/receipt_cash_return.html'
-      }
+      },
+      'confirm_donation' : {
+        url : '/partials/receipts/templates/receipt_confirm_donation.html'
+      }      
     };
 
     function convert (value, currency_id, date) {
