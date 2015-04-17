@@ -816,7 +816,14 @@
    "ALL_DONATIONS"   : "Donations",
    "CANCEL"          : "Cancel",
    "CONFIGURE"       : "Configure Donation",
-   "CONFIRM"         : "Confirm Donation",
+   "CONFIRM" : {
+      "TITLE" : "Confirm Donation",
+      "FILTER" : "Filter",
+      "NOT_FOUND" : "No donation found",
+      "CONFIRM_RECEPTION" : "Confirm entry Donation",
+      "DETAILS"           : "Details on the confirmation of the donation",
+      "CONFIRM_RECEPTION_OF"  : "Confirm receipt"
+      },    
    "DATE"            : "Date",
    "DATE_REGISTER"   : "Register Date",
    "DONATION"        : "Donation",
@@ -832,9 +839,11 @@
    "PROOF"           : "Proof of registering in Stock",
    "QTE"             : "Quantity",
    "REPORT"          : "Report",
+   "REPORT_CONF"          : "Report Confirmation Donation",
    "RESPONSABLE"     : "Responsable",
    "SAVE_BY_LOT"     : "Register by lots",
    "SEE_ALL"         : "See all donations",
+   "SELECT_TIME"     : "Select the time range",
    "SUBMIT_DONATION" : "Submit donation",
    "TITLE"           : "Donation Management",
    "TOTAL_COST"      : "Total Cost",
@@ -1274,8 +1283,11 @@
    "DISTRIBUTION_SERVICE"         : "Service Distribution",
    "DOCUMENT_NUMBER"              : "Document number",
    "DOCUMENT_REF"                 : "Document Ref.",
+   "DONATION_CONFIRMATION"        : "Donation confirmation",
+   "DONOR"                        : "Donor",
    "EMPLOYEE_CODE"                : "Employee Code",
    "EMPLOYEE_CONTACT"             : "Employee Ref.",
+   "EMPLOYEE_NAME"                : "Employee Name",   
    "ENTERPRISE_TAX_PAYMENT"       : "Entreprise Taxes Payment",
    "ENTRY_DATE"                   : "Entry date",
    "EXPIRATION_DATE"              : "Expiration date",
@@ -1918,7 +1930,8 @@
    "ID_BON_SORTI"       : "ID Bon de sortie",
    "ID_COMMANDE_ACHAT"  : "ID Command",
    "LABEL"              : "Label",
-   "LETTER"             : "Letter"
+   "LETTER"             : "Letter",
+   "QUANTITY"           : "Quantity"
    },
 "RENEWAL": {
    "AGE"             : "Age",
@@ -2569,6 +2582,7 @@
    "DEBTOR_AGING"              : "Debtor Aging",
    "DEBTOR_GRP"                : "Debtor Group",
    "DEPOT"                     : "Store",
+   "DONATION_CONFIRMATION"     : "Donation Confirm",
    "DONATION_MANAGEMENT"       : "Donation Management",
    "DONOR_MANAGEMENT"          : "Donor management",
    "EDIT_BUDGET"               : "Edit Account Budget",
@@ -2631,6 +2645,7 @@
    "REPORTS"                   : "Reports",
    "REPORT_COTISATION"         : "Reports cotisations payment",
    "REPORT_DONATION"           : "Donation report",
+   "REPORT_DONATION_CONFIRM"   : "Report Donation Confirmation",   
    "REPORT_FINANCE"            : "Finance Report",
    "REPORT_SALARY"             : "Report Salary Payment",
    "REPORT_TAXES"              : "Report of Taxes Payment",
@@ -2655,8 +2670,7 @@
    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions by Account",
    "UPDATE_STOCK"              : "Update stock",
    "AUXILLARY_CASH_RECORD"     : "Auxillary cash records",
-   "VALIDATE_PURCHASE"         : "Validation Purchase Order",
-   "DONATION_CONFIRMATION"     : "Donation Confirm"
+   "VALIDATE_PURCHASE"         : "Validation Purchase Order"
    },
 "TRIAL_BALANCE": {
    "ACCOUNT"          : "Account",
