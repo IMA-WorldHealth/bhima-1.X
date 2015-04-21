@@ -359,7 +359,7 @@ angular.module('bhima.controllers')
               columns : ['rubric_id', 'payable']
             },
             'rubric' : {
-              columns : ['id', 'abbr', 'label', 'is_advance', 'is_percent', 'is_discount', 'value']
+              columns : ['id', 'abbr', 'label', 'is_advance', 'is_percent', 'is_discount', 'is_social_care', 'value']
             }
           },
           join : [
@@ -646,19 +646,43 @@ angular.module('bhima.controllers')
         var tc_records = [];
         var cc_records = [];
         var hollydaysData = [];
-        var somRub = 0, SomTax = 0, somCot = 0;
+
+        var somRub = 0, SomTax = 0, somCot = 0, somPrime = 0;
+
+        rubric_config_list.forEach(function (rub) {
+          var change = elmt[rub.abbr];
+          if(!rub.is_social_care){
+            somPrime += elmt[rub.abbr]; 
+          }
+        });
+/*
+        cotisations.forEach(function (cotisation) {
+          var dataCotisations = (cotisation.is_percent) ?
+            ((row.daily_salary * (row.working_day + row.coefhl + row.offdays)) * cotisation.value) / 100 :
+            cotisation.value;
+          if (cotisation.is_employee) {employee_cotisation += dataCotisations;}
+          row[cotisation.abbr] = dataCotisations;
+        });
+*/
 
         cotisation_config_list.forEach(function (cotisation) {
+
+          if(cotisation.is_percent){
+            var primePercentCotisation = ((somPrime * cotisation.value) / 100);
+          }
+          elmt[cotisation.abbr] += primePercentCotisation;
           if(cotisation.is_employee){
             somCot += elmt[cotisation.abbr];
           }
         });
-
+        
         tax_config_list.forEach(function (tax) {
           if(tax.is_employee){
             SomTax += elmt[tax.abbr];
           }
         });
+
+        elmt.net_before_taxe += somPrime;
 
         elmt.net_after_taxe = elmt.net_before_taxe - somCot - SomTax;
 

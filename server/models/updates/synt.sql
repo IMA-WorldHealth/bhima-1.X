@@ -5980,3 +5980,15 @@ USE bhima;
 
 ALTER TABLE `purchase`
 ADD `confirmed_by` int unsigned not null;
+
+-- Updates rubric structure
+--
+-- ADD 'is_social_care' field
+--
+-- Date: 2015-04-17
+-- By: Chris LOMAME
+
+USE bhima;
+
+ALTER TABLE `rubric`
+ADD `is_social_care` BOOLEAN NULL;
