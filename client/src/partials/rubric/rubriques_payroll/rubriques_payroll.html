@@ -90,6 +90,13 @@
           </div>
 
           <div class="form-group">
+            <label class="control-label col-xs-4">{{ "RUBRIC_PAYROLL.IS_SOCIAL_CARE" | translate }}</label>
+            <div class="col-xs-7">
+              <input type="checkbox" ng-model="session.new.is_social_care" class="form-bhima">
+            </div>
+          </div>
+
+          <div class="form-group">
             <label class="control-label col-xs-4">{{ "RUBRIC_PAYROLL.IS_PERCENT" | translate }}</label>
             <div class="col-xs-7">
               <input type="checkbox" ng-model="session.new.is_percent" class="form-bhima">
@@ -139,6 +146,13 @@
             <label class="control-label col-xs-4">{{ "RUBRIC_PAYROLL.IS_ADVANCE" | translate }}</label>
             <div class="col-xs-7">
               <input type="checkbox" ng-model="session.edit.is_advance" class="form-bhima" ng-checked="session.edit.is_advance" ng-change="status()">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4">{{ "RUBRIC_PAYROLL.IS_SOCIAL_CARE" | translate }}</label>
+            <div class="col-xs-7">
+              <input type="checkbox" ng-model="session.edit.is_social_care" class="form-bhima" ng-checked="session.edit.is_social_care" ng-change="status()">
             </div>
           </div>
 
