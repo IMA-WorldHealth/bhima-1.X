@@ -5981,6 +5981,22 @@ USE bhima;
 ALTER TABLE `purchase`
 ADD `confirmed_by` int unsigned not null;
 
+
+
+-- Updates donations structure
+--
+-- ADD 'confirmed_by' field
+ALTER TABLE `donations`
+ADD `confirmed_by` int unsigned not null;
+
+
+-- Title : ADDING UNIT ENTRIES
+-- By    : Chris LOMAME
+-- Date  : 17 avr 2015
+INSERT INTO `unit` VALUES
+(102,'Report Donation Confirmation','TREE.REPORT_DONATION_CONFIRM','',10,0,'/partials/reports/donation_confirmation/','reports/donation_confirmation/');
+
+
 -- Updates rubric structure
 --
 -- ADD 'is_social_care' field
