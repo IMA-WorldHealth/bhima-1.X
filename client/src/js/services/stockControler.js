@@ -238,7 +238,7 @@ angular.module('bhima.services')
         .then(function (s){
             getMonthlyConsumption(uuid)
             .then(function (cm){
-                var stock_month = s / cm;
+                var stock_month = (cm > 0) ? s / cm : 0;
                 def.resolve(stock_month);
             });
         });
