@@ -303,9 +303,7 @@ angular.module('bhima.controllers')
         tranches[0].currency_id,
         util.sqlDate(new Date())
       );
-
       var montant_annuel = net_imposable * 12;
-
       var ind = -1;
       for(var i = 0; i< tranches.length; i++) {
         if(montant_annuel > tranches[i].tranche_annuelle_debut && montant_annuel < tranches[i].tranche_annuelle_fin) {
@@ -655,34 +653,30 @@ angular.module('bhima.controllers')
             somPrime += elmt[rub.abbr]; 
           }
         });
-/*
-        cotisations.forEach(function (cotisation) {
-          var dataCotisations = (cotisation.is_percent) ?
-            ((row.daily_salary * (row.working_day + row.coefhl + row.offdays)) * cotisation.value) / 100 :
-            cotisation.value;
-          if (cotisation.is_employee) {employee_cotisation += dataCotisations;}
-          row[cotisation.abbr] = dataCotisations;
-        });
-*/
 
         cotisation_config_list.forEach(function (cotisation) {
 
           if(cotisation.is_percent){
             var primePercentCotisation = ((somPrime * cotisation.value) / 100);
+            elmt[cotisation.abbr] += primePercentCotisation;
           }
-          elmt[cotisation.abbr] += primePercentCotisation;
+          
           if(cotisation.is_employee){
             somCot += elmt[cotisation.abbr];
           }
         });
+
+        elmt.net_before_taxe += somPrime;
+        var newIPR = getIPR(elmt);
         
         tax_config_list.forEach(function (tax) {
+          if(tax.is_ipr){
+            elmt[tax.abbr] = newIPR;
+          }
           if(tax.is_employee){
             SomTax += elmt[tax.abbr];
           }
         });
-
-        elmt.net_before_taxe += somPrime;
 
         elmt.net_after_taxe = elmt.net_before_taxe - somCot - SomTax;
 
@@ -691,7 +685,10 @@ angular.module('bhima.controllers')
           if(rub.is_discount){
             change *= -1;
           }
-          somRub += change;
+
+          if(rub.is_social_care){
+            somRub += change;  
+          }
         });
         elmt.net_salary = elmt.net_after_taxe + somRub - (elmt.daily_salary * elmt.off_day) + elmt.offdays_cost;
 
@@ -775,41 +772,40 @@ angular.module('bhima.controllers')
     }
 
     function refresh(row){
-      var totaldays = row.working_day + row.hollydays + row.offdays;
-
-      //row.working_day is already used, this dangerous
       if(!row.working_day){
         row.working_day = 0;
       }
+      
+      var totaldays = row.working_day + row.hollydays + row.offdays;
+
 
       var taxes, rubrics, cotisations;
       var employee_cotisation;
 
-      //row.working_day is defined, why this test?
-      if ((row.working_day) && (totaldays <= row.max_day)){
+      if (totaldays <= row.max_day){
         taxes = session.model.tax_config.data;
         rubrics = session.model.rubric_config.data;
         cotisations = session.model.cotisation_config.data;
 
         rubrics.forEach(function (rub) {
-          var dataRubric = (rub.is_percent) ?
-          ((row.daily_salary * (row.working_day + row.coefhl + row.offdays)) * rub.value) / 100 : rub.value;
-          row[rub.abbr] = dataRubric;
+          if(rub.is_percent){
+            row[rub.abbr] = (((row.daily_salary * (row.working_day + row.coefhl + row.offdays)) * rub.value) / 100);
+          }
         });
 
         taxes.forEach(function (tax) {
-          var dataTaxes = (tax.is_percent) ?
-          ((row.daily_salary * (row.working_day + row.coefhl + row.offdays)) * tax.value) / 100 : tax.value;
-          row[tax.abbr] = dataTaxes;
+          if(tax.is_percent){
+            row[tax.abbr] = (((row.daily_salary * (row.working_day + row.coefhl + row.offdays)) * tax.value) / 100);
+          }
         });
 
         employee_cotisation = 0;
 
         cotisations.forEach(function (cotisation) {
-          var dataCotisations = (cotisation.is_percent) ?
-          ((row.daily_salary * (row.working_day + row.coefhl + row.offdays)) * cotisation.value) / 100 : cotisation.value;
-          if (cotisation.is_employee) { employee_cotisation += dataCotisations; }
-          row[cotisation.abbr] = dataCotisations;
+          if(cotisation.is_percent){
+            row[cotisation.abbr] = (((row.daily_salary * (row.working_day + row.coefhl + row.offdays)) * cotisation.value) / 100);
+          }
+
         });
 
         row.net_before_taxe = ((row.working_day + row.coefhl + row.offdays) * row.daily_salary);
@@ -825,30 +821,27 @@ angular.module('bhima.controllers')
         cotisations = session.model.cotisation_config.data;
 
         rubrics.forEach(function (rub) {
-          var dataRubric = (rub.is_percent) ?
-          ((row.daily_salary * (row.working_day + row.coefhl + row.offdays)) * rub.value) / 100 : rub.value;
-          row[rub.abbr] = dataRubric;
+          if(rub.is_percent){
+            row[rub.abbr] = (((row.daily_salary * (row.working_day + row.coefhl + row.offdays)) * rub.value) / 100);
+          }
         });
 
         taxes.forEach(function (tax) {
-          var dataTaxes = (tax.is_percent) ?
-          ((row.daily_salary * (row.working_day + row.coefhl + row.offdays)) * tax.value) / 100 : tax.value;
-          row[tax.abbr] = dataTaxes;
+          if(tax.is_percent){
+            row[tax.abbr] = (((row.daily_salary * (row.working_day + row.coefhl + row.offdays)) * tax.value) / 100);
+          }
+
         });
 
         employee_cotisation = 0;
 
         cotisations.forEach(function (cotisation) {
-          var dataCotisations = (cotisation.is_percent) ?
-            ((row.daily_salary * (row.working_day + row.coefhl + row.offdays)) * cotisation.value) / 100 :
-            cotisation.value;
-          if (cotisation.is_employee) {employee_cotisation += dataCotisations;}
-          row[cotisation.abbr] = dataCotisations;
+          if(cotisation.is_percent){
+            row[cotisation.abbr] = (((row.daily_salary * (row.working_day + row.coefhl + row.offdays)) * cotisation.value) / 100);
+          }          
         });
 
         row.net_before_taxe = ((row.working_day + row.coefhl + row.offdays) * row.daily_salary);
-        row.IPR1 = getIPR(row);
-        getHollyDayCount(row); //why?
       }
     }
 
