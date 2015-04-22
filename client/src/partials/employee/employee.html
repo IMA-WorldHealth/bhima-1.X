@@ -42,7 +42,7 @@
           </thead>
           <tbody>
             <tr
-              ng-repeat="item in employee.data"
+              ng-repeat="item in employee.data | orderBy:'name'"
               ng-class="{'rowSelected' : session.employee.id == item.id}">
               <td>
                 <span ng-if="!item.code_employee" class="glyphicon glyphicon-minus-sign"></span>{{ item.code_employee }}
@@ -153,7 +153,7 @@
               <div class="form-group">
                 <label class="col-xs-3 control-label required">{{ "EMPLOYEE.SERVICE" | translate }}:</label>
                 <div class="col-xs-9">
-                  <select class="form-bhima" ng-model="session.employee.service_id" ng-options="sv.id as formatService(sv) for sv in services.data">
+                  <select class="form-bhima" ng-model="session.employee.service_id" ng-options="sv.id as formatService(sv) for sv in services.data | orderBy:'name'">
                     <option value="" disabled="disabled">--- {{ "SELECT.EMPLOYEE_SERVICE" | translate }} ---</option>
                   </select>
                 </div>
@@ -162,7 +162,7 @@
               <div class="form-group">
                 <label class="col-xs-3 control-label required">{{ "EMPLOYEE.GRADE" | translate }}:</label>
                 <div class="col-xs-9">
-                  <select class="form-bhima" ng-model="session.employee.grade_id" ng-options="gr.uuid as formatGrade(gr) for gr in grade.data" required>
+                  <select class="form-bhima" ng-model="session.employee.grade_id" ng-options="gr.uuid as formatGrade(gr) for gr in grade.data| orderBy:'text'" required>
                     <option value="" disabled="disabled">--- {{ "SELECT.EMPLOYEE_GRADE" | translate }} ---</option>
                   </select>
                 </div>
@@ -171,7 +171,7 @@
               <div class="form-group">
                 <label class="col-xs-3 control-label required">{{ "EMPLOYEE.FUNCTION" | translate }}:</label>
                 <div class="col-xs-9">
-                  <select class="form-bhima" ng-model="session.employee.fonction_id" ng-options="fx.id as fx.fonction_txt for fx in fonction.data" required>
+                  <select class="form-bhima" ng-model="session.employee.fonction_id" ng-options="fx.id as fx.fonction_txt for fx in fonction.data | orderBy:'fonction_txt'" required>
                     <option value="" disabled="disabled">--- {{ "SELECT.EMPLOYEE_FUNCTION" | translate }} ---</option>
                   </select>
                 </div>
@@ -180,7 +180,7 @@
               <div class="form-group">
                 <label class="col-xs-3 control-label required">{{ "EMPLOYEE.CREDITOR_GROUP" | translate }}:</label>
                 <div class="col-xs-9">
-                  <select class="form-bhima" ng-model="session.employee.creditor_group_uuid" ng-options="group.uuid as group.name for group in creditorGroup.data" required>
+                  <select class="form-bhima" ng-model="session.employee.creditor_group_uuid" ng-options="group.uuid as group.name for group in creditorGroup.data | orderBy:'name'" required>
                     <option value="" disabled="disabled">--- {{ "SELECT.CREDITOR_GROUP" | translate }} ---</option>
                   </select>
                 </div>
@@ -189,7 +189,7 @@
               <div class="form-group">
                 <label class="col-xs-3 control-label required">{{ "EMPLOYEE.DEBITOR_GROUP" | translate }}:</label>
                 <div class="col-xs-9">
-                  <select class="form-bhima" ng-model="session.employee.debitor_group_uuid" ng-options="group.uuid as group.name for group in debtorGroup.data" required>
+                  <select class="form-bhima" ng-model="session.employee.debitor_group_uuid" ng-options="group.uuid as group.name for group in debtorGroup.data | orderBy:'name'" required>
                     <option value="" disabled="disabled">--- {{ "SELECT.DEBITOR_GROUP" | translate }} ---</option>
                   </select>
                 </div>
