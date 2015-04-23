@@ -816,7 +816,14 @@
    "ALL_DONATIONS"   : "Les Donations",
    "CANCEL"          : "Annuler",
    "CONFIGURE"       : "Configurer la donation",
-   "CONFIRM"         : "Confirm Donation",
+   "CONFIRM" : {
+      "TITLE" : "Confirmation Donation",
+      "FILTER" : "Filtrer",
+      "NOT_FOUND" : "Aucune donation trouvee",
+      "CONFIRM_RECEPTION" : "Confirmation reception Donation",
+      "DETAILS"           : "Détaille sur la confirmation de la donation",
+      "CONFIRM_RECEPTION_OF"  : "Confirmer la réception"
+      },   
    "DATE"            : "Date",
    "DATE_REGISTER"   : "Date d'enregistrement",
    "DONATION"        : "Donation",
@@ -832,23 +839,16 @@
    "PROOF"           : "Bon d'entree",
    "QTE"             : "Quantité",
    "REPORT"          : "Rapport",
+   "REPORT_CONF"     : "Rapport de confirmation des donations",
    "RESPONSABLE"     : "Responsable",
    "SAVE_BY_LOT"     : "Enregistrement des lots",
    "SEE_ALL"         : "Voir toutes les donations",
+   "SELECT_TIME"     : "Sélectionner la plage de temps",
    "SUBMIT_DONATION" : "Soumettre le Don",
    "TITLE"           : "Gestion des Dons",
    "TOTAL_COST"      : "Coût Total",
    "TRACKING_NB"     : "N° Tracking",
-   "UUID"            : "Code",
-   "CONFIRM" : {
-      "TITLE" : "Confirmation Donation",
-      "FILTER" : "Filtrer",
-      "NOT_FOUND" : "Aucune donation trouvee",
-      "CONFIRM_RECEPTION" : "Confirmation reception Doination",
-      "DETAILS"           : "Details Confirmation Donation",
-      "CONFIRM_RECEPTION_OF"  : "Confirmer Reception"
-
-   }
+   "UUID"            : "Code"
    },
 "DONOR_MANAGEMENT": {
    "ADD"            : "Ajouter un donateur",
@@ -1283,8 +1283,11 @@
    "DISTRIBUTION_SERVICE"         : "Distribution Service",
    "DOCUMENT_NUMBER"              : "Numéro du document",
    "DOCUMENT_REF"                 : "Référence vente",
+   "DONATION_CONFIRMATION"        : "Confirmation de la donation",
+   "DONOR"                        : "Donateur",
    "EMPLOYEE_CODE"                : "Code Employé",
    "EMPLOYEE_CONTACT"             : "Contact Employé",
+   "EMPLOYEE_NAME"                : "Nom de l'employé",
    "ENTERPRISE_TAX_PAYMENT"       : "Paiement Taxes Entreprise",
    "ENTRY_DATE"                   : "Date d'entré",
    "EXPIRATION_DATE"              : "Date expiration",
@@ -1927,7 +1930,8 @@
    "ID_BON_SORTI"       : "ID Bon de sortie",
    "ID_COMMANDE_ACHAT"  : "ID Commande",
    "LABEL"              : "Libelle",
-   "LETTER"             : "Lettre"
+   "LETTER"             : "Lettre",
+   "QUANTITY"           : "Quantité"
    },
 "RENEWAL": {
    "AGE"             : "Age",
@@ -2578,6 +2582,7 @@
    "DEBTOR_AGING"              : "Rapport Débiteur",
    "DEBTOR_GRP"                : "Groupe Débiteur",
    "DEPOT"                     : "Dépôt",
+   "DONATION_CONFIRMATION"     : "Confirmation Donation",   
    "DONATION_MANAGEMENT"       : "Gestion des Dons",
    "DONOR_MANAGEMENT"          : "Gestion des donateurs",
    "EDIT_BUDGET"               : "Modifier budget d'un compte",
@@ -2640,6 +2645,7 @@
    "REPORTS"                   : "Rapports",
    "REPORT_COTISATION"         : "Rapport de paiement des cotisations",
    "REPORT_DONATION"           : "Rapport Donation",
+   "REPORT_DONATION_CONFIRM"   : "Confirmation des donations",      
    "REPORT_FINANCE"            : "Rapport Financier",
    "REPORT_SALARY"             : "Rapport de paiement des salaires",
    "REPORT_TAXES"              : "Rapport de paiement des taxes",
@@ -2664,8 +2670,7 @@
    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions par Compte",
    "UPDATE_STOCK"              : "Mettre à Jour les Stocks",
    "AUXILLARY_CASH_RECORD"     : "Historique caisse auxilliaire",
-   "VALIDATE_PURCHASE"         : "Validation Commande Achat",
-   "DONATION_CONFIRMATION"     : "Confirmation Donation"
+   "VALIDATE_PURCHASE"         : "Validation Commande Achat"
    },
 "TRIAL_BALANCE": {
    "ACCOUNT"          : "Compte",

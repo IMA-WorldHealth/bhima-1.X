@@ -4,7 +4,8 @@ angular.module('bhima.controllers')
   '$translate',
   'appstate',
   'validate',
-  function ($scope, $translate, appstate, validate) {
+  'util',
+  function ($scope, $translate, appstate, validate, util) {
     
     var dependencies = {},
         state = $scope.state,
@@ -42,7 +43,8 @@ angular.module('bhima.controllers')
           'stock.purchase_order_uuid=purchase.uuid',
           'purchase_item.purchase_uuid=purchase.uuid',
           'purchase_item.inventory_uuid=inventory.uuid'
-        ]
+        ],
+        orderby : ['donations.date', 'donor.name', 'inventory.text'],
       }
     };
 
@@ -82,11 +84,13 @@ angular.module('bhima.controllers')
 
     function generate () {
       $scope.state = 'generate';
+      session.dateFrom = util.sqlDate(session.dateFrom);
+      session.dateTo = util.sqlDate(session.dateTo);
 
       if (session.donor_id) {
-        dependencies.donation.query.where = ['donor.id=' + session.donor_id,'AND','purchase.is_donation=1'];
+        dependencies.donation.query.where = ['donor.id=' + session.donor_id,'AND','purchase.is_donation=1','AND','donations.date>=' + session.dateFrom,'AND','donations.date<=' + session.dateTo];
       } else {
-        delete dependencies.donation.query.where;
+        dependencies.donation.query.where = ['donations.date>=' + session.dateFrom,'AND','donations.date<=' + session.dateTo];
       }
 
       validate.refresh(dependencies, ['donation'])
