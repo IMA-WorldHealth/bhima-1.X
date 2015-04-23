@@ -3,15 +3,22 @@
 </header>
 
 <nav>
-  <div class="pull-left ">
-    <input type="search" ng-model="flags.search" placeholder="Filter Debitor" class="form-bhima" size="25">
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "PATIENT_GRP_ASSIGNMENT.TITLE" | translate }}</li>
+    </ol>
   </div>
+
+  <!-- FIXME not usefull input zone -->
+  <!-- <div class="pull-left ">
+    <input type="search" ng-model="flags.search" placeholder="Filter Debitor" class="form-bhima" size="25">
+  </div> -->
 </nav>
 
 <main>
-  <div class="row">
+  <div class="row margin-top-10">
     <div class="col-xs-7">
-
       <div find-patient data-on-search-complete="loadPatientGroups"></div>
     </div> 
   </div>

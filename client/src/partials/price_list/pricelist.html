@@ -3,9 +3,18 @@
 </header>
 
 <nav>
-  <button class="btn btn-sm btn-default" ng-click="addList()">
-    <span class="glyphicon glyphicon-plus-sign"></span> {{ "PRICE_LIST.NEW" | translate }}
-  </button>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "PRICE_LIST.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right">
+    <button class="btn btn-sm btn-default" ng-click="addList()">
+      <span class="glyphicon glyphicon-plus-sign"></span> {{ "PRICE_LIST.NEW" | translate }}
+    </button>
+  </div>
 </nav>
 
 <main>
@@ -23,11 +32,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-class="{'selected-primary' : session.selected===list}" ng-repeat="list in model.priceList.data">
+            <tr ng-class="{'selected-primary' : session.selected===list}" ng-repeat="list in model.priceList.data | orderBy:'title'">
               <td> {{ list.title }} </td>
-              <td><a ng-click="editMeta(list)" ><i class="glyphicon glyphicon-pencil"></i></a></td>
-              <td><a ng-click="editItems(list)"><i class="glyphicon glyphicon-cog"></i></a></td>
-              <td><a ng-click="removeList(list)" ><i class="glyphicon glyphicon-trash"></i></a></td>
+              <td><a ng-click="editMeta(list)"><i class="glyphicon glyphicon-pencil white"></i></a></td>
+              <td><a ng-click="editItems(list)"><i class="glyphicon glyphicon-cog white"></i></a></td>
+              <td><a ng-click="removeList(list)" ><i class="glyphicon glyphicon-trash white"></i></a></td>
             </tr>
 
             <tr ng-if="model.priceList.data.length===0">

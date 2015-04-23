@@ -3,11 +3,17 @@
 </header>
 
 <nav>
-  <a class="btn btn-default btn-sm" ng-click="setOp('Add')">
-    <span class="glyphicon glyphicon-plus"></span> {{'SECTOR.NEW_SECTOR' | translate}}
-  </a>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "SECTOR.TITLE" | translate }}</li>
+    </ol>
+  </div>
 
   <div class="pull-right">
+    <button class="btn btn-default btn-sm" ng-click="setOp('Add')">
+      <span class="glyphicon glyphicon-plus-sign"></span> {{'SECTOR.NEW_SECTOR' | translate}}
+    </button>
     <a href="#/location/" class="btn btn-default btn-sm">
       <span class="glyphicon glyphicon-globe"></span> {{'SECTOR.LOCATION_MANAGER' | translate}}
     </a>

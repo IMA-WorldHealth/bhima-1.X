@@ -1,9 +1,10 @@
 <!-- Purchase template -->
+<!--ng-class="{ 'hidden-print' : model.common.purchases[0].is_authorized == 0, 'visible-print':  model.common.purchases[0].is_authorized == 0 }"-->
 <div ng-controller="receipt.purchase">
   <div class="row customer-details">
     <div class="col-xs-12">
-      <small style="float: right; color: grey; font-size: 8px">{{ model.common.purchases[0].uuid }}</small>
-      <h4 class="invoice-header">{{ 'INVOICE.PURCHASE_ORDER' | translate }}</h4>
+      <small style="float: right; color: grey; font-size: 14px"> {{ model.common.purchases[0].uuid }}</small>
+      <h4 class="invoice-header">{{ 'INVOICE.PURCHASE_ORDER' | translate }} : {{ model.common.enterprise.abbr + model.common.purchases[0].reference}}</h4>
     </div>
   </div>
 
@@ -15,7 +16,7 @@
       <br>
       {{model.common.location.name}}
       <br>
-      {{ model.common.enterprise.postal || 'B.P. 205'}}
+      {{ model.common.enterprise.po_box || 'B.P. 205'}}
       <br>
       {{model.common.location.sector_name}}
       <br>
@@ -33,23 +34,40 @@
     <div class="col-xs-4">
       <i>{{'INVOICE.PURCHASE_ID' | translate}}</i> <b>{{ model.common.enterprise.abbr + model.common.purchases[0].reference}}</b>
       <br>
-      <i>{{ 'INVOICE.PURCHASE_DATE' | translate }}</i> <b>{{ model.common.purchases[0].purchase_date | date }}</b>
+      <i>{{ 'INVOICE.CREATED' | translate }}</i> <b> : {{ model.common.purchases[0].purchase_date | date }}</b>
       <br>
-      <i>{{ 'INVOICE.DATE_RECEIPT' | translate}}</i> <b>{{ timestamp | date }}</b>
-      <br>
+      <div>
+        <i>{{ 'INVOICE.ISSUER' | translate }}</i>:
+        <b>{{model.common.header[0].first + ' ' + model.common.header[0].last }}</b>
+      </div>
       <div ng-if="model.common.purchases[0].is_direct === 0">
-        <i>{{ 'INVOICE.EMPLOYEE_CONTACT' | translate }}</i><br>
+        <i>{{ 'INVOICE.BUYER' | translate }}</i>:
         <b>{{model.common.purchases[0].prenom + ' ' + model.common.purchases[0].name + ' '+  model.common.purchases[0].postnom}}</b>
+      </div>
+      <div>
+        <i>{{ 'INVOICE.TO_DELIVER_TO' | translate }}</i>:
+        <b>{{model.common.header[0].prenom + ' ' + model.common.header[0].name + ' '+  model.common.header[0].postnom}}</b>
+      </div>
+
+      <div>
+        <i>{{ 'INVOICE.IS_VALID' | translate }}</i>:
+        <b ng-show="model.common.purchases[0].is_validate === 1">{{"INVOICE.YES_VALID" | translate}}</b>
+        <b ng-show="model.common.purchases[0].is_validate != 1">{{"INVOICE.NO_VALID" | translate}}</b>
+      </div>
+
+      <div>
+        <i>{{ 'INVOICE.IS_AUTHORIZED' | translate }}</i>:
+        <b ng-show="model.common.purchases[0].is_authorized == 1">{{"INVOICE.YES_AUTHORIZED" | translate}}</b>
+        <b ng-show="model.common.purchases[0].is_authorized != 1">{{"INVOICE.NO_AUTHORIZED" | translate}}</b>
       </div>
     </div>
   </div>
-
   <div class="row">
     <div class="col-xs-12">
       <table class="invoiceTable">
         <thead>
           <tr>
-            <th>{{'COLUMNS.BHIMA_STOCK_CODE' | translate}}</th>
+            <th>{{'COLUMNS.ID_PRODUCT' | translate}}</th>
             <th>{{'INVOICE.DESCRIPTION' | translate}}</th>
             <th>{{'COLUMNS.QUANTITY' | translate}}</th>
             <th>{{'COLUMNS.PURCHASE_PRICE' | translate}}</th>

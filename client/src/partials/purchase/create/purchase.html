@@ -5,7 +5,7 @@
 <nav>
   <div class="pull-left">
     <ol class="breadcrumb">
-      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
       <li><a href="#/purchase_menu">{{ "PURCHASE_MENU.TITLE" | translate }}</a></li>
       <li class="active">{{ "PURCHASE.CREATE.TITLE" | translate }}</li>
     </ol>
@@ -17,7 +17,7 @@
 </nav>
 
 <main>
-  <div class="row">
+  <div class="row margin-top-10">
     <div class="col-xs-5">
       <div class="panel panel-default square">
 
@@ -48,11 +48,18 @@
             </select>
           </div>
 
+          <div class="form-group">
+            <label for="select-cred">{{ 'PURCHASE.CREATE.TO_DELIVER_TO' | translate }}</label>
+            <select id="select-cred" ng-change="initPanelSuccess()" ng-model="session.header" ng-options="e as e.name for e in employee.data" class="form-bhima">
+              <option value="" ng-value="" disabled="disabled">--{{ 'PURCHASE.CREATE.SELECT_HEADER' | translate }}--</option>
+            </select>
+          </div>
+
           <div ng-switch on="session.is_direct">
 
             <div ng-switch-when="false">
               <div class="form-group">
-                <label for="select-employee">{{ 'PURCHASE.CREATE.RESPONSIBLE' | translate}}</label>
+                <label for="select-employee">{{ 'PURCHASE.CREATE.BUYER' | translate}}</label>
                 <select id="select-employee" ng-model="session.employee" ng-options="e as e.name for e in employee.data" class="form-bhima" ng-change="initPanelSuccess()">
                   <!-- hack default select value to force a selection of an item -->
                   <option ng-value="" disabled="disabled">--{{ 'PURCHASE.CREATE.SELECT_EMPLOYEE' | translate }}--</option>
@@ -119,10 +126,34 @@
 
           <div class="row">
             <div class="col-xs-12">
+              <table ng-if="session.header" class="table table-bordered">
+                <thead>
+                <tr>
+                  <th> {{ 'PURCHASE.CREATE.DELIVERY_HEADER' | translate }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <strong>{{session.header.code}}</strong> / 
+                      <span>{{session.header.prenom}}</span>
+                      <span ng-if="session.header.prenom && session.header.name">, </span>
+                      <span>{{session.header.name}}</span>
+                      <span ng-if="session.header.postnom && session.header.name"> - </span>
+                      <span>{{session.header.postnom}}</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xs-12">
               <table ng-if="session.employee" class="table table-bordered">
                 <thead>
                 <tr>
-                  <th> {{ 'PURCHASE.CREATE.RESPONSIBLE' | translate }}</th>
+                  <th> {{ 'PURCHASE.CREATE.BUYER' | translate }}</th>
                 </tr>
                 </thead>
                 <tbody>

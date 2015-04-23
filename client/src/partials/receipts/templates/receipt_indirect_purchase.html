@@ -2,7 +2,7 @@
   
   <div class="row customer-details">
     <div class="col-xs-12">
-      <small style="float: right; color: grey; font-size: 8px">{{ model.indirectPurchase.uuid }}</small>
+      <p style="float: right; color: grey;">{{ model.indirectPurchase.uuid }}</p>
       <h4 class="invoice-header">{{ 'INVOICE.INDIRECT_PURCHASE' | translate }}</h4>
     </div>
   </div>
@@ -15,7 +15,7 @@
       <br>
       {{model.common.location.name}}
       <br>
-      {{ model.common.enterprise.postal || 'B.P. 205'}}
+      {{ model.common.enterprise.po_box || 'B.P. 205'}}
       <br>
       {{model.common.location.sector_name}}
       <br>
@@ -25,23 +25,16 @@
     </div>
 
     <div class="col-xs-4">
+      {{ "INVOICE.BENEFICIARY" | translate }}<br>
       <b>{{model.indirectPurchase.prenom + '  ' + model.indirectPurchase.name + '  ' + model.indirectPurchase.postnom}} </b>
-      <br>
-      <i>{{ 'INVOICE.DATE_REGISTRATION' | translate }}</i>
-      <br>
-      {{model.indirectPurchase.purchase_date | date}}
+      <br><br>
+      {{ 'INVOICE.DATE_EMIT' | translate }} : <br>
+      <b>{{model.indirectPurchase.purchase_date | date}}</b>
     </div>
 
     <div class="col-xs-4">
-      <i>{{'INVOICE.INVOICE_ID' | translate}}</i> <b>{{model.indirectPurchase.reference}}</b>
-      <br>
-      <i>{{'INVOICE.EMPLOYEE_CODE' | translate}}</i> <b>{{model.indirectPurchase.code}}</b>
-      <br>
-      <br>
-      <i>{{ 'INVOICE.DATE_RECEIPT' | translate }}</i>
-      <br>
-      {{ timestamp | date }}
-      <br>
+      {{'RECEIPT.ID_BON_SORTI' | translate}} : <b>{{model.indirectPurchase.reference}}</b><br>
+      {{'RECEIPT.EMITTER' | translate}} : <b>{{model.userInfo.first + '  ' + model.userInfo.last}}</b><br>
     </div>
   </div>
 
@@ -50,39 +43,49 @@
       <table class="invoiceTable">
         <thead>
           <tr>
-            <th>{{ 'COLUMNS.REFERENCE_PURCHASE' | translate }}</th>
-            <th>{{ 'INVOICE.COST' | translate}}</th>
-            <th>{{ 'COLUMNS.AMOUNT' | translate }}</th>
-            <th>{{ 'INVOICE.RECIPIENT' | translate }}</th>
+            <th style="width:15%;">{{ 'COLUMNS.REFERENCE_PURCHASE' | translate }}</th>
+            <th style="width:30%;">{{ 'RECEIPT.LABEL' | translate}}</th>
+            <th style="width:15%;">{{ 'RECEIPT.AMOUNT' | translate}}</th>
+            <th style="width:30%;">{{ 'RECEIPT.AMOUNT' | translate }} ({{ 'RECEIPT.LETTER' | translate }})</th>
           </tr>
         </thead>
         <tbody class="items">
           <tr>
             <td>{{ model.indirectPurchase.reference }}</td>
+            <td>{{ 'INVOICE.INDIRECT_PURCHASE' | translate }}</td>
             <td>{{ model.indirectPurchase.cost | currency }}</td>
-            <td>{{ model.indirectPurchase.cost | currency }}</td>
-            <td>{{model.indirectPurchase.prenom + '  ' + model.indirectPurchase.name + '  ' + model.indirectPurchase.postnom}}</td>
+            <td></td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-xs-4">
-      <div class="pull-right">
-        <b>{{"INVOICE.SIGN_HEADER_PRI" | translate}}</b>
+  <div class="signatures">
+    <h5>{{ "UTIL.SIGNATURES" | translate }}</h5>
+
+    <div class="signature-box-wide">
+      <div class="col-xs-3">
+        <div class="pull-left">
+          <b>{{"RECEIPT.HEAD_PRIMARY_CASH" | translate}}</b>
+        </div>
       </div>
-    </div>
-    <div class="col-xs-4">
-      <div class="pull-left">
-       <b>{{"SIGNATURES.EMPLOYEE" | translate}}</b>
+      <div class="col-xs-3">
+        <div class="pull-right">
+         <b>{{"RECEIPT.BENEFICIARY" | translate}}</b>
+        </div>
+      </div>  
+      <div class="col-xs-3">
+        <div class="pull-left">
+          <b>{{"RECEIPT.FINANCE" | translate}}</b>
+        </div>
       </div>
+      <div class="col-xs-3">
+        <div class="pull-right">
+         <b>{{"RECEIPT.ADMINISTRATOR" | translate}}</b>
+        </div>
+      </div>  
     </div>
-    <div class="col-xs-4">
-      <div class="pull-left">
-       <b>{{"SIGNATURES.CHIEF_ACCOUNTANT" | translate}}</b>
-      </div>
-    </div>
-  </div>
-</div>
+  </div> 
+</div> 
+

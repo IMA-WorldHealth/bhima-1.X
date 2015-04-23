@@ -9,7 +9,6 @@ angular.module('bhima.controllers')
     dependencies.account = {
       required: true,
       query: {
-        identifier: 'account_number',
         tables: {
           'account': {
             columns: ['id', 'account_txt', 'account_number', 'parent', 'account_type_id']
@@ -46,7 +45,7 @@ angular.module('bhima.controllers')
         //TODO if parent.depth exists, increment and kill the loop (base case is ROOT_NODE)
         parent = accountModel.get(account.parent);
         depth = 0;
-        while(parent) {
+        while (parent) {
           depth += 1;
           parent = accountModel.get(parent.parent);
         }

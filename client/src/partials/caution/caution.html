@@ -3,6 +3,12 @@
 </header>
 
 <nav>
+  <div class="pull-left">
+      <ol class="breadcrumb">
+        <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+        <li class="active">{{ "CAUTION.TITLE" | translate }}</li>
+      </ol>
+  </div>
   <div class="pull-right">
     <span class="dropdown pull-right">
       <button class="btn btn-sm btn-primary dropdown-toggle">
@@ -34,7 +40,7 @@
 
 <main>
 
-  <div class="row">
+  <div class="row margin-top-10">
     <div class="col-xs-6">
       <div find-patient on-search-complete="loadDebtor"></div>
     </div>
@@ -60,8 +66,8 @@
               </div>
 
               <div class="form-group">
-                <label class="control-label col-xs-2">{{ "CAUTION.GENDER" | translate }}</label>
-                <p class="form-control-static col-xs-10">{{debtor.sex}}</p>
+                <label class="control-label col-xs-4">{{ "CAUTION.GENDER" | translate }}</label> 
+                <p class="form-control-static col-xs-8">{{debtor.sex}}</p>
               </div>
             </div>
 

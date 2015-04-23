@@ -12,7 +12,8 @@ angular.module('bhima.controllers')
   'uuid',
   'appcache',
   '$translate',
-  function ($scope, $q, $location, $routeParams, validate, connect, appstate, messenger, util, uuid, Appcache, $translate) {
+  'precision',
+  function ($scope, $q, $location, $routeParams, validate, connect, appstate, messenger, util, uuid, Appcache, $translate, precision) {
 
     var dependencies = {}, record_uuid = -1,
         cache = new Appcache('convention');
@@ -80,16 +81,10 @@ angular.module('bhima.controllers')
         where : ['primary_cash_module.text=convention']
       }
     };
-
-    dependencies.enterprise = {
-      query : {
-        tables : {
-          'enterprise' : {
-          columns : ['currency_id']
-        }
-        }
-      }
-    };
+    
+    appstate.register('enterprise', function (enterprise) {
+      $scope.enterprise = enterprise; 
+    });
 
     $scope.noEmpty = false;
     $scope.som = 0;
@@ -109,6 +104,7 @@ angular.module('bhima.controllers')
         }
         return situation.balance>0;
       });
+      $scope.som = precision.round($scope.som,2);
       $scope.noEmpty = true;
     }
 
@@ -166,7 +162,7 @@ angular.module('bhima.controllers')
       var items = [];
       var cost_received = max_amount;
 
-      if ($scope.selectedItem.currency_id === $scope.model.enterprise.data[0].currency_id) {
+      if ($scope.selectedItem.currency_id === $scope.enterprise.currency_id) {
         for (var i = 0; i < $scope.overviews.length; i += 1){
           cost_received -= $scope.overviews[i].balance;
           if(cost_received >= 0) {
@@ -206,7 +202,7 @@ angular.module('bhima.controllers')
       $scope.data = {};
       $scope.noEmpty = false;
       if (record_uuid !== -1) {
-        $location.path('/invoice/convention/' + record_uuid);
+        $location.path('/invoice/pcash_convention/' + record_uuid);
       }
     }
 
@@ -235,15 +231,15 @@ angular.module('bhima.controllers')
 
     function check () {
       if ($scope.data.payment) {
-        if($scope.selectedItem.currency_id !== $scope.model.enterprise.data[0].currency_id) {
+        if($scope.selectedItem.currency_id !== $scope.enterprise.currency_id) {
           var rate = $scope.model.exchange_rate.data[0];
           return $scope.data.payment < $scope.selectedItem.min_monentary_unit || $scope.data.payment > $scope.som * rate.rate;
         }else{
           return $scope.data.payment < $scope.selectedItem.min_monentary_unit || $scope.data.payment > $scope.som;
         }        
-      }else{
+      } else {
          return true;
-       }     
+      }     
     }
 
     $scope.initialiseConvention = initialiseConvention;

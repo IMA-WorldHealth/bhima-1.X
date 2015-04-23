@@ -25,7 +25,7 @@ angular.module('bhima.controllers')
     dependencies.enterprise = {
       query : {
         tables : {
-          'enterprise' : {columns : ['id', 'name', 'phone', 'email', 'location_id', 'currency_id' ]},
+          'enterprise' : {columns : ['id', 'name', 'po_box', 'phone', 'email', 'location_id', 'currency_id' ]},
           'project'    : {columns : ['name', 'abbr']}
         },
         join : ['enterprise.id=project.enterprise_id']
@@ -36,12 +36,15 @@ angular.module('bhima.controllers')
       'caution' : {
         url : '/partials/receipts/templates/receipt_caution.html'
       },
-      'transfer' : {
+      'pcash_transfert' : {
         url : '/partials/receipts/templates/receipt_transfer.html'
       },
-      'convention' : {
+      'pcash_convention' : {
         url : '/partials/receipts/templates/receipt_convention.html'
       },
+      'pcash_employee' : {
+        url : '/partials/receipts/templates/receipt_employee.html'
+      },      
       'generic_income' : {
         url : '/partials/receipts/templates/receipt_generic_income.html'
       },
@@ -81,6 +84,9 @@ angular.module('bhima.controllers')
       'cash' : {
         url : '/partials/receipts/templates/receipt_cash.html'
       },
+      'cash_discard' : {
+        url : '/partials/receipts/templates/receipt_cash_discard.html'
+      },
       'credit' : {
         url : '/partials/receipts/templates/receipt_credit_note.html'
       },
@@ -95,7 +101,16 @@ angular.module('bhima.controllers')
       },
       'movement' : {
         url : '/partials/receipts/templates/receipt_movement.html'
-      }
+      },
+      'salary_advance' : {
+        url : '/partials/receipts/templates/receipt_salary_advance.html'
+      },
+      'cash_return' : {
+        url : '/partials/receipts/templates/receipt_cash_return.html'
+      },
+      'confirm_donation' : {
+        url : '/partials/receipts/templates/receipt_confirm_donation.html'
+      }      
     };
 
     function convert (value, currency_id, date) {

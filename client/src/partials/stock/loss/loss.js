@@ -171,6 +171,7 @@ angular.module('bhima.controllers')
       consumptions.loss_consumptions = [];
 
       configuration.rows.forEach(function (row) {
+
         var qte = 0, loss_qte = row.quantity;
         var current_qte = (row.lot.entered - row.lot.moved - row.lot.consumed);
         if(loss_qte <= current_qte) {
@@ -185,7 +186,8 @@ angular.module('bhima.controllers')
           date                : util.sqlDate(session.date),
           document_id         : session.document_id,
           tracking_number     : row.lot.tracking_number,
-          quantity            : qte
+          quantity            : qte,
+          unit_price          : row.price
         };
 
         var loss_consumption_item = {
@@ -280,6 +282,24 @@ angular.module('bhima.controllers')
       });
     }
 
+    function getItemPrice(item, index) {
+      dependencies.itemPrice = {
+        query : {
+          tables : {
+            'stock' : { columns : ['purchase_order_uuid']},
+            'purchase_item' : { columns : ['quantity', 'unit_price']}
+          },
+          join : ['stock.inventory_uuid=purchase_item.inventory_uuid'],
+          where : ['stock.tracking_number=' + item.tracking_number]
+        }
+      };
+
+      validate.refresh(dependencies, ['itemPrice'])
+      .then(function (data) {
+        configuration.rows[index].price = data.itemPrice.data[0].unit_price;
+      });
+    }
+
     appstate.register('project', function (project){
       dependencies.project.query.where = ['project.id='+project.id];
       validate.process(dependencies)
@@ -296,5 +316,6 @@ angular.module('bhima.controllers')
     $scope.calculateTotal = calculateTotal;
     $scope.handleQuantity = handleQuantity;
     $scope.verifyLoss = verifyLoss;
+    $scope.getItemPrice = getItemPrice;
   }
 ]);

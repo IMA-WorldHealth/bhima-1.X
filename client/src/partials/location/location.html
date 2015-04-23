@@ -3,6 +3,13 @@
 </header>
 
 <nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "LOCATION.TITLE" | translate }}</li>
+    </ol>
+  </div>
+  
   <div class="pull-right">
     <a href="#/location/village/" class="btn btn-default btn-sm">
       <span class="glyphicon glyphicon-globe"></span> {{ 'LOCATION.MANAGE_VILLAGE' | translate }}
@@ -36,7 +43,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="location in locations | orderBy:'country_name'">
+            <tr ng-repeat="location in locations ">
               <td>{{ location.name }}</td>
               <td>{{ location.sector_name }}</td>
               <td>{{ location.province_name }}</td>

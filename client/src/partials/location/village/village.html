@@ -3,8 +3,15 @@
 </header>
 
 <nav>
-  <a class="btn btn-default btn-sm" ng-click="op='add'"><span class="glyphicon glyphicon-plus"></span> {{'VILLAGE.NEW_VILLAGE' | translate}}</a>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "VILLAGE.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
   <div class="pull-right">
+    <button class="btn btn-default btn-sm" ng-click="op='add'"><span class="glyphicon glyphicon-plus-sign"></span> {{'VILLAGE.NEW_VILLAGE' | translate}}</button>
     <a href="#/location/" class="btn btn-default btn-sm">
       <span class="glyphicon glyphicon-globe"></span> {{ 'VILLAGE.LOCATION_MANAGER' | translate }}
     </a>

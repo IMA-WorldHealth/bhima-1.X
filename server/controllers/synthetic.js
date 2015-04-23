@@ -107,8 +107,8 @@ function ccc_periodic (project_id, request, callback){
     return account.id;
   });
 
-  var ids_conditions_p = (ids.length > 0) ? ' OR `posting_journal`.`account_id` IN (' + ids.join(',') + ')' : '';
-  var ids_conditions_g = (ids.length > 0) ? ' OR `general_ledger`.`account_id` IN (' + ids.join(',') + ')' : '';
+  var ids_conditions_p = (ids.length > 0) ? ' OR (`posting_journal`.`account_id` IN (' + ids.join(',') + ') AND (`posting_journal`.`trans_date` BETWEEN '+sanitize.escape(request.start)+' AND '+sanitize.escape(request.end)+') )' : '';
+  var ids_conditions_g = (ids.length > 0) ? ' OR (`general_ledger`.`account_id` IN (' + ids.join(',') + ') AND (`general_ledger`.`trans_date` BETWEEN '+sanitize.escape(request.start)+' AND '+sanitize.escape(request.end)+') )' : '';
 
   var sql =
     'SELECT SUM(`t`.`debit_equiv`) as debit, SUM(`t`.`credit_equiv`) as credit, `t`.`account_id`, `t`.`project_id`, `c`.`account_number`' +
@@ -152,8 +152,8 @@ function pcv_periodic (project_id, request, callback){
     return account.id;
   });
 
-  var ids_conditions_p = (ids.length > 0) ? ' OR `posting_journal`.`account_id` IN (' + ids.join(',') + ')' : '';
-  var ids_conditions_g = (ids.length > 0) ? ' OR `general_ledger`.`account_id` IN (' + ids.join(',') + ')' : '';
+  var ids_conditions_p = (ids.length > 0) ? ' OR (`posting_journal`.`account_id` IN (' + ids.join(',') + ') AND (`posting_journal`.`trans_date` BETWEEN '+sanitize.escape(request.start)+' AND '+sanitize.escape(request.end)+') )' : '';
+  var ids_conditions_g = (ids.length > 0) ? ' OR (`general_ledger`.`account_id` IN (' + ids.join(',') + ') AND (`general_ledger`.`trans_date` BETWEEN '+sanitize.escape(request.start)+' AND '+sanitize.escape(request.end)+') )' : '';
 
   var sql =
     'SELECT SUM(`t`.`debit_equiv`) as debit, SUM(`t`.`credit_equiv`) as credit, `t`.`account_id`, `t`.`project_id`, `c`.`account_number`' +

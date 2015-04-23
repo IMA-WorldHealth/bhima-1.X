@@ -3,8 +3,15 @@
 </header>
 
 <nav>
-  <a class="btn btn-default btn-sm" ng-click="setOp('Add')"><span class="glyphicon glyphicon-plus"></span> {{ 'PROVINCE.ADD' | translate}}</a>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "PROVINCE.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
   <div class="pull-right">
+    <button class="btn btn-default btn-sm" ng-click="setOp('Add')"><span class="glyphicon glyphicon-plus-sign"></span> {{ 'PROVINCE.ADD' | translate}}</button>
     <a href="#/location/" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-globe"></span> {{'PROVINCE.LOCATION_MANAGER' | translate}}</a>
   </div>
 </nav>

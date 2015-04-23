@@ -3,14 +3,17 @@
 </header>
 
 <nav>
-  <a class="btn btn-sm btn-default" ng-click="new()">
-    <span class="glyphicon glyphicon-file"></span> {{ 'PROJECT.NEW' | translate }}
-  </a>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "PROJECT.TITLE" | translate }}</li>
+    </ol>
+  </div>
 
   <div class="pull-right">
-    <a class="btn btn-sm btn-default" ng-click="print()">
-      <span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}
-    </a>
+    <button class="btn btn-sm btn-default" ng-click="new()">
+      <span class="glyphicon glyphicon-plus-sign"></span> {{ 'PROJECT.NEW' | translate }}
+    </button>
   </div>
 </nav>
 
@@ -104,6 +107,15 @@
               </select>
             </div>
 
+            <!-- zone de sante for snis -->
+            <div class="form-group">
+              <label>{{ 'COLUMNS.ZS' | translate }}</label>
+              <select class="form-bhima" ng-model="newProject.zs_id" ng-options="zone.id as toString(zone) for zone in zs.data" required>
+                <option value="" disabled>{{ 'SELECT.ZS' | translate }}</option>
+              </select>
+            </div>
+            <!-- end zone de sante for snis -->
+
             <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="submitNew()">
             <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.CLEAR' | translate }}" ng-click="cancelNew()">
           </fieldset>
@@ -131,6 +143,15 @@
                 <option value="" disabled>{{ 'SELECT.ENTERPRISE' | translate }}</option>
               </select>
             </div>
+
+            <!-- zone de sante for snis -->
+            <div class="form-group">
+              <label>{{ 'COLUMNS.ZS' | translate }}</label>
+              <select class="form-bhima" ng-model="editProject.zs_id" ng-options="zone.id as toString(zone) for zone in zs.data" required>
+                <option value="" disabled>{{ 'SELECT.ZS' | translate }}</option>
+              </select>
+            </div>
+            <!-- end zone de sante for snis -->
 
             <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="submitEdit()">
             <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.CLEAR' | translate }}" ng-click="cancelEdit()">

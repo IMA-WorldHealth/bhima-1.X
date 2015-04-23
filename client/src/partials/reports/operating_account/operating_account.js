@@ -1,120 +1,90 @@
 angular.module('bhima.controllers')
 .controller('operating_account', [
   '$scope',
-  '$translate',
   '$http',
-  '$routeParams',
-  'connect',  
+  '$translate',
   'validate',
   'appstate',
-  'util',
-  function ($scope, $translate, $http, $routeParams, connect, validate, appstate, util) {
+  function ($scope, $http, $translate, validate, appstate) {
     var dependencies = {},
-        session = $scope.session = {};
+        session = $scope.session = {},
+        state = $scope.state;
 
-   dependencies.getFiscalYears = {
+    dependencies.fiscalYears = {
       query : {
         identifier : 'id',
         tables : {
-          'fiscal_year' : { 
+          'fiscal_year' : {
             columns : ['id', 'fiscal_year_txt']
           }
         }
       }
     };
 
-    $scope.Reports = '';
+    dependencies.periods = {
+      query : {
+        identifier : 'id',
+        tables : {
+          'period' : {
+            columns : ['id', 'fiscal_year_id', 'period_start', 'period_stop']
+          }
+        }
+      }
+    };
 
-    function reset () {
-      var record = connect.clean(session);
-      var fiscalYear = $scope.getFiscalYears.data.filter(function (item) {
-        record.fiscal_year_id = parseInt (record.fiscal_year_id);
-        return item.id === record.fiscal_year_id;
-      });
-
-      $scope.fiscal_year_report = fiscalYear[0].fiscal_year_txt;
-
-      $http.get('/getPeriodeFiscalYear/',{params : {
-            'fiscal_year_id' : record.fiscal_year_id
-          }  
-      }).
-      success(function(data) {
-        $scope.Periods = data;
-      });
+    function getPeriods () {
+      var selectablePeriods = $scope.periods.data.filter(function (p) {return p.fiscal_year_id == session.fiscal_year_id;});
+      $scope.selectablePeriods = selectablePeriods;
     }
 
-    function reset2 () {
-      var record = connect.clean(session);
-      var tabMonth = ['OPERATING_ACCOUNT.JANUARY',
-        'OPERATING_ACCOUNT.FEBRUARY',
-        'OPERATING_ACCOUNT.MARCH',
-        'OPERATING_ACCOUNT.APRIL',
-        'OPERATING_ACCOUNT.MAY',
-        'OPERATING_ACCOUNT.JUNE',
-        'OPERATING_ACCOUNT.JULY',
-        'OPERATING_ACCOUNT.AUGUST',
-        'OPERATING_ACCOUNT.SEPTEMBER',
-        'OPERATING_ACCOUNT.OCTOBER',
-        'OPERATING_ACCOUNT.NOVEMBER',
-        'OPERATING_ACCOUNT.DECEMBER'
-      ];
+    function initialize (models) {
+      angular.extend($scope, models);
+    }
 
-      if (record.period_id === 'all'){
-        $scope.fiscal_precisonD = '';
-        $scope.fiscal_precison1 = $translate.instant('OPERATING_ACCOUNT.ALL'); 
-        
-      } else {
-        $scope.fiscal_precison1 = '';
-        var precision = $scope.Periods.filter(function (item) {
-          record.period_id = parseInt (record.period_id);
-          return item.id === record.period_id;
-        });
-        var Month = util.sqlDate(precision[0].period_start);
-        var Months = Month.split('-');
-        var MontRap = Months[1] - 1; 
-        $scope.fiscal_precisonD = $translate.instant(tabMonth[MontRap]); 
+    function generate () {
+      if(session.period_id === 'all'){
+        $scope.all_period = $translate.instant('OPERATING_ACCOUNT.ALL');
       }
-      
-      $scope.Reports = '';
-      $http.get('/getExploitationAccount/',{params : {
-            'period_id' : record.period_id,
-            'fiscal_year_id' : record.fiscal_year_id
-          }  
-      }).
-      success(function(data) {
-        $scope.ExploitAccounts = data;
+
+      $http.get(
+        '/getExploitationAccount/',
+        {params : {'period_id' : session.period_id, 'fiscal_year_id' : session.fiscal_year_id}
+      }).success(function (data) {
         $scope.debitTotal = 0;
         $scope.creditTotal = 0;
         $scope.Result = 0;
 
-        for(var item2 in data){
-          var data2 = data[item2];
-          $scope.debitTotal += data2.debit;
-          $scope.creditTotal += data2.credit;
-          $scope.Result = $scope.creditTotal - $scope.debitTotal; 
+        for(var item in data){
+          $scope.debitTotal += data[item].debit;
+          $scope.creditTotal += data[item].credit;
+          $scope.Result = $scope.creditTotal - $scope.debitTotal;
         }
-
+        $scope.records = data;
+        $scope.state = 'generate';
       });
     }
 
-    function startup (models) {
-      angular.extend($scope, models);
+    function reconfigure () {
+      $scope.state = null;
+      session.fiscal_year_id = null;
+      session.period_id = null;
+    }
+
+    function printReport () {
+      print();
     }
 
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
       validate.process(dependencies)
-      .then(startup);
+      .then(initialize);
     });
 
     $scope.all = 'all';
-    $scope.reset = reset;
-    $scope.reset2 = reset2;
-    function generateReference () {
-      window.data = $scope.getFiscalYears.data;
-      var max = Math.max.apply(Math.max, $scope.getFiscalYears.data.map(function (o) { return o.reference; }));
-      return Number.isNaN(max) ? 1 : max + 1;
-    } 
-  } 
+    $scope.getPeriods = getPeriods;
+    $scope.generate = generate;
+    $scope.reconfigure = reconfigure;
+    $scope.printReport = printReport;
+  }
 ]);
 

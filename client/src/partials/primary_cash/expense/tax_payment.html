@@ -16,7 +16,7 @@
 
   <div class="pull-left">
     <ol class="breadcrumb">
-      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
       <li><a href="#/primary_cash/">{{"PRIMARY_CASH.TITLE" | translate}}</a></li>
       <li><a ng-href="#/primary_cash/expense/payroll/{{session.cashbox}}">{{"PRIMARY_CASH.EXPENSE.PAYROLL" | translate}}</a></li>
       <li class="active">{{"PRIMARY_CASH.EXPENSE.TAX_PAYMENT" | translate}}</li>
@@ -25,7 +25,7 @@
 </nav>
 
 <main>	
-	<div ng-if="!session.configured" class="row">
+	<div ng-if="!session.configured" class="row margin-top-10">
     <div class="col-xs-12">
       <div class="panel panel-default">
         <div class="panel-heading">
@@ -41,7 +41,7 @@
           </div>
           <br>
           <div class="configure">
-            <select ng-model="session.pp" ng-options="pp as formatPeriod(pp) for pp in session.model.paiement_period.data" ng-change="setConfiguration(session.pp)">
+            <select ng-model="session.pp" ng-options="pp as formatPeriod(pp) for pp in session.model.paiement_period.data  | orderBy:'-dateTo'" ng-change="setConfiguration(session.pp)">
               <option value="" ng-disabled="disabled" disabled="true">-- {{'SELECT.PERIOD_PAYMENT' | translate}} -- </option>
             </select>
           </div>
@@ -50,7 +50,7 @@
     </div>
   </div>
 
-  <div ng-if="session.configured && !session.available" class="row">
+  <div ng-if="session.configured && !session.available" class="row margin-top-10">
     <div class="col-xs-12">
       <div class="panel panel-default">
         <div class="panel-heading">
@@ -66,7 +66,7 @@
     </div>
   </div>
 
-  <div ng-if="session.configured && session.available" class="row">
+  <div ng-if="session.configured && session.available" class="row margin-top-10">
     <div class="col-xs-12">
       <div class="panel panel-default">
         <div class="panel-heading">
@@ -82,7 +82,7 @@
             <table class="table table-condensed">
               <thead>
                 <tr>
-                  <th>{{ "TAX_PAYMENT.EMPLOYEE" | translate }}</th>
+                  <th>{{ "TAX_PAYMENT.EMPLOYEE" | translate }} </th>
                   <th>{{ "TAX_PAYMENT.TAX" | translate }}</th>
                   <th>{{ "TAX_PAYMENT.VALUE" | translate }}</th>
                   <th>{{ "TAX_PAYMENT.PAID" | translate }}</th>
@@ -90,11 +90,11 @@
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="emp in session.model.employees_payment.data | orderBy : 'code' | filter : search">
+                <tr ng-repeat="emp in session.model.employees_payment.data | filter : search">
                   <td>
-                    <span ng-show="emp.prenom">{{ emp.prenom }}, </span> 
-                    <span ng-show="emp.name">{{ emp.name }}</span> 
-                    <span ng-show="emp.postnom"> - {{ emp.postnom }}</span>
+                    <span ng-show="emp.prenom">{{ emp.name }} </span> 
+                    <span ng-show="emp.name">{{ emp.postnom }},</span> 
+                    <span ng-show="emp.postnom"> - {{ emp.prenom }}</span>
                     <strong ng-show="emp.code"> ({{ emp.code }})</strong>
                   </td>
                   <td>{{ emp.label }} ({{ emp.abbr }})</td>

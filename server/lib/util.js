@@ -14,7 +14,7 @@ module.exports = {
 
   isString: function (str) { return typeof str === 'string'; },
 
-  isObject: function (obj) { return Object.prototype.toString.call(obj) === '[object Object]'; },
+  isObject: function (obj) { return typeof obj === 'object'; },
 
   //convertToMysqlDate: function convertToMysqlDate(dateString){ return toMySqlDate(dateString); }
 
@@ -34,20 +34,14 @@ module.exports = {
     return [year, month, day].join('-');
   },
 
-  isPositive : function (number) { return this.isValidNumber(number) && Number(number) >= 0; },
+  isPositive : function (number) { return this.isNumber(number) && Number(number) >= 0; },
 
-  isNegative : function (number) { return !this.isPositive(number); },
-
-  isEqual : function (a, b) { return a === b; },
+  isNegative : function (number) { return this.isNumber(number) && !this.isPositive(number); },
 
   isDefined : function (a) { return a !== undefined; },
 
-  isUndefined : function (a) { return !this.isDefined(a); },
-
-  isNull : function (a) { return a === null; },
-
   exists : function (a) { return this.isDefined(a) && !this.isNull(a); },
 
-  toDistinctValues : function(a) { return a.reduce(function(p, c) { if (p.indexOf(c) < 0) { p.push(c); return p;}}, []); }
+  toDistinctValues : function(a) { return a.reduce(function(p, c) { if (p.indexOf(c) < 0) { p.push(c); } return p; }, []); }
 
 };

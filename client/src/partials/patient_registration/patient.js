@@ -12,12 +12,14 @@ angular.module('bhima.controllers')
   'uuid',
   function ($scope, $q, $location, $translate, connect, messenger, validate, appstate, util, uuid) {
 
-    var dependencies = {};
-    var defaultBirthMonth = '06-01';
+    var dependencies = {},
+        defaultBirthMonth = '06-01',
+        timestamp = new Date(),
+        minYear = util.minPatientDate.getFullYear(),
+        maxYear = timestamp.getFullYear(),
+        session = $scope.session = { };
 
-    var session = $scope.session = { };
-
-    session.timestamp = new Date();
+    session.timestamp = timestamp;
     session.originLocationUuid = null;
     session.currentLocationUuid = null;
 
@@ -70,11 +72,18 @@ angular.module('bhima.controllers')
       query : 'user_session'
     };
 
+
     function patientRegistration(model) {
-      console.log('Model is: ', model);
       angular.extend($scope, model);
+
+      // Update the year limit message (has to be done late to use current language)
+      validation.dates.tests.limit.message = $translate.instant(validation.dates.tests.limit.message)
+        .replace('<min>', minYear)
+	.replace('<max>', maxYear);
+
       return $q.when();
     }
+
 
     // Tests in an ng-disabled method often got called in the wrong order/ scope was not updated
     $scope.$watch('patient.dob', function (nval, oval) {
@@ -119,9 +128,9 @@ angular.module('bhima.controllers')
       return;
     }
 
-    // Conveluted date validation
+    // Convoluted date validation
     function validateDates() {
-      var extractYear = session.yob;
+      var yearOfBirth = session.yob;
       validation.dates.flag = false;
 
       if (session.fullDateEnabled) {
@@ -131,24 +140,34 @@ angular.module('bhima.controllers')
           return true;
         }
 
-        extractYear = $scope.patient.dob.getFullYear();
+        yearOfBirth = $scope.patient.dob.getFullYear();
       }
 
-      if (extractYear) {
+      if (yearOfBirth) {
 
-        if (isNaN(extractYear)) {
+	// NOTE: The following checks on the yearOfBirth are never executed with
+	//       the html5+angular date input field since the form value becomes
+	//       undefined when invalid and is caught by the previous check.
+	//       Leaving them in as a precaution in case the input form behavior
+	//       changes in the future.
+
+        if (isNaN(yearOfBirth)) {
           validation.dates.flag = validation.dates.tests.type;
           return true;
         }
 
         // Sensible year limits - may need to change to accomidate legacy patients
-        if (extractYear > 2014 || extractYear < 1900) {
+        if (yearOfBirth > maxYear || yearOfBirth < minYear) {
           validation.dates.flag = validation.dates.tests.limit;
           return true;
         }
       }
       return false;
     }
+
+    // Define limits for DOB
+    $scope.minDOB = util.htmlDate(util.minPatientDate);
+    $scope.maxDOB = util.htmlDate(timestamp);
 
     // Location methods
     function setOriginLocation(uuid) {
@@ -174,10 +193,6 @@ angular.module('bhima.controllers')
       writePatient(patient);
     };
 
-    $scope.getMaxDate = function getMaxDate () {
-      return util.htmlDate(session.timestamp);
-    };
-
     function writePatient(patient) {
       var debtorId = uuid(), patientId = uuid();
       var packageDebtor = {
@@ -198,6 +213,7 @@ angular.module('bhima.controllers')
       packagePatient.father_name = util.normalizeName(packagePatient.father_name);
       packagePatient.mother_name = util.normalizeName(packagePatient.mother_name);
       packagePatient.spouse = util.normalizeName(packagePatient.spouse);
+      packagePatient.title = util.normalizeName(packagePatient.title);
 
       connect.basicPut('debitor', [packageDebtor])
       .then(function () {
@@ -262,6 +278,6 @@ angular.module('bhima.controllers')
 
     $scope.setOriginLocation = setOriginLocation;
     $scope.setCurrentLocation = setCurrentLocation;
-
   }
+
 ]);

@@ -3,14 +3,23 @@
 </header>
 
 <nav>
-  <button class="btn btn-sm btn-default" ng-click="new()">
-    <span class="glyphicon glyphicon-paperclip"></span>
-     {{ "FONCTION.ADD" | translate }}
-  </button>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "FONCTION.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right">
+    <button class="btn btn-sm btn-default" ng-click="new()">
+      <span class="glyphicon glyphicon-plus-sign"></span>
+       {{ "FONCTION.ADD" | translate }}
+    </button>
+  </div>
 </nav>
 
 <main>
-  <div class="row">
+  <div class="row margin-top-10">
 
     <div class="col-xs-6">
       <div class="panel panel-primary">
@@ -27,7 +36,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="fonction in fonctions.data">
+            <tr ng-repeat="fonction in fonctions.data | orderBy:'fonction_txt'">
               <td>{{$index + 1}}</td>
               <td>{{ fonction.fonction_txt }}</td>
               <td><a class="action" ng-click="edit(fonction)"><span class="glyphicon glyphicon-pencil"></span></a></td>

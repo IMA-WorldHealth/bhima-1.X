@@ -19,6 +19,7 @@ angular.module('bhima.controllers')
 
     var dependencies = {},
         data = $scope.data = {},
+        session = $scope.session = {},
         cache = new Appcache('cash');
 
     $scope.queue = [];
@@ -194,6 +195,13 @@ angular.module('bhima.controllers')
     $scope.loadInvoices = function (patient) {
       $scope.ledger = [];
       $scope.queue = [];
+      if(patient.is_convention === 1){
+        session.patient = 'is_convention';
+      } else {
+        session.patient = 'not_convention';
+      }
+
+
       $scope.patient = patient;
       connect.fetch('/ledgers/debitor/' + patient.debitor_uuid)
       .then(function (data) {

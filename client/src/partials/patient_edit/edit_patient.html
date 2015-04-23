@@ -1,17 +1,26 @@
 <header data-header>
-  {{ "PATIENT_EDIT.TITLE" | translate }} <small>{{ patient.first_name }} {{ patient.last_name }}</small>
+  {{ "PATIENT_EDIT.PAGE_TITLE" | translate }} <small>{{ patient.title }} {{ patient.first_name }} {{ patient.last_name }}</small>
 </header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "PATIENT_EDIT.PAGE_TITLE" | translate }}</li>
+    </ol>
+  </div>
+</nav>
 
 <main>
   <div class="col-xs-12">
 
-    <div class="row" ng-if="session.mode === 'search'">
+    <div class="row margin-top-10" ng-if="session.mode === 'search'">
       <div class="col-xs-7">
-	<div find-patient on-search-complete="initialiseEditing"></div>
+        <div find-patient on-search-complete="initialiseEditing"></div>
       </div>
     </div>
 
-    <div class="row" ng-if="session.mode === 'edit'">
+    <div class="row margin-top-10" ng-if="session.mode === 'edit'">
       <div class="col-xs-7">
         <div class="row">
           <div id="patientDetails" class="panel panel-primary" ng-class="{'form-disabled' : session.mode != 'edit' }">
@@ -41,7 +50,7 @@
                   <div class="form-group" >
                     <label for="patient-dob" class="col-xs-3 control-label">{{ "PATIENT_REG.DOB" | translate }}</label>
                     <div class="col-xs-9">
-                      <input required id="patient-dob" type="date" class="form-bhima" ng-model="patient.dob" min="1900-01-01" max="{{ getMaxDate() }}">
+                      <input required id="patient-dob" type="date" class="form-bhima" ng-model="patient.dob" min="{{ minDOB }}" max="{{ maxDOB }}">
                     </div>
                   </div>
 
@@ -72,16 +81,16 @@
                   <div class="form-group">
                     <label class="control-label col-xs-3"> {{ "INVOICE.PATIENT_ID" | translate }}</label>
                     <div class="col-xs-9">
-		      <label class="control-label">{{ patient.hr_id }}</label>
-		    </div> 
-		  </div> <!-- form group -->
+                      <label class="control-label">{{ patient.hr_id }}</label>
+                    </div> 
+                  </div> <!-- form group -->
 
                   <div class="form-group">
                     <label class="control-label col-xs-3"> {{ "INVOICE.DATE_REGISTRATION" | translate }}</label>
                     <div class="col-xs-9">
-		      <label class="control-label">{{ patient.registration_date | date }}</label>
-		    </div> 
-		  </div> <!-- form group -->
+                      <label class="control-label">{{ patient.registration_date | date }}</label>
+                    </div> 
+                  </div> <!-- form group -->
 
                 </fieldset>
               </form>
@@ -122,17 +131,11 @@
                   <fieldset>
                     <legend>{{ "PATIENT_REG.FINANCE" | translate }}</legend>
                     <div class="form-group">
+                      <label class="control-label col-xs-3"> {{ "PATIENT_REG.DEBTOR_GROUP" | translate }}</label>
                       <div class="col-xs-9">
-			  {{ "PATIENT_REG.DEBTOR_GROUP" | translate }}: {{patient.debitor_group_name | translate}}
-			  <!--
-			  <span class="pull-right">
-			    <button class="btn btn-sm btn-default" ng-click="changeDebitor()">
-			      <span class="glyphicon glyphicon-pencil"></span>{{ "PATIENT_EDIT.CHANGE_DEBITOR_GROUP" | translate }}
-                            </button>
-			  </span>
-			  -->
-		      </div>
-                    </div>
+                        <label class="control-label">{{ patient.debitor_group_name | translate }}</label>
+                      </div> 
+                    </div> <!-- form group -->
                   </fieldset>
                 </form>
 
@@ -146,6 +149,11 @@
               <form role="form" ng-class="{'form-disabled' : session.mode != 'edit' }">
 
                 <div class="form-group">
+                  <label for="title">{{ "PATIENT_REG.TITLE" | translate }}</label>
+                  <input type="text" class="form-bhima" id="title" ng-model="patient.title">
+                </div>
+
+                <div class="form-group">
                   <label for="phone">{{ "PATIENT_REG.PHONE_NO" | translate }}</label>
                   <input type="text" class="form-bhima" id="phone" ng-model="patient.phone">
                 </div>
@@ -156,17 +164,22 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="email">{{ "PATIENT_REG.AVENUE" | translate }}</label>
-                  <input type="text" class="form-bhima" id="avenue" ng-model="patient.addr_1">
+                  <label for="address1">{{ "PATIENT_REG.ADDRESS1" | translate }}</label>
+                  <input type="text" class="form-bhima" id="address1" ng-model="patient.address_1">
                 </div>
 
                 <div class="form-group">
-                  <label for="parent">{{ "PATIENT_REG.PARENT_NAME" | translate }}</label>
+                  <label for="address2">{{ "PATIENT_REG.ADDRESS2" | translate }}</label>
+                  <input type="text" class="form-bhima" id="address2" ng-model="patient.address_2">
+                </div>
+
+                <div class="form-group">
+                  <label for="father_name">{{ "PATIENT_REG.FATHER_NAME" | translate }}</label>
                   <input type="text" class="form-bhima" id="father_name" ng-model="patient.father_name">
                 </div>
 
                 <div class="form-group">
-                  <label>{{ "PATIENT_REG.MOTHER_NAME" | translate }}</label>
+                  <label for="mother_name">{{ "PATIENT_REG.MOTHER_NAME" | translate }}</label>
                   <input type="text" class="form-bhima" id="mother_name" ng-model="patient.mother_name">
                 </div>
 
@@ -181,28 +194,33 @@
                 </div>
 
                 <div class="form-group">
-                  <label>{{ "PATIENT_REG.PROFESSION" | translate }}</label>
+                  <label for="profession">{{ "PATIENT_REG.PROFESSION" | translate }}</label>
                   <input type="text" class="form-bhima" id="profession" ng-model="patient.profession">
                 </div>
 
                 <div class="form-group">
-                  <label>{{ "PATIENT_REG.EMPLOYER" | translate }}</label>
+                  <label for="employer">{{ "PATIENT_REG.EMPLOYER" | translate }}</label>
                   <input type="text" class="form-bhima" id="employer" ng-model="patient.employer">
                 </div>
 
                 <div class="form-group">
-                  <label>{{ "PATIENT_REG.SPOUSE" | translate }}</label>
+                  <label for="spouse">{{ "PATIENT_REG.SPOUSE" | translate }}</label>
                   <input type="text" class="form-bhima" id="spouse" ng-model="patient.spouse">
                 </div>
 
                 <div class="form-group">
-                  <label>{{ "PATIENT_REG.SPOUSE_PROFESSION" | translate }}</label>
+                  <label for="spouse_profession">{{ "PATIENT_REG.SPOUSE_PROFESSION" | translate }}</label>
                   <input type="text" class="form-bhima" id="spouse_profession" ng-model="patient.spouse_profession">
                 </div>
 
                 <div class="form-group">
-                  <label>{{ "PATIENT_REG.SPOUSE_EMPLOYER" | translate }}</label>
+                  <label for="spouse_employer">{{ "PATIENT_REG.SPOUSE_EMPLOYER" | translate }}</label>
                   <input type="text" class="form-bhima" id="spouse_employer" ng-model="patient.spouse_employer">
+                </div>
+
+                <div class="form-group">
+                  <label for="notes">{{ "PATIENT_REG.NOTES" | translate }}</label>
+                  <textarea class="form-bhima" id="notes" ng-model="patient.notes" rows="4"></textarea>
                 </div>
 
               </form>
@@ -218,9 +236,13 @@
 
 <footer>
   <div class="pull-right">
-    <a id="submitPatient" ng-click="updatePatient()"
+    <button class="btn btn-default" ng-click="restartSearch()">{{ "PATIENT_EDIT.RESTART_SEARCH" | translate }}</button>
+    <a id="submitPatient" 
+       class="btn btn-sm btn-success"
+       ng-click="updatePatient()"
        ng-disabled="session.failedSessionValidation || location.$invalid || details.$invalid" 
-       class="btn btn-success btn-sm">
+       ng-if="session.mode === 'edit'"
+       >
       <span class="glyphicon glyphicon-pencil"></span> {{ "PATIENT_EDIT.UPDATE_PATIENT" | translate }}
     </a>
   </div>
