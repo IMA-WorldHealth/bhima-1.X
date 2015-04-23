@@ -16,7 +16,7 @@
     <br>
     {{model.common.location.name}}
     <br>
-    {{ model.common.enterprise.postal || 'B.P. 205'}}
+    {{ model.common.enterprise.po_box || 'B.P. 205'}}
     <br>
     {{model.common.location.sector_name}}
     <br>
@@ -58,20 +58,21 @@
           <td>{{ rec.tracking_number }}</td>
           <td>{{ rec.text }}</td>
           <td>{{ rec.quantity}}</td>
-          <td>{{ rec.purchase_price | currency }}</td>
-          <td>{{ rec.quantity * rec.purchase_price | currency}}</td>
+          <td>{{ rec.unit_price | currency }}</td>
+          <td>{{ rec.quantity * rec.unit_price | currency}}</td>
         </tr>
       </tbody>
     </table>
   </div>
 </div>
-<div class="row">
-  <div class="col-xs-6">
-    <div class="pull-right">
-      <b>{{"SIGNATURES.RESPONSABLE" | translate}}</b>
-    </div>
+
+<div class="signatures">
+  <h5>{{ "UTIL.SIGNATURES" | translate }}</h5>
+
+  <div class="signature-box">
+    <label>{{ "SIGNATURES.RESPONSABLE" | translate }}</label>
+    <div class="signature-line"></div>
   </div>
-  <div class="col-xs-6"></div>
 </div>
-</div>
+
 <!-- end distribution.html template  -->

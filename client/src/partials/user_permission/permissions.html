@@ -3,12 +3,17 @@
 </header>
 
 <nav>
-  <button class="btn btn-sm btn-default" ng-click="addUser()">
-    <span class="glyphicon glyphicon-user"></span> {{ "PERMISSION.ADD" | translate }}
-  </button>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "PERMISSION.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
   <div class="pull-right">
-    <a class="btn btn-sm btn-default" ng-click="print()">
-      <span class="glyphicon glyphicon-print"></span> {{ "UTIL.PRINT" | translate }}</a>
+    <button class="btn btn-sm btn-default" ng-click="addUser()">
+      <span class="glyphicon glyphicon-plus-sign"></span> {{ "PERMISSION.ADD" | translate }}
+    </button>
   </div>
 </nav>
 
@@ -214,7 +219,8 @@
         <div class="col-xs-6">
           <div class="panel panel-default">
             <div class="panel-heading">
-              <span>{{ "PERMISSION.PROJECTS" | translate }}</span>
+              <span>{{ "PERMISSION.PROJECTS" | translate }}</span> : 
+              <strong>{{ current.user.first }} ({{ current.user.username }})</strong>
               <span class="pull-right">
                 <a ng-click="submit()" class="clk">
                   <span class="glyphicon glyphicon-floppy-disk"></span> {{ "FORM.SAVE" | translate }}
@@ -241,7 +247,8 @@
         <div class="col-xs-10">
           <div class="panel panel-default">
             <div class="panel-heading">
-              <span>{{ "PERMISSION.PERMISSIONS" | translate }}</span>
+              <span>{{ "PERMISSION.PERMISSIONS" | translate }}</span> :
+              <strong>{{ current.user.first }} ({{ current.user.username }})</strong>
               <span class="pull-right">
                 <a ng-click="submit()" class="clk">
                   <span class="glyphicon glyphicon-floppy-disk"></span> {{ "FORM.SAVE" | translate }}
@@ -253,16 +260,16 @@
               {{ "PERMISSION.SUPER" | translate }}
             </label>
             <ul class="k-list" style="margin-left: 25px;">
-              <li ng-repeat="unit in units.data | filter:filterChildren" >
+              <li ng-repeat="unit in units.data | filter:filterChildren | orderBy:'key'" >
                 <label class="checkbox">
                   <input type="checkbox" ng-model="unit.checked" ng-change="toggleChildren(unit)">
-                  {{unit.key | translate}}
+                  {{ unit.key }}
                 </label>
                 <ul class="k-list" ng-if="unit.has_children">
-                  <li ng-repeat="child in unit.children">
+                  <li ng-repeat="child in unit.children | orderBy:'key'">
                     <label class="checkbox">
                       <input type="checkbox" ng-model="child.checked" ng-change="toggleChildren(child)">
-                      {{child.key | translate}}
+                      {{ child.key }}
                     </label>
                     <ul class="k-list" ng-if="child.has_children">
                       <li ng-repeat="final in child.children">

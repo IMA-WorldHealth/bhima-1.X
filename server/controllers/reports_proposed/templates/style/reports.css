@@ -1,4 +1,4 @@
-body { 
+body {
   font-size : 12px;
 }
 
@@ -6,7 +6,7 @@ table {
   width : 100%;
 }
 
-/* 
+/*
  * Invoice table style
  */
 .invoice {
@@ -26,23 +26,28 @@ table {
   vertical-align : right;
 }
 
-/* 
+/*
  * Balance sheet style
  */
-.balance thead > tr > th { 
+.balance thead > tr > th {
   border-bottom : 1px solid #9f9f9f;
+  text-align: center;
 }
 
-tr.outline { 
+tr.outline {
   border-top : 1px solid #9f9f9f;
   border-bottom : 1px solid #9f9f9f;
 }
 
-.center > * { 
+.center > * {
   text-align : center;
   display : block;
   margin : 0;
   padding : 0;
+}
+
+.contenu td {
+  text-align : center;
 }
 
 

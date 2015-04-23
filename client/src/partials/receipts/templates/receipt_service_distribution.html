@@ -17,7 +17,7 @@
     {{model.common.location.name}}
     <br>
     <!-- hah -->
-    {{ model.common.enterprise.postal || 'B.P. 205'}}
+    {{ model.common.enterprise.po_box || 'B.P. 205'}}
     <br>
     {{model.common.location.sector_name}}
     <br>
@@ -57,24 +57,28 @@
         <tr ng-repeat="rec in model.service_distribution">
           <td>{{ rec.text }}</td>
           <td>{{ rec.quantity}}</td>
-          <td>{{ rec.purchase_price | currency }}</td>
-          <td>{{ rec.quantity * rec.purchase_price | currency}}</td>
+          <td>{{ rec.unit_price | currency }}</td>
+          <td>{{ rec.quantity * rec.unit_price | currency}}</td>
         </tr>
       </tbody>
     </table>
   </div>
 </div>
-<div class="row">
-  <div class="col-xs-6">
-    <div class="pull-right">
-      <b>{{"SIGNATURES.RESPONSABLE" | translate}}</b>
+
+<div class="signatures">
+  <h5>{{ "UTIL.SIGNATURES" | translate }}</h5>
+
+  <div class="signature-box-wide">
+    <div class="col-xs-6">
+      <div class="pull-left">
+        <b>{{"SIGNATURES.RESPONSABLE" | translate}}</b>
+      </div>
     </div>
+    <div class="col-xs-6">
+      <div class="pull-right">
+       <b>{{"SIGNATURES.BENEFICIARY" | translate}}</b>
+      </div>
+    </div>  
   </div>
-  <div class="col-xs-6">
-    <div class="pull-left">
-     <b>{{"SIGNATURES.BENEFICIARY" | translate}}</b>
-    </div>
-  </div>
-</div>
 </div>
 <!-- end distribution.html template  -->

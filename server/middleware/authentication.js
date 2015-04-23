@@ -33,18 +33,26 @@ module.exports = function () {
     if (req.method !== 'POST') { return next(); }
     var sql, id, user,
         usr = req.body.username,
-        pwd = req.body.password;
+        pwd = req.body.password,
+        pro = req.body.project;
 
     sql =
-      'SELECT user.id, user.username, user.first, user.last, user.email ' +
-      'FROM user WHERE user.username = ? ' +
-      'AND user.password = ?;';
+      'SELECT user.id, user.username, user.first, user.last, user.email FROM user JOIN project_permission ON ' +
+      'user.id = project_permission.user_id WHERE user.username = ? AND user.password = ? AND project_permission.project_id = ?;';
 
-    db.exec(sql, [usr, pwd])
+
+    // sql =
+    //   'SELECT user.id, user.username, user.first, user.last, user.email, project_permission.project_id ' +
+    //   'FROM user, project_permission WHERE user.username = ? ' +
+    //   'AND user.password = ? AND project_permission.id = ?;';
+
+    db.exec(sql, [usr, pwd, pro])
     .then(function (results) {
       if (results.length < 1) {
-        throw 'No user found';
+        throw 'No user found for this project';
       }
+
+      console.log('voici le user', results);
 
       user = results.pop();
       sql = 'UPDATE user SET user.logged_in = 1 WHERE user.id = ?;';

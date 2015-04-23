@@ -1,14 +1,14 @@
 /**
- * Application Routing 
- *   
+ * Application Routing
+ *
  * Initialise link between server paths and controller logic
  *
- * TODO Pass authenticate and authorize middleware down through 
- * controllers, allowing for modules to subscribe to different 
+ * TODO Pass authenticate and authorize middleware down through
+ * controllers, allowing for modules to subscribe to different
  * levels of authority
  *
  * TODO createPurhcase, createSale, serviceDist are all almost
- * identicale modules - they should all be encapsulated as one 
+ * identicale modules - they should all be encapsulated as one
  * module. For Example finance.createSale, finance.createPurchase
  */
 
@@ -32,9 +32,13 @@ var uncategorised   = require('./../controllers/uncategorised');
 
 var compileReport   = require('./../controllers/reports_proposed/reports.js');
 
-exports.initialise = function (app) { 
+var snis            = require('./../controllers/snis');
+
+
+
+exports.initialise = function (app) {
   console.log('[config/routes] Configure routes');
-  
+
   app.get('/', uncategorised.exposeRoot);
 
   // Application data
@@ -42,8 +46,8 @@ exports.initialise = function (app) {
   app.get('/data/', data.read);
   app.put('/data/', data.update);
   app.delete('/data/:table/:column/:value', data.deleteRecord);
-  
-  // Locations 
+
+  // Locations
   // -> /location/:scope(list || lookup)/:target(village || sector || province)/:id(optional)
   app.get('/location/villages', location.allVillages);
   app.get('/location/sectors', location.allSectors);
@@ -52,32 +56,39 @@ exports.initialise = function (app) {
   app.get('/location/sector/:uuid', location.lookupSector);
   app.get('/location/province/:uuid', location.lookupProvince);
   app.get('/location/detail/:uuid', location.lookupDetail);
- 
+
   // -> Add :route
   app.post('/report/build/:route', compileReport.build);
   app.get('/report/serve/:target', compileReport.serve);
-  
+
   app.post('/purchase', createPurchase.execute);
   app.post('/sale/', createSale.execute);
   app.post('/service_dist/', serviceDist.execute);
   app.post('/consumption_loss/', consumptionLoss.execute);
- 
+
   app.get('/trialbalance/initialize', trialbalance.initialiseTrialBalance);
   app.get('/trialbalance/submit/:key/', trialbalance.submitTrialBalance);
-  
+
   app.get('/journal/:table/:id', journal.lookupTable);
-  
+
   app.get('/ledgers/debitor/:id', ledger.compileDebtorLedger);
   app.get('/ledgers/debitor_group/:id', ledger.compileGroupLedger);
+  app.get('/ledgers/employee_invoice/:id', ledger.compileEmployeeLedger);  
   app.get('/ledgers/distributableSale/:id', ledger.compileSaleLedger);
 
-  app.get('/fiscal/:enterprise/:startDate/:endDate/:description', fiscal.writeYear);
+  app.post('/fiscal/create', fiscal.createFiscalYear);
 
   app.get('/reports/:route/', report.buildReport);
 
   app.get('/tree', tree.generate);
 
-  // TODO These routes all belong somewhere 
+  app.get('/snis/getAllReports', snis.getAllReports);
+  app.get('/snis/getReport/:id', snis.getReport);
+  app.post('/snis/createReport', snis.createReport);
+  app.delete('/snis/deleteReport/:id', snis.deleteReport);
+  app.post('/snis/populateReport', snis.populateReport);
+
+  // TODO These routes all belong somewhere
   app.get('/services/', uncategorised.services);
   app.get('/available_cost_center/', uncategorised.availableCenters);
   app.get('/employee_list/', uncategorised.listEmployees);
@@ -115,7 +126,7 @@ exports.initialise = function (app) {
   app.get('/serv_dist_stock/:depot_uuid', uncategorised.distributeStockDepot);
   app.get('/inv_in_depot/:depot_uuid', uncategorised.inventoryByDepot);
   app.get('/inventory/depot/:depot/*', uncategorised.routeDepotQuery);
-  app.get('/inventory/drug/:code', uncategorised.routeDrugQuery);  
+  app.get('/inventory/drug/:code', uncategorised.routeDrugQuery);
   app.get('/errorcodes', uncategorised.listErrorCodes);
   app.get('/getAccount6', uncategorised.listIncomeAccounts);
   app.get('/available_payment_period/', uncategorised.availablePaymentPeriod);
@@ -134,7 +145,7 @@ exports.initialise = function (app) {
   app.get('/getCommandes/:id', uncategorised.listCommandes);
   app.get('/getMonthsBeforeExpiration/:id', uncategorised.formatLotsForExpiration);
 
-  // Added since route structure development 
+  // Added since route structure development
   app.post('/payTax/', uncategorised.submitTaxPayment);
   app.post('/posting_donation/', uncategorised.submitDonation);
 
@@ -157,9 +168,12 @@ exports.initialise = function (app) {
   // Added since server structure <--> v1 merge
   app.post('/payCotisation/', uncategorised.payCotisation);
   app.post('/posting_promesse_payment/', uncategorised.payPromesse);
-  
+  app.post('/posting_promesse_cotisation/', uncategorised.payPromesseCotisation);
+  app.post('/posting_promesse_tax/', uncategorised.payPromesseTax);
+
   app.put('/setCotisationPayment/', uncategorised.setCotisationPayment);
 
   app.get('/getEmployeeCotisationPayment/:id', uncategorised.listEmployeeCotisationPayments);
-  
+
+  app.get('/getSubsidies/', uncategorised.listSubsidies);
 };

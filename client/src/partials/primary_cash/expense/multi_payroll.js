@@ -1,21 +1,19 @@
 angular.module('bhima.controllers')
 .controller('multi_payroll', [
   '$scope',
-  '$routeParams',
   '$translate',
   '$http',
   'messenger',
   'validate',
   'appstate',
   'connect',
-  '$location',
   'util',
   'appcache',
   'exchange',
   '$q',
   'ipr',
   'uuid',
-  function ($scope, $routeParams, $translate, $http, messenger, validate, appstate, connect, $location, util, Appcache, exchange, $q, ipr, uuid) {
+  function ($scope, $translate, $http, messenger, validate, appstate, connect, util, Appcache, exchange, $q, ipr, uuid) {
     var dependencies = {},
         cache = new Appcache('payroll'),
         session = $scope.session = {configured : false, complete : false, data : {}, SelectedCurrency : {}, rows : []};
@@ -40,13 +38,33 @@ angular.module('bhima.controllers')
             columns : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'date', 'rate']
           }
         },
-        where : ['exchange_rate.date='+util.sqlDate(new Date())]
+        where : ['exchange_rate.date=' + util.sqlDate(new Date())]
       }
     };
 
     dependencies.employees = {
-      required : true,
-      query : 'employee_list/'
+      query : {
+        tables : {
+          employee : {
+            columns : [
+              'id', 'code::code_employee', 'prenom', 'name', 'postnom', 'sexe', 'dob',
+              'date_embauche', 'service_id', 'nb_spouse', 'nb_enfant', 'grade_id', 'locked',
+              'daily_salary', 'phone', 'email', 'adresse', 'bank', 'bank_account', 'location_id'
+            ]
+          },
+          grade : { columns : ['text', 'basic_salary', 'code::code_grade']},
+          fonction : { columns : ['id::fonction_id', 'fonction_txt']},
+          debitor : { columns : ['uuid::debitor_uuid', 'text::debitor_text', 'group_uuid::debitor_group_uuid']},
+          creditor : { columns : ['uuid::creditor_uuid', 'text::creditor_text', 'group_uuid::creditor_group_uuid']}
+        },
+        join : ['employee.grade_id=grade.uuid',
+          'employee.fonction_id=fonction.id',
+          'employee.debitor_uuid=debitor.uuid',
+          'employee.creditor_uuid=creditor.uuid'
+        ],
+        where : ['employee.locked<>1'],
+        orderby: ['employee.name','employee.postnom']
+      }
     };
 
     dependencies.user = {
@@ -175,7 +193,7 @@ angular.module('bhima.controllers')
     function EmployeeRow (emp) {
       //FIX ME : clean this function
       var def = $q.defer();
-      var self = this;      
+      var self = this;
       self.emp = emp;
       getHollyDayCount(emp)
       .then(function (hld){
@@ -341,7 +359,7 @@ angular.module('bhima.controllers')
               columns : ['rubric_id', 'payable']
             },
             'rubric' : {
-              columns : ['id', 'abbr', 'label', 'is_percent', 'is_discount', 'value']
+              columns : ['id', 'abbr', 'label', 'is_advance', 'is_percent', 'is_discount', 'value']
             }
           },
           join : [
@@ -512,13 +530,13 @@ angular.module('bhima.controllers')
               nb += getValue(ppc);
             });
             soms.push(nb);
-            
+
             dataHollydays.push({
               'id_hdays' : h.id,
               'nbdays' : nb,
               'percentage' : h.percentage
-            });          
-            
+            });
+
             var valeur = nb * (h.percentage / 100);
             configs.push(valeur);
           });
@@ -580,6 +598,10 @@ angular.module('bhima.controllers')
 
     function payEmployee (packagePay) {
       var def = $q.defer();
+      var params = {
+        paiement_uuid : packagePay.paiement.uuid,
+        project_id : $scope.project.id
+      };
 
       connect.basicPut('paiement', [packagePay.paiement], ['uuid'])
         .then(function () {
@@ -593,16 +615,18 @@ angular.module('bhima.controllers')
         })
         .then(function () {
           return (packagePay.hollydaysData.length > 0) ? connect.post('hollyday_paiement', packagePay.hollydaysData) : $q.when();
-        })        
+        })
         .then(function (res){
           def.resolve(res);
         })
         .then(function () {
-          var params = {
-            paiement_uuid : packagePay.paiement.uuid,
-            project_id : $scope.project.id
-          };
           return $http.post('/posting_promesse_payment/', params);
+        })
+        .then(function (){
+          return $http.post('/posting_promesse_cotisation/', params);
+        })
+        .then(function (){
+          return $http.post('/posting_promesse_tax/', params);
         })
         .catch(function (err){
           def.reject(err);
@@ -615,7 +639,7 @@ angular.module('bhima.controllers')
 
       var rubric_config_list = session.model.rubric_config.data;
       var tax_config_list = session.model.tax_config.data;
-      var cotisation_config_list = session.model.cotisation_config.data;     
+      var cotisation_config_list = session.model.cotisation_config.data;
 
       return $q.all(list.map(function (elmt) {
         var rc_records = [];
@@ -645,7 +669,7 @@ angular.module('bhima.controllers')
           }
           somRub += change;
         });
-        elmt.net_salary = elmt.net_after_taxe + somRub - (elmt.daily_salary * elmt.off_day) + elmt.offdays_cost; 
+        elmt.net_salary = elmt.net_after_taxe + somRub - (elmt.daily_salary * elmt.off_day) + elmt.offdays_cost;
 
         var paiement = {
           uuid : uuid(),
@@ -697,7 +721,7 @@ angular.module('bhima.controllers')
               paiement_uuid : paiement.uuid
             };
           });
-        } 
+        }
 
         var packagePay = {
           paiement : paiement,
@@ -714,8 +738,8 @@ angular.module('bhima.controllers')
         });
         return def.promise;
       }))
-      .then(function (tab) {
-        messenger.success('success');
+      .then(function (tab) { 
+		messenger.success($translate.instant('PRIMARY_CASH.EXPENSE.SUCCESS'));
         validate.refresh(dependencies, ['paiements'])
         .then(function () {
           session.rows = refreshList();
@@ -733,7 +757,7 @@ angular.module('bhima.controllers')
       if(!row.working_day){
         row.working_day = 0;
       }
-    
+
       var taxes, rubrics, cotisations;
       var employee_cotisation;
 

@@ -3,14 +3,23 @@
 </header>
 
 <nav>
-  <button class="btn btn-sm btn-default" ng-click="new()">
-    <span class="glyphicon glyphicon-file"></span>
-    {{ "PAYMENT_PERIOD.ADD" | translate }}
-  </button>
+	<div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "PAYMENT_PERIOD.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right">
+	  <button class="btn btn-sm btn-default" ng-click="new()">
+	    <span class="glyphicon glyphicon-plus-sign"></span>
+	    {{ "PAYMENT_PERIOD.ADD" | translate }}
+	  </button>
+  </div>
 </nav>
 
 <main>
-	<div class="row">
+	<div class="row margin-top-10">
 		<div class="col-xs-7">
 	      <div class="panel panel-primary">
 	        <div class="panel-heading">

@@ -15,7 +15,7 @@
     {{invoice.village}}
     <br>
     <!-- hah -->
-    {{ invoice.postal || 'B.P. 205'}}
+    {{ invoice.po_box || 'B.P. 205'}}
     <br>
     {{invoice.sector}}
     <br>
@@ -58,7 +58,7 @@
       </thead>
       <tbody class="items">
         <tr>
-          <td>{{ invoice.reference }}</td>
+          <td>{{ invoice.reference }} JJJJ </td>
           <td>{{ invoice.cost | currency }}</td>
           <td>{{ invoice.cost | currency }}</td>
           <td>{{ invoice.supplier }}</td>
@@ -68,16 +68,21 @@
   </div>
 </div>
 
-<div class="row">
-  <div class="col-xs-6">
-    <div class="pull-right">
-      <b>{{"INVOICE.SIGN_HEADER_PRI" | translate}}</b>
+<div class="signatures">
+  <h5>{{ "UTIL.SIGNATURES" | translate }}</h5>
+
+  <div class="signature-box-wide">
+    <div class="col-xs-6">
+      <div class="pull-left">
+        <b>{{"INVOICE.SIGN_HEADER_PRI" | translate}}</b>
+      </div>
     </div>
+    <div class="col-xs-6">
+      <div class="pull-right">
+       <b>{{"INVOICE.SIGN_EMPLOYEE" | translate}}</b>
+      </div>
+    </div>  
   </div>
-  <div class="col-xs-6">
-    <div class="pull-left">
-     <b>{{"INVOICE.SIGN_EMPLOYEE" | translate}}</b>
-    </div>
-  </div>
-</div>
+</div> 
+
 <!-- End confirm.purchase template -->

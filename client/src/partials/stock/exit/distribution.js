@@ -66,10 +66,46 @@ angular.module('bhima.controllers')
     }
 
     function startup(model) {
-      angular.extend($scope, model);
+      angular.extend($scope, model); 
+      var dataDebitor = $scope.ledger.data;
 
+      dataDebitor.forEach(function (item) {
+        dependencies.get_consumption = {
+          query : {
+            tables : {
+              'consumption' : {
+                columns : ['document_id'] }
+            },
+            where : [
+              'document_id=' + item.document_id
+            ]
+          }
+        };
+
+        dependencies.get_reversing = {
+          query : {
+            tables : {
+              'consumption_reversing' : {
+                columns : ['document_id'] }
+            },
+            where : [
+              'document_id=' + item.document_id
+            ]
+          }
+        };
+
+        validate.process(dependencies, ['get_consumption','get_reversing'])
+        .then(function (model) {
+          var nbConsumption = model.get_consumption.data.length;
+          var nbReversing = model.get_reversing.data.length;
+          if(nbConsumption > nbReversing){
+            item.reversing_stock = null;
+          }
+
+        });        
+      }); 
+      $scope.ledger.data = $scope.ledger.data.filter(function (data) { return data.is_distributable[0] === 1; });
       moduleStep();
-      console.log('model', model);
     }
 
     function moduleStep() {
@@ -91,11 +127,8 @@ angular.module('bhima.controllers')
         });
 
         $q.all(detailsRequest).then(function (result) {
-          console.log('got all lot details');
           session.sale.details.forEach(function (saleItem, index) {
             var itemModel = result[index];
-
-            console.log('assigning', result);
             if (itemModel.data.length) { saleItem.lots = itemModel; }
           });
 
@@ -121,8 +154,6 @@ angular.module('bhima.controllers')
         var validUnits = 0;
         var sessionLots = [];
 
-        console.log('Determining lots for ', saleItem);
-
         // Ignore non consumable items
         if (!saleItem.consumable) { return; }
 
@@ -131,8 +162,6 @@ angular.module('bhima.controllers')
           saleItem.stockStatus = stock.NONE;
           return;
         }
-
-        console.log('Found lots for sale item');
 
         // If lots exist, order them by experiation and quantity
         saleItem.lots.data.sort(orderLotsByUsability);
@@ -168,7 +197,6 @@ angular.module('bhima.controllers')
 
     function orderLotsByUsability(a, b) {
       // Order first by expiration date, then by quantity
-
       var aDate = new Date(a.expirationDate),
           bDate = new Date(b.expirationDate);
 
@@ -182,22 +210,14 @@ angular.module('bhima.controllers')
     function verifyValidLots(saleDetails) {
       var invalidLots = false;
 
-      console.log('checking valid lots');
-
       //Ensure each item has a lot
       invalidLots = saleDetails.some(function (item) {
-        console.log('validating lot', item);
-
         // ignore non consumables (FIXME better way tod do this across everything)
         if (!item.consumable) { return false; }
 
         // FIXME hack - if a status has been reported, cannot be submitted
         if (item.stockStatus) { return true; }
-
-        // console.log('item has lots assigned');
       });
-
-      console.log('looped through lots, found invalid', invalidLots);
 
       // Update on failed attempt - EVERY validation
       session.lotSelectionFailure = invalidLots;
@@ -205,18 +225,34 @@ angular.module('bhima.controllers')
     }
 
     function getSaleDetails(sale) {
-      console.log('sale', sale);
       var query = {
         tables : {
           sale_item : {
-            columns : ['sale_uuid', 'uuid', 'inventory_uuid', 'quantity']
+            columns : ['sale_uuid', 'uuid', 'inventory_uuid', 'quantity', 'transaction_price']
           },
           inventory : {
-            columns : ['code', 'text', 'consumable']
+            columns : ['code', 'text', 'consumable', 'purchase_price']
           }
         },
         where : ['sale_item.sale_uuid=' + sale.inv_po_id],
         join : ['sale_item.inventory_uuid=inventory.uuid']
+      };
+      return connect.req(query);
+    }
+
+    function getLotPurchasePrice (tracking_number) {
+      var query = {
+        tables : {
+          stock : { columns : ['lot_number'] },
+          purchase : { columns : ['cost'] },
+          purchase_item : { columns : ['unit_price'] }
+        },
+        join : [
+          'stock.purchase_order_uuid=purchase.uuid',
+          'purchase.uuid=purchase_item.purchase_uuid',
+          'stock.inventory_uuid=purchase_item.inventory_uuid'
+        ],
+        where : ['stock.tracking_number=' + tracking_number]
       };
 
       return connect.req(query);
@@ -226,18 +262,20 @@ angular.module('bhima.controllers')
       var submitItem = [];
       var consumption_patients = [];
       if (!session.lotSelectionSuccess) { return messenger.danger('Cannot verify lot allocation'); }
-      session.sale.details.forEach(function (consumptionItem) {
 
+      session.sale.details.forEach(function (consumptionItem) {
         if (!angular.isDefined(consumptionItem.recomendedLots)) { return; }
 
         consumptionItem.recomendedLots.forEach(function (lot) {
           var consumption_uuid = uuid();
+
           submitItem.push({
             uuid : consumption_uuid,
             depot_uuid : session.depot,
             date : util.convertToMysqlDate(new Date()),
             document_id : consumptionItem.sale_uuid,
             tracking_number : lot.details.tracking_number,
+            unit_price : null,
             quantity : lot.quantity
           });
 
@@ -249,7 +287,29 @@ angular.module('bhima.controllers')
           });
         });
       });
-      connect.basicPut('consumption', submitItem)
+
+      function updateLotPrice () {
+        var def = $q.defer(), 
+            counter = 0;
+
+        submitItem.forEach(function (item) {
+          getLotPurchasePrice(item.tracking_number)
+          .then(function (price) {
+            item.unit_price = price.data[0].unit_price;
+            counter++;
+            if (counter === submitItem.length) {
+              def.resolve(submitItem);
+            }
+          });
+        });
+
+        return def.promise;
+      }
+      
+      updateLotPrice()
+      .then(function (resultSubmitItem) {
+        return connect.basicPut('consumption', resultSubmitItem);
+      })
       .then(function (){
         return connect.basicPut('consumption_patient', consumption_patients);
       })

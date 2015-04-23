@@ -16,7 +16,7 @@
     {{model.common.location.name}}
     <br>
     <!-- hah -->
-    {{ model.common.enterprise.postal || 'B.P. 205'}}
+    {{ model.common.enterprise.po_box || 'B.P. 205'}}
     <br>
     {{model.common.location.sector_name}}
     <br>
@@ -57,22 +57,26 @@
   </div>
 </div>
 
-<div class="row">
-  <div class="col-xs-4">
-    <div class="pull-right">
-      <b>{{"INVOICE.SIGN_HEADER_PRI" | translate}}</b>
+<div class="signatures">
+  <h5>{{ "UTIL.SIGNATURES" | translate }}</h5>
+
+  <div class="signature-box-wide">
+    <div class="col-xs-4">
+      <div class="pull-left">
+        <b>{{"INVOICE.SIGN_HEADER_PRI" | translate}}</b>
+      </div>
     </div>
+    <div class="col-xs-4">
+      <div class="pull-right">
+       <b>{{"INVOICE.THIRD" | translate}}</b>
+      </div>
+    </div>  
+    <div class="col-xs-4">
+      <div class="pull-right">
+       <b>{{"INVOICE.CHIEF_ACCOUNTANT" | translate}}</b>
+      </div>
+    </div>  
   </div>
-  <div class="col-xs-4">
-    <div class="pull-left">
-     <b>{{"SIGNATURES.THIRD" | translate}}</b>
-    </div>
-  </div>
-  <div class="col-xs-4">
-    <div class="pull-left">
-     <b>{{"SIGNATURES.CHIEF_ACCOUNTANT" | translate}}</b>
-    </div>
-  </div>
-</div>
-</div>
+</div> 
+
 <!-- end cotisation payment template -->

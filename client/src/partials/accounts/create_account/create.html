@@ -3,16 +3,22 @@
 </header>
 
 <nav>
-  <button ng-click="updateState('edit')" class="btn btn-default btn-sm">
-    <span class="glyphicon glyphicon-plus"></span> {{ "ACCOUNT.ADD" | translate }}
-  </button>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "ACCOUNT.TITLE" | translate }}</li>
+    </ol>
+  </div>
   <div class="pull-right">
-      <button disabled class="btn btn-default btn-sm">
-        <span class="glyphicon glyphicon-pencil"></span> {{ "ACCOUNT.CREATE" | translate }}
-      </button>
-      <a ng-href="#/reports/chart_of_accounts" class="btn btn-default btn-sm">
-        <span class="glyphicon glyphicon-list"></span> {{ "ACCOUNT.GENERATE" | translate }}
-      </a>
+    <button ng-click="updateState('edit')" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-plus-sign"></span> {{ "ACCOUNT.ADD" | translate }}
+    </button>
+    <button disabled class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-pencil"></span> {{ "ACCOUNT.CREATE" | translate }}
+    </button>
+    <a ng-href="#/reports/chart_of_accounts" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-list"></span> {{ "ACCOUNT.GENERATE" | translate }}
+    </a>
   </div>
 </nav>
 
@@ -53,7 +59,28 @@
                   <input required type="text" id="number" class="form-bhima" ng-model="newAccount.number">
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" ng-if="newAccount.type.type === 'title'">
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="option_is_asset" id="is_asset" value="true" ng-model="newAccount.is_asset" >
+                      {{ "ACCOUNT.IS_ASSET" | translate }}
+                    </label>
+                  </div>
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="option_is_asset" id="is_asset" value="false" ng-model="newAccount.is_asset" >
+                      {{ "ACCOUNT.IS_PASSIVE" | translate }}
+                    </label>
+                  </div>
+                  <div class="radio">
+                    <label>
+                      <input type="radio" name="option_is_asset" id="is_asset" value=null ng-model="newAccount.is_asset" >
+                      {{ "ACCOUNT.IS_NOTHING" | translate }}
+                    </label>
+                  </div>
+                </div>
+
+<!--                 <div class="form-group">
                   <div class="radio">
                     <label>
                       <input type="radio" name="option_fixed" id="fixed" value="true" ng-model="newAccount.fixed" checked>
@@ -66,7 +93,7 @@
                       {{ "ACCOUNT.VARIABLE" | translate }}
                     </label>
                   </div>
-                </div>
+                </div> -->
               </form>
             </div>
           </div>

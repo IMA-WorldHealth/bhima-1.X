@@ -28,14 +28,14 @@ var keys = new KeyRing(uuid);
 /*
  * HTTP Controllers
 */
-exports.initialiseTrialBalance = function (req, res, next) { 
+exports.initialiseTrialBalance = function (req, res, next) {
   trialBalance(req.session.user_id, function (err, result) {
     if (err) { return next(err); }
     res.send(200, result);
   });
 };
 
-exports.submitTrialBalance = function (req, res, next) { 
+exports.submitTrialBalance = function (req, res, next) {
   postToGeneralLedger(req.session.user_id, req.params.key)
   .then(function () {
     res.send(200);
@@ -131,6 +131,7 @@ function areAccountsNull () {
 
   db.execute(sql, function (err, rows) {
     if (err) { d.reject(new error('ERR_QUERY', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
+    console.log('voici le resulatt', rows);
     if (rows.length) { d.reject(new error('ERR_ACCOUNT_NULL', 'Invalid or undefined accounts detected', rows)); }
     d.resolve();
   });

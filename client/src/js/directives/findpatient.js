@@ -14,10 +14,11 @@ angular.module('bhima.directives')
         required : true,
         query : {
           tables : {
-            patient : {columns : ['uuid', 'project_id', 'debitor_uuid', 'first_name', 'last_name', 'sex', 'dob', 'origin_location_id', 'reference']},
+            patient : {columns : ['uuid', 'project_id', 'debitor_uuid', 'first_name', 'last_name', 
+				  'sex', 'dob', 'origin_location_id', 'reference']},
             project : { columns : ['abbr'] },
             debitor : { columns : ['text']},
-            debitor_group : { columns : ['account_id', 'price_list_uuid', 'is_convention']}
+            debitor_group : { columns : ['account_id', 'price_list_uuid', 'is_convention', 'locked']}
           },
           join : [
             'patient.debitor_uuid=debitor.uuid',
@@ -37,7 +38,7 @@ angular.module('bhima.directives')
       };
 
       scope.findPatient = {
-        state : 'id',
+        state : 'name',
         submitSuccess : false,
         
         // #Sorry - string hack
@@ -173,8 +174,10 @@ angular.module('bhima.directives')
       }
 
       function resetSearch() {
-        scope.findPatient.valid = false;
+        scope.findPatient.valid = null;
         scope.findPatient.submitSuccess = false;
+	scope.findPatient.selectedDebtor = null;
+	scope.findPatient.debtorId = null;
         scope.findPatient.debtor = '';
       }
 

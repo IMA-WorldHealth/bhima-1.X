@@ -67,6 +67,51 @@ describe('parser', function () {
       expect(results).to.equal(answer);
     });
 
+    it('should compose a SELECT query on a single table with WHERE conditions including an IN', function () {
+      var query, results, answer;
+
+      query = {
+        tables : {
+          'account' : { columns : ['id', 'account_type_id', 'account_number', 'account_txt', 'locked'] }
+        },
+        where : ['account.account_type_id IN (1,4)', 'AND', 'account.locked=0']
+      };
+
+      results = parser.select(query);
+
+      answer =
+        'SELECT account.id, account.account_type_id, account.account_number, ' +
+	'account.account_txt, account.locked ' +
+        'FROM account ' +
+        'WHERE account.account_type_id IN (1,4) AND account.locked=\'0\';';
+
+      expect(results).to.equal(answer);
+    });
+
+    it('should compose a SELECT query on a single table with WHERE conditions including an IN with strings', function () {
+      var query, results, answer;
+
+      query = {
+        tables : {
+          'account' : { columns : ['id', 'account_type_id', 'account_number', 'account_txt'] },
+	  'account_type' : { columns : ['type::account_type'] }
+        },
+	join : ['account_type.id = acount.account_type_id'],
+        where : ['account.account_type IN (\'income\',\'expense\')']
+      };
+
+      results = parser.select(query);
+
+      answer =
+	"SELECT account.id, account.account_type_id, account.account_number, account.account_txt, " + 
+	"account_type.type as account_type " + 
+	"FROM account " + 
+	"JOIN account_type ON account_type.id = acount.account_type_id " + 
+	"WHERE account.account_type IN ('income','expense');"
+
+      expect(results).to.equal(answer);
+    });
+
     it('should compose a SELECT query on two JOINed tables with nested WHERE conditions', function () {
       var query, results, answer;
 
@@ -153,13 +198,50 @@ describe('parser', function () {
       expect(results).to.equal(answer);
     });
 
+    it('should compose a SELECT query with the LIKE syntax in the WHERE clause', function () {
+      var query, results, answer;
+
+      query = {
+        tables : {
+          'patient' : { columns : ['uuid', 'first_name', 'last_name'] }
+        },
+	where : [ 'patient.last_name LIKE john smith' ]
+      };
+
+      results = parser.select(query);
+
+      answer =
+        'SELECT patient.uuid, patient.first_name, patient.last_name ' +
+        'FROM patient WHERE patient.last_name LIKE \'%john smith%\';';
+
+      expect(results).to.equal(answer);
+    });
+
+    it('should compose a SELECT query with the :: for AS syntax in the selector', function () {
+      var query, results, answer;
+
+      query = {
+        tables : {
+          'patient' : { columns : ['uuid', 'first_name', 'last_name', 'dob::dateOfBirth'] }
+        },
+      };
+
+      results = parser.select(query);
+
+      answer =
+        'SELECT patient.uuid, patient.first_name, patient.last_name, patient.dob as dateOfBirth ' +
+        'FROM patient WHERE 1;';
+
+      expect(results).to.equal(answer);
+    });
+
     it('should compose high complexity SELECT queries', function () {
       var query, results, answer;
 
       query = {
         tables : {
           'enterprise' : { columns : ['id', 'name', 'location_id', 'account_group_id'] },
-          'account_group' : { columns : ['account_number', 'ordering'] }
+          'account_group' : { columns : ['account_number', 'ordering::account_ordering'] }
         },
         where : ['enterprise.id=1', 'AND', ['account_group.account_number<100', 'OR', 'account_group.account_number>=150']],
         join : ['enterprise.account_group_id=account_group.id'],
@@ -172,7 +254,7 @@ describe('parser', function () {
       answer =
         'SELECT enterprise.id, enterprise.name, enterprise.location_id, ' +
           'enterprise.account_group_id, account_group.account_number, ' +
-          'account_group.ordering ' +
+          'account_group.ordering as account_ordering ' +
         'FROM enterprise JOIN account_group ON ' +
           'enterprise.account_group_id=account_group.id ' +
         'WHERE enterprise.id=\'1\' AND ' +
@@ -229,6 +311,20 @@ describe('parser', function () {
       expect(results).to.equal(answer);
     });
 
+    it('should compose an UPDATE query with reserved words', function () {
+      var data, results, answer;
+
+      data = { id : 1, key : 23, title : 'hi'};
+
+      results = parser.update('table', data, 'id');
+
+      answer =
+        'UPDATE table SET `key`=23, title=\'hi\' ' +
+        'WHERE id=1;';
+
+      expect(results).to.equal(answer);
+    });
+
   });
 
   describe('#insert()', function () {
@@ -242,6 +338,19 @@ describe('parser', function () {
       answer =
         'INSERT INTO user (username, email) VALUES ' +
           '(\'axelroad\', \'axel@gmail.com\');';
+
+      expect(results).to.equal(answer);
+    });
+
+    it('should compose an INSERT query with reserved words', function () {
+      var data, results, answer;
+      data = [{ key: '1', index: '12', text : 'hello world'}];
+
+      results = parser.insert('table', data);
+
+      answer =
+        'INSERT INTO table (`key`, `index`, text) VALUES ' +
+          '(\'1\', \'12\', \'hello world\');';
 
       expect(results).to.equal(answer);
     });

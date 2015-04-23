@@ -6,9 +6,9 @@
   <div class="pull-left">
     <ol class="breadcrumb" style="float: right;">
       <!-- <span class="label label&#45;success square">{{ "UTIL.NAVIGATION" | translate }}</span> -->
-      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
       <li><a href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
-      <li><a >{{ "STOCK.MOVEMENT.TITLE" | translate }}</a></li>
+      <li class="active">{{ "STOCK.MOVEMENT.TITLE" | translate }}</li>
     </ol>
   </div>
 
@@ -145,7 +145,7 @@
                               class="form-bhima"
                               ng-model="row.lot"
                               ng-change="stockSelected(row)"
-                              ng-options="lot as (lot.lot_number + ' (' + lot.stock_description + ')') for lot in lots.data"
+                              ng-options="lot as (lot.stock_description + ' (' + lot.lot_number + ')') for lot in lots.data | orderBy : 'stock_description' "
                               >
                               <option value="">--{{"STOCK.MOVEMENT.SELECT_LOT" | translate}} {{session.from.text}}-- {{$scope}}</option>
                             </select>

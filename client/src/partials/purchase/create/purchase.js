@@ -25,8 +25,11 @@ angular.module('bhima.controllers')
       query : {
         identifier : 'uuid',
         tables : {
-          inventory : { columns : ['uuid', 'code', 'text', 'purchase_price', 'type_id'] }
-        }
+          inventory : { columns : ['uuid', 'code', 'text', 'purchase_price', 'type_id', 'group_uuid'] },
+          inventory_group : { columns : ['sales_account', 'stock_account', 'donation_account'] },
+        },
+        join : ['inventory_group.uuid=inventory.group_uuid'],
+        where : ['inventory_group.stock_account<>null']
       }
     };
 
@@ -42,7 +45,8 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           employee : { columns : ['id', 'code', 'prenom', 'name', 'postnom', 'dob', 'creditor_uuid'] }
-        }
+        },
+        where : ['employee.locked<>1']
       }
     };
 
@@ -74,6 +78,7 @@ angular.module('bhima.controllers')
     });
 
     function initialise(model) {
+      $scope.idUser = model.user.data.id;
       angular.extend($scope, model);
       settupSession(session);
     }
@@ -193,12 +198,11 @@ angular.module('bhima.controllers')
           }
         });
 
-        if (!purchaseItem.code) {
+        if (!purchaseItem.code || !purchaseItem.purchase_price) {
           return true;
-        }
+        } 
         return false;
       });
-
       // FIXME
       Object.keys(warnings).forEach(function(key) {
         warnings[key].result = false;
@@ -218,6 +222,8 @@ angular.module('bhima.controllers')
       purchase.creditor_uuid = session.creditor.creditor_uuid;
       purchase.purchaser_id = $scope.user.data.id;
       purchase.project_id = $scope.project.id;
+      purchase.issuer_id = $scope.idUser;
+      purchase.header_id = session.header.id;
       purchase.employee_id = session.is_direct === true ? null : session.employee.id;
       purchase.is_direct = session.is_direct === true ? 1 : 0;
 

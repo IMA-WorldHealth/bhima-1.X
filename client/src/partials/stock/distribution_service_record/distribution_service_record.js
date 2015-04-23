@@ -32,9 +32,7 @@ angular.module('bhima.controllers')
 
     var total = $scope.total = {
       method : {
-        'sales' : totalSales,
-        'patients' : totalPatients,
-        'cost' : totalCost
+        'totalItems' : totalItems
       },
       result : {}
     };
@@ -60,9 +58,6 @@ angular.module('bhima.controllers')
 
     function loadProjects(model) {
       $scope.model = model;
-      // session.project = model.project.data[0].id;
-
-      // TODO Determine best way to wait for page load before requesting data
       select(period[0]);
     }
 
@@ -73,6 +68,7 @@ angular.module('bhima.controllers')
 
     function updateSession(model) {
       $scope.model = model;
+      console.log('Model',$scope.model.sale.data);
       updateTotals();
       session.searching = false;
     }
@@ -110,14 +106,14 @@ angular.module('bhima.controllers')
     function week() {
       $scope.session.param.dateFrom = new Date();
       $scope.session.param.dateTo = new Date();
-      $scope.session.param.dateTo.setDate($scope.session.param.dateTo.getDate() - 7);
+      $scope.session.param.dateFrom.setDate($scope.session.param.dateTo.getDate() - $scope.session.param.dateTo.getDay());
       reset();
     }
 
     function month() {
       $scope.session.param.dateFrom = new Date();
       $scope.session.param.dateTo = new Date();
-      $scope.session.param.dateTo.setDate($scope.session.param.dateTo.getMonth() - 1);
+      $scope.session.param.dateFrom.setDate(1);
       reset();
     }
 
@@ -127,26 +123,8 @@ angular.module('bhima.controllers')
       }
     }
 
-    function totalSales() {
+    function totalItems() {
       return $scope.model.sale.data.length;
-    }
-
-    function totalPatients() {
-      var total = 0, evaluated = {};
-
-      $scope.model.sale.data.forEach(function (sale) {
-        if (evaluated[sale.debitor_uuid]) { return; }
-        total++;
-        evaluated[sale.debitor_uuid] = true;
-      });
-
-      return total;
-    }
-
-    function totalCost() {
-      return $scope.model.sale.data.reduce(function (a, b) {
-        return a + b.cost;
-      }, 0);
     }
 
     $scope.select = select;

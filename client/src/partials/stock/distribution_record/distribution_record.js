@@ -32,9 +32,7 @@ angular.module('bhima.controllers')
 
     var total = $scope.total = {
       method : {
-        'consumptions' : totalSales,
-        'patients' : totalPatients,
-        'cost' : totalCost
+        'totalItems' : totalItems
       },
       result : {}
     };
@@ -60,9 +58,6 @@ angular.module('bhima.controllers')
 
     function loadProjects(model) {
       $scope.model = model;
-      // session.project = model.project.data[0].id;
-
-      // TODO Determine best way to wait for page load before requesting data
       select(period[0]);
     }
 
@@ -103,21 +98,20 @@ angular.module('bhima.controllers')
     function today() {
       $scope.session.param.dateFrom = new Date();
       $scope.session.param.dateTo = new Date();
-      // $scope.session.param.dateTo.setDate($scope.session.param.dateTo.getDate() - 1);
       reset();
     }
 
     function week() {
       $scope.session.param.dateFrom = new Date();
       $scope.session.param.dateTo = new Date();
-      $scope.session.param.dateTo.setDate($scope.session.param.dateTo.getDate() - 7);
+      $scope.session.param.dateFrom.setDate($scope.session.param.dateTo.getDate() - $scope.session.param.dateTo.getDay());
       reset();
     }
 
     function month() {
       $scope.session.param.dateFrom = new Date();
       $scope.session.param.dateTo = new Date();
-      $scope.session.param.dateTo.setDate($scope.session.param.dateTo.getMonth() - 1);
+      $scope.session.param.dateFrom.setDate(1);
       reset();
     }
 
@@ -127,26 +121,8 @@ angular.module('bhima.controllers')
       }
     }
 
-    function totalSales() {
+    function totalItems() {
       return $scope.model.consumption.data.length;
-    }
-
-    function totalPatients() {
-      var total = 0, evaluated = {};
-
-      $scope.model.consumption.data.forEach(function (consumption) {
-        if (evaluated[consumption.debitor_uuid]) { return; }
-        total++;
-        evaluated[consumption.debitor_uuid] = true;
-      });
-
-      return total;
-    }
-
-    function totalCost() {
-      return $scope.model.consumption.data.reduce(function (a, b) {
-        return a + b.cost;
-      }, 0);
     }
 
     $scope.select = select;

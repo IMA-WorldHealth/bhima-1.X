@@ -11,7 +11,7 @@ angular.module('bhima.controllers')
   'uuid',
   'appcache',
   function($scope, $location, $translate, validate, connect, appstate, messenger, util, uuid, Appcache) {
-    var defaultCurrency, defaultCashBox;
+    var defaultCurrency, defaultCashBox, record, record_item;
 
     var dependencies = {},
         session = $scope.session = {},
@@ -103,34 +103,57 @@ angular.module('bhima.controllers')
     };
 
     function payCaution() {
-      var record = {
-        uuid         : uuid(),
-        reference    : 1, // FIXME: Workaround for dead triggers
-        value        : session.payment,
-        project_id   : $scope.project.id,
-        debitor_uuid : $scope.debtor.debitor_uuid,
-        currency_id  : $scope.currency.currency_id,
-        cash_box_id  : $scope.cashbox.id,
-        description  : [$scope.project.abbr + '_CAISSEAUX_CAUTION', $scope.debtor.debitor_uuid, $scope.debtor.first_name, util.sqlDate(new Date())].join('/')
+      record = {
+        project_id      : $scope.project.id,
+        reference       : 1, // FIXME: Workaround for dead triggers
+        uuid            : uuid(),
+        type            : 'E',
+        date            : util.sqlDate(new Date()),
+        debit_account   : $scope.currency.account_id,
+        credit_account  : $scope.debtor.account_id,
+        deb_cred_uuid   : $scope.debtor.debitor_uuid,
+        deb_cred_type   : 'D',
+        currency_id     : $scope.currency.currency_id,
+        cost            : session.payment,
+        cashbox_id      : $scope.cashbox.id,
+        description     : [$scope.project.abbr + '_CAISSEAUX_CAUTION', $scope.debtor.first_name + ' - '+ $scope.debtor.name + ' - ' + $scope.debtor.last_name, util.sqlDate(new Date())].join('/'),
+        is_caution      : 1
+      };
+
+      record_item = {
+        uuid    : uuid(),
+        cash_uuid      : record.uuid,
+        allocated_cost : record.cost
       };
 
       connect.fetch('/user_session')
       .then(function (user) {
         record.user_id = user.id;
-        return connect.post('caution', record);
+        return connect.post('cash', record);
+      })
+      .then(function () {
+        return connect.post('cash_item', record_item);
       })
       .then(function () {
         return connect.fetch('/journal/caution/' + record.uuid);
       })
       .then(function () {
-        messenger.success($translate.instant('CAUTION.SUCCES'));
         $location.path('/invoice/caution/' + record.uuid);
       })
       .catch(handleError);
     }
 
     function handleError() {
-      messenger.danger($translate.instant('CAUTION.DANGER'));
+      connect.delete('posting_journal', 'inv_po_id', [record.uuid])
+      .then(function (){
+        return connect.delete('cash_item', 'cash_uuid', [record.uuid]);
+      })
+      .then(function (){
+        return connect.delete('cash', 'uuid', [record.uuid]);
+      })
+      .then(function(){
+        messenger.danger($translate.instant('CAUTION.DANGER'));
+      });
     }
 
     function load(selectedItem) {

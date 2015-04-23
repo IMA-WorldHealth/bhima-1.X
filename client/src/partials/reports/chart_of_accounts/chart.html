@@ -11,7 +11,8 @@
 <div class="report">
   <div class="reportBody">
     <div class="reportFrame">
-      <h4>{{enterprise.name}}</h4>
+      <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
+      
       <h4>{{ "REPORT.CHART_OF_ACCOUNTS" | translate }} <small> {{timestamp | date}}</small></h4>
         <table id="accTable" class="reportTable">
           <thead>

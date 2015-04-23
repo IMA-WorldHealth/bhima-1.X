@@ -1,5 +1,12 @@
 <!-- Cash receipt template -->
 <div ng-controller="receipt.cash">
+
+  <header>
+    <div class="pull-right">
+      <select class="form-bhima" ng-change="updateCurrency(model.selectedCurrency.id)" ng-model="model.selectedCurrency" ng-options="currency.symbol for currency in model.currency.data"></select>
+    </div>
+  </header>
+
 <div class="row customer-details">
   <div class="col-xs-12">
     <h4 class="invoice-header">{{'INVOICE.CASH_RECEIPT' | translate}}</h4>
@@ -51,29 +58,25 @@
       <tbody class="items">
         <tr ng-repeat-start="invoice in model.cash.allData.cash.data"><td colspan="2"><b>{{'INVOICE.INVOICE_ID' | translate}} {{ project.abbr + invoice.reference }}</b></td></tr>
         <tr ng-repeat-end ng-repeat="item in model.cash.allData['invoiceItem'].data | orderBy: 'code' | filter:{ sale_uuid: invoice.invoice_uuid}"><td>{{item.text}}</td><td>
-        <span ng-bind-html="item.localeCost | intlcurrency:model.cash.cashTransaction.currency_id"></span></td></tr>
+        <span ng-bind-html="item.localeCost | intlcurrency:session.currency_id"></span></td></tr>
       </tbody>
       <tbody class="totals">
       <tr><td class="no-border">{{'INVOICE.TOTAL' | translate }}</td><td>
-      <span ng-bind-html="model.cash.invoice.localeCost | intlcurrency:model.cash.cashTransaction.currency_id"></span></td></tr>
-        <tr><td class="no-border">{{'INVOICE.AMOUNT_RECEIVED' | translate }}</td><td><span ng-bind-html="model.cash.cashTransaction.cost  | intlcurrency:model.cash.cashTransaction.currency_id"></span></td></tr>
-        <tr><td class="no-border">{{'INVOICE.BALANCE_DUE' | translate }}</td><td><span ng-bind-html="model.cash.invoice.localeBalance | intlcurrency:model.cash.cashTransaction.currency_id"></span></td></tr>
+      <span ng-bind-html="model.cash.invoice.localeCost | intlcurrency:session.currency_id"></span></td></tr>
+        <tr><td class="no-border">{{'INVOICE.AMOUNT_RECEIVED' | translate }}</td><td><span ng-bind-html="session.cashTransactionCost  | intlcurrency:session.currency_id"></span></td></tr>
+        <tr><td class="no-border">{{'INVOICE.BALANCE_DUE' | translate }}</td><td><span ng-bind-html="model.cash.invoice.localeBalance | intlcurrency:session.currency_id"></span></td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
-<div class="row">
-  <div class="col-xs-6">
-    <div class="pull-right">
-      <b>{{"INVOICE.SIGN_HEADER_AUXI" | translate}}</b>
-    </div>
-  </div>
-  <div class="col-xs-6">
-    <div class="pull-left">
-     <b>{{"INVOICE.SIGN_CLIENT" | translate}}</b>
-    </div>
+<div class="signatures">
+  <h5>{{ "UTIL.SIGNATURES" | translate }}</h5>
+
+  <div class="signature-box-wide">
+    <label>{{ "INVOICE.SIGN_HEADER_AUXI" | translate }}</label> <label style="float: right;">{{ "INVOICE.SIGN_CLIENT" | translate }}</label>
+    <br>
+    <div class="signature-line"></div>
   </div>
 </div>
-</div>
-<!-- End cash template -->
+<!-- End cash template

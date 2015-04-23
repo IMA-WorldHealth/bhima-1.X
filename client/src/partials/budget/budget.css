@@ -67,3 +67,18 @@
 .selected { 
   font-weight: bold;
 }
+
+th.budget, 
+td.budget {
+    padding: 0 6px;
+}
+
+th.budget-cash, 
+td.budget-cash {
+    padding: 0 6px;
+    text-align: right;
+}
+
+.smaller {
+    font-size: 85%;
+}

@@ -7,27 +7,27 @@ angular.module('bhima.controllers')
 
     config = $scope.config = [
       {
-        ico : 'glyphicon-list-alt',
+        ico : 'glyphicon-asterisk',
         key : 'INVENTORY.MAIN.ADD_ITEM',
         path : 'register'
       },
       {
-        ico : 'glyphicon-list-alt',
+        ico : 'glyphicon-asterisk',
         key : 'INVENTORY.MAIN.UPDATE_ITEM',
         path : 'update'
       },
       {
-        ico : 'glyphicon-list-alt',
+        ico : 'glyphicon-asterisk',
         key : 'INVENTORY.MAIN.CONFIG_GROUPS',
         path : 'groups'
       },
       {
-        ico : 'glyphicon-list-alt',
+        ico : 'glyphicon-asterisk',
         key : 'INVENTORY.MAIN.CONFIG_TYPES',
         path : 'types'
       },
       {
-        ico : 'glyphicon-list-alt',
+        ico : 'glyphicon-asterisk',
         key : 'INVENTORY.MAIN.VIEW',
         path : 'view'
       },
@@ -39,7 +39,7 @@ angular.module('bhima.controllers')
     ];
 
     $scope.loadPath = function loadPath(item) {
-      $location.path($location.path() + '/' + item.path);
+      $location.path($location.path() + item.path);
     };
   }
 ]);

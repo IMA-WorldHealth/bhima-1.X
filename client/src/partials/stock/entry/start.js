@@ -45,17 +45,7 @@ angular.module('bhima.controllers')
       }
     };
 
-    dependencies.names = {
-      query : {
-        identifier : 'uuid',
-        tables : {
-          'purchase' : {
-            columns : ['uuid', 'reference', 'project_id']
-          }
-        },
-        where : ['purchase.closed=0']
-      }
-    };
+    dependencies.names = { query : 'reports/purchase_order/'};
 
     dependencies.employees = {
       query : {
@@ -101,6 +91,7 @@ angular.module('bhima.controllers')
       // PAX2 or HBB1235
       if (!order || !order.label || order.label.length < 1) { return messenger.danger($translate('STOCK.ENTRY.ERR_EMPTY_PARAMTER')); }
 
+      session.selected = order;
       session.cfg.purchase_uuid = order.uuid;
       session.cfg.label = order.label;
 
@@ -120,6 +111,7 @@ angular.module('bhima.controllers')
         find.valid = false;
         error(err);
       });
+
     };
 
     find.fn.activate = function activate () {
@@ -212,12 +204,9 @@ angular.module('bhima.controllers')
       totals.price = 0;
       totals.purchase_price = 0;
       totals.items = session.order.data.length;
-
       session.order.data.forEach(function (drug) {
-
         totals.quantity += precision.round(drug.quantity);
         totals.price += precision.round(drug.unit_price * drug.quantity);
-
         drug.totalQuantity = drug.lots.data.reduce(sum, 0);
         drug.validLots = valid(drug.lots) && drug.totalQuantity === drug.quantity;
       });
@@ -226,8 +215,12 @@ angular.module('bhima.controllers')
     function valid (lots) {
       var isDef = angular.isDefined;
       return lots.data.every(function (row) {
+        var newDate = new Date().getTime(),
+          expirate = new Date(row.expiration_date).getTime(),
+          diffDays = (parseInt((expirate-newDate)/(24*3600*1000)));
+ 
         var n = parseFloat(row.quantity);
-        return n > 0 && isDef(row.lot_number) &&
+        return n > 0 && (diffDays > 0) && isDef(row.lot_number) &&
           isDef(row.expiration_date) &&
           !!row.lot_number;
       });
@@ -278,7 +271,6 @@ angular.module('bhima.controllers')
       session.lots.forEach(function (stock) {
         stocks.push({
           inventory_uuid      : stock.inventory_uuid,
-          //purchase_price      : stock.purchase_price,
           expiration_date     : util.sqlDate(stock.expiration_date),
           entry_date          : util.sqlDate(new Date()),
           lot_number          : stock.lot_number,
@@ -307,6 +299,16 @@ angular.module('bhima.controllers')
       return movements;
     }
 
+    function setPurchasePrice () {
+      session.order.data.forEach(function (item) {
+        var obj = {
+          uuid           : item.inventory_uuid,
+          purchase_price : item.unit_price
+        };
+        connect.put('inventory', [obj], ['uuid']);
+      });
+    }
+
     $scope.accept = function () {
       var document_id = uuid();
       var stock = processStock();
@@ -318,6 +320,7 @@ angular.module('bhima.controllers')
       .then(function () {
         return connect.basicPost('purchase', [{ uuid : session.cfg.purchase_uuid, closed : 1 }], ['uuid']);
       })
+      .then(setPurchasePrice)
       .then(function () {
         messenger.success($translate.instant('STOCK.ENTRY.WRITE_SUCCESS'));
       })

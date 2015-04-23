@@ -134,7 +134,7 @@ angular.module('bhima.controllers')
       })
       .then(function () {
         // navigate to invoice
-        $location.path('/invoice/transfer/' + pcash.uuid);
+        $location.path('/invoice/pcash_transfert/' + pcash.uuid);
       })
       .finally();
     };

@@ -12,7 +12,8 @@ angular.module('bhima.controllers')
   function ($scope, $q, connect, appstate, validate, messenger, util, Appcache,exchange) {
     var session = $scope.session = {};
     var dependencies = {};
-    var cache = new Appcache('income_report');
+    var cache = new Appcache('income_report'),
+      state = $scope.state;
     session.dateFrom = new Date();
     session.dateTo = new Date();
 
@@ -30,7 +31,8 @@ angular.module('bhima.controllers')
             columns : ['symbol']
           }
         },
-        join : ['cash_box.id=cash_box_account_currency.cash_box_id', 'currency.id=cash_box_account_currency.currency_id' ]
+        join : ['cash_box.id=cash_box_account_currency.cash_box_id', 
+    'currency.id=cash_box_account_currency.currency_id' ]
       }
     };
     
@@ -72,27 +74,33 @@ angular.module('bhima.controllers')
     }
 
     function setSelectedCash (obj) {
+      $scope.state = 'generate';
       session.selectedCash = obj;
       cache.put('selectedCash', obj);
       fill();
     }
 
     function fill () {
-      var request;
 
-      request = {
+      var request = {
         dateFrom : util.sqlDate(session.dateFrom),
         dateTo : util.sqlDate(session.dateTo),
-        account_id : session.selectedCash.account_id
       };
+
+      // Make sure the account_id has a valid value
+      if (session.selectedCash) {
+        request.account_id = session.selectedCash.account_id;
+      }
+      else {
+        request.account_id = null;
+      }
 
       dependencies.records.query = '/reports/income_report/?' + JSON.stringify(request);      
       validate.refresh(dependencies, ['records','currencies'])
       .then(prepareReport)
       .then(convert)
       .catch(function (err) {
-       messenger.danger(err.toString());
-
+        messenger.danger(err.toString());
       });
     }
 
@@ -115,11 +123,23 @@ angular.module('bhima.controllers')
             transaction.primary_cash_uuid = transaction.document_uuid;
           }          
           session.sum_debit += exchange.convertir(transaction.debit, transaction.currency_id, session.currency, new Date()); //transaction.trans_date
-          console.log('From '+transaction.currency_id+' To '+session.currency);
+          // console.log('From '+transaction.currency_id+' To '+session.currency);
         });        
       }
     }
+
+    $scope.print = function print() {
+      window.print();
+    };
+
+   function reconfigure () {
+      $scope.state = null;
+      $scope.session.selectedCash = null;
+      $scope.session.dateFrom = null;
+      $scope.session.dateTo = null;
+    }
+
     $scope.convert = convert;
-    
+    $scope.reconfigure = reconfigure;
   }
 ]);

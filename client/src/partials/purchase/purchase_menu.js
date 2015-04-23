@@ -14,11 +14,6 @@ angular.module('bhima.controllers')
       },
 
       {
-        key : $translate.instant('PURCHASE_MENU.CONFIRM'),
-        link : '/purchase/confirm/'
-      },
-
-      {
         key : $translate.instant('PURCHASE_MENU.VIEW'),
         link : '/purchase/view/'
       }
