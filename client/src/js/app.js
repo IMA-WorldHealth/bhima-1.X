@@ -342,6 +342,10 @@
       controller : 'purchase_order',
       templateUrl : 'partials/reports/purchase_order/purchase_order.html'
     })
+    .when('/reports/donation_confirmation', {
+      controller : 'donation_confirmation',
+      templateUrl : 'partials/reports/donation_confirmation/donation_confirmation.html'
+    })    
     .when('/reports/expiring/:option', {
       controller : 'expiring.option',
       templateUrl : 'partials/reports/expiring_stock/expiring_stock_view.html'

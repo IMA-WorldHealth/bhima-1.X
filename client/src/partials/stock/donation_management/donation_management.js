@@ -267,15 +267,19 @@ angular.module('bhima.controllers')
         totals.price += Math.round(donation.purchase_price * donation.quantity);
 
         donation.totalQuantity = donation.lots.data.reduce(sum, 0);
-        donation.validLots = donation.totalQuantity === donation.quantity;
+        donation.validLots = valid(donation.lots) && donation.totalQuantity === donation.quantity;
       });
     }
 
     function valid (lots) {
       var isDef = angular.isDefined;
       return lots.data.every(function (row) {
+        var newDate = new Date().getTime(),
+          expirate = new Date(row.expiration_date).getTime(),
+          diffDays = (parseInt((expirate-newDate)/(24*3600*1000)));
+     
         var n = parseFloat(row.quantity);
-        return n > 0 && isDef(row.lot_number) &&
+        return n > 0 && (diffDays > 0) && isDef(row.lot_number) &&
           isDef(row.expiration_date) &&
           !!row.lot_number;
       });
