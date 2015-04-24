@@ -2016,6 +2016,7 @@
    "IS_ADVANCE"     : "Is an advance?",
    "IS_DISCOUNT"    : "Is a discount?",
    "IS_PERCENT"     : "Is a percent (%)?",
+   "IS_SOCIAL_CARE" : "is_social_care ?",
    "LABEL"          : "Rubric",
    "NB"             : "N",
    "NEW"            : "New Rubric",
