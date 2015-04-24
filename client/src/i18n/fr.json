@@ -2016,6 +2016,7 @@
    "IS_ADVANCE"     : "Est-ce une avance ?",
    "IS_DISCOUNT"    : "Est-ce une réduction ?",
    "IS_PERCENT"     : "Est-ce en(%) ?",
+   "IS_SOCIAL_CARE" : "Est une charge sociale ?",
    "LABEL"          : "Rubrique",
    "NB"             : "N",
    "NEW"            : "Nouvelle Rubrique",
