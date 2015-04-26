@@ -728,6 +728,7 @@
    "HELP_TXT_4" : "Crée un nouveau groupe de debiteur",
    "INFO"       : "Information du Groupe",
    "NEW"        : "Nouveau Groupe de Débiteur",
+   "SUCCES"     : "Succès",
    "TITLE"      : "Gestion des Groupes des Débiteurs"
    },
 "DEPOT": {
