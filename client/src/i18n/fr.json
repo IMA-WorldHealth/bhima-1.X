@@ -1845,7 +1845,7 @@
    },
 "PURCHASE": {
    "AUTHORIZATION" : {
-      "TITLE" : "Authorisation Commande Achat"
+      "TITLE" : "Autorisation Commande Achat"
     },
    "CONFIRM": {
       "BY"             : "par",
@@ -1853,7 +1853,7 @@
       "CONFIRM_PAY_OF" : "Confirmation paiement de",
       "DETAILS"        : "Details",
       "FILTER"         : "Filtre de recherche",
-      "TITLE"          : "Confirmation Commande Achats"
+      "TITLE"          : "Confirmation des Commande d'achats"
       },
    "CREATE": {
       "ADD_LINE_ITEM"      : "Ajouter item",
@@ -1901,7 +1901,7 @@
     }
    },
 "PURCHASE_MENU": {
-   "AUTHORIZATION"    : "Authorisation des commandes d'achats",
+   "AUTHORIZATION"    : "Autorisation des commandes d'achats",
    "CONFIRM"          : "Confirmer paiement",
    "DESCRIPTION"      : "Ce module vous permet de gerer les commandes d'achats",
    "OPERATION"        : "Operations",
@@ -2557,7 +2557,7 @@
    "ACCOUNT_STATEMENT"         : "Rapport Compte",
    "ADMIN"                     : "Admin",
    "ALL_TRANSACTIONS"          : "Toutes les Transactions",
-   "AUTHORIZE_PURCHASE"        : "Authorisation Commande Achat",
+   "AUTHORIZE_PURCHASE"        : "Autorisation Commande Achat",
    "BALANCE_MENSUELLE"         : "Rapport Balance Mensuelle",
    "BALANCE_SHEET"             : "Feuille de Balance",
    "BENEFICIARY"               : "Bénéficiaire",
@@ -2572,7 +2572,7 @@
    "CONFIG_ACCOUNTING"         : "Configuration des comptes",
    "CONFIG_RUBRIC"             : "Configuration des rubriques",
    "CONFIG_TAX"                : "Configuration des taxes",
-   "CONFIRM_PURCHASE_ORDER"    : "Confirmation de la commande d'achats",
+   "CONFIRM_PURCHASE_ORDER"    : "Confirmation des commandes d'achats",
    "COST_CENTER_MGMT"          : "Centres des coûts",
    "COTISATION_MANAGEMENT"     : "Gestion des cotisations",
    "CREDITOR_GRP"              : "Groupe Créditeur",
