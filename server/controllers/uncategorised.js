@@ -1486,4 +1486,37 @@ exports.listSubsidies = function (req, res, next) {
   .done();
 };
 
+exports.getClassSolde = function (req, res, next) {
 
+    var account_class = req.params.account_class,
+        fiscal_year_id = req.params.fiscal_year;
+    
+    var sql =
+      'SELECT `ac`.`id`, `ac`.`account_number`, `ac`.`account_txt`, `t`.`fiscal_year_id`, `t`.`debit`, `t`.`credit`, `t`.`debit_equiv`, `t`.`credit_equiv`, `t`.`currency_id` ' +
+      'FROM (' +
+        '(' +
+          'SELECT `account`.`id`, `posting_journal`.`fiscal_year_id`, `posting_journal`.`project_id`, `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, ' +
+            0 + ' AS debit, ' + 0 + ' AS credit, ' +
+            'SUM(`posting_journal`.`debit_equiv`) AS `debit_equiv`,' +
+            'SUM(`posting_journal`.`credit_equiv`) AS `credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`deb_cred_uuid`, `posting_journal`.`currency_id`, ' +
+            '`posting_journal`.`doc_num`, `posting_journal`.`trans_id`, `posting_journal`.`description`, `posting_journal`.`comment` ' +
+          'FROM `posting_journal` JOIN `account` ON `account`.`id`=`posting_journal`.`account_id` WHERE `account`.`classe`=? GROUP BY `posting_journal`.`account_id` ' +
+        ') UNION ALL (' +
+          'SELECT `account`.`id`, `general_ledger`.`fiscal_year_id`, `general_ledger`.`project_id`, `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, '+
+            0 + ' AS credit, ' + 0 + ' AS debit, ' +
+            'SUM(`general_ledger`.`debit_equiv`) AS `debit_equiv`, ' +
+            'SUM(`general_ledger`.`credit_equiv`) AS `credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`deb_cred_uuid`, `general_ledger`.`currency_id`, ' +
+            '`general_ledger`.`doc_num`, `general_ledger`.`trans_id`, `general_ledger`.`description`, `general_ledger`.`comment` ' +
+          'FROM `general_ledger` JOIN `account` ON `account`.`id`=`general_ledger`.`account_id` WHERE `account`.`classe`=? GROUP BY `general_ledger`.`account_id` ' +
+        ')' +
+      ') AS `t`, `account` AS `ac` ' +
+      'WHERE `t`.`account_id` = `ac`.`id` AND `ac`.`classe`=? AND t.fiscal_year_id = ? ';
+  
+  db.exec(sql, [account_class, account_class, account_class, fiscal_year_id])
+  .then(function (data) {
+    res.send(data);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+
+};
