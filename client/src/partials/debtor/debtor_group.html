@@ -99,10 +99,8 @@
             <div class="form-group">
               <label class="col-xs-2 control-label">{{ "COLUMNS.PRICE_LIST" | translate }}</label>
               <div class="col-xs-10">
-                <!-- note: filter off the title accounts -->
-                <select name="group-account" class="form-bhima" ng-model="newGroup.price_list_uuid">
-                  <option value="" disabled="disabled">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
-                  <option ng-repeat="pl in price_list.data | orderBy:'title'" value='{{pl.uuid}}'>{{formatPriceList(pl)}}</option>
+                <select class="form-bhima" ng-model="newGroup.price_list_uuid" ng-options="pl.uuid as pl.title for pl in price_list.data">
+                  <option value="">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
                 </select>
               </div>
             </div>
@@ -193,10 +191,8 @@
             <div class="form-group">
               <label class="col-xs-2 control-label">{{ "COLUMNS.PRICE_LIST" | translate }}</label>
               <div class="col-xs-10">
-                <!-- note: filter off the title accounts -->
-                <select name="group-account" class="form-bhima" ng-model="editGroup.price_list_uuid">
-                  <option value="" disabled="disabled">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
-                  <option ng-repeat="pl in price_list.data | orderBy:'title'" value='{{pl.uuid}}'>{{formatPriceList(pl)}}</option>
+                <select class="form-bhima" ng-model="editGroup.price_list_uuid" ng-options="pl.uuid as pl.title for pl in price_list.data">
+                  <option value="">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
                 </select>
               </div>
             </div>
