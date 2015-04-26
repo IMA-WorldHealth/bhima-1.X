@@ -728,6 +728,7 @@
    "HELP_TXT_4" : "Create a new debitor group",
    "INFO"       : "Group Information",
    "NEW"        : "New Debtor Group",
+   "SUCCES"     : "success",   
    "TITLE"      : "Debtor Group Management"
    },
 "DEPOT": {
