@@ -176,4 +176,8 @@ exports.initialise = function (app) {
   app.get('/getEmployeeCotisationPayment/:id', uncategorised.listEmployeeCotisationPayments);
 
   app.get('/getSubsidies/', uncategorised.listSubsidies);
+
+  // Fiscal Year Resultat
+  app.get('/getClassSolde/:account_class/:fiscal_year', uncategorised.getClassSolde);
+  app.post('/posting_fiscal_resultat/', fiscal.fiscalYearResultat);
 };
