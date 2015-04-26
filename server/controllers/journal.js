@@ -30,11 +30,12 @@ check = {
     var escaped_date, sql;
     escaped_date = sanitize.escape(get.date(date));
     sql =
-      'SELECT `period`.`id`, `fiscal_year_id` ' +
+      'SELECT `period`.`id`, `period`.`fiscal_year_id` ' +
       'FROM `period` ' +
+      'JOIN `fiscal_year` ON `fiscal_year`.`id`=`period`.`fiscal_year_id` '+
       'WHERE `period`.`period_start` <=' + escaped_date + ' AND ' +
         '`period`.`period_stop` >=' + escaped_date + ' AND ' +
-        '`period`.`locked` = 0;\n';
+        '`period`.`locked` = 0 AND `fiscal_year`.`locked`=0;\n';
     return db.exec(sql)
     .then(function (rows) {
       if (rows.length === 0) {
@@ -147,9 +148,10 @@ get = {
   period : function (date) {
     // gets the currency period from a mysql-compatible date.
     var sql =
-      'SELECT `id`, `fiscal_year_id` FROM `period` ' +
-      'WHERE `period_start` <= ' + sanitize.escape(get.date(date)) + ' AND ' +
-        '`period_stop` >= ' + sanitize.escape(get.date(date)) + ';';
+      'SELECT `period`.`id`, `period`.`fiscal_year_id` FROM `period` ' +
+      'JOIN `fiscal_year` ON `fiscal_year`.`id`=`period`.`fiscal_year_id` ' +
+      'WHERE `fiscal_year`.`locked`=0 AND (`period_start` <= ' + sanitize.escape(get.date(date)) + ' AND ' +
+        '`period_stop` >= ' + sanitize.escape(get.date(date)) + ');';
 
     return db.exec(sql)
     .then(function (rows) {
@@ -3993,6 +3995,210 @@ function handleCancelSupport (id, user_id, details, done) {
   }
 }
 
+function handleFiscalYearResultat (id, user_id, data, done) {
+  /*
+  * param id : new fiscal year ID
+  * param user_id : user ID
+  * param data : useful data
+  */
+  var cfg = {},
+      reference,
+      resAccount = data.resultat_account,
+      array6 = data.class6,
+      array7 = data.class7;
+
+  getOrigin()
+  .spread(getDetails)
+  .then(getTransId)
+  .then(function () {
+    return postingResultat(resAccount);
+  })
+  .then(function (res) {
+    return done(null, res);
+  })
+  .catch(catchError);
+
+  function getOrigin () {
+    cfg.user_id = user_id;
+    cfg.project_id = 1; // HBB by default
+    return q([get.origin('journal'), get.period(get.date())]);
+  }
+
+  function getDetails (originId, periodObject) {
+    cfg.originId = originId;
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+    return get.transactionId(cfg.project_id);
+  }
+
+  function getTransId (trans_id) {
+    cfg.trans_id = trans_id;
+    cfg.descrip =  'New Fiscal Year/' + new Date().toISOString().slice(0, 10).toString();
+  }
+
+  function postingResultat (resAccount) {
+    var processClass6 = array6.map(function (account6) {
+      return processDebCred6(resAccount.id, account6);
+    });
+
+    var processClass7 = array7.map(function (account7) {
+      return processDebCred7(resAccount.id, account7);
+    });
+
+    return q.all([processClass6, processClass6]);
+  }
+
+  function processDebCred6 (resultatAccount, class6Account) {
+    var bundle = {
+          class6Account : class6Account,
+          solde         : class6Account.debit_equiv - class6Account.credit_equiv,
+          currency_id   : class6Account.currency_id
+        };
+
+    if (bundle.solde > 0) {
+      return q.all([debit(resultatAccount, bundle), credit(bundle.class6Account.id, bundle)]);
+    } else if (bundle.solde < 0) {
+      return q.all([debit(bundle.class6Account.id, bundle), credit(resultatAccount, bundle)]);
+    }
+
+    function debit (accountId, bundle) {
+      var sql =
+        'INSERT INTO posting_journal '+
+        '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+        '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) '+
+        'SELECT '+
+          [
+            sanitize.escape(uuid()),
+            cfg.project_id,
+            cfg.fiscalYearId,
+            cfg.periodId,
+            cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip)
+          ].join(',') + ', `account`.`id`, ' +
+          [
+            0, Math.abs(bundle.solde),
+            0, Math.abs(bundle.solde),
+            bundle.currency_id, 
+            'null'
+          ].join(',') +
+          ', null, ' +
+          [
+            'null',
+            cfg.originId,
+            cfg.user_id
+          ].join(',') +
+        ' FROM `account` WHERE `account`.`id`= ' + sanitize.escape(accountId);
+      return db.exec(sql);
+    }
+
+    function credit (accountId, bundle) {
+      var sql =
+        'INSERT INTO posting_journal ' +
+        '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+        '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
+        'SELECT ' +
+          [
+            sanitize.escape(uuid()),
+            cfg.project_id,
+            cfg.fiscalYearId,
+            cfg.periodId,
+            cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip)
+          ].join(',') + ', `account`.`id`, ' +
+          [
+            Math.abs(bundle.solde), 0,
+            Math.abs(bundle.solde), 0,
+            bundle.currency_id
+          ].join(',') +
+          ', null, null, ' +
+          [
+            'null',
+            cfg.originId,
+            user_id
+          ].join(',') +
+        ' FROM `account` WHERE `account`.`id`= ' + sanitize.escape(accountId);
+      return db.exec(sql);
+    }
+  }
+
+  function processDebCred7 (resultatAccount, class7Account) {
+    var bundle = {
+          class7Account : class7Account,
+          solde         : class7Account.credit_equiv - class7Account.debit_equiv,
+          currency_id   : class7Account.currency_id
+        };
+
+    if (bundle.solde > 0) {
+      return q.all([debit(bundle.class7Account.id, bundle), credit(resultatAccount, bundle)]);
+    } else if (bundle.solde < 0) {
+      return q.all([debit(resultatAccount, bundle), credit(bundle.class7Account.id, bundle)]);
+    }
+
+    function debit (accountId, bundle) {
+      var sql =
+        'INSERT INTO posting_journal '+
+        '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+        '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) '+
+        'SELECT '+
+          [
+            sanitize.escape(uuid()),
+            cfg.project_id,
+            cfg.fiscalYearId,
+            cfg.periodId,
+            cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip)
+          ].join(',') + ', `account`.`id`, ' +
+          [
+            0, Math.abs(bundle.solde),
+            0, Math.abs(bundle.solde),
+            bundle.currency_id, 
+            'null'
+          ].join(',') +
+          ', null, ' +
+          [
+            'null',
+            cfg.originId,
+            cfg.user_id
+          ].join(',') +
+        ' FROM `account` WHERE `account`.`id`= ' + sanitize.escape(accountId);
+      return db.exec(sql);
+    }
+
+    function credit (accountId, bundle) {
+      var sql =
+        'INSERT INTO posting_journal ' +
+        '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+        '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
+        'SELECT ' +
+          [
+            sanitize.escape(uuid()),
+            cfg.project_id,
+            cfg.fiscalYearId,
+            cfg.periodId,
+            cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip)
+          ].join(',') + ', `account`.`id`, ' +
+          [
+            Math.abs(bundle.solde), 0,
+            Math.abs(bundle.solde), 0,
+            bundle.currency_id
+          ].join(',') +
+          ', null, null, ' +
+          [
+            'null',
+            cfg.originId,
+            user_id
+          ].join(',') +
+        ' FROM `account` WHERE `account`.`id`= ' + sanitize.escape(accountId);
+      return db.exec(sql);
+    }
+  }
+
+  function catchError (err) {
+    console.warn(err);
+  }
+}
+
 
 
 table_router = {
@@ -4028,7 +4234,8 @@ table_router = {
   'reversing_stock'         : handleReversingStock,
   'cash_return'             : handleCashReturn,
   'advance_paiment'         : handleAdvancePaiment,
-  'cancel_support'          : handleCancelSupport
+  'cancel_support'          : handleCancelSupport,
+  'fiscal_year_resultat'    : handleFiscalYearResultat
 };
 
 

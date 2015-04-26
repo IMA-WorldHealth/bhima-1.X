@@ -1,5 +1,6 @@
 angular.module('bhima.controllers')
 .controller('fiscal.create', [
+  '$q',
   '$scope',
   '$http',
   '$translate',
@@ -7,8 +8,9 @@ angular.module('bhima.controllers')
   'appstate',
   'connect',
   'messenger',
-  function ($scope, $http, $translate, validate, appstate, connect, messenger) {
+  function ($q, $scope, $http, $translate, validate, appstate, connect, messenger) {
     var data,
+        posting = $scope.posting = { rows : [] },
         imports = $scope.$parent,
         session = $scope.session = {},
         dependencies = {};
@@ -31,6 +33,10 @@ angular.module('bhima.controllers')
         key : 'FISCAL_YEAR.CREATE_OPENING_BALANCES'
       },
       {
+        id : '2c',
+        key : 'FISCAL_YEAR.CREATE_OPENING_SOLDE'
+      },
+      {
         id : '3',
         key : 'FISCAL_YEAR.CREATE_SUCCESS'
       }
@@ -43,6 +49,7 @@ angular.module('bhima.controllers')
     $scope.stepOne = stepOne;
     $scope.stepTwo = stepTwo;
     $scope.stepThree = stepThree;
+    $scope.stepFour = stepFour;
     $scope.submitFiscalYearData = submitFiscalYearData;
 
     // dependencies
@@ -59,6 +66,15 @@ angular.module('bhima.controllers')
         join : ['account.account_type_id=account_type.id'],
         where : [['account_type.type=balance', 'OR', 'account_type.type=title'],
                 'AND']
+      }
+    };
+
+    dependencies.resultatAccount = {
+      query : {
+        tables : {
+          account : { columns : ['id', 'account_number', 'account_txt'] }
+        },
+        where : ['account.classe=1']
       }
     };
 
@@ -170,9 +186,101 @@ angular.module('bhima.controllers')
       $scope.step = steps[hasPreviousYear ?  1 : 2];
     }
 
-    // STEP 3: submits the year details
-    function stepThree() {
-      $scope.step = steps[3];
+    // STEP 3: opening with resultat
+    function stepThree(id) {
+      var fy = getFiscalYear(id);
+      session.previous_fiscal_year = fy.fiscal_year_txt;
+      session.previous_fiscal_year_id = fy.id;
+
+      getSolde(6, fy.id)
+      .then(function (data6) {
+        session.array6 = data6.data;
+        return getSolde(7, fy.id);
+      })
+      .then(function (data7) {
+        session.array7 = data7.data;
+      })
+      .then(function () {
+        session.solde6 = session.array6.reduce(sumDebMinusCred, 0);
+        session.solde7 = session.array7.reduce(sumCredMinusDeb, 0);
+        observation();
+      });
+
+      // load view
+      $scope.step = closePreviousFY() ? steps[3] : steps[1];
+    }
+
+    function closePreviousFY () {
+      var res = confirm($translate.instant('FISCAL_YEAR.CONFIRM_CLOSING'));
+      if (res) {
+        var updateFY = {
+          id : session.previous_fiscal_year_id,
+          locked : 1
+        };
+        connect.put('fiscal_year', [updateFY], ['id']);
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    function observation () {
+      if ((session.solde7 - session.solde6) > 0) {
+        session.observation = 1;
+      } else {
+        session.observation = -1;
+      }
+    }
+
+    function sumCredMinusDeb (a, b) {
+      return (b.credit_equiv - b.debit_equiv) + a;
+    }
+
+    function sumDebMinusCred (a, b) {
+      return (b.debit_equiv - b.credit_equiv) + a;
+    }
+
+    function getFiscalYear(id) {
+      return $scope.fiscal.get(id);
+    }
+
+    function getSolde (classe, fy) {
+      return $http.get('/getClassSolde/'+classe+'/'+fy)
+      .success(function (data) {
+        return data;
+      });
+    }
+
+    $scope.formatAccount = function formatAccount (ac) {
+      return '['+ac.account_number+'] => '+ac.account_txt;
+    };
+
+    function postingNewFiscalYear () {
+      submitFiscalYearData()
+      .then(function (id) {
+        var data = {
+          new_fy_id : id,
+          user_id   : session.user_id,
+          resultat  : {
+            resultat_account : session.resultat_account,
+            class6           : session.array6,
+            class7           : session.array7
+          }
+        };
+        $http.post('/posting_fiscal_resultat/', { params: 
+          {
+            new_fy_id : data.new_fy_id,
+            user_id : data.user_id,
+            resultat : data.resultat
+          }
+        });
+      });
+    }
+    // END STEP 3
+
+    // STEP 4: submits the year details
+    function stepFour() {
+      $scope.step = steps[4];
     }
 
     // returns true if the fiscal year is for 12 months
@@ -203,6 +311,7 @@ angular.module('bhima.controllers')
 
     // submits the fiscal year to the server all at once
     function submitFiscalYearData() {
+      var def = $q.defer();
       var bundle = connect.clean(data);
       var hasPreviousYear = angular.isDefined(bundle.previous_fiscal_year);
 
@@ -251,13 +360,16 @@ angular.module('bhima.controllers')
       function postCreateFiscalYear () {
         $http.post('/fiscal/create', bundle)
         .success(function (results) {
-          stepThree();
+          stepFour();
           $scope.$emit('fiscal-year-creation', results.id);
+          def.resolve(results.id);
         })
         .error(function (err) {
           throw err;
         });
       }
+
+      return def.promise;
     }
 
     function sumObjectProperty (objArray, property) {
@@ -288,6 +400,9 @@ angular.module('bhima.controllers')
 
     // listen for refresh chime
     $scope.$on('fiscal-year-create-refresh', forceRefresh);
+
+    // Expose 
+    $scope.postingNewFiscalYear = postingNewFiscalYear;
 
     // collect the enterprise id and load the controller
     appstate.register('enterprise', function (enterprise) {
