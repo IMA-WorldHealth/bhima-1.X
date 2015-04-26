@@ -5986,12 +5986,6 @@ ADD `confirmed_by` int unsigned not null;
 -- Updates donations structure
 --
 -- ADD 'confirmed_by' field
---
--- Date: 2015-04-17
--- By: Chris LOMAME
-
-USE bhima;
-
 ALTER TABLE `donations`
 ADD `confirmed_by` int unsigned not null;
 
@@ -6002,3 +5996,33 @@ ADD `confirmed_by` int unsigned not null;
 INSERT INTO `unit` VALUES
 (102,'Report Donation Confirmation','TREE.REPORT_DONATION_CONFIRM','',10,0,'/partials/reports/donation_confirmation/','reports/donation_confirmation/');
 
+
+-- Updates rubric structure
+--
+-- ADD 'is_social_care' field
+--
+-- Date: 2015-04-17
+-- By: Chris LOMAME
+
+USE bhima;
+
+ALTER TABLE `rubric`
+ADD `is_social_care` BOOLEAN NULL;
+
+-- Insert in table tax_ipr
+-- 6.31.11.1.-Ordonnace-loi-du-23-fevrier-2013_Impots-sur-les-revenus--modifications-
+--
+-- Date: 2015-04-22
+-- By: Chris LOMAME
+
+INSERT INTO `taxe_ipr` (`id`, `taux`, `tranche_annuelle_debut`, `tranche_annuelle_fin`, `tranche_mensuelle_debut`, `tranche_mensuelle_fin`, `ecart_annuel`, `ecart_mensuel`, `impot_annuel`, `impot_mensuel`, `cumul_annuel`, `cumul_mensuel`, `currency_id`) VALUES
+('', 0, 0, 524160, 0, 43680, 524160, 43680, 0, 0, 0, 0, 1),
+('', 15, 524160, 1428000, 43680, 119000, 903840, 75320, 135576, 11298, 135576, 11298, 1),
+('', 20, 1428000, 2700000, 119000, 225000, 1272000, 106000, 254400, 21200, 389976, 32498, 1),
+('', 22.5, 2700000, 4620000, 225000, 385000, 1920000, 160000, 432000, 36000, 821976, 68498, 1),
+('', 25, 4620000, 7260000, 385000, 605000, 2640000, 220000, 660000, 55000, 1481980, 123498, 1),
+('', 30, 7260000, 10260000, 605000, 855000, 3000000, 250000, 900000, 75000, 2381980, 198498, 1),
+('', 32.5, 10260000, 13908000, 855000, 1159000, 3648000, 304000, 1185600, 98800, 3567580, 297298, 1),
+('', 35, 13908000, 16824000, 1159000, 1402000, 2916000, 243000, 1020600, 85050, 4588180, 382348, 1),
+('', 37.5, 16824000, 22956000, 1402000, 1913000, 6132000, 511000, 2299500, 191625, 6887680, 573973, 1),
+('', 40, 22956000, 100000000000000, 1913000, 8333330000000, 100000000000000, 8333330000000, 40000000000000, 3333330000000, 40000000000000, 3333330000000, 1);

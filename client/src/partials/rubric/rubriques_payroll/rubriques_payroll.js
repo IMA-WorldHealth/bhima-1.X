@@ -15,7 +15,7 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           'rubric' : {
-            columns : ['id', 'label', 'abbr', 'is_advance', 'is_percent', 'is_discount', 'value']
+            columns : ['id', 'label', 'abbr', 'is_advance', 'is_percent', 'is_discount', 'is_social_care', 'value']
           }
         }
       }
