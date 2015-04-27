@@ -23,9 +23,29 @@ angular.module('bhima.controllers')
         identifier : 'account_number',
         tables : {
           account : { columns : ['id', 'account_number', 'account_txt', 'account_type_id', 'is_asset', 'parent'] },
-	  account_type : { columns : ['type::account_type'] }
+	         account_type : { columns : ['type::account_type'] }
         },
-	join: [ 'account.account_type_id=account_type.id' ]
+        join: [ 'account.account_type_id=account_type.id' ]
+      }
+    };
+
+    dependencies.costCenter = {
+      query : {
+        tables : { 
+          cost_center : { columns : ['id', 'text'] },
+          project     : { columns : ['abbr']}
+        },
+        join : ['cost_center.project_id=project.id']
+      }
+    };
+
+    dependencies.profitCenter = {
+      query : {
+        tables : { 
+          profit_center : { columns : ['id', 'text'] },
+          project       : { columns : ['abbr']}
+        },
+        join : ['profit_center.project_id=project.id']
       }
     };
 
@@ -194,6 +214,9 @@ angular.module('bhima.controllers')
         account_number: account.number,
         account_txt: account.title,
         is_asset: account.is_asset,
+        is_ohada: account.is_ohada,
+        cc_id   : account.cc_id,
+        pc_id   : account.pc_id,
         enterprise_id: appstate.get('enterprise').id,
         parent: 0, //set default parent (root)
         classe: account.number.substr(0,1)
@@ -246,7 +269,29 @@ angular.module('bhima.controllers')
       return '<a class=\'grid_link remove\'><span class=\'glyphicon glyphicon-trash remove\'></span></a>';
     }
 
+    function formatCenter (c) {
+      return '' + c.text;
+    }
+
+    function checkClass (account_number) {
+      return account_number.charAt(0);
+    }
+
+    function getAccountClass () {
+      session.accountClass = checkClass($scope.newAccount.number);
+    }
+
+    $scope.discareCC = function () {
+      $scope.newAccount.cc_id = null;
+    };
+
+    $scope.discarePC = function () {
+      $scope.newAccount.pc_id = null;
+    };
+
     $scope.updateState = updateState;
     $scope.submitAccount = submitAccount;
+    $scope.formatCenter = formatCenter;
+    $scope.getAccountClass = getAccountClass;
   }
 ]);
