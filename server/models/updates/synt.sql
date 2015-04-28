@@ -41,9 +41,7 @@ ADD `is_asset` BOOLEAN NULL;-- written by jniles
 -- Date: 2015-02-23
 -- By: Chris LOMAME
 
-USE bhima;
-
-INSERT INTO `account_type` VALUES (4,'expense');
+-- INSERT INTO `account_type` VALUES (4,'expense');
 
 ALTER TABLE `account`
 ADD FOREIGN KEY (`account_type_id`) REFERENCES `account_type` (`id`);
