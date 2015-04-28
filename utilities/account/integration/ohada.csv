@@ -1,0 +1,1193 @@
+,1,COMPTES DE RESSOURCES DURABLES
+,10,CAPITAL
+,101,Capital Social
+,10133000,Capital souscrit ; appelé ;  versé ; non amorti
+,105,Primes liées aux capitaux propres
+,10521010,Primes d'apport
+,10531010,Primes de fusion
+,10541010,Primes de conversion
+,106,Ecart de réévaluation
+,10610000,Ecart de réévaluation légal
+,10610001,Ecart de réévaluation libre
+,109,Actionnaire ; Capital souscrit ; non appelé
+,10911010,Actionnaire ; Capital souscrit ; non appelé
+,11,RESERVES
+,11110000,Reserve légale
+,11211000,Reserve statutaires ou contractuelles
+,118,Autres reserves
+,11815000,Reserves facultatives
+,11885000,Reserves diverses
+,13,RESULTAT NET DE L'EXERCICE
+,130,Résultat en instance d'affectation
+,13010100,Résultat en instance d'affectation :Bénéfice
+,13091010,Résultat en instance d'affectation: Perte
+,131,Résusltat net : Bénéfice
+,13112000,Résusltat net : Bénéfice
+,132,Marge brute (M.B)
+,13220000,Marge brute sur matières
+,133,Valeur ajoutée (V.A.)
+,13310000,Valeur ajoutée
+,134,Excedent brut d'exploitation (E.B.E.)
+,13410000,Excedent brut d'exploitation (E.B.E.)
+,135,Résultat d'exploitation (R.E.)
+,13510000,Résultat d'exploitation (R.E.)
+,136,Résultat financier ( R.F.)
+,13610000,Résultat financier ( R.F.)
+,137,Résultat des activités ordinaires (R.A.O.)
+,13710000,Résultat des activités ordinaires (R.A.O.)
+,138,Résultat hors activités ordinaires (R.H.A.O.)
+,1381,Résultat hors activités ordinaires (R.H.A.O.)
+,13810000,Résultat hors activités ordinaires (R.H.A.O.)
+,139,Résultat net: perte
+,13911000,Résultat net: perte
+,14,SUBVENTIONS D'INVESTISSEMENT
+,141,Subventions d'équipement A
+,1411,Etat
+,14111000,Subvention d'équipement Etat
+,1417,Entreprises et organismes privés
+,14171000,Subvention d'équipement HBB
+,14171001,Subvention d'équipement Ophtamologie
+,14172000,HYDROELECTRIC SYSTEME ATTSHIK
+,14172001,BICYCLES
+,14172002,MBF MAINT/EQUIPEMENT
+,14172003,RENOVATION OF THE HYDROELECTRIC
+,14172004,WASHING MACHINE AND LANDING
+,14172005,MBF ULTRASOND MACHINE
+,14172006,VEHICULE FOR THE IMCK
+,14172007,MBF FOR BED
+,14172008,MFR SPECTROPHOTOMETRE
+,14172009,SUBVENTIONS D'EQUIPEMENT CSBB
+,14172010,SUBVENTIONS D'EQUIPEMENT PLCK
+,14181010,Autres
+,16,EMPRUNTS ET DETTES ASSIMILEES
+,165,DEPOTS ET CAUTIONNEMENTS RECUS
+,16511010,Dépôts
+,16521010,Cautionnements
+,168,Autres emprunts et dettes
+,1688,Autres emprunts et dettes
+,16880100,Emprunts non garantie à LT
+,16880200,Emprunts et dettes à LT auprès des entreprises apparentées
+,16880300,Autres dettes à LT
+,16880400,Emprunts  garantis à MT
+,16880500,Emprunts non garantis à MT
+,16880600,Emprunt HTA
+,16880300,Autres emprunts à MT
+,17,DETTES DE CREDIT-BAIL ET CONTRATS ASSIMILES
+,17211182,Emprunts équivalents de crédit-bail immobilier
+,17311183,Emprunts équivalents de crédit-bail mobilier
+,17611186,Intérêts courus
+,17621010,Intérêts courus sur emprunts équivalents de crédit-bail immobilier
+,17811188,Emprunts équivalents d'autres contrats
+,18,DETTES LIEES A DES PARTICIPATIONS ET COMPTES DE LIAISON DES ETABLISSEMENTS ET SOCIETES EN PARTICIPATION
+,18611196,Comptes de liaison charges
+,18711197,Comptes de liaison produits
+,19,PROVISIONS FINANCIERES POUR RISQUES ET CHARGES
+,19111201,Provisions pour litiges
+,19410194,Provisions pour pertes de change
+,19510195,Provisions pour impôts
+,196,Provisions pour pensions et obligations similaires
+,19611010,Provisions pour pensions et obligations similaires
+,197,Provisions pour charges à repartir sur plusieurs exercices
+,19710010,Provisions pour grosses réparations
+,198,Autres provisions financières pour risques et charges
+,19810010,Provisions pour amendes et pénalités
+,2,COMPTES D'ACTIFS IMMOBILISES
+,20,CHARGES IMMOBILISEES
+,201,FRAIS D'ETABLISSEMENT
+,20180010,Frais divers d'établissement
+,202,CHARGES A REPARTIR SUR PLUSIEURS EXERCICES
+,2028,Charges à étaler
+,20280010,Charges à étaler
+,21,IMMOBILISATIONS INCORPORELLES
+,212,BREVETS ; LICENCES ; CONCESSIONS ET DROITS SIMILAIRES
+,21211010,Licence
+,21211011,Licence réévaluée
+,213,LOGICIELS
+,21311000,Logiciels Informatiques
+,21311001,Réevaluation Logiciel informatiques
+,219,IMMOBILISATIONS INCORPORELLES EN COURS
+,21920000,Logiciels en cours
+,22,TERRAINS
+,222,TERRAINS NUS
+,2228,Terrains à batir
+,22280000,Autres terrains nus
+,223,TERRAINS BÂTIS
+,2232,Pour bâtiments administratifs et commerciaux
+,22321000,Batiment Hopital
+,22322000,Batiment CME
+,22323000,Bureau Ecole
+,2238,Autres terrains bâtis
+,22381000,Morque
+,22382000,Hospice TSHITUDILU (25 ANS)
+,22383000,Dortoir CME (25 ANS)
+,22384000,Dépôt Chantier
+,22385000,E.P. BON BERGER Latrine et Bâtiment
+,22386000,Logement du Personnel
+,22387000,Maisons Médecins Residents
+,23,BATIMENTS ; INSTALLATIONS TECHNIQUES ET AGENCEMENTS
+,231,BATIMENTS INDUSTRIELS ; AGRICOLES ; ADMINISTRTATIFS ET COMMERCIAUX SUR SOL PROPRE
+,2313,Bâtiments administrtatifs et commerciaux
+,23131000,Batiment Hopital
+,23131001,Batiment Hopital réevalué
+,23132000,Batiment CME
+,23132001,Batiment CME réevalué
+,23133000,Bureau Ecole
+,23133001,Bureau Ecole réevalué
+,2314,Bâtiments affectés au logement du personnel
+,23140000,Logement du Personnel
+,23140001,Logement du Personnel réevalué
+,23140000,Maisons Médecins Residents
+,23140001,Maisons Médecins Residents réevalué
+,233,OUVRAGES D'INFRASTRUCTURES
+,2334,Barrages ; Digues
+,23341010,Barrages et autres
+,23341011,Barrages et autres réévalués
+,238,AUTRES INSTALLATIONS ET AGENCEMENTS
+,23810000,Morque
+,23810001,Morque réevalué
+,23820000,Hospice TSHITUDILU (25 ANS)
+,23820001,Hospice TSHITUDILU (25 ANS) réevalué
+,23830000,Dortoir CME (25 ANS)
+,23830001,Dortoir CME (25 ANS) réevalué
+,23840000,Dépôt Chantier
+,23840001,Dépôt Chantier réevalué
+,23850000,E.P. BON BERGER Latrine et Bâtiment
+,23850001,E.P. BON BERGER Latrine et Bâtiment réevalué
+,239,BATIMENTS ET INSTALLATIONS EN COURS
+,2391,Immeubles non résidentiels encours
+,23910000,Construction Refectoire
+,2392,Immeubles résidentiels  encours
+,23920000,Construction Maison du Personnel
+,24,MATERIELS
+,244,MATERIELS ET MOBILIERS
+,2448,Autres Matériels et Mobiliers
+,24480010,Mobilier Ophtamologique
+,24480011,Mobilier Ophtamologique réevalué
+,24480020,Mobiliers Pax
+,24480021,Mobiliers Pax réevalué
+,24480030,Mobiliers CME
+,24480031,Mobiliers CME réesvalué
+,24480040,Mobiliers Hopital
+,24480041,Mobiliers Hopital réevalué
+,24480060,Mobiliers ITM
+,24480061,Mobiliers ITM réevalué
+,24480070,Mobiliers Dentaires
+,24480071,Mobiliers Dentaires réevalué
+,24480080,Mobiliers Guest House
+,24480081,Mobiliers Guest House réevalué
+,24480090,Matériels et équipements Ophta
+,24480091,Matériels et équipements Ophta réevalué
+,24480100,Matériels et équipements Hopital
+,24480101,Matériels et équipements Hopital réevalué
+,24480200,Matériels et équipements PAX
+,24480201,Matériels et équipements PAX réevalué
+,24480300,Matériels et équipements Centre Médical d'études
+,24480301,Matériels et équipements Centre Médical d'études réevalué
+,24480400,Matériels et équipement  ITM
+,24480401,Matériels et équipement  ITM réevalué
+,24480500,Matériels et équipements Dentaires
+,24480501,Matériels et équipements Dentaires réevalué
+,24480600,Matériels et équipements GH
+,24480601,Matériels et équipements GH réevalué
+,24480700,Matériels et équipements ISTM
+,24480701,Matériels et équipements ISTM réevalué
+,24480800,Système solaire
+,24480801,Système solaire réevalué
+,24480900,Groupe Electrogène Pax
+,24480901,Groupe Electrogène Pax réévalué
+,24481000,Groupe Electrogène Pax2
+,24481001,Groupe Electrogène Pax2 réevalué
+,24482000,Groupe Electrogène HBB
+,24482001,Groupe Electrogène HBB réevalué
+,2447,Matériel et mobilier de logements du personnel
+,24471000,Mobiliers Habitation du Personnel
+,24471001,Mobiliers Habitation du Personnel réevalué
+,245,MATERIEL DE TRANSPORT
+,2451,Véhicules
+,24511000,Véhicule
+,24511001,Véhicule réevalué
+,2458,Autres (vélo ; mobylette ; moto)
+,24581000,Bicycles
+,24581001,Bicycles réevalué
+,24582000,Motocycles révalué
+,24582001,Motocycles révalué
+,24583001,E-MAIL ET ACCESSOIRES
+,249,MATERIELS EN COURS
+,24911010,Matériel et outillage industriel et commercial
+,24921010,Matériels et Mobiliers Bureau
+,24951010,Matériels de Transport
+,24981010,Autres matériels
+,25,AVANCES ET ACOMPTES VERSES SUR IMMOBILISATIONS
+,25111010,AVANCES ET ACOMPTES VERSES SUR IMMOBILISATIONS INCORPORELLES
+,25211010,AVANCES ET ACOMPTES VERSES SUR IMMOBILISATIONS CORPORELLES
+,27,AUTRES IMMOBILISATIONS FINANCIERES
+,272,PRETS AU PERSONNEL
+,27211010,Prêts immobiliers
+,27221010,Prêts mobiliers et d'installation
+,27281010,Autres prêts (frais d'études...)
+,275,DEPOTS ET CAUTIONNEMENTS VERSES
+,27511010,Dépôts pour loyers d'avance
+,27521010,Dépôts pour l'électricité
+,27531010,Dépôts pour l'eau
+,27551010,Dépôts pour le téléphone ; le télex ; la télécopie
+,27561010,Cautionnements sur le marché public
+,27571010,Cautionnements sur autres opérations
+,27581010,Autres dépôts et cautionnements
+,28,AMORTISSEMENTS
+,281,AMORTISSEMENTS DES IMMOBILISATIONS INCORPORELLES
+,2812,Amortissements des brevets ; licences ; concessions et droits similaires
+,28120001,Amortissements Brevets
+,28120002,Amortissements Brevets réévalué
+,28120003,Amortissements Licences
+,2813,Amortissements des logiciels
+,28131010,Amortissements du logiciel informatique
+,28131011,Amortissements du logiciel informatique  réév.
+,283,AMORTISSEMENTS DES BATIMENS ; INSTALLATIONS TECHNIQUES ET AGENCEMENTS
+,2831,Amortissements des batiments industriels ; agricoles ; administratifs et commerciaux sur sol propre
+,28310010,Amortissement Batiments
+,28310011,Amortissement Batiments réévalués
+,2833,Amortissements des ouvrages d'infrastructures
+,28331010,Amortissement Barrage et autres
+,28331011,Amortissement Barrage et autres réevalué
+,284,AMORTISSEMENTS DU MATERIEL
+,2844,Amortissements du matériel et mobilier
+,28441010,Amortissements des  matériels
+,28441011,Amortissements des matériels réevalués
+,28442010,Amortissement des mobiliers
+,28442011,Amortissements des mobiliers réevalués
+,28443010,Amortissements du matériel et mobilier d'habitation
+,28443011,Amortissements du matériel et mobilier d'habitation réévalué
+,2845,Amortissements du matériel de transport
+,28451010,Amortissements Véhicules
+,28451011,Amortissements véhicules réevalué
+,28452010,Amortissements Bicyclette ; Mobilette et moto
+,28452011,Amortissements Bicyclette ; Mobilette et moto réevalué
+,2848,Amortissements des autres matériels
+,28481010,Amortissements des équipements
+,28481011,Amortissements des autres matériels réevalués
+,29,PROVISIONS POUR DEPRECIATIONS
+,291,PROVISIONS POUR DEPRECIATION DES IMMOBILISATIONS INCORPORELLES
+,2919,Provisions pour dépréciation des logiciels
+,29191000,Provisions pour dépréciation des immobilisations incorporelles en cours
+,292,PROVISIONS POUR DEPRECIATION DES TERRAINS
+,29221000,Provisions pour depréciation des terrains nus
+,29231000,Provisions pour depréciation des terrains batis
+,293,PROVISIONS POUR DEPRECIATION DES BATIMENTS ; INSTALLATIONS TECHNIQUES ET AGENCEMENTS
+,29311000,Provisions pour dépréciation des batiments industriels ; agricoles ; administratifs et commerciaux sur sol propres
+,29331000,Provisions pour dépréciation des ouvrages d'infrastructures
+,294,PROVISION POUR DEPRECIATION DU MATERIEL
+,29441000,Provision pour dépréciation du materiel et mobilier
+,29451000,Provision pour dépréciation du materiel de transport
+,29481000,Provision pour dépréciation des autres materiels
+,29491000,Provision pour dépréciation du materiel en cours
+,3,COMPTES DE STOCKS
+,31,MARCHANDISES
+,311,MARCHANDISES A
+,3111,Médicaments
+,31110010,Médicaments en comprimés
+,31110011,Médicaments en Sirop
+,31110012,Médicaments en crème
+,31110013,Médicaments en Poudre et Capsul
+,31110014,Injectables
+,31110015,Produit  de Perfusion
+,31110016,Produits Ophtamologiques
+,312,MARCHANDISES B
+,3128,Autres
+,31280010,Platres
+,31280011,Suppositoires
+,31280012,Sondes
+,31810328,Marchandises Hors Activités Ordinaires
+,32,MATIERES PREMIERES ET FOURNITURES LIEES
+,321,Matières Groupe A
+,32110010,Matières pour Produits Perfusion
+,32110011,Matières pour Produits Ophtamologiques
+,323,Fournitures (A ;B)
+,32310010,Equipements médicaux (gants ; blousons ;babouche ; cache nez)
+,32310011,Petits matériels et outillages (bistouri ; stétoscope ;séringue ;thermomètres…)
+,33,AUTRES APPROVISIONNEMENTS
+,331,Matières Consommables
+,3311,Matières Consommables
+,33110010,Carburants
+,33110011,Lubrifiants
+,33110012,Réactifs  Loboratoire
+,33110013,Produits d'entretien et nétoyages
+,33110014,Consommables Informatiques
+,332,Fournitures d'atéliers et d'usine
+,3321,Fournitures d'atéliers et d'usine
+,33211010,Pièces de rechanges
+,333,Fournitures de Magasin
+,3331,Fournitures de Magasin
+,33311010,Fournitures électriques et soudures
+,334,Fournitures de bureau
+,33410000,Fournitures de bureau
+,36,PRODUITS FINIS
+,3611,Produits Finis A
+,36110010,Produits de Perfusion
+,36110011,Produits ophtamologiques
+,38,STOCKS EN COURS DE ROUTE ; EN CONSIGNATION OU EN DÉPÔT
+,381,MARCHANDISES EN COURS DE ROUTE
+,3811,MARCHANDISES EN COURS DE ROUTE
+,38110010,Médicaments en comprimés
+,38110011,Médicaments en Sirop
+,38110012,Médicaments en Poudre et Capsule
+,38110013,Médicaments en crème
+,38110014,Injectables
+,38110015,Platres
+,38110016,Suppositoires
+,38110017,Sondes
+,38110018,Produits de Perfusion
+,382,MATIERES ET FOURNITURES LIEES EN COURS DE ROUTE
+,3821,MATIERES ET FOURNITURES LIEES EN COURS DE ROUTE
+,38210010,Matières pour Produits Perfusion
+,38210011,Matières pour Produits Ophtamologiques
+,383,AUTRES APPROVISIONNEMENTS EN COURS DE ROUTE
+,3831,AUTRES APPROVISIONNEMENTS EN COURS DE ROUTE
+,38310010,Carburants
+,38310011,Lubrifiants
+,38310012,Réactifs Loboratoire
+,38310013,Fournitures de bureau
+,38310014,Produits d'entretien
+,38310015,Pièces de rechange
+,38310016,Fournitures électriques et soudures
+,38310017,Consommables Informatiques
+,387,STOCK EN CONSIGNATION OU EN DÉPÔT
+,38710010,Stock en consignation
+,38720010,Stock en dépôt
+,39,DÉPRÉCIATIONS DES STOCKS
+,391,DÉPRÉCIATIONS DES STOCKS DE MARCHANDISES
+,39110010,Médicaments en comprimés
+,39110011,Médicaments en Sirop
+,39110012,Médicaments en Poudre
+,39110013,Mésicaments en crème
+,39110014,Injectables
+,39110015,Platres
+,39110016,Suppositoires
+,39110017,Sondes
+,39110018,Produits de Perfusion
+,392,DEPRECIATION DES STOCKS MATIERES PREMIERES ET FOURNITURES LIEES
+,39210010,Matières pour Produits Perfusion
+,39210011,Matières pour Produits Ophtamologiques
+,393,DÉPRÉCIATIONS DES STOCKS D'AUTRES APPOVISIONNEMENTS
+,39310010,Carburants
+,39310011,Lubrifiants
+,39310012,Réactifs Loboratoires
+,39310013,Fournitures de bureau
+,39310014,Produit d'entretien
+,39310015,Fournitures électriques et soudures
+,39310016,Consommables informatiques
+,398,DÉPRÉCIATIONS DES STOCKS EN COURS DE ROUTE ; EN CONSIGNATION OU ENDÉPÔT
+,39810010,Dépréciation des Stocks en cours de route
+,39810011,Dépréciation des Stocks en consignation
+,39810012,Dépréciation des Stocks en dépôt
+,4,COMPTES DE TIERS
+,40,FOURNISSEURS ET COMPTE  RATTACHES
+,401,FOURNISSEURS ; DETTES EN COMPTE
+,4011,FOURNISSEURS
+,40111000,SNEL
+,40111001,REGIDESO
+,40111002,IMPROKA
+,40111003,CADMEKO
+,40111004,BTR ET CLTD BIAYA ROBERT
+,40111005,ROFFE PHARMA
+,40111006,CADIMEK
+,40111007,TAKAS
+,40111008,COALEX MEDICAL KIN
+,40111009,BADI PHARMACIE
+,40111010,CENTRE HOSPITALIER JUKAYI
+,40111011,SONAS
+,40111012,Autres Fournisseurs
+,408,FOURNISSEURS  FACTURES NON PARVENUES
+,4081,FOURNISSEURS
+,40811000,SNEL
+,40811001,REGIDESO
+,40811002,IMPROKA
+,40811003,CADMEKO
+,40811004,BTR ET CLTD BIAYA ROBERT
+,40811005,ROFFE PHARMA
+,40811006,CADIMEK
+,40811007,TAKAS
+,40811008,COALEX MEDICAL KIN
+,40811009,BADI PHARMACIE
+,40811010,CENTRE HOSPITALIER JUKAYI
+,40811011,SONAS
+,40811012,Autres Founisseurs
+,409,FOURNISSEURS DEBITEURS
+,4091,FOURNISSEURS ; AVANCES ET ACOMPTES SUR  COMMANDE
+,40910010,IMPROKA
+,40910011,CADMEKO
+,40910012,BTR ET CLTD BIAYA ROBERT
+,40910013,ROFFE PHARMA
+,40910014,CADIMEK
+,40910015,TAKAS
+,40910016,COALEX MEDICAL KIN
+,40910017,BADI PHARMACIE
+,40910018,CENTRE HOSPITALIER JUKAYI
+,40910019,Autres Founisseurs
+,4098001,RABAIS ; REMISES ; RISTOURNES ET AUTRES AVOIRS A OBTENIR
+,41,CLIENTS ET COMPTE RATTACHES
+,411,CLIENTS
+,4111,Clients (Groupe Débiteurs)
+,41111010,Clients Payant Cash
+,41111011,Ass. Prov. KasaÏ Occidental
+,41111012,Miss. Cath Ntambue
+,41111013,S.C.P.T
+,41111014,O.C.C.
+,41111015,Office des Routes UAR
+,41111016,DGDA
+,41111017,RTNC KANANGA
+,41111018,R.V.A AEROPORT
+,41111019,REGIDESO
+,41111020,S.N.C.C
+,41111021,S.N.E.L
+,41111022,SONAS
+,41111023,NPA
+,41111024,ETR/SARL
+,41111025,S.E.P CONGO
+,41111026,"TRUST MERCHANT BANK ""TMB"""
+,41111027,DIR. PROVINCIALE DES IMPOTS
+,41111028,C.N.E.
+,41111029,FORCES ARMEES CONGOLAISES
+,41111030,MISSION GREC ORTHODOXE
+,41111031,IRC
+,41111032,ARMOR GROUP
+,41111033,EMAXON
+,41111034,DE BEERS RDC
+,41111035,GROUPE KILU SPRL
+,41111036,BRAVO AIR CONGO
+,41111037,SOUTHERNERA DIAMOND
+,41111038,ENTEBBE HANDLING
+,41111039,C.I.S.P
+,41111040,G.T.M KANANGA
+,41111041,BANQUE CONGOLAISE SPRL
+,41111042,FASS
+,41111043,ETS JEAN ASSAKA
+,41111044,DIRECTION PROV. DES IMPOTS
+,41111045,CABINET CMA/AEE
+,41111046,Clients Apparentés
+,41111047,Banque du Congo
+,4114,CLIENTS ETAT ET COLLECTIVITES  PUBLIQUES
+,41141010,Gouvernorat
+,41141011,Hotel de Ville
+,41141012,Maison Provincial
+,4115,CLIENTS  ORGANISMES INTERNATIONAUX
+,41151,Clients Apparentés Organismes internationaux
+,41151010,MONUC
+,41151011,OMS
+,41151012,PNUD KasaÏ-Occidental
+,41151013,Caritas Belgique
+,41151014,MSH/USAID
+,41152,Clients non Apparenté Organismes internationnaux
+,41152010,PNMLS
+,41152011,Médecin du monde-Belgique
+,41152012,PADEICO/CTB
+,416,CREANCES CLIENTS LITIGIEUSES OU DOUTEUSES
+,4161,CREANCES LITIGIEUSES
+,41610010,Impayés
+,4162,CREANCES DOUTEUSES
+,41620010,Créances douteuses
+,418,CLIENT ; PRODUITS A RECEVOIR
+,4181,CLIENTS ;  FACTURE A ETABLIR
+,41811010,Clients Payant Cash ; Facture à établir
+,41813010,Clients ; Organismes internationaux ; Fact à établir
+,41815010,Clients ; Conventionés Factures à établir
+,419,CLIENTS CREDITEURS
+,4191,CLIENTS AVANCE ET ACOMPTES RECUS
+,41911010,Clients Payant cash
+,41911011,Ass. Prov. KasaÏ Occidental
+,41911012,Banque du Congo
+,41911013,Gouvernorat
+,41911014,Hotel de Ville
+,41911015,Maison Provincial
+,41911016,Miss. Cath Ntambue
+,41911017,S.C.P.T
+,41911018,O.C.C.
+,41911019,Office des Routes UAR
+,41911020,DGDA
+,41911021,RTNC KANANGA
+,41911022,R.V.A AEROPORT
+,41911023,REGIDESO
+,41911024,S.N.C.C
+,41911025,S.N.E.L
+,41911026,SONAS
+,41911027,NPA
+,41911028,ETR/SARL
+,41911029,S.E.P CONGO
+,41911030,"TRUST MERCHANT BANK ""TMB"""
+,41911031,DIR. PROVINCIALE DES IMPOTS
+,41911032,C.N.E.
+,41911033,FORCES ARMEES CONGOLAISES
+,41911034,MISSION GREC ORTHODOXE
+,41911035,IRC
+,41911036,ARMOR GROUP
+,41911037,EMAXON
+,41911038,DE BEERS RDC
+,41911039,GROUPE KILU SPRL
+,41911040,BRAVO AIR CONGO
+,41911041,SOUTHERNERA DIAMOND
+,41911042,ENTEBBE HANDLING
+,41911043,C.I.S.P
+,41911044,G.T.M KANANGA
+,41911045,BANQUE CONGOLAISE SPRL
+,41911046,FASS
+,41911047,MEDECINS DU MONDE-Belgique
+,41911048,PAIDECO/CTB
+,41911049,ETS JEAN ASSAKA
+,41911050,PNMLS
+,41911051,DIRECTION PROV. DES IMPOTS
+,41911052,MSH/USAID
+,41911053,CABINET CMA/AEE
+,41911054,Clients Apparentés
+,41980010,RABAIS-REMISES-RISTOURNES ET AUTRES AVOIR A ACCORDER
+,42,PERSONNEL
+,421,PERSONNEL AVANCE ET ACOMPTES
+,4211,PERSONNELS  AVANCES
+,42110010,Avances sur salaires
+,4212,PERSONNEL ACOMPTE
+,42120010,Acompte sur salaires
+,422,REMUNERATION DUE
+,42210010,Salaires à payer
+,423,PERSONNEL SAISIE ARRET
+,42310010,Personnel Saisie Arrêt
+,424,PERSONNEL ; ŒUVRES SOCIALES
+,4241,ASSISTANCE MEDICALE
+,42410010,Assistance maladie
+,4242,ALLOCATIONS  FAMILLIALES
+,42421010,Allocations Familiales
+,4248,AUTRES ŒUVRES SOCIALES INTERNES
+,42481010,Logement
+,425,REPRESENTANT DU PERSONNEL
+,4251,DELEGUE DU PERSONNEL
+,42511010,Délégué du Personnel
+,4252,SYNDICATS ET COMITES D'ENTREPRISES D'ETABLISSEMENT
+,42520010,Cotisation Syndicale
+,428,PERSONNEL CHARGES A PAYER ET PRODUITS A RECEVOIR
+,4281,DETTES PROVISIONNEES POUR CONGE A PAYER
+,42810010,Congé provision
+,4286,AUTRES CHARGES A PAYER
+,42860010,Restaurant et Transport
+,42860011,Prime d'intérim
+,42860012,Prime Supplémentaire Transport
+,42860013,Prime d'encouragement
+,42860014,Prime de fidélité
+,42860015,Prime de fin carrrière
+,42860016,Provision. Colis Fin d'années
+,43,ORGANISMES  SOCIAUX
+,431,SECURITE SOCIAL
+,4313,Caisse de retraite obligatoire
+,43130010,Cotisation INSS Employés
+,43130011,Cotisation INSS Employeur
+,433,AUTRES ORGANISMES SOCIAUX
+,4331,Mutuelle
+,4331010,ONEM
+,4331011,INPP
+,438,ORGANISMES SOCIAUX-CHARGES A PAYER ET PRODUITS A RECEVOIR
+,4381,Charges sociales sur gratifications à payer
+,43810010,13ème mois (Gratification)
+,4382,Charges sociales sur congés à payer
+,43820011,Pécule de congé
+,44,ETAT ET COLLECTIVITES PUBLIQUES
+,441,ETAT ; IMPOTS SUR LE BENEFICES
+,44110010,Impôts sur le Bénéfice
+,44120011,Impôts sur le Résultat
+,442,ETAT ; AUTRES IMPOTS ET TAXE
+,4428,AUTRES IMPOTS ET TAXE
+,44280010,DGRAD Redevance Eaux Naturelles
+,44280010,Diverses Taxes
+,443,ETAT ; TVA FACTUREE
+,44341010,TVA FACTUREE SUR LA PRODUCTION LIVREE A SOI MEMES
+,445,TVA  RECUPERABLE
+,44521010,TVA RECUPERABLE SUR IMMOBILISATIONS
+,44521010,TVA RECUPERABLE SUR  ACHATS
+,44531010,TVA RECUPERABLE SUR TRANSPORT
+,447,ETAT ; IMPOTS RETENUES A LA SOURCE
+,4472,IMPOTS SUR SALAIRES
+,44720010,I.P.R
+,448,ETAT  CHARGES A PAYER ET PRODUITS A RECEVOIR
+,4486,CHARGES A PAYER
+,44860010,Amendes et penalités à payer
+,449,ETAT ; CREANCES ET DETTES DIVERSES
+,4492,ETAT AVANCE ET ACOMPTES SUR IMPOTS
+,44920010,Acompte Provisionnel
+,47,DEBITEURS  ET CREDITEURS  DIVERS
+,471,COMPTE D'ATTENTE
+,4711,DEBITEURS  DIVERS
+,47111010,Compte d'attente
+,476,CHARGES CONSTATEES D'AVANCES
+,47610010,Charges Constatée d'avance
+,477,PRODUITS CONSTATES D'AVANCE
+,47710010,Produits Constatés d'avance
+,478,ECARTS DE CONVERSION ACTIF
+,4781,DIMUNITION DES CREANCES
+,47810010,Diminution des créances
+,4782,AUGMENTATION DES DETTES
+,47820010,Augmentation des dettes
+,479,ECARTS DE CONVERSION PASSIF
+,4791,DIMUNITION DES CREANCES
+,47910010,Diminution des créances
+,4792,AUGMENTATION DES DETTES
+,47920010,Augmentation des dettes
+,48,CREANCES ET DETTES  HORS ACTIVITE ORDINAIRE
+,481,FOURNISSEURS D'INVESTISSEMENT
+,48111010,FOURNISSEURS IMMOBILISATIONS INCORPORELLES
+,48121010,FOURNISSEURS IMMOBILISATIONS CORPORELLES
+,48181010,FACTURES NON PARVENUES
+,488,Autres Créances Hors Activités Ordinaires
+,4881,?????????????
+,48810010,Autres créances Hors Activité Ordinaire
+,49,DEPRECIATION ET RISQUES PROVISIONNES (Tiers)
+,491,DEPRECIATIONS DES COMPTES CLIENTS
+,4911,Créances litigieuses
+,49111010,Dépréciation Impayés malades
+,4912,Créances douteuses
+,49121010,Dépréciation créances Impayés malade
+,499,RISQUES PROVISIONNES
+,4991,Sur opérations d'exploitation
+,49910010,Risques provisionnés d'exploitation
+,4997,Sur opérations financières
+,49970010,Risques provisionnés financiers
+,4998,Sur opérations financières
+,49980010,Risques provisionnés H.A.O
+,5,COMPTES DE TRESORERIE
+,51,VALEURS A ENCAISSER
+,513,Chèques à encaisser
+,51311010,Cheques et OP à encaisser USD
+,51311011,Chèques et OP à encaisser EURO
+,51311012,Chèques et OP à encaisser CDF
+,514,Chèques à l'encaissement
+,51411010,Chèques à l'encaissement USD
+,51411011,Chèques à l'encaissement EURO
+,51411012,Chèques à l'encaissement CDF
+,52,BANQUES
+,521,Banques locales
+,5211,Banques en Franc congolais
+,52111010,BCDC CDF
+,5212,Banques locales en Devises
+,52121010,BCDC USD
+,53,ETABLISSEMENTS FINANCIERS ET ASSIMILES
+,536,Etablissements financiers ; assimilés
+,53611010,Etablissements financiers ; assimilés
+,538,Autres organismes financiers
+,53811010,Autres organismes financiers
+,56,BANQUES ; CREDIT DE TRESORERIE ET D'ESCOMPTE
+,561,Ligne de crédit
+,56110010,Ligne de crédit
+,57,CAISSE
+,571,Caisse IMCK(HBB ;PAX )
+,5711,Caisse en franc congolais
+,57110010,Caisse Principale HBB CDF
+,57110011,Caisse Auxiliaire HBB CDF
+,57110012,Caisse Auxiliaire PAX CDF
+,5712,Caisse en devises
+,57120010,Caisse Principale HBB USD
+,57120011,Caisse Auxiliaire HBB USD
+,57120012,Caisse Auxiliaire PAX USD
+,58,REGIES D'AVANCES ; ACCREDITIFS ET VIREMENTS INTERNE
+,585,Virement des fonds
+,5851,Virement des fonds
+,58511010,Virement des fonds Caisse Auxiliaire - Caisse Principale
+,58511011,Virement des fonds Caisse Principale - Caisse Auxiliaire
+,58511012,Virement des fonds Banque-Caisse
+,58811598,Autres virements internes
+,59,DEPRECIATIONS ET RISQUES PROVISIONNES
+,592,Depreciation des comptes banques
+,59210010,Depreciation des comptes banques
+,593,Depreciation des comptes Etablissements financiers et assimilés
+,59310010,Depreciation des comptes Etablissements financiers et assimilés
+,599,Risques provisionnés à caractère financier
+,59910010,Risques provisionnés à caractère financier
+,6,COMPTES DES CHARGES DES ACTIVITES ORDINAIRES
+,60,ACHATS ET VARIATIONS DE STOCKS
+,601,ACHATS DE MARCHANDISES
+,6011,Dans Région Ohada
+,60111010,Achat Médicaments en comprimés
+,60111011,Achat Médicaments en Sirop
+,60111012,Achat Médicaments en Poudre et capsules
+,60111013,Achat Injectables
+,60111014,Achat Platres
+,60111015,Achat Produits de Perfusion
+,60191010,Rabais ; Remises et Ristournes obtenus sur obtenu
+,602,ACHATS DES MATIERES PREMIERES ET FOURNITURES LIEES
+,6021,Dans Région Ohada
+,60211010,Achat Matières pour Produits Perfusion
+,60211011,Achat Matières pour Produits Ophtamologiques
+,60291010,Rabais ; Remises et Ristournes obtenus sur obtenu
+,603,VARIATIONS DES STOCKS DE BIENS ACHETÉS
+,6031,Variations des stocks de marchandises
+,60310010,Médicaments en comprimés
+,60310011,Médicaments en Sirop
+,60310012,Médicaments en Poudre et capsules
+,60310013,Médicaments en crème
+,60310014,Injectables
+,60310015,Platres
+,60310016,Suppositoires
+,60310017,Sondes
+,60310018,Produits de Perfusion
+,60310019,Produits Ophtamologiques
+,6032,Variations des stocks de matières premières et fournitures liées
+,60321010,Matières pour Produits Perfusion
+,60321011,Matières pour Produits Ophtamologiques
+,6033,Variations Stocks de matières et fournitures consommables
+,60331010,Equipements médicaux (gants ; blousons ;babouche ; cache nez ;...)
+,60331011,Petits matériels et outillages médicaux (bistouri ; stétoscope ;séringue ;thermomètres…)
+,60331012,Carburants
+,60331013,Lubrifiants
+,60331014,Réactifs  Loboratoire
+,60331015,Produits d'entretien et de nétoyage
+,60331016,Fournitures de bureau
+,60331017,Pièces de rechange
+,604,ACHATS STOCKÉS DE MATIÈRES ET FOURNITURES CONSOMMABLES
+,6041,Matières consommables
+,60411012,Achat Equipements médicaux (gants ; blousons ;babouche ; cache nez ;...)
+,60411013,Achat Petits matériels et outillages médicaux  (bistouri ; cisaux ; stétoscope ;séringue ;thermomètres ; Ouats…)
+,60411014,Achat Carburants
+,60411015,Achat Lubrifiants
+,60411016,Achat Réactifs  Loboratoire
+,60411017,Achat Fournitures électriques et soudures
+,60411018,Achat Consommables Informatiques
+,6043,Produits d'entretien
+,60431010,Achat Produits d'entretien et de nétoyage
+,6044,Fournitures d'atelier et d'usine
+,60441010,Achat Pièces de rechange
+,6047,Fournitures de bureau
+,60471010,Achat Fournitures de bureau
+,60491010,Rabais ; Remises et Ristournes obtenus
+,605,AUTRES ACHATS
+,6051,Fournitures non stockables - EAU
+,60511010,Eau
+,6052,Fournitures non stockables - Electricité
+,60521010,Electricité
+,6053,Fournitures non stockables – AUTRES ENERGIES
+,60531010,Achat Carburants
+,60531011,Achat Lubrifiants
+,6054,Fournitures d'entretien non stockables
+,60541010,Achat Produits d'entretien et de nétoyage
+,6055,Fournitures de bureau non stockables
+,60541010,Achat Fournitures de bureau
+,6056,Achats de petit matériel et outillage
+,60561010,Achat Equipements médicaux (gants ; blousons ;babouche ; cache nez ;...)
+,60561011,Achat Petits matériels et outillages médicaux  (bistouri ; stétoscope ;séringue ;thermomètres…)
+,60561012,Achat Réactifs  Loboratoire
+,60561013,Achat Pièces de rechange
+,60561014,Achat Fournitures électriques et soudures
+,60561015,Achat Consammables informatiques
+,6057,Achats d'études et prestations de services
+,60571010,Achats services
+,6058,Achats de travaux ; matériels et équipements
+,60581010,Achat Equipements médicaux (gants ; blousons ;babouche ; cache nez ;...)
+,60591010,Rabais ; Remises ; Ristournes obtenus
+,61,TRANSPORTS
+,6111,TRANSPORTS SUR ACHATS
+,61111010,Transport sur Achat Marchandises
+,61111011,Transport sur Achat Matière Premières et Fournitures liées
+,61111012,Transport sur autres approvisionnements
+,612,TRANSPORTS SUR VENTES
+,6121,TRANSPORTS SUR VENTES
+,61211010,Transport sur vente Marchandises
+,614,TRANSPORTS DU PERSONNEL
+,6141,Transport du Personnel
+,61411010,Transport personnel
+,616,TRANSPORTS DE PLIS
+,6161,Frais courrier Express
+,61611010,Frais courrier Express
+,618,AUTRES FRAIS DE TRANSPORT
+,6181,Voyages et Déplacements
+,61811010,Voyage local
+,61811011,Voyage à l'extérieur du pays
+,61811012,Frêt d'expédition Fournitures ; équipements et matériels
+,6183,Transports administratifs
+,61831010,Transports et courses de services
+,61831011,Transport malades fistuleuses
+,62,SERVICES EXTÉRIEURS A
+,622,LOCATIONS ET CHARGES LOCATIVES
+,6228,Locations et charges locatives diverses
+,62281010,Locations et charges locatives diverses
+,623,REDEVANCES DE CRÉDIT-BAIL ET CONTRATS ASSIMILÉS
+,62321010,Crédit-bail immobilier
+,62331010,Crédit-bail mobilier
+,62351010,Contrats assimilés
+,624,ENTRETIEN ; RÉPARATIONS ET MAINTENANCE
+,6241,Entretien et réparations des biens immobiliers
+,62411010,Entretien Terreain
+,62411011,Entretien Bâtiments
+,6242,Entretien et réparations des biens mobiliers
+,62421010,Entretien et réparation matériels de bureau
+,62421011,Entretien et réparation mobiliers de bureau
+,62421012,Entretien LC mobility
+,6243,Maintenance
+,62431010,Maintenance logiciels
+,62431011,Maintenance matériel informatique
+,6248,Autres entretiens et réparations
+,62481010,Entretien et réparation matériel informatique
+,62481011,Entretien et réparation vehicules
+,62481012,Entretien et réparation generateurs
+,62481013,Entretien et réparation mobilier Guest House
+,625,PRIMES D'ASSURANCE
+,6251,Assurances multirisques
+,62511010,Assurance incendie
+,6252,Assurances matériel de transport
+,62521010,Assurance Véhicules
+,62521011,Assurance Motos
+,6256,Assurances transport sur achats
+,62561010,Assurances transport sur achats
+,6258,Autres primes d'assurances
+,62581010,Assurances responsabilité civile
+,62581011,Assurance contre crime
+,62581012,Assurance maladie
+,628,FRAIS DE TÉLÉCOMMUNICATIONS
+,6281,Frais de téléphone
+,62811010,Frais de Poste et Télécomunication
+,6283,Frais de télécopie
+,62831010,Frais de photocopie
+,62831011,Frais photocopie-support cours
+,63,SERVICES EXTÉRIEURS B
+,631,FRAIS BANCAIRES
+,6313,Location de coffres
+,63131010,Location de coffre fort
+,6318,Autres frais bancaires
+,63181010,Frais bancaires
+,632,Rémunération d'intermédiaires et Conseils
+,6324,Honoraires
+,63241010,Assistance comptable
+,63241011,Honoraires audit
+,63241012,Honoraire AVOCAT
+,6325,Frais d'actes et de contentieux
+,63251010,Frais légaux et de justice
+,6328,Divers frais
+,63281010,Autres frais
+,633,FRAIS DE FORMATION DU PERSONNEL
+,63311010,Conferences & seminaires
+,63311011,Frais de formation
+,63311012,Frais de formation extérieure
+,634,REDEVANCES POUR BREVETS ; LICENCES ; LOGICIELS ET DROITS SIMILAIRES
+,6343,Redevances pour logiciels
+,63431010,Redevances -logiciels
+,638,AUTRES CHARGES EXTERNES
+,6381,Frais de recrutement du personnel
+,63811010,Frais de recrutement
+,6382,Frais de déménagement
+,63821010,Frais de déménagement
+,6383,Réceptions
+,63831010,Frais de restauration
+,6384,Missions
+,63841010,Frais Hotel & restauration
+,63841011,Perdiem
+,64,IMPÔTS ET TAXES
+,641,IMPÔTS ET TAXES DIRECTS
+,6411,Impôts fonciers et taxes annexes
+,6411000,Permis de construction
+,6418,Autres impôts et taxes directs
+,64181010,DGRAD Redevance Eaux Naturelles
+,64181010,IERE
+,64181011,Go pass/Taxe
+,64181012,Taxe Statistique d'embarquement
+,646,Droits d'enrégistrément
+,6463,Taxes sur les véhicules de société
+,64631010,Immatriculation Vehicules
+,6464,Vignettes
+,64641010,Vignettes Vehicule
+,647,PÉNALITÉS ET AMENDES FISCALES
+,6471,Pénalités d'assiette ; impôts directs
+,64711010,Pénalités d'assiette ; impôts directs
+,6472,Pénalités d'assiette ; impôts indirects
+,64721010,Pénalités d'assiette ; impôts indirects
+,6473,Pénalités de recouvrement ; impôts directs
+,64731010,Pénalités de recouvrement ; impôts directs
+,6474,Pénalités de recouvrement ; impôts indirects
+,64741010,Pénalités de recouvrement ; impôts indirects
+,6478,Autres amendes pénales et fiscales
+,64781010,Amendes et penalités
+,648,AUTRES IMPÔTS ET TAXES
+,65,AUTRES CHARGES
+,651,PERTES SUR CRÉANCES CLIENTS ET AUTRES DÉBITEURS
+,6511,Pertes sur créances Clients
+,6511000001,Créances Irrécouvrables sur clients
+,658,CHARGES DIVERSES
+,6581,Jetons de présence et autres rémunérations d'administrateurs
+,65811010,Conseil d'Administration
+,65811011,Autres rémunération d'administrateurs
+,6582,Dons
+,65821010,Dons et liberalités
+,6588,Autres charges Diverses
+,65881010,Frais manutention
+,65881011,Permis de conduire & Autres
+,65881012,Activités sportives et culturelles
+,65881013,Reunion & autres activités syndicales
+,659,CHARGES PROVISIONNÉES D'EXPLOITATION
+,6593,Charges provisionnées d'exploitation  sur stocks
+,65931010,Provisions pour stock obsolete
+,6594,Charges provisionnées d'exploitation sur créances
+,65931010,Charges Provisionnées sur impayés malades
+,66,CHARGES DE PERSONNEL
+,661,RÉMUNÉRATIONS DIRECTES VERSÉES AU PERSONNEL NATIONAL
+,6611,Appointements salaires et commissions
+,66110011,Remunération Personnel
+,6612,Primes et gratifications
+,66121010,13ème Mois (Gratification)
+,66121011,Primes
+,6613,Congés payés
+,66131010,Indemnité de congé
+,6614,Indemnités de préavis ; de licenciement et de recherche d'embauche
+,66141010,Indemnités de préavis ; de licenciement et de recherche d'embauche
+,6615,Indemnités de maladie versées aux travailleurs
+,66151010,Indemnités de maladie versées aux travailleurs
+,6616,Supplément familial
+,66161010,Allocations familiales legales
+,6617,Avantages en nature
+,66171010,Colis fin d'année
+,6618,Autres rémunérations directes
+,66181010,Heures Supplémentaires
+,66181011,Salaires decompte final
+,663,INDEMNITÉS FORFAITAIRES VERSÉES AU PERSONNEL
+,6631,Indemnités de logement
+,66311010,Indemnités de logement
+,6638,Autres indemnités et avantages divers
+,66381010,Indemnité kilometrique
+,66381011,Indemnité de transport
+,66381012,Indemnité de transport Expatriés
+,66381013,Minerval enfants
+,66381014,Aide mariage
+,664,CHARGES SOCIALES
+,6641,Charges sociales sur rémunération du personnel
+,66411010,Cotisation INSS
+,66411011,Cotisations INPP
+,66411012,Cotisation ONEM
+,66411013,Frais funeraires
+,66411014,Voyage employes en congé
+,66411015,Frais medicaux Personnel
+,668,AUTRES CHARGES SOCIALES
+,6681,Versements aux Syndicats et Comités d'entreprise ; d'établissement
+,66811010,Versements aux syndicats
+,67,FRAIS FINANCIERS ET CHARGES ASSIMILÉES
+,671,INTÉRÊTS DES EMPRUNTS
+,6712,Emprunts auprès des établissements de crédit
+,67121010,Internet sur emprunt
+,674,Autres intérêts
+,6745,Intérêts bancaires et sur opérations de trésorerie et d’escompte
+,67451010,Interets bancaires
+,6748,Intérêts sur dettes diverses
+,67481010,Intérêt sur dettes
+,676,PERTES DE CHANGE
+,6761,A PRECISER
+,67611010,Différences de change
+,679,CHARGES PROVISIONNÉES FINANCIÈRES
+,6791,charges provisionnées financières sur risques financiers
+,67911010,Charges provisionnées - Difference de change financière
+,68,DOTATIONS AUX AMORTISSEMENTS
+,681,DOTATIONS AUX AMORTISSEMENTS D'EXPLOITATION
+,6811,Dotations aux amortissements des charges immobilisées
+,68111010,Dotations aux amortissements
+,6812,Dotations aux amortissements des immobilisations incorporelles
+,68121010,Dotation aux amortissements sur logiciels
+,68121011,Dotation aux amortissements sur logiciels réévalués
+,68122010,Dotation aux amortissements sur frais licence
+,68122011,Dotation aux amortissements sur frais licence réévalué
+,6813,Dotations aux amortissements des immobilisations corporelles
+,68131010,Dotation aux amortissement Batiments
+,68131011,Dotation aux amortissement Batiments réévalués
+,68132010,Dotation aux amortissement Barrage et autres
+,68132011,Dotation aux amortissement Barrage et autres réevalué
+,68133010,Dotation aux amortissements des  matériels
+,68133011,Dotation aux amortissements des matériels réevalués
+,68134010,Dotation aux amortissement des mobiliers
+,68134011,Dotation aux amortissements des mobiliers réevalués
+,68135010,Dotation aux amortissements du matériel et mobilier d'habitation
+,68135011,Dotation aux amortissements du matériel et mobilier d'habitation réévalué
+,68136010,Dotation aux amortissements Véhicules
+,68136011,Dotation aux amortissements véhicules réevalué
+,68137010,Dotation aux amortissements Bicyclette ; Mobilette et moto
+,68137011,Dotation aux amortissements Bicyclette ; Mobilette et moto réevalué
+,68138010,Dotation aux amortissements des équipements
+,68138011,Dotation aux amortissements des autres matériels réevalués
+,69,DOTATIONS AUX PROVISIONS
+,691,DOTATIONS AUX PROVISIONS D'EXPLOITATION
+,6911,Dotationx aux prov d'expl pour risques et charges
+,69111010,Provisions impôts sur le Résultat
+,69111011,Provision pour litige
+,69111012,Provision pour décompte final (retraite)
+,6912,Dotationx aux prov d'expl pour grosses réparations
+,69121010,Provisions pour grosse réparations
+,69131010,Dotationx aux prov d'expl pour dépréciation des immobilisations incorporelles
+,6914,Dotationx aux prov d'expl pour dépréciation des immobilisations corporelles
+,69141010,Dotation aux prov Batiments
+,69141011,Dotation aux prov Barrage et autres
+,69141012,Dotation aux prov des  matériels
+,69141013,Dotation aux prov des mobiliers
+,69141014,Dotation aux prov du matériel et mobilier d'habitation
+,69141015,Dotation aux prov Véhicules
+,69141016,Dotation aux prov Bicyclette ; Mobilette et moto
+,69141017,Dotation aux prov des équipements
+,697,DOTATIONS AUX PROVISIONS FINANCIÈRES
+,6971,Dotations aux provisions financières pour risques et charges
+,69711010,Charges provisionnées - Difference de change financière
+,7,COMPTES DES PRODUITS DES ACTIVITES ORDINAIRES
+,70,VENTES
+,701,VENTES DE MARCHANDISES
+,7011,Vente des médicaments dans la Région Ohada
+,70111010,Vente Médicaments en comprimés
+,70111011,Vente Médicaments en Sirop
+,70111012,Vente Médicaments en crème
+,70111013,Vente Médicaments en Poudre et Capsul
+,70111014,Vente Injectables
+,70111015,Vente Platres
+,70111016,Vente Suppositoires
+,70111017,Vente Sondes
+,706,SERVICES VENDUS
+,7061,Services vendus dans la Région ohada
+,70611010,Consultation
+,70611011,Optique
+,70611012,Hospitalisation
+,70611013,IMA Subsidy
+,70611014,Frais (Frigo)
+,70611015,Chirurgie
+,70611016,Examen Labo
+,70611017,Administration
+,70611018,Accouchement PAX
+,70611019,Imagerie Médicale
+,70611020,Orl
+,70611021,Perfusion
+,70611022,Acouchement
+,70611023,Soins infirmiers ambulatoires
+,70611024,Greffes dermo-épidermiques
+,70611025,Excisions
+,70611026,Incisions
+,70611027,Orthopédie
+,70611028,Gynécologie
+,70611029,Examen complémentaire
+,70611030,Laparatomie
+,70611031,Obstétrique
+,70611032,Traumatologie fractures
+,70611033,Petite chirurgie sutures
+,70611034,Urologie
+,70611035,Stomatologie
+,70611036,URGENCES
+,71,71 SUBVENTIONS D'EXPLOITATION
+,718,AUTRES SUBVENTIONS D'EXPLOITATION
+,71811010,Autres subenventions d'expl. Versées par l'État et les collectivités publiques
+,7182,Autres subenventions d'expl.Versées par les organismes internationaux
+,71821010,Versées par WOMEN'S DEVELOPMENT
+,71821011,Versées par AGRICULTURAL DEVELOPMENT
+,71821012,Versées par NUTRITION REAB. (CN)
+,71821013,Versées par INDIGENT CARE PROJECT
+,71821014,Versées par TSHIKAJI HEALTH CENTER
+,71821015,Versées par ORPHAN SCHOR EDUC PROJECT
+,71821016,Versées par HMHC
+,71821017,Versées par FISTULA PROJECT
+,71821018,Versées par CERVICAL CANCER
+,71821019,Versées par BCZS COM. HEALTH PROGRAM
+,71821020,Versées par MOBILITY IN MISSION 0096AA-08
+,71821021,Versées par SUPPORT OF THE NURSING SCHOOL
+,71821022,Versées par WOMEN DEVELOPMENT
+,71821023,Versées par ORPHAN SCHOLARSHIP
+,71821024,Versées par MOTHER CARE BABY CARE
+,71821025,Versées par C-GSH FISTULA REPAIR
+,71821026,Versées par FOUNDERS CHAPEL
+,71821027,Versées par MISSIONNARY HOUSING
+,71821028,Versées par CHARITY FUNDS
+,7183,Autres subenventions d'expl. Versées par des tiers
+,71831010,Versées par KAJIDI JONATHAN SCHOLARSHIP
+,72,PRODUCTION IMMOBILISÉE
+,721,PRODUCTION IMMOBILISÉE - IMMOBILISATIONS INCORPORELLES
+,72111010,Production Immobilisée-Immobilisations Incorporelles
+,722,PRODUCTION IMMOBILISÉE - IMMOBILISATIONS CORPORELLES
+,72211010,Production Immobilisée-Immobilisations Corporelles
+,73,VARIATIONS DES STOCKS DE BIENS ET DE SERVICES PRODUITS
+,736,Variation des Stocks des Produits Finis
+,73611010,Variation des Produits de Perfusion
+,73611011,Variation des Produits Ophtamologiques
+,75,AUTRES PRODUITS
+,754,PRODUITS DES CESSIONS D'IMMOBILISATIONS
+,75411010,Produits des Cessions d'Immobilisations
+,758,PRODUITS DIVERS
+,7581,Jetons de présence et autres rémunérations d'administrateurs
+,75811010,Jeton de présence
+,75811011,Autres rémunérations d'administrateurs
+,7582,Indemnités d’assurances reçues
+,75821010,Indemnités d’assurances reçues
+,7588,Autres Produits divers
+,75881010,Autres revenus
+,759,REPRISES DE CHARGES PROVISIONNÉES D'EXPLOITATION
+,7593,Reprises de charges provisionnées sur stocks
+,75931010,Reprise des charges provisionnées pour stocks obsolète
+,7594,Reprises de charges provisionnées sur créances
+,75941010,Reprise de charges provisionnées sur créances impayées
+,7598,Reprises sur autres charges provisionnées
+,77,REVENUS FINANCIERS ET PRODUITS ASSIMILÉS
+,771,INTÉRÊTS DE PRÊTS
+,77111010,Intérêts de Prêts
+,773,ESCOMPTES OBTENUS
+,77311010,Escomptes obtenus
+,776,GAINS DE CHANGE
+,77611010,Gain de change
+,779,REPRISES DE CHARGES PROVISIONNÉES FINANCIÈRES
+,7791,Reprises de charges provisionnées financières sur risques financiers
+,77911010,Charges provisionnées - Difference de change financière
+,7798,Reprises de charges provisionnées financières autres charges provisionnées financières
+,77981010,Reprise des autres charges provisionnées financières
+,78,TRANSFERTS DE CHARGES
+,781,TRANSFERTS DE CHARGES D'EXPLOITATION
+,78111010,Transfert de charges d'exploitation
+,787,TRANSFERTS DE CHARGES FINANCIERES
+,78711010,Transfert de charges financières
+,79,REPRISES DE PROVISIONS
+,791,REPRISES DE PROVISIONS D'EXPLOITATION
+,7911,Reprise de provision d'exploitation pour risques et charges
+,79111010,Provisions impôts sur le Résultat
+,79111011,Provision pour litige
+,79111012,Provision pour décompte final (retraite)
+,7912,Reprise de provision d'exploitation pour grosses réparations
+,79121010,Reprise de provisipon d'exploitation pour grosse reparation
+,79131010,Reprise de provision d'exploitation pour dépréciation des immobilisations incorporelles
+,7914,Reprise de provision d'exploitation pour dépréciation des immobilisations corporelles
+,79141010,Reprise de provision pour dépréciation Batiments
+,79141011,Reprise de provision pour dépréciation Barrage et autres
+,79141012,Reprise de provision pour dépréciations des  matériels
+,79141013,Reprise de provision pour dépréciation des mobiliers
+,79141014,Reprise de provision pour dépréciations du matériel et mobilier d'habitation
+,79141015,Reprise de provision pour dépréciations Véhicules
+,79141016,Reprise de provision pour dépréciations Bicyclette ; Mobilette et moto
+,79141017,Reprise de provision pour dépréciations des équipements
+,797,REPRISES DE PROVISIONS FINANCIÈRES
+,7971,Reprises de provisions financières pour risques et charges
+,79711010,Reprises de provisions financières pour risques et charges
+,8,COMPTES DES AUTRES CHARGES ET DES AUTRES PRODUITS
+,81,VALEURS COMPTABLE DES CESSIONS D'IMMOBILISATIONS
+,81111010,Immobilisations incorporelles
+,81211010,Immobilisations corporelles
+,81611010,Immobilisations financières
+,82,PRODUITS DES CESSIONS D'IMMOBILISATIONS
+,82111010,Immobilisations incorporelles
+,82211010,Immobilisations corporelles
+,82611010,Immobilisations financières
+,83,CHARGES HORS ACTIVITES ORDINAIRES
+,83111010,Charges HAO constatées
+,83411010,Pertes sur créances HAO
+,83511010,Dons et libéralités accordés
+,83611010,Abandons de creances consentis
+,83911010,Charges provisionnées HAO
+,84,PRODUITS HORS ACTIVITES ORDINAIRES
+,84111010,Produits Hors activités ordinaires constatés
+,84511010,Dons et libéralités obtenus
+,84611010,Abandons des créances obtenus
+,84811010,Transferts des charges HAO
+,84911010,Reprises de charges Hors activités ordinaires
+,85,DOTATIONS HORS ACTIVITES ORDINAIRES
+,85211010,Dotations aux amortissements HAO
+,85311010,Dotations aux provisions pour depreciation HAO
+,85411010,Dotations aux provisions pour risques et charges HAO
+,85811010,Autres dotations HAO
+,86,REPRISES HORS ACTIVITES ORDINAIRES
+,86211010,Reprises d'amortisements HAO
+,86311010,Reprises des provisions pour depreciation HAO
+,86411010,Reprises des provisions pour risques et charges HAO
+,86511010,Reprises de subventions d'investissement
+,86811010,Autres reprises HAO
+,88,SUBVENTIONS D'EQUILIBRE
+,88111010,Etat
+,88211010,Collectivités pulique
+,88411010,Groupe
+,88811010,Autres
+,89,IMPOTS SUR LE RESULTAT
+,89111010,Impôts sur les bénéfices de l'exercice
+,89211010,Rappels d'impots sur resultats antérieurs
+,89511010,Impôt minimum forfaitaire
+,89911010,Degrevements et annulations d'impôts sur resultats antérieurs

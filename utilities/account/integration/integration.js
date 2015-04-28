@@ -1,6 +1,6 @@
 var fs = require('fs'),
 	q = require('q'),
-	accountFilePath = "./plan_comptable.csv",
+	accountFilePath = "./pcgc.csv",
 	enterprise_id = 200,
 	locked = 0,
 	is_ohada = 0;
@@ -86,14 +86,14 @@ function processContent (content){
 				var acc_txt = parseString(account_list[index + 1].trim());
 
 				if(acc_txt.length > 0){
-					chaines = [account_type_id, enterprise_id, account_list[index], acc_txt , parent, locked, classe].join(', ');
+					chaines = [account_type_id, enterprise_id, account_list[index], acc_txt , parent, locked, classe, is_ohada].join(', ');
 					string_request.push('(' + chaines + ')');
 				}
 			}
 		}
 	});
 
-	var request = 'INSERT INTO account (account_type_id, enterprise_id, account_number, account_txt, parent, locked, classe) VALUES ' +
+	var request = 'INSERT INTO account (account_type_id, enterprise_id, account_number, account_txt, parent, locked, classe, is_ohada) VALUES ' +
 					string_request.join(', ') + ";";
 	console.log(request);
 }
