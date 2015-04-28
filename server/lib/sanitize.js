@@ -14,7 +14,7 @@ module.exports = {
 
   isIn : function (s) {  return String(s).indexOf('(') > -1; },
 
-  isFloat : function (f) { return parseFloat(f) !== undefined && ~f.toString().indexOf('.'); },
+  isFloat : function (f) { return parseFloat(f) !== undefined && f.toString().indexOf('.') > -1; },
 
   // this also works for hexadecimal ('0x12')
   isNumber: function (n) { return !Number.isNaN(Number(n)); },
