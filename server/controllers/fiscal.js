@@ -53,6 +53,20 @@ exports.createFiscalYear = function (req, res, next) {
   .done();
 };
 
+exports.fiscalYearResultat = function (req, res, next) {
+  'use strict';
+  var data = req.body.params;
+  var user_id = data.user_id,
+      new_fy_id = data.new_fy_id,
+      resultat = data.resultat;
+
+  journal.request('fiscal_year_resultat', new_fy_id, user_id, function (error, result) {
+    if (error) {
+      throw new Error(error);
+    }
+  }, undefined, resultat);
+}
+
 // calculate the positive integer difference between two dates in months
 function monthDiff(firstDate, secondDate) {
   var diff = secondDate.getMonth() - firstDate.getMonth();
