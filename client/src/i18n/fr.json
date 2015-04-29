@@ -426,6 +426,7 @@
    "NUM"                   : "Numéro",
    "NUM_ITEMS"             : "Nombre Items",
    "OFFDAYS"               : "Jours fériés",
+   "OHADA"                 : "OHADA",
    "ORDER_DATE"            : "Date de la commande d' Achat",
    "ORIGIN_ID"             : "ID Origine",
    "OTHER_CURRENCY"        : "Autre Monnaie",
@@ -435,6 +436,7 @@
    "PATIENT"               : "Patient",
    "PAYCHECK"              : "Bulletin",
    "PAYMENT"               : "Payement",
+   "PCGC"                  : "PCGC",
    "PERCENT_PAY"           : "Pourcentage de paiement",
    "PERIOD_ID"             : "ID Période",
    "PERIOD_PAYMENT"        : "Période de paiement",
@@ -2134,6 +2136,7 @@
    },
 "SELECT": {
    "ACCOUNT"               : "Sélectionner Compte",
+   "ACCOUNT_REFERENTIIAL"  : "Sélectionner le referentielle de comptes",   
    "ACCOUNT_TYPE"          : "Sélectionner Type de Compte",
    "ALL"                   : "Tous",
    "CASH"                  : "Caisse Auxillaire",

@@ -1,21 +1,12 @@
 angular.module('bhima.controllers')
 .controller('accountsReport', [
   '$scope',
+  '$translate',
   'appstate',
   'validate',
-  function($scope, appstate, validate) {
-    var dependencies = {};
-
-    dependencies.account = {
-      required: true,
-      query: {
-        tables: {
-          'account': {
-            columns: ['id', 'account_txt', 'account_number', 'parent', 'account_type_id']
-          }
-        }
-      }
-    };
+  function($scope, $translate, appstate, validate) {
+    var dependencies = {},
+      session = $scope.session = {};
 
     function accountsReport(model) {
       appstate.register('enterprise', function(res) {
@@ -53,7 +44,43 @@ angular.module('bhima.controllers')
       });
     }
 
-    validate.process(dependencies).then(accountsReport);
-    $scope.printReport = function() { print(); };
+    $scope.search = function search() {
+
+      dependencies.account = {
+        query: {
+          tables: {
+            'account': {
+              columns: ['id', 'account_txt', 'account_number', 'parent', 'account_type_id', 'is_ohada']
+            }
+          },
+          where : ['account.is_ohada=' + session.type]
+        }
+      };
+
+      session.type = parseInt(session.type);
+
+      if(session.type === 1){
+        $scope.title = $translate.instant('COLUMNS.OHADA');
+      } else if (session.type === 0) {
+        $scope.title = $translate.instant('COLUMNS.PCGC');
+      }
+
+      $scope.state = 'generate';
+      validate.process(dependencies).then(accountsReport);
+      $scope.printReport = function() { print(); };
+    };
+
+    $scope.print = function print() {
+      window.print();
+    };
+
+    function reconfigure () {
+      $scope.state = null;
+      $scope.session.type = null;
+      $scope.session.limit = null;
+      $scope.model = null;
+    }
+
+    $scope.reconfigure = reconfigure;
   }
 ]);
