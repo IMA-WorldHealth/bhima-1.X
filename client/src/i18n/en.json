@@ -415,6 +415,7 @@
    "NUM"                   : "Number",
    "NUM_ITEMS"             : "Number of Items",
    "OFFDAYS"               : "Offdays",
+   "OHADA"                 : "OHADA",
    "ORDER_DATE"            : "Order Date",
    "ORIGIN_ID"             : "Origin ID",
    "OTHER_CURRENCY"        : "Other Currency",
@@ -424,6 +425,7 @@
    "PATIENT"               : "Patient",
    "PAYCHECK"              : "Paycheck",
    "PAYMENT"               : "Payment",
+   "PCGC"                  : "PCGC",
    "PERCENT_PAY"           : "Percent pay",
    "PERIOD_ID"             : "Period ID",
    "PERIOD_PAYMENT"        : "Payment period",
@@ -2123,6 +2125,7 @@
    },
 "SELECT": {
    "ACCOUNT"               : "Select Account",
+   "ACCOUNT_REFERENTIIAL"  : "Select the accounts referential",   
    "ACCOUNT_TYPE"          : "Select Account Type",
    "ALL"                   : "All",
    "CASH"                  : "Select a Cash",
