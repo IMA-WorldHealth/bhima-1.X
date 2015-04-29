@@ -6032,10 +6032,10 @@ INSERT INTO `taxe_ipr` (`id`, `taux`, `tranche_annuelle_debut`, `tranche_annuell
 --
 -- ADD 'is_ohada' field
 --
--- Date: 2015-04-27
+-- Date: 2015-04-29
 -- By: Chris LOMAME
 
 USE bhima;
 
 ALTER TABLE `account`
-ADD `is_ohada` BOOLEAN NULL;
+ADD `is_ohada` BOOLEAN;
