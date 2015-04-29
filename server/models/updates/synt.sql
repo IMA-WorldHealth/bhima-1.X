@@ -6037,3 +6037,8 @@ USE bhima;
 
 ALTER TABLE `account`
 ADD `is_ohada` BOOLEAN NULL;
+
+
+
+
+

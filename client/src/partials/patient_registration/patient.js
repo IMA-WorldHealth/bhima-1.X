@@ -198,7 +198,7 @@ angular.module('bhima.controllers')
       var packageDebtor = {
         uuid : debtorId,
         group_uuid : $scope.debtor.debtor_group.uuid,
-        text : 'Debtor ' + patient.first_name + ' ' + patient.last_name,
+        text : 'Debtor ' + patient.first_name + ' ' + patient.last_name + ' ' + patient.middle_name,
       };
 
       var packagePatient = connect.clean(patient);
@@ -210,6 +210,7 @@ angular.module('bhima.controllers')
       // Normalize the patient names
       packagePatient.first_name = util.normalizeName(packagePatient.first_name);
       packagePatient.last_name = util.normalizeName(packagePatient.last_name);
+      packagePatient.middle_name = util.normalizeName(packagePatient.middle_name);
       packagePatient.father_name = util.normalizeName(packagePatient.father_name);
       packagePatient.mother_name = util.normalizeName(packagePatient.mother_name);
       packagePatient.spouse = util.normalizeName(packagePatient.spouse);
