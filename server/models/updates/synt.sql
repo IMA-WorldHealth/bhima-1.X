@@ -41,9 +41,7 @@ ADD `is_asset` BOOLEAN NULL;-- written by jniles
 -- Date: 2015-02-23
 -- By: Chris LOMAME
 
-USE bhima;
-
-INSERT INTO `account_type` VALUES (4,'expense');
+-- INSERT INTO `account_type` VALUES (4,'expense');
 
 ALTER TABLE `account`
 ADD FOREIGN KEY (`account_type_id`) REFERENCES `account_type` (`id`);
@@ -6026,3 +6024,16 @@ INSERT INTO `taxe_ipr` (`id`, `taux`, `tranche_annuelle_debut`, `tranche_annuell
 ('', 35, 13908000, 16824000, 1159000, 1402000, 2916000, 243000, 1020600, 85050, 4588180, 382348, 1),
 ('', 37.5, 16824000, 22956000, 1402000, 1913000, 6132000, 511000, 2299500, 191625, 6887680, 573973, 1),
 ('', 40, 22956000, 100000000000000, 1913000, 8333330000000, 100000000000000, 8333330000000, 40000000000000, 3333330000000, 40000000000000, 3333330000000, 1);
+
+
+-- Updates account
+--
+-- ADD 'is_ohada' field
+--
+-- Date: 2015-04-27
+-- By: Chris LOMAME
+
+USE bhima;
+
+ALTER TABLE `account`
+ADD `is_ohada` BOOLEAN NULL;
