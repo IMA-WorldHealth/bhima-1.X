@@ -2125,7 +2125,7 @@
    },
 "SELECT": {
    "ACCOUNT"               : "Sélectionner Compte",
-   "ACCOUNT_REFERENTIIAL"  : "Sélectionner le referentielle de compte",   
+   "ACCOUNT_REFERENTIIAL"  : "Sélectionner le referentielle de comptes",   
    "ACCOUNT_TYPE"          : "Sélectionner Type de Compte",
    "ALL"                   : "Tous",
    "CASH"                  : "Caisse Auxillaire",

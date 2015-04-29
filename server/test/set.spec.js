@@ -16,7 +16,7 @@ describe('set', function () {
       expect(results).to.eql(answer);
     });
 
-    it ('should not add a second item of the same value', function () {
+    it('should not add a second item of the same value', function () {
       var set = new Set();
 
       set.insert('a');
