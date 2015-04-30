@@ -357,7 +357,7 @@ angular.module('bhima.controllers')
           paid          : 0,
           confirmed     : 0,
           closed        : 0,
-          is_donation   : 1,
+          is_integration: 1,
           is_direct     : 0
         };
 
