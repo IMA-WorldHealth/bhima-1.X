@@ -1334,7 +1334,10 @@ function handleTransfert (id, user_id, done) {
   var sql, data, reference, cfg = {}, queries = {};
 
   // TODO : Formalize this
-  sql = 'SELECT * FROM `primary_cash` WHERE `primary_cash`.`uuid` = ' + sanitize.escape(id) + ';';
+  sql = 'SELECT `primary_cash`.*, `cash_box_account_currency`.`virement_account_id` ' +
+        'FROM `primary_cash` ' +
+        'JOIN `cash_box_account_currency` ON `cash_box_account_currency`.`account_id` = `primary_cash`.`account_id` ' + 
+        'WHERE uuid = ' + sanitize.escape(id) + ';';
 
   db.exec(sql)
   .then(function (results) {
@@ -1362,12 +1365,39 @@ function handleTransfert (id, user_id, done) {
     return get.transactionId(reference.project_id);
   })
   .then(function (transId) {
-    var descrip =  transId.substring(0,4) + '_CAISSEPRINCIPALE_TRANSFERT' + new Date().toISOString().slice(0, 10).toString();
+    var descrip =  transId.substring(0,4) + 'CASH_BOX_VIRMENT' + new Date().toISOString().slice(0, 10).toString();
     queries.credit =
       'INSERT INTO posting_journal (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
         '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
         '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
         'VALUES (' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'', sanitize.escape(descrip), reference.account_id].join(',') + ', ' +
+        [ reference.cost, 0, cfg.valueExchanged, 0, reference.currency_id ].join(',')+', null, null, '+[sanitize.escape(id), cfg.originId, user_id].join(',') +
+      ');';
+
+    queries.debit =
+      'INSERT INTO posting_journal (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+        '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
+        'VALUES (' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'', sanitize.escape(descrip), reference.virement_account_id].join(',') + ', ' +
+        [ 0, reference.cost, 0, cfg.valueExchanged, reference.currency_id ].join(',')+', null, null, '+[sanitize.escape(id), cfg.originId, user_id].join(',') +
+      ');';
+
+    return db.exec(queries.credit);
+  })
+  .then(function () {
+    return db.exec(queries.debit);
+  })
+  .then(function () {
+    return get.transactionId(reference.project_id);
+  })  
+// VOICI ANALYSE DANS LA BASE DE DONNEES
+  .then(function (transId) {
+    var descrip =  transId.substring(0,4) + '_VIRMENT_CAISSEPRINCIPALE' + new Date().toISOString().slice(0, 10).toString();
+    queries.credit =
+      'INSERT INTO posting_journal (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+        '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
+        'VALUES (' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'', sanitize.escape(descrip), reference.virement_account_id].join(',') + ', ' +
         [ reference.cost, 0, cfg.valueExchanged, 0, reference.currency_id ].join(',')+', null, null, '+[sanitize.escape(id), cfg.originId, user_id].join(',') +
       ');';
 
@@ -1381,11 +1411,13 @@ function handleTransfert (id, user_id, done) {
         [sanitize.escape(id), cfg.originId, user_id].join(',') + ' ' +
         'FROM cash_box_account_currency WHERE `cash_box_account_currency`.`cash_box_id`='+sanitize.escape(reference.cash_box_id) + ' ' +
           'AND `cash_box_account_currency`.`currency_id`='+sanitize.escape(reference.currency_id);
+
     return db.exec(queries.credit);
   })
   .then(function () {
     return db.exec(queries.debit);
   })
+// VOICI ANALYSE DANS LA BASE DE CONNAISSANCES  
   .then(function (rows) {
     done(null, rows);
   })
