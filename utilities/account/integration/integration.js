@@ -1,9 +1,9 @@
 var fs = require('fs'),
 	q = require('q'),
-	accountFilePath = "./ohada.csv",
+	accountFilePath = "./pcgc.csv",
 	enterprise_id = 200,
 	locked = 0,
-	is_ohada = 1;
+	is_ohada = 0;
 
 
 //read file content
