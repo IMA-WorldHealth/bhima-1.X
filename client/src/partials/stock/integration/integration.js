@@ -351,13 +351,13 @@ angular.module('bhima.controllers')
           currency_id   : $scope.project.currency_id,
           creditor_uuid : null,
           purchaser_id  : $scope.user.data.id,
-          project_id    : $scope.project.currency_id,
+          project_id    : $scope.project.id,
           employee_id   : null,
           note          : 'INTEGRATION_STOCK /' + util.sqlDate(session.config.date),
           paid          : 0,
           confirmed     : 0,
           closed        : 0,
-          is_donation   : 1,
+          is_integration: 1,
           is_direct     : 0
         };
 
