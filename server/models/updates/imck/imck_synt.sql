@@ -26,3 +26,6 @@ INSERT INTO `transaction_type` VALUES
 
 INSERT INTO `unit` VALUES 
 (103,'Confirmation Stock Integration','TREE.CONFIRM_INTEGRATION','',11,0,'/partials/stock/integration/confirm_integration','/stock/integration_confirm/');
+
+ALTER TABLE `purchase`
+ADD `is_integration` BOOLEAN NULL;

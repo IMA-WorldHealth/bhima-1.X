@@ -1529,7 +1529,7 @@ exports.getStockIntegration = function (req, res, next) {
           + 'JOIN stock s ON s.purchase_order_uuid=p.uuid '
           + 'JOIN movement m ON s.tracking_number=m.tracking_number '
           + 'JOIN project pr ON pr.id=p.project_id '
-          + 'WHERE p.confirmed=0 AND p.is_donation=1';
+          + 'WHERE p.confirmed=0 AND p.is_integration=1';
 
   db.exec(sql)
   .then(function (data) {
