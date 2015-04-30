@@ -538,6 +538,10 @@
       controller : 'stock.integration',
       templateUrl : 'partials/stock/integration/integration.html'
     })
+    .when('/stock/integration_confirm/', {
+      controller : 'stock.confirm_integration',
+      templateUrl : 'partials/stock/integration/confirm_integration/confirm_integration.html'
+    })
     .when('/reports/loss_record/', {
       controller : 'loss_record',
       templateUrl : 'partials/reports/loss_record/loss_record.html'
