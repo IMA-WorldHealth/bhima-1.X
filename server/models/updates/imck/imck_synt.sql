@@ -7,7 +7,7 @@ USE bhima;
 -- Date: 2015-04-27
 -- By: Chris LOMAME
 ALTER TABLE `account`
-ADD `is_ohada` BOOLEAN NULL;
+ADD `is_ohada` BOOLEAN;
 
 -- Updates unit
 --
@@ -29,3 +29,20 @@ INSERT INTO `unit` VALUES
 
 ALTER TABLE `purchase`
 ADD `is_integration` BOOLEAN NULL;
+
+-- Updates patient
+--
+-- ADD 'name_middle' field
+-- ADD 'hospital_no' field
+--
+-- Date: 2015-04-30
+-- By: Chris LOMAME
+
+USE bhima;
+
+ALTER TABLE `patient`
+ADD `middle_name` varchar(150);
+
+
+ALTER TABLE `patient`
+ADD `hospital_no` varchar(150);

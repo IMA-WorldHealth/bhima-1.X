@@ -13,7 +13,7 @@
       <div class="col-xs-7">
 
         <div class="row">
-          <h4>{{recipient.first_name}} {{recipient.last_name}}</h4>
+          <h4>{{recipient.first_name}} {{recipient.last_name}} {{recipient.middle_name}}</h4>
         </div>
         <div class="row">
           <i>{{location.name}}</i>
@@ -30,6 +30,14 @@
         <div class="row">
           {{recipient.hr_id}}
         </div>
+
+        <div class="row">
+          <b>{{'INVOICE.HOSPITAL_FILE_NR' | translate}}</b>
+        </div>
+        <div class="row">
+          {{recipient.hospital_no | date}}
+        </div>
+
         <div class="row">
           <b>{{'INVOICE.DATE_REGISTRATION' | translate}}</b>
         </div>
