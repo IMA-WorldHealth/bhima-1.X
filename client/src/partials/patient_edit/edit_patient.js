@@ -1,7 +1,7 @@
 angular.module('bhima.controllers')
 .controller('patientEdit', [
   '$scope',
-  '$routeParams',  
+  '$routeParams',
   '$translate',
   'connect',
   'validate',
@@ -21,7 +21,7 @@ angular.module('bhima.controllers')
     'profession', 'employer', 'marital_status', 'spouse', 'spouse_profession', 'spouse_employer', 'notes',
     'religion', 'phone', 'email', 'address_1', 'address_2', 'origin_location_id', 'current_location_id', 'middle_name', 'hospital_no'
     ];
-    
+
     // Initialise the session
     session.mode = 'search';
     session.failedSessionValidation = false;
@@ -69,10 +69,10 @@ angular.module('bhima.controllers')
           'patient' : {
             columns : editableFields.concat(['uuid', 'reference', 'registration_date'])
           },
-          'debitor' : { 
+          'debitor' : {
             columns : ['uuid::debitor_uuid', 'group_uuid::debitor_group_id', 'text::debitor_name']
           },
-          'debitor_group' : { 
+          'debitor_group' : {
             columns : ['name::debitor_group_name']
           },
                 'project' : {
@@ -107,7 +107,7 @@ angular.module('bhima.controllers')
     $scope.setOriginLocation = function (uuid) {
       $scope.patient.origin_location_id = uuid;
     };
-    
+
     $scope.setCurrentLocation = function (uuid) {
       $scope.patient.current_location_id = uuid;
     };
@@ -144,7 +144,7 @@ angular.module('bhima.controllers')
     function invalidDOB() {
       validation.dates.flag = false;
 
-      if (typeof $scope.patient === 'undefined' || 
+      if (typeof $scope.patient === 'undefined' ||
           typeof $scope.patient.dob === 'undefined' || !$scope.patient.dob) {
         validation.dates.flag = validation.dates.tests.type;
         return true;
@@ -219,7 +219,7 @@ angular.module('bhima.controllers')
         uuid : patient.debitor_uuid
       };
 
-      debitorUuid = patient.debitor_uuid;
+      // debitorUuid = patient.debitor_uuid;
       // Make sure the DOB is in SQL format
       patient.dob = util.sqlDate(patient.dob);
 
@@ -231,7 +231,7 @@ angular.module('bhima.controllers')
       patient.mother_name = util.normalizeName(patient.mother_name);
       patient.spouse = util.normalizeName(patient.spouse);
       patient.title = util.normalizeName(patient.title);
-      
+
       // Get rid of any extraneous fields
       delete patient.reference;
       delete patient.registration_date;
