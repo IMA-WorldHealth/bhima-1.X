@@ -180,4 +180,8 @@ exports.initialise = function (app) {
   // Fiscal Year Resultat
   app.get('/getClassSolde/:account_class/:fiscal_year', uncategorised.getClassSolde);
   app.post('/posting_fiscal_resultat/', fiscal.fiscalYearResultat);
+
+  // Stock integration
+  app.get('/stockIntegration/', uncategorised.getStockIntegration);
+
 };

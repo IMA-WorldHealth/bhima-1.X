@@ -346,17 +346,20 @@ function paymentRecords(params) {
   //   'GROUP BY c.document_id;';
 
   var sql =
-    '(SELECT c.uuid, c.document_id, c.reference, s.reference AS sale_reference, s.project_id AS sale_project, ' +
+    '(SELECT c.uuid, c.document_id, c.reference, s.reference AS sale_reference, s.project_id AS sale_project, ' + 
       'pr.abbr, c.cost, cr.name, p.first_name, c.description, p.project_id AS debtor_project, p.reference AS debtor_reference , ' +
-      'p.last_name, c.deb_cred_uuid, c.currency_id, ci.invoice_uuid, c.date ' +
-    'FROM `cash` AS c JOIN project AS pr JOIN `currency` as cr JOIN `cash_item` AS ci ' +
-      'JOIN `debitor` AS d JOIN `patient` as p JOIN sale AS s ' +
-      'ON ci.cash_uuid = c.uuid AND c.currency_id = cr.id AND ' +
-      'c.project_id = pr.id AND ' +
-      'c.deb_cred_uuid = d.uuid AND d.uuid = p.debitor_uuid AND ' +
-      'ci.invoice_uuid = s.uuid ' +
-    'WHERE c.project_id IN (' + _id + ') AND DATE(c.date) BETWEEN DATE(' + _start + ') AND DATE(' + _end + ') ' +
-    'GROUP BY c.document_id);';
+      'p.last_name, c.deb_cred_uuid, c.currency_id, ci.invoice_uuid, c.date, cd.cash_uuid AS `cash_discard` ' +
+    'FROM `cash` AS c ' +
+      'JOIN project AS pr ON c.project_id = pr.id ' +
+      'JOIN `currency` AS cr ON c.currency_id = cr.id ' +
+      'JOIN `cash_item` AS ci ON ci.cash_uuid = c.uuid ' + 
+      'JOIN `debitor` AS d ON c.deb_cred_uuid = d.uuid ' +
+      'JOIN `patient` AS p ON d.uuid = p.debitor_uuid ' +
+      'JOIN sale AS s ON ci.invoice_uuid = s.uuid ' +
+      'LEFT JOIN `cash_discard` AS cd  ON c.uuid = cd.cash_uuid ' + 
+    'WHERE c.project_id IN (' + _id + ') AND DATE(c.date) BETWEEN DATE(' + _start + ') AND DATE(' + _end + ') AND cd.cash_uuid IS NULL ' +
+    'GROUP BY c.document_id);'
+
 
   return db.exec(sql);
 }
