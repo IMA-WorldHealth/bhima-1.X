@@ -3,7 +3,7 @@
 // Module: db.js
 
 // TODO rewrite documentation - this module can now be required by any controller module throughout the application
-// TODO Seperate DB wrapper and DB methods - this module should just initialise a new DB instance 
+// TODO Seperate DB wrapper and DB methods - this module should just initialise a new DB instance
 // new db(config, etc.) and return it in module exports
 
 // TODO EVERY query to the DB is currently handled on it's own connection, one
@@ -18,17 +18,15 @@
 var q = require('q');
 
 var cfg = require('./../config/environment/server').db;
-var logger = require('./logger');
 var uuid = require('./guid');
 
-var db, con, supportedDatabases, log, dbms;
+var db, con, supportedDatabases, dbms;
 
 // Initiliase module on startup - create once and allow db to be required anywhere
-function initialise() { 
+function initialise() {
   'use strict';
 
   cfg = cfg || {};
-  log = logger.external('DB');
 
   // Select the system's database with this variable.
   dbms = cfg.dbms || 'mysql';
@@ -42,23 +40,23 @@ function initialise() {
   };
 
   // The database connection for all data interactions
-  // log(uuid(), 'Creating connection pool', null);
   con = supportedDatabases[dbms](cfg);
 
-  //  FIXME reset all logged in users on event of server crashing / terminating - this should be removed/ implemented into the error/ loggin module before shipping
+  //  FIXME reset all logged in users on event of server crashing / terminating - this
+  //  should be removed/ implemented into the error/logging module before shipping
   flushUsers(con);
 }
 
 function exec(sql, params) {
   var defer = q.defer();
-  
+
   console.log('[db] [execute]: ', sql);
   con.getConnection(function (err, connection) {
     if (err) { return defer.reject(err); }
     connection.query(sql, params, function (err, results) {
 
       if (err) { return defer.reject(err); }
-      connection.release();          
+      connection.release();
       defer.resolve(results);
     });
   });
@@ -81,7 +79,7 @@ function execute(sql, callback) {
 }
 
 
-function getSupportedDatabases() { 
+function getSupportedDatabases() {
   return Object.keys(supportedDatabases);
 }
 
@@ -260,7 +258,7 @@ function sanitize(x) {
   return con.escape(x);
 }
 
-module.exports = { 
+module.exports = {
   initialise : initialise,
   requestTransactionConnection : requestTransactionConnection,
   executeAsTransaction : executeAsTransaction,
