@@ -1,4 +1,4 @@
-<header>
+<!-- <header>
   {{ "REPORT.CHART_OF_ACCOUNTS" | translate }}
 </header>
 
@@ -32,4 +32,99 @@
         </table>
     </div>
   </div>
+</div>
+ -->
+<div ng-switch="state">
+  <div ng-switch-default>
+    <main>
+      <div class="col-xs-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <b> {{ "REPORT.CONFIGURE_REPORT" | translate }} : </b> {{ "REPORT.CHART_OF_ACCOUNTS" | translate }}
+          </div>
+
+          <div class="panel-body">
+            
+            <form name="configForm" novalidate>
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ "COLUMNS.TYPE" | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                  <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-briefcase"></span>
+                  </span>  
+                  <select class="form-bhima" ng-model="session.type" required>
+                    <option disabled="disabled" value="">-- {{ "SELECT.ACCOUNT_REFERENTIIAL" | translate }} -- </option>
+                    <option value="0"> {{ "COLUMNS.PCGC" | translate }} </option>
+                    <option value="1"> {{ "COLUMNS.OHADA" | translate }} </option>
+                  </select>
+                  </div>
+                </div>
+              </div> 
+
+              <div class="pull-right">
+                <button class="btn btn-sm btn-success" type="button" ng-click="search()" ng-disabled="configForm.$invalid">
+                  {{ "REPORT.GENERATE" | translate }}
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>  
+  </div>
+  <div ng-switch-when="generate">  
+    <header>
+      {{ "REPORT.CHART_OF_ACCOUNTS" | translate }} : <small> {{ title }} {{timestamp | date}}</small>
+    </header>
+
+    <nav>
+
+      <div class="pull-right">        
+        <button class="btn btn-sm btn-default" ng-click="print()">
+          <span class="glyphicon glyphicon-print"></span>
+          {{ "UTIL.PRINT" | translate }}
+        </button>
+
+        <button
+          style="margin-left: 5px;"
+          ng-click="reconfigure()"
+          class="btn btn-sm btn-default pull-right">
+          <span class="glyphicon glyphicon-repeat"></span>
+        </button>
+      </div>
+    
+    </nav>
+
+    <div class="report">
+      <div class="reportBody">
+        <div class="reportFrame">
+          <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
+          
+          <h4 class="visible-print">
+            {{ "REPORT.CHART_OF_ACCOUNTS" | translate }} : <small> {{ title }} {{timestamp | date}}</small>
+          </h4>
+          <table id="accTable" class="reportTable">
+            <thead>
+              <tr>
+                <th>{{ "REPORT.NUMBER" | translate }}</th>
+                <th>{{ "REPORT.DESCRIPTION" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat='account in model.account.data'>
+                <td style="text-align: right;">{{account.account_number}}</td>
+                <td ng-style="{'padding-left': (account.depth * 40) + 'px'}" ng-class="{'reportTitle': account.account_type_id==3}">
+                  {{account.account_txt}}
+                </td>
+              </tr>
+            </tbody>
+          </table>       
+        </div>
+      </div>
+    </div>
+  </div>  
 </div>
