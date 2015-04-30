@@ -682,6 +682,14 @@
       controller : 'subsidy',
       templateUrl : 'partials/subsidy/subsidy.html'
     })
+    .when('/cashbox_management', {
+      controller : 'cash.cashbox',
+      templateUrl : 'partials/cash/cashbox/cashbox.html'
+    })
+    .when('/cashbox_account_management', {
+      controller : 'cash.cashbox_account',
+      templateUrl : 'partials/cash/cashbox_account_currency/cashbox_account_currency.html'
+    })
 
     // Proposed formal report building structure
     .when('/report/invoice/:target', {
