@@ -29,3 +29,11 @@ INSERT INTO `unit` VALUES
 
 ALTER TABLE `purchase`
 ADD `is_integration` BOOLEAN NULL;
+
+
+
+-- Title : ADDING UNIT ENTRIES
+-- By    : Chris LOMAME
+-- Date  : 30 avr 2015
+INSERT INTO `unit` VALUES
+('Report Stock Movement','TREE.REPORT_STOCK_MOVEMENT','',10,0,'/partials/reports/stock_movement/','reports/stock_movement/');
