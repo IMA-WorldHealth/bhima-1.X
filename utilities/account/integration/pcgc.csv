@@ -151,10 +151,12 @@
 ,30011187,Matériel d'Anesthésie et de Réanimation
 ,30011188,Materiel de Traumatologie
 ,30011189,Consommables de Traumatologie
+,30111000, Apreciser
 
 
 ,31,Matières et Fournitures Consommées
 ,311,CONSOMMATIONS FOURNITURES MEDICALES
+,31111000, A preciser
 ,31111136,Anesthésiques locaux
 ,31111137,Anesthésiques généraux et médicaments préopératoires
 ,31111141,TESTS DIAGNOSTIQUES ET BANDELETTES DIAGNOSTIQUES
@@ -182,6 +184,7 @@
 ,31111186,Consommables de Pharmacie
 ,31111187,Matériel et équipement d'anesthésie et de réanimation
 ,31111188,Matériel et équipement de traumatologie
+,31121600, A preciser
 ,31311150,Matériel et équipement administratif
 ,31311151,Consommables administratifs
 ,31601182,Consommables et matériel d'entretien  hospitalier
@@ -264,6 +267,7 @@
 ,41201470,OMS
 ,41201490,HOPITAL LUEBO
 ,41201510,DGRAD
+,41201520, A preciser
 ,41211460,CPC LUNGANDU
 ,41301000,CAUTIONS RECUES
 ,41331000,CAUTIONS SALLE D'URGENCE PAX
@@ -529,6 +533,7 @@
 ,57311350,ECOH 320802 MOBILITY IN MISSION 0096AA-08
 ,5732,ECO
 ,57321100,ECO MISSIONNARY HOUSING
+,57321124, A preciser
 ,57321270,ECO CHARITY FUNDS
 ,57321510,ECO 320202/402 GENERAL N.D.
 ,57321400,ECO 320902 ITM
@@ -658,6 +663,7 @@
 ,6156, a effacer
 ,61561000,Eau
 ,61561100,Electricité
+,61601010, A preciser
 ,61601182,Consommable et matériel d'entretien hospitalier
 
 ,618,PIECES DE RECHANGE

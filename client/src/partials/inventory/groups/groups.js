@@ -61,6 +61,22 @@ angular.module('bhima.controllers')
     $scope.submitEdit = function submitEdit() {
       var data = connect.clean($scope.group);
 
+      if(!$scope.group.sales_account){
+        data.sales_account = null;
+      }         
+
+      if(!$scope.group.cogs_account){
+        data.cogs_account = null;
+      }         
+
+      if(!$scope.group.stock_account){
+        data.stock_account = null;
+      }         
+
+      if(!$scope.group.donation_account){
+        data.donation_account = null;
+      }  
+
       connect.basicPost('inventory_group', [data], ['uuid'])
       .then(function () {
         $scope.action = '';
