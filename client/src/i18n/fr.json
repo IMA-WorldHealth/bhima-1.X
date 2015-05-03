@@ -536,6 +536,7 @@
    "USER_ID"               : "ID Utilisateur",
    "USER_NAME"             : "Nom Utilisateur",
    "VALUE"                 : "Valeur",
+   "VIEW"                  : "Voir",
    "VISIT_DATE"            : "Date de Visite",
    "VOLUME"                : "Volume",
    "WEIGHT"                : "Poids",
@@ -1016,7 +1017,7 @@
    "DAY"          : "Aujourd'hui",
    "EMPTY_REPORT" : "Aucun enregistrement trouvé !",
    "MONTH"        : "Ce mois",
-   "TITLE"        : "Rapport d'Expiration de médicaments",
+   "TITLE"        : "Rapport d'expiration de médicaments",
    "WEEK"         : "Cette semaine"
    },
 "EXPIRING_UTIL": {
@@ -2714,6 +2715,7 @@
    "REPORT_DONATION"           : "Rapport Donation",
    "REPORT_DONATION_CONFIRM"   : "Confirmation des donations",      
    "REPORT_FINANCE"            : "Rapport Financier",
+   "REPORT_STOCK_MOVEMENT"     : "Mouvement des stocks",   
    "REPORT_SALARY"             : "Rapport de paiement des salaires",
    "REPORT_TAXES"              : "Rapport de paiement des taxes",
    "REPORT_TRANSACTION"        : "Rapport Transaction",

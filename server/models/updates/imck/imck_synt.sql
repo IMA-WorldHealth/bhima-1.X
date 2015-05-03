@@ -30,6 +30,7 @@ INSERT INTO `unit` VALUES
 ALTER TABLE `purchase`
 ADD `is_integration` BOOLEAN NULL;
 
+
 -- Updates patient
 --
 -- ADD 'name_middle' field
@@ -61,3 +62,10 @@ ADD `is_bank` BOOLEAN NULL;
 
 ALTER TABLE `cash_box_account_currency`
 ADD `virement_account_id` int(11) NULL;
+
+
+-- Title : ADDING UNIT ENTRIES
+-- By    : Chris LOMAME
+-- Date  : 2005-05-01
+INSERT INTO `unit` VALUES
+('Report Stock Movement','TREE.REPORT_STOCK_MOVEMENT','',10,0,'/partials/reports/stock_movement/','reports/stock_movement/');

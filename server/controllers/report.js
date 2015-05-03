@@ -709,6 +709,39 @@ function allTransactions (params){
   return db.exec(requette);
 }
 
+
+function stock_movement (params){
+  params = querystring.parse(params);
+
+  var requette = 
+    "SELECT `m`.`uuid`, `m`.`document_id`, `m`.`depot_entry`,  `m`.`depot_exit`, `m`.`document_id`," + 
+    "`m`.`tracking_number`, `m`.`quantity`, `m`.`date`, `ex`.`text` AS `exit_text`, `ex`.`uuid`, `en`.`text` AS `entry_text`," +
+    "`inventory`.`text` AS `inventory_text`, `stock`.`lot_number`" +
+    "FROM `movement` AS `m`" +
+    "JOIN `depot` AS `ex` ON `ex`.`uuid` = `m`.`depot_exit`" +
+    "JOIN `depot` AS `en` ON `en`.`uuid` = `m`.`depot_entry`" +  
+    "JOIN `stock` ON `stock`.`tracking_number` = `m`.`tracking_number`" +
+    "JOIN `inventory` ON `inventory`.`uuid` = `stock`.`inventory_uuid`" +
+    "WHERE `m`.`date` >= '" + params.datef + "' AND `m`.`date` <= '" + params.datet + "' ";  
+
+  if(params.depot_from !== '*' && params.depot_to !== '*' ){
+    requette += ' AND `m`.`depot_exit` = \'' + params.depot_from + '\' AND `m`.`depot_entry` = \'' + params.depot_to + '\'';
+  }  
+  
+  if(params.depot_from === '*' && params.depot_to !== '*' ){
+    requette += ' AND `m`.`depot_entry` = \'' + params.depot_to + '\'';
+  }
+
+  if(params.depot_from !== '*' && params.depot_to === '*' ){
+    requette += ' AND `m`.`depot_exit` = \'' + params.depot_from + '\'';
+  }
+
+  requette += " GROUP BY `m`.`document_id`";
+
+  return db.exec(requette);
+}
+
+
 function balanceMensuelle (params){
   params = JSON.parse(params);
   var requette, oldTable, currentTable, unionTable,
@@ -861,7 +894,8 @@ function generate(request, params, done) {
     'cashAuxillaryRecords'  : cashAuxillaryRecords,
     'purchase_order'        : purchase_order,
     'purchase_records'      : purchaseOrdeRecords,
-    'donation_confirmation' : donation_confirmationRecords
+    'donation_confirmation' : donation_confirmationRecords,
+    'stock_movement'        : stock_movement,    
     //'balance_sheet'         : require('./reports/balance_sheet')
   };
 
