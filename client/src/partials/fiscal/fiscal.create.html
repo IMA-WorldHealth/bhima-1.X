@@ -63,13 +63,13 @@
       <form name="formStepTwo">
         <h4>
           <i class="glyphicon glyphicon-exclamation-sign"></i>
-          {{ 'FISCAL_YEAR.CLOSE_PREVIOUS_YEAR' | translate }}
+          {{ 'FISCAL_YEAR.CLOSE_PREVIOUS_YEAR' | translate }} : {{ session.previous_fiscal_year }}
         </h4>
         <p>{{ 'FISCAL_YEAR.CLOSE_PREVIOUS_YEAR_MESSAGE' | translate }}</p>
 
         <div class="form-group checkbox">
           <label>
-            <input type="checkbox" ng-model="stepTwoValidate" required>
+            <input type="checkbox" ng-model="close_fy">
             {{ 'FISCAL_YEAR.ACCEPT' | translate }}
           </label>
         </div>
@@ -77,7 +77,7 @@
       </form>
     </div>
     <div class="panel-footer">
-      <button class="btn btn-sm btn-success" ng-click="stepThree(data.previous_fiscal_year)" ng-disabled="formStepTwo.$invalid">
+      <button class="btn btn-sm btn-success" ng-click="checkClosing(close_fy, data.previous_fiscal_year)" ng-disabled="formStepTwo.$invalid">
         {{ 'FISCAL_YEAR.NEXT' | translate }}
         <i class="glyphicon glyphicon-arrow-right"></i>
       </button>
