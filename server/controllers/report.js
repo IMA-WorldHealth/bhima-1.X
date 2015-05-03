@@ -22,8 +22,6 @@ exports.buildReport = function (req, res, next) {
 };
 
 
-function patientGroupReport() {}
-
 function buildFinanceQuery(requiredFiscalYears) {
   //TODO currently joins two very seperate querries and just extracts columns from both, these should
   //be combined and calculations (SUM etc.) performed on the single joined table
@@ -251,21 +249,21 @@ function distributionPatients(params) {
   var requestSql =
     'SELECT `consumption_patient`.`consumption_uuid`, `consumption`.`document_id`, COUNT(`consumption`.`document_id`) AS `nr_item`, ' +
     ' `consumption_patient`.`patient_uuid`, `patient`.`uuid`, `patient`.`first_name`,`patient`.`last_name`, `patient`.`reference`, ' +
-    '`consumption`.`date`, `depot`.`text`, (`sale`.`reference`) AS refSale, `consumption_patient`.`sale_uuid`, ' + 
+    '`consumption`.`date`, `depot`.`text`, (`sale`.`reference`) AS refSale, `consumption_patient`.`sale_uuid`, ' +
     '(`consumption_reversing`.`consumption_uuid`) AS reversingUuid, `consumption_reversing`.`description`, `project`.`abbr` ' +
-    'FROM `consumption_patient` ' + 
+    'FROM `consumption_patient` ' +
     'JOIN `consumption` ON `consumption`.`uuid` =  `consumption_patient`.`consumption_uuid` ' +
     'JOIN `patient` ON `patient`.`uuid` =  `consumption_patient`.`patient_uuid` ' +
-    'JOIN `depot` ON `depot`.`uuid` = `consumption`.`depot_uuid` ' + 
-    'JOIN `stock` ON `stock`.`tracking_number` = `consumption`.`tracking_number` ' + 
+    'JOIN `depot` ON `depot`.`uuid` = `consumption`.`depot_uuid` ' +
+    'JOIN `stock` ON `stock`.`tracking_number` = `consumption`.`tracking_number` ' +
     'JOIN `inventory` ON `inventory`.`uuid` = `stock`.`inventory_uuid` ' +
     'JOIN `sale` ON `sale`.`uuid` = `consumption`.`document_id` ' +
     'JOIN `project` ON `project`.`id` = `sale`.`project_id` ' +
-    'LEFT JOIN `consumption_reversing` ON `consumption_reversing`.`consumption_uuid` = `consumption`.`uuid` ' + 
+    'LEFT JOIN `consumption_reversing` ON `consumption_reversing`.`consumption_uuid` = `consumption`.`uuid` ' +
     'WHERE `depot`.`uuid` = ? AND `consumption`.`date` >= ? AND `consumption`.`date` <= ? ' +
-    'GROUP BY `consumption`.`document_id` ' + 
+    'GROUP BY `consumption`.`document_id` ' +
     'ORDER BY `consumption`.`date` DESC, `patient`.`first_name` ASC, `patient`.`last_name` ASC ';
-    
+
   return db.exec(requestSql, [params.depotId, params.dateFrom, params.dateTo]);
 }
 
@@ -346,19 +344,19 @@ function paymentRecords(params) {
   //   'GROUP BY c.document_id;';
 
   var sql =
-    '(SELECT c.uuid, c.document_id, c.reference, s.reference AS sale_reference, s.project_id AS sale_project, ' + 
+    '(SELECT c.uuid, c.document_id, c.reference, s.reference AS sale_reference, s.project_id AS sale_project, ' +
       'pr.abbr, c.cost, cr.name, p.first_name, c.description, p.project_id AS debtor_project, p.reference AS debtor_reference , ' +
       'p.last_name, c.deb_cred_uuid, c.currency_id, ci.invoice_uuid, c.date, cd.cash_uuid AS `cash_discard` ' +
     'FROM `cash` AS c ' +
       'JOIN project AS pr ON c.project_id = pr.id ' +
       'JOIN `currency` AS cr ON c.currency_id = cr.id ' +
-      'JOIN `cash_item` AS ci ON ci.cash_uuid = c.uuid ' + 
+      'JOIN `cash_item` AS ci ON ci.cash_uuid = c.uuid ' +
       'JOIN `debitor` AS d ON c.deb_cred_uuid = d.uuid ' +
       'JOIN `patient` AS p ON d.uuid = p.debitor_uuid ' +
       'JOIN sale AS s ON ci.invoice_uuid = s.uuid ' +
-      'LEFT JOIN `cash_discard` AS cd  ON c.uuid = cd.cash_uuid ' + 
+      'LEFT JOIN `cash_discard` AS cd  ON c.uuid = cd.cash_uuid ' +
     'WHERE c.project_id IN (' + _id + ') AND DATE(c.date) BETWEEN DATE(' + _start + ') AND DATE(' + _end + ') AND cd.cash_uuid IS NULL ' +
-    'GROUP BY c.document_id);'
+    'GROUP BY c.document_id);';
 
 
   return db.exec(sql);
@@ -435,7 +433,7 @@ function employeeStanding(params) {
   })
   .then(function (rows) {
     if (!rows.length) {
-      employee.last_payment_date = undefined
+      employee.last_payment_date = undefined;
     } else {
       var row = rows.pop();
       employee.last_payment_date = row.trans_date;
@@ -806,15 +804,15 @@ function balanceMensuelle (params){
   return db.exec(requette, [periode,  periode, classe, periode, periode, project, periode, periode, classe, periode, periode, project]);
 }
 
-function purchase_order () {
+function purchase_order() {
   var sql;
 
   sql =
     'SELECT `purchase`.`uuid`, `purchase`.`reference`, `purchase`.`is_direct`, `purchase`.`project_id`, ' +
     '`purchase`.`purchase_date`, `purchase`.`closed`, `purchase`.`paid` ' +
     'FROM `purchase` ' +
-    'WHERE (`purchase`.`closed` = 0 AND `purchase`.`is_direct` = 0 AND `purchase`.`paid` = 1) OR ' + 
-    '(`purchase`.`closed` = 0 AND `purchase`.`is_direct` = 1 AND `purchase`.`is_authorized` = 1) ' + 
+    'WHERE (`purchase`.`closed` = 0 AND `purchase`.`is_direct` = 0 AND `purchase`.`paid` = 1) OR ' +
+    '(`purchase`.`closed` = 0 AND `purchase`.`is_direct` = 1 AND `purchase`.`is_authorized` = 1) ' +
     'ORDER BY `purchase`.`purchase_date` DESC ';
 
   return db.exec(sql);
@@ -827,15 +825,15 @@ function purchaseOrdeRecords(params) {
       _end =  sanitize.escape(util.toMysqlDate(new Date(p.end))),
       _id = p.id;
 
-  var sql = 
-    ' SELECT `purchase`.`uuid`, `purchase`.`cost`, `purchase`.`currency_id`, `purchase`.`purchase_date`, `purchase`.`is_direct`, ' + 
-    '`purchase`.`reference`, `user`.`first`, `user`.`last`, `employee`.`prenom`, `employee`.`name`, `employee`.`postnom`, ' + 
+  var sql =
+    ' SELECT `purchase`.`uuid`, `purchase`.`cost`, `purchase`.`currency_id`, `purchase`.`purchase_date`, `purchase`.`is_direct`, ' +
+    '`purchase`.`reference`, `user`.`first`, `user`.`last`, `employee`.`prenom`, `employee`.`name`, `employee`.`postnom`, ' +
     '`purchase`.`is_direct`, `supplier`.`name` AS `supplier_name`, `u`.`first` AS `confirmed_first`, `u`.`last` AS `confirmed_last` ' +
     'FROM `purchase` ' +
     'JOIN `user` ON `user`.`id` = `purchase`.`issuer_id` ' +
     'JOIN `user` AS u ON `u`.`id` = `purchase`.`confirmed_by` ' +
     'JOIN `supplier` ON `supplier`.`creditor_uuid` = `purchase`.`creditor_uuid` ' +
-    'LEFT JOIN `employee` ON `employee`.`id` = `purchase`.`employee_id` ' + 
+    'LEFT JOIN `employee` ON `employee`.`id` = `purchase`.`employee_id` ' +
     'WHERE `purchase`.`is_direct` IN (' + _id + ') AND DATE(`purchase`.`purchase_date`) BETWEEN DATE(' + _start + ') AND DATE(' + _end + ') ' +
     'AND `purchase`.`confirmed` = 1 ORDER BY `purchase`.`purchase_date` DESC ;';
 
@@ -849,10 +847,10 @@ function donation_confirmationRecords(params) {
   var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
       _end =  sanitize.escape(util.toMysqlDate(new Date(p.end)));
 
-  var sql = 
-    'SELECT `donations`.`uuid`, `donations`.`date`, `user`.`first`, `user`.`last`, `employee`.`prenom`, ' +  
+  var sql =
+    'SELECT `donations`.`uuid`, `donations`.`date`, `user`.`first`, `user`.`last`, `employee`.`prenom`, ' +
     '`employee`.`name`, `employee`.`postnom`, `donor`.`name` AS `donor_name` ' +
-    'FROM `donations` ' + 
+    'FROM `donations` ' +
     'JOIN `user` ON `user`.`id` = `donations`.`confirmed_by` ' +
     'JOIN `donor` ON `donor`.`id` = `donations`.`donor_id` ' +
     'JOIN `employee` ON `employee`.`id` = `donations`.`employee_id` ' +
