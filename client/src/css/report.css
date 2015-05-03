@@ -27,11 +27,14 @@
 .reportTable tbody > tr > td {
   border         : 1px solid #9F9F9F;
   vertical-align : right;
+  padding: 0px 5px;
 }
 
 .reportTitle {
   font-size   : 110%;
   font-weight : bold;
+  color: #333;
+  background-color: #f3f3f3;
 }
 
 .reportBody {

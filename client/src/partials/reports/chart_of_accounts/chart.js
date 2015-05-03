@@ -50,7 +50,7 @@ angular.module('bhima.controllers')
         query: {
           tables: {
             'account': {
-              columns: ['id', 'account_txt', 'account_number', 'is_ohada']
+              columns: ['id', 'account_type_id', 'account_txt', 'account_number', 'is_ohada']
             }
           },
           where : ['account.is_ohada=' + session.type]
