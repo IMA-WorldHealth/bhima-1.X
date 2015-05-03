@@ -111,13 +111,13 @@
             <thead>
               <tr>
                 <th>{{ "REPORT.NUMBER" | translate }}</th>
-                <th>{{ "REPORT.DESCRIPTION" | translate }}</th>
+                <th><b>{{ "REPORT.DESCRIPTION" | translate }}</b></th>
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat='account in model.account.data'>
+              <tr ng-class="{'reportTitle': account.account_type_id==3}" ng-repeat='account in model.account.data'>
                 <td style="text-align: right;">{{account.account_number}}</td>
-                <td ng-style="{'padding-left': (account.depth * 40) + 'px'}" ng-class="{'reportTitle': account.account_type_id==3}">
+                <td ng-style="{'padding-left': 5 + (account.depth * 40) + 'px'}">
                   {{account.account_txt}}
                 </td>
               </tr>
