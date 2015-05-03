@@ -350,6 +350,10 @@
       controller : 'expiring.option',
       templateUrl : 'partials/reports/expiring_stock/expiring_stock_view.html'
     })
+    .when('/reports/stock_movement', {
+      controller : 'stock_movement',
+      templateUrl : 'partials/reports/stock_movement/stock_movement.html'
+    })    
     .when('/caution', {
       controller : 'caution',
       templateUrl : 'partials/caution/caution.html'
@@ -537,10 +541,6 @@
     .when('/stock/integration/:depotId', {
       controller : 'stock.integration',
       templateUrl : 'partials/stock/integration/integration.html'
-    })
-    .when('/stock/integration_confirm/', {
-      controller : 'stock.confirm_integration',
-      templateUrl : 'partials/stock/integration/confirm_integration/confirm_integration.html'
     })
     .when('/reports/loss_record/', {
       controller : 'loss_record',
