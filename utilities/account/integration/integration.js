@@ -1,18 +1,10 @@
 var fs = require('fs'),
 	q = require('q'),
-	accountFilePath = "./pcgc.csv",
+	accountFilePath = "./ohada.csv",
 	enterprise_id = 200,
 	locked = 0,
-	is_ohada = 0;
+	is_ohada = 1;
 
-
-//read file content
-
-readContentFile(accountFilePath)
-.then(processContent);
-
-
-//functions
 
 function readContentFile (path){
 	var deferred = q.defer();
@@ -25,16 +17,12 @@ function readContentFile (path){
 
 function processContent (content){
 	var parent, classe, account_type_id;
-	//INSERT INTO account (id, account_type_id, enterprise_id, account_number, account_txt, parent, locked, classe)
 	var account_list = content.split(',');
 	var string_request = [];
-
-	//checking
-
 	var errors = [];
 
 	account_list.forEach(function (item, index) {
-		if(item !== '' && item !== undefined){
+		if(item !== '' && item !== undefined && item == ' '){
 			if(!Number.isNaN(Number(item))){
 				if(!Number.isNaN(Number(account_list[index + 1]))) {
 					errors.push(item);
@@ -45,7 +33,7 @@ function processContent (content){
 				}
 			}
 		}
-	})
+	});
 
 	if(errors.length > 0){
 		errors.forEach(function (item){
@@ -101,5 +89,11 @@ function processContent (content){
 function parseString (string) {
 	return '"' + String(string).replace(/"/g, '\\"') + '"';
 }
+
+readContentFile(accountFilePath)
+.then(processContent);
+
+
+
 
 
