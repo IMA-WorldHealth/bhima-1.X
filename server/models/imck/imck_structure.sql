@@ -34,6 +34,7 @@ CREATE TABLE `account` (
   `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `classe` int(11) DEFAULT NULL,
   `is_asset` tinyint(1) DEFAULT NULL,
+  `is_ohada` BOOLEAN NULL,
   PRIMARY KEY (`id`),
   KEY `account_type_id` (`account_type_id`),
   KEY `enterprise_id` (`enterprise_id`),
