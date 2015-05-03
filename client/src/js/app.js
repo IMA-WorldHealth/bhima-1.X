@@ -350,6 +350,10 @@
       controller : 'expiring.option',
       templateUrl : 'partials/reports/expiring_stock/expiring_stock_view.html'
     })
+    .when('/reports/stock_movement', {
+      controller : 'stock_movement',
+      templateUrl : 'partials/reports/stock_movement/stock_movement.html'
+    })    
     .when('/caution', {
       controller : 'caution',
       templateUrl : 'partials/caution/caution.html'
@@ -677,6 +681,14 @@
     .when('/subsidy', {
       controller : 'subsidy',
       templateUrl : 'partials/subsidy/subsidy.html'
+    })
+    .when('/cashbox_management', {
+      controller : 'cash.cashbox',
+      templateUrl : 'partials/cash/cashbox/cashbox.html'
+    })
+    .when('/cashbox_account_management', {
+      controller : 'cash.cashbox_account',
+      templateUrl : 'partials/cash/cashbox_account_currency/cashbox_account_currency.html'
     })
 
     // Proposed formal report building structure

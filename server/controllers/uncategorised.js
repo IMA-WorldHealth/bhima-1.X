@@ -1520,3 +1520,22 @@ exports.getClassSolde = function (req, res, next) {
   .done();
 
 };
+
+exports.getStockIntegration = function (req, res, next) {
+
+  var sql = 'SELECT DISTINCT p.uuid, p.reference, p.cost, p.creditor_uuid, p.project_id, p.purchaser_id, p.purchase_date, p.note, '
+          + 'm.document_id, s.purchase_order_uuid, pr.abbr '
+          + 'FROM purchase p '
+          + 'JOIN stock s ON s.purchase_order_uuid=p.uuid '
+          + 'JOIN movement m ON s.tracking_number=m.tracking_number '
+          + 'JOIN project pr ON pr.id=p.project_id '
+          + 'WHERE p.confirmed=0 AND p.is_integration=1';
+
+  db.exec(sql)
+  .then(function (data) {
+    res.send(data);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+
+};
