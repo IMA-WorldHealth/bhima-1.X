@@ -110,7 +110,10 @@ angular.module('bhima.controllers')
       },
       'confirm_donation' : {
         url : '/partials/receipts/templates/receipt_confirm_donation.html'
-      }      
+      },
+      'confirm_integration' : {
+        url : '/partials/receipts/templates/receipt_confirm_integration.html'
+      }       
     };
 
     function convert (value, currency_id, date) {

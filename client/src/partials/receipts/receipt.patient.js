@@ -11,7 +11,7 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           'patient' : {
-            columns: ['uuid', 'reference', 'first_name', 'last_name', 'dob', 'current_location_id', 'debitor_uuid', 'registration_date']
+            columns: ['uuid', 'reference', 'first_name', 'last_name', 'dob', 'current_location_id', 'debitor_uuid', 'registration_date', 'middle_name', 'hospital_no']
           },
           'project' : {
             columns: ['abbr']

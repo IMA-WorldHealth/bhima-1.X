@@ -151,10 +151,13 @@
 ,30011187,Matériel d'Anesthésie et de Réanimation
 ,30011188,Materiel de Traumatologie
 ,30011189,Consommables de Traumatologie
+,30111000,A preciser
+,30141000,A preciser
 
 
 ,31,Matières et Fournitures Consommées
 ,311,CONSOMMATIONS FOURNITURES MEDICALES
+,31111000,A preciser
 ,31111136,Anesthésiques locaux
 ,31111137,Anesthésiques généraux et médicaments préopératoires
 ,31111141,TESTS DIAGNOSTIQUES ET BANDELETTES DIAGNOSTIQUES
@@ -182,8 +185,11 @@
 ,31111186,Consommables de Pharmacie
 ,31111187,Matériel et équipement d'anesthésie et de réanimation
 ,31111188,Matériel et équipement de traumatologie
+,31121600,A preciser
+,31251000,A preciser
 ,31311150,Matériel et équipement administratif
 ,31311151,Consommables administratifs
+,31311500,A preciser
 ,31601182,Consommables et matériel d'entretien  hospitalier
 
 ,32011000,Emballages commerciaux
@@ -264,6 +270,7 @@
 ,41201470,OMS
 ,41201490,HOPITAL LUEBO
 ,41201510,DGRAD
+,41201520, A preciser
 ,41211460,CPC LUNGANDU
 ,41301000,CAUTIONS RECUES
 ,41331000,CAUTIONS SALLE D'URGENCE PAX
@@ -384,6 +391,7 @@
 ,42161190,PASTEUR SHAMWUIMBA
 ,42161230,BALANDA MUKUAYITA
 ,42161240,SOMBAMANYA NDAYE
+,42161250,A preciser
 ,42161270,BANSHIMI BEYA
 ,42161280,TSHIADIMUNA MATANDA
 ,42161290,KATUENABANGI
@@ -412,6 +420,8 @@
 ,42171310,MAYUWA KABANGELE
 ,42171320,ILUNGA NKASHAMA
 ,42171340,MILOLO KUINJIDI
+,42171410,A preciser
+,42171550,A preciser
 ,42201000,SALAIRES NETS A PAYER
 ,42201010,RESTAU ET TRANSP. A PAYER
 ,42201020,PRIME D'INTERIM A PAYER
@@ -529,6 +539,7 @@
 ,57311350,ECOH 320802 MOBILITY IN MISSION 0096AA-08
 ,5732,ECO
 ,57321100,ECO MISSIONNARY HOUSING
+,57321124, A preciser
 ,57321270,ECO CHARITY FUNDS
 ,57321510,ECO 320202/402 GENERAL N.D.
 ,57321400,ECO 320902 ITM
@@ -609,9 +620,10 @@
 ,60011175,"Séringues aiguilles catheters et set"
 ,60011176,"Tubes endotracheaux aspiration alimentations et drains thoraciques"
 ,60011189,Consommables de Traumatologie
+,60211000,A preciser
 
 ,611,CONSOMMATIONS FOURNITURES
-
+,61111000,A preciser
 ,61111129,REPAS MALADES FISTULEUSES
 ,61112170,PRODUITS ALIMENTAIRES
 ,61111136,Anesthésiques locaux
@@ -643,10 +655,13 @@
 ,61111187,Matériel d'Anesthésie et de Réanimation
 ,61111188,Materiel de Traumatologie
 ,61112180,PRODUITS ALIMENTAIRES GUEST HOUSE
+,61121600,A preciser
+,61311000,A preciser
 ,61311150,Matériel et équipement administratif
 ,61311151,Consommables administratifs
 ,614,CARBURANT ET LUBRIFIANT
-,6141, A effacer
+,61401000,A preciser
+,6141, A preciser
 ,61411000,Carburant
 ,61411100,Lubrifiant
 ,61411200,Moto recouvrement
@@ -655,9 +670,11 @@
 
 ,615,EAU ET ELECTRICITE
 
-,6156, a effacer
+,6156, a preciser
 ,61561000,Eau
 ,61561100,Electricité
+,61601000,A preciser
+,61601010, A preciser
 ,61601182,Consommable et matériel d'entretien hospitalier
 
 ,618,PIECES DE RECHANGE
@@ -683,6 +700,7 @@
 ,63001000,Loyer et charges locatives
 
 ,631,FRAIS D'ENTRETIEN
+,63111000,A preciser
 ,63121000,ENTRETIEN TERRAIN
 ,63151000,ENTRETIEN MAT. DE TRANSPORT
 ,63161350,Entretien LC mobility
@@ -750,6 +768,7 @@
 ,64071100,ASSURANCES MOTOS
 ,645,COTISATIONS ET AUTRES
 ,64511000,ASSISTANCES AU PERSONNEL
+,64511100,A preciser
 ,64521000,COTISATIONS
 ,64521100,DONS
 ,64521110,REPRESENTATION DES TRAVAILLEURS AUX DEFILES
@@ -762,6 +781,7 @@
 ,64901000,CONSEIL D'ADMINISTRATION
 ,64931000,PERTES S/EXERCICES ANTERIEURS
 ,64961000,CHARGES ET PERTES DIVERSES
+,64971000,A preciser
 
 ,65,CHARGES DU PERSONNEL
 ,651,SALAIRES ET PRIMES
@@ -937,6 +957,7 @@
 
 ,7,COMPTES DE PRODUITS
 ,700,VENTE MEDICAMENTS
+,70011000,A preciser
 ,70011100,Antidote
 ,70011101,Tension artérielle
 ,70011102,Diurétiques
@@ -983,6 +1004,7 @@
 ,70011175,"Séringues aiguilles catheters et set"
 ,70011176,"Tubes endotracheaux aspiration alimentations et drains thoraciques"
 ,70011189,Consommables de Traumatologie
+,70301000, A preciser
 ,710,ACTES/PRODUCTIONS VENDUES
 ,71011001,Anesthésie
 ,71011002,Biopsie
@@ -1024,6 +1046,13 @@
 ,71011038,Stomatologie
 ,71011039,O.R.L.
 ,71011040,Amputations
+,71011600,A preciser
+,71011100,A preciser
+,71011110,A preciser
+,71011120,A preciser
+,71011700,A preciser
+,71019100,A preciser
+,71161000,A preciser
 ,72001000,PRODUCTIONS STOCKEES
 ,74,PRODUITS ET PROFITS DIVERS
 ,74031000,LOYER
@@ -1105,4 +1134,56 @@
 ,84011000,RESULTAT S/CESSION IMMO ET TITRES
 ,85011000,RESULTAT AVANT IMPOT
 ,87011000,RESULTAT DE LA PERIODE A AFFECTER
+
+
+,71161100, A preparer
+,71015000, A preparer
+,71011800,A preparer
+,71101100,A preparer
+,71012100,A preparer
+,71011300,A preparer
+,70011200,A preparer
+,10113100,A preparer
+,71011200,A preparer
+,71888888,A preparer
+,41211470,A preparer
+,70211000,A preparer
+,74611500,A preparer
+,71014100,A preparer
+,57188888,A preparer
+,71019000,A preparer
+,41011980,A preparer
+,41201530,A preparer
+,70031400,A preparer
+,41011970,A preparer
+,64751100,A preparer
+,71051000,A preparer
+
+,63411000,A preciser
+,46651270,A preciser
+,31121700,A preciser
+,46651280,A preciser
+,41331400,A preciser
+
+,61421110,A preciser
+,42171470,A preciser
+,42141280,A preciser
+,42151600,A preciser
+,42151080,A preciser
+,42171460,A preciser
+,42171450,A preciser
+,42171380,A preciser
+,42171290,A preciser
+,42151940,A preciser
+,42171480,A preciser
+,42161940,A preciser
+,42171140,A preciser
+,42171540,A preciser
+
+,61121700,A preciser
+,74611450,A preciser
+,60111000,A preciser
+
+,42151580,A preciser
+,42131590,A preciser
 

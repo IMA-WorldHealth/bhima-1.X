@@ -1,7 +1,7 @@
 angular.module('bhima.controllers')
 .controller('patientEdit', [
   '$scope',
-  '$routeParams',  
+  '$routeParams',
   '$translate',
   'connect',
   'validate',
@@ -17,11 +17,11 @@ angular.module('bhima.controllers')
         maxYear = timestamp.getFullYear(),
         session = $scope.session = {},
         editableFields = [
-	  'first_name', 'last_name', 'dob', 'sex', 'father_name', 'mother_name', 'title',
-	  'profession', 'employer', 'marital_status', 'spouse', 'spouse_profession', 'spouse_employer', 'notes',
-	  'religion', 'phone', 'email', 'address_1', 'address_2', 'origin_location_id', 'current_location_id'
-	  ];
-    
+    'first_name', 'last_name', 'dob', 'sex', 'father_name', 'mother_name', 'title',
+    'profession', 'employer', 'marital_status', 'spouse', 'spouse_profession', 'spouse_employer', 'notes',
+    'religion', 'phone', 'email', 'address_1', 'address_2', 'origin_location_id', 'current_location_id', 'middle_name', 'hospital_no'
+    ];
+
     // Initialise the session
     session.mode = 'search';
     session.failedSessionValidation = false;
@@ -65,25 +65,25 @@ angular.module('bhima.controllers')
     dependencies.patient = {
       query : {
         identifier : 'uuid',
-	tables : {
-	  'patient' : {
-	    columns : editableFields.concat(['uuid', 'reference', 'registration_date'])
-	  },
-	  'debitor' : { 
-	    columns : ['group_uuid::debitor_group_id', 'text::debitor_name']
-	  },
-	  'debitor_group' : { 
-	    columns : ['name::debitor_group_name']
-	  },
-          'project' : {
-            columns : ['abbr::project_abbr']
-          }
-	},
-	join : [ 'patient.debitor_uuid=debitor.uuid',
-		 'debitor.group_uuid=debitor_group.uuid',
-		 'patient.project_id=project.id'
-	       ],
-	where : [ 'patient.uuid=' +  patientUuid ]
+        tables : {
+          'patient' : {
+            columns : editableFields.concat(['uuid', 'reference', 'registration_date'])
+          },
+          'debitor' : {
+            columns : ['uuid::debitor_uuid', 'group_uuid::debitor_group_id', 'text::debitor_name']
+          },
+          'debitor_group' : {
+            columns : ['name::debitor_group_name']
+          },
+                'project' : {
+                  columns : ['abbr::project_abbr']
+                }
+        },
+        join : [ 'patient.debitor_uuid=debitor.uuid',
+           'debitor.group_uuid=debitor_group.uuid',
+           'patient.project_id=project.id'
+               ],
+        where : [ 'patient.uuid=' +  patientUuid ]
       }
     };
 
@@ -93,7 +93,7 @@ angular.module('bhima.controllers')
         identifier : 'uuid',
         tables : {
           'debitor_group' : {
-	    'columns' : ['uuid', 'name']
+          'columns' : ['uuid', 'name']
           }
         }
       }
@@ -107,7 +107,7 @@ angular.module('bhima.controllers')
     $scope.setOriginLocation = function (uuid) {
       $scope.patient.origin_location_id = uuid;
     };
-    
+
     $scope.setCurrentLocation = function (uuid) {
       $scope.patient.current_location_id = uuid;
     };
@@ -144,7 +144,7 @@ angular.module('bhima.controllers')
     function invalidDOB() {
       validation.dates.flag = false;
 
-      if (typeof $scope.patient === 'undefined' || 
+      if (typeof $scope.patient === 'undefined' ||
           typeof $scope.patient.dob === 'undefined' || !$scope.patient.dob) {
         validation.dates.flag = validation.dates.tests.type;
         return true;
@@ -203,10 +203,10 @@ angular.module('bhima.controllers')
     $scope.initialiseEditing = function initialiseEditing(selectedPatient) {
       if (selectedPatient && 'uuid' in selectedPatient && selectedPatient.uuid) {
         patientUuid = selectedPatient.uuid;
-	dependencies.patient.query.where[0] = 'patient.uuid=' + patientUuid;
-	validate.process(dependencies)
-	  .then(startup);
-	session.mode = 'edit';
+        dependencies.patient.query.where[0] = 'patient.uuid=' + patientUuid;
+        validate.process(dependencies)
+        .then(startup);
+        session.mode = 'edit';
       }
     };
 
@@ -214,17 +214,24 @@ angular.module('bhima.controllers')
     $scope.updatePatient = function () {
       var patient = connect.clean(angular.copy($scope.patient));
 
+      var packageDebtor = {
+        text : 'Debtor ' + patient.first_name + ' ' + patient.last_name + ' ' + patient.middle_name,
+        uuid : patient.debitor_uuid
+      };
+
+      // debitorUuid = patient.debitor_uuid;
       // Make sure the DOB is in SQL format
       patient.dob = util.sqlDate(patient.dob);
 
       // Normalize the patient names (just in case they have been changed)
       patient.first_name = util.normalizeName(patient.first_name);
       patient.last_name = util.normalizeName(patient.last_name);
+      patient.middle_name = util.normalizeName(patient.middle_name);
       patient.father_name = util.normalizeName(patient.father_name);
       patient.mother_name = util.normalizeName(patient.mother_name);
       patient.spouse = util.normalizeName(patient.spouse);
       patient.title = util.normalizeName(patient.title);
-      
+
       // Get rid of any extraneous fields
       delete patient.reference;
       delete patient.registration_date;
@@ -236,20 +243,23 @@ angular.module('bhima.controllers')
 
       // Enable blank overwrites
       editableFields.forEach(function (fname) {
-	if (originalPatientData[fname] && !(patient[fname])) {
-	  patient[fname] = null;
-	}
+        if (originalPatientData[fname] && !(patient[fname])) {
+          patient[fname] = null;
+        }
       });
 
       // Save the patient data
       connect.put('patient', [patient], ['uuid'])
-	.then(function () {
-	  messenger.success($translate.instant('PATIENT_EDIT.UPDATE_SUCCESS'));
-	})
-	.catch(function (err) {
-	  messenger.danger($translate.instant('PATIENT_EDIT.UPDATE_FAILED'));
-	  console.log(err);
-	});
+      .then(function () {
+        connect.put('debitor', [packageDebtor], ['uuid']);
+      })
+      .then(function () {
+        messenger.success($translate.instant('PATIENT_EDIT.UPDATE_SUCCESS'));
+      })
+      .catch(function (err) {
+        messenger.danger($translate.instant('PATIENT_EDIT.UPDATE_FAILED'));
+        console.log(err);
+      });
 
       session.mode = 'edit';
     };
@@ -270,7 +280,7 @@ angular.module('bhima.controllers')
       // Update the year limit message (has to be done late to use current language)
       validation.dates.tests.limit.message = $translate.instant(validation.dates.tests.limit.message)
         .replace('<min>', minYear)
-	.replace('<max>', maxYear);
+  .replace('<max>', maxYear);
     }
 
 
@@ -279,9 +289,9 @@ angular.module('bhima.controllers')
       $scope.enterprise = enterprise;
       session.mode = 'search';
       if (patientUuid) {
-	session.mode = 'edit';
-	validate.process(dependencies)
-	  .then(startup);
+  session.mode = 'edit';
+  validate.process(dependencies)
+    .then(startup);
       }
     });
 
