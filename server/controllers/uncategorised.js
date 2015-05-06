@@ -1543,3 +1543,4 @@ exports.getStockIntegration = function (req, res, next) {
   .done();
 
 };
+

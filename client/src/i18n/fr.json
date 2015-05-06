@@ -2823,6 +2823,8 @@
    "NEW_SUCCESS"       : "Ajout avec succès",
    "OFF"               : "Off",
    "ON"                : "On",
+   "PATIENT_EXIST_A"   : "Le patient ayant la fiche [",
+   "PATIENT_EXIST_B"   : "] existe deja",
    "PRINT"             : "Imprimer",
    "PROJECT"           : "Project",
    "REGISTER_NEW_STOCK": "Enregistrer un stock",
