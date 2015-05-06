@@ -64,7 +64,8 @@ angular.module('bhima.controllers')
     dependencies.debtorGroup = {
       query : {
         identifier : 'uuid',
-        tables : { 'debitor_group' : { 'columns' : ['uuid', 'name', 'note']}}
+        tables : { 'debitor_group' : { 'columns' : ['uuid', 'name', 'note']}},
+        where  : ['debitor_group.locked=0']
       }
     };
 
@@ -79,9 +80,30 @@ angular.module('bhima.controllers')
       // Update the year limit message (has to be done late to use current language)
       validation.dates.tests.limit.message = $translate.instant(validation.dates.tests.limit.message)
         .replace('<min>', minYear)
-	.replace('<max>', maxYear);
+        .replace('<max>', maxYear);
 
       return $q.when();
+    }
+
+    function checkingExistPatient (file_number) {
+      var def = $q.defer();
+      var query = {
+        tables : { 
+          patient : { columns : ['uuid'] }
+        },
+        where  : ['patient.hospital_no=' + file_number]
+      };
+      connect.fetch(query)
+      .then(function (res) {
+        console.info(res);
+        if (res.length === 0) {
+          def.resolve(false);
+        } else {
+          def.resolve(true);
+        }
+      })
+      
+      return def.promise;
     }
 
 
@@ -190,7 +212,15 @@ angular.module('bhima.controllers')
       var patient = $scope.patient;
       patient.current_location_id = session.originLocationUuid;
       patient.origin_location_id = session.currentLocationUuid;
-      writePatient(patient);
+
+      checkingExistPatient(patient.hospital_no)
+      .then(function (is_exist) {
+        if (!is_exist) {
+          writePatient(patient);
+        } else {
+          messenger.info(String($translate.instant('UTIL.PATIENT_EXIST_A')).concat(patient.hospital_no, $translate.instant('UTIL.PATIENT_EXIST_B')), true);
+        }
+      });
     };
 
     function writePatient(patient) {
