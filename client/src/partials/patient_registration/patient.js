@@ -86,6 +86,10 @@ angular.module('bhima.controllers')
     }
 
     function checkingExistPatient (file_number) {
+      if (file_number === 0) {
+        return false;
+      }
+
       var def = $q.defer();
       var query = {
         tables : { 
@@ -95,13 +99,8 @@ angular.module('bhima.controllers')
       };
       connect.fetch(query)
       .then(function (res) {
-        console.info(res);
-        if (res.length === 0) {
-          def.resolve(false);
-        } else {
-          def.resolve(true);
-        }
-      })
+        def.resolve(res.length === 0);
+      });
       
       return def.promise;
     }
