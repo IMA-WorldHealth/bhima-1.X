@@ -27,25 +27,6 @@ angular.module('bhima.controllers')
 
     session.today = $scope.timestamp.toISOString().slice(0, 10);
 
-    // dependencies.debtors = {
-    //   query : {
-    //     tables : {
-    //       'patient' : {
-    //         columns : ['uuid', 'debitor_uuid', 'project_id', 'reference', 'first_name', 'last_name']
-    //       },
-    //       'debitor' : {
-    //         columns : ['group_uuid']
-    //       },
-    //       'debitor_group' : {
-    //         columns : ['account_id']
-    //       }
-    //     },
-    //     join : [
-    //       'patient.debitor_uuid=debitor.uuid',
-    //       'debitor.group_uuid=debitor_group.uuid'
-    //     ]
-    //   }
-    // };
 
     dependencies.currencies = {
       query : {
@@ -73,13 +54,10 @@ angular.module('bhima.controllers')
           'account' :{
             columns : ['id', 'account_txt', 'account_number']
           }
-        }
+        },
+        where : ['account.is_ohada=1', 'AND', 'account.account_type_id<>3']
       }
     };
-
-    // dependencies.account7 = {
-    //   query : '/getAccount7/'
-    // };
 
     cache.fetch('currency').then(load);
     cache.fetch('account').then(getAccount);
@@ -197,13 +175,6 @@ angular.module('bhima.controllers')
         messenger.success($translate.instant('ALLTRANSACTIONS.DATA_POSTED'));
         $location.path('/invoice/generic_income/' + data.uuid);
       });
-      // .then(function () {
-      //   messenger.success('Posted data successfully.');
-      //   session = $scope.session = { receipt : {} };
-      //   session.receipt.date = new Date();
-      //   session.receipt.cost = 0.00;
-      //   session.receipt.cash_box_id = $routeParams.id;
-      // });
     };
 
     function setCurrency (obj) {

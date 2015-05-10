@@ -316,8 +316,8 @@ function handleSales (id, user_id, done, caution) {
         '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
         '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
         '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-      'SELECT `sale`.`project_id`, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-        '`sale`.`note`, ' + [sanitize.escape(item.account_id), item.value, 0, item.value, 0].join(', ') + ', ' + // last three: credit, debit_equiv, credit_equiv.  Note that debit === debit_equiv since we use enterprise currency.
+      'SELECT `sale`.`project_id`, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, trans_id].join(', ') + ', ' +
+        '`sale`.`invoice_date`, `sale`.`note`, ' + [sanitize.escape(item.account_id), item.value, 0, item.value, 0].join(', ') + ', ' + // last three: credit, debit_equiv, credit_equiv.  Note that debit === debit_equiv since we use enterprise currency.
         '`sale`.`currency_id`, `sale`.`debitor_uuid`, \'D\', `sale`.`uuid`, ' + [cfg.originId, user_id].join(', ') + ' ' +
       'FROM `sale` JOIN `debitor` JOIN `debitor_group` ON ' +
         '`sale`.`debitor_uuid`=`debitor`.`uuid` AND `debitor`.`group_uuid`=`debitor_group`.`uuid` ' +
@@ -332,8 +332,8 @@ function handleSales (id, user_id, done, caution) {
         '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
         '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
         '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-      'SELECT `sale`.`project_id`, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-        '`sale`.`note`, `debitor_group`.`account_id`, ' + [reference.cost - subsidies_cost, 0, reference.cost - subsidies_cost, 0].join(', ') + ', ' + // last three: credit, debit_equiv, credit_equiv.  Note that debit === debit_equiv since we use enterprise currency.
+      'SELECT `sale`.`project_id`, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, trans_id].join(', ') + ', ' +
+        '`sale`.`invoice_date`, `sale`.`note`, `debitor_group`.`account_id`, ' + [reference.cost - subsidies_cost, 0, reference.cost - subsidies_cost, 0].join(', ') + ', ' + // last three: credit, debit_equiv, credit_equiv.  Note that debit === debit_equiv since we use enterprise currency.
         '`sale`.`currency_id`, `sale`.`debitor_uuid`, \'D\', `sale`.`uuid`, ' + [cfg.originId, user_id].join(', ') + ' ' +
       'FROM `sale` JOIN `debitor` JOIN `debitor_group` ON ' +
         '`sale`.`debitor_uuid`=`debitor`.`uuid` AND `debitor`.`group_uuid`=`debitor_group`.`uuid` ' +
@@ -353,8 +353,8 @@ function handleSales (id, user_id, done, caution) {
           '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
           '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
           '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`, `pc_id`) ' +
-        'SELECT `sale`.`project_id`, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, trans_id, '\'' + get.date() + '\''].join(', ') + ', ' +
-          '`sale`.`note`, `inventory_group`.`sales_account`, `sale_item`.`debit`, `sale_item`.`credit`, ' +
+        'SELECT `sale`.`project_id`, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, trans_id].join(', ') + ', ' +
+          '`sale`.`invoice_date`, `sale`.`note`, `inventory_group`.`sales_account`, `sale_item`.`debit`, `sale_item`.`credit`, ' +
           '`sale_item`.`debit`, `sale_item`.`credit`, `sale`.`currency_id`, null, ' +
           ' null, `sale`.`uuid`, ' + [cfg.originId, user_id].join(', ') + ', if(ISNULL(`account`.`pc_id`), \'' + item.profit_center_id + '\', `account`.`pc_id`) ' +
         'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inventory_group` JOIN `account` ON ' +
@@ -390,6 +390,7 @@ function handleSales (id, user_id, done, caution) {
   .spread(function (rows, transId) {
 
     if (caution && caution > 0) {
+      console.log('la refernce', reference);
 
       var descript = '[AVANCE] AJUSTEMENT/' + reference.note;
       var transAmount = caution - reference.cost > 0 ? reference.cost : caution;
@@ -398,7 +399,7 @@ function handleSales (id, user_id, done, caution) {
           '(`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
           '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
           '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
-          'SELECT ' + ['\'' + uuid() + '\'', reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'', '\''+descript+'\''].join(',') + ', ' +
+          'SELECT ' + ['\'' + uuid() + '\'', reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, sanitize.escape(util.toMysqlDate(reference.invoice_date)), '\''+descript+'\''].join(',') + ', ' +
             '`debitor_group`.`account_id`, ' + [0, transAmount, 0, transAmount, reference.currency_id, '\'' + reference.debitor_uuid + '\''].join(',') +
             ', \'D\', null, ' + [cfg.originId, user_id].join(',') + ' ' +
           'FROM `debitor_group` WHERE `debitor_group`.`uuid`= (' +
@@ -409,7 +410,7 @@ function handleSales (id, user_id, done, caution) {
           '(`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
           '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
           '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
-          'SELECT ' + ['\'' + uuid() + '\'', reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'', '\''+descript+'\''].join(',') + ', ' +
+          'SELECT ' + ['\'' + uuid() + '\'', reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, sanitize.escape(util.toMysqlDate(reference.invoice_date)), '\''+descript+'\''].join(',') + ', ' +
             '`debitor_group`.`account_id`, ' + [transAmount, 0, transAmount, 0, reference.currency_id, '\'' + reference.debitor_uuid + '\''].join(',') +
             ', \'D\', ' + [sanitize.escape(reference.uuid), cfg.originId, user_id].join(',') + ' ' +
           'FROM `debitor_group` WHERE `debitor_group`.`uuid`= (' +
@@ -1036,11 +1037,13 @@ function handleCreditNote (id, user_id, done) {
   var sql, data, reference, cfg = {}, queries = {};
 
   sql =
-    'SELECT `credit_note`.`project_id`, `project`.`enterprise_id`, `cost`, `debitor_uuid`, `note_date`, `credit_note`.`sale_uuid`, ' +
-      ' `description`, `note_date`, `inventory_uuid`, `quantity`, `sale_item`.`uuid` as `item_uuid`, ' +
-      '`transaction_price`, `debit`, `credit`' +
-    'FROM `credit_note` JOIN `sale_item` JOIN `inventory` JOIN `inventory_unit` JOIN `project` ' +
-      'ON `credit_note`.`sale_uuid`=`sale_item`.`sale_uuid` AND ' +
+    'SELECT `credit_note`.`project_id`, `project`.`enterprise_id`, `credit_note`.`cost`, `credit_note`.`debitor_uuid`, `note_date`, `credit_note`.`sale_uuid`, ' +
+      ' `credit_note`.`description`, `inventory_uuid`, `quantity`, `sale_item`.`uuid` as `item_uuid`, ' +
+      '`transaction_price`, `debit`, `credit`, `service`.`profit_center_id` ' +
+    'FROM `credit_note` JOIN `sale` JOIN `service` JOIN `sale_item` JOIN `inventory` JOIN `inventory_unit` JOIN `project` ' +
+      'ON `credit_note`.`sale_uuid`=`sale`.`uuid` AND ' +
+      '`sale`.`service_id`=`service`.`id` AND ' +
+      '`sale_item`.`sale_uuid`=`sale`.`uuid` AND ' +
       '`sale_item`.`inventory_uuid`=`inventory`.`uuid` AND ' +
       '`project`.`id` = `credit_note`.`project_id` AND ' +
       '`inventory`.`unit_id`=`inventory_unit`.`id` ' +
@@ -1139,14 +1142,15 @@ function handleCreditNote (id, user_id, done) {
         'INSERT INTO `posting_journal` ' +
           '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
           '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-          '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+          '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`, `pc_id` ) ' +
         'SELECT `sale`.`project_id`, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
           '\'' + reference.description + '\', `inventory_group`.`sales_account`, `sale_item`.`debit`, `sale_item`.`credit`, ' +
           '`sale_item`.`debit`, `sale_item`.`credit`, `sale`.`currency_id`, null, ' +
-          ' null, `sale`.`uuid`, ' + [cfg.originId, user_id].join(', ') + ' ' +
-        'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inventory_group` ON ' +
+          ' null, `sale`.`uuid`, ' + [cfg.originId, user_id].join(', ') + ', ' +
+          'if(ISNULL(`account`.`pc_id`), \'' + reference.profit_center_id + '\', `account`.`pc_id`) ' +
+        'FROM `sale` JOIN `sale_item` JOIN `inventory` JOIN `inventory_group` JOIN `account` ON ' +
           '`sale_item`.`sale_uuid`=`sale`.`uuid` AND `sale_item`.`inventory_uuid`=`inventory`.`uuid` AND ' +
-          '`inventory`.`group_uuid`=`inventory_group`.`uuid` ' +
+          '`inventory`.`group_uuid`=`inventory_group`.`uuid` AND `inventory_group`.`sales_account`=`account`.`id` ' +
         'WHERE `sale_item`.`uuid`=' + sanitize.escape(item.item_uuid) + ';';
 
       queries.items.push(itemSql);
@@ -1336,7 +1340,7 @@ function handleTransfert (id, user_id, done) {
   // TODO : Formalize this
   sql = 'SELECT `primary_cash`.*, `cash_box_account_currency`.`virement_account_id` ' +
         'FROM `primary_cash` ' +
-        'JOIN `cash_box_account_currency` ON `cash_box_account_currency`.`account_id` = `primary_cash`.`account_id` ' + 
+        'JOIN `cash_box_account_currency` ON `cash_box_account_currency`.`account_id` = `primary_cash`.`account_id` ' +
         'WHERE uuid = ' + sanitize.escape(id) + ';';
 
   db.exec(sql)
@@ -1389,7 +1393,7 @@ function handleTransfert (id, user_id, done) {
   })
   .then(function () {
     return get.transactionId(reference.project_id);
-  })  
+  })
 // VOICI ANALYSE DANS LA BASE DE DONNEES
   .then(function (transId) {
     var descrip =  transId.substring(0,4) + '_VIRMENT_CAISSEPRINCIPALE' + new Date().toISOString().slice(0, 10).toString();
@@ -1417,7 +1421,7 @@ function handleTransfert (id, user_id, done) {
   .then(function () {
     return db.exec(queries.debit);
   })
-// VOICI ANALYSE DANS LA BASE DE CONNAISSANCES  
+// VOICI ANALYSE DANS LA BASE DE CONNAISSANCES
   .then(function (rows) {
     done(null, rows);
   })
@@ -3922,7 +3926,7 @@ function handleCancelSupport (id, user_id, details, done) {
     '`user_id`, `cc_id`, `pc_id` ' +
     'FROM `posting_journal`' +
     'WHERE `posting_journal`.`inv_po_id`=' + sanitize.escape(id) +
-    'UNION ' +
+    'UNION ALL' +
     'SELECT `uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
     '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`,  `deb_cred_type`, `currency_id`, ' +
     '`deb_cred_uuid`, `inv_po_id`, `cost_ctrl_id`, `origin_id`, '+
@@ -4082,7 +4086,7 @@ function handleFiscalYearResultat (id, user_id, data, done) {
       cfg.descrip =  'Locking Fiscal Year/' + String(transactionDate);
     } else {
       cfg.descrip =  'New Fiscal Year/' + new Date().toISOString().slice(0, 10).toString();
-    }  
+    }
   }
 
   function postingResultat (resAccount) {
@@ -4127,7 +4131,7 @@ function handleFiscalYearResultat (id, user_id, data, done) {
           [
             0, Math.abs(bundle.solde),
             0, Math.abs(bundle.solde),
-            bundle.currency_id, 
+            bundle.currency_id,
             'null'
           ].join(',') +
           ', null, ' +
@@ -4200,7 +4204,7 @@ function handleFiscalYearResultat (id, user_id, data, done) {
           [
             0, Math.abs(bundle.solde),
             0, Math.abs(bundle.solde),
-            bundle.currency_id, 
+            bundle.currency_id,
             'null'
           ].join(',') +
           ', null, ' +

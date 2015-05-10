@@ -30,9 +30,16 @@
 
             <div class="form-group">
               <label>{{ 'TRANSFER.CAISSE' | translate}}</label>
-              <select class="form-bhima" name="caissename" id="caisseID" ng-model="data.cash_box_id" ng-options="cash.id as cash.text for cash in cash_boxes.data">
+              <!-- <select class="form-bhima" name="caissename" id="caisseID" ng-model="data.cash_box_id" ng-options="cash.id as cash.text for cash in cash_boxes.data">
                 <option value="" disabled="disabled">-- {{ 'SELECT.CASH' | translate }} -- </option>
-              </select>
+              </select> -->
+
+              <select class="form-bhima" ng-model="data.cash_box_id" required>
+                  <option value="" disabled="disabled">--- {{ 'SELECT.CASH' | translate }} ---</option>
+                  <option ng-repeat="cash in cash_boxes.data" ng-disabled="cash.is_auxillary == 0 && cash.is_bank == null" value="{{cash.id}}">
+                    {{ cash.text }}
+                  </option>
+                </select>
             </div>
 
             <div class="form-group">

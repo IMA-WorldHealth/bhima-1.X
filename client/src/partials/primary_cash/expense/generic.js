@@ -64,7 +64,8 @@ angular.module('bhima.controllers')
           'account' :{
             columns : ['id', 'account_txt', 'account_number']
           }
-        }
+        },
+        where : ['account.is_ohada=1', 'AND', 'account.account_type_id<>3']
       }
     };
 

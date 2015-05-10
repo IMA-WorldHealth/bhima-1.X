@@ -40,10 +40,9 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           'cash_box' : {
-            columns : ['id', 'text', 'project_id']
+            columns : ['id', 'text', 'project_id', 'is_auxillary', 'is_bank']
           },
-        },
-        where : ['cash_box.is_auxillary=1']
+        }
       }
     };
 
@@ -80,7 +79,7 @@ angular.module('bhima.controllers')
       var accountId;
       $scope.cash_box_account_currencies.data.forEach(function (box) {
         // FIXME I changed box.cash_box_id == cashBoxId to a strict equality.  Does it still hold?
-        if (box.currency_id === currencyId && box.cash_box_id === cashBoxId) {
+        if (box.currency_id == currencyId && box.cash_box_id == cashBoxId) {
           accountId = box.account_id;
         }
       });
