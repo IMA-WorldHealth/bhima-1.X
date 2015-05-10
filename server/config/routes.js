@@ -34,6 +34,8 @@ var compileReport   = require('./../controllers/reports_proposed/reports.js');
 
 var snis            = require('./../controllers/snis');
 
+var extra           = require('./../controllers/extraPayment');
+
 
 
 exports.initialise = function (app) {
@@ -183,5 +185,9 @@ exports.initialise = function (app) {
 
   // Stock integration
   app.get('/stockIntegration/', uncategorised.getStockIntegration);
+
+  // Extra Payement
+  app.post('/extraPayment/', extra.handleExtraPayment);
+
 
 };

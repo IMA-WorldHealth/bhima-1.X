@@ -690,6 +690,10 @@
       controller : 'cash.cashbox_account',
       templateUrl : 'partials/cash/cashbox_account_currency/cashbox_account_currency.html'
     })
+    .when('/extra_payment', {
+      controller : 'cash.extra_payment',
+      templateUrl : 'partials/cash/extra_payment/extra_payment.html'
+    })
 
     // Proposed formal report building structure
     .when('/report/invoice/:target', {
