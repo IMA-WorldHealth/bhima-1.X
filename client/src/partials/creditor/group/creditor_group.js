@@ -38,7 +38,7 @@ angular.module('bhima.controllers')
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
       dependencies.accounts.query.where =
-        ['account.enterprise_id=' + enterprise.id];
+        ['account.enterprise_id=' + enterprise.id, 'AND', 'account.is_ohada=1'];
       dependencies.groups.query.where =
         ['creditor_group.enterprise_id=' + enterprise.id];
 
