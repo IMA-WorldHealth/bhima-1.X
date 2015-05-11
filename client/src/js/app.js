@@ -542,6 +542,10 @@
       controller : 'stock.integration',
       templateUrl : 'partials/stock/integration/integration.html'
     })
+    .when('/stock/integration_confirm/', {
+      controller : 'stock.confirm_integration',
+      templateUrl : 'partials/stock/integration/confirm_integration/confirm_integration.html'
+    })
     .when('/reports/loss_record/', {
       controller : 'loss_record',
       templateUrl : 'partials/reports/loss_record/loss_record.html'
@@ -689,6 +693,10 @@
     .when('/cashbox_account_management', {
       controller : 'cash.cashbox_account',
       templateUrl : 'partials/cash/cashbox_account_currency/cashbox_account_currency.html'
+    })
+    .when('/extra_payment', {
+      controller : 'cash.extra_payment',
+      templateUrl : 'partials/cash/extra_payment/extra_payment.html'
     })
 
     // Proposed formal report building structure
