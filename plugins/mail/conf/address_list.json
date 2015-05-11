@@ -1,0 +1,39 @@
+{ 
+  "Steven Fountain" : { 
+    "language" : "en",
+    "address" : "StevenFountain1@gmail.com",
+    "subscription" : [
+      "daily"
+    ]
+  },
+  "Jonathan Niles" : { 
+    "language" : "en",
+    "address" : "Jonathanwniles@gmail.com",
+    "subscription" : [
+      "en"
+    ]
+  },
+  "Dedrick Kitamuka" : { 
+    "language" : "fr",
+    "address" : "kitamuka@gmail.com",
+    "subscription" : [
+      "daily"
+    ]
+  },
+
+  "Larry Sthreshley" : { 
+    "language" : "en",
+    "address" : "Larry@sthreshley.org",
+    "subscription" : [
+      "daily"
+    ]
+  },
+
+ "Wayne Niles" : { 
+    "language" : "en",
+    "address" : "wayne@sanru.org",
+    "subscription" : [
+      "daily"
+    ]
+  }
+}
