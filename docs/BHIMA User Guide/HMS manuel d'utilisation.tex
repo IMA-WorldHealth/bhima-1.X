@@ -3087,6 +3087,7 @@ En bas de page existe une zone permettant de choisir les produits qui feront par
 
 Pour pouvoir chercher un produit il faudrai le faire dans \includegraphics[scale=0.4]{pic/SearchInventory.png} la zone qui fonctionne comme un filtre, ensuite preciser le numéro de lot, la date d'expiration, la quantité, le prix d'achat. Si l'on veux ajouter un autre produit, il suffit de cliquer sur le bouton \includegraphics[scale=0.7]{pic/StockItem.png}.
 
+\newpage
 Une fois que la sélection les produits est effectuée le bouton \includegraphics[scale=0.7]{pic/ApercIntegration.png} permet de visualiser les informations concernant l'integration en stock en donnant soit la possibilité de pour suivre l'opération ou bien de l'interrompre comme le montre claire la figure ci-après.
 
 \begin{figure}[h]
@@ -3096,6 +3097,60 @@ Une fois que la sélection les produits est effectuée le bouton \includegraphic
 \caption{Apperçue de la zone permettant la visualisation d'une opération d'integration}
 \label{Apperçue de la zone permettant la visualisation d'une opération d'integration}
 \end{figure} 
+
+\newpage
+\subsection{Annulation de la distribution aux patients}
+Le module Annulation de la distribution aux patients permet de faire directement la re-integration des produits distribués aux patients pour une raison ou bien une autre, l'interface principale de ce module se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/DistPatient.png}
+\end{center}
+\caption{Interface principale du module Annulation de la distribution aux patients}
+\label{Interface principale du module Annulation de la distribution aux patients}
+\end{figure}
+
+Dans le haut de l'image on retrouve un lien hypertext permettant la redirection vers le menu principale de la gestion de stock, par défaut la tableau des distributions des aux patients n'affichent que les distributions du jour en cour, pour visualiser l'historique des distributions il faudrai modifier soit avec: 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=3cm]{pic/SelectJour.png}
+\end{center}
+\caption{Outils permettant de choisir l'écheance dans le temps}
+\label{Outils permettant de choisir l'écheance dans le temps}
+\end{figure} 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=6cm]{pic/SelecPlageDate.png}
+\end{center}
+\caption{Outils permettant de rechercher sur une plage de temps}
+\label{Outils permettant de rechercher sur une plage de temps}
+\end{figure} 
+
+\newpage
+Pour pouvoir annuler une distribution il suffit de cliquer sur le lien \includegraphics[scale=0.7]{pic/AnnulerDistribution.png} en fin d'être redirigé vers l'interface précedent l'annulation proprement dite.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/CancelDistribution.png}
+\end{center}
+\caption{Interface permettant d'annuler une distribution}
+\label{Interface permettant d'annuler une distribution}
+\end{figure}
+
+Pour voir le détaille de la distribution il suffit de cliquer sur le bouton \includegraphics[scale=0.7]{pic/SeeInvoice.png} qui se trouve dans le coin droit de la zone Détaille de facture   
+
+
+Et pour annuler une distribution il suffit de cliquer sur le bouton \includegraphics[scale=0.7]{pic/soumettreGreen.png} et lorsqu'on revient sur la page principale de l'historique de vente on peut se rendre compte que les distributions annulées se colorent différemment des autres, comme on peut le constaté dans la figure ci-dessous.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/CancelDistPatientView.png}
+\end{center}
+\caption{Aperçue de l'historique des distributions aux patients ayant des distributions annulées}
+\label{Aperçue de l'historique des distributions aux patients ayant des distributions annulées}
+\end{figure}
 
 
 \newpage
