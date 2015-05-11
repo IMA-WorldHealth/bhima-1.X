@@ -101,7 +101,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="sale in saleData | filter : session.search">
+              <tr 
+              ng-if="sale.transaction" 
+              ng-repeat="sale in saleDataUnique | filter : session.search">
                 <td>{{ sale.transaction }}</td>
                 <td>{{ sale.inv_po_id }}</td>
                 <td>
