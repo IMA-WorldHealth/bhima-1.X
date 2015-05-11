@@ -86,21 +86,22 @@ angular.module('bhima.controllers')
     }
 
     function checkingExistPatient (file_number) {
-      if (file_number === 0) {
-        return false;
-      }
-
       var def = $q.defer();
-      var query = {
-        tables : { 
-          patient : { columns : ['uuid'] }
-        },
-        where  : ['patient.hospital_no=' + file_number]
-      };
-      connect.fetch(query)
-      .then(function (res) {
-        def.resolve(res.length === 0);
-      });
+
+      if (file_number === 0 || file_number === '0') {
+        def.resolve(false);
+      } else {
+        var query = {
+          tables : { 
+            patient : { columns : ['uuid'] }
+          },
+          where  : ['patient.hospital_no=' + file_number]
+        };
+        connect.fetch(query)
+        .then(function (res) {
+          def.resolve(res.length !== 0);
+        });
+      }
       
       return def.promise;
     }
