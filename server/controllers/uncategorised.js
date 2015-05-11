@@ -266,6 +266,7 @@ exports.listEnterpriseAccounts = function (req, res, next) {
     'SELECT account.id, account.account_number, account.account_txt FROM account ' +
     'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
       'AND account.parent <> 0 ' +
+      'AND account.is_ohada = 1 ' +
       'AND account.cc_id IS NULL ' +
       'AND account.account_type_id <> 3';
 
@@ -289,6 +290,7 @@ exports.listEnterpriseProfitAccounts = function (req, res, next) {
     'SELECT account.id, account.account_number, account.account_txt FROM account ' +
     'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
       'AND account.parent <> 0 ' +
+      'AND account.is_ohada = 1 ' +
       'AND account.pc_id IS NULL ' +
       'AND account.account_type_id <> 3';
 
@@ -393,6 +395,7 @@ exports.costCenterAccount = function (req, res, next) {
     'ON account.cc_id = cost_center.id '+
     'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
       'AND account.parent <> 0 ' +
+      'AND account.is_ohada = 1 ' +
       'AND account.cc_id = ' + sanitize.escape(req.params.cost_center_id) + ';';
 
   function process(accounts) {
@@ -417,6 +420,7 @@ exports.profitCenterAccount = function (req, res, next) {
     'ON account.pc_id = profit_center.id '+
     'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
       'AND account.parent <> 0 ' +
+      'AND account.is_ohada = 1 ' +
       'AND account.pc_id = ' + sanitize.escape(req.params.profit_center_id) + ';';
 
   function process(accounts) {
@@ -1539,3 +1543,4 @@ exports.getStockIntegration = function (req, res, next) {
   .done();
 
 };
+

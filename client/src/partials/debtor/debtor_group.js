@@ -54,7 +54,7 @@ angular.module('bhima.controllers')
       dependencies.price_list.query.where =
         ['price_list.enterprise_id=' + enterprise.id];
       dependencies.account.query.where =
-        ['account.locked<>1', 'AND', 'account.enterprise_id=' + enterprise.id];
+        ['account.locked<>1', 'AND', 'account.enterprise_id=' + enterprise.id, 'AND', 'account.is_ohada=1'];
       validate.process(dependencies)
       .then(setUpModels);
     });
