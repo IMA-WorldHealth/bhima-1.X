@@ -206,10 +206,10 @@
 "CASH": {
    "CASHBOX" : {
       "ADD"                    : "Ajouter",
-      "ACCOUNT_ALERT"          : "Module de gestion des Cashbox Account Currency",
+      "ACCOUNT_ALERT"          : "Module de gestion des comptes et devises des Caisses",
       "ACCOUNT_BOX"            : "Compte",
       "ACCOUNT_CURRENCY"       : "Monnaie",
-      "ACCOUNT_TITLE"          : "Gestion Cashbox Account Currency",
+      "ACCOUNT_TITLE"          : "Gestion des comptes et devises des Caisses",
       "ACCOUNT_GAIN"           : "Compte Gain Echange",
       "ACCOUNT_LOSS"           : "Compte Perte Echange",
       "ACCOUNT_VIREMENT"       : "Compte Virement",
@@ -1310,7 +1310,7 @@
    "BENEFICIARY"                  : "Bénéficiaire",
    "BY"                           : "Transfert realise par : ",
    "CASH_ID"                      : "# Transaction de Caisse",
-   "CASH_RECEIPT"                 : "Recette de Caisse",
+   "CASH_RECEIPT"                 : "Sortie de Caisse",
    "CAUTION"                      : "Caution",
    "CAUTION_ID"                   : "# Caution",
    "CLIENT_ID"                    : "Code Client",
@@ -2342,7 +2342,7 @@
       "KEY" : "Expiration du stock"
       },
    "INTEGRATION" : {
-      "DESCRIPTION"          : "Utilisez ce module pour integrer dans le systeme BHIMA un stock qui existait deja physiquement",
+      "DESCRIPTION"          : "Utilisez ce module pour integrer dans le systeme BHIMA un stock qui existait déjà physiquement",
       "CANCEL"               : "Annuler",
       "CONFIRM_FILTER"       : "Filtrer la liste...",
       "CONFIRM_STOCK"        : "Confirmation integration stock",
@@ -2631,7 +2631,7 @@
    "BUDGET_BY_ACCOUNT"         : "Budget par Compte",
    "CASH"                      : "Caisse Auxilliaire",
    "CASHBOX_MANAGEMENT"        : "Gestion Cashbox",
-   "CASHBOX_ACCOUNT_MANAGEMENT": "Cashbox Account Currency",
+   "CASHBOX_ACCOUNT_MANAGEMENT": "Comptes et devises des caisses",
    "CASH_PAYMENTS"             : "Rapport Paiements",
    "CAUTION"                   : "Caution",
    "CHART_OF_ACCOUNTS"         : "Plan Comptable",

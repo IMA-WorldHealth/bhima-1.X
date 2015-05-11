@@ -111,6 +111,31 @@ Le module admin est composé des sous modules qui permettent d'administrer le sy
 \label{Le module Admin et ses sous menus}
 \end{figure} 
 
+\section{Dépôt}
+Ce menu permet d'enregistré mais aussi de gérer les dépôts.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/GestionDesDepot.png}
+\end{center}
+\caption{Interface principale permetant la gestion des dépôts}
+\label{Interface principale permetant la gestion des dépôts}
+\end{figure}
+
+Dans la partie gauche l'on trouve un bouton qui permet d'ajouter un nouveau dépôt. Pour ajouter un nouveau dépôt, il suffit de cliquer sur le bouton \includegraphics[scale=0.7]{pic/AddNewStore.png}.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=10cm]{pic/NewStore.png}
+\end{center}
+\caption{Formulaire permettant d'ajouter un dépôt}
+\label{Formulaire permettant d'ajouter un dépôt}
+\end{figure}
+
+Le formulaire ci-haut apparait lorsqu'un utilisateur clique sur le bouton \textbf{Ajouter}. Ce formulaire possède le champ \textbf{Nom} qui permet d'attribuer un nom à un dépôt, la case à cocher est ce un entrepôt permet de spécifier si le dépôt qui est entrain d'être enregistrer sera la principale dans l'organisation.
+L'enregistrement est effectif seulement si l'utilisateur clique sur le bouton Soumettre. \textbf{La liste de tous les dépôts} apparait sous forme de tableau. Ce tableau afficher toutes les informations relatives entre autre le numéro de référence, le nom et La zone \textbf{Acte} renferme deux icônes le premier \includegraphics[scale=0.7]{pic/EditUser.png}  permet de modifier le nom d'un dépôt le second \includegraphics[scale=0.7]{pic/DeleteWRed.png}  permet de supprimer un dépôt.
+
+\newpage
 \section{Entreprise}
 Le sous modules Entreprise permet d'ajouter une entreprise dans le système, ce module permet aussi de configurer certains paramètres nécessaire à une entreprise.
 
@@ -123,7 +148,7 @@ Son interface principale se présente de la manière suivante.
 \caption{Interface principale du module entreprise}
 \label{Interface principale du module entreprise}
 \end{figure} 
-\newpage
+
 Dans la figure ci-haut on retrouve dans la partie gauche la liste des entreprises existante dans le système, au dessus de ce tableau il existe le bouton \includegraphics[scale=1]{pic/New_Entre.png} qui permet d'ajouter une nouvelle entreprise dans le système.
 
 Le formulaire permettant l'ajouter une nouvelle entreprise dans le système se présente de la manière suivante.
@@ -145,6 +170,44 @@ Les tableaux réprésentant les entreprises existante donne la possibilité de p
 \caption{Apperçu du formulaire permettant la mise à jour des informations rélatives à une entreprise}
 \label{Apperçu du formulaire permettant la mise à jour des informations rélatives à une entreprise}
 \end{figure} 
+
+\newpage
+\section{Gestion Cashbox}
+Le sous modules Gestion Cashbox permet d'administrer les différents types de caisses existant au sein de l'organisation, ce module permet aussi de configurer certains paramètres nécessaire à l'administration de Cash Box.
+
+Son interface principale se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/GestCashBox.png}
+\end{center}
+\caption{Interface principale du module Cash Box}
+\label{Interface principale du module Cash Box}
+\end{figure} 
+
+Dans la figure ci-haut on retrouve dans la partie gauche la liste des differents cash box existant au sein de l'organisation, à l'extrème droite, au dessus de ce tableau il existe le bouton \includegraphics[scale=1]{pic/AddNewStore.png} qui permet d'ajouter une Cashbox dans le système dans le système.
+
+Le formulaire permettant l'ajouter un nouveau Cash Box dans le système se présente de la manière suivante.
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/FormAddCash.png}
+\end{center}
+\caption{Formulaire d'enregistrement de Cash Box}
+\label{Formulaire d'enregistrement de Cash Box}
+\end{figure} 
+
+Une fois que tous ses éléments sont renseignés, il suffit de cliquer sur le bouton Soumettre pour enregistrer un nouveau Cash Box, il s'ajoutera automatiquement dans la liste des CashBox existantes. 
+
+Les tableaux réprésentant les Cash box existantes donne la possibilité de pouvoir mettre à jour les informations rélative à chaque Cash Box. Le tableau comportant la liste des Cash Box existantes comprend 5 rubriques, le ID, Le nom ou bien la designation, Le projet auquelle appartient ce Cash Box, ainsi que la qualification de caisse auxilliaire ou bien de Banque qui s'attache à un CashBox, la dernière  zone possède l'icône \includegraphics[scale=0.7]{pic/EditUser.png}, qui permet de modifier les méta données d'un cash box, si l'on clique sur ce dernier un formulaire s'affiche dans la partie droite de l'ecran avec les informations rélatives à Chacun de CashBox et donne la possibilité de pouvoir modifier si nécessaire et de valider les modifications grâce au bouton soumettre et le dernier icone permet de supprimer un CashBox dans la liste.
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/EditCashBox.png}
+\end{center}
+\caption{Apperçu du formulaire permettant la mise à jour des informations rélatives à un CashBox}
+\label{Apperçu du formulaire permettant la mise à jour des informations rélatives à un CashBox}
+\end{figure} 
+
+
 \newpage
 %/////////////% UTILISATEUR ET PERMISSION
 \section{Utilisateur \& Permissions}
@@ -218,139 +281,6 @@ Grâce à ce formulaire ont peux modifier l'attribution d'un utilisateur par rap
 \includegraphics[scale=1]{pic/DeleteUser.png} Permet de supprimer un compte utilisateur.
 %//////////////////% 
 
-
-\section{Comptes}
-La figure ci-dessous représente l'interface principale permettant d'avoir des informations sur des comptes, de visualisation  leurs relations ainsi que la possibilité d'ajout d'un compte.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=13cm]{pic/GestionCompte.png}
-\end{center}
-\caption{Interface principale du module Gestion des comptes}
-\label{Interface principale du module Gestion des comptes}
-\end{figure}
-
-\subsection{Ajout d'un compte}
-Lorsque l'utilisateur click sur le bouton \includegraphics[scale=1]{pic/AjouterCompte.png} Le formulaire ci-après apparait.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=4.5cm]{pic/FormAddCompte.png}
-\end{center}
-\caption{Formulaire permettant d'ajouter un compte}
-\label{Formulaire permettant d'ajouter un compte}
-\end{figure}
-
-\begin{itemize}
-\item \textbf{Le libelle de compte}: permet de nomme un compte \\
-\item \textbf{Le type de Compte}: permet de dire si un compte est du type incom/expense, balance, title.\\
-\item \textbf{Numero de compte}: permet de donner un numéro à un compte \\
-\item \textbf{Groupe de comptes (Comptes titres)}: permet d'affilier un compte à un groupe de compte.\\
-\end{itemize}
-
-Si le compte est du type \textbf{Title}, un groupe de bouton radio apparait pour permettre de sélectionner dans quelle categorie des titres se trouve le compte, un compte de type title peut être soit \textbf{un actif}, \textbf{un passif} ou bien dans une autre catégorie.
-
-Après avoir renseigner tous ce champ, un clic sur le bouton soumettre permet d'ajouter un compte dans la liste des comptes.
- 
-\subsection{Création d'un plan comptable}
-Grace au bouton \includegraphics[scale=0.7]{pic/CreePlanCompt.png}, l'utilisateur peut créer un plan comptable pour l'entreprise ou bien pour l'organisation. \\
-
-Après la création du plan comptable, ainsi que l'ajout de compte, le plan comptable apparait sous forme d'un tableau, dont les principaux entêtes sont :
-\begin{itemize}
-\item Texte
-\item No
-\item Type
-\item Fixe
-\item Editer
-\item Effacer
-\end{itemize}
-
-Dans l'entête Texte on retrouve les noms des différents comptes ainsi que ceux de groupe de comptes, dans l'entête No on retrouve le différent numéro des comptes, l'entête Type permet de savoir si le compte est un Income /expence, Balance ou bien un titre et l'entête effacer permet de supprimé un compte.  Il y a aussi le bouton \includegraphics[scale=0.7]{pic/GenereRapportCompt.png} qui permet d'afficher une version imprimable du plan comptable.
-
-Comme nous le montre l'image ci-après, le plan comptable est affiché par rapport à la date du jour.\\
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=14cm]{pic/PlanComptable.png}
-\end{center}
-\caption{Aperçue du plan Comptable}
-\label{Aperçue du plan Comptable}
-\end{figure}
-
-Dans le coin supérieur droit existe le bouton \textbf{imprimer} qui permet d'imprimer le plan comptable.
-\section{Année Fiscale}
-La figure ci-dessous représente l'interface principale permettant la Gestion des années fiscales. 
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=14cm]{pic/AnneeFiscal.png}
-\end{center}
-\caption{Interface permettant de gérer les années fiscals}
-\label{Interface permettant de gérer les années fiscals}
-\end{figure}
-
-\newpage
-\subsection{Création de l'année fiscale}
-Lorsque l'utilisateur click sur le bouton \includegraphics[scale=0.7]{pic/CreeAnnFisc.png} Le formulaire ci-après apparait.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=12cm]{pic/FormCreationAnnFisc.png}
-\end{center}
-\caption{Formulaire d'ajouter une année fiscale}
-\label{Formulaire d'ajouter une année fiscale}
-\end{figure}
-\begin{itemize}
-\item \textbf{Description}: permet de décrire l'année fiscale.
-\item \textbf{Début Mois}: permet de préciser le premier mois de l'année fiscale
-\end{itemize}
-\textbf{Il existe aussi deux boutons radio une année et Spécifier }: si l'on clique sur le bouton radio \textbf{une année}, l'année fiscale commencera à partir de la période préciser et couvrira une période de douze mois mais si l'on clique sur le bouton \textbf{spécifier} dans ce cas l'utilisateur devra préciser le champ \textbf{Fin Mois} qui marquera la fin de l'année fiscale.
-
-Le champ \textbf{Année Fiscale précédent} n'apparait que s'il existe au moins une année fiscale déjà enregistrer dans le système. 
-
-Après avoir renseigné tous ce champ, un clic sur le bouton \textbf{Enregistrer} redirige vers la deuxième étape de la création d'année fiscale qu'au cas ou il existait une année fiscale précédente à celle qui est en train d'être créer. Cette interface permet juste la confirmation de la fermeture de l'année fiscale précédente.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=12cm]{pic/CloseFiscYear.png}
-\end{center}
-\caption{Aperçue de l'interface permettant la fermeture de l'année fiscale précédente}
-\label{Aperçue de l'interface permettant la fermeture de l'année fiscale précédente}
-\end{figure}
-
-La troisième étape de la création d'une année fiscale n'est juste qu'une interface de confirmation de la fermeture de l'année fiscale, cette troisième étape devient la deuxième étape de la création d'une année fiscale dans le cas ou il n'existait pas encore d'autres années fiscale.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=12cm]{pic/ConfirSucces.png}
-\end{center}
-\caption{Message de confirmation de la création de la nouvelle année fiscale}
-\label{Message de confirmation de la création de la nouvelle année fiscale}
-\end{figure}
-
-\newpage
-
-\subsection{Liste des années fiscale}
-Voici comment se présente la liste des années fiscale
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=9cm]{pic/ListeAnnFisc.png}
-\end{center}
-\caption{Aperçue de la liste des années fiscales}
-\label{Aperçue de la liste des années fiscaux}
-\end{figure}
-
-Pour pouvoir visualiser les détailles d'une année fiscale il suffit de cliquer sur cette année fiscale dans la liste des années fiscaux.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=12cm]{pic/FormAddFiscYear.png}
-\end{center}
-\caption{Interface principale de management d'une année fiscal}
-\label{Interface principale de management d'une année fiscal}
-\end{figure}
-
-Dans la partie gauche de l'image ci-haut on retrouve la liste des années fiscales, on peut aussi , modifier la designation d'une année fiscale, visualiser les différentes périodes qui constituent cette année fiscale. 
 
 \newpage
 \section{Liste des prix}
@@ -447,58 +377,6 @@ Un clic sur le bouton \includegraphics[scale=0.7]{pic/RevoirTaux.png} permet d'a
 \caption{Aperçue du taux du jour}
 \label{Aperçue du taux du jour}
 \end{figure}
-\newpage
-\section{Groupe Créditeur}
-Ce module permet de faire la gestion des groupes créditeurs, l'interface principale de ce module se présente de la manière que voici.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=12cm]{pic/AdminGroupCredit.png}
-\end{center}
-\caption{Interface principale permettant d'administrer le groupe créditeur}
-\label{Interface principale permettant d'administrer le groupe créditeur}
-\end{figure}
-
-
-Le bouton \includegraphics[scale=0.7]{pic/NewGroupCredit.png} permet d'ajouter un nouveau groupe créditeur dans ladite liste.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=8cm]{pic/AddNewGroupCred.png}
-\end{center}
-\caption{Ajouter un nouveau groupe créditeur}
-\label{Ajouter un nouveau groupe créditeur}
-\end{figure}
-
-Le formulaire ci-haut apparait lorsqu'un utilisateur clique sur le bouton \textbf{Nouveau groupe Créditeur}. Ce formulaire possède deux champs, le premier \textbf{Nom du groupe} permet de spécifier le nom du groupe et \textbf{Numéro de compte}  le numéro de compte permet de choisir dans la liste de compte, celui correspondant au groupe créditeur.
-L'enregistrement est effectif seulement si l'utilisateur clique sur le bouton Sauver changement.
-La liste des groupes créditeurs apparait sous forme de tableau. Ce tableau possède quatre rubriques. Le premier \textbf{Nom du groupe} renseigne sur le nom du groupe, le second renseigne sur le numéro de compte, en troisième lieu il y'a une rubrique qui est représenté par l'icône \includegraphics[scale=0.7]{pic/Locked.png}  qui permet de verrouiller mais aussi de déverrouillé un groupe créditeur à l'aide de case à coché et denier lieu il y'a \textbf{Editer} qui contient l'icône  \includegraphics[scale=0.7]{pic/EditUser.png} permet de modifier les informations sur un groupe créditeur.
-
-\section{Groupe Débiteur}
-Ce module permet de faire l'administration de groupe débiteur, l'interface principale de ce module se présente de la manière que voici.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=14cm]{pic/AdminGroupDebit.png}
-\end{center}
-\caption{Interface principale permettant d'administrer le groupe débiteur}
-\label{Interface principale permettant d'administrer le groupe débiteur}
-\end{figure}
-
-Le bouton \includegraphics[scale=0.7]{pic/NewGroupDebit.png} permet d'ajouter un nouveau groupe Débiteur dans ladite liste.
-\newpage
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=9cm]{pic/FormAddGroupDebiteur.png}
-\end{center}
-\caption{Formulaire permettant d'ajouter un groupe débiteur}
-\label{Formulaire permettant d'ajouter un groupe débiteur}
-\end{figure}
-
-Le formulaire ci-haut apparait lorsqu'un utilisateur clique sur le bouton \textbf{Nouveau groupe Débiteur}. Ce formulaire possède dix champs, le premier \textbf{Nom} permet de spécifier le nom du groupe débiteur, ensuite il existe une case à coché convention qui permet de déterminer si le groupe débiteur est une convention ou nom, \textbf{Compte }permet d'attribuer un compte, \textbf{Liste de prix}  permet de spécifier pour quelle liste de prix fait référence un groupe débiteur, \textbf{Localisation} permet de spécifier l'emplacement géographique relative à un groupe de compte, \textbf{Paiement} permet de spécifier le type de paiement relative à un groupe,\textbf{ Phone}, \textbf{Email}, \textbf{Crédit Max }et \textbf{Note} sont d'autres informations qu'on peut attribuer à un groupe débiteur.
-L'enregistrement est effectif seulement si l'utilisateur clique sur le bouton Sauver changement.
-La liste des groupes débiteurs apparait sous forme de tableau. Ce tableau possède cinq rubriques, il y'a Nom, Compte, Convention qui est soit vide ou bien représenté par l'icône \includegraphics[scale=0.7]{pic/IconOk.png}  seulement si le groupe débiteur appartient à un groupe de conventionné,  il y'a aussi l'icône \includegraphics[scale=0.7]{pic/Locked.png}  qui permet de verrouiller mais aussi de déverrouillé un groupe débiteur à l'aide de case à coché et denier lieu il y'a \textbf{Editer} qui contient l'icône \includegraphics[scale=0.7]{pic/EditUser.png}   permet de modifier les informations sur un groupe débiteur.
-
 \newpage
 \section{Localisation}
 Gestions Emplacement permet d'enregistrer toutes les localisations possible pour l'enregistrement des patients. L'interface principale se présente comme de la manière suivante.
@@ -748,30 +626,6 @@ Dans la partie gauche l'on trouve un bouton qui permet d'ajouter un nouveau proj
 Le formulaire ci-haut apparait lorsqu'un utilisateur clique sur le bouton \textbf{Nouveau}. Ce formulaire possède cinq champs le premier \textbf{Nom} permet de préciser le nom du projet et le second \textbf{Abbr} permet de spécifier l'abréviation du projet et en dernier lieu il y'a \textbf{Entreprise} qui permet de choisir l'entreprise pour lequel appartient ce projet.
 L'enregistrement est effectif seulement si l'utilisateur clique sur le bouton Soumettre. \textbf{La liste de projets existants} apparait sous forme de tableau. Ce tableau afficher toutes les informations relatives entre autre son Id, son nom, l'abréviation qui a été utilisé pour ce projet le Id de son entreprise à un projet. La zone \textbf{Actions} renferme deux icônes le premier \includegraphics[scale=0.7]{pic/EditUser.png}  permet de modifier les informations d'un projet et le second \includegraphics[scale=0.7]{pic/DeleteWRed.png} permet de supprimer un projet.
 
-\section{Gestions des dépôts}
-Ce menu permet d'enregistré mais aussi de gérer les dépôts.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=14cm]{pic/GestionDesDepot.png}
-\end{center}
-\caption{Interface principale permetant la gestion des dépôts}
-\label{Interface principale permetant la gestion des dépôts}
-\end{figure}
-
-Dans la partie gauche l'on trouve un bouton qui permet d'ajouter un nouveau dépôt. Pour ajouter un nouveau dépôt, il suffit de cliquer sur le bouton \includegraphics[scale=0.7]{pic/AddNewStore.png}.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=10cm]{pic/NewStore.png}
-\end{center}
-\caption{Formulaire permettant d'ajouter un dépôt}
-\label{Formulaire permettant d'ajouter un dépôt}
-\end{figure}
-
-Le formulaire ci-haut apparait lorsqu'un utilisateur clique sur le bouton \textbf{Ajouter}. Ce formulaire possède le champ \textbf{Nom} qui permet d'attribuer un nom à un dépôt, la case à cocher est ce un entrepôt permet de spécifier si le dépôt qui est entrain d'être enregistrer sera la principale dans l'organisation.
-L'enregistrement est effectif seulement si l'utilisateur clique sur le bouton Soumettre. \textbf{La liste de tous les dépôts} apparait sous forme de tableau. Ce tableau afficher toutes les informations relatives entre autre le numéro de référence, le nom et La zone \textbf{Acte} renferme deux icônes le premier \includegraphics[scale=0.7]{pic/EditUser.png}  permet de modifier le nom d'un dépôt le second \includegraphics[scale=0.7]{pic/DeleteWRed.png}  permet de supprimer un dépôt.
-\newpage
 
 \section{Gestions des services}
 Ce menu permet d'enregistré les différentes services existant au sein de l'entreprise, mais aussi de modifier leur informations rélatives, l'interface principale de ce modules se présente de la manière suivante.
@@ -1141,74 +995,6 @@ Et quand on revient sur la page principale de l'historique de la caisse auxillia
 \label{Aperçue de l'Historique de la caisse auxilliaire avec des encaissements annulées}
 \end{figure}
 
-
-\newpage
-\section{Facturation des conventions}
-Le module facturations des conventions est un modules qui permet à un groupe débiteur de prendre en charge la totalité ou bien une partie de ce que doit un patient à l'hôpital. Son interface d'utilisation se présente de la manière suivante.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=14cm]{pic/FacturationConv.png}
-\end{center}
-\caption{Interface principale de la facturation des conventions}
-\label{Interface principale de la facturation des conventions}
-\end{figure}
-
-Quand à l'utilisation de cette interface, il suffit de preciser le groupe débiteur qui accepte de prendre en charge un patient, et en suite recherche le patient en question dans la liste de débiteur, après avoir retrouver le patient en question il faudrait cliquer sut le bouton  \textbf{Continuer} pour faire apparaitre l'interface qui permet de la prise en charge.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=14cm]{pic/FactPrCharge.png}
-\end{center}
-\caption{Apperçue de l'interface de prise en charge}
-\label{Apperçue de l'interface de prise en charge}
-\end{figure}
-
-Dans la figure précedante nous pouvons appercevoir une illustration de la prises en charge, dans cette exemple un patient a deux factures en attente de paiement, la zone action possède pour les différentes factures deux icônes \includegraphics[scale=0.7]{pic/LoopBlack.png} qui permet d'avoir un aperçue de la facture et \includegraphics[scale=0.7]{pic/plusBlack.png} permet d'aller à l'interface permettant la prise en charge proprement dit de la facture. 
-Voici l'interface permettant à un débiteur de prendre en charge un patient.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=9cm]{pic/FactConv1.png}
-\end{center}
-\caption{Apperçue de l'interface permettant d'effectue une prise ne charge}
-\label{Apperçue de l'interface permettant d'effectue une prise ne charge}
-\end{figure}
-
-\newpage
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=9cm]{pic/DetailConv.png}
-\end{center}
-\caption{Apperçue d'une facture}
-\label{Apperçue d'une facture}
-\end{figure}
-
-
-Cette interface permet de payer le montant de la prise en charge du patient, par défaut le montant à payer se trouve déjà dans la zone de saisie réservée à cet effet \includegraphics[scale=0.7]{pic/editableDeb.png}, cette zone de saisie est editable et donne la possibilité de modifier le montant à payer. 
-
-Cet interface permet aussi de prendre en charge plusieur facture appartenant à un même patient en une seul fois, pour cela il suffit simplement de les ajoutant grace à un clic sur l'icône \includegraphics[scale=0.7]{pic/plusBlack.png}, et une fois que les factures concernant la prise en charge sont sélectionner, il suffit de cliquer sur le bouton \textbf{Payer la facture} pour être diriger vers une autre interface qui permet de préciser la qui a autorisé le paiement.
-
-\newpage
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=8cm]{pic/DoubleConvention.png}
-\end{center}
-\caption{Apperçue de l'interface permettant le paiement de deux factures à la fois}
-\label{Apperçue de l'interface permettant le paiement de deux factures à la fois}
-\end{figure}
-
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=8cm]{pic/PCConfirm.png}
-\end{center}
-\caption{Apperçue de l'interface permettant de renseigner la personne qui a autorisée le paiement}
-\label{Apperçue de l'interface permettant de renseigner la personne qui a autorisée le paiement}
-\end{figure}
-
-
 \newpage
 \section{ Prise en charge}
 Le module  Prise en charge est un modules qui permet aux employés de prendre en charge la totalité ou bien une partie de ce que doit un patient à l'hôpital. 
@@ -1267,6 +1053,75 @@ Cet interface permet aussi de prendre en charge plusieur facture appartenant à 
 \caption{Apperçue de l'interface permettant de renseigner la personne qui a autorisée la prise en charge}
 \label{Apperçue de l'interface permettant de renseigner la personne qui a autorisée la prise en charge}
 \end{figure}
+
+
+\newpage
+\section{ Prise en charge (Tiers)}
+Le module  Prise en charge par le tiers est un modules qui permet aux groupes débiteurs de prendre en charge la totalité ou bien une partie de ceux que doit un patient à l'hôpital. Son interface d'utilisation se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/FacturationConv.png}
+\end{center}
+\caption{Interface principale de la Prise en charge (Tiers)}
+\label{Interface principale de la Prise en charge (Tiers)}
+\end{figure}
+
+Quand à l'utilisation de cette interface, il suffit de preciser le groupe débiteur qui accepte de prendre en charge un patient, et en suite recherche le patient en question dans la liste de débiteur, après avoir retrouver le patient en question il faudrait cliquer sut le bouton  \textbf{Continuer} pour faire apparaitre l'interface qui permet de la prise en charge.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/FactPrCharge.png}
+\end{center}
+\caption{Apperçue de l'interface de prise en charge}
+\label{Apperçue de l'interface de prise en charge}
+\end{figure}
+
+Dans la figure précedante nous pouvons appercevoir une illustration de la prises en charge, dans cette exemple un patient a deux factures en attente de paiement, la zone action possède pour les différentes factures deux icônes \includegraphics[scale=0.7]{pic/LoopBlack.png} qui permet d'avoir un aperçue de la facture et \includegraphics[scale=0.7]{pic/plusBlack.png} permet d'aller à l'interface permettant la prise en charge proprement dit de la facture. 
+Voici l'interface permettant à un débiteur de prendre en charge un patient.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=9cm]{pic/FactConv1.png}
+\end{center}
+\caption{Apperçue de l'interface permettant d'effectue une prise ne charge}
+\label{Apperçue de l'interface permettant d'effectue une prise ne charge}
+\end{figure}
+
+\newpage
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=9cm]{pic/DetailConv.png}
+\end{center}
+\caption{Apperçue d'une facture}
+\label{Apperçue d'une facture}
+\end{figure}
+
+
+Cette interface permet de payer le montant de la prise en charge du patient, par défaut le montant à payer se trouve déjà dans la zone de saisie réservée à cet effet \includegraphics[scale=0.7]{pic/editableDeb.png}, cette zone de saisie est editable et donne la possibilité de modifier le montant à payer. 
+
+Cet interface permet aussi de prendre en charge plusieur facture appartenant à un même patient en une seul fois, pour cela il suffit simplement de les ajoutant grace à un clic sur l'icône \includegraphics[scale=0.7]{pic/plusBlack.png}, et une fois que les factures concernant la prise en charge sont sélectionner, il suffit de cliquer sur le bouton \textbf{Payer la facture} pour être diriger vers une autre interface qui permet de préciser la qui a autorisé le paiement.
+
+\newpage
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/DoubleConvention.png}
+\end{center}
+\caption{Apperçue de l'interface permettant le paiement de deux factures à la fois}
+\label{Apperçue de l'interface permettant le paiement de deux factures à la fois}
+\end{figure}
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/PCConfirm.png}
+\end{center}
+\caption{Apperçue de l'interface permettant de renseigner la personne qui a autorisée le paiement}
+\label{Apperçue de l'interface permettant de renseigner la personne qui a autorisée le paiement}
+\end{figure}
+
+
 
 \newpage
 \section{Caution}
@@ -1617,9 +1472,47 @@ Pour chaque ordre d'achat une preuve de paiement est directement produite par le
 \begin{center}
 \includegraphics[width=14cm]{pic/PreuvePaiement.png}
 \end{center}
-\caption{Apperçue d'un ordre de paiement}
-\label{Apperçue d'un ordre de paiement}
+\caption{Apperçue du bon de sortie caisse}
+\label{Apperçue du bon de sortie caisse}
 \end{figure}
+
+\newpage
+\subsection{Dépenses : Remboursement}
+Le module Remboursement permet à la caisse principale de restituer de l'argent à un employé de l'entreprise ou bien à un patient notament lors d'opération de l'annulation de caution. l'interface principale de ce module se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/Rembours.png}
+\end{center}
+\caption{Apperçue de l'interface principale du module Remboursement}
+\label{Apperçue de l'interface principale du module Remboursement}
+\end{figure}
+
+Sur cette interface on aussi un bouton qui permet de préciser la monnaie, 
+
+La prèmiere zone de saisie permet de rechercher un soit un employé ou bien un patient, par défaut c'est la recherche des patients qui est active, si l'on veut rechercher un employé il suffit de cliquer sur la lettre D simbolisant débiteur en C pour le créditeur, grace à une pétite liste de choix qui s'affiche à cette éffet.
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/SelectDebCredRembor.png}
+\end{center}
+\caption{Changement du mode de la recherche de Débiteur en Crediteur}
+\label{Changement du mode de la recherche de Débiteur en Crediteur}
+\end{figure}
+
+\newpage
+Les deux autres zones de saisies permettent de spécifier le mottant du remboursement ainsi qu'une petite description.  
+Voici un apperçue du document qui est généré lors de l'opération de remboursemment. 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/SortieCaisse.png}
+\end{center}
+\caption{Document lié à l'opération de rembourssement}
+\label{Document lié à l'opération de rembourssement}
+\end{figure}
+
 
 \subsection{Dépenses : Dépenses Génériques}
 Les modules dépenses génériques permet de tracquer tous les cas des dépenses de fonds au niveau de la caisse principale. l'interface principale de ce module est constituée d'une liste de choix qui permet de préciser le compte concerné par la dépence.
@@ -1635,6 +1528,7 @@ Voici l'illustration de cet interface.
 
 Sur cette interface on aussi un bouton qui permet de préciser la monnaie, et si un compte est déjà choisi par défaut on a la possibilité de la modifier grace au bouton \textbf{Sélectionner un compte}
 
+\newpage
 Après avoir choisi un compte, un deuxième interface apparait, cet interface possède un formulaire qui permet de renseigner les différentes information liée à l'activitité qui a nécéssitée une dépensetelle que la date, le label ou bien la désignation de la dépense, le montant de la dépense, il existe aussi un champ \textbf{Référence document ID} qui permet d'attribuer un identifiant unique à l'opération d'enregistrement des dépenses.
 
 \begin{figure}[h]
@@ -1728,7 +1622,7 @@ La figure ci-après donne un apperçue du rapport compte d'exploitation pour tou
 Dans le bas de page de la figure ci-haute est répertorié le total de charge, le total de profit ainsi que la résultat (si le résultat est négative il sera mis entre parenthèse).
 
 \newpage
-\section{Rapport des commandes d'achat}
+\section{Confirmation de commande d'achat}
 Le rapport de confirmation des commandes d'achat permet de visualiser l'historique de confirmation de commande d'achatdans le système. L'interface principale permettant de voire le rapport d'enregistrement des patients se présente de la manière suivante. 
 
 \begin{figure}[h]
@@ -1859,68 +1753,8 @@ En bas de page on retrouve les indicateurs sur le rapport d'exploitations glôba
 \newpage
 \section{Feuille de Balance}
 
-
 \newpage
 \section{Grand Livre}
-Le grand livre affiche tous les éléments contenu dans le grand livre, ces éléments proviennent préalablement du journal de saisie. L'interface principale du module Grand livre se présente de la manière suivante.
-
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=13cm]{pic/GrandLivre.png}
-\end{center}
-\caption{Interface principale du module Grand livre}
-\label{Interface principale du module Grand livre}
-\end{figure}
-
-Sur la première ligne on retrouve différents boutons dont chacun d'entre eux a un rôle spécifique.
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=14cm]{pic/BoutCongGrandLivre.png}
-\end{center}
-\caption{Différents boutons de configuration du Grand Livre}
-\label{Différents boutons de configuration du Grand Livre}
-\end{figure}
-
-\newpage
-
-Et en dessous de celui-ci on retrouve le tableau du Grand livre. Ce tableau est composé de plusieurs entêtes. 
-\subsection{Les entêtes du Grand Livre}
-Le premier élément du journal de saisie est l'\textbf{ID de l'Année Fiscale} qui représente l'année fiscale à laquelle se déroule le postage dans le grand livre,  \textbf{ID période} fait référence à la période de l'année fiscale, \textbf{\# transaction} est une concaténation entre les initiales du projet et le numéro de la transaction en cours, \textbf{Date} fait référence à la date de la transaction, ID Document, \textbf{Description} une concaténation entre divers élément de la transaction, \textbf{Numéro de compte} fait référence au numéro de compte qui est utilisé pour la transaction, \textbf{Equiv Debit} fait référence au montant qui est utilisé lorsqu'un compte est débité,\textbf{ Equiv Credit} fait référence au montant qui est utilisé lorsqu'un compte est crédité, \textbf{ID Deb/Cred Account} permet d'identifier un patient dans son groupe débiteur, \textbf{Type D/C }permet de savoir si la transaction est débiteur ou bien créditeur, \textbf{\# Fact/OA }est le ...
-
-\subsection{Les différents boutons de configuration}
-
-Le bouton \includegraphics[scale=0.7]{pic/GroupLigne.png}, permet la modification du mode d'affichage des données du Grand Livre,  on peut pour cela regrouper les données du grand livre par Transacrion, par compte mais aussi par période fiscale.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=4cm]{pic/MenuRegroupement.png}
-\end{center}
-\caption{Aperçue des différents options du bouton Groupement des lignes}
-\label{Aperçue des différents options du bouton Grouper des lignes}
-\end{figure}
-
-On peut aussi utiliser le bouton \textbf{Groupement des lignes} pour combiner tous les différents types de regroupement à la fois. Pour chaque types de regroupement un indicatif apparait à côte du bouton \textbf{Groupement des lignes} pour renseigner sur l'option ou bien les options de regroupement pris en compte, la figure ci dessous illustre un regroupement fait période fiscale premièrement et par compte. le petit bouton \includegraphics[scale=0.7]{pic/RedBack.png} permet d'annuler le dernier type de regroupement sélectionner. 
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=10cm]{pic/DetailleGroupeOption.png}
-\end{center}
-\caption{Aperçue de l'indicatif detaillant le type de regroupement}
-\label{Aperçue de l'indicatif detaillant le type de regroupement}
-\end{figure}
-
-
-
-Le bouton  \includegraphics[scale=0.7]{pic/ColumnsLedger.png} permet de determiner les entêtes qui seront visible ou bien invisible dans le tableau du Grand livre. les entêtes qui sont visible sont précédé \includegraphics[scale=0.7]{pic/Checked.png} par et ceux qui ne sont pas visible par \includegraphics[scale=0.7]{pic/Unchecked.png}, si l'on veut rendre une entête visible ou bien invisible il suffit de cocher sur la case à cocher qui le précede. La liste des différents entêtes du tableau du Grand livre apparaissent se présente de la manière suivante.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=4cm]{pic/ListeGrandLivre.png}
-\end{center}
-\caption{Aperçue du menu des entêtes du grand livre}
-\label{Aperçue du menu des entêtes du grand livre}
-\end{figure}
 
 \newpage
 \section{Historique des distributions aux patients}
@@ -1995,10 +1829,11 @@ Le rapport Mouvement des comptes donne un apperçue global des toutes les transa
 \label{Interface principale du module Mouvement des comptes}
 \end{figure}
 
-L'interface du rapport d'exploitation dispose des plusieurs outils permettant de visualiser les anciens résultats. En haut de page on retrouve la liste de choix des comptes qui permet de spécifier les comptes pour lequel on voudrait connaitre le mouvement
+L'interface du rapport de comptes dispose des plusieurs outils permettant de visualiser les anciens résultats. En haut de page on retrouve la liste de choix des comptes qui permet de spécifier les comptes pour lequel on voudrait connaitre le mouvement
 
 Il existe aussi deux zones \textbf{Date du} et \textbf{Date au} qui permet visualiser le rapport du mouvement des comptes en precisant une plage de valeur entre deux dates, il est possible aussi de spécifier l'origine de la transaction qu'il s'agisse soit du grand livre ou bien du posting journal ou bien de tous le deux en même temps. Une autre liste de choix permet de spécifier une monnaie pour la visualisation du mouvement de comptes.
 
+\newpage
 Le bouton générer permet l'affichage du tableau du rapport de mouvement de comptes. L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
 \includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png} permet de faire une nouvelle recherche.
 
@@ -2008,6 +1843,33 @@ Le bouton générer permet l'affichage du tableau du rapport de mouvement de com
 \end{center}
 \caption{Rapport Etat de toutes les transactions}
 \label{Rapport Etat de toutes les transactions}
+\end{figure}
+
+\newpage
+\section{Movements des Stock}
+Le rapport Mouvement des Stock donne un apperçue global des toutes les mouvements de stocks qui ont été realiser dans le système. Son interface principale se présente de la manière suivante. 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/RapMouvStock.png}
+\end{center}
+\caption{Interface principale du module Mouvement des stocks}
+\label{Interface principale du module Mouvement des stocks}
+\end{figure}
+
+L'interface du rapport des stocks dispose des plusieurs outils permettant de visualiser les anciens résultats. En haut de page on retrouve la liste de choix des différents dépôts se trouvant dans le système, il est necessaire de spécifier soit le dépôt source et le dépôt destination.
+
+Il existe aussi deux zones \textbf{Date du} et \textbf{Date au} qui permet visualiser le rapport du mouvement des comptes en precisant une plage de valeur entre deux dates.
+
+Le bouton générer permet l'affichage du tableau du rapport de mouvement de stocks. L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
+\includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png} permet de faire une nouvelle recherche.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/MouveAllStock.png}
+\end{center}
+\caption{Rapport mouvement des stocks de tous les dépôts vers tous les dépôts}
+\label{Rapport mouvement des stocks de tous les dépôts vers tous les dépôts}
 \end{figure}
 
 
@@ -2325,6 +2187,44 @@ En bas de page on retrouve les indicateurs permettant de connaitre le nombre des
 
 
 \newpage
+\section{Rapport du Payroll}
+Le rapport du payroll permet de visualiser toutes les données concernant la calcul du salaire des employés par rapport à toutes les périodes de paiements, l'interface principale de ce module se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/RapportPayrollDataBase.png}
+\end{center}
+\caption{Interface principale du module Rapport du payroll}
+\label{Interface principale du module Rapport du payroll}
+\end{figure}
+
+Ce rapport ne dispose que d'une seule zone, seule permettant deséléctioner un période de paiement dans la liste de choix
+Le bouton générer permet l'affichage du tableau du rapport du payroll. L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
+\includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png} permet de faire une nouvelle recherche.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=10cm]{pic/ResultatPayroll.png}
+\end{center}
+\caption{Aperçue du rapport payroll pour une période données}
+\label{Aperçue du rapport payroll pour une période données}
+\end{figure}
+
+Il est aussi possible de pouvoir visualiser la fiche de paie d'un agent, pour le faire il suffit de cliquer sur le bouton \includegraphics[scale=0.7]{pic/VuePaieSlip.png} qui permet une redirection vers la Feuille de paie d'un employé.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/FeuillePaie.png}
+\end{center}
+\caption{Apperçue d'un prototype de fiche de paie générer par le système}
+\label{Apperçue d'un prototype de fiche de paie générer par le système}
+\end{figure}
+\newpage
+
+
+
+\newpage
+
 \section{Situation de stock}
 le rapport de situation de stock permet de faire le contrôle de l'inventaire, le module de situation de stock utilise le système de revue continue ou permanente, aussi appelé système de commande à intervalle variable. dans ce système le niveau de stock est revisé sur une base permanente pour chague transaction effectuée sur le stock. Lorsque le stock atteint un niveau déterminé pour le réapprovisionnement, une commande doit être faite. Ce système est basé sur les niveaux de stock plutôt que sur les intervalles de temps.
 
@@ -2745,7 +2645,7 @@ Pour valider une commande d'achat il suffit de cliquer sur le bouton \includegra
 \label{Apperçue du processus de validation d'une commande d'achat direct}
 \end{figure} 
 
-
+\newpage
 \newpage
 \section{Autorisation Commande Achat}
 Le module Autorisation de commande d'achat permet la validation d'une commande d'achat permet l'autorisation de faire un décaissement des fonds dans le cas d'une commande d'achat indirecte et d'une transaction banquaire dans pour les commandes directes. L'interface principale de ce module se présente de la manière suivante.
@@ -2777,8 +2677,6 @@ Pour autoriser une commande d'achat il suffit de cliquer sur le bouton \includeg
 \caption{Apperçue du processus d'autorisation d'une commande d'achat direct}
 \label{Apperçue du processus d'autorisation d'une commande d'achat direct}
 \end{figure} 
-
-
 
 \newpage
 \section{Gestion de stock}
@@ -3103,7 +3001,7 @@ Voici un apperçue d'une interface de mouvement de stock concernant deux produit
 
 \newpage
 \subsection{Entrer donation}
-Le module entrer donantion permet de faire la Gestion de Dons en médicaments ou bien en produits pharmaceutiques, l'interface principale du module se présente de la manière.
+Le module entrer donation permet de faire la Gestion de Dons en médicaments ou bien en produits pharmaceutiques, l'interface principale du module se présente de la manière.
 
 \begin{figure}[h]
 \begin{center}
@@ -3163,6 +3061,42 @@ Une fois que les éléments rélative à l'approvisionement sont renseignés, il
 \caption{Apperçue du bon d'entrée d'une donation}
 \label{Apperçue du bon d'entrée d'une donation}
 \end{figure}
+
+
+\newpage
+\subsection{Stock Integration}
+Le module Stock Integration permet de faire directement l'integration du stock dans un dépôt, l'interface principale du module se présente de la manière.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/IngraStock.png}
+\end{center}
+\caption{Interface principale du module Stock Integration}
+\label{Interface principale du module Stock Integration}
+\end{figure}
+
+En bas de page existe une zone permettant de choisir les produits qui feront partie d'une commande d'achat comme le montre la figure suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/MenuIntegrationStock.png}
+\end{center}
+\caption{Apperçue de la zone permettant de choisir les produits faisant partie de l'integration}
+\label{Apperçue de la zone permettant de choisir les produits faisant partie de l'integration}
+\end{figure} 
+
+Pour pouvoir chercher un produit il faudrai le faire dans \includegraphics[scale=0.4]{pic/SearchInventory.png} la zone qui fonctionne comme un filtre, ensuite preciser le numéro de lot, la date d'expiration, la quantité, le prix d'achat. Si l'on veux ajouter un autre produit, il suffit de cliquer sur le bouton \includegraphics[scale=0.7]{pic/StockItem.png}.
+
+Une fois que la sélection les produits est effectuée le bouton \includegraphics[scale=0.7]{pic/ApercIntegration.png} permet de visualiser les informations concernant l'integration en stock en donnant soit la possibilité de pour suivre l'opération ou bien de l'interrompre comme le montre claire la figure ci-après.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/ValidationIntegration.png}
+\end{center}
+\caption{Apperçue de la zone permettant la visualisation d'une opération d'integration}
+\label{Apperçue de la zone permettant la visualisation d'une opération d'integration}
+\end{figure} 
+
 
 \newpage
 \section{Confirmation des Commande d'achats}
@@ -3472,6 +3406,567 @@ Le module Comptabilité est composé des sous modules qui permettent d'administr
 \label{Arborescence du module Comptabilité}
 \end{figure}
 
+\newpage
+\section{Ajout des transactions}
+
+Le module gestion des transactions permet d'enregistrer directement un transaction dans le journal de saisie sans passer par les autres interfaces, ce module dispose d'une interface qui permet soit l'enregistrement de la prise en charge d'un patient par un employé ainsi que le remboursement du paiement d'une facture en cas de non consommation du service.
+
+
+Voici l'interface principale du module gestion des transactions se présente de la manière suivante. 
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/AddTransaction.png}
+\end{center}
+\caption{Interface du module gestion des transactions}
+\label{Interface du module gestion des transactions}
+\end{figure}
+
+Lors de l'opération d'ajout de transaction il est nécessaire de pouvoir fournir une description qui caracterise la transaction, en suite il faudrait preciser la date ainsi que la monnaie de la transaction, s'il est nécessaire on peut aussi ajouter un commentaire en cliquant sur le bouton \includegraphics[scale=0.7]{pic/AddComment.png} pour afficher la zone de saisie relative à cette éffet.
+
+Il existe aussi le bouton \includegraphics[scale=0.7]{pic/AddRefDoc.png} est utilisé si l'on a besoin de spécifier la référence du document qui intervient dans la transaction. 
+
+La zone réserver aux comptes se présente de la manière suivante
+\\
+\includegraphics[scale=0.7]{pic/SelectCompte.png} cette inferface permet de choisir directement un compte dans la liste des comptes existant dans le plan comptable. il est aussi possible de rechercher un créditeur ou bien un débiteur pour cela il suffit de cliquer sur l'icône \includegraphics[scale=0.7]{pic/SelectCompteIcone.png} pour que la zone de saisie se modifier de la manière suivante \includegraphics[scale=0.7]{pic/SelectDebCred.png}, à l'état initial la zone de saisie ne permet que la recherche de débiteur pour rechercher un créditeur il suffit de cliquer sur l'icône \includegraphics[scale=0.7]{pic/DebToCred.png}, pour que la liste des options puissent apparaitre et permettre la possibilité de basculer la zone de saisie de créditeur à débiteur, Il existe aussi le bouton \includegraphics[scale=0.7]{pic/AjouterLigne.png}, qui permet d'ajouter autant de ligne que désiré.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/SelectCredit.png}
+\end{center}
+\caption{Aperçue du processus de bascule entre débiteur et créditeur}
+\label{Aperçue du processus de bascule entre débiteur et créditeur}
+\end{figure}
+
+Après avoir sélectionné soit un compte, un débiteur ou bien un créditeur, il existe deux zones rélatives aux débit ou bien au crédit. après avoir renseigner tous ses éléments et si la transaction est balancé, on peut enregistrer cette transaction dans le Journal de saisie.
+
+Pour l'illustration de ce module nous allons illustrer deux cas le prémier concerne l'annulation du paiement d'un service pour une ou une autre raison et le second concerne la prise en charge d'un patient par un employé.
+
+\subsection{Annulation de paiement}
+Pour annuler le paiement d'un patient il suffit de se rendre premièrement dans le menu \textbf{Historique de vente pour annuler la vente} mais aussi recopier la référence du paiement qui se retrouver à l'extrème droite du facture, ce numéro de référence sera utiliser lors de l'ajout de transaction.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/RefDocument.png}
+\end{center}
+\caption{Aperçue d'une facture en attente de remboursement}
+\label{Aperçue d'une facture en attente de remboursement}
+\end{figure}
+\newpage
+Pour l'opération de remboursement la connaissance de la somme payer par le patient est importance voici l'interface illustrant le remboursement.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/AjouTrans.png}
+\end{center}
+\caption{Aperçue du processus de remboursement}
+\label{Aperçue du processus de remboursement}
+\end{figure}
+
+Pour rembourser une facture il faudrait proceder de la manière suivante. choisir le compte liée à la caisse qui a été utilisée lors du paiement de la facture dans la zone reserver aux crédit saisir le montant payer et en ce qui concerne le patient il faudrait le rechercher dans la liste de débiteur en suite dans la zone reserver aux débit mettre le montant de ce qu'il a payé.
+Une fois qu'il y'a balance, il suffit de cliquer sur soumettre ajouter la transaction.
+\newpage
+\subsection{Pour la prise en charge d'un patient}
+Pour prendre en charge la consommation d'un patient il suffit de se rendre premièrement dans le menu \textbf{Historique de vente pour recopier la référence du paiement} qui se retrouver à l'extrème droite du facture, ce numéro de référence sera utiliser lors de la prise en charge.
+
+Pour l'opération de la prise en charge aussi la connaissance de la somme payer par le patient est importance voici l'interface illustrant la prise en charge.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/ATPriseEnCharge.png}
+\end{center}
+\caption{Aperçue du processus de prise en charge}
+\label{Aperçue du processus de prise en charge}
+\end{figure}
+
+Pour prendre en charge la consommation d'un patient; il faudrait proceder de la manière suivante. choisir le patient dans la liste de débiteur et en suite saisir dans la colonne de crédit le montant de ce qu'il doit et dans la seconde ligne rechercher l'employé dans la liste des créditeurs saisir le montant de la prise en charge dans la zone débit.
+Une fois qu'il y'a balance, il suffit de cliquer sur soumettre ajouter la transaction.
+
+\newpage
+\section{Année Fiscale}
+La figure ci-dessous représente l'interface principale permettant la Gestion des années fiscales. 
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/AnneeFiscal.png}
+\end{center}
+\caption{Interface permettant de gérer les années fiscals}
+\label{Interface permettant de gérer les années fiscals}
+\end{figure}
+
+\newpage
+\subsection{Création de l'année fiscale}
+Lorsque l'utilisateur click sur le bouton \includegraphics[scale=0.7]{pic/CreeAnnFisc.png} Le formulaire ci-après apparait.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/FormCreationAnnFisc.png}
+\end{center}
+\caption{Formulaire d'ajouter une année fiscale}
+\label{Formulaire d'ajouter une année fiscale}
+\end{figure}
+\begin{itemize}
+\item \textbf{Description}: permet de décrire l'année fiscale.
+\item \textbf{Début Mois}: permet de préciser le premier mois de l'année fiscale
+\end{itemize}
+\textbf{Il existe aussi deux boutons radio une année et Spécifier }: si l'on clique sur le bouton radio \textbf{une année}, l'année fiscale commencera à partir de la période préciser et couvrira une période de douze mois mais si l'on clique sur le bouton \textbf{spécifier} dans ce cas l'utilisateur devra préciser le champ \textbf{Fin Mois} qui marquera la fin de l'année fiscale.
+
+Le champ \textbf{Année Fiscale précédent} n'apparait que s'il existe au moins une année fiscale déjà enregistrer dans le système. 
+
+Après avoir renseigné tous ce champ, un clic sur le bouton \textbf{Enregistrer} redirige vers la deuxième étape de la création d'année fiscale qu'au cas ou il existait une année fiscale précédente à celle qui est en train d'être créer. Cette interface permet juste la confirmation de la fermeture de l'année fiscale précédente.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/CloseFiscYear.png}
+\end{center}
+\caption{Aperçue de l'interface permettant la fermeture de l'année fiscale précédente}
+\label{Aperçue de l'interface permettant la fermeture de l'année fiscale précédente}
+\end{figure}
+
+La troisième étape de la création d'une année fiscale n'est juste qu'une interface de confirmation de la fermeture de l'année fiscale, cette troisième étape devient la deuxième étape de la création d'une année fiscale dans le cas ou il n'existait pas encore d'autres années fiscale.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/ConfirSucces.png}
+\end{center}
+\caption{Message de confirmation de la création de la nouvelle année fiscale}
+\label{Message de confirmation de la création de la nouvelle année fiscale}
+\end{figure}
+
+\newpage
+
+\subsection{Liste des années fiscale}
+Voici comment se présente la liste des années fiscale
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=9cm]{pic/ListeAnnFisc.png}
+\end{center}
+\caption{Aperçue de la liste des années fiscales}
+\label{Aperçue de la liste des années fiscaux}
+\end{figure}
+
+Pour pouvoir visualiser les détailles d'une année fiscale il suffit de cliquer sur cette année fiscale dans la liste des années fiscaux.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/FormAddFiscYear.png}
+\end{center}
+\caption{Interface principale de management d'une année fiscal}
+\label{Interface principale de management d'une année fiscal}
+\end{figure}
+
+Dans la partie gauche de l'image ci-haut on retrouve la liste des années fiscales, on peut aussi , modifier la designation d'une année fiscale, visualiser les différentes périodes qui constituent cette année fiscale. 
+
+\newpage
+\section{Centre de coûts}
+Le module gestion de centre de profits permet d'adminstrer les centres de profits. Ce module permet la création des centres de coûts, l'etablissement des comptes de versement à un centre de coût ainsi que l'assignation de centre de coût secondaire à celle dite primaire.
+
+Voici le menu gérérale du module gestion de centre de coûts.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/GestCentreCout.png}
+\end{center}
+\caption{Menu gérérale du module gestion de centre de coûts}
+\label{Menu gérérale du module gestion de centre de coûts}
+\end{figure}
+
+\subsection{Centre de coûts}
+Le sous module gestion de coûts est un module qui a été conçu pour permettre l'administration de centres de coûts existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'un centre de coûts ainsi que sa suppression.
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/CostCenter.png}
+\end{center}
+\caption{Interface principale de la gestion de centre de profits}
+\label{Interface principale de la gestion de centre de profits}
+\end{figure}
+
+Dans la figure ci-haute on retrouve dans la partie gauche la liste des différents centre de coûts enregistrés dans le système, au dessus de ce tableau existe le bouton \includegraphics[scale=1]{pic/NewCostCenter.png} qui permet l'ajout de nouveau centre de coûts dans le système, le formulaire permettant d'enregistrer un nouveau centre de coûts se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/FormAddCostCenter.png}
+\end{center}
+\caption{Formulaire permettant l'enregistrement de centre de coûts}
+\label{Formulaire permettant l'enregistrement de centre de coûts}
+\end{figure} 
+
+Le formulaire permettant l'enregistrement  de centre de coûts est très simple, il ne contient que une zone de saisie permettant de nommer le centre de coûts, une case à cocher permettant renseigner si le centre de coût est principal ou bien secondaire, il existe aussi une zone de saisie permet de faire des annotations au centre de coût, l'enregistrement est effective que si l'on clique sur le bouton \textbf{Sauver}. 
+\newpage
+Les tableaux réprésentant les centre des coûts enregistrés donne la possibilité de pouvoir mettre à jour les informations rélative à un centre de coûts, dans la zone action de ce tableau on retrouve deux icônes, l'icône \includegraphics[scale=0.7]{pic/EditBlack.png} qui permet de mettre à jour un centre de coûts et \includegraphics[scale=0.7]{pic/RecycleRed.png} permet de supprimer un centre de coûts dans le système.
+Voici un apperçu du formulaire permettant la mise à jour des informations d'un centre de coûts, la mise à jour est effective que si l'on modifier les informations dont on a besoin en validant grace au bouton Sauver. 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/ModCostCenter.png}
+\end{center}
+\caption{Formulaire permettant de mettre à jour un centre de coûts}
+\label{Formulaire permettant de mettre à jour un centre de coûts}
+\end{figure} 
+\newpage
+\subsection{Versement}
+Le module versement permet d'associer des comptes à un centre de coûts. L'interface principale de ce module donne la possibilité de sélectionner premièrement un centre de coût et en suite choisir les comptes qui seront associés à ce centre de coût. Voici comment se présente l'interface principale de ce module.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/VersmtCompte.png}
+\end{center}
+\caption{Interface principale de versement de comptes}
+\label{Interface principale de versement de comptes}
+\end{figure} 
+
+L'utilisation de ce module se présente de la manière suivante, prémièrement on choisi dans la liste des centres de coûts le centre pour lequel on fait associer des comptes, dans la zone.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/SelectCostCenter.png}
+\end{center}
+\caption{Interface permettant la sélection d'un centre de coûts}
+\label{Interface permettant la sélection d'un centre de coûts}
+\end{figure} 
+
+Une fois que le centre de coût est sélectionné, dans la zone comptes disponibles se trouvent la liste des comptes, il suffit de cocher les comptes dont il faut et en suite cliquer sur le bouton \includegraphics[scale=0.7]{pic/VerserCompte.png} pour que les comptes choisi puissent apparaitre dans la zone comptes associé à ... qui se trouve dans la partie droit de la zone de comptes disponibles.
+
+Une fois qu'un centre de coûts dispose d'un ensemble de comptes associé, la zone qui se trouve à droite renseigne directement les comptes qui sont associés aux centres de coût choisi. cette interface donne aussi la possibilité de retirer certain compte dans la liste de compte associé à un centre de coût en le cochant et en cliquant sur le bouton \textbf{Retirer} comme le montre la figure suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/CompteAssocie.png}
+\end{center}
+\caption{Interface permettant le retrait des comptes associés}
+\label{Interface permettant le retrait des comptes associés}
+\end{figure}
+
+Comme ce menu donne la possibilité de retirer des comptes on peut aussi ajouter des comptes à un centre de coûts qui en disposait déjà en procedant par la sélection des comptes désirés et en cliquant sur le bouton \includegraphics[scale=0.7]{pic/VerserCompte.png}.
+\newpage
+\subsection{Assignation}
+Le module concernant l'assignation permet de faire l'assignation entre un centre de coût secondaire à des centres des coûts principale. l'interface principale de ce module se présente de la manière suivante. 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/AssignationInterface.png}
+\end{center}
+\caption{Interface principale du modules assignations}
+\label{Interface principale du modules assignations}
+\end{figure}
+
+Pour utiliser ce module il faut premièrement sélectionner un centre de coûts secondaire dans la liste une fois que cela est fait les détailles concernant ce centre de côuts seront affichés dans la partie qui est en dessous et à gauche de la zone permettant de sélectionner un centre de coûts secondaire. une fois que cela est fait à droite de la zone de détailles ont retrouve le centre de coûts principaux existant dans le système. pour proceder à l'assignation il suffit de proceder par choisir les centres des coûts auxquelles le centre de coûts sécondaire sera affiliée, une fois que cela est fait, il suffit de cliquer sur le bouton \textbf{suivant} pour pouvoir être dirigé vers une autre interface permettant de spécifier dans quelle mésure se faira l'assignation.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/AssiGCentCout.png}
+\end{center}
+\caption{Apperçu du processus d'affection d'un centre auxillaire à des centre principaux}
+\label{Apperçu du processus d'affection d'un centre auxillaire à des centre principaux}
+\end{figure}  
+
+L'interface permettant de spécifier les modalités d'affection se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/AssPCCenter.png}
+\end{center}
+\caption{Apperçu du formulaire permettant de spécifier les modalités d'affection}
+\label{Apperçu du formulaire permettant de spécifier les modalités d'affection}
+\end{figure}   
+
+\newpage
+\section{Centre de profits}
+Le module gestion de centre de profits permet d'adminstrer les centres des profits. Ce module permet la création des centres profits, l'etablissement des comptes associés à un centre de profits.
+
+Voici le menu gérérale du module gestion de centre des profits.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/MenuProfitCenter.png}
+\end{center}
+\caption{Menu gérérale du module gestion de centre de profits}
+\label{Menu gérérale du module gestion de centre de profits}
+\end{figure}
+
+\subsection{Centre de profits}
+Le sous module gestion de profits est un module qui a été conçu pour permettre l'administration de centres de profits existantes au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'un centre de profits ainsi que la suppression d'un centre de profits.
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/CentreProfitPage.png}
+\end{center}
+\caption{Interface principale de la gestion de centre de profits}
+\label{Interface principale de la gestion de centre de profits}
+\end{figure}
+
+Dans la figure ci-haute on retrouve dans la partie gauche la liste des différents centre de profits enregistrées dans le système, au dessus de ce tableau existe le bouton \includegraphics[scale=1]{pic/NewCostCenter.png} qui permet l'ajout de nouveau centre de profits dans le système, le formulaire permettant d'enregistrer un nouveau centre de profit se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=10cm]{pic/SaveProfitCenter.png}
+\end{center}
+\caption{Formulaire permettant l'ajout de centre de profits dans le système}
+\label{Formulaire permettant l'ajout de centre de profits dans le système}
+\end{figure}
+
+Le formulaire permettant l'enregistrement de centre de profits est très simple, il ne contient que une zone de saisie permettant de nommer le centre de profits ainsi que la zone permettant de faire des annotations au centre de profits, l'enregistrement est effective que si l'on clique sur le bouton \textbf{Sauver}. 
+\newpage
+Les tableaux réprésentant les centre de profits enregistrés donne la possibilité de pouvoir mettre à jour les informations rélative à un centre de profits, dans la zone action de ce tableau on retrouve deux icônes, l'icône \includegraphics[scale=0.7]{pic/EditBlack.png} qui permet de mettre à jour un centre de profits et \includegraphics[scale=0.7]{pic/RecycleRed.png} permet de supprimer un centre de profits dans le système.
+Voici un apperçu du formulaire permettant la mise à jour des informations d'un centre de profits, la mise à jour est effective que si l'on modifier les informations dont on a besoin en validant grace au bouton Sauver. 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=10cm]{pic/ModificationProfit.png}
+\end{center}
+\caption{Formulaire permettant de mettre à jour un centre de profits}
+\label{Formulaire permettant de mettre à jour un centre de profits}
+\end{figure} 
+\newpage
+\subsection{Versement}
+Le module versement permet d'associer des comptes à un centre de profits. L'interface principale de ce module donne la possibilité de sélectionner premièrement un centre de profits et en suite choisir les comptes qui seront associés à ce centre de profits. Voici comment se présente l'interface principale de ce module.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/VerserCompteProfit.png}
+\end{center}
+\caption{Interface principale de versement de comptes}
+\label{Interface principale de versement de comptes}
+\end{figure} 
+
+L'utilisation de ce module se présente de la manière suivante, prémièrement on choisi dans la liste des centres de profits le centre pour lequel on fait associer des comptes, dans la zone.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/SelectCentreProfit.png}
+\end{center}
+\caption{Interface permettant la sélection d'un centre de profits}
+\label{Interface permettant la sélection d'un centre de profits}
+\end{figure} 
+
+Une fois que le centre de profits est sélectionné, dans la zone comptes disponibles se trouvent la liste des comptes, il suffit de cocher les comptes dont il faut et en suite cliquer sur le bouton \includegraphics[scale=0.7]{pic/VerserCompte.png} pour que les comptes choisi puissent apparaitre dans la zone comptes associé à ... qui se trouve dans la partie droit de la zone de comptes disponibles.
+
+Une fois qu'un centre de profits dispose d'un ensemble de comptes associé, la zone qui se trouve à droite renseigne directement les comptes qui sont associés aux centres de profits choisi. cette interface donne aussi la possibilité de retirer certain compte dans la liste de compte associé à un centre de coût en le cochant et en cliquant sur le bouton \textbf{Retirer} comme le montre la figure suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/CompteAssocie.png}
+\end{center}
+\caption{Interface permettant le retrait des comptes associés}
+\label{Interface permettant le retrait des comptes associés}
+\end{figure}
+
+Comme ce menu donne la possibilité de retirer des comptes on peut aussi ajouter des comptes à un centre de profits qui en disposait déjà en procedant par la sélection des comptes désirés et en cliquant sur le bouton \includegraphics[scale=0.7]{pic/VerserCompte.png}.
+
+
+
+\newpage
+\section{Comptes}
+La figure ci-dessous représente l'interface principale permettant d'avoir des informations sur des comptes, de visualisation  leurs relations ainsi que la possibilité d'ajout d'un compte.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=13cm]{pic/GestionCompte.png}
+\end{center}
+\caption{Interface principale du module Gestion des comptes}
+\label{Interface principale du module Gestion des comptes}
+\end{figure}
+
+\subsection{Ajout d'un compte}
+Lorsque l'utilisateur click sur le bouton \includegraphics[scale=1]{pic/AjouterCompte.png} Le formulaire ci-après apparait.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=4.5cm]{pic/FormAddCompte.png}
+\end{center}
+\caption{Formulaire permettant d'ajouter un compte}
+\label{Formulaire permettant d'ajouter un compte}
+\end{figure}
+
+\begin{itemize}
+\item \textbf{Le libelle de compte}: permet de nomme un compte \\
+\item \textbf{Le type de Compte}: permet de dire si un compte est du type incom/expense, balance, title.\\
+\item \textbf{Numero de compte}: permet de donner un numéro à un compte \\
+\item \textbf{Groupe de comptes (Comptes titres)}: permet d'affilier un compte à un groupe de compte.\\
+\end{itemize}
+
+Si le compte est du type \textbf{Title}, un groupe de bouton radio apparait pour permettre de sélectionner dans quelle categorie des titres se trouve le compte, un compte de type title peut être soit \textbf{un actif}, \textbf{un passif} ou bien dans une autre catégorie.
+
+Après avoir renseigner tous ce champ, un clic sur le bouton soumettre permet d'ajouter un compte dans la liste des comptes.
+ 
+\subsection{Création d'un plan comptable}
+Grace au bouton \includegraphics[scale=0.7]{pic/CreePlanCompt.png}, l'utilisateur peut créer un plan comptable pour l'entreprise ou bien pour l'organisation. \\
+
+Après la création du plan comptable, ainsi que l'ajout de compte, le plan comptable apparait sous forme d'un tableau, dont les principaux entêtes sont :
+\begin{itemize}
+\item Texte
+\item No
+\item Type
+\item Fixe
+\item Editer
+\item Effacer
+\end{itemize}
+
+Dans l'entête Texte on retrouve les noms des différents comptes ainsi que ceux de groupe de comptes, dans l'entête No on retrouve le différent numéro des comptes, l'entête Type permet de savoir si le compte est un Income /expence, Balance ou bien un titre et l'entête effacer permet de supprimé un compte.  Il y a aussi le bouton \includegraphics[scale=0.7]{pic/GenereRapportCompt.png} qui permet d'afficher une version imprimable du plan comptable.
+
+Comme nous le montre l'image ci-après, le plan comptable est affiché par rapport à la date du jour.\\
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/PlanComptable.png}
+\end{center}
+\caption{Aperçue du plan Comptable}
+\label{Aperçue du plan Comptable}
+\end{figure}
+
+Dans le coin supérieur droit existe le bouton \textbf{imprimer} qui permet d'imprimer le plan comptable.
+
+\newpage
+\section{Comptes et devises des caisses}
+Le sous modules Comptes et devises des caisses permet d'administrer les différents types de caisses existant au sein de l'organisation en leurs attribuant les différents types de compte rélative à chaque type des transactions.
+
+Son interface principale se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/ComptDevise.png}
+\end{center}
+\caption{Interface principale du module Cash Box}
+\label{Interface principale du module Cash Box}
+\end{figure} 
+
+Dans la figure ci-haut on retrouve dans la partie gauche la liste des differents paramètrages des Cash box ansi qu'à leurs différents types de comptes enregistrés, à l'extrème droite, au dessus de ce tableau il existe le bouton \includegraphics[scale=1]{pic/AddNewStore.png} qui permet d'ajouter une nouvelle type de configuration dans le système dans le système.
+
+Le formulaire permettant l'ajouter une configuration se présente de la manière suivante.
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=6cm]{pic/AddConfigCash.png}
+\end{center}
+\caption{Formulaire d'enregistrement de configuration des CashBox des comptes ainsi que des devises}
+\label{Formulaire d'enregistrement de configuration des CashBox des comptes ainsi que des devises}
+\end{figure} 
+
+Une fois que tous ses éléments sont renseignés, il suffit de cliquer sur le bouton Soumettre pour enregistrer une nouvelle configuration, qui s'ajoutera automatiquement dans la liste des configurations  existantes. 
+
+Les tableaux réprésentant les Cash box existantes donne la possibilité de pouvoir mettre à jour les informations rélative à chaque Cash Box. Le tableau comportant la liste des configurations existantes comprend 8 rubriques, le ID, Le CashBox ou bien la Caisse pu bien même la banque, La monnaie, Le numéro de compte du CashBox par rapport à chaque monnaie, le compte d Gain d'échange, le compte de perte d'échage, ainsi le numéro de compte utilisé pour toutes les opérations de virement et la dernière  zone possède l'icône \includegraphics[scale=0.7]{pic/EditUser.png}, qui permet de modifier les méta données d'une configuration des comptes, si l'on clique sur ce dernier un formulaire s'affiche dans la partie droite de l'ecran avec les informations rélatives à chacune de configuration et donne la possibilité de pouvoir modifier si nécessaire et de valider les modifications grâce au bouton soumettre et le dernier icone \includegraphics[scale=0.7]{pic/DeleteWRed.png} permet de supprimer une Configuration dans la liste.
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/EditCashBox.png}
+\end{center}
+\caption{Apperçu du formulaire permettant la mise à jour des informations rélatives à une configuration}
+\label{Apperçu du formulaire permettant la mise à jour des informations rélatives à une configuration}
+\end{figure} 
+
+\newpage
+\section{Grand Livre}
+Le grand livre est composé de l’ensemble des comptes de l’entreprise qui figurent au journal. Il est utilisé en comptabilité pour l’ouverture et le suivi des comptes. Aucune forme particulière n’est requise pour la présentation du grand livre, voici un aperçu de l'interface principale du journal de saisie.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/RapportGL.png}
+\end{center}
+\caption{Aperçue du Grand Livre}
+\label{Aperçue du Grand Livre}
+\end{figure}
+
+Sur la première ligne on retrouve différents boutons dont chacun d'entre eux a un rôle spécifique.
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/GLBoutons.png}
+\end{center}
+\caption{Différents boutons de configuration du Grand livre}
+\label{Différents boutons de configuration du Grand livre}
+\end{figure}
+
+Et en dessous de celui-ci on retrouve le tableau du Grand livre. Ce tableau est composé de plusieurs entêtes. 
+\subsection{Les entêtes du Grand Livre}
+Le premier élément du journal de saisie est l'\textbf{ID}, cette ID permet d'identifier chaque Item du journal de saisie de façon unique, ensuite il y'a le \textbf{ID Année Fiscale} qui représente l'année fiscale à laquelle se déroule la transaction,  \textbf{ID période} fait référence à la période de l'année fiscale de la transaction, \textbf{\# transaction} est une concaténation entre les initiales du projet et le numéro de la transaction en cours, \textbf{Date} fait référence à la date de la transaction, \textbf{Description} est une concaténation entre le code de l'opération qui est en cours soit le PI pour (Paiement Invoice) ou bien le CP (Cashing Paiement) la date de la transaction ainsi que le nom de l'utilisateur, \textbf{Numéro de compte} fait référence au numéro de compte qui est utilisé pour l'item de la transaction, \textbf{Débit} fait référence au montant qui est utilisé lorsqu'un compte est débité,\textbf{Crédit} fait référence au montant qui est utilisé lorsqu'un compte est crédité, \textbf{AR/AP Account} permet d'identifier un patient dans son groupe débiteur, \textbf{Type D/C }permet de savoir si la transaction est débiteur ou bien créditeur, \textbf{\# Fact/OA }est le lien entre PI (Paiement Invoice) d'une transaction et son CP (Cashing Paiement), \textbf{Commentaire} fait référence au commentaire qui a été ajouter à une transaction.
+
+\subsection{Les différents boutons de configuration}
+
+Un clique sur le bouton 
+\includegraphics[scale=0.7]{pic/GroupeLignes.png}, modifie l'affichage des données Grand Livee.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=4cm]{pic/GrLigneAction.png}
+\end{center}
+\caption{Aperçue des différents options du bouton Groupement des lignes}
+\label{Aperçue des différents options du bouton Groupement des lignes}
+\end{figure}
+
+\newpage
+Lorsqu'on clique sur le bouton  \includegraphics[scale=0.7]{pic/ColumnFilter.png}  la liste des différents entêtes du tableau du Grand Livre apparaissent, il suffit que de cliquer sur l'un d'entre pour pouvoir soit l'afficher ou bien le cacher, grâce à une case à cocher qui précede chacun d'entre eux.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=4cm]{pic/ColumnGeneraLedger.png}
+\end{center}
+\caption{Aperçue des différents options d'affichage et du masquages des entêtes}
+\label{Aperçue des différents options d'affichage et du masquages des entêtes}
+\end{figure}
+
+\newpage
+Voici l'apperçue du Grand Journal avec seulement 5 entêtes sélectionnés et avec un groupement des transaction par transactions.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/GrandLivreParTransact.png}
+\end{center}
+\caption{Aperçue du grand livre avec un regroupement de lignes par transactions}
+\label{Aperçue du grand livre avec un regroupement de lignes par transactions}
+\end{figure}
+
+Dans la figure ci haute on se rend compte qu'il apparait un tout petit \includegraphics[scale=0.7]{pic/detailleRegroupement.png} indicateur qui permet de renseigner le type de regroupement utilisé, mais il est possible de combiner tous les autres type de regroupement sous forme de chaine, le petit bouton \includegraphics[scale=0.7]{pic/AnnulerRegroupement.png} permet d'annuler un regroupement.
+
+
+\newpage
+\section{Groupe Créditeur}
+Ce module permet de faire la gestion des groupes créditeurs, l'interface principale de ce module se présente de la manière que voici.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/AdminGroupCredit.png}
+\end{center}
+\caption{Interface principale permettant d'administrer le groupe créditeur}
+\label{Interface principale permettant d'administrer le groupe créditeur}
+\end{figure}
+
+
+Le bouton \includegraphics[scale=0.7]{pic/NewGroupCredit.png} permet d'ajouter un nouveau groupe créditeur dans ladite liste.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/AddNewGroupCred.png}
+\end{center}
+\caption{Ajouter un nouveau groupe créditeur}
+\label{Ajouter un nouveau groupe créditeur}
+\end{figure}
+
+Le formulaire ci-haut apparait lorsqu'un utilisateur clique sur le bouton \textbf{Nouveau groupe Créditeur}. Ce formulaire possède deux champs, le premier \textbf{Nom du groupe} permet de spécifier le nom du groupe et \textbf{Numéro de compte}  le numéro de compte permet de choisir dans la liste de compte, celui correspondant au groupe créditeur.
+L'enregistrement est effectif seulement si l'utilisateur clique sur le bouton Sauver changement.
+La liste des groupes créditeurs apparait sous forme de tableau. Ce tableau possède quatre rubriques. Le premier \textbf{Nom du groupe} renseigne sur le nom du groupe, le second renseigne sur le numéro de compte, en troisième lieu il y'a une rubrique qui est représenté par l'icône \includegraphics[scale=0.7]{pic/Locked.png}  qui permet de verrouiller mais aussi de déverrouillé un groupe créditeur à l'aide de case à coché et denier lieu il y'a \textbf{Editer} qui contient l'icône  \includegraphics[scale=0.7]{pic/EditUser.png} permet de modifier les informations sur un groupe créditeur.
+
+\newpage
+\section{Groupe Débiteur}
+Ce module permet de faire l'administration de groupe débiteur, l'interface principale de ce module se présente de la manière que voici.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/AdminGroupDebit.png}
+\end{center}
+\caption{Interface principale permettant d'administrer le groupe débiteur}
+\label{Interface principale permettant d'administrer le groupe débiteur}
+\end{figure}
+
+Le bouton \includegraphics[scale=0.7]{pic/NewGroupDebit.png} permet d'ajouter un nouveau groupe Débiteur dans ladite liste.
+\newpage
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=9cm]{pic/FormAddGroupDebiteur.png}
+\end{center}
+\caption{Formulaire permettant d'ajouter un groupe débiteur}
+\label{Formulaire permettant d'ajouter un groupe débiteur}
+\end{figure}
+
+Le formulaire ci-haut apparait lorsqu'un utilisateur clique sur le bouton \textbf{Nouveau groupe Débiteur}. Ce formulaire possède dix champs, le premier \textbf{Nom} permet de spécifier le nom du groupe débiteur, ensuite il existe une case à coché convention qui permet de déterminer si le groupe débiteur est une convention ou nom, \textbf{Compte }permet d'attribuer un compte, \textbf{Liste de prix}  permet de spécifier pour quelle liste de prix fait référence un groupe débiteur, \textbf{Localisation} permet de spécifier l'emplacement géographique relative à un groupe de compte, \textbf{Paiement} permet de spécifier le type de paiement relative à un groupe,\textbf{ Phone}, \textbf{Email}, \textbf{Crédit Max }et \textbf{Note} sont d'autres informations qu'on peut attribuer à un groupe débiteur.
+L'enregistrement est effectif seulement si l'utilisateur clique sur le bouton Sauver changement.
+La liste des groupes débiteurs apparait sous forme de tableau. Ce tableau possède cinq rubriques, il y'a Nom, Compte, Convention qui est soit vide ou bien représenté par l'icône \includegraphics[scale=0.7]{pic/IconOk.png}  seulement si le groupe débiteur appartient à un groupe de conventionné,  il y'a aussi l'icône \includegraphics[scale=0.7]{pic/Locked.png}  qui permet de verrouiller mais aussi de déverrouillé un groupe débiteur à l'aide de case à coché et denier lieu il y'a \textbf{Editer} qui contient l'icône \includegraphics[scale=0.7]{pic/EditUser.png}   permet de modifier les informations sur un groupe débiteur.
+
+\newpage
 \section{Journal de saisie}
 Le journal de saisie  permet répertorie toutes les opérations qui se font entre la facturation et la caisse, voici un aperçu de l'interface principale du journal de saisie.
 
@@ -3621,276 +4116,6 @@ Si l'on veut masquer une colonne de ce tableau il suffit de décocher la case qu
 \end{figure}
 
 Dans la figure ci-haute on peut voir le journal de saisie avec un plus grand nombre des colonnes qui sont à présent masquée mais aussi voir dans la boite de dialogue du bouton configurer les colonnes qui sont à présent décocher.
-
-\newpage
-\section{Centre de coûts}
-Le module gestion de centre de profits permet d'adminstrer les centres de profits. Ce module permet la création des centres de coûts, l'etablissement des comptes de versement à un centre de coût ainsi que l'assignation de centre de coût secondaire à celle dite primaire.
-
-Voici le menu gérérale du module gestion de centre de coûts.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=14cm]{pic/GestCentreCout.png}
-\end{center}
-\caption{Menu gérérale du module gestion de centre de coûts}
-\label{Menu gérérale du module gestion de centre de coûts}
-\end{figure}
-
-\subsection{Centre de coûts}
-Le sous module gestion de coûts est un module qui a été conçu pour permettre l'administration de centres de coûts existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'un centre de coûts ainsi que sa suppression.
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=14cm]{pic/CostCenter.png}
-\end{center}
-\caption{Interface principale de la gestion de centre de profits}
-\label{Interface principale de la gestion de centre de profits}
-\end{figure}
-
-Dans la figure ci-haute on retrouve dans la partie gauche la liste des différents centre de coûts enregistrés dans le système, au dessus de ce tableau existe le bouton \includegraphics[scale=1]{pic/NewCostCenter.png} qui permet l'ajout de nouveau centre de coûts dans le système, le formulaire permettant d'enregistrer un nouveau centre de coûts se présente de la manière suivante.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=8cm]{pic/FormAddCostCenter.png}
-\end{center}
-\caption{Formulaire permettant l'enregistrement de centre de coûts}
-\label{Formulaire permettant l'enregistrement de centre de coûts}
-\end{figure} 
-
-Le formulaire permettant l'enregistrement  de centre de coûts est très simple, il ne contient que une zone de saisie permettant de nommer le centre de coûts, une case à cocher permettant renseigner si le centre de coût est principal ou bien secondaire, il existe aussi une zone de saisie permet de faire des annotations au centre de coût, l'enregistrement est effective que si l'on clique sur le bouton \textbf{Sauver}. 
-\newpage
-Les tableaux réprésentant les centre des coûts enregistrés donne la possibilité de pouvoir mettre à jour les informations rélative à un centre de coûts, dans la zone action de ce tableau on retrouve deux icônes, l'icône \includegraphics[scale=0.7]{pic/EditBlack.png} qui permet de mettre à jour un centre de coûts et \includegraphics[scale=0.7]{pic/RecycleRed.png} permet de supprimer un centre de coûts dans le système.
-Voici un apperçu du formulaire permettant la mise à jour des informations d'un centre de coûts, la mise à jour est effective que si l'on modifier les informations dont on a besoin en validant grace au bouton Sauver. 
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=8cm]{pic/ModCostCenter.png}
-\end{center}
-\caption{Formulaire permettant de mettre à jour un centre de coûts}
-\label{Formulaire permettant de mettre à jour un centre de coûts}
-\end{figure} 
-\newpage
-\subsection{Versement}
-Le module versement permet d'associer des comptes à un centre de coûts. L'interface principale de ce module donne la possibilité de sélectionner premièrement un centre de coût et en suite choisir les comptes qui seront associés à ce centre de coût. Voici comment se présente l'interface principale de ce module.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=12cm]{pic/VersmtCompte.png}
-\end{center}
-\caption{Interface principale de versement de comptes}
-\label{Interface principale de versement de comptes}
-\end{figure} 
-
-L'utilisation de ce module se présente de la manière suivante, prémièrement on choisi dans la liste des centres de coûts le centre pour lequel on fait associer des comptes, dans la zone.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=12cm]{pic/SelectCostCenter.png}
-\end{center}
-\caption{Interface permettant la sélection d'un centre de coûts}
-\label{Interface permettant la sélection d'un centre de coûts}
-\end{figure} 
-
-Une fois que le centre de coût est sélectionné, dans la zone comptes disponibles se trouvent la liste des comptes, il suffit de cocher les comptes dont il faut et en suite cliquer sur le bouton \includegraphics[scale=0.7]{pic/VerserCompte.png} pour que les comptes choisi puissent apparaitre dans la zone comptes associé à ... qui se trouve dans la partie droit de la zone de comptes disponibles.
-
-Une fois qu'un centre de coûts dispose d'un ensemble de comptes associé, la zone qui se trouve à droite renseigne directement les comptes qui sont associés aux centres de coût choisi. cette interface donne aussi la possibilité de retirer certain compte dans la liste de compte associé à un centre de coût en le cochant et en cliquant sur le bouton \textbf{Retirer} comme le montre la figure suivante.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=8cm]{pic/CompteAssocie.png}
-\end{center}
-\caption{Interface permettant le retrait des comptes associés}
-\label{Interface permettant le retrait des comptes associés}
-\end{figure}
-
-Comme ce menu donne la possibilité de retirer des comptes on peut aussi ajouter des comptes à un centre de coûts qui en disposait déjà en procedant par la sélection des comptes désirés et en cliquant sur le bouton \includegraphics[scale=0.7]{pic/VerserCompte.png}.
-\newpage
-\subsection{Assignation}
-Le module concernant l'assignation permet de faire l'assignation entre un centre de coût secondaire à des centres des coûts principale. l'interface principale de ce module se présente de la manière suivante. 
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=12cm]{pic/AssignationInterface.png}
-\end{center}
-\caption{Interface principale du modules assignations}
-\label{Interface principale du modules assignations}
-\end{figure}
-
-Pour utiliser ce module il faut premièrement sélectionner un centre de coûts secondaire dans la liste une fois que cela est fait les détailles concernant ce centre de côuts seront affichés dans la partie qui est en dessous et à gauche de la zone permettant de sélectionner un centre de coûts secondaire. une fois que cela est fait à droite de la zone de détailles ont retrouve le centre de coûts principaux existant dans le système. pour proceder à l'assignation il suffit de proceder par choisir les centres des coûts auxquelles le centre de coûts sécondaire sera affiliée, une fois que cela est fait, il suffit de cliquer sur le bouton \textbf{suivant} pour pouvoir être dirigé vers une autre interface permettant de spécifier dans quelle mésure se faira l'assignation.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=12cm]{pic/AssiGCentCout.png}
-\end{center}
-\caption{Apperçu du processus d'affection d'un centre auxillaire à des centre principaux}
-\label{Apperçu du processus d'affection d'un centre auxillaire à des centre principaux}
-\end{figure}  
-
-L'interface permettant de spécifier les modalités d'affection se présente de la manière suivante.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=12cm]{pic/AssPCCenter.png}
-\end{center}
-\caption{Apperçu du formulaire permettant de spécifier les modalités d'affection}
-\label{Apperçu du formulaire permettant de spécifier les modalités d'affection}
-\end{figure}   
-
-\newpage
-\section{Ajout des transactions}
-
-Le module gestion des transactions permet d'enregistrer directement un transaction dans le journal de saisie sans passer par les autres interfaces, ce module dispose d'une interface qui permet soit l'enregistrement de la prise en charge d'un patient par un employé ainsi que le remboursement du paiement d'une facture en cas de non consommation du service.
-
-
-Voici l'interface principale du module gestion des transactions se présente de la manière suivante. 
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=12cm]{pic/AddTransaction.png}
-\end{center}
-\caption{Interface du module gestion des transactions}
-\label{Interface du module gestion des transactions}
-\end{figure}
-
-Lors de l'opération d'ajout de transaction il est nécessaire de pouvoir fournir une description qui caracterise la transaction, en suite il faudrait preciser la date ainsi que la monnaie de la transaction, s'il est nécessaire on peut aussi ajouter un commentaire en cliquant sur le bouton \includegraphics[scale=0.7]{pic/AddComment.png} pour afficher la zone de saisie relative à cette éffet.
-
-Il existe aussi le bouton \includegraphics[scale=0.7]{pic/AddRefDoc.png} est utilisé si l'on a besoin de spécifier la référence du document qui intervient dans la transaction. 
-
-La zone réserver aux comptes se présente de la manière suivante
-\\
-\includegraphics[scale=0.7]{pic/SelectCompte.png} cette inferface permet de choisir directement un compte dans la liste des comptes existant dans le plan comptable. il est aussi possible de rechercher un créditeur ou bien un débiteur pour cela il suffit de cliquer sur l'icône \includegraphics[scale=0.7]{pic/SelectCompteIcone.png} pour que la zone de saisie se modifier de la manière suivante \includegraphics[scale=0.7]{pic/SelectDebCred.png}, à l'état initial la zone de saisie ne permet que la recherche de débiteur pour rechercher un créditeur il suffit de cliquer sur l'icône \includegraphics[scale=0.7]{pic/DebToCred.png}, pour que la liste des options puissent apparaitre et permettre la possibilité de basculer la zone de saisie de créditeur à débiteur, Il existe aussi le bouton \includegraphics[scale=0.7]{pic/AjouterLigne.png}, qui permet d'ajouter autant de ligne que désiré.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=12cm]{pic/SelectCredit.png}
-\end{center}
-\caption{Aperçue du processus de bascule entre débiteur et créditeur}
-\label{Aperçue du processus de bascule entre débiteur et créditeur}
-\end{figure}
-
-Après avoir sélectionné soit un compte, un débiteur ou bien un créditeur, il existe deux zones rélatives aux débit ou bien au crédit. après avoir renseigner tous ses éléments et si la transaction est balancé, on peut enregistrer cette transaction dans le Journal de saisie.
-
-Pour l'illustration de ce module nous allons illustrer deux cas le prémier concerne l'annulation du paiement d'un service pour une ou une autre raison et le second concerne la prise en charge d'un patient par un employé.
-
-\subsection{Annulation de paiement}
-Pour annuler le paiement d'un patient il suffit de se rendre premièrement dans le menu \textbf{Historique de vente pour annuler la vente} mais aussi recopier la référence du paiement qui se retrouver à l'extrème droite du facture, ce numéro de référence sera utiliser lors de l'ajout de transaction.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=12cm]{pic/RefDocument.png}
-\end{center}
-\caption{Aperçue d'une facture en attente de remboursement}
-\label{Aperçue d'une facture en attente de remboursement}
-\end{figure}
-\newpage
-Pour l'opération de remboursement la connaissance de la somme payer par le patient est importance voici l'interface illustrant le remboursement.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=12cm]{pic/AjouTrans.png}
-\end{center}
-\caption{Aperçue du processus de remboursement}
-\label{Aperçue du processus de remboursement}
-\end{figure}
-
-Pour rembourser une facture il faudrait proceder de la manière suivante. choisir le compte liée à la caisse qui a été utilisée lors du paiement de la facture dans la zone reserver aux crédit saisir le montant payer et en ce qui concerne le patient il faudrait le rechercher dans la liste de débiteur en suite dans la zone reserver aux débit mettre le montant de ce qu'il a payé.
-Une fois qu'il y'a balance, il suffit de cliquer sur soumettre ajouter la transaction.
-\newpage
-\subsection{Pour la prise en charge d'un patient}
-Pour prendre en charge la consommation d'un patient il suffit de se rendre premièrement dans le menu \textbf{Historique de vente pour recopier la référence du paiement} qui se retrouver à l'extrème droite du facture, ce numéro de référence sera utiliser lors de la prise en charge.
-
-Pour l'opération de la prise en charge aussi la connaissance de la somme payer par le patient est importance voici l'interface illustrant la prise en charge.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=12cm]{pic/ATPriseEnCharge.png}
-\end{center}
-\caption{Aperçue du processus de prise en charge}
-\label{Aperçue du processus de prise en charge}
-\end{figure}
-
-Pour prendre en charge la consommation d'un patient; il faudrait proceder de la manière suivante. choisir le patient dans la liste de débiteur et en suite saisir dans la colonne de crédit le montant de ce qu'il doit et dans la seconde ligne rechercher l'employé dans la liste des créditeurs saisir le montant de la prise en charge dans la zone débit.
-Une fois qu'il y'a balance, il suffit de cliquer sur soumettre ajouter la transaction.
-
-\newpage
-\section{Centre de profits}
-Le module gestion de centre de profits permet d'adminstrer les centres des profits. Ce module permet la création des centres profits, l'etablissement des comptes associés à un centre de profits.
-
-Voici le menu gérérale du module gestion de centre des profits.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=14cm]{pic/MenuProfitCenter.png}
-\end{center}
-\caption{Menu gérérale du module gestion de centre de profits}
-\label{Menu gérérale du module gestion de centre de profits}
-\end{figure}
-
-\subsection{Centre de profits}
-Le sous module gestion de profits est un module qui a été conçu pour permettre l'administration de centres de profits existantes au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'un centre de profits ainsi que la suppression d'un centre de profits.
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=14cm]{pic/CentreProfitPage.png}
-\end{center}
-\caption{Interface principale de la gestion de centre de profits}
-\label{Interface principale de la gestion de centre de profits}
-\end{figure}
-
-Dans la figure ci-haute on retrouve dans la partie gauche la liste des différents centre de profits enregistrées dans le système, au dessus de ce tableau existe le bouton \includegraphics[scale=1]{pic/NewCostCenter.png} qui permet l'ajout de nouveau centre de profits dans le système, le formulaire permettant d'enregistrer un nouveau centre de profit se présente de la manière suivante.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=10cm]{pic/SaveProfitCenter.png}
-\end{center}
-\caption{Formulaire permettant l'ajout de centre de profits dans le système}
-\label{Formulaire permettant l'ajout de centre de profits dans le système}
-\end{figure}
-
-Le formulaire permettant l'enregistrement de centre de profits est très simple, il ne contient que une zone de saisie permettant de nommer le centre de profits ainsi que la zone permettant de faire des annotations au centre de profits, l'enregistrement est effective que si l'on clique sur le bouton \textbf{Sauver}. 
-\newpage
-Les tableaux réprésentant les centre de profits enregistrés donne la possibilité de pouvoir mettre à jour les informations rélative à un centre de profits, dans la zone action de ce tableau on retrouve deux icônes, l'icône \includegraphics[scale=0.7]{pic/EditBlack.png} qui permet de mettre à jour un centre de profits et \includegraphics[scale=0.7]{pic/RecycleRed.png} permet de supprimer un centre de profits dans le système.
-Voici un apperçu du formulaire permettant la mise à jour des informations d'un centre de profits, la mise à jour est effective que si l'on modifier les informations dont on a besoin en validant grace au bouton Sauver. 
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=10cm]{pic/ModificationProfit.png}
-\end{center}
-\caption{Formulaire permettant de mettre à jour un centre de profits}
-\label{Formulaire permettant de mettre à jour un centre de profits}
-\end{figure} 
-\newpage
-\subsection{Versement}
-Le module versement permet d'associer des comptes à un centre de profits. L'interface principale de ce module donne la possibilité de sélectionner premièrement un centre de profits et en suite choisir les comptes qui seront associés à ce centre de profits. Voici comment se présente l'interface principale de ce module.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=12cm]{pic/VerserCompteProfit.png}
-\end{center}
-\caption{Interface principale de versement de comptes}
-\label{Interface principale de versement de comptes}
-\end{figure} 
-
-L'utilisation de ce module se présente de la manière suivante, prémièrement on choisi dans la liste des centres de profits le centre pour lequel on fait associer des comptes, dans la zone.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=12cm]{pic/SelectCentreProfit.png}
-\end{center}
-\caption{Interface permettant la sélection d'un centre de profits}
-\label{Interface permettant la sélection d'un centre de profits}
-\end{figure} 
-
-Une fois que le centre de profits est sélectionné, dans la zone comptes disponibles se trouvent la liste des comptes, il suffit de cocher les comptes dont il faut et en suite cliquer sur le bouton \includegraphics[scale=0.7]{pic/VerserCompte.png} pour que les comptes choisi puissent apparaitre dans la zone comptes associé à ... qui se trouve dans la partie droit de la zone de comptes disponibles.
-
-Une fois qu'un centre de profits dispose d'un ensemble de comptes associé, la zone qui se trouve à droite renseigne directement les comptes qui sont associés aux centres de profits choisi. cette interface donne aussi la possibilité de retirer certain compte dans la liste de compte associé à un centre de coût en le cochant et en cliquant sur le bouton \textbf{Retirer} comme le montre la figure suivante.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=8cm]{pic/CompteAssocie.png}
-\end{center}
-\caption{Interface permettant le retrait des comptes associés}
-\label{Interface permettant le retrait des comptes associés}
-\end{figure}
-
-Comme ce menu donne la possibilité de retirer des comptes on peut aussi ajouter des comptes à un centre de profits qui en disposait déjà en procedant par la sélection des comptes désirés et en cliquant sur le bouton \includegraphics[scale=0.7]{pic/VerserCompte.png}.
 
 
 \newpage
@@ -4208,7 +4433,7 @@ Le formulaire permettant d'ajouter une rubrique se présente de la manière suiv
 \label{Formulaire permettant d'ajouter une rubrique}
 \end{figure} 
 
-Pour l'enregistrement d'une rubrique les informations suivantes doivent être fourni, la désignation de la rubrique, son abbréviation avec aux maximum quatre lettres, spécifier si cette taxe s'exprime en pourcentage,spécifier si cette rubrique est une charge pour l'employé ou bien un gain ainsi que la valeur de ce pourcentage, si elle ne s'exprime pas en pourcentage dans ce cas la zone de saisie \textbf{Valeur} exprime alors le montant par rapport à la monnaie principale de l'entreprise équivalent à la rubrique. 
+Pour l'enregistrement d'une rubrique les informations suivantes doivent être fourni, la désignation de la rubrique, son abbréviation avec aux maximum quatre lettres, spécifier si cette rubrique s'exprime en pourcentage, spécifier si cette rubrique est une charge pour l'employé ou bien un gain ainsi que la valeur de ce pourcentage, si elle ne s'exprime pas en pourcentage dans ce cas la zone de saisie \textbf{Valeur} exprime alors le montant par rapport à la monnaie principale de l'entreprise équivalent à la rubrique, spécifier aussi si cette rubrique fait partie des charges sociales (n'intervenant que dans le net après taxe), il est aussi possible de pouvoir distingué la rubrique (Avance sur salaire pour retenir automatique le montant du salaire avancé). 
 
 Les tableaux réprésentant les rubriques enregistrées donne la possibilité de pouvoir mettre à jour les informations rélative à une rubriques, dans la zone action de ce tableau on retrouve deux icônes, l'icône \includegraphics[scale=0.7]{pic/EditBlack.png} qui permet de mettre à jour une rubrique et \includegraphics[scale=0.7]{pic/DeleteWRed.png} permet de supprimer une rubriques dans le système.
 Voici un apperçu du formulaire permettant la mise à jour des informations d'une rubrique, la mise à jour est effective que si l'on modifier les informations dont on a besoin en validant grace au bouton soumettre. 
@@ -4265,13 +4490,113 @@ Le bouton  \includegraphics[scale=0.7]{pic/PlusConfigBlue.png} permet d'accompli
 \begin{center}
 \includegraphics[width=8cm]{pic/ConfigRubMenu.png}
 \end{center}
+\caption{Formulaire permettant la configuration}
+\label{Formulaire permettant la configuration}
+\end{figure} 
+
+Dans l'image ci-haute, est repris le nom de la configuration dont on veut paramettrer ainsi que la liste des différentes rubriques qui existent dans le système, ces différentes rubriques possèdes des cases à cocher qui permet de préciser les différentes rubriques qui fairons partie de la dite configuration, il est aussi possible de sélectionner toutes les taxes en une seule fois simplement en cochant l'option tous, et une fois qu'on coché les rubriques qui feront parties de la configuration le bouton \includegraphics[scale=0.7]{pic/SaveConfig.png} permet d'enregistrer la configuration, en plus ce même bouton permet aussi de faire la mise à jour des rubriques faisant partie d'une configuration.
+
+\newpage
+
+\section{Gestion des cotisations}
+Le module Gestion des cotisations permet l'administration des différents types des cotisation existant au sein de l'entreprise lors du paiement des employés. Son interface principale est constituée d'un menu qui permet l'ajout des cotisations ainsi que la configuration des cotisations qui seront prise en compte lors du paiement des agents.
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/MainCotisations.png}
+\end{center}
+\caption{Interface principale du module gestion des cotisations}
+\label{Interface principale du module gestion des cotisations}
+\end{figure}
+
+\subsection{Création des cotisations}
+Le module Création des cotisations est un module qui a été conçu pour permettre l'administration des cotisations existants au sein de l'organisation,
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/CreatCotisationInterface.png}
+\end{center}
+\caption{Interface principale de la création des cotisations}
+\label{Interface principale de la création des cotisations}
+\end{figure}
+
+Dans la figure ci-haute on retrouve une barre de navigation permettant de rentrer vers le menu principale sur la gestion des cotisations, à droite de la barre de navigation il existe le bouton \includegraphics[scale=1]{pic/AjouterCotisation.png} qui permet d'ajouter une nouvelle cotisation, il existe également en dessous de la barre de navigation dans la partie gauche le tableau des cotisations déjà enregistrées.
+
+Le formulaire permettant d'ajouter une nouvelle cotisations se présente de la manière suivante. 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/NewCotisationForm.png}
+\end{center}
+\caption{Formulaire permettant d'ajouter une cotisation}
+\label{Formulaire permettant d'ajouter une cotisation}
+\end{figure} 
+
+Pour l'enregistrement d'une cotisation les informations suivantes doivent être fourni, la désignation de la cotisation, son abbréviation avec aux maximum quatre lettres, spécifier si cette cotisation s'exprime en pourcentage, si elle ne s'exprime pas en pourcentage dans ce cas la zone de saisie \textbf{Valeur} exprime alors le montant par rapport à la monnaie principale de l'entreprise équivalent à la cotisation. 
+
+Les tableaux réprésentant les cotisationq enregistrées donne la possibilité de pouvoir mettre à jour les informations rélative à une rubriques, dans la zone action de ce tableau on retrouve deux icônes, l'icône \includegraphics[scale=0.7]{pic/EditBlack.png} qui permet de mettre à jour une cotisation et \includegraphics[scale=0.7]{pic/DeleteWRed.png} permet de supprimer une cotisation dans le système.
+Voici un apperçu du formulaire permettant la mise à jour des informations d'une cotisation, la mise à jour est effective que si l'on modifier les informations dont on a besoin en validant grace au bouton soumettre. 
+\newpage
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/ModCotisations.png}
+\end{center}
+\caption{Formulaire permettant de mettre à jour les informations d'une cotisation}
+\label{Formulaire permettant de mettre à jour les informations d'une cotisation}
+\end{figure} 
+
+
+\subsection{Configuration des Cotisations}
+Le module configuration des cotisations, permet le paramétrage des différentes types cotisations qui sont prises pendant une période de paie.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/ConfigCotisation.png}
+\end{center}
+\caption{Interface principale de la configuration des cotisations}
+\label{Interface principale de la configuration des cotisations}
+\end{figure}
+
+Dans la figure ci-haute on retrouve une barre de navigation permettant de rentrer vers le menu principale sur la gestion des cotisations, à droite de la barre de navigation il existe le bouton \includegraphics[scale=1]{pic/CreatNCRub.png} qui permet d'ajouter une nouvelle configuration de cotisation, il existe également en dessous de la barre de navigation dans la partie gauche le tableau des configurations des cotisations enregistrées.
+
+Le formulaire permettant l'ajout d'une nouvelle configuration se présente de la manière suivante. 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/NouvCotisation.png}
+\end{center}
+\caption{Formulaire permettant la création d'une nouvelle configuration}
+\label{Formulaire permettant la création d'une nouvelle configuration}
+\end{figure} 
+
+\newpage
+Pour l'enregistrement d'une nouvelle configuration, il suffit de fournir la designation d'une nouvelle configuration ensuite de cliquer sur le bouton \textbf{Soumettre}.
+\\
+
+Les tableaux réprésentant les configurations enregistrées donne la possibilité de pouvoir mettre à jour les informations rélative à une configuration, dans la zone action de ce tableau on retrouve trois icônes, l'icône \includegraphics[scale=0.7]{pic/EditUser.png} qui permet de mettre à jour la désignation de la configuration, l'icône  \includegraphics[scale=0.7]{pic/PlusConfigBlue.png} qui permet de faire la configuration proprement dite et  et l'icône  \includegraphics[scale=0.7]{pic/DeleteWRed.png} permet de supprimer une configuration dans le système.
+Le formulaire permettant la mise à jour des informations d'une configurations est très simple et ne possède que la zone de saisie permettant la modification de la designation ainsi que le bouton \textbf{Soumettre} pour confirmer la mise à jour.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/MetJCotisation.png}
+\end{center}
 \caption{Formulaire permettant de mettre à la designation d'une configuration}
 \label{Formulaire permettant de mettre à la designation d'une configuration}
 \end{figure} 
 
-Dans l'image ci-haute, est repris le nom de la configuration dont on veut paramettrer ainsi que la liste de différente taxe qui existe dans le système, ces différentes rubriques possèdes des cases à cocher qui permet de préciser les différentes rubriques qui fairons partie de la dite configuration, il est aussi possible de sélectionner toutes les taxes en une seule fois simplement en cochant l'option tous, et une fois qu'on coché les taxes qui feront parties de la configuration le bouton \includegraphics[scale=0.7]{pic/SaveConfig.png} permet d'enregistrer la configuration, en plus ce même bouton permet aussi de faire la mise à jour des rubriques faisant partie d'une configuration.
+Le bouton  \includegraphics[scale=0.7]{pic/PlusConfigBlue.png} permet d'accomplire la configuration proprement dite, l'interface de configuration se présente de la manière suivante.  
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/CotisationInPayroll.png}
+\end{center}
+\caption{Formulaire permettant configuration des cotisations d'une configuration}
+\label{Formulaire permettant configuration des cotisations d'une configuration}
+\end{figure} 
+
+Dans l'image ci-haute, est repris le nom de la configuration dont on veut paramettrer ainsi que la liste de différente cotisations qui existe dans le système, ces différentes cotisations possèdent des cases à cocher qui permet de préciser les différentes cotisations qui fairons partie de la dite configuration, il est aussi possible de sélectionner toutes les cotisations en une seule fois simplement en cochant l'option tous, et une fois qu'on coché les cotisations qui feront parties de la configuration le bouton \includegraphics[scale=0.7]{pic/SaveConfig.png} permet d'enregistrer la configuration, en plus ce même bouton permet aussi de faire la mise à jour des cotisations faisant partie d'une configuration.
 
 \newpage
+
+
 \section{Gestion des jours fériés}
 Le module gestion des jours fériés permet de configurer les différents types de jours fériés qui sont prises en charge dans l'organisation.
 
@@ -4424,7 +4749,6 @@ Voici un apperçu du formulaire permettant la mise à jour des informations lié
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   MODULES DU SYSTEMES                     %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
 \chapter{Canevas SNIS}        
 
 La République Démocratique du Congo est actuellement engagée dans une stratégie
@@ -4447,25 +4771,46 @@ C'est la raison pour laquelle ce module est ajouté aux logiciel BHIMA
 \section{Génération du rapport Système National d'Information Sanitaire}
 L'interface principale du module Snis se présente de la manière suivante.
 
-iiiiiii
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/snis_main_interface.png}
+\end{center}
+\caption{Interface principale du module SNIS}
+\label{Interface principale du module SNIS}
+\end{figure}
 
-Dans la figure ci-haute on retrouve dans la partie gauche, la liste des différents rapports rapports. Le bouton iiiiii  qui permet d'ajouter un nouveau rapport mensuel SNIS dans le système, le formulaire permettant d'enregistrer un nouveau rapport se présente de la manière suivante.
+Dans la figure ci-haute on retrouve dans la partie gauche, la liste des différents rapports rapports. Le bouton \includegraphics[scale=1]{pic/NewSnis.png} qui permet d'ajouter un nouveau rapport mensuel SNIS dans le système, le formulaire permettant d'enregistrer un nouveau rapport se présente de la manière suivante.
 
 \newpage
-iiiii
-
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/SnisInterface1.png}
+\end{center}
+\caption{Apperçue du formulaire d'enregistrement du rapport SNIS}
+\label{Apperçue du formulaire d'enregistrement du rapport SNIS}
+\end{figure} 
 
 Dans le haut de ce figure on retrouve les différentes subdivisions du canevas SNIS ces différents élements sont :
 
-iiiii
+\begin{itemize}
+\item Identification. %•
+\item Consultations
+\item Hospitalisations
+\item Labo et Imagerie
+\item Santé de la mère
+\item Sante de l'enfant
+\item Gestion des ressources
+\item Formation
+\item  Synthese utilisation service
+\end{itemize}
 
-Par défaut c'est l'onglet Identification qui est séléctionné par défaut, cette zone permet de spécifier les différents élément concernant l'établissement qui établie le rapport du SNIS.
+Par défaut c'est l'onglet Identification qui est séléctionné par défaut, cette zone permet de spécifier les différents élément concernant l'établissement qui établie le rapport du SNIS, pour acceder directement à certains éléments du canevas SNIS, il suffit de cliquer directement au bouton numéroté se trouve dans le haut de la page de l'interface principale du formulaire du canevas SNIS.
 
 Dans la zone qui se retrouve en bas du formulaire on retrouve un bon nombre de bouton permettant de naviguer entre les différentes pages.
 
-Le bouton iiii permet une redirection vers la page principale du canevas SNIS.
+Le bouton \includegraphics[scale=1]{pic/ReSnisB.png} permet une redirection vers la page principale du canevas SNIS.
 
-Le bouton iiiii permet une navigation entre les différents rubriques  canevas SNIS.
+Le bouton \includegraphics[scale=1]{pic/SnisPrecSuiv.png} permet une navigation entre les différents rubriques  canevas SNIS.
 
 Dans la partie concernant l'identification, les informations rélative à la zone de Santé, à la province ainsi qu'au territoire provienne directement des attributs du projet sélectionné. 
 
@@ -4473,17 +4818,30 @@ Le remplissage du canevas nécessite le remplissage de toutes les zones de saisi
 
 L'enregistrement de ces informations ne s'effectue que dans le dernier en effectuant un click sur le bouton soumettre.
 
-iiiiiii 
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/LastSubmit.png}
+\end{center}
+\caption{Apperçue de la dernière rubrique du canevas, disposant du bouton soumettre}
+\label{Apperçue de la dernière rubrique du canevas, disposant du bouton soumettre}
+\end{figure} 
 
 \newpage
 \section{Mis à jour du rapport Système National d'Information Sanitaire}
 
 Une fois qu'un rapport est enregistré, il est possible de pouvoir mettre à jour ses informations mensuels, il suffit d'acceder à l'interface principale du module SNIS.
 
-iiiiiiiii
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/AllSnisReport.png}
+\end{center}
+\caption{Apperçue des rapports SNIS enregistrés}
+\label{Apperçue des rapports SNIS enregistrés}
+\end{figure} 
 
-Le tableau réprésentant les differents rapports enregistrés donne la possibilité de pouvoir mettre à jour les informations rélative à un grade, dans la zone action de ce tableau on retrouve deux icônes, l'icône \includegraphics[scale=0.7]{pic/EditBlack.png} qui permet de mettre à jour un grade et iiiii permet d'imprimer le rapport.
+Le tableau réprésentant les differents rapports enregistrés donne la possibilité de pouvoir mettre à jour les informations rélative à un grade, dans la zone action de ce tableau on retrouve deux icônes, l'icône \includegraphics[scale=0.7]{pic/EditBlack.png} qui permet de mettre à jour un grade et \includegraphics[scale=0.7]{pic/icoPrint.png} permet d'imprimer le rapport.
  
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Table des matieres

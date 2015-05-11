@@ -110,7 +110,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat='expiring in configuration.expirings'>
+              <tr ng-repeat="expiring in configuration.expirings | orderBy: 'text'">
                 <td>{{$index + 1}}</td>
                 <td>{{ expiring.tracking_number }}</td>
                 <td>{{ expiring.lot_number }}</td>
