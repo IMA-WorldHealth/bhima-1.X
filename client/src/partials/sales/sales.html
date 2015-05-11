@@ -61,20 +61,30 @@
   </div>
 
   <!-- Distributable or not -->
-  <div 
-    class="panel"
-    ng-class="{'panel-success' : session.is_distributable, 'panel-warning' : !session.is_distributable}"
-  >
+  <div class="panel" ng-class="{'panel-success' : session.is_distributable, 'panel-warning' : !session.is_distributable}">
     <div class="panel-heading">
       <i class="glyphicon glyphicon-export"></i> 
-      <strong>{{ 'SALE.TYPE' | translate }} : </strong>
+      <strong>{{ 'SALE.DETAILS' | translate }} : </strong>
     </div>
     <div class="panel-body">
-      <input type="radio" id="distributable" ng-model="session.is_distributable" ng-value="1" ng-change="getDistributable()">
-      <label for="distributable">{{ 'SALE.DISTRIBUTABLE' | translate }}</label>
-      <span class="po-type-space"></span>
-      <input type="radio" id="no_distributable" ng-model="session.is_distributable" ng-value="0" ng-change="getDistributable()">
-      <label for="no_distributable">{{ 'SALE.NO_DISTRIBUTABLE' | translate }}</label>
+      <div class="col-xs-4">
+        <div class="input-group">
+          <label class="input-group-addon">{{ 'SALE.DATE' | translate }} :</label>
+          <input class="form-control" type="date" ng-model="session.invoice_date">
+        </div>
+      </div>
+      <div class="col-xs-8">
+        <div class="input-group">
+          <label class="input-group-addon">{{ 'SALE.TYPE' | translate }} :</label>
+          <div class="form-control" style="padding:0px;padding-left:10px;">
+            <input type="radio" id="distributable" ng-model="session.is_distributable" ng-value="1" ng-change="getDistributable()">
+            <label for="distributable">{{ 'SALE.DISTRIBUTABLE' | translate }}</label>
+            <span class="po-type-space"></span>
+            <input type="radio" id="no_distributable" ng-model="session.is_distributable" ng-value="0" ng-change="getDistributable()">
+            <label for="no_distributable">{{ 'SALE.NO_DISTRIBUTABLE' | translate }}</label>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <!-- End distributable or not -->
@@ -102,7 +112,7 @@
                   <tbody>
                     <tr>
                       <td>{{invoice.displayId}}</td>
-                      <td>{{invoice.date}}</td>
+                      <td>{{session.invoice_date | date}}</td>
                       <td>{{invoice.debtor.name}}</td>
                       <td>{{invoice.note}}</td>
                   </tbody>

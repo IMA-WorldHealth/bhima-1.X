@@ -4037,7 +4037,17 @@ function handleFiscalYearResultat (id, user_id, data, done) {
       reference,
       resAccount = data.resultat_account,
       array6 = data.class6,
-      array7 = data.class7;
+      array7 = data.class7,
+      transactionDate,
+      forcingDate;
+
+  if (typeof data.forcingDate === 'undefined' || data.forcingDate === null || !data.forcingDate) {
+    forcingDate = get.date(util.toMysqlDate(data.forcingDate));
+    cfg.isForClosing = false;
+  } else {
+    forcingDate = get.date(util.toMysqlDate(data.forcingDate));
+    cfg.isForClosing = true;
+  }
 
   getOrigin()
   .spread(getDetails)
@@ -4045,15 +4055,18 @@ function handleFiscalYearResultat (id, user_id, data, done) {
   .then(function () {
     return postingResultat(resAccount);
   })
-  .then(function (res) {
+  .then(function (res){
     return done(null, res);
   })
-  .catch(catchError);
+  .catch(function (err){
+    return done(err, null);
+  });
 
   function getOrigin () {
     cfg.user_id = user_id;
     cfg.project_id = 1; // HBB by default
-    return q([get.origin('journal'), get.period(get.date())]);
+    transactionDate = cfg.isForClosing ? forcingDate : get.date();
+    return q([get.origin('journal'), get.period(transactionDate)]);
   }
 
   function getDetails (originId, periodObject) {
@@ -4065,7 +4078,11 @@ function handleFiscalYearResultat (id, user_id, data, done) {
 
   function getTransId (trans_id) {
     cfg.trans_id = trans_id;
-    cfg.descrip =  'New Fiscal Year/' + new Date().toISOString().slice(0, 10).toString();
+    if (cfg.isForClosing) {
+      cfg.descrip =  'Locking Fiscal Year/' + String(transactionDate);
+    } else {
+      cfg.descrip =  'New Fiscal Year/' + new Date().toISOString().slice(0, 10).toString();
+    }  
   }
 
   function postingResultat (resAccount) {
@@ -4105,7 +4122,7 @@ function handleFiscalYearResultat (id, user_id, data, done) {
             cfg.project_id,
             cfg.fiscalYearId,
             cfg.periodId,
-            cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip)
+            cfg.trans_id, '\'' + transactionDate + '\'', sanitize.escape(cfg.descrip)
           ].join(',') + ', `account`.`id`, ' +
           [
             0, Math.abs(bundle.solde),
@@ -4119,7 +4136,7 @@ function handleFiscalYearResultat (id, user_id, data, done) {
             cfg.originId,
             cfg.user_id
           ].join(',') +
-        ' FROM `account` WHERE `account`.`id`= ' + sanitize.escape(accountId);
+        ' FROM `account` WHERE `account`.`id`= ' + sanitize.escape(accountId)+';';
       return db.exec(sql);
     }
 
@@ -4135,7 +4152,7 @@ function handleFiscalYearResultat (id, user_id, data, done) {
             cfg.project_id,
             cfg.fiscalYearId,
             cfg.periodId,
-            cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip)
+            cfg.trans_id, '\'' + transactionDate + '\'', sanitize.escape(cfg.descrip)
           ].join(',') + ', `account`.`id`, ' +
           [
             Math.abs(bundle.solde), 0,
@@ -4148,7 +4165,7 @@ function handleFiscalYearResultat (id, user_id, data, done) {
             cfg.originId,
             user_id
           ].join(',') +
-        ' FROM `account` WHERE `account`.`id`= ' + sanitize.escape(accountId);
+        ' FROM `account` WHERE `account`.`id`= ' + sanitize.escape(accountId)+';';
       return db.exec(sql);
     }
   }
@@ -4178,7 +4195,7 @@ function handleFiscalYearResultat (id, user_id, data, done) {
             cfg.project_id,
             cfg.fiscalYearId,
             cfg.periodId,
-            cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip)
+            cfg.trans_id, '\'' + transactionDate + '\'', sanitize.escape(cfg.descrip)
           ].join(',') + ', `account`.`id`, ' +
           [
             0, Math.abs(bundle.solde),
@@ -4192,7 +4209,7 @@ function handleFiscalYearResultat (id, user_id, data, done) {
             cfg.originId,
             cfg.user_id
           ].join(',') +
-        ' FROM `account` WHERE `account`.`id`= ' + sanitize.escape(accountId);
+        ' FROM `account` WHERE `account`.`id`= ' + sanitize.escape(accountId)+';';
       return db.exec(sql);
     }
 
@@ -4208,7 +4225,7 @@ function handleFiscalYearResultat (id, user_id, data, done) {
             cfg.project_id,
             cfg.fiscalYearId,
             cfg.periodId,
-            cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip)
+            cfg.trans_id, '\'' + transactionDate + '\'', sanitize.escape(cfg.descrip)
           ].join(',') + ', `account`.`id`, ' +
           [
             Math.abs(bundle.solde), 0,
@@ -4221,14 +4238,11 @@ function handleFiscalYearResultat (id, user_id, data, done) {
             cfg.originId,
             user_id
           ].join(',') +
-        ' FROM `account` WHERE `account`.`id`= ' + sanitize.escape(accountId);
+        ' FROM `account` WHERE `account`.`id`= ' + sanitize.escape(accountId)+';';
       return db.exec(sql);
     }
   }
 
-  function catchError (err) {
-    console.warn(err);
-  }
 }
 
 function handleIntegration (id, user_id, done) {
@@ -4336,7 +4350,6 @@ function handleIntegration (id, user_id, done) {
         '(SELECT `inventory`.`group_uuid` FROM `inventory` WHERE `inventory`.`uuid`=' + sanitize.escape(reference.inventory_uuid) + ')';
     return db.exec(credit_sql);
   }
-  
 }
 
 table_router = {

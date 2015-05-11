@@ -11,7 +11,7 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           fiscal_year : {
-            columns : ['id', 'fiscal_year_txt', 'start_month', 'start_year', 'previous_fiscal_year']
+            columns : ['id', 'fiscal_year_txt', 'start_month', 'start_year', 'previous_fiscal_year', 'locked']
           }
         }
       }
@@ -19,6 +19,7 @@ angular.module('bhima.controllers')
 
     // expose bindings to the view
     $scope.selectYear = selectYear;
+    $scope.selectLock = selectLock;
 
     // start up the module
     function startup(enterprise) {
@@ -32,9 +33,18 @@ angular.module('bhima.controllers')
 
     // select a fiscal year for editting
     function selectYear(id) {
+      $scope.selectedToLock = null; // Skip selected for lock style
       $scope.selected = id;
       $scope.active = 'update';
       $scope.$broadcast('fiscal-year-selection-change', id);
+    }
+
+    // select a fiscal year for lock
+    function selectLock(id) {
+      $scope.selected = null; // Skip selected for update style
+      $scope.selectedToLock = id;
+      $scope.active = 'lock';
+      $scope.$broadcast('fiscal-year-selection-lock-change', id);
     }
 
     // activate create template and deselect selection
@@ -46,6 +56,7 @@ angular.module('bhima.controllers')
 
       $scope.active = 'create';
       $scope.selected = null;
+      $scope.selectedToLock = null;
     };
 
     // listen for create event and refresh fiscal year data

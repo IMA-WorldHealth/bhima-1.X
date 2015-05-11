@@ -1,14 +1,5 @@
 USE bhima;
 
--- Updates account
---
--- ADD 'is_ohada' field
---
--- Date: 2015-04-27
--- By: Chris LOMAME
-ALTER TABLE `account`
-ADD `is_ohada` BOOLEAN;
-
 -- Updates unit
 --
 -- Move Account, Fiscal_year, Creditor_group, debitor_group to Accountant Node
@@ -67,5 +58,6 @@ ADD `virement_account_id` int(11) NULL;
 -- Title : ADDING UNIT ENTRIES
 -- By    : Chris LOMAME
 -- Date  : 2005-05-01
+
 INSERT INTO `unit` VALUES
-('Report Stock Movement','TREE.REPORT_STOCK_MOVEMENT','',10,0,'/partials/reports/stock_movement/','reports/stock_movement/');
+(107, 'Report Stock Movement','TREE.REPORT_STOCK_MOVEMENT','',10,0,'/partials/reports/stock_movement/','reports/stock_movement/');

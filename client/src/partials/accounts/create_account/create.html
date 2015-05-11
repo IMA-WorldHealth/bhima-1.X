@@ -64,7 +64,10 @@
               </td>
             </tr>
 
-            <tr ng-if="acc.is_ohada==1 || session.filterAll" ng-repeat="acc in model.account.data | filter:session.filter">
+            <tr 
+            ng-if="acc.is_ohada==1 || session.filterAll" 
+            ng-repeat="acc in model.account.data | filter:session.filter" 
+            ng-class="{'reportTitle': acc.account_type_id==3}">
                 <td>{{acc.account_number}}</td>
                 <td>{{acc.account_txt}}</td>
                 <td>{{acc.account_type}}</td>

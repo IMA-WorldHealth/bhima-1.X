@@ -22,7 +22,7 @@ function processContent (content){
 	var errors = [];
 
 	account_list.forEach(function (item, index) {
-		if(item !== '' && item !== undefined && item == ' '){
+		if(item !== '' && item !== undefined){
 			if(!Number.isNaN(Number(item))){
 				if(!Number.isNaN(Number(account_list[index + 1]))) {
 					errors.push(item);

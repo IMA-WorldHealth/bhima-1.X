@@ -18,8 +18,9 @@ angular.module('bhima.controllers')
   'messenger',
   'appcache',
   'precision',
+  'util',
   'uuid',
-  function ($scope, $location, $http, validate, connect, appstate, messenger, Appcache, precision, uuid) {
+  function ($scope, $location, $http, validate, connect, appstate, messenger, Appcache, precision, util, uuid) {
 
     var dependencies = {},
         invoice = {},
@@ -30,7 +31,8 @@ angular.module('bhima.controllers')
 
     var session = $scope.session = {
       tablock : -1,
-      is_distributable : true
+      is_distributable : true,
+      invoice_date : new Date()
     };
 
     var serviceComponent = $scope.serviceComponent = {
@@ -156,7 +158,7 @@ angular.module('bhima.controllers')
       invoice = {
         debtor : selectedDebtor,
         uuid : uuid(),
-        date : getDate(),
+        date : session.invoice_date,
         items: []
       };
 
@@ -287,7 +289,7 @@ angular.module('bhima.controllers')
         cost             : calculateTotal().total,
         currency_id      : $scope.project.currency_id,
         debitor_uuid     : invoice.debtor.debitor_uuid,
-        invoice_date     : invoice.date,
+        invoice_date     : util.sqlDate(session.invoice_date),
         note             : invoice.note,
         service_id       : invoice.service.id,
         is_distributable : session.is_distributable
