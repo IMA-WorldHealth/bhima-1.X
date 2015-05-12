@@ -4368,6 +4368,109 @@ function handleIntegration (id, user_id, done) {
   }
 }
 
+function handleExtraPayment (id, user_id, details, done) {
+  var sql, rate, state = {}, data, reference, cfg = {};
+  state.user_id = user_id;
+
+  console.info(details, id, user_id);
+
+  sql =
+    'SELECT `g`.`account_id` ' +
+    'FROM `sale` ' +
+    'JOIN `debitor` AS `d` ON `d`.`uuid` = `sale`.`debitor_uuid` ' +
+    'JOIN `debitor_group` AS `g` ON `g`.`uuid` = `d`.`group_uuid` ' +
+    'WHERE `sale`.`uuid` = ' + sanitize.escape(details.sale_uuid) + ';';
+
+  db.exec(sql)
+  .then(getRecord)
+  .spread(getDetails)
+  .then(getTransId)
+  .then(credit)
+  .then(function (res){
+    return done(null, res);
+  })
+  .catch(function (err){
+    return done(err, null);
+  });
+
+  function getRecord (records) {
+    if (records.length === 0) { throw new Error('pas enregistrement'); }
+    reference = records[0];
+    details.cost = parseFloat(details.cost);
+    console.info(reference);
+    var date = util.toMysqlDate(get.date());
+    return q([get.origin('journal'), get.period(get.date()), get.exchangeRate(date)]);
+  }
+
+  function getDetails (originId, periodObject, store) {
+    cfg.originId = originId;
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+    cfg.store = store;
+    rate = cfg.store.get(details.currency_id).rate;
+    return get.transactionId(details.project_id);
+  }
+
+  function getTransId (trans_id) {
+    cfg.trans_id = trans_id;
+    cfg.descrip =  trans_id.substring(0,4) + '_Extra_Payment/' + new Date().toISOString().slice(0, 10).toString();
+    return debit();
+  }
+
+  function debit () {
+    var debit_sql =
+      'INSERT INTO posting_journal ' +
+      '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+      '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+      '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
+      'VALUES (' +
+        [
+          sanitize.escape(uuid()),
+          details.project_id,
+          cfg.fiscalYearId,
+          cfg.periodId,
+          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), details.wait_account
+        ].join(',') + ', ' +
+        [
+          0, (details.cost).toFixed(4),
+          0, (details.cost / rate).toFixed(4),
+          details.currency_id,
+          sanitize.escape(details.debitor_uuid)
+        ].join(',') +
+      ', \'C\', ' +
+        [
+          sanitize.escape(details.sale_uuid),
+          cfg.originId,
+          details.user_id
+        ].join(',') + ');';
+    return db.exec(debit_sql);
+  }
+
+  function credit () {
+    var credit_sql =
+      'INSERT INTO posting_journal ' +
+      '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+      '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+      '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
+      'VALUES (' +
+        [
+          sanitize.escape(uuid()),
+          details.project_id,
+          cfg.fiscalYearId,
+          cfg.periodId,
+          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.account_id
+        ].join(',') + ', ' +
+        [
+          details.cost.toFixed(4), 0,
+          (details.cost / rate).toFixed(4), 0,
+          details.currency_id,
+          sanitize.escape(details.debitor_uuid),
+        ].join(',') + ', null, ' + [sanitize.escape(details.sale_uuid), cfg.originId, user_id].join(',') +
+      ');';
+    return db.exec(credit_sql);
+  }
+}
+
 table_router = {
   'sale'                    : handleSales,
   'cash'                    : handleCash,
@@ -4403,7 +4506,8 @@ table_router = {
   'advance_paiment'         : handleAdvancePaiment,
   'cancel_support'          : handleCancelSupport,
   'fiscal_year_resultat'    : handleFiscalYearResultat,
-  'confirm_integration'     : handleIntegration
+  'confirm_integration'     : handleIntegration,
+  'extra_payment'           : handleExtraPayment
 };
 
 
