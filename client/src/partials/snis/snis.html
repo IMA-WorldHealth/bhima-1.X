@@ -35,7 +35,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="report in reports.data">
+            <tr ng-repeat="report in reports.data | orderBy:'date'">
               <td>{{ report.id }}</td>
               <td>{{ "SNIS.LABEL" | translate }} - <b>{{ report.date | date:"MMMM yyyy" }}</b></td>
               <td><a class="action" ng-click="edit(report)"><span class="glyphicon glyphicon-pencil"></span></a></td>

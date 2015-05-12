@@ -69,12 +69,15 @@
             </tr>
           </tbody>
         </table>
+        <h6 class="visible-print">
+          {{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: <b ng-bind-html="session.sum | intlcurrency:session.currency"></b>  
+        </h6>  
     </div>
   </div>
 </div>
 
 <footer>
-  <table style="width: 99%" >
+  <table style="width: 99%" class="hidden-print">
     <tbody>
       <td width="50%">
         <span style="margin-right: 10px;">
