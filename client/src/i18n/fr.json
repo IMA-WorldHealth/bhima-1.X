@@ -2135,6 +2135,7 @@
    "ADD_LINE_ITEM"      : "Ajouter une Item",
    "APPLIES_GLOBALLY"   : "Appliquer globalement",
    "APPLIES_TO_ITEM"    : "Appliquer par item",
+   "APPLYABLE_SUBSIDY_LIST" : "Appliquer la liste de subvention",
    "CHOOSE"             : "Choisir le service",
    "DATE"               : "Date",
    "DEBITOR_GROUP_LOCK" : "Le groupe de débiteur de ce patient est verrouillé",
