@@ -2135,6 +2135,7 @@
    "ADD_LINE_ITEM"      : "Add a Line Item",
    "APPLIES_GLOBALLY"   : "Appliquer globallemement",
    "APPLIES_TO_ITEM"    : "Appliquer par item",
+   "APPLYABLE_SUBSIDY_LIST" : "Applyable subsidy list",
    "CHOOSE"             : "Assign a service",
    "DATE"               : "Date",
    "DEBITOR_GROUP_LOCK" : "The debitor group of this patient is locked",
