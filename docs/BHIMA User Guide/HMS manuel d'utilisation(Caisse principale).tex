@@ -11,16 +11,16 @@
 \usepackage{graphicx}
 \usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
 \author{IMA World Health Web Developer Team}
-\title{\includegraphics[width=12cm]{ima.png} \\Hospital Management System\\ (HMS) \\ Manuel d'utilisation}
+\title{\includegraphics[width=12cm]{ima.png} \\BASIC HOSPITAL INFORMATION MANAGEMENT APPLICATION\\ (BHIMA) \\ Manuel d'utilisation}
 
 \begin{document}
 %Page de garde
 \maketitle 
 \chapter{Présentation}
 \section{Accès au système}
-\large{Pour accéder au système, la première de chose à faire est de lancer un navigateur web, en suite saisir l'adresse web de l'application dans la barre d'adresse du navigateur.}
+\large{Pour accéder au système, la première de chose à faire est de lancer un navigateur web, en suite saisir l'adresse web de server dans la barre d'adresse du navigateur.}
 
-La première interface de l'application est un formulaire qui demande à chaque utilisateur de pouvoir fournir le login, le mot de passe mais  aussi le projet dont il sont assigné, comme le montre le formulaire ci-dessous.
+La première interface de l'application est un formulaire qui demande à chaque utilisateur de pouvoir fournir son login, son mot de passe mais aussi de spécifier  le projet dont il sont assigné, comme le montre le formulaire ci-dessous.
 \begin{figure}[h]
 \begin{center}
 \includegraphics[width=12cm]{pic/login.png}
@@ -28,16 +28,16 @@ La première interface de l'application est un formulaire qui demande à chaque 
 \caption{Page d'identification et authentification des utilisateurs}
 \label{Page d'identification et authentification des utilisateurs}
 \end{figure}
-\\ L'accès au système n'est garanti que pour ceux qui possèdent un compte utilisateur, si l'utilisateur est authentifié alors il sera dirigé vers l'interface principale de l'application qui se présente de la manière suivante.
+\\ L'accès au système n'est garanti que pour ceux qui possèdent un compte utilisateur, si l'utilisateur s'est authentifié alors il sera dirigé vers l'interface principale de l'application qui se présente de la manière suivante.
 \newpage
 \begin{figure}[h]
-\begin{center}
+\begin{center} 
 \includegraphics[width=10cm]{pic/mainInterface.png}
 \end{center}
 \caption{Interface principale de l'application}
 \label{Interface principale de l'application}
 \end{figure} 
-Dans sa partie gauche de la figure ci-dessous on retrouve le logo IMA World Heath Ainsi que l'arborescence qui représente le niveau d'accès de l'utilisateur. En dessous de l'arborescence figure deux boutons, le premier \includegraphics[scale=0.5]{pic/lang.png} permet de changer de langue et le second \includegraphics[scale=0.5]{pic/logout.png} permet de ce déconnecté du système.
+Dans sa partie gauche de la figure ci-dessous on retrouve le logo IMA World Heath Ainsi que l'arborescence qui représente les modules du système auxquels l'utilisateur à accès. En dessous de l'arborescence figure deux boutons, le premier \includegraphics[scale=0.5]{pic/lang.png} permet de changer de langue et le second \includegraphics[scale=0.5]{pic/logout.png} permet de ce déconnecté du système.
 
 \begin{figure}[h]
 \begin{center}
@@ -46,9 +46,32 @@ Dans sa partie gauche de la figure ci-dessous on retrouve le logo IMA World Heat
 \caption{Interface principale pour le changement de langue}
 \label{Interface principale pour le changement de langue}
 \end{figure} 
+
+\section{Utilisation de l'arborescence de navigation}
+L'arborescence de navigation contient les liens de chague module de l'application. Les modules sont regroupés en fonction de de leurs fonctionalités dans des dossiers tels que le dossier "Admin" affiché ci-dessous. Dans la première image, le dossier est fermé, en occultant tous les sous modules de ce module. Après le dossier est cliqué, une image d'un dossier ouvert montre que les contenus sont accessibles.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=4.5cm]{pic/folder_open_closed.png}
+\end{center}
+\caption{Etat d'un module ouvert et fermé}
+\label{Etat d'un module ouvert et fermé}
+\end{figure} 
+
+Cliquant sur le dossier permet d'afficher la liste de sous modules sélectionné par l'utilisateur. Par exemple, ci-dessous, le dossier "Admin" est cliqué dans la premier illustration dans la séconde est ouverte tous ses sous modules.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/open_folder.png}
+\end{center}
+\caption{Clique sur le dossier "admin" afin de pouvoir visualiser ses sous modules}
+\label{Clique sur le dossier "admin" afin de pouvoir visualiser ses sous modules}
+\end{figure} 
+
+
 \newpage
-\section{Les modules du système HMS}
-Le système d'information HMS possède plusieurs modules qui sont représenté par l'arborescence ci-dessous.
+\section{Les modules du système BHIMA}
+Le système d'information BHIMA possède plusieurs modules qui sont représenté par l'arborescence ci-dessous.
 \begin{figure}[h]
 \begin{center}
 \includegraphics[width=4.5cm]{pic/arbo.png}
@@ -60,16 +83,17 @@ Voici les différentes rubriques qui existent dans le système:
 % Liste des modules
 \begin{itemize}
 \item Admin. %•
-\item Finance
 \item Budget
-\item Rapports
-\item Stock
+\item Canevas SNIS
+\item Comptabilité
+\item Finances
 \item Hôpital
 \item Payroll
-\item Comptabilité
-\item Canevas SNIS
+\item Rapports
+\item Stock
 \end{itemize}
-Nous allons à présent détailler chacun d'entre eux.
+
+
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   MODULES DU SYSTEMES                     %
@@ -78,7 +102,7 @@ Nous allons à présent détailler chacun d'entre eux.
 \chapter{Le module Admin}        
 %////////////////////////////////////////////////%
 % MODULE ADMIN
-Le module admin est compose des sous modules qui permettent d'administrer le système. La figure ci-dessous représente avec exactitude ce module avec les différents sous éléments.
+Le module admin est composé des sous modules qui permettent d'administrer le système. La figure ci-dessous représente avec exactitude ce module avec ses différents sous éléments.
 \begin{figure}[h]
 \begin{center}
 \includegraphics[width=4cm]{pic/s_admin.png}
@@ -87,6 +111,7 @@ Le module admin est compose des sous modules qui permettent d'administrer le sys
 \label{Le module Admin et ses sous menus}
 \end{figure} 
 
+\newpage
 \section{Taux d'échange}
 Le module de taux de change, donne la possibilité de définir le taux d'échange du jour. Par souci d'intégrité des données, Le taux d'échange doit être défini chaque jour.
 
@@ -111,7 +136,7 @@ Lorsque l'utilisateur click sur le bouton \includegraphics[scale=0.7]{pic/Nouvea
 \label{Formulaire permettant de definir le taux}
 \end{figure}
 \begin{itemize}
-\item \textbf{United States Dollars}: est la monnaie principale de l'application, l'équivalence avec les autres monnaie ne doit se faire qu'avec la somme de 100 Dollars,
+\item \textbf{United States Dollars}: est la monnaie principale de l'application, l'équivalence avec d'autres monnaies ne doit se faire qu'avec la somme de 100 Dollars,
 \item \textbf{Sélectionner Monnaie}: Affiche la liste des monnaies qui existe dans le système et la zone de saisie qui se retrouve en bas permet de préciser l'équivalence avec la monnaie principale.
 \end{itemize}
 Après avoir renseigné ce deux champs, un clique sur le bouton \textbf{Soumettre} permet de définir les taux du jour.
@@ -125,6 +150,7 @@ Un clic sur le bouton \includegraphics[scale=0.7]{pic/RevoirTaux.png} permet d'a
 \caption{Aperçue du taux du jour}
 \label{Aperçue du taux du jour}
 \end{figure}
+\newpage
 
 \newpage
 \chapter{Le module finance}        
@@ -139,6 +165,9 @@ Le module finance est composé des sous modules qui permettent d'administrer le 
 \label{Arborescence du module Finance}
 \end{figure}
 
+
+
+\newpage 
 \section{Caisse Principale}
 Le module caisse principale, est l'un des principaux modules de cette application, ce module permet d'administrer les recettes ainsi que les dépenses qui s'oppere au sein de l'organisation.
 
@@ -206,6 +235,35 @@ une fois que cette opération est effectué un spéciment de reçu pour les conv
 
 
 \newpage
+\subsection{Recettes : Support paiement}
+Ce modules permet à des employés ayant prise en charge des patients de pouvoir s'acquiter de leur charges,l'interface principale de ce module se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/InterFacePriseCharge.png}
+\end{center}
+\caption{Interface principale de paiement de prise en charge}
+\label{Interface principale de paiement de prise en charge}
+\end{figure}
+
+Dans le coin superieur gauche il y'a un bouton qui permet de préciser la monnaie qui sera utilisée lors de l'opération du paiement.
+
+En suite il y'a une zone de recherche qui permet de rechercher l'employé qui procéde aux paiements, une fois qu'on a retrouver la dite employé, il suffit de cliquer sur le bouton soumettre pour que s'affiche la situation des tous les patients prisent en charge par l'employé, comme le montre la figure ci-après.
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/PaiemPriseChargeEmploy.png}
+\end{center}
+\caption{Illustration d'un cas de paiement pour un employé}
+\label{Illustration d'un cas de paiement pour un employé}
+\end{figure}
+ 
+Dans cette interface nous avons un tableau à gauche qui renseigne sur les informations financières sommaire et en bas du tableau, la totalité de ce que doit le groupe débiteur à l'hôpitale, la zone boite de paiement permet de préciser le montant à payer.
+
+une fois que cette opération est effectué un spéciment de reçu pour les conventions sera généré automatiquement par le système.
+
+\newpage
 \subsection{Recettes : Recette Générique}
 Les modules recette générique est un module qui a été ajouter au système enfin de pour traquer toutes les recettes générées par l'organisation en dehors des activités liées à l'hôpital, pour l'enregistrement de ce genre des recettes, il faudrait prémierement choisir le compte qui sera utiliser pour l'enregistrement des recettes.
 
@@ -239,12 +297,101 @@ Le module paie des employées permet permet de déterminer les différentes él�
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=14cm]{pic/paieEmp.png}
+\includegraphics[width=16cm]{pic/paieEmp.png}
 \end{center}
 \caption{Interface principale du module paie des employés}
 \label{Interface principale du module paie des employés}
 \end{figure}
 
+
+\subsection{Dépenses : Paie des employés : Paiement Effectif du Salaire}
+Le module paiement des effectifs du salaire n'est utilisable que si il existe une période de paiment pour laquelle ce module n'est pas encore utilisée. ce module dispose ainsi d'une interface principale possédant une liste de choix.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/selectPeriodPaiSal.png}
+\end{center}
+\caption{Interface principale permettant de choisir la période de paiement }
+\label{Interface principale permettant de choisir la période de paiement }
+\end{figure}
+
+Une fois qu'une période de paiement est choisi, l'utilisateur est alors dirigé vers l' interface principale du paiement effectifs des salaires. Cette interface se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/paiementSalaire.png}
+\end{center}
+\caption{Interface principale permettant de confirmer le paiement}
+\label{Interface principale permettant de confirmer le paiement}
+\end{figure}
+
+
+Voici les différents éléments de l'interface. Un bouton sélectionner une période de paiement qui permet de revenir vers l'interface permettant de choisir une période de paiement, une barre de recherche permettant de filtrer les différents éléments composant le tableau des employés.
+
+Le tableau est divisé en colonne, il existe les noms des employés, Le net après taxes, le salaire net, le salaire partiel perçu dans le cas où il y'a eu des avances sur salaires, le salaire restante qui est égale au salaire net dans le cas il n'y a pas eu d'avance sur salaire, le status du paiement qui par défaut est \includegraphics[scale=0.7]{pic/NonTaxes.png} si l'employé n'est pas encore payée et \includegraphics[scale=0.7]{pic/OuiTaxes.png} si elle est payée. pour confirmer le paiement d'un employé, il faudrait cliquer sur le bouton \includegraphics[scale=0.7]{pic/PayeSalary.png}
+
+\subsection{Dépenses : Paie des employés : Paiement partiel du salaire}
+Le module Paiement partiel du salaire permet de verser à l'employé une partie de son salaire, l'interface principale de ce module se ressemble à celui permettant le paiement effectif à la différence que celui ci permet une redirection vers la page permettant le paiement partiel du salaire.
+Le paiement partiel peut se faire en plusieur phase pour vue la somme total perçue ne puissent pas dépasser le salaire net à payer. L'interface d'accueil se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/PaiePartSalaire.png}
+\end{center}
+\caption{Interface d'accueil du paiement partiel du salaire}
+\label{Interface d'accueil du paiement partiel du salaire}
+\end{figure}
+
+Le tableau est divisé en colonne, il existe les noms des employés, Le net après taxes, le salaire net, le salaire partiel perçu dans le cas où il y'a eu des avances sur salaires, le salaire restante, le status du paiement qui par défaut est \includegraphics[scale=0.7]{pic/NonTaxes.png} si l'employé n'est pas encore payée et \includegraphics[scale=0.7]{pic/OuiTaxes.png} si elle est payée. pour pouvoir procéder au paiement partial du salaire, il suffit de cliquer sur le bouton  \includegraphics[scale=0.7]{pic/salaryPartial.png} pour visualiser le formulaire du paiement partiel du salaire.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/FormPartPaiement.png}
+\end{center}
+\caption{Formulaire permettant le paiement partiel du salaire}
+\label{Formulaire permettant le paiement partiel du salaire}
+\end{figure}
+
+Dans la figure ci haute on retrouve dans la partie supérieur les éléments sommaires sur le paiement, la zone montant permet de spécifier le montant du paiement partiel qu'on voudrait effectuer et le bouton soumettre permet de declancher le processus.
+
+Si le montant du salaire partiel est supérieur au salaire net ou bien supérieur au salaire restant un message d'alerte s'affiche pour le signaler.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/errorPartialPaiement.png}
+\end{center}
+\caption{Message d'erreur en cas de paiement partiel impossible}
+\label{Message d'erreur en cas de paiement partiel impossible}
+\end{figure}
+
+
+Les répercutions du paiement partiel du salaire sont visibles dans le module paiement effectif du salaire car le patient ayant bénéficier du salaire partiel du salaire n'obtiendront que leur salaire restant lorsqu'il faudrait procéder au paiement du salaire effectif.
+
+\newpage
+\subsection{Dépenses : Paie des employés : Paiement Cotisations}
+Le module paiement des cotisations, ce module n'est utilisable que si il existe une période de paiement pour laquelle ce module n'est pas encore utilisé. ce module dispose ainsi d'une interface principale possédant une liste de choix.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/paiemCotisations.png}
+\end{center}
+\caption{Interface principale permettant sélectionner une période de paiement}
+\label{Interface principale permettant sélectionner une période de paiement}
+\end{figure}
+
+Une fois qu'une période de paiement est choisi, l'utilisateur est alors dirigé vers une interface principale de paiement de des cotisations. Cette interface se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/PaiemCoInterface.png}
+\end{center}
+\caption{Interface principale permettant de confirmer le paiement des cotisations}
+\label{Interface principale permettant de confirmer le paiement des cotisations}
+\end{figure}
+
+Voici les différents éléments de l'interface. Un bouton sélectionner une période de paiement qui permet de revenir vers l'interface permettant de choisir une période de paiement, une barre de recherche permettant de filtrer les différents éléments composant le tableau des employés ainsi que des différentes cotisations.
+
+Le tableau est divisé en colonne, il existe le nom des employés, les différentes types de cotisations, la valeur, le status du paiement qui par défaut est \includegraphics[scale=0.7]{pic/NonTaxes.png} si la cotisation n'est pas encore payée et \includegraphics[scale=0.7]{pic/OuiTaxes.png} si elle est payée. pour confirmer le paiement d'un cotisation, il faudrait cliquer sur le bouton \includegraphics[scale=0.7]{pic/CotPayBouton.png}
 
 \subsection{Dépenses : Paie des employés : Paiement Taxes}
 Le module paiement des taxes n'est utilisable que si il existe une période de paiment pour laquelle ce module n'est pas encore utilisé. ce module dispose ainsi d'une interface principale possédant une liste de choix.
@@ -271,6 +418,8 @@ Une fois qu'une période de paiement est choisi, l'utilisateur est alors dirigé
 Voici les différents éléments de l'interface. Un bouton sélectionner une période de paiement qui permet de revenir vers l'interface permettant de choisir une période de paiement, une barre de recherche permettant de filtrer les différents éléments composant le tableau des employés ainsi que des différentes taxes.
 
 Le tableau est divisé en colonne, il existe le nom des employés, les types de taxes, la valeur, le status du paiement qui par défaut est \includegraphics[scale=0.7]{pic/NonTaxes.png} si la taxe n'est pas encore payée et \includegraphics[scale=0.7]{pic/OuiTaxes.png} si elle est payée. pour confirmer le paiement d'une taxe, il faudrait cliquer sur le bouton \includegraphics[scale=0.7]{pic/PayeTaxe.png}
+
+
 \newpage
 \subsection{Dépenses : Paie des employés : Paiement Taxes Entreprise}
 Le module paiement des taxes Entreprise est similaire à celui permettant le paiement de taxes,  ce module n'est utilisable que si il existe une période de paiement pour laquelle ce module n'est pas encore utilisé. ce module dispose ainsi d'une interface principale possédant une liste de choix.
@@ -299,7 +448,7 @@ Voici les différents éléments de l'interface. Un bouton sélectionner une pé
 Le tableau est divisé en colonne, il existe le nom des employés, les types de taxes, la valeur, le status du paiement qui par défaut est \includegraphics[scale=0.7]{pic/NonTaxes.png} si la taxe n'est pas encore payée et \includegraphics[scale=0.7]{pic/OuiTaxes.png} si elle est payée. pour confirmer le paiement d'une taxe, il faudrait cliquer sur le bouton \includegraphics[scale=0.7]{pic/PayeTaxe.png}
 
 \subsection{Dépenses : Achat}
-Ce module permet de faire sortir l'argent dans la caisse principale lors qu'un ordre d'achat a été établi, voici un apperçu de l'interface du modules Achat.
+Ce module permet de faire sortir l'argent dans la caisse principale lors qu'une commande d'achat a été établi, voici un apperçu de l'interface du modules Achat.
 
 \begin{figure}[h]
 \begin{center}
@@ -315,14 +464,14 @@ Dans l'interface qui est illustrée, aucun ordre d'achat n'est encore éffectué
 \begin{center}
 \includegraphics[width=14cm]{pic/Achat2.png}
 \end{center}
-\caption{Module Achat, avec des ordres d'achat}
-\label{Module Achat, avec des ordres d'achat}
+\caption{Module Achat, avec des commandes d'achat}
+\label{Module Achat, avec des commandes d'achat}
 \end{figure}
 
-On peut remarquer un tableau des différents ordres d'achat qui ne sont pas encore payer, ainsi qu'une permettant de filtrer les ordres d'achat. 
+On peut remarquer un tableau des différents commandes d'achat qui ne sont pas encore payer, ainsi qu'une permettant de filtrer les commandes d'achat. 
 
 \newpage
-Pour que la caisse puisse payer un ordre d'achat il faudrait cliquer sur le bouton \includegraphics[scale=0.7]{pic/SelectedPOrder.png} d'un ordre d'achat, cet action activera la zone permettant de commencer le processus de paiement, dans cette nouvelle interface on retrouvera les informations rélatives à l'ordre d'achat, un bouton permettant de confirmer le payement de l'ordre d'achat ainsi que celui permettant d'annuler un ordre d'achat.
+Pour que la caisse puisse payer une commande d'achat il faudrait cliquer sur le bouton \includegraphics[scale=0.7]{pic/SelectedPOrder.png} d'une commande d'achat, cet action activera la zone permettant de commencer le processus de paiement, dans cette nouvelle interface on retrouvera les informations rélatives à la commande d'achat, un bouton permettant de confirmer le payement de la commande d'achat ainsi que celui permettant d'annuler une commande d'achat.
 
 \begin{figure}[h]
 \begin{center}
@@ -389,6 +538,7 @@ Le module rapports permet de pouvoir visualiser plusieurs types des rapports ré
 \caption{Arborescence du module Rapports}
 \label{Arborescence du module Rapports}
 \end{figure}
+
 \newpage
 \section{Plan Comptable}
 Le plan comptable permet la visualisation du plan comptable et donne la possibilité de pouvoit imprimer le plan comptable. L'interface principale de ce module se présente de la manière suivante. 
@@ -401,58 +551,6 @@ Le plan comptable permet la visualisation du plan comptable et donne la possibil
 \label{Aperçue du Plan Comptable}
 \end{figure}
 
-\newpage
-
-\newpage
-\section{Rapport Paiements}
-Le rapport de paiement permet de visualiser l'historique de paiement s'éffectuant aux niveaux des caisses auxilliaires dans le système. L'interface principale permettant de voire le rapport de paiements se présente de la manière suivante. 
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=10cm]{pic/rapportCaisseAux.png}
-\end{center}
-\caption{Aperçue de l'interface principale du rapport de paiements}
-\label{Aperçue de l'interface principale du rapport de paiements}
-\end{figure}
-
-Par défaut le rapport de paiement affiche la liste des paiements effectués le jour courant, l'interface du rapport d'enregistrement dispose de plusieurs outils permettant de visualiser les anciens paiements répertories.
-
-Le bouton \includegraphics[scale=0.7]{pic/Todays.png} donne la possibilité de visualiser les paiements du jour courant, de la semaine courante mais aussi ceux du mois courant. 
-
-Il existe aussi  \includegraphics[scale=0.7]{pic/PlageTimes.png} qui permet visualiser le rapport de paiement en precisant une plage de valeur entre deux dates.
-
-Il existe aussi une liste de choix qui donne la possibilité de visualiser le rapport d'enregistrement par projets ou bien de tous le projet à la fois.
-
-En bas de page on retrouve les indicateurs sur le rapport de paiements, on retrouve le nombre des paiements qu'il y'a eu ainsi que le montant total des paiements ainsi que la possibilité de visualier le total avec différentes monnaies. 
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=9cm]{pic/IndRapPaiement.png}
-\end{center}
-\caption{Aperçue des indicateurs du rapport de paiements}
-\label{Aperçue des indicateurs du rapport de paiements}
-\end{figure}
-
-
-\newpage
-\section{Rapport des Recettes}
-Le rapport des recettes permet de visualiser toutes les entrés en caisse qui s'éffectue aux niveaux de la caisse principale, l'interface principale de ce module se présente de la manière suivante.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=14cm]{pic/RapportRecette.png}
-\end{center}
-\caption{Interface principale du module Rapport des recettes}
-\label{Interface principale du module Rapport des recettes}
-\end{figure}
-
-La zone  \includegraphics[scale=0.7]{pic/PlageTimes.png} qui permet visualiser le rapport des recettes en précisant une plage de temps par rapport aux dates.
-
-Dans le tableau des recettes il existe le lien \includegraphics[scale=0.7]{pic/FactureRePrint.png} qui permet de réafficher les détailles d'une recette.
-
-Il est aussi possible de pouvoir choisir les recettes respectivement par rapport à la monnaie qui a été utilisé au moment de la transaction grace à la liste de choix \includegraphics[scale=0.7]{pic/SelecPriCash.png}.
-
-En bas de page on retrouve les indicateurs permettant de connaitre le nombre des recettes qui ont été réaliser ainsi que le montant total des recettes ainsi que la possibilité de le visualiser avec différentes monnaies. 
 
 \newpage
 \section{Rapport des Dépenses}
@@ -460,19 +558,54 @@ Le rapport des dépenses permet de visualiser toutes les sorties en caisse qui s
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=14cm]{pic/RapDepenses.png}
+\includegraphics[width=14cm]{pic/RapDepensesInterface.png}
 \end{center}
 \caption{Interface principale du module Rapport des dépenses}
 \label{Interface principale du module Rapport des dépenses}
 \end{figure}
 
-La zone  \includegraphics[scale=0.7]{pic/PlageTimes.png} qui permet visualiser le rapport des dépenses en précisant une plage de temps par rapport aux dates.
+La première zone permet de séléctioner une caisse principale par rapport aux monnaies enregistrés, mais aussi de spécifier la date du début et celle de la fin de la recherche. 
 
-Dans le tableau des dépenses il existe le lien \includegraphics[scale=0.7]{pic/FactureRePrint.png} qui permet de réafficher les détailles d'une dépense.
+Le bouton générer permet l'affichage du tableau du rapport des dépenses. L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
+\includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png} permet de faire une nouvelle recherche.
 
-Il est aussi possible de pouvoir choisir les depenses respectivement par rapport à la monnaie qui a été utilisé au moment de la transaction grace à la liste de choix \includegraphics[scale=0.7]{pic/SelecPriCash.png}.
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=10cm]{pic/RapDepensesApercue.png}
+\end{center}
+\caption{Aperçue du rapport de dépenses pour une période données}
+\label{Aperçue du rapport de dépenses pour une période données}
+\end{figure}
 
-En bas de page on retrouve les indicateurs permettant de connaitre le nombre des recettes qui ont été réaliser ainsi que le montant total des recettes ainsi que la possibilité de le visualiser avec différentes monnaies. 
+Il est aussi possible de pouvoir choisir les depenses respectivement par rapport à la monnaie qui a été utilisé au moment de la transaction.
+
+En bas de page on retrouve les indicateurs permettant de connaitre le nombre des dépenses qui ont été réalisé ainsi que le montant total des recettes ainsi que la possibilité de le visualiser avec différentes monnaies. 
+
+\newpage
+\section{Rapport des employés}
+Le rapport des Rapport des employés permet de visualiser l'état financier d'un employé. son interface principale se présente de la manière suivante. 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=10cm]{pic/EtFinEMp.png}
+\end{center}
+\caption{Aperçue de l'interface principale de l'état financier d'un employé}
+\label{Aperçue de l'interface principale de l'état financier d'un employé}
+\end{figure}
+
+Le formulaire possède une zone qui permet la recherche d'un employé dans la liste des employés enregistrés, le bouton générer permet l'affichage du tableau du rapport des employés. L'interface permettant de visualier le rapport se présente de la manière suivante. Au dessus on retrouve deux boutons. le prémier 
+\includegraphics[scale=0.7]{pic/Print.png} permet d'imprimer le rapport et le second \includegraphics[scale=0.7]{pic/refresh.png} permet de faire une nouvelle recherche.
+
+Voici un apperçue de la situation financière d'un employé.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/EtFinancierEmployer.png}
+\end{center}
+\caption{Aperçue du rapport financier d'un employé}
+\label{Aperçue du rapport financier d'un employé}
+\end{figure}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -101,8 +101,7 @@ angular.module('bhima.controllers')
         .then(function (res) {
           def.resolve(res.length !== 0);
         });
-      }
-      
+      }      
       return def.promise;
     }
 

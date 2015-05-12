@@ -142,7 +142,12 @@ angular.module('bhima.controllers')
 
     function totalCost() {
       return $scope.model.sale.data.reduce(function (a, b) {
-        return a + b.cost;
+        if(!b.creditId){
+          return a + b.cost;  
+        } else {
+          return a + 0;  
+        }
+
       }, 0);
     }
 
