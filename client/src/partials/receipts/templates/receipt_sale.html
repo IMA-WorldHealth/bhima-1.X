@@ -43,7 +43,7 @@
       {{model.recipient.registration_date | date}}
     </div>
     <div class="col-xs-4">
-      <i>{{'INVOICE.INVOICE_ID' | translate}}</i> <b>{{model.common.enterprise.abbr + model.saleRecords[0].reference}}</b>
+      <i>{{'INVOICE.INVOICE_ID' | translate}}</i> <small style="font-size: 20px"><b> {{model.common.enterprise.abbr + model.saleRecords[0].reference}}</small></b>
       <br>
       <i>{{'INVOICE.CLIENT_ID' | translate}}</i> <b>{{model.recipient.abbr + model.recipient.reference}}</b>
       <br>
@@ -79,7 +79,7 @@
           </tr>
           <tr ng-show="model.saleSubsidies.length" ng-repeat="subsidy in model.saleSubsidies">
             <td colspan="2">{{subsidy.text}}</td>
-            <td colspan="3"><span ng-bind-html="subsidy.value | intlcurrency:model.selectedCurrency.id"></span></td>
+            <td colspan="3"><span ng-bind-html="model.total.localeCost - model.total.localeBalance | intlcurrency:model.selectedCurrency.id"></span></td>
           </tr>
         </tbody>
         <tbody class="totals">
