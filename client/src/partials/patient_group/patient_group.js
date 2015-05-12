@@ -16,12 +16,20 @@ angular.module('bhima.controllers')
     };
 
     dependencies.group = {
+
+       query : {
+        identifier : 'uuid',
+        tables : {
+          'patient_group' : {columns : ['uuid', 'name', 'price_list_uuid', 'subsidy_uuid']}
+        }
+      }
+    };
+
+    dependencies.subsidies = {
       query : {
         identifier : 'uuid',
-        tables: {
-          'patient_group' : {
-            columns: ['uuid', 'enterprise_id', 'price_list_uuid', 'name', 'note']
-          }
+        tables : {
+          'subsidy' : {columns : ['uuid', 'text']}
         }
       }
     };
@@ -54,7 +62,7 @@ angular.module('bhima.controllers')
         return;
       }
 
-      connect.basicDelete('patient_group', grp.uuid, 'uuid')
+      connect.delete('patient_group', 'uuid', [grp.uuid])
       .then(function () {
         $scope.group.remove(grp.uuid);
       }, function (err) {
@@ -67,7 +75,6 @@ angular.module('bhima.controllers')
     $scope.newGroup = function () {
       $scope.register = {};
       $scope.action = 'register';
-
       session.selected = null;
     };
 
@@ -77,7 +84,7 @@ angular.module('bhima.controllers')
       packaged.enterprise_id = $scope.enterprise.id;
 
       // validate that register is complete.
-      connect.basicPut('patient_group', packaged)
+      connect.post('patient_group', packaged)
       .then(function () {
         $scope.group.post(packaged);
         $scope.edit(packaged);
@@ -104,9 +111,11 @@ angular.module('bhima.controllers')
 
     $scope.saveModification = function () {
       // validate that modification is complete
-      connect.basicPost('patient_group', [connect.clean($scope.modify)], ['uuid'])
+      var packaged = $scope.modify;
+      connect.put('patient_group', [packaged], ['uuid'])
       .then(function () {
-        messenger.success('Successfully modified the group.');
+        $scope.group.put(packaged);
+		    messenger.success($translate.instant('PATIENT_GRP.SUCCESS'));
       });
     };
 

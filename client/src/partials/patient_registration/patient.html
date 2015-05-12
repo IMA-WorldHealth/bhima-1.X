@@ -1,8 +1,15 @@
 <header data-header>
-  {{ "PATIENT_REG.TITLE" | translate }} <small>{{ patient.first_name }} {{ patient.last_name }}</small>
+  {{ "PATIENT_REG.PAGE_TITLE" | translate }} <small>{{ patient.title }} {{ patient.first_name }} {{ patient.last_name }}</small>
 </header>
 
 <nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "PATIENT_REG.PAGE_TITLE" | translate }}</li>
+    </ol>
+  </div>
+  
   <div class="pull-right">
     <a href="#/location" class="btn btn-default btn-sm">
       <span class="glyphicon glyphicon-globe"></span> {{ "PATIENT_REG.LOCATION" | translate }}
@@ -15,7 +22,7 @@
 </nav>
 
 <main>
-  <div class="col-xs-12">
+  <div class="col-xs-12 margin-top-10">
     <div class="row">
       <div class="col-xs-7">
         <div class="row">
@@ -29,6 +36,21 @@
               <form name="details" class="form-horizontal">
                 <fieldset>
                   <legend>{{ "PATIENT_REG.PATIENT" | translate }}</legend>
+
+                  <div class="form-group">
+                    <label for="second-name" class="control-label col-xs-3 required">{{ "PATIENT_REG.SECOND_NAME" | translate }}</label>
+                    <div class="col-xs-9">
+                      <input type="text" class="form-bhima" id="second-name" ng-model="patient.last_name" required>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="second-name" class="control-label col-xs-3 required">{{ "PATIENT_RECORDS.MIDDLE_NAME" | translate }}</label>
+                    <div class="col-xs-9">
+                      <input type="text" class="form-bhima" id="middle-name" ng-model="patient.middle_name" required>
+                    </div>
+                  </div>
+
                   <div class="form-group">
                     <label for="first-name" class="control-label col-xs-3 required">{{ "PATIENT_REG.FIRST_NAME" | translate }}</label>
                     <div class="col-xs-9">
@@ -37,9 +59,9 @@
                   </div>
 
                   <div class="form-group">
-                    <label for="second-name" class="control-label col-xs-3 required">{{ "PATIENT_REG.SECOND_NAME" | translate }}</label>
+                    <label for="first-name" class="control-label col-xs-3 required">{{ "PATIENT_RECORDS.HOSPITAL_FILE_NR" | translate }}</label>
                     <div class="col-xs-9">
-                      <input type="text" class="form-bhima" id="second-name" ng-model="patient.last_name" required>
+                      <input type="text" class="form-bhima" id="hospital-no" ng-model="patient.hospital_no">
                     </div>
                   </div>
 
@@ -55,11 +77,10 @@
                     </div>
                   </div>
 
-
                   <div class="form-group" >
                     <label for="patient-dob" class="col-xs-3 control-label">{{ "PATIENT_REG.DOB" | translate }}</label>
                     <div class="col-xs-9">
-                      <input required id="patient-dob" type="date" class="form-bhima" ng-disabled="!session.fullDateEnabled" ng-model="patient.dob" max="{{ getMaxDate() }}">
+                      <input required id="patient-dob" type="date" class="form-bhima" ng-disabled="!session.fullDateEnabled" ng-model="patient.dob" min="{{ minDOB }}" max="{{ maxDOB }}">
                     </div>
                   </div>
 
@@ -145,6 +166,11 @@
               <form role="form">
 
                 <div class="form-group">
+                  <label for="title">{{ "PATIENT_REG.TITLE" | translate }}</label>
+                  <input type="text" class="form-bhima" id="title" ng-model="patient.title">
+                </div>
+
+                <div class="form-group">
                   <label for="phone">{{ "PATIENT_REG.PHONE_NO" | translate }}</label>
                   <input type="text" class="form-bhima" id="phone" ng-model="patient.phone">
                 </div>
@@ -155,18 +181,23 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="email">{{ "PATIENT_REG.AVENUE" | translate }}</label>
-                  <input type="email" class="form-bhima" id="avenue" ng-model="patient.address_1">
+                  <label for="address1">{{ "PATIENT_REG.ADDRESS1" | translate }}</label>
+                  <input type="text" class="form-bhima" id="address1" ng-model="patient.address_1">
                 </div>
 
                 <div class="form-group">
-                  <label for="parent">{{ "PATIENT_REG.PARENT_NAME" | translate }}</label>
+                  <label for="address2">{{ "PATIENT_REG.ADDRESS2" | translate }}</label>
+                  <input type="text" class="form-bhima" id="address2" ng-model="patient.address_2">
+                </div>
+
+                <div class="form-group">
+                  <label for="father_name">{{ "PATIENT_REG.FATHER_NAME" | translate }}</label>
                   <input type="text" class="form-bhima" id="father_name" ng-model="patient.father_name">
                 </div>
 
                 <div class="form-group">
-                  <label>{{ "PATIENT_REG.MOTHER_NAME" | translate }}</label>
-                  <input class="form-bhima" id="mother_name" ng-model="patient.mother_name">
+                  <label for="mother_name">{{ "PATIENT_REG.MOTHER_NAME" | translate }}</label>
+                  <input type="text" class="form-bhima" id="mother_name" ng-model="patient.mother_name">
                 </div>
 
                 <div class="form-group">
@@ -176,32 +207,37 @@
 
                 <div class="form-group">
                   <label for="marital">{{ "PATIENT_REG.MARITAL_STATUS" | translate }}</label>
-                  <input class="form-bhima" id="marital" ng-model="patient.marital_status">
+                  <input type="text" class="form-bhima" id="marital" ng-model="patient.marital_status">
                 </div>
 
                 <div class="form-group">
-                  <label>{{ "PATIENT_REG.PROFESSION" | translate }}</label>
-                  <input class="form-bhima" id="profession" ng-model="patient.profession">
+                  <label for="profession">{{ "PATIENT_REG.PROFESSION" | translate }}</label>
+                  <input type="text" class="form-bhima" id="profession" ng-model="patient.profession">
                 </div>
 
                 <div class="form-group">
-                  <label>{{ "PATIENT_REG.EMPLOYER" | translate }}</label>
-                  <input class="form-bhima" id="employer" ng-model="patient.employer">
+                  <label for="employer">{{ "PATIENT_REG.EMPLOYER" | translate }}</label>
+                  <input type="text" class="form-bhima" id="employer" ng-model="patient.employer">
                 </div>
 
                 <div class="form-group">
-                  <label>{{ "PATIENT_REG.SPOUSE" | translate }}</label>
-                  <input class="form-bhima" id="spouse" ng-model="patient.spouse">
+                  <label for="spouse">{{ "PATIENT_REG.SPOUSE" | translate }}</label>
+                  <input type="text" class="form-bhima" id="spouse" ng-model="patient.spouse">
                 </div>
 
                 <div class="form-group">
-                  <label>{{ "PATIENT_REG.SPOUSE_PROFESSION" | translate }}</label>
-                  <input class="form-bhima" id="spouse_profession" ng-model="patient.spouse_profession">
+                  <label for="spouse_profession">{{ "PATIENT_REG.SPOUSE_PROFESSION" | translate }}</label>
+                  <input type="text" class="form-bhima" id="spouse_profession" ng-model="patient.spouse_profession">
                 </div>
 
                 <div class="form-group">
-                  <label>{{ "PATIENT_REG.SPOUSE_EMPLOYER" | translate }}</label>
-                  <input class="form-bhima" id="spouse_employer" ng-model="patient.spouse_employer">
+                  <label for="spouse_employer">{{ "PATIENT_REG.SPOUSE_EMPLOYER" | translate }}</label>
+                  <input type="text" class="form-bhima" id="spouse_employer" ng-model="patient.spouse_employer">
+                </div>
+
+                <div class="form-group">
+                  <label for="notes">{{ "PATIENT_REG.NOTES" | translate }}</label>
+                  <textarea class="form-bhima" id="notes" ng-model="patient.notes" rows="4"></textarea>
                 </div>
 
               </form>

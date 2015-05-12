@@ -1,11 +1,13 @@
 angular.module('bhima.controllers')
 .controller('group.debtor', [
   '$scope',
+  '$translate',
   'connect',
   'appstate',
   'validate',
   'uuid',
-  function ($scope, connect, appstate, validate, uuid) {
+  'messenger',
+  function ($scope, $translate, connect, appstate, validate, uuid, messenger) {
     var dependencies = {};
     $scope.data = {};
 
@@ -14,7 +16,7 @@ angular.module('bhima.controllers')
         identifier : 'uuid',
         tables : {
           'debitor_group' : {
-            columns : ['uuid', 'name', 'account_id', 'location_id', 'payment_id', 'phone', 'email', 'note', 'locked', 'tax_id', 'max_credit', 'is_convention', 'price_list_uuid']
+            columns : ['uuid', 'name', 'account_id', 'location_id', 'phone', 'email', 'note', 'locked', 'max_credit', 'is_convention', 'price_list_uuid']
           }
         }
       }
@@ -26,16 +28,6 @@ angular.module('bhima.controllers')
         tables : {
           'account' : {
             columns : ['id', 'account_number', 'account_txt', 'account_type_id']
-          }
-        }
-      }
-    };
-
-    dependencies.payment = {
-      query : {
-        tables : {
-          'payment' : {
-            columns: ['id', 'text']
           }
         }
       }
@@ -62,7 +54,7 @@ angular.module('bhima.controllers')
       dependencies.price_list.query.where =
         ['price_list.enterprise_id=' + enterprise.id];
       dependencies.account.query.where =
-        ['account.locked<>1', 'AND', 'account.enterprise_id=' + enterprise.id];
+        ['account.locked<>1', 'AND', 'account.enterprise_id=' + enterprise.id, 'AND', 'account.is_ohada=1'];
       validate.process(dependencies)
       .then(setUpModels);
     });
@@ -111,6 +103,7 @@ angular.module('bhima.controllers')
         data.id = res.data.insertId;
         $scope.debitor_group.post(data);
         $scope.action = '';
+        messenger.success($translate.instant('DEBITOR_GRP.SUCCES'));
       });
     };
 
@@ -120,11 +113,16 @@ angular.module('bhima.controllers')
 
     $scope.submitEdit =  function () {
       var data = connect.clean($scope.editGroup);
+      if(!$scope.editGroup.price_list_uuid){
+        data.price_list_uuid = null;
+      }         
+
       connect.basicPost('debitor_group', [data], ['uuid'])
       .then(function () {
         $scope.debitor_group.put(data);
         $scope.action = '';
         $scope.editGroup = {}; // reset
+        messenger.success($translate.instant('DEBITOR_GRP.SUCCES'));
       });
     };
 

@@ -114,6 +114,14 @@
   width: 300px;
 }
 
+.signatures .signature-box-wide{
+  float: left;
+  margin: 5px 20px 30px 25px;
+  border-bottom: 1px solid #000;
+  width: 800px;
+  height: 50px;  
+}
+
 .signature-box>label {
   margin-bottom: 25px;
 }

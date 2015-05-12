@@ -16,8 +16,8 @@ angular.module('bhima.controllers')
   'appcache',
   '$http',
   function ($scope, $q, $translate, $location, $routeParams, validate, connect, appstate, messenger, precision, Store, uuid, util, Appcache, $http) {
-    var dependencies = {}, 
-        session = $scope.session = {cfg : {}, totals : [], selectedAccount : {}, configured : true}, 
+    var dependencies = {},
+        session = $scope.session = {cfg : {}, totals : [], selectedAccount : {}, configured : true},
         warnings = $scope.warnings = {};
 
     var cache = new Appcache('donation');
@@ -41,12 +41,19 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.user = {
+      query : 'user_session'
+    };
+
     dependencies.inventory = {
       query : {
         identifier : 'uuid',
         tables : {
-          inventory : { columns : ['uuid', 'code', 'text', 'purchase_price', 'type_id']}
-        }
+          inventory : { columns : ['uuid', 'code', 'text', 'purchase_price', 'type_id', 'group_uuid'] },
+          inventory_group : { columns : ['sales_account', 'stock_account', 'donation_account'] },
+        },
+        join : ['inventory_group.uuid=inventory.group_uuid'],
+        where : ['inventory_group.donation_account<>null','AND','inventory_group.stock_account<>null']
       }
     };
 
@@ -100,16 +107,8 @@ angular.module('bhima.controllers')
 
     appstate.register('project', function (project) {
       $scope.project = project;
-      validate.process(dependencies)      
+      validate.process(dependencies)
       .then(startup)
-      // .then(function (sacc) {
-      //   if(!sacc) {
-      //     session.configured = false;
-      //     return;
-      //   }
-      //   session.configured = true;
-        
-      // })
       .catch(error);
     });
 
@@ -162,7 +161,7 @@ angular.module('bhima.controllers')
       return item;
     }
 
-    $scope.updateDonationItem = function(donationItem, inventoryReference) {
+    $scope.updateDonationItem = function (donationItem, inventoryReference) {
       if (donationItem.inventoryReference) {
         $scope.inventory.post(donationItem.inventoryReference);
         $scope.inventory.recalculateIndex();
@@ -185,13 +184,13 @@ angular.module('bhima.controllers')
       session.donation.items.splice(index, 1);
     }
 
-    $scope.donationTotal = function() {
+    $scope.donationTotal = function () {
       return session.donation.items.reduce(priceMultiplyQuantity, 0);
     };
 
     function nextStep() {
-      if(session.donation.items.length > 0){
-        
+      if (session.donation.items.length > 0) {
+
         session.donation.items.forEach(function (donation) {
           donation.lots = new Store({ identifier : 'tracking_number', data : [] });
           angular.extend(donation, { isCollapsed : false });
@@ -229,6 +228,7 @@ angular.module('bhima.controllers')
       this.lot_number = null;
       this.tracking_number = uuid();
       this.quantity = 0;
+      this.purchase_order_uuid = null;
     }
 
     function addLot (drug) {
@@ -267,15 +267,19 @@ angular.module('bhima.controllers')
         totals.price += Math.round(donation.purchase_price * donation.quantity);
 
         donation.totalQuantity = donation.lots.data.reduce(sum, 0);
-        donation.validLots = donation.totalQuantity == donation.quantity;
+        donation.validLots = valid(donation.lots) && donation.totalQuantity === donation.quantity;
       });
     }
 
     function valid (lots) {
       var isDef = angular.isDefined;
       return lots.data.every(function (row) {
+        var newDate = new Date().getTime(),
+          expirate = new Date(row.expiration_date).getTime(),
+          diffDays = (parseInt((expirate-newDate)/(24*3600*1000)));
+     
         var n = parseFloat(row.quantity);
-        return n > 0 && isDef(row.lot_number) &&
+        return n > 0 && (diffDays > 0) && isDef(row.lot_number) &&
           isDef(row.expiration_date) &&
           !!row.lot_number;
       });
@@ -298,7 +302,7 @@ angular.module('bhima.controllers')
       session.lots = lots;
     };
 
-    $scope.accept = function (){
+    $scope.accept = function () {
       var document_id = uuid();
       var lots = processLots();
       var don = processDonations();
@@ -307,17 +311,6 @@ angular.module('bhima.controllers')
       var donation_items = don.donation_items;
       var movement = processMovements(document_id);
       var synthese = [];
-
-      // lots.forEach(function (lot, index) {
-      //   synthese.push({
-      //     lot : lot,
-      //     movement : movement[index],
-      //     donation : donation,
-      //     donation_item : donation_items[index],
-      //     currency_id : $scope.enterprise.data[0].currency_id,
-      //     project_id : $scope.project.id
-      //   });
-      // });
 
       session.donation.items.forEach(function (inventoryReference) {
         var inventory_lots = [],
@@ -336,6 +329,7 @@ angular.module('bhima.controllers')
           donation         : donation,
           tracking_numbers : inventory_lots,
           quantity         : sum_lots,
+          purchase_price   : inventoryReference.purchase_price,
           currency_id      : $scope.enterprise.data[0].currency_id,
           project_id       : $scope.project.id
         });
@@ -352,25 +346,12 @@ angular.module('bhima.controllers')
         .then(function () {
           return connect.post('donation_item', donation_items);
         })
-        .then(function(){ 
-          // return $q.all(synthese.map(function (postingEntry) {
-          //   return $http.post('posting_donation/', postingEntry);
-          // }));
-
-          return $q.all(synthese.map(function (postingEntry) {
-            console.log('Posting : ', postingEntry);
-            // A FIXE   : L'affichage des transactions dans le journal n'est pas en ordre
-            // A FIXE   : Ecrire chaque 'postingEntry' dans le journal de facon singuliere
-            // OBJECTIF : Ecrire pour chaque inventory de la donation comme une transaction dans le journal  
-            return $http.post('posting_donation/', postingEntry);
-          }));
-
-        })
+        .then(simulatePurchase)
         .then(function () {
           $location.path('/stock/donation_management/report/' + document_id);
         })
         .then(function () {
-          messenger.success('STOCK.ENTRY.WRITE_SUCCESS');
+          messenger.success($translate.instant('STOCK.ENTRY.WRITE_SUCCESS'));
         })
         .catch(function () {
           messenger.error('STOCK.ENTRY.WRITE_ERROR');
@@ -404,7 +385,8 @@ angular.module('bhima.controllers')
           entry_date          : util.sqlDate(new Date()),
           lot_number          : lot.lot_number,
           tracking_number     : lot.tracking_number,
-          quantity            : lot.quantity
+          quantity            : lot.quantity,
+          purchase_order_uuid : lot.purchase_order_uuid
         });
       });
 
@@ -418,7 +400,8 @@ angular.module('bhima.controllers')
           uuid            : uuid(),
           donor_id        : session.config.donor.id,
           employee_id     : session.config.employee.id,
-          date            : util.sqlDate(session.config.date)
+          date            : util.sqlDate(session.config.date),
+          is_received     : 1
       };
 
       session.lots.forEach(function (lot) {
@@ -432,12 +415,12 @@ angular.module('bhima.controllers')
       return don;
     }
 
-    $scope.toggleView = function(){
-      if(session.crud_or_read == 'crud'){
+    $scope.toggleView = function () {
+      if (session.crud_or_read === 'crud') {
         session.crud_or_read = 'read';
         session.view = $translate.instant('DONATION_MANAGEMENT.NEW');
         session.crud = true;
-      }else if(session.crud_or_read == 'read'){
+      } else if (session.crud_or_read === 'read') {
         session.crud_or_read = 'crud';
         session.view = $translate.instant('DONATION_MANAGEMENT.SEE_ALL');
         session.read = true;
@@ -449,18 +432,98 @@ angular.module('bhima.controllers')
     }
 
     function setConfiguration (acc) {
-      if(acc){
+      if (acc) {
         cache.put('selectedAccount', acc);
         session.configured = true;
         session.acc = acc;
-      }            
+      }
     }
 
     function reconfigure() {
       cache.remove('selectedAccount');
       session.acc = null;
       session.configured = false;
-    } 
+    }
+
+    function simulatePurchase() {
+      if (session.donation.items.length > 0) {
+
+        var purchase = {
+          uuid          : uuid(),
+          cost          : simulatePurchaseTotal(),
+          purchase_date : util.sqlDate(session.config.date),
+          currency_id   : $scope.project.currency_id,
+          creditor_uuid : null,
+          purchaser_id  : session.config.employee.id, //$scope.user.data.id,
+          project_id    : $scope.project.currency_id,
+          employee_id   : session.config.employee.id,
+          note          : 'DONATION ' + session.config.donor.name + '/' + util.sqlDate(session.config.date),
+          paid          : 0,
+          confirmed     : 0,
+          closed        : 0,
+          is_donation   : 1,
+          is_direct     : 0
+        };
+
+        simulateWritePurchaseLine(purchase)
+        .then(simulateWritePurchaseItems(purchase.uuid))
+        .then(updateStockPurchaseOrder(purchase.uuid))
+        .catch(handleError);
+      }
+
+    }
+
+    function updateStockPurchaseOrder (purchase_uuid) {
+      session.lots.forEach(function (lot) {
+        var stockEntry = {
+          tracking_number     : lot.tracking_number,
+          purchase_order_uuid : purchase_uuid
+        };
+        connect.put('stock',[stockEntry], ['tracking_number']);
+      });
+    }
+
+    function simulatePurchaseTotal() {
+      return session.donation.items.reduce(priceMultiplyQuantity, 0);
+    }
+
+
+    function simulateWritePurchaseLine(purchase) {
+      return connect.post('purchase', [purchase], ['uuid']);
+    }
+
+    function simulateWritePurchaseItems(purchase_uuid) {
+      var deferred = $q.defer();
+      var writeRequest = [];
+
+      writeRequest = session.donation.items.map(function (item) {
+        var writeItem = {
+          uuid           : uuid(),
+          purchase_uuid  : purchase_uuid,
+          inventory_uuid : item.inventoryId,
+          quantity       : item.quantity,
+          unit_price     : item.purchase_price,
+          total          : item.quantity * item.purchase_price
+        };
+        return connect.post('purchase_item', [writeItem], ['uuid']);
+      });
+
+      $q.all(writeRequest)
+      .then(function (result) {
+        deferred.resolve(result);
+      })
+      .catch(function (error) {
+        deferred.reject(error);
+      });
+      return deferred.promise;
+    }
+
+    function handleError(error) {
+      $translate('PURCHASE.WRITE_FAILED')
+      .then(function (value) {
+         messenger.danger(value);
+      });
+    }
 
     $scope.formatAccount = formatAccount;
     $scope.setConfiguration = setConfiguration;

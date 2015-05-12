@@ -1,0 +1,53 @@
+body {
+  font-size : 12px;
+}
+
+table {
+  width : 100%;
+}
+
+/*
+ * Invoice table style
+ */
+.invoice {
+  border-collapse : collapse;
+  border-spacing : 0;
+  border : 1px solid #9F9F9F;
+  border-top : 0;
+}
+
+.invoice thead > tr > th {
+  border       : 1px solid #9F9F9F;
+  padding-left : 5px;
+}
+
+.invoice tbody > tr > td {
+  border         : 1px solid #9F9F9F;
+  vertical-align : right;
+}
+
+/*
+ * Balance sheet style
+ */
+.balance thead > tr > th {
+  border-bottom : 1px solid #9f9f9f;
+  text-align: center;
+}
+
+tr.outline {
+  border-top : 1px solid #9f9f9f;
+  border-bottom : 1px solid #9f9f9f;
+}
+
+.center > * {
+  text-align : center;
+  display : block;
+  margin : 0;
+  padding : 0;
+}
+
+.contenu td {
+  text-align : center;
+}
+
+

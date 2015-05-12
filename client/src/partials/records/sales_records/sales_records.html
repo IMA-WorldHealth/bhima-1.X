@@ -17,11 +17,11 @@
   </div>
 
   <div>
-    <div class="col-xs-2" style="padding-right: 0px;">
-      <input class="form-bhima" ng-change="reset()" type="date" ng-model="session.param.dateTo" rows="20">
-    </div>
     <div class="col-xs-2">
       <input class="form-bhima" ng-change="reset()" type="date" ng-model="session.param.dateFrom" rows="20">
+    </div>    
+    <div class="col-xs-2" style="padding-right: 0px;">
+      <input class="form-bhima" ng-change="reset()" type="date" ng-model="session.param.dateTo" rows="20">
     </div>
   </div>
 
@@ -65,6 +65,7 @@
               <td width="20%">{{invoice.cost | currency}}</td>
               <td width="30%" class="hidden-print">
                 <a ng-href="/#/invoice/sale/{{invoice.uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}</a>
+                | <a ng-href="/#/report/invoice/{{invoice.uuid}}/" style="color : red;"><span class="glyphicon glyphicon-list-alt"></span> Proof of Concept Document</a>
                 | <a ng-href="/#/credit_note/{{invoice.uuid}}/"><span class="glyphicon glyphicon-repeat"></span> {{ 'SALERECORD.CREDIT_NOTE' | translate }}</a>
               </td>
             </tr>

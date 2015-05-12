@@ -58,15 +58,6 @@ angular.module('bhima.controllers')
       });
     }
 
-    // load the tree
-    function loadTree() {
-      connect.fetch('/tree')
-      .then(function (data) {
-        $scope.treeData = data;
-      })
-      .finally();
-    }
-
     // define dependencies for before login initially happens
     function beforeLogin() {
       var languages, enterprises, projects;
@@ -128,8 +119,7 @@ angular.module('bhima.controllers')
           'exchange_rate' : {
             'columns' : ['id', 'enterprise_currency_id', 'foreign_currency_id', 'rate', 'date']
           }
-        },
-        'where' : ['exchange_rate.date=' + util.sqlDate()]
+        }
       };
 
       fiscalYear = {

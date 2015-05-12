@@ -5,7 +5,7 @@
 <nav>
   <div class="pull-left">
     <ol class="breadcrumb" style="float: right;">
-      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
       <li><a href="#/inventory">{{ "INVENTORY.MAIN.TITLE" | translate }}</a></li>
       <li class="active">{{ "INVENTORY.GROUPS.TITLE" | translate }}</li>
     </ol>
@@ -20,7 +20,7 @@
 </nav>
 
 <main>
-  <div class="row">
+  <div class="row margin-top-10">
 
     <div class="col-xs-6">
       <div class="panel panel-primary" style="max-height: 550px; overflow: auto;">
@@ -36,7 +36,7 @@
               <th>{{ "INVENTORY.GROUPS.SALES_ACCOUNT" | translate }}</th>
               <th>{{ "INVENTORY.GROUPS.COGS_ACCOUNT" | translate }}</th>
               <th>{{ "INVENTORY.GROUPS.STOCK_ACCOUNT" | translate }}</th>
-              <!-- <th>{{ "INVENTORY.GROUPS.TAX_ACCOUNT" | translate }}</th> -->
+              <th>{{ "INVENTORY.GROUPS.DONATION_ACCOUNT" | translate }}</th>
               <th>{{ "COLUMNS.ACTIONS" | translate }}</th>
             </tr>
           </thead>
@@ -47,7 +47,7 @@
               <td>{{ accounts.get(group.sales_account).account_number }}</td>
               <td>{{ accounts.get(group.cogs_account).account_number }}</td>
               <td>{{ accounts.get(group.stock_account).account_number }}</td>
-              <!-- <td>{{ accounts.get(group.tax_account).account_number }}</td> -->
+              <td>{{ accounts.get(group.donation_account).account_number }}</td>
               <td>
                 <a class="action" ng-click="edit(group)">
                   <span class="glyphicon glyphicon-pencil"></span>

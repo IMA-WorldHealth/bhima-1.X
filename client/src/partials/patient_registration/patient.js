@@ -12,12 +12,14 @@ angular.module('bhima.controllers')
   'uuid',
   function ($scope, $q, $location, $translate, connect, messenger, validate, appstate, util, uuid) {
 
-    var dependencies = {};
-    var defaultBirthMonth = '06-01';
+    var dependencies = {},
+        defaultBirthMonth = '06-01',
+        timestamp = new Date(),
+        minYear = util.minPatientDate.getFullYear(),
+        maxYear = timestamp.getFullYear(),
+        session = $scope.session = { };
 
-    var session = $scope.session = { };
-
-    session.timestamp = new Date();
+    session.timestamp = timestamp;
     session.originLocationUuid = null;
     session.currentLocationUuid = null;
 
@@ -62,7 +64,8 @@ angular.module('bhima.controllers')
     dependencies.debtorGroup = {
       query : {
         identifier : 'uuid',
-        tables : { 'debitor_group' : { 'columns' : ['uuid', 'name', 'note']}}
+        tables : { 'debitor_group' : { 'columns' : ['uuid', 'name', 'note']}},
+        where  : ['debitor_group.locked=0']
       }
     };
 
@@ -70,11 +73,38 @@ angular.module('bhima.controllers')
       query : 'user_session'
     };
 
+
     function patientRegistration(model) {
-      console.log('Model is: ', model);
       angular.extend($scope, model);
+
+      // Update the year limit message (has to be done late to use current language)
+      validation.dates.tests.limit.message = $translate.instant(validation.dates.tests.limit.message)
+        .replace('<min>', minYear)
+        .replace('<max>', maxYear);
+
       return $q.when();
     }
+
+    function checkingExistPatient (file_number) {
+      var def = $q.defer();
+
+      if (file_number === 0 || file_number === '0') {
+        def.resolve(false);
+      } else {
+        var query = {
+          tables : { 
+            patient : { columns : ['uuid'] }
+          },
+          where  : ['patient.hospital_no=' + file_number]
+        };
+        connect.fetch(query)
+        .then(function (res) {
+          def.resolve(res.length !== 0);
+        });
+      }      
+      return def.promise;
+    }
+
 
     // Tests in an ng-disabled method often got called in the wrong order/ scope was not updated
     $scope.$watch('patient.dob', function (nval, oval) {
@@ -119,9 +149,9 @@ angular.module('bhima.controllers')
       return;
     }
 
-    // Conveluted date validation
+    // Convoluted date validation
     function validateDates() {
-      var extractYear = session.yob;
+      var yearOfBirth = session.yob;
       validation.dates.flag = false;
 
       if (session.fullDateEnabled) {
@@ -131,24 +161,34 @@ angular.module('bhima.controllers')
           return true;
         }
 
-        extractYear = $scope.patient.dob.getFullYear();
+        yearOfBirth = $scope.patient.dob.getFullYear();
       }
 
-      if (extractYear) {
+      if (yearOfBirth) {
 
-        if (isNaN(extractYear)) {
+	// NOTE: The following checks on the yearOfBirth are never executed with
+	//       the html5+angular date input field since the form value becomes
+	//       undefined when invalid and is caught by the previous check.
+	//       Leaving them in as a precaution in case the input form behavior
+	//       changes in the future.
+
+        if (isNaN(yearOfBirth)) {
           validation.dates.flag = validation.dates.tests.type;
           return true;
         }
 
         // Sensible year limits - may need to change to accomidate legacy patients
-        if (extractYear > 2014 || extractYear < 1900) {
+        if (yearOfBirth > maxYear || yearOfBirth < minYear) {
           validation.dates.flag = validation.dates.tests.limit;
           return true;
         }
       }
       return false;
     }
+
+    // Define limits for DOB
+    $scope.minDOB = util.htmlDate(util.minPatientDate);
+    $scope.maxDOB = util.htmlDate(timestamp);
 
     // Location methods
     function setOriginLocation(uuid) {
@@ -171,11 +211,15 @@ angular.module('bhima.controllers')
       var patient = $scope.patient;
       patient.current_location_id = session.originLocationUuid;
       patient.origin_location_id = session.currentLocationUuid;
-      writePatient(patient);
-    };
 
-    $scope.getMaxDate = function getMaxDate () {
-      return util.htmlDate(session.timestamp);
+      checkingExistPatient(patient.hospital_no)
+      .then(function (is_exist) {
+        if (!is_exist) {
+          writePatient(patient);
+        } else {
+          messenger.info(String($translate.instant('UTIL.PATIENT_EXIST_A')).concat(patient.hospital_no, $translate.instant('UTIL.PATIENT_EXIST_B')), true);
+        }
+      });
     };
 
     function writePatient(patient) {
@@ -183,7 +227,7 @@ angular.module('bhima.controllers')
       var packageDebtor = {
         uuid : debtorId,
         group_uuid : $scope.debtor.debtor_group.uuid,
-        text : 'Debtor ' + patient.first_name + ' ' + patient.last_name,
+        text : 'Debtor ' + patient.first_name + ' ' + patient.last_name + ' ' + patient.middle_name,
       };
 
       var packagePatient = connect.clean(patient);
@@ -191,6 +235,15 @@ angular.module('bhima.controllers')
       packagePatient.uuid = patientId;
       packagePatient.project_id = $scope.project.id;
       packagePatient.reference = 1; // FIXME/TODO : This is a hack
+
+      // Normalize the patient names
+      packagePatient.first_name = util.normalizeName(packagePatient.first_name);
+      packagePatient.last_name = util.normalizeName(packagePatient.last_name);
+      packagePatient.middle_name = util.normalizeName(packagePatient.middle_name);
+      packagePatient.father_name = util.normalizeName(packagePatient.father_name);
+      packagePatient.mother_name = util.normalizeName(packagePatient.mother_name);
+      packagePatient.spouse = util.normalizeName(packagePatient.spouse);
+      packagePatient.title = util.normalizeName(packagePatient.title);
 
       connect.basicPut('debitor', [packageDebtor])
       .then(function () {
@@ -255,6 +308,6 @@ angular.module('bhima.controllers')
 
     $scope.setOriginLocation = setOriginLocation;
     $scope.setCurrentLocation = setCurrentLocation;
-
   }
+
 ]);

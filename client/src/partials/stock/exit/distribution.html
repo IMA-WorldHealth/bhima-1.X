@@ -5,9 +5,9 @@
 <nav>
   <div class="pull-left">
     <ol class="breadcrumb" style="float: right;">
-      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
       <li><a tabindex="-1" href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
-      <li><a tabindex="-1" class="clk" >{{ "STOCK.EXIT.KEY" | translate }}</a></li>
+      <li class="active">{{ "STOCK.EXIT.KEY" | translate }}</li>
     </ol>
   </div>
 
@@ -92,13 +92,22 @@
           <td width="20%">{{session.sale.trans_date | date}}</td>
           <td width="50%">
             <div>
-              <div ng-if="session.sale.balance===session.sale.debit">
+              <div ng-if="session.sale.balance===session.sale.debit&&!session.patient.is_convention">
                 <span
                 class="glyphicon"
                 ng-class="{
                   'glyphicon-remove-sign error' : true
                 }"
                 ></span> {{ "DISTRIBUTION.INVOICE_NOT_PAID" | translate }}
+              </div>
+
+              <div ng-if="session.sale.balance===session.sale.debit&&session.patient.is_convention">
+                <span
+                class="glyphicon"
+                ng-class="{
+                  'glyphicon-ok-sign correct' : true
+                }"
+                ></span> {{ "DISTRIBUTION.INVOICE_CONVENTION" | translate }}
               </div>
 
               <div ng-if="session.sale.balance===0">
@@ -132,7 +141,7 @@
       <div class="col-xs-12">
         <div class="alert alert-info">
           <span class="glyphicon glyphicon-info-sign"></span>
-          {{ledger.data.length ? 'Showing all sales for patient ' : 'No sale data found for patient '}}
+          {{(ledger.data.length ? 'DISTRIBUTION.SHOW_ALL_SALES' : 'DISTRIBUTION.NO_SALE_FOUND') | translate}}
            <b>{{session.patient.name}}
           </b>
         </div>
@@ -151,14 +160,33 @@
           <div class="panel-body">
             <div class="panel panel-default" ng-repeat="item in ledger.data | orderBy:['consumed', '-trans_date']">
               <div class="panel-body">
-                <div class="pull-right">
-                <span
-                  class="glyphicon"
-                  ng-class="{
-                    'glyphicon-ok-sign correct' : !item.consumed,
-                    'glyphicon-minus-sign warn' : item.consumed}"></span>
+                <div ng-if="!item.canceled&&!item.reversing_stock" class="pull-right">
+                  <span
+                    class="glyphicon"
+                    ng-class="{
+                      'glyphicon-ok-sign correct' : !item.consumed,
+                      'glyphicon-minus-sign warn' : item.consumed}">
+                    </span>
                   <span>{{(item.consumed ? 'DISTRIBUTION.CONSUMED' : 'DISTRIBUTION.NOT_CONSUMED') | translate}}</span>
                 </div>
+                <div ng-if="item.canceled&&!item.reversing_stock" class="pull-right">
+                  <span
+                    class="glyphicon"
+                    ng-class="{
+                      'glyphicon-ok-sign correct' : !item.canceled,
+                      'glyphicon-warning-sign error' : item.canceled}">
+                   </span>
+                  <span>{{'DISTRIBUTION.CANCELED' | translate}}</span>
+                </div>                
+                <div ng-if="item.reversing_stock" class="pull-right">
+                  <span
+                    class="glyphicon"
+                    ng-class="{
+                      'glyphicon-ok-sign correct' : !item.reversing_stock,
+                      'glyphicon-share error' : item.reversing_stock}">
+                   </span>
+                  <span>{{'DISTRIBUTION.REVERSE_CONSUMPTION' | translate}} </span>
+                </div>                
                 <table class="table table-condensed table-bordered">
                   <thead>
                     <tr>
@@ -175,7 +203,7 @@
                       <td width="20%">{{item.trans_date | date}}</td>
                       <td width="50%">
                         <div>
-                          <div ng-if="item.balance===item.debit">
+                          <div ng-if="item.balance===item.debit&&!session.patient.is_convention">
                             <span
                             class="glyphicon"
                             ng-class="{
@@ -184,13 +212,31 @@
                             ></span> {{ "DISTRIBUTION.INVOICE_NOT_PAID" | translate }}
                           </div>
 
-                          <div ng-if="item.balance===0">
+                          <div ng-if="item.balance===item.debit&&session.patient.is_convention">
+                            <span
+                            class="glyphicon"
+                            ng-class="{
+                              'glyphicon-ok-sign correct' : true
+                            }"
+                            ></span> {{ "DISTRIBUTION.INVOICE_CONVENTION" | translate }}
+                          </div>
+
+                          <div ng-if="item.balance===0&&!item.canceled">
                             <span
                             class="glyphicon"
                             ng-class="{
                               'glyphicon-ok-sign correct' : true
                             }"
                             ></span> {{ "DISTRIBUTION.INVOICE_PAID" | translate }}
+                          </div>
+
+                          <div ng-if="item.balance===0&&item.canceled">
+                            <span
+                            class="glyphicon"
+                            ng-class="{
+                              'glyphicon-warning-sign error' : true
+                            }"
+                            ></span> {{ "DISTRIBUTION.CANCELED" | translate }}
                           </div>
 
                           <div ng-if="item.balance!==0&&item.balance<item.debit">
@@ -208,11 +254,11 @@
                   </tbody>
                 </table>
 
-                <div ng-if="!item.consumed">
+                <div ng-if="!item.consumed&&!item.canceled">
                   <button
                     ng-click="selectSale(item)"
                     class="btn btn-default btn-sm"><span class="glyphicon glyphicon-circle-arrow-right correct"></span>{{ "DISTRIBUTION.SELECT" | translate }}</button>
-                  <button class="btn btn-default btn-sm">{{ "DISTRIBUTION.VIEW_SALE" | translate }}</button>
+                  <a ng-href="#/invoice/sale/{{item.inv_po_id}}" class="btn btn-default btn-sm">{{ "DISTRIBUTION.VIEW_SALE" | translate }}</a>
                 </div>
               </div>
             </div>

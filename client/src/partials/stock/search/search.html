@@ -3,6 +3,13 @@
 </header>
 
 <nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "STOCK.SEARCH.TITLE" | translate }}</li>
+    </ol>
+  </div>
+  
   <div class="col-xs-4 input-group">
     <input class="form-bhima" ng-model="session.stockSearch" typeahead="stock as stock.text for stock in inventory.data | filter: $viewValue | limitTo:10" typeahead-on-select="loadStock(session.stockSearch.uuid)" typeahead-template-url="stockItem.html" placeholder="{{'UPDATE_STOCK.SEARCH_TEXT' | translate }}">
   </div>

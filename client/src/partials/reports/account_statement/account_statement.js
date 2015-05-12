@@ -12,12 +12,14 @@ angular.module('bhima.controllers')
   '$window',
   'validate',
   function ($scope, $q, $http, $routeParams, $translate, appstate, uuid, util, messenger, $window, validate) {
-    var dependencies = {};
+    var dependencies = {},
+      state = $scope.state;
     var session = $scope.session = {
       reportDate : new Date(),
       timestamp : new Date(),
       config : {
-        limit : 10
+        limit : 10,
+	accountId : null
       },
       loaded : false,
       select : false
@@ -41,26 +43,31 @@ angular.module('bhima.controllers')
       .then(init, handleError);
     });
 
-    function init (models) {
+    function init(models) {
       angular.extend(session, models);
     }
 
-    function handleError (err) {
+
+    // Define the callbacks for the findAccount dialog
+    function submitAccount(account) {
+      $scope.state = 'generate'; 
+
+      fetchReport(account.id);
+    }
+
+    function resetAccountSearch() {
+      session.config.accountId = null;
+    }
+
+
+    function handleError(err) {
        messenger.danger($translate.instant('REPORT.ACCOUNT_STATEMENT.CANNOT_FIND_ACCOUNT') + ' ' + session.requestId);      
-    }
-
-    function formatAccount (account) {
-      return account ? [account.account_txt].join(' ') : '';
-    }
-
-    function requestAccount(accountId) {
-      if (accountId) { fetchReport(accountId); }
     }
 
     function fetchReport(accountId) {
       session.config.accountId = accountId;
 
-        processReport()
+      processReport()
         .then(
           initialise
         ).catch(
@@ -86,13 +93,11 @@ angular.module('bhima.controllers')
 
     function initialise(model) {
       $scope.report = model.data;
-      console.log($scope.report);
       $scope.report.uuid = uuid();
     }
 
 
-
-    
+   
    
     // parseParams();
 
@@ -106,10 +111,6 @@ angular.module('bhima.controllers')
 
     //   return fetchReport(session.requestId);
     // }
-
-    
-   
-    
 
     
 
@@ -130,11 +131,17 @@ angular.module('bhima.controllers')
     //   throw error;
     // }
 
-    
+    $scope.print = function print() {
+      $window.print();
+    };
 
-    function print () { $window.print(); }
-    $scope.print = print;
-    $scope.requestAccount = requestAccount;
-    $scope.formatAccount = formatAccount;
+   function reconfigure () {
+      $scope.state = null;
+    }
+
+
+    $scope.reconfigure = reconfigure;
+    $scope.submitAccount = submitAccount;
+    $scope.resetAccountSearch = resetAccountSearch;
   }
 ]);
