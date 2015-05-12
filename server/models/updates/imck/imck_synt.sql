@@ -61,3 +61,10 @@ ADD `virement_account_id` int(11) NULL;
 
 INSERT INTO `unit` VALUES
 (107, 'Report Stock Movement','TREE.REPORT_STOCK_MOVEMENT','',10,0,'/partials/reports/stock_movement/','reports/stock_movement/');
+
+-- Title : ADDING EXTRA ORDINARY PAYMENT UNIT
+-- By    : Bruce Mbayo
+-- Date  : 2015-05-10
+
+INSERT INTO `unit` VALUES
+(108, 'Extra ordinary payment','TREE.EXTRA_PAYMENT','',5,0,'/partials/cash/extra_payment/','/extra_payment/');
