@@ -10,7 +10,7 @@
     "language" : "en",
     "address" : "Jonathanwniles@gmail.com",
     "subscription" : [
-      "en"
+      "daily"
     ]
   },
   "Dedrick Kitamuka" : { 
@@ -32,6 +32,22 @@
  "Wayne Niles" : { 
     "language" : "en",
     "address" : "wayne@sanru.org",
+    "subscription" : [
+      "daily"
+    ]
+  },
+
+ "Chris Lomame" : { 
+    "language" : "fr",
+    "address" : "lomamech@gmail.com",
+    "subscription" : [
+      "daily"
+    ]
+  },
+
+ "Bernard Kabibu" : { 
+    "language" : "fr",
+    "address" : "bernardkabibu@gmail.com",
     "subscription" : [
       "daily"
     ]
