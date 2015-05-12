@@ -1092,6 +1092,7 @@
    "IMPORT_OPENING_BALANCES"     : "Import opening balances",
    "LOCK"                        : "Lock",
    "LAST_VOUCHER"                : "Last Voucher No.",
+   "LOCK"                        : "Lock",
    "LOCKED"                      : "This fiscal year is locked.",
    "LOCKED_TRUE"                 : "Locked",
    "LOCKED_FALSE"                : "Not Locked",
