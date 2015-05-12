@@ -138,7 +138,7 @@
 
             <div class="form-group">
               <label>{{ "COLUMNS.INVENTORY_GROUP" | translate }}</label>
-              <select class="form-bhima" ng-model="selectedItem.group_uuid" ng-options="group.uuid as group.name for group in groups.data"></select>
+              <select class="form-bhima" ng-model="selectedItem.group_uuid" ng-options="group.uuid as group.name for group in groups.data | orderBy:'name'"></select>
             </div>
 
             <div class="form-group">
