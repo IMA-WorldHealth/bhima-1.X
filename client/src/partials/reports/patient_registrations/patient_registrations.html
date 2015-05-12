@@ -126,7 +126,7 @@
               <tr ng-repeat='patient in patients'>
                 <td> {{$index + 1}} </td>
                 <td> {{ patient.abbr + patient.reference }} </td>
-                <td> {{ patient.first_name + ' ' + patient.last_name }} </td>
+                <td> {{ patient.last_name + ' ' + patient.middle_name  + ' ' + patient.first_name }} </td>
                 <td> {{ patient.dob | date }} </td>
                 <td> {{ patient.sex }} </td>
                 <td ng-show="!patient.expand" class="hidden-print"><a ng-click="patient.expand=!patient.expand">{{ "UTIL.SHOW" | translate }}</a></td>
