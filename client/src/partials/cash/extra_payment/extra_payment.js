@@ -169,13 +169,13 @@ angular.module('bhima.controllers')
     // Prototype unique
     Array.prototype.unique = function(criteria)
     {
-      var unique = {};
-      var distinct = [];
+      var unique = {},
+        distinct = [];
       for( var i in this ){
-       if( typeof(unique[this[i][criteria]]) == 'undefined'){
-        distinct.push(this[i]);
-       }
-       unique[this[i][criteria]] = 0;
+        if( typeof(unique[this[i][criteria]]) === 'undefined'){
+          distinct.push(this[i]);
+        }
+        unique[this[i][criteria]] = 0;
       }
       return distinct;
     };

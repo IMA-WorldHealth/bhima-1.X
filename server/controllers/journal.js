@@ -1034,6 +1034,7 @@ function handleEmployeeInvoice (id, user_id, done) {
 }
 
 function handleCreditNote (id, user_id, done) {
+  // to update this function : SELECT `s`.`uuid`, `s`.`cost`, `t`.`subsidy_uuid`, `t`.`id`, `t`.`account_txt` FROM `sale` as `s` LEFT JOIN (SELECT subsidy_uuid, sale_uuid, account.id, account_txt FROM  sale_subsidy JOIN subsidy JOIN debitor_group JOIN account WHERE sale_subsidy.sale_uuid = "f5a9e705-6c92-4ae1-b080-75522f6bd2cd" AND sale_subsidy.subsidy_uuid = subsidy.uuid AND subsidy.debitor_group_uuid = debitor_group.uuid AND  debitor_group.account_id = account.id) as `t` ON `s`.`uuid` = `t`.`sale_uuid` WHERE `s`.`uuid` = "f5a9e705-6c92-4ae1-b080-75522f6bd2cd";
   var sql, data, reference, cfg = {}, queries = {};
 
   sql =
@@ -1094,13 +1095,14 @@ function handleCreditNote (id, user_id, done) {
     //}
 
     // all checks have passed - prepare for writing to the journal.
-    return q([ get.origin('credit_note'), get.period(reference.note_date) ]);
+    return q([ get.origin('credit_note'), get.origin('sale'), get.period(reference.note_date) ]);
 
   })
-  .spread(function (originId, periodObject) {
+  .spread(function (originId, saleOrigin, periodObject) {
     // we now have the origin!
     // we now have the relevant period!
 
+    cfg.saleOrigin = saleOrigin;
     cfg.originId = originId;
     cfg.periodId = periodObject.id; // TODO : change this to camelcase
     cfg.fiscalYearId = periodObject.fiscal_year_id;
@@ -1117,16 +1119,16 @@ function handleCreditNote (id, user_id, done) {
     '`deb_cred_uuid`, `inv_po_id`, `cost_ctrl_id`, `origin_id`, '+
     '`user_id`, `cc_id`, `pc_id` ' +
     'FROM `posting_journal`' +
-    'WHERE `posting_journal`.`inv_po_id`=' + sanitize.escape(reference.sale_uuid) +
+    'WHERE `posting_journal`.`inv_po_id`= ? AND `posting_journal`.`origin_id` = ? ' +
     'UNION ' +
     'SELECT `uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
     '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`,  `deb_cred_type`, `currency_id`, ' +
     '`deb_cred_uuid`, `inv_po_id`, `cost_ctrl_id`, `origin_id`, '+
     '`user_id`, `cc_id`, `pc_id` ' +
     'FROM `general_ledger`' +
-    'WHERE `general_ledger`.`inv_po_id`=' + sanitize.escape(reference.sale_uuid) ;
+    'WHERE `general_ledger`.`inv_po_id`= ? AND `general_ledger`.`origin_id` = ? ';
 
-    return db.exec(sql);
+    return db.exec(sql, [reference.sale_uuid, cfg.saleOrigin, reference.sale_uuid, cfg.saleOrigin]);
   })
   .then(function (results) {
     queries.items = [];
@@ -1141,11 +1143,16 @@ function handleCreditNote (id, user_id, done) {
       item.trans_id = cfg.trans_id;
       item.trans_date = util.toMysqlDate(get.date());
 
-      //FIX ME deb_cred_uuid when is empty the text 'null' is inserted in the table posting_journal
+      if(item.deb_cred_uuid){
+        item.deb_cred_uuid = sanitize.escape(item.deb_cred_uuid);
+      } else {
+        item.deb_cred_uuid = null;
+      }
+      //It it fixed
       var sql =
         'INSERT INTO `posting_journal` ' +
           '(`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
-          '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `deb_cred_type`, `currency_id`, ' +
+          '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, ' +
           '`deb_cred_uuid`, `inv_po_id`, `cost_ctrl_id`, `origin_id`, '+
           '`user_id`, `cc_id`, `pc_id`) ' +
         'VALUES (' +
@@ -1162,9 +1169,8 @@ function handleCreditNote (id, user_id, done) {
           item.debit + ', ' +
           item.credit_equiv + ', ' +
           item.debit_equiv + ', ' +
-          sanitize.escape(item.deb_cred_type) + ', ' +
           item.currency_id + ', ' +
-          sanitize.escape(item.deb_cred_uuid) + ', ' +
+          item.deb_cred_uuid + ', ' +
           sanitize.escape(item.inv_po_id) + ', ' +
           item.cost_ctrl_id + ', ' +
           item.origin_id + ', ' +
@@ -1194,7 +1200,6 @@ function handleCreditNote (id, user_id, done) {
 
 
 function handleCashDiscard (id, user_id, done) {
-  console.log("ID", id);
   var sql, reference, cfg = {}, queries = {}, state = {};
   state.id = id;
   cfg.rows = [];
@@ -3787,7 +3792,13 @@ function handleReversingStock (id, user_id, details, done) {
       item.fiscal_year_id = cfg.fiscalYearId;
       item.trans_id = cfg.trans_id;
       item.trans_date = util.toMysqlDate(get.date());
-      //FIX ME deb_cred_uuid when is empty the text 'null' is inserted in the table posting_journal
+
+      if(item.deb_cred_uuid){
+        item.deb_cred_uuid = sanitize.escape(item.deb_cred_uuid);
+      } else {
+        item.deb_cred_uuid = null;
+      }
+
       var sql =
         'INSERT INTO `posting_journal` ' +
           '(`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
@@ -4018,7 +4029,12 @@ function handleCancelSupport (id, user_id, details, done) {
       item.trans_id = cfg.trans_id;
       item.trans_date = util.toMysqlDate(get.date());
 
-      //FIX ME deb_cred_uuid when is empty the text 'null' is inserted in the table posting_journal
+      if(item.deb_cred_uuid){
+        item.deb_cred_uuid = sanitize.escape(item.deb_cred_uuid);
+      } else {
+        item.deb_cred_uuid = null;
+      }
+
       var sql =
         'INSERT INTO `posting_journal` ' +
           '(`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
