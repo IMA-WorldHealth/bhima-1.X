@@ -1,0 +1,68 @@
+<header data-header>
+  <b>{{ "STOCK_STATUS.TITLE" | translate }} : </b> {{ depotSelected }}  <small> {{ title }} {{timestamp | date}}</small>
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb" style="float: right;">
+      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a tabindex="-1" href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
+      <li><a tabindex="-1" >{{ "STOCK_STATUS.TITLE" | translate }}</a></li>
+    </ol>
+  </div>
+
+  <div class="pull-right" style="margin-top: 1px">
+    <span ><b>{{depot.reference ? '[' + depot.reference + ']' : ''}} </b>
+      {{depot.text}}</span>
+  </div>
+</nav>
+
+<div class="report report-compressed">
+  <div class="reportBody">
+    <div class="reportFrame" style="padding-top: 10px;">
+      <h4 class="visible-print"><b>{{ "STOCK_STATUS.TITLE" | translate }} : </b> {{ depotSelected }}  <small> {{ title }} {{timestamp | date}}</small></h4>
+      <table class="reportTable">
+        <thead>
+          <tr>
+            <th>{{ "COLUMNS.NR" | translate }}</th>
+            <th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>
+            <th>{{ "COLUMNS.DESIGNATION" | translate }}</th>
+            <th>{{ "COLUMNS.EXPIRATION_DATE" | translate }}</th>
+            <th>{{ "COLUMNS.INITIAL_STOCK" | translate }}</th>
+            <th>{{ "COLUMNS.CURRENT_STOCK" | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="expiring in model.consumption.data | orderBy: 'text'">
+            <td>{{$index + 1}}</td>
+            <td>{{ expiring.lot_number }}</td>
+            <td>{{ expiring.text }}</td>
+            <td>{{ expiring.expiration_date | date }}</td>
+            <td>{{ expiring.initial }}</td>
+            <td>{{ expiring.current }}</td>
+          </tr>
+          <tr ng-if="!model.consumption.data.length">
+            <td colspan="7">
+              <span class="glyphicon glyphicon-stats"></span>
+              {{ "EXPIRING_REPORT.EMPTY_REPORT" | translate }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <table style="width: 99%" >
+    <tbody>
+      <td width="50%">
+        <span style="margin-right: 10px;">
+          <span class="glyphicon glyphicon-list-alt" style="color: #428bca"></span>
+          <b>{{total.result.totalItems}}</b>
+          <span ng-if="session.searching">...</span>
+        </span>
+      </td>
+    </tbody>
+  </table>
+</footer>
