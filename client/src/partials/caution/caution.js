@@ -121,7 +121,6 @@ angular.module('bhima.controllers')
         });
 
         $scope.account_balance = balance;
-        console.log('LA BALANCE DANS LA BASE DE DONNEES ',$scope.account_balance);
 
       });
 
