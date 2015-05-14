@@ -51,7 +51,7 @@ angular.module('bhima.controllers')
         identifier : 'uuid',
         'tables' : {
           'debitor' : { 'columns' : ['uuid', 'text'] },
-          'patient' : { 'columns' : ['first_name', 'last_name'] },
+          'patient' : { 'columns' : ['first_name', 'last_name', 'middle_name'] },
           'debitor_group' : { 'columns' : ['name'] },
           'account' : { 'columns' : ['account_number'] }
         },
