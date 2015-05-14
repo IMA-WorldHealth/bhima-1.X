@@ -82,6 +82,16 @@
             </div>
           </form>
         </div>
+        <span ng-show="noEmpty">
+          <div class="alert alert-danger">
+            <label> 
+              <h4>
+              <span class="glyphicon" ng-class="{'glyphicon-warning-sign error' : true }"></span> {{ "CAUTION.ATTENTION" | translate }} : <b ng-bind-html="account_balance | intlcurrency:session.currency"></b> 
+              </h4>
+            </label>
+          </div>          
+        </span>
+
       </div>
     </div>
 
@@ -97,7 +107,6 @@
                 <span class="input-group-addon"> {{ currency.symbol }} </span>
               </div>
             </div>
-
             <div style="color: #b94a48;" ng-if="session.payment < currency.min_monentary_unit">
               <span class="glyphicon glyphicon-bell"></span> {{ "CAUTION.UNIT_ERROR" | translate }}
             </div>

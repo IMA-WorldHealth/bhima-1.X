@@ -300,6 +300,7 @@
   },
 "CAUTION": {
    "AGE"          : "Age",
+   "ATTENTION"    : "Attention this patient has a debit balance",
    "CASH"         : "Cash Payments",
    "CAUTION"      : "Caution",
    "GENDER"       : "Sex",
