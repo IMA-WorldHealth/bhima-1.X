@@ -2424,6 +2424,7 @@
       },
    "REPORT": {
       "DATE"           : "Date",
+      "EMPTY_REPORT"   : "Aucun enregistrement trouvé !",
       "EXPIRING_STOCK" : "Expiration Stock",
       "ITEM_IN_STOCK"  : "Article en stock",
       "STOCK_COUNT"    : "Stock Count",

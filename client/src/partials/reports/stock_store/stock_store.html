@@ -33,13 +33,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="expiring in model.consumption.data | orderBy: 'text'">
+          <tr ng-repeat="cons in model.consumption.data | orderBy: 'text'">
             <td>{{$index + 1}}</td>
-            <td>{{ expiring.lot_number }}</td>
-            <td>{{ expiring.text }}</td>
-            <td>{{ expiring.expiration_date | date }}</td>
-            <td>{{ expiring.initial }}</td>
-            <td>{{ expiring.current }}</td>
+            <td>{{ cons.lot_number }}</td>
+            <td>{{ cons.text }}</td>
+            <td>{{ cons.expiration_date | date }}</td>
+            <td>{{ cons.initial }}</td>
+            <td>{{ cons.current }}</td>
           </tr>
           <tr ng-if="!model.consumption.data.length">
             <td colspan="7">
