@@ -220,7 +220,7 @@ angular.module('bhima.controllers')
       $scope.project = project;
       data.currency_id = project.currency_id;
       dependencies.accounts.query.where =
-        ['account.enterprise_id=' + project.enterprise_id];
+        ['account.enterprise_id=' + project.enterprise_id,'AND','account.is_ohada=1'];
       validate.process(dependencies)
       .then(startup)
       .finally();
