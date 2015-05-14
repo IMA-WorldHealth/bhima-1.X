@@ -86,7 +86,7 @@ angular.module('bhima.controllers')
             row.currency_id = 2; // values are always in $ by default
           });
           $scope.saleData = $scope.saleData.concat(items);
-          $scope.saleDataUnique = $scope.saleData.unique('transaction');
+          $scope.saleDataUnique = uniqueFx($scope.saleData, 'transaction');
         });
       });
     }
@@ -142,6 +142,18 @@ angular.module('bhima.controllers')
         obj.currency_id=obj.currency;
       }
 
+    }
+
+    function uniqueFx (tableau, criteria) {
+      var unique = {},
+          distinct = [];
+      for( var i in tableau ){
+        if( typeof(unique[tableau[i][criteria]]) === 'undefined'){
+          distinct.push(tableau[i]);
+        }
+        unique[tableau[i][criteria]] = 0;
+      }
+      return distinct;
     }
 
     $scope.formatAccount = function (ac) {

@@ -52,7 +52,7 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           'account' :{
-            columns : ['id', 'account_txt', 'account_number']
+            columns : ['id', 'account_txt', 'account_number', 'is_ohada']
           }
         },
         where : ['account.is_ohada=1', 'AND', 'account.account_type_id<>3']
@@ -87,6 +87,9 @@ angular.module('bhima.controllers')
         session.receipt.cost = 0.00;
         session.receipt.cash_box_id = $routeParams.id;
         session.accounts = models.accounts.data;
+        console.log('PPPPPPPPPPPPPPPPPPPP');
+        console.log(models.accounts.data);
+        console.log('PPPPPPPPPPPPPPPPPPPP');
       })
       .catch(function (err) {
         messenger.error(err);
