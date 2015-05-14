@@ -86,7 +86,7 @@ angular.module('bhima.controllers')
             row.currency_id = 2; // values are always in $ by default
           });
           $scope.saleData = $scope.saleData.concat(items);
-          $scope.saleDataUnique = $scope.saleData.unique('transaction');
+          $scope.saleDataUnique = uniqueFx($scope.saleData, 'transaction');
         });
       });
     }
@@ -144,6 +144,18 @@ angular.module('bhima.controllers')
 
     }
 
+    function uniqueFx (tableau, criteria) {
+      var unique = {},
+          distinct = [];
+      for( var i in tableau ){
+        if( typeof(unique[tableau[i][criteria]]) === 'undefined'){
+          distinct.push(tableau[i]);
+        }
+        unique[tableau[i][criteria]] = 0;
+      }
+      return distinct;
+    }
+
     $scope.formatAccount = function (ac) {
       if(ac){return ac.account_number + ' - ' + ac.account_txt;}
     };
@@ -165,20 +177,5 @@ angular.module('bhima.controllers')
 
     $scope.setCurrency = setCurrency;
     $scope.submit = submit;
-
-    // Prototype unique 
-    Array.prototype.unique = function(criteria)
-    {
-      var unique = {},
-        distinct = [];
-      for( var i in this ){
-        if( typeof(unique[this[i][criteria]]) === 'undefined'){
-          distinct.push(this[i]);
-        }
-        unique[this[i][criteria]] = 0;
-      }
-      return distinct;
-    };
-    // End Prototype
   }
 ]);
