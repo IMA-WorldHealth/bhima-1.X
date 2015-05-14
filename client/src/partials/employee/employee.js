@@ -113,20 +113,24 @@ angular.module('bhima.controllers')
     }
 
     function writeCreditor(creditor_uuid) {
+      var prenom = cleanPrenom(session.employee.prenom);
+
       var creditor = {
         uuid : creditor_uuid,
         group_uuid : session.employee.creditor_group_uuid,
-        text : 'Creditor [' + session.employee.name + ']'
+        text : 'Crediteur [' + prenom + session.employee.name + ' - ' + session.employee.postnom + ']'
       };
 
       return connect.basicPut('creditor', [creditor], ['uuid']);
     }
 
     function writeDebitor(debitor_uuid) {
+      var prenom = cleanPrenom(session.employee.prenom);
+
       var debitor = {
         uuid : debitor_uuid,
         group_uuid : session.employee.debitor_group_uuid,
-        text : 'Debitor [' + session.employee.name + ']'
+        text : 'Debiteur [' + prenom + session.employee.name + ' - ' + session.employee.postnom + ']'
       };
 
       return connect.basicPut('debitor', [debitor], ['uuid']);
@@ -179,16 +183,28 @@ angular.module('bhima.controllers')
       });
     }
 
+    function cleanPrenom (prenom) {
+      if (prenom === '.' || prenom === ',') {
+        prenom = '';
+      } else {
+        prenom = prenom + ', ';
+      }
+      return prenom;
+    }
+
     function updateEmployee() { 
+      var prenom = cleanPrenom(session.employee.prenom);
 
       var creditor = {
         uuid : session.employee.creditor_uuid,
-        group_uuid : session.employee.creditor_group_uuid
+        group_uuid : session.employee.creditor_group_uuid,
+        text : 'Crediteur [' + prenom + session.employee.name + ' - ' + session.employee.postnom + ']'
       };
 
       var debitor = {
         uuid : session.employee.debitor_uuid,
-        group_uuid : session.employee.debitor_group_uuid
+        group_uuid : session.employee.debitor_group_uuid,
+        text : 'Debiteur [' + prenom + session.employee.name + ' - ' + session.employee.postnom + ']'
       };
 
 
