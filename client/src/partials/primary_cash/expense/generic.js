@@ -62,9 +62,10 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           'account' :{
-            columns : ['id', 'account_txt', 'account_number']
+            columns : ['id', 'account_txt', 'account_number', 'is_ohada']
           }
-        }
+        },
+        where : ['account.is_ohada=1']
       }
     };
 
