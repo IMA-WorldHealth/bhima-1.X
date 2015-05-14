@@ -1336,7 +1336,7 @@
    "CASH_ID"                      : "# Transaction de Caisse",
    "CASH_RECEIPT"                 : "Sortie de Caisse",
    "CAUTION"                      : "Paiement anticipatif",
-   "CAUTION_ID"                   : "# Caution",
+   "CAUTION_ID"                   : "# Caution (Anticipatif)",
    "CLIENT_ID"                    : "Code Client",
    "CONFIRMED_BY"                 : "Confirmer par ",
    "CONFIRM_DIRECT_PURCHASE"      : "Confirmation Achat Direct",
