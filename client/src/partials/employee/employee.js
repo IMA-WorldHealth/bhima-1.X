@@ -126,7 +126,7 @@ angular.module('bhima.controllers')
 
     function writeDebitor(debitor_uuid) {
       var prenom = cleanPrenom(session.employee.prenom);
-      
+
       var debitor = {
         uuid : debitor_uuid,
         group_uuid : session.employee.debitor_group_uuid,
@@ -187,7 +187,7 @@ angular.module('bhima.controllers')
       if (prenom === '.' || prenom === ',') {
         prenom = '';
       } else {
-        prenom = prenom + ', '
+        prenom = prenom + ', ';
       }
       return prenom;
     }
