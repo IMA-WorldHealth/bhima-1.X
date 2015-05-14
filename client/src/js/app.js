@@ -338,6 +338,10 @@
       controller : 'expiring',
       templateUrl : 'partials/reports/expiring_stock/expiring_stock.html'
     })
+    .when('/reports/stock_store/:depotId', {
+      controller : 'stock_store',
+      templateUrl : 'partials/reports/stock_store/stock_store.html'
+    })    
     .when('/reports/purchase_order', {
       controller : 'purchase_order',
       templateUrl : 'partials/reports/purchase_order/purchase_order.html'
