@@ -860,6 +860,46 @@ function donation_confirmationRecords(params) {
   return db.exec(sql);
 }
 
+function stock_store(params) {
+  var deferred = q.defer();
+  params = JSON.parse(params);
+
+  var requestSql =
+    'SELECT stock.inventory_uuid, stock.tracking_number, ' +
+    'stock.lot_number, stock.expiration_date, SUM(if (movement.depot_entry='+sanitize.escape(params.depotId)+
+    ', movement.quantity, (movement.quantity*-1))) as current, SUM(if (movement.depot_entry=' + sanitize.escape(params.depotId) +
+    ', movement.quantity, 0)) AS initial, inventory.text FROM stock JOIN inventory JOIN movement ON stock.inventory_uuid = inventory.uuid AND '+
+    'stock.tracking_number = movement.tracking_number WHERE (movement.depot_entry=' + sanitize.escape(params.depotId) +
+    'OR movement.depot_exit=' + sanitize.escape(params.depotId) + ')  GROUP BY movement.tracking_number';
+
+  return db.exec(requestSql);
+}
+
+function stockComplete(params) {
+  params = querystring.parse(params);
+
+  var requestSql, 
+    tracking_number = sanitize.escape(params.tracking_number), 
+    depot_uuid = sanitize.escape(params.depot_uuid);
+
+  requestSql =
+    'SELECT SUM(cons.consumed ) AS consumed ' +
+    'FROM ( ' +
+      'SELECT SUM(consumption.quantity) AS consumed ' +
+      'FROM stock ' +
+      'LEFT JOIN consumption ON stock.tracking_number = consumption.tracking_number ' +
+      'WHERE stock.tracking_number = ' + tracking_number + ' '+
+      ' AND consumption.depot_uuid = ' + depot_uuid + ' '+
+    'UNION '+
+      'SELECT ((SUM(consumption_reversing.quantity)) * (-1)) AS consumed ' +
+      'FROM stock ' +
+      'LEFT JOIN consumption_reversing ON stock.tracking_number = consumption_reversing.tracking_number ' +
+      'WHERE stock.tracking_number = ' + tracking_number + ' ' +
+      'AND consumption_reversing.depot_uuid = ' + depot_uuid + '  ) AS cons;';
+
+  return db.exec(requestSql);
+}
+
 
 function generate(request, params, done) {
   /*summary
@@ -893,7 +933,9 @@ function generate(request, params, done) {
     'purchase_order'        : purchase_order,
     'purchase_records'      : purchaseOrdeRecords,
     'donation_confirmation' : donation_confirmationRecords,
-    'stock_movement'        : stock_movement,    
+    'stock_movement'        : stock_movement,
+    'stockStore'            : stock_store,
+    'stockComplete'         : stockComplete    
     //'balance_sheet'         : require('./reports/balance_sheet')
   };
 

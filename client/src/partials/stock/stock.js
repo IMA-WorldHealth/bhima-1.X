@@ -96,6 +96,12 @@ angular.module('bhima.controllers')
       },*/
 
       {
+        key : 'REPORT.STOCK',
+        ico : 'glyphicon-list-alt',
+        link : '/reports/stock_store'
+      },
+
+      {
         key : 'STOCK.DISTRIBUTION_RECORDS.KEY',
         ico : 'glyphicon-list-alt',
         link : '/reports/distribution_record'

@@ -4481,7 +4481,7 @@ function handleExtraPayment (id, user_id, details, done) {
           (details.cost / rate).toFixed(4), 0,
           details.currency_id,
           sanitize.escape(details.debitor_uuid),
-        ].join(',') + ', null, ' + [sanitize.escape(details.sale_uuid), cfg.originId, user_id].join(',') +
+        ].join(',') + ', \'D\', ' + [sanitize.escape(details.sale_uuid), cfg.originId, user_id].join(',') +
       ');';
     return db.exec(credit_sql);
   }
