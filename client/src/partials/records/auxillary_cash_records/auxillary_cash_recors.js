@@ -165,10 +165,6 @@ angular.module('bhima.controllers')
     }
 
     function convert (){
-      console.log('PPPPPPPPPPPPPPPPPPPPPP');
-      console.log($scope.model.cash.data);
-      console.log('PPPPPPPPPPPPPPPPPPPPPP');
-
       session.sum = 0;
       if($scope.model.cash.data) {
         $scope.model.cash.data.forEach(function (cash) {
