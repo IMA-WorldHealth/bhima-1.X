@@ -124,21 +124,25 @@
    "TYPE_CC"               : "Type"
    },
 "AUTH": {
-   "LOGIN"          : "Login",
-   "LOGIN_ERROR"    : "Login Error: Username and password combination are incorrect.",
-   "LOGIN_TO_BHIMA" : "Login to Bhima",
-   "LOGOUT_SUCCESS" : "You are now logged out.",
-   "RESET"          : "Reset"
-   },
+  "LOGIN"          : "Login",
+  "LOGIN_ERROR"    : "Login Error: Username and password combination are incorrect.",
+  "LOGIN_TO_BHIMA" : "Login to Bhima",
+  "LOGOUT_SUCCESS" : "You are now logged out.",
+  "RESET"          : "Reset"
+  },
 "AUXILLARY_CASH_RECORD" : {
-    "ALL_PROJECTS"   : "All projects",
-    "CANCEL"         : "Cancel Operation",
-    "CREDIT_NOTE"    : "Credit note",
-    "GENERATE"       : "Generate",
-    "PATIENT_CASH"   : "Patient Cash",
-    "RECEIPT"        : "Receipt",
-    "TITLE"          : "Auxillary cash record",
-    "UNFOUND"        : "Data Not Found"
+  "ALL_PROJECTS"    : "All projects",
+  "CANCEL"          : "Cancel Operation",
+  "CHARGED_AGAINST" : "Charged against",
+  "CREDIT_NOTE"     : "Credit note",
+  "GENERATE"        : "Generate",
+  "INVOICES"        : "Invoices",  
+  "PATIENTS"        : "Patients",    
+  "PATIENT_CASH"    : "Patient Cash",
+  "RECEIPT"         : "Receipt",
+  "TOTAL_OF"        : "Total of",
+  "TITLE"           : "Auxillary cash record",
+  "UNFOUND"         : "Data Not Found"
 },
 "BALANCE" : {
   "BUILD_BALANCE"   : "Build Balance",
@@ -416,6 +420,7 @@
    "GROUP"                 : "Group",
    "GROUP_NAME"            : "Group Name",
    "ID"                    : "ID",
+   "ID_CASH"               : "Cash ID",
    "ID_PRODUCT"            : "ID Product",
    "INDIRECT"              : "Indirect",
    "INITIAL_STOCK"         : "Initial stock",
@@ -777,7 +782,7 @@
    "HELP_TXT_4" : "Create a new debitor group",
    "INFO"       : "Group Information",
    "NEW"        : "New Debtor Group",
-   "SUCCES"     : "success",   
+   "SUCCES"     : "success",
    "TITLE"      : "Debtor Group Management"
    },
 "DEPOT": {
@@ -873,7 +878,7 @@
       "CONFIRM_RECEPTION" : "Confirm entry Donation",
       "DETAILS"           : "Details on the confirmation of the donation",
       "CONFIRM_RECEPTION_OF"  : "Confirm receipt"
-      },    
+      },
    "DATE"            : "Date",
    "DATE_REGISTER"   : "Register Date",
    "DONATION"        : "Donation",
@@ -1366,7 +1371,7 @@
    "DONOR"                        : "Donor",
    "EMPLOYEE_CODE"                : "Employee Code",
    "EMPLOYEE_CONTACT"             : "Employee Ref.",
-   "EMPLOYEE_NAME"                : "Employee Name",   
+   "EMPLOYEE_NAME"                : "Employee Name",
    "ENTERPRISE_TAX_PAYMENT"       : "Entreprise Taxes Payment",
    "ENTRY_DATE"                   : "Entry date",
    "EXPIRATION_DATE"              : "Expiration date",
@@ -2191,7 +2196,7 @@
    },
 "SELECT": {
    "ACCOUNT"               : "Select Account",
-   "ACCOUNT_REFERENTIIAL"  : "Select the accounts referential",   
+   "ACCOUNT_REFERENTIIAL"  : "Select the accounts referential",
    "ACCOUNT_TYPE"          : "Select Account Type",
    "ALL"                   : "All",
    "CASH"                  : "Select a Cash",
@@ -2742,7 +2747,7 @@
    "REPORTS"                   : "Reports",
    "REPORT_COTISATION"         : "Reports cotisations payment",
    "REPORT_DONATION"           : "Donation report",
-   "REPORT_DONATION_CONFIRM"   : "Report Donation Confirmation",   
+   "REPORT_DONATION_CONFIRM"   : "Report Donation Confirmation",
    "REPORT_FINANCE"            : "Finance Report",
    "REPORT_SALARY"             : "Report Salary Payment",
    "REPORT_STOCK_MOVEMENT"     : "Stock Mouvement",
