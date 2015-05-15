@@ -215,7 +215,7 @@ angular.module('bhima.controllers')
       var patient = connect.clean(angular.copy($scope.patient));
 
       var packageDebtor = {
-        text : 'Debtor ' + patient.first_name + ' ' + patient.last_name + ' ' + patient.middle_name,
+        text : 'Debtor ' + patient.last_name + ' ' + patient.middle_name + ' ' + patient.first_name,
         uuid : patient.debitor_uuid
       };
 
