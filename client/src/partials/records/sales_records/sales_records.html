@@ -41,7 +41,7 @@
           <thead>
             <tr>
               <th width="20%">{{'COLUMNS.DATE' | translate}}</th>
-              <th width="10%">{{'COLUMNS.ID' | translate}}</th>
+              <th width="10%">{{'COLUMNS.SALE_ID' | translate}}</th>
 
               <th width="20%">{{'COLUMNS.PATIENT' | translate}}</th>
               <th width="20%">{{'COLUMNS.AMOUNT' | translate}}</th>
@@ -61,7 +61,7 @@
             <tr ng-class="{'rowSelected': selected.uuid==invoice.uuid, 'creditInvoice': invoice.creditId}" ng-repeat="invoice in model.sale.data">
               <td width="20%">{{invoice.invoice_date | date : 'EEEE, dd/MM/yyyy'}}</td>
               <td width="10%">{{invoice.hr_id}}</td>
-              <td width="20%">[{{invoice.patientReference}}] {{invoice.first_name}} {{invoice.last_name}}</td>
+              <td width="20%">[{{invoice.projectAbbr}}{{invoice.patientReference}}]  {{invoice.last_name}} {{invoice.middle_name}} {{invoice.first_name}}</td>
               <td width="20%">{{invoice.cost | currency}}</td>
               <td width="30%" class="hidden-print">
                 <a ng-href="/#/invoice/sale/{{invoice.uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}</a>

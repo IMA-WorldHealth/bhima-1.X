@@ -75,7 +75,7 @@
               <img class="media-object" ng-src="/assets/{{img}}" alt="{{ 'PATIENT_STANDING.IMG' | translate }}" width="150" height="150">
             </span>
             <div class="media-body">
-              <h4 class="media-heading">{{ session.patient.first_name }} {{ session.patient.last_name }}</h4>
+              <h4 class="media-heading">{{ session.patient.last_name }} {{ session.patient.middle_name }} {{ session.patient.first_name }} </h4>
               <div class="media-body">
                 <form class="form-horizontal">
 
@@ -84,7 +84,7 @@
                       {{ "COLUMNS.ID" | translate }}
                     </label>
                     <div class="col-xs-4">
-                      <p class="form-control-static">{{ session.patient.abbr + session.patient.project_id }} <small ng-if="!!patient">({{ session.patient.uuid }})</small></p>
+                      <p class="form-control-static">{{ session.patient.abbr + session.patient.reference }} <small ng-if="!!patient">({{ session.patient.uuid }})</small></p>
                     </div>
 
                     <label class="control-label col-xs-2">
