@@ -1334,7 +1334,7 @@
    "BENEFICIARY"                  : "Bénéficiaire",
    "BY"                           : "Transfert realise par : ",
    "CASH_ID"                      : "# Transaction de Caisse",
-   "CASH_RECEIPT"                 : "Sortie de Caisse",
+   "CASH_RECEIPT"                 : "Reçu de Caisse",
    "CAUTION"                      : "Caution",
    "CAUTION_ID"                   : "# Caution",
    "CLIENT_ID"                    : "Code Client",
