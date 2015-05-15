@@ -60,7 +60,7 @@
             <tr ng-class="{'rowSelected': selected.uuid==receipt.uuid, 'creditInvoice': receipt.cashDiscardId}" ng-repeat="receipt in model.cash.data">
               <td width="20%">{{receipt.date | date : 'EEEE, dd/MM/yyyy'}}</td>
               <td width="10%">{{receipt.hr_id}}</td>
-              <td width="20%">[{{receipt.patientReference}}] {{receipt.first_name}} {{receipt.last_name}}</td>
+              <td width="20%">[{{receipt.projectAbbr}}{{receipt.patientReference}}] {{receipt.last_name}} {{receipt.middle_name}} {{receipt.first_name}}</td>
               <td width="20%"><span ng-bind-html="receipt.cost | intlcurrency:receipt.currency_id"></td>
               <td width="30%" class="hidden-print">
                 <a ng-href="/#/invoice/{{receipt.receiptLocation}}/{{receipt.uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{'AUXILLARY_CASH_RECORD.RECEIPT' | translate}}</a>

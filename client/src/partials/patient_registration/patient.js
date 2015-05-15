@@ -227,7 +227,7 @@ angular.module('bhima.controllers')
       var packageDebtor = {
         uuid : debtorId,
         group_uuid : $scope.debtor.debtor_group.uuid,
-        text : 'Debtor ' + patient.first_name + ' ' + patient.last_name + ' ' + patient.middle_name,
+        text : 'Debtor ' + patient.last_name + ' ' + patient.middle_name + ' ' + patient.first_name,
       };
 
       var packagePatient = connect.clean(patient);

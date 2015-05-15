@@ -124,21 +124,25 @@
    "TYPE_CC"               : "Type"
    },
 "AUTH": {
-   "LOGIN"          : "Login",
-   "LOGIN_ERROR"    : "Login Error: Username and password combination are incorrect.",
-   "LOGIN_TO_BHIMA" : "Login to Bhima",
-   "LOGOUT_SUCCESS" : "You are now logged out.",
-   "RESET"          : "Reset"
-   },
+  "LOGIN"          : "Login",
+  "LOGIN_ERROR"    : "Login Error: Username and password combination are incorrect.",
+  "LOGIN_TO_BHIMA" : "Login to Bhima",
+  "LOGOUT_SUCCESS" : "You are now logged out.",
+  "RESET"          : "Reset"
+  },
 "AUXILLARY_CASH_RECORD" : {
-    "ALL_PROJECTS"   : "All projects",
-    "CANCEL"         : "Cancel Operation",
-    "CREDIT_NOTE"    : "Credit note",
-    "GENERATE"       : "Generate",
-    "PATIENT_CASH"   : "Patient Cash",
-    "RECEIPT"        : "Receipt",
-    "TITLE"          : "Auxillary cash record",
-    "UNFOUND"        : "Data Not Found"
+  "ALL_PROJECTS"    : "All projects",
+  "CANCEL"          : "Cancel Operation",
+  "CHARGED_AGAINST" : "Charged against",
+  "CREDIT_NOTE"     : "Credit note",
+  "GENERATE"        : "Generate",
+  "INVOICES"        : "Invoices",  
+  "PATIENTS"        : "Patients",    
+  "PATIENT_CASH"    : "Patient Cash",
+  "RECEIPT"         : "Receipt",
+  "TOTAL_OF"        : "Total of",
+  "TITLE"           : "Auxillary cash record",
+  "UNFOUND"         : "Data Not Found"
 },
 "BALANCE" : {
   "BUILD_BALANCE"   : "Build Balance",
