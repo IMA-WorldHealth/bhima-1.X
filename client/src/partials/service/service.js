@@ -151,6 +151,7 @@ angular.module('bhima.controllers')
 
 
     function handleResultCost(value) {
+      console.log(value);
       $scope.choosen.charge = value.data.cost;
       return $q.when();
     }

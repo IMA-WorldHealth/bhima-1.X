@@ -316,6 +316,7 @@ exports.costCenterCost = function (req, res, next) {
     ' AND `account`.`account_type_id` <> 3';
 
   function process(accounts) {
+    console.log('ca donne', accounts);
     if(accounts.length === 0) {return {cost : 0};}
     var availablechargeAccounts = accounts.filter(function(item) {
       return item.account_number.toString().indexOf('6') === 0;
@@ -1494,7 +1495,7 @@ exports.getClassSolde = function (req, res, next) {
 
     var account_class = req.params.account_class,
         fiscal_year_id = req.params.fiscal_year;
-    
+
     var sql =
       'SELECT `ac`.`id`, `ac`.`account_number`, `ac`.`account_txt`, `t`.`fiscal_year_id`, `t`.`debit`, `t`.`credit`, `t`.`debit_equiv`, `t`.`credit_equiv`, `t`.`currency_id` ' +
       'FROM (' +
@@ -1515,7 +1516,7 @@ exports.getClassSolde = function (req, res, next) {
         ')' +
       ') AS `t`, `account` AS `ac` ' +
       'WHERE `t`.`account_id` = `ac`.`id` AND `ac`.`classe`=? AND t.fiscal_year_id = ? ';
-  
+
   db.exec(sql, [account_class, account_class, account_class, fiscal_year_id])
   .then(function (data) {
     res.send(data);

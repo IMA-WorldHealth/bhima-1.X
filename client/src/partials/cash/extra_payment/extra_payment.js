@@ -27,7 +27,7 @@ angular.module('bhima.controllers')
         },
         join : ['sale.debitor_uuid=patient.debitor_uuid']
       }
-    };    
+    };
 
     dependencies.currencies = {
       query : {
@@ -177,5 +177,20 @@ angular.module('bhima.controllers')
 
     $scope.setCurrency = setCurrency;
     $scope.submit = submit;
+
+    // Prototype unique
+    Array.prototype.unique = function(criteria)
+    {
+      var unique = {},
+        distinct = [];
+      for( var i in this ){
+        if( typeof(unique[this[i][criteria]]) === 'undefined'){
+          distinct.push(this[i]);
+        }
+        unique[this[i][criteria]] = 0;
+      }
+      return distinct;
+    };
+    // End Prototype
   }
 ]);

@@ -4,8 +4,8 @@ var xlsx = require('xlsx');
 var sanitize = require('../../server/lib/sanitize');
 var fs = require('fs');
 
-var book = xlsx.readFile('jan.xlsx');
-var sheet = book.Sheets[book.SheetNames[1]];
+var book = xlsx.readFile('mar.xlsx');
+var sheet = book.Sheets[book.SheetNames[4]];
 var JSONSheet = xlsx.utils.sheet_to_json(sheet);
 
 //base config
