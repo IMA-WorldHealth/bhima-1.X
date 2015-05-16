@@ -114,6 +114,7 @@
                 <th>{{ "COLUMNS.NR" | translate }}</th>
                 <th>{{ "COLUMNS.ID" | translate }}</th>
                 <th>{{ "COLUMNS.NAME" | translate }}</th>
+                <th>{{ "PATIENT_RECORDS.HOSPITAL_FILE_NR" | translate }}</th>
                 <th>{{ "COLUMNS.DOB" | translate }}</th>
                 <th>{{ "COLUMNS.SEX" | translate }}</th>
                 <th class="hidden-print">{{ "COLUMNS.DEBITOR_ID" | translate }}</th>
@@ -127,6 +128,7 @@
                 <td> {{$index + 1}} </td>
                 <td> {{ patient.abbr + patient.reference }} </td>
                 <td> {{ patient.last_name + ' ' + patient.middle_name  + ' ' + patient.first_name }} </td>
+                <td> {{ patient.hospital_no }} </td>
                 <td> {{ patient.dob | date }} </td>
                 <td> {{ patient.sex }} </td>
                 <td ng-show="!patient.expand" class="hidden-print"><a ng-click="patient.expand=!patient.expand">{{ "UTIL.SHOW" | translate }}</a></td>

@@ -193,7 +193,7 @@ function saleRecords(params) {
   var requestSql =
     'SELECT sale.uuid, sale.reference, sale.cost, sale.currency_id, sale.debitor_uuid, sale.invoice_date, ' +
     'sale.note, sale.posted, credit_note.uuid as `creditId`, credit_note.description as `creditDescription`, ' +
-    'credit_note.posted as `creditPosted`, first_name, last_name, patient.reference as `patientReference`, CONCAT(project.abbr, sale.reference) as `hr_id` ' +
+    'credit_note.posted as `creditPosted`, first_name, last_name, middle_name, patient.reference as `patientReference`, project.abbr as `projectAbbr`, CONCAT(project.abbr, sale.reference) as `hr_id` ' +
     'FROM sale LEFT JOIN credit_note on sale.uuid = credit_note.sale_uuid ' +
     'LEFT JOIN patient on sale.debitor_uuid = patient.debitor_uuid ' +
     'LEFT JOIN project on sale.project_id = project.id ' +
@@ -221,7 +221,7 @@ function cashAuxillaryRecords(params) {
   var requestSql =
     'SELECT cash.uuid, cash.reference, cash.cost, cash.currency_id, cash.deb_cred_uuid, cash.date, cash.is_caution, ' +
     'cash.description, cash_discard.uuid as `cashDiscardId`, cash_discard.description as `cashDiscardDescription`, ' +
-    'cash_discard.posted, first_name, last_name, patient.reference as `patientReference`, CONCAT(project.abbr, cash.reference) as `hr_id` ' +
+    'cash_discard.posted, first_name, middle_name, last_name, patient.reference as `patientReference`,  project.abbr as `projectAbbr`, CONCAT(project.abbr, cash.reference) as `hr_id` ' +
     'FROM cash LEFT JOIN cash_discard on cash.uuid = cash_discard.cash_uuid ' +
     'LEFT JOIN patient on cash.deb_cred_uuid = patient.debitor_uuid ' +
     'LEFT JOIN project on cash.project_id = project.id ' +
@@ -310,7 +310,7 @@ function patientRecords(params) {
   }
 
   var sql =
-    'SELECT patient.uuid, patient.reference, project.abbr, debitor_uuid, first_name, last_name, dob, father_name, ' +
+    'SELECT patient.uuid, patient.reference, project.abbr, debitor_uuid, first_name, middle_name, hospital_no, last_name, dob, father_name, ' +
         'sex, religion, renewal, registration_date, date, CONCAT(user.first,\' \',user.last) AS registrar ' +
       'FROM `patient` JOIN `patient_visit` JOIN `project` JOIN `user` ON ' +
         '`patient`.`uuid`=`patient_visit`.`patient_uuid` AND ' +
