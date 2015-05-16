@@ -304,6 +304,7 @@
   },
 "CAUTION": {
    "AGE"          : "Age",
+   "ATTENTION"    : "Attention this patient has a debit balance",
    "CASH"         : "Cash Payments",
    "CAUTION"      : "Caution",
    "GENDER"       : "Sex",
@@ -1340,7 +1341,7 @@
    "BY"                           : "By",
    "CASH_ID"                      : "Cash transaction #",
    "CASH_RECEIPT"                 : "Cash Receipt",
-   "CAUTION"                      : "Caution",
+   "CAUTION"                      : "Caution (Advance)",
    "CAUTION_ID"                   : "# Caution",
    "CLIENT_ID"                    : "Client Code",
    "CONFIRMED_BY"                 : "Confirmed by ",
