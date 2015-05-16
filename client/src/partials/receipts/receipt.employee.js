@@ -26,7 +26,21 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.getTransaction = {
+      query : {
+        identifier : 'uuid',
+        tables : {
+          primary_cash : { columns : ['uuid'] },
+          primary_cash_item : { columns : ['document_uuid'] },
+          posting_journal : { columns : ['trans_id'] }
+        },
+        distinct : true,
+        join : ['primary_cash.uuid=primary_cash_item.primary_cash_uuid','posting_journal.inv_po_id=primary_cash_item.document_uuid']
+      }
+    };  
+
     function buildInvoice (res) {
+      $scope.trans_id = res.getTransaction.data[0].trans_id;
       model.employee = res.employee.data;
     }
 
