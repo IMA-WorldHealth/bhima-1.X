@@ -87,9 +87,6 @@ angular.module('bhima.controllers')
         session.receipt.cost = 0.00;
         session.receipt.cash_box_id = $routeParams.id;
         session.accounts = models.accounts.data;
-        console.log('PPPPPPPPPPPPPPPPPPPP');
-        console.log(models.accounts.data);
-        console.log('PPPPPPPPPPPPPPPPPPPP');
       })
       .catch(function (err) {
         messenger.error(err);

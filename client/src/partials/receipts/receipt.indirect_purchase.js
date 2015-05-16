@@ -20,9 +20,29 @@ angular.module('bhima.controllers')
           },
           join : ['purchase.employee_id=employee.id']          
         }
-      };
+    };
+
+    dependencies.getTransaction = {
+      query : {
+        identifier : 'uuid',
+        tables : {
+          purchase : { columns : ['paid_uuid'] },
+          primary_cash : { columns : ['uuid'] },
+          primary_cash_item : { columns : ['document_uuid'] },
+          posting_journal : { columns : ['trans_id'] }
+        },
+        distinct : true,
+        join : [
+          'purchase.paid_uuid=primary_cash.uuid',
+          'primary_cash.uuid=primary_cash_item.primary_cash_uuid',
+          'posting_journal.inv_po_id=primary_cash_item.document_uuid'
+          ]
+      }
+    };
 
     function buildInvoice (res) {
+      $scope.trans_id = res.getTransaction.data[0].trans_id;
+
       model.indirectPurchase = res.indirectPurchase.data.pop();
       getUserInfo(res.user.data.id);
     }
@@ -48,6 +68,7 @@ angular.module('bhima.controllers')
         model.common.InvoiceId = values.invoiceId;
         model.common.enterprise = values.enterprise.data.pop();
         dependencies.indirectPurchase.query.where =  ['purchase.uuid=' + values.invoiceId];
+        dependencies.getTransaction.query.where = ['purchase.uuid=' + values.invoiceId];
         validate.process(dependencies)
         .then(buildInvoice)
         .catch(function (err){
