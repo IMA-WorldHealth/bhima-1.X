@@ -69,7 +69,7 @@ angular.module('bhima.controllers')
         join: ['creditor.group_uuid=creditor_group.uuid','creditor_group.account_id=account.id']
       }
     };
-    
+
     dependencies.currencies = {
       required : true,
       query : {
@@ -127,7 +127,8 @@ angular.module('bhima.controllers')
 
       // First step:
       // Get the periods associated for the date.
-      connect.fetch('/period/' + Number(data.date))
+      var transaction_date = util.htmlDate(new Date(data.date));
+      connect.fetch('/period/' + transaction_date)
       .then(function (period) {
         data.period_id = period.id;
         data.fiscal_year_id = period.fiscal_year_id;
