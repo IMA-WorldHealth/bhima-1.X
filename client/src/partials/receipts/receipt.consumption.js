@@ -23,7 +23,7 @@ angular.module('bhima.controllers')
             columns : ['code', 'text']
           },
           'patient' : {
-            columns : ['first_name', 'last_name', 'dob', 'current_location_id']
+            columns : ['first_name', 'last_name', 'middle_name', 'dob', 'current_location_id']
           },
           'debitor' : {
             columns : ['group_uuid']

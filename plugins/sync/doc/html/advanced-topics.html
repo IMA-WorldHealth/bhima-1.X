@@ -1,0 +1,1197 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;5.&nbsp;Advanced Topics</title><link rel="stylesheet" href="css/docbook-style.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.72.0"><link rel="start" href="user-guide.html" title="SymmetricDS User Guide"><link rel="up" href="user-guide.html" title="SymmetricDS User Guide"><link rel="prev" href="configuration.html" title="Chapter&nbsp;4.&nbsp;Configuration"><link rel="next" href="administration.html" title="Chapter&nbsp;6.&nbsp;Administration"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns:fo="http://www.w3.org/1999/XSL/Format" id="banner"><a style="border:none;" href="http://www.symmetricds.org/" title="SymmetricDS User Guide"><img style="border:none;" alt="SymmetricDS" src="images/banner-logo.gif"></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="advanced-topics"></a>Chapter&nbsp;5.&nbsp;Advanced Topics</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="advanced-topics.html#advanced-sync">5.1. Advanced Synchronization</a></span></dt><dd><dl><dt><span class="section"><a href="advanced-topics.html#bi-direction-sync">5.1.1. Bi-Directional Synchronization</a></span></dt><dt><span class="section"><a href="advanced-topics.html#multi-tier">5.1.2. Multi-Tiered Synchronization</a></span></dt><dd><dl><dt><span class="section"><a href="advanced-topics.html#registration-redirect">5.1.2.1. Registration Redirect</a></span></dt></dl></dd></dl></dd><dt><span class="section"><a href="advanced-topics.html#jms-publishing">5.2. JMS Publishing</a></span></dt><dt><span class="section"><a href="advanced-topics.html#deployment-options">5.3. Deployment Options</a></span></dt><dd><dl><dt><span class="section"><a href="advanced-topics.html#deployment-options-web-archive">5.3.1. Web Archive (WAR)</a></span></dt><dt><span class="section"><a href="advanced-topics.html#deployment-options-embedded">5.3.2. Embedded</a></span></dt></dl></dd><dt><span class="section"><a href="advanced-topics.html#deployment-options-standalone">5.4. Standalone</a></span></dt><dt><span class="section"><a href="advanced-topics.html#running-service">5.5. Running SymmetricDS as a Service</a></span></dt><dd><dl><dt><span class="section"><a href="advanced-topics.html#running-service-windows">5.5.1. Running as a Windows Service</a></span></dt><dt><span class="section"><a href="advanced-topics.html#running-service-unix">5.5.2. Running as a *nix Service</a></span></dt></dl></dd><dt><span class="section"><a href="advanced-topics.html#clustering">5.6. Clustering</a></span></dt><dt><span class="section"><a href="advanced-topics.html#encrypted-passwords">5.7. Encrypted Passwords</a></span></dt><dt><span class="section"><a href="advanced-topics.html#secure-transport">5.8. Secure Transport</a></span></dt><dd><dl><dt><span class="section"><a href="advanced-topics.html#secure-transport-sym">5.8.1. Sym Launcher</a></span></dt><dt><span class="section"><a href="advanced-topics.html#secure-transport-tomcat">5.8.2. Tomcat</a></span></dt><dt><span class="section"><a href="advanced-topics.html#secure-transport-keystore">5.8.3. Keystores</a></span></dt><dt><span class="section"><a href="advanced-topics.html#secure-transport-keys">5.8.4. Generating Keys</a></span></dt></dl></dd><dt><span class="section"><a href="advanced-topics.html#basic-auth">5.9. Basic Authentication</a></span></dt><dt><span class="section"><a href="advanced-topics.html#extensions">5.10. Extension Points</a></span></dt><dd><dl><dt><span class="section"><a href="advanced-topics.html#extensions-parameter-filter">5.10.1. IParameterFilter</a></span></dt><dt><span class="section"><a href="advanced-topics.html#extensions-data-loader-filter">5.10.2. IDatabaseWriterFilter</a></span></dt><dt><span class="section"><a href="advanced-topics.html#extensions-databasewriter-errorhandler">5.10.3. IDatabaseWriterErrorHandler</a></span></dt><dt><span class="section"><a href="advanced-topics.html#extensions-dataloader-factory">5.10.4. IDataLoaderFactory</a></span></dt><dt><span class="section"><a href="advanced-topics.html#extensions-acknowledge-event-listener">5.10.5. IAcknowledgeEventListener</a></span></dt><dt><span class="section"><a href="advanced-topics.html#extensions-reload-listener">5.10.6. IReloadListener</a></span></dt><dt><span class="section"><a href="advanced-topics.html#extensions-sync-url-extension">5.10.7. ISyncUrlExtension</a></span></dt><dt><span class="section"><a href="advanced-topics.html#extensions-column-transforms">5.10.8. IColumnTransform</a></span></dt><dt><span class="section"><a href="advanced-topics.html#extensions-node-id-generator">5.10.9. INodeIdCreator</a></span></dt><dt><span class="section"><a href="advanced-topics.html#extensions-trigger-creation-listener">5.10.10. ITriggerCreationListener</a></span></dt><dt><span class="section"><a href="advanced-topics.html#extensions-batch-algorithm">5.10.11. IBatchAlgorithm</a></span></dt><dt><span class="section"><a href="advanced-topics.html#extensions-data-router">5.10.12. IDataRouter</a></span></dt><dt><span class="section"><a href="advanced-topics.html#extensions-heartbeat-listener">5.10.13. IHeartbeatListener</a></span></dt><dt><span class="section"><a href="advanced-topics.html#extensions-offline-client-listener">5.10.14. IOfflineClientListener</a></span></dt><dt><span class="section"><a href="advanced-topics.html#extensions-offline-server-listener">5.10.15. IOfflineServerListener</a></span></dt><dt><span class="section"><a href="advanced-topics.html#extensions-node-password">5.10.16. INodePasswordFilter</a></span></dt></dl></dd><dt><span class="section"><a href="advanced-topics.html#android">5.11. Synchronization to and from Android Devices </a></span></dt></dl></div>
+    
+    <p>
+       This chapter focuses on a variety of topics, including deployment options, jobs, clustering, encryptions, synchronization control,
+       and configuration of SymmetricDS.
+    </p>
+
+ <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="advanced-sync"></a>5.1.&nbsp;Advanced Synchronization</h2></div></div></div>
+    
+ <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="bi-direction-sync"></a>5.1.1.&nbsp;Bi-Directional Synchronization</h3></div></div></div>
+        
+        <p>
+            SymmetricDS allows tables to be synchronized bi-directionally.  Note that an outgoing
+            synchronization does not process changes during an incoming synchronization on the same node unless the trigger
+            was created with the <code class="literal">sync_on_incoming_batch</code> flag set.  If the <code class="literal">sync_on_incoming_batch</code> flag
+            is set, then update loops are prevented by a feature that is available in most database dialects.
+            More specifically, during an incoming synchronization the source <code class="literal">node_id</code> is put into a database session variable that is
+            available to the database trigger.  Data events are not generated if the target <code class="literal">node_id</code>
+            on an outgoing synchronization is equal to the source <code class="literal">node_id</code>.
+        </p>
+        <p>
+            By default, only the columns that changed will be updated in the target system.
+        </p>
+        <p>
+            Conflict resolution strategies can be configured for specific links and/or sets of tables.
+        </p>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="multi-tier"></a>5.1.2.&nbsp;Multi-Tiered Synchronization</h3></div></div></div>
+        
+        <p>
+            As shown in <a href="planning.html#organizing-nodes" title="3.2.&nbsp;Organizing Nodes">Section&nbsp;3.2, &#8220;Organizing Nodes&#8221;</a>, there may be
+            scenarios where data needs to flow through multiple tiers of nodes that
+            are organized in a tree-like network with each tier requiring a different subset of data.  For example,
+            you may have a system where the lowest tier may be a computer or device located in a store.  Those devices
+            may connect to a server located physically at that store.  Then the store server may communicate with
+            a corporate server for example.  In this case, the three tiers would be device, store, and corporate.
+            Each tier is typically represented by a node group.  Each node in
+            the tier would belong to the node group representing that tier.
+        </p>
+        <p>
+            A node can only pull and push data to other nodes that are represented in the node's <a href="data-model.html#table_node" title="A.17.&nbsp;NODE">NODE</a>
+            table and in cases where that node's <code class="literal">sync_enabled</code> column is set to 1.
+            Because of this, a tree-like
+            hierarchy of nodes can be created by having only a subset of nodes belonging to the same node group represented at the different branches of the tree.
+        </p>
+        <p>
+            If auto registration is turned <span class="emphasis"><em>off</em></span>, then this setup must occur manually by opening registration
+            for the desired nodes at the desired parent node and by configuring each node's <code class="literal">registration.url</code>
+             to be the parent node's URL.
+            The parent node is always tracked by the setting of the parent's <code class="literal">node_id</code> in the <code class="literal">created_at_node_id</code> column of the new node.
+            When a node registers and downloads its configuration it is always provided the configuration for nodes
+            that might register with the node itself based on the Node Group Links defined in the parent node.
+        </p>
+
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="registration-redirect"></a>5.1.2.1.&nbsp;Registration Redirect</h4></div></div></div>
+        
+        <p>
+            When deploying a multi-tiered system it may be advantageous to have only one registration server, even though the parent node of a registering node
+            could be any of a number of nodes in the system.  In SymmetricDS the parent node is always the node that a child registers with.  The
+            <a href="data-model.html#table_registration_redirect" title="A.31.&nbsp;REGISTRATION_REDIRECT">REGISTRATION_REDIRECT</a> table allows a single node, usually the root server in the network, to
+            redirect registering nodes to their true parents.  It does so based on a mapping found in the table of the external id (<code class="literal">registrant_external_id</code>) to the parent's node
+            id (<code class="literal">registration_node_id</code>).
+        </p>
+        <p>
+            For example, if it is desired to have a series of regional servers that workstations at retail stores get assigned to based on their <code class="literal">external_id</code>, the store number, then
+            you might insert into <a href="data-model.html#table_registration_redirect" title="A.31.&nbsp;REGISTRATION_REDIRECT">REGISTRATION_REDIRECT</a> the store number as the <code class="literal">registrant_external_id</code> and the <code class="literal">node_id</code> of
+            the assigned region as the <code class="literal">registration_node_id</code>.  When a workstation at the store registers, the root server sends an HTTP redirect to the <code class="literal">sync_url</code> of the node
+            that matches the <code class="literal">registration_node_id</code>.
+        </p>
+        <div class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Important</h3>
+            <p>Please see <a href="configuration.html#configuration-initial-load" title="4.6.3.2.&nbsp;Initial Loads">Section&nbsp;4.6.3.2, &#8220;Initial Loads&#8221;</a> for important details around initial loads
+            and registration when using registration redirect.
+            </p>
+            </div>
+
+    </div>
+    </div>
+</div>
+
+<div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jms-publishing"></a>5.2.&nbsp;JMS Publishing</h2></div></div></div>
+        
+        <p>
+            With the proper configuration SymmetricDS can publish XML messages of captured data changes to
+            JMS during routing or transactionally while data loading synchronized data into a target database.
+            The following explains how to publish to JMS during synchronization to the target database.
+       </p>
+       <p>
+            The XmlPublisherDatabaseWriterFilter is a
+            <a href="advanced-topics.html#extensions-data-loader-filter" title="5.10.2.&nbsp;IDatabaseWriterFilter">IDatabaseWriterFilter</a> that may be configured to
+            publish specific tables as an XML message to a JMS provider.
+            See <a href="advanced-topics.html#extensions" title="5.10.&nbsp;Extension Points">Section&nbsp;5.10, &#8220;Extension Points&#8221;</a> for information on how
+            to configure an extension point.  If the publish to JMS fails, the batch will be marked in error,
+            the loaded data for the batch will be rolled back
+            and the batch will be retried during the next synchronization run.
+        </p>
+        <p>
+        The following is an example extension point configuration that will publish four tables in XML with a root
+        tag of <span class="emphasis"><em>'sale'</em></span>.  Each XML message will be grouped by the batch and the column names identified by
+        the groupByColumnNames property which have the same values.
+                </p><pre class="programlisting">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd"&gt;
+
+    &lt;bean id="configuration-publishingFilter"
+      class="org.jumpmind.symmetric.integrate.XmlPublisherDatabaseWriterFilter"&gt;
+        &lt;property name="xmlTagNameToUseForGroup" value="sale"/&gt;
+        &lt;property name="tableNamesToPublishAsGroup"&gt;
+            &lt;list&gt;
+               &lt;value&gt;SALE_TX&lt;/value&gt;
+               &lt;value&gt;SALE_LINE_ITEM&lt;/value&gt;
+               &lt;value&gt;SALE_TAX&lt;/value&gt;
+               &lt;value&gt;SALE_TOTAL&lt;/value&gt;
+            &lt;/list&gt;
+        &lt;/property&gt;
+        &lt;property name="groupByColumnNames"&gt;
+            &lt;list&gt;
+               &lt;value&gt;STORE_ID&lt;/value&gt;
+               &lt;value&gt;BUSINESS_DAY&lt;/value&gt;
+               &lt;value&gt;WORKSTATION_ID&lt;/value&gt;
+               &lt;value&gt;TRANSACTION_ID&lt;/value&gt;
+            &lt;/list&gt;
+        &lt;/property&gt;
+        &lt;property name="publisher"&gt;
+           &lt;bean class="org.jumpmind.symmetric.integrate.SimpleJmsPublisher"&gt;
+               &lt;property name="jmsTemplate" ref="definedSpringJmsTemplate"/&gt;
+           &lt;/bean&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;
+&lt;/beans&gt;</pre><p>
+        </p>
+        <p>
+          The publisher property on the XmlPublisherDatabaseWriterFilter takes an interface of type IPublisher.  The implementation
+          demonstrated here is an implementation that publishes to JMS using Spring's
+          <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/jms.html#jms-jmstemplate" target="_top">JMS template</a>.
+          Other implementations of IPublisher could easily publish the XML to other targets like an HTTP server, the file system or secure copy it to another server.
+        </p>
+        <p>
+          The above configuration will publish XML similar to the following:
+            </p><pre class="programlisting">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;sale xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  id="0012010-01-220031234" nodeid="00001" time="1264187704155"&gt;
+  &lt;row entity="SALE_TX" dml="I"&gt;
+    &lt;data key="STORE_ID"&gt;001&lt;/data&gt;
+    &lt;data key="BUSINESS_DAY"&gt;2010-01-22&lt;/data&gt;
+    &lt;data key="WORKSTATION_ID"&gt;003&lt;/data&gt;
+    &lt;data key="TRANSACTION_ID"&gt;1234&lt;/data&gt;
+    &lt;data key="CASHIER_ID"&gt;010110&lt;/data&gt;
+  &lt;/row&gt;
+  &lt;row entity="SALE_LINE_ITEM" dml="I"&gt;
+    &lt;data key="STORE_ID"&gt;001&lt;/data&gt;
+    &lt;data key="BUSINESS_DAY"&gt;2010-01-22&lt;/data&gt;
+    &lt;data key="WORKSTATION_ID"&gt;003&lt;/data&gt;
+    &lt;data key="TRANSACTION_ID"&gt;1234&lt;/data&gt;
+    &lt;data key="SKU"&gt;9999999&lt;/data&gt;
+    &lt;data key="PRICE"&gt;10.00&lt;/data&gt;
+    &lt;data key="DESC" xsi:nil="true"/&gt;
+  &lt;/row&gt;
+  &lt;row entity="SALE_LINE_ITEM" dml="I"&gt;
+    &lt;data key="STORE_ID"&gt;001&lt;/data&gt;
+    &lt;data key="BUSINESS_DAY"&gt;2010-01-22&lt;/data&gt;
+    &lt;data key="WORKSTATION_ID"&gt;003&lt;/data&gt;
+    &lt;data key="TRANSACTION_ID"&gt;1234&lt;/data&gt;
+    &lt;data key="SKU"&gt;9999999&lt;/data&gt;
+    &lt;data key="PRICE"&gt;10.00&lt;/data&gt;
+    &lt;data key="DESC" xsi:nil="true"/&gt;
+  &lt;/row&gt;
+  &lt;row entity="SALE_TAX" dml="I"&gt;
+    &lt;data key="STORE_ID"&gt;001&lt;/data&gt;
+    &lt;data key="BUSINESS_DAY"&gt;2010-01-22&lt;/data&gt;
+    &lt;data key="WORKSTATION_ID"&gt;003&lt;/data&gt;
+    &lt;data key="TRANSACTION_ID"&gt;1234&lt;/data&gt;
+    &lt;data key="AMOUNT"&gt;1.33&lt;/data&gt;
+  &lt;/row&gt;
+  &lt;row entity="SALE_TOTAL" dml="I"&gt;
+    &lt;data key="STORE_ID"&gt;001&lt;/data&gt;
+    &lt;data key="BUSINESS_DAY"&gt;2010-01-22&lt;/data&gt;
+    &lt;data key="WORKSTATION_ID"&gt;003&lt;/data&gt;
+    &lt;data key="TRANSACTION_ID"&gt;1234&lt;/data&gt;
+    &lt;data key="AMOUNT"&gt;21.33&lt;/data&gt;
+  &lt;/row&gt;
+&lt;/sale&gt;
+            </pre><p>
+            To publish JMS messages during routing
+            the same pattern is valid, with the exception that the extension point would be the XmlPublisherDataRouter and the router
+            would be configured by setting the <code class="literal">router_type</code> of a <a href="data-model.html#table_router" title="A.33.&nbsp;ROUTER">ROUTER</a> to the Spring bean
+            name of the registered extension point.  Of course, the router would need to be linked through <a href="data-model.html#table_trigger_router" title="A.40.&nbsp;TRIGGER_ROUTER">TRIGGER_ROUTER</a>s
+            to each <a href="data-model.html#table_trigger" title="A.38.&nbsp;TRIGGER">TRIGGER</a>  table that needs published.
+        </p>
+    </div>
+<div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="deployment-options"></a>5.3.&nbsp;Deployment Options</h2></div></div></div>
+        
+        <p>An instance of SymmetricDS can be deployed in several ways:</p>
+        <div class="itemizedlist"><ul type="disc"><li>
+                <p>Web application archive (WAR) deployed to an application server</p>
+                <p>
+                    This option means packaging a WAR file and deploying to your favorite
+                    web server, like Apache Tomcat.  It's a little more work, but you
+                    can configure the web server to do whatever you need.  SymmetricDS can also
+                    be embedded in an existing web application, if desired.
+                </p>
+            </li><li>
+                <p>Standalone service that embeds Jetty web server</p>
+                <p>
+                    This option means running the <span class="emphasis"><em>sym</em></span> command line, which launches the built-in Jetty web server.
+                    This is a simple option because it is already provided, but you lose the flexibility to configure
+                    the web server any further.
+                </p>
+            </li><li>
+                <p>Embedded as a Java library in an application</p>
+                <p>
+                    This option means you must write a wrapper Java program that runs
+                    SymmetricDS.  You would probably use Jetty web server, which is also embeddable.
+                    You could bring up an embedded database like Derby or H2.  You could configure the
+                    web server, database, or SymmetricDS to do whatever you needed, but it's also
+                    the most work of the three options discussed thus far.
+                </p>
+            </li></ul></div>
+        <p>
+            The deployment model you choose depends on how much flexibility you need versus how easy you
+            want it to be.  Both Jetty and Tomcat are excellent, scalable web servers that
+            compete with each other and have great performance.  Most people choose either
+            the <span class="emphasis"><em>Standalone</em></span> or <span class="emphasis"><em>Web Archive</em></span> with Tomcat 5.5 or 6.  Deploying to Tomcat
+            is a good middle-of-the-road decision that requires a little more work for more flexibility.
+        </p>
+        <p>Next, we will go into a little more detail on the first three deployment options listed above.</p>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="deployment-options-web-archive"></a>5.3.1.&nbsp;Web Archive (WAR)</h3></div></div></div>
+            
+            <p>
+                As a web application archive, a WAR is deployed to an application server,
+                such as Tomcat, Jetty, or JBoss.  The structure of the archive will have a <code class="literal">web.xml</code>
+                file in the <code class="literal">WEB-INF</code> folder, an appropriately configured <code class="filename">symmetric.properties</code> file in the <code class="literal">WEB-INF/classes</code> folder,
+                and the required JAR files in the <code class="literal">WEB-INF/lib</code> folder.
+            </p>
+            <div class="mediaobject"><img src="./images/symmetric_war.gif"></div>
+            <p>
+                A war file can be generated using the standalone installation's <code class="literal">symadmin</code> utility and the
+                <code class="literal">create-war</code> subcommand.  The command requires the name of the war file to generate.  It
+                essentially packages up the web directory, the conf directory and includes an optional
+                properties file.  Note that if a properties file is included, it will be copied to
+                WEB-INF/classes/symmetric.properties.  This is the same location conf/symmetric.properties
+                would have been copied to.  The generated war distribution uses the same web.xml as the standalone
+                deployment.
+            </p>
+            <p>
+                <span><strong class="command">../bin/symadmin -p my-symmetric-ds.properties create-war /some/path/to/symmetric-ds.war</strong></span>
+            </p>
+            <p>
+                The <code class="literal">web.base.servlet.path</code> property in <code class="filename">symmetric.properties</code> can be set if the SymmetricServlet needs to
+                coexist with other Servlets.  By default, the value is blank.  If you set it to, say, <code class="literal">web.base.servlet.path=sync</code> for example,
+                <code class="literal">registration.url</code> would be <code class="literal">http://server:port/sync</code>.
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="deployment-options-embedded"></a>5.3.2.&nbsp;Embedded</h3></div></div></div>
+            
+            <p>
+                A Java application with the SymmetricDS Java Archive (JAR) library on its
+                classpath can use the <code class="literal">SymmetricWebServer</code> to start the server.
+            </p>
+            <pre class="programlisting">
+import org.jumpmind.symmetric.SymmetricWebServer;
+
+public class StartSymmetricEngine {
+
+    public static void main(String[] args) throws Exception {
+
+        SymmetricWebServer node = new SymmetricWebServer(
+                                   "classpath://my-application.properties", "conf/web_dir");
+
+        // this will create the database, sync triggers, start jobs running
+        node.start(8080);
+
+        // this will stop the node
+        node.stop();
+    }
+
+}</pre>
+            <p>
+                This example starts the SymmetricDS server on port 8080.
+                The configuration properties file, <code class="filename">my-application.properties</code>,
+                is packaged in the application to provide properties that override the SymmetricDS
+                default values.  The second parameter to the constructor points to the web directory.
+                The default location is <code class="code">../web</code>.  In this example the web directory is located
+                at <code class="code">conf/web_dir</code>.  The web.xml is expected to be found at <code class="code">conf/web_dir/WEB-INF/web.xml</code>.
+            </p>
+        </div>
+    </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="deployment-options-standalone"></a>5.4.&nbsp;Standalone</h2></div></div></div>
+            
+            <p>
+                The <code class="literal">sym</code> command line utility starts a standalone web server with
+                SymmetricDS pre-deployed.  The standalone server uses an embedded instance of the
+                Jetty application server to handle web requests.  The web server can be configured
+                using command line options or the web server can be configured by changing properties in the
+                <code class="code">conf/symmetric-server.properties</code> file.
+            </p>
+            <p>
+                The following example starts the SymmetricDS server on port 8080 with the startup
+                properties found in the <code class="filename">root.properties</code> file.
+            </p>
+            <pre class="programlisting">/symmetric/bin/sym --properties root.properties --port 8080 --server
+</pre>
+            <p>
+                Even though the port and properties settings can be passed in on the command line, the preferred
+                configuration approach is to put each hosted node's properties file in the <code class="code">engines</code> directory
+                and to modify port settings and enable secure mode using the <code class="code">conf/symmetric-server.properties</code>.
+            </p>
+            <p>
+                It is also suggested that SymmetricDS be configured to run as a service according to the instructions for your platform as documented in the following section.
+            </p>
+        </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="running-service"></a>5.5.&nbsp;Running SymmetricDS as a Service</h2></div></div></div>
+    
+        <p>
+    SymmetricDS can be configured to start and run as a service in both Windows and *nix platforms.
+    </p>
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="running-service-windows"></a>5.5.1.&nbsp;Running as a Windows Service</h3></div></div></div>
+        
+        <p>
+            SymmetricDS uses the
+            <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://wrapper.tanukisoftware.org/" target="_top">Java Service Wrapper</a>
+            product from Tanuki Software to run in the background as a Windows system service.
+            The Java Service Wrapper executable is named <code class="filename">sym_service.exe</code>
+            so it can be easily identified from a list of running processes.
+            To install the service, use the provided script:
+            </p><pre class="programlisting">bin\install_service.bat</pre><p>
+        </p>
+        <p>
+            The service configuration is found in <code class="filename">conf/sym_service.conf</code>.
+            Edit this file if you want to change the default port number (8080), initial memory size
+            (256 MB), log file size (10 MB), or other settings.
+            When started, the server will look in the <code class="filename">conf</code> directory
+            for the <code class="filename">symmetric.properties</code> file
+            and the  <code class="filename">log4j.xml</code> file.
+            Logging for standard out, error, and application are written to the
+            <code class="filename">logs</code> directory.
+        </p>
+        <p>
+            Most configuration changes do not require the service to be re-installed.
+            To un-install the service, use the provided script:
+            </p><pre class="programlisting">bin\uninstall_service.bat</pre><p>
+        </p>
+        <p>
+            Use the <span><strong class="command">net</strong></span> command to start and stop the service:
+            </p><pre class="programlisting">net start symmetricds
+net stop symmetricds</pre><p>
+        </p>
+    </div>
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="running-service-unix"></a>5.5.2.&nbsp;Running as a *nix Service</h3></div></div></div>
+        
+        <p>
+            SymmetricDS uses the 32 bit
+            <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://wrapper.tanukisoftware.org/" target="_top">Java Service Wrapper</a>
+            product from Tanuki Software to run in the background as a Unix system service.
+            The Java Service Wrapper executable is named <code class="filename">sym_service</code>
+            so it can be easily identified from a list of running processes.
+            The service configuration is found in <code class="filename">conf/sym_service.conf</code>.
+            Edit this file if you want to change the initial memory size
+            (256 MB), log file size (10 MB), or other settings.
+        </p>
+        <p>If you happen to need a 64 bit wrapper, you'll need to download the Java Service Wrapper 64 bit version, 
+            then do the following:
+           </p><div class="orderedlist"><ol type="1"><li>Unzip the download to some directory, say /tmp</li><li>Change directory to the unzip location</li><li>Run the following three commands:
+                <pre class="programlisting">
+cp ./bin/wrapper /opt/symmetric-ds/bin/sym_service
+cp ./lib/wrapper.jar /opt/symmetric-ds/lib/wrapper.jar
+cp ./lib/libwrapper.so /opt/symmetric-ds/lib/libwrapper.so
+                </pre>
+                where <code class="literal">/opt/symmetric-ds</code> should be replaced with wherever you have installed SymmetricDS.
+                </li></ol></div><p>
+        </p>
+        <p>
+            An init script is provided to work with standard Unix run configuration levels.
+            The <code class="filename">sym_service.initd</code> file follows the
+            Linux Standard Base specification, which should work on many systems, including
+            Fedora and Debian-based distributions.
+            To install the script, copy it into the system init directory:
+        </p>
+        <p>
+            </p><pre class="programlisting">cp bin/sym_service.initd /etc/init.d/sym_service</pre><p>
+        </p>
+        <p>
+            Edit the init script to set the SYM_HOME variable to the directory
+            where SymmetricDS is located.  The init script calls the
+            <code class="filename">sym_service</code> executable.
+        </p>
+        <p>Enabling the service varies based on the version of Linux in use.  Three possible approaches are listed below:</p>
+        <div class="orderedlist"><ol type="1"><li>Using <code class="literal">chkconfig</code> command:
+        <p>
+            To enable the service to run automatically when the system is started:
+            </p><pre class="programlisting">/sbin/chkconfig --add sym_service</pre><p>
+        </p>
+        <p>
+            To disable the service from running automatically:
+            </p><pre class="programlisting">/sbin/chkconfig --del sym_service</pre><p>
+        </p>
+        </li><li>Using <code class="literal">install_initd</code> command (CentOS Linux, Oracle Linux, SUSE Linux):
+        <p>
+            On CentOS Linux, Oracle Linux, and SUSE Linux install the service by calling:
+            </p><pre class="programlisting">/usr/lib/lsb/install_initd sym_service</pre><p>
+            Remove the service by calling:
+            </p><pre class="programlisting">/usr/lib/lsb/remove_initd sym_service</pre><p>
+        </p></li><li>
+            Using <code class="literal">sysv-rc-conf</code> command (Ubuntu Linux):
+        <p>
+            On Ubuntu Linux, you might need to use sysv-rc-conf instead of chkconfig.
+            Try running sys-rc-conf as a super user (consider utilizing apt-get to install sysv-rc-conf
+            if it is not present:  <code class="literal">sudo apt-get install sysv-rc-conf</code>).
+            Run sysv-rc-conf with the following command:
+            </p><pre class="programlisting">sudo sysv-rc-conf </pre><p>
+            You should see a list of the scripts residing in your /etc/init.d folder.
+            Use control-N to navigate through the list to locate sym_service, then activate the service
+            for the desired run-levels (most likely 2-5).
+        </p>
+        </li></ol></div>
+        <p>
+            Finally, you can use the <span><strong class="command">service</strong></span> command to start, stop, and query
+            the status of the service:
+            </p><pre class="programlisting">/sbin/service sym_service start
+/sbin/service sym_service stop
+/sbin/service sym_service status</pre><p>
+        </p>
+        <p>
+            Alternatively, call the init.d script directly:
+            </p><pre class="programlisting">/etc/init.d/sym_service start
+/etc/init.d/sym_service stop
+/etc/init.d/sym_service status
+            </pre><p>
+        </p>
+    </div>
+    </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="clustering"></a>5.6.&nbsp;Clustering</h2></div></div></div>
+        
+        <p>
+        A single SymmetricDS node may be clustered across a series of instances, creating a web farm.  A node might be clustered to provide load balancing and failover, for example.
+        </p>
+        <p>
+        When clustered, a hardware load balancer is typically used
+        to round robin client requests to the cluster.  The load balancer should be configured for stateless connections.
+        Also, the <code class="literal">sync.url</code> (discussed in <a href="configuration.html#configuration-node-properties" title="4.1.&nbsp;Node Properties">Section&nbsp;4.1, &#8220;Node Properties&#8221;</a>)
+        SymmetricDS property should be set to the URL of the load balancer.
+        </p>
+        <p>
+        If the cluster will be running any of the SymmetricDS jobs, then the <code class="literal">cluster.lock.enabled</code> property should be set to <code class="literal">true</code>.
+        By setting this property to true, SymmetricDS will use a row in the <a href="data-model.html#table_lock" title="A.16.&nbsp;LOCK">LOCK</a> table as a semaphore to make sure that only one instance at a time
+        runs a job.  When a lock is acquired, a row is updated in the lock table with the time of the lock and the server id of the locking job.  The lock time is set back to null
+        when the job is finished running.  Another instance of SymmetricDS cannot aquire a lock until the locking instance (according to the server id) releases the lock.  If an
+        instance is terminated while the lock is still held, an instance with the same server id is allowed to reaquire the lock.  If the locking instance remains down, the lock can be
+        broken after a period of time, specified by the <code class="literal">cluster.lock.timeout.ms</code> property, has expired.  Note that if the job is still running and the lock
+        expires, two jobs could be running at the same time which could cause database deadlocks.
+        </p>
+        <p>
+        By default, the locking server id is the hostname of the server.  If two clustered instances are running on the same server, then the <code class="literal">cluster.server.id</code> property
+        may be set to indicate the name that the instance should use for its server id.
+        </p>
+        <p>
+        When deploying SymmetricDS to an application server like Tomcat or JBoss, no special session clustering needs to be configured for the application server.
+        </p>
+    </div>
+      <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="encrypted-passwords"></a>5.7.&nbsp;Encrypted Passwords</h2></div></div></div>
+        
+        <p>
+            The <code class="literal">db.user</code> and <code class="literal">db.password</code> properties will accept encrypted text, which protects
+            against casual observation.  The text is prefixed with <code class="literal">enc:</code> to indicate
+            that it is encrypted.  To encrypt text, use the following command:
+
+            </p><pre class="programlisting">symadmin -e {engine name} encrypt-text text-to-encrypt</pre><p>
+            or
+            </p><pre class="programlisting">symadmin -p {properties file} encrypt-text text-to-encrypt</pre><p>
+
+            The text is encrypted using a secret key named "sym.secret" that is retrieved from a keystore file.
+            By default, the keystore is located in <code class="filename">security/keystore</code>.
+            The location and filename of the keystore can be overridden by setting the "sym.keystore.file" system property.
+            If the secret key is not found, the system will generate and install a secret key for use with Triple DES cipher.
+        </p>
+        <p>
+            Generate a new secret key for encryption using the <code class="literal">keytool</code>
+            command that comes with the JRE.  If there is an existing key in the keystore, first remove it:
+
+            </p><pre class="programlisting">keytool -keystore keystore -storepass changeit -storetype jceks \
+   -alias sym.secret -delete</pre><p>
+
+            Then generate a secret key, specifying a cipher algorithm and key size.
+            Commonly used algorithms that are supported include aes, blowfish, desede, and rc4.
+
+            </p><pre class="programlisting">keytool -keystore keystore -storepass changeit -storetype jceks \
+   -alias sym.secret -genseckey -keyalg aes -keysize 128</pre><p>
+
+            If using an alternative provider, place the provider JAR file in the SymmetricDS <code class="filename">lib</code> folder.
+            The provider class name should be installed in the JRE security properties or specified on the command line.
+            To install in the JRE, edit the JRE <code class="filename">lib/security/java.security</code> file
+            and set a <code class="literal">security.provider.i</code> property for the provider class name.
+            Or, the provider can be specified on the command line instead.
+            Both <code class="literal">keytool</code> and <code class="literal">sym</code> accept command line arguments for the provider class name.
+            For example, using the Bouncy Castle provider, the command line options would look like:
+
+            </p><pre class="programlisting">keytool -keystore keystore -storepass changeit -storetype jceks \
+   -alias sym.secret -genseckey -keyalg idea -keysize 56 \
+   -providerClass org.bouncycastle.jce.provider.BouncyCastleProvider \
+   -providerPath ..\lib\bcprov-ext.jar</pre><p>
+            </p><pre class="programlisting">symadmin -providerClass org.bouncycastle.jce.provider.BouncyCastleProvider -e secret</pre><p>
+
+            To customize the encryption, write a Java class that implements the ISecurityService or extends the default SecurityService, and place
+            the class on the classpath in either <code class="filename">lib</code> or
+            <code class="filename">web/WEB-INF/lib</code> folders.
+            Then, in the <code class="filename">symmetric.properties</code> specify your class name for the security service.
+
+            </p><pre class="programlisting">security.service.class.name=org.jumpmind.security.SecurityService</pre><p>
+
+            Remember to specify your properties file when encrypting passwords, so it will use your custom ISecurityService.
+
+            </p><pre class="programlisting">symadmin -p symmetric.properties -e secret</pre><p>
+        </p>
+    </div>
+    <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="secure-transport"></a>5.8.&nbsp;Secure Transport</h2></div></div></div>
+        
+        <p>
+            By specifying the "https" protocol for a URL, SymmetricDS will communicate over
+            Secure Sockets Layer (SSL) for an encrypted transport.  The following properties
+            need to be set with "https" in the URL:
+            </p><div class="variablelist"><dl><dt><span class="term">
+                        <span><strong class="command">sync.url</strong></span>
+                    </span></dt><dd>
+                        <p>
+                            This is the URL of the current node, so if you want to force other
+                            nodes to communicate over SSL with this node, you specify "https" in the URL.
+                        </p>
+                    </dd><dt><span class="term">
+                        <span><strong class="command">registration.url</strong></span>
+                    </span></dt><dd>
+                        <p>
+                            This is the URL where the node will connect for registration when it
+                            first starts up.  To protect the registration with SSL, you specify
+                            "https" in the URL.
+                        </p>
+                    </dd></dl></div><p>
+            For incoming HTTPS connections, SymmetricDS depends on the webserver where
+            it is deployed, so the webserver must be configured for HTTPS.
+            As a standalone deployment, the "sym" launcher command provides options for
+            enabling HTTPS support.
+        </p>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="secure-transport-sym"></a>5.8.1.&nbsp;Sym Launcher</h3></div></div></div>
+            
+            <p>
+                The "sym" launch command uses Jetty as an embedded web server.
+                Using command line options, the web server can be told to listen for
+                HTTP, HTTPS, or both.
+            </p>
+            <p>
+                <span><strong class="command">sym --port 8080 --server</strong></span>
+            </p>
+            <p>
+                <span><strong class="command">sym --secure-port 8443 --secure-server</strong></span>
+            </p>
+            <p>
+                <span><strong class="command">sym --port 8080 --secure-port 8443 --mixed-server</strong></span>
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="secure-transport-tomcat"></a>5.8.2.&nbsp;Tomcat</h3></div></div></div>
+            
+            <p>
+                If you deploy SymmetricDS to Apache Tomcat, it can be secured by editing the
+                <code class="filename">TOMCAT_HOME/conf/server.xml</code>
+                configuration file.  There is already a line that can be uncommented
+                and changed to the following:
+
+                </p><pre class="programlisting">
+&lt;Connector port="8443" protocol="HTTP/1.1" SSLEnabled="true"
+  maxThreads="150" scheme="https" secure="true"
+  clientAuth="false" sslProtocol="TLS"
+  keystoreFile="/symmetric-ds-1.x.x/security/keystore" /&gt;</pre><p>
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="secure-transport-keystore"></a>5.8.3.&nbsp;Keystores</h3></div></div></div>
+            
+            <p>
+                When SymmetricDS connects to a URL with HTTPS, Java checks the validity of the
+                certificate using the built-in trusted keystore located at
+                <code class="filename">JRE_HOME/lib/security/cacerts</code>.
+                The "sym" launcher command overrides the trusted keystore to use its own
+                trusted keystore instead, which is located at
+                <code class="filename">security/cacerts</code>.
+                This keystore contains the certificate aliased as "sym" for use in testing
+                and easing deployments.
+                The trusted keystore can be overridden
+                by specifying the <code class="literal">javax.net.ssl.trustStore</code> system property.
+            </p>
+            <p>
+                When SymmetricDS is run as a secure server with the "sym" launcher,
+                it accepts incoming requests using the key installed in the keystore
+                located at
+                <code class="filename">security/keystore</code>.
+                The default key is provided for convenience of testing, but should be
+                re-generated for security.
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="secure-transport-keys"></a>5.8.4.&nbsp;Generating Keys</h3></div></div></div>
+            
+            <p>
+                To generate new keys and install a server certificate, use the
+                following steps:
+            </p>
+            <div class="procedure"><ol type="1"><li>
+                    <p>
+                        Open a command prompt and navigate to the
+                        <code class="filename">security</code>
+                        subdirectory of your SymmetricDS installation on the server to which
+                        communication will be secured (typically the "root" or "central office" server).
+                    </p>
+                </li><li>
+                    <p>Delete the old key pair and certificate.</p>
+                    <p>
+                        <span><strong class="command">keytool -keystore keystore -delete -alias sym</strong></span>
+                    </p>
+                    <p>
+                        <span><strong class="command">keytool -keystore cacerts -delete -alias sym</strong></span>
+                    </p>
+                    <pre class="programlisting">Enter keystore password:  changeit</pre>
+                </li><li>
+                    <p>Generate a new key pair.  Note that the first name/last name (the "CN") must match
+                    the fully qualified hostname the client will be using to communcate to the server.</p>
+                    <p>
+                        <span><strong class="command">keytool -keystore keystore -alias sym -genkey -keyalg RSA -validity 10950</strong></span>
+                    </p>
+                    <pre class="programlisting">
+Enter keystore password:  changeit
+What is your first and last name?
+  [Unknown]:  localhost
+What is the name of your organizational unit?
+  [Unknown]:  SymmetricDS
+What is the name of your organization?
+  [Unknown]:  JumpMind
+What is the name of your City or Locality?
+  [Unknown]:
+What is the name of your State or Province?
+  [Unknown]:
+What is the two-letter country code for this unit?
+  [Unknown]:
+Is CN=localhost, OU=SymmetricDS, O=JumpMind, L=Unknown, ST=Unknown, C=Unknown
+correct?
+  [no]:  yes
+
+Enter key password for &lt;sym&gt;
+        (RETURN if same as keystore password):</pre>
+                </li><li>
+                    <p>Export the certificate from the private keystore.</p>
+                    <p>
+                        <span><strong class="command">keytool -keystore keystore -export -alias sym -rfc -file sym.cer</strong></span>
+                    </p>
+                </li><li>
+                    <p>Install the certificate in the trusted keystore.</p>
+                    <p>
+                        <span><strong class="command">keytool -keystore cacerts -import -alias sym -file sym.cer</strong></span>
+                    </p>
+                </li><li>
+                    <p>Copy the cacerts file that is generated by this process to
+                    the <code class="filename">security</code> directory of each client's SymmetricDS installation.</p>
+                </li></ol></div>
+        </div>
+    </div>
+    <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="basic-auth"></a>5.9.&nbsp;Basic Authentication</h2></div></div></div>
+        
+        <p>
+            SymmetricDS supports basic authentication for client and server nodes.
+        </p>
+        <p>
+            To configure a client node to use basic authentication when communicating with a server node,
+            specify the following startup parameters:
+        </p>
+            <div class="variablelist"><dl><dt><span class="term">
+                        <span><strong class="command">http.basic.auth.username</strong></span>
+                    </span></dt><dd>
+                        <p>
+                            username for client node basic authentication.
+                            [&nbsp;Default:&nbsp;]
+                        </p>
+                    </dd><dt><span class="term">
+                        <span><strong class="command">http.basic.auth.password</strong></span>
+                    </span></dt><dd>
+                        <p>
+                            password for client node basic authentication.
+                            [&nbsp;Default:&nbsp;]
+                        </p>
+                    </dd></dl></div>
+        <p>
+            The SymmetricDS Standalone Web Server also supports Basic Authentication.  It can be enabled by
+            passing the following arguments to the startup program
+        </p>
+            <div class="variablelist"><dl><dt><span class="term">
+                        <span><strong class="command">--http-basic-auth-user</strong></span>
+                    </span></dt><dd>
+                        <p>
+                            username for basic authentication
+                            [&nbsp;Default:&nbsp;]
+                        </p>
+                    </dd><dt><span class="term">
+                        <span><strong class="command">--http-basic-auth-password</strong></span>
+                    </span></dt><dd>
+                        <p>
+                            password for basic authentication
+                            [&nbsp;Default:&nbsp;]
+                        </p>
+                    </dd></dl></div>
+        <p>
+            If the server node is deployed to Tomcat or another application server as a WAR or EAR file, then
+            basic authentication is setup with the standard configuration in the WEB.xml file.
+        </p>
+    </div>
+    <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="extensions"></a>5.10.&nbsp;Extension Points</h2></div></div></div>
+    
+        <p>
+             SymmetricDS has a pluggable architecture that can be extended. A Java class that implements
+             the appropriate extension point interface, can implement custom logic and change the behavior
+             of SymmetricDS to suit special needs.  All supported extension
+             points extend the <code class="literal">IExtensionPoint</code> interface.  The available extension points are documented in the following sections.
+        </p>
+        <p>
+             When SymmetricDS starts up, the <code class="literal">ExtensionPointManager</code> searches a <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://springframework.org" target="_top">Spring Framework</a>
+             context for classes that implement the <code class="literal">IExtensionPoint</code> interface, then creates and registers
+             the class with the appropriate SymmetricDS component.
+        </p>
+        <p>
+             Extensions should be configured in the <code class="literal">conf/symmetric-extensions.xml</code> file as Spring beans.  The jar file that contains
+             the extension should be placed in the web/WEB-INF/lib directory.
+        </p>        
+        <p>
+             If an extension point needs access to SymmetricDS services or needs to connect to the database
+             it may implement the <code class="literal">ISymmetricEngineAware</code> interface in order to
+             get a handle to the <code class="literal">ISymmetricEngine</code>.
+        </p>
+        <p>
+             The <code class="literal">INodeGroupExtensionPoint</code> interface may be optionally implemented to indicate that a registered
+             extension point should only be registered with specific node groups.
+             </p><pre class="programlisting">/**
+ * Only apply this extension point to the 'root' node group.
+ */
+ public String[] getNodeGroupIdsToApplyTo() {
+     return new String[] { "root" };
+ }
+</pre><p>
+        </p>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-parameter-filter"></a>5.10.1.&nbsp;IParameterFilter</h3></div></div></div>
+            
+            <p>
+                Parameter values can be specified in code using a parameter filter.  Note that there can be only one parameter
+                filter per engine instance.  The IParameterFilter replaces the deprecated IRuntimeConfig from prior releases.
+                </p><pre class="programlisting">public class MyParameterFilter
+    implements IParameterFilter, INodeGroupExtensionPoint {
+
+    /**
+     * Only apply this filter to stores
+     */
+    public String[] getNodeGroupIdsToApplyTo() {
+        return new String[] { "store" };
+    }
+
+    public String filterParameter(String key, String value) {
+        // look up a store number from an already existing properties file.
+        if (key.equals(ParameterConstants.EXTERNAL_ID)) {
+            return StoreProperties.getStoreProperties().
+              getProperty(StoreProperties.STORE_NUMBER);
+        }
+        return value;
+    }
+
+    public boolean isAutoRegister() {
+        return true;
+    }
+
+}</pre><p>
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-data-loader-filter"></a>5.10.2.&nbsp;IDatabaseWriterFilter</h3></div></div></div>
+            
+            <p>
+                Data can be filtered or manipulated before it is loaded into the target database.
+                A filter can change the
+                data in a column, save it somewhere else or do something else with the data entirely.
+                It can also specify by the
+                return value of the function call that the data loader should continue on
+                and load the data (by returning true) or ignore it (by returning false). One
+                possible use of the filter, for example, might be to
+                route credit card data to a secure database and blank it out as it loads
+                into a less-restricted reporting database.
+            </p>
+            <p>
+                A <code class="literal">DataContext</code> is passed to each of the callback methods.  A new
+                context is created for each synchronization.  The context provides a mechanism
+                to share data during the load of a batch between different rows of data that are
+                committed in a single database transaction.
+            </p>
+            <p>
+                The filter also provides callback methods for the batch lifecycle.  The <code class="literal">DatabaseWriterFilterAdapter</code>
+                may be used if not all methods are required.
+            </p>
+            <p>
+                A class implementing the IDatabaseWriterFilter interface is injected onto the
+                DataLoaderService in order to receive callbacks when data is inserted,
+                updated, or deleted.
+
+                </p><pre class="programlisting">public class MyFilter extends DatabaseWriterFilterAdapter {
+
+    @Override
+    public boolean beforeWrite(DataContext context, Table table, CsvData data) {
+        if (table.getName().equalsIgnoreCase("CREDIT_CARD_TENDER")
+                &amp;&amp; data.getDataEventType().equals(DataEventType.INSERT)) {
+            String[] parsedData = data.getParsedData(CsvData.ROW_DATA);
+            // blank out credit card number
+            parsedData[table.getColumnIndex("CREDIT_CARD_NUMBER")] = null;
+        }
+        return true;
+    }
+}</pre><p>
+            </p>
+            <p>
+                The filter class should be specified in <code class="literal">conf/symmetric-extensions.xml</code> as follows.
+
+                </p><pre class="programlisting">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd"&gt;
+
+    &lt;bean id="myFilter" class="com.mydomain.MyFilter"/&gt;
+
+&lt;/beans&gt;</pre><p>
+            </p>
+        </div>
+
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-databasewriter-errorhandler"></a>5.10.3.&nbsp;IDatabaseWriterErrorHandler</h3></div></div></div>
+            
+            <p>
+            Implement this extension point to override how errors are handled.  You can use this extension point to ignore rows that produce foreign key errors.
+            </p>
+        </div>
+
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-dataloader-factory"></a>5.10.4.&nbsp;IDataLoaderFactory</h3></div></div></div>
+            
+            <p>
+            Implement this extension point to provide a different implementation of the <code class="code">org.jumpmind.symmetric.io.data.IDataWriter</code> that
+            is used by the SymmetricDS data loader.  Data loaders are configured for a channel.  After this extension point is registered it can
+            be activated for a <a href="data-model.html#table_channel" title="A.1.&nbsp;CHANNEL">CHANNEL</a> by indicating the data loader name in the <code class="code">data_loader_type</code> column.
+            </p>
+            <p>
+            SymmetricDS has two out of the box extensions of IDataLoaderFactory already implemented in its PostgresBulkDataLoaderFactory 
+            and OracleBulkDataLoaderFactory classes.  These extension points implement bulk data loading capabilities for Oracle, 
+            Postgres and Greenplum dialects.  See Appendix C. Database Notes for details.
+            </p>
+            <p>
+            Another possible use of this extension point is to route data to a NOSQL data sink.
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-acknowledge-event-listener"></a>5.10.5.&nbsp;IAcknowledgeEventListener</h3></div></div></div>
+            
+            <p>
+            Implement this extension point to receive callback events when a batch is acknowledged.
+            The callback for this listener happens at the point of extraction.
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-reload-listener"></a>5.10.6.&nbsp;IReloadListener</h3></div></div></div>
+            
+            <p>
+            Implement this extension point to listen in and take
+            action before or after a reload is requested for a Node.  The callback for this listener
+            happens at the point of extraction.
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-sync-url-extension"></a>5.10.7.&nbsp;ISyncUrlExtension</h3></div></div></div>
+            
+            <p>
+             This extension point is used to select an appropriate URL based on
+             the URI provided in the <code class="literal">sync_url</code> column of <code class="literal">sym_node</code>.
+            </p>
+            <p>
+             To use this extension point configure the sync_url for a node with the
+             protocol of ext://beanName. The beanName is the name you give the extension
+             point in the extension xml file.
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-column-transforms"></a>5.10.8.&nbsp;IColumnTransform</h3></div></div></div>
+            
+            <p>
+             This extension point allows custom column transformations to be created.  There are a handful of
+             out-of-the-box implementations.  If any of these do not meet the column transformation needs of
+             the application, then a custom transform can be created and registered.  It can be activated
+             by referencing the column transform's name <code class="code">transform_type</code> column of
+             <a href="data-model.html#table_transform_column" title="A.37.&nbsp;TRANSFORM_COLUMN">TRANSFORM_COLUMN</a>
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-node-id-generator"></a>5.10.9.&nbsp;INodeIdCreator</h3></div></div></div>
+            
+            <p>
+             This extension point allows SymmetricDS users to implement their own algorithms for how
+             node ids and passwords are generated or selected during the registration process.  There may be
+             only one node creator per SymmetricDS instance (Please note that the node creator extension has replaced the node generator extension).
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-trigger-creation-listener"></a>5.10.10.&nbsp;ITriggerCreationListener</h3></div></div></div>
+            
+            <p>
+            Implement this extension point to get status callbacks during trigger creation.
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-batch-algorithm"></a>5.10.11.&nbsp;IBatchAlgorithm</h3></div></div></div>
+            
+            <p>
+            Implement this extension point and set the name of the Spring bean on the batch_algorithm column of the Channel table to use.
+            This extension point gives fine grained control over how a channel is batched.
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-data-router"></a>5.10.12.&nbsp;IDataRouter</h3></div></div></div>
+            
+            <p>
+            Implement this extension point and set the name of the Spring bean on the router_type column
+            of the Router table to use.  This extension point gives the ability to programmatically decide
+            which nodes data should be routed to.
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-heartbeat-listener"></a>5.10.13.&nbsp;IHeartbeatListener</h3></div></div></div>
+            
+            <p>
+            Implement this extension point to get callbacks during the heartbeat job.
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-offline-client-listener"></a>5.10.14.&nbsp;IOfflineClientListener</h3></div></div></div>
+            
+            <p>
+            Implement this extension point to get callbacks for offline events on client nodes.
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-offline-server-listener"></a>5.10.15.&nbsp;IOfflineServerListener</h3></div></div></div>
+            
+            <p>
+            Implement this extension point to get callbacks for offline events detected on a server node during monitoring of client nodes.
+            </p>
+        </div>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="extensions-node-password"></a>5.10.16.&nbsp;INodePasswordFilter</h3></div></div></div>
+            
+            <p>
+            Implement this extension point to intercept the saving and rendering of the node password.
+            </p>
+        </div>
+    </div>
+    <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="android"></a>5.11.&nbsp;Synchronization to and from Android Devices </h2></div></div></div>
+	
+
+	<p>
+		SymmetricDS now has its web-enabled, fault-tolerant, database
+		synchronization
+		software available on the Android mobile computing
+		platform. The Android client follows all of the same concepts and
+		brings to Android
+		all of the same core SymmetricDS features as the
+		full-featured,
+		Java-based SymmetricDS client. The Android client is a
+		little bit different
+		in that it is not a stand-alone application, but
+		is designed to
+		be referenced
+		as a library to run in-process with an
+		Android
+		application
+		requiring
+		synchronization for its SQLite database.
+	</p>
+	<p>
+		By using SymmetricDS, mobile application development is
+		simplified, in that the mobile application developer can now focus
+		solely on interacting with their local SQLite database. SymmetricDS
+		takes care of capturing and moving data changes to and from a
+		centralized database when the network is available
+	</p>
+	<p>
+		One of the main goals of the SymmetricDS 3 release was to support
+		deployment to Android devices. SymmetricDS's overall footprint was
+		reduced by eliminating a number of external dependencies in order to
+		better deploy to Android. Also, the database access layer was
+		abstracted so that the Android specific database access layer could be
+		used. This allows SymmetricDS to be efficient in accessing the SQLite
+		database on the Android device.
+	</p>
+	<p>
+		In order to convey how to use the SymmetricDS Android libraries,
+		the example below will show how to integrate SymmetricDS into the NotePad
+		sample application that comes with the Android ADK.
+	</p>
+	<p>
+		The NotePad sample application is a very simple task list
+		application
+		that persists &#8220;notes&#8221; to a SQLite database table called
+		Notes. The
+		Notes table will be configured to synchronize to a
+		centralized version
+		of the table.  The Notes table looks as follows:
+	</p>
+	<p>
+		</p><div class="table"><a name="d4e2081"></a><div class="table-contents">
+			
+			<table summary="Notes Table" border="1"><colgroup><col width="50%"><col width="50%"></colgroup><thead><tr><th>Column Name</th><th>Column Type</th></tr></thead><tbody><tr><td>_ID(PK)</td><td>INTEGER</td></tr><tr><td>TITLE</td><td>TEXT</td></tr><tr><td>NOTES</td><td>TEXT</td></tr><tr><td>CREATED</td><td>INTEGER</td></tr><tr><td>MODIFIED</td><td>INTEGER</td></tr></tbody></table>
+		</div><p class="title"><b>Table&nbsp;5.1.&nbsp;Notes Table</b></p></div><p><br class="table-break">
+	</p>
+	<p>
+		Next, we will describe how to embed SymmetricDS in the NotePad
+		application.  Eclipse 3.7.2 and Android ADK 20.0.3 were used for this
+		example.
+	</p>
+	<p>
+		To start,create the NotePad project. You do
+		this by adding a new Android Sample Project. Select the NotePad
+		project.
+	</p>
+	<p>
+		</p><div class="figure"><a name="New Sample NotePad Project"></a><div class="figure-contents">
+			
+			<div class="mediaobject"><img src="./images/sync-android-1.png" alt="New Sample NotePad Project"></div>
+		</div><p class="title"><b>Figure&nbsp;5.1.&nbsp;New Sample NotePad Project</b></p></div><p><br class="figure-break">
+	</p>
+	<p>
+		SymmetricDS for Android comes as a zip file of Java archives (jar
+		files) that are required by the SymmetricDS client at runtime. This
+		zip file ()symmetric-ds-3.4.7-android.zip) can be downloaded from 
+		the SymmetricDS.org website.  The first step to using SymmetricDS in an Android
+		application is to unzip the jar files into a location where the
+		project will recognize them. The latest Android SDK and the Eclipse
+		ADK requires that these jar files be put into a libs directory under
+		the Android application project.
+	</p>
+	<p>
+		</p><div class="figure"><a name="Sample NotePad Project"></a><div class="figure-contents">
+			
+			<div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="855"><tr><td align="center"><img src="./images/sync-android-2.png" align="middle" width="855" alt="New Sample NotePad Project"></td></tr></table></div>
+		</div><p class="title"><b>Figure&nbsp;5.2.&nbsp;New Sample NotePad Project</b></p></div><p><br class="figure-break">
+	</p>
+	<p>
+		Unzip the symmetric-ds-x.x.x-android.zip file to the NotePad
+		project directory. Refresh the NotePad project in Eclipse. You should
+		end up with a libs directory that is automatically added to the Android
+		Dependencies.
+	</p>
+	<p>
+		</p><div class="figure"><a name="Jar Files Added to Libs"></a><div class="figure-contents">
+			
+			<div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="855"><tr><td align="center"><img src="./images/sync-android-3.png" align="middle" width="855" alt="Jar Files Added to Libs"></td></tr></table></div>
+		</div><p class="title"><b>Figure&nbsp;5.3.&nbsp;Jar Files Added to Libs</b></p></div><p><br class="figure-break">
+	</p>
+	<p>
+		The Android version of the SymmetricDS engine is a Java class that can
+		be
+		instantiated directly or wired into an application via a provided
+		Android service. Whether you are using the service or the engine
+		directly you need to provide a few required startup parameters to the
+		engine:
+		</p><div class="itemizedlist"><ul type="disc"><li><span><strong class="command">SQLiteOpenHelper</strong></span> &#8211; It is best (but not required) if the
+				SQLiteOpenHelper is shared with the application that will be sharing
+				the SQLite database. This core Android Java class provides software
+				synchronization around the access to the database and minimizes
+				locking errors.
+			</li><li><span><strong class="command">registrationUrl</strong></span> &#8211; This is the URL of where the centralized
+				SymmetricDS instance is hosted.
+			</li><li><span><strong class="command">externalId</strong></span> &#8211; This is the identifier that can be used by the
+				centralized SymmetricDS server to identify whether this instance
+				should get data changes that happen on the server. It could be the
+				serial number of the device, an account username, or some other
+				business concept like store number.
+			</li><li><span><strong class="command">nodeGroupId</strong></span> &#8211; This is the group id for the mobile device in
+				the synchronization configuration. For example, if the nodeGroupId
+				is 'handheld', then the SymmetricDS configuration might have a group
+				called 'handheld' and a group called 'corp' where 'handheld' is
+				configured to push and pull data from 'corp.'
+			</li><li><span><strong class="command">properties</strong></span> &#8211; Optionally tweak the settings for SymmetricDS.
+			</li></ul></div><p>
+	</p>
+	<p>
+		In order to integrate SymmetricDS into the NotePad application,
+		the
+		Android-specific SymmetricService will be used, and we need to tell
+		the Android application this by adding the service to the
+		AndroidManifest.xml file. Add the following snipped to the Manifest as
+		the last entry under the &lt;application&gt;
+		tag.
+	</p>
+	<p>
+		</p><pre class="programlisting">
+&lt;service android:name="org.jumpmind.symmetric.android.SymmetricService" android:enabled="true" &gt;           
+    &lt;intent-filter&gt;
+  		&lt;action android:name="org.jumpmind.symmetric.android.SymmetricService" /&gt;
+  	&lt;/intent-filter&gt;
+&lt;/service&gt;
+		</pre><p>
+	</p>
+
+	<p>
+		The other change required in the Manifest is to give the application
+		permission to use the Internet. Add this as the first entry in the
+		AndroidManifest.xml right before the
+		&lt;application&gt; tag.
+	</p>
+
+	<p>
+		</p><pre class="programlisting">
+&lt;uses-permission android:name="android.permission.INTERNET"&gt;&lt;/uses-permission&gt; 
+		</pre><p>
+	</p>
+
+	<p>
+		The only additional change needed is the call to start the service in the
+		application. The service needs to be started manually because we need
+		to give the application a chance to provide configuration information
+		to the service.
+	</p>
+
+	<p>
+		In NotePadProvider.java add the following code snippet in the onCreate
+		method.
+	</p>
+
+	<p>
+		</p><div class="figure"><a name="NotePadProvider.java"></a><div class="figure-contents">
+			
+			<div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="855"><tr><td align="center"><img src="./images/sync-android-4.png" align="middle" width="855" alt="NotePadProvider.java"></td></tr></table></div>
+		</div><p class="title"><b>Figure&nbsp;5.4.&nbsp;NotePadProvider.java</b></p></div><p><br class="figure-break">
+	</p>
+
+	<p>
+		</p><pre class="programlisting">
+		
+final String HELPER_KEY = "NotePadHelperKey";
+
+// Register the database helper, so it can be shared with the
+SymmetricService
+SQLiteOpenHelperRegistry.register(HELPER_KEY, mOpenHelper);
+
+Intent intent = new Intent(getContext(), SymmetricService.class);
+
+// Notify the service of the database helper key
+intent.putExtra(SymmetricService.INTENTKEY_SQLITEOPENHELPER_REGISTRY_KEY,
+HELPER_KEY);
+intent.putExtra(SymmetricService.INTENTKEY_REGISTRATION_URL,
+"http://10.0.2.2:31415/sync/server");
+intent.putExtra(SymmetricService.INTENTKEY_EXTERNAL_ID,
+"android-simulator");
+intent.putExtra(SymmetricService.INTENTKEY_NODE_GROUP_ID, "client");
+intent.putExtra(SymmetricService.INTENTKEY_START_IN_BACKGROUND,
+true);
+
+Properties properties = new Properties();
+// initial load existing notes from the Client to the Server
+properties.setProperty(ParameterConstants.AUTO_RELOAD_REVERSE_ENABLED,
+"true");
+intent.putExtra(SymmetricService.INTENTKEY_PROPERTIES, properties);
+
+getContext().startService(intent);
+			
+		</pre><p>
+	</p>
+
+	<p>
+		This code snippet shows how the SQLiteOpenHelper is shared. The
+		application's SQLiteOpenHelper is registered in a static registry
+		provided by the SymmetricDS Android library. When the service is
+		started, the key used to store the helper is passed to the service so
+		that the service may pull the helper back out of the registry.
+	</p>
+
+	<p>
+		The various parameters needed by SymmetricDS are being set in the Intent
+		which will be used by the SymmetricService to start the engine.
+	</p>
+
+	<p>
+		Most of the parameters will be familiar to SymmetricDS users. In this case
+		a property is being set which will force an initial load of the
+		existing Notes from the client to the server. This allows the user of
+		the application to enter Notes for the first time offline or while the
+		SymmetricDS engine is unregistered and still have them arrive at the
+		centralized server once the SymmetricDS engine does get registered.
+	</p>
+
+	<p>
+		That's all you have to do to integrate SymmetricDS with your Android
+		application. 
+	</p>	
+</div>
+</div><div xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="30%" align="left"><a accesskey="p" href="configuration.html">Prev</a>&nbsp;</td><td width="40%" align="center"><a accesskey="h" href="user-guide.html">Home</a></td><td width="30%" align="right">&nbsp;<a accesskey="n" href="administration.html">Next</a></td></tr><tr><td width="30%" align="left" valign="top">Chapter&nbsp;4.&nbsp;Configuration&nbsp;</td><td width="40%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.symmetricds.org/" title="SymmetricDS">SymmetricDS
+                                        </a></span></td><td width="30%" align="right" valign="top">&nbsp;Chapter&nbsp;6.&nbsp;Administration</td></tr></table></div></body></html>

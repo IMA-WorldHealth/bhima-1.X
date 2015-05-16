@@ -72,7 +72,7 @@ angular.module('bhima.controllers')
     function updateSession(model) {
       $scope.model = model;
       $scope.uncompletedList = model;
-      consumption = model.consumption.data;
+      var consumption = model.consumption.data;
       consumption.forEach(function (cons) {
         connect.fetch('/reports/stockComplete/?tracking_number=' + cons.tracking_number + '&depot_uuid=' + depotId)
         .then(function (data) {

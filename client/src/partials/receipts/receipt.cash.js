@@ -93,7 +93,7 @@ angular.module('bhima.controllers')
       dependencies.recipient.query = {
         tables: {
           'patient' : {
-            columns: ['first_name', 'last_name', 'dob', 'current_location_id', 'reference', 'registration_date']
+            columns: ['first_name', 'last_name', 'middle_name', 'dob', 'current_location_id', 'reference', 'registration_date']
           },
           'project' : {
             columns: ['abbr']

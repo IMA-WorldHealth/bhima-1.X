@@ -1,0 +1,440 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;6.&nbsp;Administration</title><link rel="stylesheet" href="css/docbook-style.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.72.0"><link rel="start" href="user-guide.html" title="SymmetricDS User Guide"><link rel="up" href="user-guide.html" title="SymmetricDS User Guide"><link rel="prev" href="advanced-topics.html" title="Chapter&nbsp;5.&nbsp;Advanced Topics"><link rel="next" href="data-model.html" title="Appendix&nbsp;A.&nbsp;Data Model"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns:fo="http://www.w3.org/1999/XSL/Format" id="banner"><a style="border:none;" href="http://www.symmetricds.org/" title="SymmetricDS User Guide"><img style="border:none;" alt="SymmetricDS" src="images/banner-logo.gif"></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="administration"></a>Chapter&nbsp;6.&nbsp;Administration</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="administration.html#solving-synchronization-issues">6.1. Solving Synchronization Issues</a></span></dt><dd><dl><dt><span class="section"><a href="administration.html#solving-synchronization-issues-analysis-outgoing">6.1.1. Analyzing the Issue - Outgoing Batches</a></span></dt><dt><span class="section"><a href="administration.html#solving-synchronization-issues-analysis-incoming">6.1.2. Analyzing the Issue - Incoming Batches</a></span></dt><dt><span class="section"><a href="administration.html#solving-synchronization-issues-resolution-outgoing">6.1.3. Resolving the Issue - Outgoing Batches</a></span></dt><dt><span class="section"><a href="administration.html#solving-synchronization-issues-resolution-incoming">6.1.4. Resolving the Issue - Incoming Batches</a></span></dt></dl></dd><dt><span class="section"><a href="administration.html#changing-triggers">6.2. Changing Triggers</a></span></dt><dt><span class="section"><a href="administration.html#grouplet">6.3. Maintaining multiple synchronization configurations through Grouplets</a></span></dt><dd><dl><dt><span class="section"><a href="administration.html#grouplet-example">6.3.1. Grouplet Example</a></span></dt></dl></dd><dt><span class="section"><a href="administration.html#resync-data">6.4. Re-synchronizing Data</a></span></dt><dt><span class="section"><a href="administration.html#changing-configuration">6.5. Changing Configuration</a></span></dt><dt><span class="section"><a href="administration.html#logging">6.6. Logging Configuration</a></span></dt><dt><span class="section"><a href="administration.html#admin-jmx">6.7. Java Management Extensions</a></span></dt><dt><span class="section"><a href="administration.html#temporary-files">6.8. Temporary Files</a></span></dt></dl></div>
+    
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="solving-synchronization-issues"></a>6.1.&nbsp;Solving Synchronization Issues</h2></div></div></div>
+        
+
+       <p>
+       By design, whenever SymmetricDS encounters an issue with a synchronization, the batch containing the error is marked as being in
+       an error state, and all subsequent batches <span class="emphasis"><em>for that particular channel to that particular node</em></span> are held and not
+       synchronized until the error batch is resolved.  SymmetricDS will retry the batch in error until the situation creating the
+       error is resolved (or the data for the batch itself is changed).
+       </p>
+
+       <p>
+       Analyzing and resolving issues can take place on the outgoing or incoming side.  The techniques for analysis are slightly different in
+       the two cases, however, due to the fact that the node with outgoing batch data also has the data and data events associated with the batch in
+       the database.  On the incoming node, however, all that is available is the incoming batch header and data present in an incoming error table.
+
+       </p>
+        <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="solving-synchronization-issues-analysis-outgoing"></a>6.1.1.&nbsp;Analyzing the Issue - Outgoing Batches</h3></div></div></div>
+        
+
+       <p>
+       The first step in analyzing the cause of a failed batch is to locate information about the data in the batch, starting with
+       <a href="data-model.html#table_outgoing_batch" title="A.29.&nbsp;OUTGOING_BATCH">OUTGOING_BATCH</a>
+       To locate batches in error, use:
+       </p><pre class="programlisting">select * from sym_outgoing_batch where error_flag=1;</pre><p>
+       Several useful pieces of information are available from this query:
+       </p><div class="itemizedlist"><ul type="disc"><li>
+       The batch number of the failed batch, available in column <code class="literal">BATCH_ID</code>.
+       </li><li>
+       The node to which the batch is being sent, available in column <code class="literal">NODE_ID</code>.
+       </li><li>
+       The channel to which the batch belongs, available in column <code class="literal">CHANNEL_ID</code>.
+       All subsequent batches on this channel to this node will be held until the error condition is resolved.
+       </li><li>
+       The specific data id in the batch which is causing the failure, available in column <code class="literal">FAILED_DATA_ID</code>.
+       </li><li>
+       Any SQL message, SQL State, and SQL Codes being returned during the synchronization attempt, available in columns <code class="literal">SQL_MESSAGE</code>,
+       <code class="literal">SQL_STATE</code>, and <code class="literal">SQL_CODE</code>, respectively.
+       </li></ul></div><p>
+       </p>
+       <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+       Using the <code class="literal">error_flag</code> on the batch table, as shown above, is more reliable than using the
+       <code class="literal">status</code> column.  The status column can change from 'ER' to a different status temporarily as
+       the batch is retried.
+       </div>
+       <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>The query above will also show you any recent batches that
+       were originally in error and were changed to be manually skipped.  See the end of  <a href="administration.html#solving-synchronization-issues-resolution-outgoing" title="6.1.3.&nbsp;Resolving the Issue - Outgoing Batches">Section&nbsp;6.1.3, &#8220;Resolving the Issue - Outgoing Batches&#8221;</a> for more details.
+       </div>
+       <p>
+       To get a full picture of the batch, you can query for information representing the complete
+       list of all data changes associated with the failed batch by joining
+       <a href="data-model.html#table_data" title="A.3.&nbsp;DATA">DATA</a> and  <a href="data-model.html#table_data_event" title="A.4.&nbsp;DATA_EVENT">DATA_EVENT</a>, such as:
+       </p><pre class="programlisting">select * from sym_data where data_id in
+        (select data_id from sym_data_event where batch_id='XXXXXX');</pre><p>
+       where XXXXXX is the batch id of the failing batch.
+       </p>
+       <p>
+       This query returns a wealth of information about each data change in a batch, including:
+       </p><div class="itemizedlist"><ul type="disc"><li>
+       The table involved in each data change, available in column <code class="literal">TABLE_NAME</code>,</li><li>
+       The event type (Update [U], Insert [I], or Delete [D]), available in column <code class="literal">EVENT_TYPE</code>,
+       </li><li>
+       A comma separated list of the new data and (optionally) the old data, available in columns <code class="literal">ROW_DATA</code> and
+       <code class="literal">OLD_DATA</code>, respectively.
+       </li><li>
+       The primary key data, available in column <code class="literal">PK_DATA</code>
+       </li><li>
+       The channel id, trigger history information, transaction id if available, and other information.
+       </li></ul></div><p>
+       </p>
+       <p>
+       More importantly, if you narrow your query to just the failed data id you can determine the exact data change that is causing the failure:
+       </p><pre class="programlisting">select * from sym_data where data_id in
+        (select failed_data_id from sym_outgoing_batch where batch_id='XXXXX'
+        and node_id='YYYYY');</pre><p>
+       where XXXXXX is the batch id and YYYYY is the node id of the batch that is failing.
+       </p>
+       <p>The queries above usually yield enough information to be able to determine why a
+       particular batch is failing. Common reasons a batch might be failing include:
+            </p><div class="itemizedlist"><ul type="disc"><li>
+            The schema at the destination has a column that is not nullable yet the source
+            has the column defined as nullable and a data change was sent with the column as null.</li><li>
+            A foreign key constraint at the destination is preventing an insertion or update, which could be caused from
+            data being deleted at the destination or the foreign key constraint is not in place at the source.
+            </li><li>
+            The data size of a column on the destination is smaller than the data size in the source, and data that
+            is too large for the destination has been synced.
+            </li></ul></div><p>
+            </p>
+
+    </div>
+
+      <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="solving-synchronization-issues-analysis-incoming"></a>6.1.2.&nbsp;Analyzing the Issue - Incoming Batches</h3></div></div></div>
+        
+
+       <p>
+        Analysis using an incoming batch is different than that of outgoing batches.  For incoming batches, you will rely on two tables,
+        <a href="data-model.html#table_incoming_batch" title="A.13.&nbsp;INCOMING_BATCH">INCOMING_BATCH</a> and  <a href="data-model.html#table_incoming_error" title="A.14.&nbsp;INCOMING_ERROR">INCOMING_ERROR</a>.
+
+       The first step in analyzing the cause of an incoming failed batch is to locate information about the batch, starting with
+       <a href="data-model.html#table_incoming_batch" title="A.13.&nbsp;INCOMING_BATCH">INCOMING_BATCH</a>
+        To locate batches in error, use:
+       </p><pre class="programlisting">select * from sym_incoming_batch where error_flag=1;</pre><p>
+       Several useful pieces of information are available from this query:
+       </p><div class="itemizedlist"><ul type="disc"><li>
+       The batch number of the failed batch, available in column <code class="literal">BATCH_ID</code>.  Note that this is the batch number of the
+       outgoing batch on the outgoing node.
+       </li><li>
+       The node the batch is being sent from, available in column <code class="literal">NODE_ID</code>.
+       </li><li>
+       The channel to which the batch belongs, available in column <code class="literal">CHANNEL_ID</code>.
+       All subsequent batches on this channel from this node will be held until the error condition is resolved.
+       </li><li>
+        The data_id that was being processed when the batch failed, available in column <code class="literal">FAILED_DATA_ID</code>.
+       </li><li>
+       Any SQL message, SQL State, and SQL Codes being returned during the synchronization attempt, available in columns <code class="literal">SQL_MESSAGE</code>,
+       <code class="literal">SQL_STATE</code>, and <code class="literal">SQL_CODE</code>, respectively.
+       </li></ul></div><p>
+       </p>
+
+       <p>
+       For incoming batches, we do not have data and data event entries in the database we can query.
+       We do, however, have a table,  <a href="data-model.html#table_incoming_error" title="A.14.&nbsp;INCOMING_ERROR">INCOMING_ERROR</a>, which provides some information about the batch.
+
+
+       </p><pre class="programlisting">select * from sym_incoming_error
+            where batch_id='XXXXXX' and node_id='YYYYY';</pre><p>
+       where XXXXXX is the batch id and YYYYY is the node id of the failing batch.
+
+
+       </p>
+
+         <p>
+       This query returns a wealth of information about each data change in a batch, including:
+       </p><div class="itemizedlist"><ul type="disc"><li>
+       The table involved in each data change, available in column <code class="literal">TARGET_TABLE_NAME</code>,</li><li>
+       The event type (Update [U], Insert [I], or Delete [D]), available in column <code class="literal">EVENT_TYPE</code>,
+       </li><li>
+       A comma separated list of the new data and (optionally) the old data, available in columns <code class="literal">ROW_DATA</code> and
+       <code class="literal">OLD_DATA</code>, respectively,</li><li>
+       The column names of the table, available in column <code class="literal">COLUMN_NAMES</code>,</li><li>
+       The primary key column names of the table, available in column <code class="literal">PK_COLUMN_NAMES</code>,</li></ul></div><p>
+       </p>
+
+
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="solving-synchronization-issues-resolution-outgoing"></a>6.1.3.&nbsp;Resolving the Issue - Outgoing Batches</h3></div></div></div>
+            
+
+            <p>
+            Once you have decided upon the cause of the issue, you'll have to decide the best course of action to fix the issue.  If, for example,
+            the problem is due to a database schema mismatch, one possible solution would be to alter the destination database
+            in such a way that the SQL error no longer occurs.  Whatever approach you take to remedy the issue, once you have
+            made the change, on the next push or pull SymmetricDS will retry the batch
+            and the channel's data will start flowing again.
+            </p>
+            <p>
+            If you have instead decided that the batch itself is wrong, or does not need synchronized, or you wish to remove a
+            particular data change from a batch, you do have the option of changing the data associated with the batch directly.
+
+            </p><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3>
+            Be cautious when using the following two approaches to resolve synchronization issues.  By far, the
+            best approach to solving a synchronization error is to resolve what is truly causing the
+            error at the destination database.  Skipping a batch or removing a data id as discussed below should be your
+            solution of last resort, since doing so results in differences between the source and destination databases.
+            </div><p>
+
+            Now that you've read the warning, if you <span class="emphasis"><em>still</em></span> want to change the batch
+            data itself, you do have several options, including:
+            </p><div class="itemizedlist"><ul type="disc"><li>Causing SymmetricDS to skip the batch completely.  This is accomplished by setting the
+                batch's status to 'OK', as in:
+                <pre class="programlisting">update sym_outgoing_batch set status='OK' where batch_id='XXXXXX'</pre>
+                where XXXXXX is the failing batch. On the next pull or push, SymmetricDS will skip this batch since
+                it now thinks the batch has already been synchronized.  Note that you can still distinguish between successful
+                batches and ones that you've artificially marked as 'OK', since the <code class="literal">error_flag</code> column on
+                the failed batch will still be set to '1' (in error).
+                </li><li>
+                Removing the failing data id from the batch by deleting the corresponding row in <a href="data-model.html#table_data_event" title="A.4.&nbsp;DATA_EVENT">DATA_EVENT</a>.
+                Eliminating the data id from the list of data ids in the batch will cause future synchronization attempts
+                of the batch to no longer include that particular data change as part of the batch.  For example:
+                  <pre class="programlisting">delete from sym_data_event where batch_id='XXXXXX' and data_id='YYYYYY'</pre>
+                where XXXXXX is the failing batch and YYYYYY is the data id to longer be included in the batch.
+                </li></ul></div><p>
+            </p>
+   </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="solving-synchronization-issues-resolution-incoming"></a>6.1.4.&nbsp;Resolving the Issue - Incoming Batches</h3></div></div></div>
+            
+
+            <p>
+            For batches in error, from the incoming side you'll also have to decide the best course of action to fix the issue.
+            Incoming batch errors <span class="emphasis"><em>that are in conflict</em></span> can by fixed by taking advantage of two columns in <a href="data-model.html#table_incoming_error" title="A.14.&nbsp;INCOMING_ERROR">INCOMING_ERROR</a> which are examined each time
+            batches are processed.  The first column, <code class="literal">resolve_data</code> if filled in will be used in place of <code class="literal">row_data</code>.
+            The second column, <code class="literal">resolve_ignore</code> if set will cause this particular data item to be ignored and batch processing to continue.  This is the same
+            two columns used when a manual conflict resolution strategy is chosen, as discussed in <a href="configuration.html#conflicts" title="4.10.&nbsp;Conflict Detection and Resolution">Section&nbsp;4.10, &#8220;Conflict Detection and Resolution&#8221;</a>.
+            </p>
+            </div>
+   </div>
+    <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="changing-triggers"></a>6.2.&nbsp;Changing Triggers</h2></div></div></div>
+        
+        <p>
+            A trigger row may be updated using SQL to change a synchronization definition.
+            SymmetricDS will look for changes each night or whenever the Sync Triggers Job
+            is run (see below).  For example, a change to place the table <code class="literal">price_changes</code>
+            into the price channel would be accomplished with the following statement:
+            </p><pre class="programlisting">
+update SYM_TRIGGER
+set channel_id = 'price',
+    last_update_by = 'jsmith',
+    last_update_time = current_timestamp
+where source_table_name = 'price_changes';
+</pre><p>
+            All configuration changes should be managed centrally at the registration node.  If enabled, configuration
+            changes will be synchronized out to client nodes.  When trigger changes reach the client
+            nodes the Sync Triggers Job will run automatically.
+         </p>
+         <p>
+            Centrally, the trigger changes will not take effect until the Sync Triggers Job runs.
+            Instead of waiting for the Sync Triggers Job to run overnight after making a Trigger
+            change, you can invoke the syncTriggers() method over JMX or simply restart the SymmetricDS
+            server.  A complete record of trigger changes is kept in the table  <a href="data-model.html#table_trigger_hist" title="A.39.&nbsp;TRIGGER_HIST">TRIGGER_HIST</a>,
+            which was discussed in <a href="configuration.html#sync-triggers" title="4.12.5.&nbsp;Sync Triggers Job">Section&nbsp;4.12.5, &#8220;Sync Triggers Job&#8221;</a>.
+        </p>
+    </div>
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="grouplet"></a>6.3.&nbsp;Maintaining multiple synchronization configurations through Grouplets</h2></div></div></div>
+        
+
+        <p>
+        As you probably know by now, SymmetricDS stores its single configuration centrally and distributes it to all nodes.   By default, a trigger-router is in effect for all nodes in the source node group or target node group.  Triggers will be established
+        on each node that is a member of the source node, and changes will be routed to all relevant nodes that are members of the target node group.  If, for example, the router routes to "all" nodes,
+        "all" means every node that is in the target node group.  This is the default behavior of SymmetricDS.
+        </p>
+        <p>
+        Once in production, however, you will likely find you need or want to make configuration changes to triggers and routers as new features are rolled out to your network of SymmetricDS nodes.
+        You may, for example, wish to "pilot" a new configuration, containing new synchronizations, only on specific nodes initially, and then increase the size of the pilot over time.
+        SymmetricDS' does provide the ability to specify that only particular trigger-router combinations are applicable to particular nodes for this purpose.  It does this
+        by allowing you to define an arbitray collection of nodes, called a "grouplet", and then choosing which trigger-routers apply to the normal set of nodes (the default behavior)
+        and which apply just to nodes in one or more "grouplets".  This allows you, essentially, to filter the list of nodes that would otherwise be included as source nodes and/or target nodes.
+        Through the use of grouplets, you can, for example, specify a subset of nodes on which a given trigger would be created.  It also allows you to
+        specify a subset of the normal set of nodes a change would be routed to.  This behaviour is in addition to, and occurs before, any subsetting or filtering the router might otherwise do.
+        </p>
+        <p>
+        In its simplest form, a grouplet is just an arbitrary collection of nodes.  To define a grouplet, you start by creating a grouplet with a unique id, a description, and a link policy,
+        as defined in  <a href="data-model.html#table_grouplet" title="A.11.&nbsp;GROUPLET">GROUPLET</a>.  To defined which nodes are members of (or are not members of) a grouplet, you provide a list of external ids of the nodes
+        in <a href="data-model.html#table_grouplet_link" title="A.12.&nbsp;GROUPLET_LINK">GROUPLET_LINK</a>.  How those external ids are used varies based on the grouplet link policy.
+        The <code class="literal">grouplet_link_policy</code> can be either I or E, representing an "inclusive" list of nodes or an "exclusive" list of
+        nodes, respectively.  In the case of "inclusive", you'll be listing each external id to be included in the grouplet.  In the case of exclusive, all nodes will be included in
+        the grouplet <span class="emphasis"><em>except</em></span> ones which have an external id in the list of external ids.
+        </p>
+
+        <p>
+        Once you have defined your grouplet and which nodes are members of a grouplet, you can tie a grouplet to a given trigger-router through
+        the use of <a href="data-model.html#table_trigger_router_grouplet" title="A.41.&nbsp;TRIGGER_ROUTER_GROUPLET">TRIGGER_ROUTER_GROUPLET</a>.
+        If a particular trigger-router does not appear in this table, SymmetricDS behaves as normal.
+        If, however, an entry for a particular trigger-router appears in this table,  the default behavior is overridden based on the <code class="literal">grouplet_id</code> and <code class="literal">applies_when</code> settings.
+        The grouplet id provides the node list, and the <code class="literal">applies_when</code> indicates whether the grouplet nodes are to be used to filter the source node list, the target node list,
+        or both (settings are "S", "T", and "B", respectively).  Nodes that survive the filtering process on as a source will have a trigger defined, and nodes that survive the filtering process
+        as a target are eligible nodes that can be routed to.</p>
+         <div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="grouplet-example"></a>6.3.1.&nbsp;Grouplet Example</h3></div></div></div>
+            
+
+        <p>
+
+        At this point, an example would probably be useful.  Picture the case where you have 100 retail stores (each containing one database, and each a member of the "store" node group)
+        and a central office database (external id of corp, and a member of the "corp" node group ). You wish to pilot two new trigger and routers
+        for a new feature on your point-of-sale software (one which moves data from corp to store, and one which moves data from store to corp), but you only want the triggers to be installed on 10 specific stores that represent your "pilot" stores.  In this case,
+        the simplest approach would be to define a grouplet with, say, a grouplet id of "pilot".  We'd use a grouplet link policy of "inclusive", and list each of the 10 external ids
+        in the <a href="data-model.html#table_grouplet_link" title="A.12.&nbsp;GROUPLET_LINK">GROUPLET_LINK</a> table.
+        </p>
+        <p>
+        For the trigger-router meant to send data from corp to store, we'd create an entry in <a href="data-model.html#table_trigger_router_grouplet" title="A.41.&nbsp;TRIGGER_ROUTER_GROUPLET">TRIGGER_ROUTER_GROUPLET</a> for
+        our grouplet id of "pilot", and we'd specify "T" (target) as the applies-when setting.  In this way, the source node list is not filtered, but the target node list used during routing
+        will filter the potential target nodes to just our pilot stores.  For the trigger-router meant to send data from a pilot store back to corp, we would have the grouplet apply when
+        the node is in the source node list (i.e., <code class="literal">applies_when</code> will be "S").  This will cause the trigger to only be created for stores in the pilot list and not other stores.
+        </p>
+        <p>An important thing to mention in this example:  Since your grouplet only included the store nodes, you can't simply specify "both" for the applies when setting.  For the corp-to-store trigger,
+        for example, if you had said "both", no trigger would have been installed in corp since the grouplet nodes represent all possible source nodes as well as target nodes, and "corp" is not in the list!
+        The same is true for the store to corp trigger-router as well.  You could, however, use "both" as the applies when if you had included the "corp" external id in with the list of the 10 pilot store external ids.
+        </p>
+     </div>
+    </div>
+
+     <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="resync-data"></a>6.4.&nbsp;Re-synchronizing Data</h2></div></div></div>
+        
+        <p>
+        There may be times where you find you need to re-send or re-synchronize data when the change itself was not captured.  This could be needed, for example,
+        if the data changes occurred prior to SymmetricDS placing triggers on the data tables themselves, or if the data at the destination was accidentally deleted, or for
+        some other reason.  Two approaches are commonly taken to re-send the data, both of which are discussed below.
+        </p>
+
+      <div class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Important</h3>
+            <p>Be careful when re-sending data using either of these two techniques.  Be sure you are only sending the rows you intend to send and,
+            more importantly, be sure to re-send the data in a way that won't cause foreign key constraint issues at the destination.  In other words,
+            if more than one table is involved, be sure to send any tables which are referred to by other tables by foreign keys first.  Otherwise,
+            the channel's synchronization will block because SymmetricDS is unable to insert or update the row because the foreign key relationship refers to
+            a non-existent row in the destination!
+           </p>
+      </div>
+
+        <p>One possible approach would be to "touch" the rows in individual tables that need re-sent.  By "touch", we mean to alter the row data in such a way
+        that SymmetricDS detects a data change and therefore includes the data change in the batching and synchronizing steps.  Note that you have to
+        change the data in some meaningful way (e.g., update a time stamp); setting a column to its current value is not sufficient (by default, if there's not an actual data
+        value change SymmetricDS won't treat the change as something which needs synched.
+        </p>
+        <p>A second approach would be to take advantage of SymmetricDS built-in functionality by simulating a partial "initial load" of the data.  The approach
+        is to manually create "reload" events in <a href="data-model.html#table_data" title="A.3.&nbsp;DATA">DATA</a> for the necessary tables, thereby resending the desired rows for the given tables.
+        Again, foreign key constraints must be kept in mind when creating these reload events.  These reload events are created in the source database itself, and
+        the necessary table, trigger-router combination, and channel are included to indicate the direction of synchronization.</p>
+        <p>
+        To create a reload event, you create a <a href="data-model.html#table_data" title="A.3.&nbsp;DATA">DATA</a> row, using:
+       </p><div class="itemizedlist"><ul type="disc"><li>data_id:  null</li><li>table_name:  name of table to be sent</li><li>event_type: 'R', for reload</li><li>row_data:  a "where" clause (minus the word 'where') which defines the subset of rows from the table to be sent.  To send all rows, one can use 1=1 for this value.</li><li>pk_data:  null</li><li>old_data: null</li><li>trigger_hist_id:  use the id of the most recent entry (i.e., max(trigger_hist_id) ) in <a href="data-model.html#table_trigger_hist" title="A.39.&nbsp;TRIGGER_HIST">TRIGGER_HIST</a>
+        for the trigger-router combination for your table and router.</li><li>channel_id:  the channel in which the table is routed</li><li>transaction_id:  pick a value, for example '1'</li><li>source_node_id: null</li><li>external_data: null</li><li>create_time:  current_timestamp</li></ul></div><p>
+        </p>
+
+        <p>
+        By way of example, take our retail hands-on tutorial covered in <a href="tutorial.html" title="Chapter&nbsp;2.&nbsp;Quick Start Tutorial">Chapter&nbsp;2, <i xmlns:xlink="http://www.w3.org/1999/xlink">Quick Start Tutorial</i></a>.  Let's say
+        we need to re-send a particular sales transaction from the store to corp over again because we lost the data in corp due to
+        an overzealous delete.  For the tutorial, all transaction-related tables start with <code class="literal">sale_</code>,
+        use the <code class="literal">sale_transaction</code> channel, and are routed using the <code class="literal">store_corp_identity</code>
+        router.  In addition, the trigger-routers have been set up with an initial load order based on the necessary
+        foreign key relationships (i.e., transaction tables which are "parents" have a lower initial load order than those of their
+        "children").  An insert statement that would create the necessary "reload" events (three in this case, one for each table) would be as follows
+        (where MISSING_ID is changed to the needed transaction id):
+       </p><pre class="programlisting">
+
+insert into sym_data (
+    select null, t.source_table_name, 'R', 'tran_id=''MISSING-ID''', null, null,
+            h.trigger_hist_id, t.channel_id, '1', null, null, current_timestamp
+        from sym_trigger t inner join sym_trigger_router tr on
+            t.trigger_id=tr.trigger_id inner join sym_trigger_hist h on
+            h.trigger_hist_id=(select max(trigger_hist_id) from sym_trigger_hist
+                where trigger_id=t.trigger_id)
+    where channel_id='sale_transaction' and
+        tr.router_id like 'store_corp_identity' and
+        (t.source_table_name like 'sale_%')
+    order by tr.initial_load_order asc);
+    </pre><p>
+
+    This insert statement generates three rows, one for each configured sale table.  It uses the most recent
+    trigger history id for the corresponding table.  Finally, it takes advantage of the initial load order for each trigger-router to
+    create the three rows in the correct order (the order corresponding to the order in which the tables would have been initial loaded).
+
+    </p>
+    </div>
+    <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="changing-configuration"></a>6.5.&nbsp;Changing Configuration</h2></div></div></div>
+        
+        <p>
+            The configuration of your system as defined in the <code class="literal">sym_*</code> tables may be modified at runtime.  By default, any changes made to
+            the <code class="literal">sym_*</code> tables (with the exception of <code class="literal">sym_node</code>) should be made at the registration server.  The changes will
+            be synchronized out to the leaf nodes by SymmetricDS triggers that are automatically created on the tables.
+         </p>
+         <p>
+            If this behavior is not desired, the feature can be turned off using a parameter.  Custom triggers may be added
+            to the <code class="literal">sym_*</code> tables when the auto syncing feature is disabled.
+        </p>
+    </div>
+
+     <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="logging"></a>6.6.&nbsp;Logging Configuration</h2></div></div></div>
+        
+        <p>
+        The standalone SymmetricDS installation uses <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://logging.apache.org/log4j/1.2/index.html" target="_top">Log4J</a> for logging.  The configuration file is  <code class="literal">conf/log4j.xml</code>.
+        The <code class="literal">log4j.xml</code> file has hints as to what logging can be enabled for useful, finer-grained logging.
+        </p>
+        <p>
+        There is a command line option to turn on preconfigured debugging levels.  When the <code class="literal">--debug</code> option is used the <code class="literal">conf/debug-log4j.xml</code> is used instead of log4j.xml.
+        </p>
+        <p>
+        SymmetricDS proxies all of its logging through <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.slf4j.org/" target="_top">SLF4J</a>.  When deploying to an application server or if Log4J is not
+        being leveraged, then the general rules for for SLF4J logging apply.
+        </p>
+    </div>
+
+     <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="admin-jmx"></a>6.7.&nbsp;Java Management Extensions</h2></div></div></div>
+        
+        <p>
+          Monitoring and administrative operations can be performed using Java Management Extensions (JMX).
+          SymmetricDS uses MX4J to expose JMX attributes and operations that can be accessed
+          from the built-in web console, Java's jconsole, or an application server.
+          By default, the web management console can be opened from the following address:
+
+          </p><pre class="programlisting">http://localhost:31416/</pre><p>
+
+          In order to use jconsole, you must enable JMX remote management in the JVM. You can edit the startup scripts to set the following system
+          parameters.
+
+          </p><pre class="programlisting">
+          -Dcom.sun.management.jmxremote.port=31417
+          -Dcom.sun.management.jmxremote.authenticate=false
+          -Dcom.sun.management.jmxremote.ssl=false
+          </pre><p>
+
+          More details about enabling JMX for JConsole can be found <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://docs.oracle.com/javase/6/docs/technotes/guides/management/jconsole.html" target="_top">here</a>.
+          </p>
+          <p>
+          Using the Java jconsole command, SymmetricDS is listed as a local process named SymmetricLauncher.
+          In jconsole, SymmetricDS appears under the MBeans tab under the name defined by the <code class="literal">engine.name</code>
+          property.  The default value is SymmetricDS.
+        </p>
+        <p>
+          The management interfaces under SymmetricDS are organized as follows:
+
+            </p><div class="itemizedlist"><ul type="disc"><li>
+                    <p>Node - administrative operations </p>
+                </li><li>
+                    <p>Parameters - access to properties set through the parameter service </p>
+                </li></ul></div><p>
+
+        </p>
+    </div>
+
+
+
+    <div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="temporary-files"></a>6.8.&nbsp;Temporary Files</h2></div></div></div>
+        
+        <p>
+        SymmetricDS creates temporary extraction and data load files with the CSV payload of a synchronization when
+        the value of the <code class="literal">stream.to.file.threshold.bytes</code> SymmetricDS property has been reached.  Before reaching the threshold, files
+        are streamed to/from memory.  The default threshold value is 32,767 bytes. This feature may be turned off by setting the <code class="literal">stream.to.file.enabled</code>
+        property to false.
+        </p>
+        <p>
+        SymmetricDS creates these temporary files in the directory specified by the <code class="literal">java.io.tmpdir</code> Java System property.
+        </p>
+        <p>
+        The location of the temporary directory may be changed by setting the Java System property passed into the Java program at startup.  For example,
+        </p><pre class="programlisting">
+  -Djava.io.tmpdir=/home/.symmetricds/tmp
+        </pre><p>
+        </p>
+    </div>
+
+
+</div><div xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="30%" align="left"><a accesskey="p" href="advanced-topics.html">Prev</a>&nbsp;</td><td width="40%" align="center"><a accesskey="h" href="user-guide.html">Home</a></td><td width="30%" align="right">&nbsp;<a accesskey="n" href="data-model.html">Next</a></td></tr><tr><td width="30%" align="left" valign="top">Chapter&nbsp;5.&nbsp;Advanced Topics&nbsp;</td><td width="40%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.symmetricds.org/" title="SymmetricDS">SymmetricDS
+                                        </a></span></td><td width="30%" align="right" valign="top">&nbsp;Appendix&nbsp;A.&nbsp;Data Model</td></tr></table></div></body></html>

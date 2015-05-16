@@ -13,7 +13,7 @@ angular.module('bhima.controllers')
       query : {
         tables: {
           'patient' : {
-            columns: ['first_name', 'last_name', 'dob', 'reference', 'registration_date']
+            columns: ['first_name', 'last_name', 'middle_name', 'dob', 'reference', 'registration_date']
           },
           'debitor' : {
             columns: ['text']
