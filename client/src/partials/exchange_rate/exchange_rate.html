@@ -85,6 +85,21 @@
               <legend>{{ 'EXCHANGE.SET' | translate }}</legend>
 
               <div class="form-group">
+                <div class="checkbox">
+                  <label class="col-xs-9 control-label">
+                    {{"EXCHANGE.OLD_DATE" | translate}}
+                    <input type="checkbox" value="{{session.is_oldDate}}" ng-model="session.is_oldDate" ng-change="commitValue()">
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group" >
+                <div class="col-xs-11">
+                  <input type="date" class="form-bhima" ng-model="session.oldDate" max="{{maxDate}}" ng-disabled="!is_oldDate">
+                </div>
+              </div>
+
+              <div class="form-group">
                 <div class="col-xs-5">
                   <div class="form-bhima" style="text-align: center;" readonly>
                     {{ currency.get(enterprise.currency_id).name }}
@@ -117,8 +132,7 @@
               </div>
             </fieldset>
 
-            <input type="submit" class="btn btn-success btn-sm" ng-click="submit()" ng-disabled="exchangeForm.$invalid" value="{{ 'FORM.SUBMIT' | translate }}">
-
+            <input type="submit" class="btn btn-success btn-sm" ng-click="submit()" ng-disabled="checkValidity()" value="{{ 'FORM.SUBMIT' | translate }}">
           </form>
         </div>
       </div>

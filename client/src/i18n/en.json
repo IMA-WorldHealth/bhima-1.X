@@ -136,8 +136,8 @@
   "CHARGED_AGAINST" : "Charged against",
   "CREDIT_NOTE"     : "Credit note",
   "GENERATE"        : "Generate",
-  "INVOICES"        : "Invoices",  
-  "PATIENTS"        : "Patients",    
+  "INVOICES"        : "Invoices",
+  "PATIENTS"        : "Patients",
   "PATIENT_CASH"    : "Patient Cash",
   "RECEIPT"         : "Receipt",
   "TOTAL_OF"        : "Total of",
@@ -1022,7 +1022,9 @@
    "REVIEW"     : "Review Today's Rates",
    "SET"        : "Set Today's Exchange Rate",
    "TITLE"      : "Configure Exchange Rates",
-   "TODAY_RATE" : "Exchange Rate for"
+   "TODAY_RATE" : "Exchange Rate for",
+   "OLD_DATE"   : "Define an exchange rate for an old date",
+   "DATE"       : "Define date"
    },
 "EXPIRING": {
    "EXPIRED" : "Expired inventories",
