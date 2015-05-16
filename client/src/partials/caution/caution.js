@@ -95,11 +95,35 @@ angular.module('bhima.controllers')
     $scope.loadDebtor = function loadDebtor(debtor) {
       if (!debtor) { return messenger.danger('No debtor selected'); }
       $scope.debtor = debtor;
+
       connect.fetch('/location/detail/' + debtor.origin_location_id)
       .then(function (data) {
         $scope.location = data[0];
         $scope.noEmpty = true;
       });
+
+      connect.fetch('/reports/patientStanding/?id=' + debtor.debitor_uuid)
+      .then(function (data) {
+        var receipts = data.receipts || [];
+
+        var balance = 0,
+            sumDue = 0,
+            sumBilled = 0;
+
+        receipts.forEach(function (receipt) {
+          if (receipt.debit - receipt.credit !== 0){
+            receipt.billed = receipt.debit;
+            receipt.due = receipt.debit - receipt.credit;
+            balance += receipt.debit - receipt.credit;
+            sumBilled += receipt.billed;
+            sumDue += receipt.due;
+          }          
+        });
+
+        $scope.account_balance = balance;
+
+      });
+
     };
 
     function payCaution() {
