@@ -614,7 +614,9 @@ exports.syntheticGoal = function (req, res, next) {
 };
 
 exports.getPeriodByDate = function (req, res, next) {
-  var date = new Date(Number(req.params.date));
+  // var date = new Date(Number(req.params.date) + new Date(req.params.date).getTimezoneOffset());
+  var date = new Date(req.params.date);
+  date = util.toMysqlDate(date);
 
   var sql =
     'SELECT id, fiscal_year_id FROM period ' +
