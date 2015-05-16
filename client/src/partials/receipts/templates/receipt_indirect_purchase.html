@@ -43,15 +43,17 @@
       <table class="invoiceTable">
         <thead>
           <tr>
-            <th style="width:15%;">{{ 'COLUMNS.REFERENCE_PURCHASE' | translate }}</th>
-            <th style="width:30%;">{{ 'RECEIPT.LABEL' | translate}}</th>
-            <th style="width:15%;">{{ 'RECEIPT.AMOUNT' | translate}}</th>
-            <th style="width:30%;">{{ 'RECEIPT.AMOUNT' | translate }} ({{ 'RECEIPT.LETTER' | translate }})</th>
+            <th style="width:20%;">{{ 'COLUMNS.REFERENCE_PURCHASE' | translate }}</th>
+            <th style="width:20%;">{{ 'COLUMNS.TRANSACTION_ID' | translate }}</th>
+            <th style="width:20%;">{{ 'RECEIPT.LABEL' | translate}}</th>
+            <th style="width:20%;">{{ 'RECEIPT.AMOUNT' | translate}}</th>
+            <th style="width:20%;">{{ 'RECEIPT.AMOUNT' | translate }} ({{ 'RECEIPT.LETTER' | translate }})</th>
           </tr>
         </thead>
         <tbody class="items">
           <tr>
             <td>{{ model.indirectPurchase.reference }}</td>
+            <td>{{ trans_id }}</td>
             <td>{{ 'INVOICE.INDIRECT_PURCHASE' | translate }}</td>
             <td>{{ model.indirectPurchase.cost | currency }}</td>
             <td></td>
