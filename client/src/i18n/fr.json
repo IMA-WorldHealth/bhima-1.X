@@ -133,7 +133,7 @@
 "AUXILLARY_CASH_RECORD" : {
    "ALL_PROJECTS"    : "Tous les projets",
    "CANCEL"          : "Annuler l'operation",
-   "CHARGED_AGAINST" : "imputés à",   
+   "CHARGED_AGAINST" : "imputés à",
    "CREDIT_NOTE"     : "Note de Crédit",
    "GENERATE"        : "Générée",
    "INVOICES"        : "Factures",
@@ -304,7 +304,7 @@
   },
 "CAUTION": {
    "AGE"          : "Age",
-   "ATTENTION"    : "Attention ce patient a un solde débiteur de",   
+   "ATTENTION"    : "Attention ce patient a un solde débiteur de",
    "CASH"         : "Caisse Auxilliaire",
    "CAUTION"      : "Paiement anticipatif",
    "GENDER"       : "GENDER",
@@ -1022,7 +1022,9 @@
    "REVIEW"     : "Revoir le taux d'aujourd'hui",
    "SET"        : "Définir le Taux de Change pour Aujourd'hui",
    "TITLE"      : "Configurer le taux de change",
-   "TODAY_RATE" : "Taux de change pour"
+   "TODAY_RATE" : "Taux de change pour",
+   "OLD_DATE"   : "Definir le taux d'echange pour une date anterieure",
+   "DATE"       : "Definir date"
    },
 "EXPIRING": {
    "EXPIRED" : "Articles expirés",
@@ -2143,7 +2145,7 @@
    "APPLIES_TO_ITEM"    : "Appliquer par item",
    "APPLYABLE_SUBSIDY_LIST" : "Appliquer la liste de subvention",
    "CHOOSE"             : "Choisir le service",
-   "DATE"               : "Date",   
+   "DATE"               : "Date",
    "DEBITOR_GROUP_LOCK" : "Le groupe de débiteur de ce patient est verrouillé",
    "DETAILS"            : "Détails de la vente",
    "DISTRIBUTABLE"      : "Distribuable",
