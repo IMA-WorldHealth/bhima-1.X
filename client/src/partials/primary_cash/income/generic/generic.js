@@ -25,7 +25,8 @@ angular.module('bhima.controllers')
 
     $scope.timestamp = new Date();
 
-    session.today = $scope.timestamp.toISOString().slice(0, 10);
+    // session.today = $scope.timestamp.toISOString().slice(0, 10);
+    session.today = util.htmlDate(new Date());
 
 
     dependencies.currencies = {

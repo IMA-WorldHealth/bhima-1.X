@@ -32,6 +32,7 @@ angular.module('bhima.controllers')
     };
 
     $scope.maxDate = util.htmlDate(new Date());
+    $scope.currentDate = util.htmlDate(new Date());
     session.is_oldDate = false;
     session.oldDate = new Date();
 
@@ -62,7 +63,7 @@ angular.module('bhima.controllers')
     }, true);
 
     $scope.submit = function () {
-      $scope.today = (session.is_oldDate) ? util.htmlDate(new Date(session.oldDate)) : new Date().toISOString().slice(0, 10);
+      $scope.today = (session.is_oldDate === true) ? util.htmlDate(new Date(session.oldDate)) : util.htmlDate(new Date());
 
       var data = {
         enterprise_currency_id : $scope.enterprise.currency_id,
@@ -107,7 +108,7 @@ angular.module('bhima.controllers')
 
     $scope.checkValidity = function (){
       return ($scope.newRate.rate && $scope.newRate.rate > 0 && $scope.newRate.foreign_currency_id) ? false : true;
-    }
+    };
 
   }
 ]);
