@@ -66,7 +66,7 @@
               </div>
 
               <div class="form-group">
-                <label class="control-label col-xs-4">{{ "CAUTION.GENDER" | translate }}</label> 
+                <label class="control-label col-xs-4">{{ "CAUTION.GENDER" | translate }}</label>
                 <p class="form-control-static col-xs-8">{{debtor.sex}}</p>
               </div>
             </div>
@@ -83,13 +83,13 @@
           </form>
         </div>
         <span ng-show="noEmpty">
-          <div class="alert alert-danger">
-            <label> 
+          <div class="alert alert-danger" ng-if="account_balance > 0">
+            <label>
               <h4>
-              <span class="glyphicon" ng-class="{'glyphicon-warning-sign error' : true }"></span> {{ "CAUTION.ATTENTION" | translate }} : <b ng-bind-html="account_balance | intlcurrency:session.currency"></b> 
+              <span class="glyphicon" ng-class="{'glyphicon-warning-sign error' : true }"></span> {{ "CAUTION.ATTENTION" | translate }} : <b ng-bind-html="account_balance | intlcurrency:session.currency"></b>
               </h4>
             </label>
-          </div>          
+          </div>
         </span>
 
       </div>

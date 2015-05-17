@@ -2368,7 +2368,7 @@
       "WRITE_SUCCESS"        : "Enregistrement avec succès"
       },
    "EXIT": {
-      "KEY" : "Stock Distribution"
+      "KEY" : "Distribution stock aux malades"
       },
    "EXIT_SERVICE": {
       "KEY" : "Distribution stock au services"
@@ -2759,7 +2759,7 @@
    "ROOT"                      : "Racine",
    "RUBRIC_MANAGEMENT"         : "Gestion des rubriques",
    "SALES"                     : "Facturations",
-   "SALE_RECORDS"              : "Historique Ventes",
+   "SALE_RECORDS"              : "Historique Facturation",
    "SERVICE"                   : "Gestion des Services",
    "SERVICE_EXPLOITATION"      : "Exploitation par Service",
    "SERVICE_STATE"             : "Etat Service",

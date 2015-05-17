@@ -117,7 +117,7 @@ angular.module('bhima.controllers')
             balance += receipt.debit - receipt.credit;
             sumBilled += receipt.billed;
             sumDue += receipt.due;
-          }          
+          }
         });
 
         $scope.account_balance = balance;
@@ -194,7 +194,10 @@ angular.module('bhima.controllers')
     });
 
     function check () {
-      return session.payment && $scope.currency ? session.payment < $scope.currency.min_monentary_unit : true;
+
+      return (session.payment &&
+             $scope.currency ? session.payment < $scope.currency.min_monentary_unit : true) ||
+             ($scope.account_balance ? $scope.account_balance > 0 : false);
     }
 
     $scope.setCurrency = function setCurrency (currency) {
