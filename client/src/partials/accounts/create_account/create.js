@@ -95,13 +95,9 @@ angular.module('bhima.controllers')
         cc_id   : account.cc_id,
         pc_id   : account.pc_id,
         enterprise_id: appstate.get('enterprise').id,
-        parent: 0, //set default parent (root)
+        parent: account.parent,
         classe: account.number.substr(0,1)
       };
-
-      if (account.parent) {
-        formatAccount.parent = account.parent.account_number;
-      }
 
       connect.post('account', [formatAccount])
       .then(refreshAccountList)
@@ -137,8 +133,13 @@ angular.module('bhima.controllers')
     };
 
     $scope.getAccount = function (account) {
+      $scope.accountClass = parseInt($scope.checkClass(account.account_number)); 
       session.state = 'edit';
       $scope.editAccount = account;
+    };
+
+    $scope.format = function format(account) {
+      return [account.account_txt, account.account_number].join(' :: ');
     };
 
     function submitEditAccount (account) {
@@ -162,7 +163,9 @@ angular.module('bhima.controllers')
         is_ohada    : $scope.editAccount.is_ohada,
         locked      : $scope.editAccount.locked,
         cc_id       : $scope.editAccount.cc_id,
-        pc_id       : $scope.editAccount.pc_id
+        pc_id       : $scope.editAccount.pc_id,
+        pc_id       : $scope.editAccount.pc_id,
+        parent      : $scope.editAccount.parent
       };
 
       connect.put('account', [update], ['id'])
