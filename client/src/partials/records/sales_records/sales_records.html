@@ -26,16 +26,23 @@
   </div>
 
   <span class="pull-right">
+    <select class="form-bhima" ng-change="reset()" ng-model="session.user" ng-options="u.id as format(u) for u in  model.user_sale.data">
+      <option value="">{{ 'SALERECORD.ALL_USERS' | translate }}</option>
+    </select>
+  </span>
+
+  <span class="pull-right">
     <select class="form-bhima" ng-change="reset()" ng-model="session.project" ng-options="item.id as item.name for item in model.project.data">
       <option value="">{{ 'SALERECORD.ALL_PROJECTS' | translate }}</option>
     </select>
   </span>
+
 </nav>
 
 <div class="report report-compressed">
   <div class="reportBody">
     <div class="reportFrame" style="padding-top: 10px;">
-      <h4 class="visible-print">{{ "SALERECORD.TITLE" | translate }} <small>{{session.param.dateFrom | date}} - {{session.param.dateTo | date}}</small></h4>
+      <h4 class="visible-print">{{ "SALERECORD.TITLE" | translate }} <small>{{ "SALERECORD.BY" | translate }} : {{ userSelected }} <br> {{session.param.dateFrom | date}} - {{session.param.dateTo | date}}</small></h4>
       <p class="visible-print">{{ "SALERECORD.TOTAL_OF" | translate }} <b>{{total.result.sales}}</b> {{ "SALERECORD.INVOICES" | translate }}, {{ "SALERECORD.CHARGED_AGAINST" | translate }} <b>{{total.result.patients}}</b> {{ "SALERECORD.PATIENTS" | translate}}</p>
         <table class="reportTable">
           <thead>
