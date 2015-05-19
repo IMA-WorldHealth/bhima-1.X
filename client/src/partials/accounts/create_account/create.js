@@ -164,7 +164,6 @@ angular.module('bhima.controllers')
         locked      : $scope.editAccount.locked,
         cc_id       : $scope.editAccount.cc_id,
         pc_id       : $scope.editAccount.pc_id,
-        pc_id       : $scope.editAccount.pc_id,
         parent      : $scope.editAccount.parent
       };
 
