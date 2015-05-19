@@ -282,10 +282,10 @@ angular.module('bhima.controllers')
           $location.path('/stock/entry/report/' + document_id);
         })
         .then(function () {
-          messenger.success('STOCK.ENTRY.WRITE_SUCCESS');
+           messenger.success($translate.instant('STOCK.ENTRY.WRITE_SUCCESS'), true);
         })
         .catch(function () {
-          messenger.error('STOCK.ENTRY.WRITE_ERROR');
+          messenger.success($translate.instant('STOCK.ENTRY.WRITE_ERROR'), true);
         });
 
     };
