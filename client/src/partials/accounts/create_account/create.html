@@ -187,7 +187,7 @@
               <div class="panel-body">
                 <div class="form-group">
                   <label for="parent" class="required">{{ "ACCOUNT.TITLE_ACCOUNT" | translate }}</label>
-                  <select required  id="parent" class="form-bhima" ng-options="c.account_txt for c in model.account.data | filter: {account_type_id: 3}" ng-model="newAccount.parent">
+                  <select required  id="parent" class="form-bhima" ng-options="acc.id as format(acc) for acc in model.account.data | filter: {account_type_id: 3}" ng-model="newAccount.parent">
                     <option value="">{{ "ACCOUNT.ROOT_ACCOUNT"  | translate }}</option>
                   </select>
                 </div>
@@ -264,22 +264,37 @@
                     </div>
                   </div>
 
-                  <div class="form-group" ng-if="editAccount.account_type === 'income/expense' && editAccount.account_number">
-                    <div ng-switch on="checkClass(session.selectedAccount.account_number)">
-                      <div ng-switch-when="6">
+                  <div>
+                    <div>
+                      <div ng-if = "accountClass === 6">
                         <label for="type">{{ "ACCOUNT.COST_CENTER" | translate }}</label>
                         <select  id="type" class="form-bhima" ng-options="c.id as formatCenter(c) for c in model.costCenter.data" ng-model="editAccount.cc_id">
-                          <option value="null"> --- {{ "SELECT.COST_CENTER" | translate }} --- </option>
+                          <option value=""> --- {{ "SELECT.COST_CENTER" | translate }} --- </option>
                         </select>
                       </div>
-                      <div ng-switch-when="7">
+                      <div ng-if = "accountClass === 7">
                         <label for="type">{{ "ACCOUNT.PROFIT_CENTER" | translate }}</label>
                         <select  id="type" class="form-bhima" ng-options="p.id as formatCenter(p) for p in model.profitCenter.data" ng-model="editAccount.pc_id">
-                          <option value="null"> --- {{ "SELECT.PROFIT_CENTER" | translate }} --- </option>
+                          <option value=""> --- {{ "SELECT.PROFIT_CENTER" | translate }} --- </option>
                         </select>
                       </div>
                     </div>
                   </div>
+
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      {{ "ACCOUNT.ACCOUNT_GROUP" | translate }}
+                    </div>
+                    <div class="panel-body">
+                      <div class="form-group">
+                        <label for="parent" class="required">{{ "ACCOUNT.TITLE_ACCOUNT" | translate }}</label>
+                        <select required  id="parent" class="form-bhima" ng-options="acc.id as format(acc) for acc in model.account.data | filter: {account_type_id: 3}"  ng-model="editAccount.parent">
+                          <option value="">{{ "ACCOUNT.ROOT_ACCOUNT"  | translate }}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
                 </form>
               </div>
             </div>
