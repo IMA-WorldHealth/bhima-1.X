@@ -379,6 +379,7 @@ function paymentRecords(params) {
 function patientStanding(params) {
   params = querystring.parse(params);
   var id = sanitize.escape(params.id),
+      account_id = sanitize.escape(params.account_id),
       patient = {},
       defer = q.defer(),
       sql =
@@ -387,15 +388,15 @@ function patientStanding(params) {
         'SELECT `posting_journal`.`uuid`, `posting_journal`.`trans_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`description`, `posting_journal`.`inv_po_id`, `posting_journal`.`account_id`, `debitor_group`.`is_convention` ' +
         'FROM `posting_journal` ' +
         'JOIN `debitor_group` ON `debitor_group`.`account_id` =  `posting_journal`.`account_id` ' +
-        'WHERE `posting_journal`.`deb_cred_uuid`= ? AND `posting_journal`.`deb_cred_type`=\'D\' AND `debitor_group`.`is_convention` = 0 ' +
+        'WHERE `posting_journal`.`deb_cred_uuid`= ? AND `debitor_group`.`account_id`= ? AND `posting_journal`.`deb_cred_type`=\'D\' AND `debitor_group`.`is_convention` = 0 ' +
       'UNION ' +
         'SELECT `general_ledger`.`uuid`, `general_ledger`.`trans_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, `general_ledger`.`description`, `general_ledger`.`inv_po_id`, `general_ledger`.`account_id`, `debitor_group`.`is_convention` ' +
         'FROM `general_ledger` ' +
         'JOIN `debitor_group` ON `debitor_group`.`account_id` =  `general_ledger`.`account_id` ' +
-        'WHERE `general_ledger`.`deb_cred_uuid`= ? AND `general_ledger`.`deb_cred_type`=\'D\' AND `debitor_group`.`is_convention` = 0) as aggregate ' +
+        'WHERE `general_ledger`.`deb_cred_uuid`= ? AND `debitor_group`.`account_id`= ? AND `general_ledger`.`deb_cred_type`=\'D\' AND `debitor_group`.`is_convention` = 0) as aggregate ' +
       'GROUP BY `aggregate`.`inv_po_id` ORDER BY `aggregate`.`trans_date` DESC;';
 
-  db.exec(sql, [params.id, params.id])
+  db.exec(sql, [params.id, params.account_id, params.id, params.account_id])
   .then(function (rows) {
 
     if (!rows.length) { return defer.resolve([]); }
