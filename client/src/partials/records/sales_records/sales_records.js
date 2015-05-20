@@ -2,9 +2,10 @@ angular.module('bhima.controllers')
 .controller('salesRecords', [
   '$scope',
   '$timeout',
+  '$translate',
   'util',
   'validate',
-  function ($scope, $timeout, util, validate) {
+  function ($scope, $timeout, $translate, util, validate) {
     // TODO add search (filter)
     // TODO add sortable (clickable) columns
     var dependencies = {};
@@ -49,10 +50,21 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.user_sale = {
+      query : {
+        tables : {
+          'sale' : { columns : ['seller_id'] },
+          'user' : {columns : ['id', 'first', 'last'] }
+        },
+        distinct : true,
+        join : ['sale.seller_id=user.id']
+      }
+    };
+
     $timeout(init, 100);
 
     function init() {
-      validate.process(dependencies, ['project']).then(loadProjects);
+      validate.process(dependencies, ['project', 'user_sale']).then(loadProjects);
     }
 
     function loadProjects(model) {
@@ -86,6 +98,27 @@ angular.module('bhima.controllers')
         request.project = session.project;
       }
 
+      if (!isNaN(Number(session.user))) {
+        dependencies.user = {
+          query : {
+            tables : {
+              'user' : {columns : ['id', 'first', 'last'] }
+            },
+             where : [
+              'user.id=' + session.user
+            ]        
+          }
+        };
+        validate.process(dependencies, ['user'])
+        .then(function (model) {
+          var userData = model.user.data[0];
+          $scope.userSelected = userData.first + ' - ' + userData.last;
+        });          
+        request.user = session.user;
+      } else {
+        $scope.userSelected = $translate.instant('SALERECORD.ALL_USERS');
+      }
+
       session.searching = true;
       dependencies.sale.query = '/reports/saleRecords/?' + JSON.stringify(request);
 
@@ -102,6 +135,10 @@ angular.module('bhima.controllers')
       // $scope.session.param.dateTo.setDate($scope.session.param.dateTo.getDate() - 1);
       reset();
     }
+
+    $scope.format = function format(user) {
+      return [user.first, user.last].join(' - ');
+    };
 
     function week() {
       $scope.session.param.dateFrom = new Date();
