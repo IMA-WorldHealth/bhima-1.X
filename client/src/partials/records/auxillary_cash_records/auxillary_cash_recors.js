@@ -6,7 +6,8 @@ angular.module('bhima.controllers')
   'validate',
   'connect',
   'exchange',
-  function ($scope, $timeout, util, validate, connect, exchange) {
+  '$translate',
+  function ($scope, $timeout, util, validate, connect, exchange, $translate) {
     // TODO add search (filter)
     // TODO add sortable (clickable) columns
     var dependencies = {};
@@ -128,14 +129,14 @@ angular.module('bhima.controllers')
             },
              where : [
               'user.id=' + session.user
-            ]        
+            ]
           }
         };
         validate.process(dependencies, ['user'])
         .then(function (model) {
           var userData = model.user.data[0];
           $scope.userSelected = userData.first + ' - ' + userData.last;
-        });          
+        });
         request.user = session.user;
       } else {
         $scope.userSelected = $translate.instant('AUXILLARY_CASH_RECORD.ALL_USERS');
