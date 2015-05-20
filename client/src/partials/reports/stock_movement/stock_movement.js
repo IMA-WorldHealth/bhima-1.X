@@ -137,9 +137,6 @@ angular.module('bhima.controllers')
     }
 
     function complete (models) {
-      console.log('KKKKKKKKKKKKKKKKKKKK');
-      console.log(models);
-      console.log('KKKKKKKKKKKKKKKKKKKK');
       $scope.movement = models;
 /*      $scope.uncompletedList = models;
       return $q.all(models.map(function (m) {

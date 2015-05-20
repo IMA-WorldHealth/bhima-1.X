@@ -132,6 +132,8 @@
    },
 "AUXILLARY_CASH_RECORD" : {
    "ALL_PROJECTS"    : "Tous les projets",
+   "ALL_USERS"       : "Tous les utilisateurs", 
+   "BY"              : "Par",      
    "CANCEL"          : "Annuler l'operation",
    "CHARGED_AGAINST" : "imputés à",
    "CREDIT_NOTE"     : "Note de Crédit",
@@ -2169,6 +2171,8 @@
 "SALERECORD": {
    "ADVANCE"         : "Recherches Avancée",
    "ALL_PROJECTS"    : "Tous les Projets",
+   "ALL_USERS"       : "Tous les utilisateurs", 
+   "BY"              : "Par",  
    "CHARGED_AGAINST" : "imputées contre",
    "CREDIT_NOTE"     : "Annuler vente",
    "GENERATE"        : "Pour créer une facture.",
