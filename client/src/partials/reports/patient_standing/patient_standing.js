@@ -54,8 +54,10 @@ angular.module('bhima.controllers')
     function search() {
       $scope.state = 'generate';
       session.patient = session.selected;
-      var id = session.patient.debitor_uuid;
-      connect.fetch('/reports/patientStanding/?id=' + id)
+      var id = session.patient.debitor_uuid,
+        account_id = session.patient.account_id;
+
+      connect.fetch('/reports/patientStanding/?id=' + id + '&account_id=' + account_id)
       .then(function (data) {
 
         session.receipts = data.receipts || [];
