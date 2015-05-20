@@ -62,10 +62,21 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.cash_user = {
+      query : {
+        tables : {
+          'cash' : { columns : ['user_id'] },
+          'user' : {columns : ['id', 'first', 'last'] }
+        },
+        distinct : true,
+        join : ['cash.user_id=user.id']
+      }
+    };
+
     $timeout(init, 100);
 
     function init() {
-      validate.process(dependencies, ['project', 'currencies']).then(loadProjects);
+      validate.process(dependencies, ['project', 'currencies', 'cash_user']).then(loadProjects);
     }
 
     function loadProjects(model) {
@@ -94,6 +105,10 @@ angular.module('bhima.controllers')
       });
     }
 
+    $scope.format = function format(user) {
+      return [user.first, user.last].join(' - ');
+    };
+
     function reset() {
       var request;
       request = {
@@ -104,6 +119,28 @@ angular.module('bhima.controllers')
       if (!isNaN(Number(session.project))) {
         request.project = session.project;
       }
+
+      if (!isNaN(Number(session.user))) {
+        dependencies.user = {
+          query : {
+            tables : {
+              'user' : {columns : ['id', 'first', 'last'] }
+            },
+             where : [
+              'user.id=' + session.user
+            ]        
+          }
+        };
+        validate.process(dependencies, ['user'])
+        .then(function (model) {
+          var userData = model.user.data[0];
+          $scope.userSelected = userData.first + ' - ' + userData.last;
+        });          
+        request.user = session.user;
+      } else {
+        $scope.userSelected = $translate.instant('AUXILLARY_CASH_RECORD.ALL_USERS');
+      }
+
 
       session.searching = true;
       dependencies.cash.query = '/reports/cashAuxillaryRecords/?' + JSON.stringify(request);
