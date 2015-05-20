@@ -91,24 +91,22 @@ angular.module('bhima.controllers')
         depotId : depotId
       };
 
-    dependencies.store = {
-      required: true,
-      query : {
-        tables : {
-          'depot' : {
-            columns : ['uuid', 'text', 'reference', 'enterprise_id']
-          }
-        },
-        where : ['depot.uuid=' + depotId]
-      }
-    };
-    validate.process(dependencies, ['store'])
-    .then(function (model) {
-      var dataDepot = model.store.data[0];
-      $scope.depotSelected = dataDepot.text;
-    });       
-
-
+      dependencies.store = {
+        required: true,
+        query : {
+          tables : {
+            'depot' : {
+              columns : ['uuid', 'text', 'reference', 'enterprise_id']
+            }
+          },
+          where : ['depot.uuid=' + depotId]
+        }
+      };
+      validate.process(dependencies, ['store'])
+      .then(function (model) {
+        var dataDepot = model.store.data[0];
+        $scope.depotSelected = dataDepot.text;
+      });       
 
       session.searching = true;
       dependencies.consumption.query = '/reports/stockStore/?' + JSON.stringify(request);
