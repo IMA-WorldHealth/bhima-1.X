@@ -15,9 +15,10 @@ angular.module('bhima.controllers')
       query:  {
         tables: {
           cash: { columns: ['reference', 'cost', 'deb_cred_uuid', 'project_id', 'currency_id', 'date'] },
-          patient : {columns : ['first_name', 'last_name', 'current_location_id']}
+          patient : {columns : ['first_name', 'last_name', 'middle_name', 'current_location_id']},
+          project : {columns : ['abbr'] }
         },
-        join : ['cash.deb_cred_uuid=patient.debitor_uuid']
+        join : ['cash.deb_cred_uuid=patient.debitor_uuid', 'cash.project_id=project.id'],
       }
     };
 
