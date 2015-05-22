@@ -18,7 +18,47 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.getTransaction = {
+      query : {
+        identifier : 'uuid',
+        tables : {
+          primary_cash : { columns : ['uuid'] },
+          primary_cash_item : { columns : ['primary_cash_uuid'] },
+          posting_journal : { columns : ['trans_id'] }
+        },
+        distinct : true,
+        join : ['primary_cash.uuid=primary_cash_item.primary_cash_uuid','posting_journal.inv_po_id=primary_cash_item.primary_cash_uuid']
+      }
+    };
+
+    dependencies.getGeneraLedger = {
+      query : {
+        identifier : 'uuid',
+        tables : {
+          primary_cash : { columns : ['uuid'] },
+          primary_cash_item : { columns : ['primary_cash_uuid'] },
+          general_ledger : { columns : ['trans_id'] }
+        },
+        distinct : true,
+        join : ['primary_cash.uuid=primary_cash_item.primary_cash_uuid','general_ledger.inv_po_id=primary_cash_item.primary_cash_uuid']
+      }
+    };  
+
     function buildInvoice (res) {
+/*      $scope.trans_id = "ANALYSE DE LA BASE";
+      console.log('IHOHA AAAAAAAAA ZLOZLO ',res.getTransaction.data);
+      var i = 0;
+      res.getTransaction.data.forEach(function (emp) {
+        console.log('Elt',i,':TransID:',emp.trans_id);
+        i++;
+      });*/
+
+      if(res.getTransaction.data.length){
+        $scope.trans_id = res.getTransaction.data[0].trans_id;  
+      } else {
+        $scope.trans_id = res.getGeneraLedger.data[0].trans_id;  
+      }
+
       model.cash_return = res.cash_return.data.pop();
 
       return buildInfo();
@@ -68,6 +108,9 @@ angular.module('bhima.controllers')
         model.common.invoiceId = values.invoiceId;
         model.common.enterprise = values.enterprise.data.pop();
         dependencies.cash_return.query.where = ['primary_cash.uuid=' + values.invoiceId];
+        dependencies.getTransaction.query.where = ['primary_cash.uuid=' + values.invoiceId];
+        dependencies.getGeneraLedger.query.where = ['primary_cash.uuid=' + values.invoiceId];
+
         validate.process(dependencies)
         .then(buildInvoice)
         .catch(function (err){
