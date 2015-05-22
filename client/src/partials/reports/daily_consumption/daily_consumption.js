@@ -78,6 +78,7 @@ angular.module('bhima.controllers')
         {params : {'dateFrom' : util.sqlDate(session.dateFrom), 'dateTo' : util.sqlDate(session.dateTo), 'code' : code}}
       ).success(function(result) {
         $scope.itemInConsumptions = result;
+        $scope.drugsText = result[0].text;
         $scope.state = 'generateItem';
       });
     }
