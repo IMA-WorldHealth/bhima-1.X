@@ -62,18 +62,28 @@ angular.module('bhima.controllers')
         dependencies.recipient = {
           query: {
             tables: {
-              creditor      : { columns: ['text'] }
-            },
+              creditor      : { columns: ['text'] },
+              employee : {columns: ['prenom::first_name', 'name::last_name', 'postnom::middle_name']
+            }
+          },
+          join : [
+              'employee.creditor_uuid=creditor.uuid'
+          ],            
             where : ['creditor.uuid=' + model.cash_return.deb_cred_uuid]
-          }
+          }  
         };
       } else if (model.cash_return.deb_cred_type === 'D') {
         dependencies.recipient = {
           query: {
             tables: {
-              debitor      : { columns: ['text'] }
-            },
-            where : ['debitor.uuid=' + model.cash_return.deb_cred_uuid]
+              debitor : { columns: ['text'] },
+              patient : {columns: ['first_name', 'last_name', 'middle_name', 'dob', 'reference', 'registration_date']
+            }
+          },
+          join : [
+            'patient.debitor_uuid=debitor.uuid'
+          ],
+          where : ['debitor.uuid=' + model.cash_return.deb_cred_uuid]
           }
         };
       }
