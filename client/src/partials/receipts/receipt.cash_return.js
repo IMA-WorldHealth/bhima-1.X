@@ -45,14 +45,6 @@ angular.module('bhima.controllers')
     };  
 
     function buildInvoice (res) {
-/*      $scope.trans_id = "ANALYSE DE LA BASE";
-      console.log('IHOHA AAAAAAAAA ZLOZLO ',res.getTransaction.data);
-      var i = 0;
-      res.getTransaction.data.forEach(function (emp) {
-        console.log('Elt',i,':TransID:',emp.trans_id);
-        i++;
-      });*/
-
       if(res.getTransaction.data.length){
         $scope.trans_id = res.getTransaction.data[0].trans_id;  
       } else {
