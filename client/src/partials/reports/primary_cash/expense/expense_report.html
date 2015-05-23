@@ -121,9 +121,12 @@
                 <td>{{ record.trans_date | date }}</td>
                 <td>{{ record.service_txt }}</td>
                 <td>{{ record.first }} {{record.last}}</td>
-                <td class="hidden-print">
+                <td class="hidden-print"  ng-if="record.primary_cash_uuid">
                   <a ng-href="/#/invoice/{{record.service_txt}}/{{record.primary_cash_uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}</a>
                 </td>
+                <td class="hidden-print" ng-if="!record.primary_cash_uuid">
+                  <a ng-href="/#/invoice/{{record.service_txt}}/{{record.inv_po_id}}/"><span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}</a>
+                </td>                
               </tr>
               <tr ng-if="!session.model.records.data.length">
                 <td colspan="6">

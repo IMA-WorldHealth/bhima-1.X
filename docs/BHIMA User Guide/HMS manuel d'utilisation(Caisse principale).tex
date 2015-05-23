@@ -141,6 +141,7 @@ Lorsque l'utilisateur click sur le bouton \includegraphics[scale=0.7]{pic/Nouvea
 \end{itemize}
 Après avoir renseigné ce deux champs, un clique sur le bouton \textbf{Soumettre} permet de définir les taux du jour.
 
+\newpage
 \subsection{Revoir le taux d'aujourd'hui}
 Un clic sur le bouton \includegraphics[scale=0.7]{pic/RevoirTaux.png} permet d'afficher toutes les informations sur le taux du jour, comme la montre la figure ci-dessous.
 \begin{figure}[h]
@@ -447,6 +448,7 @@ Voici les différents éléments de l'interface. Un bouton sélectionner une pé
 
 Le tableau est divisé en colonne, il existe le nom des employés, les types de taxes, la valeur, le status du paiement qui par défaut est \includegraphics[scale=0.7]{pic/NonTaxes.png} si la taxe n'est pas encore payée et \includegraphics[scale=0.7]{pic/OuiTaxes.png} si elle est payée. pour confirmer le paiement d'une taxe, il faudrait cliquer sur le bouton \includegraphics[scale=0.7]{pic/PayeTaxe.png}
 
+\newpage
 \subsection{Dépenses : Achat}
 Ce module permet de faire sortir l'argent dans la caisse principale lors qu'une commande d'achat a été établi, voici un apperçu de l'interface du modules Achat.
 
@@ -491,6 +493,54 @@ Pour chaque ordre d'achat une preuve de paiement est directement produite par le
 \label{Apperçue d'un ordre de paiement}
 \end{figure}
 
+\newpage
+\subsection{Recettes : Remboursement}
+Ce modules permet à des faires le remboursement aux près des patients mais aussi auprès des employés, ce module permet de régulariser la solde de ces derniers. L'interface principale de ce module se présente de la sorte.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/remboursementMainInterface.png}
+\end{center}
+\caption{Interface principale du module Remboursement}
+\label{Interface principale du module Remboursement}
+\end{figure}
+
+Dans le coin superieur gauche il y'a un bouton qui permet de préciser la monnaie qui sera utilisée lors de l'opération du paiement.
+
+En suite il y'a une zone de recherche qui permet de rechercher  les créditeurs (les employés de l'hôpital) ou bien les débiteurs ( Les patients) pour ce il suffit premièrement de sélectionner la catégorie de la personne qui nécessite un remboursement.
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/SelecCredDeb.png}
+\end{center}
+\caption{Zone de rechercher des créditeurs ou bien des débiteurs}
+\label{Zone de rechercher des créditeurs ou bien des débiteurs}
+\end{figure}
+
+\newpage
+une fois que cette opération est effectué on peut rechercher directeur l'indentité de la personne qui necessite un remboursement 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/RembourDebitor.png}
+\end{center}
+\caption{Aperçue de la recherche d'un debiteur pour l'opération de remboursement}
+\label{Aperçue de la recherche d'un debiteur pour l'opération de remboursement}
+\end{figure}
+
+Après avoir renseigné sélectionner le beneficiaire du remboursement, il suffit de saisir le montant à rembourser et ensuite cliquer sur le bouton soumettre pour l'opération de remboursement soient effective. 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/SortieCaisseInvoice.png}
+\end{center}
+\caption{Aperçue du document attestant la facturation}
+\label{Aperçue du document attestant la facturation}
+\end{figure}
+
+
+\newpage
 \subsection{Dépenses : Dépenses Génériques}
 Les modules dépenses génériques permet de tracquer tous les cas des dépenses de fonds au niveau de la caisse principale. l'interface principale de ce module est constituée d'une liste de choix qui permet de préciser le compte concerné par la dépence.
 Voici l'illustration de cet interface.
@@ -505,6 +555,7 @@ Voici l'illustration de cet interface.
 
 Sur cette interface on aussi un bouton qui permet de préciser la monnaie, et si un compte est déjà choisi par défaut on a la possibilité de la modifier grace au bouton \textbf{Sélectionner un compte}
 
+\newpage
 Après avoir choisi un compte, un deuxième interface apparait, cet interface possède un formulaire qui permet de renseigner les différentes information liée à l'activitité qui a nécéssitée une dépensetelle que la date, le label ou bien la désignation de la dépense, le montant de la dépense, il existe aussi un champ \textbf{Référence document ID} qui permet d'attribuer un identifiant unique à l'opération d'enregistrement des dépenses.
 
 \begin{figure}[h]
