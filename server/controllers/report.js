@@ -826,8 +826,8 @@ function purchase_order() {
     'SELECT `purchase`.`uuid`, `purchase`.`reference`, `purchase`.`is_direct`, `purchase`.`project_id`, ' +
     '`purchase`.`purchase_date`, `purchase`.`closed`, `purchase`.`paid` ' +
     'FROM `purchase` ' +
-    'WHERE (`purchase`.`closed` = 0 AND `purchase`.`is_direct` = 0 AND `purchase`.`paid` = 1) OR ' +
-    '(`purchase`.`closed` = 0 AND `purchase`.`is_direct` = 1 AND `purchase`.`is_authorized` = 1) ' +
+    'WHERE ((`purchase`.`closed` = 0 AND `purchase`.`is_direct` = 0 AND `purchase`.`paid` = 1) OR ' +
+    '(`purchase`.`closed` = 0 AND `purchase`.`is_direct` = 1 AND `purchase`.`is_authorized` = 1 )) AND `purchase`.`is_integration` IS null ' +
     'ORDER BY `purchase`.`purchase_date` DESC ';
 
   return db.exec(sql);
