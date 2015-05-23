@@ -639,7 +639,7 @@ function expenseReport (params) {
   var defer = q.defer(),
     requette =
       'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `a`.`account_number`, `t`.`debit_equiv`,  ' +
-      '`t`.`credit_equiv`, `t`.`debit`, `t`.`credit`, `t`.`currency_id`, `t`.`description`, `t`.`comment`, `t`.`primary_cash_uuid`, `t`.`document_uuid`, `o`.`service_txt`, `u`.`first`, `u`.`last` ' +
+      '`t`.`credit_equiv`, `t`.`debit`, `t`.`credit`, `t`.`currency_id`, `t`.`description`, `t`.`comment`, `t`.`primary_cash_uuid`, `t`.`document_uuid`, `t`.`inv_po_id`, `o`.`service_txt`, `u`.`first`, `u`.`last` ' +
       'FROM (' +
         '(' +
           'SELECT `posting_journal`.`project_id`, `posting_journal`.`uuid`, `primary_cash_item`.`primary_cash_uuid`, `primary_cash_item`.`document_uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, ' +
@@ -826,8 +826,8 @@ function purchase_order() {
     'SELECT `purchase`.`uuid`, `purchase`.`reference`, `purchase`.`is_direct`, `purchase`.`project_id`, ' +
     '`purchase`.`purchase_date`, `purchase`.`closed`, `purchase`.`paid` ' +
     'FROM `purchase` ' +
-    'WHERE (`purchase`.`closed` = 0 AND `purchase`.`is_direct` = 0 AND `purchase`.`paid` = 1) OR ' +
-    '(`purchase`.`closed` = 0 AND `purchase`.`is_direct` = 1 AND `purchase`.`is_authorized` = 1) ' +
+    'WHERE ((`purchase`.`closed` = 0 AND `purchase`.`is_direct` = 0 AND `purchase`.`paid` = 1) OR ' +
+    '(`purchase`.`closed` = 0 AND `purchase`.`is_direct` = 1 AND `purchase`.`is_authorized` = 1 )) AND `purchase`.`is_integration` IS null ' +
     'ORDER BY `purchase`.`purchase_date` DESC ';
 
   return db.exec(sql);

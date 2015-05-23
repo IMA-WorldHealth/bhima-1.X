@@ -23,14 +23,17 @@ angular.module('bhima.controllers')
             columns : ['code', 'text']
           },
           'patient' : {
-            columns : ['first_name', 'last_name', 'middle_name', 'dob', 'current_location_id']
+            columns : ['first_name', 'last_name', 'middle_name', 'dob', 'current_location_id', 'reference::ref_patient']
           },
           'debitor' : {
             columns : ['group_uuid']
           },
           'debitor_group' : {
             columns : ['name', 'account_id']
-          }
+          },
+          'project' : {
+            columns: ['abbr::abbr_patient']
+          }          
         },
         join : [
           'sale.uuid=consumption.document_id',
@@ -38,7 +41,8 @@ angular.module('bhima.controllers')
           'stock.inventory_uuid=inventory.uuid',
           'sale.debitor_uuid=debitor.uuid',
           'patient.debitor_uuid=sale.debitor_uuid',
-          'debitor_group.uuid=debitor.group_uuid'
+          'debitor_group.uuid=debitor.group_uuid',
+          'patient.project_id=project.id'
         ]
       }
     };
