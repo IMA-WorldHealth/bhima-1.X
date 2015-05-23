@@ -92,7 +92,7 @@
 
     <div ng-switch-when="generateItem">
       <header>
-        {{ "DAILY_CONSUMPTION.TITLE" | translate }} / {{(session.dateFrom | date) + ' -- ' + (session.dateTo | date)}}
+        {{ "DAILY_CONSUMPTION.TITLE" | translate }} : <b><i> {{ drugsText }} </i></b> || <small> {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small>
       </header>
 
       <nav>
@@ -115,7 +115,7 @@
         <div class="reportBody">
           <div class="reportFrame">
             <h4 class="visible-print">
-              {{ "DAILY_CONSUMPTION.TITLE" | translate }} <small> {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small></h4>
+              {{ "DAILY_CONSUMPTION.TITLE" | translate }} : <b><i> {{ drugsText }} </i></b> || <small> {{ session.dateFrom | date }} - {{ session.dateTo | date }}</small></h4>
               <table id="patientTable" class="reportTable">
                 <thead>
                   <tr>

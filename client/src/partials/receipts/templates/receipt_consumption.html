@@ -38,7 +38,7 @@
     <div class="col-xs-4">
       <i>{{'INVOICE.DOCUMENT_REF' | translate}}</i> <b>{{model.common.enterprise.abbr + model.reference.reference}}</b>
       <br>
-      <i>{{'INVOICE.CLIENT_ID' | translate}}</i> <b>{{model.reference.reference}}</b>
+      <i>{{'INVOICE.CLIENT_ID' | translate}}</i> <b> {{model.reference.abbr_patient}}{{model.reference.ref_patient}}</b>
       <br>
       <i>{{'INVOICE.DEPOT_REF' | translate}}</i> <b>{{model.depot.reference}}</b>
       <br>

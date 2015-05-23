@@ -37,6 +37,7 @@
       <!-- Debtor group name -->
       {{model.recipient.name}}
       <br>
+      <i>{{'INVOICE.CLIENT_ID' | translate}}</i> <small style="font-size: 15px"><b>{{model.recipient.abbr + model.recipient.reference}}</b></small>
       <br>
       <i>{{ 'INVOICE.DATE_REGISTRATION' | translate }}</i>
       <br>
@@ -44,9 +45,6 @@
     </div>
     <div class="col-xs-4">
       <i>{{'INVOICE.INVOICE_ID' | translate}}</i> <small style="font-size: 20px"><b> {{model.common.enterprise.abbr + model.saleRecords[0].reference}}</small></b>
-      <br>
-      <i>{{'INVOICE.CLIENT_ID' | translate}}</i> <b>{{model.recipient.abbr + model.recipient.reference}}</b>
-      <br>
       <br>
       <i>{{ 'INVOICE.DATE_RECEIPT' | translate }}</i>
       <br>

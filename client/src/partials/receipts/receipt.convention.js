@@ -31,10 +31,29 @@ angular.module('bhima.controllers')
         distinct : true,
         join : ['primary_cash.uuid=primary_cash_item.primary_cash_uuid','posting_journal.inv_po_id=primary_cash_item.document_uuid']
       }
-    };    
+    }; 
+
+    dependencies.getGeneraLedger = {
+      query : {
+        identifier : 'uuid',
+        tables : {
+          primary_cash : { columns : ['uuid'] },
+          primary_cash_item : { columns : ['document_uuid'] },
+          general_ledger : { columns : ['trans_id'] }
+        },
+        distinct : true,
+        join : ['primary_cash.uuid=primary_cash_item.primary_cash_uuid','general_ledger.inv_po_id=primary_cash_item.document_uuid']
+      }
+    };       
 
     function buildInvoice (res) {
-      $scope.trans_id = res.getTransaction.data[0].trans_id;
+      if(res.getTransaction.data.length){
+        $scope.trans_id = res.getTransaction.data[0].trans_id;  
+      } else {
+        $scope.trans_id = res.getGeneraLedger.data[0].trans_id;  
+      }
+      
+      $scope.reference = res.convention.data[0].reference;
       model.conventions = res.convention.data;
     }
 
@@ -45,6 +64,8 @@ angular.module('bhima.controllers')
         model.common.enterprise = values.enterprise.data.pop();
         dependencies.convention.query.where = ['primary_cash.uuid=' + values.invoiceId];
         dependencies.getTransaction.query.where = ['primary_cash.uuid=' + values.invoiceId];
+        dependencies.getGeneraLedger.query.where = ['primary_cash.uuid=' + values.invoiceId];
+
         validate.process(dependencies)
         .then(buildInvoice)
         .catch(function (err){
