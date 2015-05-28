@@ -760,7 +760,7 @@ angular.module('bhima.controllers')
         return def.promise;
       }))
       .then(function (tab) { 
-		messenger.success($translate.instant('PRIMARY_CASH.EXPENSE.SUCCESS'));
+		    messenger.success($translate.instant('PRIMARY_CASH.EXPENSE.SUCCESS'));
         validate.refresh(dependencies, ['paiements'])
         .then(function () {
           session.rows = refreshList();

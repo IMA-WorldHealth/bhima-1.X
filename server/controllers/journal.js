@@ -3002,7 +3002,7 @@ function handlePromesseCotisation (id, user_id, data, done) {
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
-    // cfg.account_id = res[0].account_id;
+    cfg.account_id = res[0].account_id;
     cfg.creditor_uuid = res[0].creditor_uuid;
     cfg.store = store;
     rate = cfg.store.get(reference.currency_id).rate;
@@ -3016,34 +3016,69 @@ function handlePromesseCotisation (id, user_id, data, done) {
   }
 
   function debit () {
-
     return q.all(
       references.map(function (reference) {
         cfg.note = cfg.descrip + '/' + references.label + '/' + reference.abbr;
-        var debit_sql =
-          'INSERT INTO posting_journal ' +
-          '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-          '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-          '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
-          'VALUES (' +
-            [
-              sanitize.escape(uuid()),
-              data.project_id,
-              cfg.fiscalYearId,
-              cfg.periodId,
-              cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.note), reference.six_account_id
-            ].join(',') + ', ' +
-            [
-              0, (reference.value).toFixed(4),
-              0, (reference.value / rate).toFixed(4),
-              reference.currency_id
-            ].join(',') +
-          ', null, null, ' +
-            [
-              sanitize.escape(data.paiement_uuid),
-              cfg.originId,
-              user_id
-            ].join(',') + ');';
+        
+        var account;  
+        if(!reference.six_account_id){
+          account = cfg.account_id;
+
+          var debit_sql =
+            'INSERT INTO posting_journal ' +
+            '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+            '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+            '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
+            'VALUES (' +
+              [
+                sanitize.escape(uuid()),
+                data.project_id,
+                cfg.fiscalYearId,
+                cfg.periodId,
+                cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.note), account
+              ].join(',') + ', ' +
+              [
+                0, (reference.value).toFixed(4),
+                0, (reference.value / rate).toFixed(4),
+                reference.currency_id, sanitize.escape(cfg.creditor_uuid)
+              ].join(',') +
+            ', \'C\', ' +
+              [
+                sanitize.escape(data.paiement_uuid),
+                cfg.originId,
+                user_id
+              ].join(',') + ');';
+
+        } else {
+          account = reference.six_account_id;
+          var debit_sql =
+            'INSERT INTO posting_journal ' +
+            '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+            '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+            '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
+            'VALUES (' +
+              [
+                sanitize.escape(uuid()),
+                data.project_id,
+                cfg.fiscalYearId,
+                cfg.periodId,
+                cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.note), account
+              ].join(',') + ', ' +
+              [
+                0, (reference.value).toFixed(4),
+                0, (reference.value / rate).toFixed(4),
+                reference.currency_id
+              ].join(',') +
+            ', null, null, ' +
+              [
+                sanitize.escape(data.paiement_uuid),
+                cfg.originId,
+                user_id
+              ].join(',') + ');';
+
+
+        }
+
         return db.exec(debit_sql);
       })
     );
@@ -3123,7 +3158,7 @@ function handlePromesseTax (id, user_id, data, done) {
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
-    // cfg.account_id = res[0].account_id;
+    cfg.account_id = res[0].account_id;
     cfg.creditor_uuid = res[0].creditor_uuid;
     cfg.store = store;
     rate = cfg.store.get(reference.currency_id).rate;
@@ -3137,34 +3172,67 @@ function handlePromesseTax (id, user_id, data, done) {
   }
 
   function debit () {
-
     return q.all(
       references.map(function (reference) {
         cfg.note = cfg.descrip + '/' + reference.label + '/' + reference.abbr;
-        var debit_sql =
-          'INSERT INTO posting_journal ' +
-          '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-          '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-          '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
-          'VALUES (' +
-            [
-              sanitize.escape(uuid()),
-              data.project_id,
-              cfg.fiscalYearId,
-              cfg.periodId,
-              cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.note), reference.six_account_id
-            ].join(',') + ', ' +
-            [
-              0, (reference.value).toFixed(4),
-              0, (reference.value / rate).toFixed(4),
-              reference.currency_id
-            ].join(',') +
-          ', null, null, ' +
-            [
-              sanitize.escape(data.paiement_uuid),
-              cfg.originId,
-              user_id
-            ].join(',') + ');';
+        var account;  
+        if(!reference.six_account_id){
+          account = cfg.account_id;
+
+          var debit_sql =
+            'INSERT INTO posting_journal ' +
+            '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+            '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+            '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
+            'VALUES (' +
+              [
+                sanitize.escape(uuid()),
+                data.project_id,
+                cfg.fiscalYearId,
+                cfg.periodId,
+                cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.note), account
+              ].join(',') + ', ' +
+              [
+                0, (reference.value).toFixed(4),
+                0, (reference.value / rate).toFixed(4),
+                reference.currency_id, sanitize.escape(cfg.creditor_uuid)
+              ].join(',') +
+            ', \'C\', ' +
+              [
+                sanitize.escape(data.paiement_uuid),
+                cfg.originId,
+                user_id
+              ].join(',') + ');';
+
+        } else {
+          account = reference.six_account_id;
+
+          var debit_sql =
+            'INSERT INTO posting_journal ' +
+            '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
+            '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
+            '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
+            'VALUES (' +
+              [
+                sanitize.escape(uuid()),
+                data.project_id,
+                cfg.fiscalYearId,
+                cfg.periodId,
+                cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.note), account
+              ].join(',') + ', ' +
+              [
+                0, (reference.value).toFixed(4),
+                0, (reference.value / rate).toFixed(4),
+                reference.currency_id
+              ].join(',') +
+            ',null, null,' +
+              [
+                sanitize.escape(data.paiement_uuid),
+                cfg.originId,
+                user_id
+              ].join(',') + ');';
+        }
+
         return db.exec(debit_sql);
       })
     );
