@@ -109,7 +109,7 @@
             <label class="control-label col-xs-4 required">{{ "COLUMNS.FOUR_ACCOUNT" | translate }}</label>
             <div class="col-xs-7">
               <select class="form-bhima" ng-model="session.new.four_account_id">
-                <option ng-repeat="account in accounts.data" ng-value="account.id">{{account.account_number}} --- {{account.account_txt}}</option>
+                <option ng-repeat="account in accounts.data | orderBy:'account_number'" ng-value="account.id">{{account.account_number}} --- {{account.account_txt}}</option>
               </select>
             </div>
           </div>
@@ -118,7 +118,7 @@
             <label class="control-label col-xs-4 required">{{ "COLUMNS.SIX_ACCOUNT" | translate }}</label>
             <div class="col-xs-7">
               <select class="form-bhima" ng-model="session.new.six_Account_id">
-                <option ng-repeat="account in accounts.data" ng-value="account.id">{{account.account_number}} --- {{account.account_txt}}</option>
+                <option ng-repeat="account in accounts.data | orderBy:'account_number' " ng-value="account.id">{{account.account_number}} --- {{account.account_txt}}</option>
               </select>
             </div>
           </div>
@@ -172,7 +172,7 @@
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.FOUR_ACCOUNT" | translate }}</label>
             <div class="col-xs-7">
-              <select class="form-bhima" ng-model="session.edit.four_account_id" ng-options="account.id as account.account_number + ' -- ' + account.account_txt for account in accounts.data">
+              <select class="form-bhima" ng-model="session.edit.four_account_id" ng-options="account.id as account.account_number + ' -- ' + account.account_txt for account in accounts.data | orderBy:'account_number'">
                 <option></option>
               </select>
             </div>
@@ -181,7 +181,7 @@
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.SIX_ACCOUNT" | translate }}</label>
             <div class="col-xs-7">
-              <select class="form-bhima" ng-model="session.edit.six_account_id" ng-options="account.id as account.account_number + ' -- ' + account.account_txt for account in accounts.data">
+              <select class="form-bhima" ng-model="session.edit.six_account_id" ng-options="account.id as account.account_number + ' -- ' + account.account_txt for account in accounts.data | orderBy:'account_number'">
                 <option></option>
               </select>
             </div>

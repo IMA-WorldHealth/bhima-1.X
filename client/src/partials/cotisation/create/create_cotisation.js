@@ -26,7 +26,8 @@ angular.module('bhima.controllers')
           'account' : {
             columns : ['id', 'account_number', 'account_txt']
           }
-        }
+        },
+        where : ['account.is_ohada=1', 'AND', 'account.account_type_id<>3']
       }
     };
 
@@ -74,6 +75,8 @@ angular.module('bhima.controllers')
       delete record.account_number;
       delete record.account_txt;
 
+      record.six_account_id = session.edit.six_account_id;
+
       if(record.abbr){
         if(record.abbr.length <= 4){
           connect.basicPost('cotisation', [record], ['id'])
@@ -98,6 +101,8 @@ angular.module('bhima.controllers')
       $scope.session.new.is_employee = ($scope.session.new.is_employee)? 1 : 0;
       $scope.session.new.is_percent = ($scope.session.new.is_percent)? 1 : 0;
       var record = connect.clean(session.new);
+      record.six_account_id = session.new.six_account_id;
+      
       if(record.abbr){
         if(record.abbr.length <= 4){
           connect.basicPut('cotisation', [record])
