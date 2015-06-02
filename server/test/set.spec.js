@@ -3,6 +3,20 @@ var expect = require('chai').expect,
 
 describe('set', function () {
 
+  describe("#init()", function () {
+
+    it('should initialize an empty array', function () {
+      var set = new Set();
+      expect(set.set).to.be.empty;
+    });
+
+    it('should initialize with unique values if called with an array', function () {
+      var set = new Set([1, 1, 2, 3, 4, 1]);
+      expect(set.set).to.eql([1,2,3,4]);
+    });
+
+  });
+
   describe('#insert()', function () {
 
     it('should add an item to a set with insert()', function () {

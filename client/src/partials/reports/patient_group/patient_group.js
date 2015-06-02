@@ -11,8 +11,6 @@ angular.module('bhima')
 
     connect.fetch('/reports/patient_group/?uuid=' + $routeParams.uuid)
     .then(function (res) {
-      console.log('[RES]', res);
-
       $scope.group = res.group;
       $scope.priceList = res.pricelist;
       $scope.priceListDetails = res.priceListDetails;

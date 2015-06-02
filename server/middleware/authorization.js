@@ -1,6 +1,8 @@
 // scripts/lib/auth/authorization.js
 
 // Middleware: authorize
+//
+// FIXME Rethink users and permissions
 
 module.exports = function (globalPaths) {
   'use strict';
