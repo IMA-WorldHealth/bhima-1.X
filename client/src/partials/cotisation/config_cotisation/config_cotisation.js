@@ -168,7 +168,6 @@ angular.module('bhima.controllers')
       cotisations.forEach(function (proj) {
         // loop through permissions and check each cotisation that
         // the config_cotisation has permission to.
-		console.log(current.cotisations.get(proj.id));
         proj.checked = !!current.cotisations.get(proj.id);
       });
     }
@@ -196,6 +195,7 @@ angular.module('bhima.controllers')
           break;
         default:
           console.log('[ERR]', 'I don\'t know what I\'m doing!');
+          break;
       }
     };
 
@@ -211,7 +211,6 @@ angular.module('bhima.controllers')
         case 'cotisations':
           current.cotisations = current._backup;
           break;
-
         default:
           console.log('[ERR]', 'I don\'t know what I\'m doing!');
           break;

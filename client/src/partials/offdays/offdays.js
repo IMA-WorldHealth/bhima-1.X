@@ -35,7 +35,7 @@ angular.module('bhima.controllers')
 
     $scope.delete = function (offday) {
       var result = confirm($translate.instant('OFFDAY_MANAGEMENT.CONFIRM'));
-      if (result) {  
+      if (result) {
         connect.basicDelete('offday', offday.id, 'id')
         .then(function () {
           $scope.offdays.remove(offday.id);
@@ -48,7 +48,6 @@ angular.module('bhima.controllers')
       session.action = 'edit';
       offday.date = new Date(offday.date);
       session.edit = angular.copy(offday);
-      //console.log(session.edit.date);
     };
 
     $scope.new = function () {
@@ -72,22 +71,21 @@ angular.module('bhima.controllers')
         if(data.length === 0){
           connect.basicPost('offday', [record], ['id'])
           .then(function () {
-          messenger.success($translate.instant('OFFDAY_MANAGEMENT.UPDATE_SUCCES')); 
+          messenger.success($translate.instant('OFFDAY_MANAGEMENT.UPDATE_SUCCES'));
           $scope.offdays.put(record);
           session.action = '';
           session.edit = {};
-          });   
+          });
         } else {
-          messenger.danger($translate.instant('OFFDAY_MANAGEMENT.SAVE_FAILURE')); 
+          messenger.danger($translate.instant('OFFDAY_MANAGEMENT.SAVE_FAILURE'));
         }
-      });     
+      });
     };
 
     $scope.save.new = function () {
       session.new.date = util.sqlDate(session.new.date);
-        var record = connect.clean(session.new);
-      console.log($scope.offdays.data);
-      
+      var record = connect.clean(session.new);
+
       $http.get('/getCheckOffday/',{params : {
             'date' : record.date,
             'id'   : ''
@@ -97,15 +95,15 @@ angular.module('bhima.controllers')
         if(data.length === 0){
           connect.basicPut('offday', [record])
           .then(function (res) {
-          messenger.success($translate.instant('OFFDAY_MANAGEMENT.SAVE_SUCCES'));        
-          record.id = res.data.insertId;
-          record.reference = generateReference(); // this is simply to make the ui look pretty;
-          $scope.offdays.post(record);
-          session.action = '';
-          session.new = {};
-          });   
+            messenger.success($translate.instant('OFFDAY_MANAGEMENT.SAVE_SUCCES')); 
+            record.id = res.data.insertId;
+            record.reference = generateReference(); // this is simply to make the ui look pretty;
+            $scope.offdays.post(record);
+            session.action = '';
+            session.new = {};
+          });
         } else {
-          messenger.danger($translate.instant('OFFDAY_MANAGEMENT.SAVE_FAILURE')); 
+          messenger.danger($translate.instant('OFFDAY_MANAGEMENT.SAVE_FAILURE'));
         }
       });
     };
@@ -116,5 +114,5 @@ angular.module('bhima.controllers')
       var max = Math.max.apply(Math.max, $scope.offdays.data.map(function (o) { return o.reference; }));
       return Number.isNaN(max) ? 1 : max + 1;
     }
-  }  
+  }
 ]);

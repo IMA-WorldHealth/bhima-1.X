@@ -12,7 +12,8 @@ module.exports = function (db) {
   // to the session
 
   return function (req, res, next){
-    var sql, parsed = url.parse(req.url);
+    var sql,
+        parsed = url.parse(req.url);
 
     if (req.session.project_id === undefined) {
       if (parsed.pathname === '/project') {
@@ -24,9 +25,9 @@ module.exports = function (db) {
             'SELECT `project`.`id`, `project`.`name`, `project`.`abbr` ' +
             'FROM `project` JOIN `project_permission` ' +
             'ON `project`.`id` = `project_permission`.`project_id` ' +
-            'WHERE `project_permission`.`user_id` = \'' + req.session.user_id + '\';';
+            'WHERE `project_permission`.`user_id` = ?;';
 
-          db.exec(sql)
+          db.exec(sql, [req.session.user_id])
           .then(function (rows) {
             res.send(rows);
           })

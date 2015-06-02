@@ -309,8 +309,8 @@ angular.module('bhima.controllers')
           submitUnitPermissions();
           break;
         default:
-          console.log('current.state', current.state);
           console.log('[ERR]', 'I don\'t know what I\'m doing!');
+          break;
       }
     };
 
@@ -330,7 +330,6 @@ angular.module('bhima.controllers')
           current.permissions = new Store({ identifier : 'unit_id', data : current._backup });
           break;
         default:
-          console.log('current.state', current.state);
           console.log('[ERR]', 'I don\'t know what I\'m doing!');
           break;
       }
