@@ -1339,7 +1339,7 @@ exports.listTaxesData = function (req, res, next) {
 };
 
 exports.listPaymentByEmployee = function (req, res, next) {
-  var sql = "SELECT e.id, e.code, e.prenom, e.name, e.postnom, e.creditor_uuid, p.uuid as paiement_uuid, p.currency_id, t.label, t.abbr, z.tax_id, z.value, z.posted"
+  var sql = "SELECT e.id, e.code, e.prenom, e.name, e.postnom, e.creditor_uuid, p.uuid as paiement_uuid, p.currency_id, t.label, t.abbr, t.four_account_id AS 'other_account', z.tax_id, z.value, z.posted"
           + " FROM employee e "
           + " JOIN paiement p ON e.id=p.employee_id "
           + " JOIN tax_paiement z ON z.paiement_uuid=p.uuid "
@@ -1368,7 +1368,7 @@ exports.listDistinctInventory = function (req, res, next) {
 };
 
 exports.listPaymentByEnterprise = function (req, res, next) {
-  var sql = "SELECT e.id, e.code, e.prenom, e.name, e.postnom, e.creditor_uuid, p.uuid as paiement_uuid, p.currency_id, t.label, t.abbr, z.tax_id, z.value, z.posted"
+  var sql = "SELECT e.id, e.code, e.prenom, e.name, e.postnom, e.creditor_uuid, p.uuid as paiement_uuid, p.currency_id, t.label, t.abbr, t.four_account_id AS 'other_account', z.tax_id, z.value, z.posted"
           + " FROM employee e "
           + " JOIN paiement p ON e.id=p.employee_id "
           + " JOIN tax_paiement z ON z.paiement_uuid=p.uuid "
@@ -1467,7 +1467,7 @@ exports.setCotisationPayment = function (req, res, next) {
 };
 
 exports.listEmployeeCotisationPayments = function (req, res, next) {
-  var sql = "SELECT e.id, e.code, e.prenom, e.name, e.postnom, e.creditor_uuid, p.uuid as paiement_uuid, p.currency_id, t.label, t.abbr, z.cotisation_id, z.value, z.posted"
+  var sql = "SELECT e.id, e.code, e.prenom, e.name, e.postnom, e.creditor_uuid, p.uuid as paiement_uuid, p.currency_id, t.label, t.abbr, t.four_account_id AS 'other_account', z.cotisation_id, z.value, z.posted"
           + " FROM employee e "
           + " JOIN paiement p ON e.id=p.employee_id "
           + " JOIN cotisation_paiement z ON z.paiement_uuid=p.uuid "
