@@ -2855,7 +2855,8 @@ function handlePromessePayment (id, user_id, data, done) {
   state.user_id = user_id;
 
   sql =
-    'SELECT `config_accounting`.`account_id`, `paiement`.`uuid`, `paiement`.`employee_id`, `paiement`.`net_salary`, `paiement`.`currency_id`' +
+    'SELECT `config_accounting`.`account_id`, `paiement`.`uuid`, `paiement`.`employee_id`, `paiement`.`net_salary`, '+
+    ' `paiement`.`currency_id`, ((`paiement`.`net_before_tax` - `paiement`.`net_after_tax`) + `paiement`.`net_salary`) AS `gros_salary`' +
     ' FROM `paiement`' +
     ' JOIN `paiement_period` ON `paiement_period`.`id`=`paiement`.`paiement_period_id`' +
     ' JOIN `config_accounting` ON `config_accounting`.`id`=`paiement_period`.`config_accounting_id`' +
@@ -2883,7 +2884,6 @@ function handlePromessePayment (id, user_id, data, done) {
     " JOIN `creditor` ON `creditor`.`uuid`=`employee`.`creditor_uuid`" +
     " JOIN `creditor_group` ON `creditor_group`.`uuid`=`creditor`.`group_uuid` " +
     " WHERE `paiement`.`uuid` = " + sanitize.escape(reference.uuid) + ";";
-
 
     var date = util.toMysqlDate(get.date());
     return q([get.origin('payroll'), get.period(get.date()), get.exchangeRate(date), db.exec(sql2)]);
@@ -2921,8 +2921,8 @@ function handlePromessePayment (id, user_id, data, done) {
           cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.account_id
         ].join(',') + ', ' +
         [
-          0, (reference.net_salary).toFixed(4),
-          0, (reference.net_salary / rate).toFixed(4),
+          0, (reference.gros_salary).toFixed(4),
+          0, (reference.gros_salary / rate).toFixed(4),
           reference.currency_id
         ].join(',') +
       ', null, null, ' +
@@ -2949,8 +2949,8 @@ function handlePromessePayment (id, user_id, data, done) {
           cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), cfg.account_id
         ].join(',') + ', ' +
         [
-          reference.net_salary.toFixed(4), 0,
-          (reference.net_salary / rate).toFixed(4), 0,
+          reference.gros_salary.toFixed(4), 0,
+          (reference.gros_salary / rate).toFixed(4), 0,
           reference.currency_id,
           sanitize.escape(cfg.creditor_uuid)
         ].join(',') + ', \'C\', ' + [sanitize.escape(data.paiement_uuid), cfg.originId, user_id].join(',') +
@@ -3107,7 +3107,7 @@ function handlePromesseCotisation (id, user_id, data, done) {
               (reference.value / rate).toFixed(4), 0,
               reference.currency_id,
               sanitize.escape(cfg.creditor_uuid)
-            ].join(',') + ', \'C\', ' + [sanitize.escape(data.paiement_uuid), cfg.originId, user_id].join(',') +
+            ].join(',') + ', null, ' + [sanitize.escape(data.paiement_uuid), cfg.originId, user_id].join(',') +
           ');';
         return db.exec(credit_sql);
       })
@@ -3261,7 +3261,7 @@ function handlePromesseTax (id, user_id, data, done) {
               (reference.value / rate).toFixed(4), 0,
               reference.currency_id,
               sanitize.escape(cfg.creditor_uuid)
-            ].join(',') + ', \'C\', ' + [sanitize.escape(data.paiement_uuid), cfg.originId, user_id].join(',') +
+            ].join(',') + ', null, ' + [sanitize.escape(data.paiement_uuid), cfg.originId, user_id].join(',') +
           ');';
         return db.exec(credit_sql);
       })
@@ -3504,7 +3504,7 @@ function handleTaxPayment (id, user_id, details, done) {
   state.user_id = user_id;
 
   sql =
-    'SELECT `primary_cash_item`.`primary_cash_uuid`, `reference`, `project_id`, `date`, `deb_cred_uuid`, `deb_cred_type`, `currency_id`, ' +
+    'SELECT `primary_cash_item`.`primary_cash_uuid`, `primary_cash_item`.`other_account`, `reference`, `project_id`, `date`, `deb_cred_uuid`, `deb_cred_type`, `currency_id`, ' +
       '`account_id`, `cost`, `user_id`, `description`, `cash_box_id`, `origin_id`, `primary_cash_item`.`debit`, ' +
       '`primary_cash_item`.`credit`, `primary_cash_item`.`inv_po_id`, `primary_cash_item`.`document_uuid` ' +
     'FROM `primary_cash` JOIN `primary_cash_item` ON `primary_cash`.`uuid` = `primary_cash_item`.`primary_cash_uuid` ' +
@@ -3566,7 +3566,7 @@ function handleTaxPayment (id, user_id, details, done) {
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), cfg.employee_account_id
+          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), sanitize.escape(reference.other_account)
         ].join(',') + ', ' +
         [
           0, (reference.cost).toFixed(4),
@@ -3612,7 +3612,7 @@ function handleCotisationPayment (id, user_id, details, done) {
   state.user_id = user_id;
 
   sql =
-    'SELECT `primary_cash_item`.`primary_cash_uuid`, `reference`, `project_id`, `date`, `deb_cred_uuid`, `deb_cred_type`, `currency_id`, ' +
+    'SELECT `primary_cash_item`.`primary_cash_uuid`, `primary_cash_item`.`other_account`, `reference`, `project_id`, `date`, `deb_cred_uuid`, `deb_cred_type`, `currency_id`, ' +
       '`account_id`, `cost`, `user_id`, `description`, `cash_box_id`, `origin_id`, `primary_cash_item`.`debit`, ' +
       '`primary_cash_item`.`credit`, `primary_cash_item`.`inv_po_id`, `primary_cash_item`.`document_uuid` ' +
     'FROM `primary_cash` JOIN `primary_cash_item` ON `primary_cash`.`uuid` = `primary_cash_item`.`primary_cash_uuid` ' +
@@ -3671,7 +3671,7 @@ function handleCotisationPayment (id, user_id, details, done) {
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), cfg.employee_account_id
+          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), sanitize.escape(reference.other_account)
         ].join(',') + ', ' +
         [
           0, (reference.cost).toFixed(4),
