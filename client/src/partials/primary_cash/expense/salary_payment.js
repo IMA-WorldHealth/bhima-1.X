@@ -172,7 +172,7 @@ angular.module('bhima.controllers')
         date          : util.sqlDate(new Date()),
         deb_cred_uuid : emp.creditor_uuid,
         deb_cred_type : 'C',
-        account_id    : getCashAccountID(emp.currency_id),
+        account_id    : emp.creditor_account,
         currency_id   : emp.currency_id,
         cost          : emp.net_salary_paid,
         user_id       : session.model.cashier.data.id,
