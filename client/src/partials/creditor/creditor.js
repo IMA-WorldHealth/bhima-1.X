@@ -172,7 +172,6 @@ angular.module('bhima.controllers')
     $scope.createSupplier = createSupplier;
 
     $scope.selectVillage = function selectVillage(village) { 
-      console.log('new village assigned', village); 
       session.location.village = village;
     };
   }

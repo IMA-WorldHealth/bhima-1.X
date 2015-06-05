@@ -146,7 +146,6 @@ angular.module('bhima.controllers')
         });
 
         instance.result.then(function () {
-          console.log('Going to general ledger');
           $location.path('/reports/ledger/general_ledger');
         });
       })
