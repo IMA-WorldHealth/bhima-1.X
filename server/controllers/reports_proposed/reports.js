@@ -64,15 +64,15 @@ exports.serve = function (req, res, next) {
 };
 
 exports.build = function (req, res, next) {
-  var target = req.params.route;
-  var renderTarget = renderPDF;
+  var target = req.params.route; //contains the kind of report to build e.g : bilan, grand livre etc ...
+  var renderTarget = renderPDF; //renderPDF is a function which handle the pdf generation process
 
-  var handler = documentHandler[target];
+  var handler = documentHandler[target]; //handler will contain a object with two property, template for structure and context for data
   var options = req.body;
 
   // Module does not support the requested document
   if (!handler) {
-    res.status(500).end('Invalid document target');
+    res.status(500).end('Invalid or Unknown document target');
   } else {
 
     handler.context.compile(options)
