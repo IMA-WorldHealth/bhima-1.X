@@ -654,6 +654,7 @@ angular.module('bhima.controllers')
           }
         });
 
+        
         cotisation_config_list.forEach(function (cotisation) {
 
           if(cotisation.is_percent){
@@ -678,8 +679,6 @@ angular.module('bhima.controllers')
           }
         });
 
-        elmt.net_after_taxe = elmt.net_before_taxe - somCot - SomTax;
-
         rubric_config_list.forEach(function (rub) {
           var change = elmt[rub.abbr];
           if(rub.is_discount){
@@ -690,8 +689,12 @@ angular.module('bhima.controllers')
             somRub += change;  
           }
         });
-        elmt.net_salary = elmt.net_after_taxe + somRub - (elmt.daily_salary * elmt.off_day) + elmt.offdays_cost;
 
+        elmt.gross_salary = elmt.net_before_taxe + somRub; 
+        elmt.net_after_taxe = elmt.net_before_taxe - somCot - SomTax;
+
+        elmt.net_salary = elmt.net_after_taxe + somRub - (elmt.daily_salary * elmt.off_day) + elmt.offdays_cost;
+        
         var paiement = {
           uuid : uuid(),
           employee_id : elmt.emp.id,
@@ -760,7 +763,7 @@ angular.module('bhima.controllers')
         return def.promise;
       }))
       .then(function (tab) { 
-		messenger.success($translate.instant('PRIMARY_CASH.EXPENSE.SUCCESS'));
+		    messenger.success($translate.instant('PRIMARY_CASH.EXPENSE.SUCCESS'));
         validate.refresh(dependencies, ['paiements'])
         .then(function () {
           session.rows = refreshList();
