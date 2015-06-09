@@ -26,7 +26,8 @@ angular.module('bhima.controllers')
           'account' : {
             columns : ['id', 'account_number', 'account_txt']
           }
-        }
+        },
+        where : ['account.is_ohada=1', 'AND', 'account.account_type_id<>3']
       }
     };
 
@@ -87,6 +88,8 @@ angular.module('bhima.controllers')
         $scope.session.edit.is_ipr = null;
       } else {
         var record = angular.copy(connect.clean(session.edit));
+        record.six_account_id = session.edit.six_account_id;
+
         delete record.reference;
         delete record.account_number;
         delete record.account_txt;
@@ -133,6 +136,8 @@ angular.module('bhima.controllers')
         $scope.session.new.is_ipr = null;
       } else {
         var record = connect.clean(session.new);
+        record.six_account_id = session.new.six_account_id;
+
         if(record.abbr){
           if(record.abbr.length <= 4){
             connect.basicPut('tax', [record])
