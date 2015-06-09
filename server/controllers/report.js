@@ -422,12 +422,12 @@ function employeeStanding(params) {
         'SELECT `posting_journal`.`uuid`, `posting_journal`.`trans_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`description`, `posting_journal`.`inv_po_id` ' +
         'FROM `posting_journal` ' +
         'JOIN `transaction_type` ON `transaction_type`.`id`= `posting_journal`.`origin_id` '+
-        ' WHERE `posting_journal`.`deb_cred_uuid`= ? AND `posting_journal`.`deb_cred_type`=\'C\' AND `transaction_type`.`service_txt` NOT IN (\'cotisation_paiement\',\'tax_payment\',\'payroll\',\'cotisation_engagement\',\'tax_engagement\') ' +
+        ' WHERE `posting_journal`.`deb_cred_uuid`= ? AND `posting_journal`.`deb_cred_type`=\'C\' ' +
       'UNION ' +
         'SELECT `general_ledger`.`uuid`, `general_ledger`.`trans_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, `general_ledger`.`description`, `general_ledger`.`inv_po_id` ' +
         'FROM `general_ledger` ' +
         'JOIN `transaction_type` ON `transaction_type`.`id`= `general_ledger`.`origin_id` '+
-        'WHERE `general_ledger`.`deb_cred_uuid`=? AND `general_ledger`.`deb_cred_type`=\'C\'  AND `transaction_type`.`service_txt` NOT IN (\'cotisation_paiement\',\'tax_payment\',\'payroll\',\'cotisation_engagement\',\'tax_engagement\')) as aggregate ' +
+        'WHERE `general_ledger`.`deb_cred_uuid`=? AND `general_ledger`.`deb_cred_type`=\'C\') as aggregate ' +
       'GROUP BY `aggregate`.`inv_po_id` ORDER BY `aggregate`.`trans_date` DESC;';
 
   db.exec(sql,[params.id, params.id])
@@ -504,9 +504,11 @@ function employeePaiement(params) {
   var sql, id = sanitize.escape(params.id);
   sql =
     'SELECT employee.code, employee.prenom, employee.postnom, employee.name, employee.creditor_uuid, ' +
-    'paiement.uuid, paiement.currency_id, paiement.net_before_tax, paiement.net_after_tax, ' +
+    'paiement.uuid, creditor_group.account_id AS creditor_account, paiement.currency_id, paiement.net_before_tax, paiement.net_after_tax, ' +
     'paiement.net_salary, paiement.is_paid, currency.symbol, SUM(partial_paiement.amount) AS amount ' +
     'FROM employee ' +
+    'JOIN creditor ON creditor.uuid = employee.creditor_uuid ' +
+    'JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid ' +
     'JOIN paiement ON paiement.employee_id = employee.id ' +
     'JOIN currency ON currency.id = paiement.currency_id ' +
     'LEFT JOIN partial_paiement ON partial_paiement.paiement_uuid = paiement.uuid ' +

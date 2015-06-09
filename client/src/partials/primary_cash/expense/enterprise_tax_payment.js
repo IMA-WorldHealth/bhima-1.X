@@ -145,7 +145,7 @@ angular.module('bhima.controllers')
         date          : util.sqlDate(new Date()),
         deb_cred_uuid : emp.creditor_uuid,
         deb_cred_type : 'C',
-        account_id    : getCashAccountID(emp.currency_id),
+        account_id    : emp.other_account,
         currency_id   : emp.currency_id,
         cost          : emp.value,
         user_id       : session.model.cashier.data.id,
@@ -160,7 +160,8 @@ angular.module('bhima.controllers')
         debit             : 0,
         credit            : primary.cost,
         inv_po_id         : emp.paiement_uuid,
-        document_uuid     : document_uuid
+        document_uuid     : document_uuid,
+        other_account     : emp.other_account 
       };
 
       var other = {
