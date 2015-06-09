@@ -1,5 +1,6 @@
-// reports_proposed/data/balance_sheet.js
-// Collects and aggregates data for the enterprise balance sheet
+// reports_proposed/data/bilan.js
+// Collects and aggregates data for the enterprise bilan
+
 var q       = require('q');
 var db      = require('../../../lib/db');
 var numeral = require('numeral');
@@ -98,8 +99,6 @@ exports.compile = function (options) {
 
   var deferred = q.defer();
   var context = {};
-  // var fiscalYearId = options.fiscalYearId;
-
 
   context.reportDate = bilanDate.toDateString();
 
