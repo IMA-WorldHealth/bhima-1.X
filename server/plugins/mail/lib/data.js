@@ -5,7 +5,7 @@ var q = require('q');
 var data = exports;
 
 // TODO Set up absalute path to top of server structure
-var cfg = require(path.join(__dirname, '../../../config/server'));
+var cfg = require(path.join(__dirname, '../../../server/config/environment/server'));
 
 // TODO extract to config file ignored by git
 var session = mysql.createConnection({
@@ -17,25 +17,25 @@ var session = mysql.createConnection({
 
 var results = {};
 
-data.process = function (query) { 
+data.process = function (query) {
 
   console.log('Requesting information from database');
   var deferred = q.defer();
   var requests = [], keys = Object.keys(query);
-  
-  requests = keys.map(function (key) { 
+
+  requests = keys.map(function (key) {
     return dbQuery(query[key]);
   });
-  
+
   q.all(requests)
   .then(function (queryResult) {
-    keys.forEach(function (key, index) { 
+    keys.forEach(function (key, index) {
       results[key] = queryResult[index];
     });
-     
+
     deferred.resolve();
   })
-  .catch(function (error) { 
+  .catch(function (error) {
     console.log('data read error');
     deferred.reject(error);
   });
@@ -43,20 +43,20 @@ data.process = function (query) {
   return deferred.promise;
 };
 
-data.lookup = function (key) { 
+data.lookup = function (key) {
   return results[key];
 };
 
-data.end = function () { 
+data.end = function () {
   return session.end();
 };
 
-function dbQuery(request) { 
+function dbQuery(request) {
   var deferred = q.defer();
-  
-  session.query(request, function (error, result) { 
+
+  session.query(request, function (error, result) {
     if(error) return deferred.reject(error);
-    
+
     deferred.resolve(result);
   });
   return deferred.promise;

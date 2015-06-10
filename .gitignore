@@ -27,6 +27,8 @@ utilities/migrate/*
 /*./app/js/controllers/controllers.js*/
 /*./app/css/kapok.min.css*/
 
+plugins/*
+
 # ignore log files
 *.log
 /symmetric/*

@@ -1,5 +1,4 @@
 #!/usr/local/bin/node
-console.log("distribute");
 var q = require('q');
 var childProcess = require('child_process');
 var util = require('util');
@@ -21,7 +20,7 @@ var reportDate = new Date();
 initialise();
 
 function initialise() {
-  util.log('[send.js] bhima mail deamon initialised.');
+  util.log('[MAIL] bhima mail deamon initialised.');
 
   template.read(addressSource)
   // .readConfiguration(configSource)
@@ -36,8 +35,6 @@ function initialise() {
 
 function parseAddress(fileContent) {
   var content = JSON.parse(fileContent);
-
-  util.log('[send.js] parsed address list [' + addressSource + ']');
   address = content;
   return q.resolve(address);
 }
@@ -79,8 +76,8 @@ function compileReport(languages) {
 
   // TODO should check if the file exists before compiling - this should never be the case
   compileStatus = languages.map(function (language) {
-    util.log('[send.js] compiling report [' + service + '] [' + language + ']');
-    return exec('./mail.js ' + service + ' ' + language + '> ~/Mail.js_Log_' + new Date().toLocaleDateString());
+    util.log('[MAIL] compiling report [' + service + '] [' + language + ']');
+    return exec('./mail.js ' + service + ' ' + language + '> /var/opt/bhima/log/mail_log/out_' + new Date().toLocaleDateString());
   });
 
   q.all(compileStatus).then(function (result) {
@@ -102,10 +99,26 @@ function distribute(recipient, details) {
   if (!details.language) { details.language = defaultLanguage; }
   if (!details.address) { throw new Error('Recipient ' + recipient + ' has no assigned address'); }
 
-  // TODO improve send command, this is just a proof of concept
-  var command = 'mail -a \'Content-type: text/html;\' -s \'' + reportDate.toLocaleDateString() + '\' ' + details.address + ' < ' + compiledReference[details.language];
+ var langFiles = Object.keys(compiledReference);
 
-  util.log('[send.js] [' + service + '] [' + details.language + '] -> ' + details.address);
+langFiles.forEach(function (item){
+ if(compiledReference[item] == '' || !compiledReference[item]) {
+
+compiledReference[item] = 
+new Date().getDate() +  '-'
+ + (new Date().getMonth() + 1) +  '-' 
++ new Date().getFullYear() + '_' 
++ details.language + '_' 
++ service
++'.html';
+
+console.log(compiledReference[item]);
+}}); 
+
+// TODO improve send command, this is just a proof of concept
+  var command = 'mail -a \'Content-type: text/html;\' -s \'' + reportDate.toLocaleDateString() + '\' ' + details.address + ' < ' + '/var/opt/bhima/plugins/mail/out/' + compiledReference[details.language];
+
+  util.log('[MAIL] [' + service + '] [' + details.language + '] -> ' + details.address);
   return exec(command);
 }
 
@@ -117,6 +130,7 @@ function exec(command) {
     if (error) { return deferred.reject(error); }
     deferred.resolve(result);
   });
+
   return deferred.promise;
 }
 

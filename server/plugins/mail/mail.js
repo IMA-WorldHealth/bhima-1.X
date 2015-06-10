@@ -30,7 +30,7 @@ var include = [
   principalIncomeExpense,
   principalBalance,
   accounts,
-  subsidyIMA,
+  subsidyIMA
 ];
 
 console.log("Initialization done");
@@ -52,43 +52,54 @@ function buildQuery()  {
   reportQuery = {
     "HBB_New_Patients" : "SELECT COUNT(uuid) as 'total' FROM patient WHERE registration_date >= " + util.date.from + " AND registration_date <= " + util.date.to + " AND renewal = 0 AND project_id = 1;",
     "PAX_New_Patients" : "SELECT COUNT(uuid) as 'total' FROM patient WHERE registration_date >= " + util.date.from + " AND registration_date <= " + util.date.to + " AND renewal = 0 AND project_id = 2;",
+
     "HBB_Renewal_Patients" : "SELECT COUNT(uuid) as 'total' FROM patient WHERE registration_date >= " + util.date.from + " AND registration_date <= " + util.date.to + " AND renewal = 1 AND project_id = 1;",
     "PAX_Renewal_Patients" : "SELECT COUNT(uuid) as 'total' FROM patient WHERE registration_date >= " + util.date.from + " AND registration_date <= " + util.date.to + " AND renewal = 1 AND project_id = 2;",
-    "HBB_Sum_Cash" : "SELECT SUM(cost) as 'total' FROM cash where date = " + util.date.from + " AND project_id = 1;",
-    "PAX_Sum_Cash" : "SELECT SUM(cost) as 'total' FROM cash where date = " + util.date.from + " AND project_id = 2;",
+
+    "IMA_Total" : "SELECT SUM(`t`.`debit_equiv` - `t`.`credit_equiv`) as 'total' FROM (SELECT `p`.`debit_equiv`, `p`.`credit_equiv` FROM `posting_journal` as `p` WHERE `p`.`account_id` = 3551  AND trans_date=" + util.date.from + 
+    " UNION ALL SELECT `g`.`debit_equiv`, `g`.`credit_equiv` FROM `general_ledger` as `g` WHERE `g`.`account_id` = 3551 AND trans_date=" + util.date.from + ") as `t`;",
+
+    "IMA_Patients" : "SELECT COUNT(DISTINCT debitor_uuid) as 'total' FROM `sale` JOIN `sale_subsidy` JOIN `subsidy` JOIN `debitor_group` WHERE `sale`.`uuid` = `sale_subsidy`.`sale_uuid` AND " +
+    "`sale_subsidy`.`subsidy_uuid` = `subsidy`.`uuid` AND `subsidy`.`debitor_group_uuid` = `debitor_group`.`uuid` AND `sale`.`project_id` = 1 AND sale.invoice_date = " + util.date.from + " AND  `debitor_group`.`uuid` = \"25ba37de-3b26-4624-afba-f2ec002da9b8 \" " +
+    "AND `sale`.`uuid` NOT IN (SELECT sale_uuid FROM credit_note);",
+
+    "HBB_New_Fiche" : "SELECT COUNT(sale.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020002) " +
+    "AND sale.invoice_date = " + util.date.from + " AND sale.project_id = 1 AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note);",
+
+    "PAX_New_Fiche" : "SELECT COUNT(sale.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020002) " +
+    "AND sale.invoice_date = " + util.date.from + " AND sale.project_id = 2 AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note);",
+
+    "HBB_Old_Fiche" : "SELECT COUNT(sale.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020003) " +
+    "AND sale.invoice_date = " + util.date.from + " AND sale.project_id = 1 AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note);",
+
+    "PAX_Old_Fiche" : "SELECT COUNT(sale.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020003) " +
+    "AND sale.invoice_date = " + util.date.from + " AND sale.project_id = 2 AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note);",
+
+
+    "HBB_Basic_Sale" : "SELECT COUNT(uuid) as 'total' FROM sale WHERE invoice_date = " + util.date.from + " AND sale.project_id = 1 AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note);",
+    "PAX_Basic_Sale" : "SELECT COUNT(uuid) as 'total' FROM sale WHERE invoice_date = " + util.date.from + " AND sale.project_id = 2 AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note);",
+
+
+    "HBB_Principal_Cash_Income_Expense" : "SELECT SUM(if(currency_id=1,debit_equiv / 930, debit_equiv)) as debit, SUM(if(currency_id=1,credit_equiv / 930, credit_equiv)) as credit FROM (SELECT `p`.`debit_equiv`, `p`.`credit_equiv`, `p`.`currency_id` FROM posting_journal as p WHERE `p`.`account_id` IN (2935, 2939) AND `p`.`trans_date` =" + util.date.from + " UNION ALL SELECT `g`.`debit_equiv`, `g`.`credit_equiv`, `g`.`currency_id` FROM general_ledger as g WHERE `g`.`account_id` IN (2935, 2939) AND `g`.`trans_date` =" + util.date.from +") as t;",
+
+    "HBB_Principal_Cash_Balance" : "SELECT SUM(debit_equiv - credit_equiv) as balance FROM posting_journal WHERE account_id IN (2935, 2939) " +
+    "UNION ALL SELECT SUM(debit_equiv - credit_equiv) FROM general_ledger WHERE account_id IN (2935, 2939);",
+
+    "HBB_Sum_Cash" : "SELECT SUM(if(currency_id = 2, cost * 930, cost )) as 'total' FROM cash WHERE  project_id = 1 AND date=" + util.date.from + " AND uuid NOT IN (SELECT cash_uuid FROM cash_discard);",
+    "PAX_Sum_Cash" : "SELECT SUM(if(currency_id = 2, cost * 930, cost )) as 'total' FROM cash WHERE  project_id = 2 AND date=" +  util.date.from + " AND uuid NOT IN (SELECT cash_uuid FROM cash_discard);",
     "HBB_Cash_Total_Invoice" : "SELECT COUNT(invoice_uuid) as 'total' FROM cash join cash_item where cash_item.cash_uuid = cash.uuid AND date = " + util.date.from + " AND project_id = 1;",
-    "PAX_Cash_Total_Invoice" : "SELECT COUNT(invoice_uuid) as 'total' FROM cash join cash_item where cash_item.cash_uuid = cash.uuid AND date = " + util.date.from + " AND project_id = 2;",
-    "IMA_Total" : "SELECT SUM(debit) as 'total' FROM posting_journal where account_id = 1062 AND trans_date = " + util.date.from + ";",
-    "IMA_Patients" : "SELECT COUNT(distinct sale.debitor_uuid) as 'total' from posting_journal join sale where posting_journal.inv_po_id = sale.uuid AND account_id = 1062 AND trans_date = " + util.date.from + ";",
-    "HBB_New_Fiche" : "SELECT COUNT(sale.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020002) AND sale.invoice_date = " + util.date.from + " AND sale.project_id = 1;",
-    "PAX_New_Fiche" : "SELECT COUNT(sale.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020002) AND sale.invoice_date = " + util.date.from + " AND sale.project_id = 2;",
-    "HBB_Old_Fiche" : "SELECT COUNT(sale.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020003) AND sale.invoice_date = " + util.date.from + " AND sale.project_id = 1;",
-    "PAX_Old_Fiche" : "SELECT COUNT(sale.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020003) AND sale.invoice_date = " + util.date.from + " AND sale.project_id = 2;",
-    "HBB_Basic_Sale" : "SELECT COUNT(uuid) as 'total' FROM sale WHERE invoice_date = " + util.date.from + " AND sale.project_id = 1;",
-    "PAX_Basic_Sale" : "SELECT COUNT(uuid) as 'total' FROM sale WHERE invoice_date = " + util.date.from + " AND sale.project_id = 2;",
-    "HBB_Sale_Items" : "SELECT COUNT(sale_item.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid and invoice_date = " + util.date.from + " AND project_id = 1;",
-    "PAX_Sale_Items" : "SELECT COUNT(sale_item.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid and invoice_date = " + util.date.from + " AND project_id = 2;",
+    "PAX_Cash_Total_Invoice" : "SELECT COUNT(invoice_uuid) as 'total' FROM cash join cash_item where cash_item.cash_uuid = cash.uuid AND date = " + util.date.from + " AND project_id = 2;"
+    // "HBB_Sale_Items" : "SELECT COUNT(sale_item.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid and invoice_date = " + util.date.from + " AND project_id = 1;",
+    // "PAX_Sale_Items" : "SELECT COUNT(sale_item.uuid) as 'total' FROM sale join sale_item where sale_item.sale_uuid = sale.uuid and invoice_date = " + util.date.from + " AND project_id = 2;",
 
-    // Command was rushed
-    //  - Union to remove duplication of conditional
-    //  - Currently split up to allow seperation of posted and pending finances
 
-    // Account ID is currently set to 487 (principal dollar account) and 486 (principal franc account), debit and creit equivalent is used so the value returned is always dollars
-    "HBB_Principal_Cash_Income_Expense" :
-                                  "SELECT SUM(debit_equiv) as debit, SUM(credit_equiv) as credit FROM posting_journal WHERE account_id IN (486, 487) AND trans_date = " + util.date.from + " " +
-                                  "UNION ALL " +
-                                  "SELECT SUM(debit_equiv), SUM(credit_equiv) FROM general_ledger WHERE account_id IN (486, 487) AND trans_date = " + util.date.from + ";",
-    "HBB_Principal_Cash_Balance" :
-                                  "SELECT SUM(debit_equiv - credit_equiv) as balance FROM posting_journal WHERE account_id IN (486, 487) " +
-                                  "UNION ALL " +
-                                  "SELECT SUM(debit_equiv - credit_equiv) FROM general_ledger WHERE account_id IN (486, 487);"
+
   };
 
   return q.resolve();
 }
 
 function settup () {
-
   // Initialise modules
   data.process(reportQuery)
   .then(template.load(language))
@@ -152,10 +163,12 @@ function overview() {
 }
 
 function breakdown() {
-  var paxNew = data.lookup('PAX_New_Patients')[0].total;
-  var paxReturning = data.lookup('PAX_Renewal_Patients')[0].total;
+
   var hbbNew = data.lookup('HBB_New_Patients')[0].total;
+  var paxNew = data.lookup('PAX_New_Patients')[0].total;
+
   var hbbReturning = data.lookup('HBB_Renewal_Patients')[0].total;
+  var paxReturning = data.lookup('PAX_Renewal_Patients')[0].total;
 
   var paxNewFiche = data.lookup('PAX_New_Fiche')[0].total;
   var paxOldFiche = data.lookup('PAX_Old_Fiche')[0].total;
@@ -166,8 +179,8 @@ function breakdown() {
   var hbbTotalSale = data.lookup('HBB_Basic_Sale')[0].total;
   var paxTotalSale = data.lookup('PAX_Basic_Sale')[0].total;
 
-  var hbbTotalSaleItems = data.lookup('HBB_Sale_Items')[0].total;
-  var paxTotalSaleItems = data.lookup('PAX_Sale_Items')[0].total;
+  // var hbbTotalSaleItems = data.lookup('HBB_Sale_Items')[0].total;
+  // var paxTotalSaleItems = data.lookup('PAX_Sale_Items')[0].total;
 
   var structureTemplate = template.fetch('table');
   var headerTemplate = template.fetch('tableHeader');
@@ -176,7 +189,7 @@ function breakdown() {
   var row = [], table, header, body;
 
   // Populate Header
-  header = template.replace(headerTemplate, "{{DATA_ONE}}", "");
+  header = template.replace(headerTemplate, "{{DATA_ONE}}", "Rubrics");
   header = template.replace(header, "{{DATA_TWO}}", "IMCK HBB");
   header = template.replace(header, "{{DATA_THREE}}", "IMCK PAX");
 
@@ -216,10 +229,10 @@ function breakdown() {
   row[6] = template.replace(row[6], "{{DATA_THREE}}", paxTotalSale);
   row[6] = template.replace(row[6], "{{ROW_STYLE}}", "style='font-weight: bold'");
 
-  row[7] = template.replace(rowTemplate, "{{DATA_ONE}}", template.reports("Overview", "total_lines"));
-  row[7] = template.replace(row[7], "{{DATA_TWO}}", hbbTotalSaleItems);
-  row[7] = template.replace(row[7], "{{DATA_THREE}}", paxTotalSaleItems);
-  row[7] = template.replace(row[7], "{{ROW_STYLE}}", "style='font-weight: bold;'");
+  // row[7] = template.replace(rowTemplate, "{{DATA_ONE}}", template.reports("Overview", "total_lines"));
+  // row[7] = template.replace(row[7], "{{DATA_TWO}}", hbbTotalSaleItems);
+  // row[7] = template.replace(row[7], "{{DATA_THREE}}", paxTotalSaleItems);
+  // row[7] = template.replace(row[7], "{{ROW_STYLE}}", "style='font-weight: bold;'");
 
   body = row.join("\n");
 
@@ -251,6 +264,7 @@ function hbbFinanceOverview() {
   var totalInvoices = data.lookup('HBB_Cash_Total_Invoice')[0].total;
 
   var sectionTemplate = template.reports("Section", "cash_hbb");
+
   var report =
     template.compile(
         sectionTemplate.content,
@@ -262,6 +276,7 @@ function hbbFinanceOverview() {
 }
 
 function paxFinanceOverview() {
+
   var totalCash = data.lookup('PAX_Sum_Cash')[0].total;
   var totalInvoices = data.lookup('PAX_Cash_Total_Invoice')[0].total;
 
@@ -290,36 +305,40 @@ function categoryPrincipal() {
 function principalIncomeExpense() {
   var result = data.lookup('HBB_Principal_Cash_Income_Expense');
 
-  var journal_debit = result[0].debit;
-  var journal_credit = result[0].credit;
+  var journal_debit = result[0].debit || 0;
+  var journal_credit = result[0].credit || 0;
 
-  var ledger_debit = result[1].debit;
-  var ledger_credit = result[1].credit;
+  //var ledger_debit = result[1].debit;
+ // var ledger_credit = result[1].credit;
 
   var sectionTemplate = template.reports("Section", "principal_income_expense");
 
   var report =
     template.compile(
         sectionTemplate.content,
-        template.insertStrong('$'.concat((journal_debit + ledger_debit).toFixed(2))),
-        template.insertStrong('$'.concat((journal_credit + ledger_credit).toFixed(2)))
+        template.insertStrong('$'.concat((journal_debit).toFixed(2))),
+        template.insertStrong('$'.concat((journal_credit).toFixed(2)))
         );
   return template.compileSection(sectionTemplate.heading, report);
 }
 
 function principalBalance() {
 
-  var result = data.lookup('HBB_Principal_Cash_Balance');
+  //var result = data.lookup('HBB_Principal_Cash_Balance');
 
-  var journal_balance = result[0].balance;
-  var ledger_balance = result[1].balance;
+ var result = data.lookup('HBB_Principal_Cash_Income_Expense');
+ var debit = result[0].debit || 0;
+ var credit = result[0].credit || 0;
+
+  var journal_balance = debit -  credit;
+  //var ledger_balance = result[1].balance;
 
   var sectionTemplate = template.reports("Section", "principal_balance");
 
   var report =
     template.compile(
         sectionTemplate.content,
-        template.insertStrong('$'.concat((journal_balance + ledger_balance).toFixed(2)))
+        template.insertStrong('$'.concat((journal_balance).toFixed(2)))
         );
   return template.compileSection(sectionTemplate.heading, report);
 }
