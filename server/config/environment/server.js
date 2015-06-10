@@ -16,6 +16,13 @@ var config = {
   "session" : {
     "secret" : "xopen blowfish"
   },
+  "plugins" : [{
+    "name" : "mail",
+    "script" : "mail/mail.js"
+  }, {
+    "name" : "backup",
+    "script" : "backup/index.js"
+  }],
   "tls" : {
     "key" : "server/config/keys/key.pem",
     "cert" : "server/config/keys/ssl.crt"
