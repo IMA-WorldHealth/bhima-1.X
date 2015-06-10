@@ -1,11 +1,19 @@
-drop database if exists`bhima`;
-create database `bhima`;
-use `bhima`;
+/*
+SQLyog Ultimate v11.11 (32 bit)
+MySQL - 5.6.12 : Database - bhima
+*********************************************************************
+*/
 
--- grant all privileges on *.* to 'bhima'@'%' identified by 'HISCongo2013' with grant option;
-grant all privileges on *.* to 'bhima'@'localhost' identified by 'HISCongo2013' with grant option;
-flush privileges;
 
+/*!40101 SET NAMES utf8 */;
+
+/*!40101 SET SQL_MODE=''*/;
+
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`bhima` /*!40100 DEFAULT CHARACTER SET utf8 */;
 
 USE `bhima`;
 
