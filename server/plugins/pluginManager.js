@@ -30,7 +30,8 @@ function PluginManager(cfg) {
     cfg.plugins.forEach(function (plugin) {
       echo('Loading ' + plugin.name);
       // TODO : Configure plugins to use this interface
-      //plugins[plugin.name] = require(path.join('./server/plugins/', plugin.script));
+      //var Plug = require(path.join('./server/plugins/', plugin.script));
+      //plugins[plugin.name] = new Plug(plugin.options);
     });
 
   };
