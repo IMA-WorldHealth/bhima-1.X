@@ -58,7 +58,7 @@ USE bhima;
 drop table if exists `reference`;
 CREATE TABLE `reference` (
   `id`                  tinyint unsigned not null auto_increment,
-  `reference`           char(4) not null,
+  `ref`                 char(4) not null,
   `text`                text,
   `position`            int unsigned,
   `reference_group_id`  tinyint unsigned,
@@ -95,5 +95,5 @@ ADD FOREIGN KEY (`reference_id`) REFERENCES `reference` (`id`);
 -- ADD Unit reference_group AND reference_group
 --
 INSERT INTO `unit` VALUES
-('','reference_group','TREE.REFERENCE_GROUP','Reference Group', 30, 0, '/partials/reference_group', '/reports/reference_group/'),
-('','reference','TREE.REFERENCE','Reference', 30, 0, '/partials/reference', '/reports/reference/');
+('109','reference_group','TREE.REFERENCE_GROUP','Reference Group', 30, 0, '/partials/reference_group', '/reference_group/'),
+('110','reference','TREE.REFERENCE','Reference', 30, 0, '/partials/reference', '/reference/');

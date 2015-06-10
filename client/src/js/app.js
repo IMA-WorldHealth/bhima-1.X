@@ -71,6 +71,14 @@
       controller: 'journal.voucher',
       templateUrl: 'partials/journal_voucher/journal_voucher.html'
     })
+    .when('/reference_group', {
+      controller: 'reference_group',
+      templateUrl: 'partials/reference_group/reference_group.html'
+    })    
+    .when('/reference', {
+      controller: 'reference',
+      templateUrl: 'partials/reference/reference.html'
+    })        
     .when('/inventory/', {
       controller: 'inventory',
       templateUrl: '/partials/inventory/inventory.html'
