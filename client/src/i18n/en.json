@@ -132,8 +132,8 @@
   },
 "AUXILLARY_CASH_RECORD" : {
   "ALL_PROJECTS"    : "All projects",
-   "ALL_USERS"      : "All Users", 
-   "BY"             : "By",  
+   "ALL_USERS"      : "All Users",
+   "BY"             : "By",
   "CANCEL"          : "Cancel Operation",
   "CHARGED_AGAINST" : "Charged against",
   "CREDIT_NOTE"     : "Credit note",
@@ -484,6 +484,7 @@
    "PERIOD_ID"             : "Period ID",
    "PERIOD_PAYMENT"        : "Payment period",
    "PHONE"                 : "Phone",
+   "POSITION"              : "Position",
    "POSTED"                : "Posted",
    "PRICE"                 : "Price",
    "PRICE_LIST"            : "Price List",
@@ -2172,8 +2173,8 @@
 "SALERECORD": {
    "ADVANCE"         : "Advanced Search",
    "ALL_PROJECTS"    : "All Projects",
-   "ALL_USERS"       : "All Users", 
-   "BY"              : "By",     
+   "ALL_USERS"       : "All Users",
+   "BY"              : "By",
    "CHARGED_AGAINST" : "charged against",
    "CREDIT_NOTE"     : "Cancel sale",
    "GENERATE"        : "to generate an invoice.",
@@ -2187,6 +2188,16 @@
    "TITLE"           : "Patient Invoice Records",
    "TOTAL_OF"        : "Total of",
    "UNFOUND"         : "No patient transactions found. Reference"
+   },
+"SECTION_BILAN" : {
+   "ASSET" : "Asset",
+   "PASSIVE" : "Passive",
+   "NO_SECTION_BILAN" : "No bilan section found",
+   "TITLE"            : "Bilan section",
+   "ALL"              : "All bilan section",
+   "ALERT"            : "Gestion de section du bilan",
+   "NEW"              : "New bilan section",
+   "EDIT"             : "Bilan section editing"
    },
 "SECTOR": {
    "ACTIONS"          : "Actions",
@@ -2765,6 +2776,7 @@
    "RUBRIC_MANAGEMENT"         : "Rubrics Management",
    "SALES"                     : "Sales",
    "SALE_RECORDS"              : "Sale Records",
+   "SECTION_BILAN"             : "Bilan section",
    "SERVICE"                   : "Services",
    "SERVICE_EXPLOITATION"      : "Services Status",
    "SERVICE_STATE"             : "Service State",

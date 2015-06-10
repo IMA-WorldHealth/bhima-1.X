@@ -306,6 +306,10 @@
       controller: 'profitCenter.allocation',
       templateUrl: 'partials/profit_center/allocation/allocation.html'
     })
+    .when('/section_bilan/', {
+      controller : 'sectionBilan',
+      templateUrl : 'partials/section_bilan/section_bilan.html'
+    })
     .when('/patient_group/', {
       controller: 'patientGroup',
       templateUrl: 'partials/patient_group/patient_group.html'
@@ -341,7 +345,7 @@
     .when('/reports/stock_store/:depotId', {
       controller : 'stock_store',
       templateUrl : 'partials/reports/stock_store/stock_store.html'
-    })    
+    })
     .when('/reports/purchase_order', {
       controller : 'purchase_order',
       templateUrl : 'partials/reports/purchase_order/purchase_order.html'
@@ -349,7 +353,7 @@
     .when('/reports/donation_confirmation', {
       controller : 'donation_confirmation',
       templateUrl : 'partials/reports/donation_confirmation/donation_confirmation.html'
-    })    
+    })
     .when('/reports/expiring/:option', {
       controller : 'expiring.option',
       templateUrl : 'partials/reports/expiring_stock/expiring_stock_view.html'
@@ -357,7 +361,7 @@
     .when('/reports/stock_movement', {
       controller : 'stock_movement',
       templateUrl : 'partials/reports/stock_movement/stock_movement.html'
-    })    
+    })
     .when('/caution', {
       controller : 'caution',
       templateUrl : 'partials/caution/caution.html'
