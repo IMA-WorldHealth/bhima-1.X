@@ -88,3 +88,12 @@ ALTER TABLE `account`
 ADD FOREIGN KEY (`reference_id`) REFERENCES `reference` (`id`);
 
 
+
+-- Updates table account
+-- Date: 2015-06-10
+-- By: Chris LOMAME
+-- ADD Unit reference_group AND reference_group
+--
+INSERT INTO `unit` VALUES
+('','reference_group','TREE.REFERENCE_GROUP','Reference Group', 30, 0, '/partials/reference_group', '/reports/reference_group/'),
+('','reference','TREE.REFERENCE','Reference', 30, 0, '/partials/reference', '/reports/reference/');
