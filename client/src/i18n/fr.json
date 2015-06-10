@@ -132,8 +132,8 @@
    },
 "AUXILLARY_CASH_RECORD" : {
    "ALL_PROJECTS"    : "Tous les projets",
-   "ALL_USERS"       : "Tous les utilisateurs", 
-   "BY"              : "Par",      
+   "ALL_USERS"       : "Tous les utilisateurs",
+   "BY"              : "Par",
    "CANCEL"          : "Annuler l'operation",
    "CHARGED_AGAINST" : "imputés à",
    "CREDIT_NOTE"     : "Note de Crédit",
@@ -484,6 +484,7 @@
    "PERIOD_ID"             : "ID Période",
    "PERIOD_PAYMENT"        : "Période de paiement",
    "PHONE"                 : "Téléphone",
+   "POSITION"              : "Position",
    "POSTED"                : "Postée",
    "PRICE"                 : "Prix",
    "PRICE_LIST"            : "Liste de Prix",
@@ -2172,8 +2173,8 @@
 "SALERECORD": {
    "ADVANCE"         : "Recherches Avancée",
    "ALL_PROJECTS"    : "Tous les Projets",
-   "ALL_USERS"       : "Tous les utilisateurs", 
-   "BY"              : "Par",  
+   "ALL_USERS"       : "Tous les utilisateurs",
+   "BY"              : "Par",
    "CHARGED_AGAINST" : "imputées contre",
    "CREDIT_NOTE"     : "Annuler vente",
    "GENERATE"        : "Pour créer une facture.",
@@ -2187,6 +2188,18 @@
    "TITLE"           : "Enregistrements des Factures des Patients",
    "TOTAL_OF"        : "Total de",
    "UNFOUND"         : "Aucune transaction des patients trouvée. Référence"
+   },
+
+"SECTION_BILAN" : {
+   "ASSET" : "Actif",
+   "PASSIVE" : "Passif",
+   "NO_SECTION_BILAN" : "Pas de section du bilan",
+   "TITLE"            : "Section bilan",
+   "ALL"              : "Tous les section bilan",
+   "ALERT"            : "Bilan section management",
+   "ADD"              : "Ajouter",
+   "NEW"              : "Nouvelle section bilan",
+   "EDIT"             : "Edition section bilan"
    },
 "SECTOR": {
    "ACTIONS"          : "Actions",
@@ -2764,6 +2777,7 @@
    "ROOT"                      : "Racine",
    "RUBRIC_MANAGEMENT"         : "Gestion des rubriques",
    "SALES"                     : "Facturations",
+   "SECTION_BILAN"             : "Section bilan",
    "SALE_RECORDS"              : "Historique Facturation",
    "SERVICE"                   : "Gestion des Services",
    "SERVICE_EXPLOITATION"      : "Exploitation par Service",
