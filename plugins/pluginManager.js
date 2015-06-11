@@ -7,7 +7,8 @@
  *
 */
 
-var path =  require('path');
+var path =  require('path'),
+    thread = require('child_process');
 
 function PluginManager(cfg) {
   'use strict';
@@ -24,14 +25,14 @@ function PluginManager(cfg) {
   this._onStartup = function () {
     echo('_onStartup Event Fired.');
 
-    // load and map the plugins to their namespaces
     // TODO Should we have a 'priority' tag to determine which happens first?
     // This would result in sorting the array by priority prior to loading it
+
+    // load and map the plugins to their namespaces
     cfg.plugins.forEach(function (plugin) {
       echo('Loading ' + plugin.name);
-      // TODO : Configure plugins to use this interface
-      //var Plug = require(path.join('./server/plugins/', plugin.script));
-      //plugins[plugin.name] = new Plug(plugin.options);
+      plugins[plugin.name] = thread.fork(__dirname + plugin.script);
+      plugins[plugin.name].send(plugin.options);
     });
 
   };
@@ -41,7 +42,7 @@ function PluginManager(cfg) {
   };
 
   // system calls
-  
+
   this.start = function (names) {
     echo('Start Event Fired.');
   };
@@ -60,7 +61,7 @@ function PluginManager(cfg) {
 
   // TODO write safety hatches for accidental
   // process.exit();
-  
+
   this._onStartup();
 }
 
@@ -68,7 +69,7 @@ module.exports = function (app, config) {
   'use strict';
 
   var PM = new PluginManager(config);
-  
+
   // do some other cool stuff
 };
 
