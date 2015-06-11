@@ -28,9 +28,8 @@ var q = require('q'),
 
 // local imports
 var render = require(path.join(__dirname, 'lib/render.js')),
-    query = require(path.join(__dirname, 'lib/query')),
-    sender = require(path.join(__dirname, 'lib/sender')),
-    address = require(path.join(__dirname, 'conf/address_list.json'));
+    mailer = require(path.join(__dirname, 'lib/sender')),
+    addressBook = require(path.join(__dirname, 'conf/address_list.json'));
 
 function MailPlugin(options) {
   'use strict';
@@ -44,23 +43,42 @@ function MailPlugin(options) {
 
   // configure the emails
   this._emails = options.emails || [];
-  this._queue = [];
+  this._timers = [];
   this._configure();
 }
 
 // interpret the cron tasks and schedule them
 MailPlugin.prototype._configure = function () {
-  var schedule;
+  var self = this,
+      schedule;
 
-  this._emails.forEach(function (email) {
+  self._timers = self._emails.map(function (email) {
+
+    // parse the cron task into a scheule
     schedule = later.parse.cron(email.frequency);
-    console.log('email', email);
+
+    // set a timer, which will
+    var timer = later.setInterval(function () {
+      var addresses = addressBook[email.addressList];
+      addresses.forEach(function (contact) {
+        self.send(email.name, contact);
+      });
+    }, schedule);
+
+    return timer;
   });
 };
 
 // renders an email and sends it
-MailPlugin.prototype.send = function () {
+MailPlugin.prototype.send = function (email, contact) {
+  var base = __dirname + email + '/',
+      data = require(base + 'preprocess.js')(contact.language, contact.currency);
 
+  // render the email by templating data into the template
+  var message = render(data.template, data.options);
+
+  // use mailer to send the message
+  mailer(contact, message);
 };
 
 // expose module to the outside world

@@ -13,7 +13,7 @@
                     <tbody>
                       <tr>
                         <td align="right" style="font-size: 12px; color: #a3a3a3;">
-                          {{ this.institution}} | {{ this.date }}
+                          {{ this.text.institution}} | {{ this.text.date }}
                         </td>
                       </tr>
                     </tbody>
@@ -36,7 +36,7 @@
                           <strong style="font-size: 20px; color:#ffffff"><b>{{ this.reportname }} </b></strong>
                         </td>
                         <td align="right" style="line-height: 19px;font-size: 10px; color:#ffffff">
-                          {{ this.uuid }}
+                          {{ this.text.uuid }}
                         </td>
                       </tr>
                     </tbody>
@@ -48,11 +48,11 @@
 
                   <!-- Main content area, headers and sections-->
                   <div style="line-height: 18px; font-size: 16px; color: #c09853; padding: 10px; background-color: #fcf8e3; border: 1px solid #fbeed5; margin-bottom: 5px; margin-top: 5px">
-                    {{ this.info }}
+                    {{ this.text.alert }}
                   </div>
 
                   <div style="line-height: 18px; font-size: 16px; color: #000000; border-bottom: 1px solid #efefef; margin-bottom: 5px; margin-top: 20px">
-                    {{ this.overview }}
+                    {{ this.text.overview }}
                   </div>
 
                   <table cellspacing="0" cellpadding="0" border="0">
@@ -67,46 +67,46 @@
                                   <table cellspacing="0" cellpadding="0" width="600px" align="left" style="border: 1px solid black;">
                                     <thead>
                                       <tr>
-                                        <th style="border-right: 1px solid black;">Rubrics</th>
-                                        <th style="border-right: 1px solid black; padding : 2px">IMCK HBB</th>
-                                        <th>IMCK PAX</th>
+                                        <th style="border-right: 1px solid black;">{{ this.text.rubrics }}</th>
+                                        <th style="border-right: 1px solid black; padding : 2px">{{ this.text.imck }}</th>
+                                        <th>{{ this.text.pax }}</th>
                                       </tr>
                                     </thead>
                                     <tbody>
                                       <tr>
-                                        <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">New Patients</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">10</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">6</td>
+                                        <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.newPatients }}</td>
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.newPatientsHbb }}</td>
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.newPatientsPax</td>
                                       </tr>
                                       <tr>
-                                        <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">Returning Patients</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">7</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">2</td>
+                                        <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.returningPatients }}</td>
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.returningPatientsHbb }}</td>
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.returningPatientsPax }}</td>
                                       </tr>
                                       <tr style='font-weight: bold'>
-                                        <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">Total Patients</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">17</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">8</td>
+                                        <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.totalPatients }}</td>
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.totalPatientsHbb }}</td>
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.totalPatientsPax }}</td>
                                       </tr>
                                       <tr>
-                                        <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">'Nouvelle Fiche' Sales</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">5</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">5</td>
+                                        <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.newFicheSales }}</td>
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.newFicheSalesHbb }}</td>
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.newFicheSalesPax }}</td>
                                       </tr>
                                       <tr>
-                                        <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">'Ancienne Fiche' Sales</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">3</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">1</td>
+                                        <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.oldFicheSales }}</td>
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.oldFicheSalesHbb }}</td>
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.oldFicheSalesPax }}</td>
                                       </tr>
                                       <tr style='font-weight: bold'>
-                                        <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">Total Fiche Sales</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">8</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">6</td>
+                                        <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.totalFicheSales }}</td>
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.totalFicheSalesHbb }}</td>
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.totalFicheSalesPax }}</td>
                                       </tr>
                                       <tr style='font-weight: bold'>
-                                        <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">Total Invoice Transactions</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">30</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">15</td>
+                                        <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.totalInvoiceTransactions }}</td>
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.totalInvoiceTransactionsHbb }}</td>
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.totalInvoiceTransactionsPax }}</td>
                                       </tr>
                                     </tbody>
                                   </table>
@@ -127,8 +127,8 @@
                             <tbody>
                               <tr>
                                 <td style="font-size: 16px; line-height: 17px; padding: 14px 14px 0px 14px;">
-                                  <small style="color: #6fcc35;">HBB Cash Box</small><br><br>
-                                    <strong style='font-size: 18px; color: #686868;'>637.300,00FC</strong> were introduced at the Caisse Aux HBB, paid against a total of <strong style='font-size: 18px; color: #686868;'>21</strong> invoices.
+                                  <small style="color: #6fcc35;">{{ this.text.cashBoxHbb}}</small><br><br>
+                                  {{ this.html.cashBoxHbb}}
                                 </td>
                               </tr>
                             </tbody>
@@ -146,8 +146,8 @@
                             <tbody>
                               <tr>
                                 <td style="font-size: 16px; line-height: 17px; padding: 14px 14px 0px 14px;">
-                                  <small style="color: #6fcc35;">PAX Cash Box</small><br><br>
-                                    <strong style='font-size: 18px; color: #686868;'>71.400,00FC</strong> were introduced at the Caisse Aux PAX, paid against a total of <strong style='font-size: 18px; color: #686868;'>15</strong> invoices.
+                                  <small style="color: #6fcc35;">{{ this.text.cashBoxPax }}</small><br><br>
+                                  {{ this.html.cashBoxPax }}
                                 </td>
                               </tr>
                             </tbody>
@@ -158,7 +158,7 @@
                   </table>
 
                   <div style="line-height: 18px; font-size: 16px; color: #000000; border-bottom: 1px solid #efefef; margin-bottom: 5px; margin-top: 20px">
-                    Principal Cash
+                    {{ this.text.principalCash }}
                   </div>
 
                   <table cellspacing="0" cellpadding="0" border="0">
