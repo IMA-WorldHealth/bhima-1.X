@@ -1,29 +1,77 @@
 {
-    "newPatientsHbb" : "SELECT COUNT(uuid) as \"total\" FROM patient WHERE registration_date >= {{ this.date.from }} AND registration_date <= {{ this.date.to }}AND renewal = 0 AND project_id = 1;",
-    "newPatientsPax" : "SELECT COUNT(uuid) as \"total\" FROM patient WHERE registration_date >= {{ this.date.from }}AND registration_date <= {{ this.date.to }}AND renewal = 0 AND project_id = 2;",
-
-    "HBB_Renewal_Patients" : "SELECT COUNT(uuid) as \"total\" FROM patient WHERE registration_date >= {{ this.date.from }}AND registration_date <= {{ this.date.to }}AND renewal = 1 AND project_id = 1;",
-    "PAX_Renewal_Patients" : "SELECT COUNT(uuid) as \"total\" FROM patient WHERE registration_date >= {{ this.date.from }}AND registration_date <= {{ this.date.to }}AND renewal = 1 AND project_id = 2;",
-
-    "IMA_Total" : "SELECT SUM(t.debit_equiv - t.credit_equiv) as \"total\" FROM (SELECT p.debit_equiv, p.credit_equiv FROM posting_journal as p WHERE p.account_id = 3551 AND trans_date = {{ this.date.from }} UNION ALL SELECT g.debit_equiv, g.credit_equiv FROM general_ledger as g WHERE g.account_id = 3551 AND trans_date={{ this.date.from }}) as t;",
-
-    "IMA_Patients" : "SELECT COUNT(DISTINCT debitor_uuid) as \"total\" FROM sale JOIN sale_subsidy JOIN subsidy JOIN debitor_group WHERE sale.uuid = sale_subsidy.sale_uuid AND sale_subsidy.subsidy_uuid = subsidy.uuid AND subsidy.debitor_group_uuid = debitor_group.uuid AND sale.project_id = 1 AND sale.invoice_date = {{ this.date.from }}AND  debitor_group.uuid = \"25ba37de-3b26-4624-afba-f2ec002da9b8\" AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note);",
-
-    "newFicheSalesHbb" : "SELECT COUNT(sale.uuid) as \"total\" FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020002) AND sale.invoice_date = {{ this.date.from }} AND sale.project_id = 1 AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note);",
-    "newFicheSalesPax" : "SELECT COUNT(sale.uuid) as \"total\" FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020002) AND sale.invoice_date = {{ this.date.from }} AND sale.project_id = 2 AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note);",
-
-    "oldFicheSalesHbb" : "SELECT COUNT(sale.uuid) as \"total\" FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020003) AND sale.invoice_date = {{ this.date.from }}AND sale.project_id = 1 AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note);",
-    "oldFicheSalesPax" : "SELECT COUNT(sale.uuid) as \"total\" FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020003) AND sale.invoice_date = {{ this.date.from }}AND sale.project_id = 2 AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note);",
-
-    "HBB_Basic_Sale" : "SELECT COUNT(uuid) as \"total\" FROM sale WHERE invoice_date = {{ this.date.from }}AND sale.project_id = 1 AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note);",
-    "PAX_Basic_Sale" : "SELECT COUNT(uuid) as \"total\" FROM sale WHERE invoice_date = {{ this.date.from }}AND sale.project_id = 2 AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note);",
-
-    "HBB_Principal_Cash_Income_Expense" : "SELECT SUM(if(currency_id=1,debit_equiv / 930, debit_equiv)) as debit, SUM(if(currency_id=1,credit_equiv / 930, credit_equiv)) as credit FROM (SELECT p.debit_equiv, p.credit_equiv, p.currency_id FROM posting_journal as p WHERE p.account_id IN (2935, 2939) AND p.trans_date ={{ this.date.from }}UNION ALL SELECT g.debit_equiv, g.credit_equiv, g.currency_id FROM general_ledger as g WHERE g.account_id IN (2935, 2939) AND g.trans_date = {{ this.date.from }}) as t;",
-
-    "HBB_Principal_Cash_Balance" : "SELECT SUM(debit_equiv - credit_equiv) as balance FROM posting_journal WHERE account_id IN (2935, 2939) UNION ALL SELECT SUM(debit_equiv - credit_equiv) FROM general_ledger WHERE account_id IN (2935, 2939);",
-
-    "HBB_Sum_Cash" : "SELECT SUM(if(currency_id = 2, cost * 930, cost )) as \"total\" FROM cash WHERE  project_id = 1 AND date={{ this.date.from }}AND uuid NOT IN (SELECT cash_uuid FROM cash_discard);",
-    "PAX_Sum_Cash" : "SELECT SUM(if(currency_id = 2, cost * 930, cost )) as \"total\" FROM cash WHERE  project_id = 2 AND date={{ this.date.from }}AND uuid NOT IN (SELECT cash_uuid FROM cash_discard);",
-    "HBB_Cash_Total_Invoice" : "SELECT COUNT(invoice_uuid) as \"total\" FROM cash join cash_item where cash_item.cash_uuid = cash.uuid AND date = {{ this.date.from }}AND project_id = 1;",
-    "PAX_Cash_Total_Invoice" : "SELECT COUNT(invoice_uuid) as \"total\" FROM cash join cash_item where cash_item.cash_uuid = cash.uuid AND date = {{ this.date.from }}AND project_id = 2;"
+  "newPatientsHbb" : {
+    "query" : "SELECT COUNT(uuid) as \"total\" FROM patient WHERE registration_date >= {{ this.date.from }} AND registration_date <= {{ this.date.to }}AND renewal = 0 AND project_id = 1;",
+    "type" : "number"
+  },
+  "newPatientsPax" : {
+    "query" : "SELECT COUNT(uuid) as \"total\" FROM patient WHERE registration_date >= {{ this.date.from }}AND registration_date <= {{ this.date.to }}AND renewal = 0 AND project_id = 2;",
+    "type" : "number"
+  },
+  "returningPatientsHbb" : {
+    "query" : "SELECT COUNT(uuid) as \"total\" FROM patient WHERE registration_date >= {{ this.date.from }}AND registration_date <= {{ this.date.to }}AND renewal = 1 AND project_id = 1;",
+    "type" : "number"
+  },
+  "returningPatientsPax" : {
+    "query" : "SELECT COUNT(uuid) as \"total\" FROM patient WHERE registration_date >= {{ this.date.from }}AND registration_date <= {{ this.date.to }}AND renewal = 1 AND project_id = 2;",
+    "type": "number"
+  },
+  "ima" : {
+    "subsidy" : {
+      "query" : "SELECT SUM(t.debit_equiv - t.credit_equiv) as \"total\" FROM (SELECT p.debit_equiv, p.credit_equiv FROM posting_journal as p WHERE p.account_id = 3551 AND trans_date = {{ this.date.from }} UNION ALL SELECT g.debit_equiv, g.credit_equiv FROM general_ledger as g WHERE g.account_id = 3551 AND trans_date={{ this.date.from }}) as t;",
+      "type" : "currency",
+      "format" : "USD"
+    },
+    "patients" : {
+      "query" : "SELECT COUNT(DISTINCT debitor_uuid) as \"total\" FROM sale JOIN sale_subsidy JOIN subsidy JOIN debitor_group WHERE sale.uuid = sale_subsidy.sale_uuid AND sale_subsidy.subsidy_uuid = subsidy.uuid AND subsidy.debitor_group_uuid = debitor_group.uuid AND sale.project_id = 1 AND sale.invoice_date = {{ this.date.from }}AND  debitor_group.uuid = \"25ba37de-3b26-4624-afba-f2ec002da9b8\" AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note);",
+      "type" : "number"
+    }
+  },
+  "newFicheSalesHbb" : {
+    "query" : "SELECT COUNT(sale.uuid) as \"total\" FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020002) AND sale.invoice_date = {{ this.date.from }} AND sale.project_id = 1 AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note);",
+    "type" : "number"
+  },
+  "newFicheSalesPax" : {
+    "query" : "SELECT COUNT(sale.uuid) as \"total\" FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020002) AND sale.invoice_date = {{ this.date.from }} AND sale.project_id = 2 AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note);",
+    "type" : "number"
+  },
+  "oldFicheSalesHbb" : {
+    "query" : "SELECT COUNT(sale.uuid) as \"total\" FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020003) AND sale.invoice_date = {{ this.date.from }}AND sale.project_id = 1 AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note);",
+    "type" : "number"
+  },
+  "oldFicheSalesPax" : {
+    "query" : "SELECT COUNT(sale.uuid) as \"total\" FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020003) AND sale.invoice_date = {{ this.date.from }}AND sale.project_id = 2 AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note);",
+    "type" : "number"
+  },
+  "HBB_Basic_Sale" : {
+    "query" : "SELECT COUNT(uuid) as \"total\" FROM sale WHERE invoice_date = {{ this.date.from }}AND sale.project_id = 1 AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note);",
+    "type" : "number"
+  },
+  "PAX_Basic_Sale" : {
+    "query" : "SELECT COUNT(uuid) as \"total\" FROM sale WHERE invoice_date = {{ this.date.from }}AND sale.project_id = 2 AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note);",
+    "type" : "number"
+  },
+  "HBB_Principal_Cash_Income_Expense" : {
+    "query" : "SELECT SUM(if(currency_id=1,debit_equiv / 930, debit_equiv)) as debit, SUM(if(currency_id=1,credit_equiv / 930, credit_equiv)) as credit FROM (SELECT p.debit_equiv, p.credit_equiv, p.currency_id FROM posting_journal as p WHERE p.account_id IN (2935, 2939) AND p.trans_date ={{ this.date.from }}UNION ALL SELECT g.debit_equiv, g.credit_equiv, g.currency_id FROM general_ledger as g WHERE g.account_id IN (2935, 2939) AND g.trans_date = {{ this.date.from }}) as t;",
+    "type" : "number"
+  },
+  "HBB_Principal_Cash_Balance" : {
+    "query" : "SELECT SUM(debit_equiv - credit_equiv) as balance FROM posting_journal WHERE account_id IN (2935, 2939) UNION ALL SELECT SUM(debit_equiv - credit_equiv) FROM general_ledger WHERE account_id IN (2935, 2939);",
+    "type" : "currency"
+  },
+  "HBB_Sum_Cash" : {
+    "query" : "SELECT SUM(if(currency_id = 2, cost * 930, cost )) as \"total\" FROM cash WHERE  project_id = 1 AND date={{ this.date.from }}AND uuid NOT IN (SELECT cash_uuid FROM cash_discard);",
+    "type" : "currency"
+  },
+  "PAX_Sum_Cash" : {
+    "query" : "SELECT SUM(if(currency_id = 2, cost * 930, cost )) as \"total\" FROM cash WHERE  project_id = 2 AND date={{ this.date.from }}AND uuid NOT IN (SELECT cash_uuid FROM cash_discard);",
+    "type" : "currency"
+  },
+  "HBB_Cash_Total_Invoice" : {
+    "query" : "SELECT COUNT(invoice_uuid) as \"total\" FROM cash join cash_item where cash_item.cash_uuid = cash.uuid AND date = {{ this.date.from }}AND project_id = 1;",
+    "type" : "number"
+  },
+  "PAX_Cash_Total_Invoice" : {
+    "query" : "SELECT COUNT(invoice_uuid) as \"total\" FROM cash join cash_item where cash_item.cash_uuid = cash.uuid AND date = {{ this.date.from }}AND project_id = 2;"
+    "type" : "number"
+  }
 }

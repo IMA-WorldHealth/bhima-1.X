@@ -14,6 +14,28 @@ function guid() {
   });
 }
 
+// this function is responsible for templating
+// the sql queries and interpretting currencies properly
+function renderSql(queries, date) {
+  'use strict';
+
+  var dfd = q.defer();
+
+  // calculate the correct date to use for the database queries
+  var dateFrom = '\'' + date.getFullYear() + '-0' + (date.getMonth() + 1) + '-' + date.getDate() + ' 00:00:00\'',
+      dateTo = '\'' + date.getFullYear() + '-0' + (date.getMonth() + 1) + '-' + (date.getDate() + 1)  + ' 00:00:00\'';
+
+
+  var promises = Object.keys(queries).map(function (k) {
+    var sql = render(queries[k].query, { date : { from : dateFrom, to : dateTo } });
+    console.log(sql);
+    return query(sql);
+  });
+
+
+  return dfd.promise;
+}
+
 function preprocess(language) {
   'use strict';
 
@@ -24,42 +46,24 @@ function preprocess(language) {
 
       // since we are running in a separate thread,
       // we can use blocking i/o without regret
-      tpl = fs.readFileSync(base + 'daily.tmpl.html', 'utf8'),
+      tpl = fs.readFileSync(path.join(base, 'daily.tmpl.html'), 'utf8'),
 
       // parse the language file to fill in the text fields in the temaplate
-      text = require(base + language + '.json'),
+      text = require(path.join(base, 'lang', language + '.json')),
 
       // parse the queries that will fill in the data fields in the template
-      queries = require(base + 'queries.json'),
+      queries = require(path.join(base, 'queries.json')),
 
       // get today's date
       date = new Date();
 
-  // calculate the correct date to use for the database queries
-  var dateFrom = '\'' + date.getFullYear() + '-0' + (date.getMonth() + 1) + '-' + date.getDate() + ' 00:00:00\'',
-      dateTo = '\'' + date.getFullYear() + '-0' + (date.getMonth() + 1) + '-' + (date.getDate() + 1)  + ' 00:00:00\'';
-
-  // template dates and execute the database queries
-  var promises = queries.keys().map(function (k) {
-    var sql = render(queries[k], { date : { from : dateFrom, to : dateTo } });
-    return query(sql);
-  });
-
-  // NOTE : This should return items in the correct order.  If anything is strange,
-  // check here.
-  var container = {};
-  q.all(promises)
-  .then(function (results) {
-    queries.keys().forEach(function (key, idx) {
-      container[key] = results[idx];
-    });
-  });
+  // template and execute the sql queries
+  var data = renderSql(queries, date);
 
   var options = {
-    data : container,
+    data : data,
     text : text
   };
-
 }
 
 

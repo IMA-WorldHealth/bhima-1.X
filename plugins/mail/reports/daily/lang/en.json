@@ -33,12 +33,12 @@
   },
   "subsidy" : {
     "heading" : "IMA Subsidy",
-    "content" : "The IMA subsidy was charged a total of <strong style='font-size: 18px; color: #686868;'>{{ }}</strong> enabling <strong style='font-size: 18px; color: #686868;'>%s</strong> patients to receive health care."
+    "content" : "The IMA subsidy was charged a total of <strong style='font-size: 18px; color: #686868;'>{{ this.ima.subsidy }}</strong> enabling <strong style='font-size: 18px; color: #686868;'>{{ this.ima.patients }}</strong> patients to receive health care."
   },
   "principal" : {
     "incomeExpense" : { 
       "heading" : "Income/ Expenditure",
-      "content" : "Today, a value of <strong style='font-size: 18px; color: #686868;'>{{ }}</strong> was recorded as entering the principal cash box; a value of <strong style='font-size: 18px; color: #686868;'>{{ }}</strong> was recorded as expense."
+      "content" : "Today, a value of <strong style='font-size: 18px; color: #686868;'>{{ this.principal }}</strong> was recorded as entering the principal cash box; a value of <strong style='font-size: 18px; color: #686868;'>{{ }}</strong> was recorded as expense."
     },
     "balance" : { 
       "heading" : "Balance", 
