@@ -14,11 +14,10 @@ function guid() {
   });
 }
 
-function preprocess(language, currency) {
+function preprocess(language) {
 
   // default lang and currency
   language = language || 'en';
-  currency = currency || 'USD';
 
   var base = __dirname,
 
@@ -34,12 +33,6 @@ function preprocess(language, currency) {
 
       // get today's date
       date = new Date();
-
-  // render html before templating for language-specific phrasing.
-  var html = {
-    cashBoxImck: '<strong style=\'font-size: 18px; color: #686868;\'>{{ this.data.cashBoxImckMoney }}</strong> were introduced at the Caisse Aux HBB, paid against a total of <strong style=\'font-size: 18px; color: #686868;\'>{{ this.</strong> invoices.',
-    cashBoxPax : '<strong style=\'font-size: 18px; color: #686868;\'>{{ this.data.cashBoxPaxMoney }}</strong> were introduced at the Caisse Aux PAX, paid against a total of <strong style=\'font-size: 18px; color: #686868;\'>15</strong> invoices.'
-  };
 
   // calculate the correct date to use for the database queries
   var dateFrom = '\'' + date.getFullYear() + '-0' + (date.getMonth() + 1) + '-' + date.getDate() + ' 00:00:00\'',

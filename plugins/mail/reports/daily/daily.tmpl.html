@@ -33,7 +33,7 @@
                     <tbody>
                       <tr>
                         <td align="left">
-                          <strong style="font-size: 20px; color:#ffffff"><b>{{ this.reportname }} </b></strong>
+                          <strong style="font-size: 20px; color:#ffffff"><b>{{ this.text.reportname }} </b></strong>
                         </td>
                         <td align="right" style="line-height: 19px;font-size: 10px; color:#ffffff">
                           {{ this.text.uuid }}
@@ -52,7 +52,7 @@
                   </div>
 
                   <div style="line-height: 18px; font-size: 16px; color: #000000; border-bottom: 1px solid #efefef; margin-bottom: 5px; margin-top: 20px">
-                    {{ this.text.overview }}
+                    {{ this.text.header.overview }}
                   </div>
 
                   <table cellspacing="0" cellpadding="0" border="0">
@@ -74,9 +74,9 @@
                                     </thead>
                                     <tbody>
                                       <tr>
-                                        <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.newPatients }}</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.newPatientsHbb }}</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.newPatientsPax</td>
+                                        <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.overview.newPatients }}</td>
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.overview.newPatientsHbb }}</td>
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.overview.newPatientsPax</td>
                                       </tr>
                                       <tr>
                                         <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.returningPatients }}</td>
@@ -158,7 +158,7 @@
                   </table>
 
                   <div style="line-height: 18px; font-size: 16px; color: #000000; border-bottom: 1px solid #efefef; margin-bottom: 5px; margin-top: 20px">
-                    {{ this.text.principalCash }}
+                    {{ this.text.header.principal }}
                   </div>
 
                   <table cellspacing="0" cellpadding="0" border="0">
@@ -169,8 +169,8 @@
                             <tbody>
                               <tr>
                                 <td style="font-size: 16px; line-height: 17px; padding: 14px 14px 0px 14px;">
-                                  <small style="color: #6fcc35;">Income/ Expenditure</small><br><br>
-                                    Today, a value of <strong style='font-size: 18px; color: #686868;'>$1515.24</strong> was recorded as entering the principal cash box; a value of <strong style='font-size: 18px; color: #686868;'>$1667.51</strong> was recorded as expense.
+                                  <small style="color: #6fcc35;">{{ this.text.principalIncomeExpense.heading }}</small><br><br>
+                                    {{ this.text.principalIncomeExpense.content }}
                                 </td>
                               </tr>
                             </tbody>
@@ -188,8 +188,8 @@
                             <tbody>
                               <tr>
                                 <td style="font-size: 16px; line-height: 17px; padding: 14px 14px 0px 14px;">
-                                  <small style="color: #6fcc35;">Balance</small><br><br>
-                                    The balance reported by the principal cash box has a value of <strong style='font-size: 18px; color: #686868;'>$-152.27</strong>.
+                                  <small style="color: #6fcc35;">{{ this.text.section.principalBalance }}</small><br><br>
+                                    {{ this.text.section.principalBalance }}
                                 </td>
                               </tr>
                             </tbody>
@@ -200,7 +200,7 @@
                   </table>
 
                   <div style="line-height: 18px; font-size: 16px; color: #000000; border-bottom: 1px solid #efefef; margin-bottom: 5px; margin-top: 20px">
-                    Accounts
+                    {{ this.text.header.accounts }}
                   </div>
 
                   <table cellspacing="0" cellpadding="0" border="0">
@@ -211,8 +211,8 @@
                             <tbody>
                               <tr>
                                 <td style="font-size: 16px; line-height: 17px; padding: 14px 14px 0px 14px;">
-                                  <small style="color: #6fcc35;">{{ this.subsidy_title }}</small><br><br>
-                                    The IMA subsidy was charged a total of <strong style='font-size: 18px; color: #686868;'>$0.00</strong> enabling <strong style='font-size: 18px; color: #686868;'>0</strong> patients to receive health care.
+                                  <small style="color: #6fcc35;">{{ this.text.section.subsidy.heading }}</small><br><br>
+                                  {{ this.text.section.subsidy.content }}
                                 </td>
                               </tr>
                             </tbody>
