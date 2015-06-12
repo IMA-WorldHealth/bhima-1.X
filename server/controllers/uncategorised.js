@@ -233,10 +233,10 @@ exports.lookupMaxTableId = function (req, res, next) {
 exports.listInExAccounts = function (req, res, next) {
   var enterprise_id = sanitize.escape(req.params.id_enterprise);
   var sql =
-    'SELECT temp.`id`, temp.`account_number`, temp.`account_txt`, account_type.`type`, ' +
+    'SELECT temp.`id`, temp.`account_number`, temp.`account_txt`, temp.`classe`, account_type.`type`, ' +
            'temp.`parent`, temp.`balance`' +  // , temp.`fixed`
     ' FROM (' +
-        'SELECT account.id, account.account_number, account.account_txt, account.account_type_id, ' +
+        'SELECT account.id, account.account_number, account.account_txt, account.classe, account.account_type_id, ' +
                'account.parent, period_total.credit - period_total.debit as balance ' +  // account.fixed,
         'FROM account LEFT JOIN period_total ' +
         'ON account.id=period_total.account_id ' +
@@ -316,7 +316,6 @@ exports.costCenterCost = function (req, res, next) {
     ' AND `account`.`account_type_id` <> 3';
 
   function process(accounts) {
-    console.log('ca donne', accounts);
     if(accounts.length === 0) {return {cost : 0};}
     var availablechargeAccounts = accounts.filter(function(item) {
       return item.account_number.toString().indexOf('6') === 0;
