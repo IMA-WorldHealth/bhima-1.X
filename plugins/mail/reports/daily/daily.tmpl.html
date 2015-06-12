@@ -47,9 +47,11 @@
                 <td bgcolor='#ffffff' style="background-color: #ffffff; padding-top: 5px; padding-left: 12px; padding-right: 12px; padding-bottom: 12px;">
 
                   <!-- Main content area, headers and sections-->
-                  <div style="line-height: 18px; font-size: 16px; color: #c09853; padding: 10px; background-color: #fcf8e3; border: 1px solid #fbeed5; margin-bottom: 5px; margin-top: 5px">
-                    {{ this.text.alert }}
-                  </div>
+                  {{ if (this.text.notices.info) {  }}
+                    <div style="line-height: 18px; font-size: 16px; color: #c09853; padding: 10px; background-color: #fcf8e3; border: 1px solid #fbeed5; margin-bottom: 5px; margin-top: 5px">
+                      {{ this.text.notices.info }}
+                    </div>
+                  {{ } }}
 
                   <div style="line-height: 18px; font-size: 16px; color: #000000; border-bottom: 1px solid #efefef; margin-bottom: 5px; margin-top: 20px">
                     {{ this.text.header.overview }}
@@ -67,7 +69,7 @@
                                   <table cellspacing="0" cellpadding="0" width="600px" align="left" style="border: 1px solid black;">
                                     <thead>
                                       <tr>
-                                        <th style="border-right: 1px solid black;">{{ this.text.rubrics }}</th>
+                                        <th style="border-right: 1px solid black;">{{ this.text.overview.rubrics }}</th>
                                         <th style="border-right: 1px solid black; padding : 2px">{{ this.text.imck }}</th>
                                         <th>{{ this.text.pax }}</th>
                                       </tr>
@@ -127,8 +129,8 @@
                             <tbody>
                               <tr>
                                 <td style="font-size: 16px; line-height: 17px; padding: 14px 14px 0px 14px;">
-                                  <small style="color: #6fcc35;">{{ this.text.cashBoxHbb}}</small><br><br>
-                                  {{ this.html.cashBoxHbb}}
+                                  <small style="color: #6fcc35;">{{ this.text.cash.hbb.heading }}</small><br><br>
+                                  {{ this.text.cash.hbb.content }}
                                 </td>
                               </tr>
                             </tbody>
@@ -146,8 +148,8 @@
                             <tbody>
                               <tr>
                                 <td style="font-size: 16px; line-height: 17px; padding: 14px 14px 0px 14px;">
-                                  <small style="color: #6fcc35;">{{ this.text.cashBoxPax }}</small><br><br>
-                                  {{ this.html.cashBoxPax }}
+                                  <small style="color: #6fcc35;">{{ this.text.cash.pax.heading }}</small><br><br>
+                                  {{ this.text.cash.pax.content }}
                                 </td>
                               </tr>
                             </tbody>
@@ -169,8 +171,8 @@
                             <tbody>
                               <tr>
                                 <td style="font-size: 16px; line-height: 17px; padding: 14px 14px 0px 14px;">
-                                  <small style="color: #6fcc35;">{{ this.text.principalIncomeExpense.heading }}</small><br><br>
-                                    {{ this.text.principalIncomeExpense.content }}
+                                  <small style="color: #6fcc35;">{{ this.text.principal.incomeExpense.heading }}</small><br><br>
+                                    {{ this.text.principal.incomeExpense.content }}
                                 </td>
                               </tr>
                             </tbody>
@@ -188,8 +190,8 @@
                             <tbody>
                               <tr>
                                 <td style="font-size: 16px; line-height: 17px; padding: 14px 14px 0px 14px;">
-                                  <small style="color: #6fcc35;">{{ this.text.section.principalBalance }}</small><br><br>
-                                    {{ this.text.section.principalBalance }}
+                                  <small style="color: #6fcc35;">{{ this.text.principal.balance }}</small><br><br>
+                                    {{ this.text.principal.balance }}
                                 </td>
                               </tr>
                             </tbody>
@@ -211,8 +213,8 @@
                             <tbody>
                               <tr>
                                 <td style="font-size: 16px; line-height: 17px; padding: 14px 14px 0px 14px;">
-                                  <small style="color: #6fcc35;">{{ this.text.section.subsidy.heading }}</small><br><br>
-                                  {{ this.text.section.subsidy.content }}
+                                  <small style="color: #6fcc35;">{{ this.text.subsidy.heading }}</small><br><br>
+                                  {{ this.text.subsidy.content }}
                                 </td>
                               </tr>
                             </tbody>

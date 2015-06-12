@@ -15,6 +15,7 @@ function guid() {
 }
 
 function preprocess(language) {
+  'use strict';
 
   // default lang and currency
   language = language || 'en';
@@ -47,7 +48,8 @@ function preprocess(language) {
   // NOTE : This should return items in the correct order.  If anything is strange,
   // check here.
   var container = {};
-  q.all(promises).then(function (results) {
+  q.all(promises)
+  .then(function (results) {
     queries.keys().forEach(function (key, idx) {
       container[key] = results[idx];
     });
