@@ -27,9 +27,10 @@ var q = require('q'),
     later = require('later');
 
 // local imports
-var render = require(path.join(__dirname, 'lib/render.js')),
-    mailer = require(path.join(__dirname, 'lib/sender')),
-    addressBook = require(path.join(__dirname, 'conf/address_list.json'));
+var render = require(path.join(__dirname, 'lib/render')),
+    mailer = require(path.join(__dirname, 'lib/mailer')),
+    archiver = require(path.join(__dirname, 'lib/archiver')),
+    addressBook = require(path.join(__dirname, 'addresses/list.json'));
 
 function MailPlugin(options) {
   'use strict';
@@ -70,15 +71,21 @@ MailPlugin.prototype._configure = function () {
 };
 
 // renders an email and sends it
+// TODO - we should namespace by mailing list
 MailPlugin.prototype.send = function (email, contact) {
   var base = __dirname + email + '/',
-      data = require(base + 'preprocess.js')(contact.language, contact.currency);
+      data = require(base + 'preprocess.js')(contact.language),
+      date = new Date();
 
   // render the email by templating data into the template
   var message = render(data.template, data.options);
 
   // use mailer to send the message
-  mailer(contact, message);
+  mailer(contact, message, date)
+  .then(function () {
+    archiver(contact.name, message, date);
+  })
+  .done();
 };
 
 // expose module to the outside world

@@ -50,6 +50,7 @@ function archiver(name, template, date) {
   gzip(template, function (err, gz) {
     if (err) {
       console.error('[Archiver]', 'Something terrible happened');
+      return;
     }
     fs.writeFileSync(fname, gz);
   });
