@@ -2,24 +2,20 @@
 *.swo
 *.swn
 .idea/
-#*.min.js
 *.min.css
-log.*
 
+# ignore npm modules
 node_modules/
 test/reports/
 server/sql/backup/
-server/plugins/mail/out/
 
-#Ignore build
+# ignore gulp build
 client/dest/
 
 /*client/js/controllers/*/
 /*client/src/js/controllers/*/
 
 misc/migrate/out/
-
-server/plugins/mail/conf/address_list.json
 utilities/migrate/*
 
 # ignore build tool generated files
@@ -30,7 +26,8 @@ utilities/migrate/*
 # ignore log files
 *.log
 /symmetric/*
-/log.html
+log.*
+log.html
 
 # ignore latex files
 *.pdf
@@ -40,3 +37,7 @@ utilities/migrate/*
 *.lot
 *.toc
 *.out
+
+# ignore plugin configs
+plugins/mail/addresses/*
+
