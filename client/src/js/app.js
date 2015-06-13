@@ -341,7 +341,7 @@
     .when('/reports/stock_store/:depotId', {
       controller : 'stock_store',
       templateUrl : 'partials/reports/stock_store/stock_store.html'
-    })    
+    })
     .when('/reports/purchase_order', {
       controller : 'purchase_order',
       templateUrl : 'partials/reports/purchase_order/purchase_order.html'
@@ -349,7 +349,7 @@
     .when('/reports/donation_confirmation', {
       controller : 'donation_confirmation',
       templateUrl : 'partials/reports/donation_confirmation/donation_confirmation.html'
-    })    
+    })
     .when('/reports/expiring/:option', {
       controller : 'expiring.option',
       templateUrl : 'partials/reports/expiring_stock/expiring_stock_view.html'
@@ -357,7 +357,7 @@
     .when('/reports/stock_movement', {
       controller : 'stock_movement',
       templateUrl : 'partials/reports/stock_movement/stock_movement.html'
-    })    
+    })
     .when('/caution', {
       controller : 'caution',
       templateUrl : 'partials/caution/caution.html'
@@ -741,6 +741,10 @@
       prefix: '/i18n/',
       suffix: '.json'
     });
+
+    // use angular's $sanitize to parse HTML and prevent HTML injects
+    // ref: http://angular-translate.github.io/docs/#/guide/19_security
+    $translateProvider.useSanitizeValueStrategy('sanitize');
 
     //TODO Try and assign the previous sessions language key here
     $translateProvider.preferredLanguage('fr');
