@@ -10,22 +10,24 @@ var path = require('path'),
     cp = require('child_process'),
     q = require('q');
 
+
 // promisify the exec command
 function exec(command) {
   'use strict';
 
-  var deferred = q.defer();
+  var dfd = q.defer();
 
   cp.exec(command, function (error, result) {
-    if (error) { return deferred.reject(error); }
-    deferred.resolve(result);
+    if (error) { return dfd.reject(error); }
+    dfd.resolve(result);
   });
 
-  return deferred.promise;
+  return dfd.promise;
 }
 
 
-function mailer(contact, message, date) {
+// list provides a namespace for the message
+function mailer(list, contact, message, date) {
   'use strict';
 
   var timestamp = new Date(),
@@ -36,7 +38,7 @@ function mailer(contact, message, date) {
   }
 
   // compile a reference to the email
-  reference = path.join(__dirname, '../queue/', contact.address + ' ' + timestamp.toLocaleTimeString());
+  reference = path.join(__dirname, '../queue/', list + '-' + contact.name + '-' + timestamp.toLocaleTimeString());
 
   // first, write the email to the queue
   fs.writeFileSync(reference, message, 'utf8');
@@ -46,14 +48,12 @@ function mailer(contact, message, date) {
     ' < ' + reference;
 
   // send the email
-  exec(command)
+  return exec(command)
   .then(function () {
+    console.log('Mail sent! Removing file');
 
     // on successful completion, remove the file
     fs.unlinkSync(reference);
-  })
-  .catch(function (error) {
-    throw error;
   });
 }
 

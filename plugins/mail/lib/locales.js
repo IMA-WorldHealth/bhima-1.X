@@ -21,25 +21,6 @@ var locales = {
   }
 };
 
-function currencyFC(value) {
-  var symbol = 'FC',
-      separator = '.',
-      decimal = ',';
-
-  var decimalDigits, template;
-
-  // from application filter.js
-  value = (value || 0).toFixed(2);
-  decimalDigits = value.slice(value.indexOf('.')+1, value.indexOf('.') + 3);
-
-  if (decimalDigits) { value = value.slice(0, value.indexOf('.')); }
-  template = value.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1'+separator);
-  template += decimal + decimalDigits + symbol;
-
-  return template;
-
-}
-
 // expects a number and a language ('en' || 'fr')
 exports.currency = function currency(value, locale) {
   'use strict';
@@ -56,7 +37,7 @@ exports.currency = function currency(value, locale) {
   value = (value || 0).toFixed(2);
 
   // digits after decimal
-  digits = value.slice(value.indexof('.') + 1, value.indexOf('.') + 3);
+  digits = value.slice(value.indexOf('.') + 1, value.indexOf('.') + 3);
 
   if (digits) {
     value = value.slice(0, value.indexOf('.'));
@@ -66,7 +47,7 @@ exports.currency = function currency(value, locale) {
 
   // make sure the currency is correctly aligned
   if (properties.alignment == 'right') {
-    template = properties.decimal + digits + properties.symbol;
+    template += properties.decimal + digits + properties.symbol;
   } else {
     template = properties.symbol + template;
     template += properties.decimal + digits;

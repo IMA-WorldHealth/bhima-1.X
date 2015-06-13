@@ -62,7 +62,7 @@ MailPlugin.prototype._configure = function () {
     var timer = later.setInterval(function () {
       var addresses = addressBook[email.addressList];
       addresses.forEach(function (contact) {
-        self.send(email.name, contact);
+        self.send(email.addressList, email.name, contact);
       });
     }, schedule);
 
@@ -71,8 +71,7 @@ MailPlugin.prototype._configure = function () {
 };
 
 // renders an email and sends it
-// TODO - we should namespace by mailing list
-MailPlugin.prototype.send = function (email, contact) {
+MailPlugin.prototype.send = function (list, email, contact) {
   var base = __dirname + email + '/',
       data = require(base + 'preprocess.js')(contact.language),
       date = new Date();
@@ -81,9 +80,12 @@ MailPlugin.prototype.send = function (email, contact) {
   var message = render(data.template, data.options);
 
   // use mailer to send the message
-  mailer(contact, message, date)
+  mailer(list, contact, message, date)
   .then(function () {
-    archiver(contact.name, message, date);
+    archiver(list + '-' + contact.name, message, date);
+  })
+  .catch(function (err) {
+    throw err;
   })
   .done();
 };
