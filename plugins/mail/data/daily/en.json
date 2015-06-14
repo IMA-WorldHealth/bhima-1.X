@@ -1,3 +1,4 @@
+/* jshint quotmark:false */
 {
   "Header" : {
     "overview" : "Overview",
@@ -18,7 +19,7 @@
   "Section" : {
     "registration" : {
       "heading" : "Patient Registration",
-      "content" : "Today, %s patients were registered; %s patients new to the hospital, and %s returning."
+      "content" : "Today, {{ this.queries.newPatientsHbb }} patients were registered; {{ this.queries.newPatientsHbb }} patients new to the hospital, and {{ this.queries.returningPatientsHbb }} returning."
     },
     "cash_hbb" : {
       "heading" : "HBB Cash Box",

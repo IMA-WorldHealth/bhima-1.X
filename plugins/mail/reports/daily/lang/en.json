@@ -1,3 +1,4 @@
+/* jshint quotmark:false */
 {
   "institution" : "IMCK",
   "header"         : {
@@ -19,16 +20,16 @@
   },
   "registration" : {
     "heading" : "Patient Registration",
-    "content" : "Today, %s patients were registered; %s patients new to the hospital, and %s returning."
+    "content" : "Today, {{ this.queries.newPatientsHbb + this.queries.returningPatientsHbb }} patients were registered; {{ this.queries.newPatientsHbb }} patients new to the hospital, and {{ this.queries.returningPatientsHbb }} returning."
   },
   "cash" : {
     "hbb" : {
       "heading" : "HBB Cash Box",
-      "content" : "%s were introduced at the Caisse Aux HBB, paid against a total of %s invoices."
+      "content" : "{{ this.queries.auxCashHbb }} were introduced at the Caisse Aux HBB, paid against a total of {{ this.queries.auxCashTotalInvoiceHbb }} invoices."
     },
     "pax" : {
       "heading" : "PAX Cash Box",
-      "content" : "%s were introduced at the Caisse Aux PAX, paid against a total of %s invoices."
+      "content" : "{{ this.queries.auxCashPax }} were introduced at the Caisse Aux PAX, paid against a total of {{ this.queries.auxCashTotalInvoicePax }} invoices."
     }
   },
   "subsidy" : {
@@ -36,12 +37,12 @@
     "content" : "The IMA subsidy was charged a total of <strong style='font-size: 18px; color: #686868;'>{{ this.ima.subsidy }}</strong> enabling <strong style='font-size: 18px; color: #686868;'>{{ this.ima.patients }}</strong> patients to receive health care."
   },
   "principal" : {
-    "incomeExpense" : { 
+    "incomeExpense" : {
       "heading" : "Income/ Expenditure",
       "content" : "Today, a value of <strong style='font-size: 18px; color: #686868;'>{{ this.principal }}</strong> was recorded as entering the principal cash box; a value of <strong style='font-size: 18px; color: #686868;'>{{ }}</strong> was recorded as expense."
     },
-    "balance" : { 
-      "heading" : "Balance", 
+    "balance" : {
+      "heading" : "Balance",
       "content" : "The balance reported by the principal cash box has a value of <strong style='font-size: 18px; color: #686868;'>{{ this.data.balance }}</strong>."
     }
   },

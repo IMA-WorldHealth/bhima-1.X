@@ -57,8 +57,8 @@ exports.currency = function currency(value, locale) {
 };
 
 
+// TODO - make number rendering abide by country conventions
 exports.number = function number(value, locale) {
   'use strict';
-
-  console.log('TODO');
+  return value;
 };
