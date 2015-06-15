@@ -38,11 +38,11 @@ Contributor Tips & Tricks
 Some helpful tips for code organization:
 
 1) Pick a good branch name for clarity.  Below are some examples of good naming schemes.
- - `features/patient-discharge-form`  # implements a new feature for a patient discharge
- - `patches/fiscal-year-transfer`     # adds in missing (but intended) functionality transfering budgets between fiscal years
- - `fixes/posting-journal-bug-1193`   # fixes bug #1193 in the posting ouranl
- - `docs/budget-documentation`        # adds in documentation for the budgeting module
+ - `features/patient-discharge-form`   implements a new feature for a patient discharge
+ - `patches/fiscal-year-transfer`      adds in missing (but intended) functionality transfering budgets between fiscal years
+ - `fixes/posting-journal-bug-1193`    fixes bug #1193 in the posting ouranl
+ - `docs/budget-documentation`         adds in documentation for the budgeting module
 
 2) Include `fix {#}`, `fixes {#}` in your git commits to link issues.  Link issues to pull requests
 to track progress.  Examples can be seen [here](https://github.com/jmcameron/bhima/commit/c5441fdf0246ca3b3efa63786064751974971777)
-and [here])(https://github.com/IMA-WorldHealth/bhima/issues/306).
+and [here](https://github.com/IMA-WorldHealth/bhima/issues/306)).
