@@ -28,8 +28,6 @@ exports.currency = function currency(value, locale) {
   var properties = locales[locale],
       digits, template;
 
-  console.log('locale', locale);
-
   if (!properties) {
     throw new Error('Locality %s not supported'.replace('%s', locale));
   }
@@ -53,8 +51,6 @@ exports.currency = function currency(value, locale) {
     template = properties.symbol + template;
     template += properties.decimal + digits;
   }
-
-  console.log('Rendered:', template);
 
   return template;
 };

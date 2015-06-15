@@ -1,4 +1,3 @@
-/* jshint quotmark:false */
 {
   "Header" : {
     "overview" : "Overview",
@@ -34,8 +33,8 @@
       "content" : "The IMA subsidy was charged a total of %s enabling %s patients to receive health care."
     },
     "principal_income_expense" : { 
-      "heading" : "Income/ Expenditure",
-      "content" : "Today, a value of %s was recorded as entering the principal cash box; a value of %s was recorded as expense."
+      "heading" : "Income / Expenditure",
+      "content" : "Today, a value of {{ this.queries.principalCashIncomeHbb }} was recorded as entering the principal cash box; a value of {{ this.queries.principalCashExpenseHbb }} was recorded as expense."
     },
     "principal_balance" : { 
       "heading" : "Balance", 

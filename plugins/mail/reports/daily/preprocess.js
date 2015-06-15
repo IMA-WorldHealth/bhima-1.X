@@ -1,5 +1,14 @@
-// preprocessor for daily template
-
+/**
+ * Preprocessor for the daily report template.
+ *
+ * This script is responsible to doing the follow items:
+ *  1) Interpretting the date into MySQL format
+ *  2) Templating the date into queries.json and executing them
+ *  3) Using locales.js to interpret the result of executing queries.json
+ *  4) Template the results into the {lang}.json template
+ *  5) Template the result from {lang}.json and queries.json in to
+ *     the dialy.tmpl.html file
+ */
 var fs = require('fs'),
     path = require('path'),
     q = require('q'),
@@ -7,7 +16,7 @@ var fs = require('fs'),
     locales = require(path.join(__dirname, '../../lib/locales')),
     render = require(path.join(__dirname, '../../lib/render'));
 
-function guid() {
+function guid() { // v4
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
     var r = Math.random() * 16 | 0,
     v = c === 'x' ? r : (r & 0x3 | 0x8);
@@ -15,7 +24,9 @@ function guid() {
   });
 }
 
-// this function is rfe
+// this function will template and execute a query.
+// it then translates based on the local and caches
+// the result in data.result
 function renderQuery(tpl, data) {
   var sql = render(tpl.query, data),
       dfd = q.defer();
@@ -24,8 +35,7 @@ function renderQuery(tpl, data) {
   .then(function (rows) {
     var res = rows[0];
 
-    console.log(res);
-
+    // format to locality
     if (tpl.type === 'currency') {
       tpl.result = locales.currency(res.total, tpl.format);
     } else {
@@ -38,6 +48,23 @@ function renderQuery(tpl, data) {
   .done();
 
   return dfd.promise;
+}
+
+// takes in an object of templates
+function templateRecurse(templates, data) {
+  for (var key in templates) {
+    if (typeof templates[key] === 'object' && templates[key] !== null) {
+
+      // recurse
+      templateRecurse(templates[key], data);
+    } else {
+
+      // we have something to render!
+      templates[key] = render(templates[key], data); 
+    }
+  }
+
+  return templates;
 }
 
 function preprocess(language) {
@@ -72,12 +99,23 @@ function preprocess(language) {
   // execute all the queries and render them
   q.all(promises)
   .then(function (data) {
-    console.log(data);
+    var datas = {};
+
+    // restash into an object and template the text
+    Object.keys(queries).forEach(function (key, idx) {
+      datas[key] = data[idx].result;
+    });
+
+    // try templating
+    var texts = templateRecurse(text, {queries: datas});
 
     var options = {
-      data : data,
-      text : text
+      data : datas,
+      text : texts
     };
+
+    var rendered  = render(tpl, options);
+    console.log(rendered);
 
   })
   .catch(console.error)

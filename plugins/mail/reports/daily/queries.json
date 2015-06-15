@@ -48,8 +48,13 @@
     "query" : "SELECT COUNT(uuid) as \"total\" FROM sale WHERE invoice_date = {{ this.date.from }}AND sale.project_id = 2 AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note);",
     "type" : "number"
   },
-  "principalCashIncomeExpenseHbb" : {
-    "query" : "SELECT SUM(if(currency_id=1,debit_equiv / 930, debit_equiv)) - SUM(if(currency_id=1,credit_equiv / 930, credit_equiv)) as \"total\" FROM (SELECT p.debit_equiv, p.credit_equiv, p.currency_id FROM posting_journal as p WHERE p.account_id IN (2935, 2939) AND p.trans_date = {{ this.date.from }} UNION ALL SELECT g.debit_equiv, g.credit_equiv, g.currency_id FROM general_ledger as g WHERE g.account_id IN (2935, 2939) AND g.trans_date = {{ this.date.from }}) as t;",
+  "principalCashExpenseHbb" : {
+    "query" : "SELECT SUM(if(currency_id=1,credit_equiv / 930, credit_equiv)) as \"total\" FROM (SELECT p.debit_equiv, p.credit_equiv, p.currency_id FROM posting_journal as p WHERE p.account_id IN (2935, 2939) AND p.trans_date = {{ this.date.from }} UNION ALL SELECT g.debit_equiv, g.credit_equiv, g.currency_id FROM general_ledger as g WHERE g.account_id IN (2935, 2939) AND g.trans_date = {{ this.date.from }}) as t;",
+    "type" : "currency",
+    "format" : "fr"
+  },
+  "principalCashIncomeHbb" : {
+    "query" : "SELECT SUM(if(currency_id=1,debit_equiv / 930, debit_equiv)) as \"total\" FROM (SELECT p.debit_equiv, p.credit_equiv, p.currency_id FROM posting_journal as p WHERE p.account_id IN (2935, 2939) AND p.trans_date = {{ this.date.from }} UNION ALL SELECT g.debit_equiv, g.credit_equiv, g.currency_id FROM general_ledger as g WHERE g.account_id IN (2935, 2939) AND g.trans_date = {{ this.date.from }}) as t;",
     "type" : "currency",
     "format" : "fr"
   },
