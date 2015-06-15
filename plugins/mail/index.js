@@ -31,9 +31,12 @@ var render = require(path.join(__dirname, 'lib/render')),
     mailer = require(path.join(__dirname, 'lib/mailer')),
     archiver = require(path.join(__dirname, 'lib/archiver')),
     query = require(path.join(__dirname,'lib/query')),
-    util = require(path.join(__dirname, 'lib/util')),
     locales = require(path.join(__dirname,'lib/locales')),
-    addressBook = require(path.join(__dirname, 'addresses/list.json'));
+    util = require(path.join(__dirname, 'lib/util')),
+
+    // email addresses
+    addressBook = require(path.join(__dirname, 'addresses/list.json')),
+    contacts = require(path.join(__dirname, 'addresses/contacts.json'));
 
 function MailPlugin(options) {
   'use strict';
@@ -68,7 +71,7 @@ MailPlugin.prototype._configure = function () {
     var timer = later.setInterval(function () {
       var addresses = addressBook[email.addressList];
       addresses.forEach(function (contact) {
-        self.send(email.addressList, email.name, contact, new Date());
+        self.send(email.addressList, email.name, contacts[contact], new Date());
       });
     }, schedule);
 
@@ -78,6 +81,7 @@ MailPlugin.prototype._configure = function () {
 
 // renders an email and sends it to a given contact
 MailPlugin.prototype.send = function (list, email, contact, date) {
+
   var base = path.join(__dirname, 'reports', email),
       queries = require(path.join(base,  'queries.json')),
       text = require(path.join(base, 'lang', contact.language + '.json')),
@@ -97,7 +101,7 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
         template = queries[k],
 
         // template the sql query with correct dates
-        sql = render(template, { date : { to : dateTo, from : dateFrom }});
+        sql = render(template.query, { date : { to : dateTo, from : dateFrom }});
 
     // execute the templated query
     query(sql)
@@ -138,13 +142,17 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
     });
 
     // now, we want to render the language file
-    templatedText = util.recurse(text, function (node, key) {
-      node[key] = render(node[key], data);
+    // util.map() applies the function provided recursively
+    // to all non-object values in the object
+    templatedText = util.map(text, function (content) {
+      return render(content, { queries : data });
     });
-
 
     // collate data and text for email templating
     options = {
+      date : dateTo,
+      reportname : email,
+      uuid : util.uuid(),
       data : data,
       text : templatedText
     };

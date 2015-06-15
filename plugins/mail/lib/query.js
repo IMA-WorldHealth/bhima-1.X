@@ -19,10 +19,9 @@ var connection = mysql.createConnection({
   database : cfg.db.database
 });
 
-
+// provide a promise-based query interface
 function query(sql, data) {
   'use strict';
-
   var dfd = q.defer();
 
   connection.query(sql, data, function (err, res) {

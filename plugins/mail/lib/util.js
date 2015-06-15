@@ -14,19 +14,21 @@ function uuid() {
 
 // recurively loops through an object (tree), applying the
 // function fn to each value in the tree.
-function recurse(object, fn) {
+function umap(object, fn) {
   for (var key in object) {
     if (typeof object[key] === 'object' && object[key] !== null) {
 
       // descend a level
-      recurse(object[key], fn);
+      umap(object[key], fn);
     } else {
 
       // apply the function
-      fn(object, key);
+      object[key] = fn(object[key]);
     }
   }
+
+  return object;
 }
 
 exports.uuid = uuid;
-exports.recurse = recurse;
+exports.map = umap;

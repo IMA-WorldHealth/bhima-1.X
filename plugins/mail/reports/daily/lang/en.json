@@ -1,5 +1,7 @@
 {
   "institution" : "IMCK",
+  "imck" : "IMCK",
+  "pax" : "PAX",
   "header"         : {
     "overview"     : "Overview",
     "accounts"     : "Accounts",

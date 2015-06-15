@@ -4,14 +4,19 @@ Bhima Mail Plugin
 Introduction
 ------------
 
-The mail plugin allows for customized reports to be emailed on a regular basis.
+The mail plugin allows for customized reports to be emailed on a regular basis.  It is designed to have modular reports
+added to it, and easily configured and scheduled via config files.
 
 ### Dependencies
 
 To run, the mail plugin must have `q` and `later` installed.   Both are available via npm: `npm install q later`.  By default
 `q` is installed with bhima.
 
-### Organization
+### Lifecycle
+
+The 
+
+### Folder organization
 
 The mail plugin is organized in a modular fashion to be realtively stand-alone.  Like all plugins, it is
 meant to be run as a child process via the bhima plugin manager.  A breakdown of the components is as
@@ -35,7 +40,6 @@ reports/              # email reports are specified in individual folders here
     lang/             # contains i18n JSONs
       - en.json       # english text
       - fr.json       # french text
-    - preprocess.js   # processing logic to render the template, including currency conversion and i18n
     - queries.json    # database queries required for this report.
 ```
 
@@ -49,6 +53,10 @@ Each email report must be self-contained, with the idea that the mail plugin wit
 script to generate the HTML template before passing it along to the email sending client.  The benefit
 of having to call this preprocessing script for each email is that new reports can be dropped in simply
 by copying a file folder and modifying the `plugins` section of the server configuration file.
+
+### Developing new reports
+
+All emails are defined in the `reports/`
 
 ### LICENSE
 
