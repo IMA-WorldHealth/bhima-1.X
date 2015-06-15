@@ -30,20 +30,18 @@ var config = {
     'script' : '/mail/index.js',
     'options' : {
       'emails' : [{
-        'name' : 'Daily Financial Report',
-        'frequency' : '0 23 * * *',
-        'addressList' : 'developers',
-        'template' : '/tmpl/daily.tmpl.html'
+        'name' : 'daily',
+        //'frequency' : '0 23 * * *',
+        'frequency' : '*/3 * * * *', // every 3 minutes
+        'addressList' : 'test',
       }, {
-        'name' : 'Weekly Financial Report',
+        'name' : 'weekly',
         'frequency' : '0 0 * * 5',
-        'addressList' : 'developers',
-        'template' : '/tmpl/weekly.tmpl.html'
+        'addressList' : 'developers'
       }, {
-        'name' : 'Monthly Financial Report',
+        'name' : 'monthly',
         'frequency' : '0 0 1 * *',
-        'addressList' : 'developers',
-        'template' : '/tmpl/monthly.tmpl.html'
+        'addressList' : 'developers'
       }]
     }
   }],
