@@ -4,6 +4,7 @@ var fs = require('fs'),
     path = require('path'),
     q = require('q'),
     query = require(path.join(__dirname, '../../lib/query')),
+    locales = require(path.join(__dirname, '../../lib/locales')),
     render = require(path.join(__dirname, '../../lib/render'));
 
 function guid() {
@@ -14,24 +15,27 @@ function guid() {
   });
 }
 
-// this function is responsible for templating
-// the sql queries and interpretting currencies properly
-function renderSql(queries, date) {
-  'use strict';
+// this function is rfe
+function renderQuery(tpl, data) {
+  var sql = render(tpl.query, data),
+      dfd = q.defer();
 
-  var dfd = q.defer();
+  query(sql)
+  .then(function (rows) {
+    var res = rows[0];
 
-  // calculate the correct date to use for the database queries
-  var dateFrom = '\'' + date.getFullYear() + '-0' + (date.getMonth() + 1) + '-' + date.getDate() + ' 00:00:00\'',
-      dateTo = '\'' + date.getFullYear() + '-0' + (date.getMonth() + 1) + '-' + (date.getDate() + 1)  + ' 00:00:00\'';
+    console.log(res);
 
+    if (tpl.type === 'currency') {
+      tpl.result = locales.currency(res.total, tpl.format);
+    } else {
+      tpl.result = res.total;
+    }
 
-  var promises = Object.keys(queries).map(function (k) {
-    var sql = render(queries[k].query, { date : { from : dateFrom, to : dateTo } });
-    console.log(sql);
-    return query(sql);
-  });
-
+    dfd.resolve(tpl);
+  })
+  .catch(dfd.reject)
+  .done();
 
   return dfd.promise;
 }
@@ -57,14 +61,28 @@ function preprocess(language) {
       // get today's date
       date = new Date();
 
-  // template and execute the sql queries
-  var data = renderSql(queries, date);
 
-  var options = {
-    data : data,
-    text : text
-  };
+  var dateFrom = '\'' + date.getFullYear() + '-0' + (date.getMonth() + 1) + '-' + date.getDate() + ' 00:00:00\'',
+      dateTo = '\'' + date.getFullYear() + '-0' + (date.getMonth() + 1) + '-' + (date.getDate() + 1)  + ' 00:00:00\'';
+
+  var promises = Object.keys(queries).map(function (k) {
+    return renderQuery(queries[k], { date : { to : dateTo, from : dateFrom }});
+  });
+
+  // execute all the queries and render them
+  q.all(promises)
+  .then(function (data) {
+    console.log(data);
+
+    var options = {
+      data : data,
+      text : text
+    };
+
+  })
+  .catch(console.error)
+  .done();
+
 }
-
 
 module.exports = preprocess;

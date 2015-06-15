@@ -8,13 +8,13 @@
 
 var locales = {
   'en' : {
-    symbol    : '$',
+    symbol    : '$ ',
     separator : ',',
     decimal   : '.',
     alignment : 'left'
   },
   'fr' : {
-    symbol    : 'FC',
+    symbol    : ' FC',
     separator : '.',
     decimal   : ',',
     alignment : 'right'
@@ -28,10 +28,11 @@ exports.currency = function currency(value, locale) {
   var properties = locales[locale],
       digits, template;
 
+  console.log('locale', locale);
+
   if (!properties) {
     throw new Error('Locality %s not supported'.replace('%s', locale));
   }
-
 
   // convert value to string
   value = (value || 0).toFixed(2);
@@ -52,6 +53,8 @@ exports.currency = function currency(value, locale) {
     template = properties.symbol + template;
     template += properties.decimal + digits;
   }
+
+  console.log('Rendered:', template);
 
   return template;
 };
