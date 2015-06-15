@@ -1,3 +1,4 @@
 {
-  "developers" : ["Steven Fountain", "Jonathan Niles", "Dedrick Kitamuka"]
+  "developers" : ["Steven Fountain", "Jonathan Niles", "Dedrick Kitamuka"],
+  "test" : ["Jonathan Niles"]
 }

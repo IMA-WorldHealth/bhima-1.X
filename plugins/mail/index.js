@@ -38,7 +38,7 @@ var render = require(path.join(__dirname, 'lib/render')),
 function MailPlugin(options) {
   'use strict';
 
-  console.log('Configuring MailPlugin ...');
+  console.log('Configuring bhima-plugin-mail ...');
 
   options =  options || {};
 
@@ -61,6 +61,9 @@ MailPlugin.prototype._configure = function () {
     // parse the cron task into a scheule
     schedule = later.parse.cron(email.frequency);
 
+
+    console.log('Scheduling timer for:', email.name);
+
     // set a timer, which will
     var timer = later.setInterval(function () {
       var addresses = addressBook[email.addressList];
@@ -75,10 +78,10 @@ MailPlugin.prototype._configure = function () {
 
 // renders an email and sends it to a given contact
 MailPlugin.prototype.send = function (list, email, contact, date) {
-  var base = __dirname + email + '/',
+  var base = path.join(__dirname, 'reports', email),
       queries = require(path.join(base,  'queries.json')),
       text = require(path.join(base, 'lang', contact.language + '.json')),
-      tpl = fs.readFileSync(path.join(base, 'daily.tmpl.html'), 'utf8'),
+      tpl = fs.readFileSync(path.join(base, email + '.tmpl.html'), 'utf8'),
       message;
 
   // convert date into a database-friendly date

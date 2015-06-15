@@ -67,9 +67,6 @@ function PluginManager(cfg) {
 
 module.exports = function (app, config) {
   'use strict';
-
   var PM = new PluginManager(config);
-
-  // do some other cool stuff
 };
 

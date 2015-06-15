@@ -30,6 +30,8 @@ function exec(command) {
 function mailer(list, contact, message, date) {
   'use strict';
 
+  console.log('[mailer]', 'Sending a message!');
+
   var timestamp = new Date(),
       command, reference;
 
