@@ -519,6 +519,7 @@
    "SALE_ID"               : "Sale ID",
    "SALE_PRICE"            : "Sale Price",
    "SCOPE"                 : "Scope",
+   "SECTION_RESULT"        : "Section result",   
    "SEPARATOR"             : "Separator",
    "SERVICE"               : "Service",
    "SEX"                   : "Sex",
@@ -2050,26 +2051,26 @@
    "ALERT"          : "Reference management module is a module that has been designed to allow administration of existing References within the organization, the table is left to record, to update the attributes of a Reference and the deletion.",
    "CONFIRM"        : "Are you sure you want to delete this Reference",
    "DELETE_SUCCESS" : "Deleted successfully",
-   "NEW_GRADE"      : "New Reference",
-   "NO_GRADES"      : "No Reference have been registered.",
+   "NEW_REFERENCE"  : "New Reference",
+   "NO_REFERENCES"  : "No Reference have been registered.",
    "REGISTERED"     : "Registered References",
    "SAVE_SUCCES"    : "Successfully saving Reference",
    "TITLE"          : "Reference management",
    "UPDATE_SUCCES"  : "Updated successfully",
-   "UPD_GRADE"      : "Update Reference"
+   "UPD_REFERENCE"  : "Update Reference"
    },
 "REFERENCE_GROUP": {
    "ADD"            : "Add a Reference Group",
    "ALERT"          : "Reference Group management module is a module that has been designed to allow administration of existing Reference Group within the organization, the table is left to record, to update the attributes of a Reference Group and the deletion.",
    "CONFIRM"        : "Are you sure you want to delete this Reference Group",
    "DELETE_SUCCESS" : "Deleted successfully",
-   "NEW_GRADE"      : "New Reference Group",
-   "NO_GRADES"      : "No grave Reference Group have been registered.",
+   "NEW_REFERENCE"  : "New Reference Group",
+   "NO_REFERENCES"  : "No grave Reference Group have been registered.",
    "REGISTERED"     : "Registered References Groups",
    "SAVE_SUCCES"    : "Successfully saving Reference Group",
    "TITLE"          : "Reference group management",
    "UPDATE_SUCCES"  : "Updated successfully",
-   "UPD_GRADE"      : "Update Reference Group"
+   "UPD_REFERENCE"  : "Update Reference Group"
    },   
 "REPORT": {
    "ACCOUNT"                 : "Account",
