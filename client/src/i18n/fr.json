@@ -132,8 +132,8 @@
    },
 "AUXILLARY_CASH_RECORD" : {
    "ALL_PROJECTS"    : "Tous les projets",
-   "ALL_USERS"       : "Tous les utilisateurs", 
-   "BY"              : "Par",      
+   "ALL_USERS"       : "Tous les utilisateurs",
+   "BY"              : "Par",
    "CANCEL"          : "Annuler l'operation",
    "CHARGED_AGAINST" : "imputés à",
    "CREDIT_NOTE"     : "Note de Crédit",
@@ -484,6 +484,7 @@
    "PERIOD_ID"             : "ID Période",
    "PERIOD_PAYMENT"        : "Période de paiement",
    "PHONE"                 : "Téléphone",
+   "POSITION"              : "Position",
    "POSTED"                : "Postée",
    "PRICE"                 : "Prix",
    "PRICE_LIST"            : "Liste de Prix",
@@ -568,6 +569,7 @@
    "ZS"                    : "Zone de Santé",
    "DONATION_DATE"         : "Date Donation"
    },
+
 "CONFIG_ACCOUNTING": {
    "ADD"                  : "Créer une nouvelle configuration",
    "ALERT"                : "Le module configuration des comptes, permet le paramétrage du compte qui sera utilisé lors du payroll",
@@ -2172,8 +2174,8 @@
 "SALERECORD": {
    "ADVANCE"         : "Recherches Avancée",
    "ALL_PROJECTS"    : "Tous les Projets",
-   "ALL_USERS"       : "Tous les utilisateurs", 
-   "BY"              : "Par",  
+   "ALL_USERS"       : "Tous les utilisateurs",
+   "BY"              : "Par",
    "CHARGED_AGAINST" : "imputées contre",
    "CREDIT_NOTE"     : "Annuler vente",
    "GENERATE"        : "Pour créer une facture.",
@@ -2188,6 +2190,31 @@
    "TOTAL_OF"        : "Total de",
    "UNFOUND"         : "Aucune transaction des patients trouvée. Référence"
    },
+
+"SECTION_BILAN" : {
+   "ASSET" : "Actif",
+   "PASSIVE" : "Passive",
+   "NO_SECTION_BILAN" : "Pas de section du bilan",
+   "TITLE"            : "Section bilan",
+   "ALL"              : "Tous les section bilan",
+   "ALERT"            : "Bilan section management",
+   "ADD"              : "Ajouter",
+   "NEW"              : "Nouvelle section bilan",
+   "EDIT"             : "Edition section bilan"
+   },
+
+"SECTION_RESULTAT" : {
+   "CHARGE" : "Charge",
+   "PROFIT" : "Profit",
+   "NO_SECTION_RESULTAT" : "Pas de section resultat",
+   "TITLE"            : "Section resultat",
+   "ALL"              : "Tous les sections resultats",
+   "ALERT"            : "Section resultat management",
+   "ADD"              : "Ajouter",
+   "NEW"              : "Nouvelle section resultat",
+   "EDIT"             : "Edition section resultat"
+   },
+
 "SECTOR": {
    "ACTIONS"          : "Actions",
    "CONFIG"           : "Configuration Gestionnaire de Secteurs",
@@ -2677,6 +2704,7 @@
    "CAUTION"                   : "Paiement anticipatif",
    "CHART_OF_ACCOUNTS"         : "Plan Comptable",
    "CLIENT"                    : "Client",
+   "SECTION_RESULTAT"          : "Section Resultat",
    "CONFIG_ACCOUNTING"         : "Configuration des comptes",
    "CONFIG_RUBRIC"             : "Configuration des rubriques",
    "CONFIG_TAX"                : "Configuration des taxes",
@@ -2764,6 +2792,7 @@
    "ROOT"                      : "Racine",
    "RUBRIC_MANAGEMENT"         : "Gestion des rubriques",
    "SALES"                     : "Facturations",
+   "SECTION_BILAN"             : "Section bilan",
    "SALE_RECORDS"              : "Historique Facturation",
    "SERVICE"                   : "Gestion des Services",
    "SERVICE_EXPLOITATION"      : "Exploitation par Service",
