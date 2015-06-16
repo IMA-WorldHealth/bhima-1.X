@@ -58,7 +58,7 @@ USE bhima;
 drop table if exists `reference`;
 CREATE TABLE `reference` (
   `id`                  tinyint unsigned not null auto_increment,
-  `reference`           char(4) not null,
+  `ref`                 char(4) not null,
   `text`                text,
   `position`            int unsigned,
   `reference_group_id`  tinyint unsigned,
@@ -86,8 +86,15 @@ ADD `is_brut_link` boolean;
 
 ALTER TABLE `account`
 ADD FOREIGN KEY (`reference_id`) REFERENCES `reference` (`id`);
-
-
+ 
+-- Updates table account
+-- Date: 2015-06-10
+-- By: Chris LOMAME
+-- ADD Unit reference_group AND reference_group
+--
+INSERT INTO `unit` VALUES
+('111','reference_group','TREE.REFERENCE_GROUP','Reference Group', 30, 0, '/partials/reference_group', '/reference_group/'),
+('112','reference','TREE.REFERENCE','Reference', 30, 0, '/partials/reference', '/reference/');
 -- Adding record into unit table
 -- Date: 2015-06-10
 -- By: Dedrick kitamuka
