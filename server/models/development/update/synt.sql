@@ -97,5 +97,15 @@ INSERT INTO `unit` VALUES
 (109, 'Section du bilan', 'TREE.SECTION_BILAN', '', 30, 0, '/partials/section_bilan/', '/section_bilan/');
 
 
+-- Adding record into unit table
+-- Date: 2015-06-10
+-- By: Dedrick kitamuka
+--
+
+INSERT INTO `unit` VALUES
+(110, 'Section resultat', 'TREE.SECTION_RESULTAT', '', 30, 0, '/partials/section_resultat/', '/section_resultat/');
+
+
+
 
 

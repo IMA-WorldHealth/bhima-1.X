@@ -569,6 +569,7 @@
    "ZS"                    : "Health Zone",
    "DONATION_DATE"         : "Donation Date"
    },
+
 "CONFIG_ACCOUNTING": {
    "ADD"                  : "Create a new configuration",
    "ALERT"                : "The account setup module allows setting the account to be used when making payroll",
@@ -2197,8 +2198,22 @@
    "ALL"              : "All bilan section",
    "ALERT"            : "Gestion de section du bilan",
    "NEW"              : "New bilan section",
-   "EDIT"             : "Bilan section editing"
+   "EDIT"             : "Bilan section editing",
+   "ADD"              : "Add"
    },
+
+"SECTION_RESULTAT" : {
+   "CHARGE" : "Charge",
+   "PROFIT" : "Profit",
+   "NO_SECTION_RESULTAT" : "No Result Section",
+   "TITLE"            : "Result Section",
+   "ALL"              : "All Result Section",
+   "ALERT"            : "Result Section Management",
+   "ADD"              : "Add",
+   "NEW"              : "New Result Section",
+   "EDIT"             : "Edit Result Section"
+  },
+
 "SECTOR": {
    "ACTIONS"          : "Actions",
    "CONFIG"           : "Sector Manager Configuration",
@@ -2688,6 +2703,7 @@
    "CAUTION"                   : "Caution",
    "CHART_OF_ACCOUNTS"         : "Chart of Accounts",
    "CLIENT"                    : "Clients",
+   "SECTION_RESULTAT"          : "Result Section",
    "CONFIG_ACCOUNTING"         : "Configuration accounting",
    "CONFIG_RUBRIC"             : "Configuration Rubrics",
    "CONFIG_TAX"                : "Configuration Taxes",
