@@ -2,12 +2,11 @@ angular.module('bhima.controllers')
 .controller('reference_group', [
   '$scope',
   '$translate',
-  '$http',
   'validate',
   'messenger',
   'connect',
   'appstate',
-  function ($scope, $translate, $http, validate, messenger, connect, appstate) {
+  function ($scope, $translate, validate, messenger, connect, appstate) {
     var dependencies = {},
         session = $scope.session = {};
 
@@ -67,7 +66,7 @@ angular.module('bhima.controllers')
     $scope.delete = function (reference_group) {
       var result = confirm($translate.instant('REFERENCE_GROUP.CONFIRM'));
       if (result) {  
-        connect.basicDelete('reference_group', reference_group.id, 'id')
+        connect.delete('reference_group', ['id'], [reference_group.id])
         .then(function () {
           $scope.reference_groups.remove(reference_group.id);
           messenger.info($translate.instant('REFERENCE_GROUP.DELETE_SUCCESS'));
@@ -94,7 +93,7 @@ angular.module('bhima.controllers')
       delete record.section_bilan_txt;
       record.is_report = (session.edit.is_report)?1:0;
 
-      connect.basicPost('reference_group', [record], ['id'])
+      connect.put('reference_group', [record], ['id'])
       .then(function () {
         messenger.success($translate.instant('REFERENCE_GROUP.UPDATE_SUCCES')); 
         $scope.reference_groups.put(record);
@@ -107,7 +106,7 @@ angular.module('bhima.controllers')
       var record = connect.clean(session.new);
       record.is_report = (session.new.is_report)?1:0;
 
-      connect.basicPut('reference_group', [record])
+      connect.post('reference_group', [record])
       .then(function () {
         messenger.success($translate.instant('REFERENCE_GROUP.SAVE_SUCCES'));        
         record.reference = generateReference(); 
