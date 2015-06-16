@@ -569,6 +569,7 @@
    "ZS"                    : "Zone de Santé",
    "DONATION_DATE"         : "Date Donation"
    },
+
 "CONFIG_ACCOUNTING": {
    "ADD"                  : "Créer une nouvelle configuration",
    "ALERT"                : "Le module configuration des comptes, permet le paramétrage du compte qui sera utilisé lors du payroll",
@@ -2192,7 +2193,7 @@
 
 "SECTION_BILAN" : {
    "ASSET" : "Actif",
-   "PASSIVE" : "Passif",
+   "PASSIVE" : "Passive",
    "NO_SECTION_BILAN" : "Pas de section du bilan",
    "TITLE"            : "Section bilan",
    "ALL"              : "Tous les section bilan",
@@ -2201,6 +2202,19 @@
    "NEW"              : "Nouvelle section bilan",
    "EDIT"             : "Edition section bilan"
    },
+
+"SECTION_RESULTAT" : {
+   "CHARGE" : "Charge",
+   "PROFIT" : "Profit",
+   "NO_SECTION_RESULTAT" : "Pas de section resultat",
+   "TITLE"            : "Section resultat",
+   "ALL"              : "Tous les sections resultats",
+   "ALERT"            : "Section resultat management",
+   "ADD"              : "Ajouter",
+   "NEW"              : "Nouvelle section resultat",
+   "EDIT"             : "Edition section resultat"
+   },
+
 "SECTOR": {
    "ACTIONS"          : "Actions",
    "CONFIG"           : "Configuration Gestionnaire de Secteurs",
@@ -2690,6 +2704,7 @@
    "CAUTION"                   : "Paiement anticipatif",
    "CHART_OF_ACCOUNTS"         : "Plan Comptable",
    "CLIENT"                    : "Client",
+   "SECTION_RESULTAT"          : "Section Resultat",
    "CONFIG_ACCOUNTING"         : "Configuration des comptes",
    "CONFIG_RUBRIC"             : "Configuration des rubriques",
    "CONFIG_TAX"                : "Configuration des taxes",

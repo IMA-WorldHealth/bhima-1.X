@@ -310,6 +310,10 @@
       controller : 'sectionBilan',
       templateUrl : 'partials/section_bilan/section_bilan.html'
     })
+    .when('/section_resultat/', {
+      controller : 'sectionResultat',
+      templateUrl : 'partials/section_resultat/section_resultat.html'
+    })
     .when('/patient_group/', {
       controller: 'patientGroup',
       templateUrl: 'partials/patient_group/patient_group.html'

@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('sectionBilan', [
+.controller('sectionResultat', [
   '$scope',
   '$translate',
   'validate',
@@ -9,12 +9,12 @@ angular.module('bhima.controllers')
     var dependencies = {},
         session = $scope.session = {};
 
-    dependencies.sectionBilans = {
+    dependencies.sectionResultats = {
       query : {
         identifier : 'id',
         tables : {
-          'section_bilan' : {
-            columns : ['id', 'text', 'is_actif', 'position']
+          'section_resultat' : {
+            columns : ['id', 'text', 'is_charge', 'position']
           }
         }
       }
@@ -31,17 +31,17 @@ angular.module('bhima.controllers')
       return $translate.instant(key);
     };
 
-    $scope.delete = function (sectionBilan) {
-      connect.delete('section_bilan', 'id', sectionBilan.id)
+    $scope.delete = function (sectionResultat) {
+      connect.delete('section_resultat', 'id', sectionResultat.id)
       .then(function () {
-        $scope.sectionBilans.remove(sectionBilan.id);
-        messenger.info($translate.instant('SECTION_BILAN.DELETE_SUCCESS'));
+        $scope.sectionResultats.remove(sectionResultat.id);
+        messenger.info($translate.instant('SECTION_RESULTAT.DELETE_SUCCESS'));
       });
     };
 
-    $scope.edit = function (sectionBilan) {
+    $scope.edit = function (sectionResultat) {
       session.action = 'edit';
-      session.edit = angular.copy(sectionBilan);
+      session.edit = angular.copy(sectionResultat);
     };
 
     $scope.new = function () {
@@ -53,10 +53,10 @@ angular.module('bhima.controllers')
 
     $scope.save.edit = function () {
       var record = connect.clean(session.edit);
-      connect.put('section_bilan', [record], ['id'])
+      connect.put('section_resultat', [record], ['id'])
       .then(function (res) {
-        messenger.info($translate.instant('SECTION_BILAN.EDIT_SUCCESS'));
-        $scope.sectionBilans.put(record);
+        messenger.info($translate.instant('SECTION_RESULTAT.EDIT_SUCCESS'));
+        $scope.sectionResultats.put(record);
         session.action = '';
         session.edit = {};
       });
@@ -64,11 +64,11 @@ angular.module('bhima.controllers')
 
     $scope.save.new = function () {
       var record = connect.clean(session.new);
-      connect.post('section_bilan', [record])
+      connect.post('section_resultat', [record])
       .then(function (res) {
-        messenger.info($translate.instant('SECTION_BILAN.NEW_SUCCESS'));
+        messenger.info($translate.instant('SECTION_RESULTAT.NEW_SUCCESS'));
         record.id = res.data.insertId;
-        $scope.sectionBilans.post(record);
+        $scope.sectionResultats.post(record);
         session.action = '';
         session.new = {};
       });
