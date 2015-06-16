@@ -132,8 +132,8 @@
   },
 "AUXILLARY_CASH_RECORD" : {
   "ALL_PROJECTS"    : "All projects",
-   "ALL_USERS"      : "All Users", 
-   "BY"             : "By",  
+   "ALL_USERS"      : "All Users",
+   "BY"             : "By",
   "CANCEL"          : "Cancel Operation",
   "CHARGED_AGAINST" : "Charged against",
   "CREDIT_NOTE"     : "Credit note",
@@ -574,6 +574,7 @@
    "ZS"                    : "Health Zone",
    "DONATION_DATE"         : "Donation Date"
    },
+
 "CONFIG_ACCOUNTING": {
    "ADD"                  : "Create a new configuration",
    "ALERT"                : "The account setup module allows setting the account to be used when making payroll",
@@ -2204,8 +2205,8 @@
 "SALERECORD": {
    "ADVANCE"         : "Advanced Search",
    "ALL_PROJECTS"    : "All Projects",
-   "ALL_USERS"       : "All Users", 
-   "BY"              : "By",     
+   "ALL_USERS"       : "All Users",
+   "BY"              : "By",
    "CHARGED_AGAINST" : "charged against",
    "CREDIT_NOTE"     : "Cancel sale",
    "GENERATE"        : "to generate an invoice.",
@@ -2220,6 +2221,30 @@
    "TOTAL_OF"        : "Total of",
    "UNFOUND"         : "No patient transactions found. Reference"
    },
+"SECTION_BILAN" : {
+   "ASSET" : "Asset",
+   "PASSIVE" : "Passive",
+   "NO_SECTION_BILAN" : "No bilan section found",
+   "TITLE"            : "Bilan section",
+   "ALL"              : "All bilan section",
+   "ALERT"            : "Gestion de section du bilan",
+   "NEW"              : "New bilan section",
+   "EDIT"             : "Bilan section editing",
+   "ADD"              : "Add"
+   },
+
+"SECTION_RESULTAT" : {
+   "CHARGE" : "Charge",
+   "PROFIT" : "Profit",
+   "NO_SECTION_RESULTAT" : "No Result Section",
+   "TITLE"            : "Result Section",
+   "ALL"              : "All Result Section",
+   "ALERT"            : "Result Section Management",
+   "ADD"              : "Add",
+   "NEW"              : "New Result Section",
+   "EDIT"             : "Edit Result Section"
+  },
+
 "SECTOR": {
    "ACTIONS"          : "Actions",
    "CONFIG"           : "Sector Manager Configuration",
@@ -2712,6 +2737,7 @@
    "CAUTION"                   : "Caution",
    "CHART_OF_ACCOUNTS"         : "Chart of Accounts",
    "CLIENT"                    : "Clients",
+   "SECTION_RESULTAT"          : "Result Section",
    "CONFIG_ACCOUNTING"         : "Configuration accounting",
    "CONFIG_RUBRIC"             : "Configuration Rubrics",
    "CONFIG_TAX"                : "Configuration Taxes",
@@ -2802,6 +2828,7 @@
    "RUBRIC_MANAGEMENT"         : "Rubrics Management",
    "SALES"                     : "Sales",
    "SALE_RECORDS"              : "Sale Records",
+   "SECTION_BILAN"             : "Bilan section",
    "SERVICE"                   : "Services",
    "SERVICE_EXPLOITATION"      : "Services Status",
    "SERVICE_STATE"             : "Service State",
