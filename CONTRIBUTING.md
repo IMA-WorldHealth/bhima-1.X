@@ -2,7 +2,7 @@ Contributor's Guide
 =======================
 
  - Project page: https://github.com/IMA-WorldHealth/bhima
- - Email me: jonathanwniles@gmail.com
+ - Email us: bhimateam@gmail.com
 
 Your first contribution
 ------------------
