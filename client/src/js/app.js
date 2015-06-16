@@ -57,11 +57,11 @@
     })
     .when('/patient/edit/:patientID?', {
       controller: 'patientEdit',
-      templateUrl: 'partials/patient_edit/edit_patient.html'
+      templateUrl: 'partials/patient/edit/edit.html'
     })
-    .when('/patient', {
+    .when('/patient/register', {
       controller: 'patientRegistration',
-      templateUrl: 'partials/patient_registration/patient.html'
+      templateUrl: 'partials/patient/registration/registration.html'
     })
     .when('/debtor/debtor_group', {
       controller : 'group.debtor',
@@ -99,9 +99,9 @@
       controller : 'inventory.manifest',
       templateUrl : 'partials/inventory/manifest/manifest.html'
     })
-    .when('/patient_records/:patientID?', {
+    .when('/patient/search/:patientID?', {
       controller: 'patientRecords',
-      templateUrl: '/partials/records/patient_records/patient_records.html'
+      templateUrl: '/partials/patient/search/search.html'
     })
     .when('/sales/:debtorID?/:inventoryID?', {
       controller: 'sales',
@@ -254,9 +254,9 @@
       controller: 'settings',
       templateUrl: 'partials/settings/settings.html'
     })
-    .when('/patient_group_assignment/', {
+    .when('/patient/group/assignment/', {
       controller: 'AssignPatientGroup',
-      templateUrl: 'partials/patient_group_assignment/patient_group_assign.html'
+      templateUrl: 'partials/patient/group/assignment.html'
     })
     .when('/reports/chart_of_accounts/', {
       controller: 'accountsReport',
@@ -310,9 +310,9 @@
       controller : 'sectionResultat',
       templateUrl : 'partials/section_resultat/section_resultat.html'
     })
-    .when('/patient_group/', {
+    .when('/patient/groups/', {
       controller: 'patientGroup',
-      templateUrl: 'partials/patient_group/patient_group.html'
+      templateUrl: 'partials/patient/group/groups.html'
     })
     .when('/group_invoice/:id?', {
       controller : 'groupInvoice',
@@ -330,9 +330,9 @@
       controller: 'reportCashPayments',
       templateUrl: 'partials/reports/cash_payments/cash_payments.html'
     })
-    .when('/swap_debtor/', {
+    .when('/patient/debtor/', {
       controller : 'group.debtor.reassignment',
-      templateUrl : 'partials/swap_debtor/swap_debtor.html'
+      templateUrl : 'partials/patient/debtor/swap.html'
     })
     .when('/reports/all_transactions', {
       controller : 'allTransactions',
