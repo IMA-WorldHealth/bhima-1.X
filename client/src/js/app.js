@@ -57,11 +57,11 @@
     })
     .when('/patient/edit/:patientID?', {
       controller: 'patientEdit',
-      templateUrl: 'partials/patient_edit/edit_patient.html'
+      templateUrl: 'partials/patient/edit/edit.html'
     })
-    .when('/patient', {
+    .when('/patient/register', {
       controller: 'patientRegistration',
-      templateUrl: 'partials/patient_registration/patient.html'
+      templateUrl: 'partials/patient/registration/registration.html'
     })
     .when('/debtor/debtor_group', {
       controller : 'group.debtor',
@@ -99,9 +99,9 @@
       controller : 'inventory.manifest',
       templateUrl : 'partials/inventory/manifest/manifest.html'
     })
-    .when('/patient_records/:patientID?', {
+    .when('/patient/search/:patientID?', {
       controller: 'patientRecords',
-      templateUrl: '/partials/records/patient_records/patient_records.html'
+      templateUrl: '/partials/patient/search/search.html'
     })
     .when('/sales/:debtorID?/:inventoryID?', {
       controller: 'sales',
@@ -158,10 +158,6 @@
     .when('/exchange_rate', {
       controller : 'exchangeRate',
       templateUrl: 'partials/exchange_rate/exchange_rate.html'
-    })
-    .when('/currency', {
-      controller : 'currency',
-      templateUrl: 'partials/currency/currency.html'
     })
     .when('/create_account', {
       controller: 'manageAccount',
@@ -258,9 +254,9 @@
       controller: 'settings',
       templateUrl: 'partials/settings/settings.html'
     })
-    .when('/patient_group_assignment/', {
+    .when('/patient/group/assignment/', {
       controller: 'AssignPatientGroup',
-      templateUrl: 'partials/patient_group_assignment/patient_group_assign.html'
+      templateUrl: 'partials/patient/group/assignment.html'
     })
     .when('/reports/chart_of_accounts/', {
       controller: 'accountsReport',
@@ -306,9 +302,17 @@
       controller: 'profitCenter.allocation',
       templateUrl: 'partials/profit_center/allocation/allocation.html'
     })
-    .when('/patient_group/', {
+    .when('/section_bilan/', {
+      controller : 'sectionBilan',
+      templateUrl : 'partials/section_bilan/section_bilan.html'
+    })
+    .when('/section_resultat/', {
+      controller : 'sectionResultat',
+      templateUrl : 'partials/section_resultat/section_resultat.html'
+    })
+    .when('/patient/groups/', {
       controller: 'patientGroup',
-      templateUrl: 'partials/patient_group/patient_group.html'
+      templateUrl: 'partials/patient/group/groups.html'
     })
     .when('/group_invoice/:id?', {
       controller : 'groupInvoice',
@@ -326,9 +330,9 @@
       controller: 'reportCashPayments',
       templateUrl: 'partials/reports/cash_payments/cash_payments.html'
     })
-    .when('/swap_debtor/', {
+    .when('/patient/debtor/', {
       controller : 'group.debtor.reassignment',
-      templateUrl : 'partials/swap_debtor/swap_debtor.html'
+      templateUrl : 'partials/patient/debtor/swap.html'
     })
     .when('/reports/all_transactions', {
       controller : 'allTransactions',
@@ -341,7 +345,7 @@
     .when('/reports/stock_store/:depotId', {
       controller : 'stock_store',
       templateUrl : 'partials/reports/stock_store/stock_store.html'
-    })    
+    })
     .when('/reports/purchase_order', {
       controller : 'purchase_order',
       templateUrl : 'partials/reports/purchase_order/purchase_order.html'
@@ -349,7 +353,7 @@
     .when('/reports/donation_confirmation', {
       controller : 'donation_confirmation',
       templateUrl : 'partials/reports/donation_confirmation/donation_confirmation.html'
-    })    
+    })
     .when('/reports/expiring/:option', {
       controller : 'expiring.option',
       templateUrl : 'partials/reports/expiring_stock/expiring_stock_view.html'
@@ -357,7 +361,7 @@
     .when('/reports/stock_movement', {
       controller : 'stock_movement',
       templateUrl : 'partials/reports/stock_movement/stock_movement.html'
-    })    
+    })
     .when('/caution', {
       controller : 'caution',
       templateUrl : 'partials/caution/caution.html'

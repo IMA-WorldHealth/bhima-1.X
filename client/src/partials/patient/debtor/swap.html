@@ -1,0 +1,93 @@
+<header data-header>
+  {{ "SWAPDEBITOR.TITLE" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "SWAPDEBITOR.TITLE" | translate }}</li>
+    </ol>
+  </div>
+  
+  <div class="pull-right">
+    <a href="#/patient" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-file"></span> {{ 'SWAPDEBITOR.PATIENT_REGISTRATION' | translate }}</a>
+  </div>
+</nav>
+
+<main>
+  <div class="row margin-top-10">
+    <div class="col-xs-6">
+      <div find-patient on-search-complete="initialiseSwaping"></div>
+    </div>
+  </div>
+
+  <div class="row">
+   <div class="col-xs-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        {{ "SWAPDEBITOR.PATIENT" | translate }}
+      </div>
+
+      <div ng-show="noEmpty" class="panel-body">
+        <div class="row">
+          <form>
+
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label>{{ "SWAPDEBITOR.NAME" | translate }}</label>
+                <p class="form-control-static">{{selectedDebitor.name}}</p>
+              </div>
+
+              <div class="form-group">
+                <label>{{ "SWAPDEBITOR.AGE" | translate }}</label>
+                <p class="form-control-static">{{selectedDebitor.age}}</p>
+              </div>
+
+              <div class="form-group">
+                <label>{{ "SWAPDEBITOR.GENDER" | translate }}</label>
+                <p class="form-control-static">{{ selectedDebitor.sex }}</p>
+              </div>
+            </div>
+
+            <div class="col-xs-6">
+              <label>{{ "SWAPDEBITOR.ORIGIN" | translate }}</label>
+              <p class="form-control-static">
+                {{ locationDebitor.village }} <br />
+                {{ locationDebitor.sector }} <br />
+                {{ locationDebitor.province }} <br />
+                {{ locationDebitor.country }}
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="panel-footer" ng-show="noEmpty">
+        <form>
+          <div class="form-group">
+            <label>{{ "SWAPDEBITOR.DEBTOR_GROUP" | translate }}</label>
+            <div class="input-group">
+              <select required class="form-bhima" id="debtor-group" ng-model="debitor.debitor_group_uuid" ng-options="g.uuid as g.name for g in model.debtorGroup.data | orderBy:'name'">
+                <option value="" disabled="disabled">-- {{ "SELECT.DEBITOR_GROUP" | translate }} --</option>
+              </select>
+              <span class="input-group-btn">
+                <a ng-disabled="!noEmpty" ng-click="swapGroup(selectedDebitor)" class="btn btn-sm btn-default">
+                  {{ "FORM.SUBMIT" | translate }}
+                </a>
+              </span>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+   </div>
+  </div>
+</main>
+
+<script type="text/ng-template" id="debtorListItem.html">
+  <a>
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+    <span><b>[{{match.model.uuid}}]</b></span>
+  </a>
+</script>
