@@ -5,11 +5,16 @@ angular.module('bhima.controllers')
   '$routeParams',
   '$translate',
   '$sce',
-
+  'validate',
   // Prototype document building module, requests document given configuration obejct
-  function ($scope, $http, $routeParams, $translate, $sce) {
+  function ($scope, $http, $routeParams, $translate, $sce, validate) {
 
     // Configuration objects optionally passed to /report/build - drives configuration UI
+    var session = $scope.session = {},
+        dependencies = {},
+        generatedDocumentPath = null,
+        serverUtilityPath = '/report/build/bilan';
+
     var configuration = {
       language : {
         options : [
@@ -19,23 +24,37 @@ angular.module('bhima.controllers')
       }
     };
 
-    var serverUtilityPath = '/report/build/bilan';
-    var generatedDocumentPath = null;
-    var session = $scope.session = {};
+    dependencies.fiscalYears = {
+      query : {
+        identifier : 'id',
+        tables : {
+          'fiscal_year' : {
+            columns : ['id', 'fiscal_year_txt']
+          }
+        }
+      }
+    };
+
     $scope.generate_doc = $translate.instant('BILAN.GENERATE_DOC');
+    $scope.loading = $translate.instant('BILAN.LOADING');
+
+    //getting fiscal years
+
+    validate.process(dependencies)
+    .then(setDefaultConfiguration);
+
     // Expose configuration to scope - set module state
     session.building = false;
     $scope.configuration = configuration;
-
-    // TODO Load default configuration from appcache if it exists before selecting default
-    setDefaultConfiguration();
 
     function selectConfiguration(key, value) {
       configuration[key].selected = value;
     }
 
-    function setDefaultConfiguration() {
-      selectConfiguration('language', configuration.language.options[0]);
+    function setDefaultConfiguration(models) {
+      angular.extend($scope, models);
+      selectConfiguration('language', configuration.language.options[1]);
+      $scope.session.fiscal_year_id = $scope.fiscalYears.data[$scope.fiscalYears.data.length-1].id
     }
 
     // POST configuration object to /report/build/:target
@@ -45,6 +64,7 @@ angular.module('bhima.controllers')
 
       // Temporarily set configuration options - This shouldn't be manually compiled
       configurationObject.language = configuration.language.selected.value;
+      configurationObject.fy = $scope.session.fiscal_year_id;
 
       // Update state
       session.building = true;
