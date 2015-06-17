@@ -15,10 +15,7 @@
             {{ "BILAN.FISCAL_YEAR" | translate }}
           </label>
           <div>
-            <select class="form-bhima" ng-model="session.fiscal_year_id" required>
-              <option ng-repeat="fy in fiscalYears.data" ng-value="fy.id">
-                {{fy.fiscal_year_txt}}
-              </option>
+            <select class="form-bhima" ng-model="session.fiscal_year_id" ng-options="fy.id as fy.fiscal_year_txt for fy in fiscalYears.data" required>
             </select>
           </div>
         </div>
@@ -35,11 +32,12 @@
             </span>
           </div>
         </div>
+
         <!-- Links swapped out to allow target _blank (open PDF in new tab) -->
         <button
           class="btn btn-default"
           ng-disabled="session.building"
-          ng-click="generateDocument()" ng-if="!generatedDocumentPath">{{session.building ? 'Loading' : generate_doc}}
+          ng-click="generateDocument()" ng-if="!generatedDocumentPath">{{session.building ? loading : generate_doc}}
         </button>
 
         <a class="btn btn-success" href="{{generatedDocumentPath}}" target="_blank" ng-if="generatedDocumentPath" ng-click="clearPath()">{{'BILAN.DOC_SUCCES' | translate}}/a>
