@@ -2,13 +2,11 @@ angular.module('bhima.controllers')
 .controller('subsidy', [
   '$scope',
   '$translate',
-  '$http',
   'validate',
   'messenger',
   'connect',
-  'appstate',
   'uuid',
-  function ($scope, $translate, $http, validate, messenger, connect, appstate, uuid) {
+  function ($scope, $translate, validate, messenger, connect, uuid) {
     var dependencies = {},
         session = $scope.session = {};
 
@@ -54,7 +52,6 @@ angular.module('bhima.controllers')
     };
 
     $scope.edit = function (subsidy) {
-      console.log('le voici', subsidy);
       session.action = 'edit';
       session.edit = angular.copy(subsidy);
     };
@@ -69,7 +66,6 @@ angular.module('bhima.controllers')
     $scope.save.edit = function () {
 
       var record = angular.copy(connect.clean(session.edit));
-      console.log(session.edit);
       var editedSubsidy = {
         uuid : record.uuid,
         is_percent : record.is_percent,

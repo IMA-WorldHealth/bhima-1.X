@@ -52,8 +52,6 @@ module.exports = function () {
         throw 'No user found for this project';
       }
 
-      console.log('voici le user', results);
-
       user = results.pop();
       sql = 'UPDATE user SET user.logged_in = 1 WHERE user.id = ?;';
 
@@ -91,11 +89,9 @@ module.exports = function () {
       if (results.length === 1) {
         req.session.project_id = results[0].id; // TODO: projects should be incorporated
       }                                         // into login page
-      console.log('Sending 200..');
       res.status(200).send({ accessToken : uuid(), userData : user });
     })
     .catch(function (err) {
-      console.log('Login Error:', err);
       res.status(401).send(err);
     })
     .done();
@@ -123,6 +119,7 @@ module.exports = function () {
     .done();
   }
 
+  // FIXME : hard-code these routes - there is no need for this level of complexity
   return function authenticate(req, res, next) {
     var router = {
       '/auth/logout' : logout,
