@@ -38,7 +38,7 @@ var documentHandler = {
     context : grandLivreContext
   },
   employee_state : {
-    template : dots.employee_state, //templating function provider
+    template : dots.employee_state, //templating provider
     context : EmployeeStateContext // data provider
   }
 };
