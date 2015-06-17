@@ -27,13 +27,9 @@ var ledger          = require('./../controllers/ledger');
 var fiscal          = require('./../controllers/fiscal');
 var report          = require('./../controllers/report');
 var tree            = require('./../controllers/tree');
-
 var uncategorised   = require('./../controllers/uncategorised');
-
 var compileReport   = require('./../controllers/reports_proposed/reports.js');
-
 var snis            = require('./../controllers/snis');
-
 var extra           = require('./../controllers/extraPayment');
 
 
@@ -49,7 +45,7 @@ exports.initialise = function (app) {
   app.put('/data/', data.update);
   app.delete('/data/:table/:column/:value', data.deleteRecord);
 
-  // Locations
+  // location routes
   // -> /location/:scope(list || lookup)/:target(village || sector || province)/:id(optional)
   app.get('/location/villages', location.allVillages);
   app.get('/location/sectors', location.allSectors);
@@ -68,14 +64,17 @@ exports.initialise = function (app) {
   app.post('/service_dist/', serviceDist.execute);
   app.post('/consumption_loss/', consumptionLoss.execute);
 
+  // trail balance routes
   app.get('/trialbalance/initialize', trialbalance.initialiseTrialBalance);
   app.get('/trialbalance/submit/:key/', trialbalance.submitTrialBalance);
 
   app.get('/journal/:table/:id', journal.lookupTable);
 
+  // ledger routes
+  // TODO : needs renaming
   app.get('/ledgers/debitor/:id', ledger.compileDebtorLedger);
   app.get('/ledgers/debitor_group/:id', ledger.compileGroupLedger);
-  app.get('/ledgers/employee_invoice/:id', ledger.compileEmployeeLedger);  
+  app.get('/ledgers/employee_invoice/:id', ledger.compileEmployeeLedger);
   app.get('/ledgers/distributableSale/:id', ledger.compileSaleLedger);
 
   app.post('/fiscal/create', fiscal.createFiscalYear);
@@ -84,6 +83,7 @@ exports.initialise = function (app) {
 
   app.get('/tree', tree.generate);
 
+  // snis controller
   app.get('/snis/getAllReports', snis.getAllReports);
   app.get('/snis/getReport/:id', snis.getReport);
   app.post('/snis/createReport', snis.createReport);
@@ -188,6 +188,5 @@ exports.initialise = function (app) {
 
   // Extra Payement
   app.post('/extraPayment/', extra.handleExtraPayment);
-
 
 };

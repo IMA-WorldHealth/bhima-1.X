@@ -9,7 +9,7 @@ var journal = require('./journal');
 /*
  * HTTP Controllers
 */
-exports.execute = function (req, res, next) { 
+exports.execute = function (req, res, next) {
   initialiseConsumption(req.body, req.session.user_id, function (err, ans) {
     if (err) { return next(err); }
     res.send({dist: ans});
@@ -18,17 +18,16 @@ exports.execute = function (req, res, next) {
 
 function initialiseConsumption(data, userId, callback) {
 
-  console.log('voici les data : ', data);
   return writeMainConsumption(data.main_consumptions)
     .then(function () {
       return writeLossConsumption(data.loss_consumptions);
     })
     .then(function () {
-      return writeToJournal(data.main_consumptions[0].document_id, userId, data.details)
+      return writeToJournal(data.main_consumptions[0].document_id, userId, data.details);
     })
-    .then(function(){ 
+    .then(function(){
       var res = {};
-      res.docId = data.main_consumptions[0].document_id;    
+      res.docId = data.main_consumptions[0].document_id;
       console.log('res :::', res);
       callback(null, res);
     })

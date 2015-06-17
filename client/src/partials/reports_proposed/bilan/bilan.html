@@ -9,6 +9,20 @@
     <div class="panel-heading">{{'BILAN.DOCUMENT_CONFIG' | translate}}</div>
     <div class="panel-body">
       <form>
+
+        <div class="form-group">
+          <label class="control-label col-xs-4 required">
+            {{ "BILAN.FISCAL_YEAR" | translate }}
+          </label>
+          <div>
+            <select class="form-bhima" ng-model="session.fiscal_year_id" required>
+              <option ng-repeat="fy in fiscalYears.data" ng-value="fy.id">
+                {{fy.fiscal_year_txt}}
+              </option>
+            </select>
+          </div>
+        </div>
+
         <div class="form-group">
           <label>{{'BILAN.LANGUAGE' | translate}}</label>
 

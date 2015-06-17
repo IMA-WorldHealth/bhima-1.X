@@ -69,7 +69,7 @@ angular.module('bhima.controllers')
           consumption: {
             columns: ['uuid', 'document_id']
           }
-        }  
+        }
       }
     };
 
@@ -94,13 +94,13 @@ angular.module('bhima.controllers')
           consumption_reversing: {
             columns: ['uuid', 'document_id']
           }
-        }  
+        }
       }
     };
 
     appstate.register('enterprise', function (enterprise) {
-      $scope.enterprise = enterprise; 
-    }); 
+      $scope.enterprise = enterprise;
+    });
 
     appstate.register('project', function (project) {
       $scope.project = project;
@@ -130,7 +130,7 @@ angular.module('bhima.controllers')
       }
 
       $scope.sale = $scope.model.sale.data[0];
-      
+
       $scope.creditNote = packageCreditNote();
       var  sumItem = $scope.sumItem = 0,
         sumDiscard = $scope.sumDiscard = 0;
@@ -141,7 +141,7 @@ angular.module('bhima.controllers')
             item.allocated_cost /= exchange.rate(item.allocated_cost, item.currency_id,new Date());
           }
           $scope.sumItem += item.allocated_cost;
-        });              
+        });       
       }
 
       if($scope.model.cashDiscard.data){
@@ -151,7 +151,7 @@ angular.module('bhima.controllers')
             item.cost /= exchange.rate(item.cost, item.currency_id,new Date());
           }
           $scope.sumDiscard += item.cost;
-        });           
+        });    
       }
       $scope.sumItem -= $scope.sumDiscard;
 
@@ -175,13 +175,9 @@ angular.module('bhima.controllers')
       //TODO Test object before submitting to server
       //TODO ?Check there are no credit notes for this transaction and warn user
 
-      // connect.fetch('reports/saleRecords/?' + JSON.stringify({span: 'week'}))
-      // .then(function (result) {
-      //   console.log('result', result);
-      // });
-
       noteObject.reference = 1;
 
+      // FIXME Should these cascade?  return connect.fetch()?
       if ($scope.model.creditNote.data.length >= 1) { return messenger.danger('Invoice has already been reversed with credit'); }
       connect.basicPut('credit_note', [noteObject])
       .then(function () {
@@ -189,7 +185,7 @@ angular.module('bhima.controllers')
       })
       .then(function () {
         connect.fetch('journal/cancel_support/' + noteObject.sale_uuid);
-      })      
+      })
       .then(function () {
         $location.path('/invoice/credit/' + noteObject.uuid);
       });
