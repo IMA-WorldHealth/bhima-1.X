@@ -754,6 +754,10 @@
       suffix: '.json'
     });
 
+    // use angular's $sanitize to parse HTML and prevent HTML injects
+    // ref: http://angular-translate.github.io/docs/#/guide/19_security
+    $translateProvider.useSanitizeValueStrategy('sanitize');
+
     //TODO Try and assign the previous sessions language key here
     $translateProvider.preferredLanguage('fr');
   }
