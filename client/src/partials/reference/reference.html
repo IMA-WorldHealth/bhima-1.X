@@ -34,6 +34,7 @@
               <th>{{ "COLUMNS.REFERENCE" | translate}}</th>
               <th>{{ "COLUMNS.LABEL" | translate}}</th>
               <th>{{ "COLUMNS.POSITION" | translate}}</th>
+              <th>{{ "COLUMNS.IS_REPORT" | translate}}</th> 
               <th>{{ "COLUMNS.REFERENCE_GROUP" | translate}}</th> 
               <th>{{ "COLUMNS.RESULT_ACCOUNT_SCT" | translate}}</th>              
               <th colspan="4">{{ "COLUMNS.ACTIONS" | translate }}</th>
@@ -45,6 +46,7 @@
               <td>{{ reference.ref }}</td>
               <td>{{ reference.text }}</td>
               <td>{{ reference.position }}</td>
+              <td><span class="glyphicon" ng-class="{'glyphicon-ok' : !!reference.is_report}"></td>
               <td>{{ reference_groups.get(reference.reference_group_id).text }}</td>
               <td>{{ section_resultat.get(reference.section_resultat_id).text }}</td>
               <td><a class="action" ng-click="edit(reference)"><span class="glyphicon glyphicon-pencil"></span></a></td>
@@ -87,6 +89,13 @@
             <div class="col-xs-7">
               <input ng-model="session.new.position" class="form-bhima" required="required">
             </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4 required">{{ "COLUMNS.IS_REPORT" | translate }}</label>
+            <div class="col-xs-7">
+              <input type="checkbox" ng-model="session.new.is_report" class="form-bhima">
+            </div>            
           </div>
 
           <div class="form-group">
@@ -143,6 +152,13 @@
             <div class="col-xs-7">
               <input ng-model="session.edit.position" class="form-bhima" required="required">
             </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4 required">{{ "COLUMNS.IS_REPORT" | translate }}</label>
+            <div class="col-xs-7">
+              <input type="checkbox" ng-model="session.edit.is_report" class="form-bhima">
+            </div>            
           </div>
 
           <div class="form-group">
