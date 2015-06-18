@@ -193,6 +193,34 @@
                 </div>
               </div>
             </div>
+
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                {{ "ACCOUNT.BALANCE_ACCOUNT" | translate }}  
+              </div>
+              <div class="panel-body">
+                <div class="form-group">
+                  <label for="parent">{{ "COLUMNS.REFERENCE" | translate }}</label>
+                  <select id="parent" class="form-bhima" ng-options="ref.id as formatRef(ref) for ref in model.references.data" ng-model="newAccount.reference_id">
+                    <option value="">{{ "SELECT.REFERENCE"  | translate }}</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <div class="checkbox">
+                    <label>
+                      <input 
+                      type="checkbox" 
+                      name="option_is_brut_link" 
+                      id="is_brut_link" 
+                      ng-model="newAccount.is_brut_link">
+                      {{ "COLUMNS.IS_BRUT_LINK" | translate }}
+                    </label>
+                  </div>
+                </div>                  
+              </div>
+            </div>
+
+
             <button ng-disabled="form.$invalid" ng-click="submitAccount(newAccount)" class="btn btn-success">
               {{ "FORM.SUBMIT" | translate }}
             </button>
@@ -292,6 +320,32 @@
                           <option value="">{{ "ACCOUNT.ROOT_ACCOUNT"  | translate }}</option>
                         </select>
                       </div>
+                    </div>
+                  </div>
+
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      {{ "ACCOUNT.BALANCE_ACCOUNT" | translate }}  
+                    </div>
+                    <div class="panel-body">
+                      <div class="form-group">
+                        <label for="parent">{{ "COLUMNS.REFERENCE" | translate }}</label>
+                        <select id="parent" class="form-bhima" ng-options="ref.id as formatRef(ref) for ref in model.references.data" ng-model="editAccount.reference_id">
+                          <option value="">{{ "SELECT.REFERENCE"  | translate }}</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <div class="checkbox">
+                          <label>
+                            <input 
+                            type="checkbox" 
+                            name="option_is_brut_link" 
+                            id="is_brut_link" 
+                            ng-model="editAccount.is_brut_link">
+                            {{ "COLUMNS.IS_BRUT_LINK" | translate }}
+                          </label>
+                        </div>
+                      </div>                  
                     </div>
                   </div>
 
