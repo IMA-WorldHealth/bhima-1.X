@@ -754,6 +754,8 @@
       suffix: '.json'
     });
 
+    $translateProvider.useSanitizeValueStrategy('escape');
+
     //TODO Try and assign the previous sessions language key here
     $translateProvider.preferredLanguage('fr');
   }
