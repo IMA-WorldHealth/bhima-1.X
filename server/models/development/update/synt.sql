@@ -40,7 +40,6 @@ USE bhima;
 drop table if exists `reference_group`;
 CREATE TABLE `reference_group` (
   `id`                  tinyint unsigned not null auto_increment,
-  `is_report`           boolean null,
   `reference_group`     char(4) not null,
   `text`                text,
   `position`            int unsigned,
@@ -58,6 +57,7 @@ USE bhima;
 drop table if exists `reference`;
 CREATE TABLE `reference` (
   `id`                  tinyint unsigned not null auto_increment,
+  `is_report`           boolean null,
   `ref`                 char(4) not null,
   `text`                text,
   `position`            int unsigned,

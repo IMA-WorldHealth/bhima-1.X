@@ -23,10 +23,19 @@ angular.module('bhima.controllers')
       query : {
         identifier : 'account_number',
         tables : {
-          account : { columns : ['id', 'account_number', 'account_txt', 'account_type_id', 'cc_id', 'pc_id', 'is_asset', 'is_ohada', 'parent', 'locked'] },
-	        account_type : { columns : ['type::account_type'] }
+          account : { columns : ['id', 'account_number', 'account_txt', 'account_type_id', 'cc_id', 'pc_id', 'is_asset', 'is_ohada', 'parent', 'locked', 'reference_id', 'is_brut_link'] },
+          account_type : { columns : ['type::account_type'] }
         },
         join: [ 'account.account_type_id=account_type.id' ]
+      }
+    };
+
+    dependencies.references = {
+      query : {
+        identifier : 'id',
+        tables : {
+          reference : { columns : ['id', 'ref', 'text', 'position', 'reference_group_id', 'section_resultat_id', 'is_report'] }
+        }
       }
     };
 
@@ -86,6 +95,8 @@ angular.module('bhima.controllers')
         account.is_asset = null;
       }
 
+      account.is_brut_link = (account.is_brut_link)?1:0;
+
       var formatAccount = {
         account_type_id: account.type.id,
         account_number: account.number,
@@ -96,7 +107,9 @@ angular.module('bhima.controllers')
         pc_id   : account.pc_id,
         enterprise_id: appstate.get('enterprise').id,
         parent: account.parent,
-        classe: account.number.substr(0,1)
+        classe: account.number.substr(0,1),
+        reference_id : account.reference_id,
+        is_brut_link : account.is_brut_link 
       };
 
       connect.post('account', [formatAccount])
@@ -136,10 +149,19 @@ angular.module('bhima.controllers')
       $scope.accountClass = parseInt($scope.checkClass(account.account_number)); 
       session.state = 'edit';
       $scope.editAccount = account;
+
+      if($scope.editAccount.is_brut_link){
+        $scope.editAccount.is_brut_link = true;
+      }
+
     };
 
     $scope.format = function format(account) {
       return [account.account_txt, account.account_number].join(' :: ');
+    };
+
+    $scope.formatRef = function formatRef(reference) {
+      return [reference.ref, reference.text].join(' :: ');
     };
 
     function submitEditAccount (account) {
@@ -155,16 +177,19 @@ angular.module('bhima.controllers')
       } else {
         $scope.editAccount.is_asset = null;
       }
+      $scope.editAccount.is_brut_link = ($scope.editAccount.is_brut_link)?1:0;
 
       var update = {
-        id          : account.id,
-        account_txt : $scope.editAccount.account_txt,
-        is_asset    : $scope.editAccount.is_asset,
-        is_ohada    : $scope.editAccount.is_ohada,
-        locked      : $scope.editAccount.locked,
-        cc_id       : $scope.editAccount.cc_id,
-        pc_id       : $scope.editAccount.pc_id,
-        parent      : $scope.editAccount.parent
+        id            : account.id,
+        account_txt   : $scope.editAccount.account_txt,
+        is_asset      : $scope.editAccount.is_asset,
+        is_ohada      : $scope.editAccount.is_ohada,
+        locked        : $scope.editAccount.locked,
+        cc_id         : $scope.editAccount.cc_id,
+        pc_id         : $scope.editAccount.pc_id,
+        parent        : $scope.editAccount.parent,
+        reference_id  : $scope.editAccount.reference_id,
+        is_brut_link  : $scope.editAccount.is_brut_link         
       };
 
       connect.put('account', [update], ['id'])
