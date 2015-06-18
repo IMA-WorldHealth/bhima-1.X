@@ -35,7 +35,6 @@
               <th>{{ "COLUMNS.LABEL" | translate}}</th>
               <th>{{ "COLUMNS.POSITION" | translate}}</th>
               <th>{{ "COLUMNS.BALANCE_SECTION" | translate}}</th> 
-              <th>{{ "COLUMNS.IS_REPORT" | translate}}</th>              
               <th colspan="4">{{ "COLUMNS.ACTIONS" | translate }}</th>
             </tr>
           </thead>
@@ -46,7 +45,6 @@
               <td>{{ reference_group.text }}</td>
               <td>{{ reference_group.position }}</td>
               <td>{{ section_bilan.get(reference_group.section_bilan_id).text }} </td>
-              <td><span class="glyphicon" ng-class="{'glyphicon-ok' : !!reference_group.is_report}"></td>
               <td><a class="action" ng-click="edit(reference_group)"><span class="glyphicon glyphicon-pencil"></span></a></td>
               <td><a class="action danger" ng-click="delete(reference_group)"><span class="glyphicon glyphicon-trash"></span></a></td>
             </tr>
@@ -102,13 +100,6 @@
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-4 required">{{ "COLUMNS.IS_REPORT" | translate }}</label>
-            <div class="col-xs-7">
-              <input type="checkbox" ng-model="session.new.is_report" class="form-bhima">
-            </div>            
-          </div>
-
-          <div class="form-group">
             <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
             <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
           </div>   
@@ -147,13 +138,6 @@
                 <option>--- {{ "SELECT.BALANCE_SECTION" | translate }} ---</option>
               </select>
             </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-xs-4 required">{{ "COLUMNS.IS_REPORT" | translate }}</label>
-            <div class="col-xs-7">
-              <input type="checkbox" ng-model="session.edit.is_report" class="form-bhima">
-            </div>            
           </div>
 
           <div class="form-group">
