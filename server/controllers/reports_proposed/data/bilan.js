@@ -102,14 +102,25 @@ exports.compile = function (options) {
 
   context.reportDate = bilanDate.toDateString();
 
+  // var sql =
+  //   'SELECT account.id, account.account_number, account.account_txt, account.account_type_id, account.is_asset, totals.balance, ' +
+  //   'FROM account LEFT JOIN (' +
+  //     'SELECT period_total.account_id, IFNULL(SUM(period_total.debit - period_total.credit), 0) as balance, period_total.period_id ' +
+  //     'FROM period_total ' +
+  //     'GROUP BY period_total.account_id ' +
+  //   ') AS totals ON totals.account_id = account.id ' +
+  //   'WHERE account.account_type_id IN (?, ?);';
+
   var sql =
-    'SELECT account.id, account.account_number, account.account_txt, account.account_type_id, account.is_asset, account.parent, totals.balance, totals.period_id ' +
-    'FROM account LEFT JOIN (' +
-      'SELECT period_total.account_id, IFNULL(SUM(period_total.debit - period_total.credit), 0) as balance, period_total.period_id ' +
-      'FROM period_total ' +
-      'GROUP BY period_total.account_id ' +
-    ') AS totals ON totals.account_id = account.id ' +
-    'WHERE account.account_type_id IN (?, ?);';
+    'SELECT `acc`.`id` AS `accountId`, `acc`.`account_txt` AS `accounTxt`, `acc`.`account_number` AS `accountNumber`, ' +
+    '`acc`.`is_asset` AS `accountIsAsset`, `ref`.`id` AS `referenceId`, `ref`.`ref` AS `referenceAbbr`, `ref`.`text` AS `referenceLabel`, ' +
+    '`ref`.`position` AS `referencePosition`, `gref`.`id` AS `greferenceId`, `gref`.`is_report` AS `greferenceIsReport`, ' +
+    '`gref`.`reference_group` AS `greferenceAbbr`, `gref`.`text` AS `greferenceLabel`, `gref`.`position` AS `greferencePosition`, ' +
+    '`sbl`.`id` AS `sectionBilanId`, `sbl`.`text` AS `sectionBilanLabel`, `sbl`.`is_actif` AS `sectionBilanIsActif`, ' +
+    '`sbl`.`position` AS `sectionBilanPosition`, `ptt`.`debit` AS `periodTotalDebit`, `ptt`.`credit` AS `periodTotalCredit` ' +
+    'FROM `account` `acc` JOIN `reference` `ref` ON `acc`.`reference_id` = `ref`.`id` JOIN `reference_group` `gref` ' +
+    'ON `gref`.`id` = `ref`.`reference_group_id` JOIN `section_bilan` `sbl` ON `sbl`.`id` = `gref`.`section_bilan_id` ' +
+    'LEFT JOIN `period_total` `ptt` ON `ptt`.`account_id` = `acc`.`id`'
 
   db.exec('SELECT id FROM account_type WHERE type="balance";')
   .then(function (rows) {

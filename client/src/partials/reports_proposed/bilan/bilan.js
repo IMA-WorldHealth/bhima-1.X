@@ -54,7 +54,7 @@ angular.module('bhima.controllers')
     function setDefaultConfiguration(models) {
       angular.extend($scope, models);
       selectConfiguration('language', configuration.language.options[1]);
-      $scope.session.fiscal_year_id = $scope.fiscalYears.data[$scope.fiscalYears.data.length-1].id
+      $scope.session.fiscal_year_id = $scope.fiscalYears.data[$scope.fiscalYears.data.length-1].id;
     }
 
     // POST configuration object to /report/build/:target
