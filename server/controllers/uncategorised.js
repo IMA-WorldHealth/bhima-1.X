@@ -15,6 +15,7 @@ var db          = require('./../lib/db'),
 // Route specific requirements
 var synthetic                  = require('./synthetic'),
     depot                      = require('./depot')(),
+    drugRouter                 = require('./drug.js')(db),
     taxPayment                 = require('./taxPayment')(),
     donation                   = require('./postingDonation')(),
     cotisationPayment          = require('./cotisationPayment')(),
@@ -40,6 +41,13 @@ exports.services = function (req, res, next) {
   .then(function (result) {
     res.send(result);
   })
+  .catch(next)
+  .done();
+};
+
+exports.routeDrugQuery = function (req, res, next) {
+  drugRouter(req.params.code)
+  .then(res.send)
   .catch(next)
   .done();
 };
