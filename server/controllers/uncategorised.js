@@ -4,21 +4,23 @@
  * This file should not exist, it can be removed once all routes have been standardised
  * and categorised
  */
-var db          = require('./../lib/db');
-var sanitize    = require('./../lib/sanitize');
-var util        = require('./../lib/util');
-var uuid        = require('./../lib/guid');
-var cfg         = require('./../config/environment/server');
+var db          = require('./../lib/db'),
+    sanitize    = require('./../lib/sanitize'),
+    util        = require('./../lib/util'),
+    uuid        = require('./../lib/guid'),
+    cfg         = require('./../config/environment/server'),
+    url         = require('url');
+
 
 // Route specific requirements
-var synthetic                  = require('./synthetic');
-var depot                      = require('./depot')();
-var taxPayment                 = require('./taxPayment')();
-var donation                   = require('./postingDonation')();
-var cotisationPayment          = require('./cotisationPayment')();
-var promessePayment            = require('./postingPromessePayment')();
-var promesseCotisation         = require('./postingPromesseCotisation')();
-var promesseTax                = require('./postingPromesseTax')();
+var synthetic                  = require('./synthetic'),
+    depot                      = require('./depot')(),
+    taxPayment                 = require('./taxPayment')(),
+    donation                   = require('./postingDonation')(),
+    cotisationPayment          = require('./cotisationPayment')(),
+    promessePayment            = require('./postingPromessePayment')(),
+    promesseCotisation         = require('./postingPromesseCotisation')(),
+    promesseTax                = require('./postingPromesseTax')();
 
 // TODO delegate to configuration serving controller
 var errorCodes  = require('./../config/environment/errors.json');
@@ -47,12 +49,12 @@ exports.availableCenters = function (req, res, next) {
     'SELECT cost_center.text, cost_center.id, cost_center.project_id, service.name '+
     'FROM cost_center LEFT JOIN service ON service.cost_center_id=cost_center.id';
 
-  function process(ccs) {
-    var costCenters = ccs.filter(function(item) {
+  function process(array) {
+    return array.filter(function (item) {
       return !item.name;
     });
-    return costCenters;
   }
+
   db.exec(sql)
   .then(function (result) {
     res.send(process(result));
@@ -80,9 +82,7 @@ exports.listEmployees = function (req, res, next) {
     ' ORDER BY employee.name ASC, employee.postnom ASC, employee.prenom ASC';
 
   db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
+  .then(res.send)
   .catch(next)
   .done();
 };
@@ -90,15 +90,15 @@ exports.listEmployees = function (req, res, next) {
 exports.listJournal = function (req, res, next) {
   var sql =
     'SELECT posting_journal.uuid, posting_journal.fiscal_year_id, posting_journal.period_id, ' +
-    'posting_journal.trans_id, posting_journal.trans_date, posting_journal.doc_num, ' +
-    'posting_journal.description, posting_journal.account_id, posting_journal.debit, ' +
-    'posting_journal.credit, posting_journal.currency_id, posting_journal.deb_cred_uuid, ' +
-    'posting_journal.deb_cred_type, posting_journal.inv_po_id, ' +
-    'posting_journal.debit_equiv, posting_journal.credit_equiv, posting_journal.currency_id, ' +
-    'posting_journal.comment, posting_journal.user_id, posting_journal.pc_id, ' +
-    'posting_journal.cc_id, account.account_number, user.first, ' +
-    'user.last, currency.symbol, cost_center.text AS cc, ' +
-    'profit_center.text AS pc ' +
+      'posting_journal.trans_id, posting_journal.trans_date, posting_journal.doc_num, ' +
+      'posting_journal.description, posting_journal.account_id, posting_journal.debit, ' +
+      'posting_journal.credit, posting_journal.currency_id, posting_journal.deb_cred_uuid, ' +
+      'posting_journal.deb_cred_type, posting_journal.inv_po_id, ' +
+      'posting_journal.debit_equiv, posting_journal.credit_equiv, posting_journal.currency_id, ' +
+      'posting_journal.comment, posting_journal.user_id, posting_journal.pc_id, ' +
+      'posting_journal.cc_id, account.account_number, user.first, ' +
+      'user.last, currency.symbol, cost_center.text AS cc, ' +
+      'profit_center.text AS pc ' +
     'FROM posting_journal LEFT JOIN account ON posting_journal.account_id=account.id ' +
     'JOIN user ON posting_journal.user_id=user.id ' +
     'JOIN currency ON posting_journal.currency_id=currency.id ' +
@@ -106,9 +106,7 @@ exports.listJournal = function (req, res, next) {
     'LEFT JOIN profit_center ON posting_journal.pc_id=profit_center.id';
 
   db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
+  .then(res.send)
   .catch(next)
   .done();
 };
@@ -118,18 +116,16 @@ exports.listHolidays = function (req, res, next) {
   var sql =
     'SELECT hollyday.id, hollyday.label, hollyday.dateFrom, hollyday.percentage, hollyday.dateTo ' +
     'FROM hollyday WHERE ' +
-    '((hollyday.dateFrom >= ?' + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + ' AND ' +
-    'hollyday.dateFrom<=' + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ') OR ' +
-    '(hollyday.dateTo>=' + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + ' AND ' +
-    'hollyday.dateTo<=' + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ') OR ' +
-    '(hollyday.dateFrom<=' + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + ' AND ' +
-    'hollyday.dateTo>=' + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ')) AND ' +
-    'hollyday.employee_id= >' + sanitize.escape(req.params.employee_id) + ';';
+      '((hollyday.dateFrom >= ? AND ' +
+      'hollyday.dateFrom <= ?) OR ' +
+      '(hollyday.dateTo >= ? AND ' +
+      'hollyday.dateTo <= ?) OR ' +
+      '(hollyday.dateFrom <= ? AND ' +
+      'hollyday.dateTo >= ?)) AND ' +
+      'hollyday.employee_id => ?;';
 
-  db.exec(sql, [pp.dateFrom,pp.dateTo,pp.dateFrom,pp.dateTo,pp.dateFrom,pp.dateTo,req.params.employee_id])
-  .then(function (result) {
-    res.send(result);
-  })
+  db.exec(sql, [pp.dateFrom, pp.dateTo, pp.dateFrom, pp.dateTo, pp.dateFrom, pp.dateTo, req.params.employee_id])
+  .then(res.send)
   .catch(next)
   .done();
 };
@@ -158,8 +154,8 @@ exports.currentProject = function (req, res, next) {
   var sql =
     'SELECT project.id, project.name, project.abbr, project.enterprise_id, enterprise.currency_id, enterprise.location_id, enterprise.name as \'enterprise_name\', enterprise.phone, enterprise.email, village.name as \'village\', sector.name as \'sector\' ' +
     'FROM project JOIN enterprise ON project.enterprise_id=enterprise.id JOIN village ON enterprise.location_id=village.uuid JOIN sector ON village.sector_uuid=sector.uuid ' +
-    'WHERE project.id=' + req.session.project_id + ';';
-  db.exec(sql)
+    'WHERE project.id = ?;';
+  db.exec(sql, [req.session.project.id])
   .then(function (result) {
     res.send(result[0]);
   })
@@ -182,26 +178,27 @@ exports.pcashTransferSummers = function (req, res, next) {
     var d = []; //for now
     res.send(d);
   })
-  .catch(function (err) {
-    next(err);
-  })
+  .catch(next)
   .done();
 };
 
 exports.authenticatePin = function (req, res, next) {
-  var decrypt = req.params.pin >> 5;
-  var sql = 'SELECT pin FROM user WHERE user.id = ' + req.session.user_id +
-    ' AND pin = \'' + decrypt + '\';';
-  db.exec(sql)
+  var sql, decrypt = req.params.pin >> 5;
+
+  sql =
+    'SELECT pin FROM user WHERE user.id =  ? ' +
+      'AND pin = ?;';
+
+  db.exec(sql, [req.session.user_id, decrypt])
   .then(function (rows) {
     res.send({ authenticated : !!rows.length });
   })
-  .catch(function (err) {
-    next(err);
-  })
+  .catch(next)
   .done();
 };
 
+// FIXME: This API is far too generic, and is somewhat confusing
+// We can either clean up the code or remove it altogether
 exports.lookupMaxTableId = function (req, res, next) {
   var maxRequest, id = req.params.id,
       table = req.params.table,
@@ -819,31 +816,14 @@ exports.inventoryByDepot = function (req, res, next) {
   .then(function (ans) {
     res.send(ans);
   })
-  .catch(function (err) {
-    next(err);
-  })
+  .catch(next)
   .done();
 };
 
 exports.routeDepotQuery = function (req, res, next) {
   depot(req.url, req.params.depot)
-  .then(function (ans) {
-    res.send(ans);
-  })
-  .catch(function (err) {
-    next(err);
-  })
-  .done();
-};
-
-exports.routeDrugQuery = function (req, res, next) {
-  drugRouter(req.params.code)
-  .then(function (ans) {
-    res.send(ans);
-  })
-  .catch(function (err) {
-    next(err);
-  })
+  .then(res.send)
+  .catch(next)
   .done();
 };
 
@@ -856,19 +836,23 @@ exports.listIncomeAccounts = function (req, res, next) {
   var sql ='SELECT id, enterprise_id, account_number, account_txt FROM account WHERE account_number LIKE \'6%\' AND account_type_id <> \'3\'';
 
   db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
+  .then(res.send)
   .catch(next)
   .done();
 };
 
 exports.availablePaymentPeriod = function (req, res, next) {
-  var sql = 'SELECT p.id, p.config_tax_id, p.config_rubric_id, p.config_accounting_id, p.config_cotisation_id, p.label, p.dateFrom, p.dateTo, r.label AS RUBRIC, t.label AS TAX, a.label AS ACCOUNT, c.label AS COTISATION FROM paiement_period p, config_rubric r, config_tax t, config_accounting a, config_cotisation c WHERE p.config_tax_id = t.id AND p.config_rubric_id = r.id AND a.id=p.config_accounting_id AND p.config_cotisation_id = c.id ORDER BY p.id DESC';
+  var sql = 'SELECT p.id, p.config_tax_id, p.config_rubric_id, p.config_accounting_id, '+
+              'p.config_cotisation_id, p.label, p.dateFrom, p.dateTo, ' +
+              'r.label AS RUBRIC, t.label AS TAX, a.label AS ACCOUNT, c.label AS COTISATION ' +  // FIXME : why are these capitalized?
+            'FROM paiement_period p, config_rubric r, config_tax t, ' +
+              'config_accounting a, config_cotisation c ' +
+            'WHERE p.config_tax_id = t.id AND p.config_rubric_id = r.id ' +
+              'AND a.id = p.config_accounting_id AND p.config_cotisation_id = c.id ' +
+            'ORDER BY p.id DESC';
+
   db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
+  .then(res.send)
   .catch(next)
   .done();
 };
@@ -894,9 +878,7 @@ exports.listConsumptionDrugs = function (req, res, next) {
       'GROUP BY inventory.uuid ) AS dailycons GROUP BY dailycons.uuid ORDER BY dailycons.text ASC;';
 
   db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
+  .then(res.send)
   .catch(next)
   .done();
 };
@@ -925,9 +907,7 @@ var sql =
       ' GROUP BY consumption_reversing.date ) AS itemconsumpt GROUP BY itemconsumpt.date ;';
 
   db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
+  .then(res.send)
   .catch(next)
   .done();
 };
@@ -951,15 +931,15 @@ exports.listTopConsumption = function (req, res, next) {
       'GROUP BY stock.inventory_uuid ' +
     ') AS topcons GROUP BY topcons.inventory_uuid ORDER BY quantity DESC, text ASC LIMIT 10';
   db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
+  .then(res.send)
   .catch(next)
   .done();
 };
 
 exports.listPurchaseOrders = function (req, res, next) {
   var sql;
+
+  // FIXME : Use a switc statement here
   if (req.query.request == 'OrdersPayed') {
     sql = 'SELECT COUNT(uuid) AS \'count\' FROM purchase WHERE paid = 1 AND is_donation = 0';
   } else if (req.query.request == 'OrdersWatingPayment') {
@@ -1348,13 +1328,13 @@ exports.listDistinctInventory = function (req, res, next) {
 
 exports.listPaymentByEnterprise = function (req, res, next) {
   var sql = 'SELECT e.id, e.code, e.prenom, e.name, e.postnom, e.creditor_uuid, p.uuid as paiement_uuid, ' +
-            'p.currency_id, t.label, t.abbr, t.four_account_id AS \'other_account\', z.tax_id, ' +
-            'z.value, z.posted ' +
-          'FROM employee e ' +
-            'JOIN paiement p ON e.id=p.employee_id ' +
-            'JOIN tax_paiement z ON z.paiement_uuid=p.uuid ' +
-            'JOIN tax t ON t.id = z.tax_id ' +
-          'WHERE p.paiement_period_id= ? AND t.is_employee = 0 ' +
+              'p.currency_id, t.label, t.abbr, t.four_account_id AS \'other_account\', z.tax_id, ' +
+              'z.value, z.posted ' +
+            'FROM employee e ' +
+              'JOIN paiement p ON e.id=p.employee_id ' +
+              'JOIN tax_paiement z ON z.paiement_uuid=p.uuid ' +
+              'JOIN tax t ON t.id = z.tax_id ' +
+            'WHERE p.paiement_period_id= ? AND t.is_employee = 0 ' +
           'ORDER BY e.name ASC, e.postnom ASC, e.prenom ASC';
 
   db.exec(sql, [req.params.employee_id])
@@ -1384,13 +1364,13 @@ exports.listExploitationAccount = function (req, res, next) {
   // maybe use a switch here ?  With default?
   if (req.query.period_id === 'all') {
     sql = 'SELECT period_total.period_id, account.account_number, account.account_txt, SUM(period_total.credit) AS \'credit\', ' +
-                'SUM(period_total.debit) AS \'debit\' ' +
-              'FROM period_total ' +
-              'JOIN account ON account.id = period_total.account_id ' +
-              'WHERE period_total.fiscal_year_id = ' + sanitize.escape(req.query.fiscal_year_id) + ' ' +
-                'AND (account.account_number LIKE \'6%\' OR account.account_number LIKE \'7%\') ' +
-              'GROUP BY account.account_number'
-              'ORDER BY account.account_number ASC';
+            'SUM(period_total.debit) AS \'debit\' ' +
+          'FROM period_total ' +
+          'JOIN account ON account.id = period_total.account_id ' +
+          'WHERE period_total.fiscal_year_id = ' + sanitize.escape(req.query.fiscal_year_id) + ' ' +
+            'AND (account.account_number LIKE \'6%\' OR account.account_number LIKE \'7%\') ' +
+          'GROUP BY account.account_number ' +
+          'ORDER BY account.account_number ASC';
   }
 
   db.exec(sql)
@@ -1428,29 +1408,28 @@ exports.payPromesseTax = function (req, res, next) {
 };
 
 exports.setCotisationPayment = function (req, res, next) {
-  var sql = 'UPDATE cotisation_paiement SET posted=1'
-          + ' WHERE cotisation_paiement.paiement_uuid=' + sanitize.escape(req.body.paiement_uuid) + ' AND cotisation_paiement.cotisation_id=' + sanitize.escape(req.body.cotisation_id);
+  var sql = 'UPDATE cotisation_paiement SET posted = 1 ' +
+            'WHERE cotisation_paiement.paiement_uuid = ? AND ' +
+              'cotisation_paiement.cotisation_id = ?;';
 
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
+  db.exec(sql, [req.body.paiement_uuid, req.body.cotisation_id])
+  .then(res.send)
   .catch(next)
   .done();
 };
 
 exports.listEmployeeCotisationPayments = function (req, res, next) {
-  var sql = 'SELECT e.id, e.code, e.prenom, e.name, e.postnom, e.creditor_uuid, p.uuid as paiement_uuid, p.currency_id, t.label, t.abbr, t.four_account_id AS 'other_account', z.cotisation_id, z.value, z.posted'
-          + ' FROM employee e '
-          + ' JOIN paiement p ON e.id=p.employee_id '
-          + ' JOIN cotisation_paiement z ON z.paiement_uuid=p.uuid '
-          + ' JOIN cotisation t ON t.id=z.cotisation_id '
-          + ' WHERE p.paiement_period_id=' + sanitize.escape(req.params.id) + ' ORDER BY e.name ASC, e.postnom ASC, e.prenom ASC';
+  var sql = 'SELECT e.id, e.code, e.prenom, e.name, e.postnom, e.creditor_uuid, p.uuid as paiement_uuid, p.currency_id, ' +
+              't.label, t.abbr, t.four_account_id AS \'other_account\', z.cotisation_id, z.value, z.posted' +
+            'FROM employee e ' +
+            'JOIN paiement p ON e.id=p.employee_id ' +
+            'JOIN cotisation_paiement z ON z.paiement_uuid=p.uuid ' +
+            'JOIN cotisation t ON t.id=z.cotisation_id ' +
+            'WHERE p.paiement_period_id = ? ' +
+            'ORDER BY e.name ASC, e.postnom ASC, e.prenom ASC';
 
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
+  db.exec(sql, [req.params.id])
+  .then(res.send)
   .catch(next)
   .done();
 };
@@ -1458,14 +1437,14 @@ exports.listEmployeeCotisationPayments = function (req, res, next) {
 exports.listSubsidies = function (req, res, next) {
   var sql = 'SELECT subsidy.uuid, subsidy.text, subsidy.value, subsidy.is_percent, subsidy.debitor_group_uuid, ' +
     'debitor_group.name FROM subsidy JOIN debitor_group ON subsidy.debitor_group_uuid=debitor_group.uuid';
+
   db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
+  .then(res.send)
   .catch(next)
   .done();
 };
 
+// FIXME : how does this work?
 exports.getClassSolde = function (req, res, next) {
 
     var account_class = req.params.account_class,
@@ -1493,9 +1472,7 @@ exports.getClassSolde = function (req, res, next) {
       'WHERE t.account_id = ac.id AND ac.classe=? AND t.fiscal_year_id = ? ';
 
   db.exec(sql, [account_class, account_class, account_class, fiscal_year_id])
-  .then(function (data) {
-    res.send(data);
-  })
+  .then(res.send)
   .catch(next)
   .done();
 
@@ -1516,4 +1493,3 @@ exports.getStockIntegration = function (req, res, next) {
   .catch(next)
   .done();
 };
-
