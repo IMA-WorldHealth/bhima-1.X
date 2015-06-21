@@ -21,9 +21,21 @@ var sanitize = require('./../lib/sanitize');
 var uuid = require('./../lib/guid');
 var util = require('./../lib/util');
 
-'use strict';
-
 var keys = new KeyRing(uuid);
+
+var Err = (function () {
+
+  function _error (code, msg, details, action) {
+    this.code = code;
+    this.message = msg;
+    this.action = action;
+    this.details = details;
+  }
+
+  _error.prototype = Error.prototype;
+
+  return _error;
+})();
 
 /*
  * HTTP Controllers
@@ -112,8 +124,8 @@ function areAccountsLocked () {
     'WHERE account.locked=1;';
 
   db.execute(sql, function (err, rows) {
-    if (err) { d.reject(new error('ERR_QUERY', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
-    if (rows.length) { d.reject(new error('ERR_ACCOUNT_LOCKED', 'There are transactions on locked accounts', rows)); }
+    if (err) { d.reject(new Err('ERR_QUERY', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
+    if (rows.length) { d.reject(new Err('ERR_ACCOUNT_LOCKED', 'There are transactions on locked accounts', rows)); }
     d.resolve();
   });
 
@@ -130,9 +142,9 @@ function areAccountsNull () {
     'WHERE account.id IS NULL;';
 
   db.execute(sql, function (err, rows) {
-    if (err) { d.reject(new error('ERR_QUERY', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
+    if (err) { d.reject(new Err('ERR_QUERY', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
     console.log('voici le resulatt', rows);
-    if (rows.length) { d.reject(new error('ERR_ACCOUNT_NULL', 'Invalid or undefined accounts detected', rows)); }
+    if (rows.length) { d.reject(new Err('ERR_ACCOUNT_NULL', 'Invalid or undefined accounts detected', rows)); }
     d.resolve();
   });
 
@@ -147,11 +159,11 @@ function areAllDatesValid () {
     'ON posting_journal.period_id=period.id;';
 
   db.execute(sql, function (err, rows) {
-    if (err) { d.reject(new error('ERR_QUERY', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
+    if (err) { d.reject(new Err('ERR_QUERY', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
     var outliers = rows.filter(function (row) {
       return !(new Date (row.trans_date) >= new Date(row.period_start) && new Date (row.trans_date) <= new Date(row.period_stop));
     });
-    if (outliers.length) { d.reject(new error('ERR_TXN_UNRECOGNIZED_DATE', 'The dates do not match the periods', outliers)); }
+    if (outliers.length) { d.reject(new Err('ERR_TXN_UNRECOGNIZED_DATE', 'The dates do not match the periods', outliers)); }
 
     d.resolve();
   });
@@ -168,9 +180,9 @@ function areCostsBalanced () {
     'GROUP BY trans_id;';
 
   db.execute(sql, function (err, rows) {
-    if (err) { d.reject(new error('ERR_QUERY', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
+    if (err) { d.reject(new Err('ERR_QUERY', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
     var outliers = rows.filter(function (row) { return row.de !== row.ce; });
-    if (outliers.length) { d.reject(new error('ERR_TXN_IMBALANCE', 'The debits and credits do not balance for some transactions', outliers)); }
+    if (outliers.length) { d.reject(new Err('ERR_TXN_IMBALANCE', 'The debits and credits do not balance for some transactions', outliers)); }
     d.resolve();
   });
 
@@ -194,8 +206,8 @@ function areDebitorCreditorDefined () {
     ');';
 
   db.execute(sql, function (err, rows) {
-    if (err) { d.reject(new error('ERR_QUERY', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
-    if (rows.length) { d.reject(new error('ERR_TXN_UNRECOGNIZED_DC_UUID', 'Debitor or creditors do not exist for some transcations')); }
+    if (err) { d.reject(new Err('ERR_QUERY', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
+    if (rows.length) { d.reject(new Err('ERR_TXN_UNRECOGNIZED_DC_UUID', 'Debitor or creditors do not exist for some transcations')); }
     d.resolve();
   });
 
@@ -207,7 +219,7 @@ function checkPermission (userId, key) {
 
   return q(keys.validate(userId, key))
   .then(function (bool) {
-    if (!bool) { throw new error('ERR_SESS_EXPIRED', 'Posting session expired', [], 'Refresh the trial balance'); }
+    if (!bool) { throw new Err('ERR_SESS_EXPIRED', 'Posting session expired', [], 'Refresh the trial balance'); }
     return db.exec(sql);
   });
 }
@@ -268,19 +280,6 @@ exports.postToGeneralLedger = postToGeneralLedger;
 /*
  * Utility Methods
 */
-var error = (function () {
-
-  function _error (code, msg, details, action) {
-    this.code = code;
-    this.message = msg;
-    this.action = action;
-    this.details = details;
-  }
-
-  _error.prototype = Error.prototype;
-
-  return _error;
-})();
 
 function KeyRing (uuid) {
   var keyStore = {};
