@@ -1,10 +1,11 @@
 {
   "name": "bhima",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "description": "A rural hospital information management system.",
   "main": "server/app.js",
   "scripts": {
-    "test": "mocha server/test/"
+    "test": "mocha server/test/ && npm run jshint",
+    "jshint": "jshint server/controllers/*.js && jshint client/src/**/.js"
   },
   "repository": {
     "type": "git",
@@ -48,6 +49,7 @@
     "gulp-uncss": "~0.4.3",
     "gulp-yuidoc": "~0.1.2",
     "jsdoc": "~3.3.0-alpha5",
+    "jshint": "^2.8.0",
     "mocha": "^2.0.1",
     "numeral": "^1.5.3",
     "qunit": "~0.5.18",
