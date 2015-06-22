@@ -113,6 +113,14 @@ INSERT INTO `unit` VALUES
 (110, 'Section resultat', 'TREE.SECTION_RESULTAT', '', 30, 0, '/partials/section_resultat/', '/section_resultat/');
 
 
+-- Updates table account
+-- Date: 2015-06-18
+-- By: Chris LOMAME
+-- ADD 'is_used_budget' field
+--
+USE bhima;
+ALTER TABLE `account`
+ADD `is_used_budget` boolean NOT NULL;
 
 
 
