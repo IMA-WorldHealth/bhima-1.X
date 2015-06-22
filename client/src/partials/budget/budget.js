@@ -59,33 +59,31 @@ angular.module('bhima.controllers')
       var totalBalance = 0.0;
       var totals = {};
       $scope.budgets.data.forEach(function (bud) {
-  if (bud.account_id in totals) {
-    totals[bud.account_id] += bud.budget;
-    }
-  else {
-    totals[bud.account_id] = bud.budget;
-    }
-  totalBudget += bud.budget;
-  });
+      if (bud.account_id in totals) {
+        totals[bud.account_id] += bud.budget;
+      }
+      else {
+        totals[bud.account_id] = bud.budget;
+      }
+      totalBudget += bud.budget;
+    });
 
       // Insert the budget totals into the account data
       $scope.accounts.data.forEach(function (acct) {
-  if (acct.id in totals) {
-    acct.budget = precision.round(totals[acct.id], 2);
-    }
-  else {
-    if (acct.type === 'title') {
-      acct.budget = null;
-      }
-    else {
-      acct.budget = 0; // No budget means 0 budget!
-      }
-    }
-  // Increment total balance
-  if (!isNaN(acct.balance)) {
-    totalBalance += acct.balance;
-    }
-  });
+        if (acct.id in totals) {
+          acct.budget = precision.round(totals[acct.id], 2);
+        } else {
+          if (acct.type === 'title') {
+            acct.budget = null;
+          } else {
+            acct.budget = 0; // No budget means 0 budget!
+          }
+        }
+        // Increment total balance
+        if (!isNaN(acct.balance)) {
+          totalBalance += acct.balance;
+        }
+      });
 
       $scope.totalBudget = precision.round(totalBudget, 2);
       $scope.totalBalance = precision.round(totalBalance, 2);
@@ -93,9 +91,12 @@ angular.module('bhima.controllers')
 
     function parseAccountDepth(accountData, accountModel) {
       // Copied from chart of accounts, should refactor surplus deficit
+      var totalSurplus = 0.0,
+        totalDeficit = 0.0;
+
       accountData.forEach(function (account) {
         var parent, depth = 0;
-        if(account.classe === 6){
+        if(account.classe === 6 || account.classe === 2){
           if(account.budget > account.balance) {
             account.surplus = account.budget - account.balance;
             account.deficit = 0;
@@ -106,7 +107,7 @@ angular.module('bhima.controllers')
             account.deficit = 0;
             account.surplus = 0;
           }
-        } else if(account.classe === 7){
+        } else if(account.classe === 7 || account.classe === 1){
           if(account.budget < account.balance) {
             account.surplus = account.balance - account.budget ;
             account.deficit = 0;
@@ -118,6 +119,8 @@ angular.module('bhima.controllers')
             account.surplus = 0;
           }
         }
+        totalSurplus += account.surplus;
+        totalDeficit += account.deficit;  
 
         //TODO if parent.depth exists, increment and kill the loop (base case is ROOT_NODE)
         parent = accountModel.get(account.parent);
@@ -128,18 +131,19 @@ angular.module('bhima.controllers')
         }
         account.depth = depth;
       });
+      $scope.totalSurplus = totalSurplus;
+      $scope.totalDeficit = totalDeficit;  
     }
 
     function start(models) {
       angular.extend($scope, models);
       $scope.accounts.data.forEach(function (acct) {
-  if ((acct.type !== 'title') && (acct.balance === null)) {
-    acct.balance = 0.0;
-    }
-  });
+      if ((acct.type !== 'title') && (acct.balance === null)) {
+        acct.balance = 0.0;
+      }
+    });
       addBudgetData();
       parseAccountDepth($scope.accounts.data, $scope.accounts);
-
       session.mode = 'display';
     }
 
@@ -147,13 +151,13 @@ angular.module('bhima.controllers')
       dependencies.accounts.query = '/InExAccounts/' +enterprise_id;
       dependencies.budgets.query.where = ['period.fiscal_year_id=' + session.fiscal_year.id];
       validate.refresh(dependencies, ['accounts', 'budgets'])
-  .then(start);
+      .then(start);
     }
 
     function selectYear(id) {
       session.fiscal_year = $scope.fiscal_years.data.filter(function (obj) {
-  return obj.id === id;
-  })[0];
+      return obj.id === id;
+      })[0];
     }
 
     function loadFiscalYears(models) {
