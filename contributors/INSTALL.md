@@ -22,10 +22,10 @@ the `gulp` command in the client directory as shown below.
 
 ```bash
 $ # Inside the bhima/ directory
-$ npm install -g gulp later dot
+$ npm install -g gulp
 $ npm install
-$ cd client && gulp build
-# This output may vary
+$ cd client
+$ gulp
 [gulp] [21:18:18] Using gulpfile ~\proto\remote\client\gulpfile.js
 [gulp] [21:18:18] Starting 'default'...
 [gulp] [21:18:18] Starting 'scripts'...
@@ -60,7 +60,7 @@ Application running on localhost:8080
 ```
 
 ###### Verify the install
-Navigate to https://localhost:8080 in the browser to verify the installation.
+Navigate to https://localhost:8080 in the browser to verify the installation.  
 You should be greated with a login page.
 
 ###### Advanced - configuring the application
