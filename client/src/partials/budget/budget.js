@@ -13,12 +13,13 @@ angular.module('bhima.controllers')
         enterprise_id = null,
         session = $scope.session = {};
 
+
     // Set up session defaults
     session.mode = 'select';
     session.fiscal_year = null;
 
     $scope.timestamp = new Date();
-    
+    $scope.total = {};
     // Define the database queries
     dependencies.accounts = {
     };
@@ -85,8 +86,8 @@ angular.module('bhima.controllers')
         }
       });
 
-      $scope.totalBudget = precision.round(totalBudget, 2);
-      $scope.totalBalance = precision.round(totalBalance, 2);
+      $scope.total.budget = precision.round(totalBudget, 2);
+      $scope.total.balance = precision.round(totalBalance, 2);
     }
 
     function parseAccountDepth(accountData, accountModel) {
@@ -131,8 +132,8 @@ angular.module('bhima.controllers')
         }
         account.depth = depth;
       });
-      $scope.totalSurplus = totalSurplus;
-      $scope.totalDeficit = totalDeficit;  
+      $scope.total.surplus = precision.round(totalSurplus);
+      $scope.total.deficit = precision.round(totalDeficit);  
     }
 
     function start(models) {
