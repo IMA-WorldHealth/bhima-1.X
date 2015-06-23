@@ -23,7 +23,7 @@ angular.module('bhima.controllers')
       query : {
         identifier : 'account_number',
         tables : {
-          account : { columns : ['id', 'account_number', 'account_txt', 'account_type_id', 'cc_id', 'pc_id', 'is_asset', 'is_ohada', 'parent', 'locked', 'reference_id', 'is_brut_link'] },
+          account : { columns : ['id', 'account_number', 'account_txt', 'account_type_id', 'cc_id', 'pc_id', 'is_asset', 'is_ohada', 'parent', 'locked', 'reference_id', 'is_brut_link', 'is_used_budget', 'classe'] },
           account_type : { columns : ['type::account_type'] }
         },
         join: [ 'account.account_type_id=account_type.id' ]
@@ -103,6 +103,7 @@ angular.module('bhima.controllers')
         account_txt: account.title,
         is_asset: account.is_asset,
         is_ohada: account.is_ohada,
+        is_used_budget: account.is_used_budget,
         cc_id   : account.cc_id,
         pc_id   : account.pc_id,
         enterprise_id: appstate.get('enterprise').id,
@@ -146,9 +147,14 @@ angular.module('bhima.controllers')
     };
 
     $scope.getAccount = function (account) {
+      $scope.editAccount = null;
       $scope.accountClass = parseInt($scope.checkClass(account.account_number)); 
       session.state = 'edit';
       $scope.editAccount = account;
+      
+      if($scope.editAccount.is_used_budget){
+        $scope.editAccount.is_used_budget = true;
+      }
 
       if($scope.editAccount.is_brut_link){
         $scope.editAccount.is_brut_link = true;
@@ -178,18 +184,20 @@ angular.module('bhima.controllers')
         $scope.editAccount.is_asset = null;
       }
       $scope.editAccount.is_brut_link = ($scope.editAccount.is_brut_link)?1:0;
+      $scope.editAccount.is_used_budget = ($scope.editAccount.is_used_budget)?1:0;
 
       var update = {
-        id            : account.id,
-        account_txt   : $scope.editAccount.account_txt,
-        is_asset      : $scope.editAccount.is_asset,
-        is_ohada      : $scope.editAccount.is_ohada,
-        locked        : $scope.editAccount.locked,
-        cc_id         : $scope.editAccount.cc_id,
-        pc_id         : $scope.editAccount.pc_id,
-        parent        : $scope.editAccount.parent,
-        reference_id  : $scope.editAccount.reference_id,
-        is_brut_link  : $scope.editAccount.is_brut_link         
+        id              : account.id,
+        account_txt     : $scope.editAccount.account_txt,
+        is_asset        : $scope.editAccount.is_asset,
+        is_ohada        : $scope.editAccount.is_ohada,
+        is_used_budget  : $scope.editAccount.is_used_budget,
+        locked          : $scope.editAccount.locked,
+        cc_id           : $scope.editAccount.cc_id,
+        pc_id           : $scope.editAccount.pc_id,
+        parent          : $scope.editAccount.parent,
+        reference_id    : $scope.editAccount.reference_id,
+        is_brut_link    : $scope.editAccount.is_brut_link         
       };
 
       connect.put('account', [update], ['id'])
