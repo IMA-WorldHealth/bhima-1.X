@@ -107,7 +107,7 @@ angular.module('bhima.controllers')
             account.deficit = 0;
             account.surplus = 0;
           }
-        } else if(account.classe === 7 || account.classe === 1){
+        } else if(account.classe === 7 || account.classe === 1 || account.classe === 5){
           if(account.budget < account.balance) {
             account.surplus = account.balance - account.budget ;
             account.deficit = 0;

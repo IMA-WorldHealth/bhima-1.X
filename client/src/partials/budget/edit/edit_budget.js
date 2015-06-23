@@ -184,7 +184,7 @@ angular.module('bhima.controllers')
     function accountWhere() {
       // only unlocked income/expense accounts
       // Allow accounts of class 1 and 2 used in budget
-      return [['account.account_type_id IN (1,4)','OR',['account.classe IN (1,2)','AND','account.is_used_budget=1']], 'AND', 'account.locked=0' ];
+      return [['account.account_type_id IN (1,4)','OR',['account.classe IN (1,2,5)','AND','account.is_used_budget=1']], 'AND', 'account.locked=0' ];
     }
 
     function restartSearch() {

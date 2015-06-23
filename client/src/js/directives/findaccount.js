@@ -74,7 +74,6 @@ angular.module('bhima.directives')
 				if (account) {
 	  			if (!isNaN(account)) {
 	    			var data = getAccount(scope.accountId);
-            console.log('dataHHHHHHHHHHHHHHHH',data);
 	    			if (data) {
 	      			selectedAccount = data;
 	      			scope.accountId = data.account_txt + ' [' + data.account_number + ']';
