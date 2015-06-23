@@ -30,7 +30,7 @@ Contributing
 All contributions are welcome!  Our project is still in the alpha phase; we
 provide no guarantee on the build until our first releases (Spring 2014).
 However, feel free to fork, send us a pull request, do some style or
-translation work!  Please refer to the [contributing guide](./docs/CONTRIBUTING.md)
+translation work!  Please refer to the [contributing guide](./CONTRIBUTING.md)
 for more information.
 
 Installation
@@ -39,4 +39,4 @@ See the [install guide](./docs/INSTALL.md).
 
 License
 ---------------
-Bhima is licensed under GPL v2.0.  [Read the License](./docs/LICENSE).
+Bhima is licensed under GPL v2.0.  [Read the License](./LICENSE).
