@@ -16,18 +16,8 @@ angular.module('bhima.controllers')
         tables : {
           'reference' : {
             columns : ['id', 'ref', 'text', 'position', 'reference_group_id', 'section_resultat_id', 'is_report']
-          },
-          'reference_group' : {
-            columns : ['text::reference_group_txt' ]
-          },
-          'section_resultat' : {
-            columns : ['text::section_resultat_txt' ]
           }                    
-        },
-        join : [
-          'reference_group.id=reference.reference_group_id',
-          'section_resultat.id=reference.section_resultat_id'
-        ],
+        }
       }
     };
 
@@ -106,6 +96,9 @@ angular.module('bhima.controllers')
       delete record.reference;
       delete record.reference_group_txt;
       delete record.section_resultat_txt;
+
+      record.reference_group_id = session.edit.reference_group_id;
+      record.section_resultat_id = session.edit.section_resultat_id;      
       record.is_report = (session.edit.is_report)?1:0;
 
       connect.put('reference', [record], ['id'])
@@ -119,6 +112,9 @@ angular.module('bhima.controllers')
 
     $scope.save.new = function () {
       var record = connect.clean(session.new);
+
+      record.reference_group_id = session.new.reference_group_id;
+      record.section_resultat_id = session.new.section_resultat_id;
       record.is_report = (session.new.is_report)?1:0;
 
       connect.post('reference', [record])
