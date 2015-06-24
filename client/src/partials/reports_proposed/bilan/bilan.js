@@ -29,7 +29,7 @@ angular.module('bhima.controllers')
         identifier : 'id',
         tables : {
           'fiscal_year' : {
-            columns : ['id', 'fiscal_year_txt']
+            columns : ['id', 'fiscal_year_txt', 'previous_fiscal_year']
           }
         }
       }
@@ -55,6 +55,7 @@ angular.module('bhima.controllers')
       angular.extend($scope, models);
       selectConfiguration('language', configuration.language.options[1]);
       $scope.session.fiscal_year_id = $scope.fiscalYears.data[$scope.fiscalYears.data.length-1].id;
+      $scope.session.previous_fiscal_year_id = $scope.fiscalYears.data[$scope.fiscalYears.data.length-1].previous_fiscal_year;
     }
 
     // POST configuration object to /report/build/:target
@@ -65,6 +66,7 @@ angular.module('bhima.controllers')
       // Temporarily set configuration options - This shouldn't be manually compiled
       configurationObject.language = configuration.language.selected.value;
       configurationObject.fy = $scope.session.fiscal_year_id;
+      configurationObject.pfy = $scope.session.previous_fiscal_year_id ||  $scope.session.fiscal_year_id;
 
       // Update state
       session.building = true;
