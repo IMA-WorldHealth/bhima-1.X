@@ -160,6 +160,7 @@ exports.compile = function (options) {
             section.totalBrut += item.brut;
 
             item.amort_prov = getAmortProv(item, currents);
+            console.log('item.amort_prov', item.amort_prov);
             item.amort_prov_view = numeral(item.amort_prov).format(formatDollar);
             section.totalAmortProv += item.amort_prov;
 
@@ -321,6 +322,8 @@ exports.compile = function (options) {
           somCredit+=item.generalLegderCredit;
         }
       });
+
+
       return somDebit - somCredit;
     }
 
@@ -329,8 +332,8 @@ exports.compile = function (options) {
 
       currents.forEach(function (item){
         if(item.referenceId === reference.referenceId && item.accountIsBrutLink === 0){
-          somDebit+=(item.periodTotalDebit);
-          somCredit+=(item.periodTotalCredit);
+          somDebit+=(item.generalLegderDebit);
+          somCredit+=(item.generalLegderCredit);
         }
       });
       return somDebit - somCredit;
