@@ -11,8 +11,14 @@ angular.module('bhima.controllers')
   '$location',
   'exchange',
   function ($scope, $http, $translate, validate, messenger, appstate, uuid, Appcache, $location, exchange) {
-    var isDefined, dependencies = {},
-        session = $scope.session = { receipt : { date : new Date() }, configure : false, complete : false },
+    'use strict';
+
+    var dependencies = {},
+        session = $scope.session = {
+          receipt   : { date : new Date() },
+          configure : false,
+          complete  : false
+        },
         cache = new Appcache('extra');
 
     dependencies.sales = {
@@ -66,7 +72,7 @@ angular.module('bhima.controllers')
       });
     });
 
-    function getSale (data) {
+    function getSale(data) {
       // FIXME : utilisation abusive des boucles
       // l'algorithme marche mais n'est pas optimal
       $scope.saleData = [];
@@ -86,7 +92,7 @@ angular.module('bhima.controllers')
             row.currency_id = 2; // values are always in $ by default
           });
           $scope.saleData = $scope.saleData.concat(items);
-          $scope.saleDataUnique = uniqueFx($scope.saleData, 'transaction');
+          $scope.saleDataUnique = filterUnique($scope.saleData, 'transaction');
         });
       });
     }
@@ -101,6 +107,8 @@ angular.module('bhima.controllers')
         cost         : sale.cost || 0,
         currency_id  : sale.currency_id
       };
+
+      // FIXME : use connect.post()
       $http.post('/extraPayment/', {
         params : {
           user_id : details.user_id,
@@ -118,20 +126,20 @@ angular.module('bhima.controllers')
       });
     }
 
-    function init (models) {
+    function init(models) {
       angular.extend($scope, models);
       session.accounts = models.accounts.data;
       return $scope.sales.data;
     }
 
-    function getAccount (ac) {
+    function getAccount(ac) {
       if (!ac) { return; }
        session.configured = true;
        session.ac = ac;
        session.complete = true;
     }
 
-    function setCurrency (obj) {
+    function setCurrency(obj) {
       if (obj.currency === 1 && obj.currency_id === 2) {
         obj.balance = obj.balance * exchange.rate(null, obj.currency);
         obj.cost = obj.balance;
@@ -144,16 +152,25 @@ angular.module('bhima.controllers')
 
     }
 
-    function uniqueFx (tableau, criteria) {
-      var unique = {},
-          distinct = [];
-      for( var i in tableau ){
-        if( typeof(unique[tableau[i][criteria]]) === 'undefined'){
-          distinct.push(tableau[i]);
+    // filter unique items
+    function filterUnique(array, key) {
+      var filter = {},
+          unique = [],
+          k;
+
+      array.forEach(function (element, idx) {
+
+        // this is the key of the object
+        k = array[idx][key];
+        if (typeof(unique[k]) === 'undefined') {
+          unique.push(array[idx]);
         }
-        unique[tableau[i][criteria]] = 0;
-      }
-      return distinct;
+
+        // record that we've seen this value
+        unique[k] = 1;
+      });
+
+      return unique;
     }
 
     $scope.formatAccount = function (ac) {
@@ -177,20 +194,5 @@ angular.module('bhima.controllers')
 
     $scope.setCurrency = setCurrency;
     $scope.submit = submit;
-
-    // Prototype unique
-    Array.prototype.unique = function(criteria)
-    {
-      var unique = {},
-        distinct = [];
-      for( var i in this ){
-        if( typeof(unique[this[i][criteria]]) === 'undefined'){
-          distinct.push(this[i]);
-        }
-        unique[this[i][criteria]] = 0;
-      }
-      return distinct;
-    };
-    // End Prototype
   }
 ]);
