@@ -50,7 +50,7 @@ CREATE TABLE `reference_group` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Create table reference.
--- Date: 2015-06-09
+-- Date: 2015-06-24
 -- By: Chris LOMAME
 
 USE bhima;
@@ -61,12 +61,9 @@ CREATE TABLE `reference` (
   `ref`                 char(4) not null,
   `text`                text,
   `position`            int unsigned,
-  `reference_group_id`  tinyint unsigned,
-  `section_resultat_id` tinyint unsigned,
-  primary key (`id`),
-  key `reference_group_id` (`reference_group_id`),
-  key `section_resultat_id` (`section_resultat_id`),
-  constraint foreign key (`section_resultat_id`) references `section_resultat` (`id`)
+  `reference_group_id`  tinyint unsigned null,
+  `section_resultat_id` tinyint unsigned null,
+  primary key (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
