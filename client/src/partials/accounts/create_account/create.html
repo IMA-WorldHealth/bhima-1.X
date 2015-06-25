@@ -158,6 +158,19 @@
                     </div>
                   </div>
 
+                  <div class="form-group" ng-if="session.accountClass === '1' || session.accountClass === '2' || session.accountClass === '5'">
+                    <div class="checkbox">
+                      <label>
+                        <input 
+                        type="checkbox" 
+                        name="option_is_used_budget" 
+                        id="is_used_budget" 
+                        ng-model="newAccount.is_used_budget">
+                        {{ "ACCOUNT.IS_USED_BUDGET" | translate }}
+                      </label>
+                    </div>
+                  </div>
+
                   <div class="form-group" ng-if="newAccount.type.type === 'income/expense' && newAccount.number">
                     <div ng-switch on="session.accountClass">
                       <div ng-switch-when="6">
@@ -273,8 +286,25 @@
                         id="is_ohada" 
                         ng-model="editAccount.is_ohada"
                         ng-checked="editAccount.is_ohada">
-                        {{ "ACCOUNT.IS_OHADA" | translate }}
+                        {{ "ACCOUNT.IS_OHADA" | translate }} 
                       </label>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div>
+                      <div ng-if = "accountClass === 1 || accountClass === 2  || accountClass === 5">
+                        <div class="checkbox">
+                          <label>
+                            <input 
+                            type="checkbox" 
+                            name="option_is_used_budget" 
+                            id="is_used_budget" 
+                            ng-model="editAccount.is_used_budget">
+                            {{ "ACCOUNT.IS_USED_BUDGET" | translate }}
+                          </label>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
