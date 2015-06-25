@@ -30,6 +30,7 @@
    "IS_OHADA"        : "OHADA ?",
    "IS_NOTHING"      : "Autre",
    "IS_PASSIVE"      : "Est un passif",
+   "IS_USED_BUDGET"  : "Est ce utiliser dans le Budget ?",   
    "LABEL"           : "Label",
    "NEW"             : "Ajouter un Compte",
    "NO"              : "No.",
@@ -443,6 +444,7 @@
    "IS_OHADA"              : "OHADA ?",
    "IS_PERCENT"            : "En pourcentage",
    "IS_REPORT"             : "Est ce un repport ?",   
+   "IS_USED_BUDGET"        : "Est ce utiliser dans le Budget ?",
    "IS_WAREHOUSE"          : "Est-ce un entrepot ?",
    "ITEM"                  : "Item",
    "ISSUER"                : "Émetteur",
@@ -1068,7 +1070,7 @@
 "FIND": {
     "ACCOUNT" : {
       "ACCOUNT"         : "Compte",
-      "ENTER_ACCOUNT"   : "Entrez Compte",
+      "ENTER_ACCOUNT"   : "Entrez un Compte",
       "PLACEHOLDER"     : "Par le numéro de Compte ou bien par le nom"
       },
    "PATIENT_ID"        : "ID Patient",
@@ -2900,7 +2902,7 @@
    "AGGREGATES"        : "Agregats",
    "ALL"               : "Tous",
    "ALL_DONORS"        : "Tous les donateurs",
-   "BACK"              : "Retourner",
+   "BACK"              : "Précédent",
    "CANCEL"            : "Annuler",
    "COLUMNS"           : "Colonnes",
    "CONFIGURE"         : "Configurer",
@@ -2917,7 +2919,7 @@
    "DONOR"             : "Donateur",
    "EDIT_SUCCESS"      : "Modification réussie",
    "ERROR"             : "Erreur",
-   "EXPORT_TO_CSV"     : "Export to CSV",
+   "EXPORT_TO_CSV"     : "Exporter en CSV",
    "GENERATE"          : "Générer",
    "IMCK"              : "IMCK",
    "IMCK_LONG"         : "Institut Médical Chrétien du Kasaï",
