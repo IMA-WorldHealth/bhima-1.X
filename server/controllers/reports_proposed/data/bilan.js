@@ -109,10 +109,11 @@ exports.compile = function (options) {
     '`sbl`.`position` AS `sectionBilanPosition`, SUM(`gld`.`debit_equiv`) AS `generalLegderDebit`, SUM(`gld`.`credit_equiv`) AS `generalLegderCredit` ' +
     'FROM `section_bilan` `sbl` JOIN `reference_group` `gref` ON `sbl`.`id` = `gref`.`section_bilan_id` JOIN `reference` `ref` ON `gref`.`id` = `ref`.`reference_group_id` ' +
     'JOIN `account` `acc` ON `acc`.`reference_id` = `ref`.`id` JOIN `general_ledger` `gld` ON `gld`.`account_id` = `acc`.`id` WHERE `gld`.`trans_date`<= (SELECT MAX(`period_stop`) ' +
-    'FROM `period` WHERE `period`.`fiscal_year_id`=?) AND `acc`.`is_ohada`=? GROUP BY `gld`.`account_id`;';
+    'FROM `period` WHERE `period`.`fiscal_year_id`=?) AND `acc`.`is_ohada`=? GROUP BY `gld`.`account_id` ORDER BY `sbl`.`position`, `gref`.`position`, `ref`.`position` DESC;';
 
   db.exec(sql, [options.fy, 1])
   .then(function (currentAccountDetails) {
+    console.log('currentAccountDetails', currentAccountDetails);
     infos.currentAccountDetails = currentAccountDetails;
     return db.exec(sql, [options.pfy, 1]);
   })
@@ -146,7 +147,7 @@ exports.compile = function (options) {
 
     function processAsset (tbl){
       var currents = tbl.currentAccountDetails;
-      var sections = getSections(currents);
+      var sections = (currents.length > 0) ? getSections(currents) : [];
 
       context.assetGeneralBrut = 0, context.assetGeneralAmortProv = 0, context.assetGeneralNet = 0, context.assetGeneralPreviousNet = 0,
       sections.forEach(function (section){
@@ -160,7 +161,6 @@ exports.compile = function (options) {
             section.totalBrut += item.brut;
 
             item.amort_prov = getAmortProv(item, currents);
-            console.log('item.amort_prov', item.amort_prov);
             item.amort_prov_view = numeral(item.amort_prov).format(formatDollar);
             section.totalAmortProv += item.amort_prov;
 
@@ -195,7 +195,7 @@ exports.compile = function (options) {
 
     function processPassive (tbl){
       var currents = tbl.currentAccountDetails;
-      var sections = getSections(currents);
+      var sections = (currents.length > 0) ? getSections(currents) : [];
 
       context.passiveGeneralBrut = 0, context.passiveGeneralAmortProv = 0, context.passiveGeneralNet = 0, context.passiveGeneralPreviousNet = 0,
       sections.forEach(function (section){
@@ -248,6 +248,7 @@ exports.compile = function (options) {
     }
 
     function getSections (currents){
+      // console.log('recu currents', currents);
       var sections = [];
       sections.push({
         sectionBilanId : currents[0].sectionBilanId,
@@ -257,7 +258,7 @@ exports.compile = function (options) {
         grefs : []
       });
 
-      for(var i = 1; i <= currents.length - 1; i++){
+      for(var i = 0; i <= currents.length - 1; i++){
         if(!exist(currents[i], sections, 'sectionBilanId')){
           sections.push({
             sectionBilanId : currents[i].sectionBilanId,
