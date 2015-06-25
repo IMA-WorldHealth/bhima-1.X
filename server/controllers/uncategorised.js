@@ -229,7 +229,6 @@ exports.lookupMaxTableId = function (req, res, next) {
   .done();
 };
 
-
 exports.listInExAccounts = function (req, res, next) {
   var enterprise_id = sanitize.escape(req.params.id_enterprise);
   var sql =
@@ -241,6 +240,7 @@ exports.listInExAccounts = function (req, res, next) {
         'FROM account LEFT JOIN period_total ' +
         'ON account.id=period_total.account_id ' +
         'WHERE account.enterprise_id = ' + enterprise_id +
+        ' AND (account.classe IN (\'6\', \'7\') OR ((account.classe IN (\'1\', \'2\', \'5\') AND account.is_used_budget = 1) ))' +
     ' ) ' +
     'AS temp JOIN account_type ' +
     'ON temp.account_type_id = account_type.id ' +
@@ -248,7 +248,9 @@ exports.listInExAccounts = function (req, res, next) {
 
   function process(accounts) {
     var InExAccounts = accounts.filter(function(item) {
-      return item.account_number.toString().indexOf('6') === 0 || item.account_number.toString().indexOf('7') === 0;
+      var account_6_7 = item.account_number.toString().indexOf('6') === 0 || item.account_number.toString().indexOf('7') === 0,
+        account_1_2_5 = item.account_number.toString().indexOf('1') === 0 || item.account_number.toString().indexOf('2') === 0 || item.account_number.toString().indexOf('5') === 0;
+      return account_6_7 || account_1_2_5;
     });
     return InExAccounts;
   }
