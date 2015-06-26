@@ -1190,7 +1190,7 @@
    "SAVE_CHANGES"    : "Save Changes",
    "SAVE_FORM"       : "Save Form",
    "SEARCH"          : "Search",
-   "SIGN_AND_SUBMIT" : "Sign & Submit",
+   "SIGN_AND_SUBMIT" : "Sign and Submit",
    "SUBMIT"          : "Submit",
    "SUBMIT_BALANCES" : "Save Balances"
    },
@@ -1307,7 +1307,7 @@
    "REGISTER": {
       "ADD_GROUP"      : "Add Inventory Group",
       "ADD_TYPE"       : "Add Unit Type",
-      "BILLING"        : "Billing & Stock Information",
+      "BILLING"        : "Billing and Stock Information",
       "CODE"           : "Inventory Code",
       "CONSUMABLE"     : "Consumable",
       "DEFAULT_PRICE"  : "Default Price",
@@ -1746,7 +1746,7 @@
    "REGISTERED"  : "Registered Users",
    "RETYPE"      : "Retype",
    "SUPER"       : "Super User",
-   "TITLE"       : "Users & Permissions Management"
+   "TITLE"       : "Users and Permissions Management"
    },
 "PLACEHOLDERS": {
    "PRODUCTS"       : "e.g. Products",
@@ -2382,7 +2382,7 @@
   "STEP1"       : "Identification",
   "STEP2"       : "Consultations",
   "STEP3"       : "Hospitalizations",
-  "STEP4"       : "Labo & Imagerie",
+  "STEP4"       : "Labo and Imagerie",
   "STEP5"       : "Mother's health",
   "STEP6"       : "Child's health",
   "STEP7"       : "Ressource management",
@@ -2809,7 +2809,7 @@
    "PAYMENT_PERIOD"            : "Payment Period Management",
    "PAYROLL"                   : "Payroll",
    "PAYROLL_REPORT"            : "Payroll Reports",
-   "PERMISSION"                : "Users & Permissions",
+   "PERMISSION"                : "Users and Permissions",
    "POSTING_JOURNAL"           : "Posting Journal",
    "PRICE_LIST"                : "Price List",
    "PROFIT_CENTER_MGMNT"       : "Profit center management",

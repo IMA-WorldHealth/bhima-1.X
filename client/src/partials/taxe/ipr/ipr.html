@@ -120,7 +120,7 @@
 			      </div>
 
 			      <div ng-switch-when="new">
-			        <form class="form-horizontal" novalidate>
+			        <form class="form-horizontal" name="new" novalidate>
 			          <legend><h3>{{ "TAXES.NEW_TRANCH" | translate }} </h3></legend>
 
 			          <div class="form-group">
@@ -160,14 +160,14 @@
 			          </div>
 
 			          <div class="form-group">
-			            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
+			            <input type="submit" ng-disabled="new.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
 			            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
 			          </div>   
 			        </form>
 			      </div>
 
 			      <div ng-switch-when="edit">
-			        <form novalidate class="form-horizontal">
+			        <form novalidate class="form-horizontal" name="edit">
 			          <legend><h3>{{ "TAXES.EDIT_TRANCH" | translate }} </h3></legend>
 
 			          <div class="form-group">
@@ -207,7 +207,7 @@
 			          </div>
 
 			          <div class="form-group">
-			            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
+			            <input type="submit" ng-disabled="edit.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
 			            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
 			          </div>   
 			        </form>
