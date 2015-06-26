@@ -86,7 +86,7 @@
       </div>
 
       <div ng-switch-when="new">
-        <form  novalidate>
+        <form  novalidate name="new">
           <fieldset>
             <legend>{{ 'PROJECT.NEW' | translate }}</legend>
 
@@ -103,27 +103,27 @@
             <div class="form-group">
               <label>{{ 'COLUMNS.ENTERPRISE' | translate }}</label>
               <select class="form-bhima" ng-model="newProject.enterprise_id" ng-options="e.id as e.name for e in enterprises.data" required>
-                <option value="" disabled>{{ 'SELECT.ENTERPRISE' | translate }}</option>
+                <option value="">{{ 'SELECT.ENTERPRISE' | translate }}</option>
               </select>
             </div>
 
             <!-- zone de sante for snis -->
             <div class="form-group">
               <label>{{ 'COLUMNS.ZS' | translate }}</label>
-              <select class="form-bhima" ng-model="newProject.zs_id" ng-options="zone.id as toString(zone) for zone in zs.data" required>
-                <option value="" disabled>{{ 'SELECT.ZS' | translate }}</option>
+              <select class="form-bhima" ng-model="newProject.zs_id" ng-options="zone.id as toString(zone) for zone in zs.data">
+                <option value="">{{ 'SELECT.ZS' | translate }}</option>
               </select>
             </div>
             <!-- end zone de sante for snis -->
 
-            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="submitNew()">
+            <input type="submit" ng-disabled="new.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="submitNew()">
             <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.CLEAR' | translate }}" ng-click="cancelNew()">
           </fieldset>
         </form>
       </div>
 
       <div ng-switch-when="edit">
-        <form novalidate>
+        <form novalidate name="edit">
           <fieldset>
             <legend>{{ 'PROJECT.EDIT' | translate }}</legend>
 
@@ -140,20 +140,20 @@
             <div class="form-group">
               <label>{{ 'COLUMNS.ENTERPRISE' | translate }}</label>
               <select class="form-bhima" ng-model="editProject.enterprise_id" ng-options="e.id as e.name for e in enterprises.data" required>
-                <option value="" disabled>{{ 'SELECT.ENTERPRISE' | translate }}</option>
+                <option value="">{{ 'SELECT.ENTERPRISE' | translate }}</option>
               </select>
             </div>
 
             <!-- zone de sante for snis -->
             <div class="form-group">
               <label>{{ 'COLUMNS.ZS' | translate }}</label>
-              <select class="form-bhima" ng-model="editProject.zs_id" ng-options="zone.id as toString(zone) for zone in zs.data" required>
-                <option value="" disabled>{{ 'SELECT.ZS' | translate }}</option>
+              <select class="form-bhima" ng-model="editProject.zs_id" ng-options="zone.id as toString(zone) for zone in zs.data">
+                <option value="" >{{ 'SELECT.ZS' | translate }}</option>
               </select>
             </div>
             <!-- end zone de sante for snis -->
 
-            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="submitEdit()">
+            <input type="submit"  ng-disabled="edit.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="submitEdit()">
             <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.CLEAR' | translate }}" ng-click="cancelEdit()">
           </fieldset>
         </form>

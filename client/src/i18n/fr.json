@@ -1745,7 +1745,7 @@
    "REGISTERED"  : "Utilisateurs Enregistrés",
    "RETYPE"      : "Retaper",
    "SUPER"       : "Super Utilisateur",
-   "TITLE"       : "Gestion des Utilisateurs & Permissions"
+   "TITLE"       : "Gestion des Utilisateurs et Permissions"
    },
 "PLACEHOLDERS": {
    "PRODUCTS"       : "ex. Produits",
@@ -2383,7 +2383,7 @@
   "STEP1"       : "Identification",
   "STEP2"       : "Consultations",
   "STEP3"       : "Hospitalisations",
-  "STEP4"       : "Labo & Imagerie",
+  "STEP4"       : "Labo et Imagerie",
   "STEP5"       : "Sante de la mere",
   "STEP6"       : "Sante de l'enfant",
   "STEP7"       : "Gestion des ressources",
@@ -2810,7 +2810,7 @@
    "PAYMENT_PERIOD"            : "Gestion des périodes",
    "PAYROLL"                   : "Payroll",
    "PAYROLL_REPORT"            : "Rapports du payroll",
-   "PERMISSION"                : "Utilisateurs & permissions",
+   "PERMISSION"                : "Utilisateurs et permissions",
    "POSTING_JOURNAL"           : "Journal de Saisie",
    "PRICE_LIST"                : "Liste des Prix",
    "PROFIT_CENTER_MGMNT"       : "Centres de profit",

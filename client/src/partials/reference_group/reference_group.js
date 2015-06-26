@@ -16,14 +16,8 @@ angular.module('bhima.controllers')
         tables : {
           'reference_group' : {
             columns : ['id', 'reference_group', 'text', 'position', 'section_bilan_id']
-          },
-          'section_bilan' : {
-            columns : ['text::section_bilan_txt']
           }          
-        },
-        join : [
-          'reference_group.section_bilan_id=section_bilan.id'
-        ],
+        }
       }
     };
 
@@ -102,21 +96,15 @@ angular.module('bhima.controllers')
 
     $scope.save.new = function () {
       var record = connect.clean(session.new);
-
       connect.post('reference_group', [record])
-      .then(function () {
-        messenger.success($translate.instant('REFERENCE_GROUP.SAVE_SUCCES'));        
-        record.reference = generateReference(); 
+      .then(function (res) {
+        messenger.success($translate.instant('REFERENCE_GROUP.SAVE_SUCCES'));  
+        record.id = res.data.insertId;               
         $scope.reference_groups.post(record);
         session.action = '';
         session.new = {};
       });
     };
 
-    function generateReference () {
-      window.data = $scope.reference_groups.data;
-      var max = Math.max.apply(Math.max, $scope.reference_groups.data.map(function (o) { return o.reference; }));
-      return Number.isNaN(max) ? 1 : max + 1;
-    }
   }  
 ]);
