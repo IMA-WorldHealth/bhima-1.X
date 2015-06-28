@@ -67,27 +67,27 @@
       </div>
 
       <div ng-switch-when="new">
-        <form novalidate class="form-horizontal">
+        <form novalidate class="form-horizontal" name="referenceNew">
           <legend><h3>{{ "REFERENCE.NEW_REFERENCE" | translate }} </h3></legend>
 
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.REFERENCE" | translate }}</label>
             <div class="col-xs-7">
-              <input ng-model="session.new.ref" class="form-bhima" required="required">
+              <input ng-model="session.new.ref" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.LABEL" | translate }}</label>
             <div class="col-xs-7">
-              <input ng-model="session.new.text" class="form-bhima" required="required">
+              <input ng-model="session.new.text" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.POSITION" | translate }}</label>
             <div class="col-xs-7">
-              <input ng-model="session.new.position" class="form-bhima" required="required">
+              <input type="number" ng-model="session.new.position" class="form-bhima" required>
             </div>
           </div>
 
@@ -101,7 +101,7 @@
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.REFERENCE_GROUP" | translate }}</label>
             <div class="col-xs-7">
-              <select class="form-bhima" ng-model="session.new.reference_group_id" required> 
+              <select class="form-bhima" ng-model="session.new.reference_group_id"> 
                 <option value="" disabled="disabled">--- {{ "SELECT.REFERENCE_GROUP" | translate }} ---</option>
                 <option ng-repeat="reference_group in reference_groups.data | orderBy:'text'" value="{{reference_group.id}}">
                   {{ reference_group.text }}
@@ -113,7 +113,7 @@
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.RESULT_ACCOUNT_SCT" | translate }}</label>
             <div class="col-xs-7">
-              <select class="form-bhima" ng-model="session.new.section_resultat_id" required> 
+              <select class="form-bhima" ng-model="session.new.section_resultat_id"> 
                 <option value="" disabled="disabled">--- {{ "SELECT.RESULT_ACCOUNT_SCT" | translate }} ---</option>
                 <option ng-repeat="section in section_resultat.data | orderBy:'text'" value="{{section.id}}">
                   {{ section.text }}
@@ -123,34 +123,34 @@
           </div>
 
           <div class="form-group">
-            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
+            <input type="submit" ng-disabled="referenceNew.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
             <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
           </div>   
         </form>
       </div>
 
       <div ng-switch-when="edit">
-        <form novalidate class="form-horizontal">
+        <form novalidate class="form-horizontal" name="referenceEdit">
           <legend><h3>{{ "REFERENCE.UPD_REFERENCE" | translate }} </h3></legend>
 
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.REFERENCE" | translate }}</label>
             <div class="col-xs-7">
-              <input ng-model="session.edit.ref" class="form-bhima" required="required">
+              <input ng-model="session.edit.ref" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.LABEL" | translate }}</label>
             <div class="col-xs-7">
-              <input ng-model="session.edit.text" class="form-bhima" required="required">
+              <input ng-model="session.edit.text" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.POSITION" | translate }}</label>
             <div class="col-xs-7">
-              <input ng-model="session.edit.position" class="form-bhima" required="required">
+              <input type="number" ng-model="session.edit.position" class="form-bhima" required>
             </div>
           </div>
 
@@ -180,7 +180,7 @@
           </div>
 
           <div class="form-group">
-            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
+            <input type="submit" ng-disabled="referenceEdit.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
             <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
           </div>   
         </form>
