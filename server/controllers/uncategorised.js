@@ -229,18 +229,18 @@ exports.lookupMaxTableId = function (req, res, next) {
   .done();
 };
 
-
 exports.listInExAccounts = function (req, res, next) {
   var enterprise_id = sanitize.escape(req.params.id_enterprise);
   var sql =
-    'SELECT temp.`id`, temp.`account_number`, temp.`account_txt`, account_type.`type`, ' +
+    'SELECT temp.`id`, temp.`account_number`, temp.`account_txt`, temp.`classe`, account_type.`type`, ' +
            'temp.`parent`, temp.`balance`' +  // , temp.`fixed`
     ' FROM (' +
-        'SELECT account.id, account.account_number, account.account_txt, account.account_type_id, ' +
+        'SELECT account.id, account.account_number, account.account_txt, account.classe, account.account_type_id, ' +
                'account.parent, period_total.credit - period_total.debit as balance ' +  // account.fixed,
         'FROM account LEFT JOIN period_total ' +
         'ON account.id=period_total.account_id ' +
         'WHERE account.enterprise_id = ' + enterprise_id +
+        ' AND (account.classe IN (\'6\', \'7\') OR ((account.classe IN (\'1\', \'2\', \'5\') AND account.is_used_budget = 1) ))' +
     ' ) ' +
     'AS temp JOIN account_type ' +
     'ON temp.account_type_id = account_type.id ' +
@@ -248,7 +248,9 @@ exports.listInExAccounts = function (req, res, next) {
 
   function process(accounts) {
     var InExAccounts = accounts.filter(function(item) {
-      return item.account_number.toString().indexOf('6') === 0 || item.account_number.toString().indexOf('7') === 0;
+      var account_6_7 = item.account_number.toString().indexOf('6') === 0 || item.account_number.toString().indexOf('7') === 0,
+        account_1_2_5 = item.account_number.toString().indexOf('1') === 0 || item.account_number.toString().indexOf('2') === 0 || item.account_number.toString().indexOf('5') === 0;
+      return account_6_7 || account_1_2_5;
     });
     return InExAccounts;
   }
@@ -316,7 +318,6 @@ exports.costCenterCost = function (req, res, next) {
     ' AND `account`.`account_type_id` <> 3';
 
   function process(accounts) {
-    console.log('ca donne', accounts);
     if(accounts.length === 0) {return {cost : 0};}
     var availablechargeAccounts = accounts.filter(function(item) {
       return item.account_number.toString().indexOf('6') === 0;
