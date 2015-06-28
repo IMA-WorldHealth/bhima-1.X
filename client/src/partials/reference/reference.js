@@ -118,19 +118,14 @@ angular.module('bhima.controllers')
       record.is_report = (session.new.is_report)?1:0;
 
       connect.post('reference', [record])
-      .then(function () {
+      .then(function (res) {
         messenger.success($translate.instant('REFERENCE.SAVE_SUCCES'));        
-        record.reference = generateReference(); 
+        record.id = res.data.insertId;
         $scope.references.post(record);
         session.action = '';
         session.new = {};
       });
     };
 
-    function generateReference () {
-      window.data = $scope.references.data;
-      var max = Math.max.apply(Math.max, $scope.references.data.map(function (o) { return o.reference; }));
-      return Number.isNaN(max) ? 1 : max + 1;
-    }
   }  
 ]);
