@@ -2,7 +2,7 @@
  * Mail Plugin
  *
  * Extends bhima to allow email reporting at a custom frequency.
- * Depends on later.js (http://bunkat.github.io/later/)
+ * Depends on later.js (http://bunkat.github.io/later/) and q
  *
  * PLUGIN OPTIONS
  * {
@@ -61,16 +61,19 @@ MailPlugin.prototype._configure = function () {
 
   self._timers = self._emails.map(function (email) {
 
-    // parse the cron task into a scheule
+    // parse the cron task into an executable scheule 
     schedule = later.parse.cron(email.frequency);
-
 
     console.log('Scheduling timer for:', email.name);
 
-    // set a timer, which will
+    // timer function repeats on intervals defined by the email.frequency schedule
     var timer = later.setInterval(function () {
-      var addresses = addressBook[email.addressList];
-      addresses.forEach(function (contact) {
+
+      // retrieve the address list
+      var contacts = addressBook[email.addressList]; 
+
+      // use send() to deliver messages to contacts;
+      contacts.forEach(function (contact) {
         self.send(email.addressList, email.name, contacts[contact], new Date());
       });
     }, schedule);
@@ -82,9 +85,16 @@ MailPlugin.prototype._configure = function () {
 // renders an email and sends it to a given contact
 MailPlugin.prototype.send = function (list, email, contact, date) {
 
+  // format paths appropriately
   var base = path.join(__dirname, 'reports', email),
+
+      // load database queries
       queries = require(path.join(base,  'queries.json')),
+      
+      // load l10n text
       text = require(path.join(base, 'lang', contact.language + '.json')),
+
+      // load template HTML document
       tpl = fs.readFileSync(path.join(base, email + '.tmpl.html'), 'utf8'),
       message;
 
@@ -106,6 +116,8 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
     // execute the templated query
     query(sql)
     .then(function (rows) {
+
+      console.log('db function retured:', rows);
 
       // all queries return a single number in the `total` field
       var result = rows[0].total;
