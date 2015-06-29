@@ -87,7 +87,7 @@
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.POSITION" | translate }}</label>
             <div class="col-xs-7">
-              <input type="number" ng-model="session.new.position" class="form-bhima" required>
+              <input type="number" ng-model="session.new.position" min="0" class="form-bhima" required>
             </div>
           </div>
 
@@ -150,7 +150,7 @@
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.POSITION" | translate }}</label>
             <div class="col-xs-7">
-              <input type="number" ng-model="session.edit.position" class="form-bhima" required>
+              <input type="number" ng-model="session.edit.position" min="0" class="form-bhima" required>
             </div>
           </div>
 
