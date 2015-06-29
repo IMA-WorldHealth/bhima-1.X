@@ -2,7 +2,8 @@
  * mailer.js
  *
  * Responsible for delivery of a rendered HTML email to a
- * sender.
+ * sender. Wraps the linux mail command in in a promise-type
+ * framework.
  */
 
 var path = require('path'),
@@ -10,8 +11,7 @@ var path = require('path'),
     cp = require('child_process'),
     q = require('q');
 
-
-// promisify the exec command
+// promisify the child_process.exec() function 
 function exec(command) {
   'use strict';
 
