@@ -18,7 +18,7 @@ angular.module('bhima.controllers')
     // FIXME Everything currently waits on validate to process (download) models
     // begin settup etc. before that
     var dependencies = {};
-    var session = $scope.session = { is_direct : false, label_purchase_type : 'indirect' }, 
+    var session = $scope.session = { is_direct : false, label_purchase_type : 'indirect' },
         warnings = $scope.warnings = {};
 
     dependencies.inventory = {
@@ -200,7 +200,7 @@ angular.module('bhima.controllers')
 
         if (!purchaseItem.code || !purchaseItem.purchase_price) {
           return true;
-        } 
+        }
         return false;
       });
       // FIXME
@@ -220,11 +220,10 @@ angular.module('bhima.controllers')
       purchase.purchase_date = util.sqlDate(purchase.purchase_date);
       purchase.currency_id = $scope.enterprise.data[0].currency_id;
       purchase.creditor_uuid = session.creditor.creditor_uuid;
-      purchase.purchaser_id = $scope.user.data.id;
+      purchase.receiver_id = session.receiver.id; //the receiver
       purchase.project_id = $scope.project.id;
-      purchase.issuer_id = $scope.idUser;
-      purchase.header_id = session.header.id;
-      purchase.employee_id = session.is_direct === true ? null : session.employee.id;
+      purchase.emitter_id = $scope.idUser; // the user who built the purchase
+      purchase.purchaser_id = session.is_direct === true ? null : session.employee.id; // the employee who will go to make purchase
       purchase.is_direct = session.is_direct === true ? 1 : 0;
 
       writePurchaseLine(purchase)
@@ -264,14 +263,14 @@ angular.module('bhima.controllers')
     }
 
     function writeSuccess() {
-       $location.path('/invoice/purchase/' + session.purchase.uuid);     
+       $location.path('/invoice/purchase/' + session.purchase.uuid);
     }
 
     function handleError(error) {
       $translate('PURCHASE.WRITE_FAILED')
       .then(function (value) {
          messenger.danger(value);
-      });     
+      });
     }
 
     function getDate() {

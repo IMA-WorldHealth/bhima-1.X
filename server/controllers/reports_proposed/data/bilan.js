@@ -113,7 +113,7 @@ exports.compile = function (options) {
 
   db.exec(sql, [options.fy, 1])
   .then(function (currentAccountDetails) {
-    console.log('currentAccountDetails', currentAccountDetails);
+    // console.log('currentAccountDetails', currentAccountDetails);
     infos.currentAccountDetails = currentAccountDetails;
     return db.exec(sql, [options.pfy, 1]);
   })

@@ -44,7 +44,7 @@ angular.module('bhima.controllers')
       },
       'pcash_employee' : {
         url : '/partials/receipts/templates/receipt_employee.html'
-      },      
+      },
       'generic_income' : {
         url : '/partials/receipts/templates/receipt_generic_income.html'
       },
@@ -113,7 +113,7 @@ angular.module('bhima.controllers')
       },
       'confirm_integration' : {
         url : '/partials/receipts/templates/receipt_confirm_integration.html'
-      }       
+      }
     };
 
     function convert (value, currency_id, date) {

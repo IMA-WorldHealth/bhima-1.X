@@ -83,7 +83,7 @@ ADD `is_brut_link` boolean;
 
 ALTER TABLE `account`
 ADD FOREIGN KEY (`reference_id`) REFERENCES `reference` (`id`);
- 
+
 -- Updates table account
 -- Date: 2015-06-10
 -- By: Chris LOMAME
@@ -118,6 +118,31 @@ INSERT INTO `unit` VALUES
 USE bhima;
 ALTER TABLE `account`
 ADD `is_used_budget` boolean NOT NULL;
+
+-- Update purchase table
+-- Date : 2015-06-29
+-- By : Dedrick Kitamuka
+
+USE bhima;
+
+ALTER TABLE `purchase`
+DROP FOREIGN KEY `purchase_ibfk_3`;
+
+ALTER TABLE `purchase` DROP `header_id`;
+ALTER TABLE `purchase` DROP `purchaser_id`;
+ALTER TABLE `purchase` DROP `employee_id`;
+
+ALTER TABLE `purchase` ADD `purchaser_id` int(10) unsigned NULL;
+ALTER TABLE `purchase` ADD `receiver_id` int(10) unsigned NULL;
+ALTER TABLE `purchase` CHANGE `issuer_id` `emitter_id` smallint(5) unsigned NOT NULL;
+
+ALTER TABLE `purchase` ADD CONSTRAINT FOREIGN KEY (`receiver_id`) REFERENCES `employee`(`id`);
+
+
+
+
+
+
 
 
 

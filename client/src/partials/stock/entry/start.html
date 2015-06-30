@@ -51,7 +51,7 @@
               </td>
             </tr>
 
-            <tr ng-repeat="order in names.data | filter:session.filter | limitTo:10 "
+            <tr ng-repeat="order in names.data | filter:session.filter | limitTo:15 "
                 ng-class="{'selected-success': session.selected.uuid===order.uuid}">
                 <td>{{order.purchase_date | date}}</td>
                 <td><a href="/#/invoice/purchase/{{order.uuid}}">{{order.label}}</td>
@@ -103,7 +103,7 @@
         <!-- FIXME Hack floating -->
         <div class="clearfix"></div>
       </div>
-      
+
       <div class="aprecu">
         <div class="row" ng-if="!find.active && !session.review" style="padding:0 15px;">
           <table class="table table-condensed">

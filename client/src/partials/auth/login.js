@@ -33,8 +33,8 @@ angular.module('bhima.controllers')
 
         if (projectCacheFound) {
           credentials.project = project.id;
-        } else { 
-          
+        } else {
+
           // Assign default project for now
           var defaultProjectIndex = 0;
           credentials.project = session.projects[defaultProjectIndex].id;

@@ -24,11 +24,11 @@ angular.module('bhima.controllers')
       query : {
         identifier : 'uuid',
         tables : {
-          purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'employee_id', 'project_id', 'purchase_date', 'note'] },
+          purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'purchaser_id', 'project_id', 'purchase_date', 'note'] },
           employee : { columns : ['name'] },
           project : { columns : ['abbr'] }
         },
-        join : ['purchase.project_id=project.id', 'purchase.employee_id=employee.id'],
+        join : ['purchase.project_id=project.id', 'purchase.purchaser_id=employee.id'],
         where : ['purchase.paid=0','AND','purchase.is_donation=0','AND', 'purchase.is_authorized=1']
       }
     };
@@ -90,13 +90,13 @@ angular.module('bhima.controllers')
             },
             creditor_group : {
               columns : ['account_id']
-            }            
+            }
           },
           join : [
             'employee.creditor_uuid=creditor.uuid',
-            'creditor.group_uuid=creditor_group.uuid'         
-          ],          
-          where : ['employee.id=' + session.selected.employee_id]
+            'creditor.group_uuid=creditor_group.uuid'
+          ],
+          where : ['employee.id=' + session.selected.purchaser_id]
         }
       };
 

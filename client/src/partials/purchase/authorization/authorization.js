@@ -14,11 +14,11 @@ angular.module('bhima.controllers')
       query : {
         identifier : 'uuid',
         tables : {
-          purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'employee_id', 'project_id', 'purchase_date', 'note', 'paid_uuid'] },
+          purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'purchaser_id', 'project_id', 'purchase_date', 'note', 'paid_uuid'] },
           employee : { columns : ['name'] },
           project : { columns : ['abbr'] }
         },
-        join : ['purchase.project_id=project.id', 'purchase.employee_id=employee.id'],
+        join : ['purchase.project_id=project.id', 'purchase.purchaser_id=employee.id'],
         where : ['purchase.paid=0', 'AND', 'purchase.is_direct=0', 'AND', 'purchase.is_donation=0', 'AND', 'purchase.is_authorized=0', 'AND', 'purchase.is_validate=1']
       }
     };
@@ -27,7 +27,7 @@ angular.module('bhima.controllers')
       query : {
         identifier : 'uuid',
         tables : {
-          purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'employee_id', 'project_id', 'purchase_date', 'note', 'is_direct'] },
+          purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'purchaser_id', 'project_id', 'purchase_date', 'note', 'is_direct'] },
           supplier : { columns : ['name'] },
           project : { columns : ['abbr'] }
         },

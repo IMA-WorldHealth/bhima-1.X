@@ -30,7 +30,7 @@
    "IS_OHADA"         : "OHADA ?",
    "IS_NOTHING"       : "Other",
    "IS_PASSIVE"       : "Is passive",
-   "IS_USED_BUDGET"   : "Is used in the Budget",   
+   "IS_USED_BUDGET"   : "Is used in the Budget",
    "LABEL"            : "Label",
    "NEW"              : "New Account",
    "NO"               : "No.",
@@ -326,6 +326,7 @@
    "TITLE"       : "Find convention"
    },
 "COLUMNS": {
+   "USER"                   : "User",
    "ABBR"                  : "Abbr",
    "ABBREVIATION"          : "Abreviation",
    "ACCOUNT"               : "Account",
@@ -422,7 +423,7 @@
    "FIX"                   : "Fix",
    "FOUR_ACCOUNT"          : "Four Account",
    "FUNCTION"              : "Function",
-   "GAP"                   : "Gap",     
+   "GAP"                   : "Gap",
    "GIVEN_AMOUNT"          : "Given amount",
    "GRADE"                 : "Grade",
    "GROUP"                 : "Group",
@@ -439,7 +440,7 @@
    "INVOICE_ID"            : "Invoice ID",
    "INVPO_ID"              : "Inv/PO #",
    "IS_ASSET"              : "Asset ?",
-   "IS_BRUT_LINK"          : "Is Brut Link ?", 
+   "IS_BRUT_LINK"          : "Is Brut Link ?",
    "IS_IPR"                : "Is IPR ?",
    "IS_OHADA"              : "OHADA ?",
    "IS_PERCENT"            : "Is Percent",
@@ -514,7 +515,7 @@
    "RATE"                  : "Rate",
    "RECEIPT"               : "Receipt",
    "REFERENCE"             : "Reference",
-   "REFERENCE_GROUP"       : "Reference Group",   
+   "REFERENCE_GROUP"       : "Reference Group",
    "REFERENCE_PURCHASE"    : "Purchase Order Reference",
    "REGISTERED"            : "Registered",
    "REGISTERED_BY"         : "Registered By",
@@ -525,7 +526,7 @@
    "SALE_ID"               : "Sale ID",
    "SALE_PRICE"            : "Sale Price",
    "SCOPE"                 : "Scope",
-   "SECTION_RESULT"        : "Section result",   
+   "SECTION_RESULT"        : "Section result",
    "SEPARATOR"             : "Separator",
    "SERVICE"               : "Service",
    "SEX"                   : "Sex",
@@ -2079,7 +2080,7 @@
    "TITLE"          : "Reference group management",
    "UPDATE_SUCCES"  : "Updated successfully",
    "UPD_REFERENCE"  : "Update Reference Group"
-   },   
+   },
 "REPORT": {
    "ACCOUNT"                 : "Account",
    "ACCOUNT_STATEMENT": {

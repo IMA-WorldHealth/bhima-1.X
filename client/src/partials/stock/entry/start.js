@@ -62,7 +62,7 @@ angular.module('bhima.controllers')
         identifier : 'code',
         tables : {
           'purchase' : {
-            columns : ['project_id', 'reference', 'cost', 'currency_id', 'creditor_uuid', 'purchaser_id', 'employee_id', 'timestamp', 'purchase_date', 'is_direct']
+            columns : ['project_id', 'reference', 'cost', 'currency_id', 'creditor_uuid', 'purchaser_id', 'purchaser_id', 'timestamp', 'purchase_date', 'is_direct']
           },
           'purchase_item' : {
             columns : ['uuid', 'inventory_uuid', 'quantity', 'unit_price', 'total']
@@ -174,10 +174,10 @@ angular.module('bhima.controllers')
       session.cfg.order_date = new Date(models.orders.data[0].purchase_date);
 
       if(!session.cfg.is_direct){
-        session.cfg.employee_id = models.orders.data[0].employee_id;
+        session.cfg.employee_id = models.orders.data[0].purchaser_id;
         session.cfg.employee_name = ($scope.employees.get(session.cfg.employee_id).prenom || '') + ' ' + ($scope.employees.get(session.cfg.employee_id).name || '');
       }
-      
+
       // modify paramters
       session.order.data.forEach(function (drug) {
         drug.lots = new Store({ identifier : 'tracking_number', data : [] });
@@ -218,7 +218,7 @@ angular.module('bhima.controllers')
         var newDate = new Date().getTime(),
           expirate = new Date(row.expiration_date).getTime(),
           diffDays = (parseInt((expirate-newDate)/(24*3600*1000)));
- 
+
         var n = parseFloat(row.quantity);
         return n > 0 && (diffDays > 0) && isDef(row.lot_number) &&
           isDef(row.expiration_date) &&

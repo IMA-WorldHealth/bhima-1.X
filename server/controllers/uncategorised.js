@@ -1531,7 +1531,7 @@ exports.getClassSolde = function (req, res, next) {
 
 exports.getStockIntegration = function (req, res, next) {
 
-  var sql = 'SELECT DISTINCT p.uuid, p.reference, p.cost, p.creditor_uuid, p.project_id, p.purchaser_id, p.purchase_date, p.note, '
+  var sql = 'SELECT DISTINCT p.uuid, p.reference, p.cost, p.creditor_uuid, p.project_id, p.emitter_id, p.purchaser_id, p.purchase_date, p.note, '
           + 'm.document_id, s.purchase_order_uuid, pr.abbr '
           + 'FROM purchase p '
           + 'JOIN stock s ON s.purchase_order_uuid=p.uuid '
