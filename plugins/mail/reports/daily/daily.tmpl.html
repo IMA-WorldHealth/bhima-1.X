@@ -87,8 +87,8 @@
                                       </tr>
                                       <tr style='font-weight: bold'>
                                         <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.overview.totalPatients }}</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.totalPatientsHbb }}</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.totalPatientsPax }}</td>
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.newPatientsHbb + this.data.returningPatientsHbb }}</td>
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.newPatientsPax + this.data.returningPatientsPax }}</td>
                                       </tr>
                                       <tr>
                                         <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.overview.newFicheSales }}</td>
@@ -102,13 +102,13 @@
                                       </tr>
                                       <tr style='font-weight: bold'>
                                         <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.overview.totalFicheSales }}</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.totalFicheSalesHbb }}</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.totalFicheSalesPax }}</td>
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.oldFicheSalesHbb + this.data.newFicheSalesHbb }}</td>
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.oldFicheSalesPax + this.data.newFicheSalesPax}}</td>
                                       </tr>
                                       <tr style='font-weight: bold'>
                                         <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.overview.totalInvoiceTransactions }}</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.totalInvoiceTransactionsHbb }}</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.totalInvoiceTransactionsPax }}</td>
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashTotalInvoiceHbb }}</td>
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.auxCashTotalInvoicePax }}</td>
                                       </tr>
                                     </tbody>
                                   </table>

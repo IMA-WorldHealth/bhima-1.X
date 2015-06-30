@@ -158,8 +158,6 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
       return render(content, { queries : data });
     });
 
-    console.log('Templated Text', templatedText);
-
     // collate data and text for email templating
     options = {
       date : dateTo,
@@ -177,9 +175,8 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
   })
   .then(function () {
 
-    console.log('contact:', contact);
     // after message is sent, archive a copy in /archive
-    archiver(list + '-' + contact.address, message, date);
+    archiver(list + '-' + contact.address.toLowerCase(), message, date);
   })
   .catch(function (error) {
     throw error;
