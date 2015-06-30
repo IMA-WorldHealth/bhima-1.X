@@ -34,7 +34,7 @@
               <tr>
                 <th>{{"COLUMNS.DATE" | translate}}</th>
                 <th>{{"COLUMNS.REFERENCE" | translate}}</th>
-                <th>{{"COLUMNS.EMPLOYEE" | translate}}</th>
+                <th>{{"COLUMNS.USER" | translate}}</th>
                 <th>{{"COLUMNS.ACTIONS" | translate }}</th>
               </tr>
             </thead>
@@ -49,7 +49,7 @@
                 ng-class="{'selected-success': session.selected.uuid===item.uuid}">
                 <td>{{item.purchase_date | date}}</td>
                 <td><a href="/#/stock/entry/report/{{item.document_id}}">{{item.abbr}}{{item.reference}}</td>
-                <td>{{ getUser(item.purchaser_id)}}</td>
+                <td>{{ getUser(item.emitter_id)}}</td>
                 <td><a class="menu-item" ng-click="getStock(item.uuid)"><span class="glyphicon glyphicon-arrow-right"></span></a></td>
             </tr>
             <tbody>
@@ -82,12 +82,12 @@
                 <td>{{"COLUMNS.NOTE" | translate}}</td><td>{{ session.selected.note }}</td>
               </tr>
               <tr>
-                <td>{{"COLUMNS.EMPLOYEE" | translate}}</td><td>{{ getUser(session.selected.purchaser_id) }}</td>
+                <td>{{"COLUMNS.EMPLOYEE" | translate}}</td><td>{{ getUser(session.selected.emitter_id) }}</td>
               </tr>
             </tbody>
           </table>
 
-          <button ng-click="confirmIntegration()" class="square btn btn-success btn-sm"> {{ "STOCK.INTEGRATION.CONFIRM_STOCK" | translate }} {{ "PURCHASE.CONFIRM.BY" | translate }} 
+          <button ng-click="confirmIntegration()" class="square btn btn-success btn-sm"> {{ "STOCK.INTEGRATION.CONFIRM_STOCK" | translate }} {{ "PURCHASE.CONFIRM.BY" | translate }}
           <b>{{ getUser(idUser) }}</b>
           </button>
         </div>

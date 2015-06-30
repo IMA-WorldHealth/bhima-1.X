@@ -37,13 +37,15 @@
             <tr>
               <td></td>
               <td><b>{{=section.sectionBilanLabel}}({{=section.sectionBilanPosition}})</b></td>
-              <td colspan="4"></td>
+              <td colspan="3"></td>
+              <td></td>
             </tr>
               {{~section.grefs : gref : ind2}}
                 <tr>
                   <td><b>{{=gref.greferenceAbbr}}</b></td>
                   <td><b>{{=gref.greferenceLabel}}</b></td>
-                  <td colspan="4"></td>
+                  <td colspan="3"></td>
+                  <td></td>
                 </tr>
                   {{~gref.refs : ref : ind3}}
                     <tr>
@@ -100,13 +102,15 @@
             <tr>
               <td></td>
               <td><b>{{=section.sectionBilanLabel}}({{=section.sectionBilanPosition}})</b></td>
-              <td colspan="4"></td>
+              <td colspan="3"></td>
+              <td></td>
             </tr>
               {{~section.grefs : gref : ind2}}
                 <tr>
                   <td><b>{{=gref.greferenceAbbr}}</b></td>
                   <td><b>{{=gref.greferenceLabel}}</b></td>
-                  <td colspan="4"></td>
+                  <td colspan="3"></td>
+                  <td></td>
                 </tr>
                   {{~gref.refs : ref : ind3}}
                     <tr>

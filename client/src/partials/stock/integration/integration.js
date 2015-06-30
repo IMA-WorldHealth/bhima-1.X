@@ -184,7 +184,7 @@ angular.module('bhima.controllers')
       var listenValidateSession = $scope.$watch('session.stocks', validateSession, true);
       var listenValidateExpirationDate = $scope.$watch('session.stocks', validateExpirationDate, true);
       session.stocks.push(stock);
-    }  
+    }
 
     function removeStockItem (idx) {
       session.stocks.splice(idx, 1);
@@ -350,9 +350,10 @@ angular.module('bhima.controllers')
           purchase_date : util.sqlDate(session.config.date),
           currency_id   : $scope.project.currency_id,
           creditor_uuid : null,
-          purchaser_id  : $scope.user.data.id,
+          purchaser_id  : null,
+          emitter_id    : $scope.user.data.id,
           project_id    : $scope.project.id,
-          employee_id   : null,
+          receiver_id   : null,
           note          : 'INTEGRATION_STOCK /' + util.sqlDate(session.config.date),
           paid          : 0,
           confirmed     : 0,
@@ -366,14 +367,14 @@ angular.module('bhima.controllers')
         .then(updateStockPurchaseOrder(purchase.uuid))
         .catch(handleError);
       }
-      
+
     }
 
     function updateStockPurchaseOrder (purchase_uuid) {
       session.stocks.forEach(function (stockItem) {
-        var stockEntry = { 
+        var stockEntry = {
           tracking_number     : stockItem.tracking_number,
-          purchase_order_uuid : purchase_uuid 
+          purchase_order_uuid : purchase_uuid
         };
         connect.put('stock',[stockEntry], ['tracking_number']);
       });
@@ -383,7 +384,7 @@ angular.module('bhima.controllers')
       return session.stocks.reduce(priceMultiplyQuantity, 0);
     }
 
-    
+
     function simulateWritePurchaseLine(purchase) {
       return connect.post('purchase', [purchase], ['uuid']);
     }
@@ -418,7 +419,7 @@ angular.module('bhima.controllers')
       $translate('PURCHASE.WRITE_FAILED')
       .then(function (value) {
          messenger.danger(value);
-      });     
+      });
     }
 
     $scope.formatAccount = formatAccount;

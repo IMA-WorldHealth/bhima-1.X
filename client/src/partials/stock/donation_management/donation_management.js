@@ -277,7 +277,7 @@ angular.module('bhima.controllers')
         var newDate = new Date().getTime(),
           expirate = new Date(row.expiration_date).getTime(),
           diffDays = (parseInt((expirate-newDate)/(24*3600*1000)));
-     
+
         var n = parseFloat(row.quantity);
         return n > 0 && (diffDays > 0) && isDef(row.lot_number) &&
           isDef(row.expiration_date) &&
@@ -456,8 +456,8 @@ angular.module('bhima.controllers')
           creditor_uuid : null,
           purchaser_id  : session.config.employee.id, //$scope.user.data.id,
           project_id    : $scope.project.currency_id,
-          employee_id   : session.config.employee.id,
           note          : 'DONATION ' + session.config.donor.name + '/' + util.sqlDate(session.config.date),
+          receiver_id   : session.config.employee.id,
           paid          : 0,
           confirmed     : 0,
           closed        : 0,

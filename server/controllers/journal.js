@@ -1948,7 +1948,7 @@ function handleIndirectPurchase (id, user_id, done){
 
     var sql2 =
     "SELECT `cash_box_account_currency`.`account_id` " +
-    "FROM `cash_box_account_currency` " + 
+    "FROM `cash_box_account_currency` " +
     "WHERE `cash_box_account_currency`.`currency_id` = " + sanitize.escape(reference.currency_id) + " " +
     "AND `cash_box_account_currency`.`cash_box_id` = " + sanitize.escape(reference.cash_box_id) + ";";
 
@@ -2026,11 +2026,11 @@ function handleConfirm (id, user_id, done){
   var references, dayExchange, cfg = {};
 
   var sql = 'SELECT `purchase`.`uuid`, `purchase`.`cost`, `purchase`.`currency_id`, `purchase`.`project_id`,' +
-            ' `purchase`.`purchaser_id`, `purchase`.`employee_id`, `employee`.`creditor_uuid`,' +
+            ' `purchase`.`purchaser_id`, `purchase`.`purchaser_id`, `employee`.`creditor_uuid`,' +
             ' `purchase_item`.`inventory_uuid`, `purchase_item`.`total`, `purchase`.`paid_uuid` FROM' +
             ' `purchase`, `purchase_item`, `employee` WHERE' +
             ' `purchase`.`uuid` = `purchase_item`.`purchase_uuid` AND' +
-            ' `purchase`.`employee_id` = `employee`.`id` AND' +
+            ' `purchase`.`purchaser_id` = `employee`.`id` AND' +
             ' `purchase`.`paid_uuid`=' + sanitize.escape(id) + ';';
 
   db.exec(sql)
@@ -2138,7 +2138,7 @@ function handleConfirmDirectPurchase (id, user_id, done){
   var references, dayExchange, cfg = {};
 
   var sql = 'SELECT `purchase`.`uuid`, `purchase`.`creditor_uuid` , `purchase`.`cost`, `purchase`.`currency_id`, `purchase`.`project_id`,' +
-            ' `purchase`.`purchaser_id`, `purchase`.`employee_id`, ' +
+            ' `purchase`.`purchaser_id`, ' +
             ' `purchase_item`.`inventory_uuid`, `purchase_item`.`total` FROM' +
             ' `purchase`, `purchase_item` WHERE' +
             ' `purchase`.`uuid` = `purchase_item`.`purchase_uuid` AND' +
@@ -2754,7 +2754,7 @@ function handleSalaryPayment (id, user_id, done) {
   state.user_id = user_id;
 
   sql =
-    'SELECT `primary_cash_item`.`primary_cash_uuid`, `reference`, `project_id`, `date`, `deb_cred_uuid`, ' + 
+    'SELECT `primary_cash_item`.`primary_cash_uuid`, `reference`, `project_id`, `date`, `deb_cred_uuid`, ' +
       '`deb_cred_type`, `currency_id`, ' +
       '`account_id`, `cost`, `user_id`, `description`, `cash_box_id`, `origin_id`, `primary_cash_item`.`debit`, ' +
       '`primary_cash_item`.`credit`, `primary_cash_item`.`inv_po_id`, `primary_cash_item`.`document_uuid` ' +
@@ -2784,7 +2784,7 @@ function handleSalaryPayment (id, user_id, done) {
 
     var sql3 =
     "SELECT `cash_box_account_currency`.`account_id` " +
-    "FROM `cash_box_account_currency` " + 
+    "FROM `cash_box_account_currency` " +
     "WHERE `cash_box_account_currency`.`currency_id` = " + sanitize.escape(reference.currency_id) + " " +
     "AND `cash_box_account_currency`.`cash_box_id` = " + sanitize.escape(reference.cash_box_id) + ";";
 
@@ -3036,8 +3036,8 @@ function handlePromesseCotisation (id, user_id, data, done) {
     return q.all(
       references.map(function (reference) {
         cfg.note = cfg.descrip + '/' + references.label + '/' + reference.abbr;
-        
-        var account;  
+
+        var account;
         if(!reference.six_account_id){
           account = cfg.account_id;
 
@@ -3192,7 +3192,7 @@ function handlePromesseTax (id, user_id, data, done) {
     return q.all(
       references.map(function (reference) {
         cfg.note = cfg.descrip + '/' + reference.label + '/' + reference.abbr;
-        var account;  
+        var account;
         if(!reference.six_account_id){
           account = cfg.account_id;
 
@@ -3425,7 +3425,7 @@ function handleDonation (id, user_id, data, done) {
 
   function getTransId (trans_id) {
     cfg.trans_id = trans_id;
-    cfg.descrip =  trans_id.substring(0,4) + '_Donation/' + new Date().toISOString().slice(0, 10).toString();
+    cfg.descrip =  trans_id.substring(1,4) + '_Donation/' + new Date().toISOString().slice(0, 10).toString();
     return debit();
   }
 
@@ -3552,7 +3552,7 @@ function handleTaxPayment (id, user_id, details, done) {
 
     var sql3 =
     "SELECT `cash_box_account_currency`.`account_id` " +
-    "FROM `cash_box_account_currency` " + 
+    "FROM `cash_box_account_currency` " +
     "WHERE `cash_box_account_currency`.`currency_id` = " + sanitize.escape(reference.currency_id) + " " +
     "AND `cash_box_account_currency`.`cash_box_id` = " + sanitize.escape(reference.cash_box_id) + ";";
 
@@ -3665,7 +3665,7 @@ function handleCotisationPayment (id, user_id, details, done) {
 
     var sql3 =
     "SELECT `cash_box_account_currency`.`account_id` " +
-    "FROM `cash_box_account_currency` " + 
+    "FROM `cash_box_account_currency` " +
     "WHERE `cash_box_account_currency`.`currency_id` = " + sanitize.escape(reference.currency_id) + " " +
     "AND `cash_box_account_currency`.`cash_box_id` = " + sanitize.escape(reference.cash_box_id) + ";";
 
@@ -4394,7 +4394,7 @@ function handleIntegration (id, user_id, done) {
   var references, dayExchange, cfg = {};
 
   var sql = 'SELECT `purchase`.`uuid`, `purchase`.`creditor_uuid` , `purchase`.`cost`, `purchase`.`currency_id`, `purchase`.`project_id`,' +
-            ' `purchase`.`purchaser_id`, `purchase`.`employee_id`, ' +
+            ' `purchase`.`purchaser_id`, `purchase`.`emitter_id`, ' +
             ' `purchase_item`.`inventory_uuid`, `purchase_item`.`total` FROM' +
             ' `purchase`, `purchase_item` WHERE' +
             ' `purchase`.`uuid` = `purchase_item`.`purchase_uuid` AND' +
@@ -4498,36 +4498,6 @@ function handleIntegration (id, user_id, done) {
       })
     );
 
-
-
-
-
-    // var credit_sql =
-    //   'INSERT INTO posting_journal ' +
-    //   '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-    //   '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-    //   '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
-    //   'SELECT ' +
-    //     [
-    //       sanitize.escape(uuid()),
-    //       reference.project_id,
-    //       cfg.fiscalYearId,
-    //       cfg.periodId,
-    //       cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\''
-    //     ].join(',') + ', `inventory_group`.`cogs_account`, ' +
-    //     [
-    //       reference.cost.toFixed(4),0,
-    //       reference.cost.toFixed(4),0,
-    //       reference.currency_id,
-    //       sanitize.escape(reference.inventory_uuid),
-    //       '" "'
-    //     ].join(',') + ', ' +
-    //     [
-    //       sanitize.escape(reference.uuid),
-    //       cfg.originId,
-    //       user_id
-    //     ].join(',') + ' FROM `inventory_group` WHERE `inventory_group`.`uuid`=' +
-    //     '(SELECT `inventory`.`group_uuid` FROM `inventory` WHERE `inventory`.`uuid`=' + sanitize.escape(reference.inventory_uuid) + ')';
     return db.exec(credit_sql);
   }
 }

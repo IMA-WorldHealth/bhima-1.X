@@ -15,10 +15,10 @@ angular.module('bhima.controllers')
         query : {
           identifier : 'uuid',
           tables : {
-            purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'employee_id', 'project_id', 'purchase_date', 'note'] },
+            purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'purchaser_id', 'project_id', 'purchase_date', 'note'] },
             employee : { columns : ['code', 'name', 'prenom', 'postnom'] }
           },
-          join : ['purchase.employee_id=employee.id']          
+          join : ['purchase.purchaser_id=employee.id']
         }
     };
 
@@ -61,9 +61,9 @@ angular.module('bhima.controllers')
 
     function buildInvoice (res) {
       if(res.getTransaction.data.length){
-        $scope.trans_id = res.getTransaction.data[0].trans_id;  
+        $scope.trans_id = res.getTransaction.data[0].trans_id;
       } else {
-        $scope.trans_id = res.getGeneraLedger.data[0].trans_id;  
+        $scope.trans_id = res.getGeneraLedger.data[0].trans_id;
       }
 
       model.indirectPurchase = res.indirectPurchase.data.pop();
@@ -98,7 +98,7 @@ angular.module('bhima.controllers')
         .catch(function (err){
           messenger.danger('error', err);
         });
-  		});     
-    });    
+  		});
+    });
   }
 ]);

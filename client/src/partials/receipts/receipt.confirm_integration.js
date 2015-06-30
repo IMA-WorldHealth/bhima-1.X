@@ -11,7 +11,7 @@ angular.module('bhima.controllers')
       query : {
         identifier : 'uuid',
         tables : {
-          purchase : { columns : ['purchaser_id', 'purchase_date'] },
+          purchase : { columns : ['purchaser_id', 'purchase_date', 'emitter_id'] },
           movement : {
             columns : ['uuid', 'document_id', 'depot_entry', 'tracking_number', 'quantity', 'date']
           },
@@ -55,7 +55,7 @@ angular.module('bhima.controllers')
     }
 
     function getUsers (data) {
-      var p = data.allUser.get(data.stock.data[0].purchaser_id);
+      var p = data.allUser.get(data.stock.data[0].emitter_id);
       var c = data.allUser.get(data.user.data.id);
       model.integreur = p.first + ' - ' + p.last;
       model.confirmeur = c.first + ' - ' + c.last;
@@ -75,7 +75,7 @@ angular.module('bhima.controllers')
         .catch(function (err){
           messenger.danger('error', err);
         });
-  		});     
-    });    
+  		});
+    });
   }
 ]);

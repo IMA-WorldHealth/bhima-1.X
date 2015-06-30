@@ -17,7 +17,7 @@ angular.module('bhima.controllers')
         },
         join : [
           'purchase.creditor_uuid=supplier.creditor_uuid',
-          'purchase.issuer_id=user.id']
+          'purchase.emitter_id=user.id']
       }
     };
 
@@ -26,7 +26,7 @@ angular.module('bhima.controllers')
         identifier : 'uuid',
         tables : {
           'purchase' : {
-            columns : ['uuid', 'reference', 'project_id', 'cost', 'currency_id', 'creditor_uuid', 'purchase_date', 'note', 'employee_id', 'is_direct']
+            columns : ['uuid', 'reference', 'project_id', 'cost', 'currency_id', 'creditor_uuid', 'purchase_date', 'note', 'purchaser_id', 'is_direct']
           },
           'purchase_item' : {
             columns : ['inventory_uuid', 'purchase_uuid', 'quantity', 'unit_price', 'total']
@@ -69,7 +69,7 @@ angular.module('bhima.controllers')
         .catch(function (err){
           messenger.danger('error', err);
         });
-  		});     
-    });    
+  		});
+    });
   }
 ]);

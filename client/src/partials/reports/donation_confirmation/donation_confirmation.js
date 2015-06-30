@@ -15,6 +15,7 @@ angular.module('bhima.controllers')
     $scope.selected = null;
 
     var dependencies = {};
+
     dependencies.projects = {
       required: true,
       query : {
@@ -78,7 +79,7 @@ angular.module('bhima.controllers')
     function reset (p) {
       session.searching = true;
       var req, url;
-      
+
       $scope.state = 'generate';
       // toggle off active
       session.active = !p;
@@ -105,20 +106,19 @@ angular.module('bhima.controllers')
       validate.process(dependencies)
       .then(function (models) {
         $scope.projects = models.projects;
-
         $scope.currencies = models.currencies;
-        $scope.projectAbbr = $scope.projects.data[0].abbr;
+        $scope.projectAbbr = session.project.abbr;
         session.currency = $scope.currencies.data[0].id;
-        $scope.allProjectIds = 
+        $scope.allProjectIds =
           models.projects.data.reduce(function (a,b) { return a + ',' + b.id ; }, '')
-          .substr(1); 
+          .substr(1);
         search($scope.options[0]);
       });
     });
 
     appstate.register('enterprise', function (enterprise) {
-      $scope.enterprise = enterprise; 
-    });    
+      $scope.enterprise = enterprise;
+    });
 
     $scope.print = function print() {
       window.print();

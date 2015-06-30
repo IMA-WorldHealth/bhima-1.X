@@ -12,7 +12,7 @@ angular.module('bhima.controllers')
         identifier : 'uuid',
         tables : {
           'purchase' : {
-            columns : ['uuid', 'reference', 'project_id', 'cost', 'currency_id', 'creditor_uuid', 'purchase_date', 'note', 'employee_id', 'is_direct', 'is_authorized', 'is_validate']
+            columns : ['uuid', 'reference', 'project_id', 'cost', 'currency_id', 'creditor_uuid', 'purchase_date', 'note', 'purchaser_id', 'is_direct', 'is_authorized', 'is_validate']
           },
           'purchase_item' : {
             columns : ['inventory_uuid', 'purchase_uuid', 'quantity', 'unit_price', 'total']
@@ -35,7 +35,7 @@ angular.module('bhima.controllers')
           'purchase_item.inventory_uuid=inventory.uuid',
           'purchase.creditor_uuid=creditor.uuid',
           'creditor.uuid=supplier.creditor_uuid',
-          'purchase.employee_id=employee.id'
+          'purchase.purchaser_id=employee.id'
         ]
       }
     };
@@ -45,7 +45,7 @@ angular.module('bhima.controllers')
         identifier : 'uuid',
         tables : {
           'purchase' : {
-            columns : ['uuid', 'reference', 'project_id', 'cost', 'currency_id', 'creditor_uuid', 'purchase_date', 'note', 'employee_id', 'is_direct', 'is_validate', 'is_authorized']
+            columns : ['uuid', 'reference', 'project_id', 'cost', 'currency_id', 'creditor_uuid', 'purchase_date', 'note', 'purchaser_id', 'is_direct', 'is_validate', 'is_authorized']
           },
           'purchase_item' : {
             columns : ['inventory_uuid', 'purchase_uuid', 'quantity', 'unit_price', 'total']
@@ -93,7 +93,7 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           'purchase' : {
-            columns : ['uuid', 'header_id', 'issuer_id']
+            columns : ['uuid', 'receiver_id', 'emitter_id']
           },
           'employee' : {
             columns : ['prenom', 'name', 'postnom', 'creditor_uuid']
@@ -103,8 +103,8 @@ angular.module('bhima.controllers')
           }
         },
         join : [
-          'purchase.header_id=employee.id',
-          'purchase.issuer_id=user.id'
+          'purchase.receiver_id=employee.id',
+          'purchase.emitter_id=user.id'
         ]
       }
     };

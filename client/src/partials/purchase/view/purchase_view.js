@@ -8,7 +8,7 @@ angular.module('bhima.controllers')
 
     var session = $scope.session = {};
     session.option = $routeParams.option;
-    
+
     $scope.purchase_filter = {};
 
     function init() {
@@ -43,8 +43,8 @@ angular.module('bhima.controllers')
           },
           join : [
             'purchase.creditor_uuid=creditor.uuid',
-            'purchase.purchaser_id=user.id',
-            'purchase.employee_id=employee.id'
+            'purchase.emitter_id=user.id',
+            'purchase.purchaser_id=employee.id'
           ],
           where : ['purchase.paid=1', 'AND', 'purchase.is_donation=0', 'AND', 'purchase.is_direct=0']
         };
@@ -66,7 +66,7 @@ angular.module('bhima.controllers')
           },
           join : [
             'purchase.creditor_uuid=creditor.uuid',
-            'purchase.purchaser_id=user.id',
+            'purchase.emitter_id=user.id',
             'creditor.uuid=supplier.creditor_uuid'
           ],
           where : ['purchase.paid=1', 'AND', 'purchase.is_donation=0', 'AND', 'purchase.is_direct=1']
@@ -91,8 +91,8 @@ angular.module('bhima.controllers')
           },
           join : [
             'purchase.creditor_uuid=creditor.uuid',
-            'purchase.purchaser_id=user.id',
-            'purchase.employee_id=employee.id'
+            'purchase.emitter_id=user.id',
+            'purchase.purchaser_id=employee.id'
           ],
           where : ['purchase.paid=0', 'AND', 'purchase.confirmed=0', 'AND', 'purchase.is_donation=0', 'AND', 'purchase.is_direct=0']
         };
@@ -114,7 +114,7 @@ angular.module('bhima.controllers')
           },
           join : [
             'purchase.creditor_uuid=creditor.uuid',
-            'purchase.purchaser_id=user.id',
+            'purchase.emitter_id=user.id',
             'creditor.uuid=supplier.creditor_uuid'
           ],
           where : ['purchase.paid=0', 'AND', 'purchase.confirmed=0', 'AND', 'purchase.is_donation=0', 'AND', 'purchase.is_direct=1']
@@ -139,8 +139,8 @@ angular.module('bhima.controllers')
           },
           join : [
             'purchase.creditor_uuid=creditor.uuid',
-            'purchase.purchaser_id=user.id',
-            'purchase.employee_id=employee.id'
+            'purchase.emitter_id=user.id',
+            'purchase.purchaser_id=employee.id'
           ],
           where : ['purchase.closed=1', 'AND', 'purchase.confirmed=1', 'AND', 'purchase.is_donation=0', 'AND', 'purchase.is_direct=0']
         };
@@ -162,7 +162,7 @@ angular.module('bhima.controllers')
           },
           join : [
             'purchase.creditor_uuid=creditor.uuid',
-            'purchase.purchaser_id=user.id',
+            'purchase.emitter_id=user.id',
             'creditor.uuid=supplier.creditor_uuid'
           ],
           where : ['purchase.closed=1', 'AND', 'purchase.confirmed=1', 'AND', 'purchase.is_donation=0', 'AND', 'purchase.is_direct=1']
@@ -187,8 +187,8 @@ angular.module('bhima.controllers')
           },
           join : [
             'purchase.creditor_uuid=creditor.uuid',
-            'purchase.purchaser_id=user.id',
-            'purchase.employee_id=employee.id'
+            'purchase.emitter_id=user.id',
+            'purchase.purchaser_id=employee.id'
           ],
           where : ['purchase.closed=0','AND','purchase.confirmed=1', 'AND', 'purchase.is_donation=0', 'AND', 'purchase.is_direct=0']
         };
@@ -210,7 +210,7 @@ angular.module('bhima.controllers')
           },
           join : [
             'purchase.creditor_uuid=creditor.uuid',
-            'purchase.purchaser_id=user.id',
+            'purchase.emitter_id=user.id',
             'creditor.uuid=supplier.creditor_uuid'
           ],
           where : ['purchase.closed=0', 'AND', 'purchase.confirmed=1', 'AND', 'purchase.is_donation=0', 'AND', 'purchase.is_direct=1']
@@ -218,6 +218,7 @@ angular.module('bhima.controllers')
       break;
 
       default :
+      console.log('default');
         indirect = {
           'tables' : {
             'purchase' : {
@@ -235,8 +236,8 @@ angular.module('bhima.controllers')
           },
           join : [
             'purchase.creditor_uuid=creditor.uuid',
-            'purchase.purchaser_id=user.id',
-            'purchase.employee_id=employee.id'
+            'purchase.emitter_id=user.id',
+            'purchase.purchaser_id=employee.id'
           ],
           where : ['purchase.is_donation=0', 'AND', 'purchase.is_direct=0']
         };
@@ -258,7 +259,7 @@ angular.module('bhima.controllers')
           },
           join : [
             'purchase.creditor_uuid=creditor.uuid',
-            'purchase.purchaser_id=user.id',
+            'purchase.emitter_id=user.id',
             'creditor.uuid=supplier.creditor_uuid'
           ],
           where : ['purchase.is_donation=0', 'AND', 'purchase.is_direct=1']
@@ -266,7 +267,7 @@ angular.module('bhima.controllers')
       break;
 
       }
-      
+
       var d = connect.req(direct);
       var i = connect.req(indirect);
       return $q.all([d,i]);
