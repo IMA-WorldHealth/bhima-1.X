@@ -2,11 +2,12 @@ angular.module('bhima.controllers')
 .controller('reference_group', [
   '$scope',
   '$translate',
+  '$q',
   'validate',
   'messenger',
   'connect',
   'appstate',
-  function ($scope, $translate, validate, messenger, connect, appstate) {
+  function ($scope, $translate, $q, validate, messenger, connect, appstate) {
     var dependencies = {},
         session = $scope.session = {};
 
@@ -57,6 +58,22 @@ angular.module('bhima.controllers')
       angular.extend($scope, models);
     }
 
+    function checkingReferenceGroup (position,section_bilan_id) {
+      var def = $q.defer();
+      var query = {
+        tables : { 
+          reference_group : { columns : ['id'] }
+        },
+        where  : ['reference_group.position=' + position,'AND','reference_group.section_bilan_id=' + section_bilan_id]
+      };
+      connect.fetch(query)
+      .then(function (res) {
+        def.resolve(res.length !== 0);
+      });
+
+      return def.promise;
+    }
+
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
       validate.process(dependencies)
@@ -91,25 +108,38 @@ angular.module('bhima.controllers')
       delete record.reference;
       delete record.section_bilan_txt;
 
-      connect.put('reference_group', [record], ['id'])
-      .then(function () {
-        messenger.success($translate.instant('REFERENCE_GROUP.UPDATE_SUCCES')); 
-        $scope.reference_groups.put(record);
-        session.action = '';
-        session.edit = {};
+      checkingReferenceGroup(record.position,record.section_bilan_id)
+      .then(function (is_exist) {
+        if (!is_exist) {
+          connect.put('reference_group', [record], ['id'])
+          .then(function () {
+            messenger.success($translate.instant('REFERENCE_GROUP.UPDATE_SUCCES')); 
+            $scope.reference_groups.put(record);
+            session.action = '';
+            session.edit = {};
+          });
+        } else {
+          messenger.danger($translate.instant('REFERENCE_GROUP.ALERT_2')); 
+        }
       });
     };
 
     $scope.save.new = function () {
       var record = connect.clean(session.new);
-
-      connect.post('reference_group', [record])
-      .then(function () {
-        messenger.success($translate.instant('REFERENCE_GROUP.SAVE_SUCCES'));        
-        record.reference = generateReference(); 
-        $scope.reference_groups.post(record);
-        session.action = '';
-        session.new = {};
+      checkingReferenceGroup(record.position,record.section_bilan_id)
+      .then(function (is_exist) {
+        if (!is_exist) {
+          connect.post('reference_group', [record])
+          .then(function () {
+            messenger.success($translate.instant('REFERENCE_GROUP.SAVE_SUCCES'));        
+            record.reference = generateReference(); 
+            $scope.reference_groups.post(record);
+            session.action = '';
+            session.new = {};
+          });         
+        } else {
+          messenger.danger($translate.instant('REFERENCE_GROUP.ALERT_2')); 
+        }
       });
     };
 

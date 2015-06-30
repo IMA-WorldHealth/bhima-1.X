@@ -2,11 +2,12 @@ angular.module('bhima.controllers')
 .controller('reference', [
   '$scope',
   '$translate',
+  '$q',
   'validate',
   'messenger',
   'connect',
   'appstate',
-  function ($scope, $translate, validate, messenger, connect, appstate) {
+  function ($scope, $translate, $q, validate, messenger, connect, appstate) {
     var dependencies = {},
         session = $scope.session = {};
 
@@ -61,6 +62,23 @@ angular.module('bhima.controllers')
       angular.extend($scope, models);
     }
 
+    function checkingReference (position,reference_group_id) {
+      var def = $q.defer();
+      var query = {
+        tables : { 
+          reference : { columns : ['id'] }
+        },
+        where  : ['reference.position=' + position,'AND','reference.reference_group_id=' + reference_group_id]
+      };
+      connect.fetch(query)
+      .then(function (res) {
+        def.resolve(res.length !== 0);
+      });
+
+      return def.promise;
+    }
+
+
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
       validate.process(dependencies)
@@ -101,36 +119,43 @@ angular.module('bhima.controllers')
       record.section_resultat_id = session.edit.section_resultat_id;      
       record.is_report = (session.edit.is_report)?1:0;
 
-      connect.put('reference', [record], ['id'])
-      .then(function () {
-        messenger.success($translate.instant('REFERENCE.UPDATE_SUCCES')); 
-        $scope.references.put(record);
-        session.action = '';
-        session.edit = {};
+      checkingReference(record.position,record.reference_group_id)
+      .then(function (is_exist) {
+        if (!is_exist) {
+          connect.put('reference', [record], ['id'])
+          .then(function () {
+            messenger.success($translate.instant('REFERENCE.UPDATE_SUCCES')); 
+            $scope.references.put(record);
+            session.action = '';
+            session.edit = {};
+          });
+        } else {
+          messenger.danger($translate.instant('REFERENCE.ALERT_2')); 
+        }
       });
     };
 
     $scope.save.new = function () {
       var record = connect.clean(session.new);
-
       record.reference_group_id = session.new.reference_group_id;
       record.section_resultat_id = session.new.section_resultat_id;
       record.is_report = (session.new.is_report)?1:0;
-
-      connect.post('reference', [record])
-      .then(function () {
-        messenger.success($translate.instant('REFERENCE.SAVE_SUCCES'));        
-        record.reference = generateReference(); 
-        $scope.references.post(record);
-        session.action = '';
-        session.new = {};
+      checkingReference(record.position,record.reference_group_id)
+      .then(function (is_exist) {
+        if (!is_exist) {
+          connect.post('reference', [record])
+          .then(function (res) {
+            messenger.success($translate.instant('REFERENCE.SAVE_SUCCES'));        
+            record.id = res.data.insertId;
+            $scope.references.post(record);
+            session.action = '';
+            session.new = {};
+          });
+        } else {
+          messenger.danger($translate.instant('REFERENCE.ALERT_2')); 
+        }
       });
     };
 
-    function generateReference () {
-      window.data = $scope.references.data;
-      var max = Math.max.apply(Math.max, $scope.references.data.map(function (o) { return o.reference; }));
-      return Number.isNaN(max) ? 1 : max + 1;
-    }
   }  
 ]);
