@@ -18,7 +18,10 @@
  * ]
  */
 
-var VERSION = '0.1.0';
+// Global Constants
+// TODO refactor into custom config.js
+var VERSION = '0.1.0',
+    APPNAME = 'bhima';
 
 // global imports
 var q = require('q'),
@@ -160,9 +163,10 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
 
     // collate data and text for email templating
     options = {
-      date : dateTo,
+      date : locales.date(new Date()),
       reportname : email,
       uuid : util.uuid(),
+      appname : APPNAME,
       data : data,
       text : templatedText
     };

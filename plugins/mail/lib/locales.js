@@ -61,3 +61,16 @@ exports.number = function number(value, locale) {
   'use strict';
   return value;
 };
+
+
+// TODO - make a date converter
+exports.date = function date(value, format) {
+  'use strict';
+
+  var bool = value instanceof Date;
+
+  // try to convert number to a date
+  if (!bool) { value = new Date(value); }
+
+  return value.toLocaleString();
+};
