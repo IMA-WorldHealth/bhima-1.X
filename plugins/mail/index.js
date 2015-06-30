@@ -70,10 +70,10 @@ MailPlugin.prototype._configure = function () {
     var timer = later.setInterval(function () {
 
       // retrieve the address list
-      var contacts = addressBook[email.addressList]; 
+      var addresses = addressBook[email.addressList]; 
 
       // use send() to deliver messages to contacts;
-      contacts.forEach(function (contact) {
+      addresses.forEach(function (contact) {
         self.send(email.addressList, email.name, contacts[contact], new Date());
       });
     }, schedule);
@@ -117,10 +117,8 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
     query(sql)
     .then(function (rows) {
 
-      console.log('db function retured:', rows);
-
       // all queries return a single number in the `total` field
-      var result = rows[0].total;
+      var result = rows[0].total || 0;
 
       // if the result is a currency, make sure it is in the correct locality
       // NOTE : this is NOT the email locality, it is defined by the query.
@@ -160,6 +158,8 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
       return render(content, { queries : data });
     });
 
+    console.log('Templated Text', templatedText);
+
     // collate data and text for email templating
     options = {
       date : dateTo,
@@ -177,8 +177,9 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
   })
   .then(function () {
 
+    console.log('contact:', contact);
     // after message is sent, archive a copy in /archive
-    archiver(list + '-' + contact.name, message, date);
+    archiver(list + '-' + contact.address, message, date);
   })
   .catch(function (error) {
     throw error;
