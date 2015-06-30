@@ -2058,6 +2058,7 @@
 "REFERENCE": {
    "ADD"            : "Add a Reference",
    "ALERT"          : "Reference management module is a module that has been designed to allow administration of existing References within the organization, the table is left to record, to update the attributes of a Reference and the deletion.",
+   "ALERT_2"        : "Two references to the same reference groups can not have the same position",
    "CONFIRM"        : "Are you sure you want to delete this Reference",
    "DELETE_SUCCESS" : "Deleted successfully",
    "NEW_REFERENCE"  : "New Reference",
@@ -2071,6 +2072,7 @@
 "REFERENCE_GROUP": {
    "ADD"            : "Add a Reference Group",
    "ALERT"          : "Reference Group management module is a module that has been designed to allow administration of existing Reference Group within the organization, the table is left to record, to update the attributes of a Reference Group and the deletion.",
+   "ALERT_2"        : "Two Reference Group to the same Bilan Section can not have the same position number",
    "CONFIRM"        : "Are you sure you want to delete this Reference Group",
    "DELETE_SUCCESS" : "Deleted successfully",
    "NEW_REFERENCE"  : "New Reference Group",

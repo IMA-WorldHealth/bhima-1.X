@@ -2046,6 +2046,7 @@
 "REFERENCE": {
    "ADD"             : "Ajouter une référence",
    "ALERT"           : "Le module gestion de référence est un module qui a été conçu pour permettre l'administration des références existantes au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'une référence ainsi que la suppression.",
+   "ALERT_2"         : "Deux références d'un même références groupes ne peuvent avoir la même position",
    "CONFIRM"         : "Etes vois sure de vouloir supprimer cette référence",
    "DELETE_SUCCESS"  : "Suppression avec succès",
    "NEW_REFERENCE"   : "Nouvelle référence",
@@ -2059,6 +2060,7 @@
 "REFERENCE_GROUP": {
    "ADD"             : "Ajouter un groupe de référence",
    "ALERT"           : "Le module gestion des groupes des références est un module qui a été conçu pour permettre l'administration des groupe de références existants au sein de l'organisation, le tableau qui se trouve à gauche permet d’enregistrer, de mettre à jour les attributs d'un groupe de référence ainsi que la suppression.",
+   "ALERT_2"         : "Deux groupes de références d'une même section du bilan groupes ne peuvent avoir la même position",
    "CONFIRM"         : "Etes vois sure de vouloir supprimer ce groupe de référence",
    "DELETE_SUCCESS"  : "Suppression avec succès",
    "NEW_REFERENCE"   : "Nouveau groupe de référence",
