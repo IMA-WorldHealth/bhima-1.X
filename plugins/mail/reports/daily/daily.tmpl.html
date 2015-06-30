@@ -49,7 +49,7 @@
                   <!-- Main content area, headers and sections-->
                   {{ if (this.text.notices.info) {  }}
                     <div style="line-height: 18px; font-size: 16px; color: #c09853; padding: 10px; background-color: #fcf8e3; border: 1px solid #fbeed5; margin-bottom: 5px; margin-top: 5px">
-                      {{ this.text.notices.info }}
+                      {{ this.text.notices.info.content }}
                     </div>
                   {{ } }}
 
@@ -190,8 +190,8 @@
                             <tbody>
                               <tr>
                                 <td style="font-size: 16px; line-height: 17px; padding: 14px 14px 0px 14px;">
-                                  <small style="color: #6fcc35;">{{ this.text.principal.balance }}</small><br><br>
-                                    {{ this.text.principal.balance }}
+                                  <small style="color: #6fcc35;">{{ this.text.principal.balance.heading }}</small><br><br>
+                                    {{ this.text.principal.balance.content }}
                                 </td>
                               </tr>
                             </tbody>
