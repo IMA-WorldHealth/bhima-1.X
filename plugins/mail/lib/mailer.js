@@ -52,10 +52,12 @@ function mailer(list, contact, message, date) {
   // send the email
   return exec(command)
   .then(function () {
-    console.log('Mail sent! Removing file');
+    console.log('[MailPlugin] Mail sent! Removing file...');
 
     // on successful completion, remove the file
     fs.unlinkSync(reference);
+
+    console.log('[MailPlugin] ... done.');
   });
 }
 
