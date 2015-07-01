@@ -41,10 +41,9 @@ var render = require(path.join(__dirname, 'lib/render')),
     addressBook = require(path.join(__dirname, 'addresses/list.json')),
     contacts = require(path.join(__dirname, 'addresses/contacts.json'));
 
+
 function MailPlugin(options) {
   'use strict';
-
-  console.log('Configuring bhima-plugin-mail ...');
 
   options =  options || {};
 
@@ -67,7 +66,7 @@ MailPlugin.prototype._configure = function () {
     // parse the cron task into an executable scheule 
     schedule = later.parse.cron(email.frequency);
 
-    console.log('Scheduling timer for:', email.name);
+    console.log('[MailPlugin] Setting up mailing list:', email.name);
 
     // timer function repeats on intervals defined by the email.frequency schedule
     var timer = later.setInterval(function () {
@@ -163,12 +162,12 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
 
     // collate data and text for email templating
     options = {
-      date : locales.date(new Date()),
+      date       : locales.date(new Date()),
       reportname : email,
-      uuid : util.uuid(),
-      appname : APPNAME,
-      data : data,
-      text : templatedText
+      uuid       : util.uuid(),
+      appname    : APPNAME,
+      data       : data,
+      text       : templatedText
     };
 
     // render the email
@@ -189,6 +188,24 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
 };
 
 // expose module to the outside world
-process.on('message', function (options) {
-  var emailer = new MailPlugin(options);
+process.on('message', function (msg) {
+
+  var emailer;
+
+  // this is really limited for now
+  // ideally, we should have a ton of events and
+  // might want to switch to an object router model
+  switch (msg.event) {
+    
+    // configure the plugin
+    case 'config':
+      console.log('[MailPlugin] Configuring the mail plugin...');
+      emailer  = new MailPlugin(msg.data);
+      break;
+
+    // log the missed event
+    default:
+      console.log('Cannot understand event');
+      break;
+  }
 });
