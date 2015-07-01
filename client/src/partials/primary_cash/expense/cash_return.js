@@ -182,7 +182,7 @@ angular.module('bhima.controllers')
     }
 
     function getCredDeb () {
-      session.data.description = [session.base.project.abbr, 'REMBOURSSEMENT_CAISSE', session.data.deb_cred.text, session.data.type, util.sqlDate(new Date())].join('/');
+      session.data.description = [session.base.project.abbr, 'REMBOUR_C.P', session.data.deb_cred.text, session.data.type].join('/');
     }
 
     $scope.setCashAccount = setCashAccount;

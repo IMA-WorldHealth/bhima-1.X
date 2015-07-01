@@ -48,18 +48,22 @@ angular.module('bhima.controllers')
 
     function buildInvoice (res) {
       if(res.getTransaction.data.length){
-        $scope.trans_id = res.getTransaction.data[0].trans_id;  
+        $scope.trans_id = res.getTransaction.data.map(function(item){
+          return item.trans_id;
+        }).join(';');
       } else {
-        $scope.trans_id = res.getGeneraLedger.data[0].trans_id;  
+        $scope.trans_id = res.getGeneraLedger.data.map(function (item){
+          return item.trans_id;
+        }).join(';');
       }
-      
-      
+
+
       model.transfer = res.transfer.data.pop();
     }
 
   	appstate.register('receipts.commonData', function (commonData) {
   		commonData.then(function (values) {
-        model.common.location = values.location.data.pop();        
+        model.common.location = values.location.data.pop();
         model.common.enterprise = values.enterprise.data.pop();
         model.common.InvoiceId = values.invoiceId;
         dependencies.transfer.query.where = ['primary_cash.uuid=' + values.invoiceId];
@@ -70,7 +74,7 @@ angular.module('bhima.controllers')
         .catch(function (err){
           messenger.danger('error', err);
         });
-  		});     
-    });    
+  		});
+    });
   }
 ]);

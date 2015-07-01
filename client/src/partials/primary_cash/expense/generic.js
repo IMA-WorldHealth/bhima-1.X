@@ -54,10 +54,6 @@ angular.module('bhima.controllers')
       }
     };
 
-    // dependencies.account6 = {
-    //   query : '/getAccount6/'
-    // };
-
     dependencies.accounts = {
       query : {
         tables : {
@@ -145,7 +141,7 @@ angular.module('bhima.controllers')
           currency_id   : session.currency.id,
           cost          : receipt.cost,
           user_id       : user.id,
-          description   : 'HBB' + '_CAISSEPRINCIPALE_DEPENSEGENEREIQUE/' + receipt.description, //fix me
+          description   : 'HBB' + '_C.P DEP GEN/' + receipt.description, //fix me
           cash_box_id   : receipt.cash_box_id,
           origin_id     : 4,
         };

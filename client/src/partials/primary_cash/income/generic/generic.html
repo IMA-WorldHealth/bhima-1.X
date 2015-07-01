@@ -61,7 +61,7 @@
               type="text"
               ng-model="session.ac"
               placeholder="Selectionner compte"
-              typeahead="ac as formatAccount(ac) for ac in session.accounts | filter:$viewValue | limitTo:10" typeahead-template-url="AccountList.html"
+              typeahead="ac as formatAccount(ac) for ac in session.accounts | filter:$viewValue | limitTo:15" typeahead-template-url="AccountList.html"
               typeahead-on-select="setConfiguration(session.ac)"
               >
             <span class="input-group-btn">
