@@ -52,11 +52,6 @@
             </span>
           </div>
           <br>
-          <!--div class="configure">
-            <select ng-model="session.ac" ng-options="ac as formatAccount(ac) for ac in session.account6" ng-change="setConfiguration(session.ac)">
-              <option value="" ng-disabled="disabled" disabled="true">-- {{'PRIMARY_CASH.EXPENSE.SELECT_ACCOUNT' | translate}} -- </option>
-            </select>
-          </div-->
 
           <div class="input-group">
             <input
@@ -64,7 +59,7 @@
               type="text"
               ng-model="session.ac"
               placeholder="Selectionner compte"
-              typeahead="ac as formatAccount(ac) for ac in session.accounts | filter:$viewValue | limitTo:10" typeahead-template-url="AccountList.html"
+              typeahead="ac as formatAccount(ac) for ac in session.accounts | filter:$viewValue | limitTo:15" typeahead-template-url="AccountList.html"
               typeahead-on-select="setConfiguration(session.ac)"
               >
             <span class="input-group-btn">

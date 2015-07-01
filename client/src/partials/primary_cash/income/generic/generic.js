@@ -151,7 +151,7 @@ angular.module('bhima.controllers')
           currency_id   : session.currency.id,
           cost          : receipt.cost,
           user_id       : user.id,
-          description   : 'HBB' + '_CAISSEPRINCIPALE_RECETTEGENEREIQUE/' + receipt.description, //fix me
+          description   : 'HBB' + '_CP. REC GEN/' + receipt.description, //fix me
           cash_box_id   : receipt.cash_box_id,
           origin_id     : 5,
         };

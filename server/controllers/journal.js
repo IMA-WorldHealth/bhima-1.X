@@ -1416,7 +1416,7 @@ function handleTransfert (id, user_id, done) {
   })
 // VOICI ANALYSE DANS LA BASE DE DONNEES
   .then(function (transId) {
-    var descrip =  transId.substring(0,4) + '_VIRMENT_CAISSEPRINCIPALE' + new Date().toISOString().slice(0, 10).toString();
+    var descrip =  transId.substring(0,4) + 'CASH_BOX_VIRMENT' + new Date().toISOString().slice(0, 10).toString();
     queries.credit =
       'INSERT INTO posting_journal (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
         '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
@@ -1450,7 +1450,14 @@ function handleTransfert (id, user_id, done) {
     // FIXME: Need to delete the primary_cash_items before primary cash
     var discard =
       'DELETE FROM primary_cash WHERE uuid = ' + sanitize.escape(id) + ';';
-    return db.exec(discard)
+
+    var discard_item =
+      'DELETE FROM primary_cash_item WHERE primary_cash_uuid = ' + sanitize.escape(id) + ';';
+
+    return db.exec(discard_item)
+    .then(function (){
+      return db.exec(discard);
+    })
     .then(function () {
       done(err);
     })
