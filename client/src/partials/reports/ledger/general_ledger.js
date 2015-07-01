@@ -5,40 +5,29 @@ angular.module('bhima.controllers')
   '$filter',
   'appstate',
   'validate',
-  function ($scope, $translate, $filter, appstate, validate) {
+  'GeneralLedgerService',
+  function ($scope, $translate, $filter, appstate, validate, GLService) {
     /* jshint unused : false */
 
-    var dependencies = {};
+    // used by SlickGrid
     var columns, dataview, options, grid, groups = $scope.groups = [];
 
+    GLService.load()
+    .then(function (store) {
 
+      // bind data from server
+      $scope.ledger = store;
 
-    dependencies.ledger = {
-      query : {
-        tables : {
-          'general_ledger' : {
-            columns : ['uuid', 'fiscal_year_id', 'period_id', 'trans_id', 'trans_date', 'doc_num', 'description', 'account_id', 'debit', 'credit', 'debit_equiv', 'credit_equiv', 'currency_id', 'deb_cred_uuid', 'deb_cred_type', 'inv_po_id', 'comment', 'cost_ctrl_id', 'origin_id', 'user_id']
-          },
-          'account' : {
-            columns : ['account_number']
-          }
-        },
-        join : ['general_ledger.account_id=account.id'],
-      }
-    };
+      // start up SlickGrid
+      setupGridOptions();
+      initialiseGrid();
+    })
+    .catch(console.error)
+    .finally();
 
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
-      validate.process(dependencies)
-      .then(reportGeneralLedger);
     });
-
-    function reportGeneralLedger(models) {
-      for (var k in models) { $scope[k] = models[k]; }
-
-      setupGridOptions();
-      initialiseGrid();
-    }
 
     function setupGridOptions() {
       columns = [
@@ -73,7 +62,7 @@ angular.module('bhima.controllers')
       };
     }
 
-    var sort_column;
+    var sortColumn;
 
     function initialiseGrid() {
       var groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
@@ -93,14 +82,14 @@ angular.module('bhima.controllers')
         grid.render();
       });
 
-      grid = new Slick.Grid('#general_ledger', dataview, columns, options);
+      grid = new Slick.Grid('#generalLedger', dataview, columns, options);
       grid.setSelectionModel(new Slick.RowSelectionModel());
 
       grid.registerPlugin(groupItemMetadataProvider);
 
       //Grid sorting
       grid.onSort.subscribe(function(e, args) {
-        sort_column = args.sortCol.field;
+        sortColumn = args.sortCol.field;
         dataview.sort(compareSort, args.sortAsc);
       });
 
@@ -183,7 +172,7 @@ angular.module('bhima.controllers')
 
     //Grid sort methods
     function compareSort(a, b) {
-      var x = a[sort_column], y = b[sort_column];
+      var x = a[sortColumn], y = b[sortColumn];
       return (x === y) ? 0 : (x > y ? 1 : -1);
     }
 
