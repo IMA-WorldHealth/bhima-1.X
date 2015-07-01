@@ -11,6 +11,8 @@ angular.module('bhima.controllers')
     var dependencies = {};
     var columns, dataview, options, grid, groups = $scope.groups = [];
 
+
+
     dependencies.ledger = {
       query : {
         tables : {
