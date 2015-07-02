@@ -100,7 +100,7 @@ angular.module('bhima.controllers')
         currency_id : data.currency_id,
         account_id  : accountId,
         cost        : data.value,
-        description : 'CT/' + date,
+        description : 'Caisse Transfert/' + date,
         cash_box_id : pcash_box_id
       };
 
