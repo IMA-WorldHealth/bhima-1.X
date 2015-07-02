@@ -627,52 +627,105 @@ Le formulaire ci-haut apparait lorsqu'un utilisateur clique sur le bouton \textb
 L'enregistrement est effectif seulement si l'utilisateur clique sur le bouton Soumettre. \textbf{La liste de projets existants} apparait sous forme de tableau. Ce tableau afficher toutes les informations relatives entre autre son Id, son nom, l'abréviation qui a été utilisé pour ce projet le Id de son entreprise à un projet. La zone \textbf{Actions} renferme deux icônes le premier \includegraphics[scale=0.7]{pic/EditUser.png}  permet de modifier les informations d'un projet et le second \includegraphics[scale=0.7]{pic/DeleteWRed.png} permet de supprimer un projet.
 
 
-\section{Gestions des services}
-Ce menu permet d'enregistré les différentes services existant au sein de l'entreprise, mais aussi de modifier leur informations rélatives, l'interface principale de ce modules se présente de la manière suivante.
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   MODULES DU SYSTEMES                     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
+\chapter{Le module Budget}        
+%////////////////////////////////////////////////%
+
+Le module Budget permet de gérer l'ensemble des comptes qui décrivent, pour une année fiscale, toutes les ressources et toutes les charges d'une organisation. La figure ci-dessous représente l'arborescence du module Budget.
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=14cm]{pic/AdminService.png}
+\includegraphics[width=6cm]{pic/ArboBudget.png}
 \end{center}
-\caption{Interface principale de la gestion des services}
-\label{Interface principale de la gestion des services}
+\caption{Le module Budget et ses sous modules}
+\label{Le module Budget et ses sous menus}
+\end{figure} 
+
+\section{Budget par Compte}
+Le module Budget par compte, permet visualiser à partir d'un tableau récapitulatif des recettes et des dépenses prévisionnelles déterminées et chiffrées pour un année fiscale.
+
+Son interface principale se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/BudgetParCompte.png}
+\end{center}
+\caption{Aperçue de l'interface principale du module budger par compte}
+\label{Aperçue de l'interface principale du module budger par compte}
 \end{figure}
 
-Dans la figure ci-haut on retrouve dans la partie gauche la liste des services enregistrés dans le système, au dessus de ce tableau dans le coin droit existe le bouton \includegraphics[scale=1]{pic/NewService.png} qui permet d'ajouter un nouveau service dans l'entreprise, le formulaire permettant d'enregistrer un nouveau service se présente de la manière suivante.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=8cm]{pic/ServiceSave.png}
-\end{center}
-\caption{Formulaire permettant l'enregistrement des services}
-\label{Formulaire permettant l'enregistrement des services}
-\end{figure} 
-
-L'enregistrement n'est possible que si tous les champs sont renseignés et si l'on valide l'enregistrement en cliquant sur le bouton Soumettre. 
-
-Les tableaux réprésentant les services enregistrés donne la possibilité de pouvoir mettre à jour les informations rélative à un service, ce tableau comporte 5 rubriques: Service, Projet, Centre de coût, Centre de profit ainsi que la zone réservée à la modification, cette zone possède trois icône l'icône \includegraphics[scale=0.7]{pic/EditUser.png}, qui permet de modifier le méta donné d'un service, le second \includegraphics[scale=0.7]{pic/EyesBlue.png} permet de voir les résultats synthétique d'un service et le dernier \includegraphics[scale=0.7]{pic/DeleteWRed.png} permet de supprimer un service dans le système.
-\newpage
-Voici un apperçu du formulaire permettant la mise à jour des informations d'un service ainsi que celui permettant de de voir les résultats synthètique d'un service.
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=8cm]{pic/UpdateService.png}
-\end{center}
-\caption{Formulaire permettant de mettre à jour les informations d'un service}
-\label{Formulaire permettant de mettre à jour les informations d'un service}
-\end{figure} 
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=8cm]{pic/SynthetiqueService.png}
-\end{center}
-\caption{Apperçu des résultats synthétique d'un service}
-\label{Apperçu des résultats synthétique d'un service}
-\end{figure} 
-
+Par défaut c'est l'année fiscale en cours qui est sélectionné, pour changer d'année fiscale, il suffit de cliquer sur la dite année fiscale pour pouvoir changer des lignes. Le bouton soumettre permet d'afficher le tableau récaputilatif du budget.
 
 \newpage
+Voici l'apperçue du tableau récapitulatif du budget.
 
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/CompBudget.png}
+\end{center}
+\caption{Aperçue de l'interface principale Comptes de budgets et de bilans}
+\label{Aperçue de l'interface principale Comptes de budgets et de bilans}
+\end{figure}
+
+Le bouton \includegraphics[scale=0.7]{pic/PrecedentBudget.png} permet de revenir vers l'interface principale de budget par compte et le bouton \includegraphics[scale=0.7]{pic/ExportCVS.png} permet d'importer le tableau recapitulatif du budget au format Excel.
+
+
+\section{Modifier budget d'un compte}
+Le moduleModifier budget d'un compte, permet de spécifier le budget annuel d'un compte, durant une année fiscale, ce module permet aussi de spécifier le budget mensuel d'un compte.
+
+L'interface principale de ce module permet de pouvoir sélectionner le compte pour lequel on souhaite préciser le budget annuel.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/ModifierBudgCompte.png}
+\end{center}
+\caption{Interface principale permettant la gestion de budget d'un compte}
+\label{Interface principale permettant la gestion de budget d'un compte}
+\end{figure}
+
+Dans l'image ci-haut, l'on peut s'appercevoir que l'année fiscale en cours est par défaut sélectionné, une fois qu'un compte est séléctionné, il suffit de cliquer sur le bouton \textbf{Soumettre} pour preciser le budget d'un compte. 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/ModifierBudgCompte.png}
+\end{center}
+\caption{Interface principale permettant la gestion de budget d'un compte}
+\label{Interface principale permettant la gestion de budget d'un compte}
+\end{figure}
+
+Une fois qu'un compte a était choisi, le système signale s'il existe déjà un compte pour l'année fiscale en cours, comme le montre l'année fiscale en cours. 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/ModBudger1.png}
+\end{center}
+\caption{Aperçue de l'étape d'initialisation d'un budget d'un compte}
+\label{Aperçue de l'étape d'initialisation d'un budget d'un compte}
+\end{figure}
+
+\newpage
+Après cette étape, il existe l'interface proprement dits d'initialisation du budget d'un compte qui se présente de la manière suivante.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{pic/ModifierBudgetCompt2.png}
+\end{center}
+\caption{Aperçue de l'étape d'initialisation d'un budget d'un compte}
+\label{Aperçue de l'étape d'initialisation d'un budget d'un compte}
+\end{figure}
+
+La première de chose à faire est de spécifier le budget total annuel pour un compte.
+Après avoir spécifier le total, il faudrait aussi spécifier le budget mensuel.
+
+Le bouton \includegraphics[scale=0.7]{pic/AjustBudget.png} permet de diviser équitablement le budget annuel sur tout le mois de l'année fiscale.
+
+Dans le cas où les budgets de certains mois doivent être spécifier différement des autres, le bouton \includegraphics[scale=0.7]{pic/BudgetGeler.png} permet de verrouiller le budget, ceci empecherait que le montant spécifier puissent être ajuster automatiquement.
+
+Et une fois que le budget est spécifié et est équitablement repartis sur les mois d'une année fiscale, il suffit de cliquer sur le bouton \textbf{Soumettre} pour configurer le budget annuel.
 \newpage
 \chapter{Le module finance}        
 %////////////////////////////////////////////////%
@@ -4017,9 +4070,47 @@ Le bouton \includegraphics[scale=0.7]{pic/NewGroupDebit.png} permet d'ajouter un
 \label{Formulaire permettant d'ajouter un groupe débiteur}
 \end{figure}
 
-Le formulaire ci-haut apparait lorsqu'un utilisateur clique sur le bouton \textbf{Nouveau groupe Débiteur}. Ce formulaire possède dix champs, le premier \textbf{Nom} permet de spécifier le nom du groupe débiteur, ensuite il existe une case à coché convention qui permet de déterminer si le groupe débiteur est une convention ou nom, \textbf{Compte }permet d'attribuer un compte, \textbf{Liste de prix}  permet de spécifier pour quelle liste de prix fait référence un groupe débiteur, \textbf{Localisation} permet de spécifier l'emplacement géographique relative à un groupe de compte, \textbf{Paiement} permet de spécifier le type de paiement relative à un groupe,\textbf{ Phone}, \textbf{Email}, \textbf{Crédit Max }et \textbf{Note} sont d'autres informations qu'on peut attribuer à un groupe débiteur.
+Le formulaire ci-haut apparait lorsqu'un utilisateur clique sur le bouton \textbf{Nouveau groupe Débiteur}. Ce formulaire possède des champs, le premier \textbf{Nom} permet de spécifier le nom du groupe débiteur, ensuite il existe une case à coché convention qui permet de déterminer si le groupe débiteur est une convention ou nom, \textbf{Compte }permet d'attribuer un compte, \textbf{Liste de prix}  permet de spécifier pour quelle liste de prix fait référence un groupe débiteur, \textbf{Localisation} permet de spécifier l'emplacement géographique relative à un groupe de compte, \textbf{Paiement} permet de spécifier le type de paiement relative à un groupe,\textbf{ Phone}, \textbf{Email}, \textbf{Crédit Max }et \textbf{Note} sont d'autres informations qu'on peut attribuer à un groupe débiteur.
 L'enregistrement est effectif seulement si l'utilisateur clique sur le bouton Sauver changement.
 La liste des groupes débiteurs apparait sous forme de tableau. Ce tableau possède cinq rubriques, il y'a Nom, Compte, Convention qui est soit vide ou bien représenté par l'icône \includegraphics[scale=0.7]{pic/IconOk.png}  seulement si le groupe débiteur appartient à un groupe de conventionné,  il y'a aussi l'icône \includegraphics[scale=0.7]{pic/Locked.png}  qui permet de verrouiller mais aussi de déverrouillé un groupe débiteur à l'aide de case à coché et denier lieu il y'a \textbf{Editer} qui contient l'icône \includegraphics[scale=0.7]{pic/EditUser.png}   permet de modifier les informations sur un groupe débiteur.
+
+\newpage
+\section{Groupe de référence}
+Ce module permet de faire l'administration de groupe de référence, l'interface principale de ce module se présente de la manière que voici.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/GestGrREF.png}
+\end{center}
+\caption{Interface principale permettant la gestion de groupe de référence}
+\label{Interface principale permettant la gestion de groupe de référence}
+\end{figure}
+
+Le bouton \includegraphics[scale=0.7]{pic/AddREfGroup.png} permet d'ajouter un nouveau groupe de référence dans ladite liste.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/FormGrRef.png}
+\end{center}
+\caption{Formulaire permettant d'ajouter un groupe de référence}
+\label{Formulaire permettant d'ajouter un groupe de référence}
+\end{figure}
+
+Le formulaire ci-haut apparait lorsqu'un utilisateur clique sur le bouton \textbf{Ajouter un groupe de référence}. Ce formulaire possède des champs, le premier \textbf{Groupe de référence} permet de spécifier les initiales du groupe de référence, la designation, le numéro de la position ainsi que la section du bilan.
+L'enregistrement est effectif seulement si l'utilisateur clique sur le bouton Soumettre.
+
+\newpage
+Les tableaux réprésentant les groupes des références enregistrés donne la possibilité de pouvoir mettre à jour les informations rélative à chacun de groupe, dans la zone action de ce tableau on retrouve deux icônes, l'icône \includegraphics[scale=0.7]{pic/EditBlack.png} qui permet de mettre à jour un groupe de référence et \includegraphics[scale=0.7]{pic/DeleteWRed.png} permet de faire la suppression.
+Voici un apperçu du formulaire permettant la mise à jour des informations d'un groupe de référence, la mise à jour est effective que si l'on modifier les informations dont on a besoin en validant grace au bouton soumettre. 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/EdtRefGroup.png}
+\end{center}
+\caption{Formulaire permettant de mettre à jour les informations d'un groupe de référence}
+\label{Formulaire permettant de mettre à jour les informations d'un groupe de référence}
+\end{figure} 
+
 
 \newpage
 \section{Journal de saisie}
@@ -4171,6 +4262,117 @@ Si l'on veut masquer une colonne de ce tableau il suffit de décocher la case qu
 \end{figure}
 
 Dans la figure ci-haute on peut voir le journal de saisie avec un plus grand nombre des colonnes qui sont à présent masquée mais aussi voir dans la boite de dialogue du bouton configurer les colonnes qui sont à présent décocher.
+
+\newpage
+\section{Référence}
+Ce module permet de faire l'administration de référence, l'interface principale de ce module se présente de la manière que voici.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/GestReference.png}
+\end{center}
+\caption{Interface principale permettant la gestion de référence}
+\label{Interface principale permettant la gestion de référence}
+\end{figure}
+
+Le bouton \includegraphics[scale=0.7]{pic/AddReference.png} permet d'ajouter une nouvelle référence dans ladite liste.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/NewReference.png}
+\end{center}
+\caption{Formulaire permettant d'ajouter une référence}
+\label{Formulaire permettant d'ajouter une référence}
+\end{figure}
+
+Le formulaire ci-haut apparait lorsqu'un utilisateur clique sur le bouton \textbf{Ajouter une référence}. Ce formulaire possède des champs, le premier \textbf{Référence} permet de spécifier les initiales de la référence, la designation, le numéro de la position, la question est ce un report, le groupe de référence ainsi que la Section Compte du Résultat.
+L'enregistrement est effectif seulement si l'utilisateur clique sur le bouton Soumettre.
+
+\newpage
+Les tableaux réprésentant les références enregistrées donne la possibilité de pouvoir mettre à jour les informations rélative à chacune des références, dans la zone action de ce tableau on retrouve deux icônes, l'icône \includegraphics[scale=0.7]{pic/EditBlack.png} qui permet de mettre à jour une référence et \includegraphics[scale=0.7]{pic/DeleteWRed.png} permet de faire la suppression.
+Voici un apperçu du formulaire permettant la mise à jour des informations d'une référence, la mise à jour est effective que si l'on modifier les informations dont on a besoin en validant grace au bouton soumettre. 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/UptReference.png}
+\end{center}
+\caption{Formulaire permettant de mettre à jour les informations d'une référence}
+\label{Formulaire permettant de mettre à jour les informations d'une référence}
+\end{figure} 
+
+\newpage
+\section{Section du résultat}
+Ce module permet de faire l'administration de section du résultat, l'interface principale de ce module se présente de la manière que voici.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/SectionResultat.png}
+\end{center}
+\caption{Interface principale permettant la gestion de section du résultat}
+\label{Interface principale permettant la gestion de section du résultat}
+\end{figure}
+
+Le bouton \includegraphics[scale=0.7]{pic/AddNewStore.png} permet d'ajouter une nouvelle référence dans ladite liste.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/NewSectionResultat.png}
+\end{center}
+\caption{Formulaire permettant d'ajouter une nouvelle section du résultat}
+\label{Formulaire permettant d'ajouter une nouvelle section du résultat}
+\end{figure}
+
+Le formulaire ci-haut apparait lorsqu'un utilisateur clique sur le bouton \textbf{Ajouter}. Ce formulaire possède des champs, le premier \textbf{Nom de la section}, et deux bouton radio pour spécifié s'il s'agit d'une charge ou bien d'un profit ainsi que le numéro de la position.
+L'enregistrement est effectif seulement si l'utilisateur clique sur le bouton Soumettre.
+
+\newpage
+Les tableaux réprésentant les sections des résultats enregistrées donne la possibilité de pouvoir mettre à jour les informations rélative à chacune des sections, dans la zone action de ce tableau on retrouve deux icônes, l'icône \includegraphics[scale=0.7]{pic/EditBlack.png} qui permet de mettre à jour une référence et \includegraphics[scale=0.7]{pic/DeleteWRed.png} permet de faire la suppression.
+Voici un apperçu du formulaire permettant la mise à jour des informations d'une section de résultat, la mise à jour est effective que si l'on modifier les informations dont on a besoin en validant grace au bouton soumettre. 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/EditSectionResultat.png}
+\end{center}
+\caption{Formulaire permettant de mettre à jour les informations d'une section du résultat}
+\label{Formulaire permettant de mettre à jour les informations d'une section du résultat}
+\end{figure} 
+
+\newpage
+\section{Section du Bilan}
+Ce module permet de faire l'administration de la section du Bilan, l'interface principale de ce module se présente de la manière que voici.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{pic/SectionBilan.png}
+\end{center}
+\caption{Interface principale permettant la gestion de la section du Bilan}
+\label{Interface principale permettant la gestion de la section du Bilan}
+\end{figure}
+
+Le bouton \includegraphics[scale=0.7]{pic/AddNewStore.png} permet d'ajouter une nouvelle section du bilan.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/NouvelleSectionBilan.png}
+\end{center}
+\caption{Formulaire permettant d'ajouter une nouvelle section du bilan}
+\label{Formulaire permettant d'ajouter une nouvelle section du bilan}
+\end{figure}
+
+Le formulaire ci-haut apparait lorsqu'un utilisateur clique sur le bouton \textbf{Ajouter une référence}. Ce formulaire possède des champs, le premier \textbf{Nom de la section}, et deux bouton radio pour spécifié s'il s'agit d'une charge ou bien d'un profit ainsi que le numéro de la position.
+L'enregistrement est effectif seulement si l'utilisateur clique sur le bouton Soumettre.
+
+\newpage
+Les tableaux réprésentant les sections des résultats enregistrées donne la possibilité de pouvoir mettre à jour les informations rélative à chacune des sections, dans la zone action de ce tableau on retrouve deux icônes, l'icône \includegraphics[scale=0.7]{pic/EditBlack.png} qui permet de mettre à jour une référence et \includegraphics[scale=0.7]{pic/DeleteWRed.png} permet de faire la suppression.
+Voici un apperçu du formulaire permettant la mise à jour des informations d'une section de résultat, la mise à jour est effective que si l'on modifier les informations dont on a besoin en validant grace au bouton soumettre. 
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=8cm]{pic/EditSectBilan.png}
+\end{center}
+\caption{Formulaire permettant de mettre à jour les informations d'une section du bilan}
+\label{Formulaire permettant de mettre à jour les informations d'une section du bilan}
+\end{figure} 
 
 
 \newpage
