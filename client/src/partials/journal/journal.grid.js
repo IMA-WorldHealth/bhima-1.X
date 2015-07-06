@@ -13,7 +13,7 @@ angular.module('bhima.controllers')
     var columns, options, dataview, grid,
         manager = { session : {}, fn : {}, mode : {} };
 
-    // FIXME : this is <i>terrible</i>.  Never ever do this ever again
+    // FIXME : this is <i>terrible</i>.  Never ever do this ever again!
     appstate.set('journal.ready', ready.promise);
 
     dependencies.journal_bis = {

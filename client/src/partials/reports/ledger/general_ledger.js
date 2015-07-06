@@ -6,11 +6,12 @@ angular.module('bhima.controllers')
   'appstate',
   'validate',
   'GeneralLedgerService',
-  function ($scope, $translate, $filter, appstate, validate, GLService) {
+  'GridHelperFactory',
+  function ($scope, $translate, $filter, appstate, validate, GLService, GridHelper) {
     /* jshint unused : false */
 
     // used by SlickGrid
-    var columns, dataview, options, grid, groups = $scope.groups = [];
+    var columns, dataview, options, grid;
 
     GLService.load()
     .then(function (store) {
@@ -25,11 +26,35 @@ angular.module('bhima.controllers')
     .catch(console.error)
     .finally();
 
+    // expose the enterprise to the view
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
     });
 
+    // init grid
     function setupGridOptions() {
+
+      // Grid formats
+      function formatAmount(row, cell, value) {
+        return $filter('currency')(value);
+      }
+
+      function formatEquiv(row, cell, value) {
+        return $filter('currency')(value);
+      }
+
+      function formatDate (row, cell, value) {
+        return $filter('date')(value);
+      }
+
+      function formatGroupTotalRow(totals, column) {
+        var val = totals.sum && totals.sum[column.field];
+        if (val !== null) {
+          return '<span style=\'font-weight: bold\'>' + $filter('currency')(Math.round(parseFloat(val)*100/100)) + '</span>';
+        }
+        return '';
+      }
+
       columns = [
         {id: 'uuid'           , name: $translate.instant('COLUMNS.ID')             , field:'uuid'           , visible : false} ,
         {id: 'fiscal_year_id' , name: $translate.instant('COLUMNS.FISCAL_YEAR_ID') , field:'fiscal_year_id' , visible : true } ,
@@ -52,6 +77,7 @@ angular.module('bhima.controllers')
         {id: 'user_id'        , name: $translate.instant('COLUMNS.USER_ID')        , field:'user_id'        , visible : false}
       ];
 
+      // TODO : make this into a directive
       $scope.columns = angular.copy(columns);
 
       options = {
@@ -61,8 +87,6 @@ angular.module('bhima.controllers')
         rowHeight: 35,
       };
     }
-
-    var sortColumn;
 
     function initialiseGrid() {
       var groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
@@ -87,11 +111,8 @@ angular.module('bhima.controllers')
 
       grid.registerPlugin(groupItemMetadataProvider);
 
-      //Grid sorting
-      grid.onSort.subscribe(function(e, args) {
-        sortColumn = args.sortCol.field;
-        dataview.sort(compareSort, args.sortAsc);
-      });
+      // set up sorting
+      GridHelper.sorting.setupSorting(grid, dataview);
 
       dataview.beginUpdate();
       dataview.setItems($scope.ledger.data, 'uuid');
@@ -100,93 +121,18 @@ angular.module('bhima.controllers')
       dataview.syncGridSelection(grid, true);
     }
 
-    var groupDefinitions = [
-      {
-        title : $translate.instant('REPORT.TRANSACTION'),
-        getter : 'trans_id',
-        formatter : formatTransactionGroup,
-        aggregators : ['debit_equiv', 'credit_equiv']
-      },
-      {
-        title : $translate.instant('REPORT.ACCOUNT'),
-        getter : 'account_id',
-        formatter : formatAccountGroup,
-        aggregators : []
-      },
-      {
-        title : $translate.instant('REPORT.PERIOD'),
-        getter : 'period_id',
-        formatter : formatPeriodGroup,
-        aggregators : []
-      }
-    ];
 
-    //Utility methods
-    function groupby(groupDefinition) {
-      var groupInstance = {};
-      if (groupExists(groupDefinition, groups)) { return; }
-
-      groupInstance = JSON.parse(JSON.stringify(groupDefinition));
-      groupInstance.aggregateCollapsed = true;
-      groupInstance.aggregators = [];
-
-      groupDefinition.aggregators.forEach(function(aggregate) {
-        groupInstance.aggregators.push(new Slick.Data.Aggregators.Sum(aggregate));
-      });
-
-      groupInstance.formatter = groupDefinition.formatter;
-      groups.push(groupInstance);
-      dataview.setGrouping(groups);
+    // grouping
+    function groupByTransaction() {
+      GridHelper.grouping.byTransaction(dataview, false);
     }
 
-    function groupExists(targetGroup) {
-      return groups.some(function(group) {
-        return group.getter === targetGroup.getter;
-      });
+    function groupByAccount() {
+      GridHelper.grouping.byAccount(dataview, false);
     }
 
-    $scope.removeLastGroup = function () {
-      $scope.groups.pop();
-      dataview.setGrouping($scope.groups);
-    };
-
-    function formatTransactionGroup(g) {
-      return '<span>TRANSACTION (' + g.value + ')</span>';
-    }
-
-    function formatAccountGroup(g) {
-      return '<span>ACCOUNT (' + g.value + ')</span>';
-    }
-
-    function formatPeriodGroup(g) {
-      return '<span>PERIOD (' + g.value + ')</span>';
-    }
-
-    function formatGroupTotalRow(totals, column) {
-      var val = totals.sum && totals.sum[column.field];
-      if (val !== null) {
-        return '<span style=\'font-weight: bold\'>' + $filter('currency')(Math.round(parseFloat(val)*100/100)) + '</span>';
-      }
-      return '';
-    }
-
-    //Grid sort methods
-    function compareSort(a, b) {
-      var x = a[sortColumn], y = b[sortColumn];
-      return (x === y) ? 0 : (x > y ? 1 : -1);
-    }
-
-    //Grid formats
-    function formatAmount(row, cell, value) {
-      return $filter('currency')(value);
-    }
-
-    function formatEquiv(row, cell, value) {
-      return $filter('currency')(value);
-    }
-
-    function formatDate (row, cell, value) {
-      return $filter('date')(value);
+    function clearGrouping() {
+      GridHelper.grouping.clear();
     }
 
     $scope.$watch('columns', function () {
@@ -197,7 +143,8 @@ angular.module('bhima.controllers')
       grid.setColumns(columns);
     }, true);
 
-    $scope.groupby = groupby;
-    $scope.groupDefinitions = groupDefinitions;
+    $scope.groupByTransaction = groupByTransaction;
+    $scope.groupbyAccount = groupByAccount;
+    $scope.clearGrouping = clearGrouping;
   }
 ]);
