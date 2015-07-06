@@ -257,6 +257,7 @@ angular.module('bhima.controllers')
     };
 
     // Toggle column visibility
+    // this is terrible
     $scope.$watch('columns', function () {
       if (!$scope.columns) { return; }
       var columns = $scope.columns.filter(function (column) { return column.visible; });
