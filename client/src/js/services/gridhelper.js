@@ -85,7 +85,8 @@ angular.module('bhima.services')
 
   service.grouping.byAccount = function (dataview, collapsed) {
     var formatter = function (g) {
-      return '<span>ACCOUNT (' + g.value + ')</span>';
+      // FIXME: THIS IS A HACK
+      return '<span>ACCOUNT (' + g.rows[0].account_number + ')</span>';
     };
     dataview.setGrouping({
       getter: 'account_id',
@@ -103,7 +104,7 @@ angular.module('bhima.services')
 
   // clears the grouping
   service.grouping.clear = function (dataview) {
-    dataview.setGrouping({});
+    dataview.setGrouping([]);
   };
 
   /** Filter utilities */
@@ -120,21 +121,35 @@ angular.module('bhima.services')
   // of the fitler property.
 
   // returns a new filter object
+  // "by" object controls view
+  // "param" controls what is filtered
   service.filtering.filter = function () {
-    return { by : {} };
+    return { by : {}, param : null };
+  };
+
+  // matches the param
+  service.filtering.filterFn = function (filter) {
+    return function (item, args) {
+      if (filter.by.field || String(item[filter.by.field]).match(args.param)) {
+        return true;
+      }
+      return false;
+    };
   };
 
   // clears the data in the filter and dataview
   service.filtering.clear = function (dataview, filter) {
-    filter.by = '';
-    dataview.setFilterArgs(filter);
+    filter.param = '';
+    dataview.setFilterArgs({
+      param : filter.param
+    });
     dataview.refresh();
   };
 
   // updates the dataview to filter with the new parameter provided in filter
   service.filtering.update = function (dataview, filter) {
-    if (!filter.by) { return; }
-    dataview.setFilterArgs(filter);
+    if (!filter.param) { return; }
+    dataview.setFilterArgs({ param : filter.param });
     dataview.refresh();
   };
 
