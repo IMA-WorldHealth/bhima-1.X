@@ -63,7 +63,8 @@ angular.module('bhima.controllers')
         {id: 'trans_date'     , name: $translate.instant('COLUMNS.DATE')           , field:'trans_date'     , visible : true   , formatter: formatDate  , sortable : true },
         {id: 'doc_num'        , name: $translate.instant('COLUMNS.DOCUMENT_ID')    , field:'doc_num'        , visible : true } ,
         {id: 'description'    , name: $translate.instant('COLUMNS.DESCRIPTION')    , field:'description'    , visible : true } ,
-        {id: 'account_number' , name: $translate.instant('COLUMNS.ACCOUNT_NUMBER') , field:'account_number' , visible : true } ,
+        {id: 'account_number' , name: $translate.instant('COLUMNS.ACCOUNT_NUMBER') , field:'account_number' , visible : true   , sortable : true } ,
+        {id: 'account_id'     , name: $translate.instant('COLUMNS.ACCOUNT_ID')     , field:'account_id'     , visible : false} ,
         {id: 'debit'          , name: $translate.instant('COLUMNS.DEBIT')          , field:'debit'          , visible : false  , formatter: formatAmount , groupTotalsFormatter: formatGroupTotalRow}  ,
         {id: 'credit'         , name: $translate.instant('COLUMNS.CREDIT')         , field:'credit'         , visible : false  , formatter: formatAmount , groupTotalsFormatter: formatGroupTotalRow}  ,
         {id: 'debit_equiv'    , name: $translate.instant('COLUMNS.DEB_EQUIV')      , field:'debit_equiv'    , visible : true   , formatter: formatEquiv  , groupTotalsFormatter: formatGroupTotalRow } ,
@@ -74,7 +75,7 @@ angular.module('bhima.controllers')
         {id: 'inv_po_id'      , name: $translate.instant('COLUMNS.INVPO_ID')       , field:'inv_po_id'      , visible : true } ,
         {id: 'comment'        , name: $translate.instant('COLUMNS.COMMENT')        , field:'comment'        , visible : false} ,
         {id: 'origin_id'      , name: $translate.instant('COLUMNS.ORIGIN_ID')      , field:'origin_id'      , visible : false} ,
-        {id: 'user_id'        , name: $translate.instant('COLUMNS.USER_ID')        , field:'user_id'        , visible : false}
+        {id: 'user_id'        , name: $translate.instant('COLUMNS.USER_ID')        , field:'user_id'        , visible : false  , sortable : true }
       ];
 
       // TODO : make this into a directive
@@ -119,8 +120,16 @@ angular.module('bhima.controllers')
       dataview.endUpdate();
 
       dataview.syncGridSelection(grid, true);
-    }
 
+      // filter stuff
+      dataview.beginUpdate();
+      dataview.setFilter(filterFn);
+      dataview.setFilterArgs({
+        param : ''
+      });
+      dataview.endUpdate();
+
+    }
 
     // grouping
     function groupByTransaction() {
@@ -132,7 +141,7 @@ angular.module('bhima.controllers')
     }
 
     function clearGrouping() {
-      GridHelper.grouping.clear();
+      GridHelper.grouping.clear(dataview);
     }
 
     // make sure that columns are properly filtered
@@ -140,8 +149,33 @@ angular.module('bhima.controllers')
       GridHelper.columns.filterColumns(grid, cols);
     }, true);
 
+    // filtering controls
+    
+    var filter = $scope.filter = GridHelper.filtering.filter();
+    var filterFn = GridHelper.filtering.filterFn(filter);
+
+    function refreshFilter() {
+      GridHelper.filtering.clear(dataview, filter);
+    }
+
+    // sets the filter.by parameter to the given column
+    function filterBy(column) {
+      filter.by = column;
+    }
+
+    // updates on ng-model change
+    function updateFilter() { 
+      GridHelper.filtering.update(dataview, filter);
+    }
+
+    // expose groupings
     $scope.groupByTransaction = groupByTransaction;
-    $scope.groupbyAccount = groupByAccount;
+    $scope.groupByAccount = groupByAccount;
     $scope.clearGrouping = clearGrouping;
+    
+    // expose filtering
+    $scope.refreshFilter = refreshFilter;
+    $scope.updateFilter = updateFilter;
+    $scope.filterBy = filterBy;
   }
 ]);
