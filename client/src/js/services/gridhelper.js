@@ -15,14 +15,15 @@ angular.module('bhima.services')
 
   // These column utitilites eliminate redundency by encapsulating
   // common actions on columns.  Currently supported:
-  // service.columns.toggleVisibleColumns(grid, columns):
+  // service.columns.filterColumns(grid, columns):
 
   // filter out columns with a false-y visible property
-  service.columns.toggleVisibileColumns = function (grid, columns) {
+  service.columns.filterColumns = function (grid, columns) {
+    if (!columns) { return; }
     var visibleColumns = columns.filter(function (column) {
       return column.visible;
     });
-    grid.setColumns(columns);
+    grid.setColumns(visibleColumns);
   };
 
 
@@ -35,7 +36,7 @@ angular.module('bhima.services')
   function sortFn(column) {
     return function (a,b) {
       var x = a[column], y = b[column];
-      return x - y;
+      return (x > y) ? 1 : -1;
     };
   }
 
@@ -45,9 +46,9 @@ angular.module('bhima.services')
     // set up the listener
     grid.onSort.subscribe(function (evt, args) {
       var key = args.sortCol.field,
-          sorter = sortFn(key);
+          comparer = sortFn(key);
 
-      dataview.sort(sorter, args.sortAsc);
+      dataview.sort(comparer, args.sortAsc);
     });
   };
 

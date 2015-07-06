@@ -60,7 +60,7 @@ angular.module('bhima.controllers')
         {id: 'fiscal_year_id' , name: $translate.instant('COLUMNS.FISCAL_YEAR_ID') , field:'fiscal_year_id' , visible : true } ,
         {id: 'period_id'      , name: $translate.instant('COLUMNS.PERIOD_ID')      , field:'period_id'      , visible : true } ,
         {id: 'trans_id'       , name: $translate.instant('COLUMNS.TRANS_ID')       , field:'trans_id'       , visible : true } ,
-        {id: 'trans_date'     , name: $translate.instant('COLUMNS.DATE')           , field:'trans_date'     , visible : true   , formatter: formatDate}  ,
+        {id: 'trans_date'     , name: $translate.instant('COLUMNS.DATE')           , field:'trans_date'     , visible : true   , formatter: formatDate  , sortable : true },
         {id: 'doc_num'        , name: $translate.instant('COLUMNS.DOCUMENT_ID')    , field:'doc_num'        , visible : true } ,
         {id: 'description'    , name: $translate.instant('COLUMNS.DESCRIPTION')    , field:'description'    , visible : true } ,
         {id: 'account_number' , name: $translate.instant('COLUMNS.ACCOUNT_NUMBER') , field:'account_number' , visible : true } ,
@@ -135,12 +135,9 @@ angular.module('bhima.controllers')
       GridHelper.grouping.clear();
     }
 
-    $scope.$watch('columns', function () {
-      if (!$scope.columns) { return; }
-      var columns = $scope.columns.filter(function (column) {
-        return column.visible;
-      });
-      grid.setColumns(columns);
+    // make sure that columns are properly filtered
+    $scope.$watch('columns', function (cols) {
+      GridHelper.columns.filterColumns(grid, cols);
     }, true);
 
     $scope.groupByTransaction = groupByTransaction;
