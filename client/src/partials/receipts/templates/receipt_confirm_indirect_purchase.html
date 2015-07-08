@@ -13,7 +13,7 @@
         <b>{{model.common.enterprise.name}}</b>
       </span>
       <br>
-      {{model.common.location.name}}
+      {{model.common.location.name}} 
       <br>
       <!-- hah -->
       {{ model.common.enterprise.po_box || 'B.P. 205'}}
@@ -31,6 +31,8 @@
       <i>{{ 'INVOICE.DATE_JUSTIFICATION' | translate }}</i>
       <br>
       {{model.confirmIndirectPurchase.purchase_date | date}}
+      <br>
+      <i>{{ 'COLUMNS.TRANSACTION_ID' | translate }}</i> : <b>{{ trans_id }}<b>
     </div>
 
     <div class="col-xs-4">

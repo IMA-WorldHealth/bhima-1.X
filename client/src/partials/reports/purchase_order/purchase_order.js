@@ -10,7 +10,8 @@ angular.module('bhima.controllers')
   function ($scope, $timeout, $translate, connect, appstate, validate, exchange) {
     var session = $scope.session = {},
       state = $scope.state,
-      allTypes = $scope.allTypes = '0,1';
+      allTypes = $scope.allTypes = '0,1',
+      service_txt = 'confirm_purchase';
 
     $scope.selected = null;
 
@@ -55,6 +56,17 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.transaction_type = {
+      query : {
+        tables : {
+          'transaction_type' : {
+            columns : ['id']
+          }
+        },
+        where : ['transaction_type.service_txt=' + service_txt]
+      }
+    };
+
     $scope.options = [
       {
         label : 'CASH_PAYMENTS.DAY',
@@ -95,10 +107,11 @@ angular.module('bhima.controllers')
         dateTo : session.dateTo
       };
 
-      url = '/reports/purchase_records/?id=%types%&start=%start%&end=%end%'
+      url = '/reports/purchase_records/?id=%types%&start=%start%&end=%end%&transaction=%transaction%'
       .replace('%types%', session.type)
       .replace('%start%', req.dateFrom)
-      .replace('%end%', req.dateTo);
+      .replace('%end%', req.dateTo)
+      .replace('%transaction%', $scope.transaction) ;
 
       connect.fetch(url)
       .then(function (model) {
@@ -112,8 +125,8 @@ angular.module('bhima.controllers')
       session.project = project.id;
       validate.process(dependencies)
       .then(function (models) {
+        $scope.transaction = models.transaction_type.data[0].id;        
         $scope.projects = models.projects;
-
         $scope.currencies = models.currencies;
         $scope.projectAbbr = $scope.projects.data[0].abbr;
         session.currency = $scope.currencies.data[0].id;
