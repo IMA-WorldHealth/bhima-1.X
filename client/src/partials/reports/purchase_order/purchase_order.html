@@ -115,6 +115,7 @@
             <thead>
               <tr>
                 <th>{{ "COLUMNS.REFERENCE_PURCHASE" | translate }}</th>
+                <th>{{ "COLUMNS.TRANSACTION_NUMBER" | translate }}</th>
                 <th>{{ "COLUMNS.ISSUER" | translate }}</th>
                 <th>{{ "COLUMNS.SUPPLIER" | translate }}</th>
                 <th>{{ "COLUMNS.TYPE" | translate }}</th>
@@ -131,6 +132,7 @@
                 <td ng-if="!purchase.is_direct">
                   <a ng-if="purchase.uuid" ng-href="/#/invoice/confirm_indirect_purchase/{{purchase.uuid}}">{{ projectAbbr + purchase.reference }}</a>
                 </td>                
+                <td><b> {{ purchase.journal_trans_id }} {{ purchase.ledger_trans_id }} </b></td>
                 <td> {{ purchase.first + ' ' + purchase.last }} </td>
                 <td> {{ purchase.supplier_name }} </td>
                 <td ng-if="purchase.is_direct"> {{ "COLUMNS.DIRECT" | translate }} </td>
