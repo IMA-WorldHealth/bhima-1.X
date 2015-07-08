@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
   'appstate',
   'messenger',
   function ($scope, validate, appstate, messenger) {
-    var dependencies = {}, model = $scope.model = {common : {}};
+    var dependencies = {}, model = $scope.model = {common : {}}, service_txt = 'confirm_purchase';
 
     dependencies.confirmDirectPurchase = {
       query : {
@@ -50,7 +50,39 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.getTransaction = {
+      query : {
+        identifier : 'uuid',
+        tables : {
+          posting_journal : { columns : ['trans_id'] },
+          transaction_type : {columns : ['id']}
+        },
+        distinct : true,
+        join : ['posting_journal.origin_id=transaction_type.id'],
+        where : ['transaction_type.service_txt=' + service_txt]
+      }
+    };
+
+    dependencies.getGeneraLedger = {
+      query : {
+        identifier : 'uuid',
+        tables : {
+          general_ledger : { columns : ['trans_id'] },
+          transaction_type : {columns : ['id']}
+        },
+        distinct : true,
+        join : ['general_ledger.origin_id=transaction_type.id'],
+        where : ['transaction_type.service_txt=' + service_txt]
+      }
+    };
+
     function buildInvoice (res) {
+      if(res.getTransaction.data.length){
+        $scope.trans_id = res.getTransaction.data[0].trans_id;
+      } else if (res.getGeneraLedger.data.length){
+        $scope.trans_id = res.getTransaction.data[0].trans_id;
+      }
+
       model.directPurchase = res.directPurchases.data;
       model.confirmDirectPurchase = res.confirmDirectPurchase.data.pop();
     }
@@ -63,6 +95,8 @@ angular.module('bhima.controllers')
         model.common.enterprise = values.enterprise.data.pop();
         dependencies.confirmDirectPurchase.query.where =  ['purchase.uuid=' + values.invoiceId];
         dependencies.directPurchases.query.where =  ['purchase.uuid=' + values.invoiceId];
+        dependencies.getTransaction.query.where = ['posting_journal.inv_po_id=' + values.invoiceId , 'AND', 'transaction_type.service_txt=' + service_txt];
+        dependencies.getGeneraLedger.query.where = ['general_ledger.inv_po_id=' + values.invoiceId , 'AND', 'transaction_type.service_txt=' + service_txt];        
 
         validate.process(dependencies)
         .then(buildInvoice)

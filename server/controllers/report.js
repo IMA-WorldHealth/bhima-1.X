@@ -841,17 +841,22 @@ function purchaseOrdeRecords(params) {
   var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
       _end =  sanitize.escape(util.toMysqlDate(new Date(p.end))),
       _id = p.id;
+      _transaction = sanitize.escape(p.transaction);
 
   var sql =
-    ' SELECT `purchase`.`uuid`, `purchase`.`cost`, `purchase`.`currency_id`, `purchase`.`purchase_date`, `purchase`.`is_direct`, ' +
+    ' SELECT DISTINCT `purchase`.`uuid`, `purchase`.`cost`, `purchase`.`currency_id`, `purchase`.`purchase_date`, `purchase`.`is_direct`, ' +
     '`purchase`.`reference`, `user`.`first`, `user`.`last`, `employee`.`prenom`, `employee`.`name`, `employee`.`postnom`, ' +
-    '`purchase`.`is_direct`, `supplier`.`name` AS `supplier_name`, `u`.`first` AS `confirmed_first`, `u`.`last` AS `confirmed_last` ' +
+    '`purchase`.`is_direct`, `supplier`.`name` AS `supplier_name`, `u`.`first` AS `confirmed_first`, `u`.`last` AS `confirmed_last`, ' +
+    '`posting_journal`.`trans_id` AS `journal_trans_id`, `general_ledger`.`trans_id` AS `ledger_trans_id` ' +
     'FROM `purchase` ' +
-    'JOIN `user` ON `user`.`id` = `purchase`.`issuer_id` ' +
+    'JOIN `user` ON `user`.`id` = `purchase`.`emitter_id` ' +
     'JOIN `user` AS u ON `u`.`id` = `purchase`.`confirmed_by` ' +
     'JOIN `supplier` ON `supplier`.`creditor_uuid` = `purchase`.`creditor_uuid` ' +
-    'LEFT JOIN `employee` ON `employee`.`id` = `purchase`.`employee_id` ' +
+    'LEFT JOIN `employee` ON `employee`.`id` = `purchase`.`receiver_id` ' +
+    'LEFT JOIN `posting_journal` ON `posting_journal`.`inv_po_id` = `purchase`.`uuid` ' +
+    'LEFT JOIN `general_ledger` ON `general_ledger`.`inv_po_id` = `purchase`.`uuid`' +
     'WHERE `purchase`.`is_direct` IN (' + _id + ') AND DATE(`purchase`.`purchase_date`) BETWEEN DATE(' + _start + ') AND DATE(' + _end + ') ' +
+    'AND (`posting_journal`.`origin_id` = ' + _transaction + ' OR `general_ledger`.`origin_id` = ' + _transaction + ') ' +
     'AND `purchase`.`confirmed` = 1 ORDER BY `purchase`.`purchase_date` DESC ;';
 
   return db.exec(sql);
