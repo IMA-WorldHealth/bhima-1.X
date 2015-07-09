@@ -4,14 +4,30 @@
       <div class="col-xs-12">
         <div class="panel panel-default">
           <div class="panel-heading">
-            <b> {{ "REPORT.CONFIGURE_REPORT" | translate }} : </b> {{ "DONATION_MANAGEMENT.REPORT_CONF" | translate }}
+            <b> {{ "REPORT.CONFIGURE_REPORT" | translate }} : </b> {{ "STOCK.INTEGRATION.REPORT_CONF" | translate }}
           </div>
 
           <div class="panel-body">
-            <form name="configForm" novalidate>              
+            <form name="configForm" novalidate>   
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ 'STOCK.INTEGRATION.STORE' | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-briefcase"></span>
+                    </span>  
+                    <select class="form-bhima" required ng-model="session.depot_entry" >
+                      <option ng-repeat="depot in depots" value="{{ depot.uuid }}">{{ depot.text}}</option>
+                    </select>                    
+                  </div>
+                </div>
+              </div>
+
               <div class="form-group">
                 <label class="control-label required">
-                  {{ 'DONATION_MANAGEMENT.SELECT_TIME' | translate }}
+                  {{ 'STOCK.INTEGRATION.SELECT_TIME' | translate }}
                 </label>
               </div>
 
@@ -68,7 +84,7 @@
   </div>
   <div ng-switch-when="generate">  
     <header>
-      <b> {{ "DONATION_MANAGEMENT.REPORT_CONF" | translate }} </b> : <small>  {{ session.dateFrom | date }} - {{ session.dateTo | date }} </small>
+      <b> {{ "STOCK.INTEGRATION.REPORT_CONF" | translate }} </b> : <small>  {{ session.dateFrom | date }} - {{ session.dateTo | date }} </small>
     </header>
 
     <nav>
@@ -101,22 +117,24 @@
               <tr>
                 <th>{{ "COLUMNS.REFERENCE_PURCHASE" | translate }}</th>
                 <th>{{ "COLUMNS.TRANSACTION_NUMBER" | translate }}</th>
-                <th>{{ "COLUMNS.DONOR" | translate }}</th>
+                <th>{{ "COLUMNS.ISSUER" | translate }}</th>
+                <th>{{ "COLUMNS.DEPOT" | translate }}</th>
                 <th>{{ "COLUMNS.CONFIRM_BY" | translate }}</th>
-                <th>{{ "COLUMNS.DATE" | translate }}</th>
+                <th>{{ "COLUMNS.DATE" | translate }}</th>                
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat='donations in donation_records'>
+              <tr ng-repeat='integrations in integration_records'>
                 <td>
-                  <a ng-if="donations.uuid" ng-href="/#/invoice/confirm_donation/{{donations.uuid}}"><span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}</a>
-                </td>
-                <td><b> {{ donations.journal_trans_id }} {{ donations.ledger_trans_id }} </b></td>                
-                <td> {{ donations.donor_name }} </td>
-                <td> {{ donations.first + ' ' + donations.last }} </td>
-                <td> {{ donations.date | date }} </td>
+                  <a ng-if="integrations.uuid" ng-href="/#/invoice/confirm_integration/{{integrations.document_id}}"><span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}</a>
+                </td>                                
+                <td><b> {{ integrations.journal_trans_id }} {{ integrations.ledger_trans_id }} </b></td>
+                <td> {{ integrations.first + ' ' + integrations.last }} </td>
+                <td> {{ integrations.depot_text }} </td>
+                <td> {{ integrations.confirmed_first }} {{ integrations.confirmed_last }} </td>
+                <td> {{ integrations.purchase_date | date }} </td>
               </tr>
-              <tr ng-if="!donation_records.length">
+              <tr ng-if="!integration_records.length">
                 <td colspan="7">
                   <span class="glyphicon glyphicon-stats"></span>
                   {{ "PURCHASE.REPORT.EMPTY_REPORT" | translate }}

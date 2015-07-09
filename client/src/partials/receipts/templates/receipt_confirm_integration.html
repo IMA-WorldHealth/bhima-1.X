@@ -31,6 +31,7 @@
 
       <i>{{'INVOICE.DATE_INTEGRATION' | translate}}</i><br>
       <b>{{model.stock[0].purchase_date | date}}</b>
+
     </div>
 
     <div class="col-xs-4">
@@ -38,6 +39,7 @@
       <br><br>
       <i>{{'INVOICE.INTEGRATION_CONFIRMER' | translate}}</i>: <b>{{ model.confirmeur }}</b>
       <br>
+      <i>{{ 'COLUMNS.TRANSACTION_ID' | translate }}</i> : <b>{{ trans_id }}<b>
     </div>
   </div>
 
