@@ -1,16 +1,13 @@
 angular.module('bhima.controllers')
-.controller('stock_integration', [
+.controller('stockIntegration', [
   '$scope',
-  '$timeout',
-  '$translate',
+  '$window',
   'connect',
   'appstate',
   'validate',
-  'exchange',
-  function ($scope, $timeout, $translate, connect, appstate, validate, exchange) {
+  function ($scope, $window, connect, appstate, validate) {
     var session = $scope.session = {},
-      state = $scope.state,
-      allTypes = $scope.allTypes = '0,1';
+      state = $scope.state;
 
     $scope.selected = null;
 
@@ -135,7 +132,7 @@ angular.module('bhima.controllers')
     });
 
     $scope.print = function print() {
-      window.print();
+      $window.print();
     };
 
    function reconfigure () {

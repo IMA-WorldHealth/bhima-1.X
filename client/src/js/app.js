@@ -363,7 +363,7 @@
       templateUrl : 'partials/reports/donation_confirmation/donation_confirmation.html'
     })
     .when('/reports/stock_integration', {
-      controller : 'stock_integration',
+      controller : 'stockIntegration',
       templateUrl : 'partials/reports/stock_integration/stock_integration.html'
     })    
     .when('/reports/expiring/:option', {
