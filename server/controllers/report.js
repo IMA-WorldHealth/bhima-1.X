@@ -870,14 +870,46 @@ function donation_confirmationRecords(params) {
       _end =  sanitize.escape(util.toMysqlDate(new Date(p.end)));
 
   var sql =
-    'SELECT `donations`.`uuid`, `donations`.`date`, `user`.`first`, `user`.`last`, `employee`.`prenom`, ' +
-    '`employee`.`name`, `employee`.`postnom`, `donor`.`name` AS `donor_name` ' +
+    'SELECT DISTINCT `donations`.`uuid`, `donations`.`date`, `user`.`first`, `user`.`last`, `employee`.`prenom`, ' +
+    '`employee`.`name`, `employee`.`postnom`, `donor`.`name` AS `donor_name`, ' +
+    '`posting_journal`.`trans_id` AS `journal_trans_id`, `general_ledger`.`trans_id` AS `ledger_trans_id` ' +
     'FROM `donations` ' +
     'JOIN `user` ON `user`.`id` = `donations`.`confirmed_by` ' +
     'JOIN `donor` ON `donor`.`id` = `donations`.`donor_id` ' +
     'JOIN `employee` ON `employee`.`id` = `donations`.`employee_id` ' +
+    'LEFT JOIN `posting_journal` ON `posting_journal`.`inv_po_id` = `donations`.`uuid` ' +
+    'LEFT JOIN `general_ledger` ON `general_ledger`.`inv_po_id` = `donations`.`uuid`' +
     'WHERE DATE(`donations`.`date`) BETWEEN DATE(' + _start + ') AND DATE(' + _end + ') ' +
     'AND `donations`.`is_confirmed` = 1 ORDER BY `donations`.`date` DESC ;';
+
+  return db.exec(sql);
+}
+
+function integration_stock(params) {
+  var p = querystring.parse(params);
+
+  var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
+      _end =  sanitize.escape(util.toMysqlDate(new Date(p.end))),
+      _depot = sanitize.escape(p.depot);
+
+  var sql =
+    'SELECT DISTINCT purchase.uuid, movement.depot_entry, depot.text AS depot_text, movement.document_id, purchase.cost, purchase.is_integration, purchase.currency_id, ' +
+    'purchase.purchase_date, purchase.is_direct, ' +
+    'purchase.reference, user.first, user.last, employee.prenom, employee.name, employee.postnom, ' +
+    'purchase.is_direct, u.first AS confirmed_first, u.last AS confirmed_last, ' +
+    'posting_journal.trans_id AS journal_trans_id, general_ledger.trans_id AS ledger_trans_id ' +
+    'FROM purchase ' + 
+    'JOIN user ON user.id = purchase.emitter_id ' +
+    'JOIN user AS u ON u.id = purchase.confirmed_by ' +
+    'JOIN stock ON stock.purchase_order_uuid = purchase.uuid ' +
+    'JOIN movement ON movement.tracking_number = stock.tracking_number ' +  
+    'JOIN depot ON depot.uuid = movement.depot_entry ' +  
+    'LEFT JOIN employee ON employee.id = purchase.receiver_id ' +
+    'LEFT JOIN posting_journal ON posting_journal.inv_po_id = purchase.uuid ' +
+    'LEFT JOIN general_ledger ON general_ledger.inv_po_id = purchase.uuid ' +
+    'WHERE DATE(purchase.purchase_date) BETWEEN DATE(' + _start + ') AND DATE(' + _end + ') ' + 
+    'AND purchase.is_integration = 1 AND purchase.confirmed = 1 AND movement.depot_entry = ' + _depot + ' ' + 
+    'ORDER BY purchase.purchase_date DESC ';
 
   return db.exec(sql);
 }
@@ -955,6 +987,7 @@ function generate(request, params, done) {
     'purchase_order'        : purchase_order,
     'purchase_records'      : purchaseOrdeRecords,
     'donation_confirmation' : donation_confirmationRecords,
+    'integration_stock'     : integration_stock,
     'stock_movement'        : stock_movement,
     'stockStore'            : stock_store,
     'stockComplete'         : stockComplete    
