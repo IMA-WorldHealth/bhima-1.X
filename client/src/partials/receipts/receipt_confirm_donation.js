@@ -79,7 +79,6 @@ angular.module('bhima.controllers')
         $scope.trans_id = res.getTransaction.data[0].trans_id;
       }
       
-      console.log(res.confirmDonations.data[0]);
       model.donations = res.donations.data;
       model.confirmDonations = res.confirmDonations.data.pop();
     }
