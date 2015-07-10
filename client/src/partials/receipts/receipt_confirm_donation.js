@@ -48,8 +48,37 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.getTransaction = {
+      query : {
+        identifier : 'uuid',
+        tables : {
+          posting_journal : { columns : ['trans_id'] },
+          transaction_type : {columns : ['id']}
+        },
+        distinct : true,
+        join : ['posting_journal.origin_id=transaction_type.id']
+      }
+    };
+
+    dependencies.getGeneraLedger = {
+      query : {
+        identifier : 'uuid',
+        tables : {
+          general_ledger : { columns : ['trans_id'] },
+          transaction_type : {columns : ['id']}
+        },
+        distinct : true,
+        join : ['general_ledger.origin_id=transaction_type.id']
+      }
+    };
+
     function buildInvoice (res) {
-      console.log(res.confirmDonations.data[0]);
+      if(res.getTransaction.data.length){
+        $scope.trans_id = res.getTransaction.data[0].trans_id;
+      } else if (res.getGeneraLedger.data.length){
+        $scope.trans_id = res.getTransaction.data[0].trans_id;
+      }
+      
       model.donations = res.donations.data;
       model.confirmDonations = res.confirmDonations.data.pop();
     }
@@ -60,9 +89,12 @@ angular.module('bhima.controllers')
         model.common.location = values.location.data.pop();
         model.common.InvoiceId = values.invoiceId;
         model.common.enterprise = values.enterprise.data.pop();
-        //dependencies.confirmDonations.query.where =  ['donations.uuid=' + values.invoiceId];
+
         dependencies.confirmDonations.query.where =  ['donations.uuid=' + values.invoiceId];
         dependencies.donations.query.where =  ['donations.uuid=' + values.invoiceId];
+        dependencies.getTransaction.query.where = ['posting_journal.inv_po_id=' + values.invoiceId ];
+        dependencies.getGeneraLedger.query.where = ['general_ledger.inv_po_id=' + values.invoiceId ];
+
 
         validate.process(dependencies)
         .then(buildInvoice)

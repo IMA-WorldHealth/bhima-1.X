@@ -140,6 +140,13 @@ ALTER TABLE `purchase` ADD CONSTRAINT FOREIGN KEY (`receiver_id`) REFERENCES `em
 
 
 
+-- Updates table account
+-- Date: 2015-06-09
+-- By: Chris LOMAME
+-- ADD Report Stock integration
+--
+INSERT INTO `unit` VALUES
+('113','Report Stock Integration','TREE.REPORT_STOCK_INTEGRATION','',10,0,'/partials/reports/stock_integration/','reports/stock_integration/');
 
 
 

@@ -11,7 +11,7 @@ angular.module('bhima.controllers')
       query : {
         identifier : 'uuid',
         tables : {
-          purchase : { columns : ['purchaser_id', 'purchase_date', 'emitter_id'] },
+          purchase : { columns : ['uuid::purchase_uuid','purchaser_id', 'purchase_date', 'emitter_id'] },
           movement : {
             columns : ['uuid', 'document_id', 'depot_entry', 'tracking_number', 'quantity', 'date']
           },
@@ -47,7 +47,49 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.getTransaction = {
+      query : {
+        identifier : 'uuid',
+        tables : {
+          posting_journal : { columns : ['trans_id'] },
+          transaction_type : {columns : ['id']},
+          stock : {columns : ['tracking_number', 'purchase_order_uuid']},
+          movement : {columns : ['document_id']}
+        },
+        distinct : true,
+        join : [
+          'posting_journal.origin_id=transaction_type.id',
+          'stock.purchase_order_uuid=posting_journal.inv_po_id',
+          'movement.tracking_number=stock.tracking_number'
+          ]
+      }
+    };
+
+    dependencies.getGeneraLedger = {
+      query : {
+        identifier : 'uuid',
+        tables : {
+          general_ledger : { columns : ['trans_id'] },
+          transaction_type : {columns : ['id']},
+          stock : {columns : ['tracking_number', 'purchase_order_uuid']},
+          movement : {columns : ['document_id']}
+        },
+        distinct : true,
+        join : [
+          'general_ledger.origin_id=transaction_type.id',
+          'stock.purchase_order_uuid=general_ledger.inv_po_id',
+          'movement.tracking_number=stock.tracking_number'
+          ]
+      }
+    };
+
     function buildInvoice (res) {
+      if(res.getTransaction.data.length){
+        $scope.trans_id = res.getTransaction.data[0].trans_id;
+      } else if (res.getGeneraLedger.data.length){
+        $scope.trans_id = res.getTransaction.data[0].trans_id;
+      }
+
       model.stock = res.stock.data;
       $scope.idUser = res.user.data.id;
       $scope.today = new Date();
@@ -68,6 +110,8 @@ angular.module('bhima.controllers')
         model.common.InvoiceId = values.invoiceId;
         model.common.enterprise = values.enterprise.data.pop();
         dependencies.stock.query.where =  ['movement.document_id=' + values.invoiceId];
+        dependencies.getTransaction.query.where = ['movement.document_id=' + values.invoiceId ];
+        dependencies.getGeneraLedger.query.where = ['movement.document_id=' + values.invoiceId ];
 
         validate.process(dependencies)
         .then(buildInvoice)

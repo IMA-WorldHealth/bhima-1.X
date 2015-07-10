@@ -912,7 +912,7 @@
    "PROOF"           : "Proof of registering in Stock",
    "QTE"             : "Quantity",
    "REPORT"          : "Report",
-   "REPORT_CONF"          : "Report Confirmation Donation",
+   "REPORT_CONF"     : "Report Confirmation Donation",
    "RESPONSABLE"     : "Responsable",
    "SAVE_BY_LOT"     : "Register by lots",
    "SEE_ALL"         : "See all donations",
@@ -1191,7 +1191,7 @@
    "SAVE_CHANGES"    : "Save Changes",
    "SAVE_FORM"       : "Save Form",
    "SEARCH"          : "Search",
-   "SIGN_AND_SUBMIT" : "Sign & Submit",
+   "SIGN_AND_SUBMIT" : "Sign and Submit",
    "SUBMIT"          : "Submit",
    "SUBMIT_BALANCES" : "Save Balances"
    },
@@ -1308,7 +1308,7 @@
    "REGISTER": {
       "ADD_GROUP"      : "Add Inventory Group",
       "ADD_TYPE"       : "Add Unit Type",
-      "BILLING"        : "Billing & Stock Information",
+      "BILLING"        : "Billing and Stock Information",
       "CODE"           : "Inventory Code",
       "CONSUMABLE"     : "Consumable",
       "DEFAULT_PRICE"  : "Default Price",
@@ -1747,7 +1747,7 @@
    "REGISTERED"  : "Registered Users",
    "RETYPE"      : "Retype",
    "SUPER"       : "Super User",
-   "TITLE"       : "Users & Permissions Management"
+   "TITLE"       : "Users and Permissions Management"
    },
 "PLACEHOLDERS": {
    "PRODUCTS"       : "e.g. Products",
@@ -2385,7 +2385,7 @@
   "STEP1"       : "Identification",
   "STEP2"       : "Consultations",
   "STEP3"       : "Hospitalizations",
-  "STEP4"       : "Labo & Imagerie",
+  "STEP4"       : "Labo and Imagerie",
   "STEP5"       : "Mother's health",
   "STEP6"       : "Child's health",
   "STEP7"       : "Ressource management",
@@ -2467,8 +2467,11 @@
       "MADE_BY"              : "Made By",
       "NEW"                  : "New Stock Integration",
       "PREVIEW"              : "Preview",
+      "REPORT_CONF"          : "Report Confirmation Integration",
+      "SELECT_TIME"          : "Select the time range",
       "STOCK_VOID"           : "No Stock",
       "STOCK_VOID_DESC"      : "Please add products",
+      "STORE"                : "Store",
       "TITLE"                : "Stock Integration",
       "SUBMIT"               : "Submit"
       },
@@ -2812,7 +2815,7 @@
    "PAYMENT_PERIOD"            : "Payment Period Management",
    "PAYROLL"                   : "Payroll",
    "PAYROLL_REPORT"            : "Payroll Reports",
-   "PERMISSION"                : "Users & Permissions",
+   "PERMISSION"                : "Users and Permissions",
    "POSTING_JOURNAL"           : "Posting Journal",
    "PRICE_LIST"                : "Price List",
    "PROFIT_CENTER_MGMNT"       : "Profit center management",
@@ -2831,6 +2834,7 @@
    "REPORT_DONATION"           : "Donation report",
    "REPORT_DONATION_CONFIRM"   : "Report Donation Confirmation",
    "REPORT_FINANCE"            : "Finance Report",
+   "REPORT_STOCK_INTEGRATION"  : "Report integration Confirmation",   
    "REPORT_SALARY"             : "Report Salary Payment",
    "REPORT_STOCK_MOVEMENT"     : "Stock Mouvement",
    "REPORT_TAXES"              : "Report of Taxes Payment",
