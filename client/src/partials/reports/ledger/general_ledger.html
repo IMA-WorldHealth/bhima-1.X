@@ -8,10 +8,9 @@
       <span class="glyphicon glyphicon-list-alt"></span> {{ "REPORT.GROUP_ROWS" | translate }}
     </button>
     <ul class="dropdown-menu">
-      <li class="dropdown-header">{{ "REPORT.GROUPING" | translate }}</li>
       <li><a class="clk" ng-click="groupByTransaction()"><i class="glyphicon glyphicon-th-list"></i> {{ 'POSTING_JOURNAL.TRANSACTION' | translate }}</a></li>
       <li><a class="clk" ng-click="groupByAccount()"><i class="glyphicon glyphicon-euro"></i> {{ 'POSTING_JOURNAL.ACCOUNT' | translate }}</a></li>
-      <li><a class="clk" ng-click="clearGrouping()"><i class="glyphicon glyphicon-remove"></i> {{ 'POSTING_JOURNAL.ABOLISH_GROUPS' | translate }}</a></li>
+      <li><a class="clk" ng-click="clearGrouping()"><i class="glyphicon glyphicon-remove"></i> {{ 'GRID.ABOLISH_GROUPS' | translate }}</a></li>
     </ul>
   </div>
 
@@ -23,13 +22,15 @@
         {{ filter.by.name }}
       </button>
     </span>
+
     <input class="form-bhima" ng-model="filter.param" ng-change="updateFilter()">
+
     <ul class="dropdown-menu">
       <li ng-repeat="column in columns">
         <a ng-click="filterBy(column)" class="clk">{{ column.name }}</a>
       </li>
       <li>
-        <a ng-click="refreshfilter()" class="clk"><span class="glyphicon glyphicon-refresh"></span> {{ "POSTING_JOURNAL.REFRESH" | translate }}</a>
+        <a ng-click="clearFilter()" class="clk" ><i class="glyphicon glyphicon-remove"></i> {{ 'GRID.CLEAR' | translate }}</a>
       </li>
     </ul>
   </div>
@@ -44,7 +45,7 @@
       </li>
       <li ng-repeat="column in columns">
         <a class="clk" ng-click="column.visible=!column.visible">
-          <i class="glyphicon" ng-class="{'glyphicon-unchecked' : !column.visible, 'glyphicon-check' : !!column.visible}"></i> {{column.name || column.id}}
+          <i class="glyphicon" ng-class="{'glyphicon-unchecked' : !column.visible, 'glyphicon-check' : !!column.visible}"></i> {{ column.name }}
         </a>
       </li>
     </ul>

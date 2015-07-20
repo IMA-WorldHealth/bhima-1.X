@@ -61,7 +61,7 @@ angular.module('bhima.services')
   /** collapsed is a boolean */
   service.grouping.byTransaction = function (dataview, collapsed) {
     var formatter = function (g) {
-      return '<span>TRANSACTION (' + g.value + ')</span>';
+      return '<span>TRANSACTION (<b>' + g.value + '</b>)</span>';
     };
 
     dataview.setGrouping({
@@ -86,7 +86,7 @@ angular.module('bhima.services')
   service.grouping.byAccount = function (dataview, collapsed) {
     var formatter = function (g) {
       // FIXME: THIS IS A HACK
-      return '<span>ACCOUNT (' + g.rows[0].account_number + ')</span>';
+      return '<span>ACCOUNT (<b>' + g.rows[0].account_number + '</b>)</span>';
     };
     dataview.setGrouping({
       getter: 'account_id',
@@ -130,26 +130,30 @@ angular.module('bhima.services')
   // matches the param
   service.filtering.filterFn = function (filter) {
     return function (item, args) {
-      if (filter.by.field || String(item[filter.by.field]).match(args.param)) {
+      if (!filter.by.field || String(item[filter.by.field]).match(args.param)) {
         return true;
       }
       return false;
     };
   };
 
+  service.filtering.init = function (dataview, filterFn) {
+    dataview.beginUpdate();
+    dataview.setFilter(filterFn);
+    dataview.setFilterArgs({ param : '' });
+    dataview.endUpdate();
+  };
+
   // clears the data in the filter and dataview
   service.filtering.clear = function (dataview, filter) {
     filter.param = '';
-    dataview.setFilterArgs({
-      param : filter.param
-    });
+    dataview.setFilterArgs(filter);
     dataview.refresh();
   };
 
   // updates the dataview to filter with the new parameter provided in filter
   service.filtering.update = function (dataview, filter) {
-    if (!filter.param) { return; }
-    dataview.setFilterArgs({ param : filter.param });
+    dataview.setFilterArgs(filter);
     dataview.refresh();
   };
 
