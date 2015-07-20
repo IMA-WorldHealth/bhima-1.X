@@ -321,7 +321,7 @@ angular.module('bhima.controllers')
       manager.fn.regroup();
     };
 
-    function filter (item, args) {
+    function filter(item, args) {
       if (!$scope.filter.by.field || String(item[$scope.filter.by.field]).match(args.param)) {
         return true;
       }
@@ -339,6 +339,5 @@ angular.module('bhima.controllers')
     };
 
     $scope.$watch('filter', $scope.updateFilter, true);
-
   }
 ]);
