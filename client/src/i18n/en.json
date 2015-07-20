@@ -2988,5 +2988,12 @@
    "REGISTERED"       : "Registered villages",
    "SECTOR"           : "Sector",
    "TITLE"            : "Village Manager"
-   }
+   },
+"GRID" : {
+  "CLEAR" : "Clear Selection",
+  "UPDATE" : "Update Selection",
+  "REFRESH" : "Refresh Selection",
+  "GROUP_ROWS" : "Group Rows",
+  "ABOLISH_GROUPS" : "Abolish Grouping"
+}
 }
