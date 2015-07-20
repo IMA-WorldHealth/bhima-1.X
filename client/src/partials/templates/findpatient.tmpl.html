@@ -1,24 +1,28 @@
-<div id="findPatient" class="panel panel-default" ng-class="{'panel-success': findPatient.valid, 'panel-danger': findPatient.valid===false}">
+<div id="findPatient" class="panel panel-default" ng-class="{'panel-success': findPatient.valid, 'panel-danger': findPatient.valid === false}">
   <div class="panel-heading ">
     <div ng-switch="findPatient.submitSuccess">
+
      <div ng-switch-when="false">
-       <span class="glyphicon glyphicon-search"></span> {{ "FIND.TITLE" | translate }}
+       <i class="glyphicon glyphicon-search"></i> {{ "FIND.TITLE" | translate }}
        <div class="pull-right">
          <a id="findById" style="cursor:pointer;" ng-class="{'link-selected': findPatient.state==='id'}" ng-click="findPatient.updateState('id')" class="patient-find"><span class="glyphicon glyphicon-pencil"></span> {{ "FIND.SEARCH_PATIENT_ID" | translate }} </a>
          <a id="findByName" style="cursor:pointer;" ng-class="{'link-selected': findPatient.state==='name'}" ng-click="findPatient.updateState('name')" class="patient-find"><span class="glyphicon glyphicon-user"></span> {{ "FIND.SEARCH_NAME" | translate }} </a>
        </div>
      </div>
+
      <div ng-switch-when="true">
        <!-- Style hack -->
-       <span style="margin-right: 5px;" class="glyphicon glyphicon-user"> </span> {{findPatient.debtor.name}} <small>({{findPatient.debtor.sex}} {{findPatient.debtor.age}})</small>
+       <i style="margin-right: 5px;" class="glyphicon glyphicon-user"></i> {{findPatient.debtor.name}} <small>({{findPatient.debtor.sex}} {{findPatient.debtor.age}})</small>
        <div class="pull-right" ng-if="findPatient.enableRefresh">
          <span ng-click="findPatient.refresh()" class="glyphicon glyphicon-repeat"></span>
        </div>
      </div>
     </div>
   </div>
+
   <div class="panel-body find-collapse" ng-show="!findPatient.submitSuccess">
     <div ng-switch on="findPatient.state">
+
       <div ng-switch-when="name">
         <div class="input-group">
           <input
@@ -36,15 +40,16 @@
           </span>
         </div>
       </div> <!-- End searchName component -->
+
       <div ng-switch-when="id">
         <div class="input-group">
           <input
-            type="text"
-            ng-model="findPatient.debtorId"
-            class="form-bhima"
-            placeholder="{{ 'FIND.PATIENT_ID' | translate }}">
+          type="text"
+          ng-model="findPatient.debtorId"
+          class="form-bhima"
+          placeholder="{{ 'FIND.PATIENT_ID' | translate }}">
           <span class="input-group-btn">
-            <button ng-click="submitDebtor(findPatient.debtorId)" class="btn btn-sm btn-default"> {{ "FORM.SUBMIT" | translate }} </button>
+            <button ng-click="uuidSearch(findPatient.debtorId)" class="btn btn-sm btn-default"> {{ "FORM.SUBMIT" | translate }} </button>
           </span>
         </div>
       </div>
