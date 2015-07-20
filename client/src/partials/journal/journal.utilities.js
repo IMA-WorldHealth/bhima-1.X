@@ -257,6 +257,7 @@ angular.module('bhima.controllers')
     };
 
     // Toggle column visibility
+    // this is terrible
     $scope.$watch('columns', function () {
       if (!$scope.columns) { return; }
       var columns = $scope.columns.filter(function (column) { return column.visible; });
@@ -320,7 +321,7 @@ angular.module('bhima.controllers')
       manager.fn.regroup();
     };
 
-    function filter (item, args) {
+    function filter(item, args) {
       if (!$scope.filter.by.field || String(item[$scope.filter.by.field]).match(args.param)) {
         return true;
       }
@@ -338,6 +339,5 @@ angular.module('bhima.controllers')
     };
 
     $scope.$watch('filter', $scope.updateFilter, true);
-
   }
 ]);
