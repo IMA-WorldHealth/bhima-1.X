@@ -23,8 +23,6 @@ var paths = {
 
 gulp.task('scripts', function () {
   return gulp.src(paths.scripts)
-    .pipe(jshint(jshintrcPath))
-    .pipe(jshint.reporter('default'))
     .pipe(gulpif(UGLIFY, uglify()))
     .pipe(concat('js/bhima.min.js'))
     .pipe(gulp.dest(destPath));
@@ -92,5 +90,5 @@ gulp.task('i18n', function () {
 });
 
 gulp.task('default', [], function () {
-  gulp.start('lint', 'i18n', 'scripts', 'styles', 'assets', 'vendor', 'jquery', 'slick', 'static');
+  gulp.start('i18n', 'scripts', 'styles', 'assets', 'vendor', 'jquery', 'slick', 'static');
 });
