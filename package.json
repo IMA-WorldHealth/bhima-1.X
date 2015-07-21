@@ -24,6 +24,7 @@
   "dependencies": {
     "csv": "^0.4.1",
     "express": "4.x.x",
+    "morgan": "^1.5.2",
     "mysql": "2.x.x",
     "q": "~1.0.0"
   },

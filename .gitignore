@@ -13,14 +13,12 @@ server/plugins/mail/out/
 
 #Ignore build
 client/dest/
-
 /*client/js/controllers/*/
 /*client/src/js/controllers/*/
-
 misc/migrate/out/
-
 server/plugins/mail/conf/address_list.json
 utilities/migrate/*
+/symmetric/*
 
 # ignore build tool generated files
 /*app/js/controllers/controllers.js*/
@@ -29,7 +27,6 @@ utilities/migrate/*
 
 # ignore log files
 *.log
-/symmetric/*
 /log.html
 
 # ignore latex files
