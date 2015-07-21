@@ -1,7 +1,9 @@
 // patient controller
 
 var db = require('../lib/db'),
-    uuid = require('../lib/uuid');
+    guid = require('../lib/guid');
+
+
 
 // GET /patient/search/:uuid
 // Performs a get on the patient uuid
@@ -43,7 +45,7 @@ exports.fuzzySearch = function (req, res, next) {
     'FROM patient as p JOIN project as proj JOIN debitor as d JOIN debitor_group as dg ' +
     'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = project.id' +
     'WHERE SOUNDEX(p.first_name) = SOUNDEX(?) OR ' +
-      'SOUNDEX(p.last_name) = SOUNDEX(?);';
+      'SOUNDEX(p.last_name) = SOUNDEX(?) LIMIT 10;';
 
   db.exec(sql, [match, match])
   .then(res.json)
@@ -62,7 +64,7 @@ exports.startVisit = function (req, res, next) {
     'INSERT INTO patient_visit (uuid, patient_uuid, entry_date, registered_by) VALUES ' +
     '(?, ?, ?, ?);';
 
-  db.exec(sql, [uuid(), patientId, new Date(), req.session.user_id])
+  db.exec(sql, [guid(), patientId, new Date(), req.session.user_id])
   .then(function () {
     res.send();
   })

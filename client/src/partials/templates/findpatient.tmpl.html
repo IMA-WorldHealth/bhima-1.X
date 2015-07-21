@@ -1,22 +1,24 @@
-<div id="findPatient" class="panel panel-default" ng-class="{'panel-success': findPatient.valid, 'panel-danger': findPatient.valid === false}">
-  <div class="panel-heading ">
-    <div ng-switch="findPatient.submitSuccess">
+<div class="panel panel-default" ng-class="{'panel-success': session.valid === true, 'panel-danger': session.valid === false }">
+  <div class="panel-heading">
 
-     <div ng-switch-when="false">
-       <i class="glyphicon glyphicon-search"></i> {{ "FIND.TITLE" | translate }}
-       <div class="pull-right">
-         <a id="findById" style="cursor:pointer;" ng-class="{'link-selected': findPatient.state==='id'}" ng-click="findPatient.updateState('id')" class="patient-find"><span class="glyphicon glyphicon-pencil"></span> {{ "FIND.SEARCH_PATIENT_ID" | translate }} </a>
-         <a id="findByName" style="cursor:pointer;" ng-class="{'link-selected': findPatient.state==='name'}" ng-click="findPatient.updateState('name')" class="patient-find"><span class="glyphicon glyphicon-user"></span> {{ "FIND.SEARCH_NAME" | translate }} </a>
-       </div>
-     </div>
+    <div ng-if="!session.submitted">
+      <i class="glyphicon glyphicon-search"></i> {{ "FIND.TITLE" | translate }}
+      <div class="pull-right">
+        <a style="cursor:pointer;" ng-class="{'link-selected': findPatient.state==='id'}" ng-click="toggleSearch('id')">
+          <i class="glyphicon glyphicon-pencil"></i> {{ "FIND.SEARCH_PATIENT_ID" | translate }}
+        </a>
+        <a style="cursor:pointer;" ng-class="{'link-selected': findPatient.state==='name'}" ng-click="toggleSearch('name')">
+          <i class="glyphicon glyphicon-user"></i> {{ "FIND.SEARCH_NAME" | translate }}
+        </a>
+      </div>
+    </div>
 
-     <div ng-switch-when="true">
-       <!-- Style hack -->
-       <i style="margin-right: 5px;" class="glyphicon glyphicon-user"></i> {{findPatient.debtor.name}} <small>({{findPatient.debtor.sex}} {{findPatient.debtor.age}})</small>
-       <div class="pull-right" ng-if="findPatient.enableRefresh">
-         <span ng-click="findPatient.refresh()" class="glyphicon glyphicon-repeat"></span>
-       </div>
-     </div>
+    <div ng-if="session.submitted">
+      <!-- Style hack -->
+      <i style="margin-right: 5px;" class="glyphicon glyphicon-user"></i> {{findPatient.debtor.name}} <small>({{findPatient.debtor.sex}} {{findPatient.debtor.age}})</small>
+      <div class="pull-right" ng-if="enableRefresh">
+        <i ng-click="refresh()" class="glyphicon glyphicon-repeat"></i>
+      </div>
     </div>
   </div>
 
@@ -29,8 +31,9 @@
           id="findSearch"
           type="text"
           ng-model="findPatient.selectedDebtor"
-          typeahead="patient as patient.name for patient in debtorList | filter:$viewValue | limitTo:8"
+          typeahead="patient as patient.name for patient in fuzzyNameSearch($viewValue)"
           placeholder="{{ 'FIND.PATIENT_NAME' | translate }}"
+          typeahead-wait-ms="200"
           typeahead-on-select="loadDebitor(debitor.id)"
           typeahead-template-url="/partials/templates/debtorListItem.tmpl.html"
           class="form-bhima"
