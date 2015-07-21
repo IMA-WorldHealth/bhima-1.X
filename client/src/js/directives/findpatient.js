@@ -11,10 +11,11 @@ angular.module('bhima.directives')
       var dependencies = {},
           cache = new AppCache('patientSearchDirective');
 
-      // mode is 'uuid' || 'fuzzy'
-      scope.mode = 'fuzzy';
-      scope.dirty = false;
-      scope.state = {};
+      var session = scope.session = {};
+
+      session.state = 'name'; // 'name || 'uuid'
+      session.submitted = false;
+      session.valid = null;
 
       // calls bhima API for a patient by uuid
       function uuidSearch(uuid) {
@@ -27,14 +28,24 @@ angular.module('bhima.directives')
         var url = '/patient/fuzzy/';
         return $http.get(url + text)
         .then(function (response) {
+          console.log('Got response:', response);
+
           response.data.results.map(function (item) {
             return item.first_name + ' ' + item.last_name;
           });
+
         });
       }
+      
+      function toggleSearch(s) {
+        session.method = s;
+      }
 
+      // expose to view
       scope.uuidSearch = uuidSearch;
-      scope.nameSearch = fuzzyNameSearch;
+      scope.fuzzyNameSearch = fuzzyNameSearch;
+      scope.toggleSearch = toggleSearch;
+
 
       scope.findPatient = {
         state : 'name',

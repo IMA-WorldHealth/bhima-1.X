@@ -34,7 +34,7 @@ var extra           = require('../controllers/extraPayment');
 var gl              = require('../controllers/ledgers/general');
 
 
-var search          = require('../controllers/search');
+var patient = require('../controllers/patient');
 
 
 
@@ -198,7 +198,7 @@ exports.initialise = function (app) {
   app.get('/ledgers/general', gl.route);
 
   // search stuff
-  app.get('/search/patient/:uuid', search.patient);
-  app.get('/search/patient', search.patientFuzzy);
+  app.get('/search/patient/:uuid', patient.search);
+  app.get('/search/patient', patient.fuzzySearch);
 
 };
