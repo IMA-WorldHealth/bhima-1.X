@@ -20,8 +20,14 @@ module.exports = function (app, authentication) {
   // middleware
   app.use(compress());
   app.use(cookieParser());
-  app.use(bodyParser());
-  app.use(session({ store : new FileStore(), secret : cfg.session.secret }));
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(session({
+    store : new FileStore(),
+    secret : cfg.session.secret,
+    saveUninitialized : cfg.session.saveUninitialized,
+    resave : cfg.session.resave
+  }));
   
   // morgan logger setup
   // options: combined | common | dev | short | tiny |
