@@ -61,66 +61,66 @@
       </div>
 
       <div ng-switch-when="new">
-        <form novalidate class="form-horizontal">
+        <form novalidate class="form-horizontal" name="new">
           <legend><h3>{{ "GRADE.NEW_GRADE" | translate }} </h3></legend>
 
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.CODE" | translate }}</label>
             <div class="col-xs-8">
-              <input ng-model="session.new.code" class="form-bhima" required="required">
+              <input ng-model="session.new.code" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.GRADE" | translate }}</label>
             <div class="col-xs-8">
-              <input ng-model="session.new.text" class="form-bhima" required="required">
+              <input ng-model="session.new.text" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.BASIC_SALARY" | translate }}</label>
             <div class="input-group col-xs-8">
-              <input ng-model="session.new.basic_salary" class="form-bhima" required="required">
+              <input ng-model="session.new.basic_salary" class="form-bhima" required>
               <span class="input-group-addon"> {{ enterprise.data[0].symbol }} </span>
             </div>
           </div>
 
           <div class="form-group">
-            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
+            <input type="submit" ng-disabled="new.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
             <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
           </div>   
         </form>
       </div>
 
       <div ng-switch-when="edit">
-        <form novalidate class="form-horizontal">
+        <form novalidate class="form-horizontal" name="edit">
           <legend><h3>{{ "GRADE.UPD_GRADE" | translate }} </h3></legend>
 
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.CODE" | translate }}</label>
             <div class="col-xs-8">
-              <input ng-model="session.edit.code" class="form-bhima" required="required">
+              <input ng-model="session.edit.code" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.GRADE" | translate }}</label>
             <div class="col-xs-8">
-              <input ng-model="session.edit.text" class="form-bhima" required="required">
+              <input ng-model="session.edit.text" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.BASIC_SALARY" | translate }}</label>
             <div class="input-group col-xs-8">
-              <input ng-model="session.edit.basic_salary" class="form-bhima" required="required">
+              <input ng-model="session.edit.basic_salary" class="form-bhima" required>
               <span class="input-group-addon"> {{ enterprise.data[0].symbol }} </span>
             </div>
           </div>
 
           <div class="form-group">
-            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
+            <input type="submit" ng-disabled="edit.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
             <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
           </div>   
         </form>

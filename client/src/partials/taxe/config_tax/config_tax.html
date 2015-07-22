@@ -60,18 +60,17 @@
       </div>
 
       <div ng-switch-when="add">
-        <form novalidate class="form-horizontal">
+        <form novalidate class="form-horizontal" name="new">
           <legend><h3>{{ "CONFIG_TAX.NEW_CONFIG" | translate }}</small></h3></legend>
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.LABEL" | translate }}</label>
             <div class="col-xs-7">
-              <input ng-model="current.config_tax.label" class="form-bhima" required="required">
+              <input ng-model="current.config_tax.label" class="form-bhima" required>
             </div>
           </div>
 
-
           <div class="form-group">
-            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="submit()">
+            <input type="submit" ng-disabled="new.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="submit()">
             <input type="reset"  class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
           </div>
           
@@ -79,18 +78,18 @@
       </div>
 
       <div ng-switch-when="edit">
-        <form novalidate class="form-horizontal">
+        <form novalidate class="form-horizontal" name="edit">
           <legend><h3>{{ "CONFIG_TAX.UPDATE" | translate }} </h3></legend>
 
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.LABEL" | translate }}</label>
             <div class="col-xs-7">
-              <input ng-model="current.config_tax.label" class="form-bhima" required="required">
+              <input ng-model="current.config_tax.label" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
-            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="submit()">
+            <input type="submit" ng-disabled="edit.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="submit()">
             <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
           </div>   
         </form>	  

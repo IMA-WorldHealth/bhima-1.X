@@ -70,84 +70,84 @@
 
         <div class="form-group">
           <label class="control-label">{{ "CASH.CASHBOX.BOX" | translate }}</label>
-          <select class="form-control" ng-model="session.new.cash_box_id" ng-options="p.id as p.text for p in cash_box.data">
+          <select class="form-control" required ng-model="session.new.cash_box_id" ng-options="p.id as p.text for p in cash_box.data">
           </select>
         </div>
 
         <div class="form-group">
           <label class="control-label">{{ "CASH.CASHBOX.ACCOUNT_CURRENCY" | translate }}</label>
-          <select class="form-control" ng-model="session.new.currency_id" ng-options="p.id as p.symbol for p in currency.data">
+          <select class="form-control" required ng-model="session.new.currency_id" ng-options="p.id as p.symbol for p in currency.data">
           </select>
         </div>
 
         <div class="form-group">
           <label class="control-label">{{ "CASH.CASHBOX.ACCOUNT_BOX" | translate }}</label>
-          <select class="form-control" ng-model="session.new.account_id" ng-options="p.id as formatAccount(p) for p in account1.data">
+          <select class="form-control" required ng-model="session.new.account_id" ng-options="p.id as formatAccount(p) for p in account1.data">
           </select>
         </div>
 
         <div class="form-group">
           <label class="control-label">{{ "CASH.CASHBOX.ACCOUNT_GAIN" | translate }}</label>
-          <select class="form-control" ng-model="session.new.gain_exchange_account_id" ng-options="p.id as formatAccount(p) for p in account2.data">
+          <select class="form-control" required ng-model="session.new.gain_exchange_account_id" ng-options="p.id as formatAccount(p) for p in account2.data">
           </select>
         </div>
 
         <div class="form-group">
           <label class="control-label">{{ "CASH.CASHBOX.ACCOUNT_LOSS" | translate }}</label>
-          <select class="form-control" ng-model="session.new.loss_exchange_account_id" ng-options="p.id as formatAccount(p) for p in account3.data">
+          <select class="form-control" required ng-model="session.new.loss_exchange_account_id" ng-options="p.id as formatAccount(p) for p in account3.data">
           </select>
         </div>
 
         <div class="form-group">
           <label class="control-label">{{ "CASH.CASHBOX.ACCOUNT_VIREMENT" | translate }}</label>
-          <select class="form-control" ng-model="session.new.virement_account_id" ng-options="p.id as formatAccount(p) for p in account1.data">
+          <select class="form-control" required ng-model="session.new.virement_account_id" ng-options="p.id as formatAccount(p) for p in account1.data">
           </select>
         </div>
 
-        <button class="btn btn-sm btn-success" type="submit" ng-click="save.new()" ng-disabled="boxtNew.$invalid">{{ "FORM.SUBMIT" | translate }}</button>
+        <button class="btn btn-sm btn-success" type="submit" ng-click="save.new()" ng-disabled="boxNew.$invalid">{{ "FORM.SUBMIT" | translate }}</button>
         <button class="btn btn-sm btn-danger" type="reset">{{ "FORM.CLEAR" | translate }}</button>
       </form>
 
-      <form ng-switch-when="edit">
+      <form ng-switch-when="edit" name="edit">
         <legend>{{ "CASH.CASHBOX.EDIT" | translate }}</legend>
 
         <div class="form-group">
           <label class="control-label">{{ "CASH.CASHBOX.BOX" | translate }}</label>
-          <select class="form-control" ng-model="session.edit.cash_box_id" ng-options="p.id as p.text for p in cash_box.data">
+          <select class="form-control" required ng-model="session.edit.cash_box_id" ng-options="p.id as p.text for p in cash_box.data">
           </select>
         </div>
 
         <div class="form-group">
           <label class="control-label">{{ "CASH.CASHBOX.ACCOUNT_CURRENCY" | translate }}</label>
-          <select class="form-control" ng-model="session.edit.currency_id" ng-options="p.id as p.symbol for p in currency.data">
+          <select class="form-control" required ng-model="session.edit.currency_id" ng-options="p.id as p.symbol for p in currency.data">
           </select>
         </div>
 
         <div class="form-group">
           <label class="control-label">{{ "CASH.CASHBOX.ACCOUNT_BOX" | translate }}</label>
-          <select class="form-control" ng-model="session.edit.account_id" ng-options="p.id as formatAccount(p) for p in account1.data">
+          <select class="form-control" required ng-model="session.edit.account_id" ng-options="p.id as formatAccount(p) for p in account1.data">
           </select>
         </div>
 
         <div class="form-group">
           <label class="control-label">{{ "CASH.CASHBOX.ACCOUNT_GAIN" | translate }}</label>
-          <select class="form-control" ng-model="session.edit.gain_exchange_account_id" ng-options="p.id as formatAccount(p) for p in account2.data">
+          <select class="form-control" required ng-model="session.edit.gain_exchange_account_id" ng-options="p.id as formatAccount(p) for p in account2.data">
           </select>
         </div>
 
         <div class="form-group">
           <label class="control-label">{{ "CASH.CASHBOX.ACCOUNT_LOSS" | translate }}</label>
-          <select class="form-control" ng-model="session.edit.loss_exchange_account_id" ng-options="p.id as formatAccount(p) for p in account3.data">
+          <select class="form-control" required ng-model="session.edit.loss_exchange_account_id" ng-options="p.id as formatAccount(p) for p in account3.data">
           </select>
         </div>
 
         <div class="form-group">
           <label class="control-label">{{ "CASH.CASHBOX.ACCOUNT_VIREMENT" | translate }}</label>
-          <select class="form-control" ng-model="session.edit.virement_account_id" ng-options="p.id as formatAccount(p) for p in account1.data">
+          <select class="form-control" required ng-model="session.edit.virement_account_id" ng-options="p.id as formatAccount(p) for p in account1.data">
           </select>
         </div>
 
-        <button class="btn btn-sm btn-success" type="submit" ng-click="save.edit()">{{ "FORM.SUBMIT" | translate }}</button>
+        <button class="btn btn-sm btn-success" ng-disabled="edit.$invalid" type="submit" ng-click="save.edit()">{{ "FORM.SUBMIT" | translate }}</button>
         <button class="btn btn-sm btn-danger" type="reset">{{ "FORM.CLEAR" | translate }}</button>
       </form>
 

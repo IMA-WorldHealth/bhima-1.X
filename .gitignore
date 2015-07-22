@@ -37,3 +37,6 @@ utilities/migrate/*
 *.lot
 *.toc
 *.out
+
+# ignore express-session
+sessions/*
