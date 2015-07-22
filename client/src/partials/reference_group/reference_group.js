@@ -17,7 +17,7 @@ angular.module('bhima.controllers')
         tables : {
           'reference_group' : {
             columns : ['id', 'reference_group', 'text', 'position', 'section_bilan_id']
-          }          
+          }
         }
       }
     };
@@ -55,7 +55,7 @@ angular.module('bhima.controllers')
     function checkingReferenceGroup (position,section_bilan_id) {
       var def = $q.defer();
       var query = {
-        tables : { 
+        tables : {
           reference_group : { columns : ['id'] }
         },
         where  : ['reference_group.position=' + position,'AND','reference_group.section_bilan_id=' + section_bilan_id]
@@ -76,7 +76,7 @@ angular.module('bhima.controllers')
 
     $scope.delete = function (reference_group) {
       var result = confirm($translate.instant('REFERENCE_GROUP.CONFIRM'));
-      if (result) {  
+      if (result) {
         connect.delete('reference_group', ['id'], [reference_group.id])
         .then(function () {
           $scope.reference_groups.remove(reference_group.id);
@@ -107,45 +107,35 @@ angular.module('bhima.controllers')
         if (!is_exist) {
           connect.put('reference_group', [record], ['id'])
           .then(function () {
-            messenger.success($translate.instant('REFERENCE_GROUP.UPDATE_SUCCES')); 
+            messenger.success($translate.instant('REFERENCE_GROUP.UPDATE_SUCCES'));
             $scope.reference_groups.put(record);
             session.action = '';
             session.edit = {};
           });
         } else {
-          messenger.danger($translate.instant('REFERENCE_GROUP.ALERT_2')); 
+          messenger.danger($translate.instant('REFERENCE_GROUP.ALERT_2'));
         }
       });
     };
 
     $scope.save.new = function () {
       var record = connect.clean(session.new);
-<<<<<<< HEAD
       checkingReferenceGroup(record.position,record.section_bilan_id)
       .then(function (is_exist) {
         if (!is_exist) {
           connect.post('reference_group', [record])
           .then(function () {
-            messenger.success($translate.instant('REFERENCE_GROUP.SAVE_SUCCES'));        
-            record.reference = generateReference(); 
+            messenger.success($translate.instant('REFERENCE_GROUP.SAVE_SUCCES'));
+            record.reference = generateReference();
             $scope.reference_groups.post(record);
             session.action = '';
             session.new = {};
-          });         
+          });
         } else {
-          messenger.danger($translate.instant('REFERENCE_GROUP.ALERT_2')); 
+          messenger.danger($translate.instant('REFERENCE_GROUP.ALERT_2'));
         }
-=======
-      connect.post('reference_group', [record])
-      .then(function (res) {
-        messenger.success($translate.instant('REFERENCE_GROUP.SAVE_SUCCES'));  
-        record.id = res.data.insertId;               
-        $scope.reference_groups.post(record);
-        session.action = '';
-        session.new = {};
->>>>>>> 9b493baffb797d98f96248836e466e3509b770a2
       });
     };
 
-  }  
+  }
 ]);
