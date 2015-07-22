@@ -17,11 +17,11 @@ exports.searchUuid = function (req, res, next) {
 
   // compose the sql query
   sql =
-    'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name ' +
+    'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name, ' +
       'p.sex, p.dob, p.origin_location_id, p.reference, proj.abbr, d.text, ' +
-      'dg.account_id, dg.price_list_uuid, d.is_convention, d.locked ' +
+      'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.locked ' +
     'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
-    'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = project.id' +
+    'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id' +
     'WHERE p.uuid = ?;';
 
   db.exec(sql, [uuid])
@@ -50,21 +50,21 @@ exports.searchReference = function (req, res, next) {
   // use MYSQL to look up the reference
   // TODO This could probably be optimized
   sql =
-    'SELECT q.uuid, q.project_id, q.debitor_uuid, q.first_name, q.last_name ' +
-      'q.sex, q.dob, q.origin_location_id, q.reference, q.abbr, q.text, ' +
+    'SELECT q.uuid, q.project_id, q.debitor_uuid, q.first_name, q.last_name, ' +
+      'q.sex, q.dob, q.origin_location_id, q.reference, q.text, ' +
       'q.account_id, q.price_list_uuid, q.is_convention, q.locked ' +
     'FROM (' +
-      'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name ' +
+      'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name, ' +
       'p.sex, p.dob, CONCAT(proj.abbr, p.reference) AS reference, p.origin_location_id, d.text, ' +
-      'dg.account_id, dg.price_list_uuid, d.is_convention, d.locked ' +
+      'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.locked ' +
       'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
-        'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = project.id' +
+        'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id' +
     ') AS q ' +
     'WHERE q.reference = ?;';
 
   db.exec(sql, [reference])
   .then(function (rows) {
-    
+
     if (empty(rows)) {
       res.status(404).send();
     } else {
@@ -88,11 +88,11 @@ exports.searchFuzzy = function (req, res, next) {
 
   // Do fuzzy searching on the match parameter
   sql =
-    'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name ' +
+    'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name, ' +
       'p.sex, p.dob, p.origin_location_id, p.reference, proj.abbr, d.text, ' +
-      'dg.account_id, dg.price_list_uuid, d.is_convention, d.locked ' +
+      'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.locked ' +
     'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
-    'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = project.id' +
+    'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id' +
     'WHERE SOUNDEX(p.first_name) = SOUNDEX(?) OR ' +
       'SOUNDEX(p.last_name) = SOUNDEX(?) LIMIT 10;';
 
