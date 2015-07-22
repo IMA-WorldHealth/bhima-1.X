@@ -63,13 +63,13 @@
       </div>
 
       <div ng-switch-when="new">
-        <form novalidate class="form-horizontal">
+        <form novalidate class="form-horizontal" name="new">
           <legend><h3>{{ "HOLLYDAY_MANAGEMENT.NEW_HOLLYDAY" | translate }} </h3></legend>
 
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.EMPLOYEE_NAME" | translate }}</label>
             <div class="col-xs-8">
-              <select class="form-bhima" ng-model="session.new.employee_id">
+              <select class="form-bhima" required ng-model="session.new.employee_id">
                 <option ng-repeat="employee in employees.data" ng-value="employee.id">{{ employee.name }} {{ employee.postnom }} {{ employee.prenom }}</option>
               </select>
             </div>
@@ -78,46 +78,46 @@
           <div class="form-group">
             <label class="control-label col-xs-3">{{ "COLUMNS.LABEL" | translate }}</label>
             <div class="col-xs-8">
-              <input ng-model="session.new.label" class="form-bhima" required="required">
+              <input ng-model="session.new.label" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-3">{{ "COLUMNS.PERCENT_PAY" | translate }}</label>
             <div class="col-xs-8">
-              <input ng-model="session.new.percentage" class="form-bhima" required="required">
+              <input ng-model="session.new.percentage" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.DATE_FROM" | translate }}</label>
             <div class="col-xs-8">
-              <input type="date" ng-model="session.new.dateFrom" class="form-bhima" required="required">
+              <input type="date" ng-model="session.new.dateFrom" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.DATE_TO" | translate }}</label>
             <div class="col-xs-8">
-              <input type="date" ng-model="session.new.dateTo" class="form-bhima" required="required">
+              <input type="date" ng-model="session.new.dateTo" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
-            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
+            <input type="submit" ng-disabled="new.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
             <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
           </div>   
         </form>
       </div>
 
       <div ng-switch-when="edit">
-        <form novalidate class="form-horizontal">
+        <form novalidate class="form-horizontal" name="edit">
           <legend><h3>{{ "HOLLYDAY_MANAGEMENT.UPDATE" | translate }} </h3></legend>
 
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.EMPLOYEE_NAME" | translate }}</label>
             <div class="col-xs-8">
-              <select class="form-bhima" ng-model="session.edit.employee_id" ng-options="employee.id as employee.name + '  ' + employee.postnom + ' ' + employee.prenom for employee in employees.data">
+              <select class="form-bhima" required ng-model="session.edit.employee_id" ng-options="employee.id as employee.name + '  ' + employee.postnom + ' ' + employee.prenom for employee in employees.data">
                 <option></option>
               </select>
             </div>
@@ -126,33 +126,33 @@
           <div class="form-group">
             <label class="control-label col-xs-3">{{ "COLUMNS.LABEL" | translate }}</label>
             <div class="col-xs-8">
-              <input ng-model="session.edit.label" class="form-bhima" required="required">
+              <input ng-model="session.edit.label" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-3">{{ "COLUMNS.PERCENT_PAY" | translate }}</label>
             <div class="col-xs-8">
-              <input ng-model="session.edit.percentage" class="form-bhima" required="required">
+              <input ng-model="session.edit.percentage" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.DATE_FROM" | translate }}</label>
             <div class="col-xs-8">
-              <input type="date" ng-model="session.edit.dateFrom" class="form-bhima" required="required">
+              <input type="date" ng-model="session.edit.dateFrom" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.DATE_TO" | translate }}</label>
             <div class="col-xs-8">
-              <input type="date" ng-model="session.edit.dateTo" class="form-bhima" required="required">
+              <input type="date" ng-model="session.edit.dateTo" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
-            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
+            <input type="submit" ng-disabled="edit.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
             <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
           </div>   
         </form>

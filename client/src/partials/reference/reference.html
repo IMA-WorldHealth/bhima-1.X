@@ -87,7 +87,7 @@
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.POSITION" | translate }}</label>
             <div class="col-xs-7">
-              <input type="number" ng-model="session.new.position" class="form-bhima" required>
+              <input type="number" ng-model="session.new.position" min="0" class="form-bhima" required>
             </div>
           </div>
 
@@ -150,7 +150,7 @@
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.POSITION" | translate }}</label>
             <div class="col-xs-7">
-              <input type="number" ng-model="session.edit.position" class="form-bhima" required>
+              <input type="number" ng-model="session.edit.position" min="0" class="form-bhima" required>
             </div>
           </div>
 
@@ -164,8 +164,11 @@
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.REFERENCE_GROUP" | translate }}</label>
             <div class="col-xs-7">
-              <select class="form-bhima" ng-model="session.edit.reference_group_id" ng-options="reference_group.id as reference_group.text  for reference_group in reference_groups.data | orderBy:'text'">
-                <option></option>
+              <select class="form-bhima" ng-model="session.edit.reference_group_id"> 
+                <option value=""></option>
+                <option ng-repeat="reference_group in reference_groups.data | orderBy:'text'" value="{{reference_group.id}}">
+                  {{ reference_group.text }}
+                </option>
               </select>
             </div>
           </div>
@@ -173,9 +176,13 @@
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.RESULT_ACCOUNT_SCT" | translate }}</label>
             <div class="col-xs-7">
-              <select class="form-bhima" ng-model="session.edit.section_resultat_id" ng-options="section.id as section.text  for section in section_resultat.data | orderBy:'text'">
-                <option></option>
+              <select class="form-bhima" ng-model="session.edit.section_resultat_id"> 
+                <option value=""></option>
+                <option ng-repeat="section in section_resultat.data | orderBy:'text'" value="{{section.id}}">
+                  {{ section.text }}
+                </option>
               </select>
+
             </div>
           </div>
 

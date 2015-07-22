@@ -66,12 +66,10 @@
 
           <div class="panel-body">
             <form name="editPriceList" class="form-horizontal">
-
-
                 <div class="form-group">
                   <label class="col-xs-2 control-label required">{{ "COLUMNS.TITLE" | translate }}</label>
                   <div class="col-xs-5">
-                    <input class="form-bhima" ng-model="edit.title">
+                    <input class="form-bhima" ng-model="edit.title"  required>
                   </div>
                 </div>           
 
@@ -84,7 +82,7 @@
                   </div>
                 </div>
     
-                <input type="submit" class="btn btn-sm btn-success" ng-click="saveMeta()" value="{{ 'FORM.SAVE_CHANGES' | translate }}">
+                <input type="submit" ng-disabled="editPriceList.$invalid" class="btn btn-sm btn-success" ng-click="saveMeta()" value="{{ 'FORM.SAVE_CHANGES' | translate }}">
                 <input type="reset" class="btn btn-sm btn-default" ng-click="resetMeta()" value="{{ 'FORM.RESET_FORM' | translate }}">
 
             </form>
@@ -99,12 +97,12 @@
           </div>
 
           <div class="panel-body">
-            <form name="editPriceList" class="form-horizontal">
+            <form name="newPriceList" class="form-horizontal">
               
               <div class="form-group">
                   <label class="col-xs-2 control-label required">{{ "COLUMNS.TITLE" | translate }}</label>
                   <div class="col-xs-5">
-                    <input class="form-bhima" ng-model="add.title">
+                    <input class="form-bhima" ng-model="add.title" required>
                   </div>
                 </div>
                 
@@ -115,7 +113,7 @@
                   </div>
                 </div>
 
-                <input type="submit" class="btn btn-sm btn-success" ng-click="saveAdd()" value="{{ 'FORM.SAVE_CHANGES' | translate }}">
+                <input type="submit" ng-disabled="newPriceList.$invalid" class="btn btn-sm btn-success" ng-click="saveAdd()" value="{{ 'FORM.SAVE_CHANGES' | translate }}">
                 <input type="reset" class="btn btn-sm btn-default" ng-click="resetAdd()" value="{{ 'FORM.RESET' | translate }}">
 
             </form>
