@@ -33,9 +33,9 @@ angular.module('bhima.directives')
       // matches the patient's name via SOUNDEX()
       function fuzzyNameSearch(text) {
         var url = '/patient/search/fuzzy/';
-        return $http.get(url + text)
+        return $http.get(url + text.toLowerCase())
         .then(function (response) {
-          console.log('Got response:', response);
+          return response.data;
         });
       }
 
@@ -60,10 +60,12 @@ angular.module('bhima.directives')
       cache.fetch('state')
       .then(loadDefaultState);
 
-      // once fuzzy search finds something,
-      // this is called
+      // this is called after $http requests are made,
       function selectPatient(patient) {
         scope.patient = patient;
+
+        // flush input away
+        scope.input = {};
 
         // show success ui response
         session.valid = true;
@@ -85,6 +87,7 @@ angular.module('bhima.directives')
         return current.getFullYear() - dob.getFullYear() - Math.round(current.getMonth() / 12 + dob.getMonth() / 12);
       }
 
+      // value is the selected typeahead model
       function validateNameSearch(value) {
         if (!value) { return true; }
 
@@ -113,6 +116,7 @@ angular.module('bhima.directives')
 
       scope.validateNameSearch = validateNameSearch;
       scope.refresh = refresh;
+      scope.selectPatient = selectPatient;
     }
   };
 }]);
