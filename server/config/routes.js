@@ -198,7 +198,8 @@ exports.initialise = function (app) {
   app.get('/ledgers/general', gl.route);
 
   // search stuff
-  app.get('/search/patient/:uuid', patient.search);
-  app.get('/search/patient', patient.fuzzySearch);
+  app.get('/patient/:uuid', patient.searchUuid);
+  app.get('/patient/search/fuzzy/:match', patient.searchFuzzy);
+  app.get('/patient/search/reference/:reference', patient.searchReference);
 
 };
