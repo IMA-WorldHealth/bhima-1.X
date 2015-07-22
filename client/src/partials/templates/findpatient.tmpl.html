@@ -23,7 +23,7 @@
     </div>
   </div>
 
-  <div class="panel-body find-collapse" ng-hide="session.submitted && session.valid">
+  <div class="panel-body find-collapse" ng-if="!(session.submitted && session.valid)">
     <div ng-switch="session.state">
 
       <!-- search by name -->
@@ -35,12 +35,11 @@
           ng-model="input.model"
           typeahead="patient as fmtPatient(patient) for patient in fuzzyNameSearch($viewValue)"
           placeholder="{{ 'FIND.PATIENT_NAME' | translate }}"
-          typeahead-wait-ms="100"
-          typeahead-on-select="loadDebitor(debitor.id)"
+          typeahead-wait-ms="150"
           typeahead-template-url="/partials/templates/debtorListItem.tmpl.html"
           size="25">
           <span class="input-group-btn">
-            <button ng-disabled="validateNameSearch(findPatient.selectedDebtor)" ng-click="selectPatient(input.model)" class="btn btn-sm btn-default">
+            <button ng-disabled="validateNameSearch(input.model)" ng-click="selectPatient(input.model)" class="btn btn-sm btn-default">
               {{ "FORM.SUBMIT" | translate }}
             </button>
           </span>
