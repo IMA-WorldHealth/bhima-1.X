@@ -22,7 +22,12 @@ angular.module('bhima.directives')
       // (e.g. HBB123)
       function searchReference(ref) {
         var url = '/patient/search/reference/';
-        return $http.get(url + ref);
+        $http.get(url + ref)
+        .success(selectPatient)
+        .error(function (err) {
+          console.error(err); 
+        })
+        .finally();
       }
 
       // matches the patient's name via SOUNDEX()
@@ -36,12 +41,13 @@ angular.module('bhima.directives')
 
       // make a pretty label
       function fmtPatient(p) {
-        return p.first_name + ' ' + p.last_name;
+        return p ? p.first_name + ' ' + p.last_name : '';
       }
 
       // change the input type
       function toggleSearch(s) {
         session.state = s;
+        saveState({ state : s });
       }
 
       // expose to view
@@ -58,8 +64,18 @@ angular.module('bhima.directives')
       // this is called
       function selectPatient(patient) {
         scope.patient = patient;
-      }
 
+        // show success ui response
+        session.valid = true;
+        session.submitted = true;
+
+        // parse patient metadata
+        patient.age = getAge(patient.dob);
+        patient.name = fmtPatient(patient);
+
+        // call the external $scope callback
+        scope.callback({ patient : patient });
+      }
 
       // naive quick method to calculate the difference between two dates
       function getAge(date) {
@@ -86,13 +102,13 @@ angular.module('bhima.directives')
         input = {};
       }
 
+      function loadDefaultState(dstate) {
+        if (dstate) { toggleSearch(dstate.state); }
+      }
 
-      // FIXME Configure component on this data being available, avoid glitching interface
-      function loadDefaultState(defaultState) {
-        if (defaultState) {
-          scope.findPatient.state = defaultState.state;
-          return;
-        }
+      // save the directive state to appcache
+      function saveState(dstate) {
+        cache.put('state', dstate);
       }
 
       scope.validateNameSearch = validateNameSearch;

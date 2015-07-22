@@ -66,7 +66,8 @@ angular.module('bhima.controllers')
       });
     }
 
-    function loadPatientGroups (patient) {
+    function loadPatientGroups(patient) {
+      console.log('Load Patient Groups:', patient);
       transformDatas(false);
       $scope.patient = patient;
       $scope.print = true;

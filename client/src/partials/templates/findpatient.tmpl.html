@@ -16,8 +16,8 @@
 
     <!-- banner after submission -->
     <div ng-if="session.submitted">
-      <i style="margin-right: 5px;" class="glyphicon glyphicon-user"></i> {{findPatient.debtor.name}} <small>({{findPatient.debtor.sex}} {{findPatient.debtor.age}})</small>
-      <div class="pull-right" ng-if="enableRefresh">
+      <i style="margin-right: 5px;" class="glyphicon glyphicon-user"></i> {{ patient.name }} <small>({{ patient.sex }} {{ patient.age }})</small>
+      <div class="pull-right" ng-if="enableRefresh" style="cursor:pointer;">
         <i ng-click="refresh()" class="glyphicon glyphicon-repeat"></i>
       </div>
     </div>
