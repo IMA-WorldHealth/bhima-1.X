@@ -892,24 +892,34 @@ function integration_stock(params) {
       _end =  sanitize.escape(util.toMysqlDate(new Date(p.end))),
       _depot = sanitize.escape(p.depot);
 
-  var sql =
-    'SELECT DISTINCT purchase.uuid, movement.depot_entry, depot.text AS depot_text, movement.document_id, purchase.cost, purchase.is_integration, purchase.currency_id, ' +
-    'purchase.purchase_date, purchase.is_direct, ' +
-    'purchase.reference, user.first, user.last, employee.prenom, employee.name, employee.postnom, ' +
-    'purchase.is_direct, u.first AS confirmed_first, u.last AS confirmed_last, ' +
-    'posting_journal.trans_id AS journal_trans_id, general_ledger.trans_id AS ledger_trans_id ' +
-    'FROM purchase ' + 
+  var sql = 
+    'SELECT DISTINCT purchase.uuid, purchase.cost, purchase.is_integration, purchase.currency_id, ' +
+    'purchase.purchase_date, purchase.is_direct, purchase.reference, purchase.is_direct, ' +
+    'posting_journal.inv_po_id, posting_journal.trans_id, ' +
+    'user.first, user.last, u.first AS confirmed_first, u.last AS confirmed_last, movement.depot_entry, movement.document_id, depot.text ' +
+    'FROM purchase ' +
+    'JOIN posting_journal ON posting_journal.inv_po_id = purchase.uuid ' +
     'JOIN user ON user.id = purchase.emitter_id ' +
     'JOIN user AS u ON u.id = purchase.confirmed_by ' +
     'JOIN stock ON stock.purchase_order_uuid = purchase.uuid ' +
-    'JOIN movement ON movement.tracking_number = stock.tracking_number ' +  
-    'JOIN depot ON depot.uuid = movement.depot_entry ' +  
-    'LEFT JOIN employee ON employee.id = purchase.receiver_id ' +
-    'LEFT JOIN posting_journal ON posting_journal.inv_po_id = purchase.uuid ' +
-    'LEFT JOIN general_ledger ON general_ledger.inv_po_id = purchase.uuid ' +
+    'JOIN movement ON movement.tracking_number = stock.tracking_number ' +
+    'JOIN depot ON depot.uuid = movement.depot_entry ' +
     'WHERE DATE(purchase.purchase_date) BETWEEN DATE(' + _start + ') AND DATE(' + _end + ') ' + 
     'AND purchase.is_integration = 1 AND purchase.confirmed = 1 AND movement.depot_entry = ' + _depot + ' ' + 
-    'ORDER BY purchase.purchase_date DESC ';
+    'UNION ' + 
+    'SELECT DISTINCT purchase.uuid, purchase.cost, purchase.is_integration, purchase.currency_id, ' +
+    'purchase.purchase_date, purchase.is_direct, purchase.reference, purchase.is_direct, ' +
+    'general_ledger.inv_po_id, general_ledger.trans_id, ' +
+    'user.first, user.last, u.first AS confirmed_first, u.last AS confirmed_last, movement.depot_entry, movement.document_id, depot.text ' +
+    'FROM purchase ' +
+    'JOIN general_ledger ON general_ledger.inv_po_id = purchase.uuid ' +
+    'JOIN user ON user.id = purchase.emitter_id ' +
+    'JOIN user AS u ON u.id = purchase.confirmed_by ' +
+    'JOIN stock ON stock.purchase_order_uuid = purchase.uuid ' +
+    'JOIN movement ON movement.tracking_number = stock.tracking_number ' +
+    'JOIN depot ON depot.uuid = movement.depot_entry ' +
+    'WHERE DATE(purchase.purchase_date) BETWEEN DATE(' + _start + ') AND DATE(' + _end + ') ' + 
+    'AND purchase.is_integration = 1 AND purchase.confirmed = 1 AND movement.depot_entry = ' + _depot + ' ';
 
   return db.exec(sql);
 }
