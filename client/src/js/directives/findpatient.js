@@ -38,7 +38,7 @@ angular.module('bhima.directives')
       }
       
       function toggleSearch(s) {
-        session.method = s;
+        session.state = s;
       }
 
       // expose to view
@@ -57,12 +57,6 @@ angular.module('bhima.directives')
       cache.fetch('state')
       .then(loadDefaultState);
 
-      function searchUuid(value) {
-        dependencies.debtor.query.where = [
-          'patient.uuid=' + value
-        ];
-        validate.refresh(dependencies, ['debtor']).then(handleIdRequest);
-      }
 
       // TODO should this be temporary?
       function parseId(idString) {
