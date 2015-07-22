@@ -30,18 +30,19 @@
       <div ng-switch-when="name">
         <div class="input-group">
           <input
-          id="findSearch"
           type="text"
-          ng-model="findPatient.selectedDebtor"
-          typeahead="patient as patient.name for patient in fuzzyNameSearch($viewValue)"
+          class="form-bhima"
+          ng-model="input.model"
+          typeahead="patient as fmtPatient(patient) for patient in fuzzyNameSearch($viewValue)"
           placeholder="{{ 'FIND.PATIENT_NAME' | translate }}"
-          typeahead-wait-ms="200"
+          typeahead-wait-ms="100"
           typeahead-on-select="loadDebitor(debitor.id)"
           typeahead-template-url="/partials/templates/debtorListItem.tmpl.html"
-          class="form-bhima"
           size="25">
           <span class="input-group-btn">
-            <button id="submitSearch" ng-disabled="validateNameSearch(findPatient.selectedDebtor)" ng-click="submitDebtor(findPatient.selectedDebtor)" class="btn btn-sm btn-default"> {{ "FORM.SUBMIT" | translate }}</button>
+            <button ng-disabled="validateNameSearch(findPatient.selectedDebtor)" ng-click="selectPatient(input.model)" class="btn btn-sm btn-default">
+              {{ "FORM.SUBMIT" | translate }}
+            </button>
           </span>
         </div>
       </div> <!-- End searchName component -->
@@ -51,11 +52,13 @@
         <div class="input-group">
           <input
           type="text"
-          ng-model="findPatient.debtorId"
           class="form-bhima"
+          ng-model="input.term"
           placeholder="{{ 'FIND.PATIENT_ID' | translate }}">
           <span class="input-group-btn">
-            <button ng-click="uuidSearch(findPatient.debtorId)" class="btn btn-sm btn-default"> {{ "FORM.SUBMIT" | translate }} </button>
+            <button ng-click="searchReference(input.term)" class="btn btn-sm btn-default">
+              {{ "FORM.SUBMIT" | translate }}
+            </button>
           </span>
         </div>
       </div>
