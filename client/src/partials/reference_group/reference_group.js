@@ -126,7 +126,7 @@ angular.module('bhima.controllers')
           connect.post('reference_group', [record])
           .then(function () {
             messenger.success($translate.instant('REFERENCE_GROUP.SAVE_SUCCES'));
-            record.reference = generateReference();
+            // record.reference = generateReference();
             $scope.reference_groups.post(record);
             session.action = '';
             session.new = {};
