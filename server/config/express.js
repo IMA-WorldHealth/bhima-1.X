@@ -5,6 +5,7 @@ var express       = require('express');
 var compress      = require('compression');
 var bodyParser    = require('body-parser');
 var session       = require('express-session');
+var FileStore     = require('session-file-store')(session);
 var cookieParser  = require('cookie-parser');
 var morgan        = require('morgan');
 var fs            = require('fs');
@@ -18,9 +19,9 @@ module.exports = function (app, authentication) {
   
   // middleware
   app.use(compress());
-  app.use(bodyParser());
   app.use(cookieParser());
-  app.use(session(cfg.session));
+  app.use(bodyParser());
+  app.use(session({ store : new FileStore(), secret : cfg.session.secret }));
   
   // morgan logger setup
   // options: combined | common | dev | short | tiny |
