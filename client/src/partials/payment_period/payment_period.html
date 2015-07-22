@@ -68,34 +68,34 @@
 	      </div>
 
 	      <div ng-switch-when="new">
-	        <form novalidate class="form-horizontal">
+	        <form novalidate class="form-horizontal" name="new"> 
 	          <legend><h3>{{ "PAYMENT_PERIOD.NEW" | translate }} </h3></legend>
 
 	          <div class="form-group">
 	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.LABEL" | translate }}</label>
 	            <div class="col-xs-8">
-	              <input ng-model="session.new.label" class="form-bhima" required="required">
+	              <input ng-model="session.new.label" class="form-bhima" required>
 	            </div>
 	          </div>
 
 	          <div class="form-group">
 	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.FROM" | translate }}</label>
 	            <div class="col-xs-8">
-	              <input type="date" ng-model="session.new.dateFrom" class="form-bhima" required="required">
+	              <input type="date" ng-model="session.new.dateFrom" class="form-bhima" required>
 	            </div>
 	          </div>
 
 	          <div class="form-group">
 	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.TO" | translate }}</label>
 	            <div class="col-xs-8">
-	              <input type="date" ng-model="session.new.dateTo" class="form-bhima" required="required">
+	              <input type="date" ng-model="session.new.dateTo" class="form-bhima" required>
 	            </div>
 	          </div>
 
 	          <div class="form-group">
 	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.RUBRIC" | translate }}</label>
 	            <div class="col-xs-8">
-	              <select ng-model="session.new.config_rubric_id" class="form-bhima" ng-options="rubric.id as rubric.label for rubric in config_rubric.data" required="required">
+	              <select ng-model="session.new.config_rubric_id" class="form-bhima" ng-options="rubric.id as rubric.label for rubric in config_rubric.data" required>
 	              	<option>{{ "SELECT.PERIOD_RUBRIC_CONFIG" | translate }}</option>
 	              </select>
 	            </div>
@@ -104,7 +104,7 @@
 	          <div class="form-group">
 	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.TAX" | translate }}</label>
 	            <div class="col-xs-8">
-	              <select ng-model="session.new.config_tax_id" class="form-bhima" ng-options="tax.id as tax.label for tax in config_tax.data" required="required">
+	              <select ng-model="session.new.config_tax_id" class="form-bhima" ng-options="tax.id as tax.label for tax in config_tax.data" required>
 	              	<option>{{ "SELECT.PERIOD_TAX_CONFIG" | translate }}</option>
 	              </select>
 	            </div>
@@ -113,7 +113,7 @@
 	          <div class="form-group">
 	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.COTISATION" | translate }}</label>
 	            <div class="col-xs-8">
-	              <select ng-model="session.new.config_cotisation_id" class="form-bhima" ng-options="cotisation.id as cotisation.label for cotisation in config_cotisation.data" required="required">
+	              <select ng-model="session.new.config_cotisation_id" class="form-bhima" ng-options="cotisation.id as cotisation.label for cotisation in config_cotisation.data" required>
 	              	<option>{{ "SELECT.PERIOD_COTISATION_CONFIG" | translate }}</option>
 	              </select>
 	            </div>
@@ -122,48 +122,48 @@
 	          <div class="form-group">
 	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.ACCOUNT" | translate }}</label>
 	            <div class="col-xs-8">
-	              <select ng-model="session.new.config_accounting_id" class="form-bhima" ng-options="acc.id as acc.label for acc in config_accounting.data" required="required">
+	              <select ng-model="session.new.config_accounting_id" class="form-bhima" ng-options="acc.id as acc.label for acc in config_accounting.data" required>
 	              	<option>{{ "SELECT.PERIOD_ACCOUNT_CONFIG" | translate }}</option>
 	              </select>
 	            </div>
 	          </div>
 
 	          <div class="form-group">
-	            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
+	            <input type="submit" ng-disabled="new.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
 	            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
 	          </div>
 	        </form>
 	      </div>
 
 	      <div ng-switch-when="edit">
-	        <form novalidate class="form-horizontal">
+	        <form novalidate class="form-horizontal" name="edit">
 	          <legend><h3>{{ "PAYMENT_PERIOD.EDIT" | translate }} </h3></legend>
 
 	          <div class="form-group">
 	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.LABEL" | translate }}</label>
 	            <div class="col-xs-8">
-	              <input ng-model="session.edit.label" class="form-bhima" required="required">
+	              <input ng-model="session.edit.label" class="form-bhima" required>
 	            </div>
 	          </div>
 
 	          <div class="form-group">
 	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.FROM" | translate }}</label>
 	            <div class="col-xs-8">
-	              <input type="date" ng-model="session.edit.dateFrom" class="form-bhima" required="required">
+	              <input type="date" ng-model="session.edit.dateFrom" class="form-bhima" required>
 	            </div>
 	          </div>
 
 	          <div class="form-group">
 	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.TO" | translate }}</label>
 	            <div class="col-xs-8">
-	              <input type="date" ng-model="session.edit.dateTo" class="form-bhima" required="required">
+	              <input type="date" ng-model="session.edit.dateTo" class="form-bhima" required>
 	            </div>
 	          </div>
 
 	          <div class="form-group">
 	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.RUBRIC" | translate }}</label>
 	            <div class="col-xs-8">
-	              <select ng-model="session.edit.config_rubric_id" class="form-bhima" ng-options="rubric.id as rubric.label for rubric in config_rubric.data" required="required">
+	              <select ng-model="session.edit.config_rubric_id" class="form-bhima" ng-options="rubric.id as rubric.label for rubric in config_rubric.data" required>
 	              	<option>{{ "SELECT.PERIOD_RUBRIC_CONFIG" | translate }}</option>
 	              </select>
 	            </div>
@@ -181,7 +181,7 @@
 	          <div class="form-group">
 	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.COTISATION" | translate }}</label>
 	            <div class="col-xs-8">
-	              <select ng-model="session.edit.config_cotisation_id" class="form-bhima" ng-options="cotisation.id as cotisation.label for cotisation in config_cotisation.data" required="required">
+	              <select ng-model="session.edit.config_cotisation_id" class="form-bhima" ng-options="cotisation.id as cotisation.label for cotisation in config_cotisation.data">
 	              	<option>{{ "SELECT.PERIOD_TAX_CONFIG" | translate }}</option>
 	              </select>
 	            </div>
@@ -190,14 +190,14 @@
 	          <div class="form-group">
 	            <label class="control-label col-xs-3 required">{{ "PAYMENT_PERIOD.ACCOUNT" | translate }}</label>
 	            <div class="col-xs-8">
-	              <select ng-model="session.edit.config_accounting_id" class="form-bhima" ng-options="acc.id as acc.label for acc in config_accounting.data" required="required">
+	              <select ng-model="session.edit.config_accounting_id" class="form-bhima" ng-options="acc.id as acc.label for acc in config_accounting.data" required>
 	              	<option>{{ "SELECT.PERIOD_ACCOUNT_CONFIG" | translate }}</option>
 	              </select>
 	            </div>
 	          </div>
 
 	          <div class="form-group">
-	            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
+	            <input type="submit" ng-disabled="edit.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
 	            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
 	          </div>
 	        </form>
