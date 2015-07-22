@@ -5,9 +5,9 @@ var db = require('../lib/db'),
 
 
 
-// GET /patient/search/:uuid
-// Performs a get on the patient uuid
-exports.search = function (req, res, next) {
+// GET /patient/:uuid
+// Get a patient by uuid
+exports.searchUuid = function (req, res, next) {
   'use strict';
 
   var sql, uuid = req.params.uuid;
@@ -25,13 +25,24 @@ exports.search = function (req, res, next) {
   .then(res.json)
   .catch(next)
   .done();
+};
+
+// GET /patient/search/reference/:reference
+// Performs a search on the patient reference (e.g. HBB123)
+exports.searchReference = function (req, res, next) {
+  'use strict';
+
+  var sql, reference = req.params.reference;
+
+  sql =
+    'SELECT ';
 
 };
 
-
-// GET /patient/fuzzy/:match
+// GET /patient/search/fuzzy/:match
 // Performs fuzzy searching on patient names
-exports.fuzzySearch = function (req, res, next) {
+exports.searchFuzzy = function (req, res, next) {
+  'use strict';
 
   var sql, match = req.params.match;
 
