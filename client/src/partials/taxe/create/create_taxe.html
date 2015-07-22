@@ -68,20 +68,20 @@
       </div>
 
       <div ng-switch-when="new">
-        <form novalidate class="form-horizontal">
+        <form novalidate class="form-horizontal" name="new">
           <legend><h3>{{ "TAXES.NEW_TAX" | translate }} </h3></legend>
 
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.LABEL" | translate }}</label>
             <div class="col-xs-7">
-              <input ng-model="session.new.label" class="form-bhima" required="required">
+              <input ng-model="session.new.label" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.ABBR" | translate }}</label>
             <div class="col-xs-7">
-              <input ng-model="session.new.abbr" class="form-bhima" required="required">
+              <input ng-model="session.new.abbr" class="form-bhima" required>
             </div>
           </div>
 
@@ -109,7 +109,7 @@
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.VALUE" | translate }}</label>
             <div class="col-xs-7">
-              <input ng-model="session.new.value" class="form-bhima" required="required">
+              <input ng-model="session.new.value" class="form-bhima" required>
             </div>
           </div>
 
@@ -125,21 +125,21 @@
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.SIX_ACCOUNT" | translate }}</label>
             <div class="col-xs-7">
-              <select class="form-bhima" ng-model="session.new.six_Account_id">
+              <select class="form-bhima" required ng-model="session.new.six_Account_id">
                 <option ng-repeat="account in accounts.data | orderBy:'account_number'" ng-value="account.id">{{account.account_number}} --- {{account.account_txt}}</option>
               </select>
             </div>
           </div>
 
           <div class="form-group">
-            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
+            <input type="submit" ng-disabled="new.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
             <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
           </div>
         </form>
       </div>
 
       <div ng-switch-when="edit">
-        <form novalidate class="form-horizontal">
+        <form novalidate class="form-horizontal" name="edit">
           <legend><h3>{{ "TAXES.UPDATE" | translate }} </h3></legend>
 
           <div class="form-group">
@@ -196,14 +196,14 @@
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.SIX_ACCOUNT" | translate }}</label>
             <div class="col-xs-7">
-              <select class="form-bhima" ng-model="session.edit.six_account_id" ng-options="account.id as account.account_number + ' -- ' + account.account_txt for account in accounts.data | orderBy:'account_number'">
+              <select class="form-bhima" required ng-model="session.edit.six_account_id" ng-options="account.id as account.account_number + ' -- ' + account.account_txt for account in accounts.data | orderBy:'account_number'">
                 <option></option>
               </select>
             </div>
           </div>
 
           <div class="form-group">
-            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
+            <input type="submit" ng-disabled="edit.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
             <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
           </div>
         </form>
