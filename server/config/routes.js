@@ -7,7 +7,7 @@
  * controllers, allowing for modules to subscribe to different
  * levels of authority
  *
- * TODO createPurhcase, createSale, serviceDist are all almost
+ * TODO createPurchase, createSale, serviceDist are all almost
  * identicale modules - they should all be encapsulated as one
  * module. For Example finance.createSale, finance.createPurchase
  */
