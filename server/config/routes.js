@@ -32,7 +32,8 @@ var compileReport   = require('../controllers/reports_proposed/reports.js');
 var snis            = require('../controllers/snis');
 var extra           = require('../controllers/extraPayment');
 var gl              = require('../controllers/ledgers/general');
-
+var finance         = require('../controllers/finance');
+var accounts        = require('../controllers/accounts');
 
 
 exports.initialise = function (app) {
@@ -193,5 +194,14 @@ exports.initialise = function (app) {
   // general ledger controller
   // transitioning to a more traditional angular application architecture
   app.get('/ledgers/general', gl.route);
+
+  // finance controller
+  app.get('/finance/debtors', finance.getDebtors);
+  app.get('/finance/creditors', finance.getCreditors);
+  app.get('/finance/currencies', finance.getCurrencies);
+  app.post('/finance/voucher', finance.postJournalVoucher);
+
+  // accounts controller
+  app.get('/accounts', accounts.getAccounts);
 
 };
