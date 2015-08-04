@@ -12,6 +12,16 @@ angular.module('bhima.controllers')
      * for the journal voucher and the JournalVoucherTableController.
      * It is responsible for validation checks, submitting
      * the form, and any error handling.
+     *
+     * AngularJS only allows child $scopes access to parents (via
+     * prototypical inheritence on the $parent property), so we define
+     * the transaction rows here (master.rows).  All the mechanics of
+     * adding and removing rows is done in JournalVoucherTableController,
+     * however the final validation check is done here in the function
+     * correctTableInput().
+     *
+     * This is one of the better models for sharing data we have
+     * used so far...  Can we do better?
     */
 
     var dependencies = {},
@@ -31,7 +41,7 @@ angular.module('bhima.controllers')
     // child can access it via $scope.$parent
     $scope.master = self.master = {
       date : new Date(),
-      rows : [] // the child 
+      rows : [] // the child
     };
 
     // load dependencies
@@ -61,11 +71,28 @@ angular.module('bhima.controllers')
 
     // do the final submit checks
     self.submitForm = function () {
-      console.log('MASTER:', self.master);
 
       if (!correctTableInput()) {
         self.tableError = true;
       }
+
+      $http.post('/finance/journal/voucher')
+
+      // success!  Clear the data to start again.
+      .success(function (data) {
+
+        $scope.master.rows = [];
+        $scope.master.data = new Date();
+        $scope.master.comment = '';
+        $scope.master.documentId = '';
+        $scope.master.description = '';
+
+      })
+
+      // something went wrong... log it!
+      .error(function (error) {
+        console.error(error);
+      });
 
     };
 
@@ -73,7 +100,7 @@ angular.module('bhima.controllers')
   // ensure that the table portion is valid before submitting
   function correctTableInput() {
 
-    // validate that the rows contain the correct format 
+    // validate that the rows contain the correct format
     var validRows = self.master.rows.every(function (row) {
 
       // must have a one non-zero value
@@ -99,8 +126,11 @@ angular.module('bhima.controllers')
 
     var validTotals = totals.debit === totals.credit;
 
-    console.log(validRows, validTotals);
-
+    // TODO
+    // Should we include specific error messages (the debits/credits
+    // do not balance, missing an account?)
+    // It would be easy to do, but very verbose, especially considering
+    // translation..
     return validRows && validTotals;
   }
 
@@ -128,7 +158,6 @@ angular.module('bhima.controllers')
    * transaction can only be in one currency, we don't need to know the
    * currency - simply that the transaction balances.  The currency is specified
    * in the parent controller (JournalVoucherController).
-   *
   */
 
 
