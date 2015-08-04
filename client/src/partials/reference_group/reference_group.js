@@ -64,7 +64,22 @@ angular.module('bhima.controllers')
       .then(function (res) {
         def.resolve(res.length !== 0);
       });
+      return def.promise;
+    }
 
+    function checkingReferenceGroupUpdate (id,position,section_bilan_id) {
+      var def = $q.defer();
+
+      var query = {
+        tables : {
+          reference_group : { columns : ['id'] }
+        },
+        where  : ['reference_group.id<>' + id, 'AND','reference_group.position=' + position,'AND','reference_group.section_bilan_id=' + section_bilan_id]
+      };
+      connect.fetch(query)
+      .then(function (res) {
+        def.resolve(res.length !== 0);
+      });
       return def.promise;
     }
 
@@ -102,7 +117,7 @@ angular.module('bhima.controllers')
       delete record.reference;
       delete record.section_bilan_txt;
 
-      checkingReferenceGroup(record.position,record.section_bilan_id)
+      checkingReferenceGroupUpdate(record.id,record.position,record.section_bilan_id)
       .then(function (is_exist) {
         if (!is_exist) {
           connect.put('reference_group', [record], ['id'])
@@ -126,7 +141,6 @@ angular.module('bhima.controllers')
           connect.post('reference_group', [record])
           .then(function () {
             messenger.success($translate.instant('REFERENCE_GROUP.SAVE_SUCCES'));
-            // record.reference = generateReference();
             $scope.reference_groups.post(record);
             session.action = '';
             session.new = {};
