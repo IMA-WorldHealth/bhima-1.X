@@ -1,10 +1,15 @@
 
 var db = require('../lib/db');
 
-// GET accounts/
-exports.getAll = function (req, res, next) {
+// GET /accounts
+exports.getAllAccounts = function (req, res, next) {
   'use strict';
 
+  // TODO
+  // This should probably take a query string for filtering to
+  // make it more useful all around.
+  // Some ideas: 
+  // ?classe=5, ?type=ohada, etc...
   var sql =
     'SELECT a.id, a.account_number, a.account_text, a.parent, at.type ' +
     'FROM account AS a JOIN account_type AS at ON ' +
@@ -18,9 +23,9 @@ exports.getAll = function (req, res, next) {
   .done();
 };
 
-// GET account/:id
+// GET /account/:id
 // FIXME/TODO
-exports.getId = function (req, res, next) {
+exports.getAccountById = function (req, res, next) {
   'use strict';
   
   var sql, id = req.param.id;
@@ -38,4 +43,3 @@ exports.getId = function (req, res, next) {
   .catch(next)
   .done();
 };
-

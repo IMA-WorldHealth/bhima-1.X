@@ -1,5 +1,7 @@
 // controllers/finance.js
 
+var db = require('../lib/db');
+
 // POST /journal/voucher
 // Securely post a transaction to the posting journal.
 // 
@@ -15,4 +17,62 @@ exports.postJournalVoucher = function (req, res, next) {
   
   var sql;
 
+};
+
+
+// GET /finance/debtors
+// returns a list of debtors
+exports.getDebtors = function (req, res, next) {
+  'use strict';
+
+  var sql =
+    'SELECT d.uuid, d.text, CONCAT(p.first_name, p.middle_name, p.last_name) AS patientname, ' +
+      'dg.name AS groupname, a.id AS account_id, a.account_number ' +
+    'FROM debitor AS d JOIN patient AS p JOIN debitor_group AS dg JOIN account AS a ON ' +
+      'd.uuid = p.debitor_uuid AND d.group_uuid = dg.uuid AND dg.account_id = account.id;';
+
+  db.exec(sql)
+  .then(function (rows) {
+    res.status(200).json(rows);
+  })
+  .catch(function (error) {
+    next(error);
+  })
+  .done();
+};
+
+// GET /finance/creditors
+exports.getCreditors = function (req, res, next) {
+  'use strict';
+
+  var sql = 
+    'SELECT c.uuid, c.text, cg.name, c.group_uuid, a.id AS account_id, a.account_number ' +
+    'FROM creditor AS c JOIN creditor_group AS cg JOIN account AS a ' +
+      'ON c.group_uuid = cg.uuid AND cg.account_id = account.id;';
+  
+  db.exec(sql)
+  .then(function (rows) {
+    res.status(200).json(rows);
+  })
+  .catch(function (error) {
+    next(error);
+  })
+  .done();
+};
+
+// GET /finance/currencies
+exports.getCurrencies = function (req, res, next) {
+  'use strict';
+
+  var sql =
+    'SELECT id, name, symbol FROM currency;';
+
+  db.exec(sql)
+  .then(function (rows) {
+    res.status(200).json(rows);
+  })
+  .catch(function (error) {
+    next(error);
+  })
+  .done();
 };
