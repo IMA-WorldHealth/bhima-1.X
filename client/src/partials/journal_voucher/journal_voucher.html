@@ -11,7 +11,7 @@
   </div>
 </nav>
 
-<main class="extend">
+<main class="extend" ng-cloak>
   <div class="row margin-top-10">
     <div class="col-xs-8">
       <div class="panel panel-primary" ng-class="{'form-disabled' : session.noExchange }">
@@ -22,7 +22,7 @@
 
         <div class="panel-body">
 
-          <form class="form-horizontal" name="VoucherForm" class="voucher-form" ng-submit="voucher.submitForm(VoucherForm.$valid)" novalidate>
+          <form class="form-horizontal" name="VoucherForm" class="voucher-form" ng-submit="JournalVoucherCtrl.submitForm(VoucherForm.$valid)" novalidate>
 
             <div class="form-group">
               <label class="control-label col-xs-2">{{ "COLUMNS.DESCRIPTION" | translate }}</label>
@@ -48,8 +48,8 @@
             <div class="form-group">
               <label class="control-label col-xs-2">{{ "COLUMNS.CURRENCY" | translate }}</label>
               <div class="col-xs-10">
-                <select class="form-bhima" name="currencyId" ng-model="currencyId" ng-options="curr.id as curr.symbol for curr in currencies.data">
-                  <option value=""></option>
+                <select class="form-bhima" name="currencyId" ng-model="currencyId" ng-options="curr.id as curr.symbol for curr in JournalVoucherCtrl.currencies">
+                  <option value="">{{ "SELECT.CURRENCY" | translate }}</option>
                 </select>
                 <p ng-show="VoucherForm.currencyId.$invalid && VoucherForm.currencyId.$dirty" class="help-block">
                   A date is required.
@@ -106,61 +106,73 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="row in data.rows">
+              <tr ng-repeat="row in TableCtrl.rows">
                 <td>
                   <div class="input-group">
                     <span class="input-group-btn">
-                      <a class="btn btn-sm btn-default" ng-click="switchEntity(row)">
-                        <i class="glyphicon" ng-class="{ 'glyphicon-user' : !row.selectEntity, 'glyphicon-th-list': !!row.selectEntity}"></i>
+                      <a class="btn btn-sm btn-default" ng-click="TableCtrl.toggleAccountSwitch(row)">
+                        <i class="glyphicon" ng-class="{ 'glyphicon-user' : row.selectAccount, 'glyphicon-th-list': !row.selectAccount }"></i>
                       </a>
                     </span>
 
                     <input
                       class="form-bhima"
-                      ng-if="!row.selectEntity"
-                      ng-model="row.account"
-                      typeahead="account as account.account_number for account in accounts.data | filter:$viewValue | limitTo:20"
+                      ng-if="row.selectAccount"
+                      ng-model="row.account_id"
+                      typeahead="a.account_id as a.account_number for a in TableCtrl.accounts | filter:$viewValue | limitTo:20"
                       typeahead-on-select="selectAccount(row, account)"
                       typeahead-template-url="accountListItem.tmpl.html"
                       placeholder="{{ 'SELECT.ACCOUNT' | translate }}"
                     >
 
-                    <input
-                      class="form-bhima"
-                      ng-if="!!row.selectEntity"
-                      ng-model="row.deb_cred"
-                      typeahead="e as e.text for e in entities | filter:{type : row.dctype} | filter:$viewValue | limitTo:20"
-                      typeahead-on-select="selectDebCred(row)"
-                      typeahead-template-url="entityListItem.tmpl.html"
-                      placeholder="{{ 'SELECT.DEB_CRED' | translate }}"
-                    >
+                    <div ng-switch="deb_cred_type" ng-if="!row.selectAccount">
+
+                      <input
+                        class="form-bhima"
+                        ng-switch-when='D'
+                        ng-model="row.deb_cred_uuid"
+                        typeahead="debtor.uuid as debtor.text for debtor in TableCtrl.debtors | filter:$viewValue | limitTo:20"
+                        typeahead-template-url="entityListItem.tmpl.html"
+                        placeholder="{{ 'SELECT.DEB_CRED' | translate }}"
+                      >
+
+                      <input
+                        class="form-bhima"
+                        ng-switch-when='C'
+                        ng-model="row.deb_cred_uuid"
+                        typeahead="creditor as creditor.text for creditor in TableCtrl.creditors | filter:$viewValue | limitTo:20"
+                        typeahead-template-url="entityListItem.tmpl.html"
+                        placeholder="{{ 'SELECT.DEB_CRED' | translate }}"
+                      >
+                    </div>
+
                     <span class="input-group-btn dropdown" ng-if="!!row.selectEntity">
                       <a class="btn btn-default dropdown-toggle">
                         {{ row.dctype | uppercase }}
                         <span class="caret" data-caret="&#9660;"></span>
                       </a>
                       <ul class="dropdown-menu">
-                        <li><a ng-click="row.dctype='d'">{{ "COLUMNS.DEBTOR" | translate }}</a></li>
-                        <li><a ng-click="row.dctype='c'">{{ "COLUMNS.CREDITOR" | translate }}</a></li>
+                        <li><a ng-click="TableCtrl.setDebtorOrCreditorType(row, 'D')">{{ "COLUMNS.DEBTOR" | translate }}</a></li>
+                        <li><a ng-click="TableCtrl.setDebtorOrCreditorType(row, 'C')">{{ "COLUMNS.CREDITOR" | translate }}</a></li>
                       </ul>
                     </span>
                   </div>
                 </td>
                 <td><input type="number" class="form-invoice" min="0" placeholder="0.00" ng-model="row.debit" ng-change="totalDebit()" ng-disabled="row.credit>0"></td>
                 <td><input type="number" class="form-invoice" min="0" placeholder="0.00" ng-model="row.credit" ng-change="totalCredit()" ng-disabled="row.debit>0"></td>
-                <td><a ng-click="remove($index)" class="danger" ng-if="data.rows.length>2"><i class="glyphicon glyphicon-trash"></i></a></td>
+                <td><a ng-click="TableCtrl.removeRow($index)" class="danger" ng-if="data.rows.length>2"><i class="glyphicon glyphicon-trash"></i></a></td>
               </tr>
               <tr>
                 <td></td>
-                <td ng-bind-html="(session.totalDebit || 0) | intlcurrency:data.currency_id"></td>
-                <td ng-bind-html="(session.totalCredit || 0) | intlcurrency:data.currency_id"></td>
-                <td><i class="glyphicon" ng-class="{ 'glyphicon-ok-circle text-success' : session.validTotals, 'glyphicon-ban-circle text-danger': !session.validTotals }"></i></td>
+                <td ng-bind-html="this.totals.debits | intlcurrency:VoucherForm.currencyId.$modelValue"></td>
+                <td ng-bind-html="this.totals.credits  | intlcurrency:VoucherForm.currencyId.$modelValue"></td>
+                <td><i class="glyphicon" ng-class="{ 'glyphicon-ok-circle text-success' : this.totals.credits === this.totals.debits, 'glyphicon-ban-circle text-danger': this.totals.credits !== this.totals.debits }"></i></td>
               </tr>
             </tbody>
             <tfoot>
               <tr>
                 <th colspan="4">
-                  <a ng-click="addRow()">
+                  <a ng-click="TableCtrl.addRow()">
                     <i class="glyphicon glyphicon-plus-sign"></i>
                     {{ "JOURNAL_VOUCHER.ADD_ROW" | translate }}
                   </a>
@@ -199,7 +211,7 @@
 
 <script type="text/ng-template" id="accountListItem.tmpl.html">
   <a class="clk">
-    <span ng-if="match.model.type=='title'" class="text-warning">
+    <span ng-if="match.model.type === 'title'" class="text-warning">
       <i class="glyphicon glyphicon-exclamation-sign"></i>
     </span>
     <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>

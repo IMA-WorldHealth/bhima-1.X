@@ -2,7 +2,7 @@
 var db = require('../lib/db');
 
 // GET /accounts
-exports.getAllAccounts = function (req, res, next) {
+exports.getAccounts = function (req, res, next) {
   'use strict';
 
   // TODO
@@ -11,7 +11,7 @@ exports.getAllAccounts = function (req, res, next) {
   // Some ideas: 
   // ?classe=5, ?type=ohada, etc...
   var sql =
-    'SELECT a.id, a.account_number, a.account_text, a.parent, at.type ' +
+    'SELECT a.id, a.account_number, a.account_txt, a.parent, at.type ' +
     'FROM account AS a JOIN account_type AS at ON ' +
       'a.account_type_id = at.id;';
 

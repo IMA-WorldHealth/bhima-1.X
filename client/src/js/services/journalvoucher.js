@@ -3,11 +3,17 @@ angular.module('bhima.controllers')
 // Creates rows for the journal voucher form
 .factory('JournalVoucherRowFactory', function () {
   return {
+    type : 'accountSelect',
     debit : undefined,
     credit : undefined,
     account_id : undefined,
-    debcred : undefined,
-    dctype : 'd',
+
+    // allows the row to select based on account or debitor
+    isAccountSelect : function () {
+      return this.type === 'accountSelect';
+    },
+
+    // used for validation checks
     isValid : function () {
 
       // must have a one non-zero value
