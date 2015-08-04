@@ -1,11 +1,12 @@
 angular.module('bhima.controllers')
 .controller('JournalVoucherController', [
+  '$scope',
   '$http',
   'appcache',
   'messenger',
   'uuid',
   'exchange',
-  function ($http, AppCache, messenger, uuid, exchange) {
+  function ($scope, $http, AppCache, messenger, uuid, exchange) {
 
     /* This controller wraps all the global metadata
      * for the journal voucher and the JournalVoucherTableController.
@@ -22,9 +23,15 @@ angular.module('bhima.controllers')
     // alias this
     var self = this;
 
+    // trigger error text for the transaction table
+    self.tableError = false;
+
     // the master form
-    self.master = {
-      date : new Date()
+    // We must define this on the $scope so that the
+    // child can access it via $scope.$parent
+    $scope.master = self.master = {
+      date : new Date(),
+      rows : [] // the child 
     };
 
     // load dependencies
@@ -53,14 +60,21 @@ angular.module('bhima.controllers')
     };
 
     // do the final submit checks
-    self.submitForm = function (voucher) {
+    self.submitForm = function () {
+      console.log('MASTER:', self.master);
+
+      if (!correctTableInput()) {
+        self.tableError = true;
+      }
 
     };
 
 
   // ensure that the table portion is valid before submitting
-  function validateTableInput() {
-    var validRows = self.rows.every(function (row) {
+  function correctTableInput() {
+
+    // validate that the rows contain the correct format 
+    var validRows = self.master.rows.every(function (row) {
 
       // must have a one non-zero value
       var validAmount =
@@ -76,14 +90,23 @@ angular.module('bhima.controllers')
       return validAmount && validAccount;
     });
 
-    var validTotals = self.totals.credits === self.totals.debits;
+    // validate that the transaction balances
+    var totals = self.master.rows.reduce(function (aggregate, row) {
+      aggregate.debit += row.debit;
+      aggregate.credit += row.credit;
+      return aggregate;
+    }, { debit : 0, credit : 0 });
 
-    self.valid = validRows && validTotals;
+    var validTotals = totals.debit === totals.credit;
+
+    console.log(validRows, validTotals);
+
+    return validRows && validTotals;
   }
 
 }])
 
-.controller('JournalVoucherTableController', ['$http', '$q', function ($http, $q) {
+.controller('JournalVoucherTableController', ['$http', '$q', '$scope', function ($http, $q, $scope) {
 
   /* This controller is somewhat complex because it handles the
    * behavior of either specifying an account OR a debtor/creditor
@@ -126,8 +149,14 @@ angular.module('bhima.controllers')
     };
   }
 
+
+  // pull in parent rows
+  self.rows = $scope.$parent.master.rows;
+
   // start out with two rows
-  self.rows = [generateRow(), generateRow()];
+  self.rows.push(generateRow());
+  self.rows.push(generateRow());
+
   self.totals = {
     credits : 0,
     debits : 0

@@ -28,7 +28,7 @@
             <div class="form-group">
               <label class="control-label col-xs-2">{{ "COLUMNS.DESCRIPTION" | translate }}</label>
               <div class="col-xs-10">
-                <input class="form-bhima" name="description" ng-model="master.description" required>
+                <input class="form-bhima" name="description" ng-model="JournalVoucherCtrl.master.description" required>
                 <p ng-show="VoucherForm.description.$invalid && VoucherForm.description.$dirty" class="help-block">
                   A description is required.
                 </p>
@@ -39,7 +39,7 @@
               <label class="control-label col-xs-2">{{ "COLUMNS.DATE" | translate }}</label>
               <div class="input-group col-xs-10">
                 <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-                <input type="date" class="form-bhima" name="master.date" ng-model="date" required>
+                <input type="date" class="form-bhima" name="date" ng-model="JournalVoucherCtrl.master.date" required>
               </div>
               <p ng-show="VoucherForm.date.$invalid && VoucherForm.date.$dirty" class="help-block">
                 A date is required.
@@ -49,7 +49,7 @@
             <div class="form-group">
               <label class="control-label col-xs-2">{{ "COLUMNS.CURRENCY" | translate }}</label>
               <div class="col-xs-10">
-                <select class="form-bhima" name="currencyId" ng-model="master.currencyId" ng-options="currency.id as currency.symbol for currency in JournalVoucherCtrl.currencies" required>
+                <select class="form-bhima" name="currencyId" ng-model="JournalVoucherCtrl.master.currencyId" ng-options="currency.id as currency.symbol for currency in JournalVoucherCtrl.currencies" required>
                   <option value="" disabled>-- {{ "SELECT.CURRENCY" | translate }} --</option>
                 </select>
                 <p ng-show="VoucherForm.currencyId.$invalid && VoucherForm.currencyId.$dirty" class="help-block">
@@ -61,7 +61,7 @@
             <div class="form-group" ng-if="JournalVoucherCtrl.showComment">
               <label class="control-label col-xs-2">{{ "COLUMNS.COMMENT" | translate }}</label>
               <div class="col-xs-10">
-                <input class="form-bhima" name="comment" ng-model="master.comment">
+                <input class="form-bhima" name="comment" ng-model="JournalVoucherCtrl.master.comment">
               </div>
             </div>
 
@@ -69,7 +69,7 @@
               <label class="control-label col-xs-2">{{ "COLUMNS.REFERENCE" | translate }}</label>
               <div class="input-group col-xs-10">
                 <span class="input-group-addon"><i class="glyphicon glyphicon-file"></i></span>
-                <input class="form-bhima" name="documentId" ng-model="master.documentId">
+                <input class="form-bhima" name="documentId" ng-model="JournalVoucherCtrl.master.documentId">
               </div>
             </div>
 
@@ -172,6 +172,15 @@
                       <i class="glyphicon glyphicon-plus-sign"></i>
                       {{ "JOURNAL_VOUCHER.ADD_ROW" | translate }}
                     </a>
+                  </th>
+                <tr>
+
+                <tr>
+                  <th colspan="4" ng-if="JournalVoucherCtrl.tableError">
+                    <p class="help-block">
+                      <i class="glyphicon glyphicon-exclamation-sign"></i>
+                      The transaction doesn't look correctly formatted.  Did you forget an account?
+                    </p>
                   </th>
                 <tr>
               </tfoot>
