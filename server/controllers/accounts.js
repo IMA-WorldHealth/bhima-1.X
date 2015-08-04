@@ -10,10 +10,15 @@ exports.getAccounts = function (req, res, next) {
   // make it more useful all around.
   // Some ideas: 
   // ?classe=5, ?type=ohada, etc...
+  
   var sql =
     'SELECT a.id, a.account_number, a.account_txt, a.parent, at.type ' +
     'FROM account AS a JOIN account_type AS at ON ' +
-      'a.account_type_id = at.id;';
+      'a.account_type_id = at.id';
+
+  if (req.query.type === 'ohada') {
+    sql += ' WHERE a.is_ohada = 1;';
+  }
 
   db.exec(sql)
   .then(function (rows) {
