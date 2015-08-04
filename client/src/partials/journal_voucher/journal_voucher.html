@@ -39,17 +39,17 @@
               <div class="input-group col-xs-10">
                 <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                 <input type="date" class="form-bhima" name="date" ng-model="date" required>
-                <p ng-show="VoucherForm.date.$invalid && VoucherForm.date.$dirty" class="help-block">
-                  A date is required.
-                </p>
               </div>
+              <p ng-show="VoucherForm.date.$invalid && VoucherForm.date.$dirty" class="help-block">
+                A date is required.
+              </p>
             </div>
 
             <div class="form-group">
               <label class="control-label col-xs-2">{{ "COLUMNS.CURRENCY" | translate }}</label>
               <div class="col-xs-10">
-                <select class="form-bhima" name="currencyId" ng-model="currencyId" ng-options="curr.id as curr.symbol for curr in JournalVoucherCtrl.currencies">
-                  <option value="">{{ "SELECT.CURRENCY" | translate }}</option>
+                <select class="form-bhima" name="currencyId" ng-model="currencyId" ng-options="currency.id as currency.symbol for currency in JournalVoucherCtrl.currencies">
+                  <option value="" disabled>-- {{ "SELECT.CURRENCY" | translate }} --</option>
                 </select>
                 <p ng-show="VoucherForm.currencyId.$invalid && VoucherForm.currencyId.$dirty" class="help-block">
                   A date is required.
@@ -57,7 +57,7 @@
               </div>
             </div>
 
-            <div class="form-group" ng-if="session.comment">
+            <div class="form-group" ng-if="JournalVoucherCtrl.showComment">
               <label class="control-label col-xs-2">{{ "COLUMNS.COMMENT" | translate }}</label>
               <div class="col-xs-10">
                 <input class="form-bhima" name="comment" ng-model="comment"required>
@@ -67,7 +67,7 @@
               </div>
             </div>
 
-            <div class="form-group" ng-if="session.document">
+            <div class="form-group" ng-if="JournalVoucherCtrl.showReference">
               <label class="control-label col-xs-2">{{ "COLUMNS.REFERENCE" | translate }}</label>
               <div class="input-group col-xs-10">
                 <span class="input-group-addon"><i class="glyphicon glyphicon-file"></i></span>
@@ -81,14 +81,14 @@
             <div class="form-group">
 
                 <div class="col-xs-2"></div>
-                <div class="form-control-static col-xs-5"  ng-if="!session.comment">
-                  <a ng-click="session.comment=!session.comment"> <i class="glyphicon glyphicon-plus-sign"></i>
+                <div class="form-control-static col-xs-5"  ng-if="!JournalVoucherCtrl.showComment">
+                  <a ng-click="JournalVoucherCtrl.toggleComment()"> <i class="glyphicon glyphicon-plus-sign"></i>
                     <b>{{ "JOURNAL_VOUCHER.ADD_COMMENT" | translate }}</b>
                   </a>
                 </div>
 
-                <div class="form-control-static col-xs-5" ng-if="!session.document">
-                  <a ng-click="session.document=!session.document"> <i class="glyphicon glyphicon-plus-sign"></i>
+                <div class="form-control-static col-xs-5" ng-if="!JournalVoucherCtrl.showReference">
+                  <a ng-click="JournalVoucherCtrl.toggleReference()"> <i class="glyphicon glyphicon-plus-sign"></i>
                     <b>{{ "JOURNAL_VOUCHER.ADD_REFERENCE_DOCUMENT" | translate }}</b>
                   </a>
                 </div>
@@ -120,18 +120,17 @@
                       ng-if="row.selectAccount"
                       ng-model="row.account_id"
                       typeahead="a.account_id as a.account_number for a in TableCtrl.accounts | filter:$viewValue | limitTo:20"
-                      typeahead-on-select="selectAccount(row, account)"
                       typeahead-template-url="accountListItem.tmpl.html"
                       placeholder="{{ 'SELECT.ACCOUNT' | translate }}"
                     >
 
-                    <div ng-switch="deb_cred_type" ng-if="!row.selectAccount">
+                    <div ng-switch="row.deb_cred_type" ng-if="!row.selectAccount">
 
                       <input
                         class="form-bhima"
                         ng-switch-when='D'
                         ng-model="row.deb_cred_uuid"
-                        typeahead="debtor.uuid as debtor.text for debtor in TableCtrl.debtors | filter:$viewValue | limitTo:20"
+                        typeahead="debtor as debtor.text for debtor in TableCtrl.debtors | filter:$viewValue | limitTo:20"
                         typeahead-template-url="entityListItem.tmpl.html"
                         placeholder="{{ 'SELECT.DEB_CRED' | translate }}"
                       >
@@ -146,9 +145,9 @@
                       >
                     </div>
 
-                    <span class="input-group-btn dropdown" ng-if="!!row.selectEntity">
-                      <a class="btn btn-default dropdown-toggle">
-                        {{ row.dctype | uppercase }}
+                    <span class="input-group-btn dropdown" ng-if="!row.selectAccount">
+                      <a class="btn btn-sm btn-default dropdown-toggle">
+                        {{ row.deb_cred_type | uppercase }}
                         <span class="caret" data-caret="&#9660;"></span>
                       </a>
                       <ul class="dropdown-menu">
@@ -215,7 +214,7 @@
       <i class="glyphicon glyphicon-exclamation-sign"></i>
     </span>
     <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-    <span>-- {{ match.model.account_txt }}</span>
+    <span>{{ match.model.account_number }} -- {{ match.model.account_txt }}</span>
   </a>
 </script>
 

@@ -1,51 +1,51 @@
 angular.module('bhima.controllers')
 .controller('JournalVoucherController', [
-  '$scope',
   '$http',
   'appcache',
   'messenger',
   'uuid',
   'exchange',
-  function ($scope, $http, AppCache, messenger, uuid, exchange) {
+  function ($http, AppCache, messenger, uuid, exchange) {
 
     var dependencies = {},
         db = new AppCache('journal.voucher');
 
+    var self = this;
+
     // load dependencies
     $http.get('/finance/currencies')
     .success(function (data) {
-      $scope.currencies = data;
+      self.currencies = data;
     })
     .error(function (error) {
-      console.log('financeCurrencies error');
-      console.log(error);
+      console.error(error);
     });
 
     // current timestamp
-    this.today = new Date();
+    self.today = new Date();
 
-    this.showComment = false;
-    this.showReference = false;
+    self.showComment = false;
+    self.showReference = false;
 
     // toggle comment field
-    this.toggleComment = function () {
-      this.showComment = !this.showComment;
+    self.toggleComment = function () {
+      self.showComment = !self.showComment;
     };
 
     // toggle reference field
-    this.toggleReference = function () {
-      this.showReference = !this.showReference;
+    self.toggleReference = function () {
+      self.showReference = !self.showReference;
     };
 
     // do the final submit checks
-    this.submitForm = function (isValid) {
+    self.submitForm = function (isValid) {
       // TODO
     };
 
   }
 ])
 
-.controller('JournalVoucherTableController', ['$scope', '$http', '$q', function ($scope, $http, $q) {
+.controller('JournalVoucherTableController', ['$http', '$q', function ($http, $q) {
 
   /* This controller is somewhat complex because it handles the
    * behavior of either specifying an account OR a debtor/creditor
@@ -70,7 +70,10 @@ angular.module('bhima.controllers')
    *
   */
 
-  // this is the format of the rows in the journal voucher table
+  // alias this
+  var self = this;
+
+  // self is the format of the rows in the journal voucher table
   function generateRow() {
     return {
       account_id    : undefined,
@@ -85,8 +88,8 @@ angular.module('bhima.controllers')
   }
 
   // start out with two rows
-  this.rows = [generateRow(), generateRow()];
-  this.totals = {
+  self.rows = [generateRow(), generateRow()];
+  self.totals = {
     credits : 0,
     debits : 0
   };
@@ -101,21 +104,21 @@ angular.module('bhima.controllers')
   // load all accounts
   $http.get('/accounts?type=ohada')
   .success(function (data) {
-    $scope.accounts = data;
+    self.accounts = data;
   })
   .error(handle);
 
   // load debtors
   $http.get('/finance/debtors')
   .success(function (data) {
-    $scope.debtors = data;
+    self.debtors = data;
   })
   .error(handle);
 
   // load creditors
   $http.get('/finance/creditors')
   .success(function (data) {
-    $scope.creditors = data;
+    self.creditors = data;
   })
   .error(handle);
 
@@ -123,27 +126,27 @@ angular.module('bhima.controllers')
 
   // switches between the account typeahead
   // and the debtor/creditor typeahead
-  this.toggleAccountSwitch = function (row) {
+  self.toggleAccountSwitch = function (row) {
     row.selectAccount = !row.selectAccount;
   };
 
   // switches the debtor or creditor type
-  this.setDebtorOrCreditorType = function (row, type) {
+  self.setDebtorOrCreditorType = function (row, type) {
     row.deb_cred_type = type;
   };
 
   /* Totalling */
 
   // total debits
-  this.totalDebit = function () {
-    this.totals.debits = this.rows.reduce(function (total, row) {
+  self.totalDebit = function () {
+    self.totals.debits = self.rows.reduce(function (total, row) {
       return total + row.debit;
     }, 0);
   };
 
   // total credits
-  this.totalCredit = function () {
-    this.totals.credits = this.rows.reduce(function (total, row) {
+  self.totalCredit = function () {
+    self.totals.credits = self.rows.reduce(function (total, row) {
       return total + row.credit;
     }, 0);
   };
@@ -151,13 +154,13 @@ angular.module('bhima.controllers')
   /* Row Controls */
 
   // adds a row to the table
-  this.addRow = function () {
-    this.rows.push(generateRow());
+  self.addRow = function () {
+    self.rows.push(generateRow());
   };
 
   // removes a row from the table
-  this.removeRow = function (idx) {
-    this.rows.splice(idx, 1);
+  self.removeRow = function (idx) {
+    self.rows.splice(idx, 1);
   };
 
 }]);
