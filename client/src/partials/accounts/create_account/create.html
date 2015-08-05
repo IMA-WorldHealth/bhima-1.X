@@ -115,16 +115,6 @@
                   </div>
 
                   <div class="form-group">
-                    <label for="number">{{ "ACCOUNT.ACCOUNT_NUMBER" | translate }}</label>
-                    <input 
-                    required type="text" 
-                    id="number" 
-                    class="form-bhima" 
-                    ng-model="newAccount.number"
-                    ng-change="getAccountClass()">
-                  </div>
-
-                  <div class="form-group" ng-if="newAccount.type.type === 'title'">
                     <div class="radio">
                       <label>
                         <input type="radio" name="option_is_asset" id="is_asset" value="true" ng-model="newAccount.is_asset" >
@@ -137,12 +127,16 @@
                         {{ "ACCOUNT.IS_PASSIVE" | translate }}
                       </label>
                     </div>
-                    <div class="radio">
-                      <label>
-                        <input type="radio" name="option_is_asset" id="is_asset" value=null ng-model="newAccount.is_asset" >
-                        {{ "ACCOUNT.IS_NOTHING" | translate }}
-                      </label>
-                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="number">{{ "ACCOUNT.ACCOUNT_NUMBER" | translate }}</label>
+                    <input 
+                    required type="text" 
+                    id="number" 
+                    class="form-bhima" 
+                    ng-model="newAccount.number"
+                    ng-change="getAccountClass()">
                   </div>
 
                   <div class="form-group">
@@ -218,7 +212,7 @@
                     <option value="">{{ "SELECT.REFERENCE"  | translate }}</option>
                   </select>
                 </div>
-                <div class="form-group">
+                <div class="form-group" ng-if="newAccount.type.type === 'balance'">
                   <div class="checkbox">
                     <label>
                       <input 
@@ -232,8 +226,6 @@
                 </div>                  
               </div>
             </div>
-
-
             <button ng-disabled="form.$invalid" ng-click="submitAccount(newAccount)" class="btn btn-success">
               {{ "FORM.SUBMIT" | translate }}
             </button>
@@ -243,11 +235,9 @@
             <div class="panel panel-default">
               <div class="panel-heading">
                 {{ "ACCOUNT.EDIT" | translate }} <b>{{ editAccount.account_number }}</b>
-                
               </div>
               <div class="panel-body">
                 <form novalidate name="form">
-
                   <div class="form-group">
                     <label for="title">{{ "ACCOUNT.ACCOUNT_TITLE" | translate }}</label>
                     <input 
@@ -255,8 +245,7 @@
                     type="text" 
                     id="title" class="form-bhima" ng-model="editAccount.account_txt">
                   </div>
-
-                  <div class="form-group" ng-if="editAccount.account_type === 'title'">
+                  <div class="form-group">
                     <div class="radio">
                       <label>
                         <input type="radio" name="option_is_asset" value="true" ng-model="editAccount.is_asset" ng-checked="editAccount.is_asset==1">
@@ -265,18 +254,12 @@
                     </div>
                     <div class="radio">
                       <label>
-                        <input type="radio" name="option_is_asset" value="false" ng-model="editAccount.is_asset" >
+                        <input type="radio" name="option_is_asset" value="false" ng-model="editAccount.is_asset" ng-checked="editAccount.is_asset==0">
                         {{ "ACCOUNT.IS_PASSIVE" | translate }}
                       </label>
                     </div>
-                    <div class="radio">
-                      <label>
-                        <input type="radio" name="option_is_asset" value="null" ng-model="editAccount.is_asset" >
-                        {{ "ACCOUNT.IS_NOTHING" | translate }}
-                      </label>
-                    </div>
                   </div>
-
+                  <hr>
                   <div class="form-group">
                     <div class="checkbox">
                       <label>
@@ -364,7 +347,7 @@
                           <option value="">{{ "SELECT.REFERENCE"  | translate }}</option>
                         </select>
                       </div>
-                      <div class="form-group">
+                      <div class="form-group" ng-if="editAccount.account_type  === 'balance'">
                         <div class="checkbox">
                           <label>
                             <input 
