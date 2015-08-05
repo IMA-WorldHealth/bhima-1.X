@@ -21,14 +21,14 @@
         </div>
 
 
-        <form class="form-horizontal" name="VoucherForm" class="voucher-form" ng-submit="JournalVoucherCtrl.submitForm(VoucherForm)" novalidate>
+        <form class="form-horizontal" name="VoucherForm" class="voucher-form" ng-submit="JournalVoucherCtrl.submitForm()" novalidate>
 
           <div class="panel-body">
 
             <div class="form-group">
               <label class="control-label col-xs-2">{{ "COLUMNS.DESCRIPTION" | translate }}</label>
               <div class="col-xs-10">
-                <input class="form-bhima" name="description" ng-model="JournalVoucherCtrl.master.description" required>
+                <input type="text" class="form-bhima" name="description" ng-model="JournalVoucherCtrl.master.description" required>
                 <p ng-show="VoucherForm.description.$invalid && VoucherForm.description.$dirty" class="help-block">
                   A description is required.
                 </p>
