@@ -19,6 +19,7 @@ angular.module('bhima.controllers')
       { number : 5, name : $translate.instant('ACCOUNT.ACCOUNT_FINC')},
       { number : 6, name : $translate.instant('ACCOUNT.ACCOUNT_COST')},
       { number : 7, name : $translate.instant('ACCOUNT.ACCOUNT_REV')},
+      { number : 8, name : $translate.instant('ACCOUNT.ACCOUNT_EXP_PROD')},
       { number : '*', name : $translate.instant('ACCOUNT.ALL_ACCOUNT')}
     ];
 

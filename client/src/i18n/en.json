@@ -4,6 +4,7 @@
    "ACCOUNT_CHART"    : "Chart of Accounts",
    "ACCOUNT_COST"     : "Costs Accounts",
    "ACCOUNT_EQUITY"   : "Accounts of equity and borrowing more than a year",
+   "ACCOUNT_EXP_PROD" : "Accounts other expenses and other products",
    "ACCOUNT_FINC"     : "Financial Accounts",
    "ACCOUNT_GROUP"    : "Account Group (Title Account)",
    "ACCOUNT_LIST"     : "Accounts list",
