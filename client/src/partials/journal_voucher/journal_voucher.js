@@ -33,14 +33,22 @@ angular.module('bhima.controllers')
     // alias this
     var self = this;
 
-    // trigger error text for the transaction table
-    self.tableError = false;
+    // trigger error/success text for the transaction table
+    self.clientTableError = false;
+    self.serverSuccessMessage = false;
+    self.serverFailureMessage = false;
+
+    // current timestamp
+    self.today = new Date();
+
+    self.showComment = false;
+    self.showReference = false;
 
     // the master form
     // We must define this on the $scope so that the
     // child can access it via $scope.$parent
     $scope.master = self.master = {
-      date : new Date(),
+      date : self.today,
       rows : [] // the child
     };
 
@@ -53,11 +61,6 @@ angular.module('bhima.controllers')
       console.error(error);
     });
 
-    // current timestamp
-    self.today = new Date();
-
-    self.showComment = false;
-    self.showReference = false;
 
     // toggle comment field
     self.toggleComment = function () {
@@ -71,10 +74,11 @@ angular.module('bhima.controllers')
 
     // do the final submit checks
     self.submitForm = function () {
-      console.log($scope.master);
+      self.serverFailureMessage = false;
+      self.serverSuccessMessage = false;
 
       if (!correctTableInput()) {
-        self.tableError = true;
+        self.clientTableError = true;
         return;
       }
 
@@ -83,8 +87,13 @@ angular.module('bhima.controllers')
       // success!  Clear the data to start again.
       .success(function (data) {
 
+        self.serverSuccessMessage = data;
+
+        // reset form validation checks
+        $scope.VoucherForm.$setPristine();
+
         $scope.master.rows = [];
-        $scope.master.data = new Date();
+        $scope.master.date = self.today;
         $scope.master.comment = '';
         $scope.master.documentId = '';
         $scope.master.description = '';
@@ -96,6 +105,7 @@ angular.module('bhima.controllers')
 
       // something went wrong... log it!
       .error(function (error) {
+        self.serverFailureMessage = error;
         console.error(error);
       });
     };

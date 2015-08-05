@@ -176,10 +176,18 @@
                 <tr>
 
                 <tr>
-                  <th colspan="4" ng-if="JournalVoucherCtrl.tableError">
-                    <p class="help-block">
+                  <th colspan="4"  style="text-align:center;">
+                    <p class="help-block" ng-if="JournalVoucherCtrl.clientTableError">
                       <i class="glyphicon glyphicon-exclamation-sign"></i>
                       The transaction doesn't look correctly formatted.  Did you forget an account?
+                    </p>
+                    <p class="help-block" ng-if="JournalVoucherCtrl.serverFailureMessage">
+                      <i class="glyphicon glyphicon-exclamation-sign"></i>
+                      {{ JournalVoucherCtrl.serverFailureMessage | translate }}
+                    </p>
+                    <p style="font-weight:bold; color:green;" ng-if="JournalVoucherCtrl.serverSuccessMessage">
+                      <i class="glyphicon glyphicon-ok"></i>
+                      {{ JournalVoucherCtrl.serverSuccessMessage | translate }}
                     </p>
                   </th>
                 <tr>
