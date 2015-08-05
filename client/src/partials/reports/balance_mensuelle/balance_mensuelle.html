@@ -106,13 +106,13 @@
             <tbody>
               <tr ng-repeat='item in balance_mensuelle.data'>
                 <td> {{ item.account_number }} </td>
-                <td> {{ item.account_txt }} </td>
+                <td class="account_text"> {{ item.account_txt }} </td>
                 <td> {{ item.old_debit | currency }} </td>
                 <td> {{ item.old_credit | currency }} </td>
                 <td> {{ item.debit | currency }} </td>
                 <td> {{ item.credit | currency }} </td>
-                <td> {{ item.debit + item.old_debit | currency}}</td>
-                <td> {{ item.credit + item.old_credit | currency}}</td>
+                <td> {{ item.solde_debit | currency}}</td>
+                <td> {{ item.solde_credit | currency}}</td>
               </tr>
             </tbody>
             <hr>
