@@ -92,15 +92,11 @@ angular.module('bhima.controllers')
         // reset form validation checks
         $scope.VoucherForm.$setPristine();
 
-        $scope.master.rows = [];
-        $scope.master.date = self.today;
-        $scope.master.comment = '';
-        $scope.master.documentId = '';
-        $scope.master.description = '';
+        // new form set up
+        self.master = $scope.master = { date : self.today, rows : [] };
 
-        // reset form validation checks
-        $scope.VoucherForm.$setPristine();
-
+        // tell the child controller to import the new form
+        $scope.$broadcast('table.reset');
       })
 
       // something went wrong... log it!
@@ -140,13 +136,19 @@ angular.module('bhima.controllers')
 
     var validTotals = totals.debit === totals.credit;
 
+    // validate that there is only one cost or profit center per line
+    var validCenters = self.master.rows.every(function (row) {
+      return !(row.cc_id && row.pc_id);
+    });
+
     // TODO
     // Should we include specific error messages (the debits/credits
     // do not balance, missing an account?)
     // It would be easy to do, but very verbose, especially considering
     // translation..
-    return validRows && validTotals;
+    return validRows && validTotals && validCenters;
   }
+
 
 }])
 
@@ -174,7 +176,6 @@ angular.module('bhima.controllers')
    * in the parent controller (JournalVoucherController).
   */
 
-
   // alias this
   var self = this;
 
@@ -191,6 +192,15 @@ angular.module('bhima.controllers')
       selectAccount : true,       // by default, filter accounts
     };
   }
+
+  // reset when all done
+  $scope.$on('table.reset', function () {
+    self.rows = $scope.$parent.master.rows;
+    self.rows.push(generateRow());
+    self.rows.push(generateRow());
+    self.totalCredit();
+    self.totalDebit();
+  });
 
 
   // pull in parent rows
@@ -230,6 +240,19 @@ angular.module('bhima.controllers')
   $http.get('/finance/creditors')
   .success(function (data) {
     self.creditors = data;
+  })
+  .error(handle);
+
+  // load profit + cost centers
+  $http.get('/finance/profitcenters')
+  .success(function (data) {
+    self.profitcenters = data;
+  })
+  .error(handle);
+
+  $http.get('/finance/costcenters')
+  .success(function (data) {
+    self.costcenters = data;
   })
   .error(handle);
 
@@ -299,4 +322,5 @@ angular.module('bhima.controllers')
     row.deb_cred_uuid = undefined;
     row.entity = undefined;
   };
+
 }]);

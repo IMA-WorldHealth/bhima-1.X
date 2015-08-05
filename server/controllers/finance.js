@@ -310,3 +310,38 @@ exports.getCurrencies = function (req, res, next) {
   })
   .done();
 };
+
+// GET /finance/costcenters
+exports.getCostCenters = function (req, res, next) {
+  'use strict';
+
+  var sql =
+    'SELECT project_id, id, text FROM cost_center;';
+
+  db.exec(sql)
+  .then(function (rows) {
+    res.status(200).json(rows);
+  })
+  .catch(function (error) {
+    next(error);
+  })
+  .done();
+};
+
+
+// GET /finance/profitcenters
+exports.getProfitCenters = function (req, res, next) {
+  'use strict';
+
+  var sql =
+    'SELECT project_id, id, text FROM profit_center;';
+
+  db.exec(sql)
+  .then(function (rows) {
+    res.status(200).json(rows);
+  })
+  .catch(function (error) {
+    next(error);
+  })
+  .done();
+};

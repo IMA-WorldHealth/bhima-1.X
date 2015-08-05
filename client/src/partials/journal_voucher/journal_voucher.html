@@ -96,6 +96,8 @@
                   <th style="width:50%">{{ "COLUMNS.ACCOUNT" | translate }}</th>
                   <th>{{ "COLUMNS.DEBIT" | translate }}</th>
                   <th>{{ "COLUMNS.CREDIT" | translate }}</th>
+                  <th>{{ "COLUMNS.COST_CENTER" | translate }}</th>
+                  <th>{{ "COLUMNS.PROFIT_CENTER" | translate }}</th>
                   <th></th>
                 </tr>
               </thead>
@@ -156,18 +158,33 @@
                   </td>
                   <td><input type="number" class="form-invoice" min="0" placeholder="0.00" ng-model="row.debit" ng-change="TableCtrl.totalDebit()" ng-disabled="row.credit>0"></td>
                   <td><input type="number" class="form-invoice" min="0" placeholder="0.00" ng-model="row.credit" ng-change="TableCtrl.totalCredit()" ng-disabled="row.debit>0"></td>
+
+                  <!-- select a cost center -->
+                  <td>
+                    <select class="form-bhima" ng-model="row.cc_id" ng-options="cc.id as cc.text for cc in TableCtrl.costcenters">
+                      <option value="">{{ "SELECT.NONE" | translate }}</option>
+                    </select>
+                  </td>
+
+                  <!-- select a profit center -->
+                  <td>
+                    <select class="form-bhima" ng-model="row.pc_id" ng-options="pc.id as pc.text for pc in TableCtrl.profitcenters">
+                      <option value="">{{ "SELECT.NONE" | translate }}</option>
+                    </select>
+                  </td>
+
                   <td><a ng-click="TableCtrl.removeRow($index)" class="danger" ng-if="TableCtrl.rows.length > 2"><i class="glyphicon glyphicon-trash"></i></a></td>
                 </tr>
                 <tr>
                   <td></td>
                   <td ng-bind-html="TableCtrl.totals.debits | intlcurrency:VoucherForm.currencyId.$modelValue"></td>
-                  <td ng-bind-html="TableCtrl.totals.credits  | intlcurrency:VoucherForm.currencyId.$modelValue"></td>
+                  <td colspan="3" ng-bind-html="TableCtrl.totals.credits  | intlcurrency:VoucherForm.currencyId.$modelValue"></td>
                   <td><i class="glyphicon" ng-class="{ 'glyphicon-ok-circle text-success' : TableCtrl.totals.credits === TableCtrl.totals.debits, 'glyphicon-ban-circle text-danger': TableCtrl.totals.credits !== TableCtrl.totals.debits }"></i></td>
                 </tr>
               </tbody>
               <tfoot>
                 <tr>
-                  <th colspan="4">
+                  <th colspan="6">
                     <a ng-click="TableCtrl.addRow()">
                       <i class="glyphicon glyphicon-plus-sign"></i>
                       {{ "JOURNAL_VOUCHER.ADD_ROW" | translate }}
@@ -176,7 +193,7 @@
                 <tr>
 
                 <tr>
-                  <th colspan="4"  style="text-align:center;">
+                  <th colspan="6"  style="text-align:center;">
                     <p class="help-block" ng-if="JournalVoucherCtrl.clientTableError">
                       <i class="glyphicon glyphicon-exclamation-sign"></i>
                       {{ "ERR_TRANSACTION_FORMAT" | translate }}

@@ -2302,6 +2302,7 @@
    "LANGUAGE"              : "Sélectionner une lang",
    "LOCATION"              : "Sélectionner un Emplacement",
    "NAME"                  : "Sélectionner un Nom",
+   "NONE"                  : "None",
    "OTHER"                 : "Autre Source",
    "PATIENT"               : "Sélectionner un patient",
    "PATIENT_GROUP"         : "Sélectionner Groupe de Malades",
