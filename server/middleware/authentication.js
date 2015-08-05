@@ -39,7 +39,7 @@ module.exports = function () {
     sql =
       'SELECT user.id, user.username, user.first, user.last, user.email, project.enterprise_id ' +
       'FROM user JOIN project_permission JOIN project ON ' +
-        'user.id = project_permission.user_id AND project.id = ' +
+        'user.id = project_permission.user_id AND project.id = project_permission.project_id ' +
       'WHERE user.username = ? AND user.password = ? AND project_permission.project_id = ?;';
 
 
