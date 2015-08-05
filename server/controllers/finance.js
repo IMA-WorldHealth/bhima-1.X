@@ -7,7 +7,7 @@ var db = require('../lib/db'),
 // utilities
 
 // TODO copied from journal.  These ought to be aggregated somewhere
-function getTransactionId(project_id) {
+function getTransactionId(projectId) {
   // get a new transaction id from the journal.
   // make sure it is the last thing fired in the
   // call stack before posting.
@@ -21,32 +21,34 @@ function getTransactionId(project_id) {
     'SELECT abbr, max(increment) AS increment FROM (' +
       'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
       'FROM posting_journal JOIN project ON posting_journal.project_id = project.id ' +
-      'WHERE project_id = ' + project_id + ' ' +
-      'UNION ' +
+      'WHERE posting_journal.project_id = ? ' +
+    'UNION ' +
       'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
       'FROM general_ledger JOIN project ON general_ledger.project_id = project.id ' +
-      'WHERE project_id = ' + project_id + ')c;';
+      'WHERE general_ledger.project_id = ?)c;';
 
-  var sql2 = 'SELECT `project`.`abbr` FROM `project` WHERE `project`.`id` = ' + project_id;
+  var sql2 = 'SELECT project.abbr FROM project WHERE project.id = ?;';
 
-  db.exec(sql)
+  db.exec(sql, [projectId, projectId])
   .then(function (rows) {
     var data = rows.pop();
 
     // FIXME: dangerous test
 
-    if(!data.abbr){
-      db.exec(sql2)
+    if (!data.abbr) {
+      db.exec(sql2, [projectId])
       .then(function (rows){
         var data2 = rows.pop();
-        value = (data.increment) ? '\'' + data2.abbr + data.increment + '\'' : '\'' + data2.abbr + 1 + '\'';
+        value = String(data.increment ? data2.abbr + data.increment :  data2.abbr + 1);
         defer.resolve(value);
-      });
-    }else{
-      var value = data.increment ? '\'' + data.abbr + data.increment + '\'' : '\'' + data.abbr + 1 + '\'';
+      })
+      .catch(defer.reject);
+    } else {
+      var value = String(data.increment ? data.abbr + data.increment : data.abbr + 1);
       defer.resolve(value);
     }
-  });
+  })
+  .catch(defer.reject);
 
   return defer.promise;
 }
@@ -115,6 +117,10 @@ exports.postJournalVoucher = function (req, res, next) {
     row.user_id = req.session.user_id;
     row.currency_id = data.currencyId;
     row.date = date;
+
+    // strip the deb_cred_type if the deb_cred_uuid is undefined
+    if (row.deb_cred_uuid === undefined) { row.deb_cred_type = undefined; }
+
     return row;
   });
 
@@ -125,9 +131,9 @@ exports.postJournalVoucher = function (req, res, next) {
     'SELECT period.id, period.fiscal_year_id ' +
     'FROM period JOIN fiscal_year ON ' +
       'period.fiscal_year_id = fiscal_year.id ' +
-    'WHERE period.period_start > ? AND ' +
-      'period.period_stop < ? AND ' +
-      'fiscal_year.enterpise_id = ?;';
+    'WHERE period.period_start < ? AND ' +
+      'period.period_stop > ? AND ' +
+      'fiscal_year.enterprise_id = ?;';
 
   db.exec(sql, [date, date, req.session.enterpriseId || 200])
   .then(function (rows) {
@@ -157,7 +163,7 @@ exports.postJournalVoucher = function (req, res, next) {
     return db.exec(sql, [date]);
   })
   .then(function (rows) {
- 
+
     if (rows.length < 1) {
       throw 'ERR_NO_EXCHANGE_RATE';
     }
@@ -166,7 +172,7 @@ exports.postJournalVoucher = function (req, res, next) {
     // (if someone made a mistake, there may be multiple)
     // TODO Should this be fixed to one rate per currency per day?
     var record = rows.pop();
- 
+
 
     // if we are not using the enterprise currency, we need to exchange the debits
     // and credits
@@ -181,7 +187,7 @@ exports.postJournalVoucher = function (req, res, next) {
       }
 
       // we are exchanging the data using the exchange rate.
-      dbrows = dbrows.map(function (row) {
+      dbrows.forEach(function (row) {
         row.debit_equiv = row.debit * (1 / record.rate);
         row.credit_equiv = row.credit * (1 / record.rate);
       });
@@ -190,7 +196,7 @@ exports.postJournalVoucher = function (req, res, next) {
     } else {
 
       // we are exchanging the data using the exchange rate.
-      dbrows = dbrows.map(function (row) {
+      dbrows.forEach(function (row) {
         row.debit_equiv = row.debit;
         row.credit_equiv = row.credit;
       });
@@ -207,8 +213,8 @@ exports.postJournalVoucher = function (req, res, next) {
         '(uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
         'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
         'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) ' +
-      'VALUES ?';
- 
+      'VALUES ?;';
+
     // node-mysql accepts an array of arrays for bulk inserts.
     // we should shape our data to fit the standard it is looking to see.
     var insertRows = dbrows.map(function (row) {
@@ -216,15 +222,15 @@ exports.postJournalVoucher = function (req, res, next) {
         guid(),
         row.project_id,
         row.fiscal_year_id,
-        row.period_id, 
+        row.period_id,
         transId,
         row.date,
         row.description,
         row.account_id,
         row.credit,
-        row.debit, 
+        row.debit,
         row.credit_equiv,
-        row.debit_equiv, 
+        row.debit_equiv,
         row.currency_id,
         row.deb_cred_uuid,
         row.deb_cred_type,
@@ -234,13 +240,16 @@ exports.postJournalVoucher = function (req, res, next) {
       ];
     });
 
-    return db.exec(sql, insertRows);
+    console.log('INSERT ROWS:', insertRows);
+
+    return db.exec(sql, [insertRows]);
   })
   .then(function () {
     res.status(200).send('POST_SUCCESSFUL');
   })
   .catch(function (error) {
-    res.status(400).send(error);      
+    console.log('ERROR', error);
+    res.status(400).send(error);
   });
 };
 
