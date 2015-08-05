@@ -212,7 +212,7 @@ exports.postJournalVoucher = function (req, res, next) {
       'INSERT INTO posting_journal ' +
         '(uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
         'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
-        'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) ' +
+        'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id, pc_id, cc_id) ' +
       'VALUES ?;';
 
     // node-mysql accepts an array of arrays for bulk inserts.
@@ -235,12 +235,12 @@ exports.postJournalVoucher = function (req, res, next) {
         row.deb_cred_uuid,
         row.deb_cred_type,
         row.inv_po_id,
-        5,
-        row.user_id
+        5, // FIXME: What is the origin id actually supposed to be?
+        row.user_id,
+        row.pc_id,
+        row.cc_id
       ];
     });
-
-    console.log('INSERT ROWS:', insertRows);
 
     return db.exec(sql, [insertRows]);
   })
@@ -248,7 +248,6 @@ exports.postJournalVoucher = function (req, res, next) {
     res.status(200).send('POST_SUCCESSFUL');
   })
   .catch(function (error) {
-    console.log('ERROR', error);
     res.status(400).send(error);
   });
 };
