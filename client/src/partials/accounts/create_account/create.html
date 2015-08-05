@@ -212,7 +212,7 @@
                     <option value="">{{ "SELECT.REFERENCE"  | translate }}</option>
                   </select>
                 </div>
-                <div class="form-group">
+                <div class="form-group" ng-if="newAccount.type.type === 'balance'">
                   <div class="checkbox">
                     <label>
                       <input 
@@ -347,7 +347,7 @@
                           <option value="">{{ "SELECT.REFERENCE"  | translate }}</option>
                         </select>
                       </div>
-                      <div class="form-group">
+                      <div class="form-group" ng-if="editAccount.account_type  === 'balance'">
                         <div class="checkbox">
                           <label>
                             <input 
