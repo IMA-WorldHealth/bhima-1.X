@@ -199,6 +199,8 @@ exports.initialise = function (app) {
   app.get('/finance/debtors', finance.getDebtors);
   app.get('/finance/creditors', finance.getCreditors);
   app.get('/finance/currencies', finance.getCurrencies);
+  app.get('/finance/profitcenters', finance.getProfitCenters);
+  app.get('/finance/costcenters', finance.getCostCenters);
   app.post('/finance/journalvoucher', finance.postJournalVoucher);
 
   // accounts controller
