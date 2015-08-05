@@ -71,12 +71,14 @@ angular.module('bhima.controllers')
 
     // do the final submit checks
     self.submitForm = function () {
+      console.log($scope.master);
 
       if (!correctTableInput()) {
         self.tableError = true;
+        return;
       }
 
-      $http.post('/finance/journal/voucher')
+      $http.post('/finance/journalvoucher', { data : $scope.master })
 
       // success!  Clear the data to start again.
       .success(function (data) {
@@ -87,13 +89,15 @@ angular.module('bhima.controllers')
         $scope.master.documentId = '';
         $scope.master.description = '';
 
+        // reset form validation checks
+        $scope.VoucherForm.$setPristine();
+
       })
 
       // something went wrong... log it!
       .error(function (error) {
         console.error(error);
       });
-
     };
 
 

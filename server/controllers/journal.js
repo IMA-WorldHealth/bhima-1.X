@@ -91,6 +91,10 @@ get = {
     // call stack before posting.
     var defer = q.defer();
 
+    // FIXME
+    // This can be done in one SQL with a default value
+    // using an IF statement.  It will be much cleaner.
+
     var sql =
       'SELECT abbr, max(increment) AS increment FROM (' +
         'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
