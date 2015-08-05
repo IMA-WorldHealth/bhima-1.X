@@ -15,6 +15,7 @@
    "ACCOUNT_TYPE"     : "Account Type",
    "ADD"              : "Add Account",
    "ALL"              : "All",
+   "ALL_ACCOUNT"      : "All Account",
    "BALANCE_ACCOUNT"  : "Balance Sheet Account",
    "CREATE"           : "Create Chart of Accounts",
    "COST_CENTER"      : "Cost Center",
