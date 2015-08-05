@@ -118,7 +118,6 @@ angular.module('bhima.controllers')
       $scope.session.periode = null;
     }    
 
-    // Exports
     $scope.reconfigure = reconfigure;
     $scope.getAccountBalance = getAccountBalance;
     $scope.formatAccount = formatAccount;
