@@ -1,162 +1,193 @@
-// scripts/lib/logic/trialbalance.js
+// scripts/controllerstrialbalance.js
 
 /*
- * TODO Ensure HTTP controllers and logic are organised according to application standards
+ * The trial balance provides a description of what the general
+ * ledger and balance sheet would look like after posting
+ * data from the posting journal to the general ledger.  It also
+ * submit errors back to the client.
+ *
+ * We perform various checks on the data to ensure that all
+ * values are correct and present.  These checks include:
+ *  1) Every transaction has an account [FATAL]
+ *  2) Every account used is unlocked [FATAL]
+ *  3) Every transaction has an currency [FATAL]
+ *  4) Every transaction has a 0 balance (debits - credits, debit_equv - credit_equiv) [FATAL]
+ *  5) Every transaction has the same fiscal year and period [FATAL]
+ *  6) The fiscal year and period for each transaction is not in the future [FATAL]
+ *  7) A deb_cred_type exists for each transaction with a deb_cred_uuid [FATAL]
+ *  8) An exchange rate exists for each row/date in the transaction [WARNING]
+ *  9) A doc_num exists for transactions involving a debtor/creditor [WARNING]
+ *
+ * If an error or warning is incurred, the controller responds
+ * to the client with an 400 'Bad Request' status header.  The
+ * body sent back is in the following format:
+ * {
+ *   affectedRows : 312,
+ *   affectedTransactions : 16,
+ *   errors : [{
+ *     code : 'ERR_MISSING_ACCOUNT',
+ *     fatal: true,
+ *     rows : ['uuid1', 'uuid2'],
+ *     details : 'Some rows are missing an account.'
+ *   }, {
+ *     code : 'ERR_TXN_IMBALANCE',
+ *     fatal : true,
+ *     rows: ['uuid1', 'uuid2']
+ *     details : 'Some transactions do not balance.'
+ *   }]
+ * }
+ *
+ * If there is no error, we send back the trial balance report,
+ * telling the state of the general ledger before the post and
+ * after.
  */
 
-// Module: TrialBalance
-//
-// Trial Balance executes a series of general error checking
-// functions and specific accounting logic before posting
-// to the general ledger.  Any lines with dirty/invalid
-// rows are retained as errors to be shipped back to the
-// client and displayed.
-//
-// If there are no errors, the module proceeds to post
-// rows from the journal into the general ledger.
+var q = require('q'),
+    db = require('../lib/db'),
+    uuid = require('../lib/guid'),
+    util = require('../lib/util');
 
-var q = require('q');
-var db = require('./../lib/db');
-var sanitize = require('./../lib/sanitize');
-var uuid = require('./../lib/guid');
-var util = require('./../lib/util');
+// utility function to sum an array of objects
+// on a particular property
+function aggregate(property, array) {
+  return array.reduce(function (s, row) {
+    return s + row[property];
+  }, 0);
+}
 
-'use strict';
+// creates an error report for a given code
+function createErrorReport(code, isFatal, rows) {
+  return q({
+    code : code,
+    fatal : isFatal,
+    transactions : rows.map(function (row) { return row.trans_id; }),
+    affectedRows : aggregate('count', rows)
+  });
+}
 
-var keys = new KeyRing(uuid);
+// Ensure no accounts are locked in the transactions
+function checkAccountsLocked(transactions) {
+  var sql =
+    'SELECT COUNT(pj.uuid) AS count, pj.trans_id ' +
+    'FROM posting_journal AS pj LEFT JOIN account ' +
+      'ON pj.account_id = account.id ' +
+    'WHERE account.locked = 1 AND pj.trans_id IN (?) ' +
+    'GROUP BY pj.trans_id;';
 
-/*
- * HTTP Controllers
-*/
-exports.initialiseTrialBalance = function (req, res, next) {
-  trialBalance(req.session.user_id, function (err, result) {
-    if (err) { return next(err); }
-    res.send(200, result);
+  return db.exec(sql, transactions)
+  .then(function (rows) {
+
+    // if nothing is returned, skip error report
+    if (!rows.length) { return; }
+
+    // returns a promise error report
+    return createErrorReport('ERR_LOCKED_ACCOUNTS', true, rows);
+  });
+}
+
+function checkMissingAccounts(transactions) {
+  var sql =
+    'SELECT COUNT(pj.uuid), pj.trans_id ' +
+    'FROM posting_journal AS pj LEFT JOIN account ON ' +
+      'pj.account_id = account.id ' +
+    'WHERE pj.trans_id IN (?) AND account.id IS NULL' +
+    'GROUP BY pj.trans_id';
+
+  return db.exec(sql, transactions)
+  .then(function (rows) {
+
+    // if nothing is returned, skip error report
+    if (!rows.length) { return; }
+
+    // returns a promise error report
+    return createErrorReport('ERR_MISSING_ACCOUNTS', true, rows);
+  });
+}
+
+function checkDateInPeriod(transactions) {
+  var sql =
+    'SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.trans_date, p.period_start, p.period_stop ' +
+    'FROM posting_journal AS pj JOIN period as p ON pj.period_id = p.id ' +
+    'WHERE pj.trans_date NOT BETWEEN p.period_start AND p.period_stop AND ' +
+      'trans.id IN (?) ' +
+    'GROUP BY pj.trans_id;'
+
+  return db.exec(sql, transactions)
+  .then(function (rows) {
+    // if nothing is returned, skip error report
+    if (!rows.length) { return; }
+
+    // returns a promise error report
+    return createErrorReport('ERR_DATE_IN_WRONG_PERIOD', true, rows);
+  });
+}
+
+function checkPeriodAndFiscalYearExists(transactions) {
+  var sql =
+    'SELECT COUNT(pj.uuid) AS count, pj.trans_id ' +
+    'FROM posting_journal AS pj ' +
+    'WHERE pj.trans_id IN (?) AND (pj.period_id IS NULL OR pj.fiscal_year_id IS NULL) ' +
+    'GROUP BY pj.trans_id;';
+
+  return db.exec(sql, transactions)
+  .then(function (rows) {
+
+    // if nothing is returned, skip error report
+    if (!rows.length) { return; }
+
+    // returns a promise error report
+    return createErrorReport('ERR_MISSING_FISCAL_OR_PERIOD', true, rows);
+  });
+}
+
+function checkTransactionBalanced(transactions) {
+
+}
+
+
+// 
+
+
+// takes in an array of transactions and runs the trial
+// balance checks on them,
+function runAllChecks(transactions) {
+
+}
+
+
+// GET /journal/trialbalance
+// Performs a trial balance
+// Transaction ids are sent to the route in the query.
+// e.g. ?transactions=HBB1,PAX2,HBB34,PAX356
+exports.postTrialBalance = function (req, res, next) {
+  'use strict';
+
+  // parse the query string and retrieve the params
+  var transactions = req.query.transactions.split(',');
+
+  runAllChecks(transactions)
+  .then(function (data) {
+
+    // trial balance succeeded!  Send back the resulting report
+    res.status(200).send(data);
+  })
+  .catch(function (error) {
+
+    // whoops.  Still have either errors or warnings. Make sure
+    // that they are properly reported to the client.
+    res.status(400).send(error);
   });
 };
 
-exports.submitTrialBalance = function (req, res, next) {
-  postToGeneralLedger(req.session.user_id, req.params.key)
-  .then(function () {
-    res.send(200);
-  })
-  .catch(next)
-  .done();
+// POST /generalledger
+// Posts data passing a valid trial balance to the general ledger
+exports.postToGeneralLedger = function (req,res, next) {
+  'use strict';
+
 };
 
-function trialBalance (userId, callback) {
-  // Takes in a callback function which is
-  // only fired when all test are complete.
+function runAllChecks() {
 
-  var results = {},
-      errors;
-
-  q.allSettled([
-    areAccountsLocked(),
-    areAccountsNull(),
-    areAllDatesValid(),
-    areCostsBalanced()
-  ])
-  .then(function (promises) {
-    // Loop through promises and collect failure reasons
-    errors = promises
-    .filter(function (promise) {
-      return promise.state === 'rejected';
-    })
-    .map(function (promise) {
-      return promise.reason;
-    });
-
-    var sql =
-      'SELECT pt.debit, pt.credit, '  +
-      'pt.account_id, pt.balance, account.account_number ' +
-      'FROM  account JOIN ( ' +
-        'SELECT SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit, ' +
-        'posting_journal.account_id, (period_total.debit - period_total.credit) AS balance ' +
-        'FROM posting_journal LEFT JOIN period_total ' +
-        'ON posting_journal.account_id = period_total.account_id ' +
-        'GROUP BY posting_journal.account_id ' +
-        ') AS pt ' +
-      'ON account.id=pt.account_id;';
-
-    return db.exec(sql);
-  })
-  .then(function (rows) {
-    results.balances = rows;
-    results.errors = errors;
-
-    var sql =
-      'SELECT COUNT(uuid) AS `lines`, trans_id, trans_date FROM posting_journal GROUP BY trans_id;';
-    return db.exec(sql);
-  })
-  .then(function (rows) {
-    results.transactions = rows;
-    results.key = keys.generate(userId);
-    callback(null, results);
-  })
-  .catch(function (err) {
-    callback(err);
-  })
-  .done();
-}
-
-
-// Tests
-// Tries to find locked accounts
-function areAccountsLocked () {
-  var d = q.defer();
-  var sql =
-    'SELECT posting_journal.uuid, posting_journal.trans_id ' +
-    'FROM posting_journal LEFT JOIN account ' +
-    'ON posting_journal.account_id=account.id ' +
-    'WHERE account.locked=1;';
-
-  db.execute(sql, function (err, rows) {
-    if (err) { d.reject(new error('ERR_QUERY', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
-    if (rows.length) { d.reject(new error('ERR_ACCOUNT_LOCKED', 'There are transactions on locked accounts', rows)); }
-    d.resolve();
-  });
-
-  return d.promise;
-}
-
-// are all accounts defined??
-function areAccountsNull () {
-  var d = q.defer();
-  var sql =
-    'SELECT uuid, trans_id ' +
-    'FROM posting_journal ' +
-    'LEFT JOIN account ON posting_journal.account_id=account.id ' +
-    'WHERE account.id IS NULL;';
-
-  db.execute(sql, function (err, rows) {
-    if (err) { d.reject(new error('ERR_QUERY', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
-    console.log('voici le resulatt', rows);
-    if (rows.length) { d.reject(new error('ERR_ACCOUNT_NULL', 'Invalid or undefined accounts detected', rows)); }
-    d.resolve();
-  });
-
-  return d.promise;
-}
-
-function areAllDatesValid () {
-  var d = q.defer();
-  var sql =
-    'SELECT uuid, trans_id, period_id, trans_date, period_start, period_stop ' +
-    'FROM posting_journal JOIN period ' +
-    'ON posting_journal.period_id=period.id;';
-
-  db.execute(sql, function (err, rows) {
-    if (err) { d.reject(new error('ERR_QUERY', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
-    var outliers = rows.filter(function (row) {
-      return !(new Date (row.trans_date) >= new Date(row.period_start) && new Date (row.trans_date) <= new Date(row.period_stop));
-    });
-    if (outliers.length) { d.reject(new error('ERR_TXN_UNRECOGNIZED_DATE', 'The dates do not match the periods', outliers)); }
-
-    d.resolve();
-  });
-
-  return d.promise;
 }
 
 function areCostsBalanced () {

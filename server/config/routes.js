@@ -21,7 +21,7 @@ var createSale      = require('../controllers/createSale');
 
 var serviceDist     = require('../controllers/serviceDist');
 var consumptionLoss = require('../controllers/consumptionLoss');
-var trialbalance    = require('../controllers/trialbalance');
+//var trialbalance    = require('../controllers/trialbalance');
 var journal         = require('../controllers/journal');
 var ledger          = require('../controllers/ledger');
 var fiscal          = require('../controllers/fiscal');
@@ -68,9 +68,9 @@ exports.initialise = function (app) {
   app.post('/service_dist/', serviceDist.execute);
   app.post('/consumption_loss/', consumptionLoss.execute);
 
-  // trail balance routes
-  app.get('/trialbalance/initialize', trialbalance.initialiseTrialBalance);
-  app.get('/trialbalance/submit/:key/', trialbalance.submitTrialBalance);
+  // trial balance routes
+  //app.get('/trialbalance/initialize', trialbalance.initialiseTrialBalance);
+  //app.get('/trialbalance/submit/:key/', trialbalance.submitTrialBalance);
 
   app.get('/journal/:table/:id', journal.lookupTable);
 
