@@ -13,10 +13,9 @@
 
 <main>
   <div class="col-xs-12">
-
     <div class="row margin-top-10" ng-if="session.mode === 'search'">
       <div class="col-xs-7">
-        <div find-patient on-search-complete="initialiseEditing"></div>
+        <div find-patient on-search-complete="initialiseEditing(patient)"></div>
       </div>
     </div>
 
