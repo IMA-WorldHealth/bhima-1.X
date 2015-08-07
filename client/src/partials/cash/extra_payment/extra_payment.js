@@ -82,18 +82,6 @@ angular.module('bhima.controllers')
        session.complete = true;
     }
 
-    function setCurrency(obj) {
-      if (obj.currency === 1 && obj.currency_id === 2) {
-        obj.balance = obj.balance * exchange.rate(null, obj.currency);
-        obj.cost = obj.balance;
-        obj.currency_id=obj.currency;
-      } else if (obj.currency === 2 && obj.currency_id === 1) {
-        obj.balance = obj.balance / exchange.rate(null, obj.currency_id);
-        obj.cost = obj.balance;
-        obj.currency_id=obj.currency;
-      }
-    }
-
     function search() {
       $scope.state = 'generate';
       session.patient = session.selected;
@@ -132,8 +120,8 @@ angular.module('bhima.controllers')
               row.debitor_last = sale.last_name;
               row.transaction = row.abbr + row.reference;
               row.cost = row.balance;
-              row.currency = 2; // values are always in $ by default
-              row.currency_id = 2; // values are always in $ by default
+              row.currency = $scope.project.currency_id;
+              row.currency_id = $scope.project.currency_id;
             });
             $scope.saleData = $scope.saleData.concat(items);
             $scope.saleDataUnique = filterUnique($scope.saleData, 'transaction');
@@ -200,7 +188,6 @@ angular.module('bhima.controllers')
     $scope.search = search;
     $scope.print = print;
     $scope.reconfigure = reconfigure;
-    $scope.setCurrency = setCurrency;
     $scope.submit = submit;
   }
 ]);
