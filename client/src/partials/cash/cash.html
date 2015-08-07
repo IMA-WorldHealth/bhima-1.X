@@ -44,7 +44,7 @@
     <div class="col-xs-6" ng-switch="session.patient">
 
       <!-- patient search panel -->
-      <div find-patient on-search-complete="loadInvoices"></div>
+      <div find-patient on-search-complete="loadInvoices(patient)"></div>
 
       <div ng-switch-default>
         <div class="alert alert-info">
