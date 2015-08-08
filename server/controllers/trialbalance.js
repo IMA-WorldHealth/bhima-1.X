@@ -110,7 +110,7 @@ function checkDateInPeriod(transactions) {
     'FROM posting_journal AS pj JOIN period as p ON pj.period_id = p.id ' +
     'WHERE pj.trans_date NOT BETWEEN p.period_start AND p.period_stop AND ' +
       'trans.id IN (?) ' +
-    'GROUP BY pj.trans_id;'
+    'GROUP BY pj.trans_id;';
 
   return db.exec(sql, transactions)
   .then(function (rows) {
@@ -122,6 +122,7 @@ function checkDateInPeriod(transactions) {
   });
 }
 
+// make sure fiscal years and periods exist for all transactions
 function checkPeriodAndFiscalYearExists(transactions) {
   var sql =
     'SELECT COUNT(pj.uuid) AS count, pj.trans_id ' +
@@ -140,18 +141,74 @@ function checkPeriodAndFiscalYearExists(transactions) {
   });
 }
 
-function checkTransactionBalanced(transactions) {
 
+// make sure the debit_equiv, credit_equiv are balanced
+function checkTransactionsBalanced(transactions) {
+
+  var sql = 
+    'SELECT COUNT(pj.uuid) AS count, pj.trans_id, SUM(pj.debit_equiv - pj.credit_equiv) AS balance ' +
+    'FROM posting_journal AS pj ' +
+    'WHERE pj.trans_id IN (?) ' +
+    'GROUP BY trans_id HAVING balance <> 0;';
+
+  db.exec(sql, transactions)
+  .then(function (rows) {
+
+    // if nothing is returned, skip error report
+    if (!rows.length) { return; }
+
+    // returns a promise error report
+    return createErrorReport('ERR_UNBALANCED_TRANSACTIONS', true, rows);
+  });
 }
 
+// make sure that a deb_cred_uuid exists for each deb_cred_type
+function checkDebtorCreditorExists(transactions) {
 
-// 
+  var sql =
+    'SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.deb_cred_uuid FROM posting_journal AS pj ' +
+    'WHERE pj.trans_id IN (?) AND (pj.deb_cred_type = \'D\' OR pj.deb_cred_type = \'C\') ' +
+    'GROUP BY trans_id HAVING deb_cred_uuid IS NULL;';
 
+  return db.exec(sql, transactions)
+  .then(function (rows) {
+
+    // if nothing is returned, skip error report
+    if (!rows.length) { return; }
+
+    // returns a promise error report
+    return createErrorReport('ERR_MISSING_DEBTOR_CREDITOR', true, rows);
+  });
+}
+
+function checkDocumentNumberExists(transactions) {
+  var sql =
+    'SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.deb_cred_uuid FROM posting_journal AS pj ' +
+    'WHERE pj.trans_id IN (?) AND (pj.deb_cred_type = \'D\' OR pj.deb_cred_type = \'C\') ' +
+    'GROUP BY trans_id HAVING doc_num IS NULL;';
+
+  return db.exec(sql, transactions)
+  .then(function (rows) {
+
+    // if nothing is returned, skip error report
+    if (!rows.length) { return; }
+
+    // returns a promise error report
+    return createErrorReport('WARN_MISSING_DOCUMENT_ID', true, rows);
+  });
+}
 
 // takes in an array of transactions and runs the trial
 // balance checks on them,
 function runAllChecks(transactions) {
-
+  return q.all([
+    checkAccountsLocked(transactions),
+    checkMissingAccounts(transactions),
+    checkDateInPeriod(transactions),
+    checkPeriodAndFiscalYearExists(transactions),
+    checkTransactionsBalanced(transactions),
+    checkDebtorCreditorExists(transactions)
+  ]);
 }
 
 
@@ -175,7 +232,7 @@ exports.postTrialBalance = function (req, res, next) {
 
     // whoops.  Still have either errors or warnings. Make sure
     // that they are properly reported to the client.
-    res.status(400).send(error);
+    res.status(500).send(error);
   });
 };
 
@@ -186,83 +243,28 @@ exports.postToGeneralLedger = function (req,res, next) {
 
 };
 
-function runAllChecks() {
 
-}
 
-function areCostsBalanced () {
-  var d = q.defer();
-  var sql =
-    'SELECT uuid, trans_id, sum(debit) as d, sum(credit) as c, ' +
-    'sum(debit_equiv) as de, sum(credit_equiv) as ce  ' +
-    'FROM posting_journal ' +
-    'GROUP BY trans_id;';
-
-  db.execute(sql, function (err, rows) {
-    if (err) { d.reject(new error('ERR_QUERY', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
-    var outliers = rows.filter(function (row) { return row.de !== row.ce; });
-    if (outliers.length) { d.reject(new error('ERR_TXN_IMBALANCE', 'The debits and credits do not balance for some transactions', outliers)); }
-    d.resolve();
-  });
-
-  return d.promise;
-}
-
-function areDebitorCreditorDefined () {
-  var d = q.defer();
-  var sql =
-    'SELECT uuid, trans_id ' +
-    'FROM posting_journal ' +
-    'WHERE NOT EXISTS (' +
-      '(' +
-        'SELECT creditor.uuid, posting_journal.deb_cred_uuid ' +
-        'FROM creditor JOIN posting_journal ' +
-        'ON creditor.uuid=posting_journal.deb_cred_uuid' +
-      ') UNION (' +
-        'SELECT debitor.uuid, posting_journal.deb_cred_uuid '+
-        'FROM debitor JOIN posting_journal ON debitor.uuid=posting_journal.deb_cred_uuid' +
-      ')' +
-    ');';
-
-  db.execute(sql, function (err, rows) {
-    if (err) { d.reject(new error('ERR_QUERY', 'An error occured in the SQL query.', [], 'Please contact a system administrator')); }
-    if (rows.length) { d.reject(new error('ERR_TXN_UNRECOGNIZED_DC_UUID', 'Debitor or creditors do not exist for some transcations')); }
-    d.resolve();
-  });
-
-  return d.promise;
-}
-
-function checkPermission (userId, key) {
-  var sql = 'SELECT 1 + 1 AS s';
-
-  return q(keys.validate(userId, key))
-  .then(function (bool) {
-    if (!bool) { throw new error('ERR_SESS_EXPIRED', 'Posting session expired', [], 'Refresh the trial balance'); }
-    return db.exec(sql);
-  });
-}
-
+// TODO
 function postToGeneralLedger (userId, key) {
   // Post data from the journal into the general ledger.
   var sql;
 
   // First thing we need to do is make sure that this posting request
   // is not an error and comes from a valid user.
-  return checkPermission(userId, key)
-  .then(function () {
 
-    // Next, we need to generate a posting session id.
-    sql =
-      'INSERT INTO posting_session ' +
-      'SELECT max(posting_session.id) + 1, ?, ? ' +
-      'FROM posting_session;';
+  // Next, we need to generate a posting session id.
+  sql =
+    'INSERT INTO posting_session ' +
+    'SELECT max(posting_session.id) + 1, ?, ? ' +
+    'FROM posting_session;';
 
-    return db.exec(sql, [userId, new Date()]);
-  })
+  db.exec(sql, [userId, new Date()])
   .then(function (res) {
+
     // Next, we must move the data into the general ledger.
     var sessionId = res.insertId;
+
     sql =
       'INSERT INTO general_ledger ' +
         '(project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, doc_num, ' +
@@ -291,43 +293,5 @@ function postToGeneralLedger (userId, key) {
     sql = 'DELETE FROM posting_journal WHERE 1;';
     return db.exec(sql);
   });
-}
-
-exports.run = trialBalance;
-exports.postToGeneralLedger = postToGeneralLedger;
-
-/*
- * Utility Methods
-*/
-var error = (function () {
-
-  function _error (code, msg, details, action) {
-    this.code = code;
-    this.message = msg;
-    this.action = action;
-    this.details = details;
-  }
-
-  _error.prototype = Error.prototype;
-
-  return _error;
-})();
-
-function KeyRing (uuid) {
-  var keyStore = {};
-
-  this.generate = function generate (userId) {
-    var k = uuid();
-    keyStore[userId] = {};
-    keyStore[userId][k] = 1;
-    setTimeout(function () {
-      delete keyStore[userId][k];
-    }, 25000);
-    return k;
-  };
-
-  this.validate = function validate (userId, key) {
-    return !!keyStore[userId][key];
-  };
 }
 
