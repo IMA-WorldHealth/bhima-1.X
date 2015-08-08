@@ -2753,6 +2753,7 @@
    "CHART_OF_ACCOUNTS"         : "Plan Comptable",
    "CLIENT"                    : "Client",
    "SECTION_RESULTAT"          : "Section Resultat",
+   "COMPTE_RESULTAT"           : "Compte Resultat",
    "CONFIG_ACCOUNTING"         : "Configuration des comptes",
    "CONFIG_RUBRIC"             : "Configuration des rubriques",
    "CONFIG_TAX"                : "Configuration des taxes",

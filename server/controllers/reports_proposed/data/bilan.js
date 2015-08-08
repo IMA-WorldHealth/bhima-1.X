@@ -254,10 +254,10 @@ exports.compile = function (options) {
       return somDebit - somCredit;
     }
 
-    function getPreviousNet (reference, currents){
+    function getPreviousNet (reference, previous){
       var somDebit = 0, somCredit = 0;
 
-      currents.forEach(function (item){
+      previous.forEach(function (item){
         if(item.referenceId == reference.referenceId && item.accountIsBrutLink == 0){
           somDebit+=(item.generalLegderDebit) * -1;
           somCredit+=(item.generalLegderCredit) * -1;

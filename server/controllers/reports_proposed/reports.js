@@ -15,6 +15,7 @@ var balanceContext          = require('./data/balance_sheet');
 var bilanContext            = require('./data/bilan');
 var grandLivreContext       = require('./data/grand_livre');
 var EmployeeStateContext    = require('./data/employee_state');
+var accountResultContext    = require('./data/account_result');
 
 // Module configuration
 var writePath = path.join(__dirname, 'out/');
@@ -40,6 +41,10 @@ var documentHandler = {
   employee_state : {
     template : dots.employee_state, //templating provider
     context : EmployeeStateContext // data provider
+  },
+  result_account : {
+    template : dots.account_result, //templating provider
+    context :  accountResultContext // data provider
   }
 };
 
