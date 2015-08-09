@@ -4,6 +4,7 @@
    "ACCOUNT_CHART"    : "Chart of Accounts",
    "ACCOUNT_COST"     : "Costs Accounts",
    "ACCOUNT_EQUITY"   : "Accounts of equity and borrowing more than a year",
+   "ACCOUNT_EXP_PROD" : "Accounts other expenses and other products",
    "ACCOUNT_FINC"     : "Financial Accounts",
    "ACCOUNT_GROUP"    : "Account Group (Title Account)",
    "ACCOUNT_LIST"     : "Accounts list",
@@ -15,6 +16,7 @@
    "ACCOUNT_TYPE"     : "Account Type",
    "ADD"              : "Add Account",
    "ALL"              : "All",
+   "ALL_ACCOUNT"      : "All Account",
    "BALANCE_ACCOUNT"  : "Balance Sheet Account",
    "CREATE"           : "Create Chart of Accounts",
    "COST_CENTER"      : "Cost Center",
@@ -2988,5 +2990,12 @@
    "REGISTERED"       : "Registered villages",
    "SECTOR"           : "Sector",
    "TITLE"            : "Village Manager"
-   }
+   },
+"GRID" : {
+  "CLEAR" : "Clear Selection",
+  "UPDATE" : "Update Selection",
+  "REFRESH" : "Refresh Selection",
+  "GROUP_ROWS" : "Group Rows",
+  "ABOLISH_GROUPS" : "Abolish Grouping"
+}
 }

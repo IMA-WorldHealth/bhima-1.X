@@ -17,14 +17,8 @@ angular.module('bhima.controllers')
         tables : {
           'reference_group' : {
             columns : ['id', 'reference_group', 'text', 'position', 'section_bilan_id']
-          },
-          'section_bilan' : {
-            columns : ['text::section_bilan_txt']
-          }          
-        },
-        join : [
-          'reference_group.section_bilan_id=section_bilan.id'
-        ],
+          }
+        }
       }
     };
 
@@ -61,7 +55,7 @@ angular.module('bhima.controllers')
     function checkingReferenceGroup (position,section_bilan_id) {
       var def = $q.defer();
       var query = {
-        tables : { 
+        tables : {
           reference_group : { columns : ['id'] }
         },
         where  : ['reference_group.position=' + position,'AND','reference_group.section_bilan_id=' + section_bilan_id]
@@ -70,7 +64,22 @@ angular.module('bhima.controllers')
       .then(function (res) {
         def.resolve(res.length !== 0);
       });
+      return def.promise;
+    }
 
+    function checkingReferenceGroupUpdate (id,position,section_bilan_id) {
+      var def = $q.defer();
+
+      var query = {
+        tables : {
+          reference_group : { columns : ['id'] }
+        },
+        where  : ['reference_group.id<>' + id, 'AND','reference_group.position=' + position,'AND','reference_group.section_bilan_id=' + section_bilan_id]
+      };
+      connect.fetch(query)
+      .then(function (res) {
+        def.resolve(res.length !== 0);
+      });
       return def.promise;
     }
 
@@ -82,7 +91,7 @@ angular.module('bhima.controllers')
 
     $scope.delete = function (reference_group) {
       var result = confirm($translate.instant('REFERENCE_GROUP.CONFIRM'));
-      if (result) {  
+      if (result) {
         connect.delete('reference_group', ['id'], [reference_group.id])
         .then(function () {
           $scope.reference_groups.remove(reference_group.id);
@@ -108,18 +117,18 @@ angular.module('bhima.controllers')
       delete record.reference;
       delete record.section_bilan_txt;
 
-      checkingReferenceGroup(record.position,record.section_bilan_id)
+      checkingReferenceGroupUpdate(record.id,record.position,record.section_bilan_id)
       .then(function (is_exist) {
         if (!is_exist) {
           connect.put('reference_group', [record], ['id'])
           .then(function () {
-            messenger.success($translate.instant('REFERENCE_GROUP.UPDATE_SUCCES')); 
+            messenger.success($translate.instant('REFERENCE_GROUP.UPDATE_SUCCES'));
             $scope.reference_groups.put(record);
             session.action = '';
             session.edit = {};
           });
         } else {
-          messenger.danger($translate.instant('REFERENCE_GROUP.ALERT_2')); 
+          messenger.danger($translate.instant('REFERENCE_GROUP.ALERT_2'));
         }
       });
     };
@@ -131,22 +140,16 @@ angular.module('bhima.controllers')
         if (!is_exist) {
           connect.post('reference_group', [record])
           .then(function () {
-            messenger.success($translate.instant('REFERENCE_GROUP.SAVE_SUCCES'));        
-            record.reference = generateReference(); 
+            messenger.success($translate.instant('REFERENCE_GROUP.SAVE_SUCCES'));
             $scope.reference_groups.post(record);
             session.action = '';
             session.new = {};
-          });         
+          });
         } else {
-          messenger.danger($translate.instant('REFERENCE_GROUP.ALERT_2')); 
+          messenger.danger($translate.instant('REFERENCE_GROUP.ALERT_2'));
         }
       });
     };
 
-    function generateReference () {
-      window.data = $scope.reference_groups.data;
-      var max = Math.max.apply(Math.max, $scope.reference_groups.data.map(function (o) { return o.reference; }));
-      return Number.isNaN(max) ? 1 : max + 1;
-    }
-  }  
+  }
 ]);

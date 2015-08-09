@@ -13,24 +13,28 @@
  */
 
 // Require application controllers
-var data            = require('./../controllers/data');
-var location        = require('./../controllers/location');
+var data            = require('../controllers/data');
+var locations       = require('../controllers/location');
 
-var createPurchase  = require('./../controllers/createPurchase');
-var createSale      = require('./../controllers/createSale');
+var createPurchase  = require('../controllers/createPurchase');
+var createSale      = require('../controllers/createSale');
 
-var serviceDist     = require('./../controllers/serviceDist');
-var consumptionLoss = require('./../controllers/consumptionLoss');
-var trialbalance    = require('./../controllers/trialbalance');
-var journal         = require('./../controllers/journal');
-var ledger          = require('./../controllers/ledger');
-var fiscal          = require('./../controllers/fiscal');
-var report          = require('./../controllers/report');
-var tree            = require('./../controllers/tree');
-var uncategorised   = require('./../controllers/uncategorised');
-var compileReport   = require('./../controllers/reports_proposed/reports.js');
-var snis            = require('./../controllers/snis');
-var extra           = require('./../controllers/extraPayment');
+var serviceDist     = require('../controllers/serviceDist');
+var consumptionLoss = require('../controllers/consumptionLoss');
+var trialbalance    = require('../controllers/trialbalance');
+var journal         = require('../controllers/journal');
+var ledger          = require('../controllers/ledger');
+var fiscal          = require('../controllers/fiscal');
+var report          = require('../controllers/report');
+var tree            = require('../controllers/tree');
+var uncategorised   = require('../controllers/uncategorised');
+var compileReport   = require('../controllers/reports_proposed/reports.js');
+var snis            = require('../controllers/snis');
+var extra           = require('../controllers/extraPayment');
+var gl              = require('../controllers/ledgers/general');
+
+
+var patient = require('../controllers/patient');
 
 
 
@@ -47,13 +51,13 @@ exports.initialise = function (app) {
 
   // location routes
   // -> /location/:scope(list || lookup)/:target(village || sector || province)/:id(optional)
-  app.get('/location/villages', location.allVillages);
-  app.get('/location/sectors', location.allSectors);
-  app.get('/location/provinces', location.allProvinces);
-  app.get('/location/village/:uuid', location.lookupVillage);
-  app.get('/location/sector/:uuid', location.lookupSector);
-  app.get('/location/province/:uuid', location.lookupProvince);
-  app.get('/location/detail/:uuid', location.lookupDetail);
+  app.get('/location/villages', locations.allVillages);
+  app.get('/location/sectors', locations.allSectors);
+  app.get('/location/provinces', locations.allProvinces);
+  app.get('/location/village/:uuid', locations.lookupVillage);
+  app.get('/location/sector/:uuid', locations.lookupSector);
+  app.get('/location/province/:uuid', locations.lookupProvince);
+  app.get('/location/detail/:uuid', locations.lookupDetail);
 
   // -> Add :route
   app.post('/report/build/:route', compileReport.build);
@@ -188,5 +192,14 @@ exports.initialise = function (app) {
 
   // Extra Payement
   app.post('/extraPayment/', extra.handleExtraPayment);
+
+  // general ledger controller
+  // transitioning to a more traditional angular application architecture
+  app.get('/ledgers/general', gl.route);
+
+  // search stuff
+  app.get('/patient/:uuid', patient.searchUuid);
+  app.get('/patient/search/fuzzy/:match', patient.searchFuzzy);
+  app.get('/patient/search/reference/:reference', patient.searchReference);
 
 };

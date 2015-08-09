@@ -18,17 +18,15 @@
 var q = require('q');
 
 var cfg = require('./../config/environment/server').db;
-var logger = require('./logger');
 var uuid = require('./guid');
 
-var db, con, supportedDatabases, log, dbms;
+var db, con, supportedDatabases, dbms;
 
 // Initiliase module on startup - create once and allow db to be required anywhere
 function initialise() {
   'use strict';
 
   cfg = cfg || {};
-  log = logger.external('DB');
 
   // Select the system's database with this variable.
   dbms = cfg.dbms || 'mysql';
@@ -42,10 +40,10 @@ function initialise() {
   };
 
   // The database connection for all data interactions
-  // log(uuid(), 'Creating connection pool', null);
   con = supportedDatabases[dbms](cfg);
 
-  //  FIXME reset all logged in users on event of server crashing / terminating - this should be removed/ implemented into the error/ loggin module before shipping
+  //  FIXME reset all logged in users on event of server crashing / terminating - this
+  //  should be removed/ implemented into the error/logging module before shipping
   flushUsers(con);
 }
 

@@ -87,6 +87,7 @@ angular.module('bhima.controllers')
 
       //format account
       var classe = account.number.substr(0,1);
+
       if(account.is_asset === 'true'){
         account.is_asset = 1;
       } else if (account.is_asset === 'false'){
@@ -151,7 +152,7 @@ angular.module('bhima.controllers')
       $scope.accountClass = parseInt($scope.checkClass(account.account_number)); 
       session.state = 'edit';
       $scope.editAccount = account;
-      
+
       if($scope.editAccount.is_used_budget){
         $scope.editAccount.is_used_budget = true;
       }

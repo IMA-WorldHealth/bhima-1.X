@@ -1,6 +1,6 @@
 
-#general_ledger,
-#general_ledger div {
+#generalLedger,
+#generalLedger div {
   -webkit-box-sizing : content-box;
   -moz-box-sizing    : content-box;
   box-sizing         : content-box;

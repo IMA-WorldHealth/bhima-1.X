@@ -5,51 +5,66 @@ angular.module('bhima.controllers')
   '$filter',
   'appstate',
   'validate',
-  function ($scope, $translate, $filter, appstate, validate) {
+  'GeneralLedgerService',
+  'GridHelperFactory',
+  function ($scope, $translate, $filter, appstate, validate, GLService, GridHelper) {
     /* jshint unused : false */
 
-    var dependencies = {};
-    var columns, dataview, options, grid, groups = $scope.groups = [];
+    // used by SlickGrid
+    var columns, dataview, options, grid;
 
-    dependencies.ledger = {
-      query : {
-        tables : {
-          'general_ledger' : {
-            columns : ['uuid', 'fiscal_year_id', 'period_id', 'trans_id', 'trans_date', 'doc_num', 'description', 'account_id', 'debit', 'credit', 'debit_equiv', 'credit_equiv', 'currency_id', 'deb_cred_uuid', 'deb_cred_type', 'inv_po_id', 'comment', 'cost_ctrl_id', 'origin_id', 'user_id']
-          },
-          'account' : {
-            columns : ['account_number']
-          }
-        },
-        join : ['general_ledger.account_id=account.id'],
-      }
-    };
+    GLService.load()
+    .then(function (store) {
 
-    appstate.register('enterprise', function (enterprise) {
-      $scope.enterprise = enterprise;
-      validate.process(dependencies)
-      .then(reportGeneralLedger);
-    });
+      // bind data from server
+      $scope.ledger = store;
 
-    function reportGeneralLedger(models) {
-      for (var k in models) { $scope[k] = models[k]; }
-
+      // start up SlickGrid
       setupGridOptions();
       initialiseGrid();
-    }
+    })
+    .catch(console.error)
+    .finally();
 
+    // expose the enterprise to the view
+    appstate.register('enterprise', function (enterprise) {
+      $scope.enterprise = enterprise;
+    });
+
+    // init grid
     function setupGridOptions() {
+
+      // Grid formats
+      function formatAmount(row, cell, value) {
+        return $filter('currency')(value);
+      }
+
+      function formatEquiv(row, cell, value) {
+        return $filter('currency')(value);
+      }
+
+      function formatDate (row, cell, value) {
+        return $filter('date')(value, 'yyyy-MM-dd');
+      }
+
+      function formatGroupTotalRow(totals, column) {
+        var val = totals.sum && totals.sum[column.field];
+        if (val !== null) {
+          return '<span style=\'font-weight: bold\'>' + $filter('currency')(Math.round(parseFloat(val)*100/100)) + '</span>';
+        }
+        return '';
+      }
+
       columns = [
         {id: 'uuid'           , name: $translate.instant('COLUMNS.ID')             , field:'uuid'           , visible : false} ,
-        {id: 'fiscal_year_id' , name: $translate.instant('COLUMNS.FISCAL_YEAR_ID') , field:'fiscal_year_id' , visible : true } ,
-        {id: 'period_id'      , name: $translate.instant('COLUMNS.PERIOD_ID')      , field:'period_id'      , visible : true } ,
+        {id: 'fiscal_year_id' , name: $translate.instant('COLUMNS.FISCAL_YEAR_ID') , field:'fiscal_year_id' , visible : false} ,
+        {id: 'period_id'      , name: $translate.instant('COLUMNS.PERIOD_ID')      , field:'period_id'      , visible : false} ,
         {id: 'trans_id'       , name: $translate.instant('COLUMNS.TRANS_ID')       , field:'trans_id'       , visible : true } ,
-        {id: 'trans_date'     , name: $translate.instant('COLUMNS.DATE')           , field:'trans_date'     , visible : true   , formatter: formatDate}  ,
-        {id: 'doc_num'        , name: $translate.instant('COLUMNS.DOCUMENT_ID')    , field:'doc_num'        , visible : true } ,
+        {id: 'trans_date'     , name: $translate.instant('COLUMNS.DATE')           , field:'trans_date'     , visible : true   , formatter: formatDate  , sortable : true },
+        {id: 'doc_num'        , name: $translate.instant('COLUMNS.DOCUMENT_ID')    , field:'doc_num'        , visible : false} ,
         {id: 'description'    , name: $translate.instant('COLUMNS.DESCRIPTION')    , field:'description'    , visible : true } ,
-        {id: 'account_number' , name: $translate.instant('COLUMNS.ACCOUNT_NUMBER') , field:'account_number' , visible : true } ,
-        {id: 'debit'          , name: $translate.instant('COLUMNS.DEBIT')          , field:'debit'          , visible : false  , formatter: formatAmount , groupTotalsFormatter: formatGroupTotalRow}  ,
-        {id: 'credit'         , name: $translate.instant('COLUMNS.CREDIT')         , field:'credit'         , visible : false  , formatter: formatAmount , groupTotalsFormatter: formatGroupTotalRow}  ,
+        {id: 'account_number' , name: $translate.instant('COLUMNS.ACCOUNT_NUMBER') , field:'account_number' , visible : true   , sortable : true } ,
+        {id: 'account_id'     , name: $translate.instant('COLUMNS.ACCOUNT_ID')     , field:'account_id'     , visible : false} ,
         {id: 'debit_equiv'    , name: $translate.instant('COLUMNS.DEB_EQUIV')      , field:'debit_equiv'    , visible : true   , formatter: formatEquiv  , groupTotalsFormatter: formatGroupTotalRow } ,
         {id: 'credit_equiv'   , name: $translate.instant('COLUMNS.CRE_EQUIV')      , field:'credit_equiv'   , visible : true   , formatter: formatEquiv  , groupTotalsFormatter: formatGroupTotalRow}  ,
         {id: 'currency_id'    , name: $translate.instant('COLUMNS.CURRENCY')       , field:'currency_id'    , visible : false} ,
@@ -58,20 +73,20 @@ angular.module('bhima.controllers')
         {id: 'inv_po_id'      , name: $translate.instant('COLUMNS.INVPO_ID')       , field:'inv_po_id'      , visible : true } ,
         {id: 'comment'        , name: $translate.instant('COLUMNS.COMMENT')        , field:'comment'        , visible : false} ,
         {id: 'origin_id'      , name: $translate.instant('COLUMNS.ORIGIN_ID')      , field:'origin_id'      , visible : false} ,
-        {id: 'user_id'        , name: $translate.instant('COLUMNS.USER_ID')        , field:'user_id'        , visible : false}
+        {id: 'user_id'        , name: $translate.instant('COLUMNS.USER_ID')        , field:'user_id'        , visible : false  , sortable : true }
       ];
 
+      // TODO : make this into a directive
       $scope.columns = angular.copy(columns);
 
       options = {
+        enableTextSelectionOnCells : true,
         enableCellNavigation: true,
         enableColumnReorder: true,
         forceFitColumns: true,
-        rowHeight: 35,
+        rowHeight: 35
       };
     }
-
-    var sort_column;
 
     function initialiseGrid() {
       var groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
@@ -91,122 +106,71 @@ angular.module('bhima.controllers')
         grid.render();
       });
 
-      grid = new Slick.Grid('#general_ledger', dataview, columns, options);
-      grid.setSelectionModel(new Slick.RowSelectionModel());
+      grid = new Slick.Grid('#generalLedger', dataview, columns, options);
 
       grid.registerPlugin(groupItemMetadataProvider);
+      grid.setSelectionModel(new Slick.RowSelectionModel({ selectActiveRow: false }));
 
-      //Grid sorting
-      grid.onSort.subscribe(function(e, args) {
-        sort_column = args.sortCol.field;
-        dataview.sort(compareSort, args.sortAsc);
-      });
+      // set up sorting
+      GridHelper.sorting.setupSorting(grid, dataview);
 
+      // intialize the items
       dataview.beginUpdate();
       dataview.setItems($scope.ledger.data, 'uuid');
       dataview.endUpdate();
 
       dataview.syncGridSelection(grid, true);
-    }
 
-    var groupDefinitions = [
-      {
-        title : $translate.instant('REPORT.TRANSACTION'),
-        getter : 'trans_id',
-        formatter : formatTransactionGroup,
-        aggregators : ['debit_equiv', 'credit_equiv']
-      },
-      {
-        title : $translate.instant('REPORT.ACCOUNT'),
-        getter : 'account_id',
-        formatter : formatAccountGroup,
-        aggregators : []
-      },
-      {
-        title : $translate.instant('REPORT.PERIOD'),
-        getter : 'period_id',
-        formatter : formatPeriodGroup,
-        aggregators : []
+
+      var filter = $scope.filter = GridHelper.filtering.filter();
+      var filterFn = GridHelper.filtering.filterFn(filter);
+
+      // filtering controls
+
+      function clearFilter() {
+        GridHelper.filtering.clear(dataview, filter);
       }
-    ];
 
-    //Utility methods
-    function groupby(groupDefinition) {
-      var groupInstance = {};
-      if (groupExists(groupDefinition, groups)) { return; }
-
-      groupInstance = JSON.parse(JSON.stringify(groupDefinition));
-      groupInstance.aggregateCollapsed = true;
-      groupInstance.aggregators = [];
-
-      groupDefinition.aggregators.forEach(function(aggregate) {
-        groupInstance.aggregators.push(new Slick.Data.Aggregators.Sum(aggregate));
-      });
-
-      groupInstance.formatter = groupDefinition.formatter;
-      groups.push(groupInstance);
-      dataview.setGrouping(groups);
-    }
-
-    function groupExists(targetGroup) {
-      return groups.some(function(group) {
-        return group.getter === targetGroup.getter;
-      });
-    }
-
-    $scope.removeLastGroup = function () {
-      $scope.groups.pop();
-      dataview.setGrouping($scope.groups);
-    };
-
-    function formatTransactionGroup(g) {
-      return '<span>TRANSACTION (' + g.value + ')</span>';
-    }
-
-    function formatAccountGroup(g) {
-      return '<span>ACCOUNT (' + g.value + ')</span>';
-    }
-
-    function formatPeriodGroup(g) {
-      return '<span>PERIOD (' + g.value + ')</span>';
-    }
-
-    function formatGroupTotalRow(totals, column) {
-      var val = totals.sum && totals.sum[column.field];
-      if (val !== null) {
-        return '<span style=\'font-weight: bold\'>' + $filter('currency')(Math.round(parseFloat(val)*100/100)) + '</span>';
+      // sets the filter.by parameter to the given column
+      function filterBy(column) {
+        filter.by = column;
       }
-      return '';
+
+      // updates on ng-model change
+      function updateFilter() {
+        GridHelper.filtering.update(dataview, filter);
+      }
+
+      // init filtering
+      GridHelper.filtering.init(dataview, filterFn);
+
+      // expose filtering
+      $scope.updateFilter = updateFilter;
+      $scope.clearFilter = clearFilter;
+      $scope.filterBy = filterBy;
     }
 
-    //Grid sort methods
-    function compareSort(a, b) {
-      var x = a[sort_column], y = b[sort_column];
-      return (x === y) ? 0 : (x > y ? 1 : -1);
+    // grouping
+    function groupByTransaction() {
+      GridHelper.grouping.byTransaction(dataview, false);
     }
 
-    //Grid formats
-    function formatAmount(row, cell, value) {
-      return $filter('currency')(value);
+    function groupByAccount() {
+      GridHelper.grouping.byAccount(dataview, false);
     }
 
-    function formatEquiv(row, cell, value) {
-      return $filter('currency')(value);
+    function clearGrouping() {
+      GridHelper.grouping.clear(dataview);
     }
 
-    function formatDate (row, cell, value) {
-      return $filter('date')(value);
-    }
-
-    $scope.$watch('columns', function () {
-      if (!$scope.columns) { return; }
-      var columns = $scope.columns.filter(function (column) {
-        return column.visible;
-      });
-      grid.setColumns(columns);
+    // make sure that columns are properly filtered
+    $scope.$watch('columns', function (cols) {
+      GridHelper.columns.filterColumns(grid, cols);
     }, true);
 
-    $scope.groupby = groupby;
-    $scope.groupDefinitions = groupDefinitions;
+    // expose groupings
+    $scope.groupByTransaction = groupByTransaction;
+    $scope.groupByAccount = groupByAccount;
+    $scope.clearGrouping = clearGrouping;
   }
 ]);

@@ -2,8 +2,7 @@
 SQLyog Ultimate v11.11 (32 bit)
 MySQL - 5.6.12 : Database - bhima
 *********************************************************************
-*/
-
+*/
 
 /*!40101 SET NAMES utf8 */;
 
@@ -35,15 +34,20 @@ CREATE TABLE `account` (
   `classe` int(11) DEFAULT NULL,
   `is_asset` tinyint(1) DEFAULT NULL,
   `is_ohada` tinyint(1) DEFAULT NULL,
+  `reference_id` tinyint(3) unsigned DEFAULT NULL,
+  `is_brut_link` tinyint(1) DEFAULT NULL,
+  `is_used_budget` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `account_type_id` (`account_type_id`),
   KEY `enterprise_id` (`enterprise_id`),
   KEY `cc_id` (`cc_id`),
+  KEY `reference_id` (`reference_id`),
   CONSTRAINT `account_ibfk_1` FOREIGN KEY (`account_type_id`) REFERENCES `account_type` (`id`),
   CONSTRAINT `account_ibfk_2` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
   CONSTRAINT `account_ibfk_3` FOREIGN KEY (`cc_id`) REFERENCES `cost_center` (`id`),
-  CONSTRAINT `account_ibfk_4` FOREIGN KEY (`account_type_id`) REFERENCES `account_type` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3577 DEFAULT CHARSET=latin1;
+  CONSTRAINT `account_ibfk_4` FOREIGN KEY (`account_type_id`) REFERENCES `account_type` (`id`),
+  CONSTRAINT `account_ibfk_5` FOREIGN KEY (`reference_id`) REFERENCES `reference` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3626 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `account_type` */
 
@@ -140,7 +144,7 @@ CREATE TABLE `cash_box` (
   PRIMARY KEY (`id`),
   KEY `project_id` (`project_id`),
   CONSTRAINT `cash_box_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `cash_box_account_currency` */
 
@@ -165,7 +169,7 @@ CREATE TABLE `cash_box_account_currency` (
   CONSTRAINT `cash_box_account_currency_ibfk_3` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   CONSTRAINT `cash_box_account_currency_ibfk_4` FOREIGN KEY (`gain_exchange_account_id`) REFERENCES `account` (`id`),
   CONSTRAINT `cash_box_account_currency_ibfk_5` FOREIGN KEY (`loss_exchange_account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `cash_discard` */
 
@@ -431,7 +435,7 @@ CREATE TABLE `cost_center` (
   PRIMARY KEY (`id`),
   KEY `project_id` (`project_id`),
   CONSTRAINT `cost_center_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `cost_center_assignation` */
 
@@ -671,7 +675,7 @@ CREATE TABLE `depot` (
   `is_warehouse` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`uuid`),
   KEY `reference` (`reference`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `donation_item` */
 
@@ -707,7 +711,7 @@ CREATE TABLE `donor` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `employee` */
 
@@ -826,7 +830,7 @@ CREATE TABLE `exchange_rate` (
   KEY `foreign_currency_id` (`foreign_currency_id`),
   CONSTRAINT `exchange_rate_ibfk_1` FOREIGN KEY (`enterprise_currency_id`) REFERENCES `currency` (`id`),
   CONSTRAINT `exchange_rate_ibfk_2` FOREIGN KEY (`foreign_currency_id`) REFERENCES `currency` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `fiscal_year` */
 
@@ -1225,8 +1229,10 @@ CREATE TABLE `movement` (
   PRIMARY KEY (`uuid`),
   KEY `tracking_number` (`tracking_number`),
   KEY `depot_exit` (`depot_exit`),
+  KEY `depot_entry` (`depot_entry`),
   CONSTRAINT `movement_ibfk_1` FOREIGN KEY (`tracking_number`) REFERENCES `stock` (`tracking_number`),
-  CONSTRAINT `movement_ibfk_2` FOREIGN KEY (`depot_exit`) REFERENCES `depot` (`uuid`)
+  CONSTRAINT `movement_ibfk_2` FOREIGN KEY (`depot_exit`) REFERENCES `depot` (`uuid`),
+  CONSTRAINT `movement_ibfk_3` FOREIGN KEY (`depot_entry`) REFERENCES `depot` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `offday` */
@@ -1457,7 +1463,7 @@ CREATE TABLE `permission` (
   KEY `user_id` (`user_id`),
   CONSTRAINT `permission_ibfk_1` FOREIGN KEY (`unit_id`) REFERENCES `unit` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `permission_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=812 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `posting_journal` */
 
@@ -1586,7 +1592,7 @@ CREATE TABLE `primary_cash` (
   CONSTRAINT `primary_cash_ibfk_4` FOREIGN KEY (`cash_box_id`) REFERENCES `cash_box` (`id`),
   CONSTRAINT `primary_cash_ibfk_5` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   CONSTRAINT `primary_cash_ibfk_6` FOREIGN KEY (`origin_id`) REFERENCES `primary_cash_module` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=526 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `primary_cash_item` */
 
@@ -1626,7 +1632,7 @@ CREATE TABLE `profit_center` (
   PRIMARY KEY (`id`),
   KEY `project_id` (`project_id`),
   CONSTRAINT `profit_center_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `project` */
 
@@ -1657,7 +1663,7 @@ CREATE TABLE `project_permission` (
   KEY `user_id` (`user_id`),
   KEY `project_id` (`project_id`),
   CONSTRAINT `project_permission_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `province` */
 
@@ -1683,8 +1689,6 @@ CREATE TABLE `purchase` (
   `cost` decimal(19,4) unsigned NOT NULL DEFAULT '0.0000',
   `currency_id` tinyint(3) unsigned NOT NULL,
   `creditor_uuid` char(36) DEFAULT NULL,
-  `purchaser_id` smallint(5) unsigned NOT NULL,
-  `employee_id` int(10) unsigned DEFAULT NULL,
   `discount` mediumint(8) unsigned DEFAULT '0',
   `purchase_date` date NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -1695,23 +1699,24 @@ CREATE TABLE `purchase` (
   `closed` tinyint(1) DEFAULT '0',
   `is_direct` tinyint(1) DEFAULT '0',
   `is_donation` tinyint(1) DEFAULT '0',
-  `header_id` int(10) unsigned DEFAULT NULL,
-  `issuer_id` int(10) unsigned DEFAULT NULL,
+  `emitter_id` smallint(5) unsigned NOT NULL,
   `is_authorized` tinyint(1) DEFAULT '0',
   `is_validate` tinyint(1) DEFAULT '0',
   `confirmed_by` int(10) unsigned DEFAULT NULL,
   `is_integration` tinyint(1) DEFAULT NULL,
+  `purchaser_id` int(10) unsigned DEFAULT NULL,
+  `receiver_id` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`uuid`),
   KEY `project_id` (`project_id`),
   KEY `reference` (`reference`),
   KEY `creditor_uuid` (`creditor_uuid`),
-  KEY `purchaser_id` (`purchaser_id`),
   KEY `paid_uuid` (`paid_uuid`),
+  KEY `receiver_id` (`receiver_id`),
   CONSTRAINT `purchase_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
   CONSTRAINT `purchase_ibfk_2` FOREIGN KEY (`creditor_uuid`) REFERENCES `creditor` (`uuid`),
-  CONSTRAINT `purchase_ibfk_3` FOREIGN KEY (`purchaser_id`) REFERENCES `user` (`id`),
-  CONSTRAINT `purchase_ibfk_4` FOREIGN KEY (`paid_uuid`) REFERENCES `primary_cash` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  CONSTRAINT `purchase_ibfk_4` FOREIGN KEY (`paid_uuid`) REFERENCES `primary_cash` (`uuid`),
+  CONSTRAINT `purchase_ibfk_5` FOREIGN KEY (`receiver_id`) REFERENCES `employee` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=138 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `purchase_item` */
 
@@ -1729,6 +1734,36 @@ CREATE TABLE `purchase_item` (
   KEY `inventory_uuid` (`inventory_uuid`),
   CONSTRAINT `purchase_item_ibfk_1` FOREIGN KEY (`purchase_uuid`) REFERENCES `purchase` (`uuid`) ON DELETE CASCADE,
   CONSTRAINT `purchase_item_ibfk_2` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Table structure for table `reference` */
+
+DROP TABLE IF EXISTS `reference`;
+
+CREATE TABLE `reference` (
+  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `is_report` tinyint(1) DEFAULT NULL,
+  `ref` char(4) NOT NULL,
+  `text` text,
+  `position` int(10) unsigned DEFAULT NULL,
+  `reference_group_id` tinyint(3) unsigned DEFAULT NULL,
+  `section_resultat_id` tinyint(3) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Table structure for table `reference_group` */
+
+DROP TABLE IF EXISTS `reference_group`;
+
+CREATE TABLE `reference_group` (
+  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `reference_group` char(4) NOT NULL,
+  `text` text,
+  `position` int(10) unsigned DEFAULT NULL,
+  `section_bilan_id` tinyint(3) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `section_bilan_id` (`section_bilan_id`),
+  CONSTRAINT `reference_group_ibfk_1` FOREIGN KEY (`section_bilan_id`) REFERENCES `section_bilan` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Table structure for table `rubric` */
@@ -1830,6 +1865,30 @@ CREATE TABLE `sale_subsidy` (
   CONSTRAINT `sale_subsidy_ibfk_2` FOREIGN KEY (`subsidy_uuid`) REFERENCES `subsidy` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+/*Table structure for table `section_bilan` */
+
+DROP TABLE IF EXISTS `section_bilan`;
+
+CREATE TABLE `section_bilan` (
+  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `text` text,
+  `is_actif` tinyint(1) DEFAULT NULL,
+  `position` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Table structure for table `section_resultat` */
+
+DROP TABLE IF EXISTS `section_resultat`;
+
+CREATE TABLE `section_resultat` (
+  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `text` text,
+  `position` int(10) unsigned DEFAULT NULL,
+  `is_charge` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 /*Table structure for table `sector` */
 
 DROP TABLE IF EXISTS `sector`;
@@ -1860,7 +1919,7 @@ CREATE TABLE `service` (
   CONSTRAINT `service_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `service_ibfk_2` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `service_ibfk_3` FOREIGN KEY (`profit_center_id`) REFERENCES `profit_center` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `stock` */
 
@@ -1919,857 +1978,6 @@ CREATE TABLE `supplier` (
   CONSTRAINT `supplier_ibfk_1` FOREIGN KEY (`location_id`) REFERENCES `village` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `supplier_ibfk_2` FOREIGN KEY (`creditor_uuid`) REFERENCES `creditor` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-/*Table structure for table `sym_channel` */
-
-DROP TABLE IF EXISTS `sym_channel`;
-
-CREATE TABLE `sym_channel` (
-  `channel_id` varchar(20) NOT NULL,
-  `processing_order` int(11) NOT NULL DEFAULT '1',
-  `max_batch_size` int(11) NOT NULL DEFAULT '1000',
-  `max_batch_to_send` int(11) NOT NULL DEFAULT '60',
-  `max_data_to_route` int(11) NOT NULL DEFAULT '100000',
-  `extract_period_millis` int(11) NOT NULL DEFAULT '0',
-  `enabled` smallint(6) NOT NULL DEFAULT '1',
-  `use_old_data_to_route` smallint(6) NOT NULL DEFAULT '1',
-  `use_row_data_to_route` smallint(6) NOT NULL DEFAULT '1',
-  `use_pk_data_to_route` smallint(6) NOT NULL DEFAULT '1',
-  `contains_big_lob` smallint(6) NOT NULL DEFAULT '0',
-  `batch_algorithm` varchar(50) NOT NULL DEFAULT 'default',
-  `data_loader_type` varchar(50) NOT NULL DEFAULT 'default',
-  `description` varchar(255) DEFAULT NULL,
-  `create_time` datetime DEFAULT NULL,
-  `last_update_by` varchar(50) DEFAULT NULL,
-  `last_update_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`channel_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_conflict` */
-
-DROP TABLE IF EXISTS `sym_conflict`;
-
-CREATE TABLE `sym_conflict` (
-  `conflict_id` varchar(50) NOT NULL,
-  `source_node_group_id` varchar(50) NOT NULL,
-  `target_node_group_id` varchar(50) NOT NULL,
-  `target_channel_id` varchar(20) DEFAULT NULL,
-  `target_catalog_name` varchar(255) DEFAULT NULL,
-  `target_schema_name` varchar(255) DEFAULT NULL,
-  `target_table_name` varchar(255) DEFAULT NULL,
-  `detect_type` varchar(128) NOT NULL,
-  `detect_expression` mediumtext,
-  `resolve_type` varchar(128) NOT NULL,
-  `ping_back` varchar(128) NOT NULL,
-  `resolve_changes_only` smallint(6) DEFAULT '0',
-  `resolve_row_only` smallint(6) DEFAULT '0',
-  `create_time` datetime NOT NULL,
-  `last_update_by` varchar(50) DEFAULT NULL,
-  `last_update_time` datetime NOT NULL,
-  PRIMARY KEY (`conflict_id`),
-  KEY `sym_fk_cf_2_grp_lnk` (`source_node_group_id`,`target_node_group_id`),
-  CONSTRAINT `sym_fk_cf_2_grp_lnk` FOREIGN KEY (`source_node_group_id`, `target_node_group_id`) REFERENCES `sym_node_group_link` (`source_node_group_id`, `target_node_group_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_data` */
-
-DROP TABLE IF EXISTS `sym_data`;
-
-CREATE TABLE `sym_data` (
-  `data_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `table_name` varchar(255) NOT NULL,
-  `event_type` char(1) NOT NULL,
-  `row_data` mediumtext,
-  `pk_data` mediumtext,
-  `old_data` mediumtext,
-  `trigger_hist_id` int(11) NOT NULL,
-  `channel_id` varchar(20) DEFAULT NULL,
-  `transaction_id` varchar(255) DEFAULT NULL,
-  `source_node_id` varchar(50) DEFAULT NULL,
-  `external_data` varchar(50) DEFAULT NULL,
-  `node_list` varchar(255) DEFAULT NULL,
-  `create_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`data_id`),
-  KEY `sym_idx_d_channel_id` (`data_id`,`channel_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_data_event` */
-
-DROP TABLE IF EXISTS `sym_data_event`;
-
-CREATE TABLE `sym_data_event` (
-  `data_id` bigint(20) NOT NULL,
-  `batch_id` bigint(20) NOT NULL,
-  `router_id` varchar(50) NOT NULL,
-  `create_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`data_id`,`batch_id`,`router_id`),
-  KEY `sym_idx_de_batchid` (`batch_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_data_gap` */
-
-DROP TABLE IF EXISTS `sym_data_gap`;
-
-CREATE TABLE `sym_data_gap` (
-  `start_id` bigint(20) NOT NULL,
-  `end_id` bigint(20) NOT NULL,
-  `status` char(2) DEFAULT NULL,
-  `create_time` datetime NOT NULL,
-  `last_update_hostname` varchar(255) DEFAULT NULL,
-  `last_update_time` datetime NOT NULL,
-  PRIMARY KEY (`start_id`,`end_id`),
-  KEY `sym_idx_dg_status` (`status`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_extract_request` */
-
-DROP TABLE IF EXISTS `sym_extract_request`;
-
-CREATE TABLE `sym_extract_request` (
-  `request_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `node_id` varchar(50) NOT NULL,
-  `status` char(2) DEFAULT NULL,
-  `start_batch_id` bigint(20) NOT NULL,
-  `end_batch_id` bigint(20) NOT NULL,
-  `trigger_id` varchar(50) NOT NULL,
-  `router_id` varchar(50) NOT NULL,
-  `last_update_time` datetime DEFAULT NULL,
-  `create_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`request_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_file_incoming` */
-
-DROP TABLE IF EXISTS `sym_file_incoming`;
-
-CREATE TABLE `sym_file_incoming` (
-  `relative_dir` varchar(255) NOT NULL,
-  `file_name` varchar(128) NOT NULL,
-  `last_event_type` char(1) NOT NULL,
-  `node_id` varchar(50) NOT NULL,
-  `file_modified_time` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`relative_dir`,`file_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_file_snapshot` */
-
-DROP TABLE IF EXISTS `sym_file_snapshot`;
-
-CREATE TABLE `sym_file_snapshot` (
-  `trigger_id` varchar(50) NOT NULL,
-  `router_id` varchar(50) NOT NULL,
-  `relative_dir` varchar(255) NOT NULL,
-  `file_name` varchar(128) NOT NULL,
-  `last_event_type` char(1) NOT NULL,
-  `crc32_checksum` bigint(20) DEFAULT NULL,
-  `file_size` bigint(20) DEFAULT NULL,
-  `file_modified_time` bigint(20) DEFAULT NULL,
-  `last_update_time` datetime NOT NULL,
-  `last_update_by` varchar(50) DEFAULT NULL,
-  `create_time` datetime NOT NULL,
-  PRIMARY KEY (`trigger_id`,`router_id`,`relative_dir`,`file_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_file_trigger` */
-
-DROP TABLE IF EXISTS `sym_file_trigger`;
-
-CREATE TABLE `sym_file_trigger` (
-  `trigger_id` varchar(50) NOT NULL,
-  `base_dir` varchar(255) NOT NULL,
-  `recurse` smallint(6) NOT NULL DEFAULT '1',
-  `includes_files` varchar(255) DEFAULT NULL,
-  `excludes_files` varchar(255) DEFAULT NULL,
-  `sync_on_create` smallint(6) NOT NULL DEFAULT '1',
-  `sync_on_modified` smallint(6) NOT NULL DEFAULT '1',
-  `sync_on_delete` smallint(6) NOT NULL DEFAULT '1',
-  `before_copy_script` mediumtext,
-  `after_copy_script` mediumtext,
-  `create_time` datetime NOT NULL,
-  `last_update_by` varchar(50) DEFAULT NULL,
-  `last_update_time` datetime NOT NULL,
-  PRIMARY KEY (`trigger_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_file_trigger_router` */
-
-DROP TABLE IF EXISTS `sym_file_trigger_router`;
-
-CREATE TABLE `sym_file_trigger_router` (
-  `trigger_id` varchar(50) NOT NULL,
-  `router_id` varchar(50) NOT NULL,
-  `enabled` smallint(6) NOT NULL DEFAULT '1',
-  `initial_load_enabled` smallint(6) NOT NULL DEFAULT '1',
-  `target_base_dir` varchar(255) DEFAULT NULL,
-  `conflict_strategy` varchar(128) NOT NULL DEFAULT 'source_wins',
-  `create_time` datetime NOT NULL,
-  `last_update_by` varchar(50) DEFAULT NULL,
-  `last_update_time` datetime NOT NULL,
-  PRIMARY KEY (`trigger_id`,`router_id`),
-  KEY `sym_fk_ftr_2_rtr` (`router_id`),
-  CONSTRAINT `sym_fk_ftr_2_ftrg` FOREIGN KEY (`trigger_id`) REFERENCES `sym_file_trigger` (`trigger_id`),
-  CONSTRAINT `sym_fk_ftr_2_rtr` FOREIGN KEY (`router_id`) REFERENCES `sym_router` (`router_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_grouplet` */
-
-DROP TABLE IF EXISTS `sym_grouplet`;
-
-CREATE TABLE `sym_grouplet` (
-  `grouplet_id` varchar(50) NOT NULL,
-  `grouplet_link_policy` char(1) NOT NULL DEFAULT 'I',
-  `description` varchar(255) DEFAULT NULL,
-  `create_time` datetime NOT NULL,
-  `last_update_by` varchar(50) DEFAULT NULL,
-  `last_update_time` datetime NOT NULL,
-  PRIMARY KEY (`grouplet_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_grouplet_link` */
-
-DROP TABLE IF EXISTS `sym_grouplet_link`;
-
-CREATE TABLE `sym_grouplet_link` (
-  `grouplet_id` varchar(50) NOT NULL,
-  `external_id` varchar(50) NOT NULL,
-  `create_time` datetime NOT NULL,
-  `last_update_by` varchar(50) DEFAULT NULL,
-  `last_update_time` datetime NOT NULL,
-  PRIMARY KEY (`grouplet_id`,`external_id`),
-  CONSTRAINT `sym_fk_gpltlnk_2_gplt` FOREIGN KEY (`grouplet_id`) REFERENCES `sym_grouplet` (`grouplet_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_incoming_batch` */
-
-DROP TABLE IF EXISTS `sym_incoming_batch`;
-
-CREATE TABLE `sym_incoming_batch` (
-  `batch_id` bigint(20) NOT NULL,
-  `node_id` varchar(50) NOT NULL,
-  `channel_id` varchar(20) DEFAULT NULL,
-  `status` char(2) DEFAULT NULL,
-  `error_flag` smallint(6) DEFAULT '0',
-  `network_millis` bigint(20) NOT NULL DEFAULT '0',
-  `filter_millis` bigint(20) NOT NULL DEFAULT '0',
-  `database_millis` bigint(20) NOT NULL DEFAULT '0',
-  `failed_row_number` bigint(20) NOT NULL DEFAULT '0',
-  `failed_line_number` bigint(20) NOT NULL DEFAULT '0',
-  `byte_count` bigint(20) NOT NULL DEFAULT '0',
-  `statement_count` bigint(20) NOT NULL DEFAULT '0',
-  `fallback_insert_count` bigint(20) NOT NULL DEFAULT '0',
-  `fallback_update_count` bigint(20) NOT NULL DEFAULT '0',
-  `ignore_count` bigint(20) NOT NULL DEFAULT '0',
-  `missing_delete_count` bigint(20) NOT NULL DEFAULT '0',
-  `skip_count` bigint(20) NOT NULL DEFAULT '0',
-  `sql_state` varchar(10) DEFAULT NULL,
-  `sql_code` int(11) NOT NULL DEFAULT '0',
-  `sql_message` mediumtext,
-  `last_update_hostname` varchar(255) DEFAULT NULL,
-  `last_update_time` datetime DEFAULT NULL,
-  `create_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`batch_id`,`node_id`),
-  KEY `sym_idx_ib_time_status` (`create_time`,`status`),
-  KEY `sym_idx_ib_in_error` (`error_flag`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_incoming_error` */
-
-DROP TABLE IF EXISTS `sym_incoming_error`;
-
-CREATE TABLE `sym_incoming_error` (
-  `batch_id` bigint(20) NOT NULL,
-  `node_id` varchar(50) NOT NULL,
-  `failed_row_number` bigint(20) NOT NULL,
-  `failed_line_number` bigint(20) NOT NULL DEFAULT '0',
-  `target_catalog_name` varchar(255) DEFAULT NULL,
-  `target_schema_name` varchar(255) DEFAULT NULL,
-  `target_table_name` varchar(255) NOT NULL,
-  `event_type` char(1) NOT NULL,
-  `binary_encoding` varchar(10) NOT NULL DEFAULT 'HEX',
-  `column_names` mediumtext NOT NULL,
-  `pk_column_names` mediumtext NOT NULL,
-  `row_data` mediumtext,
-  `old_data` mediumtext,
-  `cur_data` mediumtext,
-  `resolve_data` mediumtext,
-  `resolve_ignore` smallint(6) DEFAULT '0',
-  `conflict_id` varchar(50) DEFAULT NULL,
-  `create_time` datetime DEFAULT NULL,
-  `last_update_by` varchar(50) DEFAULT NULL,
-  `last_update_time` datetime NOT NULL,
-  PRIMARY KEY (`batch_id`,`node_id`,`failed_row_number`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_load_filter` */
-
-DROP TABLE IF EXISTS `sym_load_filter`;
-
-CREATE TABLE `sym_load_filter` (
-  `load_filter_id` varchar(50) NOT NULL,
-  `load_filter_type` varchar(10) NOT NULL,
-  `source_node_group_id` varchar(50) NOT NULL,
-  `target_node_group_id` varchar(50) NOT NULL,
-  `target_catalog_name` varchar(255) DEFAULT NULL,
-  `target_schema_name` varchar(255) DEFAULT NULL,
-  `target_table_name` varchar(255) DEFAULT NULL,
-  `filter_on_update` smallint(6) NOT NULL DEFAULT '1',
-  `filter_on_insert` smallint(6) NOT NULL DEFAULT '1',
-  `filter_on_delete` smallint(6) NOT NULL DEFAULT '1',
-  `before_write_script` mediumtext,
-  `after_write_script` mediumtext,
-  `batch_complete_script` mediumtext,
-  `batch_commit_script` mediumtext,
-  `batch_rollback_script` mediumtext,
-  `handle_error_script` mediumtext,
-  `create_time` datetime NOT NULL,
-  `last_update_by` varchar(50) DEFAULT NULL,
-  `last_update_time` datetime NOT NULL,
-  `load_filter_order` int(11) NOT NULL DEFAULT '1',
-  `fail_on_error` smallint(6) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`load_filter_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_lock` */
-
-DROP TABLE IF EXISTS `sym_lock`;
-
-CREATE TABLE `sym_lock` (
-  `lock_action` varchar(50) NOT NULL,
-  `locking_server_id` varchar(255) DEFAULT NULL,
-  `lock_time` datetime DEFAULT NULL,
-  `last_lock_time` datetime DEFAULT NULL,
-  `last_locking_server_id` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`lock_action`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_node` */
-
-DROP TABLE IF EXISTS `sym_node`;
-
-CREATE TABLE `sym_node` (
-  `node_id` varchar(50) NOT NULL,
-  `node_group_id` varchar(50) NOT NULL,
-  `external_id` varchar(50) NOT NULL,
-  `sync_enabled` smallint(6) DEFAULT '0',
-  `sync_url` varchar(255) DEFAULT NULL,
-  `schema_version` varchar(50) DEFAULT NULL,
-  `symmetric_version` varchar(50) DEFAULT NULL,
-  `database_type` varchar(50) DEFAULT NULL,
-  `database_version` varchar(50) DEFAULT NULL,
-  `heartbeat_time` datetime DEFAULT NULL,
-  `timezone_offset` varchar(6) DEFAULT NULL,
-  `batch_to_send_count` int(11) DEFAULT '0',
-  `batch_in_error_count` int(11) DEFAULT '0',
-  `created_at_node_id` varchar(50) DEFAULT NULL,
-  `deployment_type` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`node_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_node_channel_ctl` */
-
-DROP TABLE IF EXISTS `sym_node_channel_ctl`;
-
-CREATE TABLE `sym_node_channel_ctl` (
-  `node_id` varchar(50) NOT NULL,
-  `channel_id` varchar(20) NOT NULL,
-  `suspend_enabled` smallint(6) DEFAULT '0',
-  `ignore_enabled` smallint(6) DEFAULT '0',
-  `last_extract_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`node_id`,`channel_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_node_communication` */
-
-DROP TABLE IF EXISTS `sym_node_communication`;
-
-CREATE TABLE `sym_node_communication` (
-  `node_id` varchar(50) NOT NULL,
-  `communication_type` varchar(10) NOT NULL,
-  `lock_time` datetime DEFAULT NULL,
-  `locking_server_id` varchar(255) DEFAULT NULL,
-  `last_lock_time` datetime DEFAULT NULL,
-  `last_lock_millis` bigint(20) DEFAULT '0',
-  `success_count` bigint(20) DEFAULT '0',
-  `fail_count` bigint(20) DEFAULT '0',
-  `total_success_count` bigint(20) DEFAULT '0',
-  `total_fail_count` bigint(20) DEFAULT '0',
-  `total_success_millis` bigint(20) DEFAULT '0',
-  `total_fail_millis` bigint(20) DEFAULT '0',
-  PRIMARY KEY (`node_id`,`communication_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_node_group` */
-
-DROP TABLE IF EXISTS `sym_node_group`;
-
-CREATE TABLE `sym_node_group` (
-  `node_group_id` varchar(50) NOT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `create_time` datetime DEFAULT NULL,
-  `last_update_by` varchar(50) DEFAULT NULL,
-  `last_update_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`node_group_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_node_group_channel_wnd` */
-
-DROP TABLE IF EXISTS `sym_node_group_channel_wnd`;
-
-CREATE TABLE `sym_node_group_channel_wnd` (
-  `node_group_id` varchar(50) NOT NULL,
-  `channel_id` varchar(20) NOT NULL,
-  `start_time` time NOT NULL,
-  `end_time` time NOT NULL,
-  `enabled` smallint(6) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`node_group_id`,`channel_id`,`start_time`,`end_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_node_group_link` */
-
-DROP TABLE IF EXISTS `sym_node_group_link`;
-
-CREATE TABLE `sym_node_group_link` (
-  `source_node_group_id` varchar(50) NOT NULL,
-  `target_node_group_id` varchar(50) NOT NULL,
-  `data_event_action` char(1) NOT NULL DEFAULT 'W',
-  `create_time` datetime DEFAULT NULL,
-  `last_update_by` varchar(50) DEFAULT NULL,
-  `last_update_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`source_node_group_id`,`target_node_group_id`),
-  KEY `sym_fk_lnk_2_grp_tgt` (`target_node_group_id`),
-  CONSTRAINT `sym_fk_lnk_2_grp_src` FOREIGN KEY (`source_node_group_id`) REFERENCES `sym_node_group` (`node_group_id`),
-  CONSTRAINT `sym_fk_lnk_2_grp_tgt` FOREIGN KEY (`target_node_group_id`) REFERENCES `sym_node_group` (`node_group_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_node_host` */
-
-DROP TABLE IF EXISTS `sym_node_host`;
-
-CREATE TABLE `sym_node_host` (
-  `node_id` varchar(50) NOT NULL,
-  `host_name` varchar(60) NOT NULL,
-  `ip_address` varchar(50) DEFAULT NULL,
-  `os_user` varchar(50) DEFAULT NULL,
-  `os_name` varchar(50) DEFAULT NULL,
-  `os_arch` varchar(50) DEFAULT NULL,
-  `os_version` varchar(50) DEFAULT NULL,
-  `available_processors` int(11) DEFAULT '0',
-  `free_memory_bytes` bigint(20) DEFAULT '0',
-  `total_memory_bytes` bigint(20) DEFAULT '0',
-  `max_memory_bytes` bigint(20) DEFAULT '0',
-  `java_version` varchar(50) DEFAULT NULL,
-  `java_vendor` varchar(255) DEFAULT NULL,
-  `symmetric_version` varchar(50) DEFAULT NULL,
-  `timezone_offset` varchar(6) DEFAULT NULL,
-  `heartbeat_time` datetime DEFAULT NULL,
-  `last_restart_time` datetime NOT NULL,
-  `create_time` datetime NOT NULL,
-  PRIMARY KEY (`node_id`,`host_name`),
-  CONSTRAINT `sym_fk_host_2_node` FOREIGN KEY (`node_id`) REFERENCES `sym_node` (`node_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_node_host_channel_stats` */
-
-DROP TABLE IF EXISTS `sym_node_host_channel_stats`;
-
-CREATE TABLE `sym_node_host_channel_stats` (
-  `node_id` varchar(50) NOT NULL,
-  `host_name` varchar(60) NOT NULL,
-  `channel_id` varchar(20) NOT NULL,
-  `start_time` datetime NOT NULL,
-  `end_time` datetime NOT NULL,
-  `data_routed` bigint(20) DEFAULT '0',
-  `data_unrouted` bigint(20) DEFAULT '0',
-  `data_event_inserted` bigint(20) DEFAULT '0',
-  `data_extracted` bigint(20) DEFAULT '0',
-  `data_bytes_extracted` bigint(20) DEFAULT '0',
-  `data_extracted_errors` bigint(20) DEFAULT '0',
-  `data_bytes_sent` bigint(20) DEFAULT '0',
-  `data_sent` bigint(20) DEFAULT '0',
-  `data_sent_errors` bigint(20) DEFAULT '0',
-  `data_loaded` bigint(20) DEFAULT '0',
-  `data_bytes_loaded` bigint(20) DEFAULT '0',
-  `data_loaded_errors` bigint(20) DEFAULT '0',
-  PRIMARY KEY (`node_id`,`host_name`,`channel_id`,`start_time`,`end_time`),
-  KEY `sym_idx_nd_hst_chnl_sts` (`node_id`,`start_time`,`end_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_node_host_job_stats` */
-
-DROP TABLE IF EXISTS `sym_node_host_job_stats`;
-
-CREATE TABLE `sym_node_host_job_stats` (
-  `node_id` varchar(50) NOT NULL,
-  `host_name` varchar(60) NOT NULL,
-  `job_name` varchar(50) NOT NULL,
-  `start_time` datetime NOT NULL,
-  `end_time` datetime NOT NULL,
-  `processed_count` bigint(20) DEFAULT '0',
-  PRIMARY KEY (`node_id`,`host_name`,`job_name`,`start_time`,`end_time`),
-  KEY `sym_idx_nd_hst_job` (`node_id`,`start_time`,`end_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_node_host_stats` */
-
-DROP TABLE IF EXISTS `sym_node_host_stats`;
-
-CREATE TABLE `sym_node_host_stats` (
-  `node_id` varchar(50) NOT NULL,
-  `host_name` varchar(60) NOT NULL,
-  `start_time` datetime NOT NULL,
-  `end_time` datetime NOT NULL,
-  `restarted` bigint(20) NOT NULL DEFAULT '0',
-  `nodes_pulled` bigint(20) DEFAULT '0',
-  `total_nodes_pull_time` bigint(20) DEFAULT '0',
-  `nodes_pushed` bigint(20) DEFAULT '0',
-  `total_nodes_push_time` bigint(20) DEFAULT '0',
-  `nodes_rejected` bigint(20) DEFAULT '0',
-  `nodes_registered` bigint(20) DEFAULT '0',
-  `nodes_loaded` bigint(20) DEFAULT '0',
-  `nodes_disabled` bigint(20) DEFAULT '0',
-  `purged_data_rows` bigint(20) DEFAULT '0',
-  `purged_data_event_rows` bigint(20) DEFAULT '0',
-  `purged_batch_outgoing_rows` bigint(20) DEFAULT '0',
-  `purged_batch_incoming_rows` bigint(20) DEFAULT '0',
-  `triggers_created_count` bigint(20) DEFAULT NULL,
-  `triggers_rebuilt_count` bigint(20) DEFAULT NULL,
-  `triggers_removed_count` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`node_id`,`host_name`,`start_time`,`end_time`),
-  KEY `sym_idx_nd_hst_sts` (`node_id`,`start_time`,`end_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_node_identity` */
-
-DROP TABLE IF EXISTS `sym_node_identity`;
-
-CREATE TABLE `sym_node_identity` (
-  `node_id` varchar(50) NOT NULL,
-  PRIMARY KEY (`node_id`),
-  CONSTRAINT `sym_fk_ident_2_node` FOREIGN KEY (`node_id`) REFERENCES `sym_node` (`node_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_node_security` */
-
-DROP TABLE IF EXISTS `sym_node_security`;
-
-CREATE TABLE `sym_node_security` (
-  `node_id` varchar(50) NOT NULL,
-  `node_password` varchar(50) NOT NULL,
-  `registration_enabled` smallint(6) DEFAULT '0',
-  `registration_time` datetime DEFAULT NULL,
-  `initial_load_enabled` smallint(6) DEFAULT '0',
-  `initial_load_time` datetime DEFAULT NULL,
-  `initial_load_id` bigint(20) DEFAULT NULL,
-  `initial_load_create_by` varchar(255) DEFAULT NULL,
-  `rev_initial_load_enabled` smallint(6) DEFAULT '0',
-  `rev_initial_load_time` datetime DEFAULT NULL,
-  `rev_initial_load_id` bigint(20) DEFAULT NULL,
-  `rev_initial_load_create_by` varchar(255) DEFAULT NULL,
-  `created_at_node_id` varchar(50) NOT NULL,
-  PRIMARY KEY (`node_id`),
-  CONSTRAINT `sym_fk_sec_2_node` FOREIGN KEY (`node_id`) REFERENCES `sym_node` (`node_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_outgoing_batch` */
-
-DROP TABLE IF EXISTS `sym_outgoing_batch`;
-
-CREATE TABLE `sym_outgoing_batch` (
-  `batch_id` bigint(20) NOT NULL,
-  `node_id` varchar(50) NOT NULL,
-  `channel_id` varchar(20) DEFAULT NULL,
-  `status` char(2) DEFAULT NULL,
-  `load_id` bigint(20) DEFAULT NULL,
-  `extract_job_flag` smallint(6) DEFAULT '0',
-  `load_flag` smallint(6) DEFAULT '0',
-  `error_flag` smallint(6) DEFAULT '0',
-  `common_flag` smallint(6) DEFAULT '0',
-  `ignore_count` bigint(20) NOT NULL DEFAULT '0',
-  `byte_count` bigint(20) NOT NULL DEFAULT '0',
-  `extract_count` bigint(20) NOT NULL DEFAULT '0',
-  `sent_count` bigint(20) NOT NULL DEFAULT '0',
-  `load_count` bigint(20) NOT NULL DEFAULT '0',
-  `data_event_count` bigint(20) NOT NULL DEFAULT '0',
-  `reload_event_count` bigint(20) NOT NULL DEFAULT '0',
-  `insert_event_count` bigint(20) NOT NULL DEFAULT '0',
-  `update_event_count` bigint(20) NOT NULL DEFAULT '0',
-  `delete_event_count` bigint(20) NOT NULL DEFAULT '0',
-  `other_event_count` bigint(20) NOT NULL DEFAULT '0',
-  `router_millis` bigint(20) NOT NULL DEFAULT '0',
-  `network_millis` bigint(20) NOT NULL DEFAULT '0',
-  `filter_millis` bigint(20) NOT NULL DEFAULT '0',
-  `load_millis` bigint(20) NOT NULL DEFAULT '0',
-  `extract_millis` bigint(20) NOT NULL DEFAULT '0',
-  `sql_state` varchar(10) DEFAULT NULL,
-  `sql_code` int(11) NOT NULL DEFAULT '0',
-  `sql_message` mediumtext,
-  `failed_data_id` bigint(20) NOT NULL DEFAULT '0',
-  `failed_line_number` bigint(20) NOT NULL DEFAULT '0',
-  `last_update_hostname` varchar(255) DEFAULT NULL,
-  `last_update_time` datetime DEFAULT NULL,
-  `create_time` datetime DEFAULT NULL,
-  `create_by` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`batch_id`,`node_id`),
-  KEY `sym_idx_ob_node_status` (`node_id`,`status`),
-  KEY `sym_idx_ob_status` (`status`),
-  KEY `sym_idx_ob_in_error` (`error_flag`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_parameter` */
-
-DROP TABLE IF EXISTS `sym_parameter`;
-
-CREATE TABLE `sym_parameter` (
-  `external_id` varchar(50) NOT NULL,
-  `node_group_id` varchar(50) NOT NULL,
-  `param_key` varchar(80) NOT NULL,
-  `param_value` mediumtext,
-  `create_time` datetime DEFAULT NULL,
-  `last_update_by` varchar(50) DEFAULT NULL,
-  `last_update_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`external_id`,`node_group_id`,`param_key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_registration_redirect` */
-
-DROP TABLE IF EXISTS `sym_registration_redirect`;
-
-CREATE TABLE `sym_registration_redirect` (
-  `registrant_external_id` varchar(50) NOT NULL,
-  `registration_node_id` varchar(50) NOT NULL,
-  PRIMARY KEY (`registrant_external_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_registration_request` */
-
-DROP TABLE IF EXISTS `sym_registration_request`;
-
-CREATE TABLE `sym_registration_request` (
-  `node_group_id` varchar(50) NOT NULL,
-  `external_id` varchar(50) NOT NULL,
-  `status` char(2) NOT NULL,
-  `host_name` varchar(60) NOT NULL,
-  `ip_address` varchar(50) NOT NULL,
-  `attempt_count` int(11) DEFAULT '0',
-  `registered_node_id` varchar(50) DEFAULT NULL,
-  `error_message` mediumtext,
-  `create_time` datetime NOT NULL,
-  `last_update_by` varchar(50) DEFAULT NULL,
-  `last_update_time` datetime NOT NULL,
-  PRIMARY KEY (`node_group_id`,`external_id`,`create_time`),
-  KEY `sym_idx_reg_req_1` (`node_group_id`,`external_id`,`status`,`host_name`,`ip_address`),
-  KEY `sym_idx_reg_req_2` (`status`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_router` */
-
-DROP TABLE IF EXISTS `sym_router`;
-
-CREATE TABLE `sym_router` (
-  `router_id` varchar(50) NOT NULL,
-  `target_catalog_name` varchar(255) DEFAULT NULL,
-  `target_schema_name` varchar(255) DEFAULT NULL,
-  `target_table_name` varchar(255) DEFAULT NULL,
-  `source_node_group_id` varchar(50) NOT NULL,
-  `target_node_group_id` varchar(50) NOT NULL,
-  `router_type` varchar(50) DEFAULT NULL,
-  `router_expression` mediumtext,
-  `sync_on_update` smallint(6) NOT NULL DEFAULT '1',
-  `sync_on_insert` smallint(6) NOT NULL DEFAULT '1',
-  `sync_on_delete` smallint(6) NOT NULL DEFAULT '1',
-  `create_time` datetime NOT NULL,
-  `last_update_by` varchar(50) DEFAULT NULL,
-  `last_update_time` datetime NOT NULL,
-  PRIMARY KEY (`router_id`),
-  KEY `sym_fk_rt_2_grp_lnk` (`source_node_group_id`,`target_node_group_id`),
-  CONSTRAINT `sym_fk_rt_2_grp_lnk` FOREIGN KEY (`source_node_group_id`, `target_node_group_id`) REFERENCES `sym_node_group_link` (`source_node_group_id`, `target_node_group_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_sequence` */
-
-DROP TABLE IF EXISTS `sym_sequence`;
-
-CREATE TABLE `sym_sequence` (
-  `sequence_name` varchar(50) NOT NULL,
-  `current_value` bigint(20) NOT NULL DEFAULT '0',
-  `increment_by` int(11) NOT NULL DEFAULT '1',
-  `min_value` bigint(20) NOT NULL DEFAULT '1',
-  `max_value` bigint(20) NOT NULL DEFAULT '9999999999',
-  `cycle` smallint(6) DEFAULT '0',
-  `create_time` datetime DEFAULT NULL,
-  `last_update_by` varchar(50) DEFAULT NULL,
-  `last_update_time` datetime NOT NULL,
-  PRIMARY KEY (`sequence_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_table_reload_request` */
-
-DROP TABLE IF EXISTS `sym_table_reload_request`;
-
-CREATE TABLE `sym_table_reload_request` (
-  `target_node_id` varchar(50) NOT NULL,
-  `source_node_id` varchar(50) NOT NULL,
-  `trigger_id` varchar(50) NOT NULL,
-  `router_id` varchar(50) NOT NULL,
-  `reload_select` mediumtext,
-  `reload_delete_stmt` mediumtext,
-  `reload_enabled` smallint(6) DEFAULT '0',
-  `reload_time` datetime DEFAULT NULL,
-  `create_time` datetime DEFAULT NULL,
-  `last_update_by` varchar(50) DEFAULT NULL,
-  `last_update_time` datetime NOT NULL,
-  PRIMARY KEY (`target_node_id`,`source_node_id`,`trigger_id`,`router_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_transform_column` */
-
-DROP TABLE IF EXISTS `sym_transform_column`;
-
-CREATE TABLE `sym_transform_column` (
-  `transform_id` varchar(50) NOT NULL,
-  `include_on` char(1) NOT NULL DEFAULT '*',
-  `target_column_name` varchar(128) NOT NULL,
-  `source_column_name` varchar(128) DEFAULT NULL,
-  `pk` smallint(6) DEFAULT '0',
-  `transform_type` varchar(50) DEFAULT 'copy',
-  `transform_expression` mediumtext,
-  `transform_order` int(11) NOT NULL DEFAULT '1',
-  `create_time` datetime DEFAULT NULL,
-  `last_update_by` varchar(50) DEFAULT NULL,
-  `last_update_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`transform_id`,`include_on`,`target_column_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_transform_table` */
-
-DROP TABLE IF EXISTS `sym_transform_table`;
-
-CREATE TABLE `sym_transform_table` (
-  `transform_id` varchar(50) NOT NULL,
-  `source_node_group_id` varchar(50) NOT NULL,
-  `target_node_group_id` varchar(50) NOT NULL,
-  `transform_point` varchar(10) NOT NULL,
-  `source_catalog_name` varchar(255) DEFAULT NULL,
-  `source_schema_name` varchar(255) DEFAULT NULL,
-  `source_table_name` varchar(255) NOT NULL,
-  `target_catalog_name` varchar(255) DEFAULT NULL,
-  `target_schema_name` varchar(255) DEFAULT NULL,
-  `target_table_name` varchar(255) DEFAULT NULL,
-  `update_first` smallint(6) DEFAULT '0',
-  `delete_action` varchar(10) NOT NULL,
-  `transform_order` int(11) NOT NULL DEFAULT '1',
-  `column_policy` varchar(10) NOT NULL DEFAULT 'SPECIFIED',
-  `create_time` datetime DEFAULT NULL,
-  `last_update_by` varchar(50) DEFAULT NULL,
-  `last_update_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`transform_id`,`source_node_group_id`,`target_node_group_id`),
-  KEY `sym_fk_tt_2_grp_lnk` (`source_node_group_id`,`target_node_group_id`),
-  CONSTRAINT `sym_fk_tt_2_grp_lnk` FOREIGN KEY (`source_node_group_id`, `target_node_group_id`) REFERENCES `sym_node_group_link` (`source_node_group_id`, `target_node_group_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_trigger` */
-
-DROP TABLE IF EXISTS `sym_trigger`;
-
-CREATE TABLE `sym_trigger` (
-  `trigger_id` varchar(50) NOT NULL,
-  `source_catalog_name` varchar(255) DEFAULT NULL,
-  `source_schema_name` varchar(255) DEFAULT NULL,
-  `source_table_name` varchar(255) NOT NULL,
-  `channel_id` varchar(20) NOT NULL,
-  `sync_on_update` smallint(6) NOT NULL DEFAULT '1',
-  `sync_on_insert` smallint(6) NOT NULL DEFAULT '1',
-  `sync_on_delete` smallint(6) NOT NULL DEFAULT '1',
-  `sync_on_incoming_batch` smallint(6) NOT NULL DEFAULT '0',
-  `name_for_update_trigger` varchar(255) DEFAULT NULL,
-  `name_for_insert_trigger` varchar(255) DEFAULT NULL,
-  `name_for_delete_trigger` varchar(255) DEFAULT NULL,
-  `sync_on_update_condition` mediumtext,
-  `sync_on_insert_condition` mediumtext,
-  `sync_on_delete_condition` mediumtext,
-  `custom_on_update_text` mediumtext,
-  `custom_on_insert_text` mediumtext,
-  `custom_on_delete_text` mediumtext,
-  `external_select` mediumtext,
-  `tx_id_expression` mediumtext,
-  `excluded_column_names` mediumtext,
-  `sync_key_names` mediumtext,
-  `use_stream_lobs` smallint(6) NOT NULL DEFAULT '0',
-  `use_capture_lobs` smallint(6) NOT NULL DEFAULT '0',
-  `use_capture_old_data` smallint(6) NOT NULL DEFAULT '1',
-  `use_handle_key_updates` smallint(6) NOT NULL DEFAULT '0',
-  `create_time` datetime NOT NULL,
-  `last_update_by` varchar(50) DEFAULT NULL,
-  `last_update_time` datetime NOT NULL,
-  PRIMARY KEY (`trigger_id`),
-  KEY `sym_fk_trg_2_chnl` (`channel_id`),
-  CONSTRAINT `sym_fk_trg_2_chnl` FOREIGN KEY (`channel_id`) REFERENCES `sym_channel` (`channel_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_trigger_hist` */
-
-DROP TABLE IF EXISTS `sym_trigger_hist`;
-
-CREATE TABLE `sym_trigger_hist` (
-  `trigger_hist_id` int(11) NOT NULL AUTO_INCREMENT,
-  `trigger_id` varchar(50) NOT NULL,
-  `source_table_name` varchar(255) NOT NULL,
-  `source_catalog_name` varchar(255) DEFAULT NULL,
-  `source_schema_name` varchar(255) DEFAULT NULL,
-  `name_for_update_trigger` varchar(255) DEFAULT NULL,
-  `name_for_insert_trigger` varchar(255) DEFAULT NULL,
-  `name_for_delete_trigger` varchar(255) DEFAULT NULL,
-  `table_hash` bigint(20) NOT NULL DEFAULT '0',
-  `trigger_row_hash` bigint(20) NOT NULL DEFAULT '0',
-  `trigger_template_hash` bigint(20) NOT NULL DEFAULT '0',
-  `column_names` mediumtext NOT NULL,
-  `pk_column_names` mediumtext NOT NULL,
-  `last_trigger_build_reason` char(1) NOT NULL,
-  `error_message` mediumtext,
-  `create_time` datetime NOT NULL,
-  `inactive_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`trigger_hist_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_trigger_router` */
-
-DROP TABLE IF EXISTS `sym_trigger_router`;
-
-CREATE TABLE `sym_trigger_router` (
-  `trigger_id` varchar(50) NOT NULL,
-  `router_id` varchar(50) NOT NULL,
-  `enabled` smallint(6) NOT NULL DEFAULT '1',
-  `initial_load_order` int(11) NOT NULL DEFAULT '1',
-  `initial_load_select` mediumtext,
-  `initial_load_delete_stmt` mediumtext,
-  `initial_load_batch_count` int(11) DEFAULT '1',
-  `ping_back_enabled` smallint(6) NOT NULL DEFAULT '0',
-  `create_time` datetime NOT NULL,
-  `last_update_by` varchar(50) DEFAULT NULL,
-  `last_update_time` datetime NOT NULL,
-  PRIMARY KEY (`trigger_id`,`router_id`),
-  KEY `sym_fk_tr_2_rtr` (`router_id`),
-  CONSTRAINT `sym_fk_tr_2_rtr` FOREIGN KEY (`router_id`) REFERENCES `sym_router` (`router_id`),
-  CONSTRAINT `sym_fk_tr_2_trg` FOREIGN KEY (`trigger_id`) REFERENCES `sym_trigger` (`trigger_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Table structure for table `sym_trigger_router_grouplet` */
-
-DROP TABLE IF EXISTS `sym_trigger_router_grouplet`;
-
-CREATE TABLE `sym_trigger_router_grouplet` (
-  `grouplet_id` varchar(50) NOT NULL,
-  `trigger_id` varchar(50) NOT NULL,
-  `router_id` varchar(50) NOT NULL,
-  `applies_when` char(1) NOT NULL,
-  `create_time` datetime NOT NULL,
-  `last_update_by` varchar(50) DEFAULT NULL,
-  `last_update_time` datetime NOT NULL,
-  PRIMARY KEY (`grouplet_id`,`trigger_id`,`router_id`,`applies_when`),
-  KEY `sym_fk_trgplt_2_tr` (`trigger_id`,`router_id`),
-  CONSTRAINT `sym_fk_trgplt_2_gplt` FOREIGN KEY (`grouplet_id`) REFERENCES `sym_grouplet` (`grouplet_id`),
-  CONSTRAINT `sym_fk_trgplt_2_tr` FOREIGN KEY (`trigger_id`, `router_id`) REFERENCES `sym_trigger_router` (`trigger_id`, `router_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Table structure for table `tax` */
 
@@ -2870,7 +2078,7 @@ CREATE TABLE `user` (
   `logged_in` tinyint(1) NOT NULL DEFAULT '0',
   `pin` char(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `village` */
 

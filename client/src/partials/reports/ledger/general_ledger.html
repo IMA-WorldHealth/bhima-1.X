@@ -8,23 +8,31 @@
       <span class="glyphicon glyphicon-list-alt"></span> {{ "REPORT.GROUP_ROWS" | translate }}
     </button>
     <ul class="dropdown-menu">
-      <li class="dropdown-header">{{ "REPORT.GROUPING" | translate }}</li>
-      <li ng-repeat="groupDefinition in groupDefinitions">
-        <a ng-click="groupby(groupDefinition)">{{ groupDefinition.title }}</a>
-      </li>
+      <li><a class="clk" ng-click="groupByTransaction()"><i class="glyphicon glyphicon-th-list"></i> {{ 'POSTING_JOURNAL.TRANSACTION' | translate }}</a></li>
+      <li><a class="clk" ng-click="groupByAccount()"><i class="glyphicon glyphicon-euro"></i> {{ 'POSTING_JOURNAL.ACCOUNT' | translate }}</a></li>
+      <li><a class="clk" ng-click="clearGrouping()"><i class="glyphicon glyphicon-remove"></i> {{ 'GRID.ABOLISH_GROUPS' | translate }}</a></li>
     </ul>
   </div>
 
-  <div class="pull-left">
-    <ol class="breadcrumb">
-      <li>{{ "REPORT.GROUP_DETAIL" | translate }}</li>
-      <li ng-repeat="activeGroup in groups">
-        <span class="label label-info" style="white-space:inherit;"> <!-- FIXME: style hack -->
-          {{ activeGroup.title }}
-        </span>
+  <div class="pull-left dropdown input-group col-xs-4">
+    <span class="input-group-btn dropdown-toggle" style="background : white;">
+      <button class="btn btn-sm btn-default" type="button" ng-class="{'active': !!filter.by && !!filter.param }">
+        <span class="glyphicon glyphicon-filter"></span>
+        <span class="caret" data-caret="&#9660;"></span>
+        {{ filter.by.name }}
+      </button>
+    </span>
+
+    <input class="form-bhima" ng-model="filter.param" ng-change="updateFilter()">
+
+    <ul class="dropdown-menu">
+      <li ng-repeat="column in columns">
+        <a ng-click="filterBy(column)" class="clk">{{ column.name }}</a>
       </li>
-      <li ng-if="groups.length>0"><span class="label label-danger" style="cursor:pointer;" ng-click="removeLastGroup()"><span class="glyphicon glyphicon-chevron-left"></span><span class="glyphicon glyphicon-remove"></span></span></li>
-    </ol>
+      <li>
+        <a ng-click="clearFilter()" class="clk" ><i class="glyphicon glyphicon-remove"></i> {{ 'GRID.CLEAR' | translate }}</a>
+      </li>
+    </ul>
   </div>
 
   <div class="pull-right dropdown">
@@ -37,7 +45,7 @@
       </li>
       <li ng-repeat="column in columns">
         <a class="clk" ng-click="column.visible=!column.visible">
-          <i class="glyphicon" ng-class="{'glyphicon-unchecked' : !column.visible, 'glyphicon-check' : !!column.visible}"></i> {{column.name || column.id}}
+          <i class="glyphicon" ng-class="{'glyphicon-unchecked' : !column.visible, 'glyphicon-check' : !!column.visible}"></i> {{ column.name }}
         </a>
       </li>
     </ul>
@@ -47,7 +55,7 @@
 <main class="extend">
   <div class="row" style="height:99%;">
     <div class="col-xs-12" style="height:100%;">
-      <div id="general_ledger" class="grid" style="height: 100%; overflow: hidden; outline: 0px; position: relative; font-size: 8pt"></div>
+      <div id="generalLedger" class="grid" style="height: 100%; overflow: hidden; outline: 0px; position: relative; font-size: 8pt"></div>
     </div>
   </div>
 </main>

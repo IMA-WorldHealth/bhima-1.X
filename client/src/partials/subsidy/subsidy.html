@@ -66,13 +66,13 @@
       </div>
 
       <div ng-switch-when="new">
-        <form novalidate class="form-horizontal">
+        <form novalidate name="new" class="form-horizontal">
           <legend><h3>{{ "SUBSIDY.NEW_SUBSIDY" | translate }} </h3></legend>
 
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.LABEL" | translate }}</label>
             <div class="col-xs-7">
-              <input ng-model="session.new.text" class="form-bhima" required="required">
+              <input ng-model="session.new.text" class="form-bhima" required>
             </div>
           </div>
 
@@ -97,27 +97,27 @@
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.DEBITOR_GROUP" | translate }}</label>
             <div class="col-xs-7">
-              <select class="form-bhima" ng-model="session.new.debitor_group_uuid">
+              <select class="form-bhima" required ng-model="session.new.debitor_group_uuid">
                 <option ng-repeat="debitorGroup in debitorGroups.data | orderBy:'name'" ng-value="debitorGroup.uuid">{{debitorGroup.name}}</option>
               </select>
             </div>
           </div>
 
           <div class="form-group">
-            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
+            <input type="submit" ng-disabled="new.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
             <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
           </div>
         </form>
       </div>
 
       <div ng-switch-when="edit">
-        <form novalidate class="form-horizontal">
+        <form novalidate class="form-horizontal" name="edit">
           <legend><h3>{{ "SUBSIDY.UPDATE" | translate }} </h3></legend>
 
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.LABEL" | translate }}</label>
             <div class="col-xs-7">
-              <input ng-model="session.edit.text" class="form-bhima" required="required">
+              <input ng-model="session.edit.text" class="form-bhima" required>
             </div>
           </div>
 
@@ -131,7 +131,7 @@
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.VALUE" | translate }}</label>
             <div class="input-group col-xs-7">
-              <input ng-model="session.edit.value" class="form-bhima" required="required">
+              <input ng-model="session.edit.value" class="form-bhima" required>
               <span class="input-group-addon">
                 <span ng-show="session.edit.is_percent">%</span>
                 <span ng-hide="session.edit.is_percent">{{enterprise.data[0].symbol}}</span>
@@ -142,14 +142,14 @@
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.DEBITOR_GROUP" | translate }}</label>
             <div class="col-xs-7">
-              <select class="form-bhima" ng-model="session.edit.debitor_group_uuid" ng-options="debitorGroup.uuid as debitorGroup.name for debitorGroup in debitorGroups.data">
+              <select class="form-bhima" required ng-model="session.edit.debitor_group_uuid" ng-options="debitorGroup.uuid as debitorGroup.name for debitorGroup in debitorGroups.data">
                 <option value="" disable="disabled">-- {{'SELECT.SUBSIDY' | translate}} -- </option>
               </select>
             </div>
           </div>
 
           <div class="form-group">
-            <input type="submit" id="editButtonID" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
+            <input type="submit" ng-disabled="edit.$invalid" id="editButtonID" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
             <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
           </div>
         </form>

@@ -4,6 +4,7 @@
    "ACCOUNT_CHART"   : "Plan Comptable",
    "ACCOUNT_COST"    : "Comptes des charges et pertes par nature",
    "ACCOUNT_EQUITY"  : "Comptes des fonds propres et emprunts a plus d'un an",
+   "ACCOUNT_EXP_PROD": "Comptes des autres charges et autres produits",
    "ACCOUNT_FINC"    : "Comptes financiers",
    "ACCOUNT_GROUP"   : "Groupe des Comptes (Comptes Titres)",
    "ACCOUNT_LIST"    : "Liste des comptes",
@@ -15,6 +16,7 @@
    "ACCOUNT_TYPE"    : "Type de Compte",
    "ADD"             : "Ajouter un Compte",
    "ALL"             : "Tous",
+   "ALL_ACCOUNT"     : "Tous les comptes",
    "BALANCE_ACCOUNT" : "Compte du bilan",
    "CREATE"          : "Créer un plan Comptable",
    "COST_CENTER"     : "Centre des couts",
@@ -439,7 +441,7 @@
    "INVOICE_DATE"          : "Date Facture",
    "INVOICE_ID"            : "ID Facture",
    "INVPO_ID"              : "ID Operation",
-   "IS_ASSET"              : "Asset ?",
+   "IS_ASSET"              : "Actif ?",
    "IS_BRUT_LINK"          : "Est un brut ?",
    "IS_IPR"                : "Est-ce l'IPR",
    "IS_OHADA"              : "OHADA ?",
@@ -2989,5 +2991,12 @@
    "REGISTERED"       : "Villages Enregistrés",
    "SECTOR"           : "Commune",
    "TITLE"            : "Gestion des Villages"
-   }
+   },
+"GRID" : {
+  "CLEAR" : "Clear Selection",
+  "UPDATE" : "Update Selection",
+  "REFRESH" : "Refresh Selection",
+  "GROUP_ROWS" : "Group Rows",
+  "ABOLISH_GROUPS" : "Abolish Grouping"
+}
 }
