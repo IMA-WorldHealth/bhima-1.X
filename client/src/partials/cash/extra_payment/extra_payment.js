@@ -10,8 +10,6 @@ angular.module('bhima.controllers')
   'exchange',
   '$window',
   function ($scope, $http, $translate, validate, messenger, appstate, Appcache, exchange, $window) {
-
-
     var dependencies = {};
     $scope.img = 'placeholder.gif';
     var session = $scope.session = {},
@@ -22,7 +20,7 @@ angular.module('bhima.controllers')
       required : true,
       query : {
         tables : {
-          patient : {columns : ['uuid', 'project_id', 'reference', 'debitor_uuid', 'first_name', 'last_name', 'sex', 'dob', 'origin_location_id', 'registration_date']},
+          patient : {columns : ['uuid', 'project_id', 'reference', 'debitor_uuid', 'first_name', 'last_name', 'middle_name', 'sex', 'dob', 'origin_location_id', 'registration_date']},
           debitor : { columns : ['text']},
           debitor_group : { columns : ['account_id', 'price_list_uuid', 'is_convention']},
           project : { columns : ['abbr']}
@@ -59,7 +57,7 @@ angular.module('bhima.controllers')
     cache.fetch('account').then(getAccount);
 
     $scope.formatPatient = function (patient) {
-      return patient ? [patient.first_name, patient.last_name].join(' ') : '';
+      return patient ? [patient.first_name, patient.last_name, patient.middle_name].join(' ') : '';
     };
 
     $scope.formatAccount = function (ac) {
@@ -84,49 +82,26 @@ angular.module('bhima.controllers')
 
     function search() {
       $scope.state = 'generate';
-      session.patient = session.selected;
       session.configured = true;
 
-      var id = session.patient.debitor_uuid,
+      var debitor_uuid = session.patient.debitor_uuid,
         account_id = session.patient.account_id;
 
-      dependencies.sales = {
-        query : {
-          tables : {
-            'sale' : {
-              columns : ['uuid', 'debitor_uuid']
-            },
-            'patient' : {
-              columns : ['first_name', 'middle_name', 'last_name']
-            }
-          },
-          join : ['sale.debitor_uuid=patient.debitor_uuid'],
-          where : ['patient.debitor_uuid=' + id]
-        }
-      };
-      validate.process(dependencies, ['sales'])
-      .then(function (model) {
-        var sales = model.sales.data;
-        $scope.saleData = [];
-        sales.forEach(function (sale) {
-          $http.get('/ledgers/debitor/'+sale.debitor_uuid)
-          .success(function (rows) {
-            var items = rows.filter(function (row) {
-              return row.balance > 0;
-            });
-            items.forEach(function (row) {
-              row.debitor_first = sale.first_name;
-              row.debitor_middle = sale.middle_name;
-              row.debitor_last = sale.last_name;
-              row.transaction = row.abbr + row.reference;
-              row.cost = row.balance;
-              row.currency = $scope.project.currency_id;
-              row.currency_id = $scope.project.currency_id;
-            });
-            $scope.saleData = $scope.saleData.concat(items);
-            $scope.saleDataUnique = filterUnique($scope.saleData, 'transaction');
-          });
-        });  
+      $scope.saleData = [];
+        
+      $http.get('/ledgers/debitor/' + debitor_uuid)
+      .success(function (rows) {
+        var items = rows.filter(function (row) {
+          return row.balance > 0;
+        });
+        items.forEach(function (row) {
+          row.transaction = row.abbr + row.reference;
+          row.cost = row.balance;
+          row.currency = $scope.project.currency_id;
+          row.currency_id = $scope.project.currency_id;
+        });
+        $scope.saleData = $scope.saleData.concat(items);
+        $scope.saleDataUnique = filterUnique($scope.saleData, 'transaction');
       });
 
       function filterUnique(array, key) {
@@ -144,6 +119,17 @@ angular.module('bhima.controllers')
       }
     }
 
+    function setCurrency(obj) {
+      if (obj.currency !== $scope.project.currency_id && obj.currency_id === $scope.project.currency_id) {
+        obj.balance = obj.balance * exchange.rate(null, obj.currency);
+        obj.cost = obj.balance;
+        obj.currency_id=obj.currency;
+      } else if (obj.currency === $scope.project.currency_id && obj.currency_id !== $scope.project.currency_id) {
+        obj.balance = obj.balance / exchange.rate(null, obj.currency_id);
+        obj.cost = obj.balance;
+        obj.currency_id=obj.currency;
+      }
+    }
     $scope.isOutstanding = function isoutstanding(receipt) {
       return receipt.debit - receipt.credit !== 0;
     };
@@ -188,6 +174,7 @@ angular.module('bhima.controllers')
     $scope.search = search;
     $scope.print = print;
     $scope.reconfigure = reconfigure;
+    $scope.setCurrency = setCurrency;
     $scope.submit = submit;
   }
 ]);

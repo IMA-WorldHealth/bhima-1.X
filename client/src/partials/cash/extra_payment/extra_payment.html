@@ -19,7 +19,10 @@
                   <span class="input-group-addon">
                     <span class="glyphicon glyphicon-user"></span>
                   </span>  
-                  <input class="form-bhima" ng-model="session.selected" required typeahead="patient as formatPatient(patient) for patient in session.patients.data | filter:$viewValue | limitTo:10" typeahead-template-url="template.html" placeholder="{{ 'PATIENT_STANDING.PLACEHOLDER' | translate }}">
+                  <input class="form-bhima" ng-model="session.patient" 
+                    required typeahead="patient as formatPatient(patient) for patient in session.patients.data | filter:$viewValue | limitTo:10" 
+                    typeahead-template-url="/partials/templates/patientListe.tmpl.html"
+                    placeholder="{{ 'PATIENT_STANDING.PLACEHOLDER' | translate }}">
                   </div>
                 </div>
               </div>
@@ -33,7 +36,7 @@
                   <span class="input-group-addon">
                     <span class="glyphicon glyphicon-briefcase"></span>
                   </span>  
-                  <input class="form-bhima" ng-model="session.account" required typeahead="account as formatAccount(account) for account in session.accounts.data | filter:$viewValue | limitTo:10" typeahead-template-url="templateAccount.html" placeholder="{{ 'PATIENT_STANDING.PLACEHOLDER' | translate }}">
+                  <input class="form-bhima" ng-model="session.account" required typeahead="account as formatAccount(account) for account in session.accounts.data | filter:$viewValue | limitTo:10" typeahead-template-url="/partials/templates/accountListe.tmpl.html" placeholder="{{ 'PATIENT_STANDING.PLACEHOLDER' | translate }}">
                   </div>
                 </div>
               </div>
@@ -42,23 +45,10 @@
                     {{ "REPORT.GENERATE" | translate }}
                 </button>
               </div>
-
             </form>
           </div>
         </div>
       </div>
-      <script type="text/ng-template" id="template.html">
-        <a>
-          <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-          <span><b>[{{ match.model.uuid }}]</b></span>
-        </a>
-      </script>
-      <script type="text/ng-template" id="templateAccount.html">
-        <a>
-          <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-        </a>
-      </script>
-
     </main>  
   </div>
   <div ng-switch-when="generate">  
@@ -124,6 +114,9 @@
           <div class="alert alert-info">
             <h4>{{ 'PRIMARY_CASH.EXPENSE.ACCOUNT' | translate }} ({{ 'CASH.EXTRA.WAIT_ACCOUNT' | translate }})</h4>
             <strong>{{ session.account.account_number }}</strong> - {{ session.account.account_txt }}
+            <hr>
+            <h4>{{ 'CASH.EXTRA.SALE_CLIENT' | translate }}</h4>
+            {{ session.patient.last_name }} {{ session.patient.middle_name }} {{ session.patient.first_name }}            
           </div>
         </div>
       </div>
@@ -141,7 +134,6 @@
                   <tr>
                     <th width="7%">{{ "CASH.EXTRA.SALE_NO" | translate }}</th>
                     <th>{{ "CASH.EXTRA.SALE_UUID" | translate }}</th>
-                    <th>{{ "CASH.EXTRA.SALE_CLIENT" | translate }}</th>
                     <th>{{ "CASH.EXTRA.SALE_AMOUNT_TO_PAY" | translate }}</th>
                     <th>{{ "CASH.EXTRA.SALE_AMOUNT_PAYED" | translate }}</th>
                     <th width="5%">{{ "CASH.EXTRA.SALE_CURRENCY" | translate }}</th>
@@ -154,11 +146,6 @@
                   ng-repeat="sale in saleDataUnique | filter : session.search">
                     <td>{{ sale.transaction }}</td>
                     <td>{{ sale.inv_po_id }}</td>
-                    <td>
-                      <span ng-if="sale.debitor_first">{{ sale.debitor_first }}</span> 
-                      <span ng-if="sale.debitor_middle">{{ sale.debitor_middle }}</span> 
-                      <span ng-if="sale.debitor_last">{{ sale.debitor_last }}</span> 
-                    </td>
                     <td><span ng-bind-html="sale.balance | intlcurrency:sale.currency"></span></td>
                     <td>
                       <input 
