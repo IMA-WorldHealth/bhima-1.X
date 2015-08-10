@@ -249,7 +249,7 @@
       "SALE_NO"            : "Sale",
       "SALE_UUID"          : "Sale ID",
       "SALE_SUBMIT"        : "Submit",
-      "TITLE"              : "Extra ordinary payment",
+      "TITLE"              : "Regularization of payments",
       "WAIT_ACCOUNT"       : "Compte d'attente"
     },
    "HELP_TXT_1"       : "The module allows debitors to pay against existing invoices",
@@ -2773,7 +2773,7 @@
    "DONATION_MANAGEMENT"       : "Donation Management",
    "DONOR_MANAGEMENT"          : "Donor management",
    "EDIT_BUDGET"               : "Edit Account Budget",
-   "EXTRA_PAYMENT"             : "Extra ordinary payment",
+   "EXTRA_PAYMENT"             : "Regularization of payments",
    "DISTRIBUTION_PATIENTS"     : "Distribution patients records",
    "DISTRIBUTION_SERVICES"     : "Distribution Services Records",
    "EDIT_PATIENT"              : "Edit Patient Details",

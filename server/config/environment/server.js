@@ -9,18 +9,50 @@ var config = {
     'password' : 'HISCongo2013',
     'database' : 'bhima'
   },
-  'log' : {
-    'type' : 'html',
-    'file' : 'log'
-  },
   'session' : {
     'secret' : 'xopen blowfish',
     'resave' : false,
     'saveUninitialized' : false,
   },
+
+  /* Configuration for plugins
+   * Each plugin REQUIRES three properties:
+   * 1) name      - Stored as the name of the plugin. Write in camelCase.
+   * 2) script    - The script relative to the plugins/ directory
+   * 3) options   - can be an empty object, but must exist. An object of paramter to
+   *                be passed to the child process.  Generally, you'll want to schedule
+   *                frequencies here.
+   */
+  'plugins' : [{
+    'name' : 'mail',
+    'script' : '/mail/index.js',
+    'options' : {
+      'emails' : [{
+        'name' : 'daily',
+        //'frequency' : '0 23 * * *',
+        'frequency' : '*/3 * * * *', // every 3 minutes
+        'addressList' : 'test',
+      }, {
+        'name' : 'weekly',
+        'frequency' : '0 0 * * 5',
+        'addressList' : 'developers'
+      }, {
+        'name' : 'monthly',
+        'frequency' : '0 0 1 * *',
+        'addressList' : 'developers'
+      }]
+    }
+  }],
+//  }, {
+//    'name' : 'backup',
+//    'script' : 'backup/index.js',
+//    'options' : {
+//      'frequency' : '0 0 * * *'
+//    }
+//  }],
   'tls' : {
-    'key' : 'server/config/keys/key.pem',
-    'cert' : 'server/config/keys/ssl.crt'
+    'key' : 'server/config/keys/server.key',
+    'cert' : 'server/config/keys/server.crt'
   },
   'auth' : {
     'paths' : [
