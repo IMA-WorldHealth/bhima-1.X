@@ -90,7 +90,7 @@ function checkMissingAccounts(transactions) {
     'SELECT COUNT(pj.uuid), pj.trans_id ' +
     'FROM posting_journal AS pj LEFT JOIN account ON ' +
       'pj.account_id = account.id ' +
-    'WHERE pj.trans_id IN (?) AND account.id IS NULL' +
+    'WHERE pj.trans_id IN (?) AND account.id IS NULL ' +
     'GROUP BY pj.trans_id';
 
   return db.exec(sql, transactions)
@@ -109,7 +109,7 @@ function checkDateInPeriod(transactions) {
     'SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.trans_date, p.period_start, p.period_stop ' +
     'FROM posting_journal AS pj JOIN period as p ON pj.period_id = p.id ' +
     'WHERE pj.trans_date NOT BETWEEN p.period_start AND p.period_stop AND ' +
-      'trans.id IN (?) ' +
+      'pj.trans_id IN (?) ' +
     'GROUP BY pj.trans_id;';
 
   return db.exec(sql, transactions)
@@ -181,14 +181,17 @@ function checkDebtorCreditorExists(transactions) {
   });
 }
 
+// issue a warning if a transaction involving a debtor/creditor does not use a doc_num
 function checkDocumentNumberExists(transactions) {
   var sql =
-    'SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.deb_cred_uuid FROM posting_journal AS pj ' +
+    'SELECT COUNT(pj.uuid) AS count, pj.doc_num, pj.trans_id, pj.deb_cred_uuid FROM posting_journal AS pj ' +
     'WHERE pj.trans_id IN (?) AND (pj.deb_cred_type = \'D\' OR pj.deb_cred_type = \'C\') ' +
-    'GROUP BY trans_id HAVING doc_num IS NULL;';
+    'GROUP BY pj.trans_id HAVING pj.doc_num IS NULL;';
 
   return db.exec(sql, transactions)
   .then(function (rows) {
+
+    console.log('[DOC NUM]', rows);
 
     // if nothing is returned, skip error report
     if (!rows.length) { return; }
@@ -207,7 +210,8 @@ function runAllChecks(transactions) {
     checkDateInPeriod(transactions),
     checkPeriodAndFiscalYearExists(transactions),
     checkTransactionsBalanced(transactions),
-    checkDebtorCreditorExists(transactions)
+    checkDebtorCreditorExists(transactions),
+    checkDocumentNumberExists(transactions)
   ]);
 }
 
@@ -216,7 +220,7 @@ function runAllChecks(transactions) {
 // Performs a trial balance
 // Transaction ids are sent to the route in the query.
 // e.g. ?transactions=HBB1,PAX2,HBB34,PAX356
-exports.postTrialBalance = function (req, res, next) {
+exports.getTrialBalance = function (req, res, next) {
   'use strict';
 
   // parse the query string and retrieve the params
@@ -225,10 +229,14 @@ exports.postTrialBalance = function (req, res, next) {
   runAllChecks(transactions)
   .then(function (data) {
 
+    console.log('Done!', data);
+
     // trial balance succeeded!  Send back the resulting report
     res.status(200).send(data);
   })
   .catch(function (error) {
+
+    console.error(error.stack);
 
     // whoops.  Still have either errors or warnings. Make sure
     // that they are properly reported to the client.
@@ -283,7 +291,7 @@ function postToGeneralLedger (userId, key) {
     sql =
       'INSERT INTO period_total (account_id, credit, debit, fiscal_year_id, enterprise_id, period_id) ' +
       'SELECT account_id, SUM(credit_equiv) AS credit, SUM(debit_equiv) as debit , fiscal_year_id, project.enterprise_id, ' +
-        'period_id FROM posting_journal JOIN project ON posting_journal.project_id=project.id ' +
+        'period_id FROM posting_journal JOIN project ON posting_journal.project_id = project.id ' +
       'GROUP BY account_id ' +
       'ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit);';
     return db.exec(sql);
