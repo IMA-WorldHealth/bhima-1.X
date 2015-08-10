@@ -74,11 +74,11 @@
     .when('/reference_group', {
       controller: 'reference_group',
       templateUrl: 'partials/reference_group/reference_group.html'
-    })    
+    })
     .when('/reference', {
       controller: 'reference',
       templateUrl: 'partials/reference/reference.html'
-    })        
+    })
     .when('/inventory/', {
       controller: 'inventory',
       templateUrl: '/partials/inventory/inventory.html'
@@ -365,7 +365,7 @@
     .when('/reports/stock_integration', {
       controller : 'stockIntegration',
       templateUrl : 'partials/reports/stock_integration/stock_integration.html'
-    })    
+    })
     .when('/reports/expiring/:option', {
       controller : 'expiring.option',
       templateUrl : 'partials/reports/expiring_stock/expiring_stock_view.html'
@@ -727,6 +727,10 @@
     .when('/reports/bilan/', {
       controller : 'configureBilan',
       templateUrl : 'partials/reports_proposed/bilan/bilan.html'
+    })
+    .when('/reports/result_account/', {
+      controller : 'configureResult',
+      templateUrl : 'partials/reports_proposed/result_account/result_account.html'
     })
     .when('/reports/balance/', {
       controller : 'configureBalance',
