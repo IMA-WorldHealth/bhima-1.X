@@ -147,7 +147,7 @@ function checkPeriodAndFiscalYearExists(transactions) {
 // make sure the debit_equiv, credit_equiv are balanced
 function checkTransactionsBalanced(transactions) {
 
-  var sql = 
+  var sql =
     'SELECT COUNT(pj.uuid) AS count, pj.trans_id, SUM(pj.debit_equiv - pj.credit_equiv) AS balance ' +
     'FROM posting_journal AS pj ' +
     'WHERE pj.trans_id IN (?) ' +
@@ -229,7 +229,7 @@ function trialdashboard(transactions) {
  * performed to catch errors.  Even if errors or warnings are incurred,
  * the balance proceeds to report the total number of rows in the
  * trailbalance and other details.
- * 
+ *
  * This report is sent back to the client for processing.
  *
  * NOTE: though a user may choose to ignore the errors presented
@@ -244,17 +244,44 @@ exports.getTrialBalance = function (req, res, next) {
   'use strict';
 
   // parse the query string and retrieve the params
-  var transactions = req.query.transactions.split(',');
+  var transactions = req.query.transactions.split(','),
+      report = {};
 
+  // run the database checks
   runAllChecks(transactions)
-  .then(function (reports) {
+  .then(function (results) {
 
-    reports = reports.filter(function (r) {
+    // filter out the checks that passed
+    // (they will be null/undefined)
+    report.exceptions = results.filter(function (r) {
       return !!r;
     });
 
+    // attempt to calculate a summary of the before, credit, debit, and after
+    // state of each account in the posting journal
+    var sql =
+      'SELECT pt.debit, pt.credit, '  +
+      'pt.account_id, pt.balance, account.account_number ' +
+      'FROM  account JOIN ( ' +
+        'SELECT SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit, ' +
+        'posting_journal.account_id, (period_total.debit - period_total.credit) AS balance ' +
+        'FROM posting_journal LEFT JOIN period_total ' +
+        'ON posting_journal.account_id = period_total.account_id ' +
+        'WHERE posting_journal.trans_id IN (?) ' +
+        'GROUP BY posting_journal.account_id' +
+        ') AS pt ' +
+      'ON account.id=pt.account_id;';
+
+    return db.exec(sql, [transactions]);
+  })
+  .then(function (summary) {
+
+    console.log(summary);
+
+    report.summary = summary;
+
     // trial balance succeeded!  Send back the resulting report
-    res.status(200).send(reports);
+    //res.status(200).send(report);
   })
   .catch(function (error) {
 

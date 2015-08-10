@@ -12,7 +12,6 @@ angular.module('bhima.controllers')
 
     connect.fetch('trialbalance/initialize')
     .then(function (request) {
-      console.log('[DEBUG]', 'Request is:', request);
       $scope.transactions = request.transactions;
       $scope.balances = request.balances;
       var total = $scope.total = {};
