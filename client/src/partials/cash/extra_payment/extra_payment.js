@@ -130,7 +130,6 @@ angular.module('bhima.controllers')
         obj.currency_id=obj.currency;
       }
     }
-
     $scope.isOutstanding = function isoutstanding(receipt) {
       return receipt.debit - receipt.credit !== 0;
     };
