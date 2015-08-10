@@ -756,6 +756,69 @@ function stock_movement (params){
   return db.exec(requette);
 }
 
+function balance_mensuelle_all (params){
+  params = JSON.parse(params);
+  var requette, oldTable, currentTable, unionTable,
+      classe = params.classe,
+      periode = params.periode,
+      project = params.project;
+
+  oldTable =
+      '(SELECT `ac`.`account_number`, `ac`.`account_txt`, `ac`.`is_asset`, `t`.`debit`, `t`.`credit`, `t`.`old_debit`, `t`.`old_credit`, `t`.`currency_id` ' +
+      'FROM (' +
+        '(' +
+          'SELECT `posting_journal`.`project_id`, `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, ' +
+            0 + ' AS debit, ' + 0 + ' AS credit, ' +
+            'SUM(`posting_journal`.`debit_equiv`) AS `old_debit`,' +
+            'SUM(`posting_journal`.`credit_equiv`) AS `old_credit`, `posting_journal`.`account_id`, `posting_journal`.`deb_cred_uuid`, `posting_journal`.`currency_id`, ' +
+            '`posting_journal`.`doc_num`, `posting_journal`.`trans_id`, `posting_journal`.`description`, `posting_journal`.`comment` ' +
+          'FROM `posting_journal` WHERE MONTH(`posting_journal`.`trans_date`) < MONTH(?) GROUP BY `posting_journal`.`account_id` ' +
+        ') UNION ALL (' +
+          'SELECT `general_ledger`.`project_id`, `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, '+
+            0 + ' AS credit, ' + 0 + ' AS debit, ' +
+            'SUM(`general_ledger`.`debit_equiv`) AS `old_debit`, ' +
+            'SUM(`general_ledger`.`credit_equiv`) AS `old_credit`, `general_ledger`.`account_id`, `general_ledger`.`deb_cred_uuid`, `general_ledger`.`currency_id`, ' +
+            '`general_ledger`.`doc_num`, `general_ledger`.`trans_id`, `general_ledger`.`description`, `general_ledger`.`comment` ' +
+          'FROM `general_ledger` WHERE MONTH(`general_ledger`.`trans_date`) < MONTH(?) GROUP BY `general_ledger`.`account_id`' +
+        ')' +
+      ') AS `t`, `account` AS `ac`, `period` AS `p` ' +
+      'WHERE `t`.`account_id` = `ac`.`id` ' +
+      ' AND MONTH(t.trans_date) < MONTH(?) AND (? BETWEEN `p`.`period_start` AND `p`.`period_stop`) AND `p`.`locked`=0 ' +
+      ' AND t.project_id = ?) ';
+
+  currentTable =
+      '(SELECT `ac`.`account_number`, `ac`.`account_txt`, `ac`.`is_asset`, `t`.`debit`, `t`.`credit`, `t`.`old_debit`, `t`.`old_credit`, `t`.`currency_id` ' +
+      'FROM (' +
+        '(' +
+          'SELECT `posting_journal`.`project_id`, `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, ' +
+            'SUM(`posting_journal`.`debit_equiv`) AS `debit`,' +
+            'SUM(`posting_journal`.`credit_equiv`) AS `credit`, ' +
+            0 + ' AS old_debit, ' + 0 + ' AS old_credit, ' +
+            '`posting_journal`.`account_id`, `posting_journal`.`deb_cred_uuid`, `posting_journal`.`currency_id`, ' +
+            '`posting_journal`.`doc_num`, `posting_journal`.`trans_id`, `posting_journal`.`description`, `posting_journal`.`comment` ' +
+          'FROM `posting_journal` WHERE MONTH(`posting_journal`.`trans_date`) = MONTH(?) GROUP BY `posting_journal`.`account_id` ' +
+        ') UNION ALL (' +
+          'SELECT `general_ledger`.`project_id`, `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, ' +
+            'SUM(`general_ledger`.`debit_equiv`) AS `debit`, ' +
+            'SUM(`general_ledger`.`credit_equiv`) AS `credit`, '+
+            0 + ' AS old_debit, ' + 0 + ' AS old_credit, ' +
+            '`general_ledger`.`account_id`, `general_ledger`.`deb_cred_uuid`, `general_ledger`.`currency_id`, ' +
+            '`general_ledger`.`doc_num`, `general_ledger`.`trans_id`, `general_ledger`.`description`, `general_ledger`.`comment` ' +
+          'FROM `general_ledger` WHERE MONTH(`general_ledger`.`trans_date`) = MONTH(?) GROUP BY `general_ledger`.`account_id`' +
+        ')' +
+      ') AS `t`, `account` AS `ac`, `period` AS `p` ' +
+      'WHERE `t`.`account_id` = `ac`.`id` ' +
+      ' AND MONTH(t.trans_date) = MONTH(?) AND (? BETWEEN `p`.`period_start` AND `p`.`period_stop`) AND `p`.`locked`=0 ' +
+      ' AND t.project_id = ?) ';
+
+  unionTable = '(' + oldTable + ' UNION ALL ' + currentTable + ') AS `union` ';
+
+  requette = 'SELECT `union`.`account_number`, `union`.`account_txt`, `union`.`is_asset`, SUM(`union`.`debit`) AS `debit`, SUM(`union`.`credit`) AS `credit`, SUM(`union`.`old_debit`) AS `old_debit`, SUM(`union`.`old_credit`) AS `old_credit`, `union`.`currency_id` ' +
+           ' FROM ' + unionTable +
+           ' GROUP BY `union`.`account_number`';
+
+  return db.exec(requette, [periode, periode, periode, periode, project, periode, periode, periode, periode, project]);
+}
 
 function balanceMensuelle (params){
   params = JSON.parse(params);
@@ -765,7 +828,7 @@ function balanceMensuelle (params){
       project = params.project;
 
   oldTable =
-      '(SELECT `ac`.`account_number`, `ac`.`account_txt`, `t`.`debit`, `t`.`credit`, `t`.`old_debit`, `t`.`old_credit`, `t`.`currency_id` ' +
+      '(SELECT `ac`.`account_number`, `ac`.`account_txt`, `ac`.`is_asset`, `t`.`debit`, `t`.`credit`, `t`.`old_debit`, `t`.`old_credit`, `t`.`currency_id` ' +
       'FROM (' +
         '(' +
           'SELECT `posting_journal`.`project_id`, `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, ' +
@@ -788,7 +851,7 @@ function balanceMensuelle (params){
       ' AND t.project_id = ?) ';
 
   currentTable =
-      '(SELECT `ac`.`account_number`, `ac`.`account_txt`, `t`.`debit`, `t`.`credit`, `t`.`old_debit`, `t`.`old_credit`, `t`.`currency_id` ' +
+      '(SELECT `ac`.`account_number`, `ac`.`account_txt`, `ac`.`is_asset`, `t`.`debit`, `t`.`credit`, `t`.`old_debit`, `t`.`old_credit`, `t`.`currency_id` ' +
       'FROM (' +
         '(' +
           'SELECT `posting_journal`.`project_id`, `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, ' +
@@ -814,7 +877,7 @@ function balanceMensuelle (params){
 
   unionTable = '(' + oldTable + ' UNION ALL ' + currentTable + ') AS `union` ';
 
-  requette = 'SELECT `union`.`account_number`, `union`.`account_txt`, SUM(`union`.`debit`) AS `debit`, SUM(`union`.`credit`) AS `credit`, SUM(`union`.`old_debit`) AS `old_debit`, SUM(`union`.`old_credit`) AS `old_credit`, `union`.`currency_id` ' +
+  requette = 'SELECT `union`.`account_number`, `union`.`account_txt`, `union`.`is_asset`, SUM(`union`.`debit`) AS `debit`, SUM(`union`.`credit`) AS `credit`, SUM(`union`.`old_debit`) AS `old_debit`, SUM(`union`.`old_credit`) AS `old_credit`, `union`.`currency_id` ' +
            ' FROM ' + unionTable +
            ' GROUP BY `union`.`account_number`';
 
@@ -892,24 +955,34 @@ function integration_stock(params) {
       _end =  sanitize.escape(util.toMysqlDate(new Date(p.end))),
       _depot = sanitize.escape(p.depot);
 
-  var sql =
-    'SELECT DISTINCT purchase.uuid, movement.depot_entry, depot.text AS depot_text, movement.document_id, purchase.cost, purchase.is_integration, purchase.currency_id, ' +
-    'purchase.purchase_date, purchase.is_direct, ' +
-    'purchase.reference, user.first, user.last, employee.prenom, employee.name, employee.postnom, ' +
-    'purchase.is_direct, u.first AS confirmed_first, u.last AS confirmed_last, ' +
-    'posting_journal.trans_id AS journal_trans_id, general_ledger.trans_id AS ledger_trans_id ' +
-    'FROM purchase ' + 
+  var sql = 
+    'SELECT DISTINCT purchase.uuid, purchase.cost, purchase.is_integration, purchase.currency_id, ' +
+    'purchase.purchase_date, purchase.is_direct, purchase.reference, purchase.is_direct, ' +
+    'posting_journal.inv_po_id, posting_journal.trans_id, ' +
+    'user.first, user.last, u.first AS confirmed_first, u.last AS confirmed_last, movement.depot_entry, movement.document_id, depot.text ' +
+    'FROM purchase ' +
+    'JOIN posting_journal ON posting_journal.inv_po_id = purchase.uuid ' +
     'JOIN user ON user.id = purchase.emitter_id ' +
     'JOIN user AS u ON u.id = purchase.confirmed_by ' +
     'JOIN stock ON stock.purchase_order_uuid = purchase.uuid ' +
-    'JOIN movement ON movement.tracking_number = stock.tracking_number ' +  
-    'JOIN depot ON depot.uuid = movement.depot_entry ' +  
-    'LEFT JOIN employee ON employee.id = purchase.receiver_id ' +
-    'LEFT JOIN posting_journal ON posting_journal.inv_po_id = purchase.uuid ' +
-    'LEFT JOIN general_ledger ON general_ledger.inv_po_id = purchase.uuid ' +
+    'JOIN movement ON movement.tracking_number = stock.tracking_number ' +
+    'JOIN depot ON depot.uuid = movement.depot_entry ' +
     'WHERE DATE(purchase.purchase_date) BETWEEN DATE(' + _start + ') AND DATE(' + _end + ') ' + 
     'AND purchase.is_integration = 1 AND purchase.confirmed = 1 AND movement.depot_entry = ' + _depot + ' ' + 
-    'ORDER BY purchase.purchase_date DESC ';
+    'UNION ' + 
+    'SELECT DISTINCT purchase.uuid, purchase.cost, purchase.is_integration, purchase.currency_id, ' +
+    'purchase.purchase_date, purchase.is_direct, purchase.reference, purchase.is_direct, ' +
+    'general_ledger.inv_po_id, general_ledger.trans_id, ' +
+    'user.first, user.last, u.first AS confirmed_first, u.last AS confirmed_last, movement.depot_entry, movement.document_id, depot.text ' +
+    'FROM purchase ' +
+    'JOIN general_ledger ON general_ledger.inv_po_id = purchase.uuid ' +
+    'JOIN user ON user.id = purchase.emitter_id ' +
+    'JOIN user AS u ON u.id = purchase.confirmed_by ' +
+    'JOIN stock ON stock.purchase_order_uuid = purchase.uuid ' +
+    'JOIN movement ON movement.tracking_number = stock.tracking_number ' +
+    'JOIN depot ON depot.uuid = movement.depot_entry ' +
+    'WHERE DATE(purchase.purchase_date) BETWEEN DATE(' + _start + ') AND DATE(' + _end + ') ' + 
+    'AND purchase.is_integration = 1 AND purchase.confirmed = 1 AND movement.depot_entry = ' + _depot + ' ';
 
   return db.exec(sql);
 }
@@ -990,7 +1063,8 @@ function generate(request, params, done) {
     'integration_stock'     : integration_stock,
     'stock_movement'        : stock_movement,
     'stockStore'            : stock_store,
-    'stockComplete'         : stockComplete    
+    'stockComplete'         : stockComplete,
+    'balance_mensuelle_all' : balance_mensuelle_all    
     //'balance_sheet'         : require('./reports/balance_sheet')
   };
 

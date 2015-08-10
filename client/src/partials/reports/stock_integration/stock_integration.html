@@ -122,13 +122,13 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat='integrations in integration_records'>
+              <tr ng-repeat='integrations in integration_records | orderBy: "purchase_date" '>
                 <td>
                   <a ng-if="integrations.uuid" ng-href="/#/invoice/confirm_integration/{{integrations.document_id}}"><span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}</a>
                 </td>                                
-                <td><b> {{ integrations.journal_trans_id }} {{ integrations.ledger_trans_id }} </b></td>
+                <td><b> {{ integrations.trans_id }} </b></td>
                 <td> {{ integrations.first + ' ' + integrations.last }} </td>
-                <td> {{ integrations.depot_text }} </td>
+                <td> {{ integrations.text }} </td>
                 <td> {{ integrations.confirmed_first }} {{ integrations.confirmed_last }} </td>
                 <td> {{ integrations.purchase_date | date }} </td>
               </tr>

@@ -34,6 +34,9 @@ var extra           = require('../controllers/extraPayment');
 var gl              = require('../controllers/ledgers/general');
 
 
+var patient = require('../controllers/patient');
+
+
 
 exports.initialise = function (app) {
   console.log('[config/routes] Configure routes');
@@ -193,5 +196,10 @@ exports.initialise = function (app) {
   // general ledger controller
   // transitioning to a more traditional angular application architecture
   app.get('/ledgers/general', gl.route);
+
+  // search stuff
+  app.get('/patient/:uuid', patient.searchUuid);
+  app.get('/patient/search/fuzzy/:match', patient.searchFuzzy);
+  app.get('/patient/search/reference/:reference', patient.searchReference);
 
 };
