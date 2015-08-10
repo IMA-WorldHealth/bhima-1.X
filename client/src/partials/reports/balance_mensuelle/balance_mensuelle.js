@@ -104,12 +104,31 @@ angular.module('bhima.controllers')
     function print() { $window.print(); }
 
     function calculTotaux() {
-      session.sumOldDebit = $scope.balance_mensuelle.data.reduce(function sum(a, b) { return a + b.old_debit; },0);
-      session.sumOldCredit = $scope.balance_mensuelle.data.reduce(function sum(a, b) { return a + b.old_credit; },0);
-      session.sumDebit = $scope.balance_mensuelle.data.reduce(function sum(a, b) { return a + b.debit; },0);
-      session.sumCredit = $scope.balance_mensuelle.data.reduce(function sum(a, b) { return a + b.credit; },0);
-      session.solde_debit = $scope.balance_mensuelle.data.reduce(function sum(a, b) { return a + b.solde_debit; },0);
-      session.solde_credit = $scope.balance_mensuelle.data.reduce(function sum(a, b) { return a + b.solde_credit; },0);      
+      var sums = {
+        sumOldDebit : 0,
+        sumOldCredit : 0,
+        sumDebit : 0,
+        sumCredit : 0,
+        solde_debit : 0,
+        solde_credit :0
+      };
+
+      sums = $scope.balance_mensuelle.data.reduce(function (summer, row) {
+        summer.sumOldDebit += row.old_debit;
+        summer.sumOldCredit += row.old_credit;
+        summer.sumDebit += row.debit;
+        summer.sumCredit += row.credit;
+        summer.solde_debit += row.solde_debit;
+        summer.solde_credit += row.solde_credit;
+        return summer;
+      }, sums);
+
+      session.sumOldDebit = sums.sumOldDebit;
+      session.sumOldCredit = sums.sumOldCredit;
+      session.sumDebit = sums.sumDebit;
+      session.sumCredit = sums.sumCredit;
+      session.solde_debit = sums.solde_debit;
+      session.solde_credit = sums.solde_credit; 
     }
     
    function reconfigure () {
