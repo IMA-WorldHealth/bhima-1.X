@@ -1,1 +1,0 @@
-- [ ] Basic plugin for setting up and configuring backups and backup syncing
