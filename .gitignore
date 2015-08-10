@@ -2,21 +2,22 @@
 *.swo
 *.swn
 .idea/
-#*.min.js
 *.min.css
-log.*
 
+# ignore npm modules
 node_modules/
 test/reports/
 server/sql/backup/
-server/plugins/mail/out/
 
-#Ignore build
+# ignore gulp build
 client/dest/
 /*client/js/controllers/*/
 /*client/src/js/controllers/*/
 misc/migrate/out/
+<<<<<<< HEAD
 server/plugins/mail/conf/address_list.json
+=======
+>>>>>>> 937e0a5b71d9c159bec6c160596037943a3be0ac
 utilities/migrate/*
 /symmetric/*
 
@@ -27,7 +28,13 @@ utilities/migrate/*
 
 # ignore log files
 *.log
+<<<<<<< HEAD
 /log.html
+=======
+/symmetric/*
+log.*
+log.html
+>>>>>>> 937e0a5b71d9c159bec6c160596037943a3be0ac
 
 # ignore latex files
 *.pdf
@@ -40,3 +47,6 @@ utilities/migrate/*
 
 # ignore express-session
 sessions/*
+
+# ignore plugin configs
+plugins/mail/addresses/*
