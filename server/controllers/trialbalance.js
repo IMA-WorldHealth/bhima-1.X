@@ -244,7 +244,7 @@ exports.getTrialBalance = function (req, res, next) {
   'use strict';
 
   // parse the query string and retrieve the params
-  var transactions = req.query.transactions.split(','),
+  var transactions = req.query.transactions.toUpperCase().split(','),
       report = {};
 
   // run the database checks
@@ -274,14 +274,26 @@ exports.getTrialBalance = function (req, res, next) {
 
     return db.exec(sql, [transactions]);
   })
-  .then(function (summary) {
+  .then(function (balances) {
 
-    console.log(summary);
+    // attach the balances to the response
+    report.balances = balances;
 
-    report.summary = summary;
+    // attempt to calculate the date range of the transactions
+    var sql =
+      'SELECT COUNT(trans_id) AS rows, COUNT(DISTINCT(trans_id)) AS transactions, ' +
+        'MIN(DATE(trans_date)) AS mindate, MAX(DATE(trans_date)) AS maxdate ' +
+      'FROM posting_journal WHERE trans_id IN (?);';
+
+    return db.exec(sql, [transactions]);
+  })
+  .then(function (metadata) {
+
+    // attach the dates to the response
+    report.metadata = metadata[0];
 
     // trial balance succeeded!  Send back the resulting report
-    //res.status(200).send(report);
+    res.status(200).send(report);
   })
   .catch(function (error) {
 
