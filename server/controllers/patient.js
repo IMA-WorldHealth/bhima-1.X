@@ -17,7 +17,7 @@ exports.searchUuid = function (req, res, next) {
 
   // compose the sql query
   sql =
-    'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name, ' +
+    'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name, p.middle_name, ' +
       'p.sex, p.dob, p.origin_location_id, p.reference, proj.abbr, d.text, ' +
       'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.locked ' +
     'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
@@ -50,11 +50,11 @@ exports.searchReference = function (req, res, next) {
   // use MYSQL to look up the reference
   // TODO This could probably be optimized
   sql =
-    'SELECT q.uuid, q.project_id, q.debitor_uuid, q.first_name, q.last_name, ' +
+    'SELECT q.uuid, q.project_id, q.debitor_uuid, q.first_name, q.last_name, q.middle_name, ' +
       'q.sex, q.dob, q.origin_location_id, q.reference, q.text, ' +
       'q.account_id, q.price_list_uuid, q.is_convention, q.locked ' +
     'FROM (' +
-      'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name, ' +
+      'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name, p.middle_name, ' +
       'p.sex, p.dob, CONCAT(proj.abbr, p.reference) AS reference, p.origin_location_id, d.text, ' +
       'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.locked ' +
       'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
@@ -88,7 +88,7 @@ exports.searchFuzzy = function (req, res, next) {
 
   // Do fuzzy searching on the match parameter
   sql =
-    'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name, ' +
+    'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name,  p.middle_name, ' +
       'p.sex, p.dob, p.origin_location_id, p.reference, proj.abbr, d.text, ' +
       'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.locked ' +
     'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
@@ -96,10 +96,15 @@ exports.searchFuzzy = function (req, res, next) {
     'WHERE LEFT(LOWER(CONCAT(p.last_name, \' \', p.first_name )), CHAR_LENGTH(?)) = ? OR ' +
       'SOUNDEX(p.first_name) = SOUNDEX(?) OR ' +
       'SOUNDEX(p.last_name) = SOUNDEX(?) OR ' +
-      'SOUNDEX(CONCAT(p.last_name, \' \', p.first_name)) = SOUNDEX(?) ' +
+      'SOUNDEX(p.middle_name) = SOUNDEX(?) OR ' +
+      'SOUNDEX(CONCAT(p.last_name, \' \', p.first_name)) = SOUNDEX(?) OR ' +
+      'SOUNDEX(CONCAT(p.first_name, \' \', p.last_name)) = SOUNDEX(?) OR ' +
+      'SOUNDEX(CONCAT(p.first_name, \' \', p.last_name, \' \', p.middle_name)) = SOUNDEX(?) OR ' +
+      'SOUNDEX(CONCAT(p.last_name, \' \', p.middle_name, \' \', p.first_name)) = SOUNDEX(?) OR ' +
+      'SOUNDEX(CONCAT(p.last_name, \' \', p.middle_name)) = SOUNDEX(?) ' +
     'LIMIT 10;';
 
-  db.exec(sql, [match, match, match, match, match])
+  db.exec(sql, [match, match, match, match, match, match, match, match, match, match])
   .then(function (rows) {
     res.status(200).json(rows);
   })
