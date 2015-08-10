@@ -150,7 +150,7 @@
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.POSITION" | translate }}</label>
             <div class="col-xs-7">
-              <input type="number" ng-model="session.edit.position" min="0" class="form-bhima" required>
+              <input type="number" ng-model="session.edit.position" min="1" class="form-bhima" required>
             </div>
           </div>
 
@@ -165,8 +165,7 @@
             <label class="control-label col-xs-4 required">{{ "COLUMNS.REFERENCE_GROUP" | translate }}</label>
             <div class="col-xs-7">
               <select class="form-bhima" ng-model="session.edit.reference_group_id"> 
-                <option value=""></option>
-                <option ng-repeat="reference_group in reference_groups.data | orderBy:'text'" value="{{reference_group.id}}">
+                <option ng-repeat="reference_group in reference_groups.data | orderBy:'text'" ng-selected="reference_group.id" value="{{reference_group.id}}">
                   {{ reference_group.text }}
                 </option>
               </select>
@@ -177,8 +176,7 @@
             <label class="control-label col-xs-4 required">{{ "COLUMNS.RESULT_ACCOUNT_SCT" | translate }}</label>
             <div class="col-xs-7">
               <select class="form-bhima" ng-model="session.edit.section_resultat_id"> 
-                <option value=""></option>
-                <option ng-repeat="section in section_resultat.data | orderBy:'text'" value="{{section.id}}">
+                <option ng-repeat="section in section_resultat.data | orderBy:'text'" ng-selected="section.id" value="{{section.id}}">
                   {{ section.text }}
                 </option>
               </select>
