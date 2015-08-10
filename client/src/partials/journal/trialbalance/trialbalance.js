@@ -1,61 +1,77 @@
 angular.module('bhima.controllers')
-.controller('trialBalance', [
+.controller('TrialBalanceController', [
   '$scope',
   '$modalInstance',
   '$location',
-  'connect',
-  'messenger',
-  'request',
+  '$http',
   'errorCodes',
   'precision',
-  function ($scope, $modalInstance, $location, connect, messenger, request, errorCodes, precision) {
-    var session = $scope.session = {};
-    session.action = 'hide';
+  'transactions',
+  function ($scope, $modalInstance, $location, $http, errorCodes, precision, transactions) {
 
-    console.log('request', request);
+    // alais controller object
+    var self = this;
 
-    $scope.transactions = request.transactions;
-    $scope.balances = request.balances;
-    var total = $scope.total = {};
+    // globals
+    self.totals = {};
+    self.state = 'loading';
 
-    $scope.balances.forEach(function (item) {
-      total.before = (total.before || 0) + item.balance;
-      total.debit = (total.debit || 0) + item.debit;
-      total.credit = (total.credit || 0) + item.credit;
-      total.after = (total.after || 0) + item.balance + precision.round(item.credit - item.debit);
+    // load data and perform totalling
+    $http.get('/journal/trialbalance?transactions=' + transactions.join(','))
+    .then(function (response) {
+      self.state = 'default';
+
+      // attach to controller
+      self.balances = response.data.balances;
+      self.metadata = response.data.metadata;
+      self.exceptions = response.data.exceptions;
+
+      console.log('Exceptions:', self.exceptions);
+
+      // helper toggles
+      self.hasExceptions = self.exceptions.length > 0;
+      self.hasErrors = self.exceptions.some(function (e) {
+        return e.fatal;
+      });
+
+      // sum the totals up
+      self.totals  = self.balances.reduce(function (totals, row) {
+        totals.before += row.balance;
+        totals.debit += row.debit;
+        totals.credit += row.credit;
+        totals.after += (row.balance + precision.round(row.credit - row.debit));
+        return totals;
+      }, { before : 0, debit : 0, credit : 0, after : 0 });
+    })
+    .catch(function (error) {
+      console.error(error);
     });
 
-    var dates = $scope.transactions.map(function (row) {
-      return new Date(row.trans_date);
-    });
-
-    session.max = Math.max.apply(Math.max, dates);
-    session.min = Math.min.apply(Math.min, dates);
-    session.count = $scope.transactions.reduce(function (a,b) { return a + b.lines; }, 0);
-
-    $scope.errors = request.errors.map(function (error) {
-      return angular.extend(errorCodes[error.code], {affectedRows : error.details});
-    });
-
-    $scope.submit = function submit () {
-      connect.fetch('/trialbalance/submit/'+ request.key +'/')
+    self.postToGeneralLedger = function submit () {
+      $http.post('/journal/togeneraledger')
       .then(function () {
         $modalInstance.close();
       })
       .catch(function (error) {
         console.log(error);
-        messenger.error('Posting failed with ' +  JSON.stringify(error));
       });
     };
 
-    $scope.cancel = function cancel () {
+    self.cancelModal = function () {
       $modalInstance.dismiss();
     };
 
-    $scope.print = function print () {
-      $location.path('/trialbalance/print');
+    self.print = function print () {
+      $location.path('/trialbalance/print?transactions=' + transactions.join(','));
       $modalInstance.dismiss();
     };
 
+    self.toggleExceptionState = function () {
+      self.state = (self.state === 'exception') ? 'default' : 'exception';
+    };
+    
+    self.toggleVisibility = function (e) {
+      e.visible = !e.visible;
+    };
   }
 ]);

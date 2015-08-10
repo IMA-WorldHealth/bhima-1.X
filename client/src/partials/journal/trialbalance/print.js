@@ -10,7 +10,7 @@ angular.module('bhima.controllers')
 
     $scope.timestamp = new Date();
 
-    connect.fetch('trialbalance/initialize')
+    connect.fetch('/journal/trialbalance/')
     .then(function (request) {
       $scope.transactions = request.transactions;
       $scope.balances = request.balances;

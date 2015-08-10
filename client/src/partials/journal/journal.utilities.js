@@ -126,31 +126,35 @@ angular.module('bhima.controllers')
       dataview.setGrouping();
     };
 
+
+    // runs the trial balance
+    // We need to 
     $scope.trialBalance = function () {
-      // Runs the trial balance
-      // first, we need to validate that all items in each trans have been
-      // selected.
+      
+      // TODO
+      // Have a way of selecting transactions to perform the trial balance on
+      var transactions = [];
+      for (var i = 4640; i < 5000; i++) {
+        transactions.push('HBB' + i);
+      }
 
-      connect.fetch('/trialbalance/initialize')
-      .then(function (res) {
-        var instance = $modal.open({
-          backdrop: 'static', // this should not close on off click
-          keyboard : false,   // do not let esc key close modal
-          templateUrl:'partials/journal/trialbalance/trialbalance.html',
-          controller: 'trialBalance',
-          resolve : {
-            request: function () {
-              return res;
-            }
+      // The modal should make the relevant $http requests so that the client is
+      // not confused as to what is happening.  A loading dialog can be displayed
+      // on the modal to ensure that everything is fine.
+      var modal = $modal.open({
+        backdrop: 'static', // this should not close on off click
+        keyboard : false,   // do not let esc key close modal
+        templateUrl:'partials/journal/trialbalance/trialbalance.html',
+        controller: 'TrialBalanceController as BalanceCtrl',
+        resolve : {
+          transactions : function () {
+            return transactions;
           }
-        });
+        }
+      });
 
-        instance.result.then(function () {
-          $location.path('/reports/ledger/general_ledger');
-        });
-      })
-      .catch(function (error) {
-        messenger.danger('Trial Balance failed with ' + JSON.stringify(error));
+      modal.result.then(function () {
+        $location.path('/reports/ledger/general_ledger');
       });
     };
 
