@@ -4,17 +4,17 @@ var express       = require('express'),
 
 var config        = require('./config/environment/server');
 
-// TLS credentials
+// SSL credentials
 var privateKey    = fs.readFileSync(config.tls.key, 'utf8');
 var certificate   = fs.readFileSync(config.tls.cert, 'utf8');
-var credentials   = {key : privateKey, cert : certificate};
+var credentials   = { key : privateKey, cert : certificate };
 
 // Set the appropriate timezone for interpretting the server's data
 // NOTE : In a proper installation, this should be an environmental variable
 process.env.TZ = 'UTC';
 
 // Session configuration
-var db            = require('./lib/db').initialise(); // why we need to keep the null reference in db ?
+var db            = require('./lib/db').initialise(); // FIXME why we need to keep the null reference in db ?
 var authenticate  = require('./middleware/authentication')();
 
 var app = express();
@@ -24,6 +24,9 @@ require('./config/express')(app, authenticate);
 
 // Link routes
 require('./config/routes').initialise(app);
+
+// Load and configure plugins
+require('../plugins/pluginManager')(app, config);
 
 https.createServer(credentials, app).listen(config.port, logApplicationStart);
 
