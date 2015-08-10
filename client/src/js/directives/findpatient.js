@@ -41,7 +41,7 @@ angular.module('bhima.directives')
 
       // make a pretty label
       function fmtPatient(p) {
-        return p ? p.first_name + ' ' + p.last_name : '';
+        return p ? p.first_name + ' ' + p.last_name + ' ' + p.middle_name : '';
       }
 
       // change the input type
