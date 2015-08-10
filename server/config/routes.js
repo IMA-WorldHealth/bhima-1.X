@@ -35,6 +35,9 @@ var gl              = require('../controllers/ledgers/general');
 var finance         = require('../controllers/finance');
 var accounts        = require('../controllers/accounts');
 
+var patient = require('../controllers/patient');
+
+
 
 exports.initialise = function (app) {
   console.log('[config/routes] Configure routes');
@@ -205,5 +208,10 @@ exports.initialise = function (app) {
 
   // accounts controller
   app.get('/accounts', accounts.getAccounts);
+
+  // search stuff
+  app.get('/patient/:uuid', patient.searchUuid);
+  app.get('/patient/search/fuzzy/:match', patient.searchFuzzy);
+  app.get('/patient/search/reference/:reference', patient.searchReference);
 
 };

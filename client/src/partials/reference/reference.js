@@ -78,6 +78,22 @@ angular.module('bhima.controllers')
       return def.promise;
     }
 
+    function checkingReferenceUpdate (id,position,reference_group_id) {
+      var def = $q.defer();
+      var query = {
+        tables : { 
+          reference : { columns : ['id'] }
+        },
+        where  : ['reference.id<>' + id,'AND','reference.position=' + position,'AND','reference.reference_group_id=' + reference_group_id]
+      };
+      connect.fetch(query)
+      .then(function (res) {
+        def.resolve(res.length !== 0);
+      });
+
+      return def.promise;
+    }
+
 
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
@@ -119,7 +135,7 @@ angular.module('bhima.controllers')
       record.section_resultat_id = session.edit.section_resultat_id;      
       record.is_report = (session.edit.is_report)?1:0;
 
-      checkingReference(record.position,record.reference_group_id)
+      checkingReferenceUpdate(record.id,record.position,record.reference_group_id)
       .then(function (is_exist) {
         if (!is_exist) {
           connect.put('reference', [record], ['id'])
