@@ -5,93 +5,8 @@ var q       = require('q');
 var db      = require('../../../lib/db');
 var numeral = require('numeral');
 
-// Constant: root account id
-// var ROOT_ACCOUNT_ID = 0;
-
 var formatDollar = '$0,0.00';
 var bilanDate = new Date();
-
-// TODO Query for balance and title account IDs
-// var balanceAccountId = 2;
-// var titleAccountId = 3;
-
-// This method builds a tree data structure of
-// accounts and children of a specified parentId.
-// function getChildren(accounts, parentId, depth) {
-//   var children;
-
-//   // Base case: There are no child accounts
-//   // Return an empty array
-//   if (accounts.length === 0) { return []; }
-
-//   // Returns all accounts where the parent is the
-//   // parentId
-//   children = accounts.filter(function (account) {
-//     return account.parent === parentId;
-//   });
-
-//   // Recursively call get children on all child accounts
-//   // and attach them as childen of their parent account
-//   children.forEach(function (account) {
-//     account.depth = depth;
-//     account.children = getChildren(accounts, account.id, depth+1);
-//   });
-
-//   return children;
-// }
-
-
-// FIXME Whatever - Jog on CS 101 - oh man
-// function filterEmptyAccounts(accounts) {
-//   var removedAccount = true;
-
-//   while (removedAccount) {
-//     removedAccount = false;
-//     accounts = accounts.filter(emptyFilter);
-//   }
-
-//   function emptyFilter(account) {
-//     var hasNoChildren = account.children.length === 0;
-
-//     if (account.account_type_id === titleAccountId && hasNoChildren) {
-//       removedAccount = true;
-//     } else {
-//       account.children = account.children.filter(emptyFilter);
-//       return account;
-//     }
-//   }
-
-//   return accounts;
-// }
-
-// Adds the balance of a list of accounts to
-// an aggregate value
-// function aggregate(value, account) {
-
-//   var isLeaf = account.children.length === 0;
-
-//   // FIXME MySQL querry should never return NULL - normalization should not have to be done
-//   account.balance = account.balance || 0;
-
-//   // FIXME Balances are ONLY ever assigned to the very top level accounts, not for every title account
-//   account.formattedBalance = numeral(account.balance).format(formatDollar);
-
-//   // if the account has children, recursively
-//   // recursively call aggregate on the array of accounts
-//   if (!isLeaf) {
-//     return value + account.children.reduce(aggregate, 0);
-//   }
-//   return value + account.balance;
-// }
-
-// function getBalance(account) {
-//   var som = 0;
-//   account.children.forEach(function (child) {
-//     som += child.balance + getBalance(child);
-//   });
-
-//   return som;
-// }
 
 // expose the http route
 exports.compile = function (options) {
@@ -225,7 +140,6 @@ exports.compile = function (options) {
           section.totalAmortProv_view = numeral(section.totalAmortProv).format(formatDollar);
           section.totalNet_view = numeral(section.totalNet).format(formatDollar);
           section.totalPreviousNet_view = numeral(section.totalPreviousNet).format(formatDollar);
-
         });
 
           context.passiveGeneralBrut += section.totalBrut;
@@ -340,10 +254,10 @@ exports.compile = function (options) {
       return somDebit - somCredit;
     }
 
-    function getPreviousNet (reference, currents){
+    function getPreviousNet (reference, previous){
       var somDebit = 0, somCredit = 0;
 
-      currents.forEach(function (item){
+      previous.forEach(function (item){
         if(item.referenceId == reference.referenceId && item.accountIsBrutLink == 0){
           somDebit+=(item.generalLegderDebit) * -1;
           somCredit+=(item.generalLegderCredit) * -1;

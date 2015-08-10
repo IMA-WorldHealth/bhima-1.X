@@ -1,0 +1,99 @@
+<head>
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/normalize.css">
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/skeleton.css">
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/reports.css">
+</head>
+
+<body>
+  <section id="title" class="center">
+      <h3>Compte Resultat</h4>
+      <h4>Entreprise : ... ... ... ... ... ...</h5>
+      <h5>Exercice clos le : ... ... ... ... ... ...</h6>
+      <h5>Duree (En mois) : ... ... ... ... ... ...</h6>
+      <h5>Date {{=it.reportDate}}</h5>
+  </section>
+
+  <section>
+    <!-- charge side -->
+      <table class="balance" border="1">
+        <thead>
+          <tr>
+            <th>Ref</th>
+            <th>Charge</th>
+            <th>Exercice N</th>
+            <th>Ex. N-1</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{~it.chargeSide : section : ind1}}
+            <tr>
+              <td></td>
+              <td><b>{{=section.sectionResultLabel}}({{=section.sectionResultPosition}})</b></td>
+              <td colspan="3"></td>
+            </tr>
+              {{~section.refs : ref : ind2}}
+                <tr>
+                  <td>{{=ref.referenceAbbr}}</td>
+                  <td>{{=ref.referenceLabel}}</td>
+                  <td>{{=ref.net_view}}</td>
+                  <td>{{=ref.previous_view}}</td>
+                </tr>
+              {{~}}
+            <tr>
+              <td></td>
+              <td><b>TOTAL {{=section.sectionResultLabel}} ({{=section.sectionResultPosition}})</b></td>
+              <td><b>{{=section.total_view}}</b></td>
+              <td><b>{{=section.totalPrevious_view}}</b></td>
+            </tr>
+          {{~}}
+          <tr>
+            <td></td>
+            <td><b>TOTAL GENERAL</b></td>
+            <td><b>{{=it.chargeGeneral}}</b></td>
+            <td><b>{{=it.chargeGeneralPrevious}}</b></td>
+          </tr>
+        </tbody>
+      </table>
+
+    <!-- profit side -->
+      <table class="balance" border="1">
+        <thead>
+          <tr>
+            <th>Ref</th>
+            <th>Profit</th>
+            <th>Exercice N</th>
+            <th>Ex. N-1</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{~it.profitSide : section : ind1}}
+            <tr>
+              <td></td>
+              <td><b>{{=section.sectionResultLabel}}({{=section.sectionResultPosition}})</b></td>
+              <td colspan="3"></td>
+            </tr>
+              {{~section.refs : ref : ind2}}
+                <tr>
+                  <td>{{=ref.referenceAbbr}}</td>
+                  <td>{{=ref.referenceLabel}}</td>
+                  <td>{{=ref.net_view}}</td>
+                  <td>{{=ref.previous_view}}</td>
+                </tr>
+              {{~}}
+            <tr>
+              <td></td>
+              <td><b>TOTAL {{=section.sectionResultLabel}} ({{=section.sectionResultPosition}})</b></td>
+              <td><b>{{=section.total_view}}</b></td>
+              <td><b>{{=section.totalPrevious_view}}</b></td>
+            </tr>
+          {{~}}
+          <tr>
+            <td></td>
+            <td><b>TOTAL GENERAL</b></td>
+            <td><b>{{=it.profitGeneral}}</b></td>
+            <td><b>{{=it.profitGeneralPrevious}}</b></td>
+          </tr>
+        </tbody>
+      </table>
+  </section>
+</body>
