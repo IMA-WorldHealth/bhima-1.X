@@ -249,7 +249,7 @@
       "SALE_NO"            : "Vente",
       "SALE_UUID"          : "ID vente",
       "SALE_SUBMIT"        : "Soumettre",
-      "TITLE"              : "Paiement extra ordinaire",
+      "TITLE"              : "Régularisation des paiements",
       "WAIT_ACCOUNT"       : "Compte d'attente"
     },
    "HELP_TXT_1"       : "Cette module permettre des payer contre plusiers factures",
@@ -2773,7 +2773,7 @@
    "DONATION_MANAGEMENT"       : "Gestion des Dons",
    "DONOR_MANAGEMENT"          : "Gestion des donateurs",
    "EDIT_BUDGET"               : "Modifier budget d'un compte",
-   "EXTRA_PAYMENT"             : "Paiement extra ordinaire",
+   "EXTRA_PAYMENT"             : "Régularisation des paiements",
    "DISTRIBUTION_PATIENTS"     : "Historique des distributions aux patients",
    "DISTRIBUTION_SERVICES"     : "Historique des distributions aux services",
    "EDIT_PATIENT"              : "Modifier Patient",
