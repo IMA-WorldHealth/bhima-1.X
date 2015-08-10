@@ -133,10 +133,7 @@ angular.module('bhima.controllers')
       
       // TODO
       // Have a way of selecting transactions to perform the trial balance on
-      var transactions = [];
-      for (var i = 4640; i < 5000; i++) {
-        transactions.push('HBB' + i);
-      }
+      var transactions = ['HBB5472'];
 
       // The modal should make the relevant $http requests so that the client is
       // not confused as to what is happening.  A loading dialog can be displayed
