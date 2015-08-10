@@ -19,8 +19,8 @@ var config = {
     'saveUninitialized' : false,
   },
   'tls' : {
-    'key' : 'server/config/keys/key.pem',
-    'cert' : 'server/config/keys/ssl.crt'
+    'key' : 'server/config/keys/server.key',
+    'cert' : 'server/config/keys/server.crt'
   },
   'auth' : {
     'paths' : [
