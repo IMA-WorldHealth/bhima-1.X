@@ -74,7 +74,7 @@ function checkAccountsLocked(transactions) {
     'WHERE account.locked = 1 AND pj.trans_id IN (?) ' +
     'GROUP BY pj.trans_id;';
 
-  return db.exec(sql, transactions)
+  return db.exec(sql, [transactions])
   .then(function (rows) {
 
     // if nothing is returned, skip error report
@@ -85,6 +85,7 @@ function checkAccountsLocked(transactions) {
   });
 }
 
+// make sure there are no missing accounts in the transactions
 function checkMissingAccounts(transactions) {
   var sql =
     'SELECT COUNT(pj.uuid), pj.trans_id ' +
@@ -93,7 +94,7 @@ function checkMissingAccounts(transactions) {
     'WHERE pj.trans_id IN (?) AND account.id IS NULL ' +
     'GROUP BY pj.trans_id';
 
-  return db.exec(sql, transactions)
+  return db.exec(sql, [transactions])
   .then(function (rows) {
 
     // if nothing is returned, skip error report
@@ -104,6 +105,7 @@ function checkMissingAccounts(transactions) {
   });
 }
 
+// make sure dates are in their correct period
 function checkDateInPeriod(transactions) {
   var sql =
     'SELECT COUNT(pj.uuid) AS count, pj.trans_id, pj.trans_date, p.period_start, p.period_stop ' +
@@ -112,7 +114,7 @@ function checkDateInPeriod(transactions) {
       'pj.trans_id IN (?) ' +
     'GROUP BY pj.trans_id;';
 
-  return db.exec(sql, transactions)
+  return db.exec(sql, [transactions])
   .then(function (rows) {
     // if nothing is returned, skip error report
     if (!rows.length) { return; }
@@ -130,7 +132,7 @@ function checkPeriodAndFiscalYearExists(transactions) {
     'WHERE pj.trans_id IN (?) AND (pj.period_id IS NULL OR pj.fiscal_year_id IS NULL) ' +
     'GROUP BY pj.trans_id;';
 
-  return db.exec(sql, transactions)
+  return db.exec(sql, [transactions])
   .then(function (rows) {
 
     // if nothing is returned, skip error report
@@ -151,7 +153,7 @@ function checkTransactionsBalanced(transactions) {
     'WHERE pj.trans_id IN (?) ' +
     'GROUP BY trans_id HAVING balance <> 0;';
 
-  db.exec(sql, transactions)
+  db.exec(sql, [transactions])
   .then(function (rows) {
 
     // if nothing is returned, skip error report
@@ -170,7 +172,7 @@ function checkDebtorCreditorExists(transactions) {
     'WHERE pj.trans_id IN (?) AND (pj.deb_cred_type = \'D\' OR pj.deb_cred_type = \'C\') ' +
     'GROUP BY trans_id HAVING deb_cred_uuid IS NULL;';
 
-  return db.exec(sql, transactions)
+  return db.exec(sql, [transactions])
   .then(function (rows) {
 
     // if nothing is returned, skip error report
@@ -188,16 +190,14 @@ function checkDocumentNumberExists(transactions) {
     'WHERE pj.trans_id IN (?) AND (pj.deb_cred_type = \'D\' OR pj.deb_cred_type = \'C\') ' +
     'GROUP BY pj.trans_id HAVING pj.doc_num IS NULL;';
 
-  return db.exec(sql, transactions)
+  return db.exec(sql, [transactions])
   .then(function (rows) {
-
-    console.log('[DOC NUM]', rows);
 
     // if nothing is returned, skip error report
     if (!rows.length) { return; }
 
     // returns a promise error report
-    return createErrorReport('WARN_MISSING_DOCUMENT_ID', true, rows);
+    return createErrorReport('WARN_MISSING_DOCUMENT_ID', false, rows);
   });
 }
 
@@ -215,8 +215,28 @@ function runAllChecks(transactions) {
   ]);
 }
 
+//
+function trialdashboard(transactions) {
 
-// GET /journal/trialbalance
+}
+
+
+/* GET /journal/trialbalance
+ *
+ * Performs the trial balance.
+ *
+ * Initially, the checks described at the beginning of the module are
+ * performed to catch errors.  Even if errors or warnings are incurred,
+ * the balance proceeds to report the total number of rows in the
+ * trailbalance and other details.
+ * 
+ * This report is sent back to the client for processing.
+ *
+ * NOTE: though a user may choose to ignore the errors presented
+ * in the trial balance, the posting operation will block posting
+ * to the general ledger if there are any 'fatal' errors.
+*/
+
 // Performs a trial balance
 // Transaction ids are sent to the route in the query.
 // e.g. ?transactions=HBB1,PAX2,HBB34,PAX356
@@ -227,12 +247,14 @@ exports.getTrialBalance = function (req, res, next) {
   var transactions = req.query.transactions.split(',');
 
   runAllChecks(transactions)
-  .then(function (data) {
+  .then(function (reports) {
 
-    console.log('Done!', data);
+    reports = reports.filter(function (r) {
+      return !!r;
+    });
 
     // trial balance succeeded!  Send back the resulting report
-    res.status(200).send(data);
+    res.status(200).send(reports);
   })
   .catch(function (error) {
 
@@ -250,7 +272,6 @@ exports.postToGeneralLedger = function (req,res, next) {
   'use strict';
 
 };
-
 
 
 // TODO
@@ -302,4 +323,3 @@ function postToGeneralLedger (userId, key) {
     return db.exec(sql);
   });
 }
-
