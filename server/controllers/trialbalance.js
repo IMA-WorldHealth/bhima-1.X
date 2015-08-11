@@ -223,13 +223,7 @@ function runAllChecks(transactions) {
   ]);
 }
 
-//
-function trialdashboard(transactions) {
-
-}
-
-
-/* GET /journal/trialbalance
+/* POST /journal/trialbalance
  *
  * Performs the trial balance.
  *
@@ -244,11 +238,6 @@ function trialdashboard(transactions) {
  * in the trial balance, the posting operation will block posting
  * to the general ledger if there are any 'fatal' errors.
 */
-
-// POST /journal/trialbalance
-// Performs a trial balance
-// Transaction ids are sent to the route in the query.
-// e.g. ?transactions=HBB1,PAX2,HBB34,PAX356
 exports.postTrialBalance = function (req, res, next) {
   'use strict';
 
@@ -305,7 +294,6 @@ exports.postTrialBalance = function (req, res, next) {
     res.status(200).send(report);
   })
   .catch(function (error) {
-
     console.error(error.stack);
 
     // whoops.  Still have either errors or warnings. Make sure
@@ -314,32 +302,49 @@ exports.postTrialBalance = function (req, res, next) {
   });
 };
 
+
 // POST /generalledger
 // Posts data passing a valid trial balance to the general ledger
-exports.postToGeneralLedger = function (req,res, next) {
+exports.postToGeneralLedger = function (req, res, next) {
   'use strict';
 
-};
+  var sql,
+      transactions = req.body.transactions.map(function (t) { return t.toUpperCase(); });
 
+  // First check.  The post must pass a valid trial balance.  If it does
+  // not pass the trial balance, we error hard with a '400 Bad Request'
+  // error.
+  runAllChecks(transactions)
+  .then(function (results) {
 
-// TODO
-function postToGeneralLedger (userId, key) {
-  // Post data from the journal into the general ledger.
-  var sql;
+    // filter out the checks that passed
+    // (they will be null/undefined)
+    var exceptions = results.filter(function (r) {
+      return !!r;
+    });
 
-  // First thing we need to do is make sure that this posting request
-  // is not an error and comes from a valid user.
+    var hasErrors = exceptions.every(function (e) {
+      return e.fatal === false;
+    });
 
-  // Next, we need to generate a posting session id.
-  sql =
-    'INSERT INTO posting_session ' +
-    'SELECT max(posting_session.id) + 1, ?, ? ' +
-    'FROM posting_session;';
+    // we cannot post if there are fatal exceptions. Throw
+    // an error
+    if (hasErrors) {
+      throw { exceptions : exceptions };
+    }
 
-  db.exec(sql, [userId, new Date()])
-  .then(function (res) {
+    // we assume from here on that trial balance checks have passed
+    // let's open up a posting session
+    sql =
+      'INSERT INTO posting_session ' +
+      'SELECT max(posting_session.id) + 1, ?, ? ' +
+      'FROM posting_session;';
 
-    // Next, we must move the data into the general ledger.
+    return db.exec(sql, [req.session.user_id, new Date()]);
+  })
+  .then(function (result) {
+
+    // recoup the sessionId from the posting session
     var sessionId = res.insertId;
 
     sql =
@@ -351,23 +356,43 @@ function postToGeneralLedger (userId, key) {
       'SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, doc_num, ' +
         'description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, ' +
         'deb_cred_uuid, deb_cred_type,inv_po_id, comment, cost_ctrl_id, origin_id, user_id, cc_id, pc_id, ? ' +
-      'FROM posting_journal;';
-    return db.exec(sql, [sessionId]);
+      'FROM posting_journal WHERE trans_id IN (?);';
+    return db.exec(sql, [sessionId, transactions]);
   })
   .then(function () {
+
     // Sum all transactions for a given period from the PJ
     // into period_total, updating old values if necessary.
     sql =
       'INSERT INTO period_total (account_id, credit, debit, fiscal_year_id, enterprise_id, period_id) ' +
       'SELECT account_id, SUM(credit_equiv) AS credit, SUM(debit_equiv) as debit , fiscal_year_id, project.enterprise_id, ' +
         'period_id FROM posting_journal JOIN project ON posting_journal.project_id = project.id ' +
+        'WHERE trans_id IN (?) ' +
       'GROUP BY account_id ' +
       'ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit);';
-    return db.exec(sql);
+
+    return db.exec(sql, [transactions]);
   })
   .then(function () {
+
     // Finally, we can remove the data from the posting journal
-    sql = 'DELETE FROM posting_journal WHERE 1;';
-    return db.exec(sql);
+    sql = 'DELETE FROM posting_journal WHERE trans_id IN (?);';
+    return db.exec(sql, [transactions]);
+  })
+  .then(function () {
+    res.status(200).send();
+  })
+  .catch(function (error) {
+    console.error('error', error.stack);
+
+    // this was a generated error for failing the trial balance
+    // tell the client that
+    if (error.exceptions) {
+      return res.status(400).send({ exceptions: error.exceptions });
+    }
+
+    // whoops.  Still have either errors or warnings. Make sure
+    // that they are properly reported to the client.
+    res.status(500).send(error);
   });
-}
+};
