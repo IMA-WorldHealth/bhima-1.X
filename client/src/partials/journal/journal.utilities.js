@@ -131,11 +131,11 @@ angular.module('bhima.controllers')
     // We need to
     $scope.trialBalance = function () {
 
-      var transactions = dataview.getItems().map(function (d) { return d.trans_id; });
+      //var transactions = dataview.getItems().map(function (d) { return d.trans_id; });
     
       // TODO
       // Have a way of selecting transactions to perform the trial balance on
-      //var transactions = ['HBB5472', 'PAX1'];
+      var transactions = ['HBB5472', 'PAX1'];
 
       // The modal should make the relevant $http requests so that the client is
       // not confused as to what is happening.  A loading dialog can be displayed

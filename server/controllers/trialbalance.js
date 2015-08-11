@@ -303,7 +303,7 @@ exports.postTrialBalance = function (req, res, next) {
 };
 
 
-// POST /generalledger
+// POST /journal/togeneralledger
 // Posts data passing a valid trial balance to the general ledger
 exports.postToGeneralLedger = function (req, res, next) {
   'use strict';
@@ -323,8 +323,8 @@ exports.postToGeneralLedger = function (req, res, next) {
       return !!r;
     });
 
-    var hasErrors = exceptions.every(function (e) {
-      return e.fatal === false;
+    var hasErrors = exceptions.some(function (e) {
+      return e.fatal === true;
     });
 
     // we cannot post if there are fatal exceptions. Throw
@@ -344,8 +344,10 @@ exports.postToGeneralLedger = function (req, res, next) {
   })
   .then(function (result) {
 
+    console.log('Result:', result);
+
     // recoup the sessionId from the posting session
-    var sessionId = res.insertId;
+    var sessionId = result.insertId;
 
     sql =
       'INSERT INTO general_ledger ' +
