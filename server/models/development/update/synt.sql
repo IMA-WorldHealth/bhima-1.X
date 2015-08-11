@@ -32,3 +32,26 @@ UPDATE `account` SET `is_asset`=TRUE WHERE LEFT(`account_number`,2)=85 AND `is_o
 UPDATE `account` SET `is_asset`=TRUE WHERE LEFT(`account_number`,2)=87 AND `is_ohada` =1;
 UPDATE `account` SET `is_asset`=TRUE WHERE LEFT(`account_number`,2)=89 AND `is_ohada` =1;
 UPDATE `account` SET `is_asset`=NULL WHERE `parent`=0 AND `is_ohada` =1;
+
+
+
+USE bhima;
+
+-- Update all inventory type where inventory type is assembly to Article
+--
+-- Date: 2015-08-11
+-- By: Chris LOMAME
+
+UPDATE `inventory` SET `inventory`.`type_id` = 1, `inventory`.`consumable` = 1  WHERE `inventory`.`type_id` = 2;
+
+
+USE bhima;
+
+-- Remove inventory type Discount
+--
+-- Date: 2015-08-11
+-- By: Chris LOMAME
+
+DELETE FROM `inventory_type` WHERE `inventory_type`.`id` = 4;
+
+
