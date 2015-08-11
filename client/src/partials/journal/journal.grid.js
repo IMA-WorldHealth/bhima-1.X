@@ -11,7 +11,7 @@ angular.module('bhima.controllers')
     /* jshint unused : false */
     var dependencies = {}, ready = $q.defer();
     var columns, options, dataview, grid, checkboxSelector,
-        manager = { session : {}, fn : {}, mode : {} };
+        manager = { session : { selection : [] }, fn : {}, mode : {} };
 
     // FIXME : this is <i>terrible</i>.  Never ever do this ever again!
     appstate.set('journal.ready', ready.promise);
@@ -24,13 +24,8 @@ angular.module('bhima.controllers')
     function initialise (models) {
       angular.extend($scope, models);
 
-      checkboxSelector = new Slick.CheckboxSelectColumn({
-        cssClass : 'slick-cell-checkboxsel'
-      });
-
       // set up grid properties
       columns = [
-        checkboxSelector.getColumnDefinition(),
         // {id: 'uuid'           , name: $translate.instant('COLUMNS.ID')             , field: 'uuid'           , sortable: true },
         // {id: 'fiscal_year_id' , name: $translate.instant('COLUMNS.FISCAL_YEAR_ID') , field: 'fiscal_year_id' , sortable: true },
         // {id: 'period_id'      , name: $translate.instant('COLUMNS.PERIOD_ID')      , field: 'period_id'      , sortable: true },
@@ -60,11 +55,11 @@ angular.module('bhima.controllers')
       populate();
     }
 
-    function formatDate (row, col, val) {
-      return $filter('date')(val);
+    function formatDate(row, col, val) {
+      return $filter('date')(val, 'yyyy-MM-dd');
     }
 
-    function populate () {
+    function populate() {
       var groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
 
       dataview = new Slick.Data.DataView({
@@ -76,11 +71,6 @@ angular.module('bhima.controllers')
 
       grid.registerPlugin(groupItemMetadataProvider);
       grid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}));
-
-      // make sure the checkbox selector is 
-      grid.registerPlugin(checkboxSelector);
-
-      dataview.syncGridSelection(grid, true);
 
       dataview.onRowCountChanged.subscribe(function (e, args) {
         grid.updateRowCount();
