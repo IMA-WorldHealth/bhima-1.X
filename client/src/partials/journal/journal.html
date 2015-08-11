@@ -58,7 +58,7 @@
     <a class="btn btn-sm"  ng-class="{ 'btn-danger active' : !!session.authenticated, 'btn-default' : !session.authenticated }" ng-click="toggleEditMode()" ng-disabled="!hasData || session.mode=='edit'">
       <span class="glyphicon glyphicon-exclamation-sign"></span> {{ 'POSTING_JOURNAL.EDIT_MODE' | translate }}
     </a>
-    <a class="btn btn-default btn-sm" ng-click="trialBalance()" ng-disabled="!!session.authenticated">
+    <a class="btn btn-default btn-sm" ng-click="trialBalance()" ng-disabled="!!session.authenticated || grouping !== 'transaction'">
       <span class="glyphicon glyphicon-stats"></span> {{'POSTING_JOURNAL.TRIAL_BALANCE' | translate }}
     </a>
     <a class="btn btn-default btn-sm" ng-click="print()" ng-disabled="!!session.authenticated">

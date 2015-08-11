@@ -25,7 +25,7 @@ angular.module('bhima.controllers')
     $scope.filter = { by : {} };
 
     // TODO : both journal.utilities and journal.controls use this
-    // table.  Use promises to share the data between the two controllers
+    // table.  Use a service to share data betwen two controllers
     dependencies.account = {
       query : {
         'tables' : {
@@ -42,20 +42,21 @@ angular.module('bhima.controllers')
         dataview = params[2];
         options = params[3];
         manager = params[4];
-        $scope.hasData = !!dataview.getItems().length;
+        $scope.hasData = dataview.getItems().length > 0;
         return validate.process(dependencies);
       })
       .then(initialise)
       .catch(handleErrors);
     });
 
+    // load saved columns
     cache.fetch('columns')
     .then(function (columns) {
       if (!columns) { return; }
       $scope.columns = columns;
     });
 
-    function initialise (models) {
+    function initialise(models) {
       for (var k in models) { $scope[k] = models[k]; }
 
       // check for cache read
@@ -128,15 +129,22 @@ angular.module('bhima.controllers')
 
 
     // runs the trial balance
-    // We need to
     $scope.trialBalance = function () {
+      
+      var l = dataview.getLength(),
+          transactions = [];
 
-      //var transactions = dataview.getItems().map(function (d) { return d.trans_id; });
+      // loop through the current view and add all the transactions
+      // you find to the list of transactions for posting to
+      // the general ledger
+      // NOTE : MUST BE GROUPED BY TRANS_ID
+      for (var i = 0; i < l; i++) {
+        var item = dataview.getItem(i);
+        if (item.__group) {
+          transactions.push(item.value);
+        }
+      }
     
-      // TODO
-      // Have a way of selecting transactions to perform the trial balance on
-      var transactions = ['HBB5472', 'PAX1'];
-
       // The modal should make the relevant $http requests so that the client is
       // not confused as to what is happening.  A loading dialog can be displayed
       // on the modal to ensure that everything is fine.
@@ -210,6 +218,7 @@ angular.module('bhima.controllers')
 
       if (groupMap[targetGroup]) { groupMap[targetGroup](); }
     };
+
 
     $scope.refreshFilter = function refreshFilter () {
       $scope.filter.param = '';
