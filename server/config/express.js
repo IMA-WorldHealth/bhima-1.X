@@ -20,7 +20,7 @@ module.exports = function (app, authentication) {
   // middleware
   app.use(compress());
   app.use(cookieParser());
-  app.use(bodyParser.json());
+  app.use(bodyParser.json({ limit : '8mb'}));
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(session({
     store : new FileStore(),

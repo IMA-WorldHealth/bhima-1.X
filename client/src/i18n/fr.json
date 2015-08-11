@@ -2880,6 +2880,7 @@
    "DESCRIPTION"      : "Description",
    "ERROR"            : "Erreur",
    "ERRORS"           : "Erreurs",
+   "EXCEPTIONS"       : "Erreurs",
    "ERROR_TEXT"       : "Vous avez des Erreurs!",
    "FINANCE_OFFICER"  : "Chef Finance",
    "HIDE"             : "Cacher",

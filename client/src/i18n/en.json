@@ -2880,6 +2880,7 @@
    "ERROR"            : "Error",
    "ERROR_ALERT"      : "Warning: The trial balance contains errors.",
    "ERRORS"           : "Errors",
+   "EXCEPTIONS"       : "Exceptions",
    "SHOW_ERRORS"      : "Show Errors",
    "SHOW_WARNINGS"    : "Show Warnings",
    "LINES"            : "Lines",
