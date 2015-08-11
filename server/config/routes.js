@@ -71,7 +71,7 @@ exports.initialise = function (app) {
   // trial balance routes
   //app.get('/trialbalance/initialize', trialbalance.initialiseTrialBalance);
   //app.get('/trialbalance/submit/:key/', trialbalance.submitTrialBalance);
-  app.get('/journal/trialbalance', trialbalance.getTrialBalance);
+  app.post('/journal/trialbalance', trialbalance.postTrialBalance);
 
   app.get('/journal/:table/:id', journal.lookupTable);
 

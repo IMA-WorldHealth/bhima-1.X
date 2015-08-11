@@ -43,7 +43,7 @@
       controller: 'enterprise',
       templateUrl: 'partials/enterprise/enterprise.html'
     })
-    .when('/posting_journal', {
+    .when('/journal', {
       controller: 'journal.grid',
       templateUrl:'partials/journal/journal.html'
     })

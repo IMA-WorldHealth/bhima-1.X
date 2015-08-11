@@ -4,10 +4,9 @@ angular.module('bhima.controllers')
   '$modalInstance',
   '$location',
   '$http',
-  'errorCodes',
   'precision',
   'transactions',
-  function ($scope, $modalInstance, $location, $http, errorCodes, precision, transactions) {
+  function ($scope, $modalInstance, $location, $http, precision, transactions) {
 
     // alais controller object
     var self = this;
@@ -17,9 +16,11 @@ angular.module('bhima.controllers')
     self.state = 'loading';
 
     // load data and perform totalling
-    $http.get('/journal/trialbalance?transactions=' + transactions.join(','))
+    $http.post('/journal/trialbalance', { transactions : transactions })
     .then(function (response) {
       self.state = 'default';
+
+      console.log('result', response);
 
       // attach to controller
       self.balances = response.data.balances;
@@ -42,6 +43,14 @@ angular.module('bhima.controllers')
         totals.after += (row.balance + precision.round(row.credit - row.debit));
         return totals;
       }, { before : 0, debit : 0, credit : 0, after : 0 });
+
+      // make sure exceptions with fewer than 9 items are displayed
+      // open ('visible') by default
+      self.exceptions.forEach(function (e) {
+        if (e.transactions.length < 9) {
+          e.visible = true;
+        }
+      });
     })
     .catch(function (error) {
       console.error(error);
@@ -69,7 +78,7 @@ angular.module('bhima.controllers')
     self.toggleExceptionState = function () {
       self.state = (self.state === 'exception') ? 'default' : 'exception';
     };
-    
+   
     self.toggleVisibility = function (e) {
       e.visible = !e.visible;
     };

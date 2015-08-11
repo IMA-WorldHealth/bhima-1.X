@@ -19,21 +19,29 @@
  *  9) A doc_num exists for transactions involving a debtor/creditor [WARNING]
  *
  * If an error or warning is incurred, the controller responds
- * to the client with an 400 'Bad Request' status header.  The
- * body sent back is in the following format:
+ * to the client with a 200 'OK' status header, however, it includes
+ * information about the potential errors.  Since errors can be fatal
+ * or non-fatal, it is inappropriate to use a '400 Bad Request' status. The
+ * body returned to the client is in the following format:
  * {
- *   affectedRows : 312,
- *   affectedTransactions : 16,
- *   errors : [{
- *     code : 'ERR_MISSING_ACCOUNT',
- *     fatal: true,
- *     rows : ['uuid1', 'uuid2'],
- *     details : 'Some rows are missing an account.'
- *   }, {
- *     code : 'ERR_TXN_IMBALANCE',
- *     fatal : true,
- *     rows: ['uuid1', 'uuid2']
- *     details : 'Some transactions do not balance.'
+ *   balances :  [{
+ *     account_id : '',
+ *     account_number :'',
+ *     balance : 0,        // can be null or number
+ *     credit : 0,         // sum of credit_equv
+ *     debit : 0           // sum of debit_equiv
+ *   }, etc ...  ],
+ *   exceptions : [{
+ *     code : '',          // e.g 'ERR_MISSING_ACCOUNT'  warning prefix is WARN_
+ *     fatal : false,      // boolean if fatal (blocking) or not
+ *     transactions : ['HBB1'],   // affected transaction ids
+ *     affectedRows : 12          // number of affectedRows in the transaction
+ *   },
+ *   metadata : {
+ *     maxdate : "2015-05-13",    // the largest date being posted
+ *     mindate : "2015-01-14"     // the minumum date being posted
+ *     rows : 12,                 // number of rows being posted
+ *     transactions : 1           // number of transactions being posted
  *   }]
  * }
  *
@@ -237,14 +245,15 @@ function trialdashboard(transactions) {
  * to the general ledger if there are any 'fatal' errors.
 */
 
+// POST /journal/trialbalance
 // Performs a trial balance
 // Transaction ids are sent to the route in the query.
 // e.g. ?transactions=HBB1,PAX2,HBB34,PAX356
-exports.getTrialBalance = function (req, res, next) {
+exports.postTrialBalance = function (req, res, next) {
   'use strict';
 
   // parse the query string and retrieve the params
-  var transactions = req.query.transactions.toUpperCase().split(','),
+  var transactions = req.body.transactions.map(function (t) { return t.toUpperCase(); }),
       report = {};
 
   // run the database checks

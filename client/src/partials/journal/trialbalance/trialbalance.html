@@ -2,7 +2,7 @@
   <div class="modal-header">
     <h3 class="pull-left">{{ 'TRIAL_BALANCE.TITLE' | translate }}</h3>
     <div class="modal-icons">
-      <a class="btn btn-default" ng-click="BalanceCtrl.toggleExceptionState()" ng-class="{ 'active' : BalanceCtrl.state === 'exception' }">
+      <a class="btn btn-default" ng-click="BalanceCtrl.toggleExceptionState()" ng-class="{ 'active' : BalanceCtrl.state === 'exception' }" ng-if="BalanceCtrl.hasExceptions">
         {{ BalanceCtrl.hasErrors ? "TRIAL_BALANCE.SHOW_ERRORS" : "TRIAL_BALANCE.SHOW_WARNINGS" | translate }}
       </a>
     </div>
@@ -32,7 +32,7 @@
             <td><span class="label" ng-class="{ 'label-warning' : !e.fatal, 'label-danger' : !!e.fatal }">{{ e.affectedRows }}</span> {{ e.code  | translate }}</td>
             <td style="width: 5%;">
               <a style="color: #000;cursor: pointer;" ng-click="BalanceCtrl.toggleVisibility(e)">
-                <span class="glyphicon" ng-class="{ 'glyphicon-download' : !error.visible , 'glyphicon-upload' : !!error.visible}"></span>
+                <span class="glyphicon" ng-class="{ 'glyphicon-download' : !e.visible , 'glyphicon-upload' : e.visible}"></span>
                 <span>{{ e.visible ? "TRIAL_BALANCE.HIDE" : "TRIAL_BALANCE.SHOW" | translate }}</span>
               </a>
             </td>
@@ -92,6 +92,7 @@
       <label><i class="glyphicon glyphicon-calendar"></i> {{ BalanceCtrl.metadata.mindate | date:'dd/MM/yyyy' }} - {{ BalanceCtrl.metadata.maxdate | date:'dd/MM/yyyy' }}</label>
       <label><i class="glyphicon glyphicon-tasks"></i> {{ BalanceCtrl.metadata.transactions }} {{"TRIAL_BALANCE.TRANSACTIONS" | translate }}</label>
       <label><i class="glyphicon glyphicon-list"></i> {{ BalanceCtrl.metadata.rows}} {{"TRIAL_BALANCE.LINES" | translate }}</label>
+      <label ng-if="BalanceCtrl.hasExceptions" ng-class="{'text-warning' : BalanceCtrl.hasExceptions, 'text-danger' : BalanceCtrl.hasErrors }"><i class="glyphicon glyphicon-exclamation-sign"></i> {{ BalanceCtrl.exceptions.length }} {{ "TRIAL_BALANCE.EXCEPTIONS" | translate }}</label>
     </div>
     <button class="btn btn-sm btn-success" ng-class="{ 'btn-success' : !BalanceCtrl.hasExceptions, 'btn-warning' : BalanceCtrl.hasExceptions, 'btn-danger' : BalanceCtrl.hasErrors }" ng-click="BalanceCtrl.postToGeneralLedger()" ng-disabled="BalanceCtrl.hasErrors">
       <span class="glyphicon" ng-class="{ 'glyphicon-ok-circle' : !BalanceCtrl.hasExceptions, 'glyphicon-warning-sign' : BalanceCtrl.hasExceptions, 'glyphicon-remove-circle' : BalanceCtrl.hasErrors }"></span> {{ 'TRIAL_BALANCE.POST_TO_LEDGER' | translate }}
