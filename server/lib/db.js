@@ -50,15 +50,15 @@ function initialise() {
 function exec(sql, params) {
   var defer = q.defer();
 
+  // console.log('[db] [exec]', sql);
   con.getConnection(function (err, connection) {
     if (err) { return defer.reject(err); }
-    var request = connection.query(sql, params, function (err, results) {
+    connection.query(sql, params, function (err, results) {
 
       if (err) { return defer.reject(err); }
       connection.release();
       defer.resolve(results);
     });
-    console.log('[db] [exec]: ', request.sql);
   });
 
   return defer.promise;
