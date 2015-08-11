@@ -106,6 +106,17 @@ angular.module('bhima.controllers')
     };
 
     $scope.submit = function () {
+      var inventory_type_data = $scope.inventory_type.data;
+
+      $scope.item.consumable = 0;
+      inventory_type_data.forEach(function (inventoryType) {
+        if(parseInt($scope.item.type_id) === parseInt(inventoryType.id)) {
+          if(inventoryType.text === 'Article'){
+            $scope.item.consumable = 1;  
+          }
+        } 
+      });
+
       var packaged = connect.clean($scope.item);
       packaged.uuid = uuid();
 
@@ -147,7 +158,7 @@ angular.module('bhima.controllers')
       if (!$scope.item.code) { return false; }
       if (!$scope.item.text) { return false; }
       if (!$scope.item.group_uuid) { return false; }
-      if (!$scope.item.consumable) { return false; }
+      //if (!$scope.item.consumable) { return false; }
       if (!$scope.item.unit_id) { return false; }
       if (!$scope.item.purchase_price) { return false; }
       if (!$scope.item.price) { return false; }
@@ -171,7 +182,7 @@ angular.module('bhima.controllers')
       instance.result.then(function (model) {
         model.uuid = uuid();
         $scope.inventory_group.post(model);
-		messenger.success($translate.instant('INVENTORY.REGISTER.SUBMIT_SUCCESS'));
+		      messenger.success($translate.instant('INVENTORY.REGISTER.SUBMIT_SUCCESS'));
       }, function () {
       });
     };

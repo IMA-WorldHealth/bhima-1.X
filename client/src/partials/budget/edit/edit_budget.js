@@ -96,8 +96,8 @@ angular.module('bhima.controllers')
       }
       else {
         session.no_data_msg = $translate.instant('BUDGET.EDIT.DATA_NOT_FOUND')
-          .replace('<acct>', session.account.account_txt)
-          .replace('<fyname>', session.fiscal_year.fiscal_year_txt);
+          .replace('(acct)', session.account.account_txt)
+          .replace('(fyname)', session.fiscal_year.fiscal_year_txt);  
       }
     }
 
