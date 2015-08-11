@@ -6,7 +6,7 @@
         {{ BalanceCtrl.hasErrors ? "TRIAL_BALANCE.SHOW_ERRORS" : "TRIAL_BALANCE.SHOW_WARNINGS" | translate }}
       </a>
     </div>
-    <div class="modal-print">
+    <div class="modal-print" ng-hide="BalanceCtrl.state === 'loading'"  >
       <a ng-click="BalanceCtrl.print()" style="margin: 5px;"><span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}</a>
     </div>
   </div>
