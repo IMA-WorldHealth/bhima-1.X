@@ -144,7 +144,15 @@ angular.module('bhima.controllers')
       var updateLine, history;
       updateLine = connect.clean(selectedItem);
 
-      updateLine.consumable = (updateLine.consumable)? 1 : 0;
+      var inventory_type_data = $scope.types.data;
+      updateLine.consumable = 0;
+      inventory_type_data.forEach(function (inventoryType) {
+        if(parseInt(updateLine.type_id) === parseInt(inventoryType.id)) {
+          if(inventoryType.text === 'Article'){
+            updateLine.consumable = 1;  
+          }
+        } 
+      });
 
       if (detectErrors(updateLine)) { return; }
 
