@@ -1,13 +1,12 @@
 angular.module('bhima.controllers')
 .controller('TrialBalanceController', [
-  '$scope',
   '$modalInstance',
   '$location',
   '$http',
   'precision',
   'transactions',
   'JournalPrintService',
-  function ($scope, $modalInstance, $location, $http, precision, transactions, PrintService) {
+  function ($modalInstance, $location, $http, precision, transactions, PrintService) {
 
     // alias controller object
     var self = this;
@@ -56,7 +55,7 @@ angular.module('bhima.controllers')
     // TODO
     // implement posting to the general ledger with error handling
     self.postToGeneralLedger = function submit () {
-      $http.post('/journal/togeneraledger')
+      $http.post('/journal/togeneralledger', { transactions : transactions })
       .then(function () {
         $modalInstance.close();
       })
