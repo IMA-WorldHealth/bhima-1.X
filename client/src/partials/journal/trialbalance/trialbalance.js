@@ -61,6 +61,7 @@ angular.module('bhima.controllers')
       })
       .catch(function (error) {
         console.log(error);
+        $modalInstance.close(error);
       });
     };
 
