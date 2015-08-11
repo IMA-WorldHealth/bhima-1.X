@@ -6,9 +6,10 @@ angular.module('bhima.controllers')
   '$http',
   'precision',
   'transactions',
-  function ($scope, $modalInstance, $location, $http, precision, transactions) {
+  'JournalPrintService',
+  function ($scope, $modalInstance, $location, $http, precision, transactions, PrintService) {
 
-    // alais controller object
+    // alias controller object
     var self = this;
 
     // globals
@@ -71,14 +72,19 @@ angular.module('bhima.controllers')
     };
 
     self.print = function print () {
-      $location.path('/trialbalance/print?transactions=' + transactions.join(','));
+
+      // share data with the trial balance printer
+      PrintService.setData({ balances : self.balances, metadata: self.metadata, exceptions : self.exceptions });
+
+      // go to the controller
+      $location.path('/trialbalance/print');
       $modalInstance.dismiss();
     };
 
     self.toggleExceptionState = function () {
       self.state = (self.state === 'exception') ? 'default' : 'exception';
     };
-   
+
     self.toggleVisibility = function (e) {
       e.visible = !e.visible;
     };
