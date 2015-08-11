@@ -21,14 +21,10 @@ angular.module('bhima.controllers')
     .then(function (response) {
       self.state = 'default';
 
-      console.log('result', response);
-
       // attach to controller
       self.balances = response.data.balances;
       self.metadata = response.data.metadata;
       self.exceptions = response.data.exceptions;
-
-      console.log('Exceptions:', self.exceptions);
 
       // helper toggles
       self.hasExceptions = self.exceptions.length > 0;
@@ -57,6 +53,8 @@ angular.module('bhima.controllers')
       console.error(error);
     });
 
+    // TODO
+    // implement posting to the general ledger with error handling
     self.postToGeneralLedger = function submit () {
       $http.post('/journal/togeneraledger')
       .then(function () {
@@ -67,10 +65,12 @@ angular.module('bhima.controllers')
       });
     };
 
+    // kill the modal and resume posting journal editting
     self.cancelModal = function () {
       $modalInstance.dismiss();
     };
 
+    // print the trial balance in a separate HTML page
     self.print = function print () {
 
       // share data with the trial balance printer
@@ -81,10 +81,13 @@ angular.module('bhima.controllers')
       $modalInstance.dismiss();
     };
 
+    // switches between viewing the trial balance
+    // and the errors in the trial balance
     self.toggleExceptionState = function () {
       self.state = (self.state === 'exception') ? 'default' : 'exception';
     };
 
+    // reveals the transactions of a certain exception
     self.toggleVisibility = function (e) {
       e.visible = !e.visible;
     };
