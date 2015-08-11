@@ -40,7 +40,7 @@
     </button>
     <ul class="dropdown-menu">
       <li class="dropdown-header">{{ 'UTIL.TOGGLE' | translate }} {{ 'UTIL.COLUMNS' | translate }}</li>
-      <li ng-repeat="column in columns">
+      <li ng-repeat="column in columns | filter:{ id : '!_checkbox_selector' }">
         <a ng-click="column.visible=!column.visible" class="clk">
           <span class="glyphicon" ng-class="{'glyphicon-unchecked' : !column.visible, 'glyphicon-check' : !!column.visible}"></span> {{ column.name }}
         </a>
