@@ -2893,7 +2893,8 @@
    "SIGNATURES"       : "Signatures",
    "SUMMARY"          : "Summary",
    "TITLE"            : "Trial Balance",
-   "TRANSACTIONS"     : "Transactions"
+   "TRANSACTIONS"     : "Transactions",
+   "NO_DATA"          : "This page uses old and out-of-date data.  Please make a new trial balance to print."
    },
 "UNIT_TYPE": {
    "ADD"         : "Add a Unit Type",

@@ -2893,7 +2893,8 @@
    "SIGNATURES"       : "Signées",
    "SUMMARY"          : "Summaire",
    "TITLE"            : "Rapprochement",
-   "TRANSACTIONS"     : "Transactions"
+   "TRANSACTIONS"     : "Transactions",
+   "NO_DATA"          : "Il n'y a pas des donnes.  S'il vous plait, recommencer par la rapprochement et clickez sur imprimer."
    },
 "UNIT_TYPE": {
    "ADD"         : "Ajouter",
