@@ -37,7 +37,7 @@
    "NEW"             : "Ajouter un Compte",
    "NO"              : "No.",
    "NOT_FOUND"       : "Aucun compte enregistrés...",
-   "PROFIT_CENTER"   : "Centre des profits",
+   "PROFIT_CENTER"   : "Centres de profits",
    "ROOT_ACCOUNT"    : "Compte Parent",
    "TITLE"           : "Gestion des Comptes",
    "TITLE_ACCOUNT"   : "Comptes Titre",
@@ -93,7 +93,7 @@
    "NOTE"                   : "Note",
    "PARENT"                 : "Gestion de centre de profit",
    "REGISTER"               : "Enregistrement",
-   "REGISTERED"             : "Centre des profits enregistrés",
+   "REGISTERED"             : "Centres de profits enregistrés",
    "REMOVE_FAIL_MESSAGE"    : "Erreur durant la suppression !",
    "REMOVE_SUCCESS_MESSAGE" : "Suppression avec succès !",
    "TEXT"                   : "Text",
@@ -177,6 +177,7 @@
 "BILAN" : {
   "BUILD_BILAN"     : "Génération bilan",
   "DOCUMENT_CONFIG" : "Configuration du document",
+  "FISCAL_YEAR"     : "Année Fiscale",
   "LANGUAGE"        : "Langue",
   "GENERATE_DOC"    : "Générer le document",
   "DOC_SUCCES"      : "Document généré avec succès - Ouvrir le document"
@@ -184,7 +185,7 @@
 "BUDGET": {
    "DISPLAY" : {
      "LINE"         : "Ligne",
-     "REPORT_TITLE" : "Comptes de budgets et de bilans",
+     "REPORT_TITLE" : "Comptes des budgets et des bilans",
      "TOTALS"       : "TOTAUX: "
    },
    "EDIT": {
@@ -690,10 +691,10 @@
    "OPERATION"   : "operations",
    "OPERATIONS": {
       "ASSIGN"    : "Assignation",
-      "CC"        : "Centre de coûts",
+      "CC"        : "Centres de coûts",
       "VERSEMENT" : "Versement"
       },
-   "TITLE"      : "Gestion de Centre de Coûts"
+   "TITLE"      : "Gestion des Centres de Coûts"
    },
 "COTISATIONS": {
    "ADD"            : "Ajouter ",
@@ -1059,7 +1060,7 @@
    "DAY"          : "Aujourd'hui",
    "EMPTY_REPORT" : "Aucun enregistrement trouvé !",
    "MONTH"        : "Ce mois",
-   "TITLE"        : "Rapport d'expiration de médicaments",
+   "TITLE"        : "Rapport d'expiration des médicaments",
    "WEEK"         : "Cette semaine"
    },
 "EXPIRING_UTIL": {
@@ -1111,11 +1112,11 @@
    "DEBIT"                       : "Debit",
    "DESC"                        : "Description",
    "DESCRIPTION"                 : "Description",
-   "EDIT"                        : "Editer l'année fiscale sélectionnée; Bloquer et debloquer des périodes and voir l'ouverture des balances.",
+   "EDIT"                        : "Editer l'année fiscale sélectionnée; Bloquer et debloquer des périodes et visualiser les balances d'ouvertures",
    "END_MONTH"                   : "Fin Mois",
    "FIRST_VOUCHER"               : "Premier No Voucher",
    "FISCAL_YEAR_SELECTION"       : "Sélection de l'Année Fiscale",
-   "HELP_TXT"                    : "Crée et Gere l'année fiscale du system.",
+   "HELP_TXT"                    : "Créer et Gérer l'année fiscale du system.",
    "IMPORT_OPENING_BALANCES"     : "Importer la balance d'ouverture",
    "LAST_VOUCHER"                : "Dernier No Voucher",
    "LOCK"                        : "Fermer",
@@ -1369,7 +1370,7 @@
    "CLIENT_ID"                    : "Code Client",
    "CONFIRMED_BY"                 : "Confirmer par ",
    "CONFIRM_DIRECT_PURCHASE"      : "Confirmation Achat Direct",
-   "CONFIRM_PURCHASE"             : "Confirmation paiement",
+   "CONFIRM_PURCHASE"             : "Confirmation de paiement",
    "CONVENTION"                   : "Reçu pour convention",
    "COST"                         : "Coût",
    "COTISATIONS"                  : "Cotisations",
@@ -1405,9 +1406,9 @@
    "HOSPITAL_FILE_NR"             : "Numéro de la fiche",
    "ID"                           : "Id",
    "INDIRECT_PURCHASE"            : "Bon de sortie caisse",
-   "INTEGRATION_CONFIRMATION"     : "Confirmation de l'integration des stocks",
+   "INTEGRATION_CONFIRMATION"     : "Confirmation d'integration des stocks",
    "INTEGRATION_CONFIRMER"        : "Agent confirmation",
-   "INTEGRATION_USER"             : "Agent integration",
+   "INTEGRATION_USER"             : "Agent d'integration",
    "INVOICE_ID"                   : "Facture N°",
    "ID_PURCHASE_ORDER"            : "ID Commande d'achat",
    "ISSUER"                       : "Émetteur",
@@ -1482,7 +1483,7 @@
    "SUBMIT"                 : "Soumettre",
    "TAB_LOCK_COLONNE"       : "Colonne par Colonne",
    "TAB_LOCK_LINE"          : "Ligne par Ligne",
-   "TITLE"                  : "Ajout Transaction",
+   "TITLE"                  : "Ajout des Transactions",
    "TRANS_ID"               : "Transaction ID "
    },
 "LANGUAGES": {
@@ -1824,7 +1825,7 @@
    "POSTED"           : "Nouvelle liste de prix postée",
    "REMOVE_SUCCESS"   : "Effacer avec succès",
    "SAVE_LIST"        : "Sauver la liste",
-   "TITLE"            : "Listes des Prix",
+   "TITLE"            : "Liste des Prix",
    "UNABLE_TO_DELETE" : "La liste de prix ne peut être supprimer - car elle peut être courament assignée à un groupe de patient / groupes débiteurs"
    },
 "PRIMARY_CASH": {
@@ -1933,7 +1934,7 @@
       "CC"        : "Centre de profit",
       "VERSEMENT" : "Versement"
       },
-   "TITLE"      : "Gestion de Centre de profits"
+   "TITLE"      : "Gestion des Centres de profits"
    },
 "PROJECT": {
    "EDIT"        : "Editer",
@@ -1963,7 +1964,7 @@
     },
    "CONFIRM": {
       "BY"             : "par",
-      "CONFIRM_PAY"    : "Confirmation paiement",
+      "CONFIRM_PAY"    : "Confirmation de paiement",
       "CONFIRM_PAY_OF" : "Confirmation paiement de",
       "DETAILS"        : "Details",
       "FILTER"         : "Filtre de recherche",
@@ -2301,7 +2302,7 @@
    "FISCAL_YEAR"           : "Sélectionner une année fiscale",
    "GENERAL_LEDGER"        : "Grand Livre",
    "GROUP_TYPE"            : "Sélectionner une Type de Groupe",
-   "INVENTORY_GROUP"       : "Sélectionner Groupe des stockss",
+   "INVENTORY_GROUP"       : "Sélectionner Groupes de stocks",
    "INVENTORY_ITEM"        : "Sélectionner une Article en Stock",
    "LANGUAGE"              : "Sélectionner une lang",
    "LOCATION"              : "Sélectionner un localisation",
@@ -2461,12 +2462,12 @@
       "DESCRIPTION"          : "Utilisez ce module pour integrer dans le systeme BHIMA un stock qui existait déjà physiquement",
       "CANCEL"               : "Annuler",
       "CONFIRM_FILTER"       : "Filtrer la liste...",
-      "CONFIRM_STOCK"        : "Confirmation integration stock",
+      "CONFIRM_STOCK"        : "Confirmation d'integration de stock",
       "EXPIRATION_DATE"      : "Date d'Expiration",
       "EXPIRATION_INFO"      : "Veuillez introduire des dates d'expirations valides",
       "EXPIRATION_ALERT"     : "Le système n'accepte pas des produits périmés",
       "ITEMS"                : "Stock Item(s)",
-      "KEY"                  : "Stock Integration",
+      "KEY"                  : "Stock d'Integration",
       "LOT_QTY"              : "Lot et Quantité",
       "LOT_QTY_DESC"         : "Veuillez introduire le numero du lot et la quantité",
       "MADE_BY"              : "Effectuée par",
@@ -2736,7 +2737,7 @@
    "TRANSFER"    : "Transfert"
    },
 "TREE": {
-   "ACCOUNT"                   : "Compte",
+   "ACCOUNT"                   : "Comptes",
    "ACCOUNTING"                : "Comptabilité",
    "ACCOUNT_BALANCE_STATEMENT" : "Rapport Balance Compte",
    "ACCOUNT_STATEMENT"         : "Rapport Compte",
@@ -2761,9 +2762,9 @@
    "CONFIG_ACCOUNTING"         : "Configuration des comptes",
    "CONFIG_RUBRIC"             : "Configuration des rubriques",
    "CONFIG_TAX"                : "Configuration des taxes",
-   "CONFIRM_INTEGRATION"       : "Confirmation Integration des Stocks",
+   "CONFIRM_INTEGRATION"       : "Confirmation d'Integration des Stocks",
    "CONFIRM_PURCHASE_ORDER"    : "Confirmation des commandes d'achats",
-   "COST_CENTER_MGMT"          : "Centres des coûts",
+   "COST_CENTER_MGMT"          : "Centres de coûts",
    "COTISATION_MANAGEMENT"     : "Gestion des cotisations",
    "CREDITOR_GRP"              : "Groupe Créditeur",
    "CREDIT_NOTE"               : "Note de Crédit",
@@ -2803,7 +2804,7 @@
    "INVENTORY"                 : "Stocks",
    "INVENTORY_MANAGEMENT"      : "Gestion des Inventaires ",
    "INVENTORY_VIEW"            : "Rapport des stockss",
-   "JOURNAL_VOUCHER"           : "Ajout Transactions",
+   "JOURNAL_VOUCHER"           : "Ajout des Transactions",
    "LOCATION"                  : "Localisation",
    "LOSS_RECORDS"              : "Rapport de pertes des stockss",
    "MAIN_CASH"                 : "Caisse Principale",
@@ -2824,7 +2825,7 @@
    "PERMISSION"                : "Utilisateurs et permissions",
    "POSTING_JOURNAL"           : "Journal de Saisie",
    "PRICE_LIST"                : "Liste des Prix",
-   "PROFIT_CENTER_MGMNT"       : "Centres de profit",
+   "PROFIT_CENTER_MGMNT"       : "Centres de profits",
    "PROJECT"                   : "Projets",
    "PURCHASE_ORDER"            : "Commande d'achat",
    "PURCHASE_CONFIRMATION"     : "Confirmation de commande d'achat",
@@ -2964,7 +2965,7 @@
    "AVAILABLE_ACCOUNT" : "Les comptes disponibles",
    "CHOOSE"            : "Sélectionner centre de coûts",
    "NAVIG"             : "Navigation",
-   "PARENT"            : "Gestion de centre de coûts",
+   "PARENT"            : "Gestion des centres de coûts",
    "PLEASE_SELECT"     : "(Sélectionner centre frais SVP!)",
    "REMOVE"            : "Retirer",
    "TITLE"             : "Versement des comptes",
