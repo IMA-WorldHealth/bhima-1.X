@@ -2,19 +2,15 @@
  * Mail Plugin
  *
  * Extends bhima to allow email reporting at a custom frequency.
- * Depends on later.js (http://bunkat.github.io/later/) and q
+ * Depends on later.js (http://bunkat.github.io/later/) and q.
  *
  * PLUGIN OPTIONS
  * {
- *   name : 'mail',
- *   script : 'index.js',
- *   options : {
- *     emails : [{
- *       name : 'Daily Financial Report',
- *       frequency : 'daily',
- *       addressList : 'developers'
- *     }]
- *   }
+ *   emails : [{
+ *     name : 'Daily Financial Report',
+ *     frequency : 'daily',
+ *     addressList : 'developers'
+ *   }]
  * ]
  */
 

@@ -2,6 +2,7 @@ module.exports = {
   'emails' : [{
     'name' : 'daily',
     'frequency' : '0 23 * * *',
+    //'frequency' : '*/1 * * * *', // every minute
     'addressList' : 'developers',
   }, {
     'name' : 'weekly',

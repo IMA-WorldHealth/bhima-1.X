@@ -30,7 +30,7 @@ function exec(command) {
 function mailer(list, contact, message, date) {
   'use strict';
 
-  console.log('[MailPlugin]', 'Sending a message!');
+  console.log('[MailPlugin]', 'Sending a message to', contact.address.toLowerCase());
 
   var timestamp = new Date(),
       command, reference;
@@ -40,7 +40,7 @@ function mailer(list, contact, message, date) {
   }
 
   // compile a reference to the email
-  reference = path.join(__dirname, '../queue/', list + '-' + contact.name + '-' + timestamp.toLocaleTimeString());
+  reference = path.join(__dirname, '../queue/', list + '-' + contact.address.toLowerCase() + '-' + timestamp.toLocaleTimeString());
 
   // first, write the email to the queue
   fs.writeFileSync(reference, message, 'utf8');
