@@ -11,7 +11,7 @@ var path = require('path'),
     cp = require('child_process'),
     q = require('q');
 
-// promisify the child_process.exec() function 
+// promisify the child_process.exec() function
 function exec(command) {
   'use strict';
 
@@ -30,7 +30,7 @@ function exec(command) {
 function mailer(list, contact, message, date) {
   'use strict';
 
-  console.log('[mailer]', 'Sending a message!');
+  console.log('[MailPlugin]', 'Sending a message!');
 
   var timestamp = new Date(),
       command, reference;
