@@ -46,7 +46,7 @@ function mailer(list, contact, message, date) {
   fs.writeFileSync(reference, message, 'utf8');
 
   // build mail command (returns to slave email address)
-  command = 'mail --return-address=moblesshoard@gmail.com -a \'Content-type: text/html;\' -s \'' + date.toLocaleDateString() + '\' ' + contact.address +
+  command = 'mail -r moblesshoard@gmail.com -a \'Content-type: text/html;\' -aFrom:moblesshoard@gmail.com -s \'' + date.toLocaleDateString() + '\' ' + contact.address +
     ' < ' + reference;
 
   // send the email
