@@ -79,6 +79,10 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.user = {
+      query : '/user_session'
+    };
+
     function loadDefaultCurrency(currency) {
       if (!currency) { return; }
       defaultCurrency = currency;
@@ -103,13 +107,12 @@ angular.module('bhima.controllers')
       dependencies.cashboxes.query.where =
         ['cash_box.project_id=' + project.id, 'AND', 'cash_box.is_auxillary=1'];
 
-      validate.process(dependencies, ['cashboxes', 'cash', 'projects'])
+      validate.process(dependencies, ['cashboxes', 'cash', 'projects', 'user'])
       .then(setUpModels, handleErrors);
     });
 
     function setUpModels(models) {
       angular.extend($scope, models);
-
       if (!$scope.cashbox) {
         var sessionDefault =
           $scope.cashboxes.data[0];
@@ -319,11 +322,9 @@ angular.module('bhima.controllers')
       initPayment()
       .then(function (data) {
         // pay the cash payment
-
         creditAccount = data.creditAccount;
-
         var account = $scope.cashbox_accounts.get($scope.currency.currency_id);
-        var user_id = angular.isDefined(appstate.get('user')) ? appstate.get('user').id : 3;
+        var user_id = $scope.user.data.id;
 
         payment = data.invoice;
         payment.uuid = id;
