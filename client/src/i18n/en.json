@@ -177,6 +177,7 @@
 "BILAN" : {
   "BUILD_BILAN"     : "Build bilan",
   "DOCUMENT_CONFIG" : "Document configuration",
+  "FISCAL_YEAR"     : "Fiscal Year",
   "LANGUAGE"        : "Language",
   "GENERATE_DOC"    : "Generate Document",
   "DOC_SUCCES"      : "Document Build Success - Open Document"
