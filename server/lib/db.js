@@ -50,15 +50,17 @@ function initialise() {
 function exec(sql, params) {
   var defer = q.defer();
 
-  console.log('[db] [exec]: ', sql);
   con.getConnection(function (err, connection) {
     if (err) { return defer.reject(err); }
-    connection.query(sql, params, function (err, results) {
+
+    // this lets me log the actual request
+    var q =  connection.query(sql, params, function (err, results) {
 
       if (err) { return defer.reject(err); }
       connection.release();
       defer.resolve(results);
     });
+    console.log('[db] [exec]: ', q.sql);
   });
 
   return defer.promise;
@@ -247,7 +249,6 @@ function promiseQuery(connection, sql) {
 
   console.log('[db] [Transaction Query]', sql);
   connection.query(sql, function (error, result) {
-    console.log('resultssss', error, result);
     if (error) { return deferred.reject(error); }
     return deferred.resolve(result);
   });
