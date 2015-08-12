@@ -1,4 +1,3 @@
-
 .modal-table {
   position : relative;
   max-height: 400px;
@@ -7,12 +6,40 @@
 
 .modal-table table {
   width: 100%;
+  border-collapse: collapse;
 }
 
-.modal-table table tr th,
-.modal-table table tr td {
+.modal-table table tr td:not(:first-child),
+.modal-table table tr th:not(:first-child) {
+  text-align: right;
+  padding-right : 0.5em;
+}
+
+.modal-table-body {
+  margin-top : 1px;
+}
+
+.modal-table-body table tr th,
+.modal-table-body table tr td {
   width: 20%;
   padding: 5px;
+  border: 1px solid black;
+}
+
+.modal-table-body table tr:first-child th,
+.modal-table-body table tr:first-child td {
+  border-top: 0;
+}
+
+
+.modal-table-body table tr td:first-child,
+.modal-table-body table tr th:first-child {
+  border-left: 0;
+}
+
+.modal-table-body table tr td:last-child,
+.modal-table-body table tr th:last-child {
+  border-right: 0;
 }
 
 .modal-table-head {
