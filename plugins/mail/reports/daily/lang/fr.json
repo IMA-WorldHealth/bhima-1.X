@@ -1,9 +1,12 @@
+
 {
   "institution" : "IMCK",
+  "imck" : "IMCK",
+  "pax" : "PAX",
   "header" : {
     "overview" : "Sommaire",
     "accounts" : "Comptes",
-    "principal" : "TODO - (Principal Cash)",
+    "principal" : "Caisse Principal",
     "experimental" : "Rapport Experimental"
   },
   "overview"  : {
@@ -19,41 +22,41 @@
   },
   "registration" : {
     "heading" : "Enregistrement des Patients",
-    "content" : "Aujourd'hui, %s patient(s) etaient enregistre(s); %s nouveau patient(s), et %s revenu(s)."
+    "content" : "Aujourd'hui, {{ this.queries.newPatientsHbb + this.queries.returningPatientsHbb }} patient(s) etaient enregistre(s); {{ this.queries.newPatientsHbb }} nouveau patient(s), et {{ this.queries.returningPatientsHbb }} revenu(s)."
   },
   "cash" : {
     "hbb" : {
       "heading" : "Caisse HBB",
-      "content" : "%s etaient entrees dans la caisse auxilliaire HBB, payes contre un total de %s factures."
+      "content" : "{{ this.queries.auxCashHbb }} etaient entrees dans la caisse auxilliaire HBB, payes contre un total de {{ this.queries.auxCashTotalInvoiceHbb }} factures."
     },
     "pax" : {
       "heading" : "Caisse PAX",
-      "content" : "%s etaient entrees dans la caisse auxilliaire PAX, payes contre un total de %s factures."
+      "content" : "{{ this.queries.auxCashPax }} etaient entrees dans la caisse auxilliaire PAX, payes contre un total de {{ this.queries.auxCashTotalInvoicePax }} factures."
     }
   },
   "subsidy" : {
     "heading" : "Compte IMA",
-    "content" : "Le compte d'IMA etait charge avec un total de %s aidant %s pour recevoir des soins."
+    "content" : "Le compte d'IMA etait charge avec un total de <strong style='font-size: 18px; color: #686868;'>{{ this.queries.imaSubsidyTotal }}</strong> aidant <strong style='font-size: 18px; color: #686868;'>{{ this.imaSubsidyPatients }}</strong> pour recevoir des soins."
   },
   "principal" : {
     "incomeExpense" : {
-      "heading" : "TODO - (Income/ Expenditure)",
-      "content" : "TODO - (Today, a value of %s was recorded as entering the principal cash box; a value of %s was recorded as expense.)"
+      "heading" : "Income/ Expenditure",
+      "content" : "Today, a value of <strong style='font-size: 18px; color: #686868;'>{{ this.queries.principalCashIncomeHbb }}</strong> was recorded as entering the principal cash box; a value of <strong style='font-size: 18px; color: #686868;'>{{ this.queries.principalCashExpenseHbb }}</strong> was recorded as expense."
     },
     "balance" : {
-      "heading" : "TODO - (Balance)",
-      "content" : "TODO - (The balance reported by the principal cash box has a value of %s.)"
-    },
+      "heading" : "Balance",
+      "content" : "The balance reported by the principal cash box has a value of <strong style='font-size: 18px; color: #686868;'>{{ this.queries.principalCashBalanceHbb}}</strong>."
+    }
   },
   "sale" : {
     "heading" : "Facture",
-    "content" : "%s des factures ont ete envoyees correspondant aux %s lignes d'item, Ceci concerne les factures des patients ambulatoires et hospitalises."
+    "content" : "{{ this.queries.totalSalesHbb}} des factures ont ete envoyees correspondant aux %s lignes d'item, Ceci concerne les factures des patients ambulatoires et hospitalises."
   },
   "fiche" : {
     "heading" : "Consultation Fiche",
-    "content" : "Un total de %s etait fait pour les fiches de consulation; %s pour 'Nouvelle Fiche' et %s pour 'Anciennce Fiche'."
+    "content" : "Un total de {{ this.queries.newFicheSalesHbb + this.queries.oldFicheSalesHbb }} etait fait pour les fiches de consulation; {{ this.queries.newFicheSalesHbb }}  pour 'Nouvelle Fiche' et {{ this.queries.oldFicheSalesHbb }} pour 'Anciennce Fiche'."
   },
-  "notices" :  {
+  "notices" : {
     "info" : {
       "heading" : "Information",
       "content" : "Veillez remarquer qu'il s'agit d'un rapport automatique base sur les donnees capturees par le systeme BHIMA. Il est cense fournir un rapport transparent concernant la finance et autres activites administratives a l'administration IMCK. Ce message n'apparaittra plus une seconde fois."
@@ -69,8 +72,8 @@
       "content" : "La connexion entre HBB and PAX ne pouvait pas etre etabli aujourd'hui."
     },
     "upgrade" : {
-      "heading" : "TODO - ([ADMIN])",
-      "content" : "TODO - (The system is currently being upgraded.)"
+      "heading" : "[ADMIN]",
+      "content" : "The system is currently being upgraded."
     }
   }
 }
