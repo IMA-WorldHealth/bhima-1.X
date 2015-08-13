@@ -14,7 +14,7 @@ angular.module('bhima.controllers')
     cache.fetch('language')
     .then(function (res) {
       if (res) {
-        $scope.settings = {language: res.current};
+        $scope.settings = { language: res.current };
       }
     });
 
