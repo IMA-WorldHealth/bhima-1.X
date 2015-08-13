@@ -14,7 +14,7 @@ var credentials   = { key : privateKey, cert : certificate };
 process.env.TZ = 'UTC';
 
 // Session configuration
-var db            = require('./lib/db').initialise(); // FIXME why we need to keep the null reference in db ?
+var db            = require('./lib/db').initialise();
 
 var app = express();
 

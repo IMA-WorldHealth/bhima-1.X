@@ -62,16 +62,16 @@ angular.module('bhima.controllers')
 
       // submit the credentials to the server
       $http.post('/login', credentials)
-      .then(function (data) {
+      .then(function (response) {
         self.submitError = false;
 
         // Yay!  We are authenticated.  Create the user session.
-        SessionService.create(data.user, data.enterprise, data.project);
+        SessionService.create(response.data.user, response.data.enterprise, response.data.project);
 
         // DEPRECATED
         // Support old code by registering with appstate
-        appstate.set('enterprise', data.enterprise);
-        appstate.set('project', data.project);
+        appstate.set('enterprise', response.data.enterprise);
+        appstate.set('project', response.data.project);
 
         // navigate to the home page
         $location.url('/');
