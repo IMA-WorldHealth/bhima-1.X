@@ -2,12 +2,23 @@ angular.module('bhima.controllers')
 .controller('ApplicationController', [
   '$location',
   '$timeout',
+  '$translate',
   'appcache',
   'appstate',
   'connect',
   'util',
   'SessionService',
-  function ($location, $timeout, Appcache, appstate, connect, util, SessionService) {
+  function ($location, $timeout, $translate, Appcache, appstate, connect, util, SessionService) {
+
+    // useful for loading the language
+    var cache = new Appcache('preferences');
+
+    cache.fetch('language')
+    .then(function (res) {
+      if (res) {
+        $translate.use(res.current);
+      }
+    });
 
     this.isLoggedIn = function () {
       return SessionService.user;
