@@ -3,10 +3,11 @@ angular.module('bhima.controllers')
   '$translate',
   '$location',
   '$http',
+  '$timeout',
   'appcache',
   'appstate',
   'SessionService',
-  function ($translate, $location, $http, Appcache, appstate, SessionService) {
+  function ($translate, $location, $http, $timeout, Appcache, appstate, SessionService) {
 
     var self = this,
         cache = new Appcache('preferences');
@@ -70,8 +71,10 @@ angular.module('bhima.controllers')
 
         // DEPRECATED
         // Support old code by registering with appstate
-        appstate.set('enterprise', response.data.enterprise);
-        appstate.set('project', response.data.project);
+        $timeout(function () {
+          appstate.set('enterprise', response.data.enterprise);
+          appstate.set('project', response.data.project);
+        });
 
         // navigate to the home page
         $location.url('/');

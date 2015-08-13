@@ -1,12 +1,13 @@
 angular.module('bhima.controllers')
 .controller('ApplicationController', [
   '$location',
+  '$timeout',
   'appcache',
   'appstate',
   'connect',
   'util',
   'SessionService',
-  function ($location,  Appcache, appstate, connect, util, SessionService) {
+  function ($location, $timeout, Appcache, appstate, connect, util, SessionService) {
 
     this.isLoggedIn = function () {
       return SessionService.user;
@@ -20,6 +21,8 @@ angular.module('bhima.controllers')
     //   FiscalYear
     //   ExchangeRate
     //   Currencies
+    // Also contains a hack to make sure the appstate has the correct
+    // enterprise, user, and project from SessionService
     function loadState() {
       var currencies, exchangeRate, fiscalYear;
 
@@ -55,6 +58,15 @@ angular.module('bhima.controllers')
       setEnvironmentVariable('currencies', currencies);
       setEnvironmentVariable('exchange_rate', exchangeRate);
 
+      // FIXME hack to make sure that appstate has user,
+      // project, and enterprise defined
+      $timeout(function () {
+        console.log('loading...');
+        appstate.set('enterprise', SessionService.enterprise);
+        appstate.set('project', SessionService.project);
+        appstate.set('user', SessionService.user);
+      });
+
       // FIXME
       // set DEPRECATED appstate variables until we can change them
       // throughout the application.
@@ -68,13 +80,14 @@ angular.module('bhima.controllers')
       });
     }
 
-    function setEnvironmentVariable(key, value) {
-      connect.fetch(value)
-      .then(function (data) {
-        console.log('key', key, 'data',  data);
-        appstate.set(key, data);
-      })
-      .catch(console.error);
+    // utility function to set appstate() variables
+    function setEnvironmentVariable(key, data) {
+      connect.fetch(data)
+      .then(function (values) {
+        $timeout(function () {
+          appstate.set(key, values);
+        });
+      });
     }
   }
 ]);
