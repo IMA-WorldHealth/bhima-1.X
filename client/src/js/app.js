@@ -731,12 +731,8 @@
       controller : 'configureEmployeeState',
       templateUrl : 'partials/reports_proposed/employee_state/employee_state.html'
     })
-    .when('/home', {
-      controller : 'home',
-      templateUrl : 'partials/home/home.html'
-    })
     .when('/', {
-      controller : 'home',
+      controller : 'HomeController as HomeCtrl',
       templateUrl : 'partials/home/home.html'
     })
     .otherwise('/');
@@ -767,7 +763,6 @@
   function startupConfig($rootScope, $location, SessionService) {
     $rootScope.$on('$routeChangeStart', function (event, next) {
       if (!SessionService.user) {
-        console.log('Blocking with:', SessionService);
         $location.url('/login');
       }
     });

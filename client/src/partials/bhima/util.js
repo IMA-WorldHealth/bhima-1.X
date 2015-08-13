@@ -17,7 +17,7 @@ angular.module('bhima.controllers')
       $http.get('/logout')
       .then(function () {
         SessionService.destroy();
-        $location.url('/');
+        $location.url('/login');
       });
     };
   }

@@ -61,7 +61,6 @@ angular.module('bhima.controllers')
       // FIXME hack to make sure that appstate has user,
       // project, and enterprise defined
       $timeout(function () {
-        console.log('loading...');
         appstate.set('enterprise', SessionService.enterprise);
         appstate.set('project', SessionService.project);
         appstate.set('user', SessionService.user);
