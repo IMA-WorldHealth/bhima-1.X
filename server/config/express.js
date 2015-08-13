@@ -42,14 +42,27 @@ module.exports = function (app, authentication) {
   app.use(morgan('short'));
 
   // serve static files from a single location
-  // NOTE the assumption is that this entire directory is public - 
+  // NOTE the assumption is that this entire directory is public -
   // there is no need to authenticate users to access the public
   // directory.
   var days = 1000 * 60 * 60 * 24;
   app.use(express.static('client/dest/', { maxAge : 7*days }));
 
-  // require login for contained routes
-  app.use(authentication);
+  // quick way to find out if a value is in an array
+  function within(value, array) { return array.indexOf(value) !== -1; }
+
+  // Only allow routes to use /login, /projects, and /language if session does not exists
+  app.use(function (req, res, next) {
+    'use strict';
+
+    var publicRoutes = ['/login', '/languages', '/projects'];
+
+    if (req.session.user === undefined && !within(req.path, publicRoutes)) {
+      res.status(401).json({ reason : 'ERR_NOT_AUTHENTICATED' });
+    } else {
+      next();
+    }
+  });
 
   // new error handler
   app.use(function (err, req, res, next) {
