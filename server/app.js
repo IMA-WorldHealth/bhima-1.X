@@ -16,19 +16,10 @@ process.env.TZ = 'UTC';
 // Session configuration
 var db            = require('./lib/db').initialise(); // FIXME why we need to keep the null reference in db ?
 
-// Only allow routes to use /login if session not exists
-var authenticate  = function (req, res, next) {
-  if (req.session.user === undefined && req.path !== '/login') {
-    res.status(401).send('ERR_NOT_LOGGED_IN');
-  } else {
-    next();
-  }
-};
-
 var app = express();
 
 // Configure application middleware stack, inject authentication session
-require('./config/express')(app, authenticate);
+require('./config/express')(app);
 
 // Link routes
 require('./config/routes').initialise(app);

@@ -20,7 +20,7 @@
     //TODO: Dynamic routes loaded from unit database?
     $routeProvider
     .when('/login', {
-      controller : 'auth.login',
+      controller : 'LoginController as LoginCtrl',
       templateUrl : 'partials/auth/login.html'
     })
     .when('/budgeting/edit', {
