@@ -25,9 +25,6 @@
                 </span>
                 <input name="username" ng-model="LoginCtrl.credentials.username" class="form-bhima" placeholder="Enter your username" type="text" autofocus required />
               </div>
-              <p class="help-block" ng-if="LoginForm.$submitted && LoginForm.username.$invalid">
-                {{ "AUTH.USERNAME_REQUIRED" | translate }}
-              </p>
             </div>
 
             <div class="form-group">
@@ -38,9 +35,6 @@
                 </span>
                 <input name="password" ng-model="LoginCtrl.credentials.password" class="form-bhima" placeholder="Enter your password" type="password" required />
               </div>
-              <p class="help-block" ng-if="LoginForm.$submitted && LoginForm.password.$invalid">
-                {{ "AUTH.PASSWORD_REQUIRED" | translate }}
-              </p>
             </div>
 
             <div class="form-group">
@@ -53,9 +47,6 @@
                   <option disabled="disabled" selected="selected"> -- {{ "SELECT.PROJECT" | translate }} --</option>
                 </select>
               </div>
-              <p class="help-block" ng-if="LoginForm.$submitted && LoginForm.project.$invalid">
-                {{ "AUTH.PROJECT_REQUIRED" | translate }}
-              </p>
             </div>
 
             <input class="btn btn-sm btn-success" type="submit" value="{{'AUTH.LOGIN' | translate}}"/>

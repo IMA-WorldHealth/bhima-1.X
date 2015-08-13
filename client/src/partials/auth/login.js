@@ -1,12 +1,12 @@
 angular.module('bhima.controllers')
 .controller('LoginController', [
-  'EVENTS',
   '$translate',
   '$location',
   '$http',
   'appcache',
+  'appstate',
   'SessionService',
-  function (EVENTS, $translate, $location, $http, Appcache, SessionService) {
+  function ($translate, $location, $http, Appcache, appstate, SessionService) {
 
     var self = this,
         cache = new Appcache('preferences');
@@ -57,25 +57,31 @@ angular.module('bhima.controllers')
       });
     }
 
+    // logs the user in, creates the session
     self.login = function (credentials) {
 
-      console.log('Submitting...', credentials);
-
+      // submit the credentials to the server
       $http.post('/login', credentials)
       .then(function (data) {
+        self.submitError = false;
 
+        // Yay!  We are authenticated.  Create the user session.
+        SessionService.create(data.user, data.enterprise, data.project);
 
-        console.log('YAY!', data);
+        // DEPRECATED
+        // Support old code by registering with appstate
+        appstate.set('enterprise', data.enterprise);
+        appstate.set('project', data.project);
 
-
+        // navigate to the home page
+        $location.url('/');
       })
       .catch(function (error) {
-        console.log(' :( ');
         self.submitError = true;
       });
-
     };
 
+    // switches languages
     self.setLanguage = function (lang) {
       $translate.use(lang.key);
       cache.put('language', { current: lang.key });

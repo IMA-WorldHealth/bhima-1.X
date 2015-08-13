@@ -66,8 +66,6 @@ exports.login = function (req, res, next) {
     req.session.enterprise = enterprise;
     req.session.project = project;
 
-    console.log('Created Session :', req.session);
-
     // send the data back to the client
     res.status(200).json({
       user : user,
