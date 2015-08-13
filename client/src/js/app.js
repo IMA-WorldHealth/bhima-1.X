@@ -735,7 +735,7 @@
       controller : 'HomeController as HomeCtrl',
       templateUrl : 'partials/home/home.html'
     })
-    .otherwise('/');
+    .otherwise({ redirectTo : '/' });
   }
 
   function translateConfig($translateProvider) {
