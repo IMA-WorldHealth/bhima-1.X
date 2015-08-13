@@ -9,8 +9,10 @@ angular.module('bhima.services')
   // rather than localForage because we want immediate
   // responses.
   self.loadStoredSession = function () {
-    var session = $window.sessionStorage[key];
-    if (session) { self.create(session.user, session.enterprise, session.project); }
+    try {
+      var session = JSON.parse($window.sessionStorage.getItem(key));
+      if (session) { self.create(session.user, session.enterprise, session.project); }
+    } catch (e) {}
   };
 
   // set the user, enterprise, and project for the session
@@ -19,7 +21,7 @@ angular.module('bhima.services')
     self.user = user;
     self.enterprise = enterprise;
     self.project = project;
-    $window.sessionStorage[key] = { user : user, enterprise: enterprise, project : project };
+    $window.sessionStorage.setItem(key, JSON.stringify({ user : user, enterprise: enterprise, project : project }));
   };
 
   // unsets the values for the session variables
@@ -27,7 +29,7 @@ angular.module('bhima.services')
     self.user       = undefined;
     self.enterprise = undefined;
     self.project    = undefined;
-    delete $window.sessionStorage[key];
+    $window.sessionStorage.setItem(key, '{}');
   };
 
   // check and see if we have a session stored -

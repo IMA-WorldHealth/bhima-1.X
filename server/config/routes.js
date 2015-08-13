@@ -40,8 +40,6 @@ var auth            = require('../controllers/auth'),
 
 var patient = require('../controllers/patient');
 
-
-
 exports.initialise = function (app) {
   console.log('[config/routes] Configure routes');
 
@@ -49,6 +47,7 @@ exports.initialise = function (app) {
   app.get('/languages', users.getLanguages);
   app.get('/projects', projects.getProjects);
   app.post('/login', auth.login);
+  app.get('/logout', auth.logout);
 
   // Application data
   app.post('/data/', data.create);
