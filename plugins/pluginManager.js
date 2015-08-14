@@ -31,7 +31,6 @@ function Plugin(script) {
   // in case of unknown termination signal.
   this.maxRestarts = MAX_RESTARTS;
 
-
   // perform the initial startup
   this.startup();
 }
@@ -89,9 +88,9 @@ Plugin.prototype.register = function (event, callback) {
 /**
  * A class to manage all plugins.
  * @constructor
- * @param {object} cfg - configuration JSON with plugins names and scripts
+ * @param {Array} cfgArray - configuration array with plugins names and scripts
  */
-function PluginManager(cfg) {
+function PluginManager(cfgArray) {
   'use strict';
 
   var plugins = this.plugins = {};
@@ -111,7 +110,7 @@ function PluginManager(cfg) {
     // prior to loading it
 
     // load and map the plugins to their namespaces
-    cfg.plugins.forEach(function (plugin) {
+    cfgArray.forEach(function (plugin) {
       echo('Loading ' + plugin.name);
       plugins[plugin.name] = new Plugin(plugin.script);
     });
@@ -119,14 +118,15 @@ function PluginManager(cfg) {
 
   // kills all subprocesses in the case that the parent process dies.
   this.killChildren = function (e) {
-    console.log('[PluginManager] Killing all subprocesses ...');
+    echo('Killing all subprocesses ...');
 
     // look through the 
     Object.keys(plugins).forEach(function (key) {
-      console.log('[PluginManager] Killing', key);
+      echo('Killing', key);
       plugins[key].kill('SIGTERM');
     });
 
+    echo('Done. Exiting...');
     // exit the main thread
     process.exit(e);
   };
@@ -158,10 +158,10 @@ function PluginManager(cfg) {
 
 
 /* expose routes to the greater bhima server */
-module.exports = function (app, config) {
+module.exports = function (app, pluginConfig) {
   'use strict';
 
-  var pm = new PluginManager(config);
+  var pm = new PluginManager(pluginConfig);
 
   // configure plugin routes
 
