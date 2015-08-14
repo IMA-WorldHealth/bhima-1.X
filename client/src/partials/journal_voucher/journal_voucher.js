@@ -59,7 +59,6 @@ angular.module('bhima.controllers')
       console.error(error);
     });
 
-
     // toggle comment field
     self.toggleComment = function () {
       self.showComment = !self.showComment;
@@ -75,17 +74,25 @@ angular.module('bhima.controllers')
       self.serverFailureMessage = false;
       self.serverSuccessMessage = false;
 
+      // cache the working form in case something breaks
+      cacheWorkingForm();
+
+      // validation of table rows
       if (!correctTableInput()) {
         self.clientTableError = true;
         return;
       }
 
+      // submit to the server
       $http.post('/finance/journalvoucher', { data : $scope.master })
 
       // success!  Clear the data to start again.
-      .success(function (data) {
+      .then(function (response) {
 
-        self.serverSuccessMessage = data;
+        // if everything went correctly, remove the old copy
+        removeCachedForm();
+
+        self.serverSuccessMessage = response.data;
 
         // reset form validation checks
         $scope.VoucherForm.$setPristine();
@@ -98,9 +105,8 @@ angular.module('bhima.controllers')
       })
 
       // something went wrong... log it!
-      .error(function (error) {
-        self.serverFailureMessage = error;
-        console.error(error);
+      .catch(function (error) {
+        self.serverFailureMessage = error.data;
       });
     };
 
@@ -146,21 +152,54 @@ angular.module('bhima.controllers')
       return validRows && validTotals && validCenters;
     }
 
+    // stores the 'master' form in the browser cache in
+    // case anything goes wrong.
+    function cacheWorkingForm() {
+      console.log('Saving...', self.master);
+      db.put('CachedForm', self.master);
+    }
+
+    // look to see if there is an old form in the broswer cache
     function findCachedForm() {
+      console.log('Finding...');
       db.fetch('CachedForm')
       .then(function (data) {
         if (data) { self.hasCachedForm = true; }
       });
     }
 
+    function removeCachedForm() {
+      console.log('Removing...');
+      db.remove('CachedForm');
+    }
+
+    // load an old form from the browser cache
     self.loadCachedForm = function () {
+      console.log('Loading...');
       db.fetch('CachedForm')
       .then(function (data) {
         if (data) {
-          self.master = data;
+
+          // load meta-data
+          self.master.date = data.date;
+          self.master.description = data.description;
+          self.master.currencyId = data.currencyId;
+          self.master.comment = data.comment;
+          self.master.documentId = data.documentId;
+
+          // load the rows into the master
+          self.master.rows.length = 0;
+          data.rows.forEach(function (row) {
+            self.master.rows.push(row);
+          });
+
+          self.hasCachedForm = false;
         }
       });
     };
+
+    // auto-detect if there is an old form
+    findCachedForm();
 }])
 
 .controller('JournalVoucherTableController', ['$http', '$q', '$scope', function ($http, $q, $scope) {
