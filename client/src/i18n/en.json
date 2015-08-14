@@ -177,6 +177,7 @@
 "BILAN" : {
   "BUILD_BILAN"     : "Build bilan",
   "DOCUMENT_CONFIG" : "Document configuration",
+  "FISCAL_YEAR"     : "Fiscal Year",
   "LANGUAGE"        : "Language",
   "GENERATE_DOC"    : "Generate Document",
   "DOC_SUCCES"      : "Document Build Success - Open Document"
@@ -2305,7 +2306,8 @@
    "LANGUAGE"              : "Select a Language",
    "LOCATION"              : "Select a Location",
    "NAME"                  : "Select a Name",
-   "OTHER"                 : "OTHER",
+   "NONE"                  : "None",
+   "OTHER"                 : "Other",
    "PATIENT"               : "Select a Patient",
    "PATIENT_GROUP"         : "Select a Patient Group",
    "PAYMENT"               : "Select a Payment Type",
@@ -3006,5 +3008,9 @@
   "REFRESH" : "Refresh Selection",
   "GROUP_ROWS" : "Group Rows",
   "ABOLISH_GROUPS" : "Abolish Grouping"
-}
+},
+  "ERR_TRANSACTION_FORMAT" : "The transaction doesn't look correctly formatted.  Did you forget an account?",
+  "ERR_NO_CURRENCY" : "A currency is required.",
+  "ERR_NO_DATE" : "A date is required.",
+  "ERR_NO_DESCRIPTION" : "A description is required."
 }

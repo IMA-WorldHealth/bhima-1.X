@@ -7,7 +7,7 @@
  * controllers, allowing for modules to subscribe to different
  * levels of authority
  *
- * TODO createPurhcase, createSale, serviceDist are all almost
+ * TODO createPurchase, createSale, serviceDist are all almost
  * identicale modules - they should all be encapsulated as one
  * module. For Example finance.createSale, finance.createPurchase
  */
@@ -32,7 +32,8 @@ var compileReport   = require('../controllers/reports_proposed/reports.js');
 var snis            = require('../controllers/snis');
 var extra           = require('../controllers/extraPayment');
 var gl              = require('../controllers/ledgers/general');
-
+var finance         = require('../controllers/finance');
+var accounts        = require('../controllers/accounts');
 
 var patient = require('../controllers/patient');
 
@@ -196,6 +197,17 @@ exports.initialise = function (app) {
   // general ledger controller
   // transitioning to a more traditional angular application architecture
   app.get('/ledgers/general', gl.route);
+
+  // finance controller
+  app.get('/finance/debtors', finance.getDebtors);
+  app.get('/finance/creditors', finance.getCreditors);
+  app.get('/finance/currencies', finance.getCurrencies);
+  app.get('/finance/profitcenters', finance.getProfitCenters);
+  app.get('/finance/costcenters', finance.getCostCenters);
+  app.post('/finance/journalvoucher', finance.postJournalVoucher);
+
+  // accounts controller
+  app.get('/accounts', accounts.getAccounts);
 
   // search stuff
   app.get('/patient/:uuid', patient.searchUuid);

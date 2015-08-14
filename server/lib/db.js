@@ -50,9 +50,12 @@ function initialise() {
 function exec(sql, params) {
   var defer = q.defer();
 
+  // uncomment for console.logs().  Warning -- slows down trial balance terribly
   // console.log('[db] [exec]', sql);
   con.getConnection(function (err, connection) {
     if (err) { return defer.reject(err); }
+
+    // this lets me log the actual request
     connection.query(sql, params, function (err, results) {
 
       if (err) { return defer.reject(err); }
@@ -247,7 +250,6 @@ function promiseQuery(connection, sql) {
 
   console.log('[db] [Transaction Query]', sql);
   connection.query(sql, function (error, result) {
-    console.log('resultssss', error, result);
     if (error) { return deferred.reject(error); }
     return deferred.resolve(result);
   });
