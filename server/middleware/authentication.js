@@ -37,14 +37,11 @@ module.exports = function () {
         pro = req.body.project;
 
     sql =
-      'SELECT user.id, user.username, user.first, user.last, user.email FROM user JOIN project_permission ON ' +
-      'user.id = project_permission.user_id WHERE user.username = ? AND user.password = ? AND project_permission.project_id = ?;';
+      'SELECT user.id, user.username, user.first, user.last, user.email, project.enterprise_id ' +
+      'FROM user JOIN project_permission JOIN project ON ' +
+        'user.id = project_permission.user_id AND project.id = project_permission.project_id ' +
+      'WHERE user.username = ? AND user.password = ? AND project_permission.project_id = ?;';
 
-
-    // sql =
-    //   'SELECT user.id, user.username, user.first, user.last, user.email, project_permission.project_id ' +
-    //   'FROM user, project_permission WHERE user.username = ? ' +
-    //   'AND user.password = ? AND project_permission.id = ?;';
 
     db.exec(sql, [usr, pwd, pro])
     .then(function (results) {
@@ -73,6 +70,7 @@ module.exports = function () {
       }
 
       req.session.user_id = user.id;
+      req.session.project_id = pro;
       req.session.paths = results.map(function (row) {
         return row.url;
       });

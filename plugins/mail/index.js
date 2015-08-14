@@ -2,26 +2,23 @@
  * Mail Plugin
  *
  * Extends bhima to allow email reporting at a custom frequency.
- * Depends on later.js (http://bunkat.github.io/later/) and q
+ * Depends on later.js (http://bunkat.github.io/later/) and q.
  *
  * PLUGIN OPTIONS
  * {
- *   name : 'mail',
- *   script : 'index.js',
- *   options : {
- *     emails : [{
- *       name : 'Daily Financial Report',
- *       frequency : 'daily',
- *       addressList : 'developers'
- *     }]
- *   }
+ *   emails : [{
+ *     name : 'Daily Financial Report',
+ *     frequency : 'daily',
+ *     addressList : 'developers'
+ *   }]
  * ]
  */
 
 // Global Constants
 // TODO refactor into custom config.js
 var VERSION = '0.1.0',
-    APPNAME = 'bhima';
+    APPNAME = 'bhima',
+    CONFIG  = './config.js';
 
 // global imports
 var q = require('q'),
@@ -42,10 +39,10 @@ var render = require(path.join(__dirname, 'lib/render')),
     contacts = require(path.join(__dirname, 'addresses/contacts.json'));
 
 
-function MailPlugin(options) {
+function MailPlugin() {
   'use strict';
 
-  options =  options || {};
+  var options = require(CONFIG);
 
   this._running = true;
   this._timestamp = Date.now();
@@ -63,7 +60,7 @@ MailPlugin.prototype._configure = function () {
 
   self._timers = self._emails.map(function (email) {
 
-    // parse the cron task into an executable scheule 
+    // parse the cron task into an executable scheule
     schedule = later.parse.cron(email.frequency);
 
     console.log('[MailPlugin] Setting up mailing list:', email.name);
@@ -72,7 +69,7 @@ MailPlugin.prototype._configure = function () {
     var timer = later.setInterval(function () {
 
       // retrieve the address list
-      var addresses = addressBook[email.addressList]; 
+      var addresses = addressBook[email.addressList];
 
       // use send() to deliver messages to contacts;
       addresses.forEach(function (contact) {
@@ -84,6 +81,17 @@ MailPlugin.prototype._configure = function () {
   });
 };
 
+// respond to a reconfigure event from the client
+MailPlugin.prototype.reconfigure = function (options) {
+
+  // if a new configuration has not been provided, reload the old
+  options = options || require(CONFIG);
+
+  this._emails = options.emails || [];
+  this._timers = [];
+  this._configure();
+};
+
 // renders an email and sends it to a given contact
 MailPlugin.prototype.send = function (list, email, contact, date) {
 
@@ -92,7 +100,7 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
 
       // load database queries
       queries = require(path.join(base,  'queries.json')),
-      
+
       // load l10n text
       text = require(path.join(base, 'lang', contact.language + '.json')),
 
@@ -187,25 +195,29 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
   .done();
 };
 
+
+// This the plugin runtime.  We define the global
+// `plug` variable that will be configured on events
+// from the outside world.
+var plug = new MailPlugin();
+
 // expose module to the outside world
 process.on('message', function (msg) {
-
-  var emailer;
 
   // this is really limited for now
   // ideally, we should have a ton of events and
   // might want to switch to an object router model
   switch (msg.event) {
-    
+
     // configure the plugin
-    case 'config':
-      console.log('[MailPlugin] Configuring the mail plugin...');
-      emailer  = new MailPlugin(msg.data);
+    case 'reconfigure':
+      console.log('[MailPlugin] Reconfiguring the mail plugin...');
+      plug._configure(msg.options) ;
       break;
 
     // log the missed event
     default:
-      console.log('Cannot understand event');
+      console.log('[MailPlugin] Cannot understand event.');
       break;
   }
 });

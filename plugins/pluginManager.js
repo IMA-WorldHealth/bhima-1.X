@@ -104,7 +104,7 @@ function PluginManager(cfg) {
   // PluginManager Methods
 
   function _onStartup() {
-    echo('_onStartup Event Fired.');
+    echo('Starting PluginManager...');
 
     // TODO Should we have a 'priority' tag to determine which plugins are
     // initialized first?  This would require sorting the array by priority
@@ -114,7 +114,6 @@ function PluginManager(cfg) {
     cfg.plugins.forEach(function (plugin) {
       echo('Loading ' + plugin.name);
       plugins[plugin.name] = new Plugin(plugin.script);
-      plugins[plugin.name].emit('config', plugin.options);
     });
   }
 
@@ -132,7 +131,7 @@ PluginManager.prototype.routeEvent = function (event, data) {
 
   // error if the plugin is not defined for the manager
   if (!this.plugins[pluginId]) {
-    throw new Error('ERROR: Plugin not found');
+    throw new Error('Error: Plugin not found %s'.replace('%s', pluginId));
   }
 
   // send the event to the plugin
@@ -140,8 +139,6 @@ PluginManager.prototype.routeEvent = function (event, data) {
 
   return;
 };
-
-
 
 module.exports = function (app, config) {
   'use strict';
@@ -158,7 +155,7 @@ module.exports = function (app, config) {
     try {
       pm.routeEvent(req.params.action, req.body.data);
     } catch (err) {
-      return res.status(500).send(err);
+      return res.status(500).json(err);
     }
 
     res.status(200).send();
