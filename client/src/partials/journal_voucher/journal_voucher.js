@@ -3,10 +3,7 @@ angular.module('bhima.controllers')
   '$scope',
   '$http',
   'appcache',
-  'messenger',
-  'uuid',
-  'exchange',
-  function ($scope, $http, AppCache, messenger, uuid, exchange) {
+  function ($scope, $http, AppCache) {
 
     /* This controller wraps all the global metadata
      * for the journal voucher and the JournalVoucherTableController.
@@ -28,7 +25,7 @@ angular.module('bhima.controllers')
         isDefined = angular.isDefined,
 
         // cache TODO
-        db = new AppCache('journal.voucher');
+        db = new AppCache('JournalVoucher');
 
     // alias this
     var self = this;
@@ -43,6 +40,7 @@ angular.module('bhima.controllers')
 
     self.showComment = false;
     self.showReference = false;
+    self.hasCachedForm = false;
 
     // the master form
     // We must define this on the $scope so that the
@@ -106,50 +104,63 @@ angular.module('bhima.controllers')
       });
     };
 
+    // ensure that the table portion is valid before submitting
+    function correctTableInput() {
 
-  // ensure that the table portion is valid before submitting
-  function correctTableInput() {
+      // validate that the rows contain the correct format
+      var validRows = self.master.rows.every(function (row) {
 
-    // validate that the rows contain the correct format
-    var validRows = self.master.rows.every(function (row) {
+        // must have a one non-zero value
+        var validAmount =
+            (row.debit > 0 && !row.credit) ||
+            (!row.debit && row.credit > 0);
 
-      // must have a one non-zero value
-      var validAmount =
-          (row.debit > 0 && !row.credit) ||
-          (!row.debit && row.credit > 0);
+        // must have either a debitor/creditor switch
+        // or an account
+        var validAccount =
+            (isDefined(row.deb_cred_uuid) && isDefined(row.deb_cred_type)) ||
+             isDefined(row.account_id);
 
-      // must have either a debitor/creditor switch
-      // or an account
-      var validAccount =
-          (isDefined(row.deb_cred_uuid) && isDefined(row.deb_cred_type)) ||
-           isDefined(row.account_id);
+        return validAmount && validAccount;
+      });
 
-      return validAmount && validAccount;
-    });
+      // validate that the transaction balances
+      var totals = self.master.rows.reduce(function (aggregate, row) {
+        aggregate.debit += row.debit;
+        aggregate.credit += row.credit;
+        return aggregate;
+      }, { debit : 0, credit : 0 });
 
-    // validate that the transaction balances
-    var totals = self.master.rows.reduce(function (aggregate, row) {
-      aggregate.debit += row.debit;
-      aggregate.credit += row.credit;
-      return aggregate;
-    }, { debit : 0, credit : 0 });
+      var validTotals = totals.debit === totals.credit;
 
-    var validTotals = totals.debit === totals.credit;
+      // validate that there is only one cost or profit center per line
+      var validCenters = self.master.rows.every(function (row) {
+        return !(row.cc_id && row.pc_id);
+      });
 
-    // validate that there is only one cost or profit center per line
-    var validCenters = self.master.rows.every(function (row) {
-      return !(row.cc_id && row.pc_id);
-    });
+      // TODO
+      // Should we include specific error messages (the debits/credits
+      // do not balance, missing an account?)
+      // It would be easy to do, but very verbose, especially considering
+      // translation..
+      return validRows && validTotals && validCenters;
+    }
 
-    // TODO
-    // Should we include specific error messages (the debits/credits
-    // do not balance, missing an account?)
-    // It would be easy to do, but very verbose, especially considering
-    // translation..
-    return validRows && validTotals && validCenters;
-  }
+    function findCachedForm() {
+      db.fetch('CachedForm')
+      .then(function (data) {
+        if (data) { self.hasCachedForm = true; }
+      });
+    }
 
-
+    self.loadCachedForm = function () {
+      db.fetch('CachedForm')
+      .then(function (data) {
+        if (data) {
+          self.master = data;
+        }
+      });
+    };
 }])
 
 .controller('JournalVoucherTableController', ['$http', '$q', '$scope', function ($http, $q, $scope) {
