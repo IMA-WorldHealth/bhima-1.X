@@ -56,7 +56,7 @@ angular.module('bhima.controllers')
       query : {
         tables: {
           'user': {
-            columns : ['id', 'username', 'email', 'password', 'first', 'last', 'logged_in']
+            columns : ['id', 'username', 'email', 'password', 'first', 'last']
           }
         }
       }
@@ -134,7 +134,7 @@ angular.module('bhima.controllers')
           removals  = [],
           additions = [];
 
-   
+
       // current.permission is acting as a hash of
       // the permission for the current.user.
       // Checking current.permission.get(unit) tells
@@ -190,7 +190,7 @@ angular.module('bhima.controllers')
       var promises = removals.map(function (id) {
         return connect.delete('project_permission', 'id', id);
       });
-     
+ 
       // add the (newly) checked project permissions
       if (additions.length > 0) { promises.push(connect.post('project_permission', additions)); }
 

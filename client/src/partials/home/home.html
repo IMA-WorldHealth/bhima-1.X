@@ -3,27 +3,12 @@
     <img src="assets/icon.png" width="200" height="200" />
     <h1>{{ "HOME.BHIMA" | translate }}</h1>
     <h4>{{ "HOME.BHIMA_LONG" | translate }}</h4>
-  </div> 
-
-  <div id="status" ng-class="{'row alert alert-success': session.hasDailyRate, 'row alert alert-danger': !session.hasDailyRate}">
-    <div class="col-xs-3">{{ "HOME.PROJECT" | translate }}: <br><strong>{{ project.name }}</strong></div>
-    <div class="col-xs-3">{{ "HOME.DATE" | translate }}: <br><strong>{{ session.date | date }}</strong></div>
-    <div class="col-xs-3">{{ "HOME.EXCHANGE_RATE" | translate }}: <br><strong>{{ session.exchangeRate }}</strong></div>
-    <div class="col-xs-3">{{ "HOME.USER" | translate }}: <br><strong>{{ session.user.first }} - {{ session.user.last }}</strong></div>
   </div>
 
-  <div id="menu" class="row">
-    <div class="col-xs-3" ng-repeat="node in session.treeNavigation">
-    <div class="panel panel-default block">
-      <div class="panel-heading">
-        <strong><i class="glyphicon glyphicon-folder-close"></i> {{ node.parent.key | translate }}</strong>
-      </div>
-      <div class="panel-body">
-        <ul>
-          <li ng-repeat="unit in node.children"><a ng-href="#{{ unit.path }}"><i class="glyphicon glyphicon-file"></i> {{ unit.key | translate }}</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
+  <div id="status" class='row alert' ng-class="{'alert-success': HomeCtrl.hasDailyRate, 'alert-danger': !HomeCtrl.hasDailyRate }">
+    <div class="col-xs-3">{{ "HOME.PROJECT" | translate }}: <br><strong>{{ HomeCtrl.project.name }}</strong></div>
+    <div class="col-xs-3">{{ "HOME.DATE" | translate }}: <br><strong>{{ HomeCtrl.today | date }}</strong></div>
+    <div class="col-xs-3">{{ "HOME.EXCHANGE_RATE" | translate }}: <br><strong>{{ HomeCtrl.exchangeRate }}</strong></div>
+    <div class="col-xs-3">{{ "HOME.USER" | translate }}: <br><strong>{{ HomeCtrl.user.first }} - {{ HomeCtrl.user.last }}</strong></div>
   </div>
 </div>
