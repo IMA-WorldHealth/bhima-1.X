@@ -155,13 +155,11 @@ angular.module('bhima.controllers')
     // stores the 'master' form in the browser cache in
     // case anything goes wrong.
     function cacheWorkingForm() {
-      console.log('Saving...', self.master);
       db.put('CachedForm', self.master);
     }
 
     // look to see if there is an old form in the broswer cache
     function findCachedForm() {
-      console.log('Finding...');
       db.fetch('CachedForm')
       .then(function (data) {
         if (data) { self.hasCachedForm = true; }
@@ -169,13 +167,11 @@ angular.module('bhima.controllers')
     }
 
     function removeCachedForm() {
-      console.log('Removing...');
       db.remove('CachedForm');
     }
 
     // load an old form from the browser cache
     self.loadCachedForm = function () {
-      console.log('Loading...');
       db.fetch('CachedForm')
       .then(function (data) {
         if (data) {
@@ -187,12 +183,17 @@ angular.module('bhima.controllers')
           self.master.comment = data.comment;
           self.master.documentId = data.documentId;
 
+          // show if has a cached comment/documentId
+          self.showComment = !!data.comment;
+          self.showReference = !!data.documentId;
+
           // load the rows into the master
           self.master.rows.length = 0;
           data.rows.forEach(function (row) {
             self.master.rows.push(row);
           });
 
+          // remove the button from the UI
           self.hasCachedForm = false;
         }
       });
