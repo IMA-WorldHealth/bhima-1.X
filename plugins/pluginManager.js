@@ -117,29 +117,47 @@ function PluginManager(cfg) {
     });
   }
 
+  // kills all subprocesses in the case that the parent process dies.
+  this.killChildren = function (e) {
+    console.log('[PluginManager] Killing all subprocesses ...');
+
+    // look through the 
+    Object.keys(plugins).forEach(function (key) {
+      console.log('[PluginManager] Killing', key);
+      plugins[key].kill('SIGTERM');
+    });
+
+    // exit the main thread
+    process.exit(e);
+  };
+
+  // parses events and routes them to the correct plugin
+  this.routeEvent = function (event, data) {
+    try {
+      // parse the plugin name from the event
+      var params = event.split('::'),
+          pluginId = params[0],
+          eventId = params[1];
+
+      // error if the plugin is not defined for the manager
+      if (!this.plugins[pluginId]) {
+        throw new Error('Error: Plugin not found %s'.replace('%s', pluginId));
+      }
+
+      // send the event to the plugin
+      this.plugins[pluginId].emit(eventId);
+    } catch (e) {
+  
+      // ensure that the event failure is broadcast
+      throw new Error('Error: Event %s not properly constructed'.replace('%s', event));
+    }
+  };
+
   _onStartup();
 }
 
 
-/** parses events and routes them to the correct plugin  */
-PluginManager.prototype.routeEvent = function (event, data) {
-
-  // parse the plugin name from the event
-  var params = event.split('::'),
-      pluginId = params[0],
-      eventId = params[1];
-
-  // error if the plugin is not defined for the manager
-  if (!this.plugins[pluginId]) {
-    throw new Error('Error: Plugin not found %s'.replace('%s', pluginId));
-  }
-
-  // send the event to the plugin
-  this.plugins[pluginId].emit(eventId);
-
-  return;
-};
-
+/* expose routes to the greater bhima server */
 module.exports = function (app, config) {
   'use strict';
 
@@ -160,5 +178,9 @@ module.exports = function (app, config) {
 
     res.status(200).send();
   });
-};
 
+  // clean up children one exception, error, exit
+  process.on('uncaughtException', pm.killChildren);
+  process.on('SIGINT', pm.killChildren);
+  process.on('SIGTERM', pm.killChildren);
+};
