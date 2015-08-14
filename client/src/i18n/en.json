@@ -1485,7 +1485,8 @@
    "TAB_LOCK_COLONNE"       : "Colonne by Colonne",
    "TAB_LOCK_LINE"          : "Row by row",
    "TITLE"                  : "Journal Voucher",
-   "TRANS_ID"               : "Transaction ID "
+   "TRANS_ID"               : "Transaction ID ",
+   "LOAD_CACHED_FORM"       : "Load Stored Form"
    },
 "LANGUAGES": {
    "ENGLISH" : "English",
