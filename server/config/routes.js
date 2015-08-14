@@ -34,15 +34,20 @@ var extra           = require('../controllers/extraPayment');
 var gl              = require('../controllers/ledgers/general');
 var finance         = require('../controllers/finance');
 var accounts        = require('../controllers/accounts');
+var auth            = require('../controllers/auth'),
+    projects        = require('../controllers/projects'),
+    users           = require('../controllers/users');
 
 var patient = require('../controllers/patient');
-
-
 
 exports.initialise = function (app) {
   console.log('[config/routes] Configure routes');
 
-  app.get('/', uncategorised.exposeRoot);
+  // exposed to the outside without authentication
+  app.get('/languages', users.getLanguages);
+  app.get('/projects', projects.getProjects);
+  app.post('/login', auth.login);
+  app.get('/logout', auth.logout);
 
   // Application data
   app.post('/data/', data.create);
