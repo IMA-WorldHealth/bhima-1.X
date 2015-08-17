@@ -11,16 +11,52 @@
         <tr>
           <th>{{ 'FISCAL_YEAR.CHARGE' | translate }} ({{ 'FISCAL_YEAR.CLASS_6' | translate }})</th>
           <th>{{ 'FISCAL_YEAR.PROFIT' | translate }} ({{ 'FISCAL_YEAR.CLASS_7' | translate }})</th>
-          <th>{{ 'FISCAL_YEAR.RESULT' | translate }}</th>
-          <th>{{ 'FISCAL_YEAR.OBSERVATION' | translate }}</th>
+          <th></th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td>{{ session.solde6 | currency }}</td>
           <td>{{ session.solde7 | currency }}</td>
+          <td>
+          </td>
+          <td>
+          </td>
+        </tr>
+      </tbody>
+      <thead>
+        <tr>
+          <th>{{ 'FISCAL_YEAR.OTHER_CHARGE' | translate }} ({{ 'FISCAL_YEAR.CLASS_8' | translate }})</th>
+          <th>{{ 'FISCAL_YEAR.OTHER_PROFIT' | translate }} ({{ 'FISCAL_YEAR.CLASS_8' | translate }})</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ session.solde8Charge | currency }}</td>
+          <td>{{ session.solde8Profit | currency }}</td>
+          <td>
+          </td>
+          <td>
+          </td>
+        </tr>
+      </tbody>
+      <thead>
+        <tr>
+          <th>{{ 'FISCAL_YEAR.TOTAL_CHARGE' | translate }} </th>
+          <th>{{ 'FISCAL_YEAR.TOTAL_PROFIT' | translate }} </th>
+          <th>{{ 'FISCAL_YEAR.RESULT' | translate }}</th>
+          <th>{{ 'FISCAL_YEAR.OBSERVATION' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ session.charge | currency }}</td>
+          <td>{{ session.produit | currency }}</td>
           <td class="alert " ng-class="{'alert-success':session.observation==1, 'alert-danger':session.observation==-1}">
-            {{ session.solde7 - session.solde6 | number:0 }} $
+            {{ session.produit - session.charge | number:0 }} $
           </td>
           <td class="alert " ng-class="{'alert-success':session.observation==1, 'alert-danger':session.observation==-1}">
             <span ng-if="session.observation==1">
@@ -31,8 +67,8 @@
             </span>
           </td>
         </tr>
-      </tbody>
-    </table>
+      </tbody>      
+    </table>    
     <hr>
     <div class="form-group">
       <label>{{ 'FISCAL_YEAR.SELECT_RESULTAT_ACCOUNT' | translate }} 
