@@ -53,9 +53,9 @@ angular.module('bhima.controllers')
     $scope.formatAccount = formatAccount;
 
     function observation () {
-      if ((session.solde7 - session.solde6) > 0) {
+      if ((session.produit - session.charge) > 0) {
         session.observation = 1;
-      } else if ((session.solde7 - session.solde6) < 0)  {
+      } else if ((session.produit - session.charge) < 0)  {
         session.observation = -1;
       } else {
         session.observation = 0;
