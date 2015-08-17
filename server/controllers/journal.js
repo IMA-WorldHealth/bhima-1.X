@@ -121,14 +121,9 @@ get = {
           defer.resolve(value);
         });
       }else{
-        // var value = '\'' + data.abbr + data.increment + '\'';
         var value = data.increment ? '\'' + data.abbr + data.increment + '\'' : '\'' + data.abbr + 1 + '\'';
         defer.resolve(value);
       }
-
-
-      // console.log('voici le tableau data :::', data);
-      // var value = data.increment ? '\'' + data.abbr + data.increment + '\'' : '\'' + data.abbr + 1 + '\'';
     });
 
     return defer.promise;
