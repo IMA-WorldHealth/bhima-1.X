@@ -100,9 +100,35 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
       tpl = fs.readFileSync(path.join(base, email + '.tmpl.html'), 'utf8'),
       message;
 
+      console.log('voici email name', email);
+
   // convert date into a database-friendly date
-  var dateFrom = '\'' + date.getFullYear() + '-0' + (date.getMonth() + 1) + '-' + date.getDate() + ' 00:00:00\'',
-      dateTo = '\'' + date.getFullYear() + '-0' + (date.getMonth() + 1) + '-' + (date.getDate() + 1)  + ' 00:00:00\'';
+
+  var dateFrom = date, dateTo = date;
+
+   switch (email) {
+    
+    case 'daily':
+      console.log('[MailPlugin] Configuring the daily mail ...');
+      break;
+
+    case 'weekly':
+      console.log('[MailPlugin] Configuring the weekly mail ...');
+      dateFrom.setDate(date.getDate() - date.getDay());
+      break;
+
+    case 'monthly':
+      console.log('[MailPlugin] Configuring the monthly mail ...');
+      dateFrom.setDate(1);
+      break;
+
+    default:
+      console.log('Cannot understand email name');
+      break;
+  }
+
+  dateFrom = '\'' + dateFrom.getFullYear() + '-0' + (dateFrom.getMonth() + 1) + '-' + dateFrom.getDate() + ' 00:00:00\'';
+  dateTo = '\'' + dateTo.getFullYear() + '-0' + (dateTo.getMonth() + 1) + '-' + (dateTo.getDate() + 1)  + ' 00:00:00\'';
 
   // loop through the queries and do the following:
   // 1) template in the date fields

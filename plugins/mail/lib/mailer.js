@@ -39,25 +39,38 @@ function mailer(list, contact, message, date) {
     date = timestamp;
   }
 
-  // compile a reference to the email
-  reference = path.join(__dirname, '../queue/', list + '-' + contact.name + '-' + timestamp.toLocaleTimeString());
+  //testing queue directory existence
 
-  // first, write the email to the queue
-  fs.writeFileSync(reference, message, 'utf8');
+  reference = path.join(__dirname, '../queue');
 
-  // build mail command
-  command = 'mail -a \'Content-type: text/html;\' -s \'' + date.toLocaleDateString() + '\' ' + contact.address +
-    ' < ' + reference;
+  fs.exists(reference, function (exist){
+    if(!exist){
+      fs.mkdirSync(reference);
+    }
 
-  // send the email
-  return exec(command)
-  .then(function () {
-    console.log('[MailPlugin] Mail sent! Removing file...');
+    // compile a reference to the email
+    reference += list + '-' + contact.name + '-' + timestamp.toLocaleTimeString(); 
 
-    // on successful completion, remove the file
-    fs.unlinkSync(reference);
+    // first, write the email to the queue
+    fs.writeFileSync(reference, message, 'utf8');
 
-    console.log('[MailPlugin] ... done.');
+    // build mail command
+    command = 'mail -a \'Content-type: text/html;\' -s \'' + date.toLocaleDateString() + '\' ' + contact.address +
+      ' < ' + reference;
+
+    // send the email
+    return exec(command)
+    .then(function () {
+      console.log('[MailPlugin] Mail sent! Removing file...');
+
+      // on successful completion, remove the file
+      fs.unlinkSync(reference);
+
+      console.log('[MailPlugin] ... done.');
+    })
+    .catch(function (err){
+      console.log('error : ', err);
+    });
   });
 }
 

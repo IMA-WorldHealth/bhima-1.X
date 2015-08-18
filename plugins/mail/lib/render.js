@@ -50,7 +50,7 @@ function Render(tpl, data) {
   code = (code + 'return r.join(\'\'); }').replace(/[\r\t\n]/g, '');
 
   // attempt compilation
-  try {
+  try {    
     result = new Fn('scope', code).apply(data, [data]);
   } catch (error) {
     console.error(error.message, '\n', code);
