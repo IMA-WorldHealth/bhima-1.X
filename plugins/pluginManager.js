@@ -118,6 +118,7 @@ function PluginManager(cfgArray) {
 
   // kills all subprocesses in the case that the parent process dies.
   this.killChildren = function (e) {
+    console.log('Exception:', e);
     echo('Killing all subprocesses ...');
 
     // look through the 
