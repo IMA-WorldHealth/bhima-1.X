@@ -14,7 +14,7 @@ var tableRouter, check, get;
 */
 function lookupTable(req, res, next) {
   // What are the params here?
-  request(req.params.table, req.params.id, req.session.user_id, function (err) {
+  request(req.params.table, req.params.id, req.session.user.id, function (err) {
     if (err) { return next(err); }
     res.send(200);
   });
