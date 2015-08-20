@@ -10,7 +10,6 @@ var uuid = require('./../lib/guid');
 
 // FIXME Example of a legacy method - bad error handling, could easily hang
 exports.execute = function (req, res, next) {
-  console.log('\nreq.session:', req.session, '\n\n');
   initialiseSale(req.body, req.session.user.id, function (err, ans) {
     if (err) { return next(err); }
     res.send({saleId: ans});
