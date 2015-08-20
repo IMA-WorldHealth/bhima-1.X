@@ -69,7 +69,7 @@ module.exports = function () {
         throw new Error('This user has no permissions, please contact your System Administrator.');
       }
 
-      req.session.user_id = user.id;
+      req.session.user.id = user.id;
       req.session.project_id = pro;
       req.session.paths = results.map(function (row) {
         return row.url;
@@ -81,7 +81,7 @@ module.exports = function () {
         'ON project.id = project_permission.project_id ' +
         'WHERE project_permission.user_id = ?;';
 
-      return db.exec(sql, [req.session.user_id]);
+      return db.exec(sql, [req.session.user.id]);
     })
     .then(function (results) {
       if (results.length === 1) {
@@ -98,14 +98,14 @@ module.exports = function () {
   function logout(req, res, next) {
     var sql;
 
-    if (!req.session || !req.session.user_id) {
+    if (!req.session || !req.session.user.id) {
       console.log('[ERROR] session data does not exist.');
       return res.status(419).send();
     }
 
     sql = 'UPDATE user SET user.logged_in = 0 WHERE user.id = ?;';
 
-    db.exec(sql, [req.session.user_id])
+    db.exec(sql, [req.session.user.id])
     .then(function () {
       req.session.destroy(function () {
         res.clearCookie('connect.sid');

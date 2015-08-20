@@ -29,14 +29,14 @@ var keys = new KeyRing(uuid);
  * HTTP Controllers
 */
 exports.initialiseTrialBalance = function (req, res, next) {
-  trialBalance(req.session.user_id, function (err, result) {
+  trialBalance(req.session.user.id, function (err, result) {
     if (err) { return next(err); }
     res.send(200, result);
   });
 };
 
 exports.submitTrialBalance = function (req, res, next) {
-  postToGeneralLedger(req.session.user_id, req.params.key)
+  postToGeneralLedger(req.session.user.id, req.params.key)
   .then(function () {
     res.send(200);
   })

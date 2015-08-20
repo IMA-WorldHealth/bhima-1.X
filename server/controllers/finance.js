@@ -114,7 +114,7 @@ exports.postJournalVoucher = function (req, res, next) {
   var dbrows = data.rows.map(function (row) {
     row.project_id = req.session.project_id;
     row.description = data.description;
-    row.user_id = req.session.user_id;
+    row.user_id = req.session.user.id;
     row.currency_id = data.currencyId;
     row.date = date;
 

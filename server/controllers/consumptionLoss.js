@@ -10,7 +10,7 @@ var journal = require('./journal');
  * HTTP Controllers
 */
 exports.execute = function (req, res, next) {
-  initialiseConsumption(req.body, req.session.user_id, function (err, ans) {
+  initialiseConsumption(req.body, req.session.user.id, function (err, ans) {
     if (err) { return next(err); }
     res.send({dist: ans});
   });

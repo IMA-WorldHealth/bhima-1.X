@@ -7,7 +7,7 @@ var journal = require('./journal');
  * HTTP Controllers
 */
 exports.execute = function (req, res, next) {
-  executePurchase(req.session.user_id, req.body)
+  executePurchase(req.session.user.id, req.body)
   .then(function (id) {
     res.status(200).send({ purchaseId : id });
   })
