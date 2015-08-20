@@ -10,7 +10,7 @@ var uuid = require('./../lib/guid');
  * HTTP Controllers
 */
 exports.execute = function (req, res, next) { 
-  initialiseDistribution(req.body, req.session.user_id, function (err, ans) {
+  initialiseDistribution(req.body, req.session.user.id, function (err, ans) {
     if (err) { return next(err); }
     res.send({dist: ans});
   });

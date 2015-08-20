@@ -10,7 +10,7 @@ var uuid = require('./../lib/guid');
 
 // FIXME Example of a legacy method - bad error handling, could easily hang
 exports.execute = function (req, res, next) {
-  initialiseSale(req.body, req.session.user_id, function (err, ans) {
+  initialiseSale(req.body, req.session.user.id, function (err, ans) {
     if (err) { return next(err); }
     res.send({saleId: ans});
   });
@@ -110,7 +110,7 @@ function generateSubsidies(saleRecord, saleApplyableSubsidies) {
     var amount;
     if(currentCost === 0) {
       amount = 0;
-      return  {uuid : uuid(), sale_uuid : saleRecord.uuid, subsidy_uuid : item.uuid, value : amount}
+      return  {uuid : uuid(), sale_uuid : saleRecord.uuid, subsidy_uuid : item.uuid, value : amount};
     }else{
       if(currentCost - item.value >= 0){
         amount = item.value;
