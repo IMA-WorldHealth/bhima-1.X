@@ -6,6 +6,10 @@
   function bhimaconfig($routeProvider) {
     //TODO: Dynamic routes loaded from unit database?
     $routeProvider
+    .when('/', {
+      controller : 'HomeController as HomeCtrl',
+      templateUrl : 'partials/home/home.html'
+    })
     .when('/login', {
       controller : 'LoginController as LoginCtrl',
       templateUrl : 'partials/auth/login.html'
@@ -731,9 +735,9 @@
       controller : 'configureEmployeeState',
       templateUrl : 'partials/reports_proposed/employee_state/employee_state.html'
     })
-    .when('/', {
-      controller : 'HomeController as HomeCtrl',
-      templateUrl : 'partials/home/home.html'
+    .when('/dashboards/finance', {
+      controller : 'FinanceDashboardController as FinanceCtrl',
+      templateUrl : 'partials/dashboard/finance.html'
     })
     .otherwise({ redirectTo : '/' });
   }
