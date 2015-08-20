@@ -1,29 +1,24 @@
 angular.module('bhima.controllers')
-.controller('util', [
-  'EVENTS',
+.controller('UtilController', [
   '$scope',
-  '$rootScope',
   '$location',
-  'appauth',
-  function(EVENTS, $scope, $rootScope, $location, appauth) {
+  '$http',
+  'SessionService',
+  function($scope, $location, $http, SessionService) {
     // Controls the visibility and actions of the utilities
     // on the application's sidebar
 
-    $scope.openSettings = function () {
+    this.openSettings = function () {
       var last = $location.path();
       $location.path('/settings/').search('url', last);
     };
 
-    $scope.logout = function () {
-      appauth.logout()
+    this.logout = function () {
+      $http.get('/logout')
       .then(function () {
-        $rootScope.$broadcast(EVENTS.auth.logoutSuccess);
-        $location.path('/login');
-      })
-      .catch(function () {
-        $rootScope.$broadcast(EVENTS.auth.sessionTimeout);
-      })
-      .finally();
+        SessionService.destroy();
+        $location.url('/login');
+      });
     };
   }
 ]);

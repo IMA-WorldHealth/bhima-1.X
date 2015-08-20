@@ -1490,7 +1490,8 @@
    "TAB_LOCK_COLONNE"       : "Colonne by Colonne",
    "TAB_LOCK_LINE"          : "Row by row",
    "TITLE"                  : "Journal Voucher",
-   "TRANS_ID"               : "Transaction ID "
+   "TRANS_ID"               : "Transaction ID ",
+   "LOAD_CACHED_FORM"       : "Load Stored Form"
    },
 "LANGUAGES": {
    "ENGLISH" : "English",
@@ -3008,8 +3009,13 @@
   "GROUP_ROWS" : "Group Rows",
   "ABOLISH_GROUPS" : "Abolish Grouping"
 },
-  "ERR_TRANSACTION_FORMAT" : "The transaction doesn't look correctly formatted.  Did you forget an account?",
-  "ERR_NO_CURRENCY" : "A currency is required.",
-  "ERR_NO_DATE" : "A date is required.",
-  "ERR_NO_DESCRIPTION" : "A description is required."
+  "ERR_TRANSACTION_FORMAT"     : "The transaction doesn't look correctly formatted.  Did you forget an account?",
+  "ERR_NO_CURRENCY"            : "A currency is required.",
+  "ERR_NO_DATE"                : "A date is required.",
+  "ERR_NO_DESCRIPTION"         : "A description is required.",
+  "ERR_DATE_IN_THE_FUTURE"     : "Error: The submitted date in the future.  Please insert a valid date.",
+  "ERR_MISSING_ACCOUNTS"       : "Error: There are missing accounts in the transaction.  Please make sure each line has a valid account number.",
+  "ERR_DEBIT_CREDIT_IMBALANCE" : "Error: The debits and credits do not balance for this transaction.  Please balance the transaction and re-submit.",
+  "ERR_NO_PERIOD"              : "Error: There isn't a valid period for this date.  Please check to make sure that the date is valid, and is within a recorded period.",
+  "ERR_NO_EXCHANGE_RATE"       : "Error: There is no exchange rate defined for the transaction date.  Please define one using the exchange rate module and re-submit."
 }
