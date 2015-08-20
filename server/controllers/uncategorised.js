@@ -170,7 +170,7 @@ exports.currentProject = function (req, res, next) {
 
 // FIXME Remove
 exports.userSession = function (req, res, next) {
-  res.send({ id: req.session.user_id });
+  res.send({ id: req.session.user.id });
 };
 
 exports.pcashTransferSummers = function (req, res, next) {
@@ -191,7 +191,7 @@ exports.pcashTransferSummers = function (req, res, next) {
 
 exports.authenticatePin = function (req, res, next) {
   var decrypt = req.params.pin >> 5;
-  var sql = 'SELECT pin FROM user WHERE user.id = ' + req.session.user_id +
+  var sql = 'SELECT pin FROM user WHERE user.id = ' + req.session.user.id +
     ' AND pin = \'' + decrypt + '\';';
   db.exec(sql)
   .then(function (rows) {
@@ -532,7 +532,7 @@ exports.logVisit = function (req, res, next) {
   sql =
     'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES (?, ?, ?);';
 
-  db.exec(sql, [uuid(), id, req.session.user_id])
+  db.exec(sql, [uuid(), id, req.session.user.id])
   .then(function () {
     res.send();
   })
@@ -1162,14 +1162,14 @@ exports.formatLotsForExpiration = function (req, res, next) {
 };
 
 exports.submitTaxPayment = function (req, res, next) {
-  taxPayment.execute(req.body, req.session.user_id, function (err, ans) {
+  taxPayment.execute(req.body, req.session.user.id, function (err, ans) {
     if (err) { return next(err); }
     res.send({resp: ans});
   });
 };
 
 exports.submitDonation = function (req, res, next) {
-  donation.execute(req.body, req.session.user_id, function (err, ans) {
+  donation.execute(req.body, req.session.user.id, function (err, ans) {
     if (err) { return next(err); }
     res.send({resp: ans});
   });
@@ -1428,28 +1428,28 @@ exports.listExploitationAccount = function (req, res, next) {
 };
 
 exports.payCotisation = function (req, res, next) {
-  cotisationPayment.execute(req.body, req.session.user_id, function (err, ans) {
+  cotisationPayment.execute(req.body, req.session.user.id, function (err, ans) {
     if (err) { return next(err); }
     res.send({resp: ans});
   });
 };
 
 exports.payPromesse = function (req, res, next) {
-  promessePayment.execute(req.body, req.session.user_id, function (err, ans) {
+  promessePayment.execute(req.body, req.session.user.id, function (err, ans) {
     if (err) { return next(err); }
     res.send({resp: ans});
   });
 };
 
 exports.payPromesseCotisation = function (req, res, next) {
-  promesseCotisation.execute(req.body, req.session.user_id, function (err, ans) {
+  promesseCotisation.execute(req.body, req.session.user.id, function (err, ans) {
     if (err) { return next(err); }
     res.send({resp: ans});
   });
 };
 
 exports.payPromesseTax = function (req, res, next) {
-  promesseTax.execute(req.body, req.session.user_id, function (err, ans) {
+  promesseTax.execute(req.body, req.session.user.id, function (err, ans) {
     if (err) { return next(err); }
     res.send({resp: ans});
   });
