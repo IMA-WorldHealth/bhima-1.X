@@ -67,8 +67,9 @@ angular.module('bhima.controllers')
 
 }])
 
-.controller('FinanceDashboardController', ['FinanceDashboardService', 'appcache', function (Finance, AppCache) {
-  var self = this;
+.controller('FinanceDashboardController', ['FinanceDashboardService', 'appcache', '$filter', function (Finance, AppCache, $filter) {
+  var self = this,
+      $currency = $filter('currency');
 
   // defaults
   // TODO - should be loaded from AppCache
@@ -106,7 +107,7 @@ angular.module('bhima.controllers')
     Finance.getCashBoxBalance(id, self.currencyId, self.hasPostingJournal)
     .then(function (response) {
       console.log('CashBoxBalance:', response.data);
-      self.cashBoxChart.data = [ response.data.debit, response.data.credit];
+      self.cashBoxChart.data = [ response.data[0].debit, response.data[0].credit];
       self.cashBoxChart.labels = ['Debit', 'Credit'];
     });
   };
