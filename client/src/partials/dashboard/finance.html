@@ -1,0 +1,77 @@
+<section style="margin-top:15px;">
+
+  <div class="row" style="margin-bottom:15px;">
+    <div class="col-md-1">
+      <select class="form-bhima" ng-options="currency.id as currency.symbol for currency in FinanceCtrl.currencies" ng-model="FinanceCtrl.currencyId" ng-change="FinanceCtrl.refresh()"></select>
+    </div>
+
+    <div class="col-md-1">
+    <!--<select class="form-bhima" ng-options="" ng-change="FinanceCtrl.refresh()"></select>-->
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="panel panel-primary">
+        <div class="panel-heading">Cash Box Income/Expense</div>
+        <div class="panel-body">
+          <canvas
+            id="doughnut"
+            class="chart chart-doughnut"
+            data="FinanceCtrl.cashBoxChart.data"
+            labels="FinanceCtrl.cashBoxChart.labels"
+            legend="true">
+          </canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="panel panel-primary">
+        <div class="panel-heading"></div>
+        <div class="panel-body">
+          This is cool.
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="panel panel-primary">
+        <div class="panel-heading"></div>
+        <div class="panel-body">
+          This is cool.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="panel panel-primary">
+        <div class="panel-heading"></div>
+        <div class="panel-body">
+          This is cool.
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="panel panel-primary">
+        <div class="panel-heading"></div>
+        <div class="panel-body">
+          This is cool.
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="panel panel-primary">
+        <div class="panel-heading"></div>
+        <div class="panel-body">
+          This is cool.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
