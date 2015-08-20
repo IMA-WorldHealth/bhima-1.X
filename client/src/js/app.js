@@ -3,24 +3,11 @@
 
   var bhima = angular.module('bhima', ['bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate', 'LocalForageModule']);
 
-  // application events
-  // Contains constants for use in the application by
-  // event emitters throughout the app.
-  var events = {};
-  events.auth = {
-    loginSuccess     : 'auth.login.success',
-    loginFailure     : 'auth.login.failure',
-    logoutSuccess    : 'auth.logout.success',
-    sessionTimeout   : 'auth.session.timeout',
-    notAuthorizied   : 'auth.not.authorized',
-    notAuthenticated : 'auth.not.authenticated'
-  };
-
   function bhimaconfig($routeProvider) {
     //TODO: Dynamic routes loaded from unit database?
     $routeProvider
     .when('/login', {
-      controller : 'auth.login',
+      controller : 'LoginController as LoginCtrl',
       templateUrl : 'partials/auth/login.html'
     })
     .when('/budgeting/edit', {
@@ -744,15 +731,11 @@
       controller : 'configureEmployeeState',
       templateUrl : 'partials/reports_proposed/employee_state/employee_state.html'
     })
-    .when('/home', {
-      controller : 'home',
-      templateUrl : 'partials/home/home.html'
-    })
     .when('/', {
-      controller : 'home',
+      controller : 'HomeController as HomeCtrl',
       templateUrl : 'partials/home/home.html'
     })
-    .otherwise('/');
+    .otherwise({ redirectTo : '/' });
   }
 
   function translateConfig($translateProvider) {
@@ -768,20 +751,19 @@
     $translateProvider.preferredLanguage('fr');
   }
 
+  // Logs HTTP errors to the console, even if uncaught
+  // TODO - in production, we shouldn't log as many errors
   function authConfig($httpProvider) {
-    $httpProvider.interceptors.push([
-      '$injector',
-      function ($injector) {
-        return $injector.get('auth.injector');
-      }
-    ]);
+    $httpProvider.interceptors.push(['$injector', function ($injector) {
+      return $injector.get('AuthInjectorFactory');
+    }]);
   }
 
-  function startupConfig($rootScope, EVENTS, appauth) {
+  // Redirect to login if not signed in.
+  function startupConfig($rootScope, $location, SessionService) {
     $rootScope.$on('$routeChangeStart', function (event, next) {
-      if (!appauth.isAuthenticated()) {
-        $rootScope.$broadcast(EVENTS.auth.notAuthenticated);
-        event.preventDefault();
+      if (!SessionService.user) {
+        $location.url('/login');
       }
     });
   }
@@ -793,14 +775,12 @@
     });
   }
 
-  // Event constants
-  bhima.constant('EVENTS', events);
   // configuration
   bhima.config(['$routeProvider', bhimaconfig]);
   bhima.config(['$translateProvider', translateConfig]);
   bhima.config(['$httpProvider', authConfig]);
   bhima.config(['$localForageProvider', localForageConfig]);
   // run
-  bhima.run(['$rootScope', 'EVENTS', 'appauth', startupConfig]);
+  bhima.run(['$rootScope', '$location', 'SessionService', startupConfig]);
 
 })(angular);
