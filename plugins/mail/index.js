@@ -100,11 +100,9 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
       tpl = fs.readFileSync(path.join(base, email + '.tmpl.html'), 'utf8'),
       message;
 
-      console.log('voici email name', email);
-
   // convert date into a database-friendly date
 
-  var dateFrom = date, dateTo = date;
+  var dateFrom = new Date(), dateTo = date;
 
    switch (email) {
     
@@ -128,7 +126,7 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
   }
 
   dateFrom = '\'' + dateFrom.getFullYear() + '-0' + (dateFrom.getMonth() + 1) + '-' + dateFrom.getDate() + ' 00:00:00\'';
-  dateTo = '\'' + dateTo.getFullYear() + '-0' + (dateTo.getMonth() + 1) + '-' + (dateTo.getDate() + 1)  + ' 00:00:00\'';
+  dateTo = '\'' + dateTo.getFullYear() + '-0' + (dateTo.getMonth() + 1) + '-' + (dateTo.getDate())  + ' 00:00:00\'';
 
   // loop through the queries and do the following:
   // 1) template in the date fields
@@ -146,14 +144,16 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
     .then(function (rows) {
 
       // all queries return a single number in the `total` field
-      var result = rows[0].total || 0;
+      // var result = (rows.length) ? rows[0].total : 0;
+
+      var results = rows
 
       // if the result is a currency, make sure it is in the correct locality
       // NOTE : this is NOT the email locality, it is defined by the query.
       if (template.type === 'currency') {
-        template.result = locales.currency(result, template.format);
+        template.results = locales.currency(results, template.format);
       } else {
-        template.result = result;
+        template.results = results;
       }
 
       // resolve the original query with the data formatted and
@@ -170,14 +170,17 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
   // property
   q.all(promises)
   .then(function (results) {
+
     var data = {},
         templatedText,
         options;
 
     // convert promise array to a data object
     Object.keys(queries).forEach(function (key, idx) {
-      data[key] = results[idx].result;
+      data[key] = results[idx].results;          
     });
+
+    data = lineUp(data);
 
     // now, we want to render the language file
     // util.map() applies the function provided recursively
@@ -185,6 +188,8 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
     templatedText = util.map(text, function (content) {
       return render(content, { queries : data });
     });
+
+    // console.log('voici le templatedText :', templatedText);
 
     // collate data and text for email templating
     options = {
@@ -212,6 +217,17 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
   })
   .done();
 };
+
+function lineUp(data){
+  Object.keys(data).forEach(function (key, idx){
+    var obj = {}; //will contains transformed data from array
+    data[key].forEach(function (item){
+      item.period ? obj[item.period] = {"total" : item.total} : obj["total"] = item.total;
+    });
+    data[key] = obj;
+  });
+  return data;
+}
 
 // expose module to the outside world
 process.on('message', function (msg) {

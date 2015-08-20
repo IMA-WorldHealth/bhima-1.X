@@ -29,6 +29,7 @@ function exec(command) {
 // list provides a namespace for the message
 function mailer(list, contact, message, date) {
   'use strict';
+  // console.log('list : ', list, 'contact : ', contact, 'message : ', message, 'date :', date);
 
   console.log('[mailer]', 'Sending a message!');
 
@@ -41,7 +42,7 @@ function mailer(list, contact, message, date) {
 
   //testing queue directory existence
 
-  reference = path.join(__dirname, '../queue');
+  reference = path.join(__dirname, '../queue/');
 
   fs.exists(reference, function (exist){
     if(!exist){

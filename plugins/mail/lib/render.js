@@ -53,7 +53,8 @@ function Render(tpl, data) {
   try {    
     result = new Fn('scope', code).apply(data, [data]);
   } catch (error) {
-    console.error(error.message, '\n', code);
+    // console.error(error.message, '\n', code);
+    console.error(error);
     console.error('HELP: Are you missing properties?\n');
   }
 

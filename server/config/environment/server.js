@@ -34,12 +34,12 @@ var config = {
         'addressList' : 'test',
       }, {
         'name' : 'weekly',
-        'frequency' : '*/20 * * * *',
-        'addressList' : 'developers'
+        'frequency' : '*/1 * * * *',
+        'addressList' : 'test'
       }, {
         'name' : 'monthly',
         'frequency' : '* * * * 5',
-        'addressList' : 'developers'
+        'addressList' : 'test'
       }]
     }
   }],
