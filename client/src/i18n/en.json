@@ -796,9 +796,12 @@
 "DASHBOARD": {
    "TITLE" : "Dashboards",
    "FINANCE" : {
-     "TITLE" : "Financial Dashboard",
-     "CASHFLOW" : "Cash Flow Analysis",
-     "CASHBOX" : "CashBox"
+     "TITLE"             : "Financial Dashboard",
+     "CASHFLOW"          : "Cash Flow Analysis",
+     "CASHBOX"           : "CashBox",
+     "HASPOSTINGJOURNAL" : "Include Posting Journal",
+     "CUMMULATIVE"       : "Cummulative Data",
+     "CURRENCY"          : "Currency"
    }
  },
 "DEBITOR_GRP": {

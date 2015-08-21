@@ -1,11 +1,15 @@
 <div class="panel panel-default" ng-controller="CashBoxChartController as CashChartCtrl">
   <div class="panel-heading">
     {{ "DASHBOARD.FINANCE.CASHFLOW" | translate }}
-    <span class="pull-right" style="margin : 0 10px;">
+    <span class="pull-right" style="margin : 0 5px;">
       {{ "CHART.GROUPING.TITLE" | translate }}:
       <select ng-model="CashChartCtrl.group" ng-options="group as CashChartCtrl.fmt(group.key) for group in CashChartCtrl.grouping" ng-change="CashChartCtrl.refresh()"></select>
     </span>
-    <span class="pull-right">
+    <span class="pull-right" style="margin : 0 5px;">
+      {{ "DASHBOARD.FINANCE.CURRENCY" | translate }}:
+      <select ng-model="CashChartCtrl.currencyId" ng-options="currency.id as currency.symbol for currency in CashChartCtrl.currencies" ng-change="CashChartCtrl.refresh()"></select>
+    </span>
+    <span class="pull-right" style="margin : 0 5px;">
       {{ "DASHBOARD.FINANCE.CASHBOX" | translate }}:
       <select ng-model="CashChartCtrl.cashBoxId" ng-options="cash.id as cash.text for cash in CashChartCtrl.cashBoxes" ng-change="CashChartCtrl.refresh()"></select>
     </span>
@@ -13,9 +17,18 @@
   <table class="table table-bordered table-condensed">
     <tbody>
       <tr>
-        <th>{{ "COLUMNS.INCOME" | translate }} :{{ CashChartCtrl.meta.debit | currency }}</th>
-        <th>{{ "COLUMNS.EXPENSE" | translate }}: {{ CashChartCtrl.meta.credit | currency }}</th>
-        <th>{{ "COLUMNS.BALANCE" | translate }}: {{ CashChartCtrl.meta.balance | currency }}</th>
+        <td>
+          <span style="margin: 0 5px;"><b>{{ "DASHBOARD.FINANCE.CUMMULATIVE" | translate }}</b></span>
+          <span style="margin: 0 5px;" class="text-success"><b><i class="glyphicon glyphicon-chevron-up"></i> {{ "COLUMNS.INCOME" | translate }}</b>: {{ CashChartCtrl.meta.debit | currency }}</span>
+          <span style="margin: 0 5px;" class="text-danger"><b><i class="glyphicon glyphicon-chevron-down"></i> {{ "COLUMNS.EXPENSE" | translate }}</b>: {{ CashChartCtrl.meta.credit | currency }}</span>
+          <span style="margin: 0 5px;" class="text-info"><b><i class="glyphicon glyphicon-transfer"></i> {{ "COLUMNS.BALANCE" | translate }}</b>: {{ CashChartCtrl.meta.balance | currency }}</span>
+          <span class="pull-right">
+            <label>
+              <input ng-model="CashChartCtrl.hasPostingJournal" type="checkbox" ng-change="CashChartCtrl.refresh()" ng-true-value="1" ng-false-value="0" />
+              {{ "DASHBOARD.FINANCE.HASPOSTINGJOURNAL" | translate }}
+            </label>
+          </span>
+        </td>
       </tr>
       <tr>
       </tr>
@@ -25,11 +38,10 @@
     <canvas id="cash-line"
       class="chart chart-line"
       data="CashChartCtrl.chart.data"
-      legend="true"
       options="CashChartCtrl.chart.options"
       series="CashChartCtrl.chart.series"
       labels="CashChartCtrl.chart.labels"
-      series="CashChartCtrl.series">
+      colours="CashChartCtrl.chart.colors">
     </canvas>
   </div>
 </div>
