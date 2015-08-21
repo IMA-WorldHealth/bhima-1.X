@@ -94,24 +94,24 @@ exports.getCashBoxHistory = function (req, res, next) {
     if (req.query.hasPostingJournal) {
       sql =
         'SELECT COUNT(trans_id) AS transactions, SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit, ' +
-          'SUM(debit_equiv - credit_equiv) AS balance, account_id ' +
+          'SUM(debit_equiv - credit_equiv) AS balance, trans_date, account_id ' +
         'FROM (' +
-          'SELECT trans_id, account_id, debit_equiv, credit_equiv ' +
+          'SELECT trans_id, account_id, trans_date, debit_equiv, credit_equiv ' +
           'FROM posting_journal ' +
-          'UNION SELECT trans_id, account_id, debit_equiv, credit_equiv ' +
+          'UNION SELECT trans_id, account_id, trans_date, debit_equiv, credit_equiv ' +
           'FROM general_ledger' +
         ')c ' +
         'WHERE account_id IN (?) ';
     } else {
       sql =
         'SELECT COUNT(trans_id) AS transactions, SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit, ' +
-          'SUM(debit_equiv - credit_equiv) AS balance, account_id ' +
+          'SUM(debit_equiv - credit_equiv) AS balance, trans_date, account_id ' +
         'FROM general_ledger ' +
         'WHERE account_id IN (?) ';
     }
 
     // now we tackle the grouping using MySQL's Date/Time functions
-    switch (req.query.grouping) {
+    switch (req.query.grouping.toLowerCase()) {
       case 'year':
         sql += 'GROUP BY account_id, YEAR(trans_date);';
         break;
@@ -123,9 +123,13 @@ exports.getCashBoxHistory = function (req, res, next) {
         break;
       default:
         sql += 'GROUP BY account_id;';
+        break;
     }
 
     return db.exec(sql, [accounts]);
+  })
+  .then(function (rows) {
+    res.status(200).json(rows);
   })
   .catch(next)
   .done();
