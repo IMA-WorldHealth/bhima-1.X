@@ -53,17 +53,17 @@
                 <th>{{"COLUMNS.LABEL" | translate}}</th>
                 <th>{{"COLUMNS.TYPE" | translate}}</th>
                 <th>{{"COLUMNS.IS_ASSET" | translate }}</th>
+                <th>{{"COLUMNS.NATURE" | translate}}</th>
                 <th>{{"COLUMNS.IS_OHADA" | translate }}</th>
                 <th>{{"COLUMNS.ACTION" | translate }}</th>
               </tr>
             </thead>
 
             <tr ng-if="!model.account.data.length">
-              <td colspan="6">
+              <td colspan="7">
                 <div class="alert alert-warning square">{{ "ACCOUNT.NOT_FOUND" | translate }}</div>
               </td>
             </tr>
-
             <tr 
             ng-if="acc.is_ohada==1 || session.filterAll" 
             ng-repeat="acc in model.account.data | filter:session.filter" 
@@ -72,6 +72,10 @@
                 <td>{{acc.account_txt}}</td>
                 <td>{{acc.account_type}}</td>
                 <td style="width:12%;text-align:center"><i class="glyphicon glyphicon-ok-circle" ng-if="acc.is_asset==1"></i></td>
+                <td style="width:12%;text-align:center"> 
+                  <i class="glyphicon glyphicon-minus-sign" ng-if="acc.is_charge==1"></i>
+                  <i class="glyphicon glyphicon-plus-sign" ng-if="acc.is_charge==0"></i>
+                </td>
                 <td style="width:12%;text-align:center"><i class="glyphicon glyphicon-ok-circle" ng-if="acc.is_ohada==1"></i></td>
                 <td><a class="menu-item" ng-click="getAccount(acc)"><span class="glyphicon glyphicon-edit"></span></a></td>
             </tr>
@@ -110,7 +114,7 @@
                   <div class="form-group">
                     <label for="type">{{ "ACCOUNT.ACCOUNT_TYPE" | translate }}</label>
                     <select required  id="type" class="form-bhima" ng-options="c.type for c in model.accountType.data" ng-model="newAccount.type">
-                      <option value="" disabled="disabled"> --- {{ "SELECT.ACCOUNT_TYPE" | translate }} --- </option>
+                      <option value=""> --- {{ "SELECT.ACCOUNT_TYPE" | translate }} --- </option>
                     </select>
                   </div>
 
@@ -128,7 +132,7 @@
                       </label>
                     </div>
                   </div>
-
+                  <hr>
                   <div class="form-group">
                     <label for="number">{{ "ACCOUNT.ACCOUNT_NUMBER" | translate }}</label>
                     <input 
@@ -151,7 +155,7 @@
                       </label>
                     </div>
                   </div>
-
+                  <hr>
                   <div class="form-group" ng-if="session.accountClass === '1' || session.accountClass === '2' || session.accountClass === '5'">
                     <div class="checkbox">
                       <label>
@@ -165,16 +169,30 @@
                     </div>
                   </div>
 
-                  <div class="form-group" ng-if="session.accountClass === '6' || session.accountClass === '7'">
-                    <div ng-switch on="session.accountClass">
-                      <div ng-switch-when="6">
+                  <div class="form-group" ng-if="newAccount.type.type === 'income/expense'">
+                    <hr>
+                    <div class="radio">
+                      <label>
+                        <input type="radio" name="option_is_charge" id="is_charge" value="true" ng-model="newAccount.is_charge" >
+                        {{ "ACCOUNT.IS_CHARGE" | translate }}
+                      </label>
+                    </div>
+                    <div class="radio">
+                      <label>
+                        <input type="radio" name="option_is_charge" id="is_charge" value="false" ng-model="newAccount.is_charge" >
+                        {{ "ACCOUNT.IS_PROFIT" | translate }}
+                      </label>
+                    </div>
+                    
+                    <div ng-switch on="newAccount.is_charge">
+                      <div ng-switch-when="true">
                         <label for="type">{{ "ACCOUNT.COST_CENTER" | translate }}</label>
                         <select  id="type" class="form-bhima" ng-options="c.id as formatCenter(c) for c in model.costCenter.data" ng-model="newAccount.cc_id" 
                         ng-change="discarePC()">
                           <option value="null"> --- {{ "SELECT.COST_CENTER" | translate }} --- </option>
                         </select>
                       </div>
-                      <div ng-switch-when="7">
+                      <div ng-switch-when="false">
                         <label for="type">{{ "ACCOUNT.PROFIT_CENTER" | translate }}</label>
                         <select  id="type" class="form-bhima" ng-options="p.id as formatCenter(p) for p in model.profitCenter.data" ng-model="newAccount.pc_id" 
                         ng-change="discareCC()">
@@ -304,16 +322,29 @@
                       </label>
                     </div>
                   </div>
-
-                  <div>
-                    <div>
-                      <div ng-if = "accountClass === 6">
+                  <div class="form-group" ng-if="editAccount.account_type === 'income/expense'">
+                    <hr>
+                    <div class="radio">
+                      <label>
+                        <input type="radio" name="option_is_charge" id="is_charge" value="1" ng-model="editAccount.is_charge" >
+                        {{ "ACCOUNT.CHARGE" | translate }}
+                      </label>
+                    </div>
+                    <div class="radio">
+                      <label>
+                        <input type="radio" name="option_is_charge" id="is_charge" value="0" ng-model="editAccount.is_charge" >
+                        {{ "ACCOUNT.PROFIT" | translate }}
+                      </label>
+                    </div>
+                    
+                    <div ng-switch on="editAccount.is_charge">
+                      <div ng-switch-when="1">
                         <label for="type">{{ "ACCOUNT.COST_CENTER" | translate }}</label>
                         <select  id="type" class="form-bhima" ng-options="c.id as formatCenter(c) for c in model.costCenter.data" ng-model="editAccount.cc_id">
                           <option value=""> --- {{ "SELECT.COST_CENTER" | translate }} --- </option>
                         </select>
                       </div>
-                      <div ng-if = "accountClass === 7">
+                      <div ng-switch-when="0">
                         <label for="type">{{ "ACCOUNT.PROFIT_CENTER" | translate }}</label>
                         <select  id="type" class="form-bhima" ng-options="p.id as formatCenter(p) for p in model.profitCenter.data" ng-model="editAccount.pc_id">
                           <option value=""> --- {{ "SELECT.PROFIT_CENTER" | translate }} --- </option>
