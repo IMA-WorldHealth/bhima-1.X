@@ -3018,6 +3018,16 @@
   "GROUP_ROWS" : "Group Rows",
   "ABOLISH_GROUPS" : "Abolish Grouping"
 },
+"CHART" : {
+  "GROUPING" : {
+    "TITLE"  : "Grouping",
+    "DAY"    : "Day",
+    "WEEK"   : "Week",
+    "MONTH"  : "Month",
+    "YEAR"   : "Year",
+    "PERIOD" : "Period"
+  }
+},
   "ERR_TRANSACTION_FORMAT"     : "The transaction doesn't look correctly formatted.  Did you forget an account?",
   "ERR_NO_CURRENCY"            : "A currency is required.",
   "ERR_NO_DATE"                : "A date is required.",
