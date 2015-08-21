@@ -34,11 +34,9 @@ angular.module('bhima.controllers')
 
     // records the data for the chart
     self.chart = {
-      options : { tooltipTemplate : ChartService.tooltip.currency } 
+      options : { tooltipTemplate : ChartService.tooltip.currency },
+      colors : ['#468847', '#F7464A']
     };
-
-    // switch to currency tooltip
-    Chart.defaults.global.tooltipTemplate = ChartService.tooltip.currency;
 
     // retrieve the list of cashboxes from the server
     self.getCashBoxes = function () {
@@ -47,10 +45,8 @@ angular.module('bhima.controllers')
 
     // load the balance data for a single account
     self.getCashBalance = function (cashBoxId) {
-      console.log('Loading cash balance:', cashBoxId);
       Finance.getCashBoxBalance(cashBoxId, self.currencyId, self.hasPostingJournal)
       .then(function (response) {
-        console.log('CashBoxBalance:', response.data);
 
         // this is the immediate overview (income, expense, balance)
         self.meta = response.data[0];
@@ -59,11 +55,9 @@ angular.module('bhima.controllers')
 
     // load the analytics history of the given cashbox
     self.getCashHistory = function (cashBoxId) {
-      console.log('Loading cash history:', cashBoxId, self.group);
       Finance.getCashBoxHistory(cashBoxId, self.currencyId, self.hasPostingJournal, self.group.grouping)
       .then(function (response) {
         var data = response.data;
-        console.log('CashBoxHistory', response.data);
 
         // assign chart data
         self.chart.data = [
@@ -76,9 +70,6 @@ angular.module('bhima.controllers')
 
         // assign the chart labels
         self.chart.labels = data.map(function (row) { return $date(row.trans_date, self.group.format); });
-
-        console.log(self.chart);
-
       });
     };
 
@@ -86,6 +77,10 @@ angular.module('bhima.controllers')
     self.getCashBoxes()
     .then(function (response) {
       self.cashBoxes = response.data;
+      return Finance.getCurrencies();
+    })
+    .then(function (response) {
+      self.currencies = response.data;
       return loadChartDefaults();
     })
     .then(function () {

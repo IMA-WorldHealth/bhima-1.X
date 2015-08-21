@@ -1,6 +1,7 @@
 var db = require('../../lib/db'),
     q = require('q');
 
+// GET /analytics/cashboxes
 exports.getCashBoxes = function (req, res, next) {
   'use strict';
 
