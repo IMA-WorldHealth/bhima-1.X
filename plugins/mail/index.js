@@ -128,6 +128,7 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
   dateFrom = '\'' + dateFrom.getFullYear() + '-0' + (dateFrom.getMonth() + 1) + '-' + dateFrom.getDate() + ' 00:00:00\'';
   dateTo = '\'' + dateTo.getFullYear() + '-0' + (dateTo.getMonth() + 1) + '-' + (dateTo.getDate())  + ' 00:00:00\'';
 
+
   // loop through the queries and do the following:
   // 1) template in the date fields
   // 2) execute the queries using the query() function
@@ -182,6 +183,8 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
 
     data = lineUp(data);
 
+    console.log(data);
+
     // now, we want to render the language file
     // util.map() applies the function provided recursively
     // to all non-object values in the object
@@ -219,6 +222,7 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
 };
 
 function lineUp(data){
+
   Object.keys(data).forEach(function (key, idx){
     var obj = {}; //will contains transformed data from array
     data[key].forEach(function (item){

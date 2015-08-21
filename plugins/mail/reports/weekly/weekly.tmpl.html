@@ -69,14 +69,14 @@
                                   <table cellspacing="0" cellpadding="0" width="800px" align="left" style="border: 1px solid black;">
                                     <thead>
                                       <tr>
-                                        <th style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.overview.week}}</th>
-                                        <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.overview.monday}}</th>
-                                        <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.overview.tuesday}}</th>
-                                        <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.overview.wednesday}}</th>
-                                        <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.overview.thursday}}</th>
-                                        <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.overview.friday}}</th>
-                                        <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.overview.saturday}}</th>
-                                        <th colspan="2" style="border-bottom: 1px solid black;">{{this.text.overview.sunday}}</th>
+                                        <th style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.week}}</th>
+                                        <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.monday}}</th>
+                                        <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.tuesday}}</th>
+                                        <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.wednesday}}</th>
+                                        <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.thursday}}</th>
+                                        <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.friday}}</th>
+                                        <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.saturday}}</th>
+                                        <th colspan="2" style="border-bottom: 1px solid black;">{{this.text.period.sunday}}</th>
                                       </tr>
                                       <tr>
                                         <th style="border-right: 1px solid black;">
@@ -338,33 +338,113 @@
                     <tbody>
                       <tr>
                         <td valign="top">
-                          <table cellspacing="0" cellpadding="0" border="0">
+                          <table cellspacing="0" cellpadding="0" width="800px" align="left" style="border: 1px solid black;">
+                            <thead>
+                              <tr>
+                                <th style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.week}}</th>
+                                <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.monday}}</th>
+                                <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.tuesday}}</th>
+                                <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.wednesday}}</th>
+                                <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.thursday}}</th>
+                                <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.friday}}</th>
+                                <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.saturday}}</th>
+                                <th colspan="2" style="border-bottom: 1px solid black;">{{this.text.period.sunday}}</th>
+                              </tr>
+                              <tr>
+                                <th style="border-right: 1px solid black;">
+                                  {{this.text.overview.rubrics}} / {{this.text.overview.project}}
+                                </th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="border-right: 1px solid black;">{{this.text.pax}}</th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="border-right: 1px solid black;">{{this.text.pax}}</th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="border-right: 1px solid black;">{{this.text.pax}}</th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="border-right: 1px solid black;">{{this.text.pax}}</th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="border-right: 1px solid black;">{{this.text.pax}}</th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="border-right: 1px solid black;">{{this.text.pax}}</th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="">{{this.text.pax}}</th>
+                              </tr>
+                            </thead>
                             <tbody>
                               <tr>
-                                <td style="font-size: 16px; line-height: 17px; padding: 14px 14px 0px 14px;">
-                                  <small style="color: #6fcc35;">{{ this.text.cash.hbb.heading }}</small><br><br>
-                                  {{ this.text.cash.hbb.content }}
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                                <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.finance.auxillaryCash }}</td>
 
-                  <table cellspacing="0" cellpadding="0" border="0">
-                    <tbody>
-                      <tr>
-                        <td valign="top">
-                          <table cellspacing="0" cellpadding="0" border="0">
-                            <tbody>
-                              <tr>
-                                <td style="font-size: 16px; line-height: 17px; padding: 14px 14px 0px 14px;">
-                                  <small style="color: #6fcc35;">{{ this.text.cash.pax.heading }}</small><br><br>
-                                  {{ this.text.cash.pax.content }}
-                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;  background : #C2D6D6;">{{ this.data.auxCashHbb.Monday? this.data.auxCashHbb.Monday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashPax.Monday? this.data.auxCashPax.Monday.total : 0 }}</td>
+
+
+                                
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.auxCashHbb.Tuesday? this.data.auxCashHbb.Tuesday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashPax.Tuesday? this.data.auxCashPax.Tuesday.total : 0 }}</td>
+
+
+                                
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.auxCashHbb.Wednesday? this.data.auxCashHbb.Wednesday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashPax.Wednesday ? this.data.auxCashPax.Wednesday.total : 0}}</td>
+
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.auxCashHbb.Thursday ? this.data.auxCashHbb.Thursday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashPax.Thursday ? this.data.auxCashPax.Thursday.total : 0 }}</td>
+
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.auxCashHbb.Friday ? this.data.auxCashHbb.Friday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashPax.Friday ? this.data.auxCashPax.Friday.total : 0}}</td>
+
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.auxCashHbb.Saturday ? this.data.auxCashHbb.Saturday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashPax.Saturday ? this.data.auxCashPax.Saturday.total : 0}}</td>
+
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.auxCashHbb.Sunday ? this.data.auxCashHbb.Sunday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.auxCashPax.Sunday ? this.data.auxCashPax.Sunday.total : 0}}</td>
                               </tr>
+                              <tr style='font-weight: bold'>
+                                <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.finance.totalInvoice }}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;  background : #C2D6D6;">{{ this.data.auxCashTotalInvoiceHbb.Monday? this.data.auxCashTotalInvoiceHbb.Monday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashTotalInvoicePax.Monday? this.data.auxCashTotalInvoicePax.Monday.total : 0 }}</td>
+
+
+                                
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.auxCashTotalInvoiceHbb.Tuesday? this.data.auxCashTotalInvoiceHbb.Tuesday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashTotalInvoicePax.Tuesday? this.data.auxCashTotalInvoicePax.Tuesday.total : 0 }}</td>
+
+
+                                
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.auxCashTotalInvoiceHbb.Wednesday? this.data.auxCashTotalInvoiceHbb.Wednesday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashTotalInvoicePax.Wednesday ? this.data.auxCashTotalInvoicePax.Wednesday.total : 0}}</td>
+
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.auxCashTotalInvoiceHbb.Thursday ? this.data.auxCashTotalInvoiceHbb.Thursday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashTotalInvoicePax.Thursday ? this.data.auxCashTotalInvoicePax.Thursday.total : 0 }}</td>
+
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.auxCashTotalInvoiceHbb.Friday ? this.data.auxCashTotalInvoiceHbb.Friday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashTotalInvoicePax.Friday ? this.data.auxCashTotalInvoicePax.Friday.total : 0}}</td>
+
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.auxCashTotalInvoiceHbb.Saturday ? this.data.auxCashTotalInvoiceHbb.Saturday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashTotalInvoicePax.Saturday ? this.data.auxCashTotalInvoicePax.Saturday.total : 0}}</td>
+
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.auxCashTotalInvoiceHbb.Sunday ? this.data.auxCashTotalInvoiceHbb.Sunday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.auxCashTotalInvoicePax.Sunday ? this.data.auxCashTotalInvoicePax.Sunday.total : 0}}</td>
+                              </tr>                                     
                             </tbody>
                           </table>
                         </td>

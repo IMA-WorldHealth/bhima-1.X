@@ -60,21 +60,21 @@
   },
   
   "auxCashHbb" : {
-    "query" : "SELECT SUM(if(currency_id = 2, cost * 930, cost )) as \"total\", DAYNAME(date) as period FROM cash WHERE  project_id = 1 AND date={{ this.date.from }} AND uuid NOT IN (SELECT cash_uuid FROM cash_discard) GROUP BY period;",
+    "query" : "SELECT SUM(if(currency_id = 2, cost * 930, cost )) as \"total\", DAYNAME(date) as period FROM cash WHERE  project_id = 1 AND date>={{ this.date.from }} AND date<={{ this.date.to }} AND uuid NOT IN (SELECT cash_uuid FROM cash_discard) GROUP BY period;",
     "type" : "currency",
     "format" : "fr"
   },
   "auxCashPax" : {
-    "query" : "SELECT SUM(if(currency_id = 2, cost * 930, cost )) as \"total\", DAYNAME(date) as period FROM cash WHERE  project_id = 2 AND date={{ this.date.from }} AND uuid NOT IN (SELECT cash_uuid FROM cash_discard) GROUP BY period;",
+    "query" : "SELECT SUM(if(currency_id = 2, cost * 930, cost )) as \"total\", DAYNAME(date) as period FROM cash WHERE  project_id = 2 AND date>={{ this.date.from }} AND date<={{ this.date.to }} AND uuid NOT IN (SELECT cash_uuid FROM cash_discard) GROUP BY period;",
     "type" : "currency",
     "format": "fr"
   },
   "auxCashTotalInvoiceHbb" : {
-    "query" : "SELECT COUNT(invoice_uuid) as \"total\", DAYNAME(date) as period FROM cash join cash_item where cash_item.cash_uuid = cash.uuid AND date = {{ this.date.from }} AND project_id = 1 GROUP BY period;",
+    "query" : "SELECT COUNT(invoice_uuid) as \"total\", DAYNAME(date) as period FROM cash join cash_item where cash_item.cash_uuid = cash.uuid AND date >= {{ this.date.from }} AND date <= {{ this.date.to }} AND project_id = 1 GROUP BY period;",
     "type" : "number"
   },
   "auxCashTotalInvoicePax" : {
-    "query" : "SELECT COUNT(invoice_uuid) as \"total\", DAYNAME(date) as period FROM cash join cash_item where cash_item.cash_uuid = cash.uuid AND date = {{ this.date.from }}AND project_id = 2 GROUP BY period;",
+    "query" : "SELECT COUNT(invoice_uuid) as \"total\", DAYNAME(date) as period FROM cash join cash_item where cash_item.cash_uuid = cash.uuid AND date >= {{ this.date.from }} AND date <= {{ this.date.to }} AND project_id = 2 GROUP BY period;",
     "type" : "number"
   }
 }

@@ -2,14 +2,7 @@
   "institution" : "IMCK",
   "hbb" : "HBB",
   "pax" : "PAX",
-  "header"         : {
-    "overview"     : "Overview",
-    "finance"      : "Finance",
-    "accounts"     : "Accounts",
-    "principal"    : "Principal Cash",
-    "experimental" : "Experimental Reports"
-  },
-  "overview" : {
+  "period" : {
     "week"                     : "Week",
     "monday"                   : "Monday",
     "tuesday"                  : "Tuesday",
@@ -17,7 +10,16 @@
     "thursday"                 : "Thursday",
     "friday"                   : "Friday",
     "saturday"                 : "Saturday",
-    "sunday"                   : "Sunday",                    
+    "sunday"                   : "Sunday"
+  },
+  "header"         : {
+    "overview"     : "Overview",
+    "finance"      : "Finance",
+    "accounts"     : "Accounts",
+    "principal"    : "Principal Cash",
+    "experimental" : "Experimental Reports"
+  },
+  "overview" : {                          
     "rubrics"                  : "Rubrics",
     "project"                  : "Project",
     "newPatients"              : "New Patients",
@@ -28,6 +30,10 @@
     "totalFicheSales"          : "Total Fiche Sales",
     "totalInvoiceTransactions" : "Total Invoice Transactions",
     "totalLines"               : "Total Invoice Line Items"
+  },
+  "finance" : {
+    "auxillaryCash" : "Auxillary Cash",
+    "totalInvoice"  : "Total Invoices"
   },
   "registration" : {
     "heading" : "Patient Registration",
