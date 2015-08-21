@@ -95,16 +95,14 @@ angular.module('bhima.controllers')
           var accountNumber = String(item.account_number);
           var accountIndex = accountNumber.substring(0,2);
           accountIndex = parseInt(accountIndex);
-
-          return ((accountIndex % 2) === 1);
+          return ((item.is_charge) === 1);
         });
 
         var otherProfit = session.array8.filter(function (item) {
           var accountNumber = String(item.account_number);
           var accountIndex = accountNumber.substring(0,2);
           accountIndex = parseInt(accountIndex);
-
-          return ((accountIndex % 2) === 0);
+          return ((item.is_charge) === 0);
         });
 
         session.otherCharge = otherCharge;
