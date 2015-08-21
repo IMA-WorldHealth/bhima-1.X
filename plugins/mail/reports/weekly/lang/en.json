@@ -4,6 +4,7 @@
   "pax" : "PAX",
   "header"         : {
     "overview"     : "Overview",
+    "finance"      : "Finance",
     "accounts"     : "Accounts",
     "principal"    : "Principal Cash",
     "experimental" : "Experimental Reports"
