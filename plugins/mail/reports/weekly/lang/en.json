@@ -4,6 +4,7 @@
   "pax" : "PAX",
   "period" : {
     "week"                     : "Week",
+    "day"                      : "Day",
     "monday"                   : "Monday",
     "tuesday"                  : "Tuesday",
     "wednesday"                : "Wednesday",
@@ -14,7 +15,8 @@
   },
   "header"         : {
     "overview"     : "Overview",
-    "finance"      : "Finance",
+    "auxFinance"   : "Finance - Auxillary Cash Box",
+    "priFinance"   : "Finance - Principal Cash Box",
     "accounts"     : "Accounts",
     "principal"    : "Principal Cash",
     "experimental" : "Experimental Reports"
@@ -33,7 +35,9 @@
   },
   "finance" : {
     "auxillaryCash" : "Auxillary Cash",
-    "totalInvoice"  : "Total Invoices"
+    "totalInvoice"  : "Total Invoices",
+    "income"        : "Income",
+    "expense"       : "Expense"
   },
   "registration" : {
     "heading" : "Patient Registration",
