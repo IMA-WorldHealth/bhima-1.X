@@ -67,63 +67,25 @@ angular.module('bhima.controllers')
 
 }])
 
-.controller('FinanceDashboardController', ['FinanceDashboardService', 'appcache', '$filter', function (Finance, AppCache, $filter) {
-  var self = this,
-      $currency = $filter('currency');
+// controller for the main finance dashboard page
+.controller('FinanceDashboardController', [
+  '$scope',
+  'FinanceDashboardService',
+  'appcache',
+  function ($scope, Finance, AppCache) {
+    var self = this,
+        cache = new AppCache('FinanceDashboard');
 
-  // defaults
-  // TODO - should be loaded from AppCache
-  self.hasPostingJournal = 1;
-  self.currencyId = 1;
-  self.cashBoxGrouping = 'day';
-
-  // data for the cashbox chart
-  self.cashBoxChart = {
-    data : [],
-    labels : []
-  };
-
-  // get the available cashboxes
-  Finance.getCashBoxes()
-  .then(function (response) {
-    console.log('CashBoxes:', response.data);
-    self.cashboxes = response.data;
-
-    // load the default cash balance
-    // TODO - this should be dependent on localstorage
-    self.getCashBalance(self.cashboxes[0].id);
-  });
-
-  // load available currencies
-  Finance.getCurrencies()
-  .then(function (response) {
-    console.log('Currencies', response.data);
-    self.currencies = response.data;
-  });
-
-  // load the balance data for a single account
-  self.getCashBalance = function (id) {
-    console.log('Loading cash balance:', id);
-    Finance.getCashBoxBalance(id, self.currencyId, self.hasPostingJournal)
+    // load currencies
+    Finance.getCurrencies()
     .then(function (response) {
-      console.log('CashBoxBalance:', response.data);
-      self.cashBoxChart.data = [ response.data[0].debit, response.data[0].credit];
-      self.cashBoxChart.labels = ['Debit', 'Credit'];
+      self.currencies = response.data;
     });
-  };
 
-  // load the analytics history of the given cashbox
-  self.getCashHistory = function (id) {
-    console.log('Loading cash history:', id);
-    Finance.getCashBoxHistory(id, self.currencyId, self.hasPostingJournal, self.cashBoxGrouping)
-    .then(function (response) {
-      console.log('CashBoxHistory', response.data);
-      self.cashBoxHistory = response.data;
-    });
-  };
-
-  self.refresh = function () {
-    console.log('Called refresh!');
-  };
-
-}]);
+    // send a refresh 
+    self.refresh = function () {
+      console.log('Called refresh!');
+      $scope.$broadcast('refresh', {});
+    };
+  }
+]);

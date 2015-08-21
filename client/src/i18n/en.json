@@ -331,6 +331,8 @@
 "COLUMNS": {
    "USER"                   : "User",
    "ABBR"                  : "Abbr",
+   "INCOME"                : "Income",
+   "EXPENSE"               : "Expense",
    "ABBREVIATION"          : "Abreviation",
    "ACCOUNT"               : "Account",
    "ACCOUNT_ID"            : "Account ID",
@@ -792,8 +794,13 @@
    "WEEK"               : "This Week"
    },
 "DASHBOARD": {
-   "TITLE" : "Dashboards"
-   },
+   "TITLE" : "Dashboards",
+   "FINANCE" : {
+     "TITLE" : "Financial Dashboard",
+     "CASHFLOW" : "Cash Flow Analysis",
+     "CASHBOX" : "CashBox"
+   }
+ },
 "DEBITOR_GRP": {
    "FILTER"     : "Filter Debtor Groups",
    "GROUPS"     : "Debtor Groups",
