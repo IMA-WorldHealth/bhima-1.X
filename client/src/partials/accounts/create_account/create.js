@@ -145,7 +145,6 @@ angular.module('bhima.controllers')
     }
 
     function typeAccountClass () {
-      console.log('A la recherche de Type Account');  
       session.accountType = $scope.checkClass($scope.newAccount.number);
     }
 
