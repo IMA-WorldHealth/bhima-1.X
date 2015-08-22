@@ -43,7 +43,7 @@ function getAccountIds(cashBoxId, currencyId) {
 
 // GET /analytics/cashboxes/:id/balance?hasPostingJournal=0&currencyId=1
 exports.getCashBoxBalance = function (req, res, next) {
-  'use strict';
+ 'use strict';
 
   var sql;
 
@@ -53,7 +53,7 @@ exports.getCashBoxBalance = function (req, res, next) {
     // check if we are including the posting journal or not
     if (req.query.hasPostingJournal) {
       sql =
-        'SELECT COUNT(trans_id) AS transactions, SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit, ' +
+        'SELECT COUNT(DISTINCT trans_id) AS transactions, SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit, ' +
           'SUM(debit_equiv - credit_equiv) AS balance, account_id ' +
         'FROM (' +
           'SELECT trans_id, account_id, debit_equiv, credit_equiv ' +
@@ -65,7 +65,7 @@ exports.getCashBoxBalance = function (req, res, next) {
         'GROUP BY account_id;';
     } else {
       sql =
-        'SELECT COUNT(trans_id) AS transactions, SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit, ' +
+        'SELECT COUNT(DISTINCT trans_id) AS transactions, SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit, ' +
           'SUM(debit_equiv - credit_equiv) AS balance, account_id ' +
         'FROM general_ledger ' +
         'WHERE account_id IN (?) ' +
@@ -119,6 +119,9 @@ exports.getCashBoxHistory = function (req, res, next) {
       case 'month':
         sql += 'GROUP BY account_id, YEAR(trans_date), MONTH(trans_date);';
         break;
+      case 'week' :
+        sql += 'GROUP BY account_id, YEAR(trans_date), DAYOFWEEK(trans_date) ORDER BY DAYOFWEEK(trans_date);';
+        break;
       case 'day':
         sql += 'GROUP BY account_id, YEAR(trans_date), MONTH(trans_date), DAY(trans_date);';
         break;
@@ -134,4 +137,22 @@ exports.getCashBoxHistory = function (req, res, next) {
   })
   .catch(next)
   .done();
+};
+
+// GET /analytics/debitorgroups/top
+exports.getTopDebitorGroups = function () {
+  'use strict';
+
+  var sql =
+    'SELECT ' +
+    'FROM (' +
+        'SELECT deb_cred_uuid, SUM(debit_equiv) AS totaldebit, SUM(credit_equiv) AS totalcredit ' +
+        'FROM posting_journal ' +
+        'WHERE deb_cred_type = \'D\' ' +
+        'GROUP BY deb_cred_uuid ' +
+        'ORDER BY totaldebit' +
+      ') AS groups JOIN debitor JOIN debitor_group ' +
+    'ON';
+
+
 };
