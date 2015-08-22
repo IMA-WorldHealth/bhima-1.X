@@ -329,7 +329,8 @@
    "TITLE"       : "Find convention"
    },
 "COLUMNS": {
-   "USER"                   : "User",
+   "USER"                  : "User",
+   "TRANSACTIONS"          : "Transactions",
    "ABBR"                  : "Abbr",
    "INCOME"                : "Income",
    "EXPENSE"               : "Expense",

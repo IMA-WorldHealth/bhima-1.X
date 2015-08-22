@@ -1,11 +1,11 @@
 angular.module('bhima.controllers')
 
+// composes query strings nicely off a url and
+// an object of potential queries.
+// queries = { hasId : 0, utm_awesome: undefined } => '?hasId=1'
 .service('QueryService', function () {
   var service = {};
 
-  // composes query strings nicely off a url and
-  // an object of potential queries.
-  // queries = { hasId : 0, utm_awesome: undefined } => '?hasId=1'
   service.compose = function (url, queries) {
     var value, params = [];
 
@@ -63,6 +63,11 @@ angular.module('bhima.controllers')
     return $http.get(url);
   };
 
+  // get the top-spending debtor groups
+  service.getTopDebtorGroups = function () {
+    return $http.get('/analytics/debtorgroups/top');
+  };
+
   return service;
 
 }])
@@ -70,17 +75,10 @@ angular.module('bhima.controllers')
 // controller for the main finance dashboard page
 .controller('FinanceDashboardController', [
   '$scope',
-  'FinanceDashboardService',
   'appcache',
-  function ($scope, Finance, AppCache) {
+  function ($scope, AppCache) {
     var self = this,
         cache = new AppCache('FinanceDashboard');
-
-    // load currencies
-    Finance.getCurrencies()
-    .then(function (response) {
-      self.currencies = response.data;
-    });
 
     // send a refresh 
     self.refresh = function () {

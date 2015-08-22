@@ -18,7 +18,7 @@
     <tbody>
       <tr>
         <td>
-          <span style="margin: 0 5px;"><b>{{ "DASHBOARD.FINANCE.CUMMULATIVE" | translate }}</b></span>
+          <span style="margin: 0 5px;"><b><i class="glyphicon glyphicon-transactions"></i> {{ "COLUMNS.TRANSACTIONS" | translate }}</b>: {{ CashChartCtrl.meta.transactions }}</span>
           <span style="margin: 0 5px;" class="text-success"><b><i class="glyphicon glyphicon-chevron-up"></i> {{ "COLUMNS.INCOME" | translate }}</b>: {{ CashChartCtrl.meta.debit | currency }}</span>
           <span style="margin: 0 5px;" class="text-danger"><b><i class="glyphicon glyphicon-chevron-down"></i> {{ "COLUMNS.EXPENSE" | translate }}</b>: {{ CashChartCtrl.meta.credit | currency }}</span>
           <span style="margin: 0 5px;" class="text-info"><b><i class="glyphicon glyphicon-transfer"></i> {{ "COLUMNS.BALANCE" | translate }}</b>: {{ CashChartCtrl.meta.balance | currency }}</span>
