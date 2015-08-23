@@ -9,6 +9,11 @@
       <li class="active">{{ "JOURNAL_VOUCHER.TITLE" | translate }}</li>
     </ol>
   </div>
+  <div class="pull-right" ng-if="JournalVoucherCtrl.hasCachedForm">
+    <button type="button" class="btn btn-sm btn-success" ng-click="JournalVoucherCtrl.loadCachedForm()">
+      {{ "JOURNAL_VOUCHER.LOAD_CACHED_FORM" | translate }}
+    </button>
+  </div>
 </nav>
 
 <main class="extend" ng-cloak>

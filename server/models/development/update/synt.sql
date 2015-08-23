@@ -62,3 +62,13 @@ USE bhima;
 DELETE FROM `inventory_type` WHERE `inventory_type`.`id` = 4;
 
 
+-- Update user table
+-- Change logged_in to online
+-- Add column last_login DATE
+-- Encrypt user passwords
+--
+-- Date: 2015-08-13
+-- By: jniles
+ALTER TABLE `user` CHANGE `logged_in` `active` TINYINT NOT NULL DEFAULT 0;
+ALTER TABLE `user` ADD COLUMN `last_login` DATE NOT NULL;
+UPDATE `user` SET `password` = PASSWORD(`password`);

@@ -123,7 +123,7 @@ exports.startVisit = function (req, res, next) {
     'INSERT INTO patient_visit (uuid, patient_uuid, entry_date, registered_by) VALUES ' +
     '(?, ?, ?, ?);';
 
-  db.exec(sql, [guid(), patientId, new Date(), req.session.user_id])
+  db.exec(sql, [guid(), patientId, new Date(), req.session.user.id])
   .then(function () {
     res.status(200).send();
   })

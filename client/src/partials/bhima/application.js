@@ -1,117 +1,40 @@
 angular.module('bhima.controllers')
-.controller('app', [
-  'EVENTS',
-  '$scope',
+.controller('ApplicationController', [
   '$location',
-  '$translate',
   '$timeout',
-  'appauth',
+  '$translate',
   'appcache',
   'appstate',
   'connect',
-  'validate',
   'util',
-  'exchange',
-  function (EVENTS, $scope, $location, $translate, $timeout, appauth, Appcache, appstate, connect, validate, util, exchange) {
-    var dependencies = {},
-        preferences = new Appcache('preferences'),
-        cache = new Appcache('application');
-        // FIXME : why do I have two caches here again?
-    
-    $scope.isLoggedIn = function () {
-      return appauth.isAuthenticated();
+  'SessionService',
+  function ($location, $timeout, $translate, Appcache, appstate, connect, util, SessionService) {
+
+    // useful for loading the language
+    var cache = new Appcache('preferences');
+
+    cache.fetch('language')
+    .then(function (res) {
+      if (res) {
+        $translate.use(res.current);
+      }
+    });
+
+    this.isLoggedIn = function () {
+      return SessionService.user;
     };
 
-    // utility function to set appstate() variables
-    function setEnvironmentVariable(key, data) {
-      connect.fetch(data)
-      .then(function (values) {
-        $timeout(function () {
-          appstate.set(key, values);
-        });
-      });
+    if (this.isLoggedIn()) {
+      loadState();
     }
 
-    function loadCachedLanguage() {
-      //FIXME This could be done in util.js -
-      // extra object (in this file) vs. the clarity
-      // of doing all set up in one place
-      preferences.fetch('language')
-      .then(function (res) {
-        if (res) { $translate.use(res.current); }
-      })
-      .catch(handleError);
-    }
-
-    function loadCachedLocation() {
-      preferences.fetch('location')
-      .then(function (res) {
-        if (res) { $location.path(res.path); }
-      })
-      .catch(handleError);
-    }
-
-    function loadCachedProject() {
-      preferences.fetch('project')
-      .then(function (project) {
-        appstate.set('project', project);
-      });
-    }
-
-    // define dependencies for before login initially happens
-    function beforeLogin() {
-      var languages, enterprises, projects;
-      console.log('[NOTICE] beforeLogin()');
-
-      languages = {
-        tables : {
-          'language' : { columns : ['id', 'name', 'key'] }
-        }
-      };
-
-      // For future use
-      enterprises = {
-        tables : {
-          'enterprise' : {
-            columns : ['id', 'name', 'abbr', 'location_id', 'currency_id', 'phone', 'email']
-          }
-        }
-      };
-
-      // FIXME: What is the deal here? 
-      // Why do we need to have currency_id for a project?
-      // sales.js uses it, so I require it here, but this should
-      // probably change.
-      projects = {
-        tables : {
-          'enterprise' : { columns: ['currency_id', 'phone', 'email', 'location_id'] },
-          'project' : { columns : ['id', 'name', 'enterprise_id', 'abbr'] },
-        },
-        join : ['project.enterprise_id=enterprise.id']
-      };
-
-      // set appstate variables
-      setEnvironmentVariable('languages', languages);
-      setEnvironmentVariable('enterprises', enterprises);
-      setEnvironmentVariable('projects', projects);
-
-      // load appcache variables
-      var url = $location.url();
-      if (url === '' || url === '/') { loadCachedLocation(); }
-      loadCachedLanguage();
-      loadCachedProject();
-
-      // FIXME
-      // Set DEPRECATED appstate values until we can change them in the future.
-      appstate.register('enterprises', function (result) {
-        var defaultEnterprise = result[0];
-        if (defaultEnterprise) { appstate.set('enterprise', defaultEnterprise); }
-      });
-    }
-
-    // Fires after login
-    function afterLogin() {
-      console.log('[NOTICE] afterLogin()');
+    // loads dependencies used by the application during runtime
+    //   FiscalYear
+    //   ExchangeRate
+    //   Currencies
+    // Also contains a hack to make sure the appstate has the correct
+    // enterprise, user, and project from SessionService
+    function loadState() {
       var currencies, exchangeRate, fiscalYear;
 
       exchangeRate = {
@@ -145,7 +68,15 @@ angular.module('bhima.controllers')
       setEnvironmentVariable('fiscalYears', fiscalYear);
       setEnvironmentVariable('currencies', currencies);
       setEnvironmentVariable('exchange_rate', exchangeRate);
-      
+
+      // FIXME hack to make sure that appstate has user,
+      // project, and enterprise defined
+      $timeout(function () {
+        appstate.set('enterprise', SessionService.enterprise);
+        appstate.set('project', SessionService.project);
+        appstate.set('user', SessionService.user);
+      });
+
       // FIXME
       // set DEPRECATED appstate variables until we can change them
       // throughout the application.
@@ -159,43 +90,14 @@ angular.module('bhima.controllers')
       });
     }
 
-    // FIXME : this needs to be better formalized
-    beforeLogin();
-
-    function onReload() {
-      console.log('[NOTICE] onReload()');
-      afterLogin();
-    }
-
-    if (appauth.isAuthenticated()) { onReload(); }
-
-    // Event handlers
-    
-    $scope.$on(EVENTS.auth.notAuthenticated, function (e) {
-      console.log('[AUTH] Not Authenticated Event Fired!');
-      appauth.destroySession();
-      beforeLogin();
-      $location.path('/login');
-    });
-
-    $scope.$on(EVENTS.auth.sessionTimeout, function (e) {
-      console.log('[AUTH] Session Timeout Event Fired!');
-      appauth.destroySession();
-      $location.path('/login');
-    });
-
-    $scope.$on(EVENTS.auth.loginSuccess, function (e) {
-      console.log('[AUTH] Login Success Event Fired!');
-      afterLogin();
-    });
-
-    $scope.$on(EVENTS.auth.loginFailed, function (e) {
-      console.log('[AUTH] Login Failed Event Fired!');
-      appauth.destroySession();
-    });
-
-    function handleError(error) {
-      throw error;
+    // utility function to set appstate() variables
+    function setEnvironmentVariable(key, data) {
+      connect.fetch(data)
+      .then(function (values) {
+        $timeout(function () {
+          appstate.set(key, values);
+        });
+      });
     }
   }
 ]);

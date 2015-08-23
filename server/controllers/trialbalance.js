@@ -73,6 +73,7 @@ function createErrorReport(code, isFatal, rows) {
   });
 }
 
+
 // Ensure no accounts are locked in the transactions
 function checkAccountsLocked(transactions) {
   var sql =

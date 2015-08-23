@@ -1,12 +1,12 @@
 angular.module('bhima.controllers')
-.controller('tree', [
+.controller('TreeController', [
   '$scope',
   '$rootScope',
   '$location',
+  '$http',
   '$translate',
   'appcache',
-  'connect',
-  function($scope, $rootScope, $location, $translate, AppCache, connect) {
+  function($scope, $rootScope, $location, $http, $translate, AppCache) {
 
     // TODO
     //   Theoretically, the users and permissions depend on an
@@ -98,15 +98,15 @@ angular.module('bhima.controllers')
       });
     }
 
-    function init () {
-      connect.fetch('/tree')
-      .then(function (data) {
+    function init() {
+      $http.get('/tree')
+      .then(function (response) {
 
         // sort the tree nodes alphabetically
-        sortTreeNodes(data);
+        sortTreeNodes(response.data);
 
         // expose to view
-        $scope.treeData = data;
+        $scope.treeData = response.data;
         loadTreeOptions();
       });
     }

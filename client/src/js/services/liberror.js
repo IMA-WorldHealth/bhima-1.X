@@ -24,6 +24,7 @@ angular.module('bhima.services')
     }
   };
 
+  /*
   (function loadErrorCodes() {
     $http.get('/errorcodes')
     .success(function (data) {
@@ -33,16 +34,7 @@ angular.module('bhima.services')
       messenger.danger(JSON.stringify(err));
     });
   })();
-
-  (function loadErrorCodes() {
-    $http.get('/errorcodes')
-    .success(function (data) {
-      errorCodes = data;
-    })
-    .error(function (err) {
-      messenger.danger(JSON.stringify(err));
-    });
-  })();
+  */
 
   function CustomError (code, namespace, message) {
     var args, err = Error.call(this, message);
