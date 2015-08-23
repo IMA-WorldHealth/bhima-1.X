@@ -37,7 +37,7 @@ var accounts        = require('../controllers/accounts');
 var auth            = require('../controllers/auth'),
     projects        = require('../controllers/projects'),
     users           = require('../controllers/users'),
-    analytics       = require('../controllers/analytics/finance');
+    analytics       = require('../controllers/analytics');
 
 var patient = require('../controllers/patient');
 
@@ -220,8 +220,9 @@ exports.initialise = function (app) {
   app.get('/patient/search/fuzzy/:match', patient.searchFuzzy);
   app.get('/patient/search/reference/:reference', patient.searchReference);
 
-  // analytics for dashboards
-  app.get('/analytics/cashboxes', analytics.getCashBoxes);
-  app.get('/analytics/cashboxes/:id/balance', analytics.getCashBoxBalance);
-  app.get('/analytics/cashboxes/:id/history', analytics.getCashBoxHistory);
+  // analytics for financial dashboards
+  app.get('/analytics/cashboxes', analytics.cashflow.getCashBoxes);
+  app.get('/analytics/cashboxes/:id/balance', analytics.cashflow.getCashBoxBalance);
+  app.get('/analytics/cashboxes/:id/history', analytics.cashflow.getCashBoxHistory);
+  app.get('/analytics/debtorgroups/top', analytics.cashflow.getTopDebtorGroups);
 };
