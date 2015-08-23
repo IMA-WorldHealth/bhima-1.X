@@ -2882,16 +2882,21 @@
    "DESCRIPTION"      : "Description",
    "ERROR"            : "Erreur",
    "ERRORS"           : "Erreurs",
+   "EXCEPTIONS"       : "Erreurs",
    "ERROR_TEXT"       : "Vous avez des Erreurs!",
    "FINANCE_OFFICER"  : "Chef Finance",
    "HIDE"             : "Cacher",
-   "POST_TO_LEDGER"   : "Poster dans le grand livre",
+   "POST_TO_LEDGER"   : "Poster au grand livre",
    "RESULTS"          : "Résultats",
    "SHOW"             : "Voir",
+   "SHOW_ERRORS"      : "Afficher des Erreurs",
+   "SHOW_WARNINGS"    : "Afficher des Avertissements",
+   "LINES"            : "Lignes",
    "SIGNATURES"       : "Signées",
    "SUMMARY"          : "Summaire",
    "TITLE"            : "Rapprochement",
-   "TRANSACTIONS"     : "Transactions"
+   "TRANSACTIONS"     : "Transactions",
+   "NO_DATA"          : "Il n'y a pas des donnes.  S'il vous plait, recommencer par la rapprochement et clickez sur imprimer."
    },
 "UNIT_TYPE": {
    "ADD"         : "Ajouter",

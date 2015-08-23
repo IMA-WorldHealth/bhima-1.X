@@ -74,9 +74,9 @@ exports.initialise = function (app) {
   app.post('/service_dist/', serviceDist.execute);
   app.post('/consumption_loss/', consumptionLoss.execute);
 
-  // trail balance routes
-  app.get('/trialbalance/initialize', trialbalance.initialiseTrialBalance);
-  app.get('/trialbalance/submit/:key/', trialbalance.submitTrialBalance);
+  // trial balance routes
+  app.post('/journal/trialbalance', trialbalance.postTrialBalance);
+  app.post('/journal/togeneralledger', trialbalance.postToGeneralLedger); // TODO : rename?
 
   app.get('/journal/:table/:id', journal.lookupTable);
 
