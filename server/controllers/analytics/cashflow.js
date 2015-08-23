@@ -139,8 +139,8 @@ exports.getCashBoxHistory = function (req, res, next) {
   .done();
 };
 
-// GET /analytics/debitorgroups/top
-exports.getTopDebitorGroups = function () {
+// GET /analytics/debtorgroups/top
+exports.getTopDebtorGroups = function () {
   'use strict';
 
   var sql =
@@ -153,6 +153,5 @@ exports.getTopDebitorGroups = function () {
         'ORDER BY totaldebit' +
       ') AS groups JOIN debitor JOIN debitor_group ' +
     'ON';
-
 
 };
