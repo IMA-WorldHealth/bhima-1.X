@@ -1,61 +1,95 @@
 angular.module('bhima.controllers')
-.controller('trialBalance', [
-  '$scope',
+.controller('TrialBalanceController', [
   '$modalInstance',
   '$location',
-  'connect',
-  'messenger',
-  'request',
-  'errorCodes',
+  '$http',
   'precision',
-  function ($scope, $modalInstance, $location, connect, messenger, request, errorCodes, precision) {
-    var session = $scope.session = {};
-    session.action = 'hide';
+  'transactions',
+  'JournalPrintService',
+  function ($modalInstance, $location, $http, precision, transactions, PrintService) {
 
-    console.log('request', request);
+    // alias controller object
+    var self = this;
 
-    $scope.transactions = request.transactions;
-    $scope.balances = request.balances;
-    var total = $scope.total = {};
+    // globals
+    self.totals = {};
+    self.state = 'loading';
 
-    $scope.balances.forEach(function (item) {
-      total.before = (total.before || 0) + item.balance;
-      total.debit = (total.debit || 0) + item.debit;
-      total.credit = (total.credit || 0) + item.credit;
-      total.after = (total.after || 0) + item.balance + precision.round(item.credit - item.debit);
+    // load data and perform totalling
+    $http.post('/journal/trialbalance', { transactions : transactions })
+    .then(function (response) {
+      self.state = 'default';
+
+      // attach to controller
+      self.balances = response.data.balances;
+      self.metadata = response.data.metadata;
+      self.exceptions = response.data.exceptions;
+
+      // helper toggles
+      self.hasExceptions = self.exceptions.length > 0;
+      self.hasErrors = self.exceptions.some(function (e) {
+        return e.fatal;
+      });
+
+      // sum the totals up
+      self.totals  = self.balances.reduce(function (totals, row) {
+        totals.before += row.balance;
+        totals.debit += row.debit;
+        totals.credit += row.credit;
+        totals.after += (row.balance + precision.round(row.credit - row.debit));
+        return totals;
+      }, { before : 0, debit : 0, credit : 0, after : 0 });
+
+      // make sure exceptions with fewer than 9 items are displayed
+      // open ('visible') by default
+      self.exceptions.forEach(function (e) {
+        if (e.transactions.length < 9) {
+          e.visible = true;
+        }
+      });
+    })
+    .catch(function (error) {
+      console.error(error);
     });
 
-    var dates = $scope.transactions.map(function (row) {
-      return new Date(row.trans_date);
-    });
-
-    session.max = Math.max.apply(Math.max, dates);
-    session.min = Math.min.apply(Math.min, dates);
-    session.count = $scope.transactions.reduce(function (a,b) { return a + b.lines; }, 0);
-
-    $scope.errors = request.errors.map(function (error) {
-      return angular.extend(errorCodes[error.code], {affectedRows : error.details});
-    });
-
-    $scope.submit = function submit () {
-      connect.fetch('/trialbalance/submit/'+ request.key +'/')
+    // TODO
+    // implement posting to the general ledger with error handling
+    self.postToGeneralLedger = function submit () {
+      $http.post('/journal/togeneralledger', { transactions : transactions })
       .then(function () {
         $modalInstance.close();
       })
       .catch(function (error) {
         console.log(error);
-        messenger.error('Posting failed with ' +  JSON.stringify(error));
+        $modalInstance.close(error);
       });
     };
 
-    $scope.cancel = function cancel () {
+    // kill the modal and resume posting journal editting
+    self.cancelModal = function () {
       $modalInstance.dismiss();
     };
 
-    $scope.print = function print () {
+    // print the trial balance in a separate HTML page
+    self.print = function print () {
+
+      // share data with the trial balance printer
+      PrintService.setData({ balances : self.balances, metadata: self.metadata, exceptions : self.exceptions });
+
+      // go to the controller
       $location.path('/trialbalance/print');
       $modalInstance.dismiss();
     };
 
+    // switches between viewing the trial balance
+    // and the errors in the trial balance
+    self.toggleExceptionState = function () {
+      self.state = (self.state === 'exception') ? 'default' : 'exception';
+    };
+
+    // reveals the transactions of a certain exception
+    self.toggleVisibility = function (e) {
+      e.visible = !e.visible;
+    };
   }
 ]);
