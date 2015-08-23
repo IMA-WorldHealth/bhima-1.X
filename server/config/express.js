@@ -17,7 +17,7 @@ module.exports = function (app, authentication) {
 
   // middleware
   app.use(compress());
-  app.use(bodyParser.json());
+  app.use(bodyParser.json({ limit : '8mb' }));
   app.use(bodyParser.urlencoded({ extended: false }));
 
   // stores session in a file store so that server restarts do
