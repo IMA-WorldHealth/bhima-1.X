@@ -207,7 +207,7 @@ function flushUsers (db_con) {
   // Disable safe mode #420blazeit
   // TODO  This should be optionally set as a flag - and reported (logged)
   permissions = 'SET SQL_SAFE_UPDATES = 0;';
-  reset = 'UPDATE `user` SET `logged_in`=\'0\' WHERE `logged_in`=\'1\';';
+  reset = 'UPDATE `user` SET user.active = 0 WHERE user.active = 1;';
 
   db_con.getConnection(function (err, con) {
     if (err) { throw err; }

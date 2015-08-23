@@ -38,7 +38,7 @@
               <td>{{ grp.name }}</td>
               <td>{{ list.get(grp.price_list_uuid).title }}</td>
               <td>{{ subsidies.get(grp.subsidy_uuid).text }}</td>
-              <td><a title="{{ 'PATIENT_GRP.PRICE_LIST' | translate }}" class="action" ng-click="showReport(grp)"><span class="glyphicon glyphicon-eye-open"></span></a></td>
+              <td><a ng-if="grp.price_list_uuid" title="{{ 'PATIENT_GRP.PRICE_LIST' | translate }}" class="action" ng-click="showReport(grp)"><span class="glyphicon glyphicon-eye-open"></span></a></td>
               <td><a class="action" ng-click="edit(grp)"><i class="glyphicon glyphicon-pencil"></i></a></td>
               <td><a class="action" ng-click="remove(grp)"><i class="glyphicon glyphicon-trash uif-red"></i></a></td>
             </tr>

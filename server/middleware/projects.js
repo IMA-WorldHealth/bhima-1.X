@@ -27,7 +27,7 @@ module.exports = function (db) {
             'ON `project`.`id` = `project_permission`.`project_id` ' +
             'WHERE `project_permission`.`user_id` = ?;';
 
-          db.exec(sql, [req.session.user_id])
+          db.exec(sql, [req.session.user.id])
           .then(function (rows) {
             res.send(rows);
           })

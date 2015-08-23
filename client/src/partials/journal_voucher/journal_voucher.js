@@ -3,10 +3,7 @@ angular.module('bhima.controllers')
   '$scope',
   '$http',
   'appcache',
-  'messenger',
-  'uuid',
-  'exchange',
-  function ($scope, $http, AppCache, messenger, uuid, exchange) {
+  function ($scope, $http, AppCache) {
 
     /* This controller wraps all the global metadata
      * for the journal voucher and the JournalVoucherTableController.
@@ -28,7 +25,7 @@ angular.module('bhima.controllers')
         isDefined = angular.isDefined,
 
         // cache TODO
-        db = new AppCache('journal.voucher');
+        db = new AppCache('JournalVoucher');
 
     // alias this
     var self = this;
@@ -43,6 +40,7 @@ angular.module('bhima.controllers')
 
     self.showComment = false;
     self.showReference = false;
+    self.hasCachedForm = false;
 
     // the master form
     // We must define this on the $scope so that the
@@ -61,7 +59,6 @@ angular.module('bhima.controllers')
       console.error(error);
     });
 
-
     // toggle comment field
     self.toggleComment = function () {
       self.showComment = !self.showComment;
@@ -77,17 +74,25 @@ angular.module('bhima.controllers')
       self.serverFailureMessage = false;
       self.serverSuccessMessage = false;
 
+      // cache the working form in case something breaks
+      cacheWorkingForm();
+
+      // validation of table rows
       if (!correctTableInput()) {
         self.clientTableError = true;
         return;
       }
 
+      // submit to the server
       $http.post('/finance/journalvoucher', { data : $scope.master })
 
       // success!  Clear the data to start again.
-      .success(function (data) {
+      .then(function (response) {
 
-        self.serverSuccessMessage = data;
+        // if everything went correctly, remove the old copy
+        removeCachedForm();
+
+        self.serverSuccessMessage = response.data;
 
         // reset form validation checks
         $scope.VoucherForm.$setPristine();
@@ -100,56 +105,102 @@ angular.module('bhima.controllers')
       })
 
       // something went wrong... log it!
-      .error(function (error) {
-        self.serverFailureMessage = error;
-        console.error(error);
+      .catch(function (error) {
+        self.serverFailureMessage = error.data;
       });
     };
 
+    // ensure that the table portion is valid before submitting
+    function correctTableInput() {
 
-  // ensure that the table portion is valid before submitting
-  function correctTableInput() {
+      // validate that the rows contain the correct format
+      var validRows = self.master.rows.every(function (row) {
 
-    // validate that the rows contain the correct format
-    var validRows = self.master.rows.every(function (row) {
+        // must have a one non-zero value
+        var validAmount =
+            (row.debit > 0 && !row.credit) ||
+            (!row.debit && row.credit > 0);
 
-      // must have a one non-zero value
-      var validAmount =
-          (row.debit > 0 && !row.credit) ||
-          (!row.debit && row.credit > 0);
+        // must have either a debitor/creditor switch
+        // or an account
+        var validAccount =
+            (isDefined(row.deb_cred_uuid) && isDefined(row.deb_cred_type)) ||
+             isDefined(row.account_id);
 
-      // must have either a debitor/creditor switch
-      // or an account
-      var validAccount =
-          (isDefined(row.deb_cred_uuid) && isDefined(row.deb_cred_type)) ||
-           isDefined(row.account_id);
+        return validAmount && validAccount;
+      });
 
-      return validAmount && validAccount;
-    });
+      // validate that the transaction balances
+      var totals = self.master.rows.reduce(function (aggregate, row) {
+        aggregate.debit += row.debit;
+        aggregate.credit += row.credit;
+        return aggregate;
+      }, { debit : 0, credit : 0 });
 
-    // validate that the transaction balances
-    var totals = self.master.rows.reduce(function (aggregate, row) {
-      aggregate.debit += row.debit;
-      aggregate.credit += row.credit;
-      return aggregate;
-    }, { debit : 0, credit : 0 });
+      var validTotals = totals.debit === totals.credit;
 
-    var validTotals = totals.debit === totals.credit;
+      // validate that there is only one cost or profit center per line
+      var validCenters = self.master.rows.every(function (row) {
+        return !(row.cc_id && row.pc_id);
+      });
 
-    // validate that there is only one cost or profit center per line
-    var validCenters = self.master.rows.every(function (row) {
-      return !(row.cc_id && row.pc_id);
-    });
+      // TODO
+      // Should we include specific error messages (the debits/credits
+      // do not balance, missing an account?)
+      // It would be easy to do, but very verbose, especially considering
+      // translation..
+      return validRows && validTotals && validCenters;
+    }
 
-    // TODO
-    // Should we include specific error messages (the debits/credits
-    // do not balance, missing an account?)
-    // It would be easy to do, but very verbose, especially considering
-    // translation..
-    return validRows && validTotals && validCenters;
-  }
+    // stores the 'master' form in the browser cache in
+    // case anything goes wrong.
+    function cacheWorkingForm() {
+      db.put('CachedForm', self.master);
+    }
 
+    // look to see if there is an old form in the broswer cache
+    function findCachedForm() {
+      db.fetch('CachedForm')
+      .then(function (data) {
+        if (data) { self.hasCachedForm = true; }
+      });
+    }
 
+    function removeCachedForm() {
+      db.remove('CachedForm');
+    }
+
+    // load an old form from the browser cache
+    self.loadCachedForm = function () {
+      db.fetch('CachedForm')
+      .then(function (data) {
+        if (data) {
+
+          // load meta-data
+          self.master.date = data.date;
+          self.master.description = data.description;
+          self.master.currencyId = data.currencyId;
+          self.master.comment = data.comment;
+          self.master.documentId = data.documentId;
+
+          // show if has a cached comment/documentId
+          self.showComment = !!data.comment;
+          self.showReference = !!data.documentId;
+
+          // load the rows into the master
+          self.master.rows.length = 0;
+          data.rows.forEach(function (row) {
+            self.master.rows.push(row);
+          });
+
+          // remove the button from the UI
+          self.hasCachedForm = false;
+        }
+      });
+    };
+
+    // auto-detect if there is an old form
+    findCachedForm();
 }])
 
 .controller('JournalVoucherTableController', ['$http', '$q', '$scope', function ($http, $q, $scope) {
