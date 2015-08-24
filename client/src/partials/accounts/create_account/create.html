@@ -121,13 +121,13 @@
                   <div class="form-group">
                     <div class="radio">
                       <label>
-                        <input type="radio" name="option_is_asset" id="is_asset" value="true" ng-model="newAccount.is_asset" >
+                        <input type="radio" name="option_is_asset" id="is_asset" ng-value=1 ng-model="newAccount.is_asset" >
                         {{ "ACCOUNT.IS_ASSET" | translate }}
                       </label>
                     </div>
                     <div class="radio">
                       <label>
-                        <input type="radio" name="option_is_asset" id="is_asset" value="false" ng-model="newAccount.is_asset" >
+                        <input type="radio" name="option_is_asset" id="is_asset" ng-value=0 ng-model="newAccount.is_asset" >
                         {{ "ACCOUNT.IS_PASSIVE" | translate }}
                       </label>
                     </div>
@@ -139,8 +139,7 @@
                     required type="text" 
                     id="number" 
                     class="form-bhima" 
-                    ng-model="newAccount.number"
-                    ng-change="getAccountClass()">
+                    ng-model="newAccount.number">
                   </div>
 
                   <div class="form-group">
@@ -173,26 +172,26 @@
                     <hr>
                     <div class="radio">
                       <label>
-                        <input type="radio" name="option_is_charge" id="is_charge" value="true" ng-model="newAccount.is_charge" >
+                        <input type="radio" name="option_is_charge" id="is_charge" ng-value=1 ng-model="newAccount.is_charge" >
                         {{ "ACCOUNT.IS_CHARGE" | translate }}
                       </label>
                     </div>
                     <div class="radio">
                       <label>
-                        <input type="radio" name="option_is_charge" id="is_charge" value="false" ng-model="newAccount.is_charge" >
+                        <input type="radio" name="option_is_charge" id="is_charge" ng-value=0 ng-model="newAccount.is_charge" >
                         {{ "ACCOUNT.IS_PROFIT" | translate }}
                       </label>
                     </div>
                     
                     <div ng-switch on="newAccount.is_charge">
-                      <div ng-switch-when="true">
+                      <div ng-switch-when=1>
                         <label for="type">{{ "ACCOUNT.COST_CENTER" | translate }}</label>
                         <select  id="type" class="form-bhima" ng-options="c.id as formatCenter(c) for c in model.costCenter.data" ng-model="newAccount.cc_id" 
                         ng-change="discarePC()">
                           <option value="null"> --- {{ "SELECT.COST_CENTER" | translate }} --- </option>
                         </select>
                       </div>
-                      <div ng-switch-when="false">
+                      <div ng-switch-when=0>
                         <label for="type">{{ "ACCOUNT.PROFIT_CENTER" | translate }}</label>
                         <select  id="type" class="form-bhima" ng-options="p.id as formatCenter(p) for p in model.profitCenter.data" ng-model="newAccount.pc_id" 
                         ng-change="discareCC()">
@@ -266,13 +265,13 @@
                   <div class="form-group">
                     <div class="radio">
                       <label>
-                        <input type="radio" name="option_is_asset" value="true" ng-model="editAccount.is_asset" ng-checked="editAccount.is_asset==1">
+                        <input type="radio" name="option_is_asset" ng-value=1 ng-model="editAccount.is_asset" ng-checked="editAccount.is_asset==1">
                         {{ "ACCOUNT.IS_ASSET" | translate }}
                       </label>
                     </div>
                     <div class="radio">
                       <label>
-                        <input type="radio" name="option_is_asset" value="false" ng-model="editAccount.is_asset" ng-checked="editAccount.is_asset==0">
+                        <input type="radio" name="option_is_asset" ng-value=0 ng-model="editAccount.is_asset" ng-checked="editAccount.is_asset==0">
                         {{ "ACCOUNT.IS_PASSIVE" | translate }}
                       </label>
                     </div>
@@ -286,7 +285,7 @@
                         name="option_is_ohada" 
                         id="is_ohada" 
                         ng-model="editAccount.is_ohada"
-                        ng-checked="editAccount.is_ohada">
+                        ng-true-value=1>
                         {{ "ACCOUNT.IS_OHADA" | translate }} 
                       </label>
                     </div>
@@ -300,7 +299,8 @@
                             <input 
                             type="checkbox" 
                             name="option_is_used_budget" 
-                            id="is_used_budget" 
+                            id="is_used_budget"
+                            ng-true-value=1 
                             ng-model="editAccount.is_used_budget">
                             {{ "ACCOUNT.IS_USED_BUDGET" | translate }}
                           </label>
@@ -326,25 +326,25 @@
                     <hr>
                     <div class="radio">
                       <label>
-                        <input type="radio" name="option_is_charge" id="is_charge" value="1" ng-model="editAccount.is_charge" >
+                        <input type="radio" name="option_is_charge" id="is_charge" ng-value=1 ng-model="editAccount.is_charge" >
                         {{ "ACCOUNT.CHARGE" | translate }}
                       </label>
                     </div>
                     <div class="radio">
                       <label>
-                        <input type="radio" name="option_is_charge" id="is_charge" value="0" ng-model="editAccount.is_charge" >
+                        <input type="radio" name="option_is_charge" id="is_charge" ng-value=0 ng-model="editAccount.is_charge" >
                         {{ "ACCOUNT.PROFIT" | translate }}
                       </label>
                     </div>
                     
                     <div ng-switch on="editAccount.is_charge">
-                      <div ng-switch-when="1">
+                      <div ng-switch-when=1>
                         <label for="type">{{ "ACCOUNT.COST_CENTER" | translate }}</label>
                         <select  id="type" class="form-bhima" ng-options="c.id as formatCenter(c) for c in model.costCenter.data" ng-model="editAccount.cc_id">
                           <option value=""> --- {{ "SELECT.COST_CENTER" | translate }} --- </option>
                         </select>
                       </div>
-                      <div ng-switch-when="0">
+                      <div ng-switch-when=0>
                         <label for="type">{{ "ACCOUNT.PROFIT_CENTER" | translate }}</label>
                         <select  id="type" class="form-bhima" ng-options="p.id as formatCenter(p) for p in model.profitCenter.data" ng-model="editAccount.pc_id">
                           <option value=""> --- {{ "SELECT.PROFIT_CENTER" | translate }} --- </option>
@@ -384,7 +384,8 @@
                             <input 
                             type="checkbox" 
                             name="option_is_brut_link" 
-                            id="is_brut_link" 
+                            id="is_brut_link"
+                            ng-true-value=1 
                             ng-model="editAccount.is_brut_link">
                             {{ "COLUMNS.IS_BRUT_LINK" | translate }}
                           </label>
