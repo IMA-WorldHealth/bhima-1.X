@@ -2921,6 +2921,7 @@
    "ACCOUNT"           : "Account",
    "AGGREGATES"        : "Aggregates",
    "ALL"               : "All",
+   "LOADING"           : "Loading",
    "ALL_DONORS"        : "All donators",
    "BACK"              : "Back",
    "CANCEL"            : "Cancel",
