@@ -103,18 +103,27 @@ angular.module('bhima.controllers')
           self.currencyId        = options.currencyId;
           self.hasPostingJournal = options.hasPostingJournal;
           self.cashBoxId         = options.cashBoxId;
-          self.group             = options.group;
+          var group = self.grouping[options.groupIdx];
+          if (group) { self.group = self.grouping[options.groupIdx]; }
         }
       });
     }
 
     // save defaults to localstorage
     function saveChartDefaults() {
+     
+      // TODO
+      // this could probably be done much better.
+      var idx = self.grouping.reduce(function (idx, group, index) {
+        if (idx !== -1) { return idx; }
+        return group.key === self.group.key ? index : -1;
+      }, -1);
+
       cache.put('options', {
         currencyId        : self.currencyId,
         hasPostingJournal : self.hasPostingJournal,
         cashBoxId         : self.cashBoxId,
-        group             : self.group
+        groupIdx          : idx
       });
     }
 

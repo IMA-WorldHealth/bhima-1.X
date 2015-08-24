@@ -21,6 +21,7 @@ angular.module('bhima.services')
     { key : 'CHART.GROUPING.YEAR'  , grouping: 'year'  , format : 'yyyy' }
   ];
 
+  // TODO tooltips with correct currency labeling
   service.tooltip = {
     currency : '<%if (label){%><%=label%>: <%}%>$<%= value %>'
   };

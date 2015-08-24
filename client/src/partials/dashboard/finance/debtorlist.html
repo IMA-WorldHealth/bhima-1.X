@@ -9,7 +9,7 @@
   <ul class="list-group">
     <li class="list-group-item" ng-repeat="debtor in DebtorListCtrl.data | limitTo:DebtorListCtrl.limit">
       <span class="badge">{{ debtor.balance | currency }}</span>
-      {{ debtor.debtorText }}
+      <b>{{ $index + 1}}</b>. {{ debtor.debtorText }}
     </li>
   </ul>
 </div
