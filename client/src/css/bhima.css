@@ -465,3 +465,8 @@ td.bhima {
     transform: rotate(360deg);
   }
 }
+
+.currency {
+  text-align : right;
+  padding-right: 5px;
+}
