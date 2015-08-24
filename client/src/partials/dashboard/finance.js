@@ -33,7 +33,7 @@ angular.module('bhima.controllers')
 
 // Finance DashBoard Service
 // Performs the HTTP queries for the financial dashboard controller
-.service('FinanceDashboardService', ['$http', 'QueryService', function ($http, QS) {
+.service('FinanceDashboardService', ['$http', '$translate', 'QueryService', function ($http, $translate, QS) {
 
   var service = {};
 
@@ -73,6 +73,16 @@ angular.module('bhima.controllers')
   // get the debtors owing the most money
   service.getTopDebtors = function (limit) {
     return $http.get('/analytics/debtors/top?limit=' + limit);
+  };
+ 
+  var all = $translate.instant('UTIL.ALL');
+
+  // limits for things
+  service.limits = {
+    10  : 10,
+    25  : 25,
+    50  : 50,
+    all : Infinity
   };
 
   return service;

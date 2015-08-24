@@ -332,6 +332,7 @@
    "USER"                  : "User",
    "TRANSACTIONS"          : "Transactions",
    "ABBR"                  : "Abbr",
+   "DEBT"                  : "Debt",
    "INCOME"                : "Income",
    "EXPENSE"               : "Expense",
    "ABBREVIATION"          : "Abreviation",

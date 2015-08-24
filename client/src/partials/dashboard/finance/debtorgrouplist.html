@@ -8,16 +8,17 @@
   <table class="table table-condensed">
     <thead>
       <tr>
-        <th>{{ "COLUMNS.DEBTOR_GROUP" | translate }}</th>
+        <th colspan="2">{{ "COLUMNS.DEBITOR_GROUP" | translate }}</th>
         <th>{{ "COLUMNS.ACCOUNT_NUMBER" | translate }}</th>
-        <th>{{ "COLUMNS.BALANCE" | translate }}</th>
+        <th>{{ "COLUMNS.DEBT" | translate }}</th>
       </tr>
     </thead>
     <tbody>
       <tr ng-if="DebtorGroupListCtrl.isLoading">
-        <td colspan="3">{{ "UTIL.LOADING" | translate }}</td>
+        <td colspan="4">{{ "UTIL.LOADING" | translate }}</td>
       </tr>
       <tr ng-repeat="group in DebtorGroupListCtrl.data track by group.uuid | limitTo:DebtorGroupListCtrl.limit">
+        <th>{{ $index + 1 }}</th>
         <td>{{ group.name }}</td>
         <td>{{ group.account_number }}</td>
         <td>{{ group.balance | currency }}</td>

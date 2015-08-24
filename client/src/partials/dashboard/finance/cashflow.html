@@ -3,7 +3,7 @@
     {{ "DASHBOARD.FINANCE.CASHFLOW" | translate }}
     <span class="pull-right" style="margin : 0 5px;">
       {{ "CHART.GROUPING.TITLE" | translate }}:
-      <select ng-model="CashChartCtrl.group" ng-options="group as CashChartCtrl.fmt(group.key) for group in CashChartCtrl.grouping" ng-change="CashChartCtrl.refresh()"></select>
+      <select ng-model="CashChartCtrl.group" ng-options="group as CashChartCtrl.fmt(group.key) for group in CashChartCtrl.grouping track by group.key" ng-change="CashChartCtrl.refresh()"></select>
     </span>
     <span class="pull-right" style="margin : 0 5px;">
       {{ "DASHBOARD.FINANCE.CURRENCY" | translate }}:
