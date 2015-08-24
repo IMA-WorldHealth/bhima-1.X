@@ -30,7 +30,7 @@ var config = {
       'emails' : [{
         'name' : 'daily',
         //'frequency' : '0 23 * * *',
-        'frequency' : '* * * * 1', // every 3 minutes
+        'frequency' : '* * * * 5', //
         'addressList' : 'test',
       }, {
         'name' : 'weekly',
@@ -38,7 +38,7 @@ var config = {
         'addressList' : 'test'
       }, {
         'name' : 'monthly',
-        'frequency' : '* * * * 1',
+        'frequency' : '* * * * 5',
         'addressList' : 'test'
       }]
     }
