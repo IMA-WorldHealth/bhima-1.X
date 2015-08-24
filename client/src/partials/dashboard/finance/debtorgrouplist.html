@@ -15,7 +15,9 @@
     </thead>
     <tbody>
       <tr ng-if="DebtorGroupListCtrl.isLoading">
-        <td colspan="4">{{ "UTIL.LOADING" | translate }}</td>
+        <td colspan="4" style="text-align:center;">
+          <loading-indicator></loading-indicator>
+        </td>
       </tr>
       <tr ng-repeat="group in DebtorGroupListCtrl.data track by group.uuid | limitTo:DebtorGroupListCtrl.limit">
         <th>{{ $index + 1 }}</th>
