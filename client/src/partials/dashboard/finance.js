@@ -69,21 +69,4 @@ angular.module('bhima.controllers')
   };
 
   return service;
-
-}])
-
-// controller for the main finance dashboard page
-.controller('FinanceDashboardController', [
-  '$scope',
-  'appcache',
-  function ($scope, AppCache) {
-    var self = this,
-        cache = new AppCache('FinanceDashboard');
-
-    // send a refresh 
-    self.refresh = function () {
-      console.log('Called refresh!');
-      $scope.$broadcast('refresh', {});
-    };
-  }
-]);
+}]);
