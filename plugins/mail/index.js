@@ -192,8 +192,6 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
       return render(content, { queries : data });
     });
 
-    // console.log('voici le templatedText :', templatedText);
-
     // collate data and text for email templating
     options = {
       date       : locales.date(new Date()),
