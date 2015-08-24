@@ -1,7 +1,8 @@
 angular.module('bhima.controllers')
 
-.controller('DebtorGroupListDashboardController', ['FinanceDashboardService', function (Finance) {
-  var self = this;
+.controller('DebtorGroupListDashboardController', ['FinanceDashboardService', 'appcache', function (Finance, AppCache) {
+  var self = this,
+      cache = new AppCache('DGFinanceDashboard');
 
   // toggle loading state
   self.isLoading = true;
@@ -16,4 +17,18 @@ angular.module('bhima.controllers')
     self.isLoading = false;
     self.data = response.data;
   });
+
+  self.saveOptions = function () {
+    cache.put('options', { limit : self.limit });
+  };
+
+  function loadDefaultOptions() {
+    cache.fetch('options')
+    .then(function (options) {
+      self.limit = options.limit;
+    });
+  }
+
+  // load defaults
+  loadDefaultOptions();
 }]);
