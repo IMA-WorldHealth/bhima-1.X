@@ -1,11 +1,11 @@
 angular.module('bhima.controllers')
 .controller('operating_account', [
   '$scope',
-  '$http',
   '$translate',
   'validate',
   'appstate',
-  function ($scope, $http, $translate, validate, appstate) {
+  'connect',
+  function ($scope, $translate, validate, appstate, connect) {
     var dependencies = {},
         session = $scope.session = {},
         state = $scope.state;
@@ -46,10 +46,8 @@ angular.module('bhima.controllers')
         $scope.all_period = $translate.instant('OPERATING_ACCOUNT.ALL');
       }
 
-      $http.get(
-        '/getExploitationAccount/',
-        {params : {'period_id' : session.period_id, 'fiscal_year_id' : session.fiscal_year_id}
-      }).success(function (data) {
+      connect.fetch('/reports/operatingAccount/?period_id=' + session.period_id + '&fiscal_id=' + session.fiscal_year_id)
+      .then(function (data) {
         $scope.debitTotal = 0;
         $scope.creditTotal = 0;
         $scope.Result = 0;
@@ -61,6 +59,7 @@ angular.module('bhima.controllers')
         }
         $scope.records = data;
         $scope.state = 'generate';
+
       });
     }
 

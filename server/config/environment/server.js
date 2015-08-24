@@ -126,7 +126,6 @@ var config = {
       '/partials/',
       '/getEnterprisePayment/',
       '/getPeriodeFiscalYear/',
-      '/getExploitationAccount/',
       '/cost_periodic/',
       '/profit_periodic/',
       '/posting_promesse_payment/',
