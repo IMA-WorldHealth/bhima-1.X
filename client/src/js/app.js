@@ -30,7 +30,7 @@
       controller: 'enterprise',
       templateUrl: 'partials/enterprise/enterprise.html'
     })
-    .when('/posting_journal', {
+    .when('/journal', {
       controller: 'journal.grid',
       templateUrl:'partials/journal/journal.html'
     })
@@ -382,7 +382,7 @@
       templateUrl : 'partials/primary_cash/income/generic/generic.html'
     })
     .when('/trialbalance/print', {
-      controller : 'trialbalance.print',
+      controller : 'TrialBalancePrintController as PrintCtrl',
       templateUrl : 'partials/journal/trialbalance/print.html'
     })
     .when('/primary_cash/', {

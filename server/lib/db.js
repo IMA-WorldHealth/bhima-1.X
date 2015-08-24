@@ -50,17 +50,18 @@ function initialise() {
 function exec(sql, params) {
   var defer = q.defer();
 
+  // uncomment for console.logs().  Warning -- slows down trial balance terribly
+  // console.log('[db] [exec]', sql);
   con.getConnection(function (err, connection) {
     if (err) { return defer.reject(err); }
 
     // this lets me log the actual request
-    var q =  connection.query(sql, params, function (err, results) {
+    connection.query(sql, params, function (err, results) {
 
       if (err) { return defer.reject(err); }
       connection.release();
       defer.resolve(results);
     });
-    console.log('[db] [exec]: ', q.sql);
   });
 
   return defer.promise;
