@@ -37,10 +37,12 @@ angular.module('bhima.controllers')
 
   var service = {};
 
+  // get a list of cashboxes and associated currencies/accounts
   service.getCashBoxes = function () {
     return $http.get('/analytics/cashboxes');
   };
 
+  // retrieve a list of valid currencies
   service.getCurrencies = function () {
     return $http.get('/finance/currencies');
   };
@@ -63,9 +65,14 @@ angular.module('bhima.controllers')
     return $http.get(url);
   };
 
-  // get the top-spending debtor groups
-  service.getTopDebtorGroups = function () {
-    return $http.get('/analytics/debtorgroups/top');
+  // get the debtor groups owing the most money
+  service.getTopDebtorGroups = function (limit) {
+    return $http.get('/analytics/debtorgroups/top?limit=' + limit);
+  };
+
+  // get the debtors owing the most money
+  service.getTopDebtors = function (limit) {
+    return $http.get('/analytics/debtors/top?limit=' + limit);
   };
 
   return service;

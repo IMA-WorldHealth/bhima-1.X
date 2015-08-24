@@ -1,6 +1,6 @@
 angular.module('bhima.controllers')
 
-.controller('DebtorGroupListDashboardController', ['FinanceDashboardService', function (Finance) {
+.controller('DebtorListDashboardController', ['FinanceDashboardService', function (Finance) {
   var self = this;
 
   self.isLoading = true;
@@ -15,9 +15,9 @@ angular.module('bhima.controllers')
 
   self.limit = 25;
  
-  Finance.getTopDebtorGroups(self.limit)
+  Finance.getTopDebtors(self.limit)
   .then(function (response) {
-    console.log('DebtorGroup Response.data:', response.data);
+    console.log('Debtors response.data:', response.data);
     self.isLoading = false;
     self.data = response.data;
   });
