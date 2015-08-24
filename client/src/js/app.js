@@ -736,7 +736,6 @@
       templateUrl : 'partials/reports_proposed/employee_state/employee_state.html'
     })
     .when('/dashboards/finance', {
-      controller : 'FinanceDashboardController as FinanceCtrl',
       templateUrl : 'partials/dashboard/finance.html'
     })
     .otherwise({ redirectTo : '/' });
