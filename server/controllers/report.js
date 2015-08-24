@@ -1027,6 +1027,38 @@ function stockComplete(params) {
   return db.exec(requestSql);
 }
 
+function operatingAccount(params) {
+  params = querystring.parse(params);
+  console.log(params);
+  var fiscal_id = sanitize.escape(params.fiscal_id),
+    sql;
+
+  sql = 
+    'SELECT period_total.period_id, account.account_number, account.account_txt, period_total.credit, period_total.debit ' +
+    'FROM period_total ' +
+    'JOIN account ON account.id = period_total.account_id ' +
+    'JOIN account_type ON account_type.id = account.account_type_id ' +
+    'WHERE period_total.period_id = ' + params.period_id + ' ' +
+    'AND account_type.type = \'income/expense\' ' +
+    'ORDER BY account.account_number ASC';
+
+  if(params.period_id === 'all'){
+    sql = 
+      'SELECT period_total.period_id, account.account_number, account.account_txt, SUM(period_total.credit) AS \'credit\', ' +
+      'SUM(period_total.debit) AS \'debit\' ' +
+      'FROM period_total ' +
+      'JOIN account ON account.id = period_total.account_id ' +
+      'JOIN account_type ON account_type.id = account.account_type_id ' +
+      'WHERE period_total.fiscal_year_id = ' + fiscal_id + ' ' +
+      'AND account_type.type = \'income/expense\' ' +
+      'GROUP BY account.account_number ' +
+      'ORDER BY account.account_number ASC ';
+  }
+
+  return db.exec(sql);
+}
+
+
 
 function generate(request, params, done) {
   /*summary
@@ -1064,7 +1096,8 @@ function generate(request, params, done) {
     'stock_movement'        : stock_movement,
     'stockStore'            : stock_store,
     'stockComplete'         : stockComplete,
-    'balance_mensuelle_all' : balance_mensuelle_all    
+    'balance_mensuelle_all' : balance_mensuelle_all,
+    'operatingAccount'      : operatingAccount   
     //'balance_sheet'         : require('./reports/balance_sheet')
   };
 
