@@ -159,8 +159,8 @@ exports.getTopDebtors = function (req, res, next) {
       'ORDER BY balance DESC ' +
       'LIMIT ?;';
 
-  // default to 25 in case no limit is provided
-  db.exec(sql, [isNaN(limit) ? 25 : limit])
+  // default to large number in case no limit is provided
+  db.exec(sql, [isNaN(limit) ? 1000000 : limit])
   .then(function (rows) {
     res.status(200).json(rows);
   })
@@ -188,8 +188,8 @@ exports.getTopDebtorGroups = function (req, res, next) {
       'ORDER BY balance DESC ' +
       'LIMIT ?;';
 
-  // default to 25 in case no limit is provided
-  db.exec(sql, [isNaN(limit) ? 25 : limit])
+  // default to large number in case no limit is provided
+  db.exec(sql, [isNaN(limit) ? 1000000 : limit])
   .then(function (rows) {
     res.status(200).json(rows);
   })

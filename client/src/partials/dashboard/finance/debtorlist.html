@@ -1,24 +1,15 @@
-<div class="panel panel-default" ng-controller="DebtorListDashboardController as DebtorListCtrl">
+<div class="panel panel-default dash-panel" ng-controller="DebtorListDashboardController as DebtorListCtrl">
   <div class="panel-heading">
     {{ "DASHBOARD.FINANCE.TOP_DEBTORS" | translate }}
+    <span class="pull-right">
+      <select ng-model="DebtorListCtrl.limit" ng-options="value as key for (key, value) in DebtorListCtrl.limits"></select>
+    </span>
   </div>
-  <table class="table table-condensed">
-    <thead>
-      <tr>
-        <th>{{ "COLUMNS.DEBTOR" | translate }}</th>
-        <th>{{ "COLUMNS.DEBTOR_GROUP" | translate }}</th>
-        <th>{{ "COLUMNS.BALANCE" | translate }}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr colspan="3" ng-if="DebtorListCtrl.isLoading">
-        <td>{{ "UTIL.LOADING" | translate }}</td>
-      </tr>
-      <tr ng-repeat="debtor in DebtorListCtrl.data">
-        <td>{{ debtor.debtorText }}<td>
-        <td>{{ debtor.debtorGroupName }}<td>
-        <td>{{ debtor.balance | currency }}<td>
-      <tr>
-    </tbody>
-  </table>
+
+  <ul class="list-group">
+    <li class="list-group-item" ng-repeat="debtor in DebtorListCtrl.data | limitTo:DebtorListCtrl.limit">
+      <span class="badge">{{ debtor.balance | currency }}</span>
+      {{ debtor.debtorText }}
+    </li>
+  </ul>
 </div
