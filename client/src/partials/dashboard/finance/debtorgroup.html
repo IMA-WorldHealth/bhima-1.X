@@ -1,4 +1,4 @@
-<div class="panel panel-default" ng-controller="DebtorGroupDashboardController as DebtorGroupCtrl">
+<div class="panel panel-default" ng-controller="DebtorGroupListDashboardController as DebtorGroupListCtrl">
   <div class="panel-heading">
     {{ "DASHBOARD.FINANCE.TOP_DEBTOR_GROUPS" | translate }}
   </div>
@@ -6,16 +6,18 @@
     <thead>
       <tr>
         <th>{{ "COLUMNS.DEBTOR_GROUP" | translate }}</th>
-        <th>{{ "COLUMNS.DEBIT" | translate }}</th>
-        <th>{{ "COLUMNS.CREDIT" | translate }}</th>
+        <th>{{ "COLUMNS.ACCOUNT_NUMBER" | translate }}</th>
+        <th>{{ "COLUMNS.BALANCE" | translate }}</th>
       </tr>
     </thead>
     <tbody>
-      <tr colspan="3" ng-if="DebtorGroupCtrl.isLoading">
+      <tr colspan="3" ng-if="DebtorGroupListCtrl.isLoading">
         <td>{{ "UTIL.LOADING" | translate }}</td>
       </tr>
-      <tr ng-repeat="group in DebtorGroupCtrl.data">
-        <td>{{ group.text }}<td>
+      <tr ng-repeat="group in DebtorGroupListCtrl.data">
+        <td>{{ group.name }}<td>
+        <td>{{ group.account_number }}<td>
+        <td>{{ group.balance | currency }}<td>
       <tr>
     </tbody>
   </table>

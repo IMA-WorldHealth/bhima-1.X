@@ -139,19 +139,60 @@ exports.getCashBoxHistory = function (req, res, next) {
   .done();
 };
 
-// GET /analytics/debtorgroups/top
-exports.getTopDebtorGroups = function () {
+// GET /analytics/debtors/top
+exports.getTopDebtors = function (req, res, next) {
   'use strict';
 
-  var sql =
-    'SELECT ' +
-    'FROM (' +
-        'SELECT deb_cred_uuid, SUM(debit_equiv) AS totaldebit, SUM(credit_equiv) AS totalcredit ' +
-        'FROM posting_journal ' +
-        'WHERE deb_cred_type = \'D\' ' +
-        'GROUP BY deb_cred_uuid ' +
-        'ORDER BY totaldebit' +
-      ') AS groups JOIN debitor JOIN debitor_group ' +
-    'ON';
+  var limit = Number(req.query.limit),
+      sql;
 
+  // pull in the debtors owing the most, group names, and balancek
+  sql =
+    'SELECT journal.deb_cred_uuid AS uuid, journal.balance, dg.name AS debtorGroupName, d.text AS debtorText ' +
+    'FROM (' +
+        'SELECT deb_cred_uuid, SUM(debit_equiv - credit_equiv) AS balance FROM posting_journal WHERE deb_cred_type = \'D\' GROUP BY deb_cred_uuid ' +
+        'UNION ' +
+        'SELECT deb_cred_uuid, SUM(debit_equiv - credit_equiv) AS balance FROM general_ledger WHERE deb_cred_type = \'D\' GROUP BY deb_cred_uuid ' +
+      ') AS journal JOIN debitor AS d JOIN debitor_group AS dg ON ' +
+        'd.uuid = journal.deb_cred_uuid AND dg.uuid = d.group_uuid ' +
+      'WHERE balance <> 0 ' +
+      'ORDER BY balance DESC ' +
+      'LIMIT ?;';
+
+  // default to 25 in case no limit is provided
+  db.exec(sql, [isNaN(limit) ? 25 : limit])
+  .then(function (rows) {
+    res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
+};
+
+// GET /analytics/debtorgroups/top
+exports.getTopDebtorGroups = function (req, res, next) {
+  'use strict';
+
+  var limit = Number(req.query.limit),
+      sql;
+
+  // find the debtor groups owing the most, group names, and balancek
+  sql =
+    'SELECT dg.uuid, SUM(journal.balance) AS balance, dg.name FROM (' +
+        'SELECT deb_cred_uuid, SUM(debit_equiv - credit_equiv) AS balance FROM posting_journal WHERE deb_cred_type = \'D\' GROUP BY deb_cred_uuid ' +
+        'UNION ' +
+        'SELECT deb_cred_uuid, SUM(debit_equiv - credit_equiv) AS balance FROM general_ledger WHERE deb_cred_type = \'D\' GROUP BY deb_cred_uuid' +
+      ') AS journal JOIN debitor AS d JOIN debitor_group AS dg ON ' +
+        'd.uuid = journal.deb_cred_uuid AND dg.uuid = d.group_uuid ' +
+      'WHERE balance <> 0 ' +
+      'GROUP BY dg.uuid ' +
+      'ORDER BY balance DESC ' +
+      'LIMIT ?;';
+
+  // default to 25 in case no limit is provided
+  db.exec(sql, [isNaN(limit) ? 25 : limit])
+  .then(function (rows) {
+    res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
 };

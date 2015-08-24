@@ -1,0 +1,24 @@
+<div class="panel panel-default" ng-controller="DebtorListDashboardController as DebtorListCtrl">
+  <div class="panel-heading">
+    {{ "DASHBOARD.FINANCE.TOP_DEBTORS" | translate }}
+  </div>
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>{{ "COLUMNS.DEBTOR" | translate }}</th>
+        <th>{{ "COLUMNS.DEBTOR_GROUP" | translate }}</th>
+        <th>{{ "COLUMNS.BALANCE" | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr colspan="3" ng-if="DebtorListCtrl.isLoading">
+        <td>{{ "UTIL.LOADING" | translate }}</td>
+      </tr>
+      <tr ng-repeat="debtor in DebtorListCtrl.data">
+        <td>{{ debtor.debtorText }}<td>
+        <td>{{ debtor.debtorGroupName }}<td>
+        <td>{{ debtor.balance | currency }}<td>
+      <tr>
+    </tbody>
+  </table>
+</div
