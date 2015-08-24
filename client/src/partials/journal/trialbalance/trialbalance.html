@@ -6,15 +6,15 @@
         {{ BalanceCtrl.hasErrors ? "TRIAL_BALANCE.SHOW_ERRORS" : "TRIAL_BALANCE.SHOW_WARNINGS" | translate }}
       </a>
     </div>
-    <div class="modal-print" ng-hide="BalanceCtrl.state === 'loading'"  >
+    <div class="modal-print" ng-hide="BalanceCtrl.state === 'loading'" >
       <a ng-click="BalanceCtrl.print()" style="margin: 5px;"><span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}</a>
     </div>
   </div>
 
   <div class="modal-table" ng-class="{ 'success' : !BalanceCtrl.hasExceptions, 'warning' : BalanceCtrl.hasExceptions, 'error' : BalanceCtrl.hasErrors }">
 
-    <div class="modal-loading" ng-if="BalanceCtrl.state === 'loading'">
-      <i class="glyphicon glyphicon-refresh icon-spin"></i> Loading ...
+    <div style="text-align:center; width:100%;padding-top:5em;" ng-if="BalanceCtrl.state === 'loading'">
+      <loading-indicator></loading-indicator>
     </div>
 
     <!-- Exception state -->

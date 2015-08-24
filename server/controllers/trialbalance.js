@@ -341,7 +341,7 @@ exports.postToGeneralLedger = function (req, res, next) {
       'SELECT max(posting_session.id) + 1, ?, ? ' +
       'FROM posting_session;';
 
-    return db.exec(sql, [req.session.user_id, new Date()]);
+    return db.exec(sql, [req.session.user.id, new Date()]);
   })
   .then(function (result) {
 
