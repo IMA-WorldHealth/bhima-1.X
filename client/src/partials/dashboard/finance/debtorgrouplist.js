@@ -10,12 +10,12 @@ angular.module('bhima.controllers')
     10 : 10,
     25 : 25,
     50 : 50,
-    'ALL' : Infinity
+    'All' : Infinity
   };
 
   self.limit = 25;
  
-  Finance.getTopDebtorGroups(self.limit)
+  Finance.getTopDebtorGroups()
   .then(function (response) {
     console.log('DebtorGroup Response.data:', response.data);
     self.isLoading = false;

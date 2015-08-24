@@ -802,7 +802,9 @@
      "CASHBOX"           : "CashBox",
      "HASPOSTINGJOURNAL" : "Include Posting Journal",
      "CUMMULATIVE"       : "Cummulative Data",
-     "CURRENCY"          : "Currency"
+     "CURRENCY"          : "Currency",
+     "TOP_DEBTORS"       : "Top Debtors",
+     "TOP_DEBTOR_GROUPS" : "Top Debtor Groups"
    }
  },
 "DEBITOR_GRP": {

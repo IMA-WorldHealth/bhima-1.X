@@ -220,9 +220,13 @@ exports.initialise = function (app) {
   app.get('/patient/search/fuzzy/:match', patient.searchFuzzy);
   app.get('/patient/search/reference/:reference', patient.searchReference);
 
-  // analytics for financial dashboards
+  // analytics for financial dashboard
+  // cash flow analytics
   app.get('/analytics/cashboxes', analytics.cashflow.getCashBoxes);
   app.get('/analytics/cashboxes/:id/balance', analytics.cashflow.getCashBoxBalance);
   app.get('/analytics/cashboxes/:id/history', analytics.cashflow.getCashBoxHistory);
+  
+  // debtor analytics
   app.get('/analytics/debtorgroups/top', analytics.cashflow.getTopDebtorGroups);
+  app.get('/analytics/debtors/top', analytics.cashflow.getTopDebtors);
 };
