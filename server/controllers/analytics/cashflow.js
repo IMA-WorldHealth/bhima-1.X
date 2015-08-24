@@ -177,12 +177,12 @@ exports.getTopDebtorGroups = function (req, res, next) {
 
   // find the debtor groups owing the most, group names, and balancek
   sql =
-    'SELECT dg.uuid, SUM(journal.balance) AS balance, dg.name FROM (' +
+    'SELECT dg.uuid, SUM(journal.balance) AS balance, dg.name, a.account_number FROM (' +
         'SELECT deb_cred_uuid, SUM(debit_equiv - credit_equiv) AS balance FROM posting_journal WHERE deb_cred_type = \'D\' GROUP BY deb_cred_uuid ' +
         'UNION ' +
         'SELECT deb_cred_uuid, SUM(debit_equiv - credit_equiv) AS balance FROM general_ledger WHERE deb_cred_type = \'D\' GROUP BY deb_cred_uuid' +
-      ') AS journal JOIN debitor AS d JOIN debitor_group AS dg ON ' +
-        'd.uuid = journal.deb_cred_uuid AND dg.uuid = d.group_uuid ' +
+      ') AS journal JOIN debitor AS d JOIN debitor_group AS dg JOIN account AS a ON ' +
+        'd.uuid = journal.deb_cred_uuid AND dg.uuid = d.group_uuid AND a.id = dg.account_id ' +
       'WHERE balance <> 0 ' +
       'GROUP BY dg.uuid ' +
       'ORDER BY balance DESC ' +
