@@ -18,7 +18,7 @@ function lookupTable(req, res, next) {
   // What are the params here?
   request(req.params.table, req.params.id, req.session.user.id, function (err) {
     if (err) { return next(err); }
-    res.send(200);
+    res.status(200).send();
   });
 }
 
