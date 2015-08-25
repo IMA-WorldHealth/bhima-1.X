@@ -72,19 +72,45 @@ angular.module('bhima.directives')
         session.submitted = true;
 
         // parse patient metadata
-        patient.age = getAge(patient.dob);
+        var age = getAge(patient.dob);
+        patient.ageObject = age;
+        patient.age = age.years;
         patient.name = fmtPatient(patient);
 
         // call the external $scope callback
         scope.callback({ patient : patient });
       }
 
-      // naive quick method to calculate the difference between two dates
+      // get an age object for the person with years, months, days
+      // inspired by http://stackoverflow.com/questions/7833709/calculating-age-in-months-and-days
       function getAge(date) {
-        var current = new Date(),
-            dob = (typeof date === 'object') ? date : new Date(date);
+        var age = {},
+            today = new Date();
 
-        return current.getFullYear() - dob.getFullYear() - Math.round(current.getMonth() / 12 + dob.getMonth() / 12);
+        // convert to date object
+        date = new Date(date);
+
+        var y   = [today.getFullYear(), date.getFullYear()],
+          ydiff = y[0] - y[1],
+          m     = [today.getMonth(), date.getMonth()],
+          mdiff = m[0] - m[1],
+          d     = [today.getDate(), date.getDate()],
+          ddiff = d[0] - d[1];
+
+        if (mdiff < 0 || (mdiff=== 0 && ddiff<0)) { --ydiff; }
+
+        if (mdiff < 0) { mdiff+= 12; }
+
+        if (ddiff < 0) {
+          date.setMonth(m[1]+1, 0);
+          ddiff = date.getDate()-d[1]+d[0];
+          --mdiff;
+        }
+
+        age.years  = ydiff > 0 ? ydiff : 0;
+        age.months = mdiff > 0 ? mdiff : 0;
+        age.days   = ddiff > 0 ? ddiff : 0;
+        return age;
       }
 
       // value is the selected typeahead model
