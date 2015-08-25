@@ -1,52 +1,25 @@
-*.swp
-*.swo
-*.swn
-.idea/
-*.min.css
+# ignore editor-specific working files
+*.swp,*.swo,*.swn,.idea/
 
 # ignore npm modules
 node_modules/
-test/reports/
-server/sql/backup/
+.npm-debug.log
 
 # ignore gulp build
 client/dest/
 /*client/js/controllers/*/
 /*client/src/js/controllers/*/
-misc/migrate/out/
-<<<<<<< HEAD
-server/plugins/mail/conf/address_list.json
-=======
->>>>>>> 937e0a5b71d9c159bec6c160596037943a3be0ac
 utilities/migrate/*
-/symmetric/*
-
-# ignore build tool generated files
-/*app/js/controllers/controllers.js*/
-/*./app/js/controllers/controllers.js*/
-/*./app/css/kapok.min.css*/
 
 # ignore log files
 *.log
-<<<<<<< HEAD
-/log.html
-=======
-/symmetric/*
-log.*
-log.html
->>>>>>> 937e0a5b71d9c159bec6c160596037943a3be0ac
-
-# ignore latex files
-*.pdf
-*.aux
-*.bbl
-*.ist
-*.lot
-*.toc
-*.out
+symmetric/*
 
 # ignore express-session
 sessions/*
 
-# ignore plugin configs
+# ignore sensative plugin data
 plugins/mail/addresses/*
+
+# ignore PDF reports
+/server/controllers/reports_proposed/out/
