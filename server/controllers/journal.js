@@ -7,11 +7,15 @@ var uuid = require('./../lib/guid');
 var validate = require('./../lib/validate')();
 var util = require('./../lib/util');
 
-var tableRouter, check, get;
+var core = require('./journal/core');
 
-/*
- * HTTP Controllers
-*/
+var tableRouter;
+
+function getDate(date) {
+  return util.toMysqlDate(date || new Date());
+}
+
+// GET /journal/:table/:id
 function lookupTable(req, res, next) {
   // What are the params here?
   request(req.params.table, req.params.id, req.session.user.id, function (err) {
@@ -19,196 +23,6 @@ function lookupTable(req, res, next) {
     res.send(200);
   });
 }
-
-/*
-/* Utility Methods
-*/
-
-// validity checks
-check = {
-  validPeriod : function (enterprise_id, date) {
-    var escaped_date, sql;
-    escaped_date = sanitize.escape(get.date(date));
-    sql =
-      'SELECT `period`.`id`, `period`.`fiscal_year_id` ' +
-      'FROM `period` ' +
-      'JOIN `fiscal_year` ON `fiscal_year`.`id`=`period`.`fiscal_year_id` '+
-      'WHERE `period`.`period_start` <=' + escaped_date + ' AND ' +
-        '`period`.`period_stop` >=' + escaped_date + ' AND ' +
-        '`period`.`locked` = 0 AND `fiscal_year`.`locked`=0;\n';
-    return db.exec(sql)
-    .then(function (rows) {
-      if (rows.length === 0) {
-        throw new Error('No period found to match the posted date : ' + date);
-      }
-      return q(rows);
-    });
-  },
-
-  validDebitorOrCreditor : function (id) {
-    // NOTE: This is NOT STRICT. It may find a debitor when a creditor was
-    // requested, or vice versa.  This is fine for the checks here, but not
-    // for posting to the general ledger.
-    var sql;
-    id = sanitize.escape(id);
-    sql =
-      'SELECT `uuid` ' +
-      'FROM (' +
-        'SELECT `debitor`.`uuid` FROM `debitor` WHERE `uuid`=' + id + ' ' +
-      'UNION ' +
-        'SELECT `creditor`.`uuid` FROM `creditor` WHERE `uuid`=' + id +
-      ')c;';
-    return db.exec(sql)
-    .then(function (rows) {
-      if (rows.length === 0) {
-        throw new Error('No Debitor or Creditor found with id: ' + id);
-      }
-      return q(rows);
-    });
-  }
-};
-
-// utility functions shared by multiple queries
-get = {
-  origin : function (table) {
-    // uses the transaction_type table to derive an origin_id
-    // to post to the journal.  Returns the id.
-    var sql =
-      'SELECT `id`, `service_txt` FROM `transaction_type` ' +
-      'WHERE `service_txt` = ' + sanitize.escape(table) + ';';
-    return db.exec(sql)
-    .then(function (rows) {
-      if (rows.length === 0) {
-        throw new Error('Cannot find origin for transaction type : ' + table);
-      }
-      return q(rows.pop().id);
-    });
-  },
-
-  transactionId : function (project_id) {
-    // get a new transaction id from the journal.
-    // make sure it is the last thing fired in the
-    // call stack before posting.
-    var defer = q.defer();
-
-    // FIXME
-    // This can be done in one SQL with a default value
-    // using an IF statement.  It will be much cleaner.
-
-    var sql =
-      'SELECT abbr, max(increment) AS increment FROM (' +
-        'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
-        'FROM posting_journal JOIN project ON posting_journal.project_id = project.id ' +
-        'WHERE project_id = ' + project_id + ' ' +
-        'UNION ' +
-        'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
-        'FROM general_ledger JOIN project ON general_ledger.project_id = project.id ' +
-        'WHERE project_id = ' + project_id + ')c;';
-
-    var sql2 = 'SELECT `project`.`abbr` FROM `project` WHERE `project`.`id` = ' + project_id;
-
-    db.exec(sql)
-    .then(function (rows) {
-      var data = rows.pop();
-
-      //FIX ME: dangerous test
-
-      if(!data.abbr){
-        db.exec(sql2)
-        .then(function (rows){
-          var data2 = rows.pop();
-          value = (data.increment) ? '\'' + data2.abbr + data.increment + '\'' : '\'' + data2.abbr + 1 + '\'';
-          defer.resolve(value);
-        });
-      }else{
-        var value = data.increment ? '\'' + data.abbr + data.increment + '\'' : '\'' + data.abbr + 1 + '\'';
-        defer.resolve(value);
-      }
-
-    });
-
-    return defer.promise;
-  },
-
-  date : function (date) {
-    // returns a mysql-compatible date
-    // Note : this transforms things into a date, not date + time
-    if (date) {
-      date = new Date(date);
-      var year = String(date.getFullYear());
-      var month = String(date.getMonth() + 1);
-      month = month.length === 1 ? '0' + month : month;
-      var day = String(date.getDate()).length === 1 ? '0' + String(date.getDate()) : String(date.getDate());
-      return [year, month, day].join('-');
-    } else {
-      return new Date().toISOString().slice(0, 10);
-    }
-  },
-
-  period : function (date) {
-    // gets the currency period from a mysql-compatible date.
-    var sql =
-      'SELECT `period`.`id`, `period`.`fiscal_year_id` FROM `period` ' +
-      'JOIN `fiscal_year` ON `fiscal_year`.`id`=`period`.`fiscal_year_id` ' +
-      'WHERE `fiscal_year`.`locked`=0 AND (`period_start` <= ' + sanitize.escape(get.date(date)) + ' AND ' +
-        '`period_stop` >= ' + sanitize.escape(get.date(date)) + ');';
-
-    return db.exec(sql)
-    .then(function (rows) {
-      if (rows.length === 0) {
-        throw new Error('No period or fiscal year data for date: ' + date);
-      }
-      return q(rows.pop());
-    });
-  },
-
-  exchangeRate : function (date) {
-    // expects a mysql-compatible date
-    var sql;
-
-    sql =
-      'SELECT `enterprise_currency_id`, `foreign_currency_id`, `rate`, ' +
-        '`min_monentary_unit` ' +
-      'FROM `exchange_rate` JOIN `currency` ON `exchange_rate`.`foreign_currency_id` = `currency`.`id` ' +
-      'WHERE `exchange_rate`.`date`=\'' + this.date(date) + '\';';
-
-    return db.exec(sql)
-    .then(function (rows) {
-      if (rows.length === 0) {
-        throw new Error('No exchange rate found for date : ' + date);
-      }
-
-      var store = new Store();
-      rows.forEach(function (line) {
-        store.post({ id : line.foreign_currency_id, rate : line.rate });
-        store.post({ id : line.enterprise_currency_id, rate : 1});
-      });
-
-      return q(store);
-    });
-  },
-
-  myExchangeRate : function (date) {
-    // expects a mysql-compatible date
-    var defer = q.defer(),
-      sql =
-      'SELECT `enterprise_currency_id`, `foreign_currency_id`, `rate`, `min_monentary_unit` ' +
-      'FROM `exchange_rate` JOIN `currency` ON `exchange_rate`.`foreign_currency_id` = `currency`.`id` ' +
-      'WHERE `exchange_rate`.`date`=\'' + date + '\';';
-    db.execute(sql, function (err, rows) {
-      if (err) { defer.reject(err); }
-      if (rows.length === 0) { defer.reject(new Error('No exchange rate found for date : ' + date)); }
-      var store = new Store();
-      rows.forEach(function (line) {
-        store.post({ id : line.foreign_currency_id, rate : line.rate });
-        store.post({ id : line.enterprise_currency_id, rate : 1});
-      });
-      defer.resolve(store);
-    });
-
-    return defer.promise;
-  }
-};
 
 function authorize (user_id, done) {
   // TODO : This is a placeholder until we find out how to allow
@@ -265,7 +79,7 @@ function handleSales (id, user_id, done, caution) {
   })
   .then(function (results) {
     subsidyReferences = results;
-    return check.validPeriod(reference.enterprise_id, reference.invoice_date);
+    return core.checks.validPeriod(reference.enterprise_id, reference.invoice_date);
   })
   .then(function () {
     // second check - are the debits (discounts) positive
@@ -289,7 +103,7 @@ function handleSales (id, user_id, done, caution) {
     }
 
     // all checks have passed - prepare for writing to the journal.
-    return q([get.origin('sale'), get.period(reference.invoice_date)]);
+    return q([core.queries.origin('sale'), core.queries.period(reference.invoice_date)]);
   })
   .spread(function (originId, periodObject) {
     cfg.periodId = periodObject.id;
@@ -298,7 +112,7 @@ function handleSales (id, user_id, done, caution) {
 
     // create a trans_id for the transaction
     // MUST BE THE LAST REQUEST TO prevent race conditions.
-    return get.transactionId(reference.project_id);
+    return core.queries.transactionId(reference.project_id);
   })
   .then(function (trans_id) {
 
@@ -381,7 +195,7 @@ function handleSales (id, user_id, done, caution) {
     return queries.sale ? db.exec(queries.sale) : q();
   })
   .then(function () {
-    return q([ db.exec(queries.sale_posted), get.transactionId(reference.project_id)]);
+    return q([ db.exec(queries.sale_posted), core.queries.transactionId(reference.project_id)]);
   })
   .spread(function (rows, transId) {
 
@@ -456,7 +270,7 @@ function handleRounding (cash_id) {
     if (!row) {
       throw new Error('No debtor invoices found.  Internal system error in handling rounding.');
     }
-    return get.exchangeRate(row.date);
+    return core.queries.exchangeRate(row.date);
   })
   .then(function (store) {
     var paidValue = precision(row.cost / store.get(row.currency_id).rate, 4);
@@ -495,7 +309,7 @@ function handleCash (id, user_id, done) {
     state.items = results;
     state.reference = results[0];
 
-    return check.validPeriod(state.reference.enterprise_id, state.reference.date);
+    return core.checks.validPeriod(state.reference.enterprise_id, state.reference.date);
   })
   .then(function () {
     var document_id_exist = validate.exists(state.reference.document_id);
@@ -524,26 +338,26 @@ function handleCash (id, user_id, done) {
       throw new Error('Invalid payment price for one invoice with cash id: ' + id);
     }
 
-    return check.validPeriod(state.reference.enterprise_id, state.reference.date);
+    return core.checks.validPeriod(state.reference.enterprise_id, state.reference.date);
   })
   .then(function () {
-    return check.validDebitorOrCreditor(state.reference.deb_cred_uuid);
+    return core.checks.validDebtorOrCreditor(state.reference.deb_cred_uuid);
   })
   .then(function () {
-    return get.origin('cash');
+    return core.queries.origin('cash');
   })
   // TODO : collapse this code using Q.spread();
   .then(function (id) {
     state.originId = id;
-    return get.period(state.reference.date);
+    return core.queries.period(state.reference.date);
   })
   .then(function (period) {
     state.period = period;
-    return get.exchangeRate(state.reference.date);
+    return core.queries.exchangeRate(state.reference.date);
   })
   .then(function (store) {
     state.store = store;
-    return get.transactionId(state.reference.project_id);
+    return core.queries.transactionId(state.reference.project_id);
   })
   .then(function (id) {
     state.transId = id;
@@ -572,7 +386,7 @@ function handleCash (id, user_id, done) {
         '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
         '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
         '`inv_po_id`, `currency_id`, `deb_cred_uuid`, `deb_cred_type`, `origin_id`, `user_id` ) ' +
-      'SELECT `cash`.`project_id`, ' + [sanitize.escape(state.cashUUID), state.period.fiscal_year_id, state.period.id , state.transId, '\'' + get.date() + '\''].join(', ') + ', ' +
+      'SELECT `cash`.`project_id`, ' + [sanitize.escape(state.cashUUID), state.period.fiscal_year_id, state.period.id , state.transId, '\'' + getDate() + '\''].join(', ') + ', ' +
         '`cash`.`description`, `cash`.`document_id`, `cash`.`' + account_type + '`, ' + money + sanitize.escape(state.id) +
         ', `cash`.`currency_id`, null, null, ' +
         [state.originId, state.userId].join(', ') + ' ' +
@@ -603,7 +417,7 @@ function handleCash (id, user_id, done) {
         '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
         '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
         '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-      'SELECT `cash`.`project_id`, ' + [sanitize.escape(id), state.period.fiscal_year_id, state.period.id, state.transId, '\'' + get.date() + '\''].join(', ') + ', ' +
+      'SELECT `cash`.`project_id`, ' + [sanitize.escape(id), state.period.fiscal_year_id, state.period.id, state.transId, '\'' + getDate() + '\''].join(', ') + ', ' +
         '`cash`.`description`, `cash`.`document_id`, `cash`.`' + state.cash_item_account_id  + '`, ' + cash_item_money +
         '`cash`.`currency_id`, `cash`.`deb_cred_uuid`, ' + state.deb_cred_type + ', ' +
         '`cash_item`.`invoice_uuid`, ' + [state.originId, state.userId].join(', ') + ' ' +
@@ -638,7 +452,7 @@ function handleCash (id, user_id, done) {
         '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
         '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
         '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-      'SELECT `cash`.`project_id`, ' + [sanitize.escape(state.roundingUUID), state.period.fiscal_year_id, state.period.id, state.transId, '\'' + get.date() + '\''].join(', ') + ', ' +
+      'SELECT `cash`.`project_id`, ' + [sanitize.escape(state.roundingUUID), state.period.fiscal_year_id, state.period.id, state.transId, '\'' + getDate() + '\''].join(', ') + ', ' +
         description + ', `cash`.`document_id`, `cash_box_account_currency`.'+ ((state.remainder > 0) ? '`loss_exchange_account_id`' : '`gain_exchange_account_id`' ) + ', ' + creditOrDebit + ', ' +
         '`cash`.`currency_id`, null, null, `cash_item`.`invoice_uuid`, ' +
         [state.originId, state.userId].join(', ') + ' ' +
@@ -665,7 +479,7 @@ function handleCash (id, user_id, done) {
         '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
         '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
         '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-      'SELECT `cash`.`project_id`, ' + [sanitize.escape(state.roundingUUID2), state.period.fiscal_year_id, state.period.id, state.transId, '\'' + get.date() + '\''].join(', ') + ', ' +
+      'SELECT `cash`.`project_id`, ' + [sanitize.escape(state.roundingUUID2), state.period.fiscal_year_id, state.period.id, state.transId, '\'' + getDate() + '\''].join(', ') + ', ' +
         description +', `cash`.`document_id`, `cash`.`' + state.cash_item_account_id  + '`, ' + balance + ', ' +
         '`cash`.`currency_id`, `cash`.`deb_cred_uuid`, `cash`.`deb_cred_type`, `cash_item`.`invoice_uuid`, ' +
         [state.originId, state.userId].join(', ') + ' ' +
@@ -724,7 +538,7 @@ function handlePurchase (id, user_id, done) {
     // first check - do we have a validPeriod?
     // Also, implicit in this check is that a valid fiscal year
     // is in place.
-    return check.validPeriod(reference.enterprise_id, reference.invoice_date);
+    return core.checks.validPeriod(reference.enterprise_id, reference.invoice_date);
   })
   .then(function () {
     // second check - is the cost positive for every transaction?
@@ -745,16 +559,16 @@ function handlePurchase (id, user_id, done) {
       throw new Error('Unit prices and quantities do not match for purchase id: ' + id);
     }
 
-    return get.origin('purchase');
+    return core.queries.origin('purchase');
   })
   .then(function (originId) {
     cfg.originId = originId;
-    return get.period(reference.date);
+    return core.queries.period(reference.date);
   })
   .then(function (periodObject) {
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
-    return get.transactionId(reference.project_id);
+    return core.queries.transactionId(reference.project_id);
   })
   .then(function (transId) {
     // format queries
@@ -763,7 +577,7 @@ function handlePurchase (id, user_id, done) {
         '(`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
         '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
         '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-      'SELECT `purchase`.`project_id`, ' + [cfg.fiscalYearId, cfg.periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
+      'SELECT `purchase`.`project_id`, ' + [cfg.fiscalYearId, cfg.periodId, transId, '\'' + getDate() + '\''].join(', ') + ', ' +
         '`purchase`.`note`, `creditor_group`.`account_id`, 0, `purchase`.`cost`, 0, `purchase`.`cost`, ' + // last four debit, credit, debit_equiv, credit_equiv.  Note that debit === debit_equiv since we use enterprise currency.
         '`purchase`.`currency_id`, `purchase`.`creditor_id`, \'C\', `purchase`.`id`, ' + [cfg.originId, user_id].join(', ') + ' ' +
       'FROM `purchase` JOIN `creditor` JOIN `creditor_group` ON ' +
@@ -775,7 +589,7 @@ function handlePurchase (id, user_id, done) {
         '(`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
         '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
         '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-      'SELECT `purchase`.`project_id`, ' + [cfg.fiscalYearId, cfg.periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
+      'SELECT `purchase`.`project_id`, ' + [cfg.fiscalYearId, cfg.periodId, transId, '\'' + getDate() + '\''].join(', ') + ', ' +
         '`purchase`.`note`, `inventory_group`.`sales_account`, `purchase_item`.`total`, 0, `purchase_item`.`total`, 0, ' + // last three: credit, debit_equiv, credit_equiv
         '`purchase`.`currency_id`, `purchase`.`creditor_id`, \'C\', `purchase`.`id`, ' + [cfg.originId, user_id].join(', ') + ' ' +
       'FROM `purchase` JOIN `purchase_item` JOIN `inventory` JOIN `inventory_group` ON ' +
@@ -810,7 +624,7 @@ function handleGroupInvoice (id, user_id, done) {
     cfg.enterprise_id = results[0].enterprise_id;
     cfg.project_id = results[0].project_id;
     cfg.date = results[0].date;
-    return check.validPeriod(cfg.enterprise_id, cfg.date);
+    return core.checks.validPeriod(cfg.enterprise_id, cfg.date);
   }
 
   function handleValidPeriod () {
@@ -826,19 +640,19 @@ function handleGroupInvoice (id, user_id, done) {
     // if (!totalEquality) {
     //   throw new Error('Individual costs do not match total cost for invoice id: ' + id);
     // }
-    return get.origin('group_invoice');
+    return core.queries.origin('group_invoice');
   }
 
   function handleOrigin (originId) {
     cfg.originId = originId;
-    return get.period(cfg.date);
+    return core.queries.period(cfg.date);
   }
 
   function handlePeriod (periodObject) {
     cfg.period_id = periodObject.id;
     cfg.fiscal_year_id = periodObject.fiscal_year_id;
     references.forEach(function (row) {
-      get.transactionId(cfg.project_id)
+      core.queries.transactionId(cfg.project_id)
         .then(function  (trans_id) {
           cfg.descript = trans_id.substring(0,4) + '_VENTE_CHARITE/' + new Date().toISOString().slice(0, 10).toString();
           var debitSql=
@@ -847,7 +661,7 @@ function handleGroupInvoice (id, user_id, done) {
             '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
             '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
             'SELECT ' +
-              [sanitize.escape(uuid()), cfg.project_id, cfg.fiscal_year_id, cfg.period_id, trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descript)].join(', ') + ', ' +
+              [sanitize.escape(uuid()), cfg.project_id, cfg.fiscal_year_id, cfg.period_id, trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.descript)].join(', ') + ', ' +
             '`debitor_group`.`account_id`, `group_invoice_item`.`cost`, ' +
             '  0, `group_invoice_item`.`cost`, 0, `enterprise`.`currency_id`, ' +
             '  null, null, `group_invoice_item`.`invoice_uuid`, ' +
@@ -865,7 +679,7 @@ function handleGroupInvoice (id, user_id, done) {
             '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
             '  `currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
             'SELECT `group_invoice`.`project_id`, ' +
-              [sanitize.escape(uuid()), cfg.fiscal_year_id, cfg.period_id, trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descript)].join(', ') + ', ' +
+              [sanitize.escape(uuid()), cfg.fiscal_year_id, cfg.period_id, trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.descript)].join(', ') + ', ' +
             '`debitor_group`.`account_id`, 0, `group_invoice_item`.`cost`, ' +
             '0, `group_invoice_item`.`cost`, `enterprise`.`currency_id`,  ' +
             '`group_invoice`.`debitor_uuid`, \'D\', `group_invoice_item`.`invoice_uuid`, ' +
@@ -922,7 +736,7 @@ function handleEmployeeInvoice (id, user_id, done) {
     cfg.enterprise_id = results[0].enterprise_id;
     cfg.project_id = results[0].project_id;
     cfg.date = results[0].date;
-    return check.validPeriod(cfg.enterprise_id, cfg.date);
+    return core.checks.validPeriod(cfg.enterprise_id, cfg.date);
   }
 
   function handleValidPeriod () {
@@ -938,19 +752,19 @@ function handleEmployeeInvoice (id, user_id, done) {
     if (!totalEquality) {
       throw new Error('Individual costs do not match total cost for invoice id: ' + id);
     }
-    return get.origin('group_invoice');
+    return core.queries.origin('group_invoice');
   }
 
   function handleOrigin (originId) {
     cfg.originId = originId;
-    return get.period(cfg.date);
+    return core.queries.period(cfg.date);
   }
 
   function handlePeriod (periodObject) {
     cfg.period_id = periodObject.id;
     cfg.fiscal_year_id = periodObject.fiscal_year_id;
     references.forEach(function (row) {
-      get.transactionId(cfg.project_id)
+      core.queries.transactionId(cfg.project_id)
         .then(function  (trans_id) {
           cfg.descript = trans_id.substring(0,4) + '_SUPPORTED/' + new Date().toISOString().slice(0, 10).toString();
 
@@ -960,7 +774,7 @@ function handleEmployeeInvoice (id, user_id, done) {
             '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
             '  `currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
             'SELECT `employee_invoice`.`project_id`, ' +
-              [sanitize.escape(uuid()), cfg.fiscal_year_id, cfg.period_id, trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descript)].join(', ') + ', ' +
+              [sanitize.escape(uuid()), cfg.fiscal_year_id, cfg.period_id, trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.descript)].join(', ') + ', ' +
             '`creditor_group`.`account_id`, `employee_invoice_item`.`cost`, 0, ' +
             '`employee_invoice_item`.`cost`, 0, `enterprise`.`currency_id`,  ' +
             '`employee_invoice`.`creditor_uuid`, \'C\', `employee_invoice_item`.`invoice_uuid`, ' +
@@ -982,7 +796,7 @@ function handleEmployeeInvoice (id, user_id, done) {
             '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
             '  `currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
             'SELECT `employee_invoice`.`project_id`, ' +
-              [sanitize.escape(uuid()), cfg.fiscal_year_id, cfg.period_id, trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descript)].join(', ') + ', ' +
+              [sanitize.escape(uuid()), cfg.fiscal_year_id, cfg.period_id, trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.descript)].join(', ') + ', ' +
             '`debitor_group`.`account_id`, 0, `employee_invoice_item`.`cost`, ' +
             '0, `employee_invoice_item`.`cost`, `enterprise`.`currency_id`,  ' +
             '`employee_invoice`.`debitor_uuid`, \'D\', `employee_invoice_item`.`invoice_uuid`, ' +
@@ -1055,7 +869,7 @@ function handleCreditNote (id, user_id, done) {
     data = results;
     reference = results[0];
 
-    return check.validPeriod(reference.enterprise_id, reference.note_date);
+    return core.checks.validPeriod(reference.enterprise_id, reference.note_date);
 
   })
   .then(function () {
@@ -1091,7 +905,7 @@ function handleCreditNote (id, user_id, done) {
     //}
 
     // all checks have passed - prepare for writing to the journal.
-    return q([ get.origin('credit_note'), get.origin('sale'), get.period(reference.note_date) ]);
+    return q([ core.queries.origin('credit_note'), core.queries.origin('sale'), core.queries.period(reference.note_date) ]);
 
   })
   .spread(function (originId, saleOrigin, periodObject) {
@@ -1103,7 +917,7 @@ function handleCreditNote (id, user_id, done) {
     cfg.periodId = periodObject.id; // TODO : change this to camelcase
     cfg.fiscalYearId = periodObject.fiscal_year_id;
 
-    return get.transactionId(reference.project_id);
+    return core.queries.transactionId(reference.project_id);
   })
   .then(function (transId) {
     cfg.trans_id = transId;
@@ -1129,7 +943,7 @@ function handleCreditNote (id, user_id, done) {
   .then(function (results) {
     queries.items = [];
 
-    var date = get.date();
+    var date = getDate();
     results.forEach(function (item) {
       item.uuid = sanitize.escape(uuid());
       item.origin_id = cfg.originId;
@@ -1137,7 +951,7 @@ function handleCreditNote (id, user_id, done) {
       item.period_id = cfg.periodId;
       item.fiscal_year_id = cfg.fiscalYearId;
       item.trans_id = cfg.trans_id;
-      item.trans_date = util.toMysqlDate(get.date());
+      item.trans_date = util.toMysqlDate(getDate());
 
       if(item.deb_cred_uuid){
         item.deb_cred_uuid = sanitize.escape(item.deb_cred_uuid);
@@ -1216,7 +1030,7 @@ function handleCashDiscard (id, user_id, done) {
     }
 
     reference = results[0];
-    return q([ get.origin('cash_discard'), get.period(reference.date) ]);
+    return q([ core.queries.origin('cash_discard'), core.queries.period(reference.date) ]);
 
   })
   .spread(function (originId, periodObject) {
@@ -1251,7 +1065,7 @@ function handleCashDiscard (id, user_id, done) {
       cfg.rows.push(item);
     });
 
-    return get.transactionId(reference.project_id);
+    return core.queries.transactionId(reference.project_id);
   })
   .then(function (transId) {
     var sqls = [];
@@ -1262,7 +1076,7 @@ function handleCashDiscard (id, user_id, done) {
         '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
         '`description`, `doc_num`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
         '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-        'SELECT `cash_discard`.`project_id`, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId, '\'' + get.date() + '\''].join(', ') + ', ' +
+        'SELECT `cash_discard`.`project_id`, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId, '\'' + getDate() + '\''].join(', ') + ', ' +
         '`cash_discard`.`description`, null, ' + [item.account_id, item.debit, item.credit, item.debit_equiv, item.credit_equiv].join(', ') + ', ' +
         '`cash`.`currency_id`, ' + ((item.deb_cred_uuid) ? sanitize.escape(item.deb_cred_uuid) : 'null') + ', ' +
         ((item.deb_cred_type) ? sanitize.escape(item.deb_cred_type) : 'null') + ', ' + sanitize.escape(item.inv_po_id) + ', ' +
@@ -1300,21 +1114,21 @@ function handleCaution(id, user_id, done) {
     reference = results[0];
 
     cfg.date = util.toMysqlDate(reference.date);
-    return get.myExchangeRate(cfg.date);
+    return core.queries.myExchangeRate(cfg.date);
   })
   .then(function (exchangeRateStore) {
     var dailyExchange = exchangeRateStore.get(reference.currency_id);
     cfg.debit_equiv = dailyExchange.rate * 0;
     cfg.credit_equiv = (1/dailyExchange.rate) * reference.cost;
 
-    return q([get.origin('caution'), get.period(reference.date)]);
+    return q([core.queries.origin('caution'), core.queries.period(reference.date)]);
   })
   .spread(function (originId, periodObject) {
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
 
-    return get.transactionId(reference.project_id);
+    return core.queries.transactionId(reference.project_id);
   })
   .then(function (transId) {
     //we credit the caution account
@@ -1323,7 +1137,7 @@ function handleCaution(id, user_id, done) {
       '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
       '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
       '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) VALUES ('+
-      [reference.project_id, sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId, '\'' + get.date() + '\'','\'' + reference.description + '\'', reference.credit_account,
+      [reference.project_id, sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId, '\'' + getDate() + '\'','\'' + reference.description + '\'', reference.credit_account,
        reference.cost, 0, cfg.credit_equiv, cfg.debit_equiv, reference.currency_id, '\'' + reference.deb_cred_uuid + '\''].join(', ') +
         ', \'D\', ' + ['\'' + id + '\'', cfg.originId, user_id].join(', ') + ');';
 
@@ -1332,7 +1146,7 @@ function handleCaution(id, user_id, done) {
       '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
       '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
       '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) VALUES (' +
-      [reference.project_id, sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId, '\'' + get.date() + '\'', '\'' + reference.description + '\'',
+      [reference.project_id, sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId, '\'' + getDate() + '\'', '\'' + reference.description + '\'',
        reference.debit_account, 0, reference.cost, cfg.debit_equiv, cfg.credit_equiv, reference.currency_id].join(',') +
         ', null, null, ' + ['\'' + id + '\'', cfg.originId, user_id].join(', ') + ');';
 
@@ -1369,20 +1183,20 @@ function handleTransfert (id, user_id, done) {
     data = results;
     var date = util.toMysqlDate(reference.date);
 
-    return get.myExchangeRate(date);
+    return core.queries.myExchangeRate(date);
   })
   .then(function (exchangeRateStore) {
     var dailyExchange = exchangeRateStore.get(reference.currency_id);
     cfg.valueExchanged = parseFloat((1/dailyExchange.rate) * reference.cost).toFixed(4);
 
-    return q([get.origin('pcash_transfert'), get.period(reference.date)]); // should be get.origin(pcash_transfert);
+    return q([core.queries.origin('pcash_transfert'), core.queries.period(reference.date)]); // should be core.queries.origin(pcash_transfert);
   })
   .spread(function (originId, periodObject) {
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
 
-    return get.transactionId(reference.project_id);
+    return core.queries.transactionId(reference.project_id);
   })
   .then(function (transId) {
     var descrip =  transId.substring(0,4) + 'CASH_BOX_VIRMENT' + new Date().toISOString().slice(0, 10).toString();
@@ -1390,7 +1204,7 @@ function handleTransfert (id, user_id, done) {
       'INSERT INTO posting_journal (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
         '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
         '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
-        'VALUES (' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'', sanitize.escape(descrip), reference.account_id].join(',') + ', ' +
+        'VALUES (' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+getDate()+'\'', sanitize.escape(descrip), reference.account_id].join(',') + ', ' +
         [ reference.cost, 0, cfg.valueExchanged, 0, reference.currency_id ].join(',')+', null, null, '+[sanitize.escape(id), cfg.originId, user_id].join(',') +
       ');';
 
@@ -1398,7 +1212,7 @@ function handleTransfert (id, user_id, done) {
       'INSERT INTO posting_journal (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
         '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
         '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
-        'VALUES (' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'', sanitize.escape(descrip), reference.virement_account_id].join(',') + ', ' +
+        'VALUES (' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+getDate()+'\'', sanitize.escape(descrip), reference.virement_account_id].join(',') + ', ' +
         [ 0, reference.cost, 0, cfg.valueExchanged, reference.currency_id ].join(',')+', null, null, '+[sanitize.escape(id), cfg.originId, user_id].join(',') +
       ');';
 
@@ -1408,7 +1222,7 @@ function handleTransfert (id, user_id, done) {
     return db.exec(queries.debit);
   })
   .then(function () {
-    return get.transactionId(reference.project_id);
+    return core.queries.transactionId(reference.project_id);
   })
 // VOICI ANALYSE DANS LA BASE DE DONNEES
   .then(function (transId) {
@@ -1417,7 +1231,7 @@ function handleTransfert (id, user_id, done) {
       'INSERT INTO posting_journal (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
         '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
         '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
-        'VALUES (' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'', sanitize.escape(descrip), reference.virement_account_id].join(',') + ', ' +
+        'VALUES (' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+getDate()+'\'', sanitize.escape(descrip), reference.virement_account_id].join(',') + ', ' +
         [ reference.cost, 0, cfg.valueExchanged, 0, reference.currency_id ].join(',')+', null, null, '+[sanitize.escape(id), cfg.originId, user_id].join(',') +
       ');';
 
@@ -1426,7 +1240,7 @@ function handleTransfert (id, user_id, done) {
         '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
         '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
         '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-        'SELECT ' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+get.date()+'\'', sanitize.escape(descrip)].join(',') +
+        'SELECT ' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+getDate()+'\'', sanitize.escape(descrip)].join(',') +
         ', `account_id`, ' + [0, reference.cost, 0, cfg.valueExchanged, reference.currency_id ].join(',')+', null, null, ' +
         [sanitize.escape(id), cfg.originId, user_id].join(',') + ' ' +
         'FROM cash_box_account_currency WHERE `cash_box_account_currency`.`cash_box_id`='+sanitize.escape(reference.cash_box_id) + ' ' +
@@ -1478,20 +1292,20 @@ function handleCashReturn (id, user_id, done) {
     data = results;
     var date = util.toMysqlDate(reference.date);
 
-    return get.myExchangeRate(date);
+    return core.queries.myExchangeRate(date);
   })
   .then(function (exchangeRateStore) {
     var dailyExchange = exchangeRateStore.get(reference.currency_id);
     cfg.valueExchanged = parseFloat((1/dailyExchange.rate) * reference.cost).toFixed(4);
 
-    return q([get.origin('cash_return'), get.period(reference.date)]); // should be get.origin(pcash_transfert);
+    return q([core.queries.origin('cash_return'), core.queries.period(reference.date)]); // should be core.queries.origin(pcash_transfert);
   })
   .spread(function (originId, periodObject) {
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
 
-    return get.transactionId(reference.project_id);
+    return core.queries.transactionId(reference.project_id);
   })
   .then(function (transId) {
 
@@ -1555,19 +1369,19 @@ function handleConvention (id, user_id, done) {
     if (records.length === 0) { throw new Error('pas enregistrement'); }
     reference.reference_pcash_items = records;
     var date = util.toMysqlDate(reference.reference_pcash.date);
-    return get.myExchangeRate(date);
+    return core.queries.myExchangeRate(date);
   }
 
   function getExchange (exchangeStore) {
     dayExchange = exchangeStore.get(reference.reference_pcash.currency_id);
-    return q([get.origin('pcash_convention'), get.period(reference.date)]);
+    return q([core.queries.origin('pcash_convention'), core.queries.period(reference.date)]);
   }
 
   function getDetails (originId, periodObject) {
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
-    return get.transactionId(reference.reference_pcash.project_id);
+    return core.queries.transactionId(reference.reference_pcash.project_id);
   }
 
   function getTransId (trans_id) {
@@ -1590,7 +1404,7 @@ function handleConvention (id, user_id, done) {
                                   reference.reference_pcash.project_id,
                                   cfg.fiscalYearId,
                                   cfg.periodId,
-                                  cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip)
+                                  cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.descrip)
                                 ].join(',') + ', `account_id`, ' +
                                 [
                                   0, ref_pcash_item.debit,
@@ -1620,7 +1434,7 @@ function handleConvention (id, user_id, done) {
               reference.reference_pcash.project_id,
               cfg.fiscalYearId,
               cfg.periodId,
-              cfg.trans_id, '\''+get.date()+'\'',  sanitize.escape(cfg.descrip), reference.reference_pcash.account_id
+              cfg.trans_id, '\''+getDate()+'\'',  sanitize.escape(cfg.descrip), reference.reference_pcash.account_id
             ].join(',') + ' , ' +
             [
               ref_pcash_item.debit,0,
@@ -1665,19 +1479,19 @@ function handleEmployee (id, user_id, done) {
     if (records.length === 0) { throw new Error('pas enregistrement'); }
     reference.reference_pcash_items = records;
     var date = util.toMysqlDate(reference.reference_pcash.date);
-    return get.myExchangeRate(date);
+    return core.queries.myExchangeRate(date);
   }
 
   function getExchange (exchangeStore) {
     dayExchange = exchangeStore.get(reference.reference_pcash.currency_id);
-    return q([get.origin('pcash_employee'), get.period(reference.date)]);
+    return q([core.queries.origin('pcash_employee'), core.queries.period(reference.date)]);
   }
 
   function getDetails (originId, periodObject) {
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
-    return get.transactionId(reference.reference_pcash.project_id);
+    return core.queries.transactionId(reference.reference_pcash.project_id);
   }
 
   function getTransId (trans_id) {
@@ -1702,7 +1516,7 @@ function handleEmployee (id, user_id, done) {
               reference.reference_pcash.project_id,
               cfg.fiscalYearId,
               cfg.periodId,
-              cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip)
+              cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.descrip)
             ].join(',') + ', `account_id`, ' +
             [
               ref_pcash_item.debit, 0,
@@ -1734,7 +1548,7 @@ function handleEmployee (id, user_id, done) {
               reference.reference_pcash.project_id,
               cfg.fiscalYearId,
               cfg.periodId,
-              cfg.trans_id, '\''+get.date()+'\'',  sanitize.escape(cfg.descrip), reference.reference_pcash.account_id
+              cfg.trans_id, '\''+getDate()+'\'',  sanitize.escape(cfg.descrip), reference.reference_pcash.account_id
             ].join(',') + ', ' +
             [
               0, ref_pcash_item.debit,
@@ -1789,19 +1603,19 @@ function handleGenericExpense(id, user_id, done) {
     reference = results[0];
     data = results;
     var date = util.toMysqlDate(reference.date);
-    return get.exchangeRate(date);
+    return core.queries.exchangeRate(date);
   })
   .then(function (store) {
     state.store = store;
 
-    return q([get.origin('generic_expense'), get.period(reference.invoice_date)]);
+    return q([core.queries.origin('generic_expense'), core.queries.period(reference.invoice_date)]);
   })
   .spread(function (originId, periodObject) {
 
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
     cfg.originId = originId;
-    return get.transactionId(reference.project_id);
+    return core.queries.transactionId(reference.project_id);
   })
   .then(function (transId) {
     state.transId = transId;
@@ -1868,18 +1682,18 @@ function handleGenericIncome (id, user_id, done) {
     reference = results[0];
     data = results;
     var date = util.toMysqlDate(reference.date);
-    return get.exchangeRate(date);
+    return core.queries.exchangeRate(date);
   })
   .then(function (store) {
     state.store = store;
 
-    return q([get.origin('generic_income'), get.period(reference.invoice_date)]);
+    return q([core.queries.origin('generic_income'), core.queries.period(reference.invoice_date)]);
   })
   .spread(function (originId, periodObject) {
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
     cfg.originId = originId;
-    return get.transactionId(reference.project_id);
+    return core.queries.transactionId(reference.project_id);
   })
   .then(function (transId) {
     state.transId = transId;
@@ -1956,7 +1770,7 @@ function handleIndirectPurchase (id, user_id, done){
     'AND `cash_box_account_currency`.`cash_box_id` = ' + sanitize.escape(reference.cash_box_id) + ';';
 
 
-    return q([get.origin('indirect_purchase'), get.period(reference.date), db.exec(sql2)]);
+    return q([core.queries.origin('indirect_purchase'), core.queries.period(reference.date), db.exec(sql2)]);
   }
 
   function getDetails (originId, periodObject, res) {
@@ -1964,7 +1778,7 @@ function handleIndirectPurchase (id, user_id, done){
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
     cfg.account_cashbox = res[0].account_id;
-    return get.transactionId(reference.project_id);
+    return core.queries.transactionId(reference.project_id);
   }
 
   function getTransId (trans_id) {
@@ -1985,7 +1799,7 @@ function handleIndirectPurchase (id, user_id, done){
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\''
+          cfg.trans_id, '\'' + getDate() + '\'', '\'' + cfg.descrip + '\''
         ].join(',') + ', `account_id`, ' +
         [
           0, reference.debit.toFixed(4),
@@ -2013,7 +1827,7 @@ function handleIndirectPurchase (id, user_id, done){
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', cfg.account_cashbox
+          cfg.trans_id, '\'' + getDate() + '\'', '\'' + cfg.descrip + '\'', cfg.account_cashbox
         ].join(',') + ', ' +
         [
           reference.debit.toFixed(4), 0,
@@ -2051,15 +1865,15 @@ function handleConfirm (id, user_id, done){
   function getRecord (records) {
     if (records.length === 0) { throw new Error('pas enregistrement'); }
     references = records;
-    var date = util.toMysqlDate(get.date());
-    return q([get.origin('confirm_purchase'), get.period(get.date())]);
+    var date = util.toMysqlDate(getDate());
+    return q([core.queries.origin('confirm_purchase'), core.queries.period(getDate())]);
   }
 
   function getDetails (originId, periodObject) {
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
-    return get.transactionId(references[0].project_id);
+    return core.queries.transactionId(references[0].project_id);
   }
 
   function getTransId (trans_id) {
@@ -2082,7 +1896,7 @@ function handleConfirm (id, user_id, done){
                       reference.project_id,
                       cfg.fiscalYearId,
                       cfg.periodId,
-                      cfg.trans_id, '\''+get.date()+'\'', '\''+cfg.descrip+'\''
+                      cfg.trans_id, '\''+getDate()+'\'', '\''+cfg.descrip+'\''
                     ].join(',') + ', `inventory_group`.`stock_account`, '+
                     [
                       0, reference.total.toFixed(4),
@@ -2116,7 +1930,7 @@ function handleConfirm (id, user_id, done){
                     reference.project_id,
                     cfg.fiscalYearId,
                     cfg.periodId,
-                    cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\''
+                    cfg.trans_id, '\'' + getDate() + '\'', '\'' + cfg.descrip + '\''
                   ].join(',') + ', `inventory_group`.`cogs_account`, ' +
                   [
                     reference.total.toFixed(4),0,
@@ -2163,15 +1977,15 @@ function handleConfirmDirectPurchase (id, user_id, done){
   function getRecord (records) {
     if (records.length === 0) { throw new Error('pas enregistrement'); }
     references = records;
-    var date = util.toMysqlDate(get.date());
-    return q([get.origin('confirm_purchase'), get.period(get.date())]);
+    var date = util.toMysqlDate(getDate());
+    return q([core.queries.origin('confirm_purchase'), core.queries.period(getDate())]);
   }
 
   function getDetails (originId, periodObject) {
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
-    return get.transactionId(references[0].project_id);
+    return core.queries.transactionId(references[0].project_id);
   }
 
   function getTransId (trans_id) {
@@ -2193,7 +2007,7 @@ function handleConfirmDirectPurchase (id, user_id, done){
                       reference.project_id,
                       cfg.fiscalYearId,
                       cfg.periodId,
-                      cfg.trans_id, '\''+get.date()+'\'', '\''+cfg.descrip+'\''
+                      cfg.trans_id, '\''+getDate()+'\'', '\''+cfg.descrip+'\''
                     ].join(',') + ', `inventory_group`.`stock_account`, '+
                     [
                       0, reference.total.toFixed(4),
@@ -2227,7 +2041,7 @@ function handleConfirmDirectPurchase (id, user_id, done){
                     reference.project_id,
                     cfg.fiscalYearId,
                     cfg.periodId,
-                    cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\''
+                    cfg.trans_id, '\'' + getDate() + '\'', '\'' + cfg.descrip + '\''
                   ].join(',') + ', `inventory_group`.`cogs_account`, ' +
                   [
                     reference.total.toFixed(4),0,
@@ -2272,15 +2086,15 @@ function handleDistributionPatient (id, user_id, done) {
   function getRecord (records) {
     if (records.length === 0) { throw new Error('pas enregistrement'); }
     references = records;
-    var date = util.toMysqlDate(get.date());
-    return q([get.origin('distribution'), get.period(get.date())]);
+    var date = util.toMysqlDate(getDate());
+    return q([core.queries.origin('distribution'), core.queries.period(getDate())]);
   }
 
   function getDetails (originId, periodObject) {
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
-    return get.transactionId(references[0].project_id); // fix me, ID of project
+    return core.queries.transactionId(references[0].project_id); // fix me, ID of project
   }
 
   function getTransId (trans_id) {
@@ -2305,7 +2119,7 @@ function handleDistributionPatient (id, user_id, done) {
                       reference.project_id,
                       cfg.fiscalYearId,
                       cfg.periodId,
-                      cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.cogs_account
+                      cfg.trans_id, '\'' + getDate() + '\'', '\'' + cfg.descrip + '\'', reference.cogs_account
                     ].join(',') + ', ' +
                     [
                       0, (reference.quantity * reference.unit_price).toFixed(4),
@@ -2341,7 +2155,7 @@ function handleDistributionPatient (id, user_id, done) {
                       reference.project_id,
                       cfg.fiscalYearId,
                       cfg.periodId,
-                      cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.stock_account
+                      cfg.trans_id, '\'' + getDate() + '\'', '\'' + cfg.descrip + '\'', reference.stock_account
                     ].join(',') + ', ' +
                     [
                       (reference.quantity * reference.unit_price).toFixed(4), 0,
@@ -2405,15 +2219,15 @@ function handleDistributionService (id, user_id, details, done) {
   function getRecord (records) {
     if (records.length === 0) { throw new Error('pas enregistrement'); }
     references = records;
-    var date = util.toMysqlDate(get.date());
-    return q([get.origin('distribution'), get.period(get.date())]);
+    var date = util.toMysqlDate(getDate());
+    return q([core.queries.origin('distribution'), core.queries.period(getDate())]);
   }
 
   function getDetails (originId, periodObject) {
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
-    return get.transactionId(details.id);
+    return core.queries.transactionId(details.id);
   }
 
   function getTransId (trans_id) {
@@ -2438,7 +2252,7 @@ function handleDistributionService (id, user_id, details, done) {
                       details.id,
                       cfg.fiscalYearId,
                       cfg.periodId,
-                      cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.cogs_account
+                      cfg.trans_id, '\'' + getDate() + '\'', '\'' + cfg.descrip + '\'', reference.cogs_account
                     ].join(',') + ', ' +
                     [
                       0, (reference.quantity * reference.unit_price).toFixed(4),
@@ -2473,7 +2287,7 @@ function handleDistributionService (id, user_id, details, done) {
                       details.id,
                       cfg.fiscalYearId,
                       cfg.periodId,
-                      cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.stock_account
+                      cfg.trans_id, '\'' + getDate() + '\'', '\'' + cfg.descrip + '\'', reference.stock_account
                     ].join(',') + ', ' +
                     [
                       (reference.quantity * reference.unit_price).toFixed(4), 0,
@@ -2537,15 +2351,15 @@ function handleDistributionLoss (id, user_id, details, done) {
   function getRecord (records) {
     if (records.length === 0) { throw new Error('pas enregistrement'); }
     references = records;
-    var date = util.toMysqlDate(get.date());
-    return q([get.origin('loss'), get.period(get.date())]);
+    var date = util.toMysqlDate(getDate());
+    return q([core.queries.origin('loss'), core.queries.period(getDate())]);
   }
 
   function getDetails (originId, periodObject) {
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
-    return get.transactionId(details.id);
+    return core.queries.transactionId(details.id);
   }
 
   function getTransId (trans_id) {
@@ -2570,7 +2384,7 @@ function handleDistributionLoss (id, user_id, details, done) {
                       details.id,
                       cfg.fiscalYearId,
                       cfg.periodId,
-                      cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.cogs_account
+                      cfg.trans_id, '\'' + getDate() + '\'', '\'' + cfg.descrip + '\'', reference.cogs_account
                     ].join(',') + ', ' +
                     [
                       0, (reference.quantity * reference.unit_price).toFixed(4),
@@ -2605,7 +2419,7 @@ function handleDistributionLoss (id, user_id, details, done) {
                       details.id,
                       cfg.fiscalYearId,
                       cfg.periodId,
-                      cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.stock_account
+                      cfg.trans_id, '\'' + getDate() + '\'', '\'' + cfg.descrip + '\'', reference.stock_account
                     ].join(',') + ', ' +
                     [
                       (reference.quantity * reference.unit_price).toFixed(4), 0,
@@ -2679,8 +2493,8 @@ function handlePayroll (id, user_id, done) {
     '`paiement`.`uuid` = ' + sanitize.escape(reference.document_uuid) + ';';
 
 
-    var date = util.toMysqlDate(get.date());
-    return q([get.origin('payroll'), get.period(get.date()), get.exchangeRate(date), db.exec(sql2)]);
+    var date = util.toMysqlDate(getDate());
+    return q([core.queries.origin('payroll'), core.queries.period(getDate()), core.queries.exchangeRate(date), db.exec(sql2)]);
   }
 
   function getDetails (originId, periodObject, store, res) {
@@ -2690,7 +2504,7 @@ function handlePayroll (id, user_id, done) {
     cfg.employee_account_id = res[0].account_id;
     cfg.store = store;
     rate = cfg.store.get(reference.currency_id).rate;
-    return get.transactionId(reference.project_id);
+    return core.queries.transactionId(reference.project_id);
   }
 
   function getTransId (trans_id) {
@@ -2711,7 +2525,7 @@ function handlePayroll (id, user_id, done) {
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', cfg.employee_account_id
+          cfg.trans_id, '\'' + getDate() + '\'', '\'' + cfg.descrip + '\'', cfg.employee_account_id
         ].join(',') + ', ' +
         [
           0, (reference.cost).toFixed(4),
@@ -2740,7 +2554,7 @@ function handlePayroll (id, user_id, done) {
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\'', reference.account_id
+          cfg.trans_id, '\'' + getDate() + '\'', '\'' + cfg.descrip + '\'', reference.account_id
         ].join(',') + ', ' +
         [
           reference.cost.toFixed(4), 0,
@@ -2792,8 +2606,8 @@ function handleSalaryPayment (id, user_id, done) {
     'AND `cash_box_account_currency`.`cash_box_id` = ' + sanitize.escape(reference.cash_box_id) + ';';
 
 
-    var date = util.toMysqlDate(get.date());
-    return q([get.origin('payroll'), get.period(get.date()), get.exchangeRate(date), db.exec(sql2), db.exec(sql3)]);
+    var date = util.toMysqlDate(getDate());
+    return q([core.queries.origin('payroll'), core.queries.period(getDate()), core.queries.exchangeRate(date), db.exec(sql2), db.exec(sql3)]);
   }
 
   function getDetails (originId, periodObject, store, res, res2) {
@@ -2806,7 +2620,7 @@ function handleSalaryPayment (id, user_id, done) {
     cfg.account_cashbox = res2[0].account_id;
     rate = cfg.store.get(reference.currency_id).rate;
 
-    return get.transactionId(reference.project_id);
+    return core.queries.transactionId(reference.project_id);
   }
 
   function getTransId (trans_id) {
@@ -2827,7 +2641,7 @@ function handleSalaryPayment (id, user_id, done) {
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), cfg.account_id
+          cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.descrip), cfg.account_id
         ].join(',') + ', ' +
         [
           0, (reference.cost).toFixed(4),
@@ -2856,7 +2670,7 @@ function handleSalaryPayment (id, user_id, done) {
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), cfg.account_cashbox
+          cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.descrip), cfg.account_cashbox
         ].join(',') + ', ' +
         [
           reference.cost.toFixed(4), 0,
@@ -2905,8 +2719,8 @@ function handlePromessePayment (id, user_id, data, done) {
     ' JOIN `creditor_group` ON `creditor_group`.`uuid`=`creditor`.`group_uuid` ' +
     ' WHERE `paiement`.`uuid` = ' + sanitize.escape(reference.uuid) + ';';
 
-    var date = util.toMysqlDate(get.date());
-    return q([get.origin('payroll'), get.period(get.date()), get.exchangeRate(date), db.exec(sql2)]);
+    var date = util.toMysqlDate(getDate());
+    return q([core.queries.origin('payroll'), core.queries.period(getDate()), core.queries.exchangeRate(date), db.exec(sql2)]);
   }
 
   function getDetails (originId, periodObject, store, res) {
@@ -2917,7 +2731,7 @@ function handlePromessePayment (id, user_id, data, done) {
     cfg.creditor_uuid = res[0].creditor_uuid;
     cfg.store = store;
     rate = cfg.store.get(reference.currency_id).rate;
-    return get.transactionId(data.project_id);
+    return core.queries.transactionId(data.project_id);
   }
 
   function getTransId (trans_id) {
@@ -2938,7 +2752,7 @@ function handlePromessePayment (id, user_id, data, done) {
           data.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.account_id
+          cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.descrip), reference.account_id
         ].join(',') + ', ' +
         [
           0, (reference.gros_salary).toFixed(4),
@@ -2966,7 +2780,7 @@ function handlePromessePayment (id, user_id, data, done) {
           data.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), cfg.account_id
+          cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.descrip), cfg.account_id
         ].join(',') + ', ' +
         [
           reference.gros_salary.toFixed(4), 0,
@@ -3014,8 +2828,8 @@ function handlePromesseCotisation (id, user_id, data, done) {
     ' JOIN `creditor_group` ON `creditor_group`.`uuid`=`creditor`.`group_uuid` ' +
     ' WHERE `paiement`.`uuid` = ' + sanitize.escape(data.paiement_uuid) + ';';
 
-    var date = util.toMysqlDate(get.date());
-    return q([get.origin('cotisation_engagement'), get.period(get.date()), get.exchangeRate(date), db.exec(sql2)]);
+    var date = util.toMysqlDate(getDate());
+    return q([core.queries.origin('cotisation_engagement'), core.queries.period(getDate()), core.queries.exchangeRate(date), db.exec(sql2)]);
   }
 
   function getDetails (originId, periodObject, store, res) {
@@ -3026,7 +2840,7 @@ function handlePromesseCotisation (id, user_id, data, done) {
     cfg.creditor_uuid = res[0].creditor_uuid;
     cfg.store = store;
     rate = cfg.store.get(reference.currency_id).rate;
-    return get.transactionId(data.project_id);
+    return core.queries.transactionId(data.project_id);
   }
 
   function getTransId (trans_id) {
@@ -3057,7 +2871,7 @@ function handlePromesseCotisation (id, user_id, data, done) {
                 data.project_id,
                 cfg.fiscalYearId,
                 cfg.periodId,
-                cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.note), account
+                cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.note), account
               ].join(',') + ', ' +
               [
                 0, (reference.value).toFixed(4),
@@ -3084,7 +2898,7 @@ function handlePromesseCotisation (id, user_id, data, done) {
                 data.project_id,
                 cfg.fiscalYearId,
                 cfg.periodId,
-                cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.note), account
+                cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.note), account
               ].join(',') + ', ' +
               [
                 0, (reference.value).toFixed(4),
@@ -3122,7 +2936,7 @@ function handlePromesseCotisation (id, user_id, data, done) {
               data.project_id,
               cfg.fiscalYearId,
               cfg.periodId,
-              cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.note), reference.four_account_id
+              cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.note), reference.four_account_id
             ].join(',') + ', ' +
             [
               reference.value.toFixed(4), 0,
@@ -3172,8 +2986,8 @@ function handlePromesseTax (id, user_id, data, done) {
     ' JOIN `creditor_group` ON `creditor_group`.`uuid`=`creditor`.`group_uuid` ' +
     ' WHERE `paiement`.`uuid` = ' + sanitize.escape(data.paiement_uuid) + ';';
 
-    var date = util.toMysqlDate(get.date());
-    return q([get.origin('tax_engagement'), get.period(get.date()), get.exchangeRate(date), db.exec(sql2)]);
+    var date = util.toMysqlDate(getDate());
+    return q([core.queries.origin('tax_engagement'), core.queries.period(getDate()), core.queries.exchangeRate(date), db.exec(sql2)]);
   }
 
   function getDetails (originId, periodObject, store, res) {
@@ -3184,7 +2998,7 @@ function handlePromesseTax (id, user_id, data, done) {
     cfg.creditor_uuid = res[0].creditor_uuid;
     cfg.store = store;
     rate = cfg.store.get(reference.currency_id).rate;
-    return get.transactionId(data.project_id);
+    return core.queries.transactionId(data.project_id);
   }
 
   function getTransId (trans_id) {
@@ -3213,7 +3027,7 @@ function handlePromesseTax (id, user_id, data, done) {
                 data.project_id,
                 cfg.fiscalYearId,
                 cfg.periodId,
-                cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.note), account
+                cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.note), account
               ].join(',') + ', ' +
               [
                 0, (reference.value).toFixed(4),
@@ -3241,7 +3055,7 @@ function handlePromesseTax (id, user_id, data, done) {
                 data.project_id,
                 cfg.fiscalYearId,
                 cfg.periodId,
-                cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.note), account
+                cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.note), account
               ].join(',') + ', ' +
               [
                 0, (reference.value).toFixed(4),
@@ -3277,7 +3091,7 @@ function handlePromesseTax (id, user_id, data, done) {
               data.project_id,
               cfg.fiscalYearId,
               cfg.periodId,
-              cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.note), reference.four_account_id
+              cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.note), reference.four_account_id
             ].join(',') + ', ' +
             [
               reference.value.toFixed(4), 0,
@@ -3325,8 +3139,8 @@ function handleSalaryAdvance (id, user_id, done) {
     ' WHERE `primary_cash`.`uuid` = ' + sanitize.escape(reference.primary_cash_uuid) + ';';
 
 
-    var date = util.toMysqlDate(get.date());
-    return q([get.origin('salary_advance'), get.period(get.date()), get.exchangeRate(date), db.exec(sql2)]);
+    var date = util.toMysqlDate(getDate());
+    return q([core.queries.origin('salary_advance'), core.queries.period(getDate()), core.queries.exchangeRate(date), db.exec(sql2)]);
   }
 
   function getDetails (originId, periodObject, store, res) {
@@ -3337,7 +3151,7 @@ function handleSalaryAdvance (id, user_id, done) {
     cfg.creditor_uuid = res[0].uuid;
     cfg.store = store;
     rate = cfg.store.get(reference.currency_id).rate;
-    return get.transactionId(reference.project_id);
+    return core.queries.transactionId(reference.project_id);
   }
 
   function getTransId (trans_id) {
@@ -3358,7 +3172,7 @@ function handleSalaryAdvance (id, user_id, done) {
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), cfg.account_id
+          cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.descrip), cfg.account_id
         ].join(',') + ', ' +
         [
           0, (reference.cost).toFixed(4),
@@ -3387,7 +3201,7 @@ function handleSalaryAdvance (id, user_id, done) {
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.account_id
+          cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.descrip), reference.account_id
         ].join(',') + ', ' +
         [
           reference.cost.toFixed(4), 0,
@@ -3419,14 +3233,14 @@ function handleDonation (id, user_id, data, done) {
     if (records.length === 0) { throw new Error('pas enregistrement'); }
     reference = records[0];
     cfg.cost = (data.purchase_price * data.quantity).toFixed(4);
-    return q([get.origin('donation'), get.period(get.date())]);
+    return q([core.queries.origin('donation'), core.queries.period(getDate())]);
   }
 
   function getDetails (originId, periodObject) {
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
-    return get.transactionId(data.project_id);
+    return core.queries.transactionId(data.project_id);
   }
 
   function getTransId (trans_id) {
@@ -3447,7 +3261,7 @@ function handleDonation (id, user_id, data, done) {
           data.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip)
+          cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.descrip)
         ].join(',') + ', `inventory_group`.`stock_account`, ' +
         [
           0, cfg.cost,
@@ -3476,7 +3290,7 @@ function handleDonation (id, user_id, data, done) {
           data.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip)
+          cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.descrip)
         ].join(',') + ', `inventory_group`.`donation_account`, ' +
         [
           cfg.cost, 0,
@@ -3554,7 +3368,7 @@ function handleTaxPayment (id, user_id, details, done) {
       ' JOIN `creditor` ON `creditor`.`uuid`=`primary_cash`.`deb_cred_uuid` ' +
       ' JOIN `creditor_group` ON `creditor_group`.`uuid`=`creditor`.`group_uuid` ' +
       ' WHERE `primary_cash`.`deb_cred_uuid`=' + sanitize.escape(reference.deb_cred_uuid) + ';';
-    var date = util.toMysqlDate(get.date());
+    var date = util.toMysqlDate(getDate());
 
     var sql3 =
     'SELECT `cash_box_account_currency`.`account_id` ' +
@@ -3562,7 +3376,7 @@ function handleTaxPayment (id, user_id, details, done) {
     'WHERE `cash_box_account_currency`.`currency_id` = ' + sanitize.escape(reference.currency_id) + ' ' +
     'AND `cash_box_account_currency`.`cash_box_id` = ' + sanitize.escape(reference.cash_box_id) + ';';
 
-    return q([get.origin('tax_payment'), get.period(get.date()), get.exchangeRate(date), db.exec(sql2), db.exec(sql3)]);
+    return q([core.queries.origin('tax_payment'), core.queries.period(getDate()), core.queries.exchangeRate(date), db.exec(sql2), db.exec(sql3)]);
   }
 
   function getDetails (originId, periodObject, store, res, res2) {
@@ -3575,7 +3389,7 @@ function handleTaxPayment (id, user_id, details, done) {
     cfg.account_cashbox = res2[0].account_id;
 
     rate = cfg.store.get(reference.currency_id).rate;
-    return get.transactionId(reference.project_id);
+    return core.queries.transactionId(reference.project_id);
   }
 
   function getTransId (trans_id) {
@@ -3596,7 +3410,7 @@ function handleTaxPayment (id, user_id, details, done) {
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), sanitize.escape(reference.account_id)
+          cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.descrip), sanitize.escape(reference.account_id)
         ].join(',') + ', ' +
         [
           0, (reference.cost).toFixed(4),
@@ -3625,7 +3439,7 @@ function handleTaxPayment (id, user_id, details, done) {
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), cfg.account_cashbox
+          cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.descrip), cfg.account_cashbox
         ].join(',') + ', ' +
         [
           reference.cost.toFixed(4), 0,
@@ -3675,8 +3489,8 @@ function handleCotisationPayment (id, user_id, details, done) {
     'WHERE `cash_box_account_currency`.`currency_id` = ' + sanitize.escape(reference.currency_id) + ' ' +
     'AND `cash_box_account_currency`.`cash_box_id` = ' + sanitize.escape(reference.cash_box_id) + ';';
 
-    var date = util.toMysqlDate(get.date());
-    return q([get.origin('cotisation_paiement'), get.period(get.date()), get.exchangeRate(date), db.exec(sql2), db.exec(sql3)]);
+    var date = util.toMysqlDate(getDate());
+    return q([core.queries.origin('cotisation_paiement'), core.queries.period(getDate()), core.queries.exchangeRate(date), db.exec(sql2), db.exec(sql3)]);
   }
 
   function getDetails (originId, periodObject, store, res, res2) {
@@ -3688,7 +3502,7 @@ function handleCotisationPayment (id, user_id, details, done) {
     cfg.account_cashbox = res2[0].account_id;
     cfg.store = store;
     rate = cfg.store.get(reference.currency_id).rate;
-    return get.transactionId(reference.project_id);
+    return core.queries.transactionId(reference.project_id);
   }
 
   function getTransId (trans_id) {
@@ -3709,7 +3523,7 @@ function handleCotisationPayment (id, user_id, details, done) {
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), sanitize.escape(reference.account_id)
+          cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.descrip), sanitize.escape(reference.account_id)
         ].join(',') + ', ' +
         [
           0, (reference.cost).toFixed(4),
@@ -3738,7 +3552,7 @@ function handleCotisationPayment (id, user_id, details, done) {
           reference.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), cfg.account_cashbox
+          cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.descrip), cfg.account_cashbox
         ].join(',') + ', ' +
         [
           reference.cost.toFixed(4), 0,
@@ -3765,8 +3579,8 @@ function handleCreateFiscalYear (id, user_id, details, done) {
   .catch(catchError);
 
   function getOrigin () {
-    var date = util.toMysqlDate(get.date());
-    return q([get.origin('journal'), get.period(get.date()), get.exchangeRate(date)]);
+    var date = util.toMysqlDate(getDate());
+    return q([core.queries.origin('journal'), core.queries.period(getDate()), core.queries.exchangeRate(date)]);
   }
 
   function getDetails (originId, periodObject, store) {
@@ -3776,7 +3590,7 @@ function handleCreateFiscalYear (id, user_id, details, done) {
     cfg.fiscalYearId = periodObject.fiscal_year_id;
     cfg.store = store;
     rate = cfg.store.get(cfg.balance.currencyId).rate;
-    return get.transactionId(cfg.balance.projectId);
+    return core.queries.transactionId(cfg.balance.projectId);
   }
 
   function getTransId (transId) {
@@ -3801,7 +3615,7 @@ function handleCreateFiscalYear (id, user_id, details, done) {
               balance.projectId,
               cfg.fiscalYearId,
               cfg.periodId,
-              cfg.transId, '\'' + get.date() + '\'', sanitize.escape(cfg.description), balance.accountId
+              cfg.transId, '\'' + getDate() + '\'', sanitize.escape(cfg.description), balance.accountId
             ].join(',') + ', ' +
             [
               balance.credit.toFixed(4), balance.debit.toFixed(4),
@@ -3866,8 +3680,8 @@ function handleReversingStock (id, user_id, details, done) {
     if (records.length === 0) { throw new Error('pas enregistrement'); }
     reference = records[0];
     postingJournal = records;
-    var date = util.toMysqlDate(get.date());
-    return q([get.origin('reversing'), get.period(get.date()), get.exchangeRate(date)]);
+    var date = util.toMysqlDate(getDate());
+    return q([core.queries.origin('reversing'), core.queries.period(getDate()), core.queries.exchangeRate(date)]);
   }
 
   function getDetails (originId, periodObject, store, res) {
@@ -3876,8 +3690,8 @@ function handleReversingStock (id, user_id, details, done) {
     cfg.fiscalYearId = periodObject.fiscal_year_id;
     cfg.store = store;
     rate = cfg.store.get(reference.currency_id).rate;
-    transact = get.transactionId(reference.project_id);
-    return get.transactionId(reference.project_id);
+    transact = core.queries.transactionId(reference.project_id);
+    return core.queries.transactionId(reference.project_id);
   }
 
   function getTransId (trans_id) {
@@ -3888,7 +3702,7 @@ function handleReversingStock (id, user_id, details, done) {
 
   function requests () {
     queries.items = [];
-    var date = get.date();
+    var date = getDate();
     postingJournal.forEach(function (item) {
       item.uuid = sanitize.escape(uuid());
       item.origin_id = cfg.originId;
@@ -3896,7 +3710,7 @@ function handleReversingStock (id, user_id, details, done) {
       item.period_id = cfg.periodId;
       item.fiscal_year_id = cfg.fiscalYearId;
       item.trans_id = cfg.trans_id;
-      item.trans_date = util.toMysqlDate(get.date());
+      item.trans_date = util.toMysqlDate(getDate());
 
       if(item.deb_cred_uuid){
         item.deb_cred_uuid = sanitize.escape(item.deb_cred_uuid);
@@ -3979,8 +3793,8 @@ function handleAdvancePaiment (id, user_id, done) {
     if (records.length === 0) { throw new Error('pas enregistrement'); }
 
     reference = records[0];
-    var date = util.toMysqlDate(get.date());
-    return q([get.origin('salary_advance'), get.period(get.date()), get.exchangeRate(date)]);
+    var date = util.toMysqlDate(getDate());
+    return q([core.queries.origin('salary_advance'), core.queries.period(getDate()), core.queries.exchangeRate(date)]);
 
   }
 
@@ -3991,7 +3805,7 @@ function handleAdvancePaiment (id, user_id, done) {
     cfg.store = store;
     rate = cfg.store.get(reference.currency_id).rate;
 
-    return get.transactionId(reference.project_id);
+    return core.queries.transactionId(reference.project_id);
   }
 
   function getTransId (trans_id) {
@@ -4013,7 +3827,7 @@ function handleAdvancePaiment (id, user_id, done) {
             reference.project_id,
             cfg.fiscalYearId,
             cfg.periodId,
-            cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.account_creditor
+            cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.descrip), reference.account_creditor
           ].join(',') + ', ' +
           [
             (reference.value).toFixed(4), 0,
@@ -4045,7 +3859,7 @@ function handleAdvancePaiment (id, user_id, done) {
             reference.project_id,
             cfg.fiscalYearId,
             cfg.periodId,
-            cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.account_paiement
+            cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.descrip), reference.account_paiement
           ].join(',') + ', ' +
           [
             0, reference.value.toFixed(4),
@@ -4094,8 +3908,8 @@ function handleCancelSupport (id, user_id, details, done) {
     if (records.length === 0) { return; }
     reference = records[0];
     postingJournal = records;
-    var date = util.toMysqlDate(get.date());
-    return q([get.origin('group_invoice'), get.period(get.date()), get.exchangeRate(date)]);
+    var date = util.toMysqlDate(getDate());
+    return q([core.queries.origin('group_invoice'), core.queries.period(getDate()), core.queries.exchangeRate(date)]);
   }
 
   function getDetails (originId, periodObject, store, res) {
@@ -4112,8 +3926,8 @@ function handleCancelSupport (id, user_id, details, done) {
     });
 
 
-    transact = get.transactionId(reference.project_id);
-    return get.transactionId(reference.project_id);
+    transact = core.queries.transactionId(reference.project_id);
+    return core.queries.transactionId(reference.project_id);
   }
 
   function getTransId (trans_id) {
@@ -4124,7 +3938,7 @@ function handleCancelSupport (id, user_id, details, done) {
 
   function requests () {
     queries.items = [];
-    var date = get.date();
+    var date = getDate();
     postingJournal.forEach(function (item) {
       item.uuid = sanitize.escape(uuid());
       item.origin_id = cfg.originId;
@@ -4132,7 +3946,7 @@ function handleCancelSupport (id, user_id, details, done) {
       item.period_id = cfg.periodId;
       item.fiscal_year_id = cfg.fiscalYearId;
       item.trans_id = cfg.trans_id;
-      item.trans_date = util.toMysqlDate(get.date());
+      item.trans_date = util.toMysqlDate(getDate());
 
       if(item.deb_cred_uuid){
         item.deb_cred_uuid = sanitize.escape(item.deb_cred_uuid);
@@ -4196,10 +4010,10 @@ function handleFiscalYearResultat (id, user_id, data, done) {
       forcingDate;
 
   if (typeof data.forcingDate === 'undefined' || data.forcingDate === null || !data.forcingDate) {
-    forcingDate = get.date(util.toMysqlDate(data.forcingDate));
+    forcingDate = getDate(util.toMysqlDate(data.forcingDate));
     cfg.isForClosing = false;
   } else {
-    forcingDate = get.date(util.toMysqlDate(data.forcingDate));
+    forcingDate = getDate(util.toMysqlDate(data.forcingDate));
     cfg.isForClosing = true;
   }
 
@@ -4219,15 +4033,15 @@ function handleFiscalYearResultat (id, user_id, data, done) {
   function getOrigin () {
     cfg.user_id = user_id;
     cfg.project_id = 1; // HBB by default
-    transactionDate = cfg.isForClosing ? forcingDate : get.date();
-    return q([get.origin('journal'), get.period(transactionDate)]);
+    transactionDate = cfg.isForClosing ? forcingDate : getDate();
+    return q([core.queries.origin('journal'), core.queries.period(transactionDate)]);
   }
 
   function getDetails (originId, periodObject) {
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
-    return get.transactionId(cfg.project_id);
+    return core.queries.transactionId(cfg.project_id);
   }
 
   function getTransId (trans_id) {
@@ -4432,15 +4246,15 @@ function handleIntegration (id, user_id, done) {
   function getRecord (records) {
     if (records.length === 0) { throw new Error('pas enregistrement'); }
     references = records;
-    var date = util.toMysqlDate(get.date());
-    return q([get.origin('confirm_integration'), get.period(get.date())]);
+    var date = util.toMysqlDate(getDate());
+    return q([core.queries.origin('confirm_integration'), core.queries.period(getDate())]);
   }
 
   function getDetails (originId, periodObject) {
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
-    return get.transactionId(references[0].project_id);
+    return core.queries.transactionId(references[0].project_id);
   }
 
   function getTransId (trans_id) {
@@ -4462,7 +4276,7 @@ function handleIntegration (id, user_id, done) {
                       reference.project_id,
                       cfg.fiscalYearId,
                       cfg.periodId,
-                      cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\''
+                      cfg.trans_id, '\'' + getDate() + '\'', '\'' + cfg.descrip + '\''
                     ].join(',') + ', `inventory_group`.`stock_account`, '+
                     [
                       0, reference.total.toFixed(4),
@@ -4497,7 +4311,7 @@ function handleIntegration (id, user_id, done) {
               reference.project_id,
               cfg.fiscalYearId,
               cfg.periodId,
-              cfg.trans_id, '\'' + get.date() + '\'', '\'' + cfg.descrip + '\''
+              cfg.trans_id, '\'' + getDate() + '\'', '\'' + cfg.descrip + '\''
             ].join(',') + ', `inventory_group`.`cogs_account`, ' +
             [
               reference.total.toFixed(4),0,
@@ -4547,8 +4361,8 @@ function handleExtraPayment (id, user_id, details, done) {
     reference = records[0];
     details.cost = parseFloat(details.cost);
     console.info(reference);
-    var date = util.toMysqlDate(get.date());
-    return q([get.origin('journal'), get.period(get.date()), get.exchangeRate(date)]);
+    var date = util.toMysqlDate(getDate());
+    return q([core.queries.origin('journal'), core.queries.period(getDate()), core.queries.exchangeRate(date)]);
   }
 
   function getDetails (originId, periodObject, store) {
@@ -4557,7 +4371,7 @@ function handleExtraPayment (id, user_id, details, done) {
     cfg.fiscalYearId = periodObject.fiscal_year_id;
     cfg.store = store;
     rate = cfg.store.get(details.currency_id).rate;
-    return get.transactionId(details.project_id);
+    return core.queries.transactionId(details.project_id);
   }
 
   function getTransId (trans_id) {
@@ -4578,7 +4392,7 @@ function handleExtraPayment (id, user_id, details, done) {
           details.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), details.wait_account
+          cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.descrip), details.wait_account
         ].join(',') + ', ' +
         [
           0, (details.cost).toFixed(4),
@@ -4607,7 +4421,7 @@ function handleExtraPayment (id, user_id, details, done) {
           details.project_id,
           cfg.fiscalYearId,
           cfg.periodId,
-          cfg.trans_id, '\'' + get.date() + '\'', sanitize.escape(cfg.descrip), reference.account_id
+          cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.descrip), reference.account_id
         ].join(',') + ', ' +
         [
           details.cost.toFixed(4), 0,
