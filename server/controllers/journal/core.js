@@ -102,7 +102,6 @@ queries.transactionId = function (projectId) {
       'FROM general_ledger JOIN project ON general_ledger.project_id = project.id ' +
       'WHERE general_ledger.project_id = ?)c;';
 
-
   return db.exec(sql, [projectId, projectId])
   .then(function (rows) {
 
@@ -132,7 +131,7 @@ queries.period = function (date) {
   });
 };
 
-// CHANGELOG - uses DATE() to ensure equality
+// get the exchange rate for a given date
 queries.exchangeRate = function (date) {
   'use strict';
 
@@ -160,6 +159,7 @@ queries.exchangeRate = function (date) {
   });
 };
 
+// get the exchange rate for a given date
 queries.myExchangeRate = function (date) {
   'use strict';
 
