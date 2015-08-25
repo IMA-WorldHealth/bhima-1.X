@@ -1,4 +1,4 @@
-<div class="panel panel-default dash-panel" ng-controller="CashBoxChartController as CashChartCtrl">
+<div class="panel panel-default dash-panel" ng-controller="CashFlowChartController as CashChartCtrl">
   <div class="panel-heading">
     {{ "DASHBOARD.FINANCE.CASHFLOW" | translate }}
     <span class="pull-right" style="margin : 0 5px;">
@@ -35,8 +35,8 @@
     </tbody>
   </table>
   <div class="panel-body">
-    <canvas id="cash-line"
-      class="chart chart-line"
+    <canvas id="cashflow-bar"
+      class="chart chart-bar"
       data="CashChartCtrl.chart.data"
       options="CashChartCtrl.chart.options"
       series="CashChartCtrl.chart.series"

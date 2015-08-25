@@ -6,7 +6,7 @@ angular.module('bhima.controllers')
 // The code below is poorly written, as I am still prototyping how to
 // all the different pieces together.  It should be rewritten as soon
 // as we understand what each chart/controller will do.
-.controller('CashBoxChartController', [
+.controller('CashFlowChartController', [
     '$scope',
     '$filter',
     '$translate',
@@ -17,7 +17,7 @@ angular.module('bhima.controllers')
 
     // alias this
     var self = this,
-        cache = new AppCache('CashBoxChart'),
+        cache = new AppCache('CashFlowChart'),
         $date = $filter('date');
 
     // expose group options to the view
@@ -62,7 +62,7 @@ angular.module('bhima.controllers')
         // assign chart data
         self.chart.data = [
           data.map(function (row) { return row.debit; }),
-          data.map(function (row) { return -row.credit; }),
+          data.map(function (row) { return row.credit; }),
         ];
 
         // assign the chart series
@@ -111,7 +111,7 @@ angular.module('bhima.controllers')
 
     // save defaults to localstorage
     function saveChartDefaults() {
-     
+
       // TODO
       // this could probably be done much better.
       var idx = self.grouping.reduce(function (idx, group, index) {
