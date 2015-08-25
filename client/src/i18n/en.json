@@ -2753,6 +2753,10 @@
    },
 "TREE": {
    "ACCOUNT"                   : "Account",
+   "DASHBOARD" : {
+      "TITLE" : "Dashboards",
+      "FINANCE" : "Finance Dashboard"
+   },
    "ACCOUNTING"                : "Accounting",
    "ACCOUNT_BALANCE_STATEMENT" : "Account Balance Statement",
    "ACCOUNT_STATEMENT"         : "Account Statement",
