@@ -30,11 +30,11 @@ var config = {
       'emails' : [{
         'name' : 'daily',
         //'frequency' : '0 23 * * *',
-        'frequency' : '* * * * 5', //
+        'frequency' : '*/1 * * * *', //
         'addressList' : 'test',
       }, {
         'name' : 'weekly',
-        'frequency' : '*/1 * * * *',
+        'frequency' : '* * * * 5',
         'addressList' : 'test'
       }, {
         'name' : 'monthly',
