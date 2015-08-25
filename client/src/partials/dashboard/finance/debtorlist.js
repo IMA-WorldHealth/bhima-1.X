@@ -9,7 +9,7 @@ angular.module('bhima.controllers')
 
   // limits
   self.limits = Finance.limits;
-  self.limit = 25;
+  self.limit = 10;
  
   // load data
   Finance.getTopDebtors()
@@ -25,6 +25,7 @@ angular.module('bhima.controllers')
   function loadDefaultOptions() {
     cache.fetch('options')
     .then(function (options) {
+      if (!options) { return; }
       self.limit = options.limit;
     });
   }
