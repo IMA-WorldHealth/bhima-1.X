@@ -302,7 +302,7 @@ exports.payment = function (id, userId, callback) {
     })
     .done();
   })
-  .callback();
+  .done();
 };
 
 
