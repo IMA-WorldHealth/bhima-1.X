@@ -49,14 +49,14 @@
     "type" : "number"
   },
   "principalCashExpenseHbb" : {
-    "query" : "SELECT SUM(if(currency_id=1,credit_equiv / 930, credit_equiv)) as \"total\" FROM (SELECT p.debit_equiv, p.credit_equiv, p.currency_id FROM posting_journal as p WHERE p.account_id IN (2935, 2939) AND p.trans_date = {{ this.date.from }} UNION ALL SELECT g.debit_equiv, g.credit_equiv, g.currency_id FROM general_ledger as g WHERE g.account_id IN (2935, 2939) AND g.trans_date = {{ this.date.from }}) as t;",
+    "query" : "SELECT SUM(credit_equiv) as \"total\" FROM (SELECT p.debit_equiv, p.credit_equiv, p.currency_id FROM posting_journal as p WHERE p.account_id IN (2935, 2939) AND p.trans_date = {{ this.date.from }} UNION ALL SELECT g.debit_equiv, g.credit_equiv, g.currency_id FROM general_ledger as g WHERE g.account_id IN (2935, 2939) AND g.trans_date = {{ this.date.from }}) as t;",
     "type" : "currency",
-    "format" : "fr"
+    "format" : "en"
   },
   "principalCashIncomeHbb" : {
-    "query" : "SELECT SUM(if(currency_id=1,debit_equiv / 930, debit_equiv)) as \"total\" FROM (SELECT p.debit_equiv, p.credit_equiv, p.currency_id FROM posting_journal as p WHERE p.account_id IN (2935, 2939) AND p.trans_date = {{ this.date.from }} UNION ALL SELECT g.debit_equiv, g.credit_equiv, g.currency_id FROM general_ledger as g WHERE g.account_id IN (2935, 2939) AND g.trans_date = {{ this.date.from }}) as t;",
+    "query" : "SELECT SUM(debit_equiv) as \"total\" FROM (SELECT p.debit_equiv, p.credit_equiv, p.currency_id FROM posting_journal as p WHERE p.account_id IN (2935, 2939) AND p.trans_date = {{ this.date.from }} UNION ALL SELECT g.debit_equiv, g.credit_equiv, g.currency_id FROM general_ledger as g WHERE g.account_id IN (2935, 2939) AND g.trans_date = {{ this.date.from }}) as t;",
     "type" : "currency",
-    "format" : "fr"
+    "format" : "en"
   },
   "principalCashBalanceHbb" : {
     "query" : "SELECT SUM(debit_equiv - credit_equiv) as \"total\" FROM posting_journal WHERE account_id IN (2935, 2939) UNION ALL SELECT SUM(debit_equiv - credit_equiv) FROM general_ledger WHERE account_id IN (2935, 2939);",

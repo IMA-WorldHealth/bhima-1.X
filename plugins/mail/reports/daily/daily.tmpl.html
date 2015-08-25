@@ -46,13 +46,6 @@
               <tr>
                 <td bgcolor='#ffffff' style="background-color: #ffffff; padding-top: 5px; padding-left: 12px; padding-right: 12px; padding-bottom: 12px;">
 
-                  <!-- Main content area, headers and sections-->
-                  {{ if (this.text.notices.info) {  }}
-                    <div style="line-height: 18px; font-size: 16px; color: #c09853; padding: 10px; background-color: #fcf8e3; border: 1px solid #fbeed5; margin-bottom: 5px; margin-top: 5px">
-                      {{ this.text.notices.info.content }}
-                    </div>
-                  {{ } }}
-
                   <div style="line-height: 18px; font-size: 16px; color: #000000; border-bottom: 1px solid #efefef; margin-bottom: 5px; margin-top: 20px">
                     {{ this.text.header.overview }}
                   </div>
@@ -70,45 +63,67 @@
                                     <thead>
                                       <tr>
                                         <th style="border-right: 1px solid black;">{{ this.text.overview.rubrics }}</th>
-                                        <th style="border-right: 1px solid black; padding : 2px">{{ this.text.imck }}</th>
+                                        <th style="border-right: 1px solid black; padding : 2px">{{ this.text.hbb }}</th>
                                         <th>{{ this.text.pax }}</th>
                                       </tr>
                                     </thead>
+
                                     <tbody>
                                       <tr>
+
                                         <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.overview.newPatients }}</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.newPatientsHbb }}</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.newPatientsPax }}</td>
+
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.newPatientsHbb.total }}</td>
+
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.newPatientsPax.total }}</td>
                                       </tr>
+
                                       <tr>
                                         <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.overview.returningPatients }}</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.returningPatientsHbb }}</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.returningPatientsPax }}</td>
+
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.returningPatientsHbb.total }}</td>
+
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.returningPatientsPax.total }}</td>
                                       </tr>
+
                                       <tr style='font-weight: bold'>
                                         <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.overview.totalPatients }}</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.newPatientsHbb + this.data.returningPatientsHbb }}</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.newPatientsPax + this.data.returningPatientsPax }}</td>
+
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.newPatientsHbb.total + this.data.returningPatientsHbb.total }}</td>
+
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.newPatientsPax.total + this.data.returningPatientsPax.total }}</td>
                                       </tr>
+
                                       <tr>
                                         <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.overview.newFicheSales }}</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.newFicheSalesHbb }}</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.newFicheSalesPax }}</td>
+
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.newFicheSalesHbb.total }}</td>
+
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.newFicheSalesPax.total }}</td>
                                       </tr>
+
                                       <tr>
                                         <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.overview.oldFicheSales }}</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.oldFicheSalesHbb }}</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.oldFicheSalesPax }}</td>
+
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.oldFicheSalesHbb.total }}</td>
+
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.oldFicheSalesPax.total }}</td>
                                       </tr>
+
                                       <tr style='font-weight: bold'>
                                         <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.overview.totalFicheSales }}</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.oldFicheSalesHbb + this.data.newFicheSalesHbb }}</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.oldFicheSalesPax + this.data.newFicheSalesPax}}</td>
+
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.oldFicheSalesHbb.total + this.data.newFicheSalesHbb.total }}</td>
+
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.oldFicheSalesPax.total + this.data.newFicheSalesPax.total}}</td>
                                       </tr>
+
                                       <tr style='font-weight: bold'>
                                         <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.overview.totalInvoiceTransactions }}</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashTotalInvoiceHbb }}</td>
-                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.auxCashTotalInvoicePax }}</td>
+
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashTotalInvoiceHbb.total }}</td>
+
+                                        <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.auxCashTotalInvoicePax.total }}</td>
                                       </tr>
                                     </tbody>
                                   </table>
