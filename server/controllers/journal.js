@@ -24,15 +24,6 @@ function lookupTable(req, res, next) {
   });
 }
 
-function authorize (user_id, done) {
-  // TODO : This is a placeholder until we find out how to allow
-  // users to post.  It is a permissions issue.
-  return db.exec('SELECT 1+1 AS ans;')
-  .then(function (results) {
-    return q(results);
-  });
-}
-
 // TODO Only has project ID passed from sale reference, need to look up enterprise ID
 function handleSales (id, user_id, done, caution) {
   // sale posting requests enter here.
