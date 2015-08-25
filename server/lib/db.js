@@ -55,9 +55,7 @@ function exec(sql, params) {
   con.getConnection(function (err, connection) {
     if (err) { return defer.reject(err); }
 
-    // this lets me log the actual request
     connection.query(sql, params, function (err, results) {
-
       if (err) { return defer.reject(err); }
       connection.release();
       defer.resolve(results);
