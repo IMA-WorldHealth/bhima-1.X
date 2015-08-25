@@ -79,8 +79,6 @@ exports.postJournalVoucher = function (req, res, next) {
 
   // turn into date object
   var date = new Date(data.date);
-  console.log('DATA:', data);
-  console.log('date:', date);
 
   // is the date in the future?
   if (date > new Date()) {
@@ -166,8 +164,6 @@ exports.postJournalVoucher = function (req, res, next) {
   })
   .then(function (rows) {
     
-    console.log('ExchangeRows: ', rows);
-
     if (rows.length < 1) {
       throw 'ERR_NO_EXCHANGE_RATE';
     }
@@ -252,7 +248,7 @@ exports.postJournalVoucher = function (req, res, next) {
     res.status(200).send('POST_SUCCESSFUL');
   })
   .catch(function (error) {
-    res.status(400).send(error);
+    res.status(500).send(error);
   });
 };
 
