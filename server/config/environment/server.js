@@ -34,7 +34,7 @@ var config = {
         'addressList' : 'test',
       }, {
         'name' : 'weekly',
-        'frequency' : '* * * * 5',
+        'frequency' : '*/1 * * * *',
         'addressList' : 'test'
       }, {
         'name' : 'monthly',
