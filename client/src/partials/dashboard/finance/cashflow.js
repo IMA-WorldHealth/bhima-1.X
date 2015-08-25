@@ -34,8 +34,9 @@ angular.module('bhima.controllers')
 
     // records the data for the chart
     self.chart = {
-      options : { tooltipTemplate : ChartService.tooltip.currency },
-      colors : ['#468847', '#F7464A']
+      options : { multiTooltipTemplate: ChartService.multitooltip.currency },
+      colors : ['#468847', '#F7464A'],
+      series : ['Income', 'Expense']
     };
 
     // retrieve the list of cashboxes from the server
@@ -64,9 +65,6 @@ angular.module('bhima.controllers')
           data.map(function (row) { return row.debit; }),
           data.map(function (row) { return row.credit; }),
         ];
-
-        // assign the chart series
-        self.chart.series = ['Income', 'Expense'];
 
         // assign the chart labels
         self.chart.labels = data.map(function (row) { return $date(row.trans_date, self.group.format); });
