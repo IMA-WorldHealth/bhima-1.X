@@ -108,7 +108,7 @@ queries.transactionId = function (projectId) {
     // This is guaranteed to be defined if a project is defined.
     // Even if there is no data in the posting journal and/or
     // general ledger
-    return q(rows[0].id);
+    return q('\'' + rows[0].id + '\'');
   });
 };
 
