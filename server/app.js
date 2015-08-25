@@ -9,10 +9,6 @@ var privateKey    = fs.readFileSync(config.tls.key, 'utf8');
 var certificate   = fs.readFileSync(config.tls.cert, 'utf8');
 var credentials   = { key : privateKey, cert : certificate };
 
-// Set the appropriate timezone for interpretting the server's data
-// NOTE : In a proper installation, this should be an environmental variable
-process.env.TZ = 'UTC';
-
 // Session configuration
 var db            = require('./lib/db').initialise();
 

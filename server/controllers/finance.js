@@ -79,6 +79,8 @@ exports.postJournalVoucher = function (req, res, next) {
 
   // turn into date object
   var date = new Date(data.date);
+  console.log('DATA:', data);
+  console.log('date:', date);
 
   // is the date in the future?
   if (date > new Date()) {
@@ -158,11 +160,13 @@ exports.postJournalVoucher = function (req, res, next) {
     // exchange the debits and credits.  Otherwise, do nothing.
     sql =
       'SELECT enterprise_currency_id, foreign_currency_id, rate ' +
-      'FROM exchange_rate WHERE date = DATE(?);';
+      'FROM exchange_rate WHERE DATE(date) = DATE(?);';
 
     return db.exec(sql, [date]);
   })
   .then(function (rows) {
+    
+    console.log('ExchangeRows: ', rows);
 
     if (rows.length < 1) {
       throw 'ERR_NO_EXCHANGE_RATE';
