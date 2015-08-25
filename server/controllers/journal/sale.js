@@ -6,7 +6,6 @@ var q = require('q'),
     util = require('../../lib/util'),
     db = require('../../lib/db');
 
-
 // TODO
 // convert everything to using db.exec()
 // parameter parsing.
