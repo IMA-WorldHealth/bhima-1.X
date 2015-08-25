@@ -146,7 +146,6 @@ function handleSales (id, user_id, done, caution) {
   }
 
 
-
     // Then copy data from SALE_ITEMS -> JOURNAL
     // This query is significantly more complex because sale_item
     // contains both debits and credits.
