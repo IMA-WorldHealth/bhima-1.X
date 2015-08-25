@@ -23,7 +23,7 @@ angular.module('bhima.controllers')
       query : {
         identifier : 'account_number',
         tables : {
-          account : { columns : ['id', 'account_number', 'account_txt', 'account_type_id', 'cc_id', 'pc_id', 'is_asset', 'is_ohada', 'parent', 'locked', 'reference_id', 'is_brut_link', 'is_used_budget', 'classe'] },
+          account : { columns : ['id', 'account_number', 'account_txt', 'account_type_id', 'cc_id', 'pc_id', 'is_asset', 'is_ohada', 'parent', 'locked', 'reference_id', 'is_brut_link', 'is_used_budget', 'classe', 'is_charge'] },
           account_type : { columns : ['type::account_type'] }
         },
         join: [ 'account.account_type_id=account_type.id' ]
@@ -88,22 +88,13 @@ angular.module('bhima.controllers')
       //format account
       var classe = account.number.substr(0,1);
 
-      if(account.is_asset === 'true'){
-        account.is_asset = 1;
-      } else if (account.is_asset === 'false'){
-        account.is_asset = 0;
-      } else {
-        account.is_asset = null;
-      }
-
-      account.is_brut_link = (account.is_brut_link)?1:0;
-
       var formatAccount = {
         account_type_id: account.type.id,
         account_number: account.number,
         account_txt: account.title,
         is_asset: account.is_asset,
         is_ohada: account.is_ohada,
+        is_charge : account.is_charge,
         is_used_budget: account.is_used_budget,
         cc_id   : account.cc_id,
         pc_id   : account.pc_id,
@@ -131,14 +122,6 @@ angular.module('bhima.controllers')
       return '' + c.text;
     }
 
-    function getAccountClass () {
-      session.accountClass = $scope.checkClass($scope.newAccount.number);
-    }
-
-    $scope.checkClass = function (account_number) {
-      return String(account_number).charAt(0);
-    };
-
     $scope.discareCC = function () {
       $scope.newAccount.cc_id = null;
     };
@@ -149,18 +132,8 @@ angular.module('bhima.controllers')
 
     $scope.getAccount = function (account) {
       $scope.editAccount = null;
-      $scope.accountClass = parseInt($scope.checkClass(account.account_number)); 
       session.state = 'edit';
       $scope.editAccount = account;
-
-      if($scope.editAccount.is_used_budget){
-        $scope.editAccount.is_used_budget = true;
-      }
-
-      if($scope.editAccount.is_brut_link){
-        $scope.editAccount.is_brut_link = true;
-      }
-
     };
 
     $scope.format = function format(account) {
@@ -177,13 +150,6 @@ angular.module('bhima.controllers')
         * Only account of 'title' type have is_asset 
       */
 
-      if($scope.editAccount.is_asset === 'true' || $scope.editAccount.is_asset === 1){
-        $scope.editAccount.is_asset = 1;
-      } else if ($scope.editAccount.is_asset === 'false' || $scope.editAccount.is_asset === 0){
-        $scope.editAccount.is_asset = 0;
-      } else {
-        $scope.editAccount.is_asset = null;
-      }
       $scope.editAccount.is_brut_link = ($scope.editAccount.is_brut_link)?1:0;
       $scope.editAccount.is_used_budget = ($scope.editAccount.is_used_budget)?1:0;
 
@@ -196,6 +162,7 @@ angular.module('bhima.controllers')
         locked          : $scope.editAccount.locked,
         cc_id           : $scope.editAccount.cc_id,
         pc_id           : $scope.editAccount.pc_id,
+        is_charge       : $scope.editAccount.is_charge,
         parent          : $scope.editAccount.parent,
         reference_id    : $scope.editAccount.reference_id,
         is_brut_link    : $scope.editAccount.is_brut_link         
@@ -224,7 +191,6 @@ angular.module('bhima.controllers')
     $scope.updateState = updateState;
     $scope.submitAccount = submitAccount;
     $scope.formatCenter = formatCenter;
-    $scope.getAccountClass = getAccountClass;
     $scope.submitEditAccount = submitEditAccount;
   }
 ]);

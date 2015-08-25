@@ -1470,7 +1470,7 @@ exports.getClassSolde = function (req, res, next) {
         fiscal_year_id = req.params.fiscal_year;
 
     var sql =
-      'SELECT `ac`.`id`, `ac`.`account_number`, `ac`.`account_txt`, `t`.`fiscal_year_id`, `t`.`debit`, `t`.`credit`, `t`.`debit_equiv`, `t`.`credit_equiv`, `t`.`currency_id` ' +
+      'SELECT `ac`.`id`, `ac`.`account_number`, `ac`.`account_txt`, `ac`.`is_charge`, `t`.`fiscal_year_id`, `t`.`debit`, `t`.`credit`, `t`.`debit_equiv`, `t`.`credit_equiv`, `t`.`currency_id` ' +
       'FROM (' +
         '(' +
           'SELECT `account`.`id`, `posting_journal`.`fiscal_year_id`, `posting_journal`.`project_id`, `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, ' +

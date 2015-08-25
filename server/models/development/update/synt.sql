@@ -22,7 +22,6 @@ VALUES (114, 'compte de resultat', 'TREE.COMPTE_RESULTAT', 'pour voir le rapport
 -- Date: 2015-08-04
 -- By: Chris LOMAME
 
-
 UPDATE `account` SET `is_asset`=FALSE;
 UPDATE `account` SET `is_asset`=TRUE WHERE `classe`=2 AND `is_ohada` =1;
 UPDATE `account` SET `is_asset`=TRUE WHERE `classe`=3 AND `is_ohada` =1;
@@ -36,10 +35,8 @@ UPDATE `account` SET `is_asset`=TRUE WHERE LEFT(`account_number`,2)=73 AND `is_o
 UPDATE `account` SET `is_asset`=TRUE WHERE LEFT(`account_number`,2)=81 AND `is_ohada` =1;
 UPDATE `account` SET `is_asset`=TRUE WHERE LEFT(`account_number`,2)=83 AND `is_ohada` =1;
 UPDATE `account` SET `is_asset`=TRUE WHERE LEFT(`account_number`,2)=85 AND `is_ohada` =1;
-UPDATE `account` SET `is_asset`=TRUE WHERE LEFT(`account_number`,2)=87 AND `is_ohada` =1;
 UPDATE `account` SET `is_asset`=TRUE WHERE LEFT(`account_number`,2)=89 AND `is_ohada` =1;
 UPDATE `account` SET `is_asset`=NULL WHERE `parent`=0 AND `is_ohada` =1;
-
 
 
 USE bhima;
@@ -72,3 +69,33 @@ DELETE FROM `inventory_type` WHERE `inventory_type`.`id` = 4;
 ALTER TABLE `user` CHANGE `logged_in` `active` TINYINT NOT NULL DEFAULT 0;
 ALTER TABLE `user` ADD COLUMN `last_login` DATE NOT NULL;
 UPDATE `user` SET `password` = PASSWORD(`password`);
+
+
+-- Adding column is_charge 
+-- Date: 2015-08-20
+-- By: Chris LOMAME
+--
+ALTER TABLE `account`
+ADD `is_charge` BOOLEAN NULL;
+
+
+USE bhima;
+
+-- Updates table account
+-- Updating the column is_charge column following the accounting standard OHADA
+--
+-- Date: 2015-08-20
+-- By: Chris LOMAME
+
+UPDATE `account` SET `is_charge`= NULL;
+UPDATE `account` SET `is_charge` =1 WHERE `classe`=6 AND `account_type_id` =1 AND `is_ohada` =1;
+UPDATE `account` SET `is_charge` =1 WHERE LEFT(`account_number`,2)=81 AND `account_type_id` =1 AND `is_ohada` =1;
+UPDATE `account` SET `is_charge` =1 WHERE LEFT(`account_number`,2)=83 AND `account_type_id` =1 AND `is_ohada` =1;
+UPDATE `account` SET `is_charge` =1 WHERE LEFT(`account_number`,2)=85 AND `account_type_id` =1 AND `is_ohada` =1;
+UPDATE `account` SET `is_charge` =1 WHERE LEFT(`account_number`,2)=89 AND `account_type_id` =1 AND `is_ohada` =1;
+UPDATE `account` SET `is_charge` =0 WHERE `classe`=7 AND `account_type_id` =1 AND `is_ohada` =1;
+UPDATE `account` SET `is_charge` =0 WHERE LEFT(`account_number`,2)=82 AND `account_type_id` =1 AND `is_ohada` =1;
+UPDATE `account` SET `is_charge` =0 WHERE LEFT(`account_number`,2)=84 AND `account_type_id` =1 AND `is_ohada` =1;
+UPDATE `account` SET `is_charge` =0 WHERE LEFT(`account_number`,2)=86 AND `account_type_id` =1 AND `is_ohada` =1;
+UPDATE `account` SET `is_charge` =0 WHERE LEFT(`account_number`,2)=88 AND `account_type_id` =1 AND `is_ohada` =1;
+
