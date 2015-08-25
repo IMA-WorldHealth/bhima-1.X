@@ -159,7 +159,7 @@ exports.currentProject = function (req, res, next) {
   var sql =
     'SELECT `project`.`id`, `project`.`name`, `project`.`abbr`, `project`.`enterprise_id`, `enterprise`.`currency_id`, `enterprise`.`location_id`, `enterprise`.`name` as \'enterprise_name\', `enterprise`.`phone`, `enterprise`.`email`, `village`.`name` as \'village\', `sector`.`name` as \'sector\' ' +
     'FROM `project` JOIN `enterprise` ON `project`.`enterprise_id`=`enterprise`.`id` JOIN `village` ON `enterprise`.`location_id`=`village`.`uuid` JOIN `sector` ON `village`.`sector_uuid`=`sector`.`uuid` ' +
-    'WHERE `project`.`id`=' + req.session.project_id + ';';
+    'WHERE `project`.`id`=' + req.session.project.id + ';';
   db.exec(sql)
   .then(function (result) {
     res.send(result[0]);
