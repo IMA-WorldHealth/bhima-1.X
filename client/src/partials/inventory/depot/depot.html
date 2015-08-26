@@ -68,7 +68,7 @@
         <div class="form-group">
           <label class="control-label col-xs-4">{{ "COLUMNS.IS_WAREHOUSE" | translate }}</label>
           <div class="col-xs-7">
-            <input type="checkbox" ng-model="session.new.is_warehouse">
+            <input type="checkbox" ng-value=1 ng-model="session.new.is_warehouse">
           </div>
         </div>
 
@@ -86,7 +86,7 @@
         <div class="form-group">
           <label class="control-label col-xs-4">{{ "COLUMNS.IS_WAREHOUSE" | translate }}</label>
           <div class="col-xs-7">
-            <input type="checkbox" ng-model="session.edit.is_warehouse">
+            <input type="checkbox" ng-true-value=1 ng-model="session.edit.is_warehouse">
           </div>
         </div>
 
