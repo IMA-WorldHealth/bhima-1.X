@@ -16,7 +16,8 @@
 
     <!-- banner after submission -->
     <div ng-if="session.submitted">
-      <i style="margin-right: 5px;" class="glyphicon glyphicon-user"></i> {{ patient.name }} <small>({{ patient.sex }} {{ patient.age }})</small>
+      <i style="margin-right: 5px;" class="glyphicon glyphicon-user"></i> {{ patient.name }}
+      <small>({{ patient.sex }} {{ (patient.ageObject.years <= 1) ? patient.ageObject.months : patient.ageObject.years }} {{ (patient.ageObject.years <= 1) ? "UTIL.MONTHS" : "UTIL.YEARS" | translate }}) </small>
       <div class="pull-right" ng-if="enableRefresh" style="cursor:pointer;">
         <i ng-click="refresh()" class="glyphicon glyphicon-repeat"></i>
       </div>
