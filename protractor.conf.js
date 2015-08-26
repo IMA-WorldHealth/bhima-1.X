@@ -5,9 +5,11 @@ exports.config = {
     'browserName': 'chrome'
   },
 
-  specs: ['client/test/**/*.js'],
+  specs: ['client/test/e2e/**/*.js'],
 
   jasmineNodeOpts: {
     showColors: true
-  }
+  },
+
+  framework : 'mocha'
 };
