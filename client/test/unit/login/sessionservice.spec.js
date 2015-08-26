@@ -11,7 +11,7 @@ describe('TestSessionService - get and set client user sessions', function () {
     module('bhima.services')
   });
 
-  beforeEach(inject(function (_SessionService_, _window_) {
+  beforeEach(inject(function (_SessionService_, _$window_) {
     SessionService = _SessionService_;
     $window = _window_;
   }));
