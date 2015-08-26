@@ -3,15 +3,12 @@
   "hbb" : "HBB",
   "pax" : "PAX",
   "period" : {
-    "week"                     : "Week",
-    "day"                      : "Day",
-    "monday"                   : "Monday",
-    "tuesday"                  : "Tuesday",
-    "wednesday"                : "Wednesday",
-    "thursday"                 : "Thursday",
-    "friday"                   : "Friday",
-    "saturday"                 : "Saturday",
-    "sunday"                   : "Sunday"
+    "month"                     : "Month",
+    "week_1"                      : "Week 1",
+    "week_2"                   : "Week 2",
+    "week_3"                  : "Week 3",
+    "week_4"                : "Week 4",
+    "week_5"                 : "Week 5"
   },
 
   "header" : {
