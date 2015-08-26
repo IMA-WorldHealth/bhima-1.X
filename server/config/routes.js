@@ -218,4 +218,7 @@ exports.initialise = function (app) {
   app.get('/patient/search/fuzzy/:match', patient.searchFuzzy);
   app.get('/patient/search/reference/:reference', patient.searchReference);
 
+  // users controller
+  app.post('/users', users.createUser);
+
 };
