@@ -220,5 +220,8 @@ exports.initialise = function (app) {
 
   // users controller
   app.post('/users', users.createUser);
+  app.put('/users/:id', users.updateUser);
+  app.get('/users', users.getUsers);
+  app.delete('/users/:id', users.removeUser);
 
 };

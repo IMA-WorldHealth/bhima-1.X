@@ -125,15 +125,15 @@ angular.module('bhima.controllers')
         $scope.editUser(current.user);
       })
       .catch(function (error) {
-        console.error('Error:', error); 
+        console.error('Error:', error);
       });
     }
 
     function submitEdit() {
       delete current.user.passwordVerify;
-      connect.put('user', [connect.clean(current.user)], ['id'])
-      .then(function (res) {
-        messenger.info('Successfully edited user : ' + res.data.insertId);
+      $http.put('/users/' + current.user.id, current.user)
+      .then(function (response) {
+        messenger.info('Successfully edited user : ' + response.data.insertId);
         $scope.users.put(current.user);
         $scope.editUser(current.user);
       });
@@ -199,7 +199,7 @@ angular.module('bhima.controllers')
       var promises = removals.map(function (id) {
         return connect.delete('project_permission', 'id', id);
       });
- 
+
       // add the (newly) checked project permissions
       if (additions.length > 0) { promises.push(connect.post('project_permission', additions)); }
 
@@ -220,12 +220,10 @@ angular.module('bhima.controllers')
     $scope.removeUser = function removeUser(user) {
       var result = $window.confirm('Are you sure you want to delete user: '  + user.first +' ' +user.last);
       if (result) {
-        connect.delete('user', 'id', user.id)
+        $http.delete('users/' + user.id)
         .then(function () {
           messenger.success('Deleted user id: ' + user.id);
           $scope.users.remove(user.id);
-          //  Check if we are looking at a users permissions,
-          //  or editing them, we should clear our view
         });
       }
     };
