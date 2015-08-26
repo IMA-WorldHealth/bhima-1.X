@@ -55,12 +55,11 @@ function exec(sql, params) {
   con.getConnection(function (err, connection) {
     if (err) { return defer.reject(err); }
 
-    var q = connection.query(sql, params, function (err, results) {
+    connection.query(sql, params, function (err, results) {
       if (err) { return defer.reject(err); }
       connection.release();
       defer.resolve(results);
     });
-    console.log(q.sql);
   });
 
   return defer.promise;
