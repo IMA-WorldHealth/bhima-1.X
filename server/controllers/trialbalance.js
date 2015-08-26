@@ -90,7 +90,7 @@ function checkAccountsLocked(transactions) {
     if (!rows.length) { return; }
 
     // returns a promise error report
-    return createErrorReport('ERR_LOCKED_ACCOUNTS', true, rows);
+    return createErrorReport('ERROR.ERR_LOCKED_ACCOUNTS', true, rows);
   });
 }
 
@@ -110,7 +110,7 @@ function checkMissingAccounts(transactions) {
     if (!rows.length) { return; }
 
     // returns a promise error report
-    return createErrorReport('ERR_MISSING_ACCOUNTS', true, rows);
+    return createErrorReport('ERROR.ERROR_MISSING_ACCOUNTS', true, rows);
   });
 }
 
@@ -129,7 +129,7 @@ function checkDateInPeriod(transactions) {
     if (!rows.length) { return; }
 
     // returns a promise error report
-    return createErrorReport('ERR_DATE_IN_WRONG_PERIOD', true, rows);
+    return createErrorReport('ERROR.ERR_DATE_IN_WRONG_PERIOD', true, rows);
   });
 }
 
@@ -148,7 +148,7 @@ function checkPeriodAndFiscalYearExists(transactions) {
     if (!rows.length) { return; }
 
     // returns a promise error report
-    return createErrorReport('ERR_MISSING_FISCAL_OR_PERIOD', true, rows);
+    return createErrorReport('ERROR.ERR_MISSING_FISCAL_OR_PERIOD', true, rows);
   });
 }
 
@@ -169,7 +169,7 @@ function checkTransactionsBalanced(transactions) {
     if (!rows.length) { return; }
 
     // returns a promise error report
-    return createErrorReport('ERR_UNBALANCED_TRANSACTIONS', true, rows);
+    return createErrorReport('ERROR.ERR_UNBALANCED_TRANSACTIONS', true, rows);
   });
 }
 
@@ -188,7 +188,7 @@ function checkDebtorCreditorExists(transactions) {
     if (!rows.length) { return; }
 
     // returns a promise error report
-    return createErrorReport('ERR_MISSING_DEBTOR_CREDITOR', true, rows);
+    return createErrorReport('ERROR.ERR_MISSING_DEBTOR_CREDITOR', true, rows);
   });
 }
 
@@ -206,7 +206,7 @@ function checkDocumentNumberExists(transactions) {
     if (!rows.length) { return; }
 
     // returns a promise error report
-    return createErrorReport('WARN_MISSING_DOCUMENT_ID', false, rows);
+    return createErrorReport('ERROR.WARN_MISSING_DOCUMENT_ID', false, rows);
   });
 }
 
