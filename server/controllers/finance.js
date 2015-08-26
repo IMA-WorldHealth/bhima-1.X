@@ -59,7 +59,7 @@ exports.postJournalVoucher = function (req, res, next) {
   if (date > new Date()) {
 
     // Send back"Bad Request" HTTP error code
-    return report('ERR_DATE_IN_THE_FUTURE');
+    return report('ERROR.ERR_DATE_IN_THE_FUTURE');
   }
 
   // validate that the rows balance
@@ -68,7 +68,7 @@ exports.postJournalVoucher = function (req, res, next) {
   });
 
   if (!validAccounts) {
-    return report('ERR_MISSING_ACCOUNTS');
+    return report('ERROR.ERR_MISSING_ACCOUNTS');
   }
 
   // validate that the debits and credits balance
@@ -81,7 +81,7 @@ exports.postJournalVoucher = function (req, res, next) {
   var validTotals = totals.debit.toFixed(4) === totals.credit.toFixed(4);
 
   if (!validTotals) {
-    return report('ERR_DEBIT_CREDIT_IMBALANCE');
+    return report('ERROR.ERR_DEBIT_CREDIT_IMBALANCE');
   }
 
   // Flatten the data object into a series of rows for
@@ -115,7 +115,7 @@ exports.postJournalVoucher = function (req, res, next) {
 
     // whoops! No period found!
     if (rows.length < 1) {
-      throw 'ERR_NO_PERIOD';
+      throw 'ERROR.ERR_NO_PERIOD';
     }
 
     // put the fiscal year and period id into the db rows
@@ -140,7 +140,7 @@ exports.postJournalVoucher = function (req, res, next) {
   .then(function (rows) {
 
     if (rows.length < 1) {
-      throw 'ERR_NO_EXCHANGE_RATE';
+      throw 'ERROR.ERR_NO_EXCHANGE_RATE';
     }
 
     // get the most recent record for that date
@@ -158,7 +158,7 @@ exports.postJournalVoucher = function (req, res, next) {
       if (data.currencyId !== record.foreign_currency_id) {
 
         // didn't find a suitable exchange rate, throw an error
-        throw 'ERR_NO_EXCHANGE_RATE';
+        throw 'ERROR.ERR_NO_EXCHANGE_RATE';
       }
 
       // we are exchanging the data using the exchange rate.
@@ -219,7 +219,7 @@ exports.postJournalVoucher = function (req, res, next) {
     return db.exec(sql, [insertRows]);
   })
   .then(function () {
-    res.status(200).send('POST_SUCCESSFUL');
+    res.status(200).send('JOURNAL_VOUCHER.POST_SUCCESSFUL');
   })
   .catch(function (error) {
     res.status(500).send(error);
