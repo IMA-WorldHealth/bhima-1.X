@@ -2931,6 +2931,8 @@
    "AGGREGATES"        : "Agregats",
    "ALL"               : "Tous",
    "ALL_DONORS"        : "Tous les donateurs",
+   "YEARS"             : "Annees",
+   "MONTHS"            : "Mois",
    "BACK"              : "Précédent",
    "CANCEL"            : "Annuler",
    "COLUMNS"           : "Colonnes",
