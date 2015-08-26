@@ -11,14 +11,6 @@ describe('bhima login page', function () {
      browser.get('https://localhost:8080/#/login');
   });
 
-  it('redirects to the /login page on start up', function () {
-   browser.get('https://localhost:8080/#/nottheloginpage');
-
-   console.log(browser.getCurrentUrl());
-   expect(browser.getCurrentUrl()).to.equal('http://localhost:8080/#/login')
-  });
-
-
   it('rejects an undefined user', function () {
 
     element(by.model('LoginCtrl.credentials.username')).sendKeys('undefineds');
