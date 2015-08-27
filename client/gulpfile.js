@@ -89,6 +89,10 @@ gulp.task('i18n', function () {
   return;
 });
 
+gulp.task('build', [], function () {
+  gulp.start('scripts', 'styles', 'assets', 'vendor', 'jquery', 'slick', 'static');
+});
+
 gulp.task('default', [], function () {
   gulp.start('i18n', 'scripts', 'styles', 'assets', 'vendor', 'jquery', 'slick', 'static', 'watch');
 });
