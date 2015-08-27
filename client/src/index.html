@@ -8,7 +8,7 @@
 <body ng-app="bhima">
 
 <!--not required in placeholder rewrite-->
-<div ng-controller="app">
+<div ng-controller="ApplicationController as AppCtrl">
 
   <!-- sidebar definition -->
   <div class="container sidebar hidden-print">
@@ -16,16 +16,16 @@
       <h2><a href="#/"><img src="assets/icon.png" width="100" height="100"></a></h2>
     </div>
 
-    <div class="row" id="bhima-tree" ng-controller="tree" ng-if="!!isLoggedIn()">
+    <div class="row" id="bhima-tree" ng-controller="TreeController" ng-if="AppCtrl.isLoggedIn()">
       <div data-angular-treeview="true" data-tree-id="navtree" data-tree-model="treeData" data-node-id="id" data-node-label="key" data-node-children="children"></div>
     </div>
 
-   <div class="row" id="bhima-util" ng-controller="util" ng-if="!!isLoggedIn()">
+   <div class="row" id="bhima-util" ng-controller="UtilController as UtilCtrl" ng-if="AppCtrl.isLoggedIn()">
       <div class="btn-group-justified">
-        <a ng-click="openSettings()" type="button" class="btn btn-default">
+        <a ng-click="UtilCtrl.openSettings()" type="button" class="btn btn-default">
           <span class="glyphicon glyphicon-cog"></span>
         </a>
-        <a tabindex=-1 name="logout" type="button" class="btn btn-default" ng-click="logout()">
+        <a tabindex=-1 name="logout" type="button" class="btn btn-default" ng-click="UtilCtrl.logout()">
           <span class="glyphicon glyphicon-log-out"></span>
         </a>
       </div>

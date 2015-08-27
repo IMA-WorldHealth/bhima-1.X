@@ -16,40 +16,14 @@ var config = {
   },
 
   /* Configuration for plugins
-   * Each plugin REQUIRES three properties:
-   * 1) name      - Stored as the name of the plugin. Write in camelCase.
-   * 2) script    - The script relative to the plugins/ directory
-   * 3) options   - can be an empty object, but must exist. An object of paramter to
-   *                be passed to the child process.  Generally, you'll want to schedule
-   *                frequencies here.
-   */
+   * Each plugin REQUIRES two properties:
+   * name      - Stored as the name of the plugin. Write in camelCase.
+   * script    - The script relative to the plugins directory
+  */
   'plugins' : [{
     'name' : 'mail',
-    'script' : '/mail/index.js',
-    'options' : {
-      'emails' : [{
-        'name' : 'daily',
-        //'frequency' : '0 23 * * *',
-        'frequency' : '0 18 * * *', // */3 * * * * (for test)
-        'addressList' : 'developers',
-      }, {
-        'name' : 'weekly',
-        'frequency' : '0 19 * * 0', // */2 * * * * (for test)
-        'addressList' : 'wk'
-      }, {
-        'name' : 'monthly',
-        'frequency' : '0 20 28-31 * *', // */1 * * * * (for test)
-        'addressList' : 'mn'
-      }]
-    }
+    'script' : '/mail/index.js'    
   }],
-//  }, {
-//    'name' : 'backup',
-//    'script' : 'backup/index.js',
-//    'options' : {
-//      'frequency' : '0 0 * * *'
-//    }
-//  }],
   'tls' : {
     'key' : 'server/config/keys/server.key',
     'cert' : 'server/config/keys/server.crt'
@@ -152,7 +126,6 @@ var config = {
       '/partials/',
       '/getEnterprisePayment/',
       '/getPeriodeFiscalYear/',
-      '/getExploitationAccount/',
       '/cost_periodic/',
       '/profit_periodic/',
       '/posting_promesse_payment/',

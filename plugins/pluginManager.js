@@ -31,7 +31,6 @@ function Plugin(script) {
   // in case of unknown termination signal.
   this.maxRestarts = MAX_RESTARTS;
 
-
   // perform the initial startup
   this.startup();
 }
@@ -89,9 +88,9 @@ Plugin.prototype.register = function (event, callback) {
 /**
  * A class to manage all plugins.
  * @constructor
- * @param {object} cfg - configuration JSON with plugins names and scripts
+ * @param {Array} cfgArray - configuration array with plugins names and scripts
  */
-function PluginManager(cfg) {
+function PluginManager(cfgArray) {
   'use strict';
 
   var plugins = this.plugins = {};
@@ -104,64 +103,86 @@ function PluginManager(cfg) {
   // PluginManager Methods
 
   function _onStartup() {
-    echo('_onStartup Event Fired.');
+    echo('Starting PluginManager...');
 
     // TODO Should we have a 'priority' tag to determine which plugins are
     // initialized first?  This would require sorting the array by priority
     // prior to loading it
 
     // load and map the plugins to their namespaces
-    cfg.plugins.forEach(function (plugin) {
+    cfgArray.forEach(function (plugin) {
       echo('Loading ' + plugin.name);
       plugins[plugin.name] = new Plugin(plugin.script);
-      plugins[plugin.name].emit('config', plugin.options);
     });
   }
+
+  // kills all subprocesses in the case that the parent process dies.
+  this.killChildren = function (e) {
+    console.log('Exception:', e);
+    echo('Killing all subprocesses ...');
+
+    // look through the 
+    Object.keys(plugins).forEach(function (key) {
+      echo('Killing', key);
+      plugins[key].kill('SIGTERM');
+    });
+
+    echo('Done. Exiting...');
+    // exit the main thread
+    process.exit(e);
+  };
+
+  // parses events and routes them to the correct plugin
+  this.routeEvent = function (event, data) {
+    try {
+      // parse the plugin name from the event
+      var params = event.split('::'),
+          pluginId = params[0],
+          eventId = params[1];
+
+      // error if the plugin is not defined for the manager
+      if (!this.plugins[pluginId]) {
+        throw new Error('Error: Plugin not found %s'.replace('%s', pluginId));
+      }
+
+      // send the event to the plugin
+      this.plugins[pluginId].emit(eventId);
+    } catch (e) {
+  
+      // ensure that the event failure is broadcast
+      throw new Error('Error: Event %s not properly constructed'.replace('%s', event));
+    }
+  };
 
   _onStartup();
 }
 
 
-/** parses events and routes them to the correct plugin  */
-PluginManager.prototype.routeEvent = function (event, data) {
-
-  // parse the plugin name from the event
-  var params = event.split('::'),
-      pluginId = params[0],
-      eventId = params[1];
-
-  // error if the plugin is not defined for the manager
-  if (!this.plugins[pluginId]) {
-    throw new Error('ERROR: Plugin not found');
-  }
-
-  // send the event to the plugin
-  this.plugins[pluginId].emit(eventId);
-
-  return;
-};
-
-
-
-module.exports = function (app, config) {
+/* expose routes to the greater bhima server */
+module.exports = function (app, pluginConfig) {
   'use strict';
 
-  var pm = new PluginManager(config);
+  var pm = new PluginManager(pluginConfig);
 
   // configure plugin routes
 
   // :action is actually {pluginId}::{eventId}}
   // Example : /plugin/events/mail::restart
   app.post('/plugin/events/:action', function (req, res, next) {
+    console.log("on entre");
 
     // make sure the plugin exists
     try {
       pm.routeEvent(req.params.action, req.body.data);
     } catch (err) {
-      return res.status(500).send(err);
+      return res.status(500).json(err);
     }
 
     res.status(200).send();
   });
-};
 
+  // clean up children one exception, error, exit
+  process.on('uncaughtException', pm.killChildren);
+  process.on('SIGINT', pm.killChildren);
+  process.on('SIGTERM', pm.killChildren);
+};

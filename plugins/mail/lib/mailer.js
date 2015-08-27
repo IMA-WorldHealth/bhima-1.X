@@ -11,7 +11,7 @@ var path = require('path'),
     cp = require('child_process'),
     q = require('q');
 
-// promisify the child_process.exec() function 
+// promisify the child_process.exec() function
 function exec(command) {
   'use strict';
 
@@ -31,7 +31,7 @@ function mailer(list, contact, message, date) {
   'use strict';
   // console.log('list : ', list, 'contact : ', contact, 'message : ', message, 'date :', date);
 
-  console.log('[mailer]', 'Sending a message!');
+  console.log('[MailPlugin]', 'Sending a message to', contact.address.toLowerCase());
 
   var timestamp = new Date(),
       command, reference;
@@ -42,6 +42,7 @@ function mailer(list, contact, message, date) {
 
   //testing queue directory existence
 
+
   reference = path.join(__dirname, '../queue/');
 
   fs.exists(reference, function (exist){
@@ -49,8 +50,9 @@ function mailer(list, contact, message, date) {
       fs.mkdirSync(reference);
     }
 
+
     // compile a reference to the email
-    reference += list + '-' + contact.name + '-' + timestamp.toLocaleTimeString(); 
+    reference += list + '-' + contact.address + '-' + timestamp.toLocaleTimeString(); 
 
     // first, write the email to the queue
     fs.writeFileSync(reference, message, 'utf8');

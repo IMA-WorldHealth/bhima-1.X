@@ -1,0 +1,1800 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="213e8c63-f9a8-4f4c-81ed-8ad808b82ea2" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/example-account-report/account.html" afterPath="$PROJECT_DIR$/docs/example-account-report/account.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/angular-grid.min.js" afterPath="$PROJECT_DIR$/dist/angular-grid.min.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/dist/angular-grid.min.js" afterPath="$PROJECT_DIR$/docs/dist/angular-grid.min.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/example-data-grid/basic.html" afterPath="$PROJECT_DIR$/docs/example-data-grid/basic.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bower.json" afterPath="$PROJECT_DIR$/bower.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-column-api/columnStateExample.html" afterPath="$PROJECT_DIR$/docs/angular-grid-column-api/columnStateExample.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/documentation.php" afterPath="$PROJECT_DIR$/docs/documentation.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/example.html" afterPath="$PROJECT_DIR$/docs/example.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-angular-compiling/example1.html" afterPath="$PROJECT_DIR$/docs/angular-grid-angular-compiling/example1.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-cell-rendering/example1.html" afterPath="$PROJECT_DIR$/docs/angular-grid-cell-rendering/example1.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-cell-styling/example1.html" afterPath="$PROJECT_DIR$/docs/angular-grid-cell-styling/example1.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-cell-template/example1.html" afterPath="$PROJECT_DIR$/docs/angular-grid-cell-template/example1.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-context/example1.html" afterPath="$PROJECT_DIR$/docs/angular-grid-context/example1.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-editing/example1.html" afterPath="$PROJECT_DIR$/docs/angular-grid-editing/example1.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-filtering/example1.html" afterPath="$PROJECT_DIR$/docs/angular-grid-filtering/example1.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-getting-started/example1.html" afterPath="$PROJECT_DIR$/docs/angular-grid-getting-started/example1.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-grouping/example1.html" afterPath="$PROJECT_DIR$/docs/angular-grid-grouping/example1.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-grouping-headers/example1.html" afterPath="$PROJECT_DIR$/docs/angular-grid-grouping-headers/example1.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-header-rendering/example1.html" afterPath="$PROJECT_DIR$/docs/angular-grid-header-rendering/example1.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-loading/example1.html" afterPath="$PROJECT_DIR$/docs/angular-grid-loading/example1.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-loading-rows/example1.html" afterPath="$PROJECT_DIR$/docs/angular-grid-loading-rows/example1.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-no-scrolls/example1.html" afterPath="$PROJECT_DIR$/docs/angular-grid-no-scrolls/example1.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-pinning/example1.html" afterPath="$PROJECT_DIR$/docs/angular-grid-pinning/example1.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-refresh/example1.html" afterPath="$PROJECT_DIR$/docs/angular-grid-refresh/example1.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-resizing/example1.html" afterPath="$PROJECT_DIR$/docs/angular-grid-resizing/example1.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-selection/example1.html" afterPath="$PROJECT_DIR$/docs/angular-grid-selection/example1.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-sorting/example1.html" afterPath="$PROJECT_DIR$/docs/angular-grid-sorting/example1.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-styling/example1.html" afterPath="$PROJECT_DIR$/docs/angular-grid-styling/example1.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-value-getters/example1.html" afterPath="$PROJECT_DIR$/docs/angular-grid-value-getters/example1.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-width-and-height/example1.html" afterPath="$PROJECT_DIR$/docs/angular-grid-width-and-height/example1.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/example-native-javascript-grid/example1.html" afterPath="$PROJECT_DIR$/docs/example-native-javascript-grid/example1.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/example-web-component-grid/example1.html" afterPath="$PROJECT_DIR$/docs/example-web-component-grid/example1.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-filtering/example2.html" afterPath="$PROJECT_DIR$/docs/angular-grid-filtering/example2.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-getting-started/example2.html" afterPath="$PROJECT_DIR$/docs/angular-grid-getting-started/example2.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-grouping/example2.html" afterPath="$PROJECT_DIR$/docs/angular-grid-grouping/example2.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-refresh/example2.html" afterPath="$PROJECT_DIR$/docs/angular-grid-refresh/example2.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-resizing/example2.html" afterPath="$PROJECT_DIR$/docs/angular-grid-resizing/example2.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-selection/example2.html" afterPath="$PROJECT_DIR$/docs/angular-grid-selection/example2.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-getting-started/example3.html" afterPath="$PROJECT_DIR$/docs/angular-grid-getting-started/example3.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-grouping/example3.html" afterPath="$PROJECT_DIR$/docs/angular-grid-grouping/example3.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-selection/example3.html" afterPath="$PROJECT_DIR$/docs/angular-grid-selection/example3.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-grouping/example4.html" afterPath="$PROJECT_DIR$/docs/angular-grid-grouping/example4.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-selection/example4.html" afterPath="$PROJECT_DIR$/docs/angular-grid-selection/example4.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-grouping/example5.html" afterPath="$PROJECT_DIR$/docs/angular-grid-grouping/example5.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-grouping/example6.html" afterPath="$PROJECT_DIR$/docs/angular-grid-grouping/example6.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-cell-expressions/exampleCellExpressions.html" afterPath="$PROJECT_DIR$/docs/angular-grid-cell-expressions/exampleCellExpressions.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-filtering/exampleFilterApi.html" afterPath="$PROJECT_DIR$/docs/angular-grid-filtering/exampleFilterApi.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-filtering/exampleFilterApply.html" afterPath="$PROJECT_DIR$/docs/angular-grid-filtering/exampleFilterApply.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-filtering/exampleFilterModel.html" afterPath="$PROJECT_DIR$/docs/angular-grid-filtering/exampleFilterModel.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-sorting/exampleSortingOrder.html" afterPath="$PROJECT_DIR$/docs/angular-grid-sorting/exampleSortingOrder.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/example-file-browser/fileBrowser.html" afterPath="$PROJECT_DIR$/docs/example-file-browser/fileBrowser.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ts/groupCreator.ts" afterPath="$PROJECT_DIR$/src/ts/groupCreator.ts" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-selection/groupSelection.html" afterPath="$PROJECT_DIR$/docs/angular-grid-selection/groupSelection.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-grouping/groupingFooters.html" afterPath="$PROJECT_DIR$/docs/angular-grid-grouping/groupingFooters.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/example-native-javascript-grid/html5grid.html" afterPath="$PROJECT_DIR$/docs/example-native-javascript-grid/html5grid.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-icons/icons.html" afterPath="$PROJECT_DIR$/docs/angular-grid-icons/icons.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/index.html" afterPath="$PROJECT_DIR$/docs/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-getting-started/index.php" afterPath="$PROJECT_DIR$/docs/angular-grid-getting-started/index.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-internationalisation/internationalisation.html" afterPath="$PROJECT_DIR$/docs/angular-grid-internationalisation/internationalisation.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/example-expressions-and-context/monthlySales.html" afterPath="$PROJECT_DIR$/docs/example-expressions-and-context/monthlySales.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-pagination/paging.html" afterPath="$PROJECT_DIR$/docs/angular-grid-pagination/paging.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-pagination/pagingServerSide.html" afterPath="$PROJECT_DIR$/docs/angular-grid-pagination/pagingServerSide.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-sorting/sortingApi.html" afterPath="$PROJECT_DIR$/docs/angular-grid-sorting/sortingApi.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-tool-panel/toolPanelExample.html" afterPath="$PROJECT_DIR$/docs/angular-grid-tool-panel/toolPanelExample.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-virtual-paging/virtualPaging.html" afterPath="$PROJECT_DIR$/docs/angular-grid-virtual-paging/virtualPaging.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/angular-grid-virtual-paging/virtualPagingServerSide.html" afterPath="$PROJECT_DIR$/docs/angular-grid-virtual-paging/virtualPagingServerSide.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/example-web-component-grid/webComponentDataGrid.html" afterPath="$PROJECT_DIR$/docs/example-web-component-grid/webComponentDataGrid.html" />
+    </list>
+    <list id="a3f0384d-0005-4f86-b067-96ce3c52b79b" name="do not checkin" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docs/dist/angular-grid.js" afterPath="$PROJECT_DIR$/docs/dist/angular-grid.js" />
+    </list>
+    <ignored path="angular-grid.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <ignored path="$PROJECT_DIR$/out/" />
+    <ignored path=".idea/dataSources.local.xml" />
+    <ignored path=".idea/" />
+    <ignored path="angular-grid.iml" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <file path="$PROJECT_DIR$/docs/dist/angular-grid.js" ignored="false" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="angular-grid" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="example.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/docs/example.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-97.42308">
+              <caret line="149" column="0" selection-start-line="149" selection-start-column="0" selection-end-line="149" selection-end-column="0" />
+              <folding>
+                <element signature="n#style#0;n#select#4;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#select#5;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LICENSE.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/LICENSE.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+          <provider editor-type-id="com.intellij.database.editor.CsvTableFileEditorProvider">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="gulpfile.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/gulpfile.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="17" column="38" selection-start-line="17" selection-start-column="38" selection-end-line="17" selection-end-column="38" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="notes.txt" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/notes.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.18710692">
+              <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="bower.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bower.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-1.3076923">
+              <caret line="2" column="20" selection-start-line="2" selection-start-column="20" selection-end-line="2" selection-end-column="20" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="package.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/package.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-0.65384614">
+              <caret line="2" column="20" selection-start-line="2" selection-start-column="20" selection-end-line="2" selection-end-column="20" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/docs/angular-grid-api/index.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-23.192308">
+              <caret line="235" column="75" selection-start-line="235" selection-start-column="75" selection-end-line="235" selection-end-column="75" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="account.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/docs/example-account-report/account.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-10.461538">
+              <caret line="16" column="56" selection-start-line="16" selection-start-column="48" selection-end-line="16" selection-end-column="56" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="example1.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/docs/angular-grid-angular-compiling/example1.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-8.5">
+              <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="groupCreator.ts" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/ts/groupCreator.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GradleLocalSettings">
+    <option name="externalProjectsViewState">
+      <projects_view />
+    </option>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/docs/angular-grid-sorting/exampleSortingOrder.html" />
+        <option value="$PROJECT_DIR$/docs/angular-grid-sorting/exampleSortingOrder.js" />
+        <option value="$PROJECT_DIR$/docs/angular-grid-sorting/index.php" />
+        <option value="$PROJECT_DIR$/src/ts/filter/setFilterModel.ts" />
+        <option value="$PROJECT_DIR$/src/ts/columnEvent.ts" />
+        <option value="$PROJECT_DIR$/src/ts/toolPanel/columnSelectionPanel.ts" />
+        <option value="$PROJECT_DIR$/src/ts/toolPanel/groupSelectionPanel.ts" />
+        <option value="$PROJECT_DIR$/src/ts/toolPanel/valuesSelectionPanel.ts" />
+        <option value="$PROJECT_DIR$/src/ts/headerRendering/headerRenderer.ts" />
+        <option value="$PROJECT_DIR$/src/ts/columnChangeEvent.ts" />
+        <option value="$PROJECT_DIR$/src/ts/headerRendering/renderedHeaderElement.ts" />
+        <option value="$PROJECT_DIR$/src/ts/headerRendering/renderedHeaderGroupCell.ts" />
+        <option value="$PROJECT_DIR$/src/ts/entities/columnGroup.ts" />
+        <option value="$PROJECT_DIR$/src/ts/entities/column.ts" />
+        <option value="$PROJECT_DIR$/src/ts/columnController.ts" />
+        <option value="$PROJECT_DIR$/src/ts/entities/gridOptions.ts" />
+        <option value="$PROJECT_DIR$/src/ts/gridOptionsWrapper.ts" />
+        <option value="$PROJECT_DIR$/src/ts/headerRendering/renderedHeaderCell.ts" />
+        <option value="$PROJECT_DIR$/docs/example.js" />
+        <option value="$PROJECT_DIR$/docs/angular-grid-grid-options/index.php" />
+        <option value="$PROJECT_DIR$/docs/example-web-component-grid/html5grid.js" />
+        <option value="$PROJECT_DIR$/docs/example-web-component-grid/html5grid.html" />
+        <option value="$PROJECT_DIR$/docs/example-web-component-grid/component.html" />
+        <option value="$PROJECT_DIR$/docs/example-web-component-grid/example1.js" />
+        <option value="$PROJECT_DIR$/src/ts/main.ts" />
+        <option value="$PROJECT_DIR$/docs/example-web-component-grid/webComponentDataGrid.js" />
+        <option value="$PROJECT_DIR$/docs/example-native-javascript-grid/html5grid.html" />
+        <option value="$PROJECT_DIR$/docs/example-native-javascript-grid/html5grid.js" />
+        <option value="$PROJECT_DIR$/docs/example-native-javascript-grid/index.php" />
+        <option value="$PROJECT_DIR$/docs/documentation_header.php" />
+        <option value="$PROJECT_DIR$/docs/example-web-component-grid/example1.html" />
+        <option value="$PROJECT_DIR$/docs/example-web-component-grid/webComponentDataGrid.html" />
+        <option value="$PROJECT_DIR$/src/ts/selectionController.ts" />
+        <option value="$PROJECT_DIR$/src/ts/templateService.ts" />
+        <option value="$PROJECT_DIR$/src/ts/valueService.ts" />
+        <option value="$PROJECT_DIR$/src/ts/gridApi.ts" />
+        <option value="$PROJECT_DIR$/src/ts/filter/filterManager.ts" />
+        <option value="$PROJECT_DIR$/src/ts/grid.ts" />
+        <option value="$PROJECT_DIR$/src/ts/rowControllers/inMemoryRowController.ts" />
+        <option value="$PROJECT_DIR$/docs/angular-grid-api/index.php" />
+        <option value="$PROJECT_DIR$/src/ts/rendering/renderedRow.ts" />
+        <option value="$PROJECT_DIR$/src/ts/rendering/renderedCell.ts" />
+        <option value="$PROJECT_DIR$/src/ts/rendering/rowRenderer.ts" />
+        <option value="$PROJECT_DIR$/docs/example-web-component-grid/index.php" />
+        <option value="$PROJECT_DIR$/src/ts/filter/setFilter.ts" />
+        <option value="$PROJECT_DIR$/docs/documentation.php" />
+        <option value="$PROJECT_DIR$/docs/example.html" />
+        <option value="$PROJECT_DIR$/src/ts/groupCreator.ts" />
+        <option value="$PROJECT_DIR$/bower.json" />
+        <option value="$PROJECT_DIR$/package.json" />
+        <option value="$PROJECT_DIR$/docs/angular-grid-angular-compiling/example1.html" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <gulpfiles>
+      <GulpfileState>
+        <gulpfile-path>$PROJECT_DIR$/gulpfile.js</gulpfile-path>
+        <tasks>
+          <GulpTaskState>
+            <dependencies>
+              <dependency value="build" />
+              <dependency value="watch" />
+            </dependencies>
+            <task-name>default</task-name>
+          </GulpTaskState>
+          <GulpTaskState>
+            <dependencies>
+              <dependency value="stylus" />
+              <dependency value="js" />
+            </dependencies>
+            <task-name>build</task-name>
+          </GulpTaskState>
+          <GulpTaskState>
+            <task-name>stylus</task-name>
+          </GulpTaskState>
+          <GulpTaskState>
+            <task-name>js</task-name>
+          </GulpTaskState>
+          <GulpTaskState>
+            <task-name>watch</task-name>
+          </GulpTaskState>
+          <GulpTaskState>
+            <task-name>ts</task-name>
+          </GulpTaskState>
+          <GulpTaskState>
+            <dependencies>
+              <dependency value="ts" />
+            </dependencies>
+            <task-name>tswatch</task-name>
+          </GulpTaskState>
+        </tasks>
+      </GulpfileState>
+    </gulpfiles>
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="Bundled (Maven 3)" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="NamedScopeManager">
+    <order />
+  </component>
+  <component name="PhpServers">
+    <servers />
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" interpreter_name="PHP" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-9" />
+    <option name="y" value="-9" />
+    <option name="width" value="1938" />
+    <option name="height" value="1050" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State>
+            <id />
+          </State>
+          <State>
+            <id>Android Lint</id>
+          </State>
+          <State>
+            <id>Internationalization issues</id>
+          </State>
+          <State>
+            <id>Java</id>
+          </State>
+          <State>
+            <id>Performance issuesJava</id>
+          </State>
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>Android</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+    </navigator>
+    <panes>
+      <pane id="PackagesPane">
+        <subPane />
+      </pane>
+      <pane id="Scope" />
+      <pane id="Scratches">
+        <subPane />
+      </pane>
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="angular-grid" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="angular-grid" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="angular-grid" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="recentsLimit" value="5" />
+    <property name="last_opened_file_path" value="$USER_HOME$/AppData/Roaming/npm/node_modules/typescript/bin" />
+    <property name="restartRequiresConfirmation" value="true" />
+    <property name="FullScreen" value="false" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth0" value="207" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder0" value="0" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth1" value="239" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder1" value="1" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth2" value="240" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder2" value="2" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth3" value="1141" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder3" value="3" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth0" value="414" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder0" value="0" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth1" value="417" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder1" value="1" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth2" value="418" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder2" value="2" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth3" value="578" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder3" value="3" />
+    <property name="settings.editor.selected.configurable" value="settings.typescriptcompiler" />
+    <property name="settings.editor.splitter.proportion" value="0.26615968" />
+    <property name="full.screen.before.presentation.mode" value="false" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="typescript-compiler-editor-notification" value="false" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\development\workspace\angular-grid\docs\example-web-component-grid" />
+      <recent name="C:\development\workspace\angular-grid\docs\angular-grid-sorting" />
+      <recent name="C:\development\workspace\angular-grid\docs\images" />
+      <recent name="C:\development\workspace\angular-grid\docs" />
+      <recent name="C:\development\workspace\angular-grid\docs\why-the-world-needed-another-angularjs-grid" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\development\workspace\angular-grid\src\ts\headerRendering" />
+      <recent name="C:\development\workspace\angular-grid\src\ts\entities" />
+      <recent name="C:\development\workspace\angular-grid\src\ts\rendering" />
+      <recent name="C:\development\workspace\angular-grid\docs\angular-grid-virtual-paging" />
+      <recent name="C:\development\workspace\angular-grid\src\js\gridPanel" />
+    </key>
+  </component>
+  <component name="RunManager" selected="PHP Built-in Web Server.docs">
+    <configuration default="false" name="index.html" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/angular-grid/example/index.html">
+      <method />
+    </configuration>
+    <configuration default="false" name="example1.html" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/angular-grid/docs/angular-grid-refresh/example1.html">
+      <method />
+    </configuration>
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+      <option name="PROGRAM_PARAMETERS" />
+      <method />
+    </configuration>
+    <configuration default="true" type="AndroidRunConfigurationType" factoryName="Android Application">
+      <module name="" />
+      <option name="ACTIVITY_CLASS" value="" />
+      <option name="MODE" value="default_activity" />
+      <option name="DEPLOY" value="true" />
+      <option name="ARTIFACT_NAME" value="" />
+      <option name="TARGET_SELECTION_MODE" value="EMULATOR" />
+      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
+      <option name="PREFERRED_AVD" value="" />
+      <option name="USE_COMMAND_LINE" value="true" />
+      <option name="COMMAND_LINE" value="" />
+      <option name="WIPE_USER_DATA" value="false" />
+      <option name="DISABLE_BOOT_ANIMATION" value="false" />
+      <option name="NETWORK_SPEED" value="full" />
+      <option name="NETWORK_LATENCY" value="none" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
+      <option name="FILTER_LOGCAT_AUTOMATICALLY" value="true" />
+      <method />
+    </configuration>
+    <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Tests">
+      <module name="" />
+      <option name="TESTING_TYPE" value="0" />
+      <option name="INSTRUMENTATION_RUNNER_CLASS" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="TARGET_SELECTION_MODE" value="EMULATOR" />
+      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
+      <option name="PREFERRED_AVD" value="" />
+      <option name="USE_COMMAND_LINE" value="true" />
+      <option name="COMMAND_LINE" value="" />
+      <option name="WIPE_USER_DATA" value="false" />
+      <option name="DISABLE_BOOT_ANIMATION" value="false" />
+      <option name="NETWORK_SPEED" value="full" />
+      <option name="NETWORK_LATENCY" value="none" />
+      <option name="CLEAR_LOGCAT" value="false" />
+      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="true" />
+      <option name="FILTER_LOGCAT_AUTOMATICALLY" value="true" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <module />
+      <method />
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="myFilePath" />
+      <option name="GLUE" />
+      <option name="myNameFilter" />
+      <option name="myGeneratedName" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="FlashRunConfigurationType" factoryName="Flash App">
+      <option name="BCName" value="" />
+      <option name="IOSSimulatorSdkPath" value="" />
+      <option name="adlOptions" value="" />
+      <option name="airProgramParameters" value="" />
+      <option name="appDescriptorForEmulator" value="Android" />
+      <option name="debugTransport" value="USB" />
+      <option name="debuggerSdkRaw" value="BC SDK" />
+      <option name="emulator" value="NexusOne" />
+      <option name="emulatorAdlOptions" value="" />
+      <option name="fastPackaging" value="true" />
+      <option name="fullScreenHeight" value="0" />
+      <option name="fullScreenWidth" value="0" />
+      <option name="launchUrl" value="false" />
+      <option name="launcherParameters">
+        <LauncherParameters>
+          <option name="browser" value="a7bb68e0-33c0-4d6f-a81a-aac1fdb870c8" />
+          <option name="launcherType" value="OSDefault" />
+          <option name="newPlayerInstance" value="false" />
+          <option name="playerPath" value="FlashPlayerDebugger.exe" />
+        </LauncherParameters>
+      </option>
+      <option name="mobileRunTarget" value="Emulator" />
+      <option name="moduleName" value="" />
+      <option name="overriddenMainClass" value="" />
+      <option name="overriddenOutputFileName" value="" />
+      <option name="overrideMainClass" value="false" />
+      <option name="runTrusted" value="true" />
+      <option name="screenDpi" value="0" />
+      <option name="screenHeight" value="0" />
+      <option name="screenWidth" value="0" />
+      <option name="url" value="http://" />
+      <option name="usbDebugPort" value="7936" />
+      <method />
+    </configuration>
+    <configuration default="true" type="FlexUnitRunConfigurationType" factoryName="FlexUnit" appDescriptorForEmulator="Android" class_name="" emulatorAdlOptions="" method_name="" package_name="" scope="Class">
+      <option name="BCName" value="" />
+      <option name="launcherParameters">
+        <LauncherParameters>
+          <option name="browser" value="a7bb68e0-33c0-4d6f-a81a-aac1fdb870c8" />
+          <option name="launcherType" value="OSDefault" />
+          <option name="newPlayerInstance" value="false" />
+          <option name="playerPath" value="FlashPlayerDebugger.exe" />
+        </LauncherParameters>
+      </option>
+      <option name="moduleName" value="" />
+      <option name="trusted" value="true" />
+      <method />
+    </configuration>
+    <configuration default="true" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list />
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <method />
+    </configuration>
+    <configuration default="true" type="GrailsRunConfigurationType" factoryName="Grails">
+      <module name="" />
+      <setting name="vmparams" value="" />
+      <setting name="cmdLine" value="run-app" />
+      <setting name="depsClasspath" value="false" />
+      <setting name="passParentEnv" value="true" />
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <setting name="launchBrowser" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration default="true" type="JarApplication" factoryName="JAR Application">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
+      <method />
+    </configuration>
+    <configuration default="true" type="NodeJSConfigurationType" factoryName="Node.js" working-dir="">
+      <method />
+    </configuration>
+    <configuration default="true" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
+      <TestRunner />
+      <method />
+    </configuration>
+    <configuration default="true" type="PhpBuiltInWebServerConfigurationType" factoryName="PHP Built-in Web Server">
+      <method />
+    </configuration>
+    <configuration default="true" type="PhpLocalRunConfigurationType" factoryName="PHP Console">
+      <method />
+    </configuration>
+    <configuration default="true" type="PhpUnitRemoteRunConfigurationType" factoryName="PHPUnit on Server">
+      <method />
+    </configuration>
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+      <method />
+    </configuration>
+    <configuration default="true" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="TestNG" factoryName="TestNG">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="ANNOTATION_TYPE" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
+      <envs />
+      <properties />
+      <listeners />
+      <method />
+    </configuration>
+    <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
+      <node-options />
+      <gulpfile />
+      <tasks />
+      <arguments />
+      <pass-parent-envs>true</pass-parent-envs>
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="osgi.bnd.run" factoryName="Run Launcher">
+      <method />
+    </configuration>
+    <configuration default="true" type="osgi.bnd.run" factoryName="Test Launcher (JUnit)">
+      <method />
+    </configuration>
+    <configuration default="false" name="Unnamed" type="PhpBuiltInWebServerConfigurationType" factoryName="PHP Built-in Web Server" document_root="C:/temp/again">
+      <method />
+    </configuration>
+    <configuration default="false" name="docs" type="PhpBuiltInWebServerConfigurationType" factoryName="PHP Built-in Web Server" document_root="$PROJECT_DIR$/docs">
+      <method />
+    </configuration>
+    <configuration default="false" name="docs using ip address" type="PhpBuiltInWebServerConfigurationType" factoryName="PHP Built-in Web Server" document_root="$PROJECT_DIR$/docs" host="192.168.1.116">
+      <method />
+    </configuration>
+    <list size="5">
+      <item index="0" class="java.lang.String" itemvalue="PHP Built-in Web Server.Unnamed" />
+      <item index="1" class="java.lang.String" itemvalue="PHP Built-in Web Server.docs" />
+      <item index="2" class="java.lang.String" itemvalue="PHP Built-in Web Server.docs using ip address" />
+      <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.index.html" />
+      <item index="4" class="java.lang.String" itemvalue="JavaScript Debug.example1.html" />
+    </list>
+    <recent_temporary>
+      <list size="2">
+        <item index="0" class="java.lang.String" itemvalue="JavaScript Debug.example1.html" />
+        <item index="1" class="java.lang.String" itemvalue="JavaScript Debug.index.html" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="213e8c63-f9a8-4f4c-81ed-8ad808b82ea2" name="Default" comment="" />
+      <changelist id="a3f0384d-0005-4f86-b067-96ce3c52b79b" name="do not checkin" comment="" />
+      <created>1429447590874</created>
+      <option name="number" value="Default" />
+      <updated>1429447590874</updated>
+      <workItem from="1429447592977" duration="13457000" />
+      <workItem from="1429465089459" duration="1475000" />
+      <workItem from="1429559386043" duration="11438000" />
+      <workItem from="1429820527299" duration="23000" />
+      <workItem from="1429820629708" duration="1949000" />
+      <workItem from="1429856074253" duration="834000" />
+      <workItem from="1429961532172" duration="38192000" />
+      <workItem from="1430066899435" duration="3409000" />
+      <workItem from="1430083105394" duration="2957000" />
+      <workItem from="1430156789134" duration="1178000" />
+      <workItem from="1430159387091" duration="2461000" />
+      <workItem from="1430243121084" duration="495000" />
+      <workItem from="1430254824543" duration="5350000" />
+      <workItem from="1430261013311" duration="713000" />
+      <workItem from="1430296203211" duration="14979000" />
+      <workItem from="1430496580523" duration="7321000" />
+      <workItem from="1430510883793" duration="62000" />
+      <workItem from="1431272145018" duration="837000" />
+      <workItem from="1431367070534" duration="5101000" />
+      <workItem from="1431706357023" duration="4535000" />
+      <workItem from="1431782805736" duration="25231000" />
+      <workItem from="1431851071946" duration="30902000" />
+      <workItem from="1432056105174" duration="1533000" />
+      <workItem from="1432154468290" duration="15000" />
+      <workItem from="1432374810145" duration="9934000" />
+      <workItem from="1432418256460" duration="5377000" />
+      <workItem from="1432461458786" duration="9013000" />
+      <workItem from="1432543265722" duration="11854000" />
+      <workItem from="1432678523547" duration="632000" />
+      <workItem from="1432981309310" duration="313000" />
+      <workItem from="1433069963178" duration="27783000" />
+      <workItem from="1433186903359" duration="769000" />
+      <workItem from="1433357750522" duration="2724000" />
+      <workItem from="1433449101975" duration="6099000" />
+      <workItem from="1433583252950" duration="46563000" />
+      <workItem from="1433699079403" duration="298000" />
+      <workItem from="1433791439983" duration="5538000" />
+      <workItem from="1433885074853" duration="693000" />
+      <workItem from="1433962514974" duration="11442000" />
+      <workItem from="1434141804248" duration="807000" />
+      <workItem from="1434186743024" duration="28000" />
+      <workItem from="1434186789027" duration="27541000" />
+      <workItem from="1434271438775" duration="8113000" />
+      <workItem from="1434289284615" duration="12129000" />
+      <workItem from="1434393007615" duration="3967000" />
+      <workItem from="1434560475733" duration="1753000" />
+      <workItem from="1434565637989" duration="1099000" />
+      <workItem from="1434653078123" duration="3581000" />
+      <workItem from="1434664841288" duration="21299000" />
+      <workItem from="1434784256041" duration="3759000" />
+      <workItem from="1434805649083" duration="3604000" />
+      <workItem from="1434809393835" duration="3596000" />
+      <workItem from="1434877192380" duration="25015000" />
+      <workItem from="1434955482109" duration="131000" />
+      <workItem from="1435005728038" duration="847000" />
+      <workItem from="1435007850351" duration="739000" />
+      <workItem from="1435009633125" duration="247000" />
+      <workItem from="1435083335151" duration="3155000" />
+      <workItem from="1435184365955" duration="563000" />
+      <workItem from="1435184979418" duration="642000" />
+      <workItem from="1435215391807" duration="976000" />
+      <workItem from="1435336908547" duration="6163000" />
+      <workItem from="1435601448672" duration="2698000" />
+      <workItem from="1435784148080" duration="2720000" />
+      <workItem from="1435856380244" duration="736000" />
+      <workItem from="1435865781878" duration="13861000" />
+      <workItem from="1435945843601" duration="826000" />
+      <workItem from="1435949919901" duration="11566000" />
+      <workItem from="1436010309888" duration="3953000" />
+      <workItem from="1436014919351" duration="17807000" />
+      <workItem from="1436132143488" duration="359000" />
+      <workItem from="1436205063572" duration="1185000" />
+      <workItem from="1436303522727" duration="1011000" />
+      <workItem from="1436336593094" duration="313000" />
+      <workItem from="1436371923478" duration="12074000" />
+      <workItem from="1436425021612" duration="8708000" />
+      <workItem from="1436563263790" duration="1385000" />
+      <workItem from="1436564841134" duration="1570000" />
+      <workItem from="1436602021804" duration="38175000" />
+      <workItem from="1436726556480" duration="10158000" />
+      <workItem from="1436740767175" duration="1004000" />
+      <workItem from="1436813411005" duration="7755000" />
+      <workItem from="1436829082733" duration="679000" />
+      <workItem from="1436913947377" duration="2540000" />
+      <workItem from="1436982413961" duration="14338000" />
+      <workItem from="1437161290915" duration="2440000" />
+      <workItem from="1437203086116" duration="26689000" />
+      <workItem from="1437243975118" duration="1092000" />
+      <workItem from="1437245235658" duration="988000" />
+      <workItem from="1437248181667" duration="308000" />
+      <workItem from="1437248513961" duration="159000" />
+      <workItem from="1437249819036" duration="2161000" />
+      <workItem from="1437289192773" duration="14476000" />
+      <workItem from="1437431854530" duration="599000" />
+      <workItem from="1437910685446" duration="11291000" />
+      <workItem from="1438067126704" duration="15539000" />
+      <workItem from="1438150582444" duration="6734000" />
+      <workItem from="1438330517437" duration="9548000" />
+      <workItem from="1438855633814" duration="14199000" />
+      <workItem from="1438969240678" duration="4804000" />
+      <workItem from="1439029300681" duration="21173000" />
+    </task>
+    <task id="LOCAL-00134" summary="iteration of virtual dom">
+      <created>1436654102216</created>
+      <option name="number" value="00134" />
+      <option name="project" value="LOCAL" />
+      <updated>1436654102217</updated>
+    </task>
+    <task id="LOCAL-00135" summary="iteration of virtual dom">
+      <created>1436655315874</created>
+      <option name="number" value="00135" />
+      <option name="project" value="LOCAL" />
+      <updated>1436655315874</updated>
+    </task>
+    <task id="LOCAL-00136" summary="iteration of virtual dom">
+      <created>1436712040848</created>
+      <option name="number" value="00136" />
+      <option name="project" value="LOCAL" />
+      <updated>1436712040849</updated>
+    </task>
+    <task id="LOCAL-00137" summary="iteration of virtual dom">
+      <created>1436712926526</created>
+      <option name="number" value="00137" />
+      <option name="project" value="LOCAL" />
+      <updated>1436712926526</updated>
+    </task>
+    <task id="LOCAL-00138" summary="iteration of virtual dom">
+      <created>1436735551691</created>
+      <option name="number" value="00138" />
+      <option name="project" value="LOCAL" />
+      <updated>1436735551696</updated>
+    </task>
+    <task id="LOCAL-00139" summary="refactoring of row renderer">
+      <created>1436820650583</created>
+      <option name="number" value="00139" />
+      <option name="project" value="LOCAL" />
+      <updated>1436820650584</updated>
+    </task>
+    <task id="LOCAL-00140" summary="refactoring of row renderer">
+      <created>1436821528944</created>
+      <option name="number" value="00140" />
+      <option name="project" value="LOCAL" />
+      <updated>1436821528946</updated>
+    </task>
+    <task id="LOCAL-00141" summary="added beforeSortChanged(), afterSortChanged(), beforeFilterChanged(), afterFilterChanged()">
+      <created>1436914544825</created>
+      <option name="number" value="00141" />
+      <option name="project" value="LOCAL" />
+      <updated>1436914544826</updated>
+    </task>
+    <task id="LOCAL-00142" summary="fixes #279, ensure row visible">
+      <created>1436915237496</created>
+      <option name="number" value="00142" />
+      <option name="project" value="LOCAL" />
+      <updated>1436915237497</updated>
+    </task>
+    <task id="LOCAL-00143" summary="change to pull request, visibility callback was not right">
+      <created>1436984331842</created>
+      <option name="number" value="00143" />
+      <option name="project" value="LOCAL" />
+      <updated>1436984331843</updated>
+    </task>
+    <task id="LOCAL-00144" summary="fixes #308 #315">
+      <created>1436986069269</created>
+      <option name="number" value="00144" />
+      <option name="project" value="LOCAL" />
+      <updated>1436986069269</updated>
+    </task>
+    <task id="LOCAL-00145" summary="fixes #319">
+      <created>1436986269658</created>
+      <option name="number" value="00145" />
+      <option name="project" value="LOCAL" />
+      <updated>1436986269661</updated>
+    </task>
+    <task id="LOCAL-00146" summary="fixes #225">
+      <created>1436986859687</created>
+      <option name="number" value="00146" />
+      <option name="project" value="LOCAL" />
+      <updated>1436986859687</updated>
+    </task>
+    <task id="LOCAL-00147" summary="iteration of performance improvements">
+      <created>1437077779415</created>
+      <option name="number" value="00147" />
+      <option name="project" value="LOCAL" />
+      <updated>1437077779415</updated>
+    </task>
+    <task id="LOCAL-00148" summary="iteration of performance">
+      <created>1437078310837</created>
+      <option name="number" value="00148" />
+      <option name="project" value="LOCAL" />
+      <updated>1437078310837</updated>
+    </task>
+    <task id="LOCAL-00149" summary="iteration of performance">
+      <created>1437207418398</created>
+      <option name="number" value="00149" />
+      <option name="project" value="LOCAL" />
+      <updated>1437207418399</updated>
+    </task>
+    <task id="LOCAL-00150" summary="iteration of performance">
+      <created>1437209312655</created>
+      <option name="number" value="00150" />
+      <option name="project" value="LOCAL" />
+      <updated>1437209312655</updated>
+    </task>
+    <task id="LOCAL-00151" summary="iteration of performance">
+      <created>1437212137255</created>
+      <option name="number" value="00151" />
+      <option name="project" value="LOCAL" />
+      <updated>1437212137255</updated>
+    </task>
+    <task id="LOCAL-00152" summary="iteration of performance">
+      <created>1437219799735</created>
+      <option name="number" value="00152" />
+      <option name="project" value="LOCAL" />
+      <updated>1437219799736</updated>
+    </task>
+    <task id="LOCAL-00153" summary="iteration of performance">
+      <created>1437232939965</created>
+      <option name="number" value="00153" />
+      <option name="project" value="LOCAL" />
+      <updated>1437232939965</updated>
+    </task>
+    <task id="LOCAL-00154" summary="iteration of performance">
+      <created>1437235371825</created>
+      <option name="number" value="00154" />
+      <option name="project" value="LOCAL" />
+      <updated>1437235371826</updated>
+    </task>
+    <task id="LOCAL-00155" summary="iteration of performance">
+      <created>1437236850123</created>
+      <option name="number" value="00155" />
+      <option name="project" value="LOCAL" />
+      <updated>1437236850123</updated>
+    </task>
+    <task id="LOCAL-00156" summary="update of documentation">
+      <created>1437243904972</created>
+      <option name="number" value="00156" />
+      <option name="project" value="LOCAL" />
+      <updated>1437243904973</updated>
+    </task>
+    <task id="LOCAL-00157" summary="release 1.12.0">
+      <created>1437244077085</created>
+      <option name="number" value="00157" />
+      <option name="project" value="LOCAL" />
+      <updated>1437244077086</updated>
+    </task>
+    <task id="LOCAL-00158" summary="fixes #327">
+      <created>1437250975159</created>
+      <option name="number" value="00158" />
+      <option name="project" value="LOCAL" />
+      <updated>1437250975160</updated>
+    </task>
+    <task id="LOCAL-00159" summary="updates to website for SEO">
+      <created>1437316044360</created>
+      <option name="number" value="00159" />
+      <option name="project" value="LOCAL" />
+      <updated>1437316044362</updated>
+    </task>
+    <task id="LOCAL-00160" summary="updates to website for SEO, in particular mobile devices">
+      <created>1437323923530</created>
+      <option name="number" value="00160" />
+      <option name="project" value="LOCAL" />
+      <updated>1437323923530</updated>
+    </task>
+    <task id="LOCAL-00161" summary="added minWidth and maxWidth">
+      <created>1437930372811</created>
+      <option name="number" value="00161" />
+      <option name="project" value="LOCAL" />
+      <updated>1437930372812</updated>
+    </task>
+    <task id="LOCAL-00162" summary="added minWidth and maxWidth">
+      <created>1437930842767</created>
+      <option name="number" value="00162" />
+      <option name="project" value="LOCAL" />
+      <updated>1437930842767</updated>
+    </task>
+    <task id="LOCAL-00163" summary="fixes #337 - now the focused cell also contains the col def">
+      <created>1437931737274</created>
+      <option name="number" value="00163" />
+      <option name="project" value="LOCAL" />
+      <updated>1437931737274</updated>
+    </task>
+    <task id="LOCAL-00164" summary="fixes #334">
+      <created>1437932217699</created>
+      <option name="number" value="00164" />
+      <option name="project" value="LOCAL" />
+      <updated>1437932217699</updated>
+    </task>
+    <task id="LOCAL-00165" summary="release 1.12.4">
+      <created>1437932938120</created>
+      <option name="number" value="00165" />
+      <option name="project" value="LOCAL" />
+      <updated>1437932938120</updated>
+    </task>
+    <task id="LOCAL-00166" summary="updated 'not used' in docs">
+      <created>1437933000176</created>
+      <option name="number" value="00166" />
+      <option name="project" value="LOCAL" />
+      <updated>1437933000176</updated>
+    </task>
+    <task id="LOCAL-00167" summary="refactoring of header renderer">
+      <created>1438072720394</created>
+      <option name="number" value="00167" />
+      <option name="project" value="LOCAL" />
+      <updated>1438072720396</updated>
+    </task>
+    <task id="LOCAL-00168" summary="refactoring of header renderer">
+      <created>1438117913642</created>
+      <option name="number" value="00168" />
+      <option name="project" value="LOCAL" />
+      <updated>1438117913643</updated>
+    </task>
+    <task id="LOCAL-00169" summary="changes to pull request">
+      <created>1438119315327</created>
+      <option name="number" value="00169" />
+      <option name="project" value="LOCAL" />
+      <updated>1438119315327</updated>
+    </task>
+    <task id="LOCAL-00170" summary="iteration of colors for 'dont show group rows'">
+      <created>1438122398429</created>
+      <option name="number" value="00170" />
+      <option name="project" value="LOCAL" />
+      <updated>1438122398429</updated>
+    </task>
+    <task id="LOCAL-00171" summary="cleanup of inMemoryRowController.ts">
+      <created>1438330615283</created>
+      <option name="number" value="00171" />
+      <option name="project" value="LOCAL" />
+      <updated>1438330615284</updated>
+    </task>
+    <task id="LOCAL-00172" summary="no longer suppress 'row clicked' for checkbox">
+      <created>1438800716814</created>
+      <option name="number" value="00172" />
+      <option name="project" value="LOCAL" />
+      <updated>1438800716814</updated>
+    </task>
+    <task id="LOCAL-00173" summary="added in sortingOrder">
+      <created>1438806537204</created>
+      <option name="number" value="00173" />
+      <option name="project" value="LOCAL" />
+      <updated>1438806537204</updated>
+    </task>
+    <task id="LOCAL-00174" summary="iteration of resize refactor">
+      <created>1438875955185</created>
+      <option name="number" value="00174" />
+      <option name="project" value="LOCAL" />
+      <updated>1438875955185</updated>
+    </task>
+    <task id="LOCAL-00175" summary="refactoring of columns, now the renderers no longer change the widht, that's done by the column controller">
+      <created>1438881600109</created>
+      <option name="number" value="00175" />
+      <option name="project" value="LOCAL" />
+      <updated>1438881600109</updated>
+    </task>
+    <task id="LOCAL-00176" summary="added suppressMenuHide&#10;">
+      <created>1438969835362</created>
+      <option name="number" value="00176" />
+      <option name="project" value="LOCAL" />
+      <updated>1438969835362</updated>
+    </task>
+    <task id="LOCAL-00177" summary="implemented web components">
+      <created>1439115460415</created>
+      <option name="number" value="00177" />
+      <option name="project" value="LOCAL" />
+      <updated>1439115460416</updated>
+    </task>
+    <task id="LOCAL-00178" summary="implemented web components">
+      <created>1439116146831</created>
+      <option name="number" value="00178" />
+      <option name="project" value="LOCAL" />
+      <updated>1439116146831</updated>
+    </task>
+    <task id="LOCAL-00179" summary="added getValue to the api">
+      <created>1439118500722</created>
+      <option name="number" value="00179" />
+      <option name="project" value="LOCAL" />
+      <updated>1439118500722</updated>
+    </task>
+    <task id="LOCAL-00180" summary="now when you tab when editing, the focused cell follows the editable cell">
+      <created>1439136946404</created>
+      <option name="number" value="00180" />
+      <option name="project" value="LOCAL" />
+      <updated>1439136946405</updated>
+    </task>
+    <task id="LOCAL-00181" summary="release of 1.12.5">
+      <created>1439138897844</created>
+      <option name="number" value="00181" />
+      <option name="project" value="LOCAL" />
+      <updated>1439138897844</updated>
+    </task>
+    <task id="LOCAL-00182" summary="release of 1.12.6">
+      <created>1439142145627</created>
+      <option name="number" value="00182" />
+      <option name="project" value="LOCAL" />
+      <updated>1439142145627</updated>
+    </task>
+    <option name="localTasksCounter" value="183" />
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="730854000" />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-9" y="-9" width="1938" height="1050" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.49786097" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.28" sideWeight="0.63529414" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.26222223" sideWeight="0.44010696" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3288889" sideWeight="0.41390374" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25666666" sideWeight="0.36096257" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Gulp" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5124378" order="3" side_tool="true" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1973262" sideWeight="0.48756218" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.45666668" sideWeight="0.3647059" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5124378" order="4" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24973261" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="TypeScript Compiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.28666666" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+      <collection />
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <option name="CHECK_COMMIT_MESSAGE_SPELLING" value="false" />
+    <MESSAGE value="iteration of performance" />
+    <MESSAGE value="update of documentation" />
+    <MESSAGE value="release 1.12.0" />
+    <MESSAGE value="fixes #327" />
+    <MESSAGE value="updates to website for SEO" />
+    <MESSAGE value="updates to website for SEO, in particular mobile devices" />
+    <MESSAGE value="added minWidth and maxWidth" />
+    <MESSAGE value="fixes #337 - now the focused cell also contains the col def" />
+    <MESSAGE value="fixes #334" />
+    <MESSAGE value="release 1.12.4" />
+    <MESSAGE value="updated 'not used' in docs" />
+    <MESSAGE value="refactoring of header renderer" />
+    <MESSAGE value="changes to pull request" />
+    <MESSAGE value="iteration of colors for 'dont show group rows'" />
+    <MESSAGE value="cleanup of inMemoryRowController.ts" />
+    <MESSAGE value="no longer suppress 'row clicked' for checkbox" />
+    <MESSAGE value="added in sortingOrder" />
+    <MESSAGE value="iteration of resize refactor" />
+    <MESSAGE value="refactoring of columns, now the renderers no longer change the widht, that's done by the column controller" />
+    <MESSAGE value="added suppressMenuHide&#10;" />
+    <MESSAGE value="implemented web components" />
+    <MESSAGE value="added getValue to the api" />
+    <MESSAGE value="now when you tab when editing, the focused cell follows the editable cell" />
+    <MESSAGE value="release of 1.12.5" />
+    <MESSAGE value="release of 1.12.6" />
+    <option name="LAST_COMMIT_MESSAGE" value="release of 1.12.6" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <option name="time" value="3" />
+    </breakpoint-manager>
+    <watches-manager />
+  </component>
+  <component name="antWorkspaceConfiguration">
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="FILTER_TARGETS" value="false" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/ts/toolPanel/columnSelectionPanel.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/toolPanel/groupSelectionPanel.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="25" column="52" selection-start-line="25" selection-start-column="52" selection-end-line="25" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/toolPanel/valuesSelectionPanel.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/headerRendering/renderedHeaderGroupCell.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="129" column="0" selection-start-line="129" selection-start-column="0" selection-end-line="129" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/headerRendering/renderedHeaderElement.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/headerRendering/headerRenderer.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/columnChangeEvent.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/columnController.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="195" column="0" selection-start-line="195" selection-start-column="0" selection-end-line="195" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!doc" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/entities/columnGroup.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="62" column="0" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/entities/column.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.2977233">
+          <caret line="10" column="8" selection-start-line="10" selection-start-column="8" selection-end-line="10" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/entities/colDef.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.26795095">
+          <caret line="9" column="8" selection-start-line="9" selection-start-column="8" selection-end-line="9" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/entities/gridOptions.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7915937">
+          <caret line="78" column="0" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/gridOptionsWrapper.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.40980735">
+          <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/headerRendering/renderedHeaderCell.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="98" column="34" selection-start-line="98" selection-start-column="34" selection-end-line="98" selection-end-column="34" />
+          <folding>
+            <element signature="n#!!doc" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/example.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="73" column="0" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/angular-grid-grid-options/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-21.5">
+          <caret line="246" column="0" selection-start-line="246" selection-start-column="0" selection-end-line="246" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/typescript/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.22295082">
+          <caret line="8" column="5" selection-start-line="8" selection-start-column="5" selection-end-line="8" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/main.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="85" column="0" selection-start-line="85" selection-start-column="0" selection-end-line="85" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/example-web-component-grid/example1.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7216981">
+          <caret line="27" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/example-web-component-grid/webComponentDataGrid.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="193" column="66" selection-start-line="193" selection-start-column="66" selection-end-line="193" selection-end-column="66" />
+          <folding>
+            <marker date="1439115183545" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1439115183545" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1439115183545" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1439115183545" expanded="true" signature="-1:-1" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/example-native-javascript-grid/example1.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/example-native-javascript-grid/html5grid.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-12.423077">
+          <caret line="19" column="48" selection-start-line="19" selection-start-column="48" selection-end-line="19" selection-end-column="48" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/example-native-javascript-grid/html5grid.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="189" column="70" selection-start-line="189" selection-start-column="70" selection-end-line="189" selection-end-column="70" />
+          <folding>
+            <marker date="1439115214591" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1439115214591" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1439115214591" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1439115214591" expanded="true" signature="-1:-1" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/example-native-javascript-grid/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.65384614">
+          <caret line="1" column="25" selection-start-line="1" selection-start-column="25" selection-end-line="1" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/documentation_header.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6377049">
+          <caret line="326" column="37" selection-start-line="326" selection-start-column="37" selection-end-line="326" selection-end-column="37" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/example-web-component-grid/example1.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.65384614">
+          <caret line="1" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/example-web-component-grid/webComponentDataGrid.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.6153846">
+          <caret line="4" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#2;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/selectionController.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="350" column="39" selection-start-line="350" selection-start-column="39" selection-end-line="350" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/templateService.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="45" column="0" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/utils.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="292" column="59" selection-start-line="292" selection-start-column="56" selection-end-line="292" selection-end-column="59" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/gridApi.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="229" column="9" selection-start-line="229" selection-start-column="9" selection-end-line="229" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/filter/filterManager.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="181" column="28" selection-start-line="181" selection-start-column="28" selection-end-line="181" selection-end-column="28" />
+          <folding>
+            <element signature="n#!!doc" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/grid.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="185" column="29" selection-start-line="185" selection-start-column="29" selection-end-line="185" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/rowControllers/inMemoryRowController.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="614" column="0" selection-start-line="614" selection-start-column="0" selection-end-line="614" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/valueService.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.4544025">
+          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!doc" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/rendering/renderedCell.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="181" column="0" selection-start-line="181" selection-start-column="0" selection-end-line="181" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/rendering/renderedRow.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.34119496">
+          <caret line="146" column="0" selection-start-line="146" selection-start-column="0" selection-end-line="146" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/rendering/rowRenderer.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="435" column="0" selection-start-line="435" selection-start-column="0" selection-end-line="435" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/example-web-component-grid/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3065574">
+          <caret line="20" column="8" selection-start-line="20" selection-start-column="8" selection-end-line="20" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/filter/setFilter.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="164" column="0" selection-start-line="164" selection-start-column="0" selection-end-line="164" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/documentation.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-30.0">
+          <caret line="64" column="0" selection-start-line="64" selection-start-column="0" selection-end-line="64" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ts/groupCreator.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/example.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-97.42308">
+          <caret line="149" column="0" selection-start-line="149" selection-start-column="0" selection-end-line="149" selection-end-column="0" />
+          <folding>
+            <element signature="n#style#0;n#select#4;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#select#5;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/LICENSE.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="com.intellij.database.editor.CsvTableFileEditorProvider">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.65384614">
+          <caret line="2" column="20" selection-start-line="2" selection-start-column="20" selection-end-line="2" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/angular-grid-api/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-23.192308">
+          <caret line="235" column="75" selection-start-line="235" selection-start-column="75" selection-end-line="235" selection-end-column="75" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/example-account-report/account.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-10.461538">
+          <caret line="16" column="56" selection-start-line="16" selection-start-column="48" selection-end-line="16" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/angular-grid-angular-compiling/example1.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.5">
+          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bower.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.3076923">
+          <caret line="2" column="20" selection-start-line="2" selection-start-column="20" selection-end-line="2" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gulpfile.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="17" column="38" selection-start-line="17" selection-start-column="38" selection-end-line="17" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/notes.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.18710692">
+          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>No facets are configured</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>angular-grid</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+                <option value="0.6" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>angular-grid node_modules</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ScopeChooserConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>

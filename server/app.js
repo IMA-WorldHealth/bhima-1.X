@@ -9,24 +9,19 @@ var privateKey    = fs.readFileSync(config.tls.key, 'utf8');
 var certificate   = fs.readFileSync(config.tls.cert, 'utf8');
 var credentials   = { key : privateKey, cert : certificate };
 
-// Set the appropriate timezone for interpretting the server's data
-// NOTE : In a proper installation, this should be an environmental variable
-process.env.TZ = 'UTC';
-
 // Session configuration
-var db            = require('./lib/db').initialise(); // FIXME why we need to keep the null reference in db ?
-var authenticate  = require('./middleware/authentication')();
+var db            = require('./lib/db').initialise();
 
 var app = express();
 
 // Configure application middleware stack, inject authentication session
-require('./config/express')(app, authenticate);
+require('./config/express')(app);
 
 // Link routes
 require('./config/routes').initialise(app);
 
 // Load and configure plugins
-require('../plugins/pluginManager')(app, config);
+require('../plugins/pluginManager')(app, config.plugins);
 
 https.createServer(credentials, app).listen(config.port, logApplicationStart);
 
@@ -37,7 +32,7 @@ function logApplicationStart() {
 }
 
 function forceExit(err) {
-  console.error('[uncaughtException]', err.message);
+  console.error('[uncaughtException]', err, err.message);
   console.error(err.stack);
   process.exit(1);
 }

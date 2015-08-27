@@ -14,17 +14,20 @@
 //    - Current User data sheet
 // - Password Insecure alert or not
 
+
 angular.module('bhima.controllers')
 .controller('permission', [
   '$scope',
   '$q',
   '$window',
   '$translate',
+  '$http',
   'store',
   'connect',
   'messenger',
   'validate',
-  function($scope, $q, $window, $translate, Store, connect, messenger, validate) {
+  'SessionService',
+  function($scope, $q, $window, $translate, $http, Store, connect, messenger, validate, SessionService) {
     var dependencies = {};
     var isDefined = angular.isDefined;
 
@@ -56,7 +59,7 @@ angular.module('bhima.controllers')
       query : {
         tables: {
           'user': {
-            columns : ['id', 'username', 'email', 'password', 'first', 'last', 'logged_in']
+            columns : ['id', 'username', 'email', 'password', 'first', 'last']
           }
         }
       }
@@ -108,14 +111,21 @@ angular.module('bhima.controllers')
       current.state = 'add';
     };
 
+    // add a new user to the database
     function submitAdd() {
+
+      // remove the duplicate passwordVerify field
       delete current.user.passwordVerify;
-      connect.post('user', [connect.clean(current.user)])
-      .then(function (res) {
-        messenger.info('Successfully posted new user with id: ' + res.data.insertId);
-        current.user.id = res.data.insertId;
+
+      $http.post('/users', current.user)
+      .then(function (response) {
+        messenger.info('Successfully posted new user with id: ' + response.data.insertId);
+        current.user.id = response.data.insertId;
         $scope.users.post(current.user);
         $scope.editUser(current.user);
+      })
+      .catch(function (error) {
+        console.error('Error:', error); 
       });
     }
 
@@ -134,7 +144,6 @@ angular.module('bhima.controllers')
           removals  = [],
           additions = [];
 
-   
       // current.permission is acting as a hash of
       // the permission for the current.user.
       // Checking current.permission.get(unit) tells
@@ -190,7 +199,7 @@ angular.module('bhima.controllers')
       var promises = removals.map(function (id) {
         return connect.delete('project_permission', 'id', id);
       });
-     
+ 
       // add the (newly) checked project permissions
       if (additions.length > 0) { promises.push(connect.post('project_permission', additions)); }
 

@@ -1,43 +1,46 @@
 angular.module('bhima.controllers')
-.controller('trialbalance.print', [
-  '$scope',
-  'connect',
-  'messenger',
-  'errorCodes',
+.controller('TrialBalancePrintController', [
+  '$http',
   'precision',
-  function ($scope, connect, messenger, errorCodes, precision) {
-    var session = $scope.session = {};
+  'JournalPrintService',
+  function ($http, precision, PrintService) {
+    // alias controller object
+    var self = this;
 
-    $scope.timestamp = new Date();
+    // timestamps FTW
+    self.timestamp = new Date();
 
-    connect.fetch('trialbalance/initialize')
-    .then(function (request) {
-      console.log('[DEBUG]', 'Request is:', request);
-      $scope.transactions = request.transactions;
-      $scope.balances = request.balances;
-      var total = $scope.total = {};
+    // retrieve the transactions
+    var data = PrintService.getData();
 
-      $scope.balances.forEach(function (item) {
-        total.before = (total.before || 0) + item.balance;
-        total.debit = (total.debit || 0) + item.debit;
-        total.credit = (total.credit || 0) + item.credit;
-        total.after = (total.after || 0) + item.balance + precision.round(item.credit - item.debit);
-      });
+    // NOTE: data is not saved in AppCache, since it
+    // might bring up old balances,  We could store the
+    // timestamp there, but would a user see it?
+    //
+    // Therefore, we will simply print an error message
+    // when the "refresh" button is hit, and the user
+    // must restart their trial balance.
+    self.hasData = angular.isDefined(data.balances);
 
-      var dates = $scope.transactions.map(function (row) {
-        return new Date(row.trans_date);
-      });
+    if (self.hasData) {
 
-      session.max = Math.max.apply(Math.max, dates);
-      session.min = Math.min.apply(Math.min, dates);
-      session.count = $scope.transactions.reduce(function (a,b) { return a + b.lines; }, 0);
+      // expose to view
+      self.balances = data.balances;
+      self.metadata = data.metadata;
+      self.exceptions = data.exceptions;
 
-      $scope.errors = request.errors.map(function (error) {
-        return angular.extend(errorCodes[error.code], {affectedRows : error.details});
-      });
-    })
-    .catch(function (error) {
-      messenger.error(error);
-    });
+      // pretty hooks
+      self.hasExceptions = self.exceptions.length > 0;
+      self.hasErrors = self.exceptions.some(function (e) { return e.fatal; });
+
+      // sum the totals up
+      self.totals  = self.balances.reduce(function (totals, row) {
+        totals.before += row.balance;
+        totals.debit += row.debit;
+        totals.credit += row.credit;
+        totals.after += (row.balance + precision.round(row.credit - row.debit));
+        return totals;
+      }, { before : 0, debit : 0, credit : 0, after : 0 });
+    }
   }
 ]);

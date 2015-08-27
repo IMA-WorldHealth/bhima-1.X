@@ -32,8 +32,8 @@
               <th>{{ "COLUMNS.ID" | translate }}</th>
               <th>{{ "COLUMNS.NAME" | translate }}</th>
               <th>{{ "CASH.CASHBOX.PROJECT" | translate }}</th>
-              <th>{{ "CASH.CASHBOX.IS_AUXILLARY" | translate }}</th>
               <th>{{ "CASH.CASHBOX.IS_BANK" | translate }}</th>
+              <th>{{ "CASH.CASHBOX.IS_AUXILLARY" | translate }}</th>              
               <th colspan="2" style="width:15%;">{{ "COLUMNS.ACTION" | translate }}</th>
             </tr>
           </thead>
@@ -42,8 +42,8 @@
               <td>{{ box.id }}</td>
               <td>{{ box.text }}</td>
               <td>{{ box.abbr }}</td>
-              <td><span class="glyphicon" ng-class="{'glyphicon-ok' : !!box.is_auxillary}"></span></td>
               <td><span class="glyphicon" ng-class="{'glyphicon-ok' : !!box.is_bank}"></span></td>
+              <td><span class="glyphicon" ng-class="{'glyphicon-ok' : !!box.is_auxillary}"></span></td>
               <td><a class="action" ng-click="edit(box)"><span class="glyphicon glyphicon-pencil"></span></a></td>
               <td><a class="action danger" ng-click="delete(box)"><span class="glyphicon glyphicon-trash"></span></a></td>
             </tr>
@@ -109,7 +109,7 @@
             <input 
             type="checkbox" 
             ng-model="session.edit.is_bank" 
-            ng-checked="session.edit.is_bank">
+            ng-true-value=1>
             </label>
           </div>
         </div>
@@ -120,7 +120,7 @@
             <input 
             type="checkbox" 
             ng-model="session.edit.is_auxillary" 
-            ng-checked="session.edit.is_auxillary">
+            ng-true-value=1>
             </label>
           </div>
         </div>
