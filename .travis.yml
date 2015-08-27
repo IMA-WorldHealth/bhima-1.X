@@ -12,3 +12,7 @@ env:
     - secure: SJrx53jlcIJpvWQFrxFHwNkVhanXNZo9LRZe39NCuRPjuhojkfpizRmD+ar/Ok1E6fA+FynSZEDOhahLLNgwFlUTOxtZ0RcRjAzaCQqaQN2u5keWe4DEh/7r6Db2rriuqRNcYpvKgZpAaGYLVunsMT8I21uClTXFxvABJ6GRFls=
 addons:
   sauce_connect: true
+
+before_script:
+  - ./server/server.js &
+  - sleep 2
