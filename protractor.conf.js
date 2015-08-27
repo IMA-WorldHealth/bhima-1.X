@@ -5,10 +5,16 @@ var q = require('q');
 exports.config = {
   seleniumAddress: 'http://localhost:4444/wd/hub',
 
+  // configuration for running on SauceLabs
+  sauceUser: process.env.SAUCE_USERNAME,
+  sauceKey: process.env.SAUCE_ACCESS_KEY,
+
   multiCapabilities: [{
-    'browserName': 'firefox'
+    'browserName': 'firefox',
+     'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
   }, {
-    'browserName': 'chrome'
+    'browserName': 'chrome',
+     'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
   }],
 
   specs: ['client/test/e2e/**/*.spec.js'],
