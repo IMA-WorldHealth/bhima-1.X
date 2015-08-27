@@ -6,11 +6,11 @@ var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 var expect = chai.expect;
 
-beforeEach(function () {
-  browser.get('https://localhost:8080/#/login');
-});
-
 describe('login page', function () {
+
+  beforeEach(function () {
+    browser.get('#/login');
+  });
 
   it('rejects an undefined user', function () {
     element(by.model('LoginCtrl.credentials.username')).sendKeys('undefineds');
@@ -51,7 +51,6 @@ describe('login page', function () {
     element(by.model('LoginCtrl.credentials.password')).sendKeys('1');
     element(by.id('submit')).click();
 
-    expect(browser.getCurrentUrl()).to.eventually.equal('https://localhost:8080/#/')
+    expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + '#/');
   });
-
 });

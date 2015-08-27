@@ -1,15 +1,33 @@
+/* global by,browser,element */
+
+var q = require('q');
+
 exports.config = {
   seleniumAddress: 'http://localhost:4444/wd/hub',
 
-  capabilities: {
+  multiCapabilities: [{
+    'browserName': 'firefox'
+  }, {
     'browserName': 'chrome'
-  },
+  }],
 
-  specs: ['client/test/e2e/**/*.js'],
+  specs: ['client/test/e2e/**/*.spec.js'],
 
-  jasmineNodeOpts: {
-    showColors: true
-  },
+  framework : 'mocha',
+  baseUrl : 'https://localhost:8080/',
+  allScriptsTimeout : 30000,
 
-  framework : 'mocha'
+  // this will log the user in to begin with
+  onPrepare : function () {
+    return q.fcall(function () {
+      browser.get('https://localhost:8080/#/login');
+
+      element(by.model('LoginCtrl.credentials.username')).sendKeys('test');
+      element(by.model('LoginCtrl.credentials.password')).sendKeys('test');
+      element(by.id('submit')).click();
+
+      // NOTE - you may need to play with the delay time to get this to work properly
+      // Give this plenty of time to run
+    }).delay(3100);
+  }
 };
