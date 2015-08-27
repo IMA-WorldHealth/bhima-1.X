@@ -17,7 +17,7 @@ var q = require('q'),
 exports.generate = function (req, res, next) { 
   /* jshint unused : false*/
 
-  load(req.session.user_id)
+  load(req.session.user.id)
   .then(function (treeData) {
     res.send(treeData);
   })

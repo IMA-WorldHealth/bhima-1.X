@@ -1,18 +1,11 @@
 angular.module('bhima.services')
-.factory('auth.injector', [
-  'EVENTS',
+.factory('AuthInjectorFactory', [
   '$rootScope',
   '$q',
-  function AuthInjector(EVENTS, $rootScope, $q) {
+  function AuthInjector($rootScope, $q) {
     return {
       responseError : function (res) {
-        var errors = {
-          401 : EVENTS.auth.notAuthenticated,
-          419 : EVENTS.auth.sessionTimeout,
-          440 : EVENTS.auth.sessionTimeout
-        };
-        console.log('[INTERCEPTOR] Recieved res status', res.status); 
-        $rootScope.$broadcast(errors[res.status], res);
+        console.log('[INTERCEPTOR] Received HTTP error', res.status, res.data); 
         return $q.reject(res);
       }
     };

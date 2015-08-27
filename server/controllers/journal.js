@@ -14,7 +14,7 @@ var tableRouter, check, get;
 */
 function lookupTable(req, res, next) {
   // What are the params here?
-  request(req.params.table, req.params.id, req.session.user_id, function (err) {
+  request(req.params.table, req.params.id, req.session.user.id, function (err) {
     if (err) { return next(err); }
     res.send(200);
   });
@@ -121,14 +121,10 @@ get = {
           defer.resolve(value);
         });
       }else{
-        // var value = '\'' + data.abbr + data.increment + '\'';
         var value = data.increment ? '\'' + data.abbr + data.increment + '\'' : '\'' + data.abbr + 1 + '\'';
         defer.resolve(value);
       }
 
-
-      // console.log('voici le tableau data :::', data);
-      // var value = data.increment ? '\'' + data.abbr + data.increment + '\'' : '\'' + data.abbr + 1 + '\'';
     });
 
     return defer.promise;
@@ -4188,11 +4184,14 @@ function handleFiscalYearResultat (id, user_id, data, done) {
   * param user_id : user ID
   * param data : useful data
   */
+
   var cfg = {},
       reference,
       resAccount = data.resultat_account,
       array6 = data.class6,
       array7 = data.class7,
+      array8Charge = data.solde8Charge,
+      array8Profit = data.solde8Profit,      
       transactionDate,
       forcingDate;
 
@@ -4240,6 +4239,7 @@ function handleFiscalYearResultat (id, user_id, data, done) {
     }
   }
 
+
   function postingResultat (resAccount) {
     var processClass6 = array6.map(function (account6) {
       return processDebCred6(resAccount.id, account6);
@@ -4249,7 +4249,15 @@ function handleFiscalYearResultat (id, user_id, data, done) {
       return processDebCred7(resAccount.id, account7);
     });
 
-    return q.all([processClass6, processClass6]);
+    var processClass8Charge = array8Charge.map(function (account8c) {
+      return processDebCred6(resAccount.id, account8c);
+    });
+
+    var processClass8Profit = array8Profit.map(function (account8p) {
+      return processDebCred7(resAccount.id, account8p);
+    });
+
+    return q.all([processClass6, processClass7, processClass8Charge, processClass8Profit]);
   }
 
   function processDebCred6 (resultatAccount, class6Account) {
@@ -4397,7 +4405,6 @@ function handleFiscalYearResultat (id, user_id, data, done) {
       return db.exec(sql);
     }
   }
-
 }
 
 function handleIntegration (id, user_id, done) {

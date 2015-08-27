@@ -34,15 +34,20 @@ var extra           = require('../controllers/extraPayment');
 var gl              = require('../controllers/ledgers/general');
 var finance         = require('../controllers/finance');
 var accounts        = require('../controllers/accounts');
+var auth            = require('../controllers/auth'),
+    projects        = require('../controllers/projects'),
+    users           = require('../controllers/users');
 
 var patient = require('../controllers/patient');
-
-
 
 exports.initialise = function (app) {
   console.log('[config/routes] Configure routes');
 
-  app.get('/', uncategorised.exposeRoot);
+  // exposed to the outside without authentication
+  app.get('/languages', users.getLanguages);
+  app.get('/projects', projects.getProjects);
+  app.post('/login', auth.login);
+  app.get('/logout', auth.logout);
 
   // Application data
   app.post('/data/', data.create);
@@ -69,9 +74,9 @@ exports.initialise = function (app) {
   app.post('/service_dist/', serviceDist.execute);
   app.post('/consumption_loss/', consumptionLoss.execute);
 
-  // trail balance routes
-  app.get('/trialbalance/initialize', trialbalance.initialiseTrialBalance);
-  app.get('/trialbalance/submit/:key/', trialbalance.submitTrialBalance);
+  // trial balance routes
+  app.post('/journal/trialbalance', trialbalance.postTrialBalance);
+  app.post('/journal/togeneralledger', trialbalance.postToGeneralLedger); // TODO : rename?
 
   app.get('/journal/:table/:id', journal.lookupTable);
 
@@ -170,7 +175,6 @@ exports.initialise = function (app) {
   app.get('/getDistinctInventories/', uncategorised.listDistinctInventory);
   app.get('/getEnterprisePayment/:employee_id', uncategorised.listPaymentByEnterprise);
   app.get('/getPeriodeFiscalYear/', uncategorised.lookupPeriod);
-  app.get('/getExploitationAccount/', uncategorised.listExploitationAccount);
 
   // Added since server structure <--> v1 merge
   app.post('/payCotisation/', uncategorised.payCotisation);
@@ -213,5 +217,8 @@ exports.initialise = function (app) {
   app.get('/patient/:uuid', patient.searchUuid);
   app.get('/patient/search/fuzzy/:match', patient.searchFuzzy);
   app.get('/patient/search/reference/:reference', patient.searchReference);
+
+  // users controller
+  app.post('/users', users.createUser);
 
 };

@@ -1,4 +1,3 @@
-
 .modal-table {
   position : relative;
   max-height: 400px;
@@ -7,16 +6,40 @@
 
 .modal-table table {
   width: 100%;
+  border-collapse: collapse;
 }
 
-.modal-table-body table tr:hover {
-  background-color: rgba(255, 255, 255,0.75);
+.modal-table table tr td:not(:first-child),
+.modal-table table tr th:not(:first-child) {
+  text-align: right;
+  padding-right : 0.5em;
 }
 
-.modal-table table tr th,
-.modal-table table tr td {
+.modal-table-body {
+  margin-top : 1px;
+}
+
+.modal-table-body table tr th,
+.modal-table-body table tr td {
   width: 20%;
   padding: 5px;
+  border: 1px solid black;
+}
+
+.modal-table-body table tr:first-child th,
+.modal-table-body table tr:first-child td {
+  border-top: 0;
+}
+
+
+.modal-table-body table tr td:first-child,
+.modal-table-body table tr th:first-child {
+  border-left: 0;
+}
+
+.modal-table-body table tr td:last-child,
+.modal-table-body table tr th:last-child {
+  border-right: 0;
 }
 
 .modal-table-head {
@@ -45,6 +68,10 @@
   background-color: #fff;
 }
 
+.modal-header .modal-icons {
+  margin : 0 1em;
+}
+
 .modal-header h3 {
   display : inline-block;
   margin  : 0;
@@ -60,9 +87,12 @@
   padding-top:0;
 }
 
+.modal-footer label {
+  margin : 0 1em;
+}
+
 .modal-icons {
   display: inline-block;
-  margin-left:5em;
 }
 
 .modal-icons label {
@@ -73,27 +103,38 @@
   font-size: 10px;
 }
 
+/* color reset */
+.modal-table.success,
+.modal-table.error,
+.modal-table.warn {
+  color : #000;
+}
+
 /* success / warning / error classes */
 
-.modal-table.success {
-  background-color: rgba(212,221,228,0.5);
+.modal-table.success thead tr th {
+  background-color: #003F82;
 }
 
-.modal-table.error {
-  background-color : rgba(193,56,50,0.35);
-}
-
-
-.modal-table.success .modal-table-head {
+.modal-table.success .modal-table-head tr {
   background-color : rgb(0,63,130);
-}
-
-.modal-table.error .modal-table-head {
-  background-color : #8B0000;
 }
 
 .modal-table.success .modal-table-body {
   border-left : 6px solid rgba(0,63,130, 0.75);
+}
+
+.modal-table.warning .modal-table-head tr {
+  background-color : rgb(213,133, 17);
+}
+
+.modal-table.warning .modal-table-body {
+  border-left : 6px solid rgba(213,133, 17, 0.75);
+  opacity : 0.75%;
+}
+
+.modal-table.error .modal-table-head tr {
+  background-color : #8B0000;
 }
 
 .modal-table.error .modal-table-body {
@@ -114,12 +155,12 @@
   width: 300px;
 }
 
-.signatures .signature-box-wide{
+.signatures .signature-box-wide {
   float: left;
   margin: 5px 20px 30px 25px;
   border-bottom: 1px solid #000;
   width: 800px;
-  height: 50px;  
+  height: 50px;
 }
 
 .signature-box>label {

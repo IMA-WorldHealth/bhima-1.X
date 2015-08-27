@@ -1,22 +1,20 @@
 <div  style="margin-top: 5em;">
   <div class="col-sm-offset-4 col-xs-4" style="margin-top:5%;">
-    <div class="panel" ng-class="{ 'panel-default' : !session.loginFailure, 'panel-danger' : !!session.loginFailure }">
+    <div class="panel panel-default">
       <div class="panel-heading">
-        {{ "AUTH.LOGIN_TO_BHIMA" | translate }}
-        <span class="pull-right dropdown">
-          <a class="clk dropdown-toggle"><i class="glyphicon glyphicon-cog"></i></a>
+        <div class="pull-right dropdown">
+          <a class="btn btn-sm btn-default dropdown-toggle" style="color:#000;"><i class="glyphicon glyphicon-cog"></i></a>
           <ul class="dropdown-menu">
-            <li ng-repeat="lang in session.languages">
-              <a ng-click="changeLanguage(lang)">{{ lang.name }}</a>
+            <li ng-repeat="lang in LoginCtrl.languages">
+              <a ng-click="LoginCtrl.setLanguage(lang)">{{ lang.name }}</a>
             </li>
           </ul>
-        </span>
+        </div>
+        <h6>{{ "AUTH.LOGIN_TO_BHIMA" | translate }}</h6>
       </div>
-      <ul class="list-group" ng-if="!!session.loginFailure">
-        <li class="list-group-item text-danger" ><i class="glyphicon glyphicon-remove"></i> <b>{{ "AUTH.LOGIN_ERROR" | translate }}</b></li>
-      </ul>
       <div class="panel-body">
-        <form class="form" ng-submit="login(credentials)" novalidate>
+
+        <form class="form" name="LoginForm" ng-submit="LoginCtrl.login(LoginCtrl.credentials)" novalidate>
           <fieldset>
 
             <div class="form-group">
@@ -25,7 +23,7 @@
                 <span class="input-group-addon" style="background-color: #fff;">
                   <span class="glyphicon glyphicon-user"></span>
                 </span>
-                <input ng-model="credentials.username" class="form-bhima" placeholder="Enter your username" type="text" autofocus required />
+                <input name="username" ng-model="LoginCtrl.credentials.username" class="form-bhima" placeholder="Enter your username" type="text" autofocus required />
               </div>
             </div>
 
@@ -35,7 +33,7 @@
                 <span class="input-group-addon" style="background-color: #fff;">
                   <span class="glyphicon glyphicon-lock"></span>
                 </span>
-                <input ng-model="credentials.password" class="form-bhima" placeholder="Enter your password" type="password" required />
+                <input name="password" ng-model="LoginCtrl.credentials.password" class="form-bhima" placeholder="Enter your password" type="password" required />
               </div>
             </div>
 
@@ -45,14 +43,17 @@
                 <span class="input-group-addon" style="background-color: #fff;">
                   <i class="glyphicon glyphicon-home"></i>
                 </span>
-                <select class="form-bhima" ng-model="credentials.project" ng-options="proj.id as proj.name for proj in session.projects">
+                <select name="project" class="form-bhima" ng-model="LoginCtrl.credentials.project" ng-options="proj.id as proj.name for proj in LoginCtrl.projects">
                   <option disabled="disabled" selected="selected"> -- {{ "SELECT.PROJECT" | translate }} --</option>
                 </select>
               </div>
             </div>
 
             <input class="btn btn-sm btn-success" type="submit" value="{{'AUTH.LOGIN' | translate}}"/>
-            <input class="btn btn-sm btn-default" type="reset" value="{{'AUTH.RESET' | translate}}"/>
+
+            <p class="help-block" ng-if="LoginCtrl.submitError">
+              <b><i class="glyphicon glyphicon-exclamation-sign"></i> {{ "AUTH.LOGIN_ERROR" | translate }}</b>
+            </p>
           </fieldset>
         </form>
       </div>

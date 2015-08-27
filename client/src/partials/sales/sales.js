@@ -20,7 +20,8 @@ angular.module('bhima.controllers')
   'precision',
   'util',
   'uuid',
-  function ($scope, $location, $http, validate, connect, appstate, messenger, Appcache, precision, util, uuid) {
+  'SessionService',
+  function ($scope, $location, $http, validate, connect, appstate, messenger, Appcache, precision, util, uuid, SessionService) {
 
     var dependencies = {},
         invoice = {},
@@ -34,6 +35,8 @@ angular.module('bhima.controllers')
       is_distributable : true,
       invoice_date : new Date()
     };
+
+    $scope.project = SessionService.project;
 
     var serviceComponent = $scope.serviceComponent = {
       selected : null,
@@ -64,10 +67,6 @@ angular.module('bhima.controllers')
         }
       }
     };
-
-    appstate.register('project', function (project) {
-      $scope.project = project;
-    });
 
     recoverCache.fetch('session').then(processRecover);
 
@@ -287,7 +286,7 @@ angular.module('bhima.controllers')
       requestContainer.sale = {
         project_id       : $scope.project.id,
         cost             : calculateTotal().total,
-        currency_id      : $scope.project.currency_id,
+        currency_id      : SessionService.enterprise.currency_id,
         debitor_uuid     : invoice.debtor.debitor_uuid,
         invoice_date     : util.sqlDate(session.invoice_date),
         note             : invoice.note,

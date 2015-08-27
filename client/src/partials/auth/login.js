@@ -1,70 +1,91 @@
 angular.module('bhima.controllers')
-.controller('auth.login', [
-  'EVENTS',
-  '$scope',
-  '$rootScope',
+.controller('LoginController', [
   '$translate',
   '$location',
-  'store',
-  'appauth',
+  '$http',
+  '$timeout',
   'appcache',
   'appstate',
-  function (EVENTS, $scope, $rootScope, $translate, $location, Store, appauth, Appcache, appstate) {
-    var session = $scope.session = { menu : false };
-    var credentials = $scope.credentials = {};
-    var cache = new Appcache('preferences');
+  'SessionService',
+  function ($translate, $location, $http, $timeout, Appcache, appstate, SessionService) {
 
-    // load projects
-    appstate.register('projects', function (projects) {
-      session.projects = projects;
-      loadProject();
+    var self = this,
+        cache = new Appcache('preferences');
+
+    // contains the values from the login form
+    self.credentials = {};
+    self.submitError = false;
+
+    // load language dependencies
+    $http.get('/languages')
+    .then(function (response) {
+      self.languages = response.data;
+    })
+    .catch(function (error) {
+      console.log('err', error);  
     });
 
-    // load languages
-    appstate.register('languages', function (languages) {
-      session.languages = languages;
+    // load project dependencies
+    $http.get('/projects')
+    .then(function (response) {
+      self.projects = response.data;
+      loadStoredProject();
+    })
+    .catch(function (error) {
+      console.log('err', error);  
     });
 
-    // fetch the default project
-    function loadProject() {
+    // If the user has logged in previously, the project will
+    // be stored in appcache.  We will load it up as the default
+    // choice.  If the user has not logged in previously, we will
+    // select the first project as default.
+    function loadStoredProject() {
+      var defaultProjectIndex = 0;
+
       cache.fetch('project')
       .then(function (project) {
         var projectCacheFound = project && project.id;
 
         if (projectCacheFound) {
-          credentials.project = project.id;
+
+          // Assign the cached project as default selection
+          self.credentials.project = project.id;
         } else {
 
-          // Assign default project for now
-          var defaultProjectIndex = 0;
-          credentials.project = session.projects[defaultProjectIndex].id;
+          // Assign defaultProjectIndex for now
+          self.credentials.project = self.projects[defaultProjectIndex].id;
         }
       });
     }
 
-    $scope.login = function (cred) {
-      var projects = new Store({ identifier : 'id', data : session.projects });
+    // logs the user in, creates the session
+    self.login = function (credentials) {
 
-      // put project in cache to save it for next login
-      cache.put('project', projects.get(cred.project));
+      // submit the credentials to the server
+      $http.post('/login', credentials)
+      .then(function (response) {
+        self.submitError = false;
 
-      // put project in appstate for use throughout this session
-      appstate.set('project', projects.get(cred.project));
+        // Yay!  We are authenticated.  Create the user session.
+        SessionService.create(response.data.user, response.data.enterprise, response.data.project);
 
-      appauth.login(cred)
-      .then(function (sess) {
-        $rootScope.$broadcast(EVENTS.auth.loginSuccess);
-        session.loginFailure = false;
-        $location.path('/');
+        // DEPRECATED
+        // Support old code by registering with appstate
+        $timeout(function () {
+          appstate.set('enterprise', response.data.enterprise);
+          appstate.set('project', response.data.project);
+        });
+
+        // navigate to the home page
+        $location.url('/');
       })
-      .catch(function (err) {
-        $rootScope.$broadcast(EVENTS.auth.loginFailed);
-        session.loginFailure = true;
-      })
-      .finally();
+      .catch(function (error) {
+        self.submitError = true;
+      });
     };
 
-    $scope.changeLanguage = function (lang) {
+    // switches languages
+    self.setLanguage = function (lang) {
       $translate.use(lang.key);
       cache.put('language', { current: lang.key });
     };

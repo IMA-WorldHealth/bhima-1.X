@@ -18,7 +18,7 @@ angular.module('bhima.controllers')
       required : true,
       query : {
         tables : {
-          patient : {columns : ['uuid', 'project_id', 'reference', 'debitor_uuid', 'first_name', 'last_name', 'sex', 'dob', 'origin_location_id', 'registration_date']},
+          patient : {columns : ['uuid', 'project_id', 'reference', 'debitor_uuid', 'first_name', 'last_name', 'middle_name', 'sex', 'dob', 'origin_location_id', 'registration_date']},
           debitor : { columns : ['text']},
           debitor_group : { columns : ['account_id', 'price_list_uuid', 'is_convention']},
           project : { columns : ['abbr']}
@@ -39,7 +39,7 @@ angular.module('bhima.controllers')
     };
 
     $scope.formatPatient = function (patient) {
-      return patient ? [patient.first_name, patient.last_name].join(' ') : '';
+      return patient ? [patient.first_name, patient.last_name, patient.middle_name].join(' ') : '';
     };
 
     function processModels(models) {
