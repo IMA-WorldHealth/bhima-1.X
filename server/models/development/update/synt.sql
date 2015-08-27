@@ -99,3 +99,19 @@ UPDATE `account` SET `is_charge` =0 WHERE LEFT(`account_number`,2)=84 AND `accou
 UPDATE `account` SET `is_charge` =0 WHERE LEFT(`account_number`,2)=86 AND `account_type_id` =1 AND `is_ohada` =1;
 UPDATE `account` SET `is_charge` =0 WHERE LEFT(`account_number`,2)=88 AND `account_type_id` =1 AND `is_ohada` =1;
 
+
+USE bhima;
+
+-- Updating some Elements of table transaction_type
+--
+-- Date: 2015-08-27
+-- By: Chris LOMAME
+
+-- Delete transaction_type purchase unused
+DELETE FROM `transaction_type` WHERE `transaction_type`.`id` = 3;
+
+
+UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'import_automatique' WHERE  `transaction_type`.`id` =9;
+UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'group_deb_invoice' WHERE  `transaction_type`.`id` =5;
+UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'stock_loss' WHERE  `transaction_type`.`id` =13;
+UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'reversing_stock' WHERE  `transaction_type`.`id` =28;
