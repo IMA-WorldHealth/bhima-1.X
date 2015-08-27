@@ -30,16 +30,16 @@ var config = {
       'emails' : [{
         'name' : 'daily',
         //'frequency' : '0 23 * * *',
-        'frequency' : '* * * * 5', //
-        'addressList' : 'test',
+        'frequency' : '0 18 * * *', // */3 * * * * (for test)
+        'addressList' : 'developers',
       }, {
         'name' : 'weekly',
-        'frequency' : '* * * * 5',
-        'addressList' : 'test'
+        'frequency' : '0 19 * * 0', // */2 * * * * (for test)
+        'addressList' : 'wk'
       }, {
         'name' : 'monthly',
-        'frequency' : '*/1 * * * *',
-        'addressList' : 'test'
+        'frequency' : '0 20 28-31 * *', // */1 * * * * (for test)
+        'addressList' : 'mn'
       }]
     }
   }],
