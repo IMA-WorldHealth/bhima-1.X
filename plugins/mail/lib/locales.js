@@ -22,7 +22,7 @@ var locales = {
 };
 
 // expects a number and a language ('en' || 'fr')
-exports.currency = function currency(value, locale) {
+exports.currency = function currency(values, locale) {
   'use strict';
 
   var properties = locales[locale],
@@ -32,27 +32,31 @@ exports.currency = function currency(value, locale) {
     throw new Error('Locality %s not supported'.replace('%s', locale));
   }
 
-  // convert value to string
-  value = (value || 0).toFixed(2);
+  values.forEach(function (value){
+    // convert value to string
+    value.total = (value.total || 0).toFixed(2);
 
-  // digits after decimal
-  digits = value.slice(value.indexOf('.') + 1, value.indexOf('.') + 3);
+    // digits after decimal
+    digits = value.total.slice(value.total.indexOf('.') + 1, value.total.indexOf('.') + 3);
 
-  if (digits) {
-    value = value.slice(0, value.indexOf('.'));
-  }
+    if (digits) {
+      value.total = value.total.slice(0, value.total.indexOf('.'));
+    }
 
-  template = value.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1' + properties.separator);
+    template = value.total.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1' + properties.separator);
 
-  // make sure the currency is correctly aligned
-  if (properties.alignment == 'right') {
-    template += properties.decimal + digits + properties.symbol;
-  } else {
-    template = properties.symbol + template;
-    template += properties.decimal + digits;
-  }
+    // make sure the currency is correctly aligned
+    if (properties.alignment == 'right') {
+      template += properties.decimal + digits + properties.symbol;
+    } else {
+      template = properties.symbol + template;
+      template += properties.decimal + digits;
+    }
 
-  return template;
+    value.total = template;
+  });
+
+  return values;
 };
 
 

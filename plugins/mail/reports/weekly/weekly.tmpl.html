@@ -1,0 +1,875 @@
+<div style="margin:0; padding:0px;" bgcolor='#ffffff' style="background-color: #ffffff" marginwidth='0' marginheight='0'>
+  <table border="0" width="100%" cellpadding="0" cellspacing="0" bgcolor="#ffffff" style="margin-top:10px">
+    <tbody>
+      <tr>
+        <td align="center" valign="top" bgcolor="#ffffff" style="padding-top: 10px; padding-bottom: 10px;background-color:#ffffff;">
+
+          <!-- Header (Hospital Name | Date) -->
+          <table border="0" width="600" cellpadding="0" cellspacing="0" style="border-collapse:collapse">
+            <tbody>
+              <tr>
+                <td style="padding-top: 5px; padding-bottom: 5px;">
+                  <table width="100%" cellspacing="0" cellpadding="0" align="left">
+                    <tbody>
+                      <tr>
+                        <td align="right" style="font-size: 12px; color: #a3a3a3;">
+                          {{ this.appname }} | {{ this.date }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Main Content -->
+          <table border="0" width="600" cellpadding="0" cellspacing="0" style="border-collapse:collapse">
+            <tbody>
+              <!-- Report Header -->
+              <tr>
+                <td style="padding:12px;padding-left: 12px; color:#ffffff; padding-right:12px;" bgcolor="#C2D6D6">
+                  <table width="100%" cellspacing="0" cellpadding="0" align="left">
+                    <tbody>
+                      <tr>
+                        <td align="left">
+                          <strong style="font-size: 20px; color:#ffffff"><b>{{ this.reportname }} </b></strong>
+                        </td>
+                        <td align="right" style="line-height: 19px;font-size: 10px; color:#ffffff">
+                          {{ this.uuid }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- Report Body -->
+
+              <tr>
+                <td bgcolor='#ffffff' style="background-color: #ffffff; padding-top: 5px; padding-left: 12px; padding-right: 12px; padding-bottom: 12px;">                  
+
+                  <div style="line-height: 18px; font-size: 16px; color: #C2D6D6; border-bottom: 1px solid #efefef; margin-bottom: 5px; margin-top: 20px">
+                    {{ this.text.header.overview }}
+                  </div>
+
+                  <table cellspacing="0" cellpadding="0" border="0">
+                    <tbody>
+                      <tr>
+                        <td valign="top">
+                          <table cellspacing="0" cellpadding="0" width="800px" align="left" style="border: 1px solid black;">
+                            <thead>
+                              <tr>
+                                <th style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.week}}</th>
+                                <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.monday}}</th>
+                                <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.tuesday}}</th>
+                                <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.wednesday}}</th>
+                                <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.thursday}}</th>
+                                <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.friday}}</th>
+                                <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.saturday}}</th>
+                                <th colspan="2" style="border-bottom: 1px solid black;">{{this.text.period.sunday}}</th>
+                              </tr>
+                              <tr>
+                                <th style="border-right: 1px solid black;">
+                                  {{this.text.overview.rubrics}} / {{this.text.overview.project}}
+                                </th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="border-right: 1px solid black;">{{this.text.pax}}</th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="border-right: 1px solid black;">{{this.text.pax}}</th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="border-right: 1px solid black;">{{this.text.pax}}</th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="border-right: 1px solid black;">{{this.text.pax}}</th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="border-right: 1px solid black;">{{this.text.pax}}</th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="border-right: 1px solid black;">{{this.text.pax}}</th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="">{{this.text.pax}}</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.overview.newPatients }}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;  background : #C2D6D6;">{{ this.data.newPatientsHbb.Monday? this.data.newPatientsHbb.Monday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.newPatientsPax.Monday? this.data.newPatientsPax.Monday.total : 0 }}</td>
+
+
+                                
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.newPatientsHbb.Tuesday? this.data.newPatientsHbb.Tuesday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.newPatientsPax.Tuesday? this.data.newPatientsPax.Tuesday.total : 0 }}</td>
+
+
+                                
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.newPatientsHbb.Wednesday? this.data.newPatientsHbb.Wednesday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.newPatientsPax.Wednesday ? this.data.newPatientsPax.Wednesday.total : 0}}</td>
+
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.newPatientsHbb.Thursday ? this.data.newPatientsHbb.Thursday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.newPatientsPax.Thursday ? this.data.newPatientsPax.Thursday.total : 0 }}</td>
+
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.newPatientsHbb.Friday ? this.data.newPatientsHbb.Friday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.newPatientsPax.Friday ? this.data.newPatientsPax.Friday.total : 0}}</td>
+
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.newPatientsHbb.Saturday ? this.data.newPatientsHbb.Saturday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.newPatientsPax.Saturday ? this.data.newPatientsPax.Saturday.total : 0}}</td>
+
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.newPatientsHbb.Sunday ? this.data.newPatientsHbb.Sunday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.newPatientsPax.Sunday ? this.data.newPatientsPax.Sunday.total : 0}}</td>
+                              </tr>
+                              <tr>
+                                <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.overview.returningPatients }}</td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.returningPatientsHbb.Monday ? this.data.returningPatientsHbb.Monday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.returningPatientsPax.Monday ? this.data.returningPatientsPax.Monday.total : 0}}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.returningPatientsHbb.Tuesday ? this.data.returningPatientsHbb.Tuesday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.returningPatientsPax.Tuesday ? this.data.returningPatientsPax.Tuesday.total : 0}}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.returningPatientsHbb.Wednesday ? this.data.returningPatientsHbb.Wednesday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.returningPatientsPax.Wednesday ? this.data.returningPatientsPax.Wednesday.total : 0  }}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.returningPatientsHbb.Thursday ? this.data.returningPatientsHbb.Thursday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.returningPatientsPax.Thursday ? this.data.returningPatientsPax.Thursday.total : 0}}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.returningPatientsHbb.Friday ?  this.data.returningPatientsHbb.Friday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.returningPatientsPax.Friday ? this.data.returningPatientsPax.Friday.total : 0 }}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.returningPatientsHbb.Saturday ? this.data.returningPatientsHbb.Saturday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.returningPatientsPax.Saturday ? this.data.returningPatientsPax.Saturday.total : 0}}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.returningPatientsHbb.Sunday ?  this.data.returningPatientsHbb.Sunday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.returningPatientsPax.Sunday ? this.data.returningPatientsPax.Sunday.total : 0}}</td>
+                              </tr>
+                              <tr style='font-weight: bold'>
+                                <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.overview.totalPatients }}</td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;background : #C2D6D6;">{{ (this.data.newPatientsHbb.Monday ? this.data.newPatientsHbb.Monday.total : 0)  + (this.data.returningPatientsHbb.Monday ? this.data.returningPatientsHbb.Monday.total : 0) }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ (this.data.newPatientsPax.Monday ? this.data.newPatientsPax.Monday.total : 0)  + (this.data.returningPatientsPax.Monday ? this.data.returningPatientsPax.Monday.total : 0) }}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;background : #C2D6D6;">{{ (this.data.newPatientsHbb.Tuesday ? this.data.newPatientsHbb.Tuesday.total : 0)  + (this.data.returningPatientsHbb.Tuesday ? this.data.returningPatientsHbb.Tuesday.total : 0) }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ (this.data.newPatientsPax.Tuesday ? this.data.newPatientsPax.Tuesday.total : 0)  + (this.data.returningPatientsPax.Tuesday ? this.data.returningPatientsPax.Tuesday.total : 0) }}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ (this.data.newPatientsHbb.Wednesday ? this.data.newPatientsHbb.Wednesday.total : 0)  + (this.data.returningPatientsHbb.Wednesday ? this.data.returningPatientsHbb.Wednesday.total : 0) }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ (this.data.newPatientsPax.Wednesday ? this.data.newPatientsPax.Wednesday.total : 0)  + (this.data.returningPatientsPax.Wednesday ? this.data.returningPatientsPax.Wednesday.total : 0) }}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ (this.data.newPatientsHbb.Thursday ? this.data.newPatientsHbb.Thursday.total : 0)  + (this.data.returningPatientsHbb.Thursday ? this.data.returningPatientsHbb.Thursday.total : 0) }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ (this.data.newPatientsPax.Thursday ? this.data.newPatientsPax.Thursday.total : 0)  + (this.data.returningPatientsPax.Thursday ? this.data.returningPatientsPax.Thursday.total : 0) }}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ (this.data.newPatientsHbb.Friday ? this.data.newPatientsHbb.Friday.total : 0)  + (this.data.returningPatientsHbb.Friday ? this.data.returningPatientsHbb.Friday.total : 0) }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ (this.data.newPatientsPax.Friday ? this.data.newPatientsPax.Friday.total : 0)  + (this.data.returningPatientsPax.Friday ? this.data.returningPatientsPax.Friday.total : 0) }}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ (this.data.newPatientsHbb.Saturday ? this.data.newPatientsHbb.Saturday.total : 0)  + (this.data.returningPatientsHbb.Saturday ? this.data.returningPatientsHbb.Saturday.total : 0) }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ (this.data.newPatientsPax.Saturday ? this.data.newPatientsPax.Saturday.total : 0)  + (this.data.returningPatientsPax.Saturday ? this.data.returningPatientsPax.Saturday.total : 0) }}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ (this.data.newPatientsHbb.Sunday ? this.data.newPatientsHbb.Sunday.total : 0)  + (this.data.returningPatientsHbb.Sunday ? this.data.returningPatientsHbb.Sunday.total : 0) }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ (this.data.newPatientsPax.Sunday ? this.data.newPatientsPax.Sunday.total : 0)  + (this.data.returningPatientsPax.Sunday ? this.data.returningPatientsPax.Sunday.total : 0) }}</td>                                        
+                              </tr>
+                              <tr>
+                                <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.overview.newFicheSales }}</td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.newFicheSalesHbb.Monday ? this.data.newFicheSalesHbb.Monday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.newFicheSalesPax.Monday ? this.data.newFicheSalesHbb.Monday.total : 0 }}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.newFicheSalesHbb.Tuesday ? this.data.newFicheSalesHbb.Tuesday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.newFicheSalesHbb.Tuesday ? this.data.newFicheSalesHbb.Tuesday.total : 0 }}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.newFicheSalesHbb.Wednesday ? this.data.newFicheSalesHbb.Wednesday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.newFicheSalesHbb.Wednesday ? this.data.newFicheSalesHbb.Wednesday.total : 0 }}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.newFicheSalesHbb.Thursday ? this.data.newFicheSalesHbb.Thursday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.newFicheSalesHbb.Thursday ? this.data.newFicheSalesHbb.Thursday.total : 0 }}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.newFicheSalesHbb.Friday ? this.data.newFicheSalesHbb.Friday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.newFicheSalesHbb.Friday ? this.data.newFicheSalesHbb.Friday.total : 0 }}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.newFicheSalesHbb.Saturday ? this.data.newFicheSalesHbb.Saturday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.newFicheSalesHbb.Saturday ? this.data.newFicheSalesHbb.Saturday.total : 0 }}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.newFicheSalesHbb.Sunday ? this.data.newFicheSalesHbb.Sunday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.newFicheSalesHbb.Sunday ? this.data.newFicheSalesHbb.Sunday.total : 0 }}</td>
+                              </tr>
+                              <tr>
+                                <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.overview.oldFicheSales }}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.oldFicheSalesHbb.Monday ? this.data.oldFicheSalesHbb.Monday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.oldFicheSalesPax.Monday ? this.data.oldFicheSalesPax.Monday.total : 0}}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.oldFicheSalesHbb.Tuesday ? this.data.oldFicheSalesHbb.Tuesday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.oldFicheSalesPax.Tuesday ? this.data.oldFicheSalesPax.Tuesday.total : 0}}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.oldFicheSalesHbb.Wednesday ? this.data.oldFicheSalesHbb.Wednesday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.oldFicheSalesPax.Wednesday ? this.data.oldFicheSalesPax.Wednesday.total : 0}}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.oldFicheSalesHbb.Thursday ? this.data.oldFicheSalesHbb.Thursday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.oldFicheSalesPax.Thursday ? this.data.oldFicheSalesPax.Thursday.total : 0}}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.oldFicheSalesHbb.Friday ? this.data.oldFicheSalesHbb.Friday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.oldFicheSalesPax.Friday ? this.data.oldFicheSalesPax.Friday.total : 0}}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.oldFicheSalesHbb.Saturday ? this.data.oldFicheSalesHbb.Saturday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.oldFicheSalesPax.Saturday ? this.data.oldFicheSalesPax.Saturday.total : 0}}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.oldFicheSalesHbb.Sunday ? this.data.oldFicheSalesHbb.Sunday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.oldFicheSalesPax.Sunday ? this.data.oldFicheSalesPax.Sunday.total : 0}}</td>                                        
+                              </tr>
+                              <tr style='font-weight: bold'>
+                                <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.overview.totalFicheSales }}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ (this.data.oldFicheSalesHbb.Monday ? this.data.oldFicheSalesHbb.Monday.total : 0) + (this.data.newFicheSalesHbb.Monday ? this.data.newFicheSalesHbb.Monday.total : 0) }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ (this.data.oldFicheSalesPax.Monday ? this.data.oldFicheSalesPax.Monday.total : 0)  + (this.data.newFicheSalesPax.Monday ? this.data.newFicheSalesPax.Monday.total : 0)}}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ (this.data.oldFicheSalesHbb.Tuesday ? this.data.oldFicheSalesHbb.Tuesday.total : 0) + (this.data.newFicheSalesHbb.Tuesday ? this.data.newFicheSalesHbb.Tuesday.total : 0) }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ (this.data.oldFicheSalesPax.Tuesday ? this.data.oldFicheSalesPax.Tuesday.total : 0)  + (this.data.newFicheSalesPax.Tuesday ? this.data.newFicheSalesPax.Tuesday.total : 0)}}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ (this.data.oldFicheSalesHbb.Wednesday ? this.data.oldFicheSalesHbb.Wednesday.total : 0) + (this.data.newFicheSalesHbb.Wednesday ? this.data.newFicheSalesHbb.Wednesday.total : 0) }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ (this.data.oldFicheSalesPax.Wednesday ? this.data.oldFicheSalesPax.Wednesday.total : 0)  + (this.data.newFicheSalesPax.Wednesday ? this.data.newFicheSalesPax.Wednesday.total : 0)}}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ (this.data.oldFicheSalesHbb.Thursday ? this.data.oldFicheSalesHbb.Thursday.total : 0) + (this.data.newFicheSalesHbb.Thursday ? this.data.newFicheSalesHbb.Thursday.total : 0) }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ (this.data.oldFicheSalesPax.Thursday ? this.data.oldFicheSalesPax.Thursday.total : 0)  + (this.data.newFicheSalesPax.Thursday ? this.data.newFicheSalesPax.Thursday.total : 0)}}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ (this.data.oldFicheSalesHbb.Friday ? this.data.oldFicheSalesHbb.Friday.total : 0) + (this.data.newFicheSalesHbb.Friday ? this.data.newFicheSalesHbb.Friday.total : 0) }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ (this.data.oldFicheSalesPax.Friday ? this.data.oldFicheSalesPax.Friday.total : 0)  + (this.data.newFicheSalesPax.Friday ? this.data.newFicheSalesPax.Friday.total : 0)}}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ (this.data.oldFicheSalesHbb.Saturday ? this.data.oldFicheSalesHbb.Saturday.total : 0) + (this.data.newFicheSalesHbb.Saturday ? this.data.newFicheSalesHbb.Saturday.total : 0) }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ (this.data.oldFicheSalesPax.Saturday ? this.data.oldFicheSalesPax.Saturday.total : 0)  + (this.data.newFicheSalesPax.Saturday ? this.data.newFicheSalesPax.Saturday.total : 0)}}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ (this.data.oldFicheSalesHbb.Sunday ? this.data.oldFicheSalesHbb.Sunday.total : 0) + (this.data.newFicheSalesHbb.Sunday ? this.data.newFicheSalesHbb.Sunday.total : 0) }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ (this.data.oldFicheSalesPax.Sunday ? this.data.oldFicheSalesPax.Sunday.total : 0)  + (this.data.newFicheSalesPax.Sunday ? this.data.newFicheSalesPax.Sunday.total : 0)}}</td>                                        
+                              </tr>
+                              <tr style='font-weight: bold'>
+                                <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.overview.totalInvoiceTransactions }}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.totalSalesHbb.Monday ? this.data.totalSalesHbb.Monday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.totalSalesPax.Monday ? this.data.totalSalesPax.Monday.total : 0}}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.totalSalesHbb.Tuesday ? this.data.totalSalesHbb.Tuesday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.totalSalesPax.Tuesday ? this.data.totalSalesPax.Tuesday.total : 0}}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.totalSalesHbb.Wednesday ? this.data.totalSalesHbb.Wednesday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.totalSalesPax.Wednesday ? this.data.totalSalesPax.Wednesday.total : 0}}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.totalSalesHbb.Thursday ? this.data.totalSalesHbb.Thursday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.totalSalesPax.Thursday ? this.data.totalSalesPax.Thursday.total : 0}}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.totalSalesHbb.Friday ? this.data.totalSalesHbb.Friday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.totalSalesPax.Friday ? this.data.totalSalesPax.Friday.total : 0}}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.totalSalesHbb.Saturday ? this.data.totalSalesHbb.Saturday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.totalSalesPax.Saturday ? this.data.totalSalesPax.Saturday.total : 0}}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.totalSalesHbb.Sunday ? this.data.totalSalesHbb.Sunday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.totalSalesPax.Sunday ? this.data.totalSalesPax.Sunday.total : 0}}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <div style="line-height: 18px; font-size: 16px; color: #C2D6D6; border-bottom: 1px solid #efefef; margin-bottom: 5px; margin-top: 20px">
+                    {{ this.text.header.auxFinance}}
+                  </div>
+
+                  <table cellspacing="0" cellpadding="0" border="0">
+                    <tbody>
+                      <tr>
+                        <td valign="top">
+                          <table cellspacing="0" cellpadding="0" width="800px" align="left" style="border: 1px solid black;">
+                            <thead>
+                              <tr>
+                                <th style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.week}}</th>
+                                <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.monday}}</th>
+                                <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.tuesday}}</th>
+                                <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.wednesday}}</th>
+                                <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.thursday}}</th>
+                                <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.friday}}</th>
+                                <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.saturday}}</th>
+                                <th colspan="2" style="border-bottom: 1px solid black;">{{this.text.period.sunday}}</th>
+                              </tr>
+                              <tr>
+                                <th style="border-right: 1px solid black;">
+                                  {{this.text.overview.rubrics}} / {{this.text.overview.project}}
+                                </th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="border-right: 1px solid black;">{{this.text.pax}}</th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="border-right: 1px solid black;">{{this.text.pax}}</th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="border-right: 1px solid black;">{{this.text.pax}}</th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="border-right: 1px solid black;">{{this.text.pax}}</th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="border-right: 1px solid black;">{{this.text.pax}}</th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="border-right: 1px solid black;">{{this.text.pax}}</th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="">{{this.text.pax}}</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.finance.auxillaryCash }}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;  background : #C2D6D6;">{{ this.data.auxCashHbb.Monday? this.data.auxCashHbb.Monday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashPax.Monday? this.data.auxCashPax.Monday.total : 0 }}</td>
+
+
+                                
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.auxCashHbb.Tuesday? this.data.auxCashHbb.Tuesday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashPax.Tuesday? this.data.auxCashPax.Tuesday.total : 0 }}</td>
+
+
+                                
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.auxCashHbb.Wednesday? this.data.auxCashHbb.Wednesday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashPax.Wednesday ? this.data.auxCashPax.Wednesday.total : 0}}</td>
+
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.auxCashHbb.Thursday ? this.data.auxCashHbb.Thursday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashPax.Thursday ? this.data.auxCashPax.Thursday.total : 0 }}</td>
+
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.auxCashHbb.Friday ? this.data.auxCashHbb.Friday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashPax.Friday ? this.data.auxCashPax.Friday.total : 0}}</td>
+
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.auxCashHbb.Saturday ? this.data.auxCashHbb.Saturday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashPax.Saturday ? this.data.auxCashPax.Saturday.total : 0}}</td>
+
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.auxCashHbb.Sunday ? this.data.auxCashHbb.Sunday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.auxCashPax.Sunday ? this.data.auxCashPax.Sunday.total : 0}}</td>
+                              </tr>
+                              <tr style='font-weight: bold'>
+                                <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.finance.totalInvoice }}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;  background : #C2D6D6;">{{ this.data.auxCashTotalInvoiceHbb.Monday? this.data.auxCashTotalInvoiceHbb.Monday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashTotalInvoicePax.Monday? this.data.auxCashTotalInvoicePax.Monday.total : 0 }}</td>
+
+
+                                
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.auxCashTotalInvoiceHbb.Tuesday? this.data.auxCashTotalInvoiceHbb.Tuesday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashTotalInvoicePax.Tuesday? this.data.auxCashTotalInvoicePax.Tuesday.total : 0 }}</td>
+
+
+                                
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.auxCashTotalInvoiceHbb.Wednesday? this.data.auxCashTotalInvoiceHbb.Wednesday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashTotalInvoicePax.Wednesday ? this.data.auxCashTotalInvoicePax.Wednesday.total : 0}}</td>
+
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.auxCashTotalInvoiceHbb.Thursday ? this.data.auxCashTotalInvoiceHbb.Thursday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashTotalInvoicePax.Thursday ? this.data.auxCashTotalInvoicePax.Thursday.total : 0 }}</td>
+
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.auxCashTotalInvoiceHbb.Friday ? this.data.auxCashTotalInvoiceHbb.Friday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashTotalInvoicePax.Friday ? this.data.auxCashTotalInvoicePax.Friday.total : 0}}</td>
+
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.auxCashTotalInvoiceHbb.Saturday ? this.data.auxCashTotalInvoiceHbb.Saturday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.auxCashTotalInvoicePax.Saturday ? this.data.auxCashTotalInvoicePax.Saturday.total : 0}}</td>
+
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.auxCashTotalInvoiceHbb.Sunday ? this.data.auxCashTotalInvoiceHbb.Sunday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.auxCashTotalInvoicePax.Sunday ? this.data.auxCashTotalInvoicePax.Sunday.total : 0}}</td>
+                              </tr>                                     
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <div style="line-height: 18px; font-size: 16px; color: #C2D6D6; border-bottom: 1px solid #efefef; margin-bottom: 5px; margin-top: 20px">
+                    {{ this.text.header.priFinance}}
+                  </div>
+
+                  <table cellspacing="0" cellpadding="0" border="0">
+                    <tbody>
+                      <tr>
+                        <td valign="top">
+                          <table cellspacing="0" cellpadding="0" width="800px" align="left" style="border: 1px solid black;">
+                            <thead>
+                              <tr>
+                                <th style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.day}}</th>
+                                <th style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.monday}}</th>
+                                <th style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.tuesday}}</th>
+                                <th style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.wednesday}}</th>
+                                <th style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.thursday}}</th>
+                                <th style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.friday}}</th>
+                                <th style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.saturday}}</th>
+                                <th style="border-bottom: 1px solid black;">{{this.text.period.sunday}}</th>
+                              </tr>
+                              <tr>
+                                <th colspan="8" style="border-bottom: 1px solid black;">
+                                  {{this.text.finance.income}}
+                                </th>
+                              </tr>
+                              <tr>
+                                <th style="border-right: 1px solid black;">
+                                  {{this.text.overview.rubrics}}
+                                </th>
+                                <th colspan="7" style="border-right: 0px solid black;">
+                                </th>                               
+                              </tr>
+                            </thead>
+                            <tbody>
+
+                              <tr>
+                                <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.text.finance.transfer }}
+                                </td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;  background : #C2D6D6;">
+                                  {{ this.data.transfer.Monday? this.data.transfer.Monday.total : 0 }}
+                                </td>
+
+                                
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.data.transfer.Tuesday? this.data.transfer.Tuesday.total : 0 }}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">
+                                  {{ this.data.transfer.Wednesday ? this.data.transfer.Wednesday.total : 0}}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.data.transfer.Thursday ? this.data.transfer.Thursday.total : 0 }}
+                                </td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">
+                                  {{ this.data.transfer.Friday ? this.data.transfer.Friday.total : 0 }}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.data.transfer.Saturday ? this.data.transfer.Saturday.total : 0}}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0; background : #C2D6D6;">
+                                  {{ this.data.transfer.Sunday ? this.data.transfer.Sunday.total : 0}}
+                                </td>
+                              </tr>
+
+                              <tr>
+                                <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.text.finance.convention }}
+                                </td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;  background : #C2D6D6;">
+                                  {{ this.data.convention.Monday? this.data.convention.Monday.total : 0 }}
+                                </td>
+
+                                
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.data.convention.Tuesday? this.data.convention.Tuesday.total : 0 }}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">
+                                  {{ this.data.convention.Wednesday ? this.data.convention.Wednesday.total : 0}}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.data.convention.Thursday ? this.data.convention.Thursday.total : 0 }}
+                                </td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">
+                                  {{ this.data.convention.Friday ? this.data.convention.Friday.total : 0 }}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.data.convention.Saturday ? this.data.convention.Saturday.total : 0}}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0; background : #C2D6D6;">
+                                  {{ this.data.convention.Sunday ? this.data.convention.Sunday.total : 0}}
+                                </td>
+                              </tr>
+
+                              <tr>
+                                <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.text.finance.chargeTaken }}
+                                </td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;  background : #C2D6D6;">
+                                  {{ this.data.chargeTaken.Monday? this.data.chargeTaken.Monday.total : 0 }}
+                                </td>
+
+                                
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.data.chargeTaken.Tuesday? this.data.chargeTaken.Tuesday.total : 0 }}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">
+                                  {{ this.data.chargeTaken.Wednesday ? this.data.chargeTaken.Wednesday.total : 0}}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.data.chargeTaken.Thursday ? this.data.chargeTaken.Thursday.total : 0 }}
+                                </td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">
+                                  {{ this.data.chargeTaken.Friday ? this.data.chargeTaken.Friday.total : 0 }}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.data.chargeTaken.Saturday ? this.data.chargeTaken.Saturday.total : 0}}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0; background : #C2D6D6;">
+                                  {{ this.data.chargeTaken.Sunday ? this.data.chargeTaken.Sunday.total : 0}}
+                                </td>
+                              </tr>
+
+                              <tr>
+                                <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.text.finance.genericIncome }}
+                                </td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;  background : #C2D6D6;">
+                                  {{ this.data.genericIncome.Monday? this.data.genericIncome.Monday.total : 0 }}
+                                </td>
+
+                                
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.data.genericIncome.Tuesday? this.data.genericIncome.Tuesday.total : 0 }}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">
+                                  {{ this.data.genericIncome.Wednesday ? this.data.genericIncome.Wednesday.total : 0}}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.data.genericIncome.Thursday ? this.data.genericIncome.Thursday.total : 0 }}
+                                </td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">
+                                  {{ this.data.genericIncome.Friday ? this.data.genericIncome.Friday.total : 0 }}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.data.genericIncome.Saturday ? this.data.genericIncome.Saturday.total : 0}}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0; background : #C2D6D6;">
+                                  {{ this.data.genericIncome.Sunday ? this.data.genericIncome.Sunday.total : 0}}
+                                </td>
+                              </tr>
+
+                              <tr>
+                                <th colspan="8" style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0; text-align: center">{{this.text.finance.expense}}</th>
+                              </tr>
+
+                              <tr>
+                                <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.text.finance.purchase }}
+                                </td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;  background : #C2D6D6;">
+                                  {{ this.data.purchase.Monday? this.data.purchase.Monday.total : 0 }}
+                                </td>
+
+                                
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.data.purchase.Tuesday? this.data.purchase.Tuesday.total : 0 }}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">
+                                  {{ this.data.purchase.Wednesday ? this.data.purchase.Wednesday.total : 0}}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.data.purchase.Thursday ? this.data.purchase.Thursday.total : 0 }}
+                                </td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">
+                                  {{ this.data.purchase.Friday ? this.data.purchase.Friday.total : 0 }}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.data.purchase.Saturday ? this.data.purchase.Saturday.total : 0}}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0; background : #C2D6D6;">
+                                  {{ this.data.purchase.Sunday ? this.data.purchase.Sunday.total : 0}}
+                                </td>
+                              </tr>
+
+                              <tr>
+                                <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.text.finance.reversing }}
+                                </td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;  background : #C2D6D6;">
+                                  {{ this.data.reversing.Monday? this.data.reversing.Monday.total : 0 }}
+                                </td>
+
+                                
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.data.reversing.Tuesday? this.data.reversing.Tuesday.total : 0 }}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">
+                                  {{ this.data.reversing.Wednesday ? this.data.reversing.Wednesday.total : 0}}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.data.reversing.Thursday ? this.data.reversing.Thursday.total : 0 }}
+                                </td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">
+                                  {{ this.data.reversing.Friday ? this.data.reversing.Friday.total : 0 }}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.data.reversing.Saturday ? this.data.reversing.Saturday.total : 0}}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0; background : #C2D6D6;">
+                                  {{ this.data.reversing.Sunday ? this.data.reversing.Sunday.total : 0}}
+                                </td>
+                              </tr>
+
+                              <tr>
+                                <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.text.finance.payroll }}
+                                </td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;  background : #C2D6D6;">
+                                  {{ this.data.payroll.Monday? this.data.payroll.Monday.total : 0 }}
+                                </td>
+
+                                
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.data.payroll.Tuesday? this.data.payroll.Tuesday.total : 0 }}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">
+                                  {{ this.data.payroll.Wednesday ? this.data.payroll.Wednesday.total : 0}}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.data.payroll.Thursday ? this.data.payroll.Thursday.total : 0 }}
+                                </td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">
+                                  {{ this.data.payroll.Friday ? this.data.payroll.Friday.total : 0 }}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.data.payroll.Saturday ? this.data.payroll.Saturday.total : 0}}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0; background : #C2D6D6;">
+                                  {{ this.data.payroll.Sunday ? this.data.payroll.Sunday.total : 0}}
+                                </td>
+                              </tr>
+
+                              <tr>
+                                <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.text.finance.genericExpense }}
+                                </td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;  background : #C2D6D6;">
+                                  {{ this.data.genericExpense.Monday? this.data.genericExpense.Monday.total : 0 }}
+                                </td>
+
+                                
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.data.genericExpense.Tuesday? this.data.genericExpense.Tuesday.total : 0 }}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">
+                                  {{ this.data.genericExpense.Wednesday ? this.data.genericExpense.Wednesday.total : 0}}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.data.genericExpense.Thursday ? this.data.genericExpense.Thursday.total : 0 }}
+                                </td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">
+                                  {{ this.data.genericExpense.Friday ? this.data.genericExpense.Friday.total : 0 }}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">
+                                  {{ this.data.genericExpense.Saturday ? this.data.genericExpense.Saturday.total : 0}}
+                                </td>
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0; background : #C2D6D6;">
+                                  {{ this.data.genericExpense.Sunday ? this.data.genericExpense.Sunday.total : 0}}
+                                </td>
+                              </tr>
+                            </tbody>                            
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <div style="line-height: 18px; font-size: 16px; color: #C2D6D6; border-bottom: 1px solid #efefef; margin-bottom: 5px; margin-top: 20px">
+                    {{ this.text.header.subsidy }}
+                  </div>
+
+                  <table cellspacing="0" cellpadding="0" border="0">
+                    <tbody>
+                      <tr>
+                        <td valign="top">
+                          <table cellspacing="0" cellpadding="0" width="800px" align="left" style="border: 1px solid black;">
+                            <thead>
+                              <tr>
+                                <th style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.week}}</th>
+                                <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.monday}}</th>
+                                <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.tuesday}}</th>
+                                <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.wednesday}}</th>
+                                <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.thursday}}</th>
+                                <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.friday}}</th>
+                                <th colspan="2" style="border-right: 1px solid black; border-bottom: 1px solid black;">{{this.text.period.saturday}}</th>
+                                <th colspan="2" style="border-bottom: 1px solid black;">{{this.text.period.sunday}}</th>
+                              </tr>
+                              <tr>
+                                <th style="border-right: 1px solid black;">
+                                  {{this.text.overview.rubrics}} / {{this.text.overview.project}}
+                                </th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="border-right: 1px solid black;">{{this.text.pax}}</th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="border-right: 1px solid black;">{{this.text.pax}}</th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="border-right: 1px solid black;">{{this.text.pax}}</th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="border-right: 1px solid black;">{{this.text.pax}}</th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="border-right: 1px solid black;">{{this.text.pax}}</th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="border-right: 1px solid black;">{{this.text.pax}}</th>
+                                <th style="border-right: 1px solid black; background : #C2D6D6;">{{this.text.hbb}}</th>
+                                <th style="">{{this.text.pax}}</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td style="padding: 2px; border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.text.subsidy.ima }}</td>
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;  background : #C2D6D6;">{{ this.data.subsidyIma.Monday? this.data.subsidyIma.Monday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.subsidyIma.Monday? this.data.subsidyIma.Monday.total : 0 }}</td>
+
+
+                                
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.subsidyIma.Tuesday? this.data.subsidyIma.Tuesday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.subsidyIma.Tuesday? this.data.subsidyIma.Tuesday.total : 0 }}</td>
+
+
+                                
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.subsidyIma.Wednesday? this.data.subsidyIma.Wednesday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.subsidyIma.Wednesday ? this.data.subsidyIma.Wednesday.total : 0}}</td>
+
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.subsidyIma.Thursday ? this.data.subsidyIma.Thursday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.subsidyIma.Thursday ? this.data.subsidyIma.Thursday.total : 0 }}</td>
+
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.subsidyIma.Friday ? this.data.subsidyIma.Friday.total : 0 }}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.subsidyIma.Friday ? this.data.subsidyIma.Friday.total : 0}}</td>
+
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.subsidyIma.Saturday ? this.data.subsidyIma.Saturday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0;">{{ this.data.subsidyIma.Saturday ? this.data.subsidyIma.Saturday.total : 0}}</td>
+
+
+
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; background : #C2D6D6;">{{ this.data.subsidyIma.Sunday ? this.data.subsidyIma.Sunday.total : 0}}</td>
+                                <td align="center" style="border: 1px solid black; border-bottom: 0; border-left: 0; border-right: 0;">{{ this.data.subsidyIma.Sunday ? this.data.subsidyIma.Sunday.total : 0}}</td>
+                              </tr>                                     
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

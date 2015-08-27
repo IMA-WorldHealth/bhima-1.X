@@ -29,6 +29,7 @@ function exec(command) {
 // list provides a namespace for the message
 function mailer(list, contact, message, date) {
   'use strict';
+  // console.log('list : ', list, 'contact : ', contact, 'message : ', message, 'date :', date);
 
   console.log('[MailPlugin]', 'Sending a message to', contact.address.toLowerCase());
 
@@ -39,25 +40,40 @@ function mailer(list, contact, message, date) {
     date = timestamp;
   }
 
-  // compile a reference to the email
-  reference = path.join(__dirname, '../queue/', list + '-' + contact.address.toLowerCase() + '-' + timestamp.toLocaleTimeString());
+  //testing queue directory existence
 
-  // first, write the email to the queue
-  fs.writeFileSync(reference, message, 'utf8');
 
-  // build mail command (returns to slave email address)
-  command = 'mail -r moblesshoard@gmail.com -a \'Content-type: text/html;\' -aFrom:moblesshoard@gmail.com -s \'' + date.toLocaleDateString() + '\' ' + contact.address +
-    ' < ' + reference;
+  reference = path.join(__dirname, '../queue/');
 
-  // send the email
-  return exec(command)
-  .then(function () {
-    console.log('[MailPlugin] Mail sent! Removing file...');
+  fs.exists(reference, function (exist){
+    if(!exist){
+      fs.mkdirSync(reference);
+    }
 
-    // on successful completion, remove the file
-    fs.unlinkSync(reference);
 
-    console.log('[MailPlugin] ... done.');
+    // compile a reference to the email
+    reference += list + '-' + contact.address + '-' + timestamp.toLocaleTimeString(); 
+
+    // first, write the email to the queue
+    fs.writeFileSync(reference, message, 'utf8');
+
+    // build mail command
+    command = 'mail -a \'Content-type: text/html;\' -s \'' + date.toLocaleDateString() + '\' ' + contact.address +
+      ' < ' + reference;
+
+    // send the email
+    return exec(command)
+    .then(function () {
+      console.log('[MailPlugin] Mail sent! Removing file...');
+
+      // on successful completion, remove the file
+      fs.unlinkSync(reference);
+
+      console.log('[MailPlugin] ... done.');
+    })
+    .catch(function (err){
+      console.log('error : ', err);
+    });
   });
 }
 

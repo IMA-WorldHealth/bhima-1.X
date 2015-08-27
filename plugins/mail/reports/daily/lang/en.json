@@ -1,7 +1,7 @@
 {
   "institution" : "IMCK",
-  "imck" : "IMCK",
   "pax" : "PAX",
+  "hbb" : "HBB",
   "header"         : {
     "overview"     : "Overview",
     "accounts"     : "Accounts",
@@ -21,35 +21,35 @@
   },
   "registration" : {
     "heading" : "Patient Registration",
-    "content" : "Today, {{ this.queries.newPatientsHbb + this.queries.returningPatientsHbb }} patients were registered; {{ this.queries.newPatientsHbb }} patients new to the hospital, and {{ this.queries.returningPatientsHbb }} returning."
+    "content" : "Today, {{ this.queries.newPatientsHbb.total + this.queries.returningPatientsHbb.total }} patients were registered; {{ this.queries.newPatientsHbb.total }} patients new to the hospital, and {{ this.queries.returningPatientsHbb.total }} returning."
   },
   "cash" : {
     "hbb" : {
       "heading" : "HBB Cash Box",
-      "content" : "{{ this.queries.auxCashHbb }} were introduced at the Caisse Aux HBB, paid against a total of {{ this.queries.auxCashTotalInvoiceHbb }} invoices."
+      "content" : "{{ this.queries.auxCashHbb.total }} were introduced at the Caisse Aux HBB, paid against a total of {{ this.queries.auxCashTotalInvoiceHbb.total }} invoices."
     },
     "pax" : {
       "heading" : "PAX Cash Box",
-      "content" : "{{ this.queries.auxCashPax }} were introduced at the Caisse Aux PAX, paid against a total of {{ this.queries.auxCashTotalInvoicePax }} invoices."
+      "content" : "{{ this.queries.auxCashPax.total }} were introduced at the Caisse Aux PAX, paid against a total of {{ this.queries.auxCashTotalInvoicePax.total }} invoices."
     }
   },
   "subsidy" : {
     "heading" : "IMA Subsidy",
-    "content" : "The IMA subsidy was charged a total of <strong style='font-size: 18px; color: #686868;'>{{ this.queries.imaSubsidyTotal }}</strong> enabling <strong style='font-size: 18px; color: #686868;'>{{ this.imaSubsidyPatients }}</strong> patients to receive health care."
+    "content" : "The IMA subsidy was charged a total of <strong style='font-size: 18px; color: #686868;'>{{ this.queries.imaSubsidyTotal.total }}</strong> enabling <strong style='font-size: 18px; color: #686868;'>{{ this.queries.imaSubsidyPatients.total }}</strong> patients to receive health care."
   },
   "principal" : {
     "incomeExpense" : {
       "heading" : "Income/ Expenditure",
-      "content" : "Today, a value of <strong style='font-size: 18px; color: #686868;'>{{ this.queries.principalCashIncomeHbb }}</strong> was recorded as entering the principal cash box; a value of <strong style='font-size: 18px; color: #686868;'>{{ this.queries.principalCashExpenseHbb }}</strong> was recorded as expense."
+      "content" : "Today, a value of <strong style='font-size: 18px; color: #686868;'>{{ this.queries.principalCashIncomeHbb.total }}</strong> was recorded as entering the principal cash box; a value of <strong style='font-size: 18px; color: #686868;'>{{ this.queries.principalCashExpenseHbb.total }}</strong> was recorded as expense."
     },
     "balance" : {
       "heading" : "Balance",
-      "content" : "The balance reported by the principal cash box has a value of <strong style='font-size: 18px; color: #686868;'>{{ this.queries.principalCashBalanceHbb}}</strong>."
+      "content" : "The balance reported by the principal cash box has a value of <strong style='font-size: 18px; color: #686868;'>{{ this.queries.principalCashBalanceHbb.total}}</strong>."
     }
   },
   "sale" : {
     "heading" : "Invoice",
-    "content" : "{{ this.queries.totalSalesHbb}} invoice transactions were submitted; this includes both hospitalised and outpatient invoices."
+    "content" : "{{ this.queries.totalSalesHbb.total}} invoice transactions were submitted; this includes both hospitalised and outpatient invoices."
   },
   "fiche" : {
     "heading" : "Fiche Consultation",

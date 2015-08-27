@@ -109,8 +109,33 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
       message;
 
   // convert date into a database-friendly date
-  var dateFrom = '\'' + date.getFullYear() + '-0' + (date.getMonth() + 1) + '-' + date.getDate() + ' 00:00:00\'',
-      dateTo = '\'' + date.getFullYear() + '-0' + (date.getMonth() + 1) + '-' + (date.getDate() + 1)  + ' 00:00:00\'';
+
+  var dateFrom = new Date(), dateTo = date;
+
+   switch (email) {
+    
+    case 'daily':
+      console.log('[MailPlugin] Configuring the daily mail ...');
+      break;
+
+    case 'weekly':
+      console.log('[MailPlugin] Configuring the weekly mail ...');
+      dateFrom.setDate(date.getDate() - date.getDay());
+      break;
+
+    case 'monthly':
+      console.log('[MailPlugin] Configuring the monthly mail ...');
+      dateFrom.setDate(1);
+      break;
+
+    default:
+      console.log('Cannot understand email name');
+      break;
+  }
+
+  dateFrom = '\'' + dateFrom.getFullYear() + '-0' + (dateFrom.getMonth() + 1) + '-' + dateFrom.getDate() + ' 00:00:00\'';
+  dateTo = '\'' + dateTo.getFullYear() + '-0' + (dateTo.getMonth() + 1) + '-' + (dateTo.getDate())  + ' 00:00:00\'';
+
 
   // loop through the queries and do the following:
   // 1) template in the date fields
@@ -128,14 +153,16 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
     .then(function (rows) {
 
       // all queries return a single number in the `total` field
-      var result = rows[0].total || 0;
+      // var result = (rows.length) ? rows[0].total : 0;
+
+      var results = rows
 
       // if the result is a currency, make sure it is in the correct locality
       // NOTE : this is NOT the email locality, it is defined by the query.
       if (template.type === 'currency') {
-        template.result = locales.currency(result, template.format);
+        template.results = locales.currency(results, template.format);
       } else {
-        template.result = result;
+        template.results = results;
       }
 
       // resolve the original query with the data formatted and
@@ -152,14 +179,19 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
   // property
   q.all(promises)
   .then(function (results) {
+
     var data = {},
         templatedText,
         options;
 
     // convert promise array to a data object
     Object.keys(queries).forEach(function (key, idx) {
-      data[key] = results[idx].result;
+      data[key] = results[idx].results;          
     });
+
+    data = lineUp(data);
+
+    console.log(data);
 
     // now, we want to render the language file
     // util.map() applies the function provided recursively
@@ -195,6 +227,17 @@ MailPlugin.prototype.send = function (list, email, contact, date) {
   .done();
 };
 
+function lineUp(data){
+
+  Object.keys(data).forEach(function (key, idx){
+    var obj = {}; //will contains transformed data from array
+    data[key].forEach(function (item){
+      item.period ? obj[item.period] = {"total" : item.total} : obj["total"] = item.total;
+    });
+    data[key] = obj;
+  });
+  return data;
+}
 
 // This the plugin runtime.  We define the global
 // `plug` variable that will be configured on events

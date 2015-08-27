@@ -1,0 +1,105 @@
+{
+  "newPatientsHbb" : {
+    "query" : "SELECT COUNT(uuid) as \"total\", DAYNAME(registration_date) as period FROM patient WHERE registration_date >= {{ this.date.from }} AND registration_date <= {{ this.date.to }} AND renewal = 0 AND project_id = 1 GROUP BY period;",
+    "type" : "number"
+  },
+  "newPatientsPax" : {
+    "query" : "SELECT COUNT(uuid) as \"total\", DAYNAME(registration_date) as period FROM patient WHERE registration_date >= {{ this.date.from }} AND registration_date <= {{ this.date.to }} AND renewal = 0 AND project_id = 2 GROUP BY period;",
+    "type" : "number"
+  },
+  "returningPatientsHbb" : {
+    "query" : "SELECT COUNT(uuid) as \"total\", DAYNAME(registration_date) as period FROM patient WHERE registration_date >= {{ this.date.from }} AND registration_date <= {{ this.date.to }} AND renewal = 1 AND project_id = 1 GROUP BY period;",
+    "type" : "number"
+  },
+  "returningPatientsPax" : {
+    "query" : "SELECT COUNT(uuid) as \"total\", DAYNAME(registration_date) as period FROM patient WHERE registration_date >= {{ this.date.from }} AND registration_date <= {{ this.date.to }} AND renewal = 1 AND project_id = 2 GROUP BY period;",
+    "type": "number"
+  },
+  "newFicheSalesHbb" : {
+    "query" : "SELECT COUNT(sale.uuid) as \"total\", DAYNAME(sale.invoice_date) as period FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020002) AND sale.invoice_date >= {{ this.date.from }} AND sale.invoice_date <= {{ this.date.to }} AND sale.project_id = 1 AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note) GROUP BY period;",
+    "type" : "number"
+  },
+  "newFicheSalesPax" : {
+    "query" : "SELECT COUNT(sale.uuid) as \"total\", DAYNAME(sale.invoice_date) as period FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020002) AND sale.invoice_date >= {{ this.date.from }} AND sale.invoice_date <= {{ this.date.to }} AND sale.project_id = 2 AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note) GROUP BY period;",
+    "type" : "number"
+  },
+  "oldFicheSalesHbb" : {
+    "query" : "SELECT COUNT(sale.uuid) as \"total\", DAYNAME(sale.invoice_date) as period FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020003) AND sale.invoice_date >= {{ this.date.from }} AND sale.invoice_date <= {{ this.date.to }} AND sale.project_id = 1 AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note) GROUP BY period;",
+    "type" : "number"
+  },
+  "oldFicheSalesPax" : {
+    "query" : "SELECT COUNT(sale.uuid) as \"total\", DAYNAME(sale.invoice_date) as period FROM sale join sale_item where sale_item.sale_uuid = sale.uuid AND sale_item.inventory_uuid = (SELECT uuid from inventory where code = 020003) AND sale.invoice_date >= {{ this.date.from }} AND sale.invoice_date <= {{ this.date.to }} AND sale.project_id = 2 AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note) GROUP BY period;",
+    "type" : "number"
+  },
+  "totalSalesHbb" : {
+    "query" : "SELECT COUNT(uuid) as \"total\", DAYNAME(invoice_date) as period FROM sale WHERE invoice_date >= {{ this.date.from }} AND invoice_date <= {{ this.date.to }} AND sale.project_id = 1 AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note) GROUP BY period;",
+    "type" : "number"
+  },
+  "totalSalesPax" : {
+    "query" : "SELECT COUNT(uuid) as \"total\", DAYNAME(invoice_date) as period FROM sale WHERE invoice_date >= {{ this.date.from }} AND invoice_date <= {{ this.date.to }} AND sale.project_id = 2 AND sale.uuid NOT IN (SELECT sale_uuid FROM credit_note) GROUP BY period;",
+    "type" : "number"
+  },  
+  "auxCashHbb" : {
+    "query" : "SELECT SUM(if(currency_id = 2, cost * 930, cost )) as \"total\", DAYNAME(date) as period FROM cash WHERE  project_id = 1 AND date>={{ this.date.from }} AND date<={{ this.date.to }} AND uuid NOT IN (SELECT cash_uuid FROM cash_discard) GROUP BY period;",
+    "type" : "currency",
+    "format" : "fr"
+  },
+  "auxCashPax" : {
+    "query" : "SELECT SUM(if(currency_id = 2, cost * 930, cost )) as \"total\", DAYNAME(date) as period FROM cash WHERE  project_id = 2 AND date>={{ this.date.from }} AND date<={{ this.date.to }} AND uuid NOT IN (SELECT cash_uuid FROM cash_discard) GROUP BY period;",
+    "type" : "currency",
+    "format": "fr"
+  },
+  "auxCashTotalInvoiceHbb" : {
+    "query" : "SELECT COUNT(invoice_uuid) as \"total\", DAYNAME(date) as period FROM cash join cash_item where cash_item.cash_uuid = cash.uuid AND date >= {{ this.date.from }} AND date <= {{ this.date.to }} AND project_id = 1 GROUP BY period;",
+    "type" : "number"
+  },
+  "auxCashTotalInvoicePax" : {
+    "query" : "SELECT COUNT(invoice_uuid) as \"total\", DAYNAME(date) as period FROM cash join cash_item where cash_item.cash_uuid = cash.uuid AND date >= {{ this.date.from }} AND date <= {{ this.date.to }} AND project_id = 2 GROUP BY period;",
+    "type" : "number"
+  },
+  "transfer" : {
+    "query" : "SELECT SUM(debit_equiv) as \"total\", DAYNAME(trans_date) as period FROM (SELECT p.debit_equiv, p.trans_date FROM posting_journal as p WHERE p.account_id IN (2935, 2939) AND p.trans_date >= {{ this.date.from }} AND p.trans_date <= {{ this.date.to }} AND origin_id = 10 UNION ALL SELECT g.debit_equiv, g.trans_date FROM general_ledger as g WHERE g.account_id IN (2935, 2939) AND g.trans_date >= {{ this.date.from }} AND g.trans_date <= {{ this.date.to }} AND origin_id = 10) as t GROUP BY period;",
+    "type" : "currency",
+    "format" : "en"
+  },
+  "convention" : {
+    "query" : "SELECT SUM(debit_equiv) as \"total\", DAYNAME(trans_date) as period FROM (SELECT p.debit_equiv, p.trans_date FROM posting_journal as p WHERE p.account_id IN (2935, 2939) AND p.trans_date >= {{ this.date.from }} AND p.trans_date <= {{ this.date.to }} AND origin_id = 8 UNION ALL SELECT g.debit_equiv, g.trans_date FROM general_ledger as g WHERE g.account_id IN (2935, 2939) AND g.trans_date >= {{ this.date.from }} AND g.trans_date <= {{ this.date.to }} AND origin_id = 8) as t GROUP BY period;",
+    "type" : "currency",
+    "format" : "en"
+  },
+  "chargeTaken" : {
+    "query" : "SELECT SUM(debit_equiv) as \"total\", DAYNAME(trans_date) as period FROM (SELECT p.debit_equiv, p.trans_date FROM posting_journal as p WHERE p.account_id IN (2935, 2939) AND p.trans_date >= {{ this.date.from }} AND p.trans_date <= {{ this.date.to }} AND origin_id = 5 UNION ALL SELECT g.debit_equiv, g.trans_date FROM general_ledger as g WHERE g.account_id IN (2935, 2939) AND g.trans_date >= {{ this.date.from }} AND g.trans_date <= {{ this.date.to }} AND origin_id = 5) as t GROUP BY period;",
+    "type" : "currency",
+    "format" : "en"
+  },
+  "genericIncome" : {
+    "query" : "SELECT SUM(debit_equiv) as \"total\", DAYNAME(trans_date) as period FROM (SELECT p.debit_equiv, p.trans_date FROM posting_journal as p WHERE p.account_id IN (2935, 2939) AND p.trans_date >= {{ this.date.from }} AND p.trans_date <= {{ this.date.to }} AND origin_id = 11 UNION ALL SELECT g.debit_equiv, g.trans_date FROM general_ledger as g WHERE g.account_id IN (2935, 2939) AND g.trans_date >= {{ this.date.from }} AND g.trans_date <= {{ this.date.to }} AND origin_id = 11) as t GROUP BY period;",
+    "type" : "currency",
+    "format" : "en"
+  },
+  "purchase" : {
+    "query" : "SELECT SUM(credit_equiv) as \"total\", DAYNAME(trans_date) as period FROM (SELECT p.credit_equiv, p.trans_date FROM posting_journal as p WHERE p.account_id IN (2935, 2939) AND p.trans_date >= {{ this.date.from }} AND p.trans_date <= {{ this.date.to }} AND origin_id = 3 UNION ALL SELECT g.credit_equiv, g.trans_date FROM general_ledger as g WHERE g.account_id IN (2935, 2939) AND g.trans_date >= {{ this.date.from }} AND g.trans_date <= {{ this.date.to }} AND origin_id = 3) as t GROUP BY period;",
+    "type" : "currency",
+    "format" : "en"
+  },
+  "reversing" : {
+    "query" : "SELECT SUM(credit_equiv) as \"total\", DAYNAME(trans_date) as period FROM (SELECT p.credit_equiv, p.trans_date FROM posting_journal as p WHERE p.account_id IN (2935, 2939) AND p.trans_date >= {{ this.date.from }} AND p.trans_date <= {{ this.date.to }} AND origin_id = 28 UNION ALL SELECT g.credit_equiv, g.trans_date FROM general_ledger as g WHERE g.account_id IN (2935, 2939) AND g.trans_date >= {{ this.date.from }} AND g.trans_date <= {{ this.date.to }} AND origin_id = 28) as t GROUP BY period;",
+    "type" : "currency",
+    "format" : "en"
+  },
+  "payroll" : {
+    "query" : "SELECT SUM(credit_equiv) as \"total\", DAYNAME(trans_date) as period FROM (SELECT p.credit_equiv, p.trans_date FROM posting_journal as p WHERE p.account_id IN (2935, 2939) AND p.trans_date >= {{ this.date.from }} AND p.trans_date <= {{ this.date.to }} AND origin_id = 14 UNION ALL SELECT g.credit_equiv, g.trans_date FROM general_ledger as g WHERE g.account_id IN (2935, 2939) AND g.trans_date >= {{ this.date.from }} AND g.trans_date <= {{ this.date.to }} AND origin_id = 14) as t GROUP BY period;",
+    "type" : "currency",
+    "format" : "en"
+  },
+  "genericExpense" : {
+    "query" : "SELECT SUM(credit_equiv) as \"total\", DAYNAME(trans_date) as period FROM (SELECT p.credit_equiv, p.trans_date FROM posting_journal as p WHERE p.account_id IN (2935, 2939) AND p.trans_date >= {{ this.date.from }} AND p.trans_date <= {{ this.date.to }} AND origin_id = 20 UNION ALL SELECT g.credit_equiv, g.trans_date FROM general_ledger as g WHERE g.account_id IN (2935, 2939) AND g.trans_date >= {{ this.date.from }} AND g.trans_date <= {{ this.date.to }} AND origin_id = 20) as t GROUP BY period;",
+    "type" : "currency",
+    "format" : "en"
+  },
+  "subsidyIma" : {
+    "query" : "SELECT SUM(t.debit_equiv - t.credit_equiv) as \"total\", DAYNAME(t.trans_date) as period FROM (SELECT p.debit_equiv, p.credit_equiv, p.trans_date FROM posting_journal as p WHERE p.account_id = 3551 AND trans_date >= {{ this.date.from }} AND trans_date <= {{ this.date.to }} UNION ALL SELECT g.debit_equiv, g.credit_equiv, g.trans_date FROM general_ledger as g WHERE g.account_id = 3551 AND trans_date >= {{ this.date.from }} AND trans_date <= {{ this.date.to }}) as t GROUP BY period;",
+    "type" : "currency",
+    "format" : "en"
+  }
+}

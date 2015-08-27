@@ -22,7 +22,7 @@ var config = {
   */
   'plugins' : [{
     'name' : 'mail',
-    'script' : '/mail/index.js'
+    'script' : '/mail/index.js'    
   }],
   'tls' : {
     'key' : 'server/config/keys/server.key',
