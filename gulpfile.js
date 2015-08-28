@@ -46,7 +46,7 @@ var UGLIFY = false,
 var paths = {
   client : {
     javascript : ['client/src/js/define.js', 'client/src/js/app.js', 'client/src/**/*.js'],
-    css        : ['client/src/partials/**/*.css', 'src/css/*.css'],
+    css        : ['client/src/partials/**/*.css', 'client/src/css/*.css'],
     vendor     : ['client/vendor/*.js', 'client/vendor/**/*.js'],
 
     // these must be globs ("**" syntax) to retain their folder structures
