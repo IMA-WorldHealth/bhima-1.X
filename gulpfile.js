@@ -113,7 +113,8 @@ gulp.task('client-minify-css', function () {
 // move vendor files over to the /vendor directory
 gulp.task('client-mv-vendor', function () {
   return gulp.src(paths.client.vendor)
-    .pipe(gulp.dest(CLIENT_FOLDER + 'lib/'));
+    .pipe(flatten())
+    .pipe(gulp.dest(CLIENT_FOLDER + 'vendor/'));
 });
 
 // move static files to the public directory
@@ -125,8 +126,8 @@ gulp.task('client-mv-static', ['client-lint-i18n'], function () {
 // custom task: compare the English and French for missing tokens
 gulp.task('client-lint-i18n', function (cb) {
   var progPath = './utilities/translation/tfcomp.js',
-      enPath = 'src/i18n/en.json',
-      frPath = 'src/i18n/fr.json';
+      enPath = 'client/src/i18n/en.json',
+      frPath = 'client/src/i18n/fr.json';
 
   exec('node ' + [progPath, enPath, frPath].join(' '), function(err, _, warning) {
     if (warning) { console.error(warning); }
