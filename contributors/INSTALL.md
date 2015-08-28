@@ -63,6 +63,11 @@ Application running on localhost:8080
 Navigate to https://localhost:8080 in the browser to verify the installation.  
 You should be greated with a login page.
 
+###### Testing
+
+We use mocha for our unit tests and protractor for our end-to-end tests.  All tests
+can be run using `gulp`.
+
 ###### Advanced - configuring the application
 All configuration options are found in the configuration file located in
 `server/config.json`.  These options are straightforward and documented
