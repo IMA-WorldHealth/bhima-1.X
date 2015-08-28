@@ -77,12 +77,6 @@ var paths = {
  *
  * Other options include
  *   - [client-watch]       watch the client/src/ for changes and run the build
- *
- * NOTE
- *   Whether you are minifying the files or not, the output of all css/js
- * operations will result in files written with the *.min.js or *.min.css
- * suffix.  This is so that links in index.html do not have to rewritten on the
- * fly depending on the build type.
 */
 
 // removes files with del, and continues
@@ -216,7 +210,13 @@ gulp.task('build', ['build-client', 'build-server']);
 // run the selenium server for e2e tests
 gulp.task('webdriver-standalone', webdriver);
 
+gulp.task('clean', function (cb) {
+  del(['./bin/'], cb);
+});
 
+gulp.task('build', ['clean'], function () {
+  gulp.start('build-client', 'build-server');
+});
 
 // run the build-client task when no arguments
 gulp.task('default', [], function () {
