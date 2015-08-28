@@ -45,10 +45,12 @@ var UGLIFY = false,
 // resource paths
 var paths = {
   client : {
-    javascript : ['client/src/js/define.js', 'client/src/**/*.js', '!client/src/js/app.js'],
+    javascript : ['client/src/js/define.js', 'client/src/js/app.js', 'client/src/**/*.js'],
     css        : ['client/src/partials/**/*.css', 'src/css/*.css'],
     vendor     : ['client/vendor/*.js', 'client/vendor/**/*.js'],
-    static     : ['client/src/index.html', 'client/src/js/app.js', 'client/src/i18n/*.json', 'client/src/fonts/*', 'client/src/partials/**/*.html', 'client/src/css/images/*', 'client/src/assets/**/*']
+
+    // these must be globs ("**" syntax) to retain their folder structures
+    static     : ['client/src/index.html', 'client/src/js/app.js', 'client/src/**/*', '!client/src/**/*.js', '!client/src/**/*.css']
   },
   server : {
     javascript : ['server/*.js', 'server/**/*.js'],
@@ -117,7 +119,7 @@ gulp.task('client-mv-vendor', function () {
 
 // move static files to the public directory
 gulp.task('client-mv-static', ['client-lint-i18n'], function () {
-  return gulp.src(paths.client.static, { base : './src/' })
+  return gulp.src(paths.client.static)
     .pipe(gulp.dest(CLIENT_FOLDER));
 });
 
