@@ -9,7 +9,13 @@ var q = require('q');
 // as appropriate.
 
 var config = {
-  seleniumAddress: 'http://localhost:4444/wd/hub',
+
+  // local selenium config, in case it applies
+  seleniumAddress   : 'http://localhost:4444/wd/hub',
+  /*
+  seleniumServerJar : './node_modules/protractor/bin/selenium-server-standalone-latest.jar',
+  seleniumPort      : 4444,
+  */
 
   specs: ['client/test/e2e/**/*.spec.js'],
 

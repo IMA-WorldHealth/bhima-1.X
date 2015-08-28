@@ -1,6 +1,7 @@
 # ignore editor-specific working files
 *.swp,*.swo,*.swn,.idea/
 
+
 # ignore npm modules
 node_modules/
 .npm-debug.log
@@ -10,6 +11,7 @@ client/dest/
 /*client/js/controllers/*/
 /*client/src/js/controllers/*/
 utilities/migrate/*
+bin/*
 
 # ignore log files
 *.log
