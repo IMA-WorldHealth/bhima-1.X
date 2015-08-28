@@ -5,7 +5,7 @@ node_js:
   - "0.12"
   - "0.11"
   - "0.10"
-  - "iojs"
+
 env:
   global:
     - secure: VgYj3w6ztd5rU+XLGLUNYkqjv/GXxyYAuAzNbFhMzYARMF/Kxc6Znwh9RkmNuQjVhRE5ViWEX8Gb0GqFqcHf5jpOjC7DkrkZ0pppWkUqaMhh+IQiU9mqWRxSVLRme1NMSlnRTv6NKX8ezHHmXy/OpuMHyfUoWbVJErXjtkwZw/M=
