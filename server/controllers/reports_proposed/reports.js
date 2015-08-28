@@ -57,7 +57,7 @@ exports.serve = function (req, res, next) {
 
   res.sendFile(target.concat('.pdf'), options, function (err, res) {
     if (err) {
-      res.status(err.status).end();
+      next(err);
     } else {
 
       // Delete (unlink) served file
