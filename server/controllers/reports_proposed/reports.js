@@ -100,9 +100,16 @@ exports.build = function (req, res, next) {
 
 
     // wkhtmltopdf exceptions not handled
-    var pdf = wkhtmltopdf(compiledReport, configuration, function (code, signal, a) {
-      // Return path to file service
-      res.send('/report/serve/' + hash);
+    // TODO Verify with wkhtmltopdf docs that the first parameter will ONLY ever return error codes
+    var pdf = wkhtmltopdf(compiledReport, configuration, function (errorCode, signal, a) {
+    
+      if (errorCode) { 
+        next(errorCode);
+      } else { 
+
+        // Return path to file service
+        res.send('/report/serve/' + hash);
+      }
     });
   }
 };
