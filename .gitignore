@@ -23,3 +23,6 @@ plugins/mail/addresses/*
 
 # ignore PDF reports
 /server/controllers/reports_proposed/out/
+
+# ignore all gzipped files
+*.gz
