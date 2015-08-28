@@ -32,6 +32,9 @@ var UGLIFY = false,
     // path to the jshintrc to use
     JSHINT_PATH = '.jshintrc',
 
+    // TODO - remove this link
+    PLUGIN_FOLDER = './bin/plugins',
+
     // the output folder for built server files
     SERVER_FOLDER = './bin/server/',
 
@@ -49,7 +52,8 @@ var paths = {
   },
   server : {
     javascript : ['server/*.js', 'server/**/*.js'],
-    files      : ['server/*']
+    files      : ['server/*', 'server/**/*'],
+    plugins    : ['plugins/*', 'plugins/**/*']
   }
 };
 
@@ -136,7 +140,7 @@ gulp.task('client-lint-i18n', function (cb) {
 });
 
 // watchs for any change and builds the appropriate route
-gulp.task('client-watch', function () {
+gulp.task('watch-client', function () {
   gulp.watch(paths.client.css, ['client-minify-css']);
   gulp.watch(paths.client.javascript, ['client-minify-js']);
   gulp.watch(paths.client.static, ['client-mv-static']);
@@ -158,14 +162,15 @@ gulp.task('build-client', ['client-clean'], function () {
  * folder for convenience.
  *
  * Building will run the following tasks:
- *   - [server-lint-js]  lint the server javascript code (via jshint)
- *   - [server-mv-files] move the server files into the /bin/server folder
+ *   - [server-lint-js]    lint the server javascript code (via jshint)
+ *   - [server-mv-files]   move the server files into the /bin/server folder
+ *   - [server-mv-plugins] move the server plugins into the /bin/server folder
  *
  * To run all of the above, run the gulp task `gulp build-server`.
 */
 
 gulp.task('server-clean', function (cb) {
-  del([SERVER_FOLDER], cb);
+  del([SERVER_FOLDER, PLUGIN_FOLDER], cb);
 });
 
 // run jshint on all server javascript files
@@ -181,9 +186,16 @@ gulp.task('server-mv-files', function () {
     .pipe(gulp.dest(SERVER_FOLDER));
 });
 
+// move plugins
+// TODO - maybe find a better place for PluginManager?
+gulp.task('server-mv-plugins', function () {
+  return gulp.src(paths.server.plugins)
+    .pipe(gulp.dest(PLUGIN_FOLDER));
+});
+
 // build the server
 gulp.task('build-server', ['server-clean'], function () {
-  gulp.start('server-mv-files');
+  gulp.start('server-mv-files', 'server-mv-plugins');
 });
 
 /* -------------------------------------------------------------------------- */
@@ -195,12 +207,16 @@ gulp.task('build', ['build-client', 'build-server']);
 
 /* Testing Client Builds
  *
+ * TODO
+ *
  * The following tasks will run unit and end-to-end tests
  * on bhima.
 */
 
 // run the selenium server for e2e tests
 gulp.task('webdriver-standalone', webdriver);
+
+
 
 // run the build-client task when no arguments
 gulp.task('default', [], function () {
