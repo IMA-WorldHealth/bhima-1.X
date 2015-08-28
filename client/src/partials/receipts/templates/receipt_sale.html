@@ -49,6 +49,8 @@
       <i>{{ 'INVOICE.DATE_RECEIPT' | translate }}</i>
       <br>
       {{model.saleRecords[0].invoice_date | date}}
+      {{ 300.45 | currency:thisvariable }}
+      <p style="color : red;">{{ 93000 | bhimaCurrency:model.selectedCurrency.id}}</p>
       <br>
     </div>
   </div>
