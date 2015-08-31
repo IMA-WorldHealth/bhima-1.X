@@ -144,7 +144,7 @@ function handleGroupInvoice (id, user_id, done) {
     // if (!totalEquality) {
     //   throw new Error('Individual costs do not match total cost for invoice id: ' + id);
     // }
-    return core.queries.origin('group_invoice');
+    return core.queries.origin('group_deb_invoice');
   }
 
   function handleOrigin (originId) {
@@ -1764,7 +1764,7 @@ function handleDistributionLoss (id, user_id, details, done) {
     if (records.length === 0) { throw new Error('pas enregistrement'); }
     references = records;
     var date = util.toMysqlDate(getDate());
-    return q([core.queries.origin('loss'), core.queries.period(getDate())]);
+    return q([core.queries.origin('stock_loss'), core.queries.period(getDate())]);
   }
 
   function getDetails (originId, periodObject) {
@@ -3093,7 +3093,7 @@ function handleReversingStock (id, user_id, details, done) {
     reference = records[0];
     postingJournal = records;
     var date = util.toMysqlDate(getDate());
-    return q([core.queries.origin('reversing'), core.queries.period(getDate()), core.queries.exchangeRate(date)]);
+    return q([core.queries.origin('reversing_stock'), core.queries.period(getDate()), core.queries.exchangeRate(date)]);
   }
 
   function getDetails (originId, periodObject, store, res) {
@@ -3851,7 +3851,6 @@ tableRouter = {
   'cash'                    : require('./journal/cash').payment,
   'cash_discard'            : require('./journal/cash').refund,
   'cash_return'             : handleCashReturn,
-  // 'purchase'                : handlePurchase,
   'group_invoice'           : handleGroupInvoice,
   'employee_invoice'        : handleEmployeeInvoice,
   'credit_note'             : handleCreditNote,
