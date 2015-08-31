@@ -1,4 +1,3 @@
-
 angular.module('bhima.services')
 .service('SessionService', ['$window', function ($window) {
   var self = this,

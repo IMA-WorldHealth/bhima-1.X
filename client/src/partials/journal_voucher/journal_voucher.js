@@ -83,6 +83,8 @@ angular.module('bhima.controllers')
         return;
       }
 
+      console.log('Submitting...', $scope.master);
+
       // submit to the server
       $http.post('/finance/journalvoucher', { data : $scope.master })
 

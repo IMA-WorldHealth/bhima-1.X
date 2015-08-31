@@ -28,10 +28,10 @@
               </label>
               <div>
                 <select class="form-bhima" ng-model="session.period_id" required>
-                  <option ng-if="selectablePeriods.length" ng-value="all">
+                  <option ng-if="selectablePeriods.length" value="all">
                     {{ "OPERATING_ACCOUNT.ALL" | translate }}
                   </option>
-                  <option ng-repeat="per in selectablePeriods" ng-value="per.id">
+                  <option ng-if="selectablePeriods.length" ng-repeat="per in selectablePeriods" value="{{ per.id }}">
                     {{per.period_start | date}} -- {{per.period_stop | date}}
                   </option>
                 </select>

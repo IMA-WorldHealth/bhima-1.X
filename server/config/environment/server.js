@@ -19,11 +19,9 @@ var config = {
    * Each plugin REQUIRES two properties:
    * name      - Stored as the name of the plugin. Write in camelCase.
    * script    - The script relative to the plugins directory
+   *e.g : {'name' : 'mail', 'script' : '/mail/index.js'}
   */
-  'plugins' : [{
-    'name' : 'mail',
-    'script' : '/mail/index.js'
-  }],
+  'plugins' : [],
   'tls' : {
     'key' : 'server/config/keys/server.key',
     'cert' : 'server/config/keys/server.crt'
@@ -126,7 +124,6 @@ var config = {
       '/partials/',
       '/getEnterprisePayment/',
       '/getPeriodeFiscalYear/',
-      '/getExploitationAccount/',
       '/cost_periodic/',
       '/profit_periodic/',
       '/posting_promesse_payment/',

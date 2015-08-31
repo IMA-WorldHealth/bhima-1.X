@@ -11,6 +11,8 @@ var fs = require('fs');
 var filename1 = process.argv[2];
 var filename2 = process.argv[3];
 
+console.log('comparing', filename1, filename2);
+
 // Load the data for filename1
 var data1 = fs.readFileSync(filename1, 'utf8');
 var dict1 = JSON.parse(data1);
