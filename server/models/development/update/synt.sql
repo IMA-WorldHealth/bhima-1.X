@@ -22,7 +22,6 @@ VALUES (114, 'compte de resultat', 'TREE.COMPTE_RESULTAT', 'pour voir le rapport
 -- Date: 2015-08-04
 -- By: Chris LOMAME
 
-
 UPDATE `account` SET `is_asset`=FALSE;
 UPDATE `account` SET `is_asset`=TRUE WHERE `classe`=2 AND `is_ohada` =1;
 UPDATE `account` SET `is_asset`=TRUE WHERE `classe`=3 AND `is_ohada` =1;
@@ -36,10 +35,8 @@ UPDATE `account` SET `is_asset`=TRUE WHERE LEFT(`account_number`,2)=73 AND `is_o
 UPDATE `account` SET `is_asset`=TRUE WHERE LEFT(`account_number`,2)=81 AND `is_ohada` =1;
 UPDATE `account` SET `is_asset`=TRUE WHERE LEFT(`account_number`,2)=83 AND `is_ohada` =1;
 UPDATE `account` SET `is_asset`=TRUE WHERE LEFT(`account_number`,2)=85 AND `is_ohada` =1;
-UPDATE `account` SET `is_asset`=TRUE WHERE LEFT(`account_number`,2)=87 AND `is_ohada` =1;
 UPDATE `account` SET `is_asset`=TRUE WHERE LEFT(`account_number`,2)=89 AND `is_ohada` =1;
 UPDATE `account` SET `is_asset`=NULL WHERE `parent`=0 AND `is_ohada` =1;
-
 
 
 USE bhima;
@@ -80,3 +77,48 @@ UPDATE `user` SET `password` = PASSWORD(`password`);
 INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `has_children`, `url`, `path`) VALUES
 (115, 'Dashboards', 'TREE.DASHBOARD.TITLE', 'Dashboards', 0, 1, '/partials/dashboards/', '/dashboards'),
 (116, 'Finance Dashboar', 'TREE.DASHBOARD.FINANCE', 'Finance Dashboard', 115, 0, '/partials/dashboards/finance/finance.html', '/dashboards/finance');
+
+-- Adding column is_charge 
+-- Date: 2015-08-20
+-- By: Chris LOMAME
+--
+ALTER TABLE `account`
+ADD `is_charge` BOOLEAN NULL;
+
+
+USE bhima;
+
+-- Updates table account
+-- Updating the column is_charge column following the accounting standard OHADA
+--
+-- Date: 2015-08-20
+-- By: Chris LOMAME
+
+UPDATE `account` SET `is_charge`= NULL;
+UPDATE `account` SET `is_charge` =1 WHERE `classe`=6 AND `account_type_id` =1 AND `is_ohada` =1;
+UPDATE `account` SET `is_charge` =1 WHERE LEFT(`account_number`,2)=81 AND `account_type_id` =1 AND `is_ohada` =1;
+UPDATE `account` SET `is_charge` =1 WHERE LEFT(`account_number`,2)=83 AND `account_type_id` =1 AND `is_ohada` =1;
+UPDATE `account` SET `is_charge` =1 WHERE LEFT(`account_number`,2)=85 AND `account_type_id` =1 AND `is_ohada` =1;
+UPDATE `account` SET `is_charge` =1 WHERE LEFT(`account_number`,2)=89 AND `account_type_id` =1 AND `is_ohada` =1;
+UPDATE `account` SET `is_charge` =0 WHERE `classe`=7 AND `account_type_id` =1 AND `is_ohada` =1;
+UPDATE `account` SET `is_charge` =0 WHERE LEFT(`account_number`,2)=82 AND `account_type_id` =1 AND `is_ohada` =1;
+UPDATE `account` SET `is_charge` =0 WHERE LEFT(`account_number`,2)=84 AND `account_type_id` =1 AND `is_ohada` =1;
+UPDATE `account` SET `is_charge` =0 WHERE LEFT(`account_number`,2)=86 AND `account_type_id` =1 AND `is_ohada` =1;
+UPDATE `account` SET `is_charge` =0 WHERE LEFT(`account_number`,2)=88 AND `account_type_id` =1 AND `is_ohada` =1;
+
+
+USE bhima;
+
+-- Updating some Elements of table transaction_type
+--
+-- Date: 2015-08-27
+-- By: Chris LOMAME
+
+-- Delete transaction_type purchase unused
+DELETE FROM `transaction_type` WHERE `transaction_type`.`id` = 3;
+
+
+UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'import_automatique' WHERE  `transaction_type`.`id` =9;
+UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'group_deb_invoice' WHERE  `transaction_type`.`id` =5;
+UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'stock_loss' WHERE  `transaction_type`.`id` =13;
+UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'reversing_stock' WHERE  `transaction_type`.`id` =28;

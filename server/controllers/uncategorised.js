@@ -159,7 +159,7 @@ exports.currentProject = function (req, res, next) {
   var sql =
     'SELECT `project`.`id`, `project`.`name`, `project`.`abbr`, `project`.`enterprise_id`, `enterprise`.`currency_id`, `enterprise`.`location_id`, `enterprise`.`name` as \'enterprise_name\', `enterprise`.`phone`, `enterprise`.`email`, `village`.`name` as \'village\', `sector`.`name` as \'sector\' ' +
     'FROM `project` JOIN `enterprise` ON `project`.`enterprise_id`=`enterprise`.`id` JOIN `village` ON `enterprise`.`location_id`=`village`.`uuid` JOIN `sector` ON `village`.`sector_uuid`=`sector`.`uuid` ' +
-    'WHERE `project`.`id`=' + req.session.project_id + ';';
+    'WHERE `project`.`id`=' + req.session.project.id + ';';
   db.exec(sql)
   .then(function (result) {
     res.send(result[0]);
@@ -1397,36 +1397,6 @@ exports.lookupPeriod = function (req, res, next) {
   .done();
 };
 
-exports.listExploitationAccount = function (req, res, next) {
-  console.log(req.query.fiscal_year_id);
-  var sql = "SELECT period_total.period_id, account.account_number, account.account_txt, period_total.credit, period_total.debit"
-          + " FROM period_total"
-          + " JOIN account ON account.id = period_total.account_id"
-          + " WHERE period_total.period_id = " + sanitize.escape(req.query.period_id)
-          + " AND (account.account_number LIKE '6%' OR account.account_number LIKE '7%')"
-          + " ORDER BY account.account_number ASC";
-
-  console.log(req.query.period_id);
-  if(req.query.period_id === 'all'){
-    var sql = "SELECT period_total.period_id, account.account_number, account.account_txt, SUM(period_total.credit) AS 'credit',"
-            + " SUM(period_total.debit) AS 'debit'"
-            + " FROM period_total"
-            + " JOIN account ON account.id = period_total.account_id"
-            + " WHERE period_total.fiscal_year_id = " + sanitize.escape(req.query.fiscal_year_id)
-            + " AND (account.account_number LIKE '6%' OR account.account_number LIKE '7%')"
-            + " GROUP BY account.account_number"
-            + " ORDER BY account.account_number ASC";
-  }
-
-  req.query.fiscal_year_id
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
 exports.payCotisation = function (req, res, next) {
   cotisationPayment.execute(req.body, req.session.user.id, function (err, ans) {
     if (err) { return next(err); }
@@ -1500,7 +1470,7 @@ exports.getClassSolde = function (req, res, next) {
         fiscal_year_id = req.params.fiscal_year;
 
     var sql =
-      'SELECT `ac`.`id`, `ac`.`account_number`, `ac`.`account_txt`, `t`.`fiscal_year_id`, `t`.`debit`, `t`.`credit`, `t`.`debit_equiv`, `t`.`credit_equiv`, `t`.`currency_id` ' +
+      'SELECT `ac`.`id`, `ac`.`account_number`, `ac`.`account_txt`, `ac`.`is_charge`, `t`.`fiscal_year_id`, `t`.`debit`, `t`.`credit`, `t`.`debit_equiv`, `t`.`credit_equiv`, `t`.`currency_id` ' +
       'FROM (' +
         '(' +
           'SELECT `account`.`id`, `posting_journal`.`fiscal_year_id`, `posting_journal`.`project_id`, `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, ' +

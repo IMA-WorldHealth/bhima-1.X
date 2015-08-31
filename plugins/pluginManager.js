@@ -169,6 +169,7 @@ module.exports = function (app, pluginConfig) {
   // :action is actually {pluginId}::{eventId}}
   // Example : /plugin/events/mail::restart
   app.post('/plugin/events/:action', function (req, res, next) {
+    console.log("on entre");
 
     // make sure the plugin exists
     try {

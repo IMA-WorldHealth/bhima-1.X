@@ -46,7 +46,7 @@ module.exports = function (app, authentication) {
   // there is no need to authenticate users to access the public
   // directory.
   var days = 1000 * 60 * 60 * 24;
-  app.use(express.static('client/dest/', { maxAge : 7*days }));
+  app.use(express.static('client/', { maxAge : 7*days }));
 
   // quick way to find out if a value is in an array
   function within(value, array) { return array.indexOf(value) !== -1; }

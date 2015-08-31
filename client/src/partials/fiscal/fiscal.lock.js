@@ -53,9 +53,9 @@ angular.module('bhima.controllers')
     $scope.formatAccount = formatAccount;
 
     function observation () {
-      if ((session.solde7 - session.solde6) > 0) {
+      if ((session.produit - session.charge) > 0) {
         session.observation = 1;
-      } else if ((session.solde7 - session.solde6) < 0)  {
+      } else if ((session.produit - session.charge) < 0)  {
         session.observation = -1;
       } else {
         session.observation = 0;
@@ -85,10 +85,38 @@ angular.module('bhima.controllers')
       })
       .then(function (data7) {
         session.array7 = data7.data;
+        return getSolde(8, fy_id);
+      })
+      .then(function (data8) {
+        session.array8 = data8.data;
       })
       .then(function () {
+        var otherCharge = session.array8.filter(function (item) {
+          var accountNumber = String(item.account_number);
+          var accountIndex = accountNumber.substring(0,2);
+          accountIndex = parseInt(accountIndex);
+          return ((item.is_charge) === 1);
+        });
+
+        var otherProfit = session.array8.filter(function (item) {
+          var accountNumber = String(item.account_number);
+          var accountIndex = accountNumber.substring(0,2);
+          accountIndex = parseInt(accountIndex);
+          return ((item.is_charge) === 0);
+        });
+
+        session.otherCharge = otherCharge;
+        session.otherProfit = otherProfit;           
+
         session.solde6 = session.array6.reduce(sumDebMinusCred, 0);
         session.solde7 = session.array7.reduce(sumCredMinusDeb, 0);
+
+        session.solde8Charge = otherCharge.reduce(sumDebMinusCred, 0);
+        session.solde8Profit = otherProfit.reduce(sumCredMinusDeb, 0);
+
+        session.charge = session.solde6 + session.solde8Charge;
+        session.produit = session.solde7 + session.solde8Profit;
+
         observation();
       });
     }
@@ -123,6 +151,8 @@ angular.module('bhima.controllers')
           resultat_account : session.resultat_account,
           class6           : session.array6,
           class7           : session.array7,
+          solde8Charge     : session.otherCharge,
+          solde8Profit     : session.otherProfit,          
           forcingDate      : session.fiscalYearLastDate
         }
       };

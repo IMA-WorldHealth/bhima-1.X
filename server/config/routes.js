@@ -176,7 +176,6 @@ exports.initialise = function (app) {
   app.get('/getDistinctInventories/', uncategorised.listDistinctInventory);
   app.get('/getEnterprisePayment/:employee_id', uncategorised.listPaymentByEnterprise);
   app.get('/getPeriodeFiscalYear/', uncategorised.lookupPeriod);
-  app.get('/getExploitationAccount/', uncategorised.listExploitationAccount);
 
   // Added since server structure <--> v1 merge
   app.post('/payCotisation/', uncategorised.payCotisation);
@@ -229,4 +228,10 @@ exports.initialise = function (app) {
   // debtor analytics
   app.get('/analytics/debtorgroups/top', analytics.cashflow.getTopDebtorGroups);
   app.get('/analytics/debtors/top', analytics.cashflow.getTopDebtors);
+
+  // users controller
+  app.post('/users', users.createUser);
+  app.put('/users/:id', users.updateUser);
+  app.get('/users', users.getUsers);
+  app.delete('/users/:id', users.removeUser);
 };
