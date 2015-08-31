@@ -12,6 +12,7 @@ var gulp       = require('gulp'),
     minifycss  = require('gulp-minify-css'),
     jshint     = require('gulp-jshint'),
     flatten    = require('gulp-flatten'),
+    iife       = require('gulp-iife'),
     del        = require('del'),
 
     // mocha for server-side testing
@@ -97,6 +98,7 @@ gulp.task('client-lint-js', function () {
 // writes output to bhima.min.js
 gulp.task('client-minify-js', function () {
   return gulp.src(paths.client.javascript)
+    .pipe(iife())
     .pipe(concat('js/bhima.min.js'))
     .pipe(gulp.dest(CLIENT_FOLDER));
 });
