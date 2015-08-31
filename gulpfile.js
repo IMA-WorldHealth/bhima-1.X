@@ -183,7 +183,6 @@ gulp.task('server-mv-files', function () {
 });
 
 // move plugins
-// TODO - maybe find a better place for PluginManager?
 gulp.task('server-mv-plugins', function () {
   return gulp.src(paths.server.plugins)
     .pipe(gulp.dest(PLUGIN_FOLDER));

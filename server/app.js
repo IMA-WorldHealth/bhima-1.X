@@ -21,7 +21,7 @@ require('./config/express')(app);
 require('./config/routes').initialise(app);
 
 // Load and configure plugins
-require('../plugins/pluginManager')(app, config.plugins);
+require('./lib/pluginManager')(app, config.plugins);
 
 https.createServer(credentials, app).listen(config.port, logApplicationStart);
 
