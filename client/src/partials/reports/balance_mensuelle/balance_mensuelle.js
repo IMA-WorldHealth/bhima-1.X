@@ -85,7 +85,7 @@ angular.module('bhima.controllers')
           rootReport = 'balance_mensuelle';
 
         if(session.classe.number === '*'){
-          var rootReport = 'balance_mensuelle_all';
+          rootReport = 'balance_mensuelle_all';
         }
 
         dependencies.balance_mensuelle = { query : 'reports/' + rootReport + '/?' + JSON.stringify(params) };
