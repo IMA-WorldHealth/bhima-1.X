@@ -1030,14 +1030,30 @@
    "TITLE"                    : "Enterprise Management"
    },
 "ERROR": {
-   "ERR_ACCNT_LOCKED"    : "Locked Account Error",
-   "ERR_ACCNT_NULL"      : "Null Account Error",
-   "ERR_DEB_CRED_DNE"    : "Debtor/Creditor Does Not Exist Error",
-   "ERR_EXPIRED_SESSION" : "Session Expired Error",
-   "ERR_IMBALANCE"       : "Imbalancing Error",
-   "ERR_INVALID_DATE"    : "Invalid Date Error",
-   "ERR_SQL"             : "SQL Error",
-   "HTTP_STATUS_CODE"    : "HTTP status code"
+   "ERR_ACCNT_LOCKED"            : "Locked Account Error",
+   "ERR_ACCNT_NULL"              : "Null Account Error",
+   "ERR_DATE_IN_THE_FUTURE"      : "Error: The submitted date in the future.  Please insert a valid date.",
+   "ERR_DATE_IN_WRONG_PERIOD"    : "Date in wrong period",
+   "ERR_DEB_CRED_DNE"            : "Debtor/Creditor Does Not Exist Error",
+   "ERR_DEBIT_CREDIT_IMBALANCE"  : "Error: The debits and credits do not balance for this transaction.  Please balance the transaction and re-submit.",
+   "ERR_EXPIRED_SESSION"         : "Session Expired Error",
+   "ERR_IMBALANCE"               : "Imbalancing Error",
+   "ERR_INVALID_DATE"            : "Invalid Date Error",
+   "ERR_LOCKED_ACCOUNTS"         : "Locked accounts",
+   "ERR_MISSING_ACCOUNTS"        : "Error: There are missing accounts in the transaction.  Please make sure each line has a valid account number.",
+   "ERR_MISSING_DEBTOR_CREDITOR" : "Missing debtor creditor",
+   "ERR_MISSING_FISCAL_OR_PERIOD": "Missing fiscal or period",
+   "ERR_NO_CURRENCY"             : "A currency is required.",
+   "ERR_NO_DATE"                 : "A date is required.",
+   "ERR_NO_DESCRIPTION"          : "A description is required.",
+   "ERR_NO_EXCHANGE_RATE"        : "Error: There is no exchange rate defined for the transaction date.  Please define one using the exchange rate module and re-submit.",
+   "ERR_NO_PERIOD"               : "Error: There isn't a valid period for this date.  Please check to make sure that the date is valid, and is within a recorded period.",
+   "ERR_SQL"                     : "SQL Error",
+   "ERR_TRANSACTION_FORMAT"      : "The transaction doesn't look correctly formatted.  Did you forget an account?",
+   "ERR_UNBALANCED_TRANSACTIONS" : "Unbalanced transactions",
+   "ERROR_MISSING_ACCOUNTS"      : "Missing accounts",
+   "HTTP_STATUS_CODE"            : "HTTP status code",
+   "WARN_MISSING_DOCUMENT_ID"    : "Missing document ID"
    },
 "EXCHANGE": {
    "HELP_TXT_1" : "The exchange rate module provides the facilty to set daily exchange rates. In order to ensure data integrity, an exchange rate for all functional currencies must be set daily",
@@ -1227,6 +1243,13 @@
   "FISCAL_YEAR"          : "Fiscal year",
   "LANGUAGE"             : "Language"
   },
+"GRID" : {
+  "ABOLISH_GROUPS"    : "Abolish Grouping",
+  "CLEAR"             : "Clear Selection",
+  "GROUP_ROWS"        : "Group Rows",
+  "REFRESH"           : "Refresh Selection",
+  "UPDATE"            : "Update Selection"
+},  
 "GROUP_INVOICE": {
    "AGREED"                 : "Agreed Payment",
    "AUTHORIZE"              : "Authorize",
@@ -1489,14 +1512,15 @@
    "DEFAULT_CURRENCY"       : "Currency",
    "DESCRIPTION"            : "Description",
    "DESCRIPTION_LONG"       : "This module help you to make intantaneous transaction to posting journal",
+   "LOAD_CACHED_FORM"       : "Load Stored Form",
    "LOG"                    : "Log Journal ID ",
+   "POST_SUCCESSFUL"        : "Post successful",
    "POSTING_JOURNAL"        : "Posting Journal",
    "SUBMIT"                 : "Submit",
    "TAB_LOCK_COLONNE"       : "Colonne by Colonne",
    "TAB_LOCK_LINE"          : "Row by row",
    "TITLE"                  : "Journal Voucher",
-   "TRANS_ID"               : "Transaction ID ",
-   "LOAD_CACHED_FORM"       : "Load Stored Form"
+   "TRANS_ID"               : "Transaction ID "
    },
 "LANGUAGES": {
    "ENGLISH" : "English",
@@ -2892,22 +2916,22 @@
    "DESCRIPTION"      : "Description",
    "ERROR"            : "Error",
    "ERROR_ALERT"      : "Warning: The trial balance contains errors.",
+   "ERROR_TEXT"       : "Errors detected in the trial balance.",
    "ERRORS"           : "Errors",
    "EXCEPTIONS"       : "Exceptions",
-   "SHOW_ERRORS"      : "Show Errors",
-   "SHOW_WARNINGS"    : "Show Warnings",
-   "LINES"            : "Lines",
-   "ERROR_TEXT"       : "Errors detected in the trial balance.",
    "FINANCE_OFFICER"  : "Finance officer",
    "HIDE"             : "Hide",
+   "LINES"            : "Lines",
+   "NO_DATA"          : "This page uses old and out-of-date data.  Please make a new trial balance to print.",
    "POST_TO_LEDGER"   : "Post to General Ledger",
    "RESULTS"          : "Results",
    "SHOW"             : "Show",
+   "SHOW_ERRORS"      : "Show Errors",
+   "SHOW_WARNINGS"    : "Show Warnings",
    "SIGNATURES"       : "Signatures",
    "SUMMARY"          : "Summary",
    "TITLE"            : "Trial Balance",
-   "TRANSACTIONS"     : "Transactions",
-   "NO_DATA"          : "This page uses old and out-of-date data.  Please make a new trial balance to print."
+   "TRANSACTIONS"     : "Transactions"
    },
 "UNIT_TYPE": {
    "ADD"         : "Add a Unit Type",
@@ -2931,17 +2955,16 @@
    "ACCOUNT"           : "Account",
    "AGGREGATES"        : "Aggregates",
    "ALL"               : "All",
-   "LOADING"           : "Loading",
    "ALL_DONORS"        : "All donators",
-   "BACK"              : "Back",
+   "BACK"              : "Back",   
    "CANCEL"            : "Cancel",
+   "CHECK_DAILY_RATE"  : "Please check the daily rate",
    "COLUMNS"           : "Columns",
    "CONFIGURE"         : "Configure",
    "CONFIGURE_REPORT"  : "Report configuration",
    "CONFIRM"           : "Confirm",
    "CREATE"            : "Create",
    "CURRENCY"          : "Currency",
-   "CHECK_DAILY_RATE"  : "Please check the daily rate",
    "DATE"              : "Date",
    "DATE_FROM"         : "From",
    "DATE_TO"           : "To",
@@ -2955,6 +2978,8 @@
    "IMCK"              : "IMCK",
    "IMCK_LONG"         : "Christian Medical Institue of Kasai",
    "ITEMS"             : "Items",
+   "LOADING"           : "Loading",
+   "MONTHS"            : "Months",
    "NAVIGATION"        : "Navigation",
    "NEW_SUCCESS"       : "Successfully added",
    "OFF"               : "Off",
@@ -2976,7 +3001,8 @@
    "TOGGLE_AGGREGATES" : "Toggle Aggregates",
    "TOTAL"             : "Total",
    "TSHIKAJI"          : "TSHIKAJI",
-   "VALIDATE"          : "Accept"
+   "VALIDATE"          : "Accept",
+   "YEARS"             : "Years"
    },
 "VERSEMENT": {
    "ASSOCIATED_TO"     : "Accounts associated to         : ",
@@ -3013,21 +3039,5 @@
    "REGISTERED"       : "Registered villages",
    "SECTOR"           : "Sector",
    "TITLE"            : "Village Manager"
-   },
-"GRID" : {
-  "CLEAR" : "Clear Selection",
-  "UPDATE" : "Update Selection",
-  "REFRESH" : "Refresh Selection",
-  "GROUP_ROWS" : "Group Rows",
-  "ABOLISH_GROUPS" : "Abolish Grouping"
-},
-  "ERR_TRANSACTION_FORMAT"     : "The transaction doesn't look correctly formatted.  Did you forget an account?",
-  "ERR_NO_CURRENCY"            : "A currency is required.",
-  "ERR_NO_DATE"                : "A date is required.",
-  "ERR_NO_DESCRIPTION"         : "A description is required.",
-  "ERR_DATE_IN_THE_FUTURE"     : "Error: The submitted date in the future.  Please insert a valid date.",
-  "ERR_MISSING_ACCOUNTS"       : "Error: There are missing accounts in the transaction.  Please make sure each line has a valid account number.",
-  "ERR_DEBIT_CREDIT_IMBALANCE" : "Error: The debits and credits do not balance for this transaction.  Please balance the transaction and re-submit.",
-  "ERR_NO_PERIOD"              : "Error: There isn't a valid period for this date.  Please check to make sure that the date is valid, and is within a recorded period.",
-  "ERR_NO_EXCHANGE_RATE"       : "Error: There is no exchange rate defined for the transaction date.  Please define one using the exchange rate module and re-submit."
+   }
 }

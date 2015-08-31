@@ -12,9 +12,10 @@ angular.module('bhima.controllers')
   'appcache',
   '$location',
   function ($scope, $routeParams, $translate, validate, messenger, appstate, connect, uuid, util, Appcache, $location) {
-    var isDefined, dependencies = {};
-    var session = $scope.session = { receipt : { date : new Date() }, configure : false, complete : false };
-    var cache = new Appcache('expense');
+    var isDefined, dependencies = {},
+      session = $scope.session = { receipt : { date : new Date() }, configure : false, complete : false },
+      cache = new Appcache('expense'),
+      tomorrow;
 
     // TODO
     if (Number.isNaN(Number($routeParams.id))) {
@@ -25,7 +26,11 @@ angular.module('bhima.controllers')
 
     $scope.timestamp = new Date();
 
-    session.today = $scope.timestamp.toISOString().slice(0, 10);
+    //session.today = $scope.timestamp.toISOString().slice(0, 10);
+    tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    session.tomorrow = util.htmlDate(tomorrow);
+
 
     dependencies.suppliers = {
       query : {

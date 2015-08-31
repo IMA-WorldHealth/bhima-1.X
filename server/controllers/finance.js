@@ -5,52 +5,27 @@ var db = require('../lib/db'),
     q = require('q');
 
 // utilities
-
-// TODO copied from journal.  These ought to be aggregated somewhere
 function getTransactionId(projectId) {
-  // get a new transaction id from the journal.
-  // make sure it is the last thing fired in the
-  // call stack before posting.
-  var defer = q.defer();
-
-  // FIXME
-  // This can be done in one SQL with a default value
-  // using an IF statement.  It will be much cleaner.
+  'use strict';
 
   var sql =
-    'SELECT abbr, max(increment) AS increment FROM (' +
-      'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
+    'SELECT CONCAT(abbr, IFNULL(MAX(increment), 1)) AS id FROM (' +
+      'SELECT project.abbr, MAX(FLOOR(SUBSTR(trans_id, 4))) + 1 AS increment ' +
       'FROM posting_journal JOIN project ON posting_journal.project_id = project.id ' +
       'WHERE posting_journal.project_id = ? ' +
     'UNION ' +
-      'SELECT project.abbr, max(floor(substr(trans_id, 4))) + 1 AS increment ' +
+      'SELECT project.abbr, MAX(FLOOR(SUBSTR(trans_id, 4))) + 1 AS increment ' +
       'FROM general_ledger JOIN project ON general_ledger.project_id = project.id ' +
       'WHERE general_ledger.project_id = ?)c;';
 
-  var sql2 = 'SELECT project.abbr FROM project WHERE project.id = ?;';
-
-  db.exec(sql, [projectId, projectId])
+  return db.exec(sql, [projectId, projectId])
   .then(function (rows) {
-    var data = rows.pop();
 
-    // FIXME: dangerous test
-
-    if (!data.abbr) {
-      db.exec(sql2, [projectId])
-      .then(function (rows){
-        var data2 = rows.pop();
-        value = String(data.increment ? data2.abbr + data.increment :  data2.abbr + 1);
-        defer.resolve(value);
-      })
-      .catch(defer.reject);
-    } else {
-      var value = String(data.increment ? data.abbr + data.increment : data.abbr + 1);
-      defer.resolve(value);
-    }
-  })
-  .catch(defer.reject);
-
-  return defer.promise;
+    // This is guaranteed to be defined if a project is defined.
+    // Even if there is no data in the posting journal and/or
+    // general ledger
+    return q('\'' + rows[0].id + '\'');
+  });
 }
 
 // POST /journal/voucher
@@ -84,7 +59,7 @@ exports.postJournalVoucher = function (req, res, next) {
   if (date > new Date()) {
 
     // Send back"Bad Request" HTTP error code
-    return report('ERR_DATE_IN_THE_FUTURE');
+    return report('ERROR.ERR_DATE_IN_THE_FUTURE');
   }
 
   // validate that the rows balance
@@ -93,7 +68,7 @@ exports.postJournalVoucher = function (req, res, next) {
   });
 
   if (!validAccounts) {
-    return report('ERR_MISSING_ACCOUNTS');
+    return report('ERROR.ERR_MISSING_ACCOUNTS');
   }
 
   // validate that the debits and credits balance
@@ -106,13 +81,13 @@ exports.postJournalVoucher = function (req, res, next) {
   var validTotals = totals.debit.toFixed(4) === totals.credit.toFixed(4);
 
   if (!validTotals) {
-    return report('ERR_DEBIT_CREDIT_IMBALANCE');
+    return report('ERROR.ERR_DEBIT_CREDIT_IMBALANCE');
   }
 
   // Flatten the data object into a series of rows for
   // insertion into the database
   var dbrows = data.rows.map(function (row) {
-    row.project_id = req.session.project_id;
+    row.project_id = req.session.project.id;
     row.description = data.description;
     row.user_id = req.session.user.id;
     row.currency_id = data.currencyId;
@@ -140,7 +115,7 @@ exports.postJournalVoucher = function (req, res, next) {
 
     // whoops! No period found!
     if (rows.length < 1) {
-      throw 'ERR_NO_PERIOD';
+      throw 'ERROR.ERR_NO_PERIOD';
     }
 
     // put the fiscal year and period id into the db rows
@@ -158,14 +133,14 @@ exports.postJournalVoucher = function (req, res, next) {
     // exchange the debits and credits.  Otherwise, do nothing.
     sql =
       'SELECT enterprise_currency_id, foreign_currency_id, rate ' +
-      'FROM exchange_rate WHERE date = DATE(?);';
+      'FROM exchange_rate WHERE DATE(date) = DATE(?);';
 
     return db.exec(sql, [date]);
   })
   .then(function (rows) {
 
     if (rows.length < 1) {
-      throw 'ERR_NO_EXCHANGE_RATE';
+      throw 'ERROR.ERR_NO_EXCHANGE_RATE';
     }
 
     // get the most recent record for that date
@@ -183,7 +158,7 @@ exports.postJournalVoucher = function (req, res, next) {
       if (data.currencyId !== record.foreign_currency_id) {
 
         // didn't find a suitable exchange rate, throw an error
-        throw 'ERR_NO_EXCHANGE_RATE';
+        throw 'ERROR.ERR_NO_EXCHANGE_RATE';
       }
 
       // we are exchanging the data using the exchange rate.
@@ -202,12 +177,11 @@ exports.postJournalVoucher = function (req, res, next) {
       });
     }
 
-    return getTransactionId(req.session.project_id);
+    return getTransactionId(req.session.project.id);
   })
 
   // FIXME We need to stop depending on this async transId function
   .then(function (transId) {
-
     sql =
       'INSERT INTO posting_journal ' +
         '(uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
@@ -245,10 +219,10 @@ exports.postJournalVoucher = function (req, res, next) {
     return db.exec(sql, [insertRows]);
   })
   .then(function () {
-    res.status(200).send('POST_SUCCESSFUL');
+    res.status(200).send('JOURNAL_VOUCHER.POST_SUCCESSFUL');
   })
   .catch(function (error) {
-    res.status(400).send(error);
+    res.status(500).send(error);
   });
 };
 
