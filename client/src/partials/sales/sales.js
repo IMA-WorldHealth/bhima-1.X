@@ -499,12 +499,16 @@ angular.module('bhima.controllers')
     function selectRecover() {
       $scope.session.recovering = true;
 
-      $scope.findPatient.forceSelect($scope.session.recovered.patientId);
+      // FIXME
+      // This is a cheeky way to refresh the session by changing a value
+      // the find-patient directive is looking for.
+      $scope.session.findPatientId = $scope.session.recovered.patientId;
 
       serviceComponent.selected = $scope.session.recovered.service;
       assignService();
     }
 
+    // recover a patient's sale
     function recover() {
 
       invoice.service = $scope.session.recovered.service || null;
@@ -518,6 +522,7 @@ angular.module('bhima.controllers')
 
 
       // FIXME this is stupid
+      // @sfount -- jeez man, no need to be so hard on yourself.
       session.displayRecover = true;
 
       session.recovering = false;
