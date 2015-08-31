@@ -49,7 +49,7 @@ var paths = {
     javascript : ['client/src/js/define.js', 'client/src/js/app.js', 'client/src/**/*.js'],
     css        : ['client/src/partials/**/*.css', 'client/src/css/*.css'],
     vendor     : ['client/vendor/*.js', 'client/vendor/**/*.js'],
-    e2etest    : ['client/test/**/*.spec.js'],
+    e2etest    : ['client/test/e2e/**/*.spec.js'],
     unittest   : [],
 
     // these must be globs ("**" syntax) to retain their folder structures
