@@ -13,6 +13,8 @@ var gulp       = require('gulp'),
     jshint     = require('gulp-jshint'),
     flatten    = require('gulp-flatten'),
     del        = require('del'),
+    spawn      = require('child_process').spawn,
+    path       = require('path'),
 
     // mocha for server-side testing
     mocha      = require('gulp-mocha'),
@@ -205,7 +207,6 @@ gulp.task('build-server', ['server-clean'], function () {
 */
 
 // run the selenium server for e2e tests
-
 gulp.task('client-test-e2e', function () {
   return gulp.src(paths.client.e2etest)
     .pipe(protractor({
@@ -213,7 +214,6 @@ gulp.task('client-test-e2e', function () {
     }))
     .on('error', function (e) { throw e; });
 });
-
 
 
 /* -------------------------------------------------------------------------- */
@@ -225,6 +225,10 @@ gulp.task('client-test-e2e', function () {
  * The following tasks will run unit tests on the bhima server using gulp-mocha
 */
 
+// ensure that the server actually runs
+gulp.task('server-test-run', function () {
+  spawn('node', [path.join(SERVER_FOLDER, 'app.js')], {stdio: 'inherit'}); 
+});
 
 /* -------------------------------------------------------------------------- */
 
