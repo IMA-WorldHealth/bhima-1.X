@@ -18,8 +18,7 @@ var gulp       = require('gulp'),
     mocha      = require('gulp-mocha'),
 
     // protractor for e2e tests
-    protractor = require('gulp-protractor'),
-    webdriver  = protractor.webdriver_standalone,
+    protractor = require('gulp-protractor').protractor,
 
     // child process for custom scripts
     exec       = require('child_process').exec;
@@ -48,6 +47,8 @@ var paths = {
     javascript : ['client/src/js/define.js', 'client/src/js/app.js', 'client/src/**/*.js'],
     css        : ['client/src/partials/**/*.css', 'client/src/css/*.css'],
     vendor     : ['client/vendor/*.js', 'client/vendor/**/*.js'],
+    e2etest    : ['client/test/**/*.spec.js'],
+    unittest   : [],
 
     // these must be globs ("**" syntax) to retain their folder structures
     static     : ['client/src/index.html', 'client/src/js/app.js', 'client/src/**/*', '!client/src/**/*.js', '!client/src/**/*.css']
@@ -55,7 +56,8 @@ var paths = {
   server : {
     javascript : ['server/*.js', 'server/**/*.js'],
     files      : ['server/*', 'server/**/*'],
-    plugins    : ['plugins/*', 'plugins/**/*']
+    plugins    : ['plugins/*', 'plugins/**/*'],
+    unittest   : []
   }
 };
 
@@ -195,21 +197,36 @@ gulp.task('build-server', ['server-clean'], function () {
 
 /* -------------------------------------------------------------------------- */
 
-// builds both the client and the server
-gulp.task('build', ['build-client', 'build-server']);
-
-/* -------------------------------------------------------------------------- */
 
 /* Testing Client Builds
- *
- * TODO
  *
  * The following tasks will run unit and end-to-end tests
  * on bhima.
 */
 
 // run the selenium server for e2e tests
-gulp.task('webdriver-standalone', webdriver);
+
+gulp.task('client-test-e2e', function () {
+  return gulp.src(paths.client.e2etest)
+    .pipe(protractor({
+      configFile : 'protractor.conf.js'
+    }))
+    .on('error', function (e) { throw e; });
+});
+
+
+
+/* -------------------------------------------------------------------------- */
+
+/* Testing Server Builds
+ *
+ * TODO
+ *
+ * The following tasks will run unit tests on the bhima server using gulp-mocha
+*/
+
+
+/* -------------------------------------------------------------------------- */
 
 gulp.task('clean', function (cb) {
   del(['./bin/'], cb);
@@ -219,7 +236,11 @@ gulp.task('build', ['clean'], function () {
   gulp.start('build-client', 'build-server');
 });
 
-// run the build-client task when no arguments
+gulp.task('test', ['build'], function () {
+  gulp.start('client-test-e2e');
+});
+
+// run the build-client and build-server tasks when no arguments
 gulp.task('default', [], function () {
-  gulp.start('build-client');
+  gulp.start('build-client', 'build-server');
 });
