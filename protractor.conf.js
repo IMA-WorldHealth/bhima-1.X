@@ -11,7 +11,7 @@ var q = require('q');
 var config = {
 
   // local selenium config, in case it applies
-  seleniumServerJar : './node_modules/protractor/selenium/selenium-server-standalone-latest.jar',
+  seleniumServerJar : '/usr/local/lib/node_modules/protractor/selenium/selenium-server-standalone-2.45.0.jar',
   seleniumPort      : 4444,
 
   specs: ['client/test/e2e/**/*.spec.js'],
@@ -22,8 +22,8 @@ var config = {
 
   // default browsers to run
   multiCapabilities: [{
-    'browserName': 'firefox',
-  }, {
+    //'browserName': 'firefox',
+ // }, {
     'browserName': 'chrome',
   }],
 
