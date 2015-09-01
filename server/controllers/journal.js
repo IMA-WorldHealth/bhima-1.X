@@ -484,85 +484,6 @@ function handleCaution(id, user_id, done) {
   .done();
 }
 
-function handleCashReturn (id, user_id, done) {
-  var sql, data, reference, cfg = {}, queries = {};
-
-  // TODO : Formalize this
-  sql = 'SELECT * FROM `primary_cash` WHERE `primary_cash`.`uuid` = ' + sanitize.escape(id) + ';';
-
-  db.exec(sql)
-  .then(function (results) {
-    if (results.length === 0) {
-      throw new Error('No primary_cash by the uuid: ' + id);
-    }
-
-    reference = results[0];
-    data = results;
-    var date = util.toMysqlDate(reference.date);
-
-    return core.queries.myExchangeRate(date);
-  })
-  .then(function (exchangeRateStore) {
-    var dailyExchange = exchangeRateStore.get(reference.currency_id);
-    cfg.valueExchanged = parseFloat((1/dailyExchange.rate) * reference.cost).toFixed(4);
-
-    return q([core.queries.origin('cash_return'), core.queries.period(reference.date)]); // should be core.queries.origin(pcash_transfert);
-  })
-  .spread(function (originId, periodObject) {
-    cfg.originId = originId;
-    cfg.periodId = periodObject.id;
-    cfg.fiscalYearId = periodObject.fiscal_year_id;
-
-    return core.queries.transactionId(reference.project_id);
-  })
-  .then(function (transId) {
-
-    queries.credit =
-      'INSERT INTO posting_journal '+
-        '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-        '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-        'SELECT ' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, sanitize.escape(util.toMysqlDate(reference.date)), sanitize.escape(reference.description)].join(',') +
-        ', `account_id`, ' + [reference.cost, 0, cfg.valueExchanged, 0, reference.currency_id].join(',')+',null, null, ' +
-        [sanitize.escape(id), cfg.originId, user_id].join(',') + ' ' +
-        'FROM cash_box_account_currency WHERE `cash_box_account_currency`.`cash_box_id`='+sanitize.escape(reference.cash_box_id) + ' ' +
-          'AND `cash_box_account_currency`.`currency_id`='+sanitize.escape(reference.currency_id);
-
-    queries.debit =
-      'INSERT INTO posting_journal (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-        '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
-        'VALUES (' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, sanitize.escape(util.toMysqlDate(reference.date)), sanitize.escape(reference.description), reference.account_id].join(',') + ', ' +
-        [ 0, reference.cost, 0, cfg.valueExchanged, reference.currency_id, sanitize.escape(reference.deb_cred_uuid), sanitize.escape(reference.deb_cred_type)].join(',')+', '+[sanitize.escape(id), cfg.originId, user_id].join(',') +
-      ');';
-
-    return db.exec(queries.credit);
-  })
-  .then(function () {
-    return db.exec(queries.debit);
-  })
-  .then(function (rows) {
-    done(null, rows);
-  })
-  .catch(function (err) {
-    console.log('voici erreur ', err);
-    var discard =
-      'DELETE FROM primary_cash WHERE uuid = ' + sanitize.escape(id) + ';';
-      var discard_item =
-      'DELETE FROM primary_cash_item WHERE primary_cash_uuid = ' + sanitize.escape(id) + ';';
-
-    return db.exec(discard_item)
-    .then(function(){
-      return db.exec(discard);
-    })
-    .then(function () {
-      done(err);
-    })
-    .done();
-  })
-  .done();
-}
-
 function handleConvention (id, user_id, done) {
   var dayExchange = {}, reference = {}, cfg = {};
   var sql = 'SELECT * FROM `primary_cash` WHERE `primary_cash`.`uuid`='+sanitize.escape(id)+';';
@@ -3646,12 +3567,12 @@ tableRouter = {
   'sale'                    : require('./journal/sale'),
   'cash'                    : require('./journal/cash').payment,
   'cash_discard'            : require('./journal/cash').refund, // TODO - make this 
-  'cash_return'             : handleCashReturn,
+  'cash_return'             : require('./journal/primarycash').refund,
+  'transfert'               : require('./journal/primarycash').transfer,
   'group_invoice'           : handleGroupInvoice,
   'employee_invoice'        : handleEmployeeInvoice,
   'credit_note'             : handleCreditNote,
   'caution'                 : handleCaution,
-  'transfert'               : require('./journal/primarycash').transfer,
   'pcash_convention'        : handleConvention,
   'pcash_employee'          : handleEmployee,
   'primary_expense'         : handleGenericExpense,
