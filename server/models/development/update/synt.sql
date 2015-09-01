@@ -70,6 +70,13 @@ ALTER TABLE `user` CHANGE `logged_in` `active` TINYINT NOT NULL DEFAULT 0;
 ALTER TABLE `user` ADD COLUMN `last_login` DATE NOT NULL;
 UPDATE `user` SET `password` = PASSWORD(`password`);
 
+-- Add Dashboards leaf to tree, with finance dashboard child
+--
+-- Date: 2015-08-25
+-- By: jniles
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `has_children`, `url`, `path`) VALUES
+(115, 'Dashboards', 'TREE.DASHBOARD.TITLE', 'Dashboards', 0, 1, '/partials/dashboards/', '/dashboards'),
+(116, 'Finance Dashboar', 'TREE.DASHBOARD.FINANCE', 'Finance Dashboard', 115, 0, '/partials/dashboards/finance/finance.html', '/dashboards/finance');
 
 -- Adding column is_charge 
 -- Date: 2015-08-20
@@ -99,3 +106,27 @@ UPDATE `account` SET `is_charge` =0 WHERE LEFT(`account_number`,2)=84 AND `accou
 UPDATE `account` SET `is_charge` =0 WHERE LEFT(`account_number`,2)=86 AND `account_type_id` =1 AND `is_ohada` =1;
 UPDATE `account` SET `is_charge` =0 WHERE LEFT(`account_number`,2)=88 AND `account_type_id` =1 AND `is_ohada` =1;
 
+
+USE bhima;
+
+-- Updating some Elements of table transaction_type
+--
+-- Date: 2015-08-27
+-- By: Chris LOMAME
+
+-- Delete transaction_type purchase unused
+DELETE FROM `transaction_type` WHERE `transaction_type`.`id` = 3;
+
+
+UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'import_automatique' WHERE  `transaction_type`.`id` =9;
+UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'group_deb_invoice' WHERE  `transaction_type`.`id` =5;
+UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'stock_loss' WHERE  `transaction_type`.`id` =13;
+UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'reversing_stock' WHERE  `transaction_type`.`id` =28;
+
+
+-- rm unused currency tree node
+--
+-- Date: 2015-08-31
+-- By: jniles
+
+DELETE FROM `unit` WHERE id = 33;

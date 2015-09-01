@@ -46,16 +46,16 @@ module.exports = function (app, authentication) {
   // there is no need to authenticate users to access the public
   // directory.
   var days = 1000 * 60 * 60 * 24;
-  app.use(express.static('client/dest/', { maxAge : 7*days }));
+  app.use(express.static('client/', { maxAge : 7*days }));
 
   // quick way to find out if a value is in an array
   function within(value, array) { return array.indexOf(value) !== -1; }
 
-  // Only allow routes to use /login, /projects, and /language if session does not exists
+  // Only allow routes to use /login, /projects, /logout, and /language if session does not exists
   app.use(function (req, res, next) {
     'use strict';
 
-    var publicRoutes = ['/login', '/languages', '/projects'];
+    var publicRoutes = ['/login', '/languages', '/projects', '/logout'];
 
     if (req.session.user === undefined && !within(req.path, publicRoutes)) {
       res.status(401).json({ reason : 'ERR_NOT_AUTHENTICATED' });
