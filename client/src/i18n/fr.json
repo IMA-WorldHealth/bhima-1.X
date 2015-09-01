@@ -239,7 +239,7 @@
       "IS_AUXILLARY"           : "Auxiliaire ?",
       "IS_BANK"                : "Banque ?",
       "NO_BOX"                 : "Aucune Cashbox enregistrée",
-      "TITLE"                  : "Gestion Cashbox",
+      "TITLE"                  : "Gestion des caisses et des comptes bancaires",
       "PROJECT"                : "Projet",
       "SELECT_PROJECT"         : "Selectionner un projet"
       },
@@ -2814,7 +2814,7 @@
    "BUDGETING"                 : "Budget",
    "BUDGET_BY_ACCOUNT"         : "Budget par Compte",
    "CASH"                      : "Caisse Auxilliaire",
-   "CASHBOX_MANAGEMENT"        : "Cashbox",
+   "CASHBOX_MANAGEMENT"        : "Caisses et Banques",
    "CASHBOX_ACCOUNT_MANAGEMENT": "Configuration Tresorerie",
    "CASH_PAYMENTS"             : "Rapport Paiements",
    "CAUTION"                   : "Paiement anticipatif",
