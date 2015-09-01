@@ -15,13 +15,10 @@ angular.module('bhima.controllers')
     var cache = new Appcache('preferences');
 
     cache.fetch('language')
-    .then(function (res) {
-      if (res) {
-        $translate.use(res.current);
-
-        console.log('settingLocale fr');
-        
-        tmhDynamicLocale.set('fr-fr');
+    .then(function (language) {
+      if (language) {
+        $translate.use(language.translateKey);
+        tmhDynamicLocale.set(language.localeKey);
       }
     });
 
