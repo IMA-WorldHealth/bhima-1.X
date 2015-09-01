@@ -5,6 +5,7 @@ angular.module('bhima.directives')
     templateUrl : 'partials/templates/findpatient.tmpl.html',
     scope : {
       callback : '&onSearchComplete',
+      initLookup : '=?',
       enableRefresh : '=',
     },
     link : function(scope, element, attrs) {
@@ -37,6 +38,17 @@ angular.module('bhima.directives')
         .then(function (response) {
           return response.data;
         });
+      }
+
+      // calls bhima API with uuid
+      function searchByUuid(uuid) {
+        var url = '/patient/';
+        $http.get(url + uuid)
+        .success(selectPatient)
+        .error(function (err) {
+          console.error(err); 
+        })
+        .finally();
       }
 
       // make a pretty label
@@ -139,6 +151,12 @@ angular.module('bhima.directives')
       function saveState(dstate) {
         cache.put('state', dstate);
       }
+
+      // when the init-lookup value changes, force a refresh on that patient
+      // allows you to coerce the find patient to execute when recovering previous data
+      scope.$watch('initLookup', function (value) {
+        if (value) { searchByUuid(value); }
+      });
 
       scope.validateNameSearch = validateNameSearch;
       scope.refresh = refresh;
