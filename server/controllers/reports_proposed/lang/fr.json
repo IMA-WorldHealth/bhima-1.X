@@ -1,0 +1,15 @@
+{
+	"BILAN" : {
+		"TITLE"                 : "BILAN",
+		"ENTERPRISE"            : "Entreprise",
+		"CLOS"                  : "Exercice clos le : ",
+		"DURATION"              : "Duree (En mois) : ",
+		"REFERENCE"             : "Ref",
+		"ACTIF"                 : "Actif",
+		"BRUT"                  : "Brut",
+		"AMORT_PROV"            : "Amort/Prov",
+		"NET"                   : "NET",
+		"TOTAL GENERAL"         : "TOTAL GENERAL",
+		"PASSIVE"               : "Passif"
+	}
+}
