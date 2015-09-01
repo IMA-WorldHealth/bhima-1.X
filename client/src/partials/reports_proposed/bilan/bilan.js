@@ -2,27 +2,19 @@ angular.module('bhima.controllers')
 .controller('configureBilan', [
   '$scope',
   '$http',
-  '$routeParams',
   '$translate',
   '$sce',
   'validate',
+  'reportConfigService',
+  'messenger',
   // Prototype document building module, requests document given configuration obejct
-  function ($scope, $http, $routeParams, $translate, $sce, validate) {
+  function ($scope, $http, $translate, $sce, validate, reportConfigService, messenger) {
 
-    // Configuration objects optionally passed to /report/build - drives configuration UI
     var session = $scope.session = {},
         dependencies = {},
         generatedDocumentPath = null,
-        serverUtilityPath = '/report/build/bilan';
-
-    var configuration = {
-      language : {
-        options : [
-          {value : 'en', label : 'English'},
-          {value : 'fr', label : 'French'}
-        ]
-      }
-    };
+        serverUtilityPath = '/report/build/bilan',
+        configuration = reportConfigService.configuration;
 
     dependencies.fiscalYears = {
       query : {
@@ -39,7 +31,6 @@ angular.module('bhima.controllers')
     $scope.loading = $translate.instant('BILAN.LOADING');
 
     //getting fiscal years
-
     validate.process(dependencies)
     .then(setDefaultConfiguration);
 
@@ -73,15 +64,13 @@ angular.module('bhima.controllers')
 
       $http.post(path, configurationObject)
       .success(function (result) {
-
         // Expose generated document path to template
         session.building = false;
         $scope.generatedDocumentPath = result;
       })
       .error(function (code) {
         session.building = false;
-
-        // TODO Handle error
+        messenger.danger('error' + code);
       });
     }
 
