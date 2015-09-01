@@ -17,10 +17,6 @@ var gulp       = require('gulp'),
     // mocha for server-side testing
     mocha      = require('gulp-mocha'),
 
-    // protractor for e2e tests
-    protractor = require('gulp-protractor'),
-    webdriver  = protractor.webdriver_standalone,
-
     // child process for custom scripts
     exec       = require('child_process').exec;
 
@@ -144,7 +140,7 @@ gulp.task('watch-client', function () {
 });
 
 // builds the client with all the options available
-gulp.task('build-client', ['client-clean'], function () {
+gulp.task('build-client', function () {
   gulp.start('client-lint-js', 'client-minify-js', 'client-minify-css', 'client-mv-vendor', 'client-mv-static');
 });
 
@@ -189,14 +185,11 @@ gulp.task('server-mv-plugins', function () {
 });
 
 // build the server
-gulp.task('build-server', ['server-clean'], function () {
+gulp.task('build-server', function () {
   gulp.start('server-mv-files', 'server-mv-plugins');
 });
 
 /* -------------------------------------------------------------------------- */
-
-// builds both the client and the server
-gulp.task('build', ['build-client', 'build-server']);
 
 /* -------------------------------------------------------------------------- */
 
@@ -208,14 +201,11 @@ gulp.task('build', ['build-client', 'build-server']);
  * on bhima.
 */
 
-// run the selenium server for e2e tests
-gulp.task('webdriver-standalone', webdriver);
-
 gulp.task('clean', function (cb) {
   del(['./bin/'], cb);
 });
 
-gulp.task('build', ['clean'], function () {
+gulp.task('build', function () {
   gulp.start('build-client', 'build-server');
 });
 
