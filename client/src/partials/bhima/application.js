@@ -8,7 +8,8 @@ angular.module('bhima.controllers')
   'connect',
   'util',
   'SessionService',
-  function ($location, $timeout, $translate, Appcache, appstate, connect, util, SessionService) {
+  'tmhDynamicLocale',
+  function ($location, $timeout, $translate, Appcache, appstate, connect, util, SessionService, tmhDynamicLocale) {
 
     // useful for loading the language
     var cache = new Appcache('preferences');
@@ -17,6 +18,10 @@ angular.module('bhima.controllers')
     .then(function (res) {
       if (res) {
         $translate.use(res.current);
+
+        console.log('settingLocale fr');
+        
+        tmhDynamicLocale.set('fr-fr');
       }
     });
 

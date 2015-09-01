@@ -53,10 +53,12 @@
           console.log('patterns 1', formats.PATTERNS[1]);
           console.log('group sep', formats.GROUP_SEP);
           console.log('decimal sep', formats.DECIMAL_SEP);
-
-          formats.DECIMAL_SEP = currency.get(targetLocale).decimal;
-          currencySymbol = currency.get(targetLocale).symbol; 
-          
+  
+          // FIXME hack
+          if (currency.get(targetLocale)) { 
+            formats.DECIMAL_SEP = currency.get(targetLocale).decimal;
+            currencySymbol = currency.get(targetLocale).symbol; 
+          } 
           // if null or undefined pass it through
           return (amount == null)
             ? amount
