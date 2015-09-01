@@ -74,19 +74,6 @@ angular.module('bhima.controllers')
       });
     }
 
-    // Utility method - GET PDF blob displaying embedded object
-    function downloadDocument(url) {
-
-      $http.get(url, {responseType : 'arraybuffer'})
-      .success(function (pdfResult) {
-        var file = new Blob([pdfResult], {type: 'application/pdf'});
-        var fileURL = URL.createObjectURL(file);
-
-        // Expose document to scope
-        $scope.pdfContent = $sce.trustAsResourceUrl(fileURL);
-      });
-    }
-
     function clearPath() {
       $scope.generatedDocumentPath = null;
     }
