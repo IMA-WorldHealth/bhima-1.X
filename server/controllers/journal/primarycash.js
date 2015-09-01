@@ -6,6 +6,7 @@ var q = require('q'),
 
 exports.transfer = transfer;
 exports.refund = refund;
+exports.payroll = payroll;
 
 /*
  * Transfer cash from one cashbox to another
@@ -253,6 +254,94 @@ function refund(id, userId, cb) {
     })
     .catch(cb)
     .done();
+  })
+  .done();
+}
+
+
+/*
+ * Payroll
+ *
+ * If you pay people, the enterprise loses money.  You shouldn't ever pay them.
+ * I expect this route to never be used.
+ */
+function payroll(id, userId, cb) {
+  var sql, rate, params, reference, cfg = {};
+
+  sql =
+    'SELECT primary_cash_item.primary_cash_uuid, reference, project_id, date, deb_cred_uuid, deb_cred_type, currency_id, ' +
+      'account_id, cost, user_id, description, cash_box_id, origin_id, primary_cash_item.debit, ' +
+      'primary_cash_item.credit, primary_cash_item.inv_po_id, primary_cash_item.document_uuid ' +
+    'FROM primary_cash JOIN primary_cash_item ON primary_cash.uuid = primary_cash_item.primary_cash_uuid ' +
+    'WHERE primary_cash.uuid = ?;';
+
+  db.exec(sql, [id])
+  .then(function (records) {
+    if (records.length === 0) { throw new Error('No values'); }
+
+    reference = records[0];
+    sql =
+      'SELECT account_id FROM config_accounting, paiement_period, paiement ' +
+      'WHERE paiement.paiement_period_id = paiement_period.id AND ' +
+        'paiement_period.config_accounting_id = config_accounting.id AND ' +
+        'paiement.uuid = ?;';
+
+    return q([
+      core.queries.origin('payroll'),
+      core.queries.period(new Date()),
+      core.queries.exchangeRate(new Date()),
+      db.exec(sql, [reference.document_uuid])
+    ]);
+  })
+  .spread(function (originId, periodObject, store, res) {
+    cfg.originId = originId;
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+    cfg.employee_account_id = res[0].account_id;
+    cfg.store = store;
+    rate = cfg.store.get(reference.currency_id).rate;
+    return core.queries.transactionId(reference.project_id);
+  })
+  .then(function (transId) {
+    cfg.transId = transId;
+    cfg.description =  'Payroll/' + new Date().toISOString().slice(0, 10).toString();
+
+    sql =
+      'INSERT INTO posting_journal (' +
+        'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+        'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+        'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
+      'VALUES (?);';
+
+    params = [
+      uuid(),reference.project_id, cfg.fiscalYearId,cfg.periodId, cfg.transId, new Date(),
+      cfg.description, cfg.employee_account_id, 0, reference.cost,0, (reference.cost / rate).toFixed(4),
+      reference.currency_id,reference.deb_cred_uuid, 'C', id, cfg.originId, userId
+    ];
+
+    return db.exec(sql, params);
+  })
+  .then(function () {
+    var credit_sql =
+      'INSERT INTO posting_journal (' +
+        'uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+        'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+        'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) ' +
+      'VALUES (?);';
+
+    params = [
+      uuid(), reference.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
+      cfg.description, reference.account_id, reference.cost, 0, (reference.cost / rate).toFixed(4), 0,
+      reference.currency_id, null, null, id, cfg.originId, userId
+    ];
+
+    return db.exec(sql, params);
+  })
+  .then(function (res){
+    return cb(null, res);
+  })
+  .catch(function (err) {
+    return cb(err);
   })
   .done();
 }
