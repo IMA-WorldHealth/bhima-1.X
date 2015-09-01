@@ -132,12 +132,15 @@
    "TYPE_CC"               : "Type"
    },
 "AUTH": {
-   "LOGIN"          : "Se connecter",
-   "LOGIN_ERROR"    : "Erreur : Nom de utilisateur et mots de pass ne sont pas correct",
-   "LOGIN_TO_BHIMA" : "Bhima Login",
-   "LOGOUT_SUCCESS" : "Vous n'etes pas connecté",
-   "RESET"          : "Annuler"
-   },
+  "LOGIN"                      : "Se connecter",
+  "LOGIN_ERROR"                : "Erreur: Nom d'utilisateur et mot de passe ne sont pas correct.",
+  "LOGIN_TO_BHIMA"             : "Bhima Login",
+  "LOGIN_ERR_MISSING_DATA"     : "Erreur: Nom d'utilisateur et mot de passe sont nécessaires.",
+  "LOGIN_PLACEHOLDER_USERNAME" : "Entrez votre nom d'utilisateur",
+  "LOGIN_PLACEHOLDER_PASSWORD" : "Entrez votre mot de passe",
+  "LOGOUT_SUCCESS"             : "Vous n'etes pas connecté",
+  "RESET"                      : "Annuler"
+ },
 "AUXILLARY_CASH_RECORD" : {
    "ALL_PROJECTS"    : "Tous les projets",
    "ALL_USERS"       : "Tous les utilisateurs",
