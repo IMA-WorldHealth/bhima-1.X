@@ -11,10 +11,15 @@ var bilanDate = new Date();
 // expose the http route
 exports.compile = function (options) {
   'use strict';
+  var i18nBilan = options.language == 'fr' ? require('../lang/fr.json').BILAN : require('../lang/en.json').BILAN;
+  console.log(i18nBilan);
 
   var deferred = q.defer(), context = {}, infos = {}, assetData = {}, passiveData = {};
   context.reportDate = bilanDate.toDateString();
   context.enterpriseName = options.enterprise.abbr;
+  context.title = i18nBilan.TITLE;
+  context.enterprise = i18nBilan.ENTERPRISE;
+  context.clos = i18nBilan.CLOS;
 
   var sql =
     'SELECT `acc`.`id` AS `accountId`, `acc`.`account_txt` AS `accounTxt`, `acc`.`account_number` AS `accountNumber`, ' +
