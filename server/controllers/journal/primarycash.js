@@ -167,6 +167,7 @@ function transfer(id, userId, cb) {
  * This is used when you need to pay someone back for a previous (paid) bill.
  */
 function refund(id, userId, cb) {
+  console.log('[JOURNAL] REFUND ', id);
   var sql, data, params, reference, cfg = {}, queries = {};
 
   // TODO : Formalize this
@@ -207,7 +208,7 @@ function refund(id, userId, cb) {
         'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
         'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
         'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
-      'SELECT ?,?,?,?,?,?, account_id,?,?,?,?,?,?,?,?,?,? ' +
+      'SELECT ?,?,?,?,?,?,?, account_id,?,?,?,?,?,?,?,?,?,? ' +
       'FROM cash_box_account_currency ' +
       'WHERE cash_box_account_currency.cash_box_id = ? AND ' +
           'cash_box_account_currency.currency_id = ?;';
@@ -234,7 +235,7 @@ function refund(id, userId, cb) {
       userId
     ];
 
-    return db.exec(sql, params);
+    return db.exec(sql, [params]);
   })
   .then(function (rows) {
     cb(null, rows);
