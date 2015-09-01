@@ -47,6 +47,7 @@ exports.initialise = function (app) {
   // exposed to the outside without authentication
   app.get('/languages', users.getLanguages);
   app.get('/projects', projects.getProjects);
+
   app.post('/login', auth.login);
   app.get('/logout', auth.logout);
 

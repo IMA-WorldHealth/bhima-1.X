@@ -29,12 +29,12 @@
    "HELP_TXT_3"       : "Click 'Add Account' to add an account",
    "IS_ASSET"         : "Is asset",
    "IS_ASSET_TITLE"   : "Asset?",
-   "IS_CHARGE"        : "Is charge ?",   
+   "IS_CHARGE"        : "Is charge ?",
    "IS_LOCKED"        : "Is Locked ?",
    "IS_OHADA"         : "OHADA ?",
    "IS_NOTHING"       : "Other",
    "IS_PASSIVE"       : "Is passive",
-   "IS_PROFIT"        : "Is profit?",  
+   "IS_PROFIT"        : "Is profit?",
    "IS_USED_BUDGET"   : "Is used in the Budget",
    "LABEL"            : "Label",
    "NEW"              : "New Account",
@@ -132,12 +132,16 @@
    "TYPE_CC"               : "Type"
    },
 "AUTH": {
-  "LOGIN"          : "Login",
-  "LOGIN_ERROR"    : "Login Error: Username and password combination are incorrect.",
-  "LOGIN_TO_BHIMA" : "Login to Bhima",
-  "LOGOUT_SUCCESS" : "You are now logged out.",
-  "RESET"          : "Reset"
-  },
+  "LOGIN"                      : "Login",
+  "LOGIN_ERROR"                : "Error: Username and password combination are incorrect.",
+  "LOGIN_TO_BHIMA"             : "Login to Bhima",
+  "LOGOUT_SUCCESS"             : "You are now logged out.",
+  "LOGIN_ERR_MISSING_DATA"         : "A username and password are required!",
+  "LOGIN_PLACEHOLDER_USERNAME" : "Enter your username",
+  "LOGIN_PLACEHOLDER_PASSWORD" : "Enter your password",
+  "RESET"                      : "Reset"
+},
+
 "AUXILLARY_CASH_RECORD" : {
   "ALL_PROJECTS"    : "All projects",
    "ALL_USERS"      : "All Users",
@@ -1171,7 +1175,7 @@
    "ONE_YEAR"                    : "One Year",
    "OPEN"                        : "This fiscal year is open.",
    "OTHER_CHARGE"                : "Other charges",
-   "OTHER_PROFIT"                : "Other Profits",   
+   "OTHER_PROFIT"                : "Other Profits",
    "PERIODS"                     : "Periods",
    "POSTING_FROM"                : "Posting From",
    "POSTING_SOLD_TO_NEW_FY"      : "Poster le solde dans la nouvelle année fiscale",
@@ -1193,7 +1197,7 @@
    "TITLE"                       : "Fiscal Year",
    "TOTAL_CHARGE"                : "Total Charge",
    "TOTAL_MONTH"                 : "Total Months",
-   "TOTAL_PROFIT"                : "Total profit", 
+   "TOTAL_PROFIT"                : "Total profit",
    "UNLOCK"                      : "Unlock",
    "VIEW"                        : "View",
    "VIEW_BALANCE"                : "View opening balances"
@@ -1263,7 +1267,7 @@
   "GROUP_ROWS"        : "Group Rows",
   "REFRESH"           : "Refresh Selection",
   "UPDATE"            : "Update Selection"
-},  
+},
 "GROUP_INVOICE": {
    "AGREED"                 : "Agreed Payment",
    "AUTHORIZE"              : "Authorize",
@@ -2974,7 +2978,7 @@
    "AGGREGATES"        : "Aggregates",
    "ALL"               : "All",
    "ALL_DONORS"        : "All donators",
-   "BACK"              : "Back",   
+   "BACK"              : "Back",
    "CANCEL"            : "Cancel",
    "CHECK_DAILY_RATE"  : "Please check the daily rate",
    "COLUMNS"           : "Columns",
