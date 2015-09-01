@@ -1,12 +1,14 @@
 angular.module('bhima.controllers')
-.controller('tree', [
+.controller('TreeController', [
   '$scope',
+  '$rootScope',
   '$location',
+  '$http',
+  '$translate',
   'appcache',
-  'connect',
-  function($scope, $location, AppCache, connect) {
+  function($scope, $rootScope, $location, $http, $translate, AppCache) {
 
-    // TODO:
+    // TODO
     //   Theoretically, the users and permissions depend on an
     //   enterprise, so do we need it or not?
     var moduleNamespace = 'tree', applicationNamespace = 'application';
@@ -73,13 +75,42 @@ angular.module('bhima.controllers')
       });
     }
 
-    (function init () {
-      connect.fetch('/tree')
-      .then(function (data) {
-        $scope.treeData = data; // FIX: new connect.fetch() api
-        // $scope.treeData = res.data;
+    // when the translation changes, sort the data in
+    // the tree nodes
+    $rootScope.$on('$translateChangeSuccess', function () {
+      sortTreeNodes($scope.treeData);
+    });
+
+
+    // alphabetically sort tree nodes
+    function sortTreeNodes(data) {
+
+      data.sort(function (a, b) {
+        return $translate.instant(a.key) > $translate.instant(b.key) ? 1 : -1;
+      });
+
+      // for each node, recursively sort children 
+      // if they exist
+      data.forEach(function (node) {
+        if (angular.isDefined(node.children)) {
+          sortTreeNodes(node.children);
+        }
+      });
+    }
+
+    function init() {
+      $http.get('/tree')
+      .then(function (response) {
+
+        // sort the tree nodes alphabetically
+        sortTreeNodes(response.data);
+
+        // expose to view
+        $scope.treeData = response.data;
         loadTreeOptions();
       });
-    })();
+    }
+
+    init();
   }
 ]);

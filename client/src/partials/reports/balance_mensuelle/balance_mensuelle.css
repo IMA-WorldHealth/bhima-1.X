@@ -1,0 +1,8 @@
+#balance-mensuelle hr { display: none; }
+
+.balance-mensuelle-table th, 
+.balance-mensuelle-table { text-align: right; }
+
+.balance-mensuelle-footer { font-weight: bold; }
+.balance-mensuelle-footer tr { background-color: #eee; }
+.account_text { text-align: left; }

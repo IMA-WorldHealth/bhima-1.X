@@ -1,0 +1,98 @@
+<header data-header>
+  {{ 'STOCK.INTEGRATION.CONFIRM_STOCK' | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "STOCK.INTEGRATION.CONFIRM_STOCK" | translate }}</li>
+    </ol>
+  </div>
+</nav>
+
+<main>
+  <div class="row margin-top-10">
+    <div class="col-xs-5">
+
+      <div class="panel panel-default square">
+        <div class="panel-heading square">
+          {{ "STOCK.INTEGRATION.CONFIRM_STOCK" | translate }}
+        </div>
+
+        <div class="panel-body">
+
+          <div class="input-group" style="margin-bottom: 15px">
+            <span class="input-group-btn">
+              <button disabled class="btn btn-default btn-sm"><span class="glyphicon glyphicon-search"></span></button>
+            </span>
+             <input class="form-bhima" placeholder="{{'STOCK.INTEGRATION.CONFIRM_FILTER' | translate }}" ng-model="session.filter">
+          </div>
+
+          <table class="table table-bordered table-condensed">
+            <thead>
+              <tr>
+                <th>{{"COLUMNS.DATE" | translate}}</th>
+                <th>{{"COLUMNS.REFERENCE" | translate}}</th>
+                <th>{{"COLUMNS.USER" | translate}}</th>
+                <th>{{"COLUMNS.ACTIONS" | translate }}</th>
+              </tr>
+            </thead>
+
+            <tr ng-if="!stock.data.length">
+              <td colspan="4">
+                <div class="alert alert-warning square">{{ "PURCHASE.NOT_FOUND" | translate }}</div>
+              </td>
+            </tr>
+
+            <tr ng-repeat="item in stock.data | filter : session.filter"
+                ng-class="{'selected-success': session.selected.uuid===item.uuid}">
+                <td>{{item.purchase_date | date}}</td>
+                <td><a href="/#/stock/entry/report/{{item.document_id}}">{{item.abbr}}{{item.reference}}</td>
+                <td>{{ getUser(item.emitter_id)}}</td>
+                <td><a class="menu-item" ng-click="getStock(item.uuid)"><span class="glyphicon glyphicon-arrow-right"></span></a></td>
+            </tr>
+            <tbody>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xs-7">
+      <div class="panel square" ng-class="{'panel-success': session.selected, 'panel-default' : !session.selected}">
+        <div class="panel-heading square">
+          <span class="glyphicon glyphicon-list-alt"></span>
+          {{ "STOCK.INTEGRATION.CONFIRM_STOCK" | translate }} <small>{{session.selected.document_id}}</small>
+        </div>
+
+        <div class="panel-body" ng-if="session.selected">
+          <table class="table table-bordered table-condensed">
+            <thead>
+              <tr>
+                <th colspan="2">{{ "PURCHASE.CONFIRM.DETAILS" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{"COLUMNS.ID" | translate}}</td><td><b>{{ session.selected.document_id }}</b></td>
+              </tr>
+              <tr>
+                <td>{{"COLUMNS.NOTE" | translate}}</td><td>{{ session.selected.note }}</td>
+              </tr>
+              <tr>
+                <td>{{"COLUMNS.EMPLOYEE" | translate}}</td><td>{{ getUser(session.selected.emitter_id) }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <button ng-click="confirmIntegration()" class="square btn btn-success btn-sm"> {{ "STOCK.INTEGRATION.CONFIRM_STOCK" | translate }} {{ "PURCHASE.CONFIRM.BY" | translate }}
+          <b>{{ getUser(idUser) }}</b>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+

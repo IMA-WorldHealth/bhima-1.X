@@ -5,7 +5,7 @@
 <nav>
   <div class="pull-left">
     <ol class="breadcrumb" style="float: right;">
-      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
       <li><a href="#/inventory">{{ "INVENTORY.MAIN.TITLE" | translate }}</a></li>
       <li class="active">{{ "INVENTORY.GROUPS.TITLE" | translate }}</li>
     </ol>
@@ -20,7 +20,7 @@
 </nav>
 
 <main>
-  <div class="row">
+  <div class="row margin-top-10">
 
     <div class="col-xs-6">
       <div class="panel panel-primary" style="max-height: 550px; overflow: auto;">
@@ -36,7 +36,7 @@
               <th>{{ "INVENTORY.GROUPS.SALES_ACCOUNT" | translate }}</th>
               <th>{{ "INVENTORY.GROUPS.COGS_ACCOUNT" | translate }}</th>
               <th>{{ "INVENTORY.GROUPS.STOCK_ACCOUNT" | translate }}</th>
-              <!-- <th>{{ "INVENTORY.GROUPS.TAX_ACCOUNT" | translate }}</th> -->
+              <th>{{ "INVENTORY.GROUPS.DONATION_ACCOUNT" | translate }}</th>
               <th>{{ "COLUMNS.ACTIONS" | translate }}</th>
             </tr>
           </thead>
@@ -47,7 +47,7 @@
               <td>{{ accounts.get(group.sales_account).account_number }}</td>
               <td>{{ accounts.get(group.cogs_account).account_number }}</td>
               <td>{{ accounts.get(group.stock_account).account_number }}</td>
-              <!-- <td>{{ accounts.get(group.tax_account).account_number }}</td> -->
+              <td>{{ accounts.get(group.donation_account).account_number }}</td>
               <td>
                 <a class="action" ng-click="edit(group)">
                   <span class="glyphicon glyphicon-pencil"></span>
@@ -96,9 +96,12 @@
             {{ "INVENTORY.GROUPS.SALES_ACCOUNT" | translate }}
           </label>
           <div class="col-xs-10">
-            <select id="group-sales-account" class="form-bhima" ng-model="group.sales_account" ng-options="account.id as account.account_number+'--'+account.account_txt for account in accounts.data | orderBy:'account_number'" required>
-              <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
+
+            <select class="form-bhima" ng-model="group.sales_account" >
+              <option ng-if="accounts.data.length" ng-value=""> {{ "SELECT.ACCOUNT" | translate }} </option>
+              <option ng-repeat="account in accounts.data" ng-value="account.a">{{ account.account_number }} -- {{ account.account_txt }}</option>
             </select>
+
           </div>
         </div>
 
@@ -107,8 +110,9 @@
             {{ "INVENTORY.GROUPS.COGS_ACCOUNT" | translate }}
           </label>
           <div class="col-xs-10">
-            <select id="group-cogs-account" class="form-bhima" ng-model="group.cogs_account" ng-options="account.id as account.account_number+'--'+account.account_txt for account in accounts.data | orderBy:'account_number'">
-              <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
+            <select class="form-bhima" ng-model="group.cogs_account" >
+              <option ng-if="accounts.data.length" ng-value=""> {{ "SELECT.ACCOUNT" | translate }} </option>
+              <option ng-repeat="account in accounts.data" ng-value="account.id">{{ account.account_number }} -- {{ account.account_txt }}</option>
             </select>
           </div>
         </div>
@@ -118,19 +122,21 @@
             {{ "INVENTORY.GROUPS.STOCK_ACCOUNT" | translate }}
           </label>
           <div class="col-xs-10">
-            <select id="group-stock-account" class="form-bhima" ng-model="group.stock_account" ng-options="account.id as account.account_number+'--'+account.account_txt for account in accounts.data | orderBy:'account_number'">
-              <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
+            <select class="form-bhima" ng-model="group.stock_account" >
+              <option ng-if="accounts.data.length" ng-value=""> {{ "SELECT.ACCOUNT" | translate }} </option>
+              <option ng-repeat="account in accounts.data" ng-value="account.id">{{ account.account_number }} -- {{ account.account_txt }}</option>
             </select>
           </div>
         </div>
 
         <div class="form-group">
           <label class="col-xs-2 control-label" for="group-tax-account">
-            {{ "INVENTORY.GROUPS.TAX_ACCOUNT" | translate }}
+            {{ "INVENTORY.GROUPS.DONATION_ACCOUNT" | translate }}
           </label>
           <div class="col-xs-10">
-            <select id="group-tax-account" class="form-bhima" ng-model="group.tax_account" ng-options="account.id as account.account_number+'--'+account.account_txt for account in accounts.data | orderBy:'account_number'">
-              <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
+            <select class="form-bhima" ng-model="group.donation_account">
+              <option ng-if="accounts.data.length" ng-value=""> {{ "SELECT.ACCOUNT" | translate }} </option>
+              <option ng-repeat="account in accounts.data" ng-value="account.id">{{ account.account_number }} -- {{ account.account_txt }}</option>
             </select>
           </div>
         </div>
@@ -169,8 +175,8 @@
             {{ "INVENTORY.GROUPS.SALES_ACCOUNT" | translate }}
           </label>
           <div class="col-xs-10">
-            <select id="group-sales-account" class="form-bhima" ng-model="group.sales_account" ng-options="account.id as account.account_number+'--'+account.account_txt for account in accounts.data | orderBy:'account_number'" required>
-              <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
+            <select id="group-sales-account" class="form-bhima" ng-model="group.sales_account" ng-options="account.id as account.account_number+'--'+account.account_txt for account in accounts.data | orderBy:'account_number'">
+              <option ng-if="accounts.data" value="">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
             </select>
           </div>
         </div>
@@ -181,7 +187,7 @@
           </label>
           <div class="col-xs-10">
             <select id="group-cogs-account" class="form-bhima" ng-model="group.cogs_account" ng-options="account.id as account.account_number+'--'+account.account_txt for account in accounts.data | orderBy:'account_number'">
-              <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
+              <option ng-if="accounts.data" value="">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
             </select>
           </div>
         </div>
@@ -192,18 +198,18 @@
           </label>
           <div class="col-xs-10">
             <select id="group-stock-account" class="form-bhima" ng-model="group.stock_account" ng-options="account.id as account.account_number+'--'+account.account_txt for account in accounts.data | orderBy:'account_number'">
-              <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
+              <option ng-if="accounts.data" value="">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
             </select>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="col-xs-2 control-label" for="group-tax-account">
-            {{ "INVENTORY.GROUPS.TAX_ACCOUNT" | translate }}
+          <label class="col-xs-2 control-label" for="group-donation-account">
+            {{ "INVENTORY.GROUPS.DONATION_ACCOUNT" | translate }}
           </label>
           <div class="col-xs-10">
-            <select id="group-tax-account" class="form-bhima" ng-model="group.tax_account" ng-options="account.id as account.account_number+'--'+account.account_txt for account in accounts.data | orderBy:'account_number'">
-              <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
+            <select id="group-donation-account" class="form-bhima" ng-model="group.donation_account" ng-options="account.id as account.account_number+'--'+account.account_txt for account in accounts.data | orderBy:'account_number'">
+              <option ng-if="accounts.data" value="">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
             </select>
           </div>
         </div>

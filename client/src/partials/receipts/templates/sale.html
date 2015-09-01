@@ -17,7 +17,7 @@
     {{project.village}}
     <br>
     <!-- hah -->
-    {{ project.postal || 'B.P. 205'}}
+    {{ project.po_box || 'B.P. 205'}}
     <br>
     {{project.sector}}
     <br>
@@ -65,7 +65,7 @@
       </thead>
       <tbody class="items">
         <tr ng-repeat="item in model['invoiceItem'].data | orderBy : 'code'">
-          <td>{{ item.code }}</td>
+            <td>{{ item.code }}</td>
           <td>{{ item.text }}</td>
           <td>{{ item.quantity }}</td>
 
@@ -82,16 +82,22 @@
     </table>
   </div>
 </div>
-<div class="row">
-  <div class="col-xs-6">
-    <div class="pull-right">
-      <b>{{"INVOICE.SIGN_HEADER_BILLING" | translate}}</b>
+
+<div class="signatures">
+  <h5>{{ "UTIL.SIGNATURES" | translate }}</h5>
+
+  <div class="signature-box-wide">
+    <div class="col-xs-6">
+      <div class="pull-left">
+        <b>{{"INVOICE.SIGN_HEADER_BILLING" | translate}}</b>
+      </div>
     </div>
+    <div class="col-xs-6">
+      <div class="pull-right">
+       <b>{{"INVOICE.SIGN_CLIENT" | translate}}</b>
+      </div>
+    </div>  
   </div>
-  <div class="col-xs-6">
-    <div class="pull-left">
-     <b>{{"INVOICE.SIGN_CLIENT" | translate}}</b>
-    </div>
-  </div>
-</div>
+</div> 
+
 <!-- End Patient Invoice template -->

@@ -19,6 +19,7 @@ angular.module('bhima.controllers')
 
     var dependencies = {},
         data = $scope.data = {},
+        session = $scope.session = {},
         cache = new Appcache('cash');
 
     $scope.queue = [];
@@ -78,6 +79,10 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.user = {
+      query : '/user_session'
+    };
+
     function loadDefaultCurrency(currency) {
       if (!currency) { return; }
       defaultCurrency = currency;
@@ -102,13 +107,12 @@ angular.module('bhima.controllers')
       dependencies.cashboxes.query.where =
         ['cash_box.project_id=' + project.id, 'AND', 'cash_box.is_auxillary=1'];
 
-      validate.process(dependencies, ['cashboxes', 'cash', 'projects'])
+      validate.process(dependencies, ['cashboxes', 'cash', 'projects', 'user'])
       .then(setUpModels, handleErrors);
     });
 
     function setUpModels(models) {
       angular.extend($scope, models);
-
       if (!$scope.cashbox) {
         var sessionDefault =
           $scope.cashboxes.data[0];
@@ -194,6 +198,13 @@ angular.module('bhima.controllers')
     $scope.loadInvoices = function (patient) {
       $scope.ledger = [];
       $scope.queue = [];
+      if(patient.is_convention === 1){
+        session.patient = 'is_convention';
+      } else {
+        session.patient = 'not_convention';
+      }
+
+
       $scope.patient = patient;
       connect.fetch('/ledgers/debitor/' + patient.debitor_uuid)
       .then(function (data) {
@@ -261,7 +272,7 @@ angular.module('bhima.controllers')
       invoice = {
         date : date,
         document_id : id,
-        description : ['CP E', id, $scope.patient.last_name, date].join('/')
+        description : [$scope.project.abbr + '_CAISSEAUX', id, $scope.patient.last_name, date].join('/')
       };
 
       if ($scope.data.overdue) {
@@ -311,11 +322,9 @@ angular.module('bhima.controllers')
       initPayment()
       .then(function (data) {
         // pay the cash payment
-
         creditAccount = data.creditAccount;
-
         var account = $scope.cashbox_accounts.get($scope.currency.currency_id);
-        var user_id = angular.isDefined(appstate.get('user')) ? appstate.get('user').id : 3;
+        var user_id = $scope.user.data.id;
 
         payment = data.invoice;
         payment.uuid = id;

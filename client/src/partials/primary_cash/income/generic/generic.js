@@ -2,6 +2,7 @@ angular.module('bhima.controllers')
 .controller('primaryCash.income.generic', [
   '$scope',
   '$routeParams',
+  '$translate',
   'validate',
   'messenger',
   'appstate',
@@ -10,10 +11,11 @@ angular.module('bhima.controllers')
   'util',
   '$location',
   'appcache',
-  function ($scope, $routeParams, validate, messenger, appstate, connect, uuid, util, $location, Appcache) {
-    var isDefined, dependencies = {};
-    var session = $scope.session = { receipt : {} };
-    var cache = new Appcache('income');
+  function ($scope, $routeParams, $translate, validate, messenger, appstate, connect, uuid, util, $location, Appcache) {
+    var isDefined, dependencies = {},
+      session = $scope.session = { receipt : {}, configured : false, complete : false },
+      cache = new Appcache('income'),
+      tomorrow;
 
     // TODO
     if (Number.isNaN(Number($routeParams.id))) {
@@ -24,27 +26,11 @@ angular.module('bhima.controllers')
 
     $scope.timestamp = new Date();
 
-    session.today = $scope.timestamp.toISOString().slice(0, 10);
-
-    dependencies.debtors = {
-      query : {
-        tables : {
-          'patient' : {
-            columns : ['uuid', 'debitor_uuid', 'project_id', 'reference', 'first_name', 'last_name']
-          },
-          'debitor' : {
-            columns : ['group_uuid']
-          },
-          'debitor_group' : {
-            columns : ['account_id']
-          }
-        },
-        join : [
-          'patient.debitor_uuid=debitor.uuid',
-          'debitor.group_uuid=debitor_group.uuid'
-        ]
-      }
-    };
+    // session.today = $scope.timestamp.toISOString().slice(0, 10);
+    //session.today = util.htmlDate(new Date());
+    tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    session.tomorrow = util.htmlDate(tomorrow);
 
     dependencies.currencies = {
       query : {
@@ -55,7 +41,7 @@ angular.module('bhima.controllers')
         }
       }
     };
- 
+
     dependencies.projects = {
       query : {
         tables : {
@@ -66,11 +52,32 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.accounts = {
+      query : {
+        tables : {
+          'account' :{
+            columns : ['id', 'account_txt', 'account_number', 'is_ohada']
+          }
+        },
+        where : ['account.is_ohada=1', 'AND', 'account.account_type_id<>3']
+      }
+    };
+
     cache.fetch('currency').then(load);
+    cache.fetch('account').then(getAccount);
+
+
 
     function load (currency) {
       if (!currency) { return; }
        $scope.session.currency = currency;
+    }
+
+    function getAccount (ac) {
+      if (!ac) { return; }
+       session.configured = true;
+       session.ac = ac;
+       session.complete = true;
     }
 
     appstate.register('project', function (project) {
@@ -83,6 +90,7 @@ angular.module('bhima.controllers')
         session.receipt.date = new Date();
         session.receipt.cost = 0.00;
         session.receipt.cash_box_id = $routeParams.id;
+        session.accounts = models.accounts.data;
       })
       .catch(function (err) {
         messenger.error(err);
@@ -117,7 +125,6 @@ angular.module('bhima.controllers')
       var r = session.receipt;
 
       session.invalid = !(isDefined(session.currency) &&
-        isDefined(r.recipient) &&
         isDefined(r.cost) &&
         r.cost > 0 &&
         isDefined(r.description) &&
@@ -143,13 +150,11 @@ angular.module('bhima.controllers')
           project_id    : $scope.project.id,
           type          : 'E',
           date          : util.sqlDate(receipt.date),
-          deb_cred_uuid : receipt.recipient.debitor_uuid,
-          deb_cred_type : 'C',
-          account_id    : receipt.recipient.account_id,
+          account_id    : session.ac.id,
           currency_id   : session.currency.id,
           cost          : receipt.cost,
           user_id       : user.id,
-          description   : receipt.description + ' ID       : ' + receipt.reference_uuid,
+          description   : 'HBB' + '_CP. REC GEN/' + receipt.description, //fix me
           cash_box_id   : receipt.cash_box_id,
           origin_id     : 5,
         };
@@ -171,24 +176,37 @@ angular.module('bhima.controllers')
       })
       .then(function () {
         // invoice
-        messenger.success('Posted data successfully.');
+        messenger.success($translate.instant('ALLTRANSACTIONS.DATA_POSTED'));
         $location.path('/invoice/generic_income/' + data.uuid);
       });
-      // .then(function () {
-      //   messenger.success('Posted data successfully.');
-      //   session = $scope.session = { receipt : {} };
-      //   session.receipt.date = new Date();
-      //   session.receipt.cost = 0.00;
-      //   session.receipt.cash_box_id = $routeParams.id;
-      // });
     };
 
     function setCurrency (obj) {
       $scope.session.currency=obj;
       cache.put('currency', obj);
-    }  
+    }
+
+    function formatAccount (ac) {
+      if (ac) {return ac.account_number + ' - ' + ac.account_txt;}
+    }
+
+    $scope.reconfigure = function () {
+      session.ac = null;
+      session.configured = false;
+      session.complete = false;
+    };
+
+    $scope.setConfiguration = function (ac) {
+      if (ac) {
+        cache.put('account', ac);
+        session.configured = true;
+        session.ac = ac;
+        session.complete = true;
+      }
+    };
 
     $scope.update = update;
     $scope.setCurrency = setCurrency;
+    $scope.formatAccount = formatAccount;
   }
 ]);

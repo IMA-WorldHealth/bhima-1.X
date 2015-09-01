@@ -1,208 +1,379 @@
 angular.module('bhima.controllers')
-.controller('journalVoucher', [
+.controller('JournalVoucherController', [
   '$scope',
-  'validate',
-  'connect',
-  'appstate',
-  'messenger',
-  'uuid',
-  'util',
-  'exchange',
-  function ($scope, validate, connect, appstate, messenger, uuid, util, exchange) {
-    var dependencies = {};
-    var voucher = $scope.voucher = { rows : [] };
-    var session = $scope.session = {};
+  '$http',
+  'appcache',
+  function ($scope, $http, AppCache) {
 
-    $scope.options = ['D', 'C'];
+    /* This controller wraps all the global metadata
+     * for the journal voucher and the JournalVoucherTableController.
+     * It is responsible for validation checks, submitting
+     * the form, and any error handling.
+     *
+     * AngularJS only allows child $scopes access to parents (via
+     * prototypical inheritence on the $parent property), so we define
+     * the transaction rows here (master.rows).  All the mechanics of
+     * adding and removing rows is done in JournalVoucherTableController,
+     * however the final validation check is done here in the function
+     * correctTableInput().
+     *
+     * This is one of the better models for sharing data we have
+     * used so far...  Can we do better?
+    */
 
-    $scope.today = new Date().toISOString().slice(0,10);
+    var dependencies = {},
+        isDefined = angular.isDefined,
 
-    dependencies.accounts = {
-      required : true,
-      query : {
-        tables : {
-          'account' : {
-            columns : ['id', 'account_number', 'account_txt', 'account_type_id']
-          }
-        }
-      }
+        // cache TODO
+        db = new AppCache('JournalVoucher');
+
+    // alias this
+    var self = this;
+
+    // trigger error/success text for the transaction table
+    self.clientTableError = false;
+    self.serverSuccessMessage = false;
+    self.serverFailureMessage = false;
+
+    // current timestamp
+    self.today = new Date();
+
+    self.showComment = false;
+    self.showReference = false;
+    self.hasCachedForm = false;
+
+    // the master form
+    // We must define this on the $scope so that the
+    // child can access it via $scope.$parent
+    $scope.master = self.master = {
+      date : self.today,
+      rows : [] // the child
     };
 
-    dependencies.currencies = {
-      required : true,
-      query : {
-        tables : {
-          'currency' : {
-            columns : ['id', 'symbol', 'min_monentary_unit']
-          }
-        }
-      }
-    };
-
-    dependencies.debitors = {
-      query : {
-        tables : {
-          'debitor' : {
-            columns : ['uuid', 'text']
-          }
-        }
-      }
-    };
-
-    function JournalRow () {
-      this.id = Math.random();
-      this.description = null;
-      this.account = null;
-      this.debit = 0;
-      this.credit = 0;
-      this.currency_id = null;
-      this.deb_cred_uuid = null;
-      this.deb_cred_type = null;
-      this.inv_po_id = null;
-      this.comment = null;
-      this.origin = null;
-      return this;
-    }
-
-    function init (model) {
-      angular.extend($scope, model);
-
-      $scope.accounts.data.forEach(function (account) {
-        account.account_number = String(account.account_number);
-      });
-
-      voucher.currency_id = model.currencies.data[model.currencies.data.length-1].id;
-      voucher.trans_date = util.convertToMysqlDate(new Date());
-      voucher.rows = [new JournalRow(), new JournalRow()];
-
-      connect.fetch('/max_trans/' + $scope.project.id)
-      .then(function (ids) {
-        var id = ids.pop();
-        voucher.trans_id = id.increment ? id.abbr + id.increment : $scope.project.abbr + 1;
-      });
-    }
-
-    $scope.submit = function submit() {
-      // local variables to speed up calculation
-      var prid, peid, fyid, description, transDate, invid, userId;
-      prid = $scope.project.id;
-      transDate = util.convertToMysqlDate(voucher.trans_date);
-      invid = voucher.inv_po_id;
-      description = voucher.description;
-
-      // serialize date
-      connect.fetch('/period/' + new Date(voucher.trans_date).valueOf())
-      .then(function (periods) {
-        if (!periods.length) { throw new Error('No periods for that trans_id'); }
-        var period = periods.pop();
-        peid = period.id;
-        fyid = period.fiscal_year_id;
-
-        return connect.fetch('/user_session');
-      })
-      .then(function () {
-        var records = [];
-        userId = 1; // FIXME
-        voucher.rows.forEach(function (row) {
-          var record = {
-            uuid           : uuid(),
-            project_id     : prid,
-            period_id      : peid,
-            fiscal_year_id : fyid,
-            trans_id       : voucher.trans_id,
-            trans_date     : transDate,
-            description    : description,
-            account_id     : row.account_id,
-            debit          : row.debit,
-            credit         : row.credit,
-            debit_equiv    : row.debit * exchange.rate(row.debit, voucher.currency_id),
-            credit_equiv   : row.credit * exchange.rate(row.credit, voucher.currency_id),
-            currency_id    : voucher.currency_id,
-            deb_cred_uuid  : row.deb_cred_uuid,
-            deb_cred_type  : row.deb_cred_type,
-            inv_po_id      : invid,
-            comment        : row.comment,
-            origin_id      : 9,
-            user_id        : userId,
-          };
-          records.push(record);
-        });
-
-        return connect.basicPut('posting_journal', records);
-      })
-      .then(function () {
-        var log = {
-          uuid           : uuid(),
-          transaction_id : voucher.trans_id,
-          justification  : voucher.description,
-          date           : voucher.trans_date,
-          user_id        : userId
-        };
-
-        return connect.basicPut('journal_log', [log]);
-      })
-      .then(function () {
-        messenger.success('Data posted successfully');
-        flush();
-      });
-    };
-
-    function flush (){
-      voucher.rows = [new JournalRow(), new JournalRow()];
-      voucher.description = null;
-      voucher.inv_po_id = null;
-
-      connect.fetch('/max_trans/' + $scope.project.id)
-      .then(function (ids) {
-        var id = ids.pop();
-        voucher.trans_id = id.increment ? id.abbr + id.increment : $scope.project.abbr + 1;
-      });
-    }
-
-    function calculateTotals () {
-      var debitSom = 0, creditSom = 0;
-      $scope.voucher.rows.forEach(function (item) {
-        debitSom += item.debit;
-        creditSom += item.credit;
-      });
-
-      $scope.voucher.debitTotal = debitSom;
-      $scope.voucher.creditTotal = creditSom;
-    }
-
-    $scope.$watch('voucher.rows', function () {
-      calculateTotals();
-
-      var hasAccounts = voucher.rows.every(function (row) {
-        return !!row.account_id;
-      });
-
-      var isBalanced = voucher.debitTotal === voucher.creditTotal;
-      var nonZeroBalances = voucher.debitTotal + voucher.creditTotal !== 0;
-      var nonDoubleEntry = voucher.rows.length >= 2;
-
-      session.valid = hasAccounts && isBalanced && nonZeroBalances && nonDoubleEntry;
-    }, true);
-
-    appstate.register('project', function (project) {
-      $scope.project = project;
-      dependencies.accounts.query.where =
-        ['account.enterprise_id=' + project.enterprise_id];
-
-      validate.process(dependencies)
-      .then(init)
-      .catch(function (error) {
-        messenger.danger('An error occured : ' + JSON.stringify(error));
-        //console.error(error);
-      });
+    // load dependencies
+    $http.get('/finance/currencies')
+    .success(function (data) {
+      self.currencies = data;
+    })
+    .error(function (error) {
+      console.error(error);
     });
 
-    $scope.addRow = function addRow () {
-      voucher.rows.push(new JournalRow());
+    // toggle comment field
+    self.toggleComment = function () {
+      self.showComment = !self.showComment;
     };
 
-    $scope.removeRow = function removeRow (index) {
-      voucher.rows.splice(index, 1);
+    // toggle reference field
+    self.toggleReference = function () {
+      self.showReference = !self.showReference;
+    };
+
+    // do the final submit checks
+    self.submitForm = function () {
+      self.serverFailureMessage = false;
+      self.serverSuccessMessage = false;
+
+      // cache the working form in case something breaks
+      cacheWorkingForm();
+
+      // validation of table rows
+      if (!correctTableInput()) {
+        self.clientTableError = true;
+        return;
+      }
+
+      console.log('Submitting...', $scope.master);
+
+      // submit to the server
+      $http.post('/finance/journalvoucher', { data : $scope.master })
+
+      // success!  Clear the data to start again.
+      .then(function (response) {
+
+        // if everything went correctly, remove the old copy
+        removeCachedForm();
+
+        self.serverSuccessMessage = response.data;
+
+        // reset form validation checks
+        $scope.VoucherForm.$setPristine();
+
+        // new form set up
+        self.master = $scope.master = { date : self.today, rows : [] };
+
+        // tell the child controller to import the new form
+        $scope.$broadcast('table.reset');
+      })
+
+      // something went wrong... log it!
+      .catch(function (error) {
+        self.serverFailureMessage = error.data;
+      });
+    };
+
+    // ensure that the table portion is valid before submitting
+    function correctTableInput() {
+
+      // validate that the rows contain the correct format
+      var validRows = self.master.rows.every(function (row) {
+
+        // must have a one non-zero value
+        var validAmount =
+            (row.debit > 0 && !row.credit) ||
+            (!row.debit && row.credit > 0);
+
+        // must have either a debitor/creditor switch
+        // or an account
+        var validAccount =
+            (isDefined(row.deb_cred_uuid) && isDefined(row.deb_cred_type)) ||
+             isDefined(row.account_id);
+
+        return validAmount && validAccount;
+      });
+
+      // validate that the transaction balances
+      var totals = self.master.rows.reduce(function (aggregate, row) {
+        aggregate.debit += row.debit;
+        aggregate.credit += row.credit;
+        return aggregate;
+      }, { debit : 0, credit : 0 });
+
+      var validTotals = totals.debit === totals.credit;
+
+      // validate that there is only one cost or profit center per line
+      var validCenters = self.master.rows.every(function (row) {
+        return !(row.cc_id && row.pc_id);
+      });
+
+      // TODO
+      // Should we include specific error messages (the debits/credits
+      // do not balance, missing an account?)
+      // It would be easy to do, but very verbose, especially considering
+      // translation..
+      return validRows && validTotals && validCenters;
+    }
+
+    // stores the 'master' form in the browser cache in
+    // case anything goes wrong.
+    function cacheWorkingForm() {
+      db.put('CachedForm', self.master);
+    }
+
+    // look to see if there is an old form in the broswer cache
+    function findCachedForm() {
+      db.fetch('CachedForm')
+      .then(function (data) {
+        if (data) { self.hasCachedForm = true; }
+      });
+    }
+
+    function removeCachedForm() {
+      db.remove('CachedForm');
+    }
+
+    // load an old form from the browser cache
+    self.loadCachedForm = function () {
+      db.fetch('CachedForm')
+      .then(function (data) {
+        if (data) {
+
+          // load meta-data
+          self.master.date = data.date;
+          self.master.description = data.description;
+          self.master.currencyId = data.currencyId;
+          self.master.comment = data.comment;
+          self.master.documentId = data.documentId;
+
+          // show if has a cached comment/documentId
+          self.showComment = !!data.comment;
+          self.showReference = !!data.documentId;
+
+          // load the rows into the master
+          self.master.rows.length = 0;
+          data.rows.forEach(function (row) {
+            self.master.rows.push(row);
+          });
+
+          // remove the button from the UI
+          self.hasCachedForm = false;
+        }
+      });
+    };
+
+    // auto-detect if there is an old form
+    findCachedForm();
+}])
+
+.controller('JournalVoucherTableController', ['$http', '$q', '$scope', function ($http, $q, $scope) {
+
+  /* This controller is somewhat complex because it handles the
+   * behavior of either specifying an account OR a debtor/creditor
+   * to debit/credit in the journal voucher table.
+   *
+   * If the user has seleted an account, we must remove the deb_cred_type
+   * before submitting to the server. This is done in the .submitForm()
+   * method of the parent controller.
+   *
+   * If the user has selected a debtor/creditor, we must be sure that the
+   * row contains
+   *   1) the account_id associated with the debtor/creditor
+   *   2) the debtor/creditor uuid
+   *   3) the debtor/creditor type
+   * Most of these are taken care of automatically by the user
+   * when selecting the debtor/creditor.
+   *
+   * Every time a row is updated, the totals must be recalculated.  Since a
+   * transaction can only be in one currency, we don't need to know the
+   * currency - simply that the transaction balances.  The currency is specified
+   * in the parent controller (JournalVoucherController).
+  */
+
+  // alias this
+  var self = this;
+
+  // self is the format of the rows in the journal voucher table
+  function generateRow() {
+    return {
+      account_id    : undefined,
+      deb_cred_uuid : undefined,
+      deb_cred_type : 'D',
+      debit         : 0,
+      credit        : 0,
+      cc_id         : undefined,
+      pc_id         : undefined,
+      selectAccount : true,       // by default, filter accounts
     };
   }
-]);
+
+  // reset when all done
+  $scope.$on('table.reset', function () {
+    self.rows = $scope.$parent.master.rows;
+    self.rows.push(generateRow());
+    self.rows.push(generateRow());
+    self.totalCredit();
+    self.totalDebit();
+  });
+
+
+  // pull in parent rows
+  self.rows = $scope.$parent.master.rows;
+
+  // start out with two rows
+  self.rows.push(generateRow());
+  self.rows.push(generateRow());
+
+  self.totals = {
+    credits : 0,
+    debits : 0
+  };
+
+  /* Load dependencies */
+
+  // error handler
+  function handle(error) {
+    console.error(error);
+  }
+
+  // load all accounts
+  $http.get('/accounts?type=ohada')
+  .success(function (data) {
+    self.accounts = data;
+  })
+  .error(handle);
+
+  // load debtors
+  $http.get('/finance/debtors')
+  .success(function (data) {
+    self.debtors = data;
+  })
+  .error(handle);
+
+  // load creditors
+  $http.get('/finance/creditors')
+  .success(function (data) {
+    self.creditors = data;
+  })
+  .error(handle);
+
+  // load profit + cost centers
+  $http.get('/finance/profitcenters')
+  .success(function (data) {
+    self.profitcenters = data;
+  })
+  .error(handle);
+
+  $http.get('/finance/costcenters')
+  .success(function (data) {
+    self.costcenters = data;
+  })
+  .error(handle);
+
+  /* Toggles */
+
+  // switches between the account typeahead
+  // and the debtor/creditor typeahead
+  self.toggleAccountSwitch = function (row) {
+    row.selectAccount = !row.selectAccount;
+  };
+
+  // switches the debtor or creditor type
+  // NOTE switching debtor/creditor type destroys
+  // previously cached data
+  self.setDebtorOrCreditorType = function (row, type) {
+    row.deb_cred_uuid = undefined;
+    row.entity = undefined;
+    row.deb_cred_type = type;
+  };
+
+  /* Totalling */
+
+  // total debits
+  self.totalDebit = function () {
+    self.totals.debits = self.rows.reduce(function (total, row) {
+      return total + row.debit;
+    }, 0);
+  };
+
+  // total credits
+  self.totalCredit = function () {
+    self.totals.credits = self.rows.reduce(function (total, row) {
+      return total + row.credit;
+    }, 0);
+  };
+
+  /* Row Controls */
+
+  // adds a row to the table
+  self.addRow = function () {
+    self.rows.push(generateRow());
+  };
+
+  // removes a row from the table
+  self.removeRow = function (idx) {
+    self.rows.splice(idx, 1);
+  };
+
+  /* formatters */
+  self.fmtAccount = function (account) {
+    return account ?  account.account_number + ' ' +  account.account_txt : '';
+  };
+
+  // Set a debtor or creditor for the row
+  // First, remove the old account_id.
+  // Then, set the deb_cred_uuid and account_id properly
+  self.setDebtorOrCreditor = function (row) {
+    row.account_id = row.entity.account_id;
+    row.deb_cred_uuid = row.entity.uuid;
+  };
+
+  // set the account for a row
+  // remove all debtor/creditor properties that may
+  // have been set on a previous selection
+  self.setAccount = function (row) {
+    row.account_id = row.account.id;
+    row.deb_cred_uuid = undefined;
+    row.entity = undefined;
+  };
+
+}]);

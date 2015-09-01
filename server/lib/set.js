@@ -1,20 +1,38 @@
 // scripts/lib/util/set.js
 
-module.exports = function Set () {
-  this.set = [];
-  
-  this.insert = function insert (item) {
-    if (this.index(item) > -1) { return; }
-    this.set.push(item);
+// Set.js keeps an array of unique values similar to an array.
+
+module.exports = function Set(data) {
+  'use strict';
+  var _t = this;
+
+  data = data || [];
+
+  _t.insert = function insert(item) {
+    if (_t.index(item) > -1) { return; }
+    _t.set.push(item);
   };
 
-  this.remove = function remove (item) {
-    if (this.index(item) > -1) {
-      this.set.splice(this.index(item), 1);
+  _t.remove = function remove(item) {
+    if (_t.index(item) > -1) {
+      _t.set.splice(_t.index(item), 1);
     }
   };
 
-  this.index = function index (item) {
-    return this.set.indexOf(item);
+  _t.index = function index(item) {
+    return _t.set.indexOf(item);
   };
+
+  // filter to remove duplicated values
+  function unique(value, index, self) {
+    return self.indexOf(value) === index;
+  }
+
+  _t.init = function (array) {
+    // filter for unique values
+    _t.set = array.filter(unique);
+  };
+
+  // initialize with data
+  _t.init(data);
 };

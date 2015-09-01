@@ -1,0 +1,149 @@
+<div ng-switch="state">
+  <div ng-switch-default>
+    <main>
+      <div class="col-xs-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <b> {{ "OPERATING_ACCOUNT.CONFIGURE_REPORT" | translate }} </b>
+        </div>
+
+        <div class="panel-body">
+          <form name="configForm" novalidate>
+            <div class="form-group">
+              <label class="control-label col-xs-4 required">
+                {{ "OPERATING_ACCOUNT.FISCAL_YEAR" | translate }}
+              </label>
+              <div>
+                <select class="form-bhima" ng-model="session.fiscal_year_id" ng-change="getPeriods()" required>
+                  <option ng-repeat="fy in fiscalYears.data" ng-value="fy.id">
+                    {{fy.fiscal_year_txt}}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-xs-4 required">
+                {{ "OPERATING_ACCOUNT.PERIOD" | translate }}
+              </label>
+              <div>
+                <select class="form-bhima" ng-model="session.period_id" required>
+                  <option ng-if="selectablePeriods.length" value="all">
+                    {{ "OPERATING_ACCOUNT.ALL" | translate }}
+                  </option>
+                  <option ng-if="selectablePeriods.length" ng-repeat="per in selectablePeriods" value="{{ per.id }}">
+                    {{per.period_start | date}} -- {{per.period_stop | date}}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="pull-right">
+              <button class="btn btn-sm btn-success" type="button" ng-click="generate()" ng-disabled="configForm.$invalid">
+                {{ "OPERATING_ACCOUNT.GENERATE" | translate }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      </div>
+    </main>
+  </div>
+
+  <div ng-switch-when="generate">
+    <header>
+      {{ "OPERATING_ACCOUNT.TITLE" | translate }} / {{fiscalYears.get(session.fiscal_year_id).fiscal_year_txt}} / {{session.period_id == 'all' ? all_period : (periods.get(session.period_id).period_start | date) + ' -- ' + (periods.get(session.period_id).period_stop | date)}}
+    </header>
+
+    <nav>
+      <button
+        style="margin-left: 5px;"
+        ng-click="reconfigure()"
+        class="btn btn-sm btn-default pull-right">
+        <span class="glyphicon glyphicon-repeat"></span>
+      </button>
+
+      <div class="pull-right">
+        <button ng-click="printReport()" class="btn btn-default btn-sm square">
+          <span class="glyphicon glyphicon-print"></span>
+          {{ 'UTIL.PRINT' | translate }}
+        </button>
+      </div>
+    </nav>
+
+    <div class="report">
+      <div class="reportBody">
+        <div class="reportFrame">
+          <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
+          
+          <h4 class="visible-print">
+            {{ "OPERATING_ACCOUNT.TITLE" | translate }} :
+            <small>
+              {{ fiscalYears.get(session.fiscal_year_id).fiscal_year_txt}} /
+              {{session.period_id == 'all' ? 'Tous' : (periods.get(session.period_id).period_start | date) + ' -- ' + (periods.get(session.period_id).period_stop | date)}}
+            </small>
+          </h4>
+          <table id="patientTable" class="reportTable">
+            <thead>
+              <tr>
+                <th>{{ "COLUMNS.NR" | translate }}</th>
+                <th>{{ "COLUMNS.ACCOUNT" | translate }}</th>
+                <th>{{ "COLUMNS.LABEL" | translate }}</th>
+                <th>{{ "COLUMNS.CHARGE" | translate }}</th>
+                <th>{{ "COLUMNS.PROFIT" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat='record in records'>
+                <td> {{ $index + 1 }} </td>
+                <td> {{ record.account_number}} </td>
+                <td> {{ record.account_txt }} </td>
+                <td> {{ record.debit }} </td>
+                <td> {{ record.credit }} </td>
+              </tr>
+            </tbody>
+          </table>
+          <h6 class="visible-print">
+            {{ 'OPERATING_ACCOUNT.TOTAL_CHARGE' | translate }}: <b ng-bind-html=" debitTotal | intlcurrency:session.currency"></b> | {{ 'OPERATING_ACCOUNT.TOTAL_PROFIT' | translate }}: <b ng-bind-html=" creditTotal | intlcurrency:session.currency"></b> | {{ 'COLUMNS.RESULT' | translate }} : <b ng-bind-html=" Result | intlcurrency:session.currency"></b>
+          </h6>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <table style="width: 99%, margin-top: 3px">
+        <tbody>
+          <td style="width:20%;">
+            <b>{{ 'OPERATING_ACCOUNT.TOTAL_CHARGE' | translate }}: </b>
+            <span>
+              <b ng-bind-html=" debitTotal | intlcurrency:session.currency"></b>
+            </span>
+            <span ng-if="session.searching">...</span>
+          </td>
+
+          <td style="width:20%;">
+          </td>
+
+          <td style="width:20%;">
+            <b>{{ 'OPERATING_ACCOUNT.TOTAL_PROFIT' | translate }}: </b>
+            <span>
+              <b ng-bind-html=" creditTotal | intlcurrency:session.currency"></b>
+            </span>
+            <span ng-if="session.searching">...</span>
+          </td>
+
+          <td style="width:20%;">
+            <b>{{ 'COLUMNS.RESULT' | translate }}: </b>
+            <span>
+              <b ng-bind-html=" Result | intlcurrency:session.currency"></b>
+            </span>
+            <span ng-if="session.searching">...</span>
+          </td>
+        </tbody>
+      </table>
+    </footer>
+  </div>
+</div>
+
+
+

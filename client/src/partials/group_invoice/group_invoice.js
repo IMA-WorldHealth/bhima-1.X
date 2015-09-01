@@ -1,12 +1,13 @@
 angular.module('bhima.controllers')
 .controller('groupInvoice', [
   '$scope',
+  '$translate',
   'connect',
   'validate',
   'appstate',
   'messenger',
   'uuid',
-  function ($scope, connect, validate, appstate, messenger, uuid) {
+  function ($scope, $translate, connect, validate, appstate, messenger, uuid) {
 
     var dependencies = {};
     $scope.action = '';
@@ -45,6 +46,21 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.currency = {
+      required : true,
+      query : {
+        tables : {
+          'enterprise' : {
+            columns : ['currency_id']
+          },
+          'currency' : {
+            columns : ['symbol']
+          }
+        },
+        join : ['enterprise.currency_id=currency.id']
+      }
+    };
+
     // get enterprise
     appstate.register('project', function (project) {
       $scope.project = project;
@@ -53,7 +69,7 @@ angular.module('bhima.controllers')
       dependencies.conventions.query.where.push(
         'debitor_group.enterprise_id=' + project.enterprise_id
       );
-      validate.process(dependencies, ['debitors', 'conventions']).then(setUpModels);
+      validate.process(dependencies, ['debitors', 'conventions', 'currency']).then(setUpModels);
     });
 
     $scope.setDebitor = function () {
@@ -61,7 +77,6 @@ angular.module('bhima.controllers')
         return messenger.danger('Error: No debitor selected');
       }
 
-      console.log('[selected debitor]', $scope.selected.debitor);
       dependencies.invoices.query += $scope.selected.debitor.uuid;
       validate.process(dependencies).then(setUpModels);
       $scope.hasDebitor = true;
@@ -111,8 +126,10 @@ angular.module('bhima.controllers')
     };
 
     $scope.dequeue = function () {
+      var total_payment = $scope.total_payment = 0;
       $scope.paying.forEach(function (i) {
         $scope.invoices.data.push(i);
+        total_payment += i.payment;
       });
       $scope.paying.length = 0;
       $scope.action = '';
@@ -129,11 +146,15 @@ angular.module('bhima.controllers')
     };
 
     $scope.$watch('paying', function () {
-      var s = 0;
+      var s = 0, total_debit = 0, total_credit = 0;
       $scope.paying.forEach(function (i) {
         s = s + i.payment;
+        total_debit += i.debit;
+        total_credit += i.credit; 
       });
-      $scope.paymentBalance = s;
+      var balance = total_debit - total_credit;
+      $scope.balance =  balance - s;
+      $scope.paymentBalance =  s;
     }, true);
 
     $scope.authorize = function () {
@@ -151,7 +172,7 @@ angular.module('bhima.controllers')
         return connect.fetch('/journal/group_invoice/' + id);
       })
       .then(function () {
-        messenger.success('Data submitted successfully.');
+		    messenger.success($translate.instant('GROUP_INVOICE.SUCCES'));
       });
     };
 
@@ -164,11 +185,9 @@ angular.module('bhima.controllers')
         item.invoice_uuid = i.inv_po_id;
         item.payment_uuid = id;
         items.push(item);
-        console.log('[inserted item]', item);
       });
 
       return items;
-
     }
 
     $scope.filter = function (invoice) {

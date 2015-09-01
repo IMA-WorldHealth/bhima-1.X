@@ -1,17 +1,24 @@
 angular.module('bhima.controllers')
-.controller('util', [
+.controller('UtilController', [
   '$scope',
   '$location',
-  function($scope, $location) {
-    ////
-    // summary: 
-    //  Responsible for all utilities (buttons/ selects etc.) on the application side bar
-    /////
+  '$http',
+  'SessionService',
+  function($scope, $location, $http, SessionService) {
+    // Controls the visibility and actions of the utilities
+    // on the application's sidebar
 
-    $scope.openSettings = function () {
+    this.openSettings = function () {
       var last = $location.path();
       $location.path('/settings/').search('url', last);
     };
 
+    this.logout = function () {
+      $http.get('/logout')
+      .then(function () {
+        SessionService.destroy();
+        $location.url('/login');
+      });
+    };
   }
 ]);

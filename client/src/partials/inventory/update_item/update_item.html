@@ -5,7 +5,7 @@
 <nav>
   <div class="pull-left">
     <ol class="breadcrumb" style="float: right;">
-      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
       <li><a href="#/inventory">{{ "INVENTORY.MAIN.TITLE" | translate }}</a></li>
       <li class="active">{{ "INVENTORY.UPDATE_ITEM.TITLE" | translate }}</li>
     </ol>
@@ -13,8 +13,8 @@
 </nav>
 
 <main>
-  <div class="row">
-    <div class="col-xs-8">
+  <div class="row margin-top-10">
+    <div class="col-xs-6">
       <div class="panel square" ng-class="{'panel-success' : selectedItem, 'panel-default' : !selectedItem}">
         <div class="panel-heading square">
           <span class="glyphicon" ng-class="{'glyphicon-search' : session.search, 'glyphicon-list-alt' : !session.search}"></span>
@@ -109,11 +109,12 @@
               </div>
             </div>
 
-            <div class="form-group checkbox">
-              <label>
-                {{ "COLUMNS.CONSUMABLE" | translate }}
-                <input type="checkbox" ng-model="selectedItem.consumable">
-              </label>
+            <div ng-if="selectedItem.consumable" class="form-group">
+              <h3>{{ "INVENTORY.UPDATE_ITEM.DELIVERABLE" | translate }}</h3>
+            </div>
+
+            <div ng-if="!selectedItem.consumable" class="form-group">
+              <h3>{{ "INVENTORY.UPDATE_ITEM.UNDELIVERABLE" | translate }}</h3>
             </div>
 
             <div class="form-group">
@@ -138,7 +139,7 @@
 
             <div class="form-group">
               <label>{{ "COLUMNS.INVENTORY_GROUP" | translate }}</label>
-              <select class="form-bhima" ng-model="selectedItem.group_uuid" ng-options="group.uuid as group.name for group in groups.data"></select>
+              <select class="form-bhima" ng-model="selectedItem.group_uuid" ng-options="group.uuid as group.name for group in groups.data | orderBy:'name'"></select>
             </div>
 
             <div class="form-group">

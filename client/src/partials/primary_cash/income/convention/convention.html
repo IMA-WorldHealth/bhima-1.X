@@ -1,35 +1,32 @@
-<header>
+<header data-header>
   {{ "CONVENTION.TITLE" | translate }}
 </header>
 
 <nav>
-  <div style="position: absolute; right: 5px;">
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li><a href="#/primary_cash/">{{ 'PRIMARY_CASH.TITLE' | translate}}</a></li>
+      <li class="active">{{ 'CONVENTION.TITLE' | translate}}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right dropdown">
     <button class="btn btn-sm btn-primary dropdown-toggle">
       {{ selectedItem.symbol || "CONVENTION.DEFAULT_CURRENCY" | translate }}
       <span class="caret" data-caret="&#9660;"></span>
     </button>
-    <ul class="dropdown-menu pull-left">
+    <ul class="dropdown-menu">
       <li ng-repeat="box in model.cash_box.data">
-        <a href="" ng-click="setCashAccount(box)"> {{ box.symbol }} </a>
+        <a ng-click="setCashAccount(box)">{{ box.symbol }}</a>
       </li>
     </ul>
-  </div>
-
-  <div class="pull-left">
-    <ol class="breadcrumb">
-      <li><span class="glyphicon glyphicon-home"></span></li>
-      <li><a href="#/primary_cash/">{{'CONVENTION.CRUMB_PCASH' | translate}}</a></li>
-      <li class="active">{{'CONVENTION.CRUMB_CONVENTION' | translate}}</li>
-    </ol>
   </div>
 </nav>
 
 <main>
-
-  <div class="row">
-    <div class="col-xs-6">
-      <div find-convention on-search-complete="initialiseConvention"></div>
-    </div>
+  <div class="row margin-top-10">
+    <div find-convention on-search-complete="initialiseConvention" class="col-xs-6"></div>
   </div>
 
   <div class="row">
@@ -39,42 +36,33 @@
           {{ "CONVENTION.INFO" | translate }}
         </div>
 
-        <div ng-show="noEmpty" class="panel-body">
-          <div class="row">
-            <div class="col-xs-12">
-              <table class="table table-condensed">
-                <thead>
-                  <tr>
-                    <th>{{'COLUMNS.REFERENCE' | translate}}</th>
-                    <th>{{'COLUMNS.DESCRIPTION' | translate}}</th>
-                    <th>{{'COLUMNS.AMOUNT' | translate}}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr ng-repeat="overview in overviews">
-                    <td>{{overview.reference}}</td>
-                    <td>{{overview.description}}</td>
-                    <td  align="right"> {{overview.balance | number:4 | currency}}</td>
-                  </tr>
-                  <tr ng-if="overviews.length">
-                    <td align="left">{{'CONVENTION.TOT' | translate}}</td>
-                    <td colspan="2" align="right">{{som | number:4 | currency}}</td>
-                  </tr>
-                  <tr ng-if="!overviews.length">
-                    <td colspan="3">
-                      <div class="alert alert-warning square">
-                        {{ 'CONVENTION.NO_RECORD' | translate }}
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+        <table class="table table-condensed" ng-if="!!overviews.length" ng-show="noEmpty">
+          <thead>
+            <tr>
+              <th>{{ 'COLUMNS.REFERENCE' | translate }}</th>
+              <th>{{ 'COLUMNS.DESCRIPTION' | translate }}</th>
+              <th>{{ 'COLUMNS.AMOUNT' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="overview in overviews">
+              <td>{{ overview.reference }}</td>
+              <td>{{ overview.description }}</td>
+              <td align="right" ng-bind-html="overview.balance | intlcurrency:enterprise.currency_id"></td>
+            </tr>
+            <tr>
+              <td>{{ 'CONVENTION.TOT' | translate}}</td>
+              <td colspan="2" align="right" ng-bind-html="som | intlcurrency:enterprise.currency_id"></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="panel-body" ng-if="!overviews.length" ng-show="noEmpty">
+          <div class="alert alert-warning">
+            {{ 'CONVENTION.NO_RECORD' | translate }}
           </div>
         </div>
 
-        <div class="panel-footer" ng-show="noEmpty">
-        </div>
       </div>
     </div>
 
@@ -87,29 +75,22 @@
           <form >
             <div class="form-group">
               <div class="col-xs-4">
-                <label>{{"CONVENTION.MONTANT" | translate}}</label>
+                <label>{{ "CONVENTION.MONTANT" | translate }} </label>
               </div>
             </div>
             <div class="input-group col-xs-8">
-              <input type="number" ng-model="data.payment"  class="form-bhima" min="0" required>
+              <input type="number" step="any" ng-model="data.payment"  class="form-bhima" min="0" required>
               <span class="input-group-addon"> {{ selectedItem.symbol }} </span>
             </div>
           </form>
         </div>
 
         <div class="panel-footer" ng-show="noEmpty">
-            <button type="button" class="btn btn-sm" ng-class="{ 'btn-danger' : data.payment < selectedItem.min_monentary_unit || data.payment > som, 'btn-success':  data.payment >= selectedItem.min_monentary_unit }" ng-click="pay()" ng-disabled="check()">
-              {{ "FORM.SUBMIT" | translate }}
-            </button>
+          <button type="button" class="btn btn-sm" ng-class="{ 'btn-danger' : data.payment < selectedItem.min_monentary_unit || data.payment > som, 'btn-success':  data.payment >= selectedItem.min_monentary_unit }" ng-click="pay()" ng-disabled="check()">
+            {{ "FORM.SUBMIT" | translate }}
+          </button>
         </div>
       </div>
     </div>
   </div>
 </main>
-
-<script type="text/ng-template" id="debitorGroupListItem.html">
-  <a>
-    <span><b>[{{ match.model.uuid }}]</b></span>
-    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-  </a>
-</script>

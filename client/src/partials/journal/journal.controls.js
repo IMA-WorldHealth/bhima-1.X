@@ -4,6 +4,7 @@ angular.module('bhima.controllers')
   '$rootScope',
   '$q',
   '$window',
+  '$translate',
   'uuid',
   'store',
   'util',
@@ -13,14 +14,14 @@ angular.module('bhima.controllers')
   'appstate',
   'liberror',
   'messenger',
-  function ($scope, $rootScope, $q, $window, uuid, Store, util, connect, precision, validate, appstate, liberror, messenger) {
+  function ($scope, $rootScope, $q, $window, $translate, uuid, Store, util, connect, precision, validate, appstate, liberror, messenger) {
     /* jshint unused : true */
     var dependencies = {};
     var columns, options, dataview, grid, manager;
-    var sort_column;
+    var sortColumn;
 
     var journalError =  liberror.namespace('JOURNAL');
-    
+
     $scope.editing = false;
 
     function isNull (t) { return t === null; }
@@ -77,6 +78,26 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.cost_center = {
+      query : {
+        tables : {
+          'cost_center': {
+            columns : ['id', 'text']
+          }
+        }
+      }
+    };
+
+    dependencies.profit_center = {
+      query : {
+        tables : {
+          'profit_center' : {
+            columns : ['id', 'text']
+          }
+        }
+      }
+    };
+
     appstate.register('project', function (project) {
       $scope.project = project;
     });
@@ -104,7 +125,9 @@ angular.module('bhima.controllers')
         'account_id'    : AccountEditor,
         'deb_cred_uuid' : DebCredEditor,
         'deb_cred_type' : DebCredTypeEditor,
-        'inv_po_id'     : InvoiceEditor
+        'inv_po_id'     : InvoiceEditor,
+        'cc_id'         : CostCenterEditor,
+        'pc_id'         : ProfitCenterEditor
       };
 
       columns.forEach(function (column) {
@@ -115,14 +138,14 @@ angular.module('bhima.controllers')
 
       // set up grid sorting
 
-      grid.onSort.subscribe(function(e, args) {
-        sort_column = args.sortCol.field;
+      grid.onSort.subscribe(function (e, args) {
+        sortColumn = args.sortCol.field;
         dataview.sort(sort, args.sortAsc);
       });
 
       // set up click handling
 
-      grid.onClick.subscribe(function(e, args) {
+      grid.onClick.subscribe(function (e, args) {
         handleClick(e.target.className, args);
       });
 
@@ -139,8 +162,8 @@ angular.module('bhima.controllers')
     }
 
     function sort (a,b) {
-      var x = a[sort_column];
-      var y = b[sort_column];
+      var x = a[sortColumn];
+      var y = b[sortColumn];
       return x > y ? 1 : -1;
     }
 
@@ -233,7 +256,7 @@ angular.module('bhima.controllers')
         userId         : 13 // FIXME
       };
 
-      transaction.rows.forEach(function(row) {
+      transaction.rows.forEach(function (row) {
         row.newRecord = false;
         manager.session.records.post(row);
       });
@@ -247,12 +270,12 @@ angular.module('bhima.controllers')
       journalError.throw(desc);
     }
 
-    function packager (record) {
+    function packager(record) {
       var data = {}, cpProperties, prop;
       cpProperties = [
         'uuid', 'project_id', 'trans_id', 'trans_date', 'period_id', 'description', 'account_id',
         'credit', 'debit', 'debit_equiv', 'credit_equiv', 'fiscal_year_id', 'currency_id',
-        'deb_cred_id', 'deb_cred_type', 'inv_po_id', 'user_id', 'origin_id'
+        'deb_cred_id', 'deb_cred_type', 'inv_po_id', 'user_id', 'origin_id', 'cc_id', 'pc_id'
       ];
 
       for (prop in record) {
@@ -263,13 +286,28 @@ angular.module('bhima.controllers')
         }
       }
 
+      // FIXME : This will no longer work if we have non-unique account
+      // numbers.
       if (record.account_number) { data.account_id = $scope.account.get(record.account_number).id; }
+
+      // Transfer values from cc over to posting journal cc_id and pc_id fields
+      // This is because we are doing a join, similar to the account_number field
+      // above.
+      // We check for NaNs because we don't have unique identifers like the account number
+      // for an account.
+      if (record.cc && !Number.isNaN(Number(record.cc))) { data.cc_id = record.cc; }
+      if (record.pc && !Number.isNaN(Number(record.pc))) { data.pc_id = record.pc; }
+
+      // FIXME : Hack to get deletion to work with parser.js
+      // This is probably pretty damn insecure
+      if (record.cc === 'null') { data.cc_id = null; }
+      if (record.pc === 'null') { data.pc_id = null; }
+
       // FIXME : Review this decision
       data.project_id = $scope.project.id;
       data.origin_id = 4;
 
       return data;
-
     }
 
     function validDate (item) {
@@ -326,7 +364,7 @@ angular.module('bhima.controllers')
           fiscalError = false;
 
       //validation
-      records.forEach(function(record) {
+      records.forEach(function (record) {
         totalDebits += precision.round(Number(record.debit_equiv));
         totalCredits += precision.round(Number(record.credit_equiv));
         if (!validDate(record)) { dateError = true; }
@@ -376,7 +414,7 @@ angular.module('bhima.controllers')
           editedRecords = [],
           removedRecords = [];
 
-      records.forEach(function(record) {
+      records.forEach(function (record) {
         var newRecord = record.newRecord,
             packed = packager(record);
         (newRecord ? newRecords : editedRecords).push(packed);
@@ -392,19 +430,19 @@ angular.module('bhima.controllers')
         manager.session.userId = res.id;
         newRecords.forEach(function (rec) { rec.user_id = res.id; });
         editedRecords.forEach(function (rec) { rec.user_id = res.id; });
-        return newRecords.length ? connect.basicPut('posting_journal', newRecords) : $q.when(1);
+        return newRecords.length ? connect.post('posting_journal', newRecords) : $q.when(1);
       })
       .then(function () {
-        return editedRecords.length ? editedRecords.map(function (record) { return connect.basicPost('posting_journal', [record], ['uuid']); }) : $q.when(1);
+        return editedRecords.length ? editedRecords.map(function (record) { return connect.put('posting_journal', [record], ['uuid']); }) : $q.when(1);
       })
       .then(function () {
-        return removedRecords.length ? connect.basicDelete('posting_journal', removedRecords, 'uuid') : $q.when(1);
+        return removedRecords.length ? connect.delete('posting_journal', 'uuid', removedRecords) : $q.when(1);
       })
       .then(function () {
         return writeJournalLog(manager.session);
       })
       .then(function () {
-        messenger.success('Transaction edits and logs saved successfully');
+		messenger.success($translate.instant('POSTING_JOURNAL.TRANSACTION_SUCCESS'));	
         manager.fn.resetManagerSession();
         manager.fn.regroup();
         grid.invalidate();
@@ -425,7 +463,7 @@ angular.module('bhima.controllers')
         user_id        : session.userId
       };
 
-      return connect.basicPut('journal_log', [packagedLog]);
+      return connect.post('journal_log', [packagedLog]);
     }
 
     function normalizeDate (date) {
@@ -470,19 +508,17 @@ angular.module('bhima.controllers')
       var defaultValue;
 
       this.init = function () {
-        defaultValue = new Date(args.item.trans_date).toISOString().substring(0,10);
+        defaultValue = args.item.trans_date.split('T')[0]; // If the date encodes timezone info, strip it.
         this.$input = $('<input class="editor-text" type="date">');
         this.$input.appendTo(args.container);
         this.$input.focus();
       };
 
-      this.applyValue = function(item,state) {
-        var stateDate = new Date(state);
-        var e = util.convertToMysqlDate(stateDate);
-        var dateInfo = getDateInfo(stateDate);
+      this.applyValue = function (item, state) {
+        var dateInfo = getDateInfo(state);
         item.fiscal_year_id = dateInfo.fiscal_year_id;
         item.period_id = dateInfo.period_id;
-        item[args.column.field] = e;
+        item[args.column.field] = state;
       };
 
       this.loadValue = function () { this.$input.val(defaultValue); };
@@ -508,7 +544,7 @@ angular.module('bhima.controllers')
         this.$input.focus();
       };
 
-      this.applyValue = function(item, state) {
+      this.applyValue = function (item, state) {
         if (state === 'cancel') { return; }
         item[args.column.field] = state === 'clear' ? '' : state;
       };
@@ -532,7 +568,7 @@ angular.module('bhima.controllers')
 
         // TODO : this is overly verbose
         if (deb_cred_type === 'D') {
-          $scope.debtor.data.forEach(function(debtor) {
+          $scope.debtor.data.forEach(function (debtor) {
             options += '<option value="' + debtor.uuid + '">[D] [' + debtor.name + '] ' + debtor.first_name + ' ' + debtor.last_name + '</option>';
             if (!defaultValue) {
               defaultValue = debtor.uuid;
@@ -546,7 +582,7 @@ angular.module('bhima.controllers')
             }
           });
         } else {
-          $scope.debtor.data.forEach(function(debtor) {
+          $scope.debtor.data.forEach(function (debtor) {
             options += '<option value="' + debtor.uuid + '">[D] [' + debtor.name + '] ' + debtor.first_name + ' ' + debtor.last_name + '</option>';
             if (!defaultValue) {
               defaultValue = debtor.uuid;
@@ -569,7 +605,7 @@ angular.module('bhima.controllers')
         this.$input.focus();
       };
 
-      this.applyValue = function(item,state) {
+      this.applyValue = function (item,state) {
         if (state === 'cancel') { return; }
         item[args.column.field] = state === 'clear' ? '' : state;
       };
@@ -590,7 +626,7 @@ angular.module('bhima.controllers')
         //default value - naive way of checking for previous value, default string is set, not value
         defaultValue = Number.isNaN(Number(args.item.account_number)) ? null : args.item.account_number;
         var options = '';
-        $scope.account.data.forEach(function(account) {
+        $scope.account.data.forEach(function (account) {
           var disabled = (account.account_type_id === 3) ? 'disabled' : '';
           options += '<option ' + disabled + ' value="' + account.account_number + '">' + account.account_number + ' ' + account.account_txt + '</option>';
           if (!defaultValue && account.account_type_id!==3) {
@@ -607,7 +643,7 @@ angular.module('bhima.controllers')
 
       this.loadValue = function () { this.$input.val(defaultValue); };
 
-      this.applyValue = function(item, state) {
+      this.applyValue = function (item, state) {
         if (state === 'cancel') { return; }
         item[args.column.field] = state === 'clear' ? '' : state;
       };
@@ -630,7 +666,7 @@ angular.module('bhima.controllers')
         defaultValue = args.item.deb_cred_type;
         var concatOptions = '';
 
-        options.forEach(function(option) {
+        options.forEach(function (option) {
           concatOptions += '<option value="' + option + '">' + option + '</option>';
         });
 
@@ -644,7 +680,7 @@ angular.module('bhima.controllers')
 
       this.loadValue = function () { this.$input.val(defaultValue); };
 
-      this.applyValue = function(item,state) {
+      this.applyValue = function (item, state) {
         if (state === 'cancel') { return; }
         item[args.column.field] = state === 'clear' ? '' : state;
       };
@@ -653,5 +689,72 @@ angular.module('bhima.controllers')
     }
 
     DebCredTypeEditor.prototype = new BaseEditor();
+
+    function CostCenterEditor(args) {
+      var defaultValue,
+          clear = '<option value="clear">Clear</option>',
+          cancel = '<option value="cancel">Cancel</option>';
+
+      this.init = function () {
+        //default value - naive way of checking for previous value, default string is set, not value
+        defaultValue = args.item.cc_id;
+        var options = '';
+        $scope.cost_center.data.forEach(function (cc) {
+          options += '<option  value="' + cc.id + '">[' + cc.id + '] ' + cc.text + '</option>';
+        });
+
+        options += cancel;
+        options += clear;
+
+        this.$input = $('<SELECT class="editor-text">' + options + '</SELECT>');
+        this.$input.appendTo(args.container);
+        this.$input.focus();
+      };
+
+      this.loadValue = function () { this.$input.val(defaultValue); };
+
+      this.applyValue = function (item, state) {
+        if (state === 'cancel') { return; }
+        item[args.column.field] = (state === 'clear') ? 'null' : state;
+      };
+
+      this.init();
+
+    }
+
+    CostCenterEditor.prototype = new BaseEditor();
+
+    function ProfitCenterEditor(args) {
+      var defaultValue,
+          clear = '<option value="clear">Clear</option>',
+          cancel = '<option value="cancel">Cancel</option>';
+
+      this.init = function () {
+        //default value - naive way of checking for previous value, default string is set, not value
+        var options = '';
+        defaultValue = args.item.pc_id;
+        $scope.profit_center.data.forEach(function (pc) {
+          options += '<option  value="' + pc.id + '">[' + pc.id + '] ' + pc.text + '</option>';
+        });
+
+        options += cancel;
+        options += clear;
+
+        this.$input = $('<SELECT class="editor-text">' + options + '</SELECT>');
+        this.$input.appendTo(args.container);
+        this.$input.focus();
+      };
+
+      this.loadValue = function () { this.$input.val(defaultValue); };
+
+      this.applyValue = function (item, state) {
+        if (state === 'cancel') { return; }
+        item[args.column.field] = (state === 'clear') ? 'null' : state;
+      };
+
+      this.init();
+    }
+
+    ProfitCenterEditor.prototype = new BaseEditor();
   }
 ]);
