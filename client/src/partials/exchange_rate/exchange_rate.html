@@ -3,10 +3,19 @@
 </header>
 
 <nav>
-  <button class="btn btn-sm btn-default" ng-click="action='new'">
-  <i class="glyphicon glyphicon-file"></i>{{ "EXCHANGE.NEW" | translate }}</a>
-  <button class="btn btn-sm btn-default" ng-click="action='review'">
-  <i class="glyphicon glyphicon-list"></i> {{ "EXCHANGE.REVIEW" | translate }}</a>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "EXCHANGE.TITLE" | translate }}</li>
+    </ol>
+  </div>
+  <div class="pull-right">
+    <button class="btn btn-sm btn-default" ng-click="action='new'">
+      <i class="glyphicon glyphicon-plus-sign"></i> {{ "EXCHANGE.NEW" | translate }}</a>
+    </button>
+    <button class="btn btn-sm btn-default" ng-click="action='review'">
+      <i class="glyphicon glyphicon-list"></i> {{ "EXCHANGE.REVIEW" | translate }}</a>
+    </button>
 </nav>
 
 <main>
@@ -44,7 +53,7 @@
 
       <div class="panel panel-default" ng-switch-when="review">
         <div class="panel-heading">
-          <span>{{ 'EXCHANGE.TODAY_RATE' | translate }} <b>{{ today | date}}</b></span>
+          <span>{{ 'EXCHANGE.TODAY_RATE' | translate }} <b>{{ currentDate | date}}</b></span>
         </div>
         <div class="panel-body">
           <form class="form-horizontal">
@@ -76,6 +85,21 @@
               <legend>{{ 'EXCHANGE.SET' | translate }}</legend>
 
               <div class="form-group">
+                <div class="checkbox">
+                  <label class="col-xs-9 control-label">
+                    {{"EXCHANGE.OLD_DATE" | translate}}
+                    <input type="checkbox" value="{{session.is_oldDate}}" ng-model="session.is_oldDate" ng-change="commitValue()">
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group" >
+                <div class="col-xs-11">
+                  <input type="date" class="form-bhima" ng-model="session.oldDate" max="{{maxDate}}" ng-disabled="!is_oldDate">
+                </div>
+              </div>
+
+              <div class="form-group">
                 <div class="col-xs-5">
                   <div class="form-bhima" style="text-align: center;" readonly>
                     {{ currency.get(enterprise.currency_id).name }}
@@ -84,7 +108,7 @@
 
                 <div class="col-sm-offset-1 col-xs-5">
                   <select class="form-bhima" ng-model="newRate.foreign_currency_id" ng-options="c.id as c.name for c in currency.data | filter:fcurrency" required>
-                    <option value="" disabled="disabled">-- {{ 'SELECT.CURRENCY' | translate }} --</option>
+                    <option value="">-- {{ 'SELECT.CURRENCY' | translate }} --</option>
                   </select>
                 </div>
               </div>
@@ -108,8 +132,7 @@
               </div>
             </fieldset>
 
-            <input type="submit" class="btn btn-success btn-sm" ng-click="submit()" ng-disabled="exchangeForm.$invalid" value="{{ 'FORM.SUBMIT' | translate }}">
-
+            <input type="submit" class="btn btn-success btn-sm" ng-click="submit()" ng-disabled="checkValidity()" value="{{ 'FORM.SUBMIT' | translate }}">
           </form>
         </div>
       </div>

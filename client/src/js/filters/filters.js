@@ -10,30 +10,24 @@
     })
 
     .filter('intlcurrency', [
+      '$http',
       '$filter',
       '$sce',
+      'store',
       'messenger',
-      'validate',
-      function ($filter, $sce, messenger, validate) {
-        var dependencies = {},
-            currency;
+      function ($http, $filter, $sce, Store, messenger) {
 
-        dependencies.currency = {
-          required : true,
-          query : {
-            tables : {
-              'currency' : {
-                columns: ['id', 'symbol', 'name', 'note', 'decimal', 'separator']
-              }
-            }
-          }
-        };
+        var currency = new Store({
+          data : [],
+          identifier : 'id'
+        });
 
-        validate.process(dependencies)
-        .then(function (models) {
-          currency = models.currency;
-        }, function  (err) {
-          messenger.danger('An error occured:' + JSON.stringify(err));
+        $http.get('/finance/currencies')
+        .success(function (data) {
+          currency.setData(data);
+        })
+        .error(function (error) {
+          messenger.danger('An error occured:' + JSON.stringify(error));
         });
 
         return function (value, id) {

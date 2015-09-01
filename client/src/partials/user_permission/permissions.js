@@ -14,16 +14,20 @@
 //    - Current User data sheet
 // - Password Insecure alert or not
 
+
 angular.module('bhima.controllers')
 .controller('permission', [
   '$scope',
   '$q',
   '$window',
+  '$translate',
+  '$http',
   'store',
   'connect',
   'messenger',
   'validate',
-  function($scope, $q, $window, Store, connect, messenger, validate) {
+  'SessionService',
+  function($scope, $q, $window, $translate, $http, Store, connect, messenger, validate, SessionService) {
     var dependencies = {};
     var isDefined = angular.isDefined;
 
@@ -44,7 +48,7 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           'unit' : {
-            columns : ['id', 'name', 'description', 'has_children', 'parent']
+            columns : ['id', 'name', 'key', 'description', 'has_children', 'parent']
           }
         },
         where : ['unit.id<>0']
@@ -55,7 +59,7 @@ angular.module('bhima.controllers')
       query : {
         tables: {
           'user': {
-            columns : ['id', 'username', 'email', 'password', 'first', 'last', 'logged_in']
+            columns : ['id', 'username', 'email', 'password', 'first', 'last']
           }
         }
       }
@@ -107,22 +111,29 @@ angular.module('bhima.controllers')
       current.state = 'add';
     };
 
+    // add a new user to the database
     function submitAdd() {
+
+      // remove the duplicate passwordVerify field
       delete current.user.passwordVerify;
-      connect.post('user', [connect.clean(current.user)])
-      .then(function (res) {
-        messenger.info('Successfully posted new user with id: ' + res.data.insertId);
-        current.user.id = res.data.insertId;
+
+      $http.post('/users', current.user)
+      .then(function (response) {
+        messenger.info('Successfully posted new user with id: ' + response.data.insertId);
+        current.user.id = response.data.insertId;
         $scope.users.post(current.user);
         $scope.editUser(current.user);
+      })
+      .catch(function (error) {
+        console.error('Error:', error);
       });
     }
 
     function submitEdit() {
       delete current.user.passwordVerify;
-      connect.put('user', [connect.clean(current.user)], ['id'])
-      .then(function (res) {
-        messenger.info('Successfully edited user : ' + res.data.insertId);
+      $http.put('/users/' + current.user.id, current.user)
+      .then(function (response) {
+        messenger.info('Successfully edited user : ' + response.data.insertId);
         $scope.users.put(current.user);
         $scope.editUser(current.user);
       });
@@ -133,7 +144,6 @@ angular.module('bhima.controllers')
           removals  = [],
           additions = [];
 
-   
       // current.permission is acting as a hash of
       // the permission for the current.user.
       // Checking current.permission.get(unit) tells
@@ -189,7 +199,7 @@ angular.module('bhima.controllers')
       var promises = removals.map(function (id) {
         return connect.delete('project_permission', 'id', id);
       });
-     
+
       // add the (newly) checked project permissions
       if (additions.length > 0) { promises.push(connect.post('project_permission', additions)); }
 
@@ -210,12 +220,10 @@ angular.module('bhima.controllers')
     $scope.removeUser = function removeUser(user) {
       var result = $window.confirm('Are you sure you want to delete user: '  + user.first +' ' +user.last);
       if (result) {
-        connect.delete('user', 'id', user.id)
+        $http.delete('users/' + user.id)
         .then(function () {
           messenger.success('Deleted user id: ' + user.id);
           $scope.users.remove(user.id);
-          //  Check if we are looking at a users permissions,
-          //  or editing them, we should clear our view
         });
       }
     };
@@ -254,6 +262,7 @@ angular.module('bhima.controllers')
       if (!current.permissions.data || !$scope.units) { return; }
       var units = $scope.units.data;
       units.forEach(function (unit) {
+        unit.key = $translate.instant(unit.key);
         // loop through permissions and check each module that
         // the user has permission to.
         unit.checked = !!current.permissions.get(unit.id);
@@ -307,8 +316,8 @@ angular.module('bhima.controllers')
           submitUnitPermissions();
           break;
         default:
-          console.log('current.state', current.state);
           console.log('[ERR]', 'I don\'t know what I\'m doing!');
+          break;
       }
     };
 
@@ -328,7 +337,6 @@ angular.module('bhima.controllers')
           current.permissions = new Store({ identifier : 'unit_id', data : current._backup });
           break;
         default:
-          console.log('current.state', current.state);
           console.log('[ERR]', 'I don\'t know what I\'m doing!');
           break;
       }

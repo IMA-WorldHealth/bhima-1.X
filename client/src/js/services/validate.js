@@ -6,6 +6,13 @@ angular.module('bhima.services')
     {flag: 'required', message : 'Required data not found!', method : hasData}
   ];
 
+  function clear(dependencies, limit) {
+    var list = limit || Object.keys(dependencies);
+    list.forEach(function(modelKey) {
+      dependencies[modelKey].processed = false;
+    });
+  }
+
   function refresh(dependencies, limit) {
     var list = limit || Object.keys(dependencies);
 
@@ -90,10 +97,8 @@ angular.module('bhima.services')
   function fetchModels(list, dependencies) {
     var deferred = $q.defer(), promiseList = [];
 
-
     list.forEach(function(key) {
       var dependency = dependencies[key], args = [dependency.query];
-
 
       //Hack to allow modelling reports with unique identifier - not properly supported by connect
       if (dependency.identifier) {
@@ -169,6 +174,7 @@ angular.module('bhima.services')
 
   return {
     process : process,
+    clear   : clear,
     refresh : refresh
   };
 }]);

@@ -1,0 +1,118 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Appendix&nbsp;E.&nbsp;Upgrading from 2.x</title><link rel="stylesheet" href="css/docbook-style.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.72.0"><link rel="start" href="user-guide.html" title="SymmetricDS User Guide"><link rel="up" href="user-guide.html" title="SymmetricDS User Guide"><link rel="prev" href="data-format.html" title="Appendix&nbsp;D.&nbsp;Data Format"><link rel="next" href="version-numbering.html" title="Appendix&nbsp;F.&nbsp;Version Numbering"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns:fo="http://www.w3.org/1999/XSL/Format" id="banner"><a style="border:none;" href="http://www.symmetricds.org/" title="SymmetricDS User Guide"><img style="border:none;" alt="SymmetricDS" src="images/banner-logo.gif"></a></div><div class="appendix" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="upgrading"></a>Appendix&nbsp;E.&nbsp;Upgrading from 2.x</h2></div></div></div>
+    
+    <p>
+        Please test carefully when upgrading SymmetricDS 2 to SymmetricDS 3. Note that
+        <a href="data-model.html#table_outgoing_batch" title="A.29.&nbsp;OUTGOING_BATCH">OUTGOING_BATCH</a>
+        table's primary key changed. The automatic upgrade backs up and copies the table. This might take some time if the
+        table is large.
+    </p>
+    <p>
+        The following parameters are no longer supported:
+        </p><div class="itemizedlist"><ul type="disc"><li>
+                <p>
+                    <code class="literal">db.spring.bean.name</code>
+                    - The connection pool is no longer wired in via the Spring Framework
+                </p>
+            </li><li>
+                <p>
+                    <code class="literal">db.tx.timeout.seconds</code>
+                    - Transactions are no longer managed by the Spring Framework
+                </p>
+            </li><li>
+                <p>
+                    <code class="literal">db.default.schema</code>
+                    - The default schema is always the schema associated with the database user
+                </p>
+            </li><li>
+                <p>
+                    <code class="literal">db.jndi.name</code>
+                    - JNDI data sources are no longer supported
+                </p>
+            </li><li>
+                <p>
+                    <code class="literal">auto.upgrade</code>
+                    - Database upgrade is controlled by
+                    <code class="literal">auto.config.database</code>
+                </p>
+            </li><li>
+                <p>
+                    <code class="literal">routing.data.reader.type</code>
+                    - As of this release, there is only one data reader type.
+                </p>
+            </li><li>
+                <p>
+                    <code class="literal">job.purge.max.num.data.events.to.delete.in.tx</code>
+                    - The name of this property changed to
+                    <code class="literal">job.purge.max.num.data.event.batches.to.delete.in.tx</code>
+                </p>
+            </li><li>
+                <p>
+                    <code class="literal">web.base.servlet.path</code>
+                    - No longer needed
+                </p>
+            </li><li>
+                <p>
+                    <code class="literal">dataloader.allow.missing.delete</code>
+                    - Controlled by conflict detection and resolution
+                </p>
+            </li><li>
+                <p>
+                    <code class="literal">dataloader.enable.fallback.insert</code>
+                    - Controlled by conflict detection and resolution
+                </p>
+            </li><li>
+                <p>
+                    <code class="literal">dataloader.enable.fallback.update</code>
+                    - Controlled by conflict detection and resolution
+                </p>
+            </li><li>
+                <p>
+                    <code class="literal">dataloader.enable.fallback.savepoint</code>
+                    - No longer needed
+                </p>
+            </li><li>
+                <p>
+                    <code class="literal">db.force.delimited.identifier.mode.on</code>
+                    - No longer needed
+                </p>
+            </li><li>
+                <p>
+                    <code class="literal">db.force.delimited.identifier.mode.off</code>
+                    - No longer needed
+                </p>
+            </li></ul></div><p>
+    </p>
+    <p>
+        The way extension points work has changed. SymmetricDS services are no longer Spring injectable into extension
+        points. Please use the
+        <code class="literal">ISymmetricEngineAware</code>
+        interface to get a handle to the engine which gives access to services.
+    </p>
+    <p>
+        The following extension points are no longer supported:
+        </p><div class="itemizedlist"><ul type="disc"><li>
+                <p>
+                    <code class="literal">IDataLoaderFilter</code>
+                    - Replaced by IDatabaseWriterFilter
+                </p>
+            </li><li>
+                <p>
+                    <code class="literal">IBatchListener</code>
+                    - Replaced by IDatabaseWriterFilter
+                </p>
+            </li><li>
+                <p>
+                    <code class="literal">IExtractorFilter</code>
+                    - No longer supported. Rarely used.
+                </p>
+            </li><li>
+                <p>
+                    <code class="literal">IColumnFilter</code>
+                    - No longer needed. Please use the transformation feature.
+                </p>
+            </li></ul></div><p>
+    </p>
+</div><div xmlns:fo="http://www.w3.org/1999/XSL/Format" class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="30%" align="left"><a accesskey="p" href="data-format.html">Prev</a>&nbsp;</td><td width="40%" align="center"><a accesskey="h" href="user-guide.html">Home</a></td><td width="30%" align="right">&nbsp;<a accesskey="n" href="version-numbering.html">Next</a></td></tr><tr><td width="30%" align="left" valign="top">Appendix&nbsp;D.&nbsp;Data Format&nbsp;</td><td width="40%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.symmetricds.org/" title="SymmetricDS">SymmetricDS
+                                        </a></span></td><td width="30%" align="right" valign="top">&nbsp;Appendix&nbsp;F.&nbsp;Version Numbering</td></tr></table></div></body></html>

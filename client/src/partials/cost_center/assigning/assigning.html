@@ -5,7 +5,7 @@
 <nav>
   <div class="pull-left">
     <ol class="breadcrumb">
-      <span class="glyphicon glyphicon-home"></span>
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
       <li><a href="#/cost_center">{{ "ASSIGNING.PARENT" | translate }}</a></li>
       <li class="active">{{ "ASSIGNING.TITLE" | translate }}</li>
     </ol>
@@ -21,7 +21,7 @@
       <form>
         <div class="form-group">
           <select class="col-xs-2 form-bhima" ng-model="configuration.aux_cost_center" ng-change="performChange()">
-            <option value="{{cc}}" ng-repeat="cc in model.aux_cost_centers.data">{{cc.text}}</option>
+            <option value="{{cc}}" ng-repeat="cc in model.aux_cost_centers.data  | orderBy:'text'">{{cc.text}}</option>
           </select>
         </div>
       </form>
@@ -78,7 +78,7 @@
                   <tr><th><input type="checkbox" ng-model="cc.all" ng-change="checkAll()"/></th><th>{{ 'ASSIGNING.PRI_CENTERS' | translate}}</th></tr>
                 </thead>
                 <tbody>
-                  <tr ng-repeat="pri_cost_center in model.pri_cost_centers.data">
+                  <tr ng-repeat="pri_cost_center in model.pri_cost_centers.data | orderBy:'text'">
                     <td><input type="checkbox" ng-model="pri_cost_center.checked"/></td>
                     <td>{{pri_cost_center.text}}</td>
                   </tr>

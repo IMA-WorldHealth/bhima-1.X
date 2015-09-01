@@ -1,22 +1,7 @@
-.group-crumbs { 
-  margin-top: 10px; clear: both;
-  float: left;
-  display: inline-block;
-}
-/*Hacks*/
-.group-crumbs :first-child { 
-  margin-left : 5px;
-}
 
-.group-crumbs span { 
-  color : blue;
-  display: inline-block;
-  
-}
-
-#bhima-ledger-general_ledger-grid,
-#bhima-ledger-general_ledger-grid div {
-  -webkit-box-sizing: content-box;
-  -moz-box-sizing: content-box;
-  box-sizing: content-box;
+#generalLedger,
+#generalLedger div {
+  -webkit-box-sizing : content-box;
+  -moz-box-sizing    : content-box;
+  box-sizing         : content-box;
 }

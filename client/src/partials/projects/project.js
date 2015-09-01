@@ -21,6 +21,16 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.zs = {
+      query : {
+        tables : {
+          'mod_snis_zs' : {
+            columns : ['id', 'zone', 'territoire', 'province']
+          }
+        }
+      }
+    };
+
     dependencies.enterprises = {
       query : {
         tables : {
@@ -92,6 +102,10 @@ angular.module('bhima.controllers')
       .catch(function (error) {
         messenger.danger('An error occurred : ' + error);
       });
+    };
+
+    $scope.toString = function toString(obj) {
+      return '' + obj.zone + ' - ' + obj.territoire + '(' + obj.province + ')';
     };
 
     appstate.register('project', function (project) {

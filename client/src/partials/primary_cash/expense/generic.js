@@ -2,6 +2,7 @@ angular.module('bhima.controllers')
 .controller('primaryCash.expense.generic', [
   '$scope',
   '$routeParams',
+  '$translate',
   'validate',
   'messenger',
   'appstate',
@@ -10,10 +11,11 @@ angular.module('bhima.controllers')
   'util',
   'appcache',
   '$location',
-  function ($scope, $routeParams, validate, messenger, appstate, connect, uuid, util, Appcache, $location) {
-    var isDefined, dependencies = {};
-    var session = $scope.session = { receipt : { date : new Date() } };
-    var cache = new Appcache('expense');
+  function ($scope, $routeParams, $translate, validate, messenger, appstate, connect, uuid, util, Appcache, $location) {
+    var isDefined, dependencies = {},
+      session = $scope.session = { receipt : { date : new Date() }, configure : false, complete : false },
+      cache = new Appcache('expense'),
+      tomorrow;
 
     // TODO
     if (Number.isNaN(Number($routeParams.id))) {
@@ -24,7 +26,11 @@ angular.module('bhima.controllers')
 
     $scope.timestamp = new Date();
 
-    session.today = $scope.timestamp.toISOString().slice(0, 10);
+    //session.today = $scope.timestamp.toISOString().slice(0, 10);
+    tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    session.tomorrow = util.htmlDate(tomorrow);
+
 
     dependencies.suppliers = {
       query : {
@@ -53,11 +59,30 @@ angular.module('bhima.controllers')
       }
     };
 
+    dependencies.accounts = {
+      query : {
+        tables : {
+          'account' :{
+            columns : ['id', 'account_txt', 'account_number', 'is_ohada']
+          }
+        },
+        where : ['account.is_ohada=1', 'AND', 'account.account_type_id<>3']
+      }
+    };
+
     cache.fetch('currency').then(load);
+    cache.fetch('account').then(getAccount);
 
     function load (currency) {
       if (!currency) { return; }
       session.currency = currency;
+    }
+
+    function getAccount (ac) {
+      if (!ac) { return; }
+       session.configured = true;
+       session.ac = ac;
+       session.complete = true;
     }
 
     appstate.register('project', function (project) {
@@ -68,6 +93,8 @@ angular.module('bhima.controllers')
         session.receipt.date = new Date();
         session.receipt.cost = 0.00;
         session.receipt.cash_box_id = $routeParams.id;
+
+        session.accounts = models.accounts.data;
       })
       .catch(function (err) {
         messenger.danger(err);
@@ -93,7 +120,6 @@ angular.module('bhima.controllers')
       var r = session.receipt;
 
       session.invalid = !(isDefined(session.currency) &&
-        isDefined(r.recipient) &&
         isDefined(r.cost) &&
         r.cost > 0 &&
         isDefined(r.description) &&
@@ -116,13 +142,11 @@ angular.module('bhima.controllers')
           project_id    : $scope.project.id,
           type          : 'E',
           date          : util.sqlDate(receipt.date),
-          deb_cred_uuid : receipt.recipient.creditor_uuid,
-          deb_cred_type : 'C',
-          account_id    : receipt.recipient.account_id,
+          account_id    : session.ac.id,
           currency_id   : session.currency.id,
           cost          : receipt.cost,
           user_id       : user.id,
-          description   : receipt.description + ' ID       : ' + receipt.reference_uuid,
+          description   : 'HBB' + '_C.P DEP GEN/' + receipt.description, //fix me
           cash_box_id   : receipt.cash_box_id,
           origin_id     : 4,
         };
@@ -144,7 +168,7 @@ angular.module('bhima.controllers')
       })
        .then(function () {
         // invoice
-        messenger.success('Posted data successfully.');
+        messenger.success($translate.instant('ALLTRANSACTIONS.DATA_POSTED'));
         $location.path('/invoice/generic_expense/' + data.uuid);
       });
     };
@@ -152,11 +176,30 @@ angular.module('bhima.controllers')
     function setCurrency (obj) {
       session.currency=obj;
       cache.put('currency', obj);
-    }  
+    }
 
     function update (value) {
       session.receipt.recipient = value;
     }
+
+    $scope.formatAccount = function (ac) {
+      if(ac){return ac.account_number + ' - ' + ac.account_txt;}
+    };
+
+    $scope.reconfigure = function () {
+      session.configured = false;
+      session.ac = null;
+      session.complete = false;
+    };
+
+    $scope.setConfiguration = function (ac) {
+      if(ac){
+        cache.put('account', ac);
+        session.configured = true;
+        session.ac = ac;
+        session.complete = true;
+      }
+    };
 
     $scope.update = update;
     $scope.setCurrency = setCurrency;

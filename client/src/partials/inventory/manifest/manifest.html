@@ -3,6 +3,14 @@
 </header>
 
 <nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active"><a href="#/inventory">{{ "INVENTORY.MAIN.TITLE" | translate }}</a></li>
+      <li>{{ "INVENTORY.MANIFEST.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
   <button class="btn btn-sm btn-default pull-right" ng-click="print()">
     <span class="glyphicon glyphicon-print"></span>
     {{ "UTIL.PRINT" | translate }}

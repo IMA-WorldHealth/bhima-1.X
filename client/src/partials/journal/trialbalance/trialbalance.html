@@ -1,69 +1,52 @@
 <div class="modal-content modal-lg square">
   <div class="modal-header">
-    <h3>{{ 'TRIAL_BALANCE.TITLE' | translate }}</h3>
+    <h3 class="pull-left">{{ 'TRIAL_BALANCE.TITLE' | translate }}</h3>
     <div class="modal-icons">
-      <label><span class="glyphicon glyphicon-tasks"></span> {{ transactions.length }} {{"TRIAL_BALANCE.TRANSACTIONS" | translate }}</label>
-      <label ng-show="session.action=='hide'"><a href="" ng-click="session.action='show'" ng-class="{ 'danger' : !!errors.length }"><span class="glyphicon glyphicon-flag"></span> {{ errors.length }} {{"TRIAL_BALANCE.ERRORS" | translate }}</a></label>
-      <label ng-show="session.action=='show'"><a href="" ng-click="session.action='hide'"><span class="glyphicon glyphicon-flag"></span> {{ errors.length }} {{"TRIAL_BALANCE.RESULTS" | translate }}</a></label>
-      <label><span class="glyphicon glyphicon-calendar"></span> {{ session.min | date}} - {{ session.max | date }}</label>
+      <a class="btn btn-default" ng-click="BalanceCtrl.toggleExceptionState()" ng-class="{ 'active' : BalanceCtrl.state === 'exception' }" ng-if="BalanceCtrl.hasExceptions">
+        {{ BalanceCtrl.hasErrors ? "TRIAL_BALANCE.SHOW_ERRORS" : "TRIAL_BALANCE.SHOW_WARNINGS" | translate }}
+      </a>
     </div>
-    <div class="modal-print">
-      <a href="" ng-click="print()" style="margin: 5px;"><span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}</a>
+    <div class="modal-print" ng-hide="BalanceCtrl.state === 'loading'" >
+      <a ng-click="BalanceCtrl.print()" style="margin: 5px;"><span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}</a>
     </div>
   </div>
 
-  <div class="modal-table" ng-class="{ 'success' : session.action=='hide', 'error' : session.action=='show' }" ng-switch="session.action">
+  <div class="modal-table" ng-class="{ 'success' : !BalanceCtrl.hasExceptions, 'warning' : BalanceCtrl.hasExceptions, 'error' : BalanceCtrl.hasErrors }">
 
-    <!-- error modal -->
+    <div style="text-align:center; width:100%;padding-top:5em;" ng-if="BalanceCtrl.state === 'loading'">
+      <loading-indicator></loading-indicator>
+    </div>
 
-    <table class="modal-table-head" ng-switch-when="show">
-      <th style="width:20%;">{{ 'TRIAL_BALANCE.ERRORS' | translate }}</th>
-      <th>{{ 'TRIAL_BALANCE.DESCRIPTION' | translate }}</th>
-      <th style="width:5%;"><span class="glyphicon glyphicon-list-alt"></span></th>
+    <!-- Exception state -->
+    <table class="modal-table-head" ng-if="BalanceCtrl.state === 'exception'">
+      <thead>
+        <th>{{ "TRIAL_BALANCE.ERRORS"| translate }}</th>
+        <th style="width:5%;"><span class="glyphicon glyphicon-list-alt"></span></th>
+      </thead>
     </table>
 
-    <div class="modal-table-body" ng-switch-when="show">
-      <table style="color: #000;">
-        <tbody ng-repeat="error in errors">
-          <tr  ng-click="error.visible=!error.visible" style="cursor: pointer;">
-            <th style="width:20;%">{{ error.title }}</th>
-            <td>{{ error.description }}</td>
+    <div class="modal-table-body" ng-if="BalanceCtrl.state === 'exception'">
+      <table class="table-hover">
+        <tbody ng-repeat="e in BalanceCtrl.exceptions">
+          <tr>
+            <th><span class="label" ng-class="{ 'label-warning' : !e.fatal, 'label-danger' : e.fatal }">{{ e.transactions.length }}</span> {{ e.code  | translate }}</th>
             <td style="width: 5%;">
-              <a style="color: #000;">
-                <span class="glyphicon" ng-class="{ 'glyphicon-download' : !error.visible , 'glyphicon-upload' : !!error.visible}"></span>
-                <span ng-show="!error.visible">{{ "TRIAL_BALANCE.SHOW" | translate }}</span>
-                <span ng-show="!!error.visible">{{ "TRIAL_BALANCE.HIDE" | translate }}</span>
+              <a style="color: #000;cursor: pointer;" ng-click="BalanceCtrl.toggleVisibility(e)">
+                <span class="glyphicon" ng-class="{ 'glyphicon-download' : !e.visible , 'glyphicon-upload' : e.visible}"></span>
+                <span>{{ e.visible ? "TRIAL_BALANCE.HIDE" : "TRIAL_BALANCE.SHOW" | translate }}</span>
               </a>
             </td>
           </tr>
-          <tr ng-repeat="row in error.affectedRows" ng-show="!!error.visible" class="details">
-            <th style="width:20;%">
-              <span class="glyphicon glyphicon-minus"></span>
-              <span> {{ row.trans_id }}</span>
-            </th>
-            <td colspan="2">{{ row.uuid }}</td>
+          <tr ng-if="e.visible" ng-repeat="trans in e.transactions">
+            <td colspan="2" style="padding-left:1em;"> - {{ trans }}</td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <div class="modal-table-foot" ng-switch-when="show">
-      <table>
-        <tfoot>
-          <tr>
-            <th style="width:20%;">{{ 'UTIL.TOTAL' | translate }}</th>
-            <th style="width:20%;" ng-bind-html="total.before | intlcurrency:2"></th>
-            <th style="width:20%;" ng-bind-html="total.debit | intlcurrency:2"></th>
-            <th style="width:20%;" ng-bind-html="total.credit | intlcurrency:2"></th>
-            <th style="width:20%;" ng-bind-html="total.after | intlcurrency:2"></th>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-
     <!-- success modal -->
 
-    <table class="modal-table-head" ng-switch-when="hide">
+    <table class="modal-table-head" ng-if="BalanceCtrl.state === 'default'">
       <thead>
         <tr>
           <th style="width:20%">{{ 'TRIAL_BALANCE.ACCOUNT' | translate }}</th>
@@ -75,10 +58,10 @@
       </thead>
     </table>
 
-    <div class="modal-table-body" ng-switch-when="hide">
-      <table>
+    <div class="modal-table-body" ng-if="BalanceCtrl.state === 'default'">
+      <table class="table-hover">
         <tbody>
-          <tr ng-repeat="account in balances | orderBy:'account_number'">
+          <tr ng-repeat="account in BalanceCtrl.balances | orderBy:'account_number'">
             <th style="width:20%" class="no-border">{{ account.account_number }}</th>
             <td style="width:20%" ng-bind-html="account.balance | intlcurrency:2"></td>
             <td style="width:20%" ng-bind-html="account.debit | intlcurrency:2"></td>
@@ -89,15 +72,15 @@
       </table>
     </div>
 
-    <div class="modal-table-foot" ng-switch-when="hide">
+    <div class="modal-table-foot">
       <table>
         <tfoot>
           <tr>
             <th style="width:20%">{{ 'UTIL.TOTAL' | translate }}</th>
-            <th style="width:20%" ng-bind-html="total.before | intlcurrency:2"></th>
-            <th style="width:20%" ng-bind-html="total.debit | intlcurrency:2"></th>
-            <th style="width:20%" ng-bind-html="total.credit | intlcurrency:2"></th>
-            <th style="width:20%" ng-bind-html="total.after | intlcurrency:2"></th>
+            <th style="width:20%" ng-bind-html="BalanceCtrl.totals.before | intlcurrency:2"></th>
+            <th style="width:20%" ng-bind-html="BalanceCtrl.totals.debit | intlcurrency:2"></th>
+            <th style="width:20%" ng-bind-html="BalanceCtrl.totals.credit | intlcurrency:2"></th>
+            <th style="width:20%" ng-bind-html="BalanceCtrl.totals.after | intlcurrency:2"></th>
           </tr>
         </tfoot>
       </table>
@@ -105,8 +88,15 @@
   </div>
 
   <div class="modal-footer" style="margin-top: 0;">
-    <button class="btn btn-sm btn-success square" ng-disabled="!!errors.length" ng-click="submit()"><span class="glyphicon glyphicon-ok-circle"></span> {{ 'TRIAL_BALANCE.POST_TO_LEDGER' | translate }}</button>
-    <button class="btn btn-sm btn-default square" ng-click="cancel()"><span class="glyphicon glyphicon-ban-circle"></span> {{ 'UTIL.CANCEL' | translate }}</button>
+    <div class="pull-left">
+      <label><i class="glyphicon glyphicon-calendar"></i> {{ BalanceCtrl.metadata.mindate | date:'dd/MM/yyyy' }} - {{ BalanceCtrl.metadata.maxdate | date:'dd/MM/yyyy' }}</label>
+      <label><i class="glyphicon glyphicon-tasks"></i> {{ BalanceCtrl.metadata.transactions }} {{"TRIAL_BALANCE.TRANSACTIONS" | translate }}</label>
+      <label><i class="glyphicon glyphicon-list"></i> {{ BalanceCtrl.metadata.rows}} {{"TRIAL_BALANCE.LINES" | translate }}</label>
+      <label ng-if="BalanceCtrl.hasExceptions" ng-class="{'text-warning' : BalanceCtrl.hasExceptions, 'text-danger' : BalanceCtrl.hasErrors }"><i class="glyphicon glyphicon-exclamation-sign"></i> {{ BalanceCtrl.exceptions.length }} {{ "TRIAL_BALANCE.EXCEPTIONS" | translate }}</label>
+    </div>
+    <button class="btn btn-sm btn-success" ng-class="{ 'btn-success' : !BalanceCtrl.hasExceptions, 'btn-warning' : BalanceCtrl.hasExceptions, 'btn-danger' : BalanceCtrl.hasErrors }" ng-click="BalanceCtrl.postToGeneralLedger()" ng-disabled="BalanceCtrl.hasErrors">
+      <span class="glyphicon" ng-class="{ 'glyphicon-ok-circle' : !BalanceCtrl.hasExceptions, 'glyphicon-warning-sign' : BalanceCtrl.hasExceptions, 'glyphicon-remove-circle' : BalanceCtrl.hasErrors }"></span> {{ 'TRIAL_BALANCE.POST_TO_LEDGER' | translate }}
+    </button>
+    <button class="btn btn-sm btn-default" ng-click="BalanceCtrl.cancelModal()"><span class="glyphicon glyphicon-ban-circle"></span> {{ 'UTIL.CANCEL' | translate }}</button>
   </div>
-
 </div>

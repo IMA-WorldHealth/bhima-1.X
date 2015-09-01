@@ -17,31 +17,38 @@
   </div>
 
   <div>
+    <div class="col-xs-2">
+      <input class="form-bhima" ng-change="reset()" type="date" ng-model="session.param.dateFrom" rows="20">
+    </div>    
     <div class="col-xs-2" style="padding-right: 0px;">
       <input class="form-bhima" ng-change="reset()" type="date" ng-model="session.param.dateTo" rows="20">
     </div>
-    <div class="col-xs-2">
-      <input class="form-bhima" ng-change="reset()" type="date" ng-model="session.param.dateFrom" rows="20">
-    </div>
   </div>
+
+  <span class="pull-right">
+    <select class="form-bhima" ng-change="reset()" ng-model="session.user" ng-options="u.id as format(u) for u in  model.user_sale.data">
+      <option value="">{{ 'SALERECORD.ALL_USERS' | translate }}</option>
+    </select>
+  </span>
 
   <span class="pull-right">
     <select class="form-bhima" ng-change="reset()" ng-model="session.project" ng-options="item.id as item.name for item in model.project.data">
       <option value="">{{ 'SALERECORD.ALL_PROJECTS' | translate }}</option>
     </select>
   </span>
+
 </nav>
 
 <div class="report report-compressed">
   <div class="reportBody">
     <div class="reportFrame" style="padding-top: 10px;">
-      <h4 class="visible-print">{{ "SALERECORD.TITLE" | translate }} <small>{{session.param.dateFrom | date}} - {{session.param.dateTo | date}}</small></h4>
+      <h4 class="visible-print">{{ "SALERECORD.TITLE" | translate }} <small>{{ "SALERECORD.BY" | translate }} : {{ userSelected }} <br> {{session.param.dateFrom | date}} - {{session.param.dateTo | date}}</small></h4>
       <p class="visible-print">{{ "SALERECORD.TOTAL_OF" | translate }} <b>{{total.result.sales}}</b> {{ "SALERECORD.INVOICES" | translate }}, {{ "SALERECORD.CHARGED_AGAINST" | translate }} <b>{{total.result.patients}}</b> {{ "SALERECORD.PATIENTS" | translate}}</p>
         <table class="reportTable">
           <thead>
             <tr>
               <th width="20%">{{'COLUMNS.DATE' | translate}}</th>
-              <th width="10%">{{'COLUMNS.ID' | translate}}</th>
+              <th width="10%">{{'COLUMNS.SALE_ID' | translate}}</th>
 
               <th width="20%">{{'COLUMNS.PATIENT' | translate}}</th>
               <th width="20%">{{'COLUMNS.AMOUNT' | translate}}</th>
@@ -61,20 +68,24 @@
             <tr ng-class="{'rowSelected': selected.uuid==invoice.uuid, 'creditInvoice': invoice.creditId}" ng-repeat="invoice in model.sale.data">
               <td width="20%">{{invoice.invoice_date | date : 'EEEE, dd/MM/yyyy'}}</td>
               <td width="10%">{{invoice.hr_id}}</td>
-              <td width="20%">[{{invoice.patientReference}}] {{invoice.first_name}} {{invoice.last_name}}</td>
+              <td width="20%">[{{invoice.projectAbbr}}{{invoice.patientReference}}]  {{invoice.last_name}} {{invoice.middle_name}} {{invoice.first_name}}</td>
               <td width="20%">{{invoice.cost | currency}}</td>
               <td width="30%" class="hidden-print">
                 <a ng-href="/#/invoice/sale/{{invoice.uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}</a>
+                | <a ng-href="/#/report/invoice/{{invoice.uuid}}/" style="color : red;"><span class="glyphicon glyphicon-list-alt"></span> Proof of Concept Document</a>
                 | <a ng-href="/#/credit_note/{{invoice.uuid}}/"><span class="glyphicon glyphicon-repeat"></span> {{ 'SALERECORD.CREDIT_NOTE' | translate }}</a>
               </td>
             </tr>
           </tbody>
         </table>
+        <h6 class="visible-print">
+          {{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: <b ng-bind-html="total.result.cost | intlcurrency:session.currency"></b>  
+        </h6>            
     </div>
   </div>
 </div>
 
-<section class="bar-bottom" style="background-color: #ffffff;">
+<footer>
   <table style="width: 99%" >
     <tbody>
       <td width="50%">
@@ -100,4 +111,4 @@
       <td></td>
     </tbody>
   </table>
-</section>
+</footer>

@@ -6,25 +6,57 @@ angular.module('bhima.controllers')
   'connect',
   '$translate',
   'liberror',
-  function ($scope, validate, appstate, connect, $translate, liberror) {
+  'messenger',
+  function ($scope, validate, appstate, connect, $translate, liberror, messenger) {
     /* jshint unused : false */
     var dependencies = {}, titleAccount = 3;
     var grid, columns, options, dataview, sortColumn = 'account_number';
-    // var financeGroups = {index: {}, store: []};
     var session = $scope.session = { state: 'display' };
 
     var accountError = liberror.namespace('ACCOUNT');
 
     $scope.newAccount = {};
+    $scope.editAccount = {};
 
     dependencies.account = {
       required : true,
       query : {
         identifier : 'account_number',
         tables : {
-          account : { columns : ['id', 'account_number', 'account_txt', 'account_type_id', 'fixed', 'parent'] }
+          account : { columns : ['id', 'account_number', 'account_txt', 'account_type_id', 'cc_id', 'pc_id', 'is_asset', 'is_ohada', 'parent', 'locked', 'reference_id', 'is_brut_link', 'is_used_budget', 'classe', 'is_charge'] },
+          account_type : { columns : ['type::account_type'] }
+        },
+        join: [ 'account.account_type_id=account_type.id' ]
+      }
+    };
+
+    dependencies.references = {
+      query : {
+        identifier : 'id',
+        tables : {
+          reference : { columns : ['id', 'ref', 'text', 'position', 'reference_group_id', 'section_resultat_id', 'is_report'] }
         }
-      },
+      }
+    };
+
+    dependencies.costCenter = {
+      query : {
+        tables : { 
+          cost_center : { columns : ['id', 'text'] },
+          project     : { columns : ['abbr']}
+        },
+        join : ['cost_center.project_id=project.id']
+      }
+    };
+
+    dependencies.profitCenter = {
+      query : {
+        tables : { 
+          profit_center : { columns : ['id', 'text'] },
+          project       : { columns : ['abbr']}
+        },
+        join : ['profit_center.project_id=project.id']
+      }
     };
 
     dependencies.accountType = {
@@ -35,208 +67,130 @@ angular.module('bhima.controllers')
       }
     };
 
+    appstate.register('enterprise', loadEnterprise);
+
+    function loadEnterprise(enterprise) { 
+      $scope.enterprise = enterprise; 
+      validate.process(dependencies).then(manageAccount);
+    }
+
     function manageAccount(model) {
       $scope.model = model;
-
-      appstate.register('enterprise', loadEnterprise);
-      defineGridOptions();
-      initialiseGrid();
-    }
-
-    validate.process(dependencies).then(manageAccount);
-
-    function loadEnterprise(enterprise) { $scope.enterprise = enterprise; }
-
-    function defineGridOptions() {
-
-      columns = [
-        {id: 'ACCOUNT.TXT', name: 'Text', field: 'account_txt', formatter: AccountFormatter},
-        {id: 'ACCOUNT.NO', name: 'No.', field: 'account_number'},
-        {id: 'ACCOUNT.TYPE', name: 'Type', field: 'account_type_id', maxWidth: 60},
-        {id: 'ACCOUNT.FIXED', name: 'Fixed', field: 'fixed', maxWidth: 60},
-        {id: 'COLUMNS.EDIT', name: 'Edit', maxWidth: 50, formatter: EditFormatter},
-        {id: 'COLUMNS.DELETE', name: 'Delete', maxWidth: 70, formatter: DeleteFormatter}
-      ];
-
-      columns.forEach(function (col) {
-        col.name = $translate.instant(col.id);
-      });
-
-      options = {
-        enableCellNavigation: true,
-        enableColumnReorder: true,
-        forceFitColumns: true,
-        rowHeight: 30
-      };
-
-      awfulIndentCrawl($scope.model.account.data);
-    }
-
-    function initialiseGrid() {
-      var groupItemMetadataProvider;
-
-      groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
-      dataview = new Slick.Data.DataView({
-        groupItemMetadataProvider: groupItemMetadataProvider,
-        inlineFilter: true
-      });
-
-      grid = new Slick.Grid('#account_grid', dataview, columns, options);
-      grid.registerPlugin(groupItemMetadataProvider);
-
-      grid.onSort.subscribe(function(e, args) {
-        sortColumn = args.sortCol.field;
-        // FIXME : compareSort is unimplemented
-        //dataview.sort(compareSort, args.sortAsc);
-      });
-
-      //FIXME improve this function (redundant code) extract from main initialise)
-      grid.onClick.subscribe(function(e, args) {
-        if ($(e.target).hasClass('toggle')) {
-          var item = dataview.getItem(args.row);
-          if (item) {
-            if (!item._collapsed) {
-              item._collapsed = true;
-            } else {
-              item._collapsed = false;
-            }
-            dataview.updateItem(item.id, item);
-          }
-          e.stopImmediatePropagation();
-        }
-
-        // FIXME: This could be formalized/encapsulated
-        if ($(e.target).hasClass('remove')) {
-          $scope.$apply(function () {
-            accountError.throw('ERR_CANNOT_REMOVE_ACCOUNT');
-          });
-        }
-
-        if ($(e.target).hasClass('edit')) {
-          $scope.$apply(function () {
-            accountError.throw('ERR_CANNOT_EDIT_ACCOUNT');
-          });
-        }
-      });
-
-      dataview.onRowCountChanged.subscribe(function(e, args) {
-        awfulIndentCrawl($scope.model.account.data);
-        sortAccounts();
-        grid.updateRowCount();
-        grid.render();
-      });
-
-      dataview.onRowsChanged.subscribe(function(e, args) {
-        grid.invalidateRows(args.rows);
-        grid.render();
-      });
-
-      dataview.beginUpdate();
-      dataview.setItems($scope.model.account.data);
-      sortAccounts();
-      dataview.setFilter(accountFilter);
-      dataview.endUpdate();
-    }
-
-    function sortAccounts() {
-      dataview.sort(ohadaSort, true);
-      $scope.model.account.recalculateIndex();
-    }
-
-    function ohadaSort(a, b) {
-      var x = String(a[sortColumn]), y = String(b[sortColumn]);
-      return (x === y) ? 0 : (x > y ? 1 : -1);
-    }
-
-    function accountFilter(item) {
-      if (item.parent !== null) {
-        var parent = $scope.model.account.get(item.parent);
-        while (parent) {
-          if (parent._collapsed) { return false; }
-          parent = $scope.model.account.get(parent.parent);
-        }
-      }
-      return true;
-    }
-
-    //runs in O(O(O(...)))
-    function awfulIndentCrawl(data) {
-      data.forEach(function (item) {
-        var indent = 0;
-        var parent = $scope.model.account.get(item.parent);
-        while (parent) {
-          indent += 1;
-          parent = $scope.model.account.get(parent.parent);
-        }
-        item.indent = indent;
-      });
+      sortAccountList(model.account.data);
     }
 
     function submitAccount(account) {
-      //do some kind of validation
       //kill if account exists for now
       if ($scope.model.account.get(account.number)) {
         return accountError.throw('ERR_ACCOUNT_EXISTS', account.number);
       }
 
       //format account
+      var classe = account.number.substr(0,1);
+
       var formatAccount = {
         account_type_id: account.type.id,
         account_number: account.number,
         account_txt: account.title,
-        fixed: account.fixed === 'true' ? 1 : 0,
+        is_asset: account.is_asset,
+        is_ohada: account.is_ohada,
+        is_charge : account.is_charge,
+        is_used_budget: account.is_used_budget,
+        cc_id   : account.cc_id,
+        pc_id   : account.pc_id,
         enterprise_id: appstate.get('enterprise').id,
-        parent: 0 //set default parent (root)
+        parent: account.parent,
+        classe: account.number.substr(0,1),
+        reference_id : account.reference_id,
+        is_brut_link : account.is_brut_link 
       };
 
-      if (account.parent) {
-        formatAccount.parent = account.parent.account_number;
-      }
-
-      connect.basicPut('account', [formatAccount])
-      .then(function(res) {
-        formatAccount.id = res.data.insertId;
-        $scope.model.account.post(formatAccount);
-        dataview.refresh();
-
-        //reset form
-        $scope.newAccount.title = '';
-        $scope.newAccount.number = '';
-
-        if(formatAccount.account_type_id === titleAccount) {
-          //console.log('update parent');
-          $scope.newAccount.parent = $scope.model.account.get(formatAccount.account_number);
-          //console.log($scope.newAccount.parent);
-        }
-
+      connect.post('account', [formatAccount])
+      .then(refreshAccountList)
+      .then(function () {
+        messenger.success($translate.instant('CONFIG_ACCOUNTING.SAVE_SUCCES'), true);
+        $scope.newAccount = {};
+        session.state = 'display';
       });
     }
 
-    function updateState(newState) { session.state = newState; }
-
-    function AccountFormatter(row, cell, value, columnDef, dataContext) {
-      var spacer = '<span style="display:inline-block;height:1px;width:' + (15 * dataContext.indent) + 'px"></span>';
-
-      if(dataContext.account_type_id === titleAccount) {
-        if (dataContext._collapsed) {
-          return spacer + ' <span class=\'toggle expanded glyphicon glyphicon-collapse-up\'></span>&nbsp; <b>' + value + '</b>';
-        } else {
-          return spacer + ' <span class=\'toggle collapsed glyphicon glyphicon-collapse-down\'></span>&nbsp; <b>' + value + '</b>';
-        }
-      } else {
-        return spacer + ' <span class=\'toggle\'></span>&nbsp;' + value;
-      }
+    function updateState(newState) { 
+      session.state = newState; 
     }
 
-    function EditFormatter() {
-      return '<a class=\'grid_link edit\'><span class=\'glyphicon glyphicon-pencil edit\'></span></a>';
+    function formatCenter (c) {
+      return '' + c.text;
     }
 
-    function DeleteFormatter() {
-      return '<a class=\'grid_link remove\'><span class=\'glyphicon glyphicon-trash remove\'></span></a>';
+    $scope.discareCC = function () {
+      $scope.newAccount.cc_id = null;
+    };
+
+    $scope.discarePC = function () {
+      $scope.newAccount.pc_id = null;
+    };
+
+    $scope.getAccount = function (account) {
+      $scope.editAccount = null;
+      session.state = 'edit';
+      $scope.editAccount = account;
+    };
+
+    $scope.format = function format(account) {
+      return [account.account_txt, account.account_number].join(' :: ');
+    };
+
+    $scope.formatRef = function formatRef(reference) {
+      return [reference.ref, reference.text].join(' :: ');
+    };
+
+    function submitEditAccount (account) {
+      /**
+        * Only account of 'income/expense' type have cc_id or pc_id
+        * Only account of 'title' type have is_asset 
+      */
+
+      $scope.editAccount.is_brut_link = ($scope.editAccount.is_brut_link)?1:0;
+      $scope.editAccount.is_used_budget = ($scope.editAccount.is_used_budget)?1:0;
+
+      var update = {
+        id              : account.id,
+        account_txt     : $scope.editAccount.account_txt,
+        is_asset        : $scope.editAccount.is_asset,
+        is_ohada        : $scope.editAccount.is_ohada,
+        is_used_budget  : $scope.editAccount.is_used_budget,
+        locked          : $scope.editAccount.locked,
+        cc_id           : $scope.editAccount.cc_id,
+        pc_id           : $scope.editAccount.pc_id,
+        is_charge       : $scope.editAccount.is_charge,
+        parent          : $scope.editAccount.parent,
+        reference_id    : $scope.editAccount.reference_id,
+        is_brut_link    : $scope.editAccount.is_brut_link         
+      };
+
+      connect.put('account', [update], ['id'])
+      .then(refreshAccountList)
+      .then(function () {
+        messenger.success($translate.instant('CONFIG_ACCOUNTING.UPDATE_SUCCES'), true);
+        $scope.editAccount = {};
+        session.state = 'display';
+      });
+    }
+
+    function refreshAccountList () {
+      validate.refresh(dependencies, ['account'])
+      .then(manageAccount);
+    }
+
+    function sortAccountList (data) {
+      data.sort(function (a, b) {
+        return String(a.account_number) >= String(b.account_number) ? 1 : -1;
+      });
     }
 
     $scope.updateState = updateState;
     $scope.submitAccount = submitAccount;
+    $scope.formatCenter = formatCenter;
+    $scope.submitEditAccount = submitEditAccount;
   }
 ]);

@@ -2,8 +2,8 @@
   {{ "CREDIT_NOTE.TITLE" | translate }}
 </header>
 
-<div class="content"> 
-    <div class="panel panel-default">
+<main> 
+  <div class="panel panel-default">
       <div ng-click="sale.visible=!sale.visible" class="panel-heading">
         {{ "CREDIT_NOTE.SALE_DETAILS" | translate }} ({{sale.uuid}})
         <div class="pull-right">
@@ -67,6 +67,29 @@
     </div>
   </div>
 
+  <div class="row" ng-if="sumItem">
+    <div class="col-xs-12">
+      <label> 
+        <h4>
+          <span class="glyphicon" ng-class="{'glyphicon-warning-sign error' : true }"></span> {{ "CREDIT_NOTE.PLEASE_NOTE" | translate }} {{sumItem | currency}}
+        </h4>
+      </label>
+    </div>
+  </div>  
+
+  <div class="row" ng-if="nb_consumption>0">
+    <div class="col-xs-12">
+      <label> 
+        <h4>
+          <span class="glyphicon" ng-class="{'glyphicon-warning-sign error' : true }"></span> {{ "CREDIT_NOTE.INVOICE_CONSUMPTION" | translate }}
+        </h4>
+        <h5>
+          {{ "CREDIT_NOTE.INVOICE_CONSUMPTION_2" | translate }}
+        </h5>
+      </label>
+    </div>
+  </div>
+
   <div class="row">
     <div class="col-xs-12">
       <label>{{ "CREDIT_NOTE.DESCRIPTION" | translate }}</label>
@@ -75,11 +98,10 @@
   </div>
 
   <div class="row creditSubmit">
-    <div class="col-xs-12">
+    <div class="col-xs-12" ng-if="!nb_consumption&&!sumItem">
     <button ng-click="submitNote(creditNote)" class="btn btn-sm btn-success">
       {{ "CREDIT_NOTE.SUBMIT" | translate }}
     </button>
     </div> 
   </div>
-
-</div>
+</main>

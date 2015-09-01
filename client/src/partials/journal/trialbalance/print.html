@@ -1,19 +1,23 @@
 <div class="reportBody">
-  <div class="reportFrame" style="overflow: auto;">
-    <h3 style="text-align: center;">{{ "TRIAL_BALANCE.TITLE" | translate }}<small style="float:right;"> {{ timestamp | date:'dd-MM-yyyy HH:mm:ss' }}</small></h3>
+  <div class="reportFrame" style="overflow: auto;" ng-show="PrintCtrl.hasData">
+    <h3 style="text-align: center;">{{ "TRIAL_BALANCE.TITLE" | translate }}<small style="float:right;"> {{ PrintCtrl.timestamp | date:'dd/MM/yyyy HH:mm:ss' }}</small></h3>
 
     <div class="summary">
       <h5>{{ "TRIAL_BALANCE.SUMMARY" | translate }}</h5>
       <label style="padding: 0 5px;">
-        <span class="glyphicon glyphicon-flag"></span> {{ errors.length }} {{ "TRIAL_BALANCE.ERRORS" | translate }}
+        <span class="glyphicon glyphicon-calendar"></span> {{ PrintCtrl.metadata.mindate | date:'dd/MM/yyyy' }} - {{ PrintCtrl.metadata.maxdate | date:'dd/MM/yyyy' }}
       </label>
 
       <label style="padding: 0 5px;">
-        <span class="glyphicon glyphicon-tasks"></span> {{ transactions.length }} {{ "TRIAL_BALANCE.TRANSACTIONS" | translate }}
+        <span class="glyphicon glyphicon-tasks"></span> {{ PrintCtrl.metadata.transactions}} {{ "TRIAL_BALANCE.TRANSACTIONS" | translate }}
       </label>
 
       <label style="padding: 0 5px;">
-        <span class="glyphicon glyphicon-calendar"></span> {{ session.min | date}} - {{ session.max | date }}
+        <span class="glyphicon glyphicon-list"></span> {{ PrintCtrl.metadata.rows }} {{ "TRIAL_BALANCE.TRANSACTIONS" | translate }}
+      </label>
+
+      <label style="padding: 0 5px;" ng-if="PrintCtrl.hasExceptions" ng-class="{ 'text-warning' : PrintCtrl.hasExceptions, 'text-danger' : PrintCtrl.hasErrors }">
+        <span class="glyphicon glyphicon-exclamation-sign"></span> {{ PrintCtrl.exceptions.length }} {{ "TRIAL_BALANCE.EXCEPTIONS" | translate }}
       </label>
     </div>
 
@@ -28,21 +32,21 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="account in balances | orderBy:'account_number'">
+        <tr ng-repeat="account in PrintCtrl.balances | orderBy:'account_number'">
           <td><b>{{ account.account_number }}</b></td>
-          <td ng-bind-html="account.balance | intlcurrency:2"></td>
-          <td ng-bind-html="account.debit | intlcurrency:2"></td>
-          <td ng-bind-html="account.credit | intlcurrency:2"></td>
-          <td ng-bind-html="(account.balance + (account.credit-account.debit)) | intlcurrency:2"></td>
+          <td style="text-align:right;padding-right:5px;" ng-bind-html="account.balance | intlcurrency:2"></td>
+          <td style="text-align:right;padding-right:5px;" ng-bind-html="account.debit | intlcurrency:2"></td>
+          <td style="text-align:right;padding-right:5px;" ng-bind-html="account.credit | intlcurrency:2"></td>
+          <td style="text-align:right;padding-right:5px;" ng-bind-html="(account.balance + (account.credit - account.debit)) | intlcurrency:2"></td>
         </tr>
       </tbody>
       <tfoot>
         <tr>
           <th>{{ 'UTIL.TOTAL' | translate }}</th>
-          <th ng-bind-html="total.before | intlcurrency:2"></th>
-          <th ng-bind-html="total.debit | intlcurrency:2"></th>
-          <th ng-bind-html="total.credit | intlcurrency:2"></th>
-          <th ng-bind-html="total.after | intlcurrency:2"></th>
+          <th style="text-align:right;padding-right:5px;" ng-bind-html="PrintCtrl.totals.before | intlcurrency:2"></th>
+          <th style="text-align:right;padding-right:5px;" ng-bind-html="PrintCtrl.totals.debit | intlcurrency:2"></th>
+          <th style="text-align:right;padding-right:5px;" ng-bind-html="PrintCtrl.totals.credit | intlcurrency:2"></th>
+          <th style="text-align:right;padding-right:5px;" ng-bind-html="PrintCtrl.totals.after | intlcurrency:2"></th>
         </tr>
       </tfoot>
     </table>
@@ -61,5 +65,8 @@
       </div>
 
     </div>
+  </div>
+  <div class="reportFrame" style="overflow: auto;" ng-hide="PrintCtrl.hasData">
+    <div class="alert alert-danger">{{ "TRIAL_BALANCE.NO_DATA" | translate }}</div>
   </div>
 </div>

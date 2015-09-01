@@ -2,14 +2,16 @@ angular.module('bhima.controllers')
 .controller('expiring', [
   '$scope',
   '$q',
+  '$translate',
   'connect',
   'appstate',
   'validate',
   'messenger',
   'util',
-  function ($scope, $q, connect, appstate, validate, messenger, util) {
+  function ($scope, $q, $translate, connect, appstate, validate, messenger, util) {
     var session = $scope.session = {};
-    var dependencies = {};
+    var dependencies = {},
+      state = $scope.state;
 
     session.dateFrom = new Date();
     session.dateTo = new Date();
@@ -52,7 +54,6 @@ angular.module('bhima.controllers')
       session.dateFrom = new Date();
       session.dateTo = new Date();
       $scope.configuration = getConfiguration();
-      doSearching();
     }
 
     function week () {
@@ -60,7 +61,6 @@ angular.module('bhima.controllers')
       session.dateFrom.setDate(session.dateFrom.getDate() - session.dateFrom.getDay());
       session.dateTo = new Date(session.dateFrom.getTime()+(6*3600000));
       $scope.configuration = getConfiguration();
-      doSearching();
     }
 
     function month () {
@@ -68,10 +68,33 @@ angular.module('bhima.controllers')
       session.dateTo = new Date();
       session.dateFrom.setDate(1);
       $scope.configuration = getConfiguration();
-      doSearching();
     }
 
     function doSearching (p) {
+
+      if(session.depot === '*'){
+        $scope.depotSelected = $translate.instant('EXPIRING_REPORT.ALL_DEPOTS');
+      } else {
+        
+        dependencies.store = {
+          required: true,
+          query : {
+            tables : {
+              'depot' : {
+                columns : ['uuid', 'text', 'reference', 'enterprise_id']
+              }
+            },
+            where : ['depot.uuid=' + session.depot]
+          }
+        };
+        validate.process(dependencies, ['store'])
+        .then(function (model) {
+          var dataDepot = model.store.data[0];
+          $scope.depotSelected = dataDepot.text;
+        });       
+      }
+
+      $scope.state = 'generate';
       if (p && p===1) {
         $scope.configuration = getConfiguration();
       }
@@ -115,7 +138,7 @@ angular.module('bhima.controllers')
           text            : item.text,
           expiration_date : item.expiration_date,
           initial         : item.initial,
-          current         : item.current
+          current         : item.current - item.consumed
         };
       });
 
@@ -139,7 +162,6 @@ angular.module('bhima.controllers')
       session.depot = '*';
       search($scope.options[0]);
       $scope.configuration = getConfiguration();
-      doSearching();
     }
 
     function getConfiguration () {
@@ -148,6 +170,16 @@ angular.module('bhima.controllers')
         df         : session.dateFrom,
         dt         : session.dateTo
       };
+    }
+
+    $scope.print = function print() {
+      window.print();
+    };
+
+   function reconfigure () {
+      $scope.state = null;
+      $scope.session.depot = '*';
+      $scope.configuration.depot_uuid = null;
     }
 
     appstate.register('enterprise', function(enterprise) {
@@ -160,5 +192,6 @@ angular.module('bhima.controllers')
 
     $scope.search = search;
     $scope.doSearching = doSearching;
+    $scope.reconfigure = reconfigure;
   }
 ]);

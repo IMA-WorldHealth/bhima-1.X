@@ -1,5 +1,12 @@
-// TODO Global charges currently don't hit an invetory item || account,
-// no way of tracing this back to a reason for being
+/**
+ * TODO Global charges currently don't hit an invetory item || account,
+ * no way of tracing this back to a reason for being
+ *
+ * FIXME State currently relies on random variables, there should be a clear state object that
+ * controls and verifies the current state
+ *
+ * FIXME All sale details are still downloaded on patient select, hidden until service assignment, this should all be reuqested at once - ties in with state
+ */
 angular.module('bhima.controllers')
 .controller('sales', [
   '$scope',
@@ -11,8 +18,11 @@ angular.module('bhima.controllers')
   'messenger',
   'appcache',
   'precision',
+  'util',
   'uuid',
-  function ($scope, $location, $http, validate, connect, appstate, messenger, Appcache, precision, uuid) {
+  'SessionService',
+  function ($scope, $location, $http, validate, connect, appstate, messenger, Appcache, precision, util, uuid, SessionService) {
+
     var dependencies = {},
         invoice = {},
         inventory = [];
@@ -21,7 +31,16 @@ angular.module('bhima.controllers')
         priceListSource = [];
 
     var session = $scope.session = {
-      tablock : -1
+      tablock : -1,
+      is_distributable : true,
+      invoice_date : new Date()
+    };
+
+    $scope.project = SessionService.project;
+
+    var serviceComponent = $scope.serviceComponent = {
+      selected : null,
+      complete : false
     };
 
     dependencies.inventory = {
@@ -29,9 +48,12 @@ angular.module('bhima.controllers')
         identifier : 'uuid',
         tables: {
           'inventory' : {
-            columns: ['uuid', 'code', 'text', 'price']
-          }
-        }
+            columns: ['uuid', 'code', 'text', 'price', 'group_uuid']
+          },
+          inventory_group : { columns : ['sales_account', 'stock_account', 'donation_account'] },
+        },
+        join : ['inventory_group.uuid=inventory.group_uuid'],
+        where : ['inventory_group.sales_account<>null']
       }
     };
 
@@ -46,10 +68,6 @@ angular.module('bhima.controllers')
       }
     };
 
-    appstate.register('project', function (project) {
-      $scope.project = project;
-    });
-
     recoverCache.fetch('session').then(processRecover);
 
     function sales (model) {
@@ -58,6 +76,13 @@ angular.module('bhima.controllers')
     }
 
     validate.process(dependencies).then(sales);
+
+    function assignService() {
+      var selectedService = serviceComponent.selected;
+
+      if (!selectedService) { return messenger.danger('No service selected'); }
+      invoice.service = selectedService;
+    }
 
     function initialiseSaleDetails(selectedDebtor) {
       if (!selectedDebtor) { return messenger.danger('No invoice debtor selected'); }
@@ -105,6 +130,25 @@ angular.module('bhima.controllers')
         }
       };
 
+      dependencies.patientApplyableSubsidyList = {
+        query : {
+          tables : {
+            assignation_patient : {columns : ['patient_uuid', 'patient_group_uuid']},
+            patient_group : {columns : ['note', 'subsidy_uuid']},
+            subsidy : {columns : ['text', 'value', 'is_percent', 'debitor_group_uuid']},
+            debitor_group : {columns : ['account_id']}
+          },
+          join : [
+            'assignation_patient.patient_group_uuid=patient_group.uuid',
+            'patient_group.subsidy_uuid=subsidy.uuid',
+            'subsidy.debitor_group_uuid=debitor_group.uuid'
+          ],
+          where : [
+            'assignation_patient.patient_uuid=' + selectedDebtor.uuid
+          ]
+        }
+      };
+
       priceListSource = ['patientGroupList', 'debtorGroupList'];
       validate.refresh(dependencies, priceListSource).then(processPriceList);
     }
@@ -113,7 +157,7 @@ angular.module('bhima.controllers')
       invoice = {
         debtor : selectedDebtor,
         uuid : uuid(),
-        date : getDate(),
+        date : session.invoice_date,
         items: []
       };
 
@@ -173,6 +217,15 @@ angular.module('bhima.controllers')
           invoice.applyGlobal.push(listItem);
         }
       });
+
+      validate.refresh(dependencies, ['patientApplyableSubsidyList']).then(processPatientApplyableSubsidy);
+    }
+
+    function processPatientApplyableSubsidy (model) {
+      invoice.applyableSubsidies = [];
+      model.patientApplyableSubsidyList.data.forEach(function (subsidy) {
+        invoice.applyableSubsidies.push(subsidy);
+      });
     }
 
     function sortByOrder(a, b) {
@@ -203,7 +256,10 @@ angular.module('bhima.controllers')
 
       $scope.model.inventory.recalculateIndex();
 
-      updateSessionRecover();
+      // Do not update the recovery object for items added during recovery
+      if (!session.recovering) {
+        updateSessionRecover();
+      }
     }
 
     function removeInvoiceItem(index) {
@@ -228,13 +284,14 @@ angular.module('bhima.controllers')
 
       //Seller ID will be inserted on the server
       requestContainer.sale = {
-        project_id   : $scope.project.id,
-        cost         : calculateTotal().total,
-        currency_id  : $scope.project.currency_id,
-        debitor_uuid : invoice.debtor.debitor_uuid,
-        invoice_date : invoice.date,
-        note         : invoice.note,
-        service_id   : invoice.service.id
+        project_id       : $scope.project.id,
+        cost             : calculateTotal().total,
+        currency_id      : SessionService.enterprise.currency_id,
+        debitor_uuid     : invoice.debtor.debitor_uuid,
+        invoice_date     : util.sqlDate(session.invoice_date),
+        note             : invoice.note,
+        service_id       : invoice.service.id,
+        is_distributable : session.is_distributable
       };
 
       requestContainer.saleItems = [];
@@ -253,18 +310,17 @@ angular.module('bhima.controllers')
         requestContainer.saleItems.push(formatSaleItem);
       });
 
-      // Patient Groups
-      // if (invoice.priceList) {
-      //   //TODO Placeholder discount item select, this should be in enterprise settings
-      //   var formatDiscountItem, enterpriseDiscountId=12;
-      //   formatDiscountItem = {
-      //     inventory_id : enterpriseDiscountId,
-      //     quantity : 1,
-      //     transaction_price : netDiscountPrice,
-      //     debit : netDiscountPrice,
-      //     credit : 0, //FIXME default values because parser cannot insert records with different columns
-      //     inventory_price : 0
-      //   };
+      var sale_cost = requestContainer.sale.cost;
+      requestContainer.applyableSaleSubsidies = [];
+
+      invoice.applyableSubsidies.forEach(function (subsidy) {
+        var amount = subsidy.is_percent ? (sale_cost * subsidy.value) / 100 : subsidy.value;
+        var applyableSubsidy = {
+          uuid : subsidy.subsidy_uuid,
+          value : amount
+        };
+        requestContainer.applyableSaleSubsidies.push(applyableSubsidy);
+      });
 
       invoice.applyGlobal.forEach(function (listItem) {
 
@@ -283,7 +339,6 @@ angular.module('bhima.controllers')
       });
 
       requestContainer.caution = (invoice.debitorCaution)? invoice.debitorCaution : 0;
-
 
       return requestContainer;
     }
@@ -327,7 +382,7 @@ angular.module('bhima.controllers')
 
     function formatNote(invoice) {
       var noteDebtor = invoice.debtor || '';
-      return 'PI' + '/' + invoice.date + '/' + noteDebtor.name;
+      return $scope.project.abbr + '_VENTE/' + invoice.date + '/' + noteDebtor.name;
     }
 
     //TODO Refactor code
@@ -363,10 +418,11 @@ angular.module('bhima.controllers')
 
       // Apply caution
       if (invoice.debitorCaution){
-        var remaining = 0;
-        remaining = total - invoice.debitorCaution;
-        totalToPay = remaining < 0 ? 0 : remaining;
-        totalToPay = Number(totalToPay.toFixed(4));
+        // var remaining = 0;
+        // remaining = total - invoice.debitorCaution;
+        // totalToPay = remaining < 0 ? 0 : remaining;
+        // totalToPay = Number(totalToPay.toFixed(4));
+        totalToPay = total;
       }else{
         totalToPay = total;
       }
@@ -442,16 +498,24 @@ angular.module('bhima.controllers')
 
     function selectRecover() {
       $scope.session.recovering = true;
+
       $scope.findPatient.forceSelect($scope.session.recovered.patientId);
+
+      serviceComponent.selected = $scope.session.recovered.service;
+      assignService();
     }
 
     function recover() {
+
+      invoice.service = $scope.session.recovered.service || null;
+
       $scope.session.recovered.items.forEach(function (item) {
         var currentItem = addInvoiceItem(), invItem = $scope.model.inventory.get(item.uuid);
         currentItem.selectedReference = invItem.code;
         updateInvoiceItem(currentItem, invItem);
         currentItem.quantity = item.quantity;
       });
+
 
       // FIXME this is stupid
       session.displayRecover = true;
@@ -461,9 +525,11 @@ angular.module('bhima.controllers')
     }
 
     function updateSessionRecover() {
+
       //FIXME currently puts new object on every item, this could be improved
       var recoverObject = session.recoverObject || {
         patientId : invoice.debtor.uuid,
+        service : invoice.service,
         items : []
       };
 
@@ -504,6 +570,10 @@ angular.module('bhima.controllers')
       return invalidItems;
     }
 
+    function SelectService () {
+      updateSessionRecover();
+    }
+
     $scope.initialiseSaleDetails = initialiseSaleDetails;
     $scope.addInvoiceItem = addInvoiceItem;
     $scope.updateInvoiceItem = updateInvoiceItem;
@@ -514,5 +584,8 @@ angular.module('bhima.controllers')
     $scope.selectRecover = selectRecover;
     $scope.cacheQuantity = cacheQuantity;
     $scope.verifySubmission = verifySubmission;
+
+    $scope.assignService = assignService;
+    //$scope.SelectService = SelectService;
   }
 ]);

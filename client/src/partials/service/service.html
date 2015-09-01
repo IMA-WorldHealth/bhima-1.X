@@ -3,9 +3,18 @@
 </header>
 
 <nav>
-  <button ng-click="setAction('register')" class="btn btn-sm btn-default pull-right">
-    <i class="glyphicon glyphicon-file"></i>{{'SERVICE.NEW' | translate}}
-  </button>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "SERVICE.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right">
+    <button ng-click="setAction('register')" class="btn btn-sm btn-default pull-right">
+      <i class="glyphicon glyphicon-plus-sign"></i> {{'SERVICE.NEW' | translate}}
+    </button>
+  </div>
 </nav>
 
 <main>
@@ -22,23 +31,23 @@
               <th>{{ "COLUMNS.PROJECT" | translate }}</th>
               <th>{{ "COLUMNS.COST_CENTER" | translate }}</th>
               <th>{{ "COLUMNS.PROFIT_CENTER" | translate }}</th>
-              <th>{{"COLUMNS.ACTIONS" | translate}}</th>
+              <th colspan="3">{{ "COLUMNS.ACTIONS" | translate}}</th>
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="item in model.services.data">
+            <tr ng-repeat="item in model.services.data  | orderBy:'service'">
               <td>{{ item.service }}</td>
               <td>{{ item.project }}</td>
               <td>{{ item.cost_center }}</td>
               <td>{{ item.profit_center }}</td>
-              <td>
-                <button class="btn btn-sm btn-default" ng-click="setAction('edit', item)"><i class="glyphicon glyphicon-pencil"></i></button>
-                <button class="btn btn-sm btn-default" ng-click="setAction('more', item)"><i class="glyphicon glyphicon-eye-open"></i></button>
-                <button class="btn btn-sm btn-danger" ng-click="remove(item)"><i class="glyphicon glyphicon-trash"></i></button>
-              </td>
+              <td><a class="clk" ng-click="setAction('edit', item)"><i class="glyphicon glyphicon-pencil"></i></a></td>
+              <td><a class="clk" ng-click="setAction('more', item)"><i class="glyphicon glyphicon-eye-open"></i></a></td>
+              <td><a class="clk danger" ng-click="remove(item)"><i class="glyphicon glyphicon-trash"></i></a></td>
             </tr>
             <tr ng-if="!model.services.data.length">
-              <td colspan="3"><div class="alert alert-warning square">{{ 'SERVICE.NONE_FOUND' | translate }}</div></td>
+              <td colspan="7">
+                <div class="alert alert-warning square"><i class="glyphicon glyphicon-warning-sign"></i> {{ 'SERVICE.NONE_FOUND' | translate }}</div>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -48,10 +57,8 @@
     <div class="col-xs-6" ng-switch="action">
       <div ng-switch-default>
         <div class="alert alert-info">
-          <b>{{'SERVICE.INFO' | translate}}</b>
-          <p>
-            {{'SERVICE.INFO_DESCRIPTION' | translate}}
-          </p>
+          <b>{{ 'SERVICE.INFO' | translate}}</b>
+          <p>{{ 'SERVICE.INFO_DESCRIPTION' | translate }}</p>
         </div>
       </div>
 
@@ -166,13 +173,13 @@
               </tr>
             </thead>
             <tbody>
-              <tr  ng-if="false">
-                <td>{{selected.name}}</td>
-                <td>{{selected.charge | currency }}</td>
-                <td>{{selected.profit | currency }}</td>
-                <td>{{(selected.profit-selected.charge) | currency}}</td>
+              <tr  ng-if="true">
+                <td>{{choosen.service}}</td>
+                <td>{{choosen.charge | currency }}</td>
+                <td>{{choosen.profit | currency }}</td>
+                <td>{{(choosen.profit-choosen.charge) | currency}}</td>
               </tr>
-              <tr ng-if="true">
+              <tr ng-if="false">
                 <td colspan="4"><div class="alert alert-warning square">Non disponible</div></td>
               </tr>
             </tbody>

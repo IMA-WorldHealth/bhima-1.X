@@ -25,7 +25,7 @@ angular.module('bhima.controllers')
     $scope.filter = { by : {} };
 
     // TODO : both journal.utilities and journal.controls use this
-    // table.  Use promises to share the data between the two controllers
+    // table.  Use a service to share data betwen two controllers
     dependencies.account = {
       query : {
         'tables' : {
@@ -42,20 +42,21 @@ angular.module('bhima.controllers')
         dataview = params[2];
         options = params[3];
         manager = params[4];
-        $scope.hasData = !!dataview.getItems().length;
+        $scope.hasData = dataview.getItems().length > 0;
         return validate.process(dependencies);
       })
       .then(initialise)
       .catch(handleErrors);
     });
 
+    // load saved columns
     cache.fetch('columns')
     .then(function (columns) {
       if (!columns) { return; }
       $scope.columns = columns;
     });
 
-    function initialise (models) {
+    function initialise(models) {
       for (var k in models) { $scope[k] = models[k]; }
 
       // check for cache read
@@ -126,32 +127,41 @@ angular.module('bhima.controllers')
       dataview.setGrouping();
     };
 
+
+    // runs the trial balance
     $scope.trialBalance = function () {
-      // Runs the trial balance
-      // first, we need to validate that all items in each trans have been
-      // selected.
+      
+      var l = dataview.getLength(),
+          transactions = [];
 
-      connect.fetch('/trialbalance/initialize')
-      .then(function (res) {
-        var instance = $modal.open({
-          backdrop: 'static', // this should not close on off click
-          keyboard : false,   // do not let esc key close modal
-          templateUrl:'partials/journal/trialbalance/trialbalance.html',
-          controller: 'trialBalance',
-          resolve : {
-            request: function () {
-              return res;
-            }
+      // loop through the current view and add all the transactions
+      // you find to the list of transactions for posting to
+      // the general ledger
+      // NOTE : MUST BE GROUPED BY TRANS_ID
+      for (var i = 0; i < l; i++) {
+        var item = dataview.getItem(i);
+        if (item.__group) {
+          transactions.push(item.value);
+        }
+      }
+    
+      // The modal should make the relevant $http requests so that the client is
+      // not confused as to what is happening.  A loading dialog can be displayed
+      // on the modal to ensure that everything is fine.
+      var modal = $modal.open({
+        backdrop: 'static', // this should not close on off click
+        keyboard : false,   // do not let esc key close modal
+        templateUrl:'partials/journal/trialbalance/trialbalance.html',
+        controller: 'TrialBalanceController as BalanceCtrl',
+        resolve : {
+          transactions : function () {
+            return transactions;
           }
-        });
+        }
+      });
 
-        instance.result.then(function () {
-          console.log('Going to general ledger');
-          $location.path('/reports/ledger/general_ledger');
-        });
-      })
-      .catch(function (error) {
-        messenger.danger('Trial Balance failed with ' + JSON.stringify(error));
+      modal.result.then(function () {
+        $location.path('/reports/ledger/general_ledger');
       });
     };
 
@@ -209,6 +219,7 @@ angular.module('bhima.controllers')
       if (groupMap[targetGroup]) { groupMap[targetGroup](); }
     };
 
+
     $scope.refreshFilter = function refreshFilter () {
       $scope.filter.param = '';
       dataview.setFilterArgs({
@@ -226,14 +237,14 @@ angular.module('bhima.controllers')
       });
 
       if (manager.session.mode === 'lock') {
-        editTemplate = '<div class="pull-right"><a class="editTransaction" style="color: white; cursor: pointer;"><span class="glyphicon glyphicon-pencil"></span> ' + $translate('POSTING_JOURNAL.EDIT_TRANSACTION') + ' </a></div>';
+        editTemplate = '<div class="pull-right"><a class="editTransaction" style="color: white; cursor: pointer;"><span class="glyphicon glyphicon-pencil"></span> ' + $translate.instant('POSTING_JOURNAL.EDIT_TRANSACTION') + ' </a></div>';
       }
 
       if (manager.session.mode === 'edit' && correctRow) {
         rowMarkup =
           '<span style="color: white;">' +
           '  <span style="color: white;" class="glyphicon glyphicon-warning-sign"> </span> ' +
-          $translate('POSTING_JOURNAL.LIVE_TRANSACTION') + ' <strong>'  + g.value + '</strong> (' + g.count + ' records)' +
+          $translate.instant('POSTING_JOURNAL.LIVE_TRANSACTION') + ' <strong>'  + g.value + '</strong> (' + g.count + ' records)' +
           '</span> ' +
           '<span class="pull-right">' +
           //'  <a class='addRow' style='color: white; cursor: pointer;'> <span class='glyphicon glyphicon-plus'></span>  ' + $translate('POSTING_JOURNAL.ADD_ROW') + '</a>' +
@@ -258,6 +269,7 @@ angular.module('bhima.controllers')
     };
 
     // Toggle column visibility
+    // this is terrible
     $scope.$watch('columns', function () {
       if (!$scope.columns) { return; }
       var columns = $scope.columns.filter(function (column) { return column.visible; });
@@ -321,7 +333,7 @@ angular.module('bhima.controllers')
       manager.fn.regroup();
     };
 
-    function filter (item, args) {
+    function filter(item, args) {
       if (!$scope.filter.by.field || String(item[$scope.filter.by.field]).match(args.param)) {
         return true;
       }
@@ -339,6 +351,5 @@ angular.module('bhima.controllers')
     };
 
     $scope.$watch('filter', $scope.updateFilter, true);
-
   }
 ]);

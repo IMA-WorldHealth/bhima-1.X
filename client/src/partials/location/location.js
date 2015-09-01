@@ -6,10 +6,9 @@ angular.module('bhima.controllers')
   function ($scope, connect, Store) {
 
     // TODO : This could be achieved with connect.req
-    connect.fetch('/location/')
+    connect.fetch('/location/villages')
     .then(function (data) {
-      $scope.locations = new Store({ identifier : 'uuid' });
-      $scope.locations.setData(data);
+      $scope.locations = data;
     });
 
   }

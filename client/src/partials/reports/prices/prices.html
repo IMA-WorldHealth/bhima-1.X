@@ -2,16 +2,17 @@
   {{ "REPORT.PRICES" | translate }}
 </header>
 
-<section class="top-nav">
+<nav>
   <div class="pull-right">
     <button ng-click="print()" class="btn btn-default btn-sm square"><span class="glyphicon glyphicon-print"></span> {{'UTIL.PRINT' | translate}}</button>
   </div>
-</section>
+</nav>
 
 <div class="report">
   <div class="reportBody">
     <div class="reportFrame">
-      <h4>{{ enterprise.name }}</h4>
+      <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
+      
       <h4>{{ "REPORT.PRICES" | translate }} <small> {{ "REPORT.CREATED_ON" | translate }} {{timestamp | date }}</small></h4>
         <table class="reportTable priceReport">
           <thead>

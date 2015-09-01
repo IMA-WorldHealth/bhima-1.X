@@ -24,12 +24,12 @@ angular.module('bhima.controllers')
       query : {
         identifier : 'uuid',
         tables : {
-          purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'employee_id', 'project_id', 'purchase_date', 'note'] },
+          purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'purchaser_id', 'project_id', 'purchase_date', 'note'] },
           employee : { columns : ['name'] },
           project : { columns : ['abbr'] }
         },
-        join : ['purchase.project_id=project.id', 'purchase.employee_id=employee.id'],
-        where : ['purchase.paid='+0]
+        join : ['purchase.project_id=project.id', 'purchase.purchaser_id=employee.id'],
+        where : ['purchase.paid=0','AND','purchase.is_donation=0','AND', 'purchase.is_authorized=1']
       }
     };
 
@@ -76,7 +76,6 @@ angular.module('bhima.controllers')
 
     function confirmPurchase(purchaseId) {
       session.selected = $scope.purchase.get(purchaseId);
-
     }
 
     function payPurchase() {
@@ -85,9 +84,19 @@ angular.module('bhima.controllers')
           tables : {
             employee : {
               columns : ['creditor_uuid']
+            },
+            creditor : {
+              columns : ['group_uuid']
+            },
+            creditor_group : {
+              columns : ['account_id']
             }
           },
-          where : ['employee.id=' + session.selected.employee_id]
+          join : [
+            'employee.creditor_uuid=creditor.uuid',
+            'creditor.group_uuid=creditor_group.uuid'
+          ],
+          where : ['employee.id=' + session.selected.purchaser_id]
         }
       };
 
@@ -95,7 +104,9 @@ angular.module('bhima.controllers')
     }
 
     function submitPayment(model) {
-      var creditorId = model.employee.data[0].creditor_uuid;
+      var creditorId = model.employee.data[0].creditor_uuid,
+        creditorAccount = model.employee.data[0].account_id;
+
       var request = {
         details         : {
           project_id    : appstate.get('project').id,
@@ -105,7 +116,7 @@ angular.module('bhima.controllers')
           deb_cred_type : 'C',
           currency_id   : model.enterprise.data[0].currency_id, //FIXME
           cash_box_id   : cashbox.id,
-          account_id    : cashbox.account_id,
+          account_id    : creditorAccount,
           cost          : session.selected.cost,
           description   : 'PP/' + session.selected.uuid + '/',
           origin_id     : model.pcash_module.data[0].id
@@ -114,7 +125,8 @@ angular.module('bhima.controllers')
           {
             inv_po_id : session.selected.uuid,
             debit : session.selected.cost,
-            credit : 0
+            credit : 0,
+            document_uuid : session.selected.uuid
           }
         ]
       };
@@ -135,11 +147,15 @@ angular.module('bhima.controllers')
     }
 
     function generateDocument (res){
-       $location.path('/invoice/indirect_purchase/' + session.selected.uuid);
+        $location.path('/invoice/indirect_purchase/' + session.selected.uuid);
     }
 
     function handleError(error) {
       throw error;
+    }
+
+    function resetSelected () {
+      delete session.selected;
     }
 
     $scope.confirmPurchase = confirmPurchase;

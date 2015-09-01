@@ -33,6 +33,10 @@ angular.module('bhima.controllers')
         link : '/primary_cash/convention/'
       },
       {
+        key : 'PRIMARY_CASH.INCOME.SUPPORT',
+        link : '/primary_cash/support/'
+      },
+      {
         key : 'PRIMARY_CASH.INCOME.GENERIC.TITLE',
         link : '/primary_cash/income/generic/'
       }
@@ -44,18 +48,26 @@ angular.module('bhima.controllers')
         link : '/primary_cash/expense/purchase/'
       },
       {
+       key : 'PRIMARY_CASH.EXPENSE.CASH_RETURN',
+       link : '/primary_cash/expense/cash_return/'
+      },
+      {
+         key : 'PRIMARY_CASH.EXPENSE.PAYROLL',
+         link : '/primary_cash/expense/payroll/'
+      },
+      {
         key : 'PRIMARY_CASH.EXPENSE.GENERIC_TITLE',
         link : '/primary_cash/expense/generic/'
       }
     ];
-    
+
     validate.process(dependencies)
       .then(parseDependenciesData)
       .then(readConfiguration)
       .then(parseConfiguration)
       .then(initialise)
       .catch(handleError);
-  
+
     function parseDependenciesData(model) {
       angular.extend($scope, model);
       return $q.when();
@@ -67,10 +79,9 @@ angular.module('bhima.controllers')
 
     function parseConfiguration(cashbox) {
       var currentModel = $scope.cashBox;
-      var configurationExists, validConfiguration;
-    
-      configurationExists = angular.isDefined(cashbox);
-      if (!configurationExists) {
+      var validConfiguration;
+
+      if (!cashbox) {
         session.configure = true;
         return;
       }
@@ -80,7 +91,7 @@ angular.module('bhima.controllers')
         session.configure = true;
         return;
       }
-      
+
       session.cashbox = cashbox;
       session.complete = true;
       return;

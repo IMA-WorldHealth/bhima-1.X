@@ -3,9 +3,18 @@
 </header>
 
 <nav>
-  <button class="btn btn-sm btn-default" ng-click="addList()">
-    <span class="glyphicon glyphicon-plus-sign"></span> {{ "PRICE_LIST.NEW" | translate }}
-  </button>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "PRICE_LIST.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right">
+    <button class="btn btn-sm btn-default" ng-click="addList()">
+      <span class="glyphicon glyphicon-plus-sign"></span> {{ "PRICE_LIST.NEW" | translate }}
+    </button>
+  </div>
 </nav>
 
 <main>
@@ -23,17 +32,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-class="{'selected-primary' : session.selected===list}" ng-repeat="list in model.priceList.data">
+            <tr ng-class="{'selected-primary' : session.selected===list}" ng-repeat="list in model.priceList.data | orderBy:'title'">
               <td> {{ list.title }} </td>
-              <td>
-                <a class="btn btn-sm btn-default" ng-click="editMeta(list)" href=""><i class="glyphicon glyphicon-pencil"></i></a>
-              </td>
-              <td>
-                <a class="btn btn-sm btn-default" ng-click="editItems(list)"><i class="glyphicon glyphicon-cog"></i></a>
-              </td>
-              <td>
-                <a class="btn btn-sm btn-danger" ng-click="removeList(list)" href=""><i class="glyphicon glyphicon-trash"></i></a>
-              </td>
+              <td><a ng-click="editMeta(list)"><i class="glyphicon glyphicon-pencil white"></i></a></td>
+              <td><a ng-click="editItems(list)"><i class="glyphicon glyphicon-cog white"></i></a></td>
+              <td><a ng-click="removeList(list)" ><i class="glyphicon glyphicon-trash white"></i></a></td>
             </tr>
 
             <tr ng-if="model.priceList.data.length===0">
@@ -63,12 +66,10 @@
 
           <div class="panel-body">
             <form name="editPriceList" class="form-horizontal">
-
-
                 <div class="form-group">
                   <label class="col-xs-2 control-label required">{{ "COLUMNS.TITLE" | translate }}</label>
                   <div class="col-xs-5">
-                    <input class="form-bhima" ng-model="edit.title">
+                    <input class="form-bhima" ng-model="edit.title"  required>
                   </div>
                 </div>           
 
@@ -81,7 +82,7 @@
                   </div>
                 </div>
     
-                <input type="submit" class="btn btn-sm btn-success" ng-click="saveMeta()" value="{{ 'FORM.SAVE_CHANGES' | translate }}">
+                <input type="submit" ng-disabled="editPriceList.$invalid" class="btn btn-sm btn-success" ng-click="saveMeta()" value="{{ 'FORM.SAVE_CHANGES' | translate }}">
                 <input type="reset" class="btn btn-sm btn-default" ng-click="resetMeta()" value="{{ 'FORM.RESET_FORM' | translate }}">
 
             </form>
@@ -96,12 +97,12 @@
           </div>
 
           <div class="panel-body">
-            <form name="editPriceList" class="form-horizontal">
+            <form name="newPriceList" class="form-horizontal">
               
               <div class="form-group">
                   <label class="col-xs-2 control-label required">{{ "COLUMNS.TITLE" | translate }}</label>
                   <div class="col-xs-5">
-                    <input class="form-bhima" ng-model="add.title">
+                    <input class="form-bhima" ng-model="add.title" required>
                   </div>
                 </div>
                 
@@ -112,7 +113,7 @@
                   </div>
                 </div>
 
-                <input type="submit" class="btn btn-sm btn-success" ng-click="saveAdd()" value="{{ 'FORM.SAVE_CHANGES' | translate }}">
+                <input type="submit" ng-disabled="newPriceList.$invalid" class="btn btn-sm btn-success" ng-click="saveAdd()" value="{{ 'FORM.SAVE_CHANGES' | translate }}">
                 <input type="reset" class="btn btn-sm btn-default" ng-click="resetAdd()" value="{{ 'FORM.RESET' | translate }}">
 
             </form>

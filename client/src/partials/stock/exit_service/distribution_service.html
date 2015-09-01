@@ -5,9 +5,9 @@
 <nav>
   <div class="pull-left">
     <ol class="breadcrumb" style="float: right;">
-      <li><span class="glyphicon glyphicon-home"></span></li>
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
       <li><a tabindex="-1" href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
-      <li><a tabindex="-1" href="">{{ "STOCK.EXIT_SERVICE.KEY" | translate }}</a></li>
+      <li class="active">{{ "STOCK.EXIT_SERVICE.KEY" | translate }}</li>
     </ol>
   </div>
 
@@ -20,7 +20,7 @@
 <main>
   <div class="panel panel-default">
     <div class="panel-heading">
-      {{'DISTRIBUTION_SERVICE.CHOOSE' | translate}}
+      {{'DISTRIBUTION_SERVICE.CHOOSE' | translate}} 
     </div>
     <div class="panel-body">
       <form class="form">
@@ -109,13 +109,27 @@
                         }"
                       class="glyphicon"></span>
                     </span>
-                    <input class="form-bhima" ng-disabled="!row.code" ng-model="row.quantity" type="number" min="0" ng-change="handleChange(row, $index)" required>
+                    <input 
+                    class="form-bhima" 
+                    ng-disabled="!row.code" 
+                    ng-model="row.quantity" 
+                    type="number" 
+                    min="0" 
+                    ng-change="handleChange(row, $index)" required>
                 </div>
               </td>
               <td width="35%">
                 <div ng-repeat="lot in configuration.rows[$index].lots">
                   <table class="reportTable">
                     <tbody>
+                      <tr width="100%">
+                        <td width="50%">
+                          {{"DISTRIBUTION_SERVICE.DESCRIPTION" | translate }}
+                        </td>
+                        <td width="50%">
+                          <b>{{lot.text}}</b>
+                        </td>
+                      </tr>
                       <tr width="100%">
                         <td width="50%">
                           {{"DISTRIBUTION_SERVICE.LOT_NUMBER" | translate }}
@@ -146,7 +160,11 @@
                 </div>
               </td>
               <td>
-                {{row.price | currency}}
+                <input
+                  class="form-invoice"
+                  type="text"
+                  ng-model="row.price"
+                >
               </td>
 
               <td>
@@ -175,11 +193,11 @@
   </div>
 </main>
 
-<section class="bar-bottom">
+<footer>
   <div class="pull-right">
     <a ng-disabled="verifyDistribution()" ng-click="Distribute()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "DISTRIBUTION_SERVICE.DISTRIBUTE" | translate }}</a>
   </div>
-</section>
+</footer>
 
 <script type="text/ng-template" id="lotList.html">
   <a>

@@ -5,8 +5,11 @@ angular.module('bhima.controllers')
   'messenger',
   'appstate',
   'validate',
-  function ($scope, connect, messenger, appstate, validate) {
+  'exchange',
+  'util',
+  function ($scope, connect, messenger, appstate, validate, exchange, util) {
     var dependencies = {};
+    var session = $scope.session = {};
 
     dependencies.currency = {
       required : true,
@@ -27,6 +30,11 @@ angular.module('bhima.controllers')
         }
       }
     };
+
+    $scope.maxDate = util.htmlDate(new Date());
+    $scope.currentDate = util.htmlDate(new Date());
+    session.is_oldDate = false;
+    session.oldDate = new Date();
 
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
@@ -55,6 +63,7 @@ angular.module('bhima.controllers')
     }, true);
 
     $scope.submit = function () {
+      $scope.today = (session.is_oldDate === true) ? util.htmlDate(new Date(session.oldDate)) : util.htmlDate(new Date());
 
       var data = {
         enterprise_currency_id : $scope.enterprise.currency_id,
@@ -73,6 +82,7 @@ angular.module('bhima.controllers')
         }
 
         appstate.set('exchange_rate', $scope.globalRates);
+        exchange.forceRefresh();
 
         // add to store
         data.id = result.data.insertId;
@@ -90,6 +100,14 @@ angular.module('bhima.controllers')
 
     $scope.fcurrency = function (currency) {
       return currency.id !== $scope.enterprise.currency_id;
+    };
+
+    $scope.commitValue = function (){
+      $scope.is_oldDate = !$scope.is_oldDate;
+    };
+
+    $scope.checkValidity = function (){
+      return ($scope.newRate.rate && $scope.newRate.rate > 0 && $scope.newRate.foreign_currency_id) ? false : true;
     };
 
   }

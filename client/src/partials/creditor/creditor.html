@@ -3,6 +3,13 @@
 </header>
 
 <nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "SUPPLIER.TITLE" | translate }}</li>
+    </ol>
+  </div>
+  
   <div class="pull-right">
     <a class="btn btn-default btn-sm" ng-click="createSupplier()">
       <span class="glyphicon glyphicon-user"></span> {{ "SUPPLIER.TITLE" | translate }}
@@ -15,12 +22,11 @@
 </nav>
 
 <main>
-  <div class="row" style="height: 99%">
+  <div class="row margin-top-10" style="height: 99%">
     <div class="col-xs-7">
       <div class="panel panel-default" ng-class="{'panel-primary' : session.state===route.create, 'panel-success' : session.state===route.edit}">
         <div class="panel-heading">
           <span class="glyphicon glyphicon-user"></span> {{ 'SUPPLIER.SUPPLIER_DETAILS' | translate }}
-          <span class="pull-right">{{ (session.state.header | translate) || '...' }}</span>
         </div>
         <div class="panel-body">
           <form role="form" name="form" novalidate>
@@ -28,12 +34,12 @@
               <legend>Supplier</legend>
 
               <div class="form-group">
-                <label for="name">{{ "COLUMNS.NAME" | translate }}</label>
+                <label for="name" class="control-label required">{{ "COLUMNS.NAME" | translate }}</label>
                 <input type="text" class="form-bhima" id="name" ng-model="session.supplier.name" required>
               </div>
 
               <div class="form-group">
-                <label for="Group">{{ "COLUMNS.GROUP" | translate }}</label>
+                <label for="Group" class="control-label required">{{ "COLUMNS.GROUP" | translate }}</label>
                 <select required class="form-bhima" id="groupselectID" ng-model="session.creditor.group_uuid" ng-options="group.uuid as group.name for group in creditGroup.data">
                   <option value="" disabled="disabled">--Select Group--</option>
                 </select>
@@ -41,56 +47,26 @@
 
               <div class="checkbox">
                 <label> {{ "SUPPLIER.INTL" | translate }}
-                  <input type="checkbox" id="internationalID" ng-model="session.supplier.international">
+                  <input type="checkbox" id="internationalID" ng-true-value="1" ng-false-value="0" ng-model="session.supplier.international">
                 </label>
               </div>
 
               <div class="form-group">
-                <label for="phone">{{ "SUPPLIER.PHONE" | translate }}</label>
+                <label for="phone" class="control-label required">{{ "SUPPLIER.PHONE" | translate }}</label>
                 <input required type="text" class="form-bhima" id="phoneID" ng-model="session.supplier.phone">
               </div>
 
               <div class="form-group">
-                <label for="email">{{ "SUPPLIER.EMAIL" | translate }}</label>
-                <input required type="email" class="form-bhima" id="emailID" ng-model="session.supplier.email">
+                <label for="email" class="control-label">{{ "SUPPLIER.EMAIL" | translate }}</label>
+                <input type="email" class="form-bhima" id="emailID" ng-model="session.supplier.email">
               </div>
+
             </fieldset>
-
+            
             <fieldset>
-              <legend>Location</legend>
-                <div class="form-group">
-                  <label for="location-country">
-                    {{ "LOCATION.COUNTRY" | translate }}
-                  </label>
-                  <select required class="form-bhima" id="location-country" ng-model="session.location.country" ng-options="country as country.country_fr for country in country.data">
-                    <option value="" disabled="disabled">-- {{ "SELECT.COUNTRY" | translate }} --</option>
-                  </select>
-                </div>
-
-                <div class="form-group">
-                  <label for="location-province">
-                    {{ "LOCATION.PROVINCE" | translate }}
-                  </label>
-                  <select required class="form-bhima" id="location-province" ng-model="session.location.province" ng-options="province as province.name for province in province.data | filter:{country_id:origin.country.id}">
-                    <option value="" disabled="disabled">-- {{ "SELECT.PROVINCE" | translate }} --</option>
-                  </select>
-                </div>
-
-                <div class="form-group">
-                  <label for="location-sector">
-                    {{ "LOCATION.VILLE" | translate }}
-                  </label>
-                  <select class="form-bhima" id="location-sector" ng-model="session.location.sector" ng-options="sector as sector.name for sector in sector.data | filter:{province_id:origin.province.id}" required>
-                    <option value="" disabled="disabled">-- {{ "SELECT.SECTOR" | translate }}--</option>
-                  </select>
-                </div>
-
-                <div class="form-group">
-                  <label for="location-village">
-                    {{ "LOCATION.LOCALITY" | translate }}
-                  </label>
-                  <input class="form-bhima" id="location-country" ng-model="session.location.village" typeahead="village as village.name for village in village.data | filter:$viewValue | limitTo:10" required>
-                </div>
+              <legend>Location <small style="color : red;">*</small></legend>
+                
+              <div location-select select-village="selectVillage" default-village="defaultVillage">
             </fieldset>
           </form>
         </div>
@@ -152,10 +128,10 @@
   </div>
 </main>
 
-<section class="bar-bottom">
+<footer>
   <div class="pull-right">
-    <button class="btn btn-success btn-sm" ng-click="session.state.method()" ng-disabled="form.$invalid">
+    <button class="btn btn-success btn-sm" ng-click="session.state.method()" ng-disabled="form.$invalid || !session.location.village" >
       {{ session.state.button | translate }}
     </button>
   </div>
-</section>
+</footer>

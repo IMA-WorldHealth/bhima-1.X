@@ -115,7 +115,7 @@ angular.module('bhima.controllers')
 
     appstate.register('project', function (project) {
       $scope.project = project;
-      dependencies.cost_centers.where = ['cost_center.project_id='+project.id];
+      dependencies.cost_centers.query.where = ['cost_center.project_id='+project.id];
       validate.process(dependencies).then(init);
     });
 

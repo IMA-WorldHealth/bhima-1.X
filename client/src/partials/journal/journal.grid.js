@@ -10,22 +10,15 @@ angular.module('bhima.controllers')
   function ($scope, $translate, $filter, $q, precision, validate, appstate) {
     /* jshint unused : false */
     var dependencies = {}, ready = $q.defer();
-    var columns, options, dataview, grid,
-        manager = { session : {}, fn : {}, mode : {} };
+    var columns, options, dataview, grid, checkboxSelector,
+        manager = { session : { selection : [] }, fn : {}, mode : {} };
 
+    // FIXME : this is <i>terrible</i>.  Never ever do this ever again!
     appstate.set('journal.ready', ready.promise);
 
-    dependencies.journal = {
-      query : {
-        identifier : 'uuid',
-        tables : {
-          'posting_journal' : {
-            'columns' : ['uuid', 'fiscal_year_id', 'period_id', 'trans_id', 'trans_date', 'doc_num', 'description', 'account_id', 'debit', 'credit', 'currency_id', 'deb_cred_uuid', 'deb_cred_type', 'inv_po_id', 'debit_equiv', 'credit_equiv', 'currency_id', 'comment', 'user_id']
-          },
-          'account' : { 'columns' : ['account_number'] }
-        },
-        join: ['posting_journal.account_id=account.id']
-      }
+    dependencies.journal_bis = {
+      identifier : 'uuid',
+      query : 'journal_list/'
     };
 
     function initialise (models) {
@@ -33,19 +26,21 @@ angular.module('bhima.controllers')
 
       // set up grid properties
       columns = [
-        {id: 'uuid'          , name: $translate.instant('COLUMNS.ID')             , field: 'uuid'           , sortable : true },
-        {id: 'fiscal_year_id', name: $translate.instant('COLUMNS.FISCAL_YEAR_ID') , field: 'fiscal_year_id' , sortable: true },
-        {id: 'period_id'     , name: $translate.instant('COLUMNS.PERIOD_ID')      , field: 'period_id'      , sortable: true },
-        {id: 'trans_id'      , name: $translate.instant('COLUMNS.TRANS_ID')       , field: 'trans_id'       , sortable: true },
-        {id: 'trans_date'    , name: $translate.instant('COLUMNS.DATE')           , field: 'trans_date'     , formatter : formatDate, sortable: true},
-        {id: 'description'   , name: $translate.instant('COLUMNS.DESCRIPTION')    , field: 'description'    , width: 110 , editor: Slick.Editors.Text},
-        {id: 'account_id'    , name: $translate.instant('COLUMNS.ACCOUNT_NUMBER') , field: 'account_number' , sortable: true },
-        {id: 'debit_equiv'   , name: $translate.instant('COLUMNS.DEB_EQUIV')      , field: 'debit_equiv'    , groupTotalsFormatter: totalFormat , sortable: true, maxWidth: 100, editor:Slick.Editors.Text},
-        {id: 'credit_equiv'  , name: $translate.instant('COLUMNS.CRE_EQUIV')      , field: 'credit_equiv'   , groupTotalsFormatter: totalFormat , sortable: true, maxWidth: 100, editor:Slick.Editors.Text},
-        {id: 'deb_cred_uuid' , name: 'AR/AP Account'                      , field: 'deb_cred_uuid'},
-        {id: 'deb_cred_type' , name: $translate.instant('COLUMNS.DC_TYPE')        , field: 'deb_cred_type'},
-        {id: 'inv_po_id'     , name: $translate.instant('COLUMNS.INVPO_ID')       , field: 'inv_po_id'},
-        {id: 'comment'       , name: $translate.instant('COLUMNS.COMMENT')        , field: 'comment', sortable : true, editor: Slick.Editors.Text}
+        // {id: 'uuid'           , name: $translate.instant('COLUMNS.ID')             , field: 'uuid'           , sortable: true },
+        // {id: 'fiscal_year_id' , name: $translate.instant('COLUMNS.FISCAL_YEAR_ID') , field: 'fiscal_year_id' , sortable: true },
+        // {id: 'period_id'      , name: $translate.instant('COLUMNS.PERIOD_ID')      , field: 'period_id'      , sortable: true },
+        {id: 'trans_id'       , name: $translate.instant('COLUMNS.TRANS_ID')       , field: 'trans_id'       , sortable: true },
+        {id: 'trans_date'     , name: $translate.instant('COLUMNS.DATE')           , field: 'trans_date'     , formatter : formatDate, sortable: true},
+        {id: 'description'    , name: $translate.instant('COLUMNS.DESCRIPTION')    , field: 'description'    , width: 110, editor: Slick.Editors.Text},
+        {id: 'account_id'     , name: $translate.instant('COLUMNS.ACCOUNT_NUMBER') , field: 'account_number' , sortable: true }                  ,
+        {id: 'debit_equiv'    , name: $translate.instant('COLUMNS.DEB_EQUIV')      , field: 'debit_equiv'    , groupTotalsFormatter: totalFormat , sortable: true, maxWidth: 100, editor:Slick.Editors.Text},
+        {id: 'credit_equiv'   , name: $translate.instant('COLUMNS.CRE_EQUIV')      , field: 'credit_equiv'   , groupTotalsFormatter: totalFormat , sortable: true, maxWidth: 100, editor:Slick.Editors.Text},
+        // {id: 'deb_cred_uuid'  , name: 'ID Source'                                  , field: 'deb_cred_uuid'},
+        {id: 'deb_cred_type'  , name: $translate.instant('COLUMNS.DC_TYPE')        , field: 'deb_cred_type'},
+        // {id: 'inv_po_id'      , name: $translate.instant('COLUMNS.INVPO_ID')       , field: 'inv_po_id'},
+        {id: 'comment'        , name: $translate.instant('COLUMNS.COMMENT')        , field: 'comment'        , sortable : true, editor: Slick.Editors.Text} ,
+        {id: 'cc_id'          , name: $translate.instant('COLUMNS.COST_CENTER')    , field: 'cc'          , sortable : true},
+        {id: 'pc_id'          , name: $translate.instant('COLUMNS.PROFIT_CENTER')  , field: 'pc'          , sortable : true}
       ];
 
       options = {
@@ -60,11 +55,11 @@ angular.module('bhima.controllers')
       populate();
     }
 
-    function formatDate (row, col, val) {
-      return $filter('date')(val);
+    function formatDate(row, col, val) {
+      return $filter('date')(val, 'yyyy-MM-dd');
     }
 
-    function populate () {
+    function populate() {
       var groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider();
 
       dataview = new Slick.Data.DataView({
@@ -77,8 +72,6 @@ angular.module('bhima.controllers')
       grid.registerPlugin(groupItemMetadataProvider);
       grid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}));
 
-      // grid.setSelectionModel(new Slick.CellSelectionModel());
-
       dataview.onRowCountChanged.subscribe(function (e, args) {
         grid.updateRowCount();
         grid.render();
@@ -90,11 +83,12 @@ angular.module('bhima.controllers')
       });
 
       grid.onCellChange.subscribe(function(e, args) {
-        dataview.updateItem(args.item.id, args.item);
+        var id = args.item.id || args.item.uuid;
+        dataview.updateItem(id, args.item);
       });
 
       dataview.beginUpdate();
-      dataview.setItems($scope.journal.data, 'uuid');
+      dataview.setItems($scope.journal_bis.data, 'uuid');
       dataview.endUpdate();
 
       expose();

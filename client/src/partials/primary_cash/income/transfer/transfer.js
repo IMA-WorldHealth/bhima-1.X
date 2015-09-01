@@ -2,22 +2,29 @@ angular.module('bhima.controllers')
 .controller('primaryCash.income.transfer', [
   '$scope',
   'connect',
-  'messenger',
   'validate',
   'appstate',
   'util',
   'uuid',
   '$routeParams',
   '$location',
-  '$translate',
-  function ($scope, connect, messenger, validate, appstate, util, uuid, $routeParams, $location, $translate) {
+  function ($scope, connect, validate, appstate, util, uuid, $routeParams, $location) {
+    var dependencies = {},
+        data = $scope.data = {};
 
-    //inits and declarations
-    var dependencies = {}, configuration = {};
-    $scope.data= {};
-    configuration.cash_box_id = $routeParams.cashbox_id;
+    var pcash_box_id = $routeParams.cashbox_id;
 
-    dependencies.project = {
+    var moduleQuery = {
+      tables : {
+        'primary_cash_module' : {
+          columns : ['id']
+        }
+      },
+      where : ['primary_cash_module.text=transfert']
+    };
+
+    // TODO : this should just load from appstate
+    dependencies.projects = {
       required : true,
       query : {
         tables : {
@@ -28,197 +35,113 @@ angular.module('bhima.controllers')
       }
     };
 
-    dependencies.pcash_module = {
-      required : true,
-      query : {
-        tables : {
-          'primary_cash_module' : {
-            columns : ['id']
-          }
-        },
-        where : ['primary_cash_module.text='+'transfert']
-      }
-    };
-
-    dependencies.cash_box = {
+    dependencies.cash_boxes = {
       required : true,
       query : {
         tables : {
           'cash_box' : {
-            columns : ['id', 'text', 'project_id']
-          }
-        },
-        where : ['cash_box.is_auxillary='+1]
-      }
-    };
-
-    dependencies.cashAccounCurrency = {
-      required : true,
-      query : {
-        tables : {
-          'cash_box_account_currency' : {
-            columns : ['id', 'currency_id', 'cash_box_id', 'account_id']
-          }
+            columns : ['id', 'text', 'project_id', 'is_auxillary', 'is_bank']
+          },
         }
       }
     };
 
-    dependencies.currency = {
+    dependencies.cash_box_account_currencies = {
+      required : true,
+      query : {
+        tables : {
+          'cash_box_account_currency' : { columns : ['id', 'currency_id', 'account_id', 'cash_box_id'] }
+        }
+      }
+    };
+
+    dependencies.currencies = {
       required : true,
       query : {
         tables : {
           'currency' : {
-            columns : ['id', 'name', 'symbol', 'min_monentary_unit']
+            columns : ['id', 'symbol'] // TODO: including min_monentary unit and then doing validation checks based on it.
           }
         }
       }
     };
 
-    dependencies.cashier = {
-      query : 'user_session'
+    function startup(model) {
+      angular.extend($scope, model);
+    }
+
+    $scope.labelCurrency = function (id) {
+      if (!angular.isDefined(id)) { return '...'; }
+      return $scope.currencies.get(id).symbol || '{ERR}';
     };
 
-    //fonctions
-    function init(model) {
-      $scope.model = model;
-      $scope.view = model;
-      configuration.enterprise = $scope.enterprise;
-      configuration.currency = getCurrency(configuration.enterprise.currency_id);
-      configuration.module_id = model.pcash_module.data[0].id;
-    }
-
-    function commitCash() {      
-      validate.refresh(dependencies, ['cash_box'])
-      .then(function (model) {
-        $scope.view.cash_box.data = model.cash_box.data.filter(function (item) {
-          return item.project_id == $scope.data.project_id;
-        });
-        configuration.project_id = $scope.data.project_id;
-      });     
-    }
-
-    function getCurrency(value) {
-      var currency = {};
-      for (var i = $scope.model.currency.data.length - 1; i >= 0; i -= 1) {
-        if ($scope.model.currency.data[i].id === value) {
-          currency = $scope.model.currency.data[i];
-          break;
+    function getAccount(currencyId, cashBoxId) {
+      var accountId;
+      $scope.cash_box_account_currencies.data.forEach(function (box) {
+        // FIXME I changed box.cash_box_id == cashBoxId to a strict equality.  Does it still hold?
+        if (box.currency_id == currencyId && box.cash_box_id == cashBoxId) {
+          accountId = box.account_id;
         }
-      }
-      return currency;
-    }
-
-    function commitConfig() {
-      configuration.cash_box_source_id = $scope.data.cash_box_id;
-      updateInfoCashBox(configuration.cash_box_source_id, configuration.currency.id);
-    }
-
-    function updateInfoCashBox(cash_box_source_id, currency_id) {
-      if (!cash_box_source_id || !currency_id) {
-        messenger.danger();
-        return;
-      }
-      configuration.cash_account_currency = $scope.model.cashAccounCurrency.data.filter(function (item) {
-        return item.cash_box_id == configuration.cash_box_source_id &&
-          item.currency_id == configuration.currency.id;
       });
+      return accountId;
     }
 
-    function updateConfig() {
-      configuration.symbol = $scope.data.currency.symbol;
-      configuration.currency_id = $scope.data.currency.id;
-    }
+    $scope.submit = function submit() {
+      var pcash, item, accountId, date = util.sqlDate();
 
-    function handleError(err) {
-      messenger.danger(err.toString());
-    }
+      accountId = getAccount(data.currency_id, data.cash_box_id);
+      if (!accountId) { throw 'NO ACCOUNT'; }
 
-    function isValid() {
-      var clean = true;
-      if (!configuration || !configuration.value) { return false; }
-      for (var k in configuration) {
-        clean = clean && (k) ? true : false;
-      }
-      return (clean && ($scope.data.value) ? true : false);
-    }
-
-    function ajouter () {
-      configuration.value = $scope.data.value;
-
-      if (!isValid()) { return  messenger.danger($translate.instant('TRANSFERT.NO_CURRENCY')); }
-
-      writeTransfer()
-      .then(writeItem)
-      .then(postToJournal)
-      .then(function () {
-        $location.path('/invoice/pcash_transfert/' + configuration.pcash.uuid);
-      })
-      .catch(handleError);
-    }
-
-    function writeItem(result) {
-      var item = {
-        uuid : uuid(),
-        primary_cash_uuid : result.config.data.data.uuid,
-        debit : configuration.value,
-        credit : 0
-      };
-      return connect.basicPut('primary_cash_item', [item]);
-    }
-
-    function writeTransfer() {
-      var pcash = {
+      pcash = {
         uuid        : uuid(),
-        project_id  : configuration.project_id,
+        project_id  : data.project_id,
         type        : 'E',
-        date        : util.sqlDate(new Date()),
-        currency_id : configuration.currency.id,
-        account_id  : configuration.cash_account_currency[0].account_id,
-        cost        : configuration.value,
-        user_id     : $scope.model.cashier.data.id,
-        description : 'CT/'+new Date().toTimeString(),
-        cash_box_id : configuration.cash_box_id,
-        origin_id   : configuration.module_id
+        date        : date,
+        currency_id : data.currency_id,
+        account_id  : accountId,
+        cost        : data.value,
+        description : 'Caisse Transfert/' + date,
+        cash_box_id : pcash_box_id
       };
-      configuration.pcash = pcash;
-      return connect.basicPut('primary_cash', connect.clean(pcash));
-    }
 
-    function postToJournal() {
-      return connect.fetch('/journal/transfert/' + configuration.pcash.uuid);
-    }
+      // fetch module id
+      connect.fetch(moduleQuery)
+      .then(function (data) {
+        // fetch the user id
+        pcash.origin_id = data[0].id;
+        return connect.fetch('/user_session');
+      })
+      .then(function (data) {
+        // post primary_cash record line
+        pcash.user_id = data.id;
+        return connect.post('primary_cash', pcash);
+      })
+      .then(function () {
+        // create and post primary_cash_item record line
+        item = {
+          uuid              : uuid(),
+          primary_cash_uuid : pcash.uuid,
+          debit             : data.value,
+          document_uuid     : pcash.uuid,
+          credit            : 0 // LOL wot?
+        };
+        return connect.post('primary_cash_item', item);
+      })
+      .then(function () {
+        // post to journal
+        return connect.fetch('/journal/transfert/' + pcash.uuid);
+      })
+      .then(function () {
+        // navigate to invoice
+        $location.path('/invoice/pcash_transfert/' + pcash.uuid);
+      })
+      .finally();
+    };
 
-    function commitConfiguration() {
-      configuration.currency_id = $scope.data.currency_id;
-    }
-
-    function loadPath(path) {
-      // TODO validate both correct path and cashbox
-      $location.path(path + configuration.cashbox);
-    }
-
-    appstate.register('enterprise', function (enterprise) {
-      $scope.enterprise = enterprise;
-      validate.process(dependencies, ['project', 'cash_box', 'cashAccounCurrency', 'currency', 'cashier', 'pcash_module'])
-      .then(init)
-      .catch(handleError);
+    appstate.register('project', function (project) {
+      data.project_id = project.id;
+      validate.process(dependencies)
+      .then(startup);
     });
-
-    $scope.$watch('data.currency', function (nv) {
-      if (nv) {
-        configuration.currency = JSON.parse(nv);
-        updateInfoCashBox(configuration.cash_box_source_id, configuration.currency.id);
-      }
-    }, true);
-
-    //expositions
-    $scope.loadPath = loadPath;
-    $scope.commitCash = commitCash;
-    $scope.commitConfiguration = commitConfiguration;
-    $scope.commitConfig = commitConfig;
-    $scope.commitCash = commitCash;
-    $scope.ajouter = ajouter;
-    $scope.configuration = configuration;
-    $scope.updateConfig = updateConfig;
   }
 ]);

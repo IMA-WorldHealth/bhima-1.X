@@ -9,14 +9,12 @@ angular.module('bhima.controllers')
   function($scope, $routeParams, $translate, $location, Appcache, messenger) {
 
     $scope.url = $routeParams.url || '';
-
-    var MODULE_NAMESPACE = 'util';
-    var cache = new Appcache(MODULE_NAMESPACE);
+    var cache = new Appcache('preferences');
 
     cache.fetch('language')
     .then(function (res) {
       if (res) {
-        $scope.settings = {language: res.current};
+        $scope.settings = { language: res.current };
       }
     });
 
@@ -30,6 +28,5 @@ angular.module('bhima.controllers')
     $scope.back = function () {
       $location.url($scope.url);
     };
-
   }
 ]);
