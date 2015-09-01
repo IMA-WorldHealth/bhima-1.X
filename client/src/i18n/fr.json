@@ -141,6 +141,7 @@
   "LOGOUT_SUCCESS"             : "Vous n'etes pas connecté",
   "RESET"                      : "Annuler"
  },
+
 "AUXILLARY_CASH_RECORD" : {
    "ALL_PROJECTS"    : "Tous les projets",
    "ALL_USERS"       : "Tous les utilisateurs",
@@ -335,8 +336,17 @@
    "SEARCH"      : "Chercher Par Nom",
    "TITLE"       : "Trouver Convention"
    },
+"CHART" : {
+  "GROUPING" : {
+    "DAY"    : "Jour",
+    "MONTH"  : "Mois",
+    "PERIOD" : "Période",
+    "TITLE"  : "Groupement",    
+    "WEEK"   : "Semaine",    
+    "YEAR"   : "Année"    
+  }
+}, 
 "COLUMNS": {
-   "USER"                  : "Utilisateur",
    "ABBR"                  : "Abr.",
    "ABBREVIATION"          : "Abréviation",
    "ACCOUNT"               : "Compte",
@@ -396,6 +406,7 @@
    "DEBITOR_GROUP"         : "Groupe Débiteur",
    "DEBITOR_ID"            : "ID Débiteur",
    "DEBITOR_NAME"          : "Nom Débiteur",
+   "DEBT"                  : "Dette",   
    "DEBITOR_TYPE"          : "Type de Débiteur",
    "DEBTOR"                : "Débiteur",
    "DEB_CRED_TYPE"         : "Type Débiteur/Créditeur",
@@ -414,6 +425,7 @@
    "DOB"                   : "Date de Naissance",
    "DOCUMENT_ID"           : "ID Document",
    "DOCUMENT_UUID"         : "Numéro Document",
+   "DONATION_DATE"         : "Date Donation",
    "DONOR"                 : "Donateur",
    "DRUGS"                 : "Médicaments",
    "DURABLE"               : "Durable",
@@ -426,6 +438,7 @@
    "ENTERPRISE_CURRENCY"   : "Monnaie de l'Entreprise",
    "ENTERPRISE_ID"         : "ID Enterprise",
    "ENTRY_DATE"            : "Date d'entrée",
+   "EXPENSE"               : "Dépense",
    "EXPIRATION_DATE"       : "Date Expiration",
    "EXPLANATION"           : "Explication",
    "FIRST_NAME"            : "Prenom",
@@ -441,6 +454,7 @@
    "ID_CASH"               : "ID Recue",
    "ID"                    : "ID",
    "ID_PRODUCT"            : "ID Produit",
+   "INCOME"                : "Recette",
    "INDIRECT"              : "Indirect",
    "INITIAL_STOCK"         : "Stock Initial",
    "INVENTORY_CODE"        : "Code Inventaire",
@@ -569,6 +583,7 @@
    "TOTAL_DEBIT"           : "Débit total",
    "TOTAL_PRICE"           : "Prix Total",
    "TRACKING_NUMBER"       : "Numéro de Tracking",
+   "TRANSACTIONS"          : "Transactions",
    "TRANSACTION_DATE"      : "Date de Transaction",
    "TRANSACTION_ID"        : "ID Transaction",
    "TRANSACTION_NUMBER"    : "Numéro Transaction",
@@ -580,6 +595,7 @@
    "UNIT_PRICE"            : "Prix Unitaire",
    "UNIT_VOLUME"           : "Volume unitaire",
    "UNIT_WEIGHT"           : "Poids unitaire",
+   "USER"                  : "Utilisateur",   
    "USERNAME"              : "Nom d'utilisateur",
    "USER_ID"               : "ID Utilisateur",
    "USER_NAME"             : "Nom Utilisateur",
@@ -590,8 +606,8 @@
    "WEIGHT"                : "Poids",
    "WORDING"               : "Libellé",
    "WORKING_DAY"           : "Jours prestés",
-   "ZS"                    : "Zone de Santé",
-   "DONATION_DATE"         : "Date Donation"
+   "ZS"                    : "Zone de Santé"
+   
    },
 
 "CONFIG_ACCOUNTING": {
@@ -800,8 +816,18 @@
    "WEEK"               : "Cette Semaine"
    },
 "DASHBOARD": {
-   "TITLE" : "Tableau de bord"
-   },
+   "TITLE" : "Tableau de bord",
+   "FINANCE" : {
+     "CASHBOX"           : "CashBox",
+     "CASHFLOW"          : "Analyse des flux de trésorerie",
+     "CUMMULATIVE"       : " Données cumulatives",
+     "CURRENCY"          : "Monnaie",
+     "HASPOSTINGJOURNAL" : "Inclure le journal de saisie",
+     "TITLE"             : "Tableau de bord financier",
+     "TOP_DEBTORS"       : "Top des débiteurs",
+     "TOP_DEBTOR_GROUPS" : "Top des Groupes débiteurs"
+   }   
+},
 "DEBITOR_GRP": {
    "FILTER"     : "Filtrer Le Groupe de Débiteur",
    "GROUPS"     : "Groupe de Débiteur",
@@ -2238,7 +2264,6 @@
    "DEBITOR_GROUP_LOCK" : "Le groupe de débiteur de ce patient est verrouillé",
    "DETAILS"            : "Détails de la vente",
    "DISTRIBUTABLE"      : "Distribuable",
-   "DETAILS"            : "Détails de la vente",
    "EDIT_SALE"          : "Editer la Facture",
    "IMPORT"             : "Importer Perscription",
    "IS_DISTRIBUTABLE"   : "Distribuable via le stock ?",
@@ -2274,7 +2299,6 @@
    "TOTAL_OF"        : "Total de",
    "UNFOUND"         : "Aucune transaction des patients trouvée. Référence"
    },
-
 "SECTION_BILAN" : {
    "ASSET" : "Actif",
    "PASSIVE" : "Passive",
@@ -2809,6 +2833,10 @@
    "CREDIT_NOTE"               : "Note de Crédit",
    "CURRENCY"                  : "Monnaie",
    "DAILY_CONSUMPTION"         : "Consommation journaliere",
+   "DASHBOARD" : {
+      "FINANCE" : "Tableau de bord Financier",
+      "TITLE"   : "Tableau de bord"      
+   },
    "DEBTOR_AGING"              : "Rapport Débiteur",
    "DEBTOR_GRP"                : "Groupe Débiteur",
    "DEPOT"                     : "Dépôt",
