@@ -21,7 +21,7 @@ exports.searchUuid = function (req, res, next) {
       'p.sex, p.dob, p.origin_location_id, p.reference, proj.abbr, d.text, ' +
       'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.locked ' +
     'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
-    'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id' +
+    'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id ' +
     'WHERE p.uuid = ?;';
 
   db.exec(sql, [uuid])
@@ -34,7 +34,6 @@ exports.searchUuid = function (req, res, next) {
     } else {
       res.status(200).json(rows[0]);
     }
-
   })
   .catch(next)
   .done();
