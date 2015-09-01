@@ -7,7 +7,7 @@
 <body>
   <section id="title" class="center">
       <h3>Bilan</h4>
-      <h4>Entreprise : ... ... ... ... ... ...</h5>
+      <h4>Entreprise : {{=it.enterpriseName}}</h5>
       <h5>Exercice clos le : ... ... ... ... ... ...</h6>
       <h5>Duree (En mois) : ... ... ... ... ... ...</h6>
       <h5>Date {{=it.reportDate}}</h5>

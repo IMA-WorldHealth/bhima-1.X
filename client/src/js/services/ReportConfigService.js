@@ -1,6 +1,6 @@
 angular.module('bhima.services')
-.service('reportConfigService', [
-  function () {
+.service('reportConfigService', ['SessionService',
+  function (sessionService) {
     //This service essentially used the pdf report exposes an object containing common data and common function
 
     return {
@@ -10,7 +10,9 @@ angular.module('bhima.services')
             {value : 'en', label : 'English'},
             {value : 'fr', label : 'French'}
           ]
-        }
+        },
+        enterprise : sessionService.enterprise,
+        project : sessionService.project
       }
     };
   }
