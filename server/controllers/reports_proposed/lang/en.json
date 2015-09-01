@@ -9,7 +9,9 @@
 		"BRUT"                  : "Brut",
 		"AMORT_PROV"            : "Amort/Prov",
 		"NET"                   : "NET",
-		"TOTAL GENERAL"         : "GENERAL TOTAL",
-		"PASSIVE"               : "Passive"
+		"TOTAL_GENERAL"         : "GENERAL TOTAL",
+		"PASSIVE"               : "Passive",
+		"DATE"                  : "Date : ",
+		"TOTAL"                 : "TOTAL"
 	}
 }
