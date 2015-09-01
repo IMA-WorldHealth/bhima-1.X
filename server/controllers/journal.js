@@ -1,10 +1,10 @@
 var q = require('q'),
-    db = require('./../lib/db'),
-    sanitize = require('./../lib/sanitize'),
-    Store = require('./../lib/store'),
-    uuid = require('./../lib/guid'),
-    validate = require('./../lib/validate')(),
-    util = require('./../lib/util'),
+    db = require('../lib/db'),
+    sanitize = require('../lib/sanitize'),
+    Store = require('../lib/store'),
+    uuid = require('../lib/guid'),
+    validate = require('../lib/validate')(),
+    util = require('../lib/util'),
     core = require('./journal/core');
 
 var tableRouter;
@@ -22,98 +22,6 @@ function lookupTable(req, res, next) {
   });
 }
 
-function handlePurchase (id, user_id, done) {
-  // posting purchase requests
-  var sql, data, reference, cfg = {}, queries = {};
-  sql =
-    'SELECT `purchase`.`project_id`, `project`.`enterprise_id`, `purchase`.`id`, `purchase`.`cost`, `purchase`.`currency_id`, ' +
-      '`purchase`.`creditor_id`, `purchase`.`purchaser_id`, `purchase`.`discount`, `purchase`.`invoice_date`, ' +
-      '`purchase`.`note`, `purchase`.`posted`, `purchase_item`.`unit_price`, `purchase_item`.`total`, `purchase_item`.`quantity` ' +
-    'FROM `purchase` JOIN `purchase_item` JOIN `project` ON `purchase`.`id`=`purchase_item`.`purchase_id` AND `project`.`id`=`purchase`.`project_id` ' +
-    'WHERE `purchase`.`id`=' + sanitize.escape(id) + ';';
-
-  db.exec(sql)
-  .then(function (results) {
-    if (results.length === 0) { throw new Error('No purchase order by the id: ' + id); }
-
-    reference = results[0];
-    data = results;
-
-    // first check - do we have a validPeriod?
-    // Also, implicit in this check is that a valid fiscal year
-    // is in place.
-    return core.checks.validPeriod(reference.enterprise_id, reference.invoice_date);
-  })
-  .then(function () {
-    // second check - is the cost positive for every transaction?
-    var costPositive = data.every(function (row) { return validate.isPositive(row.cost); });
-    if (!costPositive) {
-      throw new Error('Negative cost detected for purchase id: ' + id);
-    }
-
-    // third check - are all the unit_price's for purchase_items positive?
-    var unit_pricePositive = data.every(function (row) { return validate.isPositive(row.unit_price); });
-    if (!unit_pricePositive) {
-      throw new Error('Negative unit_price for purchase id: ' + id);
-    }
-
-    // fourth check - is the total the price * the quantity?
-    var totalEquality = data.every(function (row) { return validate.isEqual(row.total, row.unit_price * row.quantity); });
-    if (!totalEquality) {
-      throw new Error('Unit prices and quantities do not match for purchase id: ' + id);
-    }
-
-    return core.queries.origin('purchase');
-  })
-  .then(function (originId) {
-    cfg.originId = originId;
-    return core.queries.period(reference.date);
-  })
-  .then(function (periodObject) {
-    cfg.periodId = periodObject.id;
-    cfg.fiscalYearId = periodObject.fiscal_year_id;
-    return core.queries.transactionId(reference.project_id);
-  })
-  .then(function (transId) {
-    // format queries
-    queries.purchase =
-      'INSERT INTO `posting_journal` ' +
-        '(`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-        '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-      'SELECT `purchase`.`project_id`, ' + [cfg.fiscalYearId, cfg.periodId, transId, '\'' + getDate() + '\''].join(', ') + ', ' +
-        '`purchase`.`note`, `creditor_group`.`account_id`, 0, `purchase`.`cost`, 0, `purchase`.`cost`, ' + // last four debit, credit, debit_equiv, credit_equiv.  Note that debit === debit_equiv since we use enterprise currency.
-        '`purchase`.`currency_id`, `purchase`.`creditor_id`, \'C\', `purchase`.`id`, ' + [cfg.originId, user_id].join(', ') + ' ' +
-      'FROM `purchase` JOIN `creditor` JOIN `creditor_group` ON ' +
-        '`purchase`.`creditor_id`=`creditor`.`id` AND `creditor_group`.`id`=`creditor`.`group_id` ' +
-      'WHERE `purchase`.`id` = ' + sanitize.escape(id);
-
-    queries.purchase_item =
-      'INSERT INTO `posting_journal` ' +
-        '(`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-        '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, ' +
-        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-      'SELECT `purchase`.`project_id`, ' + [cfg.fiscalYearId, cfg.periodId, transId, '\'' + getDate() + '\''].join(', ') + ', ' +
-        '`purchase`.`note`, `inventory_group`.`sales_account`, `purchase_item`.`total`, 0, `purchase_item`.`total`, 0, ' + // last three: credit, debit_equiv, credit_equiv
-        '`purchase`.`currency_id`, `purchase`.`creditor_id`, \'C\', `purchase`.`id`, ' + [cfg.originId, user_id].join(', ') + ' ' +
-      'FROM `purchase` JOIN `purchase_item` JOIN `inventory` JOIN `inventory_group` ON ' +
-        '`purchase_item`.`purchase_id`=`purchase`.`id` AND `purchase_item`.`inventory_id`=`inventory`.`id` AND ' +
-        '`inventory`.`group_id`=`inventory_group`.`id` ' +
-      'WHERE `purchase`.`id` = ' + sanitize.escape(id) + ';';
-
-    return db.exec(queries.purchase);
-  })
-  .then(function () {
-    return db.exec(queries.purchase_item);
-  })
-  .then(function (rows) {
-    done(null, rows);
-  })
-  .catch(function (err) {
-    done(err);
-  })
-  .done();
-}
 
 // TODO : Figure out what we are going to do with this route
 function handleGroupInvoice (id, user_id, done) {
@@ -572,118 +480,6 @@ function handleCaution(id, user_id, done) {
   })
   .catch(function (err) {
     done(err, null);
-  })
-  .done();
-}
-
-function handleTransfert (id, user_id, done) {
-  var sql, data, reference, cfg = {}, queries = {};
-
-  // TODO : Formalize this
-  sql = 'SELECT `primary_cash`.*, `cash_box_account_currency`.`virement_account_id` ' +
-        'FROM `primary_cash` ' +
-        'JOIN `cash_box_account_currency` ON `cash_box_account_currency`.`account_id` = `primary_cash`.`account_id` ' +
-        'WHERE uuid = ' + sanitize.escape(id) + ';';
-
-  db.exec(sql)
-  .then(function (results) {
-    if (results.length === 0) {
-      throw new Error('No primary_cash by the uuid: ' + id);
-    }
-
-    reference = results[0];
-    data = results;
-    var date = util.toMysqlDate(reference.date);
-
-    return core.queries.myExchangeRate(date);
-  })
-  .then(function (exchangeRateStore) {
-    var dailyExchange = exchangeRateStore.get(reference.currency_id);
-    cfg.valueExchanged = parseFloat((1/dailyExchange.rate) * reference.cost).toFixed(4);
-
-    return q([core.queries.origin('pcash_transfert'), core.queries.period(reference.date)]); // should be core.queries.origin(pcash_transfert);
-  })
-  .spread(function (originId, periodObject) {
-    cfg.originId = originId;
-    cfg.periodId = periodObject.id;
-    cfg.fiscalYearId = periodObject.fiscal_year_id;
-
-    return core.queries.transactionId(reference.project_id);
-  })
-  .then(function (transId) {
-    var descrip =  transId.substring(0,4) + 'CASH_BOX_VIRMENT' + new Date().toISOString().slice(0, 10).toString();
-    queries.credit =
-      'INSERT INTO posting_journal (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-        '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
-        'VALUES (' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+getDate()+'\'', sanitize.escape(descrip), reference.account_id].join(',') + ', ' +
-        [ reference.cost, 0, cfg.valueExchanged, 0, reference.currency_id ].join(',')+', null, null, '+[sanitize.escape(id), cfg.originId, user_id].join(',') +
-      ');';
-
-    queries.debit =
-      'INSERT INTO posting_journal (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-        '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
-        'VALUES (' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+getDate()+'\'', sanitize.escape(descrip), reference.virement_account_id].join(',') + ', ' +
-        [ 0, reference.cost, 0, cfg.valueExchanged, reference.currency_id ].join(',')+', null, null, '+[sanitize.escape(id), cfg.originId, user_id].join(',') +
-      ');';
-
-    return db.exec(queries.credit);
-  })
-  .then(function () {
-    return db.exec(queries.debit);
-  })
-  .then(function () {
-    return core.queries.transactionId(reference.project_id);
-  })
-// VOICI ANALYSE DANS LA BASE DE DONNEES
-  .then(function (transId) {
-    var descrip =  transId.substring(0,4) + 'CASH_BOX_VIRMENT' + new Date().toISOString().slice(0, 10).toString();
-    queries.credit =
-      'INSERT INTO posting_journal (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-        '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
-        'VALUES (' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+getDate()+'\'', sanitize.escape(descrip), reference.virement_account_id].join(',') + ', ' +
-        [ reference.cost, 0, cfg.valueExchanged, 0, reference.currency_id ].join(',')+', null, null, '+[sanitize.escape(id), cfg.originId, user_id].join(',') +
-      ');';
-
-    queries.debit =
-      'INSERT INTO posting_journal '+
-        '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-        '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-        '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-        'SELECT ' + [ sanitize.escape(uuid()), reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, '\''+getDate()+'\'', sanitize.escape(descrip)].join(',') +
-        ', `account_id`, ' + [0, reference.cost, 0, cfg.valueExchanged, reference.currency_id ].join(',')+', null, null, ' +
-        [sanitize.escape(id), cfg.originId, user_id].join(',') + ' ' +
-        'FROM cash_box_account_currency WHERE `cash_box_account_currency`.`cash_box_id`='+sanitize.escape(reference.cash_box_id) + ' ' +
-          'AND `cash_box_account_currency`.`currency_id`='+sanitize.escape(reference.currency_id);
-
-    return db.exec(queries.credit);
-  })
-  .then(function () {
-    return db.exec(queries.debit);
-  })
-// VOICI ANALYSE DANS LA BASE DE CONNAISSANCES
-  .then(function (rows) {
-    done(null, rows);
-  })
-  .catch(function (err) {
-    console.log('voici erreur ', err);
-    // FIXME: Need to delete the primary_cash_items before primary cash
-    var discard =
-      'DELETE FROM primary_cash WHERE uuid = ' + sanitize.escape(id) + ';';
-
-    var discard_item =
-      'DELETE FROM primary_cash_item WHERE primary_cash_uuid = ' + sanitize.escape(id) + ';';
-
-    return db.exec(discard_item)
-    .then(function (){
-      return db.exec(discard);
-    })
-    .then(function () {
-      done(err);
-    })
-    .done();
   })
   .done();
 }
@@ -3849,13 +3645,13 @@ function handleExtraPayment (id, user_id, details, done) {
 tableRouter = {
   'sale'                    : require('./journal/sale'),
   'cash'                    : require('./journal/cash').payment,
-  'cash_discard'            : require('./journal/cash').refund,
+  'cash_discard'            : require('./journal/cash').refund, // TODO - make this 
   'cash_return'             : handleCashReturn,
   'group_invoice'           : handleGroupInvoice,
   'employee_invoice'        : handleEmployeeInvoice,
   'credit_note'             : handleCreditNote,
   'caution'                 : handleCaution,
-  'transfert'               : handleTransfert,
+  'transfert'               : require('./journal/primarycash').transfer,
   'pcash_convention'        : handleConvention,
   'pcash_employee'          : handleEmployee,
   'primary_expense'         : handleGenericExpense,
