@@ -70,6 +70,13 @@ ALTER TABLE `user` CHANGE `logged_in` `active` TINYINT NOT NULL DEFAULT 0;
 ALTER TABLE `user` ADD COLUMN `last_login` DATE NOT NULL;
 UPDATE `user` SET `password` = PASSWORD(`password`);
 
+-- Add Dashboards leaf to tree, with finance dashboard child
+--
+-- Date: 2015-08-25
+-- By: jniles
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `has_children`, `url`, `path`) VALUES
+(115, 'Dashboards', 'TREE.DASHBOARD.TITLE', 'Dashboards', 0, 1, '/partials/dashboards/', '/dashboards'),
+(116, 'Finance Dashboar', 'TREE.DASHBOARD.FINANCE', 'Finance Dashboard', 115, 0, '/partials/dashboards/finance/finance.html', '/dashboards/finance');
 
 -- Adding column is_charge 
 -- Date: 2015-08-20

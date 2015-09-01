@@ -337,8 +337,12 @@
    "TITLE"       : "Find convention"
    },
 "COLUMNS": {
-   "USER"                   : "User",
+   "USER"                  : "User",
+   "TRANSACTIONS"          : "Transactions",
    "ABBR"                  : "Abbr",
+   "DEBT"                  : "Debt",
+   "INCOME"                : "Income",
+   "EXPENSE"               : "Expense",
    "ABBREVIATION"          : "Abreviation",
    "ACCOUNT"               : "Account",
    "ACCOUNT_ID"            : "Account ID",
@@ -801,8 +805,18 @@
    "WEEK"               : "This Week"
    },
 "DASHBOARD": {
-   "TITLE" : "Dashboards"
-   },
+   "TITLE" : "Dashboards",
+   "FINANCE" : {
+     "TITLE"             : "Financial Dashboard",
+     "CASHFLOW"          : "Cash Flow Analysis",
+     "CASHBOX"           : "CashBox",
+     "HASPOSTINGJOURNAL" : "Include Posting Journal",
+     "CUMMULATIVE"       : "Cummulative Data",
+     "CURRENCY"          : "Currency",
+     "TOP_DEBTORS"       : "Top Debtors",
+     "TOP_DEBTOR_GROUPS" : "Top Debtor Groups"
+   }
+ },
 "DEBITOR_GRP": {
    "FILTER"     : "Filter Debtor Groups",
    "GROUPS"     : "Debtor Groups",
@@ -2777,6 +2791,10 @@
    },
 "TREE": {
    "ACCOUNT"                   : "Account",
+   "DASHBOARD" : {
+      "TITLE" : "Dashboards",
+      "FINANCE" : "Finance Dashboard"
+   },
    "ACCOUNTING"                : "Accounting",
    "ACCOUNT_BALANCE_STATEMENT" : "Account Balance Statement",
    "ACCOUNT_STATEMENT"         : "Account Statement",
@@ -3043,5 +3061,31 @@
    "REGISTERED"       : "Registered villages",
    "SECTOR"           : "Sector",
    "TITLE"            : "Village Manager"
-   }
+   },
+"GRID" : {
+  "CLEAR" : "Clear Selection",
+  "UPDATE" : "Update Selection",
+  "REFRESH" : "Refresh Selection",
+  "GROUP_ROWS" : "Group Rows",
+  "ABOLISH_GROUPS" : "Abolish Grouping"
+},
+"CHART" : {
+  "GROUPING" : {
+    "TITLE"  : "Grouping",
+    "DAY"    : "Day",
+    "WEEK"   : "Week",
+    "MONTH"  : "Month",
+    "YEAR"   : "Year",
+    "PERIOD" : "Period"
+  }
+},
+  "ERR_TRANSACTION_FORMAT"     : "The transaction doesn't look correctly formatted.  Did you forget an account?",
+  "ERR_NO_CURRENCY"            : "A currency is required.",
+  "ERR_NO_DATE"                : "A date is required.",
+  "ERR_NO_DESCRIPTION"         : "A description is required.",
+  "ERR_DATE_IN_THE_FUTURE"     : "Error: The submitted date in the future.  Please insert a valid date.",
+  "ERR_MISSING_ACCOUNTS"       : "Error: There are missing accounts in the transaction.  Please make sure each line has a valid account number.",
+  "ERR_DEBIT_CREDIT_IMBALANCE" : "Error: The debits and credits do not balance for this transaction.  Please balance the transaction and re-submit.",
+  "ERR_NO_PERIOD"              : "Error: There isn't a valid period for this date.  Please check to make sure that the date is valid, and is within a recorded period.",
+  "ERR_NO_EXCHANGE_RATE"       : "Error: There is no exchange rate defined for the transaction date.  Please define one using the exchange rate module and re-submit."
 }
