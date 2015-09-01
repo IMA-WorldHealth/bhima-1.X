@@ -10,30 +10,100 @@ console.log(angular);
 console.log(angular.module);
 angular.module('bhima.filters') 
   
-  .filter('bhimaCurrency', [
+  .filter('currency', [
     '$locale',
     '$http',
+    '$q',
+    '$timeout',
     'store',
-    function ($locale, $http, Store) { 
+    function ($locale, $http, $q, $timeout, Store) { 
       var formats = $locale.NUMBER_FORMATS;
+  
+      var format = new CurrencyCache();
 
-      var currency = new Store({
-        data : [],
-        identifier : 'id'
-      });
+          
+        
+      // TODO Move to service 
+      function CurrencyCache () { 
+        
+        var notReadyCache = [];
+        console.log('CurrencyCache initiliased');
+  
+        var supportedCurrencies = new Store({identifier : 'id'});
+        var currentFormats = new Store({identifier : 'id'});
+        var fetchingKeys = [];
 
-      $http.get('/finance/currencies')
-      .success(function (data) {
-        currency.setData(data);
-      })
-      .error(function (error) {
-        messenger.danger('An error occured:' + JSON.stringify(error));
-      });
+        var loadedSupportedCurrencies = false;
 
+        $http.get('/finance/currencies')
+        .success(function (data) {
+          supportedCurrencies.setData(data);
+          loadedSupportedCurrencies = true;
+
+          // Request all currencies we've missed - this is stupid, it's late
+          
+          // var hit = []; 
+          // notReadyCache.forEach(function (key) { 
+          //   var miss = hit.indexOf(key) == -1;
+
+          //   if (miss) { 
+          //     hit.push(key);
+          //     fetchFormatConfiguration(key);
+          //   }
+          // });
+        })
+        .error(function (error) {
+          messenger.danger('An error occured:' + JSON.stringify(error));
+        });
+
+        function fetchFormatConfiguration(key) { 
+          fetchingKeys[key] = true;
+
+          $http.get('/i18n/currency/'.concat(key))
+            .success(function (result) { 
+
+            })
+            .catch(function (err) { 
+
+            });
+        }
+
+        function getFormat(key) {
+
+          // if (!loadedSupportedCurrencies) { 
+          //   notReadyCache.push(key);
+          //   return;
+          // }
+
+          var progress = fetchingKeys[key];
+
+          console.log('ang test', angular.isUndefined(progress));
+
+          if (!angular.isDefined(progress)) { 
+            fetchFormatConfiguration(key);
+
+          }
+          var format = currentFormats.get(key);
+
+          fetchingKeys[key] = false;
+          return { 
+            supported : false
+          };     
+        }
+
+        function fetchKey(key) { 
+
+        }
+
+        return { 
+          request : getFormat
+        }
+      } // End CurrencyCache
               
       // targetLocale/ targetCurrency
-      return function(amount, targetLocale, currencySymbol, fractionSize) {
-        
+      function handleFilter(amount, targetLocale, currencySymbol, fractionSize) {
+        var formats = $locale.NUMBER_FORMATS; 
+        console.log('formats now', formats);
         if (angular.isUndefined(targetLocale)) { 
           targetLocale = 1;
         }
@@ -53,18 +123,41 @@ angular.module('bhima.filters')
         console.log('decimal sep', formats.DECIMAL_SEP);
 
         // FIXME hack
-        if (currency.get(targetLocale)) { 
-          formats.DECIMAL_SEP = currency.get(targetLocale).decimal;
-          currencySymbol = currency.get(targetLocale).symbol; 
-        } 
+        // if (currency.get(targetLocale)) { 
+          // formats.DECIMAL_SEP = currency.get(targetLocale).decimal;
+          // currencySymbol = currency.get(targetLocale).symbol; 
+        // } 
         // if null or undefined pass it through
-        return (amount == null)
-          ? amount
-          : formatNumber(amount, getLocaleCurrencyFormat(targetLocale), formats.GROUP_SEP, formats.DECIMAL_SEP, fractionSize).
+        
+        // $http.get('/finance/currencies').then(function (result) { 
+          // return result; 
+        // });
+        var thisFormat = format.request('usd');
+      
+        // TODO It's not sexy but it works - move these to descriptions 
+        // var formatNotReady = thisFormat == null etc.
+        if (amount == null) { 
+          return null;
+        }
+        
+        if (thisFormat == null) { 
+          return "...";
+        }
+
+        if (thisFormat.supported === false) { 
+          return 'CURRENCY_NOT_SUPPORTED('.concat(amount).concat(')');
+        }
+        
+        return formatNumber(amount, getLocaleCurrencyFormat(targetLocale), formats.GROUP_SEP, formats.DECIMAL_SEP, fractionSize).
             replace(/\u00A4/g, currencySymbol);
-      };
+      }
+
+      handleFilter.$stateful = true;
+      
+      return handleFilter;
     }
   ])
+
 
 // Utility methods
 // This method is copied directly from the angular repository. The method is
