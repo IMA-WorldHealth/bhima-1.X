@@ -274,7 +274,7 @@
                     <ul class="k-list" ng-if="child.has_children">
                       <li ng-repeat="final in child.children">
                         <label class="checkbox">
-                          <input type="checkbox" ng-model="final.checked" ng-change="toggleChildren(child)">
+                          <input type="checkbox" ng-model="final.checked" ng-change="toggleChildren(final)">
                           {{final.key | translate}}
                         </label>
                       </li>
