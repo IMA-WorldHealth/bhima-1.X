@@ -3,12 +3,11 @@ angular.module('bhima.controllers')
   '$scope',
   '$http',
   '$translate',
-  '$sce',
   'validate',
   'reportConfigService',
   'messenger',
   // Prototype document building module, requests document given configuration obejct
-  function ($scope, $http, $translate, $sce, validate, reportConfigService, messenger) {
+  function ($scope, $http, $translate, validate, reportConfigService, messenger) {
 
     var session = $scope.session = {},
         dependencies = {},
