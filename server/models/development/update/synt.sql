@@ -115,3 +115,11 @@ UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'import_automatique' WH
 UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'group_deb_invoice' WHERE  `transaction_type`.`id` =5;
 UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'stock_loss' WHERE  `transaction_type`.`id` =13;
 UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'reversing_stock' WHERE  `transaction_type`.`id` =28;
+
+
+-- rm unused currency tree node
+--
+-- Date: 2015-08-31
+-- By: jniles
+
+DELETE FROM `unit` WHERE id = 33;
