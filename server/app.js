@@ -23,6 +23,7 @@ require('./config/routes').initialise(app);
 // Load and configure plugins
 require('./lib/pluginManager')(app, config.plugins);
 
+// start the server
 https.createServer(credentials, app).listen(config.port, logApplicationStart);
 
 process.on('uncaughtException', forceExit);
