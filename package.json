@@ -5,7 +5,7 @@
   "main": "server/app.js",
   "scripts": {
     "test": "mocha server/test/",
-    "start": "cd client/ && gulp && cd .. && node server/app.js"
+    "app": "gulp build && cd bin && node server/app.js"
   },
   "repository": {
     "type": "git",
