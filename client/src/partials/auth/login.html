@@ -14,16 +14,25 @@
       </div>
       <div class="panel-body">
 
-        <form class="form" name="LoginForm" ng-submit="LoginCtrl.login(LoginCtrl.credentials)" novalidate>
-          <fieldset>
+        <form name="LoginForm" ng-submit="LoginCtrl.login(LoginForm.$invalid, LoginCtrl.credentials)" novalidate>
 
+          <!-- error alerts -->
+          <div class="alert alert-danger" ng-if="LoginCtrl.$error">
+            <b><i class="glyphicon glyphicon-exclamation-sign"></i> {{ "AUTH.LOGIN_ERROR" | translate }}</b>
+          </div>
+
+          <div class="alert alert-danger" ng-if="LoginForm.$submitted && LoginForm.$invalid">
+            <b><i class="glyphicon glyphicon-exclamation-sign"></i> {{ "AUTH.LOGIN_ERR_MISSING_DATA" | translate }}</b>
+          </div>
+
+          <fieldset>
             <div class="form-group">
               <label for="username">{{ "COLUMNS.USERNAME" | translate }}</label>
               <div class="input-group">
                 <span class="input-group-addon" style="background-color: #fff;">
                   <span class="glyphicon glyphicon-user"></span>
                 </span>
-                <input name="username" ng-model="LoginCtrl.credentials.username" class="form-bhima" placeholder="Enter your username" type="text" autofocus required />
+                <input name="username" ng-model="LoginCtrl.credentials.username" class="form-bhima" placeholder="{{ 'AUTH.LOGIN_PLACEHOLDER_USERNAME' | translate }}" type="text" autofocus required />
               </div>
             </div>
 
@@ -33,7 +42,7 @@
                 <span class="input-group-addon" style="background-color: #fff;">
                   <span class="glyphicon glyphicon-lock"></span>
                 </span>
-                <input name="password" ng-model="LoginCtrl.credentials.password" class="form-bhima" placeholder="Enter your password" type="password" required />
+                <input name="password" ng-model="LoginCtrl.credentials.password" class="form-bhima" placeholder="{{ 'AUTH.LOGIN_PLACEHOLDER_PASSWORD' | translate }}" "" type="password" required />
               </div>
             </div>
 
@@ -49,11 +58,10 @@
               </div>
             </div>
 
-            <input id="submit" class="btn btn-sm btn-success" type="submit" value="{{'AUTH.LOGIN' | translate}}"/>
+            <div class="form-group">
+              <input id="submit" class="btn btn-sm btn-success" type="submit" value="{{'AUTH.LOGIN' | translate}}"/>
+            </div>
 
-            <p class="help-block" ng-if="LoginCtrl.submitError">
-              <b><i class="glyphicon glyphicon-exclamation-sign"></i> {{ "AUTH.LOGIN_ERROR" | translate }}</b>
-            </p>
           </fieldset>
         </form>
       </div>
