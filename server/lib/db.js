@@ -264,7 +264,8 @@ module.exports = {
   executeAsTransaction : executeAsTransaction,
   exec : exec,
   execute : execute,
-  sanitize : sanitize //  for sanitization
+  sanitize : sanitize, // FIXME: is this even used?
+  escape : sanitize
 };
 
 //module.exports = db;

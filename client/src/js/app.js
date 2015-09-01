@@ -1,11 +1,15 @@
 (function (angular) {
   'use strict';
 
-  var bhima = angular.module('bhima', ['bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate', 'LocalForageModule']);
+  var bhima = angular.module('bhima', ['bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate', 'LocalForageModule', 'chart.js']);
 
   function bhimaconfig($routeProvider) {
     //TODO: Dynamic routes loaded from unit database?
     $routeProvider
+    .when('/', {
+      controller : 'HomeController as HomeCtrl',
+      templateUrl : 'partials/home/home.html'
+    })
     .when('/login', {
       controller : 'LoginController as LoginCtrl',
       templateUrl : 'partials/auth/login.html'
@@ -731,9 +735,8 @@
       controller : 'configureEmployeeState',
       templateUrl : 'partials/reports_proposed/employee_state/employee_state.html'
     })
-    .when('/', {
-      controller : 'HomeController as HomeCtrl',
-      templateUrl : 'partials/home/home.html'
+    .when('/dashboards/finance', {
+      templateUrl : 'partials/dashboard/finance.html'
     })
     .otherwise({ redirectTo : '/' });
   }
