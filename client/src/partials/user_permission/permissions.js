@@ -353,11 +353,24 @@ angular.module('bhima.controllers')
       }
     };
 
+    //
     $scope.toggleChildren = function toggleChildren(unit) {
       if (!unit.checked) { $scope.super.units = false; }
       $scope.toggleParents(unit); // traverse upwards, toggling parents
       unit.children.forEach(function (child) {
         child.checked = unit.checked;
+        if(child.has_children){
+          $scope.otherChildren(child);
+        }
+      });
+    };
+
+    $scope.otherChildren = function otherChildren(unit) {
+      unit.children.forEach(function (child) {
+        child.checked = unit.checked;
+        if(child.has_children){
+          $scope.otherChildren(child);
+        }        
       });
     };
 

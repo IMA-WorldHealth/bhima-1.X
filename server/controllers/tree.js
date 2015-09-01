@@ -53,22 +53,23 @@ function load(userId) {
       // Impliment proper error handling
       if (err) { console.log(err); }
 
-      var haveChildren, promises;
+      var promises;
 
-      haveChildren = result.filter(function (row) {
-        return row.has_children;
-      });
-
-      if (haveChildren.length > 0) {
-        promises = haveChildren.map(function (row) {
-          return getChildren(row.unit_id);
+      promises = result.map(function (row) {
+        var p = q.defer();          
+        getChildren(row.unit_id)
+        .then(function (children) {
+          if(children){
+            row.children = children;  
+          } else {
+            row.children = null;
+          }          
+          p.resolve(row);
         });
-        d.resolve(q.all(promises));
-      } else {
-        d.resolve(result);
-      }
+        return p.promise;
+      });
+      d.resolve(q.all(promises));
     });
-
     return d.promise;
   }
 
