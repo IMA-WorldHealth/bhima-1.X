@@ -8,9 +8,9 @@
   <section id="title" class="center">
       <h3>{{=it.title}}</h4>
       <h4>{{=it.enterprise}} {{=it.enterpriseName}}</h5>
-      <h5>{{=it.clos}} </h6>
-      <h5>Duree (En mois) : ... ... ... ... ... ...</h6>
-      <h5>Date {{=it.reportDate}}</h5>
+      <h5>{{=it.clos}}</h6>
+      <h5>{{=it.duration}}</h6>
+      <h5>{{=it.date}} {{=it.reportDate}}</h5>
   </section>
 
   <section>
@@ -18,18 +18,18 @@
       <table class="balance" border="1">
         <thead>
           <tr>
-            <th>Ref</th>
-            <th>Actif</th>
+            <th>{{=it.reference}}</th>
+            <th>{{=it.actif}}</th>
             <th colspan="3">Exercice N</th>
             <th>Ex. N-1</th>
           </tr>
 
           <tr>
             <th colspan="2"></th>
-            <th>Brut</th>
-            <th>Amort/Prov.</th>
-            <th>Net</th>
-            <th>Net</th>
+            <th>{{=it.brut}}</th>
+            <th>{{=it.amort_prov}}</th>
+            <th>{{=it.net}}</th>
+            <th>{{=it.net}}</th>
           </tr>
         </thead>
         <tbody>
@@ -60,7 +60,7 @@
               {{~}}
               <tr>
                 <td></td>
-                <td><b>TOTAL {{=section.sectionBilanLabel}} ({{=section.sectionBilanPosition}})</b></td>
+                <td><b>{{=it.total}} {{=section.sectionBilanLabel}} ({{=section.sectionBilanPosition}})</b></td>
                 <td><b>{{=section.totalBrut_view}}</b></td>
                 <td><b>{{=section.totalAmortProv_view}}</b></td>
                 <td><b>{{=section.totalNet_view}}</b></td>
@@ -69,7 +69,7 @@
           {{~}}
           <tr>
             <td></td>
-            <td><b>TOTAL GENERAL</b></td>
+            <td><b>{{=it.totalGeneral}}</b></td>
             <td><b>{{=it.assetGeneralBrut}}</b></td>
             <td><b>{{=it.assetGeneralAmortProv}}</b></td>
             <td><b>{{=it.assetGeneralNet}}</b></td>
@@ -83,18 +83,18 @@
       <table class="balance" border="1">
         <thead>
           <tr>
-            <th>Ref</th>
-            <th>Passive</th>
+            <th>{{=it.reference}}</th>
+            <th>{{=it.passif}}</th>
             <th colspan="3">Exercice N</th>
             <th>Ex. N-1</th>
           </tr>
 
           <tr>
             <th colspan="2"></th>
-            <th>Brut</th>
-            <th>Amort/Prov.</th>
-            <th>Net</th>
-            <th>Net</th>
+            <th>{{=it.brut}}</th>
+            <th>{{=it.amort_prov}}</th>
+            <th>{{=it.net}}</th>
+            <th>{{=it.net}}</th>
           </tr>
         </thead>
         <tbody>
@@ -125,7 +125,7 @@
               {{~}}
               <tr>
                 <td></td>
-                <td><b>TOTAL {{=section.sectionBilanLabel}} ({{=section.sectionBilanPosition}})</b></td>
+                <td><b>{{=it.total}} {{=section.sectionBilanLabel}} ({{=section.sectionBilanPosition}})</b></td>
                 <td><b>{{=section.totalBrut_view}}</b></td>
                 <td><b>{{=section.totalAmortProv_view}}</b></td>
                 <td><b>{{=section.totalNet_view}}</b></td>
@@ -134,7 +134,7 @@
           {{~}}
           <tr>
             <td></td>
-            <td><b>TOTAL GENERAL</b></td>
+            <td><b>{{=it.totalGeneral}}</b></td>
             <td><b>{{=it.passiveGeneralBrut}}</b></td>
             <td><b>{{=it.passiveGeneralAmortProv}}</b></td>
             <td><b>{{=it.passiveGeneralNet}}</b></td>

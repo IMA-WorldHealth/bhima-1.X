@@ -15,11 +15,26 @@ exports.compile = function (options) {
   console.log(i18nBilan);
 
   var deferred = q.defer(), context = {}, infos = {}, assetData = {}, passiveData = {};
+
+  //populating context object
+
   context.reportDate = bilanDate.toDateString();
   context.enterpriseName = options.enterprise.abbr;
+
   context.title = i18nBilan.TITLE;
   context.enterprise = i18nBilan.ENTERPRISE;
   context.clos = i18nBilan.CLOS;
+  context.duration = i18nBilan.DURATION;
+  context.reference = i18nBilan.REFERENCE;
+  context.actif = i18nBilan.ACTIF;
+  context.brut  = i18nBilan.BRUT;
+  context.amort_prov = i18nBilan.AMORT_PROV;
+  context.net = i18nBilan.NET;
+  context.totalGeneral = i18nBilan.TOTAL_GENERAL;
+  context.passif = i18nBilan.PASSIVE;
+  context.date = i18nBilan.DATE;
+  context.total = i18nBilan.TOTAL;
+
 
   var sql =
     'SELECT `acc`.`id` AS `accountId`, `acc`.`account_txt` AS `accounTxt`, `acc`.`account_number` AS `accountNumber`, ' +
