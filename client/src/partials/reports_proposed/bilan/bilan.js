@@ -57,6 +57,8 @@ angular.module('bhima.controllers')
       configurationObject.language = configuration.language.selected.value;
       configurationObject.fy = $scope.session.fiscal_year_id;
       configurationObject.pfy = $scope.session.previous_fiscal_year_id ||  $scope.session.fiscal_year_id;
+      configurationObject.enterprise = configuration.enterprise;
+      configurationObject.project = configuration.project;
 
       // Update state
       session.building = true;

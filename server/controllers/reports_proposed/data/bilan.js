@@ -14,6 +14,7 @@ exports.compile = function (options) {
 
   var deferred = q.defer(), context = {}, infos = {}, assetData = {}, passiveData = {};
   context.reportDate = bilanDate.toDateString();
+  context.enterpriseName = options.enterprise.abbr;
 
   var sql =
     'SELECT `acc`.`id` AS `accountId`, `acc`.`account_txt` AS `accounTxt`, `acc`.`account_number` AS `accountNumber`, ' +
@@ -28,7 +29,6 @@ exports.compile = function (options) {
 
   db.exec(sql, [options.fy, 1])
   .then(function (currentAccountDetails) {
-    // console.log('currentAccountDetails', currentAccountDetails);
     infos.currentAccountDetails = currentAccountDetails;
     return db.exec(sql, [options.pfy, 1]);
   })
