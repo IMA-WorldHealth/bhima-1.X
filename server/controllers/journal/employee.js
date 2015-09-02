@@ -272,7 +272,7 @@ function promisePayment(id, userId, data, cb) {
     'SELECT config_accounting.account_id, paiement.uuid, paiement.employee_id, paiement.net_salary, '+
       'paiement.currency_id, ((paiement.net_before_tax - paiement.net_after_tax) + paiement.net_salary) AS gros_salary ' +
     'FROM paiement JOIN paiement_period JOIN config_accounting ON ' +
-      'paiement_period.id = paiement.paiement_period_id' +
+      'paiement_period.id = paiement.paiement_period_id AND ' +
       'config_accounting.id = paiement_period.config_accounting_id ' +
     'WHERE paiement.uuid = ?;';
 
@@ -310,12 +310,12 @@ function promisePayment(id, userId, data, cb) {
 
   // debit sql
   .then(function (transId) {
-    cfg.trans_id = transId;
+    cfg.transId = transId;
     cfg.description =  transId.substring(0,4) + '_EngagementPay/' + new Date().toISOString().slice(0, 10).toString();
 
     sql =
-      'INSERT INTO posting_journal ' +
-      '(uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+      'INSERT INTO posting_journal (' +
+      'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
       'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
       'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
       'VALUES (?);';
@@ -326,7 +326,7 @@ function promisePayment(id, userId, data, cb) {
       reference.currency_id, null, null, data.paiement_uuid, cfg.originId, userId
     ];
 
-    return db.exec(sql, params);
+    return db.exec(sql, [params]);
   })
 
   // credit sql
