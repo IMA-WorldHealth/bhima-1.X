@@ -7,6 +7,7 @@ var q        = require('q'),
 
 exports.invoice = invoice;
 exports.promiseCotisation = promiseCotisation;
+exports.promisePayment = promisePayment;
 
 // invoice an employee
 function invoice(id, userId, cb) {
@@ -135,7 +136,6 @@ function invoice(id, userId, cb) {
   .done();
 }
 
-// USED BY MULTIPLE PAYROLL
 // Cette fonction ecrit dans le journal la promesse d'un paiment de cotisation
 // mais la cotisation n'est pas encore paye effectivement.
 function promiseCotisation(id, userId, data, cb) {
@@ -259,5 +259,96 @@ function promiseCotisation(id, userId, data, cb) {
   .catch(function (err){
     cb(err);
   })
+  .done();
+}
+
+// USED IN MULTIPLE PAYROLL
+// Cette fonction ecrit dans le journal la promesse d'un paiment de salaire
+// mais le salaire n'est pas encore paye effectivement.
+function promisePayment(id, userId, data, cb) {
+  var sql, rate, state = {}, reference, params, cfg = {};
+
+  sql =
+    'SELECT config_accounting.account_id, paiement.uuid, paiement.employee_id, paiement.net_salary, '+
+      'paiement.currency_id, ((paiement.net_before_tax - paiement.net_after_tax) + paiement.net_salary) AS gros_salary ' +
+    'FROM paiement JOIN paiement_period JOIN config_accounting ON ' +
+      'paiement_period.id = paiement.paiement_period_id' +
+      'config_accounting.id = paiement_period.config_accounting_id ' +
+    'WHERE paiement.uuid = ?;';
+
+  db.exec(sql, [data.paiement_uuid])
+  .then(function (records) {
+    if (records.length === 0) { throw new Error('Could not find a payment with uuid:' + data.paiement_uuid); }
+
+    reference = records[0];
+
+    sql =
+      'SELECT creditor_group.account_id, creditor.uuid AS creditor_uuid ' +
+      'FROM paiement ' +
+        'JOIN employee ON employee.id=paiement.employee_id ' +
+        'JOIN creditor ON creditor.uuid=employee.creditor_uuid ' +
+        'JOIN creditor_group ON creditor_group.uuid=creditor.group_uuid ' +
+      'WHERE paiement.uuid = ?;';
+
+    return q([
+      core.queries.origin('payroll'),
+      core.queries.period(new Date()),
+      core.queries.exchangeRate(new Date()),
+      db.exec(sql, [reference.uuid])
+    ]);
+  })
+  .spread(function (originId, periodObject, store, res) {
+    cfg.originId = originId;
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+    cfg.account_id = res[0].account_id;
+    cfg.creditor_uuid = res[0].creditor_uuid;
+    cfg.store = store;
+    rate = cfg.store.get(reference.currency_id).rate;
+    return core.queries.transactionId(data.project_id);
+  })
+
+  // debit sql
+  .then(function (transId) {
+    cfg.trans_id = transId;
+    cfg.description =  transId.substring(0,4) + '_EngagementPay/' + new Date().toISOString().slice(0, 10).toString();
+
+    sql =
+      'INSERT INTO posting_journal ' +
+      '(uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+      'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+      'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
+      'VALUES (?);';
+
+    params =  [
+      uuid(), data.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
+      cfg.description, reference.account_id, 0, reference.gros_salary, 0, reference.gros_salary / rate,
+      reference.currency_id, null, null, data.paiement_uuid, cfg.originId, userId
+    ];
+
+    return db.exec(sql, params);
+  })
+
+  // credit sql
+  .then(function () {
+    sql =
+      'INSERT INTO posting_journal (' +
+        'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+        'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+        'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
+      'VALUES (?);';
+
+    params = [
+      uuid(), data.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
+      cfg.description, cfg.account_id, reference.gros_salary, 0, reference.gros_salary / rate,
+      0, reference.currency_id, cfg.creditor_uuid, 'C', data.paiement_uuid, cfg.originId, userId
+    ];
+
+    return db.exec(sql, [params]);
+  })
+  .then(function (res){
+    return cb(null, res);
+  })
+  .catch(cb)
   .done();
 }
