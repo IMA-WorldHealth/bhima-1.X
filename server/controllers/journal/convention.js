@@ -121,7 +121,7 @@ function invoice(id, userId, cb) {
           transId,  new Date(), description, cfg.originId, userId, row.gid
         ];
 
-        db.exec(credsql, params);
+        credsql = db.exec(credsql, params);
 
         // push the credit sql query
         return q.all([debsql, credsql]);

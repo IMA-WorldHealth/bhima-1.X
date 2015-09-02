@@ -1,0 +1,263 @@
+var q        = require('q'),
+    db       = require('../../lib/db'),
+    uuid     = require('../../lib/guid'),
+    validate = require('../../lib/validate')(),
+    util     = require('../../lib/util'),
+    core     = require('./core');
+
+exports.invoice = invoice;
+exports.promiseCotisation = promiseCotisation;
+
+// invoice an employee
+function invoice(id, userId, cb) {
+  // posting group invoice requests
+  var sql, references = {}, cfg = {};
+
+  sql =
+    'SELECT employee_invoice.uuid, employee_invoice.project_id, project.enterprise_id, employee_invoice.debitor_uuid,  ' +
+      'employee_invoice.note, employee_invoice.authorized_by, employee_invoice.date, ' +
+      'employee_invoice.total, employee_invoice_item.invoice_uuid, employee_invoice_item.cost, ' +
+      'employee_invoice_item.uuid as gid ' +
+    'FROM employee_invoice JOIN employee_invoice_item JOIN sale JOIN project ON ' +
+      'employee_invoice.uuid = employee_invoice_item.payment_uuid AND ' +
+      'employee_invoice_item.invoice_uuid = sale.uuid AND ' +
+      'project.id = employee_invoice.project_id ' +
+    'WHERE employee_invoice.uuid = ?;';
+
+  db.exec(sql, [id])
+  .then(function (results) {
+    if (results.length === 0) {
+      throw new Error('No record found');
+    }
+    references = results;
+    cfg.enterprise_id = results[0].enterprise_id;
+    cfg.project_id = results[0].project_id;
+    cfg.date = results[0].date;
+    return core.checks.validPeriod(cfg.enterprise_id, cfg.date);
+  })
+  .then(function () {
+    var costPositive = references.every(function (row) {
+      return validate.isPositive(row.cost);
+    });
+
+    if (!costPositive) {
+      throw new Error('Negative cost detected for invoice id: ' + id);
+    }
+
+    var sum = references.reduce(function (a,b) { return a + b.cost; }, 0);
+    var totalEquality = validate.isEqual(references[0].total, sum);
+
+    if (!totalEquality) {
+      throw new Error('Individual costs do not match total cost for invoice id: ' + id);
+    }
+
+    return core.queries.origin('group_invoice');
+  })
+  .then(function (originId) {
+    cfg.originId = originId;
+    return core.queries.period(cfg.date);
+  })
+  .then(function (periodObject) {
+    cfg.period_id = periodObject.id;
+    cfg.fiscal_year_id = periodObject.fiscal_year_id;
+
+    return q.all(references.map(function (row) {
+      return core.queries.transactionId(cfg.project_id)
+      .then(function  (transId) {
+        var debsql, credsql, params;
+
+        cfg.description = transId.substring(0,4) + '_SUPPORTED/' + new Date().toISOString().slice(0, 10).toString();
+
+        debsql =
+          'INSERT INTO posting_journal (' +
+            'project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, ' +
+            'description, account_id, debit, credit, debit_equiv, credit_equiv, ' +
+            'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
+          'SELECT employee_invoice.project_id, ?, ?, ?, ?, ?, ?, ' +
+            'creditor_group.account_id, employee_invoice_item.cost, 0, ' +
+            'employee_invoice_item.cost, 0, enterprise.currency_id,  ' +
+            'employee_invoice.creditor_uuid, \'C\', employee_invoice_item.invoice_uuid, ?, ? ' +
+          'FROM employee_invoice JOIN employee_invoice_item JOIN debitor JOIN creditor JOIN debitor_group JOIN creditor_group JOIN sale JOIN project JOIN enterprise ON ' +
+          '  employee_invoice.uuid = employee_invoice_item.payment_uuid AND ' +
+          '  employee_invoice.debitor_uuid = debitor.uuid  AND ' +
+          '  employee_invoice.creditor_uuid = creditor.uuid  AND ' +
+          '  debitor.group_uuid = debitor_group.uuid AND ' +
+          '  creditor.group_uuid = creditor_group.uuid AND ' +
+          '  employee_invoice_item.invoice_uuid = sale.uuid AND ' +
+          '  employee_invoice.project_id = project.id AND ' +
+          '  project.enterprise_id = enterprise.id ' +
+          'WHERE employee_invoice_item.uuid = ?;';
+
+        params = [
+          uuid(), cfg.fiscal_year_id, cfg.period_id, transId, new Date(),
+          cfg.description, cfg.originId, userId, row.gid
+        ];
+
+        // execute the debit query
+        debsql = db.exec(debsql, params);
+
+        credsql =
+          'INSERT INTO posting_journal (' +
+            'project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, ' +
+            'description, account_id, debit, credit, debit_equiv, credit_equiv, ' +
+            'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
+          'SELECT employee_invoice.project_id, ?, ?, ?, ?, ?, ?. ' +
+            'debitor_group.account_id, 0, employee_invoice_item.cost, ' +
+            '0, employee_invoice_item.cost, enterprise.currency_id,  ' +
+            'employee_invoice.debitor_uuid, \'D\', employee_invoice_item.invoice_uuid, ?, ? ' +
+          'FROM employee_invoice JOIN employee_invoice_item JOIN debitor JOIN debitor_group JOIN sale JOIN project JOIN enterprise ON ' +
+            'employee_invoice.uuid = employee_invoice_item.payment_uuid AND ' +
+            'employee_invoice.debitor_uuid = debitor.uuid  AND ' +
+            'debitor.group_uuid = debitor_group.uuid AND ' +
+            'employee_invoice_item.invoice_uuid = sale.uuid AND ' +
+            'employee_invoice.project_id = project.id AND ' +
+            'project.enterprise_id = enterprise.id ' +
+          'WHERE employee_invoice_item.uuid = ?;';
+
+        params = [
+          uuid(), cfg.fiscal_year_id, cfg.period_id, transId, new Date(),
+          cfg.description, cfg.originId, userId, row.gid
+        ];
+
+        // execute the credit query
+        credsql = db.exec(credsql, params);
+
+        return q.all([debsql, credsql]);
+      });
+    }));
+  })
+  .then(function (res) {
+    cb(null, res);
+  })
+  .catch(function (err) {
+    cb(err);
+  })
+  .done();
+}
+
+// USED BY MULTIPLE PAYROLL
+// Cette fonction ecrit dans le journal la promesse d'un paiment de cotisation
+// mais la cotisation n'est pas encore paye effectivement.
+function promiseCotisation(id, userId, data, cb) {
+  var sql, rate, state = {}, reference, cfg = {}, references;
+
+  sql =
+    'SELECT cotisation.label, cotisation.abbr, cotisation.is_employee, cotisation.four_account_id, ' +
+      'cotisation.six_account_id, paiement.employee_id, paiement.paiement_date, paiement.currency_id, ' +
+      'cotisation_paiement.value ' +
+    'FROM cotisation JOIN paiement JOIN cotisation_paiement ON ' +
+      'cotisation.id = cotisation_paiement.cotisation_id AND ' +
+      'paiement.uuid = cotisation_paiement.paiement_uuid ' +
+    'WHERE paiement.uuid = ?;';
+
+  db.exec(sql, [data.paiement_uuid])
+  .then(function (records) {
+    if (records.length === 0) { throw new Error('No payment by that uuid.'); }
+
+    reference = records[0];
+    references = records;
+
+    sql =
+    'SELECT creditor_group.account_id, creditor.uuid AS creditor_uuid ' +
+    'FROM paiement ' +
+      'JOIN employee ON employee.id=paiement.employee_id ' +
+      'JOIN creditor ON creditor.uuid=employee.creditor_uuid ' +
+      'JOIN creditor_group ON creditor_group.uuid=creditor.group_uuid ' +
+    'WHERE paiement.uuid = ?;';
+
+    return q([
+      core.queries.origin('cotisation_engagement'),
+      core.queries.period(new Date()),
+      core.queries.exchangeRate(new Date()),
+      db.exec(sql, [data.paiement_uuid])
+    ]);
+  })
+  .spread(function (originId, periodObject, store, res) {
+    cfg.originId = originId;
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+    cfg.account_id = res[0].account_id;
+    cfg.creditor_uuid = res[0].creditor_uuid;
+    cfg.store = store;
+    rate = cfg.store.get(reference.currency_id).rate;
+    return core.queries.transactionId(data.project_id);
+  })
+
+  // run the debit query
+  .then(function (transId) {
+    cfg.transId = transId;
+    cfg.description =  transId.substring(0,4) + '_EngagementCotisation/' + new Date().toISOString().slice(0, 10).toString();
+
+    return q.all(references.map(function (reference) {
+      var account, params, debsql;
+
+      cfg.note = cfg.description + '/' + references.label + '/' + reference.abbr;
+
+      if (!reference.six_account_id) {
+
+        account = cfg.account_id;
+
+        debsql =
+          'INSERT INTO posting_journal ' +
+          '(uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+          'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+          'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
+          'VALUES (?);';
+
+        params = [
+          uuid(), data.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
+          cfg.note, account, 0, (reference.value).toFixed(4), 0, (reference.value / rate).toFixed(4),
+          reference.currency_id, cfg.creditor_uuid, 'C', data.paiement_uuid, cfg.originId, userId
+        ];
+
+      } else {
+        account = reference.six_account_id;
+        debsql =
+          'INSERT INTO posting_journal (' +
+            'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+            'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+            'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
+          'VALUES (?);';
+
+        params = [
+          uuid(), data.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId,
+          new Date(), cfg.note, account, 0, (reference.value).toFixed(4), 0,
+          (reference.value / rate).toFixed(4), reference.currency_id, null, null,
+          data.paiement_uuid, cfg.originId, userId
+        ];
+      }
+
+      return db.exec(debsql, [params]);
+    }));
+  })
+  .then(function () {
+    return q.all(references.map(function (reference) {
+      var credsql, params;
+
+      cfg.note = cfg.description + '/' + reference.label + '/' + reference.abbr;
+
+      credsql =
+        'INSERT INTO posting_journal (' +
+          'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+          'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+          'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) ' +
+        'VALUES (?);';
+
+      params = [
+        uuid(), data.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
+         cfg.note, reference.four_account_id, reference.value.toFixed(4), 0,
+         (reference.value / rate).toFixed(4), 0, reference.currency_id, cfg.creditor_uuid,
+         null, data.paiement_uuid, cfg.originId, userId
+      ];
+
+      return db.exec(credsql, [params]);
+    }));
+  })
+  .then(function (res){
+    cb(null, res);
+  })
+  .catch(function (err){
+    cb(err);
+  })
+  .done();
+}

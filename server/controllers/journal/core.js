@@ -86,9 +86,6 @@ queries.origin = function (table) {
 };
 
 // get a new transaction id for a given project
-// FIXME this is a dangerous operation.  It should be either
-//  1) wrapped in a transaction or
-//  2) done in a separate request
 queries.transactionId = function (projectId) {
   'use strict';
 
@@ -108,7 +105,7 @@ queries.transactionId = function (projectId) {
     // This is guaranteed to be defined if a project is defined.
     // Even if there is no data in the posting journal and/or
     // general ledger
-    return q('\'' + rows[0].id + '\'');
+    return q(rows[0].id);
   });
 };
 
