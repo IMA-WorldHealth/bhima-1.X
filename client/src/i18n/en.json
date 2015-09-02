@@ -336,8 +336,17 @@
    "SEARCH"      : "search by name",
    "TITLE"       : "Find convention"
    },
+"CHART" : {
+  "GROUPING" : {
+    "DAY"    : "Day",
+    "MONTH"  : "Month",
+    "PERIOD" : "Period",
+    "TITLE"  : "Grouping",    
+    "WEEK"   : "Week",    
+    "YEAR"   : "Year"    
+  }
+},   
 "COLUMNS": {
-   "USER"                   : "User",
    "ABBR"                  : "Abbr",
    "ABBREVIATION"          : "Abreviation",
    "ACCOUNT"               : "Account",
@@ -398,6 +407,7 @@
    "DEBITOR_ID"            : "Debtor ID",
    "DEBITOR_NAME"          : "Debtor Name",
    "DEBITOR_TYPE"          : "Debtor Type",
+   "DEBT"                  : "Debt",
    "DEBTOR"                : "Debtor",
    "DEB_CRED_TYPE"         : "Debtor/Creditor Type",
    "DEB_CRED_UUID"         : "Debtor/Creditor ID",
@@ -415,6 +425,7 @@
    "DOB"                   : "Date of Birth",
    "DOCUMENT_ID"           : "Document ID",
    "DOCUMENT_UUID"         : "Document Number",
+   "DONATION_DATE"         : "Donation Date",
    "DONOR"                 : "Donor",
    "DRUGS"                 : "Drugs",
    "DURABLE"               : "Durable",
@@ -427,6 +438,7 @@
    "ENTERPRISE_CURRENCY"   : "Enterprise Currency",
    "ENTERPRISE_ID"         : "Enterprise ID",
    "ENTRY_DATE"            : "Entry date",
+   "EXPENSE"               : "Expense",
    "EXPIRATION_DATE"       : "Expiration Date",
    "EXPLANATION"           : "Explanation",
    "FIRST_NAME"            : "First Name",
@@ -442,6 +454,7 @@
    "ID"                    : "ID",
    "ID_CASH"               : "Cash ID",
    "ID_PRODUCT"            : "ID Product",
+   "INCOME"                : "Income",
    "INDIRECT"              : "Indirect",
    "INITIAL_STOCK"         : "Initial stock",
    "INVENTORY_CODE"        : "Inventory Code",
@@ -570,6 +583,7 @@
    "TOTAL_DEBIT"           : "Total debit",
    "TOTAL_PRICE"           : "Total Price",
    "TRACKING_NUMBER"       : "Tracking Number",
+   "TRANSACTIONS"          : "Transactions",
    "TRANSACTION_DATE"      : "Transaction Date",
    "TRANSACTION_ID"        : "Transaction ID",
    "TRANSACTION_NUMBER"    : "Transaction number",
@@ -581,6 +595,7 @@
    "UNIT_PRICE"            : "Unit Price",
    "UNIT_VOLUME"           : "Unit Volume",
    "UNIT_WEIGHT"           : "Unit Weight",
+   "USER"                  : "User",
    "USERNAME"              : "Username",
    "USER_ID"               : "User ID",
    "USER_NAME"             : "User Name",
@@ -591,8 +606,8 @@
    "WEIGHT"                : "Weight",
    "WORDING"               : "Wording",
    "WORKING_DAY"           : "Working day",
-   "ZS"                    : "Health Zone",
-   "DONATION_DATE"         : "Donation Date"
+   "ZS"                    : "Health Zone"
+   
    },
 
 "CONFIG_ACCOUNTING": {
@@ -801,8 +816,18 @@
    "WEEK"               : "This Week"
    },
 "DASHBOARD": {
-   "TITLE" : "Dashboards"
-   },
+   "TITLE" : "Dashboards",
+   "FINANCE" : {
+     "CASHBOX"           : "CashBox",
+     "CASHFLOW"          : "Cash Flow Analysis",
+     "CUMMULATIVE"       : "Cummulative Data",
+     "CURRENCY"          : "Currency",
+     "HASPOSTINGJOURNAL" : "Include Posting Journal",
+     "TITLE"             : "Financial Dashboard",
+     "TOP_DEBTORS"       : "Top Debtors",
+     "TOP_DEBTOR_GROUPS" : "Top Debtor Groups"
+   }
+ },
 "DEBITOR_GRP": {
    "FILTER"     : "Filter Debtor Groups",
    "GROUPS"     : "Debtor Groups",
@@ -1144,7 +1169,6 @@
    "FISCAL_YEAR_SELECTION"       : "Fiscal Year Selection",
    "HELP_TXT"                    : "This utility facilitates the creation and management of fiscal years. The following operations are available",
    "IMPORT_OPENING_BALANCES"     : "Import opening balances",
-   "LOCK"                        : "Lock",
    "LAST_VOUCHER"                : "Last Voucher No.",
    "LOCK"                        : "Lock",
    "LOCKED"                      : "This fiscal year is locked.",
@@ -2809,6 +2833,10 @@
    "CREDIT_NOTE"               : "Credit note",
    "CURRENCY"                  : "Currency",
    "DAILY_CONSUMPTION"         : "Daily Consumption",
+   "DASHBOARD" : {
+      "FINANCE" : " Finance Dashboard",
+      "TITLE"   : "Dashboards"
+   },   
    "DEBTOR_AGING"              : "Debtor Aging",
    "DEBTOR_GRP"                : "Debtor Group",
    "DEPOT"                     : "Store",
