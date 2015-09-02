@@ -87,11 +87,11 @@ exports.compile = function (options) {
         section.grefs.forEach(function (gref){
           gref.refs = getReferences(gref, currents);
           gref.refs.forEach(function (item){
-            item.brut = getBrut(item, currents);
+            item.brut = getBrut(item, currents, section.sectionBilanIsActif);
             item.brut_view = numeral(item.brut).format(formatDollar);
             section.totalBrut += item.brut;
 
-            item.amort_prov = getAmortProv(item, currents);
+            item.amort_prov = getAmortProv(item, currents, section.sectionBilanIsActif);
             item.amort_prov_view = numeral(item.amort_prov).format(formatDollar);
             section.totalAmortProv += item.amort_prov;
 
@@ -99,7 +99,7 @@ exports.compile = function (options) {
             item.net_view = numeral(item.net).format(formatDollar);
             section.totalNet += item.net;
 
-            item.previousNet = getPreviousNet(item, tbl.previousAccountDetails);
+            item.previousNet = getPreviousNet(item, tbl.previousAccountDetails, section.sectionBilanIsActif);
             item.previousNet_view = numeral(item.previousNet).format(formatDollar);
             section.totalPreviousNet = item.previousNet;
           });
@@ -135,11 +135,11 @@ exports.compile = function (options) {
         section.grefs.forEach(function (gref){
           gref.refs = getReferences(gref, currents);
           gref.refs.forEach(function (item){
-            item.brut = getBrut(item, currents);
+            item.brut = getBrut(item, currents, section.sectionBilanIsActif);
             item.brut_view = numeral(item.brut).format(formatDollar);
             section.totalBrut += item.brut;
 
-            item.amort_prov = getAmortProv(item, currents);
+            item.amort_prov = getAmortProv(item, currents, section.sectionBilanIsActif);
             item.amort_prov_view = numeral(item.amort_prov).format(formatDollar);
             section.totalAmortProv += item.amort_prov;
 
@@ -147,7 +147,7 @@ exports.compile = function (options) {
             item.net_view = numeral(item.net).format(formatDollar);
             section.totalNet += item.net;
 
-            item.previousNet = getPreviousNet(item, tbl.previousAccountDetails);
+            item.previousNet = getPreviousNet(item, tbl.previousAccountDetails, section.sectionBilanIsActif);
             item.previousNet_view = numeral(item.previousNet).format(formatDollar);
             section.totalPreviousNet = item.previousNet;
           });
@@ -178,7 +178,6 @@ exports.compile = function (options) {
     }
 
     function getSections (currents){
-      // console.log('recu currents', currents);
       var sections = [];
       sections.push({
         sectionBilanId : currents[0].sectionBilanId,
@@ -244,7 +243,7 @@ exports.compile = function (options) {
       return references;
     }
 
-    function getBrut (reference, currents){
+    function getBrut (reference, currents, isActif){
       var somDebit = 0, somCredit = 0;
 
       currents.forEach(function (item){
@@ -255,10 +254,10 @@ exports.compile = function (options) {
       });
 
 
-      return somDebit - somCredit;
+      return (isActif == 1)? somDebit - somCredit : somCredit - somDebit;
     }
 
-    function getAmortProv (reference, currents){
+    function getAmortProv (reference, currents, isActif){
       var somDebit = 0, somCredit = 0;
 
       currents.forEach(function (item){
@@ -267,10 +266,10 @@ exports.compile = function (options) {
           somCredit+=(item.generalLegderCredit);
         }
       });
-      return somDebit - somCredit;
+      return isActif == 1 ? somDebit - somCredit : somCredit - somDebit;
     }
 
-    function getPreviousNet (reference, previous){
+    function getPreviousNet (reference, previous, isActif){
       var somDebit = 0, somCredit = 0;
 
       previous.forEach(function (item){
@@ -282,7 +281,7 @@ exports.compile = function (options) {
           somCredit+=item.generalLegderCredit;
         }
       });
-      return somDebit - somCredit;
+      return isActif == 1 ? somDebit - somCredit : somCredit - somDebit;
     }
 
     deferred.resolve(context);
