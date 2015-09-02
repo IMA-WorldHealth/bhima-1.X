@@ -24,13 +24,13 @@ angular.module('bhima.filters')
         identifier : 'id'
       });
 
-      $http.get('/finance/currencies')
-      .success(function (data) {
-        currency.setData(data);
-      })
-      .error(function (error) {
-        messenger.danger('An error occured:' + JSON.stringify(error));
-      });
+      // $http.get('/finance/currencies')
+      // .success(function (data) {
+        // currency.setData(data);
+      // })
+      // .error(function (error) {
+        // messenger.danger('An error occured:' + JSON.stringify(error));
+      // });
 
       return function (value, id) {
         value = (value || 0).toFixed(2);
@@ -46,10 +46,11 @@ angular.module('bhima.filters')
           value = value.slice(0, value.indexOf('.'));
         }
 
-        var templ = value.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1'+currency.get(id).separator);
-        templ += '<span class="desc">' + currency.get(id).decimal + decimalDigits + '</span><span class="cur"> ' + currency.get(id).symbol +  '</span>';
+        // var templ = value.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1'+currency.get(id).separator);
+        // templ += '<span class="desc">' + currency.get(id).decimal + decimalDigits + '</span><span class="cur"> ' + currency.get(id).symbol +  '</span>';
 
-        return $sce.trustAsHtml(templ);
+        // return $sce.trustAsHtml(templ);
+        return $sce.trustAsHtml('<span style="color : red;">Filter Depriciated</span>');
       };
     }
   ])
