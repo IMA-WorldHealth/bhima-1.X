@@ -3,6 +3,7 @@ angular.module('bhima.controllers')
   '$scope',
   '$routeParams',
   '$translate',
+  '$modal',
   'validate',
   'messenger',
   'appstate',
@@ -11,7 +12,8 @@ angular.module('bhima.controllers')
   'util',
   'appcache',
   '$location',
-  function ($scope, $routeParams, $translate, validate, messenger, appstate, connect, uuid, util, Appcache, $location) {
+  'exchange',
+  function ($scope, $routeParams, $translate, $modal, validate, messenger, appstate, connect, uuid, util, Appcache, $location, exchange) {
     var isDefined, dependencies = {},
       session = $scope.session = { receipt : { date : new Date() }, configure : false, complete : false },
       cache = new Appcache('expense'),
@@ -76,6 +78,7 @@ angular.module('bhima.controllers')
     function load (currency) {
       if (!currency) { return; }
       session.currency = currency;
+      haltOnNoExchange();
     }
 
     function getAccount (ac) {
@@ -201,6 +204,35 @@ angular.module('bhima.controllers')
       }
     };
 
+
+    function haltOnNoExchange () {
+      if (exchange.hasDailyRate()) { return; }
+
+      var instance = $modal.open({
+        templateUrl : 'noExchangeRate.html',
+        backdrop    : 'static',
+        keyboard    : false,
+        controller  : function ($scope, $modalInstance) {
+          $scope.timestamp= new Date();
+
+          $scope.close = function close () {
+            $modalInstance.dismiss();
+          };
+
+          $scope.setExchange = function setExchange () {
+            $modalInstance.close();
+          };
+
+        }
+      });
+
+      instance.result.then(function () {
+        $location.path('/exchange_rate');
+      }, function () {
+        $scope.errorState = true;
+      });
+    }
+    
     $scope.update = update;
     $scope.setCurrency = setCurrency;
   }
