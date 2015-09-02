@@ -13,5 +13,19 @@
 		"PASSIVE"               : "Passif",
 		"DATE"                  : "Date : ",
 		"TOTAL"                 : "TOTAL"
+	},
+
+	"ACCOUNT_RESULT" : {
+		"TITLE"                 : "COMPTE RESULTAT",
+		"ENTERPRISE"            : "Entreprise",
+		"CLOS"                  : "Exercice clos le : ",
+		"DURATION"              : "Duree (En mois) : ",
+		"REFERENCE"             : "Ref",
+		"CHARGE"                : "Charge",
+		"NET"                   : "Net",
+		"TOTAL_GENERAL"         : "GENERAL TOTAL",
+		"PROFIT"                : "Profit",
+		"DATE"                  : "Date : ",
+		"TOTAL"                 : "TOTAL"
 	}
 }
