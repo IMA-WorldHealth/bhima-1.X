@@ -3,6 +3,7 @@ angular.module('bhima.controllers')
   '$scope',
   '$location',
   '$translate',
+  '$modal',
   'validate',
   'connect',
   'appstate',
@@ -10,7 +11,8 @@ angular.module('bhima.controllers')
   'util',
   'uuid',
   'appcache',
-  function($scope, $location, $translate, validate, connect, appstate, messenger, util, uuid, Appcache) {
+  'exchange',
+  function($scope, $location, $translate, $modal, validate, connect, appstate, messenger, util, uuid, Appcache, exchange) {
     var defaultCurrency, defaultCashBox, record, record_item;
 
     var dependencies = {},
@@ -119,11 +121,8 @@ angular.module('bhima.controllers')
             sumDue += receipt.due;
           }
         });
-
         $scope.account_balance = balance;
-
       });
-
     };
 
     function payCaution() {
@@ -194,7 +193,6 @@ angular.module('bhima.controllers')
     });
 
     function check () {
-
       return (session.payment &&
              $scope.currency ? session.payment < $scope.currency.min_monentary_unit : true) ||
              ($scope.account_balance ? $scope.account_balance > 0 : false);
@@ -216,6 +214,8 @@ angular.module('bhima.controllers')
     };
 
     function loadDefaultCurrency(currency) {
+      haltOnNoExchange();
+
       if (!currency) { return; }
       defaultCurrency = currency;
 
@@ -250,6 +250,35 @@ angular.module('bhima.controllers')
 
       $scope.setCurrency(sessionDefault);
     }
+
+    function haltOnNoExchange () {
+      if (exchange.hasDailyRate()) { return; }
+
+      var instance = $modal.open({
+        templateUrl : 'noExchangeRate.html',
+        backdrop    : 'static',
+        keyboard    : false,
+        controller  : function ($scope, $modalInstance) {
+          $scope.timestamp= new Date();
+
+          $scope.close = function close () {
+            $modalInstance.dismiss();
+          };
+
+          $scope.setExchange = function setExchange () {
+            $modalInstance.close();
+          };
+
+        }
+      });
+
+      instance.result.then(function () {
+        $location.path('/exchange_rate');
+      }, function () {
+        $scope.errorState = true;
+      });
+    }
+
 
     $scope.payCaution = payCaution;
     $scope.check = check;

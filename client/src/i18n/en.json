@@ -1085,16 +1085,17 @@
    "WARN_MISSING_DOCUMENT_ID"    : "Missing document ID"
    },
 "EXCHANGE": {
-   "HELP_TXT_1" : "The exchange rate module provides the facilty to set daily exchange rates. In order to ensure data integrity, an exchange rate for all functional currencies must be set daily",
-   "NEW"        : "New Exchange Rate",
-   "NO_RATES"   : "There are no rates set for today!",
-   "PREV"       : "Previous Rates",
-   "REVIEW"     : "Review Today's Rates",
-   "SET"        : "Set Today's Exchange Rate",
-   "TITLE"      : "Configure Exchange Rates",
-   "TODAY_RATE" : "Exchange Rate for",
-   "OLD_DATE"   : "Define an exchange rate for an old date",
-   "DATE"       : "Define date"
+   "HELP_TXT_1"       : "The exchange rate module provides the facilty to set daily exchange rates. In order to ensure data integrity, an exchange rate for all functional currencies must be set daily",
+   "NEW"              : "New Exchange Rate",
+   "NO_EXCHANGE_RATE" : "No exchange rates loaded for date",
+   "NO_RATES"         : "There are no rates set for today!",
+   "PREV"             : "Previous Rates",
+   "REVIEW"           : "Review Today's Rates",
+   "SET"              : "Set Today's Exchange Rate",
+   "TITLE"            : "Configure Exchange Rates",
+   "TODAY_RATE"       : "Exchange Rate for",
+   "OLD_DATE"         : "Define an exchange rate for an old date",
+   "DATE"             : "Define date"
    },
 "EXPIRING": {
    "EXPIRED" : "Expired inventories",
