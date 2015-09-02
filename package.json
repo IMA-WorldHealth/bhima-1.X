@@ -5,7 +5,7 @@
   "main": "server/app.js",
   "scripts": {
     "test": "mocha server/test/",
-    "start": "cd client/ && gulp && cd .. && node server/app.js"
+    "app": "gulp build && cd bin && node server/app.js"
   },
   "repository": {
     "type": "git",
@@ -52,6 +52,7 @@
     "gulp-protractor": "^1.0.0",
     "gulp-uglify": "~1.2.0",
     "mocha": "^2.0.1",
-    "protractor": "^2.2.0"
+    "protractor": "^2.2.0",
+    "rimraf": "^2.4.3"
   }
 }
