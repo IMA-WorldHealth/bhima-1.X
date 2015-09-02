@@ -36,7 +36,8 @@ var finance         = require('../controllers/finance');
 var accounts        = require('../controllers/accounts');
 var auth            = require('../controllers/auth'),
     projects        = require('../controllers/projects'),
-    users           = require('../controllers/users');
+    users           = require('../controllers/users'),
+    analytics       = require('../controllers/analytics');
 
 var patient = require('../controllers/patient');
 
@@ -46,6 +47,7 @@ exports.initialise = function (app) {
   // exposed to the outside without authentication
   app.get('/languages', users.getLanguages);
   app.get('/projects', projects.getProjects);
+
   app.post('/login', auth.login);
   app.get('/logout', auth.logout);
 
@@ -218,10 +220,19 @@ exports.initialise = function (app) {
   app.get('/patient/search/fuzzy/:match', patient.searchFuzzy);
   app.get('/patient/search/reference/:reference', patient.searchReference);
 
+  // analytics for financial dashboard
+  // cash flow analytics
+  app.get('/analytics/cashboxes', analytics.cashflow.getCashBoxes);
+  app.get('/analytics/cashboxes/:id/balance', analytics.cashflow.getCashBoxBalance);
+  app.get('/analytics/cashboxes/:id/history', analytics.cashflow.getCashBoxHistory);
+  
+  // debtor analytics
+  app.get('/analytics/debtorgroups/top', analytics.cashflow.getTopDebtorGroups);
+  app.get('/analytics/debtors/top', analytics.cashflow.getTopDebtors);
+
   // users controller
   app.post('/users', users.createUser);
   app.put('/users/:id', users.updateUser);
   app.get('/users', users.getUsers);
   app.delete('/users/:id', users.removeUser);
-
 };

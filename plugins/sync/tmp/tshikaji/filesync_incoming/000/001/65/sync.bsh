@@ -1,2 +1,0 @@
-fileList = new HashMap();
-return fileList;
