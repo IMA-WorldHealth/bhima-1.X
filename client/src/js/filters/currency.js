@@ -6,8 +6,6 @@
  *  - Accept currency key per individual filter
  *  - Fetch and cache currencies and formats from system database
  */
-console.log(angular);
-console.log(angular.module);
 angular.module('bhima.filters') 
   
   .filter('currency', [
@@ -30,7 +28,7 @@ angular.module('bhima.filters')
         console.log('CurrencyCache initiliased');
   
         var supportedCurrencies = new Store({identifier : 'id'});
-        var currentFormats = new Store({identifier : 'id'});
+        var currentFormats = new Store({identifier : 'format_key'});
         var fetchingKeys = [];
 
         var loadedSupportedCurrencies = false;
@@ -57,38 +55,67 @@ angular.module('bhima.filters')
         });
 
         function fetchFormatConfiguration(key) { 
+          var formatObject = {};
+
           fetchingKeys[key] = true;
 
-          $http.get('/i18n/currency/'.concat(key))
+          $http.get('/i18n/currency/'.concat(key).concat('.json'))
             .success(function (result) { 
+              formatObject = result;
 
+              formatObject.supported = true;
+              
+              // TODO identifier could be in format file if required
+              formatObject.format_key = key;
+              console.log('got currency format', result);
+              
+              addFormat(formatObject);      
             })
             .catch(function (err) { 
+              formatObject.supported = false;
+              formatObject.format_key = key;
 
+              console.log('ERRUR : ', err);
+
+              addFormat(formatObject);
             });
         }
 
-        function getFormat(key) {
+        function addFormat(formatObject) { 
+          // FIXME Resolve issue with Store to just allow post. Github Ref: #
+          if (angular.isUndefined(currentFormats.data.length)) { 
+            currentFormats.setData([formatObject]);
+          } else { 
+            currentFormats.post(formatObject);
+          }
+        }
+
+        function getFormat(currencyId) {
 
           // if (!loadedSupportedCurrencies) { 
           //   notReadyCache.push(key);
           //   return;
           // }
+          var supportedCurrency = supportedCurrencies.get(currencyId);
+  
 
-          var progress = fetchingKeys[key];
-
-          console.log('ang test', angular.isUndefined(progress));
+          // TODO move supported object into variable
+          if (angular.isUndefined(supportedCurrency)) { 
+            return {
+              supported : false
+            }
+          }
+          var formatKey = supportedCurrency.format_key;
+          var progress = fetchingKeys[formatKey];
+    
+          // console.log('ang test', angular.isUndefined(progress));
 
           if (!angular.isDefined(progress)) { 
-            fetchFormatConfiguration(key);
-
+            fetchFormatConfiguration(formatKey);
           }
-          var format = currentFormats.get(key);
-
-          fetchingKeys[key] = false;
-          return { 
-            supported : false
-          };     
+          
+          var format = currentFormats.get(formatKey);
+          return format;
         }
 
         function fetchKey(key) { 
@@ -96,16 +123,22 @@ angular.module('bhima.filters')
         }
 
         return { 
-          request : getFormat
+          request : getFormat,
+          
+          // TODO remove inline function
+          ready : function () { 
+            return loadedSupportedCurrencies;
+          }
         }
       } // End CurrencyCache
               
       // targetLocale/ targetCurrency
       function handleFilter(amount, targetLocale, currencySymbol, fractionSize) {
         var formats = $locale.NUMBER_FORMATS; 
-        console.log('formats now', formats);
         if (angular.isUndefined(targetLocale)) { 
-          targetLocale = 1;
+
+          // TODO Assign enterprise currency and warn user
+          targetLocale = -1;
         }
 
         if (angular.isUndefined(currencySymbol)) {
@@ -115,12 +148,12 @@ angular.module('bhima.filters')
         if (angular.isUndefined(fractionSize)) {
           fractionSize = formats.PATTERNS[1].maxFrac;
         }
-        console.log(targetLocale);
+        // console.log(targetLocale);
         
-        console.log('bhima currency');
-        console.log('patterns 1', formats.PATTERNS[1]);
-        console.log('group sep', formats.GROUP_SEP);
-        console.log('decimal sep', formats.DECIMAL_SEP);
+        // console.log('bhima currency');
+        // console.log('patterns 1', formats.PATTERNS[1]);
+        // console.log('group sep', formats.GROUP_SEP);
+        // console.log('decimal sep', formats.DECIMAL_SEP);
 
         // FIXME hack
         // if (currency.get(targetLocale)) { 
@@ -132,15 +165,23 @@ angular.module('bhima.filters')
         // $http.get('/finance/currencies').then(function (result) { 
           // return result; 
         // });
-        var thisFormat = format.request('usd');
-      
-        // TODO It's not sexy but it works - move these to descriptions 
-        // var formatNotReady = thisFormat == null etc.
-        if (amount == null) { 
+        
+        // TODO sort out this logic 
+        if (!format.ready()) { 
           return null;
         }
         
-        if (thisFormat == null) { 
+        // TODO Get enterprise currency from session 
+        // TODO Pass option in here (hardcoded)
+        var thisFormat = format.request(targetLocale);
+      
+        // TODO It's not sexy but it works - move these to descriptions 
+        // var formatNotReady = thisFormat == null etc.
+        if (amount === null) { 
+          return null;
+        }
+        
+        if (angular.isUndefined(thisFormat)) { 
           return "...";
         }
 
@@ -148,8 +189,8 @@ angular.module('bhima.filters')
           return 'CURRENCY_NOT_SUPPORTED('.concat(amount).concat(')');
         }
         
-        return formatNumber(amount, getLocaleCurrencyFormat(targetLocale), formats.GROUP_SEP, formats.DECIMAL_SEP, fractionSize).
-            replace(/\u00A4/g, currencySymbol);
+        return formatNumber(amount, thisFormat.PATTERNS[1], thisFormat.GROUP_SEP, thisFormat.DECIMAL_SEP, fractionSize).
+            replace(/\u00A4/g, thisFormat.CURRENCY_SYM);
       }
 
       handleFilter.$stateful = true;
@@ -250,9 +291,7 @@ function formatNumber(number, pattern, groupSep, decimalSep, fractionSize) {
   return parts.join('');
 } 
 
-// Temporary function to map locales to currencies 
-// TODO move all currency format information into currency table OR define 
-//      all currency formatting through locale 
+// FIXME Method depreciated - move when all dependencies cleared
 function getLocaleCurrencyFormat(currencyId) { 
   
   var en_us =
