@@ -822,7 +822,7 @@ function handleEmployeeInvoice (id, user_id, done) {
   var references = {}, cfg = {};
 
   function handleResult (results) {
-    if (results.length === 0) {
+    if (results.length <= 0) {
       throw new Error('no record found');
     }
     references = results;
@@ -845,7 +845,7 @@ function handleEmployeeInvoice (id, user_id, done) {
     if (!totalEquality) {
       throw new Error('Individual costs do not match total cost for invoice id: ' + id);
     }
-    return get.origin('group_invoice');
+    return get.origin('employee_invoice');
   }
 
   function handleOrigin (originId) {
@@ -859,7 +859,7 @@ function handleEmployeeInvoice (id, user_id, done) {
     references.forEach(function (row) {
       get.transactionId(cfg.project_id)
         .then(function  (trans_id) {
-          cfg.descript = trans_id.substring(0,4) + '_SUPPORTED/' + new Date().toISOString().slice(0, 10).toString();
+          cfg.descript = trans_id.substring(0,4) + '_CHARGE TAKEN/' + new Date().toISOString().slice(0, 10).toString();
 
           var debitSql=
             'INSERT INTO `posting_journal` ' +
@@ -904,13 +904,14 @@ function handleEmployeeInvoice (id, user_id, done) {
             'WHERE `employee_invoice_item`.`uuid` = ' + sanitize.escape(row.gid);
 
           return q.all([db.exec(debitSql), db.exec(credit_sql)]);
-          //return q.all([db.exec(credit_sql)]);
         })
         .catch(function(err) {
           console.log('erreur', err);
+          done(err);
         });
     });
   }
+  
   var sql =
     'SELECT `employee_invoice`.`uuid`, `employee_invoice`.`project_id`, `project`.`enterprise_id`, `employee_invoice`.`debitor_uuid`,  ' +
     '  `employee_invoice`.`note`, `employee_invoice`.`authorized_by`, `employee_invoice`.`date`, ' +
