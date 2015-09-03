@@ -1,330 +1,156 @@
-/*
- * BHIMA fork of native angular currency filter 
- * https://github.com/angular/angular.js/blob/master/src/ng/filter/filters.js
- * Built to support the following feature s
- *  - Logically seperate locale and currency, accounting cannot be based on language preference 
- *  - Accept currency key per individual filter
- *  - Fetch and cache currencies and formats from system database
- */
-angular.module('bhima.filters') 
+'use strict'
+
+/** 
+ * @description 
+ * BHIMA fork of angular's native currency filter. 
+ * Allows currency to be defined for each filter individually. 
+ * Currency IDs are used to fetch configuration files asynchronously from the server.
+ * Completely seperates locale from currency format to facilitate reliable accounting.
+ * Clearly fails given an unsupported currency ID or configuration.
+ *
+ * @param {number} amount Value to be converted into currency
+ * @param {number} currencyId ID for 
+ * @returns {string} Valid supported currency or error string
+ */ 
+
+angular.module('bhima.filters')
+.filter('currency', ['currencyFormat', 'SessionService', function (CurrencyFormat, Session) { 
+  var requireCurrencyDefinition = false;     
   
-  .filter('currency', [
-    '$locale',
-    '$http',
-    '$q',
-    '$timeout',
-    'store',
-    function ($locale, $http, $q, $timeout, Store) { 
-      var formats = $locale.NUMBER_FORMATS;
-  
-      var format = new CurrencyCache();
+  function currencyFilter(amount, currencyId) {
+    var formatConfiguration;
+    var amountUndefined = angular.isUndefined(amount) || angular === null; 
 
-          
+    if (angular.isUndefined(currencyId)) { 
+
+      if (requireCurrencyDefinition) { 
+        return formatError('INVALID_CURRENCY_DEFINITION', amount);
+      } else { 
         
-      // TODO Move to service 
-      function CurrencyCache () { 
-        
-        var notReadyCache = [];
-        console.log('CurrencyCache initiliased');
-  
-        var supportedCurrencies = new Store({identifier : 'id'});
-        var currentFormats = new Store({identifier : 'format_key'});
-        var fetchingKeys = [];
-
-        var loadedSupportedCurrencies = false;
-
-        $http.get('/finance/currencies')
-        .success(function (data) {
-          supportedCurrencies.setData(data);
-          loadedSupportedCurrencies = true;
-
-          // Request all currencies we've missed - this is stupid, it's late
-          
-          // var hit = []; 
-          // notReadyCache.forEach(function (key) { 
-          //   var miss = hit.indexOf(key) == -1;
-
-          //   if (miss) { 
-          //     hit.push(key);
-          //     fetchFormatConfiguration(key);
-          //   }
-          // });
-        })
-        .error(function (error) {
-          messenger.danger('An error occured:' + JSON.stringify(error));
-        });
-
-        function fetchFormatConfiguration(key) { 
-          var formatObject = {};
-
-          fetchingKeys[key] = true;
-
-          $http.get('/i18n/currency/'.concat(key).concat('.json'))
-            .success(function (result) { 
-              formatObject = result;
-
-              formatObject.supported = true;
-              
-              // TODO identifier could be in format file if required
-              formatObject.format_key = key;
-              console.log('got currency format', result);
-              
-              addFormat(formatObject);      
-            })
-            .catch(function (err) { 
-              formatObject.supported = false;
-              formatObject.format_key = key;
-
-              console.log('ERRUR : ', err);
-
-              addFormat(formatObject);
-            });
-        }
-
-        function addFormat(formatObject) { 
-          // FIXME Resolve issue with Store to just allow post. Github Ref: #
-          if (angular.isUndefined(currentFormats.data.length)) { 
-            currentFormats.setData([formatObject]);
-          } else { 
-            currentFormats.post(formatObject);
-          }
-        }
-
-        function getFormat(currencyId) {
-
-          // if (!loadedSupportedCurrencies) { 
-          //   notReadyCache.push(key);
-          //   return;
-          // }
-          var supportedCurrency = supportedCurrencies.get(currencyId);
-  
-
-          // TODO move supported object into variable
-          if (angular.isUndefined(supportedCurrency)) { 
-            return {
-              supported : false
-            }
-          }
-          var formatKey = supportedCurrency.format_key;
-          var progress = fetchingKeys[formatKey];
-    
-          // console.log('ang test', angular.isUndefined(progress));
-
-          if (!angular.isDefined(progress)) { 
-            fetchFormatConfiguration(formatKey);
-          }
-          
-          var format = currentFormats.get(formatKey);
-          return format;
-        }
-
-        function fetchKey(key) { 
-
-        }
-
-        return { 
-          request : getFormat,
-          
-          // TODO remove inline function
-          ready : function () { 
-            return loadedSupportedCurrencies;
-          }
-        }
-      } // End CurrencyCache
-              
-      // targetLocale/ targetCurrency
-      function handleFilter(amount, targetLocale, currencySymbol, fractionSize) {
-        var formats = $locale.NUMBER_FORMATS; 
-        if (angular.isUndefined(targetLocale)) { 
-
-          // TODO Assign enterprise currency and warn user
-          targetLocale = -1;
-        }
-
-        if (angular.isUndefined(currencySymbol)) {
-          currencySymbol = formats.CURRENCY_SYM;
-        }
-
-        if (angular.isUndefined(fractionSize)) {
-          fractionSize = formats.PATTERNS[1].maxFrac;
-        }
-        // console.log(targetLocale);
-        
-        // console.log('bhima currency');
-        // console.log('patterns 1', formats.PATTERNS[1]);
-        // console.log('group sep', formats.GROUP_SEP);
-        // console.log('decimal sep', formats.DECIMAL_SEP);
-
-        // FIXME hack
-        // if (currency.get(targetLocale)) { 
-          // formats.DECIMAL_SEP = currency.get(targetLocale).decimal;
-          // currencySymbol = currency.get(targetLocale).symbol; 
-        // } 
-        // if null or undefined pass it through
-        
-        // $http.get('/finance/currencies').then(function (result) { 
-          // return result; 
-        // });
-        
-        // TODO sort out this logic 
-        if (!format.ready()) { 
-          return null;
-        }
-        
-        // TODO Get enterprise currency from session 
-        // TODO Pass option in here (hardcoded)
-        var thisFormat = format.request(targetLocale);
-      
-        // TODO It's not sexy but it works - move these to descriptions 
-        // var formatNotReady = thisFormat == null etc.
-        if (amount === null) { 
-          return null;
-        }
-        
-        if (angular.isUndefined(thisFormat)) { 
-          return "...";
-        }
-
-        if (thisFormat.supported === false) { 
-          return 'CURRENCY_NOT_SUPPORTED('.concat(amount).concat(')');
-        }
-        
-        return formatNumber(amount, thisFormat.PATTERNS[1], thisFormat.GROUP_SEP, thisFormat.DECIMAL_SEP, fractionSize).
-            replace(/\u00A4/g, thisFormat.CURRENCY_SYM);
+        // Display enterprise currency unless otherwise specified 
+        currencyId = Session.enterprise.currency_id;
       }
-
-      handleFilter.$stateful = true;
-      
-      return handleFilter;
     }
-  ])
-
-
-// Utility methods
-// This method is copied directly from the angular repository. The method is
-// a utility used by the native currency filter. 
-var DECIMAL_SEP = '.';
-function formatNumber(number, pattern, groupSep, decimalSep, fractionSize) {
-  if (angular.isObject(number)) return '';
-
-  var isNegative = number < 0;
-  number = Math.abs(number);
-
-  var isInfinity = number === Infinity;
-  if (!isInfinity && !isFinite(number)) return '';
-
-  var numStr = number + '',
-      formatedText = '',
-      hasExponent = false,
-      parts = [];
-
-  if (isInfinity) formatedText = '\u221e';
-
-  if (!isInfinity && numStr.indexOf('e') !== -1) {
-    var match = numStr.match(/([\d\.]+)e(-?)(\d+)/);
-    if (match && match[2] == '-' && match[3] > fractionSize + 1) {
-      number = 0;
-    } else {
-      formatedText = numStr;
-      hasExponent = true;
+    
+    // Terminate early to reduce calculations for ill formed requests 
+    if (amountUndefined) { 
+      return null;
     }
+
+    // Currency cache has not yet retrieved available currency index 
+    if (!CurrencyFormat.indexReady()) { 
+      return null;
+    }
+    
+    formatConfiguration = CurrencyFormat.request(currencyId);
+    
+    // No configuration found - definition is probably being fetched
+    if (angular.isUndefined(formatConfiguration)) { 
+      return null;
+    }
+    
+    // Currency ID did not match a currency ID or format configuration was not found
+    if (!formatConfiguration.supported) { 
+      return formatError('CURRENCY_NOT_SUPPORTED', amount);
+    }
+    
+    return formatNumber(amount, formatConfiguration.PATTERNS[1], formatConfiguration.GROUP_SEP, formatConfiguration.DECIMAL_SEP)
+      .replace(/\u00A4/g, formatConfiguration.CURRENCY_SYM);
   }
 
-  if (!isInfinity && !hasExponent) {
-    var fractionLen = (numStr.split(DECIMAL_SEP)[1] || '').length;
+  // Utility methods
+  function formatError(message, amount) { 
+    return message.concat('(', amount, ')');
+  }
 
-    // determine fractionSize if it is not specified
-    if (angular.isUndefined(fractionSize)) {
-      fractionSize = Math.min(Math.max(pattern.minFrac, fractionLen), pattern.maxFrac);
+  var DECIMAL_SEP = '.';
+  function formatNumber(number, pattern, groupSep, decimalSep, fractionSize) {
+    if (angular.isObject(number)) return '';
+
+    var isNegative = number < 0;
+    number = Math.abs(number);
+
+    var isInfinity = number === Infinity;
+    if (!isInfinity && !isFinite(number)) return '';
+
+    var numStr = number + '',
+        formatedText = '',
+        hasExponent = false,
+        parts = [];
+
+    if (isInfinity) formatedText = '\u221e';
+
+    if (!isInfinity && numStr.indexOf('e') !== -1) {
+      var match = numStr.match(/([\d\.]+)e(-?)(\d+)/);
+      if (match && match[2] == '-' && match[3] > fractionSize + 1) {
+        number = 0;
+      } else {
+        formatedText = numStr;
+        hasExponent = true;
+      }
     }
 
-    // safely round numbers in JS without hitting imprecisions of floating-point arithmetics
-    // inspired by:
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round
-    number = +(Math.round(+(number.toString() + 'e' + fractionSize)).toString() + 'e' + -fractionSize);
+    if (!isInfinity && !hasExponent) {
+      var fractionLen = (numStr.split(DECIMAL_SEP)[1] || '').length;
 
-    var fraction = ('' + number).split(DECIMAL_SEP);
-    var whole = fraction[0];
-    fraction = fraction[1] || '';
+      // determine fractionSize if it is not specified
+      if (angular.isUndefined(fractionSize)) {
+        fractionSize = Math.min(Math.max(pattern.minFrac, fractionLen), pattern.maxFrac);
+      }
 
-    var i, pos = 0,
-        lgroup = pattern.lgSize,
-        group = pattern.gSize;
+      // safely round numbers in JS without hitting imprecisions of floating-point arithmetics
+      // inspired by:
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round
+      number = +(Math.round(+(number.toString() + 'e' + fractionSize)).toString() + 'e' + -fractionSize);
 
-    if (whole.length >= (lgroup + group)) {
-      pos = whole.length - lgroup;
-      for (i = 0; i < pos; i++) {
-        if ((pos - i) % group === 0 && i !== 0) {
+      var fraction = ('' + number).split(DECIMAL_SEP);
+      var whole = fraction[0];
+      fraction = fraction[1] || '';
+
+      var i, pos = 0,
+          lgroup = pattern.lgSize,
+          group = pattern.gSize;
+
+      if (whole.length >= (lgroup + group)) {
+        pos = whole.length - lgroup;
+        for (i = 0; i < pos; i++) {
+          if ((pos - i) % group === 0 && i !== 0) {
+            formatedText += groupSep;
+          }
+          formatedText += whole.charAt(i);
+        }
+      }
+
+      for (i = pos; i < whole.length; i++) {
+        if ((whole.length - i) % lgroup === 0 && i !== 0) {
           formatedText += groupSep;
         }
         formatedText += whole.charAt(i);
       }
-    }
 
-    for (i = pos; i < whole.length; i++) {
-      if ((whole.length - i) % lgroup === 0 && i !== 0) {
-        formatedText += groupSep;
+      // format fraction part.
+      while (fraction.length < fractionSize) {
+        fraction += '0';
       }
-      formatedText += whole.charAt(i);
+
+      if (fractionSize && fractionSize !== "0") formatedText += decimalSep + fraction.substr(0, fractionSize);
+    } else {
+      if (fractionSize > 0 && number < 1) {
+        formatedText = number.toFixed(fractionSize);
+        number = parseFloat(formatedText);
+      }
     }
 
-    // format fraction part.
-    while (fraction.length < fractionSize) {
-      fraction += '0';
+    if (number === 0) {
+      isNegative = false;
     }
 
-    if (fractionSize && fractionSize !== "0") formatedText += decimalSep + fraction.substr(0, fractionSize);
-  } else {
-    if (fractionSize > 0 && number < 1) {
-      formatedText = number.toFixed(fractionSize);
-      number = parseFloat(formatedText);
-    }
+    parts.push(isNegative ? pattern.negPre : pattern.posPre,
+               formatedText,
+               isNegative ? pattern.negSuf : pattern.posSuf);
+    return parts.join('');
   }
 
-  if (number === 0) {
-    isNegative = false;
-  }
-
-  parts.push(isNegative ? pattern.negPre : pattern.posPre,
-             formatedText,
-             isNegative ? pattern.negSuf : pattern.posSuf);
-  return parts.join('');
-} 
-
-// FIXME Method depreciated - move when all dependencies cleared
-function getLocaleCurrencyFormat(currencyId) { 
-  
-  var en_us =
-  {
-    "gSize": 3,
-    "lgSize": 3,
-    "maxFrac": 2,
-    "minFrac": 2,
-    "minInt": 1,
-    "negPre": "-",
-    "negSuf": "\u00a0\u00a4",
-    "posPre": "",
-    "posSuf": "\u00a0\u00a4"
-  };
-
-  var fr_cd = 
-  {
-    "gSize": 3,
-    "lgSize": 3,
-    "maxFrac": 2,
-    "minFrac": 2,
-    "minInt": 1,
-    "negPre": "-\u00a4",
-    "negSuf": "",
-    "posPre": "\u00a4",
-    "posSuf": ""
-  };
-
-  var map = {
-    '1' : en_us, 
-    '2' : fr_cd
-  };
-
-  return map[currencyId];
-}
-
+  currencyFilter.$stateful = true;
+  return currencyFilter;
+}]);

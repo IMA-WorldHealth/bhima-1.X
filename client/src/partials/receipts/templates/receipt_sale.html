@@ -49,7 +49,6 @@
       <i>{{ 'INVOICE.DATE_RECEIPT' | translate }}</i>
       <br>
       {{model.saleRecords[0].invoice_date | date}}
-      <p style="color : red;">{{ 93000 | currency:model.selectedCurrency.id}}</p>
       <br>
     </div>
   </div>
@@ -73,8 +72,6 @@
             <td>{{ item.text }}</td>
             <td>{{ item.quantity }}</td>
 
-            <!-- <td><span ng-bind-html="item.localeTransaction | intlcurrency:model.selectedCurrency.id"></span></td> -->
-            <!-- <td><span ng-bind-html="item.localeCost| intlcurrency:model.selectedCurrency.id"></span></td> -->
             <td>{{ item.localeTransaction | currency:model.selectedCurrency.id }}</td>
             <td>{{ item.localeCost | currency:model.selectedCurrency.id }}</td>
           </tr>
