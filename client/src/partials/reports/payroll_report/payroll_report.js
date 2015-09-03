@@ -24,7 +24,6 @@ angular.module('bhima.controllers')
       }
     };
 
-
     function reset () {
       var record = connect.clean(session);
       dependencies.periods = {
@@ -42,7 +41,7 @@ angular.module('bhima.controllers')
       .then(function (model) {
         var period = $scope.period =model.periods.data[0];
       });
-
+      
 
       $http.get('/getReportPayroll/',{params : {
             'period_id' : record.period_id
@@ -74,11 +73,6 @@ angular.module('bhima.controllers')
     }
 
     $scope.reset = reset;
-    function generateReference () {
-      window.data = $scope.getPeriods.data;
-      var max = Math.max.apply(Math.max, $scope.getPeriods.data.map(function (o) { return o.reference; }));
-      return Number.isNaN(max) ? 1 : max + 1;
-    } 
     $scope.reconfigure = reconfigure;
   } 
 ]);
