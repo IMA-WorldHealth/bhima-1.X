@@ -9,6 +9,8 @@ exports.refund = refund;
 exports.payroll = payroll;
 exports.convention = convention;
 exports.payEmployee = payEmployee;
+exports.genericIncome = genericIncome;
+exports.genericExpense = genericExpense;
 
 /*
  * Transfer cash from one cashbox to another
@@ -559,3 +561,186 @@ function payEmployee(id, userId, cb) {
   .catch(cb)
   .done();
 }
+
+
+/*
+ * Generic Expense
+ *
+ * This route allows the primary cash module to disperse payment to any source.
+*/
+function genericExpense(id, userId, cb) {
+  'use strict';
+
+  var sql, params, state = {}, data, reference, cfg = {};
+
+  sql =
+    'SELECT primary_cash_item.primary_cash_uuid, reference, project_id, date, deb_cred_uuid, deb_cred_type, currency_id, ' +
+      'account_id, cost, user_id, description, cash_box_id, origin_id, primary_cash_item.debit, ' +
+      'primary_cash_item.credit, primary_cash_item.inv_po_id, primary_cash_item.document_uuid ' +
+    'FROM primary_cash JOIN primary_cash_item ON primary_cash.uuid = primary_cash_item.primary_cash_uuid ' +
+    'WHERE primary_cash.uuid = ?;';
+
+  db.exec(sql, [id])
+  .then(function (results) {
+    if (results.length === 0) {
+      throw new Error('No primary cash row by the uuid: ' + id);
+    }
+
+    reference = results[0];
+    data = results;
+    return core.queries.exchangeRate(new Date());
+  })
+  .then(function (store) {
+    state.store = store;
+
+    return q([core.queries.origin('generic_expense'), core.queries.period(reference.date)]);
+  })
+  .spread(function (originId, periodObject) {
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+    cfg.originId = originId;
+
+    return core.queries.transactionId(reference.project_id);
+  })
+  .then(function (transId) {
+    state.transId = transId;
+    var rate = state.store.get(reference.currency_id).rate;
+
+    // debit the creditor
+    sql =
+      'INSERT INTO posting_journal ' +
+        '(project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, ' +
+        'description, account_id, debit, credit, debit_equiv, credit_equiv, ' +
+        'currency_id, inv_po_id, origin_id, user_id ) ' +
+      'SELECT project_id, ?, ?, ?, ?, date, description, account_id, credit, ' +
+        'debit, credit / ?, debit / ?, currency_id, document_uuid, ?, ? ' +
+      'FROM primary_cash JOIN primary_cash_item ON ' +
+        'primary_cash.uuid = primary_cash_item.primary_cash_uuid ' +
+      'WHERE primary_cash.uuid = ?;';
+
+    params = [
+      uuid(), cfg.fiscalYearId, cfg.periodId, transId,
+      rate, rate, cfg.originId, userId, id
+    ];
+
+    return db.exec(sql, params);
+  })
+  .then(function () {
+
+    // credit the primary cash account
+    var rate = state.store.get(reference.currency_id).rate;
+
+    sql =
+      'INSERT INTO posting_journal ' +
+        '(project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, ' +
+        'description, account_id, debit, credit, debit_equiv, credit_equiv, ' +
+        'currency_id, inv_po_id, origin_id, user_id ) ' +
+      'SELECT project_id, ?, ?, ?, ?, date, description, cash_box_account_currency.account_id, ' +
+        'debit, credit, debit / ?, credit / ?, primary_cash.currency_id, document_uuid, ?, ? ' +
+      'FROM primary_cash JOIN primary_cash_item JOIN cash_box_account_currency ON ' +
+        'primary_cash.uuid = primary_cash_item.primary_cash_uuid AND ' +
+        'primary_cash.cash_box_id = cash_box_account_currency.cash_box_id ' +
+      'WHERE primary_cash.uuid = ? AND cash_box_account_currency.currency_id = ?;';
+
+    params = [
+      uuid(), cfg.fiscalYearId, cfg.periodId, state.transId, rate, rate,
+      cfg.originId, userId, id, reference.currency_id
+    ];
+
+    return db.exec(sql, params);
+  })
+  .then(function (rows) {
+    cb(null, rows);
+  })
+  .catch(cb)
+  .done();
+}
+
+/*
+ * Generic Income
+ *
+ * This route allows the primary cash module to accept payment to any source.
+*/
+function genericIncome(id, userId, cb) {
+  var sql, params, state = {}, data, reference, cfg = {};
+
+  sql =
+    'SELECT primary_cash_item.primary_cash_uuid, reference, project_id, date, deb_cred_uuid, deb_cred_type, currency_id, ' +
+      'account_id, cost, user_id, description, cash_box_id, origin_id, primary_cash_item.debit, ' +
+      'primary_cash_item.credit, primary_cash_item.inv_po_id, primary_cash_item.document_uuid ' +
+    'FROM primary_cash JOIN primary_cash_item ON primary_cash.uuid = primary_cash_item.primary_cash_uuid ' +
+    'WHERE primary_cash.uuid = ?;';
+
+  db.exec(sql, [id])
+  .then(function (results) {
+    if (results.length === 0) {
+      throw new Error('No primary_cash by the uuid: ' + id);
+    }
+
+    reference = results[0];
+    data = results;
+    var date = util.toMysqlDate(reference.date);
+    return core.queries.exchangeRate(date);
+  })
+  .then(function (store) {
+    state.store = store;
+
+    return q([core.queries.origin('generic_income'), core.queries.period(reference.date)]);
+  })
+  .spread(function (originId, periodObject) {
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+    cfg.originId = originId;
+    return core.queries.transactionId(reference.project_id);
+  })
+  .then(function (transId) {
+    state.transId = transId;
+
+    var rate = state.store.get(reference.currency_id).rate;
+    // credit the profit account
+    sql =
+      'INSERT INTO posting_journal ' +
+        '(project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, ' +
+        'description, account_id, debit, credit, debit_equiv, credit_equiv, ' +
+        'currency_id, inv_po_id, origin_id, user_id ) ' +
+      'SELECT project_id, ?, ?, ?, ?, date, description, account_id, credit, ' +
+        'debit, credit / ?, debit / ?, currency_id, document_uuid, ?, ? ' +
+      'FROM primary_cash JOIN primary_cash_item ON ' +
+        'primary_cash.uuid = primary_cash_item.primary_cash_uuid ' +
+      'WHERE primary_cash.uuid = ?;';
+
+    params = [
+      uuid(), cfg.fiscalYearId, cfg.periodId, transId, rate, rate, cfg.originid, userId, id
+    ];
+
+    return db.exec(sql, params);
+  })
+  .then(function () {
+    // debit the primary cash account
+    var rate = state.store.get(reference.currency_id).rate;
+    sql =
+      'INSERT INTO posting_journal ' +
+        '(project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, ' +
+        'description, account_id, debit, credit, debit_equiv, credit_equiv, ' +
+        'currency_id, inv_po_id, origin_id, user_id ) ' +
+      'SELECT project_id, ?, ?, ?, ?, date, description, cash_box_account_currency.account_id, ' +
+        'debit, credit, debit / ?, credit / ?, primary_cash.currency_id, document_uuid, ?, ? ' +
+      'FROM primary_cash JOIN primary_cash_item JOIN cash_box_account_currency ON ' +
+        'primary_cash.uuid = primary_cash_item.primary_cash_uuid AND ' +
+        'primary_cash.cash_box_id = cash_box_account_currency.cash_box_id ' +
+      'WHERE primary_cash.uuid = ? AND cash_box_account_currency.currency_id = ?;';
+
+    params = [
+      uuid(), cfg.fiscalYearId, cfg.periodId, state.transId, rate, rate,
+      cfg.originId, userId, id, reference.currency_id
+    ];
+
+    return db.exec(sql, params);
+  })
+  .then(function (rows) {
+    cb(null, rows);
+  })
+  .catch(cb)
+  .done();
+}
+
