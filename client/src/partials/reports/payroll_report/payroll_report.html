@@ -19,10 +19,12 @@
                   <div class="pull-left form-group input-group">
                     <span class="input-group-addon">
                       <span class="glyphicon glyphicon-folder-open"></span>
-                    </span>  
+                    </span>
+
                     <select class="form-bhima" ng-model="session.period_id">
-                      <option ng-repeat="getPeriod in getPeriods.data | orderBy:'-dateTo'" ng-value="getPeriod.id">{{getPeriod.label}} :: {{getPeriod.dateFrom | date }} - {{getPeriod.dateTo | date }}</option>
+                      <option ng-value="getPeriod.id" value="getPeriod.id" ng-repeat="getPeriod in getPeriods.data | orderBy:'-dateTo'">{{getPeriod.label}} :: {{getPeriod.dateFrom | date }} - {{getPeriod.dateTo | date }}</option>
                     </select>
+                    
                   </div>
                 </div>
               </div>
