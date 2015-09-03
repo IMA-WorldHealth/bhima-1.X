@@ -10,11 +10,9 @@ var resultAccountDate = new Date();
 
 // expose the http route
 exports.compile = function (options) {
-  'use strict';
-
+  'use strict';  
+  var i18nAccountResult = options.language == 'fr' ? require('../lang/fr.json').ACCOUNT_RESULT : require('../lang/en.json').ACCOUNT_RESULT;
   var deferred = q.defer(), context = {}, infos = {}, chargeData = {}, profitData = {};
-  context.reportDate = resultAccountDate.toDateString();
-
   var sql =
     'SELECT `acc`.`id` AS `accountId`, `acc`.`account_txt` AS `accounTxt`, `acc`.`account_number` AS `accountNumber`, ' +
     '`ref`.`id` AS `referenceId`, `ref`.`ref` AS `referenceAbbr`, `ref`.`text` AS `referenceLabel`, ' +
@@ -24,6 +22,26 @@ exports.compile = function (options) {
     'FROM `section_resultat` `src` JOIN `reference` `ref` ON `ref`.`section_resultat_id` = `src`.`id` ' +
     'JOIN `account` `acc` ON `acc`.`reference_id` = `ref`.`id` JOIN `general_ledger` `gld` ON `gld`.`account_id` = `acc`.`id` WHERE `gld`.`trans_date`<= (SELECT MAX(`period_stop`) ' +
     'FROM `period` WHERE `period`.`fiscal_year_id`=?) AND `acc`.`is_ohada`=? AND SUBSTRING(`acc`.`account_number`, 1, 1) >= 6 GROUP BY `gld`.`account_id` ORDER BY `src`.`position`, `ref`.`position` DESC;';
+
+  var doBalance = function (somDebit, somCredit, isCharge){
+    return (isCharge == 1)? somDebit - somCredit : somCredit - somDebit;
+  }
+  //populating context object
+
+  context.reportDate = resultAccountDate.toDateString();
+  context.enterpriseName = options.enterprise.abbr;
+
+  context.title = i18nAccountResult.TITLE;
+  context.enterprise = i18nAccountResult.ENTERPRISE;
+  context.clos = i18nAccountResult.CLOS;
+  context.duration = i18nAccountResult.DURATION;
+  context.reference = i18nAccountResult.REFERENCE;
+  context.charge = i18nAccountResult.CHARGE;
+  context.net = i18nAccountResult.NET;
+  context.totalGeneral = i18nAccountResult.TOTAL_GENERAL;
+  context.profit = i18nAccountResult.PROFIT;
+  context.date = i18nAccountResult.DATE;
+  context.total = i18nAccountResult.TOTAL;
 
   db.exec(sql, [options.fy, 1])
   .then(function (currentAccountDetails) {
@@ -72,11 +90,11 @@ exports.compile = function (options) {
         section.refs = getReferences(section, currents);
 
         section.refs.forEach(function (item){
-            item.net = getChargeNet(item, currents);
+            item.net = getNet(item, currents, section.sectionResultIsCharge, doBalance);
             item.net_view = numeral(item.net).format(formatDollar);
             section.total += item.net;
 
-            item.previous = getPreviousCharge(item, previous);
+            item.previous = getPrevious(item, previous, section.sectionResultIsCharge, doBalance);
             item.previous_view = numeral(item.previous).format(formatDollar);
             section.totalPrevious += item.previous;
         });
@@ -105,11 +123,11 @@ exports.compile = function (options) {
         section.refs = getReferences(section, currents);
 
         section.refs.forEach(function (item){
-            item.net = getProfitNet(item, currents);
+            item.net = getNet(item, currents, section.sectionResultIsCharge, doBalance);
             item.net_view = numeral(item.net).format(formatDollar);
             section.total += item.net;
 
-            item.previous = getPreviousProfit(item, previous);
+            item.previous = getPrevious(item, previous, section.sectionResultIsCharge, doBalance);
             item.previous_view = numeral(item.previous).format(formatDollar);
             section.totalPrevious += item.previous;
         });
@@ -157,7 +175,6 @@ exports.compile = function (options) {
       return sections;
     }
 
-
     function getReferences (section, currents){
       var references = [];
 
@@ -178,7 +195,7 @@ exports.compile = function (options) {
       return references;
     }
 
-    function getChargeNet (reference, currents){
+    function getNet(reference, currents, isCharge, fn){
       var somDebit = 0, somCredit = 0;
 
       currents.forEach(function (item){
@@ -187,24 +204,10 @@ exports.compile = function (options) {
           somCredit+=item.generalLegderCredit;
         }
       });
-
-      return somDebit - somCredit;
+      return fn(somDebit, somCredit, isCharge);
     }
 
-    function getProfitNet (reference, currents){
-      var somDebit = 0, somCredit = 0;
-
-      currents.forEach(function (item){
-        if(item.referenceId === reference.referenceId){
-          somDebit+=item.generalLegderDebit;
-          somCredit+=item.generalLegderCredit;
-        }
-      });
-
-      return somCredit - somDebit;
-    }
-
-    function getPreviousCharge (reference, previous){
+    function getPrevious (reference, previous, isCharge, fn){
       var somDebit = 0, somCredit = 0;
 
       previous.forEach(function (item){
@@ -214,21 +217,8 @@ exports.compile = function (options) {
         }
       });
 
-      return somDebit - somCredit;
-    }
-
-    function getPreviousProfit (reference, previous){
-      var somDebit = 0, somCredit = 0;
-
-      previous.forEach(function (item){
-        if(item.referenceId === reference.referenceId){
-          somDebit+=item.generalLegderDebit;
-          somCredit+=item.generalLegderCredit;
-        }
-      });
-
-      return somCredit - somDebit;
-    }
+      return fn(somDebit, somCredit, isCharge);
+    }    
 
     deferred.resolve(context);
   })
