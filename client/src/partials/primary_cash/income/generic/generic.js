@@ -211,23 +211,12 @@ angular.module('bhima.controllers')
       if (exchange.hasDailyRate()) { return; }
 
       var instance = $modal.open({
-        templateUrl : 'noExchangeRate.html',
+        templateUrl : 'partials/exchangeRateModal/exchangeRateModal.html',
         backdrop    : 'static',
         keyboard    : false,
-        controller  : function ($scope, $modalInstance) {
-          $scope.timestamp= new Date();
-
-          $scope.close = function close () {
-            $modalInstance.dismiss();
-          };
-
-          $scope.setExchange = function setExchange () {
-            $modalInstance.close();
-          };
-
-        }
+        controller  : 'exchangeRateModal'
       });
-
+      
       instance.result.then(function () {
         $location.path('/exchange_rate');
       }, function () {

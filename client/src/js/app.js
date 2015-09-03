@@ -735,6 +735,14 @@
       controller : 'configureEmployeeState',
       templateUrl : 'partials/reports_proposed/employee_state/employee_state.html'
     })
+    .when('/exchangeRateModal/', {
+      controller : 'exchangeRateModal',
+      templateUrl : 'partials/exchangeRateModal/exchangeRateModal.html'
+    })
+    .when('/justifyModal/', {
+      controller : 'justifyModal',
+      templateUrl : 'partials/cash/justify_modal.html'
+    })        
     .when('/dashboards/finance', {
       templateUrl : 'partials/dashboard/finance.html'
     })
