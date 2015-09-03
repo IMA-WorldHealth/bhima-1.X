@@ -710,7 +710,7 @@ function genericIncome(id, userId, cb) {
       'WHERE primary_cash.uuid = ?;';
 
     params = [
-      uuid(), cfg.fiscalYearId, cfg.periodId, transId, rate, rate, cfg.originid, userId, id
+      uuid(), cfg.fiscalYearId, cfg.periodId, transId, rate, rate, cfg.originId, userId, id
     ];
 
     return db.exec(sql, params);
