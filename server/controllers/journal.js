@@ -21,71 +21,6 @@ function lookupTable(req, res, next) {
   });
 }
 
-function handleCaution(id, user_id, done) {
-  var sql, reference, cfg = {}, queries = {};
-
-  sql =
-    'SELECT * FROM `cash` JOIN `cash_item` ON `cash`.`uuid` = `cash_item`.`cash_uuid` WHERE `cash`.`uuid` = ' + sanitize.escape(id) + ';';
-
-  db.exec(sql)
-  .then(function (results) {
-    if (results.length === 0) {
-      throw new Error('No caution by the id: ' + id);
-    }
-
-    reference = results[0];
-
-    cfg.date = util.toMysqlDate(reference.date);
-    return core.queries.myExchangeRate(cfg.date);
-  })
-  .then(function (exchangeRateStore) {
-    var dailyExchange = exchangeRateStore.get(reference.currency_id);
-    cfg.debit_equiv = dailyExchange.rate * 0;
-    cfg.credit_equiv = (1/dailyExchange.rate) * reference.cost;
-
-    return q([core.queries.origin('caution'), core.queries.period(reference.date)]);
-  })
-  .spread(function (originId, periodObject) {
-    cfg.originId = originId;
-    cfg.periodId = periodObject.id;
-    cfg.fiscalYearId = periodObject.fiscal_year_id;
-
-    return core.queries.transactionId(reference.project_id);
-  })
-  .then(function (transId) {
-    //we credit the caution account
-    queries.creditingRequest =
-      'INSERT INTO posting_journal '+
-      '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-      '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-      '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) VALUES ('+
-      [reference.project_id, sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId, '\'' + getDate() + '\'','\'' + reference.description + '\'', reference.credit_account,
-       reference.cost, 0, cfg.credit_equiv, cfg.debit_equiv, reference.currency_id, '\'' + reference.deb_cred_uuid + '\''].join(', ') +
-        ', \'D\', ' + ['\'' + id + '\'', cfg.originId, user_id].join(', ') + ');';
-
-    queries.debitingRequest =
-      'INSERT INTO posting_journal '+
-      '(`project_id`, `uuid`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-      '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-      '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) VALUES (' +
-      [reference.project_id, sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId, '\'' + getDate() + '\'', '\'' + reference.description + '\'',
-       reference.debit_account, 0, reference.cost, cfg.debit_equiv, cfg.credit_equiv, reference.currency_id].join(',') +
-        ', null, null, ' + ['\'' + id + '\'', cfg.originId, user_id].join(', ') + ');';
-
-    return db.exec(queries.creditingRequest);
-  })
-  .then(function () {
-    return db.exec(queries.debitingRequest);
-  })
-  .then(function (rows) {
-    done(null, rows);
-  })
-  .catch(function (err) {
-    done(err, null);
-  })
-  .done();
-}
-
 
 function handleEmployee (id, user_id, done) {
   var dayExchange = {}, reference = {}, cfg = {};
@@ -2581,7 +2516,7 @@ tableRouter = {
   'group_invoice'           : require('./journal/convention').invoice,
   'employee_invoice'        : require('./journal/employee').invoice,
   'credit_note'             : require('./journal/sale').creditNote,
-  'caution'                 : handleCaution,
+  'caution'                 : require('./journal/sale').caution,
   'pcash_convention'        : require('./journal/primarycash').convention,
   'pcash_employee'          : handleEmployee,
   'primary_expense'         : handleGenericExpense,
