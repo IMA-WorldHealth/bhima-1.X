@@ -20,108 +20,6 @@ function lookupTable(req, res, next) {
     res.status(200).send();
   });
 }
-
-function handleIndirectPurchase (id, user_id, done){
-  var reference, dayExchange, cfg = {};
-  var sql = 'SELECT `primary_cash`.`reference`, `primary_cash`.`uuid`, `primary_cash`.`project_id`, `primary_cash`.`type`, `primary_cash`.`date`, `primary_cash`.`deb_cred_uuid`, ' +
-            '`primary_cash`.`deb_cred_type`, `primary_cash`.`currency_id`, `primary_cash`.`account_id`, `primary_cash`.`cost`, `primary_cash`.`user_id`, `primary_cash`.`description`, ' +
-            '`primary_cash`.`cash_box_id`, `primary_cash`.`origin_id`, `primary_cash_item`.`debit`, `primary_cash_item`.`credit`, `primary_cash_item`.`inv_po_id`, `primary_cash_item`.`document_uuid`, ' +
-            '`creditor`.`group_uuid` FROM `primary_cash` JOIN `primary_cash_item` JOIN `creditor` ON `primary_cash`.`uuid` = `primary_cash_item`.`primary_cash_uuid` AND ' +
-            '`primary_cash`.`deb_cred_uuid` = `creditor`.`uuid` WHERE `primary_cash`.`uuid`=' + sanitize.escape(id) + ';';
-
-  db.exec(sql)
-  .then(getRecord)
-  .spread(getDetails)
-  .then(getTransId)
-  .then(credit)
-  .then(function (res){
-    return done(null, res);
-  })
-  .catch(function (err){
-    return done(err);
-  })
-  .done();
-
-  function getRecord (records) {
-    if (records.length === 0) { throw new Error('pas enregistrement'); }
-    reference = records[0];
-
-    var sql2 =
-    'SELECT `cash_box_account_currency`.`account_id` ' +
-    'FROM `cash_box_account_currency` ' +
-    'WHERE `cash_box_account_currency`.`currency_id` = ' + sanitize.escape(reference.currency_id) + ' ' +
-    'AND `cash_box_account_currency`.`cash_box_id` = ' + sanitize.escape(reference.cash_box_id) + ';';
-
-
-    return q([core.queries.origin('indirect_purchase'), core.queries.period(reference.date), db.exec(sql2)]);
-  }
-
-  function getDetails (originId, periodObject, res) {
-    cfg.originId = originId;
-    cfg.periodId = periodObject.id;
-    cfg.fiscalYearId = periodObject.fiscal_year_id;
-    cfg.account_cashbox = res[0].account_id;
-    return core.queries.transactionId(reference.project_id);
-  }
-
-  function getTransId (trans_id) {
-    cfg.trans_id = trans_id;
-    cfg.descrip =  'PAIE C.A Indirect/' + new Date().toISOString().slice(0, 10).toString();
-    return debit();
-  }
-
-  function debit () {
-    var sql =
-      'INSERT INTO posting_journal ' +
-      '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-      '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-      '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-      'SELECT ' +
-        [
-          sanitize.escape(uuid()),
-          reference.project_id,
-          cfg.fiscalYearId,
-          cfg.periodId,
-          cfg.trans_id, '\'' + getDate() + '\'', '\'' + cfg.descrip + '\''
-        ].join(',') + ', `account_id`, ' +
-        [
-          0, reference.debit.toFixed(4),
-          0, reference.debit.toFixed(4),
-          reference.currency_id
-        ].join(',') + ', ' + sanitize.escape(reference.deb_cred_uuid) + ', \'C\', '+
-        [
-          sanitize.escape(reference.inv_po_id),
-          cfg.originId,
-          user_id
-        ].join(',') +
-      ' FROM `creditor_group` WHERE `creditor_group`.`uuid`=' + sanitize.escape(reference.group_uuid);
-    return db.exec(sql);
-  }
-
-  function credit () {
-    var credit_sql =
-      'INSERT INTO posting_journal ' +
-      '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-      '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-      '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-      'VALUES (' +
-        [
-          sanitize.escape(uuid()),
-          reference.project_id,
-          cfg.fiscalYearId,
-          cfg.periodId,
-          cfg.trans_id, '\'' + getDate() + '\'', '\'' + cfg.descrip + '\'', cfg.account_cashbox
-        ].join(',') + ', ' +
-        [
-          reference.debit.toFixed(4), 0,
-          reference.debit.toFixed(4), 0,
-          reference.currency_id
-        ].join(',') + ', null, null, ' + [sanitize.escape(reference.inv_po_id), cfg.originId, user_id].join(',') +
-      ');';
-    return db.exec(credit_sql);
-  }
-}
-
 function handleConfirmDirectPurchase (id, user_id, done){
   var references, dayExchange, cfg = {};
 
@@ -2245,8 +2143,8 @@ tableRouter = {
   'pcash_convention'        : require('./journal/primarycash').convention,
   'pcash_employee'          : require('./journal/primarycash').payEmployee,
   'primary_expense'         : require('./journal/primarycash').genericExpense,
-  'primary_income'         : require('./journal/primarycash').genericIncome,
-  'indirect_purchase'       : handleIndirectPurchase,
+  'primary_income'          : require('./journal/primarycash').genericIncome,
+  'indirect_purchase'       : require('./journal/purchase').indirectPurchase,
   'confirm'                 : require('./journal/purchase').confirm, // TODO - rename
   'confirm_direct_purchase' : handleConfirmDirectPurchase,
   'distribution_patient'    : handleDistributionPatient,
