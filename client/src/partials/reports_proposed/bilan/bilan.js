@@ -2,27 +2,18 @@ angular.module('bhima.controllers')
 .controller('configureBilan', [
   '$scope',
   '$http',
-  '$routeParams',
   '$translate',
-  '$sce',
   'validate',
+  'reportConfigService',
+  'messenger',
   // Prototype document building module, requests document given configuration obejct
-  function ($scope, $http, $routeParams, $translate, $sce, validate) {
+  function ($scope, $http, $translate, validate, reportConfigService, messenger) {
 
-    // Configuration objects optionally passed to /report/build - drives configuration UI
     var session = $scope.session = {},
         dependencies = {},
         generatedDocumentPath = null,
-        serverUtilityPath = '/report/build/bilan';
-
-    var configuration = {
-      language : {
-        options : [
-          {value : 'en', label : 'English'},
-          {value : 'fr', label : 'French'}
-        ]
-      }
-    };
+        serverUtilityPath = '/report/build/bilan',
+        configuration = reportConfigService.configuration;
 
     dependencies.fiscalYears = {
       query : {
@@ -39,7 +30,6 @@ angular.module('bhima.controllers')
     $scope.loading = $translate.instant('BILAN.LOADING');
 
     //getting fiscal years
-
     validate.process(dependencies)
     .then(setDefaultConfiguration);
 
@@ -67,34 +57,21 @@ angular.module('bhima.controllers')
       configurationObject.language = configuration.language.selected.value;
       configurationObject.fy = $scope.session.fiscal_year_id;
       configurationObject.pfy = $scope.session.previous_fiscal_year_id ||  $scope.session.fiscal_year_id;
+      configurationObject.enterprise = configuration.enterprise;
+      configurationObject.project = configuration.project;
 
       // Update state
       session.building = true;
 
       $http.post(path, configurationObject)
       .success(function (result) {
-
         // Expose generated document path to template
         session.building = false;
         $scope.generatedDocumentPath = result;
       })
       .error(function (code) {
         session.building = false;
-
-        // TODO Handle error
-      });
-    }
-
-    // Utility method - GET PDF blob displaying embedded object
-    function downloadDocument(url) {
-
-      $http.get(url, {responseType : 'arraybuffer'})
-      .success(function (pdfResult) {
-        var file = new Blob([pdfResult], {type: 'application/pdf'});
-        var fileURL = URL.createObjectURL(file);
-
-        // Expose document to scope
-        $scope.pdfContent = $sce.trustAsResourceUrl(fileURL);
+        messenger.danger('error' + code);
       });
     }
 
