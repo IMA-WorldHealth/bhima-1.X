@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 /** 
  * @description 
@@ -62,23 +62,24 @@ angular.module('bhima.filters')
   function formatError(message, amount) { 
     return message.concat('(', amount, ')');
   }
-
+  
+  // Formatting method directly from angular native filter - does not support BHIMA coding guidelines
   var DECIMAL_SEP = '.';
   function formatNumber(number, pattern, groupSep, decimalSep, fractionSize) {
-    if (angular.isObject(number)) return '';
+    if (angular.isObject(number)) return ''; // jshint ignore:line
 
     var isNegative = number < 0;
     number = Math.abs(number);
 
     var isInfinity = number === Infinity;
-    if (!isInfinity && !isFinite(number)) return '';
+    if (!isInfinity && !isFinite(number)) return '';// jshint ignore:line
 
     var numStr = number + '',
         formatedText = '',
         hasExponent = false,
         parts = [];
 
-    if (isInfinity) formatedText = '\u221e';
+    if (isInfinity) formatedText = '\u221e'; // jshint ignore:line
 
     if (!isInfinity && numStr.indexOf('e') !== -1) {
       var match = numStr.match(/([\d\.]+)e(-?)(\d+)/);
@@ -133,7 +134,7 @@ angular.module('bhima.filters')
         fraction += '0';
       }
 
-      if (fractionSize && fractionSize !== "0") formatedText += decimalSep + fraction.substr(0, fractionSize);
+      if (fractionSize && fractionSize !== "0") formatedText += decimalSep + fraction.substr(0, fractionSize); // jshint ignore:line
     } else {
       if (fractionSize > 0 && number < 1) {
         formatedText = number.toFixed(fractionSize);
