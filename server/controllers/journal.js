@@ -21,170 +21,6 @@ function lookupTable(req, res, next) {
   });
 }
 
-function handleCreditNote (id, user_id, done) {
-  // to update this function : SELECT `s`.`uuid`, `s`.`cost`, `t`.`subsidy_uuid`, `t`.`id`, `t`.`account_txt` FROM `sale` as `s` LEFT JOIN (SELECT subsidy_uuid, sale_uuid, account.id, account_txt FROM  sale_subsidy JOIN subsidy JOIN debitor_group JOIN account WHERE sale_subsidy.sale_uuid = 'f5a9e705-6c92-4ae1-b080-75522f6bd2cd' AND sale_subsidy.subsidy_uuid = subsidy.uuid AND subsidy.debitor_group_uuid = debitor_group.uuid AND  debitor_group.account_id = account.id) as `t` ON `s`.`uuid` = `t`.`sale_uuid` WHERE `s`.`uuid` = 'f5a9e705-6c92-4ae1-b080-75522f6bd2cd';
-  var sql, data, reference, cfg = {}, queries = {};
-
-  sql =
-    'SELECT `credit_note`.`project_id`, `project`.`enterprise_id`, `credit_note`.`cost`, `credit_note`.`debitor_uuid`, `note_date`, `credit_note`.`sale_uuid`, ' +
-      ' `credit_note`.`description`, `inventory_uuid`, `quantity`, `sale_item`.`uuid` as `item_uuid`, ' +
-      '`transaction_price`, `debit`, `credit`, `service`.`profit_center_id` ' +
-    'FROM `credit_note` JOIN `sale` JOIN `service` JOIN `sale_item` JOIN `inventory` JOIN `inventory_unit` JOIN `project` ' +
-      'ON `credit_note`.`sale_uuid`=`sale`.`uuid` AND ' +
-      '`sale`.`service_id`=`service`.`id` AND ' +
-      '`sale_item`.`sale_uuid`=`sale`.`uuid` AND ' +
-      '`sale_item`.`inventory_uuid`=`inventory`.`uuid` AND ' +
-      '`project`.`id` = `credit_note`.`project_id` AND ' +
-      '`inventory`.`unit_id`=`inventory_unit`.`id` ' +
-    'WHERE `credit_note`.`uuid`=' + sanitize.escape(id);
-
-  db.exec(sql)
-  .then(function (results) {
-    if (results.length === 0) {
-      throw new Error('No credit note by the id: ' + id);
-    }
-
-    data = results;
-    reference = results[0];
-
-    return core.checks.validPeriod(reference.enterprise_id, reference.note_date);
-
-  })
-  .then(function () {
-    // Ensure a credit note hasn't already been assiged to this sale
-    var reviewLegacyNotes = 'SELECT uuid FROM credit_note WHERE sale_uuid=' + sanitize.escape(reference.sale_uuid) + ';';
-    return db.exec(reviewLegacyNotes);
-  })
-  .then(function (rows) {
-    // There should only be one sale here
-    if (rows.length > 1) {
-      throw new Error('This sale has already been reversed with a credit note');
-    }
-
-    // Cost positive checks
-    var costPositive = data.every(function (row) { return validate.isPositive(row.cost); });
-    if (!costPositive) {
-      throw new Error('Negative cost detected for invoice id: ' + id);
-    }
-
-    // third check - is the total the price * the quantity?
-    /*
-    function sum (a, b) {
-      return a + (b.credit - b.debit);
-    }
-    */
-
-    //var total = data.reduce(sum, 0);
-    //console.log('[DEBUG] sum', total, 'cost', reference_note.cost);
-    //var totalEquality = validate.isEqual(total, reference.cost);
-    //if (!totalEquality) {
-      //console.log('[DEBUG] ', 'sum of costs is not equal to the total');
-      //return done(new Error('Individual costs do not match total cost for invoice id: ' + id));
-    //}
-
-    // all checks have passed - prepare for writing to the journal.
-    return q([ core.queries.origin('credit_note'), core.queries.origin('sale'), core.queries.period(reference.note_date) ]);
-
-  })
-  .spread(function (originId, saleOrigin, periodObject) {
-    // we now have the origin!
-    // we now have the relevant period!
-
-    cfg.saleOrigin = saleOrigin;
-    cfg.originId = originId;
-    cfg.periodId = periodObject.id; // TODO : change this to camelcase
-    cfg.fiscalYearId = periodObject.fiscal_year_id;
-
-    return core.queries.transactionId(reference.project_id);
-  })
-  .then(function (transId) {
-    cfg.trans_id = transId;
-    cfg.descrip =  reference.description;
-
-  sql =
-    'SELECT `uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
-    '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `deb_cred_type`, `currency_id`, ' +
-    '`deb_cred_uuid`, `inv_po_id`, `cost_ctrl_id`, `origin_id`, '+
-    '`user_id`, `cc_id`, `pc_id` ' +
-    'FROM `posting_journal`' +
-    'WHERE `posting_journal`.`inv_po_id`= ? AND `posting_journal`.`origin_id` = ? ' +
-    'UNION ' +
-    'SELECT `uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
-    '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`,  `deb_cred_type`, `currency_id`, ' +
-    '`deb_cred_uuid`, `inv_po_id`, `cost_ctrl_id`, `origin_id`, '+
-    '`user_id`, `cc_id`, `pc_id` ' +
-    'FROM `general_ledger`' +
-    'WHERE `general_ledger`.`inv_po_id`= ? AND `general_ledger`.`origin_id` = ? ';
-
-    return db.exec(sql, [reference.sale_uuid, cfg.saleOrigin, reference.sale_uuid, cfg.saleOrigin]);
-  })
-  .then(function (results) {
-    queries.items = [];
-
-    var date = getDate();
-    results.forEach(function (item) {
-      item.uuid = sanitize.escape(uuid());
-      item.origin_id = cfg.originId;
-      item.description = cfg.descrip;
-      item.period_id = cfg.periodId;
-      item.fiscal_year_id = cfg.fiscalYearId;
-      item.trans_id = cfg.trans_id;
-      item.trans_date = util.toMysqlDate(getDate());
-
-      if (item.deb_cred_uuid){
-        item.deb_cred_uuid = sanitize.escape(item.deb_cred_uuid);
-      } else {
-        item.deb_cred_uuid = null;
-      }
-      //It it fixed
-      var sql =
-        'INSERT INTO `posting_journal` ' +
-          '(`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
-          '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, ' +
-          '`deb_cred_uuid`, `inv_po_id`, `cost_ctrl_id`, `origin_id`, '+
-          '`user_id`, `cc_id`, `pc_id`) ' +
-        'VALUES (' +
-          item.uuid + ', ' +
-          item.project_id + ', ' +
-          item.fiscal_year_id + ', ' +
-          item.period_id + ', ' +
-          item.trans_id + ', ' +
-          sanitize.escape(item.trans_date) + ', ' +
-          item.doc_num + ', ' +
-          sanitize.escape(item.description) + ', ' +
-          item.account_id + ', ' +
-          item.credit + ', ' +
-          item.debit + ', ' +
-          item.credit_equiv + ', ' +
-          item.debit_equiv + ', ' +
-          item.currency_id + ', ' +
-          item.deb_cred_uuid + ', ' +
-          sanitize.escape(item.inv_po_id) + ', ' +
-          item.cost_ctrl_id + ', ' +
-          item.origin_id + ', ' +
-          item.user_id + ', ' +
-          item.cc_id + ', ' +
-          item.pc_id +
-        ');';
-      queries.items.push(sql);
-    });
-    return q.all(queries.items.map(function (sql) {
-      return db.exec(sql);
-    }));
-  })
-  .then(function () {
-    var updatePosted = 'UPDATE `credit_note` SET `posted`=1 WHERE `uuid`=' + sanitize.escape(id) + ';';
-    return db.exec(updatePosted);
-  })
-  .then(function (rows) {
-    done(null, rows);
-  })
-  .catch(function (err) {
-    done(err);
-  })
-  .done();
-}
-
 function handleCaution(id, user_id, done) {
   var sql, reference, cfg = {}, queries = {};
 
@@ -2844,7 +2680,7 @@ function handleExtraPayment (id, user_id, details, done) {
 }
 
 tableRouter = {
-  'sale'                    : require('./journal/sale'),
+  'sale'                    : require('./journal/sale').create,
   'cash'                    : require('./journal/cash').payment,
   'cash_discard'            : require('./journal/cash').refund, // TODO - make this
   'cash_return'             : require('./journal/primarycash').refund,
@@ -2852,7 +2688,7 @@ tableRouter = {
   //'payroll'                 : require('./journal/primarycash').payroll,
   'group_invoice'           : require('./journal/convention').invoice,
   'employee_invoice'        : require('./journal/employee').invoice,
-  'credit_note'             : handleCreditNote,
+  'credit_note'             : require('./journal/sale').creditNote,
   'caution'                 : handleCaution,
   'pcash_convention'        : handleConvention,
   'pcash_employee'          : handleEmployee,
