@@ -1,11 +1,16 @@
-var q = require('q'),
-    db = require('../../lib/db'),
+var q        = require('q'),
+    uuid     = require('../../lib/uuid'),
+    db       = require('../../lib/db'),
     validate = require('../../lib/validate')(),
-    core = require('./core');
+    core     = require('./core');
+
+exports.purchase = purchase;
+exports.confirm = confirm;
+exports.indirectPurchase = indirectPurchase;
 
 // handle posting purchase requests
 // TODO/FIXME - it doesn't seem like this is used.  Why?
-exports.purchase = function (id, userId, cb) {
+function purchase(id, userId, cb) {
   'use strict';
 
   // posting purchase requests
@@ -99,121 +104,190 @@ exports.purchase = function (id, userId, cb) {
   })
   .catch(cb)
   .done();
-};
+}
 
 
-exports.confirm = function (id, userId, cb) {
+// TODO - what does this do?
+function confirm(id, userId, cb) {
   'use strict';
 
-  var references, dayExchange, cfg = {};
+  var sql, references, params, dayExchange, cfg = {};
 
-  var sql =
+  sql =
     'SELECT purchase.uuid, purchase.cost, purchase.currency_id, purchase.project_id, ' +
       'purchase.purchaser_id, purchase.purchaser_id, employee.creditor_uuid, ' +
       'purchase_item.inventory_uuid, purchase_item.total, purchase.paid_uuid ' +
-    'FROM ' +
-            ' purchase, purchase_item, employee WHERE' +
-            ' purchase.uuid = purchase_item.purchase_uuid AND' +
-            ' purchase.purchaser_id = employee.id AND' +
-            ' purchase.paid_uuid=' + sanitize.escape(id) + ';';
+    'FROM purchase JOIN purchase_item JOIN employee ON ' +
+      'purchase.uuid = purchase_item.purchase_uuid AND ' +
+      'purchase.purchaser_id = employee.id ' +
+    'WHERE purchase.paid_uuid = ?;';
 
-  db.exec(sql)
-  .then(getRecord)
-  .spread(getDetails)
-  .then(getTransId)
-  .then(credit)
-  .then(function (res){
-    return done(null, res);
-  })
-  .catch(function (err){
-    return done(err, null);
-  });
-
-  function getRecord (records) {
-    if (records.length === 0) { throw new Error('pas enregistrement'); }
+  db.exec(sql, [id])
+  .then(function (records) {
+    if (records.length === 0) { throw new Error('No purchase with paid_uuid:' + id); }
     references = records;
-    var date = util.toMysqlDate(getDate());
-    return q([core.queries.origin('confirm_purchase'), core.queries.period(getDate())]);
-  }
-
-  function getDetails (originId, periodObject) {
+    return q([
+      core.queries.origin('confirm_purchase'),
+      core.queries.period(new Date())
+    ]);
+  })
+  .spread(function (originId, periodObject) {
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
     return core.queries.transactionId(references[0].project_id);
-  }
+  })
+  .then(function (transId) {
 
-  function getTransId (trans_id) {
-    cfg.trans_id = trans_id;
-    //FIX ME : must get the project abbr by the sql request.
-    cfg.descrip =  'CONFIRM C.A. INDIRECT/' + new Date().toISOString().slice(0, 10).toString();
-    return debit();
-  }
+    // FIXME : must get the project abbr by the sql request.
+    cfg.transId = transId;
+    cfg.description =  'CONFIRM C.A. INDIRECT/' + new Date().toISOString().slice(0, 10).toString();
 
-  function debit () {
-    return q.all(
-      references.map(function (reference) {
-        var sql = 'INSERT INTO posting_journal '+
-                  '(uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
-                  'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
-                  'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) '+
-                  'SELECT '+
-                    [
-                      sanitize.escape(uuid()),
-                      reference.project_id,
-                      cfg.fiscalYearId,
-                      cfg.periodId,
-                      cfg.trans_id, '\''+getDate()+'\'', '\''+cfg.descrip+'\''
-                    ].join(',') + ', inventory_group.stock_account, '+
-                    [
-                      0, reference.total.toFixed(4),
-                      0, reference.total.toFixed(4),
-                      reference.currency_id, sanitize.escape(reference.inventory_uuid)
-                    ].join(',') +
-                    ', null, ' +
-                    [
-                      sanitize.escape(reference.uuid),
-                      cfg.originId,
-                      user_id
-                    ].join(',') +
-                  ' FROM inventory_group WHERE inventory_group.uuid= ' +
-                  '(SELECT inventory.group_uuid FROM inventory WHERE inventory.uuid=' + sanitize.escape(reference.inventory_uuid) + ')';
-        return db.exec(sql);
-      })
-    );
-  }
+    var queries = references.map(function (reference) {
+      var sql, params;
 
-  function credit () {
+      sql =
+        'INSERT INTO posting_journal (' +
+          'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+          'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+          'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
+        'SELECT ?, ?, ?, ?, ?, ?, ?, inventory_group.stock_account, ?, ?, ?, ?, ' +
+          '?, ?, null, ?, ?, ? ' +
+        'FROM inventory_group WHERE inventory_group.uuid IN ' +
+          '(SELECT inventory.group_uuid FROM inventory WHERE inventory.uuid = ?)';
 
-    return q.all(
-      references.map(function (reference) {
-        var sql = 'INSERT INTO posting_journal '+
-                  '(uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
-                  'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
-                  'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) '+
-                  'SELECT ' +
-                  [
-                    sanitize.escape(uuid()),
-                    reference.project_id,
-                    cfg.fiscalYearId,
-                    cfg.periodId,
-                    cfg.trans_id, '\'' + getDate() + '\'', '\'' + cfg.descrip + '\''
-                  ].join(',') + ', inventory_group.cogs_account, ' +
-                  [
-                    reference.total.toFixed(4),0,
-                    reference.total.toFixed(4),0,
-                    reference.currency_id,
-                    sanitize.escape(reference.inventory_uuid),
-                    '\' \''
-                  ].join(',') + ', ' +
-                  [
-                    sanitize.escape(reference.uuid),
-                    cfg.originId,
-                    user_id
-                  ].join(',') + ' FROM inventory_group WHERE inventory_group.uuid=' +
-                  '(SELECT inventory.group_uuid FROM inventory WHERE inventory.uuid=' + sanitize.escape(reference.inventory_uuid) + ')';
-        return db.exec(sql);
-      })
-    );
-  }
-};
+      params = [
+        uuid(), reference.project_id, cfg.fiscalYearId, cfg.periodId, cfg.trans_id, new Date(),
+        cfg.description, 0, reference.total, 0, reference.total, reference.currency_id,
+        reference.inventory_uuid, null, reference.uuid, cfg.originInd, userId, reference.inventory_uuid
+      ];
+
+      return db.exec(sql, params);
+    });
+
+    return q.all(queries);
+  })
+  .then(function () {
+
+    var queries =  references.map(function (reference) {
+      var sql, params;
+
+      sql =
+        'INSERT INTO posting_journal (' +
+          'uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+          'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+          'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) '+
+        'SELECT ?, ?, ?, ?, ?, ?, ?, inventory_group.cogs_accounts, ?, ?, ?, ?, ?, ?, ?, ' +
+          '?, ?, ?  ' +
+         'FROM inventory_group WHERE inventory_group.uuid = ' +
+            '(SELECT inventory.group_uuid FROM inventory WHERE inventory.uuid = ?)';
+
+      params = [
+        uuid(), reference.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
+        cfg.description, reference.total, 0, reference.total, 0, reference.currency_id,
+        reference.inventory_uuid, reference.uuid, cfg.originId, userId, reference.inventory_uuid
+      ];
+
+      return db.exec(sql, params);
+    });
+
+    return q.all(queries);
+  })
+  .then(function (rows) {
+    return cb(null, rows);
+  })
+  .catch(cb)
+  .done();
+}
+
+/*
+ * Indirect Purchase
+ *
+ *
+ *
+ */
+function indirectPurchase(id, userId, cb) {
+  'use strict';
+
+  var sql, reference, params, dayExchange, cfg = {};
+
+  sql =
+    'SELECT primary_cash.reference, primary_cash.uuid, primary_cash.project_id, primary_cash.type, ' +
+      'primary_cash.date, primary_cash.deb_cred_uuid, primary_cash.deb_cred_type, primary_cash.currency_id, ' +
+      'primary_cash.account_id, primary_cash.cost, primary_cash.user_id, primary_cash.description, ' +
+      'primary_cash.cash_box_id, primary_cash.origin_id, primary_cash_item.debit, primary_cash_item.credit, ' +
+      'primary_cash_item.inv_po_id, primary_cash_item.document_uuid, creditor.group_uuid ' +
+     'FROM primary_cash JOIN primary_cash_item JOIN creditor ON ' +
+       'primary_cash.uuid = primary_cash_item.primary_cash_uuid AND ' +
+       'primary_cash.deb_cred_uuid = creditor.uuid ' +
+     'WHERE primary_cash.uuid = ?;';
+
+  db.exec(sql, [id])
+  .then(function (records) {
+    if (records.length === 0) { throw new Error('No primary cash record found with uuid:' + id); }
+
+    reference = records[0];
+
+    sql =
+      'SELECT cash_box_account_currency.account_id ' +
+      'FROM cash_box_account_currency ' +
+      'WHERE cash_box_account_currency.currency_id = ?' +
+        'AND cash_box_account_currency.cash_box_id = ?;';
+
+    return q([
+      core.queries.origin('indirect_purchase'),
+      core.queries.period(reference.date),
+      db.exec(sql, [reference.currency_id, reference.cash_box_id])
+    ]);
+  })
+  .spread(function (originId, periodObject, res) {
+
+    cfg.originId = originId;
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+    cfg.account_cashbox = res[0].account_id;
+
+    return core.queries.transactionId(reference.project_id);
+  })
+  .then(function (transId) {
+    cfg.trans_id = transId;
+    cfg.description =  'PAIE C.A Indirect/' + new Date().toISOString().slice(0, 10).toString();
+
+    sql =
+      'INSERT INTO posting_journal (' +
+        'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+        'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+        'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
+      'SELECT ?, ?, ?, ?, ?, ?, ?, ?, account_id, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ' +
+      'FROM creditor_group WHERE creditor_group.uuid = ?;';
+
+    params = [
+      uuid(), reference.project_id, cfg.fiscalYearId, cfg.transId, new Date(), cfg.description,
+      0, reference.debit, 0, reference.debit, reference.currency_id, reference.deb_cred_uuid,
+      'C', reference.inv_po_id, cfg.originId, userId, reference.group_uuid
+    ];
+
+    return db.exec(sql, params);
+  })
+  .then(function () {
+    sql =
+      'INSERT INTO posting_journal (' +
+        'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+        'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+        'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) ' +
+      'VALUES (?);';
+
+      params = [
+        uuid(), reference.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
+        cfg.description, cfg.account_cashbox, reference.debit, 0, reference.debit, 0, reference.currency_id,
+        null, null, reference.inv_po_id, cfg.originId, userId
+      ];
+
+    return db.exec(sql, [params]);
+  })
+  .then(function (res) {
+    return cb(null, res);
+  })
+  .catch(cb)
+  .done();
+}
