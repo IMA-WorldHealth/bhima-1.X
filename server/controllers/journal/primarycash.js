@@ -7,6 +7,7 @@ var q = require('q'),
 exports.transfer = transfer;
 exports.refund = refund;
 exports.payroll = payroll;
+exports.convention = convention;
 
 /*
  * Transfer cash from one cashbox to another
@@ -36,8 +37,8 @@ function transfer(id, userId, cb) {
 
     reference = results[0];
     data = results;
-    var date = util.toMysqlDate(reference.date);
 
+    var date = util.toMysqlDate(reference.date);
     return core.queries.myExchangeRate(date);
   })
   .then(function (exchangeRateStore) {
@@ -344,4 +345,113 @@ function payroll(id, userId, cb) {
     return cb(err);
   })
   .done();
+}
+
+/*
+ * Convention Payments
+ *
+ * Allows a convention to balance its debts via
+ * the primary cash box.
+ *
+ * TODO This is really lazy coding.  Apparently we
+ * were not paying the coder enough to merit writing
+ * out all the columns.
+ */
+function convention(id, userId, cb) {
+  'use strict';
+
+  var sql, dayExchange = {}, reference = {}, cfg = {};
+
+  // FIXME - select * is bad pratice.  Sigh
+  // TODO - this is LAZY.  Why not doe a join between primary
+  // cash and primary cash item?
+  sql = 'SELECT * FROM primary_cash WHERE primary_cash.uuid = ?;';
+
+  db.exec(sql, [id])
+  .then(function (records) {
+    if (records.length === 0) { throw new Error('Could not find a primary cash record with id:' +  id); }
+    reference.reference_pcash = records[0];
+    sql = 'SELECT * FROM primary_cash_item WHERE primary_cash_item.primary_cash_uuid = ?;';
+    return db.exec(sql, [id]);
+  })
+  .then(function (records) {
+    if (records.length === 0) { throw new Error('Could not find primary cash items for primary cash id:' + id); }
+    reference.reference_pcash_items = records;
+    return core.queries.myExchangeRate(reference.reference_pcash.date);
+  })
+  .then(function (exchangeStore) {
+    dayExchange = exchangeStore.get(reference.reference_pcash.currency_id);
+    return q([core.queries.origin('pcash_convention'), core.queries.period(reference.reference_pcash.date)]);
+  })
+  .spread(function (originId, periodObject) {
+    cfg.originId = originId;
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+    return core.queries.transactionId(reference.reference_pcash.project_id);
+  })
+  .then(function (transId) {
+    cfg.transId = transId;
+    cfg.description =  transId.substring(0,4)  + '_CAISSEPRINCIPALE_CONVENTION' + new Date().toISOString().slice(0, 10).toString();
+
+    // loop through, template, and execute (debit) queries
+    var queries = reference.reference_pcash_items.map(function (item) {
+      var value, sql, params;
+
+      sql =
+        'INSERT INTO posting_journal (' +
+          'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+          'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+          'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
+        'SELECT ?, ?, ?, ?, ?, ?, ?, account_id, ?, ?, ?, ?, ?, null, null, ?, ?, ? ' +
+        'FROM cash_box_account_currency ' +
+        'WHERE cash_box_account_currency.cash_box_id = ? ' +
+          'AND cash_box_account_currency.currency_id = ?;';
+
+
+      value = parseFloat((1 / dayExchange.rate) * item.debit).toFixed(4);
+
+      params = [
+        uuid(), reference.reference_pcash.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
+        cfg.description, 0, item.debit, 0, value, reference.reference_pcash.currency_id, item.inv_po_id,
+        cfg.originId, userId, reference.reference_pcash.cash_box_id, reference.reference_pcash.currency_id
+      ];
+
+      return db.exec(sql, params);
+    });
+
+    return q.all(queries);
+  })
+  .then(function () {
+
+    // loop through, template, and execute (debit) queries
+    var queries = reference.reference_pcash_items.map(function (item) {
+      var sql, value, params;
+
+      sql =
+        'INSERT INTO posting_journal (' +
+        'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+        'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+        'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) ' +
+        'VALUES (?);';
+
+
+      // why parse float?
+      value = parseFloat((1/dayExchange.rate) * item.debit).toFixed(4);
+      
+      params = [
+        uuid(), reference.reference_pcash.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId,
+        new Date(), cfg.description, reference.reference_pcash.account_id, item.debit, 0,
+        value, 0, reference.reference_pcash.currency_id, null, null, item.inv_po_id,
+        cfg.originId, userId
+      ];
+
+      return db.exec(sql, [params]);
+    });
+    
+    return q.all(queries);
+  })
+  .then(function (res) {
+    return cb(null, res);
+  })
+  .catch(cb);
 }
