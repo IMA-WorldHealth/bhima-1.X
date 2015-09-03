@@ -1,8 +1,8 @@
-var q        = require('q'),
-    uuid     = require('../../lib/uuid'),
-    db       = require('../../lib/db'),
-    validate = require('../../lib/validate')(),
-    core     = require('./core');
+var q         = require('q'),
+    uuid      = require('../../lib/guid'),
+    db        = require('../../lib/db'),
+    validate  = require('../../lib/validate')(),
+    core      = require('./core');
 
 exports.purchase = purchase;
 exports.confirm = confirm;
