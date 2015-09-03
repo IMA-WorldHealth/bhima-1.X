@@ -8,6 +8,7 @@ var q = require('q'),
 
 exports.create = create;
 exports.creditNote = creditNote;
+exports.caution = caution;
 
 /*
  * Create a credit note for a patient
@@ -153,7 +154,7 @@ function getSubsidy(id) {
 
 
 // TODO Only has project ID passed from sale reference, need to look up enterprise ID
-function create(id, user_id, callback, caution) {
+function create(id, userId, cb, caution) {
   'use strict';
 
   var sql, data, reference, cfg = {}, queries = {}, subsidyReferences = [];
@@ -224,7 +225,10 @@ function create(id, user_id, callback, caution) {
     // MUST BE THE LAST REQUEST TO prevent race conditions.
     return core.queries.transactionId(reference.project_id);
   })
-  .then(function (trans_id) {
+  .then(function (transId) {
+
+    // FIXME - db.exec() parameter escaping
+    transId = '"' + transId + '"';
 
     // we can begin copying data from SALE -> JOURNAL
 
@@ -240,12 +244,12 @@ function create(id, user_id, callback, caution) {
         '(project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, ' +
         'description, account_id, debit, credit, debit_equiv, credit_equiv, ' +
         'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) ' +
-      'SELECT sale.project_id, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, trans_id].join(', ') + ', ' +
+      'SELECT sale.project_id, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId].join(', ') + ', ' +
         'sale.invoice_date, sale.note, ' + [sanitize.escape(item.account_id), item.value, 0, item.value, 0].join(', ') + ', ' + // last three: credit, debit_equiv, credit_equiv.  Note that debit === debit_equiv since we use enterprise currency.
-        'sale.currency_id, sale.debitor_uuid, \'D\', sale.uuid, ' + [cfg.originId, user_id].join(', ') + ' ' +
+        'sale.currency_id, sale.debitor_uuid, \'D\', sale.uuid, ' + [cfg.originId, userId].join(', ') + ' ' +
       'FROM sale JOIN debitor JOIN debitor_group ON ' +
         'sale.debitor_uuid=debitor.uuid AND debitor.group_uuid=debitor_group.uuid ' +
-      'WHERE sale.uuid=' + sanitize.escape(id) + ';';
+      'WHERE sale.uuid = ' + sanitize.escape(id) + ';';
       subsidies_cost += item.value;
       queries.subsidies.push(sql);
     });
@@ -256,14 +260,13 @@ function create(id, user_id, callback, caution) {
         '(project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, ' +
         'description, account_id, debit, credit, debit_equiv, credit_equiv, ' +
         'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) ' +
-      'SELECT sale.project_id, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, trans_id].join(', ') + ', ' +
+      'SELECT sale.project_id, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId].join(', ') + ', ' +
         'sale.invoice_date, sale.note, debitor_group.account_id, ' + [reference.cost - subsidies_cost, 0, reference.cost - subsidies_cost, 0].join(', ') + ', ' + // last three: credit, debit_equiv, credit_equiv.  Note that debit === debit_equiv since we use enterprise currency.
-        'sale.currency_id, sale.debitor_uuid, \'D\', sale.uuid, ' + [cfg.originId, user_id].join(', ') + ' ' +
+        'sale.currency_id, sale.debitor_uuid, \'D\', sale.uuid, ' + [cfg.originId, userId].join(', ') + ' ' +
       'FROM sale JOIN debitor JOIN debitor_group ON ' +
         'sale.debitor_uuid=debitor.uuid AND debitor.group_uuid=debitor_group.uuid ' +
       'WHERE sale.uuid=' + sanitize.escape(id) + ';';
   }
-
 
     // Then copy data from SALE_ITEMS -> JOURNAL
     // This query is significantly more complex because sale_item
@@ -276,10 +279,10 @@ function create(id, user_id, callback, caution) {
           '(project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, ' +
           'description, account_id, debit, credit, debit_equiv, credit_equiv, ' +
           'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id, pc_id) ' +
-        'SELECT sale.project_id, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, trans_id].join(', ') + ', ' +
+        'SELECT sale.project_id, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId].join(', ') + ', ' +
           'sale.invoice_date, sale.note, inventory_group.sales_account, sale_item.debit, sale_item.credit, ' +
           'sale_item.debit, sale_item.credit, sale.currency_id, null, ' +
-          ' null, sale.uuid, ' + [cfg.originId, user_id].join(', ') + ', if (ISNULL(account.pc_id), \'' + item.profit_center_id + '\', account.pc_id) ' +
+          ' null, sale.uuid, ' + [cfg.originId, userId].join(', ') + ', if (ISNULL(account.pc_id), \'' + item.profit_center_id + '\', account.pc_id) ' +
         'FROM sale JOIN sale_item JOIN inventory JOIN inventory_group JOIN account ON ' +
           'sale_item.sale_uuid=sale.uuid AND sale_item.inventory_uuid=inventory.uuid AND ' +
           'inventory.group_uuid=inventory_group.uuid AND account.id=inventory_group.sales_account ' +
@@ -289,7 +292,7 @@ function create(id, user_id, callback, caution) {
 
     // now we must set all relevant rows from sale to 'posted'
     queries.sale_posted =
-      'UPDATE sale SET sale.posted=1 WHERE sale.uuid = ' + sanitize.escape(id);
+      'UPDATE sale SET sale.posted = 1 WHERE sale.uuid = ?;';
 
     return q.all(queries.items.map(function (sql) {
       return db.exec(sql);
@@ -304,9 +307,12 @@ function create(id, user_id, callback, caution) {
     return queries.sale ? db.exec(queries.sale) : q();
   })
   .then(function () {
-    return q([db.exec(queries.sale_posted), core.queries.transactionId(reference.project_id)]);
+    return q([db.exec(queries.sale_posted, [id]), core.queries.transactionId(reference.project_id)]);
   })
   .spread(function (rows, transId) {
+
+    // TODO - migrate this to db.exec() parameter escapes
+    transId = '"' + transId + '"';
 
     if (caution && caution > 0) {
 
@@ -319,7 +325,7 @@ function create(id, user_id, callback, caution) {
           'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) '+
           'SELECT ' + ['\'' + uuid() + '\'', reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, sanitize.escape(util.toMysqlDate(reference.invoice_date)), '\''+descript+'\''].join(',') + ', ' +
             'debitor_group.account_id, ' + [0, transAmount, 0, transAmount, reference.currency_id, '\'' + reference.debitor_uuid + '\''].join(',') +
-            ', \'D\', null, ' + [cfg.originId, user_id].join(',') + ' ' +
+            ', \'D\', null, ' + [cfg.originId, userId].join(',') + ' ' +
           'FROM debitor_group WHERE debitor_group.uuid= (' +
           'SELECT debitor.group_uuid FROM debitor WHERE debitor.uuid='+ sanitize.escape(reference.debitor_uuid) +');';
 
@@ -330,7 +336,7 @@ function create(id, user_id, callback, caution) {
           'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) '+
           'SELECT ' + ['\'' + uuid() + '\'', reference.project_id, cfg.fiscalYearId, cfg.periodId, transId, sanitize.escape(util.toMysqlDate(reference.invoice_date)), '\''+descript+'\''].join(',') + ', ' +
             'debitor_group.account_id, ' + [transAmount, 0, transAmount, 0, reference.currency_id, '\'' + reference.debitor_uuid + '\''].join(',') +
-            ', \'D\', ' + [sanitize.escape(reference.uuid), cfg.originId, user_id].join(',') + ' ' +
+            ', \'D\', ' + [sanitize.escape(reference.uuid), cfg.originId, userId].join(',') + ' ' +
           'FROM debitor_group WHERE debitor_group.uuid= (' +
           'SELECT debitor.group_uuid FROM debitor WHERE debitor.uuid='+ sanitize.escape(reference.debitor_uuid) +');';
 
@@ -342,10 +348,97 @@ function create(id, user_id, callback, caution) {
     return q();
   })
   .then(function (res) {
-    callback(null, res);
+    cb(null, res);
   })
   .catch(function (err) {
-    callback(err);
+    cb(err);
   })
   .done();
 }
+
+/*
+ * Caution Route
+ *
+ * Allows a downpayment against a future expense by an
+ * individual debtor.
+ */
+function caution(id, userId, cb) {
+  var sql, params, reference, cfg = {}, queries = {};
+
+  sql =
+    'SELECT * FROM cash JOIN cash_item ON ' +
+      'cash.uuid = cash_item.cash_uuid ' +
+    'WHERE cash.uuid = ?;';
+
+  db.exec(sql, [id])
+  .then(function (results) {
+    if (results.length === 0) {
+      throw new Error('No caution by the id: ' + id);
+    }
+
+    reference = results[0];
+
+    cfg.date = util.toMysqlDate(reference.date);
+    return core.queries.myExchangeRate(cfg.date);
+  })
+  .then(function (exchangeRateStore) {
+    var dailyExchange = exchangeRateStore.get(reference.currency_id);
+    cfg.debit_equiv = dailyExchange.rate * 0;
+    cfg.credit_equiv = (1/dailyExchange.rate) * reference.cost;
+
+    return q([core.queries.origin('caution'), core.queries.period(reference.date)]);
+  })
+  .spread(function (originId, periodObject) {
+    cfg.originId = originId;
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+
+    return core.queries.transactionId(reference.project_id);
+  })
+
+  // crediting request
+  .then(function (transId) {
+    cfg.transId = transId;
+
+    sql =
+      'INSERT INTO posting_journal ('+
+        'project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, ' +
+        'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+        'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
+      'VALUES (?);';
+
+    params = [
+      reference.project_id, uuid(), cfg.fiscalYearId, cfg.periodId, transId, new Date(),
+      reference.description, reference.credit_account, reference.cost, 0, cfg.credit_equiv,
+      cfg.debit_equiv, reference.currency_id, reference.deb_cred_uuid, 'D', id,
+      cfg.originId, userId
+    ];
+
+    return db.exec(sql, [params]);
+  })
+
+  // debting request
+  .then(function () {
+
+    sql =
+      'INSERT INTO posting_journal ('+
+        'project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, ' +
+        'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+        'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
+      'VALUES (?);';
+
+    params = [
+      reference.project_id, uuid(), cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
+      reference.description, reference.debit_account, 0, reference.cost, cfg.debit_equiv,
+      cfg.credit_equiv, reference.currency_id, null, null, id, cfg.originId, userId
+    ];
+
+    return db.exec(sql, [params]);
+  })
+  .then(function (rows) {
+    cb(null, rows);
+  })
+  .catch(cb)
+  .done();
+}
+
