@@ -76,7 +76,7 @@ angular.module('bhima.controllers')
 
       if(record.abbr){
         if(record.abbr.length <= 4){
-          connect.basicPost('cotisation', [record], ['id'])
+          connect.put('cotisation', [record], ['id'])
           .then(function () {
             validate.refresh(dependencies)
             .then(function (models) {
@@ -108,7 +108,7 @@ angular.module('bhima.controllers')
       }
       
       // all checks pass, we are free to post to the server!
-      connect.basicPut('cotisation', [record])
+      connect.post('cotisation', [record])
       .then(function (res) {
 
         // reload data (TODO - make this a simple addition to the client store)
