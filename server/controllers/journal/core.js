@@ -12,6 +12,7 @@
  * TODO
  *   - Formalize error handling. Each error should return an
  *   error code to be translated and logged.
+ *   - remove the redundent myExchangeRate() and ExchangeRate()
  */
 
 var q = require('q'),
