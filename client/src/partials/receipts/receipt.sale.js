@@ -1,13 +1,14 @@
 angular.module('bhima.controllers')
 .controller('receipt.sale', [
   '$scope',
+  '$locale',
   'validate',
   'appstate',
   'messenger',
-  function ($scope, validate, appstate, messenger) {
+  function ($scope, $locale, validate, appstate, messenger) {
     var dependencies = {}, model = $scope.model = {common : {}, total : {}};
     $scope.updateCurrency = updateCurrency;
-
+  
     dependencies.recipient = {
       required: true,
       query : {
@@ -94,6 +95,7 @@ angular.module('bhima.controllers')
         ledgers = model.ledger;
 
       
+
       totals.localeCost = doConvert(saleRecords.cost, currency, saleRecords.invoice_date);
 
       if (ledgers)  {

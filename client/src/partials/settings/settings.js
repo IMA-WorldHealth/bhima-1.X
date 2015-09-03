@@ -6,23 +6,48 @@ angular.module('bhima.controllers')
   '$location',
   'appcache',
   'messenger',
-  function($scope, $routeParams, $translate, $location, Appcache, messenger) {
-
+  'tmhDynamicLocale',
+  'store',
+  function($scope, $routeParams, $translate, $location, Appcache, messenger, tmhDynamicLocale, Store) {
+    
+    // TODO issue discussing DB modelling of languages, quick suggestion (id, label, translateKey, localeKey)
+    var languageStore = new Store({identifier : 'translateKey'});
+    var languages = [
+      {
+        translateKey : 'en',
+        localeKey : 'en-us',
+        label : 'English'
+      },
+      {
+        translateKey : 'fr',
+        localeKey : 'fr-fr',
+        label : 'French'
+      },
+      {
+        translateKey : 'ln',
+        localeKey : 'fr-cd',
+        label : 'Lingala'
+      }
+    ];
+    languageStore.setData(languages);
+    
     $scope.url = $routeParams.url || '';
     var cache = new Appcache('preferences');
 
     cache.fetch('language')
     .then(function (res) {
       if (res) {
-        $scope.settings = { language: res.current };
+        $scope.settings = { language: res.translateKey };
       }
     });
 
     $scope.updateLanguage = function updateLanuage(key) {
-      $translate.use(key);
-      cache.put('language', {current: key});
+      var language = languageStore.get(key);
+      
+      $translate.use(language.translateKey);
+      tmhDynamicLocale.set(language.localeKey);
 
-      messenger.primary({ namespace : 'SETTINGS', description : 'Language preference updated : ' + key });
+      cache.put('language', language);
     };
 
     $scope.back = function () {
