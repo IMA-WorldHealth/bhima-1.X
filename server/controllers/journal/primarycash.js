@@ -8,6 +8,7 @@ exports.transfer = transfer;
 exports.refund = refund;
 exports.payroll = payroll;
 exports.convention = convention;
+exports.payEmployee = payEmployee;
 
 /*
  * Transfer cash from one cashbox to another
@@ -407,7 +408,6 @@ function convention(id, userId, cb) {
         'WHERE cash_box_account_currency.cash_box_id = ? ' +
           'AND cash_box_account_currency.currency_id = ?;';
 
-
       value = parseFloat((1 / dayExchange.rate) * item.debit).toFixed(4);
 
       params = [
@@ -437,7 +437,7 @@ function convention(id, userId, cb) {
 
       // why parse float?
       value = parseFloat((1/dayExchange.rate) * item.debit).toFixed(4);
-      
+
       params = [
         uuid(), reference.reference_pcash.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId,
         new Date(), cfg.description, reference.reference_pcash.account_id, item.debit, 0,
@@ -447,11 +447,115 @@ function convention(id, userId, cb) {
 
       return db.exec(sql, [params]);
     });
-    
+
     return q.all(queries);
   })
   .then(function (res) {
     return cb(null, res);
   })
   .catch(cb);
+}
+
+/*
+ * Pay Employee
+ *
+ * This route is triggered when money leaves the primary cashbox
+ * and lands in the employees hands.  Why would you ever let such a
+ * fate befall an enterprise?!
+*/
+function payEmployee(id, userId, cb) {
+  'use strict';
+
+  var sql, dayExchange = {}, reference = {}, cfg = {};
+
+  sql = 'SELECT * FROM primary_cash WHERE primary_cash.uuid = ?;';
+
+  db.exec(sql, [id])
+  .then(function (records) {
+    if (records.length === 0) { throw new Error('Could not find primary cash row with id:' + id); }
+    reference.reference_pcash = records[0];
+
+    sql = 'SELECT * FROM primary_cash_item WHERE primary_cash_item.primary_cash_uuid = ?;';
+    return db.exec(sql, [id]);
+  })
+  .then(function (records) {
+    if (records.length === 0) { throw new Error('pas enregistrement'); }
+    reference.reference_pcash_items = records;
+    var date = util.toMysqlDate(reference.reference_pcash.date);
+    return core.queries.myExchangeRate(date);
+  })
+  .then(function (exchangeStore) {
+    dayExchange = exchangeStore.get(reference.reference_pcash.currency_id);
+    return q([core.queries.origin('pcash_employee'), core.queries.period(reference.date)]);
+  })
+  .spread(function (originId, periodObject) {
+    cfg.originId = originId;
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+    return core.queries.transactionId(reference.reference_pcash.project_id);
+  })
+
+  // debting sql
+  .then(function (transId) {
+    cfg.transId = transId;
+    cfg.descrip = transId.substring(0, 4) + '_CAISSEPRINCIPALE_EMPLOYEE' + new Date().toISOString().slice(0, 10).toString();
+
+    var queries = reference.reference_pcash_items.map(function (item) {
+      var sql, value, params;
+
+      value = parseFloat((1/dayExchange.rate) * item.debit).toFixed(4);
+
+      sql =
+          'INSERT INTO posting_journal (' +
+            'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+            'description, account_id, debit, credit, debit_equiv, credit_equiv, ' +
+            'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) ' +
+          'SELECT ?, ?, ?, ?, ?, ?, ?, account_id, ?, ?, ?, ?, ?, null, \'C\', ?, ?, ? ' +
+          'FROM cash_box_account_currency WHERE cash_box_account_currency.cash_box_id = ? ' +
+            'AND cash_box_account_currency.currency_id = ?;';
+
+      params = [
+        uuid(), reference.reference_pcash.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
+        cfg.description, item.debit, 0, value, 0, reference.reference_pcash.curreny_id, item.inv_po_id, cfg.originId,
+        userId, reference.reference_pcash.cash_box_id, reference.reference_pcash.currency_id
+      ];
+
+      return db.exec(sql, params);
+    });
+
+    return q.all(queries);
+  })
+
+  // creditting sql
+  .then(function () {
+
+    var queries = reference.reference_pcash_items.map(function (item) {
+      var value, sql, params;
+
+      value = parseFloat((1/dayExchange.rate) * item.debit).toFixed(4);
+
+      sql =
+        'INSERT INTO posting_journal (' +
+          'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+          'description, account_id, debit, credit, debit_equiv, credit_equiv, ' +
+          'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) ' +
+        'VALUES (?);';
+
+      params = [
+        uuid(), reference.reference_pcash.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId,
+        new Date(), cfg.description, reference.reference_pcash.account_id, 0, item.debit,
+        0, value, reference.reference_pcash.currency_id, reference.reference_pcash.deb_cred_uuid,
+        'C', item.inv_po_id, cfg.originId, userId
+      ];
+
+      return db.exec(sql, [params]);
+    });
+
+    return q.all(queries);
+  })
+  .then(function (res) {
+    return cb(null, res);
+  })
+  .catch(cb)
+  .done();
 }
