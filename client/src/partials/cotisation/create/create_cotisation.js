@@ -67,8 +67,9 @@ angular.module('bhima.controllers')
     $scope.save = {};
 
     $scope.save.edit = function () {
-      $scope.session.edit.is_employee = ($scope.session.edit.is_employee)? 1 : 0;
-      $scope.session.edit.is_percent = ($scope.session.edit.is_percent)? 1 : 0;
+      console.log('$scope.session.edit', $scope.session.edit);
+      $scope.session.edit.is_employee = ($scope.session.edit.is_employee) ? 1 : 0;
+      $scope.session.edit.is_percent = ($scope.session.edit.is_percent) ? 1 : 0;
 
       var record = angular.copy(connect.clean(session.edit));
       delete record.reference;
@@ -98,6 +99,8 @@ angular.module('bhima.controllers')
     };
 
     $scope.save.new = function () {
+      console.log('$scope.session.new:', $scope.session.new);
+
       $scope.session.new.is_employee = ($scope.session.new.is_employee)? 1 : 0;
       $scope.session.new.is_percent = ($scope.session.new.is_percent)? 1 : 0;
       var record = connect.clean(session.new);
