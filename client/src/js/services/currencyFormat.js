@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 /**
  * @description
@@ -26,6 +26,7 @@ angular.module('bhima.services')
     
   // Requests individual currency configurations
   function fetchFormatConfiguration(key) { 
+    var formatObject = null;
     fetchingKeys[key] = true;
     
     $http.get(currencyConfigurationPath.concat(key, '.json'))
