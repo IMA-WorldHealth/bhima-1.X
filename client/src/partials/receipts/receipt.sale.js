@@ -1,11 +1,10 @@
 angular.module('bhima.controllers')
 .controller('receipt.sale', [
   '$scope',
-  '$locale',
   'validate',
   'appstate',
   'messenger',
-  function ($scope, $locale, validate, appstate, messenger) {
+  function ($scope, validate, appstate, messenger) {
     var dependencies = {}, model = $scope.model = {common : {}, total : {}};
     $scope.updateCurrency = updateCurrency;
   

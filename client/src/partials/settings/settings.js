@@ -20,7 +20,7 @@ angular.module('bhima.controllers')
       },
       {
         translateKey : 'fr',
-        localeKey : 'fr-fr',
+        localeKey : 'fr-be',
         label : 'French'
       },
       {
