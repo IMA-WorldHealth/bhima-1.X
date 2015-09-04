@@ -11,10 +11,8 @@ var bilanDate = new Date();
 // expose the http route
 exports.compile = function (options) {
   'use strict';
-
+  var i18nBilan = options.language == 'fr' ? require('../lang/fr.json').BILAN : require('../lang/en.json').BILAN;
   var deferred = q.defer(), context = {}, infos = {}, assetData = {}, passiveData = {};
-  context.reportDate = bilanDate.toDateString();
-
   var sql =
     'SELECT `acc`.`id` AS `accountId`, `acc`.`account_txt` AS `accounTxt`, `acc`.`account_number` AS `accountNumber`, ' +
     '`acc`.`is_brut_link` AS `accountIsBrutLink`, `ref`.`id` AS `referenceId`, `ref`.`ref` AS `referenceAbbr`, `ref`.`text` AS `referenceLabel`, ' +
@@ -26,9 +24,27 @@ exports.compile = function (options) {
     'JOIN `account` `acc` ON `acc`.`reference_id` = `ref`.`id` JOIN `general_ledger` `gld` ON `gld`.`account_id` = `acc`.`id` WHERE `gld`.`trans_date`<= (SELECT MAX(`period_stop`) ' +
     'FROM `period` WHERE `period`.`fiscal_year_id`=?) AND `acc`.`is_ohada`=? GROUP BY `gld`.`account_id` ORDER BY `sbl`.`position`, `gref`.`position`, `ref`.`position` DESC;';
 
+  //populating context object
+
+  context.reportDate = bilanDate.toDateString();
+  context.enterpriseName = options.enterprise.abbr;
+
+  context.title = i18nBilan.TITLE;
+  context.enterprise = i18nBilan.ENTERPRISE;
+  context.clos = i18nBilan.CLOS;
+  context.duration = i18nBilan.DURATION;
+  context.reference = i18nBilan.REFERENCE;
+  context.actif = i18nBilan.ACTIF;
+  context.brut  = i18nBilan.BRUT;
+  context.amort_prov = i18nBilan.AMORT_PROV;
+  context.net = i18nBilan.NET;
+  context.totalGeneral = i18nBilan.TOTAL_GENERAL;
+  context.passif = i18nBilan.PASSIVE;
+  context.date = i18nBilan.DATE;
+  context.total = i18nBilan.TOTAL;
+
   db.exec(sql, [options.fy, 1])
   .then(function (currentAccountDetails) {
-    // console.log('currentAccountDetails', currentAccountDetails);
     infos.currentAccountDetails = currentAccountDetails;
     return db.exec(sql, [options.pfy, 1]);
   })
@@ -71,11 +87,11 @@ exports.compile = function (options) {
         section.grefs.forEach(function (gref){
           gref.refs = getReferences(gref, currents);
           gref.refs.forEach(function (item){
-            item.brut = getBrut(item, currents);
+            item.brut = getBrut(item, currents, section.sectionBilanIsActif);
             item.brut_view = numeral(item.brut).format(formatDollar);
             section.totalBrut += item.brut;
 
-            item.amort_prov = getAmortProv(item, currents);
+            item.amort_prov = getAmortProv(item, currents, section.sectionBilanIsActif);
             item.amort_prov_view = numeral(item.amort_prov).format(formatDollar);
             section.totalAmortProv += item.amort_prov;
 
@@ -83,7 +99,7 @@ exports.compile = function (options) {
             item.net_view = numeral(item.net).format(formatDollar);
             section.totalNet += item.net;
 
-            item.previousNet = getPreviousNet(item, tbl.previousAccountDetails);
+            item.previousNet = getPreviousNet(item, tbl.previousAccountDetails, section.sectionBilanIsActif);
             item.previousNet_view = numeral(item.previousNet).format(formatDollar);
             section.totalPreviousNet = item.previousNet;
           });
@@ -119,11 +135,11 @@ exports.compile = function (options) {
         section.grefs.forEach(function (gref){
           gref.refs = getReferences(gref, currents);
           gref.refs.forEach(function (item){
-            item.brut = getBrut(item, currents);
+            item.brut = getBrut(item, currents, section.sectionBilanIsActif);
             item.brut_view = numeral(item.brut).format(formatDollar);
             section.totalBrut += item.brut;
 
-            item.amort_prov = getAmortProv(item, currents);
+            item.amort_prov = getAmortProv(item, currents, section.sectionBilanIsActif);
             item.amort_prov_view = numeral(item.amort_prov).format(formatDollar);
             section.totalAmortProv += item.amort_prov;
 
@@ -131,7 +147,7 @@ exports.compile = function (options) {
             item.net_view = numeral(item.net).format(formatDollar);
             section.totalNet += item.net;
 
-            item.previousNet = getPreviousNet(item, tbl.previousAccountDetails);
+            item.previousNet = getPreviousNet(item, tbl.previousAccountDetails, section.sectionBilanIsActif);
             item.previousNet_view = numeral(item.previousNet).format(formatDollar);
             section.totalPreviousNet = item.previousNet;
           });
@@ -162,7 +178,6 @@ exports.compile = function (options) {
     }
 
     function getSections (currents){
-      // console.log('recu currents', currents);
       var sections = [];
       sections.push({
         sectionBilanId : currents[0].sectionBilanId,
@@ -228,7 +243,7 @@ exports.compile = function (options) {
       return references;
     }
 
-    function getBrut (reference, currents){
+    function getBrut (reference, currents, isActif){
       var somDebit = 0, somCredit = 0;
 
       currents.forEach(function (item){
@@ -239,10 +254,10 @@ exports.compile = function (options) {
       });
 
 
-      return somDebit - somCredit;
+      return (isActif == 1)? somDebit - somCredit : somCredit - somDebit;
     }
 
-    function getAmortProv (reference, currents){
+    function getAmortProv (reference, currents, isActif){
       var somDebit = 0, somCredit = 0;
 
       currents.forEach(function (item){
@@ -251,10 +266,10 @@ exports.compile = function (options) {
           somCredit+=(item.generalLegderCredit);
         }
       });
-      return somDebit - somCredit;
+      return isActif == 1 ? somDebit - somCredit : somCredit - somDebit;
     }
 
-    function getPreviousNet (reference, previous){
+    function getPreviousNet (reference, previous, isActif){
       var somDebit = 0, somCredit = 0;
 
       previous.forEach(function (item){
@@ -266,7 +281,7 @@ exports.compile = function (options) {
           somCredit+=item.generalLegderCredit;
         }
       });
-      return somDebit - somCredit;
+      return isActif == 1 ? somDebit - somCredit : somCredit - somDebit;
     }
 
     deferred.resolve(context);
