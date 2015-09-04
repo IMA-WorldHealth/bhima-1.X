@@ -754,7 +754,7 @@
 
     // TODO Hardcoded default translation/ localisation
     tmhDynamicLocaleProvider.localeLocationPattern('/i18n/locale/angular-locale_{{locale}}.js');
-    tmhDynamicLocaleProvider.defaultLocale('fr-fr');
+    tmhDynamicLocaleProvider.defaultLocale('fr-be');
   }
 
   // Logs HTTP errors to the console, even if uncaught
