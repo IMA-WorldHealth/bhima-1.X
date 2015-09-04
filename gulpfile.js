@@ -41,12 +41,12 @@ var UGLIFY = false,
 // resource paths
 var paths = {
   client : {
-    javascript : ['client/src/js/define.js', 'client/src/js/app.js', 'client/src/**/*.js'],
+    javascript : ['client/src/js/define.js', 'client/src/js/app.js', 'client/src/**/*.js', '!client/src/i18n/**/*.js'],
     css        : ['client/src/partials/**/*.css', 'client/src/css/*.css'],
     vendor     : ['client/vendor/*.js', 'client/vendor/**/*.js'],
 
     // these must be globs ("**" syntax) to retain their folder structures
-    static     : ['client/src/index.html', 'client/src/js/app.js', 'client/src/**/*', '!client/src/**/*.js', '!client/src/**/*.css']
+    static     : ['client/src/index.html', 'client/src/js/app.js', 'client/src/**/*', '!client/src/js/**/*.js', '!client/src/partials/**/*.js', '!client/src/**/*.css']
   },
   server : {
     javascript : ['server/*.js', 'server/**/*.js'],

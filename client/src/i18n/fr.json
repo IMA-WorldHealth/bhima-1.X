@@ -326,7 +326,7 @@
    "INFO_CAUTION" : "Information sur le paiement anticipatif",
    "NAME"         : "Noms",
    "ORIGIN"       : "Origines",
-   "PATIENT"      : "Informations Patient",
+   "PATIENT"      : "Informations sur le Patient",
    "PAY"          : "Payer",
    "TITLE"        : "Gestion des paiements anticipatifs",
    "UNIT_ERROR"   : "Le montant du paiement anticipatif est inférieure à la plus petite unité de la monnaie choisie!"
@@ -1085,16 +1085,17 @@
    "WARN_MISSING_DOCUMENT_ID"       : "Document ID manquant"
    },
 "EXCHANGE": {
-   "HELP_TXT_1" : "Le module de taux de change, donne la possibilite de définir le taux d'echange du jour. Par souci d'Intégrité des données, Le taux d'echange doit être défini par jour",
-   "NEW"        : "Nouveau Taux",
-   "NO_RATES"   : "Il n'y a pas des taux défini pour aujourd'hui!",
-   "PREV"       : "Taux Précédent ",
-   "REVIEW"     : "Revoir le taux d'aujourd'hui",
-   "SET"        : "Définir le Taux de Change pour Aujourd'hui",
-   "TITLE"      : "Configurer le taux de change",
-   "TODAY_RATE" : "Taux de change pour",
-   "OLD_DATE"   : "Definir le taux d'echange pour une date anterieure",
-   "DATE"       : "Definir date"
+   "HELP_TXT_1"       : "Le module de taux de change, donne la possibilite de définir le taux d'echange du jour. Par souci d'Intégrité des données, Le taux d'echange doit être défini par jour",
+   "NEW"              : "Nouveau Taux",
+   "NO_EXCHANGE_RATE" : "Le taux d'échange n'est pas encore défini pour la date du :",
+   "NO_RATES"         : "Il n'y a pas des taux défini pour aujourd'hui!",
+   "PREV"             : "Taux Précédent ",
+   "REVIEW"           : "Revoir le taux d'aujourd'hui",
+   "SET"              : "Définir le Taux de Change pour Aujourd'hui",
+   "TITLE"            : "Configurer le taux de change",
+   "TODAY_RATE"       : "Taux de change pour",
+   "OLD_DATE"         : "Definir le taux d'echange pour une date anterieure",
+   "DATE"             : "Definir date"
    },
 "EXPIRING": {
    "EXPIRED" : "Articles expirés",
@@ -1584,10 +1585,10 @@
    },
 "NO_EXCHANGE": {
    "CURRENT_DATE" : "Date",
-   "EXPLANATION"  : "Ce module marche avec un taux de jour.  On n'a pas enregistré un taux pour aujourd'hui.",
-   "FIX"          : "Entrer dans le module et enregistrer un taux de jour.",
-   "SET_NEW_RATE" : "Soumettre un nouveau taux",
-   "TITLE"        : "Il n'y a pas un taux"
+   "EXPLANATION"  : "Ce module ne marche qu'avec un nouveau d'échange, aucun taux n'a éta défini pour aujourd'hui.",
+   "FIX"          : "Entrer dans le module et enregistrer un taux d'échange.",
+   "SET_NEW_RATE" : "Soumettre un nouveau taux d'échange",
+   "TITLE"        : "Il n'y a pas de taux d'échange"
    },
 "OFFDAY_MANAGEMENT": {
    "ADD"            : "Ajouter un jour férié",

@@ -1,7 +1,7 @@
 (function (angular) {
   'use strict';
 
-  var bhima = angular.module('bhima', ['bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate', 'LocalForageModule', 'chart.js']);
+  var bhima = angular.module('bhima', ['bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate', 'LocalForageModule', 'chart.js', 'tmh.dynamicLocale']);
 
   function bhimaconfig($routeProvider) {
     //TODO: Dynamic routes loaded from unit database?
@@ -735,6 +735,14 @@
       controller : 'configureEmployeeState',
       templateUrl : 'partials/reports_proposed/employee_state/employee_state.html'
     })
+    .when('/exchangeRateModal/', {
+      controller : 'exchangeRateModal',
+      templateUrl : 'partials/exchangeRateModal/exchangeRateModal.html'
+    })
+    .when('/justifyModal/', {
+      controller : 'justifyModal',
+      templateUrl : 'partials/cash/justify_modal.html'
+    })        
     .when('/dashboards/finance', {
       templateUrl : 'partials/dashboard/finance.html'
     })
@@ -749,9 +757,15 @@
     });
 
     $translateProvider.useSanitizeValueStrategy('escape');
-
-    //TODO Try and assign the previous sessions language key here
+  
     $translateProvider.preferredLanguage('fr');
+  }
+
+  function localeConfig(tmhDynamicLocaleProvider) { 
+
+    // TODO Hardcoded default translation/ localisation
+    tmhDynamicLocaleProvider.localeLocationPattern('/i18n/locale/angular-locale_{{locale}}.js');
+    tmhDynamicLocaleProvider.defaultLocale('fr-be');
   }
 
   // Logs HTTP errors to the console, even if uncaught
@@ -781,6 +795,7 @@
   // configuration
   bhima.config(['$routeProvider', bhimaconfig]);
   bhima.config(['$translateProvider', translateConfig]);
+  bhima.config(['tmhDynamicLocaleProvider', localeConfig]);
   bhima.config(['$httpProvider', authConfig]);
   bhima.config(['$localForageProvider', localForageConfig]);
   // run
