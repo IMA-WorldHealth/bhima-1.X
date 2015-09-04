@@ -115,3 +115,19 @@ UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'import_automatique' WH
 UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'group_deb_invoice' WHERE  `transaction_type`.`id` =5;
 UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'stock_loss' WHERE  `transaction_type`.`id` =13;
 UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'reversing_stock' WHERE  `transaction_type`.`id` =28;
+
+
+USE bhima;
+
+-- Create new units relatives to Budget Module
+-- 
+-- Date: 2015-09-03
+-- By: Bruce MBAYO
+
+-- Budget Analysis
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `has_children`, `url`, `path`)
+VALUES (115, 'Budget Analysis', 'TREE.BUDGET_ANALYSIS', 'analyse du budget courant avec les precedants', 8, 0, '/partials/budget/analysis', '/budgeting/analysis/');
+
+-- Create new budget
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `has_children`, `url`, `path`)
+VALUES (116, 'Create new budget', 'TREE.NEW_BUDGET', 'Creation nouveau budget via CSV', 8, 0, '/partials/budget/create', '/budgeting/create/');
