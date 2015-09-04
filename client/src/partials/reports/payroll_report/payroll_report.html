@@ -92,9 +92,9 @@
                 <td> {{ report.prenom }} </td>  
                 <td> {{ report.dob | date }} </td>
                 <td> {{ report.sexe }} </td>
-                <td><span ng-bind-html="report.net_before_tax | intlcurrency:report.currency_id"></span></td>
-                <td><span ng-bind-html="report.net_after_tax | intlcurrency:report.currency_id"></span></td>  
-                <td><span ng-bind-html="report.net_salary | intlcurrency:report.currency_id"></span></td>
+                <td>{{ report.net_before_tax | currency:report.currency_id }}</td>
+                <td>{{ report.net_after_tax | currency:report.currency_id }}</td>  
+                <td>{{ report.net_salary | currency:report.currency_id }}</td>
                 <td class="hidden-print"><a ng-href="/#/invoice/payslip/{{report.uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{ "PAYCHECK.VIEW" | translate  }}</a></td>                              
               </tr>
             </tbody>
@@ -148,9 +148,6 @@
               <td> {{ report.prenom }} </td>  
               <td> {{ report.dob | date }} </td>
               <td> {{ report.sexe }} </td>
-              <td><span ng-bind-html="report.net_before_tax | intlcurrency:report.currency_id"></span></td>
-              <td><span ng-bind-html="report.net_after_tax | intlcurrency:report.currency_id"></span></td>  
-              <td><span ng-bind-html="report.net_salary | intlcurrency:report.currency_id"></span></td>
               <td class="hidden-print"><a ng-href="/#/invoice/payslip/{{report.uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{ "PAYCHECK.VIEW" | translate  }}</a></td>                              
             </tr>
           </tbody>

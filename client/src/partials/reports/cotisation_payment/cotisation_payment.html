@@ -88,16 +88,16 @@
                 <td> {{ report.name }}  {{ report.postnom }} </td>
                 <td> {{ report.prenom }} </td>  
                 <td> {{ report.label }} </td>
-                <td><span ng-bind-html="report.value | intlcurrency:report.currency_id"></span></td>
-                <td><span ng-bind-html="report.amount_paid | intlcurrency:report.currency_id"></td>
+                <td>{{ report.value | currency:report.currency_id }}</td>
+                <td>{{ report.amount_paid | currency:report.currency_id }}</td>
               </tr>
             </tbody>
           </table>
           <h5 class="visible-print">
             <tr>
-              {{ 'COLUMNS.TOTAL_AMOUNT' | translate }}:   <b ng-bind-html="total | intlcurrency:session.currency"></b>
-              | {{ 'COLUMNS.TOTAL_AMOUNT_DUE' | translate }}:   <b ng-bind-html="sum_due | intlcurrency:session.currency"></b>
-              | {{ 'COLUMNS.TOTAL_AMOUNT_PAID' | translate }}:   <b ng-bind-html="sum_paid | intlcurrency:session.currency"></b>
+              {{ 'COLUMNS.TOTAL_AMOUNT' | translate }}:   <b>{{ total | currency:session.currency }}</b>
+              | {{ 'COLUMNS.TOTAL_AMOUNT_DUE' | translate }}:   <b>{{ sum_due | currency:session.currency }}</b>
+              | {{ 'COLUMNS.TOTAL_AMOUNT_PAID' | translate }}:   <b>{{ sum_paid | currency:session.currency }}</b>
           </h5>
 
 
@@ -115,7 +115,7 @@
             </span>
           </td>
           <td>
-            <b ng-bind-html="total | intlcurrency:session.currency"></b>
+            <b>{{ total | currency:session.currency }}</b>
             <span ng-if="session.searching">...</span>
           </td>
           <td>
@@ -125,7 +125,7 @@
             </span>
           </td>
           <td>
-            <b ng-bind-html="sum_due | intlcurrency:session.currency"></b>
+            <b>{{ sum_due | currency:session.currency }}</b>
             <span ng-if="session.searching">...</span>
           </td>
           <td>
@@ -135,7 +135,7 @@
             </span>
           </td>
           <td>
-            <b ng-bind-html="sum_paid | intlcurrency:session.currency"></b>
+            <b>{{ sum_paid | currency:session.currency }}</b>
             <span ng-if="session.searching">...</span>
           </td>          
           <td colspan="4">
