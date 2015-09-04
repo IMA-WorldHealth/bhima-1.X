@@ -3,6 +3,7 @@ angular.module('bhima.controllers')
   '$scope',
   '$routeParams',
   '$translate',
+  '$modal',
   'validate',
   'messenger',
   'appstate',
@@ -11,7 +12,8 @@ angular.module('bhima.controllers')
   'util',
   '$location',
   'appcache',
-  function ($scope, $routeParams, $translate, validate, messenger, appstate, connect, uuid, util, $location, Appcache) {
+  'exchange',
+  function ($scope, $routeParams, $translate, $modal, validate, messenger, appstate, connect, uuid, util, $location, Appcache, exchange) {
     var isDefined, dependencies = {},
       session = $scope.session = { receipt : {}, configured : false, complete : false },
       cache = new Appcache('income'),
@@ -67,10 +69,10 @@ angular.module('bhima.controllers')
     cache.fetch('account').then(getAccount);
 
 
-
     function load (currency) {
       if (!currency) { return; }
        $scope.session.currency = currency;
+       haltOnNoExchange();
     }
 
     function getAccount (ac) {
@@ -204,6 +206,24 @@ angular.module('bhima.controllers')
         session.complete = true;
       }
     };
+
+    function haltOnNoExchange () {
+      if (exchange.hasDailyRate()) { return; }
+
+      var instance = $modal.open({
+        templateUrl : 'partials/exchangeRateModal/exchangeRateModal.html',
+        backdrop    : 'static',
+        keyboard    : false,
+        controller  : 'exchangeRateModal'
+      });
+      
+      instance.result.then(function () {
+        $location.path('/exchange_rate');
+      }, function () {
+        $scope.errorState = true;
+      });
+    }
+
 
     $scope.update = update;
     $scope.setCurrency = setCurrency;
