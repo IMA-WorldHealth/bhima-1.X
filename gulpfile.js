@@ -12,7 +12,7 @@ var gulp       = require('gulp'),
     minifycss  = require('gulp-minify-css'),
     jshint     = require('gulp-jshint'),
     flatten    = require('gulp-flatten'),
-    del        = require('del'),
+    rimraf     = require('rimraf'),
 
     // mocha for server-side testing
     mocha      = require('gulp-mocha'),
@@ -79,7 +79,7 @@ var paths = {
 
 // removes files with del, and continues
 gulp.task('client-clean', function (cb) {
-  del([CLIENT_FOLDER], cb);
+  rimraf(CLIENT_FOLDER, cb);
 });
 
 // run jshint on the client javascript code
@@ -162,7 +162,9 @@ gulp.task('build-client', function () {
 */
 
 gulp.task('server-clean', function (cb) {
-  del([SERVER_FOLDER, PLUGIN_FOLDER], cb);
+  rimraf(SERVER_FOLDER, function () {
+    rimraf(PLUGIN_FOLDER, cb);
+  });
 });
 
 // run jshint on all server javascript files
@@ -202,7 +204,7 @@ gulp.task('build-server', function () {
 */
 
 gulp.task('clean', function (cb) {
-  del(['./bin/'], cb);
+  rimraf('./bin/', cb);
 });
 
 gulp.task('build', function () {
