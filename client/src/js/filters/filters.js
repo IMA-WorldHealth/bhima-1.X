@@ -1,4 +1,3 @@
-// (function (angular) {
 'use strict';
 
 angular.module('bhima.filters')
@@ -7,53 +6,6 @@ angular.module('bhima.filters')
       return Boolean(Number(input));
     };
   })
-
-  // Potential currency filter providing a specified locale 
-  // Ideally would leverage angular currency filter but this does NOT support
-  // passing through individual locale and doesn't expose utility methods 
-  .filter('intlcurrency', [
-    '$http',
-    '$filter',
-    '$sce',
-    'store',
-    'messenger',
-    function ($http, $filter, $sce, Store, messenger) {
-
-      var currency = new Store({
-        data : [],
-        identifier : 'id'
-      });
-
-      // $http.get('/finance/currencies')
-      // .success(function (data) {
-        // currency.setData(data);
-      // })
-      // .error(function (error) {
-        // messenger.danger('An error occured:' + JSON.stringify(error));
-      // });
-
-      return function (value, id) {
-        value = (value || 0).toFixed(2);
-
-        if (!angular.isDefined(id) || !angular.isDefined(currency)) {
-          return $sce.trustAsHtml($filter('currency')(value));
-        }
-
-        // first, extract the decimal digits '0.xx'
-        var decimalDigits = value.slice(value.indexOf('.')+1, value.indexOf('.') + 3);
-
-        if (decimalDigits) {
-          value = value.slice(0, value.indexOf('.'));
-        }
-
-        // var templ = value.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1'+currency.get(id).separator);
-        // templ += '<span class="desc">' + currency.get(id).decimal + decimalDigits + '</span><span class="cur"> ' + currency.get(id).symbol +  '</span>';
-
-        // return $sce.trustAsHtml(templ);
-        return $sce.trustAsHtml('<span style="color : red;">Filter Depriciated</span>');
-      };
-    }
-  ])
   .filter('unique', function () {
     return function (items, filterOn) {
       console.log('item est : ', items, 'filteron est ', filterOn);
@@ -106,6 +58,15 @@ angular.module('bhima.filters')
       var scalar = map[currency_id] || 1;
       return map ? precision.round(scalar*value, 2) : precision.round(value, 2);
     };
-  }]); 
-  // })(angular);
+  }])
 
+  // Filter is depreciated, structure maintained until it has been confirmed removed
+  .filter('intlcurrency', ['$sce',
+    function ($sce) {
+      
+      return function (value) {
+        var depreciateElement = '<span style="color : red;">Filter Depriciated</span>';
+        var depreciateScript = '<script>alert("DEPRECIARED FILTER. It can be dangerous to trust templated strings as HTML within browser applications, If someone could sneak a <script> tag into the template they could execute code to create an annoying alert for example. Please use currency instead.");</script>';
+        return $sce.trustAsHtml(depreciateElement.concat(depreciateScript));
+      };
+    }]); 
