@@ -1,12 +1,13 @@
 angular.module('bhima.services')
 .service('exchange', [
   '$timeout',
+  '$translate',
   'store',
   'appstate',
   'messenger',
   'precision',
   'connect',
-  function ($timeout, Store, appstate, messenger, precision, connect) {
+  function ($timeout, $translate, Store, appstate, messenger, precision, connect) {
     // FIXME : this module needs to be able to do
     // exchange.setRate() so that it can detect changes
     var called = false;
@@ -26,7 +27,7 @@ angular.module('bhima.services')
 
       var store = DateStore.get(date);
       if (!store && !called) { // HACK to only show one messenger instance
-        messenger.danger('No exchange rates loaded for date: ' + new Date(date));
+        messenger.danger($translate.instant('EXCHANGE.NO_EXCHANGE_RATE') + new Date(date));
         called = true;
         $timeout(function () { called = false; }, 50);
       }
@@ -39,7 +40,7 @@ angular.module('bhima.services')
       date = normalize(new Date(date || new Date()));
 
       var store = DateStore.get(date);
-      if (!store) { messenger.danger('No exchange rates loaded for date: ' + new Date(date)); }
+      if (!store) { messenger.danger($translate.instant('EXCHANGE.NO_EXCHANGE_RATE') + new Date(date)); }
       return precision.round(store && store.rates.get(currency_id) ? store.rates.get(currency_id).rate : 1);
     };
 
@@ -52,7 +53,7 @@ angular.module('bhima.services')
       date = new Date(date) || new Date();
       date = normalize(date);
       var converter = DateStore.get(date);
-      if (!converter) { messenger.danger('No exchange rates loaded for date: ' + new Date(date)); return;}
+      if (!converter) { messenger.danger($translate.instant('EXCHANGE.NO_EXCHANGE_RATE') + new Date(date)); return;}
 
       var from = converter.rates.data.filter(function (item) {
         return item.id === from_currency_id;
