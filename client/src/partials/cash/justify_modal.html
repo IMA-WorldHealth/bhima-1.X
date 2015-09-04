@@ -1,0 +1,25 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h3>{{ 'CASH.OVER.TITLE' | translate }}</h3>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-xs-2">
+        <b>{{ 'CASH.OVER.DANGER' | translate }}</b>
+      </div>
+      <div class="col-xs-10">
+        <p>{{ "CASH.OVER.CUED" | translate }} <b class="pull-right">{{ bill.total | currency }}</b></p>
+        <p>{{ "CASH.OVER.PAYMENT" | translate }} <b class="pull-right">{{ bill.payment | currency }}</b></p>
+        <p> <b>{{ "CASH.OVER.JUSTIFICATION" | translate }}</b> <small>({{ "CASH.OVER.MIN" | translate }})</small></p>
+        <div class="input-group">
+          <span class='input-group-addon'>{{ 'CASH.OVER.REASON' | translate }}</span>
+          <input type="text" class="form-bhima" ng-model="bill.justification">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-sm btn-success" ng-click="submit()" ng-disabled="!bill.valid">{{ "FORM.SUBMIT" | translate }}</button>
+    <button class="btn btn-sm btn-danger" ng-click="cancel()">{{ "FORM.CANCEL" | translate }}</button>
+  </div>
+</div>
