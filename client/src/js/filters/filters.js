@@ -1,5 +1,3 @@
-// (function (angular) {
-'use strict';
 
 angular.module('bhima.filters')
   .filter('boolean', function() {
@@ -107,5 +105,3 @@ angular.module('bhima.filters')
       return map ? precision.round(scalar*value, 2) : precision.round(value, 2);
     };
   }]); 
-  // })(angular);
-
