@@ -167,13 +167,13 @@ angular.module('bhima.controllers')
         tax_id : emp.tax_id
       };
 
-      var package = {
+      var packet = {
         primary : primary,
         primary_details : primary_details,
         other : other
       };
 
-      $http.post('payTax/', package)
+      $http.post('payTax/', packet)
       .then(function (res){
          // A FIXE : Using $http instead connect
         var formatObject = {
