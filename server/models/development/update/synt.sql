@@ -123,10 +123,20 @@ UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'group_deb_invoice' WHE
 UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'stock_loss' WHERE  `transaction_type`.`id` =13;
 UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'reversing_stock' WHERE  `transaction_type`.`id` =28;
 
-
 -- rm unused currency tree node
 --
 -- Date: 2015-08-31
 -- By: jniles
 
 DELETE FROM `unit` WHERE id = 33;
+
+-- Update currency, decoupling format and definition to utilise locale format 
+-- 
+-- Date : 2015-09-01
+-- @sfount
+ALTER TABLE `currency` DROP COLUMN `separator`;
+ALTER TABLE `currency` DROP COLUMN `decimal`;
+ALTER TABLE `currency` ADD `format_key` VARCHAR(20) AFTER `name`;
+UPDATE `currency` SET `format_key` = 'fc' WHERE id = 1;
+UPDATE `currency` SET `format_key` = 'usd' WHERE `id` = 2;
+ALTER TABLE `currency` MODIFY `format_key` VARCHAR(20) NOT NULL;
