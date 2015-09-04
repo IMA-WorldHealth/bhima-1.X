@@ -54,7 +54,7 @@
             <td>{{ cashDiscard.date | date }}</td>
             <td>{{ cash.first_name }} {{cash.last_name}}</td>
             <td>{{ cash.deb_cred_uuid }}</td>
-            <td><span ng-bind-html="cash.cost | intlcurrency:cash.currency_id"></td>
+            <td>{{ cash.cost | currency:cash.currency_id }}</td>
           </tr>
         </tbody>
       </table>

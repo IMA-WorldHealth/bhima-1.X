@@ -63,10 +63,10 @@
                 {{ currency.get(rate.foreign_currency_id).name }} Rate
               </label>
               <div class="col-xs-4">
-                <p class="form-control-static" ng-bind-html="100 | intlcurrency:rate.enterprise_currency_id"></p>
+                <p class="form-control-static">{{ 100 | currency:rate.enterprise_currency_id }}</p>
               </div>
               <div class="col-xs-4">
-                <p class="form-control-static" ng-bind-html="rate.rate * 100 | intlcurrency:rate.foreign_currency_id"></p>
+                <p class="form-control-static">{{ rate.rate * 100 | currency:rate.foreign_currency_id }}</p>
               </div>
             </div>
 
