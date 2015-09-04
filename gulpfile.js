@@ -12,9 +12,10 @@ var gulp       = require('gulp'),
     minifycss  = require('gulp-minify-css'),
     jshint     = require('gulp-jshint'),
     flatten    = require('gulp-flatten'),
-    del        = require('del'),
     spawn      = require('child_process').spawn,
     path       = require('path'),
+    iife       = require('gulp-iife'),
+    rimraf     = require('rimraf'),
 
     // mocha for server-side testing
     mocha      = require('gulp-mocha'),
@@ -46,14 +47,14 @@ var UGLIFY = false,
 // resource paths
 var paths = {
   client : {
-    javascript : ['client/src/js/define.js', 'client/src/js/app.js', 'client/src/**/*.js'],
+    javascript : ['client/src/js/define.js', 'client/src/js/app.js', 'client/src/**/*.js', '!client/src/i18n/**/*.js'],
     css        : ['client/src/partials/**/*.css', 'client/src/css/*.css'],
     vendor     : ['client/vendor/*.js', 'client/vendor/**/*.js'],
     e2etest    : ['client/test/e2e/**/*.spec.js'],
     unittest   : [],
 
     // these must be globs ("**" syntax) to retain their folder structures
-    static     : ['client/src/index.html', 'client/src/js/app.js', 'client/src/**/*', '!client/src/**/*.js', '!client/src/**/*.css']
+    static     : ['client/src/index.html', 'client/src/js/app.js', 'client/src/**/*', '!client/src/js/**/*.js', '!client/src/partials/**/*.js', '!client/src/**/*.css']
   },
   server : {
     javascript : ['server/*.js', 'server/**/*.js'],
@@ -87,7 +88,7 @@ var paths = {
 
 // removes files with del, and continues
 gulp.task('client-clean', function (cb) {
-  del([CLIENT_FOLDER], cb);
+  rimraf(CLIENT_FOLDER, cb);
 });
 
 // run jshint on the client javascript code
@@ -101,6 +102,7 @@ gulp.task('client-lint-js', function () {
 // writes output to bhima.min.js
 gulp.task('client-minify-js', function () {
   return gulp.src(paths.client.javascript)
+    .pipe(iife())
     .pipe(concat('js/bhima.min.js'))
     .pipe(gulp.dest(CLIENT_FOLDER));
 });
@@ -170,7 +172,9 @@ gulp.task('build-client', ['client-clean'], function () {
 */
 
 gulp.task('server-clean', function (cb) {
-  del([SERVER_FOLDER, PLUGIN_FOLDER], cb);
+  rimraf(SERVER_FOLDER, function () {
+    rimraf(PLUGIN_FOLDER, cb);
+  });
 });
 
 // run jshint on all server javascript files
@@ -233,7 +237,7 @@ gulp.task('server-test-run', function () {
 /* -------------------------------------------------------------------------- */
 
 gulp.task('clean', function (cb) {
-  del(['./bin/'], cb);
+  rimraf('./bin/', cb);
 });
 
 gulp.task('build', ['clean'], function () {

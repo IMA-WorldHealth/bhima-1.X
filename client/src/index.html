@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
   <meta charset="utf-8"/>
   <title>BHIMA</title>
@@ -88,6 +88,7 @@
 <!-- scripts loaded in body to prevent page from 'hanging'-->
 <!--jquery-->
 <script src="vendor/jquery.min.js"></script>
+<script src="vendor/jquery-ui.min.js"></script>
 
 <!-- localforage -->
 <script src="vendor/localforage.min.js"></script>
@@ -99,10 +100,17 @@
 <script src="vendor/angular.js"></script>
 <script src="vendor/angular-route.js"></script>
 
+<!-- angular-chart-->
+<script src="vendor/Chart.min.js"></script>
+<script src="vendor/angular-chart.min.js"></script>
+
 <!--i18n-->
 <script src="vendor/angular-translate.min.js"></script>
 <script src="vendor/loader-static-files.min.js"></script>
 <script src="vendor/loader-url.min.js"></script>
+
+<!--locale-->
+<script type="text/javascript" src="vendor/tmhDynamicLocale.js"></script>
 
 <!--lib-->
 <script src="vendor/ui-bootstrap-tpls.js"></script>
@@ -110,5 +118,11 @@
 
 <!-- BHIMA -->
 <script src="js/bhima.min.js"></script>
+
+<!-- Legacy locale tests - remove as depreciated -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-i18n/1.4.4/angular-locale_en-us.js"></script> -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-i18n/1.4.4/angular-locale_fr-fr.js"></script> -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-i18n/1.4.4/angular-locale_fr-cd.js"></script> -->
+
 </body>
 </html>
