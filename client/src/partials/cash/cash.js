@@ -132,23 +132,12 @@ angular.module('bhima.controllers')
       if (exchange.hasDailyRate()) { return; }
 
       var instance = $modal.open({
-        templateUrl : 'noExchangeRate.html',
+        templateUrl : 'partials/exchangeRateModal/exchangeRateModal.html',
         backdrop    : 'static',
         keyboard    : false,
-        controller  : function ($scope, $modalInstance) {
-          $scope.timestamp= new Date();
-
-          $scope.close = function close () {
-            $modalInstance.dismiss();
-          };
-
-          $scope.setExchange = function setExchange () {
-            $modalInstance.close();
-          };
-
-        }
+        controller  : 'exchangeRateModal'
       });
-
+      
       instance.result.then(function () {
         $location.path('/exchange_rate');
       }, function () {
@@ -277,25 +266,10 @@ angular.module('bhima.controllers')
 
       if ($scope.data.overdue) {
         instance = $modal.open({
-          templateUrl : 'justifyModal.html',
+          templateUrl : 'partials/cash/justify_modal.html',
           backdrop    : 'static',
           keyboard    : false,
-          controller  : function ($scope, $modalInstance, data) {
-            $scope.bill = data;
-            $scope.bill.valid = false;
-
-            $scope.submit = function () {
-              $modalInstance.close($scope.bill.justification);
-            };
-
-            $scope.cancel = function () {
-              $modalInstance.dismiss();
-            };
-
-            $scope.$watch('bill.justification', function () {
-              $scope.bill.valid = $scope.bill.justification ? $scope.bill.justification.length > 25 : false;
-            });
-          },
+          controller  : 'justifyModal',
           resolve : {
             data : function () {
               return $scope.data;

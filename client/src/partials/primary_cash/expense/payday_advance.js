@@ -126,7 +126,7 @@ angular.module('bhima.controllers')
           document_uuid     : document_uuid
         };
         
-        var package = {
+        var packet = {
           primary : primary,
           primary_details : primary_details
         };
@@ -134,12 +134,12 @@ angular.module('bhima.controllers')
         
         if (session.hasDailyRate) {
 
-          connect.post('primary_cash', [package.primary], ['uuid'])
+          connect.post('primary_cash', [packet.primary], ['uuid'])
           .then(function () {
-            return connect.post('primary_cash_item', [package.primary_details], ['uuid']);
+            return connect.post('primary_cash_item', [packet.primary_details], ['uuid']);
           })
           .then(function () {
-            return connect.fetch('/journal/salary_advance/' + package.primary.uuid);
+            return connect.fetch('/journal/salary_advance/' + packet.primary.uuid);
           })
           .then(function () {
             session.employee = null;
@@ -147,7 +147,7 @@ angular.module('bhima.controllers')
             session.selectedItem = null;
             session.montant = null;
             session.motif = null;
-            $location.path('/invoice/salary_advance/' + package.primary.uuid);
+            $location.path('/invoice/salary_advance/' + packet.primary.uuid);
           })
           .catch(function (err) { console.log(err); });
 
