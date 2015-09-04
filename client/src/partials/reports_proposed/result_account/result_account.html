@@ -1,5 +1,3 @@
-<!-- TODO Add translation keys -->
-
 <header data-header>
   {{'RESULT_ACCOUNT.BUILD_RESULT_ACCOUNT' | translate}}
 </header>
@@ -20,7 +18,7 @@
           </div>
         </div>
 
-        <!--<div class="form-group">
+        <div class="form-group">
           <label>{{'RESULT_ACCOUNT.LANGUAGE' | translate}}</label>
 
           <div>
@@ -31,16 +29,15 @@
                 ng-click="selectConfiguration('language', language)">{{language.label}}</button>
             </span>
           </div>
-        </div>-->
+        </div>
 
-        <!-- Links swapped out to allow target _blank (open PDF in new tab) -->
         <button
           class="btn btn-default"
           ng-disabled="session.building"
           ng-click="generateDocument()" ng-if="!generatedDocumentPath">{{session.building ? loading : generate_doc}}
         </button>
 
-        <a class="btn btn-success" href="{{generatedDocumentPath}}" target="_blank" ng-if="generatedDocumentPath" ng-click="clearPath()">{{'RESULT_ACCOUNT.DOC_SUCCES' | translate}}/a>
+        <a class="btn btn-success" href="{{generatedDocumentPath}}" target="_blank" ng-if="generatedDocumentPath" ng-click="clearPath()">{{'RESULT_ACCOUNT.DOC_SUCCES' | translate}}</a>
       </form>
     </div>
   </div>

@@ -70,6 +70,13 @@ ALTER TABLE `user` CHANGE `logged_in` `active` TINYINT NOT NULL DEFAULT 0;
 ALTER TABLE `user` ADD COLUMN `last_login` DATE NOT NULL;
 UPDATE `user` SET `password` = PASSWORD(`password`);
 
+-- Add Dashboards leaf to tree, with finance dashboard child
+--
+-- Date: 2015-08-25
+-- By: jniles
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `has_children`, `url`, `path`) VALUES
+(115, 'Dashboards', 'TREE.DASHBOARD.TITLE', 'Dashboards', 0, 1, '/partials/dashboards/', '/dashboards'),
+(116, 'Finance Dashboar', 'TREE.DASHBOARD.FINANCE', 'Finance Dashboard', 115, 0, '/partials/dashboards/finance/finance.html', '/dashboards/finance');
 
 -- Adding column is_charge 
 -- Date: 2015-08-20
@@ -116,7 +123,6 @@ UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'group_deb_invoice' WHE
 UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'stock_loss' WHERE  `transaction_type`.`id` =13;
 UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'reversing_stock' WHERE  `transaction_type`.`id` =28;
 
-
 USE bhima;
 
 -- Create new units relatives to Budget Module
@@ -131,3 +137,22 @@ VALUES (115, 'Budget Analysis', 'TREE.BUDGET_ANALYSIS', 'analyse du budget coura
 -- Create new budget
 INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `has_children`, `url`, `path`)
 VALUES (116, 'Create new budget', 'TREE.NEW_BUDGET', 'Creation nouveau budget via CSV', 8, 0, '/partials/budget/create', '/budgeting/create/');
+
+-- rm unused currency tree node
+--
+-- Date: 2015-08-31
+-- By: jniles
+
+DELETE FROM `unit` WHERE id = 33;
+
+-- Update currency, decoupling format and definition to utilise locale format 
+-- 
+-- Date : 2015-09-01
+-- @sfount
+ALTER TABLE `currency` DROP COLUMN `separator`;
+ALTER TABLE `currency` DROP COLUMN `decimal`;
+ALTER TABLE `currency` ADD `format_key` VARCHAR(20) AFTER `name`;
+UPDATE `currency` SET `format_key` = 'fc' WHERE id = 1;
+UPDATE `currency` SET `format_key` = 'usd' WHERE `id` = 2;
+ALTER TABLE `currency` MODIFY `format_key` VARCHAR(20) NOT NULL;
+

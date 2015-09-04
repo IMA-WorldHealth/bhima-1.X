@@ -12,7 +12,7 @@ var gulp       = require('gulp'),
     minifycss  = require('gulp-minify-css'),
     jshint     = require('gulp-jshint'),
     flatten    = require('gulp-flatten'),
-    del        = require('del'),
+    rimraf     = require('rimraf'),
 
     // mocha for server-side testing
     mocha      = require('gulp-mocha'),
@@ -45,12 +45,12 @@ var UGLIFY = false,
 // resource paths
 var paths = {
   client : {
-    javascript : ['client/src/js/define.js', 'client/src/js/app.js', 'client/src/**/*.js'],
+    javascript : ['client/src/js/define.js', 'client/src/js/app.js', 'client/src/**/*.js', '!client/src/i18n/**/*.js'],
     css        : ['client/src/partials/**/*.css', 'client/src/css/*.css'],
     vendor     : ['client/vendor/*.js', 'client/vendor/**/*.js'],
 
     // these must be globs ("**" syntax) to retain their folder structures
-    static     : ['client/src/index.html', 'client/src/js/app.js', 'client/src/**/*', '!client/src/**/*.js', '!client/src/**/*.css']
+    static     : ['client/src/index.html', 'client/src/js/app.js', 'client/src/**/*', '!client/src/js/**/*.js', '!client/src/partials/**/*.js', '!client/src/**/*.css']
   },
   server : {
     javascript : ['server/*.js', 'server/**/*.js'],
@@ -83,7 +83,7 @@ var paths = {
 
 // removes files with del, and continues
 gulp.task('client-clean', function (cb) {
-  del([CLIENT_FOLDER], cb);
+  rimraf(CLIENT_FOLDER, cb);
 });
 
 // run jshint on the client javascript code
@@ -166,7 +166,9 @@ gulp.task('build-client', ['client-clean'], function () {
 */
 
 gulp.task('server-clean', function (cb) {
-  del([SERVER_FOLDER, PLUGIN_FOLDER], cb);
+  rimraf(SERVER_FOLDER, function () {
+    rimraf(PLUGIN_FOLDER, cb);
+  });
 });
 
 // run jshint on all server javascript files
@@ -212,7 +214,7 @@ gulp.task('build', ['build-client', 'build-server']);
 gulp.task('webdriver-standalone', webdriver);
 
 gulp.task('clean', function (cb) {
-  del(['./bin/'], cb);
+  rimraf('./bin/', cb);
 });
 
 gulp.task('build', ['clean'], function () {
