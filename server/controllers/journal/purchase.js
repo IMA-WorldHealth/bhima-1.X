@@ -7,6 +7,7 @@ var q         = require('q'),
 exports.purchase = purchase;
 exports.confirm = confirm;
 exports.indirectPurchase = indirectPurchase;
+exports.directPurchase = directPurchase;
 
 // handle posting purchase requests
 // TODO/FIXME - it doesn't seem like this is used.  Why?
@@ -291,3 +292,95 @@ function indirectPurchase(id, userId, cb) {
   .catch(cb)
   .done();
 }
+
+/*
+ * Confirm Direct Purchase
+ *
+ *
+*/
+
+function directPurchase(id, userId, cb) {
+  'use strict';
+
+  var references, dayExchange, cfg = {};
+
+  var sql =
+    'SELECT purchase.uuid, purchase.creditor_uuid , purchase.cost, purchase.currency_id, purchase.project_id, ' +
+      'purchase.purchaser_id, purchase_item.inventory_uuid, purchase.purchase_date, purchase_item.total ' +
+    'FROM purchase JOIN purchase_item ON ' +
+      'purchase.uuid = purchase_item.purchase_uuid ' +
+    'WHERE purchase.is_direct = 1 AND ' +
+      'purchase.uuid = ?;';
+
+  db.exec(sql, [id])
+  .then(function (records) {
+    if (records.length === 0) { throw new Error('Could not find purchase order with uuid:' + id); }
+    references = records;
+    return q([core.queries.origin('confirm_purchase'), core.queries.period(references[0].purchase_date)]);
+  })
+  .spread(function (originId, periodObject) {
+    cfg.originId = originId;
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+    return core.queries.transactionId(references[0].project_id);
+  })
+  .then(function (transId) {
+    cfg.transId = transId;
+    cfg.description =  'CONFIRM C.A. DIRECT/' + new Date().toISOString().slice(0, 10).toString();
+
+    var queries = references.map(function (reference) {
+      var sql, params;
+
+      sql =
+        'INSERT INTO posting_journal ('+
+          'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+          'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+          'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
+        'SELECT ?, ?, ?, ?, ?, ?, ?, inventory_group.stock_account, ?, ?, ?, ?, ?, ?, ' +
+          'NULL, ?, ?, ? ' +
+        'FROM inventory_group WHERE inventory_group.uuid IN ' +
+          '(SELECT inventory.group_uuid FROM inventory WHERE inventory.uuid = ?);';
+
+      params = [
+        uuid(), reference.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
+        cfg.description, 0, reference.total, 0, reference.total. reference.currency_id,
+        reference.inventory_uuid, reference.uuid, cfg.originId, userId, reference.inventory_uuid
+      ];
+
+      return db.exec(sql, params);
+    });
+
+    return q.all(queries);
+  })
+  .then(function () {
+
+    var queries = references.map(function (reference) {
+      var sql, params;
+
+      sql =
+        'INSERT INTO posting_journal ('+
+          'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+          'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+          'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
+        'SELECT ?, ?, ?, ?, ?, ?, ?, inventory_group.cogs_account, ?, ?, ?, ?, ?, ?, ?, ?, ?, ' +
+        'FROM inventory_group WHERE inventory_group.uuid IN ' +
+          '(SELECT inventory.group_uuid FROM inventory WHERE inventory.uuid = ?);';
+
+      params = [
+        uuid(), reference.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
+        cfg.description, reference.total, 0, reference.total, 0, reference.currency_id,
+        reference.inventory_uuid, reference.uuid, cfg.originId, userId, reference.inventory_uuid
+      ];
+
+      return db.exec(sql, params);
+    });
+
+    return q.all(queries);
+  })
+  .then(function (res){
+    return cb(null, res);
+  })
+  .catch(cb)
+  .done();
+}
+
