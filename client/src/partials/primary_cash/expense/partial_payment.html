@@ -101,13 +101,13 @@
                         <span ng-show="emp.postnom"> - {{ emp.prenom }}</span>
                         <strong ng-show="emp.code"> ({{ emp.code }})</strong>
                       </td>
-                      <td><span ng-bind-html="emp.net_before_tax | intlcurrency:emp.currency_id"></span></td>
-                      <td><span ng-bind-html="emp.net_after_tax | intlcurrency:emp.currency_id"></span></td>
+                      <td>{{ emp.net_before_tax | currency:emp.currency_id }}</td>
+                      <td>{{ emp.net_after_tax | currency:emp.currency_id }}</td>
                       <td>
-                        <strong><span ng-bind-html="emp.net_salary | intlcurrency:emp.currency_id"></span></strong>
+                        <strong>{{ emp.net_salary | currency:emp.currency_id }}</strong>
                       </td>
                       <td>
-                        <strong><span ng-bind-html="emp.amount | intlcurrency:emp.currency_id"></span></strong>
+                        <strong>{{ emp.amount | currency:emp.currency_id }}</span></strong>
                       </td>                      
                       <td>
                         <span ng-if="emp.is_paid==0" class="label label-danger">{{ "RUBRIC_PAYROLL.NO" | translate }}</span>
@@ -232,8 +232,8 @@
                       <td>{{employee.name}} </td>
                       <td>{{employee.postnom | date}}</td>
                       <td>{{employee.prenom}}</td>
-                      <td><b ng-bind-html="employee.net_salary | intlcurrency:employee.currency_id"></b></td>
-                       <td><b ng-bind-html="employee.amount| intlcurrency:employee.currency_id"></b></td>
+                      <td><b>{{ employee.net_salary | currency:employee.currency_id }}</b></td>
+                      <td><b>{{ employee.amount | currency:employee.currency_id }}</b></td>
                     </tr>
                   </tbody>
                 </table>
