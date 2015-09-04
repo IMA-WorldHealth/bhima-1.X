@@ -34,9 +34,10 @@ angular.module('bhima.directives')
         if (attrs.angularTreeview) {
           scope[treeId] = scope[treeId] || {};
           scope[treeId].selectNodeHead = scope[treeId].selectNodeHead || function (selectedNode) {
+            var hasChildren = selectedNode.children && selectedNode.children.length > 0;
 
             // Select nodes without children
-            if (!selectedNode.has_children) {
+            if (!hasChildren) {
               return scope[treeId].selectNodeLabel(selectedNode);
             }
 
@@ -46,9 +47,9 @@ angular.module('bhima.directives')
             cache.put(selectedNode.unit_id, {collapsed: selectedNode.collapsed});
           };
           scope[treeId].selectNodeLabel = scope[treeId].selectNodeLabel || function (selectedNode) {
-
+            var hasChildren = selectedNode.children && selectedNode.children.length > 0;
             // Open nodes with children
-            if (selectedNode.has_children) {
+            if (hasChildren) {
               return scope[treeId].selectNodeHead(selectedNode);
             }
 

@@ -68,14 +68,13 @@ angular.module('bhima.controllers')
 
         var sanitiseElement = element.path.replace(/\//g, '');
         var sanitiseLocation = locationPath ? locationPath.replace(/\//g, '') : '';
+        var hasChildren = element.children && element.children.length > 0;
 
         if (sanitiseElement === sanitiseLocation) {
           $scope.navtree.selectNodeLabel(element);
         }
 
-        if (element.has_children) {
-          selectTreeNode(element.children, locationPath); 
-        }
+        if (hasChildren) { selectTreeNode(element.children, locationPath); }
       });
     }
 

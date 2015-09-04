@@ -130,3 +130,19 @@ UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'reversing_stock' WHERE
 -- By: jniles
 
 DELETE FROM `unit` WHERE id = 33;
+
+
+
+-- Updates to unit table
+---
+-- DROPs unused has_children field
+--
+-- Date: 2015-01-11
+-- By: Jonathan Niles
+-- Restaure by : Chris Lomame
+-- Restaure date : 2015-09-04
+
+USE bhima;
+
+ALTER TABLE `unit`
+DROP `has_children`;

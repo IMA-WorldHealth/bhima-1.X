@@ -48,7 +48,7 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           'unit' : {
-            columns : ['id', 'name', 'key', 'description', 'has_children', 'parent']
+            columns : ['id', 'name', 'key', 'description', 'parent']
           }
         },
         where : ['unit.id<>0']
@@ -356,19 +356,19 @@ angular.module('bhima.controllers')
       if (!unit.checked) { $scope.super.units = false; }
       $scope.toggleParents(unit); // traverse upwards, toggling parents
       unit.children.forEach(function (child) {
-        child.checked = unit.checked;
-        if(child.has_children){
-          $scope.otherChildren(child);
+        if(child){
+          child.checked = unit.checked;
+          $scope.otherChildren(child);          
         }
       });
     };
 
     $scope.otherChildren = function otherChildren(unit) {
       unit.children.forEach(function (child) {
-        child.checked = unit.checked;
-        if(child.has_children){
-          $scope.otherChildren(child);
-        }        
+        if(child){
+          child.checked = unit.checked;
+          $scope.otherChildren(child);  
+        }
       });
     };
 
