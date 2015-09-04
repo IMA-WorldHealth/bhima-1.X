@@ -47,8 +47,7 @@ function close(id, user_id, data, cb) {
     cfg.isForClosing = true;
   }
 
-  getOrigin()
-  .then(function () {
+  function init() {
     cfg.user_id = user_id;
     cfg.project_id = 1; // HBB by default
     transactionDate = cfg.isForClosing ? forcingDate : new Date();
@@ -56,7 +55,9 @@ function close(id, user_id, data, cb) {
       core.queries.origin('journal'),
       core.queries.period(transactionDate)
     ];
-  })
+  }
+
+  init()
   .spread(function (originId, periodObject) {
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
@@ -64,7 +65,7 @@ function close(id, user_id, data, cb) {
     return core.queries.transactionId(cfg.project_id);
   })
   .then(function (transId) {
-    cfg.trans_id = trans_id;
+    cfg.transId = '"' + transId + '"'; // FIXME - migrate to db.exec()
     if (cfg.isForClosing) {
       cfg.descrip =  'Locking Fiscal Year/' + String(transactionDate);
     } else {
@@ -77,10 +78,8 @@ function close(id, user_id, data, cb) {
   .then(function (res){
     return cb(null, res);
   })
-  .catch(function (err){
-    return done(err, null);
-  });
-
+  .catch(cb)
+  .done();
 
 
   function postingResultat (resAccount) {
@@ -128,7 +127,7 @@ function close(id, user_id, data, cb) {
             cfg.project_id,
             cfg.fiscalYearId,
             cfg.periodId,
-            cfg.trans_id, '\'' + transactionDate + '\'', sanitize.escape(cfg.descrip)
+            cfg.transId, '\'' + transactionDate + '\'', sanitize.escape(cfg.descrip)
           ].join(',') + ', account.id, ' +
           [
             0, Math.abs(bundle.solde),
@@ -158,7 +157,7 @@ function close(id, user_id, data, cb) {
             cfg.project_id,
             cfg.fiscalYearId,
             cfg.periodId,
-            cfg.trans_id, '\'' + transactionDate + '\'', sanitize.escape(cfg.descrip)
+            cfg.transId, '\'' + transactionDate + '\'', sanitize.escape(cfg.descrip)
           ].join(',') + ', account.id, ' +
           [
             Math.abs(bundle.solde), 0,
@@ -201,7 +200,7 @@ function close(id, user_id, data, cb) {
             cfg.project_id,
             cfg.fiscalYearId,
             cfg.periodId,
-            cfg.trans_id, '\'' + transactionDate + '\'', sanitize.escape(cfg.descrip)
+            cfg.transId, '\'' + transactionDate + '\'', sanitize.escape(cfg.descrip)
           ].join(',') + ', account.id, ' +
           [
             0, Math.abs(bundle.solde),
@@ -231,7 +230,7 @@ function close(id, user_id, data, cb) {
             cfg.project_id,
             cfg.fiscalYearId,
             cfg.periodId,
-            cfg.trans_id, '\'' + transactionDate + '\'', sanitize.escape(cfg.descrip)
+            cfg.transId, '\'' + transactionDate + '\'', sanitize.escape(cfg.descrip)
           ].join(',') + ', account.id, ' +
           [
             Math.abs(bundle.solde), 0,
