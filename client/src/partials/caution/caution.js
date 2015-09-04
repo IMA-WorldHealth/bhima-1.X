@@ -3,6 +3,7 @@ angular.module('bhima.controllers')
   '$scope',
   '$location',
   '$translate',
+  '$modal',
   'validate',
   'connect',
   'appstate',
@@ -10,7 +11,8 @@ angular.module('bhima.controllers')
   'util',
   'uuid',
   'appcache',
-  function($scope, $location, $translate, validate, connect, appstate, messenger, util, uuid, Appcache) {
+  'exchange',
+  function($scope, $location, $translate, $modal, validate, connect, appstate, messenger, util, uuid, Appcache, exchange) {
     var defaultCurrency, defaultCashBox, record, record_item;
 
     var dependencies = {},
@@ -50,7 +52,6 @@ angular.module('bhima.controllers')
     };
 
     dependencies.exchange_rate = {
-      required : true,
       query : {
         tables : {
           'exchange_rate' : {
@@ -119,11 +120,8 @@ angular.module('bhima.controllers')
             sumDue += receipt.due;
           }
         });
-
         $scope.account_balance = balance;
-
       });
-
     };
 
     function payCaution() {
@@ -189,12 +187,12 @@ angular.module('bhima.controllers')
       $scope.project = project;
       dependencies.accounts.query.where = ['account.enterprise_id='+project.enterprise_id];
       dependencies.cashboxes.query.where = ['cash_box.is_auxillary=1', 'AND', 'cash_box.project_id='+project.id];
+
       validate.process(dependencies)
       .then(startup);
     });
 
     function check () {
-
       return (session.payment &&
              $scope.currency ? session.payment < $scope.currency.min_monentary_unit : true) ||
              ($scope.account_balance ? $scope.account_balance > 0 : false);
@@ -216,6 +214,9 @@ angular.module('bhima.controllers')
     };
 
     function loadDefaultCurrency(currency) {
+
+      haltOnNoExchange();
+
       if (!currency) { return; }
       defaultCurrency = currency;
 
@@ -250,6 +251,24 @@ angular.module('bhima.controllers')
 
       $scope.setCurrency(sessionDefault);
     }
+
+    function haltOnNoExchange () {
+      if (exchange.hasDailyRate()) { return; }
+
+      var instance = $modal.open({
+        templateUrl : 'partials/exchangeRateModal/exchangeRateModal.html',
+        backdrop    : 'static',
+        keyboard    : false,
+        controller  : 'exchangeRateModal'
+      });
+      
+      instance.result.then(function () {
+        $location.path('/exchange_rate');
+      }, function () {
+        $scope.errorState = true;
+      });
+    }
+
 
     $scope.payCaution = payCaution;
     $scope.check = check;

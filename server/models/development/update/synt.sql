@@ -70,6 +70,13 @@ ALTER TABLE `user` CHANGE `logged_in` `active` TINYINT NOT NULL DEFAULT 0;
 ALTER TABLE `user` ADD COLUMN `last_login` DATE NOT NULL;
 UPDATE `user` SET `password` = PASSWORD(`password`);
 
+-- Add Dashboards leaf to tree, with finance dashboard child
+--
+-- Date: 2015-08-25
+-- By: jniles
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `has_children`, `url`, `path`) VALUES
+(115, 'Dashboards', 'TREE.DASHBOARD.TITLE', 'Dashboards', 0, 1, '/partials/dashboards/', '/dashboards'),
+(116, 'Finance Dashboar', 'TREE.DASHBOARD.FINANCE', 'Finance Dashboard', 115, 0, '/partials/dashboards/finance/finance.html', '/dashboards/finance');
 
 -- Adding column is_charge 
 -- Date: 2015-08-20
@@ -116,11 +123,20 @@ UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'group_deb_invoice' WHE
 UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'stock_loss' WHERE  `transaction_type`.`id` =13;
 UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'reversing_stock' WHERE  `transaction_type`.`id` =28;
 
--- Add a test user (id:39) to user table
+-- rm unused currency tree node
 --
 -- Date: 2015-08-31
 -- By: jniles
-INSERT INTO user (id, username, password, first, last, email) VALUES (39, 'test', PASSWORD('test'), 'Test', 'Test', 'test@test.org');
-INSERT INTO permission (unit_id, user_id) VALUES (1, 39), (2, 39), (4, 39), (5, 39), (6, 39), (7, 39), (8, 39), (9, 39), (10, 39), (11, 39), (12, 39), (13, 39), (14, 39), (15, 39), (16, 39), (17, 39), (18, 39), (19, 39), (20, 39), (21, 39), (22, 39), (23, 39), (24, 39), (25, 39), (26, 39), (27, 39), (28, 39), (29, 39), (30, 39), (31, 39), (32, 39), (34, 39), (35, 39), (36, 39), (37, 39), (38, 39), (39, 39), (40, 39), (41, 39), (42, 39), (43, 39), (44, 39), (45, 39), (46, 39), (48, 39), (49, 39), (50, 39), (51, 39), (53, 39), (54, 39), (55, 39), (56, 39), (57, 39), (58, 39), (59, 39), (60, 39), (61, 39), (62, 39), (63, 39), (64, 39), (65, 39), (66, 39), (67, 39), (68, 39), (69, 39), (70, 39), (71, 39), (72, 39), (73, 39), (74, 39), (75, 39), (76, 39), (77, 39), (78, 39), (79, 39), (80, 39), (81, 39), (82, 39), (83, 39), (84, 39), (85, 39), (86, 39), (87, 39), (88, 39), (89, 39), (90, 39), (91, 39), (92, 39), (93, 39), (97, 39), (98, 39), (99, 39), (100, 39), (101, 39), (102, 39), (103, 39), (105, 39), (106, 39), (107, 39), (108, 39), (109, 39), (110, 39), (111, 39), (112, 39), (113, 39), (114, 39);
-INSERT INTO project_permission (project_id, user_id) VALUES (1, 39), (2, 39);
 
+DELETE FROM `unit` WHERE id = 33;
+
+-- Update currency, decoupling format and definition to utilise locale format 
+-- 
+-- Date : 2015-09-01
+-- @sfount
+ALTER TABLE `currency` DROP COLUMN `separator`;
+ALTER TABLE `currency` DROP COLUMN `decimal`;
+ALTER TABLE `currency` ADD `format_key` VARCHAR(20) AFTER `name`;
+UPDATE `currency` SET `format_key` = 'fc' WHERE id = 1;
+UPDATE `currency` SET `format_key` = 'usd' WHERE `id` = 2;
+ALTER TABLE `currency` MODIFY `format_key` VARCHAR(20) NOT NULL;

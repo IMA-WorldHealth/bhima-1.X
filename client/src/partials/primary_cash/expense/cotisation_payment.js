@@ -167,13 +167,13 @@ angular.module('bhima.controllers')
         cotisation_id : emp.cotisation_id
       };
 
-      var package = {
+      var packet = {
         primary : primary,
         primary_details : primary_details,
         other : other
       };
 
-      $http.post('payCotisation/', package)
+      $http.post('payCotisation/', packet)
       .then(function (res){
          // A FIXE : Using $http instead connect
         var formatObject = {

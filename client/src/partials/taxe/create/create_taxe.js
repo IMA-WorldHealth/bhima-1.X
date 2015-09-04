@@ -55,9 +55,6 @@ angular.module('bhima.controllers')
     $scope.edit = function (taxes) {
       session.action = 'edit';
       session.edit = angular.copy(taxes);
-      session.edit.is_employee = session.edit.is_employee !== 0;
-      session.edit.is_percent = session.edit.is_percent !== 0;
-      session.edit.is_ipr = session.edit.is_ipr !== 0;
     };
 
     $scope.new = function () {
@@ -68,10 +65,6 @@ angular.module('bhima.controllers')
     $scope.save = {};
 
     $scope.save.edit = function () {
-      $scope.session.edit.is_employee = ($scope.session.edit.is_employee)? 1 : 0;
-      $scope.session.edit.is_percent = ($scope.session.edit.is_percent)? 1 : 0;
-      $scope.session.edit.is_ipr = ($scope.session.edit.is_ipr)? 1 : 0;      
-
       var taxes = $scope.taxes.data,
         ipr_exist = 0;
      
@@ -116,10 +109,6 @@ angular.module('bhima.controllers')
     };
 
     $scope.save.new = function () {
-      $scope.session.new.is_employee = ($scope.session.new.is_employee)? 1 : 0;
-      $scope.session.new.is_percent = ($scope.session.new.is_percent)? 1 : 0;
-      $scope.session.new.is_ipr = ($scope.session.new.is_ipr)? 1 : 0;
-
       var taxes = $scope.taxes.data,
         ipr_exist = 0;
      
