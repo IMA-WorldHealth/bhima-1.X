@@ -55,11 +55,11 @@
             <td>{{ model.transfer.reference }}</td>
             <td>{{ trans_id }}</td>            
             <td>{{'INVOICE.LIBELLE_TRANSFERT_FROM' | translate}}{{model.transfer.account_txt}} {{'INVOICE.TO' | translate}} {{'INVOICE.PCASH' | translate}}</td>
-            <td><span ng-bind-html="model.transfer.cost  | intlcurrency:model.transfer.currency_id"></span></td>
+            <td>{{ model.transfer.cost  | currency:model.transfer.currency_id }}</td>
           </tr>
         </tbody>
         <tbody class="totals">
-          <tr><td colspan="3" class="no-border">{{'INVOICE.TOTAL_TRANSFERT' | translate}}</td><td><span ng-bind-html="model.transfer.cost  | intlcurrency:model.transfer.currency_id"></span></td></tr>
+          <tr><td colspan="3" class="no-border">{{'INVOICE.TOTAL_TRANSFERT' | translate}}</td><td>{{ model.transfer.cost  | currency:model.transfer.currency_id }}</td></tr>
         </tbody>
       </table>
     </div>

@@ -49,7 +49,7 @@
         <tr>
           <td>{{ model.cotisation.reference }}</td>
           <td>{{ model.cotisation.description }}</td>
-          <td><span ng-bind-html="model.cotisation.cost | intlcurrency:model.cotisation.currency_id"></span></td>
+          <td>{{ model.cotisation.cost | currency:model.cotisation.currency_id }}</td>
           <td>{{ model.cotisation.first}} &nbsp; {{ model.cotisation.last}}</td>
         </tr>
       </tbody>
