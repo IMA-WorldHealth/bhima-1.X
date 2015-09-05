@@ -49,7 +49,8 @@ var paths = {
   client : {
     javascript : ['client/src/js/define.js', 'client/src/js/app.js', 'client/src/**/*.js', '!client/src/i18n/**/*.js'],
     css        : ['client/src/partials/**/*.css', 'client/src/css/*.css'],
-    vendor     : ['client/vendor/*.js', 'client/vendor/**/*.js'],
+    // vendor     : ['client/vendor/*.js', 'client/vendor/**/*.js'],
+    vendor : ['client/bower_components/**/*.js', 'client/bower_components/**/*.css', '!client/bower_components/**/src{,/**}', '!client/bower_components/**/js{,/**}'],
     e2etest    : ['client/test/e2e/**/*.spec.js'],
     unittest   : [],
 
@@ -119,7 +120,7 @@ gulp.task('client-minify-css', function () {
 // move vendor files over to the /vendor directory
 gulp.task('client-mv-vendor', function () {
   return gulp.src(paths.client.vendor)
-    .pipe(flatten())
+    // .pipe(flatten())
     .pipe(gulp.dest(CLIENT_FOLDER + 'vendor/'));
 });
 
