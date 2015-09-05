@@ -50,7 +50,7 @@ var paths = {
     javascript : ['client/src/js/define.js', 'client/src/js/app.js', 'client/src/**/*.js', '!client/src/i18n/**/*.js'],
     excludeLint: ['!client/src/lib/**/*.js'],
     css        : ['client/src/partials/**/*.css', 'client/src/css/*.css'],
-    vendor : ['client/vendor/**/*.js', 'client/vendor/**/*.css', '!client/vendor/**/src{,/**}', '!client/vendor/**/js{,/**}'],
+    vendor     : ['client/vendor/**/*.js', 'client/vendor/**/*.css', '!client/vendor/**/src{,/**}', '!client/vendor/**/js{,/**}'],
     e2etest    : ['client/test/e2e/**/*.spec.js'],
     unittest   : [],
 
@@ -124,6 +124,24 @@ gulp.task('client-mv-vendor', function () {
     .pipe(gulp.dest(CLIENT_FOLDER + 'vendor/'));
 });
 
+// SlickGrid repository is very modular and does not include distribution folder 
+// This build process combines all required components for BHIMA and optionally 
+// minifies the output
+gulp.task('client-vendor-build-slickgrid', function () { 
+  
+  // Specifiy components required by BHIMA
+  var slickgridComponents = [
+    'client/vendor/slickgrid/lib/jquery-ui-*.js',
+    'client/vendor/slickgrid/lib/jquery.event.drag-*.js',
+    'client/vendor/slickgrid/*.js', 
+    'client/vendor/slickgrid/plugins/*.js'
+  ];
+
+  return gulp.src(slickgridComponents)
+    .pipe(concat('bhima.slickgrid.js'))
+    .pipe(gulp.dest(CLIENT_FOLDER + 'vendor/slickgrid'));
+});
+
 // move static files to the public directory
 gulp.task('client-mv-static', ['client-lint-i18n'], function () {
   return gulp.src(paths.client.static)
@@ -152,7 +170,7 @@ gulp.task('watch-client', function () {
 
 // builds the client with all the options available
 gulp.task('build-client', ['client-clean'], function () {
-  gulp.start('client-lint-js', 'client-minify-js', 'client-minify-css', 'client-mv-vendor', 'client-mv-static');
+  gulp.start('client-lint-js', 'client-minify-js', 'client-minify-css', 'client-mv-vendor', 'client-vendor-build-slickgrid', 'client-mv-static');
 });
 
 /* -------------------------------------------------------------------------- */
