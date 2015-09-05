@@ -14,9 +14,9 @@ For an in-depth installation guide (including trouble-shooting tips), please ref
 for the basic steps.
 
  1. Clone the official repository onto your local machine: `git clone git@github.com:IMA-WorldHealth/bhima.git bhima`
- 2. Install the development dependencies: `npm install -g gulp jshint && npm install`
- 3. Build the client `cd client/ && gulp build`
- 4. Startup the server `npm start`.
+ 2. Install the development dependencies: `npm install -g gulp jshint bower && npm install && bower install`
+ 3. Build the client and server `gulp build`
+ 4. Startup the server `npm run app`.
 
  For troubleshooting, please see [the installation guide](./docs/INSTALL.md).
 
