@@ -1,4 +1,4 @@
 { 
-  "directory": "client/bower_components",
+  "directory": "client/vendor",
   "analytics": false
 }

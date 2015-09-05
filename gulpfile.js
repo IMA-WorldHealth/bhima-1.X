@@ -48,9 +48,9 @@ var UGLIFY = false,
 var paths = {
   client : {
     javascript : ['client/src/js/define.js', 'client/src/js/app.js', 'client/src/**/*.js', '!client/src/i18n/**/*.js'],
+    excludeLint: ['!client/src/lib/**/*.js'],
     css        : ['client/src/partials/**/*.css', 'client/src/css/*.css'],
-    // vendor     : ['client/vendor/*.js', 'client/vendor/**/*.js'],
-    vendor : ['client/bower_components/**/*.js', 'client/bower_components/**/*.css', '!client/bower_components/**/src{,/**}', '!client/bower_components/**/js{,/**}'],
+    vendor : ['client/vendor/**/*.js', 'client/vendor/**/*.css', '!client/vendor/**/src{,/**}', '!client/vendor/**/js{,/**}'],
     e2etest    : ['client/test/e2e/**/*.spec.js'],
     unittest   : [],
 
@@ -94,7 +94,7 @@ gulp.task('client-clean', function (cb) {
 
 // run jshint on the client javascript code
 gulp.task('client-lint-js', function () {
-  return gulp.src(paths.client.javascript)
+  return gulp.src(paths.client.javascript.concat(paths.client.excludeLint))
     .pipe(jshint(JSHINT_PATH))
     .pipe(jshint.reporter('default'));
 });
