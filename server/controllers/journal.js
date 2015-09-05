@@ -1784,7 +1784,7 @@ tableRouter = {
   'indirect_purchase'       : require('./journal/purchase').indirectPurchase,
   'confirm'                 : require('./journal/purchase').confirm, // TODO - rename
   'confirm_direct_purchase' : require('./journal/purchase').directPurchase,
-  'distribution_patient'    : handleDistributionPatient,
+  'distribution_patient'    : require('./journal/distribution').patient,
   'distribution_service'    : handleDistributionService,
   'consumption_loss'        : handleDistributionLoss,
   'salary_payment'          : handleSalaryPayment,
