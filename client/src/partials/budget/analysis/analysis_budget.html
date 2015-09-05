@@ -110,19 +110,13 @@
                     <th class="budget-cash" rowspan="2">{{ "BUDGET.EDIT.BUDGET" | translate }}</th>
                     <th class="budget-cash" rowspan="2">{{ "COLUMNS.BALANCE"    | translate }}</th>
                     <th class="budget" colspan="2">{{ "COLUMNS.GAP" | translate }}</th>
-                    <th class="budget-cash" colspan="2" 
+                    <th class="budget-cash" rowspan="2" 
                         ng-if="config.hasPrevious && session.selectedPreviousFY.length"
                         ng-repeat="fy in session.selectedPreviousFY">{{ fy.fiscal_year_txt }}</th>
                   </tr>
                   <tr>
                     <th class="budget">{{ "COLUMNS.SURPLUS" | translate }}</th>
-                    <th class="budget">{{ "COLUMNS.DEFICIT" | translate }}</th>  
-                    <section 
-                    ng-if="config.hasPrevious && session.selectedPreviousFY.length"
-                    ng-repeat="fy in session.selectedPreviousFY"> 
-                      <th class="budget">{{ "BUDGET.EDIT.BUDGET" | translate }}</th>
-                      <th class="budget">{{ "COLUMNS.BALANCE" | translate }}</th> 
-                    </section>               
+                    <th class="budget">{{ "COLUMNS.DEFICIT" | translate }}</th>
                   </tr>                                         
                 </thead>
                 <tbody>
@@ -136,19 +130,21 @@
                     <td class="budget-cash">{{ account.balance }}</td>
                     <td class="budget">{{ account.surplus }}</td>
                     <td class="budget">{{ account.deficit }}</td>
-                    <section 
-                    ng-if="config.hasPrevious && session.selectedPreviousFY.length"
-                    ng-repeat="fy in session.selectedPreviousFY">
-                      <td class="budget">{{ account.oldBudget["'"+fy.id+"'"].budget }}</td>
-                      <td class="budget">{{ account.oldBudget[fy.id] }}</td>
-                    </section>
+                    <td class="budget"
+                        ng-if="config.hasPrevious && session.selectedPreviousFY.length" 
+                        ng-repeat="fy in session.selectedPreviousFY">{{ account.previousBudget[fy.id] }}</td>
                   </tr>
                 <tr>
                   <td class="budget-cash" colspan="3"><b>{{ "BUDGET.DISPLAY.TOTALS" | translate }}</b></td>
                   <td class="budget-cash"><b>{{ total.budget }}</b></td>
                   <td class="budget-cash"><b>{{ total.balance }}</b></td>
                   <td class="budget-cash"><b>{{ total.surplus }}</b></td>
-                  <td class="budget-cash"><b>{{ total.deficit }}</b></td>              
+                  <td class="budget-cash"><b>{{ total.deficit }}</b></td> 
+                  <td class="budget-cash"
+                      ng-if="config.hasPrevious && session.selectedPreviousFY.length" 
+                      ng-repeat="fy in session.selectedPreviousFY">
+                      <b>{{ totalPreviousBudget[fy.id] }}</b>
+                  </td>            
                 </tr>
               </tbody>
             </table>

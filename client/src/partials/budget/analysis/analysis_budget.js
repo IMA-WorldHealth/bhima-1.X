@@ -20,12 +20,12 @@ angular.module('bhima.controllers')
     session.mode = 'configuration';
     session.fiscal_year = null;
     session.periods = null;
+    session.selectedPreviousFY = null;
 
     $scope.timestamp = new Date();
     $scope.total = {};
     // Define the database queries
-    dependencies.accounts = {
-    };
+    dependencies.accounts = {};
 
     // TODO: Convert this into a server-side get query that does totals
     // NOTE: No need to restrict this to income/expense since budgets are
@@ -41,7 +41,7 @@ angular.module('bhima.controllers')
             }
           },
         join : [ 'period.id=budget.period_id' ]
-        }
+      }
     };
 
     dependencies.fiscal_years = {
@@ -51,7 +51,7 @@ angular.module('bhima.controllers')
             columns : ['id', 'fiscal_year_txt', 'start_month', 'start_year', 'previous_fiscal_year']
           },
         },
-  orderby : ['fiscal_year.start_year', 'fiscal_year.start_month'],
+        orderby : ['fiscal_year.start_year', 'fiscal_year.start_month'],
       }
     };
 
@@ -72,8 +72,30 @@ angular.module('bhima.controllers')
         totalBudget += bud.budget;
       });
 
+      // Previous Budgets processing
+      // Total budget per fiscal year
+      var totalsFY = {},
+          totalBudgetFY = {};
+      session.selectedPreviousFY.forEach(function (fy) {
+        totalsFY[fy.id] = {};
+        totalBudgetFY[fy.id] = 0.0;
+        $scope.fiscalYearBudget[fy.id].forEach(function (bud) {
+          if (bud.account_id in totalsFY[fy.id]) {
+            totalsFY[fy.id][bud.account_id] += bud.budget;
+          }
+          else {
+            totalsFY[fy.id][bud.account_id] = bud.budget;
+          }
+          totalBudgetFY[fy.id] += bud.budget;
+        });
+      });
+
+
       // Insert the budget totals into the account data
       $scope.accounts.data.forEach(function (acct) {
+        acct.previousBudget = {};
+        acct.previousBalance = {};
+
         if (acct.id in totals) {
           acct.budget = precision.round(totals[acct.id], 2);
         } else {
@@ -83,6 +105,20 @@ angular.module('bhima.controllers')
             acct.budget = 0; // No budget means 0 budget!
           }
         }
+
+        // Previous Budgets
+        session.selectedPreviousFY.forEach(function (fy) {
+          if (acct.id in totalsFY[fy.id]) {
+            acct.previousBudget[fy.id] = precision.round(totalsFY[fy.id][acct.id], 2);
+          } else {
+            if (acct.type === 'title') {
+              acct.previousBudget[fy.id] = null;
+            } else {
+              acct.previousBudget[fy.id] = 0; // No budget means 0 budget!
+            }
+          }
+        });
+
         // Increment total balance
         if (!isNaN(acct.balance)) {
           totalBalance += acct.balance;
@@ -91,6 +127,11 @@ angular.module('bhima.controllers')
 
       $scope.total.budget = precision.round(totalBudget, 2);
       $scope.total.balance = precision.round(totalBalance, 2);
+      // Previous Budget Data
+      $scope.totalPreviousBudget = {};
+      session.selectedPreviousFY.forEach(function (fy) {
+        $scope.totalPreviousBudget[fy.id] = Math.round(totalBudgetFY[fy.id], 2);
+      });
     }
 
     function parseAccountDepth(accountData, accountModel) {
@@ -153,117 +194,46 @@ angular.module('bhima.controllers')
 
     function displayAccounts() {
       dependencies.accounts.query = '/InExAccounts/' +enterprise_id;
-      dependencies.budgets.query.where = ['period.fiscal_year_id=' + session.fiscal_year.id];
+      dependencies.budgets.query.where = ['period.fiscal_year_id=' + config.fiscal_year_id];
 
       return $q.when(true)
       .then(function () {
-        return validate.refresh(dependencies, ['accounts', 'budgets'])
+        validate.refresh(dependencies, ['accounts', 'budgets'])
         .then(start);
       });
     }
 
-    function previousFYBudget(data) {
+    function previousFYBudget(selectedPreviousFY) {
+      // Get budget data for all previous fiscal years
       session.previousFYBudget = [];
-      for(var fy in data) {
+      $scope.fiscalYearBudget = {};
+      for(var fy in selectedPreviousFY) {
         var budget = { 
-          id           : data[fy].id, 
+          id           : selectedPreviousFY[fy].id, 
           data         : null, 
           totalBudget  : 0, 
           totalBalance : 0 
         };
         session.previousFYBudget.push(budget);
+        $scope.fiscalYearBudget[budget.id] = {};
         getBudget(budget.id);
       }
 
       function getBudget(fiscal_year_id) {
         // Work with a copy of dependencies.budget structure
         // for a temporary data
-        dependencies.previousFYBudget = {
-          query : {
-            tables : {
-              'budget' : { 
-                columns : ['id', 'account_id', 'period_id', 'budget']
-                },
-              'period' : {
-                columns : ['fiscal_year_id', 'period_number', 'period_start', 'period_stop', 'locked' ]
-                }
-              },
-            join : [ 'period.id=budget.period_id' ]
-            }
-        };
+        dependencies.previousFYBudget = dependencies.budgets;
         dependencies.previousFYBudget.query.where = ['period.fiscal_year_id=' + fiscal_year_id];
         validate.refresh(dependencies, ['previousFYBudget'])
-        .then(handleBudget)
-        .then(accountWithPreviousFY);
+        .then(function (model) {
+          var data = model.previousFYBudget.data;
+          handleFiscalYearBudget(fiscal_year_id, data);
+        });
       }
 
-      function handleBudget(model) {
-        var idx = session.previousFYBudget.length;
-        session.previousFYBudget[idx - 1].data = model.previousFYBudget.data;
-
-        var totalBudget = 0.0;
-        var totalBalance = 0.0;
-        var totals = {};
-        session.previousFYBudget[idx - 1].data.forEach(function (bud) {
-          if (bud.account_id in totals) {
-            totals[bud.account_id] += bud.budget;
-          }
-          else {
-            totals[bud.account_id] = bud.budget;
-          }
-          totalBudget += bud.budget;
-        });
-
-        // Insert the budget totals into the account data
-        $scope.accounts.data.forEach(function (acct) {
-          if (acct.id in totals) {
-            acct.budget = precision.round(totals[acct.id], 2);
-          } else {
-            if (acct.type === 'title') {
-              acct.budget = null;
-            } else {
-              acct.budget = 0; // No budget means 0 budget!
-            }
-          }
-          // Increment total balance
-          if (!isNaN(acct.balance)) {
-            totalBalance += acct.balance;
-          }
-        });
-
-        session.previousFYBudget[idx - 1].totalBudget = precision.round(totalBudget, 2);
-        session.previousFYBudget[idx - 1].totalBalance = precision.round(totalBalance, 2);
-
-        return session.previousFYBudget[idx - 1].id;
+      function handleFiscalYearBudget(fiscal_year_id, data) {
+        $scope.fiscalYearBudget[fiscal_year_id] = data;
       }
-    }
-
-    function accountWithPreviousFY(fiscal_year_id) {
-      var fiscalYearData = session.previousFYBudget.filter(function (fy) {
-        return fy.id === fiscal_year_id;
-      });
-
-      fiscalYearData = fiscalYearData.pop();
-
-      $scope.accounts.data.forEach(function (acct) {
-        var oldAccount = {};
-
-        for (var i = 0; i < fiscalYearData.data.length; i++) {
-          if (fiscalYearData.data[i].account_id === acct.id) {
-            angular.extend(oldAccount, fiscalYearData.data[i]);
-            break;
-          }
-        }
-
-        if (acct.type !== 'title' && oldAccount) {
-          acct.oldBudget = {};
-          acct.oldBudget[fiscal_year_id] = {
-            balance : oldAccount.balance,
-            budget  : oldAccount.budget
-          };
-        }
-
-      });
     }
 
     function selectYear(id) {
@@ -274,7 +244,6 @@ angular.module('bhima.controllers')
 
     function loadFiscalYears(models) {
       angular.extend($scope, models);
-      // Default to the last fiscal year
       session.fiscal_year = $scope.fiscal_years.data[$scope.fiscal_years.data.length - 1];
     }
 
@@ -379,16 +348,14 @@ angular.module('bhima.controllers')
     function budgetAnalysis() {
 
       if (config.fiscal_year_id && config.period_id) {
-        session.mode = 'budget-analysis';
         getSelectPreviousFY()
-        .then(displayAccounts)
-        .then(getSelectPreviousFY)
-        .then(previousFYBudget);
+        .then(previousFYBudget)
+        .then(displayAccounts);
       }
 
       function getSelectPreviousFY() {
         var def = $q.defer();
-        session.selectedPreviousFY = $scope.fiscal_years.data.filter(function(fy) {
+        session.selectedPreviousFY = session.previous_fiscal_years.filter(function(fy) {
           return fy.checked;
         });
         def.resolve(session.selectedPreviousFY);
@@ -397,7 +364,7 @@ angular.module('bhima.controllers')
     }
 
     $scope.togglePreviousFY = function togglePreviousFY(bool) {
-      $scope.fiscal_years.data.forEach(function (fy) {
+      session.previous_fiscal_years.forEach(function (fy) {
         fy.checked = bool;
       });
     };
