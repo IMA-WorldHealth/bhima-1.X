@@ -28,8 +28,6 @@
     "angular-translate-loader-static-files": "~2.7.2",
     "angular-translate-loader-url": "~2.7.2",
     "jquery": "~2.1.4",
-    "jquery-ui.min": "https://code.jquery.com/ui/1.11.4/jquery-ui.min.js",
-    "jquery.event.drag-new": "*",
     "slickgrid": "~2.1.0"
   }
 }
