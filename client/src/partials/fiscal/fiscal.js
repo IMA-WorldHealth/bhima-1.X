@@ -3,8 +3,11 @@ angular.module('bhima.controllers')
   '$scope',
   'appstate',
   'validate',
-  function ($scope, appstate, validate) {
+  'SessionService',
+  function ($scope, appstate, validate, sessionService) {
     var dependencies = {};
+
+    $scope.user = sessionService.user;
 
     // register dependencies
     dependencies.fiscal = {
@@ -22,9 +25,9 @@ angular.module('bhima.controllers')
     $scope.selectLock = selectLock;
 
     // start up the module
-    function startup(enterprise) {
-      $scope.enterprise = enterprise;
-      dependencies.fiscal.where = ['fiscal_year.enterprise_id=' + enterprise.id];
+    function startup() {
+      $scope.enterprise = sessionService.enterprise;
+      dependencies.fiscal.where = ['fiscal_year.enterprise_id=' + $scope.enterprise.id];
       validate.refresh(dependencies)
       .then(function (models) {
         angular.extend($scope, models);
@@ -61,10 +64,9 @@ angular.module('bhima.controllers')
 
     // listen for create event and refresh fiscal year data
     $scope.$on('fiscal-year-creation', function (e, id) {
-      startup($scope.enterprise);
+      startup();
     });
 
-    // get the enterprise information and startup
-    appstate.register('enterprise', startup);
+    startup();
   }
 ]);

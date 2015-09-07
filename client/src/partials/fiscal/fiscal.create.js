@@ -5,10 +5,9 @@ angular.module('bhima.controllers')
   '$http',
   '$translate',
   'validate',
-  'appstate',
   'connect',
   'messenger',
-  function ($q, $scope, $http, $translate, validate, appstate, connect, messenger) {
+  function ($q, $scope, $http, $translate, validate, connect, messenger) {
     var data,
         posting = $scope.posting = { rows : [] },
         imports = $scope.$parent,
@@ -75,13 +74,13 @@ angular.module('bhima.controllers')
         tables : {
           account : { columns : ['id', 'account_number', 'account_txt'] }
         },
-        where : ['account.classe=1']
+        where : ['account.classe=1', 'OR', 'account.is_ohada=1']
       }
     };
 
-    dependencies.user = {
-      query : '/user_session'
-    };
+    // dependencies.user = {
+    //   query : '/user_session'
+    // };
 
     // returns true if the years array contains a
     // year with previous_fiscal_year matching the
@@ -133,7 +132,7 @@ angular.module('bhima.controllers')
         angular.extend($scope, models);
 
         // get user id
-        session.user_id = models.user.data.id;
+        session.user_id = imports.user.id;
 
         // initialise account balances
         resetBalances();
@@ -328,6 +327,7 @@ angular.module('bhima.controllers')
 
     // submits the fiscal year to the server all at once
     function submitFiscalYearData() {
+      console.log(connect);
       var def = $q.defer();
       var bundle = connect.clean(data);
       var hasPreviousYear = angular.isDefined(bundle.previous_fiscal_year);
@@ -417,14 +417,11 @@ angular.module('bhima.controllers')
     // listen for refresh chime
     $scope.$on('fiscal-year-create-refresh', forceRefresh);
 
-    // Expose
+    // Expose    
     $scope.postingNewFiscalYear = postingNewFiscalYear;
+    $scope.enterprise = imports.enterprise;
 
-    // collect the enterprise id and load the controller
-    appstate.register('enterprise', function (enterprise) {
-      $scope.enterprise = enterprise;
-      dependencies.accounts.query.where[2] = 'account.enterprise_id=' + enterprise.id;
-      onLoad();
-    });
+    dependencies.accounts.query.where[2] = 'account.enterprise_id=' + $scope.enterprise.id;
+    onLoad();
   }
 ]);
