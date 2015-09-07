@@ -8,7 +8,9 @@ angular.module('bhima.controllers')
   'uuid',
   '$routeParams',
   '$location',
-  function ($scope, connect, validate, appstate, util, uuid, $routeParams, $location) {
+  'exchange',
+  '$modal',
+  function ($scope, connect, validate, appstate, util, uuid, $routeParams, $location, exchange, $modal) {
     var dependencies = {},
         data = $scope.data = {};
 
@@ -67,6 +69,7 @@ angular.module('bhima.controllers')
     };
 
     function startup(model) {
+      haltOnNoExchange();
       angular.extend($scope, model);
     }
 
@@ -137,6 +140,23 @@ angular.module('bhima.controllers')
       })
       .finally();
     };
+
+    function haltOnNoExchange () {
+      if (exchange.hasDailyRate()) { return; }
+
+      var instance = $modal.open({
+        templateUrl : 'partials/exchangeRateModal/exchangeRateModal.html',
+        backdrop    : 'static',
+        keyboard    : false,
+        controller  : 'exchangeRateModal'
+      });
+      
+      instance.result.then(function () {
+        $location.path('/exchange_rate');
+      }, function () {
+        $scope.errorState = true;
+      });
+    }
 
     appstate.register('project', function (project) {
       data.project_id = project.id;
