@@ -47,7 +47,7 @@ var UGLIFY = false,
 // resource paths
 var paths = {
   client : {
-    javascript : ['client/src/js/define.js', 'client/src/js/app.js', 'client/src/**/*.js', '!client/src/i18n/**/*.js'],
+    javascript : ['client/src/js/define.js', 'client/src/js/app.js', 'client/src/**/*.js', '!client/src/i18n/**/*.js', '!client/src/lib/**/*.js'],
     excludeLint: ['!client/src/lib/**/*.js'],
     css        : ['client/src/partials/**/*.css', 'client/src/css/*.css'],
     vendor     : ['client/vendor/**/*.js', 'client/vendor/**/*.css', '!client/vendor/**/src{,/**}', '!client/vendor/**/js{,/**}'],
@@ -131,8 +131,7 @@ gulp.task('client-vendor-build-slickgrid', function () {
   
   // Specifiy components required by BHIMA
   var slickgridComponents = [
-    'client/vendor/slickgrid/lib/jquery-ui-*.js',
-    'client/vendor/slickgrid/lib/jquery.event.drag-*.js',
+    'client/vendor/slickgrid/lib/jquery.event.*.js',
     'client/vendor/slickgrid/*.js', 
     'client/vendor/slickgrid/plugins/*.js'
   ];
