@@ -7,6 +7,7 @@ var q         = require('q'),
 
 exports.close = close;
 exports.extraPayment = extraPayment;
+exports.create = create;
 
 /*
  * Closes a fiscal year, migrating data over to the
@@ -327,5 +328,69 @@ function extraPayment(id, userId, details, cb) {
     return cb(null, res);
   })
   .catch(cb)
+  .done();
+}
+
+/* Create
+ *
+ * Create fiscal year, which involves the posting journal
+ * for some reason...
+*/
+function create(id, userId, details, cb) {
+  'use strict';
+
+  var sql, rate, queries, cfg = {},
+      ids = [];
+
+  q([
+    core.queries.origin('journal'),
+    core.queries.period(new Date()),
+    core.queries.exchangeRate(new Date())
+  ])
+  .spread(function (originId, periodObject, store) {
+    cfg.balance = details[0];
+    cfg.originId = originId;
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+    cfg.store = store;
+    rate = cfg.store.get(cfg.balance.currencyId).rate;
+    return core.queries.transactionId(cfg.balance.projectId);
+  })
+  .then(function (transId) {
+
+    queries = details.map(function (balance) {
+      var params, uid = uuid();
+      ids.push(uid);
+
+      sql =
+        'INSERT INTO posting_journal (' +
+          'uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+          'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+          'currency_id, origin_id, user_id) ' +
+        'VALUES (?);';
+
+      params = [
+        uid, balance.projectId, cfg.fiscalYearId, cfg.periodId, transId, new Date(),
+        cfg.description, balance.accountId, balance.credit, balance.debit,
+        balance.credit / rate, balance.debit / rate, balance.currencyId, cfg.originId,
+        userId
+      ];
+
+      return db.exec(sql, params);
+    });
+
+    return q.all(queries);
+  })
+  .then(function (res) {
+    cb(null, res);
+  })
+  .catch(function (err) {
+    sql = ids.length > 0 ? 'DELETE FROM posting_journal WHERE posting_journal.uuid IN (?);' : 'SELECT 1 + 1;';
+
+    db.exec(sql, [ids])
+    .finally(function () {
+      cb(err);
+    });
+  })
   .done();
 }
