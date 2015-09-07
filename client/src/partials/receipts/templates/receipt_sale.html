@@ -77,7 +77,7 @@
           </tr>
           <tr ng-show="model.saleSubsidies.length" ng-repeat="subsidy in model.saleSubsidies">
             <td colspan="2">{{subsidy.text}}</td>
-            <td colspan="3"><span ng-bind-html="model.total.localeCost - model.ledger.localeCredit - model.total.localeBalance | intlcurrency:model.selectedCurrency.id"></span></td>
+            <td colspan="3">{{ model.total.localeCost - model.ledger.localeCredit - model.total.localeBalance | currency:model.selectedCurrency.id }}</td>
           </tr>
         </tbody>
         <tbody class="totals">

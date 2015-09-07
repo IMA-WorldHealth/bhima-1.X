@@ -50,11 +50,11 @@
           <tr ng-repeat="convention in model.conventions">
             <td>{{$index + 1}}</td>
             <td>{{convention.note}}</td>
-            <td><span ng-bind-html="convention.debit  | intlcurrency:convention.currency_id"></span></td>
+            <td>{{ convention.debit  | currency:convention.currency_id }}</td>
           </tr>
         </tbody>
         <tbody class="totals">
-          <tr><td colspan="2" class="no-border">{{'INVOICE.TOTAL' | translate}}</td><td><span ng-bind-html="model.conventions[0].cost  | intlcurrency:model.conventions[0].currency_id"></span></td></tr>
+          <tr><td colspan="2" class="no-border">{{'INVOICE.TOTAL' | translate}}</td><td>{{ model.conventions[0].cost  | currency:model.conventions[0].currency_id }}</td></tr>
         </tbody>
       </table>
     </div>

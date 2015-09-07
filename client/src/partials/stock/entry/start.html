@@ -126,8 +126,8 @@
                 <td>{{ drug.text }}</td>
                 <td>{{ drug.name }}</td>
                 <td>{{ drug.quantity }}</td>
-                <td ng-bind-html="drug.unit_price | intlcurrency:drug.currency_id"></td>
-                <td ng-bind-html="drug.quantity * drug.unit_price | intlcurrency:drug.currency_id"></td>
+                <td>{{ drug.unit_price | currency:drug.currency_id }}</td>
+                <td>{{ drug.quantity * drug.unit_price | currency:drug.currency_id }}</td>
                 <td>
                   <div ng-show="!drug.isCollapsed" class="pull-right">
                     <a ng-click="addLot(drug)" class="action"><span class="glyphicon glyphicon-plus"></span></a>
@@ -235,8 +235,8 @@
                 <td>{{ drug.text }}</td>
                 <td>{{ drug.name }}</td>
                 <td>{{ drug.quantity }}</td>
-                <td ng-bind-html="drug.unit_price | intlcurrency:drug.currency_id"></td>
-                <td ng-bind-html="drug.quantity * drug.unit_price | intlcurrency:drug.currency_id"></td>
+                <td>{{ drug.unit_price | currency:drug.currency_id }}</td>
+                <td>{{ drug.quantity * drug.unit_price | currency:drug.currency_id }}</td>
                 <td>
                   <div ng-show="drug.validLots" class="pull-right">
                     <span class="correct glyphicon glyphicon-ok-circle"></span>
