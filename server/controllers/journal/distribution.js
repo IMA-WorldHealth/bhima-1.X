@@ -1,14 +1,11 @@
 var q        = require('q'),
     core     = require('./core'),
     uuid     = require('../../lib/guid'),
-    sanitize = require('../../lib/sanitize'),
-    validate = require('../../lib/validate')(),
-    util     = require('../../lib/util'),
     db       = require('../../lib/db');
 
 exports.patient = patient;
 exports.service = service;
-
+exports.loss = loss;
 
 /* Distribution to a patient
  *
@@ -95,7 +92,7 @@ function patient(id, userId, cb) {
       'WHERE inventory_group.uuid = ?;';
 
       params = [
-        uid, reference.project_id, cfg.fiscalYearId, cfg.periodId, cfg.trans_id, new Date(),
+        uid, reference.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
         cfg.description, reference.stock_account, (reference.quantity * reference.unit_price).toFixed(4),
         0, (reference.quantity * reference.unit_price).toFixed(4), 0, 2, reference.inventory_uuid, null,
         reference.uuid, cfg.originId, userId, reference.group_uuid
@@ -106,7 +103,7 @@ function patient(id, userId, cb) {
 
     return q.all(queries);
   })
-  .then(function (res){
+  .then(function (res) {
     cb(null, res);
   })
 
@@ -221,7 +218,7 @@ function service(id, userId, details, cb) {
       params = [
         uid, details.id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description,
         reference.stock_account, reference.quantity * reference.unit_price, 0, reference.quantity * reference.unit_price, 0,
-        details.currency_id, sanitize.escape(reference.inventory_uuid), null, reference.uuid, cfg.originId, userId,
+        details.currency_id, reference.inventory_uuid, null, reference.uuid, cfg.originId, userId,
         reference.group_uuid
       ];
 
@@ -232,7 +229,7 @@ function service(id, userId, details, cb) {
   })
 
   // all done!
-  .then(function (res){
+  .then(function (res) {
     return cb(null, res);
   })
   .catch(function (err) {
@@ -253,6 +250,117 @@ function service(id, userId, details, cb) {
     })
     .finally(function () {
       return cb(err);
+    });
+  })
+  .done();
+}
+
+/* Distribution Loss
+ *
+ *
+*/
+function loss(id, userId, details, cb) {
+  'use strict';
+
+  var sql, queries, references, dayExchange, cfg = {}, ids = [];
+
+  sql =
+    'SELECT consumption.uuid, consumption.date, consumption.quantity, consumption.unit_price, stock.inventory_uuid, ' +
+    'inventory.purchase_price, inventory_group.uuid AS group_uuid, inventory_group.cogs_account, inventory_group.stock_account ' +
+    'FROM consumption JOIN consumption_loss JOIN stock JOIN inventory JOIN inventory_group ON ' +
+      'consumption.tracking_number = stock.tracking_number AND ' +
+      'consumption_loss.consumption_uuid = consumption.uuid AND ' +
+      'stock.inventory_uuid = inventory.uuid AND ' +
+      'inventory.group_uuid = inventory_group.uuid ' +
+    'WHERE consumption.document_id = ?;';
+
+  db.exec(sql, [id])
+  .then(function (records) {
+    if (records.length === 0) {
+      throw new Error('Could not find consumption with uuid:' + uuid);
+    }
+    references = records;
+    return [
+      core.queries.origin('stock_loss'),
+      core.queries.period(new Date())
+    ];
+  })
+  .spread(function (originId, periodObject) {
+    cfg.originId = originId;
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+    return core.queries.transactionId(details.id);
+  })
+  .then(function (transId) {
+    cfg.transId = transId;
+    cfg.description =  'LO/'+new Date().toISOString().slice(0, 10).toString();
+
+    references.map(function (reference) {
+      var params, uid = uuid();
+      ids.push(uid);
+
+      sql =
+        'INSERT INTO posting_journal (' +
+          'uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+          'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+          'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
+        'SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ' +
+        'FROM inventory_group WHERE inventory_group.uuid = ?;';
+
+      params = [
+        uid, details.id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description,
+        reference.cogs_account, 0, reference.quantity * reference.unit_price, 0, reference.quantity * reference.unit_price,
+        details.currency_id, null, null, id, cfg.originId, userId, reference.group_uuid
+      ];
+
+      return db.exec(sql, params);
+    });
+
+    return q.all(queries);
+  })
+  .then(function () {
+    queries = references.map(function (reference) {
+      var params, uid = uuid();
+      ids.push(uid);
+
+      sql =
+        'INSERT INTO posting_journal (' +
+          'uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+          'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+          'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
+        'SELECT ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? ' +
+        'FROM inventory_group ' +
+        'WHERE inventory_group.uuid = ?';
+
+      params = [
+        uid, details.id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description,
+        reference.stock_account, reference.quantity * reference.unit_price, 0,
+        reference.quantity * reference.unit_price, 0, details.currency_id, reference.inventory_uuid, null,
+        id, cfg.originId, userId, reference.group_uuid
+      ];
+
+      return db.exec(sql, params);
+    });
+
+    return q.all(queries);
+  })
+  .then(function (res) {
+    return cb(null, res);
+  })
+  .catch(function (err) {
+    sql = ids.length > 0 ? 'DELETE FROM posting_journal WHERE posting_journal.uuid IN (?);' : 'SELECT 1 + 1;';
+
+    db.exec(sql, [ids])
+    .then(function () {
+      sql = 'DELETE FROM consumption_loss WHERE consumption_loss.document_uuid = ?;';
+      return db.exec(sql, [id]);
+    })
+    .then(function () {
+      sql = 'DELETE FROM consumption WHERE consumption.document_id = ?;';
+      return db.exec(sql, [id]);
+    })
+    .finally(function () {
+      return cb(err, null);
     });
   })
   .done();
