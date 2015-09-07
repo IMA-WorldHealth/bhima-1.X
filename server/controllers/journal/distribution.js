@@ -109,13 +109,13 @@ function patient(id, userId, cb) {
   .then(function (res){
     cb(null, res);
   })
-  .catch(catchError)
-  .done();
 
-  // error handler to clean up if there are errors
-  function catchError(err) {
+  // handle errors appropriately
+  .catch(function (err) {
 
     // delete from posting journal if we've posted there
+    // TODO - make a logic 1,2,3 steps to this process
+    // and then replicate it everywhere
     sql = ids.length > 0 ? 'DELETE FROM posting_journal WHERE posting_journal.uuid IN (?);' : 'SELECT 1 + 1;';
 
     // execute in order
@@ -131,7 +131,8 @@ function patient(id, userId, cb) {
     .finally(function () {
       cb(err);
     });
-  }
+  })
+  .done();
 }
 
 
@@ -140,10 +141,10 @@ function patient(id, userId, cb) {
  * Handles distribution of medicines to a service.
  *
 */
-function service(id, userId, details, done) {
+function service(id, userId, details, cb) {
   'use strict';
 
-  var sql, references, dayExchange,
+  var sql, queries, references, dayExchange,
       cfg = {},
       ids = [];
 
@@ -169,120 +170,90 @@ function service(id, userId, details, done) {
       core.queries.period(new Date())
     ];
   })
-  .then(getRecord)
-  .spread(getDetails)
-  .then(getTransId)
-  .then(credit)
-  .then(function (res){
-    return done(null, res);
-  })
-  .catch(catchError);
-
-  function getRecord (records) {
-  }
-
-  function getDetails (originId, periodObject) {
+  .spread(function (originId, periodObject) {
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
     return core.queries.transactionId(details.id);
-  }
-
-  function getTransId (trans_id) {
-    cfg.trans_id = trans_id;
+  })
+  .then(function (transId) {
+    cfg.transId = transId;
     cfg.description =  'DS/'+new Date().toISOString().slice(0, 10).toString();
-    return debit();
-  }
 
-  function debit () {
-    return q.all(
-      references.map(function (reference) {
-        var uuid_debit = sanitize.escape(uuid());
-        ids.push(uuid_debit);
+    queries = references.map(function (reference) {
+      var params, uid = uuid();
+      ids.push(uid);
 
-        var sql = 'INSERT INTO posting_journal ' +
-                  '(uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
-                  'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
-                  'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id, cc_id) ' +
-                  'SELECT ' +
-                    [
-                      uuid_debit,
-                      details.id,
-                      cfg.fiscalYearId,
-                      cfg.periodId,
-                      cfg.trans_id, '\'' + new Date() + '\'', '\'' + cfg.description + '\'', reference.cogs_account
-                    ].join(',') + ', ' +
-                    [
-                      0, (reference.quantity * reference.unit_price).toFixed(4),
-                      0, (reference.quantity * reference.unit_price).toFixed(4),
-                      details.currency_id
-                    ].join(',') +
-                    ', null, null, ' +
-                    [
-                      sanitize.escape(id),
-                      cfg.originId,
-                      userId
-                    ].join(',') +
-                  ', service.cost_center_id FROM service WHERE service.id= ' + sanitize.escape(reference.service_id) + ';';
-        return db.exec(sql);
-      })
-    );
-  }
+      sql =
+      'INSERT INTO posting_journal (' +
+        'uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+        'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+        'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id, cc_id) ' +
+      'SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,  service.cost_center_id ' +
+      'FROM service WHERE service.id = ?;';
 
-  function credit () {
-    return q.all(
-      references.map(function (reference) {
-        var uuid_credit = sanitize.escape(uuid());
-        ids.push(uuid_credit);
+      params = [
+        uid, details.id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description, reference.cogs_account,
+        0, reference.quantity * reference.unit_price, 0, reference.quantity * reference.unit_price,
+        details.currency_id, null, null, id, cfg.originId, reference.service_id
+      ];
 
-        var sql =
+      return db.exec(sql, params);
+    });
+
+    return q.all(queries);
+  })
+  .then(function () {
+
+    queries = references.map(function (reference) {
+      var params, uid = uuid();
+      ids.push(uid);
+
+      sql =
         'INSERT INTO posting_journal (' +
           'uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
           'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
           'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
-        'SELECT ' +
-                    [
-                      uuid_credit,
-                      details.id,
-                      cfg.fiscalYearId,
-                      cfg.periodId,
-                      cfg.trans_id, '\'' + new Date() + '\'', '\'' + cfg.description + '\'', reference.stock_account
-                    ].join(',') + ', ' +
-                    [
-                      (reference.quantity * reference.unit_price).toFixed(4), 0,
-                      (reference.quantity * reference.unit_price).toFixed(4), 0,
-                      details.currency_id, sanitize.escape(reference.inventory_uuid)
-                    ].join(',') +
-                    ', null, ' +
-                    [
-                      sanitize.escape(reference.uuid),
-                      cfg.originId,
-                      userId,
-                    ].join(',') +
-                  ' FROM inventory_group WHERE inventory_group.uuid= '+ sanitize.escape(reference.group_uuid) +';';
-        return db.exec(sql);
-      })
-    );
-  }
+        'SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ' +
+        'FROM inventory_group ' +
+        'WHERE inventory_group.uuid = ?;';
 
-  function catchError (err) {
-    var condition = ids.concat(ids).join(',');
-    var posting_deleting = condition.length > 0 ? 'DELETE FROM posting_journal WHERE posting_journal.uuid' + ' IN (' + condition + ')' : 'SELECT 1+1';
-    var consumption_service_deleting = 'DELETE FROM consumption_service WHERE consumption_service.consumption_uuid IN (SELECT DISTINCT consumption.uuid FROM consumption WHERE consumption.document_id=' + sanitize.escape(id) + ')';
-    var consumption_deleting = 'DELETE FROM consumption WHERE consumption.document_id=' + sanitize.escape(id);
+      params = [
+        uid, details.id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description,
+        reference.stock_account, reference.quantity * reference.unit_price, 0, reference.quantity * reference.unit_price, 0,
+        details.currency_id, sanitize.escape(reference.inventory_uuid), null, reference.uuid, cfg.originId, userId,
+        reference.group_uuid
+      ];
 
-    db.exec(posting_deleting)
+      return db.exec(sql, params);
+    });
+
+    return q.all(queries);
+  })
+
+  // all done!
+  .then(function (res){
+    return cb(null, res);
+  })
+  .catch(function (err) {
+    sql = ids.length > 0 ? 'DELETE FROM posting_journal WHERE posting_journal.uuid IN (?)' : 'SELECT 1 + 1;';
+
+    db.exec(sql, [ids])
     .then(function () {
-      return db.exec(consumption_service_deleting);
+      sql =
+        'DELETE FROM consumption_service WHERE consumption_service.consumption_uuid IN (' +
+          'SELECT DISTINCT consumption.uuid FROM consumption WHERE consumption.document_id = ?' +
+        ');';
+
+      return db.exec(sql, [id]);
     })
     .then(function () {
-      return db.exec(consumption_deleting);
-    })
-    .catch(function (err) {
-      console.log('erreur pendant la suppression ::: ', err);
+      sql = 'DELETE FROM consumption WHERE consumption.document_id = ?;';
+      return db.exec(sql, [id]);
     })
     .finally(function () {
-      return done(err, null);
+      return cb(err);
     });
-  }
+  })
+  .done();
 }
