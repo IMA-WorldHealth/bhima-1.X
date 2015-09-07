@@ -3,14 +3,13 @@ angular.module('bhima.controllers')
   '$q',
   '$scope', 
   '$window',
-  '$http',
   '$translate',
   'validate',
   'precision',
   'messenger',
   'appstate',
   'util',
-  function($q, $scope, $window, $http, $translate, validate, precision, messenger, appstate, util) {
+  function($q, $scope, $window, $translate, validate, precision, messenger, appstate, util) {
     var dependencies = {},
         enterprise_id = null,
         session = $scope.session = {},
@@ -18,18 +17,27 @@ angular.module('bhima.controllers')
 
     // Set up session defaults
     session.mode = 'configuration';
-    session.fiscal_year = null;
     session.periods = null;
     session.selectedPreviousFY = null;
 
-    $scope.timestamp = new Date();
+    $scope.months = {
+      0 : 'OPERATING_ACCOUNT.ALL',
+      1 : 'OPERATING_ACCOUNT.JANUARY',
+      2 : 'OPERATING_ACCOUNT.FEBRUARY',
+      3 : 'OPERATING_ACCOUNT.MARCH',
+      4 : 'OPERATING_ACCOUNT.APRIL',
+      5 : 'OPERATING_ACCOUNT.MAY',
+      6 : 'OPERATING_ACCOUNT.JUNE',
+      7 : 'OPERATING_ACCOUNT.JULY',
+      8 : 'OPERATING_ACCOUNT.AUGUST',
+      9 : 'OPERATING_ACCOUNT.SEPTEMBER',
+      10 : 'OPERATING_ACCOUNT.OCTOBER',
+      11 : 'OPERATING_ACCOUNT.NOVEMBER',
+      12 : 'OPERATING_ACCOUNT.DECEMBER'
+    };
     $scope.total = {};
-    // Define the database queries
-    dependencies.accounts = {};
 
-    // TODO: Convert this into a server-side get query that does totals
-    // NOTE: No need to restrict this to income/expense since budgets are
-    //       never added to anything else.
+    dependencies.accounts = {};
     dependencies.budgets = {
       query : {
         tables : {
@@ -194,18 +202,22 @@ angular.module('bhima.controllers')
 
     function displayAccounts() {
       dependencies.accounts.query = '/InExAccounts/' +enterprise_id;
-      dependencies.budgets.query.where = ['period.fiscal_year_id=' + config.fiscal_year_id];
-
-      return $q.when(true)
-      .then(function () {
-        validate.refresh(dependencies, ['accounts', 'budgets'])
-        .then(start);
-      });
+      // Process period
+      var periodCriteria;
+      var selectedPeriod = session.periods.filter(function (p) {
+        return p.id === config.period_id;
+      })[0];
+      if (selectedPeriod.period_number === 0) {
+        dependencies.budgets.query.where = ['period.fiscal_year_id=' + config.fiscal_year_id];
+      } else {
+        dependencies.budgets.query.where = ['period.fiscal_year_id=' + config.fiscal_year_id, 'AND', 'period.id='+selectedPeriod.id];
+      }
+      validate.refresh(dependencies, ['accounts', 'budgets'])
+      .then(start);
     }
 
     function previousFYBudget(selectedPreviousFY) {
       // Get budget data for all previous fiscal years
-      session.previousFYBudget = [];
       $scope.fiscalYearBudget = {};
       for(var fy in selectedPreviousFY) {
         var budget = { 
@@ -214,16 +226,24 @@ angular.module('bhima.controllers')
           totalBudget  : 0, 
           totalBalance : 0 
         };
-        session.previousFYBudget.push(budget);
         $scope.fiscalYearBudget[budget.id] = {};
         getBudget(budget.id);
       }
 
       function getBudget(fiscal_year_id) {
-        // Work with a copy of dependencies.budget structure
-        // for a temporary data
+        // Work with a copy of dependencies.budgets structure
+        // for a temporary previous fiscal years budgets
         dependencies.previousFYBudget = dependencies.budgets;
-        dependencies.previousFYBudget.query.where = ['period.fiscal_year_id=' + fiscal_year_id];
+        // Process period
+        var periodCriteria;
+        var selectedPeriod = session.periods.filter(function (p) {
+          return p.id === config.period_id;
+        })[0];
+        if (selectedPeriod.period_number === 0) {
+          dependencies.previousFYBudget.query.where = ['period.fiscal_year_id=' + fiscal_year_id];
+        } else {
+          dependencies.previousFYBudget.query.where = ['period.fiscal_year_id=' + fiscal_year_id, 'AND', 'period.period_number='+selectedPeriod.period_number];
+        }
         validate.refresh(dependencies, ['previousFYBudget'])
         .then(function (model) {
           var data = model.previousFYBudget.data;
@@ -236,15 +256,8 @@ angular.module('bhima.controllers')
       }
     }
 
-    function selectYear(id) {
-      session.fiscal_year = $scope.fiscal_years.data.filter(function (obj) {
-      return obj.id === id;
-      })[0];
-    }
-
     function loadFiscalYears(models) {
       angular.extend($scope, models);
-      session.fiscal_year = $scope.fiscal_years.data[$scope.fiscal_years.data.length - 1];
     }
 
     // Register this controller
@@ -255,66 +268,6 @@ angular.module('bhima.controllers')
       validate.process(dependencies, ['fiscal_years'])
         .then(loadFiscalYears);
     });
-
-    function exportToCSV() {
-      // Construct the raw CSV string with the account budget/balance data
-      var lf = '%0A';
-      var sp = '%20';
-      var csvStr = '"AccountId", "AccountNum", "AccountName", "Budget", "Balance", "Gap Surplus", "Gap Deficit", "Type"' + lf;
-      $scope.accounts.data.forEach(function (a) {
-      var budget = a.budget;
-      if (budget === null) {
-        budget = '';
-        }
-      var balance = a.balance;
-      if (balance === null) {
-        balance = '';
-      }
-      var title = a.account_txt.replace(/"/g, '\'').replace(/ /g, sp);
-      csvStr += a.id + ', ' + a.account_number + ', "' + title + '", ' + budget + ', ' + balance + ', ' + a.surplus + ', ' + a.deficit + ', "' + a.type + '"' + lf;
-      });
-
-      var today = new Date();
-      var date = today.toISOString().slice(0, 19).replace('T', '-').replace(':', '-').replace(':', '-');
-      var path = 'budget-' + date + '.csv';
-
-      // Construct a HTML 'download' element to download the CSV data (at the end of the body)
-      var e         = document.createElement('a');
-      e.href        = 'data:attachment/csv,' + csvStr;
-      e.className   = 'no-print';
-      e.target      = '_blank';
-      e.download    = path;
-      document.body.appendChild(e);
-      e.click();
-    }
-
-    function print() {
-      $window.print();
-    }
-
-    function formatFiscalYear(obj) {
-      return '' + obj.fiscal_year_txt + ' - ' + obj.start_month + '/' + obj.start_year;
-    }
-
-    function formatPeriod(obj) {
-      var months = {
-            0 : 'OPERATING_ACCOUNT.ALL',
-            1 : 'OPERATING_ACCOUNT.JANUARY',
-            2 : 'OPERATING_ACCOUNT.FEBRUARY',
-            3 : 'OPERATING_ACCOUNT.MARCH',
-            4 : 'OPERATING_ACCOUNT.APRIL',
-            5 : 'OPERATING_ACCOUNT.MAY',
-            6 : 'OPERATING_ACCOUNT.JUNE',
-            7 : 'OPERATING_ACCOUNT.JULY',
-            8 : 'OPERATING_ACCOUNT.AUGUST',
-            9 : 'OPERATING_ACCOUNT.SEPTEMBER',
-            10 : 'OPERATING_ACCOUNT.OCTOBER',
-            11 : 'OPERATING_ACCOUNT.NOVEMBER',
-            12 : 'OPERATING_ACCOUNT.DECEMBER'
-          };
-
-      return '' +  $translate.instant(months[obj.period_number]);
-    }
 
     function loadPeriod(fiscal_year_id) {
       dependencies.period = {
@@ -348,6 +301,11 @@ angular.module('bhima.controllers')
     function budgetAnalysis() {
 
       if (config.fiscal_year_id && config.period_id) {
+        var selectedPeriod = session.periods.filter(function (p) {
+          return p.id === config.period_id;
+        })[0];
+        session.selectedPeriod = $translate.instant($scope.months[selectedPeriod.period_number]);
+        session.selectedFiscalYear = $scope.fiscal_years.get(config.fiscal_year_id);
         getSelectPreviousFY()
         .then(previousFYBudget)
         .then(displayAccounts);
@@ -363,6 +321,69 @@ angular.module('bhima.controllers')
       }
     }
 
+    function exportToCSV() {
+      // Construct the raw CSV string with the account budget/balance data
+      var lf = '%0A';
+      var sp = '%20';
+
+      // Get previous fy labels
+      var previousLabels = '';
+      session.selectedPreviousFY.forEach(function (fy, index) {
+        previousLabels += (index === session.selectedPreviousFY.length - 1) ? '"'+ fy.fiscal_year_txt +'"' : '"'+ fy.fiscal_year_txt +'", ';
+      });
+
+      var csvStr = '"AccountId", "AccountNum", "AccountName", "Budget", "Balance", "Gap Surplus", "Gap Deficit", ' + previousLabels + ', "Type"' + lf;
+      $scope.accounts.data.forEach(function (a) {
+      var budget = a.budget;
+      if (budget === null) {
+        budget = '';
+        }
+      var balance = a.balance;
+      if (balance === null) {
+        balance = '';
+      }
+
+      // Get previous fy budget data
+      var previousBudget = '';
+      session.selectedPreviousFY.forEach(function (fy, index) {
+        previousBudget += (index === session.selectedPreviousFY.length - 1) ? a.previousBudget[fy.id] : a.previousBudget[fy.id] + ', ';
+      });
+
+
+      var title = a.account_txt.replace(/"/g, '\'').replace(/ /g, sp);
+      csvStr += a.id + ', ' + a.account_number + ', "' + title + '", ' + budget + ', ' + balance + ', ' + a.surplus + ', ' + a.deficit + ', ' + previousBudget + ', "' + a.type + '"' + lf;
+      });
+
+      var today = new Date();
+      var date = today.toISOString().slice(0, 19).replace('T', '-').replace(':', '-').replace(':', '-');
+      var path = 'budget-' + date + '.csv';
+
+      // Construct a HTML 'download' element to download the CSV data (at the end of the body)
+      var e         = document.createElement('a');
+      e.href        = 'data:attachment/csv,' + csvStr;
+      e.className   = 'no-print';
+      e.target      = '_blank';
+      e.download    = path;
+      document.body.appendChild(e);
+      e.click();
+    }
+
+    function reconfigure() {
+      session.mode = 'configuration';
+    }
+
+    function print() {
+      $window.print();
+    }
+
+    function formatFiscalYear(obj) {
+      return '' + obj.fiscal_year_txt + ' - ' + obj.start_month + '/' + obj.start_year;
+    }
+
+    function formatPeriod(obj) {
+      return '' + $translate.instant($scope.months[obj.period_number]);
+    }
+
     $scope.togglePreviousFY = function togglePreviousFY(bool) {
       session.previous_fiscal_years.forEach(function (fy) {
         fy.checked = bool;
@@ -374,7 +395,6 @@ angular.module('bhima.controllers')
     };
 
     // Set up the exported functions
-    $scope.selectYear = selectYear;
     $scope.displayAccounts = displayAccounts;
     $scope.exportToCSV = exportToCSV;
     $scope.print = print;
@@ -382,5 +402,6 @@ angular.module('bhima.controllers')
     $scope.formatFiscalYear = formatFiscalYear;
     $scope.formatPeriod = formatPeriod;
     $scope.budgetAnalysis = budgetAnalysis;
+    $scope.reconfigure = reconfigure;
 
 }]);
