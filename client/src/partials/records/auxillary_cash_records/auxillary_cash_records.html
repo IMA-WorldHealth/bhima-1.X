@@ -69,7 +69,7 @@
               <td width="20%">{{receipt.date | date : 'EEEE, dd/MM/yyyy'}}</td>
               <td width="10%">{{receipt.hr_id}}</td>
               <td width="20%">[{{receipt.projectAbbr}}{{receipt.patientReference}}] {{receipt.last_name}} {{receipt.middle_name}} {{receipt.first_name}}</td>
-              <td width="20%"><span ng-bind-html="receipt.cost | intlcurrency:receipt.currency_id"></td>
+              <td width="20%">{{ receipt.cost | currency:receipt.currency_id }}</td>
               <td width="30%" class="hidden-print">
                 <a ng-href="/#/invoice/{{receipt.receiptLocation}}/{{receipt.uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{'AUXILLARY_CASH_RECORD.RECEIPT' | translate}}</a>
                 | <a ng-href="/#/cash_discard/{{receipt.uuid}}/"><span class="glyphicon glyphicon-repeat"></span> {{ 'AUXILLARY_CASH_RECORD.CANCEL' | translate }}</a>
@@ -78,7 +78,7 @@
           </tbody>
         </table>
         <h6 class="visible-print">
-          {{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: <b ng-bind-html="session.sum | intlcurrency:session.currency"></b>  
+          {{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: <b>{{ session.sum | currency:session.currency }}</b>  
         </h6>  
     </div>
   </div>
@@ -90,7 +90,7 @@
       <td width="50%">
         <span style="margin-right: 10px;">
           <span class="glyphicon glyphicon-list-alt" style="color: #428bca"></span>
-          <b><span ng-bind-html="session.sum | intlcurrency:session.currency"></b>
+          <b>{{ session.sum | currency:session.currency }}</b>
           <span ng-if="session.searching">...</span>
         </span>
 
@@ -103,7 +103,7 @@
         </span>
       </td>
       <td width="20%">
-        <b><span ng-bind-html="session.sum | intlcurrency:session.currency"></b>
+        <b>{{ session.sum | currency:session.currency }}</b>
         <span ng-if="session.searching">...</span>
       </td>
       <td width="20%">
