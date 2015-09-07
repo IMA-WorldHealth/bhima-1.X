@@ -8,6 +8,7 @@ var q        = require('q'),
 exports.invoice = invoice;
 exports.promiseCotisation = promiseCotisation;
 exports.promisePayment = promisePayment;
+exports.promiseTax = promiseTax;
 
 // invoice an employee
 function invoice(id, userId, cb) {
@@ -253,10 +254,10 @@ function promiseCotisation(id, userId, data, cb) {
       return db.exec(credsql, [params]);
     }));
   })
-  .then(function (res){
+  .then(function (res) {
     cb(null, res);
   })
-  .catch(function (err){
+  .catch(function (err) {
     cb(err);
   })
   .done();
@@ -346,7 +347,133 @@ function promisePayment(id, userId, data, cb) {
 
     return db.exec(sql, [params]);
   })
-  .then(function (res){
+  .then(function (res) {
+    return cb(null, res);
+  })
+  .catch(cb)
+  .done();
+}
+
+/* Promise Tax
+ *
+*/
+// Cette fonction ecrit dans le journal la promesse d'un paiment de cotisation
+// mais la cotisation n'est pas encore payE effectivement.
+function promiseTax(id, userId, data, cb) {
+  'use strict';
+
+  var sql, queries, rate, reference, cfg = {}, references;
+
+  sql =
+    'SELECT tax.label, tax.abbr, tax.is_employee, tax.four_account_id, tax.six_account_id, ' +
+      'paiement.employee_id, paiement.paiement_date, paiement.currency_id, tax_paiement.value ' +
+    'FROM tax JOIN paiement JOIN tax_paiement ON ' +
+      'tax.id = tax_paiement.tax_id AND paiement.uuid = tax_paiement.paiement_uuid ' +
+    'WHERE paiement.uuid = ?;';
+
+  db.exec(sql, [data.paiement_uuid])
+  .then(function (records) {
+    if (records.length === 0) {
+      throw new Error('Could not find paiement with uuid:' + data.paiement_uuid);
+    }
+
+    reference = records[0];
+    references = records;
+
+    sql =
+      'SELECT creditor_group.account_id, creditor.uuid AS creditor_uuid ' +
+      'FROM paiement ' +
+      'JOIN employee ON employee.id = paiement.employee_id ' +
+      'JOIN creditor ON creditor.uuid = employee.creditor_uuid ' +
+      'JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid ' +
+      'WHERE paiement.uuid = ?;';
+
+    return [
+      core.queries.origin('tax_engagement'),
+      core.queries.period(new Date()),
+      core.queries.exchangeRate(new Date()), db.exec(sql, [data.paiement_uuid])
+    ];
+  })
+
+  // FIXME/TODO -- what is res?  Descriptive naming
+  .spread(function (originId, periodObject, store, res) {
+    cfg.originId = originId;
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+    cfg.account_id = res[0].account_id;
+    cfg.creditor_uuid = res[0].creditor_uuid;
+    rate = store.get(reference.currency_id).rate;
+    return core.queries.transactionId(data.project_id);
+  })
+  .then(function (transId) {
+    cfg.transId = transId;
+    cfg.description =  transId.substring(0,4) + '_EngagementTax/' + new Date().toISOString().slice(0, 10).toString();
+
+    queries = references.map(function (reference) {
+      var account, params;
+      cfg.note = cfg.descrip + '/' + reference.label + '/' + reference.abbr;
+
+      if (!reference.six_account_id) {
+        account = cfg.account_id;
+
+        sql =
+          'INSERT INTO posting_journal (' +
+            'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+            'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+            'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ' +
+          'VALUES (?);';
+
+        params = [
+          uuid(), data.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
+          cfg.note, account, 0, reference.value, 0, reference.value / rate, reference.currency_id,
+          cfg.creditor_uuid, 'C', data.paiement_uuid, cfg.originId, userId
+        ];
+      } else {
+        account = reference.six_account_id;
+
+        sql =
+          'INSERT INTO posting_journal (' +
+          'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+          'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+          'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
+          'VALUES (?);'; 
+        params = [
+          uuid(), data.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
+          cfg.note, account, 0, reference.value, 0, reference.value / rate, reference.currency_id,
+          null, null, data.paiement_uuid, cfg.originId, userId
+        ];
+      }
+
+      return db.exec(sql, [params]);
+    });
+
+    return q.all(queries);
+  })
+  .then(function () {
+
+    queries = references.map(function (reference) {
+      var params;
+
+      cfg.note = cfg.descrip + '/' + reference.label + '/' + reference.abbr;
+      sql =
+        'INSERT INTO posting_journal (' +
+          'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+          'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+          'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) ' +
+        'VALUES (?);';
+
+      params = [
+        uuid(), data.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
+        cfg.note, reference.four_account_id, reference.value, 0, reference.value / rate, 0,
+        reference.currency_id, cfg.creditor_uuid, null, data.paiement_uuid, cfg.originId,
+        userId
+      ];
+
+      return db.exec(sql, [params]);
+    });
+    return q.all(queries);
+  })
+  .then(function (res) {
     return cb(null, res);
   })
   .catch(cb)
