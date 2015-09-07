@@ -9,6 +9,7 @@ exports.invoice = invoice;
 exports.promiseCotisation = promiseCotisation;
 exports.promisePayment = promisePayment;
 exports.promiseTax = promiseTax;
+exports.taxPayment = taxPayment;
 
 // invoice an employee
 function invoice(id, userId, cb) {
@@ -436,7 +437,7 @@ function promiseTax(id, userId, data, cb) {
           'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
           'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
           'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
-          'VALUES (?);'; 
+          'VALUES (?);';
         params = [
           uuid(), data.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
           cfg.note, account, 0, reference.value, 0, reference.value / rate, reference.currency_id,
@@ -478,4 +479,100 @@ function promiseTax(id, userId, data, cb) {
   })
   .catch(cb)
   .done();
+}
+
+function taxPayment(id, userId, details, cb) {
+  var sql, params, rate, reference, cfg = {};
+
+  sql =
+    'SELECT primary_cash_item.primary_cash_uuid, reference, project_id, date, deb_cred_uuid, deb_cred_type, currency_id, ' +
+      'account_id, cost, user_id, description, cash_box_id, origin_id, primary_cash_item.debit, ' +
+      'primary_cash_item.credit, primary_cash_item.inv_po_id, primary_cash_item.document_uuid ' +
+    'FROM primary_cash JOIN primary_cash_item ON primary_cash.uuid = primary_cash_item.primary_cash_uuid ' +
+    'WHERE primary_cash.uuid = ?;';
+
+  db.exec(sql, [id])
+  .then(function (records) {
+    if (records.length === 0) {
+      throw new Error('Could not find primary cash with uuid:' + id);
+    }
+    reference = records[0];
+
+    var sql2 =
+      'SELECT creditor_group.account_id, creditor.uuid FROM primary_cash ' +
+      'JOIN creditor ON creditor.uuid = primary_cash.deb_cred_uuid ' +
+      'JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid ' +
+      'WHERE primary_cash.deb_cred_uuid = ?;' + ';';
+
+
+    var sql3 =
+      'SELECT cash_box_account_currency.account_id ' +
+      'FROM cash_box_account_currency ' +
+      'WHERE cash_box_account_currency.currency_id = ?' +
+      'AND cash_box_account_currency.cash_box_id = ?;';
+
+    return [
+      core.queries.origin('tax_payment'),
+      core.queries.period(new Date()),
+      core.queries.exchangeRate(new Date()),
+      db.exec(sql2, [reference.deb_cred_uuid]),
+      db.exec(sql3, [reference.currency_id, reference.cash_box_id])
+    ];
+  })
+  .spread(function (originId, periodObject, store, res, res2) {
+    cfg.originId = originId;
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+    cfg.employee_account_id = res[0].account_id;
+    cfg.creditor_uuid = res[0].uuid;
+    cfg.store = store;
+    cfg.account_cashbox = res2[0].account_id;
+
+    rate = cfg.store.get(reference.currency_id).rate;
+    return core.queries.transactionId(reference.project_id);
+  })
+  .then(function (transId) {
+    cfg.transId = transId;
+    cfg.description =  transId.substring(0,4) + '_Tax Payment/' + new Date().toISOString().slice(0, 10).toString();
+
+    sql =
+      'INSERT INTO posting_journal (' +
+        'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+        'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+        'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
+      'VALUES (?);';
+
+    params = [
+      uuid(), reference.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description,
+      reference.account_id, 0, reference.cost, 0, reference.cost / rate, reference.currency_id, cfg.creditor_uuid,
+      'C', reference.document_uuid, cfg.originId, userId
+    ];
+
+    return db.exec(sql, [params]);
+  })
+  .then(function () {
+    sql =
+      'INSERT INTO posting_journal (' +
+        'uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+        'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+        'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) ' +
+      'VALUES (?);';
+
+    params = [
+      uuid(), reference.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description,
+      cfg.account_cashbox, reference.cost, 0, reference.cost / rate, 0, reference.currency_id, null, null,
+      reference.document_uuid, cfg.originId, userId
+    ];
+
+    return db.exec(sql, [params]);
+  })
+  .then(function (res){
+    return cb(null, res);
+  })
+  .catch(cb)
+  .done();
+
+
+  function credit () {
+  }
 }
