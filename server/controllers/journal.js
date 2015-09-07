@@ -750,85 +750,6 @@ function handleCotisationPayment (id, user_id, details, done) {
   }
 }
 
-function handleCreateFiscalYear (id, user_id, details, done) {
-
-  var rate, cfg = {},
-      array_journal_uuid = [];
-
-  getOrigin()
-  .spread(getDetails)
-  .then(getTransId)
-  .then(postingEntry)
-  .then(function (res) {
-    done(null, res);
-  })
-  .catch(catchError);
-
-  function getOrigin () {
-    var date = util.toMysqlDate(getDate());
-    return q([core.queries.origin('journal'), core.queries.period(getDate()), core.queries.exchangeRate(date)]);
-  }
-
-  function getDetails (originId, periodObject, store) {
-    cfg.balance = details[0];
-    cfg.originId = originId;
-    cfg.periodId = periodObject.id;
-    cfg.fiscalYearId = periodObject.fiscal_year_id;
-    cfg.store = store;
-    rate = cfg.store.get(cfg.balance.currencyId).rate;
-    return core.queries.transactionId(cfg.balance.projectId);
-  }
-
-  function getTransId (transId) {
-    cfg.transId = transId;
-    cfg.description =  transId.substring(0,4) + '/' + cfg.balance.description;
-  }
-
-  function postingEntry () {
-    return q.all(
-      details.map(function (balance) {
-        var journal_uuid = sanitize.escape(uuid());
-        array_journal_uuid.push(journal_uuid);
-
-        var sql =
-          'INSERT INTO posting_journal ' +
-          '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-          '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-          '`currency_id`, `origin_id`, `user_id` ) ' +
-          'VALUES (' +
-            [
-              journal_uuid,
-              balance.projectId,
-              cfg.fiscalYearId,
-              cfg.periodId,
-              cfg.transId, '\'' + getDate() + '\'', sanitize.escape(cfg.description), balance.accountId
-            ].join(',') + ', ' +
-            [
-              balance.credit.toFixed(4), balance.debit.toFixed(4),
-              (balance.credit / rate).toFixed(4), (balance.debit / rate).toFixed(4),
-              balance.currencyId,
-              cfg.originId,
-              user_id
-            ].join(',') +
-          ');';
-        return db.exec(sql);
-      })
-    );
-  }
-
-  function catchError (err) {
-    var sql = array_journal_uuid.length > 0 ? 'DELETE FROM `posting_journal` WHERE `posting_journal`.`uuid` IN (' + array_journal_uuid.join(',') + '); ' : 'SELECT 1+1;';
-
-    db.exec(sql)
-    .then(function () {
-      console.error('[ROLLBACK]: deleting last entries in posting journal, Because => ', err);
-      return done(err);
-    })
-    .catch(function (err2) {
-      console.error('[ERR2]:', err2);
-    });
-  }
-}
 
 function handleReversingStock (id, user_id, details, done) {
   var sql, rate, transact, state = {}, queries = {}, data, reference, postingJournal, cfg = {};
@@ -1288,108 +1209,6 @@ function handleIntegration (id, user_id, done) {
   }
 }
 
-function handleExtraPayment (id, user_id, details, done) {
-  var sql, rate, state = {}, data, reference, cfg = {};
-  state.user_id = user_id;
-
-  console.info(details, id, user_id);
-
-  sql =
-    'SELECT `g`.`account_id` ' +
-    'FROM `sale` ' +
-    'JOIN `debitor` AS `d` ON `d`.`uuid` = `sale`.`debitor_uuid` ' +
-    'JOIN `debitor_group` AS `g` ON `g`.`uuid` = `d`.`group_uuid` ' +
-    'WHERE `sale`.`uuid` = ' + sanitize.escape(details.sale_uuid) + ';';
-
-  db.exec(sql)
-  .then(getRecord)
-  .spread(getDetails)
-  .then(getTransId)
-  .then(credit)
-  .then(function (res){
-    return done(null, res);
-  })
-  .catch(function (err){
-    return done(err, null);
-  });
-
-  function getRecord (records) {
-    if (records.length === 0) { throw new Error('pas enregistrement'); }
-    reference = records[0];
-    details.cost = parseFloat(details.cost);
-    console.info(reference);
-    var date = util.toMysqlDate(getDate());
-    return q([core.queries.origin('journal'), core.queries.period(getDate()), core.queries.exchangeRate(date)]);
-  }
-
-  function getDetails (originId, periodObject, store) {
-    cfg.originId = originId;
-    cfg.periodId = periodObject.id;
-    cfg.fiscalYearId = periodObject.fiscal_year_id;
-    cfg.store = store;
-    rate = cfg.store.get(details.currency_id).rate;
-    return core.queries.transactionId(details.project_id);
-  }
-
-  function getTransId (trans_id) {
-    cfg.trans_id = trans_id;
-    cfg.descrip =  trans_id.substring(0,4) + '_Extra_Payment/' + new Date().toISOString().slice(0, 10).toString();
-    return debit();
-  }
-
-  function debit () {
-    var debitSql =
-      'INSERT INTO posting_journal ' +
-      '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-      '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-      '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
-      'VALUES (' +
-        [
-          sanitize.escape(uuid()),
-          details.project_id,
-          cfg.fiscalYearId,
-          cfg.periodId,
-          cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.descrip), details.wait_account
-        ].join(',') + ', ' +
-        [
-          0, (details.cost).toFixed(4),
-          0, (details.cost / rate).toFixed(4),
-          details.currency_id,
-          sanitize.escape(details.debitor_uuid)
-        ].join(',') +
-      ', \'C\', ' +
-        [
-          sanitize.escape(details.sale_uuid),
-          cfg.originId,
-          details.user_id
-        ].join(',') + ');';
-    return db.exec(debitSql);
-  }
-
-  function credit () {
-    var credit_sql =
-      'INSERT INTO posting_journal ' +
-      '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-      '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-      '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) ' +
-      'VALUES (' +
-        [
-          sanitize.escape(uuid()),
-          details.project_id,
-          cfg.fiscalYearId,
-          cfg.periodId,
-          cfg.trans_id, '\'' + getDate() + '\'', sanitize.escape(cfg.descrip), reference.account_id
-        ].join(',') + ', ' +
-        [
-          details.cost.toFixed(4), 0,
-          (details.cost / rate).toFixed(4), 0,
-          details.currency_id,
-          sanitize.escape(details.debitor_uuid),
-        ].join(',') + ', \'D\', ' + [sanitize.escape(details.sale_uuid), cfg.originId, user_id].join(',') +
-      ');';
-    return db.exec(credit_sql);
-  }
-}
 
 tableRouter = {
   'sale'                    : require('./journal/sale').create,
@@ -1420,13 +1239,13 @@ tableRouter = {
   'tax_payment'             : handleTaxPayment,
   'cotisation_payment'      : handleCotisationPayment,
   'salary_advance'          : handleSalaryAdvance,
-  'create_fiscal_year'      : handleCreateFiscalYear,
   'reversing_stock'         : handleReversingStock,
   'advance_paiment'         : handleAdvancePaiment,
   'cancel_support'          : handleCancelSupport,
+  'create_fiscal_year'      : require('./journal/fiscal').create,
+  'extra_payment'           : require('./journal/fiscal').extraPayment,
   'fiscal_year_resultat'    : require('./journal/fiscal').close,
-  'confirm_integration'     : handleIntegration,
-  'extra_payment'           : handleExtraPayment
+  'confirm_integration'     : handleIntegration
 };
 
 
