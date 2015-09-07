@@ -383,4 +383,3 @@ function directPurchase(id, userId, cb) {
   .catch(cb)
   .done();
 }
-
