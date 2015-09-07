@@ -34,7 +34,7 @@ angular.module('bhima.controllers')
         tables : {
           account : { columns : ['id', 'account_number', 'account_txt'] }
         },
-        where : ['account.classe=1']
+        where : ['account.classe=1', 'AND', 'is_ohada=1']
       }
     };
 
