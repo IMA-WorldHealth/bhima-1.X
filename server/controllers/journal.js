@@ -1,13 +1,6 @@
-var q        = require('q'),
-    db       = require('../lib/db'),
-    sanitize = require('../lib/sanitize'),
-    uuid     = require('../lib/guid'),
-    validate = require('../lib/validate')(),
-    util     = require('../lib/util'),
-    core     = require('./journal/core');
-
 var tableRouter;
 
+// Todo -- Why do we need this?
 // GET /journal/:table/:id
 function lookupTable(req, res, next) {
   // What are the params here?
@@ -17,241 +10,14 @@ function lookupTable(req, res, next) {
   });
 }
 
-function handleCancelSupport (id, user_id, details, done) {
-  var sql, rate, transact, state = {}, queries = {}, data, reference, postingJournal, cfg = {};
-  state.user_id = user_id;
-  sql =
-    'SELECT `uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
-    '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `deb_cred_type`, `currency_id`, ' +
-    '`deb_cred_uuid`, `inv_po_id`, `cost_ctrl_id`, `origin_id`, '+
-    '`user_id`, `cc_id`, `pc_id` ' +
-    'FROM `posting_journal`' +
-    'WHERE `posting_journal`.`inv_po_id`=' + sanitize.escape(id) +
-    'UNION ALL' +
-    'SELECT `uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
-    '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`,  `deb_cred_type`, `currency_id`, ' +
-    '`deb_cred_uuid`, `inv_po_id`, `cost_ctrl_id`, `origin_id`, '+
-    '`user_id`, `cc_id`, `pc_id` ' +
-    'FROM `general_ledger`' +
-    'WHERE `general_ledger`.`inv_po_id`=' + sanitize.escape(id) ;
-
-  db.exec(sql)
-  .then(getRecord)
-  .spread(getDetails)
-  .then(getTransId)
-  .then(function (res){
-    return done(null, res);
-  })
-  .then(function (res) {
-    done(null, res);
-  })
-  .catch(function (err) {
-    done(err);
-  });
-
-  function getRecord (records) {
-    if (records.length === 0) { return; }
-    reference = records[0];
-    postingJournal = records;
-    var date = util.toMysqlDate(new Date());
-    return q([core.queries.origin('group_invoice'), core.queries.period(new Date()), core.queries.exchangeRate(date)]);
-  }
-
-  function getDetails (originId, periodObject, store, res) {
-    cfg.originId = originId;
-    cfg.periodId = periodObject.id;
-    cfg.fiscalYearId = periodObject.fiscal_year_id;
-    cfg.store = store;
-    rate = cfg.store.get(reference.currency_id).rate;
-
-    console.log(postingJournal.length);
-
-    postingJournal = postingJournal.filter(function (item) {
-      return item.origin_id === cfg.originId;
-    });
-
-
-    transact = core.queries.transactionId(reference.project_id);
-    return core.queries.transactionId(reference.project_id);
-  }
-
-  function getTransId (trans_id) {
-    cfg.trans_id = trans_id;
-    cfg.descrip =  'CANCEL SUPPORTED ' + new Date().toISOString().slice(0, 10).toString();
-    return requests();
-  }
-
-  function requests () {
-    queries.items = [];
-    var date = new Date();
-    postingJournal.forEach(function (item) {
-      item.uuid = sanitize.escape(uuid());
-      item.origin_id = cfg.originId;
-      item.description = cfg.descrip;
-      item.period_id = cfg.periodId;
-      item.fiscal_year_id = cfg.fiscalYearId;
-      item.trans_id = cfg.trans_id;
-      item.trans_date = util.toMysqlDate(new Date());
-
-      if (item.deb_cred_uuid){
-        item.deb_cred_uuid = sanitize.escape(item.deb_cred_uuid);
-      } else {
-        item.deb_cred_uuid = null;
-      }
-
-      var sql =
-        'INSERT INTO `posting_journal` ' +
-          '(`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, `doc_num`, ' +
-          '`description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `deb_cred_type`, `currency_id`, ' +
-          '`deb_cred_uuid`, `inv_po_id`, `cost_ctrl_id`, `origin_id`, '+
-          '`user_id`, `cc_id`, `pc_id`) ' +
-        'VALUES (' +
-          item.uuid + ', ' +
-          item.project_id + ', ' +
-          item.fiscal_year_id + ', ' +
-          item.period_id + ', ' +
-          item.trans_id + ', ' +
-          sanitize.escape(item.trans_date) + ', ' +
-          item.doc_num + ', ' +
-          sanitize.escape(item.description) + ', ' +
-          item.account_id + ', ' +
-          item.credit + ', ' +
-          item.debit + ', ' +
-          item.credit_equiv + ', ' +
-          item.debit_equiv + ', ' +
-          sanitize.escape(item.deb_cred_type) + ', ' +
-          item.currency_id + ', ' +
-          sanitize.escape(item.deb_cred_uuid) + ', ' +
-          sanitize.escape(item.inv_po_id) + ', ' +
-          item.cost_ctrl_id + ', ' +
-          item.origin_id + ', ' +
-          item.user_id + ', ' +
-          item.cc_id + ', ' +
-          item.pc_id +
-        ');';
-      queries.items.push(sql);
-    });
-    return q.all(queries.items.map(function (sql) {
-      return db.exec(sql);
-    }));
-  }
-}
-
-function handleIntegration (id, user_id, done) {
-  var references, dayExchange, cfg = {};
-
-  var sql = 'SELECT `purchase`.`uuid`, `purchase`.`creditor_uuid` , `purchase`.`cost`, `purchase`.`currency_id`, `purchase`.`project_id`,' +
-            ' `purchase`.`purchaser_id`, `purchase`.`emitter_id`, ' +
-            ' `purchase_item`.`inventory_uuid`, `purchase_item`.`total` FROM' +
-            ' `purchase`, `purchase_item` WHERE' +
-            ' `purchase`.`uuid` = `purchase_item`.`purchase_uuid` AND' +
-            ' `purchase`.`uuid`=' + sanitize.escape(id) + ';';
-
-  db.exec(sql)
-  .then(getRecord)
-  .spread(getDetails)
-  .then(getTransId)
-  .then(credit)
-  .then(function (res){
-    return done(null, res);
-  })
-  .catch(function (err){
-    return done(err, null);
-  });
-
-  function getRecord (records) {
-    if (records.length === 0) { throw new Error('pas enregistrement'); }
-    references = records;
-    var date = util.toMysqlDate(new Date());
-    return q([core.queries.origin('confirm_integration'), core.queries.period(new Date())]);
-  }
-
-  function getDetails (originId, periodObject) {
-    cfg.originId = originId;
-    cfg.periodId = periodObject.id;
-    cfg.fiscalYearId = periodObject.fiscal_year_id;
-    return core.queries.transactionId(references[0].project_id);
-  }
-
-  function getTransId (trans_id) {
-    cfg.trans_id = trans_id;
-    cfg.descrip =  'Confirm Integration/' + new Date().toISOString().slice(0, 10).toString();
-    return debit();
-  }
-
-  function debit () {
-    return q.all(
-      references.map(function (reference) {
-        var sql = 'INSERT INTO posting_journal '+
-                  '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-                  '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-                  '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id` ) '+
-                  'SELECT '+
-                    [
-                      sanitize.escape(uuid()),
-                      reference.project_id,
-                      cfg.fiscalYearId,
-                      cfg.periodId,
-                      cfg.trans_id, '\'' + new Date() + '\'', '\'' + cfg.descrip + '\''
-                    ].join(',') + ', `inventory_group`.`stock_account`, '+
-                    [
-                      0, reference.total.toFixed(4),
-                      0, reference.total.toFixed(4),
-                      reference.currency_id, sanitize.escape(reference.inventory_uuid)
-                    ].join(',') +
-                    ', null, ' +
-                    [
-                      sanitize.escape(reference.uuid),
-                      cfg.originId,
-                      user_id
-                    ].join(',') +
-                  ' FROM `inventory_group` WHERE `inventory_group`.`uuid`= ' +
-                  '(SELECT `inventory`.`group_uuid` FROM `inventory` WHERE `inventory`.`uuid`=' + sanitize.escape(reference.inventory_uuid) + ')';
-        return db.exec(sql);
-      })
-    );
-  }
-
-  function credit () {
-
-    return q.all(
-      references.map(function (reference) {
-        var sql =
-          'INSERT INTO posting_journal ' +
-          '(`uuid`,`project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_date`, ' +
-          '`description`, `account_id`, `credit`, `debit`, `credit_equiv`, `debit_equiv`, ' +
-          '`currency_id`, `deb_cred_uuid`, `deb_cred_type`, `inv_po_id`, `origin_id`, `user_id`) ' +
-          'SELECT ' +
-            [
-              sanitize.escape(uuid()),
-              reference.project_id,
-              cfg.fiscalYearId,
-              cfg.periodId,
-              cfg.trans_id, '\'' + new Date() + '\'', '\'' + cfg.descrip + '\''
-            ].join(',') + ', `inventory_group`.`cogs_account`, ' +
-            [
-              reference.total.toFixed(4),0,
-              reference.total.toFixed(4),0,
-              reference.currency_id,
-              sanitize.escape(reference.inventory_uuid)
-            ].join(',') + ', null, ' +
-            [
-              sanitize.escape(reference.uuid),
-              cfg.originId,
-              user_id
-            ].join(',') + ' FROM `inventory_group` WHERE `inventory_group`.`uuid`=' +
-            '(SELECT `inventory`.`group_uuid` FROM `inventory` WHERE `inventory`.`uuid`=' + sanitize.escape(reference.inventory_uuid) + ')';
-        return db.exec(sql);
-      })
-    );
-  }
-}
-
-
+// FIXME/TODO -- rename HTTP routes into meaningful routes
+// Each route should describe what it actually is trying to do.
+// At miniumum the route name + the controller name should allow
+// the developer to guess what the implications of each route are.
 tableRouter = {
   'sale'                    : require('./journal/sale').create,
   'cash'                    : require('./journal/cash').payment,
-  'cash_discard'            : require('./journal/cash').refund, // TODO - make this
+  'cash_discard'            : require('./journal/cash').refund,
   'cash_return'             : require('./journal/primarycash').refund,
   'transfert'               : require('./journal/primarycash').transfer,
   //'payroll'                 : require('./journal/primarycash').payroll,
@@ -278,16 +44,24 @@ tableRouter = {
   'tax_payment'             : require('./journal/employee').taxPayment,
   'cotisation_payment'      : require('./journal/primarycash').cotisationPayment,
   'reversing_stock'         : require('./journal/distribution').reverseDistribution,
-  'advance_paiment'         : handleAdvancePaiment,
-  'cancel_support'          : handleCancelSupport,
+  'advance_paiment'         : require('./journal/employee').advancePayment,
+  'cancel_support'          : require('./journal/finance').cancelInvoice,
   'create_fiscal_year'      : require('./journal/fiscal').create,
   'extra_payment'           : require('./journal/fiscal').extraPayment,
   'fiscal_year_resultat'    : require('./journal/fiscal').close,
-  'confirm_integration'     : handleIntegration
+  'confirm_integration'     : require('./journal/purchase').integration
 };
 
 
-// FIXME - standardize this API
+// FIXME - redesign
+//
+// If there are classes of routes that need extra information, that must be
+// WELL DOCUMENTED and an explanation provided for why they might need
+// extra params.
+//
+// It is my impression that these journal modules are called from other
+// routes that are not HTTP endpoints.  Perhaps it would be better to have
+// two separate functions for doing that, rather than a single endpoint.
 function request (table, id, user_id, done, debCaution, details) {
   // handles all requests coming from the client
   if (debCaution >= 0) {
