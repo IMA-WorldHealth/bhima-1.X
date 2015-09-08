@@ -365,3 +365,93 @@ function loss(id, userId, details, cb) {
   })
   .done();
 }
+
+
+/* This is really a general reversing transaction */
+function reverseDistribution(id, userId, details, cb) {
+  'use strict';
+
+  var sql, rate, params, transact, queries = {}, data, reference, references, cfg = {};
+  sql =
+    'SELECT uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, doc_num, ' +
+      'description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, ' +
+      'deb_cred_uuid, inv_po_id, cost_ctrl_id, origin_id, '+
+      'user_id, cc_id, pc_id ' +
+    'FROM posting_journal' +
+    'WHERE posting_journal.trans_id = ? ' +
+    'UNION ' +
+    'SELECT uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, doc_num, ' +
+      'description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, ' +
+      'deb_cred_uuid, inv_po_id, cost_ctrl_id, origin_id, '+
+      'user_id, cc_id, pc_id ' +
+    'FROM general_ledger' +
+    'WHERE general_ledger.trans_id = ?;';
+
+  db.exec(sql)
+  .then(function (records) {
+    if (records.length === 0) {
+      throw new Error('Could not find transaction with id:' + id);
+    }
+    reference = records[0];
+    references = records;
+
+    return [
+      core.queries.origin('reversing_stock'),
+      core.queries.period(new Date()),
+      core.queries.exchangeRate(new Date())
+    ];
+  })
+  .spread(function (originId, periodObject, store) {
+    cfg.originId = originId;
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+    cfg.store = store;
+    rate = cfg.store.get(reference.currency_id).rate;
+    transact = core.queries.transactionId(reference.project_id);
+    return core.queries.transactionId(reference.project_id);
+  })
+  .then(function (transId) {
+    var description = 'REVERSING_STOCK/'+new Date().toISOString().slice(0, 10).toString();
+
+    queries = references.map(function (item) {
+      item.uuid = uuid();
+      item.origin_id = cfg.originId;
+      item.description = description;
+      item.period_id = cfg.periodId;
+      item.fiscal_year_id = cfg.fiscalYearId;
+      item.trans_id = transId;
+      item.trans_date = new Date();
+
+      if (item.deb_cred_uuid) {
+        item.deb_cred_uuid = item.deb_cred_uuid;
+      } else {
+        item.deb_cred_uuid = null;
+      }
+
+      sql =
+        'INSERT INTO posting_journal (' +
+          'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, doc_num, ' +
+          'description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, ' +
+          'deb_cred_uuid, inv_po_id, cost_ctrl_id, origin_id, '+
+          'user_id, cc_id, pc_id) ' +
+        'VALUES (?);';
+
+      params = [
+        item.uuid, item.project_id, item.fiscal_year_id, item.period_id, item.trans_id, item.trans_date,
+        item.doc_num, item.description, item.account_id, item.credit, item.debit,item.credit_equiv, item.debit_equiv,
+        item.currency_id, item.deb_cred_uuid, item.inv_po_id,item.cost_ctrl_id, item.origin_id,
+        item.user_id, item.cc_id, item.pc_id                      
+      ];
+
+      return db.exec(sql, [params]);
+    });
+
+    return q.all(queries);
+  })
+  .then(function (res) {
+    cb(null, res);
+  })
+  .catch(cb)
+  .done();
+}
+
