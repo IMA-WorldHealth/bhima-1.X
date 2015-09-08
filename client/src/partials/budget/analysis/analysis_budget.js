@@ -80,6 +80,11 @@ angular.module('bhima.controllers')
         totalBudget += bud.budget;
       });
 
+      var accounts_data_id = [];
+      $scope.accounts.data.forEach(function (acct) {
+        accounts_data_id.push(acct.id);
+      });
+
       // Previous Budgets processing
       // Total budget per fiscal year
       var totalsFY = {},
@@ -94,6 +99,8 @@ angular.module('bhima.controllers')
           else {
             totalsFY[fy.id][bud.account_id] = bud.budget;
           }
+          // FIXME totalBudgetFY[fy.id] must be for either expense, or income or all
+          // FIXME but retrieving for all account type at all time
           totalBudgetFY[fy.id] += bud.budget;
         });
       });
@@ -101,9 +108,7 @@ angular.module('bhima.controllers')
 
       // Insert the budget totals into the account data
       $scope.accounts.data.forEach(function (acct) {
-        acct.previousBudget = {};
-        acct.previousBalance = {};
-
+        // Current budget
         if (acct.id in totals) {
           acct.budget = precision.round(totals[acct.id], 2);
         } else {
@@ -115,6 +120,7 @@ angular.module('bhima.controllers')
         }
 
         // Previous Budgets
+        acct.previousBudget = {};
         session.selectedPreviousFY.forEach(function (fy) {
           if (acct.id in totalsFY[fy.id]) {
             acct.previousBudget[fy.id] = precision.round(totalsFY[fy.id][acct.id], 2);
@@ -195,7 +201,9 @@ angular.module('bhima.controllers')
           acct.balance = 0.0;
         }
       });
-      addBudgetData();
+
+      filterAccounts($scope.accounts.data)
+      .then(addBudgetData);
       parseAccountDepth($scope.accounts.data, $scope.accounts);
       session.mode = 'budget-analysis';
     }
@@ -382,6 +390,26 @@ angular.module('bhima.controllers')
 
     function formatPeriod(obj) {
       return '' + $translate.instant($scope.months[obj.period_number]);
+    }
+
+    function filterAccounts(model) {
+      var accountClass = config.account_class || 0,
+          expense = ''+ $translate.instant('BUDGET.ANALYSIS.EXPENSE'),
+          income = ''+ $translate.instant('BUDGET.ANALYSIS.INCOME');
+
+      if (accountClass === 6 || accountClass === expense) {
+        // Class 6 accounts
+        $scope.accounts.data = model.filter(function (acct) {
+          return acct.classe === 6 || acct.classe === '6';
+        });
+      } else if (accountClass === 7 || accountClass === income) {
+        // Class 7 accounts
+        $scope.accounts.data = model.filter(function (acct) {
+          return acct.classe === 7 || acct.classe === '7';
+        });
+      } 
+
+      return $q.when(true);
     }
 
     $scope.togglePreviousFY = function togglePreviousFY(bool) {
