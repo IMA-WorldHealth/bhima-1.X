@@ -55,22 +55,12 @@
           <div class="form-group">
             <label>{{ "SELECT.ACCOUNT_TYPE" | translate }}: 
             {{ "BUDGET.ANALYSIS.EXPENSE" | translate }}/{{ "BUDGET.ANALYSIS.INCOME" | translate }}</label>
-            <select 
-            class="form-bhima">
-              <option ng-value="-1">{{ "BUDGET.ANALYSIS.EXPENSE" | translate }}</option>
-              <option ng-value="+1">{{ "BUDGET.ANALYSIS.INCOME" | translate }}</option>
+            <select class="form-bhima" ng-model="config.account_class">
+              <option ng-value="0">{{ "UTIL.ALL" | translate }}</option>
+              <option ng-value="6">{{ "BUDGET.ANALYSIS.EXPENSE" | translate }}</option>
+              <option ng-value="7">{{ "BUDGET.ANALYSIS.INCOME" | translate }}</option>
             </select>
           </div>
-          
-          <small class="budget-analysis-label">{{ "BUDGET.ANALYSIS.VIEW_MODE" | translate }}</small>
-
-          <label>
-          <input type="radio" name="view_mode" ng-model="config.view_model" ng-value="data_table"> 
-          {{ "BUDGET.ANALYSIS.DATA_TABLE" | translate }}</label>
-
-          <label>
-          <input type="radio" name="view_mode" ng-model="config.view_model" ng-value="data_graph"> 
-          {{ "BUDGET.ANALYSIS.DATA_GRAPH" | translate }}</label>
 
           <small class="budget-analysis-label">{{ "BUDGET.ANALYSIS.PREVIOUS_BUDGET" | translate }}</small>
 
