@@ -7,7 +7,8 @@ angular.module('bhima.controllers')
   'appstate',
   'messenger',
   'uuid',
-  function ($scope, $translate, connect, validate, appstate, messenger, uuid) {
+  'SessionService',
+  function ($scope, $translate, connect, validate, appstate, messenger, uuid, sessionService) {
 
     var dependencies = {};
     $scope.action = '';
@@ -61,13 +62,9 @@ angular.module('bhima.controllers')
       }
     };
 
-    // get enterprise
-    appstate.register('project', function (project) {
-      $scope.project = project;
-      dependencies.invoices.query.where =
-        ['posting_journal.project_id=' + project.id];
-      validate.process(dependencies, ['debitors', 'employees', 'currency']).then(setUpModels);
-    });
+    $scope.project = sessionService.project;
+    dependencies.invoices.query.where = ['posting_journal.project_id=' + $scope.project.id];
+    validate.process(dependencies, ['debitors', 'employees', 'currency']).then(setUpModels);
 
     $scope.setDebitor = function () {
       if (!$scope.selected.debitor) {
@@ -81,9 +78,8 @@ angular.module('bhima.controllers')
     };
 
     function setUpModels (models) {
-      angular.extend($scope, models);
+      angular.extend($scope, models);      
       if ($scope.invoices) {
-        // FIXME: this is hack
         $scope.invoices.data = $scope.invoices.data.filter(function (d) {
           return d.balance !== 0;
         });
@@ -156,11 +152,11 @@ angular.module('bhima.controllers')
       var id, items, payment = connect.clean($scope.payment);
       payment.uuid = uuid();
 
-      connect.basicPut('employee_invoice', [payment])
+      connect.post('employee_invoice', [payment])
       .then(function () {
         id = payment.uuid;
         items = formatItems(id);
-        return connect.basicPut('employee_invoice_item', items);
+        return connect.post('employee_invoice_item', items);
       })
       .then(function () {
         $scope.action = '';
@@ -168,9 +164,8 @@ angular.module('bhima.controllers')
         return connect.fetch('/journal/employee_invoice/' + id);
       })
      .then(function () {
-        messenger.info($translate.instant('SUPPORT.SUCCES'));
-      });
-       
+        messenger.info($translate.instant('SUPPORT.SUCCES'));       
+      });       
     };
 
     function formatItems (id) {
