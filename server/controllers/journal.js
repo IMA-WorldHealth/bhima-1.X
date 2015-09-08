@@ -18,11 +18,8 @@ tableRouter = {
   'sale'                    : require('./journal/sale').create,
   'cash'                    : require('./journal/cash').payment,
   'cash_discard'            : require('./journal/cash').refund,
-  'cash_return'             : require('./journal/primarycash').refund,
-  'transfert'               : require('./journal/primarycash').transfer,
   //'payroll'                 : require('./journal/primarycash').payroll,
   'group_invoice'           : require('./journal/convention').invoice,
-  'employee_invoice'        : require('./journal/employee').invoice,
   'credit_note'             : require('./journal/sale').creditNote,
   'caution'                 : require('./journal/sale').caution,
   'pcash_convention'        : require('./journal/primarycash').convention,
@@ -30,6 +27,8 @@ tableRouter = {
   'primary_expense'         : require('./journal/primarycash').genericExpense,
   'salary_advance'          : require('./journal/primarycash').salaryAdvance,
   'primary_income'          : require('./journal/primarycash').genericIncome,
+  'cash_return'             : require('./journal/primarycash').refund,
+  'transfert'               : require('./journal/primarycash').transfer,
   'indirect_purchase'       : require('./journal/purchase').indirectPurchase,
   'confirm'                 : require('./journal/purchase').confirm, // TODO - rename
   'confirm_direct_purchase' : require('./journal/purchase').directPurchase,
@@ -37,19 +36,20 @@ tableRouter = {
   'distribution_service'    : require('./journal/distribution').service,
   'consumption_loss'        : require('./journal/distribution').loss,
   'salary_payment'          : require('./journal/primarycash').salaryPayment,
+  'employee_invoice'        : require('./journal/employee').invoice,
   'promesse_payment'        : require('./journal/employee').promisePayment,
   'promesse_cotisation'     : require('./journal/employee').promiseCotisation,
   'promesse_tax'            : require('./journal/employee').promiseTax,
-  'donation'                : require('./journal/inventory').donation,
   'tax_payment'             : require('./journal/employee').taxPayment,
   'cotisation_payment'      : require('./journal/primarycash').cotisationPayment,
   'reversing_stock'         : require('./journal/distribution').reverseDistribution,
   'advance_paiment'         : require('./journal/employee').advancePayment,
+  'extra_payment'           : require('./journal/finance').extraPayment,
   'cancel_support'          : require('./journal/finance').cancelInvoice,
   'create_fiscal_year'      : require('./journal/fiscal').create,
-  'extra_payment'           : require('./journal/fiscal').extraPayment,
   'fiscal_year_resultat'    : require('./journal/fiscal').close,
-  'confirm_integration'     : require('./journal/purchase').integration
+  'confirm_integration'     : require('./journal/purchase').integration,
+  'donation'                : require('./journal/inventory').donation
 };
 
 
