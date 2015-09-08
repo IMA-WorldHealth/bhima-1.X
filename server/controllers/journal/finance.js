@@ -186,7 +186,7 @@ function extraPayment(id, userId, details, cb) {
       userId
     ];
 
-    return db.exec(sql, params);
+    return db.exec(sql, [params]);
   })
   .then(function (res) {
     return cb(null, res);
