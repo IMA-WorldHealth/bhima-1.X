@@ -36,7 +36,7 @@ tableRouter = {
   'distribution_patient'    : require('./journal/distribution').patient,
   'distribution_service'    : require('./journal/distribution').service,
   'consumption_loss'        : require('./journal/distribution').loss,
-  'salary_payment'          : require('./jounal/primarycash').salaryPayment,
+  'salary_payment'          : require('./journal/primarycash').salaryPayment,
   'promesse_payment'        : require('./journal/employee').promisePayment,
   'promesse_cotisation'     : require('./journal/employee').promiseCotisation,
   'promesse_tax'            : require('./journal/employee').promiseTax,
