@@ -55,7 +55,7 @@ function invoice(id, userId, cb) {
       throw new Error('Individual costs do not match total cost for invoice id: ' + id);
     }
 
-    return core.queries.origin('group_invoice');
+    return core.queries.origin('employee_invoice');
   })
   .then(function (originId) {
     cfg.originId = originId;
@@ -70,7 +70,7 @@ function invoice(id, userId, cb) {
       .then(function  (transId) {
         var debsql, credsql, params;
 
-        cfg.description = transId.substring(0,4) + '_SUPPORTED/' + new Date().toISOString().slice(0, 10).toString();
+        cfg.description = transId.substring(0,4) + '_CHARGE_TAKEN/' + new Date().toISOString().slice(0, 10).toString();
 
         debsql =
           'INSERT INTO posting_journal (' +

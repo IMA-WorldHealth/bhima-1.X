@@ -273,6 +273,7 @@ exports.getCurrencies = function (req, res, next) {
 
   var sql =
     'SELECT c.id, c.name, c.symbol, c.note, c.format_key ' +
+    'SELECT c.id, c.name, c.note, c.format_key, c.symbol ' +
     'FROM currency AS c;';
 
   db.exec(sql)
