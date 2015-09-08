@@ -10,6 +10,7 @@ exports.promiseCotisation = promiseCotisation;
 exports.promisePayment = promisePayment;
 exports.promiseTax = promiseTax;
 exports.taxPayment = taxPayment;
+exports.advancePayment = advancePayment;
 
 // invoice an employee
 function invoice(id, userId, cb) {
@@ -581,7 +582,7 @@ function taxPayment(id, userId, details, cb) {
  *
  *
 */
-function handleAdvancePaiment (id, userId, cb) {
+function advancePayment(id, userId, cb) {
   'use strict';
 
   var sql, rate, params, reference, cfg = {};
