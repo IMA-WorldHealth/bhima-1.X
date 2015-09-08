@@ -72,7 +72,7 @@ function transfer(id, userId, cb) {
     sql =
       'INSERT INTO posting_journal (uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
         'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
-        'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) '+
+        'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) '+
       'VALUES (?);';
 
     params = [
@@ -89,7 +89,7 @@ function transfer(id, userId, cb) {
     sql =
       'INSERT INTO posting_journal (uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
         'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
-        'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) '+
+        'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) '+
       'VALUES (?);';
 
     params = [

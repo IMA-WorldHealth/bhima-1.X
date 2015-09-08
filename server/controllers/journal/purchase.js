@@ -161,7 +161,7 @@ function confirm(id, userId, cb) {
       params = [
         uuid(), reference.project_id, cfg.fiscalYearId, cfg.periodId, cfg.trans_id, new Date(),
         cfg.description, 0, reference.total, 0, reference.total, reference.currency_id,
-        reference.inventory_uuid, null, reference.uuid, cfg.originInd, userId, reference.inventory_uuid
+        reference.inventory_uuid, null, null, reference.uuid, cfg.originId, userId, reference.inventory_uuid
       ];
 
       return db.exec(sql, params);
@@ -233,7 +233,7 @@ function indirectPurchase(id, userId, cb) {
     sql =
       'SELECT cash_box_account_currency.account_id ' +
       'FROM cash_box_account_currency ' +
-      'WHERE cash_box_account_currency.currency_id = ?' +
+      'WHERE cash_box_account_currency.currency_id = ? ' +
         'AND cash_box_account_currency.cash_box_id = ?;';
 
     return q([
@@ -252,7 +252,7 @@ function indirectPurchase(id, userId, cb) {
     return core.queries.transactionId(reference.project_id);
   })
   .then(function (transId) {
-    cfg.trans_id = transId;
+    cfg.transId = transId;
     cfg.description =  'PAIE C.A Indirect/' + new Date().toISOString().slice(0, 10).toString();
 
     sql =
@@ -260,11 +260,11 @@ function indirectPurchase(id, userId, cb) {
         'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
         'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
         'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
-      'SELECT ?, ?, ?, ?, ?, ?, ?, ?, account_id, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ' +
+      'SELECT ?, ?, ?, ?, ?, ?, ?, account_id, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ' +
       'FROM creditor_group WHERE creditor_group.uuid = ?;';
 
     params = [
-      uuid(), reference.project_id, cfg.fiscalYearId, cfg.transId, new Date(), cfg.description,
+      uuid(), reference.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description,
       0, reference.debit, 0, reference.debit, reference.currency_id, reference.deb_cred_uuid,
       'C', reference.inv_po_id, cfg.originId, userId, reference.group_uuid
     ];
