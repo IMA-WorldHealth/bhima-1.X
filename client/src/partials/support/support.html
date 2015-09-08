@@ -9,8 +9,9 @@
       <li class="active">{{ "SUPPORT.TITLE" | translate }}</li>
     </ol>
   </div>
+
   <div class="pull-right">
-    <span class="btn btn-sm btn-default" ng-show="!!selected.employee">{{ selected.employee.name }}</span>
+    <span class="btn btn-lg btn-default" ng-show="!!selected.employee">{{ selected.employee.name }} :: {{selected.debitor.text || '?'}}</span>
   </div>
 </nav>
 
@@ -34,9 +35,9 @@
                   <input
                     class="form-bhima"
                     type="text"
-                    typeahead-template-url="ConventionList.html"
+                    typeahead-template-url="EmployeeList.html"
                     ng-model="selected.employee"
-                    typeahead="group as group.name for group in employees.data | filter:$viewValue | limitTo:8"
+                    typeahead="employee as employee.name for employee in employees.data | filter:$viewValue | limitTo:15"
                     placeholder="{{ 'SELECT.EMPLOYEE' | translate }}"
                   >
                 </div>
@@ -54,11 +55,6 @@
                     typeahead="debitor as debitor.text for debitor in debitors.data | filter:$viewValue | limitTo:8"
                     placeholder="{{ 'SELECT.DEBITOR' | translate }}"
                   >
-
-
-                  <!--select class="form-bhima" ng-model="selected.debitor" ng-options="debitor as debitor.text for debitor in debitors.data">
-                    <option value="">-- {{ "SELECT.DEBITOR" | translate }}--</option>
-                  </select-->
                 </div>
               </div>
             </div>
@@ -78,7 +74,6 @@
           <thead>
             <tr>
               <th>{{ "COLUMNS.INVOICE_ID" | translate }}</th>
-              <th>{{ "COLUMNS.DEBITOR_ID" | translate }}</th>
               <th>{{ "COLUMNS.DATE" | translate }}</th>
               <th>{{ "COLUMNS.TOTAL" | translate }}</th>
               <th colspan="2" style="width:10%;">{{ "COLUMNS.ACTIONS" | translate }}</th>
@@ -86,8 +81,7 @@
           </thead>
           <tbody>
             <tr ng-repeat="invoice in invoices.data | filter:filter">
-              <td>{{invoice.inv_po_id}}</td>
-              <td>{{invoice.deb_cred_uuid}}</td>
+              <td>{{invoice.abbr + invoice.reference}}</td>
               <td>{{invoice.trans_date | date}}</td>
               <td>{{invoice.balance | currency }}</td>
               <td><button class="btn btn-sm btn-default" ng-click="examineInvoice(invoice, $index)"><i class="glyphicon glyphicon-search"></i></button></td>
@@ -261,7 +255,7 @@
   </div>
 </main>
 
-<script type="text/ng-template" id="ConventionList.html">
+<script type="text/ng-template" id="EmployeeList.html">
   <a>
     <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
     <span><i>{{match.model.name}} {{match.model.postnom}} {{match.model.prenom}}</i></span>
