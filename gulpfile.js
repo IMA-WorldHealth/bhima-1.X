@@ -150,7 +150,7 @@ gulp.task('watch-client', function () {
 });
 
 // builds the client with all the options available
-gulp.task('build-client', ['client-clean'], function () {
+gulp.task('build-client', function () {
   gulp.start('client-lint-js', 'client-minify-js', 'client-minify-css', 'client-mv-vendor', 'client-mv-static');
 });
 
@@ -197,12 +197,11 @@ gulp.task('server-mv-plugins', function () {
 });
 
 // build the server
-gulp.task('build-server', ['server-clean'], function () {
+gulp.task('build-server', function () {
   gulp.start('server-mv-files', 'server-mv-plugins');
 });
 
 /* -------------------------------------------------------------------------- */
-
 
 /* Testing Client Builds
  *
@@ -240,7 +239,7 @@ gulp.task('clean', function (cb) {
   rimraf('./bin/', cb);
 });
 
-gulp.task('build', ['clean'], function () {
+gulp.task('build', function () {
   gulp.start('build-client', 'build-server');
 });
 
