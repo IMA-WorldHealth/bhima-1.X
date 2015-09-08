@@ -621,10 +621,10 @@ angular.module('bhima.controllers')
           return $http.post('/posting_promesse_payment/', params);
         })
         .then(function (){
-          return $http.post('/posting_promesse_cotisation/', params);
+          return (packagePay.cc_records.length > 0) ? $http.post('/posting_promesse_cotisation/', params) : $q.when();
         })
         .then(function (){
-          return $http.post('/posting_promesse_tax/', params);
+          return (packagePay.tc_records.length > 0) ? $http.post('/posting_promesse_tax/', params) : $q.when();
         })
         .catch(function (err){
           def.reject(err);
@@ -653,7 +653,6 @@ angular.module('bhima.controllers')
             somPrime += elmt[rub.abbr]; 
           }
         });
-
         
         cotisation_config_list.forEach(function (cotisation) {
 

@@ -54,13 +54,13 @@
         <tbody class="items">
           <tr>
             <td>{{'INVOICE.LIBELLE_CAUTION' | translate}}</td>
-            <td><span ng-bind-html="session.cost | intlcurrency:session.currency_id"></span></td>
+            <td>{{ session.cost | currency:session.currency_id }}</td>
           </tr>
         </tbody>
         <tbody class="totals">
           <tr>
             <td colspan="1" class="no-border">{{'INVOICE.TOTAL_CAUTION' | translate}}</td>
-            <td><span ng-bind-html="session.cost | intlcurrency:session.currency_id"></span></td>
+            <td>{{ session.cost | currency:session.currency_id }}</td>
           </tr>
         </tbody>
       </table>

@@ -80,15 +80,15 @@
             <td>{{ item.text }}</td>
             <td>{{ item.quantity }}</td>
 
-            <td><span ng-bind-html="item.unit_price | intlcurrency:item.currency_id"></span></td>
-            <td><span ng-bind-html="item.total | intlcurrency:item.currency_id"></span></td>
+            <td>{{ item.unit_price | currency:item.currency_id }}</td>
+            <td>{{ item.total | currency:item.currency_id }}</td>
           </tr>
         </tbody>
         <tbody class="totals">
           <tr>
             <td colspan="4" class="no-border">{{'INVOICE.PURCHASE_TOTAL' | translate}}</td>
             <td>
-              <span ng-bind-html="model.common.purchases[0].cost | intlcurrency:model.common.purchases[0].currency_id"></span>
+              {{ model.common.purchases[0].cost | currency:model.common.purchases[0].currency_id" }}
             </td>
           </tr>
         </tbody>

@@ -138,7 +138,7 @@
                   <a ng-if="payment.uuid === payment.document_id" ng-href="/#/invoice/caution/{{payment.invoice_uuid}}">{{ projects.get(payment.sale_project).abbr + payment.sale_reference }}</a>
                 </td>
                 <td> {{ projects.get(payment.debtor_project).abbr + payment.debtor_reference }} </td>
-                <td ng-bind-html="payment.cost | intlcurrency:payment.currency_id"></td>
+                <td>{{ payment.cost | currency:payment.currency_id }}</td>
                 <td> {{ payment.description }} </td>
                 <td> {{ payment.date | date }} </td>
               </tr>
@@ -151,7 +151,7 @@
             </tbody>
           </table>
           <h6 class="visible-print">
-            {{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: <b ng-bind-html="session.sum | intlcurrency:session.currency"></b>  
+            {{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: <b>{{ session.sum | currency:session.currency }}</b>  
           </h6>          
         </div>
       </div>
@@ -175,7 +175,7 @@
             </span>
           </td>
           <td style="width:20%;">
-            <b ng-bind-html="session.sum | intlcurrency:session.currency"></b>
+            <b>{{ session.sum | currency:session.currency }}</b>
             <span ng-if="session.searching">...</span>
           </td>
           <td colspan="2">

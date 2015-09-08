@@ -32,7 +32,7 @@
               <th></th>
               <td> {{ row.code }}</td>
               <td> {{ row.text }}</td>
-              <td ng-bind-html="row.price | intlcurrency:enterprise.currency_id"> {{ item.price }}</td>
+              <td>{{ row.price | currency:enterprise.currency_id }}</td>
             </tr>
           </tbody>
           <tfoot>

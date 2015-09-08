@@ -12,14 +12,16 @@ var gulp       = require('gulp'),
     minifycss  = require('gulp-minify-css'),
     jshint     = require('gulp-jshint'),
     flatten    = require('gulp-flatten'),
+    spawn      = require('child_process').spawn,
+    path       = require('path'),
+    iife       = require('gulp-iife'),
     rimraf     = require('rimraf'),
 
     // mocha for server-side testing
     mocha      = require('gulp-mocha'),
 
     // protractor for e2e tests
-    protractor = require('gulp-protractor'),
-    webdriver  = protractor.webdriver_standalone,
+    protractor = require('gulp-protractor').protractor,
 
     // child process for custom scripts
     exec       = require('child_process').exec;
@@ -48,6 +50,8 @@ var paths = {
     javascript : ['client/src/js/define.js', 'client/src/js/app.js', 'client/src/**/*.js', '!client/src/i18n/**/*.js'],
     css        : ['client/src/partials/**/*.css', 'client/src/css/*.css'],
     vendor     : ['client/vendor/*.js', 'client/vendor/**/*.js'],
+    e2etest    : ['client/test/e2e/**/*.spec.js'],
+    unittest   : [],
 
     // these must be globs ("**" syntax) to retain their folder structures
     static     : ['client/src/index.html', 'client/src/js/app.js', 'client/src/**/*', '!client/src/js/**/*.js', '!client/src/partials/**/*.js', '!client/src/**/*.css']
@@ -55,7 +59,8 @@ var paths = {
   server : {
     javascript : ['server/*.js', 'server/**/*.js'],
     files      : ['server/*', 'server/**/*'],
-    plugins    : ['plugins/*', 'plugins/**/*']
+    plugins    : ['plugins/*', 'plugins/**/*'],
+    unittest   : []
   }
 };
 
@@ -97,6 +102,7 @@ gulp.task('client-lint-js', function () {
 // writes output to bhima.min.js
 gulp.task('client-minify-js', function () {
   return gulp.src(paths.client.javascript)
+    .pipe(iife())
     .pipe(concat('js/bhima.min.js'))
     .pipe(gulp.dest(CLIENT_FOLDER));
 });
@@ -144,7 +150,7 @@ gulp.task('watch-client', function () {
 });
 
 // builds the client with all the options available
-gulp.task('build-client', ['client-clean'], function () {
+gulp.task('build-client', function () {
   gulp.start('client-lint-js', 'client-minify-js', 'client-minify-css', 'client-mv-vendor', 'client-mv-static');
 });
 
@@ -191,37 +197,57 @@ gulp.task('server-mv-plugins', function () {
 });
 
 // build the server
-gulp.task('build-server', ['server-clean'], function () {
+gulp.task('build-server', function () {
   gulp.start('server-mv-files', 'server-mv-plugins');
 });
 
 /* -------------------------------------------------------------------------- */
 
-// builds both the client and the server
-gulp.task('build', ['build-client', 'build-server']);
-
-/* -------------------------------------------------------------------------- */
-
 /* Testing Client Builds
- *
- * TODO
  *
  * The following tasks will run unit and end-to-end tests
  * on bhima.
 */
 
 // run the selenium server for e2e tests
-gulp.task('webdriver-standalone', webdriver);
+gulp.task('client-test-e2e', function () {
+  return gulp.src(paths.client.e2etest)
+    .pipe(protractor({
+      configFile : 'protractor.conf.js'
+    }))
+    .on('error', function (e) { throw e; });
+});
+
+
+/* -------------------------------------------------------------------------- */
+
+/* Testing Server Builds
+ *
+ * TODO
+ *
+ * The following tasks will run unit tests on the bhima server using gulp-mocha
+*/
+
+// ensure that the server actually runs
+gulp.task('server-test-run', function () {
+  spawn('node', [path.join(SERVER_FOLDER, 'app.js')], {stdio: 'inherit'}); 
+});
+
+/* -------------------------------------------------------------------------- */
 
 gulp.task('clean', function (cb) {
   rimraf('./bin/', cb);
 });
 
-gulp.task('build', ['clean'], function () {
+gulp.task('build', function () {
   gulp.start('build-client', 'build-server');
 });
 
-// run the build-client task when no arguments
+gulp.task('test', ['build'], function () {
+  gulp.start('client-test-e2e');
+});
+
+// run the build-client and build-server tasks when no arguments
 gulp.task('default', [], function () {
-  gulp.start('build-client');
+  gulp.start('build-client', 'build-server');
 });

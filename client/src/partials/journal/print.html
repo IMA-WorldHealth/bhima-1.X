@@ -32,8 +32,8 @@
           <td>{{ row.trans_id }}</td>
           <td>{{ row.trans_date | date }}</td>
           <td>{{ row.account_number }}</td>
-          <td ng-bind-html="row.debit_equiv | intlcurrency:project.currency_id"></td>
-          <td ng-bind-html="row.credit_equiv | intlcurrency:project.currency_id"></td>
+          <td>{{ row.debit_equiv | currency:project.currency_id }}</td>
+          <td>{{ row.credit_equiv | currency:project.currency_id }}</td>
           <td>{{ row.description }}</td>
           <td>{{ row.deb_cred_uuid }}</td>
           <td>{{ row.deb_cred_type }}</td>
@@ -43,8 +43,8 @@
       <tfoot>
         <tr>
           <th colspan="3">{{ "REPORT.TOTAL" | translate }}</th>
-          <th ng-bind-html="sums.debit | intlcurrency:project.currency_id"></th>
-          <th ng-bind-html="sums.credit | intlcurrency:project.currency_id"></th>
+          <th>{{ sums.debit | currency:project.currency_id }}</th>
+          <th>{{ sums.credit | currency:project.currency_id }}</th>
           <th colspan="4"></th>
         </tr>
       </tfoot>

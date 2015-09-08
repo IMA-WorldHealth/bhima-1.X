@@ -146,7 +146,7 @@
                   ng-repeat="sale in saleDataUnique | filter : session.search">
                     <td>{{ sale.transaction }}</td>
                     <td>{{ sale.inv_po_id }}</td>
-                    <td><span ng-bind-html="sale.balance | intlcurrency:sale.currency"></span></td>
+                    <td>{{ sale.balance | currency:sale.currency }}</td>
                     <td>
                       <input 
                       ng-model="sale.cost"

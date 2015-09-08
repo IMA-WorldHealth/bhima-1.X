@@ -101,8 +101,8 @@
               <tr ng-repeat='transaction in transactions'>
                 <td>{{ transaction.trans_date | date }}</td>
                 <td>{{ transaction.description }}</td>
-                <td ng-bind-html="transaction.debit | intlcurrency:transaction.currency_id"></td>
-                <td ng-bind-html="transaction.credit | intlcurrency:transaction.currency_id"></td>
+                <td>{{ transaction.debit | currency:transaction.currency_id }}</td>
+                <td>{{ transaction.credit | currency:transaction.currency_id }}</td>
               </tr>
             </tbody>
             <tbody ng-if="!transactions.length && session.account">
@@ -116,7 +116,7 @@
             </tfoot>
           </table>
           <h6 class="visible-print">
-            {{ 'COLUMNS.TOTAL_DEBIT' | translate }}: <b ng-bind-html=" session.sum_debit | intlcurrency:session.currency"></b> | {{ 'COLUMNS.TOTAL_CREDIT' | translate }}: <b ng-bind-html=" session.sum_credit | intlcurrency:session.currency"></b> |  
+            {{ 'COLUMNS.TOTAL_DEBIT' | translate }}: <b >{{ session.sum_debit | currency:session.currency }}</b> | {{ 'COLUMNS.TOTAL_CREDIT' | translate }}: <b>{{ session.sum_credit | currency:session.currency }}</b> |  
           </h6>          
         </div>
       </div>
@@ -132,7 +132,7 @@
           <td style="width:25%;">
             <b>{{ 'COLUMNS.TOTAL_DEBIT' | translate }}: </b>
             <span>
-              <b ng-bind-html=" session.sum_debit | intlcurrency:session.currency"></b>
+              <b>{{ session.sum_debit | currency:session.currency }}</b>
             </span>
             <span ng-if="session.searching">...</span>
           </td>
@@ -140,7 +140,7 @@
           <td style="width:25%;">
             <b>{{ 'COLUMNS.TOTAL_CREDIT' | translate }}: </b>
             <span>
-              <b ng-bind-html=" session.sum_credit | intlcurrency:session.currency"></b>
+              <b>{{ session.sum_credit | currency:session.currency }}</b>
             </span>
             <span ng-if="session.searching">...</span>
           </td>

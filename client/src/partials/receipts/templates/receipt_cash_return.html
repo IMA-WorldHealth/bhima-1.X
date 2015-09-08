@@ -58,11 +58,11 @@
             <td>{{ trans_id }}</td>
             <td>{{ model.cash_return.description }}</td>
             <td>{{ model.recipient.text }}</td>
-            <td><span ng-bind-html="model.cash_return.cost | intlcurrency:model.cash_return.currency_id"></span></td>
+            <td>{{ model.cash_return.cost | currency:model.cash_return.currency_id }}</td>
           </tr>
         </tbody>
         <tbody class="totals">
-          <tr><td colspan="4" class="no-border">{{'INVOICE.TOTAL' | translate}}</td><td><span ng-bind-html="model.cash_return.cost | intlcurrency:model.cash_return.currency_id"></span></td></tr>
+          <tr><td colspan="4" class="no-border">{{'INVOICE.TOTAL' | translate}}</td><td>{{ model.cash_return.cost | currency:model.cash_return.currency_id }}</td></tr>
         </tbody>
       </table>
   </div>

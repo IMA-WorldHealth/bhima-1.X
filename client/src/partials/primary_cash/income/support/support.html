@@ -48,11 +48,11 @@
             <tr ng-repeat="overview in overviews">
               <td>{{ overview.reference }}</td>
               <td>{{ overview.description }}</td>
-              <td align="right" ng-bind-html="overview.balance | intlcurrency:enterprise.currency_id"></td>
+              <td align="right">{{ overview.balance | currency:enterprise.currency_id }}</td>
             </tr>
             <tr>
               <td>{{ 'SUPPORT_PAYEMENT.TOT' | translate}}</td>
-              <td colspan="2" align="right" ng-bind-html="som | intlcurrency:enterprise.currency_id"></td>
+              <td colspan="2" align="right">{{ som | currency:enterprise.currency_id }}</td>
             </tr>
           </tbody>
         </table>

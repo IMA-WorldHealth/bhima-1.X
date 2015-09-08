@@ -61,13 +61,13 @@
       <tbody class="items">
         <tr ng-repeat-start="invoice in model.cash.allData.cash.data"><td colspan="2"><b>{{'INVOICE.INVOICE_ID' | translate}} {{ project.abbr + invoice.reference }}</b></td></tr>
         <tr ng-repeat-end ng-repeat="item in model.cash.allData['invoiceItem'].data | orderBy: 'code' | filter:{ sale_uuid: invoice.invoice_uuid}"><td>{{item.text}}</td><td>
-        <span ng-bind-html="item.localeCost | intlcurrency:session.currency_id"></span></td></tr>
+            {{item.localeCost | currency:session.currency_id }}</td></tr>
       </tbody>
       <tbody class="totals">
       <tr><td class="no-border">{{'INVOICE.TOTAL' | translate }}</td><td>
-      <span ng-bind-html="model.cash.invoice.localeCost | intlcurrency:session.currency_id"></span></td></tr>
-        <tr><td class="no-border">{{'INVOICE.AMOUNT_RECEIVED' | translate }}</td><td><span ng-bind-html="session.cashTransactionCost  | intlcurrency:session.currency_id"></span></td></tr>
-        <tr><td class="no-border">{{'INVOICE.BALANCE_DUE' | translate }}</td><td><span ng-bind-html="model.cash.invoice.localeBalance | intlcurrency:session.currency_id"></span></td></tr>
+          {{model.cash.invoice.localeCost | currency:session.currency_id }}</td></tr>
+      <tr><td class="no-border">{{'INVOICE.AMOUNT_RECEIVED' | translate }}</td><td>{{ session.cashTransactionCost  | currency:session.currency_id }}</td></tr>
+        <tr><td class="no-border">{{'INVOICE.BALANCE_DUE' | translate }}</td><td>{{ model.cash.invoice.localeBalance | currency:session.currency_id }}</td></tr>
       </tbody>
     </table>
   </div>
