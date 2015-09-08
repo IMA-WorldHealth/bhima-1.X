@@ -167,12 +167,12 @@ function promiseCotisation(id, userId, data, cb) {
       'JOIN creditor_group ON creditor_group.uuid=creditor.group_uuid ' +
     'WHERE paiement.uuid = ?;';
 
-    return q([
+    return [
       core.queries.origin('cotisation_engagement'),
       core.queries.period(new Date()),
       core.queries.exchangeRate(new Date()),
       db.exec(sql, [data.paiement_uuid])
-    ]);
+    ];
   })
   .spread(function (originId, periodObject, store, res) {
     cfg.originId = originId;
@@ -575,4 +575,102 @@ function taxPayment(id, userId, details, cb) {
 
   function credit () {
   }
+}
+
+/*  Payment of Advances
+ *
+ *
+*/
+function handleAdvancePaiment (id, userId, cb) {
+  'use strict';
+
+  var sql, rate, params, reference, cfg = {};
+
+  sql =
+    'SELECT rubric_paiement.id, rubric_paiement.rubric_id, rubric_paiement.paiement_uuid, rubric_paiement.value, ' +
+      'rubric.is_advance, paiement.currency_id, paiement.employee_id, employee.prenom, employee.name, employee.creditor_uuid, ' +
+      'creditor_group.account_id AS account_creditor, config_accounting.account_id AS account_paiement, primary_cash.project_id ' +
+    'FROM rubric_paiement ' +
+    'JOIN rubric ON rubric.id = rubric_paiement.rubric_id ' +
+    'JOIN paiement ON paiement.uuid = rubric_paiement.paiement_uuid ' +
+    'JOIN paiement_period ON paiement_period.id = paiement_period.config_accounting_id ' +
+    'JOIN config_accounting ON config_accounting.id = paiement_period.config_accounting_id ' +
+    'JOIN employee ON employee.id = paiement.employee_id ' +
+    'JOIN creditor ON creditor.uuid= employee.creditor_uuid ' +
+    'JOIN creditor_group ON creditor_group.uuid=creditor.group_uuid ' +
+    'JOIN primary_cash_item ON primary_cash_item.inv_po_id = rubric_paiement.paiement_uuid ' +
+    'JOIN primary_cash ON primary_cash.uuid = primary_cash_item.primary_cash_uuid ' +
+    'WHERE rubric_paiement.paiement_uuid = ? ' +
+      'AND rubric.is_advance = 1;';
+
+
+  db.exec(sql, [id])
+  .then(function (records) {
+    if (records.length === 0) {
+      throw new Error('No payment record with uuid:' + id);
+    }
+
+    reference = records[0];
+
+    return [
+      core.queries.origin('salary_advance'),
+      core.queries.period(new Date()),
+      core.queries.exchangeRate(new Date())
+    ];
+  })
+  .spread(function (originId, periodObject, store) {
+    cfg.originId = originId;
+    cfg.periodId = periodObject.id;
+    cfg.fiscalYearId = periodObject.fiscal_year_id;
+    cfg.store = store;
+    rate = cfg.store.get(reference.currency_id).rate;
+
+    return core.queries.transactionId(reference.project_id);
+  })
+  .then(function (transId) {
+    cfg.transId = transId;
+    cfg.description =  transId.substring(0,4) + '_Pay Advance salary/' + new Date().toISOString().slice(0, 10).toString();
+
+    // TODO - Why does this depend on a value?  What error messages
+    // are sent if this criteria is not met?
+    if (reference.value > 0) {
+      sql =
+        'INSERT INTO posting_journal (' +
+          'uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+          'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+          'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
+        'VALUES (?);';
+
+      params = [
+        uuid(), reference.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description,
+        reference.account_creditor, reference.value, 0, reference.value / rate, 0, reference.currency_id,
+        reference.creditor_uuid, 'C', reference.paiement_uuid, cfg.originId, userId
+      ];
+
+      return db.exec(sql, [params]);
+    }
+  })
+  .then(function () {
+    if (reference.value > 0) {
+      sql =
+        'INSERT INTO posting_journal (' +
+          'uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+          'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+          'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
+        'VALUES (?);';
+
+      params = [
+        uuid(), reference.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description,
+        reference.account_paiement, 0, reference.value, 0, reference.value / rate,
+        reference.currency_id, null, null, reference.paiement_uuid, cfg.originId, userId
+      ];
+
+      return db.exec(sql, [params]);
+    }
+  })
+  .then(function (res){
+    return cb(null, res);
+  })
+  .catch(cb)
+  .done();
 }
