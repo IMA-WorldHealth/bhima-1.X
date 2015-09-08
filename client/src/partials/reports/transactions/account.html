@@ -136,6 +136,7 @@
             </span>
             <span ng-if="session.searching">...</span>
           </td>
+
           <td style="width:25%;">
             <b>{{ 'COLUMNS.TOTAL_CREDIT' | translate }}: </b>
             <span>
@@ -143,6 +144,7 @@
             </span>
             <span ng-if="session.searching">...</span>
           </td>
+
           <td class="hidden-print" style="width:30%;">
             <select class="form-bhima" ng-model="session.currency" ng-options="currency.id as currency.symbol for currency in currencies.data" ng-change="convert()"></select>
           </td>
