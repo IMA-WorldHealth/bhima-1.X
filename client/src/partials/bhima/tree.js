@@ -33,7 +33,6 @@ angular.module('bhima.controllers')
       if (!group) {
         return;
       }
-
       return group.map(function (element) {
         collapsedModel.some(function (item) {
           if (item.key === element.unit_id) {
@@ -54,10 +53,11 @@ angular.module('bhima.controllers')
 
     $scope.$on('$locationChangeStart', function (e, n_url) {
       /* jshint unused : false */
-      var target = n_url.split('/#')[1];
+
+      var target = n_url.split('/#')[1]; 
 
       originLocation = target;
-      if(target) {
+      if(target) { 
         applicationCache.put('location', {path: target});
         selectTreeNode($scope.treeData, target);
       }
@@ -65,13 +65,16 @@ angular.module('bhima.controllers')
 
     function selectTreeNode(list, locationPath) {
       list.some(function (element) {
+
         var sanitiseElement = element.path.replace(/\//g, '');
         var sanitiseLocation = locationPath ? locationPath.replace(/\//g, '') : '';
+        var hasChildren = element.children && element.children.length > 0;
 
         if (sanitiseElement === sanitiseLocation) {
           $scope.navtree.selectNodeLabel(element);
         }
-        if (element.has_children) { selectTreeNode(element.children, locationPath); }
+
+        if (hasChildren) { selectTreeNode(element.children, locationPath); }
       });
     }
 
@@ -106,6 +109,7 @@ angular.module('bhima.controllers')
         sortTreeNodes(response.data);
 
         // expose to view
+
         $scope.treeData = response.data;
         loadTreeOptions();
       });

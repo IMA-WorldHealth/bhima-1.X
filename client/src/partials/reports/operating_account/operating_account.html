@@ -104,7 +104,7 @@
             </tbody>
           </table>
           <h6 class="visible-print">
-            {{ 'OPERATING_ACCOUNT.TOTAL_CHARGE' | translate }}: <b ng-bind-html=" debitTotal | intlcurrency:session.currency"></b> | {{ 'OPERATING_ACCOUNT.TOTAL_PROFIT' | translate }}: <b ng-bind-html=" creditTotal | intlcurrency:session.currency"></b> | {{ 'COLUMNS.RESULT' | translate }} : <b ng-bind-html=" Result | intlcurrency:session.currency"></b>
+            {{ 'OPERATING_ACCOUNT.TOTAL_CHARGE' | translate }}: <b>{{ debitTotal | currency:session.currency }}</b> | {{ 'OPERATING_ACCOUNT.TOTAL_PROFIT' | translate }}: <b>{{ creditTotal | currency:session.currency }}</b> | {{ 'COLUMNS.RESULT' | translate }} : <b>{{ Result | currency:session.currency }}</b>
           </h6>
         </div>
       </div>
@@ -116,7 +116,7 @@
           <td style="width:20%;">
             <b>{{ 'OPERATING_ACCOUNT.TOTAL_CHARGE' | translate }}: </b>
             <span>
-              <b ng-bind-html=" debitTotal | intlcurrency:session.currency"></b>
+              <b>{{ debitTotal | currency:session.currency }}</b>
             </span>
             <span ng-if="session.searching">...</span>
           </td>
@@ -127,7 +127,7 @@
           <td style="width:20%;">
             <b>{{ 'OPERATING_ACCOUNT.TOTAL_PROFIT' | translate }}: </b>
             <span>
-              <b ng-bind-html=" creditTotal | intlcurrency:session.currency"></b>
+              <b>{{ creditTotal | currency:session.currency }}</b>
             </span>
             <span ng-if="session.searching">...</span>
           </td>
@@ -135,7 +135,7 @@
           <td style="width:20%;">
             <b>{{ 'COLUMNS.RESULT' | translate }}: </b>
             <span>
-              <b ng-bind-html=" Result | intlcurrency:session.currency"></b>
+              <b>{{ Result | currency:session.currency }}</b>
             </span>
             <span ng-if="session.searching">...</span>
           </td>

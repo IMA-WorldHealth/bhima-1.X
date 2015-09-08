@@ -99,7 +99,7 @@
                         <td>{{row.emp.text}}</td>
                         <td>{{row.emp.nb_enfant}}</td>
                         <td>{{row.emp.nb_spouse}}</td>
-                        <td><b ng-bind-html="row.emp.basic_salary | intlcurrency:session.SelectedCurrency.id"></b></td>
+                        <td><b>{{ row.emp.basic_salary | currency:session.SelectedCurrency.id }}</b></td>
                       </tr>
                     </tbody>
                   </table>

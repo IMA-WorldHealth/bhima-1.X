@@ -11,11 +11,9 @@ var q = require('q');
 var config = {
 
   // local selenium config, in case it applies
-  seleniumAddress   : 'http://localhost:4444/wd/hub',
-  /*
-  seleniumServerJar : './node_modules/protractor/bin/selenium-server-standalone-latest.jar',
+  seleniumServerJar : '/usr/local/lib/node_modules/protractor/selenium/selenium-server-standalone-2.45.0.jar',
+  chromeDriver      : '/usr/local/lib/node_modules/protractor/selenium/chromedriver',
   seleniumPort      : 4444,
-  */
 
   specs: ['client/test/e2e/**/*.spec.js'],
 
@@ -25,8 +23,8 @@ var config = {
 
   // default browsers to run
   multiCapabilities: [{
-    'browserName': 'firefox',
-  }, {
+    //'browserName': 'firefox',
+ // }, {
     'browserName': 'chrome',
   }],
 

@@ -69,14 +69,14 @@
           <td>{{ item.text }}</td>
           <td>{{ item.quantity }}</td>
 
-          <td><span ng-bind-html="item.localeTransaction | intlcurrency:session.currentCurrency.id"></span></td>
-          <td><span ng-bind-html="item.localeCost | intlcurrency:session.currentCurrency.id"></span></td>
+          <td>{{ item.localeTransaction | currency:session.currentCurrency.id }}</td>
+          <td>{{ item.localeCost | currency:session.currentCurrency.id }}</td>
         </tr>
       </tbody>
       <tbody class="totals">
-        <tr><td colspan="4" class="no-border">{{'INVOICE.TOTAL' | translate}}</td><td><span ng-bind-html="invoice.localeCost | intlcurrency:session.currentCurrency.id"></span></td></tr>
-        <tr><td colspan="4" class="no-border">{{'INVOICE.AMOUNT_RECEIVED' | translate}}</td><td><span ng-bind-html="invoice.ledger.localeCredit | intlcurrency:session.currentCurrency.id"></span></td></tr>
-        <tr><td colspan="4" class="no-border">{{'INVOICE.BALANCE_DUE' | translate}}</td><td><span ng-bind-html="invoice.localeBalance | intlcurrency:session.currentCurrency.id"></span></td></tr>
+        <tr><td colspan="4" class="no-border">{{'INVOICE.TOTAL' | translate}}</td><td>{{ invoice.localeCost | currency:session.currentCurrency.id }}</td></tr>
+        <tr><td colspan="4" class="no-border">{{'INVOICE.AMOUNT_RECEIVED' | translate}}</td><td>{{ invoice.ledger.localeCredit | currency:session.currentCurrency.id }}</td></tr>
+        <tr><td colspan="4" class="no-border">{{'INVOICE.BALANCE_DUE' | translate}}</td><td>{{ invoice.localeBalance | currency:session.currentCurrency.id }}</td></tr>
       </tbody>
 
     </table>

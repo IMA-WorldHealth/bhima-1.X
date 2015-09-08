@@ -15,17 +15,19 @@
                   <div class="col-xs-4">
                     <div class="form-group">
                       <label class="control-label col-xs-4 required">{{ "UTIL.ACCOUNT" | translate }}</label>
-                      <select required class="form-bhima" id="account" ng-model="model.account_id">
-                        <option value="0">-- {{"SELECT.ALL" | translate }} --</option>
-                        <option ng-repeat="acc in accounts.data | orderBy:'account_number'" value='{{acc.id}}' ng-disabled="acc.account_type_id==3">{{formatAccount(acc)}}</option>
+                    
+                      <!-- Select using ng-options vs. ng-repeat to reduce impact on DOM loading times -->
+                      <select ng-options="account.id as account.display disable when (account.account_type_id===3) for account in accounts.data" ng-model="model.account_id" class="form-bhima">
+                        <option value="">-- {{"SELECT.ALL" | translate }} --</option>
                       </select>
+                    
                     </div>
                   </div>
 
                   <div class="col-xs-4">
                     <label class="control-label col-xs-4 required">{{ "UTIL.SOURCE" | translate }}</label>
                     <select class="form-bhima" id="sources" ng-change="search()" ng-model="model.source_id">
-                      <option ng-repeat="source in model.sources" value='{{$index}}'>{{source}}</option>
+                      <option required ng-repeat="source in model.sources" value='{{$index}}'>{{source}}</option>
                     </select>
                   </div>
 
@@ -115,8 +117,8 @@
                       <td width="10%"> {{ record.trans_id }} </td>
                       <td width="15%"> {{ record.TRANSACTION_DATE | date }} </td>
                       <td width="10%"> {{ record.account_number }} </td>
-                      <td width="10%"><span ng-bind-html="record.debit | intlcurrency:record.currency_id"></span></td>
-                      <td width="10%"><span ng-bind-html="record.credit | intlcurrency:record.currency_id"></span></td>
+                      <td width="10%">{{ record.debit | currency:record.currency_id }}</td>
+                    <td width="10%">{{ record.credit | currency:record.currency_id }}</td>
                       <td width="45%"> {{ record.description}} </td>
                     </tr>
                   </tbody>
@@ -124,8 +126,8 @@
                     <tr>
                       <th colspan="6">
                         {{ "COLUMNS.TOTAL" | translate }} : {{ records.length }} /
-                        {{"COLUMNS.DEBIT" | translate}} : <span ng-bind-html="session.somDebit | intlcurrency:model.c"></span> /
-                        {{"COLUMNS.CREDIT" | translate}} : <span ng-bind-html="session.somCredit | intlcurrency:model.c"></span>
+                        {{"COLUMNS.DEBIT" | translate}} : {{ session.somDebit | currency:model.c }} /
+                        {{"COLUMNS.CREDIT" | translate}} : {{ session.somCredit | currency:model.c }}
                       </th>
                     </tr>
                   </tfoot>
@@ -151,8 +153,8 @@
                       <td width="10%"> {{ record.trans_id }} </td>
                       <td width="15%"> {{ record.trans_date | date }} </td>
                       <td width="10%"> {{ record.account_number }} </td>
-                      <td width="10%"><span ng-bind-html="record.debit | intlcurrency:record.currency_id"></span></td>
-                      <td width="10%"><span ng-bind-html="record.credit | intlcurrency:record.currency_id"></span></td>
+                      <td width="10%">{{ record.debit | currency:record.currency_id }}</td>
+                    <td width="10%">{{ record.credit | currency:record.currency_id }}</td>
                       <td width="45%"> {{ record.description}} </td>
                     </tr>
                   </tbody>
@@ -160,8 +162,8 @@
                     <tr>
                       <th colspan="6">
                         {{ "COLUMNS.TOTAL" | translate }} : {{ records.length }} /
-                        {{"COLUMNS.DEBIT" | translate}} : <span ng-bind-html="session.somDebit | intlcurrency:model.c"></span> /
-                        {{"COLUMNS.CREDIT" | translate}} : <span ng-bind-html="session.somCredit | intlcurrency:model.c"></span>
+                        {{"COLUMNS.DEBIT" | translate}} : {{ session.somDebit | currency:model.c }} /
+                        {{"COLUMNS.CREDIT" | translate}} : {{ session.somCredit | currency:model.c }}
                       </th>
                     </tr>
                   </tfoot>
@@ -187,8 +189,8 @@
                       <td width="10%"> {{ record.trans_id }} </td>
                       <td width="15%"> {{ record.trans_date | date }} </td>
                       <td width="10%"> {{ record.account_number }} </td>
-                      <td width="10%"><span ng-bind-html="record.debit | intlcurrency:record.currency_id"></span></td>
-                      <td width="10%"><span ng-bind-html="record.credit | intlcurrency:record.currency_id"></span></td>
+                      <td width="10%">{{ record.debit | currency:record.currency_id }}</td>
+                      <td width="10%">{{ record.credit | currency:record.currency_id }}</td>
                       <td width="45%"> {{ record.description}} </td>
                     </tr>
                   </tbody>
@@ -196,8 +198,8 @@
                     <tr>
                       <th colspan="6">
                         {{ "COLUMNS.TOTAL" | translate }} : {{ records.length }} /
-                        {{"COLUMNS.DEBIT" | translate}} : <span ng-bind-html="session.somDebit | intlcurrency:model.c"></span> /
-                        {{"COLUMNS.CREDIT" | translate}} : <span ng-bind-html="session.somCredit | intlcurrency:model.c"></span>
+                        {{"COLUMNS.DEBIT" | translate}} : {{ session.somDebit | currency:model.c }} /
+                        {{"COLUMNS.CREDIT" | translate}} : {{ session.somCredit | currency:model.c }}
                       </th>
                     </tr>
                   </tfoot>

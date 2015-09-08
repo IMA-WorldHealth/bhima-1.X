@@ -117,7 +117,7 @@
               <tr ng-repeat='record in session.model.records.data'>
                 <td>{{ record.trans_id }}</td>
                 <td>{{ record.description }}</td>
-                <td><span ng-bind-html="record.credit | intlcurrency:record.currency_id"></td>
+                <td>{{ record.credit | currency:record.currency_id }}</td>
                 <td>{{ record.trans_date | date }}</td>
                 <td>{{ record.service_txt }}</td>
                 <td>{{ record.first }} {{record.last}}</td>
@@ -137,7 +137,7 @@
             </tbody>
           </table>
           <h6 class="visible-print">
-            {{ "PRIMARY_CASH.REPORT.EXPENSE.TOTAL_EXPENSE" | translate }} : <b ng-bind-html="session.sum_credit | intlcurrency:session.currency"></b>  
+            {{ "PRIMARY_CASH.REPORT.EXPENSE.TOTAL_EXPENSE" | translate }} : <b>{{ session.sum_credit | currency:session.currency }}</b>  
           </h6>          
         </div>
       </div>
@@ -154,7 +154,7 @@
 
           <td style="width:30%;">
             <span style="margin-right: 20px;">
-              <span class="glyphicon glyphicon-money" style="color: #428bca"></span>  {{ "PRIMARY_CASH.REPORT.EXPENSE.TOTAL_EXPENSE" | translate }} : <b ng-bind-html="session.sum_credit | intlcurrency:session.currency"></b>
+              <span class="glyphicon glyphicon-money" style="color: #428bca"></span>  {{ "PRIMARY_CASH.REPORT.EXPENSE.TOTAL_EXPENSE" | translate }} : <b>{{ session.sum_credit | currency:session.currency }}</b>
             </span>
           </td>
 

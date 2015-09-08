@@ -138,7 +138,7 @@
                 <td ng-if="purchase.is_direct"> {{ "COLUMNS.DIRECT" | translate }} </td>
                 <td ng-if="!purchase.is_direct"> {{ "COLUMNS.INDIRECT" | translate }} </td>
                 <td> {{ purchase.confirmed_first }} {{ purchase.confirmed_last }} </td>
-                <td ng-bind-html="purchase.cost | intlcurrency:purchase.currency_id"></td> 
+                <td>{{ purchase.cost | currency:purchase.currency_id }}</td> 
                 <td> {{ purchase.purchase_date | date }} </td>
               </tr>
               <tr ng-if="!purchase_records.length">

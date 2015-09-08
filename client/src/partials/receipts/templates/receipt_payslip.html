@@ -59,17 +59,17 @@
           <td> </td>
           <td>{{'COLUMNS.WORKING_DAY' | translate}}</td>
           <td>{{ total_day }}</td>
-          <td><span ng-bind-html="daly_rate| intlcurrency:dataPaiements[0].currency_id"></span></td>
-          <td><span ng-bind-html="amont_payable| intlcurrency:dataPaiements[0].currency_id"></span></td>
-          <td><span ng-bind-html="item.localeTransaction | intlcurrency:dataPaiements[0].currency_id"></span></td>
+          <td>{{ daly_rate | currency:dataPaiements[0].currency_id }}</td>
+          <td>{{ amont_payable | currency:dataPaiements[0].currency_id }}</td>
+          <td>{{ item.localeTransaction | currency:dataPaiements[0].currency_id }}</span></td>
           <td></td>
         </tr>
         <tr ng-repeat="item in dataHollydays | orderBy:'label'">
           <td> </td>
           <td>{{ item.label }}</td>
           <td>{{ item.hollyday_nbdays }} </td>
-          <td><span ng-bind-html="item.dailyHollyd | intlcurrency:dataPaiements[0].currency_id"></span></td>
-          <td><span ng-bind-html="item.somHolly | intlcurrency:dataPaiements[0].currency_id"></td>
+          <td>{{ item.dailyHollyd | currency:dataPaiements[0].currency_id }}</td>
+          <td>{{ item.somHolly | currency:dataPaiements[0].currency_id }}</td>
           <td></td>
           <td></td>
         </tr>
@@ -77,8 +77,8 @@
           <td> </td>
           <td>{{ item.label }}</td>
           <td> 1 </td>
-          <td><span ng-bind-html="item.rate_offDay | intlcurrency:dataPaiements[0].currency_id"></span></td>
-          <td><span ng-bind-html="item.rate_offDay | intlcurrency:dataPaiements[0].currency_id"></td>
+          <td>{{ item.rate_offDay | currency:dataPaiements[0].currency_id }}</td>
+          <td>{{ item.rate_offDay | currency:dataPaiements[0].currency_id }}</td>
           <td></td>
           <td></td>
         </tr>
@@ -87,8 +87,8 @@
           <td>{{ item.label }}</td>
           <td>{{ total_day }}</td>
           <td>{{ }}</td>
-          <td><span ng-bind-html="item.valueP | intlcurrency:dataPaiements[0].currency_id"></span></td>
-          <td><span ng-bind-html="item.valueR | intlcurrency:dataPaiements[0].currency_id"></span></td>
+          <td>{{ item.valueP | currency:dataPaiements[0].currency_id }}</td>
+          <td>{{ item.valueR | currency:dataPaiements[0].currency_id }}</td>
           <td></td>
         </tr>
         <tr ng-repeat="cotisation in dataCotisation | orderBy:'label'">
@@ -97,7 +97,7 @@
           <td> </td>
           <td></td>
           <td></span></td>
-          <td><span ng-bind-html="cotisation.value | intlcurrency:dataPaiements[0].currency_id"></span></td>
+          <td>{{ cotisation.value | currency:dataPaiements[0].currency_id }}</td>
           <td></td>
         </tr> 
         <tr ng-repeat="tax in dataTaxes | orderBy:'label'">
@@ -106,16 +106,16 @@
           <td> </td>
           <td></td>
           <td></span></td>
-          <td><span ng-bind-html="tax.value | intlcurrency:dataPaiements[0].currency_id"></span></td>
+          <td>{{ tax.value | currency:dataPaiements[0].currency_id }}</td>
           <td></td>
         </tr>        
       </tbody>
       <tbody class="totals">
         <tr>
           <td colspan="4" class="no-border"><b>{{'INVOICE.TOTAL' | translate}}</b></td>
-          <td><span ng-bind-html="TotalPaid | intlcurrency:dataPaiements[0].currency_id"></span></td>
-          <td><span ng-bind-html="TotalWithheld | intlcurrency:dataPaiements[0].currency_id"></span></td>
-          <td><span ng-bind-html="TotalNet | intlcurrency:dataPaiements[0].currency_id"></span></td>
+          <td>{{ TotalPaid | currency:dataPaiements[0].currency_id }}</td>
+          <td>{{ TotalWithheld | currency:dataPaiements[0].currency_id }}</td>
+          <td>{{ TotalNet | currency:dataPaiements[0].currency_id }}</td>
         </tr>
       </tbody>
 

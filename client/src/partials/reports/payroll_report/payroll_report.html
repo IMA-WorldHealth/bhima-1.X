@@ -19,10 +19,12 @@
                   <div class="pull-left form-group input-group">
                     <span class="input-group-addon">
                       <span class="glyphicon glyphicon-folder-open"></span>
-                    </span>  
+                    </span>
+
                     <select class="form-bhima" ng-model="session.period_id">
-                      <option ng-repeat="getPeriod in getPeriods.data | orderBy:'-dateTo'" ng-value="getPeriod.id">{{getPeriod.label}} :: {{getPeriod.dateFrom | date }} - {{getPeriod.dateTo | date }}</option>
+                      <option ng-value="getPeriod.id" value="getPeriod.id" ng-repeat="getPeriod in getPeriods.data | orderBy:'-dateTo'">{{getPeriod.label}} :: {{getPeriod.dateFrom | date }} - {{getPeriod.dateTo | date }}</option>
                     </select>
+                    
                   </div>
                 </div>
               </div>
@@ -92,9 +94,9 @@
                 <td> {{ report.prenom }} </td>  
                 <td> {{ report.dob | date }} </td>
                 <td> {{ report.sexe }} </td>
-                <td><span ng-bind-html="report.net_before_tax | intlcurrency:report.currency_id"></span></td>
-                <td><span ng-bind-html="report.net_after_tax | intlcurrency:report.currency_id"></span></td>  
-                <td><span ng-bind-html="report.net_salary | intlcurrency:report.currency_id"></span></td>
+                <td>{{ report.net_before_tax | currency:report.currency_id }}</td>
+                <td>{{ report.net_after_tax | currency:report.currency_id }}</td>  
+                <td>{{ report.net_salary | currency:report.currency_id }}</td>
                 <td class="hidden-print"><a ng-href="/#/invoice/payslip/{{report.uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{ "PAYCHECK.VIEW" | translate  }}</a></td>                              
               </tr>
             </tbody>
@@ -148,9 +150,6 @@
               <td> {{ report.prenom }} </td>  
               <td> {{ report.dob | date }} </td>
               <td> {{ report.sexe }} </td>
-              <td><span ng-bind-html="report.net_before_tax | intlcurrency:report.currency_id"></span></td>
-              <td><span ng-bind-html="report.net_after_tax | intlcurrency:report.currency_id"></span></td>  
-              <td><span ng-bind-html="report.net_salary | intlcurrency:report.currency_id"></span></td>
               <td class="hidden-print"><a ng-href="/#/invoice/payslip/{{report.uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{ "PAYCHECK.VIEW" | translate  }}</a></td>                              
             </tr>
           </tbody>

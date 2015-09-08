@@ -190,7 +190,7 @@ angular.module('bhima.controllers')
         document_uuid     : document_uuid
       };
 
-      var package = {
+      var packet = {
         primary : primary,
         primary_details : primary_details
       };
@@ -215,9 +215,9 @@ angular.module('bhima.controllers')
         }
       };
 
-      connect.post('primary_cash', [package.primary], ['uuid'])
+      connect.post('primary_cash', [packet.primary], ['uuid'])
       .then(function () {
-        return connect.post('primary_cash_item', [package.primary_details], ['uuid']);
+        return connect.post('primary_cash_item', [packet.primary_details], ['uuid']);
       })
        .then(function () {
         var param = { uuid : emp.uuid, is_paid : 1 };
@@ -225,7 +225,7 @@ angular.module('bhima.controllers')
         .then(function () { validate.refresh(dependencies); });
       })
      .then(function () {
-        return connect.fetch('/journal/salary_payment/' + package.primary.uuid);
+        return connect.fetch('/journal/salary_payment/' + packet.primary.uuid);
       })
      .then(function () {
         return validate.process(dependencies, ['advance']);
@@ -233,7 +233,7 @@ angular.module('bhima.controllers')
       .then(function (model) {
         if(model.advance.data.length){
           if(model.advance.data[0].value){
-            return connect.fetch('/journal/advance_paiment/' + package.primary_details.inv_po_id);
+            return connect.fetch('/journal/advance_paiment/' + packet.primary_details.inv_po_id);
           } else {
             return;
           } 

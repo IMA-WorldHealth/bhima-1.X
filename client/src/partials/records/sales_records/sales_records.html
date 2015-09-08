@@ -79,7 +79,7 @@
           </tbody>
         </table>
         <h6 class="visible-print">
-          {{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: <b ng-bind-html="total.result.cost | intlcurrency:session.currency"></b>  
+          {{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: <b>{{ total.result.cost | currency:session.currency }}</b>  
         </h6>            
     </div>
   </div>

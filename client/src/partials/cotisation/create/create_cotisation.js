@@ -67,9 +67,6 @@ angular.module('bhima.controllers')
     $scope.save = {};
 
     $scope.save.edit = function () {
-      $scope.session.edit.is_employee = ($scope.session.edit.is_employee)? 1 : 0;
-      $scope.session.edit.is_percent = ($scope.session.edit.is_percent)? 1 : 0;
-
       var record = angular.copy(connect.clean(session.edit));
       delete record.reference;
       delete record.account_number;
@@ -79,7 +76,7 @@ angular.module('bhima.controllers')
 
       if(record.abbr){
         if(record.abbr.length <= 4){
-          connect.basicPost('cotisation', [record], ['id'])
+          connect.put('cotisation', [record], ['id'])
           .then(function () {
             validate.refresh(dependencies)
             .then(function (models) {
@@ -98,29 +95,30 @@ angular.module('bhima.controllers')
     };
 
     $scope.save.new = function () {
-      $scope.session.new.is_employee = ($scope.session.new.is_employee)? 1 : 0;
-      $scope.session.new.is_percent = ($scope.session.new.is_percent)? 1 : 0;
       var record = connect.clean(session.new);
-      record.six_account_id = session.new.six_account_id;
-      
-      if(record.abbr){
-        if(record.abbr.length <= 4){
-          connect.basicPut('cotisation', [record])
-          .then(function (res) {
 
-            validate.refresh(dependencies)
-            .then(function (models) {
-              angular.extend($scope, models);
-            });
-            session.action = '';
-            session.new = {};
-          });
-        } else if (record.abbr.length > 4){
-          messenger.danger($translate.instant('COTISATIONS.NOT_SUP4'));
-        }
-      }  else {
-        messenger.danger($translate.instant('COTISATIONS.NOT_EMPTY'));
+      // fail if no abbreviation
+      if (!record.abbr) {
+        return messenger.danger($translate.instant('COTISATIONS.NOT_EMPTY'));
       }
+
+      // require small abbreviations
+      if (record.abbr.length > 4) {
+        return messenger.danger($translate.instant('COTISATIONS.NOT_SUP4'));
+      }
+      
+      // all checks pass, we are free to post to the server!
+      connect.post('cotisation', [record])
+      .then(function (res) {
+
+        // reload data (TODO - make this a simple addition to the client store)
+        validate.refresh(dependencies)
+        .then(function (models) {
+          angular.extend($scope, models);
+        });
+        session.action = '';
+        session.new = {};
+      });
     };
   }
 ]);

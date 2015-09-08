@@ -34,19 +34,19 @@
       <tbody>
         <tr ng-repeat="account in PrintCtrl.balances | orderBy:'account_number'">
           <td><b>{{ account.account_number }}</b></td>
-          <td style="text-align:right;padding-right:5px;" ng-bind-html="account.balance | intlcurrency:2"></td>
-          <td style="text-align:right;padding-right:5px;" ng-bind-html="account.debit | intlcurrency:2"></td>
-          <td style="text-align:right;padding-right:5px;" ng-bind-html="account.credit | intlcurrency:2"></td>
-          <td style="text-align:right;padding-right:5px;" ng-bind-html="(account.balance + (account.credit - account.debit)) | intlcurrency:2"></td>
+          <td style="text-align:right;padding-right:5px;">{{ account.balance | currency:2 }}</td>
+          <td style="text-align:right;padding-right:5px;">{{ account.debit | currency:2 }}</td>
+          <td style="text-align:right;padding-right:5px;">{{ account.credit | currency:2 }}</td>
+          <td style="text-align:right;padding-right:5px;">{{ (account.balance + (account.credit - account.debit)) | currency:2 }}</td>
         </tr>
       </tbody>
       <tfoot>
         <tr>
           <th>{{ 'UTIL.TOTAL' | translate }}</th>
-          <th style="text-align:right;padding-right:5px;" ng-bind-html="PrintCtrl.totals.before | intlcurrency:2"></th>
-          <th style="text-align:right;padding-right:5px;" ng-bind-html="PrintCtrl.totals.debit | intlcurrency:2"></th>
-          <th style="text-align:right;padding-right:5px;" ng-bind-html="PrintCtrl.totals.credit | intlcurrency:2"></th>
-          <th style="text-align:right;padding-right:5px;" ng-bind-html="PrintCtrl.totals.after | intlcurrency:2"></th>
+          <th style="text-align:right;padding-right:5px;">{{ PrintCtrl.totals.before | currency:2 }}</th>
+          <th style="text-align:right;padding-right:5px;">{{ PrintCtrl.totals.debit | currency:2 }}</th>
+          <th style="text-align:right;padding-right:5px;">{{ PrintCtrl.totals.credit | currency:2 }}</th>
+          <th style="text-align:right;padding-right:5px;">{{ PrintCtrl.totals.after | currency:2 }}</th>
         </tr>
       </tfoot>
     </table>

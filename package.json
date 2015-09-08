@@ -45,6 +45,7 @@
     "gulp-concat": "^2.6.0",
     "gulp-flatten": "^0.2.0",
     "gulp-if": "^1.2.5",
+    "gulp-iife": "0.0.7",
     "gulp-jshint": "^1.11.2",
     "gulp-minify-css": "^1.2.1",
     "gulp-mocha": "^2.1.3",

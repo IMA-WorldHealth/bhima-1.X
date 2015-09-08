@@ -180,7 +180,7 @@ angular.module('bhima.controllers')
         primary = {}, 
         partial_paiement = {},   
         primary_details = {}, 
-        package = {};
+        packet = {};
 
       var net_salary = emp.net_salary.toFixed(2),
         amount_paid = 0;
@@ -227,15 +227,15 @@ angular.module('bhima.controllers')
           document_uuid     : document_uuid
         };
 
-        package = {
+        packet = {
           primary          : primary,
           primary_details  : primary_details,
           partial_paiement : partial_paiement
         };
 
-        connect.post('primary_cash', [package.primary], ['uuid'])
+        connect.post('primary_cash', [packet.primary], ['uuid'])
         .then(function () {
-          return connect.post('primary_cash_item', [package.primary_details], ['uuid']);
+          return connect.post('primary_cash_item', [packet.primary_details], ['uuid']);
         })
         .then(function () {
           var param = { uuid : emp.uuid, is_paid : 0 };
@@ -243,10 +243,10 @@ angular.module('bhima.controllers')
           .then(function () { validate.refresh(dependencies); });
         })
         .then(function () {
-          return connect.post('partial_paiement', [package.partial_paiement], ['uuid']);
+          return connect.post('partial_paiement', [packet.partial_paiement], ['uuid']);
         })
         .then(function () {
-          return connect.fetch('/journal/salary_payment/' + package.primary.uuid);
+          return connect.fetch('/journal/salary_payment/' + packet.primary.uuid);
         })
         .then(function () {
           session.amount = null;
@@ -289,7 +289,7 @@ angular.module('bhima.controllers')
           document_uuid     : document_uuid
         };
 
-        package = {
+        packet = {
           primary          : primary,
           primary_details  : primary_details,
           partial_paiement : partial_paiement
@@ -315,9 +315,9 @@ angular.module('bhima.controllers')
           }
         };
 
-        connect.post('primary_cash', [package.primary], ['uuid'])
+        connect.post('primary_cash', [packet.primary], ['uuid'])
         .then(function () {
-          return connect.post('primary_cash_item', [package.primary_details], ['uuid']);
+          return connect.post('primary_cash_item', [packet.primary_details], ['uuid']);
         })
         .then(function () {
           var param = { uuid : emp.uuid, is_paid : 1 };
@@ -325,10 +325,10 @@ angular.module('bhima.controllers')
           .then(function () { validate.refresh(dependencies); });
         })
         .then(function () {
-          return connect.post('partial_paiement', [package.partial_paiement], ['uuid']);
+          return connect.post('partial_paiement', [packet.partial_paiement], ['uuid']);
         })
         .then(function () {
-          return connect.fetch('/journal/salary_payment/' + package.primary.uuid);
+          return connect.fetch('/journal/salary_payment/' + packet.primary.uuid);
         })
        .then(function () {
           return validate.process(dependencies, ['advance']);
@@ -336,7 +336,7 @@ angular.module('bhima.controllers')
         .then(function (model) {
           if(model.advance.data.length){
             if(model.advance.data[0].value){
-              return connect.fetch('/journal/advance_paiment/' + package.primary_details.inv_po_id);
+              return connect.fetch('/journal/advance_paiment/' + packet.primary_details.inv_po_id);
             } else {
               return;
             } 

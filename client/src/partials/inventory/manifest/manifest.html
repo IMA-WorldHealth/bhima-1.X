@@ -38,7 +38,7 @@
             <tr ng-repeat='item in inventory.data | orderBy : "code"'>
               <td>{{ item.code }}</td>
               <td>{{ item.text }}</td>
-              <td ng-bind-html="item.price | intlcurrency:project.currency_id"></td>
+              <td>{{ item.price | currency:project.currency_id }}</td>
               <td>{{ units.get(item.unit_id).text }}</td>
               <td>{{ item.unit_weight }} kg</td>
               <td>{{ types.get(item.type_id).text }}</td>

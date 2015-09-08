@@ -49,7 +49,7 @@
           <tr>
             <td>{{ model.common.enterprise.abbr }} {{ model.taxPayment.reference }}</td>
             <td>{{ model.taxPayment.description }}</td>
-            <td><span ng-bind-html="model.taxPayment.cost | intlcurrency:model.taxPayment.currency_id"></span></td>
+            <td>{{ model.taxPayment.cost | currency:model.taxPayment.currency_id }}</td>
             <td>{{ model.taxPayment.first}} &nbsp; {{ model.taxPayment.last}}</td>
           </tr>
         </tbody>
