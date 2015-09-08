@@ -41,7 +41,7 @@ function load(userId) {
     var sql, d = q.defer();
 
     sql = 
-      'SELECT permission.id, permission.unit_id, unit.name, unit.parent, unit.has_children, ' +
+      'SELECT permission.id, permission.unit_id, unit.name, unit.parent, ' +
         'unit.url, unit.path, unit.key ' +
       'FROM permission JOIN unit ON ' +
         'permission.unit_id = unit.id ' + 
@@ -53,22 +53,23 @@ function load(userId) {
       // Impliment proper error handling
       if (err) { console.log(err); }
 
-      var haveChildren, promises;
+      var promises;
 
-      haveChildren = result.filter(function (row) {
-        return row.has_children;
-      });
-
-      if (haveChildren.length > 0) {
-        promises = haveChildren.map(function (row) {
-          return getChildren(row.unit_id);
+      promises = result.map(function (row) {
+        var p = q.defer();          
+        getChildren(row.unit_id)
+        .then(function (children) {
+          if(children){
+            row.children = children;  
+          } else {
+            row.children = null;
+          }          
+          p.resolve(row);
         });
-        d.resolve(q.all(promises));
-      } else {
-        d.resolve(result);
-      }
+        return p.promise;
+      });
+      d.resolve(q.all(promises));
     });
-
     return d.promise;
   }
 
@@ -86,7 +87,7 @@ function load(userId) {
     } else {
 
       sql = 
-        'SELECT permission.id, permission.unit_id, unit.name, unit.parent, unit.has_children, ' +
+        'SELECT permission.id, permission.unit_id, unit.name, unit.parent, ' +
           'unit.url, unit.path, unit.key ' +
         'FROM permission JOIN unit ON ' +
           'permission.unit_id = unit.id ' + 
@@ -102,14 +103,13 @@ function load(userId) {
 
         d.resolve(q.all(result.map(function (row) {
           var p = q.defer();
-          if (row.has_children) {
-            getChildren(row.unit_id)
-            .then(function (children) {
-              row.children = children;
-              p.resolve(row);
-            });
-          }
-          else { p.resolve(row); }
+          getChildren(row.unit_id)
+          .then(function (children) {
+            if(children){
+              row.children = children;  
+            }            
+            p.resolve(row);
+          });
           return p.promise;
         })));
       });

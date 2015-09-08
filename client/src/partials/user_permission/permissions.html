@@ -265,16 +265,16 @@
                   <input type="checkbox" ng-model="unit.checked" ng-change="toggleChildren(unit)">
                   {{ unit.key }}
                 </label>
-                <ul class="k-list" ng-if="unit.has_children">
+                <ul class="k-list" ng-if="unit.children">
                   <li ng-repeat="child in unit.children | orderBy:'key'">
                     <label class="checkbox">
                       <input type="checkbox" ng-model="child.checked" ng-change="toggleChildren(child)">
                       {{ child.key }}
                     </label>
-                    <ul class="k-list" ng-if="child.has_children">
+                    <ul class="k-list" ng-if="child.children">
                       <li ng-repeat="final in child.children">
                         <label class="checkbox">
-                          <input type="checkbox" ng-model="final.checked" ng-change="toggleChildren(child)">
+                          <input type="checkbox" ng-model="final.checked" ng-change="toggleChildren(final)">
                           {{final.key | translate}}
                         </label>
                       </li>
