@@ -99,9 +99,11 @@ angular.module('bhima.controllers')
           else {
             totalsFY[fy.id][bud.account_id] = bud.budget;
           }
-          // FIXME totalBudgetFY[fy.id] must be for either expense, or income or all
-          // FIXME but retrieving for all account type at all time
-          totalBudgetFY[fy.id] += bud.budget;
+          // FIXME totalBudgetFY[fy.id] must be for expense, or income or all
+          if (accounts_data_id.indexOf(bud.account_id) !== -1) {
+            totalBudgetFY[fy.id] += bud.budget;
+          }
+          
         });
       });
 
@@ -268,7 +270,6 @@ angular.module('bhima.controllers')
       angular.extend($scope, models);
     }
 
-    // Register this controller
     appstate.register('enterprise', function (enterprise) {
       enterprise_id = Number(enterprise.id);
       $scope.enterprise = enterprise;
