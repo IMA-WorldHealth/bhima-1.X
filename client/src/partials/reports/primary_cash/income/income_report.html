@@ -118,7 +118,7 @@
               <tr ng-repeat='record in session.model.records.data'>
                 <td>{{ record.trans_id }}</td>
                 <td>{{ record.description }}</td>
-                <td><span ng-bind-html="record.debit | intlcurrency:record.currency_id"></td>
+                <td>{{ record.debit | currency:record.currency_id }}</td>
                 <td>{{ record.trans_date | date }}</td>
                 <td>{{ record.service_txt }}</td>
                 <td>{{ record.first }} {{record.last}}</td>
@@ -135,7 +135,7 @@
             </tbody>
           </table>
           <h6 class="visible-print">
-            {{ "PRIMARY_CASH.REPORT.INCOME.TOTAL_INCOME" | translate }} : <b ng-bind-html="session.sum_debit | intlcurrency:session.currency"></b>
+            {{ "PRIMARY_CASH.REPORT.INCOME.TOTAL_INCOME" | translate }} : <b>{{ session.sum_debit | currency:session.currency }}</b>
           </h6>          
         </div>
       </div>
@@ -152,7 +152,7 @@
 
           <td style="width:30%;">
             <span style="margin-right: 10px;">
-              <span class="glyphicon glyphicon-money" style="color: #428bca"></span>  {{ "PRIMARY_CASH.REPORT.INCOME.TOTAL_INCOME" | translate }} : <b ng-bind-html="session.sum_debit | intlcurrency:session.currency"></b>
+              <span class="glyphicon glyphicon-money" style="color: #428bca"></span>  {{ "PRIMARY_CASH.REPORT.INCOME.TOTAL_INCOME" | translate }} : <b>{{ session.sum_debit | currency:session.currency }}</b>
             </span>
           </td>
 

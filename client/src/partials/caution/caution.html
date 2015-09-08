@@ -86,7 +86,7 @@
           <div class="alert alert-danger" ng-if="account_balance > 0">
             <label>
               <h4>
-              <span class="glyphicon" ng-class="{'glyphicon-warning-sign error' : true }"></span> {{ "CAUTION.ATTENTION" | translate }} : <b ng-bind-html="account_balance | intlcurrency:session.currency"></b>
+                <span class="glyphicon" ng-class="{'glyphicon-warning-sign error' : true }"></span> {{ "CAUTION.ATTENTION" | translate }} : <b>{{ account_balance | currency:session.currency }}</b>
               </h4>
             </label>
           </div>
