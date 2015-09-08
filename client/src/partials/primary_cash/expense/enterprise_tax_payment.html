@@ -99,7 +99,7 @@
                   </td>
                   <td>{{ emp.label }} ({{ emp.abbr }})</td>
                   <td>
-                    <span ng-bind-html="emp.value | intlcurrency:emp.currency_id"></span>
+                    {{ emp.value | currency:emp.currency_id }}
                   </td>
                   <td>
                     <span ng-if="emp.posted==0" class="label label-danger">{{ "RUBRIC_PAYROLL.NO" | translate }}</span>

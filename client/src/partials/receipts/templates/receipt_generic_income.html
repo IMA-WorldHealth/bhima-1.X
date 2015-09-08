@@ -49,7 +49,7 @@
             <td>{{ model.genericIncome.reference }}</td>
             <td>{{ trans_id }}</td>
             <td>{{ model.genericIncome.description }}</td>
-            <td><span ng-bind-html="model.genericIncome.cost | intlcurrency:model.genericIncome.currency_id"></span></td>
+            <td>{{ model.genericIncome.cost | currency:model.genericIncome.currency_id }}</td>
             <td>{{model.genericIncome.first + '  ' + model.genericIncome.last}}</td>
           </tr>
         </tbody>

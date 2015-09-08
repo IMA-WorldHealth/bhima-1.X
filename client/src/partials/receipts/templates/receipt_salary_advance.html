@@ -61,7 +61,7 @@
               <span ng-if="model.salary_advance.postnom"> - {{ model.salary_advance.postnom }}</span>
             </td>
             <td>{{ model.salary_advance.description }}</td>
-            <td><span ng-bind-html="model.salary_advance.cost | intlcurrency:model.salary_advance.currency_id"></span></td>
+            <td>{{ model.salary_advance.cost | currency:model.salary_advance.currency_id }}</td>
             <td>{{ model.salary_advance.first}} &nbsp; {{ model.salary_advance.last}}</td>
           </tr>
         </tbody>

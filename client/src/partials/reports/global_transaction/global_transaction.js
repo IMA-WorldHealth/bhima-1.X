@@ -60,6 +60,9 @@ angular.module('bhima.controllers')
 
       $scope.accounts.data.forEach(function (account) {
         account.account_number = String(account.account_number);
+        
+        // Define formatted account string at load time as this will never have to change again
+        account.display = formatAccount(account);
       });
       $scope.model.c = $scope.enterprise.currency_id;
       $scope.model.account_id = 0;

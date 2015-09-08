@@ -48,7 +48,7 @@
           <tr>
             <td>{{ model.common.enterprise.abbr }} {{ model.payroll.reference }}</td>
             <td>{{ model.payroll.description }}</td>
-            <td><span ng-bind-html="model.payroll.cost | intlcurrency:model.payroll.currency_id"></span></td>
+            <td>{{ model.payroll.cost | currency:model.payroll.currency_id }}</td>
             <td>{{ model.payroll.first}} &nbsp; {{ model.payroll.last}}</td>
           </tr>
         </tbody>
