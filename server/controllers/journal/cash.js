@@ -41,7 +41,7 @@ function handleRounding(id) {
 
   return db.exec(sql, [id])
   .then(function (rows) {
-    
+
     // pick the first (and only row);
     row = rows[0];
 
@@ -69,11 +69,9 @@ function handleRounding(id) {
 
 // Supports cash payments at the auxillary cashbox
 exports.payment = function (id, userId, callback) {
+  'use strict';
 
   var sql, state = {};
-
-  state.id = id;
-  state.userId = userId;
 
   sql =
     'SELECT cash.uuid, cash_item.uuid AS cash_item_uuid, cash.project_id, project.enterprise_id, cash.date, cash.debit_account, cash.credit_account, '  +
@@ -90,7 +88,7 @@ exports.payment = function (id, userId, callback) {
 
     // first check - make sure the cash payment actually exists in the cash table
     if (results.length === 0) {
-      throw new Error('No cash value by the id :' + state.id);
+      throw new Error('No cash value by the id :' + id);
     }
 
     state.items = results;
@@ -103,19 +101,19 @@ exports.payment = function (id, userId, callback) {
     var document_id_exist = validate.exists(state.reference.document_id);
 
     if (!document_id_exist) {
-      throw new Error('The document number is not defined for cash id: ' + state.id);
+      throw new Error('The document number is not defined for cash id: ' + id);
     }
 
     // third check - is the type defined?
     var type_exist = validate.exists(state.reference.type);
     if (!type_exist) {
-      throw new Error('The document type is not defined for cash id: ' + state.id);
+      throw new Error('The document type is not defined for cash id: ' + id);
     }
 
     // forth check - is the cost positive?
     var cost_positive = validate.isPositive(state.reference.cost);
     if (!cost_positive) {
-      throw new Error('Invalid value for cost for cash id: ' + state.id);
+      throw new Error('Invalid value for cost for cash id: ' + id);
     }
 
     // fifth check - is the allocated cost positive for every cash item?
@@ -146,9 +144,9 @@ exports.payment = function (id, userId, callback) {
     state.store = store;
     return core.queries.transactionId(state.reference.project_id);
   })
-  .then(function (id) {
-    state.transId = id;
-    return handleRounding(state.id);
+  .then(function (transId) {
+    state.transId = '"' + transId + '"';
+    return handleRounding(id);
   })
   .then(function (rounding) {
     state.remainder = rounding.remainder;
@@ -176,7 +174,7 @@ exports.payment = function (id, userId, callback) {
       'SELECT cash.project_id, ' + [sanitize.escape(state.cashUUID), state.period.fiscal_year_id, state.period.id , state.transId, '\'' + getDate() + '\''].join(', ') + ', ' +
         'cash.description, cash.document_id, cash.' + account_type + ', ' + money + sanitize.escape(state.id) +
         ', cash.currency_id, null, null, ' +
-        [state.originId, state.userId].join(', ') + ' ' +
+        [state.originId, userId].join(', ') + ' ' +
       'FROM cash JOIN cash_item ON ' +
         ' cash.uuid = cash_item.cash_uuid ' +
       'WHERE cash.uuid=' + sanitize.escape(id) + ' ' +
@@ -207,7 +205,7 @@ exports.payment = function (id, userId, callback) {
       'SELECT cash.project_id, ' + [sanitize.escape(id), state.period.fiscal_year_id, state.period.id, state.transId, '\'' + getDate() + '\''].join(', ') + ', ' +
         'cash.description, cash.document_id, cash.' + state.cash_item_account_id  + ', ' + cash_item_money +
         'cash.currency_id, cash.deb_cred_uuid, ' + state.deb_cred_type + ', ' +
-        'cash_item.invoice_uuid, ' + [state.originId, state.userId].join(', ') + ' ' +
+        'cash_item.invoice_uuid, ' + [state.originId, userId].join(', ') + ' ' +
       'FROM cash JOIN cash_item ON ' +
         'cash.uuid=cash_item.cash_uuid '+
       'WHERE cash_item.uuid=' + sanitize.escape(item.cash_item_uuid) + ';';
@@ -242,7 +240,7 @@ exports.payment = function (id, userId, callback) {
       'SELECT cash.project_id, ' + [sanitize.escape(state.roundingUUID), state.period.fiscal_year_id, state.period.id, state.transId, '\'' + getDate() + '\''].join(', ') + ', ' +
         description + ', cash.document_id, cash_box_account_currency.'+ ((state.remainder > 0) ? 'loss_exchange_account_id' : 'gain_exchange_account_id' ) + ', ' + creditOrDebit + ', ' +
         'cash.currency_id, null, null, cash_item.invoice_uuid, ' +
-        [state.originId, state.userId].join(', ') + ' ' +
+        [state.originId, userId].join(', ') + ' ' +
       'FROM cash JOIN cash_item JOIN cash_box_account_currency ON cash.uuid = cash_item.cash_uuid AND cash_box_account_currency.id=cash.cashbox_id ' +
       'WHERE cash.uuid = ' + sanitize.escape(state.id) + ' LIMIT 1;';
     }
@@ -269,7 +267,7 @@ exports.payment = function (id, userId, callback) {
       'SELECT cash.project_id, ' + [sanitize.escape(state.roundingUUID2), state.period.fiscal_year_id, state.period.id, state.transId, '\'' + getDate() + '\''].join(', ') + ', ' +
         description +', cash.document_id, cash.' + state.cash_item_account_id  + ', ' + balance + ', ' +
         'cash.currency_id, cash.deb_cred_uuid, cash.deb_cred_type, cash_item.invoice_uuid, ' +
-        [state.originId, state.userId].join(', ') + ' ' +
+        [state.originId, userId].join(', ') + ' ' +
       'FROM cash JOIN cash_item ON cash.uuid = cash_item.cash_uuid ' +
       'WHERE cash.uuid=' + sanitize.escape(state.id) + ' LIMIT 1;';
     }
@@ -310,10 +308,7 @@ exports.payment = function (id, userId, callback) {
 exports.refund = function (id, userId, callback) {
   var sql, reference,
       cfg = { rows : [] },
-      queries = {},
-      state = {};
-
-  state.id = id;
+      queries = {};
 
   sql =
     'SELECT cash_discard.project_id, cash_discard.reference, cash_discard.uuid, cash_discard.cost, ' +
@@ -333,15 +328,17 @@ exports.refund = function (id, userId, callback) {
     }
 
     reference = results[0];
-    return q([core.queries.origin('cash_discard'), core.queries.period(reference.date)]);
-
+    return [
+      core.queries.origin('cash_discard'),
+      core.queries.period(reference.date)
+    ];
   })
   .spread(function (originId, periodObject) {
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
 
-    var sql =
+    sql =
       'SELECT trans_id FROM (' +
         'SELECT trans_id, inv_po_id FROM posting_journal ' +
         'UNION ' +
@@ -362,7 +359,9 @@ exports.refund = function (id, userId, callback) {
           'credit_equiv, inv_po_id, currency_id, deb_cred_uuid, deb_cred_type, origin_id, user_id FROM general_ledger ' +
       ') AS pg WHERE pg.trans_id = ?;';
 
-    return db.exec(sql, [t.pop().trans_id]);
+    var transId = t[0].trans_id;
+
+    return db.exec(sql, [transId]);
   })
   .then(function (rows) {
 
@@ -393,7 +392,7 @@ exports.refund = function (id, userId, callback) {
           ((item.deb_cred_type) ? sanitize.escape(item.deb_cred_type) : 'null') + ', ' + sanitize.escape(item.inv_po_id) + ', ' +
           [cfg.originId, userId].join(', ') + ' ' +
         'FROM cash_discard JOIN cash ON cash.uuid=cash_discard.cash_uuid '+
-        'WHERE cash_discard.uuid = ' + sanitize.escape(state.id) + ';';
+        'WHERE cash_discard.uuid = ' + sanitize.escape(id) + ';';
       sqls.push(sql);
     });
 
