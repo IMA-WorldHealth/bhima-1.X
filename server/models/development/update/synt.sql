@@ -130,6 +130,8 @@ UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'reversing_stock' WHERE
 
 DELETE FROM `unit` WHERE id = 33;
 
+
+
 -- Update currency, decoupling format and definition to utilise locale format 
 -- 
 -- Date : 2015-09-01
@@ -140,3 +142,18 @@ ALTER TABLE `currency` ADD `format_key` VARCHAR(20) AFTER `name`;
 UPDATE `currency` SET `format_key` = 'fc' WHERE id = 1;
 UPDATE `currency` SET `format_key` = 'usd' WHERE `id` = 2;
 ALTER TABLE `currency` MODIFY `format_key` VARCHAR(20) NOT NULL;
+
+
+-- Updates to unit table
+---
+-- DROPs unused has_children field
+--
+-- Date: 2015-01-11
+-- By: Jonathan Niles
+-- Restaure by : Chris Lomame
+-- Restaure date : 2015-09-04
+
+USE bhima;
+
+ALTER TABLE `unit`
+DROP `has_children`;
