@@ -1,24 +1,48 @@
 angular.module('bhima.services')
-.service('StockDashboardService', ['validate', '$q', 'connect', StockDashboardService]);
+.service('StockDashboardService', [
+  'validate', '$http', '$q', 'connect', StockDashboardService
+]);
 
-function StockDashboardService(validate, $q, connect) {
+function StockDashboardService(validate, $http, $q, connect) {
+  var service = this;
   var dependencies = {};
 
-  function getMonthCount (uuid) {
-    var def = $q.defer();
-    dependencies.nombreMois = {};
-    dependencies.nombreMois.query = '/getNombreMoisStockControl/' + uuid;
+  service.getMonthCount         = getMonthCount;
+  service.getMonthlyConsumption = getMonthlyConsumption;
+  service.getDelaiLivraison     = getDelaiLivraison;
+  service.getIntervalleCommande = getIntervalleCommande;
+  service.getStockSecurity      = getStockSecurity;
+  service.getExpirationRisk     = getExpirationRisk;
+  service.getStockMin           = getStockMin;
+  service.getStockMax           = getStockMax;
+  service.getStockMonth         = getStockMonth;
+  service.getStock              = getStock;
+  service.getStockToCommand     = getStockToCommand;
 
-    validate.process(dependencies, ['nombreMois'])
-    .then(function (result) {
-        var nb = (result.nombreMois.data.nb > 6) ? 6 : result.nombreMois.data.nb;
-        def.resolve(nb);
+  service.getConsumption        = getConsumption;
+  service.getRecentDonations    = getRecentDonations;
+
+  /* ------------------------------------------------------------------------ */
+
+  function getConsumption(limit) {
+    return $http.get('/consumption?limit=' + limit);
+  }
+
+  // returns consumption
+  function getMonthCount(uuid) {
+    var def = $q.defer();
+    var url = '/getNombreMoisStockControl/' + uuid;
+
+    $http.get(url)
+    .then(function (response) {
+      var nb = (response.data.nb > 6) ? 6 : response.data.nb;
+      def.resolve(nb);
     });
 
     return def.promise;
   }
 
-  function getMonthlyConsumption (uuid) {
+  function getMonthlyConsumption(uuid) {
     var def = $q.defer();
     dependencies.consumptions = {};
     getMonthCount(uuid)
@@ -46,6 +70,10 @@ function StockDashboardService(validate, $q, connect) {
       def.resolve(dl);
     });
     return def.promise;
+  }
+
+  function getRecentDonations(limit) {
+    return $http.get('/donations?limit='+limit);
   }
 
   function getIntervalleCommande(uuid) {
@@ -259,18 +287,4 @@ function StockDashboardService(validate, $q, connect) {
       });
       return def.promise;
   }
-
-  return {
-    getMonthCount : getMonthCount,
-    getMonthlyConsumption : getMonthlyConsumption,
-    getDelaiLivraison : getDelaiLivraison,
-    getIntervalleCommande : getIntervalleCommande,
-    getStockSecurity : getStockSecurity,
-    getExpirationRisk : getExpirationRisk,
-    getStockMin : getStockMin,
-    getStockMax : getStockMax,
-    getStockMonth : getStockMonth,
-    getStock : getStock,
-    getStockToCommand : getStockToCommand
-  };
 }

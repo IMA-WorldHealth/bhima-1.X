@@ -60,6 +60,7 @@ function exec(sql, params) {
       connection.release();
       defer.resolve(results);
     });
+
   });
 
   return defer.promise;
