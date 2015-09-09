@@ -9,7 +9,8 @@ angular.module('bhima.controllers')
   'messenger',
   'appstate',
   'util',
-  function($q, $scope, $window, $translate, validate, precision, messenger, appstate, util) {
+  'exportFile',
+  function($q, $scope, $window, $translate, validate, precision, messenger, appstate, util, exportFile) {
     var dependencies = {},
         enterprise_id = null,
         session = $scope.session = {},
@@ -331,50 +332,36 @@ angular.module('bhima.controllers')
     }
 
     function exportToCSV() {
-      // Construct the raw CSV string with the account budget/balance data
-      var lf = '%0A';
-      var sp = '%20';
+      var fileData = { 
+        column: ['AccountId', 'AccountNum', 'AccountName', 'Budget', 'Balance', 'Gap Surplus', 'Gap Deficit'], 
+        data: []
+      };
 
       // Get previous fy labels
-      var previousLabels = '';
-      session.selectedPreviousFY.forEach(function (fy, index) {
-        previousLabels += (index === session.selectedPreviousFY.length - 1) ? '"'+ fy.fiscal_year_txt +'"' : '"'+ fy.fiscal_year_txt +'", ';
+      var previousLabels = [];
+      session.selectedPreviousFY.forEach(function (fy) {
+        previousLabels.push(fy.fiscal_year_txt);
       });
+      previousLabels.push('Type');
+      fileData.column = fileData.column.concat(previousLabels);
 
-      var csvStr = '"AccountId", "AccountNum", "AccountName", "Budget", "Balance", "Gap Surplus", "Gap Deficit", ' + previousLabels + ', "Type"' + lf;
       $scope.accounts.data.forEach(function (a) {
-      var budget = a.budget;
-      if (budget === null) {
-        budget = '';
-        }
-      var balance = a.balance;
-      if (balance === null) {
-        balance = '';
-      }
+        var budget = a.budget === null ? '' : a.budget;
+        var balance = a.balance === null ? '' : a.balance;
 
-      // Get previous fy budget data
-      var previousBudget = '';
-      session.selectedPreviousFY.forEach(function (fy, index) {
-        previousBudget += (index === session.selectedPreviousFY.length - 1) ? a.previousBudget[fy.id] : a.previousBudget[fy.id] + ', ';
+        // Get previous fy budget data
+        var previousBudget = [];
+        session.selectedPreviousFY.forEach(function (fy) {
+          var prevBudget = a.previousBudget[fy.id] === null ? '' : a.previousBudget[fy.id];
+          previousBudget.push(prevBudget);
+        });
+
+        var row = [a.id, a.account_number, a.account_txt, budget, balance, a.surplus, a.deficit].concat(previousBudget, a.type);
+        fileData.data.push(row);
       });
 
-
-      var title = a.account_txt.replace(/"/g, '\'').replace(/ /g, sp);
-      csvStr += a.id + ', ' + a.account_number + ', "' + title + '", ' + budget + ', ' + balance + ', ' + a.surplus + ', ' + a.deficit + ', ' + previousBudget + ', "' + a.type + '"' + lf;
-      });
-
-      var today = new Date();
-      var date = today.toISOString().slice(0, 19).replace('T', '-').replace(':', '-').replace(':', '-');
-      var path = 'budget-' + date + '.csv';
-
-      // Construct a HTML 'download' element to download the CSV data (at the end of the body)
-      var e         = document.createElement('a');
-      e.href        = 'data:attachment/csv,' + csvStr;
-      e.className   = 'no-print';
-      e.target      = '_blank';
-      e.download    = path;
-      document.body.appendChild(e);
-      e.click();
+      // Exportation
+      exportFile.csv(fileData, 'Budget Analysis Report');
     }
 
     function reconfigure() {
