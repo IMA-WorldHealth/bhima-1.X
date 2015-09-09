@@ -37,9 +37,10 @@ var accounts        = require('../controllers/accounts');
 var auth            = require('../controllers/auth'),
     projects        = require('../controllers/projects'),
     users           = require('../controllers/users'),
-    analytics       = require('../controllers/analytics');
-
-var patient = require('../controllers/patient');
+    analytics       = require('../controllers/analytics'),
+    stock           = require('../controllers/stock'),
+    purchase        = require('../controllers/purchase'),
+    patient         = require('../controllers/patient');
 
 exports.initialise = function (app) {
   console.log('[config/routes] Configure routes');
@@ -144,20 +145,25 @@ exports.initialise = function (app) {
   app.get('/errorcodes', uncategorised.listErrorCodes);
   app.get('/getAccount6', uncategorised.listIncomeAccounts);
   app.get('/available_payment_period/', uncategorised.availablePaymentPeriod);
-  app.get('/getConsumptionDrugs/', uncategorised.listConsumptionDrugs);
-  app.get('/getItemInConsumption/', uncategorised.listItemByConsumption);
-  app.get('/getTop10Consumption/', uncategorised.listTopConsumption);
-  app.get('/getPurchaseOrders/', uncategorised.listPurchaseOrders);
-  app.get('/getTop10Donor/', uncategorised.listTopDonors);
-  app.get('/getConsumptionTrackingNumber/', uncategorised.listConsumptionByTrackingNumber);
   app.get('/getExpiredTimes/', uncategorised.listExpiredTimes);
   app.get('/getStockEntry/', uncategorised.listStockEntry);
   app.get('/getStockConsumption/', uncategorised.listStockConsumption);
   app.get('/getNombreMoisStockControl/:inventory_uuid', uncategorised.frenchEnglishRoute);
   app.get('/monthlyConsumptions/:inventory_uuid/:nb', uncategorised.listMonthlyConsumption);
+  app.get('/getConsumptionTrackingNumber/', uncategorised.listConsumptionByTrackingNumber);
   app.get('/getDelaiLivraison/:id', uncategorised.frenchRoute);
   app.get('/getCommandes/:id', uncategorised.listCommandes);
   app.get('/getMonthsBeforeExpiration/:id', uncategorised.formatLotsForExpiration);
+
+  // stock API
+  // TODO - make a consumption controller
+  app.get('/consumption', stock.getConsumption);
+  app.get('/donations', stock.getRecentDonations);
+  app.get('/getItemInConsumption/', stock.listItemByConsumption);
+  app.get('/getConsumptionDrugs/', stock.listConsumptionDrugs);
+
+  // TODO - make a purchase order controller
+  app.get('/purchaseorders', purchase.getPurchaseOrders);
 
   // Added since route structure development
   app.post('/payTax/', uncategorised.submitTaxPayment);
@@ -225,7 +231,7 @@ exports.initialise = function (app) {
   app.get('/analytics/cashboxes', analytics.cashflow.getCashBoxes);
   app.get('/analytics/cashboxes/:id/balance', analytics.cashflow.getCashBoxBalance);
   app.get('/analytics/cashboxes/:id/history', analytics.cashflow.getCashBoxHistory);
-  
+
   // debtor analytics
   app.get('/analytics/debtorgroups/top', analytics.cashflow.getTopDebtorGroups);
   app.get('/analytics/debtors/top', analytics.cashflow.getTopDebtors);

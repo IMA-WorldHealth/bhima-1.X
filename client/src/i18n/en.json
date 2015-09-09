@@ -2619,8 +2619,8 @@
    },
 "STOCK_DASHBOARD": {
    "DONATIONS": {
-      "TITLE" : "The last 10 Donations"
-      },
+      "TITLE" : "Recent Donations"
+    },
    "EXPIRING_INVENTORY": {
       "EXPIRED"      : "Expired",
       "TITLE"        : "Expiring Inventory",
@@ -2629,19 +2629,19 @@
       "WITHIN_30"    : "Expiring within 30 days",
       "WITHIN_365"   : "Expiring between 180 and 365 days",
       "WITHIN_90"    : "Expiring between 30 and 90 days"
-      },
-   "MOST_CONSUMED"      : "Most consumed (top 10)",
+    },
+   "MOST_CONSUMED" : "Most Consumed Inventory Items",
    "MOVEMENT": {
       "ENTER" : "Enter",
       "EXIT"  : "Exit",
       "TITLE" : "Movement"
       },
    "PURCHASE_ORDER": {
-      "IN_WATING"        : "in wating payment",
-      "PAYED"            : "payed",
-      "RECEIVED"         : "received",
-      "TITLE"            : "Purchase Order",
-      "WATING_RECEPTION" : "in wating reception"
+      "TITLE"            : "Purchase Orders",
+      "IN_WATING"        : "Pending Payment",
+      "PAYED"            : "Paid",
+      "WATING_RECEPTION" : "Shipped",
+      "RECEIVED"         : "Delivered"
       },
    "REPORTS": {
       "EXPIRING_STOCK"  : "Expiring Stock",

@@ -2619,7 +2619,7 @@
    },
 "STOCK_DASHBOARD": {
    "DONATIONS": {
-      "TITLE" : "le 10 derniers dons"
+      "TITLE" : "Dons Récents"
       },
    "EXPIRING_INVENTORY": {
       "EXPIRED"      : "Expirés",
@@ -2630,7 +2630,7 @@
       "WITHIN_365"   : "Expiration entre 180 et 365 jours",
       "WITHIN_90"    : "Expiration entre 30 et 90 jours"
       },
-   "MOST_CONSUMED"      : "Produits les plus consommes (10 premiers)",
+   "MOST_CONSUMED"      : "Produits les Plus Consommes",
    "MOVEMENT": {
       "ENTER" : "Entrée",
       "EXIT"  : "Sortie",
