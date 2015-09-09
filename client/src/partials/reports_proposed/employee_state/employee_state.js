@@ -3,21 +3,14 @@ angular.module('bhima.controllers')
   '$scope',
   '$http',
   '$routeParams',
-  '$sce',
+  'reportConfigService',
+  'messenger',
 
   // Prototype document building module, requests document given configuration obejct
-  function ($scope, $http, $routeParams, $sce) {
+  function ($scope, $http, $routeParams, reportConfigService, messenger) {
 
     // Configuration objects optionally passed to /report/build - drives configuration UI
-    var configuration = {
-      language : {
-        options : [
-          {value : 'en', label : 'English'},
-          {value : 'fr', label : 'French'}
-        ]
-      }
-    };
-
+    var configuration = reportConfigService.configuration;
     var serverUtilityPath = '/report/build/employee_state';
     var generatedDocumentPath = null;
     var session = $scope.session = {};
@@ -44,6 +37,8 @@ angular.module('bhima.controllers')
 
       // Temporarily set configuration options - This shouldn't be manually compiled
       configurationObject.language = configuration.language.selected.value;
+      configurationObject.enterprise = configuration.enterprise;
+      configurationObject.project = configuration.project;
 
       // Update state
       session.building = true;
@@ -57,21 +52,7 @@ angular.module('bhima.controllers')
       })
       .error(function (code) {
         session.building = false;
-
-        // TODO Handle error
-      });
-    }
-
-    // Utility method - GET PDF blob displaying embedded object
-    function downloadDocument(url) {
-
-      $http.get(url, {responseType : 'arraybuffer'})
-      .success(function (pdfResult) {
-        var file = new Blob([pdfResult], {type: 'application/pdf'});
-        var fileURL = URL.createObjectURL(file);
-
-        // Expose document to scope
-        $scope.pdfContent = $sce.trustAsResourceUrl(fileURL);
+         messenger.danger('error' + code);
       });
     }
 
