@@ -21,7 +21,7 @@
                       <span class="glyphicon glyphicon-folder-open"></span>
                     </span>  
                     <select class="form-bhima" required ng-click="selecTaxes()" ng-model="session.period_id">
-                      <option ng-repeat="getPeriod in getPeriods.data" ng-value="getPeriod.id">{{getPeriod.label}} :: {{getPeriod.dateFrom | date }} - {{getPeriod.dateTo | date }}</option>
+                      <option ng-value="getPeriod.id" value="getPeriod.id" ng-repeat="getPeriod in getPeriods.data">{{getPeriod.label}} :: {{getPeriod.dateFrom | date }} - {{getPeriod.dateTo | date }}</option>
                     </select>
                   </div>
                 </div>
@@ -37,7 +37,7 @@
                       <span class="glyphicon glyphicon-briefcase"></span>
                     </span>  
                     <select class="form-bhima" required ng-model="session.tax_id">
-                      <option ng-repeat="tax in taxes_period" ng-value="tax.id"> [ {{tax.abbr}} ] {{ tax.label }}</option>
+                      <option ng-value="tax.id" value="tax.id"  ng-repeat="tax in taxes_period" ng-value="tax.id"> [ {{tax.abbr}} ] {{ tax.label }}</option>
                     </select>
                   </div>
                 </div>

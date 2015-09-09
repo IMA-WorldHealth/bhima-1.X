@@ -2346,6 +2346,7 @@
    "BALANCE_SECTION"       : "Select Balance Sheet Section",
    "CASH"                  : "Select a Cash",
    "COST_CENTER"           : "Select the cost center",
+   "COTISATION"            : "Select a Cotisation",   
    "COUNTRY"               : "Select a Country",
    "CREDITOR"              : "Select a creditor",
    "CREDITOR_GROUP"        : "Select a Creditor Group",
