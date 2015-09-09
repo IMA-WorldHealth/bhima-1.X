@@ -27,5 +27,17 @@
 		"PROFIT"                : "Profit",
 		"DATE"                  : "Date : ",
 		"TOTAL"                 : "TOTAL"
+	},
+
+	"EMPLOYEE_STATE" : {
+  		"TITLE" : "Employee State",
+		"ENTERPRISE" : "Enterprise",
+		"DEBIT" : "Debit",
+		"CREDIT" : "Credit",
+		"DATE" : "Date",
+		"CODE" : "Code",
+		"PRENOM" : "First Name",
+		"NOM" : "Name",
+		"POSTNOM" : "Last Name"
 	}
 }
