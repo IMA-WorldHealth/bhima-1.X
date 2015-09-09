@@ -563,7 +563,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/reports/loss_record/loss_record.html'
   })
   .when('/stock_dashboard/', {
-    controller : 'stock_dashboard',
+    controller : 'StockDashboardController as StockDashCtrl',
     templateUrl : 'partials/stock_dashboard/stock_dashboard.html'
   })
   .when('/inventory/distribution/:depotId?', {

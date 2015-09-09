@@ -154,8 +154,6 @@ exports.listAvailableProfitCenters = function (req, res, next) {
 };
 
 exports.currentProject = function (req, res, next) {
-  //req.session.project_id = req.session.project_id || 1;
-  console.log('request with', req.session);
   var sql =
     'SELECT `project`.`id`, `project`.`name`, `project`.`abbr`, `project`.`enterprise_id`, `enterprise`.`currency_id`, `enterprise`.`location_id`, `enterprise`.`name` as \'enterprise_name\', `enterprise`.`phone`, `enterprise`.`email`, `village`.`name` as \'village\', `sector`.`name` as \'sector\' ' +
     'FROM `project` JOIN `enterprise` ON `project`.`enterprise_id`=`enterprise`.`id` JOIN `village` ON `enterprise`.`location_id`=`village`.`uuid` JOIN `sector` ON `village`.`sector_uuid`=`sector`.`uuid` ' +
@@ -368,7 +366,6 @@ exports.processProfitCenter = function (req, res, next) {
       if (err) { return next(err); }
       res.send(process(data));
     });
-  })
   .catch(next)
   .done();
 
@@ -897,7 +894,6 @@ exports.listConsumptionDrugs = function (req, res, next) {
 
   db.exec(sql)
   .then(function (result) {
-    console.log(result);
     res.send(result);
   })
   .catch(function (err) { next(err); })
@@ -1069,19 +1065,19 @@ exports.listStockConsumption = function (req, res, next) {
 };
 
 exports.frenchEnglishRoute = function (req, res, next) {
-  var sql = "SELECT COUNT(DISTINCT(MONTH(c.date))) AS nb"
-          + " FROM consumption c"
-          + " JOIN stock s ON c.tracking_number=s.tracking_number "
-          + " JOIN inventory i ON i.uuid=s.inventory_uuid "
-          + " WHERE (c.date BETWEEN DATE_SUB(CURDATE(),INTERVAL 6 MONTH) AND CURDATE()) "
-          + " AND s.inventory_uuid=" + sanitize.escape(req.params.inventory_uuid);
+  var sql =
+    'SELECT COUNT(DISTINCT(MONTH(c.date))) AS nb ' +
+    'FROM consumption AS c '
+    'JOIN stock AS s ON c.tracking_number = s.tracking_number '
+    'JOIN inventory AS i ON i.uuid = s.inventory_uuid '
+    'WHERE (c.date BETWEEN DATE_SUB(CURDATE(),INTERVAL 6 MONTH) AND CURDATE()) '
+      'AND s.inventory_uuid = ?;';
 
-  db.exec(sql)
-  .then(function (result) {
-    console.log(result);
-    res.send(result[0]);
+  db.exec(sql, [req.params.inventory_uuid])
+  .then(function (rows) {
+    res.send(rows[0]);
   })
-  .catch(function (err) { next(err); })
+  .catch(next)
   .done();
 };
 
@@ -1386,9 +1382,7 @@ exports.listPaymentByEnterprise = function (req, res, next) {
 };
 
 exports.lookupPeriod = function (req, res, next) {
-  console.log(req.query.fiscal_year_id);
   var sql = "SELECT * FROM period WHERE fiscal_year_id = " + sanitize.escape(req.query.fiscal_year_id);
-  console.log(sql);
   db.exec(sql)
   .then(function (result) {
     res.send(result);
@@ -1515,6 +1509,4 @@ exports.getStockIntegration = function (req, res, next) {
   })
   .catch(function (err) { next(err); })
   .done();
-
 };
-
