@@ -3,13 +3,13 @@ angular.module('bhima.controllers')
   '$scope',
   '$q',
   'connect',
-  'appstate',
   'validate',
   'messenger',
   'util',
   'appcache',
   'exchange',
-  function ($scope, $q, connect, appstate, validate, messenger, util, Appcache,exchange) {
+  'SessionService',
+  function ($scope, $q, connect, validate, messenger, util, Appcache, exchange, SessionService) {
     var session = $scope.session = {};
     var dependencies = {};
     var cache = new Appcache('income_report'),
@@ -54,15 +54,12 @@ angular.module('bhima.controllers')
     function load (selectedCash) {
       if (selectedCash) { session.selectedCash = selectedCash; }
       
-      appstate.register('project', function(project) {
-        session.project = project;
-
-        dependencies.cashes.query.where = ['cash_box.project_id=' + project.id, 'AND', 'cash_box.is_auxillary=0'];
-        validate.process(dependencies, ['cashes'])
-        .then(init)
-        .catch(function (err) {
-          messenger.danger(err.toString());
-        });
+      session.project = SessionService.project;
+      dependencies.cashes.query.where = ['cash_box.project_id=' + session.project.id, 'AND', 'cash_box.is_auxillary=0'];
+      validate.process(dependencies, ['cashes'])
+      .then(init)
+      .catch(function (err) {
+        messenger.danger(err.toString());
       });
     }
 
@@ -108,7 +105,7 @@ angular.module('bhima.controllers')
       session.model = model;
       //Currencies
       $scope.currencies = session.model.currencies;
-      session.currency = session.project.currency_id;
+      session.currency = SessionService.enterprise.currency_id;
     }
 
     $scope.setSelectedCash = setSelectedCash;
