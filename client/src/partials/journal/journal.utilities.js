@@ -130,7 +130,7 @@ angular.module('bhima.controllers')
 
     // runs the trial balance
     $scope.trialBalance = function () {
-      
+
       var l = dataview.getLength(),
           transactions = [];
 
@@ -144,7 +144,7 @@ angular.module('bhima.controllers')
           transactions.push(item.value);
         }
       }
-    
+
       // The modal should make the relevant $http requests so that the client is
       // not confused as to what is happening.  A loading dialog can be displayed
       // on the modal to ensure that everything is fine.
@@ -333,10 +333,39 @@ angular.module('bhima.controllers')
       manager.fn.regroup();
     };
 
+    // accepts a date object
+    function formatDate(d) {
+      var month = '' + (d.getMonth() + 1),
+          day = '' + d.getDate(),
+          year = d.getFullYear();
+
+      if (month.length < 2) { month = '0' + month; }
+      if (day.length < 2) { day = '0' + day; }
+
+      return [year, month, day].join('-');
+    }
+
+
     function filter(item, args) {
-      if (!$scope.filter.by.field || String(item[$scope.filter.by.field]).match(args.param)) {
+      var value;
+
+      // if there is no filter, let everything through
+      if (!$scope.filter.by.field) {  return true; }
+
+      value = item[$scope.filter.by.field];
+
+      // if we are searching for trans_date, it will be in
+      // ISO format.  Just split it and compare!
+      if ($scope.filter.by.field === 'trans_date') {
+        var p = formatDate(value).substr(0, args.param.length);
+        return p === args.param;
+      }
+
+      // if matches regex, let it through
+      if (String(value).toLowerCase().match(args.param)) {
         return true;
       }
+
       return false;
     }
 
