@@ -27,14 +27,6 @@ function bhimaconfig($routeProvider) {
     controller: 'budget',
     templateUrl: 'partials/budget/budget.html'
   })
-  .when('/budgeting/analysis', {
-    controller: 'budget.analysis',
-    templateUrl: 'partials/budget/analysis/analysis_budget.html'
-  })
-  .when('/budgeting/create', {
-    controller: 'budget.create',
-    templateUrl: 'partials/budget/create/create_budget.html'
-  })
   .when('/project', {
     controller : 'project',
     templateUrl: 'partials/project/project.html'

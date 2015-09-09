@@ -7,10 +7,10 @@ angular.module('bhima.controllers')
   'validate',
   'precision',
   'messenger',
-  'appstate',
+  'SessionService',
   'util',
   'exportFile',
-  function($q, $scope, $window, $translate, validate, precision, messenger, appstate, util, exportFile) {
+  function($q, $scope, $window, $translate, validate, precision, messenger, SessionService, util, exportFile) {
     var dependencies = {},
         enterprise_id = null,
         session = $scope.session = {},
@@ -64,6 +64,16 @@ angular.module('bhima.controllers')
       }
     };
 
+    init();
+
+    function init() {
+      enterprise_id = Number(SessionService.enterprise.id);
+      $scope.enterprise = SessionService.enterprise;
+      dependencies.fiscal_years.query.where = [ 'fiscal_year.enterprise_id=' + enterprise_id ];
+      validate.process(dependencies, ['fiscal_years'])
+      .then(loadFiscalYears);
+    }
+
     function addBudgetData() {
       // Insert the budget numbers into the account data
       // TODO: The following procedural hacks can be simplified by better SQL queries...
@@ -100,11 +110,9 @@ angular.module('bhima.controllers')
           else {
             totalsFY[fy.id][bud.account_id] = bud.budget;
           }
-          // FIXME totalBudgetFY[fy.id] must be for expense, or income or all
           if (accounts_data_id.indexOf(bud.account_id) !== -1) {
             totalBudgetFY[fy.id] += bud.budget;
           }
-          
         });
       });
 
@@ -184,7 +192,6 @@ angular.module('bhima.controllers')
         totalSurplus += account.surplus;
         totalDeficit += account.deficit;  
 
-        //TODO if parent.depth exists, increment and kill the loop (base case is ROOT_NODE)
         parent = accountModel.get(account.parent);
         depth = 0;
         while (parent) {
@@ -205,8 +212,8 @@ angular.module('bhima.controllers')
         }
       });
 
-      filterAccounts($scope.accounts.data)
-      .then(addBudgetData);
+      filterAccounts($scope.accounts.data);
+      addBudgetData();
       parseAccountDepth($scope.accounts.data, $scope.accounts);
       session.mode = 'budget-analysis';
     }
@@ -270,14 +277,6 @@ angular.module('bhima.controllers')
     function loadFiscalYears(models) {
       angular.extend($scope, models);
     }
-
-    appstate.register('enterprise', function (enterprise) {
-      enterprise_id = Number(enterprise.id);
-      $scope.enterprise = enterprise;
-      dependencies.fiscal_years.query.where = [ 'fiscal_year.enterprise_id=' + enterprise_id ];
-      validate.process(dependencies, ['fiscal_years'])
-        .then(loadFiscalYears);
-    });
 
     function loadPeriod(fiscal_year_id) {
       dependencies.period = {
@@ -395,9 +394,7 @@ angular.module('bhima.controllers')
         $scope.accounts.data = model.filter(function (acct) {
           return acct.classe === 7 || acct.classe === '7';
         });
-      } 
-
-      return $q.when(true);
+      }
     }
 
     $scope.togglePreviousFY = function togglePreviousFY(bool) {
