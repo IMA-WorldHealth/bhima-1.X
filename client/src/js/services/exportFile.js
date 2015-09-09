@@ -195,11 +195,96 @@ angular.module('bhima.services')
 		}
 	}
 
+	function download(data, fileType, headers) {
+		// TODO Perform headers manipulation
+		// 			Like restrict data to only defined headers
+
+		/*
+			* ========================================
+			* Parameters (data, fileType, headers)
+			* ========================================
+			* => data = []
+			* 	  {..., ..., ..., ...},
+			* 	  {..., ..., ..., ...}
+			*    ]
+			* => fileType // String 'csv', 'tsv', 'json'
+			* => headers  // Array of string ['ID', 'NAME', 'BIRTH DAY']
+		*/
+		headers = headers || [];
+		fileType =fileType || 'csv';
+		var isCorrectData = checking(data);
+		var fileData = {};
+
+		if (isCorrectData) {
+			if (headers.length) {
+				fileData = fileDataBuilder(data, headers);
+			} else {
+				fileData = fileDataBuilder(data);
+			}
+			publish(fileData, fileType);
+		} else {
+			console.warn('Erronous data type for download');
+		}
+	}
+
+	function fileDataBuilder(data, headers) {
+		var fileData = {};
+		var sample = data[0];
+		var keys = Object.keys(sample);
+
+		if (headers && headers.length) {
+			fileData.column = headers;
+			fileData.data = getData(data);
+		} else {
+			fileData.column = keys.map(function (key) {
+				return key;
+			});
+			fileData.data = getData(data);
+		}
+
+		function getData() {
+			var d = [];
+			d = data.map(function (item) {
+				var obj = [];
+				for (var i in item) {
+					obj.push(item[i]);
+				}
+				return obj;
+			});
+			return d;
+		}
+
+		return fileData;	
+	}
+
+	function checking(data) {
+		// Check data has the same keys
+		var sameLength = false,
+				sample = data[0],
+				keys = Object.keys(sample),
+				length = keys.length;
+
+		for (var i in data) {
+			for (var j in keys) {
+				var objKeys = Object.keys(data[i]);
+				if (keys[j] in data[i] && objKeys.length === length) {
+					continue;
+				}
+				else {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
 	exportFile = {
 		publish  : publish,
 		csv      : csv,
 		tsv      : tsv,
-		json     : json
+		json     : json,
+		download : download
 	};
 
 	return exportFile;
