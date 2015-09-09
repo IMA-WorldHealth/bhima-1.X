@@ -465,6 +465,7 @@ function employeeStanding(params) {
 function cotisation_payment(params) {
   params = querystring.parse(params);
   var id = sanitize.escape(params.id),
+    cotisation_id = sanitize.escape(params.cotisation_id),
     sql;
 
   sql =
@@ -474,7 +475,7 @@ function cotisation_payment(params) {
     'JOIN paiement p ON e.id=p.employee_id ' +
     'JOIN cotisation_paiement z ON z.paiement_uuid=p.uuid ' +
     'JOIN cotisation t ON t.id=z.cotisation_id ' +
-    'WHERE p.paiement_period_id= ' + id +
+    'WHERE p.paiement_period_id= ' + id + ' AND z.cotisation_id=' + cotisation_id +
     ' ORDER BY e.name ASC, e.postnom ASC, e.prenom ASC';
 
   return db.exec(sql);

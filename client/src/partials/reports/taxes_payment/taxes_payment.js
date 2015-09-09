@@ -116,6 +116,10 @@ angular.module('bhima.controllers')
     function reconfigure () {
       $scope.state = null;
       session.period_id = null;
+      
+      $scope.total = 0;
+      $scope.sum_due = 0;
+      $scope.sum_paid = 0;
     }
 
     function selecTaxes(){
@@ -183,11 +187,6 @@ angular.module('bhima.controllers')
     $scope.convert = convert;
     $scope.reset = reset;
     $scope.selecTaxes = selecTaxes;
-    function generateReference () {
-      window.data = $scope.getPeriods.data;
-      var max = Math.max.apply(Math.max, $scope.getPeriods.data.map(function (o) { return o.reference; }));
-      return Number.isNaN(max) ? 1 : max + 1;
-    } 
     $scope.reconfigure = reconfigure;
   } 
 ]);
