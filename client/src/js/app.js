@@ -746,6 +746,10 @@ function bhimaconfig($routeProvider) {
   .when('/dashboards/finance', {
     templateUrl : 'partials/dashboard/finance.html'
   })
+  .when('/development/report/balance', { 
+    controller : 'ReportCore as ReportCtrl', 
+    templateUrl : 'partials/development/feature/report/core.html'
+  })
   .otherwise({ redirectTo : '/' });
 }
 

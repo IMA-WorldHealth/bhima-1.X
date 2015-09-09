@@ -1,0 +1,34 @@
+<header data-header>
+  REPORT_TITLE
+</header>
+  
+<nav>
+<button class="btn btn-primary btn-default">Generate new report</button>
+
+<div class="pull-right">
+  <button class="btn btn-default">Manage recurring report</button>
+  <button class="btn btn-default">Settings</button>
+</div>
+</nav>
+
+<main>
+
+  <!-- Temporary controller as syntax proof of concept -->
+  <p>{{ReportCtrl.state | json}}</p>
+  
+  <!-- TODO: Replace table with grid pending grid analysis (UI grid/ slick grid) -->
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Report Title</th>
+        <th>Date</th>
+        <th>Tags</th>
+        <th>User</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+    </tbody>
+  </table>
+</main>
