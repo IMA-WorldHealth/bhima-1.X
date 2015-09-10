@@ -8,23 +8,26 @@ var sanitize = require('../../../lib/sanitize');
 var formatDollar = '$0,0.00';
 var employeeStateDate = new Date();
 
-
-function getBalance(account) {
-  var som = 0;
-  account.children.forEach(function (child) {
-    som += child.balance + getBalance(child);
-  });
-
-  return som;
-}
-
-// expose the http route
 exports.compile = function (options) {
   'use strict';
+
+  var i18nEmployeeState = options.language == 'fr' ? require('../lang/fr.json').EMPLOYEE_STATE : require('../lang/en.json').EMPLOYEE_STATE;
 
   var deferred = q.defer();
   var context = {};
   context.reportDate = employeeStateDate.toDateString();
+  context.enterpriseName = options.enterprise.abbr;
+  context.title = i18nEmployeeState.TITLE;
+  context.enterprise = i18nEmployeeState.ENTERPRISE;
+  context.debit = i18nEmployeeState.DEBIT;
+  context.credit = i18nEmployeeState.CREDIT;
+  context.date = i18nEmployeeState.DATE;
+  context.code = i18nEmployeeState.CODE;
+  context.prenom = i18nEmployeeState.PRENOM;
+  context.nom = i18nEmployeeState.NOM;
+  context.postnom = i18nEmployeeState.POSTNOM;
+
+
   var uuids = [];
 
   db.exec('SELECT creditor_uuid FROM employee')

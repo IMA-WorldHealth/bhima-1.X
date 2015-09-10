@@ -10,21 +10,21 @@
   </section>
 
   <section id="title" class="center">
-      <h5>IMCK Hopital Bon Berger</h5>
-      <h5>Etat Employee</h5>
-      <h5>As of {{=it.reportDate}}</h5>
+      <h5>{{=it.enterprise}} {{=it.enterpriseName}}</h5>
+      <h5>{{=it.title}}</h5>
+      <h5>{{=it.date}} {{=it.reportDate}}</h5>
   </section>
 
   <section>
     <table class="balance" border="1">
       <thead>
         <tr>
-          <th>Code</th>
-          <th>Prenom</th>
-          <th>Nom</th>
-          <th>Postnom</th>
-          <th>Debit</th>
-          <th>Credit</th>
+          <th>{{=it.code}}</th>
+          <th>{{=it.prenom}}</th>
+          <th>{{=it.nom}}</th>
+          <th>{{=it.postnom}}</th>
+          <th>{{=it.debit}}</th>
+          <th>{{=it.credit}}</th>
         </tr>
       </thead>
 
