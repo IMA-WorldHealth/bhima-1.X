@@ -20,13 +20,11 @@
                     <span class="input-group-addon">
                       <span class="glyphicon glyphicon-folder-open"></span>
                     </span>  
-                    <select class="form-bhima" required ng-click="selecCotisations()" ng-model="session.period_id">
-                      <option ng-value="getPeriod.id" value="getPeriod.id" ng-repeat="getPeriod in getPeriods.data">{{getPeriod.label}} :: {{getPeriod.dateFrom | date }} - {{getPeriod.dateTo | date }}</option>
+                    <select class="form-bhima" required ng-value="getPeriod.id" ng-click="selecCotisations()" ng-options="getPeriod.id as format(getPeriod) for getPeriod in getPeriods.data" ng-model="session.period_id">
                     </select>
                   </div>
                 </div>
               </div>
-
               <div class="form-group">
                 <label class="control-label col-xs-4 required">
                   {{ "SELECT.COTISATION" | translate }}
@@ -35,20 +33,17 @@
                   <div class="pull-left form-group input-group">
                     <span class="input-group-addon">
                       <span class="glyphicon glyphicon-briefcase"></span>
-                    </span>  
-                    <select class="form-bhima" required ng-model="session.cotisation_id">
-                      <option ng-value="cotisation.id" value="cotisation.id"  ng-repeat="cotisation in cotisations_period" ng-value="cotisation.id"> [ {{cotisation.abbr}} ] {{ cotisation.label }}</option>
+                    </span> 
+                    <select class="form-bhima" required ng-value="cotisation.id"  ng-options="cotisation.id as formatCotisation(cotisation) for cotisation in cotisations_period" ng-model="session.cotisation_id">
                     </select>
                   </div>
                 </div>
-              </div>
-            
+              </div>            
               <div class="pull-right">
                 <button class="btn btn-sm btn-success" type="button" ng-click="reset()" ng-disabled="configForm.$invalid">
                   {{ "REPORT.GENERATE" | translate }}
                 </button>
               </div>
-
             </form>
           </div>
         </div>
