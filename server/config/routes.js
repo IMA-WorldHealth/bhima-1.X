@@ -37,9 +37,13 @@ var accounts        = require('../controllers/accounts');
 var auth            = require('../controllers/auth'),
     projects        = require('../controllers/projects'),
     users           = require('../controllers/users'),
-    analytics       = require('../controllers/analytics');
+    analytics       = require('../controllers/analytics'),
+    budget          = require('../controllers/budget');
 
-var patient = require('../controllers/patient');
+var patient         = require('../controllers/patient');
+
+// Middleware for a particular route
+var multipart       = require('connect-multiparty');
 
 exports.initialise = function (app) {
   console.log('[config/routes] Configure routes');
@@ -235,4 +239,7 @@ exports.initialise = function (app) {
   app.put('/users/:id', users.updateUser);
   app.get('/users', users.getUsers);
   app.delete('/users/:id', users.removeUser);
+
+  // budget controller
+  app.post('/budget/upload', multipart({ uploadDir: 'upload/'}), budget.upload);
 };
