@@ -98,6 +98,14 @@ angular.module('bhima.controllers')
       $scope.state = 'generate';
     }
 
+    function format (c) {
+      return '' + c.label + ' :: ' + util.formatDate(c.dateFrom) + ' - ' + util.formatDate(c.dateTo);
+    }
+
+    function formatTaxes(c){
+      return ' [ ' + c.abbr + ' ] ' + c.label; 
+    } 
+
     $scope.print = function print() {
       window.print();
     };
@@ -187,6 +195,8 @@ angular.module('bhima.controllers')
     $scope.convert = convert;
     $scope.reset = reset;
     $scope.selecTaxes = selecTaxes;
+    $scope.format = format;
+    $scope.formatTaxes = formatTaxes;
     $scope.reconfigure = reconfigure;
   } 
 ]);

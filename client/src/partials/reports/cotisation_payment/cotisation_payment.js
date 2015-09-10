@@ -106,6 +106,14 @@ angular.module('bhima.controllers')
       angular.extend($scope, models);
     }
 
+    function format (c) {
+      return '' + c.label + ' :: ' + util.formatDate(c.dateFrom) + ' - ' + util.formatDate(c.dateTo);
+    }
+
+    function formatCotisation(c){
+      return ' [ ' + c.abbr + ' ] ' + c.label; 
+    }   
+
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
       session.currency = $scope.enterprise.currency_id;
@@ -186,8 +194,10 @@ angular.module('bhima.controllers')
 
     $scope.convert = convert;
     $scope.reset = reset;
+    $scope.format = format;
     $scope.selecCotisations = selecCotisations;
     $scope.reconfigure = reconfigure;
+    $scope.formatCotisation = formatCotisation;
   } 
 ]);
 
