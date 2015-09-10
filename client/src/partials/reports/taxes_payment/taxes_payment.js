@@ -124,6 +124,7 @@ angular.module('bhima.controllers')
     function reconfigure () {
       $scope.state = null;
       session.period_id = null;
+      session.tax_id = null;
       
       $scope.total = 0;
       $scope.sum_due = 0;
