@@ -134,10 +134,6 @@ USE bhima;
 INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `has_children`, `url`, `path`)
 VALUES (115, 'Budget Analysis', 'TREE.BUDGET_ANALYSIS', 'analyse du budget courant avec les precedants', 8, 0, '/partials/budget/analysis', '/budgeting/analysis/');
 
--- Create new budget
-INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `has_children`, `url`, `path`)
-VALUES (116, 'Create new budget', 'TREE.NEW_BUDGET', 'Creation nouveau budget via CSV', 8, 0, '/partials/budget/create', '/budgeting/create/');
-
 -- rm unused currency tree node
 --
 -- Date: 2015-08-31
