@@ -3,7 +3,7 @@
 // Module: ledger
 //
 // This module exposes three methods:
-//  (1) debtor
+//  (1) debitor
 //  (2) credior
 //  (3) general
 // which encapsulate reporting the ledgers
@@ -71,10 +71,10 @@ function debitor(id) {
   else { id = sanitize.escape(id); }
 
   var query =
-    'SELECT account_id ' +
-    'FROM debitor JOIN debitor_group ON ' +
-      'debitor.group_uuid = debitor_group.uuid ' +
-    'WHERE debitor.uuid=' + id +';';
+    'SELECT `account_id` ' +
+    'FROM `debitor` JOIN `debitor_group` ON ' +
+      '`debitor`.`group_uuid` = `debitor_group`.`uuid` ' +
+    'WHERE `debitor`.`uuid`=' + id +';';
 
   db.exec(query)
   .then(function (ans) {
@@ -229,7 +229,7 @@ function employeeInvoice(id) {
   var query =
     'SELECT creditor_group.account_id ' +
     'FROM `creditor_group` ' +
-    'JOIN creditor ON creditor.group_uuid = creditor_group.uuid ' + 
+    'JOIN creditor ON creditor.group_uuid = creditor_group.uuid'
     'WHERE `creditor`.`uuid`=' + id +';';
 
   db.exec(query)
