@@ -3,7 +3,7 @@
 // Module: ledger
 //
 // This module exposes three methods:
-//  (1) debitor
+//  (1) debtor
 //  (2) credior
 //  (3) general
 // which encapsulate reporting the ledgers
@@ -230,7 +230,7 @@ function employeeInvoice(id) {
   var query =
     'SELECT creditor_group.account_id ' +
     'FROM `creditor_group` ' +
-    'JOIN creditor ON creditor.group_uuid = creditor_group.uuid'
+    'JOIN creditor ON creditor.group_uuid = creditor_group.uuid '
     'WHERE `creditor`.`uuid`=' + id +';';
 
   db.exec(query)
