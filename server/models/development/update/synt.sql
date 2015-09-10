@@ -132,7 +132,7 @@ USE bhima;
 
 -- Budget Analysis
 INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `has_children`, `url`, `path`)
-VALUES (115, 'Budget Analysis', 'TREE.BUDGET_ANALYSIS', 'analyse du budget courant avec les precedants', 8, 0, '/partials/budget/analysis', '/budgeting/analysis/');
+VALUES (117, 'Budget Analysis', 'TREE.BUDGET_ANALYSIS', 'analyse du budget courant avec les precedants', 8, 0, '/partials/budget/analysis', '/budgeting/analysis/');
 
 -- rm unused currency tree node
 --
@@ -153,7 +153,7 @@ UPDATE `currency` SET `format_key` = 'usd' WHERE `id` = 2;
 ALTER TABLE `currency` MODIFY `format_key` VARCHAR(20) NOT NULL;
 
 -- Updates to unit table
----
+-- 
 -- DROPs unused has_children field
 --
 -- Date: 2015-01-11
