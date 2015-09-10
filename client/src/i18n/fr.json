@@ -237,8 +237,15 @@
       "WARNING"           : "ATTENTION! ",
       "WARN_BAD_TOTALS"   : "La somme des chiffres du budget pour les périodes ne correspond pas au total! ",
       "WARN_ZERO_TOTAL"   : "Veuillez d'abord entrer le total pour l'année avant de pouvoir procéder! "
-      }
    },
+   "NEW" : {
+    "DESC"       : "Creation d'un budget pour una année fiscale donnée",
+    "IMPORT_CSV" : "Importation du fichier CSV",
+    "MANUAL"     : "Définition manuelle du budget",
+    "SEND_FILE"  : "Envoyer le nouveau budget",
+    "TITLE"      : "Creation d'un nouveau budget"
+  }
+},
 "CASH": {
    "CASHBOX" : {
       "ADD"                    : "Ajouter",

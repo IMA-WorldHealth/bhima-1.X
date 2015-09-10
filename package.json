@@ -35,7 +35,8 @@
     "q": "~1.4.1",
     "session-file-store": "0.0.14",
     "wkhtmltopdf": "^0.1.5",
-    "numeral": "^1.5.3"
+    "numeral": "^1.5.3",
+    "fast-csv": "^0.6.0"
   },
   "devDependencies": {
     "chai": "^3.2.0",

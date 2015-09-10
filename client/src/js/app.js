@@ -1,4 +1,4 @@
-var bhima = angular.module('bhima', ['bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate', 'LocalForageModule', 'chart.js', 'tmh.dynamicLocale']);
+var bhima = angular.module('bhima', ['bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate', 'LocalForageModule', 'chart.js', 'tmh.dynamicLocale', 'ngFileUpload']);
 
 function bhimaconfig($routeProvider) {
   //TODO: Dynamic routes loaded from unit database?
@@ -18,6 +18,10 @@ function bhimaconfig($routeProvider) {
   .when('/budgeting/analysis', {
     controller: 'budget.analysis',
     templateUrl: 'partials/budget/analysis/analysis_budget.html'
+  })
+  .when('/budgeting/new', {
+    controller: 'budget.new',
+    templateUrl: 'partials/budget/new/new_budget.html'
   })
   .when('/budgeting/:accountID?', {
     controller: 'budget',
