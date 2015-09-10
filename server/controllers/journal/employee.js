@@ -509,7 +509,7 @@ function taxPayment(id, userId, details, cb) {
     var sql3 =
       'SELECT cash_box_account_currency.account_id ' +
       'FROM cash_box_account_currency ' +
-      'WHERE cash_box_account_currency.currency_id = ?' +
+      'WHERE cash_box_account_currency.currency_id = ? ' +
       'AND cash_box_account_currency.cash_box_id = ?;';
 
     return [
