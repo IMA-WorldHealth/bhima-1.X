@@ -20,7 +20,7 @@
                     <span class="input-group-addon">
                       <span class="glyphicon glyphicon-folder-open"></span>
                     </span>  
-                    <select class="form-bhima" required ng-value="getPeriod.id" ng-click="selecCotisations()" ng-options="getPeriod.id as format(getPeriod) for getPeriod in getPeriods.data" ng-model="session.period_id">
+                    <select class="form-bhima" required ng-change="selecCotisations()" ng-options="getPeriod.id as format(getPeriod) for getPeriod in getPeriods.data" ng-model="session.period_id">
                     </select>
                   </div>
                 </div>
@@ -34,7 +34,7 @@
                     <span class="input-group-addon">
                       <span class="glyphicon glyphicon-briefcase"></span>
                     </span> 
-                    <select class="form-bhima" required ng-value="cotisation.id"  ng-options="cotisation.id as formatCotisation(cotisation) for cotisation in cotisations_period" ng-model="session.cotisation_id">
+                    <select class="form-bhima" required ng-options="cotisation.id as formatCotisation(cotisation) for cotisation in cotisations_period" ng-model="session.cotisation_id">
                     </select>
                   </div>
                 </div>
