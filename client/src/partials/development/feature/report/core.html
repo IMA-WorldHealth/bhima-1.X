@@ -1,5 +1,5 @@
 <header data-header>
-  REPORT_TITLE
+  {{ReportCtrl.title}}
 </header>
   
 <nav>
@@ -13,22 +13,30 @@
 
 <main>
 
-  <!-- Temporary controller as syntax proof of concept -->
-  <p>{{ReportCtrl.state | json}}</p>
-  
-  <!-- TODO: Replace table with grid pending grid analysis (UI grid/ slick grid) -->
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Report Title</th>
-        <th>Date</th>
-        <th>Tags</th>
-        <th>User</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
+  <!-- TODO: If page structure should be replaced with implicit correctness through -->
+  <!-- dynamic, database driven routes -->
+  <section ng-if="ReportCtrl.state.isInvalid">
+    <div class="alert alert-warning">
+      Invalid report
+    </div>
+  </section>
 
-    <tbody>
-    </tbody>
-  </table>
+  
+  <section ng-if="ReportCtrl.state.isValid">
+    <!-- TODO: Replace table with grid pending grid analysis (UI grid/ slick grid) -->
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Report Title</th>
+          <th>Date</th>
+          <th>Tags</th>
+          <th>User</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+      </tbody>
+    </table>
+  </section>
 </main>

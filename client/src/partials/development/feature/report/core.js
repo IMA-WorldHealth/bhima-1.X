@@ -18,17 +18,30 @@
  * report/{key}/generate
  * report/{key}/generate/{option_key}/{option_value}
  */
-angular.module('bhima.controllers').controller('ReportCore', ['ModuleState', ReportCore]);
+angular.module('bhima.controllers').controller('ReportCore', ReportCore);
 
-// ReportCore.$inject = ['ModuleState'];
+ReportCore.$inject = ['$routeParams', 'ModuleState'];
 
-function ReportCore(ModuleState) { 
+function ReportCore($routeParams, ModuleState) { 
   
   // Anything assigned to the controller object will be exposed to the template (view)
   var viewModel = this;
   
-  viewModel.state = new ModuleState();
-  
+  var state = new ModuleState();
+
+  // TODO report routes and configuration should be defined in the database 
+  // this relationship should be dynamically loaded and routes should implicitly 
+  // be valid as they are data driven
+  function legacyReportConfiguration() { 
+    var reportMap = { 
+      'balance' : { 
+        title : 'Balance',
+        generate_template : null,
+        supports : null
+      }
+    };
+  }
+
   /**
    * @params {Object} options Specify any initial options for the report, this 
    * can be default values passed sepecified in the URL
@@ -36,4 +49,7 @@ function ReportCore(ModuleState) {
   function requestReport(options) { 
 
   }
+
+  // Expose state to the view model - allow selective displaying of elements
+  viewModel.state = state;
 }
