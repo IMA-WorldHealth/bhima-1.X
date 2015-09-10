@@ -71,10 +71,11 @@ function debitor(id) {
   else { id = sanitize.escape(id); }
 
   var query =
-    'SELECT `account_id` ' +
-    'FROM `debitor` JOIN `debitor_group` ON ' +
-      '`debitor`.`group_uuid` = `debitor_group`.`uuid` ' +
-    'WHERE `debitor`.`uuid`=' + id +';';
+    'SELECT account_id ' +
+    'FROM debitor JOIN debitor_group ON ' +
+      'debitor.group_uuid = debitor_group.uuid ' +
+    'WHERE debitor.uuid=' + id +';';
+
 
   db.exec(query)
   .then(function (ans) {
