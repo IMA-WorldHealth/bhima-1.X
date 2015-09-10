@@ -8,7 +8,7 @@ angular.module('bhima.controllers')
   'messenger',
   'uuid',
   'SessionService',
-  function ($scope, $translate, connect, validate, appstate, messenger, uuid, sessionService) {
+  function ($scope, $translate, connect, validate, appstate, messenger, uuid, SessionService) {
 
     var dependencies = {};
     $scope.action = '';
@@ -62,8 +62,8 @@ angular.module('bhima.controllers')
       }
     };
 
-    $scope.project = sessionService.project;
-    dependencies.invoices.query.where = ['posting_journal.project_id=' + $scope.project.id];
+    $scope.project = SessionService.project;
+    //dependencies.invoices.query.where = ['posting_journal.project_id=' + $scope.project.id];
     validate.process(dependencies, ['debitors', 'employees', 'currency']).then(setUpModels);
 
     $scope.setDebitor = function () {
