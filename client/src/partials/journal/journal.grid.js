@@ -87,6 +87,11 @@ angular.module('bhima.controllers')
         dataview.updateItem(id, args.item);
       });
 
+      $scope.journal_bis.data = $scope.journal_bis.data.map(function (item) {
+        item.trans_date = new Date(item.trans_date);
+        return item;
+      });
+
       dataview.beginUpdate();
       dataview.setItems($scope.journal_bis.data, 'uuid');
       dataview.endUpdate();
