@@ -76,6 +76,7 @@ function debitor(id) {
       'debitor.group_uuid = debitor_group.uuid ' +
     'WHERE debitor.uuid=' + id +';';
 
+
   db.exec(query)
   .then(function (ans) {
 
@@ -229,7 +230,7 @@ function employeeInvoice(id) {
   var query =
     'SELECT creditor_group.account_id ' +
     'FROM `creditor_group` ' +
-    'JOIN creditor ON creditor.group_uuid = creditor_group.uuid ' + 
+    'JOIN creditor ON creditor.group_uuid = creditor_group.uuid '
     'WHERE `creditor`.`uuid`=' + id +';';
 
   db.exec(query)

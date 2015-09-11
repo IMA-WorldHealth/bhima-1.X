@@ -105,7 +105,7 @@ function invoice(id, userId, cb) {
             'project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, ' +
             'description, account_id, debit, credit, debit_equiv, credit_equiv, ' +
             'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
-          'SELECT employee_invoice.project_id, ?, ?, ?, ?, ?, ?. ' +
+          'SELECT employee_invoice.project_id, ?, ?, ?, ?, ?, ?, ' +
             'debitor_group.account_id, 0, employee_invoice_item.cost, ' +
             '0, employee_invoice_item.cost, enterprise.currency_id,  ' +
             'employee_invoice.debitor_uuid, \'D\', employee_invoice_item.invoice_uuid, ?, ? ' +
