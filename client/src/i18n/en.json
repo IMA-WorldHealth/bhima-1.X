@@ -191,6 +191,23 @@
   "DOC_SUCCES"      : "Document Build Success - Open Document"
   },
 "BUDGET": {
+    "ANALYSIS" : {
+      "ALL_PERIOD"         : "All periods",
+      "CONFIG"             : "Analysis Report Configuration",
+      "CONFIG_DESC"        : "Configure on the form below your budget data for analyse",
+      "DATA_TABLE"         : "Data table",
+      "DATA_GRAPH"         : "Individual data graph",
+      "EXPENSE"            : "Expense",
+      "INCLUDE_PREVIOUS"   : "Include previous budget",
+      "INCOME"             : "Income",
+      "PREVIOUS_BUDGET"    : "Previous budget(s)",
+      "SELECT_BUDGET"      : "Select the budget/fiscal year",
+      "SELECT_PERIOD"      : "Select the period",
+      "SELECT_REF_ACCOUNT" : "Select the account referential",
+      "TITLE"              : "Budget Analysis",
+      "VALIDATE"           : "Validate",
+      "VIEW_MODE"          : "View mode"
+   },
    "DISPLAY" : {
      "LINE"         : "Line",
      "REPORT_TITLE" : "Accounts Budgets and Balances",
@@ -2815,6 +2832,7 @@
    "BENEFICIARY"               : "Beneficaries",
    "BILAN"                     : "Bilan",
    "BUDGETING"                 : "Budget",
+   "BUDGET_ANALYSIS"           : "Budget Analysis",
    "BUDGET_BY_ACCOUNT"         : "Budget by Account",
    "CASH"                      : "Cash Payments",
    "CASHBOX_MANAGEMENT"        : "Cashbox Management",
@@ -2879,6 +2897,7 @@
    "LOSS_RECORDS"              : "Stock loss records",
    "MAIN_CASH"                 : "Principal Cashbox",
    "MULTI_PAYROLL"             : "Multiple Payroll",
+   "NEW_BUDGET"                : "Create Budget",
    "OFFDAY_MANAGEMENT"         : "Offday management",
    "OPERATING_ACCOUNT"         : "Operating Account",
    "PATIENT_GRP"               : "Patient Groups",

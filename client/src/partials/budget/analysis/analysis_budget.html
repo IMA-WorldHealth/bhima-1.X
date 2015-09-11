@@ -1,0 +1,162 @@
+<header data-header> 
+  {{ "BUDGET.ANALYSIS.TITLE" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "BUDGET.ANALYSIS.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
+  <div ng-if="session.mode=='budget-analysis'" class="pull-right">
+    <button class="btn btn-default btn-sm square" 
+      ng-click="reconfigure()"
+      style="margin-right: 20px"><i class="glyphicon glyphicon-repeat"></i></button>
+
+    <button ng-click="exportToCSV()" 
+      class="btn btn-default btn-sm square" 
+      style="margin-right: 20px"><span class="glyphicon glyphicon-file"></span> {{'UTIL.EXPORT_TO_CSV' | translate}}</button> 
+
+    <button ng-click="print()" 
+      class="btn btn-default btn-sm square"><span class="glyphicon glyphicon-print"></span> {{'UTIL.PRINT' | translate}}</button>
+  </div>
+</nav>
+
+<div class="report">
+  <div ng-switch on="session.mode">
+    <div ng-switch-default>
+      <div class="col-sm-offset-4 col-xs-4">
+        <h3 class="center"><b>{{ "BUDGET.ANALYSIS.CONFIG" | translate }}</b></h3>
+        <p>{{ "BUDGET.ANALYSIS.CONFIG_DESC" | translate }}</p>
+        <form class="form budget-analysis-form" novalidate>
+          <div class="form-group">
+            <label>{{ "BUDGET.ANALYSIS.SELECT_BUDGET" | translate }}</label>
+            <select 
+            class="form-bhima" 
+            ng-model="config.fiscal_year_id" 
+            ng-options="fy.id as formatFiscalYear(fy) for fy in fiscal_years.data"
+            ng-change="loadPeriod(config.fiscal_year_id)" 
+            required></select>
+          </div>
+
+          <div class="form-group">
+            <label>{{ "BUDGET.ANALYSIS.SELECT_PERIOD" | translate }}</label>
+            <select 
+            class="form-bhima" 
+            ng-model="config.period_id"
+            ng-options="p.id as formatPeriod(p) for p in session.periods" 
+            ng-disabled="!config.fiscal_year_id" 
+            required>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>{{ "SELECT.ACCOUNT_TYPE" | translate }}: 
+            {{ "BUDGET.ANALYSIS.EXPENSE" | translate }}/{{ "BUDGET.ANALYSIS.INCOME" | translate }}</label>
+            <select class="form-bhima" ng-model="config.account_class">
+              <option ng-value="0">{{ "UTIL.ALL" | translate }}</option>
+              <option ng-value="6">{{ "BUDGET.ANALYSIS.EXPENSE" | translate }}</option>
+              <option ng-value="7">{{ "BUDGET.ANALYSIS.INCOME" | translate }}</option>
+            </select>
+          </div>
+
+          <small class="budget-analysis-label">{{ "BUDGET.ANALYSIS.PREVIOUS_BUDGET" | translate }}</small>
+
+          <label>
+          <input type="checkbox" name="hasPrevious" ng-model="config.hasPrevious"> 
+          {{ "BUDGET.ANALYSIS.INCLUDE_PREVIOUS" | translate }}?</label>
+
+          <div class="center">
+            <button 
+            class="btn btn-lg btn-success" 
+            ng-click="budgetAnalysis()" ng-disabled="!config.fiscal_year_id || !config.period_id">{{ "BUDGET.ANALYSIS.VALIDATE" | translate }}</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="col-xs-4">
+        <!-- Previous Fiscal Years -->
+        <div ng-if="config.hasPrevious" class="budget-analysis-previous">
+          <p><b><span class="glyphicon glyphicon-time"></span></b> {{ "BUDGET.ANALYSIS.PREVIOUS_BUDGET" | translate }}</p>
+
+          <label class="checkbox" style="margin-left: 10px; margin-bottom: 5px;">
+            <input type="checkbox" ng-model="previousFY.all" ng-change="togglePreviousFY(previousFY.all)">
+            {{ "BUDGET.ANALYSIS.ALL_PERIOD" | translate }}
+          </label>
+          <ul class="k-list" style="margin-left: 25px;">
+            <li ng-repeat="fy in session.previous_fiscal_years">
+              <label class="checkbox">
+                <input type="checkbox" ng-model="fy.checked" ng-change="deselectAllFY(fy.checked)">
+                {{ fy.fiscal_year_txt }}
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div ng-switch-when="budget-analysis">
+      <div class="reportFrame">
+        <h3><b>{{ "BUDGET.DISPLAY.REPORT_TITLE" | translate }}</b> 
+        <span class="pull-right smaller">
+        {{session.selectedPeriod}}, {{session.selectedFiscalYear.start_year}}</span></h3>
+
+        <h3>{{enterprise.name}} - {{ "FISCAL_YEAR.TITLE" | translate }}: 
+        {{session.selectedFiscalYear.fiscal_year_txt}}</h3>
+        <div class="row">
+          <div class="col-xs-12">
+            <table class="reportTable">
+              <thead>
+                <tr>
+                  <th rowspan="2">{{ "BUDGET.DISPLAY.LINE" | translate }}</th>
+                  <th class="budget" rowspan="2">{{ "ACCOUNT.ACCOUNT_NUMBER"  | translate }}</th>
+                  <th class="budget" rowspan="2">{{ "COLUMNS.DESCRIPTION"     | translate }}</th>
+                  <th class="budget-cash" rowspan="2">{{ "BUDGET.EDIT.BUDGET" | translate }}</th>
+                  <th class="budget-cash" rowspan="2">{{ "COLUMNS.BALANCE"    | translate }}</th>
+                  <th class="budget" colspan="2">{{ "COLUMNS.GAP" | translate }}</th>
+                  <th class="budget-cash" rowspan="2" 
+                      ng-if="config.hasPrevious && session.selectedPreviousFY.length"
+                      ng-repeat="fy in session.selectedPreviousFY">{{ fy.fiscal_year_txt }}</th>
+                </tr>
+                <tr>
+                  <th class="budget">{{ "COLUMNS.SURPLUS" | translate }}</th>
+                  <th class="budget">{{ "COLUMNS.DEFICIT" | translate }}</th>
+                </tr>                                         
+              </thead>
+              <tbody>
+                <tr ng-repeat="account in accounts.data">
+                  <td class="budget">{{ $index + 1 }}</td>
+                  <td class="budget">{{ account.account_number }}</td>
+                  <td class="budget" 
+                      ng-style="{'padding-left': (account.depth * 40) + 'px'}" 
+                      ng-class="{'reportTitle': account.type=='title'}">{{ account.account_txt }}</td>
+                  <td class="budget-cash">{{ account.budget }}</td>
+                  <td class="budget-cash">{{ account.balance }}</td>
+                  <td class="budget">{{ account.surplus }}</td>
+                  <td class="budget">{{ account.deficit }}</td>
+                  <td class="budget"
+                      ng-if="config.hasPrevious && session.selectedPreviousFY.length" 
+                      ng-repeat="fy in session.selectedPreviousFY">{{ account.previousBudget[fy.id] }}</td>
+                </tr>
+                <tr>
+                  <td class="budget-cash" colspan="3"><b>{{ "BUDGET.DISPLAY.TOTALS" | translate }}</b></td>
+                  <td class="budget-cash"><b>{{ total.budget }}</b></td>
+                  <td class="budget-cash"><b>{{ total.balance }}</b></td>
+                  <td class="budget-cash"><b>{{ total.surplus }}</b></td>
+                  <td class="budget-cash"><b>{{ total.deficit }}</b></td> 
+                  <td class="budget-cash"
+                      ng-if="config.hasPrevious && session.selectedPreviousFY.length" 
+                      ng-repeat="fy in session.selectedPreviousFY">
+                      <b>{{ totalPreviousBudget[fy.id] }}</b>
+                  </td>            
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
