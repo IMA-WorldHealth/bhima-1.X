@@ -464,7 +464,8 @@ function employeeStanding(params) {
 
 function cotisation_payment(params) {
   params = querystring.parse(params);
-  var id = sanitize.escape(params.id),
+  var id = params.id,
+    cotisation_id = params.cotisation_id,
     sql;
 
   sql =
@@ -474,17 +475,17 @@ function cotisation_payment(params) {
     'JOIN paiement p ON e.id=p.employee_id ' +
     'JOIN cotisation_paiement z ON z.paiement_uuid=p.uuid ' +
     'JOIN cotisation t ON t.id=z.cotisation_id ' +
-    'WHERE p.paiement_period_id= ' + id +
+    'WHERE p.paiement_period_id= ? AND z.cotisation_id= ? ' + 
     ' ORDER BY e.name ASC, e.postnom ASC, e.prenom ASC';
 
-  return db.exec(sql);
+  return db.exec(sql, [id, cotisation_id]);
 }
 
 function taxes_payment(params) {
   params = querystring.parse(params);
 
-  var id = sanitize.escape(params.id),
-      tax_id = sanitize.escape(params.tax_id),
+  var id = params.id,
+      tax_id = params.tax_id,
     sql;
 
   sql =
@@ -494,9 +495,9 @@ function taxes_payment(params) {
     'JOIN paiement p ON e.id=p.employee_id ' +
     'JOIN tax_paiement z ON z.paiement_uuid=p.uuid ' +
     'JOIN tax t ON t.id=z.tax_id ' +
-    'WHERE p.paiement_period_id= ' + id + ' AND z.tax_id=' + tax_id +
+    'WHERE p.paiement_period_id= ? AND z.tax_id= ? ' + 
     ' ORDER BY e.name ASC, e.postnom ASC, e.prenom ASC';
-  return db.exec(sql);
+  return db.exec(sql, [id, tax_id]);
 }
 
 function employeePaiement(params) {

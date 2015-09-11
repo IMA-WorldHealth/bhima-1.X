@@ -160,8 +160,7 @@ angular.module('bhima.controllers')
         debit             : 0,
         credit            : primary.cost,
         inv_po_id         : emp.paiement_uuid,
-        document_uuid     : document_uuid,
-        other_account     : emp.other_account 
+        document_uuid     : document_uuid
       };
 
       var other = {
