@@ -52,12 +52,26 @@ angular.module('bhima.controllers')
           where : ['paiement_period.id=' + record.period_id]
         }
       };
-      validate.process(dependencies, ['periods'])
+
+      dependencies.cotisations = {
+        query : {
+          identifier : 'id',
+          tables : {
+            'cotisation' : { 
+              columns : ['id', 'label', 'abbr', 'is_employee']
+            }
+          },
+          where : ['cotisation.id=' + record.cotisation_id]
+        }
+      };
+
+      validate.process(dependencies, ['periods', 'cotisations'])
       .then(function (model) {
         var period = $scope.period =model.periods.data[0];
+        var cotisations = $scope.cotisations =model.cotisations.data[0];
       });
 
-      connect.fetch('/reports/cotisation_payment/?id=' + record.period_id)
+      connect.fetch('/reports/cotisation_payment/?id=' + record.period_id + '&cotisation_id=' + record.cotisation_id)
       .then(function (data) {
         $scope.Reports = data;
         
@@ -92,6 +106,14 @@ angular.module('bhima.controllers')
       angular.extend($scope, models);
     }
 
+    function format (c) {
+      return '' + c.label + ' :: ' + util.formatDate(c.dateFrom) + ' - ' + util.formatDate(c.dateTo);
+    }
+
+    function formatCotisation(c){
+      return ' [ ' + c.abbr + ' ] ' + c.label; 
+    }   
+
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
       session.currency = $scope.enterprise.currency_id;
@@ -99,9 +121,45 @@ angular.module('bhima.controllers')
       .then(startup);
     });
 
-   function reconfigure () {
+    function reconfigure () {
       $scope.state = null;
       session.period_id = null;
+      session.cotisation_id = null;
+      
+      $scope.total = 0;
+      $scope.sum_due = 0;
+      $scope.sum_paid = 0;
+    }
+
+    function selecCotisations(){
+      if(session.period_id){        
+        session.cotisation_id = null;
+
+        dependencies.cotisations_period = {
+          query : {
+            tables : {
+              cotisation : {
+                columns : [
+                  'id', 'label', 'abbr', 'is_employee'
+                ]
+              },
+              config_cotisation_item : { columns : ['config_cotisation_id', 'cotisation_id']},
+              config_cotisation : { columns : ['id::config_cotisation', 'label::config_label']},
+              paiement_period : { columns : ['id::period_id','config_cotisation_id::cotisation_period']}
+            },
+            join : ['config_cotisation_item.cotisation_id=cotisation.id',
+              'config_cotisation.id=config_cotisation_item.config_cotisation_id',
+              'paiement_period.config_cotisation_id=config_cotisation.id'
+            ],
+            where : ['paiement_period.id=' + session.period_id ]
+          }
+        };
+        validate.process(dependencies, ['cotisations_period'])
+        .then(function (model) {
+          var cotisations_period = $scope.cotisations_period = model.cotisations_period.data;
+        });        
+
+      }
     }
 
     function convert () {
@@ -137,12 +195,12 @@ angular.module('bhima.controllers')
 
     $scope.convert = convert;
     $scope.reset = reset;
-    function generateReference () {
-      window.data = $scope.getPeriods.data;
-      var max = Math.max.apply(Math.max, $scope.getPeriods.data.map(function (o) { return o.reference; }));
-      return Number.isNaN(max) ? 1 : max + 1;
-    } 
+    $scope.format = format;
+    $scope.selecCotisations = selecCotisations;
     $scope.reconfigure = reconfigure;
+    $scope.formatCotisation = formatCotisation;
   } 
 ]);
+
+
 

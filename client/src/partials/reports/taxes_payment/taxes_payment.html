@@ -20,8 +20,7 @@
                     <span class="input-group-addon">
                       <span class="glyphicon glyphicon-folder-open"></span>
                     </span>  
-                    <select class="form-bhima" required ng-click="selecTaxes()" ng-model="session.period_id">
-                      <option ng-repeat="getPeriod in getPeriods.data" ng-value="getPeriod.id">{{getPeriod.label}} :: {{getPeriod.dateFrom | date }} - {{getPeriod.dateTo | date }}</option>
+                    <select class="form-bhima" required ng-change="selecTaxes()" ng-options="getPeriod.id as format(getPeriod) for getPeriod in getPeriods.data" ng-model="session.period_id">
                     </select>
                   </div>
                 </div>
@@ -29,15 +28,14 @@
 
               <div class="form-group">
                 <label class="control-label col-xs-4 required">
-                  {{ "SELECT.TAXES" | translate }}
+                  {{ "SELECT.TAXES" | translate }} IPR
                 </label>
                 <div>
                   <div class="pull-left form-group input-group">
                     <span class="input-group-addon">
                       <span class="glyphicon glyphicon-briefcase"></span>
                     </span>  
-                    <select class="form-bhima" required ng-model="session.tax_id">
-                      <option ng-repeat="tax in taxes_period" ng-value="tax.id"> [ {{tax.abbr}} ] {{ tax.label }}</option>
+                    <select class="form-bhima" required ng-options="tax.id as formatTaxes(tax) for tax in taxes_period" ng-model="session.tax_id">
                     </select>
                   </div>
                 </div>

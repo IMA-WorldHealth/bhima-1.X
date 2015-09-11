@@ -55,8 +55,6 @@ angular.module('bhima.controllers')
     $scope.edit = function (cotisations) {
       session.action = 'edit';
       session.edit = angular.copy(cotisations);
-      session.edit.is_employee = session.edit.is_employee !== 0;
-      session.edit.is_percent = session.edit.is_percent !== 0;
     };
 
     $scope.new = function () {
