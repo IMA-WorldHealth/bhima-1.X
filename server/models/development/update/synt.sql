@@ -174,8 +174,8 @@ DROP `has_children`;
 -- By : Chris Lomame
 
 INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`) VALUES
-(117, 'Report Taxes paiments', 'TREE.REPORT_TAXES', 'Report taxes paiements', 10, '/partials/reports/taxes_payment/', '/reports/taxes_payment/'),
-(118, 'Report Cotisation paiements', 'TREE.REPORT_COTISATION', 'Report Cotisation paiements', 10, '/partials/reports/cotisation_payment/', '/reports/cotisation_payment/');
+(118, 'Report Taxes paiments', 'TREE.REPORT_TAXES', 'Report taxes paiements', 10, '/partials/reports/taxes_payment/', '/reports/taxes_payment/'),
+(119, 'Report Cotisation paiements', 'TREE.REPORT_COTISATION', 'Report Cotisation paiements', 10, '/partials/reports/cotisation_payment/', '/reports/cotisation_payment/');
 
 
 -- Update field of table tax
