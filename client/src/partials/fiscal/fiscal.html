@@ -29,6 +29,7 @@
           <thead>
             <tr>
               <th>{{ 'FISCAL_YEAR.DESCRIPTION' | translate }}</th>
+              <th>{{ 'FISCAL_YEAR.NUMBER_MONTHS' | translate }}</th>
               <th>{{ 'FISCAL_YEAR.START_DATE' | translate }}</th>
               <th>{{ 'FISCAL_YEAR.STATUS' | translate }}</th>
               <th width="10%" colspan="2">{{ 'COLUMNS.ACTIONS' | translate }}</th>
@@ -43,6 +44,7 @@
             <tr ng-repeat="year in fiscal.data" 
             ng-class="{'btn-primary': year.id === selected, 'btn-danger': year.id === selectedToLock}">
               <td>{{ year.fiscal_year_txt }}</td>
+              <td>{{ year.number_of_months }}</td>
               <td>{{ year.start_month}}/{{year.start_year }}</td>
               <td>
                 <span ng-if="year.locked">
