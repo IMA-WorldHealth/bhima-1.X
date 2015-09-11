@@ -123,14 +123,23 @@ UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'group_deb_invoice' WHE
 UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'stock_loss' WHERE  `transaction_type`.`id` =13;
 UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'reversing_stock' WHERE  `transaction_type`.`id` =28;
 
+USE bhima;
+
+-- Create new units relatives to Budget Module
+-- 
+-- Date: 2015-09-03
+-- By: Bruce MBAYO
+
+-- Budget Analysis
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `has_children`, `url`, `path`)
+VALUES (117, 'Budget Analysis', 'TREE.BUDGET_ANALYSIS', 'analyse du budget courant avec les precedants', 8, 0, '/partials/budget/analysis', '/budgeting/analysis/');
+
 -- rm unused currency tree node
 --
 -- Date: 2015-08-31
 -- By: jniles
 
 DELETE FROM `unit` WHERE id = 33;
-
-
 
 -- Update currency, decoupling format and definition to utilise locale format 
 -- 
@@ -143,9 +152,8 @@ UPDATE `currency` SET `format_key` = 'fc' WHERE id = 1;
 UPDATE `currency` SET `format_key` = 'usd' WHERE `id` = 2;
 ALTER TABLE `currency` MODIFY `format_key` VARCHAR(20) NOT NULL;
 
-
 -- Updates to unit table
----
+-- 
 -- DROPs unused has_children field
 --
 -- Date: 2015-01-11

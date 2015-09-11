@@ -191,6 +191,23 @@
   "DOC_SUCCES"      : "Document généré avec succès - Ouvrir le document"
   },
 "BUDGET": {
+   "ANALYSIS" : {
+      "ALL_PERIOD"         : "Toutes les periodes",
+      "CONFIG"             : "Configuration du rapport d'analyse",
+      "CONFIG_DESC"        : "Configurer dans le formulaiire ci-dessous les données budgetaires à analyser",
+      "DATA_TABLE"         : "Tableau des données",
+      "DATA_GRAPH"         : "Données Individuelles en graphique",
+      "EXPENSE"            : "Dépenses",
+      "INCLUDE_PREVIOUS"   : "Inclure les budgets precedants",
+      "INCOME"             : "Ressources",
+      "PREVIOUS_BUDGET"    : "Budget(s) precedant(s)",
+      "SELECT_BUDGET"      : "Selectionner le Budget",
+      "SELECT_PERIOD"      : "Selectionner la periode",
+      "SELECT_REF_ACCOUNT" : "Selectionner le referentiel comptable",
+      "TITLE"              : "Analyse Budgetaire",
+      "VALIDATE"           : "Validate",
+      "VIEW_MODE"          : "Mode d'affichage"
+   },
    "DISPLAY" : {
      "LINE"         : "Ligne",
      "REPORT_TITLE" : "Comptes des budgets et des bilans",
@@ -2815,6 +2832,7 @@
    "BENEFICIARY"               : "Bénéficiaire",
    "BILAN"                     : "Bilan",
    "BUDGETING"                 : "Budget",
+   "BUDGET_ANALYSIS"           : "Analyse Budget",
    "BUDGET_BY_ACCOUNT"         : "Budget par Compte",
    "CASH"                      : "Caisse Auxilliaire",
    "CASHBOX_MANAGEMENT"        : "Caisses et Banques",
@@ -2879,6 +2897,7 @@
    "LOSS_RECORDS"              : "Rapport de pertes des stockss",
    "MAIN_CASH"                 : "Caisse Principale",
    "MULTI_PAYROLL"             : "Payroll Multiple",
+   "NEW_BUDGET"                : "Creation Budget",
    "OFFDAY_MANAGEMENT"         : "Gestion des jours fériés",
    "OPERATING_ACCOUNT"         : "Compte d'exploitation",
    "PATIENT_GRP"               : "Groupe des Patients",

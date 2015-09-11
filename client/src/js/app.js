@@ -15,6 +15,10 @@ function bhimaconfig($routeProvider) {
     controller: 'editAccountBudget',
     templateUrl: 'partials/budget/edit/edit_budget.html'
   })
+  .when('/budgeting/analysis', {
+    controller: 'budget.analysis',
+    templateUrl: 'partials/budget/analysis/analysis_budget.html'
+  })
   .when('/budgeting/:accountID?', {
     controller: 'budget',
     templateUrl: 'partials/budget/budget.html'
@@ -706,7 +710,6 @@ function bhimaconfig($routeProvider) {
     controller : 'cash.extra_payment',
     templateUrl : 'partials/cash/extra_payment/extra_payment.html'
   })
-
   // Proposed formal report building structure
   .when('/report/invoice/:target', {
     controller : 'configureInvoice',
