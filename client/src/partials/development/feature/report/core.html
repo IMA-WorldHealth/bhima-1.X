@@ -1,28 +1,29 @@
 <header data-header>
   {{ReportCtrl.title}}
 </header>
-  
-<nav>
-<button class="btn btn-primary btn-default">Generate new report</button>
 
-<div class="pull-right">
-  <button class="btn btn-default">Manage recurring report</button>
-  <button class="btn btn-default">Settings</button>
-</div>
+<!-- TODO: If page structure should be replaced with implicit correctness through -->
+<!-- dynamic, database driven routes -->
+<nav ng-if="::ReportCtrl.state.isValid">
+  <button class="btn btn-primary btn-default">Generate new report</button>
+
+  <div class="pull-right">
+    <button class="btn btn-default">Manage recurring report</button>
+    <button class="btn btn-default">Settings</button>
+  </div>
 </nav>
 
 <main>
-
-  <!-- TODO: If page structure should be replaced with implicit correctness through -->
-  <!-- dynamic, database driven routes -->
-  <section ng-if="ReportCtrl.state.isInvalid">
+  
+  <!-- Binding one way declutters the digest loop after the initial page load -->
+  <section ng-if="::ReportCtrl.state.isInvalid">
     <div class="alert alert-warning">
-      Invalid report
+      Report key '{{ReportCtrl.reportKey}}' is not supported.
     </div>
   </section>
 
   
-  <section ng-if="ReportCtrl.state.isValid">
+  <section ng-if="::ReportCtrl.state.isValid">
     <!-- TODO: Replace table with grid pending grid analysis (UI grid/ slick grid) -->
     <table class="table">
       <thead>

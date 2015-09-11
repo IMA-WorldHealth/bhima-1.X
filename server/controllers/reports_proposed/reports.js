@@ -20,6 +20,11 @@ var accountResultContext    = require('./data/account_result');
 // Module configuration
 var writePath = path.join(__dirname, 'out/');
 
+// TODO: All of these should be driven be either a JSON configuration file or 
+// by the report index in the database. 
+// TODO: Recommend convention based context and template loading, based on 
+// database record report_key, {report_key}.template.dot, {report_key}.content.js
+
 // Map templates and context compilation to request targets
 var documentHandler = {
   invoice : {

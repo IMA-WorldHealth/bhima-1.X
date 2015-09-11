@@ -19,7 +19,7 @@ function ModuleState () {
   function Session () { 
 
     // Components relying on this should not assume invalid as default
-    this.__valid = null;
+    this.__valid = undefined;
     
     this.__initialised = false;
     this.__loading = true;
@@ -27,7 +27,6 @@ function ModuleState () {
     // Expose available properties
     Object.defineProperty(this, 'isValid', { 
       get : function isValid() { 
-        console.log('isValid');
         return this.__valid;
       }
     });
@@ -35,7 +34,7 @@ function ModuleState () {
     Object.defineProperty(this, 'isInvalid', { 
       get : function isInvalid() { 
 
-        if (this.__valid === null) { 
+        if (angular.isUndefined(this.__valid)) { 
           return this.__valid;
         }
         return !this.__valid;

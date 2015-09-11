@@ -746,9 +746,14 @@ function bhimaconfig($routeProvider) {
   .when('/dashboards/finance', {
     templateUrl : 'partials/dashboard/finance.html'
   })
-  .when('/development/report/:keyval', { 
+  .when('/development/report/:reportKey', { 
     controller : 'ReportCore as ReportCtrl', 
-    templateUrl : 'partials/development/feature/report/core.html'
+    templateUrl : 'partials/development/feature/report/core.html',
+    resolve : { 
+      'ReportServiceData' : ['ReportService', function (ReportService) { 
+        return ReportService.dependency;
+      }]
+    }
   })
   .otherwise({ redirectTo : '/' });
 }
