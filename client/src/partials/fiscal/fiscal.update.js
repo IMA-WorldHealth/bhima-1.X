@@ -1,9 +1,10 @@
 angular.module('bhima.controllers')
 .controller('fiscal.update', [
+  '$route',
   '$scope',
   'validate',
   'connect',
-  function ($scope, validate, connect) {
+  function ($route, $scope, validate, connect) {
     var imports,
         editCache,
         query,
@@ -118,6 +119,7 @@ angular.module('bhima.controllers')
       session.saved = false;
       session.saveError = false;
       $scope.fiscal = angular.copy(editCache);
+      $route.reload();
     }
 
     // returns true if the fiscal year has periods
