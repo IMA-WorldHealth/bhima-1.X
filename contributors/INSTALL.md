@@ -15,6 +15,17 @@ $ git clone https://github.com/IMA-WorldHealth/bhima bhima
 $ cd bhima
 ```
 
+###### Installing dependencies 
+Bhima uses npm to track server dependencies and the bower package manager to 
+track client dependencies. Bower can be installed with `$ npm install -g bower`
+Installing all required Bhima dependencies is a simple as running the commands
+show below from the top level directory. 
+
+```bash
+$ npm install
+$ bower install
+```
+
 ###### Building the source
 Bhima uses the [gulp](http://www.gulpjs.com) build tool to build from source.
 Install it globally with npm and install other all npm dependencies, then run
@@ -23,9 +34,7 @@ the `gulp` command in the client directory as shown below.
 ```bash
 $ # Inside the bhima/ directory
 $ npm install -g gulp
-$ npm install
-$ cd client
-$ gulp
+$ gulp build
 [gulp] [21:18:18] Using gulpfile ~\proto\remote\client\gulpfile.js
 [gulp] [21:18:18] Starting 'default'...
 [gulp] [21:18:18] Starting 'scripts'...
@@ -48,8 +57,9 @@ application up and running rapidly.  Build one or both, and customize further
 from within the running application.
 
 ###### Running the application
-Bhima separates the client and server into separate directories.  The app is run
-from the top level directory.  Enter the top level directory, and run
+Bhima separates the client and server into separate directories the compiled
+versions in a bin/ folder. The app is run from the bin folder.  
+Enter the bin folder, and run
 `node server/app.js`.
 
 ```bash
@@ -57,6 +67,13 @@ $ node server/app.js
 Creating connection pool...
 Application running on localhost:8080
 [db.js] (*) user . logged_in set to 0
+```
+
+Alternatively the server can be run from the top level directory using the npm 
+tool, as follows:
+
+```bash 
+$ npm run app
 ```
 
 ###### Verify the install

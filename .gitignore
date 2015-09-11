@@ -6,6 +6,10 @@
 node_modules/
 .npm-debug.log
 
+# ignore bower
+bower_components
+client/vendor/
+
 # ignore gulp build
 client/dest/
 /*client/js/controllers/*/
