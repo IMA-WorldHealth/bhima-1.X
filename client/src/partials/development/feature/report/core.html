@@ -5,7 +5,7 @@
 <!-- TODO: If page structure should be replaced with implicit correctness through -->
 <!-- dynamic, database driven routes -->
 <nav ng-if="::ReportCtrl.state.isValid">
-  <button class="btn btn-primary btn-default">Generate new report</button>
+  <button class="btn btn-primary btn-default">Generate new {{ReportCtrl.title}}</button>
 
   <div class="pull-right">
     <button class="btn btn-default">Manage recurring report</button>
@@ -24,6 +24,26 @@
 
   
   <section ng-if="::ReportCtrl.state.isValid">
+  
+    <!-- TODO: Review how expensive the conditional templating below is -->
+    <!-- Searching for archives -->
+    <div ng-if="ReportCtrl.state.isLoading" ng- class="panel panel-default">
+      <div class="panel-body">
+        <i style="padding-right : 0.5em;" class="glyphicon glyphicon-search"></i> <strong>Searching archives...</strong>
+      </div>
+    </div>
+
+    <!-- No archive data found -->
+    <div ng-if="ReportCtrl.archivesEmpty" class="alert alert-info">
+      <i style="padding-right : 0.5em;" class="glyphicon glyphicon-folder-open"></i> <strong> No reports found in the archive.</strong> Use the 'Generate new {{ReportCtrl.title}}' button to create a new report.
+    </div>
+
+    <!-- Found archives -->
+    <div ng-if="ReportCtrl.archivesEmpty===false && ReportCtrl.state.suppressSuccessDisplay===false" class="alert alert-success alert-dismissible">
+      <button ng-click="ReportCtrl.suppressSuccess()" style="line-height : 0.85;" class="close" type="button" aria-label="close"><span aria-hidden="true">&times;</span></button>
+      <i style="padding-right : 0.5em;" class="glyphicon glyphicon-ok"></i> <strong>Found report archives.</strong> Displaying <strong>{{ReportCtrl.archives.length}}</strong> found.
+    </div>
+
     <!-- TODO: Replace table with grid pending grid analysis (UI grid/ slick grid) -->
     <table class="table">
       <thead>

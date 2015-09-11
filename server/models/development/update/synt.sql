@@ -217,3 +217,37 @@ ALTER TABLE `rubric`
 CHANGE `is_advance` `is_advance` tinyint(1) DEFAULT '0';
 ALTER TABLE `rubric`  
 CHANGE `is_social_care` `is_social_care` tinyint(1) DEFAULT '0';
+
+-- Required definitions for report archive feature 
+--
+-- Date : 2015-09-11
+-- @sfount
+DROP TABLE IF EXISTS `report`;
+CREATE TABLE `report` (
+  `id` smallint(5) unsigned NOT NULL,
+  `key` varchar(50) NOT NULL, 
+  `title` varchar(255) NOT NULL,
+  `description` text,
+  `supports_pdf` boolean, 
+  `supports_csv` boolean, 
+  `supports_client` boolean,
+  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  -- `last_updated` TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Experimental report options - these could be used to generate a CSV from a 
+-- archived PDF, however this should be designed
+DROP TABLE IF EXISTS `report_archive`;
+CREATE TABLE `report_archive` (
+  `id` smallint(5) unsigned NOT NULL,
+  `report_id` smallint(5) unsigned NOT NULL,
+  `path` varchar(255) NOT NULL,
+  `report_options` text,
+  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Core BHIMA supported reports 
+INSERT INTO `report` VALUES 
+  (1, 'balance', 'Balance Report', NULL, true, false, false, CURRENT_TIMESTAMP),
+  (2, 'chart_of_acccounts', 'Chart of Accounts', NULL, true, false, false, CURRENT_TIMESTAMP),
+  (3, 'budget_balance', 'Budget vs. Balance', NULL, true, false, false, CURRENT_TIMESTAMP);

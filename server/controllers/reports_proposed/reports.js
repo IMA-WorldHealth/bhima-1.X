@@ -1,6 +1,7 @@
 var path                    = require('path');
 var fs                      = require('fs');
 var q                       = require('q');
+var db                      = require('./../../lib/db');
 
 // Import and compile template files
 var dots                    = require('dot').process({path : path.join(__dirname, 'templates')});
@@ -71,6 +72,31 @@ exports.serve = function (req, res, next) {
       });*/
     }
   });
+};
+
+// TODO refactor 
+exports.index = function (req, res, next) { 
+  var indexQuery = 'SELECT * FROM `report`';
+
+  db.exec(indexQuery)
+    .then(function (reportsIndex) { 
+      res.json(reportsIndex);
+    })
+    .catch(function (err) { next(err); })
+    .done();
+};
+
+// Designed to be able to handle additional type logic; CSV, PDF
+exports.listArchives = function (req, res, next) { 
+  var archiveQuery = 'SELECT * from `report_archive` WHERE `report_id` = ?';
+  var reportId = req.params.id;
+
+  db.exec(archiveQuery, [reportId])
+    .then(function (archives) { 
+      res.json(archives);
+    })
+    .catch(function (err) { next(err); })
+    .done();
 };
 
 exports.build = function (req, res, next) {

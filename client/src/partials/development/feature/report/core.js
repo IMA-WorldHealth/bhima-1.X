@@ -28,16 +28,54 @@ function ReportCore($routeParams, ModuleState, ReportService) {
   var viewModel = this;
 
   var state = new ModuleState();
+  
   var reportKey = $routeParams.reportKey;
-  
-  var serverInterface = ReportService;
+  var reportDefinition = null;
 
-  console.log(state);
-   
-  var t = serverInterface.requestDefinition(reportKey);
-  console.log('got result', t);
-  // state.invalidateModule();
+  var serverInterface = ReportService;
   
+  // Set up the core report archive page
+  loadDefinition(reportKey); 
+  
+  function loadDefinition(key) { 
+
+    // Uses non asynchronous request method - this can be done because of the 
+    // $routeProvider resolve configuration
+    reportDefinition = serverInterface.requestDefinition(key);
+
+    if (angular.isUndefined(reportDefinition)) { 
+
+      // Report definition has not been found - BHIMA instance does not support 
+      // this report - update the module state accordingly 
+      state.invalidateModule();
+    } else { 
+
+      // Found report definition - settup module page
+      state.validateModule();
+      settupCoreReport(reportDefinition);
+    }
+  }
+  
+  function settupCoreReport(definition) { 
+    
+    // Customize view
+    viewModel.title = definition.title;
+    
+    // TODO Use semantic methods
+    state.isLoading = true;
+
+    // Fetch archives 
+    serverInterface.fetchArchive(definition.id)
+      .then(settupArchive);
+      // TODO .catch()
+
+    // Customize generation model
+    
+    // Hook up recurring report configuration 
+    
+    // Hook up settings
+  }
+
   /**
    * @params {Object} options Specify any initial options for the report, this 
    * can be default values passed sepecified in the URL
@@ -46,8 +84,35 @@ function ReportCore($routeParams, ModuleState, ReportService) {
 
   }
 
+  function settupArchive(archives) { 
+    
+    // TODO use semantic methods
+    state.isLoading = false;
+
+    // Update view
+    updateArchivesView(archives.data); 
+  }
+  
+  // Method to expose archives to view model, this can be called by the initial
+  // settup routine as well as post report generation 
+  function updateArchivesView(archivesData) { 
+    var archivesEmpty = archivesData.length === 0;
+    
+    viewModel.archives = archivesData;
+    
+    // Allows semantic templating 
+    viewModel.archivesEmpty = archivesEmpty;
+  }
+  
+  // UI Utility 
+  function suppressSuccess() { 
+    viewModel.state.suppressSuccessDisplay = true;
+  }
+
   // Expose state to the view model - allow selective displaying of elements
   viewModel.state = state;
-  
+  viewModel.suppressSuccess = suppressSuccess;
+  viewModel.state.suppressSuccessDisplay = false;
+
   viewModel.reportKey = reportKey;
 }

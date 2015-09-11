@@ -14,10 +14,10 @@
 angular.module('bhima.services')
 .factory('ReportService', ReportService);
 
-ReportService.$inject = ['$timeout', '$http', '$q', 'store'];
+ReportService.$inject = ['$http', '$q', 'store'];
 
-function ReportService($timeout, $http, $q, Store) { 
-  var reportIndexCache = new Store({ identifier : 'key' });
+function ReportService($http, $q, Store) { 
+  var reportIndexCache = new Store({identifier : 'key'});
   var serviceDependency = $q.defer();
  
   // Tasks run on service startup
@@ -25,15 +25,27 @@ function ReportService($timeout, $http, $q, Store) {
 
   function cacheIndex() { 
   
-    $timeout(function () { 
-      
-      // Notify any $routeProvider resolve methods waiting on this dependency 
-      serviceDependency.resolve();
-      
-      // Update legacy deferred request state
-      loadedReportIndex = true;
-      fulfillPromises();
-    }, 3000);
+    $http.get('report/index')
+      .then(function (reportIndex) { 
+        reportIndexCache.setData(reportIndex.data);
+        
+        // Notify any $routeProvider resolve methods waiting on this dependency 
+        serviceDependency.resolve();
+        
+        // Update legacy deferred request state
+        loadedReportIndex = true;
+        fulfillPromises();
+      });
+      // .catch()
+  }
+
+  function fetchArchive(id) { 
+    var archivePath = 'report/archives/'.concat(id);
+
+    return $http.get(archivePath);
+      // .then(function (archive) { 
+      // });
+      //.catch()
   }
   
   /**
@@ -43,6 +55,7 @@ function ReportService($timeout, $http, $q, Store) {
    * serviceDependency resolve in $routeProvider
    */
   function requestDefinition(key) { 
+    console.log('key', key,  reportIndexCache);
     return reportIndexCache.get(key);
   }
 
@@ -92,6 +105,7 @@ function ReportService($timeout, $http, $q, Store) {
   return { 
     dependency : serviceDependency.promise, 
     requestDefinition : requestDefinition,
-    requestDefinitionDeferred : requestDefinitionDeferred
+    requestDefinitionDeferred : requestDefinitionDeferred,
+    fetchArchive : fetchArchive
   }
 }

@@ -70,6 +70,8 @@ exports.initialise = function (app) {
   // -> Add :route
   app.post('/report/build/:route', compileReport.build);
   app.get('/report/serve/:target', compileReport.serve);
+  app.get('/report/index', compileReport.index);
+  app.get('/report/archives/:id', compileReport.listArchives);
 
   app.post('/purchase', createPurchase.execute);
   app.post('/sale/', createSale.execute);
