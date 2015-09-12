@@ -1,15 +1,166 @@
 <!-- TODO: Translate -->
-<div class="modal-content modal-lg square">
+
+<div class="modal-content modal-report">
   
   <div class="modal-header">
-
+    <h3><i class="glyphicon glyphicon-file"></i> Create {{balanceCtrl.title}}</h3> 
   </div>
   
   <div class="modal-body">
+    <div style="padding-left : 15px; padding-bottom : 10px;">
+    <label>Index</label>
+    <ul class="list-unstyled">
+      <li><a ng-click="balanceCtrl.scrollToContent()">Content Configuration</a></li>
+      <li><a ng-click="balanceCtrl.scrollToLabel()">Label Configuration</a></li>
+      <li><a ng-click="balanceCtrl.scrollToLayout()">Layout Configuration</a></li>
+    </ul>
+    </div>
+    <form>
+      
+      <div id="contentConfig" class="panel panel-default">
+        <div class="panel-heading">
 
+        <strong>Content Configuration</strong>
+        </div>
+          
+        <div class="panel-body">
+        <div class="form-group">
+          <label for="fiscalYear">Fiscal Year <small>Soon to be depreciated for period selection directive</small></label>
+          <select id="fiscalYear" class="form-control">
+            <option>2015 - Year to date</option>
+            <option>2014</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="identity">Report Title <small>This will be used to identify the report in the future, this title is not included in the report (see heading)</small></label>
+          <input type="text" class="form-control" id="identity" placeholder="Report Title">
+        </div>
+
+
+        <div class="form-group">
+          <label for="tags">Report Tags</label>
+          <select disabled id="tags" class="form-control">
+          </select>
+        </div>
+
+        
+      </div>
+    </div>
+      
+      <div id="labelConfig" class="panel panel-default square">
+        <div class="panel-heading">
+          <strong>Label Configuration</strong>
+        </div>
+        <div class="panel-body">
+        <div class="form-group">
+          <label for="title">Heading</label>
+          <input type="text" class="form-control" id="title" placeholder="Report Title">
+        </div>
+      
+        <div class="form-group">
+          <label for="subtitle">Subheading</label>
+          <input type="text" class="form-control" id="subtitle" placeholder="Report Subtitle">
+        </div>
+
+        <div class="form-group">
+          <label for="address">Address To <small>Begin typing to select from debtors, creditors, employees and conventions</small></label>
+          <input type="text" class="form-control" id="address" placeholder="Search addressee...">
+        </div>
+
+        <div class="form-group">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" id="letterhead">
+              Include enterprise letterhead
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" id="letterhead">
+              Include date generated
+            </label>
+          </div>
+        </div>
+
+
+      <div class="form-group">
+        <label>Language</label>
+
+        <div class="radio">
+          <label>
+            <input type="radio" name="languageOptions" id="english" value="en" checked>
+            English
+          </label>
+        </div>
+
+        <div class="radio">
+          <label>
+            <input type="radio" name="languageOptions" id="french" value="fr">
+            French
+          </label>
+        </div>
+
+      </div>
+      </div> 
+      </div>
+      
+      <div id="layoutConfig" class="panel panel-default">
+        <div class="panel-heading">
+          <strong>Layout Configuration</strong>
+        </div>
+        <div class="panel-body">
+  
+        <div class="form-group">
+          <label>Orientation</label>
+
+          <div class="radio">
+            <label>
+              <input type="radio" name="orientationOptions" id="portrait" value="portrait" checked>
+              Portrait
+            </label>
+          </div>
+
+          <div class="radio">
+            <label>
+              <input type="radio" name="orientationOptions" id="landscape" value="landscape">
+              Landscape
+            </label>
+          </div>
+
+        </div>
+        
+        <div class="form-group">
+          <label>Page Size</label>
+
+          <div class="radio">
+            <label>
+              <input type="radio" name="sizeOptions" id="normal" value="normal" checked>
+              Normal (A4)
+            </label>
+          </div>
+
+          <div class="radio">
+            <label>
+              <input type="radio" name="sizeOptions" id="compact" value="compact">
+              Compact (A5)
+            </label>
+          </div>
+
+        </div>
+
+        </div>
+      </div>
+      
+    </form>
   </div>
 
   <div class="modal-footer">
-    <i>bhima reporting module 0.1</i>
+    <div class="pull-left">
+      <i><small>bhima reporting module 0.1</small></i>
+    </div>
   </div>
 </div>

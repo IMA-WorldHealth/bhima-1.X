@@ -311,7 +311,38 @@ a.danger {
 
 .modal-content.modal-lg {
   width: 60%;
+}
+
+.modal-content.modal.lg.square { 
   border-radius : 0;
+}
+
+.modal-report { 
+  width : 95%;
+  max-width : 75em;
+  
+  /* Using top because the page layout is structured such that margin would push 
+   * it down (scheduled to be fixed in architecture redesign
+   */
+  top : 10px !important;
+}
+
+@media screen and (min-width : 992px) { 
+  .modal-report { 
+    width : 95%;
+    max-width : 75em;
+    top : 60px !important;
+  }
+}
+
+.modal-report > .modal-body { 
+  padding-bottom : 0px !important;
+  max-height : 45em;
+  overflow-y : auto;
+}
+
+.modal-report > .modal-footer { 
+  margin-top : 0px !important;
 }
 
 .box-error {

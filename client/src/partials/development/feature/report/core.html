@@ -5,7 +5,7 @@
 <!-- TODO: If page structure should be replaced with implicit correctness through -->
 <!-- dynamic, database driven routes -->
 <nav ng-if="::ReportCtrl.state.isValid">
-  <button ng-click="ReportCtrl.hookGeneration()" class="btn btn-primary btn-default">Generate new {{ReportCtrl.title}}</button>
+  <button ng-click="ReportCtrl.hookGeneration()" class="btn btn-primary btn-default">Create new {{ReportCtrl.title}}</button>
 
   <div class="pull-right">
     <button class="btn btn-default">Manage recurring report</button>
@@ -35,7 +35,7 @@
 
     <!-- No archive data found -->
     <div ng-if="ReportCtrl.archivesEmpty" class="alert alert-info">
-      <i style="padding-right : 0.5em;" class="glyphicon glyphicon-folder-open"></i> <strong> No reports found in the archive.</strong> Use the 'Generate new {{ReportCtrl.title}}' button to create a new report.
+      <i style="padding-right : 0.5em;" class="glyphicon glyphicon-folder-open"></i> <strong> No reports found in the archive.</strong> Use the 'Create new {{ReportCtrl.title}}' button to create a new report.
     </div>
 
     <!-- Found archives -->

@@ -91,7 +91,12 @@ function ReportCore($routeParams, $modal, ModuleState, ReportService) {
       backdrop : 'static',
       keyboard : false,
       templateUrl : templateByConvention,
-      controller : controllerByConvention
+      controller : controllerByConvention,
+      resolve : { 
+        definition : function () { 
+          return reportDefinition 
+        }
+      }
     })
 
     modal.result.then(function (completeConfirmation) { 
