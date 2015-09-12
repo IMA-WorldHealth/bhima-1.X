@@ -1,2 +1,0 @@
-Fixations directory
-===================
