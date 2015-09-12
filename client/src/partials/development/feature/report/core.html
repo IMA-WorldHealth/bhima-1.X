@@ -5,7 +5,7 @@
 <!-- TODO: If page structure should be replaced with implicit correctness through -->
 <!-- dynamic, database driven routes -->
 <nav ng-if="::ReportCtrl.state.isValid">
-  <button class="btn btn-primary btn-default">Generate new {{ReportCtrl.title}}</button>
+  <button ng-click="ReportCtrl.hookGeneration()" class="btn btn-primary btn-default">Generate new {{ReportCtrl.title}}</button>
 
   <div class="pull-right">
     <button class="btn btn-default">Manage recurring report</button>

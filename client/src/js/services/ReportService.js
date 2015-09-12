@@ -19,7 +19,11 @@ ReportService.$inject = ['$http', '$q', 'store'];
 function ReportService($http, $q, Store) { 
   var reportIndexCache = new Store({identifier : 'key'});
   var serviceDependency = $q.defer();
- 
+  
+  var generateTemplatesPath = 'partials/development/feature/report/generate/';
+  var generateTemplateConvention = '.generate.tmpl.html';
+  var generateControllerConvention = 'Controller';
+  var generateAliasConvention = ' as ?Ctrl';
   // Tasks run on service startup
   cacheIndex();
 
@@ -46,6 +50,17 @@ function ReportService($http, $q, Store) {
       // .then(function (archive) { 
       // });
       //.catch()
+  }
+
+  function resolveTemplatePath(reportKey) { 
+    return generateTemplatesPath.concat(reportKey).concat(generateTemplateConvention);
+  }
+
+  function resolveController(reportKey) { 
+    var controller = reportKey.concat(generateControllerConvention);
+    var alias = controller.concat(generateAliasConvention).replace('?', reportKey);
+
+    return alias;
   }
   
   /**
@@ -106,6 +121,8 @@ function ReportService($http, $q, Store) {
     dependency : serviceDependency.promise, 
     requestDefinition : requestDefinition,
     requestDefinitionDeferred : requestDefinitionDeferred,
-    fetchArchive : fetchArchive
+    fetchArchive : fetchArchive,
+    resolveTemplatePath : resolveTemplatePath,
+    resolveController : resolveController
   }
 }

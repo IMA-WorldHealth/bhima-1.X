@@ -20,9 +20,9 @@
  */
 angular.module('bhima.controllers').controller('ReportCore', ReportCore);
 
-ReportCore.$inject = ['$routeParams', 'ModuleState', 'ReportService'];
+ReportCore.$inject = ['$routeParams', '$modal', 'ModuleState', 'ReportService'];
 
-function ReportCore($routeParams, ModuleState, ReportService) { 
+function ReportCore($routeParams, $modal, ModuleState, ReportService) { 
   
   // Anything assigned to the controller object will be exposed to the template (view)
   var viewModel = this;
@@ -31,7 +31,7 @@ function ReportCore($routeParams, ModuleState, ReportService) {
   
   var reportKey = $routeParams.reportKey;
   var reportDefinition = null;
-
+  
   var serverInterface = ReportService;
   
   // Set up the core report archive page
@@ -76,6 +76,35 @@ function ReportCore($routeParams, ModuleState, ReportService) {
     // Hook up settings
   }
 
+  function hookGeneration() { 
+    var templateByConvention = serverInterface.resolveTemplatePath(reportDefinition.key); 
+    var controllerByConvention = serverInterface.resolveController(reportDefinition.key);
+    
+    // TODO verify these exist as entities before continuing (catch erros on modal creation?)
+    console.log(templateByConvention);
+    console.log(controllerByConvention);
+
+    var modal = $modal
+      .open({
+      
+      // Disable interaction with page behind
+      backdrop : 'static',
+      keyboard : false,
+      templateUrl : templateByConvention,
+      controller : controllerByConvention
+    })
+
+    modal.result.then(function (completeConfirmation) { 
+      // Report complete 
+      
+    }, function (error) { 
+    
+      // TODO formalise this
+      console.error('Report is NOT configured correctly');
+      console.error(error);
+    });
+  }
+
   /**
    * @params {Object} options Specify any initial options for the report, this 
    * can be default values passed sepecified in the URL
@@ -111,8 +140,10 @@ function ReportCore($routeParams, ModuleState, ReportService) {
 
   // Expose state to the view model - allow selective displaying of elements
   viewModel.state = state;
+  
   viewModel.suppressSuccess = suppressSuccess;
+  viewModel.hookGeneration = hookGeneration;
   viewModel.state.suppressSuccessDisplay = false;
-
+  
   viewModel.reportKey = reportKey;
 }
