@@ -2648,13 +2648,12 @@
       "SITUATION_STOCK" : "Situation du stock",
       "TITLE"           : "Rapports"
       },
-   "STOCK_BY_PRODUCT": {
+   "ALERTS": {
+      "TITLE"         : "Alertes Stock",
       "IN_STOCK"      : "En stock",
-      "NO_LONGER"     : "Tend vers épuisement",
       "OPTIMAL_LEVEL" : "Niveau des stocks optimale",
       "OUT_OF_STOCK"  : "Stock épuisé",
       "OVER_MAX"      : "Au dessus du maximum",
-      "TITLE"         : "Stock par produits",
       "UNDER_MIN"     : "En dessous du minimum"
       },
    "TITLE"              : "Tableau de bord du Stock"

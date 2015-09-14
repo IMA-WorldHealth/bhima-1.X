@@ -107,7 +107,6 @@ exports.listItemByConsumption = function (req, res, next) {
 * GET /donations?limit=10
 *
 * Returns a list of the top donors by quantity
-*
 */
 exports.getRecentDonations = function (req, res, next) {
   'use strict';
@@ -128,6 +127,51 @@ exports.getRecentDonations = function (req, res, next) {
   db.exec(sql, [limit])
   .then(function (rows) {
     res.status(200).send(rows);
+  })
+  .catch(next)
+  .done();
+};
+
+/*
+* GET /stockalerts
+*/
+exports.getStockAlerts = function (req, res, next) {
+  'use strict';
+
+  var sql, data = {
+    outtage : [],
+    minimum : [],
+    excess  : [],
+    optimum : []
+  };
+
+  sql =
+    'SELECT i.uuid, i.stock_min AS min, i.stock_max AS max, IFNULL(SUM(s.quantity), 0) AS quantity ' +
+    'FROM inventory AS i LEFT OUTER JOIN stock AS s ' +
+      'ON i.uuid = s.inventory_uuid ' +
+    'GROUP BY i.uuid;';
+
+  db.exec(sql)
+  .then(function (rows) {
+
+    // NOTE -- this is potentially an expensive blocking operation.  If too expensive,
+    // chunk it into smaller peices.
+    rows.forEach(function (item) {
+
+      // Stock Outtage
+      if (item.quantity === 0) { data.outtage.push(item.uuid); }
+
+      // Under minimum preset value (but not out)
+      if (item.quantity <= item.min && item.quantity !== 0) { data.minimum.push(item.uuid); }
+
+      // Excess stock
+      if (item.quantity > item.max) { data.excess.push(item.uuid); }
+
+      // Optimum stock level --- TODO is this really necessary?
+      if (item.quantity ===  item.max) { data.optimum.push(item.uuid); }
+    });
+
+    res.status(200).json(data);
   })
   .catch(next)
   .done();

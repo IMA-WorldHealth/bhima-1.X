@@ -1,9 +1,9 @@
 angular.module('bhima.services')
-.service('StockDashboardService', [
-  'validate', '$http', '$q', 'connect', StockDashboardService
+.service('StockDataService', [
+  'validate', '$http', '$q', 'connect', StockDataService
 ]);
 
-function StockDashboardService(validate, $http, $q, connect) {
+function StockDataService(validate, $http, $q, connect) {
   var service = this;
   var dependencies = {};
 
@@ -21,11 +21,16 @@ function StockDashboardService(validate, $http, $q, connect) {
 
   service.getConsumption        = getConsumption;
   service.getRecentDonations    = getRecentDonations;
+  service.getStockAlerts        = getStockAlerts;
 
   /* ------------------------------------------------------------------------ */
 
   function getConsumption(limit) {
     return $http.get('/consumption?limit=' + limit);
+  }
+
+  function getStockAlerts() {
+    return $http.get('/stockalerts');
   }
 
   // returns consumption
