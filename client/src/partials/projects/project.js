@@ -95,7 +95,7 @@ angular.module('bhima.controllers')
     };
 
     $scope.delete = function d(project) {
-      connect.basicDelete('project', project.id, 'id')
+      connect.delete('project', 'id', project.id)
       .then(function () {
         $scope.projects.remove(project.id);
       })
