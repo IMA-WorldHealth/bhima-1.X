@@ -243,3 +243,10 @@ DELETE FROM `permission` WHERE `permission`.`unit_id` = 91;
 DELETE FROM `unit` WHERE `unit`.`id` = 90;
 DELETE FROM `unit` WHERE `unit`.`id` = 91;
 DELETE FROM `unit` WHERE `unit`.`id` = 92;
+
+-- Change stock URL route
+--
+-- Date 2015-09-14
+-- by: jniles
+
+UPDATE `unit` SET path="/stock/dashboard", url = "/stock/dashboard" WHERE id = 81;

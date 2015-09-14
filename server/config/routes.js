@@ -161,7 +161,10 @@ exports.initialise = function (app) {
   app.get('/donations', stock.getRecentDonations);
   app.get('/getItemInConsumption/', stock.listItemByConsumption);
   app.get('/getConsumptionDrugs/', stock.listConsumptionDrugs);
+
+  // TODO -- better route names?
   app.get('/stockalerts', stock.getStockAlerts);
+  app.get('/stockexpiration', stock.getStockExpirationStatus);
 
   // TODO - make a purchase order controller
   app.get('/purchaseorders', purchase.getPurchaseOrders);
