@@ -176,3 +176,12 @@ exports.getStockAlerts = function (req, res, next) {
   .catch(next)
   .done();
 };
+
+/*
+* GET /stockexpiration
+*/
+exports.getStockExpirationStatus = function (req, res, next) {
+  'use strict';
+
+  res.status(200).send();
+};
