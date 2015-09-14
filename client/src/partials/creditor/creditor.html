@@ -60,13 +60,6 @@
                 <label for="email" class="control-label">{{ "SUPPLIER.EMAIL" | translate }}</label>
                 <input type="email" class="form-bhima" id="emailID" ng-model="session.supplier.email">
               </div>
-
-            </fieldset>
-            
-            <fieldset>
-              <legend>Location <small style="color : red;">*</small></legend>
-                
-              <div location-select select-village="selectVillage" default-village="defaultVillage">
             </fieldset>
           </form>
         </div>
@@ -85,7 +78,7 @@
             </div>
             <div class="form-group">
               <label for="ad1">{{ "SUPPLIER.ADDR_2" | translate }}</label>
-              <input type="text" class="form-bhima" id="ad2ID" ng-model="session.suplier.address_2">
+              <input type="text" class="form-bhima" id="ad2ID" ng-model="session.supplier.address_2">
             </div>
             <div class="form-group">
               <label for="fax">{{ "SUPPLIER.FAX" | translate }}</label>
@@ -93,7 +86,7 @@
             </div>
             <div>
               <label for="note">{{ "COLUMNS.NOTE" | translate }}</label>
-              <textarea ng-model="session.supplier.note" class="form-bhima note"></textarea>
+              <textarea ng-model="session.supplier.note" class="form-bhima" ng-model="session.supplier.note"></textarea>
             </div>
           </form>
         </div>
@@ -130,7 +123,7 @@
 
 <footer>
   <div class="pull-right">
-    <button class="btn btn-success btn-sm" ng-click="session.state.method()" ng-disabled="form.$invalid || !session.location.village" >
+    <button class="btn btn-success btn-sm" ng-click="session.state.method()" ng-disabled="form.$invalid" >
       {{ session.state.button | translate }}
     </button>
   </div>
