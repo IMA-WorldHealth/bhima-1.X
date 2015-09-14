@@ -217,3 +217,18 @@ ALTER TABLE `rubric`
 CHANGE `is_advance` `is_advance` tinyint(1) DEFAULT '0';
 ALTER TABLE `rubric`  
 CHANGE `is_social_care` `is_social_care` tinyint(1) DEFAULT '0';
+
+
+-- Deletion of undeveloped reports
+--
+-- Date: 2015-09-14
+-- By : Chris Lomame
+
+DELETE FROM `permission` WHERE `permission`.`unit_id` = 90;
+DELETE FROM `permission` WHERE `permission`.`unit_id` = 91;
+DELETE FROM `permission` WHERE `permission`.`unit_id` = 91;
+
+
+DELETE FROM `unit` WHERE `unit`.`id` = 90;
+DELETE FROM `unit` WHERE `unit`.`id` = 91;
+DELETE FROM `unit` WHERE `unit`.`id` = 92;
