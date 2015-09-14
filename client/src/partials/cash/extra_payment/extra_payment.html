@@ -22,7 +22,7 @@
                   <input class="form-bhima" ng-model="session.patient" 
                     required typeahead="patient as formatPatient(patient) for patient in session.patients.data | filter:$viewValue | limitTo:10" 
                     typeahead-template-url="/partials/templates/patientListe.tmpl.html"
-                    placeholder="{{ 'PATIENT_STANDING.PLACEHOLDER' | translate }}">
+                    placeholder="{{ 'CASH.EXTRA.FIND_PATIENT' | translate }}">
                   </div>
                 </div>
               </div>
@@ -36,7 +36,7 @@
                   <span class="input-group-addon">
                     <span class="glyphicon glyphicon-briefcase"></span>
                   </span>  
-                  <input class="form-bhima" ng-model="session.account" required typeahead="account as formatAccount(account) for account in session.accounts.data | filter:$viewValue | limitTo:10" typeahead-template-url="/partials/templates/accountListe.tmpl.html" placeholder="{{ 'PATIENT_STANDING.PLACEHOLDER' | translate }}">
+                  <input class="form-bhima" ng-model="session.account" required typeahead="account as formatAccount(account) for account in session.accounts.data | filter:$viewValue | limitTo:10" typeahead-template-url="/partials/templates/accountListe.tmpl.html" placeholder="{{ 'CASH.EXTRA.FIND_ACCOUNT' | translate }}">
                   </div>
                 </div>
               </div>
