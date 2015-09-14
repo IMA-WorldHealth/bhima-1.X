@@ -22,7 +22,7 @@ angular.module('bhima.controllers')
       query : {
         identifier : 'uuid',
         tables : {
-          supplier : { columns : ['uuid', 'name', 'phone', 'locked', 'email', 'location_id', 'international', 'creditor_uuid'] },
+          supplier : { columns : ['uuid', 'name', 'phone', 'locked', 'email', 'international', 'creditor_uuid', 'address_1', 'address_2', 'fax', 'note'] },
           creditor : { columns : ['group_uuid'] }
         },
         join : ['supplier.creditor_uuid=creditor.uuid']
@@ -66,13 +66,10 @@ angular.module('bhima.controllers')
     function createSupplier() {
       session.supplier = {};
       session.creditor = {};
-      //setDefaultLocation(session.enterprise.location_id);
       
       session.state = route.create;
       session.selected = null;
 
-      // Default location 
-      $scope.defaultVillage = session.enterprise.location_id;
    }
 
     function editSupplier(uuid) {
@@ -87,7 +84,6 @@ angular.module('bhima.controllers')
     function assignSupplier(supplier) {
       session.supplier = supplier;
       session.creditor = { group_uuid : supplier.group_uuid };      
-      $scope.defaultVillage = supplier.location_id;
     }
 
     function registerSupplier() {
@@ -99,7 +95,6 @@ angular.module('bhima.controllers')
 
       // Assign uuid, location and creditor id to supplier
       session.supplier.uuid = uuid();
-      session.supplier.location_id = session.location.village;
       session.supplier.creditor_uuid = creditor_uuid;
     
       requestCreditor(session.creditor)
