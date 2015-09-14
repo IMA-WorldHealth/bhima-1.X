@@ -36,7 +36,7 @@ angular.module('bhima.controllers')
     dependencies.creditor = {
       query : {
         tables : {
-          supplier : { columns : ['uuid', 'name', 'location_id', 'creditor_uuid'] },
+          supplier : { columns : ['uuid', 'name', 'creditor_uuid'] },
         }
       }
     };
