@@ -161,6 +161,7 @@ exports.initialise = function (app) {
   app.get('/donations', stock.getRecentDonations);
   app.get('/getItemInConsumption/', stock.listItemByConsumption);
   app.get('/getConsumptionDrugs/', stock.listConsumptionDrugs);
+  app.get('/stockalerts', stock.getStockAlerts);
 
   // TODO - make a purchase order controller
   app.get('/purchaseorders', purchase.getPurchaseOrders);

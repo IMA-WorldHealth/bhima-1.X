@@ -360,11 +360,11 @@
     "DAY"    : "Day",
     "MONTH"  : "Month",
     "PERIOD" : "Period",
-    "TITLE"  : "Grouping",    
-    "WEEK"   : "Week",    
-    "YEAR"   : "Year"    
+    "TITLE"  : "Grouping",
+    "WEEK"   : "Week",
+    "YEAR"   : "Year"
   }
-},   
+},
 "COLUMNS": {
    "ABBR"                  : "Abbr",
    "ABBREVIATION"          : "Abreviation",
@@ -626,7 +626,7 @@
    "WORDING"               : "Wording",
    "WORKING_DAY"           : "Working day",
    "ZS"                    : "Health Zone"
-   
+
    },
 
 "CONFIG_ACCOUNTING": {
@@ -2368,7 +2368,7 @@
    "BALANCE_SECTION"       : "Select Balance Sheet Section",
    "CASH"                  : "Select a Cash",
    "COST_CENTER"           : "Select the cost center",
-   "COTISATION"            : "Select a Cotisation",   
+   "COTISATION"            : "Select a Cotisation",
    "COUNTRY"               : "Select a Country",
    "CREDITOR"              : "Select a creditor",
    "CREDITOR_GROUP"        : "Select a Creditor Group",
@@ -2648,14 +2648,13 @@
       "SITUATION_STOCK" : "Stock status",
       "TITLE"           : "Reports"
       },
-   "STOCK_BY_PRODUCT": {
+   "ALERTS": {
+      "TITLE"         : "Stock Alerts",
       "IN_STOCK"      : "In stock",
-      "NO_LONGER"     : "No longer in stock",
       "OPTIMAL_LEVEL" : "Optimal level of stock",
-      "OUT_OF_STOCK"  : "Out of stock",
-      "OVER_MAX"      : "Over maximum",
-      "TITLE"         : "Stock by product",
-      "UNDER_MIN"     : "Under minimum"
+      "OUT_OF_STOCK"  : "Out of Stock",
+      "OVER_MAX"      : "Over Maximum",
+      "UNDER_MIN"     : "Under Minimum"
       },
    "TITLE"              : "Stock Dashboard"
    },
@@ -2861,7 +2860,7 @@
    "DASHBOARD" : {
       "FINANCE" : " Finance Dashboard",
       "TITLE"   : "Dashboards"
-   },   
+   },
    "DEBTOR_AGING"              : "Debtor Aging",
    "DEBTOR_GRP"                : "Debtor Group",
    "DEPOT"                     : "Store",

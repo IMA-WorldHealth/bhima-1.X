@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
 .controller('stock_status', [
   '$scope',
   '$http',
-  'stockControler',
-  function ($scope, $http, stockControler) {
+  'StockDataService',
+  function ($scope, $http, StockDataService) {
     var session = $scope.session = {};
 
     $scope.consumptions = {};
@@ -11,40 +11,40 @@ angular.module('bhima.controllers')
 
     if (document.readyState === 'complete') {
 
-      $http.get('/getStockEntry/').
-      success(function(data) {
+      $http.get('/getStockEntry/')
+      .success(function(data) {
 
         data.forEach(function (item2) {
 
-          stockControler.getStock(item2.inventory_uuid)
+          StockDataService.getStock(item2.inventory_uuid)
           .then(function (val) {
             item2.total = Math.round(val);
           });
 
-          stockControler.getDelaiLivraison(item2.inventory_uuid)
+          StockDataService.getDelaiLivraison(item2.inventory_uuid)
           .then(function (val) {
           });
 
-          stockControler.getIntervalleCommande(item2.inventory_uuid)
+          StockDataService.getIntervalleCommande(item2.inventory_uuid)
           .then(function (val) {
           });
 
-          stockControler.getMonthlyConsumption(item2.inventory_uuid)
+          StockDataService.getMonthlyConsumption(item2.inventory_uuid)
           .then(function (val) {
             item2.consumption_avg = Math.round(val);
           });
 
-          stockControler.getStockSecurity(item2.inventory_uuid)
+          StockDataService.getStockSecurity(item2.inventory_uuid)
           .then(function (val) {
             item2.consumption_security = Math.round(val);
           });
 
-          stockControler.getStockMin(item2.inventory_uuid)
+          StockDataService.getStockMin(item2.inventory_uuid)
           .then(function (val) {
             item2.consumption_min = Math.round(val);
           });
 
-          stockControler.getStockMax(item2.inventory_uuid)
+          StockDataService.getStockMax(item2.inventory_uuid)
           .then(function (val) {
             item2.consumption_max = Math.round(val);
           })
@@ -60,7 +60,6 @@ angular.module('bhima.controllers')
 
         $scope.consumptions = data;
       });
-
     }
   }
 ]);
