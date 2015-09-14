@@ -104,8 +104,8 @@ angular.module('bhima.controllers')
       });
     };
 
-    $scope.toString = function toString(obj) {
-      return '' + obj.zone + ' - ' + obj.territoire + '(' + obj.province + ')';
+    $scope.fmtZone = function (obj) {
+      return obj.zone + ' - ' + obj.territoire + ' (' + obj.province + ')';
     };
 
     appstate.register('project', function (project) {
