@@ -434,7 +434,7 @@ angular.module('bhima.controllers')
           query : {
             tables : {
               creditor : { columns : ['group_uuid'] },
-              supplier : { columns : ['uuid', 'name', 'location_id', 'email', 'fax', 'note', 'phone', 'international'] }
+              supplier : { columns : ['uuid', 'name', 'email', 'fax', 'note', 'phone', 'international'] }
             },
             join : ['creditor.uuid=supplier.creditor_uuid'],
             where : ['creditor.uuid=' + creditor]
