@@ -50,8 +50,6 @@ function initialise() {
 function exec(sql, params) {
   var defer = q.defer();
 
-  // uncomment for console.logs().  Warning -- slows down trial balance terribly
-  // console.log('[db] [exec]', sql);
   con.getConnection(function (err, connection) {
     if (err) { return defer.reject(err); }
 
@@ -60,7 +58,6 @@ function exec(sql, params) {
       connection.release();
       defer.resolve(results);
     });
-
   });
 
   return defer.promise;

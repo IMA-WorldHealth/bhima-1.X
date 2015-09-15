@@ -994,23 +994,6 @@ exports.listMonthlyConsumption = function (req, res, next) {
   .done();
 };
 
-exports.frenchRoute = function (req, res, next) {
-  var sql = "SELECT ROUND(AVG(CEIL(DATEDIFF(s.entry_date,p.purchase_date)/30))) AS dl"
-          + " FROM purchase p"
-          + " JOIN stock s ON p.uuid=s.purchase_order_uuid "
-          + " JOIN purchase_item z ON p.uuid=z.purchase_uuid "
-          + " JOIN inventory i ON s.inventory_uuid=i.uuid "
-          + " WHERE z.inventory_uuid=s.inventory_uuid "
-          + " AND s.inventory_uuid=" + sanitize.escape(req.params.id);
-
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result[0]);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
 exports.listCommandes = function (req, res, next) {
   var sql = "SELECT p.purchase_date AS date_commande"
           + " FROM purchase p"

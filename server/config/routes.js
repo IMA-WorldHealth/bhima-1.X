@@ -40,6 +40,7 @@ var auth            = require('../controllers/auth'),
     analytics       = require('../controllers/analytics'),
     stock           = require('../controllers/stock'),
     purchase        = require('../controllers/purchase'),
+    inventory       = require('../controllers/inventory'),
     patient         = require('../controllers/patient');
 
 exports.initialise = function (app) {
@@ -136,8 +137,6 @@ exports.initialise = function (app) {
   app.get('/max_trans/:projectId', uncategorised.maxTransactionByProject);
   app.get('/print/journal', uncategorised.printJournal);
   app.get('/stockIn/:depot_uuid/:df/:dt', uncategorised.stockIn);
-  app.get('/expiring/:depot_uuid/:df/:dt', uncategorised.stockExpiringByDepot);
-  app.get('/expiring_complete/:tracking_number/:depot_uuid', uncategorised.stockExpiringComplete);
   app.get('/serv_dist_stock/:depot_uuid', uncategorised.distributeStockDepot);
   app.get('/inv_in_depot/:depot_uuid', uncategorised.inventoryByDepot);
   app.get('/inventory/depot/:depot/*', uncategorised.routeDepotQuery);
@@ -151,12 +150,27 @@ exports.initialise = function (app) {
   app.get('/getNombreMoisStockControl/:inventory_uuid', uncategorised.frenchEnglishRoute);
   app.get('/monthlyConsumptions/:inventory_uuid/:nb', uncategorised.listMonthlyConsumption);
   app.get('/getConsumptionTrackingNumber/', uncategorised.listConsumptionByTrackingNumber);
-  app.get('/getDelaiLivraison/:id', uncategorised.frenchRoute);
   app.get('/getCommandes/:id', uncategorised.listCommandes);
   app.get('/getMonthsBeforeExpiration/:id', uncategorised.formatLotsForExpiration);
 
+  /*  Inventory and Stock Managment */
+
+  app.get('/inventory/metadata', inventory.getInventoryItems);
+  app.get('/inventory/:uuid/metadata', inventory.getInventoryItemsById);
+
+  app.get('/inventory/consumption', inventory.getInventoryConsumption);
+  app.get('/inventory/:uuid/consumption', inventory.getInventoryConsumptionById);
+
+  app.get('/inventory/delay', inventory.getInventoryDelay);
+  app.get('/inventory/:uuid/delay', inventory.getInventoryDelayById);
+
+  app.get('/inventory/stock', inventory.getInventoryStockLevels);
+  app.get('/inventory/:uuid/stock', inventory.getInventoryStockLevelsById);
+
+
+  /* continuing on ... */
+
   // stock API
-  // TODO - make a consumption controller
   app.get('/consumption', stock.getConsumption);
   app.get('/donations', stock.getRecentDonations);
   app.get('/getItemInConsumption/', stock.listItemByConsumption);
@@ -165,6 +179,8 @@ exports.initialise = function (app) {
   // TODO -- better route names?
   app.get('/stockalerts', stock.getStockAlerts);
   app.get('/stockexpiration', stock.getStockExpirationStatus);
+  app.get('/expiring/:depot_uuid/:df/:dt', uncategorised.stockExpiringByDepot);
+  app.get('/expiring_complete/:tracking_number/:depot_uuid', uncategorised.stockExpiringComplete);
 
   // TODO - make a purchase order controller
   app.get('/purchaseorders', purchase.getPurchaseOrders);
