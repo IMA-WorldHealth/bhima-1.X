@@ -95,7 +95,10 @@
 
           <!-- show loader for GET methods -->
           <div class="pull-right">
-            <span ng-if="session.state==='loading'">{{ "UTIL.LOADING" | translate}} ...</span>
+            <span ng-if="session.state==='loading'">
+              {{ "UTIL.LOADING" | translate}} &nbsp; 
+              <span class="rotator"><i class="glyphicon glyphicon-refresh"></i></span>
+            </span>
             </span>
           </div>
         </div>
