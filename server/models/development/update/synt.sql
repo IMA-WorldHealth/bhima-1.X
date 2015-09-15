@@ -217,3 +217,22 @@ ALTER TABLE `rubric`
 CHANGE `is_advance` `is_advance` tinyint(1) DEFAULT '0';
 ALTER TABLE `rubric`  
 CHANGE `is_social_care` `is_social_care` tinyint(1) DEFAULT '0';
+
+-- @sfount
+-- 2015-15-09
+-- Model languages
+
+DROP TABLE IF EXISTS `language`;
+CREATE TABLE `language` (
+  `id` smallint(5) unsigned NOT NULL,
+  `title` varchar(35) NOT NULL,
+  `description` varchar(50),
+  `translateKey` varchar(5) NOT NULL,
+  `localeKey` varchar(5) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `language` VALUES
+  (1, 'English', NULL, 'en', 'en-us'),
+  (2, 'French', NULL, 'fr', 'fr-cd');
+-- (3, 'English (EU)', 'en', 'en-uk')
+
