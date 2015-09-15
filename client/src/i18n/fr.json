@@ -1071,6 +1071,7 @@
    "NEW"                      : "Nouvelle Entreprise",
    "PHONE"                    : "Telephone",
    "PO_BOX"                   : "B.P.",
+   "POST_OFFICE_BOX"          : "Boîte Postale",
    "REGISTERED_ENTERPRISE"    : "Entreprises Enregistrées",
    "REGISTERED_RELATIONS"     : "Relations Enregistrées",
    "TITLE"                    : "Gestion de l'Entreprise"
