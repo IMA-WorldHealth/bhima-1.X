@@ -183,5 +183,21 @@ exports.getStockAlerts = function (req, res, next) {
 exports.getStockExpirationStatus = function (req, res, next) {
   'use strict';
 
-  res.status(200).send();
+  var sql,
+      start = req.query.start,
+      end = req.query.end;
+
+  sql =
+    'SELECT stock.inventory_uuid, stock.tracking_number, ' +
+      'stock.lot_number, stock.quantity, stock.expiration_date, inventory.text '+
+    'FROM stock JOIN inventory ON stock.inventory_uuid = inventory.uuid '+
+    'WHERE DATE(stock.expiration_date) BETWEEN DATE(?) AND DATE(?);'+
+
+  db.exec(sql, [start, end])
+  .then(function (rows) {
+
+    res.status(200).send(rows);
+  })
+  .catch(next)
+  .done();
 };

@@ -250,3 +250,10 @@ DELETE FROM `unit` WHERE `unit`.`id` = 92;
 -- by: jniles
 
 UPDATE `unit` SET path="/stock/dashboard", url = "/stock/dashboard" WHERE id = 81;
+
+-- BREAKING - remove consumption_reversing table and add `annuled` column
+--
+-- Date 2015-09-14
+-- by: jniles
+DROP TABLE consumption_reversing;
+ALTER TABLE consumption ADD COLUMN `cancelled` BOOLEAN NOT NULL DEFAULT 0;

@@ -33,6 +33,10 @@ function StockDataService(validate, $http, $q, connect) {
     return $http.get('/stockalerts');
   }
 
+  function getExpirations() {
+    return $http.get('/stockexpirations');
+  }
+
   // returns consumption
   function getMonthCount(uuid) {
     var def = $q.defer();
