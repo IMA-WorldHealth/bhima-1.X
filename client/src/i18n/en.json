@@ -862,6 +862,7 @@
    "ALERT"           : "Manage your stores from here",
    "ALL"             : "All Stores",
    "DELETE_SUCCESS"  : "Delete success",
+   "DELETE_FAIL"     : "Fail when deleting depot, it is used in other records",
    "EDIT"            : "Edit store information",
    "EDIT_SUCCESS"    : "Update successfully",
    "NEW"             : "Register a new Store",

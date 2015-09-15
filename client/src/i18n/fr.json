@@ -862,6 +862,7 @@
    "ALERT"           : "Ce module vous permet de gérer vos dépôt",
    "ALL"             : "Tous les Dépôts",
    "DELETE_SUCCESS"  : "Suppression avec succès",
+   "DELETE_FAIL"     : "Echec Suppression, Le depot est utilisé dans plusiers enregistrements",
    "EDIT"            : "Editer les informations d'un dépôt",
    "EDIT_SUCCESS"    : "Données du dépôt mise à jour avec succès ",
    "NEW"             : "Nouveau dépôt",
