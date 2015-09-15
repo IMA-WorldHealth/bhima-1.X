@@ -217,3 +217,16 @@ ALTER TABLE `rubric`
 CHANGE `is_advance` `is_advance` tinyint(1) DEFAULT '0';
 ALTER TABLE `rubric`  
 CHANGE `is_social_care` `is_social_care` tinyint(1) DEFAULT '0';
+
+
+-- Drop column location_id from table supplier 
+-- Date: 2015-09-14
+-- By: Chris LOMAME
+--
+USE bhima;
+
+ALTER TABLE  `supplier` 
+DROP FOREIGN KEY  `supplier_ibfk_1` ;
+
+ALTER TABLE `supplier`
+DROP `location_id`;
