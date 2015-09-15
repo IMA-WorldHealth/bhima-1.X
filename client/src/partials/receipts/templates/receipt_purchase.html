@@ -1,28 +1,22 @@
 <!-- Purchase template -->
-<!--ng-class="{ 'hidden-print' : model.common.purchases[0].is_authorized == 0, 'visible-print':  model.common.purchases[0].is_authorized == 0 }"-->
-<div ng-controller="receipt.purchase">
+<div ng-controller="receipt.purchase as ReceiptCtrl">
   <div class="row customer-details">
     <div class="col-xs-12">
       <small style="float: right; color: grey; font-size: 14px"> {{ model.common.purchases[0].uuid }}</small>
-      <h4 class="invoice-header">{{ 'INVOICE.PURCHASE_ORDER' | translate }} : {{ model.common.enterprise.abbr + model.common.purchases[0].reference}}</h4>
+      <h4 class="invoice-header">{{ 'INVOICE.PURCHASE_ORDER' | translate }}: {{ model.common.enterprise.abbr + model.common.purchases[0].reference}}</h4>
     </div>
   </div>
 
   <div class="row customer-details">
     <div class="col-xs-4">
-      <span>
-        <b>{{model.common.enterprise.name}}</b>
-      </span>
-      <br>
-      {{model.common.location.name}}
-      <br>
-      {{ model.common.enterprise.po_box || 'B.P. 205'}}
-      <br>
-      {{model.common.location.sector_name}}
-      <br>
-      <i>TEL. : </i> {{model.common.enterprise.phone}}
-      <br>
-      <i>EMAIL : </i> {{model.common.enterprise.email}}
+      <address>
+        <strong>{{ model.common.enterprise.name }}</strong><br />
+        {{ model.common.location.name }} <br>
+        <abbr title="{{ 'ENTERPRISE.POST_OFFICE_BOX' | translate }}">{{ 'ENTERPRISE.PO_BOX' | translate }} :</abbr> {{ model.common.enterprise.po_box }}<br>
+        {{ model.common.location.sector_name }}<br>
+        <abbr title="{{ 'ENTERPRISE.PHONE' | translate }}">TEL. :</abbr> {{ model.common.enterprise.phone }}<br>
+        <i>EMAIL : </i> {{ model.common.enterprise.email }}
+      </address>
     </div>
     <div class="col-xs-4">
       <i>{{ "INVOICE.PURCHASE_RECIPIENT" | translate }}</i><br>
@@ -88,7 +82,7 @@
           <tr>
             <td colspan="4" class="no-border">{{'INVOICE.PURCHASE_TOTAL' | translate}}</td>
             <td>
-              {{ model.common.purchases[0].cost | currency:model.common.purchases[0].currency_id" }}
+              {{ model.common.purchases[0].cost | currency:model.common.purchases[0].currency_id }}
             </td>
           </tr>
         </tbody>

@@ -8,8 +8,7 @@ angular.module('bhima.controllers')
   'validate',
   'exchange',
   'appstate',
-  'connect',
-  function ($scope, $routeParams, $q, validate, exchange, appstate, connect) {
+  function ($scope, $routeParams, $q, validate, exchange, appstate) {
     var templates,
       dependencies = {},
       origin = $scope.origin = $routeParams.originId,

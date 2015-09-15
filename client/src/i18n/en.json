@@ -1071,6 +1071,7 @@
    "NEW"                      : "New Enterprise",
    "PHONE"                    : "Phone",
    "PO_BOX"                   : "PO Box",
+   "POST_OFFICE_BOX"          : "Post Office Box",
    "REGISTERED_ENTERPRISE"    : "Registered Enterprises",
    "REGISTERED_RELATIONS"     : "Registered Relations",
    "TITLE"                    : "Enterprise Management"
