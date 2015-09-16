@@ -11,12 +11,12 @@
   </div>
   
   <div style="position: absolute; right: 5px;">
-    <button class="btn btn-sm btn-primary dropdown-toggle">
+    <button ng-if="session.configured" class="btn btn-sm btn-primary dropdown-toggle">
       {{ session.SelectedCurrency.symbol || "PRIMARY_CASH.DEFAULT_CURRENCY" | translate }}
       <span class="caret" data-caret="&#9660;"></span>
     </button>
 
-    <ul class="dropdown-menu pull-left">
+    <ul ng-if="session.configured" class="dropdown-menu pull-left">
       <li ng-repeat="cur in session.model.currencies.data">
         <a ng-click="setCurrency(cur)"> {{ cur.symbol }} </a>
       </li>
@@ -33,25 +33,54 @@
 
 <main>
   <div ng-if="!session.configured" class="row margin-top-10">
-    <div class="col-xs-12">
+    <div class="col-xs-4 col-md-offset-4">
       <div class="panel panel-default">
         <div class="panel-heading">
-          {{ "PRIMARY_CASH.EXPENSE.SELECT_PERIOD" | translate }}
+          <i class="glyphicon glyphicon-cog"></i> {{ "UTIL.CONFIGURATION" | translate }}
         </div>
 
         <div class="panel-body">
           <div class="configure">
-            <span
-              style="font-size: 70px"
-              class="glyphicon glyphicon-calendar">
-            </span>
-            <select
-              ng-model="session.pp"
-              ng-options="pp as formatPeriod(pp) for pp in session.model.paiement_period.data | orderBy:'-dateTo'"
-              ng-change="setConfiguration(session.pp)"
-              class="form-bhima">
-              <option value="" ng-disabled="disabled">-- {{"SELECT.PERIOD_PAYMENT" | translate}}-- </option>
-            </select>
+            <div class="form-group" ng-hide="session.error.paiement_period && !session.model.paiement_period.data.length">
+              <label><i class="glyphicon glyphicon-calendar"></i> {{"SELECT.PERIOD_PAYMENT" | translate}}</label>
+              <select
+                ng-model="session.pp"
+                ng-options="pp as formatPeriod(pp) for pp in session.model.paiement_period.data | orderBy:'-dateTo'"
+                class="form-bhima">
+                <option value="" ng-disabled="disabled">-- {{"SELECT.PERIOD_PAYMENT" | translate}} -- </option>
+              </select>
+            </div>
+            <!-- error -->
+            <div class="alert alert-info" ng-show="session.error.paiement_period && !session.model.paiement_period.data.length">
+              <b>{{"UTIL.CONFIGURE_PP_NONE" | translate}}</b><br>
+              <p>{{"UTIL.CONFIGURE_PP_INFO" | translate}}: </p>
+              <a href="#/payment_period/"><b><i class="glyphicon glyphicon-hand-right"></i> ici</b></a>
+            </div>
+            <!-- error -->
+
+            <div class="form-group" ng-hide="session.error.exchange_rate">
+              <label><i class="glyphicon glyphicon-usd"></i> {{"SELECT.CURRENCY" | translate}}</label>
+              <select 
+                ng-model="session.currency"
+                ng-options="cur as cur.symbol for cur in session.model.currencies.data"
+                class="form-bhima">
+                <option value="" ng-disabled="disabled">-- {{"SELECT.CURRENCY" | translate}} -- </option>
+              </select>
+            </div>
+            <!-- error -->
+            <div class="alert alert-info"  ng-show="session.error.exchange_rate">
+              <b>{{"UTIL.CONFIGURE_ER_NONE" | translate}}</b><br>
+              <p>{{"UTIL.CONFIGURE_ER_INFO" | translate}}: </p>
+              <a href="#/exchange_rate/"><b><i class="glyphicon glyphicon-hand-right"></i> ici</b></a>
+            </div>
+            <!-- error -->
+
+            <div class="">
+              <button class="btn btn-success btn-sm" 
+                ng-click="setConfiguration(session.pp, session.currency)" 
+                ng-disabled="!session.pp || !session.currency">
+              {{"UTIL.VALIDATE" | translate}}</button>
+            </div>
           </div>
         </div>
       </div>
@@ -63,6 +92,15 @@
       <div class="panel panel-default">
         <div class="panel-heading" >
           <b>{{ "PRIMARY_CASH.EXPENSE.PAYABLE_EMPLOYEE" | translate}} {{session.pp.dateFrom | date}} / {{session.pp.dateTo | date}}</b>
+
+          <!-- show loader for GET methods -->
+          <div class="pull-right">
+            <span ng-if="session.state==='loading'">
+              {{ "UTIL.LOADING" | translate}} &nbsp; 
+              <span class="rotator"><i class="glyphicon glyphicon-refresh"></i></span>
+            </span>
+            </span>
+          </div>
         </div>
         <div class="panel-body">
 
