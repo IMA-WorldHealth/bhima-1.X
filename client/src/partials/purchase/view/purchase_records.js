@@ -1,24 +1,21 @@
-angular.module('bhima.controllers')
-.controller('purchaseRecords', [
-  '$scope',
-  '$q',
-  'connect',
-  function ($scope, $q, connect) {
-    var session = $scope.session = { purchase_type: 'indirect'};
-    $scope.purchase_filter = {};
+
+var purchaseRecords = function ($q, connect) {
+  var that = this;
+    var session = that.session = { purchase_type: 'indirect'};
+    that.purchase_filter = {};
 
     function init() {
-      $scope.selected = null;
+      that.selected = null;
       var promise = fetchRecords();
 
       promise.then(function(model) {
-        $scope.indirect_purchase = model[1];
-        $scope.direct_purchase = model[0];
+        that.indirect_purchase = model[1];
+        that.direct_purchase = model[0];
       });
     }
 
     function fetchRecords() {
-      $scope.selected = {};
+      that.selected = {};
       var indirect = {
         'tables' : {
           'purchase' : {
@@ -71,5 +68,7 @@ angular.module('bhima.controllers')
     }
 
     init();
+};
 
-}]);
+purchaseRecords.$inject = ['$q', 'connect'];
+angular.module('bhima.controllers').controller('purchaseRecords', purchaseRecords);

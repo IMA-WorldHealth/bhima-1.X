@@ -12,11 +12,11 @@
   </div>
 
   <div class="col-xs-4 hack-left">
-    <input type="search" ng-model="purchase_filter.filter" class="form-bhima" placeholder="Filter Purchase Orders">
+    <input type="search" ng-model="purchaseRecordsCtrl.purchase_filter.filter" class="form-bhima" placeholder="Filter Purchase Orders">
   </div>
 
   <div class="pull-right">
-    <select class="form-bhima" ng-model="session.purchase_type">
+    <select class="form-bhima" ng-model="purchaseRecordsCtrl.session.purchase_type">
       <option value="direct">{{ "PURCHASE.DIRECT" | translate }}</option>
       <option value="indirect" selected>{{ "PURCHASE.INDIRECT" | translate }}</option>
     </select>
@@ -24,14 +24,12 @@
 </nav>
 
 <main>
+
   <div class="row">
     <div class="col-xs-12">
 
-      <div ng-if="session.purchase_type==='indirect'">
-        <div ng-switch on="indirect_purchase.data.length">
-          <!-- <div class="alert alert-info" ng-switch-when="0">
-            {{"PURCHASE_RECORDS.NO_PURCHASE_FOUND" | translate}}. {{"PURCHASE_RECORDS.REFERENCE" | translate}}<strong><a href="/#/inventory/purchase">{{"PURCHASE_RECORDS.PURCHASE_ORDER" | translate}}</a></strong> {{"PURCHASE_RECORDS.TO_REQUEST" | translate}}.
-          </div> -->
+      <div ng-if="purchaseRecordsCtrl.session.purchase_type==='indirect'">
+        <div ng-switch on="purchaseRecordsCtrl.indirect_purchase.data.length">
           <div ng-switch-default></div>
         </div>
         <div class="invoice-table">
@@ -51,8 +49,8 @@
               </tr>
             </thead>
 
-            <tbody ng-if="indirect_purchase.data.length">
-              <tr ng-repeat="purchase in indirect_purchase.data | filter: purchase_filter.filter">
+            <tbody ng-if="purchaseRecordsCtrl.indirect_purchase.data.length">
+              <tr ng-repeat="purchase in purchaseRecordsCtrl.indirect_purchase.data | filter: purchaseRecordsCtrl.purchase_filter.filter">
                 <td>{{purchase.reference}}</td>
                 <td>{{purchase.purchase_date | date : 'EEEE, dd/MM/yyyy'}}</td>
                 <td>{{purchase.cost | currency}}</td>
@@ -68,7 +66,7 @@
               </tr>
             </tbody>
 
-            <tbody ng-if="!indirect_purchase.data.length">
+            <tbody ng-if="!purchaseRecordsCtrl.indirect_purchase.data.length">
               <tr>
               <td colspan="9" class="alert alert-info">
                 {{"PURCHASE_RECORDS.NO_PURCHASE_FOUND" | translate}}. 
@@ -81,8 +79,8 @@
         </div>
       </div>
 
-      <div ng-if="session.purchase_type==='direct'">
-        <div ng-switch on="invoice_model.data.length">
+      <div ng-if="purchaseRecordsCtrl.session.purchase_type==='direct'">
+        <div ng-switch on="purchaseRecordsCtrl.invoice_model.data.length">
           <div class="alert alert-info" ng-switch-when="0">
             {{"PURCHASE_RECORDS.NO_PURCHASE_FOUND" | translate}}. {{"PURCHASE_RECORDS.REFERENCE" | translate}}<strong><a href="/#/inventory/purchase">{{"PURCHASE_RECORDS.PURCHASE_ORDER" | translate}}</a></strong> {{"PURCHASE_RECORDS.TO_REQUEST" | translate}}.
           </div>
@@ -105,8 +103,8 @@
               </tr>
             </thead>
 
-            <tbody ng-if="direct_purchase.data.length">
-              <tr ng-repeat="purchase in direct_purchase.data | filter: purchase_filter.filter">
+            <tbody ng-if="purchaseRecordsCtrl.direct_purchase.data.length">
+              <tr ng-repeat="purchase in purchaseRecordsCtrl.direct_purchase.data | filter: purchaseRecordsCtrl.purchase_filter.filter">
                 <td>{{purchase.reference}}</td>
                 <td>{{purchase.purchase_date | date : 'EEEE, dd/MM/yyyy'}}</td>
                 <td>{{purchase.cost | currency}}</td>
@@ -122,7 +120,7 @@
               </tr>
             </tbody>
 
-            <tbody ng-if="!direct_purchase.data.length">
+            <tbody ng-if="!purchaseRecordsCtrl.direct_purchase.data.length">
               <tr>
               <td colspan="9" class="alert alert-info">
                 {{"PURCHASE_RECORDS.NO_PURCHASE_FOUND" | translate}}. 
