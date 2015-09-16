@@ -3,6 +3,7 @@ angular.module('bhima.controllers')
   '$scope',
   '$translate',
   '$http',
+  '$timeout',
   'messenger',
   'validate',
   'appstate',
@@ -13,11 +14,11 @@ angular.module('bhima.controllers')
   '$q',
   'ipr',
   'uuid',
-  function ($scope, $translate, $http, messenger, validate, appstate, connect, util, Appcache, exchange, $q, ipr, uuid) {
+  'SessionService',
+  function ($scope, $translate, $http, $timeout, messenger, validate, appstate, connect, util, Appcache, exchange, $q, ipr, uuid, SessionService) {
     var dependencies = {},
         cache = new Appcache('payroll'),
-        session = $scope.session = {configured : false, complete : false, data : {}, SelectedCurrency : {}, rows : []};
-
+        session = $scope.session = {configured : false, complete : false, data : {}, SelectedCurrency : {}, rows : [], error: {}};
 
     dependencies.currencies = {
       required : true,
@@ -101,14 +102,17 @@ angular.module('bhima.controllers')
       }
     };
 
-    appstate.register('project', function (project) {
-      $scope.project = project;
-        validate.process(dependencies, ['enterprise', 'paiement_period', 'user', 'exchange_rate', 'currencies'])
-        .then(init, function (err) {
-          messenger.danger(err.message + ' ' + err.reference);
-          return;
-        });
-    });
+    start();
+
+    function start() {
+      $scope.project = SessionService.project;
+      validate.process(dependencies, ['enterprise', 'paiement_period', 'user', 'exchange_rate', 'currencies'])
+      .then(init, function (err) {
+        session.error.paiement_period = err.reference === 'paiement_period' ? true : false;
+        session.error.exchange_rate = err.reference === 'exchange_rate' ? true : false;
+        return;
+      });
+    }
 
     function reconfigure() {
       cache.remove('paiement_period');
@@ -119,57 +123,79 @@ angular.module('bhima.controllers')
 
     function init (model) {
       session.model = model;
-      cache.fetch('SelectedCurrency')
-      .then(function (SelectedCurrency){
-        if (!SelectedCurrency) { throw new Error($translate.instant('PRIMARY_CASH.EXPENSE.CURRENCY_NOT_FOUND')); }
-        session.loading_currency_id = SelectedCurrency.id;
-        session.SelectedCurrency = SelectedCurrency;
-        return cache.fetch('paiement_period');
-      })
-      .then(function (pp) {
-        if(!pp) {
-          throw new Error($translate.instant('PRIMARY_CASH.EXPENSE.PAYMENT_PERIOD_NOT_FOUND'));
+      initCurrency();
+      if (session.pp) {
+        // Process only when we have session.pp
+        initPaiementPeriod()
+        .then(initConfiguration)
+        .then(getOffDayCount)
+        .then(getTrancheIPR)
+        .then(initTranche)
+        .then(getEmployees)
+        .catch(initError)
+        .finally(endLoading);
+      }
+
+      function initCurrency(enterprise_currency_id) {
+        if (!session.currency) {
+          session.configured = false;
+          session.complete = false;
         }
-        session.pp = pp;
+        session.loading_currency_id = (session.currency) ? session.currency.id : enterprise_currency_id;
+        session.SelectedCurrency = (session.currency) ? session.currency : null;
+      }
+
+      function initPaiementPeriod() {
+        session.state = 'loading';
         dependencies.paiements.query.where = ['paiement.paiement_period_id=' + session.pp.id];
         if(dependencies.paiements) {
           dependencies.paiements.processed = false;
         }
-
         if(dependencies.employees){
           dependencies.employees.processed = false;
         }
-
         return validate.process(dependencies, ['employees', 'paiements']);
-      })
-      .then(function (model) {
+      }
+
+      function initConfiguration(model) {
         session.model = model;
         session.configured = true;
         session.complete = true;
         return fetchConfigurations();
-      })
-      .then(getOffDayCount)
-      .then(getTrancheIPR)
-      .then(function(tranches){
+      }
+
+      function initTranche(tranches){
         session.tranches_ipr = tranches;
         return $q.when();
-      })
-      .then(getEmployees)
-      .catch(function (err) {
-        messenger.danger(err.message);
+      }
+
+      function initError(err) {
+        if (err !== 'currency_required' && err !== 'pp_required') {
+          messenger.danger(err.message);
+        }
         return;
-      });
+      }
+    }
+
+    function endLoading() {
+      $timeout(function () {
+        session.state = 'completed';
+      }, 0);
     }
 
     function getEmployees () {
+      var def = $q.defer();
       session.rows = [];
       var unpaidEmployees = getUnpaidEmployees();
       unpaidEmployees.forEach(function (emp) {
         new EmployeeRow(emp)
         .then(function (row) {
           session.rows.push(row);
+          def.resolve(session.rows);
         });
       });
+
+      return def.promise;
     }
 
     function getUnpaidEmployees () {
@@ -570,8 +596,8 @@ angular.module('bhima.controllers')
 
     function setCurrency(currency) {
       if (currency) {
-        session.loading_currency_id = session.SelectedCurrency.id || session.model.enterprise.data[0].currency_id;
-        var reload = session.SelectedCurrency.id ? false : true;
+        session.loading_currency_id = session.SelectedCurrency ? session.SelectedCurrency.id : session.model.enterprise.data[0].currency_id;
+        var reload = session.SelectedCurrency ? false : true;
         session.SelectedCurrency = currency;
         cache.put('SelectedCurrency', currency);
         if(reload){
