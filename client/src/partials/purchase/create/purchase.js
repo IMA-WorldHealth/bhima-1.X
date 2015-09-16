@@ -275,7 +275,7 @@ angular.module('bhima.controllers')
 
     function getDate() {
       var now = new Date();
-      return now.getFullYear() + '-' + ('0' + (now.getMonth() + 1)).slice(-2) + '-' + ('0' + now.getDate()).slice(-2);
+      return now //now.getFullYear() + '-' + ('0' + (now.getMonth() + 1)).slice(-2) + '-' + ('0' + now.getDate()).slice(-2);
     }
 
     function initPanelSuccess() {
