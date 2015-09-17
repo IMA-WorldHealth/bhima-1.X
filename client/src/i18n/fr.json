@@ -266,6 +266,8 @@
    "EXTRA" : {
       "ACTION"             : "Action",
       "FILTER_PATIENT"     : "Filtre client",
+      "FIND_ACCOUNT"       : "Chercher un compte d'attente ...",
+      "FIND_PATIENT"       : "Chercher le patient ...",
       "PATIENT"            : "Client",
       "SALE_AMOUNT_PAYED"  : "Montant payé",
       "SALE_AMOUNT_TO_PAY" : "Montant à payer",
