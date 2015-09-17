@@ -230,3 +230,12 @@ DROP FOREIGN KEY  `supplier_ibfk_1` ;
 
 ALTER TABLE `supplier`
 DROP `location_id`;
+
+
+-- Alter enterprise data
+-- Date: 2015-09-17
+-- By: Bruce Mbayo
+
+UPDATE `enterprise` 
+SET `name`='Institut Médical Chrétien du Kasaï' 
+WHERE `id`=200;
