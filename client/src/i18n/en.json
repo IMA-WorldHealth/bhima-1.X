@@ -266,6 +266,8 @@
    "EXTRA" : {
       "ACTION"             : "Action",
       "FILTER_PATIENT"     : "Client filter",
+      "FIND_ACCOUNT"       : "Find an suspense account ...",
+      "FIND_PATIENT"       : "Find a patient ...",
       "PATIENT"            : "Patient",
       "SALE_AMOUNT_PAYED"  : "Payed",
       "SALE_AMOUNT_TO_PAY" : "To Pay",
