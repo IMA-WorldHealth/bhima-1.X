@@ -132,7 +132,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/purchase/create/purchase.html'
   })
   .when('/purchase/view/', {
-    controller: 'purchaseRecords',
+    controller: 'purchaseRecords as purchaseRecordsCtrl',
     templateUrl: 'partials/purchase/view/purchase_records.html'
   })
   .when('/purchase/view/:option', {
