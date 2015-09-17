@@ -5,7 +5,8 @@ angular.module('bhima.controllers')
   'connect',
   'appstate',
   'exchange',
-  function ($scope, validate, connect, appstate, exchange) {
+  'SessionService',
+  function ($scope, validate, connect, appstate, exchange, SessionService) {
     var session = $scope.session = {},
       dependencies = {},
       state = $scope.state;
@@ -37,7 +38,7 @@ angular.module('bhima.controllers')
 
     function startup(models) {
       $scope.currencies = models.currencies;
-      session.currency = session.enterprise.currency_id;
+      session.currency = SessionService.enterprise.currency_id;
       models.accounts.data.forEach(function (acc) {
         acc.account_number = String(acc.account_number);
       });
