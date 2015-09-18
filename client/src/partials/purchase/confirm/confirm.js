@@ -1,114 +1,96 @@
-angular.module('bhima.controllers')
-.controller('purchaseConfirm', [
-  '$scope',
-  'validate',
-  'appstate',
-  'connect',
-  '$location',
-  function ($scope, validate, appstate, connect, $location) {
-    var dependencies = {}, session = $scope.session = { is_direct : false };
+var purchaseConfirm = function (validate, sessionService, connect, $location) {
 
-    dependencies.indirect_purchase = {
-      query : {
-        identifier : 'uuid',
-        tables : {
-          purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'purchaser_id', 'project_id', 'purchase_date', 'note', 'paid_uuid'] },
-          employee : { columns : ['name'] },
-          project : { columns : ['abbr'] }
-        },
-        join : ['purchase.project_id=project.id', 'purchase.purchaser_id=employee.id'],
-        where : ['purchase.paid=1', 'AND' ,'purchase.confirmed=' + 0, 'AND', 'purchase.is_direct=0', 'AND', 'purchase.is_donation=0', 'AND', 'purchase.closed=1']
-      }
-    };
+  var vm = this;
+  var dependencies = {};
+  vm.is_direct = false;
 
-    dependencies.direct_purchase = {
-      query : {
-        identifier : 'uuid',
-        tables : {
-          purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'purchaser_id', 'project_id', 'purchase_date', 'note', 'is_direct'] },
-          supplier : { columns : ['name'] },
-          project : { columns : ['abbr'] }
-        },
-        join : ['purchase.project_id=project.id', 'purchase.creditor_uuid=supplier.creditor_uuid'],
-        where : ['purchase.confirmed=' + 0, 'AND', 'purchase.is_direct=1', 'AND', 'purchase.is_donation=0', 'AND', 'purchase.closed=1']
-      }
-    };
-
-    dependencies.user = {
-      query : 'user_session'
-    };
-
-    dependencies.enterprise = {
-      query : {
-        tables : {
-          enterprise : {columns : ['id', 'currency_id']}
-        }
-      }
-    };
-
-    appstate.register('project', function (project){
-      $scope.project = project;
-       validate.process(dependencies)
-      .then(initialise);
-    });
-
-    function initialise(model) {
-      $scope.idUser = model.user.data.id;
-      angular.extend($scope, model);
+  dependencies.indirect_purchase = {
+    query : {
+      identifier : 'uuid',
+      tables : {
+        purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'purchaser_id', 'project_id', 'purchase_date', 'note', 'paid_uuid'] },
+        employee : { columns : ['name'] },
+        project : { columns : ['abbr'] }
+      },
+      join : ['purchase.project_id=project.id', 'purchase.purchaser_id=employee.id'],
+      where : ['purchase.paid=1', 'AND' ,'purchase.confirmed=' + 0, 'AND', 'purchase.is_direct=0', 'AND', 'purchase.is_donation=0', 'AND', 'purchase.closed=1']
     }
+  };
 
-    $scope.confirmPurchase = function confirmPurchase(purchaseId) {
-      session.selected = (session.is_direct) ? $scope.direct_purchase.get(purchaseId) : $scope.indirect_purchase.get(purchaseId);
-    };
-
-    $scope.confirmPayment = function confirmPayment () {
-    	writeToJournal()
-      .then(updatePurchase)
-    	.then(generateDocument)
-    	.catch(handleError);
-    };
-
-    function updatePurchase () {
-    	var purchase = {
-        	uuid         : session.selected.uuid,
-        	confirmed    : 1,
-          confirmed_by : $scope.idUser,
-          paid         : 1
-      };
-      return connect.put('purchase', [purchase], ['uuid']);
+  dependencies.direct_purchase = {
+    query : {
+      identifier : 'uuid',
+      tables : {
+        purchase : { columns : ['uuid', 'reference', 'cost', 'creditor_uuid', 'purchaser_id', 'project_id', 'purchase_date', 'note', 'is_direct'] },
+        supplier : { columns : ['name'] },
+        project : { columns : ['abbr'] }
+      },
+      join : ['purchase.project_id=project.id', 'purchase.creditor_uuid=supplier.creditor_uuid'],
+      where : ['purchase.confirmed=' + 0, 'AND', 'purchase.is_direct=1', 'AND', 'purchase.is_donation=0', 'AND', 'purchase.closed=1']
     }
+  };
 
-    function writeToJournal () {
-      var query = (session.is_direct) ? '/confirm_direct_purchase/' + session.selected.uuid : '/confirm/' + session.selected.paid_uuid;
-    	return connect.fetch('/journal' + query);
-    }
+  vm.project = sessionService.project;
+  validate.process(dependencies).then(initialise);
 
-    function paymentSuccess(result) {
-      var purchase = {
-        uuid : session.selected.uuid,
-        paid : 1
-      };
-      return connect.put('purchase', [purchase], ['uuid']);
-    }
-
-    function generateDocument(res) {
-
-      //$location.path('/invoice/confirm_indirect_purchase/' + session.selected.uuid);
-      var query = (session.is_direct) ? '/confirm_direct_purchase/' + session.selected.uuid : '/confirm_indirect_purchase/' + session.selected.uuid;
-      $location.path('/invoice' + query);
-    }
-
-    function handleError(error) {
-      throw error;
-    }
-
-    function getDate() {
-      var currentDate = new Date();
-      return currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1) + '-' + ('0' + currentDate.getDate()).slice(-2);
-    }
-
-    $scope.resetSelected = function () {
-      session.selected = null;
-    };
+  function initialise(model) {
+    vm.idUser = sessionService.user.id;
+    angular.extend(vm, model);
   }
-]);
+
+  vm.confirmPurchase = function confirmPurchase(purchaseId) {
+    vm.selected = (vm.is_direct) ? vm.direct_purchase.get(purchaseId) : vm.indirect_purchase.get(purchaseId);
+  };
+
+  vm.confirmPayment = function confirmPayment () {
+    writeToJournal()
+    .then(updatePurchase)
+    .then(generateDocument)
+    .catch(handleError);
+  };
+
+  function updatePurchase () {
+    var purchase = {
+        uuid         : vm.selected.uuid,
+        confirmed    : 1,
+        confirmed_by : vm.idUser,
+        paid         : 1
+    };
+    return connect.put('purchase', [purchase], ['uuid']);
+  }
+
+  function writeToJournal () {
+    var query = (vm.is_direct) ? '/confirm_direct_purchase/' + vm.selected.uuid : '/confirm_indirect_purchase/' + vm.selected.paid_uuid;
+    return connect.fetch('/journal' + query);
+  }
+
+  function paymentSuccess(result) {
+    var purchase = {
+      uuid : vm.selected.uuid,
+      paid : 1
+    };
+    return connect.put('purchase', [purchase], ['uuid']);
+  }
+
+  function generateDocument(res) {
+    var query = (vm.is_direct) ? '/confirm_direct_purchase/' + vm.selected.uuid : '/confirm_indirect_purchase/' + vm.selected.uuid;
+    $location.path('/invoice' + query);
+  }
+
+  function handleError(error) {
+    throw error;
+  }
+
+  function getDate() {
+    var currentDate = new Date();
+    return currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1) + '-' + ('0' + currentDate.getDate()).slice(-2);
+  }
+
+  vm.resetSelected = function () {
+    vm.selected = null;
+  };
+};
+
+purchaseConfirm.$inject = ['validate', 'SessionService', 'connect', '$location'];
+
+angular.module('bhima.controllers').controller('PurchaseConfirm', purchaseConfirm);
