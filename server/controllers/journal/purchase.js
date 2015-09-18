@@ -345,7 +345,7 @@ function directPurchase(id, userId, cb) {
 
       params = [
         uuid(), reference.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
-        cfg.description, 0, reference.total, 0, reference.total. reference.currency_id,
+        cfg.description, 0, reference.total, 0, reference.total, reference.currency_id,
         reference.inventory_uuid, reference.uuid, cfg.originId, userId, reference.inventory_uuid
       ];
 
@@ -364,7 +364,7 @@ function directPurchase(id, userId, cb) {
           'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
           'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
           'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
-        'SELECT ?, ?, ?, ?, ?, ?, ?, inventory_group.cogs_account, ?, ?, ?, ?, ?, ?, ?, ?, ?, ' +
+        'SELECT ?, ?, ?, ?, ?, ?, ?, inventory_group.cogs_account, ?, ?, ?, ?, ?, ?, NULL, ?, ?, ? ' +
         'FROM inventory_group WHERE inventory_group.uuid IN ' +
           '(SELECT inventory.group_uuid FROM inventory WHERE inventory.uuid = ?);';
 

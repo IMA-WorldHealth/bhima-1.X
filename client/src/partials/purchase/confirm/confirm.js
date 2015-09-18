@@ -1,7 +1,8 @@
 var purchaseConfirm = function (validate, sessionService, connect, $location) {
 
   var vm = this;
-  var dependencies = {}, session = vm.session = { is_direct : false };
+  var dependencies = {};
+  vm.is_direct = false;
 
   dependencies.indirect_purchase = {
     query : {
@@ -38,7 +39,7 @@ var purchaseConfirm = function (validate, sessionService, connect, $location) {
   }
 
   vm.confirmPurchase = function confirmPurchase(purchaseId) {
-    session.selected = (session.is_direct) ? vm.direct_purchase.get(purchaseId) : vm.indirect_purchase.get(purchaseId);
+    vm.selected = (vm.is_direct) ? vm.direct_purchase.get(purchaseId) : vm.indirect_purchase.get(purchaseId);
   };
 
   vm.confirmPayment = function confirmPayment () {
@@ -50,7 +51,7 @@ var purchaseConfirm = function (validate, sessionService, connect, $location) {
 
   function updatePurchase () {
     var purchase = {
-        uuid         : session.selected.uuid,
+        uuid         : vm.selected.uuid,
         confirmed    : 1,
         confirmed_by : vm.idUser,
         paid         : 1
@@ -59,22 +60,20 @@ var purchaseConfirm = function (validate, sessionService, connect, $location) {
   }
 
   function writeToJournal () {
-    var query = (session.is_direct) ? '/confirm_direct_purchase/' + session.selected.uuid : '/confirm_indirect_purchase/' + session.selected.paid_uuid;
+    var query = (vm.is_direct) ? '/confirm_direct_purchase/' + vm.selected.uuid : '/confirm_indirect_purchase/' + vm.selected.paid_uuid;
     return connect.fetch('/journal' + query);
   }
 
   function paymentSuccess(result) {
     var purchase = {
-      uuid : session.selected.uuid,
+      uuid : vm.selected.uuid,
       paid : 1
     };
     return connect.put('purchase', [purchase], ['uuid']);
   }
 
   function generateDocument(res) {
-    console.log('generateDocument');
-
-    var query = (session.is_direct) ? '/confirm_direct_purchase/' + session.selected.uuid : '/confirm_indirect_purchase/' + session.selected.uuid;
+    var query = (vm.is_direct) ? '/confirm_direct_purchase/' + vm.selected.uuid : '/confirm_indirect_purchase/' + vm.selected.uuid;
     $location.path('/invoice' + query);
   }
 
@@ -88,7 +87,7 @@ var purchaseConfirm = function (validate, sessionService, connect, $location) {
   }
 
   vm.resetSelected = function () {
-    session.selected = null;
+    vm.selected = null;
   };
 };
 
