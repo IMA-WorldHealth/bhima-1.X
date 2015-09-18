@@ -1,14 +1,15 @@
+// Controller name must match key convention over BHIMA style guide
 angular.module('bhima.controllers')
-.controller('balanceController', balanceController);
+.controller('income_expenseController', incomeExpense);
 
 // Definition is passed in through report core
-balanceController.$inject = ['$anchorScroll', '$location', '$modalInstance', '$http', 'store', 'ModuleState', 'definition'];
+incomeExpense.$inject = ['$anchorScroll', '$location', '$modalInstance', '$http', 'store', 'ModuleState', 'definition'];
 
-function balanceController($anchorScroll, $location, $modalInstance, $http, Store, ModuleState, definition) { 
+function incomeExpense($anchorScroll, $location, $modalInstance, $http, Store, ModuleState, definition) { 
   var modal = this;
   var state = new ModuleState();
 
-  var generateUrl = 'report/build/balance';
+  var generateUrl = 'report/build/income_expense';
 
   
   modal.state = state;

@@ -113,7 +113,7 @@ function ModuleState ($timeout) {
     return this.__success;
   }
 
-  Session.prototype.fail = function () { 
+  Session.prototype.failed = function () { 
     this.__success = false;
     return this.__success;
   }

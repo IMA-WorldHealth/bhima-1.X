@@ -30,6 +30,9 @@ exports.compile = function (options) {
   var currentPeriod = {};
   var currentFiscalYear = {};
 
+  
+  //FIXME 
+  options.fiscalYearId = 1;
 
   // Querry from balance sheet 
   var sql =
@@ -45,23 +48,29 @@ exports.compile = function (options) {
   
   db.exec(sql, [options.fiscalYearId, incomeAccountId, titleAccountId, expenseAccountId])
     .then(function (accounts) { 
-      
+      console.log('income_expense build got', accounts);
+
       var accountTree = getChildren(accounts, ROOT_ACCOUNT_ID, 0);
       
       // FIXME Extend object hack
       var incomeData = JSON.parse(JSON.stringify(accountTree));
       var expenseData = JSON.parse(JSON.stringify(accountTree));
       
+      console.log('before filter', incomeData);
+      
       // FIXME Lots of processing, very little querrying - this is what MySQL is foreh
-      incomeData = filterAccounts(incomeData, expenseAccountId);
-      incomeData = trimEmptyAccounts(incomeData);
+      // incomeData = filterAccounts(incomeData, expenseAccountId);
+      // incomeData = trimEmptyAccounts(incomeData);
 
-      expenseData = filterAccounts(expenseData, incomeAccountId);
-      expenseData = trimEmptyAccounts(expenseData);
+      // expenseData = filterAccounts(expenseData, incomeAccountId);
+      // expenseData = trimEmptyAccounts(expenseData);
       
       context.incomeData = incomeData;
       context.expenseData = expenseData; 
+  
 
+      // console.log('after trim', incomeData);
+      // console.log('after trim', expenseData);
       deferred.resolve(context);
     })
     .catch(deferred.reject)

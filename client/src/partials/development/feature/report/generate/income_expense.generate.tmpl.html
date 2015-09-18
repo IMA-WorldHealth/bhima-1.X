@@ -5,11 +5,11 @@
 <div class="modal-content modal-report">
   
   <div class="modal-header">
-    <h3><i class="glyphicon glyphicon-file"></i> Create {{balanceCtrl.title}} Document</h3> 
+    <h3><i class="glyphicon glyphicon-file"></i> Create {{income_expenseCtrl.title}} Document</h3> 
   </div>
   
   <div class="modal-body">
-    <div ng-if="balanceCtrl.state.isLoading()" id="progress">
+    <div ng-if="income_expenseCtrl.state.isLoading()" id="progress">
 
       <!-- TODO Move into directive to be used in future templates -->
       <div class="spinner">
@@ -21,9 +21,9 @@
       </div>
     </div>
     
-    <div ng-if="balanceCtrl.state.notLoading() && balanceCtrl.state.isComplete()" id="status" style="padding-bottom : 1em;">
+    <div ng-if="income_expenseCtrl.state.notLoading() && income_expenseCtrl.state.isComplete()" id="status" style="padding-bottom : 1em;">
       
-      <div ng-if="::balanceCtrl.state.moduleSuccess">
+      <div ng-if="::income_expenseCtrl.state.moduleSuccess">
         <div style="text-align : center; padding-bottom : 20px;">
           <h1 style="color : green;"><i class="glyphicon glyphicon-ok"></i> Document Complete</h1>
         </div> 
@@ -32,35 +32,35 @@
           <p>Your document has been archived and is now ready to view.</p>
 
           <ul class="list-unstyled">
-            <li><a target="_blank" ng-href="{{balanceCtrl.link}}">Open /document title/</a></li>
-            <li><a ng-click="balanceCtrl.cancelModal()">Return to archives</a></li>
+            <li><a target="_blank" ng-href="{{income_expenseCtrl.link}}">Open /document title/</a></li>
+            <li><a ng-click="income_expenseCtrl.cancelModal()">Return to archives</a></li>
           </ul>
         </div>
       </div>
       
-      <div ng-if="::balanceCtrl.state.moduleFailed">
+      <div ng-if="::income_expenseCtrl.state.moduleFailed">
         <div style="text-align : center; padding-bottom : 20px;">
           <h1 style="color : red;"><i class="glyphicon glyphicon-remove"></i> Document Failed</h1>
         </div> 
       </div>
     </div>
     
-    <div ng-if="balanceCtrl.state.notLoading() && balanceCtrl.state.notComplete()"  id="configure">
+    <div ng-if="income_expenseCtrl.state.notLoading() && income_expenseCtrl.state.notComplete()"  id="configure">
       <form>
         <span class="pull-right"><a>Autofill quick settings</a></span>
         <div style="padding-left : 15px; padding-bottom : 10px;">
           <label>Index</label>
           <ul class="list-unstyled">
-            <li><a ng-click="balanceCtrl.scrollToContent()">{{balanceCtrl.title}} Configuration</a></li>
-            <li><a ng-click="balanceCtrl.scrollToLabel()">Label Configuration</a></li>
-            <li><a ng-click="balanceCtrl.scrollToLayout()">Layout Configuration</a></li>
+            <li><a ng-click="income_expenseCtrl.scrollToContent()">{{income_expenseCtrl.title}} Configuration</a></li>
+            <li><a ng-click="income_expenseCtrl.scrollToLabel()">Label Configuration</a></li>
+            <li><a ng-click="income_expenseCtrl.scrollToLayout()">Layout Configuration</a></li>
           </ul>
         </div>
    
         <div id="contentConfig" class="panel panel-default">
           <div class="panel-heading">
 
-          <strong>{{balanceCtrl.title}} Configuration</strong>
+          <strong>{{income_expenseCtrl.title}} Configuration</strong>
           </div>
             
           <div class="panel-body">
@@ -206,9 +206,9 @@
       <i>bhima reporting module 0.1</i>
     </div>
     
-    <div ng-if="balanceCtrl.state.notComplete() && balanceCtrl.state.notLoading()">
-      <button  ng-click="balanceCtrl.cancelModal()" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-ban-circle"></i> Cancel</button>
-      <button ng-click="balanceCtrl.submit()" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-open"></i> Create Document</button>
+    <div ng-if="income_expenseCtrl.state.notComplete() && income_expenseCtrl.state.notLoading()">
+      <button  ng-click="income_expenseCtrl.cancelModal()" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-ban-circle"></i> Cancel</button>
+      <button ng-click="income_expenseCtrl.submit()" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-open"></i> Create Document</button>
     </div>
   </div>
 </div>

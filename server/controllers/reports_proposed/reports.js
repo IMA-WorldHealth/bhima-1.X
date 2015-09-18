@@ -13,6 +13,8 @@
  * - ?Balance
  * - Sale records 
  * - State of employment
+ *
+ * @todo Either fully support or fully depreciate reports created during prototype
  */
 
 var path                    = require('path');
@@ -148,13 +150,14 @@ exports.build = function (req, res, next) {
   }
 
   // Module does not support the requested document
-  if (!definiton) {
+  if (!definition) {
 
     // FIXME Use standard error handling
     res.status(500).end('Invalid or Unknown document target');
   } else {
+    var context = definition.context;
 
-    handler.context.compile(options)
+    context.compile(options)
     .then(renderTarget)
     .catch(next);
   }
@@ -166,10 +169,13 @@ exports.build = function (req, res, next) {
     var format = options.format || 'standard';
     var language = options.language || 'en';
     var configuration = buildConfiguration(hash, format);
+  
+    // FIXME pass key into method
+    var templater = dots[definition.key];
 
     // Ensure templates have path data
     reportData.path = reportData.path || __dirname;
-    compiledReport = handler.template(reportData);
+    compiledReport = templater(reportData);
 
 
 
@@ -239,6 +245,8 @@ function initialise() {
 
         loadReportContext(report.key, report);
       });
+
+      moduleLoading = false;
     })
     .catch(function (err) { 
       console.error('Initialise error');
