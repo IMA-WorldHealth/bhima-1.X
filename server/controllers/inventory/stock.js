@@ -1,6 +1,5 @@
 
-var db = require('../../lib/db'),
-    q  = require('q');
+var db = require('../../lib/db');
 
 exports.getStockLevels = getStockLevels;
 exports.getStockLevelsById = getStockLevelsById;
@@ -37,7 +36,7 @@ function getStockLevels(options) {
         's.tracking_number = c.tracking_number ' +
       'WHERE c.cancelled <> 1 ' +
       'GROUP BY s.inventory_uuid ' +
-    ') AS t ON i.uuid = t.uuid ' + 
+    ') AS t ON i.uuid = t.uuid ' +
     'GROUP BY i.uuid;';
 
   return db.exec(sql);
@@ -84,7 +83,19 @@ function getStockLevelsById(uuid, options) {
 function getAverageStockLevels(options) {
   'use strict';
 
-  // TODO
+  var sql;
+
+  // TODO - figure out dates
+
+  sql =
+    'SELECT s.inventory_uuid AS uuid, ' +
+      'SUM(s.quantity - c.quantity) AS quantity ' +
+    'FROM stock AS s LEFT JOIN consumption AS c ON ' +
+      's.tracking_number = c.tracking_number ' +
+    'WHERE c.cancelled <> 1 AND s.inventory_uuid = ? ' +
+    'GROUP BY s.inventory_uuid;';
+
+  return db.exec(sql, []);
 }
 
 /**

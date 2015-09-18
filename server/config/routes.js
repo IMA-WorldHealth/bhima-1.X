@@ -161,11 +161,17 @@ exports.initialise = function (app) {
   app.get('/inventory/consumption', inventory.getInventoryConsumption);
   app.get('/inventory/:uuid/consumption', inventory.getInventoryConsumptionById);
 
-  app.get('/inventory/delay', inventory.getInventoryDelay);
-  app.get('/inventory/:uuid/delay', inventory.getInventoryDelayById);
+  app.get('/inventory/leadtimes', inventory.getInventoryLeadTimes);
+  app.get('/inventory/:uuid/leadtimes', inventory.getInventoryLeadTimesById);
 
   app.get('/inventory/stock', inventory.getInventoryStockLevels);
   app.get('/inventory/:uuid/stock', inventory.getInventoryStockLevelsById);
+
+  app.get('/inventory/expirations', inventory.getInventoryExpirations);
+  app.get('/inventory/:uuid/expirations', inventory.getInventoryExpirationsById);
+
+  app.get('/inventory/alerts', inventory.getInventoryAlerts);
+  app.get('/inventory/:uuid/alerts', inventory.getInventoryAlertsById);
 
 
   /* continuing on ... */
@@ -173,12 +179,10 @@ exports.initialise = function (app) {
   // stock API
   app.get('/consumption', stock.getConsumption);
   app.get('/donations', stock.getRecentDonations);
-  app.get('/getItemInConsumption/', stock.listItemByConsumption);
   app.get('/getConsumptionDrugs/', stock.listConsumptionDrugs);
 
   // TODO -- better route names?
   app.get('/stockalerts', stock.getStockAlerts);
-  app.get('/stockexpiration', stock.getStockExpirationStatus);
   app.get('/expiring/:depot_uuid/:df/:dt', uncategorised.stockExpiringByDepot);
   app.get('/expiring_complete/:tracking_number/:depot_uuid', uncategorised.stockExpiringComplete);
 
