@@ -106,7 +106,7 @@ exports.getLanguages = function (req, res, next) {
   'use strict';
 
   var sql =
-    'SELECT lang.id, lang.name, lang.key FROM language AS lang;';
+    'SELECT lang.id, lang.name, lang.translate_key, lang.locale_key FROM language AS lang;';
 
   db.exec(sql)
   .then(function (rows) {

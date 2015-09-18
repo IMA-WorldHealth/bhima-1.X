@@ -7,11 +7,8 @@
     <div class="col-xs-5">
       <div class="form-group">
         <label for="select-language">{{ "SETTINGS.LANGUAGE" | translate }}</label>
-        <select id="select-language" ng-model="settings.language" ng-change="updateLanguage(settings.language)" class="form-bhima">
+        <select id="select-language" ng-options="language.id as language.name for language in languages" ng-model="settings.language" ng-change="updateLanguage(settings.language)" class="form-bhima">
           <option value="" disabled="disabled" selected>{{ "SELECT.LANGUAGE" | translate }}</option>
-          <option value="en">{{ "LANGUAGES.ENGLISH" | translate }}</option>
-          <option value="fr">{{ "LANGUAGES.FRENCH" | translate }}</option>
-          <option value="ln">{{ "LANGUAGES.LINGALA" | translate }}</option>
         </select>
       </div>
 

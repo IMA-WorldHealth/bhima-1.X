@@ -7,45 +7,37 @@ angular.module('bhima.controllers')
   'appcache',
   'messenger',
   'tmhDynamicLocale',
-  'store',
-  function($scope, $routeParams, $translate, $location, Appcache, messenger, tmhDynamicLocale, Store) {
+  'connect',
+  function($scope, $routeParams, $translate, $location, Appcache, messenger, tmhDynamicLocale, connect) {
     
-    // TODO issue discussing DB modelling of languages, quick suggestion (id, label, translateKey, localeKey)
-    var languageStore = new Store({identifier : 'translateKey'});
-    var languages = [
-      {
-        translateKey : 'en',
-        localeKey : 'en-us',
-        label : 'English'
-      },
-      {
-        translateKey : 'fr',
-        localeKey : 'fr-be',
-        label : 'French'
-      },
-      {
-        translateKey : 'ln',
-        localeKey : 'fr-cd',
-        label : 'Lingala'
-      }
-    ];
-    languageStore.setData(languages);
-    
+    var languageStore;
+
     $scope.url = $routeParams.url || '';
     var cache = new Appcache('preferences');
 
+    fetchAvailableLanguages();
+    
     cache.fetch('language')
     .then(function (res) {
       if (res) {
-        $scope.settings = { language: res.translateKey };
+        $scope.settings = { language: res.id };
       }
     });
+
+    function fetchAvailableLanguages() { 
+      connect.req('languages')
+        .then(function (store) { 
+
+          languageStore = store;
+          $scope.languages = languageStore.data;
+        });
+    }
 
     $scope.updateLanguage = function updateLanuage(key) {
       var language = languageStore.get(key);
       
-      $translate.use(language.translateKey);
-      tmhDynamicLocale.set(language.localeKey);
+      $translate.use(language.translate_key);
+      tmhDynamicLocale.set(language.locale_key);
 
       cache.put('language', language);
     };

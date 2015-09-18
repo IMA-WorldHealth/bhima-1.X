@@ -221,18 +221,22 @@ CHANGE `is_social_care` `is_social_care` tinyint(1) DEFAULT '0';
 -- @sfount
 -- 2015-15-09
 -- Model languages
+-- UPDATE - Language table exists but did not propegate through application language settings
 
-DROP TABLE IF EXISTS `language`;
-CREATE TABLE `language` (
-  `id` smallint(5) unsigned NOT NULL,
-  `title` varchar(35) NOT NULL,
-  `description` varchar(50),
-  `translateKey` varchar(5) NOT NULL,
-  `localeKey` varchar(5) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/* DROP TABLE IF EXISTS `language`; */
+/* CREATE TABLE `language` ( */
+  /* `id` smallint(5) unsigned NOT NULL, */
+  /* `title` varchar(35) NOT NULL, */
+  /* `description` varchar(50), */
+  /* `translate_key` varchar(5) NOT NULL, */
+  /* `locale_key` varchar(5) NOT NULL */
+/* ) ENGINE=InnoDB DEFAULT CHARSET=latin1; */
 
-INSERT INTO `language` VALUES
-  (1, 'English', NULL, 'en', 'en-us'),
-  (2, 'French', NULL, 'fr', 'fr-cd');
--- (3, 'English (EU)', 'en', 'en-uk')
+ALTER TABLE `language` CHANGE `key` `translate_key` varchar(5) NOT NULL;
+ALTER TABLE `language` ADD locale_key varchar(5);
+  
+UPDATE `language` SET locale_key = 'en-us' WHERE id = 1;
+UPDATE `language` SET locale_key = 'fr-cd' WHERE id = 2;
+UPDATE `language` SET locale_key = 'fr-cd' WHERE id = 3;
 
+ALTER TABLE `language` MODIFY `locale_key` varchar(5) NOT NULL;

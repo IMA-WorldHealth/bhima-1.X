@@ -17,8 +17,8 @@ angular.module('bhima.controllers')
     cache.fetch('language')
     .then(function (language) {
       if (language) {
-        $translate.use(language.translateKey);
-        tmhDynamicLocale.set(language.localeKey);
+        $translate.use(language.translate_key);
+        tmhDynamicLocale.set(language.locale_key);
       }
     });
 
