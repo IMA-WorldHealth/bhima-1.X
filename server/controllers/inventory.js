@@ -1,11 +1,14 @@
-/*
+/**
 * This module contains the following routes:
-*   /inventory/delays
-*   /inventory/stock
 *   /inventory/consumption
-*   /inventory/:uuid/delays
-*   /inventory/:uuid/stock
+*   /inventory/expiration
+*   /inventory/leadtimes
+*   /inventory/metadata
 *   /inventory/:uuid/consumption
+*   /inventory/:uuid/expiration
+*   /inventory/:uuid/leadtimes
+*   /inventory/:uuid/metadata
+*   /inventory/:uuid/stock
 *
 *   TODO
 *   /inventory/alerts
@@ -27,28 +30,43 @@ var db = require('../lib/db'),
 
 var core        = require('./inventory/core'),
     consumption = require('./inventory/consumption'),
-    stock       = require('./inventory/stock');
+    stock       = require('./inventory/stock'),
+    expirations = require('./inventory/expiration'),
+    leadtimes   = require('./inventory/leadtimes'),
+    alerts      = require('./inventory/alerts');
 
 // define the errors used in this module
 var ERROR = {
+
   MISSING_PARAMETERS : {
     code   : 'ERR_MISSING_PARAMETERS',
     reason : 'When using date ranges, you must provide ' +
              'both a start and end date.'
   },
+
   NOT_FOUND : {
     code   : 'ERR_NOT_FOUND',
     reason : 'The inventory uuid requested was not found in the database'
+  },
+
+  NO_STOCK : {
+    code   : 'ERR_NO_STOCK',
+    reason : 'No stock was found for the provided inventory uuid.'
   }
 };
 
 // exposed routes
 exports.getInventoryItems = getInventoryItems;
 exports.getInventoryItemsById = getInventoryItemsById;
+
 exports.getInventoryConsumptionById = getInventoryConsumptionById;
 exports.getInventoryConsumption = getInventoryConsumption;
+
 exports.getInventoryStockLevelsById = getInventoryStockLevelsById;
 exports.getInventoryStockLevels = getInventoryStockLevels;
+
+exports.getInventoryExpirations = getInventoryExpirations;
+exports.getInventoryExpirationsById = getInventoryExpirationsById;
 
 /**
 * GET /inventory/metadata
@@ -84,7 +102,7 @@ function getInventoryItemsById(req, res, next) {
       res.status(404).json(ERROR.NOT_FOUND);
     }
 
-    res.status(200).json(rows);
+    res.status(200).json(rows[0]);
   })
   .catch(next)
   .done();
@@ -194,30 +212,21 @@ function getInventoryConsumption(req, res, next) {
   .done();
 }
 
-
-/*
-* GET /inventory/:uuid/delay
-*
-* Calculates the delivery delay associated with purchases on a
-* single inventory item.  Also known as the "Lead Time".
+/**
+* GET /inventory/:uuid/leadtimes
+* Calculates the lead time (delivery delay) associated with purchases on a
+* single inventory item.
 */
-exports.getInventoryDelayById = function (req, res, next) {
+exports.getInventoryLeadTimesById = function (req, res, next) {
   'use strict';
 
-  var sql, id = req.params.uuid;
+  var uuid = req.params.uuid,
+      options = req.query;
 
-  sql =
-    'SELECT ROUND(AVG(CEIL(DATEDIFF(s.entry_date, p.purchase_date)))) AS days ' +
-    'FROM purchase AS p JOIN stock AS s JOIN purchase_item AS z JOIN inventory AS i ON ' +
-      'p.uuid = s.purchase_order_uuid AND ' +
-      's.inventory_uuid = i.uuid AND ' +
-      'p.uuid = z.purchase_uuid ' +
-    'WHERE z.inventory_uuid = s.inventory_uuid AND i.uuid = ?;';
-
-  db.exec(sql, [id])
+  leadtimes.getInventoryLeadTimesById(uuid, options)
   .then(function (rows) {
     if (!rows.length) {
-      return res.status(404).json(ERROR.NOT_FOUND);
+      return res.status(404).json(ERROR.NO_STOCK);
     }
     res.status(200).send(rows[0]);
   })
@@ -226,32 +235,24 @@ exports.getInventoryDelayById = function (req, res, next) {
 };
 
 
-/*
-* GET /inventory/delays
-*
-* Calculates the delivery delay associated with purchases on all
-* inventory items.  Also known as the "Lead Time".
+/**
+* GET /inventory/:uuid/leadtimes
+* Calculates the lead time (delivery delay) associated with purchases on a
+* single inventory item.
 */
-exports.getInventoryDelay = function (req, res, next) {
+exports.getInventoryLeadTimes = function (req, res, next) {
   'use strict';
 
-  var sql;
+  var options = req.query;
 
-  sql =
-    'SELECT i.uuid, ROUND(AVG(CEIL(DATEDIFF(s.entry_date, p.purchase_date)))) AS days ' +
-    'FROM purchase AS p JOIN stock AS s JOIN purchase_item AS z JOIN inventory AS i ON ' +
-      'p.uuid = s.purchase_order_uuid AND ' +
-      's.inventory_uuid = i.uuid AND ' +
-      'p.uuid = z.purchase_uuid ' +
-    'WHERE z.inventory_uuid = s.inventory_uuid;';
-
-  db.exec(sql)
+  leadtimes.getInventoryLeadTimes(options)
   .then(function (rows) {
     res.status(200).send(rows);
   })
   .catch(next)
   .done();
 };
+
 
 /**
 * GET /inventory/stock
@@ -266,8 +267,7 @@ exports.getInventoryDelay = function (req, res, next) {
 function getInventoryStockLevels(req, res, next) {
   'use strict';
 
-  var sql,
-      options = req.query;
+  var options = req.query;
 
   // enforce that both parameters exist or neither exist
   if (!core.hasBoth(options.start, options.end)) {
@@ -295,8 +295,7 @@ function getInventoryStockLevels(req, res, next) {
 function getInventoryStockLevelsById(req, res, next) {
   'use strict';
 
-  var sql,
-      options = req.query,
+   var options = req.query,
       uuid = req.params.uuid;
 
   // enforce that both parameters exist or neither exist
@@ -312,6 +311,111 @@ function getInventoryStockLevelsById(req, res, next) {
     // not be empty.
     if (!rows.length) {
       return res.status(200).json({ uuid : uuid, quantity : 0 });
+    }
+
+    res.status(200).json(rows[0]);
+  })
+  .catch(next)
+  .done();
+}
+
+/**
+* GET /inventory/expirations
+* Returns stock expirations between two given dates
+*
+* query options:
+*   group={day|week|month|year}
+*   start={date}
+*   end={date}
+*/
+function getInventoryExpirations(req, res, next) {
+  'use strict';
+
+   var options = req.query;
+
+  // enforce that both parameters exist or neither exist
+  if (!core.hasBoth(options.start, options.end)) {
+    return res.status(400).json(ERROR.MISSING_PARAMETERS);
+  }
+
+  expirations.getExpirations(options)
+  .then(function (rows) {
+    res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
+}
+
+/**
+* GET /inventory/:uuid/expirations
+* Returns stock expirations between two given dates for a given inventory ID
+*
+* query options:
+*   group={day|week|month|year}
+*   start={date}
+*   end={date}
+*/
+function getInventoryExpirationsById(req, res, next) {
+  'use strict';
+
+   var options = req.query,
+      uuid = req.params.uuid;
+
+  // enforce that both parameters exist or neither exist
+  if (!core.hasBoth(options.start, options.end)) {
+    return res.status(400).json(ERROR.MISSING_PARAMETERS);
+  }
+
+  expirations.getExpirationsById(uuid, options)
+  .then(function (rows) {
+    if (!rows.length) {
+      res.status(404).json(ERROR.NO_STOCK);
+    }
+
+    res.status(200).json(rows[0]);
+  })
+  .catch(next)
+  .done();
+}
+
+/**
+* GET /inventory/alerts
+* Returns any combination of five types of stock alerts:
+*   1) Stockout
+*   2) Overstocked
+*   3) Stock Expiring
+*   4) Stock Expired
+*   5) Stock Minimum
+*/
+function getInventoryAlerts(req, res, next) {
+  'use strict';
+
+  alerts.getStockAlerts()
+  .then(function (rows) {
+    res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
+}
+
+/**
+* GET /inventory/:uuid/alerts
+* Returns any combination of five types of stock alerts:
+*   1) Stockout
+*   2) Overstocked
+*   3) Stock Expiring
+*   4) Stock Expired
+*   5) Stock Minimum
+*/
+function getInventoryExpirationsById(req, res, next) {
+  'use strict';
+
+  var uuid = req.params.uuid;
+
+  alerts.getStockAlertsById(uuid)
+  .then(function (rows) {
+    if (!rows.length) {
+      res.status(404).json(ERROR.NO_STOCK);
     }
 
     res.status(200).json(rows[0]);

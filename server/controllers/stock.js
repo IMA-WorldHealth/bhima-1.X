@@ -67,42 +67,6 @@ exports.listConsumptionDrugs = function (req, res, next) {
   .done();
 };
 
-exports.listItemByConsumption = function (req, res, next) {
-  'use strict';
-
-  var sql, code = req.query.code,
-      from = req.query.dateFrom,
-      to = req.query.dateTo ;
-
-  sql =
-    'SELECT itemconsumpt.uuid,  SUM(itemconsumpt.quantity) AS quantity, itemconsumpt.date, itemconsumpt.code, itemconsumpt.text ' +
-    'FROM ( ' +
-      'SELECT consumption.uuid,  SUM(consumption.quantity) AS quantity, consumption.date, inventory.code, inventory.text ' +
-      'FROM consumption ' +
-      'JOIN stock ON stock.tracking_number = consumption.tracking_number ' +
-      'JOIN inventory ON inventory.uuid = stock.inventory_uuid ' +
-      'WHERE consumption.uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss ) ' +
-      'AND inventory.code =? AND ((consumption.date >= DATE(?)) ' +
-      'AND (consumption.date <= DATE(?))) ' +
-      'GROUP BY consumption.date ' +
-    'UNION ' +
-      'SELECT consumption_reversing.uuid, ((SUM(consumption_reversing.quantity)) * (-1)) AS quantity, consumption_reversing.date, inventory.code, inventory.text ' +
-      ' FROM consumption_reversing ' +
-      ' JOIN stock ON stock.tracking_number = consumption_reversing.tracking_number ' +
-      ' JOIN inventory ON inventory.uuid = stock.inventory_uuid ' +
-      ' WHERE consumption_reversing.consumption_uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss ) ' +
-      ' AND inventory.code = ? AND ((consumption_reversing.date >= ?) ' +
-      ' AND (consumption_reversing.date <= ?))' +
-      ' GROUP BY consumption_reversing.date ) AS itemconsumpt GROUP BY itemconsumpt.date ;';
-
-  db.exec(sql, [code, from, to, code, from, to])
-  .then(function (rows) {
-    res.send(rows);
-  })
-  .catch(next)
-  .done();
-};
-
 /*
 * GET /donations?limit=10
 *
@@ -172,31 +136,6 @@ exports.getStockAlerts = function (req, res, next) {
     });
 
     res.status(200).json(data);
-  })
-  .catch(next)
-  .done();
-};
-
-/*
-* GET /stockexpiration
-*/
-exports.getStockExpirationStatus = function (req, res, next) {
-  'use strict';
-
-  var sql,
-      start = req.query.start,
-      end = req.query.end;
-
-  sql =
-    'SELECT stock.inventory_uuid, stock.tracking_number, ' +
-      'stock.lot_number, stock.quantity, stock.expiration_date, inventory.text '+
-    'FROM stock JOIN inventory ON stock.inventory_uuid = inventory.uuid '+
-    'WHERE DATE(stock.expiration_date) BETWEEN DATE(?) AND DATE(?);'+
-
-  db.exec(sql, [start, end])
-  .then(function (rows) {
-
-    res.status(200).send(rows);
   })
   .catch(next)
   .done();
