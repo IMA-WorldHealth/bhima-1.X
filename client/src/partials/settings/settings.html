@@ -7,7 +7,7 @@
     <div class="col-xs-5">
       <div class="form-group">
         <label for="select-language">{{ "SETTINGS.LANGUAGE" | translate }}</label>
-        <select id="select-language" ng-options="language.id as language.name for language in languages" ng-model="settings.language" ng-change="updateLanguage(settings.language)" class="form-bhima">
+        <select id="select-language" ng-options="language.id as language.name for language in SettingsCtrl.languages" ng-model="SettingsCtrl.language" ng-change="SettingsCtrl.updateLanguage()" class="form-bhima">
           <option value="" disabled="disabled" selected>{{ "SELECT.LANGUAGE" | translate }}</option>
         </select>
       </div>
@@ -21,7 +21,7 @@
     </div>
   </div>
 
-  <button ng-if="!!url" class="btn btn-sm btn-default" ng-click="back()">
+  <button ng-if="!!SettingsCtrl.url" class="btn btn-sm btn-default" ng-click="SettingsCtrl.back()">
     <span class="glyphicon glyphicon-circle-arrow-left"></span> {{ "UTIL.BACK" | translate }}
   </button>
 </main>

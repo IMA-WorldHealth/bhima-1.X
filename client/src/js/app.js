@@ -251,7 +251,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/print/test.html'
   })
   .when('/settings/:route?', {
-    controller: 'settings',
+    controller: 'Settings as SettingsCtrl',
     templateUrl: 'partials/settings/settings.html'
   })
   .when('/patient/group/assignment/', {
