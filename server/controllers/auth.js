@@ -41,7 +41,7 @@ exports.login = function (req, res, next) {
     //   the current enterprise
     //   the current project
     sql =
-      'SELECT e.id, e.name, e.abbr, e.phone, e.email, e.location_id, e.currency_id, e.po_box ' +
+      'SELECT e.id, e.name, e.abbr, e.phone, e.email, e.location_id, e.currency_id, e.language_id, e.po_box ' +
       'FROM enterprise AS e WHERE e.id = ?;';
 
     return db.exec(sql, [user.enterprise_id]);

@@ -240,3 +240,13 @@ UPDATE `language` SET locale_key = 'fr-cd' WHERE id = 2;
 UPDATE `language` SET locale_key = 'fr-cd' WHERE id = 3;
 
 ALTER TABLE `language` MODIFY `locale_key` varchar(5) NOT NULL;
+
+-- @sfount
+-- 2015-17-09
+-- Model enterprise (application) wide default language 
+ALTER TABLE `enterprise` ADD language_id tinyint(3);
+  
+-- Set tshikaji's default language to French
+UPDATE `enterprise` SET language_id = 1;
+
+ALTER TABLE `enterprise` MODIFY language_id tinyint(3) NOT NULL;

@@ -16,9 +16,30 @@ angular.module('bhima.controllers')
 
     cache.fetch('language')
     .then(function (language) {
+
       if (language) {
+        
+        // Use previously set language
+        // TODO Use a translation service to fetch languages and configure cache
         $translate.use(language.translate_key);
         tmhDynamicLocale.set(language.locale_key);
+      } else { 
+        
+        // FIXME SessionService values _cannot_ be relied upon unless the user has 
+        // already logged in once - they cannot be used on initial load
+        if (SessionService.enterprise) { 
+
+          connect.req('languages')
+          .then(function (languageStore) { 
+            var enterpriseLanguage = languageStore.get(SessionService.enterprise.language_id);
+            
+            // TODO Use a translation service to fetch languages and configure cache
+            // Default to enterprise language
+            $translate.use(enterpriseLanguage.translate_key);
+            tmhDynamicLocale.set(enterpriseLanguage.locale_key);
+            cache.put('language', enterpriseLanguage);
+          });
+        }
       }
     });
 
@@ -79,7 +100,6 @@ angular.module('bhima.controllers')
         appstate.set('user', SessionService.user);
       });
 
-      // FIXME
       // set DEPRECATED appstate variables until we can change them
       // throughout the application.
       appstate.register('fiscalYears', function (data) {

@@ -757,13 +757,14 @@ function translateConfig($translateProvider) {
   });
 
   $translateProvider.useSanitizeValueStrategy('escape');
-
+  
+  // TODO Load/ template default enterprise language before bootstrapping angular
   $translateProvider.preferredLanguage('fr');
 }
 
 function localeConfig(tmhDynamicLocaleProvider) { 
-
-  // TODO Hardcoded default translation/ localisation
+  
+  // TODO Load/ template default enterprise language before bootstrapping angular
   tmhDynamicLocaleProvider.localeLocationPattern('/i18n/locale/angular-locale_{{locale}}.js');
   tmhDynamicLocaleProvider.defaultLocale('fr-be');
 }
@@ -776,8 +777,9 @@ function authConfig($httpProvider) {
   }]);
 }
 
-// Redirect to login if not signed in.
 function startupConfig($rootScope, $location, SessionService) {
+  
+  // Redirect to login if not signed in.
   $rootScope.$on('$routeChangeStart', function (event, next) {
     if (!SessionService.user) {
       $location.url('/login');

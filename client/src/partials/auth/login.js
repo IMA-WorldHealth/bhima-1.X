@@ -95,7 +95,9 @@ function LoginController($scope, $translate, $location, $http, $timeout, Appcach
 
   // switches languages
   function setLanguage(lang) {
-    $translate.use(lang.key);
-    cache.put('language', { current: lang.key });
+
+    // TODO Use a translation service to fetch languages and configure cache
+    $translate.use(lang.translate_key);
+    cache.put('language', lang);
   }
 }

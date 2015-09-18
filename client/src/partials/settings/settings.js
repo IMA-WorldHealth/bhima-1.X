@@ -32,7 +32,8 @@ function Settings($routeParams, $translate, $location, Appcache, tmhDynamicLocal
   
   function updateLanguage(key) {
     var language = languageStore.get(viewModel.language);
-    
+   
+    // TODO Use a translation service to fetch languages and configure cache
     $translate.use(language.translate_key);
     tmhDynamicLocale.set(language.locale_key);
 
