@@ -1,5 +1,7 @@
-<!-- TODO: Translate -->
-
+<!-- TODO Translate -->
+<!-- TODO Reduce number of state checks (generally two checks per segment) 
+- combining these into generate report specific state variables -->
+<!-- TODO Remove all inline styles -->
 <div class="modal-content modal-report">
   
   <div class="modal-header">
@@ -7,9 +9,9 @@
   </div>
   
   <div class="modal-body">
-  
-    <!-- TODO Move into directive to be used in future templates -->
-    <div id="progress">
+    <div ng-if="balanceCtrl.state.isLoading()" id="progress">
+
+      <!-- TODO Move into directive to be used in future templates -->
       <div class="spinner">
         <div class="cube1"></div>
         <div class="cube2"></div>
@@ -19,11 +21,31 @@
       </div>
     </div>
     
-    <div id="status">
+    <div ng-if="balanceCtrl.state.notLoading() && balanceCtrl.state.isComplete()" id="status" style="padding-bottom : 1em;">
+      
+      <div ng-if="::balanceCtrl.state.moduleSuccess">
+        <div style="text-align : center; padding-bottom : 20px;">
+          <h1 style="color : green;"><i class="glyphicon glyphicon-ok"></i> Document Complete</h1>
+        </div> 
 
+        <div>
+          <p>Your document has been archived and is now ready to view.</p>
+
+          <ul class="list-unstyled">
+            <li><a target="_blank" ng-href="{{balanceCtrl.link}}">Open /document title/</a></li>
+            <li><a ng-click="balanceCtrl.cancelModal()">Return to archives</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div ng-if="::balanceCtrl.state.moduleFailed">
+        <div style="text-align : center; padding-bottom : 20px;">
+          <h1 style="color : red;"><i class="glyphicon glyphicon-remove"></i> Document Failed</h1>
+        </div> 
+      </div>
     </div>
     
-    <div hidden id="configure">
+    <div ng-if="balanceCtrl.state.notLoading() && balanceCtrl.state.notComplete()"  id="configure">
       <form>
         <span class="pull-right"><a>Autofill quick settings</a></span>
         <div style="padding-left : 15px; padding-bottom : 10px;">
@@ -184,9 +206,9 @@
       <i>bhima reporting module 0.1</i>
     </div>
     
-    <div hidden>
-    <button  ng-click="balanceCtrl.cancelModal()" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-ban-circle"></i> Cancel</button>
-    <button  disabled class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-open"></i> Create Document</button>
+    <div ng-if="balanceCtrl.state.notComplete() && balanceCtrl.state.notLoading()">
+      <button  ng-click="balanceCtrl.cancelModal()" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-ban-circle"></i> Cancel</button>
+      <button ng-click="balanceCtrl.submit()" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-open"></i> Create Document</button>
     </div>
   </div>
 </div>

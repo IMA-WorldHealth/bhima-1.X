@@ -14,16 +14,20 @@
 
 angular.module('bhima.services').factory('ModuleState', ModuleState);
     
-function ModuleState () { 
+ModuleState.$inject = ['$timeout'];
+
+function ModuleState ($timeout) { 
   
   function Session () { 
 
     // Components relying on this should not assume invalid as default
     this.__valid = undefined;
-    
+    this.__success = undefined;
+
+    this.__complete = false;
     this.__initialised = false;
-    this.__loading = true;
-    
+    this.__loading = false;
+
     // Expose available properties
     Object.defineProperty(this, 'isValid', { 
       get : function isValid() { 
@@ -40,8 +44,26 @@ function ModuleState () {
         return !this.__valid;
         }
     });
-  };
 
+    Object.defineProperty(this, 'moduleSuccess', { 
+      get : function moduleSuccess() { 
+        return this.__success;
+      }
+    });
+   
+    Object.defineProperty(this, 'moduleFailed', { 
+      get : function moduleFailed() { 
+
+        if (angular.isUndefined(this.__success)) { 
+          return this.__success;
+        }
+        return !this.__success;
+        }
+    });
+
+  };
+  
+  // TODO Rewrite prototype methods as getters + setters
   Session.prototype.validateModule = function () { 
     this.__valid = true;
   }
@@ -53,7 +75,47 @@ function ModuleState () {
   Session.prototype.isInitialised = function () { 
     return this.__initialised;
   }
+
+  Session.prototype.loaded = function () { 
+    this.__loading = false;
+    return this.__loading;
+  }
+
+  Session.prototype.isLoading = function () { 
+    console.log('isLoading called', this.__loading);
+    return this.__loading;
+  }
+
+  Session.prototype.notLoading = function () { 
+    return !this.__loading;
+  }
+
+  Session.prototype.loading = function () { 
+    this.__loading = true;
+    return this.__loading;
+  }
+
+  Session.prototype.isComplete = function () { 
+    return this.__complete;
+  }
+
+  Session.prototype.notComplete = function () { 
+    return !this.__complete;
+  }
+
+  Session.prototype.completed = function () { 
+    this.__complete = true;
+    return this.__complete;
+  }
   
-  
+  Session.prototype.success = function () { 
+    this.__success = true;
+    return this.__success;
+  }
+
+  Session.prototype.fail = function () { 
+    this.__success = false;
+    return this.__success;
+  }
   return Session;
 };
