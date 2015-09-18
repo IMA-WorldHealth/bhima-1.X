@@ -230,6 +230,7 @@ DROP FOREIGN KEY  `supplier_ibfk_1` ;
 ALTER TABLE `supplier`
 DROP `location_id`;
 
+
 -- Deletion of undeveloped reports
 --
 -- Date: 2015-09-14
@@ -243,3 +244,12 @@ DELETE FROM `permission` WHERE `permission`.`unit_id` = 91;
 DELETE FROM `unit` WHERE `unit`.`id` = 90;
 DELETE FROM `unit` WHERE `unit`.`id` = 91;
 DELETE FROM `unit` WHERE `unit`.`id` = 92;
+
+
+-- Alter enterprise data
+-- Date: 2015-09-17
+-- By: Bruce Mbayo
+
+UPDATE `enterprise` 
+SET `name`='Institut Médical Chrétien du Kasaï' 
+WHERE `id`=200;
