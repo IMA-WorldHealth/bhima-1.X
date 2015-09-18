@@ -140,7 +140,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/purchase/view/purchase_view.html'
   })
   .when('/purchase/confirm/', {
-    controller: 'purchaseConfirm',
+    controller: 'PurchaseConfirm as purchaseConfirmCtrl',
     templateUrl: 'partials/purchase/confirm/confirm.html'
   })
   .when('/purchase/validate/', {
