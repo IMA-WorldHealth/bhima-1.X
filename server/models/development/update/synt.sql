@@ -248,6 +248,7 @@ CREATE TABLE `report_archive` (
 
 -- Core BHIMA supported reports 
 INSERT INTO `report` VALUES 
-  (1, 'balance', 'Balance Report', NULL, true, false, false, CURRENT_TIMESTAMP),
-  (2, 'chart_of_acccounts', 'Chart of Accounts', NULL, true, false, false, CURRENT_TIMESTAMP),
-  (3, 'budget_balance', 'Budget vs. Balance', NULL, true, false, false, CURRENT_TIMESTAMP);
+  /* (1, 'balance', 'Balance Report', NULL, true, false, false, CURRENT_TIMESTAMP), */
+  (1, 'chart_of_acccounts', 'Chart of Accounts', NULL, true, false, false, CURRENT_TIMESTAMP),
+  (2, 'income_expense', 'Income vs. Expense', NULL, true, false, false, CURRENT_TIMESTAMP);
+  /* (3, 'budget_balance', 'Budget vs. Balance', NULL, true, false, false, CURRENT_TIMESTAMP); */

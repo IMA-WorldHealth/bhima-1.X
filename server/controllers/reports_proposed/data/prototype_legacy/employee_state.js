@@ -1,9 +1,9 @@
 // reports_proposed/data/balance_sheet.js
 // Collects and aggregates data for the enterprise balance sheet
 var q       = require('q');
-var db      = require('../../../lib/db');
+var db      = require('../../../../lib/db');
 var numeral = require('numeral');
-var sanitize = require('../../../lib/sanitize');
+var sanitize = require('../../../../lib/sanitize');
 
 var formatDollar = '$0,0.00';
 var employeeStateDate = new Date();

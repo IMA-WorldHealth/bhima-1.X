@@ -53,6 +53,8 @@ function ReportCore($routeParams, $modal, ModuleState, ReportService) {
       // Found report definition - settup module page
       state.validateModule();
       settupCoreReport(reportDefinition);
+
+      console.log('settup with', reportDefinition);
     }
   }
   

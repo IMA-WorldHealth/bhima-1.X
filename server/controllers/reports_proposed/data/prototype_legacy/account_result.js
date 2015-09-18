@@ -2,7 +2,7 @@
 // Collects and aggregates data for the enterprise bilan
 
 var q       = require('q');
-var db      = require('../../../lib/db');
+var db      = require('../../../../lib/db');
 var numeral = require('numeral');
 
 var formatDollar = '$0,0.00';

@@ -1,4 +1,4 @@
-var db      = require('./../../../lib/db');
+var db      = require('../../../../lib/db');
 
 var q       = require('q');
 var numeral = require('numeral');

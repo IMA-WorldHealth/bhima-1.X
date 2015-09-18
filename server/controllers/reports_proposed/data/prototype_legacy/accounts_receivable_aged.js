@@ -2,7 +2,7 @@
 // Aggregates the debtor balances for all enterprise debtors, optionally
 // ignoring those with zero balances
 var q = require('q'),
-    db = require('../../../lib/db'),
+    db = require('../../../../lib/db'),
     numberal = require('numeral');
 
 // initiliase the database connection

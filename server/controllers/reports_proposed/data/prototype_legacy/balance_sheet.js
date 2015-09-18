@@ -1,7 +1,7 @@
 // reports_proposed/data/balance_sheet.js
 // Collects and aggregates data for the enterprise balance sheet
 var q       = require('q');
-var db      = require('../../../lib/db');
+var db      = require('../../../../lib/db');
 var numeral = require('numeral');
 
 // Constant: root account id
@@ -91,8 +91,7 @@ exports.compile = function (options) {
   var deferred = q.defer();
   var context = {};
   var fiscalYearId = options.fy;
-
-
+  
   context.reportDate = balanceDate.toDateString();
 
   var sql =
