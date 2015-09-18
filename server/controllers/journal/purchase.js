@@ -5,10 +5,12 @@ var q         = require('q'),
     core      = require('./core');
 
 exports.purchase = purchase;
-exports.confirm = confirm;
+exports.confirmIndirectPurchase = confirmIndirectPurchase;
 exports.indirectPurchase = indirectPurchase;
 exports.directPurchase = directPurchase;
 exports.integration = integration;
+
+
 
 // handle posting purchase requests
 // TODO/FIXME - it doesn't seem like this is used.  Why?
@@ -109,8 +111,7 @@ function purchase(id, userId, cb) {
 }
 
 
-// TODO - what does this do?
-function confirm(id, userId, cb) {
+function confirmIndirectPurchase(id, userId, cb) {
   'use strict';
 
   var sql, references, params, dayExchange, cfg = {};
@@ -154,14 +155,14 @@ function confirm(id, userId, cb) {
           'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
           'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
         'SELECT ?, ?, ?, ?, ?, ?, ?, inventory_group.stock_account, ?, ?, ?, ?, ' +
-          '?, ?, null, ?, ?, ? ' +
+          '?, ?, NULL, ?, ?, ? ' +
         'FROM inventory_group WHERE inventory_group.uuid IN ' +
           '(SELECT inventory.group_uuid FROM inventory WHERE inventory.uuid = ?)';
 
       params = [
-        uuid(), reference.project_id, cfg.fiscalYearId, cfg.periodId, cfg.trans_id, new Date(),
+        uuid(), reference.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
         cfg.description, 0, reference.total, 0, reference.total, reference.currency_id,
-        reference.inventory_uuid, null, null, reference.uuid, cfg.originId, userId, reference.inventory_uuid
+        reference.inventory_uuid, reference.uuid, cfg.originId, userId, reference.inventory_uuid
       ];
 
       return db.exec(sql, params);
@@ -171,6 +172,7 @@ function confirm(id, userId, cb) {
   })
   .then(function () {
 
+
     var queries =  references.map(function (reference) {
       var sql, params;
 
@@ -179,7 +181,7 @@ function confirm(id, userId, cb) {
           'uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
           'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
           'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) '+
-        'SELECT ?, ?, ?, ?, ?, ?, ?, inventory_group.cogs_accounts, ?, ?, ?, ?, ?, ?, ?, ' +
+        'SELECT ?, ?, ?, ?, ?, ?, ?, inventory_group.cogs_account, ?, ?, ?, ?, ?, ?, NULL, ' +
           '?, ?, ?  ' +
          'FROM inventory_group WHERE inventory_group.uuid = ' +
             '(SELECT inventory.group_uuid FROM inventory WHERE inventory.uuid = ?)';
@@ -209,7 +211,7 @@ function confirm(id, userId, cb) {
  *
  */
 function indirectPurchase(id, userId, cb) {
-  'use strict';
+  'use strict';  
 
   var sql, reference, params, dayExchange, cfg = {};
 
