@@ -19,7 +19,7 @@ exports.getAverageItemConsumption = getAverageItemConsumption;
 * @function getItemConsumption
 * @param {String} uuid Inventory item identifier
 * @param {Object} options An object derived from the URL query string
-* @returns {Promise} returns a database query
+* @returns {Promise} Returns a database query
 */
 function getItemConsumption(uuid, options) {
   'use strict';
@@ -97,7 +97,7 @@ function getAverageItemConsumption(uuid, options) {
   where = start ? 'c.date BETWEEN DATE(?) AND DATE(?) '  : '1 ';
   difference = start ?
     'DATE(?), DATE(?)' :
-    'MAX(c.date), MIN(c.date)';
+    'CURDATE(), MIN(c.date)';
   params = start ? [end, start, uuid, start, end] : [uuid];
 
   // if the user has predefined a date range, we will compute the consumption

@@ -4,15 +4,13 @@
 *   /inventory/expiration
 *   /inventory/leadtimes
 *   /inventory/metadata
+*   /inventory/status
 *   /inventory/:uuid/consumption
 *   /inventory/:uuid/expiration
 *   /inventory/:uuid/leadtimes
 *   /inventory/:uuid/metadata
 *   /inventory/:uuid/stock
-*
-*   TODO
-*   /inventory/alerts
-*   /inventory/:uuid/alerts
+*   /inventory/:uuid/status
 *
 * TODO
 * I would like to have a breakdown of usage by service.  How do I do this?
@@ -33,27 +31,8 @@ var core        = require('./inventory/core'),
     stock       = require('./inventory/stock'),
     expirations = require('./inventory/expiration'),
     leadtimes   = require('./inventory/leadtimes'),
-    alerts      = require('./inventory/alerts');
-
-// define the errors used in this module
-var ERROR = {
-
-  MISSING_PARAMETERS : {
-    code   : 'ERR_MISSING_PARAMETERS',
-    reason : 'When using date ranges, you must provide ' +
-             'both a start and end date.'
-  },
-
-  NOT_FOUND : {
-    code   : 'ERR_NOT_FOUND',
-    reason : 'The inventory uuid requested was not found in the database'
-  },
-
-  NO_STOCK : {
-    code   : 'ERR_NO_STOCK',
-    reason : 'No stock was found for the provided inventory uuid.'
-  }
-};
+    lots        = require('./inventory/lots'),
+    stats       = require('./inventory/status');
 
 // exposed routes
 exports.getInventoryItems = getInventoryItems;
@@ -68,6 +47,12 @@ exports.getInventoryStockLevels = getInventoryStockLevels;
 exports.getInventoryExpirations = getInventoryExpirations;
 exports.getInventoryExpirationsById = getInventoryExpirationsById;
 
+exports.getInventoryLots = getInventoryLots;
+exports.getInventoryLotsById = getInventoryLotsById;
+
+exports.getInventoryStatus = getInventoryStatus;
+exports.getInventoryStatusById = getInventoryStatusById;
+
 /**
 * GET /inventory/metadata
 * Returns a description all inventory items in the inventory table.
@@ -79,9 +64,15 @@ function getInventoryItems(req, res, next) {
 
   core.getItemsMetadata()
   .then(function (rows) {
+    if (!rows.length) {
+      throw core.errors.NO_INVENTORY_ITEMS;
+    }
+
     res.status(200).json(rows);
   })
-  .catch(next)
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
   .done();
 }
 
@@ -99,12 +90,14 @@ function getInventoryItemsById(req, res, next) {
   core.getItemsMetadataById(uuid)
   .then(function (rows) {
     if (!rows.length) {
-      res.status(404).json(ERROR.NOT_FOUND);
+      throw core.errors.NO_INVENTORY_ITEM;
     }
 
     res.status(200).json(rows[0]);
   })
-  .catch(next)
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
   .done();
 }
 
@@ -127,14 +120,14 @@ function getInventoryConsumptionById(req, res, next) {
 
   // enforce that both parameters exist or neither exist
   if (!core.hasBoth(options.start, options.end)) {
-    return res.status(400).json(ERROR.MISSING_PARAMETERS);
+    return res.status(400).json(core.errors.MISSING_PARAMETERS);
   }
 
   // get the consumption
-  core.getItemsMetadataById(uuid)
+  core.getIds(uuid)
   .then(function (rows) {
     if (!rows.length) {
-      throw ERROR.NOT_FOUND;
+      throw core.errors.NO_INVENTORY_ITEMS;
     }
 
     // cache results
@@ -146,16 +139,17 @@ function getInventoryConsumptionById(req, res, next) {
       consumption.getItemConsumption(uuid, options);
   })
   .then(function (rows) {
-    data.consumption = options.average ? rows[0].average : rows;
+
+    if (!rows.length) {
+      data.consumption = options.average ? 0 : [];
+    } else {
+      data.consumption = options.average ? rows[0].average : rows;
+    }
+
     res.status(200).json(data);
   })
   .catch(function (error) {
-    if (error.code === 'ERR_NOT_FOUND') {
-      return res.status(404).json(ERROR.NOT_FOUND);
-    }
-
-    // handle database error generically
-    next(error);
+    core.errorHandler(error, req, res, next);
   })
   .done();
 }
@@ -176,13 +170,20 @@ function getInventoryConsumption(req, res, next) {
       uuid = req.params.uuid,
       options = req.query;
 
+  // TODO - is without an average and with an average different enough to
+  // require two different routes?
+  // Currently this function is pretty busy
+
   // enforce that both parameters exist or neither exist
   if (!core.hasBoth(options.start, options.end)) {
-    return res.status(400).json(ERROR.MISSING_PARAMETERS);
+    return res.status(400).json(core.errors.MISSING_PARAMETERS);
   }
 
-  core.getItemsMetadata()
+  core.getIds()
   .then(function (rows) {
+    if (!rows.length) {
+      throw core.errors.NO_INVENTORY_ITEMS;
+    }
 
     // cache rows
     data = rows;
@@ -196,19 +197,25 @@ function getInventoryConsumption(req, res, next) {
   })
   .then(function (rows) {
 
-    // FIXME - I'm not entirely sure this works in every scenario,
-    // remove this if you know the answer.
-
     // Loop through the original array and associate promises (consumptions)
     // with the original inventory value
     data.forEach(function (item, idx) {
-      item.consumption = rows[idx];
+      if (options.average) {
+        var hasAvg = rows[idx].length > 0;
+
+        // default to 0 if no average in place
+        item.consumption = hasAvg ? rows[idx][0].average : 0;
+      } else {
+        item.consumption = rows[idx];
+      }
     });
 
     // return to client
     res.status(200).json(data);
   })
-  .catch(next)
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
   .done();
 }
 
@@ -226,11 +233,14 @@ exports.getInventoryLeadTimesById = function (req, res, next) {
   leadtimes.getInventoryLeadTimesById(uuid, options)
   .then(function (rows) {
     if (!rows.length) {
-      return res.status(404).json(ERROR.NO_STOCK);
+      throw core.errors.NO_STOCK;
     }
+
     res.status(200).send(rows[0]);
   })
-  .catch(next)
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
   .done();
 };
 
@@ -247,9 +257,15 @@ exports.getInventoryLeadTimes = function (req, res, next) {
 
   leadtimes.getInventoryLeadTimes(options)
   .then(function (rows) {
+    if (!rows.length) {
+      throw core.errors.NO_STOCK;
+    }
+
     res.status(200).send(rows);
   })
-  .catch(next)
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
   .done();
 };
 
@@ -271,15 +287,20 @@ function getInventoryStockLevels(req, res, next) {
 
   // enforce that both parameters exist or neither exist
   if (!core.hasBoth(options.start, options.end)) {
-    return res.status(400).json(ERROR.MISSING_PARAMETERS);
+    return res.status(400).json(core.errors.MISSING_PARAMETERS);
   }
 
   stock.getStockLevels(options)
   .then(function (rows) {
+    if (!rows.length) {
+      throw core.errors.NO_STOCK;
+    }
 
     res.status(200).json(rows);
   })
-  .catch(next)
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
   .done();
 }
 
@@ -300,14 +321,14 @@ function getInventoryStockLevelsById(req, res, next) {
 
   // enforce that both parameters exist or neither exist
   if (!core.hasBoth(options.start, options.end)) {
-    return res.status(400).json(ERROR.MISSING_PARAMETERS);
+    return res.status(400).json(core.errors.MISSING_PARAMETERS);
   }
 
   stock.getStockLevelsById(uuid, options)
   .then(function (rows) {
 
     // in case there are no records, make one up.  This makes sense for items
-    // that have never been pruchases.  If they have been purchased, rows would
+    // that have never been purchases.  If they have been purchased, rows would
     // not be empty.
     if (!rows.length) {
       return res.status(200).json({ uuid : uuid, quantity : 0 });
@@ -315,7 +336,9 @@ function getInventoryStockLevelsById(req, res, next) {
 
     res.status(200).json(rows[0]);
   })
-  .catch(next)
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
   .done();
 }
 
@@ -335,14 +358,20 @@ function getInventoryExpirations(req, res, next) {
 
   // enforce that both parameters exist or neither exist
   if (!core.hasBoth(options.start, options.end)) {
-    return res.status(400).json(ERROR.MISSING_PARAMETERS);
+    return res.status(400).json(core.errors.MISSING_PARAMETERS);
   }
 
   expirations.getExpirations(options)
   .then(function (rows) {
+    if (!rows.length) {
+      throw core.errors.NO_STOCK;
+    }
+
     res.status(200).json(rows);
   })
-  .catch(next)
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
   .done();
 }
 
@@ -363,63 +392,140 @@ function getInventoryExpirationsById(req, res, next) {
 
   // enforce that both parameters exist or neither exist
   if (!core.hasBoth(options.start, options.end)) {
-    return res.status(400).json(ERROR.MISSING_PARAMETERS);
+    return res.status(400).json(core.errors.MISSING_PARAMETERS);
   }
 
   expirations.getExpirationsById(uuid, options)
   .then(function (rows) {
     if (!rows.length) {
-      res.status(404).json(ERROR.NO_STOCK);
+      throw core.errors.NO_STOCK;
     }
 
     res.status(200).json(rows[0]);
   })
-  .catch(next)
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
   .done();
 }
 
 /**
-* GET /inventory/alerts
-* Returns any combination of five types of stock alerts:
-*   1) Stockout
-*   2) Overstocked
-*   3) Stock Expiring
-*   4) Stock Expired
-*   5) Stock Minimum
+* GET /inventory/lots
+* Retrieve all active lots (quantity > 0) in the enterprise.  NOTE - this
+* query does not filter by expiration date or any other stock metadata.
 */
-function getInventoryAlerts(req, res, next) {
+function getInventoryLots(req, res, next) {
+
+  var data;
+
+  core.getIds()
+  .then(function (rows) {
+    if (!rows.length) {
+      throw core.errors.NO_INVENTORY_ITEMS;
+    }
+
+    // TODO - error handling: what about no inventory items?
+    data = rows;
+
+    // loop through inventory items, fetching the lots for each
+    // from the database
+    return q.all(data.map(function (i) {
+      return lots.getInventoryLotById(i.uuid);
+    }));
+  })
+  .then(function (lots) {
+    if (!lots.length) {
+      throw core.errors.NO_STOCK;
+    }
+
+    // loop through, joining lots to their inventory items
+    lots.forEach(function (lot, idx) {
+      data[idx].lot = lot;
+    });
+
+    // send data to the client
+    res.status(200).json(data);
+  })
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
+  .done();
+}
+
+/**
+* GET /inventory/:uuid/lots
+* Retrieve all active lots (quantity > 0) for a given inventory item.  NOTE -
+* this query does not filter by expiration date or any other stock metadata.
+*/
+function getInventoryLotsById(req, res, next) {
   'use strict';
 
-  alerts.getStockAlerts()
+  var uuid = req.param.uuid;
+
+  lots.getInventoryLotById(uuid)
+  .then(function (rows) {
+    if (!rows.length) {
+      throw core.errors.NO_STOCK;
+    }
+
+    res.status(200).json(rows[0]);
+  })
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
+  .done();
+}
+
+/**
+* GET /inventory/status
+* Retrieve the status of all inventory items in stock.  The status includes the
+* following checks:
+*   1) stockout
+*   2) overstock
+*   3) shortage (below minimum required level)
+*/
+function getInventoryStatus(req, res, next) {
+  'use strict';
+
+  core.getIds()
+  .then(function (rows) {
+
+    if (!rows.length) {
+      throw core.errors.NO_INVENTORY_ITEMS;
+    }
+
+    return q.all(rows.map(function (i) {
+      return stats.getInventoryStatusById(i.uuid);
+    }));
+  })
   .then(function (rows) {
     res.status(200).json(rows);
   })
-  .catch(next)
+  .catch(function (error) {
+    core.errorHandler(error, req, res, next);
+  })
   .done();
 }
 
 /**
-* GET /inventory/:uuid/alerts
-* Returns any combination of five types of stock alerts:
-*   1) Stockout
-*   2) Overstocked
-*   3) Stock Expiring
-*   4) Stock Expired
-*   5) Stock Minimum
+* GET /inventory/:uuid/status
+* Retrieve the status of a particular inventory item.  The status includes the
+* following checks:
+*   1) stockout
+*   2) overstock
+*   3) shortage (below minimum required level)
 */
-function getInventoryExpirationsById(req, res, next) {
+function getInventoryStatusById(req, res, next) {
   'use strict';
 
   var uuid = req.params.uuid;
 
-  alerts.getStockAlertsById(uuid)
-  .then(function (rows) {
-    if (!rows.length) {
-      res.status(404).json(ERROR.NO_STOCK);
-    }
-
-    res.status(200).json(rows[0]);
+  stats.getInventoryStatusById(uuid)
+  .then(function (data) {
+    res.status(200).json(data);
   })
-  .catch(next)
+  .catch(function (error) {
+    core.errorHandler(error, next);
+  })
   .done();
 }

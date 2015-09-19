@@ -170,9 +170,11 @@ exports.initialise = function (app) {
   app.get('/inventory/expirations', inventory.getInventoryExpirations);
   app.get('/inventory/:uuid/expirations', inventory.getInventoryExpirationsById);
 
-  app.get('/inventory/alerts', inventory.getInventoryAlerts);
-  app.get('/inventory/:uuid/alerts', inventory.getInventoryAlertsById);
+  app.get('/inventory/lots', inventory.getInventoryLots);
+  app.get('/inventory/:uuid/lots', inventory.getInventoryLotsById);
 
+  app.get('/inventory/status', inventory.getInventoryStatus);
+  app.get('/inventory/:uuid/status', inventory.getInventoryStatusById);
 
   /* continuing on ... */
 
