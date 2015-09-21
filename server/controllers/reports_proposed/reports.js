@@ -114,7 +114,7 @@ exports.index = function (req, res, next) {
 
 // Designed to be able to handle additional type logic; CSV, PDF
 exports.listArchives = function (req, res, next) { 
-  var archiveQuery = 'SELECT * from `report_archive` WHERE `report_id` = ?';
+  var archiveQuery = 'SELECT report_archive.*, user.first, user.last from `report_archive` LEFT JOIN user ON report_archive.user_id = user.id WHERE `report_archive`.`report_id` = ? ORDER BY report_archive.created DESC';
   var reportId = req.params.id;
 
   db.exec(archiveQuery, [reportId])
@@ -160,6 +160,9 @@ exports.build = function (req, res, next) {
     console.log('using definition', definition);
 
     var context = definition.context;
+  
+    // Assign ID of user making report request to be used throughout archiving 
+    options.user = req.session.user.id;
 
     context.compile(options)
     .then(renderTarget)
@@ -196,7 +199,7 @@ exports.build = function (req, res, next) {
 
         // TODO Link DB Driven report definition through to server
         // Write to archive unless option disabled
-        writeArchive(definition, hash)
+        writeArchive(definition, hash, options)
           .then(function (result) { 
             
             console.log('res', result);
@@ -220,12 +223,14 @@ exports.build = function (req, res, next) {
 };
 
 // Link file PATH, options and timestamp
-function writeArchive(definition, hash) { 
+function writeArchive(definition, hash, options) { 
   var deferred = q.defer();
-  var insertQuery = 'INSERT INTO `report_archive` (report_id, title, path) VALUES (?, ?, ?)';
+  var insertQuery = 'INSERT INTO `report_archive` (report_id, title, path, user_id) VALUES (?, ?, ?, ?)';
+ 
+  // Default values
+  var title = options.title || definition.title.concat(' ', new Date().toDateString());
   
-  
-  db.exec(insertQuery, [definition.id, 'title', hash])
+  db.exec(insertQuery, [definition.id, title, hash, options.user])
     .then(function (result) { 
       console.log('archive written');
 
@@ -242,7 +247,7 @@ function writeArchive(definition, hash) {
 
 function lookupArchive(id) { 
   var deferred = q.defer();
-  var archiveQuery = "SELECT * FROM report_archive WHERE id = ?";
+  var archiveQuery = "SELECT report_archive.*, user.first, user.last FROM report_archive LEFT JOIN user ON report_archive.user_id = user.id WHERE report_archive.id = ?";
   
   db.exec(archiveQuery, [id])
     .then(function (result) { 

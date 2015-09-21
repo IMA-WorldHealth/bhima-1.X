@@ -122,8 +122,9 @@ function ReportCore($routeParams, $modal, ModuleState, ReportService) {
   function insertDocument(documentRecord) { 
     var uniqueQueryIndex = 0; 
     var result = documentRecord.data[uniqueQueryIndex]; 
-      
-    viewModel.archives.push(result);
+     
+    // Hacky ordering solution - resolved with real grid
+    viewModel.archives.splice(0, 0, result);
   }
 
   /**

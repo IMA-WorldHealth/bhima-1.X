@@ -243,13 +243,16 @@ DROP TABLE IF EXISTS `report_archive`;
 CREATE TABLE `report_archive` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `report_id` smallint(5) unsigned NOT NULL,
+  `user_id` smallint(5) unsigned NOT NULL,
   `title` varchar(255) NOT NULL,
   `path` varchar(255) NOT NULL,
   `report_options` text,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-  /* KEY `report_id` (`report_id`), */
-  /* CONSTRAINT `report_id` FOREIGN KEY (`report_id`) REFERENCES `report` (`id`) */
+  PRIMARY KEY (`id`),
+  KEY `report_id` (`report_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `report_id` FOREIGN KEY (`report_id`) REFERENCES `report` (`id`),
+  CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Core BHIMA supported reports 

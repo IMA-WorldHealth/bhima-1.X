@@ -8,8 +8,8 @@
   <button ng-click="ReportCtrl.hookGeneration()" class="btn btn-primary btn-default">Create new {{ReportCtrl.title}} Document</button>
 
   <div class="pull-right">
-    <button class="btn btn-default">Manage recurring report</button>
-    <button class="btn btn-default">Settings</button>
+    <button disabled class="btn btn-default">Manage recurring report</button>
+    <button disabled class="btn btn-default">Settings</button>
   </div>
 </nav>
 
@@ -56,12 +56,16 @@
       </thead>
 
       <tbody>
-        <tr ng-repeat="archive in ReportCtrl.archives">
+        <tr ng-repeat="archive in ReportCtrl.archives | orderBy : !archive.created">
           <td>{{archive.title}}</td>
           <td>{{archive.created | date}}</td>
           <td></td>
-          <td></td>
-          <td><a ng-href="{{archive.path}}">link</a></td>
+          <td>{{archive.first}} {{archive.last}}</td>
+          <td>
+            <a ng-href="/report/serve/{{archive.path}}"><i class="glyphicon glyphicon-link"></i></a>
+            <i style="color : #B1B1B1;" class="glyphicon glyphicon-download"></i>
+            <i style="color : #B1B1B1;" class="glyphicon glyphicon-phone"></i>
+          </td>
         </tr>
       </tbody>
     </table>
