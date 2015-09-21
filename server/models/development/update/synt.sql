@@ -256,4 +256,4 @@ UPDATE `unit` SET path="/stock/dashboard", url = "/stock/dashboard" WHERE id = 8
 -- Date 2015-09-14
 -- by: jniles
 DROP TABLE consumption_reversing;
-ALTER TABLE consumption ADD COLUMN `cancelled` BOOLEAN NOT NULL DEFAULT 0;
+ALTER TABLE consumption ADD COLUMN `canceled` BOOLEAN NOT NULL DEFAULT 0;

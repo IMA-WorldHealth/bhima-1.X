@@ -478,13 +478,9 @@ function bhimaconfig($routeProvider) {
     controller : 'stock.distribution_service',
     templateUrl : 'partials/stock/exit_service/distribution_service.html'
   })
-  .when('/stock/distribution_record/:depotId', {
-    controller : 'stock.distribution_record',
-    templateUrl : 'partials/stock/distribution_record/distribution_record.html'
-  })
-  .when('/stock/distribution_service_record/:depotId', {
-    controller : 'stock.distribution_service_record',
-    templateUrl : 'partials/stock/distribution_service_record/distribution_service_record.html'
+  .when('/depots/:depotId/distributions/:type', {
+    controller : 'DepotStockDistributionsController as DistributionsCtrl',
+    templateUrl : 'partials/depots/distributions/distributions.html'
   })
   .when('/reports/distribution_record/:depotId', {
     controller : 'distribution_record',
@@ -498,22 +494,24 @@ function bhimaconfig($routeProvider) {
     controller : 'distribution_record_view',
     templateUrl : 'partials/reports/distribution_record/distribution_record_view.html'
   })
+
   .when('/reports/distribution_service_record/', {
     controller : 'distribution_service_record_view',
     templateUrl : 'partials/reports/distribution_service_record/distribution_service_record_view.html'
   })
-  .when('/stock/reversing_service_distribution/:consumptionId', {
-    controller : 'stock.reversing_service_distribution',
-    templateUrl : 'partials/stock/reversing_service_distribution/reversing_service_distribution.html'
+
+  // should this be namespaced by inventory or depot or other?
+  .when('/depot/:depotId/distributions/:consumptionId/cancel', {
+    controller : 'StockDistributionsCancelController as CancelCtrl',
+    templateUrl : 'partials/depot/distributions/cancel/cancel.html'
   })
-  .when('/stock/reversing_distribution/:consumptionId', {
-    controller : 'stock.reversing_distribution',
-    templateUrl : 'partials/stock/reversing_distribution/reversing_distribution.html'
-  })
+
+  // TODO -- this should have a depot url, not a stock URL
   .when('/stock/loss/:depotId', {
     controller : 'stock.loss',
     templateUrl : 'partials/stock/loss/loss.html'
   })
+
   .when('/stock/entry/report/:documentId?', {
     controller : 'stock.entry.report',
     templateUrl : 'partials/stock/entry/report.html'
@@ -522,6 +520,8 @@ function bhimaconfig($routeProvider) {
     controller : 'stock.search',
     templateUrl: 'partials/stock/search/search.html'
   })
+
+  // TODO -- these should probably have an /inventory/ prefix
   .when('/stock/count/', {
     controller : 'stock.count',
     templateUrl : 'partials/stock/count/count.html'
@@ -546,6 +546,9 @@ function bhimaconfig($routeProvider) {
     controller : 'donation_management.report',
     templateUrl : 'partials/stock/donation_management/report.html'
   })
+
+
+  // TODO -- thes should be namespaced/prefixed by depot
   .when('/stock/loss_record/:depotId', {
     controller : 'stock.loss_record',
     templateUrl : 'partials/stock/loss_record/loss_record.html'
@@ -562,13 +565,14 @@ function bhimaconfig($routeProvider) {
     controller : 'loss_record',
     templateUrl : 'partials/reports/loss_record/loss_record.html'
   })
-  .when('/stock/dashboard/', {
-    controller : 'StockDashboardController as StockDashCtrl',
-    templateUrl : 'partials/stock/dashboard/dashboard.html'
-  })
   .when('/inventory/distribution/:depotId?', {
     controller : 'inventory.distribution',
     templateUrl : 'partials/inventory/distribution/distribution.html'
+  })
+
+  .when('/stock/dashboard/', {
+    controller : 'StockDashboardController as StockDashCtrl',
+    templateUrl : 'partials/stock/dashboard/dashboard.html'
   })
   .when('/snis/', {
     controller : 'snis',
@@ -742,7 +746,7 @@ function bhimaconfig($routeProvider) {
   .when('/justifyModal/', {
     controller : 'justifyModal',
     templateUrl : 'partials/cash/justify_modal.html'
-  })        
+  })
   .when('/dashboards/finance', {
     templateUrl : 'partials/dashboard/finance.html'
   })
@@ -761,7 +765,7 @@ function translateConfig($translateProvider) {
   $translateProvider.preferredLanguage('fr');
 }
 
-function localeConfig(tmhDynamicLocaleProvider) { 
+function localeConfig(tmhDynamicLocaleProvider) {
 
   // TODO Hardcoded default translation/ localisation
   tmhDynamicLocaleProvider.localeLocationPattern('/i18n/locale/angular-locale_{{locale}}.js');

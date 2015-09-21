@@ -35,7 +35,7 @@ function getItemConsumption(uuid, options) {
   switch (group) {
     case 'year':
       sql =
-        'SELECT SUM(IF(c.cancelled, 0, c.quantity)) AS quantity, DATE_FORMAT(c.date, \'%Y-%m-%d\') AS `date` ' +
+        'SELECT SUM(IF(c.canceled, 0, c.quantity)) AS quantity, DATE_FORMAT(c.date, \'%Y-%m-%d\') AS `date` ' +
         'FROM consumption AS c JOIN stock AS s JOIN inventory AS i ' +
           'ON c.tracking_number = s.tracking_number AND ' +
           's.inventory_uuid = i.uuid ' +
@@ -45,7 +45,7 @@ function getItemConsumption(uuid, options) {
 
     case 'month':
       sql =
-        'SELECT SUM(IF(c.cancelled, 0, c.quantity)) AS quantity, DATE_FORMAT(c.date, \'%Y-%m-01\') AS `date` ' +
+        'SELECT SUM(IF(c.canceled, 0, c.quantity)) AS quantity, DATE_FORMAT(c.date, \'%Y-%m-01\') AS `date` ' +
         'FROM consumption AS c JOIN stock AS s JOIN inventory AS i ' +
           'ON c.tracking_number = s.tracking_number AND ' +
           's.inventory_uuid = i.uuid ' +
@@ -55,7 +55,7 @@ function getItemConsumption(uuid, options) {
 
     case 'week' :
       sql =
-        'SELECT SUM(IF(c.cancelled, 0, c.quantity)) AS quantity, c.date ' +
+        'SELECT SUM(IF(c.canceled, 0, c.quantity)) AS quantity, c.date ' +
         'FROM consumption AS c JOIN stock AS s JOIN inventory AS i ' +
           'ON c.tracking_number = s.tracking_number AND ' +
           's.inventory_uuid = i.uuid ' +
@@ -65,7 +65,7 @@ function getItemConsumption(uuid, options) {
 
     default:
       sql =
-        'SELECT SUM(IF(c.cancelled, 0, c.quantity)) AS quantity, DATE(c.date) AS `date` ' +
+        'SELECT SUM(IF(c.canceled, 0, c.quantity)) AS quantity, DATE(c.date) AS `date` ' +
         'FROM consumption AS c JOIN stock AS s JOIN inventory AS i ' +
           'ON c.tracking_number = s.tracking_number AND ' +
           's.inventory_uuid = i.uuid ' +
@@ -117,7 +117,7 @@ function getAverageItemConsumption(uuid, options) {
       'FROM consumption AS c JOIN stock AS s JOIN inventory AS i ' +
         'ON c.tracking_number = s.tracking_number AND ' +
         's.inventory_uuid = i.uuid ' +
-      'WHERE c.cancelled <> 1 AND i.uuid = ? AND ' + where +
+      'WHERE c.canceled <> 1 AND i.uuid = ? AND ' + where +
     ') AS c ' +
     'GROUP BY c.uuid;';
 

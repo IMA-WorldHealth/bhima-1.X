@@ -12,7 +12,7 @@ var cfg         = require('./../config/environment/server');
 
 // Route specific requirements
 var synthetic                  = require('./synthetic');
-var depot                      = require('./depot')();
+//var depot                      = require('./depot')();
 var taxPayment                 = require('./taxPayment')();
 var donation                   = require('./postingDonation')();
 var cotisationPayment          = require('./cotisationPayment')();
@@ -816,17 +816,6 @@ exports.inventoryByDepot = function (req, res, next) {
             'WHERE stock.depot_uuid='+sanitize.escape(req.params.depot_uuid);
 
   db.exec(sql)
-  .then(function (ans) {
-    res.send(ans);
-  })
-  .catch(function (err) {
-    next(err);
-  })
-  .done();
-};
-
-exports.routeDepotQuery = function (req, res, next) {
-  depot(req.url, req.params.depot)
   .then(function (ans) {
     res.send(ans);
   })

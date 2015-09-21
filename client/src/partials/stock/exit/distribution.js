@@ -19,26 +19,23 @@ angular.module('bhima.controllers')
       lotSelectionSuccess : false,
       lotSelectionFailure : false
     };
+
     var dependencies = {};
 
     // Test for module organised into step structure
-    var moduleDefinition = $scope.moduleDefinition = [
-      {
-        title : $translate.instant('DISTRIBUTION.LOCATE_PATIENT'),
-        template : 'patientSearch.tmpl.html',
-        method : null
-      },
-      {
-        title : $translate.instant('DISTRIBUTION.SLECT_PRESCRIPTION'),
-        template : 'selectSale.tmpl.html',
-        method : null
-      },
-      {
-        title : $translate.instant('DISTRIBUTION.ALLOCATE_MEDECINE'),
-        template : 'allocateLot.tmpl.html',
-        method : null
-      }
-    ];
+    var moduleDefinition = $scope.moduleDefinition = [{
+      title : $translate.instant('DISTRIBUTION.LOCATE_PATIENT'),
+      template : 'patientSearch.tmpl.html',
+      method : null
+    }, {
+      title : $translate.instant('DISTRIBUTION.SLECT_PRESCRIPTION'),
+      template : 'selectSale.tmpl.html',
+      method : null
+    }, {
+      title : $translate.instant('DISTRIBUTION.ALLOCATE_MEDECINE'),
+      template : 'allocateLot.tmpl.html',
+      method : null
+    }];
 
     var stock = {
       NONE : {
@@ -67,7 +64,13 @@ angular.module('bhima.controllers')
 
     function startup(model) {
       angular.extend($scope, model); 
+
+      // filter out ledger data is that is not distributable before proceeding.
+      $scope.ledger.data = $scope.ledger.data.filter(function (data) { return data.is_distributable[0] === 1; });
+
       var dataDebitor = $scope.ledger.data;
+
+      console.log('dataDebitor:', $scope.ledger.data);
 
       dataDebitor.forEach(function (item) {
         dependencies.get_consumption = {
@@ -101,10 +104,8 @@ angular.module('bhima.controllers')
           if(nbConsumption > nbReversing){
             item.reversing_stock = null;
           }
-
         });        
       }); 
-      $scope.ledger.data = $scope.ledger.data.filter(function (data) { return data.is_distributable[0] === 1; });
       moduleStep();
     }
 
@@ -237,6 +238,7 @@ angular.module('bhima.controllers')
         where : ['sale_item.sale_uuid=' + sale.inv_po_id],
         join : ['sale_item.inventory_uuid=inventory.uuid']
       };
+
       return connect.req(query);
     }
 
