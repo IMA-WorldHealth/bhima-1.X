@@ -3,14 +3,14 @@ angular.module('bhima.controllers')
 .controller('income_expenseController', incomeExpense);
 
 // Definition is passed in through report core
-incomeExpense.$inject = ['$anchorScroll', '$location', '$modalInstance', '$http', 'store', 'ModuleState', 'definition'];
+incomeExpense.$inject = ['$anchorScroll', '$location', '$modalInstance', '$http', 'store', 'ModuleState', 'definition', 'updateMethod'];
 
-function incomeExpense($anchorScroll, $location, $modalInstance, $http, Store, ModuleState, definition) { 
+function incomeExpense($anchorScroll, $location, $modalInstance, $http, Store, ModuleState, definition, updateMethod) { 
   var modal = this;
   var state = new ModuleState();
 
   var generateUrl = 'report/build/income_expense';
-
+  var definition;
   
   modal.state = state;
   modal.title = definition.title; 
@@ -30,11 +30,15 @@ function incomeExpense($anchorScroll, $location, $modalInstance, $http, Store, M
     .then(function (result) { 
       console.log('got', result);
       modal.link = result.data;
-    
+      
+      definition = result;
+
       // TODO Refactor this API, did not scale
       state.loaded();
       state.success();
       state.completed();
+
+      updateMethod(result);
     })
     .catch(function (error) { 
       console.log('err', error); 
@@ -84,5 +88,9 @@ function incomeExpense($anchorScroll, $location, $modalInstance, $http, Store, M
 
   modal.cancelModal = function () { 
     $modalInstance.dismiss();
+  }
+
+  modal.completeModal = function () { 
+    $modalInstance.close(definition);
   }
 }

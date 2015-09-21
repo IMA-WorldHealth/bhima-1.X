@@ -48,7 +48,7 @@ exports.compile = function (options) {
   
   db.exec(sql, [options.fiscalYearId, incomeAccountId, titleAccountId, expenseAccountId])
     .then(function (accounts) { 
-      console.log('income_expense build got', accounts);
+      // console.log('income_expense build got', accounts);
 
       var accountTree = getChildren(accounts, ROOT_ACCOUNT_ID, 0);
       
@@ -56,7 +56,7 @@ exports.compile = function (options) {
       var incomeData = JSON.parse(JSON.stringify(accountTree));
       var expenseData = JSON.parse(JSON.stringify(accountTree));
       
-      console.log('before filter', incomeData);
+      // console.log('before filter', incomeData);
       
       // FIXME Lots of processing, very little querrying - this is what MySQL is foreh
       // incomeData = filterAccounts(incomeData, expenseAccountId);

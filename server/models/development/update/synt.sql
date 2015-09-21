@@ -222,28 +222,34 @@ CHANGE `is_social_care` `is_social_care` tinyint(1) DEFAULT '0';
 --
 -- Date : 2015-09-11
 -- @sfount
+DROP TABLE IF EXISTS `report_archive`;
 DROP TABLE IF EXISTS `report`;
 CREATE TABLE `report` (
-  `id` smallint(5) unsigned NOT NULL,
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `key` varchar(50) NOT NULL, 
   `title` varchar(255) NOT NULL,
   `description` text,
   `supports_pdf` boolean, 
   `supports_csv` boolean, 
   `supports_client` boolean,
-  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   -- `last_updated` TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Experimental report options - these could be used to generate a CSV from a 
 -- archived PDF, however this should be designed
 DROP TABLE IF EXISTS `report_archive`;
 CREATE TABLE `report_archive` (
-  `id` smallint(5) unsigned NOT NULL,
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `report_id` smallint(5) unsigned NOT NULL,
+  `title` varchar(255) NOT NULL,
   `path` varchar(255) NOT NULL,
   `report_options` text,
-  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+  /* KEY `report_id` (`report_id`), */
+  /* CONSTRAINT `report_id` FOREIGN KEY (`report_id`) REFERENCES `report` (`id`) */
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Core BHIMA supported reports 

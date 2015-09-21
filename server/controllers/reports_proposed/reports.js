@@ -155,6 +155,10 @@ exports.build = function (req, res, next) {
     // FIXME Use standard error handling
     res.status(500).end('Invalid or Unknown document target');
   } else {
+
+    console.log('create document request');
+    console.log('using definition', definition);
+
     var context = definition.context;
 
     context.compile(options)
@@ -186,17 +190,70 @@ exports.build = function (req, res, next) {
       if (errorCode) { 
         next(errorCode);
       } else { 
+        var servePath = '/report/serve/';
         
+        console.log('configuration', configuration);
+
         // TODO Link DB Driven report definition through to server
         // Write to archive unless option disabled
-         
+        writeArchive(definition, hash)
+          .then(function (result) { 
+            
+            console.log('res', result);
 
-        // Return path to file service
-        res.send('/report/serve/' + hash);
+            lookupArchive(result.insertId)
+            .then(function (result) { 
+
+              result.hash = servePath.concat(hash);
+              res.send(result);  
+            })
+            .catch(function (error) { 
+              next(error);
+            });
+          })
+          .catch(function (error) { 
+            next(error); 
+          });
       }
     });
   }
 };
+
+// Link file PATH, options and timestamp
+function writeArchive(definition, hash) { 
+  var deferred = q.defer();
+  var insertQuery = 'INSERT INTO `report_archive` (report_id, title, path) VALUES (?, ?, ?)';
+  
+  
+  db.exec(insertQuery, [definition.id, 'title', hash])
+    .then(function (result) { 
+      console.log('archive written');
+
+      deferred.resolve(result);
+    })
+    .catch(function (error) { 
+      
+      deferred.reject(error);
+      // throw error;
+    });
+
+    return deferred.promise;
+}
+
+function lookupArchive(id) { 
+  var deferred = q.defer();
+  var archiveQuery = "SELECT * FROM report_archive WHERE id = ?";
+  
+  db.exec(archiveQuery, [id])
+    .then(function (result) { 
+      deferred.resolve(result);
+    })
+    .catch(function (error) { 
+      deferred.reject(error);
+    });
+
+  return deferred.promise;
+}
   
 // Template convention dots.{{report_key}}
 function getReportTemplate(key) { 

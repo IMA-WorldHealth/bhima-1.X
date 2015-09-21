@@ -85,7 +85,8 @@ function ReportCore($routeParams, $modal, ModuleState, ReportService) {
     // TODO verify these exist as entities before continuing (catch erros on modal creation?)
     console.log(templateByConvention);
     console.log(controllerByConvention);
-
+  
+    // console.log('update');
     var modal = $modal
       .open({
       
@@ -96,20 +97,33 @@ function ReportCore($routeParams, $modal, ModuleState, ReportService) {
       controller : controllerByConvention,
       resolve : { 
         definition : function () { 
-          return reportDefinition 
+          return reportDefinition;
+        }, 
+        updateMethod : function () { 
+          return insertDocument;
         }
       }
     })
 
     modal.result.then(function (completeConfirmation) { 
-      // Report complete 
+      // Report complete
       
+      console.log('completed', completeConfirmation);
+
     }, function (error) { 
-    
+       
       // TODO formalise this
       console.error('Report is NOT configured correctly');
       console.error(error);
     });
+  }
+
+  // Optimistically add archived file to table
+  function insertDocument(documentRecord) { 
+    var uniqueQueryIndex = 0; 
+    var result = documentRecord.data[uniqueQueryIndex]; 
+      
+    viewModel.archives.push(result);
   }
 
   /**
