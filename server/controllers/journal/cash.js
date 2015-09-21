@@ -345,7 +345,7 @@ exports.refund = function (id, userId, callback) {
         'SELECT trans_id, inv_po_id FROM general_ledger' +
       ') AS pg WHERE pg.inv_po_id = ? LIMIT 1;';
 
-    return db.exec(sql, [reference.cash_uuid]);
+    return db.exec(sql, [reference.invoice_uuid]);
   })
   .then(function (t) {
     var sql =
@@ -379,14 +379,14 @@ exports.refund = function (id, userId, callback) {
   })
   .then(function (transId) {
     var sqls = [];
+
     cfg.rows.forEach(function (item) {
-      var id = uuid();
       var sql =
         'INSERT INTO posting_journal ' +
           '(project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, ' +
           'description, doc_num, account_id, debit, credit, debit_equiv, credit_equiv, ' +
           'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) ' +
-        'SELECT cash_discard.project_id, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, transId, '\'' + getDate() + '\''].join(', ') + ', ' +
+        'SELECT cash_discard.project_id, ' + [sanitize.escape(uuid()), cfg.fiscalYearId, cfg.periodId, sanitize.escape(transId), sanitize.escape(getDate())].join(', ') + ', ' +
           'cash_discard.description, null, ' + [item.account_id, item.debit, item.credit, item.debit_equiv, item.credit_equiv].join(', ') + ', ' +
           'cash.currency_id, ' + ((item.deb_cred_uuid) ? sanitize.escape(item.deb_cred_uuid) : 'null') + ', ' +
           ((item.deb_cred_type) ? sanitize.escape(item.deb_cred_type) : 'null') + ', ' + sanitize.escape(item.inv_po_id) + ', ' +
