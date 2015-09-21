@@ -41,7 +41,8 @@ var auth            = require('../controllers/auth'),
     stock           = require('../controllers/stock'),
     purchase        = require('../controllers/purchase'),
     inventory       = require('../controllers/inventory'),
-    patient         = require('../controllers/patient');
+    patient         = require('../controllers/patient'),
+    depot           = require('../controllers/depot');
 
 exports.initialise = function (app) {
   console.log('[config/routes] Configure routes');
@@ -53,7 +54,7 @@ exports.initialise = function (app) {
   app.post('/login', auth.login);
   app.get('/logout', auth.logout);
 
-  // Application data
+  // application data
   app.post('/data/', data.create);
   app.get('/data/', data.read);
   app.put('/data/', data.update);
@@ -139,7 +140,6 @@ exports.initialise = function (app) {
   app.get('/stockIn/:depot_uuid/:df/:dt', uncategorised.stockIn);
   app.get('/serv_dist_stock/:depot_uuid', uncategorised.distributeStockDepot);
   app.get('/inv_in_depot/:depot_uuid', uncategorised.inventoryByDepot);
-  app.get('/inventory/depot/:depot/*', uncategorised.routeDepotQuery);
   app.get('/inventory/drug/:code', uncategorised.routeDrugQuery);
   app.get('/errorcodes', uncategorised.listErrorCodes);
   app.get('/getAccount6', uncategorised.listIncomeAccounts);
@@ -176,15 +176,17 @@ exports.initialise = function (app) {
   app.get('/inventory/status', inventory.getInventoryStatus);
   app.get('/inventory/:uuid/status', inventory.getInventoryStatusById);
 
+  /* Depot Management */
+
+  app.get('/depots/:depotId/distributions', depot.getDistributions);
+  app.get('/depots/:depotId/distributions/:uuid', depot.getDistributionsById);
+
   /* continuing on ... */
 
   // stock API
-  app.get('/consumption', stock.getConsumption);
   app.get('/donations', stock.getRecentDonations);
-  app.get('/getConsumptionDrugs/', stock.listConsumptionDrugs);
 
   // TODO -- better route names?
-  app.get('/stockalerts', stock.getStockAlerts);
   app.get('/expiring/:depot_uuid/:df/:dt', uncategorised.stockExpiringByDepot);
   app.get('/expiring_complete/:tracking_number/:depot_uuid', uncategorised.stockExpiringComplete);
 

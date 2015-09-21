@@ -34,7 +34,7 @@ function getStockLevels(options) {
         'SUM(s.quantity - c.quantity) AS quantity ' +
       'FROM stock AS s LEFT JOIN consumption AS c ON ' +
         's.tracking_number = c.tracking_number ' +
-      'WHERE c.cancelled <> 1 ' +
+      'WHERE c.canceled <> 1 ' +
       'GROUP BY s.inventory_uuid ' +
     ') AS t ON i.uuid = t.uuid ' +
     'GROUP BY i.uuid;';
@@ -65,7 +65,7 @@ function getStockLevelsById(uuid, options) {
       'SUM(s.quantity - c.quantity) AS quantity ' +
     'FROM stock AS s LEFT JOIN consumption AS c ON ' +
       's.tracking_number = c.tracking_number ' +
-    'WHERE c.cancelled <> 1 AND s.inventory_uuid = ? ' +
+    'WHERE c.canceled <> 1 AND s.inventory_uuid = ? ' +
     'GROUP BY s.inventory_uuid;';
 
   return db.exec(sql, [uuid]);
@@ -92,7 +92,7 @@ function getAverageStockLevels(options) {
       'SUM(s.quantity - c.quantity) AS quantity ' +
     'FROM stock AS s LEFT JOIN consumption AS c ON ' +
       's.tracking_number = c.tracking_number ' +
-    'WHERE c.cancelled <> 1 AND s.inventory_uuid = ? ' +
+    'WHERE c.canceled <> 1 AND s.inventory_uuid = ? ' +
     'GROUP BY s.inventory_uuid;';
 
   return db.exec(sql, []);

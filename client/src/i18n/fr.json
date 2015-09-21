@@ -29,7 +29,7 @@
    "HELP_TXT_3"      : "Cliquer 'Ajouter un Compte' pour l'ajout d'un compte",
    "IS_ASSET"        : "Est un actif",
    "IS_ASSET_TITLE"  : "Est ce actif?",
-   "IS_CHARGE"       : "Est ce une charge?", 
+   "IS_CHARGE"       : "Est ce une charge?",
    "IS_LOCKED"       : "Verrouillé ?",
    "IS_OHADA"        : "OHADA ?",
    "IS_NOTHING"      : "Autre",
@@ -360,11 +360,11 @@
     "DAY"    : "Jour",
     "MONTH"  : "Mois",
     "PERIOD" : "Période",
-    "TITLE"  : "Groupement",    
-    "WEEK"   : "Semaine",    
-    "YEAR"   : "Année"    
+    "TITLE"  : "Groupement",
+    "WEEK"   : "Semaine",
+    "YEAR"   : "Année"
   }
-}, 
+},
 "COLUMNS": {
    "ABBR"                  : "Abr.",
    "ABBREVIATION"          : "Abréviation",
@@ -425,7 +425,7 @@
    "DEBITOR_GROUP"         : "Groupe Débiteur",
    "DEBITOR_ID"            : "ID Débiteur",
    "DEBITOR_NAME"          : "Nom Débiteur",
-   "DEBT"                  : "Dette",   
+   "DEBT"                  : "Dette",
    "DEBITOR_TYPE"          : "Type de Débiteur",
    "DEBTOR"                : "Débiteur",
    "DEB_CRED_TYPE"         : "Type Débiteur/Créditeur",
@@ -614,7 +614,7 @@
    "UNIT_PRICE"            : "Prix Unitaire",
    "UNIT_VOLUME"           : "Volume unitaire",
    "UNIT_WEIGHT"           : "Poids unitaire",
-   "USER"                  : "Utilisateur",   
+   "USER"                  : "Utilisateur",
    "USERNAME"              : "Nom d'utilisateur",
    "USER_ID"               : "ID Utilisateur",
    "USER_NAME"             : "Nom Utilisateur",
@@ -626,7 +626,7 @@
    "WORDING"               : "Libellé",
    "WORKING_DAY"           : "Jours prestés",
    "ZS"                    : "Zone de Santé"
-   
+
    },
 
 "CONFIG_ACCOUNTING": {
@@ -845,7 +845,7 @@
      "TITLE"             : "Tableau de bord financier",
      "TOP_DEBTORS"       : "Top des débiteurs",
      "TOP_DEBTOR_GROUPS" : "Top des Groupes débiteurs"
-   }   
+   }
 },
 "DEBITOR_GRP": {
    "FILTER"     : "Filtrer Le Groupe de Débiteur",
@@ -860,18 +860,26 @@
    "TITLE"      : "Gestion des Groupes des Débiteurs"
    },
 "DEPOT": {
-   "ADD"             : "Ajouter",
-   "ALERT"           : "Ce module vous permet de gérer vos dépôt",
-   "ALL"             : "Tous les Dépôts",
-   "DELETE_SUCCESS"  : "Suppression avec succès",
-   "EDIT"            : "Editer les informations d'un dépôt",
-   "EDIT_SUCCESS"    : "Données du dépôt mise à jour avec succès ",
-   "NEW"             : "Nouveau dépôt",
-   "NEW_SUCCESS"     : "Nouveau dépôt enregistré avec succès",
-   "NO_DEPOTS"       : "Aucun dépôt trouvé",
-   "NOT_FOUND"       : "Aucun dépôt enregistrés n'a pu être trouvée. Veuillez sélectionner le bon dépôt ou contacter l'administrateur du système.",
-   "TITLE"           : "Gestion des Dépôt"
-   },
+  "ADD"             : "Ajouter",
+  "ALERT"           : "Ce module vous permet de gérer vos dépôt",
+  "ALL"             : "Tous les Dépôts",
+  "DELETE_SUCCESS"  : "Suppression avec succès",
+  "EDIT"            : "Editer les informations d'un dépôt",
+  "EDIT_SUCCESS"    : "Données du dépôt mise à jour avec succès ",
+  "NEW"             : "Nouveau dépôt",
+  "NEW_SUCCESS"     : "Nouveau dépôt enregistré avec succès",
+  "NO_DEPOTS"       : "Aucun dépôt trouvé",
+  "NOT_FOUND"       : "Aucun dépôt enregistrés n'a pu être trouvée. Veuillez sélectionner le bon dépôt ou contacter l'administrateur du système.",
+  "TITLE"           : "Gestion des Dépôt",
+  "DISTRIBUTION"   : {
+    "PATIENTS" : "Distributions to Patients",
+    "SERVICES" : "Distributions to Services",
+    "RUMMAGE"  : "Liquidation by Rummage Sale",
+    "LOSSES"   : "Stock Losses",
+    "ANNUL"    : "Annuler cette Transaction",
+    "ANNULLED" : "Annulé"
+  }
+},
 "DISTRIBUTION": {
    "ADD_ROW"                : "Ajouter Item",
    "ALLOCATE_MEDECINE"      : "Allouer les médicaments",
@@ -1208,7 +1216,7 @@
    "ONE_YEAR"                    : "Une Année",
    "OPEN"                        : "Cette année fiscal est ouvert",
    "OTHER_CHARGE"                : "Autres charges",
-   "OTHER_PROFIT"                : "Autres profits",     
+   "OTHER_PROFIT"                : "Autres profits",
    "PERIODS"                     : "Périodes",
    "POSTING_FROM"                : "Poster De",
    "POSTING_SOLD_TO_NEW_FY"      : "Poster le solde dans la nouvelle année fiscale",
@@ -1230,7 +1238,7 @@
    "TITLE"                       : "Année Fiscale",
    "TOTAL_CHARGE"                : "Total des Charges",
    "TOTAL_MONTH"                 : "Total Months",
-   "TOTAL_PROFIT"                : "Total des profits",    
+   "TOTAL_PROFIT"                : "Total des profits",
    "UNLOCK"                      : "Deverrouiller",
    "VIEW"                        : "Voir",
    "VIEW_BALANCE"                : "Voir Balance D'ouverture"
@@ -1299,8 +1307,8 @@
   "CLEAR"            : "Effacer la sélection",
   "GROUP_ROWS"       : "Grouper les lignes",
   "REFRESH"          : "Rafraichir la sélection",
-  "UPDATE"           : "Mettre à jour la sélection" 
-},  
+  "UPDATE"           : "Mettre à jour la sélection"
+},
 "GROUP_INVOICE": {
    "AGREED"                 : "Paiement Agrée",
    "AUTHORIZE"              : "Autoriser",
@@ -1443,6 +1451,7 @@
    "AMOUNT"                       : "Montant",
    "AMOUNT_RECEIVE"               : "Montant reçu",
    "AMOUNT_RECEIVED"              : "Montant Payé",
+   "ANNULLED"                     : "Annulé",
    "BALANCE_DUE"                  : "Solde",
    "BUYER"                        : "Acheteur",
    "BENEFICIARY"                  : "Bénéficiaire",
@@ -1565,7 +1574,7 @@
    "DESCRIPTION_LONG"       : "Ce module vous permet de faire des transactions instantannées vers le journal de saisie",
    "LOAD_CACHED_FORM"       : "Charger le formulaire",
    "LOG"                    : "Log Journal ID ",
-   "POST_SUCCESSFUL"        : "Postée avec succès",   
+   "POST_SUCCESSFUL"        : "Postée avec succès",
    "POSTING_JOURNAL"        : "Posting Journal",
    "SUBMIT"                 : "Soumettre",
    "TAB_LOCK_COLONNE"       : "Colonne par Colonne",
@@ -2859,7 +2868,7 @@
    "DAILY_CONSUMPTION"         : "Consommation journaliere",
    "DASHBOARD" : {
       "FINANCE" : "Tableau de bord Financier",
-      "TITLE"   : "Tableau de bord"      
+      "TITLE"   : "Tableau de bord"
    },
    "DEBTOR_AGING"              : "Rapport Débiteur",
    "DEBTOR_GRP"                : "Groupe Débiteur",
@@ -2981,7 +2990,7 @@
    "LINES"            : "Lignes",
    "NO_DATA"          : "Il n'y a pas des donnes.  S'il vous plait, recommencer par la rapprochement et clickez sur imprimer.",
    "RESULTS"          : "Résultats",
-   "POST_TO_LEDGER"   : "Poster au grand livre",   
+   "POST_TO_LEDGER"   : "Poster au grand livre",
    "SHOW"             : "Voir",
    "SHOW_ERRORS"      : "Afficher des Erreurs",
    "SHOW_WARNINGS"    : "Afficher des Avertissements",
@@ -3012,7 +3021,7 @@
    "ACCOUNT"           : "Compte",
    "AGGREGATES"        : "Agregats",
    "ALL"               : "Tous",
-   "ALL_DONORS"        : "Tous les donateurs",  
+   "ALL_DONORS"        : "Tous les donateurs",
    "BACK"              : "Précédent",
    "CANCEL"            : "Annuler",
    "CHECK_DAILY_RATE"  : "Veuillez verifier le taux de change",
@@ -3026,7 +3035,7 @@
    "CONFIGURE_REPORT"  : "Configuration rapport",
    "CONFIRM"           : "Confirmer",
    "CREATE"            : "Créer",
-   "CURRENCY"          : "Monnaie",   
+   "CURRENCY"          : "Monnaie",
    "DATE"              : "Date",
    "DATE_FROM"         : "Du",
    "DATE_TO"           : "Au",
