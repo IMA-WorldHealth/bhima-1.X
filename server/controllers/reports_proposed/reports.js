@@ -156,8 +156,8 @@ exports.build = function (req, res, next) {
     res.status(500).end('Invalid or Unknown document target');
   } else {
 
-    console.log('create document request');
     console.log('using definition', definition);
+    console.log('got options', options);
 
     var context = definition.context;
   
@@ -195,14 +195,12 @@ exports.build = function (req, res, next) {
       } else { 
         var servePath = '/report/serve/';
         
-        console.log('configuration', configuration);
 
         // TODO Link DB Driven report definition through to server
         // Write to archive unless option disabled
         writeArchive(definition, hash, options)
           .then(function (result) { 
             
-            console.log('res', result);
 
             lookupArchive(result.insertId)
             .then(function (result) { 
@@ -232,7 +230,6 @@ function writeArchive(definition, hash, options) {
   
   db.exec(insertQuery, [definition.id, title, hash, options.user])
     .then(function (result) { 
-      console.log('archive written');
 
       deferred.resolve(result);
     })

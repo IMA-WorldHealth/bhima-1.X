@@ -11,9 +11,13 @@ function incomeExpense($anchorScroll, $location, $modalInstance, $http, Store, M
 
   var generateUrl = 'report/build/income_expense';
   var definition;
+
+  // This will act as a container for all report document configuration options
+  var options = {};
   
   modal.state = state;
   modal.title = definition.title; 
+  modal.options = options;
   console.log('controller init', definition);
   // Fetch required information (archive exists for option, available params etc.)
   // $q.all 
@@ -26,10 +30,12 @@ function incomeExpense($anchorScroll, $location, $modalInstance, $http, Store, M
   function submit() { 
     state.loading();
     
-    $http.post(generateUrl)
+    $http.post(generateUrl, options)
     .then(function (result) { 
-      console.log('got', result);
-      modal.link = result.data;
+      var uniqueResultIndex = 0;
+      var archiveRecord = result.data[uniqueResultIndex];
+
+      modal.link = archiveRecord.path;
       
       definition = result;
 
@@ -55,7 +61,6 @@ function incomeExpense($anchorScroll, $location, $modalInstance, $http, Store, M
   // Report status
   
   modal.submit = submit;
-
   modal.scrollToContent = function () { 
     var hash = 'contentConfig';
 
