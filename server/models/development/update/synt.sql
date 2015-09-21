@@ -253,3 +253,11 @@ DELETE FROM `unit` WHERE `unit`.`id` = 92;
 UPDATE `enterprise` 
 SET `name`='Institut Médical Chrétien du Kasaï' 
 WHERE `id`=200;
+
+-- Transaction type : groupe invoice
+-- server/controllers/journal/finance.js use it in cancelInvoice()
+-- Date: 2015-09-21
+-- By: Bruce Mbayo
+
+INSERT INTO `transaction_type` (`service_txt`) 
+VALUES ('group_invoice');
