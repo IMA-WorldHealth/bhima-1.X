@@ -95,7 +95,7 @@ angular.module('bhima.controllers')
     };
 
     $scope.delete = function d(project) {
-      connect.basicDelete('project', project.id, 'id')
+      connect.delete('project', 'id', project.id)
       .then(function () {
         $scope.projects.remove(project.id);
       })
@@ -104,8 +104,8 @@ angular.module('bhima.controllers')
       });
     };
 
-    $scope.toString = function toString(obj) {
-      return '' + obj.zone + ' - ' + obj.territoire + '(' + obj.province + ')';
+    $scope.fmtZone = function (obj) {
+      return obj.zone + ' - ' + obj.territoire + ' (' + obj.province + ')';
     };
 
     appstate.register('project', function (project) {
