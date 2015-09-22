@@ -254,8 +254,16 @@ UPDATE `enterprise`
 SET `name`='Institut Médical Chrétien du Kasaï' 
 WHERE `id`=200;
 
+-- Transaction type : groupe invoice
+-- server/controllers/journal/finance.js use it in cancelInvoice()
+-- Date: 2015-09-21
+-- By: Bruce Mbayo
 
--- Alter cost center, profit_center
+INSERT INTO `transaction_type` (`service_txt`) 
+VALUES ('group_invoice');
+
+
+-- Alter cost center, service
 -- Date: 2015-09-22
 -- By: Bruce M.
 

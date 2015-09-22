@@ -5,11 +5,12 @@ angular.module('bhima.controllers')
   'validate',
   'connect',
   'messenger',
-  'appstate',
+  'SessionService',
   'uuid',
-  function ($scope, $translate, validate, connect, messenger, appstate, uuid) {
+  function ($scope, $translate, validate, connect, messenger, sessionService, uuid) {
     var dependencies = {},
         session = $scope.session = {};
+    $scope.enterprise = sessionService.enterprise;
 
     dependencies.depots = {
       query : {
@@ -26,17 +27,17 @@ angular.module('bhima.controllers')
       angular.extend($scope, models);
     }
 
-    appstate.register('enterprise', function (enterprise) {
-      $scope.enterprise = enterprise;
-      validate.process(dependencies)
+    validate.process(dependencies)
       .then(startup);
-    });
 
     $scope.delete = function (depot) {
-      connect.basicDelete('depot', depot.uuid, 'uuid')
+      connect.delete('depot','uuid', [depot.uuid])
       .then(function () {
         $scope.depots.remove(depot.uuid);
         messenger.info($translate.instant('DEPOT.DELETE_SUCCESS'));
+      })
+      .catch(function (err){
+        messenger.danger($translate.instant('DEPOT.DELETE_FAIL'));
       });
     };
 
@@ -56,7 +57,7 @@ angular.module('bhima.controllers')
       var record = connect.clean(session.edit);
       record.enterprise_id = $scope.enterprise.id;
       delete record.reference;
-      connect.basicPost('depot', [record], ['uuid'])
+      connect.put('depot', [record], ['uuid'])
       .then(function () {
         messenger.info($translate.instant('DEPOT.EDIT_SUCCESS'));
         $scope.depots.put(record);
@@ -69,10 +70,9 @@ angular.module('bhima.controllers')
       var record = connect.clean(session.new);
       record.enterprise_id = $scope.enterprise.id;
       record.uuid = uuid();
-      connect.basicPut('depot', [record])
+      connect.post('depot', [record])
       .then(function () {
         messenger.info($translate.instant('DEPOT.NEW_SUCCESS'));
-        // record.id = res.data.insertId;
         record.reference = generateReference(); // this is simply to make the ui look pretty;
         $scope.depots.post(record);
         session.action = '';

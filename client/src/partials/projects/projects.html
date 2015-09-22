@@ -110,8 +110,8 @@
             <!-- zone de sante for snis -->
             <div class="form-group">
               <label>{{ 'COLUMNS.ZS' | translate }}</label>
-              <select class="form-bhima" ng-model="newProject.zs_id" ng-options="zone.id as toString(zone) for zone in zs.data">
-                <option value="">{{ 'SELECT.ZS' | translate }}</option>
+              <select class="form-bhima" ng-model="newProject.zs_id" ng-options="zone.id as fmtZone(zone) for zone in zs.data">
+                <option disabled="disabled" value="">-- {{ 'SELECT.ZS' | translate }} --</option>
               </select>
             </div>
             <!-- end zone de sante for snis -->
@@ -147,8 +147,8 @@
             <!-- zone de sante for snis -->
             <div class="form-group">
               <label>{{ 'COLUMNS.ZS' | translate }}</label>
-              <select class="form-bhima" ng-model="editProject.zs_id" ng-options="zone.id as toString(zone) for zone in zs.data">
-                <option value="" >{{ 'SELECT.ZS' | translate }}</option>
+              <select class="form-bhima" ng-model="editProject.zs_id" ng-options="zone.id as fmtZone(zone) for zone in zs.data">
+                <option disabled="disabled" value="">-- {{ 'SELECT.ZS' | translate }} --</option>
               </select>
             </div>
             <!-- end zone de sante for snis -->
