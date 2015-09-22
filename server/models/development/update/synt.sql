@@ -12,8 +12,8 @@ UPDATE unit SET `url` = '/partials/journal/journal.html', `path` = '/journal' WH
 -- Adding a new unit for resultat comptable
 --
 
-INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `has_children`, `url`, `path`)
-VALUES (114, 'compte de resultat', 'TREE.COMPTE_RESULTAT', 'pour voir le rapport de compte de resultat', 10, 0, '/partials/reports/result_account', '/reports/result_account/');
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
+VALUES (114, 'compte de resultat', 'TREE.COMPTE_RESULTAT', 'pour voir le rapport de compte de resultat', 10, '/partials/reports/result_account', '/reports/result_account/');
 
 
 -- Updates table account
@@ -74,9 +74,9 @@ UPDATE `user` SET `password` = PASSWORD(`password`);
 --
 -- Date: 2015-08-25
 -- By: jniles
-INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `has_children`, `url`, `path`) VALUES
-(115, 'Dashboards', 'TREE.DASHBOARD.TITLE', 'Dashboards', 0, 1, '/partials/dashboards/', '/dashboards'),
-(116, 'Finance Dashboar', 'TREE.DASHBOARD.FINANCE', 'Finance Dashboard', 115, 0, '/partials/dashboards/finance/finance.html', '/dashboards/finance');
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`) VALUES
+(115, 'Dashboards', 'TREE.DASHBOARD.TITLE', 'Dashboards', 0, '/partials/dashboards/', '/dashboards'),
+(116, 'Finance Dashboar', 'TREE.DASHBOARD.FINANCE', 'Finance Dashboard', 115, '/partials/dashboards/finance/finance.html', '/dashboards/finance');
 
 -- Adding column is_charge 
 -- Date: 2015-08-20
@@ -131,8 +131,8 @@ USE bhima;
 -- By: Bruce MBAYO
 
 -- Budget Analysis
-INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `has_children`, `url`, `path`)
-VALUES (117, 'Budget Analysis', 'TREE.BUDGET_ANALYSIS', 'analyse du budget courant avec les precedants', 8, 0, '/partials/budget/analysis', '/budgeting/analysis/');
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
+VALUES (117, 'Budget Analysis', 'TREE.BUDGET_ANALYSIS', 'analyse du budget courant avec les precedants', 8, '/partials/budget/analysis', '/budgeting/analysis/');
 
 -- rm unused currency tree node
 --
@@ -261,3 +261,13 @@ WHERE `id`=200;
 
 INSERT INTO `transaction_type` (`service_txt`) 
 VALUES ('group_invoice');
+
+
+--
+-- Dedrick Kitamuka
+-- 22/09/2015
+-- Adding a new unit for resultat comptable
+--
+
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `has_children`, `url`, `path`)
+VALUES (120, 'Rapport situation group debiteur', 'TREE.DEBITOR_GROUP_REPORT', 'pour voir le rapport pdf detaille de group de debiteur', 10, 0, '/partials/reports/debitor_group_report', '/reports/debitor_group_report/');
