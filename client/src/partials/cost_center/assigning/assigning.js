@@ -10,8 +10,8 @@ angular.module('bhima.controllers')
   '$translate',
   'SessionService',
   function ($scope, $q, connect, appstate, messenger, validate, util, $translate, SessionService) {
-    var dependencies = {};
-    var config = $scope.configuration = {};
+    var dependencies = {},
+        config = $scope.configuration = {};
 
     dependencies.aux_cost_centers = {
       query : {
@@ -89,9 +89,7 @@ angular.module('bhima.controllers')
         setAction('suivant');
         calculate();
       })
-      .catch(function (err) {
-        console.log('error', err);
-      });
+      .catch(error);
     }
 
     function processPrincipalsCenters() {
@@ -107,7 +105,6 @@ angular.module('bhima.controllers')
 
     function handleResult(cout) {      
       $scope.selected_aux_cost_center.cost = cout.data.cost;
-      console.log('le resulat recu est :::', cout);
       return $q.when();
     }
 
