@@ -858,7 +858,13 @@
    "NEW"        : "New Debtor Group",
    "SUCCES"     : "success",
    "TITLE"      : "Debtor Group Management"
-   },
+},
+
+"DEBITOR_GROUP_REPORT" : {
+   "DOCUMENT_CONFIG" : "Configuration of Debitor Group Report",
+   "LANGUAGE" : "Language",
+   "INVOLVE_JOURNAL" : "Involve journal"
+},
 "DEPOT": {
    "ADD"             : "Add a Store",
    "ALERT"           : "Manage your stores from here",
