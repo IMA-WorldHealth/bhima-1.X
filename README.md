@@ -1,6 +1,8 @@
 BHIMA
 =================
 
+[![Join the chat at https://gitter.im/IMA-WorldHealth/bhima](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/IMA-WorldHealth/bhima?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/IMA-WorldHealth/bhima.svg?branch=feature%2Ftests)](https://travis-ci.org/IMA-WorldHealth/bhima)
 
 _Bhima is alpha version software. Please do not use this in a commerical context._
