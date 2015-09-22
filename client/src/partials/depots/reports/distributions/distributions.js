@@ -14,7 +14,7 @@ function DepotStockDistributionsController($routeParams, $http, util, Dates) {
   vm.loading = false;
   vm.depotId = $routeParams.depotId;
   vm.type    = $routeParams.type;
-  vm.url     = '/partials/depots/distributions/templates/' + vm.type + '.html';
+  vm.url     = '/partials/depots/reports/distributions/templates/' + vm.type + '.html';
   vm.title   = 'DEPOT.DISTRIBUTION.' + vm.type.toUpperCase();
   vm.select  = select;
   vm.fetch   = search;

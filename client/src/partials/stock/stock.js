@@ -23,69 +23,69 @@ function MainStockController($scope, $location, $translate, $window, validate, m
   config.modules = [{
     key : 'STOCK.INTEGRATION.KEY',
     ico : 'glyphicon-th-large',
-    link : '/stock/integration'
+    link : '/depots/:uuid/integrations'
   }, {
     key : 'STOCK.EXIT.KEY',
     ico : 'glyphicon-export',
-    link : '/stock/distribution'
+    link : '/depots/:uuid/distributions/patients'
   }, {
     key : 'STOCK.EXIT_SERVICE.KEY',
     ico : 'glyphicon-export',
-    link : '/stock/distribution_service'
+    link : '/depots/:uuid/distributions/services'
   }, {
     key : 'STOCK.LOSS.KEY',
     ico : 'glyphicon-cloud',
-    link : '/stock/loss'
+    link : '/depots/:uuid/losses'
   }, {
     key : 'STOCK.MOVEMENT.KEY',
     ico : 'glyphicon-transfer',
-    link : '/stock/movement'
+    link : '/depots/:uuid/movements'
   }];
 
   config.modules_warehouse = [{
     key  : 'STOCK.ENTRY.KEY',
     ico  : 'glyphicon-import',
-    link : '/stock/entry/start'
+    link : '/stock/entry/start/:uuid'
   }, {
     key  : 'STOCK.DONATION.KEY',
     ico  : 'glyphicon-heart',
-    link : '/stock/donation_management'
+    link : '/stock/donation_management/:uuid'
   }];
 
   config.utilities = [{
     key  : 'DEPOT.DISTRIBUTION.PATIENTS',
     ico  : 'glyphicon-th-list',
-    link : '/depots/:uuid/distributions/patients'
+    link : '/depots/:uuid/reports/distributions/patients'
   }, {
     key : 'DEPOT.DISTRIBUTION.SERVICES',
     ico : 'glyphicon-th-list',
-    link : '/depots/:uuid/distributions/services'
+    link : '/depots/:uuid/reports/distributions/services'
   }, {
     key : 'DEPOT.DISTRIBUTION.RUMMAGE',
     ico : 'glyphicon-th-list',
-    link : '/depots/:uuid/distributions/rummage'
+    link : '/depots/:uuid/reports/distributions/rummage'
   }, {
     key : 'DEPOT.DISTRIBUTION.LOSSES',
     ico : 'glyphicon-th-list',
-    link : '/depots/:uuid/distributions/loss'
+    link : '/depots/:uuid/reports/distributions/loss'
   }];
 
   config.reports = [{
     key : 'REPORT.STOCK',
     ico : 'glyphicon-list-alt',
-    link : '/reports/stock_store'
+    link : '/reports/stock_store/:uuid'
   }, {
     key : 'STOCK.DISTRIBUTION_RECORDS.KEY',
     ico : 'glyphicon-list-alt',
-    link : '/reports/distribution_record'
+    link : '/reports/distribution_record/:uuid'
   }, {
     key : 'STOCK.DISTRIBUTION_SERVICE_RECORDS.KEY',
     ico : 'glyphicon-list-alt',
-    link : '/reports/distribution_service_record'
+    link : '/reports/distribution_service_record/:uuid'
   }, {
     key : 'STOCK.LOSS.LOSS_RECORDS',
     ico : 'glyphicon-list-alt',
-    link : '/stock/loss_record'
+    link : '/stock/loss_record/:uuid'
   }];
 
   dependencies.depots = {
@@ -149,26 +149,11 @@ function MainStockController($scope, $location, $translate, $window, validate, m
     }
   }
 
-  $scope.loadPath = function (defn) {
-
-    // build dynamically the report list links in report panel
-    var isModules = (config.modules.indexOf(defn) > -1),
-        isUtilities = (config.utilities.indexOf(defn) > -1),
-        isReports = (config.reports.indexOf(defn) > -1 );
-
-    var path = isModules ? defn.link + '/' + $scope.depot.uuid
-      : isUtilities ? defn.link+ '/' + $scope.depot.uuid
-      : isReports ? defn.link+ '/' + $scope.depot.uuid : defn.link;
-
-    $location.path(path);
-  };
-
   // better version of load path, that allows uuid to be in arbitrary
   // places.
   // TODO - standardize path loading
-  $scope.loadPathBetter = function (defn) {
+  $scope.loadPath = function (defn) {
     var path = defn.link.replace(':uuid', $scope.depot.uuid);
-    console.log('Path:', path);
     $location.path(path);
   };
 
