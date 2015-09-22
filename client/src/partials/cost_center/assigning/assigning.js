@@ -8,7 +8,8 @@ angular.module('bhima.controllers')
   'validate',
   'util',
   '$translate',
-  function ($scope, $q, connect, appstate, messenger, validate, util, $translate) {
+  'SessionService',
+  function ($scope, $q, connect, appstate, messenger, validate, util, $translate, SessionService) {
     var dependencies = {};
     var config = $scope.configuration = {};
 
@@ -17,12 +18,8 @@ angular.module('bhima.controllers')
         tables : {
           'cost_center' : {
             columns : ['id', 'text', 'note']
-          },
-          'project' : {
-            columns :['name']
           }
         },
-        join : ['cost_center.project_id=project.id'],
         where : ['cost_center.is_principal=0']
       }
     };
@@ -33,14 +30,19 @@ angular.module('bhima.controllers')
           'cost_center' : {
             columns : ['id', 'text', 'note']
           },
-          'project' : {
-            columns :['name']
-          }
         },
-        join : ['cost_center.project_id=project.id'],
         where : ['cost_center.is_principal=1']
       }
     };
+
+    startup();
+
+    function startup() {
+      $scope.project = SessionService.project;
+      validate.process(dependencies)
+      .then(init)
+      .catch(error);
+    }
 
     function init(model) {
       $scope.model = model;
@@ -192,13 +194,9 @@ angular.module('bhima.controllers')
       messenger.danger($translate.instant('SERVICE.INSERT_FAIL_MESSAGE'));
     }
 
-    appstate.register('project', function (project) {
-      $scope.project = project;
-      validate.process(dependencies)
-      .then(init, function (err) {
-        console.log('erreur', err);
-      });
-    });
+    function error(err) {
+      console.log('Error: ', err);
+    }
 
     $scope.performChange = performChange;
     $scope.checkAll = checkAll;

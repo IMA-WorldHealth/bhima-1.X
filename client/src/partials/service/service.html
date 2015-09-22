@@ -24,28 +24,25 @@
         <div class="panel-heading">
           {{ "SERVICE.REGISTERED" | translate }}
         </div>
-        <table class="table table-condensed">
+        <table class="table table-condensed table-striped">
           <thead>
             <tr>
               <th>{{ "COLUMNS.SERVICE" | translate }}</th>
-              <th>{{ "COLUMNS.PROJECT" | translate }}</th>
               <th>{{ "COLUMNS.COST_CENTER" | translate }}</th>
               <th>{{ "COLUMNS.PROFIT_CENTER" | translate }}</th>
-              <th colspan="3">{{ "COLUMNS.ACTIONS" | translate}}</th>
+              <th colspan="2">{{ "COLUMNS.ACTIONS" | translate}}</th>
             </tr>
           </thead>
           <tbody>
             <tr ng-repeat="item in model.services.data  | orderBy:'service'">
               <td>{{ item.service }}</td>
-              <td>{{ item.project }}</td>
               <td>{{ item.cost_center }}</td>
               <td>{{ item.profit_center }}</td>
               <td><a class="clk" ng-click="setAction('edit', item)"><i class="glyphicon glyphicon-pencil"></i></a></td>
               <td><a class="clk" ng-click="setAction('more', item)"><i class="glyphicon glyphicon-eye-open"></i></a></td>
-              <td><a class="clk danger" ng-click="remove(item)"><i class="glyphicon glyphicon-trash"></i></a></td>
             </tr>
             <tr ng-if="!model.services.data.length">
-              <td colspan="7">
+              <td colspan="6">
                 <div class="alert alert-warning square"><i class="glyphicon glyphicon-warning-sign"></i> {{ 'SERVICE.NONE_FOUND' | translate }}</div>
               </td>
             </tr>
@@ -71,15 +68,6 @@
               <label class="col-xs-3 control-label required">{{ "COLUMNS.NAME" | translate }}:</label>
               <div class="col-xs-9">
                 <input class="form-bhima" ng-model="service.name" required>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="col-xs-3 control-label required">{{ "SERVICE.PROJECT_SELECT" | translate }}:</label>
-              <div class="col-xs-9">
-                <select class="form-bhima" ng-model="service.project_id" ng-options="project.id as project.name for project in model.projects.data" ng-change="filterCenters(service.project_id)" required>
-                  <option value="" disabled="disabled">--- {{ "SELECT.PROJECT" | translate }} ---</option>
-                </select>
               </div>
             </div>
 
@@ -119,15 +107,6 @@
               <label class="col-xs-3 control-label required">{{ "COLUMNS.NAME" | translate }}:</label>
               <div class="col-xs-9">
                 <input class="form-bhima" ng-model="choosen.service" required>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="col-xs-3 control-label required">{{ "SERVICE.PROJECT_SELECT" | translate }}:</label>
-              <div class="col-xs-9">
-                <select class="form-bhima" name="project_name" ng-model="choosen.project_id" ng-options="project.id as project.name for project in model.projects.data" ng-change="filterCenters(choosen.project_id)"required>
-                  <option value="" disabled="disabled">--- {{ "SELECT.PROJECT" | translate }} ---</option>
-                </select>
               </div>
             </div>
 
