@@ -1,6 +1,7 @@
 // controllers/finance.js
 
 var db = require('../lib/db'),
+    core = require('./journal/core'),
     guid = require('../lib/guid'),
     q = require('q');
 
@@ -177,7 +178,7 @@ exports.postJournalVoucher = function (req, res, next) {
       });
     }
 
-    return getTransactionId(req.session.project.id);
+    return core.queries.transactionId(req.session.project.id);
   })
 
   // FIXME We need to stop depending on this async transId function
