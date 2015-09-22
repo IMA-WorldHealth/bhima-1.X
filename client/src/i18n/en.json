@@ -877,7 +877,11 @@
     "RUMMAGE"  : "Liquidation by Rummage Sale",
     "LOSSES"   : "Stock Losses",
     "ANNUL"    : "Annul this Transaction",
-    "ANNULLED" : "Annulled"
+    "ANNULLED" : "Annulled",
+    "CANCEL" : {
+      "TITLE" : "Cancel Pharmacy Distribution",
+      "MESSAGE" : "You are about to cancel a distribution made from the pharmacy.  Please make sure these details are correct."
+    }
   }
 },
 "DISTRIBUTION": {

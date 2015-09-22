@@ -5,7 +5,20 @@ StockDistributionsController.$inject = [
   '$scope', '$q', '$routeParams', '$location', 'validate', 'connect', 'messenger', 'util', 'uuid', '$translate'
 ];
 
+/**
+* This module is responsible to distributing drugs to patients in fulfillment
+* of prepaid sales.  There will be warnings if a patient has not paid for their
+* sale, yet it is still possible to distribute drugs to that patient.
+*
+* Furthermore, the module makes efforts to recommend lot numbers of medications
+* that will expire in the near future.  Distribution of medications that have
+* already expired is strictly prohibited.
+*
+* @constructor
+*/
 function StockDistributionsController($scope, $q, $routeParams, $location, validate, connect, messenger, util, uuid, $translate) {
+  var vm = this;
+
   var session = $scope.session = {
     // FIXME
     index : -1,
@@ -58,47 +71,14 @@ function StockDistributionsController($scope, $q, $routeParams, $location, valid
   }
 
   function startup(model) {
-    angular.extend($scope, model); 
+    angular.extend($scope, model);
 
-    // filter out ledger data is that is not distributable before proceeding.
-    $scope.ledger.data = $scope.ledger.data.filter(function (data) { return data.is_distributable[0] === 1; });
+    // filter out invoices that are either not distributable, or have
+    // already been consumed.
+    $scope.ledger.data = $scope.ledger.data.filter(function (data) {
+      return data.is_distributable === 1 && !data.consumed;
+    });
 
-    var dataDebitor = $scope.ledger.data;
-
-    dataDebitor.forEach(function (item) {
-      dependencies.get_consumption = {
-        query : {
-          tables : {
-            'consumption' : {
-              columns : ['document_id'] }
-          },
-          where : [
-            'document_id=' + item.document_id
-          ]
-        }
-      };
-
-      dependencies.get_reversing = {
-        query : {
-          tables : {
-            'consumption_reversing' : {
-              columns : ['document_id'] }
-          },
-          where : [
-            'document_id=' + item.document_id
-          ]
-        }
-      };
-
-      validate.process(dependencies, ['get_consumption','get_reversing'])
-      .then(function (model) {
-        var nbConsumption = model.get_consumption.data.length;
-        var nbReversing = model.get_reversing.data.length;
-        if(nbConsumption > nbReversing){
-          item.reversing_stock = null;
-        }
-      });        
-    }); 
     moduleStep();
   }
 
@@ -117,10 +97,11 @@ function StockDistributionsController($scope, $q, $routeParams, $location, valid
       session.sale.details = saleDetails.data;
 
       detailsRequest = session.sale.details.map(function (saleItem) {
-        return connect.req('inventory/depot/' + session.depot + '/drug/' + saleItem.code);
+        return connect.req('/depots/' + session.depot + '/inventory/' + saleItem.inventory_uuid);
       });
 
-      $q.all(detailsRequest).then(function (result) {
+      $q.all(detailsRequest)
+      .then(function (result) {
         session.sale.details.forEach(function (saleItem, index) {
           var itemModel = result[index];
           if (itemModel.data.length) { saleItem.lots = itemModel; }
@@ -235,7 +216,7 @@ function StockDistributionsController($scope, $q, $routeParams, $location, valid
     return connect.req(query);
   }
 
-  function getLotPurchasePrice (tracking_number) {
+  function getLotPurchasePrice(tracking_number) {
     var query = {
       tables : {
         stock : { columns : ['lot_number'] },
@@ -284,7 +265,7 @@ function StockDistributionsController($scope, $q, $routeParams, $location, valid
     });
 
     function updateLotPrice() {
-      var def = $q.defer(), 
+      var def = $q.defer(),
           counter = 0;
 
       submitItem.forEach(function (item) {
@@ -300,7 +281,7 @@ function StockDistributionsController($scope, $q, $routeParams, $location, valid
 
       return def.promise;
     }
-    
+
     updateLotPrice()
     .then(function (resultSubmitItem) {
       return connect.basicPut('consumption', resultSubmitItem);

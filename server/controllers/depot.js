@@ -10,11 +10,13 @@
 *   /depots/:depotId/distributions/:uuid
 */
 
-var db = require('./../lib/db');
+var db = require('../lib/db'),
+    Store = require('../lib/store');
 
 // expose routes
 exports.getDistributions = getDistributions;
 exports.getDistributionsById = getDistributionsById;
+exports.getAvailableLotsByInventoryId = getAvailableLotsByInventoryId;
 
 /**
 * GET /depots/:uuid/distributions
@@ -28,7 +30,7 @@ exports.getDistributionsById = getDistributionsById;
 * NOTE - this query does not filter for uncanceled sales.  You will have to
 * handle those yourselves in your controllers.
 *
-* @function getDistributions 
+* @function getDistributions
 */
 function getDistributions(req, res, next) {
   'use strict';
@@ -149,8 +151,8 @@ function getDistributionsById(req, res, next) {
       uuid = req.params.uuid;
 
   sql =
-    'SELECT c.uuid, c.quantity, c.document_id AS total, c.date, ' +
-      'd.text, d.uuid AS depotId, i.text AS label, c.canceled ' +
+    'SELECT c.uuid, c.document_id, c.date, d.text AS depotName, ' +
+      'd.uuid AS depotId, c.quantity, i.text AS label, c.canceled ' +
     'FROM consumption AS c ' +
     'JOIN depot AS d ON d.uuid = c.depot_uuid ' +
     'JOIN stock AS s ON s.tracking_number = c.tracking_number ' +
@@ -167,6 +169,48 @@ function getDistributionsById(req, res, next) {
       });
     }
 
+    res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
+}
+
+/**
+* GET /depots/:depotId/inventory/:uuid
+* This function returns all the lots in a given depot for a given inventory
+* item, identified by a uuid.
+*
+* @function getAvailableLotsByInventoryId
+*/
+function getAvailableLotsByInventoryId(req, res, next) {
+  'use strict';
+
+  var sql,
+      depot = req.params.depotId,
+      uuid = req.params.uuid;
+
+  sql =
+    'SELECT s.tracking_number, s.lot_number, s.quantity, s.code FROM (' +
+      'SELECT stock.tracking_number, stock.lot_number, outflow.depot_entry, outflow.depot_exit, ' +
+        'SUM(CASE WHEN outflow.depot_entry = ? THEN outflow.quantity ELSE -outflow.quantity END) AS quantity, ' +
+        'stock.expiration_date, inventory.code ' +
+      'FROM inventory JOIN stock JOIN (' +
+        'SELECT uuid, depot_entry, depot_exit, tracking_number, quantity, date ' +
+        'FROM movement ' +
+        'UNION ' +
+        'SELECT uuid, null AS depot_entry, depot_uuid AS depot_exit, tracking_number, quantity, date  ' +
+        'FROM consumption ' +
+        'WHERE consumption.canceled = 0' +
+      ') AS outflow ON ' +
+        'inventory.uuid = stock.inventory_uuid AND ' +
+        'stock.tracking_number = outflow.tracking_number ' +
+      'WHERE outflow.depot_entry = ? OR outflow.depot_exit = ? ' +
+      'AND inventory.code = ? ' +
+      'GROUP BY stock.tracking_number' +
+    ') AS s;';
+
+  return db.exec(sql, [depot, depot, depot, uuid])
+  .then(function (rows) {
     res.status(200).json(rows);
   })
   .catch(next)
@@ -233,38 +277,6 @@ module.exports = function () {
         'inventory.uuid = stock.inventory_uuid AND stock.tracking_number = movement.tracking_number ' +
       'WHERE (movement.depot_entry = ' + _depot + ' OR movement.depot_exit = ' + _depot + ') ' +
       'AND stock.tracking_number = ' + _id + ' ' +
-      'GROUP BY stock.tracking_number;';
-
-    return db.exec(sql)
-    .then(function (rows) {
-      var store = findDrugsInDepot(rows, depot);
-      return q(store.data);
-    });
-  }
-
-  function byCode (depot, code) {
-    var sql, _depot, _code;
-
-    _depot = sanitize.escape(depot);
-    _code = sanitize.escape(code);
-
-    sql =
-      'SELECT stock.tracking_number, stock.lot_number, calculateMovement.depot_entry, calculateMovement.depot_exit, ' +
-        'SUM(CASE WHEN calculateMovement.depot_entry =' + _depot + ' THEN calculateMovement.quantity ELSE -calculateMovement.quantity END) AS quantity, ' +
-        'stock.expiration_date, code ' +
-      'FROM inventory JOIN stock JOIN ' +
-      // ' movement ON ' +
-      '(SELECT uuid, depot_entry, depot_exit, tracking_number, quantity, date ' +
-      'FROM movement ' +
-      'UNION ' +
-      'SELECT uuid, null as depot_entry, depot_uuid as depot_exit, tracking_number, quantity, date  ' +
-      'FROM consumption ' +
-      'UNION ' +
-      'SELECT uuid, null as depot_entry, depot_uuid as depot_exit, tracking_number, (quantity * (-1)) AS quantity, date ' +
-      'FROM consumption_reversing ) as calculateMovement ON ' +
-        'inventory.uuid = stock.inventory_uuid AND stock.tracking_number = calculateMovement.tracking_number ' +
-      'WHERE (calculateMovement.depot_entry = ' + _depot + ' OR calculateMovement.depot_exit = ' + _depot + ') ' +
-      'AND inventory.code = ' + _code +
       'GROUP BY stock.tracking_number;';
 
     return db.exec(sql)

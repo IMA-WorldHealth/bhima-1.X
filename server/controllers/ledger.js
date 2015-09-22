@@ -110,10 +110,10 @@ function debtor(id) {
 
     var sql =
       'SELECT s.reference, s.project_id, s.is_distributable, t.inv_po_id, t.trans_date, SUM(t.debit_equiv) AS debit,  ' +
-      'SUM(t.credit_equiv) AS credit, SUM(t.debit_equiv - t.credit_equiv) as balance, ' +
-      't.account_id, t.deb_cred_uuid, t.currency_id, t.doc_num, t.description, t.account_id, ' +
-      't.comment, t.canceled, p.abbr, c.document_id ' +
-      ', IF(NOT(ISNULL(c.document_id)), 1, 0) as consumed ' +
+        'SUM(t.credit_equiv) AS credit, SUM(t.debit_equiv - t.credit_equiv) as balance, ' +
+        't.account_id, t.deb_cred_uuid, t.currency_id, t.doc_num, t.description, t.account_id, ' +
+        't.comment, t.canceled, p.abbr, c.document_id, ' +
+        'IF(ISNULL(c.document_id), 0, 1) AS consumed ' +
       'FROM (' +
         '(' +
           'SELECT pj.inv_po_id, pj.trans_date, pj.debit, ' +
@@ -130,10 +130,13 @@ function debtor(id) {
           'FROM general_ledger AS gl ' +
           'LEFT JOIN credit_note ON credit_note.sale_uuid = gl.inv_po_id ' +
         ')' +
-      ') AS t JOIN sale AS s on t.inv_po_id = s.uuid JOIN project AS p on s.project_id = p.id LEFT JOIN consumption as c on t.inv_po_id = c.document_id ' +
+      ') AS t ' +
+      'JOIN sale AS s ON t.inv_po_id = s.uuid ' +
+      'JOIN project AS p ON s.project_id = p.id ' +
+      'LEFT JOIN consumption AS c ON t.inv_po_id = c.document_id ' +
       'WHERE t.inv_po_id IN ("' + invoices.join('","') + '") ' +
       'AND t.account_id = ' + account_id + ' ' +
-      'GROUP BY t.inv_po_id;\n';
+      'GROUP BY t.inv_po_id;';
 
     return db.exec(sql);
   })

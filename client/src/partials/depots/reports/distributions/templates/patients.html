@@ -39,7 +39,7 @@
         </a>
       </td>
       <td class="hidden-print">
-        <a ng-href="#/stock/distributions/{{ distribution.uuid }}/cancel" ng-if="!distribution.canceled">
+        <a ng-href="#/depot/{{ DistributionsCtrl.depotId }}/distributions/{{ distribution.uuid }}/cancel" ng-if="!distribution.canceled">
           <i class="glyphicon glyphicon-remove"></i> {{ 'DEPOT.DISTRIBUTION.ANNUL' | translate }}
         </a>
         <span class="label label-danger" ng-if="distribution.canceled">
