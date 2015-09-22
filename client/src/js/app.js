@@ -454,6 +454,8 @@ function bhimaconfig($routeProvider) {
     controller : 'inventory.depot',
     templateUrl : 'partials/inventory/depot/depot.html'
   })
+
+  // TODO -- migrate this to /depots/
   .when('/stock/', {
     controller : 'stock.main',
     templateUrl : 'partials/stock/stock.html'
@@ -466,21 +468,37 @@ function bhimaconfig($routeProvider) {
     controller : 'stock.entry.partition',
     templateUrl : 'partials/stock/entry/partition.html'
   })
-  .when('/stock/movement/:depotId', {
+
+  /* depots */
+  .when('/depots/:depotId/losses', {
+    controller : 'stock.loss',
+    templateUrl : 'partials/stock/loss/loss.html'
+  })
+  .when('/depots/:depotId/movements', {
     controller : 'stock.movement',
     templateUrl : 'partials/stock/movement/movement.html'
   })
-  .when('/stock/distribution/:depotId', {
-    controller : 'stock.distribution',
-    templateUrl : 'partials/stock/exit/distribution.html'
+  .when('/depots/:depotId/distributions/patients', {
+    controller : 'StockDistributionsController as StockDistributionsCtrl',
+    templateUrl : 'partials/depots/distributions/patients/patients.html'
   })
-  .when('/stock/distribution_service/:depotId', {
+  .when('/depots/:depotId/distributions/services', {
     controller : 'stock.distribution_service',
     templateUrl : 'partials/stock/exit_service/distribution_service.html'
   })
-  .when('/depots/:depotId/distributions/:type', {
+  .when('/depot/:depotId/distributions/:consumptionId/cancel', {
+    controller : 'StockDistributionsCancelController as CancelCtrl',
+    templateUrl : 'partials/depot/distributions/cancel/cancel.html'
+  })
+  .when('/depots/:depotId/integrations', {
+    controller : 'stock.integration',
+    templateUrl : 'partials/stock/integration/integration.html'
+  })
+
+  // depot reports
+  .when('/depots/reports/:depotId/distributions/:type', {
     controller : 'DepotStockDistributionsController as DistributionsCtrl',
-    templateUrl : 'partials/depots/distributions/distributions.html'
+    templateUrl : 'partials/depots/reports/distributions/distributions.html'
   })
   .when('/reports/distribution_record/:depotId', {
     controller : 'distribution_record',
@@ -494,23 +512,11 @@ function bhimaconfig($routeProvider) {
     controller : 'distribution_record_view',
     templateUrl : 'partials/reports/distribution_record/distribution_record_view.html'
   })
-
   .when('/reports/distribution_service_record/', {
     controller : 'distribution_service_record_view',
     templateUrl : 'partials/reports/distribution_service_record/distribution_service_record_view.html'
   })
 
-  // should this be namespaced by inventory or depot or other?
-  .when('/depot/:depotId/distributions/:consumptionId/cancel', {
-    controller : 'StockDistributionsCancelController as CancelCtrl',
-    templateUrl : 'partials/depot/distributions/cancel/cancel.html'
-  })
-
-  // TODO -- this should have a depot url, not a stock URL
-  .when('/stock/loss/:depotId', {
-    controller : 'stock.loss',
-    templateUrl : 'partials/stock/loss/loss.html'
-  })
 
   .when('/stock/entry/report/:documentId?', {
     controller : 'stock.entry.report',
@@ -552,10 +558,6 @@ function bhimaconfig($routeProvider) {
   .when('/stock/loss_record/:depotId', {
     controller : 'stock.loss_record',
     templateUrl : 'partials/stock/loss_record/loss_record.html'
-  })
-  .when('/stock/integration/:depotId', {
-    controller : 'stock.integration',
-    templateUrl : 'partials/stock/integration/integration.html'
   })
   .when('/stock/integration_confirm/', {
     controller : 'stock.confirm_integration',
