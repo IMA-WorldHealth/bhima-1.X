@@ -1,0 +1,40 @@
+<header data-header>
+  {{'DEBITOR_GROUP_REPORT.DOCUMENT_CONFIG' | translate}}
+</header>
+
+<main>
+  <div class="panel panel-default">
+    <div class="panel-heading">{{'DEBITOR_GROUP_REPORT.DOCUMENT_CONFIG' | translate}}</div>
+      <div class="panel-body">
+        <form>
+          <div class="form-group">
+            <label>{{'DEBITOR_GROUP_REPORT.LANGUAGE' | translate}}</label>
+
+            <div>
+              <span ng-repeat="language in configureDebitorGroupReportCtrl.configuration.language.options">
+                <button
+                  class="btn btn-default btn-lg"
+                  ng-class="{'active' : configureDebitorGroupReportCtrl.configuration.language.selected===language}"
+                  ng-click="configureDebitorGroupReportCtrl.selectConfiguration('language', language)">{{language.label}}</button>
+              </span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4">{{ "DEBITOR_GROUP_REPORT.INVOLVE_JOURNAL" | translate }}</label>
+            <div class="col-xs-7">
+              <input type="checkbox" ng-value=1 ng-model="configureDebitorGroupReportCtrl.new.is_warehouse">
+            </div>
+          </div>
+
+          <button
+            class="btn btn-default"
+            ng-disabled="configureDebitorGroupReportCtrl.building"
+            ng-click="configureDebitorGroupReportCtrl.generateDocument()" ng-if="!configureDebitorGroupReportCtrl.generatedDocumentPath">{{configureDebitorGroupReportCtrl.building ? configureDebitorGroupReportCtrl.loading : configureDebitorGroupReportCtrl.generate_doc}}
+          </button>
+
+          <a class="btn btn-success" href="{{configureDebitorGroupReportCtrl.generatedDocumentPath}}" target="_blank" ng-if="configureDebitorGroupReportCtrl.generatedDocumentPath" ng-click="configureDebitorGroupReportCtrl.clearPath()">{{'DEBITOR_GROUP_REPORT.DOC_SUCCES' | translate}}</a>
+        </form>
+      </div>
+    </div>
+</main>
