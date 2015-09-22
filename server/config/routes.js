@@ -181,6 +181,9 @@ exports.initialise = function (app) {
   app.get('/depots/:depotId/distributions', depot.getDistributions);
   app.get('/depots/:depotId/distributions/:uuid', depot.getDistributionsById);
 
+  // TODO -- should this be in the inventory, or depot controller?
+  app.get('/depots/:depotId/inventory/:uuid', depot.getAvailableLotsByInventoryId);
+
   /* continuing on ... */
 
   // stock API

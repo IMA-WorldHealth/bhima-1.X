@@ -53,11 +53,13 @@ function exec(sql, params) {
   con.getConnection(function (err, connection) {
     if (err) { return defer.reject(err); }
 
-    connection.query(sql, params, function (err, results) {
+    var qs = connection.query(sql, params, function (err, results) {
       if (err) { return defer.reject(err); }
       connection.release();
       defer.resolve(results);
     });
+
+    console.log(qs.sql);
   });
 
   return defer.promise;

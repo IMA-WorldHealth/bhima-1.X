@@ -487,8 +487,8 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/stock/exit_service/distribution_service.html'
   })
   .when('/depot/:depotId/distributions/:consumptionId/cancel', {
-    controller : 'StockDistributionsCancelController as CancelCtrl',
-    templateUrl : 'partials/depot/distributions/cancel/cancel.html'
+    controller : 'DepotDistributionsCancelController as CancelCtrl',
+    templateUrl : 'partials/depots/distributions/cancel/cancel.html'
   })
   .when('/depots/:depotId/integrations', {
     controller : 'stock.integration',
@@ -496,7 +496,7 @@ function bhimaconfig($routeProvider) {
   })
 
   // depot reports
-  .when('/depots/reports/:depotId/distributions/:type', {
+  .when('/depots/:depotId/reports/distributions/:type', {
     controller : 'DepotStockDistributionsController as DistributionsCtrl',
     templateUrl : 'partials/depots/reports/distributions/distributions.html'
   })
