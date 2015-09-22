@@ -26,14 +26,12 @@
         <thead>
           <tr>
             <th>{{ 'COLUMNS.NAME' | translate }}</th>
-            <th>{{ 'COLUMNS.PROJECT' | translate }}</th>
             <th>{{ 'COLUMNS.ACTIONS' | translate }}</th>
           </tr>
         </thead>
         <tbody>
           <tr ng-repeat="cc in model.cost_centers.data  | orderBy:'text'">
             <td>{{cc.text}}</td>
-            <td>{{cc.abbr}}</td>
             <td>
               <button class="btn btn-sm btn-default" ng-click="setAction('edit', cc)"><i class="glyphicon glyphicon-pencil"></i></button>
               <button class="btn btn-sm btn-danger" ng-click="remove(cc)"><i class="glyphicon glyphicon-trash"></i></button>
@@ -41,7 +39,7 @@
           </tr>
 
           <tr ng-if="!model.cost_centers.data.length">
-            <td colspan="4">
+            <td colspan="3">
               <div class="alert alert-warning square">
                 {{ 'ANALYSIS_CENTER.NONE_FOUND' | translate }}
               </div>

@@ -6,7 +6,8 @@ angular.module('bhima.controllers')
   'messenger',
   'validate',
   '$translate',
-  function ($scope, connect, appstate, messenger, validate, $translate) {
+  'SessionService',
+  function ($scope, connect, appstate, messenger, validate, $translate, SessionService) {
 
     var dependencies = {};
 
@@ -14,18 +15,21 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           'profit_center' : {
-            columns : ['id', 'text', 'note', 'project_id']
-          },
-          'project' : {
-            columns :['abbr']
+            columns : ['id', 'text', 'note']
           }
-        },
-        join : ['profit_center.project_id=project.id']
+        }
       }
     };
 
     $scope.register = {};
     $scope.selected = {};
+
+    startup();
+
+    function startup() {
+      $scope.project = SessionService.project;
+      validate.process(dependencies).then(init);
+    }
 
     function init(model) {
       $scope.model = model;
@@ -71,7 +75,6 @@ angular.module('bhima.controllers')
       delete $scope.selected.abbr;
       updateProfitCenter()
       .then(function () {
-        // FIXME just add employee to model
         $scope.model.profit_centers.put($scope.selected);
         messenger.success($translate.instant('ANALYSIS_PROFIT_CENTER.UPDATE_SUCCESS_MESSAGE'));
       })
@@ -81,18 +84,12 @@ angular.module('bhima.controllers')
     }
 
     function removeProfitCenter() {
-      return connect.basicDelete('profit_center', [$scope.selected.id], 'id');
+      return connect.delete('profit_center', 'id', [$scope.selected.id]);
     }
 
     function updateProfitCenter() {
-      return connect.basicPost('profit_center', [connect.clean($scope.selected)], ['id']);
+      return connect.put('profit_center', [connect.clean($scope.selected)], ['id']);
     }
-
-    appstate.register('project', function (project) {
-      $scope.project = project;
-      dependencies.profit_centers.where = ['profit_center.project_id='+project.id];
-      validate.process(dependencies).then(init);
-    });
 
     $scope.setAction = setAction;
     $scope.saveRegistration = saveRegistration;

@@ -253,3 +253,14 @@ DELETE FROM `unit` WHERE `unit`.`id` = 92;
 UPDATE `enterprise` 
 SET `name`='Institut Médical Chrétien du Kasaï' 
 WHERE `id`=200;
+
+
+-- Alter cost center, profit_center
+-- Date: 2015-09-22
+-- By: Bruce M.
+
+ALTER TABLE  `cost_center` 
+DROP FOREIGN KEY  `cost_center_ibfk_1` ;
+
+ALTER TABLE  `service` 
+DROP FOREIGN KEY  `service_ibfk_1` ;
