@@ -2,13 +2,26 @@ var configureDebitorGroupReport = function ($http, $translate, validate, reportC
 
   var vm = this,
   generatedDocumentPath = null,
-  serverUtilityPath = '/report/build/debitor_group',
-  configuration = reportConfigService.configuration;
+  serverUtilityPath = '/report/build/debitor_group_report',
+  configuration = reportConfigService.configuration,
+  dependencies = {};
+
+  dependencies.debitorGroup = {
+      query : {
+        identifier : 'uuid',
+        tables : {
+          'debitor_group' : {
+            columns : ['uuid', 'name', 'account_id', 'is_convention']
+          }
+        },
+        where : ['debitor_group.is_convention=1']
+      }
+  };
 
   vm.generate_doc = $translate.instant('DEBITOR_GROUP_REPORT.GENERATE_DOC');
   vm.loading = $translate.instant('DEBITOR_GROUP_REPORT.LOADING');
 
-  setDefaultConfiguration();
+  validate.process(dependencies).then(setDefaultConfiguration);
 
   // Expose configuration to scope - set module state
   vm.building = false;
@@ -18,7 +31,8 @@ var configureDebitorGroupReport = function ($http, $translate, validate, reportC
     configuration[key].selected = value;
   }
 
-  function setDefaultConfiguration() {
+  function setDefaultConfiguration(models) {
+    angular.extend(vm, models);
     selectConfiguration('language', configuration.language.options[1]);
   }
 
@@ -31,6 +45,9 @@ var configureDebitorGroupReport = function ($http, $translate, validate, reportC
     configurationObject.language = configuration.language.selected.value;
     configurationObject.enterprise = configuration.enterprise;
     configurationObject.project = configuration.project;
+    configurationObject.involveJournal = vm.involve_journal;
+    configurationObject.dg = vm.debitorGroup.get(vm.debitor_group_uuid);
+    configurationObject.unsoldOnly = vm.unsold_only;
 
     // Update state
     vm.building = true;

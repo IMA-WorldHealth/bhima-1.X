@@ -863,7 +863,9 @@
 "DEBITOR_GROUP_REPORT" : {
    "DOCUMENT_CONFIG" : "Configuration of Debitor Group Report",
    "LANGUAGE" : "Language",
-   "INVOLVE_JOURNAL" : "Involve journal"
+   "INVOLVE_JOURNAL" : "Involve journal",
+   "NOTSOLD_ONLY" : "Show unsold bill only",
+   "DEBITOR_GROUP" : "Debitor Group"
 },
 "DEPOT": {
    "ADD"             : "Add a Store",

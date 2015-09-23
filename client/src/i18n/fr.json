@@ -863,7 +863,9 @@
 "DEBITOR_GROUP_REPORT" : {
    "DOCUMENT_CONFIG" : "Configuration rapport groupe de debiteur",
    "LANGUAGE" : "Langue",
-   "INVOLVE_JOURNAL" : "Integrer le journal "
+   "INVOLVE_JOURNAL" : "Integrer le journal ",
+   "NOTSOLD_ONLY"    : "Montrer seulement Les factures non Soldees",
+   "DEBITOR_GROUP"   : "Groupe de Debiteur"
 },
 
 "DEPOT": {
