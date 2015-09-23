@@ -143,7 +143,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat-start="item in session.listItems ">
+              <tr ng-repeat-start="item in session.listItems">
                 <td style="padding-top: 12px;">{{$index}}</td>
                 <td><input class="form-bhima" ng-model="item.description" type="text" placeholder="Item Description"></td>
                 <td>
@@ -153,15 +153,15 @@
                 </td>
                 <td>
                   <select class="form-bhima" ng-model="item.is_discount">
-                    <option value="0">{{'PRICE_LIST.INCREASE' | translate}}</option>
-                    <option value="1">{{'PRICE_LIST.DECREASE' | translate}}</option>
+                    <option value="0" ng-selected="!item.is_discount">{{'PRICE_LIST.INCREASE' | translate}}</option>
+                    <option value="1" ng-selected="item.is_discount">{{'PRICE_LIST.DECREASE' | translate}}</option>
                   </select>
                 </td>
 
                 <td>
                   <select class="form-bhima" ng-change="clearInventory(item)" ng-model="item.is_global">
-                    <option value="0">{{'PRICE_LIST.APPLY_TO_ITEM' | translate}}</option>
-                    <option value="1">{{'PRICE_LIST.APPLY_TO_BILL' | translate}}</option>
+                    <option value="0" ng-selected="!item.is_global">{{'PRICE_LIST.APPLY_TO_ITEM' | translate}}</option>
+                    <option value="1" ng-selected="item.is_global">{{'PRICE_LIST.APPLY_TO_BILL' | translate}}</option>
                   </select>
                 </td>
 
@@ -181,7 +181,7 @@
               <tr ng-repeat-end ng-if="item.is_global">
                 <td style="border-top: 0"></td>
                 <td colspan="7" style="border-top: 0">
-                  <select class="form-bhima" ng-model="item.inventory_uuid" ng-options="item.uuid as ('[' + item.type_id + '][' + item.code + '] ' + item.text) for item in model.inventory.data | orderBy: '!type_id'">
+                  <select class="form-bhima" ng-model="item.inventory_uuid" ng-options="item.uuid as ('[' + item.type_id + '][' + item.code + '] ' + item.text) for item in model.inventory.data | orderBy: 'code'">
                     <option value="" disabled>-- Select Discount Item --</option>
                   </select>
                 </td>

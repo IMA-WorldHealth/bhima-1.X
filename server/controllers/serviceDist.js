@@ -9,7 +9,7 @@ var uuid = require('./../lib/guid');
 /*
  * HTTP Controllers
 */
-exports.execute = function (req, res, next) { 
+exports.execute = function (req, res, next) {
   initialiseDistribution(req.body, req.session.user.id, function (err, ans) {
     if (err) { return next(err); }
     res.send({dist: ans});
@@ -38,11 +38,11 @@ function initialiseDistribution(data, userId, callback) {
 }
 
 function writeMainConsumption (main_consumptions) {
-  return db.exec(generate ('consumption', main_consumptions));
+  return db.exec(generate('consumption', main_consumptions));
 }
 
 function writeServiceConsumption (service_consumptions) {
-  return db.exec(generate ('consumption_service', service_consumptions));
+  return db.exec(generate('consumption_service', service_consumptions));
 }
 
 function writeToJournal (document_id, userId, details) {

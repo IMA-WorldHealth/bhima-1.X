@@ -1,75 +1,74 @@
-angular.module('bhima.controllers')
-.controller('purchaseRecords', [
-  '$scope',
-  '$q',
-  'connect',
-  function ($scope, $q, connect) {
-    var session = $scope.session = { purchase_type: 'indirect'};
-    $scope.purchase_filter = {};
 
-    function init() {
-      $scope.selected = null;
-      var promise = fetchRecords();
+var purchaseRecords = function ($q, connect) {
+  var vm = this;
+  var session = vm.session = { purchase_type: 'indirect'};
+  vm.purchase_filter = {};
 
-      promise.then(function(model) {
-        $scope.indirect_purchase = model[1];
-        $scope.direct_purchase = model[0];
-      });
-    }
+  function init() {
+    vm.selected = null;
+    var promise = fetchRecords();
 
-    function fetchRecords() {
-      $scope.selected = {};
-      var indirect = {
-        'tables' : {
-          'purchase' : {
-            'columns' : ['uuid', 'reference', 'cost', 'discount', 'purchase_date', 'paid']
-          },
-          'creditor' : {
-            'columns' : ['text']
-          },
-          'employee' : {
-            'columns' : ['name', 'prenom']
-          },
-          'user' : {
-            'columns' : ['first', 'last']
-          }
+    promise.then(function(model) {
+      vm.indirect_purchase = model[1];
+      vm.direct_purchase = model[0];
+    });
+  }
+
+  function fetchRecords() {
+    vm.selected = {};
+    var indirect = {
+      'tables' : {
+        'purchase' : {
+          'columns' : ['uuid', 'reference', 'cost', 'discount', 'purchase_date', 'paid']
         },
-        join : [
-          'purchase.creditor_uuid=creditor.uuid',
-          'purchase.emitter_id=user.id',
-          'purchase.purchaser_id=employee.id'
-        ],
-        where : ['purchase.is_direct=0', 'AND', 'purchase.is_donation=0']
-      };
-
-      var direct = {
-        'tables' : {
-          'purchase' : {
-            'columns' : ['uuid', 'reference', 'cost', 'discount', 'purchase_date', 'confirmed']
-          },
-          'creditor' : {
-            'columns' : ['text']
-          },
-          'supplier' : {
-            'columns' : ['name']
-          },
-          'user' : {
-            'columns' : ['first', 'last']
-          }
+        'creditor' : {
+          'columns' : ['text']
         },
-        join : [
-          'purchase.creditor_uuid=creditor.uuid',
-          'purchase.emitter_id=user.id',
-          'creditor.uuid=supplier.creditor_uuid'
-        ],
-        where : ['purchase.is_direct=1', 'AND', 'purchase.is_donation=0']
-      };
+        'employee' : {
+          'columns' : ['name', 'prenom']
+        },
+        'user' : {
+          'columns' : ['first', 'last']
+        }
+      },
+      join : [
+        'purchase.creditor_uuid=creditor.uuid',
+        'purchase.emitter_id=user.id',
+        'purchase.purchaser_id=employee.id'
+      ],
+      where : ['purchase.is_direct=0', 'AND', 'purchase.is_donation=0']
+    };
 
-      var d = connect.req(direct);
-      var i = connect.req(indirect);
-      return $q.all([d,i]);
-    }
+    var direct = {
+      'tables' : {
+        'purchase' : {
+          'columns' : ['uuid', 'reference', 'cost', 'discount', 'purchase_date', 'confirmed']
+        },
+        'creditor' : {
+          'columns' : ['text']
+        },
+        'supplier' : {
+          'columns' : ['name']
+        },
+        'user' : {
+          'columns' : ['first', 'last']
+        }
+      },
+      join : [
+        'purchase.creditor_uuid=creditor.uuid',
+        'purchase.emitter_id=user.id',
+        'creditor.uuid=supplier.creditor_uuid'
+      ],
+      where : ['purchase.is_direct=1', 'AND', 'purchase.is_donation=0']
+    };
 
-    init();
+    var d = connect.req(direct);
+    var i = connect.req(indirect);
+    return $q.all([d,i]);
+  }
 
-}]);
+  init();
+};
+
+purchaseRecords.$inject = ['$q', 'connect'];
+angular.module('bhima.controllers').controller('purchaseRecords', purchaseRecords);

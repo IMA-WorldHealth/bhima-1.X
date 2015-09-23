@@ -860,30 +860,31 @@
    "TITLE"      : "Debtor Group Management"
    },
 "DEPOT": {
-  "ADD"             : "Add a Store",
-  "ALERT"           : "Manage your stores from here",
-  "ALL"             : "All Stores",
-  "DELETE_SUCCESS"  : "Delete success",
-  "EDIT"            : "Edit store information",
-  "EDIT_SUCCESS"    : "Update successfully",
-  "NEW"             : "Register a new Store",
-  "NEW_SUCCESS"     : "New store saving with success",
-  "NO_DEPOTS"       : "No stores have been registered.",
-  "NOT_FOUND"       : "The stored depot could not be found. Please select the correct depot or contact the system administrator.",
-  "TITLE"           : "Store Management",
-  "DISTRIBUTION"   : {
-    "PATIENTS" : "Distributions to Patients",
-    "SERVICES" : "Distributions to Services",
-    "RUMMAGE"  : "Liquidation by Rummage Sale",
-    "LOSSES"   : "Stock Losses",
-    "ANNUL"    : "Annul this Transaction",
-    "ANNULLED" : "Annulled",
-    "CANCEL" : {
-      "TITLE" : "Cancel Pharmacy Distribution",
-      "MESSAGE" : "You are about to cancel a distribution made from the pharmacy.  Please make sure these details are correct."
-    }
-  }
-},
+   "ADD"             : "Add a Store",
+   "ALERT"           : "Manage your stores from here",
+   "ALL"             : "All Stores",
+   "DELETE_SUCCESS"  : "Delete success",
+   "DELETE_FAIL"     : "Fail when deleting depot, it is used in other records",
+   "EDIT"            : "Edit store information",
+   "EDIT_SUCCESS"    : "Update successfully",
+   "NEW"             : "Register a new Store",
+   "NEW_SUCCESS"     : "New store saving with success",
+   "NO_DEPOTS"       : "No stores have been registered.",
+   "NOT_FOUND"       : "The stored depot could not be found. Please select the correct depot or contact the system administrator.",
+   "TITLE"           : "Store Management",
+   "DISTRIBUTION"   : {
+     "PATIENTS" : "Distributions to Patients",
+     "SERVICES" : "Distributions to Services",
+     "RUMMAGE"  : "Liquidation by Rummage Sale",
+     "LOSSES"   : "Stock Losses",
+     "ANNUL"    : "Annul this Transaction",
+     "ANNULLED" : "Annulled",
+     "CANCEL" : {
+       "TITLE" : "Cancel Pharmacy Distribution",
+       "MESSAGE" : "You are about to cancel a distribution made from the pharmacy.  Please make sure these details are correct."
+     }
+   }
+ },
 "DISTRIBUTION": {
    "ADD_ROW"                : "Add an Item",
    "ALLOCATE_MEDECINE"      : "Allocate medicine",
