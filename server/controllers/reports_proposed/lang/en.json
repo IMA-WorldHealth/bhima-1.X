@@ -39,5 +39,13 @@
 		"PRENOM" : "First Name",
 		"NOM" : "Name",
 		"POSTNOM" : "Last Name"
+	},
+
+	"DEBITOR_GROUP_REPORT" : {
+		"TITLE" : "Debtor Group Financial State",
+		"ENTERPRISE" : "Enterprise",
+		"DEBIT" : "Debit",
+		"CREDIT" : "Credit",
+		"DATE" : "Date"
 	}
 }
