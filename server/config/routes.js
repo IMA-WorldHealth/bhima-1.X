@@ -176,12 +176,16 @@ exports.initialise = function (app) {
   app.get('/inventory/status', inventory.getInventoryStatus);
   app.get('/inventory/:uuid/status', inventory.getInventoryStatusById);
 
+  // TODO - donations
+
   /* Depot Management */
+
+  app.get('/depots', depot.getDepots);
 
   app.get('/depots/:depotId/distributions', depot.getDistributions);
   app.get('/depots/:depotId/distributions/:uuid', depot.getDistributionsById);
 
-  // TODO -- should this be in the inventory, or depot controller?
+  // get the lots of a particular inventory item in the depot
   app.get('/depots/:depotId/inventory/:uuid', depot.getAvailableLotsByInventoryId);
 
   /* continuing on ... */

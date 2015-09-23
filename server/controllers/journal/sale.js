@@ -106,7 +106,6 @@ function creditNote(id, userId, cb) {
           'deb_cred_uuid, inv_po_id, cost_ctrl_id, origin_id, user_id, cc_id, pc_id) ' +
         'VALUES (?);';
 
-
     //  loop through and results to queries (reversing the
     //  debits and credits).  Parameters passed via escaping.
     return q.all(results.map(function (item) {
