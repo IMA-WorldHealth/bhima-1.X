@@ -1,6 +1,8 @@
 # ignore editor-specific working files
 *.swp,*.swo,*.swn,.idea/
 
+# ignore assigned tasks
+\.tasks
 
 # ignore npm modules
 node_modules/

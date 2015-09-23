@@ -230,6 +230,7 @@ DROP FOREIGN KEY  `supplier_ibfk_1` ;
 ALTER TABLE `supplier`
 DROP `location_id`;
 
+
 -- Deletion of undeveloped reports
 --
 -- Date: 2015-09-14
@@ -244,6 +245,22 @@ DELETE FROM `unit` WHERE `unit`.`id` = 90;
 DELETE FROM `unit` WHERE `unit`.`id` = 91;
 DELETE FROM `unit` WHERE `unit`.`id` = 92;
 
+-- Alter enterprise data
+-- Date: 2015-09-17
+-- By: Bruce Mbayo
+
+UPDATE `enterprise` 
+SET `name`='Institut Médical Chrétien du Kasaï' 
+WHERE `id`=200;
+
+-- Transaction type : groupe invoice
+-- server/controllers/journal/finance.js use it in cancelInvoice()
+-- Date: 2015-09-21
+-- By: Bruce Mbayo
+
+INSERT INTO `transaction_type` (`service_txt`) 
+VALUES ('group_invoice');
+
 -- Change stock URL route
 --
 -- Date 2015-09-14
@@ -251,7 +268,7 @@ DELETE FROM `unit` WHERE `unit`.`id` = 92;
 
 UPDATE `unit` SET path="/stock/dashboard", url = "/stock/dashboard" WHERE id = 81;
 
--- BREAKING - remove consumption_reversing table and add `annuled` column
+-- BREAKING - remove consumption_reversing table and add `canceled` column
 --
 -- Date 2015-09-14
 -- by: jniles

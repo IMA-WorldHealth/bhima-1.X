@@ -860,25 +860,26 @@
    "TITLE"      : "Gestion des Groupes des Débiteurs"
    },
 "DEPOT": {
-  "ADD"             : "Ajouter",
-  "ALERT"           : "Ce module vous permet de gérer vos dépôt",
-  "ALL"             : "Tous les Dépôts",
-  "DELETE_SUCCESS"  : "Suppression avec succès",
-  "EDIT"            : "Editer les informations d'un dépôt",
-  "EDIT_SUCCESS"    : "Données du dépôt mise à jour avec succès ",
-  "NEW"             : "Nouveau dépôt",
-  "NEW_SUCCESS"     : "Nouveau dépôt enregistré avec succès",
-  "NO_DEPOTS"       : "Aucun dépôt trouvé",
-  "NOT_FOUND"       : "Aucun dépôt enregistrés n'a pu être trouvée. Veuillez sélectionner le bon dépôt ou contacter l'administrateur du système.",
-  "TITLE"           : "Gestion des Dépôt",
-  "DISTRIBUTION"   : {
-    "PATIENTS" : "Distributions to Patients",
-    "SERVICES" : "Distributions to Services",
-    "RUMMAGE"  : "Liquidation by Rummage Sale",
-    "LOSSES"   : "Stock Losses",
-    "ANNUL"    : "Annuler cette Transaction",
-    "ANNULLED" : "Annulé"
-  }
+   "ADD"             : "Ajouter",
+   "ALERT"           : "Ce module vous permet de gérer vos dépôt",
+   "ALL"             : "Tous les Dépôts",
+   "DELETE_SUCCESS"  : "Suppression avec succès",
+   "DELETE_FAIL"     : "Echec Suppression, Le depot est utilisé dans plusiers enregistrements",
+   "EDIT"            : "Editer les informations d'un dépôt",
+   "EDIT_SUCCESS"    : "Données du dépôt mise à jour avec succès ",
+   "NEW"             : "Nouveau dépôt",
+   "NEW_SUCCESS"     : "Nouveau dépôt enregistré avec succès",
+   "NO_DEPOTS"       : "Aucun dépôt trouvé",
+   "NOT_FOUND"       : "Aucun dépôt enregistrés n'a pu être trouvée. Veuillez sélectionner le bon dépôt ou contacter l'administrateur du système.",
+   "TITLE"           : "Gestion des Dépôt",
+   "DISTRIBUTION"   : {
+     "PATIENTS" : "Distributions to Patients",
+     "SERVICES" : "Distributions to Services",
+     "RUMMAGE"  : "Liquidation by Rummage Sale",
+     "LOSSES"   : "Stock Losses",
+     "ANNUL"    : "Annuler cette Transaction",
+     "ANNULLED" : "Annulé"
+   }
 },
 "DISTRIBUTION": {
    "ADD_ROW"                : "Ajouter Item",
