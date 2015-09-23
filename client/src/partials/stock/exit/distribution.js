@@ -67,7 +67,7 @@ angular.module('bhima.controllers')
 
     function startup(model) {
       angular.extend($scope, model); 
-      var dataDebitor = $scope.ledger.data;
+      var dataDebitor = session.dataDebitor = $scope.ledger.data;
 
       dataDebitor.forEach(function (item) {
         dependencies.get_consumption = {
