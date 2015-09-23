@@ -40,7 +40,7 @@ function getItemConsumption(uuid, options) {
           'ON c.tracking_number = s.tracking_number AND ' +
           's.inventory_uuid = i.uuid ' +
         'WHERE i.uuid = ? AND ' + where +
-        'GROUP BY i.uuid, YEAR(c.date);';
+        'GROUP BY i.uuid, YEAR(c.date)';
       break;
 
     case 'month':
@@ -50,7 +50,7 @@ function getItemConsumption(uuid, options) {
           'ON c.tracking_number = s.tracking_number AND ' +
           's.inventory_uuid = i.uuid ' +
         'WHERE i.uuid = ? AND ' + where +
-        'GROUP BY i.uuid, YEAR(c.date), MONTH(c.date);';
+        'GROUP BY i.uuid, YEAR(c.date), MONTH(c.date)';
       break;
 
     case 'week' :
@@ -60,7 +60,7 @@ function getItemConsumption(uuid, options) {
           'ON c.tracking_number = s.tracking_number AND ' +
           's.inventory_uuid = i.uuid ' +
         'WHERE i.uuid = ? AND ' + where +
-        'GROUP BY i.uuid, YEAR(c.date), MONTH(c.date), WEEK(c.date);';
+        'GROUP BY i.uuid, YEAR(c.date), MONTH(c.date), WEEK(c.date)';
       break;
 
     default:
@@ -70,7 +70,7 @@ function getItemConsumption(uuid, options) {
           'ON c.tracking_number = s.tracking_number AND ' +
           's.inventory_uuid = i.uuid ' +
         'WHERE i.uuid = ? AND ' + where +
-        'GROUP BY i.uuid, DATE(c.date);';
+        'GROUP BY i.uuid, DATE(c.date)';
       break;
   }
 

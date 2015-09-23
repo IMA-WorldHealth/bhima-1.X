@@ -33,6 +33,9 @@ angular.module('bhima.services')
 *   start : DateService.previous.nMonth(2),  // start two months before this month
 *   end : DateService.next.month()           // run through the end of this month
 * };                                         // total months = 3 month span!
+*
+* *NEW*
+*  Provides a generic date-to-string function that returns a same date string
 */
 function DateService() {
   var service = this;
@@ -41,6 +44,7 @@ function DateService() {
   service.previous = {};
   service.current = {};
   service.next = {};
+  service.util = {};
 
   /*
   * Very generic function to subtract days, months, years
@@ -205,5 +209,23 @@ function DateService() {
   // returns the year n years ago
   service.next.nYear = function (n) {
     return subtract(service.current.year(), 'year', -1*n);
+  };
+
+
+  /* ------------------------------------------------------------------------ */
+
+  // yet another javascript date string function
+  // expects a date object
+  // return 'YYYY-MM-DD' format
+  service.util.str = function (date) {
+    var d     = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day   = '' + d.getDate(),
+        year  = d.getFullYear();
+
+    if (month.length < 2) { month = '0' + month; }
+    if (day.length < 2) { day = '0' + day; }
+
+    return [year, month, day].join('-');
   };
 }

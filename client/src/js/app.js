@@ -471,7 +471,7 @@ function bhimaconfig($routeProvider) {
 
   /* depots */
   .when('/depots/:depotId/losses', {
-    controller : 'stock.loss',
+    controller : 'DepotLossController as LossCtrl',
     templateUrl : 'partials/stock/loss/loss.html'
   })
   .when('/depots/:depotId/movements', {
@@ -576,6 +576,7 @@ function bhimaconfig($routeProvider) {
     controller : 'StockDashboardController as StockDashCtrl',
     templateUrl : 'partials/stock/dashboard/dashboard.html'
   })
+
   .when('/snis/', {
     controller : 'snis',
     templateUrl : 'partials/snis/snis.html'

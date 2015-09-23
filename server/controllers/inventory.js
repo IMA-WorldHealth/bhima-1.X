@@ -1,11 +1,13 @@
 /**
 * This module contains the following routes:
 *   /inventory/consumption
+*   /inventory/donations
 *   /inventory/expiration
 *   /inventory/leadtimes
 *   /inventory/metadata
 *   /inventory/status
 *   /inventory/:uuid/consumption
+*   /inventory/:uuid/donations
 *   /inventory/:uuid/expiration
 *   /inventory/:uuid/leadtimes
 *   /inventory/:uuid/metadata
@@ -32,6 +34,7 @@ var core        = require('./inventory/core'),
     expirations = require('./inventory/expiration'),
     leadtimes   = require('./inventory/leadtimes'),
     lots        = require('./inventory/lots'),
+    donations   = require('./inventory/donations'),
     stats       = require('./inventory/status');
 
 // exposed routes
@@ -52,6 +55,9 @@ exports.getInventoryLotsById = getInventoryLotsById;
 
 exports.getInventoryStatus = getInventoryStatus;
 exports.getInventoryStatusById = getInventoryStatusById;
+
+exports.getInventoryDonations = getInventoryDonations;
+exports.getInventoryDonationsById = getInventoryDonationsById;
 
 /**
 * GET /inventory/metadata
@@ -160,8 +166,11 @@ function getInventoryConsumptionById(req, res, next) {
 *   group={day|week|month|year}
 *   start={date}
 *   end={date}
+*   detailed={default:0|1}
+*   average={default:0|1}
 *
-* Returns the consumption of a stock by the inventory item.
+* Returns the consumption of a stock by the inventory item.  If the detailed
+* query is used, we return inventory metadata with the consumption.
 */
 function getInventoryConsumption(req, res, next) {
   'use strict';
@@ -179,7 +188,10 @@ function getInventoryConsumption(req, res, next) {
     return res.status(400).json(core.errors.MISSING_PARAMETERS);
   }
 
-  core.getIds()
+  // are we going to be getting all metadata or just ids?
+  var fn = options.detailed ? 'getItemsMetadata' : 'getIds';
+
+  core[fn]()
   .then(function (rows) {
     if (!rows.length) {
       throw core.errors.NO_INVENTORY_ITEMS;
@@ -363,10 +375,6 @@ function getInventoryExpirations(req, res, next) {
 
   expirations.getExpirations(options)
   .then(function (rows) {
-    if (!rows.length) {
-      throw core.errors.NO_STOCK;
-    }
-
     res.status(200).json(rows);
   })
   .catch(function (error) {
@@ -397,10 +405,6 @@ function getInventoryExpirationsById(req, res, next) {
 
   expirations.getExpirationsById(uuid, options)
   .then(function (rows) {
-    if (!rows.length) {
-      throw core.errors.NO_STOCK;
-    }
-
     res.status(200).json(rows[0]);
   })
   .catch(function (error) {
@@ -521,6 +525,43 @@ function getInventoryStatusById(req, res, next) {
   var uuid = req.params.uuid;
 
   stats.getInventoryStatusById(uuid)
+  .then(function (data) {
+    res.status(200).json(data);
+  })
+  .catch(function (error) {
+    core.errorHandler(error, next);
+  })
+  .done();
+}
+
+/**
+* GET /inventory/donations
+* Retrieve all donations from the inventory.
+*/
+function getInventoryDonations(req, res, next) {
+  'use strict';
+
+  donations.getInventoryDonations()
+  .then(function (data) {
+    res.status(200).json(data);
+  })
+  .catch(function (error) {
+    core.errorHandler(error, next);
+  })
+  .done();
+}
+
+/**
+* GET /inventory/:uuid/donations
+* Retrieve all donations from the inventory for a given inventory
+* type.
+*/
+function getInventoryDonationsById(req, res, next) {
+  'use strict';
+
+  var uuid = req.params.uuid;
+
+  donations.getInventoryDonationsById(uuid)
   .then(function (data) {
     res.status(200).json(data);
   })
