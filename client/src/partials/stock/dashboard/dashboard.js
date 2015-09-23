@@ -2,54 +2,97 @@ angular.module('bhima.controllers')
 .controller('StockDashboardController', StockDashboardController);
 
 StockDashboardController.$inject = [
-  '$scope', '$http', '$q', 'validate', 'StockDataService'
+  '$q', '$http', 'StockDataService', 'DateService'
 ];
 
-function StockDashboardController($scope, $http, $q, validate, DataService) {
+function StockDashboardController($q, $http, DataService, Dates) {
   var vm = this;
 
   // bind view values
   vm.purchaseorders = {};
+  vm.limits = { consumption : 10, donations : 10 };
 
   // startup the module
-  loadPurchaseDetails();
-  loadConsumptionDetails();
-  loadRecentDonations();
-  loadExpirationDetails();
-  loadStockAlerts();
+  startup();
 
   /* ----------------------------------------------------------------------- */
 
-  // startup
-  // stockParProduit();
+  function startup() {
+    loadPurchaseDetails();
+    loadConsumptionDetails();
+    loadDonations();
+    loadExpirationDetails();
+    loadStockStatus();
+  }
 
   // get the top most consumed items
   function loadConsumptionDetails() {
-    DataService.getConsumption(10)
+    DataService.getConsumption()
     .then(function (response) {
-      vm.consumption = response.data;
+      var items = response.data;
+
+      // loop through each item and sum up the consumption quantity
+      items.forEach(function (i) {
+
+        // sum up the consumption events
+        i.consumed = i.consumption.reduce(function (a, b) {
+          return a + b.quantity;
+        }, 0);
+      });
+
+      // sort the inventory items by greated consumption
+      items.sort(function (a, b) {
+        return a.consumed < b.consumed ? 1 : -1;
+      });
+
+      vm.consumption = items;
     });
   }
 
   // load stock alerts
-  function loadStockAlerts() {
-    DataService.getStockAlerts()
+  function loadStockStatus() {
+    DataService.getStockStatus()
     .then(function (response) {
-      vm.alerts = response.data;
+
+      vm.statuses = response.data;
+
+      // stock alerts to be displayed
+      var alerts = {
+        overstock : 0,
+        shortage  : 0,
+        stockout  : 0,
+        optimal   : 0,
+        expired   : 0
+      };
+
+      // loop through each inventory item and categorize alerts
+      vm.alerts = vm.statuses.reduce(function (agg, value) {
+        if (value.overstock) { agg.overstock += 1; }
+        if (value.shortage) { agg.shortage += 1; }
+        if (value.stockout) { agg.stockout += 1; }
+        if (value.expired) { agg.expired += 1; }
+
+        // we need to make sure someone didn't forget to set stock_max
+        if (value.stock_max === value.quantity && value.quantity !== 0) {
+          agg.optimal += 1;
+        }
+        return agg;
+      }, alerts);
     });
   }
 
-  /*
-  * Loads the most recent donations into the dashboard
-  */
-  function loadRecentDonations() {
+  /* Loads the most recent donations into the dashboard */
+  function loadDonations() {
+
     // TODO -- make this number configurable
-    DataService.getRecentDonations(10)
+    DataService.getDonations(vm.limits.donations)
     .then(function (response) {
       vm.donations = response.data;
     });
   }
 
+  // TODO - this belongs in a PurchaseOrders Service
+  //
   // Load information about purchases orders based on their statuses.
   // We are getting orders that
   //  1) have not been approved
@@ -79,188 +122,63 @@ function StockDashboardController($scope, $http, $q, validate, DataService) {
   }
 
 
-  /* Consumption By tracking_number */
-  $http.get('/getConsumptionTrackingNumber/').
-  success(function (data) {
-    $scope.TrackingNumbers = data;
-  });
-
-
+  // load expirations over different time frames
   function loadExpirationDetails() {
-    /* For Expiring date */
-    $http.get('/getExpiredTimes/', {params : {
-          'request' : 'expired'
-        }
-    }).
-    success(function (data) {
-      $scope.expired = data;
-      $scope.nbExpired = data.length;
-      for (var item in $scope.TrackingNumbers) {
-        var TrackingNumber = $scope.TrackingNumbers[item];
-        for (var item2 in data) {
-          var data2 = data[item2];
-          if (data2.tracking_number === TrackingNumber.tracking_number) {
-            var diffQuantity = data2.quantity - TrackingNumber.quantity;
-            if (diffQuantity <= 0) {
-              $scope.nbExpired -= 1;
-            }
-          }
-        }
-      }
-    });
 
-    // Expire dans 30 jours
-    $http.get('/getExpiredTimes/', {params : {
-          'request' : 'expiredDellai',
-          'inf'     : '0',
-          'sup'     : '30'
-        }
-    }).
-    success(function (data) {
-      $scope.expired30 = data;
-      $scope.nbExpired30 = data.length;
-      for (var item in $scope.TrackingNumbers) {
-        var TrackingNumber = $scope.TrackingNumbers[item];
-        for (var item2 in data) {
-          var data2 = data[item2];
-          if (data2.tracking_number === TrackingNumber.tracking_number) {
-            var diffQuantity = data2.quantity - TrackingNumber.quantity;
-            if (diffQuantity <= 0) {
-              $scope.nbExpired30 -= 1;
-            }
-          }
-        }
-      }
-    });
+    // start and end dates for each period
+    vm.expirations =  [{
+      id : '0-30',
+      key : 'STOCK.EXPIRATIONS.30_DAYS',
+      range : [
+        Dates.util.str(Dates.current.day()),
+        Dates.util.str(Dates.next.nDay(30))
+      ]
+    }, {
+      id: '30-60',
+      key : 'STOCK.EXPIRATIONS.30_TO_60_DAYS',
+      range : [
+        Dates.util.str(Dates.next.nDay(30)),
+        Dates.util.str(Dates.next.nDay(60))
+      ]
+    }, {
+      id :'60-90',
+      key : 'STOCK.EXPIRATIONS.60_TO_90_DAYS',
+      range : [
+        Dates.util.str(Dates.next.nDay(60)),
+        Dates.util.str(Dates.next.nDay(90))
+      ]
+    }, {
+      id : '90-120',
+      key : 'STOCK.EXPIRATIONS.90_TO_120_DAYS',
+      range : [
+        Dates.util.str(Dates.next.nDay(90)),
+        Dates.util.str(Dates.next.nDay(120))
+      ]
+    }, {
+      id : '120-180',
+      key : 'STOCK.EXPIRATIONS.120_TO_180_DAYS',
+      range : [
+        Dates.util.str(Dates.next.nDay(120)),
+        Dates.util.str(Dates.next.nDay(180))
+      ]
+    }, {
+      id :'180-360',
+      key : 'STOCK.EXPIRATIONS.180_TO_360_DAYS',
+      range : [
+        Dates.util.str(Dates.next.nDay(180)),
+        Dates.util.str(Dates.next.nDay(360))
+      ]
+    }];
 
-    // Expire dans 30 90 jours
-    $http.get('/getExpiredTimes/', {params : {
-          'request' : 'expiredDellai',
-          'inf'     : '30',
-          'sup'     : '90'
-        }
-    }).
-    success(function (data) {
-      $scope.expired3090 = data;
-      $scope.nbExpired3090 = data.length;
-      for (var item in $scope.TrackingNumbers) {
-        var TrackingNumber = $scope.TrackingNumbers[item];
-        for (var item2 in data) {
-          var data2 = data[item2];
-          if (data2.tracking_number === TrackingNumber.tracking_number) {
-            var diffQuantity = data2.quantity - TrackingNumber.quantity;
-            if (diffQuantity <= 0) {
-              $scope.nbExpired3090 -= 1;
-            }
-          }
-        }
-      }
-    });
-
-    // Expire dans 90 180 jours
-    $http.get('/getExpiredTimes/', {params : {
-          'request' : 'expiredDellai',
-          'inf'     : '90',
-          'sup'     : '180'
-        }
-    }).
-    success(function (data) {
-      $scope.expired180 = data;
-      $scope.nbExpired180 = data.length;
-      for (var item in $scope.TrackingNumbers) {
-
-        var TrackingNumber = $scope.TrackingNumbers[item];
-        for (var item2 in data) {
-          var data2 = data[item2];
-          if (data2.tracking_number === TrackingNumber.tracking_number) {
-            var diffQuantity = data2.quantity - TrackingNumber.quantity;
-            if (diffQuantity <= 0) {
-              $scope.nbExpired180 -= 1;
-            }
-          }
-        }
-      }
-    });
-
-    // Expire dans 180 365 jours
-    $http.get('/getExpiredTimes/', {
-      params : {
-      'request' : 'expiredDellai',
-      'inf'     : '180',
-      'sup'     : '365'
-      }
-    }).
-    success(function (data) {
-      $scope.expired365 = data;
-      $scope.nbExpired365 = data.length;
-      for (var item in $scope.TrackingNumbers) {
-
-        var TrackingNumber = $scope.TrackingNumbers[item];
-        for (var item2 in data) {
-          var data2 = data[item2];
-          if (data2.tracking_number === TrackingNumber.tracking_number) {
-            var diffQuantity = data2.quantity - TrackingNumber.quantity;
-            if (diffQuantity <= 0) {
-              $scope.nbExpired365 -= 1;
-            }
-          }
-        }
-      }
-    });
-
-    // Expire dans 1 year jours
-    $http.get('/getExpiredTimes/', {
-      params : {
-      'request' : 'oneYear'
-    }
-    })
-    .success(function (data) {
-      $scope.expired1 = data;
-      $scope.nbExpired1 = data.length;
-      for (var item in $scope.TrackingNumbers) {
-        var TrackingNumber = $scope.TrackingNumbers[item];
-        for (var item2 in data) {
-          var data2 = data[item2];
-          if (data2.tracking_number === TrackingNumber.tracking_number) {
-            var diffQuantity = data2.quantity - TrackingNumber.quantity;
-            if (diffQuantity <= 0) {
-              $scope.nbExpired1 -= 1;
-            }
-          }
-        }
-      }
+    $q.all(vm.expirations.map(function (v) {
+      return DataService.getStockExpirations(v.range[0], v.range[1]);
+    }))
+    .then(function (results) {
+      // loop through expirations, counting the number of expiring items in
+      // the resultant arrays and attaching them as a count
+      results.forEach(function (ex, idx) {
+        vm.expirations[idx].count = ex.data.length;
+      });
     });
   }
-
-  // STOCK PAR PRODUITS
-  $http.get('/getStockEntry/').
-  success(function (data) {
-    $scope.enterStocks = data;
-  });
-
-  $http.get('/getStockConsumption/').
-  success(function (data) {
-    var stocksOut = 0,
-        stocksIn = 0;
-
-
-    for (var item in $scope.enterStocks) {
-      var stock = $scope.enterStocks[item];
-      for (var item2 in data) {
-        var data2 = data[item2],
-            diff;
-        if (data2.inventory_uuid === stock.inventory_uuid) {
-          diff = stock.quantity - data2.quantity;
-          if (diff === 0) {
-            stocksOut++;
-          } else if (diff > 0) {
-            stocksIn++;
-          }
-        }
-      }
-    }
-    $scope.stocksOut = stocksOut;
-    $scope.stocksIn = stocksIn;
-    $scope.OutStocks = data;
-  });
 }

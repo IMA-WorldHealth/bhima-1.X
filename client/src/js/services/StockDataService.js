@@ -8,8 +8,10 @@ function StockDataService($http) {
 
   service.getDepots             = getDepots;
   service.getConsumption        = getConsumption;
-  service.getRecentDonations    = getRecentDonations;
-  service.getStockAlerts        = getStockAlerts;
+  service.getAverageConsumption = getAverageConsumption;
+  service.getDonations          = getDonations;
+  service.getStockStatus        = getStockStatus;
+  service.getStockExpirations   = getStockExpirations;
 
   /* ------------------------------------------------------------------------ */
 
@@ -19,23 +21,31 @@ function StockDataService($http) {
   }
 
   function getConsumption() {
-    return $http.get('/inventory/consumption');
+    return $http.get('/inventory/consumption?detailed=1');
   }
 
-  function getStockAlerts() {
-    return $http.get('/inventory/alerts');
+  function getAverageConsumption() {
+    return $http.get('/inventory/consumption?detailed=1&average=1');
   }
 
-  function getExpirations() {
-    return $http.get('/inventory/expirations');
+  function getStockStatus() {
+    return $http.get('/inventory/status');
   }
 
   function getLeadTimes() {
     return $http.get('/inventory/leadtimes');
   }
 
-  // TODO -- implement server-side controller for this
-  function getRecentDonations(limit) {
-    return $http.get('/inventory/donations?limt=' + limit);
+  function getStockExpirations(start, end) {
+    var url = '/inventory/expirations?' +
+      'start=' + start +
+      '&end=' + end;
+
+    return $http.get(url);
+  }
+
+  // TODO -- implement limit functionality
+  function getDonations(limit) {
+    return $http.get('/inventory/donations?limit=' + limit);
   }
 }

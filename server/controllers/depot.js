@@ -15,6 +15,7 @@ var db = require('../lib/db'),
 
 // expose routes
 exports.getDepots = getDepots;
+exports.getDepotsById = getDepotsById;
 exports.getDistributions = getDistributions;
 exports.getDistributionsById = getDistributionsById;
 exports.getAvailableLotsByInventoryId = getAvailableLotsByInventoryId;
@@ -39,6 +40,41 @@ function getDepots(req, res, next) {
   db.exec(sql, [req.session.enterprise.id])
   .then(function (rows) {
     res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
+}
+
+/**
+* GET /depots/:uuid
+* Fetches a depot by its uuid from the database
+*
+* @function getDepotsById
+*/
+function getDepotsById(req, res, next) {
+  'use strict';
+
+  var sql, 
+      uuid = req.params.uuid;
+
+  sql =
+    'SELECT d.uuid, d.reference, d.text, d.is_warehouse ' +
+    'FROM depot AS d ' +
+    'WHERE d.enterprise_id = ? AND d.uuid = ?;';
+
+  db.exec(sql, [req.session.enterprise.id, uuid])
+  .then(function (rows) {
+    
+    // make sure we find at least one depot
+    if (rows.length < 1) {
+      return res.status(404).json({
+        code : 'ERR_NO_DEPOT',
+        reason : 'No depot was found matching the uuid:' + uuid
+      });
+    }
+
+    // return the json
+    res.status(200).json(rows[0]);
   })
   .catch(next)
   .done();

@@ -176,11 +176,15 @@ exports.initialise = function (app) {
   app.get('/inventory/status', inventory.getInventoryStatus);
   app.get('/inventory/:uuid/status', inventory.getInventoryStatusById);
 
+  app.get('/inventory/donations', inventory.getInventoryDonations);
+  app.get('/inventory/:uuid/donations', inventory.getInventoryDonationsById);
+
   // TODO - donations
 
   /* Depot Management */
 
   app.get('/depots', depot.getDepots);
+  app.get('/depots/:uuid', depot.getDepotsById);
 
   app.get('/depots/:depotId/distributions', depot.getDistributions);
   app.get('/depots/:depotId/distributions/:uuid', depot.getDistributionsById);

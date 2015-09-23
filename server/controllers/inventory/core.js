@@ -129,8 +129,6 @@ function hasBoth(m, n) {
 * @param next ExpressJS's next function
 */
 function errorHandler(error, req, res, next) {
-  console.log('Called error!', error);
-
   if (error.hasOwnProperty('httpStatus')) {
     res.status(error.httpStatus).json(error);
   } else {
