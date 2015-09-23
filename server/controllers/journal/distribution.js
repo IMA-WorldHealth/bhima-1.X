@@ -186,13 +186,13 @@ function service(id, userId, details, cb) {
         'uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
         'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
         'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id, cc_id) ' +
-      'SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,  service.cost_center_id ' +
+      'SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, service.cost_center_id ' +
       'FROM service WHERE service.id = ?;';
 
       params = [
         uid, details.id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description, reference.cogs_account,
         0, reference.quantity * reference.unit_price, 0, reference.quantity * reference.unit_price,
-        details.currency_id, null, null, id, cfg.originId, reference.service_id
+        details.currency_id, null, null, id, cfg.originId, userId, reference.service_id
       ];
 
       return db.exec(sql, params);
