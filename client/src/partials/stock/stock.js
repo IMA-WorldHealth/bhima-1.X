@@ -2,11 +2,27 @@ angular.module('bhima.controllers')
 .controller('stock.main', MainStockController);
 
 MainStockController.$inject = [
-  '$scope', '$location', '$translate', '$window', 'validate', 'messenger',
-  'appcache', 'SessionService'
+  '$scope', '$location', '$translate', '$window', 'messenger',
+  'appcache', 'StockDataService'
 ];
 
-function MainStockController($scope, $location, $translate, $window, validate, messenger, AppCache, Session) {
+/**
+* Main Stock Controller
+*
+* This module is actually the main depot controller (we should rename it).  It
+* allows a user to choose a depot (persistent across sessions), and perform
+* actions relative to that selection.  It also provides a list of links to
+* other modules that contain depot-specific actions or reports.
+*
+* To add links to this module, consider the following flowchart:
+*   Action specific to a warehouse? - add to warehouseModules object
+*   Action shared between all pharmacies? - add to sharedModules object
+*   Report? - add to reports object
+*   Utility? - add to utilities oject
+*/
+function MainStockController($scope, $location, $translate, $window, messenger, AppCache, StockDataService) {
+  var vm = this; // TODO complete migration of the to 'controller as' syntax
+
   var config, dependencies = {};
   var session = $scope.session = {
     configured : false,
@@ -15,12 +31,10 @@ function MainStockController($scope, $location, $translate, $window, validate, m
 
   var cache = new AppCache('stock.in');
 
-  // load session variables
-  $scope.enterprise = Session.enterprise;
-
   config = $scope.config = {};
 
-  config.modules = [{
+  // these modules are shared between warehouses and regular pharmacies
+  config.sharedModules = [{
     key : 'STOCK.INTEGRATION.KEY',
     ico : 'glyphicon-th-large',
     link : '/depots/:uuid/integrations'
@@ -42,7 +56,9 @@ function MainStockController($scope, $location, $translate, $window, validate, m
     link : '/depots/:uuid/movements'
   }];
 
-  config.modules_warehouse = [{
+  // these will be concatenated with the config modules if the depot chosen is
+  // a warehouse, since they present warehouse-specific functionality
+  config.warehouseModules = [{
     key  : 'STOCK.ENTRY.KEY',
     ico  : 'glyphicon-import',
     link : '/stock/entry/start/:uuid'
@@ -52,6 +68,7 @@ function MainStockController($scope, $location, $translate, $window, validate, m
     link : '/stock/donation_management/:uuid'
   }];
 
+  // utility modules
   config.utilities = [{
     key  : 'DEPOT.DISTRIBUTION.PATIENTS',
     ico  : 'glyphicon-th-list',
@@ -88,42 +105,30 @@ function MainStockController($scope, $location, $translate, $window, validate, m
     link : '/stock/loss_record/:uuid'
   }];
 
-  dependencies.depots = {
-    required : true,
-    query : {
-      identifier : 'uuid',
-      tables : {
-        'depot' : {
-          columns : [ 'uuid', 'reference', 'text', 'is_warehouse']
-        }
-      }
-    }
-  };
-
-  // FIXME functions doing 100 things at once
   function initialise() {
-    dependencies.depots.query.where = ['depot.enterprise_id=' + $scope.enterprise.id];
-
-    validate.process(dependencies)
-    .then(loadDefaultDepot);
+    StockDataService.getDepots()
+    .then(function (response) {
+      $scope.depots = response.data;
+      loadDefaultDepot();
+    })
+    .catch(handler);
   }
 
-  function loadDefaultDepot (model) {
-    angular.extend($scope, model);
-
+  // fetch the cached depot from appcache
+  function loadDefaultDepot() {
     cache.fetch('depot')
     .then(function (depot) {
       if (depot) {
 
-        var validDepot = model.depots.get(depot.uuid);
-
-        if (!validDepot) {
+        if (!depot) {
           messenger.danger($translate.instant('DEPOT.NOT_FOUND'), 8000);
           cache.remove('depot', depot);
           session.configure = true;
           return;
         }
+
         $scope.depot = depot;
+
         session.configured = true;
 
         warehouseModules();
@@ -132,26 +137,24 @@ function MainStockController($scope, $location, $translate, $window, validate, m
         session.configure = true;
       }
     })
-    .catch(error);
+    .catch(handler);
   }
 
-  function startup (models) {
-    angular.extend($scope, models);
-  }
-
-  function error (err) {
+  function handler(err) {
     messenger.danger(JSON.stringify(err));
   }
 
-  function warehouseModules(){
-    if($scope.depot && $scope.depot.is_warehouse) {
-      config.modules = config.modules_warehouse.concat(config.modules);
+  // load in warehouse modules, if appropriate.  Otherwise, just load
+  // the shared modules
+  function warehouseModules() {
+    if ($scope.depot && $scope.depot.is_warehouse) {
+      config.modules = config.warehouseModules.concat(config.sharedModules);
+    } else {
+      config.modules = config.sharedModules;
     }
   }
 
-  // better version of load path, that allows uuid to be in arbitrary
-  // places.
-  // TODO - standardize path loading
+  // better version of load path, that allows uuid to be in arbitrary places.
   $scope.loadPath = function (defn) {
     var path = defn.link.replace(':uuid', $scope.depot.uuid);
     $location.path(path);
@@ -171,7 +174,7 @@ function MainStockController($scope, $location, $translate, $window, validate, m
 
   $scope.reconfigure = function () {
     var verifyConfigure =
-      confirm('Are you sure you want to change the depot for Stock Management? The current depot is \'' + $scope.depot.text + '\'');
+          confirm('Are you sure you want to change the depot for Stock Management? The current depot is \'' + $scope.depot.text + '\'');
 
     if (!verifyConfigure) { return; }
 

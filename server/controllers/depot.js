@@ -14,9 +14,35 @@ var db = require('../lib/db'),
     Store = require('../lib/store');
 
 // expose routes
+exports.getDepots = getDepots;
 exports.getDistributions = getDistributions;
 exports.getDistributionsById = getDistributionsById;
 exports.getAvailableLotsByInventoryId = getAvailableLotsByInventoryId;
+
+/**
+* GET /depots
+* Fetches all depots in the database
+*
+* @function getDepots
+*/
+function getDepots(req, res, next) {
+  'use strict';
+
+  var sql;
+
+  // TODO - should be filtered by enterprise.
+  sql =
+    'SELECT d.uuid, d.reference, d.text, d.is_warehouse ' +
+    'FROM depot AS d ' +
+    'WHERE d.enterprise_id = ?;';
+
+  db.exec(sql, [req.session.enterprise.id])
+  .then(function (rows) {
+    res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
+}
 
 /**
 * GET /depots/:uuid/distributions
@@ -217,9 +243,11 @@ function getAvailableLotsByInventoryId(req, res, next) {
   .done();
 }
 
-/*
+/**
+ 
 // TODO this is old code, which may still be valuable!  We should try
-// to recoup some of this code in the futuer.
+// to recoup some of this code in the future.
+
 module.exports = function () {
   'use strict';
 

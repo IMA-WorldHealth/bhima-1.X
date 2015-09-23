@@ -267,7 +267,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/receipts/receipts.html'
   })
   .when('/credit_note/:invoiceId?/', {
-    controller: 'creditNote',
+    controller: 'CreditNoteController as NoteCtrl',
     templateUrl: 'partials/credit_note/credit_note.html'
   })
   .when('/cash_discard/:receiptId?/', {
