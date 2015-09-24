@@ -263,7 +263,6 @@ INSERT INTO `transaction_type` (`service_txt`)
 VALUES ('group_invoice');
 
 
-<<<<<<< HEAD
 -- Alter cost center, service
 -- Date: 2015-09-22
 -- By: Bruce M.
@@ -273,7 +272,6 @@ DROP FOREIGN KEY  `cost_center_ibfk_1` ;
 
 ALTER TABLE  `service` 
 DROP FOREIGN KEY  `service_ibfk_1` ;
-=======
 --
 -- Dedrick Kitamuka
 -- 22/09/2015
@@ -282,4 +280,3 @@ DROP FOREIGN KEY  `service_ibfk_1` ;
 
 INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `has_children`, `url`, `path`)
 VALUES (120, 'Rapport situation group debiteur', 'TREE.DEBITOR_GROUP_REPORT', 'pour voir le rapport pdf detaille de group de debiteur', 10, 0, '/partials/reports/debitor_group_report', '/reports/debitor_group_report/');
->>>>>>> Structuring and Starting debitor group
