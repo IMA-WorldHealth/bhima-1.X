@@ -865,7 +865,8 @@
    "LANGUAGE" : "Language",
    "INVOLVE_JOURNAL" : "Involve journal",
    "NOTSOLD_ONLY" : "Show unsold bill only",
-   "DEBITOR_GROUP" : "Debitor Group"
+   "DEBITOR_GROUP" : "Debitor Group",
+   "DOC_SUCCES"   : "Document Build Success - Open Document"
 },
 "DEPOT": {
    "ADD"             : "Add a Store",
