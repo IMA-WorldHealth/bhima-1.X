@@ -345,9 +345,10 @@ angular.module('bhima.controllers')
       return [year, month, day].join('-');
     }
 
-
+    // filter dataview
     function filter(item, args) {
-      var value;
+      var value,
+          re = args.re;
 
       // if there is no filter, let everything through
       if (!$scope.filter.by.field) {  return true; }
@@ -361,12 +362,9 @@ angular.module('bhima.controllers')
         return p === args.param;
       }
 
-      // if matches regex, let it through
-      if (String(value).toLowerCase().match(args.param)) {
-        return true;
-      }
 
-      return false;
+      // if matches regex, let it through
+      return re.test(String(value));
     }
 
     $scope.updateFilter = function updateFilter () {
@@ -374,7 +372,8 @@ angular.module('bhima.controllers')
       if (!$scope.filter.param) { return; }
       if (!$scope.filter.by) { return; }
       dataview.setFilterArgs({
-        param : $scope.filter.param
+        param : $scope.filter.param,
+        re    : new RegExp($scope.filter.param, 'i') // 'i' for ignore case
       });
       dataview.refresh();
     };

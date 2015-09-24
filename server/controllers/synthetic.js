@@ -94,7 +94,7 @@ function ccc (project_id, request, callback){
     ' `cost_center` ON `posting_journal`.`cc_id` = `cost_center`.`id` WHERE `posting_journal`.`cc_id`=' + sanitize.escape(request.cc_id) + ids_conditions_p +
     ' ) UNION ALL (SELECT `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`project_id` FROM `general_ledger` LEFT JOIN' +
     ' `cost_center` ON `general_ledger`.`cc_id` = `cost_center`.`id` WHERE `general_ledger`.`cc_id`=' + sanitize.escape(request.cc_id) + ids_conditions_g +
-    ' )) as `t` JOIN `account` as `c` ON `t`.`account_id`=`c`.`id` WHERE `t`.`project_id`=' + sanitize.escape(project_id) + ' GROUP BY `t`.`account_id`';
+    ' )) as `t` JOIN `account` as `c` ON `t`.`account_id`=`c`.`id` GROUP BY `t`.`account_id`';
 
   db.execute(sql, function(err, ans){
     if (err) { return callback(err); }
@@ -116,7 +116,7 @@ function ccc_periodic (project_id, request, callback){
     ' `cost_center` ON `posting_journal`.`cc_id` = `cost_center`.`id` WHERE (`posting_journal`.`trans_date` BETWEEN '+sanitize.escape(request.start)+' AND '+sanitize.escape(request.end)+') AND `posting_journal`.`cc_id`=' + sanitize.escape(request.cc_id) + ids_conditions_p +
     ' ) UNION ALL (SELECT `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`project_id` FROM `general_ledger` LEFT JOIN' +
     ' `cost_center` ON `general_ledger`.`cc_id` = `cost_center`.`id` WHERE  (`general_ledger`.`trans_date` BETWEEN '+sanitize.escape(request.start)+' AND '+sanitize.escape(request.end)+') AND `general_ledger`.`cc_id`=' + sanitize.escape(request.cc_id) + ids_conditions_g +
-    ' )) as `t` JOIN `account` as `c` ON `t`.`account_id`=`c`.`id` WHERE `t`.`project_id`=' + sanitize.escape(project_id) + ' GROUP BY `t`.`account_id`';
+    ' )) as `t` JOIN `account` as `c` ON `t`.`account_id`=`c`.`id` GROUP BY `t`.`account_id`';
 
   db.execute(sql, function(err, ans){
     if (err) { return callback(err); }
@@ -139,7 +139,7 @@ function pcv (project_id, request, callback){
     ' `profit_center` ON `posting_journal`.`pc_id` = `profit_center`.`id` WHERE `posting_journal`.`pc_id`=' + sanitize.escape(request.pc_id) + ids_conditions_p +
     ' ) UNION ALL (SELECT `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`project_id` FROM `general_ledger` LEFT JOIN' +
     ' `profit_center` ON `general_ledger`.`pc_id` = `profit_center`.`id` WHERE `general_ledger`.`pc_id`=' + sanitize.escape(request.pc_id) + ids_conditions_g +
-    ' )) as `t` JOIN `account` as `c` ON `t`.`account_id`=`c`.`id` WHERE `t`.`project_id`=' + sanitize.escape(project_id) + ' GROUP BY `t`.`account_id`';
+    ' )) as `t` JOIN `account` as `c` ON `t`.`account_id`=`c`.`id` GROUP BY `t`.`account_id`';
 
   db.execute(sql, function(err, ans){
     if (err) { return callback(err); }
@@ -162,7 +162,7 @@ function pcv_periodic (project_id, request, callback){
     ' `profit_center` ON `posting_journal`.`pc_id` = `profit_center`.`id` WHERE (`posting_journal`.`trans_date` BETWEEN '+sanitize.escape(request.start)+' AND '+sanitize.escape(request.end)+') AND `posting_journal`.`pc_id`=' + sanitize.escape(request.pc_id) + ids_conditions_p +
     ' ) UNION ALL (SELECT `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`project_id` FROM `general_ledger` LEFT JOIN' +
     ' `profit_center` ON `general_ledger`.`pc_id` = `profit_center`.`id` WHERE (`general_ledger`.`trans_date` BETWEEN '+sanitize.escape(request.start)+' AND '+sanitize.escape(request.end)+') AND `general_ledger`.`pc_id`=' + sanitize.escape(request.pc_id) + ids_conditions_g +
-    ' )) as `t` JOIN `account` as `c` ON `t`.`account_id`=`c`.`id` WHERE `t`.`project_id`=' + sanitize.escape(project_id) + ' GROUP BY `t`.`account_id`';
+    ' )) as `t` JOIN `account` as `c` ON `t`.`account_id`=`c`.`id` GROUP BY `t`.`account_id`';
 
   db.execute(sql, function(err, ans){
     if (err) { return callback(err); }
