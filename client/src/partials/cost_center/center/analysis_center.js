@@ -6,7 +6,8 @@ angular.module('bhima.controllers')
   'messenger',
   'validate',
   '$translate',
-  function ($scope, connect, appstate, messenger, validate, $translate) {
+  'SessionService',
+  function ($scope, connect, appstate, messenger, validate, $translate, SessionService) {
 
     var dependencies = {};
 
@@ -14,18 +15,21 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           'cost_center' : {
-            columns : ['id', 'text', 'note', 'is_principal', 'project_id']
-          },
-          'project' : {
-            columns :['abbr']
+            columns : ['id', 'text', 'note', 'is_principal']
           }
-        },
-        join : ['cost_center.project_id=project.id']
+        }
       }
     };
 
     $scope.register = {};
     $scope.selected = {};
+
+    startup();
+
+    function startup() {
+      $scope.enterprise = SessionService.enterprise;
+      validate.process(dependencies).then(init);
+    }
 
     function init(model) {
       $scope.model = model;
@@ -38,15 +42,13 @@ angular.module('bhima.controllers')
     }
 
     function writeCenter() {
-      return connect.basicPut('cost_center', connect.clean($scope.register));
+      return connect.post('cost_center', connect.clean($scope.register));
     }
 
     function saveRegistration() {
-      $scope.register.project_id = $scope.project.id;
       $scope.register.is_principal = ($scope.register.is_principal)? 1 : 0;
       writeCenter()
       .then(function() {
-        // FIXME just add employee to model
         validate.refresh(dependencies, ['cost_centers']).then(function (model) {
           angular.extend($scope, model);
         });
@@ -96,7 +98,6 @@ angular.module('bhima.controllers')
       delete $scope.selected.abbr;
       updateCostCenter()
       .then(function () {
-        // FIXME just add employee to model
         $scope.model.cost_centers.put($scope.selected);
         messenger.success($translate.instant('ANALYSIS_CENTER.UPDATE_SUCCESS_MESSAGE'));
       })
@@ -106,18 +107,12 @@ angular.module('bhima.controllers')
     }
 
     function removeCostcenter() {
-      return connect.basicDelete('cost_center', [$scope.selected.id], 'id');
+      return connect.delete('cost_center', 'id', [$scope.selected.id]);
     }
 
     function updateCostCenter() {
-      return connect.basicPost('cost_center', [connect.clean($scope.selected)], ['id']);
+      return connect.put('cost_center', [connect.clean($scope.selected)], ['id']);
     }
-
-    appstate.register('project', function (project) {
-      $scope.project = project;
-      dependencies.cost_centers.query.where = ['cost_center.project_id='+project.id];
-      validate.process(dependencies).then(init);
-    });
 
     $scope.setAction = setAction;
     $scope.saveRegistration = saveRegistration;
