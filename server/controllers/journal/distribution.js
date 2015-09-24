@@ -81,6 +81,8 @@ function patient(id, userId, cb) {
   .then(function () {
     queries = references.map(function (reference) {
       var params, uid = uuid();
+      
+      // generate a new uuid and store for later error correction
       ids.push(uid);
 
       var sql =

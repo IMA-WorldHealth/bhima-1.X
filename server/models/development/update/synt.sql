@@ -274,3 +274,13 @@ UPDATE `unit` SET path="/stock/dashboard", url = "/stock/dashboard" WHERE id = 8
 -- by: jniles
 DROP TABLE consumption_reversing;
 ALTER TABLE consumption ADD COLUMN `canceled` BOOLEAN NOT NULL DEFAULT 0;
+
+-- Alter cost center, service
+-- Date: 2015-09-22
+-- By: Bruce M.
+
+ALTER TABLE  `cost_center` 
+DROP FOREIGN KEY  `cost_center_ibfk_1` ;
+
+ALTER TABLE  `service` 
+DROP FOREIGN KEY  `service_ibfk_1` ;
