@@ -46,6 +46,18 @@
 		"ENTERPRISE" : "Entreprise",
 		"DEBIT" : "Debit",
 		"CREDIT" : "Credit",
-		"DATE" : "Date"
+		"DATE" : "Date",		
+		"SALE_NUMBER" : "Numero Vente",
+		"PATIENT" : "Patient",
+		"BILL_DATE" : "Date Facturation" ,
+		"AMOUNT_BILLED" : "Montant Facture",
+		"AMOUNT_PAYED" : "Montant Paye",
+		"DIFFERENCE" : "Difference",
+		"TRANS_NUMBER" : "Numero Transaction",
+		"TOTAL_BILLED" : "Total Facture",
+		"TOTAL_PAYED" : "Total Paye",
+		"TOTAL_DIFFERENCE" : "Solde",
+		"BOX" : "BP",
+		"TEL" : "Tel"
 	}
 }
