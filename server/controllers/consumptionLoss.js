@@ -17,7 +17,6 @@ exports.execute = function (req, res, next) {
 };
 
 function initialiseConsumption(data, userId, callback) {
-
   return writeMainConsumption(data.main_consumptions)
     .then(function () {
       return writeLossConsumption(data.loss_consumptions);
@@ -25,10 +24,9 @@ function initialiseConsumption(data, userId, callback) {
     .then(function () {
       return writeToJournal(data.main_consumptions[0].document_id, userId, data.details);
     })
-    .then(function(){
+    .then(function () {
       var res = {};
       res.docId = data.main_consumptions[0].document_id;
-      console.log('res :::', res);
       callback(null, res);
     })
     .catch(function (err) {
