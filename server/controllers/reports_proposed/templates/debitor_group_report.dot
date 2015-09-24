@@ -5,20 +5,19 @@
 </head>
 
 <body>
+  <section>
+    <div class="header_left">
+        <span>{{=it.enterprise}} : {{=it.enterpriseName}}</span><br/>
+        <span>{{=it.tel}} : {{=it.phone}}</span><br/>
+        <span>{{=it.box}} : {{=it.bp}}</span><br/>
+    </div>
 
-    <section>
-      <div class="header_left">
-          <span>{{=it.enterprise}} : {{=it.enterpriseName}}</span><br/>
-          <span>{{=it.tel}} : {{=it.phone}}</span><br/>
-          <span>{{=it.box}} : {{=it.bp}}</span><br/>
-      </div>
-
-      <div class="header_center">
-        <span>{{=it.title}}</span><br/>
-        <span>{{=it.debitorGroupName}}</span><br/>
-        <span>{{=it.reportDate}}</span><br/>
-      </div>
-    </section>
+    <div class="header_center">
+      <span>{{=it.title}}</span><br/>
+      <span>{{=it.debitorGroupName}}</span><br/>
+      <span>{{=it.reportDate}}</span><br/>
+    </div>
+  </section>
 
   <section>
     <table class="balance" border="1">
