@@ -3,7 +3,7 @@
 var expect = require('chai').expect,
     guid      = require('../lib/guid');
 
-describe('guild', function () {
+describe('guid', function () {
   'use strict';
 
   describe('#guid()', function () {
