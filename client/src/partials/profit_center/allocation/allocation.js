@@ -5,7 +5,8 @@ angular.module('bhima.controllers')
   'connect',
   'appstate',
   'validate',
-  function ($scope, $q, connect, appstate,validate) {
+  'SessionService',
+  function ($scope, $q, connect, appstate,validate, SessionService) {
 
     var dependencies = {},
         configuration = $scope.configuration = {};
@@ -15,14 +16,18 @@ angular.module('bhima.controllers')
         tables : {
           'profit_center' : {
             columns : ['id', 'text', 'note']
-          },
-          'project' : {
-            columns :['name']
           }
-        },
-        join : ['profit_center.project_id=project.id']
+        }
       }
     };
+
+    startup();
+
+    function startup() {
+      $scope.project = SessionService.project;
+      validate.process(dependencies)
+      .then(init);
+    }
 
     function init(models) {
       angular.extend($scope, models);
@@ -126,12 +131,6 @@ angular.module('bhima.controllers')
       if (!$scope.associatedAccounts.data.length) { return false; }
       return hasSelectedItems($scope.associatedAccounts.data);
     }
-
-    appstate.register('project', function (project) {
-      $scope.project = project;
-      validate.process(dependencies)
-      .then(init);
-    });
 
     $scope.checkAllAvailable = checkAllAvailable;
     $scope.checkAllAssociated = checkAllAssociated;

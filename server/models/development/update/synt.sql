@@ -261,3 +261,14 @@ WHERE `id`=200;
 
 INSERT INTO `transaction_type` (`service_txt`) 
 VALUES ('group_invoice');
+
+
+-- Alter cost center, service
+-- Date: 2015-09-22
+-- By: Bruce M.
+
+ALTER TABLE  `cost_center` 
+DROP FOREIGN KEY  `cost_center_ibfk_1` ;
+
+ALTER TABLE  `service` 
+DROP FOREIGN KEY  `service_ibfk_1` ;

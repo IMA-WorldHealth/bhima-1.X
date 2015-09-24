@@ -7,12 +7,12 @@ angular.module('bhima.controllers')
   'messenger',
   'connect',
   'appstate',
-  function ($scope, $q, $translate, validate, messenger, connect, appstate) {
-    var dependencies = {}, cost_center = {}, service ={};
+  'SessionService',
+  function ($scope, $q, $translate, validate, messenger, connect, appstate, SessionService) {
+    var dependencies = {}, cost_center = {}, service ={},
+        configuration = $scope.configuration = {};
+
     $scope.choosen = {};
-
-    var configuration = $scope.configuration = {};
-
 
     dependencies.projects = {
       query : {
@@ -55,6 +55,15 @@ angular.module('bhima.controllers')
     dependencies.profit_centers = {
       query : '/available_profit_center/'
     };
+
+    startup();
+
+    function startup() {
+      $scope.project = SessionService.project;
+      validate.process(dependencies)
+      .then(init)
+      .catch(error);
+    }
 
     function init (model) {
       $scope.model = model;
@@ -151,7 +160,6 @@ angular.module('bhima.controllers')
 
 
     function handleResultCost(value) {
-      console.log(value);
       $scope.choosen.charge = value.data.cost;
       return $q.when();
     }
@@ -165,48 +173,14 @@ angular.module('bhima.controllers')
       return connect.req('/cost/' + $scope.project.id + '/' + ccId);
     }
 
-    function removeService() {
-      return connect.basicDelete('service', [$scope.choosen.id], 'id');
+    function error(err) {
+      console.log('Error', err);
     }
-
-    function remove(service) {
-      $scope.choosen = angular.copy(service);
-      removeService()
-      .then(function () {
-        $scope.model.services.remove($scope.choosen.id);
-        messenger.success($translate.instant('SERVICE.REMOVE_SUCCESS_MESSAGE'));
-      })
-      .catch(function () {
-        messenger.danger($translate.instant('SERVICE.REMOVE_FAIL_MESSAGE'));
-      });
-    }
-
-    function filterCenters (id) {
-
-      configuration.cost_centers = $scope.model.cost_centers.data.filter(function (item) {
-        return item.project_id === id;
-      });
-
-      configuration.profit_centers = $scope.model.profit_centers.data.filter(function (item) {
-        return item.project_id === id;
-      });
-    }
-
-    appstate.register('project', function (project) {
-      $scope.project = project;
-      validate.process(dependencies)
-      .then(init)
-      .catch(function (err) {
-        console.log('Error', err);
-      });
-    });
 
     $scope.save = save;
     $scope.service = service;
     $scope.cost_center = cost_center;
     $scope.setAction = setAction;
     $scope.edit = edit;
-    $scope.remove = remove;
-    $scope.filterCenters = filterCenters;
   }
 ]);

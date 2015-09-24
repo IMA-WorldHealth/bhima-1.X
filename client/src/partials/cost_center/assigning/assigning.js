@@ -8,21 +8,18 @@ angular.module('bhima.controllers')
   'validate',
   'util',
   '$translate',
-  function ($scope, $q, connect, appstate, messenger, validate, util, $translate) {
-    var dependencies = {};
-    var config = $scope.configuration = {};
+  'SessionService',
+  function ($scope, $q, connect, appstate, messenger, validate, util, $translate, SessionService) {
+    var dependencies = {},
+        config = $scope.configuration = {};
 
     dependencies.aux_cost_centers = {
       query : {
         tables : {
           'cost_center' : {
             columns : ['id', 'text', 'note']
-          },
-          'project' : {
-            columns :['name']
           }
         },
-        join : ['cost_center.project_id=project.id'],
         where : ['cost_center.is_principal=0']
       }
     };
@@ -33,14 +30,19 @@ angular.module('bhima.controllers')
           'cost_center' : {
             columns : ['id', 'text', 'note']
           },
-          'project' : {
-            columns :['name']
-          }
         },
-        join : ['cost_center.project_id=project.id'],
         where : ['cost_center.is_principal=1']
       }
     };
+
+    startup();
+
+    function startup() {
+      $scope.project = SessionService.project;
+      validate.process(dependencies)
+      .then(init)
+      .catch(error);
+    }
 
     function init(model) {
       $scope.model = model;
@@ -87,9 +89,7 @@ angular.module('bhima.controllers')
         setAction('suivant');
         calculate();
       })
-      .catch(function (err) {
-        console.log('error', err);
-      });
+      .catch(error);
     }
 
     function processPrincipalsCenters() {
@@ -105,7 +105,6 @@ angular.module('bhima.controllers')
 
     function handleResult(cout) {      
       $scope.selected_aux_cost_center.cost = cout.data.cost;
-      console.log('le resulat recu est :::', cout);
       return $q.when();
     }
 
@@ -192,13 +191,9 @@ angular.module('bhima.controllers')
       messenger.danger($translate.instant('SERVICE.INSERT_FAIL_MESSAGE'));
     }
 
-    appstate.register('project', function (project) {
-      $scope.project = project;
-      validate.process(dependencies)
-      .then(init, function (err) {
-        console.log('erreur', err);
-      });
-    });
+    function error(err) {
+      console.log('Error: ', err);
+    }
 
     $scope.performChange = performChange;
     $scope.checkAll = checkAll;
