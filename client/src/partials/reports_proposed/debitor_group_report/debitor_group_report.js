@@ -40,8 +40,6 @@ var configureDebitorGroupReport = function ($http, $translate, validate, reportC
   function generateDocument() {
     var path = serverUtilityPath;
     var configurationObject = {};
-
-    // Temporarily set configuration options - This shouldn't be manually compiled
     configurationObject.language = configuration.language.selected.value;
     configurationObject.enterprise = configuration.enterprise;
     configurationObject.project = configuration.project;
@@ -55,6 +53,7 @@ var configureDebitorGroupReport = function ($http, $translate, validate, reportC
     $http.post(path, configurationObject)
     .success(function (result) {
       // Expose generated document path to template
+      console.log('voici le result', result);
       vm.building = false;
       vm.generatedDocumentPath = result;
     })
