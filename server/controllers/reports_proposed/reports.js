@@ -79,6 +79,7 @@ exports.build = function (req, res, next) {
 
   var handler = documentHandler[target]; //handler will contain a object with two property, template for structure and context for data
   var options = req.body;
+  options.path = path.join(__dirname);
 
   console.log('on est la ', options);
 

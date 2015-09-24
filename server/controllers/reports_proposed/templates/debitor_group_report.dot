@@ -5,9 +5,61 @@
 </head>
 
 <body>
-  <section id="title" class="center">
-      <h3>{{=it.title}}</h4>
-      <h4>{{=it.enterprise}} {{=it.enterpriseName}}</h5>
-      <h5>{{=it.date}} {{=it.reportDate}}</h5>
+
+    <section>
+      <div class="header_left">
+          <span>{{=it.enterprise}} : {{=it.enterpriseName}}</span><br/>
+          <span>{{=it.tel}} : {{=it.phone}}</span><br/>
+          <span>{{=it.box}} : {{=it.bp}}</span><br/>
+      </div>
+
+      <div class="header_center">
+        <span>{{=it.title}}</span><br/>
+        <span>{{=it.debitorGroupName}}</span><br/>
+        <span>{{=it.reportDate}}</span><br/>
+      </div>
+    </section>
+
+  <section>
+    <table class="balance" border="1">
+      <thead>
+        <tr>
+          <th>{{=it.saleNumber}}</th>
+          <th>{{=it.patient}}</th>
+          <th>{{=it.dateBill}}</th>
+          <th>{{=it.amountBilled}}</th>
+          <th>{{=it.amountPayed}}</th>
+          <th>{{=it.difference}}</th>
+          <th>{{=it.transNumber}}</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {{~it.data :value : index}}
+          <tr class="contenu">
+            <td>{{=value.saleNumber}}</td>
+            <td>{{=value.patientName}}</td>
+            <td>{{=value.invoice_date}}</td>
+            <td>{{=value.cost}}</td>
+            <td>{{=value.credit}}</td>
+            <td>{{=value.difference}}</td>
+            <td>{{=value.trans_id}}</td>
+          </tr>
+        {{~}}
+      </tbody>
+    </table>    
+
+    <table border="1">
+      <tbody>
+        <tr>
+          <td>{{=it.totalBilled}}</td>
+          <td>{{=it.somBilled}}</td>
+          <td>{{=it.totalPayed}}</td>
+          <td>{{=it.somPayed}}</td>
+          <td>{{=it.totalDifference}}</td>
+          <td>{{=it.somDifference}}</td>
+        </tr>
+      </tbody>
+    </table>
   </section>
 </body>
