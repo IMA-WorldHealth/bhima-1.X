@@ -272,6 +272,7 @@ DROP FOREIGN KEY  `cost_center_ibfk_1` ;
 
 ALTER TABLE  `service` 
 DROP FOREIGN KEY  `service_ibfk_1` ;
+
 --
 -- Dedrick Kitamuka
 -- 22/09/2015
