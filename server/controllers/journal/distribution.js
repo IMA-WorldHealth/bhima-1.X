@@ -297,7 +297,7 @@ function loss(id, userId, details, cb) {
     cfg.transId = transId;
     cfg.description =  'LO/'+new Date().toISOString().slice(0, 10).toString();
 
-    references.map(function (reference) {
+    queries = references.map(function (reference) {
       var params, uid = uuid();
       ids.push(uid);
 
@@ -307,7 +307,7 @@ function loss(id, userId, details, cb) {
           'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
           'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
         'SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ' +
-        'FROM inventory_group WHERE inventory_group.uuid = ?;';
+        'FROM inventory_group WHERE inventory_group.uuid = ?';
 
       params = [
         uid, details.id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description,
@@ -330,7 +330,7 @@ function loss(id, userId, details, cb) {
           'uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
           'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
           'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
-        'SELECT ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? ' +
+        'SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ' +
         'FROM inventory_group ' +
         'WHERE inventory_group.uuid = ?';
 
