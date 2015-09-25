@@ -57,6 +57,7 @@ var documentHandler = {
 initialise();
 
 exports.serve = function (req, res, next) {
+  
   var target = req.params.target;
   var options = {root : writePath};
 
@@ -79,9 +80,7 @@ exports.build = function (req, res, next) {
 
   var handler = documentHandler[target]; //handler will contain a object with two property, template for structure and context for data
   var options = req.body;
-  options.path = path.join(__dirname);
-
-  console.log('on est la ', options);
+  options.stylePath = path.join(__dirname);
 
   // Module does not support the requested document
   if (!handler) {

@@ -2875,6 +2875,7 @@
       "TITLE"   : "Tableau de bord"      
    },
    "DEBTOR_AGING"              : "Rapport Débiteur",
+   "DEBITOR_GROUP_REPORT"      : "Etat Financier Group Debiteur",
    "DEBTOR_GRP"                : "Groupe Débiteur",
    "DEPOT"                     : "Dépôt",
    "DONATION_CONFIRMATION"     : "Confirmation Donation",

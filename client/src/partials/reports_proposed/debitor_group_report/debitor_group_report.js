@@ -1,4 +1,4 @@
-var configureDebitorGroupReport = function ($http, $translate, validate, reportConfigService, messenger) {
+var DebtorGroupReportController = function ($http, $translate, validate, reportConfigService, messenger) {
 
   var vm = this,
   generatedDocumentPath = null,
@@ -51,15 +51,13 @@ var configureDebitorGroupReport = function ($http, $translate, validate, reportC
     vm.building = true;
 
     $http.post(path, configurationObject)
-    .success(function (result) {
-      // Expose generated document path to template
-      console.log('voici le result', result);
-      vm.building = false;
-      vm.generatedDocumentPath = result;
+    .then(function (result) {
+      console.log(result);
+      vm.generatedDocumentPath = result.data;
     })
-    .error(function (code) {
+    .catch(function (err) {
       vm.building = false;
-      messenger.danger('error' + code);
+      messenger.danger('error' + err);
     });
   }
 
@@ -72,5 +70,5 @@ var configureDebitorGroupReport = function ($http, $translate, validate, reportC
   vm.clearPath = clearPath;
 };
 
-configureDebitorGroupReport.$inject =['$http', '$translate', 'validate', 'reportConfigService', 'messenger'];
-angular.module('bhima.controllers').controller('configureDebitorGroupReport', configureDebitorGroupReport);
+DebtorGroupReportController.$inject =['$http', '$translate', 'validate', 'reportConfigService', 'messenger'];
+angular.module('bhima.controllers').controller('DebtorGroupReportController', DebtorGroupReportController);

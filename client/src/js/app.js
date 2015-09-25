@@ -720,7 +720,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/reports_proposed/bilan/bilan.html'
   })
   .when('/reports/debitor_group_report/', {
-    controller : 'configureDebitorGroupReport as configureDebitorGroupReportCtrl',
+    controller : 'DebtorGroupReportController as debtorGroupReportCtrl',
     templateUrl : 'partials/reports_proposed/debitor_group_report/debitor_group_report.html'
   })
   .when('/reports/result_account/', {
