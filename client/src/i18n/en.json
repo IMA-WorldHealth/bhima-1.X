@@ -2874,6 +2874,7 @@
    },   
    "DEBTOR_AGING"              : "Debtor Aging",
    "DEBTOR_GRP"                : "Debtor Group",
+   "DEBITOR_GROUP_REPORT"      : "Debtor Group Financial State",
    "DEPOT"                     : "Store",
    "DONATION_CONFIRMATION"     : "Donation Confirm",
    "DONATION_MANAGEMENT"       : "Donation Management",

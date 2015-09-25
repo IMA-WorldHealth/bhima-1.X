@@ -31,7 +31,7 @@ angular.module('bhima.controllers')
       .then(startup);
 
     $scope.delete = function (depot) {
-      connect.delete('depot','uuid', [depot.uuid])
+      connect.delete('depot','uuid', depot.uuid)
       .then(function () {
         $scope.depots.remove(depot.uuid);
         messenger.info($translate.instant('DEPOT.DELETE_SUCCESS'));
