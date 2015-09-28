@@ -866,7 +866,8 @@
    "INVOLVE_JOURNAL" : "Involve journal",
    "NOTSOLD_ONLY" : "Show unsold bill only",
    "DEBITOR_GROUP" : "Debitor Group",
-   "DOC_SUCCES"   : "Document Build Success - Open Document"
+   "DOC_SUCCES"   : "Document Build Success - Open Document",
+   "GENERATE_DOC"    : "Generate document"
 },
 "DEPOT": {
    "ADD"             : "Add a Store",

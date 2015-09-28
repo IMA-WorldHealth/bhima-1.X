@@ -42,22 +42,23 @@ var DebtorGroupReportController = function ($http, $translate, validate, reportC
     var configurationObject = {};
     configurationObject.language = configuration.language.selected.value;
     configurationObject.enterprise = configuration.enterprise;
-    configurationObject.project = configuration.project;
-    configurationObject.involveJournal = vm.involve_journal;
+    configurationObject.project = configuration.project;    
     configurationObject.dg = vm.debitorGroup.get(vm.debitor_group_uuid);
     configurationObject.unsoldOnly = vm.unsold_only;
+    configurationObject.involveJournal = vm.involve_journal;
 
     // Update state
     vm.building = true;
 
     $http.post(path, configurationObject)
     .then(function (result) {
-      console.log(result);
       vm.generatedDocumentPath = result.data;
     })
     .catch(function (err) {
-      vm.building = false;
       messenger.danger('error' + err);
+    }).
+    finally(function (){
+      vm.building = false;
     });
   }
 

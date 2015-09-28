@@ -866,7 +866,8 @@
    "INVOLVE_JOURNAL" : "Integrer le journal ",
    "NOTSOLD_ONLY"    : "Montrer seulement Les factures non Soldees",
    "DEBITOR_GROUP"   : "Groupe de Debiteur",
-   "DOC_SUCCES"      : "Document généré avec succès - Ouvrir le document"
+   "DOC_SUCCES"      : "Document généré avec succès - Ouvrir le document",
+   "GENERATE_DOC"    : "Generer document"
 },
 
 "DEPOT": {
