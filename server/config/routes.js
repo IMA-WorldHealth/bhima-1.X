@@ -190,6 +190,7 @@ exports.initialise = function (app) {
   app.get('/depots/:depotId/distributions/:uuid', depot.getDistributionsById);
 
   // get the lots of a particular inventory item in the depot
+  app.get('/depots/:depotId/inventory', depot.getAvailableLots);
   app.get('/depots/:depotId/inventory/:uuid', depot.getAvailableLotsByInventoryId);
 
   /* continuing on ... */
