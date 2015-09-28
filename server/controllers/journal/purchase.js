@@ -211,7 +211,7 @@ function confirmIndirectPurchase(id, userId, cb) {
  *
  */
 function indirectPurchase(id, userId, cb) {
-  'use strict';  
+  'use strict';
 
   var sql, reference, params, dayExchange, cfg = {};
 
@@ -429,17 +429,17 @@ function integration(id, userId, cb) {
     var queries = references.map(function (reference) {
       sql =
         'INSERT INTO posting_journal ('+
-          'uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+          'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
           'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
           'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) '+
-        'SELECT ?, ?, ?, ?, ?, ?, ?, inventory_group.stock_account, ?, ?, ?, ?, ?, ?, ?, ?, ?,' +
+        'SELECT ?, ?, ?, ?, ?, ?, ?, inventory_group.stock_account, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ' +
         'FROM inventory_group WHERE inventory_group.uuid IN (' +
           'SELECT inventory.group_uuid FROM inventory WHERE inventory.uuid = ?);';
 
       params = [
         uuid(), reference.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
         cfg.description, 0, reference.total, 0, reference.total, reference.currency_id,
-        reference.inventory_uuid, reference.uuid, cfg.originId, userId, reference.inventory_uuid
+        null, null, reference.uuid, cfg.originId, userId, reference.inventory_uuid
       ];
 
       return db.exec(sql, params);
@@ -453,14 +453,14 @@ function integration(id, userId, cb) {
           'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
           'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
           'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
-        'SELECT ?, ?, ?, ?, ?, ?, ?, inventory_group.cogs_account, ?,?,?,?,?,?,?,?,?,? ' +
+        'SELECT ?, ?, ?, ?, ?, ?, ?, inventory_group.cogs_account, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ' +
         'FROM inventory_group WHERE inventory_group.uuid  IN (' +
           'SELECT inventory.group_uuid FROM inventory WHERE inventory.uuid = ?);';
 
       params = [
         uuid(),reference.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description,
-        reference.total, 0, reference.total, 0, reference.currency_id, reference.inventory_uuid, null,
-        reference.uuid, cfg.originId, userId, reference.inventory_uuid
+        reference.total, 0, reference.total, 0, reference.currency_id, null, null, reference.uuid, cfg.originId,
+        userId, reference.inventory_uuid
       ];
 
       return db.exec(sql, params);
