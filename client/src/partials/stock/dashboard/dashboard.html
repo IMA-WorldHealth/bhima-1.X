@@ -151,7 +151,7 @@
             <tr>
               <td colspan="4" ng-if="StockDashCtrl.donations.length === 0"><loading-indicator></loading-indicator></td>
             </tr>
-            <tr ng-repeat="donation in StockDashCtrl.donations | limitTo:StockDashCtrl.limits.donations track by donation.label">
+            <tr ng-repeat="donation in StockDashCtrl.donations | limitTo:StockDashCtrl.limits.donations">
               <td>{{ donation.name }}</td>
               <td>{{ donation.date | date }}</td>
               <td>{{ donation.label }}</td>
