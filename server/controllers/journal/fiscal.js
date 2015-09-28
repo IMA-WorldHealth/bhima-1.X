@@ -3,7 +3,8 @@ var q         = require('q'),
     uuid      = require('../../lib/guid'),
     sanitize  = require('../../lib/sanitize'),
     validate  = require('../../lib/validate')(),
-    db        = require('../../lib/db');
+    db        = require('../../lib/db'),
+    util      = require('../../lib/util');
 
 exports.close = close;
 exports.create = create;
@@ -50,11 +51,11 @@ function close(id, user_id, data, cb) {
   function init() {
     cfg.user_id = user_id;
     cfg.project_id = 1; // HBB by default
-    transactionDate = cfg.isForClosing ? forcingDate : new Date();
-    return [
+    transactionDate = cfg.isForClosing ? util.toMysqlDate(forcingDate) : util.toMysqlDate();
+    return q.when([
       core.queries.origin('journal'),
       core.queries.period(transactionDate)
-    ];
+    ]);
   }
 
   init()
