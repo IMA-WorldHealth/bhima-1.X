@@ -40,7 +40,7 @@
     <!-- Found archives -->
     <div ng-if="ReportCtrl.archivesEmpty===false && ReportCtrl.state.suppressSuccessDisplay===false" class="alert alert-success alert-dismissible">
       <button ng-click="ReportCtrl.suppressSuccess()" style="line-height : 0.85;" class="close" type="button" aria-label="close"><span aria-hidden="true">&times;</span></button>
-      <i style="padding-right : 0.5em;" class="glyphicon glyphicon-ok"></i> <strong>Found report archives.</strong> Displaying <strong>{{ReportCtrl.archives.length}}</strong> found.
+      <i style="padding-right : 0.5em;" class="glyphicon glyphicon-ok"></i> Displaying <strong>{{ReportCtrl.archives.length}}</strong> archived reports.
     </div>
 
     <!-- TODO: Replace table with grid pending grid analysis (UI grid/ slick grid) -->

@@ -1,12 +1,24 @@
+/**
+ * @description 
+ *
+ * @returns 
+ *
+ * @todo Accounts are currently filtered and organised according to 6 being a expense 
+ * and 7 being income, this is hardcoded in this file. It should either be specified somewhere 
+ * or account types must be split into both income and expense
+ */
+
 var q       = require('q');
 var db      = require('../../../lib/db');
 var numeral = require('numeral');
 
 // TODO Derive from DB
-var incomeAccountId = 1;
+var incomeExpenseAccountId = 1;
 var balanceAccountId = 2;
 var titleAccountId = 3; 
-var expenseAccountId = 4;
+
+var expenseAccountConvention = '6';
+var incomeAccountConvention = '7';
 
 exports.compile = function (options) { 
   'use strict';
@@ -43,27 +55,32 @@ exports.compile = function (options) {
       'WHERE period_total.fiscal_year_id = ? ' +
       'GROUP BY period_total.account_id ' +
     ') AS totals ON totals.account_id = account.id ' +
-    'WHERE account.account_type_id IN (?, ?, ?);';
+    'WHERE account.account_type_id IN (?, ?);';
 
   
-  db.exec(sql, [options.fiscalYearId, incomeAccountId, titleAccountId, expenseAccountId])
+  db.exec(sql, [options.fiscalYearId, incomeExpenseAccountId, titleAccountId])
     .then(function (accounts) { 
       // console.log('income_expense build got', accounts);
+      console.log('[income_expense] Initial number of accounts in query: ', accounts.length);
 
       var accountTree = getChildren(accounts, ROOT_ACCOUNT_ID, 0);
+      
       
       // FIXME Extend object hack
       var incomeData = JSON.parse(JSON.stringify(accountTree));
       var expenseData = JSON.parse(JSON.stringify(accountTree));
       
+      console.log('[income_expense] Number of accounts after tree parsing: ', incomeData.length);
+      console.log('[income_expense] Number of accounts after tree parsing: ', expenseData.length);
+      
       // console.log('before filter', incomeData);
       
       // FIXME Lots of processing, very little querrying - this is what MySQL is foreh
-      // incomeData = filterAccounts(incomeData, expenseAccountId);
-      // incomeData = trimEmptyAccounts(incomeData);
+      incomeData = filterAccounts(incomeData, expenseAccountConvention);
+      incomeData = trimEmptyAccounts(incomeData);
 
-      // expenseData = filterAccounts(expenseData, incomeAccountId);
-      // expenseData = trimEmptyAccounts(expenseData);
+      expenseData = filterAccounts(expenseData, incomeAccountConvention);
+      expenseData = trimEmptyAccounts(expenseData);
       
       context.incomeData = incomeData;
       context.expenseData = expenseData; 
@@ -84,7 +101,8 @@ exports.compile = function (options) {
  */
 function getChildren(accounts, parentId, depth) {
   var children;
-
+  
+  console.log('getChildren [', accounts.length, parentId, depth, ']');
   // Base case: There are no child accounts
   // Return an empty array
   if (accounts.length === 0) { return []; }
@@ -98,21 +116,38 @@ function getChildren(accounts, parentId, depth) {
   // Recursively call get children on all child accounts
   // and attach them as childen of their parent account
   children.forEach(function (account) {
+    // console.log('children account', account.account_number);
     account.depth = depth;
-    account.children = getChildren(accounts, account.id, depth+1);
+    account.children = getChildren(accounts, account.account_number, depth+1);
   });
 
   return children;
 }
   
-function filterAccounts(accounts, filterType) { 
+function filterAccounts(accounts, excludeType) { 
+   
+  function typeFilter(account) {
+    var matchesFilterType = false;
+
+    // console.log('filtering on', account.account_number);
+    // console.log('number of children', account.children.length);
+
+    // var matchesFilterType = account.account_type_id === filterType;
+    
   
-  function typeFilter(account) { 
-    var matchesFilterType = account.account_type_id === filterType;
+    // console.log('verifying account', account.account_number, account.account_number[0], excludeType);
+    // console.log('filtering account', account);
+
+    if (account.account_number[0] === excludeType) { 
+      console.log(account.account_number[0], 'is equal to', excludeType, 'removing account.');
+      matchesFilterType = true;
+    }
+
 
     if (matchesFilterType) { 
       return null; 
     } else { 
+      
       if (account.children) account.children = account.children.filter(typeFilter);
       return account;
     }

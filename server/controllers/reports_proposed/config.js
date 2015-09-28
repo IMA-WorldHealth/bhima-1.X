@@ -16,7 +16,18 @@ var compact = {
   'margin-bottom' : '2mm'
 };
 
+var horizontal = { 
+  'page-size'     : 'A4', 
+  'orientation'   : 'Landscape', 
+  'margin-left'   : '4mm',
+  'margin-right'  : '4mm', 
+  'margin-top'    : '8mm', 
+  'margin-bottom' : '8mm'
+
+};
+
 module.exports = { 
   standard : standard, 
-  compact : compact
+  compact : compact,
+  horizontal : horizontal
 };

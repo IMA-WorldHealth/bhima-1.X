@@ -18,6 +18,10 @@ function incomeExpense($anchorScroll, $location, $modalInstance, $http, Store, M
   modal.state = state;
   modal.title = definition.title; 
   modal.options = options;
+  
+  // TODO Model orientation options 
+  modal.options.format = 'standard';
+
   console.log('controller init', definition);
   // Fetch required information (archive exists for option, available params etc.)
   // $q.all 
@@ -30,6 +34,8 @@ function incomeExpense($anchorScroll, $location, $modalInstance, $http, Store, M
   function submit() { 
     state.loading();
     
+    console.log('sending options', options);
+
     $http.post(generateUrl, options)
     .then(function (result) { 
       var uniqueResultIndex = 0;

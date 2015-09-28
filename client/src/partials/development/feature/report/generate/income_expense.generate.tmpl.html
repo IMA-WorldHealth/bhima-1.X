@@ -155,20 +155,25 @@
             <strong>Layout Configuration</strong>
           </div>
           <div class="panel-body">
-    
+        
+          {{income_expenseCtrl.options}}
           <div class="form-group">
             <label>Orientation</label>
 
             <div class="radio">
               <label>
-                <input type="radio" name="orientationOptions" id="portrait" value="portrait" checked>
+                <!-- <input ng-value="standard" ng-model="income_expenseCtrl.options.format" type="radio" name="orientationOptions" id="portrait" value="portrait"> -->
+                <!-- <input ng-value="standard" ng-model="income_expenseCtrl.options.format" type="radio" name="orientationOptions" id="format"> -->
+                <input type="radio" ng-model="income_expenseCtrl.options.format" value="standard">
                 Portrait
               </label>
             </div>
 
             <div class="radio">
               <label>
-                <input type="radio" name="orientationOptions" id="landscape" value="landscape">
+                <!-- <input ng-value="horizontal" ng-model="income_expenseCtrl.options.format" type="radio" name="orientationOptions" id="format" checked> -->
+                <!-- <input ng-value="horizontal" ng-model="income_expenseCtrl.options.format" type="radio" name="orientationOptions" id="landscape" value="landscape" checked> -->
+                <input type="radio" ng-model="income_expenseCtrl.options.format" value="horizontal">
                 Landscape
               </label>
             </div>

@@ -32,27 +32,27 @@
 
     <table class="income">
       <thead>
-        <tr>
-          <th colspan="2"></th>
+        <!--tr-->
+          <!--th colspan="2"></th-->
          
           <!-- Repeat through column configuration -->
-          <th colspan="3">Current Period</th>
-          <th colspan="3">Year to Date</th>
-        </tr>
+          <!--th colspan="3">Current Period</th-->
+          <!--th colspan="3">Year to Date</th-->
+        <!--/tr-->
         <tr class="totalRight">
           
           <td colspan="2"></td>
           
           <!-- Repeat through column configuration --> 
-          <td>Actual Jan 2015</td>
-          <td>Budget Jan 2015</td>
-          <td>Variance</td>
+          <td style="text-align : center;">2014</td>
+          <td style="text-align : center;">2015</td>
+          <td style="text-align : center;">Variance</td>
 
-          <td>Actual Jan 2015</td>
+          <!-- td>Actual Jan 2015</td>
           <td>Budget Jan 2015</td>
-          <td>Variance</td>
+          <td>Variance</td -->
 
-          <td>Annual Budget</td>
+          <!-- td>Annual Budget</td -->
       </thead>
       
       <tbody>
@@ -75,15 +75,15 @@
           <!-- Repeat through column configuration - do NOT use a conditional -->
           {{? line.account_type_id !== 3}}
           
-          <td>0</td>
-          <td>0</td>
-          <td>0</td>
+          <td style="text-align : right;">0</td>
+          <td style="text-align : right;">0</td>
+          <td style="text-align : right;">0</td>
       
-          <td>0</td>
+          <!--td>0</td>
           <td>0</td>
           <td>0</td>
         
-          <td>0</td>
+          <td>0</td-->
 
           {{?}}
 
@@ -104,13 +104,13 @@
       </tr>
       
       <thead>
-        <tr>
-          <th colspan="2"></th>
+        <!--tr-->
+          <!--th colspan="2"></th-->
          
           <!-- Repeat through column configuration -->
-          <th colspan="3">Current Period</th>
-          <th colspan="3">Year to Date</th>
-        </tr>
+          <!--th colspan="3">Current Period</th-->
+          <!--th colspan="3">Year to Date</th-->
+        <!--/tr-->
         <tr class="totalRight">
           
           <td colspan="2"></td>
@@ -120,11 +120,11 @@
           <td>Budget Jan 2015</td>
           <td>Variance</td>
 
-          <td>Actual Jan 2015</td>
+          <!--td>Actual Jan 2015</td>
           <td>Budget Jan 2015</td>
           <td>Variance</td>
           
-          <td>Annual Budget</td>
+          <td>Annual Budget</td-->
       </thead>
       
       <tbody>
