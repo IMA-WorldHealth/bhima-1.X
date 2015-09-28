@@ -527,7 +527,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/stock/search/search.html'
   })
 
-  // TODO -- these should probably have an /inventory/ prefix
+  // TODO -- these should probably have an /inventory/ or /depot/ prefix
   .when('/stock/count/', {
     controller : 'stock.count',
     templateUrl : 'partials/stock/count/count.html'
@@ -536,16 +536,12 @@ function bhimaconfig($routeProvider) {
     controller : 'stock.expiring',
     templateUrl : 'partials/stock/expiring/expiring.html'
   })
-  .when('/stock/donation_management/', {
-    controller : 'donation_management',
-    templateUrl : 'partials/stock/donation_management/donation_management.html'
-  })
   .when('/donation/confirm_donation/', {
     controller : 'confirmDonation',
     templateUrl : 'partials/stock/donation_management/confirm_donation.html'
   })
-  .when('/stock/donation_management/:depotId', {
-    controller : 'donation_management',
+  .when('/stock/donation_management/:depotId?', {
+    controller : 'DonationManagementController as DonationCtrl',
     templateUrl : 'partials/stock/donation_management/donation_management.html'
   })
   .when('/stock/donation_management/report/:documentId', {
