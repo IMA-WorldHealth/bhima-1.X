@@ -1289,13 +1289,16 @@ exports.getClassSolde = function (req, res, next) {
 
 exports.getStockIntegration = function (req, res, next) {
 
-  var sql = 'SELECT DISTINCT p.uuid, p.reference, p.cost, p.creditor_uuid, p.project_id, p.emitter_id, p.purchaser_id, p.purchase_date, p.note, '
-          + 'm.document_id, s.purchase_order_uuid, pr.abbr '
-          + 'FROM purchase p '
-          + 'JOIN stock s ON s.purchase_order_uuid=p.uuid '
-          + 'JOIN movement m ON s.tracking_number=m.tracking_number '
-          + 'JOIN project pr ON pr.id=p.project_id '
-          + 'WHERE p.confirmed=0 AND p.is_integration=1';
+  var sql =
+    'SELECT DISTINCT p.uuid, p.reference, p.cost, p.creditor_uuid, p.project_id, ' +
+      'u.first, u.last, p.purchaser_id, p.purchase_date, p.note, m.document_id, ' +
+      's.purchase_order_uuid, pr.abbr ' +
+    'FROM purchase p ' +
+    'JOIN stock s ON s.purchase_order_uuid = p.uuid ' +
+    'JOIN movement m ON s.tracking_number = m.tracking_number ' +
+    'JOIN project pr ON pr.id = p.project_id ' +
+    'JOIN user u ON u.id = p.emitter_id ' 
+    'WHERE p.confirmed = 0 AND p.is_integration = 1';
 
   db.exec(sql)
   .then(function (data) {
