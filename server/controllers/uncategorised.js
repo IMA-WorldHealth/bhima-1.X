@@ -746,66 +746,6 @@ exports.stockExpiringByDepot = function (req, res, next) {
   .done();
 };
 
-exports.stockExpiringComplete = function (req, res, next) {
-  //TODO : put it in a separate file
-  var genSql =
-    'SELECT SUM(cons.consumed ) AS consumed ' +
-    'FROM ( ' +
-      'SELECT SUM(consumption.quantity) AS consumed ' +
-      'FROM stock ' +
-      'LEFT JOIN consumption ON stock.tracking_number = consumption.tracking_number ' +
-      'WHERE stock.tracking_number = \'' + req.params.tracking_number + '\''+
-    'UNION '+
-      'SELECT ((SUM(consumption_reversing.quantity)) * (-1)) AS consumed ' +
-      'FROM stock ' +
-      'LEFT JOIN consumption_reversing ON stock.tracking_number = consumption_reversing.tracking_number ' +
-      'WHERE stock.tracking_number = \''+ req.params.tracking_number + '\') AS cons;';
-
-  var speSql =
-    'SELECT SUM(cons.consumed ) AS consumed ' +
-    'FROM ( ' +
-      'SELECT SUM(consumption.quantity) AS consumed ' +
-      'FROM stock ' +
-      'LEFT JOIN consumption ON stock.tracking_number = consumption.tracking_number ' +
-      'WHERE stock.tracking_number = \'' + req.params.tracking_number + '\' '+
-      ' AND consumption.depot_uuid = \'' + req.params.depot_uuid + '\' '+
-    'UNION '+
-      'SELECT ((SUM(consumption_reversing.quantity)) * (-1)) AS consumed ' +
-      'FROM stock ' +
-      'LEFT JOIN consumption_reversing ON stock.tracking_number = consumption_reversing.tracking_number ' +
-      'WHERE stock.tracking_number = \'' + req.params.tracking_number + '\' ' +
-      'AND consumption_reversing.depot_uuid = \'' + req.params.depot_uuid + '\'  ) AS cons;';
-
-
-  db.exec(req.params.depot_uuid === '*' ? genSql : speSql )
-  .then(function (ans) {
-    res.send(ans);
-  })
-  .catch(function (err) {
-    next(err);
-  })
-  .done();
-
-};
-
-exports.distributeStockDepot = function (req, res, next) {
-  //TODO : put it in a separate file
- var sql= 'SELECT stock.inventory_uuid, stock.tracking_number, ' +
-          'stock.lot_number, stock.expiration_date, SUM(if (movement.depot_entry='+sanitize.escape(req.params.depot_uuid)+
-          ', movement.quantity, 0)) AS entered, SUM(if (movement.depot_exit='+sanitize.escape(req.params.depot_uuid)+
-          ', movement.quantity, 0)) AS moved,  inventory.text, inventory.code, inventory.purchase_price  FROM stock JOIN inventory JOIN movement ON stock.inventory_uuid = inventory.uuid AND '+
-          'stock.tracking_number = movement.tracking_number WHERE (movement.depot_entry='+sanitize.escape(req.params.depot_uuid)+
-          'OR movement.depot_exit='+sanitize.escape(req.params.depot_uuid)+') GROUP BY stock.tracking_number';
-  db.exec(sql)
-  .then(function (ans) {
-    res.send(ans);
-  })
-  .catch(function (err) {
-      next(err);
-  })
-  .done();
-};
-
 exports.inventoryByDepot = function (req, res, next) {
   var sql = 'SELECT '+
             'distinct inventory.text, '+

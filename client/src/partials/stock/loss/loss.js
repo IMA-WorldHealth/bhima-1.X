@@ -59,7 +59,7 @@ function DepotLossController($scope, $routeParams, validate, appstate, uuid, $q,
 
   dependencies.avail_stocks = {
     identifier:'tracking_number',
-    query : '/serv_dist_stock/' + depotId
+    query : '/depots/' + depotId + '/inventory'
   };
 
 
