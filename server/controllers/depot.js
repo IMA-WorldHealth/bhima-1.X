@@ -18,6 +18,7 @@ exports.getDepots = getDepots;
 exports.getDepotsById = getDepotsById;
 exports.getDistributions = getDistributions;
 exports.getDistributionsById = getDistributionsById;
+exports.getAvailableLots = getAvailableLots;
 exports.getAvailableLotsByInventoryId = getAvailableLotsByInventoryId;
 
 /**
@@ -54,7 +55,7 @@ function getDepots(req, res, next) {
 function getDepotsById(req, res, next) {
   'use strict';
 
-  var sql, 
+  var sql,
       uuid = req.params.uuid;
 
   sql =
@@ -64,7 +65,7 @@ function getDepotsById(req, res, next) {
 
   db.exec(sql, [req.session.enterprise.id, uuid])
   .then(function (rows) {
-    
+
     // make sure we find at least one depot
     if (rows.length < 1) {
       return res.status(404).json({
@@ -238,9 +239,52 @@ function getDistributionsById(req, res, next) {
 }
 
 /**
+* GET /depots/:depotId/inventory
+* This function returns all the lots in a given depot for all inventory items
+* in the inventory.
+*
+* @function getAvailableLots
+*/
+function getAvailableLots(req, res, next) {
+  'use strict';
+
+  var sql,
+      depot = req.params.depotId,
+      uuid = req.params.uuid;
+
+  sql =
+    'SELECT s.tracking_number, s.lot_number, s.quantity, s.code FROM (' +
+      'SELECT stock.tracking_number, stock.lot_number, outflow.depot_entry, outflow.depot_exit, ' +
+        'SUM(CASE WHEN outflow.depot_entry = ? THEN outflow.quantity ELSE -outflow.quantity END) AS quantity, ' +
+        'stock.expiration_date, inventory.code ' +
+      'FROM inventory JOIN stock JOIN (' +
+        'SELECT uuid, depot_entry, depot_exit, tracking_number, quantity, date ' +
+        'FROM movement ' +
+        'UNION ' +
+        'SELECT uuid, null AS depot_entry, depot_uuid AS depot_exit, tracking_number, quantity, date  ' +
+        'FROM consumption ' +
+        'WHERE consumption.canceled = 0' +
+      ') AS outflow ON ' +
+        'inventory.uuid = stock.inventory_uuid AND ' +
+        'stock.tracking_number = outflow.tracking_number ' +
+      'WHERE outflow.depot_entry = ? OR outflow.depot_exit = ? ' +
+      'GROUP BY stock.tracking_number' +
+    ') AS s;';
+
+  return db.exec(sql, [depot, depot, depot])
+  .then(function (rows) {
+    res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
+}
+
+/**
 * GET /depots/:depotId/inventory/:uuid
 * This function returns all the lots in a given depot for a given inventory
-* item, identified by a uuid.
+* item, identified by an inventory code.
+*
+* TODO -- this should change to a UUID.
 *
 * @function getAvailableLotsByInventoryId
 */
@@ -280,7 +324,7 @@ function getAvailableLotsByInventoryId(req, res, next) {
 }
 
 /**
- 
+
 // TODO this is old code, which may still be valuable!  We should try
 // to recoup some of this code in the future.
 

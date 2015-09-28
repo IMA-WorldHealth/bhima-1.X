@@ -475,7 +475,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/stock/loss/loss.html'
   })
   .when('/depots/:depotId/movements', {
-    controller : 'stock.movement',
+    controller : 'StockMovementController as MovementCtrl',
     templateUrl : 'partials/stock/movement/movement.html'
   })
   .when('/depots/:depotId/distributions/patients', {
