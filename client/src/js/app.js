@@ -537,7 +537,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/stock/expiring/expiring.html'
   })
   .when('/donation/confirm_donation/', {
-    controller : 'confirmDonation',
+    controller : 'ConfirmDonationController as ConfirmCtrl',
     templateUrl : 'partials/stock/donation_management/confirm_donation.html'
   })
   .when('/stock/donation_management/:depotId?', {
