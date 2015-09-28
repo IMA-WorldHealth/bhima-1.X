@@ -276,7 +276,7 @@ DROP FOREIGN KEY  `service_ibfk_1` ;
 --
 -- Dedrick Kitamuka
 -- 22/09/2015
--- Adding a new unit for resultat comptable
+-- Adding a new unit for debtor group pdf report
 --
 
 INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
