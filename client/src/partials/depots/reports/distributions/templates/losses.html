@@ -3,8 +3,7 @@
     <tr>
       <th>{{'COLUMNS.DATE' | translate }}</th>
       <th>{{'COLUMNS.DEPOT' | translate }}</th>
-      <th>{{'COLUMNS.PATIENT' | translate }}</th>
-      <th>{{'COLUMNS.SALE_ID' | translate }}</th>
+      <th>{{'COLUMNS.DRUGS' | translate }}</th>
       <th>{{'COLUMNS.NUM_ITEMS' | translate }}</th>
       <th class="hidden-print">{{ 'COLUMNS.REFERENCE' | translate }}</th>
       <th class="hidden-print">{{ 'COLUMNS.ACTIONS' | translate }}</th>
@@ -25,16 +24,10 @@
     <tr ng-repeat="distribution in DistributionsCtrl.data">
       <td>{{ distribution.date | date }}</td>
       <td>{{ distribution.text }}</td>
-      <td>
-        <a ng-href="#/invoice/patient/{{ distribution.patientId }}">{{ distribution.patient | uppercase }}</a>
-        {{ distribution.first_name }} {{ distribution.middle_name }} {{ distribution.last_name }}
-      </td>
-      <td>
-        <a ng-href="#/invoice/sale/{{ distribution.saleId }}">{{ distribution.invoice }}</a>
-      </td>
+      <td>{{ distribution.label }}</td>
       <td>{{ distribution.total }}</td>
       <td class="hidden-print">
-        <a ng-href="#/invoice/consumption/{{ distribution.saleId }}/">
+        <a ng-href="#/invoice/loss/{{ distribution.voucher}}/">
           <i class="glyphicon glyphicon-list-alt"></i> {{ 'COLUMNS.REFERENCE' | translate }}
         </a>
       </td>

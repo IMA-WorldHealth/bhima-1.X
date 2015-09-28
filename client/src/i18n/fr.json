@@ -878,7 +878,8 @@
      "RUMMAGE"  : "Liquidation by Rummage Sale",
      "LOSSES"   : "Stock Losses",
      "ANNUL"    : "Annuler cette Transaction",
-     "ANNULLED" : "Annulé"
+     "ANNULLED" : "Annulé",
+     "NO_ROWS"  : "Pas de données pour période sélectionnée"
    }
 },
 "DISTRIBUTION": {

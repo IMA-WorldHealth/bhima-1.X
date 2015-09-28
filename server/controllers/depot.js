@@ -145,7 +145,7 @@ function getDistributions(req, res, next) {
         'JOIN depot AS d ON d.uuid = c.depot_uuid ' +
         'JOIN stock ON stock.tracking_number = c.tracking_number ' +
         'JOIN inventory AS i ON i.uuid = stock.inventory_uuid ' +
-        'WHERE depot.uuid = ? AND c.date BETWEEN DATE(?) AND DATE(?) ' +
+        'WHERE d.uuid = ? AND c.date BETWEEN DATE(?) AND DATE(?) ' +
         'GROUP BY c.document_id ' +
         'ORDER BY c.date DESC, service.name ASC;';
       break;
@@ -154,14 +154,14 @@ function getDistributions(req, res, next) {
     case 'rummage':
       sql =
         'SELECT c.uuid, cr.document_uuid AS voucher, ' +
-          'COUNT(c.document_id) AS total, c.date, d.text, d.uuid AS depotId ' +
+          'COUNT(c.document_id) AS total, c.date, d.text, d.uuid AS depotId, ' +
           'i.text AS label, c.canceled ' +
         'FROM consumption_rummage AS cr ' +
         'JOIN consumption AS c ON c.uuid = cr.consumption_uuid ' +
-        'JOIN depot ON depot.uuid = c.depot_uuid ' +
+        'JOIN depot AS d ON d.uuid = c.depot_uuid ' +
         'JOIN stock ON stock.tracking_number = c.tracking_number ' +
         'JOIN inventory AS i ON i.uuid = stock.inventory_uuid ' +
-        'WHERE depot.uuid = ? AND c.date BETWEEN DATE(?) AND DATE(?) ' +
+        'WHERE d.uuid = ? AND c.date BETWEEN DATE(?) AND DATE(?) ' +
         'GROUP BY c.document_id ' +
         'ORDER BY c.date DESC;';
       break;
@@ -171,14 +171,14 @@ function getDistributions(req, res, next) {
     case 'losses':
       sql =
         'SELECT c.uuid, cl.document_uuid AS voucher, ' +
-          'COUNT(c.document_id) AS total, c.date, d.text, d.uuid AS depotId ' +
+          'COUNT(c.document_id) AS total, c.date, d.text, d.uuid AS depotId, ' +
           'i.text AS label, c.canceled ' +
         'FROM consumption_loss AS cl ' +
         'JOIN consumption AS c ON c.uuid = cl.consumption_uuid ' +
         'JOIN depot AS d ON d.uuid = c.depot_uuid ' +
         'JOIN stock AS s ON s.tracking_number = c.tracking_number ' +
         'JOIN inventory AS i ON i.uuid = s.inventory_uuid ' +
-        'WHERE depot.uuid = ? AND c.date BETWEEN DATE(?) AND DATE(?) ' +
+        'WHERE d.uuid = ? AND c.date BETWEEN DATE(?) AND DATE(?) ' +
         'GROUP BY c.document_id ' +
         'ORDER BY c.date DESC;';
       break;

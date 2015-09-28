@@ -879,6 +879,7 @@
      "LOSSES"   : "Stock Losses",
      "ANNUL"    : "Annul this Transaction",
      "ANNULLED" : "Annulled",
+     "NO_ROWS"  : "No distributions found within this time frame!",
      "CANCEL" : {
        "TITLE" : "Cancel Pharmacy Distribution",
        "MESSAGE" : "You are about to cancel a distribution made from the pharmacy.  Please make sure these details are correct."
