@@ -55,7 +55,6 @@ function DepotStockDistributionsController($routeParams, $http, util, Dates) {
     $http.get(url)
     .then(function (response) {
       vm.data = response.data;
-      console.log('vm.data:', vm.data);
     })
     .catch(function (err) {
       console.log(err);

@@ -1,6 +1,3 @@
-var db = require('./../lib/db');
-var parser = require('./../lib/parser');
-var uuid = require('./../lib/guid');
 var journal = require('./../controllers/journal');
 
 var q = require('q');
@@ -20,6 +17,7 @@ module.exports = function() {
     });    
   }
 
+  // FIXME -- make this much clearer
   function writeToJournal (id, userId, data) {
     var deferred = q.defer();
     journal.request('donation', id, userId, function (error, result) {

@@ -84,7 +84,7 @@ function MainStockController($scope, $location, $translate, $window, messenger, 
   }, {
     key : 'DEPOT.DISTRIBUTION.LOSSES',
     ico : 'glyphicon-th-list',
-    link : '/depots/:uuid/reports/distributions/loss'
+    link : '/depots/:uuid/reports/distributions/losses'
   }];
 
   config.reports = [{

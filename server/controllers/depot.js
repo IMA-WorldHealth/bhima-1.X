@@ -20,6 +20,7 @@ exports.getDistributions = getDistributions;
 exports.getDistributionsById = getDistributionsById;
 exports.getAvailableLots = getAvailableLots;
 exports.getAvailableLotsByInventoryId = getAvailableLotsByInventoryId;
+exports.getExpiredLots = getExpiredLots;
 
 /**
 * GET /depots
@@ -249,11 +250,10 @@ function getAvailableLots(req, res, next) {
   'use strict';
 
   var sql,
-      depot = req.params.depotId,
-      uuid = req.params.uuid;
+      depot = req.params.depotId;
 
   sql =
-    'SELECT s.tracking_number, s.lot_number, s.quantity, s.code FROM (' +
+    'SELECT s.tracking_number, s.lot_number, s.quantity, s.code, s.expiration_date FROM (' +
       'SELECT stock.tracking_number, stock.lot_number, outflow.depot_entry, outflow.depot_exit, ' +
         'SUM(CASE WHEN outflow.depot_entry = ? THEN outflow.quantity ELSE -outflow.quantity END) AS quantity, ' +
         'stock.expiration_date, inventory.code ' +
@@ -296,7 +296,7 @@ function getAvailableLotsByInventoryId(req, res, next) {
       uuid = req.params.uuid;
 
   sql =
-    'SELECT s.tracking_number, s.lot_number, s.quantity, s.code FROM (' +
+    'SELECT s.tracking_number, s.lot_number, s.quantity, s.code, s.expiration_date FROM (' +
       'SELECT stock.tracking_number, stock.lot_number, outflow.depot_entry, outflow.depot_exit, ' +
         'SUM(CASE WHEN outflow.depot_entry = ? THEN outflow.quantity ELSE -outflow.quantity END) AS quantity, ' +
         'stock.expiration_date, inventory.code ' +
@@ -316,6 +316,45 @@ function getAvailableLotsByInventoryId(req, res, next) {
     ') AS s;';
 
   return db.exec(sql, [depot, depot, depot, uuid])
+  .then(function (rows) {
+    res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
+}
+
+/**
+* GET /depot/:uuid/expired
+* Finds expiring drugs for a particular depot identified by depotId
+*
+* @function getExpiredLots
+*/
+function getExpiredLots(req, res, next) {
+  'use strict';
+
+  var sql,
+      depot = req.params.depotId;
+
+  sql =
+    'SELECT s.tracking_number, s.lot_number, s.quantity, s.code, s.expiration_date FROM (' +
+      'SELECT stock.tracking_number, stock.lot_number, outflow.depot_entry, outflow.depot_exit, ' +
+        'SUM(CASE WHEN outflow.depot_entry = ? THEN outflow.quantity ELSE -outflow.quantity END) AS quantity, ' +
+        'stock.expiration_date, inventory.code ' +
+      'FROM inventory JOIN stock JOIN (' +
+        'SELECT uuid, depot_entry, depot_exit, tracking_number, quantity, date ' +
+        'FROM movement ' +
+        'UNION ' +
+        'SELECT uuid, null AS depot_entry, depot_uuid AS depot_exit, tracking_number, quantity, date  ' +
+        'FROM consumption ' +
+        'WHERE consumption.canceled = 0' +
+      ') AS outflow ON ' +
+        'inventory.uuid = stock.inventory_uuid AND ' +
+        'stock.tracking_number = outflow.tracking_number ' +
+      'WHERE s.expiration_date <= CURDATE() AND (outflow.depot_entry = ? OR outflow.depot_exit = ?) ' +
+      'GROUP BY stock.tracking_number' +
+    ') AS s;';
+
+  db.exec(sql, [depot, depot, depot])
   .then(function (rows) {
     res.status(200).json(rows);
   })

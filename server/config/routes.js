@@ -138,7 +138,6 @@ exports.initialise = function (app) {
   app.get('/max_trans/:projectId', uncategorised.maxTransactionByProject);
   app.get('/print/journal', uncategorised.printJournal);
   app.get('/stockIn/:depot_uuid/:df/:dt', uncategorised.stockIn);
-  app.get('/serv_dist_stock/:depot_uuid', uncategorised.distributeStockDepot);
   app.get('/inv_in_depot/:depot_uuid', uncategorised.inventoryByDepot);
   app.get('/inventory/drug/:code', uncategorised.routeDrugQuery);
   app.get('/errorcodes', uncategorised.listErrorCodes);
@@ -193,14 +192,12 @@ exports.initialise = function (app) {
   app.get('/depots/:depotId/inventory', depot.getAvailableLots);
   app.get('/depots/:depotId/inventory/:uuid', depot.getAvailableLotsByInventoryId);
 
+  app.get('/depots/:depotId/expired', depot.getExpiredLots);
+
   /* continuing on ... */
 
   // stock API
   app.get('/donations', stock.getRecentDonations);
-
-  // TODO -- better route names?
-  app.get('/expiring/:depot_uuid/:df/:dt', uncategorised.stockExpiringByDepot);
-  app.get('/expiring_complete/:tracking_number/:depot_uuid', uncategorised.stockExpiringComplete);
 
   // TODO - make a purchase order controller
   app.get('/purchaseorders', purchase.getPurchaseOrders);
