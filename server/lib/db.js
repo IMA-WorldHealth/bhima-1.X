@@ -69,13 +69,12 @@ function execute(sql, callback) {
 
   con.getConnection(function (err, connection) {
     if (err) { return callback(err); }
-    var qs = connection.query(sql, function (err, results) {
+    connection.query(sql, function (err, results) {
       connection.release();
       if (err) { return callback(err); }
       return callback(null, results);
     });
 
-    console.log(qs.sql);
   });
 }
 

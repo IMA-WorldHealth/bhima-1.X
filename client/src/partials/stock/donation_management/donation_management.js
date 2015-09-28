@@ -22,6 +22,8 @@ function DonationManagementController($scope, $q, $translate, $location, $routeP
   $scope.user = Session.user;
   $scope.enterprise = Session.enterprise;
 
+  console.log($scope.enterprise);
+
   session.crud_or_read = 'crud';
   session.view = $translate.instant('DONATION_MANAGEMENT.SEE_ALL');
   session.cfg.depot = { id : $routeParams.depotId };
@@ -87,15 +89,6 @@ function DonationManagementController($scope, $q, $translate, $location, $routeP
     required : true,
     query : 'getAccount7/'
   };
-
-  dependencies.enterprise = {
-    required : true,
-    query : {
-      tables : {
-        enterprise : {columns : ['currency_id']}
-      }
-    }
-  } ;
 
   function initialise() {
     validate.process(dependencies)
@@ -443,7 +436,7 @@ function DonationManagementController($scope, $q, $translate, $location, $routeP
         uuid          : uuid(),
         cost          : simulatePurchaseTotal(),
         purchase_date : util.sqlDate(session.config.date),
-        currency_id   : $scope.project.currency_id,
+        currency_id   : $scope.enterprise.currency_id,
         creditor_uuid : null,
         purchaser_id  : session.config.employee.id, //$scope.user.data.id,
         project_id    : $scope.project.id,
