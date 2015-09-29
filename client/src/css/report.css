@@ -26,7 +26,7 @@
 
 .reportTable tbody > tr > td {
   border         : 1px solid #9F9F9F;
-  vertical-align : right;
+  vertical-align : center;
   padding: 0px 5px;
 }
 

@@ -1,65 +1,81 @@
 angular.module('bhima.controllers')
-.controller('stock_status', [
-  '$scope',
-  '$http',
-  'StockDataService',
-  function ($scope, $http, StockDataService) {
-    var session = $scope.session = {};
+.controller('StockStatusReportController', StockStatusReportController);
 
-    $scope.consumptions = {};
-    session.date = new Date();
+StockStatusReportController.$inject = ['$http', '$timeout'];
 
-    if (document.readyState === 'complete') {
+/**
+* Stock Status Report
+*
+* This controller gives a broad overview of stock levels, expiration times,
+* lead times, and more for all depots.
+*
+* NOTES
+*  1) I have removed "quantity to order", as I think this should really be a
+*     parameter provided by an alert.  Currently, our calculates are really poor
+*     due to poor data.
+*/
+function StockStatusReportController($http, $timeout) {
+  var vm = this,
+      endpoints;
 
-      $http.get('/getStockEntry/')
-      .success(function(data) {
+  vm.loading = true;
+  vm.timestamp = new Date();
+  vm.report = {};
 
-        data.forEach(function (item2) {
+  /* ------------------------------------------------------------------------ */
 
-          StockDataService.getStock(item2.inventory_uuid)
-          .then(function (val) {
-            item2.total = Math.round(val);
-          });
+  // start up the module
+  $http.get('/inventory/status')
+  .then(template)
+  .catch(handler)
+  .finally(function () {
 
-          StockDataService.getDelaiLivraison(item2.inventory_uuid)
-          .then(function (val) {
-          });
+    // use $timeout trick to delay rendering until all other rendering is done
+    $timeout(endLoading);
+  });
 
-          StockDataService.getIntervalleCommande(item2.inventory_uuid)
-          .then(function (val) {
-          });
-
-          StockDataService.getMonthlyConsumption(item2.inventory_uuid)
-          .then(function (val) {
-            item2.consumption_avg = Math.round(val);
-          });
-
-          StockDataService.getStockSecurity(item2.inventory_uuid)
-          .then(function (val) {
-            item2.consumption_security = Math.round(val);
-          });
-
-          StockDataService.getStockMin(item2.inventory_uuid)
-          .then(function (val) {
-            item2.consumption_min = Math.round(val);
-          });
-
-          StockDataService.getStockMax(item2.inventory_uuid)
-          .then(function (val) {
-            item2.consumption_max = Math.round(val);
-          })
-          .then(function() {
-            var mstock = (item2.consumption_avg > 0) ? item2.total / item2.consumption_avg : 0,
-                command = (item2.consumption_max - item2.total > 0 ) ? item2.consumption_max - item2.total : 0 ;
-
-            item2.consumption_mstock = Math.floor(mstock);
-            item2.consumption_command = Math.round(command);
-          });
-
-        });
-
-        $scope.consumptions = data;
-      });
-    }
+  function endLoading() {
+    vm.loading = false;
   }
-]);
+
+  // template the data into the view
+  function template(response) {
+    var report;
+
+    // filter out items that are missing both a quantity and a lead time.  This
+    // should ensure that we have only relevant data.
+    report = response.data.filter(function (row) {
+      return (row.quantity > 0 || row.leadtime !== null);
+    });
+
+    // calculate the security/safety stock if applicable
+    // NOTE -- this goes by the "old" formula.  What do we do with this in the
+    // case of stock integration?  What about donations?
+    report.forEach(function (row) {
+
+      // security stock is defined as leadtime multiplied by avg consumption
+      // rate
+      row.securityStock = row.leadtime !== null ?
+          row.leadtime * row.consumption:
+          null;
+      
+      // make sure we have nice formatting for days remaining column.
+      row.remaining = Math.floor(row.remaining);
+
+      // if there is an alert, we template it in
+      row.alert = row.stockout ? 'STOCK.ALERTS.STOCKOUT' :
+                  row.shortage ? 'STOCK.ALERTS.SHORTAGE' :
+                  row.overstock ? 'STOCK.ALERTS.OVERSTOCK' :
+                  false;
+    });
+
+
+    vm.report = report;
+  }
+
+  // generic error handler
+  function handler(error) {
+    console.log(error);
+  }
+
+}
