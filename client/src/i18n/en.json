@@ -373,6 +373,7 @@
    "ACCOUNT_NUMBER"        : "Account Number",
    "ACTION"                : "Action",
    "ACTIONS"               : "Actions",
+   "ALERTS"                : "Alerts",
    "AMOUNT"                : "Amount",
    "AMOUNT_BILLED"         : "Amount Billed",
    "AMOUNT_DUE"            : "Amount Due",
@@ -398,7 +399,8 @@
    "CONFIRMED"             : "Confirmed",
    "CONSUMABLE"            : "Consumable",
    "CONSUMED_STOCK"        : "Consumed Stock",
-   "CONSUMPTION_PER_MONTH" : "Consumption per month",
+   "CONSUMPTION_PER_MONTH" : "Consumption per Month",
+   "CONSUMPTION_PER_DAY"   : "Consumption By Day",
    "CONVENTION"            : "Convention",
    "COST"                  : "Cost",
    "COST_CENTER"           : "Cost center",
@@ -418,6 +420,7 @@
    "DATE_REGISTERED"       : "Date Registered",
    "DATE_IN"               : "Entry date",
    "DATE_TO"               : "Date To",
+   "DAYS_REMAINING"        : "Days Remaining",
    "DC_TYPE"               : "D/C Type",
    "DEBCRED_ID"            : "Deb/Cred ID",
    "DEBIT"                 : "Debit",
@@ -2503,135 +2506,141 @@
   "TITLE"       : "SNIS (Système National d'Information Sanitaire)"
   },
 "STOCK": {
-   "DISTRIBUTION_RECORDS": {
-      "ERROR"                    : "This consumption has been reversed in the stock",
-      "KEY"                      : "Distribution patients records",
-      "REVERSING_DISTRIBUTION"   : "Reversing distribution",
-      "REVERSING_TITLE"          : "Cancellation distribution",
-      "REVERSING_TITLE_PATIENT"  : "Cancellation Patients distribution",
-      "SUBMIT"                   : "Submit",
-      "SUCCESS"                  : "Reversing with succes"
-      },
-   "DISTRIBUTION_SERVICE_RECORDS": {
-      "ERROR"                    : "This consumption has been reversed in the stock",
-      "KEY"                      : "Distribution Services Records",
-      "REVERSING_DISTRIBUTION"   : "Reversing distribution",
-      "REVERSING_TITLE"          : "Cancellation distribution",
-      "REVERSING_TITLE_SERVICE"  : "Cancellation Services distribution",
-      "SUBMIT"                   : "Submit",
-      "SUCCESS"                  : "Reversing with succes"
-      },
-   "DONATION": {
-      "KEY"   : "Entry Donation",
-      "TITLE" : "Entry Donation"
-      },
-   "ENTRY": {
-      "ADD_LOT"              : "Add Lot",
-      "ASSIGNED"             : "Assigned",
-      "ASSIGN_LOTS"          : "Assign Lots",
-      "CANCEL"               : "Cancel",
-      "DIRECT_PURCHASE_TYPE" : "This Purchase Order is DIRECT",
-      "ENTER_STOCK"          : "Enter Stock",
-      "ENTRY_DATE"           : "Entry Date",
-      "ENTRY_MANIFEST"       : "Entry Manifest",
-      "ERR_EMPTY_PARAMTER"   : "Error Empty Parameter",
-      "FIND_PURCHASE_ORDER"  : "Find a Purchase Order",
-      "KEY"                  : "Stock Entry",
-      "LOT_NUMBER"           : "Lot No.",
-      "NUM_ITEMS"            : "Number of Items",
-      "ORDER_DETAIL"         : "Order Details",
-      "ORDER_DETAILS"        : "Order Details",
-      "REMAINING"            : "Remaining",
-      "REPORT"               : "Entry Report",
-      "REQUESTED_BY"         : "Requested By",
-      "REVIEW"               : "Entry prouf",
-      "SELECT"               : "Select",
-      "SELECT_DEPOT"         : "Select a Store",
-      "TITLE"                : "Stock Entry",
-      "WRITE_ERROR"          : "Write error",
-      "WRITE_SUCCESS"        : "Write success"
-      },
-   "EXIT": {
-      "KEY" : "Stock Distribution"
-      },
-   "EXIT_SERVICE": {
-      "KEY" : "Stock distribution to services"
-      },
-   "EXPIRE": {
-      "KEY" : "Expiring Stock"
-      },
-   "INTEGRATION" : {
-      "DESCRIPTION"          : "Use this module to integrate into the system BHIMA a stock that already existed physically",
-      "CANCEL"               : "Cancel",
-      "CONFIRM_FILTER"       : "Filter the list...",
-      "CONFIRM_STOCK"        : "Confirm Stock Integration",
-      "EXPIRATION_DATE"      : "Expiration date",
-      "EXPIRATION_INFO"      : "Please enter the valid expirations dates",
-      "EXPIRATION_ALERT"     : "The system does not accept expired product",
-      "ITEMS"                : "Stock Item(s)",
-      "KEY"                  : "Stock Integration",
-      "LOT_QTY"              : "Lot and Quantity",
-      "LOT_QTY_DESC"         : "Please enter the lot number and quantity",
-      "MADE_BY"              : "Made By",
-      "NEW"                  : "New Stock Integration",
-      "PREVIEW"              : "Preview",
-      "REPORT_CONF"          : "Report Confirmation Integration",
-      "SELECT_TIME"          : "Select the time range",
-      "STOCK_VOID"           : "No Stock",
-      "STOCK_VOID_DESC"      : "Please add products",
-      "STORE"                : "Store",
-      "TITLE"                : "Stock Integration",
-      "SUBMIT"               : "Submit"
-      },
-   "LOSS": {
-      "KEY"               : "Stock loss",
-      "LOSS_GENERAL_INFO" : "Summary",
-      "LOSS_RECORDS"      : "Stock loss records",
-      "NO_DEPOT"          : "No store",
-      "NO_LOSS_RECORDS"   : "No stock loss recorded",
-      "SEE_RECEIPT"       : "See",
-      "SUBMIT"            : "Submit",
-      "TITLE"             : "Stock loss"
-      },
-   "MAIN": {
-      "CONFIGURE_WAREHOUSE" : "Select Store",
-      "CONFIRM"             : "Are you sure you want to select this warehouse?",
-      "MODULES"             : "Available Modules",
-      "REPORTS"             : "Stock Reports",
-      "TITLE"               : "Stock Management",
-      "UTILITIES"           : "Stock Utilities",
-      "WAREHOUSE_INFO_1"    : "Configure the store to be used for stock management.",
-      "WAREHOUSE_INFO_2"    : "All Stock operations (entry, exit and reports) will be assigned to this store.",
-      "WAREHOUSE_INFO_3"    : "This setting can be changed at a later date."
-      },
-   "MOVEMENT": {
-      "DEPOT_FROM"            : "Source Store",
-      "DEPOT_TO"              : "Destination Store",
-      "FORM"                  : "Stock Movement Form",
-      "INVALID_SESSION"       : "The page received invalid configuration data, please try again via Stock Management or contact the system administrator.",
-      "INVALID_TRANSFERT_QTE" : "Invalid transfer quantity",
-      "INVENTORY"             : "Inventory",
-      "KEY"                   : "Stock Movement",
-      "ONLY_ONE_DEPOT"        : "Only one store has been registered with BHIMA. A stock movment requires both an origin and destination store.",
-      "SELECT_LOT"            : "Select lot from",
-      "SUCCESS"               : "success",
-      "TITLE"                 : "Stock Movements"
-      },
-   "REPORT": {
-      "DATE"           : "Date",
-      "EMPTY_REPORT"   : "No record found!",
-      "EXPIRING_STOCK" : "Expiring stock",
-      "ITEM_IN_STOCK"  : "Item in stock",
-      "STOCK_COUNT"    : "Stock Count",
-      "TITLE"          : "Stock status"
-      },
-   "SEARCH": {
-      "KEY"          : "Find Stock Items",
-      "MANIFEST"     : "Stock Manifest",
-      "NO_SELECTION" : "No selection has been made.  Please choose an inventory item from above.",
-      "TITLE"        : "Locate Stock Items"
-      }
-   },
+  "ALERTS" : {
+    "STOCKOUT" : "Stockout",
+    "SHORTAGE" : "Shortage",
+    "OVERSTOCK" : "Overstocked",
+    "OPTIMAL"   : "Optimal level of stock"
+  },
+  "DISTRIBUTION_RECORDS": {
+     "ERROR"                    : "This consumption has been reversed in the stock",
+     "KEY"                      : "Distribution patients records",
+     "REVERSING_DISTRIBUTION"   : "Reversing distribution",
+     "REVERSING_TITLE"          : "Cancellation distribution",
+     "REVERSING_TITLE_PATIENT"  : "Cancellation Patients distribution",
+     "SUBMIT"                   : "Submit",
+     "SUCCESS"                  : "Reversing with succes"
+     },
+  "DISTRIBUTION_SERVICE_RECORDS": {
+     "ERROR"                    : "This consumption has been reversed in the stock",
+     "KEY"                      : "Distribution Services Records",
+     "REVERSING_DISTRIBUTION"   : "Reversing distribution",
+     "REVERSING_TITLE"          : "Cancellation distribution",
+     "REVERSING_TITLE_SERVICE"  : "Cancellation Services distribution",
+     "SUBMIT"                   : "Submit",
+     "SUCCESS"                  : "Reversing with succes"
+     },
+  "DONATION": {
+     "KEY"   : "Entry Donation",
+     "TITLE" : "Entry Donation"
+     },
+  "ENTRY": {
+     "ADD_LOT"              : "Add Lot",
+     "ASSIGNED"             : "Assigned",
+     "ASSIGN_LOTS"          : "Assign Lots",
+     "CANCEL"               : "Cancel",
+     "DIRECT_PURCHASE_TYPE" : "This Purchase Order is DIRECT",
+     "ENTER_STOCK"          : "Enter Stock",
+     "ENTRY_DATE"           : "Entry Date",
+     "ENTRY_MANIFEST"       : "Entry Manifest",
+     "ERR_EMPTY_PARAMTER"   : "Error Empty Parameter",
+     "FIND_PURCHASE_ORDER"  : "Find a Purchase Order",
+     "KEY"                  : "Stock Entry",
+     "LOT_NUMBER"           : "Lot No.",
+     "NUM_ITEMS"            : "Number of Items",
+     "ORDER_DETAIL"         : "Order Details",
+     "ORDER_DETAILS"        : "Order Details",
+     "REMAINING"            : "Remaining",
+     "REPORT"               : "Entry Report",
+     "REQUESTED_BY"         : "Requested By",
+     "REVIEW"               : "Entry prouf",
+     "SELECT"               : "Select",
+     "SELECT_DEPOT"         : "Select a Store",
+     "TITLE"                : "Stock Entry",
+     "WRITE_ERROR"          : "Write error",
+     "WRITE_SUCCESS"        : "Write success"
+     },
+  "EXIT": {
+     "KEY" : "Stock Distribution"
+     },
+  "EXIT_SERVICE": {
+     "KEY" : "Stock distribution to services"
+     },
+  "EXPIRE": {
+     "KEY" : "Expiring Stock"
+     },
+  "INTEGRATION" : {
+     "DESCRIPTION"          : "Use this module to integrate into the system BHIMA a stock that already existed physically",
+     "CANCEL"               : "Cancel",
+     "CONFIRM_FILTER"       : "Filter the list...",
+     "CONFIRM_STOCK"        : "Confirm Stock Integration",
+     "EXPIRATION_DATE"      : "Expiration date",
+     "EXPIRATION_INFO"      : "Please enter the valid expirations dates",
+     "EXPIRATION_ALERT"     : "The system does not accept expired product",
+     "ITEMS"                : "Stock Item(s)",
+     "KEY"                  : "Stock Integration",
+     "LOT_QTY"              : "Lot and Quantity",
+     "LOT_QTY_DESC"         : "Please enter the lot number and quantity",
+     "MADE_BY"              : "Made By",
+     "NEW"                  : "New Stock Integration",
+     "PREVIEW"              : "Preview",
+     "REPORT_CONF"          : "Report Confirmation Integration",
+     "SELECT_TIME"          : "Select the time range",
+     "STOCK_VOID"           : "No Stock",
+     "STOCK_VOID_DESC"      : "Please add products",
+     "STORE"                : "Store",
+     "TITLE"                : "Stock Integration",
+     "SUBMIT"               : "Submit"
+     },
+  "LOSS": {
+     "KEY"               : "Stock loss",
+     "LOSS_GENERAL_INFO" : "Summary",
+     "LOSS_RECORDS"      : "Stock loss records",
+     "NO_DEPOT"          : "No store",
+     "NO_LOSS_RECORDS"   : "No stock loss recorded",
+     "SEE_RECEIPT"       : "See",
+     "SUBMIT"            : "Submit",
+     "TITLE"             : "Stock loss"
+     },
+  "MAIN": {
+     "CONFIGURE_WAREHOUSE" : "Select Store",
+     "CONFIRM"             : "Are you sure you want to select this warehouse?",
+     "MODULES"             : "Available Modules",
+     "REPORTS"             : "Stock Reports",
+     "TITLE"               : "Stock Management",
+     "UTILITIES"           : "Stock Utilities",
+     "WAREHOUSE_INFO_1"    : "Configure the store to be used for stock management.",
+     "WAREHOUSE_INFO_2"    : "All Stock operations (entry, exit and reports) will be assigned to this store.",
+     "WAREHOUSE_INFO_3"    : "This setting can be changed at a later date."
+     },
+  "MOVEMENT": {
+     "DEPOT_FROM"            : "Source Store",
+     "DEPOT_TO"              : "Destination Store",
+     "FORM"                  : "Stock Movement Form",
+     "INVALID_SESSION"       : "The page received invalid configuration data, please try again via Stock Management or contact the system administrator.",
+     "INVALID_TRANSFERT_QTE" : "Invalid transfer quantity",
+     "INVENTORY"             : "Inventory",
+     "KEY"                   : "Stock Movement",
+     "ONLY_ONE_DEPOT"        : "Only one store has been registered with BHIMA. A stock movment requires both an origin and destination store.",
+     "SELECT_LOT"            : "Select lot from",
+     "SUCCESS"               : "success",
+     "TITLE"                 : "Stock Movements"
+     },
+  "REPORT": {
+     "DATE"           : "Date",
+     "EMPTY_REPORT"   : "No record found!",
+     "EXPIRING_STOCK" : "Expiring stock",
+     "ITEM_IN_STOCK"  : "Item in stock",
+     "STOCK_COUNT"    : "Stock Count",
+     "TITLE"          : "Stock status"
+     },
+  "SEARCH": {
+     "KEY"          : "Find Stock Items",
+     "MANIFEST"     : "Stock Manifest",
+     "NO_SELECTION" : "No selection has been made.  Please choose an inventory item from above.",
+     "TITLE"        : "Locate Stock Items"
+   }
+},
 "STOCK_DASHBOARD": {
    "DONATIONS": {
       "TITLE" : "Recent Donations"

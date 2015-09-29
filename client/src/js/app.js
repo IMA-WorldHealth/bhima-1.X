@@ -682,7 +682,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/reports/taxes_payment/taxes_payment.html'
   })
   .when('/reports/stock_status/', {
-    controller : 'stock_status',
+    controller : 'StockStatusReportController as StatusCtrl',
     templateUrl : 'partials/reports/stock_status/stock_status.html'
   })
   .when('/fonction', {
