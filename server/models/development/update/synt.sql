@@ -284,8 +284,8 @@ VALUES (120, 'Rapport situation group debiteur', 'TREE.DEBITOR_GROUP_REPORT', 'p
 
 -- Create new budget
 -- 
--- Date: 205-09-10
+-- Date: 2015-09-16
 -- By: Bruce Mbayo
-INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
-VALUES (121, 'Create new budget', 'TREE.NEW_BUDGET', 'Creation nouveau budget via CSV', 8, '/partials/budget/new', '/budgeting/new/');
 
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
+VALUES (121, 'Budget Management', 'TREE.BUDGET_MANAGEMENT', 'Budgets Management module', 8, '/partials/budget/new', '/budgeting/new/');

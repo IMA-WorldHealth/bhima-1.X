@@ -241,5 +241,5 @@ exports.initialise = function (app) {
   app.delete('/users/:id', users.removeUser);
 
   // budget controller
-  app.post('/budget/upload', multipart({ uploadDir: 'upload/'}), budget.upload);
+  app.post('/budget/upload', multipart({ uploadDir: 'client/upload'}), budget.upload);
 };

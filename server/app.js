@@ -24,7 +24,7 @@ require('./config/routes').initialise(app);
 require('./lib/pluginManager')(app, config.plugins);
 
 // start the server
-https.createServer(credentials, app).listen(config.port, 'localhost', logApplicationStart);
+https.createServer(credentials, app).listen(config.port, logApplicationStart);
 
 process.on('uncaughtException', forceExit);
 
