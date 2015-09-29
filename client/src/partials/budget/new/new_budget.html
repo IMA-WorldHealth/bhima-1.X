@@ -26,7 +26,7 @@
             class="form-bhima" 
             ng-model="config.fiscal_year_id" 
             ng-options="fy.id as formatFiscalYear(fy) for fy in fiscal_years.data"
-            ng-change="loadPeriod(config.fiscal_year_id)" 
+            ng-change="selectFiscalYear(config.fiscal_year_id)" 
             required></select>
           </div>
 
@@ -47,11 +47,25 @@
           <div ng-switch on="session.option" class="well">
             <div ng-switch-when="csv" class="form-inline">
               <h4><b><i class="glyphicon glyphicon-file"></i> {{ "BUDGET.NEW.IMPORT_CSV" | translate }}</b></h4>
+              <div class="form-group">
+                <label>{{ "BUDGET.ANALYSIS.SELECT_PERIOD" | translate }}</label>
+              </div>
+              
+              <select 
+                class="form-bhima" 
+                ng-if="session.option=='csv'"
+                ng-model="config.period" 
+                ng-options="p as formatPeriod(p) for p in session.periods" 
+                ng-disabled="!config.fiscal_year_id" 
+                required>
+              </select>
+              <br>
               <button 
                 ngf-select="uploadFile($file)"
                 ngf-pattern="'.csv'" 
                 accept=".csv" 
-                class="btn btn-sm btn-success">
+                class="btn btn-sm btn-success"
+                ng-disabled="!config.period.id">
                 <i class="glyphicon glyphicon-upload"></i> {{ "BUDGET.NEW.SEND_FILE" | translate }}
               </button>
             </div>
@@ -72,12 +86,11 @@
 
     <div ng-switch-when="edit">
       <div class="row" ng-if="!session.found">
-        <div class="col-xs-1"></div>
-        <div class="col-xs-5">
-          <div>
+        <div class="col-sm-offset-3 col-xs-6">
+          <div class="center">
             <h3>{{ session.no_data_msg }}</h3>
             <h3>{{ "BUDGET.EDIT.CREATE_QUESTION" | translate }}</h3>
-            <h3 class="center">
+            <h3>
               <button class="btn btn-sm btn-default" ng-click="createBudget()">
                 <span class="glyphicon glyphicon-plus-sign"></span> {{ "BUDGET.EDIT.CREATE" | translate }}
               </button>
@@ -86,80 +99,81 @@
         </div>
       </div>
 
-      <div class="row panel panel-primary" ng-if="session.found" style="margin: 4px 4px auto 4px">
-        <div class="panel-heading">
-          <b>{{ "BUDGET.EDIT.BUDGET_DETAILS" | translate }}</b>
-        </div>
-        <div class="col-xs-5">
-          <form name="budget" style="margin-top: 10px">
-            <table class="table form-bhima-border" summary="{{ 'EDIT.BUDGET.EDIT' | translate }}">
-              <thead>
-                <tr>
-                  <th colspan="5">
-                    <h4>{{ "BUDGET.EDIT.FISCAL_YEAR_LABEL" | translate }} {{ session.fiscal_year.fiscal_year_txt }}</h4>
-                  </th>
-                </tr>
-                <tr>
-                  <th>{{ "BUDGET.EDIT.PERIOD" | translate }}</th>
-                  <th>{{ "BUDGET.EDIT.START"  | translate }}</th>
-                  <th>{{ "BUDGET.EDIT.END"    | translate }}</th>
-                  <th>{{ "BUDGET.EDIT.BUDGET" | translate }}</th>
-                  <th>{{ "BUDGET.EDIT.FREEZE" | translate }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr ng-repeat="budget in budgets.data">
-                  <td>{{ budget.period_number }}</td>
-                  <td>{{ budget.period_start | date }}</td>
-                  <td>{{ budget.period_stop | date }}</td>
-                  <td><input type="number" 
-                       ng-model="budget.budget" 
-                       ng-change="recompute()" 
-                       ng-focus="startEditing(budget)"
-                       ng-blur="endEditing(budget)"
-                       min="0.0" 
-                       ng-disabled="session.totalBudget <= 0.0 || (session.autoAdjust && (budget.freeze && !budget.editing))"
-                       >
-                  </td>
-                  <td style="text-align: center">
-                    <input type="checkbox" 
-                     ng-model="budget.freeze">
-                  </td>
-                </tr>
-                <tr>
-                  <td colspan="2" style="vertical-align: middle">
-                    <b>{{ "BUDGET.EDIT.AUTO_ADJUST" | translate }}&nbsp;&nbsp;
-                    <input type="checkbox" 
-                     style="margin: 0"
-                     ng-disabled="session.totalBudget <= 0.0"
-                     ng-change="recompute()"
-                     ng-model="session.autoAdjust"></b>
-                  </td>
-                  <td style="vertical-align: middle">
-                    <span class="pull-right">{{ "BUDGET.EDIT.TOTAL" | translate }}</span>
-                  </td>
-                  <td style="vertical-align: middle">
-                    <input type="number"
-                     ng-class="{'form-bhima-red-border' : session.totalBudget <= 0}"
-                     ng-model="session.totalBudget" 
-                     ng-change="recompute()" 
-                     min="0.0">
-                  </td>
-                  <td>&nbsp;</td>
-                </tr>
-              </tbody>
-            </table>
-          </form>
-        </div>
-        <div class="col-xs-4">
-          <h4 class="box-error" ng-if="session.totalBudget > 0.0 && !session.validTotal">
-            {{ "BUDGET.EDIT.WARNING" | translate }} <br/>
-            {{ "BUDGET.EDIT.WARN_BAD_TOTALS" | translate }}
-          </h4>
-          <h4 class="box-error" ng-if="session.totalBudget <= 0.0">
-            {{ "BUDGET.EDIT.WARNING" | translate }} <br/>
-            {{ "BUDGET.EDIT.WARN_ZERO_TOTAL" | translate }}
-          </h4>
+      <div class="row" ng-if="session.found">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="col-xs-8">
+              <form name="budget">
+                <table class="table table-condensed form-bhima-border" summary="{{ 'EDIT.BUDGET.EDIT' | translate }}">
+                  <thead>
+                    <tr>
+                      <th colspan="5">
+                        <h4>{{ "BUDGET.EDIT.FISCAL_YEAR_LABEL" | translate }} {{ session.fiscal_year.fiscal_year_txt }}</h4>
+                      </th>
+                    </tr>
+                    <tr>
+                      <th>{{ "BUDGET.EDIT.PERIOD" | translate }}</th>
+                      <th>{{ "BUDGET.EDIT.START"  | translate }}</th>
+                      <th>{{ "BUDGET.EDIT.END"    | translate }}</th>
+                      <th>{{ "BUDGET.EDIT.BUDGET" | translate }}</th>
+                      <th>{{ "BUDGET.EDIT.FREEZE" | translate }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="budget in budgets.data | orderBy:'period_number'">
+                      <td>{{ budget.period_number }}</td>
+                      <td>{{ budget.period_start | date }}</td>
+                      <td>{{ budget.period_stop | date }}</td>
+                      <td><input type="number" 
+                           ng-model="budget.budget" 
+                           ng-change="recompute()" 
+                           ng-focus="startEditing(budget)"
+                           ng-blur="endEditing(budget)"
+                           min="0.0" 
+                           ng-disabled="session.totalBudget <= 0.0 || (session.autoAdjust && (budget.freeze && !budget.editing))"
+                           >
+                      </td>
+                      <td style="text-align: center">
+                        <input type="checkbox" 
+                         ng-model="budget.freeze">
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="2" style="vertical-align: middle">
+                        <b>{{ "BUDGET.EDIT.AUTO_ADJUST" | translate }}&nbsp;&nbsp;
+                        <input type="checkbox" 
+                         style="margin: 0"
+                         ng-disabled="session.totalBudget <= 0.0"
+                         ng-change="recompute()"
+                         ng-model="session.autoAdjust"></b>
+                      </td>
+                      <td style="vertical-align: middle">
+                        <span class="pull-right">{{ "BUDGET.EDIT.TOTAL" | translate }}</span>
+                      </td>
+                      <td style="vertical-align: middle">
+                        <input type="number"
+                         ng-class="{'form-bhima-red-border' : session.totalBudget <= 0}"
+                         ng-model="session.totalBudget" 
+                         ng-change="recompute()" 
+                         min="0.0">
+                      </td>
+                      <td>&nbsp;</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </form>
+            </div>
+            <div class="col-xs-4">
+              <h4 class="box-error" ng-if="session.totalBudget > 0.0 && !session.validTotal">
+                {{ "BUDGET.EDIT.WARNING" | translate }} <br/>
+                {{ "BUDGET.EDIT.WARN_BAD_TOTALS" | translate }}
+              </h4>
+              <h4 class="box-error" ng-if="session.totalBudget <= 0.0">
+                {{ "BUDGET.EDIT.WARNING" | translate }} <br/>
+                {{ "BUDGET.EDIT.WARN_ZERO_TOTAL" | translate }}
+              </h4>
+            </div>
+          </div>
         </div>
       </div>
     </div> <!-- end div session.mode = 'edit' -->

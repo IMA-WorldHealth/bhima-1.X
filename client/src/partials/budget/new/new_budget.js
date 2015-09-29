@@ -15,7 +15,8 @@ angular.module('bhima.controllers')
   function($q, $scope, $window, $http, $translate, validate, precision, messenger, appstate, SessionService, connect, Upload) {
     var dependencies = {},
         enterprise_id = null,
-        session = $scope.session = {};
+        session = $scope.session = {},
+        config = $scope.config = {};
 
     // Set up for the database queries
     dependencies.account = {
@@ -72,27 +73,85 @@ angular.module('bhima.controllers')
 
     session.option = 'csv';
 
+    init();
 
-    /* =============== */
-    /* IMPORT CSV FILE */
-    /* =============== */
+    function init() {
+      enterprise_id = SessionService.enterprise.id;
+      $scope.enterprise = SessionService.enterprise;
+      dependencies.fiscal_years.query.where = [ 'fiscal_year.enterprise_id=' + enterprise_id ];
+      validate.process(dependencies, ['fiscal_years'])
+      .then(loadFiscalYears);
+    }
+
+    /* -------------------------------------------------- */
+
+    /* ================== */
+    /* ULPOADING CSV FILE */
+    /* ================== */
 
     // Initialize the session
-    session.file = null;
+    $scope.months = {
+      0  : 'OPERATING_ACCOUNT.ALL',
+      1  : 'OPERATING_ACCOUNT.JANUARY',
+      2  : 'OPERATING_ACCOUNT.FEBRUARY',
+      3  : 'OPERATING_ACCOUNT.MARCH',
+      4  : 'OPERATING_ACCOUNT.APRIL',
+      5  : 'OPERATING_ACCOUNT.MAY',
+      6  : 'OPERATING_ACCOUNT.JUNE',
+      7  : 'OPERATING_ACCOUNT.JULY',
+      8  : 'OPERATING_ACCOUNT.AUGUST',
+      9  : 'OPERATING_ACCOUNT.SEPTEMBER',
+      10 : 'OPERATING_ACCOUNT.OCTOBER',
+      11 : 'OPERATING_ACCOUNT.NOVEMBER',
+      12 : 'OPERATING_ACCOUNT.DECEMBER'
+    };
+    session.periods  = null;
+    session.file     = null;
+    session.csvArray = null;
 
     // Functions
     function uploadFile(file) {
       session.file = file;
-      Upload.upload({ url: '/budget/upload', file: file });
-      console.log(session.file);
+      Upload.upload({ url: '/budget/upload', 
+        file: file, 
+        fields : {
+          'fiscal_year_id' : config.fiscal_year_id,
+          'period' : config.period,
+        } 
+      })
+      .success(function () {
+        messenger.success($translate.instant('UTIL.SUCCESS'), true);
+        config.period = null;
+      });
+    }
+
+    function loadPeriod(fiscal_year_id) {
+      dependencies.period = {
+        query : {
+          tables : {
+            'period' : { columns : ['id', 'period_number', 'period_start', 'period_stop'] }
+          },
+          where : ['period.fiscal_year_id=' + fiscal_year_id, 'AND', 'period.id<>0']
+        }
+      };
+
+      validate.refresh(dependencies, ['period'])
+      .then(function (model) {
+        session.periods = model.period.data;
+      });
+    }
+
+    function formatPeriod(obj) {
+      return '' + $translate.instant($scope.months[obj.period_number]);
     }
 
     // Expose to view
     $scope.uploadFile = uploadFile;
+    $scope.formatPeriod = formatPeriod;
 
-    /* =================== */
-    /* END IMPORT CSV FILE */
-    /* =================== */
+    /* ====================== */
+    /* END ULPOADING CSV FILE */
+    /* ====================== */
 
     /* -------------------------------------------------- */
 
@@ -101,14 +160,14 @@ angular.module('bhima.controllers')
     /* =============== */
 
     // Initialize the session
-    session.mode = 'configure';
-    session.found = false;
-    session.account = null;
+    session.mode        = 'configure';
+    session.found       = false;
+    session.account     = null;
     session.fiscal_year = null;
-    session.numPeriods = null;
+    session.numPeriods  = null;
     session.totalBudget = 0.0;
-    session.validTotal = false;
-    session.autoAdjust = false;
+    session.validTotal  = false;
+    session.autoAdjust  = false;
     session.no_data_msg = null;
 
     // Basic setup function when the models are loaded
@@ -154,11 +213,6 @@ angular.module('bhima.controllers')
         .then(startup);
         session.mode = 'edit';
       }
-      console.log(session.mode);
-    }
-
-    function resetAccountSearch() {
-      // NOP for now (may need it later)
     }
 
     function accountWhere() {
@@ -220,12 +274,6 @@ angular.module('bhima.controllers')
         messenger.danger($translate.instant('BUDGET.EDIT.UPDATE_FAIL'));
         console.log(err);
       });
-    }
-
-    function selectYear(id) {
-      session.fiscal_year = $scope.fiscal_years.data.filter(function (obj) {
-      return obj.id === id;
-      })[0];
     }
 
     function toggleFreeze(budget) {
@@ -291,31 +339,30 @@ angular.module('bhima.controllers')
     session.fiscal_year = $scope.fiscal_years.data[$scope.fiscal_years.data.length - 1];
   }
 
+  function selectFiscalYear(fy_id) {
+    session.fiscal_year = $scope.fiscal_years.get(fy_id);
+    loadPeriod(fy_id);
+  }
+
+  function formatFiscalYear(fy) {
+    return '' + fy.fiscal_year_txt + ' (' + fy.start_month + '/' + fy.start_year + ')';
+  }
+
+  // Expose to view
+  $scope.submitAccount      = submitAccount;
+  $scope.createBudget       = createBudget;
+  $scope.accountWhere       = accountWhere;
+  $scope.restartSearch      = restartSearch;
+  $scope.updateBudget       = updateBudget;
+  $scope.toggleFreeze       = toggleFreeze;
+  $scope.startEditing       = startEditing;
+  $scope.endEditing         = endEditing;
+  $scope.recompute          = recompute;
+  $scope.formatFiscalYear   = formatFiscalYear;
+  $scope.selectFiscalYear   = selectFiscalYear;
+
   /* =================== */
   /* END BUDGET MANUALLY */
   /* =================== */
-
-    // Register this controller
-  appstate.register('enterprise', function (enterprise) {
-    enterprise_id = Number(enterprise.id);
-    $scope.enterprise = enterprise;
-    dependencies.fiscal_years.query.where = [ 'fiscal_year.enterprise_id=' + enterprise_id ];
-    validate.process(dependencies, ['fiscal_years'])
-    .then(loadFiscalYears);
-  });
-
-    // Set up the visible functions
-  $scope.submitAccount = submitAccount;
-  $scope.resetAccountSearch = resetAccountSearch;
-
-  $scope.selectYear = selectYear;
-  $scope.createBudget = createBudget;
-  $scope.accountWhere = accountWhere;
-  $scope.restartSearch = restartSearch;
-  $scope.updateBudget = updateBudget;
-  $scope.toggleFreeze = toggleFreeze;
-  $scope.startEditing = startEditing;
-  $scope.endEditing = endEditing;
-  $scope.recompute = recompute;
 
 }]);

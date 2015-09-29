@@ -360,7 +360,9 @@ angular.module('bhima.controllers')
       });
 
       // Exportation
-      exportFile.csv(fileData, 'Budget Analysis Report');
+      var labelPeriod     = session.selectedPeriod || '';
+      var labelFiscalYear = session.selectedFiscalYear.start_year || '';
+      exportFile.csv(fileData, 'Budget ' + labelPeriod + '_' + labelFiscalYear);
     }
 
     function reconfigure() {
