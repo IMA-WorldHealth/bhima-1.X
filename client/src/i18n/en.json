@@ -2858,7 +2858,13 @@
    "DASHBOARD" : {
       "FINANCE" : " Finance Dashboard",
       "TITLE"   : "Dashboards"
-   },   
+   },
+   "DEVELOPMENT" : { 
+      "TITLE" : "_Development",
+      "INCOME_EXPENSE" : "Income Expense",
+      "CHART_OF_ACCOUNTS" : "Chart of Accounts",
+      "PATIENT_INVOICES" : "Patient Invoices"
+   },
    "DEBTOR_AGING"              : "Debtor Aging",
    "DEBTOR_GRP"                : "Debtor Group",
    "DEPOT"                     : "Store",
