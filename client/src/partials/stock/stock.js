@@ -69,7 +69,7 @@ function MainStockController($scope, $location, $translate, $window, messenger, 
   }];
 
   // utility modules
-  config.utilities = [{
+  config.reports = [{
     key  : 'DEPOT.DISTRIBUTION.PATIENTS',
     ico  : 'glyphicon-th-list',
     link : '/depots/:uuid/reports/distributions/patients'
@@ -85,24 +85,6 @@ function MainStockController($scope, $location, $translate, $window, messenger, 
     key : 'DEPOT.DISTRIBUTION.LOSSES',
     ico : 'glyphicon-th-list',
     link : '/depots/:uuid/reports/distributions/losses'
-  }];
-
-  config.reports = [{
-    key : 'REPORT.STOCK',
-    ico : 'glyphicon-list-alt',
-    link : '/reports/stock_store/:uuid'
-  }, {
-    key : 'STOCK.DISTRIBUTION_RECORDS.KEY',
-    ico : 'glyphicon-list-alt',
-    link : '/reports/distribution_record/:uuid'
-  }, {
-    key : 'STOCK.DISTRIBUTION_SERVICE_RECORDS.KEY',
-    ico : 'glyphicon-list-alt',
-    link : '/reports/distribution_service_record/:uuid'
-  }, {
-    key : 'STOCK.LOSS.LOSS_RECORDS',
-    ico : 'glyphicon-list-alt',
-    link : '/stock/loss_record/:uuid'
   }];
 
   function initialise() {
