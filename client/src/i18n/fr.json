@@ -858,7 +858,18 @@
    "NEW"        : "Nouveau Groupe de Débiteur",
    "SUCCES"     : "Succès",
    "TITLE"      : "Gestion des Groupes des Débiteurs"
-   },
+},
+
+"DEBITOR_GROUP_REPORT" : {
+   "DOCUMENT_CONFIG" : "Configuration rapport groupe de debiteur",
+   "LANGUAGE" : "Langue",
+   "INVOLVE_JOURNAL" : "Integrer le journal ",
+   "NOTSOLD_ONLY"    : "Montrer seulement Les factures non Soldees",
+   "DEBITOR_GROUP"   : "Groupe de Debiteur",
+   "DOC_SUCCES"      : "Document généré avec succès - Ouvrir le document",
+   "GENERATE_DOC"    : "Generer document"
+},
+
 "DEPOT": {
    "ADD"             : "Ajouter",
    "ALERT"           : "Ce module vous permet de gérer vos dépôt",
@@ -872,7 +883,8 @@
    "NO_DEPOTS"       : "Aucun dépôt trouvé",
    "NOT_FOUND"       : "Aucun dépôt enregistrés n'a pu être trouvée. Veuillez sélectionner le bon dépôt ou contacter l'administrateur du système.",
    "TITLE"           : "Gestion des Dépôt"
-   },
+},
+
 "DISTRIBUTION": {
    "ADD_ROW"                : "Ajouter Item",
    "ALLOCATE_MEDECINE"      : "Allouer les médicaments",
@@ -2864,6 +2876,7 @@
       "TITLE"   : "Tableau de bord"      
    },
    "DEBTOR_AGING"              : "Rapport Débiteur",
+   "DEBITOR_GROUP_REPORT"      : "Etat Financier Group Debiteur",
    "DEBTOR_GRP"                : "Groupe Débiteur",
    "DEPOT"                     : "Dépôt",
    "DONATION_CONFIRMATION"     : "Confirmation Donation",

@@ -1,0 +1,73 @@
+<head>
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/normalize.css">
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/skeleton.css">
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/reports.css">
+</head>
+
+<body>
+  <section>
+    <table>
+      <tr>
+        <td width="30%">
+          <div>
+            <span>{{=it.enterpriseName}}</span><br/>
+            <span>{{=it.phone}}</span><br/>
+            <span>{{=it.dataStructure.BOX}} : {{=it.bp}}</span><br/>
+          </div>
+        </td>
+        <td width="40%" align="center">
+          <div class="center-text">
+            <span>{{=it.dataStructure.TITLE}}</span><br/>
+            <span>{{=it.debitorGroupName}}</span><br/>
+            <span>{{=it.reportDate}}</span><br/>
+          </div>
+        </td>
+        <td width="30%">
+        </td>
+      </tr>
+    </table>
+  </section>
+
+  <section>
+    <table class="balance" border="1">
+      <thead>
+        <tr>
+          <th>{{=it.dataStructure.SALE_NUMBER}}</th>
+          <th>{{=it.dataStructure.PATIENT}}</th>
+          <th>{{=it.dataStructure.BILL_DATE}}</th>
+          <th>{{=it.dataStructure.AMOUNT_BILLED}}</th>
+          <th>{{=it.dataStructure.AMOUNT_PAYED}}</th>
+          <th>{{=it.dataStructure.DIFFERENCE}}</th>
+          <th>{{=it.dataStructure.TRANS_NUMBER}}</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {{~it.data :value : index}}
+          <tr class="contenu">
+            <td>{{=value.saleNumber}}</td>
+            <td>{{=value.patientName}}</td>
+            <td>{{=value.invoice_date}}</td>
+            <td>{{=value.cost}}</td>
+            <td>{{=value.credit}}</td>
+            <td>{{=value.difference}}</td>
+            <td>{{=value.trans_id}}</td>
+          </tr>
+        {{~}}
+      </tbody>
+    </table>    
+
+    <table border="1">
+      <tbody>
+        <tr>
+          <td class="total">{{=it.dataStructure.TOTAL_BILLED}}</td>
+          <td class="total">{{=it.somBilled}}</td>
+          <td class="total">{{=it.dataStructure.TOTAL_PAYED}}</td>
+          <td class="total">{{=it.somPayed}}</td>
+          <td class="total">{{=it.dataStructure.TOTAL_DIFFERENCE}}</td>
+          <td class="total">{{=it.somDifference}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</body>

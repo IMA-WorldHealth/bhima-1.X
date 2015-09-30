@@ -39,15 +39,17 @@ tr.outline {
   border-bottom : 1px solid #9f9f9f;
 }
 
-.center > * {
+.center-text : {
   text-align : center;
-  display : block;
-  margin : 0;
-  padding : 0;
+  margin: 0 auto;
 }
 
 .contenu td {
   text-align : center;
+}
+
+.total : {
+  font-weight: bold;
 }
 
 
