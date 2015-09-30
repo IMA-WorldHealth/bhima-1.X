@@ -1,21 +1,22 @@
-var path                    = require('path');
-var fs                      = require('fs');
-var q                       = require('q');
+var path                               = require('path');
+var fs                                 = require('fs');
+var q                                  = require('q');
 
 // Import and compile template files
-var dots                    = require('dot').process({path : path.join(__dirname, 'templates')});
+var dots                               = require('dot').process({path : path.join(__dirname, 'templates')});
 
-var wkhtmltopdf             = require('wkhtmltopdf');
-var uuid                    = require('./../../lib/guid');
-var config                  = require('./config');
+var wkhtmltopdf                        = require('wkhtmltopdf');
+var uuid                               = require('./../../lib/guid');
+var config                             = require('./config');
 
 // Document contexts
-var invoiceContext          = require('./data/invoice');
-var balanceContext          = require('./data/balance_sheet');
-var bilanContext            = require('./data/bilan');
-var grandLivreContext       = require('./data/grand_livre');
-var EmployeeStateContext    = require('./data/employee_state');
-var accountResultContext    = require('./data/account_result');
+var invoiceContext                     = require('./data/invoice');
+var balanceContext                     = require('./data/balance_sheet');
+var bilanContext                       = require('./data/bilan');
+var grandLivreContext                  = require('./data/grand_livre');
+var EmployeeStateContext               = require('./data/employee_state');
+var accountResultContext               = require('./data/account_result');
+var debitorGroupReportContext          = require('./data/debitor_group_report');
 
 // Module configuration
 var writePath = path.join(__dirname, 'out/');
@@ -45,6 +46,10 @@ var documentHandler = {
   result_account : {
     template : dots.account_result, //templating provider
     context :  accountResultContext // data provider
+  },
+  debitor_group_report : {
+    template : dots.debitor_group_report, //templating provider
+    context :  debitorGroupReportContext // data provider
   }
 };
 
@@ -52,6 +57,7 @@ var documentHandler = {
 initialise();
 
 exports.serve = function (req, res, next) {
+  
   var target = req.params.target;
   var options = {root : writePath};
 
@@ -74,6 +80,7 @@ exports.build = function (req, res, next) {
 
   var handler = documentHandler[target]; //handler will contain a object with two property, template for structure and context for data
   var options = req.body;
+  options.stylePath = path.join(__dirname);
 
   // Module does not support the requested document
   if (!handler) {
@@ -124,6 +131,7 @@ function buildConfiguration(hash, size) {
 }
 
 function initialise() {
+
 
   // Ensure write folder exists - wkhtmltopdf will silently fail without this
   fs.exists(writePath, function (exists) {
