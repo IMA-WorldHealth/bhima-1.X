@@ -1,18 +1,16 @@
 angular.module('bhima.controllers')
-.controller('budget.new', [
+.controller('NewBudgetController', [
   '$q',
-  '$scope', 
-  '$window',
+  '$scope',
   '$http',
   '$translate',
   'validate',
   'precision',
   'messenger',
-  'appstate',
   'SessionService',
   'connect',
   'Upload',
-  function($q, $scope, $window, $http, $translate, validate, precision, messenger, appstate, SessionService, connect, Upload) {
+  function($q, $scope, $http, $translate, validate, precision, messenger, SessionService, connect, Upload) {
     var dependencies = {},
         enterprise_id = null,
         session = $scope.session = {},
@@ -44,7 +42,8 @@ angular.module('bhima.controllers')
           columns : ['fiscal_year_id', 'period_number', 'period_start', 'period_stop', 'locked' ]
         }
       },
-      join : [ 'period.id=budget.period_id' ],
+      join  : [ 'period.id=budget.period_id' ],
+      where : [ 'period.period_number<>0' ]
       }
     };
 
@@ -241,7 +240,7 @@ angular.module('bhima.controllers')
        'budget' : 0.0});
       });
 
-      connect.post('budget', newBudgets, ['id'])
+      connect.post('budget', newBudgets)
       .then(function () {
         messenger.success($translate.instant('BUDGET.EDIT.CREATE_OK'));
         submitAccount(session.account);
@@ -254,19 +253,13 @@ angular.module('bhima.controllers')
 
     function updateBudget() {
       // Save the budget data for all the periods
-      var dbPromises = [];
-      $scope.budgets.data.forEach(function (bud) {
-      dbPromises.push( 
-      connect.put('budget', 
-        [{'id' : bud.id,
-        'account_id' : session.account.id,
-        'period_id' : bud.period_id,
-        'budget' : precision.round(bud.budget, 4)}],
-        ['id']));
-      });
-
-      $q.all(dbPromises)
-      .then(function () {
+      $http.post('/budget/update', { 
+        params : {
+          budgets   : $scope.budgets.data,
+          accountId : session.account.id
+        }
+      })
+      .success(function () {
         messenger.success($translate.instant('BUDGET.EDIT.UPDATE_OK'));
         submitAccount(session.account);
       })

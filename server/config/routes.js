@@ -242,4 +242,5 @@ exports.initialise = function (app) {
 
   // budget controller
   app.post('/budget/upload', multipart({ uploadDir: 'client/upload'}), budget.upload);
+  app.post('/budget/update', budget.update);
 };

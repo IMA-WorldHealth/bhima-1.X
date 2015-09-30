@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('budget.analysis', [
+.controller('AnalysisBudgetController', [
   '$q',
   '$scope', 
   '$window',
