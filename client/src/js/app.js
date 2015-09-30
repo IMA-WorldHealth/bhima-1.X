@@ -16,11 +16,11 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/budget/edit/edit_budget.html'
   })
   .when('/budgeting/analysis', {
-    controller: 'budget.analysis',
+    controller: 'AnalysisBudgetController as AnalysisBudgetCtrl',
     templateUrl: 'partials/budget/analysis/analysis_budget.html'
   })
   .when('/budgeting/new', {
-    controller: 'budget.new',
+    controller: 'NewBudgetController as newBudgetCtrl',
     templateUrl: 'partials/budget/new/new_budget.html'
   })
   .when('/budgeting/:accountID?', {

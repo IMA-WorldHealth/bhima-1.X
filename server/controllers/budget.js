@@ -3,11 +3,13 @@
 
 var csv  = require('fast-csv'),
 		fs   = require('fs'),
-		db   = require('../lib/db');
+		db   = require('../lib/db'),
+		q    = require('q');
 
 var uploadDir = 'client/upload/';
 
 module.exports = {
+	update : updateBudget,
 	upload : uploadedFile
 };
 
@@ -100,4 +102,22 @@ function createBudget(csvArray, fiscal_year_id, period) {
 		var sql = 'DELETE FROM budget WHERE period_id = ? ;';
 		return db.exec(sql, [period_id]);
 	}
+}
+
+function updateBudget(req, res, next) {
+	var budgets = req.body.params.budgets;
+	var accountId = req.body.params.accountId;
+	var dbPromises = [];
+
+	budgets.forEach(function (bud) {
+		var sql = 'UPDATE budget SET budget.account_id=?, budget.period_id=?, budget.budget=? WHERE budget.id=? ;';
+		var value = [accountId, bud.period_id, bud.budget, bud.id];
+		dbPromises.push(db.exec(sql, value));
+	});
+
+	q.all(dbPromises)
+	.then(function () {
+		res.status(200).send('update');
+	});
+
 }

@@ -34,3 +34,6 @@ plugins/mail/addresses/*
 
 # ignore all gzipped files
 *.gz
+
+# ignore upload folder
+client/src/upload/
