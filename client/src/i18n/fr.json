@@ -863,27 +863,35 @@
    "TITLE"      : "Gestion des Groupes des Débiteurs"
    },
 "DEPOT": {
-   "ADD"             : "Ajouter",
-   "ALERT"           : "Ce module vous permet de gérer vos dépôt",
-   "ALL"             : "Tous les Dépôts",
-   "DELETE_SUCCESS"  : "Suppression avec succès",
-   "DELETE_FAIL"     : "Echec Suppression, Le depot est utilisé dans plusiers enregistrements",
-   "EDIT"            : "Editer les informations d'un dépôt",
-   "EDIT_SUCCESS"    : "Données du dépôt mise à jour avec succès ",
-   "NEW"             : "Nouveau dépôt",
-   "NEW_SUCCESS"     : "Nouveau dépôt enregistré avec succès",
-   "NO_DEPOTS"       : "Aucun dépôt trouvé",
-   "NOT_FOUND"       : "Aucun dépôt enregistrés n'a pu être trouvée. Veuillez sélectionner le bon dépôt ou contacter l'administrateur du système.",
-   "TITLE"           : "Gestion des Dépôt",
-   "DISTRIBUTION"   : {
-     "PATIENTS" : "Distributions to Patients",
-     "SERVICES" : "Distributions to Services",
-     "RUMMAGE"  : "Liquidation by Rummage Sale",
-     "LOSSES"   : "Stock Losses",
-     "ANNUL"    : "Annuler cette Transaction",
-     "ANNULLED" : "Annulé",
-     "NO_ROWS"  : "Pas de données pour période sélectionnée"
-   }
+  "ADD"             : "Ajouter",
+  "ALERT"           : "Ce module vous permet de gérer vos dépôt",
+  "ALL"             : "Tous les Dépôts",
+  "DELETE_SUCCESS"  : "Suppression avec succès",
+  "DELETE_FAIL"     : "Echec Suppression, Le depot est utilisé dans plusiers enregistrements",
+  "EDIT"            : "Editer les informations d'un dépôt",
+  "EDIT_SUCCESS"    : "Données du dépôt mise à jour avec succès ",
+  "NEW"             : "Nouveau dépôt",
+  "NEW_SUCCESS"     : "Nouveau dépôt enregistré avec succès",
+  "NO_DEPOTS"       : "Aucun dépôt trouvé",
+  "NOT_FOUND"       : "Aucun dépôt enregistrés n'a pu être trouvée. Veuillez sélectionner le bon dépôt ou contacter l'administrateur du système.",
+  "TITLE"           : "Gestion des Dépôt",
+  "DISTRIBUTION"   : {
+    "ANNUL"    : "Annuler cette Transaction",
+    "ANNULLED" : "Annulé",
+    "LOSSES"   : "Stock Losses",
+    "NO_ROWS"  : "Pas de données pour période sélectionnée",
+    "SERVICES" : "Distributions to Services",
+    "SERVICE" : {
+      "LOTS_AVAILABLE" : "Lots Available",
+      "NO_LOTS"        : "No Lots Available"
+    },
+    "PATIENTS" : "Distributions to Patients",
+    "RUMMAGE"  : "Liquidation by Rummage Sale",
+    "CANCEL" : {
+      "TITLE"   : "Cancel Pharmacy Distribution",
+      "MESSAGE" : "You are about to cancel a distribution made from the pharmacy.  Please make sure these details are correct."
+    }
+  }
 },
 "DISTRIBUTION": {
    "ADD_ROW"                : "Ajouter Item",
@@ -2426,6 +2434,7 @@
    "REFERENCE_GROUP"       : "Sélectionner un groupe de référence",
    "RESULT_ACCOUNT_SCT"    : "Sélectionner une Section de Compte Résultat",
    "RECIPIENT"             : "Sélectionner un destinataire",
+   "SERVICE"               : "Sélectionner une Service",
    "SECTOR"                : "Sélectionner une Secteur",
    "SOURCE"                : "Sélectionner source",
    "SUBSIDY"               : "Sélectionner une subvention",

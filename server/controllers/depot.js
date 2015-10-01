@@ -4,14 +4,10 @@
 * This controller is mostly responsible for depot-dependent stock queries.  Most
 * routes require that a depot ID is specified.  Any route without a depot ID
 * might be better positioned in the /inventory/ controller.
-*
-* Exposed routes:
-*   /depots/:depotId/distributions
-*   /depots/:depotId/distributions/:uuid
 */
 
 var db = require('../lib/db'),
-    Store = require('../lib/store');
+    distributions = require('./depots/distributions');
 
 // expose routes
 exports.getDepots = getDepots;
@@ -21,6 +17,7 @@ exports.getDistributionsById = getDistributionsById;
 exports.getAvailableLots = getAvailableLots;
 exports.getAvailableLotsByInventoryId = getAvailableLotsByInventoryId;
 exports.getExpiredLots = getExpiredLots;
+exports.createDistributions = createDistributions;
 
 /**
 * GET /depots
@@ -187,7 +184,7 @@ function getDistributions(req, res, next) {
     // TODO - this should find all consumptions for this depot
     default:
       sql =
-        'SELECT c.uuid, SUM(c.quantity) AS quantity, SUM(c.unit_price) AS price ' +
+        'SELECT c.uuid, SUM(c.quantity) AS quantity, SUM(c.unit_price) AS price, ' +
           'COUNT(c.document_id) AS total, c.date, d.text, ' +
           'd.uuid AS depotId, i.text AS label, c.canceled ' +
         'FROM consumption AS c ' +
@@ -235,6 +232,27 @@ function getDistributionsById(req, res, next) {
 
     res.status(200).json(rows);
   })
+  .catch(next)
+  .done();
+}
+
+/**
+* POST /depots/:depotId/distributions
+*
+* Creates a new distribution for services, patients, etc.
+*/
+function createDistributions(req, res, next) {
+  'use strict';
+
+  // FIXME
+  // We need a better way of passing the project ID into the requests,
+  // preferably giving access to the entire session variable.
+  distributions.createDistributions(req.params.depotId, req.body, req.session)
+  .then(function (data) {
+    res.status(200).json(data);
+  })
+
+  // FIXME -- this needs better error handling, I think.
   .catch(next)
   .done();
 }
@@ -383,11 +401,9 @@ module.exports = function () {
     // to give a total quantity for each depot for each
     // tracking_number
 
-    console.log('\n\n Has reference to Store', Store, '\n\n');
     // contains { tracking_number, quantity, expiration_date }
     var _depot, store = new Store({ identifier : 'tracking_number' });
 
-    console.log('created new store instance', store, '\n\n');
     // depot ID is now a UUID
     _depot = depot;
     // _depot = Number(depot);
@@ -490,7 +506,6 @@ module.exports = function () {
   return function router (url, depot) {
     var routes, match, defer = q.defer();
 
-    console.log('\n\n Got initial depot router request for', url, depot, '\n\n');
     routes = [
       { re : /lot\/([0-9a-z\-|0-9A-Z\-]+)/ , fn : byLot },
       { re : /drug\/([0-9a-z\-|0-9A-Z\-]+)/, fn : byCode },

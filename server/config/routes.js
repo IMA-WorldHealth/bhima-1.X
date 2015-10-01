@@ -1,16 +1,16 @@
 /**
- * Application Routing
- *
- * Initialise link between server paths and controller logic
- *
- * TODO Pass authenticate and authorize middleware down through
- * controllers, allowing for modules to subscribe to different
- * levels of authority
- *
- * TODO createPurchase, createSale, serviceDist are all almost
- * identicale modules - they should all be encapsulated as one
- * module. For Example finance.createSale, finance.createPurchase
- */
+* Application Routing
+*
+* Initialise link between server paths and controller logic
+*
+* TODO Pass authenticate and authorize middleware down through
+* controllers, allowing for modules to subscribe to different
+* levels of authority
+*
+* TODO createPurchase, createSale, are all almost
+* identicale modules - they should all be encapsulated as one
+* module. For Example finance.createSale, finance.createPurchase
+*/
 
 // Require application controllers
 var data            = require('../controllers/data');
@@ -19,7 +19,6 @@ var locations       = require('../controllers/location');
 var createPurchase  = require('../controllers/createPurchase');
 var createSale      = require('../controllers/createSale');
 
-var serviceDist     = require('../controllers/serviceDist');
 var consumptionLoss = require('../controllers/consumptionLoss');
 var trialbalance    = require('../controllers/trialbalance');
 var journal         = require('../controllers/journal');
@@ -76,7 +75,6 @@ exports.initialise = function (app) {
 
   app.post('/purchase', createPurchase.execute);
   app.post('/sale/', createSale.execute);
-  app.post('/service_dist/', serviceDist.execute);
   app.post('/consumption_loss/', consumptionLoss.execute);
 
   // trial balance routes
@@ -178,8 +176,6 @@ exports.initialise = function (app) {
   app.get('/inventory/donations', inventory.getInventoryDonations);
   app.get('/inventory/:uuid/donations', inventory.getInventoryDonationsById);
 
-  // TODO - donations
-
   /* Depot Management */
 
   app.get('/depots', depot.getDepots);
@@ -188,7 +184,11 @@ exports.initialise = function (app) {
   app.get('/depots/:depotId/distributions', depot.getDistributions);
   app.get('/depots/:depotId/distributions/:uuid', depot.getDistributionsById);
 
+  // over-loaded distributions route handles patients, services, and more
+  app.post('/depots/:depotId/distributions', depot.createDistributions);
+
   // get the lots of a particular inventory item in the depot
+  // TODO -- should this be renamed? /stock? /lots?
   app.get('/depots/:depotId/inventory', depot.getAvailableLots);
   app.get('/depots/:depotId/inventory/:uuid', depot.getAvailableLotsByInventoryId);
 

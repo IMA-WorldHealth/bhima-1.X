@@ -81,7 +81,7 @@ function patient(id, userId, cb) {
   .then(function () {
     queries = references.map(function (reference) {
       var params, uid = uuid();
-      
+
       // generate a new uuid and store for later error correction
       ids.push(uid);
 
@@ -174,7 +174,7 @@ function service(id, userId, details, cb) {
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
-    return core.queries.transactionId(details.id);
+    return core.queries.transactionId(details.project.id);
   })
   .then(function (transId) {
     cfg.transId = transId;
@@ -185,17 +185,18 @@ function service(id, userId, details, cb) {
       ids.push(uid);
 
       sql =
-      'INSERT INTO posting_journal (' +
-        'uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
-        'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
-        'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id, cc_id) ' +
-      'SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, service.cost_center_id ' +
-      'FROM service WHERE service.id = ?;';
+        'INSERT INTO posting_journal (' +
+          'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+          'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
+          'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id, cc_id) ' +
+        'SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, service.cost_center_id ' +
+        'FROM service WHERE service.id = ?;';
 
       params = [
-        uid, details.id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description, reference.cogs_account,
-        0, reference.quantity * reference.unit_price, 0, reference.quantity * reference.unit_price,
-        details.currency_id, null, null, id, cfg.originId, userId, reference.service_id
+        uid, details.project.id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description,
+        reference.cogs_account, 0, reference.quantity * reference.unit_price, 0,
+        reference.quantity * reference.unit_price, details.enterprise.currency_id, null, null, id, cfg.originId,
+        userId, reference.service_id
       ];
 
       return db.exec(sql, params);
@@ -211,7 +212,7 @@ function service(id, userId, details, cb) {
 
       sql =
         'INSERT INTO posting_journal (' +
-          'uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+          'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
           'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
           'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
         'SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ' +
@@ -219,9 +220,9 @@ function service(id, userId, details, cb) {
         'WHERE inventory_group.uuid = ?;';
 
       params = [
-        uid, details.id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description,
+        uid, details.project.id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description,
         reference.stock_account, reference.quantity * reference.unit_price, 0, reference.quantity * reference.unit_price, 0,
-        details.currency_id, reference.inventory_uuid, null, reference.uuid, cfg.originId, userId,
+        details.enterprise.currency_id, reference.inventory_uuid, null, reference.uuid, cfg.originId, userId,
         reference.group_uuid
       ];
 

@@ -22,8 +22,6 @@ function DonationManagementController($scope, $q, $translate, $location, $routeP
   $scope.user = Session.user;
   $scope.enterprise = Session.enterprise;
 
-  console.log($scope.enterprise);
-
   session.crud_or_read = 'crud';
   session.view = $translate.instant('DONATION_MANAGEMENT.SEE_ALL');
   session.cfg.depot = { id : $routeParams.depotId };
