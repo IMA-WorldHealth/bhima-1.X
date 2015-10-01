@@ -21,7 +21,7 @@ var numeral = require('numeral');
  * TODO Should this be served and displayed to the client for report 
  * coniguration?
  */
-var DEFAULT_TITLE = 'Income Expense Statement';
+var DEFAULT_HEADING = 'Income Expense Statement';
 var DEFAULT_YEAR_OPTIONS = [];
 
 // TODO Derive from DB
@@ -42,7 +42,6 @@ exports.compile = function (options) {
   var formatDollar = '$0,0.00';
   var balanceDate = new Date();
   
-  
   var displayAccountNumber = false;
 
   var deferred = q.defer();
@@ -54,9 +53,10 @@ exports.compile = function (options) {
   var currentPeriod = {};
   var currentFiscalYear = {};
 
-  
-  //FIXME 
-  options.fiscalYearId = 1;
+  // Validate options/ configuration object
+  if (!options.fiscal_year) { 
+    return q.reject(new Error('Invalid report configuration'));
+  }
 
   // Querry from balance sheet 
   var sql =
@@ -70,20 +70,13 @@ exports.compile = function (options) {
     'WHERE account.account_type_id IN (?, ?);';
 
   
-  db.exec(sql, [options.fiscalYearId, incomeExpenseAccountId, titleAccountId])
+  db.exec(sql, [options.fiscal_year, incomeExpenseAccountId, titleAccountId])
     .then(function (accounts) { 
-      // console.log('income_expense build got', accounts);
-      console.log('[income_expense] Initial number of accounts in query: ', accounts.length);
-
       var accountTree = getChildren(accounts, ROOT_ACCOUNT_ID, 0);
-      
       
       // FIXME Extend object hack
       var incomeData = JSON.parse(JSON.stringify(accountTree));
       var expenseData = JSON.parse(JSON.stringify(accountTree));
-      
-      console.log('[income_expense] Number of accounts after tree parsing: ', incomeData.length);
-      console.log('[income_expense] Number of accounts after tree parsing: ', expenseData.length);
       
       // FIXME Lots of processing, very little querrying - this is what MySQL is foreh
       incomeData = filterAccounts(incomeData, expenseAccountConvention);
@@ -96,7 +89,8 @@ exports.compile = function (options) {
       context.expenseData = expenseData; 
     
       // Attach parameters/ defaults to completed context
-      context.title = options.title || DEFAULT_TITLE;
+      context.heading = options.heading || DEFAULT_HEADING;
+      context.subheading = options.subheading;
 
       deferred.resolve(context);
     })
@@ -138,7 +132,6 @@ function filterAccounts(accounts, excludeType) {
     var matchesFilterType = false;
 
     if (account.account_number[0] === excludeType) { 
-      console.log(account.account_number[0], 'is equal to', excludeType, 'removing account.');
       matchesFilterType = true;
     }
 

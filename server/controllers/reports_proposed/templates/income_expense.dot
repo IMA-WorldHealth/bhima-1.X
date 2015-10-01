@@ -14,7 +14,12 @@
 
   <section id="title" class="center" style="margin-bottom : 40px;">
       <h5>IMCK Hopital Bon Berger</h5>
-      <h5>{{=it.title}}</h5>
+      <h5>{{=it.heading}}</h5>
+  
+      {{? it.subheading }}
+      <h6>{{=it.subheading}}</h6>
+      {{?}}
+
   </section>
  
   <section>

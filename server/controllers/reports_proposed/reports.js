@@ -184,8 +184,6 @@ exports.build = function (req, res, next) {
     reportData.path = reportData.path || __dirname;
     compiledReport = templater(reportData);
 
-
-
     // wkhtmltopdf exceptions not handled
     // TODO Verify with wkhtmltopdf docs that the first parameter will ONLY ever return error codes
     var pdf = wkhtmltopdf(compiledReport, configuration, function (errorCode, signal, a) {
