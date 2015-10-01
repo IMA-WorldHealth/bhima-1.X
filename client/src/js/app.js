@@ -456,7 +456,7 @@ function bhimaconfig($routeProvider) {
   })
 
   // TODO -- migrate this to /depots/
-  .when('/stock/', {
+  .when('/stock', {
     controller : 'stock.main',
     templateUrl : 'partials/stock/stock.html'
   })
@@ -483,7 +483,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/depots/distributions/patients/patients.html'
   })
   .when('/depots/:depotId/distributions/services', {
-    controller : 'stock.distribution_service',
+    controller : 'StockServiceDistributionsController as DistributionsCtrl',
     templateUrl : 'partials/stock/exit_service/distribution_service.html'
   })
   .when('/depot/:depotId/distributions/:consumptionId/cancel', {

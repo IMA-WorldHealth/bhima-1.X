@@ -1,348 +1,224 @@
 angular.module('bhima.controllers')
-.controller('stock.distribution_service', [
-  '$scope',
-  '$q',
-  '$routeParams',
-  '$location',
-  'validate',
-  'connect',
-  'messenger',
-  'util',
-  'uuid',
-  'appstate',
-  '$http',
-  function ($scope, $q, $routeParams, $location, validate, connect, messenger, util, uuid, appstate, $http) {
-    var session = $scope.session = {
-      depot : $routeParams.depotId,
-      isServiceSelected : false
-    };
+.controller('StockServiceDistributionsController', StockServiceDistributionsController);
 
-    var configuration = $scope.configuration = {};
-    var dependencies = {}, selectedIventories = [];
-    dependencies.services = {
-      query : {
-        tables : {
-          'service' : {
-            columns : ['id', 'name', 'cost_center_id']
-          }
-        }
-      }
-    };
+StockServiceDistributionsController.$inject = [
+  '$routeParams', '$http', '$q', '$location', 'SessionService'
+];
 
-    dependencies.depots = {
-      query : {
-        tables : {
-          'depot' : {
-            columns : ['uuid', 'reference', 'text', 'enterprise_id']
-          }
-        },
-        where : ['depot.uuid='+session.depot]
-      }
-    };
+/**
+* Responsible for distributing medications to services throughout the hospital.
+* This entails the following steps:
+*   1) Get the available lots in a particular depot
+*   2) Recommend lots by increasing expiration date (soonest is first)
+*   3) Select quantities from each lot
+*   4) Distribute the drugs to an employee representing the service
+*   5a) Print a receipt/generate documentation
+*   5b) Decrease the stock inventory account in the journal by debiting the
+*       stock account and crediting the cost of goods sold account.
+*
+* @constructor
+* @class StockServiceDistributionsController
+*/
+function StockServiceDistributionsController($routeParams, $http, $q, $location, Session) {
+  var vm = this;
 
-    dependencies.avail_stocks = {
-      identifier:'tracking_number',
-      query : '/serv_dist_stock/' + session.depot
-    };
+  // view data
+  vm.uuid = $routeParams.depotId;
+  vm.total   = 0;
+  vm.queue = [{}];
+  vm.metadata = { date : new Date() };
+  vm.currencyId = Session.enterprise.currency_id;
 
-    dependencies.project = {
-      query : {
-        tables : {
-          'project' : {
-            columns : ['id', 'name']
-          },
-          'enterprise' : {
-            columns : ['currency_id']
-          }
-        },
-        join : ['project.enterprise_id=enterprise.id']
-      }
-    };
+  // exposed functions
+  vm.dequeue    = dequeue;
+  vm.enqueue    = enqueue;
+  vm.use        = use;
+  vm.retotal    = retotal;
+  vm.submit     = submit;
 
-    appstate.register('project', function (project){
-      dependencies.project.query.where = ['project.id='+project.id];
-      validate.process(dependencies)
-      .then(complet)
-      .then(extendData)
-      .then(finalize);
+  // start the module up
+  startup();
+
+  /* ------------------------------------------------------------------------ */
+
+  // get all the services supported by the enterprise
+  function getServices() {
+    return $http.get('/services')
+    .then(function (response) { return response.data; });
+  }
+
+  // get a depot by uuid
+  function getDepot(uuid) {
+    return $http.get('/depots/' + uuid)
+    .then(function (response) { return response.data; });
+  }
+
+  // get available stock in the depot
+  function getAvailableStock(uuid) {
+    return $http.get('/depots/' + uuid + '/inventory')
+    .then(function (response) { return response.data; });
+  }
+
+  function getInventoryItems() {
+    return $http.get('/inventory/metadata')
+    .then(function (response) { return response.data; });
+  }
+
+  // copy data from inventory onto queue row
+  function use(row, item) {
+
+    // toggle visibility in the inventory typeahead
+    item.used = true;
+
+    // cache selected inventory metadata on row
+    row.price = item.price;
+    row.label = item.label;
+    row.lots  = item.lots;
+    row.unit  = item.unit;
+    row.group = item.groupName;
+    row.tracking_number = item.tracking_number;
+    row.maxQuantity = item.maxQuantity;
+  }
+
+  // removes an item from the queue at a given index
+  function dequeue(idx) {
+    var item, i = 0,
+        removed = vm.queue.splice(idx, 1)[0];
+
+    if (!removed.code) { return; }
+
+    // linear search: find the inventory item that we just dequeued by linearly
+    // searching through the inventory for a matching code
+    do {
+      item = vm.inventory[i++];
+    } while (removed.code !== item.code);
+
+    // set the item to be visible again in the typeahead
+    item.used = false;
+  }
+
+  // adds a new row to the queue
+  function enqueue() {
+    vm.queue.push({});
+  }
+
+  // calculate the totals when quantities change
+  function retotal() {
+    vm.total = vm.queue.reduce(function (sum, row) {
+      return sum + (row.price * row.quantity);
+    }, 0);
+  }
+
+  // we need to extract the amount distributed from each lot
+  function distributeAmongLots(quantity, item) {
+    var lot, q,
+        distributions = [],
+        i = 0;
+
+    while (quantity > 0) {
+      lot = item.lots[i++];
+
+      // q is the amount we will consume.distribute from this lot
+      q = (lot.quantity < quantity) ? quantity - lot.quantity : quantity;
+
+      // add to list of distributions
+      distributions.push({
+        service_id      : vm.service.id,
+        unit_price      : item.price,
+        depot_uuid      : vm.uuid,
+        date            : vm.metadata.date,
+        tracking_number : lot.tracking_number,
+        quantity        : q
+      });
+
+      // decrease quantity needed by q
+      quantity -= q;
+    }
+
+    return distributions;
+  }
+
+  // triggered to submit the form
+  // NOTE -- we are guaranteed to have "valid" data, since the button will be
+  // disabled until it passes angular's validation checks.  Further validation
+  // will be done on the server.
+  function submit() {
+    var data;
+
+    // make a single flat array of distributions
+    data = vm.queue.reduce(function (array, item) {
+      return array.concat(distributeAmongLots(item.quantity, item));
+    }, []);
+
+    $http.post('/depots/' + vm.uuid + '/distributions', {
+      data : data,
+      type : 'service'   // create a service distribution
+    })
+    .then(function (result) {
+
+      // go to the receipt
+      $location.url('/invoice/service_distribution/' + result.data);
+    })
+    .catch(function (err) {
+      console.log('An error occurred:', err); 
     });
+  }
 
-    function complet (model) {
-      $scope.model = model;
-      return $q.all(model.avail_stocks.data.map(function (stock) {
-        return connect.fetch('expiring_complete/'+stock.tracking_number+'/'+session.depot);
-      }));
-    }
+  // startup the module
+  function startup() {
+    $q.all([
+      getServices(),
+      getDepot(vm.uuid),
+      getAvailableStock(vm.uuid),
+      getInventoryItems()
+    ])
+    .then(function (responses) {
+      var stock, inventory;
 
-    function extendData (results) {
-      results.forEach(function (item, index) {
-        if (!item[0].consumed) {
-          $scope.model.avail_stocks.data[index].consumed = 0;
-        }else{
-          $scope.model.avail_stocks.data[index].consumed = item[0].consumed;
-        }
-      });
-      $scope.model.avail_stocks.data = $scope.model.avail_stocks.data.filter(function (item){
-        return (item.entered - item.consumed - item.moved) > 0;
-      });
-      $q.when();
-    }
+      // destructure responses
+      vm.services = responses[0];
+      vm.depot    = responses[1];
+      stock       = responses[2];
+      inventory   = responses[3];
 
-    function preparDistribution () {
-      session.isServiceSelected = true;
-      $scope.model.uuid = uuid();
-      $scope.model.date = util.convertToMysqlDate(new Date());
-      $scope.model.depot_name = $scope.model.depots.data[0].text;
-    }
+      // we need to associate each stock with the proper inventory item
+      // if a particular inventory item does not have lots in this pharmacy,
+      // we will assign an empty array as the lots.
+      inventory.forEach(function (i) {
 
-    function finalize () {
-      $scope.model.inventory = filtrer($scope.model.avail_stocks.data, 'inventory_uuid');
-      configuration.rows = [new DistributionRow()];
-    }
+        // default: the item has not been selected yet
+        i.used = false;
 
-    function DistributionRow (){
-      this.code = null;
-      this.lots = null;
-      this.price = null;
-      this.quantity = 0;
-      this.validQuantity = false;
-      this.price = 0;
-      return this;
-    }
-
-    function addRow () {
-      configuration.rows.push(new DistributionRow());
-    }
-
-    function removeRow (index) {
-      if($scope.configuration.rows[index].code){
-        $scope.model.inventory.push(selectedIventories.splice(getInventoryIndex($scope.configuration.rows[index].code, selectedIventories), 1)[0]);
-      }
-      configuration.rows.splice(index, 1);
-    }
-
-    function filtrer (items, filterOn) {
-
-        if (filterOn === false) {
-          return items;
-        }
-
-        if ((filterOn || angular.isUndefined(filterOn)) && angular.isArray(items)) {
-          var hashCheck = {}, newItems = [];
-
-          var extractValueToCompare = function (item) {
-            if (angular.isObject(item) && angular.isString(filterOn)) {
-              return item[filterOn];
-            } else {
-              return item;
-            }
+        // TODO -- why doesn't this send back nonzero quantities?
+        i.lots = stock.filter(function (s) {
+          return s.code === i.code && s.quantity > 0;
+        })
+        .map(function (s) {
+          return {
+            lot_number      : s.lot_number,
+            quantity        : s.quantity,
+            tracking_number : s.tracking_number,
+            expiration_date : new Date(Date.parse(s.expiration_date))
           };
-
-          angular.forEach(items, function (item) {
-            var valueToCheck, isDuplicate = false;
-
-            for (var i = 0; i < newItems.length; i++) {
-              if (angular.equals(extractValueToCompare(newItems[i]), extractValueToCompare(item))) {
-                isDuplicate = true;
-                break;
-              }
-            }
-            if (!isDuplicate) {
-              newItems.push(item);
-            }
-          });
-          items = newItems;
-        }
-        return items;
-    }
-
-    function handleChange (distribution_ligne, index) {
-      if(distribution_ligne.quantity<=0 || !distribution_ligne.quantity){
-        distribution_ligne.validQuantity = false;
-        distribution_ligne.lots = [];
-        configuration.rows[index].lots = [];
-      }else{
-        distribution_ligne.validQuantity = true;
-        selectLot(distribution_ligne);
-        configuration.rows[index] = distribution_ligne;
-      }
-
-      getItemPrice(distribution_ligne.lots[0], index);
-    }
-
-    function getInventoryPrice (distribution_ligne) {
-      if(!distribution_ligne.code) { return 0; }
-      return distribution_ligne.lots.filter(function (item){
-        return item.code === distribution_ligne.code;
-      })[0].purchase_price * distribution_ligne.quantity;
-    }
-
-    function selectLot (distribution_ligne){
-      distribution_ligne.lots = extractLot(distribution_ligne);
-      for (var i = 0; i < distribution_ligne.lots.length -1; i++) {
-        for (var j = i+1; j < distribution_ligne.lots.length; j++) {
-          if (util.isDateAfter(distribution_ligne.lots[i].expiration_date, distribution_ligne.lots[j].expiration_date)) {
-            var tapon_lot = distribution_ligne.lots[i];
-            distribution_ligne.lots[i] = distribution_ligne.lots[j];
-            distribution_ligne.lots[j] = tapon_lot;
-          }
-        }
-      }
-      distribution_ligne.lots = getLots(distribution_ligne);
-    }
-
-    function extractLot (distribution_ligne){
-      if(!distribution_ligne.code || !distribution_ligne.validQuantity) {
-        return;
-      }
-      return $scope.model.avail_stocks.data.filter(function (item){
-        return item.code === distribution_ligne.code;
-      });
-    }
-
-    function getLots (distribution_ligne) {
-      var som = 0;
-      distribution_ligne.lots.forEach(function (item) {
-        som+=(item.entered - item.moved - item.consumed);
-        if (distribution_ligne.quantity > som) {
-            item.selected = true;
-        } else {
-            if (som - (item.entered - item.moved - item.consumed)< distribution_ligne.quantity) { item.selected = true; } else{item.selected = false;}
-        }
-      });
-
-      if(distribution_ligne.quantity > som){
-        //overflow
-        distribution_ligne.validQuantity = false;
-        return;
-      }
-
-
-
-      return distribution_ligne.lots.filter(function (item){
-        return item.selected;
-      });
-    }
-
-    function updateLigne (code, index){
-      if(!code) { return 0; }
-      configuration.rows[index].price = $scope.model.avail_stocks.data.filter(function (item){
-        return item.code === code;
-      })[0].purchase_price;
-
-      selectedIventories.push($scope.model.inventory.splice(getInventoryIndex(code, $scope.model.inventory), 1)[0]);
-    }
-
-    function getInventoryIndex (code, arr) {
-      var list = arr;
-      var ind;
-      for (var i = 0; i < list.length; i++) {
-        if(list[i].code === code) {
-         ind = i;
-         break;
-        }
-      }
-      return ind;
-    }
-
-    function verifyDistribution () {
-      if (!configuration.rows || configuration.rows.length < 1) {return true;}
-      return !configuration.rows.every(function (row){
-        return row.code && row.validQuantity;
-      });
-    }
-
-    function Distribute (){
-      var consumption = buildConsumptions();
-      consumption.details = $scope.model.project.data[0];
-      $http.post('service_dist/', consumption)
-      .then(function (res){
-        $location.path('/invoice/service_distribution/' + res.data.dist.docId);
-      });
-    }
-
-    function buildConsumptions () {
-      var consumptions = {};
-      consumptions.main_consumptions = [];
-      consumptions.service_consumptions = [];
-
-      configuration.rows.forEach(function (row) {
-        var qte = 0, asked_qte = row.quantity;
-        row.lots.forEach(function (lot) {
-          var current_qte = (lot.entered - lot.moved - lot.consumed);
-          if(asked_qte <= current_qte) {
-            qte = asked_qte;
-          }else{
-            qte = current_qte;
-          }
-          var main_consumption_item = {
-            uuid                : uuid(),
-            depot_uuid          : session.depot,
-            date                : $scope.model.date,
-            document_id         : $scope.model.uuid,
-            tracking_number     : lot.tracking_number,
-            unit_price          : row.price,
-            quantity            : qte
-          };
-
-          var service_consumption_item = {
-            uuid               : uuid(),
-            consumption_uuid   : main_consumption_item.uuid,
-            service_id         : configuration.service.id
-          };
-
-          consumptions.main_consumptions.push(main_consumption_item);
-          consumptions.service_consumptions.push(service_consumption_item);
-
-          asked_qte = asked_qte - qte;
-
         });
+
+        // sum the lots and figure out how much quantity we can distribute of
+        // this item
+        i.maxQuantity = i.lots.reduce(function (s, lot) {
+          return s + lot.quantity;
+        }, 0);
+
+        // sort lots in increasing order of expiration date
+        i.lots.sort(function (a,b) {
+          return a.expiration_date > b.expiration_date ? 1 : -1;
+        });
+
+        // create a nicely formatted label for the typeahead
+        i.fmtLabel = i.code + ' ' + i.label;
       });
 
-      return consumptions;
-    }
-
-    function calculateTotal () {
-      var total = 0;
-      if (!configuration.rows) {
-        total = 0;
-        return total;
-      }
-      configuration.rows.forEach(function (item) {
-        total = total + (item.price * item.quantity);
-      });
-      return total;
-    }
-
-    function getItemPrice (firstLot, index) {
-      if (!firstLot) { return; }
-
-      dependencies.itemPrice = {
-        query : {
-          tables : {
-            'stock' : { columns : ['purchase_order_uuid']},
-            'purchase_item' : { columns : ['quantity', 'unit_price']}
-          },
-          join : ['stock.inventory_uuid=purchase_item.inventory_uuid'],
-          where : ['stock.tracking_number=' + firstLot.tracking_number]
-        }
-      };
-
-      validate.refresh(dependencies, ['itemPrice'])
-      .then(function (data) {
-        configuration.rows[index].price = data.itemPrice.data[0].unit_price;
-      });
-    }
-
-
-
-    $scope.preparDistribution = preparDistribution;
-    $scope.addRow = addRow;
-    $scope.removeRow = removeRow;
-    $scope.handleChange = handleChange;
-    $scope.updateLigne = updateLigne;
-    $scope.verifyDistribution = verifyDistribution;
-    $scope.Distribute = Distribute;
-    $scope.calculateTotal = calculateTotal;
-
-}]);
+      // expose inventory to the view
+      vm.inventory = inventory;
+    });
+  }
+}
