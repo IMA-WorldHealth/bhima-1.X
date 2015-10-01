@@ -199,13 +199,13 @@ angular.module('bhima.controllers')
         session.account = newAccount;
         dependencies.account.query.where = ['account.id=' + newAccount.id];
         dependencies.budgets.query.where = ['period.fiscal_year_id=' + session.fiscal_year.id, 'AND',
-              'budget.account_id=' + session.account.id, 'AND',
-              'period.fiscal_year_id=' + session.fiscal_year.id, 'AND',
-              'period.period_number<>0'];
-        // NOTE: Restricting the periods to the selected fiscal year
-        //       automatically limits the budget items to ones for this
-        //       enterprise since the specific FY is tied to a particular
-        //       enterprise.
+          'budget.account_id=' + session.account.id, 'AND',
+          'period.fiscal_year_id=' + session.fiscal_year.id, 'AND',
+          'period.period_number<>0'];
+        //  NOTE: Restricting the periods to the selected fiscal year
+        //  automatically limits the budget items to ones for this
+        //  enterprise since the specific FY is tied to a particular
+        //  enterprise.
         dependencies.periods.query.where = ['period.fiscal_year_id=' + session.fiscal_year.id, 'AND',
         'period.period_number<>0'];
         validate.refresh(dependencies, ['account', 'budgets', 'periods'])
@@ -226,18 +226,13 @@ angular.module('bhima.controllers')
       session.autoAdjust = false;
     }
 
-    // BUDGET: 
-    //   `id` int not null auto_increment,
-    //   `account_id` int unsigned not null default '0',
-    //   `period_id` mediumint unsigned not null,
-    //   `budget` decimal(10,4) unsigned,
-
     function createBudget() {
       var newBudgets = [];
       $scope.periods.data.forEach(function (per, index) {
-      newBudgets.push({'account_id' : session.account.id,
-       'period_id' : per.id,
-       'budget' : 0.0});
+      newBudgets.push({
+        'account_id' : session.account.id,
+        'period_id'  : per.id,
+        'budget'     : 0.0});
       });
 
       connect.post('budget', newBudgets)
@@ -284,8 +279,8 @@ angular.module('bhima.controllers')
     function recompute() {
       if (session.autoAdjust) {
         var totalFrozen = 0.0,  // Total budget that is frozen/editing on the form
-          totalFree = 0.0,    // Total budget that is NOT frozen/editing on the form
-          numFree = 0;        // Number of budgets that are not frozen/editing on the form
+            totalFree   = 0.0,  // Total budget that is NOT frozen/editing on the form
+            numFree     = 0;    // Number of budgets that are not frozen/editing on the form
 
         // First figure out how much is free
         $scope.budgets.data.forEach(function (bud) {
@@ -312,10 +307,7 @@ angular.module('bhima.controllers')
       }
 
       // Double-check the totals
-      var total = 0.0;
-      $scope.budgets.data.forEach(function (bud) {
-        total += bud.budget;
-      });
+      var total = $scope.budgets.data.reduce(sumBudget, 0.0);
 
       if (isNaN(session.totalBudget) || session.totalBudget === null ||
         isNaN(total) || total === null) {
@@ -324,6 +316,10 @@ angular.module('bhima.controllers')
       } else {
         session.validTotal = precision.round(total, 6) === precision.round(session.totalBudget, 6);
       }
+  }
+
+  function sumBudget(a, b) {
+    return a + b.budget;
   }
 
   function loadFiscalYears(models) {

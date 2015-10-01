@@ -18,12 +18,13 @@
         <h3 class="center"><b>{{ "BUDGET.NEW.TITLE" | translate }}</b></h3>
         <p>{{ "BUDGET.NEW.DESC" | translate }}</p>
 
-        <form class="form budget-analysis-form" novalidate>
+        <form name="Budget" class="budget-analysis-form" novalidate>
 
           <div class="form-group">
             <label>{{ "SELECT.FISCAL_YEAR" | translate }}</label>
             <select 
             class="form-bhima" 
+            name="fiscal_year_id" 
             ng-model="config.fiscal_year_id" 
             ng-options="fy.id as formatFiscalYear(fy) for fy in fiscal_years.data"
             ng-change="selectFiscalYear(config.fiscal_year_id)" 
@@ -53,6 +54,7 @@
               
               <select 
                 class="form-bhima" 
+                name="period"
                 ng-if="session.option=='csv'"
                 ng-model="config.period" 
                 ng-options="p as formatPeriod(p) for p in session.periods" 
