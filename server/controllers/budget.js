@@ -1,12 +1,14 @@
 /* Budget controller */
 'use strict';
 
-var csv  = require('fast-csv'),
-		fs   = require('fs'),
-		db   = require('../lib/db'),
-		q    = require('q');
+var csv    = require('fast-csv'),
+	fs     = require('fs'),
+	q      = require('q');
 
-var uploadDir = 'client/upload/';
+var config = require('../config/environment/server'),
+	db     = require('../lib/db');
+	
+var uploadDir = config.uploadFolder;
 
 module.exports = {
 	update : updateBudget,
