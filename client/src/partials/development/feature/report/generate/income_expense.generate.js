@@ -3,9 +3,9 @@ angular.module('bhima.controllers')
 .controller('income_expenseController', incomeExpense);
 
 // Definition is passed in through report core
-incomeExpense.$inject = ['$anchorScroll', '$location', '$modalInstance', '$http', 'store', 'ModuleState', 'definition', 'updateMethod'];
+incomeExpense.$inject = ['$anchorScroll', '$location', '$modalInstance', '$http', 'store', 'ModuleState', 'validate', 'definition', 'updateMethod'];
 
-function incomeExpense($anchorScroll, $location, $modalInstance, $http, Store, ModuleState, definition, updateMethod) { 
+function incomeExpense($anchorScroll, $location, $modalInstance, $http, Store, ModuleState, validate, definition, updateMethod) { 
   var modal = this;
   var state = new ModuleState();
 
@@ -14,6 +14,7 @@ function incomeExpense($anchorScroll, $location, $modalInstance, $http, Store, M
 
   // This will act as a container for all report document configuration options
   var options = {};
+  var dependencies = {};
   
   modal.state = state;
   modal.title = definition.title; 
@@ -23,9 +24,43 @@ function incomeExpense($anchorScroll, $location, $modalInstance, $http, Store, M
   modal.options.format = 'standard';
 
   console.log('controller init', definition);
+  
   // Fetch required information (archive exists for option, available params etc.)
   // $q.all 
+  dependencies.fiscal = {
+      query : {
+        tables : {
+          fiscal_year : {
+            columns : ['id', 'fiscal_year_txt', 'number_of_months', 'start_month', 'start_year', 'previous_fiscal_year', 'locked']
+          }
+        }
+      }
+    };
   
+  validate.refresh(dependencies)
+    .then(settupModal);
+  
+  function settupModal(models) {
+    
+    // FIXME Hack - user preference may be to have current fiscal year selected by default?
+    var latestIndex;
+
+    modal.fiscal = models.fiscal.data;
+    latestIndex = modal.fiscal.length - 1;
+
+    // FIXME Assigning random values that are never specified - @class-y JavaScript
+    options.fiscal_year = modal.fiscal[latestIndex].id;
+    options.compare_year = modal.fiscal[latestIndex].id;
+  }
+
+  function updateCompareOption(enabled) { 
+    if (!enabled) { 
+    
+      // Remove the configuration option for comparing fiscal years
+      options.compare_year = undefined;
+    }
+  }
+
   // ? Cache options
   
   // Validate selected otionsfalse
@@ -67,6 +102,7 @@ function incomeExpense($anchorScroll, $location, $modalInstance, $http, Store, M
   // Report status
   
   modal.submit = submit;
+  modal.updateCompareOption = updateCompareOption;
   modal.scrollToContent = function () { 
     var hash = 'contentConfig';
 

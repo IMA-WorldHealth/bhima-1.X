@@ -67,12 +67,36 @@
             
           <div class="panel-body">
           <div class="form-group">
-            <label for="fiscalYear">Fiscal Year <small>Soon to be depreciated for period selection directive</small></label>
-            <select id="fiscalYear" class="form-control">
-              <option>2015 - Year to date</option>
-              <option>2014</option>
+            <label for="fiscalYear">Fiscal Year <small>Soon to be replaced with period selection directive</small></label>
+            <select id="fiscalYear" 
+              ng-options="year.id as year.fiscal_year_txt for year in income_expenseCtrl.fiscal" 
+              ng-model="income_expenseCtrl.options.fiscal_year"
+              class="form-control"></select>
+          </div>
+        
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                <input 
+                  ng-model="income_expenseCtrl.flag.compareYears" 
+                  ng-change="income_expenseCtrl.updateCompareOption(income_expenseCtrl.flag.compareYears)" 
+                  type="checkbox" id="compareFlag">
+                Compare year with additional fiscal year
+              </label>
+            </div>
+          </div>
+        
+          <div class="form-group">
+            <label for="fiscalYear">Select year for comparison </label>
+            <select id="fiscalYear" 
+              ng-disabled="!income_expenseCtrl.flag.compareYears"
+              ng-options="year.id as year.fiscal_year_txt for year in income_expenseCtrl.fiscal" 
+              ng-model="income_expenseCtrl.options.compare_year"
+              class="form-control">
+              <option disabled value="">--Select comparison year--</option> 
             </select>
           </div>
+
 
           <div class="form-group">
             <label for="identity">Report Title <small>This will be used to identify the report in the future, this title is not included in the report (see heading)</small></label>
