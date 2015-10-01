@@ -423,7 +423,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/primary_cash/expense/cash_return.html'
   })
   .when('/primary_cash/expense/multi_payroll/', {
-    controller : 'multi_payroll',
+    controller : 'MultiPayrollController as PayrollCtrl',
     templateUrl : 'partials/primary_cash/expense/multi_payroll.html'
   })
   .when('/primary_cash/expense/tax_payment/:cashbox', {
@@ -721,6 +721,10 @@ function bhimaconfig($routeProvider) {
   .when('/reports/bilan/', {
     controller : 'configureBilan',
     templateUrl : 'partials/reports_proposed/bilan/bilan.html'
+  })
+  .when('/reports/debitor_group_report/', {
+    controller : 'DebtorGroupReportController as debtorGroupReportCtrl',
+    templateUrl : 'partials/reports_proposed/debitor_group_report/debitor_group_report.html'
   })
   .when('/reports/result_account/', {
     controller : 'configureResult',

@@ -861,7 +861,17 @@
    "NEW"        : "New Debtor Group",
    "SUCCES"     : "success",
    "TITLE"      : "Debtor Group Management"
-   },
+},
+
+"DEBITOR_GROUP_REPORT" : {
+   "DOCUMENT_CONFIG" : "Configuration of Debitor Group Report",
+   "LANGUAGE" : "Language",
+   "INVOLVE_JOURNAL" : "Involve journal",
+   "NOTSOLD_ONLY" : "Show unsold bill only",
+   "DEBITOR_GROUP" : "Debitor Group",
+   "DOC_SUCCES"   : "Document Build Success - Open Document",
+   "GENERATE_DOC"    : "Generate document"
+},
 "DEPOT": {
   "ADD"             : "Add a Store",
   "ALERT"           : "Manage your stores from here",
@@ -2892,6 +2902,7 @@
    },
    "DEBTOR_AGING"              : "Debtor Aging",
    "DEBTOR_GRP"                : "Debtor Group",
+   "DEBITOR_GROUP_REPORT"      : "Debtor Group Financial State",
    "DEPOT"                     : "Store",
    "DONATION_CONFIRMATION"     : "Donation Confirm",
    "DONATION_MANAGEMENT"       : "Donation Management",
@@ -3070,6 +3081,7 @@
    "IMCK_LONG"         : "Christian Medical Institue of Kasai",
    "ITEMS"             : "Items",
    "LOADING"           : "Loading",
+   "LINK"              : "Link",
    "MONTHS"            : "Months",
    "NAVIGATION"        : "Navigation",
    "NEW_SUCCESS"       : "Successfully added",

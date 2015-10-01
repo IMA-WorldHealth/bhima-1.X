@@ -39,5 +39,25 @@
 		"PRENOM" : "First Name",
 		"NOM" : "Name",
 		"POSTNOM" : "Last Name"
+	},
+
+	"DEBITOR_GROUP_REPORT" : {
+		"TITLE" : "Debtor Group Financial State",
+		"ENTERPRISE" : "Enterprise",
+		"DEBIT" : "Debit",
+		"CREDIT" : "Credit",
+		"DATE" : "Date",
+		"SALE_NUMBER" : "Sale Number",
+		"PATIENT" : "Patient",
+		"BILL_DATE" : "Date of Billing" ,
+		"AMOUNT_BILLED" : "Amount billed",
+		"AMOUNT_PAYED" : "Amount Payed ",
+		"DIFFERENCE" : "Difference",
+		"TRANS_NUMBER" : "Transaction Number",
+		"TOTAL_BILLED" : "Total Billed",
+		"TOTAL_PAYED" : "Total Payed",
+		"TOTAL_DIFFERENCE" : "Sold",
+		"BOX" : "BP",
+		"TEL" : "Tel"
 	}
 }
