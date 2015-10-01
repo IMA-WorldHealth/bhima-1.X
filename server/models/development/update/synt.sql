@@ -281,3 +281,10 @@ DROP FOREIGN KEY  `service_ibfk_1` ;
 
 INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
 VALUES (120, 'Rapport situation group debiteur', 'TREE.DEBITOR_GROUP_REPORT', 'pour voir le rapport pdf detaille de group de debiteur', 10, '/partials/reports/debitor_group_report', '/reports/debitor_group_report/');
+
+-- Update account parent to account.is instead of account_number
+-- Date: 2015-10-01
+-- By: Bruce M.
+
+UPDATE account a JOIN account b ON a.parent=b.account_number 
+SET a.parent=b.id;
