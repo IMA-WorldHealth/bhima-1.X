@@ -1,4 +1,4 @@
-<!-- Configuration can specify period or year-to-date, full report will allow both -->
+<!-- TODO Write templates in project standardised templating -->
 
 <head>
   
@@ -12,47 +12,25 @@
     
   <section id="letterhead"></section>
 
-  <section id="title" class="center">
-      <h6>IMCK Hopital Bon Berger</h6>
-      <h6>Income Statement</h6>
-
-      <!-- TODO -->
-      <h6>Tue 1st Jan 2015 - Sat 1st Feb 2015</h6>
-
+  <section id="title" class="center" style="margin-bottom : 40px;">
+      <h5>IMCK Hopital Bon Berger</h5>
+      <h5>{{=it.title}}</h5>
   </section>
-  
-  <!--  The following layout only works because both tables have the exact same columns
-        this would not work given different labels etc. -->
-  <!-- Read : Getting the columns to line up is a hack -->
-
-  <!-- Income Statement -->
+ 
   <section>
-      
-  <span class="groupTitle">Insitution Income</span>
+  <!--span class="groupTitle">Insitution Income</span-->
 
     <table class="income">
       <thead>
-        <!--tr-->
-          <!--th colspan="2"></th-->
-         
-          <!-- Repeat through column configuration -->
-          <!--th colspan="3">Current Period</th-->
-          <!--th colspan="3">Year to Date</th-->
-        <!--/tr-->
-        <tr class="totalRight">
-          
+        <tr style="border-bottom : 1px solid grey">
           <td colspan="2"></td>
           
           <!-- Repeat through column configuration --> 
-          <td style="text-align : center;">2014</td>
-          <td style="text-align : center;">2015</td>
-          <td style="text-align : center;">Variance</td>
-
-          <!-- td>Actual Jan 2015</td>
-          <td>Budget Jan 2015</td>
-          <td>Variance</td -->
-
-          <!-- td>Annual Budget</td -->
+          <td style="text-align : left; padding-right : 10px;">2014</td>
+          <td style="text-align : left; padding-right : 10px;">2015</td>
+          <td style="text-align : left; padding-right : 10px;">Variance</td>
+          <td style="text-align : left;">(%)</td>
+        </tr>
       </thead>
       
       <tbody>
@@ -69,22 +47,18 @@
             {{?}}
           </td>
           
-          <td {{? line.account_type_id === 3}}colspan="8"{{?}} style="text-align : left; padding-left: {{=line.depth * 20}}px; {{? line.account_type_id === 3}}font-weight : bold;{{?}}">{{=line.account_txt}}</td>
+          <td {{? line.account_type_id === 3}}colspan="8"{{?}} style="text-align : left; padding-left: {{=line.depth * 20}}px; {{? line.account_type_id === 3}}font-weight : bold;{{?}}">{{=line.account_number}} {{=line.account_txt}}</td>
 
           
           <!-- Repeat through column configuration - do NOT use a conditional -->
           {{? line.account_type_id !== 3}}
-          
-          <td style="text-align : right;">0</td>
-          <td style="text-align : right;">0</td>
-          <td style="text-align : right;">0</td>
-      
-          <!--td>0</td>
-          <td>0</td>
-          <td>0</td>
-        
-          <td>0</td-->
+         
+          <!-- line will be split into multiple years line.balance[year] -->
+          <td style="text-align : right;">{{=line.balance || 0}}</td>
+          <td style="text-align : right;">{{=line.balance || 0}}</td>
 
+          <td style="text-align : right;">{{=line.difference || 0}}</td>
+          <td style="text-align : right;">0%</td>
           {{?}}
 
         </tr> 
@@ -95,79 +69,11 @@
       {{ } }} 
 
       {{ displayIncome(it.incomeData); }}
-         
       </tbody>
       
-      <!-- Style Hacks -->
-      <tr>
-        <td colspan="9" style="padding-top : 15px;"><span class="groupTitle">Institution Expense</span></td>
-      </tr>
-      
-      <thead>
-        <!--tr-->
-          <!--th colspan="2"></th-->
-         
-          <!-- Repeat through column configuration -->
-          <!--th colspan="3">Current Period</th-->
-          <!--th colspan="3">Year to Date</th-->
-        <!--/tr-->
-        <tr class="totalRight">
-          
-          <td colspan="2"></td>
-          
-          <!-- Repeat through column configuration --> 
-          <td>Actual Jan 2015</td>
-          <td>Budget Jan 2015</td>
-          <td>Variance</td>
-
-          <!--td>Actual Jan 2015</td>
-          <td>Budget Jan 2015</td>
-          <td>Variance</td>
-          
-          <td>Annual Budget</td-->
-      </thead>
-      
       <tbody>
-          
-          {{ function displayExpense(accounts) { 
-          accounts.forEach(function (line) {  }}
-        <tr class="totalRight {{? line.account_type_id === 3}}underline{{?}}">
-          
-          <td style="{{? line.account_type_id === 3}}font-weight : bold;{{?}}">
-            {{? it.displayAccountNumber}}
-            {{=line.account_number}}
-            {{?}}
-          </td>
-          
-          <td {{? line.account_type_id === 3}}colspan="8"{{?}} style="text-align : left; padding-left: {{=line.depth * 20}}px; {{? line.account_type_id === 3}}font-weight : bold;{{?}}">{{=line.account_txt}}</td>
-
-          
-          <!-- Repeat through column configuration - do NOT use a conditional -->
-          {{? line.account_type_id !== 3}}
-          
-          <td>0</td>
-          <td>0</td>
-          <td>0</td>
-      
-          <td>0</td>
-          <td>0</td>
-          <td>0</td>
-        
-          <td>0</td>
-
-          {{?}}
-
-        </tr> 
-
-      {{ if (line.children.length) displayExpense(line.children); }}
- 
-      {{ }); }}
-      {{ } }} 
-
-      {{ displayExpense(it.expenseData); }}
-          
+        {{ displayIncome(it.expenseData); }}
       </tbody>
     </table>
   </section>
- 
 </body>

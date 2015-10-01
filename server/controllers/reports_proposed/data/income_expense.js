@@ -6,11 +6,23 @@
  * @todo Accounts are currently filtered and organised according to 6 being a expense 
  * and 7 being income, this is hardcoded in this file. It should either be specified somewhere 
  * or account types must be split into both income and expense
+ *
+ * @todo Text translation and language keys
+ *
+ * @todo Update to use standard currency formatting library
  */
 
 var q       = require('q');
 var db      = require('../../../lib/db');
 var numeral = require('numeral');
+
+/**
+ * Default configuration options 
+ * TODO Should this be served and displayed to the client for report 
+ * coniguration?
+ */
+var DEFAULT_TITLE = 'Income Expense Statement';
+var DEFAULT_YEAR_OPTIONS = [];
 
 // TODO Derive from DB
 var incomeExpenseAccountId = 1;
@@ -73,8 +85,6 @@ exports.compile = function (options) {
       console.log('[income_expense] Number of accounts after tree parsing: ', incomeData.length);
       console.log('[income_expense] Number of accounts after tree parsing: ', expenseData.length);
       
-      // console.log('before filter', incomeData);
-      
       // FIXME Lots of processing, very little querrying - this is what MySQL is foreh
       incomeData = filterAccounts(incomeData, expenseAccountConvention);
       incomeData = trimEmptyAccounts(incomeData);
@@ -84,10 +94,10 @@ exports.compile = function (options) {
       
       context.incomeData = incomeData;
       context.expenseData = expenseData; 
-  
+    
+      // Attach parameters/ defaults to completed context
+      context.title = options.title || DEFAULT_TITLE;
 
-      // console.log('after trim', incomeData);
-      // console.log('after trim', expenseData);
       deferred.resolve(context);
     })
     .catch(deferred.reject)
@@ -102,7 +112,6 @@ exports.compile = function (options) {
 function getChildren(accounts, parentId, depth) {
   var children;
   
-  console.log('getChildren [', accounts.length, parentId, depth, ']');
   // Base case: There are no child accounts
   // Return an empty array
   if (accounts.length === 0) { return []; }
@@ -116,7 +125,6 @@ function getChildren(accounts, parentId, depth) {
   // Recursively call get children on all child accounts
   // and attach them as childen of their parent account
   children.forEach(function (account) {
-    // console.log('children account', account.account_number);
     account.depth = depth;
     account.children = getChildren(accounts, account.account_number, depth+1);
   });
@@ -128,15 +136,6 @@ function filterAccounts(accounts, excludeType) {
    
   function typeFilter(account) {
     var matchesFilterType = false;
-
-    // console.log('filtering on', account.account_number);
-    // console.log('number of children', account.children.length);
-
-    // var matchesFilterType = account.account_type_id === filterType;
-    
-  
-    // console.log('verifying account', account.account_number, account.account_number[0], excludeType);
-    // console.log('filtering account', account);
 
     if (account.account_number[0] === excludeType) { 
       console.log(account.account_number[0], 'is equal to', excludeType, 'removing account.');
@@ -152,7 +151,6 @@ function filterAccounts(accounts, excludeType) {
       return account;
     }
   }
-
   return accounts.filter(typeFilter);
 }
 
