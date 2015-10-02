@@ -15,10 +15,11 @@
     "bhima",
     "health",
     "HIS",
-    "hospital"
+    "hospital information system",
+    "rural accounting"
   ],
   "author": "IMA World Health Web Development Team",
-  "license": "Beerware",
+  "license": "GPLv2",
   "bugs": {
     "url": "https://github.com/IMA-WorldHealth/bhima/issues"
   },
