@@ -7,14 +7,15 @@ var db = require('../../../server/lib/db'),
 db.initialise();
 
 (function queryAccount() {
-	var accounts;
 	var sqlUpdateMatch = 'UPDATE account a JOIN account b ON a.parent=b.account_number SET a.parent=b.id ;';
 	var sqlAccount 		 = 'SELECT * FROM account;';
 
 	executeUpdate()
-	.then(executeAccount())
+	.then(executeAccount)
 	.then(unmatchAccount)
-	.then(updateParent);
+	.then(updateParent)
+	.catch(error)
+	.done(endProcess);
 
 	function executeUpdate() {
 		/*
@@ -28,11 +29,10 @@ db.initialise();
 		/*
 		 * Objectif : recuperation des comptes dans la variable accounts
 		 */
-		return db.exec(sqlAccount)
-		.then(function (data) { accounts = data; });
+		return db.exec(sqlAccount);
 	}
 
-	function unmatchAccount() {
+	function unmatchAccount(accounts) {
 		/*
 		 * Objectif : Mettre a jour le parent d'un compte selon que :
 		 * account.parent fait partie de account.account_number (partiellement)
@@ -45,19 +45,17 @@ db.initialise();
 			if (String(acc.account_number).indexOf(acc.parent) === 0) {
 				// account.parent fait partiellemnt partie de account.account_number
 				var chaine = String(acc.parent);
-				var end    = false;
 				var cut    = 0;
 				var accountId;
 				// on retranche progressivement un caractere de account.parent
 				// afin de trouver le bon compte
-				while (!end && cut !== chaine.length) {
+				while (cut !== chaine.length) {
 					accountId = getAccountId(chaine.substr(0, chaine.length - cut));
 					if (accountId) {
-						end = true;
 						acc.parent = accountId;
-					} else {
-						cut++;
+						break;
 					}
+					cut++;
 				} 
 			}
 		});
@@ -76,9 +74,11 @@ db.initialise();
 			}
 			return result;
 		}
+
+		return accounts;
 	}
 
-	function updateParent() {
+	function updateParent(accounts) {
 		/*
 		 * Objectif : Application des mise a jour dans la base de donnees
 		 */
@@ -88,9 +88,15 @@ db.initialise();
 			var value = [acc.parent, acc.id];
 			dbPromises.push(db.exec(sql, value));
 		});
-		q.all(dbPromises)
-		.then(function () {
-			console.log('Update success...');
-		});
+		return q.all(dbPromises);
+	}
+
+	function endProcess() {
+		console.log('Update parent with success...');
+		process.exit(0);
+	}
+
+	function error(err) {
+		console.error('An error occured : ', err);
 	}
 })();
