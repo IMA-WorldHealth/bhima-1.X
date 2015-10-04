@@ -36,7 +36,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/enterprise/enterprise.html'
   })
   .when('/journal', {
-    controller: 'journal.grid',
+    controller: 'PostingJournalController as JournalCtrl',
     templateUrl:'partials/journal/journal.html'
   })
   .when('/projects', {

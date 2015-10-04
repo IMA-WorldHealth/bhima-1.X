@@ -16,91 +16,7 @@ angular.module('bhima.controllers')
   'messenger',
   function ($scope, $rootScope, $q, $window, $translate, uuid, Store, util, connect, precision, validate, appstate, liberror, messenger) {
     /* jshint unused : true */
-    var dependencies = {};
-    var columns, options, dataview, grid, manager;
-    var sortColumn;
 
-    var journalError =  liberror.namespace('JOURNAL');
-
-    $scope.editing = false;
-
-    function isNull (t) { return t === null; }
-    function clone (o) { return JSON.parse(JSON.stringify(o)); }
-    function isDefined (d) { return angular.isDefined(d); }
-
-    dependencies.account = {
-      query : {
-        'identifier' : 'account_number',
-        'tables' : {
-          'account' : { 'columns' : ['id', 'account_number', 'account_type_id', 'account_txt'] }
-        }
-      }
-    };
-
-    dependencies.debtor = {
-      query: {
-        identifier : 'uuid',
-        'tables' : {
-          'debitor' : { 'columns' : ['uuid'] },
-          'patient' : { 'columns' : ['first_name', 'last_name'] },
-          'debitor_group' : { 'columns' : ['name'] },
-          'account' : { 'columns' : ['account_number'] }
-        },
-        join: ['debitor.uuid=patient.debitor_uuid', 'debitor_group.uuid=debitor.group_uuid', 'debitor_group.account_id=account.id']
-      }
-    };
-
-    dependencies.creditor = {
-      query: {
-        'tables' : {
-          'creditor' : { 'columns' : ['uuid', 'text'] },
-          'creditor_group' : { 'columns' : ['name'] },
-          'account' : { 'columns' : ['account_number'] }
-        },
-        join: ['creditor.group_uuid=creditor_group.uuid','creditor_group.account_id=account.id']
-      }
-    };
-
-    dependencies.invoice = {
-      query: {
-        identifier : 'uuid',
-        tables : {
-          sale : { columns : ['uuid', 'note'] }
-        }
-      }
-    };
-
-    dependencies.period = {
-      query : {
-        tables : {
-          period : { columns : ['id', 'fiscal_year_id', 'period_stop', 'period_start'] }
-        }
-      }
-    };
-
-    dependencies.cost_center = {
-      query : {
-        tables : {
-          'cost_center': {
-            columns : ['id', 'text']
-          }
-        }
-      }
-    };
-
-    dependencies.profit_center = {
-      query : {
-        tables : {
-          'profit_center' : {
-            columns : ['id', 'text']
-          }
-        }
-      }
-    };
-
-    appstate.register('project', function (project) {
-      $scope.project = project;
-    });
 
     appstate.register('journal.ready', function (ready) {
       ready.then(function (params) {
@@ -208,7 +124,7 @@ angular.module('bhima.controllers')
 
     function addRow () {
       var row;
-      row = clone(manager.session.template);
+      row = doParsing(manager.session.template);
       row.newRecord = true;
       row.uuid = uuid();
       manager.session.records.post(row);
