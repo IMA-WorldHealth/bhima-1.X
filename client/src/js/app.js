@@ -748,7 +748,7 @@ function bhimaconfig($routeProvider) {
   })
   .when('/development/report/:reportKey', { 
     controller : 'ReportCore as ReportCtrl', 
-    templateUrl : 'partials/development/feature/report/core.html',
+    templateUrl : 'partials/development/reports/core.html',
     resolve : { 
       'ReportServiceData' : ['ReportService', function (ReportService) { 
         return ReportService.dependency;

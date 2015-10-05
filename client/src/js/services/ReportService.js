@@ -20,7 +20,7 @@ function ReportService($http, $q, Store) {
   var reportIndexCache = new Store({identifier : 'key'});
   var serviceDependency = $q.defer();
   
-  var generateTemplatesPath = 'partials/development/feature/report/generate/';
+  var generateTemplatesPath = 'partials/development/reports/generate/';
   var generateTemplateConvention = '.generate.tmpl.html';
   var generateControllerConvention = 'Controller';
   var generateAliasConvention = ' as ?Ctrl';
