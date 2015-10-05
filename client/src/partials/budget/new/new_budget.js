@@ -254,7 +254,7 @@ function NewBudgetController($q, $scope, $http, $translate, validate, precision,
         accountId : session.account.id
       }
     })
-    .success(function () {
+    .then(function () {
       messenger.success($translate.instant('BUDGET.EDIT.UPDATE_OK'));
       submitAccount(session.account);
       session.autoAdjust = false;
@@ -326,7 +326,8 @@ function NewBudgetController($q, $scope, $http, $translate, validate, precision,
   function loadFiscalYears(models) {
     angular.extend($scope, models);
     // Default to the last fiscal year
-    session.fiscal_year = $scope.fiscal_years.data[$scope.fiscal_years.data.length - 1];
+    var numFY = $scope.fiscal_years.data.length;
+    session.fiscal_year = numFY ? $scope.fiscal_years.data[numFY - 1] : null;
   }
 
   function selectFiscalYear(fy_id) {
