@@ -1,5 +1,5 @@
 angular.module('bhima.services')
-.service('JournalDataviewService', ['JournalDataLoaderService'
+.service('JournalDataviewService', ['JournalDataLoaderService',
   function (dataLoaderService) {
 
     function create (gimp, inlineFilter){
@@ -14,7 +14,7 @@ angular.module('bhima.services')
       return dataview;
     }
 
-    function subscribe (dv){
+    function subscribe (dv, grid){
       //dv as dataview
 
       dv.onRowCountChanged.subscribe(function (e, args) {
@@ -31,24 +31,24 @@ angular.module('bhima.services')
     }
 
     function populate (dv) {
-
       return dataLoaderService.loadJournalRecord()
       .then(function (data){
         dv.beginUpdate();
-        dv.setItems(data, 'uuid');
-        dv.endUpdate();
+        dv.setItems(data.journalRecord.data, 'uuid');
+        dv.endUpdate();   
       });      
     }
 
-    function updateDataviewItem (dv, id, item) {
-      dv.updateItem(id, item);
-    }
+    // function updateDataviewItem (dv, id, item) {
+    //   dv.updateItem(id, item);
+    // }
 
     return {
       create : create,
       subscribe : subscribe,
-      populate : populate,
-      updateDataviewItem : updateDataviewItem         
+      populate : populate
+      // ,
+      // updateDataviewItem : updateDataviewItem         
     };
   }
 ]);

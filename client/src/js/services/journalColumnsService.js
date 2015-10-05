@@ -40,10 +40,19 @@ angular.module('bhima.services')
         return '<span style="font-weight: bold; color:' + fmt[column.id] + ';">' + $filter('currency')(precision.round(val)) + '</span>';
       }
       return '';
+    }
+
+    function setEditor (cols, editors){
+      cols.forEach(function (col) {
+        if (editors[col.id]) { col.editor = editors[col.id]; }
+      });
+
+      return cols;
     }    
 
     return {
-      getColumns : getColumns
+      getColumns : getColumns,
+      setEditor : setEditor
     };
   }
 ]);

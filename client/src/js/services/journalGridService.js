@@ -13,23 +13,33 @@ angular.module('bhima.services')
 
     function create (idDom, dv, cols, opt){
       var grid = new Slick.Grid(idDom, dv, cols, opt || options);
-      grid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}));
       return grid;
     }
 
     function setPlugin(plg, grid){
       grid.registerPlugin(plg);
+      return grid;
     }
 
-    function subscribe (grid, dv){
-      grid.onCellChange.subscribe(function(e, args) {
-        var id = args.item.id || args.item.uuid;
-        journalDataviewService.updateDataviewItem(dv, id, args.item);
-      });
-    }       
+    // function subscribe (grid, dv){
+    //   grid.onCellChange.subscribe(function(e, args) {
+    //     var id = args.item.id || args.item.uuid;
+    //     journalDataviewService.updateDataviewItem(dv, id, args.item);
+    //   });
+
+    //   return grid;
+    // } 
+
+    function setColumns(grid, cols){
+      grid.setColumns(cols);
+      return grid;
+    }      
 
     return {
-      create : create
+      create : create,
+      // subscribe : subscribe,
+      setColumns : setColumns,
+      setPlugin : setPlugin
     };
   }
 ]);
