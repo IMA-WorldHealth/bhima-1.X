@@ -9,7 +9,7 @@
   </div>
   
   <div class="modal-body">
-    <div ng-if="income_expenseCtrl.state.isLoading()" id="progress">
+    <div ng-if="income_expenseCtrl.state.isLoading" id="progress">
 
       <!-- TODO Move into directive to be used in future templates -->
       <div class="spinner">
@@ -21,212 +21,211 @@
       </div>
     </div>
     
-    <div ng-if="income_expenseCtrl.state.notLoading() && income_expenseCtrl.state.isComplete()" id="status" style="padding-bottom : 1em;">
-      
-      <div ng-if="::income_expenseCtrl.state.moduleSuccess">
-        <div style="text-align : center; padding-bottom : 20px;">
-          <h1 style="color : green;"><i class="glyphicon glyphicon-ok"></i> Document Complete</h1>
-        </div> 
+    <div ng-if="income_expenseCtrl.state.notLoading">
 
-        <div>
-          <p>Your document has been archived and is now ready to view.</p>
+      <div ng-if="income_expenseCtrl.state.isComplete" id="status" style="padding-bottom : 1em;">
         
-          <div class="btn-group-vertical">
-          <!-- <ul class="list-unstyled"> -->
+        <div ng-if="::income_expenseCtrl.state.moduleSuccess">
+          <div style="text-align : center; padding-bottom : 40px;">
+            <h1 style="color : green;"><i class="glyphicon glyphicon-ok"></i> Document Complete</h1>
+            
+          </div> 
+            
+          <div>
             <a class="btn btn-default" ng-click="income_expenseCtrl.completeModal()" target="_blank" ng-href="/report/serve/{{income_expenseCtrl.link}}">Open {{income_expenseCtrl.title}} Document</a>
             <a class="btn btn-default" ng-click="income_expenseCtrl.completeModal()">Return to archives</a>
-            <!-- </ul> -->
           </div>
+          
+        </div>
+        
+        <div ng-if="::income_expenseCtrl.state.moduleFailed">
+          <div style="text-align : center; padding-bottom : 20px;">
+            <h1 style="color : red;"><i class="glyphicon glyphicon-remove"></i> Document Failed</h1>
+          </div> 
         </div>
       </div>
       
-      <div ng-if="::income_expenseCtrl.state.moduleFailed">
-        <div style="text-align : center; padding-bottom : 20px;">
-          <h1 style="color : red;"><i class="glyphicon glyphicon-remove"></i> Document Failed</h1>
-        </div> 
-      </div>
-    </div>
-    
-    <div ng-if="income_expenseCtrl.state.notLoading() && income_expenseCtrl.state.notComplete()"  id="configure">
-      <form>
-        <span class="pull-right"><a>Autofill quick settings</a></span>
-        <div style="padding-left : 15px; padding-bottom : 10px;">
-          <label>Index</label>
-          <ul class="list-unstyled">
-            <li><a ng-click="income_expenseCtrl.scrollToContent()">{{income_expenseCtrl.title}} Configuration</a></li>
-            <li><a ng-click="income_expenseCtrl.scrollToLabel()">Label Configuration</a></li>
-            <li><a ng-click="income_expenseCtrl.scrollToLayout()">Layout Configuration</a></li>
-          </ul>
-        </div>
-   
-        <div id="contentConfig" class="panel panel-default">
-          <div class="panel-heading">
-
-          <strong>{{income_expenseCtrl.title}} Configuration</strong>
+      <div ng-if="income_expenseCtrl.state.notComplete"  id="configure">
+        <form>
+          <span class="pull-right"><a>Autofill quick settings</a></span>
+          <div style="padding-left : 15px; padding-bottom : 10px;">
+            <label>Index</label>
+            <ul class="list-unstyled">
+              <li><a ng-click="income_expenseCtrl.scrollToContent()">{{income_expenseCtrl.title}} Configuration</a></li>
+              <li><a ng-click="income_expenseCtrl.scrollToLabel()">Label Configuration</a></li>
+              <li><a ng-click="income_expenseCtrl.scrollToLayout()">Layout Configuration</a></li>
+            </ul>
           </div>
+     
+          <div id="contentConfig" class="panel panel-default">
+            <div class="panel-heading">
+
+            <strong>{{income_expenseCtrl.title}} Configuration</strong>
+            </div>
+              
+            <div class="panel-body">
+            <div class="form-group">
+              <label for="fiscalYear">Fiscal Year <small>Soon to be replaced with period selection directive</small></label>
+              <select id="fiscalYear" 
+                ng-options="year as year.fiscal_year_txt for year in income_expenseCtrl.fiscal" 
+                ng-model="income_expenseCtrl.options.fiscal_year"
+                class="form-control"></select>
+            </div>
+          
+            <div class="form-group">
+              <div class="checkbox">
+                <label>
+                  <input 
+                    ng-model="income_expenseCtrl.flag.compareYears" 
+                    ng-change="income_expenseCtrl.updateCompareOption(income_expenseCtrl.flag.compareYears)" 
+                    type="checkbox" id="compareFlag">
+                  Compare year with additional fiscal year
+                </label>
+              </div>
+            </div>
+          
+            <div class="form-group">
+              <label for="fiscalYear">Select year for comparison </label>
+              <select id="fiscalYear" 
+                ng-disabled="!income_expenseCtrl.flag.compareYears"
+                ng-options="year as year.fiscal_year_txt for year in income_expenseCtrl.fiscal" 
+                ng-model="income_expenseCtrl.options.compare_year"
+                class="form-control">
+                <option disabled value="">--Select comparison year--</option> 
+              </select>
+            </div>
+
+
+            <div class="form-group">
+              <label for="identity">Report Title <small>This will be used to identify the report in the future, this title is not included in the report (see heading)</small></label>
+              <input ng-model="income_expenseCtrl.options.title" type="text" class="form-control" id="identity" placeholder="Report Title">
+            </div>
+
+
+            <div class="form-group">
+              <label for="tags">[Placeholder] Report Tags</label>
+              <select disabled id="tags" class="form-control">
+              </select>
+            </div>
+
             
-          <div class="panel-body">
-          <div class="form-group">
-            <label for="fiscalYear">Fiscal Year <small>Soon to be replaced with period selection directive</small></label>
-            <select id="fiscalYear" 
-              ng-options="year as year.fiscal_year_txt for year in income_expenseCtrl.fiscal" 
-              ng-model="income_expenseCtrl.options.fiscal_year"
-              class="form-control"></select>
           </div>
-        
+        </div>
+          
+          <div id="labelConfig" class="panel panel-default square">
+            <div class="panel-heading">
+              <strong>Label Configuration</strong>
+            </div>
+            <div class="panel-body">
+            <div class="form-group">
+              <label for="title">Heading</label>
+              <input ng-model="income_expenseCtrl.options.heading" type="text" class="form-control" id="title" placeholder="Heading">
+            </div>
+          
+            <div class="form-group">
+              <label for="subtitle">Subheading</label>
+              <input ng-model="income_expenseCtrl.options.subheading" type="text" class="form-control" id="subtitle" placeholder="Subheading">
+            </div>
+
+            <div class="form-group">
+              <label for="address">[Placeholder] Address To <small>Begin typing to select from debtors, creditors, employees and conventions</small></label>
+              <input disabled ng-model="income_expenseCtrl.options.address" type="text" class="form-control" id="address" placeholder="Search addressee...">
+            </div>
+
+            <div class="form-group">
+              <div class="checkbox">
+                <label>
+                  <input disabled ng-model="income_expenseCtrl.options.includeLetterhead" type="checkbox" id="letterhead">
+                  [Placeholder] Include enterprise letterhead
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="checkbox">
+                <label>
+                  <input ng-model="income_expenseCtrl.options.includeDateGenerated" type="checkbox" id="letterhead">
+                  Include date generated
+                </label>
+              </div>
+            </div>
+
+
           <div class="form-group">
-            <div class="checkbox">
+            <label>[Placeholder] Language</label>
+
+            <div class="radio">
               <label>
-                <input 
-                  ng-model="income_expenseCtrl.flag.compareYears" 
-                  ng-change="income_expenseCtrl.updateCompareOption(income_expenseCtrl.flag.compareYears)" 
-                  type="checkbox" id="compareFlag">
-                Compare year with additional fiscal year
+                <input disabled type="radio" name="languageOptions" id="english" value="en" checked>
+                English
               </label>
             </div>
+
+            <div class="radio">
+              <label>
+                <input disabled type="radio" name="languageOptions" id="french" value="fr">
+                French
+              </label>
+            </div>
+
           </div>
-        
-          <div class="form-group">
-            <label for="fiscalYear">Select year for comparison </label>
-            <select id="fiscalYear" 
-              ng-disabled="!income_expenseCtrl.flag.compareYears"
-              ng-options="year as year.fiscal_year_txt for year in income_expenseCtrl.fiscal" 
-              ng-model="income_expenseCtrl.options.compare_year"
-              class="form-control">
-              <option disabled value="">--Select comparison year--</option> 
-            </select>
+          </div> 
           </div>
-
-
-          <div class="form-group">
-            <label for="identity">Report Title <small>This will be used to identify the report in the future, this title is not included in the report (see heading)</small></label>
-            <input ng-model="income_expenseCtrl.options.title" type="text" class="form-control" id="identity" placeholder="Report Title">
-          </div>
-
-
-          <div class="form-group">
-            <label for="tags">[Placeholder] Report Tags</label>
-            <select disabled id="tags" class="form-control">
-            </select>
-          </div>
-
           
-        </div>
+          <div id="layoutConfig" class="panel panel-default">
+            <div class="panel-heading">
+              <strong>Layout Configuration</strong>
+            </div>
+            <div class="panel-body">
+          
+            {{income_expenseCtrl.options}}
+            <div class="form-group">
+              <label>Orientation</label>
+
+              <div class="radio">
+                <label>
+                  <!-- <input ng-value="standard" ng-model="income_expenseCtrl.options.format" type="radio" name="orientationOptions" id="portrait" value="portrait"> -->
+                  <!-- <input ng-value="standard" ng-model="income_expenseCtrl.options.format" type="radio" name="orientationOptions" id="format"> -->
+                  <input type="radio" ng-model="income_expenseCtrl.options.format" value="standard">
+                  Portrait
+                </label>
+              </div>
+
+              <div class="radio">
+                <label>
+                  <!-- <input ng-value="horizontal" ng-model="income_expenseCtrl.options.format" type="radio" name="orientationOptions" id="format" checked> -->
+                  <!-- <input ng-value="horizontal" ng-model="income_expenseCtrl.options.format" type="radio" name="orientationOptions" id="landscape" value="landscape" checked> -->
+                  <input type="radio" ng-model="income_expenseCtrl.options.format" value="horizontal">
+                  Landscape
+                </label>
+              </div>
+
+            </div>
+            
+            <div class="form-group">
+              <label>[Placeholder] Page Size</label>
+
+              <div class="radio">
+                <label>
+                  <input disabled type="radio" name="sizeOptions" id="normal" value="normal" checked>
+                  Normal (A4)
+                </label>
+              </div>
+
+              <div class="radio">
+                <label>
+                  <input disabled type="radio" name="sizeOptions" id="compact" value="compact">
+                  Compact (A5)
+                </label>
+              </div>
+
+            </div>
+
+            </div>
+          </div>
+          
+        </form>
       </div>
-        
-        <div id="labelConfig" class="panel panel-default square">
-          <div class="panel-heading">
-            <strong>Label Configuration</strong>
-          </div>
-          <div class="panel-body">
-          <div class="form-group">
-            <label for="title">Heading</label>
-            <input ng-model="income_expenseCtrl.options.heading" type="text" class="form-control" id="title" placeholder="Heading">
-          </div>
-        
-          <div class="form-group">
-            <label for="subtitle">Subheading</label>
-            <input ng-model="income_expenseCtrl.options.subheading" type="text" class="form-control" id="subtitle" placeholder="Subheading">
-          </div>
-
-          <div class="form-group">
-            <label for="address">[Placeholder] Address To <small>Begin typing to select from debtors, creditors, employees and conventions</small></label>
-            <input disabled ng-model="income_expenseCtrl.options.address" type="text" class="form-control" id="address" placeholder="Search addressee...">
-          </div>
-
-          <div class="form-group">
-            <div class="checkbox">
-              <label>
-                <input disabled ng-model="income_expenseCtrl.options.includeLetterhead" type="checkbox" id="letterhead">
-                [Placeholder] Include enterprise letterhead
-              </label>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="checkbox">
-              <label>
-                <input ng-model="income_expenseCtrl.options.includeDateGenerated" type="checkbox" id="letterhead">
-                Include date generated
-              </label>
-            </div>
-          </div>
-
-
-        <div class="form-group">
-          <label>[Placeholder] Language</label>
-
-          <div class="radio">
-            <label>
-              <input disabled type="radio" name="languageOptions" id="english" value="en" checked>
-              English
-            </label>
-          </div>
-
-          <div class="radio">
-            <label>
-              <input disabled type="radio" name="languageOptions" id="french" value="fr">
-              French
-            </label>
-          </div>
-
-        </div>
-        </div> 
-        </div>
-        
-        <div id="layoutConfig" class="panel panel-default">
-          <div class="panel-heading">
-            <strong>Layout Configuration</strong>
-          </div>
-          <div class="panel-body">
-        
-          {{income_expenseCtrl.options}}
-          <div class="form-group">
-            <label>Orientation</label>
-
-            <div class="radio">
-              <label>
-                <!-- <input ng-value="standard" ng-model="income_expenseCtrl.options.format" type="radio" name="orientationOptions" id="portrait" value="portrait"> -->
-                <!-- <input ng-value="standard" ng-model="income_expenseCtrl.options.format" type="radio" name="orientationOptions" id="format"> -->
-                <input type="radio" ng-model="income_expenseCtrl.options.format" value="standard">
-                Portrait
-              </label>
-            </div>
-
-            <div class="radio">
-              <label>
-                <!-- <input ng-value="horizontal" ng-model="income_expenseCtrl.options.format" type="radio" name="orientationOptions" id="format" checked> -->
-                <!-- <input ng-value="horizontal" ng-model="income_expenseCtrl.options.format" type="radio" name="orientationOptions" id="landscape" value="landscape" checked> -->
-                <input type="radio" ng-model="income_expenseCtrl.options.format" value="horizontal">
-                Landscape
-              </label>
-            </div>
-
-          </div>
-          
-          <div class="form-group">
-            <label>[Placeholder] Page Size</label>
-
-            <div class="radio">
-              <label>
-                <input disabled type="radio" name="sizeOptions" id="normal" value="normal" checked>
-                Normal (A4)
-              </label>
-            </div>
-
-            <div class="radio">
-              <label>
-                <input disabled type="radio" name="sizeOptions" id="compact" value="compact">
-                Compact (A5)
-              </label>
-            </div>
-
-          </div>
-
-          </div>
-        </div>
-        
-      </form>
     </div>
   </div>
 
@@ -237,7 +236,7 @@
       <i>bhima reporting module 0.1</i>
     </div>
     
-    <div ng-if="income_expenseCtrl.state.notComplete() && income_expenseCtrl.state.notLoading()">
+    <div ng-if="income_expenseCtrl.state.notComplete && income_expenseCtrl.state.notLoading">
       <button  ng-click="income_expenseCtrl.cancelModal()" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-ban-circle"></i> Cancel</button>
       <button ng-click="income_expenseCtrl.submit()" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-open"></i> Create Document</button>
     </div>

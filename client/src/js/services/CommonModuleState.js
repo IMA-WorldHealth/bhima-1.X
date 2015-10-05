@@ -8,6 +8,8 @@
  *
  * @returns {object} Getters and Setters for common modules states
  *
+ * @todo Refactor API to remove redundant states
+ *
  * @todo Using getters and setters to semantically expose variables may be more
  * costly than it is worth, this should be investigated
  */
@@ -43,6 +45,30 @@ function ModuleState ($timeout) {
         }
         return !this.__valid;
         }
+    });
+    
+    Object.defineProperty(this, 'isLoading', { 
+      get : function isLoading() { 
+        return this.__loading;
+      }
+    });
+
+    Object.defineProperty(this, 'notLoading', { 
+      get : function notLoading() { 
+        return !this.__loading;
+      }
+    });
+
+    Object.defineProperty(this, 'isComplete', { 
+      get : function isComplete() { 
+        return this.__complete;
+      }
+    });
+
+    Object.defineProperty(this, 'notComplete', { 
+      get : function notComplete() { 
+        return !this.__complete;
+      }
     });
 
     Object.defineProperty(this, 'moduleSuccess', { 
@@ -81,26 +107,9 @@ function ModuleState ($timeout) {
     return this.__loading;
   }
 
-  Session.prototype.isLoading = function () { 
-    console.log('isLoading called', this.__loading);
-    return this.__loading;
-  }
-
-  Session.prototype.notLoading = function () { 
-    return !this.__loading;
-  }
-
   Session.prototype.loading = function () { 
     this.__loading = true;
     return this.__loading;
-  }
-
-  Session.prototype.isComplete = function () { 
-    return this.__complete;
-  }
-
-  Session.prototype.notComplete = function () { 
-    return !this.__complete;
   }
 
   Session.prototype.completed = function () { 

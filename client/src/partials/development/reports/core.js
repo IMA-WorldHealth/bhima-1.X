@@ -64,7 +64,8 @@ function ReportCore($routeParams, $modal, ModuleState, ReportService) {
     viewModel.title = definition.title;
     
     // TODO Use semantic methods
-    state.isLoading = true;
+    // state.isLoading = true;
+    state.loading();
 
     // Fetch archives 
     serverInterface.fetchArchive(definition.id)
@@ -138,7 +139,8 @@ function ReportCore($routeParams, $modal, ModuleState, ReportService) {
   function settupArchive(archives) { 
     
     // TODO use semantic methods
-    state.isLoading = false;
+    // state.isLoading = false;
+    state.loaded();
 
     // Update view
     updateArchivesView(archives.data); 
