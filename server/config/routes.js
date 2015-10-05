@@ -42,7 +42,7 @@ var auth            = require('../controllers/auth'),
 
 var patient         = require('../controllers/patient');
 
-// Middleware for a particular route
+// Middleware for handle uploaded file
 var multipart       = require('connect-multiparty');
 
 exports.initialise = function (app) {
