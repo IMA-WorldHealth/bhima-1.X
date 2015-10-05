@@ -21,7 +21,6 @@ NewBudgetController.$inject = [
 */
 function NewBudgetController($q, $scope, $http, $translate, validate, precision, messenger, SessionService, connect, Upload) {
   var dependencies = {},
-      enterprise_id = null,
       session = $scope.session = {},
       config = $scope.config = {};
 
@@ -84,9 +83,8 @@ function NewBudgetController($q, $scope, $http, $translate, validate, precision,
   init();
 
   function init() {
-    enterprise_id = SessionService.enterprise.id;
     $scope.enterprise = SessionService.enterprise;
-    dependencies.fiscal_years.query.where = [ 'fiscal_year.enterprise_id=' + enterprise_id ];
+    dependencies.fiscal_years.query.where = [ 'fiscal_year.enterprise_id=' + $scope.enterprise.id ];
     validate.process(dependencies, ['fiscal_years'])
     .then(loadFiscalYears);
   }
@@ -134,18 +132,11 @@ function NewBudgetController($q, $scope, $http, $translate, validate, precision,
   }
 
   function loadPeriod(fiscal_year_id) {
-    dependencies.period = {
-      query : {
-        tables : {
-          'period' : { columns : ['id', 'period_number', 'period_start', 'period_stop'] }
-        },
-        where : ['period.fiscal_year_id=' + fiscal_year_id, 'AND', 'period.id<>0']
-      }
-    };
+    dependencies.periods.query.where = ['period.fiscal_year_id=' + fiscal_year_id, 'AND', 'period.id<>0'];
 
-    validate.refresh(dependencies, ['period'])
+    validate.refresh(dependencies, ['periods'])
     .then(function (model) {
-      session.periods = model.period.data;
+      session.periods = model.periods.data;
     });
   }
 
@@ -266,6 +257,7 @@ function NewBudgetController($q, $scope, $http, $translate, validate, precision,
     .success(function () {
       messenger.success($translate.instant('BUDGET.EDIT.UPDATE_OK'));
       submitAccount(session.account);
+      session.autoAdjust = false;
     })
     .catch(function (err) {
       messenger.danger($translate.instant('BUDGET.EDIT.UPDATE_FAIL'));
@@ -298,7 +290,7 @@ function NewBudgetController($q, $scope, $http, $translate, validate, precision,
         }
         else {
           totalFree += bud.budget;
-          numFree += 1;
+          numFree++;
         }
       });
 

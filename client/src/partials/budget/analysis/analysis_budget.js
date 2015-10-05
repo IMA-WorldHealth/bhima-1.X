@@ -23,7 +23,6 @@ AnalysisBudgetController.$inject = [
 */
 function AnalysisBudgetController($q, $scope, $window, $translate, validate, precision, messenger, SessionService, util, exportFile) {
   var dependencies = {},
-      enterprise_id = null,
       session = $scope.session = {},
       config = $scope.config = {};
 
@@ -78,9 +77,8 @@ function AnalysisBudgetController($q, $scope, $window, $translate, validate, pre
   init();
 
   function init() {
-    enterprise_id = Number(SessionService.enterprise.id);
     $scope.enterprise = SessionService.enterprise;
-    dependencies.fiscal_years.query.where = [ 'fiscal_year.enterprise_id=' + enterprise_id ];
+    dependencies.fiscal_years.query.where = [ 'fiscal_year.enterprise_id=' + $scope.enterprise.id ];
     validate.process(dependencies, ['fiscal_years'])
     .then(loadFiscalYears);
   }
@@ -93,7 +91,7 @@ function AnalysisBudgetController($q, $scope, $window, $translate, validate, pre
     var totalBalance = 0.0;
     var totals = {};
     $scope.budgets.data.forEach(function (bud) {
-      if (bud.account_id in totals) {
+      if (totals[bud.account_id]) {
         totals[bud.account_id] += bud.budget;
       }
       else {
@@ -115,7 +113,7 @@ function AnalysisBudgetController($q, $scope, $window, $translate, validate, pre
       totalsFY[fy.id] = {};
       totalBudgetFY[fy.id] = 0.0;
       $scope.fiscalYearBudget[fy.id].forEach(function (bud) {
-        if (bud.account_id in totalsFY[fy.id]) {
+        if (totalsFY[fy.id][bud.account_id]) {
           totalsFY[fy.id][bud.account_id] += bud.budget;
         }
         else {
@@ -131,7 +129,7 @@ function AnalysisBudgetController($q, $scope, $window, $translate, validate, pre
     // Insert the budget totals into the account data
     $scope.accounts.data.forEach(function (acct) {
       // Current budget
-      if (acct.id in totals) {
+      if (totals[acct.id]) {
         acct.budget = precision.round(totals[acct.id], 2);
       } else {
         if (acct.type === 'title') {
@@ -144,7 +142,7 @@ function AnalysisBudgetController($q, $scope, $window, $translate, validate, pre
       // Previous Budgets
       acct.previousBudget = {};
       session.selectedPreviousFY.forEach(function (fy) {
-        if (acct.id in totalsFY[fy.id]) {
+        if (totalsFY[fy.id][acct.id]) {
           acct.previousBudget[fy.id] = precision.round(totalsFY[fy.id][acct.id], 2);
         } else {
           if (acct.type === 'title') {
@@ -230,7 +228,7 @@ function AnalysisBudgetController($q, $scope, $window, $translate, validate, pre
   }
 
   function displayAccounts() {
-    dependencies.accounts.query = '/InExAccounts/' +enterprise_id;
+    dependencies.accounts.query = '/InExAccounts/' + $scope.enterprise.id;
     // Process period
     var periodCriteria;
     var selectedPeriod = session.periods.filter(function (p) {
