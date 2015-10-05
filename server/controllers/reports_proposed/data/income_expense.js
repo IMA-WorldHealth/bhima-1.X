@@ -49,16 +49,19 @@ exports.compile = function (options) {
 
   // Validate options/ configuration object
   var compareYearDefined = options.compare_year;
-  var compareYearUnique = options.compare_year.id !== options.fiscal_year.id;
+  var compareYearUnique;
 
   if (!options.fiscal_year) { 
     return q.reject(new Error('Invalid report configuration'));
   }
   
-  if (compareYearDefined && compareYearUnique) { 
-
-    // Context will be compiled for both original fiscal year and comparison year
-    comparingYears = true;
+  if (compareYearDefined) { 
+    compareYearUnique = options.compare_year.id !== options.fiscal_year.id;
+    
+    if (compareYearUnique) { 
+      // Context will be compiled for both original fiscal year and comparison year
+      comparingYears = true;
+    }
   }
 
   // Attach parameters/ defaults to completed context
@@ -96,6 +99,7 @@ function collectSingleYear(query, context, options, deferred) {
     .then(function (accounts) { 
       
       context.fiscal = compileAccountLines(accounts);
+      context.compare = {};
       deferred.resolve(context);
     })
     .catch(deferred.reject)
@@ -113,8 +117,15 @@ function collectComparisonYear(query, context, options, deferred) {
       .then(function (comparisonAccounts) { 
    
         context.fiscal = compileAccountLines(originalAccounts);
-        context.comparison = compileAccountLines(comparisonAccounts);
+        context.compare = compileAccountLines(comparisonAccounts);
+      
+        // context.fiscal.varianceData = calculateVariance(
+          // context.fiscal.incomeData,
+          // context.fiscal.expenseData);
 
+        // context.compare.varianceData = calculateVariance(
+          // context.compare.incomeData,
+          // context.compare.expenseData);
 
         console.log('data collected and compiled for both original and comparison year');
         deferred.resolve(context);
@@ -125,6 +136,8 @@ function collectComparisonYear(query, context, options, deferred) {
 }
 
 function compileAccountLines(accounts) { 
+  
+  // Parses account depths for formatting etc.
   var accountTree = getChildren(accounts, ROOT_ACCOUNT_ID, 0);
   
   // FIXME Extend object hack
@@ -134,10 +147,12 @@ function compileAccountLines(accounts) {
   // FIXME Lots of processing, very little querrying - this is what MySQL is foreh
   incomeData = filterAccounts(incomeData, expenseAccountConvention);
   incomeData = trimEmptyAccounts(incomeData);
+  incomeData = flattenAccounts(incomeData); 
 
   expenseData = filterAccounts(expenseData, incomeAccountConvention);
-  expenseData = trimEmptyAccounts(expenseData);
-  
+  expenseData = trimEmptyAccounts(expenseData); 
+  expenseData = flattenAccounts(expenseData);
+
   return { 
     incomeData : incomeData,
     expenseData : expenseData
@@ -171,11 +186,14 @@ function getChildren(accounts, parentId, depth) {
 }
   
 function filterAccounts(accounts, excludeType) { 
-   
+
   function typeFilter(account) {
     var matchesFilterType = false;
-
-    if (account.account_number[0] === excludeType) { 
+    
+    // FIXME Expensive repeated conversion - filter once
+    var accountNumber = String(account.account_number)
+    
+    if (accountNumber[0] === excludeType) { 
       matchesFilterType = true;
     }
 
@@ -183,15 +201,18 @@ function filterAccounts(accounts, excludeType) {
     if (matchesFilterType) { 
       return null; 
     } else { 
-      
       if (account.children) account.children = account.children.filter(typeFilter);
       return account;
     }
   }
-  return accounts.filter(typeFilter);
+  
+  var filtered = accounts.filter(typeFilter);
+  return filtered;
 }
 
 function trimEmptyAccounts(accounts) { 
+  var unique = 0;
+
   var removedAccount = true;
     
   while (removedAccount) { 
@@ -205,10 +226,72 @@ function trimEmptyAccounts(accounts) {
     if (account.account_type_id === titleAccountId && hasNoChildren) { 
       removedAccount = true;
     } else { 
+
+      unique += 1;
       account.children = account.children.filter(emptyFilter);
       return account;
     }
   }
 
+  console.log('after trim', unique);
+
   return accounts;
+}
+
+// TODO Completely replace this using the MySQL Query (see CASE columns update)
+/*
+function calculateVariance(fiscal, compare) { 
+  
+  // FIXME These methods entirely rely on everything working and both fiscal years having exactly the same number of elements
+  var totalItems = fiscal.length;
+  
+  var varianceList = [];
+
+  for (var i = 0; i < totalItems; i++) { 
+
+    varianceList.push({
+      difference : compare[i].balance - fiscal[i].balance;
+    }); 
+  }
+  
+  return varianceList;
+}*/
+
+function flattenAccounts(accountTree) { 
+  
+  /**
+   * FIXME 
+   * Massive hack for merge delay
+   * 
+   * Becuase of the data model changing (OHADA vs. non OHADA?) many of the accounts are duplicated, instead of resolving
+   * that logical issue - this simply ignores duplicates - this is bad, fix as soon as possible
+   */
+  var cacheId = [];
+  /**/
+
+  var flattenedAccounts = [];
+  
+  accountTree.forEach(function (accountNode) { 
+    parseNode(accountNode);
+  });
+
+  function parseNode(accountNode) { 
+      var children = accountNode.children;
+
+      accountNode.children = undefined;
+      
+      /**
+       * FIXME
+       */
+      if (cacheId.indexOf(accountNode.id)===-1) { 
+        flattenedAccounts.push(accountNode);
+        cacheId.push(accountNode.id);
+      }
+      /**/
+
+      children.map(parseNode);
+  }
+  
+  console.log('total flattened', flattenedAccounts.length);
+  return flattenedAccounts;
 }
