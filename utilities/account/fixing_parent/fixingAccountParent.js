@@ -14,6 +14,7 @@ db.initialise();
 	.then(executeAccount)
 	.then(unmatchAccount)
 	.then(updateParent)
+	.then(success)
 	.catch(error)
 	.done(endProcess);
 
@@ -82,17 +83,18 @@ db.initialise();
 		/*
 		 * Objectif : Application des mise a jour dans la base de donnees
 		 */
-		var dbPromises = [];
-		accounts.forEach(function (acc) {
-			var sql = 'UPDATE account SET parent=? WHERE account.id=? ;';
-			var value = [acc.parent, acc.id];
-			dbPromises.push(db.exec(sql, value));
+		var sql = 'UPDATE account SET parent=? WHERE account.id=? ;';
+		var dbPromises = accounts.map(function (acc) {
+			return db.exec(sql, [acc.parent, acc.id]);
 		});
 		return q.all(dbPromises);
 	}
 
-	function endProcess() {
+	function success() {
 		console.log('Update parent with success...');
+	}
+
+	function endProcess() {
 		process.exit(0);
 	}
 
