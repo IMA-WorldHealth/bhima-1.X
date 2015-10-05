@@ -1,5 +1,5 @@
 <!-- TODO Write templates in project standardised templating -->
-
+<!-- TODO Remove all hardcoded account_type values -->
 <head>
   
   <link rel="stylesheet" href="{{=it.path}}/templates/style/normalize.css">
@@ -31,10 +31,13 @@
           <td colspan="2"></td>
           
           <!-- Repeat through column configuration --> 
-          <td style="text-align : left; padding-right : 10px;">2014</td>
-          <td style="text-align : left; padding-right : 10px;">2015</td>
-          <td style="text-align : left; padding-right : 10px;">Variance</td>
-          <td style="text-align : left;">(%)</td>
+          <td style="text-align : center; padding-right : 10px;">{{=it.fiscalDefinition.fiscal_year_txt}}</td>
+
+          {{? it.comparingYears }}
+          <td style="text-align : center; padding-right : 10px;">{{=it.compareDefinition.fiscal_year_txt}}</td>
+          <td style="text-align : center; padding-right : 10px;">Variance</td>
+          <td style="text-align : center;">(%)</td>
+          {{?}}
         </tr>
       </thead>
       
@@ -43,7 +46,9 @@
           <!-- TODO Use a partial definition here -->
 
           {{ function displayIncome(accounts) { 
-          accounts.forEach(function (line) {  }}
+               accounts.forEach(function (line, index) {
+               var compare = accounts[index]; }}
+
         <tr class="totalRight {{? line.account_type_id === 3}}underline{{?}}">
           
           <td style="{{? line.account_type_id === 3}}font-weight : bold;{{?}}">
@@ -60,10 +65,14 @@
          
           <!-- line will be split into multiple years line.balance[year] -->
           <td style="text-align : right;">{{=line.balance || 0}}</td>
+         
+          {{? it.comparingYears }}
           <td style="text-align : right;">{{=line.balance || 0}}</td>
 
           <td style="text-align : right;">{{=line.difference || 0}}</td>
           <td style="text-align : right;">0%</td>
+          {{?}}
+
           {{?}}
 
         </tr> 
@@ -73,11 +82,11 @@
       {{ }); }}
       {{ } }} 
 
-      {{ displayIncome(it.incomeData); }}
+      {{ displayIncome(it.fiscal.incomeData); }}
       </tbody>
       
       <tbody>
-        {{ displayIncome(it.expenseData); }}
+        {{ displayIncome(it.fiscal.expenseData); }}
       </tbody>
     </table>
   </section>

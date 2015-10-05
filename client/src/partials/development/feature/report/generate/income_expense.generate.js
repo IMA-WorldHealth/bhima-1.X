@@ -49,8 +49,8 @@ function incomeExpense($anchorScroll, $location, $modalInstance, $http, Store, M
     latestIndex = modal.fiscal.length - 1;
 
     // FIXME Assigning random values that are never specified - @class-y JavaScript
-    options.fiscal_year = modal.fiscal[latestIndex].id;
-    options.compare_year = modal.fiscal[latestIndex].id;
+    options.fiscal_year = modal.fiscal[latestIndex];
+    options.compare_year = modal.fiscal[latestIndex];
   }
 
   function updateCompareOption(enabled) { 

@@ -69,7 +69,7 @@
           <div class="form-group">
             <label for="fiscalYear">Fiscal Year <small>Soon to be replaced with period selection directive</small></label>
             <select id="fiscalYear" 
-              ng-options="year.id as year.fiscal_year_txt for year in income_expenseCtrl.fiscal" 
+              ng-options="year as year.fiscal_year_txt for year in income_expenseCtrl.fiscal" 
               ng-model="income_expenseCtrl.options.fiscal_year"
               class="form-control"></select>
           </div>
@@ -90,7 +90,7 @@
             <label for="fiscalYear">Select year for comparison </label>
             <select id="fiscalYear" 
               ng-disabled="!income_expenseCtrl.flag.compareYears"
-              ng-options="year.id as year.fiscal_year_txt for year in income_expenseCtrl.fiscal" 
+              ng-options="year as year.fiscal_year_txt for year in income_expenseCtrl.fiscal" 
               ng-model="income_expenseCtrl.options.compare_year"
               class="form-control">
               <option disabled value="">--Select comparison year--</option> 
