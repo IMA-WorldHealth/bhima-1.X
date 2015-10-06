@@ -237,8 +237,15 @@
       "WARNING"           : "ATTENTION! ",
       "WARN_BAD_TOTALS"   : "La somme des chiffres du budget pour les périodes ne correspond pas au total! ",
       "WARN_ZERO_TOTAL"   : "Veuillez d'abord entrer le total pour l'année avant de pouvoir procéder! "
-      }
    },
+   "NEW" : {
+    "DESC"       : "Creation d'un budget pour una année fiscale donnée",
+    "IMPORT_CSV" : "Importation du fichier CSV",
+    "MANUAL"     : "Définition manuelle du budget",
+    "SEND_FILE"  : "Envoyer le nouveau budget",
+    "TITLE"      : "Creation d'un nouveau budget"
+  }
+},
 "CASH": {
    "CASHBOX" : {
       "ADD"                    : "Ajouter",
@@ -1112,8 +1119,10 @@
    "ERR_NO_PERIOD"                  : "Erreur: Il n'y a pas une période de validité pour cette date. Veuillez vous assurez que la date est valide, et est dans une période enregistrée.",
    "ERR_SQL"                        : "SQL Erreur",
    "ERR_TRANSACTION_FORMAT"         : "La transaction ne semble pas être correctement formaté. Avez-vous oublié un compte?",
-   "ERROR_MISSING_ACCOUNTS"         : "Comptes manquants",
    "ERR_UNBALANCED_TRANSACTIONS"    : "Transactions non balancées",
+   "ERR_UPLOAD"                     : "Erreur durant d'envoi de fichier",
+   "ERR_CSV_FILE"                   : "Erreur avec le fichier CSV",
+   "ERROR_MISSING_ACCOUNTS"         : "Comptes manquants",
    "HTTP_STATUS_CODE"               : "Statut du code HTTP",
    "WARN_MISSING_DOCUMENT_ID"       : "Document ID manquant"
    },
@@ -2851,6 +2860,7 @@
    "BUDGETING"                 : "Budget",
    "BUDGET_ANALYSIS"           : "Analyse Budget",
    "BUDGET_BY_ACCOUNT"         : "Budget par Compte",
+   "BUDGET_MANAGEMENT"         : "Gestion Budgets",
    "CASH"                      : "Caisse Auxilliaire",
    "CASHBOX_MANAGEMENT"        : "Caisses et Banques",
    "CASHBOX_ACCOUNT_MANAGEMENT": "Configuration Tresorerie",

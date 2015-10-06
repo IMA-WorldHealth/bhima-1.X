@@ -153,6 +153,7 @@ UPDATE `currency` SET `format_key` = 'usd' WHERE `id` = 2;
 ALTER TABLE `currency` MODIFY `format_key` VARCHAR(20) NOT NULL;
 
 -- Updates to unit table
+
 -- 
 -- DROPs unused has_children field
 --
@@ -165,7 +166,6 @@ USE bhima;
 
 ALTER TABLE `unit`
 DROP `has_children`;
-
 
 
 -- Restaure OLD UNIT Report of tax paiement and cotisation paiement
@@ -281,3 +281,11 @@ DROP FOREIGN KEY  `service_ibfk_1` ;
 
 INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
 VALUES (120, 'Rapport situation group debiteur', 'TREE.DEBITOR_GROUP_REPORT', 'pour voir le rapport pdf detaille de group de debiteur', 10, '/partials/reports/debitor_group_report', '/reports/debitor_group_report/');
+
+-- Create new budget
+-- 
+-- Date: 2015-09-16
+-- By: Bruce Mbayo
+
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
+VALUES (121, 'Budget Management', 'TREE.BUDGET_MANAGEMENT', 'Budgets Management module', 8, '/partials/budget/new', '/budgeting/new/');
