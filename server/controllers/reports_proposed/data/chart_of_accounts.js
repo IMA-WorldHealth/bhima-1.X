@@ -38,7 +38,14 @@ exports.compile = function (options) {
   db.exec(accountQuery, [])
     .then(function (accounts) { 
       
-      deferred.resolve(accounts);
+      //FIXME What does hack really mean?
+      var calculateDepthTree = getChildren(accounts, ROOT_ACCOUNT_ID, 0);
+      console.log(calculateDepthTree);
+      var displayAccounts = flattenAccounts(calculateDepthTree);
+    
+      
+      context.accounts = displayAccounts;
+      deferred.resolve(context);
     })
     .catch(deferred.reject)
     .done();
@@ -47,7 +54,7 @@ exports.compile = function (options) {
 };
 
 /* 
- * Utility Methods - should probably be shared acorss different reporting modules
+ * Utility Methods - should probably be shared across different reporting modules
  */
 function getChildren(accounts, parentId, depth) {
   var children;
@@ -102,11 +109,12 @@ function flattenAccounts(accountTree) {
         flattenedAccounts.push(accountNode);
         cacheId.push(accountNode.id);
       }
-      /**/
+      /**/ 
 
+      if (children) { 
       children.map(parseNode);
+      }
   }
-  
-  console.log('total flattened', flattenedAccounts.length);
+
   return flattenedAccounts;
 }
