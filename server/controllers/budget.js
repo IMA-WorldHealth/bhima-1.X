@@ -29,25 +29,26 @@ function uploadedFile(req, res, next) {
 
 		// File name can be more readable
 		fs.rename(file.path, fileName, function (err) {
-			if (err) { throw err; }
-			fs.stat(fileName, function (err, stat) {
-				if (err) { throw err; }
+			if (err) { return next(err); }
+			fs.stat(fileName, function (err) {
+				if (err) { return next(err); }
 				csv.fromPath(fileName, {headers: true})
 				.on('data', function (data) {
 					csvArray.push(data);
 				})
 				.on('end', function () {
-					createBudget(csvArray, fiscal_year_id, period)
+					createBudget(csvArray, fiscal_year_id, period, next)
 					.then(success(res))
-					.catch(error)
+					.catch(next)
 					.done();
-				});
+				})
+				.on('error', next);
 			});
 		});
 	} 
 }
 
-function createBudget(csvArray, fiscal_year_id, period) {
+function createBudget(csvArray, fiscal_year_id, period, next) {
 
 	/**
 	  * Objectif : create a new budget via params given
@@ -57,7 +58,7 @@ function createBudget(csvArray, fiscal_year_id, period) {
 	  * - period : the period
 	  */
 
-	if (!csvArray.length) { return q.reject('Error with `CSV ARRAY`'); }
+	if (!csvArray.length) { return next('Error with CSV file'); }
 
 	var queryInsertBudget = 'INSERT INTO `budget` (account_id, period_id, budget) VALUES (?, ?, ?) ;';
 
@@ -91,7 +92,7 @@ function createBudget(csvArray, fiscal_year_id, period) {
 		/**
 		  * This function is responsible to get budget from csvArray
 		  * and insert these data into budget table in database 
-		  * the `periodLength` variable is used in divison of budget by period
+		  * the `periodLength` variable is used in divison of budget by period, and must be different to zero
 		  */
 		periodLength = (periodLength && periodLength > 0) ? periodLength : 1;
 		csvArray.forEach(function (acc) {
@@ -114,29 +115,29 @@ function createBudget(csvArray, fiscal_year_id, period) {
 		return db.exec(sql, [period_id]);
 	}
 
+	function error(err) {
+		return next(err);
+	}
+
 	// this function must return a promise to handle errors
 	// and for sending success status to client
 	return q(true);
 }
 
 function updateBudget(req, res, next) {
-	var budgets = req.body.params.budgets;
-	var accountId = req.body.params.accountId;
+	var budgets           = req.body.params.budgets;
+	var accountId         = req.body.params.accountId;
 	var queryUpdateBudget = 'UPDATE budget SET budget.account_id=?, budget.period_id=?, budget.budget=? WHERE budget.id=? ;';
-	var dbPromises = budgets.map(function (bud) {
+	var dbPromises        = budgets.map(function (bud) {
 		return db.exec(queryUpdateBudget, [accountId, bud.period_id, bud.budget, bud.id]);
 	});
 
 	q.all(dbPromises)
 	.then(success(res))
-	.catch(error)
+	.catch(next)
 	.done();
 }
 
 function success(res) {
 	res.status(200).send('success');
-}
-
-function error(err) {
-	console.error('[Error] ', err);
 }

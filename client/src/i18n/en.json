@@ -1118,6 +1118,8 @@
    "ERR_SQL"                     : "SQL Error",
    "ERR_TRANSACTION_FORMAT"      : "The transaction doesn't look correctly formatted.  Did you forget an account?",
    "ERR_UNBALANCED_TRANSACTIONS" : "Unbalanced transactions",
+   "ERR_UPLOAD"                  : "Error: uploading file failed",
+   "ERR_CSV_FILE"                : "Error with the CSV file",
    "ERROR_MISSING_ACCOUNTS"      : "Missing accounts",
    "HTTP_STATUS_CODE"            : "HTTP status code",
    "WARN_MISSING_DOCUMENT_ID"    : "Missing document ID"

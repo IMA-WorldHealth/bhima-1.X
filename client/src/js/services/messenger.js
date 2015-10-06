@@ -61,7 +61,7 @@ angular.module('bhima.services')
         angular.extend(err, { type : 'error', closable : true, error : true });
       } else {
         err = {
-          type : 'success',
+          type : 'error',
           closable : true,
           namespace : 'MESSENGER',
           description : err
