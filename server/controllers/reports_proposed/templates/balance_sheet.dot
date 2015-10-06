@@ -1,29 +1,28 @@
 <head>
-
   <link rel="stylesheet" href="{{=it.path}}/templates/style/normalize.css">
   <link rel="stylesheet" href="{{=it.path}}/templates/style/skeleton.css">
   <link rel="stylesheet" href="{{=it.path}}/templates/style/reports.css">
-
+  <meta charset='UTF-8' />
 </head>
 
 <body>
 
   <section id="letterhead"></section>
 
-  <section id="title" class="center">
+  <section id="title" class="front-matter">
       <h5>IMCK Hopital Bon Berger</h5>
-      <h5>Balance Sheet</h5>
-      <h5>As of {{=it.reportDate}}</h5>
+      <h5>{{= it.yearText }} Balance Sheet</h5>
+      <h5>{{= it.reportDate }}</h5>
   </section>
 
   <section>
-    <table class="balance">
+    <table class="balance text-condensed">
       <thead>
-        <tr>
-          <th>comptes</th>
-          <th>D</th>
-          <th>C</th>
-          <th>B</th>
+        <tr style="font-size: 12px;">
+          <th style="text-align:left;">Comptes</th>
+          <th style="width: 8%;">Debit</th>
+          <th style="width: 8%;">Credit</th>
+          <th style="width: 8%;">Balance</th>
         </tr>
       </thead>
 
@@ -33,30 +32,30 @@
             accounts.forEach(function (line) {  }}
           <tr>
 
-            <td style="padding-left: {{=line.depth * 50}}px; {{? line.account_type_id === 3}}font-weight : bold;{{?}}">
-              [{{=line.account_number}}] {{=line.account_txt}}
+            <td style="padding-left: {{=line.depth * 40}}px; {{? line.type === 'title' }}font-weight : bold;{{?}}">
+              {{=line.account_number}} <i>{{=line.account_txt}}</i>
             </td>
 
-            <td>
-              {{? line.account_type_id !== 3 }}{{=line.debit || 0}}{{?}}
+            <td class="text-right">
+              {{? line.type !== 'title' }}{{=line.formatDebit }}{{?}}
             </td>
 
-            <td>
-              {{? line.account_type_id !== 3}}{{=line.credit || 0}}{{?}}
+            <td class="text-right">
+              {{? line.type !== 'title' }}{{=line.formatCredit}}{{?}}
             </td>
 
-            <td>
-              {{? line.account_type_id !== 3}}{{=line.balance || 0}}{{?}}
+            <td class="text-right">
+              {{? line.type !== 'title' }}{{=line.formatBalance }}{{?}}
             </td>
 
           </tr>
 
         {{ if (line.children.length) displayRow(line.children); }}
 
-        {{? line.account_type_id === 3}}
+        {{? line.type === 'title' }}
           <tr class="outline">
-            <td style="padding-left : {{=line.depth * 50}}px; font-weight : bold;">Balance {{=line.account_txt}} [{{=line.account_number}}]</td>
-            <td style="font-weight : bold;" colspan="3">{{=line.formattedBalance}}</td>
+            <td style="padding-left : {{=line.depth * 40}}px; font-weight : bold;">Balance: {{=line.account_txt}}</td>
+            <td class="text-right" style="font-weight : bold;" colspan="3">{{=line.formattedBalance}}</td>
           </tr>
         {{?}}
         {{ }); }}
