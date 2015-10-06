@@ -1,5 +1,11 @@
-// reports_proposed/data/balance_sheet.js
-// Collects and aggregates data for the enterprise balance sheet
+/**
+* Balance Sheet Report
+*
+* Produces an enteprise balance sheet for a given fiscal year.  The balance sheet
+* is an up to date snapshot of the financial situation of an enterprise.  It takes
+* into account balance accounts and title accounts (for formatting purposes).
+*/
+
 var q       = require('q');
 var db      = require('../../../lib/db');
 var numeral = require('numeral');
@@ -9,10 +15,6 @@ var ROOT_ACCOUNT_ID = 0;
 
 var formatDollar = '$0,0.00';
 var balanceDate = new Date();
-
-// TODO Query for balance and title account IDs
-var balanceAccountId = 2;
-var titleAccountId = 3;
 
 // This method builds a tree data structure of
 // accounts and children of a specified parentId.
@@ -33,34 +35,10 @@ function getChildren(accounts, parentId, depth) {
   // and attach them as childen of their parent account
   children.forEach(function (account) {
     account.depth = depth;
-    account.children = getChildren(accounts, account.id, depth+1);
+    account.children = getChildren(accounts, account.id, depth + 1);
   });
 
   return children;
-}
-
-
-// FIXME Whatever - Jog on CS 101 - oh man
-function filterEmptyAccounts(accounts) {
-  var removedAccount = true;
-
-  while (removedAccount) {
-    removedAccount = false;
-    accounts = accounts.filter(emptyFilter);
-  }
-
-  function emptyFilter(account) {
-    var hasNoChildren = account.children.length === 0;
-
-    if (account.account_type_id === titleAccountId && hasNoChildren) {
-      removedAccount = true;
-    } else {
-      account.children = account.children.filter(emptyFilter);
-      return account;
-    }
-  }
-
-  return accounts;
 }
 
 // Adds the balance of a list of accounts to
@@ -69,8 +47,7 @@ function aggregate(value, account) {
 
   var isLeaf = account.children.length === 0;
 
-  // FIXME MySQL querry should never return NULL - normalization should not have to be done
-  account.balance = account.balance || 0;
+  account.balance = account.balance;
 
   // FIXME Balances are ONLY ever assigned to the very top level accounts, not for every title account
   account.formattedBalance = numeral(account.balance).format(formatDollar);
@@ -84,37 +61,69 @@ function aggregate(value, account) {
   return value + account.balance;
 }
 
+// remove title accounts that have no children
+function filterEmptyTitleAccounts(tree) {
+  return tree.filter(function (account) {
+
+    // recurse on children
+    account.children = filterEmptyTitleAccounts(account.children);
+
+    // if the account is a title account and has no children, return false
+    return account.children.length !== 0 || account.type !== 'title';
+  });
+}
+
 // expose the http route
 exports.compile = function (options) {
   'use strict';
 
-  var deferred = q.defer();
-  var context = {};
-  var fiscalYearId = options.fy;
-
+  var sql,
+      context = {},
+      params = {},
+      fiscalYearId = options.fy;
 
   context.reportDate = balanceDate.toDateString();
 
-  var sql =
-    'SELECT account.id, account.account_number, account.account_txt, account.account_type_id, account.parent, totals.debit, totals.credit, totals.balance, totals.period_id ' +
+  // FIXME/TODO -- n
+  sql =
+    'SELECT account.id, account.account_number, account.account_txt, account.account_type_id, ' +
+      'account.parent, IFNULL(totals.debit, 0) AS debit, IFNULL(totals.credit, 0) AS credit, ' +
+      'IFNULL(totals.balance, 0) AS balance, account_type.type ' +
     'FROM account LEFT JOIN (' +
-      'SELECT period_total.account_id, IFNULL(period_total.debit, 0) as debit, IFNULL(period_total.credit, 0) as credit, IFNULL(SUM(period_total.debit - period_total.credit), 0) as balance, period_total.period_id ' +
-      'FROM period_total ' +
-      'WHERE period_total.fiscal_year_id = ? ' +
-      'GROUP BY period_total.account_id ' +
+      'SELECT pt.account_id, IFNULL(pt.debit, 0) AS debit, IFNULL(pt.credit, 0) as credit, ' +
+        'IFNULL(SUM(pt.debit - pt.credit), 0) as balance ' +
+      'FROM period_total AS pt ' +
+      'WHERE pt.fiscal_year_id = ? ' +
+      'GROUP BY pt.account_id ' +
     ') AS totals ON totals.account_id = account.id ' +
-    'WHERE account.account_type_id IN (?, ?);';
+    'JOIN account_type ON account_type.id = account.account_type_id ' +
+    'WHERE account.account_type_id IN (?, ?) AND account.is_ohada = 1;';
 
-  db.exec('SELECT id FROM account_type WHERE type="balance";')
+  // first we want to get the proper account ids for the balance accounts
+  // and title accounts
+  return db.exec('SELECT id FROM account_type WHERE type = "balance";')
   .then(function (rows) {
+    params.balanceId = rows[0].id;
 
-    // pull out the account type id for the balance accounts
-    var balanceId = rows[0].id;
-
-    return db.exec(sql, [fiscalYearId, balanceAccountId, titleAccountId]);
+    return db.exec('SELECT id FROM account_type WHERE type = "title";');
+  })
+  .then(function (rows) {
+    params.titleId = rows[0].id;
+    return db.exec('SELECT fiscal_year_txt AS label FROM fiscal_year WHERE id = ?;', [fiscalYearId]);
+  })
+  .then(function (rows) {
+    context.yearText = rows[0].label;
+    return db.exec(sql, [fiscalYearId, params.balanceId, params.titleId]);
   })
   .then(function (accounts) {
     var accountTree;
+
+    // loop through and properly format debits and credits
+    accounts.forEach(function (account) {
+      account.formatCredit  = numeral(account.credit).format(formatDollar);
+      account.formatDebit   = numeral(account.debit).format(formatDollar);
+      account.formatBalance = numeral(account.balance).format(formatDollar);
+    });
 
     // Create the accounts and balances into a tree
     // data structure
@@ -127,13 +136,10 @@ exports.compile = function (options) {
       account.formattedBalance = numeral(account.balance).format(formatDollar);
     });
 
-    accountTree = filterEmptyAccounts(accountTree);
+    // filter empty title accounts
+    accountTree = filterEmptyTitleAccounts(accountTree);
 
     context.data = accountTree;
-    deferred.resolve(context);
-  })
-  .catch(deferred.reject)
-  .done();
-
-  return deferred.promise;
+    return context;
+  });
 };
