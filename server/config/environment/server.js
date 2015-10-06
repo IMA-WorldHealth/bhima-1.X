@@ -14,6 +14,7 @@ var config = {
     'resave' : false,
     'saveUninitialized' : false,
   },
+  'uploadFolder' : 'client/upload/',
 
   /* Configuration for plugins
    * Each plugin REQUIRES two properties:
