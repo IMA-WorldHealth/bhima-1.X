@@ -125,8 +125,12 @@ function NewBudgetController($q, $scope, $http, $translate, validate, precision,
         'period' : config.period,
       } 
     })
-    .success(function () {
+    .then(function () {
       messenger.success($translate.instant('UTIL.SUCCESS'), true);
+      config.period = null;
+    })
+    .catch(function () {
+      messenger.error($translate.instant('ERROR.ERR_UPLOAD'), true);
       config.period = null;
     });
   }
