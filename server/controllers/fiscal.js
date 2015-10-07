@@ -2,10 +2,30 @@ var db = require('./../lib/db'),
     util = require('./../lib/util'),
     journal = require('./journal');
 
-/*
- * HTTP Controller
-*/
-exports.createFiscalYear = function (req, res, next) {
+exports.createFiscalYear = createFiscalYear;
+exports.fiscalYearResultat = fiscalYearResultat;
+exports.getFiscalYears = getFiscalYears;
+
+// GET /fiscal
+function getFiscalYears(req, res, next) {
+  'use strict';
+
+  var sql;
+
+  sql =
+    'SELECT id, fiscal_year_txt, locked FROM fiscal_year;';
+
+  db.exec(sql)
+  .then(function (rows) {
+    res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
+}
+
+// POST /fiscal
+// creates a new fiscal year
+function createFiscalYear(req, res, next) {
   'use strict';
 
   var hasBalances, data, fiscalYearId;
@@ -51,20 +71,19 @@ exports.createFiscalYear = function (req, res, next) {
     next(error);
   })
   .done();
-};
+}
 
-exports.fiscalYearResultat = function (req, res, next) {
+function fiscalYearResultat(req, res, next) {
   'use strict';
+
   var data = req.body.params;
   var user_id = data.user_id,
       new_fy_id = data.new_fy_id,
       resultat = data.resultat;
 
   journal.request('fiscal_year_resultat', new_fy_id, user_id, function (error, result) {
-    if (error) {
-      throw new Error('error::: ', error);
-    }
-    res.sendStatus(200);
+    if (error) { return next(error); }
+    res.status(200).send();
   }, undefined, resultat);
 }
 
@@ -137,6 +156,7 @@ function createNewYear(data) {
 }
 
 // creates the periods (including period 0) for a fiscal year
+// TODO -- migrate this to use db.exec() parameter parsing
 function createPeriods(fiscalYearId, start, end) {
   var sql,
       totalMonths,

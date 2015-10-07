@@ -1,0 +1,63 @@
+<head>
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/normalize.css">
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/skeleton.css">
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/reports.css">
+  <meta charset="utf-8" />
+</head>
+
+<body>
+
+  <section id="title" class="center">
+      <h5>IMCK Hopital Bon Berger</h5>
+      <h5>Balance Sheet</h5>
+      <h5>As of {{=it.reportDate}}</h5>
+  </section>
+
+  <section>
+    <table>
+      <thead>
+        <tr>
+          <th>Account Number</th>
+          <th>Debtor Group</th>
+          <th>
+            <table>
+              <tr>
+                <th colspan="2">
+                  Balance {{= it.meta.startMonth }}/{{= it.meta.startYear }}
+                </th>
+              </tr>
+              <tr>
+                <th>
+                  Debit
+                </th>
+                <th>
+                  Credit
+                </th>
+              </tr>
+            </table>
+          </th>
+          <th>Debits</th>
+          <th>Credits</th>
+          <th>Balance {{= it.meta.endMonth }}/{{= it.meta.endYear }}</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        {{ for (var account in it.accounts) {  }}
+
+          <tr>
+            <td>{{= account.account_number }}</td>
+            <td>{{= account.name }}</td>
+            <td>{{= account.openingDebits }}</td>
+            <td>{{= account.openingCredits }}</td>
+            <td>{{= account.debits }}</td>
+            <td>{{= account.credits }}</td>
+            <td>{{= account.closingBalance }}</td>
+          </tr>
+
+        {{ } }}
+      </tbody>
+    </table>
+  </section>
+</body>

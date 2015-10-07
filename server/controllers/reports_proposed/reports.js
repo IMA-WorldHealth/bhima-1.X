@@ -17,6 +17,7 @@ var grandLivreContext                  = require('./data/grand_livre');
 var EmployeeStateContext               = require('./data/employee_state');
 var accountResultContext               = require('./data/account_result');
 var debitorGroupReportContext          = require('./data/debitor_group_report');
+var debtorGroupAnnualReportContext     = require('./data/debtor_group_annual_report');
 
 // Module configuration
 var writePath = path.join(__dirname, 'out/');
@@ -48,8 +49,12 @@ var documentHandler = {
     context :  accountResultContext // data provider
   },
   debitor_group_report : {
-    template : dots.debitor_group_report, //templating provider
-    context :  debitorGroupReportContext // data provider
+    template : dots.debitor_group_report,
+    context :  debitorGroupReportContext
+  },
+  debtor_group_annual_report : {
+    template : dots.debtor_group_report,
+    context :  debtorGroupAnnualReportContext
   }
 };
 
@@ -57,7 +62,7 @@ var documentHandler = {
 initialise();
 
 exports.serve = function (req, res, next) {
-  
+
   var target = req.params.target;
   var options = {root : writePath};
 
@@ -109,10 +114,10 @@ exports.build = function (req, res, next) {
     // wkhtmltopdf exceptions not handled
     // TODO Verify with wkhtmltopdf docs that the first parameter will ONLY ever return error codes
     var pdf = wkhtmltopdf(compiledReport, configuration, function (errorCode, signal, a) {
-    
-      if (errorCode) { 
+
+      if (errorCode) {
         next(errorCode);
-      } else { 
+      } else {
 
         // Return path to file service
         res.send('/report/serve/' + hash);
@@ -131,7 +136,6 @@ function buildConfiguration(hash, size) {
 }
 
 function initialise() {
-
 
   // Ensure write folder exists - wkhtmltopdf will silently fail without this
   fs.exists(writePath, function (exists) {
