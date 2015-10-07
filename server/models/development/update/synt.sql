@@ -434,3 +434,10 @@ UPDATE `unit` SET `unit`.`parent`=129 WHERE `unit`.`id`=38;
 
 UPDATE `unit` SET `unit`.`key`='TREE.PATIENT_REGISTRATION' WHERE `unit`.`id`=14;
 UPDATE `unit` SET `unit`.`key`='TREE.USERS' WHERE `unit`.`id`=4;
+--
+-- jniles
+-- 07/10/2015
+-- Tree link for debtor group annual report
+--
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
+VALUES (121, 'Annual Debtor Group Report', 'TREE.DEBTOR_GROUP_ANNUAL_REPORT', 'provides the evolution of all debtor group debts to the enterprise', 10, 'partials/reports_proposed/debtorgroup/annual', '/reports/debtorgroup/annual');
