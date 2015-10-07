@@ -18,7 +18,7 @@ angular.module('bhima.services')
     };
 
     this.buildGrid = function buildGrid (){
-      this.grid = new Slick.Grid(this.idDom, this.dataviewService.dataview, this.columnsService.getColumns(), this.options);
+      this.grid = new Slick.Grid(this.idDom, this.dataviewService.dataview, this.columnsService.columns, this.options);
       this.grid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}));
       this.grid.registerPlugin(this.dataviewService.gimp);
       return this.grid;

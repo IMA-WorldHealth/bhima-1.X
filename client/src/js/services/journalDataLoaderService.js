@@ -1,13 +1,13 @@
 angular.module('bhima.services')
 .service('JournalDataLoaderService', ['$q', 'validate',
   function ($q, validate) {
-    this.dependencies = {};
-    this.dependencies.journalRecord = {
+    var dependencies = {};
+    dependencies.journalRecord = {
       identifier : 'uuid',
       query : 'journal_list/'
     };
 
-    this.dependencies.account = {
+    dependencies.account = {
       query : {
         'identifier' : 'account_number',
         'tables' : {
@@ -16,7 +16,7 @@ angular.module('bhima.services')
       }
     };
 
-    this.dependencies.debtor = {
+    dependencies.debtor = {
       query: {
         identifier : 'uuid',
         'tables' : {
@@ -29,7 +29,7 @@ angular.module('bhima.services')
       }
     };
 
-    this.dependencies.creditor = {
+    dependencies.creditor = {
       query: {
         'tables' : {
           'creditor' : { 'columns' : ['uuid', 'text'] },
@@ -40,7 +40,7 @@ angular.module('bhima.services')
       }
     };
 
-    this.dependencies.invoice = {
+    dependencies.invoice = {
       query: {
         identifier : 'uuid',
         tables : {
@@ -49,7 +49,7 @@ angular.module('bhima.services')
       }
     };
 
-    this.dependencies.period = {
+    dependencies.period = {
       query : {
         tables : {
           period : { columns : ['id', 'fiscal_year_id', 'period_stop', 'period_start'] }
@@ -57,7 +57,7 @@ angular.module('bhima.services')
       }
     };
 
-    this.dependencies.cost_center = {
+    dependencies.cost_center = {
       query : {
         tables : {
           'cost_center': {
@@ -67,7 +67,7 @@ angular.module('bhima.services')
       }
     };
 
-    this.dependencies.profit_center = {
+    dependencies.profit_center = {
       query : {
         tables : {
           'profit_center' : {
@@ -78,19 +78,19 @@ angular.module('bhima.services')
     };
 
     this.loadAll = function loadAll (){
-      return validate.process(this.dependencies);
+      return validate.process(dependencies);
     };
 
     this.loadJournalRecord = function loadJournalRecord (){
-      return validate.process(this.dependencies, ['journalRecord']);
+      return validate.process(dependencies, ['journalRecord']);
     };
 
     this.loadAdditionalData = function loadAdditionalData (){
-      return validate.process(this.dependencies, ['debtor', 'creditor', 'invoice', 'period', 'cost_center', 'profit_center']);
+      return validate.process(dependencies, ['debtor', 'creditor', 'invoice', 'period', 'cost_center', 'profit_center']);
     };
 
     this.loadAccountData = function loadAccountData(){
-      return validate.process(this.dependencies, ['account']);
+      return validate.process(dependencies, ['account']);
     };
   }
 ]);

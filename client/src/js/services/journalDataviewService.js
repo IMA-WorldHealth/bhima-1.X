@@ -1,49 +1,56 @@
 angular.module('bhima.services')
 .service('JournalDataviewService', ['JournalDataLoaderService',
-  function (dataLoaderService) {    
+  function (dataLoaderService) {
+    var dataviewService = this;    
     var inlineFilter = true;
-    this.gimp = new Slick.Data.GroupItemMetadataProvider(); //plugin to group metadata for slick grid
-    this.dataLoaderService = dataLoaderService;
-    this.dataview = new Slick.Data.DataView({
-      groupItemMetadataProvider: this.gimp,
+    dataviewService.gimp = new Slick.Data.GroupItemMetadataProvider(); //plugin to group metadata for slick grid
+    dataviewService.dataLoaderService = dataLoaderService;
+    dataviewService.dataview = new Slick.Data.DataView({
+      groupItemMetadataProvider: dataviewService.gimp,
       inlineFilter: inlineFilter
     });
 
-    this.subscribeToOnRowCountChanged = function subscribeToOnRowCountChanged (grid){
+    dataviewService.subscribeToOnRowCountChanged = function subscribeToOnRowCountChanged (grid){
       if(!grid){throw 'Undefined grid';}
-      this.dataview.onRowCountChanged.subscribe(function (e, args) {
+      dataviewService.dataview.onRowCountChanged.subscribe(function (e, args) {
         grid.updateRowCount();
         grid.render();
       });      
     };
 
-    this.subscribeToOnRowsChanged = function subscribeToOnRowsChanged (grid){
+    dataviewService.subscribeToOnRowsChanged = function subscribeToOnRowsChanged (grid){
       if(!grid){throw 'Undefined grid';}
-      this.dataview.onRowsChanged.subscribe(function (e, args) {
+      dataviewService.dataview.onRowsChanged.subscribe(function (e, args) {
         grid.invalidateRows(args.rows);
         grid.render();
       });
     };
 
-    this.populate = function populate () {
-      return this.dataLoaderService.loadJournalRecord()
+    dataviewService.populate = function populate () {
+      return dataviewService.dataLoaderService.loadJournalRecord()
       .then(function (data){
-        this.dataview.beginUpdate();
-        this.dataview.setItems(data.journalRecord.data, 'uuid');
-        this.dataview.endUpdate();   
+        dataviewService.dataview.beginUpdate();
+        dataviewService.dataview.setItems(data.journalRecord.data, 'uuid');
+        dataviewService.dataview.endUpdate();   
       });      
     };
 
-    this.addNewItem = function addNewItem(row){
-      this.dataview.addItem(row);
+    dataviewService.addNewItem = function addNewItem(row){
+      dataviewService.dataview.addItem(row);
     };
 
-    this.getItem = function getItem(row){
-      return this.dataview.getItem(row);
+    dataviewService.getItem = function getItem(row){
+      return dataviewService.dataview.getItem(row);
     };
 
-    this.updateDataviewItem = function updateDataviewItem (id, item) {
-      this.dataview.updateItem(id, item);
+    dataviewService.getItems = function getItem(){
+      return dataviewService.dataview.getItems();
+    };
+
+
+
+    dataviewService.updateDataviewItem = function updateDataviewItem (id, item) {
+      dataviewService.dataview.updateItem(id, item);
     };
   }
 ]);

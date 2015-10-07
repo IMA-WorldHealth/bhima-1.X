@@ -12,8 +12,8 @@ var PostingJournalController = function ($translate, $filter, $q, precision, ses
 
   doSubscription();  //subscribe dataview and grid to event
 
-  dataviewService.populate()
-  .then(dataLoaderService.loadAdditionalData)  
+  vm.dataviewService.populate()
+  .then(vm.dataLoaderService.loadAdditionalData)  
   .then(initialise)
   .catch(handleErrors);
 
@@ -26,7 +26,7 @@ var PostingJournalController = function ($translate, $filter, $q, precision, ses
 
   function initialise (models) {
     angular.extend(vm, models);
-    vm.journal = new Store({ data : this.dataviewService.dataview.getItems() });
+    vm.journal = new Store({ data : vm.dataviewService.dataview.getItems() });
 
     var editors = {
       'trans_date'    : DateEditor, // SlickGrids date editors uses $() datepicker
