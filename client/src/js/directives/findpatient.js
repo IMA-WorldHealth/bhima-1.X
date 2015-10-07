@@ -1,5 +1,20 @@
 angular.module('bhima.directives')
-.directive('findPatient', ['$compile', '$http', 'validate', 'messenger', 'appcache', function($compile, $http, validate, messenger, AppCache) {
+.directive('findPatient', FindPatientDirective);
+
+FindPatientDirective.$inject = [
+'$compile', '$http', 'validate', 'messenger', 'appcache'
+];
+
+/**
+* The FindPatient directive allows a user to serach for a patient by either the
+* patient identifier (Project Abbreviation + Reference) or by typeahead on patient
+* name.
+*
+* The typeahead loads data as your type into the input box, pinging th URL
+* /patient/search/fuzzy (for legacy reasons, not actually a fuzzy search).  The
+* HTTP endpoints sends back 10 results which are then presented to the user.
+*/
+function FindPatientDirective($compile, $http, validate, messenger, AppCache) {
   return {
     restrict: 'AE',
     templateUrl : 'partials/templates/findpatient.tmpl.html',
@@ -19,15 +34,18 @@ angular.module('bhima.directives')
       session.submitted = false;
       session.valid = null;
 
+      // generic error echo-er
+      function handler(error) {
+        console.error(error);
+      }
+
       // calls bhima API for a patient by hospital reference
       // (e.g. HBB123)
       function searchReference(ref) {
         var url = '/patient/search/reference/';
         $http.get(url + ref)
-        .success(selectPatient)
-        .error(function (err) {
-          console.error(err); 
-        })
+        .then(function (response) { selectPatient(response.data); })
+        .catch(handler)
         .finally();
       }
 
@@ -44,10 +62,8 @@ angular.module('bhima.directives')
       function searchByUuid(uuid) {
         var url = '/patient/';
         $http.get(url + uuid)
-        .success(selectPatient)
-        .error(function (err) {
-          console.error(err); 
-        })
+        .then(function (response) { selectPatient(response.data); })
+        .catch(handler)
         .finally();
       }
 
@@ -163,4 +179,4 @@ angular.module('bhima.directives')
       scope.selectPatient = selectPatient;
     }
   };
-}]);
+}
