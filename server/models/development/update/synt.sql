@@ -289,3 +289,98 @@ VALUES (120, 'Rapport situation group debiteur', 'TREE.DEBITOR_GROUP_REPORT', 'p
 
 INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
 VALUES (121, 'Budget Management', 'TREE.BUDGET_MANAGEMENT', 'Budgets Management module', 8, '/partials/budget/new', '/budgeting/new/');
+
+
+-- Move reports to correct parent in unit
+-- Date: 2015-10-06
+-- By: Bruce Mbayo
+
+-- Move to Accounting
+-- ==================
+-- 
+-- chart of account
+UPDATE `unit` SET `unit`.`parent`=30 WHERE `unit`.`id`=27;
+-- account statement
+UPDATE `unit` SET `unit`.`parent`=30 WHERE `unit`.`id`=46;
+-- operating account
+UPDATE `unit` SET `unit`.`parent`=30 WHERE `unit`.`id`=75;
+-- global transaction
+UPDATE `unit` SET `unit`.`parent`=30 WHERE `unit`.`id`=77;
+-- monthly balance
+UPDATE `unit` SET `unit`.`parent`=30 WHERE `unit`.`id`=79;
+-- bilan
+UPDATE `unit` SET `unit`.`parent`=30 WHERE `unit`.`id`=83;
+-- balance sheet
+UPDATE `unit` SET `unit`.`parent`=30 WHERE `unit`.`id`=87;
+-- TFR
+UPDATE `unit` SET `unit`.`parent`=30 WHERE `unit`.`id`=88;
+-- grand livre
+UPDATE `unit` SET 
+	`unit`.`parent`=30, 
+	`unit`.`name`='Rapport Grand Livre',
+	`unit`.`key`='TREE.GRAND_LIVRE_REPORT'
+WHERE `unit`.`id`=89;
+-- compte de resultat
+UPDATE `unit` SET `unit`.`parent`=30 WHERE `unit`.`id`=114;
+-- transaction par compte
+UPDATE `unit` SET `unit`.`parent`=30 WHERE `unit`.`id`=38;
+
+-- Move to Finance
+-- ===============
+-- 
+-- debitor group report
+UPDATE `unit` SET `unit`.`parent`=5 WHERE `unit`.`id`=120;
+-- service exploitation
+UPDATE `unit` SET `unit`.`parent`=5 WHERE `unit`.`id`=76;
+-- cash payment
+UPDATE `unit` SET `unit`.`parent`=5 WHERE `unit`.`id`=37;
+-- patient standing
+UPDATE `unit` SET `unit`.`parent`=5 WHERE `unit`.`id`=43;
+-- employee standing
+UPDATE `unit` SET `unit`.`parent`=5 WHERE `unit`.`id`=44;
+-- expense report
+UPDATE `unit` SET `unit`.`parent`=5 WHERE `unit`.`id`=56;
+-- income report
+UPDATE `unit` SET `unit`.`parent`=5 WHERE `unit`.`id`=55;
+
+-- Move to Hospital
+-- ================
+-- 
+-- patient registration
+UPDATE `unit` SET `unit`.`parent`=12 WHERE `unit`.`id`=35;
+
+-- Move to Inventory
+-- =================
+-- 
+-- daily consumption
+UPDATE `unit` SET `unit`.`parent`=11 WHERE `unit`.`id`=72;
+-- expiring stock
+UPDATE `unit` SET `unit`.`parent`=11 WHERE `unit`.`id`=49;
+-- stock status
+UPDATE `unit` SET `unit`.`parent`=11 WHERE `unit`.`id`=74;
+-- distribution patient
+UPDATE `unit` SET `unit`.`parent`=11 WHERE `unit`.`id`=84;
+-- distribution service
+UPDATE `unit` SET `unit`.`parent`=11 WHERE `unit`.`id`=85;
+-- stock loss
+UPDATE `unit` SET `unit`.`parent`=11 WHERE `unit`.`id`=86;
+-- donation report
+UPDATE `unit` SET `unit`.`parent`=11 WHERE `unit`.`id`=97;
+-- purchase order confirmation
+UPDATE `unit` SET `unit`.`parent`=11 WHERE `unit`.`id`=100;
+-- donation confirmation
+UPDATE `unit` SET `unit`.`parent`=11 WHERE `unit`.`id`=102;
+-- stock movement
+UPDATE `unit` SET `unit`.`parent`=11 WHERE `unit`.`id`=107;
+-- stock integration
+UPDATE `unit` SET `unit`.`parent`=11 WHERE `unit`.`id`=113;
+
+-- Move to Payroll
+-- =================
+-- 
+-- paycheck
+UPDATE `unit` SET `unit`.`parent`=57 WHERE `unit`.`id`=73;
+-- tax payment report
+UPDATE `unit` SET `unit`.`parent`=57 WHERE `unit`.`id`=118;
+-- cotisation payment report
+UPDATE `unit` SET `unit`.`parent`=57 WHERE `unit`.`id`=119;
