@@ -1,13 +1,24 @@
-var PostingJournalController = function ($translate, $filter, $q, precision, sessionService, journalDataviewService, journalColumnsService, journalGridService, journalDataLoaderService, liberror, messenger, Store, connect, $window, uuid, $rootScope, util) {
+var PostingJournalController = function ($translate, $filter, $q, precision, sessionService, dataviewService, columnsService, gridService, dataLoaderService, liberror, messenger, Store, connect, $window, uuid, $rootScope, util, managerService) {
   var vm = this;
-  var columns, options, dataview, grid; //declaring Slickgrid component
-  var sortColumn;  //Array for sorting columns
   var journalError =  liberror.namespace('JOURNAL'); //declaring a variable to handle error  
-  var groupItemMetadataProvider = new Slick.Data.GroupItemMetadataProvider(); //plugin to group metadata for slick grid
-  var manager = { session : { selection : [] }, mode : {} };
+  vm.managerService = managerService;
+  vm.dataviewService = dataviewService;
+  vm.columnsService  = columnsService;
+  vm.dataLoaderService = dataLoaderService;
+  vm.grid     = gridService.buildGrid();
+  vm.editing = false;
+  vm.project = sessionService.project;
+
+
+  doSubscription();  //subscribe dataview and grid to event
+
+  dataviewService.populate()
+  .then(dataLoaderService.loadAdditionalData)  
+  .then(initialise)
+  .catch(handleErrors);
 
   function isNull (t) { return t === null; }
-  function doParsing (o) { return JSON.parse(JSON.stringify(o)); }
+  
   function isDefined (d) { return angular.isDefined(d); }
   function handleErrors (error) {
     messenger.danger('An error occured ' + JSON.stringify(error));
@@ -15,7 +26,7 @@ var PostingJournalController = function ($translate, $filter, $q, precision, ses
 
   function initialise (models) {
     angular.extend(vm, models);
-    vm.journal = new Store({ data : dataview.getItems() });
+    vm.journal = new Store({ data : this.dataviewService.dataview.getItems() });
 
     var editors = {
       'trans_date'    : DateEditor, // SlickGrids date editors uses $() datepicker
@@ -27,8 +38,8 @@ var PostingJournalController = function ($translate, $filter, $q, precision, ses
       'pc_id'         : ProfitCenterEditor
     };
 
-    columns = journalColumnsService.setEditor(columns, editors);   
-    grid = journalGridService.setColumns(grid, columns);      
+    columnsService.setEditor(editors);   
+    gridService.applyColumns();      
   }
 
   function DateEditor(args) {
@@ -319,30 +330,12 @@ var PostingJournalController = function ($translate, $filter, $q, precision, ses
         msg: null
       };
     };
-  }
+  }  
 
-  function sort (a,b) {
-    var x = a[sortColumn];
-    var y = b[sortColumn];
-    return x > y ? 1 : -1;
-  }
-
-  function handleClick(className, args) {
-    var classes = className.split(' ');
-    var buttonMap = {
-      'addRow'            : addRow,
-      'deleteRow'         : deleteRow,
-      'editTransaction'   : editTransaction,
-      'saveTransaction'   : saveTransaction,
-      'deleteTransaction' : deleteTransaction
-    };
-    classes.forEach(function (cls) {
-      if (buttonMap[cls]) { buttonMap[cls](args); }
-    });
-  }
+  
 
   function saveTransaction () {
-    var records = manager.session.records.data, removed = manager.session.removed.data;
+    var records = this.managerService.manager.session.records.data, removed = this.managerService.manager.session.removed.data;
 
     var hasErrors = checkErrors(records);
     if (hasErrors) { return; }
@@ -364,7 +357,7 @@ var PostingJournalController = function ($translate, $filter, $q, precision, ses
 
       connect.fetch('/user_session')
       .then(function (res) {
-        manager.session.userId = res.id;
+        this.managerService.manager.session.userId = res.id;
         newRecords.forEach(function (rec) { rec.user_id = res.id; });
         editedRecords.forEach(function (rec) { rec.user_id = res.id; });
         return newRecords.length ? connect.post('posting_journal', newRecords) : $q.when(1);
@@ -376,13 +369,13 @@ var PostingJournalController = function ($translate, $filter, $q, precision, ses
         return removedRecords.length ? connect.delete('posting_journal', 'uuid', removedRecords) : $q.when(1);
       })
       .then(function () {
-        return writeJournalLog(manager.session);
+        return writeJournalLog(this.managerService.manager.session);
       })
       .then(function () {
       messenger.success($translate.instant('POSTING_JOURNAL.TRANSACTION_SUCCESS')); 
-        manager.fn.resetManagerSession();
-        manager.fn.regroup();
-        grid.invalidate();
+        this.managerService.manager.fn.resetManagerSession();
+        this.managerService.manager.fn.regroup();
+        vm.grid.invalidate();
       })
       .catch(function (err) {
         messenger.danger('Submission failed' + err);
@@ -393,119 +386,29 @@ var PostingJournalController = function ($translate, $filter, $q, precision, ses
   function deleteTransaction (args) {
     var bool = $window.confirm('Are you sure you want to delete this transaction?');
     if (!bool) { return; }
-    var item = dataview.getItem(args.row);
+    var item = this.dataviewService.dataview.getItem(args.row);
     item.rows.forEach(function (row) {
-      manager.session.removed.post(row);
-      manager.session.records.remove(row.uuid);
-      dataview.deleteItem(row.uuid);
+      this.managerService.manager.session.removed.post(row);
+      this.managerService.manager.session.records.remove(row.uuid);
+      this.dataviewService.dataview.deleteItem(row.uuid);
     });
-    grid.invalidate();
+    vm.grid.invalidate();
     saveTransaction();
   }
 
-  function deleteRow (args) {
-    var item = dataview.getItem(args.row);
-    if (manager.session.records.data.length < 2) { return broadcastError('Cannot delete last line in transaction.'); }
-    // post to removed list and removed from records
-    manager.session.removed.post(item);
-    manager.session.records.remove(item.uuid);
-    dataview.deleteItem(item.uuid);
-    grid.invalidateRow(args.row);
-    grid.render();
-  }
+  
 
-  function addRow () {
-    var row;
-    row = doParsing(manager.session.template);
-    row.newRecord = true;
-    row.uuid = uuid();
-    manager.session.records.post(row);
-    dataview.addItem(row);
-  }
+  
 
   // TODO : clean this f() up
-  function editTransaction(args) {
-    var transaction = dataview.getItem(args.row),
-        transactionId = transaction.groupingKey,
-        templateRow = transaction.rows[0];
-
-    manager.session.rowId = args.row;
-    manager.session.mode = 'edit';
-    manager.session.transactionId = transaction.groupingKey;
-
-    if (!transactionId) { return $rootScope.$apply(messenger.danger('Invalid transaction provided')); }
-
-    manager.fn.showDeleteButton();
-
-    manager.origin = {
-      'debit'        : transaction.totals.sum.debit,
-      'credit'       : transaction.totals.sum.credit,
-      'debit_equiv'  : transaction.totals.sum.debit_equiv,
-      'credit_equiv' : transaction.totals.sum.credit_equiv
-    };
-
-    manager.session.records = new Store({ data : [], identifier: 'uuid'});
-    manager.session.removed = new Store({ data : [], identifier: 'uuid'});
-
-    manager.session.template = {
-      trans_id       : transactionId,
-      fiscal_year_id : templateRow.fiscal_year_id,
-      period_id      : templateRow.period_id,
-      trans_date     : templateRow.trans_date,
-      description    : templateRow.description,
-      project_id     : templateRow.project_id,
-      account_number : '(Select Account)',
-      debit_equiv    : 0,
-      credit_equiv   : 0,
-      debit          : 0,
-      credit         : 0,
-      inv_po_id      : templateRow.inv_po_id,
-      currency_id    : templateRow.currency_id,
-      userId         : 13 // FIXME
-    };
-
-    transaction.rows.forEach(function (row) {
-      row.newRecord = false;
-      manager.session.records.post(row);
-    });
-
-    grid.invalidate();
-    manager.fn.regroup();
-    $rootScope.$apply(messenger.success('Transaction #' + transactionId));
-  }
+  
 
   function doSubscription (){
-    dataview.onRowCountChanged.subscribe(function (e, args) {
-      grid.updateRowCount();
-      grid.render();
-    });
-
-    dataview.onRowsChanged.subscribe(function (e, args) {
-      grid.invalidateRows(args.rows);
-      grid.render();
-    });
-
-    grid.onCellChange.subscribe(function(e, args) {
-      var id = args.item.id || args.item.uuid;
-      dataview.updateItem(id, args.item);
-    });
-
-    // set up grid sorting
-    grid.onSort.subscribe(function (e, args) {
-      sortColumn = args.sortCol.field;
-      dataview.sort(sort, args.sortAsc);
-    });
-
-    // set up click handling
-    grid.onClick.subscribe(function (e, args) {
-      handleClick(e.target.className, args);
-    });
-
-    // set up editing
-    grid.onBeforeEditCell.subscribe(function (e, args) {
-      var item =  dataview.getItem(args.row),
-      canEdit = manager.session.mode === 'edit';
-      if (!canEdit || manager.session.transactionId !== item.trans_id ) { return false; }
+    
+    vm.grid.onBeforeEditCell.subscribe(function (e, args) {
+      var item =  this.dataviewService.dataview.getItem(args.row),
+      canEdit = this.managerService.manager.session.mode === 'edit';
+      if (!canEdit || this.managerService.manager.session.transactionId !== item.trans_id ) { return false; }
     });
   }
 
@@ -618,8 +521,7 @@ var PostingJournalController = function ($translate, $filter, $q, precision, ses
   }
 
   function validDate (item) {
-    return isDefined(item.trans_date) &&
-        !isNaN(Date.parse(new Date(item.trans_date)));
+    return isDefined(item.trans_date) && !isNaN(Date.parse(new Date(item.trans_date)));
   }
 
   function validDebitsAndCredits (item) {
@@ -656,26 +558,9 @@ var PostingJournalController = function ($translate, $filter, $q, precision, ses
   function validFiscal(item) {
     return !isNaN(Number(item.fiscal_year_id));
   }
-
-  vm.editing = false;
-  vm.project = sessionService.project;
-
-  //getting slick grid component from services
-  dataview = journalDataviewService.create(groupItemMetadataProvider, true); //creating the dataview
-  columns = journalColumnsService.getColumns(); //getting columns grid
-  grid = journalGridService.create('#journal_grid', dataview, columns); //creating the grid
-  journalGridService.setPlugin(groupItemMetadataProvider, grid);
-  grid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}));
-
-  doSubscription();  
-
-  journalDataviewService.populate(dataview)
-  .then(journalDataLoaderService.loadAdditionalData)  
-  .then(initialise)
-  .catch(handleErrors);
 };
 
-PostingJournalController.$inject = ['$translate', '$filter', '$q', 'precision', 'SessionService', 'JournalDataviewService', 'JournalColumnsService', 'JournalGridService', 'JournalDataLoaderService', 'liberror', 'messenger', 'store', 'connect', '$window', 'uuid', '$rootScope', 'util'];
+PostingJournalController.$inject = ['$translate', '$filter', '$q', 'precision', 'SessionService', 'JournalDataviewService', 'JournalColumnsService', 'JournalGridService', 'JournalDataLoaderService', 'liberror', 'messenger', 'store', 'connect', '$window', 'uuid', '$rootScope', 'util', 'JournalManagerService'];
 angular.module('bhima.controllers').controller('PostingJournalController', PostingJournalController);
 
 

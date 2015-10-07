@@ -2,8 +2,8 @@
   {{ 'POSTING_JOURNAL.TITLE' | translate}}
 </header>
 
-<!-- <nav ng-controller="journal.utilities">
-  <div class="pull-left dropdown">
+<nav ng-controller="journalUtilitiesController as utilitieCtrl">
+  <!-- <div class="pull-left dropdown">
     <button type="button" class="btn btn-sm btn-default dropdown-toggle" ng-disabled="!!session.authenticated">
       <span class="glyphicon glyphicon-th-list"></span> {{ 'POSTING_JOURNAL.GROUP_BY' | translate }}
     </button>
@@ -13,9 +13,9 @@
       <li><a class="clk" ng-click="groupBy('deb_cred')"><span class="glyphicon glyphicon-user"></span> {{ 'POSTING_JOURNAL.DEB_CRED' | translate }}</a></li>
       <li><a class="clk" ng-click="removeGroup()"><span class="glyphicon glyphicon-remove"></span> {{ 'POSTING_JOURNAL.ABOLISH_GROUPS' | translate }}</a></li>
     </ul>
-  </div>
+  </div> -->
 
-  <div class="pull-left dropdown input-group col-xs-4">
+  <!-- <div class="pull-left dropdown input-group col-xs-4">
     <span class="input-group-btn dropdown-toggle" style="background : white;">
       <button class="btn btn-sm btn-default" type="button" ng-class="{'active': !!filter.by && !!filter.param }">
         <span class="glyphicon glyphicon-filter"></span>
@@ -64,8 +64,8 @@
     <a class="btn btn-default btn-sm" ng-click="print()" ng-disabled="!!session.authenticated">
       <span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}
     </a>
-  </div>
-</ nav>-->
+  </div> -->
+</nav>
 
 <main class="extend">
   <div class="row" style="height:99%;">
