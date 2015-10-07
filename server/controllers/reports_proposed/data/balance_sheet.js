@@ -18,7 +18,7 @@ var balanceDate = new Date();
 
 // This method builds a tree data structure of
 // accounts and children of a specified parentId.
-function getChildren(accounts, parentId, depth) {
+function buildAccountTree(accounts, parentId, depth) {
   var children;
 
   // Base case: There are no child accounts
@@ -35,7 +35,7 @@ function getChildren(accounts, parentId, depth) {
   // and attach them as childen of their parent account
   children.forEach(function (account) {
     account.depth = depth;
-    account.children = getChildren(accounts, account.id, depth + 1);
+    account.children = buildAccountTree(accounts, account.id, depth + 1);
   });
 
   return children;
@@ -127,7 +127,7 @@ exports.compile = function (options) {
 
     // Create the accounts and balances into a tree
     // data structure
-    accountTree = getChildren(accounts, ROOT_ACCOUNT_ID, 0);
+    accountTree = buildAccountTree(accounts, ROOT_ACCOUNT_ID, 0);
 
     // aggregate the account balances of child accounts into
     // the parent account
