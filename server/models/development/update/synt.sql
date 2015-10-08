@@ -433,3 +433,4 @@ UPDATE `unit` SET `unit`.`parent`=129 WHERE `unit`.`id`=38;
 -- By: Bruce Mbayo
 
 UPDATE `unit` SET `unit`.`key`='TREE.PATIENT_REGISTRATION' WHERE `unit`.`id`=14;
+UPDATE `unit` SET `unit`.`key`='TREE.USERS' WHERE `unit`.`id`=4;

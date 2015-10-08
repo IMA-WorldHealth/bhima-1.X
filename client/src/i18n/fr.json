@@ -2940,7 +2940,6 @@
    "PAYMENT_PERIOD"            : "Gestion Périodes",
    "PAYROLL"                   : "Payroll",
    "PAYROLL_REPORT"            : "Payroll",
-   "PERMISSION"                : "Utilisateurs",
    "POSTING_JOURNAL"           : "Journal de Saisie",
    "PRICE_LIST"                : "Liste des Prix",
    "PROFIT_CENTER_MGMNT"       : "Centres de profits",
@@ -2985,6 +2984,7 @@
    "TFR"                       : "Tableau Formation des Résultats",
    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions par Compte",
    "UPDATE_STOCK"              : "Mettre à Jour les Stocks",
+   "USERS"                     : "Utilisateurs",
    "VALIDATE_PURCHASE"         : "Validation"
    },
 "TRIAL_BALANCE": {

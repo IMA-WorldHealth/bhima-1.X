@@ -2938,7 +2938,6 @@
    "PAYMENT_PERIOD"            : "Payment Period Management",
    "PAYROLL"                   : "Payroll",
    "PAYROLL_REPORT"            : "Payroll",
-   "PERMISSION"                : "Users",
    "POSTING_JOURNAL"           : "Posting Journal",
    "PRICE_LIST"                : "Price List",
    "PROFIT_CENTER_MGMNT"       : "Profit center management",
@@ -2983,6 +2982,7 @@
    "TFR"                       : "Results Table",
    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions by Account",
    "UPDATE_STOCK"              : "Update stock",
+   "USERS"                     : "Users",
    "VALIDATE_PURCHASE"         : "Validation"
    },
 "TRIAL_BALANCE": {
