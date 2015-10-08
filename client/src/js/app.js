@@ -247,9 +247,6 @@ function bhimaconfig($routeProvider) {
     controller : 'country',
     templateUrl: 'partials/location/country/country.html'
   })
-  .when('/print', {
-    templateUrl: 'partials/print/test.html'
-  })
   .when('/settings/:route?', {
     controller: 'settings',
     templateUrl: 'partials/settings/settings.html'
@@ -500,23 +497,10 @@ function bhimaconfig($routeProvider) {
     controller : 'DepotStockDistributionsController as DistributionsCtrl',
     templateUrl : 'partials/depots/reports/distributions/distributions.html'
   })
-  .when('/reports/distribution_record/:depotId', {
-    controller : 'distribution_record',
-    templateUrl : 'partials/reports/distribution_record/distribution_record.html'
+  .when('/reports/distributions/', {
+    controller : 'ReportDepotDistributionsController as ReportCtrl',
+    templateUrl : 'partials/reports/distributions/distributions.html'
   })
-  .when('/reports/distribution_service_record/:depotId', {
-    controller : 'distribution_service_record',
-    templateUrl : 'partials/reports/distribution_service_record/distribution_service_record.html'
-  })
-  .when('/reports/distribution_record/', {
-    controller : 'distribution_record_view',
-    templateUrl : 'partials/reports/distribution_record/distribution_record_view.html'
-  })
-  .when('/reports/distribution_service_record/', {
-    controller : 'distribution_service_record_view',
-    templateUrl : 'partials/reports/distribution_service_record/distribution_service_record_view.html'
-  })
-
 
   .when('/stock/entry/report/:documentId?', {
     controller : 'stock.entry.report',

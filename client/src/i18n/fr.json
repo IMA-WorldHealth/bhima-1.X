@@ -2411,6 +2411,7 @@
    "DEBTOR"                : "Sélectionner un debiteur",
    "DEB_CRED"              : "Sélectionner une Débiteur ou un Créditeur",
    "DEPOT"                 : "Sélectionner un Dépôt",
+   "DISTRIBUTION_TYPE"     : "Sélectionner un Type de Distribution",
    "DONOR"                 : "Sélectionner un Donateur",
    "EMPLOYEE"              : "Sélectionner un employé",
    "EMPLOYEE_FUNCTION"     : "Sélectionner une fonction",
