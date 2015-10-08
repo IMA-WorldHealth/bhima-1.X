@@ -65,12 +65,12 @@ function aggregate(property, array) {
 
 // creates an error report for a given code
 function createErrorReport(code, isFatal, rows) {
-  return q({
+  return {
     code : code,
     fatal : isFatal,
     transactions : rows.map(function (row) { return row.trans_id; }),
     affectedRows : aggregate('count', rows)
-  });
+  };
 }
 
 
@@ -89,7 +89,7 @@ function checkAccountsLocked(transactions) {
     // if nothing is returned, skip error report
     if (!rows.length) { return; }
 
-    // returns a promise error report
+    // returns a error report
     return createErrorReport('ERROR.ERR_LOCKED_ACCOUNTS', true, rows);
   });
 }
@@ -109,7 +109,7 @@ function checkMissingAccounts(transactions) {
     // if nothing is returned, skip error report
     if (!rows.length) { return; }
 
-    // returns a promise error report
+    // returns a error report
     return createErrorReport('ERROR.ERROR_MISSING_ACCOUNTS', true, rows);
   });
 }
@@ -128,7 +128,7 @@ function checkDateInPeriod(transactions) {
     // if nothing is returned, skip error report
     if (!rows.length) { return; }
 
-    // returns a promise error report
+    // returns a error report
     return createErrorReport('ERROR.ERR_DATE_IN_WRONG_PERIOD', true, rows);
   });
 }
@@ -147,7 +147,7 @@ function checkPeriodAndFiscalYearExists(transactions) {
     // if nothing is returned, skip error report
     if (!rows.length) { return; }
 
-    // returns a promise error report
+    // returns a error report
     return createErrorReport('ERROR.ERR_MISSING_FISCAL_OR_PERIOD', true, rows);
   });
 }
@@ -162,13 +162,13 @@ function checkTransactionsBalanced(transactions) {
     'WHERE pj.trans_id IN (?) ' +
     'GROUP BY trans_id HAVING balance <> 0;';
 
-  db.exec(sql, [transactions])
+  return db.exec(sql, [transactions])
   .then(function (rows) {
 
     // if nothing is returned, skip error report
-    if (!rows.length) { return; }
+    if (rows.length === 0) { return; }
 
-    // returns a promise error report
+    // returns a error report
     return createErrorReport('ERROR.ERR_UNBALANCED_TRANSACTIONS', true, rows);
   });
 }
@@ -187,7 +187,7 @@ function checkDebtorCreditorExists(transactions) {
     // if nothing is returned, skip error report
     if (!rows.length) { return; }
 
-    // returns a promise error report
+    // returns a error report
     return createErrorReport('ERROR.ERR_MISSING_DEBTOR_CREDITOR', true, rows);
   });
 }
@@ -205,7 +205,7 @@ function checkDocumentNumberExists(transactions) {
     // if nothing is returned, skip error report
     if (!rows.length) { return; }
 
-    // returns a promise error report
+    // returns a error report
     return createErrorReport('ERROR.WARN_MISSING_DOCUMENT_ID', false, rows);
   });
 }
@@ -269,7 +269,7 @@ exports.postTrialBalance = function (req, res, next) {
         'WHERE posting_journal.trans_id IN (?) ' +
         'GROUP BY posting_journal.account_id' +
         ') AS pt ' +
-      'ON account.id=pt.account_id;';
+      'ON account.id = pt.account_id;';
 
     return db.exec(sql, [transactions]);
   })
@@ -344,8 +344,6 @@ exports.postToGeneralLedger = function (req, res, next) {
     return db.exec(sql, [req.session.user.id, new Date()]);
   })
   .then(function (result) {
-
-    console.log('Result:', result);
 
     // recoup the sessionId from the posting session
     var sessionId = result.insertId;
