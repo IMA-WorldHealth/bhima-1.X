@@ -1,5 +1,5 @@
 <header>
-  {{ "STOCK.DISTRIBUTION_RECORDS.KEY" | translate }}
+  {{ 'DEPOT.DISTRIBUTION.PATIENTS' | translate }}
   <small>
     {{ ReportCtrl.depot.text }} / {{ ReportCtrl.start | date }} - {{ ReportCtrl.end | date }}
   </small>
@@ -28,7 +28,7 @@
       <ng-include src="'partials/reports/templates/enterprise_header.html'"></ng-include>
 
       <h4 class="visible-print">
-        {{ "STOCK.DISTRIBUTION_RECORDS.KEY" | translate }}
+        {{ 'DEPOT.DISTRIBUTION.PATIENTS' | translate }}
         <small>
           {{ ReportCtrl.depot.text }} / {{ ReportCtrl.start | date }} - {{ ReportCtrl.end | date }}
         </small>
@@ -57,7 +57,7 @@
             <td colspan="5"><loading-indicator></loading-indicator></td>
           </tr>
 
-          <tr ng-class="{'creditInvoice': distribution.canceled }" ng-repeat="distribution in ReportCtrl.distributions">
+          <tr ng-repeat="distribution in ReportCtrl.distributions" ng-class="{ 'bg-danger' : distribution.canceled }">
             <td>{{ distribution.date | date }}</td>
             <td>{{ distribution.text }}</td>
             <td>[{{ distribution.patient }}] {{ distribution.first_name }} {{ distribution.middle_name }} {{ distribution.last_name }}</td>
@@ -69,17 +69,3 @@
     </div>
   </div>
 </div>
-
-<footer>
-  <table style="width: 99%" >
-    <tbody>
-      <td width="50%">
-        <span style="margin-right: 10px;">
-          <span class="glyphicon glyphicon-list-alt" style="color: #428bca"></span>
-          <b>{{ ReportCtrl.distributions.length }}</b>
-          <span ng-if="ReportCtrl.loading">...</span>
-        </span>
-      </td>
-    </tbody>
-  </table>
-</footer>

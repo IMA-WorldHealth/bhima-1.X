@@ -292,3 +292,12 @@ DROP FOREIGN KEY  `service_ibfk_1` ;
 
 INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
 VALUES (120, 'Rapport situation group debiteur', 'TREE.DEBITOR_GROUP_REPORT', 'pour voir le rapport pdf detaille de group de debiteur', 10, '/partials/reports/debitor_group_report', '/reports/debitor_group_report/');
+
+-- 
+-- jniles
+-- Oct 8, 2015
+-- Remove irrelevant stock reports, add new stock report
+--
+DELETE FROM unit WHERE id IN (84, 85, 86);
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
+VALUES (121, 'Stock Distributions By Depot', 'TREE.DEPOT_DISTRIBUTIONS', 'This report combines distributions to patients, losses, rummage, and services into a singe report', 10, '/partials/reports/distributions', '/reports/distributions/');
