@@ -426,3 +426,10 @@ WHERE `unit`.`id`=89;
 UPDATE `unit` SET `unit`.`parent`=129 WHERE `unit`.`id`=114;
 -- transaction par compte
 UPDATE `unit` SET `unit`.`parent`=129 WHERE `unit`.`id`=38;
+
+
+-- Update unit tree
+-- Date: 2015-10-08
+-- By: Bruce Mbayo
+
+UPDATE `unit` SET `unit`.`key`='TREE.PATIENT_REGISTRATION' WHERE `unit`.`id`=14;
