@@ -16,6 +16,7 @@ function DonationManagementController($scope, $q, $translate, $location, $routeP
     return messenger.error('NO_DEPOT_ID');
   }
 
+
   var cache = new Appcache('donation');
 
   $scope.project = Session.project;
@@ -98,6 +99,7 @@ function DonationManagementController($scope, $q, $translate, $location, $routeP
 
     session.config = {};
     session.config.date = new Date();
+    session.config.maxdate = new Date();
     session.donation = {};
     session.donation.items = [];
     addDonationItem();
