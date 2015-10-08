@@ -115,7 +115,7 @@ td.visible-print {
 
 #bhima-tree {
   padding-top: 20px;
-  height: 70%;
+  height: calc(100% - 172px);
   overflow: auto;
 }
 
