@@ -1,0 +1,206 @@
+<!-- TODO Translate -->
+<!-- TODO Remove all inline styles -->
+<div class="modal-content modal-report">
+  
+  <div class="modal-header">
+    <h3><i class="glyphicon glyphicon-file"></i> Create {{patient_invoicesCtrl.title}} Document</h3> 
+  </div>
+  
+  <div class="modal-body">
+    <div ng-if="patient_invoicesCtrl.state.isLoading" id="progress">
+
+      <!-- TODO Move into directive to be used in future templates -->
+      <div class="spinner">
+        <div class="cube1"></div>
+        <div class="cube2"></div>
+      </div>
+      <div style="text-align : center; margin-bottom: 50px">
+        <h3>preparing document</h3>
+      </div>
+    </div>
+    
+    <div ng-if="patient_invoicesCtrl.state.notLoading">
+
+      <div ng-if="patient_invoicesCtrl.state.isComplete" id="status" style="padding-bottom : 1em;">
+        
+        <div ng-if="::patient_invoicesCtrl.state.moduleSuccess">
+          <div style="text-align : center; padding-bottom : 40px;">
+            <h1 style="color : green;"><i class="glyphicon glyphicon-ok"></i> Document Complete</h1>
+            
+          </div> 
+            
+          <div>
+            <a class="btn btn-default" ng-click="patient_invoicesCtrl.completeModal()" target="_blank" ng-href="/report/serve/{{patient_invoicesCtrl.link}}">Open {{patient_invoicesCtrl.title}} Document</a>
+            <a class="btn btn-default" ng-click="patient_invoicesCtrl.completeModal()">Return to archives</a>
+          </div>
+          
+        </div>
+        
+        <div ng-if="::patient_invoicesCtrl.state.moduleFailed">
+          <div style="text-align : center; padding-bottom : 20px;">
+            <h1 style="color : red;"><i class="glyphicon glyphicon-remove"></i> Document Failed</h1>
+          </div> 
+        </div>
+      </div>
+      
+      <div ng-if="patient_invoicesCtrl.state.notComplete"  id="configure">
+        <form>
+          <span class="pull-right"><a>Autofill quick settings</a></span>
+          <div style="padding-left : 15px; padding-bottom : 10px;">
+            <label>Index</label>
+            <ul class="list-unstyled">
+              <li><a ng-click="patient_invoicesCtrl.scrollToContent()">{{patient_invoicesCtrl.title}} Configuration</a></li>
+              <li><a ng-click="patient_invoicesCtrl.scrollToLabel()">Label Configuration</a></li>
+              <li><a ng-click="patient_invoicesCtrl.scrollToLayout()">Layout Configuration</a></li>
+            </ul>
+          </div>
+     
+          <div id="contentConfig" class="panel panel-default">
+            <div class="panel-heading">
+
+            <strong>{{patient_invoicesCtrl.title}} Configuration</strong>
+            </div>
+  
+            <div class="panel-body">
+              <div class="form-group">
+                <label for="identity">Report Title <small>This will be used to identify the report in the future, this title is not included in the report (see heading)</small></label>
+                <input ng-model="patient_invoicesCtrl.options.title" type="text" class="form-control" id="identity" placeholder="Report Title">
+              </div>
+
+              <div class="form-group">
+                <label for="tags">[Placeholder] Report Tags</label>
+                <select disabled id="tags" class="form-control">
+                </select>
+              </div>
+          </div>
+        </div>
+          
+          <div id="labelConfig" class="panel panel-default square">
+            <div class="panel-heading">
+              <strong>Label Configuration</strong>
+            </div>
+            <div class="panel-body">
+            <div class="form-group">
+              <label for="title">Heading</label>
+              <input ng-model="patient_invoicesCtrl.options.heading" type="text" class="form-control" id="title" placeholder="Heading">
+            </div>
+          
+            <div class="form-group">
+              <label for="subtitle">Subheading</label>
+              <input ng-model="patient_invoicesCtrl.options.subheading" type="text" class="form-control" id="subtitle" placeholder="Subheading">
+            </div>
+
+            <div class="form-group">
+              <label for="address">[Placeholder] Address To <small>Begin typing to select from debtors, creditors, employees and conventions</small></label>
+              <input disabled ng-model="patient_invoicesCtrl.options.address" type="text" class="form-control" id="address" placeholder="Search addressee...">
+            </div>
+
+            <div class="form-group">
+              <div class="checkbox">
+                <label>
+                  <input disabled ng-model="patient_invoicesCtrl.options.includeLetterhead" type="checkbox" id="letterhead">
+                  [Placeholder] Include enterprise letterhead
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="checkbox">
+                <label>
+                  <input ng-model="patient_invoicesCtrl.options.includeDateGenerated" type="checkbox" id="letterhead">
+                  Include date generated
+                </label>
+              </div>
+            </div>
+
+
+          <div class="form-group">
+            <label>[Placeholder] Language</label>
+
+            <div class="radio">
+              <label>
+                <input disabled type="radio" name="languageOptions" id="english" value="en" checked>
+                English
+              </label>
+            </div>
+
+            <div class="radio">
+              <label>
+                <input disabled type="radio" name="languageOptions" id="french" value="fr">
+                French
+              </label>
+            </div>
+
+          </div>
+          </div> 
+          </div>
+          
+          <div id="layoutConfig" class="panel panel-default">
+            <div class="panel-heading">
+              <strong>Layout Configuration</strong>
+            </div>
+            <div class="panel-body">
+          
+            <div class="form-group">
+              <label>Orientation</label>
+
+              <div class="radio">
+                <label>
+                  <!-- <input ng-value="standard" ng-model="patient_invoicesCtrl.options.format" type="radio" name="orientationOptions" id="portrait" value="portrait"> -->
+                  <!-- <input ng-value="standard" ng-model="patient_invoicesCtrl.options.format" type="radio" name="orientationOptions" id="format"> -->
+                  <input type="radio" ng-model="patient_invoicesCtrl.options.format" value="standard">
+                  Portrait
+                </label>
+              </div>
+
+              <div class="radio">
+                <label>
+                  <!-- <input ng-value="horizontal" ng-model="patient_invoicesCtrl.options.format" type="radio" name="orientationOptions" id="format" checked> -->
+                  <!-- <input ng-value="horizontal" ng-model="patient_invoicesCtrl.options.format" type="radio" name="orientationOptions" id="landscape" value="landscape" checked> -->
+                  <input type="radio" ng-model="patient_invoicesCtrl.options.format" value="horizontal">
+                  Landscape
+                </label>
+              </div>
+
+            </div>
+            
+            <div class="form-group">
+              <label>[Placeholder] Page Size</label>
+
+              <div class="radio">
+                <label>
+                  <input disabled type="radio" name="sizeOptions" id="normal" value="normal" checked>
+                  Normal (A4)
+                </label>
+              </div>
+
+              <div class="radio">
+                <label>
+                  <input disabled type="radio" name="sizeOptions" id="compact" value="compact">
+                  Compact (A5)
+                </label>
+              </div>
+
+            </div>
+
+            </div>
+          </div>
+          
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+
+    <!-- FIXME: line-height hack -->
+    <div class="pull-left" style="line-height : 2.4em">
+      <i>bhima reporting module 0.1</i>
+    </div>
+    
+    <div ng-if="patient_invoicesCtrl.state.notComplete && patient_invoicesCtrl.state.notLoading">
+      <button  ng-click="patient_invoicesCtrl.cancelModal()" class="btn btn-sm btn-default"><i class="glyphicon glyphicon-ban-circle"></i> Cancel</button>
+      <button ng-click="patient_invoicesCtrl.submit()" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-open"></i> Create Document</button>
+    </div>
+  </div>
+</div>

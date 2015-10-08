@@ -1,15 +1,15 @@
 // Controller name must match key convention over BHIMA style guide
 angular.module('bhima.controllers')
-.controller('chart_of_accountsController', chartOfAccounts);
+.controller('patient_invoicesController', patientInvoices);
 
 // Definition is passed in through report core
-chartOfAccounts.$inject = ['$anchorScroll', '$location', '$modalInstance', '$http', 'store', 'ModuleState', 'validate', 'definition', 'updateMethod'];
+patientInvoices.$inject = ['$anchorScroll', '$location', '$modalInstance', '$http', 'store', 'ModuleState', 'validate', 'definition', 'updateMethod'];
 
-function chartOfAccounts($anchorScroll, $location, $modalInstance, $http, Store, ModuleState, validate, definition, updateMethod) { 
+function patientInvoices($anchorScroll, $location, $modalInstance, $http, Store, ModuleState, validate, definition, updateMethod) { 
   var modal = this;
   var state = new ModuleState();
 
-  var generateUrl = 'report/build/chart_of_accounts';
+  var generateUrl = 'report/build/patient_invoices';
   var definition;
 
   // This will act as a container for all report document configuration options
