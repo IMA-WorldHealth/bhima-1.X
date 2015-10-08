@@ -102,6 +102,9 @@ function ReportCore($routeParams, $modal, ModuleState, ReportService) {
         }, 
         updateMethod : function () { 
           return insertDocument;
+        }, 
+        referenceOptions : function () { 
+          return {};
         }
       }
     })

@@ -3,13 +3,14 @@ angular.module('bhima.controllers')
 .controller('patient_invoicesController', patientInvoices);
 
 // Definition is passed in through report core
-patientInvoices.$inject = ['$anchorScroll', '$location', '$modalInstance', '$http', 'store', 'ModuleState', 'validate', 'definition', 'updateMethod'];
+patientInvoices.$inject = ['$anchorScroll', '$location', '$modalInstance', '$http', 'util', 'store', 'ModuleState', 'validate', 'definition', 'updateMethod', 'referenceOptions'];
 
-function patientInvoices($anchorScroll, $location, $modalInstance, $http, Store, ModuleState, validate, definition, updateMethod) { 
+function patientInvoices($anchorScroll, $location, $modalInstance, $http, util,  Store, ModuleState, validate, definition, updateMethod, defaultDateFrom, referenceOptions) { 
   var modal = this;
   var state = new ModuleState();
 
   var generateUrl = 'report/build/patient_invoices';
+  var referenceOptions = referenceOptions || {};
   var definition;
 
   // This will act as a container for all report document configuration options
@@ -18,13 +19,20 @@ function patientInvoices($anchorScroll, $location, $modalInstance, $http, Store,
   modal.state = state;
   modal.title = definition.title; 
   modal.options = options;
-  
+
   // TODO Model orientation options 
   modal.options.format = 'standard';
+  
+  modal.options.dateFrom = referenceOptions.dateFrom || new Date();
+  modal.options.dateTo = referenceOptions.dateTo || new Date();
 
   // Request form generation 
   function submit() { 
     state.loading();
+
+    // Initial date format 
+    options.dateFrom = util.sqlDate(options.dateFrom);
+    options.dateTo = util.sqlDate(options.dateTo);
     
     $http.post(generateUrl, options)
     .then(function (result) { 

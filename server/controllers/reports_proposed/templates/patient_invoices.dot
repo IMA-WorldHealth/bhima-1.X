@@ -1,0 +1,50 @@
+<head>
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/normalize.css">
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/skeleton.css">
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/reports.css">
+</head>
+
+<body>
+  <p><b>This report is a work in progress - the layout and information shown are only to demonstrate client + document reports</b></p>
+  <section id="letterhead"></section>
+
+  <section id="title" class="center" style="margin-bottom : 40px;">
+      <h5>IMCK Hopital Bon Berger</h5>
+      <h5>{{=it.heading}}</h5>
+  
+{{? it.subheading }}
+      <h6>{{=it.subheading}}</h6>
+{{?}}
+      <h6>{{=it.dateFrom}} to {{=it.dateTo}}</h6>
+  </section>
+ 
+  <section>
+{{? it.displayCompileInformation }}
+    <p><i>Document produced by BHIMA, information displayed is accurate as of {{=it.compileDate}}</i></p>
+{{?}}
+    <table class="">
+      <thead>
+        <tr style="border-bottom : 1px solid grey">
+          <th>Invoice Date</th>
+          <th style="text-align : left;">Patient Name</th>
+          <th>Invoice ID</th>
+          <th>Transaction Total</th>
+        </tr>
+      </thead>
+      
+      <tbody>
+{{ it.invoices.forEach(function (line, index) { }}
+
+        <tr class="totalRight {{? line.account_type_id === 3}}underline{{?}}">
+          <td>{{=line.invoice_date}}</td>
+          <td>
+            {{=line.first_name}} {{=line.last_name}}
+          </td>   
+          <td>{{=line.hr_id}}</td>
+          <td>{{=line.cost}}</td>
+        </tr> 
+{{ }); }}
+      </tbody>
+    </table>
+  </section>
+</body>

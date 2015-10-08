@@ -321,6 +321,8 @@ function loadReportContext(key, report) {
   try { 
     var context = require(contextTarget);
     report.context = context;
+    
+    console.log('loading data module', key);
 
   } catch (e) { 
 
