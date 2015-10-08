@@ -534,11 +534,7 @@ function bhimaconfig($routeProvider) {
   })
 
 
-  // TODO -- thes should be namespaced/prefixed by depot
-  .when('/stock/loss_record/:depotId', {
-    controller  : 'stock.loss_record',
-    templateUrl : 'partials/stock/loss_record/loss_record.html'
-  })
+  // TODO -- these should be namespaced/prefixed by depot
   .when('/stock/integration_confirm/', {
     controller : 'ConfirmStockIntegrationController as ConfirmCtrl',
     templateUrl : 'partials/stock/integration/confirm_integration/confirm_integration.html'

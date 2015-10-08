@@ -88,6 +88,7 @@ function ReportDepotDistributionsController($http, $window, $translate, Dates) {
     })
     .then(function (response) {
       vm.distributions = response.data;
+      console.log('loaded:', vm.distributions);
     })
     .catch(function (error) {
       console.log('An error occured!', error);
