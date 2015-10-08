@@ -434,7 +434,7 @@ function getInventoryLots(req, res, next) {
     // loop through inventory items, fetching the lots for each
     // from the database
     return q.all(data.map(function (i) {
-      return lots.getInventoryLotById(i.uuid);
+      return lots.getInventoryLotsById(i.uuid);
     }));
   })
   .then(function (lots) {
@@ -466,7 +466,7 @@ function getInventoryLotsById(req, res, next) {
 
   var uuid = req.param.uuid;
 
-  lots.getInventoryLotById(uuid)
+  lots.getInventoryLotsById(uuid)
   .then(function (rows) {
     if (!rows.length) {
       throw core.errors.NO_STOCK;

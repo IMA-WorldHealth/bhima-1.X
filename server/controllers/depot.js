@@ -109,7 +109,7 @@ function getDistributions(req, res, next) {
     case 'patient':
       sql =
         'SELECT c.uuid, c.document_id, COUNT(c.document_id) AS total, ' +
-          'cp.patient_uuid, p.uuid AS patientId, p.first_name, p.last_name, ' +
+          'p.uuid AS patientId, p.first_name, p.last_name, ' +
           'p.middle_name, d.text, d.uuid AS depotId, ' +
           'CONCAT(pr.abbr, p.reference) AS patient, c.date, i.text as label, ' +
           'sale.invoice, cp.sale_uuid AS saleId, c.canceled ' +

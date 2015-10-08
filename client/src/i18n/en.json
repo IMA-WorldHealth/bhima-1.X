@@ -2410,6 +2410,7 @@
    "DEBTOR"                : "Select a Debtor",
    "DEB_CRED"              : "Select a debtor or creditor",
    "DEPOT"                 : "Select a Store",
+   "DISTRIBUTION_TYPE"     : "Select a Distribution Type",
    "DONOR"                 : "Select a Donor",
    "EMPLOYEE"              : "Select an employee",
    "EMPLOYEE_FUNCTION"     : "Select a Function",
