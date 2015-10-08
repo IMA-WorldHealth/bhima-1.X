@@ -21,6 +21,8 @@ angular.module('bhima.controllers')
     var session = $scope.session = { is_direct : false, label_purchase_type : 'indirect' },
         warnings = $scope.warnings = {};
 
+    session.today = new Date();
+
     dependencies.inventory = {
       query : {
         identifier : 'uuid',
