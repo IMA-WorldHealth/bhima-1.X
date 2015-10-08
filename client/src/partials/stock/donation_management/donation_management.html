@@ -33,7 +33,7 @@
 
               <div class="form-group">
                 <label>{{ 'DONATION_MANAGEMENT.DATE' | translate }}</label>
-                <input type="date" class="form-bhima" ng-model="session.config.date">
+                <input type="date" class="form-bhima" ng-model="session.config.date" max="{{ session.config.maxdate | date:'yyyy-mm-dd' }}">
             </div>
               <div class="form-group">
                 <label>{{ 'DONATION_MANAGEMENT.DONOR' | translate }}</label>
