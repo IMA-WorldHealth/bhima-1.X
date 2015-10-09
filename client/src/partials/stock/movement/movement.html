@@ -145,7 +145,7 @@
                               class="form-bhima"
                               ng-model="row.lot"
                               ng-change="stockSelected(row)"
-                              ng-options="lot as (lot.stock_description + ' (' + lot.lot_number + ')') for lot in lots.data | orderBy : 'stock_description' "
+                              ng-options="lot as (lot.label + ' (' + lot.lot_number + ')') for lot in lots.data | orderBy : 'scription' "
                               >
                               <option value="">-- {{ "STOCK.MOVEMENT.SELECT_LOT" | translate }} {{ session.from.text }} --</option>
                             </select>
@@ -158,7 +158,7 @@
                             <table class="reportTable">
                               <tbody>
                                 <tr>
-                                  <td width="30%">{{ "COLUMNS.ITEM" | translate }}</td><td>{{ row.lot.stock_description}}</td>
+                                  <td width="30%">{{ "COLUMNS.ITEM" | translate }}</td><td>{{ row.lot.label }}</td>
                                 </tr>
                                 <tr>
                                   <td width="30%"><b>{{ "COLUMNS.QUANTITY" | translate }}</b></td><td><b>{{ row.lot.quantity}}</b></td>
@@ -171,7 +171,6 @@
                           </div>
                         </td>
                         <td width="10%">
-                          <!-- FIXME style hack -->
                           <div class="input-group" >
                             <span class="input-group-addon">
                               <span
