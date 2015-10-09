@@ -271,10 +271,10 @@ function getAvailableLots(req, res, next) {
       depot = req.params.depotId;
 
   sql =
-    'SELECT s.tracking_number, s.lot_number, s.quantity, s.code, s.expiration_date FROM (' +
+    'SELECT s.tracking_number, s.lot_number, s.quantity, s.code, s.expiration_date, s.label FROM (' +
       'SELECT stock.tracking_number, stock.lot_number, outflow.depot_entry, outflow.depot_exit, ' +
         'SUM(CASE WHEN outflow.depot_entry = ? THEN outflow.quantity ELSE -outflow.quantity END) AS quantity, ' +
-        'stock.expiration_date, inventory.code ' +
+        'stock.expiration_date, inventory.code, inventory.text AS label ' +
       'FROM inventory JOIN stock JOIN (' +
         'SELECT uuid, depot_entry, depot_exit, tracking_number, quantity, date ' +
         'FROM movement ' +

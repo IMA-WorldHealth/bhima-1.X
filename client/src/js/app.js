@@ -483,7 +483,7 @@ function bhimaconfig($routeProvider) {
     controller : 'StockServiceDistributionsController as DistributionsCtrl',
     templateUrl : 'partials/stock/exit_service/distribution_service.html'
   })
-  .when('/depot/:depotId/distributions/:consumptionId/cancel', {
+  .when('/depots/:depotId/distributions/:consumptionId/cancel', {
     controller : 'DepotDistributionsCancelController as CancelCtrl',
     templateUrl : 'partials/depots/distributions/cancel/cancel.html'
   })

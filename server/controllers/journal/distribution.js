@@ -6,6 +6,7 @@ var q        = require('q'),
 exports.patient = patient;
 exports.service = service;
 exports.loss = loss;
+exports.reverseDistribution = reverseDistribution;
 
 /**
 * Distribution to a Patient
@@ -260,8 +261,7 @@ function service(id, userId, details, cb) {
 }
 
 /* Distribution Loss
- *
- *
+*
 */
 function loss(id, userId, details, cb) {
   'use strict';
@@ -380,25 +380,25 @@ function loss(id, userId, details, cb) {
 * This module should only be used in error.  If any errors are incurred during
 * the stock distribution process, cancel the order, and restart.
 */
-function reverseDistribution(id, userId, details, cb) {
+function reverseDistribution(id, userId, cb) {
   'use strict';
 
-  var sql, params, transact, queries, reference, references, cfg = {};
+  var sql, params, queries, reference, references, cfg = {};
 
   sql =
-    'SELECT uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, doc_num, ' +
-      'description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, ' +
-      'deb_cred_uuid, inv_po_id, cost_ctrl_id, origin_id, '+
-      'user_id, cc_id, pc_id ' +
-    'FROM posting_journal' +
-    'WHERE posting_journal.trans_id = ? ' +
-    'UNION ' +
-    'SELECT uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, doc_num, ' +
-      'description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, ' +
-      'deb_cred_uuid, inv_po_id, cost_ctrl_id, origin_id, '+
-      'user_id, cc_id, pc_id ' +
-    'FROM general_ledger' +
-    'WHERE general_ledger.trans_id = ?;';
+      'SELECT uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, doc_num, ' +
+        'description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, ' +
+        'deb_cred_uuid, inv_po_id, cost_ctrl_id, origin_id, '+
+        'user_id, cc_id, pc_id ' +
+      'FROM posting_journal ' +
+      'WHERE trans_id = ? ' +
+      'UNION ' +
+      'SELECT uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, doc_num, ' +
+        'description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, ' +
+        'deb_cred_uuid, inv_po_id, cost_ctrl_id, origin_id, '+
+        'user_id, cc_id, pc_id ' +
+      'FROM general_ledger ' +
+      'WHERE trans_id = ?;';
 
   db.exec(sql, [id, id])
   .then(function (records) {
@@ -418,8 +418,6 @@ function reverseDistribution(id, userId, details, cb) {
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
-    cfg.store = store;
-    transact = core.queries.transactionId(reference.project_id);
     return core.queries.transactionId(reference.project_id);
   })
   .then(function (transId) {
@@ -466,4 +464,3 @@ function reverseDistribution(id, userId, details, cb) {
   .catch(cb)
   .done();
 }
-

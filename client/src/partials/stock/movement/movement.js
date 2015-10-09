@@ -82,6 +82,7 @@ function StockMovementController($scope, $location, $translate, $routeParams, va
 
   function validateLots(model) {
     $scope.lots = model.lots;
+    console.log(model.lots);
 
     // Reset rows TODO
     resetRows();
