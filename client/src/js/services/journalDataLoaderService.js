@@ -1,7 +1,10 @@
 angular.module('bhima.services')
 .service('JournalDataLoaderService', ['$q', 'validate',
   function ($q, validate) {
+    var dataLoaderService = this;
     var dependencies = {};
+    var df = $q.defer();
+
     dependencies.journalRecord = {
       identifier : 'uuid',
       query : 'journal_list/'
@@ -77,20 +80,34 @@ angular.module('bhima.services')
       }
     };
 
-    this.loadAll = function loadAll (){
-      return validate.process(dependencies);
-    };
-
-    this.loadJournalRecord = function loadJournalRecord (){
+    dataLoaderService.loadJournalRecord = function loadJournalRecord (){
       return validate.process(dependencies, ['journalRecord']);
     };
 
-    this.loadAdditionalData = function loadAdditionalData (){
+    dataLoaderService.loadAdditionalData = function loadAdditionalData (){
       return validate.process(dependencies, ['debtor', 'creditor', 'invoice', 'period', 'cost_center', 'profit_center']);
     };
 
-    this.loadAccountData = function loadAccountData(){
+    dataLoaderService.loadAccountData = function loadAccountData(){
       return validate.process(dependencies, ['account']);
     };
+
+    dataLoaderService.SetAccountStore = function SetAccountStore (accountStore){
+      console.log('accountStore', accountStore);
+      dataLoaderService.account = accountStore;
+    };
+
+    dataLoaderService.getAccountStore = function getAccountStore (){
+      return dataLoaderService.account;
+    };
+
+    function loadAll (){
+
+      validate.process(dependencies)
+        .then(function (data){
+          angular.extend(dataLoaderService, data);
+          df.resolve(data);
+        });
+    }
   }
 ]);

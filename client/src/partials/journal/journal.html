@@ -3,17 +3,17 @@
 </header>
 
 <nav ng-controller="journalUtilitiesController as utilitieCtrl">
-  <!-- <div class="pull-left dropdown">
-    <button type="button" class="btn btn-sm btn-default dropdown-toggle" ng-disabled="!!session.authenticated">
+  <div class="pull-left dropdown">
+    <button type="button" class="btn btn-sm btn-default dropdown-toggle" ng-disabled="!!utilitieCtrl.session.authenticated">
       <span class="glyphicon glyphicon-th-list"></span> {{ 'POSTING_JOURNAL.GROUP_BY' | translate }}
     </button>
     <ul class="dropdown-menu">
-      <li><a class="clk" ng-click="groupBy('transaction')"><span class="glyphicon glyphicon-th-list"></span> {{ 'POSTING_JOURNAL.TRANSACTION' | translate }}</a></li>
-      <li><a class="clk" ng-click="groupBy('account')"><span class="glyphicon glyphicon-euro"></span> {{ 'POSTING_JOURNAL.ACCOUNT' | translate }}</a></li>
-      <li><a class="clk" ng-click="groupBy('deb_cred')"><span class="glyphicon glyphicon-user"></span> {{ 'POSTING_JOURNAL.DEB_CRED' | translate }}</a></li>
-      <li><a class="clk" ng-click="removeGroup()"><span class="glyphicon glyphicon-remove"></span> {{ 'POSTING_JOURNAL.ABOLISH_GROUPS' | translate }}</a></li>
+      <li><a class="clk" ng-click="utilitieCtrl.groupBy('transaction')"><span class="glyphicon glyphicon-th-list"></span> {{ 'POSTING_JOURNAL.TRANSACTION' | translate }}</a></li>
+      <li><a class="clk" ng-click="utilitieCtrl.groupBy('account')"><span class="glyphicon glyphicon-euro"></span> {{ 'POSTING_JOURNAL.ACCOUNT' | translate }}</a></li>
+      <li><a class="clk" ng-click="utilitieCtrl.groupBy('deb_cred')"><span class="glyphicon glyphicon-user"></span> {{ 'POSTING_JOURNAL.DEB_CRED' | translate }}</a></li>
+      <li><a class="clk" ng-click="utilitieCtrl.removeGroup()"><span class="glyphicon glyphicon-remove"></span> {{ 'POSTING_JOURNAL.ABOLISH_GROUPS' | translate }}</a></li>
     </ul>
-  </div> -->
+  </div>
 
   <!-- <div class="pull-left dropdown input-group col-xs-4">
     <span class="input-group-btn dropdown-toggle" style="background : white;">

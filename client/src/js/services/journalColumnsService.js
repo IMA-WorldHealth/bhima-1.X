@@ -37,7 +37,7 @@ angular.module('bhima.services')
       return '';
     }
 
-    this.prototype = function setEditor (editors){
+    this.setEditor = function setEditor (editors){
       this.columns.forEach(function (col) {
         if (editors[col.id]) { col.editor = editors[col.id]; }
       });

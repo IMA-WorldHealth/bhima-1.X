@@ -147,7 +147,7 @@ angular.module('bhima.services')
     function doParsing (o) { return JSON.parse(JSON.stringify(o)); }
 
     this.applyColumns = function applyColumns(){
-      this.grid.setColumns(this.columns);
+      this.grid.setColumns(this.columnsService.columns);
     };
   }
 ]);

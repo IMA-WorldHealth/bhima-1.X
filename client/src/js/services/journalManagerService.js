@@ -1,23 +1,57 @@
 angular.module('bhima.services')
-.service('JournalManagerService', [
+.service('JournalManagerService', [ 
   function () {
-    this.manager = { session : { selection : [] }, mode : {} };
+    var managerService  = this;
 
-    this.setRowId = function setRowId(row){
-      this.manager.session.rowId = row;
+
+    managerService.manager = { session : { selection : [] }, mode : {} };
+
+    managerService.setRowId = function setRowId(row){
+      managerService.manager.session.rowId = row;
     }; 
 
-    this.setMode = function setMode (mode){
-      this.manager.session.mode = mode;
+    managerService.setMode = function setMode (mode){
+      managerService.manager.session.mode = mode;
     };
 
-    this.setTransactionId = function setTransactionId(id){
-       this.manager.session.transactionId = id;
+    managerService.getMode = function getMode (){
+      return managerService.manager.session.mode;
     };
 
-    
+    managerService.setSessionTransactionId = function setSessionTransactionId(id){
+       managerService.manager.session.transactionId = id;
+    };
 
-   
+    managerService.getSessionTransactionId = function getSessionTransactionId (){
+      return managerService.manager.session.transactionId;
+    };    
+
+    managerService.getSession = function getSession (){
+      return managerService.manager.session;
+    };
+
+    managerService.isAuthenticated = function isAuthenticated(){
+      return managerService.manager.session.authenticated;
+    };
+
+    managerService.setAuthenticated = function setAuthenticated (ans){
+      managerService.manager.session.authenticated = ans;
+    };
+
+    managerService.setUuid = function setUuid (uuid){
+      managerService.manager.session.uuid = uuid;
+    };
+
+    managerService.setStartTime = function setStartTime (startTime){
+      managerService.manager.session.start = startTime;
+    };
+
+    managerService.setJustification = function setJustification (justification){
+      managerService.manager.session.justification = justification;
+    };    
+
+    // manager.session.authenticated
+
     //manager.session.records.post(row);  
 
   }
