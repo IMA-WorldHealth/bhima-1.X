@@ -18,6 +18,7 @@ exports.getAvailableLots = getAvailableLots;
 exports.getAvailableLotsByInventoryId = getAvailableLotsByInventoryId;
 exports.getExpiredLots = getExpiredLots;
 exports.createDistributions = createDistributions;
+exports.getStockExpirations = getStockExpirations;
 
 /**
 * GET /depots
@@ -368,7 +369,7 @@ function getExpiredLots(req, res, next) {
       ') AS outflow ON ' +
         'inventory.uuid = stock.inventory_uuid AND ' +
         'stock.tracking_number = outflow.tracking_number ' +
-      'WHERE s.expiration_date <= CURDATE() AND (outflow.depot_entry = ? OR outflow.depot_exit = ?) ' +
+      'WHERE stock.expiration_date <= CURDATE() AND (outflow.depot_entry = ? OR outflow.depot_exit = ?) ' +
       'GROUP BY stock.tracking_number' +
     ') AS s;';
 
@@ -381,146 +382,47 @@ function getExpiredLots(req, res, next) {
 }
 
 /**
-
-// TODO this is old code, which may still be valuable!  We should try
-// to recoup some of this code in the future.
-
-module.exports = function () {
+* GET /depots/:uuid/expirations?start={}&end={}
+* This function returns all lots that will expire in a given depot between the
+* provided dates.
+*
+* @function getStockExpirations
+*/
+function getStockExpirations(req, res, next) {
   'use strict';
 
-  // These routes are to investigate drugs in particular depots (or all).
-  // URL root (/inventory/depot/:depotid/) {
-  //    /drug/:code           => list of all lots of drug with code code
-  //    /lot/:tracking_number => only details of the lot with tracking_number
-  //    /lots                 => list of all drugs by lot
-  //    /drugs                => lots of all drugs by code
-  // }
+  var sql,
+      depot = req.params.depotId,
+      options = req.query;
 
-  function findDrugsInDepot (array, depot) {
-    // reduce quantities in an array of entry, exit depots
-    // to give a total quantity for each depot for each
-    // tracking_number
-
-    // contains { tracking_number, quantity, expiration_date }
-    var _depot, store = new Store({ identifier : 'tracking_number' });
-
-    // depot ID is now a UUID
-    _depot = depot;
-    // _depot = Number(depot);
-
-    array
-    .filter(function (transaction) {
-      var filterDepot = transaction.depot_entry === _depot || transaction.depot_exit === _depot;
-      var filterEmpty = transaction.quantity > 0;
-
-      return filterEmpty && filterDepot;
-    })
-    .forEach(function (transaction) {
-      if (!store.get(transaction.tracking_number)) {
-        store.post(transaction);
-        // store.post({ tracking_number : transaction.tracking_number, lot_number : transaction.lot_number, stock_description : transaction.stock_description, quantity : transaction.quantity , code : transaction.code, expiration_date : transaction.expiration_date });
-      }
-      // var item = store.get(transaction.tracking_number);
-      // item.quantity += transaction.depot_entry === _depot ? transaction.quantity : -1 * transaction.quantity;
-    });
-
-    return store;
-  }
-
-  function byLot (depot, id) {
-    var sql, _depot, _id;
-
-    _depot = sanitize.escape(depot);
-    _id = sanitize.escape(id);
-
-    sql =
-      'SELECT stock.tracking_number, stock.lot_number, movement.depot_entry, movement.depot_exit, SUM(movement.quantity) AS quantity, ' +
-        'stock.expiration_date, code, inventory.text as stock_description ' +
-      'FROM inventory JOIN stock JOIN movement ON ' +
-        'inventory.uuid = stock.inventory_uuid AND stock.tracking_number = movement.tracking_number ' +
-      'WHERE (movement.depot_entry = ' + _depot + ' OR movement.depot_exit = ' + _depot + ') ' +
-      'AND stock.tracking_number = ' + _id + ' ' +
-      'GROUP BY stock.tracking_number;';
-
-    return db.exec(sql)
-    .then(function (rows) {
-      var store = findDrugsInDepot(rows, depot);
-      return q(store.data);
-    });
-  }
-
-  function byAllLots (depot) {
-    var sql, _depot;
-
-    _depot = sanitize.escape(depot);
-
-    sql =
-      'SELECT stock.tracking_number, stock.lot_number, calculateMovement.depot_entry, calculateMovement.depot_exit, ' +
-        'SUM(CASE WHEN calculateMovement.depot_entry =' + _depot + ' THEN calculateMovement.quantity ELSE -calculateMovement.quantity END) AS quantity, ' +
-        'stock.expiration_date, code, inventory.text as stock_description ' +
-      'FROM inventory JOIN stock ' +
-      'JOIN ' +
-
-      // Model consumption as a movement from nothing, would be useful to know the difference between moved and consumed
-      '(SELECT uuid, depot_entry, depot_exit, tracking_number, quantity, date ' +
-      'FROM movement ' +
-      'UNION ' +
-      'SELECT uuid, null as depot_entry, depot_uuid as depot_exit, tracking_number, quantity, date  ' +
-      'FROM consumption ' +
-      'UNION ' +
-      'SELECT uuid, null as depot_entry, depot_uuid as depot_exit, tracking_number, (quantity * (-1)) AS quantity, date ' +
-      'FROM consumption_reversing ) as calculateMovement ON ' +
-        'inventory.uuid = stock.inventory_uuid AND stock.tracking_number = calculateMovement.tracking_number ' +
-      'WHERE calculateMovement.depot_entry = ' + _depot + ' OR calculateMovement.depot_exit = ' + _depot + ' ' +
+  sql =
+    'SELECT s.tracking_number, s.lot_number, s.quantity, s.text, s.code, s.expiration_date FROM (' +
+      'SELECT stock.tracking_number, stock.lot_number, outflow.depot_entry, outflow.depot_exit, ' +
+        'SUM(CASE WHEN outflow.depot_entry = ? THEN outflow.quantity ELSE -outflow.quantity END) AS quantity, ' +
+        'stock.expiration_date, inventory.code, inventory.text ' +
+      'FROM inventory JOIN stock JOIN (' +
+        'SELECT uuid, depot_entry, depot_exit, tracking_number, quantity, date ' +
+        'FROM movement ' +
+        'UNION ' +
+        'SELECT uuid, null AS depot_entry, depot_uuid AS depot_exit, tracking_number, quantity, date  ' +
+        'FROM consumption ' +
+        'WHERE consumption.canceled = 0' +
+      ') AS outflow ON ' +
+        'inventory.uuid = stock.inventory_uuid AND ' +
+        'stock.tracking_number = outflow.tracking_number ' +
+      'WHERE (outflow.depot_entry = ? OR outflow.depot_exit = ?) AND ' +
+        'stock.expiration_date BETWEEN DATE(?) AND DATE(?) ' +
       'GROUP BY stock.tracking_number ' +
-      'ORDER BY stock.lot_number;';
+    ') AS s ' +
+    'WHERE s.quantity > 0;'; // filter out quantity = 0 from expiration report
 
-    return db.exec(sql)
-    .then(function (rows) {
-      var store = findDrugsInDepot(rows, depot);
-      return q(store.data);
-    });
-  }
+  // TODO -- should the quantity = 0 filter be a HAVING clause?  Will that be
+  // more performant?
 
-  function byAllDrugs (depot) {
-    var sql, _depot;
-
-    _depot = sanitize.escape(depot);
-
-    sql =
-      'SELECT stock.tracking_number, movement.depot_entry, movement.depot_exit, SUM(stock.quantity) AS quantity, ' +
-        'stock.expiration_date, code ' +
-      'FROM inventory JOIN stock JOIN movement ON ' +
-        'inventory.uuid = stock.inventory_uuid AND stock.tracking_number = movement.tracking_number ' +
-      'WHERE (movement.depot_entry = ' + _depot + ' OR movement.depot_exit = ' + _depot + ') ' +
-      'GROUP BY inventory.code ' +
-      'ORDER BY inventory.code;';
-
-    return db.exec(sql)
-    .then(function (rows) {
-      var store = findDrugsInDepot(rows, depot);
-      return q(store.data);
-    });
-  }
-
-  return function router (url, depot) {
-    var routes, match, defer = q.defer();
-
-    routes = [
-      { re : /lot\/([0-9a-z\-|0-9A-Z\-]+)/ , fn : byLot },
-      { re : /drug\/([0-9a-z\-|0-9A-Z\-]+)/, fn : byCode },
-      { re : /lots/, fn : byAllLots },
-      { re : /drugs/ , fn : byAllDrugs }
-    ];
-
-    routes.forEach(function (route) {
-      match = route.re.exec(url);
-      if (match) { defer.resolve(route.fn(depot, match[1])); }
-    });
-
-    if (!match) { defer.reject(new Error('No route found for url : ' + url)); }
-
-    return defer.promise;
-  };
-};
-*/
+  db.exec(sql, [depot, depot, depot, req.query.start, req.query.end])
+  .then(function (rows) {
+    res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
+}
