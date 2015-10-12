@@ -113,18 +113,11 @@
           {{ "STOCK_DASHBOARD.EXPIRING_INVENTORY.TITLE" | translate }}
         </div>
         <ul class="list-group">
-
-          <a href="#/reports/expiring/expired" class="list-group-item">
-            <i class="glyphicon glyphicon-calendar text-danger"></i>
-            {{ "STOCK_DASHBOARD.EXPIRING_INVENTORY.EXPIRED" | translate }}
-            <span class="badge">{{ StockDashCtrl.alerts.expired }}</span>
-          </a>
-
           <a ng-repeat="expiration in StockDashCtrl.expirations track by expiration.id"
             ng-href="#/reports/expiring?start={{ expiration.range[0] }}&end={{ expiration.range[1] }}"
             class="list-group-item"
             >
-            <i class="glyphicon glyphicon-calendar text-warning"></i>
+            <i class="glyphicon glyphicon-calendar" ng-class="{ 'text-danger' : $first, 'text-warning' : !$first }"></i>
             {{ expiration.key | translate }}
             <span class="badge">{{ expiration.count }}</span>
           </a>
