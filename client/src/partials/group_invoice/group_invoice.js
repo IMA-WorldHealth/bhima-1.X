@@ -18,6 +18,7 @@ function GroupInvoiceController($scope, $translate, connect, validate, messenger
 
   // get enterprise
   $scope.project = SessionService.project;
+  $scope.enterprise = SessionService.enterprise;
 
   dependencies.invoices = {
     query : 'ledgers/debitor/'
@@ -64,7 +65,8 @@ function GroupInvoiceController($scope, $translate, connect, validate, messenger
           columns : ['symbol']
         }
       },
-      join : ['enterprise.currency_id=currency.id']
+      join : ['enterprise.currency_id=currency.id'],
+      where : ['enterprise.id=' + $scope.enterprise.id]
     }
   };
 
@@ -96,11 +98,20 @@ function GroupInvoiceController($scope, $translate, connect, validate, messenger
   function setUpModels(models) {
     angular.extend($scope, models);
 
+    $scope.currency = models.currency.data[0];
 
     if ($scope.invoices) {
+
+      console.log('$scope.invoices', $scope.invoices, $scope.selected.debitor);
+
       // FIXME: this is hack
       $scope.invoices.data = $scope.invoices.data.filter(function (d) {
         return d.balance !== 0;
+      });
+
+      // proper formatting
+      $scope.invoices.data.forEach(function (i) {
+        i.invoiceRef = i.abbr + ' ' + i.reference;
       });
     }
 

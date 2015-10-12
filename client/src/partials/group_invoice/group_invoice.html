@@ -65,16 +65,17 @@
 
       <div class="panel panel-default" ng-switch-when="true">
         <div class="panel-heading">
-          <span class="glyphicon glyphicon-list"></span>
-          <span> {{ "GROUP_INVOICE.SELECT_INVOICES" | translate }}</span>
+          <i class="glyphicon glyphicon-list"></i>
+          <span>
+            {{ selected.debitor.text }}
+          </span>
         </div>
         <table class="table table-condensed">
           <thead>
             <tr>
               <th>{{ "COLUMNS.INVOICE_ID" | translate }}</th>
-              <th>{{ "COLUMNS.DEBITOR_ID" | translate }}</th>
               <th>{{ "COLUMNS.DATE" | translate }}</th>
-              <th>{{ "COLUMNS.TOTAL" | translate }}</th>
+              <th>{{ "COLUMNS.BALANCE" | translate }}</th>
               <th colspan="2" style="width:10%;">{{ "COLUMNS.ACTIONS" | translate }}</th>
             </tr>
           </thead>
@@ -90,10 +91,13 @@
               </th>
             </tr>
             <tr ng-repeat="invoice in invoices.data | filter:filter">
-              <td>{{invoice.inv_po_id}}</td>
-              <td>{{invoice.deb_cred_uuid}}</td>
-              <td>{{invoice.trans_date | date}}</td>
-              <td>{{invoice.balance | currency:invoice.currency_id }}</td>
+              <th>
+                <a ng-href="#/invoice/sale/{{ invoice.inv_po_id }}">
+                  <i class="glyphicon glyphicon-link"></i> {{ invoice.invoiceRef }}
+                </a>
+              </th>
+              <td>{{ invoice.trans_date | date }}</td>
+              <td>{{ invoice.balance | currency:invoice.currency_id }}</td>
               <td><button class="btn btn-xs btn-default" ng-click="examineInvoice(invoice, $index)"><i class="glyphicon glyphicon-search"></i></button></td>
               <td><button class="btn btn-xs btn-default" ng-click="enqueue($index)"><i class="glyphicon glyphicon-plus"></i></button></td>
             </tr>
@@ -129,14 +133,14 @@
                 <div class="form-group" >
                   <label class="col-xs-3">{{ "GROUP_INVOICE.INVOICE_ID" | translate }}</label>
                   <label class="col-xs-3">{{ "GROUP_INVOICE.COST" | translate }}</label>
-                  <label class="">{{ "GROUP_INVOICE.AGREED" | translate }}</label>
+                  <label>{{ "GROUP_INVOICE.AGREED" | translate }}</label>
                 </div>
 
                 <div class="form-group" ng-repeat="invoice in paying">
-                  <p class="form-control-static col-xs-3">{{ invoice.inv_po_id }}</p>
+                  <p class="form-control-static col-xs-3">{{ invoice.invoiceRef }}</p>
                   <p class="form-control-static col-xs-3">{{ invoice.balance | currency}}</p>
                   <div class="col-xs-6 input-group">
-                    <span class="input-group-addon">{{currency.data[0].symbol}}</span>
+                    <span class="input-group-addon">{{ currency.symbol }}</span>
                     <input type="number" class="form-bhima" ng-model="invoice.payment" min="0" max="{{invoice.balance}}">
                   </div>
                 </div>
@@ -169,11 +173,11 @@
                 <div class="form-group" >
                   <label class="col-xs-3">{{ "GROUP_INVOICE.INVOICE_ID" | translate }}</label>
                   <label class="col-xs-3">{{ "GROUP_INVOICE.COST" | translate }}</label>
-                  <label class="">{{ "GROUP_INVOICE.AGREED" | translate }}</label>
+                  <label>{{ "GROUP_INVOICE.AGREED" | translate }}</label>
                 </div>
 
                 <div class="form-group" ng-repeat="invoice in paying">
-                  <p class="form-control-static col-xs-3">{{ invoice.inv_po_id }}</p>
+                  <p class="form-control-static col-xs-3">{{ invoice.invoiceRef }}</p>
                   <p class="form-control-static col-xs-3">{{ invoice.balance | currency}}</p>
                   <p class="form-control-static">{{ invoice.payment | currency }}</p>
                 </div>
@@ -210,7 +214,7 @@
                 <div class="form-group">
                   <label class="control-label col-xs-3">{{ "COLUMNS.INVOICE_ID" | translate }}</label>
                   <div class="col-xs-9">
-                    <p class="form-control-static">{{examine.inv_po_id}}</p>
+                    <p class="form-control-static">{{examine.invoiceRef }}</p>
                   </div>
                 </div>
 
