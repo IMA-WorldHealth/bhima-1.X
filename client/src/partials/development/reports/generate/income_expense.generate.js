@@ -10,7 +10,6 @@ function incomeExpense($anchorScroll, $location, $modalInstance, $http, Store, M
   var state = new ModuleState();
 
   var generateUrl = 'report/build/income_expense';
-  var definition;
 
   // This will act as a container for all report document configuration options
   var options = {};
@@ -110,7 +109,7 @@ function incomeExpense($anchorScroll, $location, $modalInstance, $http, Store, M
     } else { 
       $anchorScroll();
     }
-  }
+  };
  
   modal.scrollToLabel = function () { 
     var hash = 'labelConfig';
@@ -120,7 +119,7 @@ function incomeExpense($anchorScroll, $location, $modalInstance, $http, Store, M
     } else { 
       $anchorScroll();
     }
-  }
+  };
 
   modal.scrollToLayout = function () { 
     var hash = 'layoutConfig';
@@ -130,13 +129,13 @@ function incomeExpense($anchorScroll, $location, $modalInstance, $http, Store, M
     } else { 
       $anchorScroll();
     }
-  }
+  };
 
   modal.cancelModal = function () { 
     $modalInstance.dismiss();
-  }
+  };
 
   modal.completeModal = function () { 
     $modalInstance.close(definition);
-  }
+  };
 }

@@ -1,4 +1,4 @@
-'use strict' 
+'use strict';
 
 /**
  * @description 
@@ -24,6 +24,7 @@ function ReportService($http, $q, Store) {
   var generateTemplateConvention = '.generate.tmpl.html';
   var generateControllerConvention = 'Controller';
   var generateAliasConvention = ' as ?Ctrl';
+  
   // Tasks run on service startup
   cacheIndex();
 
@@ -47,9 +48,6 @@ function ReportService($http, $q, Store) {
     var archivePath = 'report/archives/'.concat(id);
 
     return $http.get(archivePath);
-      // .then(function (archive) { 
-      // });
-      //.catch()
   }
 
   function resolveTemplatePath(reportKey) { 
@@ -124,5 +122,5 @@ function ReportService($http, $q, Store) {
     fetchArchive : fetchArchive,
     resolveTemplatePath : resolveTemplatePath,
     resolveController : resolveController
-  }
+  };
 }

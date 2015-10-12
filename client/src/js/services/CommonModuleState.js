@@ -1,4 +1,4 @@
-'use strict' 
+'use strict';
 
 /**
  * @description
@@ -87,44 +87,44 @@ function ModuleState ($timeout) {
         }
     });
 
-  };
+  }
   
   // TODO Rewrite prototype methods as getters + setters
   Session.prototype.validateModule = function () { 
     this.__valid = true;
-  }
+  };
 
   Session.prototype.invalidateModule = function () { 
     this.__valid = false;
-  }
+  };
   
   Session.prototype.isInitialised = function () { 
     return this.__initialised;
-  }
+  };
 
   Session.prototype.loaded = function () { 
     this.__loading = false;
     return this.__loading;
-  }
+  };
 
   Session.prototype.loading = function () { 
     this.__loading = true;
     return this.__loading;
-  }
+  };
 
   Session.prototype.completed = function () { 
     this.__complete = true;
     return this.__complete;
-  }
+  };
   
   Session.prototype.success = function () { 
     this.__success = true;
     return this.__success;
-  }
+  };
 
   Session.prototype.failed = function () { 
     this.__success = false;
     return this.__success;
-  }
+  };
   return Session;
-};
+}

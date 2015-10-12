@@ -10,7 +10,6 @@ function chartOfAccounts($anchorScroll, $location, $modalInstance, $http, Store,
   var state = new ModuleState();
 
   var generateUrl = 'report/build/chart_of_accounts';
-  var definition;
 
   // This will act as a container for all report document configuration options
   var options = {};
@@ -60,7 +59,7 @@ function chartOfAccounts($anchorScroll, $location, $modalInstance, $http, Store,
     } else { 
       $anchorScroll();
     }
-  }
+  };
  
   modal.scrollToLabel = function () { 
     var hash = 'labelConfig';
@@ -70,7 +69,7 @@ function chartOfAccounts($anchorScroll, $location, $modalInstance, $http, Store,
     } else { 
       $anchorScroll();
     }
-  }
+  };
 
   modal.scrollToLayout = function () { 
     var hash = 'layoutConfig';
@@ -80,13 +79,13 @@ function chartOfAccounts($anchorScroll, $location, $modalInstance, $http, Store,
     } else { 
       $anchorScroll();
     }
-  }
+  };
 
   modal.cancelModal = function () { 
     $modalInstance.dismiss();
-  }
+  };
 
   modal.completeModal = function () { 
     $modalInstance.close(definition);
-  }
+  };
 }

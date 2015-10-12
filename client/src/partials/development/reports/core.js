@@ -107,7 +107,7 @@ function ReportCore($routeParams, $modal, ModuleState, ReportService) {
           return {};
         }
       }
-    })
+    });
 
     modal.result.then(function (completeConfirmation) { 
       // Report complete

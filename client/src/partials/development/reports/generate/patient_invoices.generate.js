@@ -10,11 +10,12 @@ function patientInvoices($anchorScroll, $location, $modalInstance, $http, util, 
   var state = new ModuleState();
 
   var generateUrl = 'report/build/patient_invoices';
-  var referenceOptions = referenceOptions || {};
-  var definition;
-
+  
   // This will act as a container for all report document configuration options
   var options = {};
+ 
+  // Reference can optionally be passed through from intialising module - these can include any default attributes
+  referenceOptions = referenceOptions || {};
   
   modal.state = state;
   modal.title = definition.title; 
@@ -68,7 +69,7 @@ function patientInvoices($anchorScroll, $location, $modalInstance, $http, util, 
     } else { 
       $anchorScroll();
     }
-  }
+  };
  
   modal.scrollToLabel = function () { 
     var hash = 'labelConfig';
@@ -78,7 +79,7 @@ function patientInvoices($anchorScroll, $location, $modalInstance, $http, util, 
     } else { 
       $anchorScroll();
     }
-  }
+  };
 
   modal.scrollToLayout = function () { 
     var hash = 'layoutConfig';
@@ -88,13 +89,13 @@ function patientInvoices($anchorScroll, $location, $modalInstance, $http, util, 
     } else { 
       $anchorScroll();
     }
-  }
+  };
 
   modal.cancelModal = function () { 
     $modalInstance.dismiss();
-  }
+  };
 
   modal.completeModal = function () { 
     $modalInstance.close(definition);
-  }
+  };
 }
