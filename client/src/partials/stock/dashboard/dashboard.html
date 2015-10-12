@@ -80,25 +80,25 @@
         </div>
         <ul class="list-group">
 
-          <a href="#/stock/outtages" class="list-group-item">
+          <a href="#/reports/stock_status" class="list-group-item">
             <i class="glyphicon glyphicon-exclamation-sign text-danger"></i>
             {{ "STOCK_DASHBOARD.ALERTS.OUT_OF_STOCK" | translate }}
             <span class="badge">{{ StockDashCtrl.alerts.stockout }}</span>
           </a>
 
-          <a href="#/stock/minimum" class="list-group-item">
+          <a href="#/reports/stock_status" class="list-group-item">
             <i class="glyphicon glyphicon-exclamation-sign text-warning"></i>
             {{ "STOCK_DASHBOARD.ALERTS.UNDER_MIN" | translate }}
             <span class="badge">{{StockDashCtrl.alerts.shortage }}</span>
           </a>
 
-          <a href="#/stock/excess" class="list-group-item">
+          <a href="#/reports/stock_status" class="list-group-item">
             <i class="glyphicon glyphicon-exclamation-sign text-primary"></i>
             {{ "STOCK_DASHBOARD.ALERTS.OVER_MAX" | translate }}
             <span class="badge">{{ StockDashCtrl.alerts.overstock }}</span>
           </a>
 
-          <a href="#/stock/optimum" class="list-group-item">
+          <a href="#/reports/stock_status" class="list-group-item">
             <i class="glyphicon glyphicon-ok-sign text-success"></i>
             {{ "STOCK_DASHBOARD.ALERTS.OPTIMAL_LEVEL" | translate }}
             <span class="badge">{{ StockDashCtrl.alerts.optimal }}</span>
@@ -121,7 +121,7 @@
           </a>
 
           <a ng-repeat="expiration in StockDashCtrl.expirations track by expiration.id"
-            ng-href="#/reports/stock/expirations?start={{ expiration.range[0] }}&end={{ expiration.range[1] }}"
+            ng-href="#/reports/expiring?start={{ expiration.range[0] }}&end={{ expiration.range[1] }}"
             class="list-group-item"
             >
             <i class="glyphicon glyphicon-calendar text-warning"></i>
