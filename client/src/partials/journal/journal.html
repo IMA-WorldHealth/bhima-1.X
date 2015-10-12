@@ -15,26 +15,26 @@
     </ul>
   </div>
 
-  <!-- <div class="pull-left dropdown input-group col-xs-4">
+  <div class="pull-left dropdown input-group col-xs-4">
     <span class="input-group-btn dropdown-toggle" style="background : white;">
-      <button class="btn btn-sm btn-default" type="button" ng-class="{'active': !!filter.by && !!filter.param }">
+      <button class="btn btn-sm btn-default" type="button" ng-class="{'active': !!utilitieCtrl.filter.by && !!utilitieCtrl.filter.param }">
         <span class="glyphicon glyphicon-filter"></span>
         <span class="caret" data-caret="&#9660;"></span>
-        {{ filter.by.name }}
+        {{ utilitieCtrl.filter.by.name }}
       </button>
     </span>
-    <input class="form-bhima" ng-model="filter.param">
+    <input class="form-bhima" ng-model="utilitieCtrl.filter.param"/>
     <ul class="dropdown-menu">
       <li>
-        <a ng-click="refreshFilter()" class="clk"><span class="glyphicon glyphicon-refresh"></span> {{ "POSTING_JOURNAL.REFRESH" | translate }}</a>
+        <a ng-click="utilitieCtrl.refreshFilter()" class="clk"><span class="glyphicon glyphicon-refresh"></span> {{ "POSTING_JOURNAL.REFRESH" | translate }}</a>
       </li>
-      <li ng-repeat="column in columns">
-        <a ng-click="filter.by=column" class="clk">{{ column.name }}</a>
+      <li ng-repeat="column in utilitieCtrl.columns">
+        <a ng-click="utilitieCtrl.filter.by=column" class="clk">{{ column.name }}</a>
       </li>
     </ul>
   </div>
 
-  <div class="pull-right dropdown" style="padding-left:3px;">
+<!--   <div class="pull-right dropdown" style="padding-left:3px;">
     <button class="btn btn-default btn-sm dropdown-toggle" ng-disabled="!!session.authenticated">
       <span class="glyphicon glyphicon-cog"></span> {{'POSTING_JOURNAL.CONFIGURE' | translate }}
     </button>

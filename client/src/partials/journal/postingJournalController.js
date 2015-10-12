@@ -4,13 +4,12 @@ var PostingJournalController = function ($translate, $filter, $q, precision, ses
   vm.managerService = managerService;
   vm.dataviewService = dataviewService;
   vm.columnsService  = columnsService;
+  vm.gridService = gridService;
   vm.dataLoaderService = dataLoaderService;
   vm.grid     = gridService.buildGrid();
   vm.editing = false;
   vm.project = sessionService.project;
 
-
-  doSubscription();  //subscribe dataview and grid to event
 
   vm.dataviewService.populate()
   .then(vm.dataLoaderService.loadAdditionalData)  
@@ -27,6 +26,11 @@ var PostingJournalController = function ($translate, $filter, $q, precision, ses
   function initialise (models) {
     angular.extend(vm, models);
     vm.journal = new Store({ data : vm.dataviewService.dataview.getItems() });
+    vm.dataviewService.subscribeToOnRowCountChanged(vm.grid);
+    vm.dataviewService.subscribeToOnRowsChanged(vm.grid);
+    vm.gridService.subscribeToOnCellChange();
+    vm.gridService.subscribeToOnSort();
+    vm.gridService.subscribeToOnBeforeEditCell();
 
     var editors = {
       'trans_date'    : DateEditor, // SlickGrids date editors uses $() datepicker
@@ -394,23 +398,7 @@ var PostingJournalController = function ($translate, $filter, $q, precision, ses
     });
     vm.grid.invalidate();
     saveTransaction();
-  }
-
-  
-
-  
-
-  // TODO : clean this f() up
-  
-
-  function doSubscription (){
-    
-    vm.grid.onBeforeEditCell.subscribe(function (e, args) {
-      var item =  this.dataviewService.dataview.getItem(args.row),
-      canEdit = this.managerService.manager.session.mode === 'edit';
-      if (!canEdit || this.managerService.manager.session.transactionId !== item.trans_id ) { return false; }
-    });
-  }
+  } 
 
   function checkErrors (records) {
     if (!records.length) { return; }

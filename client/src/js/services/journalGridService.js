@@ -1,14 +1,14 @@
 angular.module('bhima.services')
 .service('JournalGridService', ['JournalDataviewService', 'JournalColumnsService', 'JournalManagerService', 'uuid', 
   function (dataviewService, columnsService, managerService, uuid) {
-
-    this.grid = null;
-    this.dataviewService = dataviewService;
-    this.columnsService = columnsService;
-    this.managerService = managerService;
-    this.idDom = '#journal_grid';
-    this.sortColumn = null;
-    this.options = {
+    var gridService = this;
+    gridService.grid = null;
+    gridService.dataviewService = dataviewService;
+    gridService.columnsService = columnsService;
+    gridService.managerService = managerService;
+    gridService.idDom = '#journal_grid';
+    gridService.sortColumn = null;
+    gridService.options = {
         enableCellNavigation: true,
         enableColumnReorder: true,
         forceFitColumns: true,
@@ -17,32 +17,39 @@ angular.module('bhima.services')
         autoEdit: false
     };
 
-    this.buildGrid = function buildGrid (){
-      this.grid = new Slick.Grid(this.idDom, this.dataviewService.dataview, this.columnsService.columns, this.options);
-      this.grid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}));
-      this.grid.registerPlugin(this.dataviewService.gimp);
-      return this.grid;
+    gridService.buildGrid = function buildGrid (){
+      gridService.grid = new Slick.Grid(gridService.idDom, gridService.dataviewService.dataview, gridService.columnsService.columns, gridService.options);
+      gridService.grid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow: false}));
+      gridService.grid.registerPlugin(gridService.dataviewService.gimp);
+      return gridService.grid;
     };
 
-    this.subscribeToOnCellChange = function subscribeToOnCellChange (){
-      if(!this.dataviewService.dataview) {throw 'undefined dataview';}
-      if(!this.grid) {throw 'undefined grid, call buildGrid method first!';}
+    gridService.subscribeToOnCellChange = function subscribeToOnCellChange (){
+      if(!gridService.dataviewService.dataview) {throw 'undefined dataview';}
+      if(!gridService.grid) {throw 'undefined grid, call buildGrid method first!';}
 
-      this.grid.onCellChange.subscribe(function(e, args) {
+      gridService.grid.onCellChange.subscribe(function(e, args) {
         var id = args.item.id || args.item.uuid;
-        this.dataviewService.dataview.updateItem(id, args.item);
+        gridService.dataviewService.dataview.updateItem(id, args.item);
       });
     }; 
 
-    this.subscribeToOnSort = function subscribeToOnSort (){
-      if(!this.dataviewService.dataview) {throw 'undefined dataview';}
-      if(!this.grid) {throw 'undefined grid, call buildGrid method first!';}
+    gridService.subscribeToOnSort = function subscribeToOnSort (){
+      if(!gridService.dataviewService.dataview) {throw 'undefined dataview';}
+      if(!gridService.grid) {throw 'undefined grid, call buildGrid method first!';}
 
-      this.grid.onSort.subscribe(function (e, args) {
-        this.sortColumn = args.sortCol.field;
-        this.dataviewService.dataview.sort(sort, args.sortAsc);
+      gridService.grid.onSort.subscribe(function (e, args) {
+        gridService.sortColumn = args.sortCol.field;
+        gridService.dataviewService.dataview.sort(sort, args.sortAsc);
       });
     };
+
+    gridService.subscribeToOnBeforeEditCell = function subscribeToOnBeforeEditCell (){
+      gridService.grid.onBeforeEditCell.subscribe(function (e, args) {
+        var item =  gridService.dataviewService.dataview.getItem(args.row);
+        if (gridService.managerService.getMode() !== 'edit' || gridService.managerService.getSessionTransactionId() !== item.trans_id ) { return false; }
+      });
+    };     
 
     // this.subscribeToOnclick = function subscribeToOnclick (){
     //   if(!this.grid) {throw 'undefined grid, call buildGrid method first!'}
@@ -146,8 +153,8 @@ angular.module('bhima.services')
 
     function doParsing (o) { return JSON.parse(JSON.stringify(o)); }
 
-    this.applyColumns = function applyColumns(){
-      this.grid.setColumns(this.columnsService.columns);
+    gridService.applyColumns = function applyColumns(cols){
+      gridService.grid.setColumns(cols || gridService.columnsService.columns);
     };
   }
 ]);

@@ -68,7 +68,6 @@ angular.module('bhima.services')
     };
 
     dataviewService.groupBy = function groupBy(targetGroup) {
-      console.log('targetGroup :', targetGroup);
 
       dataviewService.setGrouping(targetGroup);
 
@@ -132,6 +131,23 @@ angular.module('bhima.services')
         param : param
       });
       dataviewService.dataview.endUpdate();
+    };
+
+    dataviewService.refreshDataviewFilter = function refreshDataviewFilter (){     
+    
+      dataviewService.dataview.setFilterArgs({
+        param : '',
+        re    : new RegExp('', 'i')
+      });
+      dataviewService.dataview.refresh();
+    };
+
+    dataviewService.updateFilter = function updateFilter (param){
+      dataviewService.dataview.setFilterArgs({
+        param : param,
+        re    : new RegExp(param, 'i') // 'i' for ignore case
+      });
+      dataviewService.dataview.refresh();
     };
 
     function formatTransactionGroup(g) {

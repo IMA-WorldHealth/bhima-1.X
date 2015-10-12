@@ -1,12 +1,15 @@
 var journalUtilitiesController = function ($scope, $translate, $location, $modal, Appcache, connect, validate, appstate, messenger, dataviewService, columnsService, gridService, dataLoaderService, managerService){
   var vm = this, deleteColumn, cache = new Appcache('journal.utilities');
+
   vm.columnsService = columnsService;
   vm.gridService = gridService;
   vm.dataviewService = dataviewService;
-  vm.managerService = managerService;  
+  vm.managerService = managerService;
+  vm.dataLoaderService = dataLoaderService; 
+
   vm.hasData = vm.dataviewService.hasData();
-  vm.filter = { by : {} };
-  vm.dataLoaderService = dataLoaderService;
+  $scope.filter = vm.filter = { by : {} };
+  
 
   vm.dataLoaderService.loadAccountData()
   .then(function(data){
@@ -16,7 +19,7 @@ var journalUtilitiesController = function ($scope, $translate, $location, $modal
   cache.fetch('columns')
     .then(function (columns) {
       if (!columns) { return; }
-      vm.columns = columns;
+      $scope.columns = vm.columns = columns;
     });
 
 
@@ -54,6 +57,7 @@ var journalUtilitiesController = function ($scope, $translate, $location, $modal
   }
 
   function formatDate(d) {
+    console.log('param date', d);
     var month = '' + (d.getMonth() + 1),
         day = '' + d.getDate(),
         year = d.getFullYear();
@@ -65,6 +69,7 @@ var journalUtilitiesController = function ($scope, $translate, $location, $modal
   }
 
   function filter(item, args) {
+    // console.log('filter function', item, args);
     var value,
         re = args.re;
 
@@ -140,10 +145,48 @@ var journalUtilitiesController = function ($scope, $translate, $location, $modal
     vm.dataviewService.setGrouping();
   }
 
+  function refreshFilter () {
+    vm.dataviewService.refreshDataviewFilter();
+  }
+
+  function filterBy (col){
+    vm.filter.by = col;
+  }
+
+  function updateFilter () {
+    if (!vm.filter.param) { return; }
+    if (!vm.filter.by) { return; }    
+    vm.dataviewService.updateFilter(vm.filter.param);
+  } 
+
   vm.regroup = regroup;
   vm.groupBy = groupBy;
   vm.removeGroup = removeGroup;
-  vm.toggleEditMode = toggleEditMode;  
+  vm.toggleEditMode = toggleEditMode;
+  vm.refreshFilter = refreshFilter;
+  vm.updateFilter = updateFilter;
+  vm.filterBy = filterBy;
+
+  // $scope.$watch('columns', function () {
+  //   if (!vm.columns) { return; }
+  //   var columns = vm.columns.filter(function (column) { return column.visible; });
+  //   //cache.put('columns', columns);
+  //   vm.gridService.applyColumns(columns); 
+  // }, true);
+
+  // $scope.$watch('session.mode', function () {
+  //   if (!vm.managerService.getManager() || !vm.managerService.getSession() || !vm.managerService.getMode()) { return; }
+  //   var e = $('#journal_grid');
+  //   e[vm.managerService.getMode() === 'static' ? 'removeClass' : 'addClass']('danger');
+  //   regroup();
+  // });
+
+$scope.$watch('filter', function () {
+  updateFilter();
+}, true);
+
+
+
 
   
 
@@ -182,33 +225,13 @@ var journalUtilitiesController = function ($scope, $translate, $location, $modal
 
 
 
-  // vm.refreshFilter = function refreshFilter () {
-  //   vm.filter.param = '';
-  //   vm.dataviewService.dataview.setFilterArgs({
-  //     param : vm.filter.param
-  //   });
-  //   vm.dataviewService.dataview.refresh();
-  // };
+  
 
   // vm.print = function () {
   //   $location.path('/journal/print');
   // };
 
-  //   // Toggle column visibility
-  //   // this is terrible
-  // $scope.$watch('columns', function () {
-  //   if (!vm.columns) { return; }
-  //   var columns = vm.columns.filter(function (column) { return column.visible; });
-  //   //cache.put('columns', columns);
-  //   vm.gridService.grid.setColumns(columns);
-  // }, true);
-
-  // $scope.$watch('session.mode', function () {
-  //   if (!vm.managerService.manager || !vm.managerService.manager.session || !vm.managerService.manager.session.mode) { return; }
-  //   var e = $('#journal_grid');
-  //   e[vm.managerService.manager.session.mode === 'static' ? 'removeClass' : 'addClass']('danger');
-  //   vm.managerService.manager.fn.regroup();
-  // });
+  
 
   // vm.resetManagerSession = function resetManagerSession () {
   //   vm.session = vm.managerService.manager.session = { authenticated : false, mode : 'static' };
@@ -219,18 +242,7 @@ var journalUtilitiesController = function ($scope, $translate, $location, $modal
   //   vm.managerService.manager.fn.regroup();
   // };
 
-  // vm.updateFilter = function updateFilter () {
-  // // TODO : make this update when there is no data in filter.param
-  //   if (!vm.filter.param) { return; }
-  //   if (!vm.filter.by) { return; }
-  //   vm.dataviewService.dataview.setFilterArgs({
-  //     param : vm.filter.param,
-  //     re    : new RegExp(vm.filter.param, 'i') // 'i' for ignore case
-  //   });
-  //   vm.dataviewService.dataview.refresh();
-  // };
 
-  // $scope.$watch('filter', vm.updateFilter, true);
 
   // $scope.trialBalance = function () {
 

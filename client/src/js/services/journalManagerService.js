@@ -48,6 +48,10 @@ angular.module('bhima.services')
 
     managerService.setJustification = function setJustification (justification){
       managerService.manager.session.justification = justification;
+    };
+
+    managerService.getManager = function getManager (){
+      return managerService.manager;
     };    
 
     // manager.session.authenticated

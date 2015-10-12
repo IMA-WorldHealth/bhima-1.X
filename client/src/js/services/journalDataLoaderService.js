@@ -93,7 +93,6 @@ angular.module('bhima.services')
     };
 
     dataLoaderService.SetAccountStore = function SetAccountStore (accountStore){
-      console.log('accountStore', accountStore);
       dataLoaderService.account = accountStore;
     };
 
