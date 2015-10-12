@@ -23,9 +23,9 @@
 
         <div class="panel-body">
           <ul class="primary_cash_list">
-            <li ng-repeat="item in configuration.operations">
+            <li ng-repeat="item in CenterCtrl.configuration.operations">
               <span style="color: rgb(7, 150, 35);" class="glyphicon glyphicon-asterisk"></span>
-              <a class="menu-item" ng-click="loadPath(item.link)">{{item.key | translate}}</a>
+              <a class="menu-item" ng-click="CenterCtrl.loadPath(item.link)">{{item.key | translate}}</a>
             </li>
           </ul>
         </div>
