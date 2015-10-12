@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('ReportStockExpirationsController', ReportStockExpirationsController);
 
 ReportStockExpirationsController.$inject = [
-  '$http', '$window', 'DateService'
+  '$http', '$window', '$location', 'DateService'
 ];
 
 /**
@@ -12,13 +12,15 @@ ReportStockExpirationsController.$inject = [
 *
 * @controller ReportStockExpirationsController
 */
-function ReportStockExpirationsController($http, $window, Dates) {
-  var vm = this;
+function ReportStockExpirationsController($http, $window, $location, Dates) {
+  var vm = this,
+
+    // we need to parse the query string, if provided
+    qs = $location.search();
 
   // bind variables to scope
-  vm.state = 'default';
-  vm.start = new Date();
-  vm.end = new Date();
+  vm.start = qs.start ? (qs.start === '00-00-0000' ? qs.start: new Date(qs.start)) : new Date();        // default: today
+  vm.end = qs.end ? new Date(qs.end) :  new Date(); // default: today
   vm.loading = false;
 
   // bind methods
@@ -38,6 +40,17 @@ function ReportStockExpirationsController($http, $window, Dates) {
       vm.depots = data;
     })
     .catch(handler);
+
+    // TODO -- this could probably be made clearer.
+    // execute the search if query string is defined
+    if (qs.start && qs.end) {
+      vm.search();
+    } else {
+
+      // FIXME -- normally, this would be the first thing declared.  However, ng-model's
+      // dateFmt throws an error for 00-00-0000.  This is a work around
+      vm.state = 'default';
+    }
   }
 
   // generic error handler
@@ -83,5 +96,11 @@ function ReportStockExpirationsController($http, $window, Dates) {
   // trigger a reconfiguration of the report
   function reconfigure() {
     vm.state = 'default';
+
+    // FIXME this is a hack
+    // if we hacked in the 00-00-0000 date, reset it to a super small date
+    if (vm.start === '00-00-0000') {
+      vm.start = new Date('01-01-0100');
+    }
   }
 }

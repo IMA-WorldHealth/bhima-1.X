@@ -130,7 +130,7 @@ function StockDashboardController($q, $http, DataService, Dates) {
       id : '0',
       key : 'STOCK.EXPIRATIONS.TODAY',
       range : [
-        '01-01-0001', // this is supposed to be as far back as we can go!
+        '00-00-0000', // this is supposed to be as far back as we can go!
         Dates.util.str(Dates.current.day()),
       ]
     }, {
