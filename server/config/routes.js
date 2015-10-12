@@ -193,6 +193,7 @@ exports.initialise = function (app) {
   app.get('/depots/:depotId/inventory/:uuid', depot.getAvailableLotsByInventoryId);
 
   app.get('/depots/:depotId/expired', depot.getExpiredLots);
+  app.get('/depots/:depotId/expirations', depot.getStockExpirations);
 
   /* continuing on ... */
 
