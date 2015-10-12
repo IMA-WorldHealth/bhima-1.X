@@ -127,6 +127,13 @@ function StockDashboardController($q, $http, DataService, Dates) {
 
     // start and end dates for each period
     vm.expirations =  [{
+      id : '0',
+      key : 'STOCK.EXPIRATIONS.TODAY',
+      range : [
+        '01-01-0001', // this is supposed to be as far back as we can go!
+        Dates.util.str(Dates.current.day()),
+      ]
+    }, {
       id : '0-30',
       key : 'STOCK.EXPIRATIONS.30_DAYS',
       range : [

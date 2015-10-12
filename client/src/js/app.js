@@ -355,10 +355,6 @@ function bhimaconfig($routeProvider) {
     controller : 'stockIntegration',
     templateUrl : 'partials/reports/stock_integration/stock_integration.html'
   })
-  .when('/reports/expiring/:option', {
-    controller : 'expiring.option',
-    templateUrl : 'partials/reports/expiring_stock/expiring_stock_view.html'
-  })
   .when('/reports/stock_movement', {
     controller : 'stock_movement',
     templateUrl : 'partials/reports/stock_movement/stock_movement.html'
