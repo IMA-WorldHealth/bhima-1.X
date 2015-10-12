@@ -21,20 +21,29 @@
     <div class="panel panel-primary" style="height : 100%; overflow : auto;">
       <div class="panel-heading">
         {{ 'ANALYSIS_CENTER.REGISTERED' | translate }}
+
+        <!-- show loader for GET methods -->
+        <div class="pull-right">
+          <span ng-if="session.state === 'loading'">
+            <loading-indicator></loading-indicator>
+          </span>
+        </div>
       </div>
       <table class="table table-condensed table-striped">
         <thead>
           <tr>
             <th>{{ 'COLUMNS.NAME' | translate }}</th>
-            <th>{{ 'COLUMNS.ACTIONS' | translate }}</th>
+            <th colspan="2">{{ 'COLUMNS.ACTIONS' | translate }}</th>
           </tr>
         </thead>
         <tbody>
           <tr ng-repeat="cc in model.cost_centers.data  | orderBy:'text'">
             <td>{{cc.text}}</td>
             <td>
-              <button class="btn btn-sm btn-default" ng-click="setAction('edit', cc)"><i class="glyphicon glyphicon-pencil"></i></button>
-              <button class="btn btn-sm btn-danger" ng-click="remove(cc)"><i class="glyphicon glyphicon-trash"></i></button>
+              <a class="action" ng-click="setAction('edit', cc)"><i class="glyphicon glyphicon-pencil"></i></a>
+            </td>
+            <td>
+              <a class="action danger" ng-click="remove(cc)"><i class="glyphicon glyphicon-trash"></i></a>
             </td>
           </tr>
 
@@ -70,9 +79,13 @@
           </div>
 
           <div class="form-group required">
-            <label class="col-xs-2 control-label">{{'ANALYSIS_CENTER.IS_PROFIT' | translate}}</label>
-            <div class="col-xs-10">
-              <input type="checkbox" class="form-bhima" ng-model="register.is_principal">
+            <div class="col-sm-offset-2 col-sm-10">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="register.is_principal">
+                  {{'ANALYSIS_CENTER.IS_PRINCIPAL' | translate}}
+                </label>
+              </div>
             </div>
           </div>
 
@@ -106,9 +119,13 @@
           </div>
 
           <div class="form-group required">
-            <label class="col-xs-2 control-label">{{'ANALYSIS_CENTER.IS_PROFIT' | translate}}</label>
-            <div class="col-xs-10">
-              <input type="checkbox" class="form-bhima" ng-model="selected.is_principal">
+            <div class="col-sm-offset-2 col-sm-10">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="selected.is_principal">
+                  {{'ANALYSIS_CENTER.IS_PRINCIPAL' | translate}}
+                </label>
+              </div>
             </div>
           </div>
 

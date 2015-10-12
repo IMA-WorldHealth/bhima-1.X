@@ -9,7 +9,8 @@ angular.module('bhima.controllers')
   'SessionService',
   function ($scope, connect, appstate, messenger, validate, $translate, SessionService) {
 
-    var dependencies = {};
+    var dependencies = {},
+        session = $scope.session = {};
 
     dependencies.profit_centers = {
       query : {
@@ -27,12 +28,14 @@ angular.module('bhima.controllers')
     startup();
 
     function startup() {
+      session.state = 'loading';
       $scope.project = SessionService.project;
       validate.process(dependencies).then(init);
     }
 
     function init(model) {
       $scope.model = model;
+      session.state = 'loaded';
     }
 
     function setAction(value, profit_center) {
@@ -52,7 +55,8 @@ angular.module('bhima.controllers')
           angular.extend($scope, model);
         });
         $scope.register = {};
-        messenger.success($translate.instant('ANALYSIS_PROFIT_CENTER.INSERT_SUCCESS_MESSAGE'));
+        $scope.action = 'default';
+        messenger.error($translate.instant('ANALYSIS_PROFIT_CENTER.INSERT_SUCCESS_MESSAGE'));
       })
       .catch(function () {
         messenger.danger($translate.instant('ANALYSIS_PROFIT_CENTER.INSERT_FAIL_MESSAGE'));
@@ -67,7 +71,8 @@ angular.module('bhima.controllers')
         messenger.success($translate.instant('ANALYSIS_PROFIT_CENTER.REMOVE_SUCCESS_MESSAGE'));
       })
       .catch(function () {
-        messenger.danger($translate.instant('ANALYSIS_PROFIT_CENTER.REMOVE_FAIL_MESSAGE'));
+        var msg = $translate.instant('ANALYSIS_PROFIT_CENTER.REMOVE_FAIL_MESSAGE').replace('%VAR%', $scope.selected.text);
+        messenger.error(msg);
       });
     }
 
@@ -76,10 +81,11 @@ angular.module('bhima.controllers')
       updateProfitCenter()
       .then(function () {
         $scope.model.profit_centers.put($scope.selected);
+        $scope.action = 'default';
         messenger.success($translate.instant('ANALYSIS_PROFIT_CENTER.UPDATE_SUCCESS_MESSAGE'));
       })
       .catch(function () {
-        messenger.danger($translate.instant('ANALYSIS_PROFIT_CENTER.UPDATE_FAIL_MESSAGE'));
+        messenger.error($translate.instant('ANALYSIS_PROFIT_CENTER.UPDATE_FAIL_MESSAGE'));
       });
     }
 

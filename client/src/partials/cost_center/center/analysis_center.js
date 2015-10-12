@@ -9,7 +9,8 @@ angular.module('bhima.controllers')
   'SessionService',
   function ($scope, connect, appstate, messenger, validate, $translate, SessionService) {
 
-    var dependencies = {};
+    var dependencies = {},
+        session = $scope.session = {};
 
     dependencies.cost_centers = {
       query : {
@@ -27,12 +28,14 @@ angular.module('bhima.controllers')
     startup();
 
     function startup() {
+      session.state = 'loading';
       $scope.enterprise = SessionService.enterprise;
       validate.process(dependencies).then(init);
     }
 
     function init(model) {
       $scope.model = model;
+      session.state = 'loaded';
     }
 
     function setAction(value, cost_center) {
@@ -54,31 +57,13 @@ angular.module('bhima.controllers')
         });
 
         $scope.register = {};
-
+        $scope.action = 'default';
         messenger.success($translate.instant('ANALYSIS_CENTER.INSERT_SUCCESS_MESSAGE'));
       })
       .catch(function () {
         messenger.danger($translate.instant('ANALYSIS_CENTER.INSERT_FAIL_MESSAGE'));
       });
     }
-
-    /*
-    function getAvailablesAccounts(enterprise_id) {
-      return connect.fetch('/availablechargeAccounts/'+$scope.project.enterprise_id+'/');
-    }
-
-    function loadAssociateAccounts() {
-      return connect.fetch('/costCenterAccount/' + $scope.proejct.enterprise_id + '/' + $scope.selected.id);
-    }
-
-    function handleConfigure() {
-      loadAssociateAccounts()
-      .then(function (values) {
-        models.associatedAccounts = values;
-        transformDatas(models.associatedAccounts);
-      });
-    }
-    */
 
     function remove(cost_center) {
       $scope.selected = angular.copy(cost_center);
@@ -88,7 +73,8 @@ angular.module('bhima.controllers')
         messenger.success($translate.instant('ANALYSIS_CENTER.REMOVE_SUCCESS_MESSAGE'));
       })
       .catch(function () {
-        messenger.danger($translate.instant('ANALYSIS_CENTER.REMOVE_FAIL_MESSAGE'));
+        var msg = $translate.instant('ANALYSIS_CENTER.REMOVE_FAIL_MESSAGE').replace('%VAR%', $scope.selected.text);
+        messenger.error(msg);
       });
 
     }
@@ -99,10 +85,12 @@ angular.module('bhima.controllers')
       updateCostCenter()
       .then(function () {
         $scope.model.cost_centers.put($scope.selected);
+        $scope.selected = {};
+        $scope.action = 'default';
         messenger.success($translate.instant('ANALYSIS_CENTER.UPDATE_SUCCESS_MESSAGE'));
       })
       .catch(function () {
-        messenger.danger($translate.instant('ANALYSIS_CENTER.UPDATE_FAIL_MESSAGE'));
+        messenger.error($translate.instant('ANALYSIS_CENTER.UPDATE_FAIL_MESSAGE'));
       });
     }
 

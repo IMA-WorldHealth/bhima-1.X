@@ -21,20 +21,29 @@
     <div class="panel panel-primary" style="height : 100%; overflow : auto;">
       <div class="panel-heading">
         {{ 'ANALYSIS_PROFIT_CENTER.REGISTERED' | translate }}
+
+        <!-- show loader for GET methods -->
+        <div class="pull-right">
+          <span ng-if="session.state === 'loading'">
+            <loading-indicator></loading-indicator>
+          </span>
+        </div>
       </div>
       <table class="table table-condensed table-striped">
         <thead>
           <tr>
             <th>{{ 'COLUMNS.NAME' | translate }}</th>
-            <th>{{ 'COLUMNS.ACTIONS' | translate }}</th>
+            <th colspan="2">{{ 'COLUMNS.ACTIONS' | translate }}</th>
           </tr>
         </thead>
         <tbody>
           <tr ng-repeat="pc in model.profit_centers.data  | orderBy:'text'">
             <td>{{pc.text}}</td>
             <td>
-              <button class="btn btn-sm btn-default" ng-click="setAction('edit', pc)"><i class="glyphicon glyphicon-pencil"></i></button>
-              <button class="btn btn-sm btn-danger" ng-click="remove(pc)"><i class="glyphicon glyphicon-trash"></i></button>
+              <a class="action" ng-click="setAction('edit', pc)"><i class="glyphicon glyphicon-pencil"></i></a>
+            </td>
+            <td>
+              <a class="action danger" ng-click="remove(pc)"><i class="glyphicon glyphicon-trash"></i></a>
             </td>
           </tr>
 
