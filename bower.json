@@ -16,7 +16,6 @@
     "src"
   ],
   "dependencies": {
-    "Chart.js": "~1.0.2",
     "angular": "~1.4.5",
     "angular-bootstrap": "~0.13.4",
     "angular-chart.js": "~0.8.1",
@@ -27,8 +26,11 @@
     "angular-translate": "~2.7.2",
     "angular-translate-loader-static-files": "~2.7.2",
     "angular-translate-loader-url": "~2.7.2",
+    "Chart.js": "~1.0.2",
     "jquery": "~2.1.4",
     "jquery-ui.min": "https://code.jquery.com/ui/1.11.4/jquery-ui.min.js",
+    "ng-file-upload": "~7.3.8",
+    "ng-file-upload-shim": "~7.3.8",
     "slickgrid": "~2.1.0"
   }
 }

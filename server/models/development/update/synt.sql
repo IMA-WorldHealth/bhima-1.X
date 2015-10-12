@@ -153,6 +153,7 @@ UPDATE `currency` SET `format_key` = 'usd' WHERE `id` = 2;
 ALTER TABLE `currency` MODIFY `format_key` VARCHAR(20) NOT NULL;
 
 -- Updates to unit table
+
 -- 
 -- DROPs unused has_children field
 --
@@ -165,7 +166,6 @@ USE bhima;
 
 ALTER TABLE `unit`
 DROP `has_children`;
-
 
 
 -- Restaure OLD UNIT Report of tax paiement and cotisation paiement
@@ -301,3 +301,156 @@ VALUES (120, 'Rapport situation group debiteur', 'TREE.DEBITOR_GROUP_REPORT', 'p
 DELETE FROM unit WHERE id IN (84, 85, 86);
 INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
 VALUES (121, 'Stock Distributions By Depot', 'TREE.DEPOT_DISTRIBUTIONS', 'This report combines distributions to patients, losses, rummage, and services into a singe report', 10, '/partials/reports/distributions', '/reports/distributions/');
+
+-- Create new budget
+-- 
+-- Date: 2015-09-16
+-- By: Bruce Mbayo
+
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
+VALUES (121, 'Budget Management', 'TREE.BUDGET_MANAGEMENT', 'Budgets Management module', 8, '/partials/budget/new', '/budgeting/new/');
+
+
+-- Reorder nodes of unit table
+-- Date: 2015-10-07
+-- By: Bruce Mbayo
+
+-- Removin reports node because it's empty
+DELETE FROM `unit` WHERE `unit`.`id`=10;
+
+-- supplier --> admin
+UPDATE `unit` SET `unit`.`parent`=1 WHERE `unit`.`id`=19;
+-- donor management --> admin
+UPDATE `unit` SET `unit`.`parent`=1 WHERE `unit`.`id`=20;
+
+-- New node purchase
+-- =================
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
+VALUES (122, 'Purchase', 'TREE.PURCHASE_ORDER', 'Purchase management', 0, '/', '/');
+-- purchase order management
+UPDATE `unit` SET `unit`.`parent`=122 WHERE `unit`.`id`=53;
+-- confirm purchase order
+UPDATE `unit` SET `unit`.`parent`=122 WHERE `unit`.`id`=71;
+-- validation purchase order
+UPDATE `unit` SET `unit`.`parent`=122 WHERE `unit`.`id`=98;
+-- Authorization purchase order
+UPDATE `unit` SET `unit`.`parent`=122 WHERE `unit`.`id`=99;
+
+-- new node reports
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
+VALUES (123, 'Purchase Report', 'TREE.REPORTS', 'Purchase Report', 122, '/', '/');
+-- Report confirmation purchase order
+UPDATE `unit` SET `unit`.`parent`=123 WHERE `unit`.`id`=100;
+
+-- New node inventory
+-- ==================
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
+VALUES (124, 'Inventory', 'TREE.INVENTORY', 'Inventory management', 0, '/', '/');
+-- inventory management
+UPDATE `unit` SET `unit`.`parent`=124 WHERE `unit`.`id`=50;
+
+-- Stock update
+-- ============
+-- Rename
+UPDATE `unit` SET `unit`.`key`='TREE.STOCK' WHERE `unit`.`id`=11;
+
+-- new node reports
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
+VALUES (125, 'Stock Report', 'TREE.REPORTS', 'Stock report', 11, '/', '/');
+-- Daily consumption
+UPDATE `unit` SET `unit`.`parent`=125 WHERE `unit`.`id`=72;
+-- Expiring stock report
+UPDATE `unit` SET `unit`.`parent`=125 WHERE `unit`.`id`=49;
+-- stock status
+UPDATE `unit` SET `unit`.`parent`=125 WHERE `unit`.`id`=74;
+-- Distributions
+UPDATE `unit` SET `unit`.`parent`=125 WHERE `unit`.`id`=84;
+UPDATE `unit` SET `unit`.`parent`=125 WHERE `unit`.`id`=85;
+-- loss
+UPDATE `unit` SET `unit`.`parent`=125 WHERE `unit`.`id`=86;
+-- Donation report
+UPDATE `unit` SET `unit`.`parent`=125 WHERE `unit`.`id`=97;
+UPDATE `unit` SET `unit`.`parent`=125 WHERE `unit`.`id`=102;
+-- stock movement
+UPDATE `unit` SET `unit`.`parent`=125 WHERE `unit`.`id`=107;
+-- stock integration
+UPDATE `unit` SET `unit`.`parent`=125 WHERE `unit`.`id`=113;
+
+-- Payroll
+-- =======
+-- new node reports
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
+VALUES (126, 'Payroll Report', 'TREE.REPORTS', 'Payroll report', 57, '/', '/');
+-- paycheck
+UPDATE `unit` SET `unit`.`parent`=126 WHERE `unit`.`id`=73;
+-- tax payment report
+UPDATE `unit` SET `unit`.`parent`=126 WHERE `unit`.`id`=118;
+-- cotisation payment report
+UPDATE `unit` SET `unit`.`parent`=126 WHERE `unit`.`id`=119;
+
+-- Hospital
+-- ========
+-- new node reports
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
+VALUES (127, 'Hospital Report', 'TREE.REPORTS', 'Hospital report', 12, '/', '/');
+-- patient registration
+UPDATE `unit` SET `unit`.`parent`=127 WHERE `unit`.`id`=35;
+
+-- Finance
+-- =======
+-- new node reports
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
+VALUES (128, 'Finance Report', 'TREE.REPORTS', 'Finance report', 5, '/', '/');
+-- debitor group report
+UPDATE `unit` SET `unit`.`parent`=128 WHERE `unit`.`id`=120;
+-- service exploitation
+UPDATE `unit` SET `unit`.`parent`=128 WHERE `unit`.`id`=76;
+-- cash payment
+UPDATE `unit` SET `unit`.`parent`=128 WHERE `unit`.`id`=37;
+-- patient standing
+UPDATE `unit` SET `unit`.`parent`=128 WHERE `unit`.`id`=43;
+-- employee standing
+UPDATE `unit` SET `unit`.`parent`=128 WHERE `unit`.`id`=44;
+-- expense report
+UPDATE `unit` SET `unit`.`parent`=128 WHERE `unit`.`id`=56;
+-- income report
+UPDATE `unit` SET `unit`.`parent`=128 WHERE `unit`.`id`=55;
+
+-- Accounting
+-- ==========
+-- new node reports
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
+VALUES (129, 'Accounting Report', 'TREE.REPORTS', 'Accounting report', 30, '/', '/');
+UPDATE `unit` SET `unit`.`parent`=129 WHERE `unit`.`id`=27;
+-- account statement
+UPDATE `unit` SET `unit`.`parent`=129 WHERE `unit`.`id`=46;
+-- operating account
+UPDATE `unit` SET `unit`.`parent`=129 WHERE `unit`.`id`=75;
+-- global transaction
+UPDATE `unit` SET `unit`.`parent`=129 WHERE `unit`.`id`=77;
+-- monthly balance
+UPDATE `unit` SET `unit`.`parent`=129 WHERE `unit`.`id`=79;
+-- bilan
+UPDATE `unit` SET `unit`.`parent`=129 WHERE `unit`.`id`=83;
+-- balance sheet
+UPDATE `unit` SET `unit`.`parent`=129 WHERE `unit`.`id`=87;
+-- TFR
+UPDATE `unit` SET `unit`.`parent`=129 WHERE `unit`.`id`=88;
+-- grand livre
+UPDATE `unit` SET 
+	`unit`.`parent`=129, 
+	`unit`.`name`='Rapport Grand Livre',
+	`unit`.`key`='TREE.GRAND_LIVRE_REPORT'
+WHERE `unit`.`id`=89;
+-- compte de resultat
+UPDATE `unit` SET `unit`.`parent`=129 WHERE `unit`.`id`=114;
+-- transaction par compte
+UPDATE `unit` SET `unit`.`parent`=129 WHERE `unit`.`id`=38;
+
+
+-- Update unit tree
+-- Date: 2015-10-08
+-- By: Bruce Mbayo
+
+UPDATE `unit` SET `unit`.`key`='TREE.PATIENT_REGISTRATION' WHERE `unit`.`id`=14;
+UPDATE `unit` SET `unit`.`key`='TREE.USERS' WHERE `unit`.`id`=4;

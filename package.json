@@ -15,27 +15,30 @@
     "bhima",
     "health",
     "HIS",
-    "hospital"
+    "hospital information system",
+    "rural accounting"
   ],
   "author": "IMA World Health Web Development Team",
-  "license": "Beerware",
+  "license": "GPLv2",
   "bugs": {
     "url": "https://github.com/IMA-WorldHealth/bhima/issues"
   },
   "dependencies": {
     "body-parser": "^1.2.2",
     "compression": "~1.5.1",
+    "connect-multiparty": "^2.0.0",
     "csv": "^0.4.1",
     "dot": "^1.0.3",
     "express": "4.x.x",
     "express-session": "^1.2.1",
-    "morgan": "^1.5.2",
+    "fast-csv": "^0.6.0",
     "later": "^1.1.6",
+    "morgan": "^1.5.2",
     "mysql": "2.x.x",
+    "numeral": "^1.5.3",
     "q": "~1.4.1",
     "session-file-store": "0.0.14",
-    "wkhtmltopdf": "^0.1.5",
-    "numeral": "^1.5.3"
+    "wkhtmltopdf": "^0.1.5"
   },
   "devDependencies": {
     "chai": "^3.2.0",
