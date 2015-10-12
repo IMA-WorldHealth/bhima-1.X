@@ -218,6 +218,10 @@ function DateService() {
   // expects a date object
   // return 'YYYY-MM-DD' format
   service.util.str = function (date) {
+
+    // if we pass in a string, return it right away
+    if (typeof date === 'string') { return date; }
+
     var d     = new Date(date),
         month = '' + (d.getMonth() + 1),
         day   = '' + d.getDate(),
