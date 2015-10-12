@@ -4,13 +4,13 @@
 
 <nav>
   <div class="pull-left">
-      <ol class="breadcrumb">
-        <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
-        <li class="active">{{ "GROUP_INVOICE.TITLE" | translate }}</li>
-      </ol>
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "GROUP_INVOICE.TITLE" | translate }}</li>
+    </ol>
   </div>
-  <div class="pull-right">
-    <span class="btn btn-sm btn-default" ng-show="!!selected.convention">{{ selected.convention.name }}</span>
+  <div class="pull-right" ng-if="selected.convention">
+    <button class="btn btn-default active" disabled>{{ selected.convention.name }}</button>
   </div>
 </nav>
 
@@ -37,9 +37,6 @@
                     typeahead="group as group.name for group in conventions.data | filter:$viewValue | limitTo:8"
                     placeholder="{{ 'SELECT.DEBITOR_GROUP' | translate }}"
                   >
-                  <!--select class="form-bhima" ng-model="selected.convention" ng-options="group as group.name for group in conventions.data">
-                    <option value="">-- {{ "SELECT.DEBITOR_GROUP" | translate }} --</option>
-                  </select-->
                 </div>
               </div>
 
@@ -52,14 +49,10 @@
                     type="text"
                     typeahead-template-url="DebtorList.html"
                     ng-model="selected.debitor"
-                    typeahead="debitor as debitor.text for debitor in debitors.data | filter:$viewValue | limitTo:8"
+                    typeahead="debitor as debitor.text for debitor in debtors.data | filter:$viewValue | limitTo:8"
                     placeholder="{{ 'SELECT.DEBITOR' | translate }}"
                   >
 
-
-                  <!--select class="form-bhima" ng-model="selected.debitor" ng-options="debitor as debitor.text for debitor in debitors.data">
-                    <option value="">-- {{ "SELECT.DEBITOR" | translate }}--</option>
-                  </select-->
                 </div>
               </div>
             </div>
@@ -86,13 +79,23 @@
             </tr>
           </thead>
           <tbody>
+            <tr ng-if="loading">
+              <th colspan="6" class="text-center">
+                <loading-indicator></loading-indicator>
+              </th>
+            </tr>
+            <tr ng-if="!loading && invoices.data.length === 0">
+              <th colspan="6" class="text-center text-danger">
+                <i class="glyphicon glyphicon-exclamation-sign"></i> {{ "UTIL.NO_DATA" | translate }}
+              </th>
+            </tr>
             <tr ng-repeat="invoice in invoices.data | filter:filter">
               <td>{{invoice.inv_po_id}}</td>
               <td>{{invoice.deb_cred_uuid}}</td>
               <td>{{invoice.trans_date | date}}</td>
-              <td>{{invoice.balance | currency }}</td>
-              <td><button class="btn btn-sm btn-default" ng-click="examineInvoice(invoice, $index)"><i class="glyphicon glyphicon-search"></i></button></td>
-              <td><button class="btn btn-sm btn-default" ng-click="enqueue($index)"><i class="glyphicon glyphicon-plus"></i></button></td>
+              <td>{{invoice.balance | currency:invoice.currency_id }}</td>
+              <td><button class="btn btn-xs btn-default" ng-click="examineInvoice(invoice, $index)"><i class="glyphicon glyphicon-search"></i></button></td>
+              <td><button class="btn btn-xs btn-default" ng-click="enqueue($index)"><i class="glyphicon glyphicon-plus"></i></button></td>
             </tr>
           </tbody>
         </table>
@@ -231,13 +234,6 @@
                     <p class="form-control-static">{{examine.account_id }}</p>
                   </div>
                 </div>
-
-                <!--div class="form-group">
-                  <label class="control-label col-xs-3">{{ "COLUMNS.DEBITOR" | translate }}</label>
-                  <div class="col-xs-9">
-                    <p class="form-control-static">{{ debitors.get(examine.deb_cred_uuid).text }}</p>
-                  </div>
-                </div-->
 
                 <div class="form-group">
                   <label class="control-label col-xs-3">{{ "COLUMNS.BALANCE" | translate }}</label>

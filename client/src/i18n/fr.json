@@ -3071,6 +3071,7 @@
    "MONTHS"            : "Mois",
    "NAVIGATION"        : "Navigation",
    "NEW_SUCCESS"       : "Ajout avec succès",
+   "NO_DATA"           : "La requette n'a pas des données",
    "OFF"               : "Off",
    "ON"                : "On",
    "PATIENT_EXIST_A"   : "Le patient ayant la fiche [",
