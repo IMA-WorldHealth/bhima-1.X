@@ -25,11 +25,11 @@
               <th>{{ "COLUMNS.NR" | translate }}</th>
               <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
               <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
-              <th>{{ "COLUMNS.CONSUMPTION_PER_DAY" | translate }} </th>
+              <th>{{ "COLUMNS.CONSUMPTION_PER_MONTH" | translate }} </th>
               <th>{{ "COLUMNS.SAFETY_STOCK" | translate }} </th>
               <th>{{ "COLUMNS.MINIMUM_STOCK" | translate }} </th>
               <th>{{ "COLUMNS.MAXIMUM_STOCK" | translate }} </th>
-              <th>{{ "COLUMNS.DAYS_REMAINING" | translate }} </th>
+              <th>{{ "COLUMNS.MONTHS_REMAINING" | translate }} </th>
               <th>{{ "COLUMNS.ALERTS" | translate }} </th>
             </tr>
           </thead>
@@ -41,11 +41,11 @@
               <td>{{ $index + 1 }}</td>
               <td>{{ row.label }}</td>
               <td>{{ row.quantity }}</td>
-              <td>{{ row.consumption }}</td>
+              <td>{{ row.consumptionByMonth }}</td>
               <td>{{ row.securityStock }}</td>
               <td>{{ row.stock_min }}</td>
               <td>{{ row.stock_max }}</td>
-              <td>{{ row.remaining || '--' }}</td>
+              <td>{{ row.monthsRemaining || '--' }}</td>
               <td class="text-center">
                 <span class="label" ng-class="{ 'label-primary' : row.overstock, 'label-warning' : row.shortage, 'label-danger' : row.stockout }" ng-if="row.alert">
                   {{ row.alert | translate }}

@@ -8,7 +8,7 @@ var db          = require('../../lib/db'),
 exports.getInventoryStatusById = getInventoryStatusById;
 
 /**
-* Query a specific inventory item and find out it's stock status.  Calculates
+* Query a specific inventory item and find out its stock status.  Calculates
 * the number of days remaining, whether there is a shortage, overstock, and
 * stockout.
 *
@@ -83,6 +83,6 @@ function getInventoryStatusById(uuid) {
     // You can then toggle a warning or error state based on which condition was
     // violated - the quantity or the number of days.
 
-    return q(data);
+    return data;
   });
 }
