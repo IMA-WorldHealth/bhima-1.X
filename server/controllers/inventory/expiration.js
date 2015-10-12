@@ -18,7 +18,8 @@ function getExpirations(options) {
     'SELECT stock.inventory_uuid, stock.lot_number, stock.quantity, ' +
       'stock.expiration_date, inventory.text ' +
     'FROM stock JOIN inventory ON stock.inventory_uuid = inventory.uuid ' +
-    'WHERE DATE(stock.expiration_date) BETWEEN DATE(?) AND DATE(?);';
+    'WHERE DATE(stock.expiration_date) BETWEEN DATE(?) AND DATE(?) AND ' +
+      'stock.quantity > 0;';
 
   return db.exec(sql, [options.start, options.end]);
 }
@@ -38,7 +39,8 @@ function getExpirationsById(uuid, options) {
       'stock.expiration_date, inventory.text ' +
     'FROM stock JOIN inventory ON stock.inventory_uuid = inventory.uuid ' +
     'WHERE stock.inventory_uuid = ? AND ' +
-      'DATE(stock.expiration_date) BETWEEN DATE(?) AND DATE(?);';
+      'DATE(stock.expiration_date) BETWEEN DATE(?) AND DATE(?) AND ' +
+      'stock.quantity > 0;';
 
   return db.exec(sql, [uuid, options.start, options.end]);
 }
