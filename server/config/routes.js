@@ -41,7 +41,13 @@ var auth            = require('../controllers/auth'),
     purchase        = require('../controllers/purchase'),
     inventory       = require('../controllers/inventory'),
     patient         = require('../controllers/patient'),
-    depot           = require('../controllers/depot');
+    depot           = require('../controllers/depot'),
+    budget          = require('../controllers/budget');
+
+var patient         = require('../controllers/patient');
+
+// Middleware for handle uploaded file
+var multipart       = require('connect-multiparty');
 
 exports.initialise = function (app) {
   console.log('[config/routes] Configure routes');
@@ -279,4 +285,8 @@ exports.initialise = function (app) {
   app.put('/users/:id', users.updateUser);
   app.get('/users', users.getUsers);
   app.delete('/users/:id', users.removeUser);
+
+  // budget controller
+  app.post('/budget/upload', multipart({ uploadDir: 'client/upload'}), budget.upload);
+  app.post('/budget/update', budget.update);
 };

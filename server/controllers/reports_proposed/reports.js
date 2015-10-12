@@ -124,7 +124,7 @@ exports.build = function (req, res, next) {
 // Return configuration object for wkhtmltopdf process
 function buildConfiguration(hash, size) {
   var context = config[size] || config.standard;
-  var hash = hash || uuid();
+  hash = hash || uuid();
 
   context.output = writePath.concat(hash, '.pdf');
   return context;
