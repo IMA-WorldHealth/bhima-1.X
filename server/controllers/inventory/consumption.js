@@ -110,8 +110,8 @@ function getAverageItemConsumption(uuid, options) {
   //
   // We add one to the DATEDIFF to prevent division by 0
   sql =
-    'SELECT CEIL(SUM(c.quantity) / (DATEDIFF(' + difference +
-      ') + 1)) AS average ' +
+    'SELECT SUM(c.quantity) / (DATEDIFF(' + difference +
+      ') + 1) AS average ' +
     'FROM (' +
       'SELECT i.uuid, c.quantity, c.date ' +
       'FROM consumption AS c JOIN stock AS s JOIN inventory AS i ' +

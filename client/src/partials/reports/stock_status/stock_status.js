@@ -11,12 +11,11 @@ StockStatusReportController.$inject = ['$http', '$timeout'];
 *
 * NOTES
 *  1) I have removed "quantity to order", as I think this should really be a
-*     parameter provided by an alert.  Currently, our calculates are really poor
-*     due to poor data.
+*     parameter provided by an alert.  Currently, our calculations are inaccurate
+*     due to poor data
 */
 function StockStatusReportController($http, $timeout) {
-  var vm = this,
-      endpoints;
+  var vm = this;
 
   vm.loading = true;
   vm.timestamp = new Date();
@@ -53,14 +52,29 @@ function StockStatusReportController($http, $timeout) {
     // case of stock integration?  What about donations?
     report.forEach(function (row) {
 
+      // TODO
+      // For stock integrations and donations, the lead time does not exist.
+      // How should the system handle security stock calculations when the
+      // lead time doesn't exist?
+
       // security stock is defined as leadtime multiplied by avg consumption
       // rate
       row.securityStock = row.leadtime !== null ?
           row.leadtime * row.consumption:
           null;
-      
+
       // make sure we have nice formatting for days remaining column.
       row.remaining = Math.floor(row.remaining);
+
+      // calculate consumption by month on the fly from the
+      // NOTE: every month does not have exactly 30 days, but this is an
+      // approximation anyway.
+      row.consumptionByMonth = Math.round(row.consumption * 30);
+
+      // like consumption by month, show months of stock remaining.
+      row.monthsRemaining = row.consumptionByMonth ?
+        (row.quantity  / row.consumptionByMonth).toFixed(2) :
+        0;
 
       // if there is an alert, we template it in
       row.alert = row.stockout ? 'STOCK.ALERTS.STOCKOUT' :
@@ -68,7 +82,6 @@ function StockStatusReportController($http, $timeout) {
                   row.overstock ? 'STOCK.ALERTS.OVERSTOCK' :
                   false;
     });
-
 
     vm.report = report;
   }
