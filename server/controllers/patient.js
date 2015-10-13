@@ -8,6 +8,25 @@ function empty(array) {
   return array.length === 0;
 }
 
+// GET /patients
+// Returns a list of all patients, stuffing the patient reference into a
+// patientRef properly for human readability.
+function getPatients(req, res, next) {
+  var sql;
+
+  sql =
+    'SELECT p.uuid, CONCAT(pr.abbr, p.reference) AS patientRef, p.first_name, ' +
+      'p.middle_name, p.last_name ' +
+    'FROM patient AS p JOIN project AS pr ON p.project_id = pr.id';
+
+  db.exec(sql)
+  .then(function (rows) {
+    res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
+}
+
 // GET /patient/:uuid
 // Get a patient by uuid
 exports.searchUuid = function (req, res, next) {
