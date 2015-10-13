@@ -18,7 +18,6 @@
 var q = require('q');
 
 var cfg = require('./../config/environment/server').db;
-var uuid = require('./guid');
 
 var db, con, supportedDatabases, dbms;
 
@@ -192,8 +191,9 @@ function executeAsTransaction(querries) {
   return deferred.promise;
 }
 
-function mysqlInit (config) {
+function mysqlInit(config) {
   'use strict';
+
   var db = require('mysql');
   return db.createPool(config);
 }
