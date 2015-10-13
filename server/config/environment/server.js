@@ -7,7 +7,8 @@ var config = {
     'host'     : 'localhost',
     'user'     : 'bhima',
     'password' : 'HISCongo2013',
-    'database' : 'bhima'
+    'database' : 'bhima',
+    'acquireTimeout' : 30000
   },
   'session' : {
     'secret' : 'xopen blowfish',
