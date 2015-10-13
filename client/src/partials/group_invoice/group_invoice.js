@@ -1,24 +1,38 @@
 angular.module('bhima.controllers')
 .controller('GroupInvoiceController', GroupInvoiceController);
 
-
 GroupInvoiceController.$inject = [
-  '$scope', '$translate', 'connect', 'validate', 'messenger', 'uuid', 'SessionService',
+  '$translate', 'connect', 'validate', 'messenger', 'uuid', 'SessionService',
 ];
 
-function GroupInvoiceController($scope, $translate, connect, validate, messenger, uuid, SessionService) {
+/**
+* Group Invoice Controller
+*
+* This controller allows conventions to pay for bills of patients.
+*/
+function GroupInvoiceController($translate, connect, validate, messenger, uuid, SessionService) {
   var vm = this;
 
   var dependencies = {};
-  $scope.action = '';
-  $scope.convention = '';
-  $scope.selected = {};
-  $scope.paying = [];
-  $scope.loading = false;
+  vm.action = 'default';
+  vm.loading = false;
+  vm.queue = [];
 
-  // get enterprise
-  $scope.project = SessionService.project;
-  $scope.enterprise = SessionService.enterprise;
+  // import session variables
+  vm.project = SessionService.project;
+  vm.enterprise = SessionService.enterprise;
+
+  // bind methods
+  vm.authorize = authorize;
+  vm.setDebtor = setDebtor;
+  vm.examineInvoice = examineInvoice;
+  vm.enqueue = enqueue;
+  vm.dequeue = dequeue;
+  vm.pay = pay;
+  vm.positive = positive;
+  vm.retotal = retotal;
+
+  /* ------------------------------------------------------------------------ */
 
   dependencies.invoices = {
     query : 'ledgers/debitor/'
@@ -34,7 +48,7 @@ function GroupInvoiceController($scope, $translate, connect, validate, messenger
       },
       where : [
         'debitor_group.is_convention<>0', 'AND',
-        'debitor_group.enterprise_id=' + $scope.project.enterprise_id
+        'debitor_group.enterprise_id=' + vm.project.enterprise_id
       ]
     }
   };
@@ -66,142 +80,144 @@ function GroupInvoiceController($scope, $translate, connect, validate, messenger
         }
       },
       join : ['enterprise.currency_id=currency.id'],
-      where : ['enterprise.id=' + $scope.enterprise.id]
+      where : ['enterprise.id=' + vm.enterprise.id]
     }
   };
 
   // startup the module
-  validate.process(dependencies, ['debtors', 'conventions', 'currency'])
-  .then(setUpModels);
+  function initialise() {
+    validate.process(dependencies, ['debtors', 'conventions', 'currency'])
+    .then(setUpModels)
+    .catch(handler);
+  }
 
-  $scope.setDebitor = function () {
-    if (!$scope.selected.debitor) {
-      return messenger.danger('Error: No debitor selected');
-    }
+  // generic error logger
+  function handler(error) {
+    console.log(error);
+  }
 
-    dependencies.invoices.query += $scope.selected.debitor.uuid;
+  // select the debtor
+  function setDebtor() {
+    dependencies.invoices.query += vm.debtor.uuid;
 
     // turn on loading
-    $scope.loading = true;
+    vm.loading = true;
+    vm.showInvoices = true;
 
     validate.process(dependencies)
     .then(setUpModels)
+    .catch(handler)
     .finally(function () {
-      $scope.loading = false;
+      vm.loading = false;
     });
 
-    $scope.hasDebitor = true;
-    $scope.action = 'info';
-  };
+    vm.action = 'info';
+  }
 
   // bind data to modules
   function setUpModels(models) {
-    angular.extend($scope, models);
+    angular.extend(vm, models);
 
-    $scope.currency = models.currency.data[0];
+    vm.currency = models.currency.data[0];
 
-    if ($scope.invoices) {
-
-      console.log('$scope.invoices', $scope.invoices, $scope.selected.debitor);
+    if (vm.invoices) {
 
       // FIXME: this is hack
-      $scope.invoices.data = $scope.invoices.data.filter(function (d) {
+      vm.invoices.data = vm.invoices.data.filter(function (d) {
         return d.balance !== 0;
       });
 
       // proper formatting
-      $scope.invoices.data.forEach(function (i) {
+      vm.invoices.data.forEach(function (i) {
         i.invoiceRef = i.abbr + ' ' + i.reference;
       });
     }
 
-    $scope.payment = {};
+    vm.payment = {};
   }
 
-  $scope.examineInvoice = function (invoice) {
-    $scope.examine = invoice;
-    $scope.old_action = $scope.action;
-    $scope.action = 'examine';
-  };
+  function examineInvoice(invoice) {
+    vm.examine = invoice;
+    vm.action = 'examine';
+  }
 
-  $scope.back = function () {
-    $scope.action = $scope.old_action;
-  };
-
-  $scope.selectConvention = function () {
-    $scope.action = 'selectConvention';
-    $scope.original_id = $scope.data.invoice.convention_id;
-  };
-
-  $scope.saveConvention = function () {
-    $scope.action = '';
-  };
-
-  $scope.resetConvention = function () {
-    $scope.data.invoice.convention_id = $scope.original_id;
-    $scope.action = 'default';
-  };
-
-  $scope.enqueue = function (idx) {
-    var invoice = $scope.invoices.data.splice(idx, 1)[0];
+  function enqueue(idx) {
+    var invoice = vm.invoices.data.splice(idx, 1)[0];
     invoice.payment = invoice.balance; // initialize payment to be the exact amount -- 100%
-    $scope.paying.push(invoice);
-    $scope.action = 'pay';
-  };
+    vm.queue.push(invoice);
 
-  $scope.dequeue = function () {
-    var total_payment = $scope.total_payment = 0;
-    $scope.paying.forEach(function (i) {
-      $scope.invoices.data.push(i);
-      total_payment += i.payment;
+    vm.action = 'pay';
+
+    // run totaller
+    retotal();
+  }
+
+  function dequeue() {
+    vm.queue.forEach(function (i) {
+      vm.invoices.data.push(i);
     });
-    $scope.paying.length = 0;
-    $scope.action = '';
-  };
 
-  $scope.pay = function () {
-    var payment = $scope.payment;
-    payment.project_id = $scope.project.id;
-    payment.group_uuid = $scope.selected.convention.uuid;
-    payment.debitor_uuid  = $scope.selected.debitor.uuid;
-    payment.total = $scope.paymentBalance;
-    payment.date = new Date().toISOString().slice(0,10);
-    $scope.action = 'confirm';
-  };
+    // empty the queue
+    vm.queue.length = 0;
+    vm.action = 'default';
 
-  $scope.$watch('paying', function () {
-    var s = 0, total_debit = 0, total_credit = 0;
-    $scope.paying.forEach(function (i) {
-      s = s + i.payment;
-      total_debit += i.debit;
-      total_credit += i.credit;
-    });
-    var balance = total_debit - total_credit;
-    $scope.balance =  balance - s;
-    $scope.paymentBalance =  s;
-  }, true);
+    // run totaller
+    retotal();
+  }
 
-  $scope.authorize = function () {
-    var id, items, payment = connect.clean($scope.payment);
+  function pay() {
+    var payment = vm.payment;
+    payment.project_id = vm.project.id;
+    payment.group_uuid = vm.convention.uuid;
+    payment.debitor_uuid  = vm.debtor.uuid;
+    payment.total = vm.paymentBalance;
+    payment.date = new Date();
+    vm.action = 'confirm';
+  }
+
+  function retotal() {
+
+    var sums = {
+      balance : 0,
+      debit   : 0,
+      credit  : 0
+    };
+
+    vm.queue.reduce(function (totals, row) {
+      totals.balance += row.payment;
+      totals.debit += row.debit;
+      totals += row.credit;
+      return totals;
+    }, sums);
+
+    vm.balance = (sums.debit - sums.credit) - sums.balance;
+    vm.paymentBalance = sums.balance;
+  }
+
+  function authorize() {
+    var id,
+        payment = connect.clean(vm.payment);
+
     payment.uuid = uuid();
+
     connect.post('group_invoice', [payment])
     .then(function () {
       id = payment.uuid;
-      items = formatItems(id);
-      return connect.post('group_invoice_item', items);
+      return connect.post('group_invoice_item', formatItems(id));
     })
     .then(function () {
-      $scope.action = '';
-      $scope.paying = [];
+      vm.action = 'default';
+      vm.queue = [];
       return connect.fetch('/journal/group_invoice/' + id);
     })
     .then(function () {
       messenger.success($translate.instant('GROUP_INVOICE.SUCCES'));
-    });
-  };
+    })
+    .catch(handler);
+  }
 
   function formatItems(id) {
-    return $scope.paying.map(function (i) {
+    return vm.queue.map(function (i) {
       var item = {};
       item.uuid = uuid();
       item.cost = i.payment;
@@ -211,7 +227,9 @@ function GroupInvoiceController($scope, $translate, connect, validate, messenger
     });
   }
 
-  $scope.filter = function (invoice) {
+  function positive(invoice) {
     return invoice.balance > 0;
-  };
+  }
+
+  initialise();
 }
