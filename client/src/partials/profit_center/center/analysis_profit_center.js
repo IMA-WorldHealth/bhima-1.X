@@ -24,8 +24,12 @@ function AnalysisProfitCenterController (connect, messenger, validate, $translat
     }
   };
 
-  vm.register = {};
-  vm.selected = {};
+  vm.setAction = setAction;
+  vm.save      = save;
+  vm.remove    = remove;
+  vm.edit      = edit;
+  vm.register  = {};
+  vm.selected  = {};
 
   startup();
 
@@ -79,7 +83,6 @@ function AnalysisProfitCenterController (connect, messenger, validate, $translat
   }
 
   function edit() {
-    delete vm.selected.abbr;
     updateProfitCenter()
     .then(function () {
       vm.model.profit_centers.put(vm.selected);
@@ -99,8 +102,4 @@ function AnalysisProfitCenterController (connect, messenger, validate, $translat
     return connect.put('profit_center', [connect.clean(vm.selected)], ['id']);
   }
 
-  vm.setAction = setAction;
-  vm.save = save;
-  vm.remove = remove;
-  vm.edit = edit;
 }

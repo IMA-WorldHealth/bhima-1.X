@@ -279,19 +279,19 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/cash_discard/cash_discard.html'
   })
   .when('/cost_center/', {
-    controller: 'CostCenterController as CostCenterCtrl',
+    controller: 'CostCenterController as CenterCtrl',
     templateUrl: 'partials/cost_center/cost_center.html'
   })
   .when('/profit_center/', {
-    controller: 'profitCenter',
+    controller: 'ProfitCenterController as CenterCtrl',
     templateUrl: 'partials/profit_center/profit_center.html'
   })
   .when('/profit_center/center/', {
-    controller: 'AnalysisProfitCenterController as AnalysisProfitCenterCtrl',
+    controller: 'AnalysisProfitCenterController as CenterCtrl',
     templateUrl: 'partials/profit_center/center/analysis_profit_center.html'
   })
   .when('/cost_center/center/', {
-    controller: 'AnalysisCostCenterController as AnalysisCostCenterCtrl',
+    controller: 'AnalysisCostCenterController as CenterCtrl',
     templateUrl: 'partials/cost_center/center/analysis_center.html'
   })
   .when('/cost_center/assigning/', {
@@ -299,7 +299,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/cost_center/assigning/assigning.html'
   })
   .when('/cost_center/allocation/', {
-    controller: 'costCenter.allocation',
+    controller: 'CostCenterAllocationController as CenterCtrl',
     templateUrl: 'partials/cost_center/allocation/allocation.html'
   })
   .when('/profit_center/allocation/', {

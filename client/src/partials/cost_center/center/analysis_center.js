@@ -24,8 +24,12 @@ function AnalysisCostCenterController (connect, messenger, validate, $translate,
     }
   };
 
-  vm.register = {};
-  vm.selected = {};
+  vm.setAction = setAction;
+  vm.save      = save;
+  vm.remove    = remove;
+  vm.edit      = edit;
+  vm.register  = {};
+  vm.selected  = {};
 
   startup();
 
@@ -43,7 +47,6 @@ function AnalysisCostCenterController (connect, messenger, validate, $translate,
   function setAction(value, cost_center) {
     vm.action = value;
     vm.selected = angular.copy(cost_center) || {};
-    vm.selected.is_principal = vm.selected.is_principal !== 0;
   }
 
   function writeCenter() {
@@ -51,7 +54,6 @@ function AnalysisCostCenterController (connect, messenger, validate, $translate,
   }
 
   function save() {
-    vm.register.is_principal = (vm.register.is_principal)? 1 : 0;
     writeCenter()
     .then(function() {
       validate.refresh(dependencies, ['cost_centers']).then(function (model) {
@@ -78,12 +80,9 @@ function AnalysisCostCenterController (connect, messenger, validate, $translate,
       var msg = $translate.instant('ANALYSIS_CENTER.REMOVE_FAIL_MESSAGE').replace('%VAR%', vm.selected.text);
       messenger.error(msg);
     });
-
   }
 
   function edit() {
-    vm.selected.is_principal = (vm.selected.is_principal)? 1 : 0;
-    delete vm.selected.abbr;
     updateCostCenter()
     .then(function () {
       vm.model.cost_centers.put(vm.selected);
@@ -104,8 +103,4 @@ function AnalysisCostCenterController (connect, messenger, validate, $translate,
     return connect.put('cost_center', [connect.clean(vm.selected)], ['id']);
   }
 
-  vm.setAction = setAction;
-  vm.save      = save;
-  vm.remove    = remove;
-  vm.edit      = edit;
 }

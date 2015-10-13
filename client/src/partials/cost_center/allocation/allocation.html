@@ -20,8 +20,8 @@
     <div class="panel-body">
       <form class="form">
         <div class="form-group">
-          <select class="col-xs-2 form-bhima" ng-model="configuration.costCenter" ng-change="performChange()">
-            <option value="{{cc}}" ng-repeat="cc in cost_centers.data">{{cc.text}}</option>
+          <select class="col-xs-2 form-bhima" ng-model="CenterCtrl.configuration.costCenter" ng-change="CenterCtrl.performChange()">
+            <option value="{{cc}}" ng-repeat="cc in CenterCtrl.cost_centers.data">{{cc.text}}</option>
           </select>
         </div>
       </form>
@@ -33,22 +33,25 @@
     <div class="col-xs-6">
       <div class="panel panel-default">
         <div class="panel-heading" style="height: 50px;">
-          <span> {{ 'VERSEMENT.AVAILABLE_ACCOUNT' | translate}} {{ selected.text }}</span>
+          <span> {{ 'VERSEMENT.AVAILABLE_ACCOUNT' | translate}} {{ CenterCtrl.selected.text }}</span>
           <span class="pull-right">
-            <button ng-disabled="!isAssignable()" class="btn btn-sm btn-default" type="submit" ng-click="assign()">{{'VERSEMENT.VERSER' | translate}}</button>
+            <span ng-if="CenterCtrl.state === 'loading'">
+              <loading-indicator></loading-indicator>
+            </span>
+            <button ng-disabled="!CenterCtrl.isAssignable()" class="btn btn-sm btn-default" type="submit" ng-click="CenterCtrl.assign()">{{'VERSEMENT.VERSER' | translate}}</button>
           </span>
         </div>
         <div class="panel-body versement-header">
           <table class="table table-condensed table-striped">
             <thead>
               <tr>
-                <th><input type="checkbox" ng-model="acc_1.all" ng-change="checkAllAvailable()"/></th>
+                <th><input type="checkbox" ng-model="CenterCtrl.acc_1.all" ng-change="CenterCtrl.checkAllAvailable()"/></th>
                 <th>Account Number</th>
                 <th>Account Name</th>
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="account in availableAccounts.data">
+              <tr ng-repeat="account in CenterCtrl.availableAccounts.data">
                 <td><input type="checkbox" ng-model="account.checked"/></td>
                 <td>{{ account.account_number }}</td>
                 <td>{{ account.account_txt }}</td>
@@ -62,9 +65,10 @@
     <div class="col-xs-6">
       <div class="panel panel-primary">
         <div class="panel-heading" style="height: 50px;">
-          {{ 'VERSEMENT.ASSOCIATED_TO' | translate }} <b>{{ selectedCostCenter.text }}<span ng-if="!selectedCostCenter">{{'VERSEMENT.PLEASE_SELECT' | translate}}</span></b>
+          {{ 'VERSEMENT.ASSOCIATED_TO' | translate }} <b>{{ CenterCtrl.selectedCostCenter.text }}
+            <span ng-if="!CenterCtrl.selectedCostCenter">{{'VERSEMENT.PLEASE_SELECT' | translate}}</span></b>
           <span class="pull-right">
-            <button ng-disabled="!isRemovable()" class="btn btn-sm btn-default" type="submit" ng-click="remove()">
+            <button ng-disabled="!CenterCtrl.isRemovable()" class="btn btn-sm btn-default" type="submit" ng-click="CenterCtrl.remove()">
               {{ 'VERSEMENT.REMOVE' | translate }}
             </button>
           </span>
@@ -74,13 +78,13 @@
           <table class="table table-condensed table-striped">
             <thead>
               <tr>
-                <th><input type="checkbox" ng-model="acc_2.all" ng-change="checkAllAssociated()"/></th>
+                <th><input type="checkbox" ng-model="CenterCtrl.acc_2.all" ng-change="CenterCtrl.checkAllAssociated()"/></th>
                 <th>Account Number</th>
                 <th>Account Name</th>
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="associatedAccount in associatedAccounts.data">
+              <tr ng-repeat="associatedAccount in CenterCtrl.associatedAccounts.data">
               <td><input type="checkbox" ng-model="associatedAccount.checked"/></td>
               <td>{{ associatedAccount.account_number }}</td>
               <td>{{ associatedAccount.account_txt }}</td>

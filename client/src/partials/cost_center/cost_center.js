@@ -2,8 +2,7 @@ angular.module('bhima.controllers')
 .controller('CostCenterController', CostCenterController);
 
 CostCenterController.$inject = [
-  '$location',
-  '$translate'
+  '$location', '$translate'
 ];
 
 /**

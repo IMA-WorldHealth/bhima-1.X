@@ -11,7 +11,7 @@
     </ol>
   </div>
 
-  <button ng-click="AnalysisCostCenterCtrl.setAction('register')" class="btn btn-sm btn-default pull-right">
+  <button ng-click="CenterCtrl.setAction('register')" class="btn btn-sm btn-default pull-right">
     <span class="glyphicon glyphicon-file"></span> {{ 'ANALYSIS_CENTER.NEW' | translate }}
   </button>
 </nav>
@@ -24,7 +24,7 @@
 
         <!-- show loader for GET methods -->
         <div class="pull-right">
-          <span ng-if="AnalysisCostCenterCtrl.session.state === 'loading'">
+          <span ng-if="CenterCtrl.session.state === 'loading'">
             <loading-indicator></loading-indicator>
           </span>
         </div>
@@ -37,17 +37,17 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="cc in AnalysisCostCenterCtrl.model.cost_centers.data  | orderBy:'text'">
+          <tr ng-repeat="cc in CenterCtrl.model.cost_centers.data  | orderBy:'text'">
             <td>{{cc.text}}</td>
             <td>
-              <a class="action" ng-click="AnalysisCostCenterCtrl.setAction('edit', cc)"><i class="glyphicon glyphicon-pencil"></i></a>
+              <a class="action" ng-click="CenterCtrl.setAction('edit', cc)"><i class="glyphicon glyphicon-pencil"></i></a>
             </td>
             <td>
-              <a class="action danger" ng-click="AnalysisCostCenterCtrl.remove(cc)"><i class="glyphicon glyphicon-trash"></i></a>
+              <a class="action danger" ng-click="CenterCtrl.remove(cc)"><i class="glyphicon glyphicon-trash"></i></a>
             </td>
           </tr>
 
-          <tr ng-if="!AnalysisCostCenterCtrl.model.cost_centers.data.length">
+          <tr ng-if="!CenterCtrl.model.cost_centers.data.length">
             <td colspan="3">
               <div class="alert alert-warning square">
                 {{ 'ANALYSIS_CENTER.NONE_FOUND' | translate }}
@@ -59,7 +59,7 @@
     </div>
   </div>
 
-  <div class="col-xs-6" ng-switch="AnalysisCostCenterCtrl.action">
+  <div class="col-xs-6" ng-switch="CenterCtrl.action">
     <div ng-switch-default>
       <div class="alert alert-info">
         <b>{{ 'ANALYSIS_CENTER.INFO' | translate }}</b>
@@ -74,7 +74,7 @@
           <div class="form-group required">
             <label class="col-xs-2 control-label"> {{'ANALYSIS_CENTER.TEXT' | translate}} </label>
             <div class="col-xs-10">
-              <input class="form-bhima" ng-model="AnalysisCostCenterCtrl.register.text" required>
+              <input class="form-bhima" ng-model="CenterCtrl.register.text" required>
             </div>
           </div>
 
@@ -82,7 +82,10 @@
             <div class="col-sm-offset-2 col-sm-10">
               <div class="checkbox">
                 <label>
-                  <input type="checkbox" ng-model="AnalysisCostCenterCtrl.register.is_principal">
+                  <input type="checkbox"
+                    ng-true-value="1"
+                    ng-false-value="0"
+                    ng-model="CenterCtrl.register.is_principal">
                   {{'ANALYSIS_CENTER.IS_PRINCIPAL' | translate}}
                 </label>
               </div>
@@ -92,13 +95,13 @@
           <div class="form-group">
             <label class="col-xs-2 control-label">{{'ANALYSIS_CENTER.NOTE' | translate}}</label>
             <div class="col-xs-10">
-              <textarea class="form-control" ng-model="AnalysisCostCenterCtrl.register.note" rows="3">
+              <textarea class="form-control" ng-model="CenterCtrl.register.note" rows="3">
               </textarea>
             </div>
           </div>
 
           <div class="form-group pull-right">
-            <input ng-click="AnalysisCostCenterCtrl.save()" ng-disabled="newForm.$invalid" class="btn btn-sm btn-success" type="submit" value="{{'FORM.SAVE' | translate}}">
+            <input ng-click="CenterCtrl.save()" ng-disabled="newForm.$invalid" class="btn btn-sm btn-success" type="submit" value="{{'FORM.SAVE' | translate}}">
             <input class="btn btn-sm btn-default" type="reset" value="{{'FORM.RESET' | translate}}">
           </div>
         </fieldset>
@@ -114,7 +117,7 @@
           <div class="form-group required">
             <label class="col-xs-2 control-label">{{'ANALYSIS_CENTER.TEXT' | translate}}</label>
             <div class="col-xs-10">
-              <input class="form-bhima" ng-model="AnalysisCostCenterCtrl.selected.text" required>
+              <input class="form-bhima" ng-model="CenterCtrl.selected.text" required>
             </div>
           </div>
 
@@ -122,7 +125,11 @@
             <div class="col-sm-offset-2 col-sm-10">
               <div class="checkbox">
                 <label>
-                  <input type="checkbox" ng-model="AnalysisCostCenterCtrl.selected.is_principal">
+                  <input
+                    type="checkbox"
+                    ng-true-value="1"
+                    ng-false-value="0"
+                    ng-model="CenterCtrl.selected.is_principal">
                   {{'ANALYSIS_CENTER.IS_PRINCIPAL' | translate}}
                 </label>
               </div>
@@ -132,13 +139,13 @@
           <div class="form-group">
             <label class="col-xs-2 control-label">{{'ANALYSIS_CENTER.NOTE' | translate}}</label>
             <div class="col-xs-10">
-              <textarea class="form-control" ng-model="AnalysisCostCenterCtrl.selected.note" rows="3">
+              <textarea class="form-control" ng-model="CenterCtrl.selected.note" rows="3">
               </textarea>
             </div>
           </div>
 
           <div class="pull-right">
-            <input ng-click="AnalysisCostCenterCtrl.edit()" class="btn btn-sm btn-success" type="submit" value="{{'FORM.SAVE' | translate}}">
+            <input ng-click="CenterCtrl.edit()" class="btn btn-sm btn-success" type="submit" value="{{'FORM.SAVE' | translate}}">
             <!--input class="btn btn-sm btn-default" type="reset" value="{{'FORM.RESET' | translate}}"-->
           </div>
         </fieldset>
