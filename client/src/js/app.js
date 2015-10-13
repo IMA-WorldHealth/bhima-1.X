@@ -279,7 +279,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/cash_discard/cash_discard.html'
   })
   .when('/cost_center/', {
-    controller: 'costCenter',
+    controller: 'CostCenterController as CostCenterCtrl',
     templateUrl: 'partials/cost_center/cost_center.html'
   })
   .when('/profit_center/', {
