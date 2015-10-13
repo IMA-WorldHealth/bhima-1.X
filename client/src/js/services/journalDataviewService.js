@@ -14,6 +14,14 @@ angular.module('bhima.services')
     });
 
 
+    dataviewService.setAggregate = function setAggregate (ans){
+      dataviewService.aggregates = ans;
+    };
+
+    dataviewService.getAggregate = function getAggregate (){
+      return dataviewService.aggregates;
+    };
+
     dataviewService.subscribeToOnRowCountChanged = function subscribeToOnRowCountChanged (grid){
       if(!grid){throw 'Undefined grid';}
       dataviewService.dataview.onRowCountChanged.subscribe(function (e, args) {
@@ -33,6 +41,10 @@ angular.module('bhima.services')
     dataviewService.populate = function populate () {
       return dataviewService.dataLoaderService.loadJournalRecord()
       .then(function (data){
+        data.journalRecord.data = data.journalRecord.data.map(function (item) {
+          item.trans_date = new Date(item.trans_date);
+          return item;
+        });
         dataviewService.dataview.beginUpdate();
         dataviewService.dataview.setItems(data.journalRecord.data, 'uuid');
         dataviewService.dataview.endUpdate();   
@@ -148,6 +160,10 @@ angular.module('bhima.services')
         re    : new RegExp(param, 'i') // 'i' for ignore case
       });
       dataviewService.dataview.refresh();
+    };
+
+    dataviewService.deleteItem = function deleteItem (uuid){
+       dataviewService.dataview.deleteItem(uuid);
     };
 
     function formatTransactionGroup(g) {

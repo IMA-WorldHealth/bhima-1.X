@@ -31,6 +31,7 @@ var PostingJournalController = function ($translate, $filter, $q, precision, ses
     vm.gridService.subscribeToOnCellChange();
     vm.gridService.subscribeToOnSort();
     vm.gridService.subscribeToOnBeforeEditCell();
+    vm.gridService.subscribeToOnclick();
 
     var editors = {
       'trans_date'    : DateEditor, // SlickGrids date editors uses $() datepicker

@@ -1,6 +1,6 @@
 angular.module('bhima.services')
-.service('JournalGridService', ['JournalDataviewService', 'JournalColumnsService', 'JournalManagerService', 'uuid', 
-  function (dataviewService, columnsService, managerService, uuid) {
+.service('JournalGridService', ['JournalDataviewService', 'JournalColumnsService', 'JournalManagerService', 'uuid', 'SessionService', 'messenger',  
+  function (dataviewService, columnsService, managerService, uuid, sessionService, messenger) {
     var gridService = this;
     gridService.grid = null;
     gridService.dataviewService = dataviewService;
@@ -51,20 +51,22 @@ angular.module('bhima.services')
       });
     };     
 
-    // this.subscribeToOnclick = function subscribeToOnclick (){
-    //   if(!this.grid) {throw 'undefined grid, call buildGrid method first!'}
-    //   this.grid.onClick.subscribe(function (e, args) {
-    //     handleClick(e.target.className, args);
-    //   });
-    // }
+    gridService.subscribeToOnclick = function subscribeToOnclick (){
+      if(!gridService.grid) {throw 'undefined grid, call buildGrid method first!';}
+      gridService.grid.onClick.subscribe(function (e, args) {
+        handleClick(e.target.className, args);
+      });
+    };
 
     function handleClick(className, args) {
       var classes = className.split(' ');
       var buttonMap = {
-        'addRow'            : addRow
+        'editTransaction'   : editTransaction,
+        'deleteRow'         : deleteRow
+        // 'addRow'            : addRow
         // ,
-        // 'deleteRow'         : deleteRow,
-        // 'editTransaction'   : editTransaction,
+        // ,
+        // ,
         // 'saveTransaction'   : saveTransaction,
         // 'deleteTransaction' : deleteTransaction
       };
@@ -73,77 +75,78 @@ angular.module('bhima.services')
       });
     }
 
-    // function editTransaction(args) {
+    function editTransaction(args) {
+      var transaction = gridService.dataviewService.getItem(args.row),
+      transactionId = transaction.groupingKey,
+      templateRow = transaction.rows[0];
+      gridService.managerService.setRowId(args.row);
+      gridService.managerService.setMode('edit');
+      gridService.managerService.setSessionTransactionId(transaction.groupingKey);
 
-    //   var transaction = this.dataviewService.getItem(args.row),
-    //   transactionId = transaction.groupingKey,
-    //   templateRow = transaction.rows[0];
-    //   this.managerService.setRowId(args.row);
-    //   this.managerService.setMode('edit');
-    //   this.managerService.setTransactionId(transaction.groupingKey);
+      if (!transactionId) { 
+        throw 'Inalid Transaction'; //return $rootScope.$apply(messenger.danger('Invalid transaction provided')); 
+      }
 
-    //   if (!transactionId) { 
-    //     throw 'Inalid Transaction'; //return $rootScope.$apply(messenger.danger('Invalid transaction provided')); 
-    //   }
+      var template = {
+        trans_id       : transactionId,
+        fiscal_year_id : templateRow.fiscal_year_id,
+        period_id      : templateRow.period_id,
+        trans_date     : templateRow.trans_date,
+        description    : templateRow.description,
+        project_id     : templateRow.project_id,
+        account_number : '(Select Account)',
+        debit_equiv    : 0,
+        credit_equiv   : 0,
+        debit          : 0,
+        credit         : 0,
+        inv_po_id      : templateRow.inv_po_id,
+        currency_id    : templateRow.currency_id,
+        userId         : sessionService.user.id
+      };
 
-    //   manager.fn.showDeleteButton();
+      gridService.managerService.showDeleteButton(gridService.grid);
+      gridService.managerService.setSessionTemplate(template);
 
-    //   manager.origin = {
-    //     'debit'        : transaction.totals.sum.debit,
-    //     'credit'       : transaction.totals.sum.credit,
-    //     'debit_equiv'  : transaction.totals.sum.debit_equiv,
-    //     'credit_equiv' : transaction.totals.sum.credit_equiv
-    //   };
 
-    //   manager.session.records = new Store({ data : [], identifier: 'uuid'});
-    //   manager.session.removed = new Store({ data : [], identifier: 'uuid'});
+      // manager.origin = {
+      //   'debit'        : transaction.totals.sum.debit,
+      //   'credit'       : transaction.totals.sum.credit,
+      //   'debit_equiv'  : transaction.totals.sum.debit_equiv,
+      //   'credit_equiv' : transaction.totals.sum.credit_equiv
+      // };
 
-    //   manager.session.template = {
-    //     trans_id       : transactionId,
-    //     fiscal_year_id : templateRow.fiscal_year_id,
-    //     period_id      : templateRow.period_id,
-    //     trans_date     : templateRow.trans_date,
-    //     description    : templateRow.description,
-    //     project_id     : templateRow.project_id,
-    //     account_number : '(Select Account)',
-    //     debit_equiv    : 0,
-    //     credit_equiv   : 0,
-    //     debit          : 0,
-    //     credit         : 0,
-    //     inv_po_id      : templateRow.inv_po_id,
-    //     currency_id    : templateRow.currency_id,
-    //     userId         : 13 // FIXME
-    //   };
+      transaction.rows.forEach(function (row) {
+        row.newRecord = false;
+        gridService.managerService.postRecord(row);
+      });
 
-    //   transaction.rows.forEach(function (row) {
-    //     row.newRecord = false;
-    //     manager.session.records.post(row);
-    //   });
+      gridService.grid.invalidate();
 
-    //   grid.invalidate();
-    //   manager.fn.regroup();
-    //   $rootScope.$apply(messenger.success('Transaction #' + transactionId));
-    // }
-
-    function addRow () {
-      var row;
-      row = doParsing(this.managerService.manager.session.template);
-      row.newRecord = true;
-      row.uuid = uuid();
-      this.managerService.postItem(row); 
-      this.dataviewService.addNewItem(row);
+      if (gridService.dataviewService.getGrouping()) {
+        gridService.dataviewService.groupBy(gridService.dataviewService.getGrouping()); 
+      }
+      messenger.success('Transaction #' + transactionId);
     }
 
-    // function deleteRow (args) {
-    //   var item = dataviewService.getItem(args.row);
-    //   if (manager.session.records.data.length < 2) { return broadcastError('Cannot delete last line in transaction.'); }
-    //   // post to removed list and removed from records
-    //   manager.session.removed.post(item);
-    //   manager.session.records.remove(item.uuid);
-    //   dataview.deleteItem(item.uuid);
-    //   grid.invalidateRow(args.row);
-    //   grid.render();
+    // function addRow () {
+    //   var row;
+    //   row = doParsing(this.managerService.manager.session.template);
+    //   row.newRecord = true;
+    //   row.uuid = uuid();
+    //   this.managerService.postItem(row); 
+    //   this.dataviewService.addNewItem(row);
     // }
+
+    function deleteRow (args) {
+      var item = gridService.dataviewService.getItem(args.row);
+      if (gridService.managerService.getRecordLength() < 2) { throw 'Cannot delete last line in transaction.'; }
+      // post to removed list and removed from records
+      gridService.managerService.postRemovable(item);
+      gridService.managerService.removeRecord(item.uuid);      
+      gridService.dataviewService.deleteItem(item.uuid);
+      gridService.grid.invalidateRow(args.row);
+      gridService.grid.render();
+    }
 
     function sort (a,b) {
       var x = a[this.sortColumn];

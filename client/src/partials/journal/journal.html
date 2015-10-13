@@ -10,7 +10,7 @@
     <ul class="dropdown-menu">
       <li><a class="clk" ng-click="utilitieCtrl.groupBy('transaction')"><span class="glyphicon glyphicon-th-list"></span> {{ 'POSTING_JOURNAL.TRANSACTION' | translate }}</a></li>
       <li><a class="clk" ng-click="utilitieCtrl.groupBy('account')"><span class="glyphicon glyphicon-euro"></span> {{ 'POSTING_JOURNAL.ACCOUNT' | translate }}</a></li>
-      <li><a class="clk" ng-click="utilitieCtrl.groupBy('deb_cred')"><span class="glyphicon glyphicon-user"></span> {{ 'POSTING_JOURNAL.DEB_CRED' | translate }}</a></li>
+      <!-- <li><a class="clk" ng-click="utilitieCtrl.groupBy('deb_cred')"><span class="glyphicon glyphicon-user"></span> {{ 'POSTING_JOURNAL.DEB_CRED' | translate }}</a></li> -->
       <li><a class="clk" ng-click="utilitieCtrl.removeGroup()"><span class="glyphicon glyphicon-remove"></span> {{ 'POSTING_JOURNAL.ABOLISH_GROUPS' | translate }}</a></li>
     </ul>
   </div>
@@ -34,37 +34,37 @@
     </ul>
   </div>
 
-<!--   <div class="pull-right dropdown" style="padding-left:3px;">
-    <button class="btn btn-default btn-sm dropdown-toggle" ng-disabled="!!session.authenticated">
+  <div class="pull-right dropdown" style="padding-left:3px;">
+    <button class="btn btn-default btn-sm dropdown-toggle" ng-disabled="!!utilitieCtrl.session.authenticated">
       <span class="glyphicon glyphicon-cog"></span> {{'POSTING_JOURNAL.CONFIGURE' | translate }}
     </button>
     <ul class="dropdown-menu">
       <li class="dropdown-header">{{ 'UTIL.TOGGLE' | translate }} {{ 'UTIL.COLUMNS' | translate }}</li>
-      <li ng-repeat="column in columns | filter:{ id : '!_checkbox_selector' }">
+      <li ng-repeat="column in utilitieCtrl.columns | filter:{ id : '!_checkbox_selector' }">
         <a ng-click="column.visible=!column.visible" class="clk">
           <span class="glyphicon" ng-class="{'glyphicon-unchecked' : !column.visible, 'glyphicon-check' : !!column.visible}"></span> {{ column.name }}
         </a>
       </li>
-      <li class="dropdown-header">{{ 'UTIL.TOGGLE_AGGREGATES' | translate }}</li>
+      <!-- <li class="dropdown-header">{{ 'UTIL.TOGGLE_AGGREGATES' | translate }}</li>
       <li>
-        <a ng-click="toggleAggregates()" class="clk">
+        <a ng-click="utilitieCtrl.toggleAggregates()" class="clk">
           <span class="glyphicon" ng-class="{'glyphicon-unchecked' : !aggregates, 'glyphicon-check' : !!aggregates }"></span> {{ 'UTIL.AGGREGATES' | translate }}
         </a>
-      </li>
+      </li> -->
     </ul>
   </div>
 
   <div class="pull-right">
-    <a class="btn btn-sm"  ng-class="{ 'btn-danger active' : !!session.authenticated, 'btn-default' : !session.authenticated }" ng-click="toggleEditMode()" ng-disabled="!hasData || session.mode=='edit'">
+    <a class="btn btn-sm"  ng-class="{ 'btn-danger active' : !!utilitieCtrl.session.authenticated, 'btn-default' : !utilitieCtrl.session.authenticated }" ng-click="utilitieCtrl.toggleEditMode()" ng-disabled="utilitieCtrl.session.mode == 'edit'">
       <span class="glyphicon glyphicon-exclamation-sign"></span> {{ 'POSTING_JOURNAL.EDIT_MODE' | translate }}
     </a>
-    <a class="btn btn-default btn-sm" ng-click="trialBalance()" ng-disabled="!!session.authenticated || grouping !== 'transaction'">
+    <a class="btn btn-default btn-sm" ng-click="utilitieCtrl.trialBalance()" ng-disabled="!!utilitieCtrl.session.authenticated || utilitieCtrl.getGroupingType() !== 'transaction'">
       <span class="glyphicon glyphicon-stats"></span> {{'POSTING_JOURNAL.TRIAL_BALANCE' | translate }}
     </a>
-    <a class="btn btn-default btn-sm" ng-click="print()" ng-disabled="!!session.authenticated">
+    <a class="btn btn-default btn-sm" ng-click="utilitieCtrl.print()" ng-disabled="!!utilitieCtrl.session.authenticated">
       <span class="glyphicon glyphicon-print"></span> {{ 'UTIL.PRINT' | translate }}
     </a>
-  </div> -->
+  </div>
 </nav>
 
 <main class="extend">
