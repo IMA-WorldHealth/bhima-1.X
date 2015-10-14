@@ -237,10 +237,6 @@ var journalUtilitiesController = function ($scope, $translate, $location, $modal
   // } 
 
   // vm.toggleAggregates = toggleAggregates; 
-
-  // vm.resetManagerSession = function resetManagerSession () {
-  //   vm.session = vm.managerService.manager.session = { authenticated : false, mode : 'static' };
-  // };
 };
 journalUtilitiesController.$inject = ['$scope', '$translate', '$location', '$modal', 'appcache', 'connect', 'validate', 'appstate', 'messenger',  'JournalDataviewService', 'JournalColumnsService', 'JournalGridService', 'JournalDataLoaderService', 'JournalManagerService'];
 angular.module('bhima.controllers').controller('journalUtilitiesController', journalUtilitiesController);

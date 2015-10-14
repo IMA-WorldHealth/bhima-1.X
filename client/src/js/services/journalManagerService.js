@@ -35,6 +35,10 @@ angular.module('bhima.services')
       return managerService.manager.session;
     };
 
+    managerService.resetManagerSession = function resetManagerSession (){
+      managerService.manager.session = { authenticated : false, mode : 'static' };
+    };    
+
     managerService.isAuthenticated = function isAuthenticated(){
       return managerService.manager.session.authenticated;
     };
@@ -79,6 +83,14 @@ angular.module('bhima.services')
       managerService.manager.session.records.post(row);
     };
 
+    managerService.getRecordData = function getRecordData (){
+      return managerService.manager.session.records.data;
+    };
+
+    managerService.getRemovedData = function getRemovedData (){
+      return managerService.manager.session.removed.data;
+    };
+
     managerService.postRemovable = function postRemovable (row){
       managerService.manager.session.removed.post(row);
     };
@@ -89,6 +101,10 @@ angular.module('bhima.services')
 
     managerService.getRecordLength = function getRecordLength (){
       return managerService.manager.session.records.data.length;
+    };
+
+    managerService.setSessionUserId = function setSessionUserId(id){
+      managerService.manager.session.userId = id;
     };
 
     function btnFormatter (row,cell,value,columnDef,dataContext) {

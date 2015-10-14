@@ -1,11 +1,13 @@
 angular.module('bhima.services')
-.service('JournalGridService', ['JournalDataviewService', 'JournalColumnsService', 'JournalManagerService', 'uuid', 'SessionService', 'messenger',  
-  function (dataviewService, columnsService, managerService, uuid, sessionService, messenger) {
-    var gridService = this;
+.service('JournalGridService', ['JournalDataviewService', 'JournalColumnsService', 'JournalManagerService', 'uuid', 'SessionService', 'messenger', 'JournalValidationService', 'liberror', 'JournalDataLoaderService', 'util', 'connect', '$q', '$translate', 'precision', '$window', 
+  function (dataviewService, columnsService, managerService, uuid, sessionService, messenger, validationService, liberror, dataLoaderService, util, connect, $q, $translate, precision, $window) {
+    var gridService = this,
+        journalError =  liberror.namespace('JOURNAL');
     gridService.grid = null;
     gridService.dataviewService = dataviewService;
     gridService.columnsService = columnsService;
     gridService.managerService = managerService;
+    gridService.dataLoaderService = dataLoaderService;
     gridService.idDom = '#journal_grid';
     gridService.sortColumn = null;
     gridService.options = {
@@ -58,16 +60,14 @@ angular.module('bhima.services')
       });
     };
 
+
     function handleClick(className, args) {
       var classes = className.split(' ');
       var buttonMap = {
         'editTransaction'   : editTransaction,
         'deleteRow'         : deleteRow,
-        'addRow'            : addRow
-        // ,
-        // ,
-        // ,
-        // 'saveTransaction'   : saveTransaction,
+        'addRow'            : addRow,
+        'saveTransaction'   : saveTransaction
         // 'deleteTransaction' : deleteTransaction
       };
       classes.forEach(function (cls) {
@@ -133,7 +133,7 @@ angular.module('bhima.services')
       row = doParsing(gridService.managerService.getSessionTemplate());
       row.newRecord = true;
       row.uuid = uuid();
-      gridService.managerService.postItem(row); 
+      gridService.managerService.postRecord(row); 
       gridService.dataviewService.addNewItem(row);
     }
 
@@ -148,6 +148,177 @@ angular.module('bhima.services')
       gridService.grid.render();
     }
 
+    function isNull (t) { return t === null; }
+
+    function deleteTransaction (args) {
+      var bool = $window.confirm('Are you sure you want to delete this transaction?');
+      if (!bool) { return; }
+      var item = gridService.dataviewService.dataview.getItem(args.row);
+      item.rows.forEach(function (row) {
+        gridService.managerService.postRemovable(row);
+        gridService.managerService.removeRecord(row.uuid);
+        gridService.dataviewService.deleteItem(row.uuid);
+      });
+      gridService.grid.invalidate();
+      saveTransaction();
+    } 
+
+    function saveTransaction () {
+      var records = gridService.managerService.getRecordData(),
+          removed = gridService.managerService.getRemovedData();
+
+      var hasErrors = checkErrors(records);
+      if (hasErrors) { return; }
+
+        var newRecords = [],
+            editedRecords = [],
+            removedRecords = [];
+
+        records.forEach(function (record) {
+          var newRecord = record.newRecord,
+              packed = packager(record);
+          (newRecord ? newRecords : editedRecords).push(packed);
+        });
+
+        removed.forEach(function (record) {
+          if (record.newRecord) { return; }
+          removedRecords.push(record.uuid);
+        });
+
+        gridService.managerService.setSessionUserId(sessionService.user.id);
+        newRecords.forEach(function (rec) { rec.user_id = sessionService.user.id; });
+        editedRecords.forEach(function (rec) { rec.user_id = sessionService.user.id; });
+        var promesse = newRecords.length ? connect.post('posting_journal', newRecords) : $q.when(1);
+
+        promesse
+        .then(function () {
+          return editedRecords.length ? editedRecords.map(function (record) { return connect.put('posting_journal', [record], ['uuid']); }) : $q.when(1);
+        })
+        .then(function () {
+          return removedRecords.length ? connect.delete('posting_journal', 'uuid', removedRecords) : $q.when(1);
+        })
+        .then(function () {
+          return writeJournalLog(managerService.getSession());
+        })
+        .then(function () {
+          messenger.success($translate.instant('POSTING_JOURNAL.TRANSACTION_SUCCESS')); 
+          managerService.resetManagerSession();
+          if (gridService.dataviewService.getGrouping()) {
+           gridService.dataviewService.groupBy(gridService.dataviewService.getGrouping()); 
+          }
+          gridService.grid.invalidate();
+        })
+        .catch(function (err) {
+          messenger.danger('Submission failed' + err);
+        })
+        .finally();
+    }
+
+    function writeJournalLog (session) {
+      var packagedLog = {
+        uuid           : session.uuid,
+        transaction_id : session.transactionId,
+        justification  : session.justification,
+        date           : util.convertToMysqlDate(session.start),
+        user_id        : session.userId
+      };
+
+      return connect.post('journal_log', [packagedLog]);
+    }
+
+    function checkErrors (records) {
+      if (!records.length) { return; }
+      var totalDebits = 0, totalCredits = 0;
+
+      var dateError = false,
+          accountError = false,
+          balanceError = false,
+          singleEntryError = false,
+          multipleDatesError = false,
+          periodError = false,
+          fiscalError = false;
+
+      //validation
+      records.forEach(function (record) {
+        totalDebits += precision.round(Number(record.debit_equiv));
+        totalCredits += precision.round(Number(record.credit_equiv));
+        if (!validationService.isDateValid(record)) { dateError = true; }
+        if (!validationService.isAccountNumberValid(record)) { accountError = true; }
+        if (!validationService.isBalanceValid(record)) { balanceError = true; }
+        if (!validationService.isDebitsAndCreditsValid(record)) { balanceError = true; }
+        if (validationService.detectSingleEntry(record)) { singleEntryError = true; }
+        if (!validationService.isPeriodValid(record)) { periodError = true; }
+        if (!validationService.isValidFiscal(record)) { fiscalError = true; }
+      });
+
+      var testDate = new Date(records[0].trans_date).setHours(0,0,0,0);
+      multipleDatesError = records.some(function (record) {
+        return new Date(record.trans_date).setHours(0,0,0,0) !== testDate;
+      });
+
+      totalDebits = precision.round(totalDebits);
+      totalCredits = precision.round(totalCredits);
+
+      //TO DO : some error message must be translate
+
+      if (singleEntryError) { journalError.throw('ERR_TXN_SINGLE_ENTRY'); }
+      if (!validationService.isTotalsValid(totalDebits, totalCredits)) { journalError.throw('ERR_TXN_IMBALANCE'); }
+      if (accountError) { broadcastError('Records contain invalid or nonexistant accounts.'); }
+      if (dateError) { broadcastError('Transaction contains invalid dates.'); }
+      if (multipleDatesError) { broadcastError('Transaction trans_date field has multiple dates.'); }
+      if (periodError) { broadcastError('Transaction date does not fall in any valid periods.'); }
+      if (fiscalError) { broadcastError('Transaction date does not fall in any valid fiscal years.'); }
+
+      var hasErrors = (
+          dateError || accountError ||
+          balanceError || singleEntryError ||
+          multipleDatesError || fiscalError ||
+          periodError || !validationService.isTotalsValid(totalDebits, totalCredits)
+      );
+
+      return hasErrors;
+    }
+
+    function packager(record) {
+      var data = {}, cpProperties, prop;
+
+      cpProperties = [
+        'uuid', 'project_id', 'trans_id', 'trans_date', 'period_id', 'description', 'account_id',
+        'credit', 'debit', 'debit_equiv', 'credit_equiv', 'fiscal_year_id', 'currency_id',
+        'deb_cred_id', 'deb_cred_type', 'inv_po_id', 'user_id', 'origin_id', 'cc_id', 'pc_id'
+      ];
+
+      for (prop in record) {
+        if (cpProperties.indexOf(prop) > -1) {
+          if (angular.isDefined(record[prop]) && !isNull(record[prop])) {
+            data[prop] = record[prop];
+          }
+        }
+      }
+
+      // FIXME : This will no longer work if we have non-unique account
+      // numbers.
+      if (record.account_number) { data.account_id = gridService.dataLoaderService.account.get(record.account_number).id; }
+
+      // Transfer values from cc over to posting journal cc_id and pc_id fields
+      // This is because we are doing a join, similar to the account_number field
+      // above.
+      // We check for NaNs because we don't have unique identifers like the account number
+      // for an account.
+      if (record.cc && !Number.isNaN(Number(record.cc))) { data.cc_id = record.cc; }
+      if (record.pc && !Number.isNaN(Number(record.pc))) { data.pc_id = record.pc; }
+
+      // FIXME : Hack to get deletion to work with parser.js
+      // This is probably pretty damn insecure
+      if (record.cc === 'null') { data.cc_id = null; }
+      if (record.pc === 'null') { data.pc_id = null; }
+
+      // FIXME : Review this decision
+      data.project_id = sessionService.project.id;
+      data.origin_id = 4;
+      return data;
+    }
+
     function sort (a,b) {
       var x = a[this.sortColumn];
       var y = b[this.sortColumn];
@@ -155,6 +326,10 @@ angular.module('bhima.services')
     }
 
     function doParsing (o) { return JSON.parse(JSON.stringify(o)); }
+
+    function broadcastError (desc) {
+      journalError.throw(desc);
+    }
 
     gridService.applyColumns = function applyColumns(cols){
       gridService.grid.setColumns(cols || gridService.columnsService.columns);
