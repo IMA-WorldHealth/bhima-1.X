@@ -62,8 +62,8 @@ angular.module('bhima.services')
       var classes = className.split(' ');
       var buttonMap = {
         'editTransaction'   : editTransaction,
-        'deleteRow'         : deleteRow
-        // 'addRow'            : addRow
+        'deleteRow'         : deleteRow,
+        'addRow'            : addRow
         // ,
         // ,
         // ,
@@ -128,14 +128,14 @@ angular.module('bhima.services')
       messenger.success('Transaction #' + transactionId);
     }
 
-    // function addRow () {
-    //   var row;
-    //   row = doParsing(this.managerService.manager.session.template);
-    //   row.newRecord = true;
-    //   row.uuid = uuid();
-    //   this.managerService.postItem(row); 
-    //   this.dataviewService.addNewItem(row);
-    // }
+    function addRow () {
+      var row;
+      row = doParsing(gridService.managerService.getSessionTemplate());
+      row.newRecord = true;
+      row.uuid = uuid();
+      gridService.managerService.postItem(row); 
+      gridService.dataviewService.addNewItem(row);
+    }
 
     function deleteRow (args) {
       var item = gridService.dataviewService.getItem(args.row);

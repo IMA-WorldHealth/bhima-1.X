@@ -71,6 +71,10 @@ angular.module('bhima.services')
       managerService.manager.session.template = template;
     };
 
+    managerService.getSessionTemplate = function getSessionTemplate (){
+      return managerService.manager.session.template;
+    };
+
     managerService.postRecord = function postRecord (row){
       managerService.manager.session.records.post(row);
     };
