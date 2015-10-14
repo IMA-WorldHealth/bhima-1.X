@@ -225,7 +225,7 @@ function SalesRecords($timeout, $translate, $modal, util, validate, ReportServic
             return function (){};
           }, 
           referenceOptions : function () { 
-            return {};
+            return session.param;
           }
         }
       });
@@ -245,4 +245,4 @@ function SalesRecords($timeout, $translate, $modal, util, validate, ReportServic
   viewModel.requestDocument = requestDocument;
   viewModel.select = select;
   viewModel.reset = reset;
-};
+}

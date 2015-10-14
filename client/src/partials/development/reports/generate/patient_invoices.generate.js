@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 // Definition is passed in through report core
 patientInvoices.$inject = ['$anchorScroll', '$location', '$modalInstance', '$http', 'util', 'store', 'ModuleState', 'validate', 'definition', 'updateMethod', 'referenceOptions'];
 
-function patientInvoices($anchorScroll, $location, $modalInstance, $http, util,  Store, ModuleState, validate, definition, updateMethod, defaultDateFrom, referenceOptions) { 
+function patientInvoices($anchorScroll, $location, $modalInstance, $http, util,  Store, ModuleState, validate, definition, updateMethod, referenceOptions) { 
   var modal = this;
   var state = new ModuleState();
 
@@ -13,7 +13,7 @@ function patientInvoices($anchorScroll, $location, $modalInstance, $http, util, 
   
   // This will act as a container for all report document configuration options
   var options = {};
- 
+  
   // Reference can optionally be passed through from intialising module - these can include any default attributes
   referenceOptions = referenceOptions || {};
   
