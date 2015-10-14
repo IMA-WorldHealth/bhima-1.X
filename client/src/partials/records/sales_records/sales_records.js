@@ -1,15 +1,19 @@
+/**
+ * @todo Too much responsability is given to report document generate button - this should be handled by the service 
+ *
+ * @todo Update to use single updated report data API
+ */
 angular.module('bhima.controllers').controller('SalesRecords', SalesRecords);
   
-SalesRecords.$inject = ['$timeout','$translate','util','validate'];
+SalesRecords.$inject = ['$timeout','$translate', '$modal', 'util','validate', 'ReportService'];
 
-function SalesRecords($timeout, $translate, util, validate) { 
+function SalesRecords($timeout, $translate, $modal, util, validate, ReportService) { 
   
   // TODO add search (filter)
   // TODO add sortable (clickable) columns
   var dependencies = {};
-
-  var viewModel = this;
-
+  var viewModel = this; 
+  
   var period = viewModel.period = [
     {
       key : 'CASH_PAYMENTS.DAY',
@@ -38,6 +42,17 @@ function SalesRecords($timeout, $translate, util, validate) {
     },
     result : {}
   };
+  
+  /*
+   * Report document generation state
+   */
+  var serverInterface = ReportService;
+  
+  // TODO This variable should be driven by client route (app.js) according to the new report data API 
+  var reportKey = 'patient_invoices';
+ 
+  // serverInterface can be assumed loaded because of route resolve dependency (this should be documented somewhere)
+  var reportDefinition = serverInterface.requestDefinition(reportKey);
 
   dependencies.sale = {};
   dependencies.project = {
@@ -188,6 +203,46 @@ function SalesRecords($timeout, $translate, util, validate) {
     }, 0);
   }
 
+  function requestDocument() { 
+    var templateByConvention = serverInterface.resolveTemplatePath(reportDefinition.key); 
+    var controllerByConvention = serverInterface.resolveController(reportDefinition.key);
+    
+    var modal = $modal
+      .open({
+      
+        // Disable interaction with page behind
+        backdrop : 'static',
+        keyboard : false,
+        templateUrl : templateByConvention,
+        controller : controllerByConvention,
+        resolve : { 
+          definition : function () { 
+            return reportDefinition;
+          }, 
+          updateMethod : function () { 
+
+            // No archives will be updated
+            return function (){};
+          }, 
+          referenceOptions : function () { 
+            return {};
+          }
+        }
+      });
+
+    modal.result.then(function (completeConfirmation) { 
+      // Report submitted 
+    
+    }, function (error) { 
+       
+      // TODO formalise this
+      console.error('Report is NOT configured correctly');
+      console.error(error);
+    });
+
+  }
+  
+  viewModel.requestDocument = requestDocument;
   viewModel.select = select;
   viewModel.reset = reset;
 };

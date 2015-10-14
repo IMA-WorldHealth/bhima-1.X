@@ -26,6 +26,12 @@
   </div>
 
   <span class="pull-right">
+    <button ng-click="SalesRecordsCtrl.requestDocument()" class="btn btn-default" style="margin-left: 5px;">
+      <i class="glyphicon glyphicon-file"></i> {{ 'SALERECORD.CREATE_REPORT_DOCUMENT' | translate }}
+    </button>
+  </span>
+
+  <span class="pull-right">
     <select class="form-bhima" ng-change="SalesRecordsCtrl.reset()" ng-model="SalesRecordsCtrl.session.user" ng-options="u.id as SalesRecordsCtrl.format(u) for u in SalesRecordsCtrl.model.user_sale.data">
       <option value="">{{ 'SALERECORD.ALL_USERS' | translate }}</option>
     </select>

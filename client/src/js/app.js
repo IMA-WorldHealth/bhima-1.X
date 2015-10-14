@@ -109,7 +109,13 @@ function bhimaconfig($routeProvider) {
   })
   .when('/sale_records/:recordID?', {
     controller: 'SalesRecords as SalesRecordsCtrl',
-    templateUrl: '/partials/records/sales_records/sales_records.html'
+    templateUrl: '/partials/records/sales_records/sales_records.html',
+    resolve : { 
+      'ReportServiceData' : ['ReportService', function (ReportService) { 
+        return ReportService.dependency;
+      }]
+    }
+
   })
   .when('/cash', {
     controller: 'cash',
