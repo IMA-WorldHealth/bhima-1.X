@@ -367,11 +367,11 @@
     "DAY"    : "Day",
     "MONTH"  : "Month",
     "PERIOD" : "Period",
-    "TITLE"  : "Grouping",    
-    "WEEK"   : "Week",    
-    "YEAR"   : "Year"    
+    "TITLE"  : "Grouping",
+    "WEEK"   : "Week",
+    "YEAR"   : "Year"
   }
-},   
+},
 "COLUMNS": {
    "ABBR"                  : "Abbr",
    "ABBREVIATION"          : "Abreviation",
@@ -633,7 +633,7 @@
    "WORDING"               : "Wording",
    "WORKING_DAY"           : "Working day",
    "ZS"                    : "Health Zone"
-   
+
    },
 
 "CONFIG_ACCOUNTING": {
@@ -2388,7 +2388,7 @@
    "BALANCE_SECTION"       : "Select Balance Sheet Section",
    "CASH"                  : "Select a Cash",
    "COST_CENTER"           : "Select the cost center",
-   "COTISATION"            : "Select a Cotisation",   
+   "COTISATION"            : "Select a Cotisation",
    "COUNTRY"               : "Select a Country",
    "CREDITOR"              : "Select a creditor",
    "CREDITOR_GROUP"        : "Select a Creditor Group",
@@ -2883,7 +2883,7 @@
    "DASHBOARD" : {
       "FINANCE" : "Finance Dashboard",
       "TITLE"   : "Dashboards"
-   },   
+   },
    "DEBTOR_AGING"              : "Debtor Aging",
    "DEBTOR_GRP"                : "Debtor Group",
    "DEBITOR_GROUP_REPORT"      : "Debtor Group State",
@@ -3069,6 +3069,7 @@
    "MONTHS"            : "Months",
    "NAVIGATION"        : "Navigation",
    "NEW_SUCCESS"       : "Successfully added",
+   "NO_DATA"           : "The query did not return any data.",
    "OFF"               : "Off",
    "ON"                : "On",
    "PATIENT_EXIST_A"   : "Patient with file number [",
