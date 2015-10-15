@@ -711,7 +711,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/cash/cashbox_account_currency/cashbox_account_currency.html'
   })
   .when('/extra_payment', {
-    controller : 'cash.extra_payment',
+    controller : 'ExtraPaymentController as PaymentCtrl',
     templateUrl : 'partials/cash/extra_payment/extra_payment.html'
   })
   // Proposed formal report building structure
