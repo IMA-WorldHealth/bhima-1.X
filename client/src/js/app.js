@@ -318,8 +318,8 @@ function bhimaconfig($routeProvider) {
     controller: 'patientGroup',
     templateUrl: 'partials/patient/group/groups.html'
   })
-  .when('/group_invoice/:id?', {
-    controller : 'groupInvoice',
+  .when('/group_invoice/', {
+    controller : 'GroupInvoiceController as InvoiceCtrl',
     templateUrl : 'partials/group_invoice/group_invoice.html'
   })
   .when('/support/:id?', {
