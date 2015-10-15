@@ -23,7 +23,11 @@ var q                       = require('q');
 var db                      = require('./../../lib/db');
 
 // Import and compile template files
-var dots                    = require('dot').process({path : path.join(__dirname, 'templates')});
+var dots                    = require('dot');
+var templates = dots.process({path : [path.join(__dirname, 'templates/')]});
+
+// Support legacy reports - this should be removed as soon as possible
+var legacyTemplates = dots.process({path : path.join(__dirname, 'templates/prototype_legacy')});
 
 var wkhtmltopdf             = require('wkhtmltopdf');
 var uuid                    = require('./../../lib/guid');
@@ -46,36 +50,31 @@ var contextPath = './data/';
 var moduleLoading = false;
 var reportIndex = {};
 
-// TODO: All of these should be driven be either a JSON configuration file or 
-// by the report index in the database. 
-// TODO: Recommend convention based context and template loading, based on 
-// database record report_key, {report_key}.template.dot, {report_key}.content.js
-
 // DEPRECIATED - reports now driven by database (remove from object as updated)
 // Map templates and context compilation to request targets
 var documentHandler = {
   invoice : {
-    template : dots.invoice,
+    template : legacyTemplates.invoice,
     context : invoiceContext
   },
   balance : {
-    template : dots.balance_sheet,
+    template : legacyTemplates.balance_sheet,
     context : balanceContext
   },
   bilan : {
-    template : dots.bilan,
+    template : legacyTemplates.bilan,
     context : bilanContext
   },
   grand_livre : {
-    template : dots.grand_livre,
+    template : legacyTemplates.grand_livre,
     context : grandLivreContext
   },
   employee_state : {
-    template : dots.employee_state, //templating provider
+    template : legacyTemplates.employee_state, //templating provider
     context : EmployeeStateContext // data provider
   },
   result_account : {
-    template : dots.account_result, //templating provider
+    template : legacyTemplates.account_result, //templating provider
     context :  accountResultContext // data provider
   }
 };
@@ -130,10 +129,11 @@ exports.build = function (req, res, next) {
   var renderTarget = renderPDF; //renderPDF is a function which handle the pdf generation process
   
   var definition = reportIndex[target];
-  var handler = documentHandler[target]; //handler will contain a object with two property, template for structure and context for data
   var options = req.body;
 
-  // TODO Refactor - build -> if ready -> build method
+  // TODO Remove given all depreciated reports upgraded or removed
+  var supportingLegacy = false;
+
   if (moduleLoading) { 
 
     // FIXME Use standard error handling
@@ -143,10 +143,12 @@ exports.build = function (req, res, next) {
     return; 
   }
   
-  // FIXME No time to migrate all previous reports - ungraceful depreciation
-  if (documentHandler[target] && !definition) { 
-    res.status(500).end('This report has been depreciated. In order to use this report please update to the new API');
-    return; 
+  // Depreciated report exists - support this to be removed as soon as possible
+  if (!definition && documentHandler[target]) { 
+  
+    console.log('Report [', target, '] has been depreciated and should be updated to use the new report API');
+    definition = documentHandler[target];
+    supportingLegacy = true;
   }
 
   // Module does not support the requested document
@@ -155,10 +157,7 @@ exports.build = function (req, res, next) {
     // FIXME Use standard error handling
     res.status(500).end('Invalid or Unknown document target');
   } else {
-
-    console.log('using definition', definition);
-    console.log('got options', options);
-
+    
     var context = definition.context;
   
     // Assign ID of user making report request to be used throughout archiving 
@@ -177,14 +176,21 @@ exports.build = function (req, res, next) {
     var language = options.language || 'en';
     var configuration = buildConfiguration(hash, format);
   
-    // FIXME pass key into method
-    var templater = dots[definition.key];
+    var templater; 
 
+    // TODO Remove legacy support 
+    if (supportingLegacy) { 
+      templater = definition.template;
+    } else { 
+
+      // Not supporting legacy report - template can be derived directly according to the new API
+      templater = templates[definition.key];
+    }
+  
     // Ensure templates have path data
     reportData.path = reportData.path || __dirname;
     compiledReport = templater(reportData);
-
-    // wkhtmltopdf exceptions not handled
+  
     // TODO Verify with wkhtmltopdf docs that the first parameter will ONLY ever return error codes
     var pdf = wkhtmltopdf(compiledReport, configuration, function (errorCode, signal, a) {
     
@@ -193,26 +199,33 @@ exports.build = function (req, res, next) {
       } else { 
         var servePath = '/report/serve/';
         
+        // TODO Remove legacy support 
+        if (supportingLegacy) { 
+          
+          // Legacy reports (prototypes) have no archive records in the database
+          res.send(servePath.concat(hash));
+        } else { 
 
-        // TODO Link DB Driven report definition through to server
-        // Write to archive unless option disabled
-        writeArchive(definition, hash, options)
-          .then(function (result) { 
-            
-
-            lookupArchive(result.insertId)
+          
+          // TODO Link DB Driven report definition through to server
+          // Write to archive unless option disabled
+          writeArchive(definition, hash, options)
             .then(function (result) { 
+              
+              lookupArchive(result.insertId)
+              .then(function (result) { 
 
-              result.hash = servePath.concat(hash);
-              res.send(result);  
+                result.hash = servePath.concat(hash);
+                res.send(result);  
+              })
+              .catch(function (error) { 
+                next(error);
+              });
             })
             .catch(function (error) { 
-              next(error);
+              next(error); 
             });
-          })
-          .catch(function (error) { 
-            next(error); 
-          });
+        }
       }
     });
   }
@@ -257,7 +270,7 @@ function lookupArchive(id) {
   
 // Template convention dots.{{report_key}}
 function getReportTemplate(key) { 
-  return dots[key]; 
+  return templates[key]; 
 }
   
 // Return configuration object for wkhtmltopdf process
