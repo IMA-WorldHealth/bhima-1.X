@@ -7,6 +7,7 @@ ProfitCenterAllocationController.$inject = [
 
 /**
   * Profit Center Allocation Controller
+  * This module is responsible of allocating accounts to profit center
   */
 function ProfitCenterAllocationController ($q, connect, appstate,validate, SessionService) {
   var vm            = this,
