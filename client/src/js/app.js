@@ -311,6 +311,10 @@ function bhimaconfig($routeProvider) {
     controller : 'sectionResultat',
     templateUrl : 'partials/section_resultat/section_resultat.html'
   })
+  .when('/variation_exploitation/', {
+    controller : 'variationExploitationController as variationCtrl',
+    templateUrl : 'partials/reports_proposed/variation_exploitation/variation_exploitation.html'
+  })
   .when('/patient/groups/', {
     controller: 'patientGroup',
     templateUrl: 'partials/patient/group/groups.html'
