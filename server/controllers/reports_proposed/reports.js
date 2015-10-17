@@ -18,6 +18,7 @@ var EmployeeStateContext               = require('./data/employee_state');
 var accountResultContext               = require('./data/account_result');
 var debitorGroupReportContext          = require('./data/debitor_group_report');
 var debtorGroupAnnualReportContext     = require('./data/debtor_group_annual_report');
+var variationExploitationContext       = require('./data/variation_exploitation');
 
 // Module configuration
 var writePath = path.join(__dirname, 'out/');
@@ -55,6 +56,12 @@ var documentHandler = {
   debtor_group_annual_report : {
     template : dots.debtor_group_annual_report,
     context :  debtorGroupAnnualReportContext
+    template : dots.debitor_group_report, //templating provider
+    context :  debitorGroupReportContext // data provider
+  },
+  variation_exploitation : {
+    template : dots.variation_exploitation,
+    context : variationExploitationContext
   }
 };
 
