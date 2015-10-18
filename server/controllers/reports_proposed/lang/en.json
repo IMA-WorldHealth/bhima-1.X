@@ -59,5 +59,9 @@
 		"TOTAL_DIFFERENCE" : "Sold",
 		"BOX" : "BP",
 		"TEL" : "Tel"
+	},
+
+	"VARIATION_EXPLOITATION" : {
+		
 	}
 }
