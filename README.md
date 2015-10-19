@@ -1,7 +1,9 @@
 BHIMA
 =================
 
-[![Build Status](https://travis-ci.org/IMA-WorldHealth/bhima.svg?branch=feature%2Ftests)](https://travis-ci.org/IMA-WorldHealth/bhima)
+[![Build Status](https://travis-ci.org/IMA-WorldHealth/bhima.svg?branch=development)](https://travis-ci.org/IMA-WorldHealth/bhima)
+[![Dependency Status](https://david-dm.org/IMA-WorldHealth/bhima.svg)](https://david-dm.org/IMA-WorldHealth/bhima)
+[![devDependency Status](https://david-dm.org/IMA-WorldHealth/bhima/dev-status.svg)](https://david-dm.org/IMA-WorldHealth/bhima#info=devDependencies)
 
 _Bhima is alpha version software. Please do not use this in a commerical context._
 
