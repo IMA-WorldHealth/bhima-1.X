@@ -21,7 +21,7 @@
     <div class="panel-body">
       <div class="form-group">
         <select class="form-bhima" ng-model="DistributionsCtrl.service"
-          ng-options="service as service.service for service in ::DistributionsCtrl.services"
+          ng-options="service as service.service for service in ::DistributionsCtrl.services | orderBy:'service'"
         >
           <option value="" disabled>-- {{ 'SELECT.SERVICE' | translate }} --</option>
         </select>
