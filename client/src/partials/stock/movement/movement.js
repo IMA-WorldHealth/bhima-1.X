@@ -81,8 +81,13 @@ function StockMovementController($scope, $location, $translate, $routeParams, va
   }
 
   function validateLots(model) {
+
+    // sort the lots into alphabetical order
+    model.lots.data.sort(function (a, b) {
+      return a.label.toLowerCase() > b.label.toLowerCase() ? 1 : -1;
+    });
+
     $scope.lots = model.lots;
-    console.log(model.lots);
 
     // Reset rows TODO
     resetRows();
