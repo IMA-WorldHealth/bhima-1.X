@@ -1,31 +1,36 @@
 angular.module('bhima.controllers')
-.controller('costCenter', [
-  '$scope',
-  '$location',
-  '$translate',
-  function ($scope, $location, $translate) {
+.controller('CostCenterController', CostCenterController);
 
-    var configuration = $scope.configuration = {};
+CostCenterController.$inject = [
+  '$location', '$translate'
+];
 
-    configuration.operations = [
-      {
-        key : $translate.instant('COST_CENTER.OPERATIONS.CC'),
-        link : '/cost_center/center/'
-      },
+/**
+  * Cost Center Controller
+  * This controller is responsible for managing menu in cost center
+  */
+function CostCenterController ($location, $translate) {
+  var vm = this,
+      configuration = vm.configuration = {};
 
-      {
-        key : $translate.instant('COST_CENTER.OPERATIONS.VERSEMENT'),
-        link : '/cost_center/allocation/'
-      },
+  configuration.operations = [
+    {
+      key : $translate.instant('COST_CENTER.OPERATIONS.CC'),
+      link : '/cost_center/center/'
+    },
 
-      {
-        key : $translate.instant('COST_CENTER.OPERATIONS.ASSIGN'),
-        link : '/cost_center/assigning/'
-      }
-    ];
+    {
+      key : $translate.instant('COST_CENTER.OPERATIONS.VERSEMENT'),
+      link : '/cost_center/allocation/'
+    },
 
-    $scope.loadPath = function loadPath(path) {
-      $location.path(path);
-    };
-  }
-]);
+    {
+      key : $translate.instant('COST_CENTER.OPERATIONS.ASSIGN'),
+      link : '/cost_center/assigning/'
+    }
+  ];
+
+  vm.loadPath = function loadPath(path) {
+    $location.path(path);
+  };
+}

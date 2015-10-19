@@ -1,15 +1,9 @@
 angular.module('bhima.controllers')
-.controller('LoginController', [
-  '$scope',
-  '$translate',
-  '$location',
-  '$http',
-  '$timeout',
-  'appcache',
-  'appstate',
-  'SessionService',
-  LoginController
-]);
+.controller('LoginController', LoginController);
+
+LoginController.$inject = [
+  '$scope', '$translate', '$location', '$http', '$timeout', 'appcache', 'appstate', 'SessionService',
+];
 
 // The login conroller
 function LoginController($scope, $translate, $location, $http, $timeout, Appcache, appstate, SessionService) {
@@ -75,11 +69,9 @@ function LoginController($scope, $translate, $location, $http, $timeout, Appcach
       // Yay!  We are authenticated.  Create the user session.
       SessionService.create(response.data.user, response.data.enterprise, response.data.project);
 
-      // DEPRECATED
-      // Support old code by registering with appstate
+      // HACK to send this signal to ApplicationController
       $timeout(function () {
-        appstate.set('enterprise', response.data.enterprise);
-        appstate.set('project', response.data.project);
+        appstate.set('login', true);
       });
 
       // navigate to the home page

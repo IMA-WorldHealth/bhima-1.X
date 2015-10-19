@@ -14,14 +14,13 @@ angular.module('bhima.controllers')
   '$http',
   'validate',
   'connect',
-  'appstate',
   'messenger',
   'appcache',
   'precision',
   'util',
   'uuid',
   'SessionService',
-  function ($scope, $location, $http, validate, connect, appstate, messenger, Appcache, precision, util, uuid, SessionService) {
+  function ($scope, $location, $http, validate, connect, messenger, Appcache, precision, util, uuid, Session) {
 
     var dependencies = {},
         invoice = {},
@@ -36,7 +35,7 @@ angular.module('bhima.controllers')
       invoice_date : new Date()
     };
 
-    $scope.project = SessionService.project;
+    $scope.project = Session.project;
 
     var serviceComponent = $scope.serviceComponent = {
       selected : null,
@@ -68,7 +67,8 @@ angular.module('bhima.controllers')
       }
     };
 
-    recoverCache.fetch('session').then(processRecover);
+    recoverCache.fetch('session')
+    .then(processRecover);
 
     function sales (model) {
       $scope.model = model;
@@ -269,7 +269,13 @@ angular.module('bhima.controllers')
         $scope.model.inventory.post(selectedItem.inventoryReference);
         $scope.model.inventory.recalculateIndex();
       }
+
       invoice.items.splice(index, 1);
+
+      // Do not update the recovery object for items added during recovery
+      if (!session.recovering) {
+        updateSessionRecover();
+      }
     }
 
     function submitInvoice() {
@@ -286,7 +292,7 @@ angular.module('bhima.controllers')
       requestContainer.sale = {
         project_id       : $scope.project.id,
         cost             : calculateTotal().total,
-        currency_id      : SessionService.enterprise.currency_id,
+        currency_id      : Session.enterprise.currency_id,
         debitor_uuid     : invoice.debtor.debitor_uuid,
         invoice_date     : util.sqlDate(session.invoice_date),
         note             : invoice.note,
@@ -520,6 +526,8 @@ angular.module('bhima.controllers')
         currentItem.quantity = item.quantity;
       });
 
+      session.is_distributable = session.recovered.is_distributable;
+      session.invoice_date = session.recovered.invoice_date;
 
       // FIXME this is stupid
       // @sfount -- jeez man, no need to be so hard on yourself.
@@ -535,6 +543,8 @@ angular.module('bhima.controllers')
       var recoverObject = session.recoverObject || {
         patientId : invoice.debtor.uuid,
         service : invoice.service,
+        invoice_date : session.invoice_date,
+        is_distributable : session.is_distributable,
         items : []
       };
 
@@ -546,6 +556,7 @@ angular.module('bhima.controllers')
           });
         }
       });
+
       recoverCache.put('session', recoverObject);
     }
 
