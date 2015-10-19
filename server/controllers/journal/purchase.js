@@ -10,8 +10,6 @@ exports.indirectPurchase = indirectPurchase;
 exports.directPurchase = directPurchase;
 exports.integration = integration;
 
-
-
 // handle posting purchase requests
 // TODO/FIXME - it doesn't seem like this is used.  Why?
 function purchase(id, userId, cb) {

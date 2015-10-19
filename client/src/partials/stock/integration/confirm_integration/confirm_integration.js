@@ -24,7 +24,6 @@ function ConfirmStockIntegrationController(connect, $location, Session) {
     vm.loading = true;
     connect.fetch('/stockIntegration')
     .then(function (data) {
-      console.log('downloaded..', data);
       vm.data = data;
     })
     .catch(handleError)
@@ -49,7 +48,7 @@ function ConfirmStockIntegrationController(connect, $location, Session) {
         confirmed_by : vm.user.id,
         paid         : 1
     };
-    return connect.put('purchase', [purchase], 'uuid');
+    return connect.put('purchase', [purchase], ['uuid']);
   }
 
   function writeToJournal () {
