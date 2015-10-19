@@ -58,10 +58,10 @@ function JournalVoucherController($scope, $http, AppCache) {
 
   // load dependencies
   $http.get('/finance/currencies')
-  .success(function (data) {
-    vm.currencies = data;
+  .then(function (response) {
+    vm.currencies = response.data;
   })
-  .error(function (error) {
+  .catch(function (error) {
     console.error(error);
   });
 
@@ -289,10 +289,10 @@ function JournalVoucherTableController($http, $q, $scope) {
 
   // load all accounts
   $http.get('/accounts?type=ohada')
-  .success(function (data) {
-    vm.accounts = data;
+  .then(function (response) {
+    vm.accounts = response.data;
   })
-  .error(handle);
+  .catch(handle);
 
   // load debtors
   $http.get('/finance/debtors')
