@@ -223,7 +223,8 @@ angular.module('bhima.controllers')
     $scope.refreshFilter = function refreshFilter () {
       $scope.filter.param = '';
       dataview.setFilterArgs({
-        param : $scope.filter.param
+        param : $scope.filter.param,
+        re : new RegExp($scope.filter.param, 'i')
       });
       dataview.refresh();
     };

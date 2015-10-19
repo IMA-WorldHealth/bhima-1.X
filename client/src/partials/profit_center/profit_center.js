@@ -1,26 +1,31 @@
 angular.module('bhima.controllers')
-.controller('profitCenter', [
-  '$scope',
-  '$location',
-  '$translate',
-  function ($scope, $location, $translate) {
+.controller('ProfitCenterController', ProfitCenterController);
 
-    var configuration = $scope.configuration = {};
+ProfitCenterController.$inject = [
+  '$location', '$translate'
+];
 
-    configuration.operations = [
-      {
-        key : $translate.instant('PROFIT_CENTER.OPERATIONS.CC'),
-        link : '/profit_center/center/'
-      },
+/**
+  * Profit Center Controller
+  * This controller is responsible for managing menu in profit center
+  */
+function ProfitCenterController ($location, $translate) {
+  var vm = this,
+      configuration = vm.configuration = {};
 
-      {
-        key : $translate.instant('PROFIT_CENTER.OPERATIONS.VERSEMENT'),
-        link : '/profit_center/allocation/'
-      }
-    ];
+  configuration.operations = [
+    {
+      key : $translate.instant('PROFIT_CENTER.OPERATIONS.CC'),
+      link : '/profit_center/center/'
+    },
 
-    $scope.loadPath = function loadPath(path) {
-      $location.path(path);
-    };
-  }
-]);
+    {
+      key : $translate.instant('PROFIT_CENTER.OPERATIONS.VERSEMENT'),
+      link : '/profit_center/allocation/'
+    }
+  ];
+
+  vm.loadPath = function loadPath(path) {
+    $location.path(path);
+  };
+}
