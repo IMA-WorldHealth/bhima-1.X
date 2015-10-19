@@ -333,8 +333,8 @@ function JournalVoucherTableController($http, $q, $scope) {
   // NOTE switching debtor/creditor type destroys
   // previously cached data
   vm.setDebtorOrCreditorType = function (row, type) {
-    row.deb_cred_uuid = undefined;
-    row.entity = undefined;
+    row.deb_cred_uuid = null;
+    row.entity = null;
     row.deb_cred_type = type;
   };
 
@@ -384,7 +384,7 @@ function JournalVoucherTableController($http, $q, $scope) {
   // have been set on a previous selection
   vm.setAccount = function (row) {
     row.account_id = row.account.id;
-    row.deb_cred_uuid = undefined;
-    row.entity = undefined;
+    row.deb_cred_uuid = null;
+    row.entity = null;
   };
 }
