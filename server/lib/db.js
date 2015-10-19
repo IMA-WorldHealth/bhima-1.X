@@ -54,8 +54,8 @@ function exec(sql, params) {
     if (err) { return defer.reject(err); }
 
     connection.query(sql, params, function (err, results) {
-      if (err) { return defer.reject(err); }
       connection.release();
+      if (err) { return defer.reject(err); }
       defer.resolve(results);
     });
   });

@@ -2,60 +2,69 @@ angular.module('bhima.controllers')
 .controller('ConfirmStockIntegrationController', ConfirmStockIntegrationController);
 
 ConfirmStockIntegrationController.$inject = [
-  '$scope', 'validate', 'appstate', 'connect', '$location', 'SessionService'
+  'connect', '$location', 'SessionService'
 ];
 
-function ConfirmStockIntegrationController($scope, validate, appstate, connect, $location, Session) {
-  var dependencies = {},
-      session = $scope.session = { is_direct : false };
+function ConfirmStockIntegrationController(connect, $location, Session) {
+  var vm = this;
 
-  dependencies.stock = {
-    identifier : 'uuid',
-    query      : '/stockIntegration/'
-  };
+  // bind variables to view
+  vm.user = Session.user;
+  vm.project = Session.project;
+  vm.filter = '';
+  vm.loading = false;
 
-  $scope.user = Session.user;
-  $scope.project = Session.project;
+  // bind methods
+  vm.confirmIntegration = confirmIntegration;
+  vm.select = select;
 
-  validate.process(dependencies)
-  .then(initialise);
+  /* ------------------------------------------------------------------------ */
 
-  function initialise(model) {
-    angular.extend($scope, model);
+  function initialise() {
+    vm.loading = true;
+    connect.fetch('/stockIntegration')
+    .then(function (data) {
+      console.log('downloaded..', data);
+      vm.data = data;
+    })
+    .catch(handleError)
+    .finally(function () { vm.loading = false; });
   }
 
-  $scope.getStock = function (purchaseId) {
-    session.selected = $scope.stock.get(purchaseId);
-  };
+  function select(item) {
+    vm.selected = item;
+  }
 
-  $scope.confirmIntegration = function () {
+  function confirmIntegration() {
     writeToJournal()
     .then(updatePurchase)
     .then(generateDocument)
     .catch(handleError);
-  };
+  }
 
   function updatePurchase () {
     var purchase = {
-        uuid         : session.selected.uuid,
+        uuid         : vm.selected.uuid,
         confirmed    : 1,
-        confirmed_by : $scope.user.id,
+        confirmed_by : vm.user.id,
         paid         : 1
     };
-    return connect.put('purchase', [purchase], ['uuid']);
+    return connect.put('purchase', [purchase], 'uuid');
   }
 
   function writeToJournal () {
-    var query = '/confirm_integration/' + session.selected.uuid;
-    return connect.fetch('/journal' + query);
+    var query = 'confirm_integration/' + vm.selected.uuid;
+    return connect.fetch('/journal/' + query);
   }
 
   function generateDocument(res) {
-    var query = '/confirm_integration/' + session.selected.document_id;
-    $location.path('/invoice' + query);
+    var query = 'confirm_integration/' + vm.selected.document_id;
+    $location.path('/invoice/' + query);
   }
 
   function handleError(error) {
     console.log(error);
   }
+
+  initialise();
 }
