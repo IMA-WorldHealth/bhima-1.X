@@ -97,10 +97,10 @@
           <td>
             <table class="table table-condensed table-bordered" ng-if="row.lots.length > 0">
               <tbody>
-                <tr><th colspan="2">{{ row.label }}</th></tr>
+              <tr><th colspan="2">{{ row.label }} <span class="pull-right">[{{ row.maxQuantity }}]</span></th></tr>
               </tbody>
 
-              <tbody ng-repeat="lot in row.lots">
+              <tbody ng-repeat="lot in row.lots | filter:DistributionsCtrl.filterAggregateQuantities(row)">
                 <tr>
                   <td style="width:50%;">{{ "DISTRIBUTION_SERVICE.LOT_NUMBER" | translate }}</td>
                   <th>{{ lot.lot_number }}</th>
@@ -130,7 +130,7 @@
 
         <tr>
           <th colspan="4" class="text-right">{{ "DISTRIBUTION_SERVICE.TOTAL" | translate }}</th>
-          <th colspan="2">{{ DistributionsCtrl.total | currency:DistributionsCtrl.currenyId }}</th>
+          <th colspan="2">{{ DistributionsCtrl.total | currency:DistributionsCtrl.currencyId }}</th>
         </tr>
       </tbody>
     </table>
