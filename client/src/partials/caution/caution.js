@@ -3,10 +3,19 @@ angular.module('bhima.controllers')
 
 CautionController.$inject = [
   '$location', '$translate', '$modal', 'validate', 'connect',
-  'appstate', 'messenger', 'uuid', 'appcache', 'exchange', 'SessionService'
+   'messenger', 'uuid', 'appcache', 'exchange', 'SessionService'
 ];
 
-function CautionController($location, $translate, $modal, validate, connect, appstate, messenger, uuid, Appcache, exchange, Session) {
+/**
+* This controller allows a patient to make a cautionary payment against a future
+* invoice.  This allows the hospital to receive some money up front before
+* beginning a potentailly expensive proceedure without a guarantee of payment.
+* No invoice id needs to be referenced, and any future sales will serve to balance
+* the patient's debtor account.
+*
+* @controller CautionController
+*/
+function CautionController($location, $translate, $modal, validate, connect, messenger, uuid, Appcache, exchange, Session) {
   var vm = this;
 
   // bind state variables
