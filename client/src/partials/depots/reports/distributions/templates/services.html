@@ -4,7 +4,6 @@
       <th>{{'COLUMNS.DATE' | translate }}</th>
       <th>{{'COLUMNS.DEPOT' | translate }}</th>
       <th>{{'COLUMNS.SERVICE' | translate }}</th>
-      <th>{{'COLUMNS.DRUGS' | translate }}</th>
       <th>{{'COLUMNS.NUM_ITEMS' | translate }}</th>
       <th class="hidden-print">{{ 'COLUMNS.REFERENCE' | translate }}</th>
       <th class="hidden-print">{{ 'COLUMNS.ACTIONS' | translate }}</th>
@@ -27,7 +26,6 @@
       <td>{{ distribution.date | date }}</td>
       <td>{{ distribution.text }}</td>
       <td>{{ distribution.name }}</td>
-      <td>{{ distribution.label }}</a> </td>
       <td>{{ distribution.total }}</td>
       <td class="hidden-print">
         <a ng-href="#/invoice/service_distribution/{{ distribution.document_id }}/">
