@@ -47,13 +47,13 @@
             </tr>
 
             <tr ng-if="!ConfirmCtrl.loading && ConfirmCtrl.data.length === 0">
-              <td colspan="4">
-                <div class="alert alert-warning">{{ "PURCHASE.NOT_FOUND" | translate }}</div>
+              <td colspan="4" class="text-center text-danger">
+                <i class="glyphicon glyphicon-exclamation-sign"></i> {{ "PURCHASE.NOT_FOUND" | translate }}
               </td>
             </tr>
 
-            <tr ng-repeat="item in ConfirmCtrl.data | filter:search:ConfirmCtrl.filter | orderBy:'purchase_date'"
-                ng-class="{ 'selected-success': ConfirmCtrl.selected.document_id === item.document_id }">
+            <tr ng-repeat="item in ConfirmCtrl.data | filter:ConfirmCtrl.filter | orderBy:'purchase_date'"
+                ng-class="{ 'selected-success' : ConfirmCtrl.selected.document_id === item.document_id }">
               <td>{{ item.purchase_date | date }}</td>
               <td><a href="/#/stock/entry/report/{{ item.document_id }}">{{ item.reference }}</td>
               <td>{{ item.first }} {{ item.last }}</td>
@@ -102,4 +102,3 @@
     </div>
   </div>
 </main>
-
