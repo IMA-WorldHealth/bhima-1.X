@@ -276,19 +276,19 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/cash_discard/cash_discard.html'
   })
   .when('/cost_center/', {
-    controller: 'costCenter',
+    controller: 'CostCenterController as CenterCtrl',
     templateUrl: 'partials/cost_center/cost_center.html'
   })
   .when('/profit_center/', {
-    controller: 'profitCenter',
+    controller: 'ProfitCenterController as CenterCtrl',
     templateUrl: 'partials/profit_center/profit_center.html'
   })
   .when('/profit_center/center/', {
-    controller: 'profitCenterAnalyse',
+    controller: 'AnalysisProfitCenterController as CenterCtrl',
     templateUrl: 'partials/profit_center/center/analysis_profit_center.html'
   })
   .when('/cost_center/center/', {
-    controller: 'analysisCenter',
+    controller: 'AnalysisCostCenterController as CenterCtrl',
     templateUrl: 'partials/cost_center/center/analysis_center.html'
   })
   .when('/cost_center/assigning/', {
@@ -296,11 +296,11 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/cost_center/assigning/assigning.html'
   })
   .when('/cost_center/allocation/', {
-    controller: 'costCenter.allocation',
+    controller: 'CostCenterAllocationController as CenterCtrl',
     templateUrl: 'partials/cost_center/allocation/allocation.html'
   })
   .when('/profit_center/allocation/', {
-    controller: 'profitCenter.allocation',
+    controller: 'ProfitCenterAllocationController as ProfitCtrl',
     templateUrl: 'partials/profit_center/allocation/allocation.html'
   })
   .when('/section_bilan/', {
@@ -315,8 +315,8 @@ function bhimaconfig($routeProvider) {
     controller: 'patientGroup',
     templateUrl: 'partials/patient/group/groups.html'
   })
-  .when('/group_invoice/:id?', {
-    controller : 'groupInvoice',
+  .when('/group_invoice/', {
+    controller : 'GroupInvoiceController as InvoiceCtrl',
     templateUrl : 'partials/group_invoice/group_invoice.html'
   })
   .when('/support/:id?', {
@@ -690,7 +690,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/cash/cashbox_account_currency/cashbox_account_currency.html'
   })
   .when('/extra_payment', {
-    controller : 'cash.extra_payment',
+    controller : 'ExtraPaymentController as PaymentCtrl',
     templateUrl : 'partials/cash/extra_payment/extra_payment.html'
   })
   // Proposed formal report building structure
