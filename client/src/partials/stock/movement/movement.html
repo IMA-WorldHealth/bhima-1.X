@@ -131,21 +131,13 @@
                         </td>
                       </tr>
                       <tr ng-repeat-end>
-                        <!-- <td width="30%"> -->
-                          <!-- <input  -->
-                          <!--   class="form&#45;bhima" -->
-                          <!--   placeholder="Search lots in {{session.depotFrom.text }}" -->
-                          <!-- > -->
-
-                          <!-- </td> -->
                         <td width="55%">
                           <div ng-if="!row.lot">
-                            <!-- <span class="glyphicon glyphicon&#45;remove&#45;circle error"></span> -->
                             <select
                               class="form-bhima"
                               ng-model="row.lot"
                               ng-change="stockSelected(row)"
-                              ng-options="lot as (lot.label + ' (' + lot.lot_number + ')') for lot in lots.data | orderBy : 'scription' "
+                              ng-options="lot as (lot.label + ' (' + lot.lot_number + ')') for lot in lots.data"
                               >
                               <option value="">-- {{ "STOCK.MOVEMENT.SELECT_LOT" | translate }} {{ session.from.text }} --</option>
                             </select>
