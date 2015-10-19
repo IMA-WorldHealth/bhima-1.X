@@ -35,6 +35,7 @@ function StockServiceDistributionsController($routeParams, $http, $q, $location,
   vm.use        = use;
   vm.retotal    = retotal;
   vm.submit     = submit;
+  vm.filterAggregateQuantities = filterAggregateQuantities;
 
   // start the module up
   startup();
@@ -160,7 +161,7 @@ function StockServiceDistributionsController($routeParams, $http, $q, $location,
       $location.url('/invoice/service_distribution/' + result.data);
     })
     .catch(function (err) {
-      console.log('An error occurred:', err); 
+      console.log('An error occurred:', err);
     });
   }
 
@@ -213,6 +214,18 @@ function StockServiceDistributionsController($routeParams, $http, $q, $location,
           return a.expiration_date > b.expiration_date ? 1 : -1;
         });
 
+        // aggregate the value (in sorted order) so that we can filter as demanded
+        // by the UI
+        i.lots.forEach(function (lot, index, lots) {
+
+          // for the first item, the aggregate quantity is the quantity
+          // for all others, the aggregate quantity is the previous aggregate quantity
+          // plus the current quantity
+          lot.aggregateQuantity = (index === 0) ?
+            0 :
+            lots[index - 1].aggregateQuantity + lots[index - 1].quantity; // quantity up to this one
+        });
+
         // create a nicely formatted label for the typeahead
         i.fmtLabel = i.code + ' ' + i.label;
       });
@@ -220,5 +233,13 @@ function StockServiceDistributionsController($routeParams, $http, $q, $location,
       // expose inventory to the view
       vm.inventory = inventory;
     });
+  }
+
+  // TODO - find a better name
+  // Creates a filter for each row, that removes aggregate quantities
+  function filterAggregateQuantities(row) {
+    return function (lot) {
+      return row.quantity > lot.aggregateQuantity;
+    };
   }
 }
