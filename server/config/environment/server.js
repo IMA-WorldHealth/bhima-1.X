@@ -4,15 +4,16 @@ var config = {
   'rootFile' : '/index.html',
   'port' : 8080,
   'db' : {
-    'host'     : 'localhost',
-    'user'     : 'bhima',
-    'password' : 'HISCongo2013',
-    'database' : 'bhima'
+    'host':     'localhost',
+    'user':     'bhima',
+    'password': 'HISCongo2013',
+    'database': 'bhima'
   },
   'session' : {
     'secret' : 'xopen blowfish',
     'resave' : false,
     'saveUninitialized' : false,
+    'reapInterval' : -1 // disables session reaping
   },
   'uploadFolder' : 'client/upload/',
 
