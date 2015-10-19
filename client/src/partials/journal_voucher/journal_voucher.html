@@ -199,7 +199,7 @@
 
                 <tr>
                   <th colspan="6"  style="text-align:center;">
-                    <p class="help-block" ng-if="JournalVoucherCtrl.clientTableError">
+                    <p class="help-block" ng-if="JournalVoucherCtrl.clientTableError && !JournalVoucherCtrl.serverSuccessMessage">
                       <i class="glyphicon glyphicon-exclamation-sign"></i>
                       {{ "ERROR.ERR_TRANSACTION_FORMAT" | translate }}
                       <!-- The transaction doesn't look correctly formatted.  Did you forget an account? -->
@@ -211,6 +211,7 @@
                     <p style="font-weight:bold; color:green;" ng-if="JournalVoucherCtrl.serverSuccessMessage">
                       <i class="glyphicon glyphicon-ok"></i>
                       {{ JournalVoucherCtrl.serverSuccessMessage | translate }}
+                      <!-- Post Successful! -->
                     </p>
                   </th>
                 <tr>
