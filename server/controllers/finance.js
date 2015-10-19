@@ -95,7 +95,7 @@ exports.postJournalVoucher = function (req, res, next) {
     row.date = date;
 
     // strip the deb_cred_type if the deb_cred_uuid is undefined
-    if (row.deb_cred_uuid === undefined) { row.deb_cred_type = undefined; }
+    if (row.deb_cred_uuid === null) { row.deb_cred_type = null; }
 
     return row;
   });
