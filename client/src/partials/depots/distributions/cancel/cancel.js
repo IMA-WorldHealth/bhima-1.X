@@ -41,7 +41,7 @@ function DepotDistributionsCancelController($routeParams, connect) {
         canceled : 1
       };
 
-      return connect.put('consumption', 'document_id', data);
+      return connect.put('consumption', [data], ['document_id']);
     })
     .catch(handler);
   }
