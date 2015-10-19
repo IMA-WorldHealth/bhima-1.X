@@ -27,6 +27,7 @@ module.exports = function (app, authentication) {
     secret            : cfg.session.secret,
     saveUninitialized : cfg.session.saveUninitialized,
     resave            : cfg.session.resave,
+    reapInterval      : cfg.session.reapInterval,
     unset             : 'destroy',
     cookie            : { secure : true }
   }));
