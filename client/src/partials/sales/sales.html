@@ -47,7 +47,7 @@
             ng-model="serviceComponent.selected"
             ng-options="service as service.name  for service in model.services.data"
           >
-            <option value="" disabled selected>...</option>
+            <option value="" disabled>...</option>
           </select>
           <span class="input-group-btn">
             <button
@@ -63,14 +63,14 @@
   <!-- Distributable or not -->
   <div class="panel" ng-class="{'panel-success' : session.is_distributable, 'panel-warning' : !session.is_distributable}">
     <div class="panel-heading">
-      <i class="glyphicon glyphicon-export"></i> 
+      <i class="glyphicon glyphicon-export"></i>
       <strong>{{ 'SALE.DETAILS' | translate }} : </strong>
     </div>
     <div class="panel-body">
       <div class="col-xs-4">
         <div class="input-group">
           <label class="input-group-addon">{{ 'SALE.DATE' | translate }} :</label>
-          <input class="form-control" type="date" ng-model="session.invoice_date">
+          <input class="form-bhima" type="date" ng-model="session.invoice_date">
         </div>
       </div>
       <div class="col-xs-8">

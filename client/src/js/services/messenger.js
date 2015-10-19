@@ -27,7 +27,6 @@ angular.module('bhima.services')
 
 
     function trust(data) {
-      console.log('trusting ...', String(data));
       return $sce.trustAsHtml(String(data));
     }
 
