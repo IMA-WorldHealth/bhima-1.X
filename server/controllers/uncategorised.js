@@ -1287,23 +1287,26 @@ exports.getClassSolde = function (req, res, next) {
 
 };
 
+// gets the stock available for integration
 exports.getStockIntegration = function (req, res, next) {
+  'use strict';
 
-  var sql =
-    'SELECT DISTINCT p.uuid, p.reference, p.cost, p.creditor_uuid, p.project_id, ' +
-      'u.first, u.last, p.purchaser_id, p.purchase_date, p.note, m.document_id, ' +
-      's.purchase_order_uuid, pr.abbr ' +
-    'FROM purchase p ' +
-    'JOIN stock s ON s.purchase_order_uuid = p.uuid ' +
-    'JOIN movement m ON s.tracking_number = m.tracking_number ' +
-    'JOIN project pr ON pr.id = p.project_id ' +
-    'JOIN user u ON u.id = p.emitter_id ' 
-    'WHERE p.confirmed = 0 AND p.is_integration = 1';
+  var sql;
+
+  sql =
+    'SELECT DISTINCT p.uuid, CONCAT(pr.abbr, p.reference) AS reference, ' +
+      'u.first, u.last, p.purchase_date, p.note, m.document_id ' +
+    'FROM purchase AS p ' +
+    'JOIN stock AS s ON s.purchase_order_uuid = p.uuid ' +
+    'JOIN movement AS m ON s.tracking_number = m.tracking_number ' +
+    'JOIN project AS pr ON pr.id = p.project_id ' +
+    'JOIN user AS u ON u.id = p.emitter_id ' +
+    'WHERE p.confirmed = 0 AND p.is_integration = 1;';
 
   db.exec(sql)
   .then(function (data) {
-    res.send(data);
+    res.status(200).json(data);
   })
-  .catch(function (err) { next(err); })
+  .catch(next)
   .done();
 };

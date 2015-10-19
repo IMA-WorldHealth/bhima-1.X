@@ -386,14 +386,11 @@ angular.module('bhima.controllers')
 
 
     function simulateWritePurchaseLine(purchase) {
-      return connect.post('purchase', [purchase], ['uuid']);
+      return connect.post('purchase', purchase);
     }
 
     function simulateWritePurchaseItems(purchase_uuid) {
-      var deferred = $q.defer();
-      var writeRequest = [];
-
-      writeRequest = session.stocks.map(function (item) {
+      var requests = session.stocks.map(function (item) {
         var writeItem = {
           uuid           : uuid(),
           purchase_uuid  : purchase_uuid,
@@ -402,24 +399,14 @@ angular.module('bhima.controllers')
           unit_price     : item.purchase_price,
           total          : item.quantity * item.purchase_price
         };
-        return connect.post('purchase_item', [writeItem], ['uuid']);
+        return connect.post('purchase_item', writeItem);
       });
 
-      $q.all(writeRequest)
-      .then(function (result) {
-        deferred.resolve(result);
-      })
-      .catch(function (error) {
-        deferred.reject(error);
-      });
-      return deferred.promise;
+      return $q.all(requests);
     }
 
     function handleError(error) {
-      $translate('PURCHASE.WRITE_FAILED')
-      .then(function (value) {
-         messenger.danger(value);
-      });
+      messenger.danger($translate.instant('PURCHASE.WRITE_FAILED'));
     }
 
     $scope.formatAccount = formatAccount;
