@@ -50,14 +50,12 @@ function initialise() {
 function exec(sql, params) {
   var defer = q.defer();
 
-  // uncomment for console.logs().  Warning -- slows down trial balance terribly
-  // console.log('[db] [exec]', sql);
   con.getConnection(function (err, connection) {
     if (err) { return defer.reject(err); }
 
     connection.query(sql, params, function (err, results) {
-      if (err) { return defer.reject(err); }
       connection.release();
+      if (err) { return defer.reject(err); }
       defer.resolve(results);
     });
   });
@@ -76,6 +74,7 @@ function execute(sql, callback) {
       if (err) { return callback(err); }
       return callback(null, results);
     });
+
   });
 }
 
