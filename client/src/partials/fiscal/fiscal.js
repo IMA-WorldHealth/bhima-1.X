@@ -27,7 +27,6 @@ function FiscalController ($scope, $http, $translate, appstate, validate, sessio
   $scope.getTypeSolde = getTypeSolde;
   $scope.getSolde     = getSolde;
   $scope.error        = error;
-  $scope.getFiscalYearLastDate = getFiscalYearLastDate;
 
   // start up the module
   function startup() {
@@ -92,27 +91,6 @@ function FiscalController ($scope, $http, $translate, appstate, validate, sessio
     return $http.get('/getTypeSolde/'+fiscalYearId+'/'+accountType+'/'+isCharge)
     .then(function (data) {
       return data;
-    })
-    .catch(error);
-  }
-
-  /**
-    * This function is responsible to get the last date of a fiscal year given
-    */
-  function getFiscalYearLastDate (fy_id) {
-    dependencies.period = {
-      query : {
-        tables : {
-          period : { columns : ['period_start', 'period_stop'] }
-        },
-        where : ['period.fiscal_year_id='+fy_id]
-      }
-    };
-
-    validate.refresh(dependencies, ['period'])
-    .then(function (model) {
-      console.log(model.period.data[model.period.data.length-1].period_stop);
-      return model.period.data[model.period.data.length-1].period_stop;
     })
     .catch(error);
   }
