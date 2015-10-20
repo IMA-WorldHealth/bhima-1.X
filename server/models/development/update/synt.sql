@@ -78,7 +78,7 @@ INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`) V
 (115, 'Dashboards', 'TREE.DASHBOARD.TITLE', 'Dashboards', 0, '/partials/dashboards/', '/dashboards'),
 (116, 'Finance Dashboar', 'TREE.DASHBOARD.FINANCE', 'Finance Dashboard', 115, '/partials/dashboards/finance/finance.html', '/dashboards/finance');
 
--- Adding column is_charge 
+-- Adding column is_charge
 -- Date: 2015-08-20
 -- By: Chris LOMAME
 --
@@ -126,7 +126,7 @@ UPDATE  `bhima`.`transaction_type` SET  `service_txt` =  'reversing_stock' WHERE
 USE bhima;
 
 -- Create new units relatives to Budget Module
--- 
+--
 -- Date: 2015-09-03
 -- By: Bruce MBAYO
 
@@ -141,8 +141,8 @@ VALUES (117, 'Budget Analysis', 'TREE.BUDGET_ANALYSIS', 'analyse du budget coura
 
 DELETE FROM `unit` WHERE id = 33;
 
--- Update currency, decoupling format and definition to utilise locale format 
--- 
+-- Update currency, decoupling format and definition to utilise locale format
+--
 -- Date : 2015-09-01
 -- @sfount
 ALTER TABLE `currency` DROP COLUMN `separator`;
@@ -154,7 +154,7 @@ ALTER TABLE `currency` MODIFY `format_key` VARCHAR(20) NOT NULL;
 
 -- Updates to unit table
 
--- 
+--
 -- DROPs unused has_children field
 --
 -- Date: 2015-01-11
@@ -211,20 +211,20 @@ CHANGE `is_percent` `is_percent` tinyint(1) DEFAULT '0';
 
 ALTER TABLE `rubric`
 CHANGE `is_discount` `is_discount` tinyint(1) DEFAULT '0';
-ALTER TABLE `rubric`  
+ALTER TABLE `rubric`
 CHANGE `is_percent` `is_percent` tinyint(1) DEFAULT '0';
-ALTER TABLE `rubric`  
+ALTER TABLE `rubric`
 CHANGE `is_advance` `is_advance` tinyint(1) DEFAULT '0';
-ALTER TABLE `rubric`  
+ALTER TABLE `rubric`
 CHANGE `is_social_care` `is_social_care` tinyint(1) DEFAULT '0';
 
--- Drop column location_id from table supplier 
+-- Drop column location_id from table supplier
 -- Date: 2015-09-14
 -- By: Chris LOMAME
 --
 USE bhima;
 
-ALTER TABLE  `supplier` 
+ALTER TABLE  `supplier`
 DROP FOREIGN KEY  `supplier_ibfk_1` ;
 
 ALTER TABLE `supplier`
@@ -249,8 +249,8 @@ DELETE FROM `unit` WHERE `unit`.`id` = 92;
 -- Date: 2015-09-17
 -- By: Bruce Mbayo
 
-UPDATE `enterprise` 
-SET `name`='Institut Médical Chrétien du Kasaï' 
+UPDATE `enterprise`
+SET `name`='Institut Médical Chrétien du Kasaï'
 WHERE `id`=200;
 
 -- Transaction type : groupe invoice
@@ -258,7 +258,7 @@ WHERE `id`=200;
 -- Date: 2015-09-21
 -- By: Bruce Mbayo
 
-INSERT INTO `transaction_type` (`service_txt`) 
+INSERT INTO `transaction_type` (`service_txt`)
 VALUES ('group_invoice');
 
 -- Change stock URL route
@@ -279,10 +279,10 @@ ALTER TABLE consumption ADD COLUMN `canceled` BOOLEAN NOT NULL DEFAULT 0;
 -- Date: 2015-09-22
 -- By: Bruce M.
 
-ALTER TABLE  `cost_center` 
+ALTER TABLE  `cost_center`
 DROP FOREIGN KEY  `cost_center_ibfk_1` ;
 
-ALTER TABLE  `service` 
+ALTER TABLE  `service`
 DROP FOREIGN KEY  `service_ibfk_1` ;
 --
 -- Dedrick Kitamuka
@@ -293,17 +293,17 @@ DROP FOREIGN KEY  `service_ibfk_1` ;
 INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
 VALUES (120, 'Rapport situation group debiteur', 'TREE.DEBITOR_GROUP_REPORT', 'pour voir le rapport pdf detaille de group de debiteur', 10, '/partials/reports/debitor_group_report', '/reports/debitor_group_report/');
 
--- 
+--
 -- jniles
 -- Oct 8, 2015
 -- Remove irrelevant stock reports, add new stock report
 --
 DELETE FROM unit WHERE id IN (84, 85, 86);
 INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
-VALUES (121, 'Stock Distributions By Depot', 'TREE.DEPOT_DISTRIBUTIONS', 'This report combines distributions to patients, losses, rummage, and services into a singe report', 10, '/partials/reports/distributions', '/reports/distributions/');
+VALUES (130, 'Stock Distributions By Depot', 'TREE.DEPOT_DISTRIBUTIONS', 'This report combines distributions to patients, losses, rummage, and services into a singe report', 10, '/partials/reports/distributions', '/reports/distributions/');
 
 -- Create new budget
--- 
+--
 -- Date: 2015-09-16
 -- By: Bruce Mbayo
 
@@ -437,8 +437,8 @@ UPDATE `unit` SET `unit`.`parent`=129 WHERE `unit`.`id`=87;
 -- TFR
 UPDATE `unit` SET `unit`.`parent`=129 WHERE `unit`.`id`=88;
 -- grand livre
-UPDATE `unit` SET 
-	`unit`.`parent`=129, 
+UPDATE `unit` SET
+	`unit`.`parent`=129,
 	`unit`.`name`='Rapport Grand Livre',
 	`unit`.`key`='TREE.GRAND_LIVRE_REPORT'
 WHERE `unit`.`id`=89;
@@ -454,3 +454,17 @@ UPDATE `unit` SET `unit`.`parent`=129 WHERE `unit`.`id`=38;
 
 UPDATE `unit` SET `unit`.`key`='TREE.PATIENT_REGISTRATION' WHERE `unit`.`id`=14;
 UPDATE `unit` SET `unit`.`key`='TREE.USERS' WHERE `unit`.`id`=4;
+
+
+-- Setting all class 6 accounts to is_charge=1
+-- Setting all class 7 accounts to is_charge=0
+-- Date: 2015-10-19
+-- By: Bruce Mbayo
+
+UPDATE `account` SET `account`.`is_charge`=1
+WHERE `account`.`is_charge` IS NULL AND LEFT(`account`.`account_number`, 1)=6;
+
+UPDATE `account` SET `account`.`is_charge`=0
+WHERE `account`.`is_charge` IS NULL AND LEFT(`account`.`account_number`, 1)=7;
+
+-- NOTA : The last unit table ID is 130

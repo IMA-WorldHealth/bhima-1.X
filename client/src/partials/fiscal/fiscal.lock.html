@@ -1,4 +1,4 @@
-<div class="panel panel-danger" ng-controller="fiscal.lock">
+<div class="panel panel-danger" ng-controller="FiscalLockController as FiscalCtrl">
 
   <div class="panel-heading" ng-if="fiscal">
     <i class="glyphicon glyphicon-lock"></i> <b>{{ 'FISCAL_YEAR.LOCK' | translate }} : {{ fiscal.fiscal_year_txt }}</b>
@@ -6,43 +6,7 @@
 
   <div class="panel-body">
     <!-- Resultat -->
-    <table class="table table-condensed">
-      <thead>
-        <tr>
-          <th>{{ 'FISCAL_YEAR.CHARGE' | translate }} ({{ 'FISCAL_YEAR.CLASS_6' | translate }})</th>
-          <th>{{ 'FISCAL_YEAR.PROFIT' | translate }} ({{ 'FISCAL_YEAR.CLASS_7' | translate }})</th>
-          <th></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>{{ session.solde6 | currency }}</td>
-          <td>{{ session.solde7 | currency }}</td>
-          <td>
-          </td>
-          <td>
-          </td>
-        </tr>
-      </tbody>
-      <thead>
-        <tr>
-          <th>{{ 'FISCAL_YEAR.OTHER_CHARGE' | translate }} ({{ 'FISCAL_YEAR.CLASS_8' | translate }})</th>
-          <th>{{ 'FISCAL_YEAR.OTHER_PROFIT' | translate }} ({{ 'FISCAL_YEAR.CLASS_8' | translate }})</th>
-          <th></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>{{ session.solde8Charge | currency }}</td>
-          <td>{{ session.solde8Profit | currency }}</td>
-          <td>
-          </td>
-          <td>
-          </td>
-        </tr>
-      </tbody>
+    <table class="table table-condensed table-bordered">
       <thead>
         <tr>
           <th>{{ 'FISCAL_YEAR.TOTAL_CHARGE' | translate }} </th>
@@ -52,13 +16,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr ng-class="{'success':session.observation==1, 'danger':session.observation==-1}">
           <td>{{ session.charge | currency }}</td>
           <td>{{ session.produit | currency }}</td>
-          <td class="alert " ng-class="{'alert-success':session.observation==1, 'alert-danger':session.observation==-1}">
+          <td>
             {{ session.produit - session.charge | number:0 }} $
           </td>
-          <td class="alert " ng-class="{'alert-success':session.observation==1, 'alert-danger':session.observation==-1}">
+          <td>
             <span ng-if="session.observation==1">
               {{ 'FISCAL_YEAR.BONUS' | translate }}
             </span>
@@ -67,17 +31,17 @@
             </span>
           </td>
         </tr>
-      </tbody>      
-    </table>    
+      </tbody>
+    </table>
     <hr>
     <div class="form-group">
-      <label>{{ 'FISCAL_YEAR.SELECT_RESULTAT_ACCOUNT' | translate }} 
-      <span ng-if="session.resultat_account">: 
-        <b>[{{session.resultat_account.account_number}}]</b> 
+      <label>{{ 'FISCAL_YEAR.SELECT_RESULTAT_ACCOUNT' | translate }}
+      <span ng-if="session.resultat_account">:
+        <b>[{{session.resultat_account.account_number}}]</b>
         {{session.resultat_account.account_txt}}
       </span></label>
-      <select 
-      class="form-bhima" 
+      <select
+      class="form-bhima"
       ng-model="session.resultat_account"
       ng-options="ac as formatAccount(ac) for ac in resultatAccount.data">
         <option value="" disabled>{{ 'FISCAL_YEAR.RESULTAT_ACCOUNTS' | translate }}</option>
@@ -86,7 +50,7 @@
   </div>
   <div class="panel-footer">
     <button class="btn btn-sm btn-success" ng-click="closeFiscalYear(session.selectedToLock)" ng-disabled="formStepTwo.$invalid">
-      <i class="glyphicon glyphicon-ok-circle"></i> 
+      <i class="glyphicon glyphicon-ok-circle"></i>
       {{ 'UTIL.SUBMIT' | translate }}
     </button>
   </div>
