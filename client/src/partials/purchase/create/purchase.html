@@ -38,7 +38,7 @@
 
           <div class="form-group">
             <label for="saledate">{{ 'PURCHASE.CREATE.DATE' | translate }}</label>
-            <input type="date" id="purchaseDate" class="form-bhima" ng-model="session.purchase.purchase_date">
+            <input type="date" id="purchaseDate" class="form-bhima" ng-model="session.purchase.purchase_date" max="{{ session.today | date:'yyyy-mm-dd' }}">
           </div>
 
           <div class="form-group">

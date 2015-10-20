@@ -1816,7 +1816,7 @@ CREATE TABLE `sale` (
   `note` text,
   `posted` tinyint(1) NOT NULL DEFAULT '0',
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `is_distributable` bit(1) NOT NULL DEFAULT b'1',
+  `is_distributable` BOOLEAN NOT NULL DEFAULT 1,
   PRIMARY KEY (`uuid`),
   KEY `reference` (`reference`),
   KEY `project_id` (`project_id`),

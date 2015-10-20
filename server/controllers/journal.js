@@ -63,6 +63,8 @@ tableRouter = {
 // routes that are not HTTP endpoints.  Perhaps it would be better to have
 // two separate functions for doing that, rather than a single endpoint.
 function request (table, id, user_id, done, debCaution, details) {
+
+  console.log('Call for TABLE:', table);
   // handles all requests coming from the client
   if (debCaution >= 0) {
     tableRouter[table](id, user_id, done, debCaution);

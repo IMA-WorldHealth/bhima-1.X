@@ -4,8 +4,8 @@ angular.module('bhima.controllers')
   '$q',
   '$http',
   '$window',
-  'stockControler',
-  function ($scope, $q, $http, $window, stockControler) {
+  'StockDataService',
+  function ($scope, $q, $http, $window, StockDataService) {
     var session = $scope.session = {};
 
     session.timestamp = new Date();
@@ -28,13 +28,13 @@ angular.module('bhima.controllers')
         inventories.forEach(function (item) {
           var inventory = {};
 
-          stockControler.getStock(item.inventory_uuid)
+          StockDataService.getStock(item.inventory_uuid)
           .then(function (data) { inventory.stock = data;})
-          .then(stockControler.getStockMin(item.inventory_uuid)
+          .then(StockDataService.getStockMin(item.inventory_uuid)
                 .then(function (data) { inventory.stock_min = data; })
-                .then(stockControler.getStockSecurity(item.inventory_uuid)
+                .then(StockDataService.getStockSecurity(item.inventory_uuid)
                       .then(function (data) { inventory.stock_security = data;})
-                      .then(stockControler.getStockMax(item.inventory_uuid)
+                      .then(StockDataService.getStockMax(item.inventory_uuid)
                             .then(function (data) { 
                               inventory.stock_max = data; 
                               inventory.uuid = item.inventory_uuid;
