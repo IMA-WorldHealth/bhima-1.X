@@ -113,7 +113,6 @@ angular.module('bhima.controllers')
     function sum (a,b) { return a + b.cost; }
 
     function getRecipientDetail(result) {
-      console.log('result', result);
       model.currency = result.currency;
       model.initialCurrency = model.selectedCurrency = model.currency.get(model.common.enterprise.currency_id);
       var debtor_uuid = result.saleRecords.data[0].debitor_uuid;

@@ -14,7 +14,7 @@ angular.module('bhima.controllers')
           donations : { columns : ['uuid', 'date'] },
           donor : { columns : ['name::name_donor'] },
           employee : { columns : ['name::name_employee', 'prenom', 'postnom'] },
-          user : { columns : ['first', 'last'] } 
+          user : { columns : ['first', 'last'] }
         },
         join : [
           'donations.donor_id=donor.id',
@@ -32,7 +32,7 @@ angular.module('bhima.controllers')
           },
           'donation_item' : {
             columns : ['donation_uuid', 'tracking_number']
-          },          
+          },
           'stock' : {
             columns : ['inventory_uuid', 'quantity']
           },
@@ -78,7 +78,7 @@ angular.module('bhima.controllers')
       } else if (res.getGeneraLedger.data.length){
         $scope.trans_id = res.getTransaction.data[0].trans_id;
       }
-      
+
       model.donations = res.donations.data;
       model.confirmDonations = res.confirmDonations.data.pop();
     }
@@ -101,7 +101,7 @@ angular.module('bhima.controllers')
         .catch(function (err){
           messenger.danger('error', err);
         });
-  		});     
-    });    
+  		});
+    });
   }
 ]);

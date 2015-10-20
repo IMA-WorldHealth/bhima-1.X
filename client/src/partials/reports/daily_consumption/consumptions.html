@@ -17,7 +17,7 @@
           </thead>
           <tbody>
             <tr ng-repeat="item in itemInConsumptions | orderBy:'text'">
-              <td>{{$index + 1}}</td>
+              <td>{{ $index + 1 }}</td>
               <td>{{ item.date | date}}</td>
               <td>{{ item.quantity}}</td>
             </tr>
