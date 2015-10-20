@@ -440,4 +440,4 @@ UPDATE `unit` SET `unit`.`key`='TREE.USERS' WHERE `unit`.`id`=4;
 -- Tree link for debtor group annual report
 --
 INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
-VALUES (121, 'Annual Debtor Group Report', 'TREE.DEBTOR_GROUP_ANNUAL_REPORT', 'provides the evolution of all debtor group debts to the enterprise', 10, 'partials/reports_proposed/debtorgroup/annual', '/reports/debtorgroup/annual');
+VALUES (130, 'Annual Debtor Group Report', 'TREE.DEBTOR_GROUP_ANNUAL_REPORT', 'provides the evolution of all debtor group debts to the enterprise', 10, 'partials/reports_proposed/debtorgroup/annual', '/reports/debtorgroup/annual');
