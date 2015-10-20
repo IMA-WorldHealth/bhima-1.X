@@ -160,7 +160,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/price_list/pricelist.html'
   })
   .when('/exchange_rate', {
-    controller : 'exchangeRate',
+    controller : 'ExchangeRateController as ExchangeCtrl',
     templateUrl: 'partials/exchange_rate/exchange_rate.html'
   })
   .when('/create_account', {
