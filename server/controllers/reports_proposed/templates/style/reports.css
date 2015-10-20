@@ -83,3 +83,41 @@ tr.outline {
 .text-underline {
   text-decoration : underline;
 }
+
+/* generic pdf tables */
+
+.ptable {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.ptable th,
+.ptable td {
+  margin : 0 1px; /* don't shove text right up against the border */
+  border : 1px solid #9F9F9F;
+}
+
+.ptable th {
+  font-weight: bold;
+}
+
+.indicator {
+  padding: 0.5em;
+  border-left-width: 0.5em;
+  border-left-style: solid;
+}
+
+.indicator-warning {
+  border-color: #E0CB52;
+  background: #FCFAEE;
+}
+
+.indicator-success {
+  border-color: #52E052;
+  background: #E9FBE9;
+}
+
+.indicator-error {
+  border-color: #E05252;
+  background: #FBE9E9;
+}

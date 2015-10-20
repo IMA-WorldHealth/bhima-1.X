@@ -6,23 +6,24 @@
 </head>
 
 <body>
+  <section id="letterhead"></section>
 
-  <section id="title" class="center">
+  <section id="title" class="front-matter">
       <h5>IMCK Hopital Bon Berger</h5>
-      <h5>Balance Sheet</h5>
-      <h5>As of {{=it.reportDate}}</h5>
+      <h5>Debtor Group Annual Report</h5>
+      <h5>{{= it.reportDate }}</h5>
   </section>
 
   <section>
-    <table>
+    <table class="ptable">
       <thead>
         <tr>
           <th>Account Number</th>
           <th>Debtor Group</th>
           <th>
-            <table>
+            <table style="height:100%;">
               <tr>
-                <th colspan="2"> Balance {{= it.meta.startMonth }} / {{= it.meta.startYear }} </th>
+                <th colspan="2"> Balance ({{= it.meta.start }})</th>
               </tr>
               <tr>
                 <th> Debit </th>
@@ -32,11 +33,11 @@
           </th>
           <th>Debits</th>
           <th>Credits</th>
-          <th>Balance {{= it.meta.endMonth }}/{{= it.meta.endYear }}</th>
+          <th>Balance ({{= it.meta.stop }})</th>
         </tr>
       </thead>
 
-      <tbody>
+      <tbody class="text-condensed">
 
         {{ for (var account in it.accounts) {  }}
 
@@ -51,6 +52,16 @@
           </tr>
 
         {{ } }}
+
+        {{? (it.meta.size === 0) }}
+          <tr>
+            <td colspan="7">
+              <span class="indicator indicator-success"
+                No data found for this Fiscal Year!
+              </span>
+            </td>
+          </tr>
+        {{?}}
       </tbody>
     </table>
   </section>

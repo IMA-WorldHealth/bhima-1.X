@@ -53,7 +53,7 @@ var documentHandler = {
     context :  debitorGroupReportContext
   },
   debtor_group_annual_report : {
-    template : dots.debtor_group_report,
+    template : dots.debtor_group_annual_report,
     context :  debtorGroupAnnualReportContext
   }
 };
@@ -109,8 +109,6 @@ exports.build = function (req, res, next) {
     reportData.path = reportData.path || __dirname;
     compiledReport = handler.template(reportData);
 
-
-
     // wkhtmltopdf exceptions not handled
     // TODO Verify with wkhtmltopdf docs that the first parameter will ONLY ever return error codes
     var pdf = wkhtmltopdf(compiledReport, configuration, function (errorCode, signal, a) {
@@ -142,7 +140,7 @@ function initialise() {
 
     if (!exists) {
       fs.mkdir(writePath, function (err) {
-        if (err) throw err;
+        if (err) { throw err; }
 
         console.log('[controllers/report] output folder written :', writePath);
       });
