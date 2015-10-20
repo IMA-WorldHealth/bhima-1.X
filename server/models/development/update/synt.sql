@@ -308,8 +308,7 @@ VALUES (121, 'Stock Distributions By Depot', 'TREE.DEPOT_DISTRIBUTIONS', 'This r
 -- By: Bruce Mbayo
 
 INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
-VALUES (121, 'Budget Management', 'TREE.BUDGET_MANAGEMENT', 'Budgets Management module', 8, '/partials/budget/new', '/budgeting/new/');
-
+VALUES (131, 'Budget Management', 'TREE.BUDGET_MANAGEMENT', 'Budgets Management module', 8, '/partials/budget/new', '/budgeting/new/');
 
 -- Reorder nodes of unit table
 -- Date: 2015-10-07
@@ -460,4 +459,4 @@ UPDATE `unit` SET `unit`.`key`='TREE.USERS' WHERE `unit`.`id`=4;
 -- Tree link for debtor group annual report
 --
 INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
-VALUES (130, 'Annual Debtor Group Report', 'TREE.DEBTOR_GROUP_ANNUAL_REPORT', 'provides the evolution of all debtor group debts to the enterprise', 10, 'partials/reports_proposed/debtorgroup/annual', '/reports/debtorgroup/annual');
+VALUES (130, 'Annual Debtor Group Report', 'TREE.DEBTOR_GROUP_ANNUAL_REPORT', 'provides the evolution of all debtor group debts to the enterprise', 128, 'partials/reports_proposed/debtorgroup/annual', '/reports/debtorgroup/annual');

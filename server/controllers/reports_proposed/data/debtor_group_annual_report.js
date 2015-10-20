@@ -16,6 +16,19 @@ var numeral = require('numeral');
 
 var formatDollar = '$0,0.00';
 
+// takes in a date object, spits out
+// dd-MM-yyyy format
+function dateFmt(date) {
+  var day = date.getDate(),
+      month = date.getMonth() + 1,
+      year = date.getFullYear();
+
+  day = (day < 10) ? '0' + day : day;
+  month = (month < 10) ? '0' + month: month;
+
+  return [day, month, year].join('-');
+}
+
 // expose the http route
 exports.compile = function (options) {
   'use strict';
@@ -44,9 +57,11 @@ exports.compile = function (options) {
 
     context.meta = {
       label : year.label,
-      start : year.start,
-      stop  : year.stop
+      start : dateFmt(year.start),
+      stop  : dateFmt(year.stop)
     };
+
+    console.log('context.meta:', context.meta);
 
     // get the opening balances
     sql =
@@ -88,7 +103,6 @@ exports.compile = function (options) {
   .then(function (accounts) {
 
     console.log('context.accounts', context.accounts);
-    console.log('accounts:');
 
     accounts.forEach(function (account) {
       var ref = context.accounts[account.account_number];
@@ -114,6 +128,9 @@ exports.compile = function (options) {
       var ref = context.accounts[account.account_number];
       ref.closingBalance = fmt(account.balance);
     });
+
+    // record the size of the object
+    context.meta.size = Object.keys(accounts).length;
 
     return context;
   });
