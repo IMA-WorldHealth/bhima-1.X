@@ -7,7 +7,8 @@ var db = require('../../../server/lib/db'),
 db.initialise();
 
 (function queryAccount() {
-	var sqlUpdateMatch = 'UPDATE account a JOIN account b ON a.parent=b.account_number SET a.parent=b.id ;';
+	var sqlUpdateMatch = 'UPDATE account a JOIN account b ON a.parent=b.account_number SET a.parent=b.id '+
+	 										 'WHERE a.is_ohada=b.is_ohada;';
 	var sqlAccount 		 = 'SELECT * FROM account;';
 
 	executeUpdate()
@@ -47,29 +48,31 @@ db.initialise();
 				// account.parent fait partiellemnt partie de account.account_number
 				var chaine = String(acc.parent);
 				var cut    = 0;
-				var accountId;
+				var accountObject;
 				// on retranche progressivement un caractere de account.parent
 				// afin de trouver le bon compte
 				while (cut !== chaine.length) {
-					accountId = getAccountId(chaine.substr(0, chaine.length - cut));
-					if (accountId) {
-						acc.parent = accountId;
+					accountObject = getAccount(chaine.substr(0, chaine.length - cut), acc.is_ohada);
+					if (accountObject) {
+						acc.parent = accountObject.id;
 						break;
 					}
 					cut++;
-				} 
+				}
 			}
 		});
-		
-		function getAccountId(account_number) {
+
+		function getAccount(account_number, isOhada) {
 			/*
 			 * Objectif : Cherche le compte qui a pour account_number= 'account_number'
+			 * isOhada est un critere pour placer les comptes dans les parents de leur nature
+			 * c-a-d les comptes ohada dans les parents ohada et vice versa
 			 */
 			account_number = Number(account_number);
 			var result = null;
 			for(var i in accounts) {
-				if (accounts[i].account_number === account_number) {
-					result = accounts[i].id;
+				if (accounts[i].account_number === account_number && accounts[i].is_ohada === isOhada) {
+					result = accounts[i];
 					break;
 				}
 			}
