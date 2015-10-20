@@ -12,26 +12,26 @@
   <div class="pull-right">
     <span class="dropdown pull-right">
       <button class="btn btn-sm btn-primary dropdown-toggle">
-        {{ currency.symbol || "..." }}
+        {{ CautionCtrl.currency.symbol || "..." }}
         <span class="caret" data-caret="&#9660;"></span>
       </button>
 
       <ul class="dropdown-menu ">
-        <li ng-repeat="currency in cashbox_accounts.data">
-        <a class="clk" ng-click="setCurrency(currency)">  ({{ currency.cash_box_id }}) {{currency.symbol}} </a>
+        <li ng-repeat="currency in CautionCtrl.cashbox_accounts.data">
+        <a class="clk" ng-click="CautionCtrl.setCurrency(currency)">{{ currency.symbol }}</a>
         </li>
       </ul>
     </span>
 
     <span class="dropdown pull-right" style="padding-right: 5px;">
       <button class="btn btn-sm btn-primary dropdown-toggle">
-        {{ cashbox.text || "..." }}
+        {{ CautionCtrl.cashbox.text || "..." }}
         <span class="caret" data-caret="&#9660;"></span>
       </button>
 
       <ul class="dropdown-menu">
-        <li ng-repeat="box in cashboxes.data">
-          <a class="clk" ng-click="setCashBox(box)"> {{box.text}} - {{box.symbol}} </a>
+        <li ng-repeat="box in CautionCtrl.cashboxes.data">
+          <a class="clk" ng-click="CautionCtrl.setCashBox(box)">{{ box.text }}</a>
         </li>
       </ul>
     </span>
@@ -39,93 +39,84 @@
 </nav>
 
 <main>
-
   <div class="row margin-top-10">
     <div class="col-xs-6">
-      <div find-patient on-search-complete="loadDebtor(patient)"></div>
+      <find-patient on-search-complete="CautionCtrl.loadPatient(patient)" enable-refresh="true"></find-patient>
     </div>
   </div>
 
-  <div class="row">
+  <div class="row" ng-if="CautionCtrl.debtor">
     <div class="col-xs-6">
       <div class="panel panel-default">
         <div class="panel-heading">{{ "CAUTION.PATIENT" | translate }}</div>
+        <form class="form-horizontal panel-body">
+          <div class="col-xs-6">
 
-        <div ng-show="noEmpty" class="panel-body">
-          <form class="form-horizontal">
-            <div class="col-xs-6">
-
-              <div class="form-group">
-                <label class="control-label col-xs-2">{{ "CAUTION.NAME" | translate }}</label>
-                <p class="form-control-static col-xs-10">{{debtor.name}}</p>
-              </div>
-
-              <div class="form-group">
-                <label class="control-label col-xs-2">{{ "CAUTION.AGE" | translate }}</label>
-                <p class="form-control-static col-xs-10">{{debtor.age}}</p>
-              </div>
-
-              <div class="form-group">
-                <label class="control-label col-xs-4">{{ "CAUTION.GENDER" | translate }}</label>
-                <p class="form-control-static col-xs-8">{{debtor.sex}}</p>
-              </div>
+            <div class="form-group">
+              <label class="control-label col-xs-3">{{ "CAUTION.NAME" | translate }}</label>
+              <p class="form-control-static col-xs-9">{{ CautionCtrl.debtor.name }}</p>
             </div>
 
-            <div class="col-xs-6">
-              <label class="control-label">{{ "CAUTION.ORIGIN" | translate }}</label>
-              <p class="form-control-static">
-                {{location.village}}<br>
-                {{location.sector}}<br>
-                {{location.province}}<br>
-                {{location.country}}
-              </p>
+            <div class="form-group">
+              <label class="control-label col-xs-3">{{ "CAUTION.AGE" | translate }}</label>
+              <p class="form-control-static col-xs-9">{{ CautionCtrl.debtor.age }}</p>
             </div>
-          </form>
-        </div>
-        <span ng-show="noEmpty">
-          <div class="alert alert-danger" ng-if="account_balance > 0">
-            <label>
-              <h4>
-                <span class="glyphicon" ng-class="{'glyphicon-warning-sign error' : true }"></span> {{ "CAUTION.ATTENTION" | translate }} : <b>{{ account_balance | currency:session.currency }}</b>
-              </h4>
-            </label>
+
+            <div class="form-group">
+              <label class="control-label col-xs-3">{{ "CAUTION.GENDER" | translate }}</label>
+              <p class="form-control-static col-xs-9">{{ CautionCtrl.debtor.sex }}</p>
+            </div>
           </div>
-        </span>
 
+          <div class="col-xs-6">
+            <label class="control-label">{{ "CAUTION.ORIGIN" | translate }}</label>
+            <address class="form-control-static">
+              {{ CautionCtrl.location.village }}<br>
+              {{ CautionCtrl.location.sector }}<br>
+              {{ CautionCtrl.location.province }}<br>
+              {{ CautionCtrl.location.country }}
+            </address>
+          </div>
+        </form>
+
+        <div class="alert alert-danger" ng-if="CautionCtrl.accountBalance > 0">
+          <label>
+            <h4>
+              <i class="glyphicon glyphicon-warning-sign error"></i>
+              {{ "CAUTION.ATTENTION" | translate }}: <strong>{{ CautionCtrl.accountBalance | currency:CautionCtrl.currency.id }}</strong>
+            </h4>
+          </label>
+        </div>
       </div>
     </div>
 
-    <div class="col-xs-6">
-      <div class="panel panel-default">
+    <div class="col-xs-6" >
+      <form class="panel panel-default" name="CautionForm">
         <div class="panel-heading">{{ "CAUTION.INFO_CAUTION" | translate }}</div>
-        <div class="panel-body" ng-if="noEmpty">
-          <form class="form-horizontal">
-            <div class="form-group">
-              <label class="control-label col-xs-2">{{'CAUTION.CAUTION' | translate}}</label>
-              <div class="input-group col-xs-9">
-                <input type="number" ng-model="session.payment"  class="form-bhima" min="0" required>
-                <span class="input-group-addon"> {{ currency.symbol }} </span>
+        <div class="panel-body form-horizontal">
+          <div class="form-group" ng-class="{ 'has-error' : CautionForm.$invalid && CautionForm.$submitted}">
+            <label class="control-label col-xs-2">{{ 'CAUTION.CAUTION' | translate }}</label>
+            <div class="col-xs-10">
+              <div class="input-group">
+                <input type="number" class="form-bhima" name="value" ng-model="CautionCtrl.session.payment" ng-min="CautionCtrl.currency.min_monentary_unit" required>
+                <span class="input-group-addon">{{ CautionCtrl.currency.symbol }}</span>
               </div>
+              <p class="help-block" ng-if="CautionForm.$invalid && CautionForm.$submitted">
+                <i class="glyphicon glyphicon-exclamation-sign"></i> {{ "CAUTION.UNIT_ERROR" | translate }}
+              </p>
             </div>
-            <div style="color: #b94a48;" ng-if="session.payment < currency.min_monentary_unit">
-              <span class="glyphicon glyphicon-bell"></span> {{ "CAUTION.UNIT_ERROR" | translate }}
-            </div>
-          </form>
+          </div>
         </div>
-
-        <div class="panel-footer" ng-if="noEmpty">
-          <button type="button" class="btn btn-sm btn-default" ng-class="{ 'btn-danger' : session.payment < currency.min_monentary_unit, 'btn-success':  session.payment >= currency.min_monentary_unit }" ng-click="payCaution()" ng-disabled="check()">
+        <div class="panel-footer">
+          <button
+            type="submit"
+            class="btn btn-sm btn-default"
+            ng-class="{ 'btn-danger' : CautionForm.$invalid && CautionForm.$dirty, 'btn-success':  CautionForm.$valid && CautionForm.$dirty }"
+            ng-click="CautionCtrl.payCaution(CautionForm.$invalid)">
             {{ "CAUTION.PAY" | translate }}
           </button>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 </main>
-
-<script type="text/ng-template" id="debtorListItem.html">
-  <a>
-    <span><b>[{{ match.model.debitor_uuid }}]</b></span>
-    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-  </a>
-</script>

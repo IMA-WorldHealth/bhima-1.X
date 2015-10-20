@@ -364,7 +364,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/reports/stock_movement/stock_movement.html'
   })
   .when('/caution', {
-    controller : 'caution',
+    controller : 'CautionController as CautionCtrl',
     templateUrl : 'partials/caution/caution.html'
   })
   .when('/primary_cash/transfert/:cashbox_id', {
