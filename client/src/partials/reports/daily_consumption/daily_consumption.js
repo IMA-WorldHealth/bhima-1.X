@@ -1,97 +1,74 @@
 angular.module('bhima.controllers')
-.controller('daily_consumption', [
-  '$scope',
-  '$http',
-  '$routeParams',
-  'validate',
-  'messenger',
-  'connect',
-  'appstate',
-  'util',
-  function ($scope, $http, $routeParams, validate, messenger, connect, appstate, util) {
-    var dependencies = {},
-        session = $scope.session = {},
-        code_drugs = $scope.code_drugs,
-        dateFrom = $scope.dateFrom,
-        dateTo = $scope.dateTo,
-        state = $scope.state;
+.controller('ReportDailyConsumptionController', ReportDailyConsumptionController);
 
-    dependencies.drugs = {
-      query : {
-        identifier : 'id',
-        tables : {
-          'inventory' : { columns : ['uuid', 'code', 'text'] }
-        },
-        where: ['inventory.code=' + code_drugs]
+ReportDailyConsumptionController.$inject = ['$http', '$window', 'DateService'];
+
+function ReportDailyConsumptionController($http, $window, Dates) {
+  var vm = this,
+      state = vm.state;
+
+  // TODO -- these should be passed in as URL parameters and default to today
+  vm.start = new Date();
+  vm.end = new Date();
+  vm.state = 'default';
+  vm.loading = false;
+
+  // bind view methods
+  vm.generate = generate;
+  vm.reconfigure = reconfigure;
+  vm.print = function () { $window.print(); };
+  vm.focus = focusIn;
+  vm.unfocus = unfocus;
+
+  /* ------------------------------------------------------------------------ */
+
+  function generate() {
+    vm.loading = true;
+
+    $http.get('/inventory/consumption', {
+      params : {
+        'detailed' : 1,
+        'start' : Dates.util.str(vm.start),
+        'end' : Dates.util.str(vm.end)
       }
-    };
+    })
+    .then(function (response) {
 
-    session.dateFrom = new Date();
-    session.dateTo = new Date();
-
-    // $http.get('/getConsumptionDrugs/',{params : {
-    //       'dateFrom' : record.dateFrom,
-    //       'dateTo' : record.dateTo
-    //     }
-    // }).
-    // success(function(data) {
-    //   $scope.consumptions = data;
-    // });
-
-    // $http.get('/getItemInConsumption/',{params : {
-    //       'dateFrom' : dateFrom,
-    //       'dateTo' : dateTo,
-    //       'code' : code_drugs
-    //     }
-    // }).
-    // success(function(result) {
-    //   $scope.itemInConsumptions = result;
-    // });
-
-    function startup (models) {
-      angular.extend($scope, models);
-    }
-
-    function generate () {
-      $http.get(
-        '/getConsumptionDrugs/',
-        {params : {'dateFrom' : util.sqlDate(session.dateFrom), 'dateTo' : util.sqlDate(session.dateTo)}}
-      ).success(function(data) {
-        $scope.consumptions = data;
-        $scope.state = 'generate';
+      // filter out drugs that do not have consumptions
+      var consumptions = response.data.filter(function (item) {
+        return item.consumption.length > 0;
       });
-    }
 
-    function reconfigure () {
-      $scope.state = null;
-      session.fiscal_year_id = null;
-      session.period_id = null;
-    }
-
-    function printReport () {
-      print();
-    }
-
-    function generateItem (code) {
-      $http.get(
-        '/getItemInConsumption/',
-        {params : {'dateFrom' : util.sqlDate(session.dateFrom), 'dateTo' : util.sqlDate(session.dateTo), 'code' : code}}
-      ).success(function(result) {
-        $scope.itemInConsumptions = result;
-        $scope.drugsText = result[0].text;
-        $scope.state = 'generateItem';
+      // sum up the number of consumptions
+      consumptions.forEach(function (item) {
+        item.total = item.consumption.reduce(function (a, b) {
+          return a + b.quantity;
+        }, 0);
       });
-    }
 
-    appstate.register('enterprise', function (enterprise) {
-      $scope.enterprise = enterprise;
-      validate.process(dependencies)
-      .then(startup);
+      vm.consumptions = consumptions;
+
+      // TODO -- better state names
+      vm.state = 'generate';
+    })
+    .catch(function (error) {
+      console.log(error);
+    })
+    .finally(function () {
+      vm.loading = false;
     });
-
-    $scope.generate = generate;
-    $scope.reconfigure = reconfigure;
-    $scope.printReport = printReport;
-    $scope.generateItem = generateItem;
   }
-]);
+
+  function reconfigure() {
+    vm.state = 'default';
+  }
+
+  // focus on an item
+  function focusIn(item) {
+    vm.detailed = item;
+  }
+
+  function unfocus() {
+    vm.detailed = null;
+  }
+}

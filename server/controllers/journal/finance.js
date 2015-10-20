@@ -23,13 +23,13 @@ function cancelInvoice(id, userId, cb) {
       'user_id, cc_id, pc_id ' +
     'FROM posting_journal ' +
     'WHERE posting_journal.inv_po_id = ? ' +
-    ' UNION ALL ' +
+    'UNION ALL ' +
     'SELECT uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, doc_num, ' +
       'description, account_id, debit, credit, debit_equiv, credit_equiv,  deb_cred_type, currency_id, ' +
       'deb_cred_uuid, inv_po_id, cost_ctrl_id, origin_id, '+
       'user_id, cc_id, pc_id ' +
     'FROM general_ledger ' +
-    'WHERE general_ledger.inv_po_id = ? ;';
+    'WHERE general_ledger.inv_po_id = ?;';
 
   db.exec(sql, [id, id])
   .then(function (records) {
@@ -107,9 +107,11 @@ function cancelInvoice(id, userId, cb) {
     return q.all(queries);
   })
   .then(function (res){
-    return cb(null, res);
+    cb();
   })
-  .catch(cb)
+  .catch(function (err) {
+    cb(err);  
+  })
   .done();
 }
 

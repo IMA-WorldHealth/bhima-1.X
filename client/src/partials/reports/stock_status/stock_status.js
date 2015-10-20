@@ -1,66 +1,94 @@
 angular.module('bhima.controllers')
-.controller('stock_status', [
-  '$scope',
-  '$http',
-  'stockControler',
-  function ($scope, $http, stockControler) {
-    var session = $scope.session = {};
+.controller('StockStatusReportController', StockStatusReportController);
 
-    $scope.consumptions = {};
-    session.date = new Date();
+StockStatusReportController.$inject = ['$http', '$timeout'];
 
-    if (document.readyState === 'complete') {
+/**
+* Stock Status Report
+*
+* This controller gives a broad overview of stock levels, expiration times,
+* lead times, and more for all depots.
+*
+* NOTES
+*  1) I have removed "quantity to order", as I think this should really be a
+*     parameter provided by an alert.  Currently, our calculations are inaccurate
+*     due to poor data
+*/
+function StockStatusReportController($http, $timeout) {
+  var vm = this;
 
-      $http.get('/getStockEntry/').
-      success(function(data) {
+  vm.loading = true;
+  vm.timestamp = new Date();
+  vm.report = {};
 
-        data.forEach(function (item2) {
+  /* ------------------------------------------------------------------------ */
 
-          stockControler.getStock(item2.inventory_uuid)
-          .then(function (val) {
-            item2.total = Math.round(val);
-          });
+  // start up the module
+  $http.get('/inventory/status')
+  .then(template)
+  .catch(handler)
+  .finally(function () {
 
-          stockControler.getDelaiLivraison(item2.inventory_uuid)
-          .then(function (val) {
-          });
+    // use $timeout trick to delay rendering until all other rendering is done
+    $timeout(endLoading);
+  });
 
-          stockControler.getIntervalleCommande(item2.inventory_uuid)
-          .then(function (val) {
-          });
-
-          stockControler.getMonthlyConsumption(item2.inventory_uuid)
-          .then(function (val) {
-            item2.consumption_avg = Math.round(val);
-          });
-
-          stockControler.getStockSecurity(item2.inventory_uuid)
-          .then(function (val) {
-            item2.consumption_security = Math.round(val);
-          });
-
-          stockControler.getStockMin(item2.inventory_uuid)
-          .then(function (val) {
-            item2.consumption_min = Math.round(val);
-          });
-
-          stockControler.getStockMax(item2.inventory_uuid)
-          .then(function (val) {
-            item2.consumption_max = Math.round(val);
-          })
-          .then(function() {
-            var mstock = (item2.consumption_avg > 0) ? item2.total / item2.consumption_avg : 0,
-                command = (item2.consumption_max - item2.total > 0 ) ? item2.consumption_max - item2.total : 0 ;
-
-            item2.consumption_mstock = Math.floor(mstock);
-            item2.consumption_command = Math.round(command);
-          });
-
-        });
-
-        $scope.consumptions = data;
-      });
-
-    }
+  function endLoading() {
+    vm.loading = false;
   }
-]);
+
+  // template the data into the view
+  function template(response) {
+    var report;
+
+    // filter out items that are missing both a quantity and a lead time.  This
+    // should ensure that we have only relevant data.
+    report = response.data.filter(function (row) {
+      return (row.quantity > 0 || row.leadtime !== null);
+    });
+
+    // calculate the security/safety stock if applicable
+    // NOTE -- this goes by the "old" formula.  What do we do with this in the
+    // case of stock integration?  What about donations?
+    report.forEach(function (row) {
+
+      // TODO
+      // For stock integrations and donations, the lead time does not exist.
+      // How should the system handle security stock calculations when the
+      // lead time doesn't exist?
+
+      // security stock is defined as leadtime multiplied by avg consumption
+      // rate
+      row.securityStock = row.leadtime !== null ?
+          row.leadtime * row.consumption:
+          null;
+
+      // make sure we have nice formatting for days remaining column.
+      row.remaining = Math.floor(row.remaining);
+
+      // calculate consumption by month on the fly from the
+      // NOTE: every month does not have exactly 30 days, but this is an
+      // approximation anyway.
+      row.consumptionByMonth = Math.round(row.consumption * 30);
+
+      // like consumption by month, show months of stock remaining.
+      row.monthsRemaining = row.consumptionByMonth ?
+        (row.quantity  / row.consumptionByMonth).toFixed(2) :
+        0;
+
+      // if there is an alert, we template it in
+      row.alert = row.stockout ? 'STOCK.ALERTS.STOCKOUT' :
+                  row.shortage ? 'STOCK.ALERTS.SHORTAGE' :
+                  row.overstock ? 'STOCK.ALERTS.OVERSTOCK' :
+                  false;
+    });
+
+    vm.report = report;
+  }
+
+  // generic error handler
+  function handler(error) {
+    console.log(error);
+  }
+
+}

@@ -12,7 +12,7 @@ var cfg         = require('./../config/environment/server');
 
 // Route specific requirements
 var synthetic                  = require('./synthetic');
-var depot                      = require('./depot')();
+//var depot                      = require('./depot')();
 var taxPayment                 = require('./taxPayment')();
 var donation                   = require('./postingDonation')();
 var cotisationPayment          = require('./cotisationPayment')();
@@ -153,8 +153,6 @@ exports.listAvailableProfitCenters = function (req, res, next) {
 };
 
 exports.currentProject = function (req, res, next) {
-  //req.session.project_id = req.session.project_id || 1;
-  console.log('request with', req.session);
   var sql =
     'SELECT `project`.`id`, `project`.`name`, `project`.`abbr`, `project`.`enterprise_id`, `enterprise`.`currency_id`, `enterprise`.`location_id`, `enterprise`.`name` as \'enterprise_name\', `enterprise`.`phone`, `enterprise`.`email`, `village`.`name` as \'village\', `sector`.`name` as \'sector\' ' +
     'FROM `project` JOIN `enterprise` ON `project`.`enterprise_id`=`enterprise`.`id` JOIN `village` ON `enterprise`.`location_id`=`village`.`uuid` JOIN `sector` ON `village`.`sector_uuid`=`sector`.`uuid` ' +
@@ -366,7 +364,7 @@ exports.processProfitCenter = function (req, res, next) {
     synthetic('pcv', req.params.id_project, {pc_id : req.params.pc_id, accounts : ans}, function (err, data) {
       if (err) { return next(err); }
       res.send(process(data));
-    });
+    })
   })
   .catch(next)
   .done();
@@ -748,66 +746,6 @@ exports.stockExpiringByDepot = function (req, res, next) {
   .done();
 };
 
-exports.stockExpiringComplete = function (req, res, next) {
-  //TODO : put it in a separate file
-  var genSql =
-    'SELECT SUM(cons.consumed ) AS consumed ' +
-    'FROM ( ' +
-      'SELECT SUM(consumption.quantity) AS consumed ' +
-      'FROM stock ' +
-      'LEFT JOIN consumption ON stock.tracking_number = consumption.tracking_number ' +
-      'WHERE stock.tracking_number = \'' + req.params.tracking_number + '\''+
-    'UNION '+
-      'SELECT ((SUM(consumption_reversing.quantity)) * (-1)) AS consumed ' +
-      'FROM stock ' +
-      'LEFT JOIN consumption_reversing ON stock.tracking_number = consumption_reversing.tracking_number ' +
-      'WHERE stock.tracking_number = \''+ req.params.tracking_number + '\') AS cons;';
-
-  var speSql =
-    'SELECT SUM(cons.consumed ) AS consumed ' +
-    'FROM ( ' +
-      'SELECT SUM(consumption.quantity) AS consumed ' +
-      'FROM stock ' +
-      'LEFT JOIN consumption ON stock.tracking_number = consumption.tracking_number ' +
-      'WHERE stock.tracking_number = \'' + req.params.tracking_number + '\' '+
-      ' AND consumption.depot_uuid = \'' + req.params.depot_uuid + '\' '+
-    'UNION '+
-      'SELECT ((SUM(consumption_reversing.quantity)) * (-1)) AS consumed ' +
-      'FROM stock ' +
-      'LEFT JOIN consumption_reversing ON stock.tracking_number = consumption_reversing.tracking_number ' +
-      'WHERE stock.tracking_number = \'' + req.params.tracking_number + '\' ' +
-      'AND consumption_reversing.depot_uuid = \'' + req.params.depot_uuid + '\'  ) AS cons;';
-
-
-  db.exec(req.params.depot_uuid === '*' ? genSql : speSql )
-  .then(function (ans) {
-    res.send(ans);
-  })
-  .catch(function (err) {
-    next(err);
-  })
-  .done();
-
-};
-
-exports.distributeStockDepot = function (req, res, next) {
-  //TODO : put it in a separate file
- var sql= 'SELECT stock.inventory_uuid, stock.tracking_number, ' +
-          'stock.lot_number, stock.expiration_date, SUM(if (movement.depot_entry='+sanitize.escape(req.params.depot_uuid)+
-          ', movement.quantity, 0)) AS entered, SUM(if (movement.depot_exit='+sanitize.escape(req.params.depot_uuid)+
-          ', movement.quantity, 0)) AS moved,  inventory.text, inventory.code, inventory.purchase_price  FROM stock JOIN inventory JOIN movement ON stock.inventory_uuid = inventory.uuid AND '+
-          'stock.tracking_number = movement.tracking_number WHERE (movement.depot_entry='+sanitize.escape(req.params.depot_uuid)+
-          'OR movement.depot_exit='+sanitize.escape(req.params.depot_uuid)+') GROUP BY stock.tracking_number';
-  db.exec(sql)
-  .then(function (ans) {
-    res.send(ans);
-  })
-  .catch(function (err) {
-      next(err);
-  })
-  .done();
-};
-
 exports.inventoryByDepot = function (req, res, next) {
   var sql = 'SELECT '+
             'distinct inventory.text, '+
@@ -817,17 +755,6 @@ exports.inventoryByDepot = function (req, res, next) {
             'WHERE stock.depot_uuid='+sanitize.escape(req.params.depot_uuid);
 
   db.exec(sql)
-  .then(function (ans) {
-    res.send(ans);
-  })
-  .catch(function (err) {
-    next(err);
-  })
-  .done();
-};
-
-exports.routeDepotQuery = function (req, res, next) {
-  depot(req.url, req.params.depot)
   .then(function (ans) {
     res.send(ans);
   })
@@ -866,125 +793,6 @@ exports.listIncomeAccounts = function (req, res, next) {
 
 exports.availablePaymentPeriod = function (req, res, next) {
   var sql = "SELECT p.id, p.config_tax_id, p.config_rubric_id, p.config_accounting_id, p.config_cotisation_id, p.label, p.dateFrom, p.dateTo, r.label AS RUBRIC, t.label AS TAX, a.label AS ACCOUNT, c.label AS COTISATION FROM paiement_period p, config_rubric r, config_tax t, config_accounting a, config_cotisation c WHERE p.config_tax_id = t.id AND p.config_rubric_id = r.id AND a.id=p.config_accounting_id AND p.config_cotisation_id = c.id ORDER BY p.id DESC";
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
-exports.listConsumptionDrugs = function (req, res, next) {
-  var sql =
-    "SELECT dailycons.uuid,  SUM(dailycons.quantity) AS quantity, dailycons.date, dailycons.code, dailycons.text " +
-    "FROM ( " +
-      "SELECT inventory.uuid,  SUM(consumption.quantity) AS quantity, consumption.date, inventory.code, inventory.text " +
-      "FROM consumption " +
-      "JOIN stock ON stock.tracking_number = consumption.tracking_number " +
-      "JOIN inventory ON inventory.uuid = stock.inventory_uuid " +
-      "WHERE consumption.uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss ) " +
-      "AND ((consumption.date >= '"+ req.query.dateFrom +"') AND (consumption.date <= '" + req.query.dateTo + "')) " +
-      "GROUP BY inventory.uuid " +
-    "UNION " +
-      "SELECT inventory.uuid, ((SUM(consumption_reversing.quantity)) * (-1)) AS quantity, consumption_reversing.date, inventory.code, inventory.text " +
-      "FROM consumption_reversing " +
-      "JOIN stock ON stock.tracking_number = consumption_reversing.tracking_number " +
-      "JOIN inventory ON inventory.uuid = stock.inventory_uuid " +
-      "WHERE consumption_reversing.consumption_uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss ) " +
-      "AND ((consumption_reversing.date >= '"+ req.query.dateFrom +"') AND (consumption_reversing.date <= '" + req.query.dateTo + "')) " +
-      "GROUP BY inventory.uuid ) AS dailycons GROUP BY dailycons.uuid ORDER BY dailycons.text ASC;";
-
-  db.exec(sql)
-  .then(function (result) {
-    console.log(result);
-    res.send(result);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
-exports.listItemByConsumption = function (req, res, next) {
-
-var sql =
-    "SELECT itemconsumpt.uuid,  SUM(itemconsumpt.quantity) AS quantity, itemconsumpt.date, itemconsumpt.code, itemconsumpt.text " +
-    "FROM ( " +
-      "SELECT consumption.uuid,  SUM(consumption.quantity) AS quantity, consumption.date, inventory.code, inventory.text " +
-      " FROM consumption " +
-      " JOIN stock ON stock.tracking_number = consumption.tracking_number " +
-      " JOIN inventory ON inventory.uuid = stock.inventory_uuid " +
-      " WHERE consumption.uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss ) " +
-      " AND inventory.code = '" + req.query.code + "' AND ((consumption.date >= '"+ req.query.dateFrom +"') " +
-      " AND (consumption.date <= '" + req.query.dateTo + "')) " +
-      " GROUP BY consumption.date " +
-    "UNION " +
-      "SELECT consumption_reversing.uuid, ((SUM(consumption_reversing.quantity)) * (-1)) AS quantity, consumption_reversing.date, inventory.code, inventory.text " +
-      " FROM consumption_reversing " +
-      " JOIN stock ON stock.tracking_number = consumption_reversing.tracking_number " +
-      " JOIN inventory ON inventory.uuid = stock.inventory_uuid " +
-      " WHERE consumption_reversing.consumption_uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss ) " +
-      " AND inventory.code = '" + req.query.code + "' AND ((consumption_reversing.date >= '"+ req.query.dateFrom +"') " +
-      " AND (consumption_reversing.date <= '" + req.query.dateTo + "'))" +
-      " GROUP BY consumption_reversing.date ) AS itemconsumpt GROUP BY itemconsumpt.date ;";
-
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
-exports.listTopConsumption = function (req, res, next) {
-
-  var sql =
-    "SELECT topcons.text, SUM(topcons.quantity) as 'quantity', topcons.uuid, topcons.inventory_uuid " +
-    "FROM ( " +
-      "SELECT inventory.text, SUM(consumption.quantity) as 'quantity', inventory.uuid, stock.inventory_uuid " +
-      "FROM consumption " +
-      "JOIN stock ON stock.tracking_number = consumption.tracking_number " +
-      "JOIN inventory ON inventory.uuid = stock.inventory_uuid " +
-      "WHERE consumption.uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss ) " +
-      "GROUP BY stock.inventory_uuid " +
-    "UNION " +
-      "SELECT inventory.text, (SUM(consumption_reversing.quantity) * (-1)) as 'quantity', inventory.uuid, stock.inventory_uuid " +
-      "FROM consumption_reversing " +
-      "JOIN stock ON stock.tracking_number = consumption_reversing.tracking_number " +
-      "JOIN inventory ON inventory.uuid = stock.inventory_uuid " +
-      "GROUP BY stock.inventory_uuid " +
-    ") AS topcons GROUP BY topcons.inventory_uuid ORDER BY quantity DESC, text ASC LIMIT 10";
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
-exports.listPurchaseOrders = function (req, res, next) {
-  var sql;
-  if(req.query.request == 'OrdersPayed'){
-    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE paid = '1' AND is_donation = 0";
-  } else if (req.query.request == 'OrdersWatingPayment'){
-    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE paid = '0' AND confirmed = '0' AND is_donation = 0";
-  } else if (req.query.request == 'OrdersReceived'){
-    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE closed = '1' AND confirmed = '1' AND is_donation = 0";
-  } else if (req.query.request == 'InWatingReception'){
-    sql = "SELECT COUNT(uuid) AS 'count' FROM `purchase` WHERE closed = '0' AND confirmed = '1' AND is_donation = 0";
-  }
-
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
-exports.listTopDonors = function (req, res, next) {
-  var sql = "SELECT donor.id, donor.name, donations.date, COUNT(date) AS 'dates' "
-          + " FROM donations JOIN donor ON donor.id = donations.donor_id"
-          + " GROUP BY donations.date, donor.id ORDER BY donations.date DESC Limit 10";
-
   db.exec(sql)
   .then(function (result) {
     res.send(result);
@@ -1068,19 +876,19 @@ exports.listStockConsumption = function (req, res, next) {
 };
 
 exports.frenchEnglishRoute = function (req, res, next) {
-  var sql = "SELECT COUNT(DISTINCT(MONTH(c.date))) AS nb"
-          + " FROM consumption c"
-          + " JOIN stock s ON c.tracking_number=s.tracking_number "
-          + " JOIN inventory i ON i.uuid=s.inventory_uuid "
-          + " WHERE (c.date BETWEEN DATE_SUB(CURDATE(),INTERVAL 6 MONTH) AND CURDATE()) "
-          + " AND s.inventory_uuid=" + sanitize.escape(req.params.inventory_uuid);
+  var sql =
+    'SELECT COUNT(DISTINCT(MONTH(c.date))) AS nb ' +
+    'FROM consumption AS c '
+    'JOIN stock AS s ON c.tracking_number = s.tracking_number '
+    'JOIN inventory AS i ON i.uuid = s.inventory_uuid '
+    'WHERE (c.date BETWEEN DATE_SUB(CURDATE(), INTERVAL 6 MONTH) AND CURDATE()) '
+      'AND s.inventory_uuid = ?;';
 
-  db.exec(sql)
-  .then(function (result) {
-    console.log(result);
-    res.send(result[0]);
+  db.exec(sql, [req.params.inventory_uuid])
+  .then(function (rows) {
+    res.send(rows[0]);
   })
-  .catch(function (err) { next(err); })
+  .catch(next)
   .done();
 };
 
@@ -1109,23 +917,6 @@ exports.listMonthlyConsumption = function (req, res, next) {
   db.exec(sql)
   .then(function (result) {
     res.send(result);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
-exports.frenchRoute = function (req, res, next) {
-  var sql = "SELECT ROUND(AVG(CEIL(DATEDIFF(s.entry_date,p.purchase_date)/30))) AS dl"
-          + " FROM purchase p"
-          + " JOIN stock s ON p.uuid=s.purchase_order_uuid "
-          + " JOIN purchase_item z ON p.uuid=z.purchase_uuid "
-          + " JOIN inventory i ON s.inventory_uuid=i.uuid "
-          + " WHERE z.inventory_uuid=s.inventory_uuid "
-          + " AND s.inventory_uuid=" + sanitize.escape(req.params.id);
-
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result[0]);
   })
   .catch(function (err) { next(err); })
   .done();
@@ -1385,9 +1176,7 @@ exports.listPaymentByEnterprise = function (req, res, next) {
 };
 
 exports.lookupPeriod = function (req, res, next) {
-  console.log(req.query.fiscal_year_id);
   var sql = "SELECT * FROM period WHERE fiscal_year_id = " + sanitize.escape(req.query.fiscal_year_id);
-  console.log(sql);
   db.exec(sql)
   .then(function (result) {
     res.send(result);
@@ -1537,22 +1326,25 @@ exports.getClassSolde = function (req, res, next) {
     .done();
   };
 
-
 exports.getStockIntegration = function (req, res, next) {
+  'use strict';
 
-  var sql = 'SELECT DISTINCT p.uuid, p.reference, p.cost, p.creditor_uuid, p.project_id, p.emitter_id, p.purchaser_id, p.purchase_date, p.note, '
-          + 'm.document_id, s.purchase_order_uuid, pr.abbr '
-          + 'FROM purchase p '
-          + 'JOIN stock s ON s.purchase_order_uuid=p.uuid '
-          + 'JOIN movement m ON s.tracking_number=m.tracking_number '
-          + 'JOIN project pr ON pr.id=p.project_id '
-          + 'WHERE p.confirmed=0 AND p.is_integration=1';
+  var sql;
+
+  sql =
+    'SELECT DISTINCT p.uuid, CONCAT(pr.abbr, p.reference) AS reference, ' +
+      'u.first, u.last, p.purchase_date, p.note, m.document_id ' +
+    'FROM purchase AS p ' +
+    'JOIN stock AS s ON s.purchase_order_uuid = p.uuid ' +
+    'JOIN movement AS m ON s.tracking_number = m.tracking_number ' +
+    'JOIN project AS pr ON pr.id = p.project_id ' +
+    'JOIN user AS u ON u.id = p.emitter_id ' +
+    'WHERE p.confirmed = 0 AND p.is_integration = 1;';
 
   db.exec(sql)
   .then(function (data) {
-    res.send(data);
+    res.status(200).json(data);
   })
-  .catch(function (err) { next(err); })
+  .catch(next)
   .done();
-
 };

@@ -380,6 +380,7 @@
    "ACCOUNT_NUMBER"        : "Numéro Compte",
    "ACTION"                : "Acte",
    "ACTIONS"               : "Actions",
+   "ALERTS"                : "Alertes",
    "AMOUNT"                : "Montant",
    "AMOUNT_BILLED"         : "Montant facture",
    "AMOUNT_DUE"            : "Montant à payer",
@@ -406,6 +407,7 @@
    "CONSUMABLE"            : "Consommable",
    "CONSUMED_STOCK"        : "Stock Consommé",
    "CONSUMPTION_PER_MONTH" : "Consommation par mois",
+   "CONSUMPTION_PER_DAY"   : "Consommation par Jour",
    "CONVENTION"            : "Convention",
    "COST"                  : "Coût",
    "COST_CENTER"           : "Centre coût",
@@ -425,6 +427,7 @@
    "DATE_IN"               : "Date entrée en stock",
    "DATE_REGISTERED"       : "Date Enregistrement",
    "DATE_TO"               : "Date de la fin",
+   "DAYS_REMAINING"        : "Jours Restant",
    "DC_TYPE"               : "D/C",
    "DEBCRED_ID"            : "ID Deb/Cred",
    "DEBIT"                 : "Débit",
@@ -515,6 +518,7 @@
    "MINIMUM_STOCK"         : "Stock Minimum",
    "MONTANT"               : "Montant",
    "MONTH_OF_STOCK"        : "Mois des stocks",
+   "MONTHS_REMAINING"      : "Mois des Stocks Restant",
    "MOTIF"                 : "Motif",
    "NATURE"                : "Nature",
    "NAME"                  : "Nom",
@@ -878,20 +882,36 @@
 },
 
 "DEPOT": {
-   "ADD"             : "Ajouter",
-   "ALERT"           : "Ce module vous permet de gérer vos dépôt",
-   "ALL"             : "Tous les Dépôts",
-   "DELETE_SUCCESS"  : "Suppression avec succès",
-   "DELETE_FAIL"     : "Echec Suppression, Le depot est utilisé dans plusiers enregistrements",
-   "EDIT"            : "Editer les informations d'un dépôt",
-   "EDIT_SUCCESS"    : "Données du dépôt mise à jour avec succès ",
-   "NEW"             : "Nouveau dépôt",
-   "NEW_SUCCESS"     : "Nouveau dépôt enregistré avec succès",
-   "NO_DEPOTS"       : "Aucun dépôt trouvé",
-   "NOT_FOUND"       : "Aucun dépôt enregistrés n'a pu être trouvée. Veuillez sélectionner le bon dépôt ou contacter l'administrateur du système.",
-   "TITLE"           : "Gestion des Dépôt"
+  "ADD"             : "Ajouter",
+  "ALERT"           : "Ce module vous permet de gérer vos dépôt",
+  "ALL"             : "Tous les Dépôts",
+  "DELETE_SUCCESS"  : "Suppression avec succès",
+  "DELETE_FAIL"     : "Echec Suppression, Le depot est utilisé dans plusiers enregistrements",
+  "EDIT"            : "Editer les informations d'un dépôt",
+  "EDIT_SUCCESS"    : "Données du dépôt mise à jour avec succès ",
+  "NEW"             : "Nouveau dépôt",
+  "NEW_SUCCESS"     : "Nouveau dépôt enregistré avec succès",
+  "NO_DEPOTS"       : "Aucun dépôt trouvé",
+  "NOT_FOUND"       : "Aucun dépôt enregistrés n'a pu être trouvée. Veuillez sélectionner le bon dépôt ou contacter l'administrateur du système.",
+  "TITLE"           : "Gestion des Dépôt",
+  "DISTRIBUTION"   : {
+    "ANNUL"    : "Annuler cette Transaction",
+    "ANNULLED" : "Annulé",
+    "LOSSES"   : "Stock Losses",
+    "NO_ROWS"  : "Pas de données pour période sélectionnée",
+    "SERVICES" : "Distributions to Services",
+    "SERVICE" : {
+      "LOTS_AVAILABLE" : "Lots Available",
+      "NO_LOTS"        : "No Lots Available"
+    },
+    "PATIENTS" : "Distributions to Patients",
+    "RUMMAGE"  : "Liquidation by Rummage Sale",
+    "CANCEL" : {
+      "TITLE"   : "Cancel Pharmacy Distribution",
+      "MESSAGE" : "You are about to cancel a distribution made from the pharmacy.  Please make sure these details are correct."
+    }
+  }
 },
-
 "DISTRIBUTION": {
    "ADD_ROW"                : "Ajouter Item",
    "ALLOCATE_MEDECINE"      : "Allouer les médicaments",
@@ -1466,6 +1486,7 @@
    "AMOUNT"                       : "Montant",
    "AMOUNT_RECEIVE"               : "Montant reçu",
    "AMOUNT_RECEIVED"              : "Montant Payé",
+   "ANNULLED"                     : "Annulé",
    "BALANCE_DUE"                  : "Solde",
    "BUYER"                        : "Acheteur",
    "BENEFICIARY"                  : "Bénéficiaire",
@@ -2401,6 +2422,7 @@
    "DEBTOR"                : "Sélectionner un debiteur",
    "DEB_CRED"              : "Sélectionner une Débiteur ou un Créditeur",
    "DEPOT"                 : "Sélectionner un Dépôt",
+   "DISTRIBUTION_TYPE"     : "Sélectionner un Type de Distribution",
    "DONOR"                 : "Sélectionner un Donateur",
    "EMPLOYEE"              : "Sélectionner un employé",
    "EMPLOYEE_FUNCTION"     : "Sélectionner une fonction",
@@ -2436,6 +2458,7 @@
    "REFERENCE_GROUP"       : "Sélectionner un groupe de référence",
    "RESULT_ACCOUNT_SCT"    : "Sélectionner une Section de Compte Résultat",
    "RECIPIENT"             : "Sélectionner un destinataire",
+   "SERVICE"               : "Sélectionner une Service",
    "SECTOR"                : "Sélectionner une Secteur",
    "SOURCE"                : "Sélectionner source",
    "SUBSIDY"               : "Sélectionner une subvention",
@@ -2512,6 +2535,12 @@
   "TITLE"       : "SNIS (Système National d'Information Sanitaire)"
   },
 "STOCK": {
+  "ALERTS" : {
+    "STOCKOUT" : "Rupture de Stock",
+    "SHORTAGE" : "Pénurie",
+    "OVERSTOCK" : "Surplus",
+    "OPTIMAL"   : "Niveau Optimal de Stock"
+  },
    "DISTRIBUTION_RECORDS": {
       "ERROR"                    : "Cette consommation a déjà été inversée dans le stock",
       "KEY"                      : "Historique des distributions aux patients",
@@ -2643,7 +2672,7 @@
    },
 "STOCK_DASHBOARD": {
    "DONATIONS": {
-      "TITLE" : "le 10 derniers dons"
+      "TITLE" : "Dons Récents"
       },
    "EXPIRING_INVENTORY": {
       "EXPIRED"      : "Expirés",
@@ -2654,7 +2683,7 @@
       "WITHIN_365"   : "Expiration entre 180 et 365 jours",
       "WITHIN_90"    : "Expiration entre 30 et 90 jours"
       },
-   "MOST_CONSUMED"      : "Produits les plus consommes (10 premiers)",
+   "MOST_CONSUMED"      : "Produits les Plus Consommes",
    "MOVEMENT": {
       "ENTER" : "Entrée",
       "EXIT"  : "Sortie",
@@ -2672,13 +2701,12 @@
       "SITUATION_STOCK" : "Situation du stock",
       "TITLE"           : "Rapports"
       },
-   "STOCK_BY_PRODUCT": {
+   "ALERTS": {
+      "TITLE"         : "Alertes Stock",
       "IN_STOCK"      : "En stock",
-      "NO_LONGER"     : "Tend vers épuisement",
       "OPTIMAL_LEVEL" : "Niveau des stocks optimale",
       "OUT_OF_STOCK"  : "Stock épuisé",
       "OVER_MAX"      : "Au dessus du maximum",
-      "TITLE"         : "Stock par produits",
       "UNDER_MIN"     : "En dessous du minimum"
       },
    "TITLE"              : "Tableau de bord du Stock"

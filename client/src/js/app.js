@@ -160,7 +160,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/price_list/pricelist.html'
   })
   .when('/exchange_rate', {
-    controller : 'exchangeRate',
+    controller : 'ExchangeRateController as ExchangeCtrl',
     templateUrl: 'partials/exchange_rate/exchange_rate.html'
   })
   .when('/create_account', {
@@ -251,9 +251,6 @@ function bhimaconfig($routeProvider) {
     controller : 'country',
     templateUrl: 'partials/location/country/country.html'
   })
-  .when('/print', {
-    templateUrl: 'partials/print/test.html'
-  })
   .when('/settings/:route?', {
     controller: 'settings',
     templateUrl: 'partials/settings/settings.html'
@@ -271,7 +268,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/receipts/receipts.html'
   })
   .when('/credit_note/:invoiceId?/', {
-    controller: 'creditNote',
+    controller: 'CreditNoteController as NoteCtrl',
     templateUrl: 'partials/credit_note/credit_note.html'
   })
   .when('/cash_discard/:receiptId?/', {
@@ -343,7 +340,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/reports/all_transactions/all_transactions.html'
   })
   .when('/reports/expiring', {
-    controller : 'expiring',
+    controller : 'ReportStockExpirationsController as ReportCtrl',
     templateUrl : 'partials/reports/expiring_stock/expiring_stock.html'
   })
   .when('/reports/stock_store/:depotId', {
@@ -362,16 +359,12 @@ function bhimaconfig($routeProvider) {
     controller : 'stockIntegration',
     templateUrl : 'partials/reports/stock_integration/stock_integration.html'
   })
-  .when('/reports/expiring/:option', {
-    controller : 'expiring.option',
-    templateUrl : 'partials/reports/expiring_stock/expiring_stock_view.html'
-  })
   .when('/reports/stock_movement', {
     controller : 'stock_movement',
     templateUrl : 'partials/reports/stock_movement/stock_movement.html'
   })
   .when('/caution', {
-    controller : 'caution',
+    controller : 'CautionController as CautionCtrl',
     templateUrl : 'partials/caution/caution.html'
   })
   .when('/primary_cash/transfert/:cashbox_id', {
@@ -458,7 +451,9 @@ function bhimaconfig($routeProvider) {
     controller : 'inventory.depot',
     templateUrl : 'partials/inventory/depot/depot.html'
   })
-  .when('/stock/', {
+
+  // TODO -- migrate this to /depots/
+  .when('/stock', {
     controller : 'stock.main',
     templateUrl : 'partials/stock/stock.html'
   })
@@ -470,54 +465,43 @@ function bhimaconfig($routeProvider) {
     controller : 'stock.entry.partition',
     templateUrl : 'partials/stock/entry/partition.html'
   })
-  .when('/stock/movement/:depotId', {
-    controller : 'stock.movement',
-    templateUrl : 'partials/stock/movement/movement.html'
-  })
-  .when('/stock/distribution/:depotId', {
-    controller : 'stock.distribution',
-    templateUrl : 'partials/stock/exit/distribution.html'
-  })
-  .when('/stock/distribution_service/:depotId', {
-    controller : 'stock.distribution_service',
-    templateUrl : 'partials/stock/exit_service/distribution_service.html'
-  })
-  .when('/stock/distribution_record/:depotId', {
-    controller : 'stock.distribution_record',
-    templateUrl : 'partials/stock/distribution_record/distribution_record.html'
-  })
-  .when('/stock/distribution_service_record/:depotId', {
-    controller : 'stock.distribution_service_record',
-    templateUrl : 'partials/stock/distribution_service_record/distribution_service_record.html'
-  })
-  .when('/reports/distribution_record/:depotId', {
-    controller : 'distribution_record',
-    templateUrl : 'partials/reports/distribution_record/distribution_record.html'
-  })
-  .when('/reports/distribution_service_record/:depotId', {
-    controller : 'distribution_service_record',
-    templateUrl : 'partials/reports/distribution_service_record/distribution_service_record.html'
-  })
-  .when('/reports/distribution_record/', {
-    controller : 'distribution_record_view',
-    templateUrl : 'partials/reports/distribution_record/distribution_record_view.html'
-  })
-  .when('/reports/distribution_service_record/', {
-    controller : 'distribution_service_record_view',
-    templateUrl : 'partials/reports/distribution_service_record/distribution_service_record_view.html'
-  })
-  .when('/stock/reversing_service_distribution/:consumptionId', {
-    controller : 'stock.reversing_service_distribution',
-    templateUrl : 'partials/stock/reversing_service_distribution/reversing_service_distribution.html'
-  })
-  .when('/stock/reversing_distribution/:consumptionId', {
-    controller : 'stock.reversing_distribution',
-    templateUrl : 'partials/stock/reversing_distribution/reversing_distribution.html'
-  })
-  .when('/stock/loss/:depotId', {
-    controller : 'stock.loss',
+
+  /* depots */
+  .when('/depots/:depotId/losses', {
+    controller : 'DepotLossController as LossCtrl',
     templateUrl : 'partials/stock/loss/loss.html'
   })
+  .when('/depots/:depotId/movements', {
+    controller : 'StockMovementController as MovementCtrl',
+    templateUrl : 'partials/stock/movement/movement.html'
+  })
+  .when('/depots/:depotId/distributions/patients', {
+    controller : 'StockDistributionsController as StockDistributionsCtrl',
+    templateUrl : 'partials/depots/distributions/patients/patients.html'
+  })
+  .when('/depots/:depotId/distributions/services', {
+    controller : 'StockServiceDistributionsController as DistributionsCtrl',
+    templateUrl : 'partials/stock/exit_service/distribution_service.html'
+  })
+  .when('/depots/:depotId/distributions/:consumptionId/cancel', {
+    controller : 'DepotDistributionsCancelController as CancelCtrl',
+    templateUrl : 'partials/depots/distributions/cancel/cancel.html'
+  })
+  .when('/depots/:depotId/integrations', {
+    controller : 'stock.integration',
+    templateUrl : 'partials/stock/integration/integration.html'
+  })
+
+  // depot reports
+  .when('/depots/:depotId/reports/distributions/:type', {
+    controller : 'DepotStockDistributionsController as DistributionsCtrl',
+    templateUrl : 'partials/depots/reports/distributions/distributions.html'
+  })
+  .when('/reports/distributions/', {
+    controller : 'ReportDepotDistributionsController as ReportCtrl',
+    templateUrl : 'partials/reports/distributions/distributions.html'
+  })
+
   .when('/stock/entry/report/:documentId?', {
     controller : 'stock.entry.report',
     templateUrl : 'partials/stock/entry/report.html'
@@ -526,6 +510,8 @@ function bhimaconfig($routeProvider) {
     controller : 'stock.search',
     templateUrl: 'partials/stock/search/search.html'
   })
+
+  // TODO -- these should probably have an /inventory/ or /depot/ prefix
   .when('/stock/count/', {
     controller : 'stock.count',
     templateUrl : 'partials/stock/count/count.html'
@@ -534,46 +520,39 @@ function bhimaconfig($routeProvider) {
     controller : 'stock.expiring',
     templateUrl : 'partials/stock/expiring/expiring.html'
   })
-  .when('/stock/donation_management/', {
-    controller : 'donation_management',
-    templateUrl : 'partials/stock/donation_management/donation_management.html'
-  })
   .when('/donation/confirm_donation/', {
-    controller : 'confirmDonation',
+    controller : 'ConfirmDonationController as ConfirmCtrl',
     templateUrl : 'partials/stock/donation_management/confirm_donation.html'
   })
-  .when('/stock/donation_management/:depotId', {
-    controller : 'donation_management',
+  .when('/stock/donation_management/:depotId?', {
+    controller : 'DonationManagementController as DonationCtrl',
     templateUrl : 'partials/stock/donation_management/donation_management.html'
   })
   .when('/stock/donation_management/report/:documentId', {
     controller : 'donation_management.report',
     templateUrl : 'partials/stock/donation_management/report.html'
   })
-  .when('/stock/loss_record/:depotId', {
-    controller : 'stock.loss_record',
-    templateUrl : 'partials/stock/loss_record/loss_record.html'
-  })
-  .when('/stock/integration/:depotId', {
-    controller : 'stock.integration',
-    templateUrl : 'partials/stock/integration/integration.html'
-  })
+
+
+  // TODO -- these should be namespaced/prefixed by depot
   .when('/stock/integration_confirm/', {
-    controller : 'stock.confirm_integration',
+    controller : 'ConfirmStockIntegrationController as ConfirmCtrl',
     templateUrl : 'partials/stock/integration/confirm_integration/confirm_integration.html'
   })
   .when('/reports/loss_record/', {
     controller : 'loss_record',
     templateUrl : 'partials/reports/loss_record/loss_record.html'
   })
-  .when('/stock_dashboard/', {
-    controller : 'stock_dashboard',
-    templateUrl : 'partials/stock_dashboard/stock_dashboard.html'
-  })
   .when('/inventory/distribution/:depotId?', {
     controller : 'inventory.distribution',
     templateUrl : 'partials/inventory/distribution/distribution.html'
   })
+
+  .when('/stock/dashboard/', {
+    controller : 'StockDashboardController as StockDashCtrl',
+    templateUrl : 'partials/stock/dashboard/dashboard.html'
+  })
+
   .when('/snis/', {
     controller : 'snis',
     templateUrl : 'partials/snis/snis.html'
@@ -659,7 +638,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/rubric/rubriques_payroll/rubriques_payroll.html'
   })
   .when('/reports/daily_consumption/', {
-    controller : 'daily_consumption',
+    controller : 'ReportDailyConsumptionController as ReportCtrl',
     templateUrl : 'partials/reports/daily_consumption/daily_consumption.html'
   })
   .when('/config_accounting/', {
@@ -683,7 +662,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/reports/taxes_payment/taxes_payment.html'
   })
   .when('/reports/stock_status/', {
-    controller : 'stock_status',
+    controller : 'StockStatusReportController as StatusCtrl',
     templateUrl : 'partials/reports/stock_status/stock_status.html'
   })
   .when('/fonction', {
