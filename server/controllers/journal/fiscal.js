@@ -28,30 +28,36 @@ function close(id, user_id, data, cb) {
   * param data : useful data
   */
 
-  var cfg = {},
+  var transactionDate,
       reference,
-      resAccount = data.resultat_account,
-      array6 = data.class6,
-      array7 = data.class7,
-      array8Charge = data.solde8Charge,
-      array8Profit = data.solde8Profit,
-      transactionDate,
-      forcingDate;
+      cfg = {},
+      resAccount  = data.resultat_account,
+      charge      = data.charge,
+      produit     = data.produit;
 
-  // FIXME - under what condition would forcing date be undefined?
-  // What is forcing date?  Why make it a new date if it is undefined?
-  if (typeof data.forcingDate === 'undefined' || data.forcingDate === null || !data.forcingDate) {
-    forcingDate = new Date(data.forcingDate);
-    cfg.isForClosing = false;
-  } else {
-    forcingDate = new Date(data.forcingDate);
-    cfg.isForClosing = true;
+  try {
+    // Transaction date manipulation
+    if (data.flag === 'SIMPLE_LOCKING') {
+      // Locking simply a fiscal year without creation
+      // Transaction date (in journal) must be the last date of the concerned
+      // fiscal year
+      transactionDate = util.toMysqlDate(data.fiscalYearLastDate);
+      cfg.descrip = 'Closing Fiscal Year/' + String(transactionDate);
+
+    } else if (data.flag === 'CREATE_WITH_LOCKING') {
+      // Create a new fiscal year with closing previous
+      // Transaction date of creation (in journal) must be the last date of
+      // the closed fiscal year
+      transactionDate = util.toMysqlDate(data.closedFYLastDate);
+      cfg.descrip = 'New Fiscal Year/Closing Previous/' + String(transactionDate);
+    }
+  } catch (err) {
+    return cb(err);
   }
 
   function init() {
     cfg.user_id = user_id;
     cfg.project_id = 1; // HBB by default
-    transactionDate = cfg.isForClosing ? util.toMysqlDate(forcingDate) : util.toMysqlDate();
     return q.when([
       core.queries.origin('journal'),
       core.queries.period(transactionDate)
@@ -67,11 +73,6 @@ function close(id, user_id, data, cb) {
   })
   .then(function (transId) {
     cfg.transId = '"' + transId + '"'; // FIXME - migrate to db.exec()
-    if (cfg.isForClosing) {
-      cfg.descrip =  'Locking Fiscal Year/' + String(transactionDate);
-    } else {
-      cfg.descrip =  'New Fiscal Year/' + new Date().toISOString().slice(0, 10).toString();
-    }
   })
   .then(function () {
     return postingResultat(resAccount);
@@ -82,38 +83,35 @@ function close(id, user_id, data, cb) {
   .catch(cb)
   .done();
 
-
   function postingResultat (resAccount) {
-    var processClass6 = array6.map(function (account6) {
-      return processDebCred6(resAccount.id, account6);
-    });
+    var processCharge, processProduit;
 
-    var processClass7 = array7.map(function (account7) {
-      return processDebCred7(resAccount.id, account7);
-    });
+    if (charge.length) {
+      processCharge = charge.map(function (account) {
+        return processDebCredCharge(resAccount.id, account);
+      });
+    }
 
-    var processClass8Charge = array8Charge.map(function (account8c) {
-      return processDebCred6(resAccount.id, account8c);
-    });
+    if (produit.length) {
+      processProduit = produit.map(function (account) {
+        return processDebCredProduit(resAccount.id, account);
+      });
+    }
 
-    var processClass8Profit = array8Profit.map(function (account8p) {
-      return processDebCred7(resAccount.id, account8p);
-    });
-
-    return q.all([processClass6, processClass7, processClass8Charge, processClass8Profit]);
+    return q.all([processCharge, processProduit]);
   }
 
-  function processDebCred6 (resultatAccount, class6Account) {
+  function processDebCredCharge (resultatAccount, chargeAccount) {
     var bundle = {
-          class6Account : class6Account,
-          solde         : class6Account.debit_equiv - class6Account.credit_equiv,
-          currency_id   : class6Account.currency_id
+          chargeAccount : chargeAccount,
+          solde         : chargeAccount.debit_equiv - chargeAccount.credit_equiv,
+          currency_id   : chargeAccount.currency_id
         };
 
     if (bundle.solde > 0) {
-      return q.all([debit(resultatAccount, bundle), credit(bundle.class6Account.id, bundle)]);
+      return q.all([debit(resultatAccount, bundle), credit(bundle.chargeAccount.id, bundle)]);
     } else if (bundle.solde < 0) {
-      return q.all([debit(bundle.class6Account.id, bundle), credit(resultatAccount, bundle)]);
+      return q.all([debit(bundle.chargeAccount.id, bundle), credit(resultatAccount, bundle)]);
     }
 
     function debit (accountId, bundle) {
@@ -176,17 +174,17 @@ function close(id, user_id, data, cb) {
     }
   }
 
-  function processDebCred7 (resultatAccount, class7Account) {
+  function processDebCredProduit (resultatAccount, produitAccount) {
     var bundle = {
-          class7Account : class7Account,
-          solde         : class7Account.credit_equiv - class7Account.debit_equiv,
-          currency_id   : class7Account.currency_id
+          produitAccount : produitAccount,
+          solde          : produitAccount.credit_equiv - produitAccount.debit_equiv,
+          currency_id    : produitAccount.currency_id
         };
 
     if (bundle.solde > 0) {
-      return q.all([debit(bundle.class7Account.id, bundle), credit(resultatAccount, bundle)]);
+      return q.all([debit(bundle.produitAccount.id, bundle), credit(resultatAccount, bundle)]);
     } else if (bundle.solde < 0) {
-      return q.all([debit(resultatAccount, bundle), credit(bundle.class7Account.id, bundle)]);
+      return q.all([debit(resultatAccount, bundle), credit(bundle.produitAccount.id, bundle)]);
     }
 
     function debit (accountId, bundle) {
@@ -262,23 +260,28 @@ function create(id, userId, details, cb) {
   var sql, rate, queries, cfg = {},
       ids = [];
 
+  // fiscal year starting date
+  // When a fiscal year is created, in the posting journal we put the starting date
+  // of the fiscal year like transaction date
+  cfg.dateStart = details.dateStart;
+
   q([
     core.queries.origin('journal'),
-    core.queries.period(new Date()),
+    core.queries.period(cfg.dateStart),
     core.queries.exchangeRate(new Date())
   ])
   .spread(function (originId, periodObject, store) {
-    cfg.balance = details[0];
+    cfg.balance = details.balances[0];
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
+    cfg.description = cfg.balance.description;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
     cfg.store = store;
     rate = cfg.store.get(cfg.balance.currencyId).rate;
     return core.queries.transactionId(cfg.balance.projectId);
   })
   .then(function (transId) {
-
-    queries = details.map(function (balance) {
+    queries = details.balances.map(function (balance) {
       var params, uid = uuid();
       ids.push(uid);
 
@@ -287,15 +290,14 @@ function create(id, userId, details, cb) {
           'uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
           'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
           'currency_id, origin_id, user_id) ' +
-        'VALUES (?);';
+        'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
 
       params = [
-        uid, balance.projectId, cfg.fiscalYearId, cfg.periodId, transId, new Date(),
+        uid, balance.projectId, cfg.fiscalYearId, cfg.periodId, transId, cfg.dateStart,
         cfg.description, balance.accountId, balance.credit, balance.debit,
         balance.credit / rate, balance.debit / rate, balance.currencyId, cfg.originId,
         userId
       ];
-
       return db.exec(sql, params);
     });
 
@@ -306,7 +308,6 @@ function create(id, userId, details, cb) {
   })
   .catch(function (err) {
     sql = ids.length > 0 ? 'DELETE FROM posting_journal WHERE posting_journal.uuid IN (?);' : 'SELECT 1 + 1;';
-
     db.exec(sql, [ids])
     .finally(function () {
       cb(err);
