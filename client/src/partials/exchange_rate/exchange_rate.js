@@ -20,7 +20,8 @@ function ExchangeRateController(connect, appstate, validate, exchange, Session, 
   var dependencies = {};
 
   // bind data
-  vm.today = Dates.current.day();
+  vm.today = new Date();
+  vm.tomorrow = Dates.next.day();
   vm.enterprise = Session.enterprise;
   vm.form = { date : vm.today };
   vm.state = 'default';
@@ -75,14 +76,14 @@ function ExchangeRateController(connect, appstate, validate, exchange, Session, 
   function buildModels(models) {
     angular.extend(vm, models);
 
-    console.log('models:', models);
-
     vm.currentRates = vm.rates.data.filter(function (rate) {
       return new Date(rate.date).setHours(0,0,0,0) === new Date().setHours(0,0,0,0);
     });
   }
 
-  function submit() {
+  function submit(invalid) {
+
+    if (invalid) { return; }
 
     var data = {
       enterprise_currency_id : vm.enterprise.currency_id,
