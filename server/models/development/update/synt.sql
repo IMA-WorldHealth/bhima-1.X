@@ -245,7 +245,6 @@ DELETE FROM `unit` WHERE `unit`.`id` = 90;
 DELETE FROM `unit` WHERE `unit`.`id` = 91;
 DELETE FROM `unit` WHERE `unit`.`id` = 92;
 
-
 -- Alter enterprise data
 -- Date: 2015-09-17
 -- By: Bruce Mbayo
@@ -262,6 +261,19 @@ WHERE `id`=200;
 INSERT INTO `transaction_type` (`service_txt`) 
 VALUES ('group_invoice');
 
+-- Change stock URL route
+--
+-- Date 2015-09-14
+-- by: jniles
+
+UPDATE `unit` SET path="/stock/dashboard", url = "/stock/dashboard" WHERE id = 81;
+
+-- BREAKING - remove consumption_reversing table and add `canceled` column
+--
+-- Date 2015-09-14
+-- by: jniles
+DROP TABLE consumption_reversing;
+ALTER TABLE consumption ADD COLUMN `canceled` BOOLEAN NOT NULL DEFAULT 0;
 
 -- Alter cost center, service
 -- Date: 2015-09-22
@@ -272,7 +284,6 @@ DROP FOREIGN KEY  `cost_center_ibfk_1` ;
 
 ALTER TABLE  `service` 
 DROP FOREIGN KEY  `service_ibfk_1` ;
-
 --
 -- Dedrick Kitamuka
 -- 22/09/2015
@@ -281,6 +292,15 @@ DROP FOREIGN KEY  `service_ibfk_1` ;
 
 INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
 VALUES (120, 'Rapport situation group debiteur', 'TREE.DEBITOR_GROUP_REPORT', 'pour voir le rapport pdf detaille de group de debiteur', 10, '/partials/reports/debitor_group_report', '/reports/debitor_group_report/');
+
+-- 
+-- jniles
+-- Oct 8, 2015
+-- Remove irrelevant stock reports, add new stock report
+--
+DELETE FROM unit WHERE id IN (84, 85, 86);
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
+VALUES (121, 'Stock Distributions By Depot', 'TREE.DEPOT_DISTRIBUTIONS', 'This report combines distributions to patients, losses, rummage, and services into a singe report', 10, '/partials/reports/distributions', '/reports/distributions/');
 
 -- Create new budget
 -- 

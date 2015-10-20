@@ -11,7 +11,7 @@ var express       = require('express'),
 
 var cfg           = require('./../config/environment/server');
 
-// Accept generic express/ authentication instances (initialised in app.js)
+// Accept generic express/authentication instances (initialised in app.js)
 module.exports = function (app, authentication) {
   console.log('[config/express] Configure express');
 
