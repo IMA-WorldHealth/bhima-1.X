@@ -16,7 +16,7 @@ function donation(id, userId, data, cb) {
   var sql, params, cfg = {},
       reference;
 
-  // TODO - this is bad.  Don't do this.  Refactor
+  // TODO - this is bad.  Don't do this.  Refactor.
   sql = 'SELECT * FROM inventory WHERE inventory.uuid = ?;';
 
   db.exec(sql, [data.inventory_uuid])
@@ -43,16 +43,16 @@ function donation(id, userId, data, cb) {
     cfg.description =  transId.substring(1,4) + '_Donation/' + new Date().toISOString().slice(0, 10).toString();
     sql =
       'INSERT INTO posting_journal (' +
-        'uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+        'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
         'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
         'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
-      'SELECT ?, ?, ?, ?, ?, ?, ?, inventory_group.stock_account, ?, ?, ?, ?, ?, ?, ?, ?, ? ' +
+      'SELECT ?, ?, ?, ?, ?, ?, ?, inventory_group.stock_account, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ' +
       'FROM inventory_group WHERE inventory_group.uuid = ?;';
 
     params = [
       uuid(), data.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description,
-      0, cfg.cost, 0, cfg.cost, data.currency_id, data.inventory_uuid, null, data.donation.uuid,
-      cfg.originId, userId, reference.group_uuid
+      0, cfg.cost, 0, cfg.cost, data.currency_id, null, null, data.donation.uuid, cfg.originId, userId,
+      reference.group_uuid
     ];
 
     return db.exec(sql, params);
@@ -63,8 +63,7 @@ function donation(id, userId, data, cb) {
         'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
         'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
         'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
-      'SELECT ?, ?, ?, ?, ?, ?, ?, inventory_group.donation_account, ?, ' +
-        '?,?,?,?,?,?,?,?,? ' +
+      'SELECT ?, ?, ?, ?, ?, ?, ?, inventory_group.donation_account, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ' +
       'FROM inventory_group WHERE inventory_group.uuid = ?;';
 
     params = [
@@ -92,7 +91,7 @@ function donation(id, userId, data, cb) {
       return db.exec(sql, [data.movement.document_id]);
     })
     .then(function () {
-      sql = 'DELETE FROM stock WHERE stock.tracking_number IN ()';
+      sql = 'DELETE FROM stock WHERE stock.tracking_number IN (?)';
       return db.exec(sql, [data.donation.tracking_numbers]);
     })
     .done(cb);

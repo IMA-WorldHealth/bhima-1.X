@@ -3,48 +3,51 @@
   <div class="row customer-details">
     <div class="col-xs-12">
       <small style="float: right; color: grey; font-size: 8px">{{ model.common.invoiceId }}</small>
-      <h4 class="invoice-header">{{ 'INVOICE.PROOF_OF_PATIENT_CONSUMPTION' | translate }}</h4>
+      <h4 class="invoice-header">
+        {{ 'INVOICE.PROOF_OF_PATIENT_CONSUMPTION' | translate }}
+        <span ng-if="model.canceled" class="label label-danger">{{ 'INVOICE.ANNULLED' | translate }}</span>
+      </h4>
     </div>
   </div>
   <div class="row customer-details">
     <!-- Temporary style; needs official markup and CSS -->
     <div class="col-xs-4">
       <span>
-        <b>{{model.common.enterprise.name}}</b>
+        <b>{{ model.common.enterprise.name }}</b>
       </span>
       <br>
-      {{model.common.location.name}}
+      {{ model.common.location.name }}
       <br>
       {{ model.common.enterprise.po_box || 'B.P. 205'}}
       <br>
-      {{model.common.location.sector_name}}
+      {{ model.common.location.sector_name }}
       <br>
-      <i>TEL</i> {{model.common.enterprise.phone}}
+      <i>TEL</i> {{ model.common.enterprise.phone }}
       <br>
-      <i>MAIL</i> {{model.common.enterprise.email}}
+      <i>MAIL</i> {{ model.common.enterprise.email}}
 
     </div>
     <div class="col-xs-4">
-      <b>{{model.reference.last_name}} {{model.reference.middle_name}} {{model.reference.first_name}} </b>
+      <b>{{ model.reference.last_name }} {{ model.reference.middle_name }} {{ model.reference.first_name }} </b>
       <br>
       <!-- Debtor group name -->
-      {{model.reference.name}}
+      {{ model.reference.name }}
       <br>
       <br>
       <i>{{ 'INVOICE.DATE_REGISTRATION' | translate }}</i>
       <br>
-      {{timestamp | date}}
+      {{ timestamp | date }}
     </div>
     <div class="col-xs-4">
-      <i>{{'INVOICE.DOCUMENT_REF' | translate}}</i> <b>{{model.common.enterprise.abbr + model.reference.reference}}</b>
+      <i>{{ 'INVOICE.DOCUMENT_REF' | translate }}</i> <b>{{ model.common.enterprise.abbr + model.reference.reference }}</b>
       <br>
-      <i>{{'INVOICE.CLIENT_ID' | translate}}</i> <b> {{model.reference.abbr_patient}}{{model.reference.ref_patient}}</b>
+      <i>{{ 'INVOICE.CLIENT_ID' | translate }}</i> <b> {{ model.reference.abbr_patient }}{{ model.reference.ref_patient }}</b>
       <br>
-      <i>{{'INVOICE.DEPOT_REF' | translate}}</i> <b>{{model.depot.reference}}</b>
+      <i>{{ 'INVOICE.DEPOT_REF' | translate }}</i> <b>{{ model.depot.reference }}</b>
       <br>
       <i>{{ 'INVOICE.DATE_RECEIPT' | translate }}</i>
       <br>
-      {{model.reference.invoice_date | date}}
+      {{ model.reference.invoice_date | date }}
       <br>
     </div>
   </div>
@@ -53,18 +56,18 @@
       <table class="invoiceTable">
         <thead>
           <tr>
-            <th>{{'COLUMNS.DESCRIPTION' | translate}}</th>
-            <th>{{'COLUMNS.CODE' | translate}}</th>
-            <th>{{'COLUMNS.DEPOT' | translate}}</th>
-            <th>{{'COLUMNS.LOT_NUMBER' | translate}}</th>
-            <th>{{'COLUMNS.QUANTITY' | translate}}</th>
+            <th>{{ 'COLUMNS.DESCRIPTION' | translate }}</th>
+            <th>{{ 'COLUMNS.CODE' | translate }}</th>
+            <th>{{ 'COLUMNS.DEPOT' | translate }}</th>
+            <th>{{ 'COLUMNS.LOT_NUMBER' | translate }}</th>
+            <th>{{ 'COLUMNS.QUANTITY' | translate }}</th>
           </tr>
         </thead>
         <tbody class="items">
           <tr ng-repeat="item in model.consumptions | orderBy : 'code'">
             <td>{{ item.text }}</td>
             <td>{{ item.code }}</td>
-            <td>[{{model.depot.reference}}] {{ model.depot.text }}</td>
+            <td>[{{ model.depot.reference }}] {{ model.depot.text }}</td>
             <td>{{ item.lot_number }}</td>
             <td>{{ item.quantity }}</td>
           </tr>
@@ -75,7 +78,7 @@
         <h5>{{ "UTIL.SIGNATURES" | translate }}</h5>
 
         <div class="signature-box">
-          <label>{{ "SIGNATURES.CUSTOMER" | translate }}</label> <label style="float: right;">{{ "UTIL.DATE" | translate }}</label>
+          <label>{{ 'SIGNATURES.CUSTOMER' | translate }}</label> <label style="float: right;">{{ 'UTIL.DATE' | translate }}</label>
           <div class="signature-line"></div>
         </div>
       </div>

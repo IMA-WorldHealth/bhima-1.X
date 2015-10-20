@@ -1,16 +1,16 @@
 /**
- * Application Routing
- *
- * Initialise link between server paths and controller logic
- *
- * TODO Pass authenticate and authorize middleware down through
- * controllers, allowing for modules to subscribe to different
- * levels of authority
- *
- * TODO createPurchase, createSale, serviceDist are all almost
- * identicale modules - they should all be encapsulated as one
- * module. For Example finance.createSale, finance.createPurchase
- */
+* Application Routing
+*
+* Initialise link between server paths and controller logic
+*
+* TODO Pass authenticate and authorize middleware down through
+* controllers, allowing for modules to subscribe to different
+* levels of authority
+*
+* TODO createPurchase, createSale, are all almost
+* identicale modules - they should all be encapsulated as one
+* module. For Example finance.createSale, finance.createPurchase
+*/
 
 // Require application controllers
 var data            = require('../controllers/data');
@@ -19,7 +19,6 @@ var locations       = require('../controllers/location');
 var createPurchase  = require('../controllers/createPurchase');
 var createSale      = require('../controllers/createSale');
 
-var serviceDist     = require('../controllers/serviceDist');
 var consumptionLoss = require('../controllers/consumptionLoss');
 var trialbalance    = require('../controllers/trialbalance');
 var journal         = require('../controllers/journal');
@@ -38,6 +37,11 @@ var auth            = require('../controllers/auth'),
     projects        = require('../controllers/projects'),
     users           = require('../controllers/users'),
     analytics       = require('../controllers/analytics'),
+    stock           = require('../controllers/stock'),
+    purchase        = require('../controllers/purchase'),
+    inventory       = require('../controllers/inventory'),
+    patient         = require('../controllers/patient'),
+    depot           = require('../controllers/depot'),
     budget          = require('../controllers/budget');
 
 var patient         = require('../controllers/patient');
@@ -55,7 +59,7 @@ exports.initialise = function (app) {
   app.post('/login', auth.login);
   app.get('/logout', auth.logout);
 
-  // Application data
+  // application data
   app.post('/data/', data.create);
   app.get('/data/', data.read);
   app.put('/data/', data.update);
@@ -77,7 +81,6 @@ exports.initialise = function (app) {
 
   app.post('/purchase', createPurchase.execute);
   app.post('/sale/', createSale.execute);
-  app.post('/service_dist/', serviceDist.execute);
   app.post('/consumption_loss/', consumptionLoss.execute);
 
   // trial balance routes
@@ -139,29 +142,72 @@ exports.initialise = function (app) {
   app.get('/max_trans/:projectId', uncategorised.maxTransactionByProject);
   app.get('/print/journal', uncategorised.printJournal);
   app.get('/stockIn/:depot_uuid/:df/:dt', uncategorised.stockIn);
-  app.get('/expiring/:depot_uuid/:df/:dt', uncategorised.stockExpiringByDepot);
-  app.get('/expiring_complete/:tracking_number/:depot_uuid', uncategorised.stockExpiringComplete);
-  app.get('/serv_dist_stock/:depot_uuid', uncategorised.distributeStockDepot);
   app.get('/inv_in_depot/:depot_uuid', uncategorised.inventoryByDepot);
-  app.get('/inventory/depot/:depot/*', uncategorised.routeDepotQuery);
   app.get('/inventory/drug/:code', uncategorised.routeDrugQuery);
   app.get('/errorcodes', uncategorised.listErrorCodes);
   app.get('/getAccount6', uncategorised.listIncomeAccounts);
   app.get('/available_payment_period/', uncategorised.availablePaymentPeriod);
-  app.get('/getConsumptionDrugs/', uncategorised.listConsumptionDrugs);
-  app.get('/getItemInConsumption/', uncategorised.listItemByConsumption);
-  app.get('/getTop10Consumption/', uncategorised.listTopConsumption);
-  app.get('/getPurchaseOrders/', uncategorised.listPurchaseOrders);
-  app.get('/getTop10Donor/', uncategorised.listTopDonors);
-  app.get('/getConsumptionTrackingNumber/', uncategorised.listConsumptionByTrackingNumber);
   app.get('/getExpiredTimes/', uncategorised.listExpiredTimes);
   app.get('/getStockEntry/', uncategorised.listStockEntry);
   app.get('/getStockConsumption/', uncategorised.listStockConsumption);
   app.get('/getNombreMoisStockControl/:inventory_uuid', uncategorised.frenchEnglishRoute);
   app.get('/monthlyConsumptions/:inventory_uuid/:nb', uncategorised.listMonthlyConsumption);
-  app.get('/getDelaiLivraison/:id', uncategorised.frenchRoute);
+  app.get('/getConsumptionTrackingNumber/', uncategorised.listConsumptionByTrackingNumber);
   app.get('/getCommandes/:id', uncategorised.listCommandes);
   app.get('/getMonthsBeforeExpiration/:id', uncategorised.formatLotsForExpiration);
+
+  /*  Inventory and Stock Managment */
+
+  app.get('/inventory/metadata', inventory.getInventoryItems);
+  app.get('/inventory/:uuid/metadata', inventory.getInventoryItemsById);
+
+  app.get('/inventory/consumption', inventory.getInventoryConsumption);
+  app.get('/inventory/:uuid/consumption', inventory.getInventoryConsumptionById);
+
+  app.get('/inventory/leadtimes', inventory.getInventoryLeadTimes);
+  app.get('/inventory/:uuid/leadtimes', inventory.getInventoryLeadTimesById);
+
+  app.get('/inventory/stock', inventory.getInventoryStockLevels);
+  app.get('/inventory/:uuid/stock', inventory.getInventoryStockLevelsById);
+
+  app.get('/inventory/expirations', inventory.getInventoryExpirations);
+  app.get('/inventory/:uuid/expirations', inventory.getInventoryExpirationsById);
+
+  app.get('/inventory/lots', inventory.getInventoryLots);
+  app.get('/inventory/:uuid/lots', inventory.getInventoryLotsById);
+
+  app.get('/inventory/status', inventory.getInventoryStatus);
+  app.get('/inventory/:uuid/status', inventory.getInventoryStatusById);
+
+  app.get('/inventory/donations', inventory.getInventoryDonations);
+  app.get('/inventory/:uuid/donations', inventory.getInventoryDonationsById);
+
+  /* Depot Management */
+
+  app.get('/depots', depot.getDepots);
+  app.get('/depots/:uuid', depot.getDepotsById);
+
+  app.get('/depots/:depotId/distributions', depot.getDistributions);
+  app.get('/depots/:depotId/distributions/:uuid', depot.getDistributionsById);
+
+  // over-loaded distributions route handles patients, services, and more
+  app.post('/depots/:depotId/distributions', depot.createDistributions);
+
+  // get the lots of a particular inventory item in the depot
+  // TODO -- should this be renamed? /stock? /lots?
+  app.get('/depots/:depotId/inventory', depot.getAvailableLots);
+  app.get('/depots/:depotId/inventory/:uuid', depot.getAvailableLotsByInventoryId);
+
+  app.get('/depots/:depotId/expired', depot.getExpiredLots);
+  app.get('/depots/:depotId/expirations', depot.getStockExpirations);
+
+  /* continuing on ... */
+
+  // stock API
+  app.get('/donations', stock.getRecentDonations);
+
+  // TODO - make a purchase order controller
+  app.get('/purchaseorders', purchase.getPurchaseOrders);
 
   // Added since route structure development
   app.post('/payTax/', uncategorised.submitTaxPayment);
