@@ -22,17 +22,11 @@
           <th>
             <table>
               <tr>
-                <th colspan="2">
-                  Balance {{= it.meta.startMonth }}/{{= it.meta.startYear }}
-                </th>
+                <th colspan="2"> Balance {{= it.meta.startMonth }} / {{= it.meta.startYear }} </th>
               </tr>
               <tr>
-                <th>
-                  Debit
-                </th>
-                <th>
-                  Credit
-                </th>
+                <th> Debit </th>
+                <th> Credit </th>
               </tr>
             </table>
           </th>
