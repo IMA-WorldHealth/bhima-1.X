@@ -85,7 +85,7 @@ exports.build = function (req, res, next) {
 
   var handler = documentHandler[target]; //handler will contain a object with two property, template for structure and context for data
   var options = req.body;
-  options.stylePath = path.join(__dirname);
+  options.stylePath = __dirname;
 
   // Module does not support the requested document
   if (!handler) {
