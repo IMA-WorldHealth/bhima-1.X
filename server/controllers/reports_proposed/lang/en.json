@@ -77,6 +77,22 @@
   }
 }
 	"VARIATION_EXPLOITATION" : {
-		
+		"TITLE" : "Income Expense Variation",
+		"ENTERPRISE" : "Enterprise",
+		"DEBIT" : "Debit",
+		"CREDIT" : "Credit",
+		"DATE" : "Date",		
+		"BOX" : "BP",
+		"TEL" : "Tel",
+		"CADRE" : "Cadre",
+		"COMPTE" : "ACCOUNT",
+		"DESIGNATION" : "Name",
+		"PREVIOUS"    : "Previous",
+		"CURRENT" : "Current",
+		"VARIATION_PERCENT" : "Variation (%)",
+		"VARIATION_MONTANT" : "Variation (Amount)",
+		"INCOME_ACCOUNT" : "PROFIT ACCOUNT",
+		"EXPENSE_ACCOUNT" : "CHARGE ACCOUNT"
+	}
 	}
 }

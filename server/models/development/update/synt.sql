@@ -66,6 +66,7 @@ DELETE FROM `inventory_type` WHERE `inventory_type`.`id` = 4;
 --
 -- Date: 2015-08-13
 -- By: jniles
+
 ALTER TABLE `user` CHANGE `logged_in` `active` TINYINT NOT NULL DEFAULT 0;
 ALTER TABLE `user` ADD COLUMN `last_login` DATE NOT NULL;
 UPDATE `user` SET `password` = PASSWORD(`password`);
@@ -453,6 +454,7 @@ UPDATE `unit` SET `unit`.`parent`=129 WHERE `unit`.`id`=38;
 
 UPDATE `unit` SET `unit`.`key`='TREE.PATIENT_REGISTRATION' WHERE `unit`.`id`=14;
 UPDATE `unit` SET `unit`.`key`='TREE.USERS' WHERE `unit`.`id`=4;
+
 --
 -- jniles
 -- 07/10/2015
@@ -460,6 +462,7 @@ UPDATE `unit` SET `unit`.`key`='TREE.USERS' WHERE `unit`.`id`=4;
 --
 INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
 VALUES (132, 'Annual Debtor Group Report', 'TREE.DEBTOR_GROUP_ANNUAL_REPORT', 'provides the evolution of all debtor group debts to the enterprise', 128, 'partials/reports_proposed/debtorgroup/annual', '/reports/debtorgroup/annual');
+
 
 -- Setting all class 6 accounts to is_charge=1
 -- Setting all class 7 accounts to is_charge=0
@@ -492,4 +495,4 @@ UPDATE `unit` SET `unit`.`parent`=57 WHERE `unit`.`id`=119;
 --
 
 INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
-VALUES (122, 'compte exploitation', 'TREE.COMPTE_EXPLOITATION', 'pour voir evloution compte exploitation entre deux annees fiscales' , 30, '/partials/reports/variation_exploitation', '/variation_exploitation/');
+VALUES (131, 'compte exploitation', 'TREE.COMPTE_EXPLOITATION', 'pour voir evloution compte exploitation entre deux annees fiscales' , 129, '/partials/reports/variation_exploitation', '/variation_exploitation/');
