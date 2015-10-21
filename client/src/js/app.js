@@ -48,7 +48,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/projects/projects.html'
   })
   .when('/fiscal', {
-    controller: 'fiscal',
+    controller: 'FiscalController as FiscalCtrl',
     templateUrl: 'partials/fiscal/fiscal.html'
   })
   .when('/patient/edit/:patientID?', {

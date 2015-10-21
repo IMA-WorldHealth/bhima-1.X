@@ -1224,6 +1224,7 @@
    "CREATE_YEAR_DETAILS"         : "Configurer les détails de la nouvelle année",
    "CREATION"                    : "Créer une nouvelle année fiscale",
    "CREDIT"                      : "Credit",
+   "DATE_ORDER_ERROR"            : "Les dates ne sont pas correctes: La date de fin (%END%) doit est superieur a la date de debut (%START%)",
    "DEBIT"                       : "Debit",
    "DESC"                        : "Description",
    "DESCRIPTION"                 : "Description",
