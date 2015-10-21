@@ -6,7 +6,7 @@
   <div class="pull-left">
     <ol class="breadcrumb" style="float: right;">
       <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
-      <li><a tabindex="-1" href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
+      <li><a tabindex="-1" href="#/depots/">{{ "DEPOT.MAIN.TITLE" | translate }}</a></li>
       <li class="active">{{ "STOCK.DISTRIBUTION_SERVICE_RECORDS.REVERSING_TITLE_SERVICE" | translate }}</li>
     </ol>
   </div>
@@ -70,7 +70,7 @@
               <td>{{invoice.name}}</td>
               <td>{{invoice.itemNumers}}</td>
               <td class="hidden-print">
-                <a ng-href="/#/stock/reversing_service_distribution/{{invoice.document_id}}/"><span class="glyphicon glyphicon-repeat"></span> {{ 'STOCK.DISTRIBUTION_RECORDS.REVERSING_DISTRIBUTION' | translate }}</a>
+                <a ng-href="/#/depots/reversing_service_distribution/{{invoice.document_id}}/"><span class="glyphicon glyphicon-repeat"></span> {{ 'STOCK.DISTRIBUTION_RECORDS.REVERSING_DISTRIBUTION' | translate }}</a>
               </td>
               <td class="hidden-print">
                 <!-- FIXME get correct path to the receipt -->
