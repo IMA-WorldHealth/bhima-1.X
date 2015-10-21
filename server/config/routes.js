@@ -245,6 +245,7 @@ exports.initialise = function (app) {
 
   // Fiscal Year Resultat
   app.get('/getClassSolde/:account_class/:fiscal_year', uncategorised.getClassSolde);
+  app.get('/getTypeSolde/:fiscal_year/:account_type_id/:is_charge', uncategorised.getTypeSolde);
   app.post('/posting_fiscal_resultat/', fiscal.fiscalYearResultat);
 
   // Stock integration

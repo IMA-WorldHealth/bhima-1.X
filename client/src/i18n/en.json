@@ -1223,6 +1223,7 @@
    "CREATE_YEAR_DETAILS"         : "Configure the new year details",
    "CREATION"                    : "Create a new fiscal year ",
    "CREDIT"                      : "Credit",
+   "DATE_ORDER_ERROR"            : "Dates are not corrects: The end's date (%END%) must be greater than the start's date (%START%)",
    "DEBIT"                       : "Debit",
    "DESC"                        : "Year Description",
    "DESCRIPTION"                 : "Description",
