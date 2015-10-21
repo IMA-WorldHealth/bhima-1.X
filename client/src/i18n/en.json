@@ -471,6 +471,7 @@
    "EXPIRATION_DATE"       : "Expiration Date",
    "EXPLANATION"           : "Explanation",
    "FIRST_NAME"            : "First Name",
+   "FISCAL_YEAR"         : "Fiscal Year Selection",
    "FISCAL_YEAR_ID"        : "Fiscal Year ID",
    "FIX"                   : "Fix",
    "FOUR_ACCOUNT"          : "Four Account",
@@ -876,6 +877,13 @@
    "LANGUAGE" : "Language",
    "INVOLVE_JOURNAL" : "Involve journal",
    "NOTSOLD_ONLY" : "Show unsold bill only",
+   "DEBITOR_GROUP" : "Debitor Group",
+   "DOC_SUCCES"   : "Document Build Success - Open Document",
+   "GENERATE_DOC"    : "Generate document"
+},
+"DEBTOR_GROUP_ANNUAL_REPORT" : {
+   "TITLE" : "Configuration of Debitor Group Report",
+   "DOCUMENT_CONFIG" : "Configuration of Debitor Group Report",
    "DEBITOR_GROUP" : "Debitor Group",
    "DOC_SUCCES"   : "Document Build Success - Open Document",
    "GENERATE_DOC"    : "Generate document"
@@ -3096,6 +3104,7 @@
    "IMCK"              : "IMCK",
    "IMCK_LONG"         : "Christian Medical Institue of Kasai",
    "ITEMS"             : "Items",
+   "LANGUAGE"        : "Language",
    "LOADING"           : "Loading",
    "LINK"              : "Link",
    "MONTHS"            : "Months",

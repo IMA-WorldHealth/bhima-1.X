@@ -22,10 +22,10 @@
       <tr class="text-uppercase">
         <th rowspan="2">Numero Compte</th>
         <th rowspan="2">Designation</th>
-        <th colspan="2">Solde {{= it.meta.start }}</th>
-        <th rowspan="2">Debit</th>
-        <th rowspan="2">Credit</th>
-        <th rowspan="2">Solde {{= it.meta.stop }}</th>
+        <th colspan="2">Solde {{= it.meta.openingDate }}</th>
+        <th rowspan="2">Fact</th>
+        <th rowspan="2">Paye</th>
+        <th rowspan="2">Solde <br /> {{= it.meta.stop }}</th>
       </tr>
       <tr class="text-uppercase">
         <th>Debit</th>
@@ -51,10 +51,10 @@
 
       {{? (it.meta.size === 0) }}
         <tr>
-          <td colspan="7">
-            <span class="indicator indicator-success">
+          <td colspan="7" class="text-center" style="margin:0;padding:0;">
+            <div class="indicator indicator-error" style="width:100%;">
               Il n'y a pas des donnees trouver pour l'annee fiscal!
-            </span>
+            </div>
           </td>
         </tr>
       {{?}}
