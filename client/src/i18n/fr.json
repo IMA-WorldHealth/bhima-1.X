@@ -896,13 +896,6 @@
   "ALL"             : "Tous les Dépôts",
   "DELETE_SUCCESS"  : "Suppression avec succès",
   "DELETE_FAIL"     : "Echec Suppression, Le depot est utilisé dans plusiers enregistrements",
-  "EDIT"            : "Editer les informations d'un dépôt",
-  "EDIT_SUCCESS"    : "Données du dépôt mise à jour avec succès ",
-  "NEW"             : "Nouveau dépôt",
-  "NEW_SUCCESS"     : "Nouveau dépôt enregistré avec succès",
-  "NO_DEPOTS"       : "Aucun dépôt trouvé",
-  "NOT_FOUND"       : "Aucun dépôt enregistrés n'a pu être trouvée. Veuillez sélectionner le bon dépôt ou contacter l'administrateur du système.",
-  "TITLE"           : "Gestion des Dépôt",
   "DISTRIBUTION"   : {
     "ANNUL"    : "Annuler cette Transaction",
     "ANNULLED" : "Annulé",
@@ -919,7 +912,24 @@
       "TITLE"   : "Cancel Pharmacy Distribution",
       "MESSAGE" : "You are about to cancel a distribution made from the pharmacy.  Please make sure these details are correct."
     }
-  }
+  },
+  "EDIT"            : "Editer les informations d'un dépôt",
+  "EDIT_SUCCESS"    : "Données du dépôt mise à jour avec succès ",
+   "MAIN": {
+      "CONFIGURE_WAREHOUSE" : "Sélectionner dépôt",
+      "CONFIRM"             : "Voulez-vous vraiment gérer les stocks avec le dépôt : ",
+      "MODULES"             : "Modules Disponible",
+      "REPORTS"             : "Rapports des Stock",
+      "TITLE"               : "Gestion des Stocks",
+      "UTILITIES"           : "Utilitaires des Stocks",
+      "WAREHOUSE_INFO_1"    : "Configuration du dépôt par défaut. ",
+      "WAREHOUSE_INFO_2"    : "Toutes operations des stock seront affectées au dépôt sélectionné,",
+      "WAREHOUSE_INFO_3"    : "Cette configuration n'est pas definitive et peut être changer n'important quand."
+      },
+  "NEW"             : "Nouveau dépôt",
+  "NEW_SUCCESS"     : "Nouveau dépôt enregistré avec succès",
+  "NO_DEPOTS"       : "Aucun dépôt trouvé",
+  "TITLE"           : "Gestion des Dépôt"
 },
 "DISTRIBUTION": {
    "ADD_ROW"                : "Ajouter Item",
@@ -2641,17 +2651,6 @@
       "SEE_RECEIPT"       : "Voir le reçu",
       "SUBMIT"            : "Soumettre",
       "TITLE"             : "Perte stock"
-      },
-   "MAIN": {
-      "CONFIGURE_WAREHOUSE" : "Sélectionner dépôt",
-      "CONFIRM"             : "Voulez-vous vraiment gérer les stocks avec le dépôt : ",
-      "MODULES"             : "Modules Disponible",
-      "REPORTS"             : "Rapports des Stock",
-      "TITLE"               : "Gestion des Stocks",
-      "UTILITIES"           : "Utilitaires des Stocks",
-      "WAREHOUSE_INFO_1"    : "Configuration du dépôt par défaut. ",
-      "WAREHOUSE_INFO_2"    : "Toutes operations des stock seront affectées au dépôt sélectionné,",
-      "WAREHOUSE_INFO_3"    : "Cette configuration n'est pas definitive et peut être changer n'important quand."
       },
    "MOVEMENT": {
       "DEPOT_FROM"            : "Dépôt Source",
