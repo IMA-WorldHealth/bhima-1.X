@@ -6,63 +6,68 @@
 </head>
 
 <body>
-  <section id="letterhead"></section>
 
-  <section id="title" class="front-matter">
-      <h5>IMCK Hopital Bon Berger</h5>
-      <h5>Debtor Group Annual Report</h5>
-      <h5>{{= it.reportDate }}</h5>
-  </section>
+  <hgroup class="text-uppercase">
+    <h6>IMCK</h6>
+    <h6>Service de Comptabilite</h6>
+    <h6>Bureau de Facturation</h6>
+  </hgroup>
 
-  <section>
-    <table class="ptable">
-      <thead>
+  <h6 class="clean-title">
+    Rapport Synthese des Clients IMCK au {{= it.meta.stop }}
+  </h6>
+
+  <table class="clean-table">
+    <thead>
+      <tr class="text-uppercase">
+        <th rowspan="2">Numero Compte</th>
+        <th rowspan="2">Designation</th>
+        <th colspan="2">Solde {{= it.meta.start }}</th>
+        <th rowspan="2">Debit</th>
+        <th rowspan="2">Credit</th>
+        <th rowspan="2">Solde {{= it.meta.stop }}</th>
+      </tr>
+      <tr class="text-uppercase">
+        <th>Debit</th>
+        <th>Credit</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      {{ for (var account in it.accounts) {  }}
+
         <tr>
-          <th>Account Number</th>
-          <th>Debtor Group</th>
-          <th>
-            <table style="height:100%;">
-              <tr>
-                <th colspan="2"> Balance ({{= it.meta.start }})</th>
-              </tr>
-              <tr>
-                <th> Debit </th>
-                <th> Credit </th>
-              </tr>
-            </table>
-          </th>
-          <th>Debits</th>
-          <th>Credits</th>
-          <th>Balance ({{= it.meta.stop }})</th>
+          <td>{{= it.accounts[account].account_number }}</td>
+          <td>{{= it.accounts[account].name }}</td>
+          <td class="text-right">{{= it.accounts[account].openingDebits }}</td>
+          <td class="text-right">{{= it.accounts[account].openingCredits }}</td>
+          <td class="text-right">{{= it.accounts[account].debits }}</td>
+          <td class="text-right">{{= it.accounts[account].credits }}</td>
+          <td class="text-right">{{= it.accounts[account].closingBalance }}</td>
         </tr>
-      </thead>
 
-      <tbody class="text-condensed">
+      {{ } }}
 
-        {{ for (var account in it.accounts) {  }}
-
-          <tr>
-            <td>{{= account.account_number }}</td>
-            <td>{{= account.name }}</td>
-            <td>{{= account.openingDebits }}</td>
-            <td>{{= account.openingCredits }}</td>
-            <td>{{= account.debits }}</td>
-            <td>{{= account.credits }}</td>
-            <td>{{= account.closingBalance }}</td>
-          </tr>
-
-        {{ } }}
-
-        {{? (it.meta.size === 0) }}
-          <tr>
-            <td colspan="7">
-              <span class="indicator indicator-success"
-                No data found for this Fiscal Year!
-              </span>
-            </td>
-          </tr>
-        {{?}}
-      </tbody>
-    </table>
-  </section>
+      {{? (it.meta.size === 0) }}
+        <tr>
+          <td colspan="7">
+            <span class="indicator indicator-success">
+              Il n'y a pas des donnees trouver pour l'annee fiscal!
+            </span>
+          </td>
+        </tr>
+      {{?}}
+    </tbody>
+    <tfoot>
+        <tr>
+          <td colspan="2">Total</td>
+          <td class="text-right">{{= it.totals.openingDebits }}</td>
+          <td class="text-right">{{= it.totals.openingCredits }}</td>
+          <td class="text-right">{{= it.totals.debits }}</td>
+          <td class="text-right">{{= it.totals.credits }}</td>
+          <td class="text-right">{{= it.totals.closingBalance }}</td>
+        </tr>
+    </tfoot>
+  </table>
 </body>
