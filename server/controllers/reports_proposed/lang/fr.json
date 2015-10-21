@@ -62,6 +62,21 @@
 	},
 
 	"VARIATION_EXPLOITATION" : {
-		
+		"TITLE" : "Variation Compte Exploitation",
+		"ENTERPRISE" : "Entreprise",
+		"DEBIT" : "Debit",
+		"CREDIT" : "Credit",
+		"DATE" : "Date",		
+		"BOX" : "BP",
+		"TEL" : "Tel",
+		"CADRE" : "Cadre",
+		"COMPTE" : "Compte",
+		"DESIGNATION" : "Designation",
+		"PREVIOUS"    : "Precedent",
+		"CURRENT" : "Courant",
+		"VARIATION_PERCENT" : "Variation (%)",
+		"VARIATION_MONTANT" : "Variation (Montant)",
+		"INCOME_ACCOUNT" : "COMPTE DE PROFIT",
+		"EXPENSE_ACCOUNT" : "COMPTE DE CHARGE"
 	}
 }
