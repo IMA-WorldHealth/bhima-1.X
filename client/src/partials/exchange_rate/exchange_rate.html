@@ -81,6 +81,7 @@
       <div class="panel panel-default" ng-switch-when="new">
         <div class="panel-body">
 
+
           <form name="RateForm" class="form-horizontal" novalidate>
             <fieldset>
               <legend>{{ 'EXCHANGE.SET' | translate }}</legend>
@@ -96,7 +97,7 @@
 
               <div class="form-group" >
                 <div class="col-xs-11">
-                  <input type="date" class="form-bhima" ng-model="ExchangeCtrl.form.date" max="{{ ExchangeCtrl.today | date:'yyyy-MM-dd' }}" ng-disabled="!ExchangeCtrl.form.isOld">
+                  <input name="date" type="date" class="form-bhima" ng-model="ExchangeCtrl.form.date" ng-disabled="!ExchangeCtrl.form.isOld" ng-max="{{ ExchangeCtrl.tomorrow }}" max="{{ ExchangeCtrl.today | date:'yyyy-MM-dd' }}">
                 </div>
               </div>
 
@@ -108,7 +109,7 @@
                 </div>
 
                 <div class="col-sm-offset-1 col-xs-5">
-                  <select class="form-bhima" ng-model="ExchangeCtrl.form.foreign_currency_id" ng-options="c.id as c.name for c in ExchangeCtrl.currency.data | filter:ExchangeCtrl.fcurrency track by c.id" required>
+                  <select name="currency" class="form-bhima" ng-model="ExchangeCtrl.form.foreign_currency_id" ng-options="c.id as c.name for c in ExchangeCtrl.currency.data | filter:ExchangeCtrl.fcurrency track by c.id" required>
                     <option value="" disabled>-- {{ 'SELECT.CURRENCY' | translate }} --</option>
                   </select>
                 </div>
@@ -139,7 +140,7 @@
               </div>
             </fieldset>
 
-            <input type="submit" class="btn btn-sm btn-success" ng-click="ExchangeCtrl.submit()" ng-disabled="RateForm.$invalid" value="{{ 'FORM.SUBMIT' | translate }}">
+            <input type="submit" class="btn btn-sm btn-success" ng-click="ExchangeCtrl.submit(RateForm.$invalid)" ng-disabled="RateForm.$invalid" value="{{ 'FORM.SUBMIT' | translate }}">
           </form>
         </div>
       </div>
