@@ -45,7 +45,7 @@ exports.compile = function (options) {
 
   // get some metadata about the fiscal year
   sql =
-    'SELECT fy.fiscal_year_txt AS label, MIN(p.period_start) AS start, MAX(p.period_stop) AS stop ' +
+    'SELECT fy.fiscal_year_txt AS label, MIN(p.period_start) AS start, MAX(p.period_stop) AS stop, fy.previous_fiscal_year ' +
     'FROM fiscal_year AS fy JOIN period AS p ON fy.id = p.fiscal_year_id ' +
     'WHERE fy.id = ? AND p.period_number <> 0;';
 
@@ -61,6 +61,24 @@ exports.compile = function (options) {
       stopDate: year.stop
     };
 
+    sql =
+      'SELECT fy.fiscal_year_txt AS label, MIN(p.period_start) AS start, MAX(p.period_stop) AS stop ' +
+      'FROM fiscal_year AS fy JOIN period AS p ON fy.id = p.fiscal_year_id ' +
+      'WHERE fy.id = ? AND p.period_number <> 0;';
+
+    return db.exec(sql, [year.previous_fiscal_year]);
+  })
+  .then(function (rows) {
+
+    // this will not be null, since it is a join.
+    var year = rows[0];
+
+    if (year.stop === null) {
+      context.meta.openingDate = context.meta.start;
+    } else {
+      context.meta.openingDate = dateFmt(year.stop);
+    }
+
     // get the opening balances for the year by summing all periods less than
     // the start of the first one.
     sql =
@@ -72,7 +90,7 @@ exports.compile = function (options) {
       'WHERE p.period_stop <= DATE(?) ' +
       'GROUP BY account.id;';
 
-    return db.exec(sql, [year.start]);
+    return db.exec(sql, [context.meta.startDate]);
   })
   .then(function (accounts) {
 
@@ -142,7 +160,7 @@ exports.compile = function (options) {
       ref.closingBalance = account.balance;
     });
 
-    // record the size of the accounts object (number of accounts) 
+    // record the size of the accounts object (number of accounts)
     context.meta.size = Object.keys(context.accounts).length;
 
     // create an aggregates object

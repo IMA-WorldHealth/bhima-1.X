@@ -1,14 +1,14 @@
 <header data-header>
-  {{ 'BALANCE.BUILD_BALANCE' | translate }}
+  {{ 'DEBTOR_GROUP_ANNUAL_REPORT.TITLE' | translate }}
 </header>
 
 <main>
   <div class="panel panel-default">
-    <div class="panel-heading">{{'BALANCE.DOCUMENT_CONFIG' | translate}}</div>
+    <div class="panel-heading">{{'DEBTOR_GROUP_ANNUAL_REPORT.DOCUMENT_CONFIG' | translate }}</div>
     <div class="panel-body">
       <form name="AnnualReportForm" novalidate>
         <div class="form-group">
-          <label>{{'BALANCE.LANGUAGE' | translate}}</label>
+          <label>{{ 'UTIL.LANGUAGE' | translate }}</label>
 
           <div>
             <span ng-repeat="language in AnnualCtrl.configuration.language.options">
@@ -22,9 +22,9 @@
           </div>
         </div>
 
-        <div class="form-group" ng-class="{ '.has-error' : AnnualReportForm.$submitted && AnnualReportForm.$invalid }">
+        <div class="form-group" ng-class="{ 'has-error' : AnnualReportForm.$submitted && AnnualReportForm.$invalid }">
           <label class="required">
-            {{ "BALANCE.FISCAL_YEAR" | translate }}
+            {{ "COLUMNS.FISCAL_YEAR" | translate }}
           </label>
           <select class="form-bhima" name="fiscalYear" ng-model="AnnualCtrl.fiscalYearId" ng-options="fy.id as fy.fiscal_year_txt for fy in AnnualCtrl.fiscalYears" required>
             <option value="" disabled="disabled">--{{ 'SELECT.FISCAL_YEAR' | translate }} --</option>

@@ -471,6 +471,7 @@
    "EXPIRATION_DATE"       : "Date Expiration",
    "EXPLANATION"           : "Explication",
    "FIRST_NAME"            : "Prenom",
+  "FISCAL_YEAR"          : "Année fiscale",
    "FISCAL_YEAR_ID"        : "ID Année Fiscale",
    "FIX"                   : "Fix",
    "FOUR_ACCOUNT"          : "Compte de tier",
@@ -876,6 +877,14 @@
    "LANGUAGE" : "Langue",
    "INVOLVE_JOURNAL" : "Integrer le journal ",
    "NOTSOLD_ONLY"    : "Montrer seulement Les factures non Soldees",
+   "DEBITOR_GROUP"   : "Groupe de Debiteur",
+   "DOC_SUCCES"      : "Document généré avec succès - Ouvrir le document",
+   "GENERATE_DOC"    : "Generer document"
+},
+
+"DEBTOR_GROUP_ANNUAL_REPORT" : {
+   "TITLE" : "Rapport Groupe de Debiteur",
+   "DOCUMENT_CONFIG" : "Configuration rapport groupe de debiteur",
    "DEBITOR_GROUP"   : "Groupe de Debiteur",
    "DOC_SUCCES"      : "Document généré avec succès - Ouvrir le document",
    "GENERATE_DOC"    : "Generer document"
@@ -3097,6 +3106,7 @@
    "IMCK"              : "IMCK",
    "IMCK_LONG"         : "Institut Médical Chrétien du Kasaï",
    "ITEMS"             : "Articles",
+  "LANGUAGE"             : "Langue",
    "LOADING"           : "Chargement",
    "LINK"              : "Link",
    "MONTHS"            : "Mois",
