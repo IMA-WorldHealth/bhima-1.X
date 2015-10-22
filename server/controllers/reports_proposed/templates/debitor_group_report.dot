@@ -2,6 +2,7 @@
   <link rel="stylesheet" href="{{=it.path}}/templates/style/normalize.css">
   <link rel="stylesheet" href="{{=it.path}}/templates/style/skeleton.css">
   <link rel="stylesheet" href="{{=it.path}}/templates/style/reports.css">
+  <meta charset='UTF-8' />
 </head>
 
 <body>
