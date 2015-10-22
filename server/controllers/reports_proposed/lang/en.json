@@ -75,7 +75,6 @@
 	    "NO_DATA" : "No data found for the give fiscal year!",
 	    "TOTAL" : "Total"
 	},
-
 	"VARIATION_EXPLOITATION" : {
 		"TITLE" : "Income Expense Variation",
 		"ENTERPRISE" : "Enterprise",
@@ -94,5 +93,4 @@
 		"INCOME_ACCOUNT" : "PROFIT ACCOUNT",
 		"EXPENSE_ACCOUNT" : "CHARGE ACCOUNT"
 	}
-
 }
