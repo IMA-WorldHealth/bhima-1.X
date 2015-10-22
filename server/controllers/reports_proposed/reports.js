@@ -56,8 +56,6 @@ var documentHandler = {
   debtor_group_annual_report : {
     template : dots.debtor_group_annual_report,
     context :  debtorGroupAnnualReportContext
-    template : dots.debitor_group_report, //templating provider
-    context :  debitorGroupReportContext // data provider
   },
   variation_exploitation : {
     template : dots.variation_exploitation,
