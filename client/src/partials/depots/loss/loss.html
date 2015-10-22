@@ -6,7 +6,7 @@
   <div class="pull-left">
     <ol class="breadcrumb" style="float: right;">
       <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
-      <li><a tabindex="-1" href="#/depots">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
+      <li><a tabindex="-1" href="#/depot">{{ "DEPOT.MAIN.TITLE" | translate }}</a></li>
       <li class="active">{{ "STOCK.LOSS.KEY" | translate }}</li>
     </ol>
   </div>
@@ -26,7 +26,7 @@
         <div class="panel-heading">
           <span class="glyphicon glyphicon-list-alt"></span>
         </div>
-        <form class="panel-body">
+        <form class="panel-body" name="LossForm">
 
           <legend>{{ "STOCK.LOSS.LOSS_GENERAL_INFO" | translate }}</legend>
 
@@ -48,8 +48,8 @@
             <div class="col-xs-3">
               <span>
                 <label>{{ "COLUMNS.DATE" | translate }}</label>
-                <p class="form-control-static"><b>{{session.date | date}}</b></p>
-              </sapn>
+                <p class="form-control-static"><b>{{ session.date | date}}</b></p>
+              </span>
             </div>
           </div>
 
@@ -146,7 +146,10 @@
 
 <footer>
   <div class="pull-right">
-    <a ng-disabled="verifyLoss()" ng-click="submit()" class="btn btn-default"><span class="glyphicon glyphicon-floppy-open"></span> {{ "STOCK.LOSS.SUBMIT" | translate }}</a>
+    <a ng-disabled="verifyLoss()" ng-click="submit()" class="btn btn-default">
+      <i class="glyphicon glyphicon-floppy-open"></i>
+      {{ "STOCK.LOSS.SUBMIT" | translate }}
+    </a>
   </div>
 </footer>
 
