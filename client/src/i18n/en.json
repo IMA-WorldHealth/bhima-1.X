@@ -2251,6 +2251,8 @@
    "DEBITOR_AGING"           : "Debtor Aging",
    "DEBTOR"                  : "Debtor",
    "DESCRIPTION"             : "Description",
+   "DOCUMENT_BUILT"          : "Document Built Successfully",
+   "OPEN_PDF_DOCUMENT"       : "Open PDF Document",
    "FINANCE_REPORT"          : "Finance Report",
    "FISCAL_YEAR"             : "Fiscal Year",
    "GENERAL_LEDGER"          : "General Ledger",
@@ -2383,8 +2385,7 @@
    "NEW"              : "New bilan section",
    "EDIT"             : "Bilan section editing",
    "ADD"              : "Add"
-   },
-
+},
 "SECTION_RESULTAT" : {
    "CHARGE" : "Charge",
    "PROFIT" : "Profit",
@@ -2396,7 +2397,6 @@
    "NEW"              : "New Result Section",
    "EDIT"             : "Edit Result Section"
   },
-
 "SECTOR": {
    "ACTIONS"          : "Actions",
    "CONFIG"           : "Sector Manager Configuration",

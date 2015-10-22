@@ -59,5 +59,20 @@
 		"TOTAL_DIFFERENCE" : "Solde",
 		"BOX" : "BP",
 		"TEL" : "Tel"
-	}
+	},
+
+  "DEBTOR_GROUP_ANNUAL_REPORT" : {
+    "CREDIT" : "Credit",
+    "DEBIT"  : "Debit",
+    "BALANCE" : "Solde",
+    "BILLED" : "Fact",
+    "PAID" : "Paye",
+    "ACCOUNT_NUMBER" : "Numero Compte",
+    "DESIGNATION" : "Designation",
+    "TITLE" : "Rapport Synthese des Clients IMCK",
+    "ACCOUNTING_DEPT" : "Service de Comptabilite",
+    "BILLING_OFFICE" :  "Bureau de Facturation",
+    "NO_DATA" : "Il n'y a pas des donnees trouver pour l'annee fiscal!",
+    "TOTAL" : "Total"
+  }
 }
