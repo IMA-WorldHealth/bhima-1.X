@@ -260,8 +260,10 @@ function service(id, userId, details, cb) {
   .done();
 }
 
-/* Distribution Loss
-*
+/**
+* Distribution Loss
+* 
+* @todo Rewrite this route
 */
 function loss(id, userId, details, cb) {
   'use strict';
