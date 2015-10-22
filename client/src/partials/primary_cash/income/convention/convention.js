@@ -14,7 +14,9 @@ angular.module('bhima.controllers')
   '$translate',
   'precision',
   function ($scope, $q, $location, $routeParams, validate, connect, appstate, messenger, util, uuid, Appcache, $translate, precision) {
-
+    /**
+      * TODO use controller alias as possible and redirect url when no daily exchange rate
+      */
     var dependencies = {}, record_uuid = -1,
         cache = new Appcache('convention');
     $scope.cashbox_id = $routeParams.cashbox_id;
@@ -81,9 +83,9 @@ angular.module('bhima.controllers')
         where : ['primary_cash_module.text=convention']
       }
     };
-    
+
     appstate.register('enterprise', function (enterprise) {
-      $scope.enterprise = enterprise; 
+      $scope.enterprise = enterprise;
     });
 
     $scope.noEmpty = false;
@@ -113,7 +115,7 @@ angular.module('bhima.controllers')
         $translate('CONVENTION.NO_CONVENTION')
         .then(function (value) {
           return messenger.danger(value);
-        });        
+        });
       }
       $scope.selectedConvention = selectedConvention;
       dependencies.situations = { query : '/ledgers/debitor_group/' + $scope.selectedConvention.uuid};
@@ -224,7 +226,7 @@ angular.module('bhima.controllers')
         $translate('CONVENTION.LOADING_ERROR')
         .then(function (value) {
           messenger.danger(value);
-        });       
+        });
       });
     });
 
@@ -236,10 +238,10 @@ angular.module('bhima.controllers')
           return $scope.data.payment < $scope.selectedItem.min_monentary_unit || $scope.data.payment > $scope.som * rate.rate;
         }else{
           return $scope.data.payment < $scope.selectedItem.min_monentary_unit || $scope.data.payment > $scope.som;
-        }        
+        }
       } else {
          return true;
-      }     
+      }
     }
 
     $scope.initialiseConvention = initialiseConvention;

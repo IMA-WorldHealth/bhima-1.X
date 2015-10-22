@@ -9,7 +9,7 @@
       <li><a href="#/primary_cash/">{{ 'PRIMARY_CASH.TITLE' | translate}}</a></li>
       <li class="active">{{ 'TRANSFER.TITLE' | translate}}</li>
     </ol>
-  </div> 
+  </div>
 </nav>
 
 <main>
@@ -20,44 +20,65 @@
           <i class="glyphicon glyphicon-share-alt"></i> {{ "TRANSFER.TRANSFER" | translate }}
         </div>
         <div class="panel-body">
-          <form ng-submit="submit()">
+          <form name="TransferForm" ng-submit="TransferCtrl.submit()" novalidate>
             <div class="form-group">
-              <label>{{ 'TRANSFER.PROJECT' | translate }}</label>
-              <select class="form-bhima" name="projectname" id="projectID" ng-model="data.project_id" ng-options="project.id as project.name for project in projects.data">
+              <label class="required">{{ 'TRANSFER.PROJECT' | translate }}</label>
+              <select
+                ng-model="TransferCtrl.data.project_id"
+                ng-options="project.id as project.name for project in TransferCtrl.projects.data"
+                class="form-bhima"
+                name="projectId"
+                required>
                 <option value="" disabled="disabled">-- {{ 'SELECT.PROJECT' | translate }} -- </option>
               </select>
             </div>
 
             <div class="form-group">
-              <label>{{ 'TRANSFER.CAISSE' | translate}}</label>
-              <!-- <select class="form-bhima" name="caissename" id="caisseID" ng-model="data.cash_box_id" ng-options="cash.id as cash.text for cash in cash_boxes.data">
-                <option value="" disabled="disabled">-- {{ 'SELECT.CASH' | translate }} -- </option>
-              </select> -->
-
-              <select class="form-bhima" ng-model="data.cash_box_id" required>
-                  <option value="" disabled="disabled">--- {{ 'SELECT.CASH' | translate }} ---</option>
-                  <option ng-repeat="cash in cash_boxes.data" ng-disabled="cash.is_auxillary == 0 && cash.is_bank == null" value="{{cash.id}}">
-                    {{ cash.text }}
-                  </option>
-                </select>
+              <label class="required">{{ 'TRANSFER.CAISSE' | translate}}</label>
+              <select
+                ng-model="TransferCtrl.data.cash_box_id"
+                class="form-bhima"
+                name="cashBoxId"
+                required>
+                <option value="" disabled="disabled">--- {{ 'SELECT.CASH' | translate }} ---</option>
+                <!-- FIXME ng-options is optimale but in this case we need to disable some options -->
+                <option ng-repeat="cash in TransferCtrl.cash_boxes.data"
+                  ng-disabled="cash.is_auxillary == 0 && cash.is_bank == null"
+                  value="{{cash.id}}">
+                  {{cash.text}}
+                </option>
+              </select>
             </div>
 
             <div class="form-group">
-              <label>{{ 'TRANSFER.CURRENCY' | translate}}</label>
-              <select class="form-bhima" name="currencyname" id="currencyID" ng-model="data.currency_id" ng-options="box.currency_id as labelCurrency(box.currency_id) for box in cash_box_account_currencies.data | filter:{cash_box_id:data.cash_box_id}">
+              <label class="required">{{ 'TRANSFER.CURRENCY' | translate}}</label>
+              <select
+                id="currencyID"
+                class="form-bhima"
+                name="currencyId"
+                ng-disabled="!TransferCtrl.data.cash_box_id"
+                ng-model="TransferCtrl.data.currency_id"
+                ng-options="box.currency_id as TransferCtrl.labelCurrency(box.currency_id) for box in TransferCtrl.cash_box_account_currencies.data | filter:{cash_box_id:TransferCtrl.data.cash_box_id}"
+                required>
                 <option value="" disabled="disabled">-- {{ 'SELECT.CURRENCY' | translate }} --</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label>{{ 'TRANSFER.AMOUNT' | translate}}</label>
+              <label class="required">{{ 'TRANSFER.AMOUNT' | translate}}</label>
               <div class="input-group">
-                <input type="number" step="any" ng-model="data.value" class="form-bhima"  min="0" required>
-                <span class="input-group-addon">{{ labelCurrency(data.currency_id) }}</span>
+                <input
+                  class="form-bhima"
+                  type="number"
+                  step="any"
+                  name="transferValue"
+                  ng-model="TransferCtrl.data.value"
+                  min="0" required>
+                <span class="input-group-addon">{{ TransferCtrl.labelCurrency(TransferCtrl.data.currency_id) }}</span>
               </div>
             </div>
 
-            <input class="btn btn-success" type="submit" value="{{ 'FORM.ADD' | translate }}">
+            <input class="btn btn-success" type="submit" value="{{ 'FORM.ADD' | translate }}" ng-disabled="TransferForm.$invalid">
             <input class="btn btn-default" type="reset" value="{{ 'FORM.NEW_TRANSFER' | translate }}">
           </form>
         </div>
