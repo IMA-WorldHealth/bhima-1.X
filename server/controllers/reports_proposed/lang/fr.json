@@ -61,22 +61,22 @@
 		"TEL" : "Tel"
 	},
 
-  "DEBTOR_GROUP_ANNUAL_REPORT" : {
-    "CREDIT" : "Credit",
-    "DEBIT"  : "Debit",
-    "BALANCE" : "Solde",
-    "BILLED" : "Fact",
-    "PAID" : "Paye",
-    "ACCOUNT_NUMBER" : "Numero Compte",
-    "DESIGNATION" : "Designation",
-    "TITLE" : "Rapport Synthese des Clients IMCK",
-    "ACCOUNTING_DEPT" : "Service de Comptabilite",
-    "BILLING_OFFICE" :  "Bureau de Facturation",
-    "NO_DATA" : "Il n'y a pas des donnees trouver pour l'annee fiscal!",
-    "TOTAL" : "Total"
-  }
-}
-	"VARIATION_EXPLOITATION" : {
+    "DEBTOR_GROUP_ANNUAL_REPORT" : {
+	    "CREDIT" : "Credit",
+	    "DEBIT"  : "Debit",
+	    "BALANCE" : "Solde",
+	    "BILLED" : "Fact",
+	    "PAID" : "Paye",
+	    "ACCOUNT_NUMBER" : "Numero Compte",
+	    "DESIGNATION" : "Designation",
+	    "TITLE" : "Rapport Synthese des Clients IMCK",
+	    "ACCOUNTING_DEPT" : "Service de Comptabilite",
+	    "BILLING_OFFICE" :  "Bureau de Facturation",
+	    "NO_DATA" : "Il n'y a pas des donnees trouver pour l'annee fiscal!",
+	    "TOTAL" : "Total"
+    },
+
+    "VARIATION_EXPLOITATION" : {
 		"TITLE" : "Variation Compte Exploitation",
 		"ENTERPRISE" : "Entreprise",
 		"DEBIT" : "Debit",
@@ -87,11 +87,11 @@
 		"CADRE" : "Cadre",
 		"COMPTE" : "Compte",
 		"DESIGNATION" : "Designation",
-		"PREVIOUS"    : "Precedent",
-		"CURRENT" : "Courant",
+		"PREVIOUS"    : "Precedente",
+		"CURRENT" : "Courante",
 		"VARIATION_PERCENT" : "Variation (%)",
 		"VARIATION_MONTANT" : "Variation (Montant)",
 		"INCOME_ACCOUNT" : "COMPTE DE PROFIT",
 		"EXPENSE_ACCOUNT" : "COMPTE DE CHARGE"
 	}
-}
+}	
