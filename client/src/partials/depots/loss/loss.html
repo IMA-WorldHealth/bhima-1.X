@@ -6,26 +6,21 @@
   <div class="pull-left">
     <ol class="breadcrumb" style="float: right;">
       <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
-      <li><a tabindex="-1" href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
+      <li><a tabindex="-1" href="#/depots">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
       <li class="active">{{ "STOCK.LOSS.KEY" | translate }}</li>
     </ol>
-  </div>
-
-  <div class="pull-right" style="margin-top: 1px">
-    <span ><b>{{depot.reference ? '[' + depot.reference + ']' : ''}} </b>
-      {{depot.text}}</span>
   </div>
 </nav>
 
 <main>
-  <div class="row" ng-if="session.block">
+  <div class="row" ng-if="!LossCtrl.depotId">
     <div class="alert alert-info">
       <span class="glyphicon glyphicon-warning-sign"></span>
       {{ "STOCK.LOSS.NO_DEPOT" | translate }}
     </div>
   </div>
 
-  <div class="row" ng-if="!session.block">
+  <div class="row" ng-if="LossCtrl.depotId">
     <div class="col-xs-12">
       <div class="panel panel-default">
         <div class="panel-heading">
@@ -46,7 +41,7 @@
             <div class="col-xs-3">
               <span>
                 <label>{{ "COLUMNS.DEPOT" | translate }}</label>
-                <p class="form-control-static"><b>[{{ model.depots.data[0].reference }}] {{ model.depots.data[0].text }}</b></p>
+                <p class="form-control-static"><b>[{{ LossCtrl.depot.reference }}] {{ LossCtrl.depot.text }}</b></p>
               </sapn>
             </div>
 
@@ -61,7 +56,7 @@
           <div class="row">
             <div class="col-xs-12">
               <div class="pull-right">
-                <a ng-click="addRow()" class="fieldset-util">
+                <a ng-click="LossCtrl.add()" class="fieldset-util">
                   <span class="glyphicon glyphicon-plus"></span> {{ "DISTRIBUTION_SERVICE.ADD_ROW" | translate }}
                 </a>
               </div>
@@ -73,22 +68,18 @@
                       <th>{{ "COLUMNS.LOT" | translate }}</th>
                       <th>{{ "COLUMNS.QTY_LOSS" | translate }}</th>
                       <th>{{ "COLUMNS.PRICE" | translate }}</th>
-                      <th>{{ "COLUMNS.TOTAL" | translate }}</th>
-                      <th></th>
+                      <th colspan="2">{{ "COLUMNS.TOTAL" | translate }}</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr
-                      ng-repeat="row in configuration.rows"
-                      ng-class="{'incomplete-outline': !row.code || !row.validQuantity, 'complete-outline' : !(!row.code || !row.validQuantity)  }">
+                    <tr ng-repeat="row in LossCtrl.queue.queue">
                       <td width="20%">
                         <input
                           class="form-invoice"
                           type="text"
                           typeahead-template-url="lotList.html"
                           ng-model="row.code"
-                          typeahead="inv.code for inv in model.inventory | filter:$viewValue | limitTo:8"
-                          typeahead-on-select="updateLigne(row.code, $index)"
+                          typeahead="inv.code for inv in vm.inventory | filter:$viewValue | limitTo:8"
                           placeholder="{{ 'DISTRIBUTION_SERVICE.TAPE' | translate }}"
                         >
                       </td>
@@ -97,7 +88,7 @@
                           <select
                             class="col-xs-2 form-bhima"
                             ng-model="row.lot"
-                            ng-options="lot as '(' + lot.lot_number + ')' + '  ' + lot.text  for lot in configuration.rows[$index].lots" 
+                            ng-options="lot as '(' + lot.lot_number + ')' + '  ' + lot.text  for lot in LossCtrl.inventory | filter:{ 'code' : row.code }"
                             ng-change="getItemPrice(row.lot, $index)"
                           >
                           </select>
@@ -117,33 +108,17 @@
                             <input class="form-bhima" ng-disabled="!row.code" ng-model="row.quantity" type="number" min="0" ng-change="handleQuantity(row, $index)" required>
                         </div>
                       </td>
+
                       <td>
-
                         <div class="input-group">
-                          <span class="input-group-addon">
-                            <span
-                            ng-class=
-                            "{
-                              'glyphicon-remove-circle error' : !row.price || row.price < 0,
-                              'glyphicon-ok-circle correct' : row.price >= 0 && row.price
-                            }"
-                            class="glyphicon">
-                            </span>
-                          </span>
-
-                          <input class="form-bhima" ng-disabled="true" ng-model="row.price" type="number" min="0" required>
-
-                          <span class="input-group-addon">
-                            {{model.currency.data[0].symbol}}
-                          </span>
+                          <input class="form-bhima" type="number"  ng-disabled="true" ng-model="row.price"min="0" required>
+                          <span class="input-group-addon">{{ LossCtrl.enterprise.currencySymbol }}</span>
                         </div>
                       </td>
 
+                      <td>{{ (row.price * row.quantity) | currency:LossCtrl.enterprise.currency_id }}</td>
                       <td>
-                        {{(row.price * row.quantity) | currency}}
-                      </td>
-                      <td>
-                        <a ng-click="removeRow($index)">
+                        <a ng-click="LossCtrl.queue.remove($index)">
                           <span class="glyphicon glyphicon-trash"></span>
                         </a>
                       </td>
@@ -155,7 +130,7 @@
                         <b> {{ "DISTRIBUTION_SERVICE.TOTAL" | translate }}</b>
                       </td>
                       <td colspan="2">
-                        <b>{{ calculateTotal() | currency }}</b>
+                        <b>{{ LossCtrl.totals.cost | currency:LossCtrl.enterprise.currency_id  }}</b>
                       </td>
                     </tr>
                   </tbody>
