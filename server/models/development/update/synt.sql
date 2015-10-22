@@ -495,3 +495,8 @@ UPDATE `unit` SET `unit`.`parent`=57 WHERE `unit`.`id`=119;
 
 INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
 VALUES (131, 'compte exploitation', 'TREE.COMPTE_EXPLOITATION', 'pour voir evloution compte exploitation entre deux annees fiscales' , 129, '/partials/reports/variation_exploitation', '/variation_exploitation/');
+
+-- set the /stock route to /depots
+-- author: jniles
+-- date: 2015-10-20
+UPDATE unit SET path='/depots', url='/depots/depots.html' where id = 45;
