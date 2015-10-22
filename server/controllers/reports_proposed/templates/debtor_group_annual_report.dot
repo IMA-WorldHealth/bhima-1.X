@@ -9,27 +9,27 @@
 
   <hgroup class="text-uppercase">
     <h6>IMCK</h6>
-    <h6>Service de Comptabilite</h6>
-    <h6>Bureau de Facturation</h6>
+    <h6>{{= it.i18n.ACCOUNTING_DEPT }}</h6>
+    <h6>{{= it.i18n.BILLING_OFFICE }}</h6>
   </hgroup>
 
   <h6 class="clean-title">
-    Rapport Synthese des Clients IMCK au {{= it.meta.stop }}
+    {{= it.i18n.TITLE }} {{= it.meta.stop }}
   </h6>
 
   <table class="clean-table">
     <thead>
       <tr class="text-uppercase">
-        <th rowspan="2">Numero Compte</th>
-        <th rowspan="2">Designation</th>
-        <th colspan="2">Solde {{= it.meta.openingDate }}</th>
-        <th rowspan="2">Fact</th>
-        <th rowspan="2">Paye</th>
-        <th rowspan="2">Solde <br /> {{= it.meta.stop }}</th>
+        <th rowspan="2">{{= it.i18n.ACCOUNT_NUMBER }}</th>
+        <th rowspan="2">{{= it.i18n.DESIGNATION }}</th>
+        <th colspan="2">{{= it.i18n.BALANCE }} {{= it.meta.openingDate }}</th>
+        <th rowspan="2">{{= it.i18n.BILLED }}</th>
+        <th rowspan="2">{{= it.i18n.PAID }}</th>
+        <th rowspan="2">{{= it.i18n.BALANCE }}<br /> {{= it.meta.stop }}</th>
       </tr>
       <tr class="text-uppercase">
-        <th>Debit</th>
-        <th>Credit</th>
+        <th>{{= it.i18n.DEBIT }}</th>
+        <th>{{= it.i18n.CREDIT }}</th>
       </tr>
     </thead>
 
@@ -53,7 +53,7 @@
         <tr>
           <td colspan="7" class="text-center" style="margin:0;padding:0;">
             <div class="indicator indicator-error" style="width:100%;">
-              Il n'y a pas des donnees trouver pour l'annee fiscal!
+              {{= it.i18n.NO_DATA }}
             </div>
           </td>
         </tr>
@@ -61,7 +61,7 @@
     </tbody>
     <tfoot>
         <tr>
-          <td colspan="2">Total</td>
+          <td colspan="2">{{= it.i18n.TOTAL }}</td>
           <td class="text-right">{{= it.totals.openingDebits }}</td>
           <td class="text-right">{{= it.totals.openingCredits }}</td>
           <td class="text-right">{{= it.totals.debits }}</td>

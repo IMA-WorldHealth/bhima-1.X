@@ -41,6 +41,10 @@ exports.compile = function (options) {
       context = {},
       fiscalYearId = options.fy;
 
+  context.i18n = (options.language === 'fr') ?
+      require('../lang/fr.json').DEBTOR_GROUP_ANNUAL_REPORT :
+      require('../lang/en.json').DEBTOR_GROUP_ANNUAL_REPORT;
+
   context.timestamp = dateFmt(new Date());
 
   // get some metadata about the fiscal year
