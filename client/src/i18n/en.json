@@ -471,6 +471,7 @@
    "EXPIRATION_DATE"       : "Expiration Date",
    "EXPLANATION"           : "Explanation",
    "FIRST_NAME"            : "First Name",
+   "FISCAL_YEAR"         : "Fiscal Year Selection",
    "FISCAL_YEAR_ID"        : "Fiscal Year ID",
    "FIX"                   : "Fix",
    "FOUR_ACCOUNT"          : "Four Account",
@@ -876,6 +877,13 @@
    "LANGUAGE" : "Language",
    "INVOLVE_JOURNAL" : "Involve journal",
    "NOTSOLD_ONLY" : "Show unsold bill only",
+   "DEBITOR_GROUP" : "Debitor Group",
+   "DOC_SUCCES"   : "Document Build Success - Open Document",
+   "GENERATE_DOC"    : "Generate document"
+},
+"DEBTOR_GROUP_ANNUAL_REPORT" : {
+   "TITLE" : "Configuration of Debitor Group Report",
+   "DOCUMENT_CONFIG" : "Configuration of Debitor Group Report",
    "DEBITOR_GROUP" : "Debitor Group",
    "DOC_SUCCES"   : "Document Build Success - Open Document",
    "GENERATE_DOC"    : "Generate document"
@@ -2243,6 +2251,8 @@
    "DEBITOR_AGING"           : "Debtor Aging",
    "DEBTOR"                  : "Debtor",
    "DESCRIPTION"             : "Description",
+   "DOCUMENT_BUILT"          : "Document Built Successfully",
+   "OPEN_PDF_DOCUMENT"       : "Open PDF Document",
    "FINANCE_REPORT"          : "Finance Report",
    "FISCAL_YEAR"             : "Fiscal Year",
    "GENERAL_LEDGER"          : "General Ledger",
@@ -2375,8 +2385,7 @@
    "NEW"              : "New bilan section",
    "EDIT"             : "Bilan section editing",
    "ADD"              : "Add"
-   },
-
+},
 "SECTION_RESULTAT" : {
    "CHARGE" : "Charge",
    "PROFIT" : "Profit",
@@ -2388,7 +2397,6 @@
    "NEW"              : "New Result Section",
    "EDIT"             : "Edit Result Section"
   },
-
 "SECTOR": {
    "ACTIONS"          : "Actions",
    "CONFIG"           : "Sector Manager Configuration",
@@ -2917,6 +2925,7 @@
    },
    "DEBTOR_AGING"              : "Debtor Aging",
    "DEBTOR_GRP"                : "Debtor Group",
+   "DEBTOR_GROUP_ANNUAL_REPORT" : "Debtor Group Annual Report",
    "DEBITOR_GROUP_REPORT"      : "Debtor Group State",
    "DEPOT"                     : "Store",
    "DONATION_CONFIRMATION"     : "Donation Confirm",
@@ -3095,6 +3104,7 @@
    "IMCK"              : "IMCK",
    "IMCK_LONG"         : "Christian Medical Institue of Kasai",
    "ITEMS"             : "Items",
+   "LANGUAGE"        : "Language",
    "LOADING"           : "Loading",
    "LINK"              : "Link",
    "MONTHS"            : "Months",

@@ -471,6 +471,7 @@
    "EXPIRATION_DATE"       : "Date Expiration",
    "EXPLANATION"           : "Explication",
    "FIRST_NAME"            : "Prenom",
+  "FISCAL_YEAR"          : "Année fiscale",
    "FISCAL_YEAR_ID"        : "ID Année Fiscale",
    "FIX"                   : "Fix",
    "FOUR_ACCOUNT"          : "Compte de tier",
@@ -876,6 +877,14 @@
    "LANGUAGE" : "Langue",
    "INVOLVE_JOURNAL" : "Integrer le journal ",
    "NOTSOLD_ONLY"    : "Montrer seulement Les factures non Soldees",
+   "DEBITOR_GROUP"   : "Groupe de Debiteur",
+   "DOC_SUCCES"      : "Document généré avec succès - Ouvrir le document",
+   "GENERATE_DOC"    : "Generer document"
+},
+
+"DEBTOR_GROUP_ANNUAL_REPORT" : {
+   "TITLE" : "Rapport Groupe de Debiteur",
+   "DOCUMENT_CONFIG" : "Configuration rapport groupe de debiteur",
    "DEBITOR_GROUP"   : "Groupe de Debiteur",
    "DOC_SUCCES"      : "Document généré avec succès - Ouvrir le document",
    "GENERATE_DOC"    : "Generer document"
@@ -2244,6 +2253,8 @@
    "DEBITOR_AGING"           : "Débiteur Rapport",
    "DEBTOR"                  : "Débiteur",
    "DESCRIPTION"             : "Description",
+   "DOCUMENT_BUILT"          : "Document créé avec Succès",
+   "OPEN_PDF_DOCUMENT"       : "Ouvrir Document",
    "FINANCE_REPORT"          : "Rapport Financiale",
    "FISCAL_YEAR"             : "Année Fiscale",
    "GENERAL_LEDGER"          : "Grand Livre",
@@ -2919,6 +2930,7 @@
    "DEBTOR_AGING"              : "Débiteur",
    "DEBITOR_GROUP_REPORT"      : "Etat Groupe Debiteur",
    "DEBTOR_GRP"                : "Groupe Débiteur",
+   "DEBTOR_GROUP_ANNUAL_REPORT" : "Rapport Annuel des Groupes Débiteur",
    "DEPOT"                     : "Dépôt",
    "DONATION_CONFIRMATION"     : "Confirmation Donation",
    "DONATION_MANAGEMENT"       : "Gestion des Dons",
@@ -3096,6 +3108,7 @@
    "IMCK"              : "IMCK",
    "IMCK_LONG"         : "Institut Médical Chrétien du Kasaï",
    "ITEMS"             : "Articles",
+  "LANGUAGE"             : "Langue",
    "LOADING"           : "Chargement",
    "LINK"              : "Link",
    "MONTHS"            : "Mois",
