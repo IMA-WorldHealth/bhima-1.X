@@ -472,4 +472,9 @@ WHERE `account`.`is_charge` IS NULL AND LEFT(`account`.`account_number`, 1)=6;
 UPDATE `account` SET `account`.`is_charge`=0
 WHERE `account`.`is_charge` IS NULL AND LEFT(`account`.`account_number`, 1)=7;
 
--- NOTA : The last unit table ID is 132
+-- NOTA : The last unit table ID is 130
+
+-- set the /stock route to /depots
+-- author: jniles
+-- date: 2015-10-20
+UPDATE unit SET path='/depots', url='/depots/depots.html' where id = 45;
