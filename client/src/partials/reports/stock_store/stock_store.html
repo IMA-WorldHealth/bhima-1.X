@@ -1,12 +1,12 @@
 <header data-header>
-  <b>{{ "STOCK_STATUS.TITLE" | translate }} : </b> {{ depotSelected }}  <small> {{ title }} {{timestamp | date}}</small>
+  <b>{{ "STOCK_STATUS.TITLE" | translate }} : </b> {{ depotSelected }}  <small> {{ title }} {{ timestamp | date }}</small>
 </header>
 
 <nav>
   <div class="pull-left">
     <ol class="breadcrumb" style="float: right;">
       <li><span class="glyphicon glyphicon-home"></span></li>
-      <li><a tabindex="-1" href="#/stock/">{{ "STOCK.MAIN.TITLE" | translate }}</a></li>
+      <li><a tabindex="-1" href="#/depots">{{ "DEPOT.MAIN.TITLE" | translate }}</a></li>
       <li><a tabindex="-1" >{{ "STOCK_STATUS.TITLE" | translate }}</a></li>
     </ol>
   </div>
@@ -58,8 +58,8 @@
     <tbody>
       <td width="50%">
         <span style="margin-right: 10px;">
-          <span class="glyphicon glyphicon-list-alt" style="color: #428bca"></span>
-          <b>{{total.result.totalItems}}</b>
+          <i class="glyphicon glyphicon-list-alt" style="color: #428bca"></i>
+          <b>{{ total.result.totalItems }}</b>
           <span ng-if="session.searching">...</span>
         </span>
       </td>
