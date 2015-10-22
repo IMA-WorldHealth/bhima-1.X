@@ -917,6 +917,7 @@
   "EDIT_SUCCESS"    : "Updated successfully.",
   "MAIN": {
     "CONFIGURE_WAREHOUSE" : "Select Store",
+    "CONFIRM"             : "Are you sure you want to manage this depot: ",
     "MODULES"             : "Available Modules",
     "REPORTS"             : "Stock Reports",
     "TITLE"               : "Stock Management",
