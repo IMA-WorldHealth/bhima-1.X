@@ -288,7 +288,8 @@ function getAvailableLots(req, res, next) {
         'stock.tracking_number = outflow.tracking_number ' +
       'WHERE outflow.depot_entry = ? OR outflow.depot_exit = ? ' +
       'GROUP BY stock.tracking_number' +
-    ') AS s;';
+    ') AS s ' + 
+    'WHERE s.quantity > 0;';
 
   return db.exec(sql, [depot, depot, depot])
   .then(function (rows) {
@@ -332,7 +333,8 @@ function getAvailableLotsByInventoryId(req, res, next) {
       'WHERE outflow.depot_entry = ? OR outflow.depot_exit = ? ' +
       'AND inventory.code = ? ' +
       'GROUP BY stock.tracking_number' +
-    ') AS s;';
+    ') AS s ' +
+    'WHERE s.quantity > 0;';
 
   return db.exec(sql, [depot, depot, depot, uuid])
   .then(function (rows) {
@@ -371,7 +373,8 @@ function getExpiredLots(req, res, next) {
         'stock.tracking_number = outflow.tracking_number ' +
       'WHERE stock.expiration_date <= CURDATE() AND (outflow.depot_entry = ? OR outflow.depot_exit = ?) ' +
       'GROUP BY stock.tracking_number' +
-    ') AS s;';
+    ') AS s ' +
+    'WHERE s.quantity > 0;';
 
   db.exec(sql, [depot, depot, depot])
   .then(function (rows) {

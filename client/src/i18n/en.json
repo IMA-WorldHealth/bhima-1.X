@@ -911,6 +911,16 @@
     "CANCEL" : {
       "TITLE" : "Cancel Pharmacy Distribution",
       "MESSAGE" : "You are about to cancel a distribution made from the pharmacy.  Please make sure these details are correct."
+    },
+    "LOSS": {
+      "FORM_TITLE"      : "Stock Loss Form",
+      "KEY"               : "Stock loss",
+      "LOSS_RECORDS"      : "Stock loss records",
+      "NO_DEPOT"          : "No store",
+      "NO_LOSS_RECORDS"   : "No stock loss recorded",
+      "SEE_RECEIPT"       : "See",
+      "SUBMIT_ERROR"    : "Please make sure that all your data is correctly entered.",
+      "TITLE"             : "Stock loss"
     }
   },
   "EDIT"            : "Edit depot information",
@@ -2458,6 +2468,7 @@
    "INVENTORY_ITEM"        : "Select an Inventory Item",
    "LANGUAGE"              : "Select a Language",
    "LOCATION"              : "Select a Location",
+   "LOT_NUMBER"            : "Select a Lot Number",
    "NAME"                  : "Select a Name",
    "NONE"                  : "None",
    "OTHER"                 : "Other",
@@ -2640,16 +2651,6 @@
      "STORE"                : "Store",
      "TITLE"                : "Stock Integration",
      "SUBMIT"               : "Submit"
-     },
-  "LOSS": {
-     "KEY"               : "Stock loss",
-     "LOSS_GENERAL_INFO" : "Summary",
-     "LOSS_RECORDS"      : "Stock loss records",
-     "NO_DEPOT"          : "No store",
-     "NO_LOSS_RECORDS"   : "No stock loss recorded",
-     "SEE_RECEIPT"       : "See",
-     "SUBMIT"            : "Submit",
-     "TITLE"             : "Stock loss"
      },
   "MOVEMENT": {
      "DEPOT_FROM"            : "Source Store",

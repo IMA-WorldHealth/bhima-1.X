@@ -21,7 +21,9 @@ function InventoryService($http) {
 
   // optionally takes in a UUID to specify a single item
   function getInventoryItems(uuid) {
-    var url = '/inventory/:uuid/metadata';
-    return get(url.replace(':uuid', uuid || ''));
+    var url = uuid ?
+      '/inventory/:uuid/metadata' :
+      '/inventory/metadata';
+    return get(url.replace(':uuid', uuid));
   }
 }
