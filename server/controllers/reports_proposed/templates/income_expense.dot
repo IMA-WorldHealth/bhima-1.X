@@ -2,9 +2,25 @@
 <!-- TODO Remove all hardcoded account_type values -->
 <head>
   
+  <!-- Include font files - wkhtmltopdf versions worked with in the past have
+  <!-- not always worked well without an absolute path -->
+  <style>
+    @font-face { 
+      font-family : 'Tinos'; 
+      src: url('{{=it.path}}/templates/fonts/Tinos-Regular.ttf') format('truetype');
+    }
+    @font-face { 
+      font-family : 'Tinos'; 
+      src: url('{{=it.path}}/templates/fonts/Tinos-Bold.ttf') format('truetype');
+    }
+    @font-face { 
+      font-family : 'Tinos'; 
+      src: url('{{=it.path}}/templates/fonts/Tinos-Italic.ttf') format('truetype');
+    }
+  </style>
+
   <link rel="stylesheet" href="{{=it.path}}/templates/style/normalize.css">
-  <link rel="stylesheet" href="{{=it.path}}/templates/style/skeleton.css">
-  <link rel="stylesheet" href="{{=it.path}}/templates/style/reports.css">
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/documents.css">
 
 </head>
 
@@ -48,17 +64,17 @@
           {{ function displayAccounts(accounts, compareAccounts) { 
                accounts.forEach(function (line, index) { }}
 
-        <tr class="totalRight {{? line.account_type_id === 3}}underline{{?}}">
+        <tr class="totalRight {{? line.account_type_id === it.TITLE_ACCOUNT_ID}}underline{{?}}">
           
-          <td style="{{? line.account_type_id === 3}}font-weight : bold;{{?}}">
+          <td style="{{? line.account_type_id === it.TITLE_ACCOUNT_ID}}font-weight : bold;{{?}}">
             {{? it.displayAccountNumber}}
             {{=line.account_number}}
             {{?}}
           </td>
           
-          <td {{? line.account_type_id === 3}}colspan="8"{{?}} style="text-align : left; padding-left: {{=line.depth * 20}}px; {{? line.account_type_id === 3}}font-weight : bold;{{?}}">{{=line.account_number}} {{=line.account_txt}}</td>
+          <td {{? line.account_type_id === it.TITLE_ACCOUNT_ID}}colspan="8"{{?}} style="text-align : left; padding-left: {{=line.depth * 20}}px; {{? line.account_type_id === it.TITLE_ACCOUNT_ID}}font-weight : bold;{{?}}">{{=line.account_number}} {{=line.account_txt}}</td>
 
-          {{? line.account_type_id !== 3}}
+          {{? line.account_type_id !== it.TITLE_ACCOUNT_ID}}
          
           <td style="text-align : right;">{{=line.balance || 0}}</td>
          

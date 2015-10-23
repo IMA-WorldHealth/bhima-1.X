@@ -175,7 +175,15 @@ exports.build = function (req, res, next) {
     var format = options.format || 'standard';
     var language = options.language || 'en';
     var configuration = buildConfiguration(hash, format);
+    
+    var headerHeading = reportData.heading || '';
   
+    // TODO Flag on and off groups with client definitions
+    configuration['headerRight'] =  headerHeading.concat(' [page]/[toPage]');
+    configuration['noHeaderLine'] = true;
+    configuration['headerFontName'] = 'Tinos';
+    configuration['marginTop'] = '5mm';
+
     var templater; 
 
     // TODO Remove legacy support 

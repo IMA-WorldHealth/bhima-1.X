@@ -70,6 +70,9 @@ exports.compile = function (options) {
   context.fiscalDefinition = options.fiscal_year;
   context.compareDefinition = options.compare_year;
   context.comparingYears = comparingYears;
+  
+  // Account formatting details
+  context.TITLE_ACCOUNT_ID = titleAccountId;
 
   var accountStatusQuery =
     'SELECT account.id, account.account_number, account.account_txt, account.account_type_id, account.parent, totals.balance, totals.period_id ' +
