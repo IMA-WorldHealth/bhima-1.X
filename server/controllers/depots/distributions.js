@@ -6,6 +6,13 @@
 * losses and rummage sales.
 *
 * TODO -- complete the full CRUD described above.
+*
+* FIXME/TODO
+*
+* This analysis has brought to light several interesting parts of stock
+* management that could probably be redesigned.
+*  1) Why are there duplicated document_ids in consumption_loss and consumption?
+*
 */
 
 var db      = require('../../lib/db'),
@@ -107,10 +114,17 @@ function createServiceDistribution(depotId, item) {
   return db.exec(sql, [uuid(), item.id, item.service_id]);
 }
 
+/**
+* Create a loss distribution 
+*/
 function createLossDistribution(depotId, item) {
   'use strict';
 
-  // TODO
+  var sql = 
+    'INSERT INTO consumption_loss VALUES (?, ?, ?);';
+
+  // FIXME: why do we have duplicated 
+  return db.exec(sql, [uuid(), item.id, item.id]);
 }
 
 

@@ -174,9 +174,8 @@ function StockServiceDistributionsController($routeParams, $http, $q, $location,
         // default: the item has not been selected yet
         i.used = false;
 
-        // TODO -- why doesn't this send back nonzero quantities?
         i.lots = stock.filter(function (s) {
-          return s.code === i.code && s.quantity > 0;
+          return s.code === i.code;
         })
         .map(function (s) {
           return {
