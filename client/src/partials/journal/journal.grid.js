@@ -28,7 +28,7 @@ angular.module('bhima.controllers')
       columns = [
         // {id: 'uuid'           , name: $translate.instant('COLUMNS.ID')             , field: 'uuid'           , sortable: true },
         // {id: 'fiscal_year_id' , name: $translate.instant('COLUMNS.FISCAL_YEAR_ID') , field: 'fiscal_year_id' , sortable: true },
-        // {id: 'period_id'      , name: $translate.instant('COLUMNS.PERIOD_ID')      , field: 'period_id'      , sortable: true },
+        {id: 'period_id'      , name: $translate.instant('COLUMNS.PERIOD_ID')      , field: 'period_id'      , sortable: true },
         {id: 'trans_id'       , name: $translate.instant('COLUMNS.TRANS_ID')       , field: 'trans_id'       , sortable: true },
         {id: 'trans_date'     , name: $translate.instant('COLUMNS.DATE')           , field: 'trans_date'     , formatter : formatDate, sortable: true},
         {id: 'description'    , name: $translate.instant('COLUMNS.DESCRIPTION')    , field: 'description'    , width: 110, editor: Slick.Editors.Text},

@@ -255,7 +255,7 @@ angular.module('bhima.controllers')
           '  <a class="save" style="color: white; cursor: pointer;"> <span class="glyphicon glyphicon-floppy-disk saveTransaction"></span>  ' + '</a>' +
           '  <span style="padding: 5px;"></span>' + // FIXME Hacked spacing;
           '  <a class="save" style="color: white; cursor: pointer;"> <span class="glyphicon glyphicon-trash deleteTransaction"></span>  </a>' +
-          //'  <a class='deleteTransaction' style='color: white; cursor: pointer;'> <span class='glyphicon glyphicon-trash'></span>  ' + $translate('POSTING_JOURNAL.DELETE_TRANSACTION') + '</a>' +
+          '  <a class="repost" style="color: white; cursor: pointer;"> <span class="glyphicon glyphicon-refresh repost"></span> </a>' +
           '</span>';
         return rowMarkup;
       }
