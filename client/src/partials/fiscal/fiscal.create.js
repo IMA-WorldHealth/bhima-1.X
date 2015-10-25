@@ -131,6 +131,10 @@ function FiscalCreateController ($q, $scope, $http, $translate, validate, connec
       // get user id
       session.user_id = imports.user.id;
 
+      //get project
+      session.project_id = imports.project.id;
+
+
       // initialise account balances
       resetBalances();
     })
@@ -352,6 +356,10 @@ function FiscalCreateController ($q, $scope, $http, $translate, validate, connec
 
     // attach the user id to the request
     bundle.user_id = session.user_id;
+
+    //attach project
+
+    bundle.project_id = session.project_id;
 
     // attach the currency id to the request
     bundle.currency_id = $scope.enterprise.currency_id;
