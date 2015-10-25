@@ -103,18 +103,22 @@ function createOpeningBalances(data) {
       balances = data.balances,
       totals;
 
+  // sql =
+  //   'SELECT id FROM period WHERE period_number = 0 AND fiscal_year_id = ?;';
+
   sql =
-    'SELECT id FROM period WHERE period_number = 0 AND fiscal_year_id = ?;';
+    'SELECT id FROM period WHERE fiscal_year_id = ? and period_start = ' +
+    '(SELECT MIN(period_start) FROM period WHERE fiscal_year_id = ?)';
 
   // first, get the id of the 0 period
-  return db.exec(sql, [data.fiscalYearId])
+  return db.exec(sql, [data.fiscalYearId, data.fiscalYearId])
   .then(function (periods) {
     periodId = periods[0].id;
 
     totals = balances.map(function (account) {
       return {
-        projectId    : 1,                            // Set to HBB project ID
-        description  : 'Initialisation Fiscal Year',
+        projectId    : data.project_id,                            // Set to HBB project ID
+        description  : 'Initialisation Annee Fiscale',
         accountId    : account.account_id,
         debit        : account.debit,
         credit       : account.credit,
@@ -176,7 +180,7 @@ function createPeriods(fiscalYearId, start, end) {
     'INSERT INTO period (fiscal_year_id, period_number, period_start, period_stop) VALUES ';
 
   // create the zero period
-  template.push([fiscalYearId, 0, periodStart, periodStart]);
+  // template.push([fiscalYearId, 0, periodStart, periodStart]);//after discussion, we will not use a period zero
 
   // create a period for each month, calculating the
   // first day and last day of the month

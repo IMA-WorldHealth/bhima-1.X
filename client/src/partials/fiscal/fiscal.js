@@ -9,6 +9,7 @@ function FiscalController ($scope, $http, $translate, appstate, validate, sessio
   var dependencies = {};
 
   $scope.user = sessionService.user;
+  $scope.project = sessionService.project;
 
   // register dependencies
   dependencies.fiscal = {

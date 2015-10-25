@@ -5,6 +5,11 @@
   </div>
 
   <div class="panel-body">
+    <div class="panel panel-danger" ng-show="session.remainData">
+      <div class="panel-heading">
+        {{session.message}}       
+      </div>    
+    </div>
     <!-- Resultat -->
     <table class="table table-condensed table-bordered">
       <thead>
@@ -49,7 +54,7 @@
     </div>
   </div>
   <div class="panel-footer">
-    <button class="btn btn-sm btn-success" ng-click="closeFiscalYear(session.selectedToLock)" ng-disabled="formStepTwo.$invalid">
+    <button class="btn btn-sm btn-success" ng-click="closeFiscalYear(session.selectedToLock)" ng-disabled="formStepTwo.$invalid || session.remainData">
       <i class="glyphicon glyphicon-ok-circle"></i>
       {{ 'UTIL.SUBMIT' | translate }}
     </button>
