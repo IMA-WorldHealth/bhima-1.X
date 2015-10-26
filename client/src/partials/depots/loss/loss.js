@@ -201,7 +201,7 @@ function DepotLossController($routeParams, $q, $http, $location, Depots, Invento
       data :  data
     })
     .then(function (response) {
-      console.log('yay!');
+      $location.url('/invoice/loss/' + response.data);
     })
     .catch(handler);
   }
