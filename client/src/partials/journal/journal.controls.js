@@ -175,10 +175,32 @@ angular.module('bhima.controllers')
         'deleteRow'         : deleteRow,
         'editTransaction'   : editTransaction,
         'saveTransaction'   : saveTransaction,
-        'deleteTransaction' : deleteTransaction
+        'deleteTransaction' : deleteTransaction,
+        'repost'            : repost
       };
       classes.forEach(function (cls) {
         if (buttonMap[cls]) { buttonMap[cls](args); }
+      });
+    }
+
+    function repost(args){
+      var item = dataview.getItem(args.row);
+      item.rows.forEach(function (row){
+        row.comment = 'Transaction repostee';
+        var periodObj = refreshFiscalDetails(row.trans_date);
+        if(periodObj.length === 0) {throw 'No fiscal year for this date';}
+        periodObj = periodObj[0]; // a hack?
+        row.fiscal_year_id = periodObj.fiscal_year_id;
+        row.period_id = periodObj.id;
+        manager.session.records.put(row);
+      });      
+      saveTransaction(); 
+    }
+
+    function refreshFiscalDetails (date){
+      var d = new Date(date);
+      return $scope.period.data.filter(function (period){
+        return d >= new Date(period.period_start) && d <= new Date(period.period_stop);
       });
     }
 
@@ -275,7 +297,7 @@ angular.module('bhima.controllers')
       cpProperties = [
         'uuid', 'project_id', 'trans_id', 'trans_date', 'period_id', 'description', 'account_id',
         'credit', 'debit', 'debit_equiv', 'credit_equiv', 'fiscal_year_id', 'currency_id',
-        'deb_cred_id', 'deb_cred_type', 'inv_po_id', 'user_id', 'origin_id', 'cc_id', 'pc_id'
+        'deb_cred_id', 'deb_cred_type', 'inv_po_id', 'comment', 'user_id', 'origin_id', 'cc_id', 'pc_id'
       ];
 
       for (prop in record) {
@@ -442,7 +464,7 @@ angular.module('bhima.controllers')
         return writeJournalLog(manager.session);
       })
       .then(function () {
-		messenger.success($translate.instant('POSTING_JOURNAL.TRANSACTION_SUCCESS'));	
+		    messenger.success($translate.instant('POSTING_JOURNAL.TRANSACTION_SUCCESS'));	
         manager.fn.resetManagerSession();
         manager.fn.regroup();
         grid.invalidate();
