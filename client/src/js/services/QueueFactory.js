@@ -7,6 +7,9 @@ angular.module('bhima.services')
 * A generic list providing add, remove, and totalling functionality to a list of
 * tabular data.  Useful for controllers that want to create tables and lists on
 * the fly but don't want to deal with the mechanics of adding, removing, etc.
+*
+* NOTE -- this is a work in progress.  It should be evaluated in the context of
+* controller, then determined if it is useful.
 */
 function Queue() {
   var service = this;

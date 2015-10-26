@@ -902,6 +902,7 @@
     "ANNUL"    : "Annuler cette Transaction",
     "ANNULLED" : "Annulé",
     "LOSSES"   : "Stock Losses",
+    "TYPE_INVENTORY_ITEM"      : "Taper code ou nom médicament",
     "NO_ROWS"  : "Pas de données pour période sélectionnée",
     "SERVICES" : "Distributions to Services",
     "SERVICE" : {
@@ -1007,7 +1008,6 @@
    "REMAINING_QTY"    : "Quantité restante",
    "SUBMIT"           : "Soumettre",
    "SUMMARY"          : "Sommaire",
-   "TAPE"             : "Taper code, nom médicament",
    "TITLE"            : "Distribution au service",
    "TOTAL"            : "Total"
    },

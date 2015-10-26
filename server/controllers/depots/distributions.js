@@ -115,15 +115,15 @@ function createServiceDistribution(depotId, item) {
 }
 
 /**
-* Create a loss distribution 
+* Create a loss distribution
 */
 function createLossDistribution(depotId, item) {
   'use strict';
 
-  var sql = 
+  var sql =
     'INSERT INTO consumption_loss VALUES (?, ?, ?);';
 
-  // FIXME: why do we have duplicated 
+  // FIXME: why do we have duplicated
   return db.exec(sql, [uuid(), item.id, item.id]);
 }
 
