@@ -16,7 +16,7 @@
   <!-- Section Header -->
   <div
     class="row"
-    ng-repeat-start="section in moduleDefinition">
+    ng-repeat-start="section in StockDistributionsCtrl.moduleDefinition">
     <div
       class="col-xs-12"
       style="padding-bottom : 5px; margin-bottom: 5px;">
@@ -24,34 +24,35 @@
         <span
           class="label"
           ng-class="
-            {'label-success' : session.index===$index,
-             'label-primary' : session.index<$index,
-             'label-default' : session.index>$index
+            {'label-success' : StockDistributionsCtrl.session.index===$index,
+             'label-primary' : StockDistributionsCtrl.session.index<$index,
+             'label-default' : StockDistributionsCtrl.session.index>$index
             }">
           {{$index + 1}}</span>
-        <span ng-class="{'strike' : session.index>$index}">{{section.title}}</span>
+        <span ng-class="{'strike' : StockDistributionsCtrl.session.index>$index}">{{section.title}}</span>
       </div>
     </div>
   </div>
 
   <!-- Section Body -->
-  <ng-include
-    ng-if="session.index >= $index"
+  <ng-include 
+    ng-if="StockDistributionsCtrl.session.index >= $index"
     ng-repeat-end
-    src="section.template"></ng-include>
+    src="section.template">
+  </ng-include>
 </main>
 
 <footer>
   <div class="pull-right">
     <a
-      ng-disabled="!session.lotSelectionSuccess"
-      ng-click="submitConsumption()"
+      ng-disabled="!StockDistributionsCtrl.session.lotSelectionSuccess"
+      ng-click="StockDistributionsCtrl.submitConsumption()"
       class="btn btn-default">
       <span class="glyphicon glyphicon-floppy-open"></span>
       {{ "DISTRIBUTION.SUBMIT" | translate }}
       <span
         class="glyphicon"
-        ng-class="{'glyphicon-ok-sign correct' : session.lotSelectionSuccess, 'glyphicon-remove-sign error' : session.lotSelectionFailure}"></span>
+        ng-class="{'glyphicon-ok-sign correct' : StockDistributionsCtrl.session.lotSelectionSuccess, 'glyphicon-remove-sign error' : StockDistributionsCtrl.session.lotSelectionFailure}"></span>
     </a>
   </div>
 </footer>
@@ -59,14 +60,14 @@
 <script type="text/ng-template" id="patientSearch.tmpl.html">
   <div class="row">
     <div class="col-xs-12">
-      <div find-patient on-search-complete="initialiseDistributionDetails(patient)" data-enable-refresh="false"></div>
+      <div find-patient on-search-complete="StockDistributionsCtrl.initialiseDistributionDetails(patient)" data-enable-refresh="false"></div>
     </div>
   </div>
 </script>
 
 <script type="text/ng-template" id="selectSale.tmpl.html">
   <!-- Section complete -->
-  <div ng-if="session.index>$index">
+  <div ng-if="StockDistributionsCtrl.session.index>$index">
     <table class="table table-condensed table-bordered">
       <thead>
         <tr>
@@ -79,11 +80,11 @@
 
       <tbody>
         <tr>
-          <td width="10%"><b>'{{session.sale.abbr}} {{session.sale.reference}}'</b></td>
-          <td width="20%">{{session.sale.trans_date | date}}</td>
+          <td width="10%"><b>'{{StockDistributionsCtrl.session.sale.abbr}} {{StockDistributionsCtrl.session.sale.reference}}'</b></td>
+          <td width="20%">{{StockDistributionsCtrl.session.sale.trans_date | date}}</td>
           <td width="50%">
             <div>
-              <div ng-if="session.sale.balance===session.sale.debit&&!session.patient.is_convention">
+              <div ng-if="StockDistributionsCtrl.session.sale.balance === StockDistributionsCtrl.session.sale.debit && !StockDistributionsCtrl.session.patient.is_convention">
                 <span
                 class="glyphicon"
                 ng-class="{
@@ -92,7 +93,7 @@
                 ></span> {{ "DISTRIBUTION.INVOICE_NOT_PAID" | translate }}
               </div>
 
-              <div ng-if="session.sale.balance===session.sale.debit&&session.patient.is_convention">
+              <div ng-if="StockDistributionsCtrl.session.sale.balance===StockDistributionsCtrl.session.sale.debit && StockDistributionsCtrl.session.patient.is_convention">
                 <span
                 class="glyphicon"
                 ng-class="{
@@ -101,7 +102,7 @@
                 ></span> {{ "DISTRIBUTION.INVOICE_CONVENTION" | translate }}
               </div>
 
-              <div ng-if="session.sale.balance===0">
+              <div ng-if="StockDistributionsCtrl.session.sale.balance===0">
                 <span
                 class="glyphicon"
                 ng-class="{
@@ -110,7 +111,7 @@
                 ></span> {{ "DISTRIBUTION.INVOICE_PAID" | translate }}
               </div>
 
-              <div ng-if="session.sale.balance!==0&&session.sale.balance<session.sale.debit">
+              <div ng-if="StockDistributionsCtrl.session.sale.balance !== 0 && StockDistributionsCtrl.session.sale.balance < StockDistributionsCtrl.session.sale.debit">
                 <span
                 class="glyphicon"
                 ng-class="{
@@ -120,20 +121,21 @@
               </div>
             </div>
           </td>
-          <td width="20%">{{session.sale.balance | currency}}</td>
+          <td width="20%">{{StockDistributionsCtrl.session.sale.balance | currency}}</td>
         </tr>
       </tbody>
     </table>
   </div>
-
+  
   <!-- Section active -->
-  <div ng-if="session.index===$index">
+  <div ng-if="StockDistributionsCtrl.session.index===$index">
+
     <div class="row">
       <div class="col-xs-12">
         <div class="alert alert-info">
           <span class="glyphicon glyphicon-info-sign"></span>
-          {{(session.dataDebitor.length ? 'DISTRIBUTION.SHOW_ALL_SALES' : 'DISTRIBUTION.NO_SALE_FOUND') | translate}}
-           <b>{{session.patient.name}}
+          {{(StockDistributionsCtrl.ledger.data.length ? 'DISTRIBUTION.SHOW_ALL_SALES' : 'DISTRIBUTION.NO_SALE_FOUND') | translate}}
+           <b>{{vm.session.patient.name}}
           </b>
         </div>
       </div>
@@ -141,15 +143,12 @@
 
     <div class="row">
       <div class="col-xs-12">
-
-
-        <div ng-if="session.dataDebitor.length" class="panel panel-default">
+        <div ng-if="StockDistributionsCtrl.ledger.data.length" class="panel panel-default">
           <div class="panel-heading">
             <span class="glyphicon glyphicon-th-list"></span> {{"DISTRIBUTION.AVAILABLE" | translate}}
           </div>
-
           <div class="panel-body">
-            <div class="panel panel-default" ng-repeat="item in session.dataDebitor | orderBy:['consumed', '-trans_date']">
+            <div class="panel panel-default" ng-repeat="item in StockDistributionsCtrl.ledger.data | orderBy:['consumed', '-trans_date']">
               <div class="panel-body">
                 <div ng-if="!item.canceled && !item.reversing_stock" class="pull-right">
                   <span
@@ -194,7 +193,7 @@
                       <td width="20%">{{item.trans_date | date}}</td>
                       <td width="50%">
                         <div>
-                          <div ng-if="item.balance===item.debit&&!session.patient.is_convention">
+                          <div ng-if="item.balance === item.debit && !StockDistributionsCtrl.session.patient.is_convention">
                             <span
                             class="glyphicon"
                             ng-class="{
@@ -203,7 +202,7 @@
                             ></span> {{ "DISTRIBUTION.INVOICE_NOT_PAID" | translate }}
                           </div>
 
-                          <div ng-if="item.balance===item.debit&&session.patient.is_convention">
+                          <div ng-if="item.balance === item.debit && StockDistributionsCtrl.session.patient.is_convention">
                             <span
                             class="glyphicon"
                             ng-class="{
@@ -212,7 +211,7 @@
                             ></span> {{ "DISTRIBUTION.INVOICE_CONVENTION" | translate }}
                           </div>
 
-                          <div ng-if="item.balance===0&&!item.canceled">
+                          <div ng-if="item.balance===0 && !item.canceled">
                             <span
                             class="glyphicon"
                             ng-class="{
@@ -221,7 +220,7 @@
                             ></span> {{ "DISTRIBUTION.INVOICE_PAID" | translate }}
                           </div>
 
-                          <div ng-if="item.balance===0&&item.canceled">
+                          <div ng-if="item.balance===0 && item.canceled">
                             <span
                             class="glyphicon"
                             ng-class="{
@@ -230,7 +229,7 @@
                             ></span> {{ "DISTRIBUTION.CANCELED" | translate }}
                           </div>
 
-                          <div ng-if="item.balance!==0&&item.balance<item.debit">
+                          <div ng-if="item.balance !== 0 && item.balance <item.debit">
                             <span
                             class="glyphicon"
                             ng-class="{
@@ -245,9 +244,9 @@
                   </tbody>
                 </table>
 
-                <div ng-if="!item.consumed&&!item.canceled">
+                <div ng-if="!item.consumed && !item.canceled">
                   <button
-                    ng-click="selectSale(item)"
+                    ng-click="StockDistributionsCtrl.selectSale(item)"
                     class="btn btn-default btn-sm"><span class="glyphicon glyphicon-circle-arrow-right correct"></span>{{ "DISTRIBUTION.SELECT" | translate }}</button>
                   <a ng-href="#/invoice/sale/{{item.inv_po_id}}" class="btn btn-default btn-sm">{{ "DISTRIBUTION.VIEW_SALE" | translate }}</a>
                 </div>
@@ -269,7 +268,7 @@
     <div class="panel-body">
       <table
         class="table table-bordered"
-        ng-repeat="inventoryItem in session.sale.details | orderBy:'-consumable'">
+        ng-repeat="inventoryItem in StockDistributionsCtrl.session.sale.details | orderBy:'-consumable'">
         <thead>
         </thead>
 
