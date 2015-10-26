@@ -13,7 +13,8 @@ angular.module('bhima.controllers')
   'exchange',
   '$q',
   'uuid',
-  function ($scope, $routeParams, $translate, $location, messenger, validate, appstate, Appcache, connect, util, exchange, $q, uuid) {
+  'SessionService',
+  function ($scope, $routeParams, $translate, $location, messenger, validate, appstate, Appcache, connect, util, exchange, $q, uuid, Session) {
     /**
       * TODO use controller alias as possible and redirect url when no daily exchange rate
       */
@@ -22,10 +23,6 @@ angular.module('bhima.controllers')
         session = $scope.session = {data : {}, base : {}};
 
     session.base.cashbox = $routeParams.cashbox;
-
-    dependencies.cashier = {
-      query : 'user_session'
-    };
 
     dependencies.modules = {
       query : {
@@ -144,7 +141,7 @@ angular.module('bhima.controllers')
         currency_id   : session.base.selectedItem.currency_id,
         account_id    : session.data.deb_cred.id,
         cost          : session.data.value,
-        user_id       : $scope.cashier.data.id,
+        user_id       : Session.user.id,
         description   : session.data.description,
         cash_box_id   : session.base.cashbox,
         origin_id     : $scope.modules.data[0].id

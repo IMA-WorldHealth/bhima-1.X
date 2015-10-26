@@ -6,7 +6,8 @@ angular.module('bhima.controllers')
   'validate',
   'appstate',
   'util',
-  function ($scope, connect, messenger, validate, appstate, util) {
+  'SessionService',
+  function ($scope, connect, messenger, validate, appstate, util, Session) {
 
     //inits and declarations
     var dependencies = {},
@@ -39,10 +40,6 @@ angular.module('bhima.controllers')
 
     dependencies.summers = {
       query : '/synthetic/pcRI/'
-    };
-
-    dependencies.cashier = {
-      query : 'user_session'
     };
 
     dependencies.currency_account = {
@@ -169,7 +166,7 @@ angular.module('bhima.controllers')
         date          : util.sqlDate(new Date()),
         currency_id   : $scope.selectedItem.currency_id,
         value         : $scope.data.value,
-        cashier_id    : $scope.model.cashier.data.id,
+        cashier_id    : Session.user.id,
         description   : 'HBB' + '_CAISSEPRINCIPALE_RECETTEGENEREIQUE' + new Date().toString(),
         istransfer    : 1,
         reference     : 1,
@@ -191,7 +188,7 @@ angular.module('bhima.controllers')
         'AND',
         'currency_account.currency_id=' + $scope.enterprise.currency_id
       ];
-      validate.process(dependencies, ['pcash_accounts', 'currency_account', 'exchange_rate', 'cashier', 'accounts'])
+      validate.process(dependencies, ['pcash_accounts', 'currency_account', 'exchange_rate', 'accounts'])
       .then(init)
       .catch(handlError);
     });

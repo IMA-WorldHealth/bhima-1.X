@@ -14,7 +14,8 @@ angular.module('bhima.controllers')
   'precision',
   'calc',
   'uuid',
-  function($scope, $location, $modal, $q, connect, Appcache, appstate, messenger, validate, exchange, util, precision, calc, uuid) {
+  'SessionService',
+  function($scope, $location, $modal, $q, connect, Appcache, appstate, messenger, validate, exchange, util, precision, calc, uuid, Session) {
     var defaultCashBox, defaultCurrency;
 
     var dependencies = {},
@@ -79,10 +80,6 @@ angular.module('bhima.controllers')
       }
     };
 
-    dependencies.user = {
-      query : '/user_session'
-    };
-
     function loadDefaultCurrency(currency) {
       if (!currency) { return; }
       defaultCurrency = currency;
@@ -107,11 +104,14 @@ angular.module('bhima.controllers')
       dependencies.cashboxes.query.where =
         ['cash_box.project_id=' + project.id, 'AND', 'cash_box.is_auxillary=1'];
 
-      validate.process(dependencies, ['cashboxes', 'cash', 'projects', 'user'])
+      validate.process(dependencies, ['cashboxes', 'cash', 'projects'])
       .then(setUpModels, handleErrors);
     });
 
     function setUpModels(models) {
+      // set up the user
+      $scope.user = Session.user;
+
       angular.extend($scope, models);
       if (!$scope.cashbox) {
         var sessionDefault =
@@ -137,7 +137,7 @@ angular.module('bhima.controllers')
         keyboard    : false,
         controller  : 'exchangeRateModal'
       });
-      
+
       instance.result.then(function () {
         $location.path('/exchange_rate');
       }, function () {
@@ -298,7 +298,7 @@ angular.module('bhima.controllers')
         // pay the cash payment
         creditAccount = data.creditAccount;
         var account = $scope.cashbox_accounts.get($scope.currency.currency_id);
-        var user_id = $scope.user.data.id;
+        var user_id = $scope.user.id;
 
         payment = data.invoice;
         payment.uuid = id;
@@ -386,9 +386,11 @@ angular.module('bhima.controllers')
     // Everytime a cashbox changes or the ledger gains
     // or loses items, the invoice balances are
     // exchanged into the appropriate locale currency.
-    $scope.$watch('ledger', digestExchangeRate, true);
+
+    // NOTE -- $watch is bad, $watchCollection is better, but still bad
+    $scope.$watchCollection('ledger', digestExchangeRate);
     $scope.$watch('currency', digestExchangeRate);
-    $scope.$watch('queue', $scope.digestTotal, true);
+    $scope.$watchCollection('queue', $scope.digestTotal);
     $scope.$watch('data.payment', $scope.digestInvoice);
   }
 ]);

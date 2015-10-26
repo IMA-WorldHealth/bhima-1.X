@@ -120,7 +120,6 @@ exports.initialise = function (app) {
   app.get('/hollyday_list/:pp/:employee_id', uncategorised.listHolidays);
   app.get('/available_profit_center/', uncategorised.listAvailableProfitCenters);
   app.get('/currentProject', uncategorised.currentProject);
-  app.get('/user_session', uncategorised.userSession);
   app.get('/pcash_transfer_summers', uncategorised.pcashTransferSummers);
   app.get('/editsession/authenticate/:pin', uncategorised.authenticatePin);
   app.get('/max/:id/:table/:join?', uncategorised.lookupMaxTableId);

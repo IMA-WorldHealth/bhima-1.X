@@ -4,7 +4,8 @@ angular.module('bhima.controllers')
   'validate',
   'appstate',
   'messenger',
-  function ($scope, validate, appstate, messenger) {
+  'SessionService',
+  function ($scope, validate, appstate, messenger, Session) {
     var dependencies = {}, model = $scope.model = {common : {}};
 
     dependencies.stock = {
@@ -32,10 +33,6 @@ angular.module('bhima.controllers')
           'stock.purchase_order_uuid=purchase.uuid'
         ]
       }
-    };
-
-    dependencies.user = {
-      query : 'user_session'
     };
 
     dependencies.allUser = {
@@ -86,19 +83,19 @@ angular.module('bhima.controllers')
     function buildInvoice (res) {
       if(res.getTransaction.data.length){
         $scope.trans_id = res.getTransaction.data[0].trans_id;
-      } else if (res.getGeneraLedger.data.length){
+      } else if (res.getGeneraLedger.data.length) {
         $scope.trans_id = res.getTransaction.data[0].trans_id;
       }
 
       model.stock = res.stock.data;
-      $scope.idUser = res.user.data.id;
+      $scope.idUser = Session.user.id;
       $scope.today = new Date();
       return res;
     }
 
     function getUsers (data) {
       var p = data.allUser.get(data.stock.data[0].emitter_id);
-      var c = data.allUser.get(data.user.data.id);
+      var c = Session.user;
       model.integreur = p.first + ' - ' + p.last;
       model.confirmeur = c.first + ' - ' + c.last;
     }

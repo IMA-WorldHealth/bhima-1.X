@@ -6,15 +6,12 @@ angular.module('bhima.controllers')
   'messenger',
   '$translate',
   'uuid',
-  function ($scope, validate, connect, messenger, $translate, uuid) {
+  'SessionService',
+  function ($scope, validate, connect, messenger, $translate, uuid, Session) {
 
     var dependencies = {};
     $scope.noEmpty = false;
     $scope.debitor = {};
-
-    dependencies.changer = {
-      query : 'user_session'
-    };
 
     dependencies.debtorGroup = {
       query : {
@@ -66,7 +63,7 @@ angular.module('bhima.controllers')
           uuid               : uuid(),
           debitor_uuid       : selectedDebitor.debitor_uuid,
           debitor_group_uuid : $scope.debitor.debitor_group_uuid,
-          user_id            : 1 // FIXME
+          user_id            : Session.user.id
         };
         return connect.basicPut('debitor_group_history', [packageHistory]);
       })

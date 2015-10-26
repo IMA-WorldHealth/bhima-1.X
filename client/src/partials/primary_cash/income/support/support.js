@@ -13,7 +13,8 @@ angular.module('bhima.controllers')
   'appcache',
   '$translate',
   'precision',
-  function ($scope, $q, $location, $routeParams, validate, connect, appstate, messenger, util, uuid, Appcache, $translate, precision) {
+  'Session',
+  function ($scope, $q, $location, $routeParams, validate, connect, appstate, messenger, util, uuid, Appcache, $translate, precision, Session) {
     /**
       * TODO use controller alias as possible and redirect url when no daily exchange rate
       */
@@ -66,10 +67,6 @@ angular.module('bhima.controllers')
           }
         }
       }
-    };
-
-    dependencies.cashier = {
-      query : 'user_session'
     };
 
     dependencies.pcash_module = {
@@ -133,7 +130,7 @@ angular.module('bhima.controllers')
         deb_cred_uuid   : $scope.selectedEmployee.creditor_uuid,
         account_id      : $scope.selectedEmployee.account_id,
         cost            : $scope.data.payment,
-        user_id         : $scope.model.cashier.data.id,
+        user_id         : Session.user.id,
         description     : ['EMPLOYE', $scope.selectedEmployee.name, util.sqlDate(new Date().toString())].join('/'),
         cash_box_id     : $scope.cashbox_id,
         origin_id       : $scope.model.pcash_module.data[0].id
