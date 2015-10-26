@@ -1174,6 +1174,7 @@
    "PREV"             : "Previous Rates",
    "REVIEW"           : "Review Today's Rates",
    "SET"              : "Set Today's Exchange Rate",
+   "SET_HERE"         : "Setting here",
    "TITLE"            : "Configure Exchange Rates",
    "TODAY_RATE"       : "Exchange Rate for",
    "OLD_DATE"         : "Define an exchange rate for an old date",

@@ -81,37 +81,35 @@
           {{ "PRIMARY_CASH.INCOME.GENERIC.RECEIPT" | translate }}
         </div>
         <div class="panel-body">
-          <form>
+          <form name="GenericIncomeForm" novalidate>
 
-            <div class="form-group col-xs-6 hack-left">
-              <label>{{ "PRIMARY_CASH.INCOME.REFERENCE_DOCUMENT_ID" | translate }}</label>
-              <div class="input-group">
-                <input class="form-bhima" ng-model="session.receipt.reference_uuid" required>
-                <span class="input-group-btn">
-                  <button type="button" class="btn btn-sm btn-default" ng-click="generate()">
-                    <span class="glyphicon glyphicon-refresh"></span>
-                  </button>
-                </span>
-              </div>
-            </div>
-
-            <div class="form-group col-xs-6 pull-right" style="padding-right: 0;">
+            <div class="form-group" style="padding-right: 0;">
               <label>{{ "PRIMARY_CASH.INCOME.DATE" | translate }}</label>
               <input type="date" class="form-bhima" ng-model="session.receipt.date" max="{{ session.tomorrow }}" required>
+              <p ng-if="!session.hasDailyRate">
+                <b class="text-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                  {{ 'EXCHANGE.NO_EXCHANGE_RATE' | translate}} {{session.receipt.date | date}}
+                </b>
+                <b class="text-info">
+                  <a title="{{ 'EXCHANGE.SET_HERE' | translate}}" href="#/exchange_rate">
+                    <span class="glyphicon glyphicon-cog"></span>
+                  </a>
+                </b>
+              </p>
             </div>
 
             <div class="form-group">
-              <label>{{ "PRIMARY_CASH.INCOME.LABEL" | translate }}</label>
+              <label class="required">{{ "PRIMARY_CASH.INCOME.LABEL" | translate }}</label>
               <input class="form-bhima" ng-model="session.receipt.description" required>
             </div>
 
             <div class="form-group">
-              <label>{{ "PRIMARY_CASH.INCOME.AMOUNT" | translate }}</label>
+              <label class="required">{{ "PRIMARY_CASH.INCOME.AMOUNT" | translate }}</label>
               <div class="input-group">
                 <span class="input-group-addon">
                   {{ session.currency.symbol || "..." }}
                 </span>
-                <input type="number" class="form-bhima" ng-model="session.receipt.cost">
+                <input type="number" class="form-bhima" ng-model="session.receipt.cost" required>
               </div>
             </div>
           </form>
@@ -133,20 +131,9 @@
 
 </main>
 
-<script type="text/ng-template" id="DebtorList.html">
-  <a>
-    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-    <span><i>{{match.model.first_name}} {{match.model.last_name}}</i></span>
-  </a>
-</script>
-
 <script type="text/ng-template" id="AccountList.html">
   <a>
     <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
     <span><b>[{{ match.model.account_number }}]</b></span>
   </a>
 </script>
-
-
-
-
