@@ -155,29 +155,26 @@ function debitorGroup(id) {
 
   // debtor query
   if (!id) { defer.reject(new Error('No debitor_group id selected!')); }
-  else { id = sanitize.escape(id); }
 
   var query =
-    'SELECT `account_id` ' +
-    'FROM `debitor_group` WHERE `debitor_group`.`uuid`=' + id +';';
+    'SELECT `debitor_group`.`account_id` FROM `debitor_group` ' +
+    ' WHERE `debitor_group`.`uuid`=?';
 
-  db.exec(query)
+  db.exec(query, [id])
   .then(function (ans) {
-
-    var account = ans.pop().account_id;
-
+    var accountId = ans.pop().account_id;
     var query =
       'SELECT c.inv_po_id, c.trans_id, c.trans_date, c.account_id FROM (' +
-        'SELECT p.inv_po_id, p.trans_id, p.trans_date, p.account_id ' +
-        'FROM posting_journal AS p ' +
-        'WHERE p.account_id = ' + account + ' ' +
-      'UNION ' +
-        'SELECT g.inv_po_id, g.trans_date, g.trans_id, g.account_id ' +
-        'FROM general_ledger AS g ' +
-        'WHERE g.account_id = ' + account + ') ' +
-      ' AS c;';
+        ' SELECT p.inv_po_id, p.trans_id, p.trans_date, p.account_id ' +
+        ' FROM posting_journal AS p ' +
+        ' WHERE p.account_id=? ' +
+        ' UNION ' +
+        ' SELECT g.inv_po_id, g.trans_date, g.trans_id, g.account_id ' +
+        ' FROM general_ledger AS g ' +
+        ' WHERE g.account_id=? ' +
+      ') AS c ;';
 
-    return db.exec(query);
+    return db.exec(query, [accountId, accountId]);
   })
   .then(function (ans) {
     if (!ans.length) { defer.resolve([]); }
@@ -186,13 +183,13 @@ function debitorGroup(id) {
       return line.inv_po_id;
     });
 
-    var account_id = ans.pop().account_id;
+    var accountId = ans.pop().account_id;
 
     var sql =
       'SELECT s.reference, s.project_id, s.is_distributable, t.inv_po_id, t.trans_date, SUM(t.debit_equiv) AS debit,  ' +
         'SUM(t.credit_equiv) AS credit, SUM(t.debit_equiv - t.credit_equiv) as balance, ' +
         't.account_id, t.deb_cred_uuid, t.currency_id, t.doc_num, t.description, t.account_id, ' +
-        't.comment' +
+        't.comment ' +
       'FROM (' +
         '(' +
           'SELECT pj.inv_po_id, pj.trans_date, pj.debit, ' +
@@ -209,10 +206,10 @@ function debitorGroup(id) {
         ')' +
       ') AS t JOIN sale AS s on t.inv_po_id = s.uuid ' +
       'WHERE t.inv_po_id IN ("' + invoices.join('","') + '") ' +
-      'AND t.account_id = ' + account_id + ' ' +
+      'AND t.account_id=? ' +
       'GROUP BY t.inv_po_id;\n';
 
-    return db.exec(sql);
+    return db.exec(sql, [accountId]);
   })
   .then(function (ans) {
     defer.resolve(ans);
@@ -267,8 +264,8 @@ function employeeInvoice(id) {
     var sql =
       'SELECT s.reference, s.project_id, s.is_distributable, `t`.`inv_po_id`, `t`.`trans_date`, SUM(`t`.`debit_equiv`) AS `debit`,  ' +
       'SUM(`t`.`credit_equiv`) AS `credit`, SUM(`t`.`debit_equiv` - `t`.`credit_equiv`) as balance, ' +
-      '`t`.`account_id`, `t`.`deb_cred_uuid`, `t`.`currency_id`, `t`.`doc_num`, `t`.`deb_cred_type`, `t`.`description`, `t`.`account_id`, ' +
-      '`t`.`comment`' +
+      '`t`.`account_id`, `t`.`deb_cred_uuid`, `t`.`currency_id`, `t`.`doc_num`, `t`.`deb_cred_type`, `t`.`description`, ' +
+      '`t`.`comment` ' +
       'FROM (' +
         '(' +
           'SELECT `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit`, ' +

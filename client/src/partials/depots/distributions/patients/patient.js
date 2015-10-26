@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('StockDistributionsController', StockDistributionsController);
 
 StockDistributionsController.$inject = [
-  '$scope', '$q', '$routeParams', '$location', 'validate', 'connect', 'messenger', 'util', 'uuid', '$translate'
+  '$q', '$routeParams', '$location', 'validate', 'connect', 'messenger', 'util', 'uuid', '$translate'
 ];
 
 /**
@@ -16,27 +16,28 @@ StockDistributionsController.$inject = [
 *
 * @constructor
 */
-function StockDistributionsController($scope, $q, $routeParams, $location, validate, connect, messenger, util, uuid, $translate) {
+function StockDistributionsController($q, $routeParams, $location, validate, connect, messenger, util, uuid, $translate) {
   var vm = this;
 
-  var session = $scope.session = {
+  vm.session = {
     // FIXME
     index : -1,
     state : null,
     depot : $routeParams.depotId,
     lotSelectionSuccess : false,
-    lotSelectionFailure : false
+    lotSelectionFailure : false,
+    dataDebitor : []
   };
 
   var dependencies = {};
 
   // Test for module organised into step structure
-  var moduleDefinition = $scope.moduleDefinition = [{
+  var moduleDefinition = vm.moduleDefinition = [{
     title : $translate.instant('DISTRIBUTION.LOCATE_PATIENT'),
     template : 'patientSearch.tmpl.html',
     method : null
   }, {
-    title : $translate.instant('DISTRIBUTION.SLECT_PRESCRIPTION'),
+    title : $translate.instant('DISTRIBUTION.SELECT_PRESCRIPTION'),
     template : 'selectSale.tmpl.html',
     method : null
   }, {
@@ -66,51 +67,51 @@ function StockDistributionsController($scope, $q, $routeParams, $location, valid
 
   function initialiseDistributionDetails(patient) {
     dependencies.ledger.query = '/ledgers/debitor/' + patient.debitor_uuid;
-    session.patient = patient;
+    vm.session.patient = patient;
     validate.process(dependencies).then(startup);
   }
 
   function startup(model) {
-    angular.extend($scope, model);
+    angular.extend(vm, model);
 
     // filter out invoices that are either not distributable, or have
     // already been consumed.
-    $scope.ledger.data = $scope.ledger.data.filter(function (data) {
-      return data.is_distributable === 1 && !data.consumed;
+    vm.ledger.data = vm.ledger.data.filter(function (data) {
+      return data.is_distributable === 1 && data.consumed === 0;
     });
 
     moduleStep();
   }
 
   function moduleStep() {
-    session.index += 1;
-    session.state = moduleDefinition[session.index];
+    vm.session.index += 1;
+    vm.session.state = moduleDefinition[vm.session.index];
   }
 
   function selectSale(sale) {
-    session.sale = sale;
+    vm.session.sale = sale;
 
     moduleStep();
 
     getSaleDetails(sale).then(function (saleDetails) {
       var detailsRequest = [];
-      session.sale.details = saleDetails.data;
+      vm.session.sale.details = saleDetails.data;
 
-      detailsRequest = session.sale.details.map(function (saleItem) {
-        return connect.req('/depots/' + session.depot + '/inventory/' + saleItem.inventory_uuid);
+      detailsRequest = vm.session.sale.details.map(function (saleItem) {
+        return connect.req('/depots/' + vm.session.depot + '/inventory/' + saleItem.inventory_uuid);
       });
 
       $q.all(detailsRequest)
       .then(function (result) {
-        session.sale.details.forEach(function (saleItem, index) {
+        vm.session.sale.details.forEach(function (saleItem, index) {
           var itemModel = result[index];
           if (itemModel.data.length) { saleItem.lots = itemModel; }
         });
 
 
-        recomendLots(session.sale.details);
+        recomendLots(vm.session.sale.details);
 
-        session.lotSelectionSuccess = verifyValidLots(session.sale.details);
+        vm.session.lotSelectionSuccess = verifyValidLots(vm.session.sale.details);
       })
       .catch(function (error) {
         messenger.error(error);
@@ -195,7 +196,7 @@ function StockDistributionsController($scope, $q, $routeParams, $location, valid
     });
 
     // Update on failed attempt - EVERY validation
-    session.lotSelectionFailure = invalidLots;
+    vm.session.lotSelectionFailure = invalidLots;
     return !invalidLots;
   }
 
@@ -237,9 +238,9 @@ function StockDistributionsController($scope, $q, $routeParams, $location, valid
   function submitConsumption() {
     var submitItem = [];
     var consumption_patients = [];
-    if (!session.lotSelectionSuccess) { return messenger.danger('Cannot verify lot allocation'); }
+    if (!vm.session.lotSelectionSuccess) { return messenger.danger('Cannot verify lot allocation'); }
 
-    session.sale.details.forEach(function (consumptionItem) {
+    vm.session.sale.details.forEach(function (consumptionItem) {
       if (!angular.isDefined(consumptionItem.recomendedLots)) { return; }
 
       consumptionItem.recomendedLots.forEach(function (lot) {
@@ -247,7 +248,7 @@ function StockDistributionsController($scope, $q, $routeParams, $location, valid
 
         submitItem.push({
           uuid : consumption_uuid,
-          depot_uuid : session.depot,
+          depot_uuid : vm.session.depot,
           date : util.convertToMysqlDate(new Date()),
           document_id : consumptionItem.sale_uuid,
           tracking_number : lot.details.tracking_number,
@@ -258,8 +259,8 @@ function StockDistributionsController($scope, $q, $routeParams, $location, valid
         consumption_patients.push({
           uuid : uuid(),
           consumption_uuid : consumption_uuid,
-          sale_uuid : session.sale.inv_po_id,
-          patient_uuid : session.patient.uuid
+          sale_uuid : vm.session.sale.inv_po_id,
+          patient_uuid : vm.session.patient.uuid
         });
       });
     });
@@ -290,17 +291,17 @@ function StockDistributionsController($scope, $q, $routeParams, $location, valid
       return connect.basicPut('consumption_patient', consumption_patients);
     })
     .then(function (res) {
-      return connect.fetch('/journal/distribution_patient/' + session.sale.inv_po_id);
+      return connect.fetch('/journal/distribution_patient/' + vm.session.sale.inv_po_id);
     })
     .then(function () {
-      $location.path('/invoice/consumption/' + session.sale.inv_po_id);
+      $location.path('/invoice/consumption/' + vm.session.sale.inv_po_id);
     })
     .catch(function (error) {
       messenger.error(error);
     });
   }
 
-  $scope.selectSale = selectSale;
-  $scope.initialiseDistributionDetails = initialiseDistributionDetails;
-  $scope.submitConsumption = submitConsumption;
+  vm.selectSale = selectSale;
+  vm.initialiseDistributionDetails = initialiseDistributionDetails;
+  vm.submitConsumption = submitConsumption;
 }
