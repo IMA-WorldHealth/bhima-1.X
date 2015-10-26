@@ -61,7 +61,7 @@ angular.module('bhima.controllers')
     $scope.confirmPayment = function confirmPayment () {
     	updatePurchase()
     	.then(function () {
-        messenger.success($translate.instant('UTIL.SUCCESS'), true);
+        messenger.success($translate.instant('UTIL.SUCCESS'));
         session.selected = null;
         validate.refresh(dependencies)
         .then(initialise);

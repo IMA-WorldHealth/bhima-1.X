@@ -1,4 +1,4 @@
-var purchaseConfirm = function (validate, sessionService, connect, $location) {
+var purchaseConfirm = function (validate, sessionService, connect, $location, messenger) {
 
   var vm = this;
   var dependencies = {};
@@ -78,7 +78,8 @@ var purchaseConfirm = function (validate, sessionService, connect, $location) {
   }
 
   function handleError(error) {
-    throw error;
+    //TO DO catch the server error
+    messenger.danger(error.data);
   }
 
   function getDate() {
@@ -91,6 +92,6 @@ var purchaseConfirm = function (validate, sessionService, connect, $location) {
   };
 };
 
-purchaseConfirm.$inject = ['validate', 'SessionService', 'connect', '$location'];
+purchaseConfirm.$inject = ['validate', 'SessionService', 'connect', '$location', 'messenger'];
 
 angular.module('bhima.controllers').controller('PurchaseConfirm', purchaseConfirm);
