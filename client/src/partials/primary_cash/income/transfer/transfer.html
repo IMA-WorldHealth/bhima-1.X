@@ -39,14 +39,9 @@
                 ng-model="TransferCtrl.data.cash_box_id"
                 class="form-bhima"
                 name="cashBoxId"
+                ng-options="cash.id as cash.text disable when (cash.is_auxillary == 0 && cash.is_bank == null) for cash in TransferCtrl.cash_boxes.data"
                 required>
                 <option value="" disabled="disabled">--- {{ 'SELECT.CASH' | translate }} ---</option>
-                <!-- FIXME ng-options is optimale but in this case we need to disable some options -->
-                <option ng-repeat="cash in TransferCtrl.cash_boxes.data"
-                  ng-disabled="cash.is_auxillary == 0 && cash.is_bank == null"
-                  value="{{cash.id}}">
-                  {{cash.text}}
-                </option>
               </select>
             </div>
 

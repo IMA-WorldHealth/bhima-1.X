@@ -38,14 +38,6 @@ function PurchaseOrderCashController ($routeParams, $translate, $http, messenger
     }
   };
 
-  dependencies.enterprise = {
-    query : {
-      tables : {
-        enterprise : {columns : ['id', 'currency_id']}
-      }
-    }
-  };
-
   dependencies.pcash_module = {
     required : true,
     query : {
@@ -65,7 +57,7 @@ function PurchaseOrderCashController ($routeParams, $translate, $http, messenger
   // Startup
   (function startup() {
     if (!exchange.hasDailyRate()) { $location.path('/primary_cash/'); }
-    
+
     if (!cashboxReference) {
       return messenger.info($translate.instant('CASH_PURCHASE.CASHBOX_ASSIGN_ERROR'));
     }
@@ -116,10 +108,10 @@ function PurchaseOrderCashController ($routeParams, $translate, $http, messenger
       details         : {
         project_id    : vm.project.id,
         type          : 'S',
-        date          : util.sqlDate(new Date()),
+        date          : new Date(),
         deb_cred_uuid : creditorId,
         deb_cred_type : 'C',
-        currency_id   : model.enterprise.data[0].currency_id, //FIXME
+        currency_id   : SessionService.enterprise.currency_id,
         cash_box_id   : cashbox.id,
         account_id    : creditorAccount,
         cost          : session.selected.cost,
@@ -148,7 +140,7 @@ function PurchaseOrderCashController ($routeParams, $translate, $http, messenger
       paid : 1,
       paid_uuid : result.data.purchaseId
     };
-    return connect.basicPost('purchase', [purchase], ['uuid']);
+    return connect.put('purchase', [purchase], ['uuid']);
   }
 
   function generateDocument (res){

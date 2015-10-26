@@ -84,7 +84,6 @@ function PrimaryCashController ($location, $q, $modal, validate, AppCache, excha
 
   function parseDependenciesData(model) {
     angular.extend(vm, model);
-    return $q.when();
   }
 
   function readConfiguration() {

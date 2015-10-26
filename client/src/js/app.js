@@ -372,7 +372,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/primary_cash/income/transfer/transfer.html'
   })
    .when('/primary_cash/convention/:cashbox_id', {
-    controller : 'primaryCash.convention',
+    controller : 'PrimaryCashConventionController as ConventionCtrl',
     templateUrl : 'partials/primary_cash/income/convention/convention.html'
   })
    .when('/primary_cash/support/:cashbox_id', {
