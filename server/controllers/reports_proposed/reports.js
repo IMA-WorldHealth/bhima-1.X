@@ -75,6 +75,7 @@ exports.serve = function (req, res, next) {
     if (err) {
       next(err);
     } else {
+      console.log('report generated succefully');
 
       // Delete (unlink) served file
       /*fs.unlink(path.join(__dirname, 'out/').concat(target, '.pdf'), function (err) {
