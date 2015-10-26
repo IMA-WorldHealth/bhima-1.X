@@ -1,4 +1,3 @@
-var q       = require('q');
 var db      = require('../../../lib/db');
 var numeral = require('numeral');
 
@@ -30,11 +29,11 @@ exports.compile = function (options) {
   context.dataStructure = i18nDebitorGroupReport;
 
 
-  function filterResults (results){
+  function filterResults(results){
     return results.filter(function (item){
       return item.debit - item.credit !== 0;
     });
-  };
+  }
  
   return db.exec(defaultSql, params)
   .then(function (results){
