@@ -308,8 +308,7 @@ VALUES (130, 'Stock Distributions By Depot', 'TREE.DEPOT_DISTRIBUTIONS', 'This r
 -- By: Bruce Mbayo
 
 INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
-VALUES (121, 'Budget Management', 'TREE.BUDGET_MANAGEMENT', 'Budgets Management module', 8, '/partials/budget/new', '/budgeting/new/');
-
+VALUES (131, 'Budget Management', 'TREE.BUDGET_MANAGEMENT', 'Budgets Management module', 8, '/partials/budget/new', '/budgeting/new/');
 
 -- Reorder nodes of unit table
 -- Date: 2015-10-07
@@ -454,7 +453,13 @@ UPDATE `unit` SET `unit`.`parent`=129 WHERE `unit`.`id`=38;
 
 UPDATE `unit` SET `unit`.`key`='TREE.PATIENT_REGISTRATION' WHERE `unit`.`id`=14;
 UPDATE `unit` SET `unit`.`key`='TREE.USERS' WHERE `unit`.`id`=4;
-
+--
+-- jniles
+-- 07/10/2015
+-- Tree link for debtor group annual report
+--
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
+VALUES (132, 'Annual Debtor Group Report', 'TREE.DEBTOR_GROUP_ANNUAL_REPORT', 'provides the evolution of all debtor group debts to the enterprise', 128, 'partials/reports_proposed/debtorgroup/annual', '/reports/debtorgroup/annual');
 
 -- Setting all class 6 accounts to is_charge=1
 -- Setting all class 7 accounts to is_charge=0
@@ -468,3 +473,8 @@ UPDATE `account` SET `account`.`is_charge`=0
 WHERE `account`.`is_charge` IS NULL AND LEFT(`account`.`account_number`, 1)=7;
 
 -- NOTA : The last unit table ID is 130
+
+-- set the /stock route to /depots
+-- author: jniles
+-- date: 2015-10-20
+UPDATE unit SET path='/depots', url='/depots/depots.html' where id = 45;

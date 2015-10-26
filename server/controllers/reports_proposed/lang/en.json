@@ -59,5 +59,20 @@
 		"TOTAL_DIFFERENCE" : "Sold",
 		"BOX" : "BP",
 		"TEL" : "Tel"
-	}
+	},
+
+  "DEBTOR_GROUP_ANNUAL_REPORT" : {
+    "CREDIT" : "Credit",
+    "DEBIT"  : "Debit",
+    "BALANCE" : "Balance",
+    "BILLED" : "Billed",
+    "PAID" : "Paid",
+    "ACCOUNT_NUMBER" : "Account Number",
+    "DESIGNATION" : "Designation",
+    "TITLE" : "Debtor Group Annual Report",
+    "ACCOUNTING_DEPT" : "Accounting Department",
+    "BILLING_OFFICE" :  "Office of Billing",
+    "NO_DATA" : "No data found for the give fiscal year!",
+    "TOTAL" : "Total"
+  }
 }

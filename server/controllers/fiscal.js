@@ -2,10 +2,30 @@ var db = require('./../lib/db'),
     util = require('./../lib/util'),
     journal = require('./journal');
 
-/*
- * HTTP Controller
-*/
-exports.createFiscalYear = function (req, res, next) {
+exports.createFiscalYear = createFiscalYear;
+exports.fiscalYearResultat = fiscalYearResultat;
+exports.getFiscalYears = getFiscalYears;
+
+// GET /fiscal
+function getFiscalYears(req, res, next) {
+  'use strict';
+
+  var sql;
+
+  sql =
+    'SELECT id, fiscal_year_txt, locked FROM fiscal_year;';
+
+  db.exec(sql)
+  .then(function (rows) {
+    res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
+}
+
+// POST /fiscal
+// creates a new fiscal year
+function createFiscalYear(req, res, next) {
   'use strict';
 
   var hasBalances, data, fiscalYearId;
@@ -51,9 +71,9 @@ exports.createFiscalYear = function (req, res, next) {
     next(error);
   })
   .done();
-};
+}
 
-exports.fiscalYearResultat = function (req, res, next) {
+function fiscalYearResultat(req, res, next) {
   'use strict';
   var data      = req.body.params,
       user_id   = data.user_id,
@@ -61,9 +81,7 @@ exports.fiscalYearResultat = function (req, res, next) {
       bundle    = data.bundle;
 
   journal.request('fiscal_year_resultat', new_fy_id, user_id, function (error, result) {
-    if (error) {
-      return next(error);
-    }
+    if (error) { return next(error); }
     res.status(200).send();
   }, undefined, bundle);
 }
@@ -85,18 +103,22 @@ function createOpeningBalances(data) {
       balances = data.balances,
       totals;
 
+  // sql =
+  //   'SELECT id FROM period WHERE period_number = 0 AND fiscal_year_id = ?;';
+
   sql =
-    'SELECT id FROM period WHERE period_number = 0 AND fiscal_year_id = ?;';
+    'SELECT id FROM period WHERE fiscal_year_id = ? and period_start = ' +
+    '(SELECT MIN(period_start) FROM period WHERE fiscal_year_id = ?)';
 
   // first, get the id of the 0 period
-  return db.exec(sql, [data.fiscalYearId])
+  return db.exec(sql, [data.fiscalYearId, data.fiscalYearId])
   .then(function (periods) {
     periodId = periods[0].id;
 
     totals = balances.map(function (account) {
       return {
-        projectId    : 1,                            // Set to HBB project ID
-        description  : 'Initialisation Fiscal Year',
+        projectId    : data.project_id,                            // Set to HBB project ID
+        description  : 'Initialisation Annee Fiscale',
         accountId    : account.account_id,
         debit        : account.debit,
         credit       : account.credit,
@@ -142,6 +164,7 @@ function createNewYear(data) {
 }
 
 // creates the periods (including period 0) for a fiscal year
+// TODO -- migrate this to use db.exec() parameter parsing
 function createPeriods(fiscalYearId, start, end) {
   var sql,
       totalMonths,
@@ -157,7 +180,7 @@ function createPeriods(fiscalYearId, start, end) {
     'INSERT INTO period (fiscal_year_id, period_number, period_start, period_stop) VALUES ';
 
   // create the zero period
-  template.push([fiscalYearId, 0, periodStart, periodStart]);
+  // template.push([fiscalYearId, 0, periodStart, periodStart]);//after discussion, we will not use a period zero
 
   // create a period for each month, calculating the
   // first day and last day of the month

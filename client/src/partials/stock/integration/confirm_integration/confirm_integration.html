@@ -55,7 +55,7 @@
             <tr ng-repeat="item in ConfirmCtrl.data | filter:ConfirmCtrl.filter | orderBy:'purchase_date'"
                 ng-class="{ 'selected-success' : ConfirmCtrl.selected.document_id === item.document_id }">
               <td>{{ item.purchase_date | date }}</td>
-              <td><a href="/#/stock/entry/report/{{ item.document_id }}">{{ item.reference }}</td>
+              <td><a href="/#/depots/entry/report/{{ item.document_id }}">{{ item.reference }}</td>
               <td>{{ item.first }} {{ item.last }}</td>
               <td class="text-center"><a class="menu-item" ng-click="ConfirmCtrl.select(item)"><i class="glyphicon glyphicon-arrow-right"></i></a></td>
             </tr>
