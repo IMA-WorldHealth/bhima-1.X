@@ -22,16 +22,6 @@ function PrimaryCashIncomeGenericController ($scope, $routeParams, $translate, v
     }
   };
 
-  dependencies.projects = {
-    query : {
-      tables : {
-        'project' : {
-          columns : ['id', 'abbr']
-        }
-      }
-    }
-  };
-
   dependencies.accounts = {
     query : {
       tables : {
@@ -47,8 +37,6 @@ function PrimaryCashIncomeGenericController ($scope, $routeParams, $translate, v
   $scope.update           = update;
   $scope.setCurrency      = setCurrency;
   $scope.formatAccount    = formatAccount;
-  $scope.formatDebtor     = formatDebtor;
-  $scope.generate         = generate;
   $scope.clear            = clear;
   $scope.submit           = submit;
   $scope.reconfigure      = reconfigure;
@@ -93,7 +81,6 @@ function PrimaryCashIncomeGenericController ($scope, $routeParams, $translate, v
 
     // init models
     $scope.project =  SessionService.project;
-    dependencies.projects.query.where = ['project.enterprise_id=' + $scope.project.enterprise_id];
     validate.process(dependencies)
     .then(function (models) {
       angular.extend($scope, models);
@@ -105,24 +92,15 @@ function PrimaryCashIncomeGenericController ($scope, $routeParams, $translate, v
     .catch(error);
   }
 
-  function formatDebtor(debtor) {
-    return [
-      '[' + $scope.projects.get(debtor.project_id).abbr,
-      debtor.reference + ']',
-      debtor.first_name,
-      debtor.last_name
-    ].join(' ');
-  }
-
-  function generate () {
-    session.receipt.reference_uuid = uuid();
-  }
-
   function clear () {
     session.receipt = {};
     session.receipt.date = new Date();
     session.receipt.value = 0.00;
     session.receipt.cash_box_id = $routeParams.id;
+  }
+
+  function hasDailyRate(date) {
+    session.hasDailyRate = exchange.hasDailyRate(date);
   }
 
   function valid () {
@@ -138,6 +116,8 @@ function PrimaryCashIncomeGenericController ($scope, $routeParams, $translate, v
       isDefined(r.description) &&
       isDefined(r.date) &&
       isDefined(r.cash_box_id));
+
+    hasDailyRate(r.date);
   }
 
   function update (value) {
@@ -151,34 +131,31 @@ function PrimaryCashIncomeGenericController ($scope, $routeParams, $translate, v
   function submit () {
     var data, receipt = session.receipt;
 
-    connect.fetch('/user_session')
-    .then(function (user) {
+    data = {
+      uuid          : uuid(),
+      project_id    : $scope.project.id,
+      type          : 'E',
+      date          : util.sqlDate(receipt.date),
+      account_id    : session.ac.id,
+      currency_id   : session.currency.id,
+      cost          : receipt.cost,
+      user_id       : SessionService.user.id,
+      description   : 'HBB' + '_CP. REC GEN/' + receipt.description, //fix me
+      cash_box_id   : receipt.cash_box_id,
+      origin_id     : 5,
+    };
 
-      data = {
-        uuid          : uuid(),
-        project_id    : $scope.project.id,
-        type          : 'E',
-        date          : util.sqlDate(receipt.date),
-        account_id    : session.ac.id,
-        currency_id   : session.currency.id,
-        cost          : receipt.cost,
-        user_id       : user.id,
-        description   : 'HBB' + '_CP. REC GEN/' + receipt.description, //fix me
-        cash_box_id   : receipt.cash_box_id,
-        origin_id     : 5,
-      };
-
-      return connect.basicPut('primary_cash', [data]);
-    })
+    connect.post('primary_cash', [data])
     .then(function () {
+      var receiptReference = uuid();
       var item = {
         uuid              : uuid(),
         primary_cash_uuid : data.uuid,
         debit             : data.cost,
         credit            : 0,
-        document_uuid     : receipt.reference_uuid
+        document_uuid     : receiptReference
       };
-      return connect.basicPut('primary_cash_item', [item]);
+      return connect.post('primary_cash_item', [item]);
     })
     .then(function () {
       return connect.fetch('/journal/primary_income/' + data.uuid);

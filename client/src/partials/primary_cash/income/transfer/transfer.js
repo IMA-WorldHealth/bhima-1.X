@@ -120,13 +120,12 @@ function PrimaryCashIncomeTransferController (connect, validate, util, uuid, $ro
 
     connect.post('primary_cash', pcash)
     .then(function () {
-      // create and post primary_cash_item record line
       item = {
         uuid              : uuid(),
         primary_cash_uuid : pcash.uuid,
         debit             : data.value,
         document_uuid     : pcash.uuid,
-        credit            : 0 // LOL wot?
+        credit            : 0
       };
       return connect.post('primary_cash_item', item);
     })

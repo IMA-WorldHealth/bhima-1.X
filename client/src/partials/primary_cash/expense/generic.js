@@ -12,23 +12,6 @@ function PrimaryCashExpenseGenericController ($scope, $routeParams, $translate, 
       session      = $scope.session = { receipt : { date : new Date() }, configure : false, complete : false },
       cache        = new Appcache('expense');
 
-  dependencies.suppliers = {
-    query : {
-      tables : {
-        'supplier' : {
-          columns : ['uuid', 'creditor_uuid', 'name', 'address_1', 'address_2', 'email']
-        },
-        'creditor' : {
-          columns : ['text']
-        },
-        'creditor_group' : {
-          columns : ['account_id']
-        }
-      },
-      join : ['supplier.creditor_uuid=creditor.uuid', 'creditor.group_uuid=creditor_group.uuid']
-    }
-  };
-
   dependencies.currencies = {
     query : {
       tables : {
@@ -53,7 +36,6 @@ function PrimaryCashExpenseGenericController ($scope, $routeParams, $translate, 
   // Expose to view
   $scope.update           = update;
   $scope.setCurrency      = setCurrency;
-  $scope.generate         = generate;
   $scope.clear            = clear;
   $scope.submit           = submit;
   $scope.formatAccount    = formatAccount;
@@ -77,7 +59,7 @@ function PrimaryCashExpenseGenericController ($scope, $routeParams, $translate, 
 
   function startup() {
     if (!exchange.hasDailyRate()) { $location.path('/primary_cash/'); }
-    
+
     if (Number.isNaN(Number($routeParams.id))) {
       throw new Error('No cashbox selected');
     }
@@ -110,15 +92,15 @@ function PrimaryCashExpenseGenericController ($scope, $routeParams, $translate, 
      session.complete = true;
   }
 
-  function generate () {
-    session.receipt.reference_uuid = uuid();
-  }
-
   function clear () {
     session.receipt = {};
     session.receipt.date = new Date();
     session.receipt.value = 0.00;
     session.receipt.cash_box_id = $routeParams.id;
+  }
+
+  function hasDailyRate(date) {
+    session.hasDailyRate = exchange.hasDailyRate(date);
   }
 
   function valid () {
@@ -134,38 +116,37 @@ function PrimaryCashExpenseGenericController ($scope, $routeParams, $translate, 
       isDefined(r.description) &&
       isDefined(r.date) &&
       isDefined(r.cash_box_id));
+
+    hasDailyRate(r.date);
   }
 
   function submit () {
     var data, receipt = session.receipt;
 
-    connect.fetch('/user_session')
-    .then(function (user) {
+    data = {
+      uuid          : uuid(),
+      reference     : 1,
+      project_id    : $scope.project.id,
+      type          : 'E',
+      date          : util.sqlDate(receipt.date),
+      account_id    : session.ac.id,
+      currency_id   : session.currency.id,
+      cost          : receipt.cost,
+      user_id       : SessionService.user.id,
+      description   : 'HBB' + '_C.P DEP GEN/' + receipt.description, //fix me
+      cash_box_id   : receipt.cash_box_id,
+      origin_id     : 4,
+    };
 
-      data = {
-        uuid          : uuid(),
-        reference     : 1,
-        project_id    : $scope.project.id,
-        type          : 'E',
-        date          : util.sqlDate(receipt.date),
-        account_id    : session.ac.id,
-        currency_id   : session.currency.id,
-        cost          : receipt.cost,
-        user_id       : user.id,
-        description   : 'HBB' + '_C.P DEP GEN/' + receipt.description, //fix me
-        cash_box_id   : receipt.cash_box_id,
-        origin_id     : 4,
-      };
-
-      return connect.basicPut('primary_cash', [data]);
-    })
+    connect.post('primary_cash', [data])
     .then(function () {
+      var receiptReference = uuid();
       var item = {
         uuid              : uuid(),
         primary_cash_uuid : data.uuid,
         debit             : 0,
         credit            : data.cost,
-        document_uuid     : receipt.reference_uuid
+        document_uuid     : receiptReference
       };
       return connect.basicPut('primary_cash_item', [item]);
     })
