@@ -38,6 +38,15 @@ function FiscalLockController ($q, $scope, $http, $route, $translate, validate, 
     }
   };
 
+  dependencies.postingJournal = {
+    query : {
+      tables : {
+        posting_journal : { columns : ['uuid'] }
+      },
+      where : ['posting_journal.fiscal_year_id=' + imports.selectedToLock]
+    }
+  };
+
   dependencies.user = {
     query : '/user_session'
   };
@@ -147,16 +156,24 @@ function FiscalLockController ($q, $scope, $http, $route, $translate, validate, 
   }
 
   function onLoad () {
+    session.remainData = false;
+
     session.selectedToLock = imports.selectedToLock;
     dependencies.fiscal.query.where = ['fiscal_year.id=' + session.selectedToLock];
-    validate.refresh(dependencies, ['fiscal', 'resultatAccount', 'user'])
+    validate.refresh(dependencies, ['fiscal', 'resultatAccount', 'user', 'postingJournal'])
     .then(function (models) {
-      $scope.resultatAccount = models.resultatAccount;
-      $scope.fiscal = models.fiscal.data[0];
-      // get user id
-      session.user_id = models.user.data.id;
-      // cache the fiscal year data for expected edits
-      editCache = angular.copy($scope.fiscal);
+      if(models.postingJournal.data.length > 0){
+        session.message = $translate.instant('FISCAL_YEAR.POST_ALL_DATA');
+        session.remainData = true;        
+      }else{
+        $scope.resultatAccount = models.resultatAccount;
+        $scope.fiscal = models.fiscal.data[0];
+        // get user id
+        session.user_id = models.user.data.id;
+        // cache the fiscal year data for expected edits
+        editCache = angular.copy($scope.fiscal);
+      }
+      
     })
     .then(loadSolde(session.selectedToLock))
     .then(getFiscalYearLastDate(session.selectedToLock))
