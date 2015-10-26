@@ -14,16 +14,13 @@ angular.module('bhima.controllers')
   'exchange',
   '$q',
   'uuid',
-  function ($scope, $routeParams, $translate, $location, $http, messenger, validate, appstate, Appcache, connect, util, exchange, $q, uuid) {
+  'SessionService',
+  function ($scope, $routeParams, $translate, $location, $http, messenger, validate, appstate, Appcache, connect, util, exchange, $q, uuid, Session) {
     var dependencies = {},
         session = $scope.session = {},
         cache = new Appcache('salary_advance');
 
     session.primaryCashBox = $routeParams.cashbox;
-
-    dependencies.cashier = {
-      query : 'user_session'
-    };
 
     dependencies.cashBox = {
       required : true,
@@ -76,9 +73,9 @@ angular.module('bhima.controllers')
     }
 
     appstate.register('project', function (project) {
-      $scope.project = project;               
+      $scope.project = project;
       validate.process(dependencies)
-      .then(init);     
+      .then(init);
     });
 
     function setCashAccount(cashAccount) {
@@ -111,7 +108,7 @@ angular.module('bhima.controllers')
           account_id    : session.selectedItem.account_id,
           currency_id   : session.selectedItem.currency_id,
           cost          : session.montant,
-          user_id       : $scope.cashier.data.id,
+          user_id       : Session.user.id,
           description   : session.motif,
           cash_box_id   : session.selectedItem.id,
           origin_id     : 9 //FIX ME : Find a way to generate it automatically
@@ -125,13 +122,13 @@ angular.module('bhima.controllers')
           inv_po_id         : null, // uuid de l'avance
           document_uuid     : document_uuid
         };
-        
+
         var packet = {
           primary : primary,
           primary_details : primary_details
         };
 
-        
+
         if (session.hasDailyRate) {
 
           connect.post('primary_cash', [packet.primary], ['uuid'])

@@ -59,10 +59,6 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
     }
   };
 
-  dependencies.user = {
-    query : 'user_session'
-  };
-
   dependencies.paiement_period = {
     query : {
       tables : {
@@ -97,7 +93,7 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
 
   function start() {
     $scope.project = SessionService.project;
-    validate.process(dependencies, ['paiement_period', 'user', 'exchange_rate', 'currencies'])
+    validate.process(dependencies, ['paiement_period', 'exchange_rate', 'currencies'])
     .then(init, function (err) {
       session.error.paiement_period = err.reference === 'paiement_period' ? true : false;
       session.error.exchange_rate = err.reference === 'exchange_rate' ? true : false;

@@ -4,12 +4,9 @@ angular.module('bhima.controllers')
   'validate',
   'appstate',
   'messenger',
-  function ($scope, validate, appstate, messenger) {
+  'SessionService',
+  function ($scope, validate, appstate, messenger, Session) {
     var dependencies = {}, model = $scope.model = {common : {}};
-
-    dependencies.user = {
-      query : '/user_session'
-    };
 
     dependencies.indirectPurchase = {
         query : {
@@ -67,22 +64,7 @@ angular.module('bhima.controllers')
       }
 
       model.indirectPurchase = res.indirectPurchase.data.pop();
-      getUserInfo(res.user.data.id);
-    }
-
-    function getUserInfo (user_id) {
-      dependencies.userInfo = {
-        query : {
-          tables : {
-            'user' : { columns : ['first', 'last']}
-          },
-          where : ['user.id='+user_id]
-        }
-      };
-      validate.refresh(dependencies, ['userInfo'])
-      .then(function (data) {
-        model.userInfo = data.userInfo.data[0];
-      });
+      model.userInfo = Session.user;
     }
 
   	appstate.register('receipts.commonData', function (commonData) {

@@ -166,11 +166,6 @@ exports.currentProject = function (req, res, next) {
   .done();
 };
 
-// FIXME Remove
-exports.userSession = function (req, res, next) {
-  res.send({ id: req.session.user.id });
-};
-
 exports.pcashTransferSummers = function (req, res, next) {
   var sql =
     'SELECT `primary_cash`.`reference`, `primary_cash`.`date`, `primary_cash`.`cost`, `primary_cash`.`currency_id` '+
