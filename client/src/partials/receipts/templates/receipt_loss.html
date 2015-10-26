@@ -11,26 +11,24 @@
   <!-- Temporary style; needs official markup and CSS -->
   <div class="col-xs-4">
     <span>
-      <b>{{model.common.enterprise.name}}</b>
+      <b>{{ model.common.enterprise.name }}</b>
     </span>
     <br>
-    {{model.common.location.name}}
-    <br>
-    {{ model.common.enterprise.po_box || 'B.P. 205'}}
-    <br>
-    {{model.common.location.sector_name}}
-    <br>
-    <i>TEL</i> {{model.common.enterprise.phone}}
-    <br>
-    <i>MAIL</i> {{model.common.enterprise.email}}
+    <address>
+      {{ model.common.location.name }}
+      <br> {{ model.common.enterprise.po_box }}
+      <br> {{ model.common.location.sector_name }}
+      <br><i>TEL</i> {{ model.common.enterprise.phone }}
+      <br><i>MAIL</i> {{ model.common.enterprise.email }}
+    </address>
   </div>
 
   <div class="col-xs-4">
-    {{ 'INVOICE.DOCUMENT_NUMBER' | translate }} : <b> <br>
-    {{model.loss[0].document_uuid}}</b> <br>
+    {{ 'INVOICE.DOCUMENT_NUMBER' | translate }} :
+    <br> <strong>{{ model.loss[0].document_uuid }}</strong>
     <br>
-    <i>{{'INVOICE.DATE_REGISTRATION' | translate }}</i> <br>
-    {{model.loss[0].date | date}}
+    <br> <i>{{ 'INVOICE.DATE_REGISTRATION' | translate }}</i>
+    <br> {{ model.loss[0].date | date }}
   </div>
 
   <div class="col-xs-4"></div>
@@ -42,24 +40,22 @@
     <table class="invoiceTable">
       <thead>
         <tr>
-          <th>{{'COLUMNS.ENTRY_DATE' | translate}}</th>
-          <th>{{'COLUMNS.LOT_NUMBER' | translate}}</th>
-          <th>{{'COLUMNS.TRACKING_NUMBER' | translate}}</th>
-          <th>{{'COLUMNS.MEDECINE' | translate}}</th>
-          <th>{{'COLUMNS.QTY' | translate}}</th>
-          <th>{{'COLUMNS.UNIT_PRICE' | translate}}</th>
-          <th>{{'COLUMNS.COST' | translate}}</th>
+          <th>{{ 'COLUMNS.ENTRY_DATE' | translate }}</th>
+          <th>{{ 'COLUMNS.LOT_NUMBER' | translate }}</th>
+          <th>{{ 'COLUMNS.INVENTORY_ITEM' | translate }}</th>
+          <th>{{ 'COLUMNS.QTY' | translate }}</th>
+          <th>{{ 'COLUMNS.UNIT_PRICE' | translate }}</th>
+          <th>{{ 'COLUMNS.COST' | translate }}</th>
         </tr>
       </thead>
       <tbody class="items">
         <tr ng-repeat="rec in model.loss">
           <td>{{ rec.entry_date | date }}</td>
           <td>{{ rec.lot_number }}</td>
-          <td>{{ rec.tracking_number }}</td>
           <td>{{ rec.text }}</td>
           <td>{{ rec.quantity}}</td>
-          <td>{{ rec.unit_price | currency }}</td>
-          <td>{{ rec.quantity * rec.unit_price | currency}}</td>
+          <td class="text-right">{{ rec.unit_price | currency:model.common.enterprise.currency_id }}</td>
+          <td class="text-right">{{ rec.quantity * rec.unit_price | currency:model.common.enterprise.currency_id }}</td>
         </tr>
       </tbody>
     </table>

@@ -262,11 +262,15 @@ function service(id, userId, details, cb) {
 
 /**
 * Distribution Loss
-* 
-* @todo Rewrite this route
+*
+* This route is responsible for 
+*
+* TODO Rewrite this route
 */
 function loss(id, userId, details, cb) {
   'use strict';
+
+  console.log('details:', details);
 
   var sql, queries, references, cfg = {}, ids = [];
 
@@ -295,7 +299,7 @@ function loss(id, userId, details, cb) {
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
-    return core.queries.transactionId(details.id);
+    return core.queries.transactionId(details.project.id);
   })
   .then(function (transId) {
     cfg.transId = transId;
@@ -314,9 +318,9 @@ function loss(id, userId, details, cb) {
         'FROM inventory_group WHERE inventory_group.uuid = ?';
 
       params = [
-        uid, details.id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description,
+        uid, details.project.id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description,
         reference.cogs_account, 0, reference.quantity * reference.unit_price, 0, reference.quantity * reference.unit_price,
-        details.currency_id, null, null, id, cfg.originId, userId, reference.group_uuid
+        details.enterprise.currency_id, null, null, id, cfg.originId, userId, reference.group_uuid
       ];
 
       return db.exec(sql, params);
@@ -331,7 +335,7 @@ function loss(id, userId, details, cb) {
 
       sql =
         'INSERT INTO posting_journal (' +
-          'uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
+          'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
           'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
           'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
         'SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ' +
@@ -339,9 +343,9 @@ function loss(id, userId, details, cb) {
         'WHERE inventory_group.uuid = ?';
 
       params = [
-        uid, details.id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description,
+        uid, details.project.id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description,
         reference.stock_account, reference.quantity * reference.unit_price, 0,
-        reference.quantity * reference.unit_price, 0, details.currency_id, reference.inventory_uuid, null,
+        reference.quantity * reference.unit_price, 0, details.enterprise.currency_id, reference.inventory_uuid, null,
         id, cfg.originId, userId, reference.group_uuid
       ];
 
