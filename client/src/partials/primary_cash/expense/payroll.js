@@ -6,6 +6,9 @@ angular.module('bhima.controllers')
   'validate',
   'appcache',
   function ($scope, $location, $q, validate, AppCache) {
+    /**
+      * TODO use controller alias as possible and redirect url when no daily exchange rate
+      */
     var dependencies = {}, configuration = $scope.configuration = {};
     var session = $scope.session = {
       configure : false,
@@ -31,7 +34,7 @@ angular.module('bhima.controllers')
       {
         key : 'PRIMARY_CASH.EXPENSE.PARTIAL_PAYMENT',
         link : '/primary_cash/expense/partial_payment/'
-      },      
+      },
       {
         key : 'PRIMARY_CASH.EXPENSE.COTISATION_PAYMENT',
         link : '/primary_cash/expense/cotisation_payment/'
@@ -47,16 +50,16 @@ angular.module('bhima.controllers')
       {
         key : 'PRIMARY_CASH.EXPENSE.PAYDAY_ADVANCE_PAYMENT',
         link : '/primary_cash/expense/payday_advance/'
-      }     
+      }
     ];
-    
+
     validate.process(dependencies)
       .then(parseDependenciesData)
       .then(readConfiguration)
       .then(parseConfiguration)
       .then(initialise)
       .catch(handleError);
-  
+
     function parseDependenciesData(model) {
       angular.extend($scope, model);
       return $q.when();
@@ -69,7 +72,7 @@ angular.module('bhima.controllers')
     function parseConfiguration(cashbox) {
       var currentModel = $scope.cashBox;
       var configurationExists, validConfiguration;
-    
+
       configurationExists = angular.isDefined(cashbox);
       if (!configurationExists) {
         session.configure = true;
@@ -81,7 +84,7 @@ angular.module('bhima.controllers')
         session.configure = true;
         return;
       }
-      
+
       session.cashbox = cashbox;
       session.complete = true;
       return;

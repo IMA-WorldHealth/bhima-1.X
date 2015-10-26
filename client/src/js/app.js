@@ -368,11 +368,11 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/caution/caution.html'
   })
   .when('/primary_cash/transfert/:cashbox_id', {
-    controller : 'primaryCash.income.transfer',
+    controller : 'PrimaryCashIncomeTransferController as TransferCtrl',
     templateUrl : 'partials/primary_cash/income/transfer/transfer.html'
   })
    .when('/primary_cash/convention/:cashbox_id', {
-    controller : 'primaryCash.convention',
+    controller : 'PrimaryCashConventionController as ConventionCtrl',
     templateUrl : 'partials/primary_cash/income/convention/convention.html'
   })
    .when('/primary_cash/support/:cashbox_id', {
@@ -380,7 +380,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/primary_cash/income/support/support.html'
   })
   .when('/primary_cash/income/generic/:id', {
-    controller : 'primaryCash.income.generic',
+    controller : 'PrimaryCashIncomeGenericController as GenericIncomeCtrl',
     templateUrl : 'partials/primary_cash/income/generic/generic.html'
   })
   .when('/trialbalance/print', {
@@ -388,7 +388,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/journal/trialbalance/print.html'
   })
   .when('/primary_cash/', {
-    controller : 'primaryCash',
+    controller : 'PrimaryCashController as PrimaryCtrl',
     templateUrl : 'partials/primary_cash/primary.html'
   })
   .when('/employee', {
@@ -404,11 +404,11 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/journal/print.html'
   })
   .when('/primary_cash/expense/generic/:id?', {
-    controller : 'primaryCash.expense.generic',
+    controller : 'PrimaryCashExpenseGenericController as GenericExpenseCtrl',
     templateUrl: 'partials/primary_cash/expense/generic.html'
   })
   .when('/primary_cash/expense/purchase/:cashbox', {
-    controller : 'purchaseOrderCash',
+    controller : 'PurchaseOrderCashController as PurchaseCtrl',
     templateUrl : 'partials/primary_cash/expense/purchase.html'
   })
   .when('/primary_cash/expense/payroll/:cashbox', {

@@ -1185,6 +1185,7 @@
    "PREV"             : "Taux Précédent ",
    "REVIEW"           : "Revoir le taux d'aujourd'hui",
    "SET"              : "Définir le Taux de Change pour Aujourd'hui",
+   "SET_HERE"         : "Définir ici",
    "TITLE"            : "Configurer le taux de change",
    "TODAY_RATE"       : "Taux de change pour",
    "OLD_DATE"         : "Definir le taux d'echange pour une date anterieure",

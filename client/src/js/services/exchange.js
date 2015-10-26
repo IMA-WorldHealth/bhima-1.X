@@ -44,8 +44,8 @@ angular.module('bhima.services')
       return precision.round(store && store.rates.get(currency_id) ? store.rates.get(currency_id).rate : 1);
     };
 
-    exchange.hasDailyRate = function hasDailyRate () {
-      var date = normalize(new Date());
+    exchange.hasDailyRate = function hasDailyRate (dateParam) {
+      var date = normalize(new Date(dateParam)) || normalize(new Date());
       return !!DateStore.get(date);
     };
 
