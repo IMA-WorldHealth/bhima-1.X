@@ -3057,6 +3057,7 @@
    "SHOW"             : "Show",
    "SHOW_ERRORS"      : "Show Errors",
    "SHOW_WARNINGS"    : "Show Warnings",
+   "SHOW_RESULTS"   : "Show Results",
    "SIGNATURES"       : "Signatures",
    "SUMMARY"          : "Summary",
    "TITLE"            : "Trial Balance",
