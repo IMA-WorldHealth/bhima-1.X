@@ -11,15 +11,15 @@ angular.module('bhima.services')
 		fileName = fileName || 'Exportation';
 		// Export stringData to file
 		switch(format) {
-			case 'csv' : 
+			case 'csv' :
 				// Export to csv fileformat
 				csv(file, fileName);
 			break;
-			case 'tsv' : 
+			case 'tsv' :
 				// Export to tsv fileformat
 				tsv(file, fileName);
 			break;
-			case 'json' : 
+			case 'json' :
 				// Export to csv fileformat
 				json(file, fileName, true);
 			break;
@@ -39,7 +39,7 @@ angular.module('bhima.services')
 			* 	  column : ['',...],
 			* 	  data   : [{}, {}, ...]
 			*    }
-			* 
+			*
 		*/
 		var verdict = false;
 		if ('data' in fileData && 'column' in fileData) {
@@ -72,12 +72,13 @@ angular.module('bhima.services')
 		var data = '';
 		fileData.data.forEach(function (objectItem, index) {
 			var row = '';
+			var counter = 1;
 			for (var i in objectItem) {
-				row += (i !== objectItem.length - 1) ? sanitize(objectItem[i]) + separator : sanitize(objectItem[i]);
-			}	
+				row += (counter++ < Object.keys(objectItem).length) ? sanitize(objectItem[i]) + separator : sanitize(objectItem[i]);
+			}
 			data += row + LF;
 		});
-		
+
 		return columns + data;
 	}
 
@@ -91,12 +92,13 @@ angular.module('bhima.services')
 		var data = '';
 		fileData.data.forEach(function (objectItem, index) {
 			var row = '';
+			var counter = 1;
 			for (var i in objectItem) {
-				row += (i !== objectItem.length - 1) ? sanitize(objectItem[i]) + HT : sanitize(objectItem[i]);
-			}	
+				row += (counter++ < Object.keys(objectItem).length) ? sanitize(objectItem[i]) + HT : sanitize(objectItem[i]);
+			}
 			data += row + LF;
 		});
-		
+
 		return columns + data;
 	}
 
@@ -116,11 +118,12 @@ angular.module('bhima.services')
 		return JSON.stringify(result, null, 2);
 	}
 
-	function builder(preData, fileName, fileFormat) {
+	function builder(preData, fileName, fileFormat, genDate) {
 		var e,
 				today = new Date(),
-    		date = today.toISOString().slice(0, 19).replace('T', '-').replace(':', '-').replace(':', '-'),
-    		path = fileName + '-' + date + '.' + fileFormat;
+    		date = today.toISOString().slice(0, 19).replace('T', '-').replace(':', '-').replace(':', '-');
+
+		var path = genDate ? fileName + '-' + date + '.' + fileFormat : fileName + '.' + fileFormat;
 
     e = document.createElement('a');
     e.href = 'data:attachment/'+ fileFormat +',' + preData;
@@ -131,7 +134,7 @@ angular.module('bhima.services')
     e.click();
 	}
 
-	function csv(fileData, fileName, separator) {
+	function csv(fileData, fileName, genDate, separator) {
 		/*
 			* ========================================
 			* Parameters (fileData, fileName, option)
@@ -142,12 +145,13 @@ angular.module('bhima.services')
 			*    }
 			* => fileName // The name of the new file to generate
 			* => separator // The separator to use
+			* => genDate // Boolean : Generate a date to attach to file
 		*/
 		separator = separator || ',';
 
 		if (isValidStructure(fileData)) {
 			var preData = preDataCSV(fileData, separator);
-			builder(preData, fileName,'csv');
+			builder(preData, fileName,'csv', genDate);
 		} else {
 			console.warn('Exportation CSV: Invalid data structure');
 		}
@@ -254,7 +258,7 @@ angular.module('bhima.services')
 			return d;
 		}
 
-		return fileData;	
+		return fileData;
 	}
 
 	function checking(data) {
