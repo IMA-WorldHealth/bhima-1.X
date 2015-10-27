@@ -894,6 +894,7 @@
   "ADD"              : "Add a Depot",
   "ALERT"            : "Manage depots stores from here",
   "ALL"              : "All Depots",
+  "NO_LOTS"        : "No Lots Available",
   "CHANGE_DEPOT"      : "Are you sure you want to change depots?  The current depot is %depot%.",
   "CONFIRM_SELECTION" : "Are you sure you want to select %depot%?",
   "DELETE_SUCCESS"  : "Successfully deleted a depot.",
