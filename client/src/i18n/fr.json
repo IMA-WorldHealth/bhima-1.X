@@ -1286,6 +1286,7 @@
    "OTHER_CHARGE"                : "Autres charges",
    "OTHER_PROFIT"                : "Autres profits",
    "PERIODS"                     : "Périodes",
+   "POST_ALL_DATA"               : "Certaines transactions de cette annee fiscale trainent dans le journal de saisie, svp postez les",
    "POSTING_FROM"                : "Poster De",
    "POSTING_SOLD_TO_NEW_FY"      : "Poster le solde dans la nouvelle année fiscale",
    "POSTING_TO"                  : "Poster jusqu'au",
