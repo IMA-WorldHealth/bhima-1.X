@@ -30,10 +30,6 @@ function StockIntegrationController($scope, $q, $translate, $location, $routePar
     }
   };
 
-  dependencies.user = {
-    query : 'user_session'
-  };
-
   dependencies.inventory = {
     query : {
       identifier : 'uuid',
@@ -100,23 +96,7 @@ function StockIntegrationController($scope, $q, $translate, $location, $routePar
     angular.extend($scope, models);
     session.depot = $scope.depots.get($routeParams.depotId);
     session.acceptIntegration = false;
-    getUserInfo($scope.user.data.id);
-  }
-
-  function getUserInfo(user_id) {
-    dependencies.userInfo = {
-      query : {
-        tables : {
-          'user' : { columns : ['first', 'last'] }
-        },
-        where : ['user.id=' + user_id]
-      }
-    };
-    return validate.refresh(dependencies, ['userInfo'])
-    .then(function (models) {
-      angular.extend($scope, models);
-      session.user = models.userInfo.data[0];
-    });
+    session.user = Session.user;
   }
 
   $scope.acceptIntegration = function () {
@@ -333,7 +313,7 @@ function StockIntegrationController($scope, $q, $translate, $location, $routePar
         currency_id   : Session.enterprise.currency_id,
         creditor_uuid : null,
         purchaser_id  : null,
-        emitter_id    : $scope.user.data.id,
+        emitter_id    : Session.user.id,
         project_id    : $scope.project.id,
         receiver_id   : null,
         note          : 'INTEGRATION_STOCK /' + util.sqlDate(session.config.date),

@@ -13,7 +13,8 @@ angular.module('bhima.controllers')
   'exchange',
   '$q',
   'uuid',
-  function ($scope, $routeParams, $translate, $http, messenger, validate, appstate, Appcache, connect, util, exchange, $q, uuid) {
+  'SessionService',
+  function ($scope, $routeParams, $translate, $http, messenger, validate, appstate, Appcache, connect, util, exchange, $q, uuid, Session) {
     var dependencies = {},
         cache = new Appcache('tax_payment'),
         session = $scope.session = {
@@ -24,10 +25,6 @@ angular.module('bhima.controllers')
         };
 
     session.cashbox = $routeParams.cashbox;
-
-    dependencies.cashier = {
-      query : 'user_session'
-    };
 
     dependencies.cash_box = {
       required : true,
@@ -65,7 +62,7 @@ angular.module('bhima.controllers')
 
     appstate.register('project', function (project) {
       $scope.project = project;               
-        validate.process(dependencies, ['paiement_period', 'cashier', 'cash_box'])
+        validate.process(dependencies, ['paiement_period', 'cash_box'])
         .then(init, function (err) {
           messenger.danger(err.message + ' ' + err.reference);
         });     
@@ -148,7 +145,7 @@ angular.module('bhima.controllers')
         account_id    : emp.other_account,
         currency_id   : emp.currency_id,
         cost          : emp.value,
-        user_id       : session.model.cashier.data.id,
+        user_id       : Session.user.id,
         description   : 'Tax Payment ' + '(' + emp.label + ') : ' + emp.name + emp.postnom,
         cash_box_id   : session.cashbox,
         origin_id     : 7,
@@ -181,11 +178,10 @@ angular.module('bhima.controllers')
           paiement_uuid : emp.paiement_uuid,
           tax_id : emp.tax_id
         };
-        return $http.put('/setTaxPayment/', formatObject)
-        .success(function (res) {
-          emp.posted = 1;
-          console.log('Update Tax Payment success');
-        });
+        return $http.put('/setTaxPayment/', formatObject);
+      })
+      .then(function (res) {
+        emp.posted = 1;
       });
     }
 

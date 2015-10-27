@@ -10,7 +10,8 @@ angular.module('bhima.controllers')
   'messenger',
   'uuid',
   'util',
-  function($scope, $q, $translate, $location, validate, connect, appstate, messenger, uuid, util) {
+  'SessionService',
+  function($scope, $q, $translate, $location, validate, connect, appstate, messenger, uuid, util, Session) {
     // TODO Module should only continue with selection of both employee and
     // supplier, currently just hides everything to look like this
     // TODO Currently downloads every location - should only download the
@@ -57,10 +58,6 @@ angular.module('bhima.controllers')
       query : '/location/villages'
     };
 
-    dependencies.user = {
-      query : 'user_session'
-    };
-
     dependencies.enterprise = {
       query : {
         tables : {
@@ -80,8 +77,9 @@ angular.module('bhima.controllers')
     });
 
     function initialise(model) {
-      $scope.idUser = model.user.data.id;
+      $scope.idUser = Session.user.id;
       angular.extend($scope, model);
+      $scope.user = Session.user;
       settupSession(session);
     }
 
