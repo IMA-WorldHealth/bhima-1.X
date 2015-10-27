@@ -81,6 +81,7 @@ function DepotLossController($routeParams, $q, $http, $location, Depots, Invento
             fmtLabel        : s.lot_number + '  [' + s.quantity + ']',
             quantity        : s.quantity,
             tracking_number : s.tracking_number,
+            unit_price      : s.unit_price,
             expiration_date : new Date(Date.parse(s.expiration_date)),
             used : false
           };
@@ -107,8 +108,8 @@ function DepotLossController($routeParams, $q, $http, $location, Depots, Invento
   // total a single inventory item, changing the total cost associated with it
   function totalInventoryItem(row) {
     row.totalCost = row.staged.reduce(function (accumulator, item) {
-      var hasData = item && row.inventoryItem.price && item.quantity;
-      return accumulator + (hasData ? (row.inventoryItem.price * item.quantity) : 0);
+      var hasData = item && item.unit_price && item.quantity;
+      return accumulator + (hasData ? (item.unit_price * item.quantity) : 0);
     }, 0);
 
     // run totaller on all inventory items on any change
@@ -150,6 +151,7 @@ function DepotLossController($routeParams, $q, $http, $location, Depots, Invento
     item.tracking_number = lot.tracking_number;
     item.maxQuantity = lot.quantity;
     item.label = lot.fmtLabel;
+    item.unit_price = lot.unit_price;
 
     filterAvailableLots(row);
   }
@@ -189,7 +191,7 @@ function DepotLossController($routeParams, $q, $http, $location, Depots, Invento
           date:            vm.date,
           tracking_number: item.tracking_number,
           quantity:        item.quantity,
-          unit_price:      row.inventoryItem.price
+          unit_price:      item.unit_price
         };
       });
 
