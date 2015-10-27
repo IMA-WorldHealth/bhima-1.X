@@ -14,7 +14,8 @@ angular.module('bhima.controllers')
   'appstate',
   'liberror',
   'messenger',
-  function ($scope, $rootScope, $q, $window, $translate, uuid, Store, util, connect, precision, validate, appstate, liberror, messenger) {
+  'SessionService',
+  function ($scope, $rootScope, $q, $window, $translate, uuid, Store, util, connect, precision, validate, appstate, liberror, messenger, Session) {
     /* jshint unused : true */
     var dependencies = {};
     var columns, options, dataview, grid, manager;
@@ -193,8 +194,8 @@ angular.module('bhima.controllers')
         row.fiscal_year_id = periodObj.fiscal_year_id;
         row.period_id = periodObj.id;
         manager.session.records.put(row);
-      });      
-      saveTransaction(); 
+      });
+      saveTransaction();
     }
 
     function refreshFiscalDetails (date){
@@ -447,14 +448,13 @@ angular.module('bhima.controllers')
         removedRecords.push(record.uuid);
       });
 
-      connect.fetch('/user_session')
-      .then(function (res) {
-        manager.session.userId = res.id;
-        newRecords.forEach(function (rec) { rec.user_id = res.id; });
-        editedRecords.forEach(function (rec) { rec.user_id = res.id; });
-        return newRecords.length ? connect.post('posting_journal', newRecords) : $q.when(1);
-      })
-      .then(function () {
+      var user = Session.user;
+      manager.session.userId = user.id;
+      newRecords.forEach(function (rec) { rec.user_id = user.id; });
+      editedRecords.forEach(function (rec) { rec.user_id = user.id; });
+      var promise = newRecords.length ? connect.post('posting_journal', newRecords) : $q.when(1);
+
+      promise.then(function () {
         return editedRecords.length ? editedRecords.map(function (record) { return connect.put('posting_journal', [record], ['uuid']); }) : $q.when(1);
       })
       .then(function () {
@@ -464,7 +464,7 @@ angular.module('bhima.controllers')
         return writeJournalLog(manager.session);
       })
       .then(function () {
-		    messenger.success($translate.instant('POSTING_JOURNAL.TRANSACTION_SUCCESS'));	
+		    messenger.success($translate.instant('POSTING_JOURNAL.TRANSACTION_SUCCESS'));
         manager.fn.resetManagerSession();
         manager.fn.regroup();
         grid.invalidate();

@@ -10,7 +10,8 @@ angular.module('bhima.controllers')
   'appstate',
   'util',
   'uuid',
-  function ($scope, $q, $location, $translate, connect, messenger, validate, appstate, util, uuid) {
+  'SessionService',
+  function ($scope, $q, $location, $translate, connect, messenger, validate, appstate, util, uuid, Session) {
 
     var dependencies = {},
         defaultBirthMonth = '06-01',
@@ -68,11 +69,6 @@ angular.module('bhima.controllers')
         where  : ['debitor_group.locked=0']
       }
     };
-
-    dependencies.register = {
-      query : 'user_session'
-    };
-
 
     function patientRegistration(model) {
       angular.extend($scope, model);
@@ -253,15 +249,12 @@ angular.module('bhima.controllers')
       .then(function () {
         return connect.fetch('/visit/' + patientId);
       })
-      .then(function () {
-        return connect.fetch('/user_session');
-      })
       .then(function (data) {
         var packageHistory = {
           uuid : uuid(),
           debitor_uuid : packagePatient.debitor_uuid,
           debitor_group_uuid : $scope.debtor.debtor_group.uuid,
-          user_id : data.id // FIXME: can this be done on the server?
+          user_id : Session.user.id
         };
         return connect.basicPut('debitor_group_history', [connect.clean(packageHistory)]);
       })
@@ -272,7 +265,6 @@ angular.module('bhima.controllers')
 
     // Utility methods
     $scope.$watch('session.yob', function (nval) {
-      // Angular 1.3.0-beta.3 fixes date issues, now works with raw object
       $scope.patient.dob = nval && nval.length === 4 ? new Date(nval + '-' + defaultBirthMonth) : undefined;
     });
 

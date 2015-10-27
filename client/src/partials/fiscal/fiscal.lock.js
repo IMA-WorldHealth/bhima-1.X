@@ -2,14 +2,14 @@ angular.module('bhima.controllers')
 .controller('FiscalLockController', FiscalLockController);
 
 FiscalLockController.$inject = [
-  '$q', '$scope', '$http', '$route', '$translate', 'validate', 'connect', 'messenger', 'util'
+  '$q', '$scope', '$http', '$route', '$translate', 'validate', 'connect', 'messenger', 'util', 'SessionService'
 ];
 
 /**
   * Fiscal Lock Controller
   * This controller is responsible for locking a fiscal year
   */
-function FiscalLockController ($q, $scope, $http, $route, $translate, validate, connect, messenger, util) {
+function FiscalLockController ($q, $scope, $http, $route, $translate, validate, connect, messenger, util, Session) {
   var imports = $scope.$parent,
       session = $scope.session = {},
       editCache,
@@ -45,10 +45,6 @@ function FiscalLockController ($q, $scope, $http, $route, $translate, validate, 
       },
       where : ['posting_journal.fiscal_year_id=' + imports.selectedToLock]
     }
-  };
-
-  dependencies.user = {
-    query : '/user_session'
   };
 
   // Fire off the onload function for this controller
@@ -160,7 +156,7 @@ function FiscalLockController ($q, $scope, $http, $route, $translate, validate, 
 
     session.selectedToLock = imports.selectedToLock;
     dependencies.fiscal.query.where = ['fiscal_year.id=' + session.selectedToLock];
-    validate.refresh(dependencies, ['fiscal', 'resultatAccount', 'user', 'postingJournal'])
+    validate.refresh(dependencies, ['fiscal', 'resultatAccount', 'postingJournal'])
     .then(function (models) {
       if(models.postingJournal.data.length > 0){
         session.message = $translate.instant('FISCAL_YEAR.POST_ALL_DATA');
@@ -168,8 +164,7 @@ function FiscalLockController ($q, $scope, $http, $route, $translate, validate, 
       }else{
         $scope.resultatAccount = models.resultatAccount;
         $scope.fiscal = models.fiscal.data[0];
-        // get user id
-        session.user_id = models.user.data.id;
+        session.user_id = Session.user.id;
         // cache the fiscal year data for expected edits
         editCache = angular.copy($scope.fiscal);
       }
