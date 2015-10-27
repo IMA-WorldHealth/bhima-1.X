@@ -292,7 +292,8 @@ angular.module('bhima.controllers')
       if (!manager || !manager.session || !manager.session.mode) { return; }
       var e = $('#journal_grid');
       e[manager.session.mode === 'static' ? 'removeClass' : 'addClass']('danger');
-      manager.fn.regroup();
+      //manager.fn.regroup();
+      grid.invalidate();
     });
 
     function beginEditMode () {
