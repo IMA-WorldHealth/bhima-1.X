@@ -113,11 +113,11 @@
               </td>
 
               <td style="vertical-align:middle;" class="text-center">
-                {{ (row.inventoryItem.price || 0) | currency:LossCtrl.enterprise.currency_id }}
+                {{ (item.unit_price || 0) | currency:LossCtrl.enterprise.currency_id }}
               </td>
 
               <td style="vertical-align:middle;" class="text-center">
-                {{ (row.inventoryItem.price * item.quantity || 0) | currency:LossCtrl.enterprise.currency_id }}
+                {{ (item.unit_price * item.quantity || 0) | currency:LossCtrl.enterprise.currency_id }}
               </td>
 
               <td style="vertical-align:middle;" class="text-center">
