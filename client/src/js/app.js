@@ -367,6 +367,10 @@ function bhimaconfig($routeProvider) {
     controller : 'CautionController as CautionCtrl',
     templateUrl : 'partials/caution/caution.html'
   })
+  .when('/primary_cash', {
+    controller : 'PrimaryCashController as PrimaryCtrl',
+    templateUrl : 'partials/primary_cash/primary.html'
+  })
   .when('/primary_cash/transfert/:cashbox_id', {
     controller : 'PrimaryCashIncomeTransferController as TransferCtrl',
     templateUrl : 'partials/primary_cash/income/transfer/transfer.html'
@@ -386,10 +390,6 @@ function bhimaconfig($routeProvider) {
   .when('/trialbalance/print', {
     controller : 'TrialBalancePrintController as PrintCtrl',
     templateUrl : 'partials/journal/trialbalance/print.html'
-  })
-  .when('/primary_cash/', {
-    controller : 'PrimaryCashController as PrimaryCtrl',
-    templateUrl : 'partials/primary_cash/primary.html'
   })
   .when('/employee', {
     controller : 'employee',
