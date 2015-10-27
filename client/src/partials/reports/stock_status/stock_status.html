@@ -30,7 +30,7 @@
               <th>{{ "COLUMNS.MINIMUM_STOCK" | translate }} </th>
               <th>{{ "COLUMNS.MAXIMUM_STOCK" | translate }} </th>
               <th>{{ "COLUMNS.MONTHS_REMAINING" | translate }} </th>
-              <th>{{ "COLUMNS.ALERTS" | translate }} </th>
+              <th class="hidden-print">{{ "COLUMNS.ALERTS" | translate }} </th>
             </tr>
           </thead>
           <tbody>
@@ -43,10 +43,10 @@
               <td>{{ row.quantity }}</td>
               <td>{{ row.consumptionByMonth }}</td>
               <td>{{ row.securityStock }}</td>
-              <td>{{ row.stock_min }}</td>
-              <td>{{ row.stock_max }}</td>
+              <td>{{ row.minimumStock }}</td>
+              <td>{{ row.maximumStock }}</td>
               <td>{{ row.monthsRemaining || '--' }}</td>
-              <td class="text-center">
+              <td class="text-center hidden-print">
                 <span class="label" ng-class="{ 'label-primary' : row.overstock, 'label-warning' : row.shortage, 'label-danger' : row.stockout }" ng-if="row.alert">
                   {{ row.alert | translate }}
                 </span>
