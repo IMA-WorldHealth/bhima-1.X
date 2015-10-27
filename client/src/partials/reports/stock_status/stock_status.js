@@ -12,7 +12,7 @@ StockStatusReportController.$inject = ['$http', '$timeout'];
 * NOTES
 *  1) I have removed "quantity to order", as I think this should really be a
 *     parameter provided by an alert.  Currently, our calculations are inaccurate
-*     due to poor data
+*     due to poor data.
 */
 function StockStatusReportController($http, $timeout) {
   var vm = this;
@@ -40,6 +40,10 @@ function StockStatusReportController($http, $timeout) {
   // template the data into the view
   function template(response) {
     var report;
+
+    // FIXME - we are hard-coding procurement period to 1 until there is a
+    // good system for estimating procurement period.
+    var pp = 1;
 
     // filter out items that are missing both a quantity and a lead time.  This
     // should ensure that we have only relevant data.
@@ -75,6 +79,13 @@ function StockStatusReportController($http, $timeout) {
       row.monthsRemaining = row.consumptionByMonth ?
         (row.quantity  / row.consumptionByMonth).toFixed(2) :
         0;
+
+      // FIXME
+      // These are temporary patches until we have more data to work with.
+      // This type of analysis should be done on the server as well
+      row.shortage = row.consumptionByMonth !== 0 && row.monthsRemaining < 3;
+      row.minimumStock = (row.securityStock || 0) * 2;
+      row.maximumStock = (row.consumptionByMonth || 0)*pp + row.minimumStock;
 
       // if there is an alert, we template it in
       row.alert = row.stockout ? 'STOCK.ALERTS.STOCKOUT' :

@@ -14,6 +14,9 @@ angular.module('bhima.controllers')
   '$q',
   'uuid',
   function ($scope, $routeParams, $translate, $location, messenger, validate, appstate, Appcache, connect, util, exchange, $q, uuid) {
+    /**
+      * TODO use controller alias as possible and redirect url when no daily exchange rate
+      */
     var dependencies = {},
         cache = new Appcache('cash_return'),
         session = $scope.session = {data : {}, base : {}};

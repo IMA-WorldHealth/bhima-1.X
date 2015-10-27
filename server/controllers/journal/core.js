@@ -123,7 +123,7 @@ queries.period = function (date) {
   return db.exec(sql, [date, date])
   .then(function (rows) {
     if (rows.length === 0) {
-      throw new Error('No period or fiscal year data for date: ' + date);
+      throw new Error('Pas de periode pour la date : ' + date + ' et verifie que \'annee fiscale n\'est pas fermee');
     }
     return q(rows[0]);
   });

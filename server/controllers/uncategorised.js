@@ -95,12 +95,13 @@ exports.listJournal = function (req, res, next) {
     "`posting_journal`.`deb_cred_type`, `posting_journal`.`inv_po_id`, " +
     "`posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`currency_id`, " +
     "`posting_journal`.`comment`, `posting_journal`.`user_id`, `posting_journal`.`pc_id`, " +
-    "`posting_journal`.`cc_id`, `account`.`account_number`, `user`.`first`, " +
+    "`posting_journal`.`cc_id`, `account`.`account_number`, `user`.`first`, CONCAT(DATE_FORMAT(period.period_start, '%m-%Y'), '/', DATE_FORMAT(period.period_stop, '%m-%Y')) AS period, " +
     "`user`.`last`, `currency`.`symbol`, `cost_center`.`text` AS `cc`, " +
     "`profit_center`.`text` AS `pc` " +
     "FROM `posting_journal` LEFT JOIN `account` ON `posting_journal`.`account_id`=`account`.`id` " +
     "JOIN `user` ON `posting_journal`.`user_id`=`user`.`id` " +
     "JOIN `currency` ON `posting_journal`.`currency_id`=`currency`.`id` " +
+    "JOIN period ON `posting_journal`.`period_id` = `period`.`id` " +
     "LEFT JOIN `cost_center` ON `posting_journal`.`cc_id`=`cost_center`.`id` " +
     "LEFT JOIN `profit_center` ON `posting_journal`.`pc_id`=`profit_center`.`id`"
 

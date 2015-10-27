@@ -247,16 +247,17 @@ angular.module('bhima.controllers')
           '  <span style="color: white;" class="glyphicon glyphicon-warning-sign"> </span> ' +
           $translate.instant('POSTING_JOURNAL.LIVE_TRANSACTION') + ' <strong>'  + g.value + '</strong> (' + g.count + ' records)' +
           '</span> ' +
+
           '<span class="pull-right">' +
-          //'  <a class='addRow' style='color: white; cursor: pointer;'> <span class='glyphicon glyphicon-plus'></span>  ' + $translate('POSTING_JOURNAL.ADD_ROW') + '</a>' +
-          '  <a class="addRow" style="color: white; cursor: pointer;"> <span class="glyphicon glyphicon-plus addRow"></span>  ' + '</a>' +
+          '  <a class="addRow" style="color: white; cursor: pointer;"> <span class="glyphicon glyphicon-plus addRow"></span></a>' +
           '  <span style="padding: 5px;"></span>' + // FIXME Hacked spacing;
-          //'  <a class='saveTransaction' style='color: white; cursor: pointer;'> <span class='glyphicon glyphicon-floppy-disk'></span>  ' + $translate('POSTING_JOURNAL.SAVE_TRANSACTION') + '</a>' +
-          '  <a class="save" style="color: white; cursor: pointer;"> <span class="glyphicon glyphicon-floppy-disk saveTransaction"></span>  ' + '</a>' +
+          '  <a class="save" style="color: white; cursor: pointer;"> <span class="glyphicon glyphicon-floppy-disk saveTransaction"></span></a>' +
           '  <span style="padding: 5px;"></span>' + // FIXME Hacked spacing;
-          '  <a class="save" style="color: white; cursor: pointer;"> <span class="glyphicon glyphicon-trash deleteTransaction"></span>  </a>' +
-          //'  <a class='deleteTransaction' style='color: white; cursor: pointer;'> <span class='glyphicon glyphicon-trash'></span>  ' + $translate('POSTING_JOURNAL.DELETE_TRANSACTION') + '</a>' +
+          '  <a class="repost" style="color: white; cursor: pointer;"> <span class="glyphicon glyphicon-refresh repost"></span></a>' +
+          '  <span style="padding: 5px;"></span>' + 
+          '  <a class="save" style="color: white; cursor: pointer;"> <span class="glyphicon glyphicon-trash deleteTransaction"></span></a>' +
           '</span>';
+          
         return rowMarkup;
       }
 
