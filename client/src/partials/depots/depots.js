@@ -61,7 +61,7 @@ function DepotController($location, $translate, $window, messenger, AppCache, St
   vm.config.warehouseModules = [{
     key  : 'STOCK.ENTRY.KEY',
     ico  : 'glyphicon-import',
-    link : '/stock/entry/start/:uuid'
+    link : '/depots/:uuid/entry'
   }, {
     key  : 'STOCK.DONATION.KEY',
     ico  : 'glyphicon-heart',
