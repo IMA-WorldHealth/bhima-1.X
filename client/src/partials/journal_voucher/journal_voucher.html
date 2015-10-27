@@ -44,7 +44,7 @@
               <label class="control-label col-xs-2">{{ "COLUMNS.DATE" | translate }}</label>
               <div class="input-group col-xs-10">
                 <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-                <input type="date" class="form-bhima" name="date" ng-model="JournalVoucherCtrl.master.date" required>
+                <input type="date" class="form-bhima" name="date" ng-model="JournalVoucherCtrl.master.date" ng-max="{{ JournalVoucherCtrl.today }}" max="{{ JournalVoucherCtrl.today | date:'yyyy-MM-dd' }}"required>
               </div>
               <p ng-show="VoucherForm.date.$invalid && VoucherForm.date.$dirty" class="help-block col-md-offset-2" style="padding-top:30px;">
                 {{ "ERROR.ERR_NO_DATE" | translate }} <!-- A date is required. -->

@@ -108,7 +108,7 @@ angular.module('bhima.controllers')
       connect.post('account', [formatAccount])
       .then(refreshAccountList)
       .then(function () {
-        messenger.success($translate.instant('CONFIG_ACCOUNTING.SAVE_SUCCES'), true);
+        messenger.success($translate.instant('CONFIG_ACCOUNTING.SAVE_SUCCES'));
         $scope.newAccount = {};
         session.state = 'display';
       });
@@ -137,7 +137,7 @@ angular.module('bhima.controllers')
     };
 
     $scope.format = function format(account) {
-      return [account.account_txt, account.account_number].join(' :: ');
+      return [account.account_number, account.account_txt].join(' :: ');
     };
 
     $scope.formatRef = function formatRef(reference) {
@@ -171,7 +171,7 @@ angular.module('bhima.controllers')
       connect.put('account', [update], ['id'])
       .then(refreshAccountList)
       .then(function () {
-        messenger.success($translate.instant('CONFIG_ACCOUNTING.UPDATE_SUCCES'), true);
+        messenger.success($translate.instant('CONFIG_ACCOUNTING.UPDATE_SUCCES'));
         $scope.editAccount = {};
         session.state = 'display';
       });
