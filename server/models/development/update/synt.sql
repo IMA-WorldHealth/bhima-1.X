@@ -483,3 +483,8 @@ UPDATE unit SET path='/depots', url='/depots/depots.html' where id = 45;
 -- author: jniles
 -- date: 2015-10-26
 ALTER TABLE consumption_loss DROP COLUMN document_uuid;
+
+-- Change the stock_management route to reflect changes in the URL structure
+-- author: jniles
+-- date: 2015-10-27
+UPDATE unit SET path='/depots', url='partials/depots' where id = 45;
