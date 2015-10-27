@@ -2464,6 +2464,7 @@
    "PATIENT"               : "Select a Patient",
    "PATIENT_GROUP"         : "Select a Patient Group",
    "PAYMENT"               : "Select a Payment Type",
+   "PERIOD"                : "Select a Period",
    "PERIOD_ACCOUNT_CONFIG" : "Select an accounting config",
    "PERIOD_PAYMENT"        : "Select a payment period",
    "PERIOD_RUBRIC_CONFIG"  : "Select rubric config",
@@ -2487,6 +2488,7 @@
    "UNIT"                  : "Select a Unit",
    "VALUE"                 : "Select a value",
    "VILLAGE"               : "Select a Village",
+   "WHOLE_YEAR_BUDGET"     : "Select the annual budget",
    "ZS"                    : "Select an health zone"
    },
 "SERVICE": {

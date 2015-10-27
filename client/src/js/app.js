@@ -16,11 +16,11 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/budget/edit/edit_budget.html'
   })
   .when('/budgeting/analysis', {
-    controller: 'AnalysisBudgetController as AnalysisBudgetCtrl',
+    controller: 'AnalysisBudgetController as BudgetCtrl',
     templateUrl: 'partials/budget/analysis/analysis_budget.html'
   })
   .when('/budgeting/new', {
-    controller: 'NewBudgetController as newBudgetCtrl',
+    controller: 'NewBudgetController as BudgetCtrl',
     templateUrl: 'partials/budget/new/new_budget.html'
   })
   .when('/budgeting/:accountID?', {
@@ -224,7 +224,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/reports/global_transaction/global_transaction.html'
   })
   .when('/reports/balance_mensuelle/', {
-    controller: 'report.balance_mensuelle',
+    controller: 'ReportBalanceMensuelleController as ReportCtrl',
     templateUrl: 'partials/reports/balance_mensuelle/balance_mensuelle.html'
   })
   .when('/reports/donation/', {
@@ -672,7 +672,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: '/partials/donor_management/donor_management.html'
   })
   .when('/reports/operating_account/', {
-    controller : 'operating_account',
+    controller : 'OperatingAccountController as OperatingCtrl',
     templateUrl : 'partials/reports/operating_account/operating_account.html'
   })
   .when('/subsidy', {

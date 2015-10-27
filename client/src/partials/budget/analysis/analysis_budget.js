@@ -2,36 +2,29 @@ angular.module('bhima.controllers')
 .controller('AnalysisBudgetController', AnalysisBudgetController);
 
 AnalysisBudgetController.$inject = [
-  '$q',
-  '$scope', 
-  '$window',
-  '$translate',
-  'validate',
-  'precision',
-  'messenger',
-  'SessionService',
-  'util',
-  'exportFile'
+  '$q', '$window', '$translate', 'validate', 'precision', 'messenger',
+  'SessionService', 'util', 'exportFile'
 ];
 
 /**
 *  Analysis Budget Controller
-*  Ce controlleur est responsable de fournir un apercu du budget de l'entreprise 
+*  Ce controlleur est responsable de fournir un apercu du budget de l'entreprise
 *  selon une annee fiscale choisie, on peut voir aussi les budgets precedants.
 *  Les donnees budgetaires affichees peuvent etre exportE au format CSV pour un traitement ulterieur
 *  par un responable de budget.
 */
-function AnalysisBudgetController($q, $scope, $window, $translate, validate, precision, messenger, SessionService, util, exportFile) {
-  var dependencies = {},
-      session = $scope.session = {},
-      config = $scope.config = {};
+function AnalysisBudgetController($q, $window, $translate, validate, precision, messenger, SessionService, util, exportFile) {
+  var vm = this,
+      dependencies = {},
+      session = vm.session = {},
+      config = vm.config = {};
 
   // Set up session defaults
   session.mode = 'configuration';
   session.periods = null;
   session.selectedPreviousFY = null;
 
-  $scope.months = {
+  vm.months = {
     0 : 'OPERATING_ACCOUNT.ALL',
     1 : 'OPERATING_ACCOUNT.JANUARY',
     2 : 'OPERATING_ACCOUNT.FEBRUARY',
@@ -46,13 +39,14 @@ function AnalysisBudgetController($q, $scope, $window, $translate, validate, pre
     11 : 'OPERATING_ACCOUNT.NOVEMBER',
     12 : 'OPERATING_ACCOUNT.DECEMBER'
   };
-  $scope.total = {};
+  vm.total = {};
+  vm.previousFY = {};
 
   dependencies.accounts = {};
   dependencies.budgets = {
     query : {
       tables : {
-        'budget' : { 
+        'budget' : {
           columns : ['id', 'account_id', 'period_id', 'budget']
           },
         'period' : {
@@ -74,11 +68,25 @@ function AnalysisBudgetController($q, $scope, $window, $translate, validate, pre
     }
   };
 
+  // Expose to the view
+  vm.displayAccounts = displayAccounts;
+  vm.exportToCSV = exportToCSV;
+  vm.print = print;
+  vm.loadPeriod = loadPeriod;
+  vm.formatFiscalYear = formatFiscalYear;
+  vm.formatPeriod = formatPeriod;
+  vm.budgetAnalysis = budgetAnalysis;
+  vm.reconfigure = reconfigure;
+  vm.togglePreviousFY = togglePreviousFY;
+  vm.deselectAllFY = deselectAllFY;
+
+  // Startup
   init();
 
+  // Functions
   function init() {
-    $scope.enterprise = SessionService.enterprise;
-    dependencies.fiscal_years.query.where = [ 'fiscal_year.enterprise_id=' + $scope.enterprise.id ];
+    vm.enterprise = SessionService.enterprise;
+    dependencies.fiscal_years.query.where = [ 'fiscal_year.enterprise_id=' + vm.enterprise.id ];
     validate.process(dependencies, ['fiscal_years'])
     .then(loadFiscalYears);
   }
@@ -90,7 +98,7 @@ function AnalysisBudgetController($q, $scope, $window, $translate, validate, pre
     var totalBudget = 0.0;
     var totalBalance = 0.0;
     var totals = {};
-    $scope.budgets.data.forEach(function (bud) {
+    vm.budgets.data.forEach(function (bud) {
       if (totals[bud.account_id]) {
         totals[bud.account_id] += bud.budget;
       }
@@ -101,7 +109,7 @@ function AnalysisBudgetController($q, $scope, $window, $translate, validate, pre
     });
 
     var accounts_data_id = [];
-    $scope.accounts.data.forEach(function (acct) {
+    vm.accounts.data.forEach(function (acct) {
       accounts_data_id.push(acct.id);
     });
 
@@ -112,7 +120,7 @@ function AnalysisBudgetController($q, $scope, $window, $translate, validate, pre
     session.selectedPreviousFY.forEach(function (fy) {
       totalsFY[fy.id] = {};
       totalBudgetFY[fy.id] = 0.0;
-      $scope.fiscalYearBudget[fy.id].forEach(function (bud) {
+      vm.fiscalYearBudget[fy.id].forEach(function (bud) {
         if (totalsFY[fy.id][bud.account_id]) {
           totalsFY[fy.id][bud.account_id] += bud.budget;
         }
@@ -127,7 +135,7 @@ function AnalysisBudgetController($q, $scope, $window, $translate, validate, pre
 
 
     // Insert the budget totals into the account data
-    $scope.accounts.data.forEach(function (acct) {
+    vm.accounts.data.forEach(function (acct) {
       // Current budget
       if (totals[acct.id]) {
         acct.budget = precision.round(totals[acct.id], 2);
@@ -159,12 +167,12 @@ function AnalysisBudgetController($q, $scope, $window, $translate, validate, pre
       }
     });
 
-    $scope.total.budget = precision.round(totalBudget, 2);
-    $scope.total.balance = precision.round(totalBalance, 2);
+    vm.total.budget = precision.round(totalBudget, 2);
+    vm.total.balance = precision.round(totalBalance, 2);
     // Previous Budget Data
-    $scope.totalPreviousBudget = {};
+    vm.totalPreviousBudget = {};
     session.selectedPreviousFY.forEach(function (fy) {
-      $scope.totalPreviousBudget[fy.id] = Math.round(totalBudgetFY[fy.id], 2);
+      vm.totalPreviousBudget[fy.id] = Math.round(totalBudgetFY[fy.id], 2);
     });
   }
 
@@ -199,7 +207,7 @@ function AnalysisBudgetController($q, $scope, $window, $translate, validate, pre
         }
       }
       totalSurplus += account.surplus;
-      totalDeficit += account.deficit;  
+      totalDeficit += account.deficit;
 
       parent = accountModel.get(account.parent);
       depth = 0;
@@ -209,35 +217,35 @@ function AnalysisBudgetController($q, $scope, $window, $translate, validate, pre
       }
       account.depth = depth;
     });
-    $scope.total.surplus = precision.round(totalSurplus);
-    $scope.total.deficit = precision.round(totalDeficit);  
+    vm.total.surplus = precision.round(totalSurplus);
+    vm.total.deficit = precision.round(totalDeficit);
   }
 
   function start(models) {
-    angular.extend($scope, models);
-    $scope.accounts.data.forEach(function (acct) {
+    angular.extend(vm, models);
+    vm.accounts.data.forEach(function (acct) {
       if ((acct.type !== 'title') && (acct.balance === null)) {
         acct.balance = 0.0;
       }
     });
 
-    filterAccounts($scope.accounts.data);
+    filterAccounts(vm.accounts.data);
     addBudgetData();
-    parseAccountDepth($scope.accounts.data, $scope.accounts);
+    parseAccountDepth(vm.accounts.data, vm.accounts);
     session.mode = 'budget-analysis';
   }
 
   function displayAccounts() {
-    dependencies.accounts.query = '/InExAccounts/' + $scope.enterprise.id;
+    dependencies.accounts.query = '/InExAccounts/' + vm.enterprise.id;
     // Process period
     var periodCriteria;
     var selectedPeriod = session.periods.filter(function (p) {
-      return p.id === config.period_id;
+      return p.id == config.period_id;
     })[0];
-    if (selectedPeriod.period_number === 0) {
-      dependencies.budgets.query.where = ['period.fiscal_year_id=' + config.fiscal_year_id];
-    } else {
+    if (selectedPeriod){
       dependencies.budgets.query.where = ['period.fiscal_year_id=' + config.fiscal_year_id, 'AND', 'period.id='+selectedPeriod.id];
+    } else {
+      dependencies.budgets.query.where = ['period.fiscal_year_id=' + config.fiscal_year_id];
     }
     validate.refresh(dependencies, ['accounts', 'budgets'])
     .then(start);
@@ -245,15 +253,15 @@ function AnalysisBudgetController($q, $scope, $window, $translate, validate, pre
 
   function previousFYBudget(selectedPreviousFY) {
     // Get budget data for all previous fiscal years
-    $scope.fiscalYearBudget = {};
+    vm.fiscalYearBudget = {};
     for(var fy in selectedPreviousFY) {
-      var budget = { 
-        id           : selectedPreviousFY[fy].id, 
-        data         : null, 
-        totalBudget  : 0, 
-        totalBalance : 0 
+      var budget = {
+        id           : selectedPreviousFY[fy].id,
+        data         : null,
+        totalBudget  : 0,
+        totalBalance : 0
       };
-      $scope.fiscalYearBudget[budget.id] = {};
+      vm.fiscalYearBudget[budget.id] = {};
       getBudget(budget.id);
     }
 
@@ -264,12 +272,12 @@ function AnalysisBudgetController($q, $scope, $window, $translate, validate, pre
       // Process period
       var periodCriteria;
       var selectedPeriod = session.periods.filter(function (p) {
-        return p.id === config.period_id;
+        return p.id == config.period_id;
       })[0];
-      if (selectedPeriod.period_number === 0) {
-        dependencies.previousFYBudget.query.where = ['period.fiscal_year_id=' + fiscal_year_id];
-      } else {
+      if (selectedPeriod) {
         dependencies.previousFYBudget.query.where = ['period.fiscal_year_id=' + fiscal_year_id, 'AND', 'period.period_number='+selectedPeriod.period_number];
+      } else {
+        dependencies.previousFYBudget.query.where = ['period.fiscal_year_id=' + fiscal_year_id];
       }
       validate.refresh(dependencies, ['previousFYBudget'])
       .then(function (model) {
@@ -279,12 +287,12 @@ function AnalysisBudgetController($q, $scope, $window, $translate, validate, pre
     }
 
     function handleFiscalYearBudget(fiscal_year_id, data) {
-      $scope.fiscalYearBudget[fiscal_year_id] = data;
+      vm.fiscalYearBudget[fiscal_year_id] = data;
     }
   }
 
   function loadFiscalYears(models) {
-    angular.extend($scope, models);
+    angular.extend(vm, models);
   }
 
   function loadPeriod(fiscal_year_id) {
@@ -293,7 +301,7 @@ function AnalysisBudgetController($q, $scope, $window, $translate, validate, pre
         tables : {
           'period' : { columns : ['id', 'period_number', 'period_start', 'period_stop'] }
         },
-        where : ['period.fiscal_year_id=' + fiscal_year_id, 'AND', 'period.id<>0']
+        where : ['period.fiscal_year_id=' + fiscal_year_id, 'AND', 'period.period_number<>0']
       }
     };
 
@@ -306,9 +314,9 @@ function AnalysisBudgetController($q, $scope, $window, $translate, validate, pre
 
   function loadPreviousFiscalYears(fiscal_year_id) {
     session.previous_fiscal_years = [];
-    var current = $scope.fiscal_years.get(fiscal_year_id);
+    var current = vm.fiscal_years.get(fiscal_year_id);
     if (current.previous_fiscal_year) {
-      session.previous_fiscal_years = $scope.fiscal_years.data.filter(function (fy) {
+      session.previous_fiscal_years = vm.fiscal_years.data.filter(function (fy) {
         var currentDate = new Date(current.start_year, current.start_month, 1);
         var otherDate = new Date(fy.start_year, fy.start_month, 1);
         return (currentDate > otherDate) ? true : false;
@@ -320,10 +328,10 @@ function AnalysisBudgetController($q, $scope, $window, $translate, validate, pre
 
     if (config.fiscal_year_id && config.period_id) {
       var selectedPeriod = session.periods.filter(function (p) {
-        return p.id === config.period_id;
+        return p.id == config.period_id;
       })[0];
-      session.selectedPeriod = $translate.instant($scope.months[selectedPeriod.period_number]);
-      session.selectedFiscalYear = $scope.fiscal_years.get(config.fiscal_year_id);
+      session.selectedPeriod = selectedPeriod ? $translate.instant(vm.months[selectedPeriod.period_number]) : $translate.instant(vm.months[0]);
+      session.selectedFiscalYear = vm.fiscal_years.get(config.fiscal_year_id);
       getSelectPreviousFY()
       .then(previousFYBudget)
       .then(displayAccounts);
@@ -340,8 +348,8 @@ function AnalysisBudgetController($q, $scope, $window, $translate, validate, pre
   }
 
   function exportToCSV() {
-    var fileData = { 
-      column: ['AccountId', 'AccountNum', 'AccountName', 'Budget', 'Balance', 'Gap Surplus', 'Gap Deficit'], 
+    var fileData = {
+      column: ['AccountId', 'AccountNum', 'AccountName', 'Budget', 'Balance', 'Gap Surplus', 'Gap Deficit'],
       data: []
     };
 
@@ -353,7 +361,7 @@ function AnalysisBudgetController($q, $scope, $window, $translate, validate, pre
     previousLabels.push('Type');
     fileData.column = fileData.column.concat(previousLabels);
 
-    $scope.accounts.data.forEach(function (a) {
+    vm.accounts.data.forEach(function (a) {
       var budget = a.budget === null ? '' : a.budget;
       var balance = a.balance === null ? '' : a.balance;
 
@@ -387,7 +395,7 @@ function AnalysisBudgetController($q, $scope, $window, $translate, validate, pre
   }
 
   function formatPeriod(obj) {
-    return '' + $translate.instant($scope.months[obj.period_number]);
+    return '' + $translate.instant(vm.months[obj.period_number]);
   }
 
   function filterAccounts(model) {
@@ -397,35 +405,25 @@ function AnalysisBudgetController($q, $scope, $window, $translate, validate, pre
 
     if (accountClass === 6 || accountClass === expense) {
       // Class 6 accounts
-      $scope.accounts.data = model.filter(function (acct) {
+      vm.accounts.data = model.filter(function (acct) {
         return acct.classe === 6 || acct.classe === '6';
       });
     } else if (accountClass === 7 || accountClass === income) {
       // Class 7 accounts
-      $scope.accounts.data = model.filter(function (acct) {
+      vm.accounts.data = model.filter(function (acct) {
         return acct.classe === 7 || acct.classe === '7';
       });
     }
   }
 
-  $scope.togglePreviousFY = function togglePreviousFY(bool) {
+  function togglePreviousFY(bool) {
     session.previous_fiscal_years.forEach(function (fy) {
       fy.checked = bool;
     });
-  };
+  }
 
-  $scope.deselectAllFY = function deselectAllFY(bool) {
-    if (!bool) { $scope.previousFY.all = false; }
-  };
-
-  // Set up the exported functions
-  $scope.displayAccounts = displayAccounts;
-  $scope.exportToCSV = exportToCSV;
-  $scope.print = print;
-  $scope.loadPeriod = loadPeriod;
-  $scope.formatFiscalYear = formatFiscalYear;
-  $scope.formatPeriod = formatPeriod;
-  $scope.budgetAnalysis = budgetAnalysis;
-  $scope.reconfigure = reconfigure;
+  function deselectAllFY(bool) {
+    if (!bool) { vm.previousFY.all = false; }
+  }
 
 }
