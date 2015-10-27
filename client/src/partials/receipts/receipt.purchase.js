@@ -1,7 +1,7 @@
 angular.module('bhima.controllers')
 .controller('receipt.purchase', PurchaseReceiptController);
 
-PurchaseReceiptController = [
+PurchaseReceiptController.$inject = [
   '$scope', 'validate', 'appstate', 'messenger',
 ];
 
