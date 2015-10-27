@@ -894,6 +894,7 @@
   "ADD"             : "Ajouter",
   "ALERT"           : "Ce module vous permet de gérer vos dépôt",
   "ALL"             : "Tous les Dépôts",
+  "NO_LOTS"        : "Pass de stock disponibles",
   "CHANGE_DEPOT"      : "Etes-vous sur que vous voulez changer le pharmacy?  The pharmacy courant est  %depot%.",
   "CONFIRM_SELECTION"             : "Voulez-vous vraiment gérer les stocks avec %depot% ",
   "DELETE_SUCCESS"  : "Suppression avec succès",
@@ -907,7 +908,7 @@
     "SERVICES" : "Distributions to Services",
     "SERVICE" : {
       "LOTS_AVAILABLE" : "Lots Available",
-      "NO_LOTS"        : "No Lots Available"
+      "NO_LOTS"        : "Pass de stock disponibles"
     },
     "PATIENTS" : "Distributions to Patients",
     "RUMMAGE"  : "Liquidation by Rummage Sale",

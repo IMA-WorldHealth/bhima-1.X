@@ -102,6 +102,9 @@
                   <li ng-repeat="lot in row.inventoryItem.lots | filter:{'used': false} | orderBy:'fmtLabel' track by lot.tracking_number">
                     <a ng-click="LossCtrl.selectLot(item, lot, row)">{{ lot.fmtLabel }}</a>
                   </li>
+                  <li ng-if="row.inventoryItem.lots.length === 0">
+                    <span><i class="text-danger glyphicon glyphicon-alert"></i> {{ 'DEPOT.NO_LOTS' | translate }}</span>
+                  </li>
                 </ul>
               </td>
 
