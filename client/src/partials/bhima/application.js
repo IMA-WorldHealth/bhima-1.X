@@ -76,6 +76,11 @@ function ApplicationController($location, $timeout, $translate, Appcache, appsta
     // FIXME hack to make sure that appstate has user,
     // project, and enterprise defined
     $timeout(function () {
+
+      // FIXME hack to make receipts work with locations
+      var project = Session.project;
+      project.location_id = Session.enterprise.location_id;
+
       appstate.set('enterprise', Session.enterprise);
       appstate.set('project', Session.project);
       appstate.set('user', Session.user);
