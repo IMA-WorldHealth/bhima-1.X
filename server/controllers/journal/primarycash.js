@@ -875,9 +875,9 @@ function salaryAdvance(id, userId, cb) {
     reference = records[0];
 
     sql =
-      'SELECT creditor_group.account_id, creditor.uuid FROM primary_cash' +
-      'JOIN creditor ON creditor.uuid=primary_cash.deb_cred_uuid' +
-      'JOIN creditor_group ON creditor_group.uuid=creditor.group_uuid ' +
+      'SELECT creditor_group.account_id, creditor.uuid FROM primary_cash ' +
+      'JOIN creditor ON creditor.uuid = primary_cash.deb_cred_uuid ' +
+      'JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid ' +
       'WHERE primary_cash.uuid = ?;';
 
     return [
@@ -914,7 +914,7 @@ function salaryAdvance(id, userId, cb) {
       cfg.originId, userId
     ];
 
-    return db.exec(sql, params);
+    return db.exec(sql, [params]);
   })
   .then(function () {
     sql =
