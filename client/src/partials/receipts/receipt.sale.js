@@ -7,7 +7,7 @@ angular.module('bhima.controllers')
   function ($scope, validate, appstate, messenger) {
     var dependencies = {}, model = $scope.model = {common : {}, total : {}};
     $scope.updateCurrency = updateCurrency;
-  
+
     dependencies.recipient = {
       required: true,
       query : {
@@ -93,7 +93,7 @@ angular.module('bhima.controllers')
         convert = model.common.convert,
         ledgers = model.ledger;
 
-      
+
 
       totals.localeCost = doConvert(saleRecords.cost, currency, saleRecords.invoice_date);
 
@@ -121,7 +121,7 @@ angular.module('bhima.controllers')
       return validate.process(dependencies, ['recipient','ledger']);
     }
 
-    function buildInvoice(invoiceModel) {      
+    function buildInvoice(invoiceModel) {
       model.saleRecords = invoiceModel.saleRecords.data;
       model.saleSubsidies = invoiceModel.saleSubsidy.data;
       model.total.totalSum = model.saleRecords.reduce(sum, 0) || 0;
@@ -137,7 +137,7 @@ angular.module('bhima.controllers')
         doConvert = model.common.doConvert,
         convert = model.common.convert,
         ledgers = model.ledger;
-        
+
       totals.localeCost = doConvert(saleRecords.cost, currency_id, saleRecords.invoice_date);
 
       if (ledgers)  {
