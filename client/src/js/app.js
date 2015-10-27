@@ -452,20 +452,14 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/inventory/depot/depot.html'
   })
 
-  // TODO -- migrate this to /depots/
-  .when('/stock/entry/start/:depotId', {
-    controller : 'stock.entry.start',
-    templateUrl : 'partials/stock/entry/start.html'
-  })
-  .when('/stock/entry/partition', {
-    controller : 'stock.entry.partition',
-    templateUrl : 'partials/stock/entry/partition.html'
-  })
-
   /* depots */
   .when('/depots', {
     controller : 'DepotController as DepotCtrl',
     templateUrl : 'partials/depots/depots.html'
+  })
+  .when('/depots/:depotId/entry', {
+    controller : 'DepotEntryController',
+    templateUrl : 'partials/depots/entry/entry.html'
   })
   .when('/depots/:depotId/losses', {
     controller : 'DepotLossController as LossCtrl',
@@ -473,7 +467,7 @@ function bhimaconfig($routeProvider) {
   })
   .when('/depots/:depotId/movements', {
     controller : 'StockMovementController as MovementCtrl',
-    templateUrl : 'partials/stock/movement/movement.html'
+    templateUrl : 'partials/depots/movement/movement.html'
   })
   .when('/depots/:depotId/distributions/patients', {
     controller : 'StockDistributionsController as StockDistributionsCtrl',

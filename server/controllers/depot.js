@@ -169,7 +169,7 @@ function getDistributions(req, res, next) {
     case 'loss' :
     case 'losses':
       sql =
-        'SELECT c.uuid, cl.document_uuid AS voucher, ' +
+        'SELECT c.uuid, c.document_id AS voucher, ' +
           'COUNT(c.document_id) AS total, c.date, d.text, d.uuid AS depotId, ' +
           'i.text AS label, c.canceled ' +
         'FROM consumption_loss AS cl ' +
