@@ -1,8 +1,8 @@
-var q = require('q'),
+var q    = require('q'),
     core = require('./core'),
     uuid = require('../../lib/guid'),
     util = require('../../lib/util'),
-    db = require('../../lib/db');
+    db   = require('../../lib/db');
 
 exports.transfer = transfer;
 exports.refund = refund;
@@ -514,7 +514,7 @@ function payEmployee(id, userId, cb) {
           'INSERT INTO posting_journal (' +
             'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
             'description, account_id, debit, credit, debit_equiv, credit_equiv, ' +
-            'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) ' +
+            'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
           'SELECT ?, ?, ?, ?, ?, ?, ?, account_id, ?, ?, ?, ?, ?, null, \'C\', ?, ?, ? ' +
           'FROM cash_box_account_currency WHERE cash_box_account_currency.cash_box_id = ? ' +
             'AND cash_box_account_currency.currency_id = ?;';
@@ -773,9 +773,9 @@ function salaryPayment(id, userId, cb) {
 
     // TODO - clean this up
     var sql2 =
-      'SELECT creditor_group.account_id, creditor.uuid FROM primary_cash' +
-      'JOIN creditor ON creditor.uuid=primary_cash.deb_cred_uuid' +
-      'JOIN creditor_group ON creditor_group.uuid=creditor.group_uuid ' +
+      'SELECT creditor_group.account_id, creditor.uuid FROM primary_cash ' +
+      'JOIN creditor ON creditor.uuid = primary_cash.deb_cred_uuid ' +
+      'JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid ' +
       'WHERE primary_cash.uuid = ?;';
 
     var sql3 =
@@ -830,7 +830,7 @@ function salaryPayment(id, userId, cb) {
       'INSERT INTO posting_journal ' +
         '(uuid,project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
         'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
-        'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id ) ' +
+        'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
       'VALUES (?);';
 
     params = [
