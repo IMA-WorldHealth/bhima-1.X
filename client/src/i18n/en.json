@@ -1288,6 +1288,7 @@
    "OTHER_CHARGE"                : "Other charges",
    "OTHER_PROFIT"                : "Other Profits",
    "PERIODS"                     : "Periods",
+   "POST_ALL_DATA"               : "Some transaction of this fiscal year still wait in the posting journal, please post them first",
    "POSTING_FROM"                : "Posting From",
    "POSTING_SOLD_TO_NEW_FY"      : "Poster le solde dans la nouvelle année fiscale",
    "POSTING_TO"                  : "Posting To",

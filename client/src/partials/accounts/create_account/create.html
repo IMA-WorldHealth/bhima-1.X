@@ -132,7 +132,9 @@
                       </label>
                     </div>
                   </div>
+
                   <hr>
+
                   <div class="form-group">
                     <label for="number">{{ "ACCOUNT.ACCOUNT_NUMBER" | translate }}</label>
                     <input 
@@ -154,8 +156,10 @@
                       </label>
                     </div>
                   </div>
+
                   <hr>
-                  <div class="form-group" ng-if="session.accountClass === '1' || session.accountClass === '2' || session.accountClass === '5'">
+
+                  <div class="form-group">
                     <div class="checkbox">
                       <label>
                         <input 
@@ -218,7 +222,7 @@
               </div>
             </div>
 
-            <div class="panel panel-default">
+            <div class="panel panel-default" ng-if="newAccount.type.type === 'balance'">
               <div class="panel-heading">
                 {{ "ACCOUNT.BALANCE_ACCOUNT" | translate }}  
               </div>
@@ -293,7 +297,7 @@
 
                   <div>
                     <div>
-                      <div ng-if = "accountClass === 1 || accountClass === 2  || accountClass === 5">
+                      <div>
                         <div class="checkbox">
                           <label>
                             <input 
@@ -317,7 +321,9 @@
                         name="option_is_locked" 
                         id="locked" 
                         ng-model="editAccount.locked"
-                        ng-checked="editAccount.locked">
+                        ng-checked="editAccount.locked"
+                        ng-true-value="1"
+                        ng-false-value="0">
                         {{ "ACCOUNT.IS_LOCKED" | translate }}
                       </label>
                     </div>
@@ -367,7 +373,7 @@
                     </div>
                   </div>
 
-                  <div class="panel panel-default">
+                  <div class="panel panel-default" ng-if="editAccount.account_type === 'balance'">
                     <div class="panel-heading">
                       {{ "ACCOUNT.BALANCE_ACCOUNT" | translate }}  
                     </div>
