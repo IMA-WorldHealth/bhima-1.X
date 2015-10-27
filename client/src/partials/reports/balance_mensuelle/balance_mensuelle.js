@@ -31,7 +31,7 @@ function ReportBalanceMensuelleController ($translate, $window, validate, util, 
   vm.reconfigure = reconfigure;
   vm.getAccountBalance = getAccountBalance;
   vm.formatAccount = formatAccount;
-  vm.print = print;
+  vm.print = printer;
 
   // Startup
   startup();
@@ -115,7 +115,7 @@ function ReportBalanceMensuelleController ($translate, $window, validate, util, 
     return '[' + classe.number + ']' + classe.name;
   }
 
-  function print() { $window.print(); }
+  function printer() { $window.print(); }
 
   function calculTotaux() {
     var sums = {

@@ -478,3 +478,8 @@ WHERE `account`.`is_charge` IS NULL AND LEFT(`account`.`account_number`, 1)=7;
 -- author: jniles
 -- date: 2015-10-20
 UPDATE unit SET path='/depots', url='/depots/depots.html' where id = 45;
+
+-- remove duplicated document id from consumption_loss table
+-- author: jniles
+-- date: 2015-10-26
+ALTER TABLE consumption_loss DROP COLUMN document_uuid;

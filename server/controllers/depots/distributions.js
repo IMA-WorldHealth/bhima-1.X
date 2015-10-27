@@ -6,6 +6,13 @@
 * losses and rummage sales.
 *
 * TODO -- complete the full CRUD described above.
+*
+* FIXME/TODO
+*
+* This analysis has brought to light several interesting parts of stock
+* management that could probably be redesigned.
+*  1) Why are there duplicated document_ids in consumption_loss and consumption?
+*
 */
 
 var db      = require('../../lib/db'),
@@ -65,7 +72,7 @@ function createDistributions(depotId, body, session) {
 
     // FIXME -- this is currently only implemented for the service distribution type
     // write to the journal
-    return writeToJournal(docId, session);
+    return writeToJournal(body.type, docId, session);
   })
   .then(function () {
 
@@ -76,10 +83,10 @@ function createDistributions(depotId, body, session) {
 
 // FIXME
 // poorly designed code to write to the journal
-function writeToJournal(docId, session) {
+function writeToJournal(type, docId, session) {
   var dfd = q.defer();
 
-  journal.request('distribution_service', docId, session.user.id, function (error, result) {
+  journal.request('distribution_%type%'.replace('%type%', type), docId, session.user.id, function (error, result) {
     if (error) { return dfd.reject(error); }
     return dfd.resolve(result);
 
@@ -107,10 +114,20 @@ function createServiceDistribution(depotId, item) {
   return db.exec(sql, [uuid(), item.id, item.service_id]);
 }
 
+/**
+* Create a loss distribution
+*
+* This writes a uuid and the consumption uuid to the consumption loss table.
+*
+* TODO - discuss this design
+*/
 function createLossDistribution(depotId, item) {
   'use strict';
 
-  // TODO
+  var sql =
+    'INSERT INTO consumption_loss VALUES (?, ?);';
+
+  return db.exec(sql, [uuid(), item.id]);
 }
 
 

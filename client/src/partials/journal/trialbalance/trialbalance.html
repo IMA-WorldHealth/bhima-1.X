@@ -2,8 +2,11 @@
   <div class="modal-header">
     <h3 class="pull-left">{{ 'TRIAL_BALANCE.TITLE' | translate }}</h3>
     <div class="modal-icons">
-      <a class="btn btn-default" ng-click="BalanceCtrl.toggleExceptionState()" ng-class="{ 'active' : BalanceCtrl.state === 'exception' }" ng-if="BalanceCtrl.hasExceptions">
-        {{ BalanceCtrl.hasErrors ? "TRIAL_BALANCE.SHOW_ERRORS" : "TRIAL_BALANCE.SHOW_WARNINGS" | translate }}
+      <a class="btn btn-default" ng-click="BalanceCtrl.toggleExceptionState()" ng-if="BalanceCtrl.hasExceptions && BalanceCtrl.state !== 'exception'">
+        <i class="glyphicon glyphicon-exclamation-sign"></i> {{ BalanceCtrl.hasErrors ? "TRIAL_BALANCE.SHOW_ERRORS" : "TRIAL_BALANCE.SHOW_WARNINGS" | translate }}
+      </a>
+      <a class="btn btn-default" ng-click="BalanceCtrl.toggleExceptionState()" ng-if="BalanceCtrl.hasExceptions && BalanceCtrl.state === 'exception'">
+        <i class="glyphicon glyphicon-tasks"></i> {{ "TRIAL_BALANCE.SHOW_RESULTS" | translate }}
       </a>
     </div>
     <div class="modal-print" ng-hide="BalanceCtrl.state === 'loading'" >

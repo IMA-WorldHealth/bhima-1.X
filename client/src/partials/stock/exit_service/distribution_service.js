@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('StockServiceDistributionsController', StockServiceDistributionsController);
 
 StockServiceDistributionsController.$inject = [
-  '$routeParams', '$http', '$q', '$location', 'SessionService'
+  '$routeParams', '$http', '$q', '$location', 'SessionService', 'DepotService', 'InventoryService'
 ];
 
 /**
@@ -19,7 +19,7 @@ StockServiceDistributionsController.$inject = [
 * @constructor
 * @class StockServiceDistributionsController
 */
-function StockServiceDistributionsController($routeParams, $http, $q, $location, Session) {
+function StockServiceDistributionsController($routeParams, $http, $q, $location, Session, Depots, Inventory) {
   var vm = this;
 
   // view data
@@ -48,23 +48,6 @@ function StockServiceDistributionsController($routeParams, $http, $q, $location,
     .then(function (response) { return response.data; });
   }
 
-  // get a depot by uuid
-  function getDepot(uuid) {
-    return $http.get('/depots/' + uuid)
-    .then(function (response) { return response.data; });
-  }
-
-  // get available stock in the depot
-  function getAvailableStock(uuid) {
-    return $http.get('/depots/' + uuid + '/inventory')
-    .then(function (response) { return response.data; });
-  }
-
-  function getInventoryItems() {
-    return $http.get('/inventory/metadata')
-    .then(function (response) { return response.data; });
-  }
-
   // copy data from inventory onto queue row
   function use(row, item) {
 
@@ -72,13 +55,13 @@ function StockServiceDistributionsController($routeParams, $http, $q, $location,
     item.used = true;
 
     // cache selected inventory metadata on row
-    row.price = item.price;
-    row.label = item.label;
-    row.lots  = item.lots;
-    row.unit  = item.unit;
-    row.group = item.groupName;
+    row.price           = item.price;
+    row.label           = item.label;
+    row.lots            = item.lots;
+    row.unit            = item.unit;
+    row.group           = item.groupName;
     row.tracking_number = item.tracking_number;
-    row.maxQuantity = item.maxQuantity;
+    row.maxQuantity     = item.maxQuantity;
   }
 
   // removes an item from the queue at a given index
@@ -86,6 +69,7 @@ function StockServiceDistributionsController($routeParams, $http, $q, $location,
     var item, i = 0,
         removed = vm.queue.splice(idx, 1)[0];
 
+    // ensure the inventory item has actually been selected
     if (!removed.code) { return; }
 
     // linear search: find the inventory item that we just dequeued by linearly
@@ -169,9 +153,9 @@ function StockServiceDistributionsController($routeParams, $http, $q, $location,
   function startup() {
     $q.all([
       getServices(),
-      getDepot(vm.uuid),
-      getAvailableStock(vm.uuid),
-      getInventoryItems()
+      Depots.getDepots(vm.uuid),
+      Depots.getAvailableStock(vm.uuid),
+      Inventory.getInventoryItems()
     ])
     .then(function (responses) {
       var stock, inventory;
@@ -190,9 +174,8 @@ function StockServiceDistributionsController($routeParams, $http, $q, $location,
         // default: the item has not been selected yet
         i.used = false;
 
-        // TODO -- why doesn't this send back nonzero quantities?
         i.lots = stock.filter(function (s) {
-          return s.code === i.code && s.quantity > 0;
+          return s.code === i.code;
         })
         .map(function (s) {
           return {

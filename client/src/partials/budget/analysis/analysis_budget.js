@@ -71,7 +71,7 @@ function AnalysisBudgetController($q, $window, $translate, validate, precision, 
   // Expose to the view
   vm.displayAccounts = displayAccounts;
   vm.exportToCSV = exportToCSV;
-  vm.print = print;
+  vm.print = printer;
   vm.loadPeriod = loadPeriod;
   vm.formatFiscalYear = formatFiscalYear;
   vm.formatPeriod = formatPeriod;
@@ -386,7 +386,7 @@ function AnalysisBudgetController($q, $window, $translate, validate, precision, 
     session.mode = 'configuration';
   }
 
-  function print() {
+  function printer() {
     $window.print();
   }
 
