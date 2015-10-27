@@ -23,7 +23,6 @@ angular.module('bhima.controllers')
 
     function initialise (models) {
       angular.extend($scope, models);
-      console.log(models);
 
       // set up grid properties
       columns = [
