@@ -2687,16 +2687,11 @@
    },
 "STOCK_DASHBOARD": {
    "DONATIONS": {
-      "TITLE" : "Dons Récents"
+      "TITLE" : "Dons Récents",
+      "NO_DATA" : "Il n'y a pas eu de dons enregistrés."
       },
    "EXPIRING_INVENTORY": {
-      "EXPIRED"      : "Expirés",
-      "TITLE"        : "Expirations produits",
-      "WITHIN_180"   : "Expiration entre 90 et 180 jours",
-      "WITHIN_1YEAR" : "Expiration dans plus d'une année",
-      "WITHIN_30"    : "Expiration dans moins 30 jours",
-      "WITHIN_365"   : "Expiration entre 180 et 365 jours",
-      "WITHIN_90"    : "Expiration entre 30 et 90 jours"
+      "TITLE"        : "Expirations produits"
       },
    "MOST_CONSUMED"      : "Produits les Plus Consommes",
    "MOVEMENT": {
@@ -2704,6 +2699,7 @@
       "EXIT"  : "Sortie",
       "TITLE" : "Mouvement"
       },
+   "NO_CONSUMPTION_DATA" : "Pas de stock pièces ont été consommés.",
    "PURCHASE_ORDER": {
       "IN_WATING"        : "en attente de paiement",
       "PAYED"            : "payés",

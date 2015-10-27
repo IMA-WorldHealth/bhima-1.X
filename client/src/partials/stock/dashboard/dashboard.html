@@ -28,8 +28,15 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td colspan="3" ng-if="StockDashCtrl.consumption.length === 0"><loading-indicator></loading-indicator></td>
+            <tr ng-if="StockDashCtrl.indicators.consumption">
+              <td colspan="3" class="text-center">
+                <loading-indicator></loading-indicator>
+              </td>
+            </tr>
+            <tr ng-if="!StockDashCtrl.indicators.consumption && StockDashCtrl.consumption.length === 0">
+              <td colspan="3"class="text-center">
+                {{ 'STOCK_DASHBOARD.NO_CONSUMPTION_DATA' | translate }}
+              </td>
             </tr>
             <tr ng-repeat="item in StockDashCtrl.consumption | limitTo:StockDashCtrl.limits.consumption track by item.uuid">
               <td>{{ $index + 1 }}</td>
@@ -141,8 +148,15 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td colspan="4" ng-if="StockDashCtrl.donations.length === 0"><loading-indicator></loading-indicator></td>
+            <tr ng-if="StockDashCtrl.indicators.donations">
+              <td colspan="4" class="text-center">
+                <loading-indicator></loading-indicator>
+              </td>
+            </tr>
+            <tr ng-if="!StockDashCtrl.indicators.donations && StockDashCtrl.donations.length === 0">
+              <td colspan="4" class="text-center">
+                {{ 'STOCK_DASHBOARD.DONATIONS.NO_DATA' | translate }}
+              </td>
             </tr>
             <tr ng-repeat="donation in StockDashCtrl.donations | limitTo:StockDashCtrl.limits.donations">
               <td>{{ donation.name }}</td>
