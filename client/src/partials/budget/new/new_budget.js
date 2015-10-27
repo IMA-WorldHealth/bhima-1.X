@@ -2,16 +2,8 @@ angular.module('bhima.controllers')
 .controller('NewBudgetController', NewBudgetController);
 
 NewBudgetController.$inject = [
-  '$q', 
-  '$scope', 
-  '$http', 
-  '$translate', 
-  'validate', 
-  'precision', 
-  'messenger', 
-  'SessionService', 
-  'connect', 
-  'Upload'
+  '$q', '$scope', '$http', '$translate', 'validate', 'precision', 'messenger',
+  'SessionService', 'connect', 'Upload'
 ];
 
 /**
@@ -31,8 +23,8 @@ function NewBudgetController($q, $scope, $http, $translate, validate, precision,
         'account' :{
           columns : ['id', 'account_type_id', 'account_txt', 'account_number']
         },
-        'account_type' : { 
-          columns : ['type'] 
+        'account_type' : {
+          columns : ['type']
         },
       },
       join : ['account_type.id = account.account_type_id'],
@@ -43,7 +35,7 @@ function NewBudgetController($q, $scope, $http, $translate, validate, precision,
   dependencies.budgets = {
     query : {
     tables : {
-      'budget' : { 
+      'budget' : {
         columns : ['id', 'account_id', 'period_id', 'budget']
       },
       'period' : {
@@ -73,15 +65,16 @@ function NewBudgetController($q, $scope, $http, $translate, validate, precision,
           columns : ['id', 'fiscal_year_txt', 'start_month', 'start_year', 'previous_fiscal_year']
         },
       },
-      orderby: ['fiscal_year.start_year', 'fiscal_year.start_month'],
-      limit: 2
+      orderby: ['fiscal_year.start_year', 'fiscal_year.start_month']
     }
   };
 
   session.option = 'csv';
 
+  // Startup
   init();
 
+  // Functions
   function init() {
     $scope.enterprise = SessionService.enterprise;
     dependencies.fiscal_years.query.where = [ 'fiscal_year.enterprise_id=' + $scope.enterprise.id ];
@@ -115,15 +108,19 @@ function NewBudgetController($q, $scope, $http, $translate, validate, precision,
   session.file     = null;
   session.csvArray = null;
 
+  // Expose to view
+  $scope.uploadFile = uploadFile;
+  $scope.formatPeriod = formatPeriod;
+
   // Functions
   function uploadFile(file) {
     session.file = file;
-    Upload.upload({ url: '/budget/upload', 
-      file: file, 
+    Upload.upload({ url: '/budget/upload',
+      file: file,
       fields : {
         'fiscal_year_id' : config.fiscal_year_id,
         'period' : config.period,
-      } 
+      }
     })
     .then(function () {
       messenger.success($translate.instant('UTIL.SUCCESS'), true);
@@ -148,10 +145,6 @@ function NewBudgetController($q, $scope, $http, $translate, validate, precision,
     return '' + $translate.instant($scope.months[obj.period_number]);
   }
 
-  // Expose to view
-  $scope.uploadFile = uploadFile;
-  $scope.formatPeriod = formatPeriod;
-
   /* ====================== */
   /* END ULPOADING CSV FILE */
   /* ====================== */
@@ -173,6 +166,19 @@ function NewBudgetController($q, $scope, $http, $translate, validate, precision,
   session.autoAdjust  = false;
   session.no_data_msg = null;
 
+  // Expose to view
+  $scope.submitAccount      = submitAccount;
+  $scope.createBudget       = createBudget;
+  $scope.accountWhere       = accountWhere;
+  $scope.restartSearch      = restartSearch;
+  $scope.updateBudget       = updateBudget;
+  $scope.toggleFreeze       = toggleFreeze;
+  $scope.startEditing       = startEditing;
+  $scope.endEditing         = endEditing;
+  $scope.recompute          = recompute;
+  $scope.formatFiscalYear   = formatFiscalYear;
+  $scope.selectFiscalYear   = selectFiscalYear;
+
   // Basic setup function when the models are loaded
   function startup(models) {
     angular.extend($scope, models);
@@ -193,13 +199,13 @@ function NewBudgetController($q, $scope, $http, $translate, validate, precision,
     else {
       session.no_data_msg = $translate.instant('BUDGET.EDIT.DATA_NOT_FOUND')
         .replace('(acct)', session.account.account_txt)
-        .replace('(fyname)', session.fiscal_year.fiscal_year_txt);  
+        .replace('(fyname)', session.fiscal_year.fiscal_year_txt);
     }
   }
 
   // Initialize editing the selected account
   function submitAccount(newAccount) {
-    if (newAccount) { 
+    if (newAccount) {
       session.account = newAccount;
       dependencies.account.query.where = ['account.id=' + newAccount.id];
       dependencies.budgets.query.where = ['period.fiscal_year_id=' + session.fiscal_year.id, 'AND',
@@ -252,7 +258,7 @@ function NewBudgetController($q, $scope, $http, $translate, validate, precision,
 
   function updateBudget() {
     // Save the budget data for all the periods
-    $http.post('/budget/update', { 
+    $http.post('/budget/update', {
       params : {
         budgets   : $scope.budgets.data,
         accountId : session.account.id
@@ -342,19 +348,6 @@ function NewBudgetController($q, $scope, $http, $translate, validate, precision,
   function formatFiscalYear(fy) {
     return '' + fy.fiscal_year_txt + ' (' + fy.start_month + '/' + fy.start_year + ')';
   }
-
-  // Expose to view
-  $scope.submitAccount      = submitAccount;
-  $scope.createBudget       = createBudget;
-  $scope.accountWhere       = accountWhere;
-  $scope.restartSearch      = restartSearch;
-  $scope.updateBudget       = updateBudget;
-  $scope.toggleFreeze       = toggleFreeze;
-  $scope.startEditing       = startEditing;
-  $scope.endEditing         = endEditing;
-  $scope.recompute          = recompute;
-  $scope.formatFiscalYear   = formatFiscalYear;
-  $scope.selectFiscalYear   = selectFiscalYear;
 
   /* =================== */
   /* END BUDGET MANUALLY */

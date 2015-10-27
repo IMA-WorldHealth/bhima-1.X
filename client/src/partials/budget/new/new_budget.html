@@ -1,4 +1,4 @@
-<header data-header> 
+<header data-header>
   {{ "BUDGET.NEW.TITLE" | translate }}
 </header>
 
@@ -22,24 +22,24 @@
 
           <div class="form-group">
             <label>{{ "SELECT.FISCAL_YEAR" | translate }}</label>
-            <select 
-            class="form-bhima" 
-            name="fiscal_year_id" 
-            ng-model="config.fiscal_year_id" 
+            <select
+            class="form-bhima"
+            name="fiscal_year_id"
+            ng-model="config.fiscal_year_id"
             ng-options="fy.id as formatFiscalYear(fy) for fy in fiscal_years.data"
-            ng-change="selectFiscalYear(config.fiscal_year_id)" 
+            ng-change="selectFiscalYear(config.fiscal_year_id)"
             required></select>
           </div>
 
           <div class="form-group">
             <div class="radio new-budget">
               <label class="display-block">
-                <input type="radio" name="session.option" 
-                  class="select-csv" 
+                <input type="radio" name="session.option"
+                  class="select-csv"
                   ng-model="session.option" value="csv" ng-checked="true"><b>{{ "BUDGET.NEW.IMPORT_CSV" | translate }}</b>
               </label>
               <label class="display-block">
-                <input type="radio" name="session.option" 
+                <input type="radio" name="session.option"
                   ng-model="session.option" value="manual"><b>{{ "BUDGET.NEW.MANUAL" | translate }}</b>
               </label>
             </div>
@@ -51,21 +51,21 @@
               <div class="form-group">
                 <label>{{ "BUDGET.ANALYSIS.SELECT_PERIOD" | translate }}</label>
               </div>
-              
-              <select 
-                class="form-bhima" 
+
+              <select
+                class="form-bhima"
                 name="period"
                 ng-if="session.option=='csv'"
-                ng-model="config.period" 
-                ng-options="p as formatPeriod(p) for p in session.periods" 
-                ng-disabled="!config.fiscal_year_id" 
+                ng-model="config.period"
+                ng-options="p as formatPeriod(p) for p in session.periods"
+                ng-disabled="!config.fiscal_year_id"
                 required>
               </select>
               <br>
-              <button 
+              <button
                 ngf-select="uploadFile($file)"
-                ngf-pattern="'.csv'" 
-                accept=".csv" 
+                ngf-pattern="'.csv'"
+                accept=".csv"
                 class="btn btn-sm btn-success"
                 ng-disabled="!config.period.id">
                 <i class="glyphicon glyphicon-upload"></i> {{ "BUDGET.NEW.SEND_FILE" | translate }}
@@ -73,10 +73,10 @@
             </div>
 
             <div ng-switch-when="manual">
-              <div find-account 
-                on-submit="submitAccount" 
-                on-reset="resetAccountSearch" 
-                where="accountWhere" 
+              <div find-account
+                on-submit="submitAccount"
+                on-reset="resetAccountSearch"
+                where="accountWhere"
                 enable-reset></div>
             </div>
           </div>
@@ -111,7 +111,7 @@
                     <tr>
                       <th colspan="5">
                         <h4>
-                          {{ "BUDGET.EDIT.FISCAL_YEAR_LABEL" | translate }} {{ session.fiscal_year.fiscal_year_txt }} / 
+                          {{ "BUDGET.EDIT.FISCAL_YEAR_LABEL" | translate }} {{ session.fiscal_year.fiscal_year_txt }} /
                           {{ session.account.account_txt }}
                         </h4>
                       </th>
@@ -129,24 +129,24 @@
                       <td>{{ budget.period_number }}</td>
                       <td>{{ budget.period_start | date }}</td>
                       <td>{{ budget.period_stop | date }}</td>
-                      <td><input type="number" 
-                           ng-model="budget.budget" 
-                           ng-change="recompute()" 
+                      <td><input type="number"
+                           ng-model="budget.budget"
+                           ng-change="recompute()"
                            ng-focus="startEditing(budget)"
                            ng-blur="endEditing(budget)"
-                           min="0.0" 
+                           min="0.0"
                            ng-disabled="session.totalBudget <= 0.0 || (session.autoAdjust && (budget.freeze && !budget.editing))"
                            >
                       </td>
                       <td class="text-center">
-                        <input type="checkbox" 
+                        <input type="checkbox"
                          ng-model="budget.freeze">
                       </td>
                     </tr>
                     <tr>
                       <td colspan="2">
                         <b>{{ "BUDGET.EDIT.AUTO_ADJUST" | translate }}&nbsp;&nbsp;
-                        <input type="checkbox" 
+                        <input type="checkbox"
                          style="margin: 0"
                          ng-disabled="session.totalBudget <= 0.0"
                          ng-change="recompute()"
@@ -158,8 +158,8 @@
                       <td>
                         <input type="number"
                          ng-class="{'form-bhima-red-border' : session.totalBudget <= 0}"
-                         ng-model="session.totalBudget" 
-                         ng-change="recompute()" 
+                         ng-model="session.totalBudget"
+                         ng-change="recompute()"
                          min="0.0">
                       </td>
                       <td>&nbsp;</td>
@@ -187,15 +187,15 @@
 
 <footer>
   <div class="pull-right" ng-if="session.mode === 'edit'">
-    <button class="btn btn-default" 
+    <button class="btn btn-default"
       style="margin-right: 20px"
       ng-click="restartSearch()">
       <span class="glyphicon glyphicon-refresh"></span> {{ "BUDGET.EDIT.RESTART_SEARCH" | translate }}
     </button>
-    <button id="submitBudget" 
+    <button id="submitBudget"
       ng-click="updateBudget()"
-      ng-disabled="!session.validTotal || budget.$invalid" 
-      class="btn btn-sm btn-success" 
+      ng-disabled="!session.validTotal || budget.$invalid"
+      class="btn btn-sm btn-success"
       style="margin-right: 10px">
       <span class="glyphicon glyphicon-pencil"></span> {{ "BUDGET.EDIT.UPDATE_BUDGET" | translate }}
     </button>
