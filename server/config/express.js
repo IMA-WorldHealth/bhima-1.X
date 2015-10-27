@@ -23,11 +23,12 @@ module.exports = function (app, authentication) {
   // stores session in a file store so that server restarts do
   // not interrupt sessions.
   app.use(session({
-    store             : new FileStore(),
+    store             : new FileStore({
+      reapInterval      : cfg.session.reapInterval,
+    }),
     secret            : cfg.session.secret,
     saveUninitialized : cfg.session.saveUninitialized,
     resave            : cfg.session.resave,
-    reapInterval      : cfg.session.reapInterval,
     unset             : 'destroy',
     cookie            : { secure : true }
   }));

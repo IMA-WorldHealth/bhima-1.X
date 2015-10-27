@@ -470,3 +470,7 @@ td.bhima {
   text-align : right;
   padding-right: 8px;
 }
+
+.text-capitalize {
+  text-transform: capitalize;
+}

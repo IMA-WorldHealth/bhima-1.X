@@ -894,6 +894,7 @@
   "ADD"             : "Ajouter",
   "ALERT"           : "Ce module vous permet de gérer vos dépôt",
   "ALL"             : "Tous les Dépôts",
+  "NO_LOTS"        : "Pass de stock disponibles",
   "CHANGE_DEPOT"      : "Etes-vous sur que vous voulez changer le pharmacy?  The pharmacy courant est  %depot%.",
   "CONFIRM_SELECTION"             : "Voulez-vous vraiment gérer les stocks avec %depot% ",
   "DELETE_SUCCESS"  : "Suppression avec succès",
@@ -902,18 +903,29 @@
     "ANNUL"    : "Annuler cette Transaction",
     "ANNULLED" : "Annulé",
     "LOSSES"   : "Stock Losses",
+    "TYPE_INVENTORY_ITEM"      : "Taper code ou nom médicament",
     "NO_ROWS"  : "Pas de données pour période sélectionnée",
     "SERVICES" : "Distributions to Services",
     "SERVICE" : {
       "LOTS_AVAILABLE" : "Lots Available",
-      "NO_LOTS"        : "No Lots Available"
+      "NO_LOTS"        : "Pass de stock disponibles"
     },
     "PATIENTS" : "Distributions to Patients",
     "RUMMAGE"  : "Liquidation by Rummage Sale",
     "CANCEL" : {
       "TITLE"   : "Cancel Pharmacy Distribution",
       "MESSAGE" : "You are about to cancel a distribution made from the pharmacy.  Please make sure these details are correct."
-    }
+   },
+   "LOSS": {
+     "FORM_TITLE"      : "Formulaire Perte Stock",
+     "KEY"               : "Perte stock",
+     "LOSS_RECORDS"      : "Rapport de pertes des stocks",
+     "NO_DEPOT"          : "Pas de dépôt",
+     "NO_LOSS_RECORDS"   : "Aucune perte enregistrée",
+     "SEE_RECEIPT"       : "Voir le reçu",
+      "SUBMIT_ERROR"    : "S'il vous plaît assurez-vous que toutes vos données sont correctement saisi.",
+     "TITLE"             : "Perte stock"
+   }
   },
   "EDIT"            : "Editer les informations d'un dépôt",
   "EDIT_SUCCESS"    : "Données du dépôt mise à jour avec succès ",
@@ -997,7 +1009,6 @@
    "REMAINING_QTY"    : "Quantité restante",
    "SUBMIT"           : "Soumettre",
    "SUMMARY"          : "Sommaire",
-   "TAPE"             : "Taper code, nom médicament",
    "TITLE"            : "Distribution au service",
    "TOTAL"            : "Total"
    },
@@ -2462,6 +2473,7 @@
    "INVENTORY_ITEM"        : "Sélectionner une Article en Stock",
    "LANGUAGE"              : "Sélectionner une lang",
    "LOCATION"              : "Sélectionner un localisation",
+   "LOT_NUMBER"            : "Sélectionner une numéro Lot",
    "NAME"                  : "Sélectionner un Nom",
    "NONE"                  : "None",
    "OTHER"                 : "Autre Source",
@@ -2644,16 +2656,6 @@
       "STORE"                : "Dépôt",
       "TITLE"                : "Intergration des stocks",
       "SUBMIT"               : "Soumettre"
-      },
-   "LOSS": {
-      "KEY"               : "Perte stock",
-      "LOSS_GENERAL_INFO" : "Sommaire",
-      "LOSS_RECORDS"      : "Rapport de pertes des stocks",
-      "NO_DEPOT"          : "Pas de dépôt",
-      "NO_LOSS_RECORDS"   : "Aucune perte enregistrée",
-      "SEE_RECEIPT"       : "Voir le reçu",
-      "SUBMIT"            : "Soumettre",
-      "TITLE"             : "Perte stock"
       },
    "MOVEMENT": {
       "DEPOT_FROM"            : "Dépôt Source",
