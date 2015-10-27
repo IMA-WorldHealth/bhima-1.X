@@ -1,4 +1,4 @@
-<div ng-switch="state">
+<div ng-switch="OperatingCtrl.state">
   <div ng-switch-default>
     <main>
       <div class="col-xs-12">
@@ -14,10 +14,11 @@
                 {{ "OPERATING_ACCOUNT.FISCAL_YEAR" | translate }}
               </label>
               <div>
-                <select class="form-bhima" ng-model="session.fiscal_year_id" ng-change="getPeriods()" required>
-                  <option ng-repeat="fy in fiscalYears.data" ng-value="fy.id">
-                    {{fy.fiscal_year_txt}}
-                  </option>
+                <select class="form-bhima"
+                  ng-model="OperatingCtrl.session.fiscal_year_id"
+                  ng-options="fy.id as fy.fiscal_year_txt for fy in OperatingCtrl.fiscalYears.data"
+                  ng-change="OperatingCtrl.getPeriods()" required>
+                  <option value="" disabled>-- {{ "SELECT.FISCAL_YEAR" | translate }} --</option>
                 </select>
               </div>
             </div>
@@ -27,19 +28,25 @@
                 {{ "OPERATING_ACCOUNT.PERIOD" | translate }}
               </label>
               <div>
-                <select class="form-bhima" ng-model="session.period_id" required>
-                  <option ng-if="selectablePeriods.length" value="all">
-                    {{ "OPERATING_ACCOUNT.ALL" | translate }}
+                <select class="form-bhima"
+                  ng-model="OperatingCtrl.session.period_id"
+                  ng-disabled="!OperatingCtrl.session.fiscal_year_id"
+                  required>
+                  <option value="" disabled>
+                    {{ "SELECT.PERIOD" | translate }}
                   </option>
-                  <option ng-if="selectablePeriods.length" ng-repeat="per in selectablePeriods" value="{{ per.id }}">
-                    {{per.period_start | date}} -- {{per.period_stop | date}}
+                  <option value="all">
+                    {{ "UTIL.ALL" | translate }}
+                  </option>
+                  <option ng-repeat="per in OperatingCtrl.selectablePeriods" value="{{per.id}}">
+                    {{ OperatingCtrl.formatPeriod(per) }}
                   </option>
                 </select>
               </div>
             </div>
 
             <div class="pull-right">
-              <button class="btn btn-sm btn-success" type="button" ng-click="generate()" ng-disabled="configForm.$invalid">
+              <button class="btn btn-sm btn-success" type="button" ng-click="OperatingCtrl.generate()" ng-disabled="configForm.$invalid">
                 {{ "OPERATING_ACCOUNT.GENERATE" | translate }}
               </button>
             </div>
@@ -52,19 +59,25 @@
 
   <div ng-switch-when="generate">
     <header>
-      {{ "OPERATING_ACCOUNT.TITLE" | translate }} / {{fiscalYears.get(session.fiscal_year_id).fiscal_year_txt}} / {{session.period_id == 'all' ? all_period : (periods.get(session.period_id).period_start | date) + ' -- ' + (periods.get(session.period_id).period_stop | date)}}
+      {{ "OPERATING_ACCOUNT.TITLE" | translate }} /
+      {{ OperatingCtrl.fiscalYears.get(OperatingCtrl.session.fiscal_year_id).fiscal_year_txt}} /
+      {{ OperatingCtrl.session.period_id == 'all' ? OperatingCtrl.all_period : (OperatingCtrl.periods.get(session.period_id).period_start | date) + ' -- ' + (OperatingCtrl.periods.get(OperatingCtrl.session.period_id).period_stop | date)}}
     </header>
 
     <nav>
       <button
         style="margin-left: 5px;"
-        ng-click="reconfigure()"
+        ng-click="OperatingCtrl.reconfigure()"
         class="btn btn-sm btn-default pull-right">
         <span class="glyphicon glyphicon-repeat"></span>
       </button>
 
       <div class="pull-right">
-        <button ng-click="printReport()" class="btn btn-default btn-sm square">
+        <button ng-click="OperatingCtrl.download()" class="btn btn-default btn-sm square">
+          <span class="glyphicon glyphicon-save"></span>
+          {{ 'UTIL.EXPORT_TO_CSV' | translate }}
+        </button>
+        <button ng-click="OperatingCtrl.printReport()" class="btn btn-default btn-sm square">
           <span class="glyphicon glyphicon-print"></span>
           {{ 'UTIL.PRINT' | translate }}
         </button>
@@ -75,12 +88,12 @@
       <div class="reportBody">
         <div class="reportFrame">
           <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
-          
+
           <h4 class="visible-print">
             {{ "OPERATING_ACCOUNT.TITLE" | translate }} :
             <small>
-              {{ fiscalYears.get(session.fiscal_year_id).fiscal_year_txt}} /
-              {{session.period_id == 'all' ? 'Tous' : (periods.get(session.period_id).period_start | date) + ' -- ' + (periods.get(session.period_id).period_stop | date)}}
+              {{ OperatingCtrl.fiscalYears.get(session.fiscal_year_id).fiscal_year_txt}} /
+              {{ OperatingCtrl.session.period_id == 'all' ? 'Tous' : (OperatingCtrl.periods.get(OperatingCtrl.session.period_id).period_start | date) + ' -- ' + (OperatingCtrl.periods.get(OperatingCtrl.session.period_id).period_stop | date)}}
             </small>
           </h4>
           <table id="patientTable" class="reportTable">
@@ -94,7 +107,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat='record in records'>
+              <tr ng-repeat='record in OperatingCtrl.records'>
                 <td> {{ $index + 1 }} </td>
                 <td> {{ record.account_number}} </td>
                 <td> {{ record.account_txt }} </td>
@@ -104,7 +117,7 @@
             </tbody>
           </table>
           <h6 class="visible-print">
-            {{ 'OPERATING_ACCOUNT.TOTAL_CHARGE' | translate }}: <b>{{ debitTotal | currency:session.currency }}</b> | {{ 'OPERATING_ACCOUNT.TOTAL_PROFIT' | translate }}: <b>{{ creditTotal | currency:session.currency }}</b> | {{ 'COLUMNS.RESULT' | translate }} : <b>{{ Result | currency:session.currency }}</b>
+            {{ 'OPERATING_ACCOUNT.TOTAL_CHARGE' | translate }}: <b>{{ debitTotal | currency:OperatingCtrl.session.currency }}</b> | {{ 'OPERATING_ACCOUNT.TOTAL_PROFIT' | translate }}: <b>{{ creditTotal | currency:session.currency }}</b> | {{ 'COLUMNS.RESULT' | translate }} : <b>{{ Result | currency:session.currency }}</b>
           </h6>
         </div>
       </div>
@@ -116,9 +129,9 @@
           <td style="width:20%;">
             <b>{{ 'OPERATING_ACCOUNT.TOTAL_CHARGE' | translate }}: </b>
             <span>
-              <b>{{ debitTotal | currency:session.currency }}</b>
+              <b>{{ OperatingCtrl.debitTotal | currency:OperatingCtrl.session.currency }}</b>
             </span>
-            <span ng-if="session.searching">...</span>
+            <span ng-if="OperatingCtrl.session.searching">...</span>
           </td>
 
           <td style="width:20%;">
@@ -127,23 +140,20 @@
           <td style="width:20%;">
             <b>{{ 'OPERATING_ACCOUNT.TOTAL_PROFIT' | translate }}: </b>
             <span>
-              <b>{{ creditTotal | currency:session.currency }}</b>
+              <b>{{ OperatingCtrl.creditTotal | currency:OperatingCtrl.session.currency }}</b>
             </span>
-            <span ng-if="session.searching">...</span>
+            <span ng-if="OperatingCtrl.session.searching">...</span>
           </td>
 
           <td style="width:20%;">
             <b>{{ 'COLUMNS.RESULT' | translate }}: </b>
             <span>
-              <b>{{ Result | currency:session.currency }}</b>
+              <b>{{ OperatingCtrl.Result | currency:OperatingCtrl.session.currency }}</b>
             </span>
-            <span ng-if="session.searching">...</span>
+            <span ng-if="OperatingCtrl.session.searching">...</span>
           </td>
         </tbody>
       </table>
     </footer>
   </div>
 </div>
-
-
-

@@ -1,16 +1,16 @@
-<div ng-switch="state">
+<div ng-switch="ReportCtrl.state">
   <div ng-switch-default>
     <main>
       <div class="col-xs-12">
         <div class="panel panel-default">
           <div class="panel-heading">
-            <b> {{ "REPORT.CONFIGURE_REPORT" | translate }} : </b> {{ "BALANCE_MENSUELLE.TITLE" | translate }} 
+            <b> {{ "REPORT.CONFIGURE_REPORT" | translate }} : </b> {{ "BALANCE_MENSUELLE.TITLE" | translate }}
           </div>
 
           <div class="panel-body">
-            
-            <form name="configForm" novalidate>              
-              
+
+            <form name="configForm" novalidate>
+
               <div class="form-group">
                 <label class="control-label col-xs-4 required">
                   {{ "BALANCE_MENSUELLE.CHOOSE_PERIOD" | translate }}
@@ -19,8 +19,8 @@
                   <div class="pull-left form-group input-group">
                   <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
-                  </span>  
-                  <input id="periode" class="form-bhima" required type="month" ng-model="session.periode" rows="20" ng-change="">
+                  </span>
+                  <input id="periode" class="form-bhima" required type="month" ng-model="ReportCtrl.session.periode" rows="20" ng-change="">
                   </div>
                 </div>
               </div>
@@ -33,14 +33,14 @@
                   <div class="pull-left form-group input-group">
                   <span class="input-group-addon">
                     <span class="glyphicon glyphicon-stats"></span>
-                  </span>  
-                  <select class="form-bhima" required ng-model="session.classe" ng-options="classe as formatAccount(classe) for classe in session.classes" ></select>
+                  </span>
+                  <select class="form-bhima" required ng-model="ReportCtrl.session.classe" ng-options="classe as ReportCtrl.formatAccount(classe) for classe in ReportCtrl.session.classes" ></select>
                   </div>
                 </div>
-              </div>   
+              </div>
 
               <div class="pull-right input-group">
-                <button class="btn btn-sm btn-success" type="button" ng-click="getAccountBalance()" ng-disabled="configForm.$invalid">
+                <button class="btn btn-sm btn-success" type="button" ng-click="ReportCtrl.getAccountBalance()" ng-disabled="configForm.$invalid">
                   {{ "REPORT.GENERATE" | translate }}
                 </button>
               </div>
@@ -49,40 +49,44 @@
           </div>
         </div>
       </div>
-    </main>  
+    </main>
   </div>
-  <div ng-switch-when="generate">  
+  <div ng-switch-when="generate">
     <header>
-      {{ "BALANCE_MENSUELLE.TITLE" | translate }} 
-      <small ng-if="session.periode">{{ session.periode | date: "MMMM, yyyy" }}</small>
-      <small ng-if="session.classe"> / {{ "BALANCE_MENSUELLE.CLASS" | translate }} [{{ session.classe.number }}] {{ session.classe.name}}</small>    
+      {{ "BALANCE_MENSUELLE.TITLE" | translate }}
+      <small ng-if="ReportCtrl.session.periode">{{ ReportCtrl.session.periode | date: "MMMM, yyyy" }}</small>
+      <small ng-if="ReportCtrl.session.classe"> / {{ "BALANCE_MENSUELLE.CLASS" | translate }} [{{ ReportCtrl.session.classe.number }}] {{ ReportCtrl.session.classe.name}}</small>
     </header>
 
     <nav>
-      <div class="pull-right">        
-        <button class="btn btn-sm btn-default" ng-click="print()">
+      <div class="pull-right">
+        <button ng-click="ReportCtrl.download()" class="btn btn-default btn-sm square">
+          <span class="glyphicon glyphicon-save"></span>
+          {{ 'UTIL.EXPORT_TO_CSV' | translate }}
+        </button>
+        <button class="btn btn-sm btn-default" ng-click="ReportCtrl.print()">
           <span class="glyphicon glyphicon-print"></span>
           {{ "UTIL.PRINT" | translate }}
         </button>
 
         <button
           style="margin-left: 5px;"
-          ng-click="reconfigure()"
+          ng-click="ReportCtrl.reconfigure()"
           class="btn btn-sm btn-default pull-right">
           <span class="glyphicon glyphicon-repeat"></span>
         </button>
       </div>
-    
+
     </nav>
 
     <div class="report">
       <div class="reportBody">
         <div id="balance-mensuelle" class="reportFrame">
           <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
-          
-          <h4 class="visible-print">{{ "BALANCE_MENSUELLE.TITLE" | translate }} 
-            <small ng-if="session.periode">: {{ session.periode | date: "MMMM, yyyy" }}</small>
-            <small ng-if="session.classe"> / {{ "BALANCE_MENSUELLE.CLASS" | translate }} [{{ session.classe.number }}] {{ session.classe.name}}</small>
+
+          <h4 class="visible-print">{{ "BALANCE_MENSUELLE.TITLE" | translate }}
+            <small ng-if="ReportCtrl.session.periode">: {{ ReportCtrl.session.periode | date: "MMMM, yyyy" }}</small>
+            <small ng-if="ReportCtrl.session.classe"> / {{ "BALANCE_MENSUELLE.CLASS" | translate }} [{{ ReportCtrl.session.classe.number }}] {{ ReportCtrl.session.classe.name}}</small>
           </h4>
           <table id="patientTable" class="reportTable balance-mensuelle-table">
             <thead>
@@ -104,7 +108,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat='item in balance_mensuelle.data'>
+              <tr ng-repeat='item in ReportCtrl.balance_mensuelle.data'>
                 <td> {{ item.account_number }} </td>
                 <td class="account_text"> {{ item.account_txt }} </td>
                 <td> {{ item.old_debit | currency }} </td>
@@ -119,12 +123,12 @@
             <tfoot class="balance-mensuelle-footer">
               <tr>
                 <td colspan="2"><strong>{{ "BALANCE_MENSUELLE.TOTALS" | translate }}</strong></td>
-                <td>{{ session.sumOldDebit | currency }}</td>
-                <td>{{ session.sumOldCredit | currency }}</td>
-                <td>{{ session.sumDebit | currency }}</td>
-                <td>{{ session.sumCredit | currency }}</td>
-                <td>{{ session.sumOldDebit + session.sumDebit | currency }}</td>
-                <td>{{ session.sumOldCredit + session.sumCredit | currency }}</td>
+                <td>{{ ReportCtrl.session.sumOldDebit | currency }}</td>
+                <td>{{ ReportCtrl.session.sumOldCredit | currency }}</td>
+                <td>{{ ReportCtrl.session.sumDebit | currency }}</td>
+                <td>{{ ReportCtrl.session.sumCredit | currency }}</td>
+                <td>{{ ReportCtrl.session.sumOldDebit + ReportCtrl.session.sumDebit | currency }}</td>
+                <td>{{ ReportCtrl.session.sumOldCredit + ReportCtrl.session.sumCredit | currency }}</td>
               </tr>
             </tfoot>
           </table>
@@ -132,5 +136,5 @@
 
       </div>
     </div>
-  </div>    
-</div>  
+  </div>
+</div>
