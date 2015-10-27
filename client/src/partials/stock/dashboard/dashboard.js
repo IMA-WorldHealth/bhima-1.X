@@ -12,6 +12,12 @@ function StockDashboardController($q, $http, DataService, Dates) {
   vm.purchaseorders = {};
   vm.limits = { consumption : 10, donations : 10 };
 
+  // loading indicators
+  vm.indicators = {
+    consumption : false,
+    donations : false
+  };
+
   // startup the module
   startup();
 
@@ -27,6 +33,10 @@ function StockDashboardController($q, $http, DataService, Dates) {
 
   // get the top most consumed items
   function loadConsumptionDetails() {
+
+    // start loading indicator
+    vm.indicators.consumption = true;
+
     DataService.getConsumption()
     .then(function (response) {
       var items = response.data;
@@ -46,7 +56,8 @@ function StockDashboardController($q, $http, DataService, Dates) {
       });
 
       vm.consumption = items;
-    });
+    })
+    .finally(function () { vm.indicators.consumption = false; });
   }
 
   // load stock alerts
@@ -84,11 +95,15 @@ function StockDashboardController($q, $http, DataService, Dates) {
   /* Loads the most recent donations into the dashboard */
   function loadDonations() {
 
+    // start the donations loading indicator
+    vm.indicators.donations = true;
+
     // TODO -- make this number configurable
     DataService.getDonations(vm.limits.donations)
     .then(function (response) {
       vm.donations = response.data;
-    });
+    })
+    .finally(function () { vm.indicators.donations = false; });
   }
 
   // TODO - this belongs in a PurchaseOrders Service
