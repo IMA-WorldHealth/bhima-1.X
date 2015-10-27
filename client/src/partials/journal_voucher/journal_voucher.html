@@ -30,7 +30,7 @@
 
           <div class="panel-body">
 
-            <div class="form-group">
+            <div class="form-group" ng-class="{ 'has-error' : VoucherForm.description.$invalid && VoucherForm.description.$dirty }">
               <label class="control-label col-xs-2">{{ "COLUMNS.DESCRIPTION" | translate }}</label>
               <div class="col-xs-10">
                 <input type="text" class="form-bhima" name="description" ng-model="JournalVoucherCtrl.master.description" required>
@@ -40,7 +40,7 @@
               </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" ng-class="{ 'has-error' : VoucherForm.date.$invalid && VoucherForm.date.$dirty }">
               <label class="control-label col-xs-2">{{ "COLUMNS.DATE" | translate }}</label>
               <div class="input-group col-xs-10">
                 <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
@@ -51,7 +51,7 @@
               </p>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" ng-class="{ 'has-error' : VoucherForm.currencyId.$invalid && VoucherForm.currencyId.$dirty }">
               <label class="control-label col-xs-2">{{ "COLUMNS.CURRENCY" | translate }}</label>
               <div class="col-xs-10">
                 <select class="form-bhima" name="currencyId" ng-model="JournalVoucherCtrl.master.currencyId" ng-options="currency.id as currency.symbol for currency in JournalVoucherCtrl.currencies" required>
@@ -198,20 +198,26 @@
                 <tr>
 
                 <tr>
-                  <th colspan="6"  style="text-align:center;">
+                  <th colspan="6" class="text-center">
                     <p class="help-block" ng-if="JournalVoucherCtrl.clientTableError && !JournalVoucherCtrl.serverSuccessMessage">
-                      <i class="glyphicon glyphicon-exclamation-sign"></i>
-                      {{ "ERROR.ERR_TRANSACTION_FORMAT" | translate }}
-                      <!-- The transaction doesn't look correctly formatted.  Did you forget an account? -->
+                      <span class="text-danger">
+                        <i class="glyphicon glyphicon-exclamation-sign"></i>
+                        {{ "ERROR.ERR_TRANSACTION_FORMAT" | translate }}
+                        <!-- The transaction doesn't look correctly formatted.  Did you forget an account? -->
+                      </span>
                     </p>
-                    <p class="help-block" ng-if="JournalVoucherCtrl.serverFailureMessage">
-                      <i class="glyphicon glyphicon-exclamation-sign"></i>
-                      {{ JournalVoucherCtrl.serverFailureMessage | translate }}
+                    <p class="help-block text-danger" ng-if="JournalVoucherCtrl.serverFailureMessage">
+                      <span class="text-danger">
+                        <i class="glyphicon glyphicon-exclamation-sign text-danger"></i>
+                        {{ JournalVoucherCtrl.serverFailureMessage | translate }}
+                      </span>
                     </p>
-                    <p style="font-weight:bold; color:green;" ng-if="JournalVoucherCtrl.serverSuccessMessage">
-                      <i class="glyphicon glyphicon-ok"></i>
-                      {{ JournalVoucherCtrl.serverSuccessMessage | translate }}
-                      <!-- Post Successful! -->
+                    <p class="help-block" ng-if="JournalVoucherCtrl.serverSuccessMessage">
+                      <span class="text-success">
+                        <i class="glyphicon glyphicon-ok"></i>
+                        {{ JournalVoucherCtrl.serverSuccessMessage | translate }}
+                        <!-- Post Successful! -->
+                      </span>
                     </p>
                   </th>
                 <tr>
