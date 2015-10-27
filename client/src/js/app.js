@@ -547,7 +547,7 @@ function bhimaconfig($routeProvider) {
     controller : 'inventory.distribution',
     templateUrl : 'partials/inventory/distribution/distribution.html'
   })
-  .when('/stock/dashboard/', {
+  .when('/stock/dashboard', {
     controller : 'StockDashboardController as StockDashCtrl',
     templateUrl : 'partials/stock/dashboard/dashboard.html'
   })
