@@ -611,7 +611,9 @@
    "TOTAL_AMOUNT_DUE"      : "Total Amount due",
    "TOTAL_AMOUNT_PAID"     : "Total Amount paid",
    "TOTAL_CREDIT"          : "Total Credit",
+   "TOTAL_COST"            : "Total Cost",
    "TOTAL_DEBIT"           : "Total debit",
+   "TOTAL_ITEMS"           : "Total Number of Items",
    "TOTAL_PRICE"           : "Total Price",
    "TRACKING_NUMBER"       : "Tracking Number",
    "TRANSACTIONS"          : "Transactions",
@@ -892,6 +894,7 @@
   "ADD"              : "Add a Depot",
   "ALERT"            : "Manage depots stores from here",
   "ALL"              : "All Depots",
+  "NO_LOTS"        : "No Lots Available",
   "CHANGE_DEPOT"      : "Are you sure you want to change depots?  The current depot is %depot%.",
   "CONFIRM_SELECTION" : "Are you sure you want to select %depot%?",
   "DELETE_SUCCESS"  : "Successfully deleted a depot.",
@@ -899,6 +902,7 @@
   "DISTRIBUTION"   : {
     "ANNUL"    : "Annul this Transaction",
     "ANNULLED" : "Annulled",
+    "TYPE_INVENTORY_ITEM"      : "Type the drug name or drug code",
     "LOSSES"   : "Stock Losses",
     "NO_ROWS"  : "No distributions found within this time frame!",
     "SERVICES" : "Distributions to Services",
@@ -911,6 +915,16 @@
     "CANCEL" : {
       "TITLE" : "Cancel Pharmacy Distribution",
       "MESSAGE" : "You are about to cancel a distribution made from the pharmacy.  Please make sure these details are correct."
+    },
+    "LOSS": {
+      "FORM_TITLE"        : "Stock Loss Form",
+      "KEY"               : "Stock loss",
+      "LOSS_RECORDS"      : "Stock loss records",
+      "NO_DEPOT"          : "No store",
+      "NO_LOSS_RECORDS"   : "No stock loss recorded",
+      "SEE_RECEIPT"       : "See",
+      "SUBMIT_ERROR"    : "Please make sure that all your data is correctly entered.",
+      "TITLE"             : "Stock loss"
     }
   },
   "EDIT"            : "Edit depot information",
@@ -2459,6 +2473,7 @@
    "INVENTORY_ITEM"        : "Select an Inventory Item",
    "LANGUAGE"              : "Select a Language",
    "LOCATION"              : "Select a Location",
+   "LOT_NUMBER"            : "Select a Lot Number",
    "NAME"                  : "Select a Name",
    "NONE"                  : "None",
    "OTHER"                 : "Other",
@@ -2641,16 +2656,6 @@
      "STORE"                : "Store",
      "TITLE"                : "Stock Integration",
      "SUBMIT"               : "Submit"
-     },
-  "LOSS": {
-     "KEY"               : "Stock loss",
-     "LOSS_GENERAL_INFO" : "Summary",
-     "LOSS_RECORDS"      : "Stock loss records",
-     "NO_DEPOT"          : "No store",
-     "NO_LOSS_RECORDS"   : "No stock loss recorded",
-     "SEE_RECEIPT"       : "See",
-     "SUBMIT"            : "Submit",
-     "TITLE"             : "Stock loss"
      },
   "MOVEMENT": {
      "DEPOT_FROM"            : "Source Store",

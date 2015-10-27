@@ -272,11 +272,11 @@ function getAvailableLots(req, res, next) {
       depot = req.params.depotId;
 
   sql =
-    'SELECT s.tracking_number, s.lot_number, s.quantity, s.code, s.expiration_date, s.label FROM (' +
-      'SELECT stock.tracking_number, stock.lot_number, outflow.depot_entry, outflow.depot_exit, ' +
+    'SELECT s.unit_price, s.tracking_number, s.lot_number, s.quantity, s.code, s.expiration_date, s.label FROM (' +
+      'SELECT purchase_item.unit_price, stock.tracking_number, stock.lot_number, outflow.depot_entry, outflow.depot_exit, ' +
         'SUM(CASE WHEN outflow.depot_entry = ? THEN outflow.quantity ELSE -outflow.quantity END) AS quantity, ' +
         'stock.expiration_date, inventory.code, inventory.text AS label ' +
-      'FROM inventory JOIN stock JOIN (' +
+      'FROM inventory JOIN stock JOIN purchase JOIN purchase_item JOIN (' +
         'SELECT uuid, depot_entry, depot_exit, tracking_number, quantity, date ' +
         'FROM movement ' +
         'UNION ' +
@@ -285,10 +285,13 @@ function getAvailableLots(req, res, next) {
         'WHERE consumption.canceled = 0' +
       ') AS outflow ON ' +
         'inventory.uuid = stock.inventory_uuid AND ' +
-        'stock.tracking_number = outflow.tracking_number ' +
+        'stock.tracking_number = outflow.tracking_number AND ' +
+        'purchase.uuid = stock.purchase_order_uuid AND ' +
+        'purchase_item.purchase_uuid = purchase.uuid ' +
       'WHERE outflow.depot_entry = ? OR outflow.depot_exit = ? ' +
       'GROUP BY stock.tracking_number' +
-    ') AS s;';
+    ') AS s ' +
+    'WHERE s.quantity > 0;';
 
   return db.exec(sql, [depot, depot, depot])
   .then(function (rows) {
@@ -332,7 +335,8 @@ function getAvailableLotsByInventoryId(req, res, next) {
       'WHERE outflow.depot_entry = ? OR outflow.depot_exit = ? ' +
       'AND inventory.code = ? ' +
       'GROUP BY stock.tracking_number' +
-    ') AS s;';
+    ') AS s ' +
+    'WHERE s.quantity > 0;';
 
   return db.exec(sql, [depot, depot, depot, uuid])
   .then(function (rows) {
@@ -371,7 +375,8 @@ function getExpiredLots(req, res, next) {
         'stock.tracking_number = outflow.tracking_number ' +
       'WHERE stock.expiration_date <= CURDATE() AND (outflow.depot_entry = ? OR outflow.depot_exit = ?) ' +
       'GROUP BY stock.tracking_number' +
-    ') AS s;';
+    ') AS s ' +
+    'WHERE s.quantity > 0;';
 
   db.exec(sql, [depot, depot, depot])
   .then(function (rows) {

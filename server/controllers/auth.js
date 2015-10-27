@@ -41,8 +41,10 @@ exports.login = function (req, res, next) {
     //   the current enterprise
     //   the current project
     sql =
-      'SELECT e.id, e.name, e.abbr, e.phone, e.email, e.location_id, e.currency_id, e.po_box ' +
-      'FROM enterprise AS e WHERE e.id = ?;';
+      'SELECT e.id, e.name, e.abbr, e.phone, e.email, e.location_id, e.currency_id, ' +
+        'c.symbol AS currencySymbol, e.po_box ' +
+      'FROM enterprise AS e JOIN currency AS c ON e.currency_id = c.id ' +
+      'WHERE e.id = ?;';
 
     return db.exec(sql, [user.enterprise_id]);
   })
@@ -74,7 +76,7 @@ exports.login = function (req, res, next) {
     });
   })
   .catch(function (err) {
-    res.status(401).send(err);  
+    res.status(401).send(err);
   })
   .done();
 };

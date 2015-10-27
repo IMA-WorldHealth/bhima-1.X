@@ -16,8 +16,10 @@ function StockDataService($http) {
   /* ------------------------------------------------------------------------ */
 
   // GET depots for current enterprise
-  function getDepots() {
-    return $http.get('/depots');
+  function getDepots(id) {
+    return (id === undefined) ?
+      $http.get('/depots') :
+      $http.get('/depots/' + id);
   }
 
   function getConsumption() {

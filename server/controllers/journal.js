@@ -34,7 +34,7 @@ tableRouter = {
   'confirm_direct_purchase'    : require('./journal/purchase').directPurchase,
   'distribution_patient'       : require('./journal/distribution').patient,
   'distribution_service'       : require('./journal/distribution').service,
-  'consumption_loss'           : require('./journal/distribution').loss,
+  'distribution_loss'          : require('./journal/distribution').loss,
   'salary_payment'             : require('./journal/primarycash').salaryPayment,
   'employee_invoice'           : require('./journal/employee').invoice,
   'promesse_payment'           : require('./journal/employee').promisePayment,
@@ -62,9 +62,12 @@ tableRouter = {
 // It is my impression that these journal modules are called from other
 // routes that are not HTTP endpoints.  Perhaps it would be better to have
 // two separate functions for doing that, rather than a single endpoint.
+//
+// This should be a promise.
 function request (table, id, user_id, done, debCaution, details) {
 
   console.log('Call for TABLE:', table);
+
   // handles all requests coming from the client
   if (debCaution >= 0) {
     tableRouter[table](id, user_id, done, debCaution);
