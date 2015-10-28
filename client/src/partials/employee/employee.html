@@ -5,22 +5,22 @@
 <nav>
   <div class="pull-left">
     <ol class="breadcrumb">
-      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li><a href="#/"><i class="glyphicon glyphicon-home"></i></a></li>
       <li class="active">{{ "EMPLOYEE.TITLE" | translate }}</li>
     </ol>
   </div>
 
   <div class="pull-right">
     <button class="btn btn-sm btn-default" ng-click="transitionRegister()">
-      <span class="glyphicon glyphicon-plus-sign"></span>
+      <i class="glyphicon glyphicon-plus-sign"></i>
       {{ "EMPLOYEE.REGISTER" | translate }}
     </button>
   </div>
 </nav>
 
-<main>
-  <div class="row margin-top-10" style="height: 90%">
-    <div class="col-xs-6" style="height: 100%">
+<main class="extend margin-top-10">
+  <div class="row">
+    <div class="col-xs-6" style="height: 650px;">
       <div class="panel panel-primary" style="height: 100%; overflow-y: auto;">
         <div class="panel-heading">
           {{ "EMPLOYEE.EMPLOYEES" | translate }}
@@ -41,21 +41,28 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              ng-repeat="item in employee.data | orderBy:'name'"
-              ng-class="{'rowSelected' : session.employee.id == item.id}">
+            <tr ng-if="session.loading" class="text-center">
+              <td colspan="6"><loading-indicator></loading-indicator></td>
+            </tr>
+
+            <tr ng-if="!session.loading && employee.data.length === 0">
+              <td colspan="6">
+                <div class="alert alert-warning">
+                  <i class="glyphicon glyphicon-inbox"></i> {{ 'EMPLOYEE.NONE_FOUND' | translate }}
+                </div>
+              </td>
+            </tr>
+
+            <tr ng-repeat="item in employee.data | orderBy:'name'"
+              ng-class="{'rowSelected' : session.employee.id === item.id}">
               <td>
-                <span ng-if="!item.code_employee" class="glyphicon glyphicon-minus-sign"></span>{{ item.code_employee }}
+                <i ng-if="!item.code_employee" class="glyphicon glyphicon-minus-sign"></i> {{ item.code_employee }}
               </td>
               <td>{{ item.prenom }}<span ng-if="item.prenom && item.name">,</span> {{ item.name }} <span ng-if="item.name && item.postnom"> - </span> {{ item.postnom }}</td>
               <td>{{ item.fonction_txt }}</td>
               <td>{{ item.code_grade }}</td>
-              <td> <span class="glyphicon" ng-class="{'glyphicon-ok' : !!item.locked}"> </td>
-              <td><span ng-click="editEmployee(item)" class="btn-link glyphicon glyphicon-circle-arrow-right"></span></td>
-            </tr>
-
-            <tr ng-if="!employee.data.length">
-              <td colspan="6"><div class="alert alert-warning square"><span class="glyphicon glyphicon-inbox"></span> {{ 'EMPLOYEE.NONE_FOUND' | translate }}</div></td>
+              <td><i class="glyphicon glyphicon-ok" ng-if="!!item.locked"></i></td>
+              <td><a ng-click="editEmployee(item)"> <i class="glyphicon glyphicon-circle-arrow-right"></i></a></td>
             </tr>
           </tbody>
         </table>
@@ -63,190 +70,191 @@
     </div>
 
     <div class="col-xs-6">
-      <div>
-        <div ng-if="!session.state">
-          <div class="alert alert-info">
-            <h4>{{ 'EMPLOYEE.TITLE' | translate }}</h4>
-            <p>{{ 'EMPLOYEE.INFO' | translate }}</p>
-          </div>
+      <div ng-if="!session.state">
+        <div class="alert alert-info">
+          <h4>{{ 'EMPLOYEE.TITLE' | translate }}</h4>
+          <p>{{ 'EMPLOYEE.INFO' | translate }}</p>
         </div>
+      </div>
 
-        <div ng-if="session.state">
-          <form class="form-horizontal" name="employeeForm" novalidate>
-            <fieldset>
-              <!-- TODO Not semantic or clean -->
-              <legend>{{ session.state.title | translate }}</legend>
+      <div ng-if="session.state">
+        <form class="form-horizontal" name="EmployeeForm" novalidate>
+          <fieldset>
+            <!-- TODO Not semantic or clean -->
+            <legend>{{ session.state.title | translate }}</legend>
 
-              <div class="form-group">
-                <label class="col-xs-3 control-label required">{{ "EMPLOYEE.FIRST_NAME" | translate }}:</label>
-                <div class="col-xs-9">
-                  <input class="form-bhima" ng-model="session.employee.prenom" required>
-                </div>
+            <div class="form-group">
+              <label class="col-xs-3 control-label required">{{ "EMPLOYEE.FIRST_NAME" | translate }}:</label>
+              <div class="col-xs-9">
+                <input class="form-bhima" ng-model="session.employee.prenom" required>
               </div>
+            </div>
 
-              <div class="form-group">
-                <label class="col-xs-3 control-label required">{{ "COLUMNS.NAME" | translate }}:</label>
-                <div class="col-xs-9">
-                  <input class="form-bhima" ng-model="session.employee.name" required>
-                </div>
+            <div class="form-group">
+              <label class="col-xs-3 control-label required">{{ "COLUMNS.NAME" | translate }}:</label>
+              <div class="col-xs-9">
+                <input class="form-bhima" ng-model="session.employee.name" required>
               </div>
+            </div>
 
-              <div class="form-group">
-                <label class="col-xs-3 control-label required">{{ "EMPLOYEE.LAST_NAME" | translate }}:</label>
-                <div class="col-xs-9">
-                  <input class="form-bhima" ng-model="session.employee.postnom" required>
-                </div>
+            <div class="form-group">
+              <label class="col-xs-3 control-label required">{{ "EMPLOYEE.LAST_NAME" | translate }}:</label>
+              <div class="col-xs-9">
+                <input class="form-bhima" ng-model="session.employee.postnom" required>
               </div>
+            </div>
 
-              <div class="form-group" >
-                <label for="employee-dob" class="col-xs-3 control-label required">{{ "COLUMNS.DOB" | translate }}:</label>
-                <div class="col-xs-9">
-                  <input id="employee-dob" required type="date" class="form-bhima"  ng-model="session.employee.dob">
-                </div>
+            <div class="form-group" >
+              <label for="employee-dob" class="col-xs-3 control-label required">{{ "COLUMNS.DOB" | translate }}:</label>
+              <div class="col-xs-9">
+                <input id="employee-dob" required type="date" class="form-bhima"  ng-model="session.employee.dob">
               </div>
+            </div>
 
-              <div class="form-group">
-                <label class="col-xs-3 control-label required">{{ "EMPLOYEE.SEX" | translate }}:</label>
-                <div class="col-xs-9">
-                  <select class="form-bhima" ng-model="session.employee.sexe">
-                    <option value="" disabled="disabled">-- {{ "SELECT.EMPLOYEE_SEX" | translate }} --</option>
-                    <option>M</option><option>F</option>
-                  </select>
-                </div>
+            <div class="form-group">
+              <label class="col-xs-3 control-label required">{{ "EMPLOYEE.SEX" | translate }}:</label>
+              <div class="col-xs-9">
+                <select class="form-bhima" ng-model="session.employee.sexe">
+                  <option value="" disabled="disabled">-- {{ "SELECT.EMPLOYEE_SEX" | translate }} --</option>
+                  <option>M</option>
+                  <option>F</option>
+                </select>
               </div>
+            </div>
 
-              <div class="form-group">
-                <label class="col-xs-3 control-label">{{ "EMPLOYEE.NB_SPOUSE" | translate }}:</label>
-                <div class="col-xs-9">
-                  <input class="form-bhima" type="number" ng-model="session.employee.nb_spouse">
-                </div>
+            <div class="form-group">
+              <label class="col-xs-3 control-label">{{ "EMPLOYEE.NB_SPOUSE" | translate }}:</label>
+              <div class="col-xs-9">
+                <input class="form-bhima" type="number" ng-model="session.employee.nb_spouse">
               </div>
+            </div>
 
-              <div class="form-group">
-                <label class="col-xs-3 control-label">{{ "EMPLOYEE.NB_CHILDREN" | translate }}:</label>
-                <div class="col-xs-9">
-                  <input class="form-bhima" type="number" ng-model="session.employee.nb_enfant">
-                </div>
+            <div class="form-group">
+              <label class="col-xs-3 control-label">{{ "EMPLOYEE.NB_CHILDREN" | translate }}:</label>
+              <div class="col-xs-9">
+                <input class="form-bhima" type="number" ng-model="session.employee.nb_enfant">
               </div>
+            </div>
 
-              <div class="form-group" >
-                <label for="employee-dob" class="col-xs-3 control-label">{{ "EMPLOYEE.LOCKED" | translate }}</label>
-                <div class="col-xs-9">
-                  <input type="checkbox" ng-model="session.employee.locked"  ng-true-value="1" ng-false-value="0" ng-checked="session.employee.locked">
-                </div>
+            <div class="form-group" >
+              <label for="employee-dob" class="col-xs-3 control-label">{{ "EMPLOYEE.LOCKED" | translate }}</label>
+              <div class="col-xs-9">
+                <input type="checkbox" ng-model="session.employee.locked"  ng-true-value="1" ng-false-value="0" ng-checked="session.employee.locked">
               </div>
+            </div>
 
-              <div class="form-group" >
-                <label for="employee-dob" class="col-xs-3 control-label required">{{ "EMPLOYEE.DATE_EMBAUCHE" | translate }}</label>
-                <div class="col-xs-9">
-                  <input id="employee-dob" required type="date" class="form-bhima"  ng-model="session.employee.date_embauche" required>
-                </div>
+            <div class="form-group" >
+              <label for="employee-dob" class="col-xs-3 control-label required">{{ "EMPLOYEE.DATE_EMBAUCHE" | translate }}</label>
+              <div class="col-xs-9">
+                <input id="employee-dob" required type="date" class="form-bhima"  ng-model="session.employee.date_embauche" required>
               </div>
+            </div>
 
-              <div class="form-group">
-                <label class="col-xs-3 control-label required">{{ "COLUMNS.CODE" | translate }}:</label>
-                <div class="col-xs-9">
-                  <input class="form-bhima" ng-model="session.employee.code" required>
-                </div>
+            <div class="form-group">
+              <label class="col-xs-3 control-label required">{{ "COLUMNS.CODE" | translate }}:</label>
+              <div class="col-xs-9">
+                <input class="form-bhima" ng-model="session.employee.code" required>
               </div>
+            </div>
 
-              <div class="form-group">
-                <label class="col-xs-3 control-label required">{{ "EMPLOYEE.SERVICE" | translate }}:</label>
-                <div class="col-xs-9">
-                  <select class="form-bhima" ng-model="session.employee.service_id" ng-options="sv.id as formatService(sv) for sv in services.data | orderBy:'name'">
-                    <option value="" disabled="disabled">--- {{ "SELECT.EMPLOYEE_SERVICE" | translate }} ---</option>
-                  </select>
-                </div>
+            <div class="form-group">
+              <label class="col-xs-3 control-label required">{{ "EMPLOYEE.SERVICE" | translate }}:</label>
+              <div class="col-xs-9">
+                <select class="form-bhima" ng-model="session.employee.service_id" ng-options="sv.id as formatService(sv) for sv in services.data | orderBy:'name'">
+                  <option value="" disabled="disabled">--- {{ "SELECT.EMPLOYEE_SERVICE" | translate }} ---</option>
+                </select>
               </div>
+            </div>
 
-              <div class="form-group">
-                <label class="col-xs-3 control-label required">{{ "EMPLOYEE.GRADE" | translate }}:</label>
-                <div class="col-xs-9">
-                  <select class="form-bhima" ng-model="session.employee.grade_id" ng-options="gr.uuid as formatGrade(gr) for gr in grade.data| orderBy:'text'" required>
-                    <option value="" disabled="disabled">--- {{ "SELECT.EMPLOYEE_GRADE" | translate }} ---</option>
-                  </select>
-                </div>
+            <div class="form-group">
+              <label class="col-xs-3 control-label required">{{ "EMPLOYEE.GRADE" | translate }}:</label>
+              <div class="col-xs-9">
+                <select class="form-bhima" ng-model="session.employee.grade_id" ng-options="gr.uuid as formatGrade(gr) for gr in grade.data| orderBy:'text'" required>
+                  <option value="" disabled="disabled">--- {{ "SELECT.EMPLOYEE_GRADE" | translate }} ---</option>
+                </select>
               </div>
+            </div>
 
-              <div class="form-group">
-                <label class="col-xs-3 control-label required">{{ "EMPLOYEE.FUNCTION" | translate }}:</label>
-                <div class="col-xs-9">
-                  <select class="form-bhima" ng-model="session.employee.fonction_id" ng-options="fx.id as fx.fonction_txt for fx in fonction.data | orderBy:'fonction_txt'" required>
-                    <option value="" disabled="disabled">--- {{ "SELECT.EMPLOYEE_FUNCTION" | translate }} ---</option>
-                  </select>
-                </div>
+            <div class="form-group">
+              <label class="col-xs-3 control-label required">{{ "EMPLOYEE.FUNCTION" | translate }}:</label>
+              <div class="col-xs-9">
+                <select class="form-bhima" ng-model="session.employee.fonction_id" ng-options="fx.id as fx.fonction_txt for fx in fonction.data | orderBy:'fonction_txt'" required>
+                  <option value="" disabled="disabled">--- {{ "SELECT.EMPLOYEE_FUNCTION" | translate }} ---</option>
+                </select>
               </div>
+            </div>
 
-              <div class="form-group">
-                <label class="col-xs-3 control-label required">{{ "EMPLOYEE.CREDITOR_GROUP" | translate }}:</label>
-                <div class="col-xs-9">
-                  <select class="form-bhima" ng-model="session.employee.creditor_group_uuid" ng-options="group.uuid as group.name for group in creditorGroup.data | orderBy:'name'" required>
-                    <option value="" disabled="disabled">--- {{ "SELECT.CREDITOR_GROUP" | translate }} ---</option>
-                  </select>
-                </div>
+            <div class="form-group">
+              <label class="col-xs-3 control-label required">{{ "EMPLOYEE.CREDITOR_GROUP" | translate }}:</label>
+              <div class="col-xs-9">
+                <select class="form-bhima" ng-model="session.employee.creditor_group_uuid" ng-options="group.uuid as group.name for group in creditorGroup.data | orderBy:'name'" required>
+                  <option value="" disabled="disabled">--- {{ "SELECT.CREDITOR_GROUP" | translate }} ---</option>
+                </select>
               </div>
+            </div>
 
-              <div class="form-group">
-                <label class="col-xs-3 control-label required">{{ "EMPLOYEE.DEBITOR_GROUP" | translate }}:</label>
-                <div class="col-xs-9">
-                  <select class="form-bhima" ng-model="session.employee.debitor_group_uuid" ng-options="group.uuid as group.name for group in debtorGroup.data | orderBy:'name'" required>
-                    <option value="" disabled="disabled">--- {{ "SELECT.DEBITOR_GROUP" | translate }} ---</option>
-                  </select>
-                </div>
+            <div class="form-group">
+              <label class="col-xs-3 control-label required">{{ "EMPLOYEE.DEBITOR_GROUP" | translate }}:</label>
+              <div class="col-xs-9">
+                <select class="form-bhima" ng-model="session.employee.debitor_group_uuid" ng-options="group.uuid as group.name for group in debtorGroup.data | orderBy:'name'" required>
+                  <option value="" disabled="disabled">--- {{ "SELECT.DEBITOR_GROUP" | translate }} ---</option>
+                </select>
               </div>
+            </div>
 
-              <div class="form-group">
-                <label class="col-xs-3 control-label">{{ "EMPLOYEE.PHONE" | translate }}:</label>
-                <div class="col-xs-9">
-                  <input class="form-bhima" ng-model="session.employee.phone">
-                </div>
+            <div class="form-group">
+              <label class="col-xs-3 control-label">{{ "EMPLOYEE.PHONE" | translate }}:</label>
+              <div class="col-xs-9">
+                <input class="form-bhima" ng-model="session.employee.phone">
               </div>
+            </div>
 
-              <div class="form-group">
-                <label class="col-xs-3 control-label">{{ "EMPLOYEE.EMAIL" | translate }}:</label>
-                <div class="col-xs-9">
-                  <input class="form-bhima" ng-model="session.employee.email">
-                </div>
+            <div class="form-group">
+              <label class="col-xs-3 control-label">{{ "EMPLOYEE.EMAIL" | translate }}:</label>
+              <div class="col-xs-9">
+                <input class="form-bhima" ng-model="session.employee.email">
               </div>
+            </div>
 
-              <div class="form-group">
-                <label class="col-xs-3 control-label">{{ "EMPLOYEE.ADDRESS" | translate }}:</label>
-                <div class="col-xs-9">
-                  <input class="form-bhima" ng-model="session.employee.adresse">
-                </div>
+            <div class="form-group">
+              <label class="col-xs-3 control-label">{{ "EMPLOYEE.ADDRESS" | translate }}:</label>
+              <div class="col-xs-9">
+                <input class="form-bhima" ng-model="session.employee.adresse">
               </div>
+            </div>
 
-              <div class="form-group">
-                <label class="col-xs-3 control-label required">{{ "EMPLOYEE.LOCATION" | translate }}:</label>
-                <div class="col-xs-9">
-                  <select class="form-bhima" ng-model="session.employee.location_id" ng-options="loc.uuid as formatLocation(loc) for loc in location.data | orderBy:'village'" required>
-                  <option value="" disabled="disabled">-- {{ "SELECT.LOCATION" | translate }} --</option>
-                  </select>
-                </div>
+            <div class="form-group">
+              <label class="col-xs-3 control-label required">{{ "EMPLOYEE.LOCATION" | translate }}:</label>
+              <div class="col-xs-9">
+                <select class="form-bhima" ng-model="session.employee.location_id" ng-options="loc.uuid as formatLocation(loc) for loc in location.data | orderBy:'village'" required>
+                <option value="" disabled="disabled">-- {{ "SELECT.LOCATION" | translate }} --</option>
+                </select>
               </div>
+            </div>
 
-              <div class="form-group">
-                <label class="col-xs-3 control-label">{{ "EMPLOYEE.BANK" | translate }}:</label>
-                <div class="col-xs-9">
-                  <input class="form-bhima" ng-model="session.employee.bank">
-                </div>
+            <div class="form-group">
+              <label class="col-xs-3 control-label">{{ "EMPLOYEE.BANK" | translate }}:</label>
+              <div class="col-xs-9">
+                <input class="form-bhima" ng-model="session.employee.bank">
               </div>
+            </div>
 
-              <div class="form-group">
-                <label class="col-xs-3 control-label">{{ "EMPLOYEE.BANK_ACCOUNT" | translate }}:</label>
-                <div class="col-xs-9">
-                  <input class="form-bhima" ng-model="session.employee.bank_account">
-                </div>
+            <div class="form-group">
+              <label class="col-xs-3 control-label">{{ "EMPLOYEE.BANK_ACCOUNT" | translate }}:</label>
+              <div class="col-xs-9">
+                <input class="form-bhima" ng-model="session.employee.bank_account">
               </div>
+            </div>
 
-              <div class="pull-right">
-                <button ng-disabled="employeeForm.$invalid" class="btn btn-success btn-sm" ng-click="session.state.method()">
-                  {{ session.state.submit | translate }}
-                </button>
-              </div>
-            </fieldset>
-          </form>
-        </div>
+            <div class="pull-right">
+              <button ng-disabled="EmployeeForm.$invalid" class="btn btn-success btn-sm" ng-click="session.state.method()">
+                {{ session.state.submit | translate }}
+              </button>
+            </div>
+
+          </fieldset>
+        </form>
+        <br/ >
       </div>
     </div>
   </div>
