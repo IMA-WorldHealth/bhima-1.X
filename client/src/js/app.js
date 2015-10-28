@@ -416,7 +416,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/primary_cash/expense/payroll.html'
   })
   .when('/primary_cash/expense/cash_return/:cashbox', {
-    controller : 'cashReturn',
+    controller : 'PrimaryCashReturnController as ReturnCtrl',
     templateUrl : 'partials/primary_cash/expense/cash_return.html'
   })
   .when('/primary_cash/expense/multi_payroll/', {
