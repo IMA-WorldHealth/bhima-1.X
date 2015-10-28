@@ -29,7 +29,7 @@
       style="margin-left: 5px;"
       ng-click="reconfigure()"
       class="btn btn-sm btn-default">
-      {{'PRIMARY_CASH.EXPENSE.SELECT_ACCOUNT' | translate}}
+      {{ 'PRIMARY_CASH.EXPENSE.SELECT_ACCOUNT' | translate }}
       <span class="glyphicon glyphicon-repeat"></span>
     </button>
 
@@ -59,7 +59,8 @@
               type="text"
               ng-model="session.ac"
               placeholder="Selectionner compte"
-              typeahead="ac as formatAccount(ac) for ac in session.accounts | filter:$viewValue | limitTo:15" typeahead-template-url="AccountList.html"
+              typeahead="ac as formatAccount(ac) for ac in session.accounts | filter:$viewValue | limitTo:15"
+              typeahead-template-url="AccountList.html"
               typeahead-on-select="setConfiguration(session.ac)"
               >
             <span class="input-group-btn">
@@ -71,7 +72,7 @@
     </div>
   </div>
 
-  <div ng-if="session.configured"  class="row margin-top-10">
+  <div ng-if="session.configured" class="row margin-top-10">
     <div class="col-xs-6">
       <div class="panel panel-primary">
         <div class="panel-heading">
@@ -83,13 +84,13 @@
 
             <div class="form-group" style="padding-right: 0;">
               <label>{{ "PRIMARY_CASH.EXPENSE.EXPENSE_DATE" | translate }}</label>
-              <input class="form-bhima" type="date" ng-model="session.receipt.date" max="{{ session.tomorrow }}" required>
+              <input class="form-bhima" type="date" ng-model="session.receipt.date" ng-max="{{ session.tomorrow }}" max="{{ session.today | date:'yyyy-MM-dd' }}"  required>
               <p ng-if="!session.hasDailyRate">
                 <b class="text-danger"><span class="glyphicon glyphicon-warning-sign"></span>
-                  {{ 'EXCHANGE.NO_EXCHANGE_RATE' | translate}} {{session.receipt.date | date}}
+                  {{ 'EXCHANGE.NO_EXCHANGE_RATE' | translate }} {{session.receipt.date | date }}
                 </b>
                 <b class="text-info">
-                  <a title="{{ 'EXCHANGE.SET_HERE' | translate}}" href="#/exchange_rate">
+                  <a title="{{ 'EXCHANGE.SET_HERE' | translate }}" href="#/exchange_rate">
                     <span class="glyphicon glyphicon-cog"></span>
                   </a>
                 </b>

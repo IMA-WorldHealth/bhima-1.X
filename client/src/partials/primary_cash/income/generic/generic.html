@@ -85,7 +85,7 @@
 
             <div class="form-group" style="padding-right: 0;">
               <label>{{ "PRIMARY_CASH.INCOME.DATE" | translate }}</label>
-              <input type="date" class="form-bhima" ng-model="session.receipt.date" max="{{ session.tomorrow }}" required>
+              <input type="date" class="form-bhima" ng-model="session.receipt.date" ng-max="{{ session.tomorrow }}" max="{{ session.today | date:'yyyy-MM-dd' }}" required>
               <p ng-if="!session.hasDailyRate">
                 <b class="text-danger"><span class="glyphicon glyphicon-warning-sign"></span>
                   {{ 'EXCHANGE.NO_EXCHANGE_RATE' | translate}} {{session.receipt.date | date}}
