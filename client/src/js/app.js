@@ -220,7 +220,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/reports/service_exploitation/service_exploitation.html'
   })
   .when('/reports/global_transaction/', {
-    controller: 'report.global_transaction',
+    controller: 'ReportGlobalTransactionController as ReportCtrl',
     templateUrl: 'partials/reports/global_transaction/global_transaction.html'
   })
   .when('/reports/balance_mensuelle/', {

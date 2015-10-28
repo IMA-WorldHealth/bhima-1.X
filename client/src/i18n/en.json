@@ -51,14 +51,14 @@
 "ALLTRANSACTIONS": {
    "DATA_POSTED"  : "Posted Data Successfully",
    "DAY"          : "Today",
-   "DEFAULT"      : "ALL TRANSACTIONS STATE",
+   "DEFAULT"      : "All transactions state",
    "FISCAL_YEAR"  : "This fiscal year",
    "FROMSTARTING" : "Since the begining of the time",
    "MONTH"        : "This month",
    "POSTED_ITEM"  : "Posted item successfully",
    "SEARCH"       : "search",
-   "SELECTED"     : "TRANSACTIONS STATE FOR ACCOUNT : ",
-   "TITLE"        : "ALL TRANSACTIONS STATE",
+   "SELECTED"     : "Transactions state for account : ",
+   "TITLE"        : "All transactions state",
    "WEEK"         : "This week"
    },
 "ANALYSIS_CENTER": {
@@ -1288,7 +1288,7 @@
    "OTHER_CHARGE"                : "Other charges",
    "OTHER_PROFIT"                : "Other Profits",
    "PERIODS"                     : "Periods",
-   "POST_ALL_DATA"               : "Some transaction of this fiscal year still wait in the posting journal, please post them first",
+   "POST_ALL_DATA"               : "Some transactions of this fiscal year are yet in journal, post them please",
    "POSTING_FROM"                : "Posting From",
    "POSTING_SOLD_TO_NEW_FY"      : "Poster le solde dans la nouvelle année fiscale",
    "POSTING_TO"                  : "Posting To",
@@ -2691,10 +2691,16 @@
 "STOCK_DASHBOARD": {
    "DONATIONS": {
       "TITLE" : "Recent Donations",
-      "NO_DATA" : "There have not been any donations recorded."
+      "NO_DATA" : "There is no donation registered"
     },
    "EXPIRING_INVENTORY": {
-      "TITLE"        : "Expiring Inventory"
+      "EXPIRED"      : "Expired",
+      "TITLE"        : "Expiring Inventory",
+      "WITHIN_180"   : "Expiring between 90 and 180 days",
+      "WITHIN_1YEAR" : "Expiring in over a year",
+      "WITHIN_30"    : "Expiring within 30 days",
+      "WITHIN_365"   : "Expiring between 180 and 365 days",
+      "WITHIN_90"    : "Expiring between 30 and 90 days"
     },
    "MOST_CONSUMED" : "Most Consumed Inventory Items",
    "MOVEMENT": {
@@ -2702,7 +2708,7 @@
       "EXIT"  : "Exit",
       "TITLE" : "Movement"
       },
-   "NO_CONSUMPTION_DATA" : "No inventory items have been consumed.",
+   "NO_CONSUMPTION_DATA" : "No consumption data",
    "PURCHASE_ORDER": {
       "TITLE"            : "Purchase Orders",
       "IN_WATING"        : "Pending Payment",
