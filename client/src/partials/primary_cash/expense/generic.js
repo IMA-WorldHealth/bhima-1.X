@@ -12,6 +12,11 @@ function PrimaryCashExpenseGenericController ($scope, $routeParams, $translate, 
       session      = $scope.session = { receipt : { date : new Date() }, configure : false, complete : false },
       cache        = new Appcache('expense');
 
+  session.today = new Date();
+  tomorrow = new Date();
+  tomorrow.setDate(session.today.getDate() + 1);
+  session.tomorrow = tomorrow;
+
   dependencies.currencies = {
     query : {
       tables : {
@@ -43,8 +48,9 @@ function PrimaryCashExpenseGenericController ($scope, $routeParams, $translate, 
   $scope.setConfiguration = setConfiguration;
 
   // Watchers
-  $scope.$watch('session.receipt', valid, true);
-  $scope.$watch('session.currency', valid, true);
+  // TODO -- replace validation $watchers with angular validation
+  $scope.$watchCollection('session.receipt', valid);
+  $scope.$watchCollection('session.currency', valid);
 
   // Startup
   startup();
@@ -52,7 +58,7 @@ function PrimaryCashExpenseGenericController ($scope, $routeParams, $translate, 
   cache.fetch('account').then(getAccount);
 
   // Functions
-  function load (currency) {
+  function load(currency) {
     if (!currency) { return; }
     session.currency = currency;
   }
@@ -85,14 +91,14 @@ function PrimaryCashExpenseGenericController ($scope, $routeParams, $translate, 
     .catch(error);
   }
 
-  function getAccount (ac) {
+  function getAccount(ac) {
     if (!ac) { return; }
      session.configured = true;
      session.ac = ac;
      session.complete = true;
   }
 
-  function clear () {
+  function clear() {
     session.receipt = {};
     session.receipt.date = new Date();
     session.receipt.value = 0.00;
@@ -103,7 +109,7 @@ function PrimaryCashExpenseGenericController ($scope, $routeParams, $translate, 
     session.hasDailyRate = exchange.hasDailyRate(date);
   }
 
-  function valid () {
+  function valid() {
     if (!session || !session.receipt) {
       session.invalid = true;
       return;
@@ -133,7 +139,7 @@ function PrimaryCashExpenseGenericController ($scope, $routeParams, $translate, 
       currency_id   : session.currency.id,
       cost          : receipt.cost,
       user_id       : SessionService.user.id,
-      description   : 'HBB' + '_C.P DEP GEN/' + receipt.description, //fix me
+      description   : 'HBB' + '_C.P DEP GEN/' + receipt.description, // FIXME -- hard coded name
       cash_box_id   : receipt.cash_box_id,
       origin_id     : 4,
     };
@@ -161,31 +167,31 @@ function PrimaryCashExpenseGenericController ($scope, $routeParams, $translate, 
     .catch(error);
   }
 
-  function setCurrency (obj) {
-    session.currency=obj;
+  function setCurrency(obj) {
+    session.currency = obj;
     cache.put('currency', obj);
   }
 
-  function update (value) {
+  function update(value) {
     session.receipt.recipient = value;
   }
 
-  function error (err) {
+  function error(err) {
     messenger.error(err);
   }
 
-  function formatAccount (ac) {
-    if(ac){return ac.account_number + ' - ' + ac.account_txt;}
+  function formatAccount(ac) {
+    if (ac) {return ac.account_number + ' - ' + ac.account_txt;}
   }
 
-  function reconfigure () {
+  function reconfigure() {
     session.configured = false;
     session.ac = null;
     session.complete = false;
   }
 
-  function setConfiguration (ac) {
-    if(ac){
+  function setConfiguration(ac) {
+    if (ac) {
       cache.put('account', ac);
       session.configured = true;
       session.ac = ac;
