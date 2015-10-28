@@ -7,11 +7,17 @@ PrimaryCashIncomeGenericController.$inject = [
 ];
 
 function PrimaryCashIncomeGenericController ($scope, $routeParams, $translate, validate, messenger, SessionService, connect, uuid, util, $location, Appcache, exchange) {
-  var isDefined, tomorrow,
+  var isDefined    = angular.isDefined,
       dependencies = {},
       session      = $scope.session = { receipt : {}, configured : false, complete : false },
       cache        = new Appcache('income');
 
+  // set proper dates
+  session.today = new Date();
+  var tomorrow = new Date();
+  tomorrow.setDate(session.today.getDate() + 1);
+  session.tomorrow = tomorrow;
+  isDefined = angular.isDefined;
   dependencies.currencies = {
     query : {
       tables : {
@@ -43,8 +49,8 @@ function PrimaryCashIncomeGenericController ($scope, $routeParams, $translate, v
   $scope.setConfiguration = setConfiguration;
 
   // Watchers
-  $scope.$watch('session.receipt', valid, true);
-  $scope.$watch('session.currency', valid, true);
+  $scope.$watchCollection('session.receipt', valid);
+  $scope.$watchCollection('session.currency', valid);
 
   // Startup
   startup();
@@ -71,13 +77,7 @@ function PrimaryCashIncomeGenericController ($scope, $routeParams, $translate, v
       throw new Error('No cashbox selected');
     }
 
-    isDefined = angular.isDefined;
     $scope.timestamp = new Date();
-
-    // session.today = $scope.timestamp.toISOString().slice(0, 10);
-    tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    session.tomorrow = util.htmlDate(tomorrow);
 
     // init models
     $scope.project =  SessionService.project;
