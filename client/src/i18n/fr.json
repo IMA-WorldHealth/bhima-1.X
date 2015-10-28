@@ -51,14 +51,14 @@
 "ALLTRANSACTIONS": {
    "DATA_POSTED"  : "Données postées avec succès",
    "DAY"          : "Aujoird'hui",
-   "DEFAULT"      : "ETAT DES TOUTES LES TRANSACTIONS",
+   "DEFAULT"      : "Etat de toutes les transactions",
    "FISCAL_YEAR"  : "Cette Année Fiscale",
    "FROMSTARTING" : "Depuis le Début",
    "MONTH"        : "Ce mois",
    "POSTED_ITEM"  : "Article posté avec succès",
    "SEARCH"       : "valider",
-   "SELECTED"     : "ETAT DES TRANSACTIONS POUR LES COMPTES : ",
-   "TITLE"        : "ETAT DES TOUTES LES TRANSACTIONS",
+   "SELECTED"     : "Etat des transactions pour le compte : ",
+   "TITLE"        : "Etat de toutes les transactions",
    "WEEK"         : "Cette Semaine"
    },
 "ANALYSIS_CENTER": {
@@ -2697,7 +2697,13 @@
       "NO_DATA" : "Il n'y a pas eu de dons enregistrés."
       },
    "EXPIRING_INVENTORY": {
-      "TITLE"        : "Expirations produits"
+      "EXPIRED"      : "Expiré",
+      "TITLE"        : "Expirations produits",
+      "WITHIN_180"   : "Expire entre 90 et 180 jours",
+      "WITHIN_1YEAR" : "Expire au délà d'une année",
+      "WITHIN_30"    : "Expire dans 30 jours",
+      "WITHIN_365"   : "Expire entre 180 et 365 jours",
+      "WITHIN_90"    : "Expire entre 30 et 90 jours"
       },
    "MOST_CONSUMED"      : "Produits les Plus Consommes",
    "MOVEMENT": {
