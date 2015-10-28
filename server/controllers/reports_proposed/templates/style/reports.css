@@ -18,12 +18,12 @@ table {
 
 .invoice thead > tr > th {
   border       : 1px solid #9F9F9F;
-  padding-left : 5px;
 }
 
 .invoice tbody > tr > td {
   border         : 1px solid #9F9F9F;
   vertical-align : right;
+  padding: 1px;
 }
 
 /*
