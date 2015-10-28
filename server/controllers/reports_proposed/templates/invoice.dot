@@ -1,0 +1,51 @@
+<head>
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/normalize.css">
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/skeleton.css">
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/reports.css">
+  <meta charset='UTF-8'>
+</head>
+
+<body>
+
+  <hgroup>
+    <h5>{{= it.enterprise.name }}</h5>
+    <h5>{{= it.i18n.INVOICE_NUMBER }}: {{= it.invoice.id }}</h5>
+    <h5>{{= it.i18n.INVOICE_DATE }}: {{= it.invoice.date }}</h5>
+  </hgroup>
+
+  <h5 class="clean-title">
+    {{= it.i18n.PATIENT }}
+    {{= it.recipient.first_name }}
+    {{= it.recipient.middle_name }}
+    {{= it.recipient.last_name }}
+  </h5>
+
+  <table class="invoice">
+    <thead>
+      <tr>
+        <th class="text-center">{{= it.i18n.CODE }}</th>
+        <th class="text-center">{{= it.i18n.DESCRIPTION }}</th>
+        <th class="text-center">{{= it.i18n.QUANTITY }}</th>
+        <th class="text-center">{{= it.i18n.PRICE }}</th>
+        <th class="text-center">{{= it.i18n.AMOUNT }}</th>
+      </tr>
+    </thead>
+    <tbody>
+    {{~it.invoice.items :saleLine}}
+      <tr>
+        <td class="text-center">{{= saleLine.code }}</td>
+        <td>{{= saleLine.text }}</td>
+        <td class="text-right">{{= saleLine.quantity }}</td>
+        <td class="text-right">{{= saleLine.formattedPrice }}</td>
+        <td class="text-right">{{= saleLine.formattedTotal }}</td>
+      </tr>
+    {{~}}
+    </tbody>
+    <tbody>
+      <tr>
+        <th colspan="4">{{= it.i18n.TOTAL }}</th>
+        <td class="text-right">{{= it.invoice.totalCost }}</td>
+      </tr>
+    </tbody>
+  </table>
+</body>

@@ -1,82 +1,79 @@
 var db      = require('./../../../lib/db');
-
 var q       = require('q');
 var numeral = require('numeral');
 
-var querry = { 
-  
+var query = {
   sale : 'SELECT * FROM sale_item LEFT JOIN sale ON sale_item.sale_uuid = sale.uuid LEFT JOIN inventory ON sale_item.inventory_uuid = inventory.uuid LEFT JOIN project ON sale.project_id = project.id WHERE sale.uuid = ? ORDER BY inventory.code',
-
   enterprise : 'SELECT * FROM project JOIN enterprise on project.enterprise_id = enterprise.id WHERE project.id = ?',
-
   recipient : 'SELECT * FROM debitor JOIN patient ON debitor.uuid = patient.debitor_uuid WHERE debitor.uuid = ?'
-
 };
 
-var formatDollar = '$0,0.00';
+var formatDollar = '$0,0.00',
+    formatFranc = '0.0,00';
 
-exports.compile = function (options) { 
-  var deferred = q.defer();
-  var reportData = {};
-  
+// compiles the patient receipt
+exports.compile = function (options) {
+  var context = {};
   var saleId = options.sale;
 
-  // Ensure mandatory options are set 
-  if (!saleId) { 
+  context.i18n = (options.language == 'fr') ?
+      require('../lang/fr.json').INVOICE :
+      require('../lang/en.json').INVOICE;
+
+  var currencyFmt = (options.currency === 'dollars') ?
+      formatDollar : formatFranc;
+
+  // Ensure mandatory options are set
+  if (!saleId) {
     return q.reject('Document requires valid sale reference');
   }
 
-  // Query for sale information 
-  db.exec(querry.sale, [saleId])
-    .then(function (result) { 
-      var projectId;
-      var invalidSaleRequest = result.length === 0;
+  // TODO -- respect language options
+  return db.exec(query.sale, [saleId])
+  .then(function (rows) {
+    var projectId;
+    var invalidSaleRequest = rows.length === 0;
 
-      if (invalidSaleRequest) { 
-        throw 'invalid sale reference provided';
-      }
+    if (invalidSaleRequest) {
+      throw 'Invalid sale reference provided';
+    }
 
-      reportData.invoice = {items : result};
-      reportData.invoice.totalCost = sumCosts(result);
-      
-      formatCurrency(reportData.invoice.items);
-      projectId = reportData.invoice.items[0].project_id;
+    context.invoice = { items : rows };
+    context.invoice.totalCost = numeral(sumCosts(rows)).format(currencyFmt);
 
-      // Query for enterprise information 
-      return db.exec(querry.enterprise, [projectId]);
-    })
-    .then(function (result) { 
-      var initialLineItem = reportData.invoice.items[0];
-      reportData.enterprise = result[0];
-      
-      reportData.invoice.reference = initialLineItem.reference; 
-      reportData.invoice.id = initialLineItem.abbr.concat(initialLineItem.reference);
-      reportData.invoice.date = initialLineItem.invoice_date;
+    // TODO -- this should accept either FC or USD formatted currencies
+    formatCurrency(context.invoice.items, currencyFmt);
+    projectId = context.invoice.items[0].project_id;
 
-      // Query for recipient information 
-      return db.exec(querry.recipient, [initialLineItem.debitor_uuid]);
-    })
-    .then(function (result) { 
-      reportData.recipient = result[0];
-      
-      deferred.resolve(reportData); 
-    })
-    .catch(function (err) { 
-      console.log('caught son');
-      deferred.reject(err);
-    });
-  
-  return deferred.promise;
+    // Query for enterprise information
+    return db.exec(query.enterprise, [projectId]);
+  })
+  .then(function (result) {
+    var initialLineItem = context.invoice.items[0];
+    context.enterprise = result[0];
+
+    context.invoice.reference = initialLineItem.reference;
+    context.invoice.id = initialLineItem.abbr.concat(initialLineItem.reference);
+    context.invoice.date = initialLineItem.invoice_date.toDateString();
+
+    // Query for recipient information
+    return db.exec(query.recipient, [initialLineItem.debitor_uuid]);
+  })
+  .then(function (result) {
+    context.recipient = result[0];
+    return context;
+  });
+};
+
+function sumCosts(lineItems) {
+  return lineItems.reduce(function (a, b) { return a + b.credit - b.debit; }, 0);
 }
 
-function sumCosts(lineItems) { 
-  return lineItems.reduce(function (a, b) { return a + b.credit - b.debit; }, 0); 
-}
-
-function formatCurrency(lineItems) { 
-  lineItems.forEach(function (lineItem) { 
-    lineItem.formattedPrice = numeral(lineItem.transaction_price).format(formatDollar);
-    lineItem.formattedTotal = numeral(lineItem.credit - lineItem.debit).format(formatDollar);
+// TODO -- this should format either FC or USD
+function formatCurrency(lineItems, fmt) {
+  lineItems.forEach(function (lineItem) {
+    lineItem.formattedPrice = numeral(lineItem.transaction_price).format(fmt);
+    lineItem.formattedTotal = numeral(lineItem.credit - lineItem.debit).format(fmt);
   });
 }
 
