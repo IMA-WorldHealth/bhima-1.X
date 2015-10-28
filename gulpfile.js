@@ -103,8 +103,9 @@ gulp.task('client-lint-js', function () {
 // writes output to bhima.min.js
 gulp.task('client-minify-js', function () {
   return gulp.src(paths.client.javascript)
-    .pipe(iife())
+    .pipe(gulpif(UGLIFY, uglify({ mangle: true })))
     .pipe(concat('js/bhima.min.js'))
+    .pipe(iife())
     .pipe(gulp.dest(CLIENT_FOLDER));
 });
 
@@ -124,15 +125,15 @@ gulp.task('client-mv-vendor', function () {
     .pipe(gulp.dest(CLIENT_FOLDER + 'vendor/'));
 });
 
-// SlickGrid repository is very modular and does not include distribution folder 
-// This build process combines all required components for BHIMA and optionally 
+// SlickGrid repository is very modular and does not include distribution folder
+// This build process combines all required components for BHIMA and optionally
 // minifies the output
-gulp.task('client-vendor-build-slickgrid', function () { 
-  
+gulp.task('client-vendor-build-slickgrid', function () {
+
   // Specifiy components required by BHIMA
   var slickgridComponents = [
     'client/vendor/slickgrid/lib/jquery.event.*.js',
-    'client/vendor/slickgrid/*.js', 
+    'client/vendor/slickgrid/*.js',
     'client/vendor/slickgrid/plugins/*.js'
   ];
 
@@ -248,7 +249,7 @@ gulp.task('client-test-e2e', function () {
 
 // ensure that the server actually runs
 gulp.task('server-test-run', function () {
-  spawn('node', [path.join(SERVER_FOLDER, 'app.js')], {stdio: 'inherit'}); 
+  spawn('node', [path.join(SERVER_FOLDER, 'app.js')], {stdio: 'inherit'});
 });
 
 /* -------------------------------------------------------------------------- */
