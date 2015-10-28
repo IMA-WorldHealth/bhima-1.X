@@ -150,14 +150,14 @@ exports.getTopDebtors = function (req, res, next) {
   sql =
     'SELECT journal.deb_cred_uuid AS uuid, journal.balance, dg.name AS debtorGroupName, d.text AS debtorText ' +
     'FROM (' +
-        'SELECT deb_cred_uuid, SUM(debit_equiv - credit_equiv) AS balance FROM posting_journal WHERE deb_cred_type = \'D\' GROUP BY deb_cred_uuid ' +
-        'UNION ' +
-        'SELECT deb_cred_uuid, SUM(debit_equiv - credit_equiv) AS balance FROM general_ledger WHERE deb_cred_type = \'D\' GROUP BY deb_cred_uuid ' +
-      ') AS journal JOIN debitor AS d JOIN debitor_group AS dg ON ' +
-        'd.uuid = journal.deb_cred_uuid AND dg.uuid = d.group_uuid ' +
-      'WHERE balance <> 0 ' +
-      'ORDER BY balance DESC ' +
-      'LIMIT ?;';
+      'SELECT deb_cred_uuid, SUM(debit_equiv - credit_equiv) AS balance FROM posting_journal WHERE deb_cred_type = \'D\' GROUP BY deb_cred_uuid ' +
+      'UNION ' +
+      'SELECT deb_cred_uuid, SUM(debit_equiv - credit_equiv) AS balance FROM general_ledger WHERE deb_cred_type = \'D\' GROUP BY deb_cred_uuid ' +
+    ') AS journal JOIN debitor AS d JOIN debitor_group AS dg ON ' +
+      'd.uuid = journal.deb_cred_uuid AND dg.uuid = d.group_uuid ' +
+    'WHERE balance <> 0 ' +
+    'ORDER BY balance DESC ' +
+    'LIMIT ?;';
 
   // default to large number in case no limit is provided
   db.exec(sql, [isNaN(limit) ? 1000000 : limit])
@@ -173,23 +173,31 @@ exports.getTopDebtorGroups = function (req, res, next) {
   'use strict';
 
   var limit = Number(req.query.limit),
-      sql;
+      accounts, sql;
 
-  // find the debtor groups owing the most, group names, and balancek
   sql =
-    'SELECT dg.uuid, SUM(journal.balance) AS balance, dg.name, a.account_number FROM (' +
-        'SELECT deb_cred_uuid, SUM(debit_equiv - credit_equiv) AS balance FROM posting_journal WHERE deb_cred_type = \'D\' GROUP BY deb_cred_uuid ' +
-        'UNION ' +
-        'SELECT deb_cred_uuid, SUM(debit_equiv - credit_equiv) AS balance FROM general_ledger WHERE deb_cred_type = \'D\' GROUP BY deb_cred_uuid' +
-      ') AS journal JOIN debitor AS d JOIN debitor_group AS dg JOIN account AS a ON ' +
-        'd.uuid = journal.deb_cred_uuid AND dg.uuid = d.group_uuid AND a.id = dg.account_id ' +
-      'WHERE balance <> 0 ' +
-      'GROUP BY dg.uuid ' +
-      'ORDER BY balance DESC ' +
-      'LIMIT ?;';
+    'SELECT account_id FROM debitor_group;';
 
-  // default to large number in case no limit is provided
-  db.exec(sql, [isNaN(limit) ? 1000000 : limit])
+  db.exec(sql)
+  .then(function (rows) {
+    accounts = rows.map(function (r) { return r.account_id; });
+
+    // find the debtor groups owing the most, group names, and balance
+    sql =
+      'SELECT dg.uuid, dg.name, SUM(t.debit_equiv - t.credit_equiv) AS balance, a.account_number FROM (' +
+        'SELECT account_id, debit_equiv, credit_equiv FROM posting_journal WHERE account_id IN (?) ' +
+        'UNION ' +
+        'SELECT account_id, debit_equiv, credit_equiv FROM general_ledger WHERE account_id IN (?) ' +
+     ') AS t JOIN account AS a ON t.account_id = a.id ' +
+     'JOIN debitor_group AS dg ON t.account_id = dg.account_id ' +
+     'GROUP BY t.account_id ' +
+     'ORDER BY balance DESC ' +
+     'LIMIT ?;';
+
+    // default to large number in case no limit is provided
+    // FIXME - can we do better?
+    return db.exec(sql, [accounts, accounts, isNaN(limit) ? 1000000 : limit]);
+  })
   .then(function (rows) {
     res.status(200).json(rows);
   })
