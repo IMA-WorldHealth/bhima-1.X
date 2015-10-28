@@ -392,7 +392,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/journal/trialbalance/print.html'
   })
   .when('/employee', {
-    controller : 'employee',
+    controller : 'EmployeeController',
     templateUrl : 'partials/employee/employee.html'
   })
   .when('/service', {
