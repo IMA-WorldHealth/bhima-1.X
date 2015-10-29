@@ -14,7 +14,7 @@ function LoginController($scope, $translate, $location, $http, $timeout, Appcach
 
   // contains the values from the login form
   vm.credentials = {};
-  vm.$error = false;
+  vm.error = false;
   vm.login = login;
   vm.setLanguage = setLanguage;
 
@@ -56,7 +56,7 @@ function LoginController($scope, $translate, $location, $http, $timeout, Appcach
 
   // logs the user in, creates the user client session
   function login(invalid, credentials) {
-    vm.$error = false;
+    vm.error = false;
 
     // if the form is not valid, do not generate an
     // $http request
@@ -78,7 +78,17 @@ function LoginController($scope, $translate, $location, $http, $timeout, Appcach
       $location.url('/');
     })
     .catch(function (error) {
-      vm.$error = true;
+
+      console.log('The error was:', error);
+
+      // If the error is a string, we generated it.  Translate it an display to user
+      if (typeof error.data === 'string' ) {
+        vm.error = 'AUTH.' + error.data;
+
+      // do not swallow unrecognized errors
+      } else {
+        throw error;
+      }
 
       // suppress missing data errors when editting again
       $scope.LoginForm.$setPristine();
