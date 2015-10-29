@@ -192,8 +192,11 @@ angular.module('bhima.controllers')
         dataview.setGrouping({
           getter: 'account_id',
           formatter: function(g) {
-            var account_txt = $scope.account.get(g.rows[0].account_number).account_txt || '';
-            return '<span style="font-weight: bold">' + ( $scope.account ? account_txt : g.value) + '</span>';
+            var account = $scope.account.get(g.rows[0].account_number),
+                label = account && account.account_txt ?
+                  account.account_number + ' ' + account.account_txt :
+                  $translate.instant('POSTING_JOURNAL.UNKNOWN_ACCOUNT');
+            return '<span style="font-weight: bold">' + label + '</span>';
           },
           aggregators: [
             new Slick.Data.Aggregators.Sum('debit'),
