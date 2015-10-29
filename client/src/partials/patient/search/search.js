@@ -8,7 +8,7 @@ angular.module('bhima.controllers')
     var dependencies = {}, session = $scope.session = {};
 
     session.searchLocation = false;
-    session.villageUuid = null; 
+    session.villageUuid = null;
     session.searched = false;
     session.searching = false;
 
@@ -27,7 +27,7 @@ angular.module('bhima.controllers')
       }
     };
 
-    function assignVillageLocation(uuid) { 
+    function assignVillageLocation(uuid) {
       session.villageUuid = uuid;
     }
 
@@ -68,7 +68,7 @@ angular.module('bhima.controllers')
     }
 
     function patientRecords(model) {
-      
+
       // This is a hack to get date of birth displaying correctly
       $scope.model = model;
       filterNames(model.patient.data);
@@ -88,12 +88,7 @@ angular.module('bhima.controllers')
       });
     }
 
-    function select(id) {
-      $scope.selected = $scope.model.patient.get(id);
-    }
-
     $scope.patientSearch = patientSearch;
-    $scope.select = select;
     $scope.assignVillageLocation = assignVillageLocation;
   }
 ]);
