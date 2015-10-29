@@ -74,7 +74,7 @@ angular.module('bhima.controllers')
   service.getTopDebtors = function (limit) {
     return $http.get('/analytics/debtors/top?limit=' + limit);
   };
- 
+
   var all = $translate.instant('UTIL.ALL');
 
   // limits for things
