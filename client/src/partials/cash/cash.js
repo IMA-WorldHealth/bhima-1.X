@@ -394,4 +394,3 @@ angular.module('bhima.controllers')
     $scope.$watch('data.payment', $scope.digestInvoice);
   }
 ]);
-
