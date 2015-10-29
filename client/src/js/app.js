@@ -32,7 +32,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/project/project.html'
   })
   .when('/permission', {
-    controller: 'permission',
+    controller: 'PermissionsController as PermissionsCtrl',
     templateUrl: 'partials/user_permission/permissions.html'
   })
   .when('/enterprise', {
