@@ -378,8 +378,8 @@ function paymentRecords(params) {
 
 function patientStanding(params) {
   params = querystring.parse(params);
-  var id = sanitize.escape(params.id),
-      account_id = sanitize.escape(params.account_id),
+  var id = params.id,
+      account_id = params.account_id,
       patient = {},
       defer = q.defer(),
       sql =
