@@ -587,12 +587,12 @@ function transactionsByAccount(params) {
   _limit = p.limit;
 
   sql =
-    'SELECT trans_date, description, account_number, debit, credit, currency_id ' +
+    'SELECT uuid, trans_date, description, account_number, debit, credit, currency_id ' +
     'FROM (' +
-      'SELECT trans_date, description, account_id, debit, credit, currency_id ' +
+      'SELECT uuid, trans_date, description, account_id, debit, credit, currency_id ' +
       'FROM posting_journal ' +
     'UNION ' +
-      'SELECT trans_date, description, account_id, debit, credit, currency_id ' +
+      'SELECT uuid, trans_date, description, account_id, debit, credit, currency_id ' +
       'FROM general_ledger' +
     ') AS journal JOIN account ON ' +
       'journal.account_id = account.id ' +
@@ -1030,7 +1030,6 @@ function stockComplete(params) {
 
 function operatingAccount(params) {
   params = querystring.parse(params);
-  console.log(params);
   var fiscal_id = sanitize.escape(params.fiscal_id),
     sql;
 
@@ -1043,10 +1042,10 @@ function operatingAccount(params) {
     'AND account_type.type = \'income/expense\' ' +
     'ORDER BY account.account_number ASC';
 
-  if(params.period_id === 'all'){
+  if (params.period_id === 'all') {
     sql = 
       'SELECT period_total.period_id, account.account_number, account.account_txt, SUM(period_total.credit) AS \'credit\', ' +
-      'SUM(period_total.debit) AS \'debit\' ' +
+        'SUM(period_total.debit) AS \'debit\' ' +
       'FROM period_total ' +
       'JOIN account ON account.id = period_total.account_id ' +
       'JOIN account_type ON account_type.id = account.account_type_id ' +
