@@ -10,7 +10,7 @@
 
   <div class="pull-right" style="margin-top : 1px;">
     <span>
-      <b>{{ PrimaryCtrl.session.cashbox.id ? '[' + PrimaryCtrl.session.cashbox.id + ']' : '' }}</b>
+      <strong>{{ PrimaryCtrl.session.cashbox.id ? '[' + PrimaryCtrl.session.cashbox.id + ']' : '' }}</strong>
       {{ PrimaryCtrl.session.cashbox.text }}
     </span>
 
@@ -19,7 +19,7 @@
       ng-disabled="PrimaryCtrl.session.configure"
       ng-click="PrimaryCtrl.reconfigure()"
       class="btn btn-sm btn-default">
-      <span class="glyphicon glyphicon-repeat"></span>
+      <i class="glyphicon glyphicon-repeat"></i>
     </button>
   </div>
 </nav>
@@ -43,10 +43,9 @@
 
               <div class="panel-body">
                 <div>
-                  <span
-                    style="font-size: 70px"
-                    class="glyphicon glyphicon-briefcase"></span>
-                </div><br>
+                  <i style="font-size: 70px" class="glyphicon glyphicon-briefcase"></i>
+                </div>
+                <br />
                 {{box.text}}
               </div>
             </div> <!-- End configure item -->
@@ -58,18 +57,17 @@
 
   <!-- Exchange rate -->
   <div ng-if="!PrimaryCtrl.session.hasDailyRate" class="row margin-top-10">
-    <div class="col-xs-12">
-      <p class="alert-warning text-center">
-        <i class="glyphicon glyphicon-warning-sign"></i>
-        <b>{{ "NO_EXCHANGE.EXPLANATION" | translate }}</b> <br>{{ "NO_EXCHANGE.FIX" | translate }}
-        <b>
-          <a ng-href="#/exchange_rate"><i class="glyphicon glyphicon-link"></i>
-          {{ "NO_EXCHANGE.SET_NEW_RATE" | translate }}
-          </a>
-        </b>
-      </p>
+    <div class="alert alert-warning text-center">
+      <i class="glyphicon glyphicon-warning-sign"></i>
+      <strong>{{ "NO_EXCHANGE.EXPLANATION" | translate }}</strong> <br />{{ "NO_EXCHANGE.FIX" | translate }}
+      <b>
+        <a href="#/exchange_rate"><i class="glyphicon glyphicon-link"></i>
+        {{ "NO_EXCHANGE.SET_NEW_RATE" | translate }}
+        </a>
+      </b>
     </div>
   </div>
+
   <!-- Module content -->
   <div ng-if="PrimaryCtrl.session.complete && PrimaryCtrl.session.hasDailyRate" class="row margin-top-10">
     <div class="col-xs-6">
@@ -84,36 +82,35 @@
         <div class="panel-body">
           <ul class="primary_cash_list">
             <li ng-repeat="item in PrimaryCtrl.configuration.income">
-              <span class="glyphicon glyphicon-thumbs-up"></span>
+              <i class="glyphicon glyphicon-save"></i>
               <a class="menu-item" ng-click="PrimaryCtrl.loadPath(item.link)">
-                {{item.key | translate}}
+                {{ item.key | translate }}
               </a>
             </li>
           </ul>
         </div>
       </div>
-    </div> <!-- End Column 1 -->
+    </div>
 
     <div class="col-xs-6">
 
       <!-- Expense links widget -->
       <div class="panel panel-default">
         <div class="panel-heading">
-          <span class="glyphicon glyphicon-export"></span>
-          {{ 'PRIMARY_CASH.EXPENSES' | translate }}
+          <i class="glyphicon glyphicon-export"></i> {{ 'PRIMARY_CASH.EXPENSES' | translate }}
         </div>
 
         <div class="panel-body">
           <ul class="primary_cash_list">
             <li ng-repeat="item in PrimaryCtrl.configuration.expense">
-              <span class="glyphicon glyphicon-thumbs-down"></span>
+              <span class="glyphicon glyphicon-open"></span>
               <a
                 class="menu-item"
-                ng-click="PrimaryCtrl.loadPath(item.link)">{{item.key | translate}}</a>
+                ng-click="PrimaryCtrl.loadPath(item.link)">{{ item.key | translate }}</a>
             </li>
           </ul>
         </div>
       </div>
-    </div> <!-- End Column 2 -->
-  </div> <!-- End row -->
+    </div>
+  </div>
 </main>
