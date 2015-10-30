@@ -1,62 +1,46 @@
-<!-- TODO Add translation keys -->
-
 <header data-header>
-  Build Invoice
+  {{ 'REPORT.BUILD_INVOICE' | translate }}
 </header>
 
 <main>
   <div class="panel panel-default">
-    <div class="panel-heading">Document Configuration</div>
-    <div class="panel-body">
-      <form>
-        <div class="form-group">
-          <label>Format</label>
-          
-          <div>
-            <span ng-repeat="format in configuration.format.options">
-              <button 
-                class="btn btn-default btn-lg"
-                ng-class="{'active' : configuration.format.selected===format}"
-                ng-click="selectConfiguration('format', format)">{{format.label}}</button>
-            </span>
-          </div>
+    <div class="panel-heading">{{'REPORT.BUILD_INVOICE' | translate  }}</div>
+    <form  class="panel-body" name="ConfigForm" novalidate>
 
-        </div>
-        <div class="form-group">
-          <label>Language</label>
-         
-          <div>
-            <span ng-repeat="language in configuration.language.options">
-              <button 
-                class="btn btn-default btn-lg"
-                ng-class="{'active' : configuration.language.selected===language}"
-                ng-click="selectConfiguration('language', language)">{{language.label}}</button>
-            </span>
-          </div>
-        
-        </div>
-        <div class="form-group">
-          <label>Currency</label>
-          
-          <div>
-            <span ng-repeat="currency in configuration.currency.options">
-              <button 
-                class="btn btn-default btn-lg"
-                ng-class="{'active' : configuration.currency.selected===currency}"
-                ng-click="selectConfiguration('currency', currency)">{{currency.label}}</button>
-            </span>
-          </div>
-
-        </div>
-        
-        <!-- Links swapped out to allow target _blank (open PDF in new tab) -->
-        <button 
-          class="btn btn-default"
-          ng-disabled="session.building"
-          ng-click="generateDocument()" ng-if="!generatedDocumentPath">{{session.building ? 'Loading...' : 'Generate Document'}}</button>
-
-        <a class="btn btn-success" href="{{generatedDocumentPath}}" target="_blank" ng-if="generatedDocumentPath" ng-click="clearPath()">Document Build Success - Open Document</a>
+      <div class="form-group">
+        <label>{{ 'REPORT.LANGUAGE' | translate }}</label>
+        <br />
+        <span ng-repeat="language in configuration.language.options">
+          <button
+            class="btn btn-default btn-lg"
+            ng-class="{'active' : configuration.language.selected===language}"
+            ng-click="selectConfiguration('language', language)">
+            {{ language.key | translate }}
+          </button>
+        </span>
       </div>
-    </div>
+
+      <div class="form-group">
+        <label>{{ 'REPORT.CURRENCY' | translate }}</label>
+        <br />
+        <span ng-repeat="currency in configuration.currency.options">
+          <button
+            class="btn btn-default btn-lg"
+            ng-class="{'active' : configuration.currency.selected === currency}"
+            ng-click="selectConfiguration('currency', currency)">
+            {{ currency.key | translate }}
+          </button>
+        </span>
+      </div>
+
+      <!-- Links swapped out to allow target _blank (open PDF in new tab) -->
+      <button
+        class="btn btn-default"
+        ng-disabled="session.building"
+        ng-click="generateDocument()" ng-if="!generatedDocumentPath">{{ (session.building ? 'REPORT.LOADING' : 'REPORT.GENERATE') | translate }}
+      </button>
+
+      <a class="btn btn-success" href="{{ generatedDocumentPath }}" target="_blank" ng-if="generatedDocumentPath" ng-click="clearPath()">{{ 'REPORT.BUILD_SUCCESSFUL' | translate }} - {{ 'REPORT.OPEN_DOCUMENT' | translate }}</a>
+    </form>
   </div>
 </main>

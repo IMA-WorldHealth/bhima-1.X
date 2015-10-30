@@ -1,4 +1,22 @@
 {
+  "INVOICE" : {
+    "TITLE" : "Patient Invoice",
+    "CODE" : "Code",
+    "DESCRIPTION" : "Description",
+    "QUANTITY" : "Quantity",
+    "PRICE" : "Transaction Price",
+    "AMOUNT" : "Amount",
+    "INVOICE_NUMBER" : "Invoice Number",
+    "INVOICE_DATE" : "Invoice Date",
+    "REGISTRATION_DATE" : "Date of Registration",
+    "TOTAL" : "Total",
+    "PAID" : "Amount Paid",
+    "BALANCE" : "Balance",
+    "PATIENT" : "Patient",
+    "GROUP" : "Group",
+    "PATIENT_CODE" : "Patient Code"
+  },
+
 	"BILAN" : {
 		"TITLE"                 : "BILAN",
 		"ENTERPRISE"            : "Enterprise",
