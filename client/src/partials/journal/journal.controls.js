@@ -16,7 +16,6 @@ angular.module('bhima.controllers')
   'messenger',
   'SessionService',
   function ($scope, $rootScope, $q, $window, $translate, uuid, Store, util, connect, precision, validate, appstate, liberror, messenger, Session) {
-    /* jshint unused : true */
     var dependencies = {};
     var columns, options, dataview, grid, manager;
     var sortColumn;

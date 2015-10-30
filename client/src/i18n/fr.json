@@ -1967,6 +1967,7 @@
    "TRANSACTION_NUMBER"    : "Numéro de Transaction",
    "TRANSACTION_SUCCESS"   : " Edition des transaction et logs enregistrés avec succès",
    "TRIAL_BALANCE"         : "Rapprochement",
+   "UNKNOWN_ACCOUNT"     : "Compte Inconnu",
    "VERIFY_TRANSACTION"    : "Verifier Transaction"
    },
 "PRICE_LIST": {
