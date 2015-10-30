@@ -634,7 +634,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/reports/daily_consumption/daily_consumption.html'
   })
   .when('/config_accounting/', {
-    controller: 'config_accounting',
+    controller: 'ConfigAccountingController as ConfigAccountCtrl',
     templateUrl: 'partials/config_accounting/config_accounting.html'
   })
   .when('/reports/payroll_report/', {
