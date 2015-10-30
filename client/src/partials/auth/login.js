@@ -79,8 +79,6 @@ function LoginController($scope, $translate, $location, $http, $timeout, Appcach
     })
     .catch(function (error) {
 
-      console.log('The error was:', error);
-
       // If the error is a string, we generated it.  Translate it an display to user
       if (typeof error.data === 'string' ) {
         vm.error = 'AUTH.' + error.data;
