@@ -2460,6 +2460,7 @@
    "COST_CENTER"           : "Select the cost center",
    "COTISATION"            : "Select a Cotisation",
    "COUNTRY"               : "Select a Country",
+   "CLASS"                 : "Select a Class",
    "CREDITOR"              : "Select a creditor",
    "CREDITOR_GROUP"        : "Select a Creditor Group",
    "CURRENCY"              : "Select Currency",

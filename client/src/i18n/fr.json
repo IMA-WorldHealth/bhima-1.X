@@ -2460,6 +2460,7 @@
    "ALL"                   : "Tous",
    "BALANCE_SECTION"       : "Sélectionner la section du bilan",
    "CASH"                  : "Caisse Auxillaire",
+   "CLASS"                 : "Sélectionner une Classe",
    "COST_CENTER"           : "Sélectionner Centre des frais",
    "COTISATION"            : "Sélectionner une cotisation",
    "COUNTRY"               : "Sélectionner un Pays",

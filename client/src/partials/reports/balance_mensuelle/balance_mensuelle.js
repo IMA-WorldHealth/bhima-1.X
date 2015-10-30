@@ -6,10 +6,10 @@ ReportBalanceMensuelleController.$inject = [
 ];
 
 /**
-  * Report Balance Mensuelle Controller
-  * This controller is responsible for managing balance menselle data
-  */
-function ReportBalanceMensuelleController ($translate, $window, validate, util, messenger, exportFile, SessionService) {
+* Report Balance Mensuelle Controller
+* This controller is responsible for managing balance menselle data
+*/
+function ReportBalanceMensuelleController ($translate, $window, validate, util, messenger, exportFile, Session) {
   var vm = this,
       dependencies = {}, session = vm.session = {},
       state = vm.state;
@@ -38,20 +38,23 @@ function ReportBalanceMensuelleController ($translate, $window, validate, util, 
 
   // Functions
   function startup() {
-    session.project = SessionService.project.id;
+    session.project = Session.project.id;
+    session.enterprise = Session.enterprise;
   }
 
   function initialize(model) {
     angular.extend(vm, model);
     var balance = model.balance_mensuelle.data,
-     newSoldeDebit, newSoldeCredit;
+        newSoldeDebit, newSoldeCredit;
+
+    console.log('balance:', balance);
 
     balance.forEach(function (balances) {
       newSoldeDebit = balances.old_debit + balances.debit;
       newSoldeCredit = balances.old_credit + balances.credit;
 
-      if(balances.is_asset === 1){
-        if (balances.old_debit > balances.old_credit){
+      if (balances.is_asset === 1) {
+        if (balances.old_debit > balances.old_credit) {
           balances.old_debit -= balances.old_credit;
           balances.old_credit = 0;
         } else {
@@ -59,7 +62,7 @@ function ReportBalanceMensuelleController ($translate, $window, validate, util, 
           balances.old_debit = 0;
         }
 
-        if (newSoldeDebit > newSoldeCredit){
+        if (newSoldeDebit > newSoldeCredit) {
           balances.solde_debit = newSoldeDebit - newSoldeCredit;
           balances.solde_credit = 0;
         } else {
@@ -67,8 +70,8 @@ function ReportBalanceMensuelleController ($translate, $window, validate, util, 
           balances.solde_debit = 0;
         }
 
-      } else if (balances.is_asset === 0){
-        if (balances.old_debit > balances.old_credit){
+      } else if (balances.is_asset === 0) {
+        if (balances.old_debit > balances.old_credit) {
           balances.old_debit -= balances.old_credit;
           balances.old_credit = 0;
         } else {
@@ -76,7 +79,7 @@ function ReportBalanceMensuelleController ($translate, $window, validate, util, 
           balances.old_debit = 0;
         }
 
-        if (newSoldeDebit < newSoldeCredit){
+        if (newSoldeDebit < newSoldeCredit) {
           balances.solde_debit = 0;
           balances.solde_credit = newSoldeCredit - newSoldeDebit;
         } else {
@@ -89,16 +92,17 @@ function ReportBalanceMensuelleController ($translate, $window, validate, util, 
 
   function getAccountBalance() {
     vm.state = 'generate';
-    if(session.classe && session.periode){
+    if (session.classe && session.periode) {
 
       var params = {
         project : session.project,
         classe  : session.classe.number,
         periode : util.sqlDate(session.periode)
-      },
-        rootReport = 'balance_mensuelle';
+      };
 
-      if(session.classe.number === '*'){
+      var rootReport = 'balance_mensuelle';
+
+      if (session.classe.number === '*') {
         rootReport = 'balance_mensuelle_all';
       }
 
@@ -106,7 +110,7 @@ function ReportBalanceMensuelleController ($translate, $window, validate, util, 
       validate.process(dependencies, ['balance_mensuelle'])
       .then(initialize)
       .then(calculTotaux);
-    }else {
+    } else {
       messenger.info($translate.instant('BALANCE_MENSUELLE.INFO_FILL_INPUT'), true);
     }
   }
