@@ -89,12 +89,9 @@ function CautionController($location, $translate, $modal, validate, connect, mes
   function startup(models) {
     angular.extend(vm, models);
 
-    if (vm.cashbox) {
-      var sessionDefault =
-        vm.cashboxes.data[0];
-
-      setCashBox(sessionDefault);
-    }
+    // load defaults
+    cache.fetch('cashbox').then(loadDefaultCashBox);
+    cache.fetch('currency').then(loadDefaultCurrency);
   }
 
   function loadPatient(patient) {
@@ -110,12 +107,12 @@ function CautionController($location, $translate, $modal, validate, connect, mes
     })
     .catch(handler);
 
-    connect.fetch('/reports/patientStanding/?id=' + patient.debitor_uuid)
+    connect.fetch('/reports/patientStanding/?id=' + patient.debitor_uuid + '&account_id=' + patient.account_id)
     .then(function (data) {
       var receipts = data.receipts || [];
 
       vm.accountBalance = receipts.reduce(function (balance, receipt) {
-        return balance + (receipt.debit - receipt.credit);
+        return balance + (receipt.credit - receipt.debit);
       }, 0);
     })
     .catch(handler);
@@ -194,11 +191,6 @@ function CautionController($location, $translate, $modal, validate, connect, mes
     .then(startup)
     .then(haltOnNoExchange)
     .catch(handler);
-
-
-    // load defaults
-    cache.fetch('cashbox').then(loadDefaultCashBox);
-    cache.fetch('currency').then(loadDefaultCurrency);
   }
 
   function setCurrency(currency) {
@@ -224,13 +216,16 @@ function CautionController($location, $translate, $modal, validate, connect, mes
 
   function loadDefaultCashBox(cashbox) {
     if (!cashbox) { return; }
-    vm.cashbox = cashbox;
+    setCashBox(cashbox);
   }
 
   function refreshCurrency(model) {
     var sessionDefault;
 
     angular.extend(vm, model);
+
+    // if we already have a currency set, do not reset it
+    if (vm.currency) { return; }
 
     sessionDefault =
       vm.cashbox_accounts.get(vm.project.currency_id) ||
