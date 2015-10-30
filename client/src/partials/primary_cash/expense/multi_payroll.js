@@ -609,15 +609,14 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
     }
   }
 
-  function payEmployee (packagePay) {
-    var def = $q.defer();
+  function payEmployee(packagePay) {
 
     var params = {
       paiement_uuid : packagePay.paiement.uuid,
       project_id : $scope.project.id
     };
 
-    connect.post('paiement', [packagePay.paiement])
+    return connect.post('paiement', [packagePay.paiement])
       .then(function () {
         return (packagePay.rc_records.length > 0) ? connect.post('rubric_paiement', packagePay.rc_records) : $q.when();
       })
@@ -630,11 +629,6 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
       .then(function () {
         return (packagePay.hollydaysData.length > 0) ? connect.post('hollyday_paiement', packagePay.hollydaysData) : $q.when();
       })
-
-      // TODO - why are we resolving here?  Why not resolve at the end?
-      .then(function (res) {
-        def.resolve(res);
-      })
       .then(function () {
         return $http.post('/posting_promesse_payment/', params);
       })
@@ -643,12 +637,7 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
       })
       .then(function () {
         return (packagePay.tc_records.length > 0) ? $http.post('/posting_promesse_tax/', params) : $q.when();
-      })
-      .catch(function (err) {
-        def.reject(err);
       });
-
-      return def.promise;
   }
 
   function submit (list) {
@@ -772,12 +761,7 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
         hollydaysData : hollydaysData
       };
 
-      var def = $q.defer();
-      payEmployee(packagePay)
-      .then(function (val) {
-        def.resolve(val);
-      });
-      return def.promise;
+      return payEmployee(packagePay);
     }))
     .then(function (tab) {
       messenger.success($translate.instant('PRIMARY_CASH.EXPENSE.SUCCESS'));
