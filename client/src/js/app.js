@@ -292,7 +292,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/cost_center/center/analysis_center.html'
   })
   .when('/cost_center/assigning/', {
-    controller: 'costCenter.assigning',
+    controller: 'CostCenterAssignmentController',
     templateUrl: 'partials/cost_center/assigning/assigning.html'
   })
   .when('/cost_center/allocation/', {
