@@ -117,7 +117,7 @@ function ReportGlobalTransactionController (connect, $translate, validate, util,
     session.somDebit = 0;
 
     items.forEach(function (item) {
-      if(vm.enterprise.currency_id !== item.currency_id){
+      if (vm.enterprise.currency_id !== item.currency_id) {
         sCredit += item.credit / exchange.rate(item.credit,item.currency_id,new Date());
         sDebit += item.debit / exchange.rate(item.debit,item.currency_id,new Date());
       } else {
@@ -126,7 +126,7 @@ function ReportGlobalTransactionController (connect, $translate, validate, util,
       }
     });
 
-    if(vm.enterprise.currency_id === vm.model.c){
+    if (vm.enterprise.currency_id === vm.model.c) {
       session.somCredit = sCredit;
       session.somDebit = sDebit;
     } else {
@@ -153,13 +153,12 @@ function ReportGlobalTransactionController (connect, $translate, validate, util,
     connect.fetch(url)
     .then(function (res) {
       res.map(function (item) {
-        if(vm.enterprise.currency_id !== item.currency_id){
+        if (vm.enterprise.currency_id !== item.currency_id) {
           item.debit *= exchange.rate(item.debit,item.currency_id,new Date());
           item.credit *= exchange.rate(item.debit,item.currency_id,new Date());
         }
       });
       vm.records = res;
-      console.log('vm.records:', vm.records);
       return res;
     })
     .then(getTotal)

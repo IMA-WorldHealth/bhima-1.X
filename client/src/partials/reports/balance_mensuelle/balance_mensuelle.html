@@ -1,56 +1,50 @@
 <div ng-switch="ReportCtrl.state">
   <div ng-switch-default>
-    <main>
-      <div class="col-xs-12">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <b> {{ "REPORT.CONFIGURE_REPORT" | translate }} : </b> {{ "BALANCE_MENSUELLE.TITLE" | translate }}
-          </div>
-
-          <div class="panel-body">
-
-            <form name="configForm" novalidate>
-
-              <div class="form-group">
-                <label class="control-label col-xs-4 required">
-                  {{ "BALANCE_MENSUELLE.CHOOSE_PERIOD" | translate }}
-                </label>
-                <div>
-                  <div class="pull-left form-group input-group">
-                  <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-calendar"></span>
-                  </span>
-                  <input id="periode" class="form-bhima" required type="month" ng-model="ReportCtrl.session.periode" rows="20" ng-change="">
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label class="control-label col-xs-4 required">
-                  {{ 'BALANCE_MENSUELLE.CHOOSE_CLASS' | translate }}
-                </label>
-                <div>
-                  <div class="pull-left form-group input-group">
-                  <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-stats"></span>
-                  </span>
-                  <select class="form-bhima" required ng-model="ReportCtrl.session.classe" ng-options="classe as ReportCtrl.formatAccount(classe) for classe in ReportCtrl.session.classes" ></select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="pull-right input-group">
-                <button class="btn btn-sm btn-success" type="button" ng-click="ReportCtrl.getAccountBalance()" ng-disabled="configForm.$invalid">
-                  {{ "REPORT.GENERATE" | translate }}
-                </button>
-              </div>
-
-            </form>
-          </div>
+    <main class="extend">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <b> {{ "REPORT.CONFIGURE_REPORT" | translate }} : </b> {{ "BALANCE_MENSUELLE.TITLE" | translate }}
         </div>
+
+        <form class="panel-body" name="ConfigForm" novalidate>
+
+          <div class="form-group">
+            <label class="required">
+              {{ "BALANCE_MENSUELLE.CHOOSE_PERIOD" | translate }}
+            </label>
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="glyphicon glyphicon-calendar"></i>
+              </span>
+              <input class="form-bhima" type="month" ng-model="ReportCtrl.session.periode" required >
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="required">
+              {{ 'BALANCE_MENSUELLE.CHOOSE_CLASS' | translate }}
+            </label>
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="glyphicon glyphicon-stats"></i>
+              </span>
+              <select class="form-bhima" required ng-model="ReportCtrl.session.classe" ng-options="classe as ReportCtrl.formatAccount(classe) for classe in ReportCtrl.session.classes">
+                <option value="" disabled>{{ "SELECT.CLASS" | translate  }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="pull-right input-group">
+            <button class="btn btn-sm btn-success" type="button" ng-click="ReportCtrl.getAccountBalance()" ng-disabled="ConfigForm.$invalid">
+              {{ "REPORT.GENERATE" | translate }}
+            </button>
+          </div>
+
+        </form>
       </div>
     </main>
   </div>
+
   <div ng-switch-when="generate">
     <header>
       {{ "BALANCE_MENSUELLE.TITLE" | translate }}
@@ -60,12 +54,12 @@
 
     <nav>
       <div class="pull-right">
-        <button ng-click="ReportCtrl.download()" class="btn btn-default btn-sm square">
-          <span class="glyphicon glyphicon-save"></span>
+        <button ng-click="ReportCtrl.download()" class="btn btn-default btn-sm">
+          <i class="glyphicon glyphicon-save"></i>
           {{ 'UTIL.EXPORT_TO_CSV' | translate }}
         </button>
         <button class="btn btn-sm btn-default" ng-click="ReportCtrl.print()">
-          <span class="glyphicon glyphicon-print"></span>
+          <i class="glyphicon glyphicon-print"></i>
           {{ "UTIL.PRINT" | translate }}
         </button>
 
@@ -73,7 +67,7 @@
           style="margin-left: 5px;"
           ng-click="ReportCtrl.reconfigure()"
           class="btn btn-sm btn-default pull-right">
-          <span class="glyphicon glyphicon-repeat"></span>
+          <i class="glyphicon glyphicon-repeat"></i>
         </button>
       </div>
 
@@ -81,59 +75,58 @@
 
     <div class="report">
       <div class="reportBody">
-        <div id="balance-mensuelle" class="reportFrame">
-          <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
+        <div class="reportFrame">
+          <ng-include src="'partials/reports/templates/enterprise_header.html'"></ng-include>
 
           <h4 class="visible-print">{{ "BALANCE_MENSUELLE.TITLE" | translate }}
             <small ng-if="ReportCtrl.session.periode">: {{ ReportCtrl.session.periode | date: "MMMM, yyyy" }}</small>
             <small ng-if="ReportCtrl.session.classe"> / {{ "BALANCE_MENSUELLE.CLASS" | translate }} [{{ ReportCtrl.session.classe.number }}] {{ ReportCtrl.session.classe.name}}</small>
           </h4>
-          <table id="patientTable" class="reportTable balance-mensuelle-table">
+
+          <table id="patientTable" class="reportTable text-right">
             <thead>
               <tr>
-                <th>{{ "BALANCE_MENSUELLE.ACCOUNT" | translate }}</th>
-                <th>{{ "BALANCE_MENSUELLE.LABEL" | translate }}</th>
-                <th colspan="2">{{ "BALANCE_MENSUELLE.OLD_SOLD" | translate }}</th>
-                <th colspan="2">{{ "BALANCE_MENSUELLE.MONTH_MOVEMENT" | translate }}</th>
-                <th colspan="2">{{ "BALANCE_MENSUELLE.NEW_SOLD" | translate }}</th>
+                <th rowspan="2" class="text-center">{{ "BALANCE_MENSUELLE.ACCOUNT" | translate }}</th>
+                <th rowspan="2" class="text-center">{{ "BALANCE_MENSUELLE.LABEL" | translate }}</th>
+                <th colspan="2" class="text-center">{{ "BALANCE_MENSUELLE.OLD_SOLD" | translate }}</th>
+                <th colspan="2" class="text-center">{{ "BALANCE_MENSUELLE.MONTH_MOVEMENT" | translate }}</th>
+                <th colspan="2" class="text-center">{{ "BALANCE_MENSUELLE.NEW_SOLD" | translate }}</th>
               </tr>
               <tr>
-                <th colspan="2"></th>
-                <th>{{ "BALANCE_MENSUELLE.DEBITOR" | translate }}</th>
-                <th>{{ "BALANCE_MENSUELLE.CREDITOR" | translate }}</th>
-                <th>{{ "BALANCE_MENSUELLE.DEBIT" | translate }}</th>
-                <th>{{ "BALANCE_MENSUELLE.CREDIT" | translate }}</th>
-                <th>{{ "BALANCE_MENSUELLE.DEBITOR" | translate }}</th>
-                <th>{{ "BALANCE_MENSUELLE.CREDITOR" | translate }}</th>
+                <th class="text-center">{{ "BALANCE_MENSUELLE.DEBITOR" | translate }}</th>
+                <th class="text-center">{{ "BALANCE_MENSUELLE.CREDITOR" | translate }}</th>
+                <th class="text-center">{{ "BALANCE_MENSUELLE.DEBIT" | translate }}</th>
+                <th class="text-center">{{ "BALANCE_MENSUELLE.CREDIT" | translate }}</th>
+                <th class="text-center">{{ "BALANCE_MENSUELLE.DEBITOR" | translate }}</th>
+                <th class="text-center">{{ "BALANCE_MENSUELLE.CREDITOR" | translate }}</th>
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat='item in ReportCtrl.balance_mensuelle.data'>
-                <td> {{ item.account_number }} </td>
-                <td class="account_text"> {{ item.account_txt }} </td>
-                <td> {{ item.old_debit | currency }} </td>
-                <td> {{ item.old_credit | currency }} </td>
-                <td> {{ item.debit | currency }} </td>
-                <td> {{ item.credit | currency }} </td>
-                <td> {{ item.solde_debit | currency}}</td>
-                <td> {{ item.solde_credit | currency}}</td>
+              <tr ng-repeat='item in ReportCtrl.balance_mensuelle.data track by item.account_number'>
+                <td>{{ item.account_number }} </td>
+                <td class="text-left"> {{ item.account_txt }} </td>
+                <td>{{ item.old_debit | currency:session.enterprise.currency_id }}</td>
+                <td>{{ item.old_credit | currency:session.enterprise.currency_id }}</td>
+                <td>{{ item.debit | currency:session.enterprise.currency_id }}</td>
+                <td>{{ item.credit | currency:session.enterprise.currency_id }}</td>
+                <td>{{ item.solde_debit | currency:session.enterprise.currency_id }}</td>
+                <td>{{ item.solde_credit | currency:session.enterprise.currency_id }}</td>
               </tr>
             </tbody>
             <hr>
             <tfoot class="balance-mensuelle-footer">
               <tr>
-                <td colspan="2"><strong>{{ "BALANCE_MENSUELLE.TOTALS" | translate }}</strong></td>
-                <td>{{ ReportCtrl.session.sumOldDebit | currency }}</td>
-                <td>{{ ReportCtrl.session.sumOldCredit | currency }}</td>
-                <td>{{ ReportCtrl.session.sumDebit | currency }}</td>
-                <td>{{ ReportCtrl.session.sumCredit | currency }}</td>
-                <td>{{ ReportCtrl.session.sumOldDebit + ReportCtrl.session.sumDebit | currency }}</td>
-                <td>{{ ReportCtrl.session.sumOldCredit + ReportCtrl.session.sumCredit | currency }}</td>
+                <th colspan="2">{{ "BALANCE_MENSUELLE.TOTALS" | translate }}</th>
+                <td>{{ ReportCtrl.session.sumOldDebit | currency:session.enterprise.currency_id }}</td>
+                <td>{{ ReportCtrl.session.sumOldCredit | currency:session.enterprise.currency_id }}</td>
+                <td>{{ ReportCtrl.session.sumDebit | currency:session.enterprise.currency_id }}</td>
+                <td>{{ ReportCtrl.session.sumCredit | currency:session.enterprise.currency_id }}</td>
+                <td>{{ ReportCtrl.session.sumOldDebit + ReportCtrl.session.sumDebit | currency:session.enterprise.currency_id }}</td>
+                <td>{{ ReportCtrl.session.sumOldCredit + ReportCtrl.session.sumCredit | currency:session.enterprise.currency_id }}</td>
               </tr>
             </tfoot>
           </table>
         </div>
-
       </div>
     </div>
   </div>
