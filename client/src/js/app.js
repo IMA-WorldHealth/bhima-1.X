@@ -116,7 +116,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: '/partials/records/sales_records/sales_records.html'
   })
   .when('/cash', {
-    controller: 'cash',
+    controller: 'CashController as CashCtrl',
     templateUrl: '/partials/cash/cash.html'
   })
   .when('/auxillary_cash_records/:recordID?', {
