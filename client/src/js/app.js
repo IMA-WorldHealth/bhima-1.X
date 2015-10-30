@@ -260,7 +260,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/patient/group/assignment.html'
   })
   .when('/reports/chart_of_accounts/', {
-    controller: 'accountsReport',
+    controller: 'ReportChartOfAccountsController',
     templateUrl: 'partials/reports/chart_of_accounts/chart.html'
   })
   .when('/invoice/:originId/:invoiceId', {
