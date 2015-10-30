@@ -43,10 +43,10 @@
   </div>
 </div>
 
-<main class="hidden-print">
+<main class="hidden-print extend">
   <div class="row">
     <div class="col-xs-6">
-      <div class="panel panel-primary" style="overflow: auto">
+      <div class="panel panel-primary" style="max-height: 650px; overflow: auto">
         <div class="panel-heading">
           {{ "PERMISSION.REGISTERED" | translate }}
         </div>
@@ -60,7 +60,10 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="user in users.data | orderBy:'username'">
+            <tr ng-if="current.loading" class="text-center">
+              <td colspan="7"><loading-indicator></loading-indicator></td>
+            </tr>
+            <tr ng-repeat="user in users.data | orderBy:'username' track by user.id">
               <td>{{ user.first }}</td>
               <td>{{ user.username }}</td>
               <td>{{ user.email }}</td>
@@ -219,7 +222,7 @@
         <div class="col-xs-6">
           <div class="panel panel-default">
             <div class="panel-heading">
-              <span>{{ "PERMISSION.PROJECTS" | translate }}</span> : 
+              <span>{{ "PERMISSION.PROJECTS" | translate }}</span> :
               <strong>{{ current.user.first }} ({{ current.user.username }})</strong>
               <span class="pull-right">
                 <a ng-click="submit()" class="clk">
@@ -227,7 +230,7 @@
                 </a>
               </span>
             </div>
-            <label class="checkbox" style="margin-left: 10px; margin-bottom: 5px;">
+            <label class="checkbox" style="margin-left: 10px; margin-bottom:0;">
               <input type="checkbox" ng-model="super.projects" ng-change="toggleSuperProjects(super.projects)">
               {{ "PERMISSION.ALL" | translate }}
             </label>
@@ -255,7 +258,7 @@
                 </a>
               </span>
             </div>
-            <label class="checkbox" style="margin-left: 10px; margin-bottom: 5px;">
+            <label class="checkbox" style="margin-left: 10px; margin-bottom:0;">
               <input type="checkbox" ng-model="super.units" ng-change="toggleSuperUnits(super.units)">
               {{ "PERMISSION.SUPER" | translate }}
             </label>
