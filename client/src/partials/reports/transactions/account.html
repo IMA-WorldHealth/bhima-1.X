@@ -1,69 +1,59 @@
 <div ng-switch="state">
   <div ng-switch-default>
-    <main>
-      <div class="col-xs-12">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <b> {{ "REPORT.CONFIGURE_REPORT" | translate }} : </b> {{ "REPORT.TRANSACTIONS_BY_ACCOUNT" | translate }}
-          </div>
-
-          <div class="panel-body">
-            
-            <form name="configForm" novalidate>
-              <div class="form-group">
-                <label class="control-label col-xs-4 required">
-                  {{ "COLUMNS.LIMIT" | translate }}
-                </label>
-                <div>
-                  <div class="pull-left form-group input-group">
-                  <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-ban-circle"></span>
-                  </span>  
-                  <select class="form-bhima" ng-model="session.limit" ng-options="limit as limit for limit in session.limits" required>
-                    <option disabled="disabled" value="">-- {{ "SELECT.VALUE" | translate }} -- </option>
-                  </select>
-                  </div>
-                </div>
-              </div> 
-
-              <div class="form-group">
-                <label class="control-label col-xs-4 required">
-                  {{ "COLUMNS.ACCOUNT_NUMBER" | translate }}
-                </label>
-                <div>
-                  <div class="pull-left form-group input-group">
-                  <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-folder-open"></span>
-                  </span>  
-                    <select class="form-bhima" ng-model="session.account" ng-options="account as account.account_number + ' - ' + account.account_txt for account in accounts.data | orderBy:'account_number'" required>
-                      <option disabled="disabled" value="">-- {{ "SELECT.ACCOUNT" | translate }} -- </option>
-                    </select>
-                  </div>
-                </div>
-              </div>                        
-
-              <div class="pull-right">
-                <button class="btn btn-sm btn-success" type="button" ng-click="search()" ng-disabled="configForm.$invalid">
-                  {{ "REPORT.GENERATE" | translate }}
-                </button>
-              </div>
-
-            </form>
-          </div>
+    <main class="extend">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <strong>{{ "REPORT.CONFIGURE_REPORT" | translate }}:</strong> {{ "REPORT.TRANSACTIONS_BY_ACCOUNT" | translate }}
         </div>
+
+        <form class="panel-body" name="ConfigForm" novalidate>
+          <div class="form-group">
+            <label class="required">
+              {{ "COLUMNS.LIMIT" | translate }}
+            </label>
+            <div>
+              <div class="pull-left form-group input-group">
+              <span class="input-group-addon">
+                <span class="glyphicon glyphicon-ban-circle"></span>
+              </span>
+              <select class="form-bhima" ng-model="session.limit" ng-options="limit as limit for limit in session.limits" required>
+                <option disabled="disabled" value="">-- {{ "SELECT.VALUE" | translate }} -- </option>
+              </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="required">
+              {{ "COLUMNS.ACCOUNT_NUMBER" | translate }}
+            </label>
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="glyphicon glyphicon-folder-open"></i>
+              </span>
+              <select class="form-bhima" ng-model="session.account" ng-options="account as account.account_number + ' - ' + account.account_txt for account in accounts.data | orderBy:'account_number'" required>
+                <option value="" disabled>-- {{ "SELECT.ACCOUNT" | translate }} --</option>
+              </select>
+            </div>
+          </div>
+
+          <button class="btn btn-sm btn-success pull-right" type="button" ng-click="search()" ng-disabled="ConfigForm.$invalid">
+            {{ "REPORT.GENERATE" | translate }}
+          </button>
+        </form>
       </div>
-    </main>  
+    </main>
   </div>
-  <div ng-switch-when="generate">  
+
+  <div ng-switch-when="generate">
     <header>
       {{ "REPORT.TRANSACTIONS_BY_ACCOUNT" | translate }} / {{ session.account.account_number }} : <b> {{ session.account.account_txt }} </b> / {{ session.timestamp | date }}
     </header>
 
     <nav>
-
-      <div class="pull-right">        
+      <div class="pull-right">
         <button class="btn btn-sm btn-default" ng-click="print()">
-          <span class="glyphicon glyphicon-print"></span>
+          <i class="glyphicon glyphicon-print"></i>
           {{ "UTIL.PRINT" | translate }}
         </button>
 
@@ -71,17 +61,16 @@
           style="margin-left: 5px;"
           ng-click="reconfigure()"
           class="btn btn-sm btn-default pull-right">
-          <span class="glyphicon glyphicon-repeat"></span>
+          <i class="glyphicon glyphicon-repeat"></i>
         </button>
       </div>
-    
     </nav>
 
     <div class="report">
       <div class="reportBody">
         <div class="reportFrame">
           <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
-          
+
           <h4 class="visible-print">
             {{ "OPERATING_ACCOUNT.TITLE" | translate }} :
             <small>
@@ -98,26 +87,23 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat='transaction in transactions'>
-                <td>{{ transaction.trans_date | date }}</td>
-                <td>{{ transaction.description }}</td>
-                <td>{{ transaction.debit | currency:transaction.currency_id }}</td>
-                <td>{{ transaction.credit | currency:transaction.currency_id }}</td>
+              <tr ng-if="session.loading">
+                <td colspan="4" class="text-center"><loading-indicator></loading-indicator></td>
               </tr>
-            </tbody>
-            <tbody ng-if="!transactions.length && session.account">
-              <tr>
+              <tr ng-if="!transactions.length && !session.loading">
                 <td colspan="4">{{ "REPORT.NO_TRANSACTIONS" | translate }}</td>
               </tr>
-            </tbody>
-            <tfoot>
-              <tr>
+              <tr ng-repeat='transaction in transactions track by uuid'>
+                <td>{{ transaction.trans_date | date }}</td>
+                <td>{{ transaction.description }}</td>
+                <td class="text-right">{{ transaction.debit | currency:transaction.currency_id }}</td>
+                <td class="text-right">{{ transaction.credit | currency:transaction.currency_id }}</td>
               </tr>
-            </tfoot>
+            </tbody>
           </table>
           <h6 class="visible-print">
-            {{ 'COLUMNS.TOTAL_DEBIT' | translate }}: <b >{{ session.sum_debit | currency:session.currency }}</b> | {{ 'COLUMNS.TOTAL_CREDIT' | translate }}: <b>{{ session.sum_credit | currency:session.currency }}</b> |  
-          </h6>          
+            {{ 'COLUMNS.TOTAL_DEBIT' | translate }}: <b >{{ session.sum_debit | currency:session.currency }}</b> | {{ 'COLUMNS.TOTAL_CREDIT' | translate }}: <b>{{ session.sum_credit | currency:session.currency }}</b> |
+          </h6>
         </div>
       </div>
     </div>
@@ -125,25 +111,21 @@
     <footer>
       <table style="width: 99%, margin-top: 3px">
         <tbody>
-          <td style="width:20%;">
-            <span class="glyphicon glyphicon-list-alt" style="color: #428bca"></span> <b>{{ transactions.length }}</b>
-          </td>
+          <th style="width:20%;">
+            <i class="glyphicon glyphicon-list-alt" style="color: #428bca"></i> {{ transactions.length }}
+          </th>
 
-          <td style="width:25%;">
-            <b>{{ 'COLUMNS.TOTAL_DEBIT' | translate }}: </b>
-            <span>
-              <b>{{ session.sum_debit | currency:session.currency }}</b>
-            </span>
+          <th style="width:25%;">
+            {{ 'COLUMNS.TOTAL_DEBIT' | translate }}:
+            {{ session.sum_debit | currency:session.currency }}
             <span ng-if="session.searching">...</span>
-          </td>
+          </th>
 
-          <td style="width:25%;">
-            <b>{{ 'COLUMNS.TOTAL_CREDIT' | translate }}: </b>
-            <span>
-              <b>{{ session.sum_credit | currency:session.currency }}</b>
-            </span>
+          <th style="width:25%;">
+            {{ 'COLUMNS.TOTAL_CREDIT' | translate }}:
+            {{ session.sum_credit | currency:session.currency }}
             <span ng-if="session.searching">...</span>
-          </td>
+          </th>
 
           <td class="hidden-print" style="width:30%;">
             <select class="form-bhima" ng-model="session.currency" ng-options="currency.id as currency.symbol for currency in currencies.data" ng-change="convert()"></select>
@@ -151,5 +133,5 @@
         </tbody>
       </table>
     </footer>
-  </div>  
+  </div>
 </div>

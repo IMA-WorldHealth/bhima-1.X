@@ -6,9 +6,13 @@ ReportGlobalTransactionController.$inject = [
 ];
 
 /**
-  * Reprot Global Transaction Controller
-  * This controller is responsible for managing report of all transactions
-  */
+* Reprot Global Transaction Controller
+* This controller is responsible for managing report of all transactions
+*
+* TODO/FIXME
+*  -- Why does this use exchange? The data should be from the journal/general ledger
+*  and those are already converted!
+*/
 function ReportGlobalTransactionController (connect, $translate, validate, util, exchange, SessionService, exportFile) {
   var vm = this,
       session = vm.session = {},
@@ -155,6 +159,7 @@ function ReportGlobalTransactionController (connect, $translate, validate, util,
         }
       });
       vm.records = res;
+      console.log('vm.records:', vm.records);
       return res;
     })
     .then(getTotal)
