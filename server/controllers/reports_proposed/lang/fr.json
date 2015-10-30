@@ -6,13 +6,15 @@
 		"DURATION"              : "Duree (En mois) : ",
 		"REFERENCE"             : "Ref",
 		"ACTIF"                 : "Actif",
+		"PASSIF"                : "Passif",
 		"BRUT"                  : "Brut",
 		"AMORT_PROV"            : "Amort/Prov",
 		"NET"                   : "NET",
 		"TOTAL_GENERAL"         : "TOTAL GENERAL",
 		"PASSIVE"               : "Passif",
 		"DATE"                  : "Date : ",
-		"TOTAL"                 : "TOTAL"
+		"TOTAL"                 : "TOTAL",
+		"ACCOUNTING_DEPT"       : "Departement de Comptabilite"
 	},
 
 	"ACCOUNT_RESULT" : {

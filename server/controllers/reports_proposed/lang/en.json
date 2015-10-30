@@ -6,13 +6,15 @@
 		"DURATION"              : "Duration (In month) : ",
 		"REFERENCE"             : "Ref",
 		"ACTIF"                 : "Active",
+		"PASSIF"                : "PASSIVE",
 		"BRUT"                  : "Brut",
 		"AMORT_PROV"            : "Amort/Prov",
 		"NET"                   : "Net",
 		"TOTAL_GENERAL"         : "GENERAL TOTAL",
 		"PASSIVE"               : "Passive",
 		"DATE"                  : "Date : ",
-		"TOTAL"                 : "TOTAL"
+		"TOTAL"                 : "TOTAL",
+		"ACCOUNTING_DEPT"       : "Accounting Department"
 	},
 
 	"ACCOUNT_RESULT" : {
@@ -61,18 +63,18 @@
 		"TEL" : "Tel"
 	},
 
-  "DEBTOR_GROUP_ANNUAL_REPORT" : {
-    "CREDIT" : "Credit",
-    "DEBIT"  : "Debit",
-    "BALANCE" : "Balance",
-    "BILLED" : "Billed",
-    "PAID" : "Paid",
-    "ACCOUNT_NUMBER" : "Account Number",
-    "DESIGNATION" : "Designation",
-    "TITLE" : "Debtor Group Annual Report",
-    "ACCOUNTING_DEPT" : "Accounting Department",
-    "BILLING_OFFICE" :  "Office of Billing",
-    "NO_DATA" : "No data found for the give fiscal year!",
-    "TOTAL" : "Total"
-  }
+  	"DEBTOR_GROUP_ANNUAL_REPORT" : {
+	    "CREDIT" : "Credit",
+	    "DEBIT"  : "Debit",
+	    "BALANCE" : "Balance",
+	    "BILLED" : "Billed",
+	    "PAID" : "Paid",
+	    "ACCOUNT_NUMBER" : "Account Number",
+	    "DESIGNATION" : "Designation",
+	    "TITLE" : "Debtor Group Annual Report",
+	    "ACCOUNTING_DEPT" : "Accounting Department",
+	    "BILLING_OFFICE" :  "Office of Billing",
+	    "NO_DATA" : "No data found for the give fiscal year!",
+	    "TOTAL" : "Total"
+  	}
 }
