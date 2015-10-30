@@ -1,98 +1,113 @@
 angular.module('bhima.controllers')
-.controller('config_accounting', [
-  '$scope',
-  '$translate',
-  '$http',
-  'validate',
-  'messenger',
-  'connect',
-  'appstate',
-  function ($scope, $translate, $http, validate, messenger, connect, appstate) {
-    var dependencies = {},
-        session = $scope.session = {};
+.controller('ConfigAccountingController', ConfigAccountingController);
 
-    dependencies.config_accountings = {
-      query : {
-        identifier : 'id',
-        tables : {
-          'config_accounting' : { columns : ['id', 'label', 'account_id'] },
-          'account' : { columns : ['account_number', 'account_txt'] }
-        },
-        join : ['config_accounting.account_id=account.id']
-      }
-    };
+ConfigAccountingController.$inject = [
+  '$translate', '$http', 'validate', 'messenger', 'connect', 'SessionService'
+];
 
-    // Add by Chris Lomame for filtering accounts of class 6
-    $http.get('/getAccount6/').
-      success(function(data) {
-        $scope.accounts = data;
-    });
+/**
+  * Config Account Controller
+  * This controller is responsible to manage account configuration for Payroll
+  */
+function ConfigAccountingController ($translate, $http, validate, messenger, connect, SessionService) {
+  var vm           = this,
+      dependencies = {},
+      session      = vm.session = {};
 
-    function startup (models) {
-      angular.extend($scope, models);
+  dependencies.config_accountings = {
+    query : {
+      identifier : 'id',
+      tables : {
+        'config_accounting' : { columns : ['id', 'label', 'account_id'] },
+        'account'           : { columns : ['account_number', 'account_txt'] }
+      },
+      join : ['config_accounting.account_id=account.id']
     }
+  };
 
-    appstate.register('enterprise', function (enterprise) {
-      $scope.enterprise = enterprise;
-      validate.process(dependencies)
-      .then(startup);
-    });
+  dependencies.accounts = {
+    query : '/getAccount6/'
+  };
 
-    $scope.delete = function (config_accountings) {
-      var result = confirm($translate.instant('TAXES.CONFIRM'));
-      if (result) {  
-        connect.basicDelete('config_accounting', config_accountings.id, 'id')
-        .then(function () {
-          $scope.config_accountings.remove(config_accountings.id);
-          messenger.info($translate.instant('TAXES.DELETE_SUCCESS'));
-        });
-      }
-    };
+  // Expose to the view
+  vm.delete    = deletion;
+  vm.edit      = edit;
+  vm.new       = create;
+  vm.save      = {};
+  vm.save.edit = saveEdit;
+  vm.save.new  = saveNew;
 
-    $scope.edit = function (config_accountings) {
-      console.log(config_accountings);
-      session.action = 'edit';
-      session.edit = angular.copy(config_accountings);
-    };
+  // Startup
+  startup();
 
-    $scope.new = function () {
-      session.action = 'new';
-      session.new = {};
-    };
+  // Functions
+  function startup() {
+    vm.enterprise = SessionService.enterprise;
+    validate.process(dependencies)
+    .then(initialize);
+  }
 
-    $scope.save = {};
+  function initialize (models) {
+    angular.extend(vm, models);
+  }
 
-    $scope.save.edit = function () {
-
-      var record = angular.copy(connect.clean(session.edit));
-      delete record.reference;
-      delete record.account_number;
-      delete record.account_txt;
-
-      connect.basicPost('config_accounting', [record], ['id'])
+  function deletion (config_accountings) {
+    var result = confirm($translate.instant('TAXES.CONFIRM'));
+    if (result) {
+      connect.delete('config_accounting', config_accountings.id, 'id')
       .then(function () {
-        validate.refresh(dependencies)
-        .then(function (models) {
-          angular.extend($scope, models);
-          messenger.success($translate.instant('TAXES.UPDATE_SUCCES'));
-          session.action = '';
-          session.edit = {};
-        });        
-      });
-    };
+        vm.config_accountings.remove(config_accountings.id);
+        messenger.info($translate.instant('TAXES.DELETE_SUCCESS'));
+      })
+      .catch(error);
+    }
+  }
 
-    $scope.save.new = function () {
+  function edit (config_accountings) {
+    session.action = 'edit';
+    session.edit = angular.copy(config_accountings);
+  }
 
-      var record = connect.clean(session.new);
-      connect.basicPut('config_accounting', [record], ['id'])
-      .then(function (res) {
-        validate.refresh(dependencies)
-        .then(function (models) {
-          angular.extend($scope, models);
-        });
-        session.action = '';
-        session.new = {};
-      });
-    }; 
-  } 
-]);
+  function create () {
+    session.action = 'new';
+    session.new = {};
+  }
+
+  function saveEdit () {
+    var record = angular.copy(connect.clean(session.edit));
+    delete record.reference;
+    delete record.account_number;
+    delete record.account_txt;
+
+    connect.put('config_accounting', [record], ['id'])
+    .then(function () {
+      return validate.refresh(dependencies);
+    })
+    .then(function (models) {
+      angular.extend(vm, models);
+      messenger.success($translate.instant('TAXES.UPDATE_SUCCES'));
+      session.action = '';
+      session.edit = {};
+    })
+    .catch(error);
+  }
+
+  function saveNew () {
+    var record = connect.clean(session.new);
+    connect.post('config_accounting', [record], ['id'])
+    .then(function () {
+      return validate.refresh(dependencies);
+    })
+    .then(function (models) {
+      angular.extend(vm, models);
+      session.action = '';
+      session.new    = {};
+    })
+    .catch(error);
+  }
+
+  function error(err) {
+    messenger.error(err);
+  }
+
+}
