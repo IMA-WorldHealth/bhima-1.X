@@ -6,10 +6,10 @@ CostCenterAllocationController.$inject = [
 ];
 
 /**
-  * Cost Center Allocation Controller
-  * This controller is reponsible to manage Accoount deposit (versement)
-  */
-function CostCenterAllocationController ($q, connect, appstate,validate, SessionService) {
+* Cost Center Allocation Controller
+* This controller is reponsible to manage Accoount deposit (versement)
+*/
+function CostCenterAllocationController($q, connect, appstate,validate, SessionService) {
   var vm            = this,
       dependencies  = {},
       configuration = vm.configuration = {};
@@ -113,6 +113,9 @@ function CostCenterAllocationController ($q, connect, appstate,validate, Session
     return connect.req('/removeFromCostCenter/'+JSON.stringify(data));
   }
 
+  // TODO -- this function can potentially send lots of HTTP requests.  We
+  // should refactor this into a single API endpoint to send a list of accounts
+  // to.
   function updateAccounts(accounts) {
     return $q.all(
       accounts.map(function (account) {
@@ -154,5 +157,4 @@ function CostCenterAllocationController ($q, connect, appstate,validate, Session
   function error(err) {
     console.error(err);
   }
-
 }
