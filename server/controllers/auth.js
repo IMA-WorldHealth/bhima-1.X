@@ -31,6 +31,17 @@ exports.login = function (req, res, next) {
     // we assume only one match for the user
     user = rows[0];
 
+    // next make sure this user has permissions
+    sql =
+      'SELECT user_id, unit_id FROM permission WHERE user_id = ?';
+
+    return db.exec(sql, [user.id]);
+  })
+  .then(function (rows) {
+
+    // if no permissions, notify the user that way
+    if (rows.length === 0) { throw 'ERR_NO_PERMISSIONS'; }
+
     // update the database for when the user logged in
     sql = 'UPDATE user SET user.active = 1, user.last_login = ? WHERE user.id = ?;';
     return db.exec(sql, [new Date(), user.id]);
