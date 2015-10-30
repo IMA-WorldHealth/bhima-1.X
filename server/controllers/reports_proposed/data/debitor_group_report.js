@@ -2,11 +2,11 @@ var db      = require('../../../lib/db');
 var numeral = require('numeral');
 
 var formatDollar = '$0,0.00';
-var debitorGroupReportDate = new Date();
 
 exports.compile = function (options) {
   'use strict';
 
+  var debitorGroupReportDate = new Date();
   var i18nDebitorGroupReport = options.language == 'fr' ? require('../lang/fr.json').DEBITOR_GROUP_REPORT : require('../lang/en.json').DEBITOR_GROUP_REPORT;
   var context = {}, params = options.involveJournal === true ? [options.dg.account_id, options.dg.account_id] : [options.dg.account_id];
 

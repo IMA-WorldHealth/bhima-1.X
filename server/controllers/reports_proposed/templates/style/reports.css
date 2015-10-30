@@ -133,10 +133,19 @@ table.clean-table td {
 }
 
 table.clean-table td {
-  font-size: 8px;
+  font-size: 10px;
 }
 
 table.clean-table th {
+  font-size:  12px;
+  text-align: center;
+}
+
+table.clean-table.compressed td {
+  font-size: 8px;
+}
+
+table.clean-table.compressed  th {
   font-size:  10px;
   text-align: center;
 }
