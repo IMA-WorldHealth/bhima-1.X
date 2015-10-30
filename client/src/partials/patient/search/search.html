@@ -5,85 +5,73 @@
 <nav>
   <div class="pull-left">
     <ol class="breadcrumb">
-      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li><a href="#/"><i class="glyphicon glyphicon-home"></i></a></li>
       <li class="active">{{ "PATIENT_RECORDS.TITLE" | translate }}</li>
     </ol>
   </div>
 </nav>
 
-<main>
-<!-- Advanced Search -->
+<main class="extend">
+
+  <!-- Advanced Search -->
   <div class="row margin-top-10">
     <div class="col-xs-12">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <span class="glyphicon glyphicon-search"></span> {{ "PATIENT_RECORDS.ADVANCED_SEARCH" | translate }}
+          <i class="glyphicon glyphicon-search"></i> {{ "PATIENT_RECORDS.ADVANCED_SEARCH" | translate }}
         </div>
-        
+
         <div class="panel-body">
           <div class="row">
             <div class="col-xs-12">
               <div class="alert alert-info">
-                <span class="glyphicon glyphicon-info-sign"></span> {{ "PATIENT_RECORDS.INFO_SEARCH" | translate}} <span class="glyphicon glyphicon-saved error"></span>
-          </div>
+                <i class="glyphicon glyphicon-info-sign"></i> {{ "PATIENT_RECORDS.INFO_SEARCH" | translate}} <i class="glyphicon glyphicon-saved text-danger"></i>
+            </div>
 
             </div>
           </div>
           <div class="row">
-          
+
             <div class="col-xs-6">
 
               <div class="form-group">
-                <span 
-                  ng-if="searchParams.last_name.length"
-                  class="glyphicon glyphicon-saved error"></span> 
+                <i ng-if="searchParams.last_name.length" class="glyphicon glyphicon-saved text-danger"></i>
                 <label class="control-label">{{ "PATIENT_RECORDS.LAST_NAME" | translate }}</label>
                 <input class="form-bhima" ng-model="searchParams.last_name"></input>
               </div>
-              
+
               <div class="form-group">
-                <span 
-                  ng-if="searchParams.last_name.length"
-                  class="glyphicon glyphicon-saved error"></span> 
+                <i ng-if="searchParams.middle_name.length" class="glyphicon glyphicon-saved text-danger"></i>
                 <label class="control-label">{{ "PATIENT_RECORDS.MIDDLE_NAME" | translate }}</label>
                 <input class="form-bhima" ng-model="searchParams.middle_name"></input>
               </div>
 
               <div class="form-group">
-                <span 
-                  ng-if="searchParams.first_name.length"
-                  class="glyphicon glyphicon-saved error"></span> 
+                <i ng-if="searchParams.first_name.length" class="glyphicon glyphicon-saved text-danger"></i>
                  <label class="control-label"> {{ "PATIENT_RECORDS.FIRST_NAME" | translate }}</label>
                 <input class="form-bhima" ng-model="searchParams.first_name"></input>
               </div>
-              
+
               <div class="form-group">
-                <span 
-                  ng-if="searchParams.first_name.length"
-                  class="glyphicon glyphicon-saved error"></span> 
-                 <label class="control-label"> {{ "PATIENT_RECORDS.HOSPITAL_FILE_NR" | translate }}</label>
+                <i ng-if="searchParams.hospital_no.length" class="glyphicon glyphicon-saved text-danger"></i>
+                <label class="control-label"> {{ "PATIENT_RECORDS.HOSPITAL_FILE_NR" | translate }}</label>
                 <input class="form-bhima" ng-model="searchParams.hospital_no"></input>
               </div>
-              
+
               <!-- TODO Implement convert year to date / allow full date to be entered -->
               <div class="form-group">
-                <span 
-                  ng-if="searchParams.yob.length"
-                  class="glyphicon glyphicon-saved error"></span> 
+                <i ng-if="searchParams.yob.length" class="glyphicon glyphicon-saved text-danger"></i>
 
                 <label class="control-label">{{ "PATIENT_RECORDS.YOB" | translate }}</label>
                 <input class="form-bhima" ng-model="searchParams.yob"></input>
               </div>
 
               <div class="form-group">
-                <span 
-                      ng-if="searchParams.sex.length"
-                      class="glyphicon glyphicon-saved error"></span> 
-
+                <i ng-if="searchParams.sex.length" class="glyphicon glyphicon-saved text-danger"></i>
                 <label class="control-label">{{ "PATIENT_RECORDS.SEX" | translate }}</label>
                 <div class="col-xs-12">
                   <div class="radio-inline">
-                    
+
                     <label>
                       <input
                         type="radio"
@@ -93,7 +81,7 @@
                         checked
                         ng-model="searchParams.sex"
                         required>
-                      {{ "PATIENT_RECORDS.MALE" | translate }} 
+                      {{ "PATIENT_RECORDS.MALE" | translate }}
                     </label>
                   </div>
                   <div class="radio-inline">
@@ -106,11 +94,9 @@
               </div>
 
             </div>
-          
-            <div class="col-xs-6">
-                          
-              <div ng-show="session.locationSearch">
 
+            <div class="col-xs-6">
+              <div ng-show="session.locationSearch">
                 <div location-select select-village="assignVillageLocation"></div>
               </div>
             </div>
@@ -119,36 +105,36 @@
 
         <div class="panel-footer">
           <button ng-click="patientSearch(searchParams)" class="btn btn-default btn-sm">
-            {{ "PATIENT_RECORDS.SEARCH" | translate }} 
+            {{ "PATIENT_RECORDS.SEARCH" | translate }}
           </button>
-          
+
           <div class="pull-right">
-          <button 
+          <button
             class="btn btn-default btn-sm"
             ng-click="session.locationSearch=!session.locationSearch">
-            {{session.locationSearch ? "PATIENT_RECORDS.REMOVE_LOCATION_SEARCH" :  
+            {{session.locationSearch ? "PATIENT_RECORDS.REMOVE_LOCATION_SEARCH" :
             "PATIENT_RECORDS.INCLUDE_LOCATION_SEARCH" | translate }}</button>
           </div>
         </div>
       </div>
     </div>
   </div>
-    
+
   <div class="row">
     <div class="col-xs-12">
-      <div 
-        class="alert" 
-        ng-class="{'alert-info' : session.searching, 'alert-success' : model.patient.data.length&&!session.searching, 'alert-danger' : !model.patient.data.length&&!session.searching}"
-        ng-if="session.searched||session.searching">
+      <div
+        class="alert"
+        ng-class="{'alert-info' : session.searching, 'alert-success' : model.patient.data.length && !session.searching, 'alert-danger' : !model.patient.data.length && !session.searching}"
+        ng-if="session.searched || session.searching">
         <div ng-if="session.searching">
-          <span class="glyphicon glyphicon-refresh"></span> Searching database...
+          <i class="glyphicon glyphicon-refresh icon-spin"></i> Searching database...
         </div>
-        <div ng-if="!session.searching&&session.searched">
-          <span class="glyphicon glyphicon-info-sign"></span> Matched <b>{{model.patient.data.length}}</b> patients against the current search criteria
+        <div ng-if="!session.searching && session.searched">
+          <i class="glyphicon glyphicon-info-sign"></i> Matched <b>{{ model.patient.data.length }}</b> patients against the current search criteria
         </div>
       </div>
       <div ng-show="model.patient.data.length && model.patient.data.length!==0" class="patient-table">
-        <table class="table table-condensed table-bordered">
+        <table class="table table-condensed table-bordered table-hover">
           <thead>
           <tr>
             <th>#</th>
@@ -162,15 +148,14 @@
           </thead>
 
           <tbody>
-            <tr ng-class='{rowSelected: selected.uuid==patient.uuid}' ng-click="select(patient.uuid)" ng-repeat="patient in model['patient'].data | orderBy:'registration_date':true">
-              <td><b>{{patient.hr_id}}</b></td>
+            <tr ng-repeat="patient in model['patient'].data | orderBy:'registration_date'">
+              <th>{{ patient.hr_id }}</th>
               <td>{{ patient.name }}</td>
-              <td>{{ patient.dob | date : 'dd/MM/yyyy' }}</td>
+              <td>{{ patient.dob | date }}</td>
               <td>{{ patient.father_name }}</td>
               <td>{{ patient.sex | uppercase }}</td>
-              <!-- <td>{{ patient.email }}</td> -->
               <td>{{patient.registration_date | date}}</td>
-              <td><a href="#/invoice/patient/{{patient.uuid}}"><span class="glyphicon glyphicon-list-alt"></span> {{"PATIENT_RECORDS.VIEW_PATIENT_CARD" | translate}}</a></td>
+              <td><a ng-href="#/invoice/patient/{{patient.uuid}}"><i class="glyphicon glyphicon-list-alt"></i> {{"PATIENT_RECORDS.VIEW_PATIENT_CARD" | translate}}</a></td>
             </tr>
           </tbody>
         </table>
