@@ -1966,6 +1966,7 @@
    "TRANSACTION_NUMBER"    : "Transaction #",
    "TRANSACTION_SUCCESS"   : "Transaction edits and logs saved successfully",
    "TRIAL_BALANCE"         : "Trial Balance",
+   "UNKNOWN_ACCOUNT"     : "Unknown Account",
    "VERIFY_TRANSACTION"    : "Verify Transaction"
    },
 "PRICE_LIST": {
