@@ -80,12 +80,10 @@
         </form>
 
         <div class="alert alert-danger" ng-if="CautionCtrl.accountBalance > 0">
-          <label>
-            <h4>
-              <i class="glyphicon glyphicon-warning-sign error"></i>
-              {{ "CAUTION.ATTENTION" | translate }}: <strong>{{ CautionCtrl.accountBalance | currency:CautionCtrl.currency.id }}</strong>
-            </h4>
-          </label>
+          <h5>
+            <i class="glyphicon glyphicon-warning-sign"></i>
+            {{ "CAUTION.ATTENTION" | translate }}: <strong>{{ CautionCtrl.accountBalance | currency }}</strong>
+          </h5>
         </div>
       </div>
     </div>
@@ -111,6 +109,7 @@
           <button
             type="submit"
             class="btn btn-sm btn-default"
+            ng-disabled="!CautionCtrl.currency"
             ng-class="{ 'btn-danger' : CautionForm.$invalid && CautionForm.$dirty, 'btn-success':  CautionForm.$valid && CautionForm.$dirty }"
             ng-click="CautionCtrl.payCaution(CautionForm.$invalid)">
             {{ "CAUTION.PAY" | translate }}
