@@ -6,13 +6,13 @@ var db      = require('../../../lib/db');
 var numeral = require('numeral');
 
 var formatDollar = '$0,0.00';
-var bilanDate = new Date();
 
 // expose the http route
 exports.compile = function (options) {
   'use strict';
   var i18nBilan = options.language == 'fr' ? require('../lang/fr.json').BILAN : require('../lang/en.json').BILAN;
   var deferred = q.defer(), context = {}, infos = {}, assetData = {}, passiveData = {};
+  var bilanDate = new Date();
   var sql =
     'SELECT `acc`.`id` AS `accountId`, `acc`.`account_txt` AS `accounTxt`, `acc`.`account_number` AS `accountNumber`, ' +
     '`acc`.`is_brut_link` AS `accountIsBrutLink`, `ref`.`id` AS `referenceId`, `ref`.`ref` AS `referenceAbbr`, `ref`.`text` AS `referenceLabel`, ' +

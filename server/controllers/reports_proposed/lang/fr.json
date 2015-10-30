@@ -8,12 +8,13 @@
     "AMOUNT" : "Mountant",
     "INVOICE_NUMBER" : "Numero Facture",
     "INVOICE_DATE" : "Date de la Facture",
-    "CLIENT_CODE" : "Code Client",
     "REGISTRATION_DATE" : "Date d'enregistrement",
     "TOTAL" : "Total",
     "PAID" : "Mountant Paye",
     "BALANCE" : "Solde",
-    "PATIENT" : "Patient"
+    "PATIENT" : "Patient",
+    "GROUP" : "Group",
+    "PATIENT_CODE" : "Code Client"
   },
 
 	"BILAN" : {

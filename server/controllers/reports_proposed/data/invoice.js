@@ -2,17 +2,29 @@ var db      = require('./../../../lib/db');
 var q       = require('q');
 var numeral = require('numeral');
 
-var query = {
-  sale : 'SELECT * FROM sale_item LEFT JOIN sale ON sale_item.sale_uuid = sale.uuid LEFT JOIN inventory ON sale_item.inventory_uuid = inventory.uuid LEFT JOIN project ON sale.project_id = project.id WHERE sale.uuid = ? ORDER BY inventory.code',
-  enterprise : 'SELECT * FROM project JOIN enterprise on project.enterprise_id = enterprise.id WHERE project.id = ?',
-  recipient : 'SELECT * FROM debitor JOIN patient ON debitor.uuid = patient.debitor_uuid WHERE debitor.uuid = ?'
-};
-
 var formatDollar = '$0,0.00',
     formatFranc = '0.0,00';
 
+function fmtDate(date) {
+
+  // if we pass in a string, return it right away
+  if (typeof date === 'string') { return date; }
+
+  var d     = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day   = '' + d.getDate(),
+      year  = d.getFullYear();
+
+  if (month.length < 2) { month = '0' + month; }
+  if (day.length < 2) { day = '0' + day; }
+
+  return [year, month, day].join('-');
+}
+
 // compiles the patient receipt
 exports.compile = function (options) {
+  'use strict';
+
   var context = {};
   var saleId = options.sale;
 
@@ -28,8 +40,13 @@ exports.compile = function (options) {
     return q.reject('Document requires valid sale reference');
   }
 
-  // TODO -- respect language options
-  return db.exec(query.sale, [saleId])
+  var sql =
+    'SELECT * FROM sale_item LEFT JOIN sale ON sale_item.sale_uuid = sale.uuid ' +
+    'LEFT JOIN inventory ON sale_item.inventory_uuid = inventory.uuid ' +
+    'LEFT JOIN project ON sale.project_id = project.id WHERE sale.uuid = ? ' +
+    'ORDER BY inventory.code;';
+
+  return db.exec(sql, [saleId])
   .then(function (rows) {
     var projectId;
     var invalidSaleRequest = rows.length === 0;
@@ -45,8 +62,15 @@ exports.compile = function (options) {
     formatCurrency(context.invoice.items, currencyFmt);
     projectId = context.invoice.items[0].project_id;
 
+    sql =
+      'SELECT project.id, enterprise.id AS enterprise_id, enterprise.name, project.abbr, ' +
+        'enterprise.abbr AS enterpriseAbbr, enterprise.phone, enterprise.email, enterprise.location_id, ' +
+        'enterprise.po_box ' +
+      'FROM project JOIN enterprise ON project.enterprise_id = enterprise.id ' +
+      'WHERE project.id = ?';
+
     // Query for enterprise information
-    return db.exec(query.enterprise, [projectId]);
+    return db.exec(sql, [projectId]);
   })
   .then(function (result) {
     var initialLineItem = context.invoice.items[0];
@@ -54,13 +78,24 @@ exports.compile = function (options) {
 
     context.invoice.reference = initialLineItem.reference;
     context.invoice.id = initialLineItem.abbr.concat(initialLineItem.reference);
-    context.invoice.date = initialLineItem.invoice_date.toDateString();
+    context.invoice.date = fmtDate(initialLineItem.invoice_date);
+
+    sql =
+      'SELECT patient.hospital_no, patient.sex, CONCAT(patient.first_name, " ", patient.middle_name, " ", patient.last_name) AS patientName, ' +
+        'patient.profession, CONCAT(project.abbr, patient.reference) AS code, debitor_group.name AS groupName, patient.registration_date, ' +
+        'patient.dob ' +
+      'FROM debitor JOIN patient JOIN debitor_group JOIN project ON ' +
+        'debitor.uuid = patient.debitor_uuid AND ' +
+        'debitor_group.uuid = debitor.group_uuid AND ' +
+        'project.id = patient.project_id ' +
+      'WHERE debitor.uuid = ?';
 
     // Query for recipient information
-    return db.exec(query.recipient, [initialLineItem.debitor_uuid]);
+    return db.exec(sql, [initialLineItem.debitor_uuid]);
   })
   .then(function (result) {
     context.recipient = result[0];
+    context.recipient.registration_date = fmtDate(context.recipient.registration_date);
     return context;
   });
 };

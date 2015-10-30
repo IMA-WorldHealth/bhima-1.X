@@ -7,20 +7,33 @@
 
 <body>
 
-  <hgroup>
-    <h5>{{= it.enterprise.name }}</h5>
-    <h5>{{= it.i18n.INVOICE_NUMBER }}: {{= it.invoice.id }}</h5>
-    <h5>{{= it.i18n.INVOICE_DATE }}: {{= it.invoice.date }}</h5>
-  </hgroup>
 
-  <h5 class="clean-title">
-    {{= it.i18n.PATIENT }}
-    {{= it.recipient.first_name }}
-    {{= it.recipient.middle_name }}
-    {{= it.recipient.last_name }}
-  </h5>
+  <section class="row" style="size:1.75em;">
 
-  <table class="invoice">
+    <div class="four columns" style="color:#000;">
+      <address>
+        <strong>{{= it.enterprise.name }} ({{= it.enterprise.enterpriseAbbr }})</strong>
+        <br /> <i>TEL:</i> {{= it.enterprise.phone }}
+        <br /> <i>EMAIL:</i> {{= it.enterprise.email }}
+      </address>
+    </div>
+
+    <div class="four columns" style="color:#000;">
+      <strong>{{= it.recipient.patientName }}</strong>
+      <br />{{= it.i18n.GROUP }}: {{= it.recipient.groupName }}
+      <br />{{= it.i18n.PATIENT_CODE }}: {{= it.recipient.code }}
+      <br />{{= it.i18n.REGISTRATION_DATE }}: {{= it.recipient.registration_date }}
+    </div>
+
+    <div class="four columns" style="color:#000;">
+      <i>{{= it.i18n.INVOICE_NUMBER }}</i>: <strong>{{= it.invoice.id }}</strong>
+      <br /><i>{{= it.i18n.INVOICE_DATE }}</i>: {{= it.invoice.date }}
+    </div>
+  </section >
+
+  <br />
+
+  <table class="clean-table">
     <thead>
       <tr>
         <th class="text-center">{{= it.i18n.CODE }}</th>
