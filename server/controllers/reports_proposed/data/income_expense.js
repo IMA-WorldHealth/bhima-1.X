@@ -18,6 +18,7 @@
 var q       = require('q');
 var db      = require('../../../lib/db');
 var numeral = require('numeral');
+var moment = require('moment');
 
 /**
  * Default configuration options 
@@ -73,6 +74,8 @@ exports.compile = function (options) {
   
   // Account formatting details
   context.TITLE_ACCOUNT_ID = titleAccountId;
+  
+  context.fiscalDefinition.dates = calculateFiscalPeriod(context.fiscalDefinition);
 
   var accountStatusQuery =
     'SELECT account.id, account.account_number, account.account_txt, account.account_type_id, account.parent, totals.balance, totals.period_id ' +
@@ -126,7 +129,7 @@ function collectComparisonYear(query, context, options, deferred) {
           // context.fiscal.incomeData,
           // context.fiscal.expenseData);
 
-        // context.compare.varianceData = calculateVariance(
+        //  child.aggTotal;context.compare.varianceData = calculateVariance(
           // context.compare.incomeData,
           // context.compare.expenseData);
 
@@ -144,8 +147,8 @@ function compileAccountLines(accounts) {
   var accountTree = getChildren(accounts, ROOT_ACCOUNT_ID, 0);
   
   // FIXME Extend object hack
-  var incomeData = JSON.parse(JSON.stringify(accountTree));
-  var expenseData = JSON.parse(JSON.stringify(accountTree));
+  var incomeData = JSON.parse(JSON.stringify(accountTree.accounts));
+  var expenseData = JSON.parse(JSON.stringify(accountTree.accounts));
   
   // FIXME Lots of processing, very little querrying - this is what MySQL is foreh
   incomeData = filterAccounts(incomeData, expenseAccountConvention);
@@ -165,9 +168,16 @@ function compileAccountLines(accounts) {
 /* 
  * Utility Methods - should probably be shared acorss different reporting modules
  */
-function getChildren(accounts, parentId, depth) {
+/*
+ * FIXME The most interesting way of parsing a tree I've ever seen - it may be worth someone building
+ * an effecient AST library to parse/flatten account lists
+ */
+function getChildren(treeObject, parentId, depth) {
   var children;
-  
+  var total = 0;
+
+  var accounts = treeObject.accounts || treeObject;
+
   // Base case: There are no child accounts
   // Return an empty array
   if (accounts.length === 0) { return []; }
@@ -175,17 +185,36 @@ function getChildren(accounts, parentId, depth) {
   // Returns all accounts where the parent is the
   // parentId
   children = accounts.filter(function (account) {
-    return account.parent === parentId;
+    var validChild = account.parent === parentId;
+  
+    return validChild;
   });
 
   // Recursively call get children on all child accounts
   // and attach them as childen of their parent account
   children.forEach(function (account) {
-    account.depth = depth;
-    account.children = getChildren(accounts, account.account_number, depth+1);
-  });
+    var step; 
+    
+    total += account.balance;
+    step = getChildren(accounts, account.account_number, depth + 1);
 
-  return children;
+    account.depth = depth;
+
+    account.children = step.accounts;
+     
+    total += step.aggregateTotal;
+    if (account.total) { 
+      account.total += step.aggregateTotal;
+    } else { 
+      account.total = step.aggregateTotal;
+    }
+  });
+  
+  // return children;
+  return {
+    accounts : children,
+    aggregateTotal : total
+  };
 }
   
 function filterAccounts(accounts, excludeType) { 
@@ -297,4 +326,22 @@ function flattenAccounts(accountTree) {
   
   console.log('total flattened', flattenedAccounts.length);
   return flattenedAccounts;
+}
+
+/** 
+ * Return an object with the start and end date given a fiscal year definition 
+ * @todo This assumes that periods are month long incremements - this should be verified with the
+ * fiscal year creation tools
+ */
+function calculateFiscalPeriod(fiscalYear) { 
+  var DATE_MONTH_OFFSET = 1;
+  var fiscalDate = new Date(fiscalYear.start_year, fiscalYear.start_month-DATE_MONTH_OFFSET);
+  var completeDate = new Date(fiscalDate);
+  
+  completeDate.setMonth(fiscalDate.getMonth() + fiscalYear.number_of_months);
+
+  return { 
+    start : moment(fiscalDate).format('L'),
+    end : moment(completeDate).format('L')
+  };
 }

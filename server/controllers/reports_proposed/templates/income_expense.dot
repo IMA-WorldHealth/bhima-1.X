@@ -21,7 +21,6 @@
 
   <link rel="stylesheet" href="{{=it.path}}/templates/style/normalize.css">
   <link rel="stylesheet" href="{{=it.path}}/templates/style/documents.css">
-
 </head>
 
 <body>
@@ -29,30 +28,41 @@
   <section id="letterhead"></section>
 
   <section id="title" class="center" style="margin-bottom : 40px;">
-      <h5>IMCK Hopital Bon Berger</h5>
-      <h5>{{=it.heading}}</h5>
-  
+     
+      /* TODO Drive from DB */
+      /* Enterprise Name */
+      <h1>IMCK Hopital Bon Berger</h1>
+      
+      /* Report Heading */
+      <h1 id="heading">{{=it.heading}}</h1>
       {{? it.subheading }}
-      <h6>{{=it.subheading}}</h6>
+      <h2>{{=it.subheading}}</h2>
       {{?}}
 
+      /* Report details */
+      <h3>
+        {{=it.fiscalDefinition.fiscal_year_txt}} - 
+        {{=it.fiscalDefinition.dates.start}} 
+        to 
+        {{=it.fiscalDefinition.dates.end}}
+      </h3>
   </section>
  
   <section>
   <!--span class="groupTitle">Insitution Income</span-->
 
-    <table class="income">
+    <table>
       <thead>
-        <tr style="border-bottom : 1px solid grey">
-          <td colspan="2"></td>
+        <tr>
+          <th></th>
           
           <!-- Repeat through column configuration --> 
-          <td style="text-align : center; padding-right : 10px;">{{=it.fiscalDefinition.fiscal_year_txt}}</td>
+          <th>{{=it.fiscalDefinition.fiscal_year_txt}}</th>
 
           {{? it.comparingYears }}
-          <td style="text-align : center; padding-right : 10px;">{{=it.compareDefinition.fiscal_year_txt}}</td>
-          <td style="text-align : center; padding-right : 10px;">Variance</td>
-          <td style="text-align : center;">(%)</td>
+          <th>{{=it.compareDefinition.fiscal_year_txt}}</th>
+          <th>Variance</th>
+          <th>(%)</th>
           {{?}}
         </tr>
       </thead>
@@ -64,18 +74,20 @@
           {{ function displayAccounts(accounts, compareAccounts) { 
                accounts.forEach(function (line, index) { }}
 
-        <tr class="totalRight {{? line.account_type_id === it.TITLE_ACCOUNT_ID}}underline{{?}}">
+        <tr>
           
-          <td style="{{? line.account_type_id === it.TITLE_ACCOUNT_ID}}font-weight : bold;{{?}}">
-            {{? it.displayAccountNumber}}
-            {{=line.account_number}}
-            {{?}}
+          <td 
+            style="padding-left: {{=line.depth * 20}}px;"
+            class=" {{? line.account_type_id === it.TITLE_ACCOUNT_ID}}rowTitle{{?}}">
+            {{? line.account_type_id === it.TITLE_ACCOUNT_ID}}{{=line.account_number}}{{?}}
+            {{=line.account_txt}}
           </td>
-          
-          <td {{? line.account_type_id === it.TITLE_ACCOUNT_ID}}colspan="8"{{?}} style="text-align : left; padding-left: {{=line.depth * 20}}px; {{? line.account_type_id === it.TITLE_ACCOUNT_ID}}font-weight : bold;{{?}}">{{=line.account_number}} {{=line.account_txt}}</td>
 
-          {{? line.account_type_id !== it.TITLE_ACCOUNT_ID}}
-         
+          /* <{{? line.account_type_id !== it.TITLE_ACCOUNT_ID}}> */
+          {{? line.account_type_id === it.TITLE_ACCOUNT_ID}}
+          <td>{{=line.total}}</td>
+          {{?}}
+
           <td style="text-align : right;">{{=line.balance || 0}}</td>
          
           {{? it.comparingYears }}
@@ -88,7 +100,7 @@
           <td style="text-align : right; padding-left : 5px;">{{=displayVariance}}%</td>
           {{?}}
 
-          {{?}}
+          /* {{?}} */
 
         </tr> 
  

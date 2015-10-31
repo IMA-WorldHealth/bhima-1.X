@@ -171,7 +171,7 @@ exports.build = function (req, res, next) {
   function renderPDF(reportData) {
     var compiledReport;
     var hash = uuid();
-
+  
     var format = options.format || 'standard';
     var language = options.language || 'en';
     var configuration = buildConfiguration(hash, format);
@@ -182,7 +182,7 @@ exports.build = function (req, res, next) {
     configuration['headerRight'] =  headerHeading.concat(' [page]/[toPage]');
     configuration['noHeaderLine'] = true;
     configuration['headerFontName'] = 'Tinos';
-    configuration['marginTop'] = '5mm';
+    configuration['marginTop'] = '10mm';
 
     var templater; 
 
