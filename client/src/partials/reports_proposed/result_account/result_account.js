@@ -27,8 +27,8 @@ angular.module('bhima.controllers')
       }
     };
 
-    $scope.generate_doc = $translate.instant('RESULT_ACCOUNT.GENERATE_DOC');
-    $scope.loading = $translate.instant('RESULT_ACCOUNT.LOADING');
+    $scope.generate_doc = $translate.instant('ACCOUNT_RESULT.GENERATE_DOC');
+    $scope.loading = $translate.instant('ACCOUNT_RESULT.LOADING');
 
     //getting fiscal years
 
