@@ -25,31 +25,17 @@ exports.compile = function (options) {
     'FROM `period` WHERE `period`.`fiscal_year_id`=?) AND `acc`.`is_ohada`=? GROUP BY `gld`.`account_id` ORDER BY `sbl`.`position`, `gref`.`position`, `ref`.`position` DESC;';
 
   //populating context object
-
   context.reportDate = bilanDate.toDateString();
-  context.enterpriseName = options.enterprise.abbr;
-
-  context.title = i18nBilan.TITLE;
-  context.enterprise = i18nBilan.ENTERPRISE;
-  context.clos = i18nBilan.CLOS;
-  context.duration = i18nBilan.DURATION;
-  context.reference = i18nBilan.REFERENCE;
-  context.actif = i18nBilan.ACTIF;
-  context.brut  = i18nBilan.BRUT;
-  context.amort_prov = i18nBilan.AMORT_PROV;
-  context.net = i18nBilan.NET;
-  context.totalGeneral = i18nBilan.TOTAL_GENERAL;
-  context.passif = i18nBilan.PASSIVE;
-  context.date = i18nBilan.DATE;
-  context.total = i18nBilan.TOTAL;
+  context.options = options;
+  context.i18nBilan = i18nBilan;
 
   db.exec(sql, [options.fy, 1])
-  .then(function (currentAccountDetails) {
-    infos.currentAccountDetails = currentAccountDetails;
+  .then(function (ans) {
+    infos.current_detail_list = ans;
     return db.exec(sql, [options.pfy, 1]);
   })
-  .then(function (previousAccountDetails){
-    infos.previousAccountDetails = previousAccountDetails;
+  .then(function (ans){
+    infos.previous_detail_list = ans;
     return q.when(infos);
   })
   .then(function (infos){
@@ -57,19 +43,19 @@ exports.compile = function (options) {
 
     var AssetGeneralBrut = 0, AssetGeneralAmortProv = 0, AssetGeneralNet = 0, AssetGeneralPreviousNet = 0;
 
-    assetData.currentAccountDetails = infos.currentAccountDetails.filter(function (item){
+    assetData.current_detail_list = infos.current_detail_list.filter(function (item){
       return item.sectionBilanIsActif === 1;
     });
 
-    assetData.previousAccountDetails = infos.previousAccountDetails.filter(function (item){
+    assetData.previous_detail_list = infos.previous_detail_list.filter(function (item){
       return item.sectionBilanIsActif === 1;
     });
 
-    passiveData.currentAccountDetails = infos.currentAccountDetails.filter(function (item){
+    passiveData.current_detail_list = infos.current_detail_list.filter(function (item){
       return item.sectionBilanIsActif === 0;
     });
 
-    passiveData.previousAccountDetails = infos.previousAccountDetails.filter(function (item){
+    passiveData.previous_detail_list = infos.previous_detail_list.filter(function (item){
       return item.sectionBilanIsActif === 0;
     });
 
@@ -77,7 +63,7 @@ exports.compile = function (options) {
     context.passiveSide = processPassive(passiveData);
 
     function processAsset (tbl){
-      var currents = tbl.currentAccountDetails;
+      var currents = tbl.current_detail_list;
       var sections = (currents.length > 0) ? getSections(currents) : [];
 
       context.assetGeneralBrut = 0, context.assetGeneralAmortProv = 0, context.assetGeneralNet = 0, context.assetGeneralPreviousNet = 0,
@@ -87,34 +73,40 @@ exports.compile = function (options) {
         section.grefs.forEach(function (gref){
           gref.refs = getReferences(gref, currents);
           gref.refs.forEach(function (item){
+
+            //brut processing
             item.brut = getBrut(item, currents, section.sectionBilanIsActif);
             item.brut_view = numeral(item.brut).format(formatDollar);
             section.totalBrut += item.brut;
 
-            item.amort_prov = getAmortProv(item, currents, section.sectionBilanIsActif);
+            //amort/prov processing
+            var amor = getAmortProv(item, currents, section.sectionBilanIsActif);
+            item.amort_prov =  amor < 0 ? amor * -1 : amor;
             item.amort_prov_view = numeral(item.amort_prov).format(formatDollar);
             section.totalAmortProv += item.amort_prov;
 
+            //net processing
             item.net = item.brut - item.amort_prov;
             item.net_view = numeral(item.net).format(formatDollar);
             section.totalNet += item.net;
 
-            item.previousNet = getPreviousNet(item, tbl.previousAccountDetails, section.sectionBilanIsActif);
+            //previous net processing
+            item.previousNet = getPreviousNet(item, tbl.previous_detail_list, section.sectionBilanIsActif);
             item.previousNet_view = numeral(item.previousNet).format(formatDollar);
             section.totalPreviousNet = item.previousNet;
           });
 
+          //processing total brut, amort, previous net
           section.totalBrut_view = numeral(section.totalBrut).format(formatDollar);
           section.totalAmortProv_view = numeral(section.totalAmortProv).format(formatDollar);
           section.totalNet_view = numeral(section.totalNet).format(formatDollar);
           section.totalPreviousNet_view = numeral(section.totalPreviousNet).format(formatDollar);
-
         });
 
-          context.assetGeneralBrut += section.totalBrut;
-          context.assetGeneralNet += section.totalNet;
-          context.assetGeneralAmortProv += section.totalAmortProv;
-          context.assetGeneralPreviousNet += section.totalPreviousNet;
+        context.assetGeneralBrut += section.totalBrut;
+        context.assetGeneralNet += section.totalNet;
+        context.assetGeneralAmortProv += section.totalAmortProv;
+        context.assetGeneralPreviousNet += section.totalPreviousNet;
       });
 
       context.assetGeneralBrut = numeral(context.assetGeneralBrut).format(formatDollar);
@@ -125,47 +117,36 @@ exports.compile = function (options) {
     }
 
     function processPassive (tbl){
-      var currents = tbl.currentAccountDetails;
+      var currents = tbl.current_detail_list;
       var sections = (currents.length > 0) ? getSections(currents) : [];
 
       context.passiveGeneralBrut = 0, context.passiveGeneralAmortProv = 0, context.passiveGeneralNet = 0, context.passiveGeneralPreviousNet = 0,
       sections.forEach(function (section){
-        section.totalBrut = 0, section.totalAmortProv = 0, section.totalNet = 0, section.totalPreviousNet = 0;
+        section.totalNet = 0, section.totalPreviousNet = 0;
         section.grefs = getGroupReferences(section, currents);
         section.grefs.forEach(function (gref){
           gref.refs = getReferences(gref, currents);
           gref.refs.forEach(function (item){
-            item.brut = getBrut(item, currents, section.sectionBilanIsActif);
-            item.brut_view = numeral(item.brut).format(formatDollar);
-            section.totalBrut += item.brut;
-
-            item.amort_prov = getAmortProv(item, currents, section.sectionBilanIsActif);
-            item.amort_prov_view = numeral(item.amort_prov).format(formatDollar);
-            section.totalAmortProv += item.amort_prov;
-
-            item.net = item.brut - item.amort_prov;
+            var br = getBrut(item, currents, section.sectionBilanIsActif); //tapon pour stocker le brute
+            item.net = br < 0 ? br * -1 : br;
             item.net_view = numeral(item.net).format(formatDollar);
             section.totalNet += item.net;
 
-            item.previousNet = getPreviousNet(item, tbl.previousAccountDetails, section.sectionBilanIsActif);
+            var prev = getPreviousNet(item, tbl.previous_detail_list, section.sectionBilanIsActif);
+
+            item.previousNet = prev < 0 ? prev * -1 : prev;
             item.previousNet_view = numeral(item.previousNet).format(formatDollar);
             section.totalPreviousNet = item.previousNet;
           });
 
-          section.totalBrut_view = numeral(section.totalBrut).format(formatDollar);
-          section.totalAmortProv_view = numeral(section.totalAmortProv).format(formatDollar);
           section.totalNet_view = numeral(section.totalNet).format(formatDollar);
           section.totalPreviousNet_view = numeral(section.totalPreviousNet).format(formatDollar);
         });
 
-          context.passiveGeneralBrut += section.totalBrut;
           context.passiveGeneralNet += section.totalNet;
-          context.passiveGeneralAmortProv += section.totalAmortProv;
           context.passiveGeneralPreviousNet += section.totalPreviousNet;
       });
 
-      context.passiveGeneralBrut = numeral(context.passiveGeneralBrut).format(formatDollar);
-      context.passiveGeneralAmortProv = numeral(context.passiveGeneralAmortProv).format(formatDollar);
       context.passiveGeneralNet = numeral(context.passiveGeneralNet).format(formatDollar);
       context.passiveGeneralPreviousNet = numeral(context.passiveGeneralPreviousNet).format(formatDollar);
       return sections;
@@ -177,23 +158,23 @@ exports.compile = function (options) {
       });
     }
 
-    function getSections (currents){
+    function getSections (list){
       var sections = [];
       sections.push({
-        sectionBilanId : currents[0].sectionBilanId,
-        sectionBilanPosition : currents[0].sectionBilanPosition,
-        sectionBilanLabel : currents[0].sectionBilanLabel,
-        sectionBilanIsActif : currents[0].sectionBilanIsActif,
+        sectionBilanId : list[0].sectionBilanId,
+        sectionBilanPosition : list[0].sectionBilanPosition,
+        sectionBilanLabel : list[0].sectionBilanLabel,
+        sectionBilanIsActif : list[0].sectionBilanIsActif,
         grefs : []
       });
 
-      for(var i = 0; i <= currents.length - 1; i++){
-        if(!exist(currents[i], sections, 'sectionBilanId')){
+      for(var i = 0; i <= list.length - 1; i++){
+        if(!exist(list[i], sections, 'sectionBilanId')){
           sections.push({
-            sectionBilanId : currents[i].sectionBilanId,
-            sectionBilanPosition : currents[i].sectionBilanPosition,
-            sectionBilanLabel : currents[i].sectionBilanLabel,
-            sectionBilanIsActif : currents[i].sectionBilanIsActif,
+            sectionBilanId : list[i].sectionBilanId,
+            sectionBilanPosition : list[i].sectionBilanPosition,
+            sectionBilanLabel : list[i].sectionBilanLabel,
+            sectionBilanIsActif : list[i].sectionBilanIsActif,
             grefs : []
           })
         }
@@ -202,36 +183,37 @@ exports.compile = function (options) {
       return sections;
     }
 
-    function getGroupReferences (section, currents){
+    function getGroupReferences (section, list){
       var greferences = [];
 
-      for(var i = 0; i <= currents.length - 1; i++){
-        if(currents[i].sectionBilanId == section.sectionBilanId){
-          if(!exist(currents[i], greferences, 'greferenceId')){
+      list.forEach(function (item){
+        if(item.sectionBilanId === section.sectionBilanId){
+          if(!exist(item, greferences, 'greferenceId')){
             greferences.push({
-              greferenceId : currents[i].greferenceId,
-              greferenceAbbr : currents[i].greferenceAbbr,
-              greferencePosition : currents[i].greferencePosition,
-              greferenceLabel : currents[i].greferenceLabel,
+              greferenceId : item.greferenceId,
+              greferenceAbbr : item.greferenceAbbr,
+              greferencePosition : item.greferencePosition,
+              greferenceLabel : item.greferenceLabel,
               refs : []
             });
           }
         }
-      }
+      });
+
       return greferences;
     }
 
-    function getReferences (greference, currents){
+    function getReferences (greference, list){
       var references = [];
 
-      for(var i = 0; i <= currents.length - 1; i++){
-        if(currents[i].greferenceId == greference.greferenceId){
-          if(!exist(currents[i], references, 'referenceId')){
+      list.forEach(function (item){
+        if(item.greferenceId == greference.greferenceId){
+          if(!exist(item, references, 'referenceId')){
             references.push({
-              referenceId : currents[i].referenceId,
-              referenceAbbr : currents[i].referenceAbbr,
-              referencePosition : currents[i].referencePosition,
-              referenceLabel : currents[i].referenceLabel,
+              referenceId : item.referenceId,
+              referenceAbbr : item.referenceAbbr,
+              referencePosition : item.referencePosition,
+              referenceLabel : item.referenceLabel,
               brut : 0,
               amort_prov : 0,
               net : 0,
@@ -239,22 +221,23 @@ exports.compile = function (options) {
             });
           }
         }
-      }
+      });
+      
       return references;
     }
 
-    function getBrut (reference, currents, isActif){
+    function getBrut (reference, list, isActif){
       var somDebit = 0, somCredit = 0;
 
-      currents.forEach(function (item){
-        if(item.referenceId == reference.referenceId && item.accountIsBrutLink == 1){
+      list.forEach(function (item){
+        if(item.referenceId === reference.referenceId && item.accountIsBrutLink === 1){
           somDebit+=item.generalLegderDebit;
           somCredit+=item.generalLegderCredit;
         }
       });
 
 
-      return (isActif == 1)? somDebit - somCredit : somCredit - somDebit;
+      return (isActif === 1)? somDebit - somCredit : somCredit - somDebit;
     }
 
     function getAmortProv (reference, currents, isActif){
@@ -266,7 +249,7 @@ exports.compile = function (options) {
           somCredit+=(item.generalLegderCredit);
         }
       });
-      return isActif == 1 ? somDebit - somCredit : somCredit - somDebit;
+      return isActif === 1 ? somDebit - somCredit : somCredit - somDebit;
     }
 
     function getPreviousNet (reference, previous, isActif){
