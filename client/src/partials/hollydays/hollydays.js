@@ -116,7 +116,8 @@ function HolidayController ($translate, $http, validate, messenger, connect, uti
       messenger.success($translate.instant('HOLLYDAY_MANAGEMENT.UPDATE_SUCCES'));
     })
     .catch(error);
-  };
+
+  }
 
   function createSave () {
     var record = connect.clean(session.new);

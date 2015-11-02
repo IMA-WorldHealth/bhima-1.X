@@ -606,7 +606,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/cotisation/config_cotisation/config_cotisation.html'
   })
   .when('/offday_management/', {
-    controller : 'offdays',
+    controller : 'OffdayController as OffdayCtrl',
     templateUrl : 'partials/offdays/offdays.html'
   })
   .when('/hollyday_management/', {
@@ -626,7 +626,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/rubric/config_rubric/config_rubric.html'
   })
   .when('/rubric_management/rubriques_payroll/', {
-    controller : 'rubriques_payroll',
+    controller : 'RubriquePayrollController as RubriqueCtrl',
     templateUrl : 'partials/rubric/rubriques_payroll/rubriques_payroll.html'
   })
   .when('/reports/daily_consumption/', {

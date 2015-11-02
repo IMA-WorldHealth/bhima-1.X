@@ -11,7 +11,7 @@
   </div>
 
   <div class="pull-right">
-    <button class="btn btn-sm btn-default" ng-click="new()">
+    <button class="btn btn-sm btn-default" ng-click="OffdayCtrl.new()">
       <span class="glyphicon glyphicon-plus-sign"></span>
       {{ "OFFDAY_MANAGEMENT.ADD" | translate }}
     </button>
@@ -38,15 +38,15 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="offday in offdays.data | orderBy:'date'">
+            <tr ng-repeat="offday in OffdayCtrl.offdays.data | orderBy:$index">
               <td>{{$index + 1}}</td>
               <td>{{ offday.label }}</td>
               <td>{{ offday.date | date}}</td>
               <td>{{ offday.percent_pay }} %</td>
-              <td><a class="action" ng-click="edit(offday)"><span class="glyphicon glyphicon-pencil"></span></a></td>
-              <td><a class="action danger" ng-click="delete(offday)"><span class="glyphicon glyphicon-trash"></span></a></td>
+              <td><a class="action" ng-click="OffdayCtrl.edit(offday)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+              <td><a class="action danger" ng-click="OffdayCtrl.delete(offday)"><span class="glyphicon glyphicon-trash"></span></a></td>
             </tr>
-            <tr ng-if="!offdays.data.length">
+            <tr ng-if="!OffdayCtrl.offdays.data.length">
               <td colspan="4">{{ "OFFDAY_MANAGEMENT.NO_OFFDAY" | translate }}</td>
             </tr>
           </tbody>
@@ -54,7 +54,7 @@
       </div>
     </div>
 
-    <div class="col-xs-6" ng-switch="session.action">
+    <div class="col-xs-6" ng-switch="OffdayCtrl.session.action">
       <div class="alert alert-info" ng-switch-default>
         <h4>{{ "OFFDAY_MANAGEMENT.TITLE" | translate }}</h4>
         <p>{{ "OFFDAY_MANAGEMENT.ALERT" | translate }}</p>
@@ -67,28 +67,28 @@
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.OFFDAYS" | translate }}</label>
             <div class="col-xs-8">
-              <input ng-model="session.new.label" class="form-bhima" required>
+              <input ng-model="OffdayCtrl.session.new.label" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.DATE" | translate }}</label>
             <div class="col-xs-8">
-              <input type="date" ng-model="session.new.date" class="form-bhima" required>
+              <input type="date" ng-model="OffdayCtrl.session.new.date" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.PERCENT_PAY" | translate }}</label>
             <div class="col-xs-8">
-              <input ng-model="session.new.percent_pay" class="form-bhima" required>
+              <input ng-model="OffdayCtrl.session.new.percent_pay" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
-            <input type="submit" ng-disabled="new.$invalid"  class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
-            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
-          </div>   
+            <input type="submit" ng-disabled="new.$invalid"  class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="OffdayCtrl.save.new()">
+            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="OffdayCtrl.reset()">
+          </div>
         </form>
       </div>
 
@@ -99,28 +99,28 @@
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.OFFDAYS" | translate }}</label>
             <div class="col-xs-8">
-              <input ng-model="session.edit.label" class="form-bhima" required>
+              <input ng-model="OffdayCtrl.session.edit.label" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.DATE" | translate }}</label>
             <div class="col-xs-8">
-              <input required class="form-bhima"  ng-model="session.edit.date" type="date">    
+              <input required class="form-bhima"  ng-model="OffdayCtrl.session.edit.date" type="date">
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.PERCENT_PAY" | translate }}</label>
             <div class="col-xs-8">
-              <input ng-model="session.edit.percent_pay" class="form-bhima" required>
+              <input ng-model="OffdayCtrl.session.edit.percent_pay" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
-            <input type="submit" ng-disabled="edit.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
-            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
-          </div>   
+            <input type="submit" ng-disabled="edit.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="OffdayCtrl.save.edit()">
+            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="OffdayCtrl.reset()">
+          </div>
         </form>
       </div>
     </div>
