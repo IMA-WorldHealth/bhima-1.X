@@ -6,31 +6,18 @@
 </head>
 
 <body>
-  <section>
-    <table>
-      <tr>
-        <td width="30%">
-          <div>
-            <span>{{=it.enterpriseName}}</span><br/>
-            <span>{{=it.phone}}</span><br/>
-            <span>{{=it.dataStructure.BOX}} : {{=it.bp}}</span><br/>
-          </div>
-        </td>
-        <td width="40%" align="center">
-          <div class="center-text">
-            <span>{{=it.dataStructure.TITLE}}</span><br/>
-            <span>{{=it.debitorGroupName}}</span><br/>
-            <span>{{=it.reportDate}}</span><br/>
-          </div>
-        </td>
-        <td width="30%">
-        </td>
-      </tr>
-    </table>
-  </section>
+  <hgroup>
+    <h6>{{=it.enterpriseName}}</h6>
+    <h6>{{=it.phone}}</h6>
+    <h6>{{=it.dataStructure.BOX}} : {{=it.bp}}</h6>
+  </hgroup>
+
+  <h6 class="clean-title">
+    {{=it.dataStructure.TITLE}} {{=it.debitorGroupName}} {{=it.reportDate}}
+  </h6>
 
   <section>
-    <table class="balance" border="1">
+    <table class="clean-table" border="1">
       <thead>
         <tr>
           <th>{{=it.dataStructure.SALE_NUMBER}}</th>
@@ -55,18 +42,21 @@
             <td>{{=value.trans_id}}</td>
           </tr>
         {{~}}
+        <tr>
+
+        <tr>
       </tbody>
     </table>    
 
-    <table border="1">
+    <table class="clean-table" border="1">
       <tbody>
         <tr>
-          <td class="total">{{=it.dataStructure.TOTAL_BILLED}}</td>
-          <td class="total">{{=it.somBilled}}</td>
-          <td class="total">{{=it.dataStructure.TOTAL_PAYED}}</td>
-          <td class="total">{{=it.somPayed}}</td>
-          <td class="total">{{=it.dataStructure.TOTAL_DIFFERENCE}}</td>
-          <td class="total">{{=it.somDifference}}</td>
+          <th>{{=it.dataStructure.TOTAL_BILLED}}</th>
+          <td class="text-center">{{=it.somBilled}}</td>
+          <th>{{=it.dataStructure.TOTAL_PAYED}}</th>
+          <td class="text-center">{{=it.somPayed}}</td>
+          <th>{{=it.dataStructure.TOTAL_DIFFERENCE}}</th>
+          <td class="text-center">{{=it.somDifference}}</td>
         </tr>
       </tbody>
     </table>
