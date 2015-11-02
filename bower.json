@@ -31,6 +31,7 @@
     "jquery-ui.min": "https://code.jquery.com/ui/1.11.4/jquery-ui.min.js",
     "ng-file-upload": "~7.3.8",
     "ng-file-upload-shim": "~7.3.8",
-    "slickgrid": "~2.1.0"
+    "slickgrid": "~2.1.0",
+    "angular-ui-grid": "~3.0.7"
   }
 }
