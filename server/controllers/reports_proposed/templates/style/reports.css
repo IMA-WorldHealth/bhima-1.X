@@ -9,6 +9,12 @@ table {
 /*
  * Invoice table style
  */
+
+
+ #bilan-reference {
+  text-align:  left;
+ }
+
 .invoice {
   border-collapse : collapse;
   border-spacing : 0;
@@ -18,12 +24,12 @@ table {
 
 .invoice thead > tr > th {
   border       : 1px solid #9F9F9F;
-  padding-left : 5px;
 }
 
 .invoice tbody > tr > td {
   border         : 1px solid #9F9F9F;
   vertical-align : right;
+  padding: 1px;
 }
 
 /*
@@ -133,12 +139,25 @@ table.clean-table td {
 }
 
 table.clean-table td {
-  font-size: 8px;
+  font-size: 10px;
 }
 
 table.clean-table th {
+  font-size:  12px;
+  text-align: center;
+}
+
+table.clean-table.compressed td {
+  font-size: 8px;
+}
+
+table.clean-table.compressed  th {
   font-size:  10px;
   text-align: center;
+}
+
+table.clean-table th.bilan-group-reference {
+  text-align: left;
 }
 
 table.clean-table th,

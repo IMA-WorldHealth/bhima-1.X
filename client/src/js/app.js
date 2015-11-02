@@ -60,7 +60,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/patient/registration/registration.html'
   })
   .when('/debtor/debtor_group', {
-    controller : 'group.debtor',
+    controller : 'DebtorGroupController as GroupCtrl',
     templateUrl: 'partials/debtor/debtor_group.html'
   })
   .when('/journal_voucher', {
@@ -116,7 +116,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: '/partials/records/sales_records/sales_records.html'
   })
   .when('/cash', {
-    controller: 'cash',
+    controller: 'CashController as CashCtrl',
     templateUrl: '/partials/cash/cash.html'
   })
   .when('/auxillary_cash_records/:recordID?', {
@@ -260,7 +260,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/patient/group/assignment.html'
   })
   .when('/reports/chart_of_accounts/', {
-    controller: 'accountsReport',
+    controller: 'ReportChartOfAccountsController',
     templateUrl: 'partials/reports/chart_of_accounts/chart.html'
   })
   .when('/invoice/:originId/:invoiceId', {

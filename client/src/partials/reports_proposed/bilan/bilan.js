@@ -20,7 +20,7 @@ angular.module('bhima.controllers')
         identifier : 'id',
         tables : {
           'fiscal_year' : {
-            columns : ['id', 'fiscal_year_txt', 'previous_fiscal_year']
+            columns : ['id', 'fiscal_year_txt', 'previous_fiscal_year', 'fiscal_year_txt']
           }
         }
       }
@@ -56,6 +56,7 @@ angular.module('bhima.controllers')
       // Temporarily set configuration options - This shouldn't be manually compiled
       configurationObject.language = configuration.language.selected.value;
       configurationObject.fy = $scope.session.fiscal_year_id;
+      configurationObject.fy_txt = $scope.fiscalYears.get(configurationObject.fy).fiscal_year_txt;
       configurationObject.pfy = $scope.session.previous_fiscal_year_id ||  $scope.session.fiscal_year_id;
       configurationObject.enterprise = configuration.enterprise;
       configurationObject.project = configuration.project;
