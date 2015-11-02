@@ -186,33 +186,34 @@ exports.compile = function (options) {
     function getGroupReferences (section, list){
       var greferences = [];
 
-      for(var i = 0; i <= list.length - 1; i++){
-        if(list[i].sectionBilanId == section.sectionBilanId){
-          if(!exist(list[i], greferences, 'greferenceId')){
+      list.forEach(function (item){
+        if(item.sectionBilanId === section.sectionBilanId){
+          if(!exist(item, greferences, 'greferenceId')){
             greferences.push({
-              greferenceId : list[i].greferenceId,
-              greferenceAbbr : list[i].greferenceAbbr,
-              greferencePosition : list[i].greferencePosition,
-              greferenceLabel : list[i].greferenceLabel,
+              greferenceId : item.greferenceId,
+              greferenceAbbr : item.greferenceAbbr,
+              greferencePosition : item.greferencePosition,
+              greferenceLabel : item.greferenceLabel,
               refs : []
             });
           }
         }
-      }
+      });
+
       return greferences;
     }
 
     function getReferences (greference, list){
       var references = [];
 
-      for(var i = 0; i <= list.length - 1; i++){
-        if(list[i].greferenceId == greference.greferenceId){
-          if(!exist(list[i], references, 'referenceId')){
+      list.forEach(function (item){
+        if(item.greferenceId == greference.greferenceId){
+          if(!exist(item, references, 'referenceId')){
             references.push({
-              referenceId : list[i].referenceId,
-              referenceAbbr : list[i].referenceAbbr,
-              referencePosition : list[i].referencePosition,
-              referenceLabel : list[i].referenceLabel,
+              referenceId : item.referenceId,
+              referenceAbbr : item.referenceAbbr,
+              referencePosition : item.referencePosition,
+              referenceLabel : item.referenceLabel,
               brut : 0,
               amort_prov : 0,
               net : 0,
@@ -220,7 +221,8 @@ exports.compile = function (options) {
             });
           }
         }
-      }
+      });
+      
       return references;
     }
 

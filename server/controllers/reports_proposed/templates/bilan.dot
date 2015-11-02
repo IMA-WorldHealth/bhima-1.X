@@ -60,22 +60,22 @@
                     </tr>
                   {{~}}
               {{~}}
-              <tr>
+              <tr class="text-center">
                 <td></td>
-                <td class="text-center"><b>{{=it.i18nBilan.TOTAL}} {{=section.sectionBilanLabel}} ({{=section.sectionBilanPosition}})</b></td>
-                <td class="text-center"><b>{{=section.totalBrut_view}}</b></td>
-                <td class="text-center"><b>{{=section.totalAmortProv_view}}</b></td>
-                <td class="text-center"><b>{{=section.totalNet_view}}</b></td>
-                <td class="text-center"><b>{{=section.totalPreviousNet_view}}</b></td>
+                <td><b>{{=it.i18nBilan.TOTAL}} {{=section.sectionBilanLabel}} ({{=section.sectionBilanPosition}})</b></td>
+                <td><b>{{=section.totalBrut_view}}</b></td>
+                <td><b>{{=section.totalAmortProv_view}}</b></td>
+                <td><b>{{=section.totalNet_view}}</b></td>
+                <td><b>{{=section.totalPreviousNet_view}}</b></td>
               </tr>
           {{~}}
-          <tr>
+          <tr class="text-center">
             <td></td>
-            <td class="text-center"><b>{{=it.i18nBilan.TOTAL_GENERAL}}</b></td>
-            <td class="text-center"><b>{{=it.assetGeneralBrut}}</b></td>
-            <td class="text-center"><b>{{=it.assetGeneralAmortProv}}</b></td>
-            <td class="text-center"><b>{{=it.assetGeneralNet}}</b></td>
-            <td class="text-center"><b>{{=it.assetGeneralPreviousNet}}</b></td>
+            <td><b>{{=it.i18nBilan.TOTAL_GENERAL}}</b></td>
+            <td><b>{{=it.assetGeneralBrut}}</b></td>
+            <td><b>{{=it.assetGeneralAmortProv}}</b></td>
+            <td><b>{{=it.assetGeneralNet}}</b></td>
+            <td><b>{{=it.assetGeneralPreviousNet}}</b></td>
           </tr>
         </tbody>
       </table>
@@ -113,18 +113,18 @@
                     </tr>
                   {{~}}
               {{~}}
-              <tr>
+              <tr class="text-center">
                 <td></td>
-                <td class="text-center"><b>{{=it.i18nBilan.TOTAL}} {{=section.sectionBilanLabel}} ({{=section.sectionBilanPosition}})</b></td>
-                <td class="text-center"><b>{{=section.totalNet_view}}</b></td>
-                <td class="text-center"><b>{{=section.totalPreviousNet_view}}</b></td>
+                <td><b>{{=it.i18nBilan.TOTAL}} {{=section.sectionBilanLabel}} ({{=section.sectionBilanPosition}})</b></td>
+                <td><b>{{=section.totalNet_view}}</b></td>
+                <td><b>{{=section.totalPreviousNet_view}}</b></td>
               </tr>
           {{~}}
-          <tr>
+          <tr class="text-center">
             <td></td>
-            <td class="text-center"><b>{{=it.i18nBilan.TOTAL_GENERAL}}</b></td>
-            <td class="text-center"><b>{{=it.passiveGeneralNet}}</b></td>
-            <td class="text-center"><b>{{=it.passiveGeneralPreviousNet}}</b></td>
+            <td><b>{{=it.i18nBilan.TOTAL_GENERAL}}</b></td>
+            <td><b>{{=it.passiveGeneralNet}}</b></td>
+            <td><b>{{=it.passiveGeneralPreviousNet}}</b></td>
           </tr>
         </tbody>
       </table>
