@@ -16,6 +16,7 @@ var gulp       = require('gulp'),
     path       = require('path'),
     iife       = require('gulp-iife'),
     rimraf     = require('rimraf'),
+    gutil      = require('gulp-util'),
 
     // mocha for server-side testing
     mocha      = require('gulp-mocha'),
@@ -168,9 +169,20 @@ gulp.task('watch-client', function () {
   gulp.watch(paths.client.vendor, ['client-mv-vendor']);
 });
 
+// TODO This message can be removed once the lint/build process has been transitioned
+gulp.task('notify-lint-process', function () { 
+  gutil.log(gutil.colors.yellow('REMINDER: Please ensure you have run the command `gulp lint` before submitting a pull request to github'));
+})
+
 // builds the client with all the options available
 gulp.task('build-client', ['client-clean'], function () {
-  gulp.start('client-lint-js', 'client-minify-js', 'client-minify-css', 'client-mv-vendor', 'client-vendor-build-slickgrid', 'client-mv-static');
+  gulp.start('client-minify-js', 'client-minify-css', 'client-mv-vendor', 'client-vendor-build-slickgrid', 'client-mv-static', 'notify-lint-process');
+});
+
+// Lint client code seperately from build process 
+// TODO Processes for linting server code - requires uncategorised commit update
+gulp.task('lint', ['client-clean'], function () { 
+  gulp.start('client-lint-js', 'client-lint-i18n');
 });
 
 /* -------------------------------------------------------------------------- */
