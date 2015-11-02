@@ -166,22 +166,17 @@
   "LANGUAGE"        : "Language"
   },
 "BALANCE_MENSUELLE": {
-   "ACCOUNT"         : "Account",
    "CHOOSE_CLASS"    : "Choose a class",
    "CHOOSE_PERIOD"   : "Choose a period",
    "CLASS"           : "Class",
-   "CREDIT"          : "Credit",
-   "CREDITOR"        : "Creditor",
-   "DEBIT"           : "Debit",
-   "DEBITOR"         : "Debitor",
    "INFO_FILL_INPUT" : "Please select period and class",
    "LABEL"           : "Label",
    "MONTH_MOVEMENT"  : "Month Movement",
-   "NEW_SOLD"        : "New balance",
-   "OLD_SOLD"        : "Old balance",
-   "REPORT"          : "Monthly balance report",
-   "TITLE"           : "Monthly balance per class",
-   "TOTALS"          : "Totals"
+   "NEW_SOLD"        : "New Balance",
+   "NO_DATA"         : "There is no data for that period!",
+   "OLD_SOLD"        : "Old Balance",
+   "REPORT"          : "Monthly Balance Report",
+   "TITLE"           : "Monthly Balance by Class"
    },
 "BILAN" : {
   "BUILD_BILAN"     : "Build bilan",
@@ -3163,6 +3158,7 @@
    "TOGGLE"            : "Toggle",
    "TOGGLE_AGGREGATES" : "Toggle Aggregates",
    "TOTAL"             : "Total",
+   "TOTALS"            : "Totals",
    "TSHIKAJI"          : "TSHIKAJI",
    "VALIDATE"          : "Accept",
    "YEARS"             : "Years"
