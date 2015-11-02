@@ -392,7 +392,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/journal/trialbalance/print.html'
   })
   .when('/employee', {
-    controller : 'EmployeeController',
+    controller : 'EmployeeController as EmployeeCtrl',
     templateUrl : 'partials/employee/employee.html'
   })
   .when('/service', {
@@ -610,7 +610,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/offdays/offdays.html'
   })
   .when('/hollyday_management/', {
-    controller : 'hollydays',
+    controller : 'HolidayController as HolidayCtrl',
     templateUrl : 'partials/hollydays/hollydays.html'
   })
   .when('/payment_period/', {

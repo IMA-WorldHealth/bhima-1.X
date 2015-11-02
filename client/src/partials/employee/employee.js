@@ -2,15 +2,17 @@ angular.module('bhima.controllers')
 .controller('EmployeeController', EmployeeController);
 
 EmployeeController.$inject = [
-  '$scope', '$translate', 'validate', 'uuid', 'messenger', 'connect', 'util'
+  '$translate', 'validate', 'uuid', 'messenger', 'connect', 'util'
 ];
 
-function EmployeeController($scope, $translate, validate, uuid, messenger, connect, util) {
-  var dependencies = {}, session = $scope.session = {};
+function EmployeeController($translate, validate, uuid, messenger, connect, util) {
+  var vm = this,
+      dependencies = {},
+      session = vm.session = {};
 
   session.loading = false;
 
-  var route = $scope.route = {
+  var route = vm.route = {
     create : {
       title : 'EMPLOYEE.REGISTER',
       submit : 'EMPLOYEE.SUBMIT_NEW',
@@ -73,27 +75,34 @@ function EmployeeController($scope, $translate, validate, uuid, messenger, conne
     }
   };
 
-  $scope.formatLocation = function formatLocation (location) {
+  // Expose to the view
+  vm.registerEmployee   = registerEmployee;
+  vm.editEmployee       = editEmployee;
+  vm.transitionRegister = transitionRegister;
+
+  // start the module
+  startup();
+
+  // Functions
+  vm.formatLocation = function formatLocation (location) {
     return [location.name, location.sector_name, location.province_name, location.country_name].join(', ');
   };
 
-  $scope.formatGrade = function formatGrade (grade) {
+  vm.formatGrade = function formatGrade (grade) {
     return grade.code + ' - ' + grade.text;
   };
 
-  $scope.formatService = function formatService (service) {
+  vm.formatService = function formatService (service) {
     return service.name + ' [' + service.abbr + ']';
   };
 
   function initialise(model) {
-    angular.extend($scope, model);
+    angular.extend(vm, model);
   }
 
   function startup() {
-
     // start up loading indicator
     session.loading = true;
-
     validate.process(dependencies)
     .then(initialise)
     .catch(handleError)
@@ -130,7 +139,7 @@ function EmployeeController($scope, $translate, validate, uuid, messenger, conne
       text : 'Crediteur [' + prenom + session.employee.name + ' - ' + session.employee.postnom + ']'
     };
 
-    return connect.basicPut('creditor', [creditor], ['uuid']);
+    return connect.post('creditor', [creditor], ['uuid']);
   }
 
   function writeDebitor(debitor_uuid) {
@@ -142,19 +151,22 @@ function EmployeeController($scope, $translate, validate, uuid, messenger, conne
       text : 'Debiteur [' + prenom + session.employee.name + ' - ' + session.employee.postnom + ']'
     };
 
-    return connect.basicPut('debitor', [debitor], ['uuid']);
+    return connect.post('debitor', [debitor], ['uuid']);
   }
 
   function writeEmployee(creditor_uuid, debitor_uuid) {
     session.employee.locked = (session.employee.locked)? 1 : 0;
     session.employee.creditor_uuid = creditor_uuid;
     session.employee.debitor_uuid = debitor_uuid;
-    session.employee.dob = util.sqlDate(session.employee.dob);
-    session.employee.date_embauche = util.sqlDate(session.employee.date_embauche);
+    // session.employee.dob must have a date object
+    // util.sqlDate help us to get a "YYYY-MM-DD" date which avoid to have a date
+    // with a day-1
+    session.employee.dob = new Date(util.sqlDate(session.employee.dob));
+    session.employee.date_embauche = new Date(util.sqlDate(session.employee.date_embauche));
 
     delete(session.employee.debitor_group_uuid);
     delete(session.employee.creditor_group_uuid);
-    return connect.basicPut('employee', [connect.clean(session.employee)], ['uuid']);
+    return connect.post('employee', [connect.clean(session.employee)], ['uuid']);
   }
 
   function registerSuccess() {
@@ -164,10 +176,12 @@ function EmployeeController($scope, $translate, validate, uuid, messenger, conne
     messenger.success($translate.instant('EMPLOYEE.REGISTER_SUCCESS'));
 
     // FIXME just add employee to model
-    validate.refresh(dependencies, ['employee']).then(function (model) {
-      angular.extend($scope, model);
+    validate.refresh(dependencies, ['employee'])
+    .then(function (model) {
+      angular.extend(vm, model);
       session.state = null;
-    });
+    })
+    .catch(error);
   }
 
   function editEmployee(employee) {
@@ -186,10 +200,12 @@ function EmployeeController($scope, $translate, validate, uuid, messenger, conne
     messenger.success($translate.instant('EMPLOYEE.EDIT_SUCCESS'));
 
     // FIXME just add employee to model
-    validate.refresh(dependencies, ['employee']).then(function (model) {
-      angular.extend($scope, model);
+    validate.refresh(dependencies, ['employee'])
+    .then(function (model) {
+      angular.extend(vm, model);
       session.state = null;
-    });
+    })
+    .catch(error);
   }
 
   function cleanPrenom (prenom) {
@@ -215,7 +231,6 @@ function EmployeeController($scope, $translate, validate, uuid, messenger, conne
       group_uuid : session.employee.debitor_group_uuid,
       text : 'Debiteur [' + prenom + session.employee.name + ' - ' + session.employee.postnom + ']'
     };
-
 
     var employee = {
       id:            session.employee.id,
@@ -268,16 +283,13 @@ function EmployeeController($scope, $translate, validate, uuid, messenger, conne
   }
 
   function handleError(error) {
-
     // TODO Error Handling
     messenger.danger($translate.instant('EMPLOYEE.REGISTER_FAIL'));
     throw error;
   }
 
-  $scope.registerEmployee = registerEmployee;
-  $scope.editEmployee = editEmployee;
-  $scope.transitionRegister = transitionRegister;
+  function error(err) {
+    console.error(err);
+  }
 
-  // start the module
-  startup();
 }
