@@ -1,107 +1,91 @@
 angular.module('bhima.controllers')
-.controller('configureGrandLivre', [
-  '$scope',
-  '$http',
-  '$sce',
-  'validate',
-  function ($scope, $http, $sce, validate) {
+.controller('configureGrandLivre', ReportGeneralLedgerController);
 
-    var dependencies = {};
+ReportGeneralLedgerController.$inject = [
+ '$scope', '$http', 'validate'
+];
 
-    // Configuration objects optionally passed to /report/build - drives configuration UI
-    var configuration = {
-      language : {
-        options : [
-          {value : 'en', label : 'English'},
-          {value : 'fr', label : 'French'}
-        ]
-      }
-    };
+function ReportGeneralLedgerController($scope, $http, validate) {
+  var dependencies = {};
 
-    var serverUtilityPath = '/report/build/grand_livre';
-    var generatedDocumentPath = null;
-    var session = $scope.session = {};
+  var configuration = {
+    language : {
+      options : [
+        {value : 'en', label : 'English'},
+        {value : 'fr', label : 'French'}
+      ]
+    }
+  };
 
-    $scope.model = {};
+  var serverUtilityPath = '/report/build/grand_livre';
+  var generatedDocumentPath = null;
+  var session = $scope.session = {};
 
-    dependencies.fiscalYears = {
-      query : {
-        identifier : 'id',
-        tables : {
-          'fiscal_year' : {
-            columns : ['id', 'fiscal_year_txt']
-          }
+  $scope.model = {};
+
+  dependencies.fiscalYears = {
+    query : {
+      identifier : 'id',
+      tables : {
+        'fiscal_year' : {
+          columns : ['id', 'fiscal_year_txt']
         }
       }
-    };
-
-    // Expose configuration to scope - set module state
-    session.building = false;
-    $scope.configuration = configuration;
-
-    // TODO Load default configuration from appcache if it exists before selecting default
-
-    validate.process(dependencies)
-    .then(complete);
-
-    function complete (res){
-      $scope.model = res;
-      setDefaultConfiguration();
     }
+  };
 
-    function selectConfiguration(key, value) {
-      configuration[key].selected = value;
-    }
+  // Expose configuration to scope - set module state
+  session.building = false;
+  $scope.configuration = configuration;
 
-    function setDefaultConfiguration() {
-      selectConfiguration('language', configuration.language.options[0]);
-    }
+  // TODO Load default configuration from appcache if it exists before selecting default
 
-    // POST configuration object to /report/build/:target
-    function generateDocument() {
-      var path = serverUtilityPath;
-      var configurationObject = {};
+  validate.process(dependencies)
+  .then(complete);
 
-      // Temporarily set configuration options - This shouldn't be manually compiled
-      configurationObject.language = configuration.language.selected.value;
-      configurationObject.fy = session.fy_id || $scope.model.fiscalYears.data[0].id;
-
-      // Update state
-      session.building = true;
-
-      $http.post(path, configurationObject)
-      .success(function (result) {
-
-        // Expose generated document path to template
-        session.building = false;
-        $scope.generatedDocumentPath = result;
-      })
-      .error(function (code) {
-        session.building = false;
-
-        // TODO Handle error
-      });
-    }
-
-    // Utility method - GET PDF blob displaying embedded object
-    function downloadDocument(url) {
-
-      $http.get(url, {responseType : 'arraybuffer'})
-      .success(function (pdfResult) {
-        var file = new Blob([pdfResult], {type: 'application/pdf'});
-        var fileURL = URL.createObjectURL(file);
-
-        // Expose document to scope
-        $scope.pdfContent = $sce.trustAsResourceUrl(fileURL);
-      });
-    }
-
-    function clearPath() {
-      $scope.generatedDocumentPath = null;
-    }
-
-    $scope.selectConfiguration = selectConfiguration;
-    $scope.generateDocument = generateDocument;
-    $scope.clearPath = clearPath;
+  function complete (res){
+    $scope.model = res;
+    setDefaultConfiguration();
   }
-]);
+
+  function selectConfiguration(key, value) {
+    configuration[key].selected = value;
+  }
+
+  function setDefaultConfiguration() {
+    selectConfiguration('language', configuration.language.options[0]);
+  }
+
+  // POST configuration object to /report/build/:target
+  function generateDocument() {
+    var path = serverUtilityPath;
+    var configurationObject = {};
+
+    // Temporarily set configuration options - This shouldn't be manually compiled
+    configurationObject.language = configuration.language.selected.value;
+    configurationObject.fy = session.fy_id || $scope.model.fiscalYears.data[0].id;
+
+    // Update state
+    session.building = true;
+
+    $http.post(path, configurationObject)
+    .then(function (result) {
+
+      // Expose generated document path to template
+      $scope.generatedDocumentPath = result;
+    })
+    .catch(function (code) {
+      // TODO Handle error
+      throw code;
+    })
+    .finally(function () { session.building = false; });
+  }
+
+  function clearPath() {
+    $scope.generatedDocumentPath = null;
+  }
+
+  $scope.selectConfiguration = selectConfiguration;
+  $scope.generateDocument = generateDocument;
+  $scope.clearPath = clearPath;
+}

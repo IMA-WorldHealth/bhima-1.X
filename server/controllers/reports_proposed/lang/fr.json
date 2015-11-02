@@ -1,4 +1,22 @@
 {
+  "INVOICE" : {
+    "TITLE" : "Facture du Patient",
+    "CODE" : "Code",
+    "DESCRIPTION" : "Description",
+    "QUANTITY" : "Quantité",
+    "PRICE" : "Prix Transaction",
+    "AMOUNT" : "Mountant",
+    "INVOICE_NUMBER" : "Numero Facture",
+    "INVOICE_DATE" : "Date de la Facture",
+    "REGISTRATION_DATE" : "Date d'enregistrement",
+    "TOTAL" : "Total",
+    "PAID" : "Mountant Paye",
+    "BALANCE" : "Solde",
+    "PATIENT" : "Patient",
+    "GROUP" : "Group",
+    "PATIENT_CODE" : "Code Client"
+  },
+
 	"BILAN" : {
 		"TITLE"                 : "BILAN",
 		"ENTERPRISE"            : "Entreprise",
@@ -6,13 +24,15 @@
 		"DURATION"              : "Duree (En mois) : ",
 		"REFERENCE"             : "Ref",
 		"ACTIF"                 : "Actif",
+		"PASSIF"                : "Passif",
 		"BRUT"                  : "Brut",
 		"AMORT_PROV"            : "Amort/Prov",
 		"NET"                   : "NET",
 		"TOTAL_GENERAL"         : "TOTAL GENERAL",
 		"PASSIVE"               : "Passif",
 		"DATE"                  : "Date : ",
-		"TOTAL"                 : "TOTAL"
+		"TOTAL"                 : "TOTAL",
+		"ACCOUNTING_DEPT"       : "Departement de Comptabilite"
 	},
 
 	"ACCOUNT_RESULT" : {
@@ -30,7 +50,7 @@
 	},
 
 	"EMPLOYEE_STATE" : {
-  		"TITLE" : "Etat employees",
+  	"TITLE" : "Etat employees",
 		"ENTERPRISE" : "Entreprise",
 		"DEBIT" : "Debit",
 		"CREDIT" : "Credit",
@@ -46,7 +66,7 @@
 		"ENTERPRISE" : "Entreprise",
 		"DEBIT" : "Debit",
 		"CREDIT" : "Credit",
-		"DATE" : "Date",		
+		"DATE" : "Date",
 		"SALE_NUMBER" : "Numero Vente",
 		"PATIENT" : "Patient",
 		"BILL_DATE" : "Date Facturation" ,

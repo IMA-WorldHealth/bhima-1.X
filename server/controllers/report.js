@@ -129,21 +129,13 @@ function accountStatement(params){
     singleResult : true
   };
 
-  // report.balance = {
-  //   query :
-  //     'SELECT SUM(debit_equiv) as `debit`, SUM(credit_equiv) as `credit`, sum(debit_equiv - credit_equiv) as `balance`, COUNT(uuid) as `count` ' +
-  //     'FROM ' +
-  //     '(SELECT uuid, debit_equiv, credit_equiv FROM posting_journal WHERE account_id = ' + params.accountId + ' AND trans_date >= ' + params.dateFrom + ' AND trans_date <= ' + params.dateTo + ' ORDER BY trans_date DESC LIMIT ' + (params.limit) + ', 18446744073709551615)a;',
-  //   singleResult : true
-  // };
-
   report.detail = {
 
     query :
-      'SELECT debit_equiv, credit_equiv, trans_date, description, inv_po_id ' +
+      'SELECT debit_equiv, credit_equiv, trans_id, trans_date, description, inv_po_id ' +
       'FROM ( ' +
-      'SELECT `posting_journal`.`uuid`, `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`trans_date`, `posting_journal`.`description`, `posting_journal`.`inv_po_id` FROM `posting_journal` WHERE' +
-      ' `posting_journal`.`account_id`=' + params.accountId + ' UNION SELECT `general_ledger`.`uuid`, `general_ledger`.`debit_equiv`, ' +
+      'SELECT `posting_journal`.`uuid`, posting_journal.trans_id, `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`trans_date`, `posting_journal`.`description`, `posting_journal`.`inv_po_id` FROM `posting_journal` WHERE' +
+      ' `posting_journal`.`account_id`=' + params.accountId + ' UNION SELECT `general_ledger`.`uuid`, general_ledger.trans_id, `general_ledger`.`debit_equiv`, ' +
       '`general_ledger`.`credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`trans_date`, `general_ledger`.`description`, `general_ledger`.`inv_po_id` FROM `general_ledger` WHERE `general_ledger`.`account_id` =' + params.accountId + ')' +
       'as `pg`, account as `a` WHERE `a`.`id` = `pg`.`account_id` AND `pg`.`account_id` = ' + params.accountId + ' AND trans_date >= ' + params.dateFrom + ' AND trans_date <= ' + params.dateTo + ' ORDER BY trans_date DESC LIMIT ' + params.limit + ';',
     singleResult : false
@@ -158,7 +150,6 @@ function accountStatement(params){
   // Handle results
   q.all(queryStatus)
     .then(function (result) {
-      console.log('result :::', result);
       var packageResponse = {};
 
       reportSections.forEach(function (key, index) {
@@ -170,8 +161,6 @@ function accountStatement(params){
       if (!report.account.result) {
         return deferred.reject(new Error('Unknown account ' + params.accountId));
       }
-
-      console.log('packageResponse :::', packageResponse);
 
       deferred.resolve(packageResponse);
     })
