@@ -39,6 +39,14 @@ angular.module('bhima.controllers')
       result : {}
     };
 
+    /*
+     * UI Grid definitions
+     */
+    var gridOptions = { 
+      enableSorting : true,
+      columnDefs : []
+    };
+    
     dependencies.sale = {};
     dependencies.project = {
       query : {
