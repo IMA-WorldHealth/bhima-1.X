@@ -76,7 +76,9 @@ function OperatingAccountController($translate, $window, validate, SessionServic
     return '' + util.htmlDate(per.period_start) + ' -- ' + util.htmlDate(per.period_stop);
   }
 
-  function generate () {
+  // since we allow users to select either a fiscal year and a period OR two dates,
+  // we need to change the server API.
+  function generate() {
     if (session.period_id === 'all') {
       vm.all_period = $translate.instant('OPERATING_ACCOUNT.ALL');
     }
