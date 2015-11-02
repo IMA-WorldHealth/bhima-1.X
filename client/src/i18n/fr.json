@@ -132,11 +132,10 @@
    "TYPE_CC"               : "Type"
    },
 "AUTH": {
-  "ERR_LOGIN"                  : "Erreur: Nom d'utilisateur et mot de passe ne sont pas correct.",
-  "ERR_MISSING_DATA"           : "Erreur: Nom d'utilisateur et mot de passe sont nécessaires.",
-  "ERR_NO_PERMISSIONS"         : "Cet utilisateur ne possède pas les autorisations. S'il vous plaît contactez l'administrateur du système.",
   "LOGIN"                      : "Se connecter",
+  "LOGIN_ERROR"                : "Erreur: Nom d'utilisateur et mot de passe ne sont pas correct.",
   "LOGIN_TO_BHIMA"             : "Bhima Login",
+  "LOGIN_ERR_MISSING_DATA"     : "Erreur: Nom d'utilisateur et mot de passe sont nécessaires.",
   "LOGIN_PLACEHOLDER_USERNAME" : "Entrez votre nom d'utilisateur",
   "LOGIN_PLACEHOLDER_PASSWORD" : "Entrez votre mot de passe",
   "LOGOUT_SUCCESS"             : "Vous n'etes pas connecté",
@@ -1976,7 +1975,6 @@
    "TRANSACTION_NUMBER"    : "Numéro de Transaction",
    "TRANSACTION_SUCCESS"   : " Edition des transaction et logs enregistrés avec succès",
    "TRIAL_BALANCE"         : "Rapprochement",
-   "UNKNOWN_ACCOUNT"     : "Compte Inconnu",
    "VERIFY_TRANSACTION"    : "Verifier Transaction"
    },
 "PRICE_LIST": {
