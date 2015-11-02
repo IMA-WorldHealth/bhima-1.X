@@ -9,6 +9,12 @@ table {
 /*
  * Invoice table style
  */
+
+
+ #bilan-reference {
+  text-align:  left;
+ }
+
 .invoice {
   border-collapse : collapse;
   border-spacing : 0;
@@ -139,6 +145,10 @@ table.clean-table td {
 table.clean-table th {
   font-size:  10px;
   text-align: center;
+}
+
+table.clean-table th.bilan-group-reference {
+  text-align: left;
 }
 
 table.clean-table th,
