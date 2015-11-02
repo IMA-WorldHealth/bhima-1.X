@@ -5,7 +5,7 @@
         <div class="panel-heading">
           <strong>{{ "OPERATING_ACCOUNT.CONFIGURE_REPORT" | translate }}</strong>
         </div>
-        <form class="panel-body" name="configForm" novalidate>
+        <form class="panel-body" name="ConfigForm" novalidate>
           <div class="form-group">
             <label class="required">
               {{ "OPERATING_ACCOUNT.FISCAL_YEAR" | translate }}
@@ -39,7 +39,7 @@
           </div>
 
           <div class="pull-right">
-            <button class="btn btn-sm btn-success" type="button" ng-click="OperatingCtrl.generate()" ng-disabled="configForm.$invalid">
+            <button class="btn btn-sm btn-success" type="button" ng-click="OperatingCtrl.generate()" ng-disabled="ConfigForm.$invalid">
               {{ "OPERATING_ACCOUNT.GENERATE" | translate }}
             </button>
           </div>
