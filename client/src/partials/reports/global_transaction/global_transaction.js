@@ -99,7 +99,7 @@ function ReportGlobalTransactionController (connect, $translate, validate, util,
   }
 
   function loadView() {
-    vm.state         = 'generate';
+    vm.state             = 'generate';
     session.loaderState  = 'loading';
     session.buttonLoader = false;
   }
@@ -139,6 +139,10 @@ function ReportGlobalTransactionController (connect, $translate, validate, util,
 
   }
 
+  vm.show = function (data) {
+    console.log(data)
+  };
+
   function generate() {
     session.buttonLoader = true;
     if (!vm.enterprise || !vm.exchange_rate) {return;}
@@ -159,7 +163,6 @@ function ReportGlobalTransactionController (connect, $translate, validate, util,
         }
       });
       vm.records = res;
-      console.log('vm.records:', vm.records);
       return res;
     })
     .then(getTotal)
