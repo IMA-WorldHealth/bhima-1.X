@@ -413,7 +413,7 @@ function promiseTax(id, userId, data, cb) {
 
     queries = references.map(function (reference) {
       var account, params;
-      cfg.note = cfg.descrip + '/' + reference.label + '/' + reference.abbr;
+      cfg.note = cfg.description + '/' + reference.label + '/' + reference.abbr;
 
       if (!reference.six_account_id) {
         account = cfg.account_id;
@@ -456,7 +456,7 @@ function promiseTax(id, userId, data, cb) {
     queries = references.map(function (reference) {
       var params;
 
-      cfg.note = cfg.descrip + '/' + reference.label + '/' + reference.abbr;
+      cfg.note = cfg.description + '/' + reference.label + '/' + reference.abbr;
       sql =
         'INSERT INTO posting_journal (' +
           'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
