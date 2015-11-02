@@ -5,7 +5,7 @@
 <nav>
   <div class="pull-left">
     <ol class="breadcrumb">
-      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li><a href="#/"><i class="glyphicon glyphicon-home"></i></a></li>
       <li class="active">{{ "DEBITOR_GRP.TITLE" | translate }}</li>
     </ol>
   </div>
@@ -19,12 +19,12 @@
   </div>
 </nav>
 
-<main>
+<main class="extend">
   <div class="row">
     <div class="col-xs-6">
-      <div class="panel panel-default" style="max-height: 500px; overflow: auto;">
+      <div class="panel panel-default" style="max-height: 650px; overflow: auto;">
         <div class="panel-heading">
-          <span>{{ "DEBITOR_GRP.GROUPS" | translate }}</span>
+          {{ "DEBITOR_GRP.GROUPS" | translate }}
         </div>
         <table class="table table-condensed table-hover">
           <thead>
@@ -40,9 +40,9 @@
             <tr ng-repeat="group in debitor_group.data | filter:data.search | orderBy:'name'">
               <td>{{ group.name }}</td>
               <td>{{ account.get(group.account_id).account_number }}</td>
-              <td><span class="glyphicon" ng-class="{'glyphicon-ok' : !!group.is_convention}"></span></td>
-              <td><span class="glyphicon" ng-class="{'glyphicon-lock' : !!group.locked}"></span></td>
-              <td><a ng-click="edit(group)"><i class="glyphicon glyphicon-pencil"></i></a></td>
+              <td><i class="glyphicon" ng-class="{'glyphicon-ok' : !!group.is_convention}"></i></td>
+              <td><i class="glyphicon" ng-class="{'glyphicon-lock' : !!group.locked}"></i></td>
+              <td><a ng-click="edit(group)" class="btn btn-xs btn-default"><i class="glyphicon glyphicon-pencil"></i></a></td>
             </tr>
           </tbody>
         </table>
@@ -89,9 +89,8 @@
               <label class="col-xs-2 control-label required">{{ "COLUMNS.ACCOUNT" | translate }}</label>
               <div class="col-xs-10">
                 <!-- note: filter off the title accounts -->
-                <select name="group-account" class="form-bhima" ng-model="newGroup.account_id" required>
+                <select name="group-account" class="form-bhima" ng-model="newGroup.account_id" ng-options="acc.id as acc.label disable when (acc.account_type_id === 3) for acc in account.data"  required>
                   <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
-                  <option ng-repeat="acc in account.data | orderBy:'account_number'" value='{{acc.id}}' ng-disabled="acc.account_type_id==3">{{formatAccount(acc)}}</option>
                 </select>
               </div>
             </div>
@@ -100,7 +99,7 @@
               <label class="col-xs-2 control-label">{{ "COLUMNS.PRICE_LIST" | translate }}</label>
               <div class="col-xs-10">
                 <select class="form-bhima" ng-model="newGroup.price_list_uuid" ng-options="pl.uuid as pl.title for pl in price_list.data">
-                  <option value="">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
+                  <option value="" disabled="disabled">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
                 </select>
               </div>
             </div>
@@ -127,13 +126,6 @@
                 <input type="email" name="group-email" class="form-bhima" ng-model="newGroup.email">
               </div>
             </div>
-
-            <!-- <div class="form-group">
-              <label class="col-xs-2 control-label required">{{ "COLUMNS.MAX_CREDIT" | translate }}</label>
-              <div class="col-xs-10">
-                <input type="number" min="0" name="group-maxcredit" class="form-bhima" ng-model="newGroup.max_credit" required>
-              </div>
-            </div> -->
 
             <div class="form-group">
               <label class="col-xs-2 control-label">{{ "COLUMNS.LOCKED" | translate }}</label>
@@ -181,8 +173,7 @@
             <div class="form-group">
               <label class="col-xs-2 control-label required">{{ "COLUMNS.ACCOUNT" | translate }}</label>
               <div class="col-xs-10">
-                <!-- note: filter off the title accounts -->
-                <select name="group-account" class="form-bhima" ng-model="editGroup.account_id" ng-options="acc.id as formatAccount(acc) for acc in account.data | orderBy:'account_number'" required>
+                <select name="group-account" class="form-bhima" ng-model="editGroup.account_id" ng-options="acc.id as acc.label disable when (acc.account_type_id === 3) for acc in account.data | orderBy:'account_number'" required>
                   <option value="" disabled="disabled">-- {{ "SELECT.ACCOUNT" | translate }} --</option>
                 </select>
               </div>
@@ -192,7 +183,7 @@
               <label class="col-xs-2 control-label">{{ "COLUMNS.PRICE_LIST" | translate }}</label>
               <div class="col-xs-10">
                 <select class="form-bhima" ng-model="editGroup.price_list_uuid" ng-options="pl.uuid as pl.title for pl in price_list.data">
-                  <option value="">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
+                  <option value="" disabled="disabled">-- {{ "SELECT.PRICE_LIST" | translate }} --</option>
                 </select>
               </div>
             </div>
@@ -219,13 +210,6 @@
                 <input type="email" name="group-email" class="form-bhima" ng-model="editGroup.email">
               </div>
             </div>
-
-            <!-- <div class="form-group">
-              <label class="col-xs-2 control-label required" for="maxcredit">{{ "COLUMNS.MAX_CREDIT" | translate }}</label>
-              <div class="col-xs-10">
-                <input type="number" min="0" name="group-maxcredit" class="form-bhima" ng-model="editGroup.max_credit" required>
-              </div>
-            </div> -->
 
             <div class="form-group">
               <label class="col-xs-2 control-label">{{ "COLUMNS.LOCKED" | translate }}</label>
