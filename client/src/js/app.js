@@ -60,7 +60,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/patient/registration/registration.html'
   })
   .when('/debtor/debtor_group', {
-    controller : 'group.debtor',
+    controller : 'DebtorGroupController as GroupCtrl',
     templateUrl: 'partials/debtor/debtor_group.html'
   })
   .when('/journal_voucher', {
