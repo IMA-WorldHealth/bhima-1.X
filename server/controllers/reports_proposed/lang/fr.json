@@ -46,7 +46,8 @@
 		"TOTAL_GENERAL"         : "GENERAL TOTAL",
 		"PROFIT"                : "Profit",
 		"DATE"                  : "Date : ",
-		"TOTAL"                 : "TOTAL"
+		"TOTAL"                 : "TOTAL",
+		"ACCOUNTING_DEPT"       : "Departement de Comptabilite"
 	},
 
 	"EMPLOYEE_STATE" : {
