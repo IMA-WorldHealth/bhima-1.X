@@ -40,6 +40,25 @@ table {
   text-align    : center;
 }
 
+.variation thead > tr > th {
+  border-bottom : 1px solid #9f9f9f;
+  text-align    : center;
+}
+
+.variation tbody > tr > td {
+  border-bottom : 1px solid #9f9f9f;
+  text-align    : center;
+}
+
+.parent-backgroud {
+  background-color: #F3F3F3;  
+}
+
+.parent-content{
+  font-weight: bold;
+}
+
+
 .balance thead > tr > th,
 .balance tbody > tr > td {
   margin : 0 1px; /* don't shove text right up against the border */
