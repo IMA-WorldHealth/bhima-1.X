@@ -66,6 +66,7 @@ DELETE FROM `inventory_type` WHERE `inventory_type`.`id` = 4;
 --
 -- Date: 2015-08-13
 -- By: jniles
+
 ALTER TABLE `user` CHANGE `logged_in` `active` TINYINT NOT NULL DEFAULT 0;
 ALTER TABLE `user` ADD COLUMN `last_login` DATE NOT NULL;
 UPDATE `user` SET `password` = PASSWORD(`password`);
@@ -453,6 +454,7 @@ UPDATE `unit` SET `unit`.`parent`=129 WHERE `unit`.`id`=38;
 
 UPDATE `unit` SET `unit`.`key`='TREE.PATIENT_REGISTRATION' WHERE `unit`.`id`=14;
 UPDATE `unit` SET `unit`.`key`='TREE.USERS' WHERE `unit`.`id`=4;
+
 --
 -- jniles
 -- 07/10/2015
@@ -473,6 +475,26 @@ UPDATE `account` SET `account`.`is_charge`=0
 WHERE `account`.`is_charge` IS NULL AND LEFT(`account`.`account_number`, 1)=7;
 
 -- NOTA : The last unit table ID is 130
+
+-- Move to Payroll
+-- =================
+-- 
+-- paycheck
+UPDATE `unit` SET `unit`.`parent`=57 WHERE `unit`.`id`=73;
+-- tax payment report
+UPDATE `unit` SET `unit`.`parent`=57 WHERE `unit`.`id`=118;
+-- cotisation payment report
+UPDATE `unit` SET `unit`.`parent`=57 WHERE `unit`.`id`=119;
+
+
+--
+-- Dedrick Kitamuka
+-- 17/10/2015
+-- Adding a new unit for compte exploitation
+--
+
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
+VALUES (131, 'compte exploitation', 'TREE.COMPTE_EXPLOITATION', 'pour voir evloution compte exploitation entre deux annees fiscales' , 129, '/partials/reports/variation_exploitation', '/variation_exploitation/');
 
 -- set the /stock route to /depots
 -- author: jniles
