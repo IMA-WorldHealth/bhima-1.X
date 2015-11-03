@@ -380,7 +380,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/primary_cash/income/convention/convention.html'
   })
    .when('/primary_cash/support/:cashbox_id', {
-    controller : 'primaryCash.support',
+    controller : 'PrimaryCashSupportController as SupportCtrl',
     templateUrl : 'partials/primary_cash/income/support/support.html'
   })
   .when('/primary_cash/income/generic/:id', {
