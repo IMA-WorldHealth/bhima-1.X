@@ -99,7 +99,7 @@ function ReportGlobalTransactionController (connect, $translate, validate, util,
   }
 
   function loadView() {
-    vm.state         = 'generate';
+    vm.state             = 'generate';
     session.loaderState  = 'loading';
     session.buttonLoader = false;
   }
