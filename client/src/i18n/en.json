@@ -47,7 +47,15 @@
    "TITLE_ACCOUNT"    : "Title Account",
    "TYPE"             : "Type",
    "VARIABLE"         : "Variable"
-   },
+},
+"ACCOUNT_RESULT" : {
+  "BUILD_ACCOUNT_RESULT" : "Account Result Generating",
+  "DOCUMENT_CONFIG"      : "Document Configuration",
+  "FISCAL_YEAR"          : "Fiscal year",
+  "LANGUAGE"             : "Language",
+  "GENERATE_DOC"         : "Generate Document",
+  "DOC_SUCCES"           : "Document generated successfully - Open the Document"
+},
 "ALLTRANSACTIONS": {
    "DATA_POSTED"  : "Posted Data Successfully",
    "DAY"          : "Today",

@@ -1,10 +1,6 @@
-// reports_proposed/data/bilan.js
-// Collects and aggregates data for the enterprise bilan
-
 var q       = require('q');
 var db      = require('../../../lib/db');
 var numeral = require('numeral');
-
 var formatDollar = '$0,0.00';
 var resultAccountDate = new Date();
 
@@ -21,7 +17,8 @@ exports.compile = function (options) {
     '`src`.`position` AS `sectionResultPosition`, SUM(`gld`.`debit_equiv`) AS `generalLegderDebit`, SUM(`gld`.`credit_equiv`) AS `generalLegderCredit` ' +
     'FROM `section_resultat` `src` JOIN `reference` `ref` ON `ref`.`section_resultat_id` = `src`.`id` ' +
     'JOIN `account` `acc` ON `acc`.`reference_id` = `ref`.`id` JOIN `general_ledger` `gld` ON `gld`.`account_id` = `acc`.`id` WHERE `gld`.`trans_date`<= (SELECT MAX(`period_stop`) ' +
-    'FROM `period` WHERE `period`.`fiscal_year_id`=?) AND `acc`.`is_ohada`=? AND SUBSTRING(`acc`.`account_number`, 1, 1) >= 6 GROUP BY `gld`.`account_id` ORDER BY `src`.`position`, `ref`.`position` DESC;';
+    'FROM `period` WHERE `period`.`fiscal_year_id`=?) AND `gld`.`trans_date` >= (SELECT MIN(`period_start`) FROM `period` WHERE `period`.`fiscal_year_id`=?) AND `acc`.`is_ohada`=? ' + 
+    'AND `acc`.`account_type_id` = ? GROUP BY `gld`.`account_id` ORDER BY `src`.`position`, `ref`.`position` ASC;';
 
   var doBalance = function (somDebit, somCredit, isCharge){
     return (isCharge == 1)? somDebit - somCredit : somCredit - somDebit;
@@ -29,24 +26,13 @@ exports.compile = function (options) {
   //populating context object
 
   context.reportDate = resultAccountDate.toDateString();
-  context.enterpriseName = options.enterprise.abbr;
+  context.options = options;
+  context.i18nAccountResult = i18nAccountResult;
 
-  context.title = i18nAccountResult.TITLE;
-  context.enterprise = i18nAccountResult.ENTERPRISE;
-  context.clos = i18nAccountResult.CLOS;
-  context.duration = i18nAccountResult.DURATION;
-  context.reference = i18nAccountResult.REFERENCE;
-  context.charge = i18nAccountResult.CHARGE;
-  context.net = i18nAccountResult.NET;
-  context.totalGeneral = i18nAccountResult.TOTAL_GENERAL;
-  context.profit = i18nAccountResult.PROFIT;
-  context.date = i18nAccountResult.DATE;
-  context.total = i18nAccountResult.TOTAL;
-
-  db.exec(sql, [options.fy, 1])
+  db.exec(sql, [options.fy, options.fy, 1, 1])
   .then(function (currentAccountDetails) {
     infos.currentAccountDetails = currentAccountDetails || [];
-    return db.exec(sql, [options.pfy, 1]);
+    return db.exec(sql, [options.pfy, options.pfy, 1, 1]);
   })
   .then(function (previousAccountDetails){
     infos.previousAccountDetails = previousAccountDetails || [];
