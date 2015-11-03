@@ -4,7 +4,7 @@
   "description": "A rural hospital information management system.",
   "main": "server/app.js",
   "scripts": {
-    "test": "mocha server/test/",
+    "test": "mocha server/test/ && ./sh/travis.sh",
     "app": "gulp build && cd bin && node server/app.js"
   },
   "repository": {
