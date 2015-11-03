@@ -118,7 +118,7 @@
                     </select>
                   </div>
 
-                  <div class="form-group">
+                  <div class="form-group" ng-if="newAccount.type.type === 'balance'">
                     <div class="radio">
                       <label>
                         <input type="radio" name="option_is_asset" id="is_asset" ng-value=1 ng-model="newAccount.is_asset" >
@@ -222,9 +222,9 @@
               </div>
             </div>
 
-            <div class="panel panel-default" ng-if="newAccount.type.type === 'balance'">
+            <div class="panel panel-default" ng-if="newAccount.type.type === 'balance' || newAccount.type.type === 'income/expense'">
               <div class="panel-heading">
-                {{ "ACCOUNT.BALANCE_ACCOUNT" | translate }}  
+                {{ "COLUMNS.REFERENCE" | translate }}  
               </div>
               <div class="panel-body">
                 <div class="form-group">
@@ -373,9 +373,9 @@
                     </div>
                   </div>
 
-                  <div class="panel panel-default" ng-if="editAccount.account_type === 'balance'">
+                  <div class="panel panel-default" ng-if="editAccount.account_type === 'balance' || editAccount.account_type === 'income/expense'">
                     <div class="panel-heading">
-                      {{ "ACCOUNT.BALANCE_ACCOUNT" | translate }}  
+                      {{ "COLUMNS.REFERENCE" | translate }}  
                     </div>
                     <div class="panel-body">
                       <div class="form-group">
