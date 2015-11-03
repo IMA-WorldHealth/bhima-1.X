@@ -42,7 +42,8 @@ var auth            = require('../controllers/auth'),
     inventory       = require('../controllers/inventory'),
     patient         = require('../controllers/patient'),
     depot           = require('../controllers/depot'),
-    budget          = require('../controllers/budget');
+    budget          = require('../controllers/budget'),
+    financeServices = require('../controllers/categorised/financeServices');
 
 var patient         = require('../controllers/patient');
 
@@ -111,14 +112,28 @@ exports.initialise = function (app) {
   app.post('/snis/createReport', snis.createReport);
   app.delete('/snis/deleteReport/:id', snis.deleteReport);
   app.post('/snis/populateReport', snis.populateReport);
+ 
+  /**
+   * refactor-categorisation
+   *
+   * @todo test all routes below to ensure no broken links
+   */
 
+  // Financial services - cost/ profit centers, services etc. 
+  app.get('/services/', financeServices.listServices);
+  app.get('/available_cost_center/', financeServices.availableCostCenters);
+  app.get('/available_profit_center/', financeServices.availableProfitCenters);
+  app.get('/cost/:id_project/:cc_id', financeServices.costCenterCost);
+  app.get('/profit/:id_project/:pc_id', financeServices.profitCenterCost);
+  app.get('/costCenterAccount/:id_enterprise/:cost_center_id', financeServices.costCenterAccount);
+  app.get('/profitCenterAccount/:id_enterprise/:profit_center_id', financeServices.profitCenterAccount);
+  app.get('/removeFromCostCenter/:tab', financeServices.removeFromCostCenter);
+  app.get('/removeFromProfitCenter/:tab', financeServices.removeFromProfitCenter);
+  
   // TODO These routes all belong somewhere
-  app.get('/services/', uncategorised.services);
-  app.get('/available_cost_center/', uncategorised.availableCenters);
   app.get('/employee_list/', uncategorised.listEmployees);
   app.get('/journal_list/', uncategorised.listJournal);
   app.get('/hollyday_list/:pp/:employee_id', uncategorised.listHolidays);
-  app.get('/available_profit_center/', uncategorised.listAvailableProfitCenters);
   app.get('/currentProject', uncategorised.currentProject);
   app.get('/pcash_transfer_summers', uncategorised.pcashTransferSummers);
   app.get('/editsession/authenticate/:pin', uncategorised.authenticatePin);
@@ -126,12 +141,6 @@ exports.initialise = function (app) {
   app.get('/InExAccounts/:id_enterprise/', uncategorised.listInExAccounts);
   app.get('/availableAccounts/:id_enterprise/', uncategorised.listEnterpriseAccounts);
   app.get('/availableAccounts_profit/:id_enterprise/', uncategorised.listEnterpriseProfitAccounts);
-  app.get('/cost/:id_project/:cc_id', uncategorised.costCenterCost);
-  app.get('/profit/:id_project/:pc_id', uncategorised.processProfitCenter);
-  app.get('/costCenterAccount/:id_enterprise/:cost_center_id', uncategorised.costCenterAccount);
-  app.get('/profitCenterAccount/:id_enterprise/:profit_center_id', uncategorised.profitCenterAccount);
-  app.get('/removeFromCostCenter/:tab', uncategorised.removeFromCostCenter);
-  app.get('/removeFromProfitCenter/:tab', uncategorised.removeFromProfitCenter);
   app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', uncategorised.auxCenterAccount);
   app.get('/getCheckHollyday/', uncategorised.checkHoliday);
   app.get('/getCheckOffday/', uncategorised.checkOffday);
