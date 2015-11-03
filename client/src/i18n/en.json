@@ -132,11 +132,12 @@
    "TYPE_CC"               : "Type"
    },
 "AUTH": {
+  "ERR_LOGIN"                  : "Error: Username and password combination are incorrect.",
+  "ERR_MISSING_DATA"           : "A username and password are required!",
+  "ERR_NO_PERMISSIONS"         : "This user does not have any permissions.  Please contact a system administrator.",
   "LOGIN"                      : "Login",
-  "LOGIN_ERROR"                : "Error: Username and password combination are incorrect.",
   "LOGIN_TO_BHIMA"             : "Login to Bhima",
   "LOGOUT_SUCCESS"             : "You are now logged out.",
-  "LOGIN_ERR_MISSING_DATA"         : "A username and password are required!",
   "LOGIN_PLACEHOLDER_USERNAME" : "Enter your username",
   "LOGIN_PLACEHOLDER_PASSWORD" : "Enter your password",
   "RESET"                      : "Reset"
@@ -565,8 +566,10 @@
    "QUANTITY_ORDER"        : "Quantity to Order",
    "RATE"                  : "Rate",
    "RECEIPT"               : "Receipt",
-   "REFERENCE"             : "Reference",
-   "REFERENCE_GROUP"       : "Reference Group",
+   "REF"                   : "Ref.",
+   "REFERENCE"             : "reference",
+   "REF_GROUP"             : "Ref. Groupe",
+   "REFERENCE_GROUP"       : "Group de reference",
    "REFERENCE_PURCHASE"    : "Purchase Order Reference",
    "REGISTERED"            : "Registered",
    "REGISTERED_BY"         : "Registered By",
@@ -1738,7 +1741,7 @@
    "SEPTEMBER"          : "September",
    "TITLE"              : "Operating Account",
    "TOTAL_CHARGE"       : "Total Charge",
-   "TOTAL_PROFIT"       : "Totall profit",
+   "TOTAL_PROFIT"       : "Total profit",
    "VIEW"               : "View"
    },
 "PATIENT_EDIT": {
@@ -1969,6 +1972,7 @@
    "TRANSACTION_NUMBER"    : "Transaction #",
    "TRANSACTION_SUCCESS"   : "Transaction edits and logs saved successfully",
    "TRIAL_BALANCE"         : "Trial Balance",
+   "UNKNOWN_ACCOUNT"     : "Unknown Account",
    "VERIFY_TRANSACTION"    : "Verify Transaction"
    },
 "PRICE_LIST": {
@@ -2645,6 +2649,15 @@
   "EXIT_SERVICE": {
      "KEY" : "Stock distribution to services"
      },
+ "EXPIRATIONS": {
+    "TODAY"           : "Expire aujourd'hui",
+    "30_DAYS"         : "Expire dans moins de 30 jours",
+    "30_TO_60_DAYS"   : "Expire entre 30 et 60 jours",
+    "60_TO_90_DAYS"   : "Expire entre 60 et 90 jours",
+    "90_TO_120_DAYS"  : "Expire entre 90 et 120 jours",
+    "120_TO_180_DAYS" : "Expire entre 120 et 180 jours",
+    "180_TO_360_DAYS" : "Expire entre 180 et 360 jours"
+    },
   "EXPIRE": {
      "KEY" : "Expiring Stock"
      },
@@ -3010,7 +3023,9 @@
    "PURCHASE_ORDER"            : "Purchase Order",
    "PURCHASE_ORDER_MANAGEMENT" : "Management",
    "PURCHASE_ORDER_RECORDS"    : "Purchase Order Records",
+   "REF"                       : "Ref.",
    "REFERENCE"                 : "Reference",
+   "REF_GROUP"                 : "Ref. Group",
    "REFERENCE_GROUP"           : "Reference Group",
    "REGISTER_STOCK"            : "Stock Registration",
    "REGISTER_SUPPLIER"         : "Supplier",
