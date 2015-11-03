@@ -1,118 +1,138 @@
 angular.module('bhima.controllers')
-.controller('offdays', [
-  '$scope',
-  '$translate',
-  '$http',
-  'validate',
-  'messenger',
-  'connect',
-  'appstate',
-  'util',
-  function ($scope, $translate, $http, validate, messenger, connect, appstate, util) {
-    var dependencies = {},
-        session = $scope.session = {};
+.controller('OffdayController', OffdayController);
 
-    dependencies.offdays = {
-      query : {
-        identifier : 'id',
-        tables : {
-          'offday' : {
-            columns : ['id', 'label', 'date', 'percent_pay']
-          }
+OffdayController.$inject = [
+  '$translate', '$http', 'validate', 'messenger', 'connect',
+  'util', 'SessionService'
+];
+
+/**
+  * Offday Controller
+  * This controller is responsible to manage crud operations with offdays
+  */
+function OffdayController ($translate, $http, validate, messenger, connect, util, SessionService) {
+  var vm = this,
+      dependencies = {},
+      session = vm.session = {};
+
+  dependencies.offdays = {
+    query : {
+      identifier : 'id',
+      tables : {
+        'offday' : {
+          columns : ['id', 'label', 'date', 'percent_pay']
         }
       }
-    };
-
-    function startup (models) {
-      angular.extend($scope, models);
     }
+  };
 
-    appstate.register('enterprise', function (enterprise) {
-      $scope.enterprise = enterprise;
-      validate.process(dependencies)
-      .then(startup);
-    });
+  // Expose to the view
+  vm.delete    = deletion;
+  vm.edit      = edition;
+  vm.new       = create;
+  vm.save      = {};
+  vm.save.edit = editSave;
+  vm.save.new  = createSave;
 
-    $scope.delete = function (offday) {
-      var result = confirm($translate.instant('OFFDAY_MANAGEMENT.CONFIRM'));
-      if (result) {
-        connect.basicDelete('offday', offday.id, 'id')
-        .then(function () {
-          $scope.offdays.remove(offday.id);
-          messenger.info($translate.instant('OFFDAY_MANAGEMENT.DELETE_SUCCESS'));
-        });
-      }
-    };
+  // Startup
+  startup();
 
-    $scope.edit = function (offday) {
-      session.action = 'edit';
-      offday.date = new Date(offday.date);
-      session.edit = angular.copy(offday);
-    };
+  // Functions
+  function startup() {
+    vm.enterprise = SessionService.enterprise;
+    validate.process(dependencies)
+    .then(initialize);
+  }
 
-    $scope.new = function () {
-      session.action = 'new';
-      session.new = {};
-    };
+  function initialize (models) {
+    angular.extend(vm, models);
+  }
 
-    $scope.save = {};
-
-    $scope.save.edit = function () {
-      session.edit.date = util.sqlDate(session.edit.date);
-        var record = connect.clean(session.edit);
-        delete record.reference;
-
-      $http.get('/getCheckOffday/',{params : {
-            'date' : record.date,
-            'id'   : record.id
-          }
-        }).
-      success(function(data) {
-        if(data.length === 0){
-          connect.basicPost('offday', [record], ['id'])
-          .then(function () {
-          messenger.success($translate.instant('OFFDAY_MANAGEMENT.UPDATE_SUCCES'));
-          $scope.offdays.put(record);
-          session.action = '';
-          session.edit = {};
-          });
-        } else {
-          messenger.danger($translate.instant('OFFDAY_MANAGEMENT.SAVE_FAILURE'));
-        }
-      });
-    };
-
-    $scope.save.new = function () {
-      session.new.date = util.sqlDate(session.new.date);
-      var record = connect.clean(session.new);
-
-      $http.get('/getCheckOffday/',{params : {
-            'date' : record.date,
-            'id'   : ''
-          }
-        }).
-      success(function(data) {
-        if(data.length === 0){
-          connect.basicPut('offday', [record])
-          .then(function (res) {
-            messenger.success($translate.instant('OFFDAY_MANAGEMENT.SAVE_SUCCES')); 
-            record.id = res.data.insertId;
-            record.reference = generateReference(); // this is simply to make the ui look pretty;
-            $scope.offdays.post(record);
-            session.action = '';
-            session.new = {};
-          });
-        } else {
-          messenger.danger($translate.instant('OFFDAY_MANAGEMENT.SAVE_FAILURE'));
-        }
-      });
-    };
-
-
-    function generateReference () {
-      window.data = $scope.offdays.data;
-      var max = Math.max.apply(Math.max, $scope.offdays.data.map(function (o) { return o.reference; }));
-      return Number.isNaN(max) ? 1 : max + 1;
+  function deletion (offday) {
+    var result = confirm($translate.instant('OFFDAY_MANAGEMENT.CONFIRM'));
+    if (result) {
+      connect.delete('offday', 'id', offday.id)
+      .then(function () {
+        vm.offdays.remove(offday.id);
+        messenger.info($translate.instant('OFFDAY_MANAGEMENT.DELETE_SUCCESS'));
+      })
+      .catch(error);
     }
   }
-]);
+
+  function edition (offday) {
+    session.action = 'edit';
+    offday.date = new Date(offday.date);
+    session.edit = angular.copy(offday);
+  }
+
+  function create () {
+    session.action = 'new';
+    session.new = {};
+  }
+
+  function editSave () {
+    var record = connect.clean(session.edit);
+    record.date = util.sqlDate(session.edit.date);
+    delete record.reference;
+
+    $http.get('/getCheckOffday/',{
+      params : {
+        'date' : record.date,
+        'id'   : record.id
+      }
+    })
+    .then(function(res) {
+      if(res.data.length !== 0){
+        messenger.danger($translate.instant('OFFDAY_MANAGEMENT.SAVE_FAILURE'));
+        throw $translate.instant('OFFDAY_MANAGEMENT.SAVE_FAILURE');
+      }
+      return connect.put('offday', [record], ['id']);
+    })
+    .then(function () {
+      vm.offdays.put(record);
+      session.action = '';
+      session.edit = {};
+      messenger.success($translate.instant('OFFDAY_MANAGEMENT.UPDATE_SUCCES'));
+    })
+    .catch(error);
+  }
+
+  function createSave () {
+    var record = connect.clean(session.new);
+    record.date = util.sqlDate(session.new.date);
+
+    $http.get('/getCheckOffday/',{
+      params : {
+        'date' : record.date,
+        'id'   : ''
+      }
+    })
+    .then(function (res) {
+      if (res.data.length !== 0) {
+        messenger.danger($translate.instant('OFFDAY_MANAGEMENT.SAVE_FAILURE'));
+        throw $translate.instant('OFFDAY_MANAGEMENT.SAVE_FAILURE');
+      }
+      return connect.post('offday', [record]);
+    })
+    .then(function (res) {
+      record.id = res.data.insertId;
+      record.reference = generateReference(); // this is simply to make the ui look pretty;
+      vm.offdays.post(record);
+      session.action = '';
+      session.new = {};
+      messenger.success($translate.instant('OFFDAY_MANAGEMENT.SAVE_SUCCES'));
+    })
+    .catch(error);
+  }
+
+  function generateReference () {
+    window.data = vm.offdays.data;
+    var max = Math.max.apply(Math.max, vm.offdays.data.map(function (o) { return o.reference; }));
+    return Number.isNaN(max) ? 1 : max + 1;
+  }
+
+  function error(err) {
+    console.error(err);
+  }
+}

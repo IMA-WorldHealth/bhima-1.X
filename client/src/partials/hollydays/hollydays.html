@@ -11,7 +11,7 @@
   </div>
 
   <div class="pull-right">
-    <button class="btn btn-sm btn-default" ng-click="new()">
+    <button class="btn btn-sm btn-default" ng-click="HolidayCtrl.new()">
       <span class="glyphicon glyphicon-plus-sign"></span>
       {{ "HOLLYDAY_MANAGEMENT.ADD" | translate }}
     </button>
@@ -32,23 +32,23 @@
             <tr>
               <th>{{ "COLUMNS.EMPLOYEE_NAME" | translate}}</th>
               <th>{{ "COLUMNS.LABEL" | translate}}</th>
-              <th>{{ "COLUMNS.PERCENT_PAY" | translate}}</th>            
+              <th>{{ "COLUMNS.PERCENT_PAY" | translate}}</th>
               <th>{{ "COLUMNS.DATE_FROM" | translate}}</th>
-              <th>{{ "COLUMNS.DATE_TO" | translate}}</th>              
+              <th>{{ "COLUMNS.DATE_TO" | translate}}</th>
               <th colspan="4" style="max-width: 20%;">{{ "COLUMNS.ACTIONS" | translate }}</th>
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="hollyday in hollydays.data | orderBy:'name'">
+            <tr ng-repeat="hollyday in HolidayCtrl.hollydays.data | orderBy:'name'">
               <td>{{ hollyday.name }} {{ hollyday.postnom }} {{ hollyday.prenom }}</td>
               <td>{{ hollyday.label }}</td>
               <td>{{ hollyday.percentage }}</td>
               <td>{{ hollyday.dateFrom | date}}</td>
               <td>{{ hollyday.dateTo | date}}</td>
-              <td><a class="action" ng-click="edit(hollyday)"><span class="glyphicon glyphicon-pencil"></span></a></td>
-              <td><a class="action danger" ng-click="delete(hollyday)"><span class="glyphicon glyphicon-trash"></span></a></td>
+              <td><a class="action" ng-click="HolidayCtrl.edit(hollyday)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+              <td><a class="action danger" ng-click="HolidayCtrl.delete(hollyday)"><span class="glyphicon glyphicon-trash"></span></a></td>
             </tr>
-            <tr ng-if="!hollydays.data.length">
+            <tr ng-if="!HolidayCtrl.hollydays.data.length">
               <td colspan="4">{{ "HOLLYDAY_MANAGEMENT.NO_HOLLYDAY" | translate }}</td>
             </tr>
           </tbody>
@@ -56,7 +56,7 @@
       </div>
     </div>
 
-    <div class="col-xs-6" ng-switch="session.action">
+    <div class="col-xs-6" ng-switch="HolidayCtrl.session.action">
       <div class="alert alert-info" ng-switch-default>
         <h4>{{ "HOLLYDAY_MANAGEMENT.TITLE" | translate }}</h4>
         <p>{{ "HOLLYDAY_MANAGEMENT.ALERT" | translate }}</p>
@@ -69,8 +69,12 @@
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.EMPLOYEE_NAME" | translate }}</label>
             <div class="col-xs-8">
-              <select class="form-bhima" required ng-model="session.new.employee_id">
-                <option ng-repeat="employee in employees.data" ng-value="employee.id">{{ employee.name }} {{ employee.postnom }} {{ employee.prenom }}</option>
+              <select
+                class="form-bhima"
+                ng-model="HolidayCtrl.session.new.employee_id"
+                ng-options="employee.id as employee.name + ' ' + employee.postnom + ' ' + employee.prenom for employee in HolidayCtrl.employees.data"
+                required>
+                <option value="" disabled>-- {{ "SELECT.EMPLOYEE" | translate }} --</option>
               </select>
             </div>
           </div>
@@ -78,35 +82,35 @@
           <div class="form-group">
             <label class="control-label col-xs-3">{{ "COLUMNS.LABEL" | translate }}</label>
             <div class="col-xs-8">
-              <input ng-model="session.new.label" class="form-bhima" required>
+              <input ng-model="HolidayCtrl.session.new.label" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-3">{{ "COLUMNS.PERCENT_PAY" | translate }}</label>
             <div class="col-xs-8">
-              <input ng-model="session.new.percentage" class="form-bhima" required>
+              <input ng-model="HolidayCtrl.session.new.percentage" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.DATE_FROM" | translate }}</label>
             <div class="col-xs-8">
-              <input type="date" ng-model="session.new.dateFrom" class="form-bhima" required>
+              <input type="date" ng-model="HolidayCtrl.session.new.dateFrom" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.DATE_TO" | translate }}</label>
             <div class="col-xs-8">
-              <input type="date" ng-model="session.new.dateTo" class="form-bhima" required>
+              <input type="date" ng-model="HolidayCtrl.session.new.dateTo" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
-            <input type="submit" ng-disabled="new.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
-            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
-          </div>   
+            <input type="submit" ng-disabled="new.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="HolidayCtrl.save.new()">
+            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="HolidayCtrl.reset()">
+          </div>
         </form>
       </div>
 
@@ -117,8 +121,11 @@
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.EMPLOYEE_NAME" | translate }}</label>
             <div class="col-xs-8">
-              <select class="form-bhima" required ng-model="session.edit.employee_id" ng-options="employee.id as employee.name + '  ' + employee.postnom + ' ' + employee.prenom for employee in employees.data">
-                <option></option>
+              <select class="form-bhima"
+                ng-model="HolidayCtrl.session.edit.employee_id"
+                ng-options="employee.id as employee.name + '  ' + employee.postnom + ' ' + employee.prenom for employee in HolidayCtrl.employees.data"
+                disabled required>
+                <option value="" disabled>{{ "SELECT.EMPLOYEE" | translate }}</option>
               </select>
             </div>
           </div>
@@ -126,35 +133,35 @@
           <div class="form-group">
             <label class="control-label col-xs-3">{{ "COLUMNS.LABEL" | translate }}</label>
             <div class="col-xs-8">
-              <input ng-model="session.edit.label" class="form-bhima" required>
+              <input ng-model="HolidayCtrl.session.edit.label" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-3">{{ "COLUMNS.PERCENT_PAY" | translate }}</label>
             <div class="col-xs-8">
-              <input ng-model="session.edit.percentage" class="form-bhima" required>
+              <input ng-model="HolidayCtrl.session.edit.percentage" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.DATE_FROM" | translate }}</label>
             <div class="col-xs-8">
-              <input type="date" ng-model="session.edit.dateFrom" class="form-bhima" required>
+              <input type="date" ng-model="HolidayCtrl.session.edit.dateFrom" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.DATE_TO" | translate }}</label>
             <div class="col-xs-8">
-              <input type="date" ng-model="session.edit.dateTo" class="form-bhima" required>
+              <input type="date" ng-model="HolidayCtrl.session.edit.dateTo" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
-            <input type="submit" ng-disabled="edit.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
-            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
-          </div>   
+            <input type="submit" ng-disabled="edit.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="HolidayCtrl.save.edit()">
+            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="HolidayCtrl.reset()">
+          </div>
         </form>
       </div>
     </div>
