@@ -11,7 +11,7 @@
   </div>
 
   <div class="pull-right">
-    <button class="btn btn-sm btn-default" ng-click="new()">
+    <button class="btn btn-sm btn-default" ng-click="ConfigAccountCtrl.new()">
       <span class="glyphicon glyphicon-plus-sign"></span>
        {{ "CONFIG_ACCOUNTING.ADD" | translate }}
     </button>
@@ -37,14 +37,14 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="config_accounting in config_accountings.data">
+            <tr ng-repeat="config_accounting in ConfigAccountCtrl.config_accountings.data">
               <td>{{$index + 1}}</td>
               <td>{{ config_accounting.label }}</td>
               <td>{{ config_accounting.account_number }}</td>
-              <td><a class="action" ng-click="edit(config_accounting)"><span class="glyphicon glyphicon-pencil"></span></a></td>
-              <td><a class="action danger" ng-click="delete(config_accounting)"><span class="glyphicon glyphicon-trash"></span></a></td>
+              <td><a class="action" ng-click="ConfigAccountCtrl.edit(config_accounting)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+              <td><a class="action danger" ng-click="ConfigAccountCtrl.delete(config_accounting)"><span class="glyphicon glyphicon-trash"></span></a></td>
             </tr>
-            <tr ng-if="!config_accountings.data.length">
+            <tr ng-if="!ConfigAccountCtrl.config_accountings.data.length">
               <td colspan="4">{{ "CONFIG_ACCOUNTING.NO_CONFIG_ACCOUNTING" | translate }}</td>
             </tr>
           </tbody>
@@ -52,7 +52,7 @@
       </div>
     </div>
 
-    <div class="col-xs-6" ng-switch="session.action">
+    <div class="col-xs-6" ng-switch="ConfigAccountCtrl.session.action">
       <div class="alert alert-info" ng-switch-default>
         <h4>{{ "CONFIG_ACCOUNTING.TITLE" | translate }}</h4>
         <p>{{ "CONFIG_ACCOUNTING.ALERT" | translate }}</p>
@@ -65,24 +65,28 @@
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.LABEL" | translate }}</label>
             <div class="col-xs-7">
-              <input ng-model="session.new.label" class="form-bhima" required>
+              <input ng-model="ConfigAccountCtrl.session.new.label" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.ACCOUNT" | translate }}</label>
             <div class="col-xs-7">
-              <select class="form-bhima" ng-model="session.new.account_id" required>
-                <option ng-repeat="account in accounts" ng-value="account.id">{{account.account_number}} --- {{account.account_txt}}</option>
+              <select
+                class="form-bhima"
+                ng-options="account.id as account.account_number + ' -- ' + account.account_txt for account in ConfigAccountCtrl.accounts.data | orderBy:'account_number'"
+                ng-model="ConfigAccountCtrl.session.new.account_id"
+                required>
+                <option value="" disabled>--- {{ "SELECT.ACCOUNT" | translate }} ---</option>
               </select>
 
             </div>
-          </div>          
+          </div>
 
           <div class="form-group">
-            <input type="submit" ng-disabled="new.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
-            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
-          </div>   
+            <input type="submit" ng-disabled="new.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="ConfigAccountCtrl.save.new()">
+            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="ConfigAccountCtrl.reset()">
+          </div>
         </form>
       </div>
 
@@ -93,27 +97,29 @@
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.LABEL" | translate }}</label>
             <div class="col-xs-7">
-              <input ng-model="session.edit.label" class="form-bhima" required>
+              <input ng-model="ConfigAccountCtrl.session.edit.label" class="form-bhima" required>
             </div>
           </div>
 
           <div class="form-group">
             <label class="control-label col-xs-4 required">{{ "COLUMNS.ACCOUNT" | translate }}</label>
             <div class="col-xs-7">
-              <select class="form-bhima" required ng-model="session.edit.account_id" ng-options="account.id as account.account_number + ' -- ' + account.account_txt for account in accounts">
-                <option></option>
+              <select
+                class="form-bhima"
+                ng-model="ConfigAccountCtrl.session.edit.account_id"
+                ng-options="account.id as account.account_number + ' -- ' + account.account_txt for account in ConfigAccountCtrl.accounts.data | orderBy:'account_number'"
+                required>
+                <option value="" disabled>--- {{ "SELECT.ACCOUNT" | translate }} ---</option>
               </select>
             </div>
-          </div>   
+          </div>
 
           <div class="form-group">
-            <input type="submit" ng-disabled="edit.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
-            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
-          </div>   
+            <input type="submit" ng-disabled="edit.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="ConfigAccountCtrl.save.edit()">
+            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="ConfigAccountCtrl.reset()">
+          </div>
         </form>
       </div>
     </div>
   </div>
 </main>
-
-

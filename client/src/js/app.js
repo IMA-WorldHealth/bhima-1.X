@@ -392,7 +392,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/journal/trialbalance/print.html'
   })
   .when('/employee', {
-    controller : 'EmployeeController',
+    controller : 'EmployeeController as EmployeeCtrl',
     templateUrl : 'partials/employee/employee.html'
   })
   .when('/service', {
@@ -606,11 +606,11 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/cotisation/config_cotisation/config_cotisation.html'
   })
   .when('/offday_management/', {
-    controller : 'offdays',
+    controller : 'OffdayController as OffdayCtrl',
     templateUrl : 'partials/offdays/offdays.html'
   })
   .when('/hollyday_management/', {
-    controller : 'hollydays',
+    controller : 'HolidayController as HolidayCtrl',
     templateUrl : 'partials/hollydays/hollydays.html'
   })
   .when('/payment_period/', {
@@ -626,7 +626,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/rubric/config_rubric/config_rubric.html'
   })
   .when('/rubric_management/rubriques_payroll/', {
-    controller : 'rubriques_payroll',
+    controller : 'RubriquePayrollController as RubriqueCtrl',
     templateUrl : 'partials/rubric/rubriques_payroll/rubriques_payroll.html'
   })
   .when('/reports/daily_consumption/', {
@@ -634,7 +634,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/reports/daily_consumption/daily_consumption.html'
   })
   .when('/config_accounting/', {
-    controller: 'config_accounting',
+    controller: 'ConfigAccountingController as ConfigAccountCtrl',
     templateUrl: 'partials/config_accounting/config_accounting.html'
   })
   .when('/reports/payroll_report/', {

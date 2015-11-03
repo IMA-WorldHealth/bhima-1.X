@@ -132,12 +132,11 @@
    "TYPE_CC"               : "Type"
    },
 "AUTH": {
-  "ERR_LOGIN"                  : "Error: Username and password combination are incorrect.",
-  "ERR_MISSING_DATA"           : "A username and password are required!",
-  "ERR_NO_PERMISSIONS"         : "This user does not have any permissions.  Please contact a system administrator.",
   "LOGIN"                      : "Login",
+  "LOGIN_ERROR"                : "Error: Username and password combination are incorrect.",
   "LOGIN_TO_BHIMA"             : "Login to Bhima",
   "LOGOUT_SUCCESS"             : "You are now logged out.",
+  "LOGIN_ERR_MISSING_DATA"         : "A username and password are required!",
   "LOGIN_PLACEHOLDER_USERNAME" : "Enter your username",
   "LOGIN_PLACEHOLDER_PASSWORD" : "Enter your password",
   "RESET"                      : "Reset"
@@ -1739,7 +1738,7 @@
    "SEPTEMBER"          : "September",
    "TITLE"              : "Operating Account",
    "TOTAL_CHARGE"       : "Total Charge",
-   "TOTAL_PROFIT"       : "Total profit",
+   "TOTAL_PROFIT"       : "Totall profit",
    "VIEW"               : "View"
    },
 "PATIENT_EDIT": {
@@ -1970,7 +1969,6 @@
    "TRANSACTION_NUMBER"    : "Transaction #",
    "TRANSACTION_SUCCESS"   : "Transaction edits and logs saved successfully",
    "TRIAL_BALANCE"         : "Trial Balance",
-   "UNKNOWN_ACCOUNT"     : "Unknown Account",
    "VERIFY_TRANSACTION"    : "Verify Transaction"
    },
 "PRICE_LIST": {
