@@ -141,10 +141,11 @@
    "TYPE_CC"               : "Type"
    },
 "AUTH": {
+  "ERR_LOGIN"                  : "Erreur: Nom d'utilisateur et mot de passe ne sont pas correct.",
+  "ERR_MISSING_DATA"           : "Erreur: Nom d'utilisateur et mot de passe sont nécessaires.",
+  "ERR_NO_PERMISSIONS"         : "Cet utilisateur ne possède pas les autorisations. S'il vous plaît contactez l'administrateur du système.",
   "LOGIN"                      : "Se connecter",
-  "LOGIN_ERROR"                : "Erreur: Nom d'utilisateur et mot de passe ne sont pas correct.",
   "LOGIN_TO_BHIMA"             : "Bhima Login",
-  "LOGIN_ERR_MISSING_DATA"     : "Erreur: Nom d'utilisateur et mot de passe sont nécessaires.",
   "LOGIN_PLACEHOLDER_USERNAME" : "Entrez votre nom d'utilisateur",
   "LOGIN_PLACEHOLDER_PASSWORD" : "Entrez votre mot de passe",
   "LOGOUT_SUCCESS"             : "Vous n'etes pas connecté",
@@ -382,7 +383,7 @@
    "ACCOUNT"               : "Compte",
    "ACCOUNT_ID"            : "ID Compte",
    "ACCOUNT_NUMBER"        : "Numéro Compte",
-   "ACTION"                : "Acte",
+   "ACTION"                : "Action",
    "ACTIONS"               : "Actions",
    "ALERTS"                : "Alertes",
    "AMOUNT"                : "Montant",
@@ -574,7 +575,9 @@
    "QUANTITY_ORDER"        : "Quantité à commander",
    "RATE"                  : "Taux",
    "RECEIPT"               : "Reçu",
+   "REF"                   : "Réf.",
    "REFERENCE"             : "Référence",
+   "REF_GROUP"             : "Ref. Groupe",
    "REFERENCE_GROUP"       : "Groupe de référence",
    "REFERENCE_PURCHASE"    : "Référence",
    "REGISTERED"            : "Enregistré",
@@ -1979,6 +1982,7 @@
    "TRANSACTION_NUMBER"    : "Numéro de Transaction",
    "TRANSACTION_SUCCESS"   : " Edition des transaction et logs enregistrés avec succès",
    "TRIAL_BALANCE"         : "Rapprochement",
+   "UNKNOWN_ACCOUNT"     : "Compte Inconnu",
    "VERIFY_TRANSACTION"    : "Verifier Transaction"
    },
 "PRICE_LIST": {
@@ -2657,6 +2661,15 @@
    "EXIT_SERVICE": {
       "KEY" : "Distribution stock au services"
       },
+   "EXPIRATIONS": {
+       "TODAY"           : "Expire today",
+       "30_DAYS"         : "Expire within 30 days",
+       "30_TO_60_DAYS"   : "Expire between 30 and 60 days",
+       "60_TO_90_DAYS"   : "Expire between 60 and 90 days",
+       "90_TO_120_DAYS"  : "Expire between 90 and 120 days",
+       "120_TO_180_DAYS" : "Expire between 120 and 180 days",
+       "180_TO_360_DAYS" : "Expire between 180 and 360 days"
+       },
    "EXPIRE": {
       "KEY" : "Expiration du stock"
       },
@@ -3022,7 +3035,9 @@
    "PURCHASE_CONFIRMATION"     : "Confirmation",
    "PURCHASE_ORDER_MANAGEMENT" : "Gestion commandes",
    "PURCHASE_ORDER_RECORDS"    : "Historique des Commandes d'Achats",
+   "REF"                       : "Réf.",
    "REFERENCE"                 : "Référence",
+   "REF_GROUP"                 : "Ref. Groupe",
    "REFERENCE_GROUP"           : "Groupe de référence",
    "REGISTER_STOCK"            : "Enregistrement Stocks",
    "REGISTER_SUPPLIER"         : "Fournisseurs",
