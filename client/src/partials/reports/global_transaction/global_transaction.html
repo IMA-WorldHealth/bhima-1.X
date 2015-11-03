@@ -28,7 +28,7 @@
                 <label class="required">{{ "UTIL.SOURCE" | translate }}</label>
                 <select class="form-bhima" id="sources" name="sources"
                   ng-model="ReportCtrl.model.source_id"
-                  ng-options="$index as source for source in ReportCtrl.model.sources" ng-change="ReportCtrl."
+                  ng-options="idx as source for (idx, source) in ReportCtrl.model.sources" 
                   required>
                   <option value="" disabled>-- {{ "SELECT.SOURCE" | translate }} --</option>
                 </select>
