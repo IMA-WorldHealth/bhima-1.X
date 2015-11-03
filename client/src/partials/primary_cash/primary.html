@@ -55,8 +55,13 @@
     </div>
   </div>
 
+  <!-- Loader indicator  -->
+  <div ng-if="PrimaryCtrl.loaderState === 'loading'" class="row margin-top-10 text-center">
+    <loading-indicator></loading-indicator>
+  </div>
+
   <!-- Exchange rate -->
-  <div ng-if="!PrimaryCtrl.session.hasDailyRate" class="row margin-top-10">
+  <div ng-if="!PrimaryCtrl.session.hasDailyRate && PrimaryCtrl.loaderState === 'loaded'" class="row margin-top-10">
     <div class="alert alert-warning text-center">
       <i class="glyphicon glyphicon-warning-sign"></i>
       <strong>{{ "NO_EXCHANGE.EXPLANATION" | translate }}</strong> <br />{{ "NO_EXCHANGE.FIX" | translate }}
