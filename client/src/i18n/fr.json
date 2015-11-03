@@ -47,7 +47,16 @@
    "TITLE_ACCOUNT"   : "Comptes Titre",
    "TYPE"            : "Type",
    "VARIABLE"        : "Variable"
-   },
+},
+"ACCOUNT_RESULT" : {
+  "BUILD_ACCOUNT_RESULT" : "Génération Compte resultat",
+  "DOCUMENT_CONFIG"      : "Configuration du document",
+  "FISCAL_YEAR"          : "Année Fiscale",
+  "LANGUAGE"             : "Langue",
+  "GENERATE_DOC"         : "Générer le document",
+  "DOC_SUCCES"           : "Document généré avec succès - Ouvrir le document"
+
+},
 "ALLTRANSACTIONS": {
    "DATA_POSTED"  : "Données postées avec succès",
    "DAY"          : "Aujoird'hui",

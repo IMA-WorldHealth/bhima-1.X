@@ -1,16 +1,16 @@
 <header data-header>
-  {{'RESULT_ACCOUNT.BUILD_RESULT_ACCOUNT' | translate}}
+  {{'ACCOUNT_RESULT.BUILD_ACCOUNT_RESULT' | translate}}
 </header>
 
 <main>
   <div class="panel panel-default">
-    <div class="panel-heading">{{'RESULT_ACCOUNT.DOCUMENT_CONFIG' | translate}}</div>
+    <div class="panel-heading">{{'ACCOUNT_RESULT.DOCUMENT_CONFIG' | translate}}</div>
     <div class="panel-body">
       <form>
 
         <div class="form-group">
-          <label class="control-label col-xs-4 required">
-            {{ "RESULT_ACCOUNT.FISCAL_YEAR" | translate }}
+          <label class="required">
+            {{ "ACCOUNT_RESULT.FISCAL_YEAR" | translate }}
           </label>
           <div>
             <select class="form-bhima" ng-model="session.fiscal_year_id" ng-options="fy.id as fy.fiscal_year_txt for fy in fiscalYears.data" required>
@@ -19,7 +19,7 @@
         </div>
 
         <div class="form-group">
-          <label>{{'RESULT_ACCOUNT.LANGUAGE' | translate}}</label>
+          <label>{{'ACCOUNT_RESULT.LANGUAGE' | translate}}</label>
 
           <div>
             <span ng-repeat="language in configuration.language.options">
@@ -37,7 +37,7 @@
           ng-click="generateDocument()" ng-if="!generatedDocumentPath">{{session.building ? loading : generate_doc}}
         </button>
 
-        <a class="btn btn-success" href="{{generatedDocumentPath}}" target="_blank" ng-if="generatedDocumentPath" ng-click="clearPath()">{{'RESULT_ACCOUNT.DOC_SUCCES' | translate}}</a>
+        <a class="btn btn-success" href="{{generatedDocumentPath}}" target="_blank" ng-if="generatedDocumentPath" ng-click="clearPath()">{{'ACCOUNT_RESULT.DOC_SUCCES' | translate}}</a>
       </form>
     </div>
   </div>
