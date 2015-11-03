@@ -7,7 +7,7 @@
 
 <body>
   <hgroup class="text-uppercase">
-      <h6>{{=it.options.enterprise.name}}</h5>
+      <h6>{{=it.options.enterprise.name}}</h6>
       <h6>{{=it.i18nBilan.ACCOUNTING_DEPT }}</h6>      
   </hgroup>
 
