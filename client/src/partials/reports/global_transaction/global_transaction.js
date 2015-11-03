@@ -139,10 +139,6 @@ function ReportGlobalTransactionController (connect, $translate, validate, util,
 
   }
 
-  vm.show = function (data) {
-    console.log(data)
-  };
-
   function generate() {
     session.buttonLoader = true;
     if (!vm.enterprise || !vm.exchange_rate) {return;}
