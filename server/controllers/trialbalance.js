@@ -369,7 +369,7 @@ exports.postToGeneralLedger = function (req, res, next) {
       'SELECT account_id, SUM(credit_equiv) AS credit, SUM(debit_equiv) as debit , fiscal_year_id, project.enterprise_id, ' +
         'period_id FROM posting_journal JOIN project ON posting_journal.project_id = project.id ' +
         'WHERE trans_id IN (?) ' +
-      'GROUP BY account_id ' +
+      'GROUP BY period_id, account_id ' +
       'ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit);';
 
     return db.exec(sql, [transactions]);
