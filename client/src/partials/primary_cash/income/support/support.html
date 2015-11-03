@@ -24,8 +24,8 @@
   </div>
 </nav>
 
-<main>
-  <div class="row margin-top-10">
+<main class="extend margin-top-10">
+  <div class="row">
     <div find-employee on-search-complete="initialiseEmployee" class="col-xs-6"></div>
   </div>
 
@@ -72,7 +72,7 @@
           {{ "SUPPORT_PAYEMENT.PAYEMENT" | translate}}
         </div>
         <div class="panel-body" ng-show="noEmpty">
-          <form >
+          <form>
             <div class="form-group">
               <div class="col-xs-4">
                 <label>{{ "SUPPORT_PAYEMENT.MONTANT" | translate }} </label>

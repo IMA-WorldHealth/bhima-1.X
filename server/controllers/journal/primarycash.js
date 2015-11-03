@@ -491,7 +491,7 @@ function payEmployee(id, userId, cb) {
   })
   .then(function (exchangeStore) {
     dayExchange = exchangeStore.get(reference.reference_pcash.currency_id);
-    return q([core.queries.origin('pcash_employee'), core.queries.period(reference.date)]);
+    return q([core.queries.origin('pcash_employee'), core.queries.period(reference.reference_pcash.date)]);
   })
   .spread(function (originId, periodObject) {
     cfg.originId = originId;
@@ -521,7 +521,7 @@ function payEmployee(id, userId, cb) {
 
       params = [
         uuid(), reference.reference_pcash.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
-        cfg.description, item.debit, 0, value, 0, reference.reference_pcash.curreny_id, item.inv_po_id, cfg.originId,
+        cfg.description, item.debit, 0, value, 0, reference.reference_pcash.currency_id, item.inv_po_id, cfg.originId,
         userId, reference.reference_pcash.cash_box_id, reference.reference_pcash.currency_id
       ];
 
