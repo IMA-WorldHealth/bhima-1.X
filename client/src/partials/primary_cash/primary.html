@@ -25,6 +25,11 @@
 </nav>
 
 <main>
+  <!-- Loader indicator  -->
+  <div ng-if="PrimaryCtrl.session.complete && PrimaryCtrl.loaderState === 'loading'" class="row margin-top-10 text-center">
+    <loading-indicator></loading-indicator>
+  </div>
+
   <!-- Module configuration -->
   <div ng-if="PrimaryCtrl.session.configure" class="row margin-top-10">
     <div class="col-xs-12">
@@ -53,11 +58,6 @@
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- Loader indicator  -->
-  <div ng-if="PrimaryCtrl.loaderState === 'loading'" class="row margin-top-10 text-center">
-    <loading-indicator></loading-indicator>
   </div>
 
   <!-- Exchange rate -->

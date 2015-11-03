@@ -100,6 +100,7 @@ function PrimaryCashController ($location, $timeout, $q, validate, AppCache, exc
   function parseConfiguration(cashbox) {
     var currentModel = vm.cashBox;
     var validConfiguration;
+    vm.loaderState   = 'loaded';
 
     if (!cashbox) {
       session.configure = true;
@@ -114,7 +115,6 @@ function PrimaryCashController ($location, $timeout, $q, validate, AppCache, exc
 
     session.cashbox  = cashbox;
     session.complete = true;
-    vm.loaderState   = 'loaded';
     return;
   }
 
