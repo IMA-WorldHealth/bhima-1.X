@@ -2,14 +2,14 @@ angular.module('bhima.controllers')
 .controller('PrimaryCashController', PrimaryCashController);
 
 PrimaryCashController.$inject = [
-  '$location', '$q', '$modal', 'validate', 'appcache', 'exchange', 'messenger'
+  '$location', '$timeout', '$q', 'validate', 'appcache', 'exchange', 'messenger'
 ];
 
 /**
   * Primary Cash controller
   * This controller is responsible to manage the main menu of primary cash module
   */
-function PrimaryCashController ($location, $q, $modal, validate, AppCache, exchange, messenger) {
+function PrimaryCashController ($location, $timeout, $q, validate, AppCache, exchange, messenger) {
   var vm = this,
       dependencies  = {},
       configuration = vm.configuration = {},
@@ -67,19 +67,26 @@ function PrimaryCashController ($location, $q, $modal, validate, AppCache, excha
   vm.loadPath         = loadPath;
   vm.setConfiguration = setConfiguration;
   vm.reconfigure      = reconfigure;
+  vm.loaderState      = 'loading';
 
   // Startup
   startup();
 
   // Functions
   function startup() {
-    session.hasDailyRate = exchange.hasDailyRate();
-
     validate.process(dependencies)
     .then(parseDependenciesData)
+    .then(dailyRateSync)
     .then(readConfiguration)
     .then(parseConfiguration)
     .catch(handleError);
+  }
+
+  // FIXME: prevent risk for display message of daily rate when it is already defined
+  function dailyRateSync() {
+    $timeout(function () {
+      session.hasDailyRate = exchange.hasDailyRate();
+    }, 0);
   }
 
   function parseDependenciesData(model) {
@@ -105,8 +112,9 @@ function PrimaryCashController ($location, $q, $modal, validate, AppCache, excha
       return;
     }
 
-    session.cashbox = cashbox;
+    session.cashbox  = cashbox;
     session.complete = true;
+    vm.loaderState   = 'loaded';
     return;
   }
 
