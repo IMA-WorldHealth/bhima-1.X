@@ -227,3 +227,67 @@ exports.removeFromProfitCenter = function (req, res, next) {
   .catch(next)
   .done();
 };
+
+/* Ambigious service categorisation */
+exports.costByPeriod = function (req, res, next) {
+  var sql =
+    'SELECT `account`.`id`, `account`.`account_number`, `account`.`account_txt` FROM `account` '+
+    'WHERE `account`.`cc_id`=' + sanitize.escape(req.params.cc_id) +
+    ' AND `account`.`account_type_id` <> 3';
+
+  function process(accounts) {
+    if(accounts.length === 0) {return {cost : 0};}
+    var availablechargeAccounts = accounts.filter(function(item) {
+      return item.account_number.toString().indexOf('6') === 0;
+    });
+
+
+    var cost = availablechargeAccounts.reduce(function (x, y) {
+      return x + (y.debit - y.credit);
+
+    }, 0);
+
+    return {cost : cost};
+  }
+
+  db.exec(sql)
+  .then(function (ans) {
+    synthetic('ccc_periodic', req.params.id_project, {cc_id : req.params.cc_id, start : req.params.start, end : req.params.end, accounts : ans}, function (err, data) {
+      if (err) { return next(err); }
+      res.send(process(data));
+    });
+  })
+  .catch(next)
+  .done();
+};
+
+exports.profitByPeriod = function (req, res, next) {
+  var sql =
+    'SELECT `account`.`id`, `account`.`account_number`, `account`.`account_txt` FROM `account` '+
+    'WHERE `account`.`pc_id`=' + sanitize.escape(req.params.pc_id) +
+    ' AND `account`.`account_type_id` <> 3';
+
+  function process(accounts) {
+    if(accounts.length === 0) {return {profit : 0};}
+    var availableprofitAccounts = accounts.filter(function(item) {
+      return item.account_number.toString().indexOf('7') === 0;
+    });
+
+    var profit = availableprofitAccounts.reduce(function (x, y) {
+      return x + (y.credit - y.debit);
+
+    }, 0);
+
+    return {profit : profit};
+  }
+
+  db.exec(sql)
+  .then(function (ans) {
+    synthetic('pcv_periodic', req.params.id_project, {pc_id : req.params.pc_id, start : req.params.start, end : req.params.end, accounts : ans}, function (err, data) {
+      if (err) { return next(err); }
+      res.send(process(data));
+    });
+  })
+  .catch(next)
+  .done();
+};

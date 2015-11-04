@@ -115,3 +115,18 @@ exports.getLanguages = function (req, res, next) {
   .catch(next)
   .done();
 };
+
+exports.authenticatePin = function (req, res, next) {
+  var decrypt = req.params.pin >> 5;
+  var sql = 'SELECT pin FROM user WHERE user.id = ' + req.session.user.id +
+    ' AND pin = \'' + decrypt + '\';';
+  db.exec(sql)
+  .then(function (rows) {
+    res.send({ authenticated : !!rows.length });
+  })
+  .catch(function (err) {
+    next(err);
+  })
+  .done();
+};
+

@@ -13,258 +13,17 @@ var cfg         = require('./../config/environment/server');
 // Route specific requirements
 var synthetic                  = require('./synthetic');
 //var depot                      = require('./depot')();
-var taxPayment                 = require('./taxPayment')();
+var taxPayment                 = require('./taxPayment');
 var donation                   = require('./postingDonation')();
 var cotisationPayment          = require('./cotisationPayment')();
 var promessePayment            = require('./postingPromessePayment')();
 var promesseCotisation         = require('./postingPromesseCotisation')();
 var promesseTax                = require('./postingPromesseTax')();
 
-// TODO delegate to configuration serving controller
-var errorCodes  = require('./../config/environment/errors.json');
-
 exports.exposeRoot = function (req, res, next) {
   /* jshint unused : false */
   // This is to preserve the /#/ path in the url
   res.sendfile(cfg.rootFile);
-};
-
-exports.currentProject = function (req, res, next) {
-  var sql =
-    'SELECT `project`.`id`, `project`.`name`, `project`.`abbr`, `project`.`enterprise_id`, `enterprise`.`currency_id`, `enterprise`.`location_id`, `enterprise`.`name` as \'enterprise_name\', `enterprise`.`phone`, `enterprise`.`email`, `village`.`name` as \'village\', `sector`.`name` as \'sector\' ' +
-    'FROM `project` JOIN `enterprise` ON `project`.`enterprise_id`=`enterprise`.`id` JOIN `village` ON `enterprise`.`location_id`=`village`.`uuid` JOIN `sector` ON `village`.`sector_uuid`=`sector`.`uuid` ' +
-    'WHERE `project`.`id`=' + req.session.project.id + ';';
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result[0]);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
-exports.pcashTransferSummers = function (req, res, next) {
-  var sql =
-    'SELECT `primary_cash`.`reference`, `primary_cash`.`date`, `primary_cash`.`cost`, `primary_cash`.`currency_id` '+
-    'FROM `primary_cash` WHERE `primary_cash`.`origin_id`= (SELECT DISTINCT `primary_cash_module`.`id` FROM `primary_cash_module` '+
-    'WHERE `primary_cash_module`.`text`=\'transfer\') ORDER BY date, reference DESC LIMIT 20;'; //FIX ME : this request doesn't sort
-  db.exec(sql)
-  .then(function () {
-    var d = []; //for now
-    res.send(d);
-  })
-  .catch(function (err) {
-    next(err);
-  })
-  .done();
-};
-
-exports.authenticatePin = function (req, res, next) {
-  var decrypt = req.params.pin >> 5;
-  var sql = 'SELECT pin FROM user WHERE user.id = ' + req.session.user.id +
-    ' AND pin = \'' + decrypt + '\';';
-  db.exec(sql)
-  .then(function (rows) {
-    res.send({ authenticated : !!rows.length });
-  })
-  .catch(function (err) {
-    next(err);
-  })
-  .done();
-};
-
-exports.lookupMaxTableId = function (req, res, next) {
-  var maxRequest, id = req.params.id,
-      table = req.params.table,
-      join = req.params.join;
-
-  maxRequest = 'SELECT MAX(' + id + ') FROM ';
-
-  maxRequest += '(SELECT MAX(' + id + ') AS `' + id + '` FROM ' + table;
-  if (join) {
-    maxRequest += ' UNION ALL SELECT MAX(' + id + ') AS `' + id + '` FROM ' + join + ')a;';
-  } else {
-    maxRequest += ')a;';
-  }
-
-  db.exec(maxRequest)
-  .then(function (ans) {
-    res.send({max: ans[0]['MAX(' + id + ')']});
-  })
-  .catch(function (err) {
-    res.send(500, {info: 'SQL', detail: err});
-    console.error(err);
-    return;
-  })
-  .done();
-};
-
-exports.listInExAccounts = function (req, res, next) {
-  var enterprise_id = sanitize.escape(req.params.id_enterprise);
-  var sql =
-    'SELECT temp.`id`, temp.`account_number`, temp.`account_txt`, temp.`classe`, account_type.`type`, ' +
-           'temp.`parent`, temp.`balance`' +  // , temp.`fixed`
-    ' FROM (' +
-        'SELECT account.id, account.account_number, account.account_txt, account.classe, account.account_type_id, ' +
-               'account.parent, period_total.credit - period_total.debit as balance ' +  // account.fixed,
-        'FROM account LEFT JOIN period_total ' +
-        'ON account.id=period_total.account_id ' +
-        'WHERE account.enterprise_id = ' + enterprise_id +
-        ' AND (account.classe IN (\'6\', \'7\') OR ((account.classe IN (\'1\', \'2\', \'5\') AND account.is_used_budget = 1) ))' +
-    ' ) ' +
-    'AS temp JOIN account_type ' +
-    'ON temp.account_type_id = account_type.id ' +
-    'ORDER BY CAST(temp.account_number AS CHAR(10));';
-
-  function process(accounts) {
-    var InExAccounts = accounts.filter(function(item) {
-      var account_6_7 = item.account_number.toString().indexOf('6') === 0 || item.account_number.toString().indexOf('7') === 0,
-        account_1_2_5 = item.account_number.toString().indexOf('1') === 0 || item.account_number.toString().indexOf('2') === 0 || item.account_number.toString().indexOf('5') === 0;
-      return account_6_7 || account_1_2_5;
-    });
-    return InExAccounts;
-  }
-
-  db.exec(sql)
-  .then(function (rows) {
-    res.send(process(rows));
-  })
-  .catch(next)
-  .done();
-};
-
-exports.listEnterpriseAccounts = function (req, res, next) {
-  var sql =
-    'SELECT account.id, account.account_number, account.account_txt FROM account ' +
-    'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
-      'AND account.parent <> 0 ' +
-      'AND account.is_ohada = 1 ' +
-      'AND account.cc_id IS NULL ' +
-      'AND account.account_type_id <> 3';
-
-  function process(accounts) {
-    var availablechargeAccounts = accounts.filter(function(item) {
-      return item.account_number.toString().indexOf('6') === 0;
-    });
-    return availablechargeAccounts;
-  }
-
-  db.exec(sql)
-  .then(function (rows) {
-    res.send(process(rows));
-  })
-  .catch(next)
-  .done();
-};
-
-exports.listEnterpriseProfitAccounts = function (req, res, next) {
-  var sql =
-    'SELECT account.id, account.account_number, account.account_txt FROM account ' +
-    'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
-      'AND account.parent <> 0 ' +
-      'AND account.is_ohada = 1 ' +
-      'AND account.pc_id IS NULL ' +
-      'AND account.account_type_id <> 3';
-
-  function process(accounts) {
-    var availablechargeAccounts = accounts.filter(function(item) {
-      return item.account_number.toString().indexOf('7') === 0;
-    });
-    return availablechargeAccounts;
-  }
-
-  db.exec(sql)
-  .then(function (rows) {
-    res.send(process(rows));
-  })
-  .catch(next)
-  .done();
-};
-
-exports.logVisit = function (req, res, next) {
-  var sql, id = req.params.patientId;
-  sql =
-    'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES (?, ?, ?);';
-
-  db.exec(sql, [uuid(), id, req.session.user.id])
-  .then(function () {
-    res.send();
-  })
-  .catch(next)
-  .done();
-
-};
-
-exports.cautionDebtor = function (req, res, next) {
-  var sql, debitor_uuid = sanitize.escape(req.params.debitor_uuid),
-      project_id = sanitize.escape(req.params.project_id);
-  //prochaine enterprise_id sera obtenue par requette via debitor_id
-
-  sql =
-    'SELECT `enterprise`.`currency_id` ' +
-    'FROM `enterprise` ' +
-    'WHERE `enterprise`.`id` = (SELECT `project`.`enterprise_id` FROM `project` WHERE `project`.`id`='+project_id+')';
-
-  db.exec(sql)
-  .then(function (ans) {
-    var currency_id = ans.pop().currency_id;
-    sql =
-      'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `t`.`debit_equiv` AS `debit`, ' +
-        '`t`.`credit_equiv` AS `credit`, `t`.`description`, `t`.`account_id` ' +
-        'FROM (' +
-          'SELECT `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`account_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, ' +
-            '`posting_journal`.`credit_equiv`, `posting_journal`.`deb_cred_uuid`, ' +
-            '`posting_journal`.`trans_id`, `posting_journal`.`description` ' +
-          'FROM `posting_journal` WHERE `posting_journal`.`deb_cred_uuid` = ' + debitor_uuid +
-        ' UNION ' +
-          'SELECT `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`account_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, ' +
-            '`general_ledger`.`credit_equiv`, `general_ledger`.`deb_cred_uuid`, ' +
-            '`general_ledger`.`trans_id`, `general_ledger`.`description` ' +
-          'FROM `general_ledger` WHERE `general_ledger`.`deb_cred_uuid` = ' + debitor_uuid +
-        ') AS `t` JOIN `account` ON `t`.`account_id` = `account`.`id` ' +
-        'WHERE `t`.`account_id` IN (' +
-          'SELECT `debitor_group`.`account_id` FROM `debitor_group` WHERE `debitor_group`.`uuid`= ' +
-          '(SELECT `group_uuid` FROM `debitor` WHERE `debitor`.`uuid`=' + debitor_uuid + ' LIMIT 1));';
-    return db.exec(sql);
-  })
-  .then(function (ans) {
-    res.send(ans);
-  })
-  .catch(function (err) {
-    next(err);
-  })
-  .done();
-};
-
-exports.accountBalance = function (req, res, next) {
-  // TODO : put this in a module!
-  var enterprise_id = req.params.id;
-
-  var sql =
-    'SELECT temp.`id`, temp.`account_number`, temp.`account_txt`, account_type.`type`, temp.`parent`, temp.`fixed`, temp.`balance` FROM ' +
-    '(' +
-      'SELECT account.id, account.account_number, account.account_txt, account.account_type_id, account.parent, account.fixed, period_total.credit - period_total.debit as balance ' +
-      'FROM account LEFT JOIN period_total ' +
-      'ON account.id=period_total.account_id ' +
-      'WHERE account.enterprise_id = ' + sanitize.escape(enterprise_id) +
-    ') ' +
-    'AS temp JOIN account_type ' +
-    'ON temp.account_type_id = account_type.id ' +
-    'ORDER BY temp.account_number;';
-
-  db.exec(sql)
-  .then(function (rows) {
-    res.send(rows);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
-exports.syntheticGoal = function (req, res, next) {
-  var query = decodeURIComponent(url.parse(req.url).query);
-  synthetic(req.params.goal, req.params.project_id, query, function (err, data) {
-    if (err) { return next(err); }
-    res.send(data);
-  });
 };
 
 exports.getPeriodByDate = function (req, res, next) {
@@ -353,55 +112,6 @@ exports.stockExpiringByDepot = function (req, res, next) {
   .done();
 };
 
-exports.listErrorCodes = function (req, res, next) {
-  /* jshint unused : false */
-  res.send(errorCodes);
-};
-
-exports.listIncomeAccounts = function (req, res, next) {
-  var sql ="SELECT id, enterprise_id, account_number, account_txt FROM account WHERE account_number LIKE '6%' AND account_type_id <> '3'";
-
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
-exports.availablePaymentPeriod = function (req, res, next) {
-  var sql = "SELECT p.id, p.config_tax_id, p.config_rubric_id, p.config_accounting_id, p.config_cotisation_id, p.label, p.dateFrom, p.dateTo, r.label AS RUBRIC, t.label AS TAX, a.label AS ACCOUNT, c.label AS COTISATION FROM paiement_period p, config_rubric r, config_tax t, config_accounting a, config_cotisation c WHERE p.config_tax_id = t.id AND p.config_rubric_id = r.id AND a.id=p.config_accounting_id AND p.config_cotisation_id = c.id ORDER BY p.id DESC";
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
-exports.listCommandes = function (req, res, next) {
-  var sql = "SELECT p.purchase_date AS date_commande"
-          + " FROM purchase p"
-          + " JOIN purchase_item z ON p.uuid=z.purchase_uuid "
-          + " JOIN inventory i ON z.inventory_uuid=i.uuid "
-          + " WHERE z.inventory_uuid=" + sanitize.escape(req.params.id);
-
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
-
-exports.submitTaxPayment = function (req, res, next) {
-  taxPayment.execute(req.body, req.session.user.id, function (err, ans) {
-    if (err) { return next(err); }
-    res.send({resp: ans});
-  });
-};
-
 exports.submitDonation = function (req, res, next) {
   donation.execute(req.body, req.session.user.id, function (err, ans) {
     if (err) { return next(err); }
@@ -409,49 +119,6 @@ exports.submitDonation = function (req, res, next) {
   });
 };
 
-exports.setTaxPayment = function (req, res, next) {
-  var sql = "UPDATE tax_paiement SET posted=1"
-          + " WHERE tax_paiement.paiement_uuid=" + sanitize.escape(req.body.paiement_uuid) + " AND tax_paiement.tax_id=" + sanitize.escape(req.body.tax_id);
-
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
-exports.costByPeriod = function (req, res, next) {
-  var sql =
-    'SELECT `account`.`id`, `account`.`account_number`, `account`.`account_txt` FROM `account` '+
-    'WHERE `account`.`cc_id`=' + sanitize.escape(req.params.cc_id) +
-    ' AND `account`.`account_type_id` <> 3';
-
-  function process(accounts) {
-    if(accounts.length === 0) {return {cost : 0};}
-    var availablechargeAccounts = accounts.filter(function(item) {
-      return item.account_number.toString().indexOf('6') === 0;
-    });
-
-
-    var cost = availablechargeAccounts.reduce(function (x, y) {
-      return x + (y.debit - y.credit);
-
-    }, 0);
-
-    return {cost : cost};
-  }
-
-  db.exec(sql)
-  .then(function (ans) {
-    synthetic('ccc_periodic', req.params.id_project, {cc_id : req.params.cc_id, start : req.params.start, end : req.params.end, accounts : ans}, function (err, data) {
-      if (err) { return next(err); }
-      res.send(process(data));
-    });
-  })
-  .catch(next)
-  .done();
-};
 
 exports.profitByPeriod = function (req, res, next) {
   var sql =
@@ -484,15 +151,6 @@ exports.profitByPeriod = function (req, res, next) {
   .done();
 };
 
-exports.listExpenseAccounts = function (req, res, next) {
-  var sql ="SELECT id, enterprise_id, account_number, account_txt FROM account WHERE account_number LIKE '7%' AND account_type_id <> '3'";
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
 
 exports.listTaxCurrency = function (req, res, next) {
   var sql = "SELECT t.id,t.taux,t.tranche_annuelle_debut,t.tranche_annuelle_fin,t.tranche_mensuelle_debut,t.tranche_mensuelle_fin,t.ecart_annuel,t.ecart_mensuel,t.impot_annuel,t.impot_mensuel,t.cumul_annuel,t.cumul_mensuel,t.currency_id,c.symbol FROM taxe_ipr t, currency c WHERE t.currency_id = c.id";

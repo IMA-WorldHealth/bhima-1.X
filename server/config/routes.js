@@ -45,7 +45,10 @@ var auth            = require('../controllers/auth'),
     budget          = require('../controllers/budget'),
     financeServices = require('../controllers/categorised/financeServices'),
     depreciatedInventory = require('../controllers/categorised/inventory_depreciate/inventory'),
-    employees       = require('../controllers/categorised/employees');
+    employees       = require('../controllers/categorised/employees'),
+    caution         = require('../controllers/categorised/caution'),
+    errors          = require('../controllers/categorised/errors'),
+    taxPayment      = require('../controllers/taxPayment');
 
 var patient         = require('../controllers/patient');
 
@@ -94,6 +97,7 @@ exports.initialise = function (app) {
   
   // TODO Transition to journal API (this route should be /journal)
   app.get('/journal_list/', journal.transactions);
+  
   
   // ledger routes
   // TODO : needs renaming
@@ -153,35 +157,25 @@ exports.initialise = function (app) {
   app.get('/hollyday_list/:pp/:employee_id', employees.listHolidays);
   app.get('/getCheckHollyday/', employees.checkHoliday);
   app.get('/getCheckOffday/', employees.checkOffday);
+ 
+  app.get('/visit/:patientId', patient.logVisit);
+  app.get('/caution/:debitor_uuid/:project_id', caution.debtor);
+  
+  app.get('/errorcodes', errors.listCodes);
+  
+  app.get('/getAccount6', accounts.listIncomeAccounts);
+  app.get('/getAccount7/', accounts.listExpenseAccounts);
+  
+  app.get('available_payment_period/', taxPayment.availablePaymentPeriod);
+  app.post('/payTax/', taxPayment.submit);
+  app.put('/setTaxPayment/', taxPayment.setTaxPayment);
+  
+  app.get('/cost_periodic/:id_project/:cc_id/:start/:end', financeServices.costByPeriod);
+  app.get('/profit_periodic/:id_project/:pc_id/:start/:end', financeServices.profitByPeriod);
   
   // TODO These routes all belong somewhere
-  app.get('/currentProject', uncategorised.currentProject);
-  app.get('/pcash_transfer_summers', uncategorised.pcashTransferSummers);
-  app.get('/editsession/authenticate/:pin', uncategorised.authenticatePin);
-  app.get('/max/:id/:table/:join?', uncategorised.lookupMaxTableId);
-  app.get('/InExAccounts/:id_enterprise/', uncategorised.listInExAccounts);
-  app.get('/availableAccounts/:id_enterprise/', uncategorised.listEnterpriseAccounts);
-  app.get('/availableAccounts_profit/:id_enterprise/', uncategorised.listEnterpriseProfitAccounts);
-  app.get('/visit/:patientId', uncategorised.logVisit);
-  app.get('/caution/:debitor_uuid/:project_id', uncategorised.cautionDebtor);
-  app.get('/account_balance/:id', uncategorised.accountBalance);
-  app.get('/synthetic/:goal/:project_id?', uncategorised.syntheticGoal);
-  app.get('/period/:date', uncategorised.getPeriodByDate);
-  app.get('/max_trans/:projectId', uncategorised.maxTransactionByProject);
-  app.get('/errorcodes', uncategorised.listErrorCodes);
-  app.get('/getAccount6', uncategorised.listIncomeAccounts);
-  app.get('/available_payment_period/', uncategorised.availablePaymentPeriod);
-  app.get('/getCommandes/:id', uncategorised.listCommandes);
-
-  // Added since route structure development
-  app.post('/payTax/', uncategorised.submitTaxPayment);
   app.post('/posting_donation/', uncategorised.submitDonation);
 
-  app.put('/setTaxPayment/', uncategorised.setTaxPayment);
-
-  app.get('/cost_periodic/:id_project/:cc_id/:start/:end', uncategorised.costByPeriod);
-  app.get('/profit_periodic/:id_project/:pc_id/:start/:end', uncategorised.profitByPeriod);
-  app.get('/getAccount7/', uncategorised.listExpenseAccounts);
   app.get('/taxe_ipr_currency/', uncategorised.listTaxCurrency);
   app.get('/getReportPayroll/', uncategorised.buildPayrollReport);
   app.get('/getDataPaiement/', uncategorised.listPaiementData);
@@ -284,6 +278,9 @@ exports.initialise = function (app) {
 
   // accounts controller
   app.get('/accounts', accounts.getAccounts);
+  app.get('/InExAccounts/:id_enterprise/', accounts.listInExAccounts);
+  app.get('/availableAccounts/:id_enterprise/', accounts.listEnterpriseAccounts);
+  app.get('/availableAccounts_profit/:id_enterprise/', accounts.listEnterpriseProfitAccounts);
 
   // search stuff
   app.get('/patient/:uuid', patient.searchUuid);
@@ -305,6 +302,7 @@ exports.initialise = function (app) {
   app.put('/users/:id', users.updateUser);
   app.get('/users', users.getUsers);
   app.delete('/users/:id', users.removeUser);
+  app.get('/editsession/authenticate/:pin', users.authenticatePin);
 
   // budget controller
   app.post('/budget/upload', multipart({ uploadDir: 'client/upload'}), budget.upload);
