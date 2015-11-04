@@ -1,8 +1,0 @@
-#home {}
-#home h1, #home h4 { margin: 0px; }
-#home #header { text-align: center; margin-bottom: 10px; }
-#home #header img {}
-#home #status { margin: 1px; margin-bottom: 10px; }
-#home #menu ul { list-style: none; padding: 0px; margin: 0px; }
-#home #menu ul li { list-style: none; }
-#home #menu .block { height: 200px; overflow: auto; }

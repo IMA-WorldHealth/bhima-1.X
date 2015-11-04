@@ -9,7 +9,7 @@ function bhimaconfig($routeProvider) {
   })
   .when('/login', {
     controller : 'LoginController as LoginCtrl',
-    templateUrl : 'partials/auth/login.html'
+    templateUrl : 'partials/login/login.html'
   })
   .when('/budgeting/edit', {
     controller: 'editAccountBudget',
@@ -75,7 +75,7 @@ function bhimaconfig($routeProvider) {
     controller: 'reference',
     templateUrl: 'partials/reference/reference.html'
   })
-  .when('/inventory/', {
+  .when('/inventory', {
     controller: 'inventory',
     templateUrl: '/partials/inventory/inventory.html'
   })
@@ -102,6 +102,14 @@ function bhimaconfig($routeProvider) {
   .when('/inventory/manifest', {
     controller : 'inventory.manifest',
     templateUrl : 'partials/inventory/manifest/manifest.html'
+  })
+  .when('/inventory/depot', {
+    controller : 'inventory.depot',
+    templateUrl : 'partials/inventory/depot/depot.html'
+  })
+  .when('/inventory/price_list', {
+    controller: 'PriceListController',
+    templateUrl: 'partials/price_list/pricelist.html'
   })
   .when('/patient/search/:patientID?', {
     controller: 'patientRecords',
@@ -131,33 +139,29 @@ function bhimaconfig($routeProvider) {
     controller: 'CreditorGroupController',
     templateUrl: 'partials/creditor/group/creditor_group.html'
   }).
-  when('/purchase/create/', {
+  when('/purchase/create', {
     controller: 'purchaseOrder',
-    templateUrl: 'partials/purchase/create/purchase.html'
+    templateUrl: 'partials/purchases/create/purchase.html'
   })
-  .when('/purchase/view/', {
+  .when('/purchase/view', {
     controller: 'purchaseRecords as purchaseRecordsCtrl',
-    templateUrl: 'partials/purchase/view/purchase_records.html'
+    templateUrl: 'partials/purchases/view/purchase_records.html'
   })
   .when('/purchase/view/:option', {
     controller: 'purchase_view',
-    templateUrl: 'partials/purchase/view/purchase_view.html'
+    templateUrl: 'partials/purchases/view/purchase_view.html'
   })
-  .when('/purchase/confirm/', {
+  .when('/purchase/confirm', {
     controller: 'PurchaseConfirm as purchaseConfirmCtrl',
-    templateUrl: 'partials/purchase/confirm/confirm.html'
+    templateUrl: 'partials/purchases/confirm/confirm.html'
   })
-  .when('/purchase/validate/', {
+  .when('/purchase/validate', {
     controller: 'purchaseValidate',
-    templateUrl: 'partials/purchase/validate/validate.html'
+    templateUrl: 'partials/purchases/validate/validate.html'
   })
-  .when('/purchase/authorization/', {
+  .when('/purchase/authorization', {
     controller: 'purchaseAuthorization',
-    templateUrl: 'partials/purchase/authorization/authorization.html'
-  })
-  .when('/inventory/price_list', {
-    controller: 'PriceListController',
-    templateUrl: 'partials/price_list/pricelist.html'
+    templateUrl: 'partials/purchases/authorization/authorization.html'
   })
   .when('/exchange_rate', {
     controller : 'ExchangeRateController as ExchangeCtrl',
@@ -187,11 +191,11 @@ function bhimaconfig($routeProvider) {
     controller: 'reportTransaction',
     templateUrl: 'partials/reports/transaction_report/transaction_report.html'
   })
-  .when('/reports/patient_standing/', {
+  .when('/reports/patient_standing', {
     controller : 'reportPatientStanding',
     templateUrl : '/partials/reports/patient_standing/patient_standing.html'
   })
-  .when('/reports/employee_standing/', {
+  .when('/reports/employee_standing', {
     controller : 'reportEmployeeStanding',
     templateUrl : '/partials/reports/employee_standing/employee_standing.html'
   })
@@ -203,7 +207,7 @@ function bhimaconfig($routeProvider) {
     controller: 'summary',
     templateUrl: 'partials/reports/summary/summary.html'
   })
-  .when('/reports/debtor_aging/', {
+  .when('/reports/debtor_aging', {
     controller: 'reportDebitorAging',
     templateUrl: 'partials/reports/debtor_aging/debtor_aging.html'
   })
@@ -211,23 +215,23 @@ function bhimaconfig($routeProvider) {
     controller: 'accountStatement',
     templateUrl: 'partials/reports/account_statement/account_statement.html'
   })
-  .when('/reports/income_expensive/', {
+  .when('/reports/income_expensive', {
     controller: 'reportIncomeExpensive',
     templateUrl: 'partials/reports/income_expensive/income_expensive.html'
   })
-  .when('/reports/service_exploitation/', {
+  .when('/reports/service_exploitation', {
     controller: 'report.service_exploitation',
     templateUrl: 'partials/reports/service_exploitation/service_exploitation.html'
   })
-  .when('/reports/global_transaction/', {
+  .when('/reports/global_transaction', {
     controller: 'ReportGlobalTransactionController as ReportCtrl',
     templateUrl: 'partials/reports/global_transaction/global_transaction.html'
   })
-  .when('/reports/balance_mensuelle/', {
+  .when('/reports/balance_mensuelle', {
     controller: 'ReportBalanceMensuelleController as ReportCtrl',
     templateUrl: 'partials/reports/balance_mensuelle/balance_mensuelle.html'
   })
-  .when('/reports/donation/', {
+  .when('/reports/donation', {
     controller: 'report.donation',
     templateUrl: 'partials/reports/donation/donation.html'
   })
@@ -255,11 +259,11 @@ function bhimaconfig($routeProvider) {
     controller: 'settings',
     templateUrl: 'partials/settings/settings.html'
   })
-  .when('/patient/group/assignment/', {
+  .when('/patient/group/assignment', {
     controller: 'AssignPatientGroupController',
     templateUrl: 'partials/patient/group/assignment.html'
   })
-  .when('/reports/chart_of_accounts/', {
+  .when('/reports/chart_of_accounts', {
     controller: 'ReportChartOfAccountsController',
     templateUrl: 'partials/reports/chart_of_accounts/chart.html'
   })
@@ -267,59 +271,59 @@ function bhimaconfig($routeProvider) {
     controller: 'receipts',
     templateUrl: 'partials/receipts/receipts.html'
   })
-  .when('/credit_note/:invoiceId?/', {
+  .when('/credit_note/:invoiceId?', {
     controller: 'CreditNoteController as NoteCtrl',
     templateUrl: 'partials/credit_note/credit_note.html'
   })
-  .when('/cash_discard/:receiptId?/', {
+  .when('/cash_discard/:receiptId?', {
     controller: 'cashDiscard',
     templateUrl: 'partials/cash_discard/cash_discard.html'
   })
-  .when('/cost_center/', {
+  .when('/cost_center', {
     controller: 'CostCenterController as CenterCtrl',
     templateUrl: 'partials/cost_center/cost_center.html'
   })
-  .when('/profit_center/', {
+  .when('/profit_center', {
     controller: 'ProfitCenterController as CenterCtrl',
     templateUrl: 'partials/profit_center/profit_center.html'
   })
-  .when('/profit_center/center/', {
+  .when('/profit_center/center', {
     controller: 'AnalysisProfitCenterController as CenterCtrl',
     templateUrl: 'partials/profit_center/center/analysis_profit_center.html'
   })
-  .when('/cost_center/center/', {
+  .when('/cost_center/center', {
     controller: 'AnalysisCostCenterController as CenterCtrl',
     templateUrl: 'partials/cost_center/center/analysis_center.html'
   })
-  .when('/cost_center/assigning/', {
+  .when('/cost_center/assigning', {
     controller: 'CostCenterAssignmentController',
     templateUrl: 'partials/cost_center/assigning/assigning.html'
   })
-  .when('/cost_center/allocation/', {
+  .when('/cost_center/allocation', {
     controller: 'CostCenterAllocationController as CenterCtrl',
     templateUrl: 'partials/cost_center/allocation/allocation.html'
   })
-  .when('/profit_center/allocation/', {
+  .when('/profit_center/allocation', {
     controller: 'ProfitCenterAllocationController as ProfitCtrl',
     templateUrl: 'partials/profit_center/allocation/allocation.html'
   })
-  .when('/section_bilan/', {
+  .when('/section_bilan', {
     controller : 'sectionBilan',
     templateUrl : 'partials/section_bilan/section_bilan.html'
   })
-  .when('/section_resultat/', {
+  .when('/section_resultat', {
     controller : 'sectionResultat',
     templateUrl : 'partials/section_resultat/section_resultat.html'
   })
-  .when('/variation_exploitation/', {
+  .when('/variation_exploitation', {
     controller : 'variationExploitationController as variationCtrl',
     templateUrl : 'partials/reports_proposed/variation_exploitation/variation_exploitation.html'
   })
-  .when('/patient/groups/', {
+  .when('/patient/groups', {
     controller: 'patientGroup',
     templateUrl: 'partials/patient/group/groups.html'
   })
-  .when('/group_invoice/', {
+  .when('/group_invoice', {
     controller : 'GroupInvoiceController as InvoiceCtrl',
     templateUrl : 'partials/group_invoice/group_invoice.html'
   })
@@ -335,7 +339,7 @@ function bhimaconfig($routeProvider) {
     controller: 'reportCashPayments',
     templateUrl: 'partials/reports/cash_payments/cash_payments.html'
   })
-  .when('/patient/debtor/', {
+  .when('/patient/debtor', {
     controller : 'group.debtor.reassignment',
     templateUrl : 'partials/patient/debtor/swap.html'
   })
@@ -395,9 +399,9 @@ function bhimaconfig($routeProvider) {
     controller : 'TrialBalancePrintController as PrintCtrl',
     templateUrl : 'partials/journal/trialbalance/print.html'
   })
-  .when('/employee', {
+  .when('/employees', {
     controller : 'EmployeeController as EmployeeCtrl',
-    templateUrl : 'partials/employee/employee.html'
+    templateUrl : 'partials/employees/employees.html'
   })
   .when('/service', {
     controller : 'ServicesController',
@@ -423,7 +427,7 @@ function bhimaconfig($routeProvider) {
     controller : 'PrimaryCashReturnController as ReturnCtrl',
     templateUrl : 'partials/primary_cash/expense/cash_return.html'
   })
-  .when('/primary_cash/expense/multi_payroll/', {
+  .when('/primary_cash/expense/multi_payroll', {
     controller : 'MultiPayrollController as PayrollCtrl',
     templateUrl : 'partials/primary_cash/expense/multi_payroll.html'
   })
@@ -450,10 +454,6 @@ function bhimaconfig($routeProvider) {
   .when('/primary_cash/expense/payday_advance/:cashbox', {
     controller : 'primary_cash.payday_advance',
     templateUrl : 'partials/primary_cash/expense/payday_advance.html'
-  })
-  .when('/inventory/depot', {
-    controller : 'inventory.depot',
-    templateUrl : 'partials/inventory/depot/depot.html'
   })
 
   /* depots */
@@ -489,13 +489,16 @@ function bhimaconfig($routeProvider) {
     controller : 'stock.integration',
     templateUrl : 'partials/stock/integration/integration.html'
   })
+  .when('/depots/:uuid/search', {
+    controller : 'DepotStockSearchController',
+    templateUrl: 'partials/depots/stock_search/search.html'
+  })
 
-  // depot reports
   .when('/depots/:depotId/reports/distributions/:type', {
     controller : 'DepotStockDistributionsController as DistributionsCtrl',
     templateUrl : 'partials/depots/reports/distributions/distributions.html'
   })
-  .when('/reports/distributions/', {
+  .when('/reports/distributions', {
     controller : 'ReportDepotDistributionsController as ReportCtrl',
     templateUrl : 'partials/reports/distributions/distributions.html'
   })
@@ -504,13 +507,8 @@ function bhimaconfig($routeProvider) {
     controller : 'stock.entry.report',
     templateUrl : 'partials/stock/entry/report.html'
   })
-  .when('/stock/search/', {
-    controller : 'stock.search',
-    templateUrl: 'partials/stock/search/search.html'
-  })
-
   // TODO -- these should probably have an /inventory/ or /depot/ prefix
-  .when('/stock/count/', {
+  .when('/stock/count', {
     controller : 'stock.count',
     templateUrl : 'partials/stock/count/count.html'
   })
@@ -518,7 +516,7 @@ function bhimaconfig($routeProvider) {
     controller : 'stock.expiring',
     templateUrl : 'partials/stock/expiring/expiring.html'
   })
-  .when('/donation/confirm_donation/', {
+  .when('/donation/confirm_donation', {
     controller : 'ConfirmDonationController as ConfirmCtrl',
     templateUrl : 'partials/stock/donation_management/confirm_donation.html'
   })
@@ -533,11 +531,11 @@ function bhimaconfig($routeProvider) {
 
 
   // TODO -- these should be namespaced/prefixed by depot
-  .when('/stock/integration_confirm/', {
+  .when('/stock/integration_confirm', {
     controller : 'ConfirmStockIntegrationController as ConfirmCtrl',
     templateUrl : 'partials/stock/integration/confirm_integration/confirm_integration.html'
   })
-  .when('/reports/loss_record/', {
+  .when('/reports/loss_record', {
     controller : 'loss_record',
     templateUrl : 'partials/reports/loss_record/loss_record.html'
   })
@@ -549,7 +547,7 @@ function bhimaconfig($routeProvider) {
     controller : 'StockDashboardController as StockDashCtrl',
     templateUrl : 'partials/stock/dashboard/dashboard.html'
   })
-  .when('/snis/', {
+  .when('/snis', {
     controller : 'snis',
     templateUrl : 'partials/snis/snis.html'
   })
@@ -561,103 +559,103 @@ function bhimaconfig($routeProvider) {
     controller : 'snis.edit_report',
     templateUrl : 'partials/snis/snis_edit_report.html'
   })
-  .when('/purchase_menu/', {
+  .when('/purchase_menu', {
     controller : 'purchase.menu',
-    templateUrl : 'partials/purchase/purchase_menu.html'
+    templateUrl : 'partials/purchases/purchase_menu.html'
   })
-  .when('/reports/income_report/', {
+  .when('/reports/income_report', {
     controller : 'primary_cash.incomeReport',
     templateUrl : 'partials/reports/primary_cash/income/income_report.html'
   })
-  .when('/reports/expense_report/', {
+  .when('/reports/expense_report', {
     controller : 'primary_cash.expenseReport',
     templateUrl : 'partials/reports/primary_cash/expense/expense_report.html'
   })
-  .when('/reports/stock_report/', {
+  .when('/reports/stock_report', {
     controller : 'stock_report',
     templateUrl : 'partials/reports/stock/stock_report.html'
   })
-  .when('/grade_employers/', {
+  .when('/employees/grades', {
     controller : 'EmployeeGradeController',
-    templateUrl : 'partials/grade_employers/grade_employers.html'
+    templateUrl : 'partials/employees/grades/grades.html'
   })
-  .when('/taxes_management/', {
+  .when('/taxes_management', {
     controller : 'taxes_management.menu',
     templateUrl : 'partials/taxe/taxe_management.html'
   })
-  .when('/cotisations_management/', {
+  .when('/cotisations_management', {
     controller : 'cotisations_management.menu',
     templateUrl : 'partials/cotisation/cotisation_management.html'
   })
-  .when('/taxes_management/create/', {
+  .when('/taxes_management/create', {
     controller : 'CreateTaxController',
     templateUrl : 'partials/taxe/create/create_taxe.html'
   })
-  .when('/cotisations_management/create/', {
+  .when('/cotisations_management/create', {
     controller : 'cotisations_management.create',
     templateUrl : 'partials/cotisation/create/create_cotisation.html'
   })
-  .when('/taxes_management/ipr/', {
+  .when('/taxes_management/ipr', {
     controller : 'taxes_management.ipr',
     templateUrl : 'partials/taxe/ipr/ipr.html'
   })
-  .when('/taxes_management/config_tax/', {
+  .when('/taxes_management/config_tax', {
     controller : 'config_tax',
     templateUrl : 'partials/taxe/config_tax/config_tax.html'
   })
-  .when('/cotisations_management/config_cotisation/', {
+  .when('/cotisations_management/config_cotisation', {
     controller : 'config_cotisation',
     templateUrl : 'partials/cotisation/config_cotisation/config_cotisation.html'
   })
-  .when('/offday_management/', {
+  .when('/employees/offdays', {
     controller : 'OffdayController as OffdayCtrl',
-    templateUrl : 'partials/offdays/offdays.html'
+    templateUrl : 'partials/employees/offdays/offdays.html'
   })
-  .when('/hollyday_management/', {
+  .when('/employees/holidays', {
     controller : 'HolidayController as HolidayCtrl',
-    templateUrl : 'partials/hollydays/hollydays.html'
+    templateUrl : 'partials/employees/holidays/holidays.html'
   })
-  .when('/payment_period/', {
+  .when('/payment_period', {
     controller : 'PaymentPeriodController',
-    templateUrl : 'partials/payment_period/payment_period.html'
+    templateUrl : 'partials/payroll/payment_period/payment_period.html'
   })
-  .when('/rubric_management/', {
+  .when('/rubric_management', {
     controller : 'rubric_management.menu',
-    templateUrl : 'partials/rubric/rubric_management.html'
+    templateUrl : 'partials/payroll/rubrics/rubric_management.html'
   })
-  .when('/rubric_management/config_rubric/', {
+  .when('/rubric_management/config_rubric', {
     controller : 'config_rubric',
-    templateUrl : 'partials/rubric/config_rubric/config_rubric.html'
+    templateUrl : 'partials/payroll/rubrics/config_rubric/config_rubric.html'
   })
-  .when('/rubric_management/rubriques_payroll/', {
+  .when('/rubric_management/rubriques_payroll', {
     controller : 'RubriquePayrollController as RubriqueCtrl',
-    templateUrl : 'partials/rubric/rubriques_payroll/rubriques_payroll.html'
+    templateUrl : 'partials/payroll/rubric/rubriques_payroll/rubriques_payroll.html'
   })
-  .when('/reports/daily_consumption/', {
+  .when('/reports/daily_consumption', {
     controller : 'ReportDailyConsumptionController as ReportCtrl',
     templateUrl : 'partials/reports/daily_consumption/daily_consumption.html'
   })
-  .when('/config_accounting/', {
+  .when('/config_accounting', {
     controller: 'ConfigAccountingController as ConfigAccountCtrl',
-    templateUrl: 'partials/config_accounting/config_accounting.html'
+    templateUrl: 'partials/payroll/config_accounting/config_accounting.html'
   })
-  .when('/reports/payroll_report/', {
+  .when('/reports/payroll_report', {
     controller : 'payroll_report',
     templateUrl : 'partials/reports/payroll_report/payroll_report.html'
   })
-  .when('/reports/cotisation_payment/', {
+  .when('/reports/cotisation_payment', {
     controller : 'cotisation_payment',
     templateUrl : 'partials/reports/cotisation_payment/cotisation_payment.html'
   })
-  .when('/reports/salary_payment/', {
+  .when('/reports/salary_payment', {
     controller : 'salary_payment',
     templateUrl : 'partials/reports/salary_payment/salary_payment.html'
   })
-  .when('/reports/taxes_payment/', {
+  .when('/reports/taxes_payment', {
     controller : 'taxes_payment',
     templateUrl : 'partials/reports/taxes_payment/taxes_payment.html'
   })
-  .when('/reports/stock_status/', {
+  .when('/reports/stock_status', {
     controller : 'StockStatusReportController as StatusCtrl',
     templateUrl : 'partials/reports/stock_status/stock_status.html'
   })
@@ -665,11 +663,11 @@ function bhimaconfig($routeProvider) {
     controller : 'FonctionController',
     templateUrl : 'partials/fonction/fonction.html'
   })
-  .when('/donor_management/', {
+  .when('/donors', {
     controller: 'DonorManagementController',
-    templateUrl: '/partials/donor_management/donor_management.html'
+    templateUrl: '/partials/inventory/donors/donors.html'
   })
-  .when('/reports/operating_account/', {
+  .when('/reports/operating_account', {
     controller : 'OperatingAccountController as OperatingCtrl',
     templateUrl : 'partials/reports/operating_account/operating_account.html'
   })
@@ -694,19 +692,19 @@ function bhimaconfig($routeProvider) {
     controller : 'configureInvoice',
     templateUrl : 'partials/reports_proposed/invoice/invoice.html'
   })
-  .when('/reports/bilan/', {
+  .when('/reports/bilan', {
     controller : 'configureBilan',
     templateUrl : 'partials/reports_proposed/bilan/bilan.html'
   })
-  .when('/reports/debitor_group_report/', {
+  .when('/reports/debitor_group_report', {
     controller : 'DebtorGroupReportController as debtorGroupReportCtrl',
     templateUrl : 'partials/reports_proposed/debitor_group_report/debitor_group_report.html'
   })
-  .when('/reports/result_account/', {
+  .when('/reports/result_account', {
     controller : 'configureResult',
     templateUrl : 'partials/reports_proposed/result_account/result_account.html'
   })
-  .when('/reports/balance/', {
+  .when('/reports/balance', {
     controller : 'configureBalance',
     templateUrl : 'partials/reports_proposed/balance/balance.html'
   })
@@ -714,21 +712,13 @@ function bhimaconfig($routeProvider) {
     controller : 'DebtorGroupAnnualReportController as AnnualCtrl',
     templateUrl : 'partials/reports_proposed/debtor_group/annual.html'
   })
-  .when('/reports/grand_livre/', {
+  .when('/reports/grand_livre', {
     controller : 'configureGrandLivre',
     templateUrl : 'partials/reports_proposed/grand_livre/grand_livre.html'
   })
-  .when('/reports/employee_state/', {
+  .when('/reports/employee_state', {
     controller : 'configureEmployeeState',
     templateUrl : 'partials/reports_proposed/employee_state/employee_state.html'
-  })
-  .when('/exchangeRateModal/', {
-    controller : 'exchangeRateModal',
-    templateUrl : 'partials/exchangeRateModal/exchangeRateModal.html'
-  })
-  .when('/justifyModal/', {
-    controller : 'justifyModal',
-    templateUrl : 'partials/cash/justify_modal.html'
   })
   .when('/dashboards/finance', {
     templateUrl : 'partials/dashboard/finance.html'
