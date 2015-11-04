@@ -179,3 +179,26 @@ exports.formatLotsForExpiration = function (req, res, next) {
   .catch(function (err) { next(err); })
   .done();
 };
+
+exports.getStockIntegration = function (req, res, next) {
+  'use strict';
+
+  var sql;
+
+  sql =
+    'SELECT DISTINCT p.uuid, CONCAT(pr.abbr, p.reference) AS reference, ' +
+      'u.first, u.last, p.purchase_date, p.note, m.document_id ' +
+    'FROM purchase AS p ' +
+    'JOIN stock AS s ON s.purchase_order_uuid = p.uuid ' +
+    'JOIN movement AS m ON s.tracking_number = m.tracking_number ' +
+    'JOIN project AS pr ON pr.id = p.project_id ' +
+    'JOIN user AS u ON u.id = p.emitter_id ' +
+    'WHERE p.confirmed = 0 AND p.is_integration = 1;';
+
+  db.exec(sql)
+  .then(function (data) {
+    res.status(200).json(data);
+  })
+  .catch(next)
+  .done();
+};

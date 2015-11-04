@@ -26,7 +26,6 @@ var ledger          = require('../controllers/ledger');
 var fiscal          = require('../controllers/fiscal');
 var report          = require('../controllers/report');
 var tree            = require('../controllers/tree');
-var uncategorised   = require('../controllers/uncategorised');
 var compileReport   = require('../controllers/reports_proposed/reports.js');
 var snis            = require('../controllers/snis');
 var extra           = require('../controllers/extraPayment');
@@ -45,12 +44,14 @@ var auth            = require('../controllers/auth'),
     budget          = require('../controllers/budget'),
     financeServices = require('../controllers/categorised/financeServices'),
     depreciatedInventory = require('../controllers/categorised/inventory_depreciate'),
+    depreciatedReports = require('../controllers/categorised/reports_depreciate'),
     employees       = require('../controllers/categorised/employees'),
     caution         = require('../controllers/categorised/caution'),
     errors          = require('../controllers/categorised/errors'),
     taxPayment      = require('../controllers/taxPayment'),
-    depreciatedReports = require('../controllers/categorised/reports_depreciate'),
-    payroll         = require('../controllers/categorised/payroll');
+    payroll         = require('../controllers/categorised/payroll'),
+    donations       = require('../controllers/donations'),
+    subsidies       = require('../controllers/categorised/subsidies');
 
 var patient         = require('../controllers/patient');
 
@@ -153,6 +154,7 @@ exports.initialise = function (app) {
   app.get('/monthlyConsumptions/:inventory_uuid/:nb', depreciatedInventory.listMonthlyConsumption);
   app.get('/getConsumptionTrackingNumber/', depreciatedInventory.listConsumptionByTrackingNumber);
   app.get('/getMonthsBeforeExpiration/:id', depreciatedInventory.formatLotsForExpiration);
+  app.get('/stockIntegration/', depreciatedInventory.getStockIntegration);
 
   // Employee management 
   app.get('/employee_list/', employees.list);
@@ -167,7 +169,10 @@ exports.initialise = function (app) {
   
   app.get('/getAccount6', accounts.listIncomeAccounts);
   app.get('/getAccount7/', accounts.listExpenseAccounts);
+  app.get('/getClassSolde/:account_class/:fiscal_year', accounts.getClassSolde);
+  app.get('/getTypeSolde/:fiscal_year/:account_type_id/:is_charge', accounts.getTypeSolde);
   
+
   app.get('available_payment_period/', taxPayment.availablePaymentPeriod);
   app.post('/payTax/', taxPayment.submit);
   app.put('/setTaxPayment/', taxPayment.setTaxPayment);
@@ -175,6 +180,7 @@ exports.initialise = function (app) {
   app.get('/cost_periodic/:id_project/:cc_id/:start/:end', financeServices.costByPeriod);
   app.get('/profit_periodic/:id_project/:pc_id/:start/:end', financeServices.profitByPeriod);
  
+  // TODO Remove or upgrade (model in database) every report from report_depreciate
   app.get('/getDistinctInventories/', depreciatedReports.listDistinctInventory);
   app.get('/getReportPayroll/', depreciatedReports.buildPayrollReport);
  
@@ -182,36 +188,19 @@ exports.initialise = function (app) {
   app.get('/getDataPaiement/', payroll.listPaiementData);
   app.get('/getEmployeePayment/:id', payroll.listPaymentByEmployee);
   app.get('/getEnterprisePayment/:employee_id', payroll.listPaymentByEnterprise);
+  app.post('/payCotisation/', payroll.payCotisation);
+  app.post('/posting_promesse_payment/', payroll.payPromesse);
+  app.post('/posting_promesse_cotisation/', payroll.payPromesseCotisation);
+  app.post('/posting_promesse_tax/', payroll.payPromesseTax);
+  app.put('/setCotisationPayment/', payroll.setCotisationPayment);
+  app.get('/getEmployeeCotisationPayment/:id', payroll.listEmployeeCotisationPayments);
+  app.get('/taxe_ipr_currency/', payroll.listTaxCurrency);
   
-  // TODO Remove or upgrade (model in database) every report from report_depreciate
-
-  // TODO These routes all belong somewhere
-  app.post('/posting_donation/', uncategorised.submitDonation);
-
-  app.get('/taxe_ipr_currency/', uncategorised.listTaxCurrency);
+  app.post('/posting_donation/', donations.post);
   
-    // Added since server structure <--> v1 merge
-  app.post('/payCotisation/', uncategorised.payCotisation);
-  app.post('/posting_promesse_payment/', uncategorised.payPromesse);
-  app.post('/posting_promesse_cotisation/', uncategorised.payPromesseCotisation);
-  app.post('/posting_promesse_tax/', uncategorised.payPromesseTax);
-
-  app.put('/setCotisationPayment/', uncategorised.setCotisationPayment);
-
-  app.get('/getEmployeeCotisationPayment/:id', uncategorised.listEmployeeCotisationPayments);
-
-  app.get('/getSubsidies/', uncategorised.listSubsidies);
-
-  // Fiscal Year Resultat
-  app.get('/getClassSolde/:account_class/:fiscal_year', uncategorised.getClassSolde);
-  app.get('/getTypeSolde/:fiscal_year/:account_type_id/:is_charge', uncategorised.getTypeSolde);
-  
-  // Stock integration
-  app.get('/stockIntegration/', uncategorised.getStockIntegration);
-
+  app.get('/getSubsidies/', subsidies.list);
 
   /*  Inventory and Stock Managment */
-
   app.get('/inventory/metadata', inventory.getInventoryItems);
   app.get('/inventory/:uuid/metadata', inventory.getInventoryItemsById);
 
