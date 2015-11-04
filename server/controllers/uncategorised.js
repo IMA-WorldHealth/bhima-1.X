@@ -29,80 +29,6 @@ exports.exposeRoot = function (req, res, next) {
   res.sendfile(cfg.rootFile);
 };
 
-exports.listEmployees = function (req, res, next) {
-  var sql =
-    "SELECT " +
-    "`employee`.`id`, `employee`.`code` AS `code_employee`, `employee`.`prenom`, `employee`.`name`, " +
-    "`employee`.`postnom`, `employee`.`sexe`, `employee`.`dob`, `employee`.`date_embauche`, `employee`.`service_id`, " +
-    "`employee`.`nb_spouse`, `employee`.`nb_enfant`, `employee`.`grade_id`, `employee`.`locked`, `grade`.`text`, `grade`.`basic_salary`, " +
-    "`fonction`.`id` AS `fonction_id`, `fonction`.`fonction_txt`, " +
-    "`employee`.`phone`, `employee`.`email`, `employee`.`adresse`, `employee`.`bank`, `employee`.`bank_account`, `employee`.`daily_salary`, `employee`.`location_id`, " +
-    "`grade`.`code` AS `code_grade`, `debitor`.`uuid` as `debitor_uuid`, `debitor`.`text` AS `debitor_text`,`debitor`.`group_uuid` as `debitor_group_uuid`, " +
-    "`creditor`.`uuid` as `creditor_uuid`, `creditor`.`text` AS `creditor_text`, `creditor`.`group_uuid` as `creditor_group_uuid`, `creditor_group`.`account_id` " +
-    "FROM `employee` " +
-    " JOIN `grade` ON `employee`.`grade_id` = `grade`.`uuid` " +
-    " JOIN `fonction` ON `employee`.`fonction_id` = `fonction`.`id` " +
-    " JOIN `debitor` ON `employee`.`debitor_uuid` = `debitor`.`uuid` " +
-    " JOIN `creditor` ON `employee`.`creditor_uuid` = `creditor`.`uuid` " +
-    " JOIN `creditor_group` ON `creditor_group`.`uuid` = `creditor`.`group_uuid` " +
-    " ORDER BY employee.name ASC, employee.postnom ASC, employee.prenom ASC";
-
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
-exports.listJournal = function (req, res, next) {
-  var sql =
-    "SELECT `posting_journal`.`uuid`, `posting_journal`.`fiscal_year_id`, `posting_journal`.`period_id`, " +
-    "`posting_journal`.`trans_id`, `posting_journal`.`trans_date`, `posting_journal`.`doc_num`, " +
-    "`posting_journal`.`description`, `posting_journal`.`account_id`, `posting_journal`.`debit`, " +
-    "`posting_journal`.`credit`, `posting_journal`.`currency_id`, `posting_journal`.`deb_cred_uuid`, " +
-    "`posting_journal`.`deb_cred_type`, `posting_journal`.`inv_po_id`, " +
-    "`posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`currency_id`, " +
-    "`posting_journal`.`comment`, `posting_journal`.`user_id`, `posting_journal`.`pc_id`, " +
-    "`posting_journal`.`cc_id`, `account`.`account_number`, `user`.`first`, CONCAT(DATE_FORMAT(period.period_start, '%m-%Y'), '/', DATE_FORMAT(period.period_stop, '%m-%Y')) AS period, " +
-    "`user`.`last`, `currency`.`symbol`, `cost_center`.`text` AS `cc`, " +
-    "`profit_center`.`text` AS `pc` " +
-    "FROM `posting_journal` LEFT JOIN `account` ON `posting_journal`.`account_id`=`account`.`id` " +
-    "JOIN `user` ON `posting_journal`.`user_id`=`user`.`id` " +
-    "JOIN `currency` ON `posting_journal`.`currency_id`=`currency`.`id` " +
-    "JOIN period ON `posting_journal`.`period_id` = `period`.`id` " +
-    "LEFT JOIN `cost_center` ON `posting_journal`.`cc_id`=`cost_center`.`id` " +
-    "LEFT JOIN `profit_center` ON `posting_journal`.`pc_id`=`profit_center`.`id`"
-
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
-exports.listHolidays = function (req, res, next) {
-  var pp = JSON.parse(req.params.pp);
-  var sql =
-    "SELECT `hollyday`.`id`, `hollyday`.`label`, `hollyday`.`dateFrom`, `hollyday`.`percentage`, `hollyday`.`dateTo` " +
-    "FROM `hollyday` WHERE " +
-    "((`hollyday`.`dateFrom`>=" + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + " AND " +
-    "`hollyday`.`dateFrom`<=" + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ") OR " +
-    "(`hollyday`.`dateTo`>=" + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + " AND " +
-    "`hollyday`.`dateTo`<=" + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ") OR " +
-    "(`hollyday`.`dateFrom`<=" + sanitize.escape(util.toMysqlDate(pp.dateFrom)) + " AND " +
-    "`hollyday`.`dateTo`>=" + sanitize.escape(util.toMysqlDate(pp.dateTo)) + ")) AND " +
-    "`hollyday`.`employee_id`=" + sanitize.escape(req.params.employee_id) + ";";
-
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
 exports.currentProject = function (req, res, next) {
   var sql =
     'SELECT `project`.`id`, `project`.`name`, `project`.`abbr`, `project`.`enterprise_id`, `enterprise`.`currency_id`, `enterprise`.`location_id`, `enterprise`.`name` as \'enterprise_name\', `enterprise`.`phone`, `enterprise`.`email`, `village`.`name` as \'village\', `sector`.`name` as \'sector\' ' +
@@ -254,34 +180,6 @@ exports.listEnterpriseProfitAccounts = function (req, res, next) {
   .done();
 };
 
-exports.checkHoliday = function (req, res, next) {
-  var sql = "SELECT id, employee_id, label, dateTo, percentage, dateFrom FROM hollyday WHERE employee_id = '"+ req.query.employee_id +"'"
-          + " AND ((dateFrom >= '" + req.query.dateFrom +"') OR (dateTo >= '" + req.query.dateFrom + "') OR (dateFrom >= '"+ req.query.dateTo +"')"
-          + " OR (dateTo >= '" + req.query.dateTo + "'))"
-          + " AND ((dateFrom <= '" + req.query.dateFrom +"') OR (dateTo <= '" + req.query.dateFrom + "') OR (dateFrom <= '"+ req.query.dateTo +"')"
-          + " OR (dateTo <= '" + req.query.dateTo + "'))"
-  if (req.query.line !== ""){
-    sql += " AND id <> '" + req.query.line + "'";
-  }
-
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
-exports.checkOffday = function (req, res, next) {
-  var sql ="SELECT * FROM offday WHERE date = '" + req.query.date + "' AND id <> '" + req.query.id +"'";
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
 exports.logVisit = function (req, res, next) {
   var sql, id = req.params.patientId;
   sql =
@@ -427,10 +325,6 @@ exports.maxTransactionByProject = function (req, res, next) {
   */
 };
 
-exports.printJournal = function (req, res, next) {
-  res.send('Under Contruction');
-};
-
 exports.stockExpiringByDepot = function (req, res, next) {
   //TODO : put it in a separate file
   var genSql =
@@ -500,19 +394,6 @@ exports.listCommandes = function (req, res, next) {
   .done();
 };
 
-exports.formatLotsForExpiration = function (req, res, next) {
-  var sql = "SELECT s.tracking_number, s.lot_number, FLOOR(DATEDIFF(s.expiration_date,CURDATE())/30) AS months_before_expiration"
-          + " FROM stock s"
-          + " JOIN inventory i ON s.inventory_uuid=i.uuid "
-          + " WHERE s.inventory_uuid=" + sanitize.escape(req.params.id);
-
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
 
 exports.submitTaxPayment = function (req, res, next) {
   taxPayment.execute(req.body, req.session.user.id, function (err, ans) {

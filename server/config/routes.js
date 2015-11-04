@@ -44,7 +44,8 @@ var auth            = require('../controllers/auth'),
     depot           = require('../controllers/depot'),
     budget          = require('../controllers/budget'),
     financeServices = require('../controllers/categorised/financeServices'),
-    depreciatedInventory = require('../controllers/categorised/inventory_depreciate/inventory');
+    depreciatedInventory = require('../controllers/categorised/inventory_depreciate/inventory'),
+    employees       = require('../controllers/categorised/employees');
 
 var patient         = require('../controllers/patient');
 
@@ -90,7 +91,10 @@ exports.initialise = function (app) {
   app.post('/journal/togeneralledger', trialbalance.postToGeneralLedger); // TODO : rename?
 
   app.get('/journal/:table/:id', journal.lookupTable);
-
+  
+  // TODO Transition to journal API (this route should be /journal)
+  app.get('/journal_list/', journal.transactions);
+  
   // ledger routes
   // TODO : needs renaming
   app.get('/ledgers/debitor/:id', ledger.compileDebtorLedger);
@@ -144,10 +148,13 @@ exports.initialise = function (app) {
   app.get('/getConsumptionTrackingNumber/', depreciatedInventory.listConsumptionByTrackingNumber);
   app.get('/getMonthsBeforeExpiration/:id', depreciatedInventory.formatLotsForExpiration);
 
+  // Employee management 
+  app.get('/employee_list/', employees.list);
+  app.get('/hollyday_list/:pp/:employee_id', employees.listHolidays);
+  app.get('/getCheckHollyday/', employees.checkHoliday);
+  app.get('/getCheckOffday/', employees.checkOffday);
+  
   // TODO These routes all belong somewhere
-  app.get('/employee_list/', uncategorised.listEmployees);
-  app.get('/journal_list/', uncategorised.listJournal);
-  app.get('/hollyday_list/:pp/:employee_id', uncategorised.listHolidays);
   app.get('/currentProject', uncategorised.currentProject);
   app.get('/pcash_transfer_summers', uncategorised.pcashTransferSummers);
   app.get('/editsession/authenticate/:pin', uncategorised.authenticatePin);
@@ -155,19 +162,55 @@ exports.initialise = function (app) {
   app.get('/InExAccounts/:id_enterprise/', uncategorised.listInExAccounts);
   app.get('/availableAccounts/:id_enterprise/', uncategorised.listEnterpriseAccounts);
   app.get('/availableAccounts_profit/:id_enterprise/', uncategorised.listEnterpriseProfitAccounts);
-  app.get('/getCheckHollyday/', uncategorised.checkHoliday);
-  app.get('/getCheckOffday/', uncategorised.checkOffday);
   app.get('/visit/:patientId', uncategorised.logVisit);
   app.get('/caution/:debitor_uuid/:project_id', uncategorised.cautionDebtor);
   app.get('/account_balance/:id', uncategorised.accountBalance);
   app.get('/synthetic/:goal/:project_id?', uncategorised.syntheticGoal);
   app.get('/period/:date', uncategorised.getPeriodByDate);
   app.get('/max_trans/:projectId', uncategorised.maxTransactionByProject);
-  app.get('/print/journal', uncategorised.printJournal);
   app.get('/errorcodes', uncategorised.listErrorCodes);
   app.get('/getAccount6', uncategorised.listIncomeAccounts);
   app.get('/available_payment_period/', uncategorised.availablePaymentPeriod);
   app.get('/getCommandes/:id', uncategorised.listCommandes);
+
+  // Added since route structure development
+  app.post('/payTax/', uncategorised.submitTaxPayment);
+  app.post('/posting_donation/', uncategorised.submitDonation);
+
+  app.put('/setTaxPayment/', uncategorised.setTaxPayment);
+
+  app.get('/cost_periodic/:id_project/:cc_id/:start/:end', uncategorised.costByPeriod);
+  app.get('/profit_periodic/:id_project/:pc_id/:start/:end', uncategorised.profitByPeriod);
+  app.get('/getAccount7/', uncategorised.listExpenseAccounts);
+  app.get('/taxe_ipr_currency/', uncategorised.listTaxCurrency);
+  app.get('/getReportPayroll/', uncategorised.buildPayrollReport);
+  app.get('/getDataPaiement/', uncategorised.listPaiementData);
+  app.get('/getDataRubrics/', uncategorised.listRubricsData);
+  app.get('/getDataTaxes/', uncategorised.listTaxesData);
+  app.get('/getEmployeePayment/:id', uncategorised.listPaymentByEmployee);
+  app.get('/getDistinctInventories/', uncategorised.listDistinctInventory);
+  app.get('/getEnterprisePayment/:employee_id', uncategorised.listPaymentByEnterprise);
+  app.get('/getPeriodeFiscalYear/', uncategorised.lookupPeriod);
+
+  // Added since server structure <--> v1 merge
+  app.post('/payCotisation/', uncategorised.payCotisation);
+  app.post('/posting_promesse_payment/', uncategorised.payPromesse);
+  app.post('/posting_promesse_cotisation/', uncategorised.payPromesseCotisation);
+  app.post('/posting_promesse_tax/', uncategorised.payPromesseTax);
+
+  app.put('/setCotisationPayment/', uncategorised.setCotisationPayment);
+
+  app.get('/getEmployeeCotisationPayment/:id', uncategorised.listEmployeeCotisationPayments);
+
+  app.get('/getSubsidies/', uncategorised.listSubsidies);
+
+  // Fiscal Year Resultat
+  app.get('/getClassSolde/:account_class/:fiscal_year', uncategorised.getClassSolde);
+  app.get('/getTypeSolde/:fiscal_year/:account_type_id/:is_charge', uncategorised.getTypeSolde);
+  
+  // Stock integration
+  app.get('/stockIntegration/', uncategorised.getStockIntegration);
+
 
   /*  Inventory and Stock Managment */
 
@@ -222,44 +265,7 @@ exports.initialise = function (app) {
   // TODO - make a purchase order controller
   app.get('/purchaseorders', purchase.getPurchaseOrders);
 
-  // Added since route structure development
-  app.post('/payTax/', uncategorised.submitTaxPayment);
-  app.post('/posting_donation/', uncategorised.submitDonation);
-
-  app.put('/setTaxPayment/', uncategorised.setTaxPayment);
-
-  app.get('/cost_periodic/:id_project/:cc_id/:start/:end', uncategorised.costByPeriod);
-  app.get('/profit_periodic/:id_project/:pc_id/:start/:end', uncategorised.profitByPeriod);
-  app.get('/getAccount7/', uncategorised.listExpenseAccounts);
-  app.get('/taxe_ipr_currency/', uncategorised.listTaxCurrency);
-  app.get('/getReportPayroll/', uncategorised.buildPayrollReport);
-  app.get('/getDataPaiement/', uncategorised.listPaiementData);
-  app.get('/getDataRubrics/', uncategorised.listRubricsData);
-  app.get('/getDataTaxes/', uncategorised.listTaxesData);
-  app.get('/getEmployeePayment/:id', uncategorised.listPaymentByEmployee);
-  app.get('/getDistinctInventories/', uncategorised.listDistinctInventory);
-  app.get('/getEnterprisePayment/:employee_id', uncategorised.listPaymentByEnterprise);
-  app.get('/getPeriodeFiscalYear/', uncategorised.lookupPeriod);
-
-  // Added since server structure <--> v1 merge
-  app.post('/payCotisation/', uncategorised.payCotisation);
-  app.post('/posting_promesse_payment/', uncategorised.payPromesse);
-  app.post('/posting_promesse_cotisation/', uncategorised.payPromesseCotisation);
-  app.post('/posting_promesse_tax/', uncategorised.payPromesseTax);
-
-  app.put('/setCotisationPayment/', uncategorised.setCotisationPayment);
-
-  app.get('/getEmployeeCotisationPayment/:id', uncategorised.listEmployeeCotisationPayments);
-
-  app.get('/getSubsidies/', uncategorised.listSubsidies);
-
-  // Fiscal Year Resultat
-  app.get('/getClassSolde/:account_class/:fiscal_year', uncategorised.getClassSolde);
-  app.get('/getTypeSolde/:fiscal_year/:account_type_id/:is_charge', uncategorised.getTypeSolde);
   app.post('/posting_fiscal_resultat/', fiscal.fiscalYearResultat);
-
-  // Stock integration
-  app.get('/stockIntegration/', uncategorised.getStockIntegration);
 
   // Extra Payement
   app.post('/extraPayment/', extra.handleExtraPayment);

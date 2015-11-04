@@ -1,8 +1,10 @@
+var db = require('./../lib/db');
 var tableRouter;
 
 // Todo -- Why do we need this?
 // GET /journal/:table/:id
 function lookupTable(req, res, next) {
+  
   // What are the params here?
   request(req.params.table, req.params.id, req.session.user.id, function (err) {
     if (err) { return next(err); }
@@ -79,7 +81,36 @@ function request (table, id, user_id, done, debCaution, details) {
   return;
 }
 
+// HTTP Handler - Return all journal transactions to date
+function listTransactions(req, res, next) { 
+  var sql =
+    'SELECT posting_journal.uuid, posting_journal.fiscal_year_id, posting_journal.period_id, ' +
+    'posting_journal.trans_id, posting_journal.trans_date, posting_journal.doc_num, ' +
+    'posting_journal.description, posting_journal.account_id, posting_journal.debit, ' +
+    'posting_journal.credit, posting_journal.currency_id, posting_journal.deb_cred_uuid, ' +
+    'posting_journal.deb_cred_type, posting_journal.inv_po_id, ' +
+    'posting_journal.debit_equiv, posting_journal.credit_equiv, posting_journal.currency_id, ' +
+    'posting_journal.comment, posting_journal.user_id, posting_journal.pc_id, ' +
+    'posting_journal.cc_id, account.account_number, user.first, CONCAT(DATE_FORMAT(period.period_start, "%m-%Y"), "/", DATE_FORMAT(period.period_stop, "%m-%Y")) AS period, ' +
+    'user.last, currency.symbol, cost_center.text AS cc, ' +
+    'profit_center.text AS pc ' +
+    'FROM posting_journal LEFT JOIN account ON posting_journal.account_id=account.id ' +
+    'JOIN user ON posting_journal.user_id=user.id ' +
+    'JOIN currency ON posting_journal.currency_id=currency.id ' +
+    'JOIN period ON posting_journal.period_id = period.id ' +
+    'LEFT JOIN cost_center ON posting_journal.cc_id=cost_center.id ' +
+    'LEFT JOIN profit_center ON posting_journal.pc_id=profit_center.id'
+
+  db.exec(sql)
+  .then(function (result) {
+    res.send(result);
+  })
+  .catch(function (err) { next(err); })
+  .done();
+}
+
 module.exports = {
   request : request,
-  lookupTable : lookupTable
+  lookupTable : lookupTable,
+  transactions : listTransactions
 };
