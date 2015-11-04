@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('AssignPatientGroup', [
+.controller('AssignPatientGroupController', [
   '$scope',
   '$q',
   '$translate',
@@ -10,7 +10,7 @@ angular.module('bhima.controllers')
   'uuid',
   function ($scope, $q, $translate, connect, validate, appstate, messenger, uuid) {
 
-    //variables init
+    // variables init
     var dependencies = {},
         models = $scope.models = {},
         state = {};
@@ -25,13 +25,6 @@ angular.module('bhima.controllers')
         tables : { 'patient_group':{ columns: ['uuid', 'name']}}
       }
     };
-
-    // dependencies.patient = {
-    //   required : true,
-    //   query : {
-    //     tables : {'patient':{columns:['uuid', 'first_name', 'last_name', 'dob']}}
-    //   }
-    // };
 
     dependencies.assignation_patient = {
       query : {
@@ -60,14 +53,13 @@ angular.module('bhima.controllers')
       });
     }
 
-    function isChecked () {
+    function isChecked() {
       return models.patient_group.some(function (group) {
         return group.checked;
       });
     }
 
     function loadPatientGroups(patient) {
-      console.log('Load Patient Groups:', patient);
       transformDatas(false);
       $scope.patient = patient;
       $scope.print = true;
@@ -87,8 +79,7 @@ angular.module('bhima.controllers')
       $scope.all = !check;
     }
 
-    function changeChildren (v) {
-      //
+    function changeChildren(v) {
       transformDatas(v);
     }
 
@@ -99,9 +90,7 @@ angular.module('bhima.controllers')
     }
 
     function save () {
-      var tapon=[]; //will contain data witch will be inserted
-
-      connect.basicDelete('assignation_patient', $scope.patient.uuid, 'patient_uuid')
+      connect.delete('assignation_patient', 'patient_uuid', $scope.patient.uuid)
       .then(function (v) {
 
         if (v.status === 200) {
@@ -109,9 +98,10 @@ angular.module('bhima.controllers')
             $scope.assignation_patient.data = $scope.assignation_patient.data.filter(function (item) {
               return item.patient_uuid !== $scope.patient.uuid;
             });
+
             var ass_patient = [];
 
-            var pg_checked = models.patient_group.filter(function(item) {
+            var pg_checked = models.patient_group.filter(function (item) {
               return item.checked;
             });
 
@@ -121,12 +111,11 @@ angular.module('bhima.controllers')
 
             $q.all(
               ass_patient.map(function (assignation) {
-                tapon.push(assignation);
-                return connect.basicPut('assignation_patient', [assignation], 'uuid');
+                return connect.post('assignation_patient', [assignation]);
               })
             )
             .then(function () { 
-			  messenger.success($translate.instant('PATIENT_GRP_ASSIGNMENT.SUCCESS_UPD'));
+              messenger.success($translate.instant('PATIENT_GRP_ASSIGNMENT.SUCCESS_UPD'));
               // $scope.patient = {};
             })
             .catch(function () {
@@ -136,7 +125,6 @@ angular.module('bhima.controllers')
           }else{
            messenger.success($translate.instant('PATIENT_GRP_ASSIGNMENT.SUCCESS_UPD'));
           }
-
         }
       });
     }
@@ -144,13 +132,12 @@ angular.module('bhima.controllers')
     function checking() {
       if ($scope.patient.uuid) {
         save();
-      }else{
+      } else {
         messenger.danger('Erreur');
       }
     }
 
-    //invocation
-
+    // invocation
     appstate.register('enterprise', function (enterprise) {
       $scope.enterprise = enterprise;
       dependencies.patient_group.query.where =

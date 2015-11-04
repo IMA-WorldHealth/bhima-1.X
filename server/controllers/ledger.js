@@ -1,4 +1,4 @@
-// scripts/lib/logic/ledger.js
+// server/controllers/ledger.js
 
 // Module: ledger
 //
@@ -18,8 +18,8 @@ exports.debitor_group = debitorGroup;
 exports.employee_invoice = employeeInvoice;
 exports.distributableSale = distributableSale;
 
-/*
- * HTTP Controllers
+/**
+* HTTP Controllers
 */
 exports.compileDebtorLedger = function (req, res, next) {
   debtor(req.params.id)
@@ -323,15 +323,16 @@ function distributableSale(id) {
         'SELECT g.inv_po_id, g.account_id ' +
         'FROM general_ledger AS g ' +
         'WHERE g.deb_cred_uuid = ' + id + ' AND g.account_id = ' + account + ') ' +
-      ' AS c left join consumption on c.inv_po_id = consumption.sale_uuid';
+      ' AS c left join consumption_patient on c.inv_po_id = consumption_patient.sale_uuid ' +
+      'JOIN consumption ON consumption_patient.consumption_uuid = consumption.uuid;';
 
     return db.exec(query);
   })
   .then(function (ans) {
     if (!ans.length) { defer.resolve([]); }
+
     ans = ans.filter(function (an){
       return !an.tracking_number;
-
     });
 
     var invoices = ans.map(function (line) {

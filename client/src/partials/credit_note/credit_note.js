@@ -160,7 +160,7 @@ function CreditNoteController($scope, $routeParams, $filter, $location,  validat
 
     // FIXME Should these cascade?  return connect.fetch()?
     if ($scope.model.creditNote.data.length >= 1) { return messenger.danger('Invoice has already been reversed with credit'); }
-    connect.basicPut('credit_note', [noteObject])
+    connect.post('credit_note', [noteObject])
     .then(function () {
       connect.fetch('journal/credit_note/' + noteObject.uuid);
     })

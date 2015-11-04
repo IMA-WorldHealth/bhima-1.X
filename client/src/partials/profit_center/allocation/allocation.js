@@ -6,9 +6,9 @@ ProfitCenterAllocationController.$inject = [
 ];
 
 /**
-  * Profit Center Allocation Controller
-  * This module is responsible of allocating accounts to profit center
-  */
+* Profit Center Allocation Controller
+* This module is responsible of allocating accounts to profit center
+*/
 function ProfitCenterAllocationController ($q, connect, appstate,validate, SessionService) {
   var vm            = this,
       dependencies  = {},
@@ -116,7 +116,7 @@ function ProfitCenterAllocationController ($q, connect, appstate,validate, Sessi
   function updateAccounts(accounts) {
     return $q.all(
       accounts.map(function (account) {
-        return connect.basicPost('account', [account], ['id']);
+        return connect.put('account', [account], ['id']);
       })
     );
   }
@@ -154,5 +154,4 @@ function ProfitCenterAllocationController ($q, connect, appstate,validate, Sessi
   function error(err) {
     console.error(err);
   }
-
 }

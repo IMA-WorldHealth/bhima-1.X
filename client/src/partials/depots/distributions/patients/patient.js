@@ -285,10 +285,10 @@ function StockDistributionsController($q, $routeParams, $location, validate, con
 
     updateLotPrice()
     .then(function (resultSubmitItem) {
-      return connect.basicPut('consumption', resultSubmitItem);
+      return connect.post('consumption', resultSubmitItem);
     })
-    .then(function (){
-      return connect.basicPut('consumption_patient', consumption_patients);
+    .then(function () {
+      return connect.post('consumption_patient', consumption_patients);
     })
     .then(function (res) {
       return connect.fetch('/journal/distribution_patient/' + vm.session.sale.inv_po_id);

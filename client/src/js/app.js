@@ -44,7 +44,7 @@ function bhimaconfig($routeProvider) {
     templateUrl:'partials/journal/journal.html'
   })
   .when('/projects', {
-    controller : 'project',
+    controller : 'ProjectController',
     templateUrl : 'partials/projects/projects.html'
   })
   .when('/fiscal', {
@@ -56,7 +56,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/patient/edit/edit.html'
   })
   .when('/patient/register', {
-    controller: 'patientRegistration',
+    controller: 'PatientRegistrationController',
     templateUrl: 'partials/patient/registration/registration.html'
   })
   .when('/debtor/debtor_group', {
@@ -84,11 +84,11 @@ function bhimaconfig($routeProvider) {
     templateUrl:'/partials/inventory/view/view.html'
   })
   .when('/inventory/register', {
-    controller: 'inventoryRegister',
+    controller: 'InventoryRegisterController',
     templateUrl: '/partials/inventory/register/register.html'
   })
   .when('/inventory/update', {
-    controller : 'inventory.update',
+    controller : 'InventoryUpdateController',
     templateUrl : 'partials/inventory/update_item/update_item.html'
   })
   .when('/inventory/groups', {
@@ -96,7 +96,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/inventory/groups/groups.html'
   })
   .when('/inventory/types',  {
-    controller : 'inventory.types',
+    controller : 'InventoryTypeController',
     templateUrl : 'partials/inventory/types/types.html'
   })
   .when('/inventory/manifest', {
@@ -124,11 +124,11 @@ function bhimaconfig($routeProvider) {
     templateUrl: '/partials/records/auxillary_cash_records/auxillary_cash_records.html'
   })
   .when('/creditor', {
-    controller: 'creditors',
+    controller: 'SupplierController',
     templateUrl: '/partials/creditor/creditor.html'
   })
   .when('/creditors/creditor_group', {
-    controller: 'group.creditor',
+    controller: 'CreditorGroupController',
     templateUrl: 'partials/creditor/group/creditor_group.html'
   }).
   when('/purchase/create/', {
@@ -156,7 +156,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/purchase/authorization/authorization.html'
   })
   .when('/inventory/price_list', {
-    controller: 'priceList',
+    controller: 'PriceListController',
     templateUrl: 'partials/price_list/pricelist.html'
   })
   .when('/exchange_rate', {
@@ -248,7 +248,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/location/province/province.html'
   })
   .when('/location/country', {
-    controller : 'country',
+    controller : 'LocationCountryController',
     templateUrl: 'partials/location/country/country.html'
   })
   .when('/settings/:route?', {
@@ -256,7 +256,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/settings/settings.html'
   })
   .when('/patient/group/assignment/', {
-    controller: 'AssignPatientGroup',
+    controller: 'AssignPatientGroupController',
     templateUrl: 'partials/patient/group/assignment.html'
   })
   .when('/reports/chart_of_accounts/', {
@@ -400,7 +400,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/employee/employee.html'
   })
   .when('/service', {
-    controller : 'admin.service',
+    controller : 'ServicesController',
     templateUrl : 'partials/service/service.html'
   })
   .when('/journal/print', {
@@ -542,7 +542,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/reports/loss_record/loss_record.html'
   })
   .when('/inventory/distribution/:depotId?', {
-    controller : 'inventory.distribution',
+    controller : 'InventoryDistributionController',
     templateUrl : 'partials/inventory/distribution/distribution.html'
   })
   .when('/stock/dashboard', {
@@ -578,7 +578,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/reports/stock/stock_report.html'
   })
   .when('/grade_employers/', {
-    controller : 'grade',
+    controller : 'EmployeeGradeController',
     templateUrl : 'partials/grade_employers/grade_employers.html'
   })
   .when('/taxes_management/', {
@@ -590,7 +590,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/cotisation/cotisation_management.html'
   })
   .when('/taxes_management/create/', {
-    controller : 'taxes_management.create',
+    controller : 'CreateTaxController',
     templateUrl : 'partials/taxe/create/create_taxe.html'
   })
   .when('/cotisations_management/create/', {
@@ -618,7 +618,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/hollydays/hollydays.html'
   })
   .when('/payment_period/', {
-    controller : 'payment_period',
+    controller : 'PaymentPeriodController',
     templateUrl : 'partials/payment_period/payment_period.html'
   })
   .when('/rubric_management/', {
@@ -662,11 +662,11 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/reports/stock_status/stock_status.html'
   })
   .when('/fonction', {
-    controller : 'fonction',
+    controller : 'FonctionController',
     templateUrl : 'partials/fonction/fonction.html'
   })
   .when('/donor_management/', {
-    controller: 'donor',
+    controller: 'DonorManagementController',
     templateUrl: '/partials/donor_management/donor_management.html'
   })
   .when('/reports/operating_account/', {
