@@ -148,3 +148,18 @@ exports.startVisit = function (req, res, next) {
   .done();
 };
 
+// FIXME Legacy patient visit feature needs designing or removing
+exports.logVisit = function (req, res, next) {
+  var sql, id = req.params.patientId;
+  sql =
+    'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES (?, ?, ?);';
+
+  db.exec(sql, [uuid(), id, req.session.user.id])
+  .then(function () {
+    res.send();
+  })
+  .catch(next)
+  .done();
+
+};
+

@@ -26,7 +26,6 @@ var ledger          = require('../controllers/ledger');
 var fiscal          = require('../controllers/fiscal');
 var report          = require('../controllers/report');
 var tree            = require('../controllers/tree');
-var uncategorised   = require('../controllers/uncategorised');
 var compileReport   = require('../controllers/reports_proposed/reports.js');
 var snis            = require('../controllers/snis');
 var extra           = require('../controllers/extraPayment');
@@ -42,7 +41,17 @@ var auth            = require('../controllers/auth'),
     inventory       = require('../controllers/inventory'),
     patient         = require('../controllers/patient'),
     depot           = require('../controllers/depot'),
-    budget          = require('../controllers/budget');
+    budget          = require('../controllers/budget'),
+    financeServices = require('../controllers/categorised/financeServices'),
+    depreciatedInventory = require('../controllers/categorised/inventory_depreciate'),
+    depreciatedReports = require('../controllers/categorised/reports_depreciate'),
+    employees       = require('../controllers/categorised/employees'),
+    caution         = require('../controllers/categorised/caution'),
+    errors          = require('../controllers/categorised/errors'),
+    taxPayment      = require('../controllers/taxPayment'),
+    payroll         = require('../controllers/categorised/payroll'),
+    donations       = require('../controllers/donations'),
+    subsidies       = require('../controllers/categorised/subsidies');
 
 var patient         = require('../controllers/patient');
 
@@ -88,7 +97,11 @@ exports.initialise = function (app) {
   app.post('/journal/togeneralledger', trialbalance.postToGeneralLedger); // TODO : rename?
 
   app.get('/journal/:table/:id', journal.lookupTable);
-
+  
+  // TODO Transition to journal API (this route should be /journal)
+  app.get('/journal_list/', journal.transactions);
+  
+  
   // ledger routes
   // TODO : needs renaming
   app.get('/ledgers/debitor/:id', ledger.compileDebtorLedger);
@@ -111,55 +124,83 @@ exports.initialise = function (app) {
   app.post('/snis/createReport', snis.createReport);
   app.delete('/snis/deleteReport/:id', snis.deleteReport);
   app.post('/snis/populateReport', snis.populateReport);
+ 
+  /**
+   * refactor-categorisation
+   *
+   * @todo test all routes below to ensure no broken links
+   */
+  
+  // Financial services - cost/ profit centers, services etc. 
+  app.get('/services/', financeServices.listServices);
+  app.get('/available_cost_center/', financeServices.availableCostCenters);
+  app.get('/available_profit_center/', financeServices.availableProfitCenters);
+  app.get('/cost/:id_project/:cc_id', financeServices.costCenterCost);
+  app.get('/profit/:id_project/:pc_id', financeServices.profitCenterCost);
+  app.get('/costCenterAccount/:id_enterprise/:cost_center_id', financeServices.costCenterAccount);
+  app.get('/profitCenterAccount/:id_enterprise/:profit_center_id', financeServices.profitCenterAccount);
+  app.get('/removeFromCostCenter/:tab', financeServices.removeFromCostCenter);
+  app.get('/removeFromProfitCenter/:tab', financeServices.removeFromProfitCenter);
+  app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', financeServices.auxCenterAccount);
+ 
+  // DEPRECIATED Inventory routes - these should be removed as soon as possible
+  // FIXME Depreciate routes
+  app.get('/lot/:inventory_uuid', depreciatedInventory.getInventoryLot);
+  app.get('/stockIn/:depot_uuid/:df/:dt', depreciatedInventory.stockIn);
+  app.get('/inv_in_depot/:depot_uuid', depreciatedInventory.inventoryByDepot);
+  app.get('/getExpiredTimes/', depreciatedInventory.listExpiredTimes);
+  app.get('/getStockEntry/', depreciatedInventory.listStockEntry);
+  app.get('/getStockConsumption/', depreciatedInventory.listStockConsumption);
+  app.get('/monthlyConsumptions/:inventory_uuid/:nb', depreciatedInventory.listMonthlyConsumption);
+  app.get('/getConsumptionTrackingNumber/', depreciatedInventory.listConsumptionByTrackingNumber);
+  app.get('/getMonthsBeforeExpiration/:id', depreciatedInventory.formatLotsForExpiration);
+  app.get('/stockIntegration/', depreciatedInventory.getStockIntegration);
 
-  // TODO These routes all belong somewhere
-  app.get('/services/', uncategorised.services);
-  app.get('/available_cost_center/', uncategorised.availableCenters);
-  app.get('/employee_list/', uncategorised.listEmployees);
-  app.get('/journal_list/', uncategorised.listJournal);
-  app.get('/hollyday_list/:pp/:employee_id', uncategorised.listHolidays);
-  app.get('/available_profit_center/', uncategorised.listAvailableProfitCenters);
-  app.get('/currentProject', uncategorised.currentProject);
-  app.get('/pcash_transfer_summers', uncategorised.pcashTransferSummers);
-  app.get('/editsession/authenticate/:pin', uncategorised.authenticatePin);
-  app.get('/max/:id/:table/:join?', uncategorised.lookupMaxTableId);
-  app.get('/InExAccounts/:id_enterprise/', uncategorised.listInExAccounts);
-  app.get('/availableAccounts/:id_enterprise/', uncategorised.listEnterpriseAccounts);
-  app.get('/availableAccounts_profit/:id_enterprise/', uncategorised.listEnterpriseProfitAccounts);
-  app.get('/cost/:id_project/:cc_id', uncategorised.costCenterCost);
-  app.get('/profit/:id_project/:pc_id', uncategorised.processProfitCenter);
-  app.get('/costCenterAccount/:id_enterprise/:cost_center_id', uncategorised.costCenterAccount);
-  app.get('/profitCenterAccount/:id_enterprise/:profit_center_id', uncategorised.profitCenterAccount);
-  app.get('/removeFromCostCenter/:tab', uncategorised.removeFromCostCenter);
-  app.get('/removeFromProfitCenter/:tab', uncategorised.removeFromProfitCenter);
-  app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', uncategorised.auxCenterAccount);
-  app.get('/getCheckHollyday/', uncategorised.checkHoliday);
-  app.get('/getCheckOffday/', uncategorised.checkOffday);
-  app.get('/visit/:patientId', uncategorised.logVisit);
-  app.get('/caution/:debitor_uuid/:project_id', uncategorised.cautionDebtor);
-  app.get('/account_balance/:id', uncategorised.accountBalance);
-  app.get('/synthetic/:goal/:project_id?', uncategorised.syntheticGoal);
-  app.get('/period/:date', uncategorised.getPeriodByDate);
-  app.get('/lot/:inventory_uuid', uncategorised.getInventoryLot);
-  app.get('/max_trans/:projectId', uncategorised.maxTransactionByProject);
-  app.get('/print/journal', uncategorised.printJournal);
-  app.get('/stockIn/:depot_uuid/:df/:dt', uncategorised.stockIn);
-  app.get('/inv_in_depot/:depot_uuid', uncategorised.inventoryByDepot);
-  app.get('/inventory/drug/:code', uncategorised.routeDrugQuery);
-  app.get('/errorcodes', uncategorised.listErrorCodes);
-  app.get('/getAccount6', uncategorised.listIncomeAccounts);
-  app.get('/available_payment_period/', uncategorised.availablePaymentPeriod);
-  app.get('/getExpiredTimes/', uncategorised.listExpiredTimes);
-  app.get('/getStockEntry/', uncategorised.listStockEntry);
-  app.get('/getStockConsumption/', uncategorised.listStockConsumption);
-  app.get('/getNombreMoisStockControl/:inventory_uuid', uncategorised.frenchEnglishRoute);
-  app.get('/monthlyConsumptions/:inventory_uuid/:nb', uncategorised.listMonthlyConsumption);
-  app.get('/getConsumptionTrackingNumber/', uncategorised.listConsumptionByTrackingNumber);
-  app.get('/getCommandes/:id', uncategorised.listCommandes);
-  app.get('/getMonthsBeforeExpiration/:id', uncategorised.formatLotsForExpiration);
+  // Employee management 
+  app.get('/employee_list/', employees.list);
+  app.get('/hollyday_list/:pp/:employee_id', employees.listHolidays);
+  app.get('/getCheckHollyday/', employees.checkHoliday);
+  app.get('/getCheckOffday/', employees.checkOffday);
+ 
+  app.get('/visit/:patientId', patient.logVisit);
+  app.get('/caution/:debitor_uuid/:project_id', caution.debtor);
+  
+  app.get('/errorcodes', errors.listCodes);
+  
+  app.get('/getAccount6', accounts.listIncomeAccounts);
+  app.get('/getAccount7/', accounts.listExpenseAccounts);
+  app.get('/getClassSolde/:account_class/:fiscal_year', accounts.getClassSolde);
+  app.get('/getTypeSolde/:fiscal_year/:account_type_id/:is_charge', accounts.getTypeSolde);
+  
+
+  app.get('available_payment_period/', taxPayment.availablePaymentPeriod);
+  app.post('/payTax/', taxPayment.submit);
+  app.put('/setTaxPayment/', taxPayment.setTaxPayment);
+  
+  app.get('/cost_periodic/:id_project/:cc_id/:start/:end', financeServices.costByPeriod);
+  app.get('/profit_periodic/:id_project/:pc_id/:start/:end', financeServices.profitByPeriod);
+ 
+  // TODO Remove or upgrade (model in database) every report from report_depreciate
+  app.get('/getDistinctInventories/', depreciatedReports.listDistinctInventory);
+  app.get('/getReportPayroll/', depreciatedReports.buildPayrollReport);
+ 
+  // Payroll 
+  app.get('/getDataPaiement/', payroll.listPaiementData);
+  app.get('/getEmployeePayment/:id', payroll.listPaymentByEmployee);
+  app.get('/getEnterprisePayment/:employee_id', payroll.listPaymentByEnterprise);
+  app.post('/payCotisation/', payroll.payCotisation);
+  app.post('/posting_promesse_payment/', payroll.payPromesse);
+  app.post('/posting_promesse_cotisation/', payroll.payPromesseCotisation);
+  app.post('/posting_promesse_tax/', payroll.payPromesseTax);
+  app.put('/setCotisationPayment/', payroll.setCotisationPayment);
+  app.get('/getEmployeeCotisationPayment/:id', payroll.listEmployeeCotisationPayments);
+  app.get('/taxe_ipr_currency/', payroll.listTaxCurrency);
+  
+  app.post('/posting_donation/', donations.post);
+  
+  app.get('/getSubsidies/', subsidies.list);
 
   /*  Inventory and Stock Managment */
-
   app.get('/inventory/metadata', inventory.getInventoryItems);
   app.get('/inventory/:uuid/metadata', inventory.getInventoryItemsById);
 
@@ -211,44 +252,7 @@ exports.initialise = function (app) {
   // TODO - make a purchase order controller
   app.get('/purchaseorders', purchase.getPurchaseOrders);
 
-  // Added since route structure development
-  app.post('/payTax/', uncategorised.submitTaxPayment);
-  app.post('/posting_donation/', uncategorised.submitDonation);
-
-  app.put('/setTaxPayment/', uncategorised.setTaxPayment);
-
-  app.get('/cost_periodic/:id_project/:cc_id/:start/:end', uncategorised.costByPeriod);
-  app.get('/profit_periodic/:id_project/:pc_id/:start/:end', uncategorised.profitByPeriod);
-  app.get('/getAccount7/', uncategorised.listExpenseAccounts);
-  app.get('/taxe_ipr_currency/', uncategorised.listTaxCurrency);
-  app.get('/getReportPayroll/', uncategorised.buildPayrollReport);
-  app.get('/getDataPaiement/', uncategorised.listPaiementData);
-  app.get('/getDataRubrics/', uncategorised.listRubricsData);
-  app.get('/getDataTaxes/', uncategorised.listTaxesData);
-  app.get('/getEmployeePayment/:id', uncategorised.listPaymentByEmployee);
-  app.get('/getDistinctInventories/', uncategorised.listDistinctInventory);
-  app.get('/getEnterprisePayment/:employee_id', uncategorised.listPaymentByEnterprise);
-  app.get('/getPeriodeFiscalYear/', uncategorised.lookupPeriod);
-
-  // Added since server structure <--> v1 merge
-  app.post('/payCotisation/', uncategorised.payCotisation);
-  app.post('/posting_promesse_payment/', uncategorised.payPromesse);
-  app.post('/posting_promesse_cotisation/', uncategorised.payPromesseCotisation);
-  app.post('/posting_promesse_tax/', uncategorised.payPromesseTax);
-
-  app.put('/setCotisationPayment/', uncategorised.setCotisationPayment);
-
-  app.get('/getEmployeeCotisationPayment/:id', uncategorised.listEmployeeCotisationPayments);
-
-  app.get('/getSubsidies/', uncategorised.listSubsidies);
-
-  // Fiscal Year Resultat
-  app.get('/getClassSolde/:account_class/:fiscal_year', uncategorised.getClassSolde);
-  app.get('/getTypeSolde/:fiscal_year/:account_type_id/:is_charge', uncategorised.getTypeSolde);
   app.post('/posting_fiscal_resultat/', fiscal.fiscalYearResultat);
-
-  // Stock integration
-  app.get('/stockIntegration/', uncategorised.getStockIntegration);
 
   // Extra Payement
   app.post('/extraPayment/', extra.handleExtraPayment);
@@ -267,6 +271,9 @@ exports.initialise = function (app) {
 
   // accounts controller
   app.get('/accounts', accounts.getAccounts);
+  app.get('/InExAccounts/:id_enterprise/', accounts.listInExAccounts);
+  app.get('/availableAccounts/:id_enterprise/', accounts.listEnterpriseAccounts);
+  app.get('/availableAccounts_profit/:id_enterprise/', accounts.listEnterpriseProfitAccounts);
 
   // search stuff
   app.get('/patient/:uuid', patient.searchUuid);
@@ -288,6 +295,7 @@ exports.initialise = function (app) {
   app.put('/users/:id', users.updateUser);
   app.get('/users', users.getUsers);
   app.delete('/users/:id', users.removeUser);
+  app.get('/editsession/authenticate/:pin', users.authenticatePin);
 
   // budget controller
   app.post('/budget/upload', multipart({ uploadDir: 'client/upload'}), budget.upload);
