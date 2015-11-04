@@ -169,6 +169,30 @@ exports.profitCenterAccount = function (req, res, next) {
   .done();
 };
 
+exports.auxCenterAccount = function (req, res, next) {
+  var sql =
+    'SELECT account.id, account.account_number, account.account_txt ' +
+    'FROM account JOIN auxiliairy_center ' +
+    'ON account.auxiliairy_center_id = auxiliairy_center.id ' +
+    'WHERE account.enterprise_id = ' + sanitize.escape(req.params.id_enterprise) + ' ' +
+      'AND account.parent <> 0 ' +
+      'AND account.auxiliairy_center_id = ' + sanitize.escape(req.params.auxiliairy_center_id) + ';';
+
+  function process(accounts) {
+    var availablechargeAccounts = accounts.filter(function(item) {
+      return item.account_number.toString().indexOf('6') === 0;
+    });
+    return availablechargeAccounts;
+  }
+
+  db.exec(sql)
+  .then(function (rows) {
+    res.send(process(rows));
+  })
+  .catch(next)
+  .done();
+};
+
 exports.removeFromCostCenter = function (req, res, next) {
   var tabs = JSON.parse(req.params.tab);
 
@@ -203,5 +227,3 @@ exports.removeFromProfitCenter = function (req, res, next) {
   .catch(next)
   .done();
 };
-
-

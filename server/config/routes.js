@@ -43,7 +43,8 @@ var auth            = require('../controllers/auth'),
     patient         = require('../controllers/patient'),
     depot           = require('../controllers/depot'),
     budget          = require('../controllers/budget'),
-    financeServices = require('../controllers/categorised/financeServices');
+    financeServices = require('../controllers/categorised/financeServices'),
+    depreciatedInventory = require('../controllers/categorised/inventory_depreciate/inventory');
 
 var patient         = require('../controllers/patient');
 
@@ -118,7 +119,7 @@ exports.initialise = function (app) {
    *
    * @todo test all routes below to ensure no broken links
    */
-
+  
   // Financial services - cost/ profit centers, services etc. 
   app.get('/services/', financeServices.listServices);
   app.get('/available_cost_center/', financeServices.availableCostCenters);
@@ -129,7 +130,20 @@ exports.initialise = function (app) {
   app.get('/profitCenterAccount/:id_enterprise/:profit_center_id', financeServices.profitCenterAccount);
   app.get('/removeFromCostCenter/:tab', financeServices.removeFromCostCenter);
   app.get('/removeFromProfitCenter/:tab', financeServices.removeFromProfitCenter);
-  
+  app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', financeServices.auxCenterAccount);
+ 
+  // DEPRECIATED Inventory routes - these should be removed as soon as possible
+  // FIXME Depreciate routes
+  app.get('/lot/:inventory_uuid', depreciatedInventory.getInventoryLot);
+  app.get('/stockIn/:depot_uuid/:df/:dt', depreciatedInventory.stockIn);
+  app.get('/inv_in_depot/:depot_uuid', depreciatedInventory.inventoryByDepot);
+  app.get('/getExpiredTimes/', depreciatedInventory.listExpiredTimes);
+  app.get('/getStockEntry/', depreciatedInventory.listStockEntry);
+  app.get('/getStockConsumption/', depreciatedInventory.listStockConsumption);
+  app.get('/monthlyConsumptions/:inventory_uuid/:nb', depreciatedInventory.listMonthlyConsumption);
+  app.get('/getConsumptionTrackingNumber/', depreciatedInventory.listConsumptionByTrackingNumber);
+  app.get('/getMonthsBeforeExpiration/:id', depreciatedInventory.formatLotsForExpiration);
+
   // TODO These routes all belong somewhere
   app.get('/employee_list/', uncategorised.listEmployees);
   app.get('/journal_list/', uncategorised.listJournal);
@@ -141,7 +155,6 @@ exports.initialise = function (app) {
   app.get('/InExAccounts/:id_enterprise/', uncategorised.listInExAccounts);
   app.get('/availableAccounts/:id_enterprise/', uncategorised.listEnterpriseAccounts);
   app.get('/availableAccounts_profit/:id_enterprise/', uncategorised.listEnterpriseProfitAccounts);
-  app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', uncategorised.auxCenterAccount);
   app.get('/getCheckHollyday/', uncategorised.checkHoliday);
   app.get('/getCheckOffday/', uncategorised.checkOffday);
   app.get('/visit/:patientId', uncategorised.logVisit);
@@ -149,23 +162,12 @@ exports.initialise = function (app) {
   app.get('/account_balance/:id', uncategorised.accountBalance);
   app.get('/synthetic/:goal/:project_id?', uncategorised.syntheticGoal);
   app.get('/period/:date', uncategorised.getPeriodByDate);
-  app.get('/lot/:inventory_uuid', uncategorised.getInventoryLot);
   app.get('/max_trans/:projectId', uncategorised.maxTransactionByProject);
   app.get('/print/journal', uncategorised.printJournal);
-  app.get('/stockIn/:depot_uuid/:df/:dt', uncategorised.stockIn);
-  app.get('/inv_in_depot/:depot_uuid', uncategorised.inventoryByDepot);
-  app.get('/inventory/drug/:code', uncategorised.routeDrugQuery);
   app.get('/errorcodes', uncategorised.listErrorCodes);
   app.get('/getAccount6', uncategorised.listIncomeAccounts);
   app.get('/available_payment_period/', uncategorised.availablePaymentPeriod);
-  app.get('/getExpiredTimes/', uncategorised.listExpiredTimes);
-  app.get('/getStockEntry/', uncategorised.listStockEntry);
-  app.get('/getStockConsumption/', uncategorised.listStockConsumption);
-  app.get('/getNombreMoisStockControl/:inventory_uuid', uncategorised.frenchEnglishRoute);
-  app.get('/monthlyConsumptions/:inventory_uuid/:nb', uncategorised.listMonthlyConsumption);
-  app.get('/getConsumptionTrackingNumber/', uncategorised.listConsumptionByTrackingNumber);
   app.get('/getCommandes/:id', uncategorised.listCommandes);
-  app.get('/getMonthsBeforeExpiration/:id', uncategorised.formatLotsForExpiration);
 
   /*  Inventory and Stock Managment */
 
