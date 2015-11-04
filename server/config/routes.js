@@ -44,11 +44,13 @@ var auth            = require('../controllers/auth'),
     depot           = require('../controllers/depot'),
     budget          = require('../controllers/budget'),
     financeServices = require('../controllers/categorised/financeServices'),
-    depreciatedInventory = require('../controllers/categorised/inventory_depreciate/inventory'),
+    depreciatedInventory = require('../controllers/categorised/inventory_depreciate'),
     employees       = require('../controllers/categorised/employees'),
     caution         = require('../controllers/categorised/caution'),
     errors          = require('../controllers/categorised/errors'),
-    taxPayment      = require('../controllers/taxPayment');
+    taxPayment      = require('../controllers/taxPayment'),
+    depreciatedReports = require('../controllers/categorised/reports_depreciate'),
+    payroll         = require('../controllers/categorised/payroll');
 
 var patient         = require('../controllers/patient');
 
@@ -172,21 +174,23 @@ exports.initialise = function (app) {
   
   app.get('/cost_periodic/:id_project/:cc_id/:start/:end', financeServices.costByPeriod);
   app.get('/profit_periodic/:id_project/:pc_id/:start/:end', financeServices.profitByPeriod);
+ 
+  app.get('/getDistinctInventories/', depreciatedReports.listDistinctInventory);
+  app.get('/getReportPayroll/', depreciatedReports.buildPayrollReport);
+ 
+  // Payroll 
+  app.get('/getDataPaiement/', payroll.listPaiementData);
+  app.get('/getEmployeePayment/:id', payroll.listPaymentByEmployee);
+  app.get('/getEnterprisePayment/:employee_id', payroll.listPaymentByEnterprise);
   
+  // TODO Remove or upgrade (model in database) every report from report_depreciate
+
   // TODO These routes all belong somewhere
   app.post('/posting_donation/', uncategorised.submitDonation);
 
   app.get('/taxe_ipr_currency/', uncategorised.listTaxCurrency);
-  app.get('/getReportPayroll/', uncategorised.buildPayrollReport);
-  app.get('/getDataPaiement/', uncategorised.listPaiementData);
-  app.get('/getDataRubrics/', uncategorised.listRubricsData);
-  app.get('/getDataTaxes/', uncategorised.listTaxesData);
-  app.get('/getEmployeePayment/:id', uncategorised.listPaymentByEmployee);
-  app.get('/getDistinctInventories/', uncategorised.listDistinctInventory);
-  app.get('/getEnterprisePayment/:employee_id', uncategorised.listPaymentByEnterprise);
-  app.get('/getPeriodeFiscalYear/', uncategorised.lookupPeriod);
-
-  // Added since server structure <--> v1 merge
+  
+    // Added since server structure <--> v1 merge
   app.post('/payCotisation/', uncategorised.payCotisation);
   app.post('/posting_promesse_payment/', uncategorised.payPromesse);
   app.post('/posting_promesse_cotisation/', uncategorised.payPromesseCotisation);

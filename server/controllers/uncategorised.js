@@ -120,37 +120,6 @@ exports.submitDonation = function (req, res, next) {
 };
 
 
-exports.profitByPeriod = function (req, res, next) {
-  var sql =
-    'SELECT `account`.`id`, `account`.`account_number`, `account`.`account_txt` FROM `account` '+
-    'WHERE `account`.`pc_id`=' + sanitize.escape(req.params.pc_id) +
-    ' AND `account`.`account_type_id` <> 3';
-
-  function process(accounts) {
-    if(accounts.length === 0) {return {profit : 0};}
-    var availableprofitAccounts = accounts.filter(function(item) {
-      return item.account_number.toString().indexOf('7') === 0;
-    });
-
-    var profit = availableprofitAccounts.reduce(function (x, y) {
-      return x + (y.credit - y.debit);
-
-    }, 0);
-
-    return {profit : profit};
-  }
-
-  db.exec(sql)
-  .then(function (ans) {
-    synthetic('pcv_periodic', req.params.id_project, {pc_id : req.params.pc_id, start : req.params.start, end : req.params.end, accounts : ans}, function (err, data) {
-      if (err) { return next(err); }
-      res.send(process(data));
-    });
-  })
-  .catch(next)
-  .done();
-};
-
 
 exports.listTaxCurrency = function (req, res, next) {
   var sql = "SELECT t.id,t.taux,t.tranche_annuelle_debut,t.tranche_annuelle_fin,t.tranche_mensuelle_debut,t.tranche_mensuelle_fin,t.ecart_annuel,t.ecart_mensuel,t.impot_annuel,t.impot_mensuel,t.cumul_annuel,t.cumul_mensuel,t.currency_id,c.symbol FROM taxe_ipr t, currency c WHERE t.currency_id = c.id";
@@ -162,59 +131,6 @@ exports.listTaxCurrency = function (req, res, next) {
   .done();
 };
 
-exports.buildPayrollReport = function (req, res, next) {
-  var sql = "SELECT paiement.uuid, paiement.employee_id, paiement.paiement_period_id, paiement.currency_id,"
-          + " paiement.net_before_tax, paiement.net_after_tax, paiement.net_after_tax, paiement.net_salary,"
-          + " employee.code, employee.prenom, employee.name, employee.postnom, employee.dob, employee.sexe"
-          + " FROM paiement"
-          + " JOIN employee ON employee.id = paiement.employee_id"
-          + " WHERE paiement_period_id = " + sanitize.escape(req.query.period_id);
-
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
-exports.listPaiementData = function (req, res, next) {
-  var sql = "SELECT paiement.uuid, paiement.employee_id, paiement.paiement_period_id, paiement_period.dateFrom,"
-          + " paiement_period.dateTo, paiement.currency_id,"
-          + " paiement.net_before_tax, paiement.net_after_tax, paiement.net_after_tax, paiement.net_salary,"
-          + " paiement.working_day, paiement.paiement_date, employee.code, employee.prenom, employee.name,"
-          + " employee.postnom, employee.dob, employee.sexe, employee.nb_spouse, employee.nb_enfant,"
-          + " employee.grade_id, grade.text, grade.code AS 'codegrade', grade.basic_salary, exchange_rate.rate,"
-          + " exchange_rate.enterprise_currency_id"
-          + " FROM paiement"
-          + " JOIN employee ON employee.id = paiement.employee_id"
-          + " JOIN grade ON grade.uuid = employee.grade_id "
-          + " JOIN paiement_period ON paiement_period.id = paiement.paiement_period_id"
-          + " JOIN exchange_rate ON exchange_rate.date = paiement.paiement_date"
-          + " WHERE paiement.uuid = " + sanitize.escape(req.query.invoiceId);
-
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
-exports.listRubricsData = function (req, res, next) {
-  var sql = "SELECT rubric_paiement.id, rubric_paiement.paiement_uuid, rubric_paiement.rubric_id, rubric.label,"
-          + " rubric.is_discount, rubric_paiement.value"
-          + " FROM rubric_paiement"
-          + " JOIN rubric ON rubric.id = rubric_paiement.rubric_id"
-          + " WHERE rubric_paiement.paiement_uuid= " + sanitize.escape(req.query.invoiceId);
-
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
 
 exports.listTaxesData = function (req, res, next) {
   var sql = "SELECT tax_paiement.id, tax_paiement.paiement_uuid, tax_paiement.tax_id, tax.label,"
@@ -248,18 +164,6 @@ exports.listPaymentByEmployee = function (req, res, next) {
   .done();
 };
 
-exports.listDistinctInventory = function (req, res, next) {
-  var sql = "SELECT DISTINCT inventory.code, inventory.text, stock.inventory_uuid FROM stock"
-          + " JOIN inventory ON stock.inventory_uuid=inventory.uuid";
-
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
 exports.listPaymentByEnterprise = function (req, res, next) {
   var sql = "SELECT e.id, e.code, e.prenom, e.name, e.postnom, e.creditor_uuid, p.uuid as paiement_uuid, p.currency_id, t.label, t.abbr, t.four_account_id AS 'other_account', z.tax_id, z.value, z.posted"
           + " FROM employee e "
@@ -269,16 +173,6 @@ exports.listPaymentByEnterprise = function (req, res, next) {
           + " WHERE p.paiement_period_id=" + sanitize.escape(req.params.employee_id) + " AND t.is_employee=0 "
           + " ORDER BY e.name ASC, e.postnom ASC, e.prenom ASC";
 
-  db.exec(sql)
-  .then(function (result) {
-    res.send(result);
-  })
-  .catch(function (err) { next(err); })
-  .done();
-};
-
-exports.lookupPeriod = function (req, res, next) {
-  var sql = "SELECT * FROM period WHERE fiscal_year_id = " + sanitize.escape(req.query.fiscal_year_id);
   db.exec(sql)
   .then(function (result) {
     res.send(result);

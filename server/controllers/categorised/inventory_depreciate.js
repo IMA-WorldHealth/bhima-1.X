@@ -1,5 +1,5 @@
-var db = require('./../../../lib/db');
-var sanitize = require('./../../../lib/sanitize');
+var db = require('./../../lib/db');
+var sanitize = require('./../../lib/sanitize');
 
 exports.getInventoryLot = function (req, res, next) {
   var sql = 'SELECT expiration_date, lot_number, tracking_number, quantity, code, uuid, text FROM stock, inventory WHERE inventory.uuid = stock.inventory_uuid AND stock.inventory_uuid='+sanitize.escape(req.params.inventory_uuid);
