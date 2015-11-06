@@ -1,7 +1,7 @@
 var q         = require('q'),
-    uuid      = require('../../lib/guid'),
-    db        = require('../../lib/db'),
-    validate  = require('../../lib/validate')(),
+    uuid      = require('../../../lib/guid'),
+    db        = require('../../../lib/db'),
+    validate  = require('../../../lib/validate')(),
     core      = require('./core');
 
 exports.purchase = purchase;

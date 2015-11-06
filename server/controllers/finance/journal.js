@@ -1,4 +1,4 @@
-var db = require('./../lib/db');
+var db = require('./../../lib/db');
 var tableRouter;
 
 // Todo -- Why do we need this?

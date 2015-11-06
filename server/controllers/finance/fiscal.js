@@ -1,5 +1,5 @@
-var db = require('./../lib/db'),
-    util = require('./../lib/util'),
+var db = require('./../../lib/db'),
+    util = require('./../../lib/util'),
     journal = require('./journal');
 
 exports.createFiscalYear = createFiscalYear;

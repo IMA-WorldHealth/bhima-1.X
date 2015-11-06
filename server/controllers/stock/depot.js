@@ -6,7 +6,7 @@
 * might be better positioned in the /inventory/ controller.
 */
 
-var db = require('../lib/db'),
+var db = require('../../lib/db'),
     distributions = require('./depots/distributions');
 
 // expose routes

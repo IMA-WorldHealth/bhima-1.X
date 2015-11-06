@@ -5,7 +5,7 @@
 * handling.
 */
 
-var db = require('../../lib/db');
+var db = require('../../../lib/db');
 
 // this should be a const in future ES versions
 var errors = {

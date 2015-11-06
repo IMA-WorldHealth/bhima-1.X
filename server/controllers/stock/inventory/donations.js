@@ -5,7 +5,7 @@
 * enterprise for particular inventory items.
 */
 
-var db = require('../../lib/db');
+var db = require('../../../lib/db');
 
 exports.getInventoryDonations = getInventoryDonations;
 exports.getInventoryDonationsById = getInventoryDonationsById;

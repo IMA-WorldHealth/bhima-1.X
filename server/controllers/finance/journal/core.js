@@ -16,8 +16,8 @@
  */
 
 var q = require('q'),
-    db = require('../../lib/db'),
-    Store = require('../../lib/store');
+    db = require('../../../lib/db'),
+    Store = require('../../../lib/store');
 
 // shared checks
 var checks = {};

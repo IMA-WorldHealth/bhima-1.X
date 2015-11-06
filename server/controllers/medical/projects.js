@@ -1,5 +1,5 @@
 
-var db = require('../lib/db');
+var db = require('../../lib/db');
 
 exports.getProjects = function (req, res, next) {
   'use strict';

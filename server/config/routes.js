@@ -11,49 +11,48 @@
 * identicale modules - they should all be encapsulated as one
 * module. For Example finance.createSale, finance.createPurchase
 */
-
-// Require application controllers
+var auth            = require('../controllers/auth');
 var data            = require('../controllers/data');
+var users           = require('../controllers/users');
 var locations       = require('../controllers/location');
-
-var createPurchase  = require('../controllers/createPurchase');
-var createSale      = require('../controllers/createSale');
-
-var consumptionLoss = require('../controllers/consumptionLoss');
-var trialbalance    = require('../controllers/trialbalance');
-var journal         = require('../controllers/journal');
-var ledger          = require('../controllers/ledger');
-var fiscal          = require('../controllers/fiscal');
-var report          = require('../controllers/report');
 var tree            = require('../controllers/tree');
-var compileReport   = require('../controllers/reports_proposed/reports.js');
-var snis            = require('../controllers/snis');
-var extra           = require('../controllers/extraPayment');
-var gl              = require('../controllers/ledgers/general');
-var genericFinance  = require('../controllers/finance/financeGeneric');
-var accounts        = require('../controllers/accounts');
-var auth            = require('../controllers/auth'),
-    projects        = require('../controllers/projects'),
-    users           = require('../controllers/users'),
-    analytics       = require('../controllers/analytics'),
-    // stock           = require('../controllers/stock'),
-    purchase        = require('../controllers/purchase'),
-    inventory       = require('../controllers/inventory'),
-    patient         = require('../controllers/patient'),
-    depot           = require('../controllers/depot'),
-    budget          = require('../controllers/budget'),
-    financeServices = require('../controllers/categorised/financeServices'),
-    depreciatedInventory = require('../controllers/categorised/inventory_depreciate'),
-    depreciatedReports = require('../controllers/categorised/reports_depreciate'),
-    employees       = require('../controllers/categorised/employees'),
-    caution         = require('../controllers/categorised/caution'),
-    errors          = require('../controllers/categorised/errors'),
-    taxPayment      = require('../controllers/taxPayment'),
-    payroll         = require('../controllers/categorised/payroll'),
-    donations       = require('../controllers/donations'),
-    subsidies       = require('../controllers/categorised/subsidies');
 
-var patient         = require('../controllers/patient');
+var createPurchase  = require('../controllers/finance/purchase');
+var createSale      = require('../controllers/finance/sale');
+
+var patient         = require('../controllers/medical/patient');
+var snis            = require('../controllers/medical/snis');
+var projects        = require('../controllers/medical/projects');
+
+var legacyReports   = require('../controllers/reports/report_legacy');
+var reports         = require('../controllers/reports/reports.js');
+
+var inventory       = require('../controllers/stock/inventory');
+var depot           = require('../controllers/stock/depot');
+
+var trialbalance    = require('../controllers/finance/trialbalance');
+var journal         = require('../controllers/finance/journal');
+var ledger          = require('../controllers/finance/ledger');
+var fiscal          = require('../controllers/finance/fiscal');
+var extra           = require('../controllers/finance/extraPayment');
+var gl              = require('../controllers/finance/ledgers/general');
+var genericFinance  = require('../controllers/finance/financeGeneric');
+var accounts        = require('../controllers/finance/accounts');
+var analytics       = require('../controllers/finance/analytics');
+var purchase        = require('../controllers/finance/purchase');
+var budget          = require('../controllers/finance/budget');
+var taxPayment      = require('../controllers/finance/taxPayment');
+var donations       = require('../controllers/finance/donations');
+var consumptionLoss = require('../controllers/stock/inventory/depreciate/consumptionLoss');
+
+var financeServices       = require('../controllers/categorised/financeServices');
+var depreciatedInventory  = require('../controllers/categorised/inventory_depreciate');
+var depreciatedReports    = require('../controllers/categorised/reports_depreciate');
+var payroll               = require('../controllers/categorised/payroll');
+var caution               = require('../controllers/categorised/caution');
+var employees             = require('../controllers/categorised/employees');
+var errors                = require('../controllers/categorised/errors');
+var subsidies             = require('../controllers/categorised/subsidies');
 
 // Middleware for handle uploaded file
 var multipart       = require('connect-multiparty');
@@ -85,8 +84,8 @@ exports.initialise = function (app) {
   app.get('/location/detail/:uuid', locations.lookupDetail);
 
   // -> Add :route
-  app.post('/report/build/:route', compileReport.build);
-  app.get('/report/serve/:target', compileReport.serve);
+  app.post('/report/build/:route', reports.build);
+  app.get('/report/serve/:target', reports.serve);
 
   app.post('/purchase', createPurchase.execute);
   app.post('/sale/', createSale.execute);
@@ -114,7 +113,7 @@ exports.initialise = function (app) {
   app.get('/fiscal', fiscal.getFiscalYears);
   app.post('/fiscal/create', fiscal.createFiscalYear);
 
-  app.get('/reports/:route/', report.buildReport);
+  app.get('/reports/:route/', legacyReports.buildReport);
 
   app.get('/tree', tree.generate);
 

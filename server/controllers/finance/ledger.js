@@ -10,8 +10,8 @@
 // for each group, respectively.
 
 var q =  require('q');
-var db = require('./../lib/db');
-var sanitize = require('./../lib/sanitize');
+var db = require('./../../lib/db');
+var sanitize = require('./../../lib/sanitize');
 
 exports.debitor = debtor;
 exports.debitor_group = debitorGroup;

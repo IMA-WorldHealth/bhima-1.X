@@ -1,10 +1,10 @@
 var q = require('q'),
     core = require('./core'),
-    uuid = require('../../lib/guid'),
-    sanitize = require('../../lib/sanitize'),
-    validate = require('../../lib/validate')(),
-    util = require('../../lib/util'),
-    db = require('../../lib/db');
+    uuid = require('../../../lib/guid'),
+    sanitize = require('../../../lib/sanitize'),
+    validate = require('../../../lib/validate')(),
+    util = require('../../../lib/util'),
+    db = require('../../../lib/db');
 
 // TODO
 // 1) convert everything to using db.exec()

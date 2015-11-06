@@ -1,7 +1,7 @@
 // patient controller
 
-var db = require('../lib/db'),
-    guid = require('../lib/guid');
+var db = require('../../lib/db'),
+    guid = require('../../lib/guid');
 
 // assure the array is empty
 function empty(array) {

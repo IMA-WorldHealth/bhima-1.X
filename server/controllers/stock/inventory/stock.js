@@ -1,5 +1,5 @@
 
-var db = require('../../lib/db');
+var db = require('../../../lib/db');
 
 exports.getStockLevels = getStockLevels;
 exports.getStockLevelsById = getStockLevelsById;

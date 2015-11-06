@@ -51,9 +51,9 @@
  */
 
 var q = require('q'),
-    db = require('../lib/db'),
-    uuid = require('../lib/guid'),
-    util = require('../lib/util');
+    db = require('../../lib/db'),
+    uuid = require('../../lib/guid'),
+    util = require('../../lib/util');
 
 // utility function to sum an array of objects
 // on a particular property

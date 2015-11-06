@@ -1,4 +1,4 @@
-var db = require('../../lib/db'),
+var db = require('../../../lib/db'),
     q = require('q');
 
 // GET /analytics/cashboxes

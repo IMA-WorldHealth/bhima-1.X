@@ -5,8 +5,8 @@ var csv    = require('fast-csv'),
 	fs     = require('fs'),
 	q      = require('q');
 
-var config = require('../config/environment/server'),
-	db     = require('../lib/db');
+var config = require('../../config/environment/server'),
+	db     = require('../../lib/db');
 	
 var uploadDir = config.uploadFolder;
 

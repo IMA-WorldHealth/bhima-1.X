@@ -1,8 +1,8 @@
 var q = require('q');
-var db = require('./../lib/db');
-var parser = require('./../lib/parser');
+var db = require('./../../lib/db');
+var parser = require('./../../lib/parser');
+var uuid = require('./../../lib/guid');
 var journal = require('./journal');
-var uuid = require('./../lib/guid');
 
 /*
  * HTTP Controllers

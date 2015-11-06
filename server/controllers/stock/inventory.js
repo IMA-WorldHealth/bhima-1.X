@@ -25,7 +25,7 @@
 * results.
 */
 
-var db = require('../lib/db'),
+var db = require('../../lib/db'),
     q  = require('q');
 
 var core        = require('./inventory/core'),

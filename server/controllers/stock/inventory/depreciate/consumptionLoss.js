@@ -1,8 +1,9 @@
 var q = require('q');
-var db = require('./../lib/db');
-var parser = require('./../lib/parser');
-var uuid = require('./../lib/guid');
-var journal = require('./journal');
+var db = require('./../../../../lib/db');
+var parser = require('./../../../../lib/parser');
+var uuid = require('./../../../../lib/guid');
+
+var journal = require('./../../../finance/journal');
 
 'use strict';
 

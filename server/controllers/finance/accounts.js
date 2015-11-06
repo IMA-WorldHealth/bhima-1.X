@@ -1,7 +1,7 @@
 //TODO Refactor/define accounts API
 
-var db = require('../lib/db');
-var sanitize = require('../lib/sanitize');
+var db = require('../../lib/db');
+var sanitize = require('../../lib/sanitize');
 
 // GET /accounts
 exports.getAccounts = function (req, res, next) {

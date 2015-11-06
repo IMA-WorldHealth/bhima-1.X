@@ -1,6 +1,6 @@
-var journal = require('./../controllers/journal');
+var journal = require('./../../controllers/journal');
 
-var db = require('../lib/db');
+var db = require('../../lib/db');
 var q = require('q');
 
 exports.post = function (req, res, next) { 

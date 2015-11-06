@@ -4,9 +4,9 @@
  * a standardised server API
  */
 
-var db = require('../lib/db'),
+var db = require('./../../lib/db'),
+    guid = require('./../../lib/guid'),
     core = require('./journal/core'),
-    guid = require('../lib/guid'),
     q = require('q');
 
 // utilities

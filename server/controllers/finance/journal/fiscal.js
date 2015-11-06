@@ -1,10 +1,10 @@
 var q         = require('q'),
     core      = require('./core'),
-    uuid      = require('../../lib/guid'),
-    sanitize  = require('../../lib/sanitize'),
-    validate  = require('../../lib/validate')(),
-    db        = require('../../lib/db'),
-    util      = require('../../lib/util');
+    uuid      = require('../../../lib/guid'),
+    sanitize  = require('../../../lib/sanitize'),
+    validate  = require('../../../lib/validate')(),
+    db        = require('../../../lib/db'),
+    util      = require('../../../lib/util');
 
 exports.close = close;
 exports.create = create;

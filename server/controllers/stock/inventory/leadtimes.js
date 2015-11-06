@@ -3,7 +3,7 @@
 * These times are also known as 'lead times' for stock.
 */
 
-var db = require('../../lib/db');
+var db = require('../../../lib/db');
 
 exports.getInventoryLeadTimes= getInventoryLeadTimes;
 exports.getInventoryLeadTimesById = getInventoryLeadTimesById;

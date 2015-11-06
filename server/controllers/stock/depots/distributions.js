@@ -15,10 +15,10 @@
 *
 */
 
-var db      = require('../../lib/db'),
+var db      = require('../../../lib/db');
+var uuid    = require('../../../lib/guid'),
     q       = require('q'),
-    journal = require('../journal'),
-    uuid    = require('../../lib/guid');
+    journal = require('../../journal');
 
 exports.createDistributions = createDistributions;
 

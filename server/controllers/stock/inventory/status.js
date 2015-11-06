@@ -1,4 +1,4 @@
-var db          = require('../../lib/db'),
+var db          = require('../../../lib/db'),
     core        = require('./core'),
     consumption = require('./consumption'),
     leadtimes   = require('./leadtimes'),

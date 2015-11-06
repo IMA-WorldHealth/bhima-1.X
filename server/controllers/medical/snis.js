@@ -2,9 +2,9 @@ var Q = require('q');
 var querystring = require('querystring');
 var url = require('url');
 
-var db = require('./../lib/db');
-var sanitize = require('./../lib/sanitize');
-var util = require('./../lib/util');
+var db = require('./../../lib/db');
+var sanitize = require('./../../lib/sanitize');
+var util = require('./../../lib/util');
 
 var _REPORT_ID;
 

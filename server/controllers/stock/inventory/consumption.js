@@ -6,7 +6,7 @@
 */
 
 var q = require('q'),
-    db = require('../../lib/db');
+    db = require('../../../lib/db');
 
 // exports
 exports.getItemConsumption = getItemConsumption;
