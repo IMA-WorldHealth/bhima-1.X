@@ -110,7 +110,7 @@ function ReportBalanceMensuelleController($translate, $window, $http, messenger,
       Object.keys(accounts).forEach(function (item){
         accounts[item].endDebit = 0;
         accounts[item].endCredit = 0;
-        var sold = (accounts[item].beginDebit || 0 - accounts[item].beginCredit || 0) + (accounts[item].middleDebit || 0 - accounts[item].middleCredit || 0);
+        var sold = (accounts[item].beginDebit || 0 - accounts[item].beginCredit || 0) + (accounts[item].middleDebit - accounts[item].middleCredit);
         sold < 0 ? accounts[item].endCredit = sold * -1 : accounts[item].endDebit = sold;
       });
 
