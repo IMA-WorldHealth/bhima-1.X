@@ -6,10 +6,6 @@ ReportBalanceMensuelleController.$inject = [
   'DateService'
 ];
 
-/**
-* Report Balance Mensuelle Controller
-* This controller is responsible for managing balance menselle data
-*/
 function ReportBalanceMensuelleController($translate, $window, $http, messenger, exportFile, Session, Dates) {
   var vm = this,
       dependencies = {},
@@ -46,52 +42,6 @@ function ReportBalanceMensuelleController($translate, $window, $http, messenger,
     session.enterprise = Session.enterprise;
   }
 
-  function initialize(model) {
-    angular.extend(vm, model);
-    var balance = model.balance_mensuelle.data,
-        newSoldeDebit, newSoldeCredit;
-
-    balance.forEach(function (balances) {
-      newSoldeDebit = balances.old_debit + balances.debit;
-      newSoldeCredit = balances.old_credit + balances.credit;
-
-      if (balances.is_asset === 1) {
-        if (balances.old_debit > balances.old_credit) {
-          balances.old_debit -= balances.old_credit;
-          balances.old_credit = 0;
-        } else {
-          balances.old_credit -= balances.old_debit;
-          balances.old_debit = 0;
-        }
-
-        if (newSoldeDebit > newSoldeCredit) {
-          balances.solde_debit = newSoldeDebit - newSoldeCredit;
-          balances.solde_credit = 0;
-        } else {
-          balances.solde_credit = newSoldeCredit - newSoldeDebit;
-          balances.solde_debit = 0;
-        }
-
-      } else if (balances.is_asset === 0) {
-        if (balances.old_debit > balances.old_credit) {
-          balances.old_debit -= balances.old_credit;
-          balances.old_credit = 0;
-        } else {
-          balances.old_credit -= balances.old_debit;
-          balances.old_debit = 0;
-        }
-
-        if (newSoldeDebit < newSoldeCredit) {
-          balances.solde_debit = 0;
-          balances.solde_credit = newSoldeCredit - newSoldeDebit;
-        } else {
-          balances.solde_debit = newSoldeDebit - newSoldeCredit;
-          balances.solde_credit = 0;
-        }
-      }
-    });
-  }
-
   // actually submits the form
   function submit(invalid) {
     var url;
@@ -117,41 +67,51 @@ function ReportBalanceMensuelleController($translate, $window, $http, messenger,
           totals,
           data = response.data;
 
-      // make the accounts object
-      accounts = data.beginning.reduce(function (accounts, row) {
-        var account,
-            id = row.account_number;
+      function getSold (item){
+        var result = {debit : 0, credit : 0}, sold = 0;
 
-        if (!accounts[id]) { accounts[id] = {}; }
-        account = accounts[id];
-        account.beginDebit = row.debit;
-        account.beginCredit = row.credit;
-        account.account_txt = row.account_txt;
-        return accounts;
+        if(item.is_asset === 1 || item.is_charge === 1){
+          sold = item.debit - item.credit;
+          sold < 0 ? result.credit = sold * -1 : result.debit = sold;
+        }else{
+          sold = item.credit - item.debit;
+          sold < 0 ? result.debit = sold * -1 : result.credit = sold;
+        }
+        return result;
+      }
+
+      // make the accounts object
+      accounts = data.beginning.reduce(function (init, row) {
+        var account = init, id = row.account_number;
+        var obj = account[id] = {}, sold = getSold(row);
+        obj.account_txt = row.account_txt;
+        obj.beginDebit = sold.debit;
+        obj.beginCredit = sold.credit;
+        obj.middleDebit = 0;
+        obj.middleCredit = 0;
+        obj.is_charge = row.is_charge;
+        obj.is_asset = row.is_asset;
+        account[id] = obj;
+        return account;
       }, {});
 
-      // add the middle references
-      data.middle.forEach(function (row) {
-        var account,
-            id = row.account_number;
 
-        if (!accounts[id]) { accounts[id] = {}; }
-        account = accounts[id];
+
+      data.middle.forEach(function (row){
+        var account = accounts[row.account_number] || {};
         account.middleDebit = row.debit;
         account.middleCredit = row.credit;
         account.account_txt = row.account_txt;
+        account.is_charge = row.is_charge;
+        account.is_asset = row.is_asset;
+        accounts[row.account_number] = account;
       });
 
-      // add the final balances
-      data.end.forEach(function (row) {
-        var account,
-            id = row.account_number;
-
-        if (!accounts[id]) { accounts[id] = {}; }
-        account = accounts[id];
-        account.endDebit = row.debit;
-        account.endCredit = row.credit;
-        account.account_txt = row.account_txt;
+      Object.keys(accounts).forEach(function (item){
+        accounts[item].endDebit = 0;
+        accounts[item].endCredit = 0;
+        var sold = (accounts[item].beginDebit || 0 - accounts[item].beginCredit || 0) + (accounts[item].middleDebit || 0 - accounts[item].middleCredit || 0);
+        sold < 0 ? accounts[item].endCredit = sold * -1 : accounts[item].endDebit = sold;
       });
 
       // calculate totals
@@ -227,36 +187,39 @@ function ReportBalanceMensuelleController($translate, $window, $http, messenger,
   }
 
   function download() {
+    var data = angular.copy(vm.accounts);
+    var tbl = [];
     var fileData = {};
     var metadata = Dates.util.str(session.periode) + '_' + session.classe.number + '(' + session.classe.name + ')';
     var fileName = $translate.instant('BALANCE_MENSUELLE.TITLE') +
                   '_' + metadata;
+    var occurences = Object.keys(data);    
 
     fileData.column = [
       $translate.instant('BALANCE_MENSUELLE.ACCOUNT'),
       $translate.instant('BALANCE_MENSUELLE.LABEL'),
-      $translate.instant('BALANCE_MENSUELLE.OLD_SOLD') + ' ' + $translate.instant('BALANCE_MENSUELLE.DEBITOR'),
-      $translate.instant('BALANCE_MENSUELLE.OLD_SOLD') + ' ' + $translate.instant('BALANCE_MENSUELLE.CREDITOR'),
-      $translate.instant('BALANCE_MENSUELLE.MONTH_MOVEMENT') + ' ' + $translate.instant('BALANCE_MENSUELLE.DEBIT'),
-      $translate.instant('BALANCE_MENSUELLE.MONTH_MOVEMENT') + ' ' + $translate.instant('BALANCE_MENSUELLE.CREDIT'),
-      $translate.instant('BALANCE_MENSUELLE.NEW_SOLD') + ' ' + $translate.instant('BALANCE_MENSUELLE.DEBITOR'),
-      $translate.instant('BALANCE_MENSUELLE.NEW_SOLD') + ' ' + $translate.instant('BALANCE_MENSUELLE.CREDITOR')
+      $translate.instant('BALANCE_MENSUELLE.OLD_SOLD'), 
+      $translate.instant('BALANCE_MENSUELLE.OLD_SOLD'),
+      $translate.instant('BALANCE_MENSUELLE.MONTH_MOVEMENT'),
+      $translate.instant('BALANCE_MENSUELLE.MONTH_MOVEMENT'),
+      $translate.instant('BALANCE_MENSUELLE.NEW_SOLD'),
+      $translate.instant('BALANCE_MENSUELLE.NEW_SOLD')
     ];
 
-    fileData.data = vm.balance_mensuelle.data.map(function (item) {
+    occurences = occurences.map(function (item){
       return {
-        'account_number' : item.account_number,
-        'account_txt'    : item.account_txt,
-        'old_debit'      : item.old_debit,
-        'old_credit'     : item.old_credit,
-        'debit'          : item.debit,
-        'credit'         : item.credit,
-        'solde_debit'    : item.solde_debit,
-        'solde_credit'   : item.solde_credit
-      };
+        account_number : item,
+        account_txt    : data[item].account_txt,
+        old_debit      : data[item].beginDebit || 0,
+        old_credit     : data[item].beginCredit || 0,
+        debit          : data[item].middleDebit || 0,
+        credit         : data[item].middleCredit || 0,
+        solde_debit    : data[item].endDebit || 0,
+        solde_credit   : data[item].endCredit || 0
+      }
     });
 
+    fileData.data = occurences;
     exportFile.csv(fileData, fileName, false);
   }
-
 }
