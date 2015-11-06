@@ -175,6 +175,7 @@
   "LANGUAGE"        : "Langue"
   },
 "BALANCE_MENSUELLE": {
+   "ACCOUNT"         : "Compte",
    "CHOOSE_CLASS"    : "Choisissez une classe",
    "CHOOSE_PERIOD"   : "Choisissez une periode",
    "CLASS"           : "Classe",
@@ -185,7 +186,7 @@
    "NO_DATA"         : "Il n'y a pas des donnees pour la periode!",
    "OLD_SOLD"        : "Ancien Solde",
    "REPORT"          : "Rapport Balance Mensuelle",
-   "TITLE"           : "Balance Mensuelle par Classe"
+   "TITLE"           : "Balance Mensuelle"
    },
 "BILAN" : {
   "BUILD_BILAN"     : "Génération bilan",

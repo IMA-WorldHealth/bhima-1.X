@@ -743,7 +743,7 @@ function balanceMensuelle(params) {
 
   // gets the amount up to the current period
   sql =
-    'SELECT a.account_number, a.id, a.account_txt, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit ' +
+    'SELECT a.account_number, a.id, a.account_txt, a.account_type_id, a.is_charge, a.is_asset, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit ' +
     'FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id ' +
     'JOIN period AS p ON pt.period_id = p.id ' +
     'WHERE p.period_stop <= DATE(?) AND pt.enterprise_id = ? ' +
@@ -755,7 +755,7 @@ function balanceMensuelle(params) {
     data.beginning = rows;
 
     sql =
-      'SELECT a.account_number, a.account_txt, a.id, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit ' +
+      'SELECT a.account_number, a.account_txt, a.id, a.account_type_id, a.is_charge, a.is_asset, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit ' +
       'FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id ' +
       'JOIN period AS p ON pt.period_id = p.id ' +
       'WHERE DATE(?) BETWEEN p.period_start AND p.period_stop AND pt.enterprise_id = ? ' +
@@ -765,20 +765,7 @@ function balanceMensuelle(params) {
     return db.exec(sql, [query.date, query.enterpriseId, query.classe]);
   })
   .then(function (rows) {
-    data.middle = rows;
-
-    sql =
-      'SELECT a.account_number, a.account_txt, a.id, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit ' +
-      'FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id ' +
-      'JOIN period AS p ON pt.period_id = p.id ' +
-      'WHERE period_start <= DATE(?) AND pt.enterprise_id = ? ' +
-       (hasClasse ? 'AND a.classe = ? ' : '') +
-      'GROUP BY a.id;';
-
-    return db.exec(sql, [query.date, query.enterpriseId, query.classe]);
-  })
-  .then(function (rows) {
-    data.end = rows;
+    data.middle = rows;    
     return data;
   });
 }
