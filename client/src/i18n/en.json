@@ -173,6 +173,7 @@
   "LANGUAGE"        : "Language"
   },
 "BALANCE_MENSUELLE": {
+   "ACCOUNT"         : "Account",
    "CHOOSE_CLASS"    : "Choose a class",
    "CHOOSE_PERIOD"   : "Choose a period",
    "CLASS"           : "Class",
