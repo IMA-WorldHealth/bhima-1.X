@@ -1,4 +1,8 @@
-// controllers/finance.js
+/**
+ * TODO This file performs many varies finance requests, mostly revolving around 
+ * requesting data from tables - this should be refactored/ removed whilst implementing
+ * a standardised server API
+ */
 
 var db = require('../lib/db'),
     core = require('./journal/core'),

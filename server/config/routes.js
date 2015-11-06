@@ -30,13 +30,13 @@ var compileReport   = require('../controllers/reports_proposed/reports.js');
 var snis            = require('../controllers/snis');
 var extra           = require('../controllers/extraPayment');
 var gl              = require('../controllers/ledgers/general');
-var finance         = require('../controllers/finance');
+var genericFinance  = require('../controllers/finance/financeGeneric');
 var accounts        = require('../controllers/accounts');
 var auth            = require('../controllers/auth'),
     projects        = require('../controllers/projects'),
     users           = require('../controllers/users'),
     analytics       = require('../controllers/analytics'),
-    stock           = require('../controllers/stock'),
+    // stock           = require('../controllers/stock'),
     purchase        = require('../controllers/purchase'),
     inventory       = require('../controllers/inventory'),
     patient         = require('../controllers/patient'),
@@ -247,7 +247,7 @@ exports.initialise = function (app) {
   /* continuing on ... */
 
   // stock API
-  app.get('/donations', stock.getRecentDonations);
+  app.get('/donations', donations.getRecentDonations);
 
   // TODO - make a purchase order controller
   app.get('/purchaseorders', purchase.getPurchaseOrders);
@@ -262,12 +262,12 @@ exports.initialise = function (app) {
   app.get('/ledgers/general', gl.route);
 
   // finance controller
-  app.get('/finance/debtors', finance.getDebtors);
-  app.get('/finance/creditors', finance.getCreditors);
-  app.get('/finance/currencies', finance.getCurrencies);
-  app.get('/finance/profitcenters', finance.getProfitCenters);
-  app.get('/finance/costcenters', finance.getCostCenters);
-  app.post('/finance/journalvoucher', finance.postJournalVoucher);
+  app.get('/finance/debtors', genericFinance.getDebtors);
+  app.get('/finance/creditors', genericFinance.getCreditors);
+  app.get('/finance/currencies', genericFinance.getCurrencies);
+  app.get('/finance/profitcenters', genericFinance.getProfitCenters);
+  app.get('/finance/costcenters', genericFinance.getCostCenters);
+  app.post('/finance/journalvoucher', genericFinance.postJournalVoucher);
 
   // accounts controller
   app.get('/accounts', accounts.getAccounts);

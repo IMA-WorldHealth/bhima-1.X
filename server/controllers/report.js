@@ -960,6 +960,7 @@ function operatingAccount(params) {
 
 
 
+
 function generate(request, params, done) {
   /*summary
   *   Route request for reports, if no report matches given request, return null
