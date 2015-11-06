@@ -183,7 +183,7 @@
    "NO_DATA"         : "There is no data for that period!",
    "OLD_SOLD"        : "Old Balance",
    "REPORT"          : "Monthly Balance Report",
-   "TITLE"           : "Monthly Balance by Class"
+   "TITLE"           : "Monthly Balance"
    },
 "BILAN" : {
   "BUILD_BILAN"     : "Build bilan",
