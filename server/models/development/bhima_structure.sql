@@ -47,7 +47,7 @@ CREATE TABLE `account` (
   CONSTRAINT `account_ibfk_3` FOREIGN KEY (`cc_id`) REFERENCES `cost_center` (`id`),
   CONSTRAINT `account_ibfk_4` FOREIGN KEY (`account_type_id`) REFERENCES `account_type` (`id`),
   CONSTRAINT `account_ibfk_5` FOREIGN KEY (`reference_id`) REFERENCES `reference` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3626 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3628 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `account_type` */
 
@@ -711,7 +711,7 @@ CREATE TABLE `donor` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `employee` */
 
@@ -830,7 +830,7 @@ CREATE TABLE `exchange_rate` (
   KEY `foreign_currency_id` (`foreign_currency_id`),
   CONSTRAINT `exchange_rate_ibfk_1` FOREIGN KEY (`enterprise_currency_id`) REFERENCES `currency` (`id`),
   CONSTRAINT `exchange_rate_ibfk_2` FOREIGN KEY (`foreign_currency_id`) REFERENCES `currency` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=172 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `fiscal_year` */
 
@@ -1463,7 +1463,7 @@ CREATE TABLE `permission` (
   KEY `user_id` (`user_id`),
   CONSTRAINT `permission_ibfk_1` FOREIGN KEY (`unit_id`) REFERENCES `unit` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `permission_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1008 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `posting_journal` */
 
@@ -1592,7 +1592,7 @@ CREATE TABLE `primary_cash` (
   CONSTRAINT `primary_cash_ibfk_4` FOREIGN KEY (`cash_box_id`) REFERENCES `cash_box` (`id`),
   CONSTRAINT `primary_cash_ibfk_5` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   CONSTRAINT `primary_cash_ibfk_6` FOREIGN KEY (`origin_id`) REFERENCES `primary_cash_module` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=526 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1419 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `primary_cash_item` */
 
@@ -1716,7 +1716,7 @@ CREATE TABLE `purchase` (
   CONSTRAINT `purchase_ibfk_2` FOREIGN KEY (`creditor_uuid`) REFERENCES `creditor` (`uuid`),
   CONSTRAINT `purchase_ibfk_4` FOREIGN KEY (`paid_uuid`) REFERENCES `primary_cash` (`uuid`),
   CONSTRAINT `purchase_ibfk_5` FOREIGN KEY (`receiver_id`) REFERENCES `employee` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=138 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=289 DEFAULT CHARSET=latin1;
 
 /*Table structure for table `purchase_item` */
 
@@ -1816,7 +1816,7 @@ CREATE TABLE `sale` (
   `note` text,
   `posted` tinyint(1) NOT NULL DEFAULT '0',
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `is_distributable` BOOLEAN NOT NULL DEFAULT 1,
+  `is_distributable` bit(1) NOT NULL DEFAULT b'1',
   PRIMARY KEY (`uuid`),
   KEY `reference` (`reference`),
   KEY `project_id` (`project_id`),
