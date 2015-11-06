@@ -51,7 +51,7 @@ var paths = {
     javascript : ['client/src/js/define.js', 'client/src/js/app.js', 'client/src/**/*.js', '!client/src/i18n/**/*.js', '!client/src/lib/**/*.js'],
     excludeLint: ['!client/src/lib/**/*.js'],
     css        : ['client/src/partials/**/*.css', 'client/src/css/*.css'],
-    vendor     : ['client/vendor/**/*.js', 'client/vendor/**/*.css', '!client/vendor/**/src{,/**}', '!client/vendor/**/js{,/**}'],
+    vendor     : ['client/vendor/**/*.js', 'client/vendor/**/*.css', 'client/vendor/**/*.woff2', 'client/vendor/**/*.woff', 'client/vendor/**/*.ttf', '!client/vendor/**/src{,/**}', '!client/vendor/**/js{,/**}'],
     e2etest    : ['client/test/e2e/**/*.spec.js'],
     unittest   : [],
 
@@ -141,6 +141,18 @@ gulp.task('client-vendor-build-slickgrid', function () {
   return gulp.src(slickgridComponents)
     .pipe(concat('bhima.slickgrid.js'))
     .pipe(gulp.dest(CLIENT_FOLDER + 'vendor/slickgrid'));
+});
+
+gulp.task('client-vendor-build-bootstrap', function () { 
+  
+  /**
+   * For now this just moves the latest version of bootstrap into the repository
+   * This build process should compile the latest bhima less definition with the 
+   * latest vendor files
+   * - move less file to bootstrap vendor folder
+   * - compile with lessc
+   * - copy CSS into static file folder
+   */
 });
 
 // move static files to the public directory
