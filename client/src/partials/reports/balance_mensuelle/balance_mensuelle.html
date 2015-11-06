@@ -108,15 +108,15 @@
                   <i class="glyphicon glyphicon-exclamation-sign"></i> {{ "BALANCE_MENSUELLE.NO_DATA" | translate }}
                 </td>
               </tr>
-              <tr ng-repeat="(number, account) in ReportCtrl.accounts | orderBy:'number'" class="text-right">
-                <td class="text-left">{{ number }}</td>
+              <tr ng-repeat="(num, account) in ReportCtrl.accounts | orderBy:'num'" class="text-right">
+                <td class="text-left">{{ num }}</td>
                 <td class="text-left"> {{ account.account_txt }}</td>
-                <td>{{ (account.beginDebit || 0) | currency:session.enterprise.currency_id }}</td>
-                <td>{{ (account.beginCredit || 0) | currency:session.enterprise.currency_id }}</td>
-                <td>{{ (account.middleDebit || 0) | currency:session.enterprise.currency_id }}</td>
-                <td>{{ (account.middleCredit || 0) | currency:session.enterprise.currency_id }}</td>
-                <td>{{ (account.endDebit || 0) | currency:session.enterprise.currency_id }}</td>
-                <td>{{ (account.endCredit || 0) | currency:session.enterprise.currency_id }}</td>
+                <td>{{ (account.beginDebit) | currency:session.enterprise.currency_id }}</td>
+                <td>{{ (account.beginCredit) | currency:session.enterprise.currency_id }}</td>
+                <td>{{ (account.middleDebit) | currency:session.enterprise.currency_id }}</td>
+                <td>{{ (account.middleCredit) | currency:session.enterprise.currency_id }}</td>
+                <td>{{ (account.endDebit) | currency:session.enterprise.currency_id }}</td>
+                <td>{{ (account.endCredit) | currency:session.enterprise.currency_id }}</td>
               </tr>
             </tbody>
             <tfoot class="balance-mensuelle-footer">
