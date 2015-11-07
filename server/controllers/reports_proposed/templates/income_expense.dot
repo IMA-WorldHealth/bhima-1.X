@@ -73,7 +73,7 @@
 
           {{ function displayAccounts(accounts, compareAccounts) { 
                accounts.forEach(function (line, index) { }}
-
+        
         <tr>
           
           <td 
@@ -84,9 +84,6 @@
           </td>
 
           /* <{{? line.account_type_id !== it.TITLE_ACCOUNT_ID}}> */
-          {{? line.account_type_id === it.TITLE_ACCOUNT_ID}}
-          <td>{{=line.total}}</td>
-          {{?}}
 
           <td style="text-align : right;">{{=line.balance || 0}}</td>
          

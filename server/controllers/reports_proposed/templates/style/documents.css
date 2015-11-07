@@ -85,3 +85,9 @@ tr > th:last-child {
 .rowTitle { 
   text-decoration: underline;
 }
+
+.total > td { 
+  background-color : grey;
+  border-top : 1px solid black;
+  border-bottom : 1px solid black;
+}

@@ -1,3 +1,6 @@
+// This is a temporary data collection file to demonstrate the reporting framework
+// This should NOT be used in production
+
 /**
  * @description 
  *
@@ -18,7 +21,8 @@
 var q       = require('q');
 var db      = require('../../../lib/db');
 var numeral = require('numeral');
-var moment = require('moment');
+// FIXME Include moment dependency
+// var moment = require('moment');
 
 /**
  * Default configuration options 
@@ -199,15 +203,7 @@ function getChildren(treeObject, parentId, depth) {
     step = getChildren(accounts, account.account_number, depth + 1);
 
     account.depth = depth;
-
     account.children = step.accounts;
-     
-    total += step.aggregateTotal;
-    if (account.total) { 
-      account.total += step.aggregateTotal;
-    } else { 
-      account.total = step.aggregateTotal;
-    }
   });
   
   // return children;
@@ -340,8 +336,11 @@ function calculateFiscalPeriod(fiscalYear) {
   
   completeDate.setMonth(fiscalDate.getMonth() + fiscalYear.number_of_months);
 
+  // FIXME Include moment dependency (unable to download)
   return { 
-    start : moment(fiscalDate).format('L'),
-    end : moment(completeDate).format('L')
+    // start : moment(fiscalDate).format('L'),
+    // end : moment(completeDate).format('L')
+    start : fiscalDate.toString(),
+    end : completeDate.toString()
   };
 }
