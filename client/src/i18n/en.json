@@ -996,8 +996,8 @@
    "SELECT"                 : " Select sale for distribution",
    "SELECTED_SALE_DETAILS"  : "Details of selected sale",
    "SELECT_FROM"            : "Selected from lot",
+   "SELECT_PRESCRIPTION"    : "Select prescription sale",
    "SHOW_ALL_SALES"         : "Showing all sales for patient",
-   "SLECT_PRESCRIPTION"     : "Select prescription sale",
    "SUBMIT"                 : "Submit",
    "TITLE"                  : "Stock Distribution",
    "TOTAL"                  : "Total",
@@ -2660,13 +2660,13 @@
      "KEY" : "Stock distribution to services"
      },
  "EXPIRATIONS": {
-    "TODAY"           : "Expire aujourd'hui",
-    "30_DAYS"         : "Expire dans moins de 30 jours",
-    "30_TO_60_DAYS"   : "Expire entre 30 et 60 jours",
-    "60_TO_90_DAYS"   : "Expire entre 60 et 90 jours",
-    "90_TO_120_DAYS"  : "Expire entre 90 et 120 jours",
-    "120_TO_180_DAYS" : "Expire entre 120 et 180 jours",
-    "180_TO_360_DAYS" : "Expire entre 180 et 360 jours"
+   "TODAY"           : "Expired",
+   "30_DAYS"         : "Expire within 30 days",
+   "30_TO_60_DAYS"   : "Expire between 30 and 60 days",
+   "60_TO_90_DAYS"   : "Expire between 60 and 90 days",
+   "90_TO_120_DAYS"  : "Expire between 90 and 120 days",
+   "120_TO_180_DAYS" : "Expire between 120 and 180 days",
+   "180_TO_360_DAYS" : "Expire between 180 and 360 days"
     },
   "EXPIRE": {
      "KEY" : "Expiring Stock"

@@ -998,8 +998,8 @@
    "SELECT"                 : "Choisir vente pour distribution",
    "SELECTED_SALE_DETAILS"  : "Détail de la vente",
    "SELECT_FROM"            : "Sélectionne du lot",
+   "SELECT_PRESCRIPTION"    : "Sélectionner la vente",
    "SHOW_ALL_SALES"         : "Afficher toutes les ventes pour ce patient",
-   "SLECT_PRESCRIPTION"     : "Sélectionner la vente",
    "SUBMIT"                 : "Soumettre",
    "TITLE"                  : "Distribution des Médicaments aux malades",
    "TOTAL"                  : "Total",
@@ -2664,13 +2664,13 @@
       "KEY" : "Distribution stock au services"
       },
    "EXPIRATIONS": {
-       "TODAY"           : "Expire today",
-       "30_DAYS"         : "Expire within 30 days",
-       "30_TO_60_DAYS"   : "Expire between 30 and 60 days",
-       "60_TO_90_DAYS"   : "Expire between 60 and 90 days",
-       "90_TO_120_DAYS"  : "Expire between 90 and 120 days",
-       "120_TO_180_DAYS" : "Expire between 120 and 180 days",
-       "180_TO_360_DAYS" : "Expire between 180 and 360 days"
+      "TODAY"           : "Expirés",
+      "30_DAYS"         : "Expire dans moins de 30 jours",
+      "30_TO_60_DAYS"   : "Expire entre 30 et 60 jours",
+      "60_TO_90_DAYS"   : "Expire entre 60 et 90 jours",
+      "90_TO_120_DAYS"  : "Expire entre 90 et 120 jours",
+      "120_TO_180_DAYS" : "Expire entre 120 et 180 jours",
+      "180_TO_360_DAYS" : "Expire entre 180 et 360 jours"
        },
    "EXPIRE": {
       "KEY" : "Expiration du stock"
