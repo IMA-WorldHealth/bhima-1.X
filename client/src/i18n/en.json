@@ -174,7 +174,6 @@
   "LANGUAGE"        : "Language"
   },
 "BALANCE_MENSUELLE": {
-   "ACCOUNT"         : "Account",
    "CHOOSE_CLASS"    : "Choose a class",
    "CHOOSE_PERIOD"   : "Choose a period",
    "CLASS"           : "Class",
@@ -185,7 +184,7 @@
    "NO_DATA"         : "There is no data for that period!",
    "OLD_SOLD"        : "Old Balance",
    "REPORT"          : "Monthly Balance Report",
-   "TITLE"           : "Monthly Balance"
+   "TITLE"           : "Monthly Balance by Class"
    },
 "BILAN" : {
   "BUILD_BILAN"     : "Build bilan",
@@ -999,10 +998,6 @@
    "SELECT_FROM"            : "Selected from lot",
    "SELECT_PRESCRIPTION"    : "Select prescription sale",
    "SHOW_ALL_SALES"         : "Showing all sales for patient",
-<<<<<<< HEAD
-=======
-   "SELECT_PRESCRIPTION"     : "Select prescription sale",
->>>>>>> bbf862cb2088e540f7d3529cc4983e8d70aa57ce
    "SUBMIT"                 : "Submit",
    "TITLE"                  : "Stock Distribution",
    "TOTAL"                  : "Total",
@@ -3065,6 +3060,7 @@
    "SERVICE_STATE"             : "Service State",
    "STOCK"                     : "Stock",
    "STOCK_DASHBOARD"           : "Stock Dashboard",
+   "STOCK_DEPOT_REPORT"        : "Depots Stocks",
    "STOCK_DISTRIBUTION"        : "Stock Distribution",
    "STOCK_ENTRY_REPORT"        : "Stocks Entries",
    "STOCK_MANAGEMENT"          : "Stock Management",
