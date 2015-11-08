@@ -288,6 +288,7 @@ angular.module('bhima.controllers')
     function packageInvoiceRequest() {
       var requestContainer = {};
 
+
       //Seller ID will be inserted on the server
       requestContainer.sale = {
         project_id       : $scope.project.id,

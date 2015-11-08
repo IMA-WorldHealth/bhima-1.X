@@ -77,10 +77,10 @@
         <div class="input-group">
           <label class="input-group-addon">{{ 'SALE.TYPE' | translate }} :</label>
           <div class="form-control" style="padding:0px;padding-left:10px;">
-            <input type="radio" id="distributable" ng-model="session.is_distributable" ng-value="1" ng-change="getDistributable()">
+            <input type="radio" id="distributable" ng-model="session.is_distributable" ng-value="1">
             <label for="distributable">{{ 'SALE.DISTRIBUTABLE' | translate }}</label>
             <span class="po-type-space"></span>
-            <input type="radio" id="no_distributable" ng-model="session.is_distributable" ng-value="0" ng-change="getDistributable()">
+            <input type="radio" id="no_distributable" ng-model="session.is_distributable" ng-value="0">
             <label for="no_distributable">{{ 'SALE.NO_DISTRIBUTABLE' | translate }}</label>
           </div>
         </div>

@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('StockDistributionsController', StockDistributionsController);
 
 StockDistributionsController.$inject = [
-  '$q', '$routeParams', '$location', 'validate', 'connect', 'messenger', 'util', 'uuid', '$translate'
+  '$q', '$http', '$routeParams', '$location', 'connect', 'messenger', 'util', 'uuid', '$translate'
 ];
 
 /**
@@ -16,7 +16,7 @@ StockDistributionsController.$inject = [
 *
 * @constructor
 */
-function StockDistributionsController($q, $routeParams, $location, validate, connect, messenger, util, uuid, $translate) {
+function StockDistributionsController($q, $http, $routeParams, $location, connect, messenger, util, uuid, $translate) {
   var vm = this;
 
   vm.session = {
@@ -66,16 +66,15 @@ function StockDistributionsController($q, $routeParams, $location, validate, con
   moduleStep();
 
   function initialiseDistributionDetails(patient) {
-    dependencies.ledger.query = '/ledgers/debitor/' + patient.debitor_uuid;
     vm.session.patient = patient;
-    validate.process(dependencies).then(startup);
+    return $http.get('/ledgers/debitor/' + patient.debitor_uuid).then(startup).catch(function (err){console.log('error when fecthing data');});
   }
 
   function startup(model) {
-    angular.extend(vm, model);
-
+    vm.ledger = model;
     // filter out invoices that are either not distributable, or have
     // already been consumed.
+
     vm.ledger.data = vm.ledger.data.filter(function (data) {
       return data.is_distributable === 1 && data.consumed === 0;
     });
@@ -103,6 +102,7 @@ function StockDistributionsController($q, $routeParams, $location, validate, con
 
       $q.all(detailsRequest)
       .then(function (result) {
+        console.log('lot sur ce depot', result);
         vm.session.sale.details.forEach(function (saleItem, index) {
           var itemModel = result[index];
           if (itemModel.data.length) { saleItem.lots = itemModel; }
