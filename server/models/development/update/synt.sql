@@ -478,7 +478,7 @@ WHERE `account`.`is_charge` IS NULL AND LEFT(`account`.`account_number`, 1)=7;
 
 -- Move to Payroll
 -- =================
--- 
+--
 -- paycheck
 UPDATE `unit` SET `unit`.`parent`=57 WHERE `unit`.`id`=73;
 -- tax payment report
@@ -511,6 +511,11 @@ ALTER TABLE consumption_loss DROP COLUMN document_uuid;
 -- date: 2015-10-27
 UPDATE unit SET path='/depots', url='partials/depots' where id = 45;
 
+-- Stock entries report
+-- By: Bruce M.
+-- Date: 2015-11-06
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
+VALUES (134, 'Stock Entry Report', 'TREE.STOCK_ENTRY_REPORT', 'Rapport des entrees de stock' , 125, '/partials/reports/stock/stock_entry', '/reports/stock_entry');
 
 -- Restore the is_distributable sale property to be boolean
 -- author: Dedrick
