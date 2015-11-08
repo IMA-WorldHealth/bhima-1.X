@@ -42,7 +42,8 @@ var auth            = require('../controllers/auth'),
     inventory       = require('../controllers/inventory'),
     patient         = require('../controllers/patient'),
     depot           = require('../controllers/depot'),
-    budget          = require('../controllers/budget');
+    budget          = require('../controllers/budget'),
+    cashflow        = require('../controllers/cashflow');
 
 var patient         = require('../controllers/patient');
 
@@ -292,4 +293,7 @@ exports.initialise = function (app) {
   // budget controller
   app.post('/budget/upload', multipart({ uploadDir: 'client/upload'}), budget.upload);
   app.post('/budget/update', budget.update);
+
+  // cashflow
+  app.get('/cashflow/report/', cashflow.getReport);
 };
