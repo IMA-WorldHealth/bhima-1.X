@@ -478,7 +478,7 @@ WHERE `account`.`is_charge` IS NULL AND LEFT(`account`.`account_number`, 1)=7;
 
 -- Move to Payroll
 -- =================
--- 
+--
 -- paycheck
 UPDATE `unit` SET `unit`.`parent`=57 WHERE `unit`.`id`=73;
 -- tax payment report
@@ -523,3 +523,10 @@ ALTER TABLE `sale` CHANGE `is_distributable` `is_distributable` BOOLEAN NOT NULL
 -- date: 2015-11-07
 
 ALTER TABLE `consumption` CHANGE `quantity` `quantity` int(11) NOT NULL DEFAULT 0;
+
+-- Adding Cash Flow Report in Finance Reports
+-- By: Bruce M.
+-- Date: 2015-11-08
+
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
+VALUES (136, 'Cash Flow Report', 'TREE.CASH_FLOW', 'Cash Flow Report' , 128, '/partials/reports/cash_flow/', '/reports/cash_flow/');
