@@ -7,9 +7,10 @@ PrimaryCashExpenseGenericController.$inject = [
 ];
 
 function PrimaryCashExpenseGenericController ($scope, $routeParams, $translate, validate, messenger, SessionService, connect, uuid, util, Appcache, $location, exchange) {
-  var isDefined, tomorrow,
+  var tomorrow,
+      isDefined    = angular.isDefined,
       dependencies = {},
-      session      = $scope.session = { receipt : { date : new Date() }, configure : false, complete : false },
+      session      = $scope.session = { receipt : {}, configure : false, complete : false },
       cache        = new Appcache('expense');
 
   session.today = new Date();
@@ -70,13 +71,7 @@ function PrimaryCashExpenseGenericController ($scope, $routeParams, $translate, 
       throw new Error('No cashbox selected');
     }
 
-    isDefined = angular.isDefined;
     $scope.timestamp = new Date();
-
-    //session.today = $scope.timestamp.toISOString().slice(0, 10);
-    tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    session.tomorrow = util.htmlDate(tomorrow);
 
     // init models
     $scope.project =  SessionService.project;
