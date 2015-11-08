@@ -132,8 +132,9 @@ function CashController($scope, $location, $modal, $q, connect, Appcache, appsta
     });
 
     instance.result.then(function () {
-      $location.path('/exchange_rate');
-    }, function () {
+      $location.path('/exchange');
+    })
+    .catch(function () {
       $scope.errorState = true;
     });
   }
