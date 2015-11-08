@@ -174,7 +174,6 @@
   "LANGUAGE"        : "Language"
   },
 "BALANCE_MENSUELLE": {
-   "ACCOUNT"         : "Account",
    "CHOOSE_CLASS"    : "Choose a class",
    "CHOOSE_PERIOD"   : "Choose a period",
    "CLASS"           : "Class",
@@ -185,7 +184,7 @@
    "NO_DATA"         : "There is no data for that period!",
    "OLD_SOLD"        : "Old Balance",
    "REPORT"          : "Monthly Balance Report",
-   "TITLE"           : "Monthly Balance"
+   "TITLE"           : "Monthly Balance by Class"
    },
 "BILAN" : {
   "BUILD_BILAN"     : "Build bilan",
@@ -292,6 +291,9 @@
       "TITLE"              : "Regularization of payments",
       "WAIT_ACCOUNT"       : "Compte d'attente"
     },
+   "FLOW"  : {
+      "TITLE"         : "Cash Flow"
+   },
    "HELP_TXT_1"       : "The module allows debitors to pay against existing invoices",
    "HELP_TXT_2"       : "To begin, search for a debitor using the search bar above",
    "NO_EXCHANGE_RATE" : "Error : No exchange rate!",
@@ -409,6 +411,7 @@
    "COMMENT"               : "Comment",
    "CONFIRM_BY"            : "Confirm by",
    "CONFIRMED"             : "Confirmed",
+   "CONFIRMED_STOCK_ONLY"  : "Only stocks of confirmed purchase orders",
    "CONSUMABLE"            : "Consumable",
    "CONSUMED_STOCK"        : "Consumed Stock",
    "CONSUMPTION_PER_MONTH" : "Consumption per Month",
@@ -996,8 +999,8 @@
    "SELECT"                 : " Select sale for distribution",
    "SELECTED_SALE_DETAILS"  : "Details of selected sale",
    "SELECT_FROM"            : "Selected from lot",
+   "SELECT_PRESCRIPTION"    : "Select prescription sale",
    "SHOW_ALL_SALES"         : "Showing all sales for patient",
-   "SELECT_PRESCRIPTION"     : "Select prescription sale",
    "SUBMIT"                 : "Submit",
    "TITLE"                  : "Stock Distribution",
    "TOTAL"                  : "Total",
@@ -2330,6 +2333,7 @@
    "ROWS"                    : "Rows",
    "SIGNATURES"              : "Signatures",
    "STOCK"                   : "Stock Report",
+   "STOCK_ENTRY"             : "Stock entries",
    "TOTAL"                   : "Total",
    "TOTAL_CREDIT"            : "Total Credit",
    "TOTAL_DEBIT"             : "Total Debit",
@@ -2597,6 +2601,33 @@
   "SUBMIT"      : "Submit",
   "TITLE"       : "SNIS (Système National d'Information Sanitaire)"
   },
+"SOURCE" : {
+  "CAUTION" : "Caution",
+  "CASH" : "Cash",
+  "CASH_DISCARD" : "Cash discard",
+  "CONFIRM_PURCHASE" : "Purchase confirmation",
+  "COTISATION_ENGAGEMENT" : "Cotisation engagement",
+  "COTISATION_PAIEMENT" : "Cotisation payment",
+  "CREDIT_NOTE" : "Credit note",
+  "DISTRIBUTION" : "Distributions",
+  "DONATION" : "Donations",
+  "EMPLOYEE_INVOICE" : "Employee Invoice",
+  "GROUP_DEB_INVOICE" : "Invoice Debitor Group",
+  "GENERIC_EXPENSE" : "Generics expenses",
+  "GENERIC_INCOME" : "Generics incomes",
+  "IMPORT_AUTOMATIQUE" : "Auto Import",
+  "INDIRECT_PURCHASE" : "Indirect Purchase",
+  "JOURNAL" : "Journal",
+  "PAYROLL" : "Payroll",
+  "PCASH_CONVENTION" : "Conventions",
+  "PCASH_EMPLOYEE" : "Primary cash (Employee)",
+  "PCASH_TRANSFERT" : "Transferts",
+  "SALARY_ADVANCE" : "Salary Advance",
+  "SALE" : "Sale",
+  "STOCK_LOSS" : "Stock Loss",
+  "TAX_ENGAGEMENT" : "Tax Engagement",
+  "TAX_PAYMENT" : "Tax Payment"
+},
 "STOCK": {
   "ALERTS" : {
     "STOCKOUT" : "Stockout",
@@ -2659,13 +2690,13 @@
      "KEY" : "Stock distribution to services"
      },
  "EXPIRATIONS": {
-    "TODAY"           : "Expire aujourd'hui",
-    "30_DAYS"         : "Expire dans moins de 30 jours",
-    "30_TO_60_DAYS"   : "Expire entre 30 et 60 jours",
-    "60_TO_90_DAYS"   : "Expire entre 60 et 90 jours",
-    "90_TO_120_DAYS"  : "Expire entre 90 et 120 jours",
-    "120_TO_180_DAYS" : "Expire entre 120 et 180 jours",
-    "180_TO_360_DAYS" : "Expire entre 180 et 360 jours"
+   "TODAY"           : "Expired",
+   "30_DAYS"         : "Expire within 30 days",
+   "30_TO_60_DAYS"   : "Expire between 30 and 60 days",
+   "60_TO_90_DAYS"   : "Expire between 60 and 90 days",
+   "90_TO_120_DAYS"  : "Expire between 90 and 120 days",
+   "120_TO_180_DAYS" : "Expire between 120 and 180 days",
+   "180_TO_360_DAYS" : "Expire between 180 and 360 days"
     },
   "EXPIRE": {
      "KEY" : "Expiring Stock"
@@ -2835,7 +2866,7 @@
    "LOADING_ERROR"     : "Eror during loading, check if the exchange rate is setted, if the problem persists contact the administrator",
    "MONTANT"           : "Amount",
    "NO_CONVENTION"     : "No convention selected",
-   "NO_RECORD"         : "No record for this convention",
+   "NO_RECORD"         : "No record found",
    "PAYEMENT"          : "Pay Box",
    "SUCCES"            : "operation successfully !",
    "TITLE"             : "Support Payment",
@@ -2948,6 +2979,7 @@
    "CASH"                      : "Cash Payments",
    "CASHBOX_MANAGEMENT"        : "Cashbox Management",
    "CASHBOX_ACCOUNT_MANAGEMENT": "Treasure Configuration",
+   "CASH_FLOW"                 : "Cash Flow",
    "CASH_PAYMENTS"             : "Cash Payments",
    "CAUTION"                   : "Caution",
    "CHART_OF_ACCOUNTS"         : "Chart of Accounts",
@@ -3059,7 +3091,9 @@
    "SERVICE_STATE"             : "Service State",
    "STOCK"                     : "Stock",
    "STOCK_DASHBOARD"           : "Stock Dashboard",
+   "STOCK_DEPOT_REPORT"        : "Depots Stocks",
    "STOCK_DISTRIBUTION"        : "Stock Distribution",
+   "STOCK_ENTRY_REPORT"        : "Stocks Entries",
    "STOCK_MANAGEMENT"          : "Stock Management",
    "STOCK_STATUS"              : "Stock Status",
    "SUBSIDY"                   : "Subsidy management",
@@ -3145,6 +3179,7 @@
    "DATE_TO"           : "To",
    "DELETE_SUCCESS"    : "Successfully deleted",
    "DEPOT"             : "Store",
+   "DOCUMENT"          : "Document",
    "DONOR"             : "Donor",
    "DOLLARS"           : "Dollars",
    "EDIT_SUCCESS"      : "Successfully edited",
@@ -3161,6 +3196,7 @@
    "MONTHS"            : "Months",
    "NAVIGATION"        : "Navigation",
    "NEW_SUCCESS"       : "Successfully added",
+   "NO"                : "No",
    "NO_DATA"           : "The query did not return any data.",
    "OFF"               : "Off",
    "ON"                : "On",
@@ -3183,7 +3219,8 @@
    "TOTALS"            : "Totals",
    "TSHIKAJI"          : "TSHIKAJI",
    "VALIDATE"          : "Accept",
-   "YEARS"             : "Years"
+   "YEARS"             : "Years",
+   "YES"               : "Yes"
    },
 "VERSEMENT": {
    "ASSOCIATED_TO"     : "Accounts associated to         : ",

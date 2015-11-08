@@ -175,7 +175,6 @@
   "LANGUAGE"        : "Langue"
   },
 "BALANCE_MENSUELLE": {
-   "ACCOUNT"         : "Compte",
    "CHOOSE_CLASS"    : "Choisissez une classe",
    "CHOOSE_PERIOD"   : "Choisissez une periode",
    "CLASS"           : "Classe",
@@ -186,7 +185,7 @@
    "NO_DATA"         : "Il n'y a pas des donnees pour la periode!",
    "OLD_SOLD"        : "Ancien Solde",
    "REPORT"          : "Rapport Balance Mensuelle",
-   "TITLE"           : "Balance Mensuelle"
+   "TITLE"           : "Balance Mensuelle par Classe"
    },
 "BILAN" : {
   "BUILD_BILAN"     : "Génération bilan",
@@ -293,6 +292,9 @@
       "TITLE"              : "Régularisation des paiements",
       "WAIT_ACCOUNT"       : "Compte d'attente"
     },
+   "FLOW"  : {
+     "TITLE" : "Flux de liquidité (Cash Flow)"
+   },
    "HELP_TXT_1"       : "Cette module permettre des payer contre plusiers factures",
    "HELP_TXT_2"       : "Trouver un Débiteur avec le ",
    "NO_EXCHANGE_RATE" : "Erreur                                                      : Taux d'Exchange n'existe pas!",
@@ -410,6 +412,7 @@
    "COMMENT"               : "Commentaire",
    "CONFIRM_BY"            : "Confirmé par",
    "CONFIRMED"             : "Confirmé",
+   "CONFIRMED_STOCK_ONLY"  : "Seulement les stocks des commandes d'achat confirmées",
    "CONSUMABLE"            : "Consommable",
    "CONSUMED_STOCK"        : "Stock Consommé",
    "CONSUMPTION_PER_MONTH" : "Consommation par mois",
@@ -998,8 +1001,8 @@
    "SELECT"                 : "Choisir vente pour distribution",
    "SELECTED_SALE_DETAILS"  : "Détail de la vente",
    "SELECT_FROM"            : "Sélectionne du lot",
+   "SELECT_PRESCRIPTION"    : "Sélectionner la vente",
    "SHOW_ALL_SALES"         : "Afficher toutes les ventes pour ce patient",
-   "SELECT_PRESCRIPTION"     : "Sélectionner la vente",
    "SUBMIT"                 : "Soumettre",
    "TITLE"                  : "Distribution des Médicaments aux malades",
    "TOTAL"                  : "Total",
@@ -2332,6 +2335,7 @@
    "ROWS"                    : "Lignes",
    "SIGNATURES"              : "Signées",
    "STOCK"                   : "Rapport Stock",
+   "STOCK_ENTRY"             : "Les entrées en stock",
    "TOTAL"                   : "Total",
    "TOTAL_CREDIT"            : "Crédit Totale",
    "TOTAL_DEBIT"             : "Débit Totale",
@@ -2601,6 +2605,33 @@
   "SUBMIT"      : "Soumettre",
   "TITLE"       : "SNIS (Système National d'Information Sanitaire)"
   },
+"SOURCE" : {
+  "CAUTION" : "Caution",
+  "CASH" : "Caisse",
+  "CASH_DISCARD" : "Annulation caisse",
+  "CONFIRM_PURCHASE" : "Confirmation achat",
+  "COTISATION_ENGAGEMENT" : "Engagement Cotisations",
+  "COTISATION_PAIEMENT" : "Paiements Cotisations",
+  "CREDIT_NOTE" : "Note de Credit",
+  "DISTRIBUTION" : "Distributions",
+  "DONATION" : "Donations",
+  "EMPLOYEE_INVOICE" : "Invoice employés",
+  "GROUP_DEB_INVOICE" : "Invoice Groupe Debiteur",
+  "GENERIC_EXPENSE" : "Depenses generiques",
+  "GENERIC_INCOME" : "Recettes generiques",
+  "IMPORT_AUTOMATIQUE" : "Import Automatique",
+  "INDIRECT_PURCHASE" : "Achat indirect",
+  "JOURNAL" : "Journal",
+  "PAYROLL" : "Payroll",
+  "PCASH_CONVENTION" : "Conventions",
+  "PCASH_EMPLOYEE" : "Caisse principale (employés)",
+  "PCASH_TRANSFERT" : "Transferts",
+  "SALARY_ADVANCE" : "Avance salaire",
+  "SALE" : "Vente",
+  "STOCK_LOSS" : "Pertes de stock",
+  "TAX_ENGAGEMENT" : "Engagement Taxes",
+  "TAX_PAYMENT" : "Paiements taxes"
+},
 "STOCK": {
   "ALERTS" : {
     "STOCKOUT" : "Rupture de Stock",
@@ -2663,13 +2694,13 @@
       "KEY" : "Distribution stock au services"
       },
    "EXPIRATIONS": {
-       "TODAY"           : "Expire today",
-       "30_DAYS"         : "Expire within 30 days",
-       "30_TO_60_DAYS"   : "Expire between 30 and 60 days",
-       "60_TO_90_DAYS"   : "Expire between 60 and 90 days",
-       "90_TO_120_DAYS"  : "Expire between 90 and 120 days",
-       "120_TO_180_DAYS" : "Expire between 120 and 180 days",
-       "180_TO_360_DAYS" : "Expire between 180 and 360 days"
+      "TODAY"           : "Expirés",
+      "30_DAYS"         : "Expire dans moins de 30 jours",
+      "30_TO_60_DAYS"   : "Expire entre 30 et 60 jours",
+      "60_TO_90_DAYS"   : "Expire entre 60 et 90 jours",
+      "90_TO_120_DAYS"  : "Expire entre 90 et 120 jours",
+      "120_TO_180_DAYS" : "Expire entre 120 et 180 jours",
+      "180_TO_360_DAYS" : "Expire entre 180 et 360 jours"
        },
    "EXPIRE": {
       "KEY" : "Expiration du stock"
@@ -2839,7 +2870,7 @@
    "LOADING_ERROR"     : "Erreur durant le chargement, verifier que le taux d'echange est défini, si le probleme persiste constacter l'administrateur",
    "MONTANT"           : "Montant",
    "NO_CONVENTION"     : "Pas des convention sélectionnée",
-   "NO_RECORD"         : "Pas d'enregistrement pour cette convention",
+   "NO_RECORD"         : "Pas d'enregistrement trouvé",
    "PAYEMENT"          : "Boite de paie",
    "SUCCES"            : "Operation reussie !",
    "TITLE"             : "Paiement des prises en charge",
@@ -2952,6 +2983,7 @@
    "CASH"                      : "Caisse Auxilliaire",
    "CASHBOX_MANAGEMENT"        : "Caisses et Banques",
    "CASHBOX_ACCOUNT_MANAGEMENT": "Configuration Tresorerie",
+   "CASH_FLOW"                 : "Cash Flow",
    "CASH_PAYMENTS"             : "Paiements",
    "CAUTION"                   : "Paiement Anticipatif",
    "CHART_OF_ACCOUNTS"         : "Plan Comptable",
@@ -3063,7 +3095,9 @@
    "SERVICE_STATE"             : "Etat Service",
    "STOCK"                     : "Stock",
    "STOCK_DASHBOARD"           : "Tableau de bord du Stock",
+   "STOCK_DEPOT_REPORT"        : "Stocks Depots",
    "STOCK_DISTRIBUTION"        : "Distribution Stock",
+   "STOCK_ENTRY_REPORT"        : "Entrées Stocks",
    "STOCK_MANAGEMENT"          : "Gestion des stocks",
    "STOCK_STATUS"              : "Situation du stock",
    "SUBSIDY"                   : "Subventions",
@@ -3149,6 +3183,7 @@
    "DATE_TO"           : "Au",
    "DELETE_SUCCESS"    : "Suppression avec succès",
    "DEPOT"             : "Depot",
+   "DOCUMENT"          : "Document",
    "DONOR"             : "Donateur",
    "DOLLARS"           : "Dollars",
    "EDIT_SUCCESS"      : "Modification réussie",
@@ -3159,12 +3194,13 @@
    "IMCK"              : "IMCK",
    "IMCK_LONG"         : "Institut Médical Chrétien du Kasaï",
    "ITEMS"             : "Articles",
-  "LANGUAGE"             : "Langue",
+   "LANGUAGE"          : "Langue",
    "LOADING"           : "Chargement",
    "LINK"              : "Link",
    "MONTHS"            : "Mois",
    "NAVIGATION"        : "Navigation",
    "NEW_SUCCESS"       : "Ajout avec succès",
+   "NO"                : "Non",
    "NO_DATA"           : "La requette n'a pas des données",
    "OFF"               : "Off",
    "ON"                : "On",
@@ -3187,7 +3223,8 @@
    "TOTALS"            : "Totaux",
    "TSHIKAJI"          : "TSHIKAJI",
    "VALIDATE"          : "Accepter",
-   "YEARS"             : "Annees"
+   "YEARS"             : "Annees",
+   "YES"               : "Oui"
    },
 "VERSEMENT": {
    "ASSOCIATED_TO"     : "Les comptes associe à : ",

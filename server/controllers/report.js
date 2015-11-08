@@ -765,7 +765,7 @@ function balanceMensuelle(params) {
     return db.exec(sql, [query.date, query.enterpriseId, query.classe]);
   })
   .then(function (rows) {
-    data.middle = rows;    
+    data.middle = rows;
     return data;
   });
 }
