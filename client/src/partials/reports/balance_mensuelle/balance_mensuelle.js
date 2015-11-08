@@ -72,10 +72,18 @@ function ReportBalanceMensuelleController($translate, $window, $http, messenger,
 
         if(item.is_asset === 1 || item.is_charge === 1){
           sold = item.debit - item.credit;
-          sold < 0 ? result.credit = sold * -1 : result.debit = sold;
+          if(sold < 0){
+            result.credit = sold * -1 ;
+          }else{
+            result.debit = sold;
+          }
         }else{
           sold = item.credit - item.debit;
-          sold < 0 ? result.debit = sold * -1 : result.credit = sold;
+          if(sold < 0){
+            result.debit = sold * -1;
+          } else{
+            result.credit = sold;
+          }
         }
         return result;
       }
@@ -111,7 +119,11 @@ function ReportBalanceMensuelleController($translate, $window, $http, messenger,
         accounts[item].endDebit = 0;
         accounts[item].endCredit = 0;
         var sold = (accounts[item].beginDebit || 0 - accounts[item].beginCredit || 0) + (accounts[item].middleDebit - accounts[item].middleCredit);
-        sold < 0 ? accounts[item].endCredit = sold * -1 : accounts[item].endDebit = sold;
+        if(sold < 0){
+          accounts[item].endCredit = sold * -1;
+        }else{
+         accounts[item].endDebit = sold;
+        }
       });
 
       // calculate totals
@@ -216,7 +228,7 @@ function ReportBalanceMensuelleController($translate, $window, $http, messenger,
         credit         : data[item].middleCredit || 0,
         solde_debit    : data[item].endDebit || 0,
         solde_credit   : data[item].endCredit || 0
-      }
+      };
     });
 
     fileData.data = occurences;
