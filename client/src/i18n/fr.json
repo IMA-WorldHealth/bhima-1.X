@@ -3064,6 +3064,7 @@
    "SERVICE_STATE"             : "Etat Service",
    "STOCK"                     : "Stock",
    "STOCK_DASHBOARD"           : "Tableau de bord du Stock",
+   "STOCK_DEPOT_REPORT"        : "Stocks Depots",
    "STOCK_DISTRIBUTION"        : "Distribution Stock",
    "STOCK_ENTRY_REPORT"        : "Entrées Stocks",
    "STOCK_MANAGEMENT"          : "Gestion des stocks",

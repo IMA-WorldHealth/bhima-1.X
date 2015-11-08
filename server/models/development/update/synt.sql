@@ -516,3 +516,15 @@ UPDATE unit SET path='/depots', url='partials/depots' where id = 45;
 -- Date: 2015-11-06
 INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`)
 VALUES (134, 'Stock Entry Report', 'TREE.STOCK_ENTRY_REPORT', 'Rapport des entrees de stock' , 125, '/partials/reports/stock/stock_entry', '/reports/stock_entry');
+
+-- Restore the is_distributable sale property to be boolean
+-- author: Dedrick
+-- date: 2015-11-07
+
+ALTER TABLE `sale` CHANGE `is_distributable` `is_distributable` BOOLEAN NOT NULL DEFAULT 1;
+
+-- Remove unsigned property to quantity in consumtption
+-- author: Dedrick
+-- date: 2015-11-07
+
+ALTER TABLE `consumption` CHANGE `quantity` `quantity` int(11) NOT NULL DEFAULT 0;
