@@ -34,7 +34,7 @@ exports.compileDebtorLedger = function (req, res, next) {
 
 exports.compileGroupLedger = function (req, res, next) {
   debitorGroup(req.params.id)
-  .then(function (rows) {
+  .then(function (rows) {    
     res.send(rows);
   })
   .catch(function (error) {
@@ -121,14 +121,14 @@ function debtor(id) {
             'pj.account_id, pj.deb_cred_uuid, pj.currency_id, ' +
             'pj.doc_num, pj.trans_id, pj.description, pj.comment, credit_note.sale_uuid AS canceled ' +
           'FROM posting_journal AS pj ' +
-          'LEFT JOIN credit_note ON credit_note.sale_uuid = pj.inv_po_id ' +
+          'LEFT JOIN credit_note ON credit_note.sale_uuid = pj.inv_po_id WHERE pj.deb_cred_uuid=' + id +
         ') UNION (' +
           'SELECT gl.inv_po_id, gl.trans_date, gl.debit, ' +
             'gl.credit, gl.debit_equiv, gl.credit_equiv, ' +
             'gl.account_id, gl.deb_cred_uuid, gl.currency_id, ' +
             'gl.doc_num, gl.trans_id, gl.description, gl.comment, credit_note.sale_uuid AS canceled ' +
           'FROM general_ledger AS gl ' +
-          'LEFT JOIN credit_note ON credit_note.sale_uuid = gl.inv_po_id ' +
+          'LEFT JOIN credit_note ON credit_note.sale_uuid = gl.inv_po_id WHERE gl.deb_cred_uuid=' + id +
         ')' +
       ') AS t ' +
       'JOIN sale AS s ON t.inv_po_id = s.uuid ' +

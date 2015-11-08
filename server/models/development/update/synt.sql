@@ -510,3 +510,16 @@ ALTER TABLE consumption_loss DROP COLUMN document_uuid;
 -- author: jniles
 -- date: 2015-10-27
 UPDATE unit SET path='/depots', url='partials/depots' where id = 45;
+
+
+-- Restore the is_distributable sale property to be boolean
+-- author: Dedrick
+-- date: 2015-11-07
+
+ALTER TABLE `sale` CHANGE `is_distributable` `is_distributable` BOOLEAN NOT NULL DEFAULT 1;
+
+-- Remove unsigned property to quantity in consumtption
+-- author: Dedrick
+-- date: 2015-11-07
+
+ALTER TABLE `consumption` CHANGE `quantity` `quantity` int(11) NOT NULL DEFAULT 0;
