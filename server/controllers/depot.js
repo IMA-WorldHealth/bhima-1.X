@@ -272,14 +272,16 @@ function getAvailableLots(req, res, next) {
       depot = req.params.depotId;
 
   sql = 
-    'SELECT tracking_number, lot_number, SUM(quantity) AS quantity, code, label, expiration_date FROM ' +
-    '(SELECT stock.tracking_number, stock.lot_number, (consumption.quantity * -1) as quantity, inventory.code, inventory.text AS label, stock.expiration_date FROM ' +
+    'SELECT unit_price, tracking_number, lot_number, SUM(quantity) AS quantity, code, label, expiration_date FROM ' +
+    '(SELECT purchase_item.unit_price, stock.tracking_number, stock.lot_number, (consumption.quantity * -1) as quantity, inventory.code, inventory.text AS label, stock.expiration_date FROM ' +
     'consumption JOIN stock ON consumption.tracking_number = stock.tracking_number JOIN inventory ON inventory.uuid = stock.inventory_uuid ' +
+    'JOIN purchase_item ON purchase_item.purchase_uuid = stock.purchase_order_uuid AND purchase_item.inventory_uuid = stock.inventory_uuid  ' + 
     'WHERE consumption.canceled = 0 AND depot_uuid = ? ' +
     'UNION ALL ' +
-    'SELECT stock.tracking_number, stock.lot_number, (CASE WHEN movement.depot_entry= ? THEN movement.quantity ELSE movement.quantity*-1 END) AS quantity, ' + 
+    'SELECT purchase_item.unit_price, stock.tracking_number, stock.lot_number, (CASE WHEN movement.depot_entry= ? THEN movement.quantity ELSE movement.quantity*-1 END) AS quantity, ' + 
     'inventory.code, inventory.text AS label, stock.expiration_date FROM movement JOIN stock ON movement.tracking_number = stock.tracking_number JOIN inventory ' +
-    'ON inventory.uuid = stock.inventory_uuid WHERE movement.depot_entry= ? OR movement.depot_exit= ?) ' +
+    'ON inventory.uuid = stock.inventory_uuid JOIN purchase_item ON purchase_item.purchase_uuid = stock.purchase_order_uuid AND purchase_item.inventory_uuid = stock.inventory_uuid ' +
+    'WHERE movement.depot_entry= ? OR movement.depot_exit= ?) ' +
     'AS t GROUP BY tracking_number;';
 
   return db.exec(sql, [depot, depot, depot, depot])

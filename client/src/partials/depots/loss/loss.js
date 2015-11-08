@@ -72,10 +72,11 @@ function DepotLossController($routeParams, $q, $http, $location, Depots, Invento
       // associate inventory items with lots
       inventory.forEach(function (i) {
 
-        i.lots = lots.filter(function (s) {
+        var founds = lots.filter(function (s) {
           return s.code === i.code;
-        })
-        .map(function (s) {
+        });
+
+        i.lots = founds.map(function (s) {
           return {
             lot_number      : s.lot_number,
             fmtLabel        : s.lot_number + '  [' + s.quantity + ']',
