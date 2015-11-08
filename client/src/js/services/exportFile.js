@@ -119,19 +119,19 @@ angular.module('bhima.services')
 	}
 
 	function builder(preData, fileName, fileFormat, genDate) {
-		var e,
-				today = new Date(),
-    		date = today.toISOString().slice(0, 19).replace('T', '-').replace(':', '-').replace(':', '-');
+		var e, today = new Date(), 
+			date = today.toISOString().slice(0, 19).replace('T', '-').replace(':', '-').replace(':', '-');
 
 		var path = genDate ? fileName + '-' + date + '.' + fileFormat : fileName + '.' + fileFormat;
 
-    e = document.createElement('a');
-    e.href = 'data:attachment/'+ fileFormat +',' + preData;
-    e.className = 'no-print';
-    e.target = '_blank';
-    e.download = path;
-    document.body.appendChild(e);
-    e.click();
+		
+	    e = document.createElement('a');
+	    e.href = 'data:attachment/'+ fileFormat +',' + preData;
+	    e.className = 'no-print';
+	    e.target = '_blank';
+	    e.download = path;
+	    document.body.appendChild(e);
+	    e.click();
 	}
 
 	function csv(fileData, fileName, genDate, separator) {

@@ -150,6 +150,7 @@
           <div class="panel-body">
             <div class="panel panel-default" ng-repeat="item in StockDistributionsCtrl.ledger.data | orderBy:['consumed', '-trans_date']">
               <div class="panel-body">
+              
                 <div ng-if="!item.canceled && !item.reversing_stock" class="pull-right">
                   <span
                     class="glyphicon"
@@ -159,6 +160,7 @@
                     </span>
                   <span>{{(item.consumed ? 'DISTRIBUTION.CONSUMED' : 'DISTRIBUTION.NOT_CONSUMED') | translate}}</span>
                 </div>
+
                 <div ng-if="item.canceled && !item.reversing_stock" class="pull-right">
                   <span
                     class="glyphicon"
@@ -168,6 +170,7 @@
                    </span>
                   <span>{{'DISTRIBUTION.CANCELED' | translate}}</span>
                 </div>
+
                 <div ng-if="item.reversing_stock" class="pull-right">
                   <span
                     class="glyphicon"
@@ -177,6 +180,7 @@
                    </span>
                   <span>{{'DISTRIBUTION.REVERSE_CONSUMPTION' | translate}} </span>
                 </div>
+
                 <table class="table table-condensed table-bordered">
                   <thead>
                     <tr>
@@ -250,6 +254,7 @@
                     class="btn btn-default btn-sm"><span class="glyphicon glyphicon-circle-arrow-right correct"></span>{{ "DISTRIBUTION.SELECT" | translate }}</button>
                   <a ng-href="#/invoice/sale/{{item.inv_po_id}}" class="btn btn-default btn-sm">{{ "DISTRIBUTION.VIEW_SALE" | translate }}</a>
                 </div>
+
               </div>
             </div>
           </div>
