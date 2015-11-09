@@ -52,9 +52,17 @@ angular.module('bhima.controllers')
           },
           'currency' : {
             columns : ['id', 'symbol']
+          },
+          'project' : {
+            columns : ['id::projectId', 'abbr']
           }
         },
-        join: ['sale.uuid=sale_item.sale_uuid','sale_item.inventory_uuid=inventory.uuid', 'sale.currency_id=currency.id']
+        join: [
+          'sale.uuid=sale_item.sale_uuid',
+          'sale_item.inventory_uuid=inventory.uuid',
+          'sale.currency_id=currency.id',
+          'sale.project_id=project.id'
+        ]
       }
     };
 
@@ -93,8 +101,6 @@ angular.module('bhima.controllers')
         convert = model.common.convert,
         ledgers = model.ledger;
 
-
-
       totals.localeCost = doConvert(saleRecords.cost, currency, saleRecords.invoice_date);
 
       if (ledgers)  {
@@ -116,8 +122,9 @@ angular.module('bhima.controllers')
       model.currency = result.currency;
       model.initialCurrency = model.selectedCurrency = model.currency.get(model.common.enterprise.currency_id);
       var debtor_uuid = result.saleRecords.data[0].debitor_uuid;
+      var sale_uuid = result.saleRecords.data[0].uuid
       dependencies.recipient.query.where = ['patient.debitor_uuid=' + debtor_uuid];
-      dependencies.ledger.query = 'ledgers/debitor/' + debtor_uuid;
+      dependencies.ledger.query = 'ledgers/debitor_sale/' + debtor_uuid + '/' + sale_uuid;
       return validate.process(dependencies, ['recipient','ledger']);
     }
 
