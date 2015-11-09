@@ -95,6 +95,7 @@ exports.initialise = function (app) {
   app.get('/ledgers/debitor_group/:id', ledger.compileGroupLedger);
   app.get('/ledgers/employee_invoice/:id', ledger.compileEmployeeLedger);
   app.get('/ledgers/distributableSale/:id', ledger.compileSaleLedger);
+  app.get('/ledgers/debitor_sale/:id/:saleId', ledger.compileDebtorLedgerSale);
 
   /* fiscal year controller */
 
