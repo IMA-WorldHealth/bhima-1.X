@@ -578,7 +578,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/reports/stock/stock_report.html'
   })
   .when('/grade_employers/', {
-    controller : 'grade',
+    controller : 'GradeEmployeeController as GradeCtrl',
     templateUrl : 'partials/grade_employers/grade_employers.html'
   })
   .when('/taxes_management/', {

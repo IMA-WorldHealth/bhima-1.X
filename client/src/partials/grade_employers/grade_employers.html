@@ -74,7 +74,7 @@
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.GRADE" | translate }}</label>
             <div class="col-xs-8">
-              <input ng-model="session.new.text" class="form-bhima" required>
+              <input type="number" ng-model="session.new.text" ng-change="calculateBaseSalary()" class="form-bhima" required>
             </div>
           </div>
 
@@ -89,7 +89,7 @@
           <div class="form-group">
             <input type="submit" ng-disabled="new.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
             <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
-          </div>   
+          </div>
         </form>
       </div>
 
@@ -107,7 +107,7 @@
           <div class="form-group">
             <label class="control-label col-xs-3 required">{{ "COLUMNS.GRADE" | translate }}</label>
             <div class="col-xs-8">
-              <input ng-model="session.edit.text" class="form-bhima" required>
+              <input type="number" ng-model="session.edit.text"  ng-change="calculateBaseSalary()" class="form-bhima" required>
             </div>
           </div>
 
@@ -122,7 +122,7 @@
           <div class="form-group">
             <input type="submit" ng-disabled="edit.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
             <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
-          </div>   
+          </div>
         </form>
       </div>
     </div>
