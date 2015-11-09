@@ -69,7 +69,7 @@ function DepotController($location, $translate, $window, messenger, AppCache, St
   }, {
     key  : 'STOCK.DONATION.KEY',
     ico  : 'glyphicon-heart',
-    link : '/stock/donation_management/:uuid'
+    link : '/donations/:uuid'
   }];
 
   // repots modules
