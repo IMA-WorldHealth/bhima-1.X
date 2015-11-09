@@ -31,6 +31,10 @@
   border           : 1px solid #cccccc;
 }
 
+.form-bhima + .input-group-addon {
+  height           : 30px;
+}
+
 .form-bhima[disabled] {
   background-color: #eeeeee;
 }
