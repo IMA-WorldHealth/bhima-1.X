@@ -474,20 +474,6 @@ WHERE `account`.`is_charge` IS NULL AND LEFT(`account`.`account_number`, 1)=6;
 UPDATE `account` SET `account`.`is_charge`=0
 WHERE `account`.`is_charge` IS NULL AND LEFT(`account`.`account_number`, 1)=7;
 
--- NOTA : The last unit table ID is 130
-
--- Move to Payroll
--- =================
--- 
--- paycheck
-UPDATE `unit` SET `unit`.`parent`=57 WHERE `unit`.`id`=73;
--- tax payment report
-UPDATE `unit` SET `unit`.`parent`=57 WHERE `unit`.`id`=118;
--- cotisation payment report
-UPDATE `unit` SET `unit`.`parent`=57 WHERE `unit`.`id`=119;
-
-
---
 -- Dedrick Kitamuka
 -- 17/10/2015
 -- Adding a new unit for compte exploitation
