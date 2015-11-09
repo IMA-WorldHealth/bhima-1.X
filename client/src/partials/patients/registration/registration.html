@@ -71,7 +71,12 @@
               <div class="form-group">
                 <label for="new-yob" class="col-md-3 control-label">Year of Birth</label>
                 <div class="col-md-9">
-                  <input id="new-yob" type="number" class="form-control">
+                  <div class="input-group">
+                    <input id="new-yob" type="number" class="form-control">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" type="button">Enter Full Date</button>
+                    </span>
+                  </div>
                 </div>
               </div>
             
@@ -90,8 +95,35 @@
                   </label>  
                 </div>
               </div>
-              
+  
+              <!-- Seperate location settings -->
+              <hr>
 
+              <!-- Location -->
+              <div class="row">
+                <div class="col-md-6">
+                  <h4>Origin Location</h4>
+                  <div location-select select-village="setOriginLocation"></div>
+                </div>
+                
+                <!-- Seperate location searches given a certain screen size -->
+                <div class="visible-sm-block visible-xs-block"><hr></div>
+                
+                <div class="col-md-6">
+                  <h4>Current Location</h4>
+                  <div location-select select-village="setOriginLocation"></div>
+                </div>
+              </div>
+             
+              <!-- Seperate finance settings -->
+              <hr>
+  
+              <div class="form-group">
+                <label for="new-debtor-group" class="col-md-3 control-label">Debtor Group</label>
+                <div class="col-md-9">
+                  <select class="form-control"></select>
+                </div>
+              </div>
             </form>
           </div>
         </div>
