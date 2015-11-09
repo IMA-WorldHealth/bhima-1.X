@@ -52,9 +52,17 @@ angular.module('bhima.controllers')
           },
           'currency' : {
             columns : ['id', 'symbol']
+          },
+          'project' : {
+            columns : ['id::projectId', 'abbr']
           }
         },
-        join: ['sale.uuid=sale_item.sale_uuid','sale_item.inventory_uuid=inventory.uuid', 'sale.currency_id=currency.id']
+        join: [
+          'sale.uuid=sale_item.sale_uuid',
+          'sale_item.inventory_uuid=inventory.uuid',
+          'sale.currency_id=currency.id',
+          'sale.project_id=project.id'
+        ]
       }
     };
 
@@ -92,8 +100,6 @@ angular.module('bhima.controllers')
         doConvert = model.common.doConvert,
         convert = model.common.convert,
         ledgers = model.ledger;
-
-
 
       totals.localeCost = doConvert(saleRecords.cost, currency, saleRecords.invoice_date);
 
