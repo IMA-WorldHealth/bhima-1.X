@@ -122,7 +122,7 @@ angular.module('bhima.controllers')
       model.currency = result.currency;
       model.initialCurrency = model.selectedCurrency = model.currency.get(model.common.enterprise.currency_id);
       var debtor_uuid = result.saleRecords.data[0].debitor_uuid;
-      var sale_uuid = result.saleRecords.data[0].uuid
+      var sale_uuid = result.saleRecords.data[0].uuid;
       dependencies.recipient.query.where = ['patient.debitor_uuid=' + debtor_uuid];
       dependencies.ledger.query = 'ledgers/debitor_sale/' + debtor_uuid + '/' + sale_uuid;
       return validate.process(dependencies, ['recipient','ledger']);
