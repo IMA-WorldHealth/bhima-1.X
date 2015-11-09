@@ -154,7 +154,7 @@ exports.logVisit = function (req, res, next) {
   sql =
     'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES (?, ?, ?);';
 
-  db.exec(sql, [uuid(), id, req.session.user.id])
+  db.exec(sql, [guid(), id, req.session.user.id])
   .then(function () {
     res.send();
   })
