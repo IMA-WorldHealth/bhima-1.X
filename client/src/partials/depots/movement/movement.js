@@ -55,6 +55,7 @@ function StockMovementController($scope, $location, $translate, $routeParams, va
   }
 
   function selectDepot(target, newDepotId, oldDepot) {
+
     var reference = depotMap[target];
     var source = reference.model;
     var dependency = depotMap[reference.dependency].model;
@@ -87,8 +88,9 @@ function StockMovementController($scope, $location, $translate, $routeParams, va
       return a.label.toLowerCase() > b.label.toLowerCase() ? 1 : -1;
     });
 
-    $scope.lots = model.lots;
+    model.lots.recalculateIndex();
 
+    $scope.lots = model.lots;
     // Reset rows TODO
     resetRows();
   }
@@ -98,11 +100,13 @@ function StockMovementController($scope, $location, $translate, $routeParams, va
     $scope.addRow();
   }
 
-  Object.keys(depotMap).forEach(function (key) {
-    $scope.$watch('session.' + key, function(nval, oval) {
-      if (nval) { selectDepot(key, nval.uuid, oval); }
-    }, false);
-  });
+  $scope.$watch('session.from', function(nval, oval) {
+    if (nval) { selectDepot('from', nval.uuid, oval); }
+  }, false);
+
+  $scope.$watch('session.to', function(nval, oval) {
+    if (nval) { selectDepot('to', nval.uuid, oval); }
+  }, false);
 
   function error (err) {
     messenger.error(err);
@@ -227,11 +231,11 @@ function StockMovementController($scope, $location, $translate, $routeParams, va
     session.valid = validRows;
   }
 
-  $scope.$watch('session', verifyRows, true);
+  $scope.$watch('session.rows', verifyRows, true);
 
   $scope.stockSelected = function (row) {
     if (row.oval) {
-      $scope.lots.push(row.lot);
+      if(row.oval.tracking_number !== row.lot.tracking_number) {$scope.lots.push(row.lot);}
     }
 
     row.oval = row.lot;

@@ -23,7 +23,7 @@ var config = {
    * script    - The script relative to the plugins directory
    *e.g : {'name' : 'mail', 'script' : '/../../plugins/mail/index.js'}
   */
-  'plugins' : [],
+  'plugins' : [{'name' : 'mail', 'script' : '/../../plugins/mail/index.js'}],
   'tls' : {
     'key' : 'server/config/keys/server.key',
     'cert' : 'server/config/keys/server.crt'

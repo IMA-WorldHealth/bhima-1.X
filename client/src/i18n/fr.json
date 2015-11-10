@@ -175,7 +175,6 @@
   "LANGUAGE"        : "Langue"
   },
 "BALANCE_MENSUELLE": {
-   "ACCOUNT"         : "Compte",
    "CHOOSE_CLASS"    : "Choisissez une classe",
    "CHOOSE_PERIOD"   : "Choisissez une periode",
    "CLASS"           : "Classe",
@@ -186,7 +185,7 @@
    "NO_DATA"         : "Il n'y a pas des donnees pour la periode!",
    "OLD_SOLD"        : "Ancien Solde",
    "REPORT"          : "Rapport Balance Mensuelle",
-   "TITLE"           : "Balance Mensuelle"
+   "TITLE"           : "Balance Mensuelle par Classe"
    },
 "BILAN" : {
   "BUILD_BILAN"     : "Génération bilan",
@@ -410,6 +409,7 @@
    "COMMENT"               : "Commentaire",
    "CONFIRM_BY"            : "Confirmé par",
    "CONFIRMED"             : "Confirmé",
+   "CONFIRMED_STOCK_ONLY"  : "Seulement les stocks des commandes d'achat confirmées",
    "CONSUMABLE"            : "Consommable",
    "CONSUMED_STOCK"        : "Stock Consommé",
    "CONSUMPTION_PER_MONTH" : "Consommation par mois",
@@ -998,8 +998,8 @@
    "SELECT"                 : "Choisir vente pour distribution",
    "SELECTED_SALE_DETAILS"  : "Détail de la vente",
    "SELECT_FROM"            : "Sélectionne du lot",
+   "SELECT_PRESCRIPTION"    : "Sélectionner la vente",
    "SHOW_ALL_SALES"         : "Afficher toutes les ventes pour ce patient",
-   "SELECT_PRESCRIPTION"     : "Sélectionner la vente",
    "SUBMIT"                 : "Soumettre",
    "TITLE"                  : "Distribution des Médicaments aux malades",
    "TOTAL"                  : "Total",
@@ -2332,6 +2332,7 @@
    "ROWS"                    : "Lignes",
    "SIGNATURES"              : "Signées",
    "STOCK"                   : "Rapport Stock",
+   "STOCK_ENTRY"             : "Les entrées en stock",
    "TOTAL"                   : "Total",
    "TOTAL_CREDIT"            : "Crédit Totale",
    "TOTAL_DEBIT"             : "Débit Totale",
@@ -2663,13 +2664,13 @@
       "KEY" : "Distribution stock au services"
       },
    "EXPIRATIONS": {
-       "TODAY"           : "Expire today",
-       "30_DAYS"         : "Expire within 30 days",
-       "30_TO_60_DAYS"   : "Expire between 30 and 60 days",
-       "60_TO_90_DAYS"   : "Expire between 60 and 90 days",
-       "90_TO_120_DAYS"  : "Expire between 90 and 120 days",
-       "120_TO_180_DAYS" : "Expire between 120 and 180 days",
-       "180_TO_360_DAYS" : "Expire between 180 and 360 days"
+      "TODAY"           : "Expirés",
+      "30_DAYS"         : "Expire dans moins de 30 jours",
+      "30_TO_60_DAYS"   : "Expire entre 30 et 60 jours",
+      "60_TO_90_DAYS"   : "Expire entre 60 et 90 jours",
+      "90_TO_120_DAYS"  : "Expire entre 90 et 120 jours",
+      "120_TO_180_DAYS" : "Expire entre 120 et 180 jours",
+      "180_TO_360_DAYS" : "Expire entre 180 et 360 jours"
        },
    "EXPIRE": {
       "KEY" : "Expiration du stock"
@@ -3063,9 +3064,12 @@
    "SERVICE_STATE"             : "Etat Service",
    "STOCK"                     : "Stock",
    "STOCK_DASHBOARD"           : "Tableau de bord du Stock",
+   "STOCK_DEPOT_REPORT"        : "Stocks Depots",
    "STOCK_DISTRIBUTION"        : "Distribution Stock",
+   "STOCK_ENTRY_REPORT"        : "Entrées Stocks",
    "STOCK_MANAGEMENT"          : "Gestion des stocks",
    "STOCK_STATUS"              : "Situation du stock",
+   "STOCK_STORE_STATUS"        : "Situation du Depot",
    "SUBSIDY"                   : "Subventions",
    "SUPPORT"                   : "Prise en charge",
    "SWAP_DEBITOR"              : "Groupes Débiteurs",
@@ -3149,6 +3153,7 @@
    "DATE_TO"           : "Au",
    "DELETE_SUCCESS"    : "Suppression avec succès",
    "DEPOT"             : "Depot",
+   "DOCUMENT"          : "Document",
    "DONOR"             : "Donateur",
    "DOLLARS"           : "Dollars",
    "EDIT_SUCCESS"      : "Modification réussie",
@@ -3159,12 +3164,13 @@
    "IMCK"              : "IMCK",
    "IMCK_LONG"         : "Institut Médical Chrétien du Kasaï",
    "ITEMS"             : "Articles",
-  "LANGUAGE"             : "Langue",
+   "LANGUAGE"          : "Langue",
    "LOADING"           : "Chargement",
    "LINK"              : "Link",
    "MONTHS"            : "Mois",
    "NAVIGATION"        : "Navigation",
    "NEW_SUCCESS"       : "Ajout avec succès",
+   "NO"                : "Non",
    "NO_DATA"           : "La requette n'a pas des données",
    "OFF"               : "Off",
    "ON"                : "On",
@@ -3187,7 +3193,8 @@
    "TOTALS"            : "Totaux",
    "TSHIKAJI"          : "TSHIKAJI",
    "VALIDATE"          : "Accepter",
-   "YEARS"             : "Annees"
+   "YEARS"             : "Annees",
+   "YES"               : "Oui"
    },
 "VERSEMENT": {
    "ASSOCIATED_TO"     : "Les comptes associe à : ",

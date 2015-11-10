@@ -271,31 +271,23 @@ function getAvailableLots(req, res, next) {
   var sql,
       depot = req.params.depotId;
 
-  sql =
-    'SELECT s.unit_price, s.tracking_number, s.lot_number, s.quantity, s.code, s.expiration_date, s.label FROM (' +
-      'SELECT purchase_item.unit_price, stock.tracking_number, stock.lot_number, outflow.depot_entry, outflow.depot_exit, ' +
-        'SUM(CASE WHEN outflow.depot_entry = ? THEN outflow.quantity ELSE -outflow.quantity END) AS quantity, ' +
-        'stock.expiration_date, inventory.code, inventory.text AS label ' +
-      'FROM inventory JOIN stock JOIN purchase JOIN purchase_item JOIN (' +
-        'SELECT uuid, depot_entry, depot_exit, tracking_number, quantity, date ' +
-        'FROM movement ' +
-        'UNION ' +
-        'SELECT uuid, null AS depot_entry, depot_uuid AS depot_exit, tracking_number, quantity, date  ' +
-        'FROM consumption ' +
-        'WHERE consumption.canceled = 0' +
-      ') AS outflow ON ' +
-        'inventory.uuid = stock.inventory_uuid AND ' +
-        'stock.tracking_number = outflow.tracking_number AND ' +
-        'purchase.uuid = stock.purchase_order_uuid AND ' +
-        'purchase_item.purchase_uuid = purchase.uuid ' +
-      'WHERE outflow.depot_entry = ? OR outflow.depot_exit = ? ' +
-      'GROUP BY stock.tracking_number' +
-    ') AS s ' +
-    'WHERE s.quantity > 0;';
+  sql = 
+    'SELECT unit_price, tracking_number, lot_number, SUM(quantity) AS quantity, code, label, expiration_date FROM ' +
+    '(SELECT purchase_item.unit_price, stock.tracking_number, stock.lot_number, (consumption.quantity * -1) as quantity, inventory.code, inventory.text AS label, stock.expiration_date FROM ' +
+    'consumption JOIN stock ON consumption.tracking_number = stock.tracking_number JOIN inventory ON inventory.uuid = stock.inventory_uuid ' +
+    'JOIN purchase_item ON purchase_item.purchase_uuid = stock.purchase_order_uuid AND purchase_item.inventory_uuid = stock.inventory_uuid  ' + 
+    'WHERE consumption.canceled = 0 AND depot_uuid = ? ' +
+    'UNION ALL ' +
+    'SELECT purchase_item.unit_price, stock.tracking_number, stock.lot_number, (CASE WHEN movement.depot_entry= ? THEN movement.quantity ELSE movement.quantity*-1 END) AS quantity, ' + 
+    'inventory.code, inventory.text AS label, stock.expiration_date FROM movement JOIN stock ON movement.tracking_number = stock.tracking_number JOIN inventory ' +
+    'ON inventory.uuid = stock.inventory_uuid JOIN purchase_item ON purchase_item.purchase_uuid = stock.purchase_order_uuid AND purchase_item.inventory_uuid = stock.inventory_uuid ' +
+    'WHERE movement.depot_entry= ? OR movement.depot_exit= ?) ' +
+    'AS t GROUP BY tracking_number;';
 
-  return db.exec(sql, [depot, depot, depot])
+  return db.exec(sql, [depot, depot, depot, depot])
   .then(function (rows) {
-    res.status(200).json(rows);
+    var ans = rows.filter(function (item){return item.quantity > 0});
+    res.status(200).json(ans);
   })
   .catch(next)
   .done();
@@ -316,8 +308,6 @@ function getAvailableLotsByInventoryId(req, res, next) {
   var sql,
       depot = req.params.depotId,
       uuid = req.params.uuid;
-      console.log('uuid', uuid, depot);
-
       sql = 
         'SELECT tracking_number, lot_number, SUM(quantity) AS quantity, code, expiration_date FROM ' +
         '(SELECT stock.tracking_number, stock.lot_number, (consumption.quantity * -1) as quantity, inventory.code, stock.expiration_date FROM ' +
