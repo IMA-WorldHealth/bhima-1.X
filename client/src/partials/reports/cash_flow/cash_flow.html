@@ -136,7 +136,7 @@
               <tbody>
                 <tr ng-repeat='record in ReportCtrl.session.summationIncome'>
                   <td>{{ ReportCtrl.getSource(record.service_txt) }}</td>
-                  <td>{{ record.value | currency:ReportCtrl.record.currency_id }}</td>
+                  <td>{{ record.debit | currency:ReportCtrl.record.currency_id }}</td>
                 </tr>
                 <tr ng-if="!ReportCtrl.session.summationIncome.length">
                   <td colspan="2">
@@ -168,7 +168,7 @@
               <tbody>
                 <tr ng-repeat='record in ReportCtrl.session.summationExpense'>
                   <td>{{ ReportCtrl.getSource(record.service_txt) }}</td>
-                  <td>{{ record.value | currency:ReportCtrl.record.currency_id }}</td>
+                  <td>{{ record.credit | currency:ReportCtrl.record.currency_id }}</td>
                 </tr>
                 <tr ng-if="!ReportCtrl.session.summationExpense.length">
                   <td colspan="2">
