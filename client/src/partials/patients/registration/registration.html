@@ -3,6 +3,8 @@
 </header>
 
 <nav>
+
+  
   <div class="pull-left">
     <ol class="breadcrumb">
       <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
@@ -29,7 +31,7 @@
       
       <!-- Patient Details Form -->
       <div class="col-md-7">
-        <div id="patient-details" class="panel panel-default">
+        <div id="patient-details" class="panel panel-primary">
           <div class="panel-heading">Patient Details</div>
           <div class="panel-body">
 
@@ -117,7 +119,8 @@
              
               <!-- Seperate finance settings -->
               <hr>
-  
+          
+              <!-- Debtor Group -->
               <div class="form-group">
                 <label for="new-debtor-group" class="col-md-3 control-label">Debtor Group</label>
                 <div class="col-md-9">
@@ -134,16 +137,120 @@
         <div id="registration-type" class="panel panel-default">
           <div class="panel-heading">Optional Information</div>
           <div class="panel-body">
-            <form>
-              
+            <form class="form-horizontal">
+                
+              <div class="form-group">
+                <label for="title" class="col-md-3 control-label">Title</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="title" ng-model="patient.title">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="phone" class="col-md-3 control-label">{{ "PATIENT_REG.PHONE_NO" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="form-control" ng-model="patient.phone">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="email" class="col-md-3 control-label">{{ "PATIENT_REG.EMAIL" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="email" class="form-control" id="email" ng-model="patient.email">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="address1" class="col-md-3 control-label">{{ "PATIENT_REG.ADDRESS1" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="address1" ng-model="patient.address_1">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="address2" class="col-md-3 control-label">{{ "PATIENT_REG.ADDRESS2" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="address2" ng-model="patient.address_2">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="father_name" class="col-md-3 control-label">{{ "PATIENT_REG.FATHER_NAME" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="father_name" ng-model="patient.father_name">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="mother_name" class="col-md-3 control-label">{{ "PATIENT_REG.MOTHER_NAME" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="mother_name" ng-model="patient.mother_name">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="religion" class="col-md-3 control-label">{{ "PATIENT_REG.RELIGION" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="religion" ng-model="patient.religion">
+                </div>
+              </div>
+
+              <div class="form-group" >
+                <label for="marital" class="col-md-3 control-label">{{ "PATIENT_REG.MARITAL_STATUS" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="marital" ng-model="patient.marital_status">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="profession" class="col-md-3 control-label">{{ "PATIENT_REG.PROFESSION" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="profession" ng-model="patient.profession">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="employer" class="col-md-3 control-label">{{ "PATIENT_REG.EMPLOYER" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="employer" ng-model="patient.employer">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="spouse" class="col-md-3 control-label">{{ "PATIENT_REG.SPOUSE" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="spouse" ng-model="patient.spouse">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="spouse_profession" class="col-md-3 control-label">{{ "PATIENT_REG.SPOUSE_PROFESSION" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="spouse_profession" ng-model="patient.spouse_profession">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="spouse_employer" class="col-md-3 control-label">{{ "PATIENT_REG.SPOUSE_EMPLOYER" | translate }}</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="spouse_employer" ng-model="patient.spouse_employer">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="notes" class="col-md-3 control-label">{{ "PATIENT_REG.NOTES" | translate }}</label>
+                <div class="col-md-9">
+                  <textarea class="form-control" id="notes" ng-model="patient.notes" rows="4"></textarea>
+                </div>
+              </div>
+
             </form>
           </div>
         </div>
       </div>
-
     </div>
   </div>
-
+  
   <!-- Temporary style comparison spacer -->
   <div style="height : 50px;">
 
