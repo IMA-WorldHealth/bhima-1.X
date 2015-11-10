@@ -1324,7 +1324,7 @@ CREATE TABLE `patient` (
   `creditor_uuid` char(36) DEFAULT NULL,
   `first_name` varchar(150) NOT NULL,
   `last_name` varchar(150) NOT NULL,
-  `dob` date DEFAULT NULL,
+  `dob` date NOT NULL,
   `father_name` varchar(150) DEFAULT NULL,
   `mother_name` varchar(150) DEFAULT NULL,
   `profession` varchar(150) DEFAULT NULL,

@@ -33,7 +33,7 @@
           <div class="panel-heading">{{ "PATIENT_REG.PATIENT_DETAILS" | translate }}</div>
           <div class="panel-body">
 
-            <form id="details"  class="form-horizontal">
+            <form name="details"  class="form-horizontal">
               
               <!-- Last Name -->
               <div class="form-group">
@@ -82,9 +82,9 @@
               
               <!-- Full date of birth -->
               <div class="form-group">
-                <label for="new-patient-dob" class="col-xs-3 control-label">{{ "PATIENT_REG.DOB" | translate }}</label>
+                <label for="new-patient-dob" class="col-md-3 control-label">{{ "PATIENT_REG.DOB" | translate }}</label>
                 <div class="col-md-9">
-                  <input required id="patient-dob" type="date" class="form-control" ng-disabled="!session.fullDateEnabled" ng-model="patient.dob" min="{{ minDOB }}" max="{{ maxDOB }}">
+                  <input required id="new-patient-dob" type="date" class="form-control" ng-disabled="!session.fullDateEnabled" ng-model="patient.dob" min="{{ minDOB }}" max="{{ maxDOB }}">
                 </div>
               </div>
 
