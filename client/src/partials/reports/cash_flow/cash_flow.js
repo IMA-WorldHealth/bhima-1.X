@@ -123,7 +123,6 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
   }
 
   function getCurrencies(model) {
-    console.log(model);
     session.summationExpense = model.data.expenses;
     session.summationIncome = model.data.incomes;
     return validate.process(dependencies, ['currencies']);
@@ -142,13 +141,13 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
     session.sum_credit = 0;
     if(session.summationIncome) {
       session.summationIncome.forEach(function (transaction) {
-        session.sum_debit += exchange.convertir(transaction.value, transaction.currency_id, session.currency, new Date()); //transaction.trans_date
+        session.sum_debit += exchange.convertir(transaction.debit, transaction.currency_id, session.currency, new Date()); //transaction.trans_date
       });
     }
 
     if(session.summationExpense) {
       session.summationExpense.forEach(function (transaction) {
-        session.sum_credit += exchange.convertir(transaction.value, transaction.currency_id, session.currency, new Date()); //transaction.trans_date
+        session.sum_credit += exchange.convertir(transaction.credit, transaction.currency_id, session.currency, new Date()); //transaction.trans_date
       });
     }
   }
@@ -159,6 +158,57 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
     vm.session.dateFrom = new Date();
     vm.session.dateTo = new Date();
   }
+
+  // Grouping by source
+  function groupingResult (incomes, expenses) {
+    var temp = {},
+        summationIncome = {},
+        summationExpense = {},
+        summationIncomeArray = [],
+        summationExpenseArray = [];
+
+    // income
+    if (incomes) {
+      incomes.forEach(function (item, index) {
+        temp[item.service_txt] = !temp[item.service_txt] ? true : false;
+
+        if (temp[item.service_txt]) {
+          var value = incomes.reduce(function (a, b) {
+            return b.service_txt === item.service_txt ? b.debit + a : a;
+          }, 0);
+          summationIncomeArray.push({
+            'service_txt' : item.service_txt,
+            'currency_id' : item.currency_id,
+            'value'       : value
+          });
+        }
+      });
+    }
+
+    // Expense
+    if (expenses) {
+      expenses.forEach(function (item, index) {
+        temp[item.service_txt] = !temp[item.service_txt] ? true : false;
+
+        if (temp[item.service_txt]) {
+          var value = expenses.reduce(function (a, b) {
+            return b.service_txt === item.service_txt ? b.credit + a : a;
+          }, 0);
+          summationExpenseArray.push({
+            'service_txt' : item.service_txt,
+            'currency_id' : item.currency_id,
+            'value'       : value
+          });
+        }
+      });
+    }
+
+    return {
+      incomes  : summationIncomeArray,
+      expenses : summationExpenseArray
+    };
+  }
+  // End Grouping by source
 
   /**
     * getSource
