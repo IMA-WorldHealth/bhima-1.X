@@ -96,6 +96,7 @@ exports.initialise = function (app) {
   app.get('/ledgers/debitor_group/:id', ledger.compileGroupLedger);
   app.get('/ledgers/employee_invoice/:id', ledger.compileEmployeeLedger);
   app.get('/ledgers/distributableSale/:id', ledger.compileSaleLedger);
+  app.get('/ledgers/debitor_sale/:id/:saleId', ledger.compileDebtorLedgerSale);
 
   /* fiscal year controller */
 
@@ -294,6 +295,10 @@ exports.initialise = function (app) {
   app.post('/budget/upload', multipart({ uploadDir: 'client/upload'}), budget.upload);
   app.post('/budget/update', budget.update);
 
+  // stock entries
+  app.get('/stock/entries?', stock.getStockEntry);
+
   // cashflow
   app.get('/cashflow/report/', cashflow.getReport);
+
 };

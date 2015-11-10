@@ -80,6 +80,11 @@ angular.module('bhima.controllers')
       period.method();
     }
 
+    function getPatientProject(projectId) {
+      var prj = $scope.model.project.get(projectId);
+      return prj.abbr;
+    }
+
     function updateSession(model) {
       $scope.model = model;
       updateTotals();
@@ -106,14 +111,14 @@ angular.module('bhima.controllers')
             },
              where : [
               'user.id=' + session.user
-            ]        
+            ]
           }
         };
         validate.process(dependencies, ['user'])
         .then(function (model) {
           var userData = model.user.data[0];
           $scope.userSelected = userData.first + ' - ' + userData.last;
-        });          
+        });
         request.user = session.user;
       } else {
         $scope.userSelected = $translate.instant('SALERECORD.ALL_USERS');
@@ -180,9 +185,9 @@ angular.module('bhima.controllers')
     function totalCost() {
       return $scope.model.sale.data.reduce(function (a, b) {
         if(!b.creditId){
-          return a + b.cost;  
+          return a + b.cost;
         } else {
-          return a + 0;  
+          return a + 0;
         }
 
       }, 0);
@@ -190,5 +195,6 @@ angular.module('bhima.controllers')
 
     $scope.select = select;
     $scope.reset = reset;
+    $scope.getPatientProject = getPatientProject;
   }
 ]);
