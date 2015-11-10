@@ -199,6 +199,19 @@ function PatientRegistrationController($scope, $q, $location, $translate, connec
   }
 
   $scope.registerPatient = function registerPatient() {
+  
+    // Register submitted action even though the button it outside of the scope
+    // of the form 
+    $scope.details.$setSubmitted(); 
+  
+    if ($scope.details.$invalid) { 
+      
+      // Scroll to top invalid input
+      console.log($scope.details);
+      return;
+    }
+
+
     var patient = $scope.patient;
     patient.current_location_id = session.originLocationUuid;
     patient.origin_location_id = session.currentLocationUuid;

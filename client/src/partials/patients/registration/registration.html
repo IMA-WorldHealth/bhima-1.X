@@ -36,43 +36,58 @@
             <form name="details"  class="form-horizontal">
               
               <!-- Last Name -->
-              <div class="form-group">
+              <div 
+                class="form-group has-feedback"
+                ng-class="{'has-error' : details.lastName.$invalid && details.$submitted}">
+
                 <label for="new-second-name" class="col-md-3 control-label">{{ "PATIENT_REG.SECOND_NAME" | translate }}</label>
                 <div class="col-md-9">
-                  <input id="new-second-name" class="form-control" ng-model="patient.last_name" required>
+                  <input id="new-second-name" class="form-control" name="lastName" ng-model="patient.last_name" required>
                 </div>
               </div>
               
               <!-- Middle Name -->
-              <div class="form-group">
+              <div 
+                class="form-group has-feedback"
+                ng-class="{'has-error' : details.middleName.$invalid && details.$submitted}">
+
                 <label for="new-middle-name" class="col-md-3 control-label">{{ "INVOICE.MIDDLE_NAME" | translate }}</label>
                 <div class="col-md-9">
-                  <input id="new-middle-name" class="form-control" ng-model="patient.middle_name" required>
+                  <input id="new-middle-name" class="form-control" name="middleName" ng-model="patient.middle_name" required>
                 </div>
               </div>
           
               <!-- First Name -->
-              <div class="form-group">
+              <div 
+                class="form-group has-feedback"
+                ng-class="{'has-error' : details.firstName.$invalid && details.$submitted}">
+
                 <label for="new-first-name" class="col-md-3 control-label">{{ "PATIENT_REG.FIRST_NAME" | translate }}</label>
                 <div class="col-md-9">
-                  <input id="new-first-name" class="form-control" ng-model="patient.first_name" required >
+                  <input id="new-first-name" class="form-control" name="first-name" ng-model="patient.first_name">
                 </div>
               </div>
 
               <!-- Hospital File Number -->
-              <div class="form-group">
+              <div 
+                class="form-group has-feedback"
+                ng-class="{'has-error' : details.hospitalNumber.$invalid && details.$submitted}">
+                
                 <label for="new-hospital-number" class="col-md-3 control-label">{{ "INVOICE.HOSPITAL_FILE_NR" | translate }} </label>
                 <div class="col-md-9">
-                  <input id="new-hospital-number" class="form-control" ng-model="patient.hospital_no">
+                  <input id="new-hospital-number" name="hospitalNumber" class="form-control" ng-model="patient.hospital_no" required>
                 </div>
               </div>
               
               <!-- Year of Birth -->
-              <div class="form-group" ng-if="!session.fullDateEnabled">
+              <div class="form-group" 
+                ng-if="!session.fullDateEnabled"
+                ng-class="{'has-error' : details.yob.$invalid && details.$submitted}">
+                
                 <label for="new-yob" class="col-md-3 control-label">{{ "PATIENT_REG.YOB" | translate }}</label>
                 <div class="col-md-9">
                   <div class="input-group">
-                    <input id="yob" type="text" class="form-control" ng-model="session.yob">
+                    <input id="yob" name="yob" type="text" class="form-control" ng-model="session.yob" required>
                     <span class="input-group-btn">
                       <button class="btn btn-default" type="button" ng-click="enableFullDate()">{{ "PATIENT_REG.ENTER_FULL_DATE" | translate }}</button>
                     </span>
@@ -81,15 +96,18 @@
               </div>
               
               <!-- Full date of birth -->
-              <div class="form-group">
+              <div class="form-group has-feedback"
+                ng-class="{'has-error' : details.dob.$invalid && details.$submitted}">
+                
                 <label for="new-patient-dob" class="col-md-3 control-label">{{ "PATIENT_REG.DOB" | translate }}</label>
                 <div class="col-md-9">
-                  <input required id="new-patient-dob" type="date" class="form-control" ng-disabled="!session.fullDateEnabled" ng-model="patient.dob" min="{{ minDOB }}" max="{{ maxDOB }}">
+                  <input required name="dob" id="new-patient-dob" type="date" class="form-control" ng-disabled="!session.fullDateEnabled" ng-model="patient.dob" min="{{ minDOB }}" max="{{ maxDOB }}">
                 </div>
               </div>
 
               <!-- Gender -->
-              <div id="gender" class="form-group">
+              <div id="gender" class="form-group has-feedback"
+                ng-class="{'has-error' : details.genderOptions.$invalid && details.$submitted}">
                 <label for="male" class="col-md-3 control-label">Gender</label>
                 <div class="col-md-9">
                   <label class="radio-inline">
@@ -106,13 +124,18 @@
   
               <!-- Seperate location settings -->
               <hr>
-
+            
               <!-- Location -->
               <!-- TODO Each individual select should be a form group -->
               <div class="row">
                 <div class="col-md-6">
                   <h4>Origin Location</h4>
+                  
                   <div location-select select-village="setOriginLocation"></div>
+
+                  <!-- Input model used to attach location village to the forms scope - this is purely used for validation purposes -->
+                  <!-- TODO Explain this clearly -->
+                  <input name="newmodel" ng-model="session.originLocationUuid" required hidden>
                 </div>
                 
                 <!-- Seperate location searches given a certain screen size -->
@@ -120,7 +143,9 @@
                 
                 <div class="col-md-6">
                   <h4>Current Location</h4>
+                  
                   <div location-select select-village="setCurrentLocation"></div>
+                  <input name="newmodel" ng-model="session.originLocationUuid" required hidden>
                 </div>
               </div>
              
@@ -128,10 +153,11 @@
               <hr> 
 
               <!-- Debtor Group -->
-              <div class="form-group">
+              <div class="form-group has-feedback"
+                ng-class="{'has-error' : details.debtorGroup.$invalid && details.$submitted}">
                 <label for="new-debtor-group" class="col-md-3 control-label">Debtor Group</label>
                 <div class="col-md-9">
-                  <select class="form-control" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in debtorGroup.data | orderBy:'name'" required>
+                  <select class="form-control" name="debtorGroup" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in debtorGroup.data | orderBy:'name'" required>
                     <option value="" disabled="disabled">-- {{"SELECT.DEBITOR_GROUP" | translate }} --</option>
                   </select>
                 </div>
@@ -263,8 +289,8 @@
 
 <footer>
   <div class="pull-right">
-    <a id="submitPatient" ng-click="registerPatient()" ng-disabled="session.failedSessionValidation || details.$invalid" class="btn btn-success btn-sm">
+    <button type="submit" id="submitPatient" ng-click="registerPatient()" class="btn btn-success btn-sm">
       <span class="glyphicon glyphicon-pencil"></span> {{ "PATIENT_REG.REGISTER_PATIENT" | translate }}
-    </a>
+    </button>
   </div>
 </footer>
