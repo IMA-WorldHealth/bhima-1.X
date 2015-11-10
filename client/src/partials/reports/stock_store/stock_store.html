@@ -12,14 +12,24 @@
   </div>
 
   <div class="pull-right" style="margin-top: 1px">
-    <span ><b>{{depot.reference ? '[' + depot.reference + ']' : ''}} </b>
-      {{depot.text}}</span>
+    <button class="btn btn-default btn-sm square" type="button" ng-click="print()">
+      <i class="glyphicon glyphicon-print"></i> {{ "UTIL.PRINT" | translate }}
+    </button>
+
+    <a class="btn btn-default btn-sm square" href="#/reports/stock_store">
+      <i class="glyphicon glyphicon-repeat"></i> {{ "UTIL.CONFIGURE" | translate }}
+    </a>
   </div>
 </nav>
 
-<div class="report report-compressed">
+<div class="report" style="margin-top:5px;">
   <div class="reportBody">
-    <div class="reportFrame" style="padding-top: 10px;">
+    <div class="reportFrame">
+      <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
+      
+      <div class="text-center" ng-if="session.loading">
+        <loading-indicator></loading-indicator>
+      </div>
       <h4 class="visible-print"><b>{{ "STOCK_STATUS.TITLE" | translate }} : </b> {{ depotSelected }}  <small> {{ title }} {{timestamp | date}}</small></h4>
       <table class="reportTable">
         <thead>
@@ -41,7 +51,7 @@
             <td>{{ cons.initial }}</td>
             <td>{{ cons.current }}</td>
           </tr>
-          <tr ng-if="!model.consumption.data.length">
+          <tr ng-if="!model.consumption.data.length && !session.loading">
             <td colspan="7">
               <span class="glyphicon glyphicon-stats"></span>
               {{ "STOCK.REPORT.EMPTY_REPORT" | translate }}

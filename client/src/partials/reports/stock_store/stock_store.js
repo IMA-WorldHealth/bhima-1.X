@@ -8,29 +8,14 @@ angular.module('bhima.controllers')
   'validate',
   'connect',
   function ($scope, $timeout, $routeParams, $q, util, validate, connect) {
-    // TODO add search (filter)
-    // TODO add sortable (clickable) columns
     var dependencies = {};
+    $scope.model     = {};
     $scope.timestamp = new Date();
 
-    var period = $scope.period = [
-      {
-        key : 'CASH_PAYMENTS.DAY',
-        method : today
-      },
-      {
-        key : 'CASH_PAYMENTS.WEEK',
-        method : week
-      },
-      {
-        key : 'CASH_PAYMENTS.MONTH',
-        method : month
-      }
-    ];
-
     var session = $scope.session = {
-      param : {},
-      searching : true
+      param     : {},
+      searching : true,
+      loading   : false
     };
 
     var total = $scope.total = {
@@ -53,43 +38,40 @@ angular.module('bhima.controllers')
       }
     };
 
-    $timeout(init, 100);
+    // Expose to the view
+    $scope.print = function() { print(); };
 
-    function init() {
-      validate.process(dependencies, ['project']).then(loadProjects);
-    }
-
-    function loadProjects(model) {
-      $scope.model = model;
-      select(period[0]);
-    }
-
-    function select(period) {
-      session.selected = period;
-      period.method();
-    }
+    // Startup
+    startup();
 
     function updateSession(model) {
       $scope.model = model;
       $scope.uncompletedList = model;
       var consumption = model.consumption.data;
-      consumption.forEach(function (cons) {
-        connect.fetch('/reports/stockComplete/?tracking_number=' + cons.tracking_number + '&depot_uuid=' + depotId)
+      var dbPromises = consumption.map(function (cons) {
+        return connect.fetch('/reports/stockComplete/?tracking_number=' + cons.tracking_number + '&depot_uuid=' + depotId)
         .then(function (data) {
           cons.current -= data[0].consumed;
-        });
-
+        })
+        .catch(error);
       });
-      updateTotals();
-      session.searching = false;
+
+      $q.all(dbPromises)
+      .then(updateTotals)
+      .then(endLoading)
+      .catch(error);
+      
     }
 
-    function reset() {
-      var request;
+    function endLoading() {
+      session.searching = false;
+      session.loading   = false;
+    }
 
-      request = {
-        depotId : depotId
-      };
+    function startup() {
+      var request = { depotId : depotId };
+
+      session.loading = true;
 
       dependencies.store = {
         required: true,
@@ -106,37 +88,19 @@ angular.module('bhima.controllers')
       .then(function (model) {
         var dataDepot = model.store.data[0];
         $scope.depotSelected = dataDepot.text;
-      });       
+      })
+      .catch(error);
 
       session.searching = true;
+      total.result = {};
       dependencies.consumption.query = '/reports/stockStore/?' + JSON.stringify(request);
 
-      total.result = {};
       if ($scope.model.consumption) {
         $scope.model.consumption.data = [];
       }
       validate.refresh(dependencies, ['consumption'])
-      .then(updateSession);
-    }
-
-    function today() {
-      $scope.session.param.dateFrom = new Date();
-      $scope.session.param.dateTo = new Date();
-      reset();
-    }
-
-    function week() {
-      $scope.session.param.dateFrom = new Date();
-      $scope.session.param.dateTo = new Date();
-      $scope.session.param.dateFrom.setDate($scope.session.param.dateTo.getDate() - $scope.session.param.dateTo.getDay());
-      reset();
-    }
-
-    function month() {
-      $scope.session.param.dateFrom = new Date();
-      $scope.session.param.dateTo = new Date();
-      $scope.session.param.dateFrom.setDate(1);
-      reset();
+      .then(updateSession)
+      .catch(error);
     }
 
     function updateTotals() {
@@ -149,7 +113,9 @@ angular.module('bhima.controllers')
       return $scope.model.consumption.data.length;
     }
 
-    $scope.select = select;
-    $scope.reset = reset;
+    function error(err) {
+      console.error(err);
+    }
+
   }
 ]);
