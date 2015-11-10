@@ -1,6 +1,6 @@
 /**
- * Express Server Configuration
- */
+* Express Server Configuration
+*/
 var express       = require('express'),
     compress      = require('compression'),
     bodyParser    = require('body-parser'),
@@ -9,10 +9,10 @@ var express       = require('express'),
     morgan        = require('morgan'),
     fs            = require('fs');
 
-var cfg           = require('./../config/environment/server');
+var cfg           = require('./../config/environment/' + process.env.NODE_ENV);
 
-// Accept generic express/authentication instances (initialised in app.js)
-module.exports = function (app, authentication) {
+// accepts express server instances (initialised in app.js)
+module.exports = function config(app) {
   console.log('[config/express] Configure express');
 
   // middleware
@@ -41,7 +41,7 @@ module.exports = function (app, authentication) {
   // of piped to standard out (default).
   //var logFile = fs.createWriteStream(__dirname + '/access.log', {flags : 'a'});
   //app.use(morgan('short', { stream : logFile }));
-  app.use(morgan('short'));
+  app.use(morgan(cfg.logLevel));
 
   // serve static files from a single location
   // NOTE the assumption is that this entire directory is public -

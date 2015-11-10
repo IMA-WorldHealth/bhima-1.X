@@ -17,13 +17,10 @@
 
 var q = require('q');
 
-var cfg = require('./../config/environment/server').db;
-var uuid = require('./guid');
-
 var db, con, supportedDatabases, dbms;
 
 // Initiliase module on startup - create once and allow db to be required anywhere
-function initialise() {
+function initialise(cfg) {
   'use strict';
 
   cfg = cfg || {};
@@ -34,9 +31,6 @@ function initialise() {
   // All supported dabases and their initializations
   supportedDatabases = {
     mysql    : mysqlInit
-    // postgres : postgresInit,
-    // firebird : firebirdInit,
-    // sqlite   : sqliteInit
   };
 
   // The database connection for all data interactions
@@ -77,7 +71,6 @@ function execute(sql, callback) {
 
   });
 }
-
 
 function getSupportedDatabases() {
   return Object.keys(supportedDatabases);

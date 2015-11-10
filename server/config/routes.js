@@ -57,7 +57,7 @@ var subsidies             = require('../controllers/categorised/subsidies');
 // Middleware for handle uploaded file
 var multipart       = require('connect-multiparty');
 
-exports.initialise = function (app) {
+module.exports = function routes(app) {
   console.log('[config/routes] Configure routes');
 
   // exposed to the outside without authentication
@@ -68,9 +68,9 @@ exports.initialise = function (app) {
   app.get('/logout', auth.logout);
 
   // application data
-  app.post('/data/', data.create);
-  app.get('/data/', data.read);
-  app.put('/data/', data.update);
+  app.post('/data', data.create);
+  app.get('/data', data.read);
+  app.put('/data', data.update);
   app.delete('/data/:table/:column/:value', data.deleteRecord);
 
   // location routes
@@ -290,10 +290,11 @@ exports.initialise = function (app) {
   app.get('/analytics/debtors/top', analytics.cashflow.getTopDebtors);
 
   // users controller
-  app.post('/users', users.createUser);
-  app.put('/users/:id', users.updateUser);
-  app.get('/users', users.getUsers);
-  app.delete('/users/:id', users.removeUser);
+  app.get('/users', users.read);
+  app.get('/users/:id', users.readSingle);
+  app.post('/users', users.create);
+  app.put('/users/:id', users.update);
+  app.delete('/users/:id', users.delete);
   app.get('/editsession/authenticate/:pin', users.authenticatePin);
 
   // budget controller
