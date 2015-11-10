@@ -85,6 +85,10 @@ function DepotController($location, $translate, $window, messenger, AppCache, St
     key : 'DEPOT.DISTRIBUTION.LOSSES',
     ico : 'glyphicon-th-list',
     link : '/depots/:uuid/reports/distributions/losses'
+  }, {
+    key : 'STOCK_STATUS.TITLE',
+    ico : 'glyphicon-th-list',
+    link : '/reports/stock_store/:uuid'
   }];
 
   // generic error handler
