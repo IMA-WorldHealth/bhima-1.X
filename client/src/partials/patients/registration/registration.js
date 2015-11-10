@@ -220,13 +220,14 @@ function PatientRegistrationController($scope, $q, $location, $translate, connec
       group_uuid : $scope.debtor.debtor_group.uuid,
       text : 'Debtor ' + patient.last_name + ' ' + patient.middle_name + ' ' + patient.first_name,
     };
-
+  
     var packagePatient = connect.clean(patient);
     packagePatient.dob = util.sqlDate(packagePatient.dob);
     packagePatient.uuid = patientId;
     packagePatient.project_id = $scope.project.id;
     packagePatient.reference = 1; // FIXME/TODO : This is a hack
-
+  
+    
     // Normalize the patient names
     packagePatient.first_name = util.normalizeName(packagePatient.first_name);
     packagePatient.last_name = util.normalizeName(packagePatient.last_name);
