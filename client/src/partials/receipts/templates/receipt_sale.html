@@ -44,7 +44,7 @@
       {{model.recipient.registration_date | date}}
     </div>
     <div class="col-xs-4">
-      <i>{{'INVOICE.INVOICE_ID' | translate}}</i> <small style="font-size: 20px"><b> {{model.common.enterprise.abbr + model.saleRecords[0].reference}}</small></b>
+      <i>{{'INVOICE.INVOICE_ID' | translate}}</i> <small style="font-size: 20px"><b> {{model.saleRecords[0].abbr + model.saleRecords[0].reference}}</small></b>
       <br>
       <i>{{ 'INVOICE.DATE_RECEIPT' | translate }}</i>
       <br>

@@ -503,7 +503,10 @@ function bhimaconfig($routeProvider) {
     controller : 'ReportDepotDistributionsController as ReportCtrl',
     templateUrl : 'partials/reports/distributions/distributions.html'
   })
-
+  .when('/reports/stock_entry/', {
+    controller : 'ReportStockEntryController as ReportCtrl',
+    templateUrl : 'partials/reports/stock/stock_entry/stock_entry.html'
+  })
   .when('/stock/entry/report/:documentId?', {
     controller : 'stock.entry.report',
     templateUrl : 'partials/stock/entry/report.html'

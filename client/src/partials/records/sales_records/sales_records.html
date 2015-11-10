@@ -19,7 +19,7 @@
   <div>
     <div class="col-xs-2">
       <input class="form-bhima" ng-change="reset()" type="date" ng-model="session.param.dateFrom" rows="20">
-    </div>    
+    </div>
     <div class="col-xs-2" style="padding-right: 0px;">
       <input class="form-bhima" ng-change="reset()" type="date" ng-model="session.param.dateTo" rows="20">
     </div>
@@ -68,7 +68,7 @@
             <tr ng-class="{'rowSelected': selected.uuid==invoice.uuid, 'creditInvoice': invoice.creditId}" ng-repeat="invoice in model.sale.data">
               <td width="20%">{{invoice.invoice_date | date : 'EEEE, dd/MM/yyyy'}}</td>
               <td width="10%">{{invoice.hr_id}}</td>
-              <td width="20%">[{{invoice.projectAbbr}}{{invoice.patientReference}}]  {{invoice.last_name}} {{invoice.middle_name}} {{invoice.first_name}}</td>
+              <td width="20%">[{{getPatientProject(invoice.patientProjectId)}}{{invoice.patientReference}}]  {{invoice.last_name}} {{invoice.middle_name}} {{invoice.first_name}}</td>
               <td width="20%">{{invoice.cost | currency}}</td>
               <td width="30%" class="hidden-print">
                 <a ng-href="/#/invoice/sale/{{invoice.uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}</a>
@@ -79,8 +79,8 @@
           </tbody>
         </table>
         <h6 class="visible-print">
-          {{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: <b>{{ total.result.cost | currency:session.currency }}</b>  
-        </h6>            
+          {{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: <b>{{ total.result.cost | currency:session.currency }}</b>
+        </h6>
     </div>
   </div>
 </div>
