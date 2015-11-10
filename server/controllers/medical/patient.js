@@ -1,7 +1,79 @@
-// patient controller
-
+/**
+ * @description 
+ *
+ * @returns
+ *
+ * @todo
+ */
 var db = require('../../lib/db'),
     guid = require('../../lib/guid');
+
+exports.create = create;
+exports.details = details;
+exports.list = list;
+exports.search = search;
+
+/*
+ * HTTP Controllers
+ */
+function create(req, res, next) { 
+  next();
+}
+
+function details(req, res, next) { 
+  var patientDetailQuery;
+  var uuid = req.params.uuid;
+  
+  patientDetailQuery =
+    'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name, p.middle_name, ' +
+      'p.sex, p.dob, p.origin_location_id, p.reference, proj.abbr, d.text, ' +
+      'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.locked ' +
+    'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
+    'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id ' +
+    'WHERE p.uuid = ?';
+
+  db.exec(patientDetailQuery, [uuid])
+    .then(function(result) { 
+      var patientDetail;
+
+      if (isEmpty(result)) { 
+        res.status(404).send();
+      } else { 
+
+        // UUID has matched patient - extract result and send to client
+        patientDetail = result[0];
+        res.status(200).json(patientDetail);
+      }
+    })
+    .catch(next)
+    .done();
+}
+
+function list(req, res, next) { 
+  var listPatientsQuery; 
+  
+  listPatientsQuery =
+    'SELECT p.uuid, CONCAT(pr.abbr, p.reference) AS patientRef, p.first_name, ' +
+      'p.middle_name, p.last_name ' +
+    'FROM patient AS p JOIN project AS pr ON p.project_id = pr.id';
+
+  db.exec(listPatientsQuery)
+  .then(function (result) {
+    var patients = result;
+
+    res.status(200).json(result);
+  })
+  .catch(next)
+  .done();
+}
+
+function search(req, res, next) { 
+  next();
+}
+
+
+
+/* Legacy Methods - these will be removed or refactored */
 
 // assure the array is empty
 function empty(array) {
@@ -163,3 +235,6 @@ exports.logVisit = function (req, res, next) {
 
 };
 
+function isEmpty(array) { 
+  return array.length === 0;
+}

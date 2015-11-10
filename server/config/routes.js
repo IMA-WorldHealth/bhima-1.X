@@ -273,8 +273,15 @@ module.exports = function routes(app) {
   app.get('/InExAccounts/:id_enterprise/', accounts.listInExAccounts);
   app.get('/availableAccounts/:id_enterprise/', accounts.listEnterpriseAccounts);
   app.get('/availableAccounts_profit/:id_enterprise/', accounts.listEnterpriseProfitAccounts);
+  
+
+  // Patients API 
+  app.get('/patients', patient.list);
+  app.post('/patients', patient.create);
+  app.get('/patients/:uuid', patient.details);
 
   // search stuff
+  // TODO merge with patients API
   app.get('/patient/:uuid', patient.searchUuid);
   app.get('/patient/search/fuzzy/:match', patient.searchFuzzy);
   app.get('/patient/search/reference/:reference', patient.searchReference);
