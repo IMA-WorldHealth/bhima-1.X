@@ -1714,7 +1714,7 @@
    "ADD"            : "Add a Offday",
    "ALERT"          : "The management of the Offdays allows the configuration of different types of offdays that are supported in the organization",
    "CONFIRM"        : "Are you sure you want to delete this Offday",
-   "CREATE_TAXE"    : "Creation des taxes",
+   "CREATE_TAXE"    : "Create Taxes",
    "DELETE_SUCCESS" : "Deleted successfully",
    "NEW_OFFDAY"     : "New Offday",
    "NO_OFFDAY"      : "No Offday have been registred",
@@ -2926,7 +2926,7 @@
    },
 "TAXE_MANAGEMENT": {
    "CONFIGURE_IPR" : "IPR configuration",
-   "CREATE_TAXE"   : "taxes creation",
+   "CREATE_TAXE"   : "Create Taxes",
    "OPTIONS"       : "Options",
    "TITLE"         : "Taxes management"
    },
@@ -3096,6 +3096,7 @@
    "STOCK_ENTRY_REPORT"        : "Stocks Entries",
    "STOCK_MANAGEMENT"          : "Stock Management",
    "STOCK_STATUS"              : "Stock Status",
+   "STOCK_STORE_STATUS"        : "Depot Status",
    "SUBSIDY"                   : "Subsidy management",
    "SUPPORT"                   : "Support",
    "SWAP_DEBITOR"              : "Update Debtor",
