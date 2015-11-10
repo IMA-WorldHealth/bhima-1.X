@@ -55,7 +55,8 @@ describe('The /users API endpoint', function () {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
         expect(res.body).to.have.length(4);
-      });
+      })
+      .catch(handler);
   });
 
   it('POST /users will add a valid user', function () {
@@ -67,7 +68,8 @@ describe('The /users API endpoint', function () {
 
         // cache the user id
         newUser.id = res.body.id;
-      });
+      })
+      .catch(handler);
   });
 
   it('POST /users will reject an invalid user', function () {
@@ -78,7 +80,8 @@ describe('The /users API endpoint', function () {
         expect(res.body).to.have.keys('code', 'reason', 'missingKeys');
         expect(res.body.code).to.be.equal('ERROR.ERR_MISSING_INFO');
         expect(res.body.missingKeys).to.have.length.above(2);
-      });
+      })
+      .catch(handler);
   });
 
   it('GET /users/:id will find the newly added user', function () {
@@ -90,7 +93,8 @@ describe('The /users API endpoint', function () {
         expect(res.body.email).to.equal(newUser.email);
         expect(res.body.first).to.equal(newUser.first);
         expect(res.body.last).to.equal(newUser.last);
-      });
+      })
+      .catch(handler);
   });
 
   it('PUT /users/:id will update the newly added user', function () {
@@ -98,16 +102,39 @@ describe('The /users API endpoint', function () {
       .send({ email : 'email@test.org' })
       .then(function (res) {
         expect(res).to.have.status(200);
-        expect(res.body).to.have.keys('code', 'reason', 'missingKeys');
-        expect(res.body.code).to.be.equal('ERROR.ERR_MISSING_INFO');
-        expect(res.body.missingKeys).to.have.length.above(2);
-      });
+        expect(res).to.be.json;
+        expect(res.body.username).to.equal(newUser.username);
+        expect(res.body.email).to.not.equal(newUser.email);
+
+        // re-query the database
+        return agent.get('/users/' + newUser.id);
+      })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res.body.email).to.equal('email@test.org');
+      })
+      .catch(handler);
   });
 
   it('DELETE /users/:id will delete the newly added user', function () {
     return agent.delete('/users/' + newUser.id)
       .then(function (res) {
         expect(res).to.have.status(204);
-      });
+        expect(res.body).to.be.empty;
+        return agent.get('/users/' + newUser.id);
+      })
+      .then(function (res) {
+        expect(res).to.have.status(404);
+      })
+      .catch(handler);
+  });
+
+  it('DELETE /users/:id will send back a 404 if the user does not exist', function () {
+    return agent.delete('/users/' + newUser.id)
+      .then(function (res) {
+        expect(res).to.have.status(404);
+        expect(res.body).to.be.empty;
+      })
+      .catch(handler);
   });
 });

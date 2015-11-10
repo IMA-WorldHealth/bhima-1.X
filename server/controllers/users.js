@@ -49,7 +49,7 @@ exports.readSingle = function readSingle(req, res, next) {
   db.exec(sql, [req.params.id])
   .then(function (rows) {
     if (!rows.length) {
-      return res.status(404);
+      return res.status(404).send();
     }
 
     // send back JSON
@@ -125,7 +125,6 @@ exports.update = function update(req, res, next) {
   var params = [];
 
   for (var key in data) {
-
     if (data.hasOwnProperty(key)) {
       if (key === 'password') {
 
@@ -145,16 +144,28 @@ exports.update = function update(req, res, next) {
   sql += ' WHERE  id = ?;';
 
   db.exec(sql, [id])
+  .then(function () {
+
+    // fetch the entire changed object to send back to the client
+    sql =
+      'SELECT user.id, user.username, user.email, user.first, user.last, ' +
+        'user.active, user.last_login AS lastLogin ' +
+      'FROM user WHERE user.id = ?;';
+
+    return db.exec(sql, [id]);
+  })
   .then(function (rows) {
-    res.status(200).json(rows);
+    res.status(200).json(rows[0]);
   })
   .catch(next)
   .done();
 };
 
-// DELETE /users/:id
-// FIXME - not everyone should be able to do this.  What about
-// permissions?
+/**
+* DELETE /users/:id
+*
+* If the user exists delete it.
+*/
 exports.delete = function del(req, res, next) {
   'use strict';
 
@@ -162,8 +173,14 @@ exports.delete = function del(req, res, next) {
     'DELETE FROM user WHERE id = ?;';
 
   db.exec(sql, [req.params.id])
-  .then(function (rows) {
-    res.status(204);
+  .then(function (row) {
+    
+    // if nothing happened, let the client know via a 404 error
+    if (row.affectedRows === 0) {
+      return res.status(404).send();
+    }
+
+    res.status(204).send();
   })
   .catch(next)
   .done();
