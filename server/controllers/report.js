@@ -182,7 +182,7 @@ function saleRecords(params) {
   var requestSql =
     'SELECT sale.uuid, sale.reference, sale.cost, sale.currency_id, sale.debitor_uuid, sale.invoice_date, ' +
     'sale.note, sale.posted, sale.seller_id, credit_note.uuid as `creditId`, credit_note.description as `creditDescription`, ' +
-    'credit_note.posted as `creditPosted`, first_name, last_name, middle_name, patient.reference as `patientReference`, project.abbr as `projectAbbr`, CONCAT(project.abbr, sale.reference) as `hr_id` ' +
+    'credit_note.posted as `creditPosted`, first_name, last_name, middle_name, patient.project_id as `patientProjectId`, patient.reference as `patientReference`, project.abbr as `projectAbbr`, CONCAT(project.abbr, sale.reference) as `hr_id` ' +
     'FROM sale LEFT JOIN credit_note on sale.uuid = credit_note.sale_uuid ' +
     'LEFT JOIN patient on sale.debitor_uuid = patient.debitor_uuid ' +
     'LEFT JOIN project on sale.project_id = project.id ' +

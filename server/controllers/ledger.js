@@ -32,9 +32,20 @@ exports.compileDebtorLedger = function (req, res, next) {
   .done();
 };
 
+exports.compileDebtorLedgerSale = function (req, res, next) {
+  debtorSale(req.params.id, req.params.saleId)
+  .then(function (rows) {
+    res.send(rows);
+  })
+  .catch(function (error) {
+    next(error);
+  })
+  .done();
+};
+
 exports.compileGroupLedger = function (req, res, next) {
   debitorGroup(req.params.id)
-  .then(function (rows) {    
+  .then(function (rows) {
     res.send(rows);
   })
   .catch(function (error) {
@@ -363,6 +374,89 @@ function distributableSale(id) {
       'WHERE `t`.`inv_po_id` IN ("' + invoices.join('","') + '") ' +
       'AND t.account_id = ' + account_id + ' ' +
       'GROUP BY `t`.`inv_po_id`;\n';
+
+    return db.exec(sql);
+  })
+  .then(function (ans) {
+    defer.resolve(ans);
+  })
+  .catch(function (error) {
+    defer.reject(error);
+  });
+
+  return defer.promise;
+}
+
+// Sale Balance debitor
+function debtorSale(id, saleId) {
+  var defer = q.defer();
+
+  // debtor query
+  if (!id) { defer.reject(new Error('No debtor id selected!')); }
+  else { id = sanitize.escape(id); }
+
+  var query =
+    'SELECT account_id ' +
+    'FROM debitor JOIN debitor_group ON ' +
+      'debitor.group_uuid = debitor_group.uuid ' +
+    'WHERE debitor.uuid=' + id +';';
+
+  db.exec(query)
+  .then(function (ans) {
+
+    var account = ans.pop().account_id;
+
+    var query =
+      'SELECT c.inv_po_id, c.trans_id, c.trans_date, c.account_id FROM (' +
+        'SELECT p.inv_po_id, p.trans_id, p.trans_date, p.account_id ' +
+        'FROM posting_journal AS p ' +
+        'WHERE p.deb_cred_uuid = ' + id + ' AND p.account_id = ' + account + ' ' +
+      'UNION ' +
+        'SELECT g.inv_po_id, g.trans_date, g.trans_id, g.account_id ' +
+        'FROM general_ledger AS g ' +
+        'WHERE g.deb_cred_uuid = ' + id + ' AND g.account_id = ' + account + ') ' +
+      ' AS c;';
+
+    return db.exec(query);
+  })
+  .then(function (ans) {
+    if (!ans.length) { defer.resolve([]); }
+
+    var invoices = ans.map(function (line) {
+      return line.inv_po_id;
+    });
+
+    var account_id = ans.pop().account_id;
+
+    var sql =
+      'SELECT s.reference, s.project_id, s.is_distributable, t.inv_po_id, t.trans_date, SUM(t.debit_equiv) AS debit,  ' +
+        'SUM(t.credit_equiv) AS credit, SUM(t.debit_equiv - t.credit_equiv) as balance, ' +
+        't.account_id, t.deb_cred_uuid, t.currency_id, t.doc_num, t.description, t.account_id, ' +
+        't.comment, t.canceled, p.abbr, c.document_id, ' +
+        'IF(ISNULL(c.document_id), 0, 1) AS consumed ' +
+      'FROM (' +
+        '(' +
+          'SELECT pj.inv_po_id, pj.trans_date, pj.debit, ' +
+            'pj.credit, pj.debit_equiv, pj.credit_equiv, ' +
+            'pj.account_id, pj.deb_cred_uuid, pj.currency_id, ' +
+            'pj.doc_num, pj.trans_id, pj.description, pj.comment, credit_note.sale_uuid AS canceled ' +
+          'FROM posting_journal AS pj ' +
+          'LEFT JOIN credit_note ON credit_note.sale_uuid = pj.inv_po_id WHERE pj.deb_cred_uuid=' + id +
+        ') UNION (' +
+          'SELECT gl.inv_po_id, gl.trans_date, gl.debit, ' +
+            'gl.credit, gl.debit_equiv, gl.credit_equiv, ' +
+            'gl.account_id, gl.deb_cred_uuid, gl.currency_id, ' +
+            'gl.doc_num, gl.trans_id, gl.description, gl.comment, credit_note.sale_uuid AS canceled ' +
+          'FROM general_ledger AS gl ' +
+          'LEFT JOIN credit_note ON credit_note.sale_uuid = gl.inv_po_id WHERE gl.deb_cred_uuid=' + id +
+        ')' +
+      ') AS t ' +
+      'JOIN sale AS s ON t.inv_po_id = s.uuid ' +
+      'JOIN project AS p ON s.project_id = p.id ' +
+      'LEFT JOIN consumption AS c ON t.inv_po_id = c.document_id ' +
+      'WHERE t.inv_po_id =' + sanitize.escape(saleId) + ' ' +
+      'AND t.account_id = ' + account_id + ' ' +
+      'GROUP BY t.inv_po_id;';
 
     return db.exec(sql);
   })

@@ -9,7 +9,8 @@ exports.getPurchaseOrders = function (req, res, next) {
       status = req.query.status;
 
   // query base
-  sql = 'SELECT COUNT(uuid) AS count FROM purchase WHERE is_donation = 0';
+  sql  = 'SELECT COUNT(uuid) AS count FROM purchase WHERE is_donation = 0';
+  sql += ' AND (is_integration = 0 OR is_integration IS NULL)';
 
   switch (status) {
 
