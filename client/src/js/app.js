@@ -347,6 +347,10 @@ function bhimaconfig($routeProvider) {
     controller : 'ReportStockExpirationsController as ReportCtrl',
     templateUrl : 'partials/reports/expiring_stock/expiring_stock.html'
   })
+  .when('/reports/stock_store', {
+    controller : 'StockStoreReportController as ReportCtrl',
+    templateUrl : 'partials/reports/stock_store/report_store.html'
+  })
   .when('/reports/stock_store/:depotId', {
     controller : 'stock_store',
     templateUrl : 'partials/reports/stock_store/stock_store.html'

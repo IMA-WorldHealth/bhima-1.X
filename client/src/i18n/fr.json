@@ -3066,6 +3066,7 @@
    "STOCK_DISTRIBUTION"        : "Distribution Stock",
    "STOCK_MANAGEMENT"          : "Gestion des stocks",
    "STOCK_STATUS"              : "Situation du stock",
+   "STOCK_STORE_STATUS"        : "Situation du Depot",
    "SUBSIDY"                   : "Subventions",
    "SUPPORT"                   : "Prise en charge",
    "SWAP_DEBITOR"              : "Groupes Débiteurs",
