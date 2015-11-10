@@ -901,14 +901,14 @@ function stockComplete(params) {
       'SELECT SUM(consumption.quantity) AS consumed ' +
       'FROM stock ' +
       'LEFT JOIN consumption ON stock.tracking_number = consumption.tracking_number ' +
-      'WHERE stock.tracking_number = ' + tracking_number + ' '+
+      'WHERE stock.tracking_number = ' + tracking_number + ' AND consumption.canceled <> 1 '+
       ' AND consumption.depot_uuid = ' + depot_uuid + ' '+
     'UNION '+
-      'SELECT ((SUM(consumption_reversing.quantity)) * (-1)) AS consumed ' +
+      'SELECT ((SUM(consumption.quantity)) * (-1)) AS consumed ' +
       'FROM stock ' +
-      'LEFT JOIN consumption_reversing ON stock.tracking_number = consumption_reversing.tracking_number ' +
-      'WHERE stock.tracking_number = ' + tracking_number + ' ' +
-      'AND consumption_reversing.depot_uuid = ' + depot_uuid + '  ) AS cons;';
+      'LEFT JOIN consumption ON stock.tracking_number = consumption.tracking_number ' +
+      'WHERE stock.tracking_number = ' + tracking_number + ' AND consumption.canceled = 1 ' +
+      'AND consumption.depot_uuid = ' + depot_uuid + '  ) AS cons;';
 
   return db.exec(requestSql);
 }
