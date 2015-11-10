@@ -30,68 +30,76 @@
       <!-- Patient Details Form -->
       <div class="col-md-7">
         <div id="patient-details" class="panel panel-primary">
-          <div class="panel-heading">Patient Details</div>
+          <div class="panel-heading">{{ "PATIENT_REG.PATIENT_DETAILS" | translate }}</div>
           <div class="panel-body">
 
-            <form class="form-horizontal">
+            <form id="details"  class="form-horizontal">
               
               <!-- Last Name -->
               <div class="form-group">
-                <label for="new-second-name" class="col-md-3 control-label">Last Name</label>
+                <label for="new-second-name" class="col-md-3 control-label">{{ "PATIENT_REG.SECOND_NAME" | translate }}</label>
                 <div class="col-md-9">
-                  <input id="new-second-name" class="form-control">
+                  <input id="new-second-name" class="form-control" ng-model="patient.last_name" required>
                 </div>
               </div>
               
               <!-- Middle Name -->
               <div class="form-group">
-                <label for="new-middle-name" class="col-md-3 control-label">Middle Name</label>
+                <label for="new-middle-name" class="col-md-3 control-label">{{ "INVOICE.MIDDLE_NAME" | translate }}</label>
                 <div class="col-md-9">
-                  <input id="new-middle-name" class="form-control">
+                  <input id="new-middle-name" class="form-control" ng-model="patient.middle_name" required>
                 </div>
               </div>
           
               <!-- First Name -->
               <div class="form-group">
-                <label for="new-first-name" class="col-md-3 control-label">First Name</label>
+                <label for="new-first-name" class="col-md-3 control-label">{{ "PATIENT_REG.FIRST_NAME" | translate }}</label>
                 <div class="col-md-9">
-                  <input id="new-first-name" class="form-control">
+                  <input id="new-first-name" class="form-control" ng-model="patient.first_name" required >
                 </div>
               </div>
 
               <!-- Hospital File Number -->
               <div class="form-group">
-                <label for="new-hospital-number" class="col-md-3 control-label">Hospital File Number</label>
+                <label for="new-hospital-number" class="col-md-3 control-label">{{ "INVOICE.HOSPITAL_FILE_NR" | translate }} </label>
                 <div class="col-md-9">
-                  <input id="new-hospital-number" class="form-control">
+                  <input id="new-hospital-number" class="form-control" ng-model="patient.hospital_no">
                 </div>
               </div>
               
               <!-- Year of Birth -->
-              <div class="form-group">
-                <label for="new-yob" class="col-md-3 control-label">Year of Birth</label>
+              <div class="form-group" ng-if="!session.fullDateEnabled">
+                <label for="new-yob" class="col-md-3 control-label">{{ "PATIENT_REG.YOB" | translate }}</label>
                 <div class="col-md-9">
                   <div class="input-group">
-                    <input id="new-yob" type="number" class="form-control">
+                    <input id="yob" type="text" class="form-control" ng-model="session.yob">
                     <span class="input-group-btn">
-                      <button class="btn btn-default" type="button">Enter Full Date</button>
+                      <button class="btn btn-default" type="button" ng-click="enableFullDate()">{{ "PATIENT_REG.ENTER_FULL_DATE" | translate }}</button>
                     </span>
                   </div>
                 </div>
               </div>
-            
+              
+              <!-- Full date of birth -->
+              <div class="form-group">
+                <label for="new-patient-dob" class="col-xs-3 control-label">{{ "PATIENT_REG.DOB" | translate }}</label>
+                <div class="col-md-9">
+                  <input required id="patient-dob" type="date" class="form-control" ng-disabled="!session.fullDateEnabled" ng-model="patient.dob" min="{{ minDOB }}" max="{{ maxDOB }}">
+                </div>
+              </div>
+
               <!-- Gender -->
               <div id="gender" class="form-group">
                 <label for="male" class="col-md-3 control-label">Gender</label>
                 <div class="col-md-9">
                   <label class="radio-inline">
-                    <input type="radio" name="genderOptions" id="male" value="male">
-                    Male
+                    <input type="radio" name="genderOptions" id="male" value="M" ng-model="patient.sex" required>
+                    {{ "PATIENT_REG.MALE" | translate }}
                   </label>
 
                   <label class="radio-inline">
-                    <input type="radio" name="genderOptions" id="female" value="female">
-                    Female
+                    <input type="radio" name="genderOptions" id="female" value="F" ng-model="patient.sex" required>
+                    {{ "PATIENT_REG.FEMALE" | translate }}
                   </label>  
                 </div>
               </div>
@@ -123,7 +131,9 @@
               <div class="form-group">
                 <label for="new-debtor-group" class="col-md-3 control-label">Debtor Group</label>
                 <div class="col-md-9">
-                  <select class="form-control"></select>
+                  <select class="form-control" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in debtorGroup.data | orderBy:'name'" required>
+                    <option value="" disabled="disabled">-- {{"SELECT.DEBITOR_GROUP" | translate }} --</option>
+                  </select>
                 </div>
               </div>
             </form>
@@ -134,7 +144,7 @@
       <!-- Optional Information Form -->
       <div class="col-md-5">
         <div id="registration-type" class="panel panel-default">
-          <div class="panel-heading">Optional Information</div>
+          <div class="panel-heading">{{ "PATIENT_REG.OPTIONAL_INFO" | translate }}</div>
           <div class="panel-body">
             <form class="form-horizontal">
                 
@@ -249,309 +259,12 @@
       </div>
     </div>
   </div>
-  
-  <!-- Temporary style comparison spacer -->
-  <div style="height : 50px;">
-
-  </div>
-
-  <div class="col-xs-12 margin-top-10">
-    <div class="row">
-      <div class="col-xs-7">
-        <div class="row">
-          <div id="patientDetails" class="panel panel-primary" ng-class="{'form-disabled' : patient.renewal==2 }">
-            <div class="panel-heading">
-              <!-- Required styling workaround -->
-              <span class="glyphicon glyphicon-user"></span> <b>{{ "PATIENT_REG.PATIENT_DETAILS" | translate }}</b>
-            </div>
-            <div class="panel-body">
-
-              <form name="details" class="form-horizontal">
-                <fieldset>
-                  <legend>{{ "PATIENT_REG.PATIENT" | translate }}</legend>
-
-                  <div class="form-group">
-                    <label for="second-name" class="control-label col-xs-3 required">{{ "PATIENT_REG.SECOND_NAME" | translate }}</label>
-                    <div class="col-xs-9">
-                      <input type="text" class="form-bhima" id="second-name" ng-model="patient.last_name" required>
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="second-name" class="control-label col-xs-3 required">{{ "PATIENT_RECORDS.MIDDLE_NAME" | translate }}</label>
-                    <div class="col-xs-9">
-                      <input type="text" class="form-bhima" id="middle-name" ng-model="patient.middle_name" required>
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="first-name" class="control-label col-xs-3 required">{{ "PATIENT_REG.FIRST_NAME" | translate }}</label>
-                    <div class="col-xs-9">
-                      <input type="text" class="form-bhima" id="first-name" ng-model="patient.first_name">
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="first-name" class="control-label col-xs-3 required">{{ "PATIENT_RECORDS.HOSPITAL_FILE_NR" | translate }}</label>
-                    <div class="col-xs-9">
-                      <input type="text" class="form-bhima" id="hospital-no" ng-model="patient.hospital_no">
-                    </div>
-                  </div>
-
-                  <div class="form-group" ng-show="!session.fullDateEnabled">
-                    <label for="yob" class="control-label col-xs-3 required"> {{ "PATIENT_REG.YOB" | translate }}</label>
-                    <div class="col-xs-9">
-                      <div class="input-group">
-                        <input type="text" class="form-bhima" id="yob" ng-model="session.yob">
-                        <span class="input-group-btn">
-                          <button ng-click="enableFullDate()" type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-calendar"></span>{{ "PATIENT_REG.ENTER_FULL_DATE" | translate }}</button>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="form-group" >
-                    <label for="patient-dob" class="col-xs-3 control-label">{{ "PATIENT_REG.DOB" | translate }}</label>
-                    <div class="col-xs-9">
-                      <input required id="patient-dob" type="date" class="form-bhima" ng-disabled="!session.fullDateEnabled" ng-model="patient.dob" min="{{ minDOB }}" max="{{ maxDOB }}">
-                    </div>
-                  </div>
-
-                  <div class="form-group" ng-if="validation.dates.flag">
-                    <div style="margin : 0em 1em 0em; text-align: center;" class="alert alert-danger">
-                      <span class="glyphicon glyphicon-calendar"></span> <b>{{validation.dates.flag.message | translate}} </b>
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label class="control-label col-xs-3 required"> {{ "PATIENT_REG.SEX" | translate }}</label>
-                    <div class="col-xs-9">
-                      <div class="radio-inline">
-                        <label>
-                          <input type="radio" name="sex_select" id="male" value="M" checked ng-model="patient.sex" required>
-                          {{ "PATIENT_REG.MALE" | translate }}
-                        </label>
-                      </div>
-                      <div class="radio-inline">
-                        <label>
-                          <input type="radio" name="sex_select" id="female" value="F" ng-model="patient.sex" required>
-                          {{ "PATIENT_REG.FEMALE" | translate }}
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </fieldset>
-              </form>
-
-              <form name="location" class="form">
-                <fieldset>
-                  <legend>{{ "LOCATION.LOCATION" | translate }}</legend>
-
-                  <div class="col-xs-6">
-                    <fieldset>
-
-                      <!-- Temporary required work around -->
-                      <legend>{{ "LOCATION.ORIGIN" | translate }} <small style="color : red;">*</small></legend>
-
-                      <div location-select select-village="setOriginLocation"></div>
-                    </fieldset>
-                  </div>
-
-                  <div class="col-xs-6">
-                    <fieldset>
-
-                      <!-- Temporary required work around -->
-                      <legend> {{ "LOCATION.CURRENT" | translate }} <small style="color : red;">*</small></legend>
-
-                      <div location-select select-village="setCurrentLocation"></div>
-                    </fieldset>
-                  </div>
-                </fieldset>
-
-                <div class="form-group" ng-if="validation.locations.flag">
-                  <div style="margin : 0em 1em 0em; text-align: center;" class="alert alert-danger">
-                    <span class="glyphicon glyphicon-globe"></span> <b>{{validation.locations.flag.message | translate}} </b>
-                  </div>
-                </div>
-              </form>
-
-                <form name="finance" class="form-horizontal">
-                  <fieldset>
-                    <legend>{{ "PATIENT_REG.FINANCE" | translate }}</legend>
-                    <div class="form-group">
-                      <label for="debtor-group" class="control-label col-xs-3 required">{{ "PATIENT_REG.DEBTOR_GROUP" | translate }}</label>
-                      <div class="col-xs-9">
-                        <select required class="form-bhima" id="debtor-group" ng-model="debtor.debtor_group" ng-options="g.name for g in debtorGroup.data | orderBy:'name'">
-                          <option value="" disabled="disabled">-- {{"SELECT.DEBITOR_GROUP" | translate }} --</option>
-                        </select>
-                      </div>
-                    </div>
-                  </fieldset>
-                </form>
-
-            </div> <!-- End panel body -->
-          </div> <!-- End panel -->
-        </div> <!-- End patient details row -->
-        <div class="row">
-          <div class="panel panel-default">
-            <div class="panel-heading">{{ "PATIENT_REG.OPTIONAL_INFO" | translate }}</div>
-            <div class="panel-body">
-              <form role="form">
-
-                <div class="form-group">
-                  <label for="title">{{ "PATIENT_REG.TITLE" | translate }}</label>
-                  <input type="text" class="form-bhima" id="title" ng-model="patient.title">
-                </div>
-
-                <div class="form-group">
-                  <label for="phone">{{ "PATIENT_REG.PHONE_NO" | translate }}</label>
-                  <input type="text" class="form-bhima" id="phone" ng-model="patient.phone">
-                </div>
-
-                <div class="form-group">
-                  <label for="email">{{ "PATIENT_REG.EMAIL" | translate }}</label>
-                  <input type="email" class="form-bhima" id="email" ng-model="patient.email">
-                </div>
-
-                <div class="form-group">
-                  <label for="address1">{{ "PATIENT_REG.ADDRESS1" | translate }}</label>
-                  <input type="text" class="form-bhima" id="address1" ng-model="patient.address_1">
-                </div>
-
-                <div class="form-group">
-                  <label for="address2">{{ "PATIENT_REG.ADDRESS2" | translate }}</label>
-                  <input type="text" class="form-bhima" id="address2" ng-model="patient.address_2">
-                </div>
-
-                <div class="form-group">
-                  <label for="father_name">{{ "PATIENT_REG.FATHER_NAME" | translate }}</label>
-                  <input type="text" class="form-bhima" id="father_name" ng-model="patient.father_name">
-                </div>
-
-                <div class="form-group">
-                  <label for="mother_name">{{ "PATIENT_REG.MOTHER_NAME" | translate }}</label>
-                  <input type="text" class="form-bhima" id="mother_name" ng-model="patient.mother_name">
-                </div>
-
-                <div class="form-group">
-                  <label for="religion">{{ "PATIENT_REG.RELIGION" | translate }}</label>
-                  <input type="text" class="form-bhima" id="religion" ng-model="patient.religion">
-                </div>
-
-                <div class="form-group">
-                  <label for="marital">{{ "PATIENT_REG.MARITAL_STATUS" | translate }}</label>
-                  <input type="text" class="form-bhima" id="marital" ng-model="patient.marital_status">
-                </div>
-
-                <div class="form-group">
-                  <label for="profession">{{ "PATIENT_REG.PROFESSION" | translate }}</label>
-                  <input type="text" class="form-bhima" id="profession" ng-model="patient.profession">
-                </div>
-
-                <div class="form-group">
-                  <label for="employer">{{ "PATIENT_REG.EMPLOYER" | translate }}</label>
-                  <input type="text" class="form-bhima" id="employer" ng-model="patient.employer">
-                </div>
-
-                <div class="form-group">
-                  <label for="spouse">{{ "PATIENT_REG.SPOUSE" | translate }}</label>
-                  <input type="text" class="form-bhima" id="spouse" ng-model="patient.spouse">
-                </div>
-
-                <div class="form-group">
-                  <label for="spouse_profession">{{ "PATIENT_REG.SPOUSE_PROFESSION" | translate }}</label>
-                  <input type="text" class="form-bhima" id="spouse_profession" ng-model="patient.spouse_profession">
-                </div>
-
-                <div class="form-group">
-                  <label for="spouse_employer">{{ "PATIENT_REG.SPOUSE_EMPLOYER" | translate }}</label>
-                  <input type="text" class="form-bhima" id="spouse_employer" ng-model="patient.spouse_employer">
-                </div>
-
-                <div class="form-group">
-                  <label for="notes">{{ "PATIENT_REG.NOTES" | translate }}</label>
-                  <textarea class="form-bhima" id="notes" ng-model="patient.notes" rows="4"></textarea>
-                </div>
-
-              </form>
-            </div>
-          </div> <!-- End panel -->
-        </div> <!-- End other info row -->
-      </div> <!-- End main column 7 -->
-
-      <div class="col-xs-5">
-        <!-- <div class="col&#45;xs&#45;12"> -->
-          <div class="row hack-right">
-            <div class="panel panel-warning">
-              <div class="panel-heading">
-                <span class="glyphicon glyphicon-list-alt"></span> <b>{{ "PATIENT_REGISTRATIONS.TYPE" | translate }}</b>  <b style="color : red;">*</b>
-              </div>
-              <div class="panel-body">
-                <form name="registrationType">
-
-                  <div class="radio">
-                    <label>
-                      <input type="radio" name="renewal_select" id="no" value="0" ng-model="patient.renewal" required>
-                      <b>{{ "PATIENT_REGISTRATIONS.STATUS_NEW_TITLE" | translate }}</b>
-                    </label>
-                  </div>
-                  <div>
-                    <p>{{ "PATIENT_REGISTRATIONS.STATUS_NEW_BODY" | translate }}</p>
-                  </div>
-
-                  <div class="radio">
-                    <label>
-                      <input type="radio" name="renewal_select" id="yes" value="1" ng-model="patient.renewal" required>
-                      <b>{{ "PATIENT_REGISTRATIONS.STATUS_RETURNING_TITLE" | translate }}</b>
-                    </label>
-                  </div>
-                  <div>
-                    <p>{{ "PATIENT_REGISTRATIONS.STATUS_RETURNING_BODY" | translate }}</p>
-                  </div>
-
-                  <div class="radio">
-                    <label>
-                      <input type="radio" name="renewal_select" id="past" value="2" ng-model="patient.renewal" required>
-                      <b>{{ "PATIENT_REGISTRATIONS.STATUS_REGISTERED_TITLE" | translate }}</b>
-                    </label>
-                  </div>
-                  <div>
-                    <p>{{ "PATIENT_REGISTRATIONS.STATUS_REGISTERED_BODY" | translate }}</p>
-                    <div ng-if="patient.renewal==2">
-                      <div find-patient on-search-complete="loadPatient"></div>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div> <!-- End panel -->
-          </div> <!-- End column 5 row -->
-          <!--div class="row hack-right">
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                Additional Component
-              </div>
-
-              <div class="panel-body">
-                Content
-              </div>
-            </div> <!-- End panel -->
-          </div--> <!-- End column 5 row -->
-        </div>
-    </div><!-- End row -->
-  </div>
 </main>
 
 <footer>
   <div class="pull-right">
-    <a id="submitPatient" ng-click="registerPatient()" ng-disabled="session.failedSessionValidation || location.$invalid || details.$invalid || finance.$invalid || registrationType.$invalid" class="btn btn-success btn-sm">
+    <a id="submitPatient" ng-click="registerPatient()" ng-disabled="session.failedSessionValidation || details.$invalid" class="btn btn-success btn-sm">
       <span class="glyphicon glyphicon-pencil"></span> {{ "PATIENT_REG.REGISTER_PATIENT" | translate }}
     </a>
   </div>
 </footer>
-
-<script type="text/ng-template" id="debtorListItem.html">
-  <a class="action">
-    <span><b>[{{ match.model.age + match.model.sex }}]</b></span>
-    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-  </a>
-</script>
