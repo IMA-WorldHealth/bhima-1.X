@@ -2,9 +2,8 @@
   {{ "PATIENT_REG.PAGE_TITLE" | translate }} <small>{{ patient.title }} {{ patient.first_name }} {{ patient.last_name }}</small>
 </header>
 
+<!-- TODO Application structural changes - flex structure + bootstrap style standard -->
 <nav>
-
-  
   <div class="pull-left">
     <ol class="breadcrumb">
       <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
@@ -17,14 +16,13 @@
       <span class="glyphicon glyphicon-globe"></span> {{ "PATIENT_REG.LOCATION" | translate }}
     </a>
 
-    <a href='/#/patient_records/' class="btn btn-default btn-sm">
-      <span class="glyphicon glyphicon-list"></span> {{ "PATIENT_REG.VIEW_PATIENT_RECORDS" | translate }}
+    <a href='/#/patients/search' class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-search"></span> {{ "PATIENT_REG.VIEW_PATIENT_RECORDS" | translate }}
     </a>
   </div>
 </nav>
 
 <main>
-  
   <div class="container-fluid">
     
     <div class="row">
@@ -102,6 +100,7 @@
               <hr>
 
               <!-- Location -->
+              <!-- TODO Each individual select should be a form group -->
               <div class="row">
                 <div class="col-md-6">
                   <h4>Origin Location</h4>
@@ -113,13 +112,13 @@
                 
                 <div class="col-md-6">
                   <h4>Current Location</h4>
-                  <div location-select select-village="setOriginLocation"></div>
+                  <div location-select select-village="setCurrentLocation"></div>
                 </div>
               </div>
              
               <!-- Seperate finance settings -->
-              <hr>
-          
+              <hr> 
+
               <!-- Debtor Group -->
               <div class="form-group">
                 <label for="new-debtor-group" class="col-md-3 control-label">Debtor Group</label>

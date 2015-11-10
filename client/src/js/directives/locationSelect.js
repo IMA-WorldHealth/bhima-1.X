@@ -236,26 +236,17 @@ angular.module('bhima.directives')
 
       function generateTemplate(configLabel) { 
         var config = namespace[configLabel]; 
-        var directiveStructure = '<div>{{TEMPLATE_COMPONENTS}}</div>';
+        var directiveStructure = '{{TEMPLATE_COMPONENTS}}';
         var compile = '';
 
         // Such meta templating
         var componentStructure = 
-          '<div>' + 
-          '<label for="location-select-<%CONFIGID%>" class="control-label">' + 
+          '<div ng-class="{\'has-error\' : locationSelect.<%NAMESPACE%>.locationStore.<%CONFIGID%>.model.data.length===0}">' + 
+          '<label class="control-label" for="location-select-<%CONFIGID%>">' + 
           '{{\"<%CONFIGLABEL%>\" | translate}}</label>' + 
-          '<div class="input-group">' + 
-          '<span class="input-group-addon">' + 
-          '<span ng-if="locationSelect.<%NAMESPACE%>.locationStore.<%CONFIGID%>.model.data.length===0">' + 
-          '<i class="glyphicon glyphicon-remove"></i>' + 
-          '</span>' + 
-          '<span ng-if="locationSelect.<%NAMESPACE%>.locationStore.<%CONFIGID%>.model.data.length>0">' + 
-          '<i class="glyphicon glyphicon-ok"></i>' + 
-          '</span>' +  
-          // '<span class="glyphicon glyphicon-globe" ng-class="{\'error\' : !locationSelect.<%NAMESPACE%>.locationStore.<%CONFIGID%>.model.data.length}"></span>' + 
-          // '{{locationSelect.<%NAMESPACE%>.locationStore.<%CONFIGID%>.model.data.length}}' + 
-          '</span>' + 
-          '<select ng-disabled="locationSelect.<%NAMESPACE%>.session.locationSearch" ng-model="locationSelect.<%NAMESPACE%>.locationStore.<%CONFIGID%>.value" ng-options="<%CONFIGID%>.uuid as <%CONFIGID%>.<%CONFIGCOLUMN%> for <%CONFIGID%> in locationSelect.<%NAMESPACE%>.locationStore.<%CONFIGID%>.model.data | orderBy : \'name\'" ng-change=<%CONFIGCHANGE%> class="form-control" id="location-select-<%CONFIGID%>"><option value="" ng-if="!locationSelect.<%NAMESPACE%>.locationStore.<%CONFIGID%>.model.data.length" disabled="disabled">----</option></select></div>'; 
+          '<select ng-disabled="locationSelect.<%NAMESPACE%>.session.locationSearch || locationSelect.<%NAMESPACE%>.locationStore.<%CONFIGID%>.model.data.length===0" ng-model="locationSelect.<%NAMESPACE%>.locationStore.<%CONFIGID%>.value" ng-options="<%CONFIGID%>.uuid as <%CONFIGID%>.<%CONFIGCOLUMN%> for <%CONFIGID%> in locationSelect.<%NAMESPACE%>.locationStore.<%CONFIGID%>.model.data | orderBy : \'name\'" ng-change=<%CONFIGCHANGE%> class="form-control" id="location-select-<%CONFIGID%>"></select>' + 
+          // '<span ng-if="locationSelect.<%NAMESPACE%>.locationStore.<%CONFIGID%>.model.data.length===0" class="glyphicon glyphicon-remove form-control-feedback"></span>' + 
+          '</div>'; 
         var configurationList = Object.keys(config).reverse();
         
         configurationList.forEach(function (key) { 
