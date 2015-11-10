@@ -15,7 +15,6 @@ angular.module('bhima.directives')
 
       var template =
         '<ul>' +
-          //'<li data-ng-repeat=\'node in ' + treeModel + ' | orderBy:"name"\'>' +
           '<li data-ng-repeat=\'node in ' + treeModel + '\'>' +
             '<i name=\'{{node.' + nodeLabel + '}}\' ng-class="{\'glyphicon-folder-close collapsed\': node.' + nodeChildren + '.length && node.collapsed, \'glyphicon-folder-open expanded\': node.' + nodeChildren + '.length && !node.collapsed }" class=\'glyphicon\' data-ng-click=\'' + treeId + '.selectNodeHead(node)\'></i> ' +
             '<i class=\'normal glyphicon glyphicon-file\' data-ng-hide=\'node.' + nodeChildren + '.length\' data-ng-click=\'' + treeId + '.selectNodeHead(node)\'></i> ' +
@@ -24,12 +23,12 @@ angular.module('bhima.directives')
           '</li>' +
         '</ul>';
 
-      //Collapse by default
+      // Collapse by default
       if (scope.node) {
         scope.node.collapsed = true;
       }
 
-      //Assign select/ collapse methods - should only occur once
+      // Assign select/ collapse methods - should only occur once
       if (treeId && treeModel) {
         if (attrs.angularTreeview) {
           scope[treeId] = scope[treeId] || {};
@@ -44,7 +43,7 @@ angular.module('bhima.directives')
             selectedNode.collapsed = !selectedNode.collapsed;
 
             // Update cache
-            cache.put(selectedNode.unit_id, {collapsed: selectedNode.collapsed});
+            cache.put(selectedNode.id, {collapsed: selectedNode.collapsed});
           };
           scope[treeId].selectNodeLabel = scope[treeId].selectNodeLabel || function (selectedNode) {
             var hasChildren = selectedNode.children && selectedNode.children.length > 0;
