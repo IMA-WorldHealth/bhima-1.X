@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 CashFlowReportController.$inject = [
   '$q', '$http', 'connect', 'validate', 'messenger', 'util', 'appcache',
-  'exchange', 'SessionService', 'transactionSource'
+  'exchange', 'SessionService', 'transactionSource', '$translate'
 ];
 
 /**
@@ -11,16 +11,19 @@ CashFlowReportController.$inject = [
   * This controller is responsible of cash flow report, that report include
   * all incomes minus all depenses
   */
-function CashFlowReportController ($q, $http, connect, validate, messenger, util, Appcache, exchange, SessionService, transactionSource) {
+function CashFlowReportController ($q, $http, connect, validate, messenger, util, Appcache, exchange, SessionService, transactionSource, $translate) {
   var vm = this,
       session = vm.session = {},
       dependencies = {},
       cache = new Appcache('income_report'),
       state = vm.state;
 
-  session.dateFrom = new Date();
-  session.dateTo = new Date();
-  session.loading = false;
+  session.dateFrom         = new Date();
+  session.dateTo           = new Date();
+  session.loading          = false;
+  session.details          = false;
+  session.summationIncome  = [];
+  session.summationExpense = [];
 
   dependencies.cashes = {
     required: true,
@@ -62,6 +65,7 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
   vm.convert         = convert;
   vm.reconfigure     = reconfigure;
   vm.getSource       = getSource;
+  vm.showDetails     = showDetails;
   vm.print           = function () { print(); };
 
   cache.fetch('selectedCash').then(load);
@@ -92,6 +96,8 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
   }
 
   function fill () {
+    clearIncomeExpense();
+
     var request = session.request = {
       dateFrom : util.sqlDate(session.dateFrom),
       dateTo : util.sqlDate(session.dateTo),
@@ -123,11 +129,11 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
   }
 
   function getCurrencies(model) {
-    session.summationExpense = model.data.expenses;
-    session.summationIncome = model.data.incomes;
+    session.allIncomes  = model.data.incomes;
+    session.allExpenses = model.data.expenses;
+    groupingResult(model.data.incomes, model.data.expenses);
     return validate.process(dependencies, ['currencies']);
   }
-
 
   function prepareReport (model) {
     session.model = model;
@@ -136,47 +142,75 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
     session.loading = false;
   }
 
+  function sumDebit (a, b) { return b.debit + a; }
+  function sumCredit (a, b) { return b.credit + a; }
+  function sumValue (a, b) { return b.value + a; }
+
   function convert (){
-    session.sum_debit = 0;
+    session.sum_debit  = 0;
     session.sum_credit = 0;
+    if(session.allIncomes) {
+      session.allIncomes.forEach(function (transaction) {
+        session.sum_debit += exchange.convertir(transaction.debit, transaction.currency_id, session.currency, new Date()); //transaction.trans_date
+      });
+    }
+
+    if(session.allExpenses) {
+      session.allExpenses.forEach(function (transaction) {
+        session.sum_credit += exchange.convertir(transaction.credit, transaction.currency_id, session.currency, new Date()); //transaction.trans_date
+      });
+    }
+
+    convertGroup();
+  }
+
+  function convertGroup (){
+    session.sum_debit_group = 0;
+    session.sum_credit_group = 0;
     if(session.summationIncome) {
       session.summationIncome.forEach(function (transaction) {
-        session.sum_debit += exchange.convertir(transaction.debit, transaction.currency_id, session.currency, new Date()); //transaction.trans_date
+        session.sum_debit_group += exchange.convertir(transaction.value, transaction.currency_id, session.currency, new Date()); //transaction.trans_date
       });
     }
 
     if(session.summationExpense) {
       session.summationExpense.forEach(function (transaction) {
-        session.sum_credit += exchange.convertir(transaction.credit, transaction.currency_id, session.currency, new Date()); //transaction.trans_date
+        session.sum_credit_group += exchange.convertir(transaction.value, transaction.currency_id, session.currency, new Date()); //transaction.trans_date
       });
     }
   }
 
   function reconfigure () {
     vm.state = null;
-    vm.session.selectedCash = null;
-    vm.session.dateFrom = new Date();
-    vm.session.dateTo = new Date();
+    clearIncomeExpense();
+  }
+
+  function clearIncomeExpense () {
+    session.summationIncome  = [];
+    session.summationExpense = [];
+    session.allIncomes       = [];
+    session.allExpenses      = [];
+  }
+
+  function showDetails () {
+    session.details = session.details ? false : true;
   }
 
   // Grouping by source
   function groupingResult (incomes, expenses) {
-    var temp = {},
-        summationIncome = {},
-        summationExpense = {},
-        summationIncomeArray = [],
-        summationExpenseArray = [];
+    var tempIncome  = {},
+        tempExpense = {};
 
     // income
     if (incomes) {
       incomes.forEach(function (item, index) {
-        temp[item.service_txt] = !temp[item.service_txt] ? true : false;
+        tempIncome[item.service_txt] = angular.isDefined(tempIncome[item.service_txt]) ? false : true;
 
-        if (temp[item.service_txt]) {
+        if (tempIncome[item.service_txt] === true) {
           var value = incomes.reduce(function (a, b) {
             return b.service_txt === item.service_txt ? b.debit + a : a;
           }, 0);
-          summationIncomeArray.push({
+          session.summationIncome.push({
             'service_txt' : item.service_txt,
             'currency_id' : item.currency_id,
             'value'       : value
@@ -188,13 +222,13 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
     // Expense
     if (expenses) {
       expenses.forEach(function (item, index) {
-        temp[item.service_txt] = !temp[item.service_txt] ? true : false;
+        tempExpense[item.service_txt] = angular.isDefined(tempExpense[item.service_txt]) ? false : true;
 
-        if (temp[item.service_txt]) {
+        if (tempExpense[item.service_txt] === true) {
           var value = expenses.reduce(function (a, b) {
             return b.service_txt === item.service_txt ? b.credit + a : a;
           }, 0);
-          summationExpenseArray.push({
+          session.summationExpense.push({
             'service_txt' : item.service_txt,
             'currency_id' : item.currency_id,
             'value'       : value
@@ -203,10 +237,6 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
       });
     }
 
-    return {
-      incomes  : summationIncomeArray,
-      expenses : summationExpenseArray
-    };
   }
   // End Grouping by source
 
@@ -216,6 +246,8 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
     * @param : txt = string correponding to a transaction type
     */
   function getSource (txt) {
-    return transactionSource.get(txt);
+    // FIXME: translation broken
+    // return transactionSource.source(txt);
+    return txt;
   }
 }

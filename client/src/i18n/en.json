@@ -291,8 +291,8 @@
       "TITLE"              : "Regularization of payments",
       "WAIT_ACCOUNT"       : "Compte d'attente"
     },
-   "FLOW"  : {
-      "TITLE"         : "Cash Flow"
+   "FLOW" : {
+     "TITLE" : "Cash Flow "
    },
    "HELP_TXT_1"       : "The module allows debitors to pay against existing invoices",
    "HELP_TXT_2"       : "To begin, search for a debitor using the search bar above",
@@ -2601,33 +2601,6 @@
   "SUBMIT"      : "Submit",
   "TITLE"       : "SNIS (Système National d'Information Sanitaire)"
   },
-"SOURCE" : {
-  "CAUTION" : "Caution",
-  "CASH" : "Cash",
-  "CASH_DISCARD" : "Cash discard",
-  "CONFIRM_PURCHASE" : "Purchase confirmation",
-  "COTISATION_ENGAGEMENT" : "Cotisation engagement",
-  "COTISATION_PAIEMENT" : "Cotisation payment",
-  "CREDIT_NOTE" : "Credit note",
-  "DISTRIBUTION" : "Distributions",
-  "DONATION" : "Donations",
-  "EMPLOYEE_INVOICE" : "Employee Invoice",
-  "GROUP_DEB_INVOICE" : "Invoice Debitor Group",
-  "GENERIC_EXPENSE" : "Generics expenses",
-  "GENERIC_INCOME" : "Generics incomes",
-  "IMPORT_AUTOMATIQUE" : "Auto Import",
-  "INDIRECT_PURCHASE" : "Indirect Purchase",
-  "JOURNAL" : "Journal",
-  "PAYROLL" : "Payroll",
-  "PCASH_CONVENTION" : "Conventions",
-  "PCASH_EMPLOYEE" : "Primary cash (Employee)",
-  "PCASH_TRANSFERT" : "Transferts",
-  "SALARY_ADVANCE" : "Salary Advance",
-  "SALE" : "Sale",
-  "STOCK_LOSS" : "Stock Loss",
-  "TAX_ENGAGEMENT" : "Tax Engagement",
-  "TAX_PAYMENT" : "Tax Payment"
-},
 "STOCK": {
   "ALERTS" : {
     "STOCKOUT" : "Stockout",
@@ -2866,7 +2839,7 @@
    "LOADING_ERROR"     : "Eror during loading, check if the exchange rate is setted, if the problem persists contact the administrator",
    "MONTANT"           : "Amount",
    "NO_CONVENTION"     : "No convention selected",
-   "NO_RECORD"         : "No record found",
+   "NO_RECORD"         : "No record for this convention",
    "PAYEMENT"          : "Pay Box",
    "SUCCES"            : "operation successfully !",
    "TITLE"             : "Support Payment",
@@ -3180,6 +3153,7 @@
    "DATE_TO"           : "To",
    "DELETE_SUCCESS"    : "Successfully deleted",
    "DEPOT"             : "Store",
+   "DETAILS"           : "Details",
    "DOCUMENT"          : "Document",
    "DONOR"             : "Donor",
    "DOLLARS"           : "Dollars",

@@ -90,6 +90,13 @@
           class="btn btn-sm btn-default pull-right">
           <span class="glyphicon glyphicon-repeat"></span>
         </button>
+
+        <button
+          class="btn btn-default btn-sm"
+          ng-click="ReportCtrl.showDetails()">
+          <span class="glyphicon glyphicon-list"></span>
+          {{ "UTIL.DETAILS" | translate }}
+        </button>
       </div>
 
     </nav>
@@ -107,83 +114,170 @@
             </small>
           </h4>
           <!-- cash flow zone -->
-          <div class="col-xs-12">
-            <table class="reportTable">
-              <thead><th><b>{{ "CASH.FLOW.TITLE" | translate }}</b></th></thead>
-              <tbody>
-                <td>
-                  <h1 class="text-center">
-                    <span ng-if="ReportCtrl.session.loading"><loading-indicator></loading-indicator></span>
-                    <b ng-if="!ReportCtrl.session.loading">{{ ReportCtrl.session.sum_debit - ReportCtrl.session.sum_credit | currency:ReportCtrl.session.currency }}</b>
-                  </h1>
-                </td>
-              </tbody>
-            </table>
-          </div>
-          <br>
-          <!-- cash flow details : incomes and expenses  -->
-          <div class="col-xs-6">
-            <table class="reportTable">
-              <thead>
-                <tr>
-                  <th colspan="2"><b>{{ "COLUMNS.INCOME" | translate }}</b></th>
-                </tr>
-                <tr>
-                  <th>{{ "COLUMNS.SOURCE" | translate }}</th>
-                  <th>{{ "COLUMNS.AMOUNT" | translate }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr ng-repeat='record in ReportCtrl.session.summationIncome'>
-                  <td>{{ ReportCtrl.getSource(record.service_txt) }}</td>
-                  <td>{{ record.debit | currency:ReportCtrl.record.currency_id }}</td>
-                </tr>
-                <tr ng-if="!ReportCtrl.session.summationIncome.length">
-                  <td colspan="2">
-                    <span class="glyphicon glyphicon-stats"></span>
-                    {{ "PRIMARY_CASH.REPORT.INCOME.EMPTY_REPORT" | translate }}
+          <div class="row">
+            <div class="col-xs-12">
+              <table class="reportTable">
+                <thead><th><b>{{ "CASH.FLOW.TITLE" | translate }}</b></th></thead>
+                <tbody>
+                  <td>
+                    <h1 class="text-center">
+                      <span ng-if="ReportCtrl.session.loading"><loading-indicator></loading-indicator></span>
+                      <b ng-if="!ReportCtrl.session.loading">{{ ReportCtrl.session.sum_debit_group - ReportCtrl.session.sum_credit_group | currency:ReportCtrl.session.currency }}</b>
+                    </h1>
                   </td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td>{{ "PRIMARY_CASH.REPORT.INCOME.TOTAL_INCOME" | translate }} : </td>
-                  <td>{{ ReportCtrl.session.sum_debit | currency:ReportCtrl.session.currency }}</td>
-                </tr>
-              </tfoot>
-            </table>
+                </tbody>
+              </table>
+            </div>
           </div>
 
-          <div class="col-xs-6">
-            <table class="reportTable">
-              <thead>
-                <tr>
-                  <th colspan="2"><b>{{ "COLUMNS.EXPENSE" | translate }}</b></th>
-                </tr>
-                <tr>
-                  <th>{{ "COLUMNS.SOURCE" | translate }}</th>
-                  <th>{{ "COLUMNS.AMOUNT" | translate }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr ng-repeat='record in ReportCtrl.session.summationExpense'>
-                  <td>{{ ReportCtrl.getSource(record.service_txt) }}</td>
-                  <td>{{ record.credit | currency:ReportCtrl.record.currency_id }}</td>
-                </tr>
-                <tr ng-if="!ReportCtrl.session.summationExpense.length">
-                  <td colspan="2">
-                    <span class="glyphicon glyphicon-stats"></span>
-                    {{ "PRIMARY_CASH.REPORT.EXPENSE.EMPTY_REPORT" | translate }}
-                  </td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td>{{ "PRIMARY_CASH.REPORT.EXPENSE.TOTAL_EXPENSE" | translate }} : </td>
-                  <td>{{ ReportCtrl.session.sum_credit | currency:ReportCtrl.session.currency }}</td>
-                </tr>
-              </tfoot>
-            </table>
+          <br>
+
+          <!-- cash flow details : incomes and expenses  -->
+          <div class="row">
+            <div class="col-xs-6">
+              <table class="reportTable">
+                <thead>
+                  <tr>
+                    <th colspan="2"><b>{{ "COLUMNS.INCOME" | translate }}</b></th>
+                  </tr>
+                  <tr>
+                    <th>{{ "COLUMNS.SOURCE" | translate }}</th>
+                    <th>{{ "COLUMNS.AMOUNT" | translate }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat='record in ReportCtrl.session.summationIncome'>
+                    <td>{{ ReportCtrl.getSource(record.service_txt) }}</td>
+                    <td>{{ record.value | currency:record.currency_id }}</td>
+                  </tr>
+                  <tr ng-if="!ReportCtrl.session.summationIncome.length">
+                    <td colspan="2">
+                      <span class="glyphicon glyphicon-stats"></span>
+                      {{ "PRIMARY_CASH.REPORT.INCOME.EMPTY_REPORT" | translate }}
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td>{{ "PRIMARY_CASH.REPORT.INCOME.TOTAL_INCOME" | translate }} : </td>
+                    <td>{{ ReportCtrl.session.sum_debit_group | currency:ReportCtrl.session.currency }}</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            <div class="col-xs-6">
+              <table class="reportTable">
+                <thead>
+                  <tr>
+                    <th colspan="2"><b>{{ "COLUMNS.EXPENSE" | translate }}</b></th>
+                  </tr>
+                  <tr>
+                    <th>{{ "COLUMNS.SOURCE" | translate }}</th>
+                    <th>{{ "COLUMNS.AMOUNT" | translate }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat='record in ReportCtrl.session.summationExpense'>
+                    <td>{{ ReportCtrl.getSource(record.service_txt) }}</td>
+                    <td>{{ record.value | currency:record.currency_id }}</td>
+                  </tr>
+                  <tr ng-if="!ReportCtrl.session.summationExpense.length">
+                    <td colspan="2">
+                      <span class="glyphicon glyphicon-stats"></span>
+                      {{ "PRIMARY_CASH.REPORT.EXPENSE.EMPTY_REPORT" | translate }}
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td>{{ "PRIMARY_CASH.REPORT.EXPENSE.TOTAL_EXPENSE" | translate }} : </td>
+                    <td>{{ ReportCtrl.session.sum_credit_group | currency:ReportCtrl.session.currency }}</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+
+          <hr>
+
+          <!-- Details  -->
+          <div ng-if="!!ReportCtrl.session.details" class="row">
+            <!-- Incomes -->
+            <div class="col-xs-12">
+              <table class="reportTable">
+                <thead>
+                  <tr>
+                    <th colspan="4">{{ "UTIL.DETAILS" | translate }} {{ "COLUMNS.INCOME" | translate }}</th>
+                  </tr>
+                  <tr>
+                    <th>{{ "COLUMNS.TRANSACTIONS" | translate }}</th>
+                    <th>{{ "COLUMNS.SOURCE" | translate }}</th>
+                    <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
+                    <th>{{ "COLUMNS.AMOUNT" | translate }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="record in ReportCtrl.session.allIncomes">
+                    <td style="width:15%"><b>{{ record.trans_id }}</b></td>
+                    <td style="width:20%">{{ ReportCtrl.getSource(record.service_txt) }}</td>
+                    <td style="width:40%">{{ record.description }}</td>
+                    <td style="width:20%">{{ record.debit | currency:record.currency_id }}</td>
+                  </tr>
+                  <tr ng-if="!ReportCtrl.session.allIncomes.length">
+                    <td colspan="4">
+                      <span class="glyphicon glyphicon-stats"></span>
+                      {{ "PRIMARY_CASH.REPORT.EXPENSE.EMPTY_REPORT" | translate }}
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="3">{{ "PRIMARY_CASH.REPORT.INCOME.TOTAL_INCOME" | translate }} : </td>
+                    <td>{{ ReportCtrl.session.sum_debit | currency:ReportCtrl.session.currency }}</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            <hr>
+
+            <!-- Expenses -->
+            <div class="col-xs-12">
+              <table class="reportTable">
+                <thead>
+                  <tr>
+                    <th colspan="4">{{ "UTIL.DETAILS" | translate }} {{ "COLUMNS.EXPENSE" | translate }}</th>
+                  </tr>
+                  <tr>
+                    <th>{{ "COLUMNS.TRANSACTIONS" | translate }}</th>
+                    <th>{{ "COLUMNS.SOURCE" | translate }}</th>
+                    <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
+                    <th>{{ "COLUMNS.AMOUNT" | translate }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="record in ReportCtrl.session.allExpenses">
+                    <td style="width:15%"><b>{{ record.trans_id }}</b></td>
+                    <td style="width:20%">{{ ReportCtrl.getSource(record.service_txt) }}</td>
+                    <td style="width:40%">{{ record.description }}</td>
+                    <td style="width:20%">{{ record.credit | currency:record.currency_id }}</td>
+                  </tr>
+                  <tr ng-if="!ReportCtrl.session.allExpenses.length">
+                    <td colspan="4">
+                      <span class="glyphicon glyphicon-stats"></span>
+                      {{ "PRIMARY_CASH.REPORT.EXPENSE.EMPTY_REPORT" | translate }}
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="3">{{ "PRIMARY_CASH.REPORT.EXPENSE.TOTAL_EXPENSE" | translate }} : </td>
+                    <td>{{ ReportCtrl.session.sum_credit | currency:ReportCtrl.session.currency }}</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
           </div>
 
         </div>
@@ -196,15 +290,17 @@
 
           <td style="width:30%;">
             <span style="margin-right: 10px;">
-              <span class="glyphicon glyphicon-money" style="color: #428bca"></span>  {{ "PRIMARY_CASH.REPORT.INCOME.TOTAL_INCOME" | translate }} : <b>
-                {{ ReportCtrl.session.sum_debit | currency:ReportCtrl.session.currency }}</b>
+              <span class="glyphicon glyphicon-money" style="color: #428bca"></span>
+              {{ "PRIMARY_CASH.REPORT.INCOME.TOTAL_INCOME" | translate }} :
+              <b>{{ ReportCtrl.session.sum_debit_group | currency:ReportCtrl.session.currency }}</b>
             </span>
           </td>
 
           <td style="width:30%;">
             <span style="margin-right: 10px;">
-              <span class="glyphicon glyphicon-money" style="color: #428bca"></span>  {{ "PRIMARY_CASH.REPORT.EXPENSE.TOTAL_EXPENSE" | translate }} : <b>
-                {{ ReportCtrl.session.sum_credit | currency:ReportCtrl.session.currency }}</b>
+              <span class="glyphicon glyphicon-money" style="color: #428bca"></span>
+              {{ "PRIMARY_CASH.REPORT.EXPENSE.TOTAL_EXPENSE" | translate }} :
+              <b>{{ ReportCtrl.session.sum_credit_group | currency:ReportCtrl.session.currency }}</b>
             </span>
           </td>
 
@@ -217,6 +313,7 @@
                 ng-change="ReportCtrl.convert()"></select>
             </div>
           </td>
+
         </tbody>
       </table>
     </footer>
