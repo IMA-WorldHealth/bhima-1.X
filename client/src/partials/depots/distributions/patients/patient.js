@@ -156,7 +156,6 @@ function StockDistributionsController($q, $http, $routeParams, $location, connec
             var lotQuantity = (lot.quantity > unitsRequired) ? unitsRequired : lot.quantity;
             sessionLots.push({details : lot, quantity : lotQuantity});
             validUnits += lotQuantity;
-
           }
         } else {
           messenger.danger('Lot ' + lot.lot_number + $translate.instant('DISTRIBUTION.HAS_EXPIRED'), true);
