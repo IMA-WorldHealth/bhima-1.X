@@ -11,8 +11,8 @@ var express       = require('express'),
 
 var cfg           = require('./../config/environment/' + process.env.NODE_ENV);
 
-// accepts express server instances (initialised in app.js)
-module.exports = function config(app) {
+// Accept generic express instances (initialised in app.js)
+exports.configure = function (app) {
   console.log('[config/express] Configure express');
 
   // middleware
@@ -65,10 +65,49 @@ module.exports = function config(app) {
       next();
     }
   });
+};
 
-  // new error handler
-  app.use(function (err, req, res, next) {
+exports.errorHandling = function (app) { 
+  
+  // TODO Is there a open source middleware that does this?
+  function interceptDatabaseErrors(err, req, res, next) { 
+    var codes = [{
+        code : 'ER_BAD_FIELD_ERROR',
+        httpStatus : 400, // Invalid request
+        key : 'Column does not exist in database' // TODO translatable on client   
+      }
+    ];
+    
+    var supported = codeSupported(codes, err);
+    if (supported) { 
+      res.status(supported.httpStatus).json(err);
+      return;
+    } else { 
+      
+      // Unkown code - forward error 
+      next(err);  
+    }
+  }
+
+  function handleErrors(err, req, res, next) { 
     console.log('[ERROR]', err);
     res.status(500).json(err);
-  });
-};
+    return;
+  }
+
+  // TODO Research methods effeciency and refactor
+  function codeSupported(codes, err) { 
+    var result = null;
+
+    codes.some(function (supported) { 
+      if (supported.code === err.code) { 
+        result = supported;
+        return true;
+      }
+    });
+    return result;
+  }
+  
+  app.use(interceptDatabaseErrors);
+  app.use(handleErrors);
+}

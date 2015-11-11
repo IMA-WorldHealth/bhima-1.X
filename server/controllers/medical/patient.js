@@ -17,7 +17,63 @@ exports.search = search;
  * HTTP Controllers
  */
 function create(req, res, next) { 
-  next();
+  var writeDebtorQuery, writePatientQuery;
+  var invalidParameters;
+  var patientText;
+
+  var patientData = req.body;
+
+  // Verify that anything passed to the body is correct
+  console.log('got uuid', patientData.uuid);
+  console.log('got debtor uuid', patientData.debtorUuid);
+  
+  // FIXME This will fail with 0 (an invalid UUID)
+  invalidParameters = !patientData.uuid || !patientData.debtorUuid;
+  
+    if (invalidParameters) { 
+    
+    // FIXME This should be handled by middleware
+    res.status(400).json({
+      code : 'ERROR.ERR_MISSING_INFO',
+      reason : 'Both a valid patient uuid and patient debtor uuid must be defined to write a patient record'
+    });
+    return;
+  }
+  
+
+  writeDebtorQuery = 'INSERT INTO debitor (uuid, group_uuid, text) VALUES ' +
+    '(?, ?, ?)';
+
+  writePatientQuery = 'INSERT INTO patient SET ?';
+    
+  db.exec(writeDebtorQuery, [patientData.debtorUuid, patientData.debtorGroupUuid, generatePatientText(patientData)])
+    .then(function (result) { 
+      console.log('debtor written');
+
+      return db.exec(writePatientQuery, [patientData]);
+    })
+    .then(function (result) { 
+      
+      console.log('patient written');
+      res.status(200).json(patientData);
+    })
+    .catch(next)
+    .done();
+    
+  return;
+
+  // Construct method/query to write debtor (transaction)
+  
+  // Construct method/query to write patient (transaction)
+
+  // On failure rollback 
+
+  // On success return id
+}
+
+function generatePatientText(patient) { 
+  var textLineDefault = 'Patient/';
+  return textLineDefault.concat(patient.last_name, '/', patient.middle_name);
 }
 
 function details(req, res, next) { 

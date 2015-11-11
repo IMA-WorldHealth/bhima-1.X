@@ -47,11 +47,13 @@ function exec(sql, params) {
   con.getConnection(function (err, connection) {
     if (err) { return defer.reject(err); }
 
-    connection.query(sql, params, function (err, results) {
+    var qs = connection.query(sql, params, function (err, results) {
       connection.release();
       if (err) { return defer.reject(err); }
       defer.resolve(results);
     });
+
+    console.log(qs.sql);
   });
 
   return defer.promise;
@@ -147,6 +149,33 @@ function requestTransactionConnection() {
   };
 }
 
+function transaction(queryList, paramsList) { 
+  var deferred = q.defer();
+  var transactionPromises = [];
+
+  // Consider one query passed to method
+  queryList = queryList.length ? queryList : [queryList];
+  
+  con.getConnection(function (error, connection) { 
+    if (error) { 
+      return deferred.reject(error);
+    }
+  
+    // Successful connection 
+    connection.beginTransaction(function (error) { 
+      if (error) { 
+        return deferred.reject(error);
+
+        // Successful transaction initialisation
+        transactionPromises = queryList.map(function (query, index) { 
+
+        });
+    });
+    
+  });
+  
+}
+
 function executeAsTransaction(querries) {
   var deferred = q.defer(), queryStatus = [];
   querries = querries.length ? querries : [querries];
@@ -235,11 +264,11 @@ function sqliteInit(config) {
 */
 
 // Utility methods
-function promiseQuery(connection, sql) {
+function promiseQuery(connection, sql, params) {
   var deferred = q.defer();
 
   console.log('[db] [Transaction Query]', sql);
-  connection.query(sql, function (error, result) {
+  connection.query(sql, params, function (error, result) {
     if (error) { return deferred.reject(error); }
     return deferred.resolve(result);
   });

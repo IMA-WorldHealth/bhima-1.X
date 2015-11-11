@@ -57,7 +57,7 @@ var subsidies             = require('../controllers/categorised/subsidies');
 // Middleware for handle uploaded file
 var multipart       = require('connect-multiparty');
 
-module.exports = function routes(app) {
+exports.configure = function (app) {
   console.log('[config/routes] Configure routes');
 
   // exposed to the outside without authentication
@@ -279,6 +279,12 @@ module.exports = function routes(app) {
   app.get('/patients', patient.list);
   app.post('/patients', patient.create);
   app.get('/patients/:uuid', patient.details);
+  
+  // Generic search parameter passed
+  // app.get('/patients/search', patient.search);
+  // app.get('/patients/search/name/:value', patient.fuzzySearch);
+  // app.get('/patients/search/reference/:value', patient.fuzzySearch);
+
 
   // search stuff
   // TODO merge with patients API

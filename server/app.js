@@ -18,10 +18,12 @@ var db          = require('./lib/db').initialise(config.db);
 var app = express();
 
 // Configure application middleware stack, inject authentication session
-require('./config/express')(app);
+require('./config/express').configure(app);
 
 // Link routes
-require('./config/routes')(app);
+require('./config/routes').configure(app);
+
+require('./config/express').errorHandling(app);
 
 // Load and configure plugins
 require('./lib/pluginManager')(app, config.plugins);

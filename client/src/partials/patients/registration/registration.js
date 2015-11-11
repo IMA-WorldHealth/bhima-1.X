@@ -2,11 +2,11 @@ angular.module('bhima.controllers')
 .controller('PatientRegistrationController', PatientRegistrationController);
 
 PatientRegistrationController.$inject = [
-  '$scope', '$q', '$location', '$translate', 'connect', 'messenger',
+  '$scope', '$q', '$location', '$translate', '$http', 'connect', 'messenger',
   'validate', 'appstate', 'util', 'uuid', 'SessionService'
 ];
 
-function PatientRegistrationController($scope, $q, $location, $translate, connect, messenger, validate, appstate, util, uuid, Session) {
+function PatientRegistrationController($scope, $q, $location, $translate, $http, connect, messenger, validate, appstate, util, uuid, Session) {
 
   var dependencies = {},
       defaultBirthMonth = '06-01',
@@ -249,30 +249,18 @@ function PatientRegistrationController($scope, $q, $location, $translate, connec
     packagePatient.mother_name = util.normalizeName(packagePatient.mother_name);
     packagePatient.spouse = util.normalizeName(packagePatient.spouse);
     packagePatient.title = util.normalizeName(packagePatient.title);
+    packagePatient.debtorUuid = debtorId;
+    packagePatient.debtorGroupUuid = packageDebtor.group_uuid;
+  
 
-    connect.post('debitor', [packageDebtor])
-    .then(function () {
-      packagePatient.debitor_uuid = debtorId;
-      return connect.post('patient', [packagePatient]);
-    })
-    .then(function () {
-
-      // TODO -- this should be a POST request
-      return connect.fetch('/visit/' + patientId);
-    })
-    .then(function (data) {
-      var packageHistory = {
-        uuid : uuid(),
-        debitor_uuid : packagePatient.debitor_uuid,
-        debitor_group_uuid : $scope.debtor.debtor_group.uuid,
-        user_id : Session.user.id
-      };
-      return connect.post('debitor_group_history', [connect.clean(packageHistory)]);
-    })
-    .then(function () {
-      $location.path('invoice/patient/' + packagePatient.uuid);
-    });
-  }
+    $http.post('/patients', packagePatient)
+      .then (function (result) { 
+        console.log('recieved', result);
+      })
+    . catch(function (error) { 
+        console.log('error', error);
+      });
+   }
 
   // Utility methods
   $scope.$watch('session.yob', function (nval) {
