@@ -1877,6 +1877,20 @@
    "PLACEHOLDER"        : "Chercher le patient ...",
    "TITLE"              : "Etat Financier du Patient"
    },
+"PATIENT_VISIT" : {
+  "CASES"            : "Cas",
+  "DATE"             : "Visite Date",
+  "DETAILS"          : "Details",
+  "FILE_NR"          : "Numero Fiche",
+  "GROUP_BY"         : "Grouper Par",
+  "GROUP_BY_MONTH"   : "Mois",
+  "GROUP_BY_DAY"     : "Jours",
+  "LEGEND"           : "Legend",
+  "NAME"             : "Nom",
+  "NEW_CASES"        : "Nouveaux cas",
+  "OLD_CASES"        : "Anciens cas",
+  "TITLE"            : "Visitations Patients"
+},
 "PAYCHECK": {
    "FAM_STATUS"    : "Situation familiale",
    "GRADE"         : "Grade",
@@ -3026,6 +3040,7 @@
    "PATIENT_REGISTRATIONS"     : "Enregistrement Patients",
    "PATIENT_SEARCH"            : "Recherche Patients",
    "PATIENT_STANDING"          : "Patients",
+   "PATIENT_VISIT_STATUS"      : "Patient Visitations",
    "PAYMENT_PERIOD"            : "Gestion Périodes",
    "PAYROLL"                   : "Payroll",
    "PAYROLL_REPORT"            : "Payroll",
