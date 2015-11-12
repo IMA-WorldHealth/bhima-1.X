@@ -40,35 +40,26 @@ function create(req, res, next) {
     return;
   }
   
-
   writeDebtorQuery = 'INSERT INTO debitor (uuid, group_uuid, text) VALUES ' +
     '(?, ?, ?)';
 
   writePatientQuery = 'INSERT INTO patient SET ?';
     
-  db.exec(writeDebtorQuery, [patientData.debtorUuid, patientData.debtorGroupUuid, generatePatientText(patientData)])
-    .then(function (result) { 
-      console.log('debtor written');
+  var transaction = db.transaction();
 
-      return db.exec(writePatientQuery, [patientData]);
-    })
-    .then(function (result) { 
+  transaction
+    .addQuery(writeDebtorQuery, [patientData.debtorUuid, patientData.debtorGroupUuid, generatePatientText(patientData)])
+    .addQuery(writePatientQuery, [patientData]);
+
+  transaction.execute()
+    .then(function (results) { 
       
-      console.log('patient written');
-      res.status(200).json(patientData);
+      // All querys returned OK
+      res.status(200).json(results);
+      return;
     })
     .catch(next)
     .done();
-    
-  return;
-
-  // Construct method/query to write debtor (transaction)
-  
-  // Construct method/query to write patient (transaction)
-
-  // On failure rollback 
-
-  // On success return id
 }
 
 function generatePatientText(patient) { 

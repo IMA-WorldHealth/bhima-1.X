@@ -52,8 +52,6 @@ function exec(sql, params) {
       if (err) { return defer.reject(err); }
       defer.resolve(results);
     });
-
-    console.log(qs.sql);
   });
 
   return defer.promise;
@@ -78,78 +76,7 @@ function getSupportedDatabases() {
   return Object.keys(supportedDatabases);
 }
 
-// Depreciated test methods
-function requestTransactionConnection() {
-  var __connection__;
-  var __connectionReady__ = q.defer();
-
-  con.getConnection(function (error, connection) {
-    if (error) { return; } // FIXME hadle error
-    __connection__ = connection;
-
-    __connection__.beginTransaction(function (error) {
-      if (error) { return __connectionReady__.reject(); }
-      __connectionReady__.resolve();
-    });
-  });
-
-  /*Each method should return a promise to be chained
-    i.e
-      transaction.execute(first)
-      .then(transaction.execute(second))
-      .then(unrelatedMethod)
-      .then(transaction.execute(third))
-      .then(transaction.commit)
-      .catch(transaction.cancel);
-  */
-
-  function execute(query) {
-    var deferred = q.defer();
-
-    __connectionReady__.promise.then(function () {
-      promiseQuery(__connection__, query)
-      .then(function (result) {
-        deferred.resolve(result);
-      })
-      .catch(function (error) {
-        deferred.reject(error);
-      });
-    });
-
-    return deferred.promise;
-  }
-
-  function commit() {
-    var deferred = q.defer();
-    __connectionReady__.promise.then(function () {
-      __connection__.commit(function (error) {
-        if (error) { return deferred.reject(error); }
-        deferred.resolve();
-      });
-    });
-
-    return deferred.promise;
-  }
-
-  function cancel() {
-    var deferred = q.defer();
-    __connectionReady__.promise.then(function () {
-      __connection__.rollback(function () {
-        return deferred.resolve();
-      });
-    });
-
-    return deferred.promise;
-  }
-
-  return {
-    execute : execute,
-    commit : commit,
-    cancel : cancel
-  };
-}
-
-function transaction(queryList, paramsList) { 
+function execTransaction(queryList) { 
   var deferred = q.defer();
   var transactionPromises = [];
 
@@ -165,52 +92,71 @@ function transaction(queryList, paramsList) {
     connection.beginTransaction(function (error) { 
       if (error) { 
         return deferred.reject(error);
+      }
 
-        // Successful transaction initialisation
-        transactionPromises = queryList.map(function (query, index) { 
+      // Successful transaction initialisation
+      transactionPromises = queryList.map(function (queryObject) { 
+        var query = queryObject.query;
+        var params = queryObject.params;
 
+        return queryConnection(connection, query, params);
+      });
+
+      q.all(transactionPromises)
+        .then(function (results) { 
+          
+          // All querys completed - attempt to commit
+          connection.commit(function (error) { 
+            if (error) { 
+              connection.rollback(function () { 
+                console.log('[Transaction] Commit failure - rollback success');
+                deferred.reject(error);
+              });
+            }
+
+            deferred.resolve(results);
+          });
+        })
+        .catch(function (error) { 
+          
+          // Individual query did not work - rollback transaction
+          connection.rollback(function () { 
+
+            console.log('[Transaction] Query failure - rollback success');
+            deferred.reject(error); 
+          });
         });
     });
     
   });
   
+  return deferred.promise;
 }
 
-function executeAsTransaction(querries) {
-  var deferred = q.defer(), queryStatus = [];
-  querries = querries.length ? querries : [querries];
+// TODO verify this object is cleaned up after use
+function transaction() { 
+  var self = {};
 
-  con.getConnection(function (error, connection) {
-    if (error) { return deferred.reject(error); }
+  self.queryList = [];
+  self.addQuery = addQuery; 
+  self.execute = execute;
+  
+  // Format the query, params request and insert into the list of querys to be 
+  // executed
+  function addQuery(query, params) { 
 
-    connection.beginTransaction(function (error) {
-      if (error) { return deferred.reject(error); }
-
-      queryStatus = querries.map(function (query) {
-        return promiseQuery(connection, query);
-      });
-
-      q.all(queryStatus)
-      .then(function (result) {
-        connection.commit(function (error) {
-          if (error) {
-            connection.rollback(function () {
-              return deferred.reject(error);
-            });
-          }
-          console.log('[db][executeAsTransaction] Commited');
-          return deferred.resolve(result);
-        });
-      })
-      .catch(function (error) {
-        connection.rollback(function () {
-          console.log('[db][executeAsTransaction] Rolling back...');
-          return deferred.reject(error);
-        });
-      });
+    self.queryList.push({
+      query : query,
+      params : params
     });
-  });
-  return deferred.promise;
+    return self;
+  }
+
+  function execute() { 
+    return execTransaction(self.queryList);
+  }
+  
+  return self;
 }
 
 function mysqlInit (config) {
@@ -263,11 +209,10 @@ function sqliteInit(config) {
 }
 */
 
-// Utility methods
-function promiseQuery(connection, sql, params) {
+// Uses an already existing connection to query the database, returning a promise
+function queryConnection(connection, sql, params) {
   var deferred = q.defer();
 
-  console.log('[db] [Transaction Query]', sql);
   connection.query(sql, params, function (error, result) {
     if (error) { return deferred.reject(error); }
     return deferred.resolve(result);
@@ -281,9 +226,8 @@ function sanitize(x) {
 
 module.exports = {
   initialise : initialise,
-  requestTransactionConnection : requestTransactionConnection,
-  executeAsTransaction : executeAsTransaction,
   exec : exec,
+  transaction : transaction,
   execute : execute,
   sanitize : sanitize, // FIXME: is this even used?
   escape : sanitize
