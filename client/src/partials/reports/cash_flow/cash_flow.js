@@ -152,22 +152,13 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
     session.sum_credit = 0;
     if(session.allIncomes) {
       session.allIncomes.forEach(function (transaction) {
-        if (transaction.currency_id === session.selectedCash.currency_id) {
-          session.sum_debit += exchange.convertir(transaction.debit, transaction.currency_id, session.currency, new Date());
-        } else {
-          session.sum_debit += transaction.debit;
-        }
-
+        session.sum_debit += exchange.convertir(transaction.debit, transaction.currency_id, session.currency, new Date());
       });
     }
 
     if(session.allExpenses) {
       session.allExpenses.forEach(function (transaction) {
-        if (transaction.currency_id === session.selectedCash.currency_id) {
-          session.sum_credit += exchange.convertir(transaction.credit, transaction.currency_id, session.currency, new Date());
-        } else {
-          session.sum_credit += transaction.credit;
-        }
+        session.sum_credit += exchange.convertir(transaction.credit, transaction.currency_id, session.currency, new Date());
       });
     }
 
