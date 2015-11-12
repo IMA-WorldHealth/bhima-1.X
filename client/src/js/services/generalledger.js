@@ -1,37 +1,44 @@
-
 angular.module('bhima.services')
-.service('GeneralLedgerService', [
-  '$http',
-  '$q',
-  'messenger',
-  'store',
-  function ($http, $q, messenger, Store) {
-    'use strict';
+.service('GeneralLedgerService', GeneralLedgerService);
 
-    this.load = function () {
+GeneralLedgerService.$inject = [
+  '$http', '$q', 'messenger', 'store'
+];
 
-      var dfd = $q.defer();
+/**
+* General Ledger Service
+*
+* Allows data to be loaded for the general ledger, and supports caching.
+*/
+function GeneralLedgerService($http, $q, messenger, Store) {
+  'use strict';
 
-      $http.get('/ledgers/general')
-      .success(function (data) {
+  var service = this;
+  var cache = new Store({ identifier : 'uuid', data : [] });
 
-        // package data into a nice store
-        var store = new Store({
-          identifier : 'uuid',
-          data       : data
-        });
+  service.load = load;
 
-        dfd.resolve(store);
-      })
-      .error(function (data) {
+  /* ------------------------------------------------------------------------ */
 
-        // TODO: messenger's error warnings should be an $httpInterceptor
-        messenger.danger(data);
-        dfd.reject(data);
+  // loads based on options
+  function load(options, reload) {
+    var promise;
+    var refresh = cache.data.length === 0 || reload;
+
+    // should we reload or fetch data for the first time?
+    if (refresh) {
+      promise = $http.get('/ledgers/general', { params : options })
+      .then(function (response) {
+        cache.setData(response.data);
+        return cache;
       });
+    // if we have local data, simply return it.
+    } else {
+      promise = $q.resolve(cache);
+    }
 
-      return dfd.promise;
-    };
-
+    return promise;
   }
-]);
+
+  return service;
+}
