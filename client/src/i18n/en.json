@@ -1886,7 +1886,9 @@
    "LEGEND"           : "Legend",
    "NAME"             : "Nom",
    "NEW_CASES"        : "New Cases",
+   "NEW_VISIT_SAVED"  : "New of visitation of the patient registered",
    "OLD_CASES"        : "Old Cases",
+   "REGISTER_VISIT"   : "Register Visit",
    "TITLE"            : "Patients Visit"
  },
 "PAYCHECK": {
