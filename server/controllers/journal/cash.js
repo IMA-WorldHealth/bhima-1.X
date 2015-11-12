@@ -61,7 +61,7 @@ function handleRounding(id) {
     // if the absolute value of the remainder is less than the min_monentary_unit
     // then they have paid in full
     var isPaidInFull = Math.abs(remainder) - row.min_monentary_unit < row.min_monentary_unit;
-
+    
     return { isPaidInFull : isPaidInFull, remainder : row.balance - paidValue };
   });
 }
@@ -82,6 +82,8 @@ exports.payment = function (id, userId, callback) {
       'cash.uuid = cash_item.cash_uuid ' +
       'AND cash.project_id = project.id ' +
     'WHERE cash.uuid = ?;';
+
+  state.id = id;
 
   db.exec(sql, [id])
   .then(function (results) {
@@ -232,7 +234,7 @@ exports.payment = function (id, userId, callback) {
 
       state.roundingUUID = uuid();
 
-      query=
+      query =
         'INSERT INTO posting_journal ' +
         '(project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, ' +
         'description, doc_num, account_id, debit, credit, debit_equiv, credit_equiv, ' +
@@ -279,7 +281,7 @@ exports.payment = function (id, userId, callback) {
   .catch(function (error) {
     // undo all transaction on error state
     // clean up
-
+    
     // collect all uuids
     var ids = [state.roundingUUID, state.roundingUUID2, state.cashUUID]
     .concat(state.itemUUIDs || [])
