@@ -2,11 +2,13 @@ angular.module('bhima.controllers')
 .controller('PatientRegistrationController', PatientRegistrationController);
 
 PatientRegistrationController.$inject = [
-  '$scope', '$q', '$location', '$translate', '$http', 'connect', 'messenger',
-  'validate', 'appstate', 'util', 'uuid', 'SessionService'
+  '$scope', 'Patients', 'Debtors', '$q', '$location', '$translate', '$http', 'connect', 'messenger',
+  'validate', 'util', 'uuid', 'SessionService'
 ];
 
-function PatientRegistrationController($scope, $q, $location, $translate, $http, connect, messenger, validate, appstate, util, uuid, Session) {
+function PatientRegistrationController($scope, patients, debtors, $q, $location, $translate, $http, connect, messenger, validate, util, uuid, Session) {
+  
+  var viewModel = this;
 
   var dependencies = {},
       defaultBirthMonth = '06-01',
@@ -19,10 +21,11 @@ function PatientRegistrationController($scope, $q, $location, $translate, $http,
   session.originLocationUuid = null;
   session.currentLocationUuid = null;
 
-  // Hack
-  session.defaultLocationLoaded = false;
+  debtors.groups()
+    .then(function (results) { 
+    
+    }); 
 
-  session.failedSessionValidation = false;
   $scope.patient = {};
   $scope.origin = {};
   $scope.current = {};
@@ -61,33 +64,16 @@ function PatientRegistrationController($scope, $q, $location, $translate, $http,
   }
 
 
-  // Tests in an ng-disabled method often got called in the wrong order/ scope was not updated
-  $scope.$watch('patient.dob', function (nval, oval) {
-    customValidation();
-  }, true);
-
-  $scope.$watch('session', function (nval, oval) {
-    customValidation();
-  }, true);
-
   // Define limits for DOB
   $scope.minDOB = util.htmlDate(util.minPatientDate);
   $scope.maxDOB = util.htmlDate(timestamp);
 
   // Location methods
   function setOriginLocation(uuid) {
-    if (uuid && !session.defaultLocationLoaded) {
-      session.defaultLocationLoaded = true;
-    }
-
     session.originLocationUuid = uuid;
   }
 
   function setCurrentLocation(uuid) {
-    if (uuid && !session.defaultLocationLoaded) {
-      session.defaultLocationLoaded = true;
-    }
-
     session.currentLocationUuid = uuid;
   }
 
@@ -178,13 +164,13 @@ function PatientRegistrationController($scope, $q, $location, $translate, $http,
     })
     .finally();
   };
-
-  appstate.register('project', function (project) {
-    $scope.project = project;
-    validate.process(dependencies)
-    .then(patientRegistration)
-    .catch(handleError);
-  });
+  
+  // appstate.register('project', function (project) {
+    // $scope.project = project;
+    // validate.process(dependencies)
+    // .then(patientRegistration)
+    // .catch(handleError);
+  // });
 
   $scope.setOriginLocation = setOriginLocation;
   $scope.setCurrentLocation = setCurrentLocation;
