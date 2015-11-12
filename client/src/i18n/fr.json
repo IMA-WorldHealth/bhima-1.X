@@ -1888,7 +1888,9 @@
   "LEGEND"           : "Legend",
   "NAME"             : "Nom",
   "NEW_CASES"        : "Nouveaux cas",
+  "NEW_VISIT_SAVED"  : "Nouvelle visite enregistrée",
   "OLD_CASES"        : "Anciens cas",
+  "REGISTER_VISIT"   : "Enregistrer Visite",
   "TITLE"            : "Visitations Patients"
 },
 "PAYCHECK": {
