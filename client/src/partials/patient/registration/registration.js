@@ -1,17 +1,12 @@
 angular.module('bhima.controllers')
-.controller('patientRegistration', [
-  '$scope',
-  '$q',
-  '$location',
-  '$translate',
-  'connect',
-  'messenger',
-  'validate',
-  'appstate',
-  'util',
-  'uuid',
-  'SessionService',
-  function ($scope, $q, $location, $translate, connect, messenger, validate, appstate, util, uuid, Session) {
+.controller('patientRegistration', patientRegistration);
+
+patientRegistration.$inject = [
+  '$scope', '$q', '$location', '$translate', 'connect', 'messenger',
+  'validate', 'appstate', 'util', 'uuid', 'SessionService'
+];
+
+function patientRegistration ($scope, $q, $location, $translate, connect, messenger, validate, appstate, util, uuid, Session) {
 
     var dependencies = {},
         defaultBirthMonth = '06-01',
@@ -88,7 +83,7 @@ angular.module('bhima.controllers')
         def.resolve(false);
       } else {
         var query = {
-          tables : { 
+          tables : {
             patient : { columns : ['uuid'] }
           },
           where  : ['patient.hospital_no=' + file_number]
@@ -97,7 +92,7 @@ angular.module('bhima.controllers')
         .then(function (res) {
           def.resolve(res.length !== 0);
         });
-      }      
+      }
       return def.promise;
     }
 
@@ -241,10 +236,10 @@ angular.module('bhima.controllers')
       packagePatient.spouse = util.normalizeName(packagePatient.spouse);
       packagePatient.title = util.normalizeName(packagePatient.title);
 
-      connect.basicPut('debitor', [packageDebtor])
+      connect.post('debitor', [packageDebtor])
       .then(function () {
         packagePatient.debitor_uuid = debtorId;
-        return connect.basicPut('patient', [packagePatient]);
+        return connect.post('patient', [packagePatient]);
       })
       .then(function () {
         return connect.fetch('/visit/' + patientId);
@@ -301,5 +296,3 @@ angular.module('bhima.controllers')
     $scope.setOriginLocation = setOriginLocation;
     $scope.setCurrentLocation = setCurrentLocation;
   }
-
-]);

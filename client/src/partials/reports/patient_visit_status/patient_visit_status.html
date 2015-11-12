@@ -139,6 +139,10 @@
                     <td> <b>{{ session.count.femaleOld  }}</h4> </td>
                     <td> <b>{{ patientsOldVisit.length }}</h4> </td>
                   </tr>
+                  <tr>
+                    <td colspan="3" class="text-right"> {{ "COLUMNS.TOTAL" | translate }} </td>
+                    <td> <b>{{ patientsNewVisit.length + patientsOldVisit.length }}</b> </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -258,7 +262,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr ng-repeat="patient in patientsNewVisit | orderBy: 'reference'">
+                    <tr ng-repeat="patient in patientsOldVisit | orderBy: 'reference'">
                       <td>{{ $index }}</td>
                       <td>{{ patient.abbr + patient.reference }}</td>
                       <td>{{ patient.hospital_no }}</td>
