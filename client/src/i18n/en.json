@@ -323,6 +323,7 @@
    "DAY"          : "Today",
    "MONTH"        : "This Month",
    "SEARCH"       : "Search",
+   "ALL_TIME"     : "All Time",
    "TITLE"        : "Cash Payments",
    "WEEK"         : "This Week"
    },
