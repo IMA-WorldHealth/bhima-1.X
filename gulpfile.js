@@ -184,7 +184,7 @@ gulp.task('watch-client', function () {
 // TODO This message can be removed once the lint/build process has been transitioned
 gulp.task('notify-lint-process', function () { 
   gutil.log(gutil.colors.yellow('REMINDER: Please ensure you have run the command `gulp lint` before submitting a pull request to github'));
-})
+});
 
 // builds the client with all the options available
 gulp.task('build-client', ['client-clean'], function () {

@@ -11,7 +11,7 @@
   </div>
 
   <div class="pull-right">
-    <button class="btn btn-sm btn-default" ng-click="PermissionCtrl.addUser()">
+    <button class="btn btn-sm btn-default" ng-click="PermissionsCtrl.setState('create')">
       <i class="glyphicon glyphicon-plus-sign"></i> {{ "PERMISSION.ADD" | translate }}
     </button>
   </div>
@@ -20,116 +20,126 @@
 <main>
   <div class="container-fluid">
     <div class="row">
+
       <div class="col-md-6">
-        <div ui-grid="PermissionsCtrl.uiGridOptions" style="height:100%; width:95%;"></div>
+        <div ui-grid="PermissionsCtrl.uiGridOptions" style="height:100%; width:100%;"></div>
       </div>
 
-      <div class="col-md-6" ng-switch="current.state">
+      <div class="col-md-6" ng-switch="PermissionsCtrl.state">
         <div ng-switch-default>
-          <div class="alert alert-info">
-            <p>{{ "PERMISSION.HELP_TXT_1" | translate }}</p>
-            <dl class="dl-horizontal">
-              <dt><i class="glyphicon glyphicon-pencil"></i></dt>
-              <dd>{{ "PERMISSION.HELP_TXT_2" | translate }}</dd>
-              <dt><i class="glyphicon glyphicon-cog"></i></dt>
-              <dd>{{ "PERMISSION.HELP_TXT_3" | translate }}</dd>
-              <dt><i class="glyphicon glyphicon-trash"></i></dt>
-              <dd>{{ "PERMISSION.HELP_TXT_4" | translate }}</dd>
-            </dl>
-          </div>
+          <h4>{{ "PERMISSION.HELP_TXT_1" | translate }}</h4>
+          <dl class="dl-horizontal">
+            <dt><i class="glyphicon glyphicon-pencil"></i></dt>
+            <dd>{{ "PERMISSION.HELP_TXT_2" | translate }}</dd>
+            <dt><i class="glyphicon glyphicon-cog"></i></dt>
+            <dd>{{ "PERMISSION.HELP_TXT_3" | translate }}</dd>
+            <dt><i class="glyphicon glyphicon-trash"></i></dt>
+            <dd>{{ "PERMISSION.HELP_TXT_4" | translate }}</dd>
+          </dl>
         </div>
 
-        <div ng-switch-when="add">
-          <form novalidate class="form-horizontal" name="CreateUserForm">
-            <legend><h3>{{ "PERMISSION.ADDING" | translate }} <small>{{ current.user.first }} {{ current.user.last }}</small></h3></legend>
+        <!-- user creation view -->
+        <div ng-switch-when="create">
+          <form class="form-horizontal" name="CreateUserForm" ng-submit="PermissionsCtrl.submit(CreateUserForm.$invalid)" novalidate>
+            <fieldset>
+              <legend>{{ "PERMISSION.ADDING" | translate }}</legend>
 
-            <div class="form-group">
-              <label class="control-label col-md-2 required">{{ "COLUMNS.FIRST_NAME" | translate }}</label>
-              <div class="col-md-7">
-                <input name="firstname" ng-model="PermissionsCtrl.user.first" class="form-control" required>
+              <div class="form-group">
+                <label class="control-label col-md-2">{{ "COLUMNS.FIRST_NAME" | translate }}</label>
+                <div class="col-md-7">
+                  <input name="firstname" ng-model="PermissionsCtrl.user.first" class="form-control" required>
+                  <p class="help-block">
+                    This is cool.
+                  </p>
+                </div>
               </div>
-            </div>
 
-            <div class="form-group">
-              <label class="control-label col-md-2 required">{{ "COLUMNS.LAST_NAME" | translate }}</label>
-              <div class="col-md-7">
-                <input name="lastname" ng-model="current.user.last" class="form-control" required>
+              <div class="form-group">
+                <label class="control-label col-md-2">{{ "COLUMNS.LAST_NAME" | translate }}</label>
+                <div class="col-md-7">
+                  <input name="lastname" ng-model="PermissionsCtrl.user.last" class="form-control" required>
+                </div>
               </div>
-            </div>
 
-            <div class="form-group">
-              <label class="control-label col-md-2 required">{{ "COLUMNS.USER_NAME" | translate }}</label>
-              <div class="col-md-7">
-                <input name="username" ng-model="current.user.username" class="form-control" required>
+              <div class="form-group">
+                <label class="control-label col-md-2">{{ "COLUMNS.USER_NAME" | translate }}</label>
+                <div class="col-md-7">
+                  <input name="username" ng-model="PermissionsCtrl.user.username" class="form-control" required>
+                </div>
               </div>
-            </div>
 
-            <div class="form-group">
-              <label class="control-label col-md-2">{{ "COLUMNS.EMAIL" | translate }}</label>
-              <div class="col-md-7">
-                <input name="email" ng-model="current.user.email" class="form-control" type="email">
+              <div class="form-group">
+                <label class="control-label col-md-2">{{ "COLUMNS.EMAIL" | translate }}</label>
+                <div class="col-md-7">
+                  <input name="email" ng-model="PermissionsCtrl.user.email" class="form-control" type="email">
+                  <p class="help-block">
+
+                  </p>
+                </div>
               </div>
-            </div>
 
-            <div class="form-group">
-              <label class="control-label col-md-2 required">{{ "COLUMNS.PASSWORD" | translate }}</label>
-              <div class="col-md-7">
-                <input ng-model="current.user.password" class="form-control" required type="password" ng-change="clearPass()">
-                <i class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true" ng-if="!valid.password"></i>
-                <i class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-if="!!valid.password"></i>
+              <div class="form-group has-feedback">
+                <label class="control-label col-md-2">{{ "COLUMNS.PASSWORD" | translate }}</label>
+                <div class="col-md-7">
+                  <input ng-model="PermissionsCtl.user.password" class="form-control" type="password" required>
+                  <i ng-if="PermissionCtrl.user.password !== PermissionCtrl.user.passwordVerify" class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></i>
+                  <i ng-if="PermissionCtrl.user.password === PermissionCtrl.user.passwordVerify" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></i>
+                </div>
               </div>
-            </div>
 
-            <div class="form-group">
-              <label class="control-label col-md-2 required"> {{ "COLUMNS.PASSWORD" | translate }} ({{ "PERMISSION.RETYPE" | translate }})</label>
-              <div class="col-md-7">
-                <input ng-model="current.user.passwordVerify" class="form-control" type="password" ng-change="clearPass()" required>
-                <i class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true" ng-if="!valid.password"></i>
-                <i class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-if="!!valid.password"></i>
+              <div class="form-group has-feedback">
+                <label class="control-label col-md-2"> {{ "COLUMNS.PASSWORD" | translate }} ({{ "PERMISSION.RETYPE" | translate }})</label>
+                <div class="col-md-7">
+                  <input ng-model="PermissionsCtl.user.passwordVerify" class="form-control" type="password" required>
+                  <i ng-if="PermissionCtrl.user.password !== PermissionCtrl.user.passwordVerify" class="glyphicon glyphicon-warning-sign form-control-feedback text-success" aria-hidden="true"></i>
+                  <i ng-if="PermissionCtrl.user.password === PermissionCtrl.user.passwordVerify" class="glyphicon glyphicon-ok form-control-feedback text-danger" aria-hidden="true"></i>
+                  <p class="help-block">
+                    The passwords must match!
+                  </p>
+                </div>
               </div>
-            </div>
 
-            <input ng-disabled="new.$invalid" type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="submit()">
-            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
+              <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}">
+            </fieldset>
           </form>
         </div>
 
         <div ng-switch-when="edit">
           <form novalidate class="form-horizontal" name="edit">
-            <legend>{{ "PERMISSION.EDITTING" | translate }} <small>{{current.user.first}} {{current.user.last}}</small></legend>
+            <legend>{{ "PERMISSION.EDITTING" | translate }} <small>{{PermissionsCtl.user.first}} {{PermissionsCtl.user.last}}</small></legend>
 
             <div class="form-group">
               <label class="control-label col-md-2 required">{{ "COLUMNS.FIRST_NAME" | translate }}</label>
               <div class="col-md-7">
-                <input ng-model="current.user.first" class="form-control" required>
+                <input ng-model="PermissionsCtl.user.first" class="form-control" required>
               </div>
             </div>
 
             <div class="form-group">
               <label class="control-label col-md-2 required">{{ "COLUMNS.LAST_NAME" | translate }}</label>
               <div class="col-md-7">
-                <input ng-model="current.user.last" class="form-control" required>
+                <input ng-model="PermissionsCtl.user.last" class="form-control" required>
               </div>
             </div>
 
             <div class="form-group">
               <label class="control-label col-md-2 required">{{ "COLUMNS.USER_NAME" | translate }}</label>
               <div class="col-md-7">
-                <input ng-model="current.user.username" class="form-control" required>
+                <input ng-model="PermissionsCtl.user.username" class="form-control" required>
               </div>
             </div>
 
             <div class="form-group">
               <label class="control-label col-md-2">{{ "COLUMNS.EMAIL" | translate }}</label>
               <div class="col-md-7">
-                <input ng-model="current.user.email" class="form-control" type="email">
+                <input ng-model="PermissionsCtl.user.email" class="form-control" type="email">
               </div>
             </div>
 
             <div class="form-group has-feedback"  ng-class="{ 'has-error' : !valid.password, 'has-success' : !!valid.password }">
               <label class="control-label col-md-2 required">{{ "COLUMNS.PASSWORD" | translate }}</label>
               <div class="col-md-7">
-                <input ng-model="current.user.password" class="form-control" required type="password" ng-change="clearPass()">
+                <input ng-model="PermissionsCtl.user.password" class="form-control" required type="password" ng-change="clearPass()">
                 <i class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true" ng-if="!valid.password"></i>
                 <i class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-if="!!valid.password"></i>
               </div>
@@ -138,7 +148,7 @@
             <div class="form-group has-feedback" ng-class="{ 'has-error' : !valid.password, 'has-success' : !!valid.password }">
               <label class="control-label col-md-2 required"> {{ "COLUMNS.PASSWORD" | translate }} ({{ "PERMISSION.RETYPE" | translate }})</label>
               <div class="col-md-7">
-                <input ng-model="current.user.passwordVerify" class="form-control" required type="password" ng-change="validatePassword()">
+                <input ng-model="PermissionsCtl.user.passwordVerify" class="form-control" required type="password" ng-change="validatePassword()">
                 <i class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true" ng-if="!valid.password"></i>
                 <i class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-if="!!valid.password"></i>
               </div>
@@ -155,7 +165,7 @@
             <div class="panel panel-default">
               <div class="panel-heading">
                 <span>{{ "PERMISSION.PROJECTS" | translate }}</span> :
-                <strong>{{ current.user.first }} ({{ current.user.username }})</strong>
+                <strong>{{ PermissionsCtl.user.first }} ({{ PermissionsCtl.user.username }})</strong>
                 <span class="pull-right">
                   <a ng-click="submit()">
                     <span class="glyphicon glyphicon-floppy-disk"></span> {{ "FORM.SAVE" | translate }}
@@ -183,7 +193,7 @@
             <div class="panel panel-default">
               <div class="panel-heading">
                 <span>{{ "PERMISSION.PERMISSIONS" | translate }}</span> :
-                <strong>{{ current.user.first }} ({{ current.user.username }})</strong>
+                <strong>{{ PermissionsCtl.user.first }} ({{ PermissionsCtl.user.username }})</strong>
                 <span class="pull-right">
                   <a ng-click="submit()">
                     <span class="glyphicon glyphicon-floppy-disk"></span> {{ "FORM.SAVE" | translate }}

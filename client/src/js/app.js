@@ -842,5 +842,6 @@ bhima.config(['$translateProvider', translateConfig]);
 bhima.config(['tmhDynamicLocaleProvider', localeConfig]);
 bhima.config(['$httpProvider', authConfig]);
 bhima.config(['$localForageProvider', localForageConfig]);
+
 // run
 bhima.run(['$rootScope', '$location', 'SessionService', startupConfig]);

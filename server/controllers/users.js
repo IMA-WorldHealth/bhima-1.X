@@ -19,7 +19,8 @@ exports.list = function list(req, res, next) {
   var sql;
 
   sql =
-    'SELECT user.id, user.username FROM user;';
+    'SELECT user.id, CONCAT(user.first, \' \', user.last) AS displayname, ' +
+      'user.username FROM user;';
 
   db.exec(sql)
   .then(function (rows) {

@@ -16,17 +16,15 @@ PermissionsController.$inject = [
 function PermissionsController($window, $translate, $http, util, messenger, Session, Users, Projects) {
   var vm = this;
 
+  // TODO -- remove these
   var $scope = {};
+  var current;
 
   vm.uiGridOptions = {
-    showGridFooter : true,
-    showColumnFooter : true,
-    enableFiltering : true,
     enableSorting : true,
     columnDefs : [
-      { field : 'first', name : 'First' },
-      { field : 'username', name : 'User Name'},
-      { field : 'email', name : 'Email' },
+      { field : 'displayname', name : 'Display Name' },
+      { field : 'username', name : 'User Name' },
       { field : 'actions', name : 'Actions' }
     ]
   };
@@ -39,17 +37,25 @@ function PermissionsController($window, $translate, $http, util, messenger, Sess
   // the user object that is either edited or created
   vm.user = {};
 
-  // keeps track of state
-  var current = $scope.current = {
-    state : null,
-    user : {},
-    permissions : [],
-    projects : [],
-    _backup : null,
-    loading : false
-  };
+  // TODO -- manage state without strings
+  vm.state = 'default'; // this is default || create || update
+
+  // bind methods
+  vm.setState = setState;
+  vm.submit = submit;
 
   /* ------------------------------------------------------------------------ */
+
+  // sets the module view state
+  function setState(state) {
+    console.log('state:', state);
+    vm.state = state;
+  }
+
+  function submit(invalid) {
+    if (invalid) { return; }
+    console.log('Clicked submit!');
+  }
 
   // called on modules start
   function startup() {
@@ -67,17 +73,17 @@ function PermissionsController($window, $translate, $http, util, messenger, Sess
     .then(util.unwrapHttpResponse);
   }
 
-  $scope.editUser = function editUser(user) {
+  function editUser(user) {
     current.user = user;
     current._backup = angular.copy(user);
     current.state = 'edit';
     current.user.passwordVerify = current.user.password;
-  };
+  }
 
-  $scope.addUser = function addUser() {
+  function addUser() {
     current.user = {};
     current.state = 'add';
-  };
+  }
 
   // add a new user to the database
   function submitAdd() {
@@ -109,7 +115,7 @@ function PermissionsController($window, $translate, $http, util, messenger, Sess
   }
 
   // deleting a user
-  $scope.removeUser = function removeUser(user) {
+  function removeUser(user) {
     var result = $window.confirm('Are you sure you want to delete user: '  + user.first +' ' +user.last);
     if (result) {
       $http.delete('users/' + user.id)
@@ -118,7 +124,7 @@ function PermissionsController($window, $translate, $http, util, messenger, Sess
         $scope.users.remove(user.id);
       });
     }
-  };
+  }
 
   function setSavedUnitPermissions() {
     if (!current.permissions.data || !$scope.units) { return; }
@@ -142,40 +148,38 @@ function PermissionsController($window, $translate, $http, util, messenger, Sess
     });
   }
 
-  $scope.toggleSuperProjects = function toggleSuperProjects(bool) {
+  function toggleSuperProjects(bool) {
     $scope.projects.data.forEach(function (project) {
       project.checked = bool;
     });
-  };
+  }
 
-  $scope.deselectAllProjects = function deselectAllProjects(bool) {
+  function deselectAllProjects(bool) {
     if (!bool) { $scope.super.projects = false; }
-  };
+  }
 
-  //
-  $scope.toggleChildren = function toggleChildren(unit) {
+  function toggleChildren(unit) {
     if (!unit.checked) { $scope.super.units = false; }
-    $scope.toggleParents(unit); // traverse upwards, toggling parents
     unit.children.forEach(function (child) {
       if(child){
         child.checked = unit.checked;
         $scope.otherChildren(child);
       }
     });
-  };
+  }
 
-  $scope.otherChildren = function otherChildren(unit) {
+  function otherChildren(unit) {
     unit.children.forEach(function (child) {
       if(child){
         child.checked = unit.checked;
-        $scope.otherChildren(child);
+        otherChildren(child);
       }
     });
-  };
+  }
 
-  $scope.filterChildren = function filterChildren(unit) {
+  function filterChildren(unit) {
     return unit.parent === 0;
-  };
+  }
 
   function getChildren(id) {
     return $scope.units.data.filter(function (unit) {
@@ -183,11 +187,11 @@ function PermissionsController($window, $translate, $http, util, messenger, Sess
     });
   }
 
-  $scope.toggleSuperUnits = function toggleSuperUnits(bool) {
+  function toggleSuperUnits(bool) {
     $scope.units.data.forEach(function (unit) {
       unit.checked = bool;
     });
-  };
+  }
 
   startup();
 }
