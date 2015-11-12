@@ -85,6 +85,7 @@ function details(req, res, next) {
 
       if (isEmpty(result)) { 
         res.status(404).send();
+        return;
       } else { 
 
         // UUID has matched patient - extract result and send to client

@@ -29,6 +29,7 @@ var reports         = require('../controllers/reports/reports.js');
 
 var inventory       = require('../controllers/stock/inventory');
 var depot           = require('../controllers/stock/depot');
+var consumptionLoss = require('../controllers/stock/inventory/depreciate/consumptionLoss');
 
 var trialbalance    = require('../controllers/finance/trialbalance');
 var journal         = require('../controllers/finance/journal');
@@ -43,7 +44,7 @@ var purchase        = require('../controllers/finance/purchase');
 var budget          = require('../controllers/finance/budget');
 var taxPayment      = require('../controllers/finance/taxPayment');
 var donations       = require('../controllers/finance/donations');
-var consumptionLoss = require('../controllers/stock/inventory/depreciate/consumptionLoss');
+var debtors         = require('../controllers/finance/debtors');
 
 var financeServices       = require('../controllers/categorised/financeServices');
 var depreciatedInventory  = require('../controllers/categorised/inventory_depreciate');
@@ -279,12 +280,17 @@ exports.configure = function (app) {
   app.get('/patients', patient.list);
   app.post('/patients', patient.create);
   app.get('/patients/:uuid', patient.details);
-  
+
   // Generic search parameter passed
   // app.get('/patients/search', patient.search);
   // app.get('/patients/search/name/:value', patient.fuzzySearch);
   // app.get('/patients/search/reference/:value', patient.fuzzySearch);
-
+  
+  // Debtors API
+  // app.get('/debtors', debtors.list);
+  app.get('/debtors/groups', debtors.listGroups);
+  app.get('/debtors/groups/:uuid', debtors.groupDetails);
+  // app.get('/debtors/:uuid', debtors.details);
 
   // search stuff
   // TODO merge with patients API

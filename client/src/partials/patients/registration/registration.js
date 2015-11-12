@@ -27,36 +27,6 @@ function PatientRegistrationController($scope, $q, $location, $translate, $http,
   $scope.origin = {};
   $scope.current = {};
 
-  // Validation configuration objects
-  var validation = $scope.validation = {};
-  validation.dates = {
-    flag : false,
-    tests : {
-      type : {
-        flag : false,
-        message : 'PATIENT_REGISTRATIONS.INCORRECT_DATE_TYPE'
-      },
-      limit : {
-        flag : false,
-        message : 'PATIENT_REGISTRATIONS.INCORRECT_DATE_LIMIT'
-      }
-    }
-  };
-
-  validation.locations = {
-    flag : false,
-    tests : {
-      current : {
-        flag : false,
-        message : 'PATIENT_REGISTRATIONS.INCORRECT_LOCATION_CURRENT'
-      },
-      origin : {
-        flag : false,
-        message : 'PATIENT_REGISTRATIONS.INCORRECT_LOCATION_ORIGIN'
-      }
-    }
-  };
-
   dependencies.debtorGroup = {
     query : {
       identifier : 'uuid',
@@ -68,12 +38,6 @@ function PatientRegistrationController($scope, $q, $location, $translate, $http,
   function patientRegistration(model) {
     angular.extend($scope, model);
 
-    // Update the year limit message (has to be done late to use current language)
-    validation.dates.tests.limit.message = $translate.instant(validation.dates.tests.limit.message)
-      .replace('<min>', minYear)
-      .replace('<max>', maxYear);
-
-    return $q.when();
   }
 
   function checkingExistPatient (file_number) {
@@ -105,77 +69,6 @@ function PatientRegistrationController($scope, $q, $location, $translate, $http,
   $scope.$watch('session', function (nval, oval) {
     customValidation();
   }, true);
-
-  function validateLocations() {
-    validation.locations.flag = false;
-
-    // Wait for directives to initialise
-    if (!session.defaultLocationLoaded) {
-      return false;
-    }
-
-    if (!session.originLocationUuid) {
-      validation.locations.flag = validation.locations.tests.origin;
-      return true;
-    }
-
-    if (!session.currentLocationUuid) {
-      validation.locations.flag = validation.locations.tests.current;
-      return true;
-    }
-
-    return false;
-  }
-
-  // TODO rename
-  // TODO transition to application wide validation, validation objects are defined and parsed by a service
-  //  - test method
-  //  - flag
-  //  - message
-  function customValidation() {
-    var dates = validateDates();
-    var locations = validateLocations();
-
-    session.failedSessionValidation = dates || locations;
-    return;
-  }
-
-  // Convoluted date validation
-  function validateDates() {
-    var yearOfBirth = session.yob;
-    validation.dates.flag = false;
-
-    if (session.fullDateEnabled) {
-
-      if (!$scope.patient.dob) {
-        validation.dates.flag = validation.dates.tests.type;
-        return true;
-      }
-
-      yearOfBirth = $scope.patient.dob.getFullYear();
-    }
-
-    if (yearOfBirth) {
-
-// NOTE: The following checks on the yearOfBirth are never executed with
-//       the html5+angular date input field since the form value becomes
-//       undefined when invalid and is caught by the previous check.
-//       Leaving them in as a precaution in case the input form behavior
-//       changes in the future.
-
-      if (isNaN(yearOfBirth)) {
-        validation.dates.flag = validation.dates.tests.type;
-        return true;
-      }
-
-      // Sensible year limits - may need to change to accomidate legacy patients
-      if (yearOfBirth > maxYear || yearOfBirth < minYear) {
-        validation.dates.flag = validation.dates.tests.limit;
-        return true;
-      }
-    }
-    return false;
-  }
 
   // Define limits for DOB
   $scope.minDOB = util.htmlDate(util.minPatientDate);
@@ -285,10 +178,6 @@ function PatientRegistrationController($scope, $q, $location, $translate, $http,
     })
     .finally();
   };
-
-  function handleError(err) {
-    messenger.danger('An Error Occured : ' + JSON.stringify(err));
-  }
 
   appstate.register('project', function (project) {
     $scope.project = project;
