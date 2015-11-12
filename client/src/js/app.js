@@ -59,6 +59,10 @@ function bhimaconfig($routeProvider) {
     controller: 'patientRegistration',
     templateUrl: 'partials/patient/registration/registration.html'
   })
+  .when('/reports/patient_visit_status', {
+    controller: 'ReportPatientVisitStatus as ReportCtrl',
+    templateUrl: 'partials/reports/patient_visit_status/patient_visit_status.html'
+  })
   .when('/debtor/debtor_group', {
     controller : 'DebtorGroupController as GroupCtrl',
     templateUrl: 'partials/debtor/debtor_group.html'

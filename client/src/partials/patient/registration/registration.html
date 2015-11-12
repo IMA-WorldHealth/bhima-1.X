@@ -9,7 +9,7 @@
       <li class="active">{{ "PATIENT_REG.PAGE_TITLE" | translate }}</li>
     </ol>
   </div>
-  
+
   <div class="pull-right">
     <a href="#/location" class="btn btn-default btn-sm">
       <span class="glyphicon glyphicon-globe"></span> {{ "PATIENT_REG.LOCATION" | translate }}
@@ -285,23 +285,13 @@
                   <div>
                     <p>{{ "PATIENT_REGISTRATIONS.STATUS_REGISTERED_BODY" | translate }}</p>
                     <div ng-if="patient.renewal==2">
-                      <div find-patient on-search-complete="loadPatient"></div>
+                      <div find-patient on-search-complete="loadPatient(patient)"></div>
                     </div>
                   </div>
                 </form>
               </div>
             </div> <!-- End panel -->
           </div> <!-- End column 5 row -->
-          <!--div class="row hack-right">
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                Additional Component
-              </div>
-
-              <div class="panel-body">
-                Content
-              </div>
-            </div> <!-- End panel -->
           </div--> <!-- End column 5 row -->
         </div>
     </div><!-- End row -->

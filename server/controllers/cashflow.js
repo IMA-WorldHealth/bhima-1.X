@@ -41,7 +41,6 @@ function cashflowReport (req, res, next) {
 					')' +
 				') AS `t`, account AS a, transaction_type as o, user as u WHERE `t`.`account_id` = `a`.`id` AND `t`.`origin_id` = `o`.`id` AND `t`.`user_id` = `u`.`id` ' +
 				'GROUP BY `t`.`trans_id` ;' ;
-
 		return db.exec(requette, [params.account_id, params.dateFrom, params.dateTo, params.account_id, params.dateFrom, params.dateTo]);
 	}
 
@@ -54,5 +53,4 @@ function cashflowReport (req, res, next) {
 		 });
 		 return glb;
 	}
-	
 }

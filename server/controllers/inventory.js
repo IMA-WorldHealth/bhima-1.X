@@ -460,11 +460,14 @@ function getInventoryLots(req, res, next) {
 * GET /inventory/:uuid/lots
 * Retrieve all active lots (quantity > 0) for a given inventory item.  NOTE -
 * this query does not filter by expiration date or any other stock metadata.
+* Returns an array of lots to the client.
+* 
+* @function getInventoryLotsById
 */
 function getInventoryLotsById(req, res, next) {
   'use strict';
 
-  var uuid = req.param.uuid;
+  var uuid = req.params.uuid;
 
   lots.getInventoryLotsById(uuid)
   .then(function (rows) {
@@ -472,7 +475,7 @@ function getInventoryLotsById(req, res, next) {
       throw core.errors.NO_STOCK;
     }
 
-    res.status(200).json(rows[0]);
+    res.status(200).json(rows);
   })
   .catch(function (error) {
     core.errorHandler(error, req, res, next);
