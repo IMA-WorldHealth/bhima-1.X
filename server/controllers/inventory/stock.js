@@ -54,18 +54,11 @@ function getStockLevelsById(uuid, options) {
 
   var sql;
 
-  // We do a LEFT JOIN here because stock and consumption are related by a
-  // tracking number.  For every consumption event, there was an initial stock
-  // entry, so we should be able to capture all stock entry and consumption
-  // events with this LEFT JOIN.
-  //
-  // TODO - is this optimal?
   sql =
-    'SELECT s.inventory_uuid AS uuid, ' +
-      'SUM(s.quantity - c.quantity) AS quantity ' +
+    'SELECT s.inventory_uuid, SUM(s.quantity - IFNULL(c.quantity, 0)) AS quantity ' +
     'FROM stock AS s LEFT JOIN consumption AS c ON ' +
       's.tracking_number = c.tracking_number ' +
-    'WHERE c.canceled <> 1 AND s.inventory_uuid = ? ' +
+    'WHERE s.inventory_uuid = ? ' +
     'GROUP BY s.inventory_uuid;';
 
   return db.exec(sql, [uuid]);
@@ -76,7 +69,7 @@ function getStockLevelsById(uuid, options) {
 * Compute the average stock quantity (entries - consumption) for all inventory
 * items over time.
 *
-* @function getStockLevelsById
+* @function getAverageStockLevelsById
 * @param {Object} options Filtering options for the SQL query
 * @returns {Promise} The database request promise
 */

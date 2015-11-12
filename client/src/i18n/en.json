@@ -1875,6 +1875,22 @@
    "PLACEHOLDER"        : "Find a patient...",
    "TITLE"              : "Patient Standing Report"
    },
+"PATIENT_VISIT" : {
+   "CASES"            : "Cases",
+   "DATE"             : "Date Visite",
+   "DETAILS"          : "Details",
+   "FILE_NR"          : "File Number",
+   "GROUP_BY"         : "Group By",
+   "GROUP_BY_MONTH"   : "Months",
+   "GROUP_BY_DAY"     : "Days",
+   "LEGEND"           : "Legend",
+   "NAME"             : "Nom",
+   "NEW_CASES"        : "New Cases",
+   "NEW_VISIT_SAVED"  : "New of visitation of the patient registered",
+   "OLD_CASES"        : "Old Cases",
+   "REGISTER_VISIT"   : "Register Visit",
+   "TITLE"            : "Patients Visit"
+ },
 "PAYCHECK": {
    "FAM_STATUS"    : "Familly status",
    "GRADE"         : "Grade",
@@ -3022,6 +3038,7 @@
    "PATIENT_REGISTRATIONS"     : "Patient Registrations",
    "PATIENT_SEARCH"            : "Patient Search",
    "PATIENT_STANDING"          : "Patient Standing",
+   "PATIENT_VISIT_STATUS"      : "Patient Visits",
    "PAYMENT_PERIOD"            : "Payment Period Management",
    "PAYROLL"                   : "Payroll",
    "PAYROLL_REPORT"            : "Payroll",
