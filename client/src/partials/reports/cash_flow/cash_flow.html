@@ -222,7 +222,7 @@
                     <td style="width:15%"><b>{{ record.trans_id }}</b></td>
                     <td style="width:20%">{{ ReportCtrl.getSource(record.service_txt) }}</td>
                     <td style="width:40%">{{ record.description }}</td>
-                    <td style="width:20%">{{ record.debit | currency:record.currency_id }}</td>
+                    <td style="width:20%">{{ record.debit | currency:record.currency_id }} </td>
                   </tr>
                   <tr ng-if="!ReportCtrl.session.allIncomes.length">
                     <td colspan="4">
