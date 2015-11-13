@@ -6,40 +6,48 @@
  * @todo
  */
 var db = require('../../lib/db'),
-    guid = require('../../lib/guid');
+    uuid = require('../../lib/guid');
 
 exports.create = create;
 exports.details = details;
 exports.list = list;
 exports.search = search;
 
+exports.verifyHospitalNumber = verifyHospitalNumber;
+
 /*
  * HTTP Controllers
  */
+
+// TODO Method handles too many operations
 function create(req, res, next) { 
   var writeDebtorQuery, writePatientQuery;
   var invalidParameters;
   var patientText;
 
-  var patientData = req.body;
-
-  // Verify that anything passed to the body is correct
-  console.log('got uuid', patientData.uuid);
-  console.log('got debtor uuid', patientData.debtorUuid);
+  var createRequestData = req.body;
   
-  // FIXME This will fail with 0 (an invalid UUID)
-  invalidParameters = !patientData.uuid || !patientData.debtorUuid;
+  var medical = createRequestData.medical;
+  var finance = createRequestData.finance;
+
+  // Debtor group required for financial modelling
+  invalidParameters = !finance || !medical;
   
     if (invalidParameters) { 
     
     // FIXME This should be handled by middleware
     res.status(400).json({
       code : 'ERROR.ERR_MISSING_INFO',
-      reason : 'Both a valid patient uuid and patient debtor uuid must be defined to write a patient record'
+      reason : 'Both `financial` and `medical` information must be provided to register a patient'
     });
     return;
   }
-  
+
+  // Optionally allow client to specify UUID
+  finance.uuid = finance.uuid || uuid();
+  medical.uuid = medical.uuid || uuid();
+  medical.debitor_uuid = finance.uuid;
+
   writeDebtorQuery = 'INSERT INTO debitor (uuid, group_uuid, text) VALUES ' +
     '(?, ?, ?)';
 
@@ -48,8 +56,11 @@ function create(req, res, next) {
   var transaction = db.transaction();
 
   transaction
-    .addQuery(writeDebtorQuery, [patientData.debtorUuid, patientData.debtorGroupUuid, generatePatientText(patientData)])
-    .addQuery(writePatientQuery, [patientData]);
+    .addQuery(writeDebtorQuery, [finance.uuid, finance.debtor_group_uuid, generatePatientText(medical)])
+    .addQuery(writePatientQuery, [medical]);
+  
+  console.log(Object.keys(finance));
+  console.log(Object.keys(medical));
 
   transaction.execute()
     .then(function (results) { 
@@ -119,7 +130,42 @@ function search(req, res, next) {
   next();
 }
 
+/**
+ * @description Return a status object indicating if the hospital number has laready been registered 
+ * with an existing patient 
+ *
+ * Returns status object 
+ * { 
+ *  registered : Boolean - Specifies if the id passed has already been registered or not
+ *  details : Object (optional) - Includes the details of the registered hospital number
+ *  }
+ */
+function verifyHospitalNumber(req, res, next) { 
+  var verifyQuery;
+  var hospitalNumber = req.params.id;
 
+  verifyQuery = 
+    'SELECT uuid, hospital_no FROM patient ' + 
+      'WHERE hospital_no = ?';
+
+  db.exec(verifyQuery, [hospitalNumber])
+    .then(function (result) { 
+      var hospitalIdStatus = {};
+
+      if (isEmpty(result)) { 
+
+        hospitalIdStatus.registered = false;
+      } else { 
+
+        hospitalIdStatus.registered = true;
+        hospitalIdStatus.details = result[0];
+      }
+
+      res.status(200).json(hospitalIdStatus);
+    })
+    .catch(next)
+    .done();
+}
 
 /* Legacy Methods - these will be removed or refactored */
 
@@ -260,7 +306,7 @@ exports.startVisit = function (req, res, next) {
     'INSERT INTO patient_visit (uuid, patient_uuid, entry_date, registered_by) VALUES ' +
     '(?, ?, ?, ?);';
 
-  db.exec(sql, [guid(), patientId, new Date(), req.session.user.id])
+  db.exec(sql, [uuid(), patientId, new Date(), req.session.user.id])
   .then(function () {
     res.status(200).send();
   })
@@ -274,7 +320,7 @@ exports.logVisit = function (req, res, next) {
   sql =
     'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES (?, ?, ?);';
 
-  db.exec(sql, [guid(), id, req.session.user.id])
+  db.exec(sql, [uuid(), id, req.session.user.id])
   .then(function () {
     res.send();
   })

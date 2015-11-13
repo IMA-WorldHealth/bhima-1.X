@@ -20,10 +20,18 @@ function Patients($http) {
       .then(extractData);
   }
 
+  function create(details) { 
+    var path = '/patients';
+
+    return $http.post(path, details);
+  }
+
   return {
-    detail : detail
+    detail : detail,
+    create : create
   };
 }
+
 
 // Utility method - pass only data object to controller
 // TODO Use shared utility service

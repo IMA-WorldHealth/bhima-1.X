@@ -31,13 +31,21 @@ function details(req, res, next) {
     .done();
 }
 
+// TODO ? parameter to request all (including locked) groups
 function listGroups(req, res, next) { 
-  var listDebtorGroupsQuery;
+  var listDebtorGroupsQuery, filterLockedCondition;
+  var query;
 
   listDebtorGroupsQuery = 
-    'SELECT uuid, name, account_id FROM debitor_group';
+    'SELECT uuid, name, locked, account_id FROM debitor_group';
+  
+  filterLockedCondition = 
+    'WHERE locked = 0';
+  
+  // TODO ? parameter to request all (including locked) groups
+  query = listDebtorGroupsQuery.concat(' ', filterLockedCondition);
 
-  db.exec(listDebtorGroupsQuery)
+  db.exec(query)
     .then(function (result) { 
       var debtors = result;
 

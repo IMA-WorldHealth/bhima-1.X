@@ -275,12 +275,12 @@ exports.configure = function (app) {
   app.get('/availableAccounts/:id_enterprise/', accounts.listEnterpriseAccounts);
   app.get('/availableAccounts_profit/:id_enterprise/', accounts.listEnterpriseProfitAccounts);
   
-
   // Patients API 
   app.get('/patients', patient.list);
   app.post('/patients', patient.create);
   app.get('/patients/:uuid', patient.details);
-
+  
+  app.get('/patients/checkHospitalId/:id', patient.verifyHospitalNumber);
   // Generic search parameter passed
   // app.get('/patients/search', patient.search);
   // app.get('/patients/search/name/:value', patient.fuzzySearch);

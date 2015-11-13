@@ -213,10 +213,12 @@ function sqliteInit(config) {
 function queryConnection(connection, sql, params) {
   var deferred = q.defer();
 
-  connection.query(sql, params, function (error, result) {
+  var qs = connection.query(sql, params, function (error, result) {
     if (error) { return deferred.reject(error); }
     return deferred.resolve(result);
   });
+
+  console.log(qs.sql);
   return deferred.promise;
 }
 

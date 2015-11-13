@@ -77,7 +77,7 @@ exports.errorHandling = function (app) {
         key : 'Column does not exist in database' // TODO translatable on client   
       }
     ];
-    
+
     var supported = codeSupported(codes, err);
     if (supported) { 
       res.status(supported.httpStatus).json(err);
