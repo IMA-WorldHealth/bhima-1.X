@@ -490,7 +490,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/depots/distributions/cancel/cancel.html'
   })
   .when('/depots/:depotId/integrations', {
-    controller : 'stock.integration',
+    controller : 'stockIntegration as integrationCtrl',
     templateUrl : 'partials/stock/integration/integration.html'
   })
 

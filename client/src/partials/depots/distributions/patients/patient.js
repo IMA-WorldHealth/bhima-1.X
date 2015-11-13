@@ -102,7 +102,6 @@ function StockDistributionsController($q, $http, $routeParams, $location, connec
 
       $q.all(detailsRequest)
       .then(function (result) {
-        console.log('lot sur ce depot', result);
         vm.session.sale.details.forEach(function (saleItem, index) {
           var itemModel = result[index];
           if (itemModel.data.length) { saleItem.lots = itemModel; }

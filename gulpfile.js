@@ -30,7 +30,7 @@ var gulp       = require('gulp'),
 
 // constants
 // toggle client javascript minification
-var UGLIFY = true,
+var UGLIFY = false,
 
     // path to the jshintrc to use
     JSHINT_PATH = '.jshintrc',
