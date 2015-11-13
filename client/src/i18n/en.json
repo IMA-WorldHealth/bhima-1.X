@@ -2695,6 +2695,7 @@
      "EXPIRATION_DATE"      : "Expiration date",
      "EXPIRATION_INFO"      : "Please enter the valid expirations dates",
      "EXPIRATION_ALERT"     : "The system does not accept expired product",
+     "GOBACK"               : "Return",
      "ITEMS"                : "Stock Item(s)",
      "KEY"                  : "Stock Integration",
      "LOT_QTY"              : "Lot and Quantity",
