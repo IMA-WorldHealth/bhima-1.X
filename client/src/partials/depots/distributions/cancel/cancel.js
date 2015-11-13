@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
   'DepotDistributionsCancelController', DepotDistributionsCancelController
 );
 
-DepotDistributionsCancelController.$inject = ['$routeParams', 'connect'];
+DepotDistributionsCancelController.$inject = ['$routeParams', '$location', 'connect', 'messenger'];
 
 /**
 * This controller is responsible for canceling (or reversing) stock
@@ -13,7 +13,7 @@ DepotDistributionsCancelController.$inject = ['$routeParams', 'connect'];
 * @constructor
 * @class StockDistributionsCancelController
 */
-function DepotDistributionsCancelController($routeParams, connect) {
+function DepotDistributionsCancelController($routeParams, $location, connect, messenger) {
   var vm = this;
 
   // bind to view
@@ -37,11 +37,15 @@ function DepotDistributionsCancelController($routeParams, connect) {
 
       // flip the canceled switch in the database
       var data = {
-        document_id : vm.id,
+        uuid : vm.id,
         canceled : 1
       };
 
-      return connect.put('consumption', [data], ['document_id']);
+      return connect.put('consumption', [data], ['uuid']);
+    })
+    .then(function (){
+      messenger.success('annulee avec success', false);
+      $location.path('/depots/' + vm.depotId + '/reports/distributions/patients');
     })
     .catch(handler);
   }
