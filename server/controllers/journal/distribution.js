@@ -270,7 +270,6 @@ function service(id, userId, details, cb) {
 function loss(id, userId, details, cb) {
   'use strict';
 
-  console.log('details:', details);
 
   var sql, queries, references, cfg = {}, ids = [];
 
@@ -392,6 +391,29 @@ function reverseDistribution(id, userId, cb) {
   var sql, params, queries, reference, references, cfg = {};
 
   sql =
+    'SELECT uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, doc_num, ' +
+      'description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, ' +
+      'deb_cred_uuid, inv_po_id, cost_ctrl_id, origin_id, '+
+      'user_id, cc_id, pc_id ' +
+    'FROM posting_journal ' +
+    'WHERE inv_po_id = ? ' +
+    'UNION ' +
+    'SELECT uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, doc_num, ' +
+      'description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, ' +
+      'deb_cred_uuid, inv_po_id, cost_ctrl_id, origin_id, '+
+      'user_id, cc_id, pc_id ' +
+    'FROM general_ledger ' +
+    'WHERE inv_po_id = ?;';
+
+  db.exec(sql, [id, id])
+  .then(function (records) {
+    if (records.length === 0) {
+      throw new Error('Could not find transaction with id:' + id);
+    }
+
+    reference = records[0];
+
+    sql =
       'SELECT uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, doc_num, ' +
         'description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, ' +
         'deb_cred_uuid, inv_po_id, cost_ctrl_id, origin_id, '+
@@ -406,28 +428,25 @@ function reverseDistribution(id, userId, cb) {
       'FROM general_ledger ' +
       'WHERE trans_id = ?;';
 
-  db.exec(sql, [id, id])
-  .then(function (records) {
-    if (records.length === 0) {
-      throw new Error('Could not find transaction with id:' + id);
-    }
-    reference = records[0];
+    return db.exec(sql, [reference.trans_id, reference.trans_id]);   
+  })
+  .then(function (records){
     references = records;
 
     return [
       core.queries.origin('reversing_stock'),
-      core.queries.period(new Date()),
-      core.queries.exchangeRate(new Date())
+      core.queries.period(new Date())
     ];
+
   })
-  .spread(function (originId, periodObject, store) {
+  .spread(function (originId, periodObject) {
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
     return core.queries.transactionId(reference.project_id);
   })
   .then(function (transId) {
-    var description = 'REVERSING_STOCK/'+new Date().toISOString().slice(0, 10).toString();
+    var description = 'REVERSING_STOCK/' + new Date().toISOString().slice(0, 10).toString();
 
     queries = references.map(function (item) {
       item.uuid = uuid();
@@ -438,10 +457,8 @@ function reverseDistribution(id, userId, cb) {
       item.trans_id = transId;
       item.trans_date = new Date();
 
-      if (item.deb_cred_uuid) {
-        item.deb_cred_uuid = item.deb_cred_uuid;
-      } else {
-        item.deb_cred_uuid = null;
+      if (!item.deb_cred_uuid) {
+        item.deb_cred_uuid = null
       }
 
       sql =
