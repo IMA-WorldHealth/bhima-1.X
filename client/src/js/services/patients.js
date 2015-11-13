@@ -23,7 +23,8 @@ function Patients($http) {
   function create(details) { 
     var path = '/patients';
 
-    return $http.post(path, details);
+    return $http.post(path, details)
+      .then(extractData);
   }
 
   return {

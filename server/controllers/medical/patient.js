@@ -64,9 +64,14 @@ function create(req, res, next) {
 
   transaction.execute()
     .then(function (results) { 
-      
+      var createConfirmation = {};
+
       // All querys returned OK
-      res.status(200).json(results);
+      // Attach patient UUID to be used for confirmation etc. 
+      createConfirmation.uuid = medical.uuid;
+      createConfirmation.db = results;
+
+      res.status(200).json(createConfirmation);
       return;
     })
     .catch(next)

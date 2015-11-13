@@ -104,7 +104,7 @@
                 
                 <label for="new-patient-dob" class="col-md-3 control-label">{{ "PATIENT_REG.DOB" | translate }}</label>
                 <div class="col-md-9">
-                  <input required name="dob" id="new-patient-dob" type="date" class="form-control" ng-disabled="!session.fullDateEnabled" ng-model="medical.dob" min="{{ minDOB }}" max="{{ maxDOB }}">
+                  <input required name="dob" id="new-patient-dob" type="date" class="form-control" ng-disabled="!session.fullDateEnabled" ng-model="medical.dob" min="{{minDOB | date : 'yyyy-MM-dd'}}" max="{{maxDOB | date : 'yyyy-MM-dd'}}">
                 </div>
               </div>
       
