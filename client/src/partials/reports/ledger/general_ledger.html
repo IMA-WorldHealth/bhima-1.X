@@ -35,6 +35,25 @@
     </ul>
   </div>
 
+  <div class="pull-left">
+    <span class="btn-group">
+
+      <button class="btn btn-sm btn-default">
+        {{ (selected.key | translate) || "..." }}
+      </button>
+
+      <button class="btn btn-sm btn-default dropdown-toggle">
+        <span class="caret" data-caret="&#9660;"></span>
+      </button>
+
+      <ul class="dropdown-menu">
+        <li ng-repeat="date in periods">
+          <a class="clk" ng-click="selectDate(date)">{{ date.key | translate }}</a>
+        </li>
+      </ul>
+    </span>
+  </div>
+
   <div class="pull-right dropdown">
     <button type="button" class="btn btn-sm btn-default dropdown-toggle">
       <i class="glyphicon glyphicon-cog"></i> {{ "REPORT.COLUMNS" | translate }}
