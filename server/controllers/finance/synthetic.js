@@ -1,5 +1,5 @@
-var db = require('./../lib/db');
-var sanitize = require('./../lib/sanitize');
+var db = require('./../../lib/db');
+var sanitize = require('./../../lib/sanitize');
 
 //aB : accountBalance
 //pcR : principal caisse balance report by date

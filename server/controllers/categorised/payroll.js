@@ -1,10 +1,10 @@
 var db        = require('./../../lib/db');
 var sanitize  = require('./../../lib/sanitize');
 
-var cotisationPayment          = require('./../cotisationPayment')();
-var promessePayment            = require('./../postingPromessePayment')();
-var promesseCotisation         = require('./../postingPromesseCotisation')();
-var promesseTax                = require('./../postingPromesseTax')();
+var cotisationPayment          = require('./../finance/cotisationPayment')();
+var promessePayment            = require('./../finance/postingPromessePayment')();
+var promesseCotisation         = require('./../finance/postingPromesseCotisation')();
+var promesseTax                = require('./../finance/postingPromesseTax')();
 
 exports.listPaiementData = function (req, res, next) {
   var sql = "SELECT paiement.uuid, paiement.employee_id, paiement.paiement_period_id, paiement_period.dateFrom,"
