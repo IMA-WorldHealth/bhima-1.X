@@ -7,7 +7,7 @@ var development = {
     'password': 'HISCongo2013',
     'database': 'bhima_test'
   },
-  'logLevel' : 'tiny',
+  'logLevel' : 'none',
   'session' : {
     'secret' : 'xopen blowfish',
     'resave' : false,

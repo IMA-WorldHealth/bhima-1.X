@@ -44,14 +44,18 @@ exports.configure = function configure(app) {
   });
 
   // morgan logger setup
-  // options: combined | common | dev | short | tiny |
+  // options: combined | common | dev | short | tiny 
   // Recommend 'combined' for production settings.
   //
   // Uncomment if you want logs written to a file instead
   // of piped to standard out (default).
   //var logFile = fs.createWriteStream(__dirname + '/access.log', {flags : 'a'});
   //app.use(morgan('short', { stream : logFile }));
-  app.use(morgan(cfg.logLevel));
+  
+  // custom logLevel 'none' allows developers to turn off logging during tests
+  if (cfg.logLevel !== 'none') {
+    app.use(morgan(cfg.logLevel));
+  }
 
   // serve static files from a single location
   // NOTE the assumption is that this entire directory is public -

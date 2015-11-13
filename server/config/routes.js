@@ -63,7 +63,7 @@ exports.configure = function (app) {
 
   // exposed to the outside without authentication
   app.get('/languages', users.getLanguages);
-  app.get('/projects', projects.getProjects);
+  app.get('/projects', projects.list);
 
   app.get('/units', units.list);
 
@@ -317,10 +317,13 @@ exports.configure = function (app) {
   // users controller
   app.get('/users', users.list);
   app.get('/users/:id', users.details);
-  app.get('/users/:id/projects', users.projects);
-  app.get('/users/:id/permissions', users.permissions);
+  app.get('/users/:id/projects', users.projects.list);
+  app.get('/users/:id/permissions', users.permissions.list);
   app.post('/users', users.create);
+  app.post('/users/:id/projects', users.projects.assign);
+  app.post('/users/:id/permissions', users.permissions.assign);
   app.put('/users/:id', users.update);
+  app.put('/users/:id/password', users.password);
   app.delete('/users/:id', users.delete);
   app.get('/editsession/authenticate/:pin', users.authenticatePin);
 

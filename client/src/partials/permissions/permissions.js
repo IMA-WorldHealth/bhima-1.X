@@ -44,6 +44,10 @@ function PermissionsController($window, $translate, $http, util, messenger, Sess
   vm.setState = setState;
   vm.submit = submit;
 
+  Projects.read().then(function (data) {
+    console.log('DATA:', data);
+  });
+
   /* ------------------------------------------------------------------------ */
 
   // sets the module view state

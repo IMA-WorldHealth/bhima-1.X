@@ -84,6 +84,16 @@ describe('The /users API endpoint', function () {
       .catch(handler);
   });
 
+  it('GET /users/:id/projets should not find any projects for the new user', function () {
+    return agent.get('/users/' + newUser.id + '/projects')
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.be.empty;
+      })
+      .catch(handler);
+  });
+
   it('GET /users/:id will find the newly added user', function () {
     return agent.get('/users/' + newUser.id)
       .then(function (res) {
@@ -112,6 +122,27 @@ describe('The /users API endpoint', function () {
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body.email).to.equal('email@test.org');
+      })
+      .catch(handler);
+  });
+
+  it('PUT /users/:id will NOT update the new user\'s password', function () {
+    return agent.put('/users/' + newUser.id)
+      .send({ password : 'I am super secret.' })
+      .then(function (res) {
+        expect(res).to.have.status(400);
+        expect(res).to.be.json;
+        expect(res.body.code).to.equal('ERR_CANNOT_UPDATE_PASSWORD');
+      })
+      .catch(handler);
+  });
+
+  it('PUT /users/:id/password will update the new user\'s password', function () {
+    return agent.put('/users/' + newUser.id + '/password')
+      .send({ password : 'I am super secret.' })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
       })
       .catch(handler);
   });
