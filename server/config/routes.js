@@ -162,7 +162,6 @@ exports.configure = function (app) {
   app.get('/getCheckHollyday/', employees.checkHoliday);
   app.get('/getCheckOffday/', employees.checkOffday);
  
-  app.get('/visit/:patientId', patient.logVisit);
   app.get('/caution/:debitor_uuid/:project_id', caution.debtor);
   
   app.get('/errorcodes', errors.listCodes);
@@ -281,10 +280,11 @@ exports.configure = function (app) {
   app.get('/patients/:uuid', patient.details);
   
   app.get('/patients/checkHospitalId/:id', patient.verifyHospitalNumber);
-  // Generic search parameter passed
+  app.post('/patients/visit', patient.visit);
+  
   // app.get('/patients/search', patient.search);
-  // app.get('/patients/search/name/:value', patient.fuzzySearch);
-  // app.get('/patients/search/reference/:value', patient.fuzzySearch);
+  app.get('/patients/search/name/:value', patient.searchFuzzy);
+  app.get('/patients/search/reference/:value', patient.searchReference);
   
   // Debtors API
   // app.get('/debtors', debtors.list);
@@ -294,7 +294,7 @@ exports.configure = function (app) {
 
   // search stuff
   // TODO merge with patients API
-  app.get('/patient/:uuid', patient.searchUuid);
+  app.get('/patient/:uuid', patient.details);
   app.get('/patient/search/fuzzy/:match', patient.searchFuzzy);
   app.get('/patient/search/reference/:reference', patient.searchReference);
 

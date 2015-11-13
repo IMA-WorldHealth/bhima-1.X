@@ -59,9 +59,6 @@ function create(req, res, next) {
     .addQuery(writeDebtorQuery, [finance.uuid, finance.debtor_group_uuid, generatePatientText(medical)])
     .addQuery(writePatientQuery, [medical]);
   
-  console.log(Object.keys(finance));
-  console.log(Object.keys(medical));
-
   transaction.execute()
     .then(function (results) { 
       var createConfirmation = {};
@@ -172,62 +169,10 @@ function verifyHospitalNumber(req, res, next) {
     .done();
 }
 
-/* Legacy Methods - these will be removed or refactored */
-
-// assure the array is empty
-function empty(array) {
-  return array.length === 0;
-}
-
-// GET /patients
-// Returns a list of all patients, stuffing the patient reference into a
-// patientRef properly for human readability.
-function getPatients(req, res, next) {
-  var sql;
-
-  sql =
-    'SELECT p.uuid, CONCAT(pr.abbr, p.reference) AS patientRef, p.first_name, ' +
-      'p.middle_name, p.last_name ' +
-    'FROM patient AS p JOIN project AS pr ON p.project_id = pr.id';
-
-  db.exec(sql)
-  .then(function (rows) {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
-}
-
-// GET /patient/:uuid
-// Get a patient by uuid
-exports.searchUuid = function (req, res, next) {
-  'use strict';
-
-  var sql, uuid = req.params.uuid;
-
-  // compose the sql query
-  sql =
-    'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name, p.middle_name, ' +
-      'p.sex, p.dob, p.origin_location_id, p.reference, proj.abbr, d.text, ' +
-      'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.locked ' +
-    'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
-    'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id ' +
-    'WHERE p.uuid = ?;';
-
-  db.exec(sql, [uuid])
-  .then(function (rows) {
-
-    // if the database cannot find the record
-    // return a 404 'resource not found'
-    if (empty(rows)) {
-      res.status(404).send();
-    } else {
-      res.status(200).json(rows[0]);
-    }
-  })
-  .catch(next)
-  .done();
-};
+/**
+ * Legacy Methods
+ * TODO Remove or refactor methods to fit new API standards 
+ */
 
 // GET /patient/search/reference/:reference
 // Performs a search on the patient reference (e.g. HBB123)
@@ -254,7 +199,7 @@ exports.searchReference = function (req, res, next) {
   db.exec(sql, [reference])
   .then(function (rows) {
 
-    if (empty(rows)) {
+    if (isEmpty(rows)) {
       res.status(404).send();
     } else {
       res.status(200).json(rows[0]);
@@ -300,38 +245,31 @@ exports.searchFuzzy = function (req, res, next) {
   .done();
 };
 
+exports.visit = function (req, res, next) { 
+  var visitData = req.body;
+  
+  logVisit(visitData, req.session.user.id)
+    .then(function (result) { 
 
-// POST /patient/visit/start
-exports.startVisit = function (req, res, next) {
-  'use strict';
+      // Assign patient ID as confirmation 
+      result.uuid = visitData.uuid;
 
-  var sql, patientId = req.params.patientId;
+      res.status(200).send(result);
+    })
+    .catch(next)
+    .done();
+}
 
+function logVisit(patientData, userId) {
+  var sql;
+  console.log('log visit');
+  var visitId = uuid();
+  
   sql =
-    'INSERT INTO patient_visit (uuid, patient_uuid, entry_date, registered_by) VALUES ' +
-    '(?, ?, ?, ?);';
-
-  db.exec(sql, [uuid(), patientId, new Date(), req.session.user.id])
-  .then(function () {
-    res.status(200).send();
-  })
-  .catch(next)
-  .done();
-};
-
-// FIXME Legacy patient visit feature needs designing or removing
-exports.logVisit = function (req, res, next) {
-  var sql, id = req.params.patientId;
-  sql =
-    'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES (?, ?, ?);';
-
-  db.exec(sql, [uuid(), id, req.session.user.id])
-  .then(function () {
-    res.send();
-  })
-  .catch(next)
-  .done();
-
+    'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES (?, ?, ?)';
+  
+  console.log('build sql');
+  return db.exec(sql, [visitId, patientData.uuid, userId]);
 };
 
 function isEmpty(array) { 

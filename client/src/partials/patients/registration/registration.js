@@ -58,10 +58,17 @@ function PatientRegistrationController($scope, patients, debtors, $location, uti
   
     patients.create(createPatientDetails)
       .then(function (result) { 
+        
+        // Create patient success - mark as visiting
+        return patients.logVisit({
+          uuid : result.uuid
+        });
+      })
+      .then(function (confirmation) { 
         var patientCardPath = '/invoice/patient/';
         
         //TODO Hospital card should recieve a value that notifies the user of register success
-        $location.path(patientCardPath.concat(result.uuid));
+        $location.path(patientCardPath.concat(confirmation.uuid));
       })
   };
 
