@@ -72,17 +72,17 @@ exports.details = function details(req, res, next) {
 /**
 * POST /projects
 *
-* Creates a new project
+* Creates a new project.
 */
 exports.create = function create(req, res, next) {
   'use strict';
 
-  var sql;
+  var sql, data = req.body;
 
   sql =
-    'INSERT INTO project SET ?;';
+    'INSERT INTO project (name, abbr, enterprise_id, zs_id) VALUES (?, ?, ?, ?);';
 
-  db.exec(sql, [req.body.project])
+  db.exec(sql, [data.name, data.abbr, data.enterprise_id, data.zs_id])
   .then(function (row) {
     res.status(201).send({ id : row.insertId });
   })
@@ -95,7 +95,7 @@ exports.create = function create(req, res, next) {
 *
 * Updates a new project.
 */
-exports.create = function create(req, res, next) {
+exports.update = function update(req, res, next) {
   'use strict';
 
   var sql;
@@ -103,7 +103,7 @@ exports.create = function create(req, res, next) {
   sql =
     'UPDATE project SET ? WHERE id = ?;';
 
-  db.exec(sql, [req.body.project, req.params.id])
+  db.exec(sql, [req.body, req.params.id])
   .then(function () {
 
     sql =

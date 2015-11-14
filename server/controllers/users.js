@@ -7,7 +7,7 @@
 *   GET /users/:id
 *   GET /users/:id/permissions
 *   GET /users/:id/projects
-*   POST /users/
+*   POST /users
 *   POST /users/:id/permissions
 *   POST /users/:id/projects
 *   PUT /users/:id
@@ -19,7 +19,6 @@ var db = require('../lib/db');
 // namespaces for /users/:id/projects and /users/:id/permissions
 exports.projects = {};
 exports.permissions = {};
-
 
 /**
 * GET /users
@@ -95,41 +94,6 @@ exports.projects.list = function listProjects(req, res, next) {
 };
 
 /**
-* POST /users/:id/projects
-*
-* Gives a user with :id permissions to the projects sent in a project array
-*/
-exports.projects.assign = function assignProjects(req, res, next) {
-  'use strict';
-
-  // first step, DELETE the user's projects
-  var sql =
-    'DELETE FROM permission WHERE user_id = ?;';
-
-  db.exec(sql)
-  .then(function () {
-
-    // next step, add in the project permissions
-    sql =
-      'INSERT INTO project_permission (user_id, project_id) VALUES ?;';
-
-    // format data for (user_id, project_id) insert
-    var data = req.body.projects.map(function (projectId) {
-
-      // user_id, project_id
-      return [ req.params.id, projectId];
-    });
-
-    return db.exec(sql, [data]);
-  })
-  .then(function () {
-    res.status(200).send();
-  })
-  .catch(next)
-  .done();
-};
-
-/**
 * GET /users/:id/permissions
 *
 * Lists all the user permissions for user with :id
@@ -148,6 +112,76 @@ exports.permissions.list = function listPermissions(req, res, next) {
   .catch(next)
   .done();
 };
+
+
+/**
+* POST /users
+*
+* This endpoint creates a new user from a JSON object.  The following fields are
+* required and will result in a 400 error if not provided: username, password,
+* first, last, email, projects.
+*
+* Unlike before, the user is created with project permissions.  A user without project
+* access does not make any sense.
+*
+* If the checks succeed, the user password is hashed and stored in the database.
+* A single JSON is returned to the client with the user id.
+*/
+exports.create = function create(req, res, next) {
+  'use strict';
+
+  var sql, requiredKeys, missingKeys, id,
+      data = req.body;
+
+  requiredKeys = [
+    'username', 'password', 'first', 'last', 'email', 'projects'
+  ];
+
+  // if the data object is missing keys, they will be left in the missingKeys
+  // array
+  missingKeys = requiredKeys.filter(function (key) {
+    return !data[key];
+  });
+
+  // send a 400 response to the client
+  if (missingKeys.length > 0) {
+    return res.status(400)
+    .json({
+      code : 'ERROR.ERR_MISSING_INFO',
+      reason: 'A username, password, first name, last name, project list, and email are ' +
+              'required to create a user.',
+      missingKeys : missingKeys,
+    });
+  }
+
+  sql =
+    'INSERT INTO user (username, password, first, last, email) VALUES ' +
+    '(?, PASSWORD(?), ?, ?, ?);';
+
+  db.exec(sql, [data.username, data.password, data.first, data.last, data.email])
+  .then(function (row) {
+
+    // retain the insert id
+    id = row.insertId;
+    
+    sql =
+      'INSERT INTO project_permission (user_id, project_id) VALUES ?;';
+
+    var projects = data.projects.map(function (projectId) {
+      return [id, projectId];
+    });
+
+    return db.exec(sql, [projects]);
+  })
+  .then(function () {
+
+    // send the ID back to the client
+    res.status(201).json({ id : id });
+  })
+  .catch(next)
+  .done();
+};
+
 
 /**
 * POST /users/:id/permissions
@@ -180,58 +214,6 @@ exports.permissions.assign = function assignPermissions(req, res, next) {
   .catch(next)
   .done();
 };
-
-
-/**
-* POST /users
-*
-* This endpoint creates a new user from a JSON object.  The following fields are
-* required and will result in a 400 error if not provided: username, password,
-* first, last, email.
-*
-* If the checks succeed, the user password is hashed and stored in the database.
-* A single JSON is returned to the client with the user id.
-*/
-exports.create = function create(req, res, next) {
-  'use strict';
-
-  var sql, requiredKeys, missingKeys,
-      data = req.body;
-
-  requiredKeys = [
-    'username', 'password', 'first', 'last', 'email'
-  ];
-
-  // if the data object is missing keys, they will be left in the missingKeys
-  // array
-  missingKeys = requiredKeys.filter(function (key) {
-    return !data[key];
-  });
-
-  // send a 400 response to the client
-  if (missingKeys.length > 0) {
-    return res.status(400)
-    .json({
-      code : 'ERROR.ERR_MISSING_INFO',
-      reason: 'A username, password, first name, last name, and email are ' +
-              'required to create a user.',
-      missingKeys : missingKeys,
-    });
-  }
-
-  sql =
-    'INSERT INTO user (username, password, first, last, email) VALUES ' +
-    '(?, PASSWORD(?), ?, ?, ?);';
-
-  db.exec(sql, [data.username, data.password, data.first, data.last, data.email])
-  .then(function (row) {
-    res.status(201).send({ id : row.insertId });
-  })
-  .catch(next)
-  .done();
-};
-
-
 /**
 * PUT /users/:id
 *
@@ -246,7 +228,8 @@ exports.update = function update(req, res, next) {
   'use strict';
 
   var sql,
-      data = req.body;
+      data = req.body,
+      projects = req.body.projects;
 
   // if the password is sent the the
   if (data.password) {
@@ -257,13 +240,44 @@ exports.update = function update(req, res, next) {
     });
   }
 
+  // remove references to projects before UPDATE
+  delete data.projects;
+
   sql =
     'UPDATE user SET ? WHERE id = ?;';
 
   db.exec(sql, [data, req.params.id])
   .then(function () {
 
-    // fetch the entire changed object to send back to the client
+    // if we don't have any projects, skip this function body
+    if (!projects || !projects.length) { return; }
+
+    // update the user's project permissions by first removing
+    // all permissions
+    sql =
+      'DELETE FROM project_permission WHERE user_id = ?;';
+
+    return db.exec(sql, [req.params.id]);
+  })
+  .then(function () {
+
+    // if we don't have any projects, skip this function body
+    if (!projects || !projects.length) { return;  }
+
+    // write the user's project permissions back to the database
+    sql =
+      'INSERT INTO project_permission (user_id, project_id) VALUES ?;';
+
+    // turn into user id and project id pairs
+    projects = projects.map(function (projectId) {
+      return [ req.params.id, projectId ];
+    });
+
+    return db.exec(sql, projects);
+  })
+  .then(function () {
+
+    // fetch the entire changed resource to send back to the client
     sql =
       'SELECT user.id, user.username, user.email, user.first, user.last, ' +
         'user.active, user.last_login AS lastLogin ' +

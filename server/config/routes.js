@@ -320,7 +320,6 @@ exports.configure = function (app) {
   app.get('/users/:id/projects', users.projects.list);
   app.get('/users/:id/permissions', users.permissions.list);
   app.post('/users', users.create);
-  app.post('/users/:id/projects', users.projects.assign);
   app.post('/users/:id/permissions', users.permissions.assign);
   app.put('/users/:id', users.update);
   app.put('/users/:id/password', users.password);
@@ -330,4 +329,10 @@ exports.configure = function (app) {
   // budget controller
   app.post('/budget/upload', multipart({ uploadDir: 'client/upload'}), budget.upload);
   app.post('/budget/update', budget.update);
+
+  // projects controller
+  app.get('/projects/:id', projects.details);
+  app.put('/projects/:id', projects.update);
+  app.post('/projects', projects.create);
+  app.delete('/projects/:id', projects.delete);
 };

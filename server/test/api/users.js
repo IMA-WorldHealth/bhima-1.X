@@ -28,6 +28,7 @@ describe('The /users API endpoint', function () {
   var newUser = {
     username : 'newUser',
     password : 'newUser',
+    projects : [1],
     email : 'newUser@test.org',
     first: 'new',
     last: 'user'
@@ -84,12 +85,12 @@ describe('The /users API endpoint', function () {
       .catch(handler);
   });
 
-  it('GET /users/:id/projets should not find any projects for the new user', function () {
+  it('GET /users/:id/projects should not find one project assigned to the new user', function () {
     return agent.get('/users/' + newUser.id + '/projects')
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body).to.be.empty;
+        expect(res.body).to.have.length(1);
       })
       .catch(handler);
   });

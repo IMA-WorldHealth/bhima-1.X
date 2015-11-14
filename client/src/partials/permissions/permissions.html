@@ -1,247 +1,259 @@
-<header data-header>
-  {{ "PERMISSION.TITLE" | translate }}
+<header>
+  {{ 'PERMISSION.TITLE' | translate }}
 </header>
 
 <nav>
   <div class="pull-left">
-    <ol class="breadcrumb">
+      <ol class="breadcrumb">
       <li><a href="#/"><i class="glyphicon glyphicon-home"></i></a></li>
       <li class="active">{{ "PERMISSION.TITLE" | translate }}</li>
     </ol>
   </div>
 
   <div class="pull-right">
-    <button class="btn btn-sm btn-default" ng-click="PermissionsCtrl.setState('create')">
+    <button class="btn btn-sm btn-default" ng-click="PermissionsCtrl.setState('create')" ng-class="{ 'active' : PermissionCtrl.state === 'create' }">
       <i class="glyphicon glyphicon-plus-sign"></i> {{ "PERMISSION.ADD" | translate }}
     </button>
   </div>
 </nav>
 
-<main>
-  <div class="container-fluid">
-    <div class="row">
+<main class="container-fluid">
+  <div class="row">
 
-      <div class="col-md-6">
-        <div ui-grid="PermissionsCtrl.uiGridOptions" style="height:100%; width:100%;"></div>
+    <div class="col-md-6">
+      <div ui-grid="PermissionsCtrl.uiGridOptions" style="height:100%; width:100%;"></div>
+    </div>
+
+    <div class="col-md-6" ng-switch="PermissionsCtrl.state">
+
+      <p ng-if="PermissonsCtrl.message">
+        {{ PermissionCtrl.message }}
+      </p>
+
+      <div ng-switch-default>
+        <h4>{{ "PERMISSION.HELP_TXT_1" | translate }}</h4>
+        <dl class="dl-horizontal">
+          <dt><i class="glyphicon glyphicon-pencil"></i></dt>
+          <dd>{{ "PERMISSION.HELP_TXT_2" | translate }}</dd>
+          <dt><i class="glyphicon glyphicon-cog"></i></dt>
+          <dd>{{ "PERMISSION.HELP_TXT_3" | translate }}</dd>
+          <dt><i class="glyphicon glyphicon-trash"></i></dt>
+          <dd>{{ "PERMISSION.HELP_TXT_4" | translate }}</dd>
+        </dl>
       </div>
 
-      <div class="col-md-6" ng-switch="PermissionsCtrl.state">
-        <div ng-switch-default>
-          <h4>{{ "PERMISSION.HELP_TXT_1" | translate }}</h4>
-          <dl class="dl-horizontal">
-            <dt><i class="glyphicon glyphicon-pencil"></i></dt>
-            <dd>{{ "PERMISSION.HELP_TXT_2" | translate }}</dd>
-            <dt><i class="glyphicon glyphicon-cog"></i></dt>
-            <dd>{{ "PERMISSION.HELP_TXT_3" | translate }}</dd>
-            <dt><i class="glyphicon glyphicon-trash"></i></dt>
-            <dd>{{ "PERMISSION.HELP_TXT_4" | translate }}</dd>
-          </dl>
-        </div>
+      <!-- user creation view -->
+      <div ng-switch-when="create">
+        <form name="CreateForm" ng-submit="PermissionsCtrl.submit(CreateForm.$invalid)" novalidate>
+          <fieldset>
+            <legend>{{ "PERMISSION.ADDING" | translate }}</legend>
 
-        <!-- user creation view -->
-        <div ng-switch-when="create">
-          <form class="form-horizontal" name="CreateForm" ng-submit="PermissionsCtrl.submit(CreateForm.$invalid)" novalidate>
-            <fieldset>
-              <legend>{{ "PERMISSION.ADDING" | translate }}</legend>
-
-              <div class="form-group">
-                <label class="control-label col-md-2">{{ "COLUMNS.FIRST_NAME" | translate }}</label>
-                <div class="col-md-7">
-                  <input name="firstname" ng-model="PermissionsCtrl.user.first" class="form-control" required>
-                  <p class="help-block">
-                    This is cool.
-                  </p>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label class="control-label col-md-2">{{ "COLUMNS.LAST_NAME" | translate }}</label>
-                <div class="col-md-7">
-                  <input name="lastname" ng-model="PermissionsCtrl.user.last" class="form-control" required>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label class="control-label col-md-2">{{ "COLUMNS.USER_NAME" | translate }}</label>
-                <div class="col-md-7">
-                  <input name="username" ng-model="PermissionsCtrl.user.username" class="form-control" required>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label class="control-label col-md-2">{{ "COLUMNS.EMAIL" | translate }}</label>
-                <div class="col-md-7">
-                  <input name="email" ng-model="PermissionsCtrl.user.email" class="form-control" type="email">
-                  <p class="help-block">
-                    Enter a valid email address.
-                  </p>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label class="control-label col-md-2">{{ "COLUMNS.PROJECTS" | translate }}</label>
-                <div class="col-md-7">
-                  <select name="projects" ng-model="PermissionsCtrl.user.projects" class="form-control" ng-options="PermissionCtrl.projects" required>
-                  </select>
-                  <p class="help-block">
-                    Select to which projects the user belongs.
-                  </p>
-                </div>
-              </div>
-
-              <div class="form-group has-feedback">
-                <label class="control-label col-md-2">{{ "COLUMNS.PASSWORD" | translate }}</label>
-                <div class="col-md-7">
-                  <input ng-model="PermissionsCtrl.user.password" class="form-control" type="password" required>
-                  <i ng-if="PermissionCtrl.user.password !== PermissionCtrl.user.passwordVerify" class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></i>
-                  <i ng-if="PermissionCtrl.user.password === PermissionCtrl.user.passwordVerify" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></i>
-                </div>
-              </div>
-
-              <div class="form-group has-feedback">
-                <label class="control-label col-md-2"> {{ "COLUMNS.PASSWORD" | translate }} ({{ "PERMISSION.RETYPE" | translate }})</label>
-                <div class="col-md-7">
-                  <input ng-model="PermissionsCtrl.user.passwordVerify" class="form-control" type="password" required>
-                  <i ng-if="PermissionCtrl.user.password !== PermissionCtrl.user.passwordVerify" class="glyphicon glyphicon-warning-sign form-control-feedback text-success" aria-hidden="true"></i>
-                  <i ng-if="PermissionCtrl.user.password === PermissionCtrl.user.passwordVerify" class="glyphicon glyphicon-ok form-control-feedback text-danger" aria-hidden="true"></i>
-                  <p class="help-block">
-                    The passwords must match!
-                  </p>
-                </div>
-              </div>
-
-              <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}">
-            </fieldset>
-          </form>
-        </div>
-
-        <div ng-switch-when="edit">
-          <form novalidate class="form-horizontal" name="UpdateForm">
-            <fieldset>
-              <legend>{{ "PERMISSION.EDITTING" | translate }}</legend>
-
-              <div class="form-group">
-                <label class="control-label col-md-2 required">{{ "COLUMNS.FIRST_NAME" | translate }}</label>
-                <div class="col-md-7">
-                  <input ng-model="PermissionsCtrl.user.first" class="form-control" required>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label class="control-label col-md-2 required">{{ "COLUMNS.LAST_NAME" | translate }}</label>
-                <div class="col-md-7">
-                  <input ng-model="PermissionsCtrl.user.last" class="form-control" required>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label class="control-label col-md-2 required">{{ "COLUMNS.USER_NAME" | translate }}</label>
-                <div class="col-md-7">
-                  <input ng-model="PermissionsCtrl.user.username" class="form-control" required>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label class="control-label col-md-2">{{ "COLUMNS.EMAIL" | translate }}</label>
-                <div class="col-md-7">
-                  <input ng-model="PermissionsCtrl.user.email" class="form-control" type="email">
-                </div>
-              </div>
-
-              <div class="form-group has-feedback"  ng-class="{ 'has-error' : !valid.password, 'has-success' : !!valid.password }">
-                <label class="control-label col-md-2 required">{{ "COLUMNS.PASSWORD" | translate }}</label>
-                <div class="col-md-7">
-                  <input ng-model="PermissionsCtrl.user.password" class="form-control" required type="password" ng-change="clearPass()">
-                  <i class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true" ng-if="!valid.password"></i>
-                  <i class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-if="!!valid.password"></i>
-                </div>
-              </div>
-
-              <div class="form-group has-feedback" ng-class="{ 'has-error' : !valid.password, 'has-success' : !!valid.password }">
-                <label class="control-label col-md-2 required"> {{ "COLUMNS.PASSWORD" | translate }} ({{ "PERMISSION.RETYPE" | translate }})</label>
-                <div class="col-md-7">
-                  <input ng-model="PermissionsCtrl.user.passwordVerify" class="form-control" required type="password" ng-change="validatePassword()">
-                  <i class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true" ng-if="!valid.password"></i>
-                  <i class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-if="!!valid.password"></i>
-                </div>
-              </div>
-
-              <input type="submit" ng-disabled="edit.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="submit()">
-              <input type="button" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
-
-            </fieldset>
-          </form>
-        </div>
-
-        <div ng-switch-when="projects">
-          <div class="col-md-6">
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <span>{{ "PERMISSION.PROJECTS" | translate }}</span> :
-                <strong>{{ PermissionsCtrl.user.first }} ({{ PermissionsCtrl.user.username }})</strong>
-                <span class="pull-right">
-                  <a ng-click="submit()">
-                    <span class="glyphicon glyphicon-floppy-disk"></span> {{ "FORM.SAVE" | translate }}
-                  </a>
-                </span>
-              </div>
-              <label class="checkbox" style="margin-left: 10px; margin-bottom:0;">
-                <input type="checkbox" ng-model="super.projects" ng-change="toggleSuperProjects(super.projects)">
-                {{ "PERMISSION.ALL" | translate }}
-              </label>
-              <ul class="k-list" style="margin-left: 25px;">
-                <li ng-repeat="project in projects.data">
-                  <label class="checkbox">
-                    <input type="checkbox" ng-model="project.checked" ng-change="deselectAllProjects(project.checked)">
-                    {{ project.name }}
-                  </label>
-                </li>
-              </ul>
+            <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.firstname.$invalid }">
+              <label class="control-label">{{ "COLUMNS.FIRST_NAME" | translate }}</label>
+              <input name="firstname" ng-model="PermissionsCtrl.user.first" class="form-control" required>
+              <p class="help-block" ng-if="CreateForm.$submitted && CreateForm.firstname.$invalid">
+                You must provide a first name.
+              </p>
             </div>
+
+            <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.lastname.$invalid }">
+              <label class="control-label">{{ "COLUMNS.LAST_NAME" | translate }}</label>
+              <input name="lastname" ng-model="PermissionsCtrl.user.last" class="form-control" required>
+              <p class="help-block" ng-if="CreateForm.$submitted && CreateForm.lastname.$invalid">
+                You must provide a last name.
+              </p>
+            </div>
+
+            <div class="form-group"  ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.username.$invalid }">
+              <label class="control-label">{{ "COLUMNS.USER_NAME" | translate }}</label>
+              <input name="username" ng-model="PermissionsCtrl.user.username" class="form-control" required>
+              <p class="help-block" ng-if="CreateForm.$submitted && CreateForm.username.$invalid">
+                You must provide a username.
+              </p>
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.email.$invalid }">
+              <label class="control-label">{{ "COLUMNS.EMAIL" | translate }}</label>
+              <input name="email" ng-model="PermissionsCtrl.user.email" class="form-control" type="email" required>
+              <p class="help-block" ng-if="CreateForm.$submitted && CreateForm.email.$invalid">
+                Are you sure you spelled the email address correctly?
+              </p>
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.projects.$invalid }">
+              <label class="control-label">{{ "COLUMNS.PROJECTS" | translate }}</label>
+              <select name="projects" ng-model="PermissionsCtrl.user.projects" class="form-control" ng-options="project.id as project.name for project in PermissionsCtrl.projects" required multiple>
+              </select>
+              <p class="help-block" ng-if="CreateForm.$submitted && CreateForm.projects.$invalid">
+                A user must belong to at least one project!
+              </p>
+            </div>
+
+            <div class="form-group has-feedback" ng-class="{ 'has-error' : CreateForm.$submitted && !PermissionsCtrl.validPassword() }">
+              <label class="control-label">{{ "COLUMNS.PASSWORD" | translate }}</label>
+              <input name="password" ng-model="PermissionsCtrl.user.password" class="form-control" type="password" required>
+              <i ng-if="!PermissionsCtrl.validPassword()" class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></i>
+              <i ng-if="PermissionsCtrl.validPassword()" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></i>
+            </div>
+
+            <div class="form-group has-feedback" ng-class="{ 'has-error' : CreateForm.$submitted && !PermissionsCtrl.validPassword() }">
+              <label class="control-label"> {{ "COLUMNS.PASSWORD" | translate }} ({{ "PERMISSION.RETYPE" | translate }})</label>
+              <input name="passwordVerfiy" ng-model="PermissionsCtrl.user.passwordVerify" class="form-control" type="password" required>
+              <i ng-if="!PermissionsCtrl.validPassword()" class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></i>
+              <i ng-if="PermissionsCtrl.validPassword()" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></i>
+              <p class="help-block" ng-if="CreateForm.$submitted && !PermissionsCtrl.validPassword()">
+                The passwords must match!
+              </p>
+            </div>
+
+            <div class="form-group">
+              <button type="submit" class="btn btn-success">
+                {{ 'FORM.SUBMIT' | translate }}
+              </button>
+              <button type="button" class="btn btn-default">
+                {{ 'FORM.BACK' | translate }}
+              </button>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+
+      <div ng-switch-when="edit">
+        <form name="UpdateForm" ng-submit="PermissionsCtrl.submit(UpdateForm.$invalid)" novalidate>
+          <fieldset>
+            <legend>{{ "PERMISSION.ADDING" | translate }}</legend>
+
+            <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.firstname.$invalid }">
+              <label class="control-label">{{ "COLUMNS.FIRST_NAME" | translate }}</label>
+              <input name="firstname" ng-model="PermissionsCtrl.user.first" class="form-control" required>
+              <p class="help-block" ng-if="UpdateForm.$submitted && UpdateForm.firstname.$invalid">
+                You must provide a first name.
+              </p>
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.lastname.$invalid }">
+              <label class="control-label">{{ "COLUMNS.LAST_NAME" | translate }}</label>
+              <input name="lastname" ng-model="PermissionsCtrl.user.last" class="form-control" required>
+              <p class="help-block" ng-if="UpdateForm.$submitted && UpdateForm.lastname.$invalid">
+                You must provide a last name.
+              </p>
+            </div>
+
+            <div class="form-group"  ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.username.$invalid }">
+              <label class="control-label">{{ "COLUMNS.USER_NAME" | translate }}</label>
+              <input name="username" ng-model="PermissionsCtrl.user.username" class="form-control" required>
+              <p class="help-block" ng-if="UpdateForm.$submitted && UpdateForm.username.$invalid">
+                You must provide a username.
+              </p>
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.email.$invalid }">
+              <label class="control-label">{{ "COLUMNS.EMAIL" | translate }}</label>
+              <input name="email" ng-model="PermissionsCtrl.user.email" class="form-control" type="email">
+              <p class="help-block" ng-if="UpdateForm.$submitted && UpdateForm.email.$invalid">
+                Are you sure you spelled the email address correctly?
+              </p>
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.projects.$invalid }">
+              <label class="control-label">{{ "COLUMNS.PROJECTS" | translate }}</label>
+              <select name="projects" ng-model="PermissionsCtrl.user.projects" class="form-control" ng-options="project.id as project.name for project in PermissionsCtrl.projects" required multiple>
+              </select>
+              <p class="help-block" ng-if="UpdateForm.$submitted && UpdateForm.projects.$invalid">
+                A user must belong to at least one project!
+              </p>
+            </div>
+
+            <div class="form-group has-feedback" ng-class="{ 'has-error' : UpdateForm.$submitted && !PermissionsCtrl.validPassword() }">
+              <label class="control-label">{{ "COLUMNS.PASSWORD" | translate }}</label>
+              <input name="password" ng-model="PermissionsCtrl.user.password" class="form-control" type="password" required>
+              <i ng-if="!PermissionsCtrl.validPassword()" class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></i>
+              <i ng-if="PermissionsCtrl.validPassword()" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></i>
+            </div>
+
+            <div class="form-group has-feedback" ng-class="{ 'has-error' : UpdateForm.$submitted && !PermissionsCtrl.validPassword() }">
+              <label class="control-label"> {{ "COLUMNS.PASSWORD" | translate }} ({{ "PERMISSION.RETYPE" | translate }})</label>
+              <input name="passwordVerfiy" ng-model="PermissionsCtrl.user.passwordVerify" class="form-control" type="password" required>
+              <i ng-if="!PermissionsCtrl.validPassword()" class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></i>
+              <i ng-if="PermissionsCtrl.validPassword()" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></i>
+              <p class="help-block" ng-if="UpdateForm.$submitted && !PermissionsCtrl.validPassword()">
+                The passwords must match!
+              </p>
+            </div>
+
+            <input type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}">
+          </fieldset>
+        </form>
+      </div>
+
+      <div ng-switch-when="projects">
+        <div class="col-md-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <span>{{ "PERMISSION.PROJECTS" | translate }}</span> :
+              <strong>{{ PermissionsCtrl.user.first }} ({{ PermissionsCtrl.user.username }})</strong>
+              <span class="pull-right">
+                <a ng-click="submit()">
+                  <span class="glyphicon glyphicon-floppy-disk"></span> {{ "FORM.SAVE" | translate }}
+                </a>
+              </span>
+            </div>
+            <label class="checkbox" style="margin-left: 10px; margin-bottom:0;">
+              <input type="checkbox" ng-model="super.projects" ng-change="toggleSuperProjects(super.projects)">
+              {{ "PERMISSION.ALL" | translate }}
+            </label>
+            <ul class="k-list" style="margin-left: 25px;">
+              <li ng-repeat="project in projects.data">
+                <label class="checkbox">
+                  <input type="checkbox" ng-model="project.checked" ng-change="deselectAllProjects(project.checked)">
+                  {{ project.name }}
+                </label>
+              </li>
+            </ul>
           </div>
         </div>
+      </div>
 
-        <div ng-switch-when="permissions">
-          <div class="col-md-10">
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <span>{{ "PERMISSION.PERMISSIONS" | translate }}</span> :
-                <strong>{{ PermissionsCtrl.user.first }} ({{ PermissionsCtrl.user.username }})</strong>
-                <span class="pull-right">
-                  <a ng-click="submit()">
-                    <span class="glyphicon glyphicon-floppy-disk"></span> {{ "FORM.SAVE" | translate }}
-                  </a>
-                </span>
-              </div>
-              <label class="checkbox" style="margin-left: 10px; margin-bottom:0;">
-                <input type="checkbox" ng-model="super.units" ng-change="toggleSuperUnits(super.units)">
-                {{ "PERMISSION.SUPER" | translate }}
-              </label>
-              <ul class="k-list" style="margin-left: 25px;">
-                <li ng-repeat="unit in units.data | filter:filterChildren | orderBy:'key'" >
-                  <label class="checkbox">
-                    <input type="checkbox" ng-model="unit.checked" ng-change="toggleChildren(unit)">
-                    {{ unit.key }}
-                  </label>
-                  <ul class="k-list" ng-if="unit.children">
-                    <li ng-repeat="child in unit.children | orderBy:'key'">
-                      <label class="checkbox">
-                        <input type="checkbox" ng-model="child.checked" ng-change="toggleChildren(child)">
-                        {{ child.key }}
-                      </label>
-                      <ul class="k-list" ng-if="child.children">
-                        <li ng-repeat="final in child.children">
-                          <label class="checkbox">
-                            <input type="checkbox" ng-model="final.checked" ng-change="toggleChildren(final)">
-                            {{final.key | translate}}
-                          </label>
-                        </li>
-                      </ul>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
+      <div ng-switch-when="permissions">
+        <div class="col-md-10">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <span>{{ "PERMISSION.PERMISSIONS" | translate }}</span> :
+              <strong>{{ PermissionsCtrl.user.first }} ({{ PermissionsCtrl.user.username }})</strong>
+              <span class="pull-right">
+                <a ng-click="submit()">
+                  <span class="glyphicon glyphicon-floppy-disk"></span> {{ "FORM.SAVE" | translate }}
+                </a>
+              </span>
             </div>
+            <label class="checkbox" style="margin-left: 10px; margin-bottom:0;">
+              <input type="checkbox" ng-model="super.units" ng-change="toggleSuperUnits(super.units)">
+              {{ "PERMISSION.SUPER" | translate }}
+            </label>
+            <ul class="k-list" style="margin-left: 25px;">
+              <li ng-repeat="unit in units.data | filter:filterChildren | orderBy:'key'" >
+                <label class="checkbox">
+                  <input type="checkbox" ng-model="unit.checked" ng-change="toggleChildren(unit)">
+                  {{ unit.key }}
+                </label>
+                <ul class="k-list" ng-if="unit.children">
+                  <li ng-repeat="child in unit.children | orderBy:'key'">
+                    <label class="checkbox">
+                      <input type="checkbox" ng-model="child.checked" ng-change="toggleChildren(child)">
+                      {{ child.key }}
+                    </label>
+                    <ul class="k-list" ng-if="child.children">
+                      <li ng-repeat="final in child.children">
+                        <label class="checkbox">
+                          <input type="checkbox" ng-model="final.checked" ng-change="toggleChildren(final)">
+                          {{final.key | translate}}
+                        </label>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
