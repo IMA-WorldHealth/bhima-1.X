@@ -40,6 +40,7 @@ CREATE TABLE `account` (
 
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
 INSERT INTO `account` VALUES (3626,3,1,1000,'Test Capital Account',0,0,NULL,NULL,'2015-11-04 14:25:12',1,NULL,1,NULL,NULL,0,NULL),(3627,2,1,1100,'Test Capital One',3626,0,NULL,NULL,'2015-11-04 14:26:13',1,1,1,NULL,0,0,NULL),(3628,2,1,1200,'Test Capital Two',3626,0,NULL,NULL,'2015-11-04 14:27:13',1,1,1,NULL,0,0,NULL),(3629,3,1,40000,'Test Debtor-Creditor Accounts',0,0,NULL,NULL,'2015-11-04 14:29:11',4,NULL,1,NULL,NULL,0,NULL),(3630,2,1,4100,'Test Debtor Accounts',3629,0,NULL,NULL,'2015-11-04 14:30:46',4,NULL,1,NULL,NULL,0,NULL),(3631,3,1,41000,'Test Debtor Accounts',3629,0,NULL,NULL,'2015-11-04 14:32:22',4,NULL,1,NULL,NULL,0,NULL);
+
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 DROP TABLE IF EXISTS `account_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -660,6 +661,10 @@ CREATE TABLE `debitor` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+INSERT INTO `debitor` VALUES
+  ('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4', '4de0fe47-177f-4d30-b95f-cff8166400b4','Patient/1/Patient'),
+  ('3be232f9-a4b9-4af6-984c-5d3f87d5c107', '4de0fe47-177f-4d30-b95f-cff8166400b4','Patient/2/Patient');
+
 /*!40000 ALTER TABLE `debitor` DISABLE KEYS */;
 /*!40000 ALTER TABLE `debitor` ENABLE KEYS */;
 DROP TABLE IF EXISTS `debitor_group`;
@@ -689,6 +694,11 @@ CREATE TABLE `debitor_group` (
   CONSTRAINT `debitor_group_ibfk_4` FOREIGN KEY (`price_list_uuid`) REFERENCES `price_list` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+INSERT INTO `debitor_group` VALUES 
+  (1, '4de0fe47-177f-4d30-b95f-cff8166400b4', 'Test Debtor Group', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6', NULL, NULL, NULL, 0, 0, 0, NULL),
+  (1, '66f03607-bfbc-4b23-aa92-9321ca0ff586', 'Second Test Debtor Group', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6', NULL, NULL, NULL, 0, 0, 0, NULL);
+
 
 /*!40000 ALTER TABLE `debitor_group` DISABLE KEYS */;
 /*!40000 ALTER TABLE `debitor_group` ENABLE KEYS */;
@@ -1502,6 +1512,10 @@ CREATE TABLE `patient` (
   CONSTRAINT `patient_ibfk_4` FOREIGN KEY (`origin_location_id`) REFERENCES `village` (`uuid`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+INSERT INTO `patient` VALUES 
+  ('81af634f-321a-40de-bc6f-ceb1167a9f65',1,1,'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4',NULL,'Test','1','1990-06-01',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'M',NULL,NULL,NULL,NULL,NULL,NULL,0,'bda70b4b-8143-47cf-a683-e4ea7ddd4cff','bda70b4b-8143-47cf-a683-e4ea7ddd4cff','2015-11-14 07:04:49',NULL,NULL,'Patient','100'),
+  ('274c51ae-efcc-4238-98c6-f402bfb39866',1,2,'3be232f9-a4b9-4af6-984c-5d3f87d5c107',NULL,'Test','2','1990-06-01',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'M',NULL,NULL,NULL,NULL,NULL,NULL,0,'bda70b4b-8143-47cf-a683-e4ea7ddd4cff','bda70b4b-8143-47cf-a683-e4ea7ddd4cff','2015-11-14 07:04:49',NULL,NULL,'Patient','110');
 
 /*!40000 ALTER TABLE `patient` DISABLE KEYS */;
 /*!40000 ALTER TABLE `patient` ENABLE KEYS */;

@@ -20,6 +20,7 @@ function Patients($http) {
       .then(extractData);
   }
 
+  // TODO Service could seperate medical and financial details - depending on form build
   function create(details) { 
     var path = '/patients';
 
