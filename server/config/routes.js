@@ -52,7 +52,6 @@ var depreciatedReports    = require('../controllers/categorised/reports_deprecia
 var payroll               = require('../controllers/categorised/payroll');
 var caution               = require('../controllers/categorised/caution');
 var employees             = require('../controllers/categorised/employees');
-var errors                = require('../controllers/categorised/errors');
 var subsidies             = require('../controllers/categorised/subsidies');
 
 // Middleware for handle uploaded file
@@ -163,8 +162,6 @@ exports.configure = function (app) {
   app.get('/getCheckOffday/', employees.checkOffday);
  
   app.get('/caution/:debitor_uuid/:project_id', caution.debtor);
-  
-  app.get('/errorcodes', errors.listCodes);
   
   app.get('/getAccount6', accounts.listIncomeAccounts);
   app.get('/getAccount7/', accounts.listExpenseAccounts);

@@ -109,7 +109,7 @@ function execTransaction(queryList) {
           connection.commit(function (error) { 
             if (error) { 
               connection.rollback(function () { 
-                console.log('[Transaction] Commit failure - rollback success');
+                // console.log('[Transaction] Commit failure - rollback success');
                 deferred.reject(error);
               });
             }
@@ -122,7 +122,7 @@ function execTransaction(queryList) {
           // Individual query did not work - rollback transaction
           connection.rollback(function () { 
 
-            console.log('[Transaction] Query failure - rollback success');
+            // console.log('[Transaction] Query failure - rollback success');
             deferred.reject(error); 
           });
         });
@@ -167,7 +167,7 @@ function mysqlInit (config) {
 
 function flushUsers (db_con) {
   'use strict';
-  var permissions, reset;
+  var permissions, reset, strict;
 
   // Disable safe mode #420blazeit
   // TODO  This should be optionally set as a flag - and reported (logged)
@@ -183,6 +183,7 @@ function flushUsers (db_con) {
         if (err) { throw err; }
         con.query(reset, function (err) {
           if (err) { throw err; }
+
         });
       });
     });
@@ -218,7 +219,6 @@ function queryConnection(connection, sql, params) {
     return deferred.resolve(result);
   });
 
-  console.log(qs.sql);
   return deferred.promise;
 }
 

@@ -66,9 +66,9 @@ function create(req, res, next) {
       // All querys returned OK
       // Attach patient UUID to be used for confirmation etc. 
       createConfirmation.uuid = medical.uuid;
-      createConfirmation.db = results;
+      createConfirmation.results = results;
 
-      res.status(200).json(createConfirmation);
+      res.status(201).json(createConfirmation);
       return;
     })
     .catch(next)
@@ -262,13 +262,11 @@ exports.visit = function (req, res, next) {
 
 function logVisit(patientData, userId) {
   var sql;
-  console.log('log visit');
   var visitId = uuid();
   
   sql =
     'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES (?, ?, ?)';
   
-  console.log('build sql');
   return db.exec(sql, [visitId, patientData.uuid, userId]);
 };
 
