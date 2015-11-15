@@ -1,40 +1,34 @@
 // TODO Handle generic HTTP errors (displayed contextually on form)
-
 angular.module('bhima.controllers')
 .controller('PatientRegistrationController', PatientRegistrationController);
 
+// $scope import required to make use of angular form validation
 PatientRegistrationController.$inject = [
-  '$scope', 'Patients', 'Debtors', '$location', 'util', 'SessionService'
+  '$scope', 'Patients', 'Debtors', '$location', 'SessionService'
 ];
 
-function PatientRegistrationController($scope, patients, debtors, $location, util, Session) {
+function PatientRegistrationController($scope, patients, debtors, $location, Session) {
   var projectId = Session.project.id;
-  var session = $scope.session = {};
+  var viewModel = this;
   
   var DEFAULT_BIRTH_MONTH = '06-01';
   
-  $scope.finance = {};
-  $scope.medical = {};
-  $scope.options = {};
+  viewModel.finance = {};
+  viewModel.medical = {};
+  viewModel.options = {};
 
   debtors.groups()
     .then(function (results) { 
-      $scope.options.debtorGroups = results;
+      viewModel.options.debtorGroups = results;
     }); 
 
   // Define limits for DOB
-  $scope.minDOB = new Date('1900-01-01');
-  $scope.maxDOB = new Date();
+  viewModel.minDOB = new Date('1900-01-01');
+  viewModel.maxDOB = new Date();
 
-  $scope.setOriginLocation = function setOriginLocation(uuid) {
-    $scope.medical.origin_location_id = uuid;
-  }
-
-  $scope.setCurrentLocation = function setCurrentLocation(uuid) {
-    $scope.medical.current_location_id = uuid;
-  }
-
-  $scope.registerPatient = function registerPatient() {
+  
+  viewModel.registerPatient = function registerPatient() {
+    var createPatientDetails;
 
     // Register submitted action even though the button it outside of the scope
     // of the form 
@@ -42,14 +36,14 @@ function PatientRegistrationController($scope, patients, debtors, $location, uti
   
     if ($scope.details.$invalid) { 
       
-      // Scroll to top invalid input
+      // TODO Scroll to top invalid input or update button state?
       console.log($scope.details);
       return;
     }
 
     createPatientDetails = { 
-      medical : $scope.medical,
-      finance : $scope.finance
+      medical : viewModel.medical,
+      finance : viewModel.finance
     };
 
     // Assign implicit information 
@@ -71,12 +65,20 @@ function PatientRegistrationController($scope, patients, debtors, $location, uti
       })
   };
 
-  // TODO Refactor process - expensive operation on digest
-  $scope.$watch('session.yob', function (nval) {
-    $scope.medical.dob = nval && nval.length === 4 ? new Date(nval + '-' + DEFAULT_BIRTH_MONTH) : undefined;
-  });
-
-  $scope.enableFullDate = function enableFullDate() {
-    session.fullDateEnabled = true;
+  viewModel.enableFullDate = function enableFullDate() {
+    viewModel.fullDateEnabled = true;
   };
+  
+  viewModel.calculateYOB = function calculateYOB(value) { 
+    viewModel.medical.dob = value && value.length === 4 ? new Date(value + '-' + DEFAULT_BIRTH_MONTH) : undefined;
+  };
+  
+  //FIXME Location directive relies on the $scope object
+  $scope.setOriginLocation = function setOriginLocation(uuid) {
+    viewModel.medical.origin_location_id = uuid;
+  }
+
+  $scope.setCurrentLocation = function setCurrentLocation(uuid) {
+    viewModel.medical.current_location_id = uuid;
+  }
 }
