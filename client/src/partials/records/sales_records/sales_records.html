@@ -1,3 +1,34 @@
+<style>
+.grid-overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.grid-overlay .msg {
+  opacity: 1;
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  width: 60%;
+  height: 50%;
+  background-color: #eee;
+  border-radius: 1px;
+  border: 1px solid #555;
+  text-align: center;
+  font-size: 24px;
+  display: table;
+}
+
+.grid-overlay .msg span {
+  display: table-cell;
+  vertical-align: middle;
+  text-align : center;
+}
+</style>
+
 <header data-header>
   {{'SALERECORD.TITLE' | translate}}
 </header>
@@ -36,79 +67,92 @@
       <option value="">{{ 'SALERECORD.ALL_PROJECTS' | translate }}</option>
     </select>
   </span>
-
 </nav>
 
-<div class="report report-compressed">
-  <div class="reportBody">
-    <div class="reportFrame" style="padding-top: 10px;">
-      <h4 class="visible-print">{{ "SALERECORD.TITLE" | translate }} <small>{{ "SALERECORD.BY" | translate }} : {{ userSelected }} <br> {{session.param.dateFrom | date}} - {{session.param.dateTo | date}}</small></h4>
-      <p class="visible-print">{{ "SALERECORD.TOTAL_OF" | translate }} <b>{{total.result.sales}}</b> {{ "SALERECORD.INVOICES" | translate }}, {{ "SALERECORD.CHARGED_AGAINST" | translate }} <b>{{total.result.patients}}</b> {{ "SALERECORD.PATIENTS" | translate}}</p>
-        <table class="reportTable">
-          <thead>
-            <tr>
-              <th width="20%">{{'COLUMNS.DATE' | translate}}</th>
-              <th width="10%">{{'COLUMNS.SALE_ID' | translate}}</th>
-
-              <th width="20%">{{'COLUMNS.PATIENT' | translate}}</th>
-              <th width="20%">{{'COLUMNS.AMOUNT' | translate}}</th>
-              <th  width="30%" class="hidden-print">{{ 'COLUMNS.ACTIONS' | translate }}</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr ng-if="model.sale.data.length===0 && !session.searching">
-              <td colspan="5">{{'SALERECORD.UNFOUND' | translate}} <strong><a href="/#/sales">{{'SALERECORD.PATIENT_SALE' | translate}}</a></strong> {{'SALERECORD.GENERATE' | translate}}</td>
-            </tr>
-
-            <tr ng-if="session.searching">
-              <td colspan="5"> <span style="color: #428bca" class="glyphicon glyphicon-signal"></span></td>
-            </tr>
-
-            <tr ng-class="{'rowSelected': selected.uuid==invoice.uuid, 'creditInvoice': invoice.creditId}" ng-repeat="invoice in model.sale.data">
-              <td width="20%">{{invoice.invoice_date | date : 'EEEE, dd/MM/yyyy'}}</td>
-              <td width="10%">{{invoice.hr_id}}</td>
-              <td width="20%">[{{invoice.projectAbbr}}{{invoice.patientReference}}]  {{invoice.last_name}} {{invoice.middle_name}} {{invoice.first_name}}</td>
-              <td width="20%">{{invoice.cost | currency}}</td>
-              <td width="30%" class="hidden-print">
-                <a ng-href="/#/invoice/sale/{{invoice.uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}</a>
-                | <a ng-href="/#/report/invoice/{{invoice.uuid}}/" style="color : red;"><span class="glyphicon glyphicon-list-alt"></span> Proof of Concept Document</a>
-                | <a ng-href="/#/credit_note/{{invoice.uuid}}/"><span class="glyphicon glyphicon-repeat"></span> {{ 'SALERECORD.CREDIT_NOTE' | translate }}</a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <h6 class="visible-print">
-          {{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: <b>{{ total.result.cost | currency:session.currency }}</b>  
-        </h6>            
+<main>
+  <!-- UI Grid placeholder -->
+  <div ui-grid="gridOptions" style="width : 100%; height : 95%">
+    <div class="grid-overlay" ng-if="loading">
+      <div class="no-data" ng-hide="gridOptions.data.length && !loading">
+        <div class="msg">
+          <span>
+            <loading-indicator></loading-indicator>
+          </span>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+</main>
+<!-- <div class="report report-compressed"> -->
+  <!--   <div class="reportBody"> -->
+<!--     <div class="reportFrame" style="padding-top: 10px;"> -->
+<!--       <h4 class="visible-print">{{ "SALERECORD.TITLE" | translate }} <small>{{ "SALERECORD.BY" | translate }} : {{ userSelected }} <br> {{session.param.dateFrom | date}} - {{session.param.dateTo | date}}</small></h4> -->
+<!--       <p class="visible-print">{{ "SALERECORD.TOTAL_OF" | translate }} <b>{{total.result.sales}}</b> {{ "SALERECORD.INVOICES" | translate }}, {{ "SALERECORD.CHARGED_AGAINST" | translate }} <b>{{total.result.patients}}</b> {{ "SALERECORD.PATIENTS" | translate}}</p> -->
+<!--         <table class="reportTable"> -->
+<!--           <thead> -->
+<!--             <tr> -->
+<!--               <th width="20%">{{'COLUMNS.DATE' | translate}}</th> -->
+<!--               <th width="10%">{{'COLUMNS.SALE_ID' | translate}}</th> -->
 
-<footer>
-  <table style="width: 99%" >
-    <tbody>
-      <td width="50%">
-        <span style="margin-right: 10px;">
-          <span class="glyphicon glyphicon-list-alt" style="color: #428bca"></span>
-          <b>{{total.result.sales}}</b>
-          <span ng-if="session.searching">...</span>
-        </span>
+<!--               <th width="20%">{{'COLUMNS.PATIENT' | translate}}</th> -->
+<!--               <th width="20%">{{'COLUMNS.AMOUNT' | translate}}</th> -->
+<!--               <th  width="30%" class="hidden-print">{{ 'COLUMNS.ACTIONS' | translate }}</th> -->
+<!--             </tr> -->
+<!--           </thead> -->
 
-        <span class="glyphicon glyphicon-user" style="color: #428bca"></span>
-        <b>{{total.result.patients}}</b>
-        <span ng-if="session.searching">...</span>
+<!--           <tbody> -->
+<!--             <tr ng-if="model.sale.data.length===0 && !session.searching"> -->
+<!--               <td colspan="5">{{'SALERECORD.UNFOUND' | translate}} <strong><a href="/#/sales">{{'SALERECORD.PATIENT_SALE' | translate}}</a></strong> {{'SALERECORD.GENERATE' | translate}}</td> -->
+<!--             </tr> -->
 
-        <span style="float: right; margin-right: 5px;">
-          <b>{{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: </b>
-        </span>
-      </td>
-      <td width="20%">
-        <b>{{total.result.cost | currency}}</b>
-        <span ng-if="session.searching">...</span>
-      </td>
-      <td width="20%"></td>
-      <td></td>
-    </tbody>
-  </table>
-</footer>
+<!--             <tr ng-if="session.searching"> -->
+<!--               <td colspan="5"> <span style="color: #428bca" class="glyphicon glyphicon-signal"></span></td> -->
+<!--             </tr> -->
+
+<!--             <tr ng-class="{'rowSelected': selected.uuid==invoice.uuid, 'creditInvoice': invoice.creditId}" ng-repeat="invoice in model.sale.data"> -->
+<!--               <td width="20%">{{invoice.invoice_date | date : 'EEEE, dd/MM/yyyy'}}</td> -->
+<!--               <td width="10%">{{invoice.hr_id}}</td> -->
+<!--               <td width="20%">[{{invoice.projectAbbr}}{{invoice.patientReference}}]  {{invoice.last_name}} {{invoice.middle_name}} {{invoice.first_name}}</td> -->
+<!--               <td width="20%">{{invoice.cost | currency}}</td> -->
+<!--               <td width="30%" class="hidden-print"> -->
+<!--                 <a ng-href="/#/invoice/sale/{{invoice.uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}</a> -->
+<!--                 | <a ng-href="/#/report/invoice/{{invoice.uuid}}/" style="color : red;"><span class="glyphicon glyphicon-list-alt"></span> Proof of Concept Document</a> -->
+<!--                 | <a ng-href="/#/credit_note/{{invoice.uuid}}/"><span class="glyphicon glyphicon-repeat"></span> {{ 'SALERECORD.CREDIT_NOTE' | translate }}</a> -->
+<!--               </td> -->
+<!--             </tr> -->
+<!--           </tbody> -->
+<!--         </table> -->
+<!--         <h6 class="visible-print"> -->
+<!--           {{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: <b>{{ total.result.cost | currency:session.currency }}</b> -->  
+<!--         </h6> -->            
+<!--     </div> -->
+<!--   </div> -->
+<!-- </div> -->
+
+<!-- <footer> -->
+<!--   <table style="width: 99%" > -->
+<!--     <tbody> -->
+<!--       <td width="50%"> -->
+<!--         <span style="margin-right: 10px;"> -->
+<!--           <span class="glyphicon glyphicon-list-alt" style="color: #428bca"></span> -->
+<!--           <b>{{total.result.sales}}</b> -->
+<!--           <span ng-if="session.searching">...</span> -->
+<!--         </span> -->
+
+<!--         <span class="glyphicon glyphicon-user" style="color: #428bca"></span> -->
+<!--         <b>{{total.result.patients}}</b> -->
+<!--         <span ng-if="session.searching">...</span> -->
+
+<!--         <span style="float: right; margin-right: 5px;"> -->
+<!--           <b>{{ 'COLUMNS.TOTAL_AMOUNT' | translate }}: </b> -->
+<!--         </span> -->
+<!--       </td> -->
+<!--       <td width="20%"> -->
+<!--         <b>{{total.result.cost | currency}}</b> -->
+<!--         <span ng-if="session.searching">...</span> -->
+<!--       </td> -->
+<!--       <td width="20%"></td> -->
+<!--       <td></td> -->
+<!--     </tbody> -->
+<!--   </table> -->
+<!-- </footer> -->
