@@ -15,6 +15,7 @@
 *   DELETE /users/:id
 */
 var db = require('../lib/db');
+var q  = require('q');
 
 // namespaces for /users/:id/projects and /users/:id/permissions
 exports.projects = {};
@@ -43,6 +44,46 @@ exports.list = function list(req, res, next) {
   .done();
 };
 
+// helper function to get a single user, including project details 
+function helperGetUserDetails(id) {
+  'use strict';
+
+  var sql, data;
+
+  sql =
+    'SELECT user.id, user.username, user.email, user.first, user.last, ' +
+      'user.active, user.last_login AS lastLogin ' +
+    'FROM user WHERE user.id = ?;';
+
+  return db.exec(sql, [id])
+  .then(function (rows) {
+
+    if (!rows.length) {
+      throw 'ERR_NOT_FOUND';
+    }
+
+    // bind user data to ship back
+    data = rows[0];
+
+    // query project permissions
+    sql =
+      'SELECT pp.project_id FROM project_permission AS pp ' +
+      'WHERE user_id = ?;';
+
+    return db.exec(sql, [id])
+    .then(function (rows) {
+      // map into a list of ids
+      return rows.map(function (row) {
+        return row.project_id;
+      });
+    });
+  })
+  .then(function (projects) {
+    data.projects = projects;
+    return data;
+  });
+}
+
 
 /**
 * GET /users/:id
@@ -50,25 +91,25 @@ exports.list = function list(req, res, next) {
 * This endpoint will return a single JSON object containing the full user row
 * for the user with matching ID.  If no matching user exists, it will return a
 * 404 error.
+*
+* For consistency with the CREATE method, this route also returns a user's project
+* permissions.
 */
 exports.details = function details(req, res, next) {
   'use strict;';
 
-  var sql =
-    'SELECT user.id, user.username, user.email, user.first, user.last, ' +
-      'user.active, user.last_login AS lastLogin ' +
-    'FROM user WHERE user.id = ?;';
 
-  db.exec(sql, [req.params.id])
-  .then(function (rows) {
-    if (!rows.length) {
+  helperGetUserDetails(req.params.id)
+  .then(function (data) {
+    res.status(200).json(data);
+  })
+  .catch(function (error) {
+    if (error === 'ERR_NOT_FOUND') {
       return res.status(404).send();
     }
 
-    // send back JSON
-    res.status(200).json(rows[0]);
+    next(error);
   })
-  .catch(next)
   .done();
 };
 
@@ -163,7 +204,7 @@ exports.create = function create(req, res, next) {
 
     // retain the insert id
     id = row.insertId;
-    
+
     sql =
       'INSERT INTO project_permission (user_id, project_id) VALUES ?;';
 
@@ -214,6 +255,37 @@ exports.permissions.assign = function assignPermissions(req, res, next) {
   .catch(next)
   .done();
 };
+
+
+// User update helper function.  Updates a users's project permissions by first
+// clearing out all permissions and then re-writing.
+function helperUpdateProjectPermissions(id, projects) {
+  'use strict';
+
+  var sql;
+
+  // update the user's project permissions by first removing
+  // all permissions
+  sql =
+    'DELETE FROM project_permission WHERE user_id = ?;';
+
+  return db.exec(sql, [id])
+  .then(function () {
+
+    // write the user's project permissions back to the database
+    sql =
+      'INSERT INTO project_permission (user_id, project_id) VALUES (?);';
+
+    // turn into user id and project id pairs
+    projects = projects.map(function (projectId) {
+      return [ id, projectId ];
+    });
+
+    return db.exec(sql, projects);
+  });
+}
+
+
 /**
 * PUT /users/:id
 *
@@ -227,7 +299,7 @@ exports.permissions.assign = function assignPermissions(req, res, next) {
 exports.update = function update(req, res, next) {
   'use strict';
 
-  var sql,
+  var sql, promise,
       data = req.body,
       projects = req.body.projects;
 
@@ -240,40 +312,29 @@ exports.update = function update(req, res, next) {
     });
   }
 
-  // remove references to projects before UPDATE
-  delete data.projects;
+  // if we have changed the user's projects, update the project permissions
+  // first
+  promise = (projects && projects.length) ?
+    helperUpdateProjectPermissions(req.params.id, projects) :
+    q.resolve();
 
-  sql =
-    'UPDATE user SET ? WHERE id = ?;';
-
-  db.exec(sql, [data, req.params.id])
+  promise
   .then(function () {
 
-    // if we don't have any projects, skip this function body
-    if (!projects || !projects.length) { return; }
+    // remove data that should not be updated
+    delete data.projects;
+    delete data.id;
+    delete data.active;
 
-    // update the user's project permissions by first removing
-    // all permissions
+    // if there is nothing to update, simply return.
+    if (Object.keys(data).length === 0) {
+      return;
+    }
+
     sql =
-      'DELETE FROM project_permission WHERE user_id = ?;';
+      'UPDATE user SET ? WHERE id = ?;';
 
-    return db.exec(sql, [req.params.id]);
-  })
-  .then(function () {
-
-    // if we don't have any projects, skip this function body
-    if (!projects || !projects.length) { return;  }
-
-    // write the user's project permissions back to the database
-    sql =
-      'INSERT INTO project_permission (user_id, project_id) VALUES ?;';
-
-    // turn into user id and project id pairs
-    projects = projects.map(function (projectId) {
-      return [ req.params.id, projectId ];
-    });
-
-    return db.exec(sql, projects);
+    return db.exec(sql, [data, req.params.id]);
   })
   .then(function () {
 
@@ -301,22 +362,19 @@ exports.update = function update(req, res, next) {
 exports.password = function update(req, res, next) {
   'use strict';
 
+  // TODO -- strict check to see if the user is either signed in or has
+  // sudo permissions.
+
   var sql =
     'UPDATE user SET password = PASSWORD(?) WHERE id = ?;';
 
   db.exec(sql, [req.body.password, req.params.id])
   .then(function () {
 
-    // fetch the entire changed object to send back to the client
-    sql =
-      'SELECT user.id, user.username, user.email, user.first, user.last, ' +
-        'user.active, user.last_login AS lastLogin ' +
-      'FROM user WHERE user.id = ?;';
-
-    return db.exec(sql, [req.params.id]);
+    return helperGetUserDetails(req.params.id);
   })
-  .then(function (rows) {
-    res.status(200).json(rows[0]);
+  .then(function (data) {
+    res.status(200).json(data);
   })
   .catch(next)
   .done();

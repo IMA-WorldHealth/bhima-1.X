@@ -1920,17 +1920,14 @@
    "SOME_REPORT"           : "Summary Report of Last Payments (limit 20 items)",
    "TITLE"                 : "Enterprise Cash Payments"
    },
-"PERMISSION": {
-   "ADD"         : "Add a New User",
-   "ADDING"      : "Add a New User",
-   "ALL"         : "All",
-   "EDITTING"    : "Edit",
+"PERMISSIONS": {
+   "ADD_NEW_USER" : "Add a New User",
+   "EDIT_PERMISSIONS" : "Edit Permissions",
    "HELP_TXT_1"  : "Edit existing users and permissions from the table to the left",
    "HELP_TXT_2"  : "Edits a user's metadata",
    "HELP_TXT_3"  : "Edits a user's permissions",
    "HELP_TXT_4"  : "Deletes a user and their permissions",
    "PERMISSIONS" : "Permissions",
-   "PROJECTS"    : "Projects",
    "REGISTERED"  : "Registered Users",
    "RETYPE"      : "Retype",
    "SUPER"       : "Super User",

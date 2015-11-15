@@ -127,6 +127,26 @@ describe('The /users API endpoint', function () {
       .catch(handler);
   });
 
+  it('PUT /users/:id will update a user\'s projects', function () {
+    return agent.put('/users/' + newUser.id)
+      .send({ projects : [1, 2] })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.username).to.equal(newUser.username);
+        console.log(res.body);
+        expect(res.body.projects).to.deep.equal([ 1, 2 ]);
+
+        // re-query the database
+        return agent.get('/users/' + newUser.id);
+      })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res.body.email).to.equal('email@test.org');
+      })
+      .catch(handler);
+  });
+
   it('PUT /users/:id will NOT update the new user\'s password', function () {
     return agent.put('/users/' + newUser.id)
       .send({ password : 'I am super secret.' })

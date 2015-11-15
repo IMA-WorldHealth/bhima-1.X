@@ -6,7 +6,8 @@ UserService.$inject = [ '$http', 'util'];
 /**
 * User Service
 *
-* This service implements CRUD on the /users endpoint on the client.
+* This service implements CRUD on the /users endpoint on the client.  It also
+* provides convience wrappers for the API, wrapping
 */
 function UserService($http, util) {
   var service = this;
@@ -17,6 +18,7 @@ function UserService($http, util) {
   service.delete = del;
   service.permissions = permissions;
   service.projects = projects;
+  service.updatePassword = updatePassword;
 
   /* ------------------------------------------------------------------------ */
 
@@ -38,6 +40,11 @@ function UserService($http, util) {
 
   // updates a user with id
   function update(id, user) {
+
+    // delete properties that should not be updated
+    delete user.lastLogin;
+    delete user.id;
+
     return $http.put('/users/' + id, user)
     .then(util.unwrapHttpResponse);
   }
@@ -45,6 +52,12 @@ function UserService($http, util) {
   // deletes a user with the given ID
   function del(id) {
     return $http.delete('/users/' + id)
+    .then(util.unwrapHttpResponse);
+  }
+
+  // sets a user's password using the public API
+  function updatePassword(id, data) {
+    return $http.put('/users/' +id+ '/password')
     .then(util.unwrapHttpResponse);
   }
 

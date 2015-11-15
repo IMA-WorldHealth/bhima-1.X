@@ -166,11 +166,7 @@ exports.configure = function (app) {
  
   app.get('/caution/:debitor_uuid/:project_id', caution.debtor);
   
-
-  app.get('/visit/:patientId', patient.logVisit);
   app.get('/caution/:debitor_uuid/:project_id', caution.debtor);
-
-  app.get('/errorcodes', errors.listCodes);
 
   app.get('/getAccount6', accounts.listIncomeAccounts);
   app.get('/getAccount7/', accounts.listExpenseAccounts);
