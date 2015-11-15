@@ -6,7 +6,7 @@ var q = require('q'),
     numberal = require('numeral');
 
 // initiliase the database connection
-db.initialise();
+//db.initialise();
 
 // formatting for us dollars
 var formatDollar = '$0,0.00';

@@ -18,7 +18,7 @@
 var db      = require('../../../lib/db');
 var uuid    = require('../../../lib/guid'),
     q       = require('q'),
-    journal = require('../../journal');
+    journal = require('../../finance/journal');
 
 exports.createDistributions = createDistributions;
 

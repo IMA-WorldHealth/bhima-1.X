@@ -1,4 +1,4 @@
-var bhima = angular.module('bhima', ['bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate', 'LocalForageModule', 'chart.js', 'tmh.dynamicLocale', 'ngFileUpload']);
+var bhima = angular.module('bhima', ['bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate', 'LocalForageModule', 'chart.js', 'tmh.dynamicLocale', 'ngFileUpload', 'ui.grid']);
 
 function bhimaconfig($routeProvider) {
   // TODO: Dynamic routes loaded from unit database?
@@ -346,7 +346,7 @@ function bhimaconfig($routeProvider) {
   /* patients routes */
 
   .when('/patients/register', {
-    controller: 'PatientRegistrationController',
+    controller: 'PatientRegistrationController as PatientRegCtrl',
     templateUrl: 'partials/patients/registration/registration.html'
   })
   .when('/patients/edit/:patientID?', {

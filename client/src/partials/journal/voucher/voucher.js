@@ -6,7 +6,6 @@ angular.module('bhima.controllers')
 
 JournalVoucherController.$inject = [ '$scope', '$http', 'appcache' ];
 
-
 /**
 * This controller wraps all the global metadata
 * for the journal voucher and the JournalVoucherTableController.

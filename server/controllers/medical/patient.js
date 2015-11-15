@@ -1,62 +1,178 @@
-// patient controller
-
+/**
+ * @description 
+ *
+ * @returns
+ *
+ * @todo
+ */
 var db = require('../../lib/db'),
-    guid = require('../../lib/guid');
+    uuid = require('../../lib/guid');
 
-// assure the array is empty
-function empty(array) {
-  return array.length === 0;
+exports.create = create;
+exports.details = details;
+exports.list = list;
+exports.search = search;
+
+exports.verifyHospitalNumber = verifyHospitalNumber;
+
+/*
+ * HTTP Controllers
+ */
+
+// TODO Method handles too many operations
+function create(req, res, next) { 
+  var writeDebtorQuery, writePatientQuery;
+  var invalidParameters;
+  var patientText;
+
+  var createRequestData = req.body;
+  
+  var medical = createRequestData.medical;
+  var finance = createRequestData.finance;
+
+  // Debtor group required for financial modelling
+  invalidParameters = !finance || !medical;
+  
+    if (invalidParameters) { 
+    
+    // FIXME This should be handled by middleware
+    res.status(400).json({
+      code : 'ERROR.ERR_MISSING_INFO',
+      reason : 'Both `financial` and `medical` information must be provided to register a patient'
+    });
+    return;
+  }
+
+  // Optionally allow client to specify UUID
+  finance.uuid = finance.uuid || uuid();
+  medical.uuid = medical.uuid || uuid();
+  medical.debitor_uuid = finance.uuid;
+
+  writeDebtorQuery = 'INSERT INTO debitor (uuid, group_uuid, text) VALUES ' +
+    '(?, ?, ?)';
+
+  writePatientQuery = 'INSERT INTO patient SET ?';
+    
+  var transaction = db.transaction();
+
+  transaction
+    .addQuery(writeDebtorQuery, [finance.uuid, finance.debtor_group_uuid, generatePatientText(medical)])
+    .addQuery(writePatientQuery, [medical]);
+  
+  transaction.execute()
+    .then(function (results) { 
+      var createConfirmation = {};
+
+      // All querys returned OK
+      // Attach patient UUID to be used for confirmation etc. 
+      createConfirmation.uuid = medical.uuid;
+      createConfirmation.results = results;
+
+      res.status(201).json(createConfirmation);
+      return;
+    })
+    .catch(next)
+    .done();
 }
 
-// GET /patients
-// Returns a list of all patients, stuffing the patient reference into a
-// patientRef properly for human readability.
-function getPatients(req, res, next) {
-  var sql;
-
-  sql =
-    'SELECT p.uuid, CONCAT(pr.abbr, p.reference) AS patientRef, p.first_name, ' +
-      'p.middle_name, p.last_name ' +
-    'FROM patient AS p JOIN project AS pr ON p.project_id = pr.id';
-
-  db.exec(sql)
-  .then(function (rows) {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+function generatePatientText(patient) { 
+  var textLineDefault = 'Patient/';
+  return textLineDefault.concat(patient.last_name, '/', patient.middle_name);
 }
 
-// GET /patient/:uuid
-// Get a patient by uuid
-exports.searchUuid = function (req, res, next) {
-  'use strict';
-
-  var sql, uuid = req.params.uuid;
-
-  // compose the sql query
-  sql =
+function details(req, res, next) { 
+  var patientDetailQuery;
+  var uuid = req.params.uuid;
+  
+  patientDetailQuery =
     'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name, p.middle_name, ' +
       'p.sex, p.dob, p.origin_location_id, p.reference, proj.abbr, d.text, ' +
       'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.locked ' +
     'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
     'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id ' +
-    'WHERE p.uuid = ?;';
+    'WHERE p.uuid = ?';
 
-  db.exec(sql, [uuid])
-  .then(function (rows) {
+  db.exec(patientDetailQuery, [uuid])
+    .then(function(result) { 
+      var patientDetail;
 
-    // if the database cannot find the record
-    // return a 404 'resource not found'
-    if (empty(rows)) {
-      res.status(404).send();
-    } else {
-      res.status(200).json(rows[0]);
-    }
+      if (isEmpty(result)) { 
+        res.status(404).send();
+        return;
+      } else { 
+
+        // UUID has matched patient - extract result and send to client
+        patientDetail = result[0];
+        res.status(200).json(patientDetail);
+      }
+    })
+    .catch(next)
+    .done();
+}
+
+function list(req, res, next) { 
+  var listPatientsQuery; 
+  
+  listPatientsQuery =
+    'SELECT p.uuid, CONCAT(pr.abbr, p.reference) AS patientRef, p.first_name, ' +
+      'p.middle_name, p.last_name ' +
+    'FROM patient AS p JOIN project AS pr ON p.project_id = pr.id';
+
+  db.exec(listPatientsQuery)
+  .then(function (result) {
+    var patients = result;
+
+    res.status(200).json(result);
   })
   .catch(next)
   .done();
-};
+}
+
+function search(req, res, next) { 
+  next();
+}
+
+/**
+ * @description Return a status object indicating if the hospital number has laready been registered 
+ * with an existing patient 
+ *
+ * Returns status object 
+ * { 
+ *  registered : Boolean - Specifies if the id passed has already been registered or not
+ *  details : Object (optional) - Includes the details of the registered hospital number
+ *  }
+ */
+function verifyHospitalNumber(req, res, next) { 
+  var verifyQuery;
+  var hospitalNumber = req.params.id;
+
+  verifyQuery = 
+    'SELECT uuid, hospital_no FROM patient ' + 
+      'WHERE hospital_no = ?';
+
+  db.exec(verifyQuery, [hospitalNumber])
+    .then(function (result) { 
+      var hospitalIdStatus = {};
+
+      if (isEmpty(result)) { 
+
+        hospitalIdStatus.registered = false;
+      } else { 
+
+        hospitalIdStatus.registered = true;
+        hospitalIdStatus.details = result[0];
+      }
+
+      res.status(200).json(hospitalIdStatus);
+    })
+    .catch(next)
+    .done();
+}
+
+/**
+ * Legacy Methods
+ * TODO Remove or refactor methods to fit new API standards 
+ */
 
 // GET /patient/search/reference/:reference
 // Performs a search on the patient reference (e.g. HBB123)
@@ -83,7 +199,7 @@ exports.searchReference = function (req, res, next) {
   db.exec(sql, [reference])
   .then(function (rows) {
 
-    if (empty(rows)) {
+    if (isEmpty(rows)) {
       res.status(404).send();
     } else {
       res.status(200).json(rows[0]);
@@ -129,37 +245,31 @@ exports.searchFuzzy = function (req, res, next) {
   .done();
 };
 
+exports.visit = function (req, res, next) { 
+  var visitData = req.body;
+  
+  logVisit(visitData, req.session.user.id)
+    .then(function (result) { 
 
-// POST /patient/visit/start
-exports.startVisit = function (req, res, next) {
-  'use strict';
+      // Assign patient ID as confirmation 
+      result.uuid = visitData.uuid;
 
-  var sql, patientId = req.params.patientId;
+      res.status(200).send(result);
+    })
+    .catch(next)
+    .done();
+}
 
+function logVisit(patientData, userId) {
+  var sql;
+  var visitId = uuid();
+  
   sql =
-    'INSERT INTO patient_visit (uuid, patient_uuid, entry_date, registered_by) VALUES ' +
-    '(?, ?, ?, ?);';
-
-  db.exec(sql, [guid(), patientId, new Date(), req.session.user.id])
-  .then(function () {
-    res.status(200).send();
-  })
-  .catch(next)
-  .done();
+    'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES (?, ?, ?)';
+  
+  return db.exec(sql, [visitId, patientData.uuid, userId]);
 };
 
-// FIXME Legacy patient visit feature needs designing or removing
-exports.logVisit = function (req, res, next) {
-  var sql, id = req.params.patientId;
-  sql =
-    'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES (?, ?, ?);';
-
-  db.exec(sql, [guid(), id, req.session.user.id])
-  .then(function () {
-    res.send();
-  })
-  .catch(next)
-  .done();
-
-};
-
+function isEmpty(array) { 
+  return array.length === 0;
+}

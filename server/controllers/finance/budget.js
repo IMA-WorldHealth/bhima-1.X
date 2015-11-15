@@ -5,8 +5,10 @@ var csv    = require('fast-csv'),
 	fs     = require('fs'),
 	q      = require('q');
 
-var config = require('../../config/environment/server'),
-	db     = require('../../lib/db');
+// TODO this should be injected from the top
+var config = require('../../config/environment/production');
+
+var db     = require('../../lib/db');
 	
 var uploadDir = config.uploadFolder;
 

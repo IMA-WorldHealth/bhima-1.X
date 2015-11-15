@@ -1,6 +1,6 @@
 /**
- * Express Server Configuration
- */
+* Express Server Configuration
+*/
 var express       = require('express'),
     compress      = require('compression'),
     bodyParser    = require('body-parser'),
@@ -9,10 +9,10 @@ var express       = require('express'),
     morgan        = require('morgan'),
     fs            = require('fs');
 
-var cfg           = require('./../config/environment/server');
+var cfg           = require('./../config/environment/' + process.env.NODE_ENV);
 
-// Accept generic express/authentication instances (initialised in app.js)
-module.exports = function (app, authentication) {
+// Accept generic express instances (initialised in app.js)
+exports.configure = function (app) {
   console.log('[config/express] Configure express');
 
   // middleware
@@ -41,7 +41,7 @@ module.exports = function (app, authentication) {
   // of piped to standard out (default).
   //var logFile = fs.createWriteStream(__dirname + '/access.log', {flags : 'a'});
   //app.use(morgan('short', { stream : logFile }));
-  app.use(morgan('short'));
+  app.use(morgan(cfg.logLevel));
 
   // serve static files from a single location
   // NOTE the assumption is that this entire directory is public -
@@ -65,10 +65,49 @@ module.exports = function (app, authentication) {
       next();
     }
   });
+};
 
-  // new error handler
-  app.use(function (err, req, res, next) {
+exports.errorHandling = function (app) { 
+  
+  // TODO Is there a open source middleware that does this?
+  function interceptDatabaseErrors(err, req, res, next) { 
+    var codes = [{
+        code : 'ER_BAD_FIELD_ERROR',
+        httpStatus : 400, // Invalid request
+        key : 'Column does not exist in database' // TODO translatable on client   
+      }
+    ];
+
+    var supported = codeSupported(codes, err);
+    if (supported) { 
+      res.status(supported.httpStatus).json(err);
+      return;
+    } else { 
+      
+      // Unkown code - forward error 
+      next(err);  
+    }
+  }
+
+  function handleErrors(err, req, res, next) { 
     console.log('[ERROR]', err);
     res.status(500).json(err);
-  });
-};
+    return;
+  }
+
+  // TODO Research methods effeciency and refactor
+  function codeSupported(codes, err) { 
+    var result = null;
+
+    codes.some(function (supported) { 
+      if (supported.code === err.code) { 
+        result = supported;
+        return true;
+      }
+    });
+    return result;
+  }
+  
+  app.use(interceptDatabaseErrors);
+  app.use(handleErrors);
+}

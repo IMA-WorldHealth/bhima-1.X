@@ -1,7 +1,7 @@
 // test for server/lib/guid.js
 
 var expect = require('chai').expect,
-    guid      = require('../lib/guid');
+    guid   = require('../lib/guid');
 
 describe('guid', function () {
   'use strict';

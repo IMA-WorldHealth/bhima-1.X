@@ -29,6 +29,7 @@ var reports         = require('../controllers/reports/reports.js');
 
 var inventory       = require('../controllers/stock/inventory');
 var depot           = require('../controllers/stock/depot');
+var consumptionLoss = require('../controllers/stock/inventory/depreciate/consumptionLoss');
 
 var trialbalance    = require('../controllers/finance/trialbalance');
 var journal         = require('../controllers/finance/journal');
@@ -43,7 +44,7 @@ var purchase        = require('../controllers/finance/purchase');
 var budget          = require('../controllers/finance/budget');
 var taxPayment      = require('../controllers/finance/taxPayment');
 var donations       = require('../controllers/finance/donations');
-var consumptionLoss = require('../controllers/stock/inventory/depreciate/consumptionLoss');
+var debtors         = require('../controllers/finance/debtors');
 
 var financeServices       = require('../controllers/categorised/financeServices');
 var depreciatedInventory  = require('../controllers/categorised/inventory_depreciate');
@@ -51,13 +52,12 @@ var depreciatedReports    = require('../controllers/categorised/reports_deprecia
 var payroll               = require('../controllers/categorised/payroll');
 var caution               = require('../controllers/categorised/caution');
 var employees             = require('../controllers/categorised/employees');
-var errors                = require('../controllers/categorised/errors');
 var subsidies             = require('../controllers/categorised/subsidies');
 
 // Middleware for handle uploaded file
 var multipart       = require('connect-multiparty');
 
-exports.initialise = function (app) {
+exports.configure = function (app) {
   console.log('[config/routes] Configure routes');
 
   // exposed to the outside without authentication
@@ -68,9 +68,9 @@ exports.initialise = function (app) {
   app.get('/logout', auth.logout);
 
   // application data
-  app.post('/data/', data.create);
-  app.get('/data/', data.read);
-  app.put('/data/', data.update);
+  app.post('/data', data.create);
+  app.get('/data', data.read);
+  app.put('/data', data.update);
   app.delete('/data/:table/:column/:value', data.deleteRecord);
 
   // location routes
@@ -161,10 +161,7 @@ exports.initialise = function (app) {
   app.get('/getCheckHollyday/', employees.checkHoliday);
   app.get('/getCheckOffday/', employees.checkOffday);
  
-  app.get('/visit/:patientId', patient.logVisit);
   app.get('/caution/:debitor_uuid/:project_id', caution.debtor);
-  
-  app.get('/errorcodes', errors.listCodes);
   
   app.get('/getAccount6', accounts.listIncomeAccounts);
   app.get('/getAccount7/', accounts.listExpenseAccounts);
@@ -273,9 +270,28 @@ exports.initialise = function (app) {
   app.get('/InExAccounts/:id_enterprise/', accounts.listInExAccounts);
   app.get('/availableAccounts/:id_enterprise/', accounts.listEnterpriseAccounts);
   app.get('/availableAccounts_profit/:id_enterprise/', accounts.listEnterpriseProfitAccounts);
+  
+  // Patients API 
+  app.get('/patients', patient.list);
+  app.post('/patients', patient.create);
+  app.get('/patients/:uuid', patient.details);
+  
+  app.get('/patients/checkHospitalId/:id', patient.verifyHospitalNumber);
+  app.post('/patients/visit', patient.visit);
+  
+  // app.get('/patients/search', patient.search);
+  app.get('/patients/search/name/:value', patient.searchFuzzy);
+  app.get('/patients/search/reference/:value', patient.searchReference);
+  
+  // Debtors API
+  // app.get('/debtors', debtors.list);
+  app.get('/debtors/groups', debtors.listGroups);
+  app.get('/debtors/groups/:uuid', debtors.groupDetails);
+  // app.get('/debtors/:uuid', debtors.details);
 
   // search stuff
-  app.get('/patient/:uuid', patient.searchUuid);
+  // TODO merge with patients API
+  app.get('/patient/:uuid', patient.details);
   app.get('/patient/search/fuzzy/:match', patient.searchFuzzy);
   app.get('/patient/search/reference/:reference', patient.searchReference);
 
@@ -290,10 +306,11 @@ exports.initialise = function (app) {
   app.get('/analytics/debtors/top', analytics.cashflow.getTopDebtors);
 
   // users controller
-  app.post('/users', users.createUser);
-  app.put('/users/:id', users.updateUser);
-  app.get('/users', users.getUsers);
-  app.delete('/users/:id', users.removeUser);
+  app.get('/users', users.read);
+  app.get('/users/:id', users.readSingle);
+  app.post('/users', users.create);
+  app.put('/users/:id', users.update);
+  app.delete('/users/:id', users.delete);
   app.get('/editsession/authenticate/:pin', users.authenticatePin);
 
   // budget controller
