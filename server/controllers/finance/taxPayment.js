@@ -2,7 +2,7 @@ var parser = require('./../../lib/parser');
 var uuid = require('./../../lib/guid');
 var db = require('./../../lib/db');
 var sanitize = require('./../../lib/sanitize');
-var journal = require('./../../controllers/journal');
+var journal = require('./journal');
 
 var q = require('q');
 

@@ -5,7 +5,8 @@
   "main": "server/app.js",
   "scripts": {
     "test": "mocha server/test/ && ./sh/travis.sh",
-    "app": "gulp build && cd bin && node server/app.js"
+    "app": "gulp build && cd bin && node server/app.js",
+    "dev": "gulp build && cd bin && node server/app.js development"
   },
   "repository": {
     "type": "git",

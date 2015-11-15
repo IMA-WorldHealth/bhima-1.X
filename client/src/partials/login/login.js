@@ -28,7 +28,12 @@ function LoginController($scope, $translate, $location, $http, $timeout, Appcach
   $http.get('/projects')
   .then(function (response) {
     vm.projects = response.data;
-    loadStoredProject();
+
+    // TODO -- proper error handling in case there is no
+    // projects
+    if (vm.projects.length) {
+      loadStoredProject();
+    }
   });
 
   // If the user has logged in previously, the project will

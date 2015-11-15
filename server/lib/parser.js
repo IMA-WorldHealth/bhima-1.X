@@ -1,4 +1,4 @@
-require('./db').initialise();
+//require('./db').initialise();
 
 var sanitize = require('./db').sanitize,
     util = require('./util');

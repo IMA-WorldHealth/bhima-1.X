@@ -1,7 +1,5 @@
 // Export the same configuration object for use throughout modules
-var config = {
-  'static': 'client/dest/',
-  'rootFile' : '/index.html',
+var production = {
   'port' : 8080,
   'db' : {
     'host':     'localhost',
@@ -9,6 +7,7 @@ var config = {
     'password': 'HISCongo2013',
     'database': 'bhima'
   },
+  'logLevel' : 'common',
   'session' : {
     'secret' : 'xopen blowfish',
     'resave' : false,
@@ -30,4 +29,4 @@ var config = {
   }
 };
 
-module.exports = config;
+module.exports = production;

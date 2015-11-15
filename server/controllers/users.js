@@ -1,15 +1,26 @@
 // server/controllers/users.js
-
+/**
+* The /users HTTP API endpoint.
+*
+* This controller is responsible for implementing full CRUD on
+*
+*/
 var db = require('../lib/db');
 
-// GET /users
-// get a list of the users in the database
-exports.getUsers = function (req, res, next) {
+
+/**
+* GET /users
+*
+* If the client queries to /users endpoint, the API will respond with an array
+* of zero or more JSON objects, with id, and username keys.
+*/
+exports.read = function read(req, res, next) {
   'use strict';
 
-  var sql =
-    'SELECT u.id, u.username, u.email, u.first, u.last ' +
-    'FROM users AS u;';
+  var sql;
+
+  sql =
+    'SELECT user.id, user.username FROM user;';
 
   db.exec(sql)
   .then(function (rows) {
@@ -19,19 +30,71 @@ exports.getUsers = function (req, res, next) {
   .done();
 };
 
-// POST /users
-// This request creates a user in the database, hashing
-// the user password first.
-exports.createUser = function (req, res, next) {
+
+/**
+* GET /users/:id
+*
+* This endpoint will return a single JSON object containing the full user row
+* for the user with matching ID.  If no matching user exists, it will return a
+* 404 error.
+*/
+exports.readSingle = function readSingle(req, res, next) {
+  'use strict;';
+
+  var sql =
+    'SELECT user.id, user.username, user.email, user.first, user.last, ' +
+      'user.active, user.last_login AS lastLogin ' +
+    'FROM user WHERE user.id = ?;';
+
+  db.exec(sql, [req.params.id])
+  .then(function (rows) {
+    if (!rows.length) {
+      return res.status(404).send();
+    }
+
+    // send back JSON
+    res.status(200).json(rows[0]);
+  })
+  .catch(next)
+  .done();
+};
+
+
+/**
+* POST /users
+*
+* This endpoint creates a new user from a JSON object.  The following fields are
+* required and will result in a 400 error if not provided: username, password,
+* first, last, email.
+*
+* If the checks succeed, the user password is hashed and stored in the database.
+* A single JSON is returned to the client with the user id.
+*/
+exports.create = function create(req, res, next) {
   'use strict';
 
-  var sql, data = req.body;
+  var sql, requiredKeys, missingKeys,
+      data = req.body;
 
-  // make sure that we have a valid username, password
-  // combination
+  requiredKeys = [
+    'username', 'password', 'first', 'last', 'email'
+  ];
 
-  if (!data.username || !data.password) {
-    return res.status(400).json({ reason : 'ERROR.ERR_INVALID_USERNAME_OR_PASSWORD' });
+  // if the data object is missing keys, they will be left in the missingKeys
+  // array
+  missingKeys = requiredKeys.filter(function (key) {
+    return !data[key];
+  });
+
+  // send a 400 response to the client
+  if (missingKeys.length > 0) {
+    return res.status(400)
+    .json({
+      code : 'ERROR.ERR_MISSING_INFO',
+      reason: 'A username, password, first name, last name, and email are ' +
+              'required to create a user.',
+      missingKeys : missingKeys,
+    });
   }
 
   sql =
@@ -39,15 +102,21 @@ exports.createUser = function (req, res, next) {
     '(?, PASSWORD(?), ?, ?, ?);';
 
   db.exec(sql, [data.username, data.password, data.first, data.last, data.email])
-  .then(function (inserted) {
-    res.status(200).send(inserted);
+  .then(function (row) {
+    res.status(201).send({ id : row.insertId });
   })
   .catch(next)
   .done();
 };
 
-// PUT /users/:id
-exports.updateUser = function (req, res, next) {
+
+/**
+* PUT /users/:id
+*
+* This endpoint updates a user's information with ID :id.  If the user is not
+* found, the server sends back a 404 error.
+*/
+exports.update = function update(req, res, next) {
   var sql = 'UPDATE user SET ',
       data = req.body,
       id = req.params.id;
@@ -56,7 +125,6 @@ exports.updateUser = function (req, res, next) {
   var params = [];
 
   for (var key in data) {
-
     if (data.hasOwnProperty(key)) {
       if (key === 'password') {
 
@@ -76,25 +144,43 @@ exports.updateUser = function (req, res, next) {
   sql += ' WHERE  id = ?;';
 
   db.exec(sql, [id])
+  .then(function () {
+
+    // fetch the entire changed object to send back to the client
+    sql =
+      'SELECT user.id, user.username, user.email, user.first, user.last, ' +
+        'user.active, user.last_login AS lastLogin ' +
+      'FROM user WHERE user.id = ?;';
+
+    return db.exec(sql, [id]);
+  })
   .then(function (rows) {
-    res.status(200).json(rows);
+    res.status(200).json(rows[0]);
   })
   .catch(next)
   .done();
 };
 
-// DELETE /users/:id
-// FIXME - not everyone should be able to do this.  What about
-// permissions?
-exports.removeUser = function (req, res, next) {
+/**
+* DELETE /users/:id
+*
+* If the user exists delete it.
+*/
+exports.delete = function del(req, res, next) {
   'use strict';
 
   var sql =
     'DELETE FROM user WHERE id = ?;';
 
   db.exec(sql, [req.params.id])
-  .then(function (rows) {
-    res.status(200).json(rows);
+  .then(function (row) {
+    
+    // if nothing happened, let the client know via a 404 error
+    if (row.affectedRows === 0) {
+      return res.status(404).send();
+    }
+
+    res.status(204).send();
   })
   .catch(next)
   .done();

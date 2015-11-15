@@ -1,6 +1,6 @@
 var db        = require('./../../lib/db');
 var sanitize  = require('./../../lib/sanitize');
-var synthetic = require('./../synthetic');
+var synthetic = require('./../finance/synthetic');
 
 /** 
  * HTTP Controllers

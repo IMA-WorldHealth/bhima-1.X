@@ -144,7 +144,6 @@ function writeCashItems(primaryCashId, data) {
 }
 
 function postToJournal(primaryCashId, userId) {
-  //console.log('posting to journal ...');
   var dfd = q.defer();
   journal.request('indirect_purchase', primaryCashId, userId, function (err, result) {
     if (err) { return dfd.reject(err); }

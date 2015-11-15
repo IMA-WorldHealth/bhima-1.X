@@ -1,4 +1,4 @@
-var journal = require('./../../controllers/journal');
+var journal = require('./journal');
 
 var db = require('../../lib/db');
 var q = require('q');
