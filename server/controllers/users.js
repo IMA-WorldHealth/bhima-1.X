@@ -233,6 +233,11 @@ exports.permissions.assign = function assignPermissions(req, res, next) {
   db.exec(sql, [req.params.id])
   .then(function () {
 
+    // if there are no permissions registered, just return
+    if (!req.body.permissions.length) {
+      return;
+    }
+
     // now re-write with the new permissions
     sql =
       'INSERT INTO permission (unit_id, user_id) VALUES ?';
@@ -411,6 +416,7 @@ exports.getLanguages = function getLanguages(req, res, next) {
 };
 
 
+// TODO -- remove this.
 exports.authenticatePin = function authenticatePin(req, res, next) {
   var decrypt = req.params.pin >> 5;
   var sql = 'SELECT pin FROM user WHERE user.id = ' + req.session.user.id +

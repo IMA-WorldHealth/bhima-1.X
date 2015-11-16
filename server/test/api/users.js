@@ -193,6 +193,21 @@ describe('The /users API endpoint', function () {
       .catch(handler);
   });
 
+  // a user is allowed to delete all permissions for a give user.
+  it('POST /users/:id/permissions with no permissions will succeed', function () {
+    return agent.post('/users/' + newUser.id + '/permissions')
+      .send({ permissions : [] })
+      .then(function (res) {
+        expect(res).to.have.status(201);
+        return agent.get('/users/' + newUser.id + '/permissions');
+      })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.empty;
+      })
+      .catch(handler);
+  });
+
 
   it('PUT /users/:id/password will update a user\'s password', function () {
     return agent.put('/users/' + newUser.id + '/password')
@@ -203,6 +218,7 @@ describe('The /users API endpoint', function () {
       })
       .catch(handler);
   });
+
 
   it('DELETE /users/:id will delete the newly added user', function () {
     return agent.delete('/users/' + newUser.id)
