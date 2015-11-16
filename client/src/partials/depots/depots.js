@@ -47,6 +47,10 @@ function DepotController($location, $translate, $window, messenger, AppCache, St
     ico : 'glyphicon-export',
     link : '/depots/:uuid/distributions/services'
   }, {
+    key : 'STOCK.RETURN_SERVICE.KEY',
+    ico : 'glyphicon-arrow-left',
+    link : '/depots/:uuid/service_return_stock'
+  }, {
     key : 'DEPOT.DISTRIBUTION.LOSS.KEY',
     ico : 'glyphicon-cloud',
     link : '/depots/:uuid/losses'

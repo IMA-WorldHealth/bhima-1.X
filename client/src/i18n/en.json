@@ -2566,6 +2566,9 @@
    "SUCCESS_MESSAGE"        : "Operation successfully !",
    "TITLE"                  : "Services Management"
    },
+"SERVICE_RETURN_STOCK" : {
+   "TITLE"  : "Return stock from service"
+},
 "SERVICE_EXPLOITATION": {
    "TITLE" : "Service Income/Expense Summary"
    },
@@ -2731,6 +2734,9 @@
      "STOCK_COUNT"    : "Stock Count",
      "TITLE"          : "Stock status"
      },
+ "RETURN_SERVICE": {
+    "KEY" : "Return stock from service"
+    },
   "SEARCH": {
      "KEY"          : "Find Stock Items",
      "MANIFEST"     : "Stock Manifest",
