@@ -292,6 +292,9 @@
       "TITLE"              : "Régularisation des paiements",
       "WAIT_ACCOUNT"       : "Compte d'attente"
     },
+    "FLOW" : {
+      "TITLE" : "Flux de liquidité (Cash Flow) "
+    },
    "HELP_TXT_1"       : "Cette module permettre des payer contre plusiers factures",
    "HELP_TXT_2"       : "Trouver un Débiteur avec le ",
    "NO_EXCHANGE_RATE" : "Erreur                                                      : Taux d'Exchange n'existe pas!",
@@ -424,6 +427,7 @@
    "CRE_EQUIV"             : "Crédit",
    "CURRENCY"              : "Monnaie",
    "CURRENT_STOCK"         : "Stock Courrant",
+   "CUSTOMIZE"             : "Personnaliser",
    "DAILY_RATE"            : "Taux journalier",
    "DATE"                  : "Date",
    "DATE_BILLED"           : "Date création",
@@ -487,6 +491,7 @@
    "GRADE"                 : "Grade",
    "GROUP"                 : "Groupe",
    "GROUP_NAME"            : "Nom Groupe",
+   "HOSPITAL_FILE_NR"      : "Numero Fiche",
    "ID_CASH"               : "ID Recue",
    "ID"                    : "ID",
    "ID_PRODUCT"            : "ID Produit",
@@ -2975,6 +2980,7 @@
    "CASH"                      : "Caisse Auxilliaire",
    "CASHBOX_MANAGEMENT"        : "Caisses et Banques",
    "CASHBOX_ACCOUNT_MANAGEMENT": "Configuration Tresorerie",
+   "CASH_FLOW"                 : "Cash Flow",
    "CASH_PAYMENTS"             : "Paiements",
    "CAUTION"                   : "Paiement Anticipatif",
    "CHART_OF_ACCOUNTS"         : "Plan Comptable",
@@ -3176,6 +3182,7 @@
    "DATE_TO"           : "Au",
    "DELETE_SUCCESS"    : "Suppression avec succès",
    "DEPOT"             : "Depot",
+   "DETAILS"           : "Details",
    "DOCUMENT"          : "Document",
    "DONOR"             : "Donateur",
    "DOLLARS"           : "Dollars",
