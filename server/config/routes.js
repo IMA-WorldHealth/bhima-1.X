@@ -42,7 +42,8 @@ var auth            = require('../controllers/auth'),
     inventory       = require('../controllers/inventory'),
     patient         = require('../controllers/patient'),
     depot           = require('../controllers/depot'),
-    budget          = require('../controllers/budget');
+    budget          = require('../controllers/budget'),
+    cashflow        = require('../controllers/cashflow');
 
 var patient         = require('../controllers/patient');
 
@@ -136,7 +137,7 @@ exports.initialise = function (app) {
   app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', uncategorised.auxCenterAccount);
   app.get('/getCheckHollyday/', uncategorised.checkHoliday);
   app.get('/getCheckOffday/', uncategorised.checkOffday);
-  app.get('/visit/:patientId', uncategorised.logVisit);
+  app.get('/visit/:patientId/:customVisitDate', uncategorised.logVisit);
   app.get('/caution/:debitor_uuid/:project_id', uncategorised.cautionDebtor);
   app.get('/account_balance/:id', uncategorised.accountBalance);
   app.get('/synthetic/:goal/:project_id?', uncategorised.syntheticGoal);
@@ -296,4 +297,8 @@ exports.initialise = function (app) {
 
   // stock entries
   app.get('/stock/entries?', stock.getStockEntry);
+
+  // cashflow
+  app.get('/cashflow/report/', cashflow.getReport);
+
 };
