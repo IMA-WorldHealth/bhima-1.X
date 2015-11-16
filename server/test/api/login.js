@@ -33,7 +33,11 @@ describe('The /login API endpoint', function () {
       .get('/non-existant')
       .then(function (res) {
         expect(res).to.have.status(401);
-        expect(res.text).to.equal('{"reason":"ERR_NOT_AUTHENTICATED"}');
+        expect(res.body).to.deep.equal({
+          code : 'ERR_NOT_AUTHENTICATED',
+          httpStatus : 401,
+          reason : 'You have not yet authenticated with the API to access the endpoint.  Send a POST to /login with proper credentials to sign in.'
+        });
       })
       .catch(handler);
   });
@@ -43,7 +47,8 @@ describe('The /login API endpoint', function () {
       .get('/journal')
       .then(function (res) {
         expect(res).to.have.status(401);
-        expect(res.text).to.equal('{"reason":"ERR_NOT_AUTHENTICATED"}');
+        console.log(res.body);
+        expect(res.body.code).to.equal('ERR_NOT_AUTHENTICATED');
       })
       .catch(handler);
   });
@@ -63,7 +68,7 @@ describe('The /login API endpoint', function () {
       .send(invalidUser)
       .then(function (res) {
         expect(res).to.have.status(401);
-        expect(res.text).to.equal('ERR_LOGIN');
+        expect(res.body.code).to.equal('ERR_BAD_CREDENTIALS');
       })
       .catch(handler);
   });
@@ -75,6 +80,7 @@ describe('The /login API endpoint', function () {
       .send({ username : validUser.username, password : validUser.password })
       .then(function (res) {
         expect(res).to.have.status(401);
+        expect(res.body.code).to.equal('ERR_BAD_CREDENTIALS');
       })
       .catch(handler);
   });
@@ -85,7 +91,7 @@ describe('The /login API endpoint', function () {
       .send({ username : validUser.username, project : validUser.project })
       .then(function (res) {
         expect(res).to.have.status(401);
-        expect(res.text).to.equal('ERR_LOGIN');
+        expect(res.body.code).to.equal('ERR_BAD_CREDENTIALS');
       })
       .catch(handler);
   });

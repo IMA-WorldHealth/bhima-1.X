@@ -1,18 +1,20 @@
 /**
 * Express Server Configuration
 */
-var express       = require('express'),
-    compress      = require('compression'),
-    bodyParser    = require('body-parser'),
-    session       = require('express-session'),
-    FileStore     = require('session-file-store')(session),
-    morgan        = require('morgan'),
-    fs            = require('fs');
+var express    = require('express'),
+    compress   = require('compression'),
+    bodyParser = require('body-parser'),
+    session    = require('express-session'),
+    FileStore  = require('session-file-store')(session),
+    morgan     = require('morgan'),
+    fs         = require('fs');
 
-var cfg           = require('./../config/environment/' + process.env.NODE_ENV);
+var cfg   = require('../config/environment/' + process.env.NODE_ENV);
+var codes = require('../config/codes');
 
 // Accept generic express instances (initialised in app.js)
-exports.configure = function (app) {
+exports.configure = function configure(app) {
+  'use strict';
   console.log('[config/express] Configure express');
 
   // middleware
@@ -32,6 +34,14 @@ exports.configure = function (app) {
     unset             : 'destroy',
     cookie            : { secure : true }
   }));
+
+  // bind error codes to the express stack
+  // this allows you to later throw errors via the
+  // call req.codes.ERR_NOT_FOUND, etc..
+  app.use(function (req, res, next) {
+    req.codes = codes;
+    next();
+  });
 
   // morgan logger setup
   // options: combined | common | dev | short | tiny |
@@ -55,59 +65,73 @@ exports.configure = function (app) {
 
   // Only allow routes to use /login, /projects, /logout, and /language if session does not exists
   app.use(function (req, res, next) {
-    'use strict';
 
     var publicRoutes = ['/login', '/languages', '/projects', '/logout'];
 
     if (req.session.user === undefined && !within(req.path, publicRoutes)) {
-      res.status(401).json({ reason : 'ERR_NOT_AUTHENTICATED' });
+      next('ERR_NOT_AUTHENTICATED');
     } else {
       next();
     }
   });
 };
 
-exports.errorHandling = function (app) { 
-  
+exports.errorHandling = function errorHandling(app) {
+  'use strict';
+
   // TODO Is there a open source middleware that does this?
-  function interceptDatabaseErrors(err, req, res, next) { 
+  function interceptDatabaseErrors(err, req, res, next) {
     var codes = [{
         code : 'ER_BAD_FIELD_ERROR',
         httpStatus : 400, // Invalid request
-        key : 'Column does not exist in database' // TODO translatable on client   
+        key : 'Column does not exist in database' // TODO translatable on client
       }
     ];
 
     var supported = codeSupported(codes, err);
-    if (supported) { 
+    if (supported) {
       res.status(supported.httpStatus).json(err);
       return;
-    } else { 
-      
-      // Unkown code - forward error 
-      next(err);  
+    } else {
+
+      // Unkown code - forward error
+      next(err);
     }
   }
 
-  function handleErrors(err, req, res, next) { 
+  function catchAll(err, req, res, next) {
     console.log('[ERROR]', err);
     res.status(500).json(err);
     return;
   }
 
   // TODO Research methods effeciency and refactor
-  function codeSupported(codes, err) { 
+  function codeSupported(codes, err) {
     var result = null;
 
-    codes.some(function (supported) { 
-      if (supported.code === err.code) { 
+    codes.some(function (supported) {
+      if (supported.code === err.code) {
         result = supported;
         return true;
       }
     });
     return result;
   }
-  
+
+  function interceptThrownErrors(err, req, res, next) {
+
+    // check if it is a throw error
+    if (err.httpStatus) {
+      res.status(err.httpStatus).json(err);
+    } else if (typeof err === 'string') {
+      var error = codes[err];
+      res.status(error.httpStatus).json(error);
+    } else {
+      next(err);
+    }
+  }
+
+  app.use(interceptThrownErrors);
   app.use(interceptDatabaseErrors);
-  app.use(handleErrors);
-}
+  app.use(catchAll);
+};
