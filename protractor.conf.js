@@ -9,10 +9,10 @@ var q = require('q');
 // as appropriate.
 
 var config = {
-
-  // local selenium config, in case it applies
-  seleniumServerJar : '/usr/local/lib/node_modules/protractor/selenium/selenium-server-standalone-2.45.0.jar',
-  chromeDriver      : '/usr/local/lib/node_modules/protractor/selenium/chromedriver',
+  
+  // With paths not defined protractor will look in the local node_modules selenium folder for utilities
+  // seleniumServerJar : './node_modules/protractor/selenium/selenium-server-standalone-2.45.0.jar',
+  // chromeDriver      : './node_modules/protractor/selenium/chromedriver',
   seleniumPort      : 4444,
 
   specs: ['client/test/e2e/**/*.spec.js'],
@@ -33,8 +33,8 @@ var config = {
     return q.fcall(function () {
       browser.get('https://localhost:8080/#/login');
 
-      element(by.model('LoginCtrl.credentials.username')).sendKeys('test');
-      element(by.model('LoginCtrl.credentials.password')).sendKeys('test');
+      element(by.model('LoginCtrl.credentials.username')).sendKeys('superuser');
+      element(by.model('LoginCtrl.credentials.password')).sendKeys('superuser');
       element(by.id('submit')).click();
 
       // NOTE - you may need to play with the delay time to get this to work properly

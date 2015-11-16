@@ -108,7 +108,7 @@
               <div 
                 class="alert alert-danger"
                 ng-if="details.dob.$error.min || details.dob.$error.max">
-                <p>{{ "PATIENT_REGISTRATIONS.INCORRECT_DATE_LIMIT" | translate }} {{minDOB | date}} {{ "PATIENT_REGISTRATIONS.INCORRECT_DATE_AND" | translate }} {{maxDOB | date}}</p>
+                <p>{{ "PATIENT_REGISTRATIONS.INCORRECT_DATE_LIMIT" | translate }} {{PatientRegCtrl.minDOB | date}} {{ "PATIENT_REGISTRATIONS.INCORRECT_DATE_AND" | translate }} {{PatientRegCtrl.maxDOB | date}}</p>
               </div>
 
               <!-- Gender -->
