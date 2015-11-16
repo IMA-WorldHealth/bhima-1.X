@@ -2570,6 +2570,9 @@
    "SUCCESS_MESSAGE"        : "Insertion avec succès !",
    "TITLE"                  : "Gestion des Services"
    },
+"SERVICE_RETURN_STOCK" : {
+  "TITLE"  : "Retour de stocks en provenance d'un service"
+},
 "SERVICE_EXPLOITATION": {
    "TITLE" : "Exploitation par service"
    },
@@ -2735,6 +2738,9 @@
       "STOCK_COUNT"    : "Stock Count",
       "TITLE"          : "Etat du stock"
       },
+  "RETURN_SERVICE": {
+     "KEY" : "Retour de stocks en provenance d'un service"
+     },
    "SEARCH": {
       "KEY"          : "Rechercher Items Stock",
       "MANIFEST"     : "Documents des Stocks",
