@@ -291,6 +291,33 @@
                 </form>
               </div>
             </div> <!-- End panel -->
+
+            <div ng-if="patient.renewal==1" class="panel panel-default">
+              <div class="panel-heading">
+                <b>
+                  <span class="glyphicon glyphicon-calendar"></span>
+                  {{ "COLUMNS.CUSTOMIZE" | translate }}
+                  {{ "COLUMNS.DATE_REGISTERED" | translate }}
+                </b>
+              </div>
+              <div class="panel-body">
+                <form name="registrationDate">
+                  <div class="input-form">
+                    <label class="checkbox">
+                      <input type="checkbox"
+                        ng-true-value="1"
+                        ng-false-value="0"
+                        ng-model="session.needRegistrationDate">
+                      {{ "COLUMNS.DATE_REGISTERED" | translate }}
+                    </label>
+                  </div>
+
+                  <div class="input-form"  ng-if="session.needRegistrationDate">
+                    <input class="form-bhima" type="date" ng-model="session.customRegistrationDate">
+                  </div>
+                </form>
+              </div>
+            </div>
           </div> <!-- End column 5 row -->
           </div--> <!-- End column 5 row -->
         </div>

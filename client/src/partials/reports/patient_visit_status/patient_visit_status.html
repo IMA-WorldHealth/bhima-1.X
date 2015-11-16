@@ -229,7 +229,7 @@
                       <td>{{ $index }}</td>
                       <td>{{ patient.abbr + patient.reference }}</td>
                       <td>{{ patient.hospital_no }}</td>
-                      <td>{{ patient.middle_name + patient.last_name + patient.first_name }}</td>
+                      <td>{{ patient.middle_name + ' ' + patient.last_name + ' ' + patient.first_name }}</td>
                       <td>{{ patient.registration_date | date }}</td>
                       <td>{{ patient.date | date }}</td>
                     </tr>
@@ -266,7 +266,7 @@
                       <td>{{ $index }}</td>
                       <td>{{ patient.abbr + patient.reference }}</td>
                       <td>{{ patient.hospital_no }}</td>
-                      <td>{{ patient.middle_name + patient.last_name + patient.first_name }}</td>
+                      <td>{{ patient.middle_name + ' ' + patient.last_name + ' ' + patient.first_name }}</td>
                       <td>{{ patient.registration_date | date }}</td>
                       <td>{{ patient.date | date }}</td>
                     </tr>
