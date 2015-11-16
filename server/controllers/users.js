@@ -44,7 +44,7 @@ exports.list = function list(req, res, next) {
   .done();
 };
 
-// helper function to get a single user, including project details 
+// helper function to get a single user, including project details
 function helperGetUserDetails(id) {
   'use strict';
 
@@ -72,6 +72,7 @@ function helperGetUserDetails(id) {
 
     return db.exec(sql, [id])
     .then(function (rows) {
+
       // map into a list of ids
       return rows.map(function (row) {
         return row.project_id;
@@ -98,18 +99,11 @@ function helperGetUserDetails(id) {
 exports.details = function details(req, res, next) {
   'use strict;';
 
-
   helperGetUserDetails(req.params.id)
   .then(function (data) {
     res.status(200).json(data);
   })
-  .catch(function (error) {
-    if (error === 'ERR_NOT_FOUND') {
-      return res.status(404).send();
-    }
-
-    next(error);
-  })
+  .catch(next)
   .done();
 };
 
@@ -143,7 +137,7 @@ exports.permissions.list = function listPermissions(req, res, next) {
   'use strict';
 
   var sql =
-    'SELECT permission.id, permission.unit_id FROM permision ' +
+    'SELECT permission.id, permission.unit_id FROM permission ' +
     'WHERE permission.user_id = ?;';
 
   db.exec(sql, [req.params.id])
@@ -236,7 +230,7 @@ exports.permissions.assign = function assignPermissions(req, res, next) {
   var sql =
     'DELETE FROM permission WHERE user_id = ?;';
 
-  db.exec(sql)
+  db.exec(sql, [req.params.id])
   .then(function () {
 
     // now re-write with the new permissions
@@ -250,7 +244,7 @@ exports.permissions.assign = function assignPermissions(req, res, next) {
     return db.exec(sql, [data]);
   })
   .then(function () {
-    res.status(200).send();
+    res.status(201).send();
   })
   .catch(next)
   .done();
@@ -274,14 +268,14 @@ function helperUpdateProjectPermissions(id, projects) {
 
     // write the user's project permissions back to the database
     sql =
-      'INSERT INTO project_permission (user_id, project_id) VALUES (?);';
+      'INSERT INTO project_permission (user_id, project_id) VALUES ?;';
 
     // turn into user id and project id pairs
     projects = projects.map(function (projectId) {
       return [ id, projectId ];
     });
 
-    return db.exec(sql, projects);
+    return db.exec(sql, [ projects ]);
   });
 }
 
@@ -339,15 +333,10 @@ exports.update = function update(req, res, next) {
   .then(function () {
 
     // fetch the entire changed resource to send back to the client
-    sql =
-      'SELECT user.id, user.username, user.email, user.first, user.last, ' +
-        'user.active, user.last_login AS lastLogin ' +
-      'FROM user WHERE user.id = ?;';
-
-    return db.exec(sql, [req.params.id]);
+    return helperGetUserDetails(req.params.id);
   })
-  .then(function (rows) {
-    res.status(200).json(rows[0]);
+  .then(function (data) {
+    res.status(200).json(data);
   })
   .catch(next)
   .done();
@@ -370,7 +359,6 @@ exports.password = function update(req, res, next) {
 
   db.exec(sql, [req.body.password, req.params.id])
   .then(function () {
-
     return helperGetUserDetails(req.params.id);
   })
   .then(function (data) {
@@ -397,7 +385,7 @@ exports.delete = function del(req, res, next) {
 
     // if nothing happened, let the client know via a 404 error
     if (row.affectedRows === 0) {
-      return res.status(404).send();
+      throw 'ERR_NOT_FOUND';
     }
 
     res.status(204).send();
@@ -408,7 +396,7 @@ exports.delete = function del(req, res, next) {
 
 // GET /languages
 // TODO - where does this actually belong?
-exports.getLanguages = function (req, res, next) {
+exports.getLanguages = function getLanguages(req, res, next) {
   'use strict';
 
   var sql =
@@ -422,10 +410,12 @@ exports.getLanguages = function (req, res, next) {
   .done();
 };
 
-exports.authenticatePin = function (req, res, next) {
+
+exports.authenticatePin = function authenticatePin(req, res, next) {
   var decrypt = req.params.pin >> 5;
   var sql = 'SELECT pin FROM user WHERE user.id = ' + req.session.user.id +
     ' AND pin = \'' + decrypt + '\';';
+
   db.exec(sql)
   .then(function (rows) {
     res.send({ authenticated : !!rows.length });

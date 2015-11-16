@@ -17,7 +17,7 @@
   </div>
 </nav>
 
-<main class="container-fluid">
+<main class="container-fluid extend">
   <div class="row">
 
     <div class="col-md-6" style="height:100%;">
@@ -25,11 +25,6 @@
     </div>
 
     <div class="col-md-6" ng-switch="PermissionsCtrl.state">
-
-      <p ng-if="PermissionsCtrl.message">
-        {{ PermissionsCtrl.message }}
-      </p>
-
       <div ng-switch-default>
         <h4>{{ "PERMISSIONS.HELP_TXT_1" | translate }}</h4>
         <dl class="dl-horizontal">
@@ -121,7 +116,7 @@
       <div ng-switch-when="update">
         <form name="UpdateForm" ng-submit="PermissionsCtrl.submit(UpdateForm.$invalid)" novalidate>
           <fieldset>
-            <legend>{{ "PERMISSIONS.EDITTING" | translate }}</legend>
+            <legend>{{ "PERMISSIONS.EDITING" | translate }}</legend>
 
             <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.firstname.$invalid }">
               <label class="control-label">{{ "COLUMNS.FIRST_NAME" | translate }}</label>
@@ -196,7 +191,7 @@
             <span>{{ "PERMISSIONS.PERMISSIONS" | translate }}</span> :
             <strong>{{ PermissionsCtrl.user.first }} ({{ PermissionsCtrl.user.username }})</strong>
             <span class="pull-right">
-              <a ng-click="submit()">
+              <a href="" ng-click="PermissionsCtrl.submit()">
                 <span class="glyphicon glyphicon-floppy-disk"></span> {{ "FORM.SAVE" | translate }}
               </a>
             </span>
@@ -205,15 +200,17 @@
             <li class="list-group-item">
               <div class="checkbox">
                 <label>
-                  <input type="checkbox" ng-model="super.units">
+                  <input type="checkbox" ng-model="PermissionsCtrl.super" ng-change="PermissionsCtrl.toggleSuperUserPermissions()">
                   {{ "PERMISSIONS.SUPER" | translate }}
                 </label>
               </div>
             </li>
-            <li ng-repeat="unit in PermissionCtrl.units" class="list-group-item">
-              <div class="checkbox">
+          </ul>
+          <ul class="list-group" style="max-height: 575px; overflow:auto;">
+            <li ng-repeat="unit in PermissionsCtrl.units" class="list-group-item">
+              <div class="checkbox" ng-style="PermissionsCtrl.checkboxOffset(unit.depth)">
                 <label>
-                  <input type="checkbox" ng-model="unit.checked" ng-change="toggleChildren(unit)">
+                  <input type="checkbox" ng-model="unit.checked" ng-change="PermissionsCtrl.toggleUnitChildren(unit, unit.children)">
                   {{ unit.key | translate }}
                 </label>
               </div>

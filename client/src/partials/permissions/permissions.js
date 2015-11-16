@@ -10,11 +10,11 @@ angular.module('bhima.controllers')
 .controller('PermissionsController', PermissionsController);
 
 PermissionsController.$inject = [
-  '$window', '$translate', '$http', 'util', 'SessionService', 'UserService',
-  'ProjectService', '$modal'
+  '$window', '$translate', '$http', '$modal', 'util', 'SessionService', 'UserService',
+  'ProjectService', 'NodeTreeService'
 ];
 
-function PermissionsController($window, $translate, $http, util, Session, Users, Projects, $modal) {
+function PermissionsController($window, $translate, $http, $modal, util, Session, Users, Projects, NT) {
   var vm = this;
   var btnTemplate =
     '<button ng-click="grid.appScope.edit(row.entity)">{{ ::"FORM.EDIT" | translate }}</button>' +
@@ -49,9 +49,13 @@ function PermissionsController($window, $translate, $http, util, Session, Users,
   vm.edit = edit;
   vm.editPermissions = editPermissions;
   vm.setPasswordModal = setPasswordModal;
+  vm.checkboxOffset = checkboxOffset;
+  vm.toggleUnitChildren = toggleUnitChildren;
+  vm.toggleSuperUserPermissions = toggleSuperUserPermissions;
 
   /* ------------------------------------------------------------------------ */
 
+  // TODO
   function handler(error) {
     throw error;
   }
@@ -59,7 +63,8 @@ function PermissionsController($window, $translate, $http, util, Session, Users,
   // sets the module view state
   function setState(state) {
     vm.state = state;
-    vm.message = 'This state is: ' + state;
+    vm.super = 0; // reset super user determination between states
+    vm.user = {}; // reset users between state changes
   }
 
   // this is the new user
@@ -68,8 +73,8 @@ function PermissionsController($window, $translate, $http, util, Session, Users,
     // load the user
     Users.read(user.id)
     .then(function (user) {
-      vm.user = user;
       setState('update');
+      vm.user = user;
     })
     .catch(handler)
     .finally();
@@ -77,15 +82,54 @@ function PermissionsController($window, $translate, $http, util, Session, Users,
 
   function editPermissions(user) {
 
+    var units;
+
     // load the tree units
     loadUnits()
     .then(function (data) {
 
-      // bind the modules to nits
-      vm.units = data;
+      // unit value comparison function
+      function cmp(nodeA, nodeB) {
+        var a = $translate.instant(nodeA.key);
+        var b = $translate.instant(nodeB.key);
+        return a > b ? 1 : -1;
+      }
 
+      // build tree before flattening
+      var tree = NT.buildNodeTree(data);
+      units = NT.flattenInPlace(tree, cmp);
+
+      // make sure that we have the proper permissions selected
+      return Users.permissions(user.id);
+    })
+    .then(function (permissions) {
+
+      // loop through units, giving permissions in line with those in the
+      // database
+      permissions.forEach(function (object) {
+        units.forEach(function (unit) {
+          if (unit.id === object.unit_id) {
+            unit.checked = true;
+          }
+        });
+      });
+
+      vm.units = units;
       setState('permissions');
-    });
+
+      return Users.read(user.id);
+    })
+    .then(function (user) {
+      vm.user = user;
+    })
+    .catch(handler)
+    .finally();
+  }
+
+  function checkboxOffset(depth) {
+    return {
+      'padding-left' : 30 * depth + 'px'
+    };
   }
 
   // make sure that the passwords exist and match.
@@ -97,7 +141,7 @@ function PermissionsController($window, $translate, $http, util, Session, Users,
       vm.user.password === vm.user.passwordVerify;
   }
 
-  // opens a new modal that 
+  // opens a new modal that
   function setPasswordModal() {
     var modal = $modal.open({
       templateUrl: 'partials/permissions/permissionsPasswordModalTemplate.html',
@@ -111,23 +155,35 @@ function PermissionsController($window, $translate, $http, util, Session, Users,
     }).instance;
   }
 
-  // submit the data to the server
+  // submit the data to the server in a generic fashion
   function submit(invalid) {
     if (invalid) { return; }
 
     var promise;
 
-    if (vm.state === 'create') {
-      promise = Users.create(vm.user);
-    } else {
-      promise = Users.update(vm.user.id, vm.user);
+    // decide how to submit
+    switch (vm.state) {
+      case 'create':
+        promise = Users.create(vm.user);
+        break;
+      case 'update':
+        promise = Users.update(vm.user.id, vm.user);
+        break;
+      case 'permissions':
+        var permissions = vm.units.filter(function (u) {
+          return u.checked;
+        })
+        .map(function (u) {
+          return u.id;
+        });
+
+        promise = Users.updatePermissions(vm.user.id, permissions);
+        break;
+      default:
+        console.log('GOT STATE:', vm.state);
     }
 
-    // promise
     promise.then(function (data) {
-
-      // reset the user object
-      vm.user = {};
 
       // go back to default state
       setState('default');
@@ -157,6 +213,25 @@ function PermissionsController($window, $translate, $http, util, Session, Users,
   function loadUnits() {
     return $http.get('/units')
     .then(util.unwrapHttpResponse);
+  }
+
+  // toggle the selection all child nodes
+  function toggleUnitChildren(unit, children) {
+    children.forEach(function (node) {
+      node.checked = unit.checked;
+      if (node.children) {
+        toggleUnitChildren(node, node.children);
+      }
+    });
+  }
+
+  function toggleSuperUserPermissions() {
+    vm.units.forEach(function (node) {
+      node.checked = vm.super;
+      if (node.children) {
+        toggleUnitChildren(node, node.children);
+      }
+    });
   }
 
   startup();

@@ -47,7 +47,6 @@ describe('The /login API endpoint', function () {
       .get('/journal')
       .then(function (res) {
         expect(res).to.have.status(401);
-        console.log(res.body);
         expect(res.body.code).to.equal('ERR_NOT_AUTHENTICATED');
       })
       .catch(handler);

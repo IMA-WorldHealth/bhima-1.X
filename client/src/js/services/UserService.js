@@ -19,6 +19,7 @@ function UserService($http, util) {
   service.permissions = permissions;
   service.projects = projects;
   service.updatePassword = updatePassword;
+  service.updatePermissions = updatePermissions;
 
   /* ------------------------------------------------------------------------ */
 
@@ -55,12 +56,6 @@ function UserService($http, util) {
     .then(util.unwrapHttpResponse);
   }
 
-  // sets a user's password using the public API
-  function updatePassword(id, data) {
-    return $http.put('/users/' +id+ '/password')
-    .then(util.unwrapHttpResponse);
-  }
-
   // loads the user's permissions
   function permissions(id) {
     return $http.get('/users/' + id + '/permissions')
@@ -70,6 +65,18 @@ function UserService($http, util) {
   // loads the users's project permissions
   function projects(id) {
     return $http.get('/users/' + id + '/projects')
+    .then(util.unwrapHttpResponse);
+  }
+
+  // sets a user's permissions using the public API
+  function updatePermissions(id, data) {
+    return $http.post('/users/' + id + '/permissions', { permissions : data })
+    .then(util.unwrapHttpResponse);
+  }
+
+  // sets a user's password using the public API
+  function updatePassword(id, data) {
+    return $http.put('/users/' +id+ '/password')
     .then(util.unwrapHttpResponse);
   }
 }
