@@ -737,6 +737,12 @@ function bhimaconfig($routeProvider) {
     controller : 'configureEmployeeState',
     templateUrl : 'partials/reports_proposed/employee_state/employee_state.html'
   })
+  .when('/reports/cash_flow/', {
+    controller : 'cashFlowReportController as ReportCtrl',
+    templateUrl : 'partials/reports/cash_flow/cash_flow.html'
+  })
+
+
   .when('/exchangeRateModal/', {
     controller : 'exchangeRateModal',
     templateUrl : 'partials/exchangeRateModal/exchangeRateModal.html'

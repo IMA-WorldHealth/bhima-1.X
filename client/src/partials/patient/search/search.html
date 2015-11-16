@@ -138,10 +138,11 @@
           <thead>
           <tr>
             <th>#</th>
+            <th>{{ "COLUMNS.HOSPITAL_FILE_NR" | translate }}</th>
+            <th>{{ "COLUMNS.SEX" | translate }}</th>
             <th>{{ "COLUMNS.NAME" | translate }}</th>
             <th>{{ "COLUMNS.DOB" | translate }}</th>
             <th>{{ "COLUMNS.PARENT" | translate }}</th>
-            <th>{{ "COLUMNS.SEX" | translate }}</th>
             <th>{{ "COLUMNS.DATE_REGISTERED" | translate }}</th>
             <th></th>
           </tr>
@@ -150,10 +151,11 @@
           <tbody>
             <tr ng-repeat="patient in model['patient'].data | orderBy:'registration_date'">
               <th>{{ patient.hr_id }}</th>
+              <th>{{ patient.hospital_no }}</th>
+              <td>{{ patient.sex | uppercase }}</td>
               <td>{{ patient.name }}</td>
               <td>{{ patient.dob | date }}</td>
               <td>{{ patient.father_name }}</td>
-              <td>{{ patient.sex | uppercase }}</td>
               <td>{{patient.registration_date | date}}</td>
               <td><a ng-href="#/invoice/patient/{{patient.uuid}}"><i class="glyphicon glyphicon-list-alt"></i> {{"PATIENT_RECORDS.VIEW_PATIENT_CARD" | translate}}</a></td>
             </tr>

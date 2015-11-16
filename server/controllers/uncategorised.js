@@ -521,11 +521,15 @@ exports.checkOffday = function (req, res, next) {
 };
 
 exports.logVisit = function (req, res, next) {
-  var sql, id = req.params.patientId;
-  sql =
-    'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES (?, ?, ?);';
+  var sql,
+      id = req.params.patientId,
+      customVisitDate = req.params.customVisitDate;
 
-  db.exec(sql, [uuid(), id, req.session.user.id])
+  sql = customVisitDate === '0' ?
+    'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES (?, ?, ?);' :
+    'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`, `date`) VALUES (?, ?, ?, ?);' ;
+
+  db.exec(sql, [uuid(), id, req.session.user.id, customVisitDate])
   .then(function () {
     res.send();
   })
