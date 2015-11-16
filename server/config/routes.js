@@ -53,6 +53,7 @@ var payroll               = require('../controllers/categorised/payroll');
 var caution               = require('../controllers/categorised/caution');
 var employees             = require('../controllers/categorised/employees');
 var subsidies             = require('../controllers/categorised/subsidies');
+var units                = require('../controllers/units');
 
 // Middleware for handle uploaded file
 var multipart       = require('connect-multiparty');
@@ -63,6 +64,8 @@ exports.configure = function (app) {
   // exposed to the outside without authentication
   app.get('/languages', users.getLanguages);
   app.get('/projects', projects.getProjects);
+
+  app.get('/units', units.list);
 
   app.post('/login', auth.login);
   app.get('/logout', auth.logout);
@@ -96,11 +99,11 @@ exports.configure = function (app) {
   app.post('/journal/togeneralledger', trialbalance.postToGeneralLedger); // TODO : rename?
 
   app.get('/journal/:table/:id', journal.lookupTable);
-  
+
   // TODO Transition to journal API (this route should be /journal)
   app.get('/journal_list/', journal.transactions);
-  
-  
+
+
   // ledger routes
   // TODO : needs renaming
   app.get('/ledgers/debitor/:id', ledger.compileDebtorLedger);
@@ -123,14 +126,14 @@ exports.configure = function (app) {
   app.post('/snis/createReport', snis.createReport);
   app.delete('/snis/deleteReport/:id', snis.deleteReport);
   app.post('/snis/populateReport', snis.populateReport);
- 
+
   /**
    * refactor-categorisation
    *
    * @todo test all routes below to ensure no broken links
    */
-  
-  // Financial services - cost/ profit centers, services etc. 
+
+  // Financial services - cost/ profit centers, services etc.
   app.get('/services/', financeServices.listServices);
   app.get('/available_cost_center/', financeServices.availableCostCenters);
   app.get('/available_profit_center/', financeServices.availableProfitCenters);
@@ -141,7 +144,7 @@ exports.configure = function (app) {
   app.get('/removeFromCostCenter/:tab', financeServices.removeFromCostCenter);
   app.get('/removeFromProfitCenter/:tab', financeServices.removeFromProfitCenter);
   app.get('/auxiliairyCenterAccount/:id_enterprise/:auxiliairy_center_id', financeServices.auxCenterAccount);
- 
+
   // DEPRECIATED Inventory routes - these should be removed as soon as possible
   // FIXME Depreciate routes
   app.get('/lot/:inventory_uuid', depreciatedInventory.getInventoryLot);
@@ -155,7 +158,7 @@ exports.configure = function (app) {
   app.get('/getMonthsBeforeExpiration/:id', depreciatedInventory.formatLotsForExpiration);
   app.get('/stockIntegration/', depreciatedInventory.getStockIntegration);
 
-  // Employee management 
+  // Employee management
   app.get('/employee_list/', employees.list);
   app.get('/hollyday_list/:pp/:employee_id', employees.listHolidays);
   app.get('/getCheckHollyday/', employees.checkHoliday);
@@ -163,24 +166,30 @@ exports.configure = function (app) {
  
   app.get('/caution/:debitor_uuid/:project_id', caution.debtor);
   
+
+  app.get('/visit/:patientId', patient.logVisit);
+  app.get('/caution/:debitor_uuid/:project_id', caution.debtor);
+
+  app.get('/errorcodes', errors.listCodes);
+
   app.get('/getAccount6', accounts.listIncomeAccounts);
   app.get('/getAccount7/', accounts.listExpenseAccounts);
   app.get('/getClassSolde/:account_class/:fiscal_year', accounts.getClassSolde);
   app.get('/getTypeSolde/:fiscal_year/:account_type_id/:is_charge', accounts.getTypeSolde);
-  
+
 
   app.get('available_payment_period/', taxPayment.availablePaymentPeriod);
   app.post('/payTax/', taxPayment.submit);
   app.put('/setTaxPayment/', taxPayment.setTaxPayment);
-  
+
   app.get('/cost_periodic/:id_project/:cc_id/:start/:end', financeServices.costByPeriod);
   app.get('/profit_periodic/:id_project/:pc_id/:start/:end', financeServices.profitByPeriod);
- 
+
   // TODO Remove or upgrade (model in database) every report from report_depreciate
   app.get('/getDistinctInventories/', depreciatedReports.listDistinctInventory);
   app.get('/getReportPayroll/', depreciatedReports.buildPayrollReport);
- 
-  // Payroll 
+
+  // Payroll
   app.get('/getDataPaiement/', payroll.listPaiementData);
   app.get('/getEmployeePayment/:id', payroll.listPaymentByEmployee);
   app.get('/getEnterprisePayment/:employee_id', payroll.listPaymentByEnterprise);
@@ -191,9 +200,9 @@ exports.configure = function (app) {
   app.put('/setCotisationPayment/', payroll.setCotisationPayment);
   app.get('/getEmployeeCotisationPayment/:id', payroll.listEmployeeCotisationPayments);
   app.get('/taxe_ipr_currency/', payroll.listTaxCurrency);
-  
+
   app.post('/posting_donation/', donations.post);
-  
+
   app.get('/getSubsidies/', subsidies.list);
 
   /*  Inventory and Stock Managment */
@@ -306,8 +315,10 @@ exports.configure = function (app) {
   app.get('/analytics/debtors/top', analytics.cashflow.getTopDebtors);
 
   // users controller
-  app.get('/users', users.read);
-  app.get('/users/:id', users.readSingle);
+  app.get('/users', users.list);
+  app.get('/users/:id', users.details);
+  app.get('/users/:id/projects', users.projects);
+  app.get('/users/:id/permissions', users.permissions);
   app.post('/users', users.create);
   app.put('/users/:id', users.update);
   app.delete('/users/:id', users.delete);

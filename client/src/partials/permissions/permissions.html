@@ -1,0 +1,227 @@
+<header data-header>
+  {{ "PERMISSION.TITLE" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><i class="glyphicon glyphicon-home"></i></a></li>
+      <li class="active">{{ "PERMISSION.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right">
+    <button class="btn btn-sm btn-default" ng-click="PermissionCtrl.addUser()">
+      <i class="glyphicon glyphicon-plus-sign"></i> {{ "PERMISSION.ADD" | translate }}
+    </button>
+  </div>
+</nav>
+
+<main>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-6">
+        <div ui-grid="PermissionsCtrl.uiGridOptions" style="height:100%; width:95%;"></div>
+      </div>
+
+      <div class="col-md-6" ng-switch="current.state">
+        <div ng-switch-default>
+          <div class="alert alert-info">
+            <p>{{ "PERMISSION.HELP_TXT_1" | translate }}</p>
+            <dl class="dl-horizontal">
+              <dt><i class="glyphicon glyphicon-pencil"></i></dt>
+              <dd>{{ "PERMISSION.HELP_TXT_2" | translate }}</dd>
+              <dt><i class="glyphicon glyphicon-cog"></i></dt>
+              <dd>{{ "PERMISSION.HELP_TXT_3" | translate }}</dd>
+              <dt><i class="glyphicon glyphicon-trash"></i></dt>
+              <dd>{{ "PERMISSION.HELP_TXT_4" | translate }}</dd>
+            </dl>
+          </div>
+        </div>
+
+        <div ng-switch-when="add">
+          <form novalidate class="form-horizontal" name="CreateUserForm">
+            <legend><h3>{{ "PERMISSION.ADDING" | translate }} <small>{{ current.user.first }} {{ current.user.last }}</small></h3></legend>
+
+            <div class="form-group">
+              <label class="control-label col-md-2 required">{{ "COLUMNS.FIRST_NAME" | translate }}</label>
+              <div class="col-md-7">
+                <input name="firstname" ng-model="PermissionsCtrl.user.first" class="form-control" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-md-2 required">{{ "COLUMNS.LAST_NAME" | translate }}</label>
+              <div class="col-md-7">
+                <input name="lastname" ng-model="current.user.last" class="form-control" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-md-2 required">{{ "COLUMNS.USER_NAME" | translate }}</label>
+              <div class="col-md-7">
+                <input name="username" ng-model="current.user.username" class="form-control" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-md-2">{{ "COLUMNS.EMAIL" | translate }}</label>
+              <div class="col-md-7">
+                <input name="email" ng-model="current.user.email" class="form-control" type="email">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-md-2 required">{{ "COLUMNS.PASSWORD" | translate }}</label>
+              <div class="col-md-7">
+                <input ng-model="current.user.password" class="form-control" required type="password" ng-change="clearPass()">
+                <i class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true" ng-if="!valid.password"></i>
+                <i class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-if="!!valid.password"></i>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-md-2 required"> {{ "COLUMNS.PASSWORD" | translate }} ({{ "PERMISSION.RETYPE" | translate }})</label>
+              <div class="col-md-7">
+                <input ng-model="current.user.passwordVerify" class="form-control" type="password" ng-change="clearPass()" required>
+                <i class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true" ng-if="!valid.password"></i>
+                <i class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-if="!!valid.password"></i>
+              </div>
+            </div>
+
+            <input ng-disabled="new.$invalid" type="submit" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="submit()">
+            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
+          </form>
+        </div>
+
+        <div ng-switch-when="edit">
+          <form novalidate class="form-horizontal" name="edit">
+            <legend>{{ "PERMISSION.EDITTING" | translate }} <small>{{current.user.first}} {{current.user.last}}</small></legend>
+
+            <div class="form-group">
+              <label class="control-label col-md-2 required">{{ "COLUMNS.FIRST_NAME" | translate }}</label>
+              <div class="col-md-7">
+                <input ng-model="current.user.first" class="form-control" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-md-2 required">{{ "COLUMNS.LAST_NAME" | translate }}</label>
+              <div class="col-md-7">
+                <input ng-model="current.user.last" class="form-control" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-md-2 required">{{ "COLUMNS.USER_NAME" | translate }}</label>
+              <div class="col-md-7">
+                <input ng-model="current.user.username" class="form-control" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-md-2">{{ "COLUMNS.EMAIL" | translate }}</label>
+              <div class="col-md-7">
+                <input ng-model="current.user.email" class="form-control" type="email">
+              </div>
+            </div>
+
+            <div class="form-group has-feedback"  ng-class="{ 'has-error' : !valid.password, 'has-success' : !!valid.password }">
+              <label class="control-label col-md-2 required">{{ "COLUMNS.PASSWORD" | translate }}</label>
+              <div class="col-md-7">
+                <input ng-model="current.user.password" class="form-control" required type="password" ng-change="clearPass()">
+                <i class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true" ng-if="!valid.password"></i>
+                <i class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-if="!!valid.password"></i>
+              </div>
+            </div>
+
+            <div class="form-group has-feedback" ng-class="{ 'has-error' : !valid.password, 'has-success' : !!valid.password }">
+              <label class="control-label col-md-2 required"> {{ "COLUMNS.PASSWORD" | translate }} ({{ "PERMISSION.RETYPE" | translate }})</label>
+              <div class="col-md-7">
+                <input ng-model="current.user.passwordVerify" class="form-control" required type="password" ng-change="validatePassword()">
+                <i class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true" ng-if="!valid.password"></i>
+                <i class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-if="!!valid.password"></i>
+              </div>
+            </div>
+
+            <input type="submit" ng-disabled="edit.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="submit()">
+            <input type="button" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
+
+          </form>
+        </div>
+
+        <div ng-switch-when="projects">
+          <div class="col-md-6">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <span>{{ "PERMISSION.PROJECTS" | translate }}</span> :
+                <strong>{{ current.user.first }} ({{ current.user.username }})</strong>
+                <span class="pull-right">
+                  <a ng-click="submit()">
+                    <span class="glyphicon glyphicon-floppy-disk"></span> {{ "FORM.SAVE" | translate }}
+                  </a>
+                </span>
+              </div>
+              <label class="checkbox" style="margin-left: 10px; margin-bottom:0;">
+                <input type="checkbox" ng-model="super.projects" ng-change="toggleSuperProjects(super.projects)">
+                {{ "PERMISSION.ALL" | translate }}
+              </label>
+              <ul class="k-list" style="margin-left: 25px;">
+                <li ng-repeat="project in projects.data">
+                  <label class="checkbox">
+                    <input type="checkbox" ng-model="project.checked" ng-change="deselectAllProjects(project.checked)">
+                    {{ project.name }}
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div ng-switch-when="permissions">
+          <div class="col-md-10">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <span>{{ "PERMISSION.PERMISSIONS" | translate }}</span> :
+                <strong>{{ current.user.first }} ({{ current.user.username }})</strong>
+                <span class="pull-right">
+                  <a ng-click="submit()">
+                    <span class="glyphicon glyphicon-floppy-disk"></span> {{ "FORM.SAVE" | translate }}
+                  </a>
+                </span>
+              </div>
+              <label class="checkbox" style="margin-left: 10px; margin-bottom:0;">
+                <input type="checkbox" ng-model="super.units" ng-change="toggleSuperUnits(super.units)">
+                {{ "PERMISSION.SUPER" | translate }}
+              </label>
+              <ul class="k-list" style="margin-left: 25px;">
+                <li ng-repeat="unit in units.data | filter:filterChildren | orderBy:'key'" >
+                  <label class="checkbox">
+                    <input type="checkbox" ng-model="unit.checked" ng-change="toggleChildren(unit)">
+                    {{ unit.key }}
+                  </label>
+                  <ul class="k-list" ng-if="unit.children">
+                    <li ng-repeat="child in unit.children | orderBy:'key'">
+                      <label class="checkbox">
+                        <input type="checkbox" ng-model="child.checked" ng-change="toggleChildren(child)">
+                        {{ child.key }}
+                      </label>
+                      <ul class="k-list" ng-if="child.children">
+                        <li ng-repeat="final in child.children">
+                          <label class="checkbox">
+                            <input type="checkbox" ng-model="final.checked" ng-change="toggleChildren(final)">
+                            {{final.key | translate}}
+                          </label>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

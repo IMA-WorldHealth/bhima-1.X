@@ -2,11 +2,10 @@
 /**
 * The /users HTTP API endpoint.
 *
-* This controller is responsible for implementing full CRUD on
-*
+* This controller is responsible for implementing full CRUD on the
+* user table via the /users endpoint.
 */
 var db = require('../lib/db');
-
 
 /**
 * GET /users
@@ -14,7 +13,7 @@ var db = require('../lib/db');
 * If the client queries to /users endpoint, the API will respond with an array
 * of zero or more JSON objects, with id, and username keys.
 */
-exports.read = function read(req, res, next) {
+exports.list = function list(req, res, next) {
   'use strict';
 
   var sql;
@@ -38,7 +37,7 @@ exports.read = function read(req, res, next) {
 * for the user with matching ID.  If no matching user exists, it will return a
 * 404 error.
 */
-exports.readSingle = function readSingle(req, res, next) {
+exports.details = function details(req, res, next) {
   'use strict;';
 
   var sql =
@@ -54,6 +53,48 @@ exports.readSingle = function readSingle(req, res, next) {
 
     // send back JSON
     res.status(200).json(rows[0]);
+  })
+  .catch(next)
+  .done();
+};
+
+
+/**
+* GET /users/:id/permissions
+*
+* Lists all the user permissions for user with :id
+*/
+exports.permissions = function permissions(req, res, next) {
+  'use strict';
+
+  var sql =
+    'SELECT permission.id, permission.unit_id FROM permision ' +
+    'WHERE permission.user_id = ?;';
+
+  db.exec(sql, [req.params.id])
+  .then(function (rows) {
+    res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
+};
+
+/**
+* GET /users/:id/projects
+*
+* Lists all the user project permissions for user with :id
+*/
+exports.projects = function projects(req, res, next) {
+  'use strict';
+
+  var sql =
+    'SELECT pp.id, pp.project_id, project.name ' +
+    'FROM project_permission AS pp JOIN project ON pp.project_id = project.id ' +
+    'WHERE pp.user_id = ?;';
+
+  db.exec(sql, [req.params.id])
+  .then(function (rows) {
+    res.status(200).json(rows);
   })
   .catch(next)
   .done();
@@ -174,7 +215,7 @@ exports.delete = function del(req, res, next) {
 
   db.exec(sql, [req.params.id])
   .then(function (row) {
-    
+
     // if nothing happened, let the client know via a 404 error
     if (row.affectedRows === 0) {
       return res.status(404).send();
