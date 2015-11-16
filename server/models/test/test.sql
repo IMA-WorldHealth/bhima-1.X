@@ -1842,7 +1842,7 @@ CREATE TABLE `project` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 /*!40000 ALTER TABLE `project` DISABLE KEYS */;
-INSERT INTO `project` VALUES (1,'Test Project','TP',1,759);
+INSERT INTO `project` VALUES (1,'Test Project A','TPA',1,759), (2,'Test Project B','TPB',1,759);
 /*!40000 ALTER TABLE `project` ENABLE KEYS */;
 DROP TABLE IF EXISTS `project_permission`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

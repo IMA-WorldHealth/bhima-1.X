@@ -1,12 +1,25 @@
-// server/controllers/users.js
 /**
 * The /users HTTP API endpoint.
 *
-* This controller is responsible for implementing full CRUD on
-*
+* This controller is responsible for implementing full CRUD on the user table
+* via the /users endpoint.  The following routes are supported:
+*   GET /users
+*   GET /users/:id
+*   GET /users/:id/permissions
+*   GET /users/:id/projects
+*   POST /users
+*   POST /users/:id/permissions
+*   POST /users/:id/projects
+*   PUT /users/:id
+*   PUT /users/:id/password
+*   DELETE /users/:id
 */
 var db = require('../lib/db');
+var q  = require('q');
 
+// namespaces for /users/:id/projects and /users/:id/permissions
+exports.projects = {};
+exports.permissions = {};
 
 /**
 * GET /users
@@ -14,13 +27,14 @@ var db = require('../lib/db');
 * If the client queries to /users endpoint, the API will respond with an array
 * of zero or more JSON objects, with id, and username keys.
 */
-exports.read = function read(req, res, next) {
+exports.list = function list(req, res, next) {
   'use strict';
 
   var sql;
 
   sql =
-    'SELECT user.id, user.username FROM user;';
+    'SELECT user.id, CONCAT(user.first, \' \', user.last) AS displayname, ' +
+      'user.username FROM user;';
 
   db.exec(sql)
   .then(function (rows) {
@@ -30,6 +44,47 @@ exports.read = function read(req, res, next) {
   .done();
 };
 
+// helper function to get a single user, including project details
+function helperGetUserDetails(id) {
+  'use strict';
+
+  var sql, data;
+
+  sql =
+    'SELECT user.id, user.username, user.email, user.first, user.last, ' +
+      'user.active, user.last_login AS lastLogin ' +
+    'FROM user WHERE user.id = ?;';
+
+  return db.exec(sql, [id])
+  .then(function (rows) {
+
+    if (!rows.length) {
+      throw 'ERR_NOT_FOUND';
+    }
+
+    // bind user data to ship back
+    data = rows[0];
+
+    // query project permissions
+    sql =
+      'SELECT pp.project_id FROM project_permission AS pp ' +
+      'WHERE user_id = ?;';
+
+    return db.exec(sql, [id])
+    .then(function (rows) {
+
+      // map into a list of ids
+      return rows.map(function (row) {
+        return row.project_id;
+      });
+    });
+  })
+  .then(function (projects) {
+    data.projects = projects;
+    return data;
+  });
+}
+
 
 /**
 * GET /users/:id
@@ -37,23 +92,57 @@ exports.read = function read(req, res, next) {
 * This endpoint will return a single JSON object containing the full user row
 * for the user with matching ID.  If no matching user exists, it will return a
 * 404 error.
+*
+* For consistency with the CREATE method, this route also returns a user's project
+* permissions.
 */
-exports.readSingle = function readSingle(req, res, next) {
+exports.details = function details(req, res, next) {
   'use strict;';
 
+  helperGetUserDetails(req.params.id)
+  .then(function (data) {
+    res.status(200).json(data);
+  })
+  .catch(next)
+  .done();
+};
+
+/**
+* GET /users/:id/projects
+*
+* Lists all the user project permissions for user with :id
+*/
+exports.projects.list = function listProjects(req, res, next) {
+  'use strict';
+
   var sql =
-    'SELECT user.id, user.username, user.email, user.first, user.last, ' +
-      'user.active, user.last_login AS lastLogin ' +
-    'FROM user WHERE user.id = ?;';
+    'SELECT pp.id, pp.project_id, project.name ' +
+    'FROM project_permission AS pp JOIN project ON pp.project_id = project.id ' +
+    'WHERE pp.user_id = ?;';
 
   db.exec(sql, [req.params.id])
   .then(function (rows) {
-    if (!rows.length) {
-      return res.status(404).send();
-    }
+    res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
+};
 
-    // send back JSON
-    res.status(200).json(rows[0]);
+/**
+* GET /users/:id/permissions
+*
+* Lists all the user permissions for user with :id
+*/
+exports.permissions.list = function listPermissions(req, res, next) {
+  'use strict';
+
+  var sql =
+    'SELECT permission.id, permission.unit_id FROM permission ' +
+    'WHERE permission.user_id = ?;';
+
+  db.exec(sql, [req.params.id])
+  .then(function (rows) {
+    res.status(200).json(rows);
   })
   .catch(next)
   .done();
@@ -65,7 +154,10 @@ exports.readSingle = function readSingle(req, res, next) {
 *
 * This endpoint creates a new user from a JSON object.  The following fields are
 * required and will result in a 400 error if not provided: username, password,
-* first, last, email.
+* first, last, email, projects.
+*
+* Unlike before, the user is created with project permissions.  A user without project
+* access does not make any sense.
 *
 * If the checks succeed, the user password is hashed and stored in the database.
 * A single JSON is returned to the client with the user id.
@@ -73,11 +165,11 @@ exports.readSingle = function readSingle(req, res, next) {
 exports.create = function create(req, res, next) {
   'use strict';
 
-  var sql, requiredKeys, missingKeys,
+  var sql, requiredKeys, missingKeys, id,
       data = req.body;
 
   requiredKeys = [
-    'username', 'password', 'first', 'last', 'email'
+    'username', 'password', 'first', 'last', 'email', 'projects'
   ];
 
   // if the data object is missing keys, they will be left in the missingKeys
@@ -91,7 +183,7 @@ exports.create = function create(req, res, next) {
     return res.status(400)
     .json({
       code : 'ERROR.ERR_MISSING_INFO',
-      reason: 'A username, password, first name, last name, and email are ' +
+      reason: 'A username, password, first name, last name, project list, and email are ' +
               'required to create a user.',
       missingKeys : missingKeys,
     });
@@ -103,7 +195,23 @@ exports.create = function create(req, res, next) {
 
   db.exec(sql, [data.username, data.password, data.first, data.last, data.email])
   .then(function (row) {
-    res.status(201).send({ id : row.insertId });
+
+    // retain the insert id
+    id = row.insertId;
+
+    sql =
+      'INSERT INTO project_permission (user_id, project_id) VALUES ?;';
+
+    var projects = data.projects.map(function (projectId) {
+      return [id, projectId];
+    });
+
+    return db.exec(sql, [projects]);
+  })
+  .then(function () {
+
+    // send the ID back to the client
+    res.status(201).json({ id : id });
   })
   .catch(next)
   .done();
@@ -111,55 +219,155 @@ exports.create = function create(req, res, next) {
 
 
 /**
-* PUT /users/:id
+* POST /users/:id/permissions
 *
-* This endpoint updates a user's information with ID :id.  If the user is not
-* found, the server sends back a 404 error.
+* Creates and updates a user's permissions.
 */
-exports.update = function update(req, res, next) {
-  var sql = 'UPDATE user SET ',
-      data = req.body,
-      id = req.params.id;
+exports.permissions.assign = function assignPermissions(req, res, next) {
+  'use strict';
 
-  // we have to do manual parsing here because we are using MySQL function
-  var params = [];
+  // first step, DELETE the user's permissions
+  var sql =
+    'DELETE FROM permission WHERE user_id = ?;';
 
-  for (var key in data) {
-    if (data.hasOwnProperty(key)) {
-      if (key === 'password') {
-
-        // FIXME - this is a hack.  MySQL passwords start with a '*', so we can
-        // filter out the chnaged passwords based on that
-        var changed = data[key][0] !== '*';
-        if (changed) {
-          params.push('password = PASSWORD(' + db.escape(data[key]) + ')');
-        }
-      } else {
-        params.push(key + ' = ' + db.escape(data[key]));
-      }
-    }
-  }
-
-  sql += params.join(', ');
-  sql += ' WHERE  id = ?;';
-
-  db.exec(sql, [id])
+  db.exec(sql, [req.params.id])
   .then(function () {
 
-    // fetch the entire changed object to send back to the client
+    // now re-write with the new permissions
     sql =
-      'SELECT user.id, user.username, user.email, user.first, user.last, ' +
-        'user.active, user.last_login AS lastLogin ' +
-      'FROM user WHERE user.id = ?;';
+      'INSERT INTO permission (unit_id, user_id) VALUES ?';
 
-    return db.exec(sql, [id]);
+    var data = req.body.permissions.map(function (unitId) {
+      return [unitId, req.params.id];
+    });
+
+    return db.exec(sql, [data]);
   })
-  .then(function (rows) {
-    res.status(200).json(rows[0]);
+  .then(function () {
+    res.status(201).send();
   })
   .catch(next)
   .done();
 };
+
+
+// User update helper function.  Updates a users's project permissions by first
+// clearing out all permissions and then re-writing.
+function helperUpdateProjectPermissions(id, projects) {
+  'use strict';
+
+  var sql;
+
+  // update the user's project permissions by first removing
+  // all permissions
+  sql =
+    'DELETE FROM project_permission WHERE user_id = ?;';
+
+  return db.exec(sql, [id])
+  .then(function () {
+
+    // write the user's project permissions back to the database
+    sql =
+      'INSERT INTO project_permission (user_id, project_id) VALUES ?;';
+
+    // turn into user id and project id pairs
+    projects = projects.map(function (projectId) {
+      return [ id, projectId ];
+    });
+
+    return db.exec(sql, [ projects ]);
+  });
+}
+
+
+/**
+* PUT /users/:id
+*
+* This endpoint updates a user's information with ID :id.  If the user is not
+* found, the server sends back a 404 error.
+*
+* This method is reserved for changed all other user properties, but NOT the
+* user's password.  To change the user password, use a PUT to users/:id/password
+* with two password fields, password and passwordVerify.
+*/
+exports.update = function update(req, res, next) {
+  'use strict';
+
+  var sql, promise,
+      data = req.body,
+      projects = req.body.projects;
+
+  // if the password is sent the the
+  if (data.password) {
+    return res.status(400).json({
+      code: 'ERR_CANNOT_UPDATE_PASSWORD',
+      reason : 'Cannot update both regular user information and passwords ' +
+        'in the same request.  Please use the users/:id/password endpoint.'
+    });
+  }
+
+  // if we have changed the user's projects, update the project permissions
+  // first
+  promise = (projects && projects.length) ?
+    helperUpdateProjectPermissions(req.params.id, projects) :
+    q.resolve();
+
+  promise
+  .then(function () {
+
+    // remove data that should not be updated
+    delete data.projects;
+    delete data.id;
+    delete data.active;
+
+    // if there is nothing to update, simply return.
+    if (Object.keys(data).length === 0) {
+      return;
+    }
+
+    sql =
+      'UPDATE user SET ? WHERE id = ?;';
+
+    return db.exec(sql, [data, req.params.id]);
+  })
+  .then(function () {
+
+    // fetch the entire changed resource to send back to the client
+    return helperGetUserDetails(req.params.id);
+  })
+  .then(function (data) {
+    res.status(200).json(data);
+  })
+  .catch(next)
+  .done();
+};
+
+/**
+* PUT /users/:id/password
+*
+* This endpoint updates a user's password with ID :id.  If the user is not
+* found, the server sends back a 404 error.
+*/
+exports.password = function update(req, res, next) {
+  'use strict';
+
+  // TODO -- strict check to see if the user is either signed in or has
+  // sudo permissions.
+
+  var sql =
+    'UPDATE user SET password = PASSWORD(?) WHERE id = ?;';
+
+  db.exec(sql, [req.body.password, req.params.id])
+  .then(function () {
+    return helperGetUserDetails(req.params.id);
+  })
+  .then(function (data) {
+    res.status(200).json(data);
+  })
+  .catch(next)
+  .done();
+};
+
 
 /**
 * DELETE /users/:id
@@ -174,10 +382,10 @@ exports.delete = function del(req, res, next) {
 
   db.exec(sql, [req.params.id])
   .then(function (row) {
-    
+
     // if nothing happened, let the client know via a 404 error
     if (row.affectedRows === 0) {
-      return res.status(404).send();
+      throw 'ERR_NOT_FOUND';
     }
 
     res.status(204).send();
@@ -188,7 +396,7 @@ exports.delete = function del(req, res, next) {
 
 // GET /languages
 // TODO - where does this actually belong?
-exports.getLanguages = function (req, res, next) {
+exports.getLanguages = function getLanguages(req, res, next) {
   'use strict';
 
   var sql =
@@ -202,10 +410,12 @@ exports.getLanguages = function (req, res, next) {
   .done();
 };
 
-exports.authenticatePin = function (req, res, next) {
+
+exports.authenticatePin = function authenticatePin(req, res, next) {
   var decrypt = req.params.pin >> 5;
   var sql = 'SELECT pin FROM user WHERE user.id = ' + req.session.user.id +
     ' AND pin = \'' + decrypt + '\';';
+
   db.exec(sql)
   .then(function (rows) {
     res.send({ authenticated : !!rows.length });

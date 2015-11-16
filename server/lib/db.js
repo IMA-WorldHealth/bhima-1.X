@@ -47,7 +47,7 @@ function exec(sql, params) {
   con.getConnection(function (err, connection) {
     if (err) { return defer.reject(err); }
 
-    var qs = connection.query(sql, params, function (err, results) {
+    connection.query(sql, params, function (err, results) {
       connection.release();
       if (err) { return defer.reject(err); }
       defer.resolve(results);

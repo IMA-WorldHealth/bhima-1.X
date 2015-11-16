@@ -28,6 +28,7 @@ describe('The /users API endpoint', function () {
   var newUser = {
     username : 'newUser',
     password : 'newUser',
+    projects : [1],
     email : 'newUser@test.org',
     first: 'new',
     last: 'user'
@@ -84,6 +85,16 @@ describe('The /users API endpoint', function () {
       .catch(handler);
   });
 
+  it('GET /users/:id/projects should not find one project assigned to the new user', function () {
+    return agent.get('/users/' + newUser.id + '/projects')
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.have.length(1);
+      })
+      .catch(handler);
+  });
+
   it('GET /users/:id will find the newly added user', function () {
     return agent.get('/users/' + newUser.id)
       .then(function (res) {
@@ -116,15 +127,92 @@ describe('The /users API endpoint', function () {
       .catch(handler);
   });
 
+  it('PUT /users/:id will update a user\'s projects', function () {
+    return agent.put('/users/' + newUser.id)
+      .send({ projects : [1, 2] })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.username).to.equal(newUser.username);
+        expect(res.body.projects).to.deep.equal([ 1, 2 ]);
+
+        // re-query the database
+        return agent.get('/users/' + newUser.id);
+      })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res.body.email).to.equal('email@test.org');
+      })
+      .catch(handler);
+  });
+
+  it('PUT /users/:id will NOT update the new user\'s password', function () {
+    return agent.put('/users/' + newUser.id)
+      .send({ password : 'I am super secret.' })
+      .then(function (res) {
+        expect(res).to.have.status(400);
+        expect(res).to.be.json;
+        expect(res.body.code).to.equal('ERR_CANNOT_UPDATE_PASSWORD');
+      })
+      .catch(handler);
+  });
+
+  it('PUT /users/:id/password will update the new user\'s password', function () {
+    return agent.put('/users/' + newUser.id + '/password')
+      .send({ password : 'I am super secret.' })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+      })
+      .catch(handler);
+  });
+
+  it('GET /users/:id/permissions will have empty permissions for new user', function () {
+    return agent.get('/users/' + newUser.id + '/permissions')
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.empty;
+      })
+      .catch(handler);
+  });
+
+  it('POST /users/:id/permissions will create user permissions', function () {
+    return agent.post('/users/' + newUser.id + '/permissions')
+      .send({ permissions : [0] }) // just the root node
+      .then(function (res) {
+        expect(res).to.have.status(201);
+        return agent.get('/users/' + newUser.id + '/permissions');
+      })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res.body).to.not.be.empty;
+        expect(res.body).to.have.length(1);
+        expect(res.body[0]).to.have.keys('id', 'unit_id');
+        expect(res.body[0].unit_id).to.equal(0);
+      })
+      .catch(handler);
+  });
+
+
+  it('PUT /users/:id/password will update a user\'s password', function () {
+    return agent.put('/users/' + newUser.id + '/password')
+      .send({ password: 'WOW' })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res.body).to.not.be.empty;
+      })
+      .catch(handler);
+  });
+
   it('DELETE /users/:id will delete the newly added user', function () {
     return agent.delete('/users/' + newUser.id)
       .then(function (res) {
         expect(res).to.have.status(204);
-        expect(res.body).to.be.empty;
         return agent.get('/users/' + newUser.id);
       })
       .then(function (res) {
         expect(res).to.have.status(404);
+        expect(res.body).to.not.be.empty;
       })
       .catch(handler);
   });
@@ -133,8 +221,18 @@ describe('The /users API endpoint', function () {
     return agent.delete('/users/' + newUser.id)
       .then(function (res) {
         expect(res).to.have.status(404);
+        expect(res.body).to.not.be.empty;
+      })
+      .catch(handler);
+  });
+
+  it('GET /users/:id/permissions will be empty for deleted user', function () {
+    return agent.get('/users/' + newUser.id + '/permissions')
+      .then(function (res) {
+        expect(res).to.have.status(200);
         expect(res.body).to.be.empty;
       })
       .catch(handler);
   });
+
 });
