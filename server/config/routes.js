@@ -42,7 +42,8 @@ var auth            = require('../controllers/auth'),
     inventory       = require('../controllers/inventory'),
     patient         = require('../controllers/patient'),
     depot           = require('../controllers/depot'),
-    budget          = require('../controllers/budget');
+    budget          = require('../controllers/budget'),
+    cashflow        = require('../controllers/cashflow');
 
 var patient         = require('../controllers/patient');
 
@@ -296,4 +297,8 @@ exports.initialise = function (app) {
 
   // stock entries
   app.get('/stock/entries?', stock.getStockEntry);
+
+  // cashflow
+  app.get('/cashflow/report/', cashflow.getReport);
+
 };

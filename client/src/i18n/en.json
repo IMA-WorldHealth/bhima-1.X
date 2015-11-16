@@ -291,6 +291,9 @@
       "TITLE"              : "Regularization of payments",
       "WAIT_ACCOUNT"       : "Compte d'attente"
     },
+   "FLOW" : {
+     "TITLE" : "Cash Flow "
+   },
    "HELP_TXT_1"       : "The module allows debitors to pay against existing invoices",
    "HELP_TXT_2"       : "To begin, search for a debitor using the search bar above",
    "NO_EXCHANGE_RATE" : "Error : No exchange rate!",
@@ -2967,6 +2970,7 @@
    "CASH"                      : "Cash Payments",
    "CASHBOX_MANAGEMENT"        : "Cashbox Management",
    "CASHBOX_ACCOUNT_MANAGEMENT": "Treasure Configuration",
+   "CASH_FLOW"                 : "Cash Flow",
    "CASH_PAYMENTS"             : "Cash Payments",
    "CAUTION"                   : "Caution",
    "CHART_OF_ACCOUNTS"         : "Chart of Accounts",
@@ -3168,6 +3172,7 @@
    "DATE_TO"           : "To",
    "DELETE_SUCCESS"    : "Successfully deleted",
    "DEPOT"             : "Store",
+   "DETAILS"           : "Details",
    "DOCUMENT"          : "Document",
    "DONOR"             : "Donor",
    "DOLLARS"           : "Dollars",
