@@ -325,6 +325,62 @@ function patientRecords(params) {
   return db.exec(sql);
 }
 
+function patientNewVisit(params) {
+  var p = querystring.parse(params),
+      deferred = q.defer();
+
+  var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
+      _end =  sanitize.escape(util.toMysqlDate(new Date(p.end).setDate(new Date(p.end).getDate() + 1))),
+      _id;
+
+  if (p.id.indexOf(',')) {
+    _id = p.id.split(',').map(function (id) { return sanitize.escape(id); }).join(',');
+  } else {
+    _id = p.id;
+  }
+
+  var sql =
+    'SELECT patient.uuid, patient.reference, project.abbr, debitor_uuid, first_name, middle_name, hospital_no, last_name, dob, father_name, ' +
+        'sex, religion, renewal, registration_date, date, CONCAT(user.first,\' \',user.last) AS registrar ' +
+      'FROM `patient` JOIN `patient_visit` JOIN `project` JOIN `user` ON ' +
+        '`patient`.`uuid`=`patient_visit`.`patient_uuid` AND ' +
+        '`patient`.`project_id`=`project`.`id` AND ' +
+        '`patient_visit`.`registered_by` = `user`.`id` ' +
+      'WHERE `date` >= ' + _start + ' AND `date` <= ' + _end + ' ' +
+      'AND patient_visit.date = patient.registration_date ' +
+      'AND `project_id` IN (' + _id + ');';
+
+  return db.exec(sql);
+}
+
+function patientOldVisit(params) {
+  var p = querystring.parse(params),
+      deferred = q.defer();
+
+  var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
+      _end =  sanitize.escape(util.toMysqlDate(new Date(p.end).setDate(new Date(p.end).getDate() + 1))),
+      _id;
+
+  if (p.id.indexOf(',')) {
+    _id = p.id.split(',').map(function (id) { return sanitize.escape(id); }).join(',');
+  } else {
+    _id = p.id;
+  }
+
+  var sql =
+    'SELECT patient.uuid, patient.reference, project.abbr, debitor_uuid, first_name, middle_name, hospital_no, last_name, dob, father_name, ' +
+        'sex, religion, renewal, registration_date, date, CONCAT(user.first,\' \',user.last) AS registrar ' +
+      'FROM `patient` JOIN `patient_visit` JOIN `project` JOIN `user` ON ' +
+        '`patient`.`uuid`=`patient_visit`.`patient_uuid` AND ' +
+        '`patient`.`project_id`=`project`.`id` AND ' +
+        '`patient_visit`.`registered_by` = `user`.`id` ' +
+      'WHERE `date` >= ' + _start + ' AND `date` <= ' + _end + ' ' +
+      'AND patient_visit.date <> patient.registration_date ' +
+      'AND `project_id` IN (' + _id + ');';
+
+  return db.exec(sql);
+}
+
 function paymentRecords(params) {
   var p = querystring.parse(params);
 
@@ -958,6 +1014,8 @@ function generate(request, params, done) {
     'distributionPatients'  : distributionPatients,
     'distributionServices'  : distributionServices,
     'patients'              : patientRecords,
+    'patients_new_visit'    : patientNewVisit,
+    'patients_old_visit'    : patientOldVisit,
     'payments'              : paymentRecords,
     'patientStanding'       : patientStanding,
     'employeePaiement'      : employeePaiement,

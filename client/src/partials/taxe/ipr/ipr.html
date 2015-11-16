@@ -10,7 +10,7 @@
       <li class="active">{{ "TAXES.IPR" | translate }}</li>
     </ol>
   </div>
-  	
+
   <div class="pull-right">
 	  <button class="btn btn-sm btn-default" ng-click="new()">
 	    <span class="glyphicon glyphicon-plus-sign"></span>
@@ -162,7 +162,7 @@
 			          <div class="form-group">
 			            <input type="submit" ng-disabled="new.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.new()">
 			            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
-			          </div>   
+			          </div>
 			        </form>
 			      </div>
 
@@ -193,7 +193,7 @@
 			            	{{ "TAXES.TRANCH" | translate }} {{"TAXES.FROM" | translate}}
 			            </label>
 			            <div class="col-xs-8">
-			              <input type="number" ng-model="session.edit.tranche_annuelle_debut" class="form-bhima" required>
+			              <input type="text" ng-model="session.edit.tranche_annuelle_debut" class="form-bhima" required>
 			            </div>
 			          </div>
 
@@ -202,14 +202,14 @@
 			            	{{ "TAXES.TRANCH" | translate }} {{"TAXES.TO" | translate}}
 			            </label>
 			            <div class="col-xs-8">
-			              <input type="number" ng-model="session.edit.tranche_annuelle_fin" class="form-bhima" required>
+			              <input type="text" ng-model="session.edit.tranche_annuelle_fin" class="form-bhima" required>
 			            </div>
 			          </div>
 
 			          <div class="form-group">
 			            <input type="submit" ng-disabled="edit.$invalid" class="btn btn-sm btn-success" value="{{ 'FORM.SUBMIT' | translate }}" ng-click="save.edit()">
 			            <input type="reset" class="btn btn-sm btn-default" value="{{ 'FORM.RESET' | translate }}" ng-click="reset()">
-			          </div>   
+			          </div>
 			        </form>
 			      </div>
 				</div>
