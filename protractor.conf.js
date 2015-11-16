@@ -20,7 +20,12 @@ var config = {
   framework : 'mocha',
   baseUrl : 'https://localhost:8080/',
   allScriptsTimeout : 30000,
+  timeout : 10000,
+  defaultTimeoutInterval : 30000,
 
+  jasmineNodeOpts : { 
+    defaultTimeoutInterval : 30000,
+  },
   // default browsers to run
   multiCapabilities: [{
     //'browserName': 'firefox',

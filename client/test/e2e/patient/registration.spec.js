@@ -41,14 +41,26 @@ describe('patient registration', function () {
 
   // Blocks years above max year 
 
-  it('registers a valid user', function () { 
+  it('registers a valid user', function (done) { 
     element(by.model('PatientRegCtrl.medical.last_name')).sendKeys(mockPatient.last_name);
     element(by.model('PatientRegCtrl.medical.middle_name')).sendKeys(mockPatient.middle_name);
     element(by.model('PatientRegCtrl.medical.first_name')).sendKeys(mockPatient.first_name);
+  
+    element(by.model('PatientRegCtrl.medical.hospital_no')).sendKeys(mockPatient.hospital_no);
 
-    element(by.model('PatientRegCtrl.medical.yob')).sendKeys(mockPatient.yob);
+    element(by.model('PatientRegCtrl.yob')).sendKeys(mockPatient.yob);
 
-    // element(by.model('locationSelect.setOriginLocation.village.value').
+    var defaultOrigin = element(by.model('locationSelect.setOriginLocation.locationStore.village.value')).$('option:checked').getText();
+    var defaultCurrent = element(by.model('locationSelect.setCurrentLocation.locationStore.village.value')).$('option:checked').getText();
+  
+    element(by.model('PatientRegCtrl.medical.sex')).sendKeys('M');
+
+    element(by.id('submitPatient')).click();
+
+    expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + '#/invoice/patient/*');
+  
+
+    done();
   });
 
   // Async blocks hosptial numbers that are taken
