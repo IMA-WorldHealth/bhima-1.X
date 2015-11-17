@@ -2,231 +2,340 @@ angular.module('bhima.controllers')
 .controller('ServiceReturnStockController', ServiceReturnStockController);
 
 ServiceReturnStockController.$inject = [
-  '$routeParams', '$http', '$q', '$location', 'SessionService', 'DepotService', 'InventoryService'
+  '$routeParams', '$http', '$q', '$translate', '$location', 'SessionService',
+  'messenger', 'connect', 'uuid', 'validate', 'util'
 ];
 
 /**
-* Responsible for return return medications from service to depot.
-* This entails the following steps:
-*   1) Select the service in which there are stock to return
-*   2) Select medications by lots
-*   3) Select quantities from each lot
-*   4) Return medications to the current depots
-*   5a) Print a receipt/generate documentation
-*   5b) Increase the stock inventory account in the journal by debiting the
-*       stock account and crediting the cost of goods sold account.
-*
-* @constructor
-* @class ServiceReturnStockController
-*/
-function ServiceReturnStockController($routeParams, $http, $q, $location, Session, Depots, Inventory) {
-  var vm = this;
+  * Responsible for return medications from service to depot.
+  * This is the following steps:
+  *   1) Select the service in which there are stock to return
+  *   2) Select medications
+  *   3) Submission
+  *   4) Print a receipt/generate documentation
+  *   5) Increase the stock inventory account in the journal by debiting the
+  *       stock account and crediting the cost of goods sold account.
+  *       indicate the service as cost center in journal
+  *
+  * @constructor
+  * @class ServiceReturnStockController
+  */
+function ServiceReturnStockController($routeParams, $http, $q, $translate, $location, SessionService, messenger, connect, uuid, validate, util) {
+  var vm           = this,
+      session      = vm.session = {},
+      dependencies = {};
 
-  // view data
-  vm.uuid = $routeParams.depotId;
-  vm.total   = 0;
-  vm.queue = [{}];
-  vm.metadata = { date : new Date() };
-  vm.currencyId = Session.enterprise.currency_id;
+  // dependencies
+  dependencies.depots = {
+    query : {
+      identifier : 'uuid',
+      tables : {
+        'depot' : {
+          columns : ['uuid', 'reference', 'text']
+        }
+      }
+    }
+  };
 
-  // exposed functions
-  vm.dequeue    = dequeue;
-  vm.enqueue    = enqueue;
-  vm.use        = use;
-  vm.retotal    = retotal;
-  vm.submit     = submit;
-  vm.filterAggregateQuantities = filterAggregateQuantities;
+  dependencies.services = {
+    query : {
+      identifier : 'id',
+      tables : {
+        'service' : { columns : ['id', 'name', 'cost_center_id'] }
+      },
+      where : ['service.project_id=' + SessionService.project.id]
+    }
+  };
+
+  dependencies.inventory = {
+    query : {
+      identifier : 'uuid',
+      tables : {
+        inventory : { columns : ['uuid', 'code', 'text', 'purchase_price', 'type_id', 'group_uuid'] },
+        inventory_group : { columns : ['sales_account', 'stock_account'] },
+      },
+      join : ['inventory_group.uuid=inventory.group_uuid'],
+      where : ['inventory_group.stock_account<>null']
+    }
+  };
+
+  dependencies.employee = {
+    query : {
+      tables : {
+        employee : { columns : ['id', 'code', 'prenom', 'name', 'postnom', 'creditor_uuid']}
+      }
+    }
+  };
+
+  // initialize models
+  vm.session.step  = null;
+  vm.session.total = 0;
+  vm.session.stocks = [];
+  vm.session.integrationStarted = false;
+
+  // Expose models to the views
+  vm.startingReturnProcess = startingReturnProcess;
+  vm.addStockItem = addStockItem;
+  vm.removeStockItem = removeStockItem;
+  vm.updateStockItem = updateStockItem;
+  vm.isValidLine = isValidLine;
+  vm.preview = preview;
+  vm.isPassed = isPassed;
+  vm.goback = goback;
+  vm.reset = reset;
+  vm.integrate = integrate;
 
   // start the module up
   startup();
 
-  /* ------------------------------------------------------------------------ */
-
-  // get all the services supported by the enterprise
-  function getServices() {
-    return $http.get('/services')
-    .then(function (response) { return response.data; });
-  }
-
-  // copy data from inventory onto queue row
-  function use(row, item) {
-
-    // toggle visibility in the inventory typeahead
-    item.used = true;
-
-    // cache selected inventory metadata on row
-    row.price           = item.price;
-    row.label           = item.label;
-    row.lots            = item.lots;
-    row.unit            = item.unit;
-    row.group           = item.groupName;
-    row.tracking_number = item.tracking_number;
-    row.maxQuantity     = item.maxQuantity;
-  }
-
-  // removes an item from the queue at a given index
-  function dequeue(idx) {
-    var item, i = 0,
-        removed = vm.queue.splice(idx, 1)[0];
-
-    // ensure the inventory item has actually been selected
-    if (!removed.code) { return; }
-
-    // linear search: find the inventory item that we just dequeued by linearly
-    // searching through the inventory for a matching code
-    do {
-      item = vm.inventory[i++];
-    } while (removed.code !== item.code);
-
-    // set the item to be visible again in the typeahead
-    item.used = false;
-  }
-
-  // adds a new row to the queue
-  function enqueue() {
-    vm.queue.push({});
-  }
-
-  // calculate the totals when quantities change
-  function retotal() {
-    vm.total = vm.queue.reduce(function (sum, row) {
-      return sum + (row.price * row.quantity);
-    }, 0);
-  }
-
-  // we need to extract the amount distributed from each lot
-  function distributeAmongLots(quantity, item) {
-    var lot, q,
-        distributions = [],
-        i = 0;
-
-    while (quantity > 0) {
-      lot = item.lots[i++];
-
-      // q is the amount we will consume.distribute from this lot
-      q = (lot.quantity < quantity) ? quantity - lot.quantity : quantity;
-
-      // add to list of distributions
-      distributions.push({
-        service_id      : vm.service.id,
-        unit_price      : item.price,
-        depot_uuid      : vm.uuid,
-        date            : vm.metadata.date,
-        tracking_number : lot.tracking_number,
-        quantity        : q
-      });
-
-      // decrease quantity needed by q
-      quantity -= q;
-    }
-
-    return distributions;
-  }
-
-  // triggered to submit the form
-  // NOTE -- we are guaranteed to have "valid" data, since the button will be
-  // disabled until it passes angular's validation checks.  Further validation
-  // will be done on the server.
-  function submit() {
-    var data;
-
-    // make a single flat array of distributions
-    data = vm.queue.reduce(function (array, item) {
-      return array.concat(distributeAmongLots(item.quantity, item));
-    }, []);
-
-    // $http.post('/depots/' + vm.uuid + '/distributions', {
-    //   data : data,
-    //   type : 'service'   // create a service distribution
-    // })
-    $q.when(true)
-    .then(function () {
-      console.log(data);
-    })
-    .then(function (result) {
-
-      // go to the receipt
-      $location.url('/invoice/service_distribution/' + result.data);
-    })
-    .catch(function (err) {
-      console.log('An error occurred:', err);
-    });
-  }
-
-  // startup the module
+  // Functions definitions
   function startup() {
-    $q.all([
-      getServices(),
-      Depots.getDepots(vm.uuid),
-      Depots.getAvailableStock(vm.uuid),
-      Inventory.getInventoryItems()
-    ])
-    .then(function (responses) {
-      var stock, inventory;
+    if (angular.isUndefined($routeParams.depotId)) {
+      messenger.error($translate.instant('UTIL.NO_DEPOT_SELECTED'), true);
+      return;
+    }
+    validate.process(dependencies)
+    .then(initialize)
+    .catch(error);
+  }
 
-      // destructure responses
-      vm.services = responses[0];
-      vm.depot    = responses[1];
-      stock       = responses[2];
-      inventory   = responses[3];
+  function initialize(models) {
+    angular.extend(vm, models);
+    vm.session.depot = vm.depots.get($routeParams.depotId);
+  }
 
-      // we need to associate each stock with the proper inventory item
-      // if a particular inventory item does not have lots in this pharmacy,
-      // we will assign an empty array as the lots.
-      inventory.forEach(function (i) {
+  function error (err) {
+    console.error(err);
+    return;
+  }
 
-        // default: the item has not been selected yet
-        i.used = false;
+  function startingReturnProcess () {
+    if (!vm.service || !vm.service.id) { return; }
+    vm.session.step = 'select_inventories';
+    vm.session.integrationStarted = true;
+    vm.session.labelMovement = translateLabelMovement();
+    addStockItem();
+  }
 
-        i.lots = stock.filter(function (s) {
-          return s.code === i.code;
-        })
-        .map(function (s) {
-          return {
-            lot_number      : s.lot_number,
-            quantity        : s.quantity,
-            tracking_number : s.tracking_number,
-            expiration_date : new Date(Date.parse(s.expiration_date))
-          };
-        });
+  function translateLabelMovement() {
+    if (!vm.service || !vm.session.depot) { return; }
+    return '' + $translate.instant('SERVICE_RETURN_STOCK.MOVEMENT').replace('%SERVICE%', vm.service.name).replace('%DEPOT%', vm.session.depot.text);
+  }
 
-        // sum the lots and figure out how much quantity we can distribute of
-        // this item
-        i.maxQuantity = i.lots.reduce(function (s, lot) {
-          return s + lot.quantity;
-        }, 0);
+  function addStockItem () {
+    var stock = new StockItem();
+    vm.session.stocks.push(stock);
+  }
 
-        // sort lots in increasing order of expiration date
-        i.lots.sort(function (a,b) {
-          return a.expiration_date > b.expiration_date ? 1 : -1;
-        });
+  function StockItem () {
+    var self = this;
 
-        // aggregate the value (in sorted order) so that we can filter as demanded
-        // by the UI
-        i.lots.forEach(function (lot, index, lots) {
+    this.code = null;
+    this.inventory_uuid = null;
+    this.text = null;
+    this.date = new Date();
+    this.lot_number = null;
+    this.tracking_number = uuid();
+    this.quantity = 0;
+    this.purchase_price = 0;
+    this.purchase_order_uuid = null;
+    this.isValidStock = false;
 
-          // for the first item, the aggregate quantity is the quantity
-          // for all others, the aggregate quantity is the previous aggregate quantity
-          // plus the current quantity
-          lot.aggregateQuantity = (index === 0) ?
-            0 :
-            lots[index - 1].aggregateQuantity + lots[index - 1].quantity; // quantity up to this one
-        });
 
-        // create a nicely formatted label for the typeahead
-        i.fmtLabel = i.code + ' ' + i.label;
-      });
+    this.set = function (inventoryReference) {
+      self.inventory_uuid = inventoryReference.uuid;
+      self.code = inventoryReference.code;
+      self.text = inventoryReference.text;
+      self.expiration_date = new Date();
+      self.date = new Date();
+      self.lot_number = null;
+      self.tracking_number = uuid();
+      self.purchase_price = inventoryReference.purchase_price || self.purchase_price;
+      self.purchase_order_uuid = null;
+      self.isSet = true;
+    };
 
-      // expose inventory to the view
-      vm.inventory = inventory;
+    return this;
+  }
+
+  function removeStockItem (idx) {
+    vm.session.stocks.splice(idx, 1);
+    updateTotal();
+  }
+
+  function updateStockItem (stockItem, inventoryReference) {
+    stockItem.set(inventoryReference);
+  }
+
+  function isValidLine (stockItem) {
+    if(angular.isDefined(stockItem.code) &&
+       angular.isDefined(stockItem.expiration_date) &&
+       angular.isDefined(stockItem.lot_number) &&
+       angular.isDefined(stockItem.purchase_price) &&
+       stockItem.purchase_price > 0 &&
+       stockItem.quantity > 0 &&
+       stockItem.expiration_date > new Date()
+      ){
+      stockItem.isValidStock = true;
+      updateTotal();
+    }else{
+      stockItem.isValidStock = false;
+    }
+  }
+
+  function isPassed (){
+    return vm.session.stocks.every(function (item){
+      return item.isValidStock === true;
     });
   }
 
-  // TODO - find a better name
-  // Creates a filter for each row, that removes aggregate quantities
-  function filterAggregateQuantities(row) {
-    return function (lot) {
-      return row.quantity > lot.aggregateQuantity;
+  function preview () {
+    vm.session.step = 'preview_inventories';
+  }
+
+  function updateTotal (){
+    vm.session.total = vm.session.stocks.reduce(function (a, b){ return a + b.quantity * b.purchase_price; }, 0);
+  }
+
+  function goback () {
+    vm.session.step = 'select_inventories';
+  }
+
+  function reset () {
+    vm.session.stocks = [];
+    vm.session.step = null;
+  }
+
+  function simulatePurchase() {
+    return {
+      uuid          : uuid(),
+      cost          : vm.session.total,
+      purchase_date : util.sqlDate(new Date()),
+      currency_id   : SessionService.enterprise.currency_id,
+      creditor_uuid : null,
+      purchaser_id  : null,
+      emitter_id    : SessionService.user.id,
+      project_id    : SessionService.project.id,
+      receiver_id   : null,
+      note          : 'Service Return Stock/' + vm.service.name + '/' + vm.description + '/' + util.sqlDate(new Date()),
+      paid          : 0,
+      confirmed     : 0,
+      closed        : 0,
+      is_integration: 1,
+      is_direct     : 0
     };
   }
+
+  function getPurchaseItem(purchase_uuid){
+    var items = [];
+    vm.session.stocks.forEach(function (stock){
+      var item = {
+        uuid           : uuid(),
+        purchase_uuid  : purchase_uuid,
+        inventory_uuid : stock.inventory_uuid,
+        quantity       : stock.quantity,
+        unit_price     : stock.purchase_price,
+        total          : stock.quantity * stock.purchase_price
+      };
+      items.push(item);
+    });
+    return items;
+  }
+
+  function getStocks(purchase_uuid) {
+    var stocks = [];
+    vm.session.stocks.forEach(function (item) {
+      var stock = {
+        tracking_number      : item.tracking_number,
+        lot_number           : item.lot_number,
+        inventory_uuid       : item.inventory_uuid,
+        entry_date           : util.sqlDate(new Date()),
+        quantity             : item.quantity,
+        expiration_date      : util.sqlDate(item.expiration_date),
+        purchase_order_uuid  : purchase_uuid
+      };
+      stocks.push(stock);
+    });
+    return stocks;
+  }
+
+  function getMovements (document_id) {
+    var movements = [];
+    vm.session.stocks.forEach(function (item) {
+      var movement = {
+        uuid            : uuid(),
+        document_id     : document_id,
+        tracking_number : item.tracking_number,
+        date            : util.sqlDate(new Date()),
+        quantity        : item.quantity,
+        depot_entry     : vm.session.depot.uuid
+      };
+      movements.push(movement);
+    });
+    return movements;
+  }
+
+  function integrate () {
+    var purchase = simulatePurchase();
+    var purchase_items = getPurchaseItem(purchase.uuid);
+    var stocks = getStocks(purchase.uuid);
+    var document_id = uuid();
+    var movements = getMovements(document_id);
+
+    connect.post('purchase', purchase)
+    .then(function (){
+      var promisses = purchase_items.map(function (item){
+        return connect.post('purchase_item', item);
+      });
+      return $q.all(promisses);
+    })
+    .then(function (){
+      var promisses = stocks.map(function (item){
+        return connect.post('stock', item);
+      });
+      return $q.all(promisses);
+    })
+    .then(function (){
+      var promisses = movements.map(function (item){
+        return connect.post('movement', item);
+      });
+      return $q.all(promisses);
+    })
+    .then(function () {
+      // journal notify return stock from service
+      var params = {
+        purchase_uuid   : purchase.uuid,
+        cost_center_id  : vm.service.cost_center_id
+      };
+
+      return $http.get('/journal/service_return_stock/' + JSON.stringify(params));
+    })
+    .then(function (){
+      messenger.success($translate.instant('STOCK.ENTRY.WRITE_SUCCESS'), false);
+      return $q.when(1);
+    })
+    .then(function () {
+      $location.path('/stock/entry/report/' + document_id);
+    })
+    .catch(function (err) {
+      // notify error
+      messenger.error($translate.instant('STOCK.ENTRY.WRITE_ERROR'), false);
+      console.error(err);
+
+      // rollback
+      var stock_ids = stocks.map(function (stock){return stock.tracking_number;});
+      connect.delete('movement', 'tracking_number', stock_ids).
+      then(function (){
+        connect.delete('stock', 'tracking_number', stock_ids);
+      })
+      .then(function (){
+        connect.delete('purchase_item', 'purchase_uuid', [purchase.uuid]);
+      })
+      .then(function (){
+        connect.delete('purchase', 'uuid', [purchase.uuid]);
+      })
+      .catch(function (err){console.log('can not remove corrumpted data, inform the admin of system');});
+    });
+  }
+
 }

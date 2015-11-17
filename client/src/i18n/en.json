@@ -2573,7 +2573,15 @@
    "TITLE"                  : "Services Management"
    },
 "SERVICE_RETURN_STOCK" : {
-   "TITLE"  : "Return stock from service"
+  "BACK"         : "Back",
+  "DESCRIPTION"  : "Description",
+  "FROM"         : "Provenance",
+  "MOVEMENT"     : "Stock from %SERVICE% to %DEPOT%",
+  "PREVIEW"      : "Preview",
+  "SUBMIT"       : "Submit",
+  "TO"           : "Destination",
+  "TITLE"        : "Return stock from service",
+  "TOWARD_DEPOT" : "Return toward depot"
 },
 "SERVICE_EXPLOITATION": {
    "TITLE" : "Service Income/Expense Summary"
@@ -3200,6 +3208,7 @@
    "NEW_SUCCESS"       : "Successfully added",
    "NO"                : "No",
    "NO_DATA"           : "The query did not return any data.",
+   "NO_DEPOT_SELECTED" : "No depot selected",
    "OFF"               : "Off",
    "ON"                : "On",
    "PATIENT_EXIST_A"   : "Patient with file number [",
@@ -3207,12 +3216,14 @@
    "PRINT"             : "Print",
    "PROJECT"           : "Current Project",
    "REGISTER_NEW_STOCK": "Register a Stock",
+   "RESET"             : "Reset",
    "RESET_FORM"        : "Reset Form",
    "SAVE_SELECTION"    : "Save Selection",
    "SEARCH"            : "Search",
    "SHOW"              : "Show",
    "SIGNATURES"        : "Signatures",
    "SOURCE"            : "Source",
+   "START"             : "Start",
    "SUBMIT"            : "Submit",
    "SUCCESS"           : "successful",
    "TOGGLE"            : "Toggle",
