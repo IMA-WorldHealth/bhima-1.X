@@ -326,6 +326,7 @@
    "DAY"          : "Today",
    "MONTH"        : "This Month",
    "SEARCH"       : "Search",
+   "ALL_TIME"     : "All Time",
    "TITLE"        : "Cash Payments",
    "WEEK"         : "This Week"
    },
@@ -2703,6 +2704,7 @@
      "EXPIRATION_DATE"      : "Expiration date",
      "EXPIRATION_INFO"      : "Please enter the valid expirations dates",
      "EXPIRATION_ALERT"     : "The system does not accept expired product",
+     "GOBACK"               : "Return",
      "ITEMS"                : "Stock Item(s)",
      "KEY"                  : "Stock Integration",
      "LOT_QTY"              : "Lot and Quantity",
