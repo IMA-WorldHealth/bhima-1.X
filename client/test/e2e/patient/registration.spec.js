@@ -8,7 +8,8 @@ chai.use(chaiAsPromised);
 var expect = chai.expect;
 
 describe('patient registration', function () {
-  
+  // this.timeout(30000);
+
   var REGISTRATION_PATH = '#/patients/register';
 
   var mockPatient = { 
@@ -21,8 +22,11 @@ describe('patient registration', function () {
     // origin_location_id : 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
     sex : 'M',
     project_id : 1,
-    hospital_no : 120,
+    hospital_no : 120
   };
+
+  var debtorGroupUuid = 'string:66f03607-bfbc-4b23-aa92-9321ca0ff586';
+
 
   beforeEach(function () {
     // navigate to the patient registration page
@@ -53,14 +57,17 @@ describe('patient registration', function () {
     var defaultOrigin = element(by.model('locationSelect.setOriginLocation.locationStore.village.value')).$('option:checked').getText();
     var defaultCurrent = element(by.model('locationSelect.setCurrentLocation.locationStore.village.value')).$('option:checked').getText();
   
-    element(by.model('PatientRegCtrl.medical.sex')).sendKeys('M');
+    element(by.id('male')).click();
 
     element(by.id('submitPatient')).click();
-
-    expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + '#/invoice/patient/*');
   
+    element(by.model('PatientRegCtrl.finance.debtor_group_uuid')).element(by.cssContainingText('option', 'Second Test Debtor Group')).click();
+      
+    element(by.id('submitPatient')).click();
 
-    done();
+    // expect(browser.getCurrentUrl()).to.eventually.contain(browser.baseUrl + '#/invoice/patient/');
+    expect(browser.getCurrentUrl()).to.eventually.contain(browser.baseUrl + '#/invoice/patient/');
+    // browser.pause();
   });
 
   // Async blocks hosptial numbers that are taken

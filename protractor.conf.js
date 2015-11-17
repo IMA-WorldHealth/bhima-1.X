@@ -23,8 +23,8 @@ var config = {
   timeout : 10000,
   defaultTimeoutInterval : 30000,
 
-  jasmineNodeOpts : { 
-    defaultTimeoutInterval : 30000,
+  mochaOpts : { 
+    timeout : 30000,
   },
   // default browsers to run
   multiCapabilities: [{
