@@ -11,3 +11,9 @@ INSERT INTO `unit` (`id`, `name`, `key`, `parent`, `url`, `path`) VALUES
 
 ALTER TABLE `taxe_ipr` CHANGE `tranche_annuelle_debut` `tranche_annuelle_debut` INT UNSIGNED NULL DEFAULT NULL;
 ALTER TABLE `taxe_ipr` CHANGE `tranche_annuelle_fin` `tranche_annuelle_fin` INT UNSIGNED NULL DEFAULT NULL;
+
+-- Grade Integer
+-- By: Bruce M.
+-- Date: 2015-11-15
+
+ALTER TABLE `grade` CHANGE `text` `text` FLOAT(4) NOT NULL;
