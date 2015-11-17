@@ -326,6 +326,7 @@
    "ALL_PROJECTS" : "Tous les projets",
    "DAY"          : "Aujourd'hui",
    "MONTH"        : "Ce Mois",
+   "ALL_TIME"     : "Tous Temps",
    "SEARCH"       : "Rechercher",
    "TITLE"        : "Paiements Caisse Auxillaire",
    "WEEK"         : "Cette Semaine"
@@ -2707,6 +2708,7 @@
       "EXPIRATION_DATE"      : "Date d'Expiration",
       "EXPIRATION_INFO"      : "Veuillez introduire des dates d'expirations valides",
       "EXPIRATION_ALERT"     : "Le système n'accepte pas des produits périmés",
+      "GOBACK"               : "Retourner",
       "ITEMS"                : "Stock Item(s)",
       "KEY"                  : "Stock d'Integration",
       "LOT_QTY"              : "Lot et Quantité",
