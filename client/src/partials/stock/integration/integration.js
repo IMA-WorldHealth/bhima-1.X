@@ -1,5 +1,5 @@
 var stockIntegration = function ($q, $translate, $location, $routeParams, validate, connect, messenger, uuid, util, Appcache, Session) {
-  
+
   var vm = this, cache = new Appcache('integration'), dependencies = {};
 
   vm.session = {
@@ -59,9 +59,9 @@ var stockIntegration = function ($q, $translate, $location, $routeParams, valida
 
   function testContuity (){
     if (angular.isDefined($routeParams.depotId)) {
-      vm.session.depot = { uuid : $routeParams.depotId };    
+      vm.session.depot = { uuid : $routeParams.depotId };
     }else{
-      messenger.error('Pas de depot selectionne', false);
+      messenger.error($translate.instant('UTIL.NO_DEPOT_SELECTED'), true);
       return;
     }
   }
@@ -74,7 +74,7 @@ var stockIntegration = function ($q, $translate, $location, $routeParams, valida
 
   function addStockItem () {
     var stock = new StockItem();
-    vm.session.stocks.push(stock);    
+    vm.session.stocks.push(stock);
   }
 
   function StockItem () {
@@ -90,7 +90,7 @@ var stockIntegration = function ($q, $translate, $location, $routeParams, valida
     this.purchase_price = 0;
     this.purchase_order_uuid = null;
     this.isValidStock = false;
-    
+
 
     this.set = function (inventoryReference) {
       self.inventory_uuid = inventoryReference.uuid;
@@ -118,7 +118,7 @@ var stockIntegration = function ($q, $translate, $location, $routeParams, valida
   }
 
   function isValidLine (stockItem) {
-    if(angular.isDefined(stockItem.code) &&      
+    if(angular.isDefined(stockItem.code) &&
        angular.isDefined(stockItem.expiration_date) &&
        angular.isDefined(stockItem.lot_number) &&
        angular.isDefined(stockItem.purchase_price) &&
@@ -144,7 +144,7 @@ var stockIntegration = function ($q, $translate, $location, $routeParams, valida
   }
 
   function updateTotal (){
-    vm.session.total = vm.session.stocks.reduce(function (a, b){return a + b.quantity * b.purchase_price}, 0);
+    vm.session.total = vm.session.stocks.reduce(function (a, b){ return a + b.quantity * b.purchase_price; }, 0);
   }
 
   function goback () {
@@ -168,7 +168,7 @@ var stockIntegration = function ($q, $translate, $location, $routeParams, valida
       closed        : 0,
       is_integration: 1,
       is_direct     : 0
-    };  
+    };
   }
 
   function getPurchaseItem(purchase_uuid){
@@ -191,15 +191,15 @@ var stockIntegration = function ($q, $translate, $location, $routeParams, valida
     var stocks = [];
     vm.session.stocks.forEach(function (item) {
       var stock = {
-        tracking_number      : item.tracking_number,        
+        tracking_number      : item.tracking_number,
         lot_number           : item.lot_number,
         inventory_uuid       : item.inventory_uuid,
         entry_date           : util.sqlDate(new Date()),
         quantity             : item.quantity,
         expiration_date      : util.sqlDate(item.expiration_date),
         purchase_order_uuid  : purchase_uuid
-      }
-      stocks.push(stock);     
+      };
+      stocks.push(stock);
     });
     return stocks;
   }
@@ -214,8 +214,8 @@ var stockIntegration = function ($q, $translate, $location, $routeParams, valida
         date            : util.sqlDate(new Date()),
         quantity        : item.quantity,
         depot_entry     : vm.session.depot.uuid
-      }
-      movements.push(movement);      
+      };
+      movements.push(movement);
     });
     return movements;
   }
@@ -223,7 +223,7 @@ var stockIntegration = function ($q, $translate, $location, $routeParams, valida
   function integrate () {
     var purchase = simulatePurchase();
     var purchase_items = getPurchaseItem(purchase.uuid);
-    var stocks = getStocks(purchase.uuid);    
+    var stocks = getStocks(purchase.uuid);
     var document_id = uuid();
     var movements = getMovements(document_id);
 
@@ -276,13 +276,13 @@ var stockIntegration = function ($q, $translate, $location, $routeParams, valida
   vm.startIntegration = startIntegration;
   vm.addStockItem = addStockItem;
   vm.removeStockItem = removeStockItem;
-  vm.updateStockItem = updateStockItem; 
+  vm.updateStockItem = updateStockItem;
   vm.isValidLine = isValidLine;
   vm.preview = preview;
   vm.isPassed = isPassed;
   vm.goback = goback;
   vm.integrate = integrate;
-}
+};
 
 stockIntegration.$inject = [
   '$q', '$translate', '$location', '$routeParams', 'validate', 'connect',
