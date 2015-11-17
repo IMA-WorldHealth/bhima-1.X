@@ -23,6 +23,8 @@ function patientRegistration ($scope, $q, $location, $translate, connect, messen
     session.defaultLocationLoaded = false;
 
     session.failedSessionValidation = false;
+    session.needRegistrationDate    = false;
+    session.customRegistrationDate  = timestamp;
     $scope.patient = {};
     $scope.origin = {};
     $scope.current = {};
@@ -157,11 +159,11 @@ function patientRegistration ($scope, $q, $location, $translate, connect, messen
 
       if (yearOfBirth) {
 
-	// NOTE: The following checks on the yearOfBirth are never executed with
-	//       the html5+angular date input field since the form value becomes
-	//       undefined when invalid and is caught by the previous check.
-	//       Leaving them in as a precaution in case the input form behavior
-	//       changes in the future.
+      	// NOTE: The following checks on the yearOfBirth are never executed with
+      	//       the html5+angular date input field since the form value becomes
+      	//       undefined when invalid and is caught by the previous check.
+      	//       Leaving them in as a precaution in case the input form behavior
+      	//       changes in the future.
 
         if (isNaN(yearOfBirth)) {
           validation.dates.flag = validation.dates.tests.type;
@@ -236,13 +238,19 @@ function patientRegistration ($scope, $q, $location, $translate, connect, messen
       packagePatient.spouse = util.normalizeName(packagePatient.spouse);
       packagePatient.title = util.normalizeName(packagePatient.title);
 
+      // Custom Registration date
+      if (session.needRegistrationDate) {
+        packagePatient.registration_date = util.sqlDate(session.customRegistrationDate);
+      }
+
       connect.post('debitor', [packageDebtor])
       .then(function () {
         packagePatient.debitor_uuid = debtorId;
         return connect.post('patient', [packagePatient]);
       })
       .then(function () {
-        return connect.fetch('/visit/' + patientId);
+        var patientVisitDate = packagePatient.registration_date && session.needRegistrationDate ? packagePatient.registration_date : 0;
+        return connect.fetch('/visit/' + patientId + '/' + patientVisitDate);
       })
       .then(function (data) {
         var packageHistory = {

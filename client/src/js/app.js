@@ -494,7 +494,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/depots/distributions/cancel/cancel.html'
   })
   .when('/depots/:depotId/integrations', {
-    controller : 'stock.integration',
+    controller : 'stockIntegration as integrationCtrl',
     templateUrl : 'partials/stock/integration/integration.html'
   })
 
@@ -733,6 +733,12 @@ function bhimaconfig($routeProvider) {
     controller : 'configureEmployeeState',
     templateUrl : 'partials/reports_proposed/employee_state/employee_state.html'
   })
+  .when('/reports/cash_flow/', {
+    controller : 'cashFlowReportController as ReportCtrl',
+    templateUrl : 'partials/reports/cash_flow/cash_flow.html'
+  })
+
+
   .when('/exchangeRateModal/', {
     controller : 'exchangeRateModal',
     templateUrl : 'partials/exchangeRateModal/exchangeRateModal.html'

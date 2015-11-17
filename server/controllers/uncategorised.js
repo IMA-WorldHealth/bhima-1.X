@@ -521,11 +521,15 @@ exports.checkOffday = function (req, res, next) {
 };
 
 exports.logVisit = function (req, res, next) {
-  var sql, id = req.params.patientId;
-  sql =
-    'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES (?, ?, ?);';
+  var sql,
+      id = req.params.patientId,
+      customVisitDate = req.params.customVisitDate;
 
-  db.exec(sql, [uuid(), id, req.session.user.id])
+  sql = customVisitDate === '0' ?
+    'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`) VALUES (?, ?, ?);' :
+    'INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `registered_by`, `date`) VALUES (?, ?, ?, ?);' ;
+
+  db.exec(sql, [uuid(), id, req.session.user.id, customVisitDate])
   .then(function () {
     res.send();
   })
@@ -1037,7 +1041,9 @@ exports.profitByPeriod = function (req, res, next) {
 };
 
 exports.listExpenseAccounts = function (req, res, next) {
-  var sql ="SELECT id, enterprise_id, account_number, account_txt FROM account WHERE account_number LIKE '7%' AND account_type_id <> '3'";
+  var sql ="SELECT id, enterprise_id, account_number, account_txt FROM account " + 
+           "WHERE account_type_id = (SELECT id FROM account_type WHERE type = 'income/expense' LIMIT 1) " +
+           " AND is_charge = 0 AND account_type_id <> (SELECT id FROM account_type WHERE type = 'title' LIMIT 1)";
   db.exec(sql)
   .then(function (result) {
     res.send(result);
