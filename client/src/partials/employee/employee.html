@@ -20,52 +20,63 @@
 
 <main class="extend margin-top-10">
   <div class="row">
-    <div class="col-xs-6" style="height: 650px;">
-      <div class="panel panel-primary" style="height: 100%; overflow-y: auto;">
+    <div class="col-xs-6">
+      <div class="panel panel-primary" style="height: 650px;">
         <div class="panel-heading">
           {{ "EMPLOYEE.EMPLOYEES" | translate }}
         </div>
-        <table class="table table-condensed">
-          <thead>
-            <tr>
-              <th>{{ "COLUMNS.CODE" | translate }}</th>
-              <th>
-                {{ "COLUMNS.FIRST_NAME" | translate }},
-                {{ "COLUMNS.NAME" | translate }} -
-                {{ "COLUMNS.LAST_NAME" | translate }}
-              </th>
-              <th>{{ "COLUMNS.FUNCTION" | translate }}</th>
-              <th>{{ "COLUMNS.GRADE" | translate }}</th>
-              <th><i class="glyphicon glyphicon-lock"></i></th>
-              <th>{{ "COLUMNS.ACTIONS" | translate }}
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-if="EmployeeCtrl.session.loading" class="text-center">
-              <td colspan="6"><loading-indicator></loading-indicator></td>
-            </tr>
+        <div class="input-group input-group-sm search-employee">
+          <input
+            type="text"
+            placeholder="{{ 'UTIL.SEARCH_EMPLOYEE' | translate }}..."
+            ng-model="searchEmployee">
+          <span class="input-group-addon">
+            <i class="glyphicon glyphicon-search"></i>
+          </span>
+        </div>
+        <div style="height: 85%; overflow-y: auto;">
+          <table class="table table-condensed">
+            <thead>
+              <tr>
+                <th>{{ "COLUMNS.CODE" | translate }}</th>
+                <th>
+                  {{ "COLUMNS.FIRST_NAME" | translate }},
+                  {{ "COLUMNS.NAME" | translate }} -
+                  {{ "COLUMNS.LAST_NAME" | translate }}
+                </th>
+                <th>{{ "COLUMNS.FUNCTION" | translate }}</th>
+                <th>{{ "COLUMNS.GRADE" | translate }}</th>
+                <th><i class="glyphicon glyphicon-lock"></i></th>
+                <th>{{ "COLUMNS.ACTIONS" | translate }}
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-if="EmployeeCtrl.session.loading" class="text-center">
+                <td colspan="6"><loading-indicator></loading-indicator></td>
+              </tr>
 
-            <tr ng-if="!EmployeeCtrl.session.loading && EmployeeCtrl.employee.data.length === 0">
-              <td colspan="6">
-                <div class="alert alert-warning">
-                  <i class="glyphicon glyphicon-inbox"></i> {{ 'EMPLOYEE.NONE_FOUND' | translate }}
-                </div>
-              </td>
-            </tr>
+              <tr ng-if="!EmployeeCtrl.session.loading && EmployeeCtrl.employee.data.length === 0">
+                <td colspan="6">
+                  <div class="alert alert-warning">
+                    <i class="glyphicon glyphicon-inbox"></i> {{ 'EMPLOYEE.NONE_FOUND' | translate }}
+                  </div>
+                </td>
+              </tr>
 
-            <tr ng-repeat="item in EmployeeCtrl.employee.data | orderBy:'name'"
-              ng-class="{'rowSelected' : EmployeeCtrl.session.employee.id === item.id}">
-              <td>
-                <i ng-if="!item.code_employee" class="glyphicon glyphicon-minus-sign"></i> {{ item.code_employee }}
-              </td>
-              <td>{{ item.prenom }}<span ng-if="item.prenom && item.name">,</span> {{ item.name }} <span ng-if="item.name && item.postnom"> - </span> {{ item.postnom }}</td>
-              <td>{{ item.fonction_txt }}</td>
-              <td>{{ item.code_grade }}</td>
-              <td><i class="glyphicon glyphicon-ok" ng-if="!!item.locked"></i></td>
-              <td><a ng-click="EmployeeCtrl.editEmployee(item)"> <i class="glyphicon glyphicon-circle-arrow-right"></i></a></td>
-            </tr>
-          </tbody>
-        </table>
+              <tr ng-repeat="item in EmployeeCtrl.employee.data | orderBy:'name' | filter: searchEmployee"
+                ng-class="{'rowSelected' : EmployeeCtrl.session.employee.id === item.id}">
+                <td>
+                  <i ng-if="!item.code_employee" class="glyphicon glyphicon-minus-sign"></i> {{ item.code_employee }}
+                </td>
+                <td>{{ item.prenom }}<span ng-if="item.prenom && item.name">,</span> {{ item.name }} <span ng-if="item.name && item.postnom"> - </span> {{ item.postnom }}</td>
+                <td>{{ item.fonction_txt }}</td>
+                <td>{{ item.code_grade }}</td>
+                <td><i class="glyphicon glyphicon-ok" ng-if="!!item.locked"></i></td>
+                <td><a ng-click="EmployeeCtrl.editEmployee(item)"> <i class="glyphicon glyphicon-circle-arrow-right"></i></a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 

@@ -95,9 +95,20 @@
             </span>
           </div>
         </div>
-        <div class="panel-body">
 
-          <div ng-repeat-start="row in session.rows" class="panel panel-primary">
+        <div class="panel-body">
+          <div class="form-group">
+            <div class="input-group search-employee">
+              <input
+                type="text"
+                placeholder="{{ 'UTIL.SEARCH_EMPLOYEE' | translate }}..."
+                ng-model="searchEmployee">
+              <span class="input-group-addon">
+                <i class="glyphicon glyphicon-search"></i>
+              </span>
+            </div>
+          </div>
+          <div ng-repeat-start="row in session.rows | filter: searchEmployee" class="panel panel-primary">
             <div ng-click="row.visible=!row.visible" class="panel-heading">
               {{ row.emp.name }} {{ row.emp.postnom}} {{ row.emp.prenom}}
               <div class="pull-right">
@@ -247,7 +258,7 @@
           </div>
           <hr ng-repeat-end>
           <div class="pull-right">
-            <button class="btn btn-sm btn-success" type="button" ng-click="submit(session.rows)" ng-disabled="!session.rows.length">
+            <button class="btn btn-sm btn-success" type="button" ng-click="submit(session.rows)" ng-disabled="!session.rows.length || searchEmployee">
               {{ "FORM.SUBMIT" | translate }}
             </button>
           </div>

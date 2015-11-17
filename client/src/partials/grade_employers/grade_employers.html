@@ -30,7 +30,6 @@
         <table class="table table-condensed">
           <thead>
             <tr>
-              <th>{{ "COLUMNS.NR" | translate}}</th>
               <th>{{ "COLUMNS.CODE" | translate}}</th>
               <th>{{ "COLUMNS.GRADE" | translate}}</th>
               <th>{{ "COLUMNS.BASIC_SALARY" | translate}}</th>
@@ -39,7 +38,6 @@
           </thead>
           <tbody>
             <tr ng-repeat="grade in grades.data | orderBy:'text'">
-              <td>{{$index + 1}}</td>
               <td>{{ grade.code }}</td>
               <td>{{ grade.text }}</td>
               <td>{{ grade.basic_salary }}</td>
