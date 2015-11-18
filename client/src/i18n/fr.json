@@ -1937,7 +1937,10 @@
    "RETYPE"      : "Retaper",
    "SUPER"       : "Super Utilisateur",
    "TITLE"       : "Gestion des Utilisateurs et Permissions",
-   "UPDATE_USER_FORM" : "Editter Utilisateur"
+   "UPDATE_USER_FORM" : "Editter Utilisateur",
+   "CREATE_SUCCESS" : "Creer un nouvea utilisateur avec success.",
+   "UPDATE_SUCCESS" : "Fait un mis a jour avec success.",
+   "PERMISSIONS_SUCCESS" : "Mis les permissions a jor avec success."
    },
 "PLACEHOLDERS": {
    "PRODUCTS"       : "ex. Produits",

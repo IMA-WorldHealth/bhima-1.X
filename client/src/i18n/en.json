@@ -1936,7 +1936,10 @@
    "RETYPE"      : "Retype",
    "SUPER"       : "Super User",
    "TITLE"       : "Users and Permissions Management",
-   "UPDATE_USER_FORM" : "Update User Details"
+   "UPDATE_USER_FORM" : "Update User Details",
+   "CREATE_SUCCESS" : "Successfully created a new user.",
+   "UPDATE_SUCCESS" : "Successfully the user.",
+   "PERMISSIONS_SUCCESS" : "Successfully updated user permissions."
    },
 "PLACEHOLDERS": {
    "PRODUCTS"       : "e.g. Products",

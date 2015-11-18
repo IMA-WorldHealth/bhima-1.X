@@ -43,15 +43,33 @@ exports.configure = function configure(app) {
     next();
   });
 
+  // NOTE -- EXPERIMENTAL
+  // reject PUTs and POSTs with empty objects in the data
+  // property with a 400 error
+  app.use(function (req, res, next) {
+    if (req.method !== 'PUT' && req.method !== 'POST') {
+      return next();
+    }
+
+    // make sure the body object contains something
+    var emptyBody = Object.keys(req.body).length === 0;
+
+    if (emptyBody) {
+      next(req.codes.ERR_EMPTY_BODY);
+    } else {
+      next();
+    }
+  });
+
   // morgan logger setup
-  // options: combined | common | dev | short | tiny 
+  // options: combined | common | dev | short | tiny
   // Recommend 'combined' for production settings.
   //
   // Uncomment if you want logs written to a file instead
   // of piped to standard out (default).
   //var logFile = fs.createWriteStream(__dirname + '/access.log', {flags : 'a'});
   //app.use(morgan('short', { stream : logFile }));
-  
+
   // custom logLevel 'none' allows developers to turn off logging during tests
   if (cfg.logLevel !== 'none') {
     app.use(morgan(cfg.logLevel));

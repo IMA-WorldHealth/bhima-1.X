@@ -31,9 +31,7 @@
       </div>
 
       <!-- triggered on successful form creation -->
-      <div ng-switch-when="success" class="alert alert-success">
-        <i class="glyphicon glyphicon-ok"></i> {{ "FORM.SUBMIT_SUCCESS" | translate }}
-      </div>
+      <bh-form-message message="PermissionsCtrl.formMessage" message-type="success" ng-switch-when="success"></bh-form-message>
 
       <!-- user creation view -->
       <div ng-switch-when="create" class="panel panel-primary">
@@ -109,8 +107,8 @@
               </button>
             </div>
 
-            <!-- server sent error text -->
-            <bh-form-message message="PermissionsCtrl.sse" message-type="warning"></bh-form-message>
+            <!-- form feedback -->
+            <bh-form-message message="PermissionsCtrl.formMessage"></bh-form-message>
 
           </fieldset>
         </form>
@@ -173,6 +171,9 @@
                 </div>
               </div>
             </div>
+
+            <!-- form feedback -->
+            <bh-form-message message="PermissionsCtrl.formMessage"></bh-form-message>
 
             <div class="form-group">
 

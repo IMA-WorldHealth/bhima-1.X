@@ -21,26 +21,27 @@ function bhFormMessageController($translate) {
   var vm = this;
   var defaultType = 'danger';
 
+  // supported types
   var types = {
     'danger' : {
       icon : 'glyphicon-exclamation-sign',
-      textClass : 'text-danger'
+      cssClass : 'bh-form-message-danger'
     },
     'success' : {
       icon : 'glyphicon-ok',
-      textClass : 'text-success'
+      cssClass : 'bh-form-message-success'
     },
     'warning' : {
       icon : 'glyphicon-warning-sign',
-      textClass : 'text-warning'
+      cssClass : 'bh-form-message-warning'
     },
     'info' : {
       icon : 'glyphicon-info-sign',
-      textClass : 'text-info'
+      cssClass : 'bh-form-message-info'
     },
     'primary' : {
-      icon : 'glyphicon-bookmark',
-      textClass : 'text-primary'
+      icon : 'glyphicon-flag',
+      cssClass : 'bh-form-message-primary'
     }
   };
 
@@ -48,7 +49,13 @@ function bhFormMessageController($translate) {
   //  1) "type" defined on the DOM node directive
   //  2) "type" defined on the message object
   //  3) default type (error).
-  vm.type = types[vm.messageType] || types[vm.message.type] || types[defaultType];
+  if (vm.messageType) {
+    vm.type = types[vm.messageType];
+  } else if (vm.message && vm.message.type) {
+    vm.type = types[vm.message.type];
+  } else {
+    vm.type = types[defaultType];
+  }
 }
 
 // directive

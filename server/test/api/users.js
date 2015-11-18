@@ -85,6 +85,15 @@ describe('The /users API endpoint', function () {
       .catch(handler);
   });
 
+  it('POST /users with empty object will send 400 error code', function () {
+    return agent.post('/users')
+      .send({})
+      .then(function (res) {
+        expect(res).to.have.status(400);
+      })
+      .catch(handler);
+  });
+
   it('GET /users/:id/projects should not find one project assigned to the new user', function () {
     return agent.get('/users/' + newUser.id + '/projects')
       .then(function (res) {
@@ -123,6 +132,16 @@ describe('The /users API endpoint', function () {
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body.email).to.equal('email@test.org');
+      })
+      .catch(handler);
+  });
+
+  it('PUT /users/:id with empty object will send 400 error code', function () {
+    return agent.put('/users/' + newUser.id)
+      .send({})
+      .then(function (res) {
+        expect(res).to.have.status(400);
+        expect(res).to.be.json;
       })
       .catch(handler);
   });
