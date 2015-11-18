@@ -17,6 +17,7 @@ var gulp       = require('gulp'),
     iife       = require('gulp-iife'),
     rimraf     = require('rimraf'),
     gutil      = require('gulp-util'),
+    less       = require('gulp-less');
 
     // mocha for server-side testing
     mocha      = require('gulp-mocha'),
@@ -153,6 +154,15 @@ gulp.task('client-vendor-build-bootstrap', function () {
    * - compile with lessc
    * - copy CSS into static file folder
    */
+  
+  var bhimaDefinition = 'client/src/less/bhima-bootstrap.less'
+
+  return gulp.src(bhimaDefinition)
+    .pipe(gulp.dest('client/vendor/bootstrap/less'))
+    .pipe(less({
+      paths : ['./client/vendor/bootstrap/less/mixins']
+    }))
+    .pipe(gulp.dest(CLIENT_FOLDER + 'css'));
 });
 
 // move static files to the public directory
@@ -188,7 +198,7 @@ gulp.task('notify-lint-process', function () {
 
 // builds the client with all the options available
 gulp.task('build-client', ['client-clean'], function () {
-  gulp.start('client-minify-js', 'client-minify-css', 'client-mv-vendor', 'client-vendor-build-slickgrid', 'client-mv-static', 'notify-lint-process');
+  gulp.start('client-minify-js', 'client-minify-css', 'client-mv-vendor', 'client-vendor-build-slickgrid', 'client-vendor-build-bootstrap', 'client-mv-static', 'notify-lint-process');
 });
 
 // Lint client code seperately from build process 
