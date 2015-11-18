@@ -232,7 +232,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/reports/balance_mensuelle/balance_mensuelle.html'
   })
   .when('/reports/donation/', {
-    controller: 'report.donation',
+    controller: 'ReportDonationController as ReportCtrl',
     templateUrl: 'partials/reports/donation/donation.html'
   })
   .when('/location', {
