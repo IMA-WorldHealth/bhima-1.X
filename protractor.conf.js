@@ -10,9 +10,6 @@ var q = require('q');
 
 var config = {
   
-  // With paths not defined protractor will look in the local node_modules selenium folder for utilities
-  // seleniumServerJar : './node_modules/protractor/selenium/selenium-server-standalone-2.45.0.jar',
-  // chromeDriver      : './node_modules/protractor/selenium/chromedriver',
   seleniumPort      : 4444,
 
   specs: ['client/test/e2e/**/*.spec.js'],
