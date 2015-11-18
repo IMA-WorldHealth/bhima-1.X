@@ -74,7 +74,9 @@
                   <span ng-if="details.$error.hospitalNumber" class="glyphicon glyphicon-remove form-control-feedback"></span>
                   <span ng-if="details.$pending.hospitalNumber"  class="glyphicon glyphicon-hourglass form-control-feedback"></span>
                   <!-- <p ng-if="details.$pending.hospitalNumber" class="help-block">Checking hospital number is unique...</p> -->
-                  <p ng-if="details.$error.hospitalNumber" class="help-block">Hospital file number already exists</p>
+                  
+                  <!-- TODO Translate -->
+                  <p id="hospitalNumber-alert" ng-if="details.$error.hospitalNumber" class="help-block">Hospital file number already exists</p>
                 </div>
               </div>
 
