@@ -218,7 +218,7 @@ function queryConnection(connection, sql, params) {
     if (error) { return deferred.reject(error); }
     return deferred.resolve(result);
   });
-
+  
   return deferred.promise;
 }
 

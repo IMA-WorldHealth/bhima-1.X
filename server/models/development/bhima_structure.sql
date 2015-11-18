@@ -609,7 +609,7 @@ DROP TABLE IF EXISTS `debitor`;
 
 CREATE TABLE `debitor` (
   `uuid` char(36) NOT NULL,
-  `group_uuid` char(36) DEFAULT NULL,
+  `group_uuid` char(36) NOT NULL,
   `text` text,
   PRIMARY KEY (`uuid`),
   KEY `group_uuid` (`group_uuid`),

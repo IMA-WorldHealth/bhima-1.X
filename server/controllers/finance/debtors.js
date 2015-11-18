@@ -1,3 +1,5 @@
+// TODO Patients currently responsible for setting debtor (one small line) - should this be delegated here?
+// TODO Create Debtor Group
 var db = require('../../lib/db'),
     guid = require('../../lib/guid');
 
@@ -19,7 +21,10 @@ function details(req, res, next) {
       var debtorDetail;
 
       if (isEmpty(result)) { 
-        res.status(404).send();
+        res.status(404).json({
+          code : 'ERR_NOT_FOUND', 
+          reason : 'No debtor groups found under the id ' + uuid
+        });
         return;
       } else { 
         

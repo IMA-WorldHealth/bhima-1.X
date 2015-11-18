@@ -30,12 +30,12 @@ describe('The /patients API', function () {
 
   var mockDebtor = { 
     uuid : mockDebtorUuid,
-    debitor_group_uuid : 'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'
+    debitor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
   };
   var mockPatient = { 
     first_name : 'Mock',
     middle_name : 'Patient', 
-    last_name : 'Frist',
+    last_name : 'First',
     dob : '1993-06-01T00:00:00.000Z',
     current_location_id : 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
     origin_location_id : 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
@@ -43,7 +43,6 @@ describe('The /patients API', function () {
     project_id : 1,
     hospital_no : 120,
     uuid : mockPatientUuid,
-    debitor_uuid : mockDebtorUuid
   };
   
   // Missing last name, sex
@@ -56,7 +55,6 @@ describe('The /patients API', function () {
     project_id : 1,
     hospital_no : 121,
     uuid : missingPatientUuid,
-    debitor_uuid : mockDebtorUuid
   };
 
   var mockRequest = { 
@@ -65,7 +63,7 @@ describe('The /patients API', function () {
   };
   var mockMissingRequest = { 
     finance : {
-      debitor_group_uuid : 'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'
+      debitor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
     },
     medical : missingParamsPatient
   };
@@ -103,8 +101,35 @@ describe('The /patients API', function () {
         expect(confirmation).to.have.status(201); 
         expect(confirmation.body).to.contain.keys('uuid');
         expect(confirmation.body.uuid.length).to.equal(UUID_LENGTH);
+        
       })
       .catch(handle);
+  });
+
+  it('GET /patients/:id finds and retrieves the details of the registered patient', function () { 
+    return agent.get('/patients/' + mockPatientUuid)
+      .then(function (result) { 
+        var retrievedDetails;
+        var expectedKeys = ['uuid', 'last_name', 'middle_name', 'sex', 'origin_location_id'];
+
+        expect(result).to.have.status(200);
+        retrievedDetails = result.body;
+
+        expect(retrievedDetails).to.not.be.empty;
+        expect(retrievedDetails).to.contain.keys(expectedKeys);
+
+        expectedKeys.forEach(function (key) { 
+          expect(retrievedDetails[key]).to.equal(mockPatient[key]);
+        });
+      });
+  });
+
+  it('GET /patients/:id will return not found for invalid id', function () { 
+    return agent.get('/patients/unkownid')
+      .then(function (result) { 
+        expect(result).to.have.status(404);
+        expect(result.body).to.not.be.empty;
+      });
   });
 
   it('POST /patients will reject a patient with missing information', function () { 
@@ -127,11 +152,10 @@ describe('The /patients API', function () {
       .catch(handle);
 
   });
-
-  // Reject invalid user 
-  // Reject malformed request (both finance and medical)
-  // Reject duplicate hospital number
-  // Test that transaction is rolled back successfully gien invalid patient
+ 
+  // TODO get information on the registered patient - ensure details route is correct 
+  // TODO Reject duplicate hospital number
+  // TODO Test that transaction is rolled back successfully gien invalid patient
   
   function handle(error) {
     throw error;

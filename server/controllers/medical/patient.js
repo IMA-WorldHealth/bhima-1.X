@@ -56,7 +56,7 @@ function create(req, res, next) {
   var transaction = db.transaction();
 
   transaction
-    .addQuery(writeDebtorQuery, [finance.uuid, finance.debtor_group_uuid, generatePatientText(medical)])
+    .addQuery(writeDebtorQuery, [finance.uuid, finance.debitor_group_uuid, generatePatientText(medical)])
     .addQuery(writePatientQuery, [medical]);
   
   transaction.execute()
@@ -91,13 +91,17 @@ function details(req, res, next) {
     'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
     'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id ' +
     'WHERE p.uuid = ?';
+    // 'SELECT * FROM debitor JOIN patient ON patient.debitor_uuid = debitor.uuid WHERE patient.uuid = ?';
 
   db.exec(patientDetailQuery, [uuid])
     .then(function(result) { 
       var patientDetail;
 
       if (isEmpty(result)) { 
-        res.status(404).send();
+        res.status(404).json({
+          code : 'ERR_NOT_FOUND', 
+          reason : 'No patient found under the id ' + uuid
+        });
         return;
       } else { 
 
