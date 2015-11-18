@@ -1342,7 +1342,6 @@
    "BACK"            : "Précédent",
    "CANCEL"          : "Annuler",
    "CLEAR"           : "Effacer",
-   "CLEAR_FORM"      : "Effacer Formulaire",
    "CLOSE_FORM"      : "Annuler",
    "CONTINUE"        : "Continuer",
    "DELETE"          : "Effacer",
@@ -1351,17 +1350,21 @@
    "NEW_FORM"        : "Nouveau Formulaire",
    "NEW_TRANSFER"    : "Nouveau Transfert",
    "OK"              : "Ok",
+   "PASSWORD_MATCH" : "Les mots de pass droivent etre egale.",
    "RESET"           : "Réinitiaiser",
-   "RESET_BALANCES"  : "Réinitialiser Balances",
    "RESET_FORM"      : "Réinitiaiser Formulaire",
    "REVIEW"          : "Suivant",
+   "REQUIRED_FIELD"  : "Ce champ est requis.",
+   "REQUIRED_OPTION" : "Vous devez selectionner une option.",
+   "REQUIRED_EMAIL"  : "Vous devez enregistrer une address valide.",
+   "REQUIRED_TELEPHONE"  : "Vous devez enregistrer une numero telephone valide.",
    "SAVE"            : "Sauver",
    "SAVE_CHANGES"    : "Sauver Changement",
    "SAVE_FORM"       : "Sauver Formulaire",
    "SEARCH"          : "Rechercher",
-   "SIGN_AND_SUBMIT" : "Confirmer et soumettre",
    "SUBMIT"          : "Soumettre",
-   "SUBMIT_BALANCES" : "Sauver Balances"
+   "SUBMIT_SUCCESS"  : "Formulaire est sauvegardé avec success.",
+   "SUBMIT_FAILURE"  : "Submission n'etait pas reussi."
    },
 "GRADE": {
    "ADD"            : "Ajouter un grade",
@@ -1923,16 +1926,18 @@
    },
 "PERMISSIONS": {
    "ADD_NEW_USER"      : "Ajout d'un nouveau Utilisateur",
-   "EDIT_PERMISSIONS" : "Editter Permissions",
+   "EDIT_PERMISSIONS" : "Permissions",
    "HELP_TXT_1"  : "Editer Utilisateur Existant et sa permission à partir de la table à gauche",
    "HELP_TXT_2"  : "Editer les Metadonnées de l'utilisateur",
    "HELP_TXT_3"  : "Editer la permission de l'Utilisateur",
    "HELP_TXT_4"  : "Supprimer un utilisateur et ses droits",
+   "NEW_USER_FORM" : "Enregistrer un nouveau Utilisateur",
    "PERMISSIONS" : "Permissions",
    "REGISTERED"  : "Utilisateurs Enregistrés",
    "RETYPE"      : "Retaper",
    "SUPER"       : "Super Utilisateur",
-   "TITLE"       : "Gestion des Utilisateurs et Permissions"
+   "TITLE"       : "Gestion des Utilisateurs et Permissions",
+   "UPDATE_USER_FORM" : "Editter Utilisateur"
    },
 "PLACEHOLDERS": {
    "PRODUCTS"       : "ex. Produits",

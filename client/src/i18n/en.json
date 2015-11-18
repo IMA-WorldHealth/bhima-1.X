@@ -1340,7 +1340,6 @@
    "BACK"            : "Back",
    "CANCEL"          : "Cancel",
    "CLEAR"           : "Clear",
-   "CLEAR_FORM"      : "Clear Form",
    "CLOSE_FORM"      : "Close Form",
    "CONTINUE"        : "Continue",
    "DELETE"          : "Delete",
@@ -1349,17 +1348,21 @@
    "NEW_FORM"        : "New Form",
    "NEW_TRANSFER"    : "New transfer",
    "OK"              : "Ok",
+   "PASSWORD_MATCH" : "The passwords must be the same.",
    "RESET"           : "Reset",
-   "RESET_BALANCES"  : "Reset Balances",
    "RESET_FORM"      : "Reset Form",
+   "REQUIRED_FIELD"  : "This is a required field.",
+   "REQUIRED_OPTION" : "You must select at least one option.",
+   "REQUIRED_EMAIL" : "You must provide a valid email address.",
+   "REQUIRED_TELEPHONE"  : "You must provide a valid telephone number.",
    "REVIEW"          : "Review",
    "SAVE"            : "Save",
    "SAVE_CHANGES"    : "Save Changes",
    "SAVE_FORM"       : "Save Form",
    "SEARCH"          : "Search",
-   "SIGN_AND_SUBMIT" : "Sign and Submit",
    "SUBMIT"          : "Submit",
-   "SUBMIT_BALANCES" : "Save Balances"
+   "SUBMIT_SUCCESS"  : "Form submitted succesfully.",
+   "SUBMIT_FAILURE"  : "Form submission did not succeed."
    },
 "GRADE": {
    "ADD"            : "Add a grade",
@@ -1922,16 +1925,18 @@
    },
 "PERMISSIONS": {
    "ADD_NEW_USER" : "Add a New User",
-   "EDIT_PERMISSIONS" : "Edit Permissions",
+   "EDIT_PERMISSIONS" : "Permissions",
    "HELP_TXT_1"  : "Edit existing users and permissions from the table to the left",
    "HELP_TXT_2"  : "Edits a user's metadata",
    "HELP_TXT_3"  : "Edits a user's permissions",
    "HELP_TXT_4"  : "Deletes a user and their permissions",
+   "NEW_USER_FORM" : "New User Registration",
    "PERMISSIONS" : "Permissions",
    "REGISTERED"  : "Registered Users",
    "RETYPE"      : "Retype",
    "SUPER"       : "Super User",
-   "TITLE"       : "Users and Permissions Management"
+   "TITLE"       : "Users and Permissions Management",
+   "UPDATE_USER_FORM" : "Update User Details"
    },
 "PLACEHOLDERS": {
    "PRODUCTS"       : "e.g. Products",

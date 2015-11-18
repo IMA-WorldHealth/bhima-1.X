@@ -17,8 +17,8 @@ PermissionsController.$inject = [
 function PermissionsController($window, $translate, $http, $modal, util, Session, Users, Projects, NT) {
   var vm = this;
   var btnTemplate =
-    '<button ng-click="grid.appScope.edit(row.entity)">{{ ::"FORM.EDIT" | translate }}</button>' +
-    '<button ng-click="grid.appScope.editPermissions(row.entity)">{{ ::"PERMISSIONS.EDIT_PERMISSIONS" | translate }}</button>';
+    '<button ng-click="grid.appScope.edit(row.entity)">{{ "FORM.EDIT" | translate }}</button>' +
+    '<button ng-click="grid.appScope.editPermissions(row.entity)">{{ "PERMISSIONS.EDIT_PERMISSIONS" | translate }}</button>';
 
   // options for the UI grid
   vm.uiGridOptions = {
@@ -30,11 +30,6 @@ function PermissionsController($window, $translate, $http, $modal, util, Session
     ],
     enableSorting : true
   };
-
-  // view loading indicators
-  vm.loadingUsers = false;
-  vm.loadingPermissions = false;
-  vm.loadingProjects = false;
 
   // the user object that is either edited or created
   vm.user = {};
@@ -180,18 +175,17 @@ function PermissionsController($window, $translate, $http, $modal, util, Session
         promise = Users.updatePermissions(vm.user.id, permissions);
         break;
       default:
-        console.log('GOT STATE:', vm.state);
+        break;
     }
 
     promise.then(function (data) {
 
       // go back to default state
-      setState('default');
-
-      vm.message = $translate.instant('PERMISSIONS.CREATE_SUCCESS');
+      setState('success');
     })
     .catch(function (error) {
-      vm.message = $translate.instant(error.code);
+      console.log(error);
+      vm.formMessage = error;
     });
   }
 

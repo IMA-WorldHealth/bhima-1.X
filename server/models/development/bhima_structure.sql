@@ -1349,7 +1349,7 @@ CREATE TABLE `patient` (
   `hospital_no` varchar(150) DEFAULT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `creditor_uuid` (`creditor_uuid`),
-  UNIQUE KEY `hospital_no` (`hospital_no`),
+  /* UNIQUE KEY `hospital_no` (`hospital_no`), */
   KEY `reference` (`reference`),
   KEY `project_id` (`project_id`),
   KEY `debitor_uuid` (`debitor_uuid`),

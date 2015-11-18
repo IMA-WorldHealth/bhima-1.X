@@ -7,7 +7,7 @@ var db = require('../lib/db');
 // username, password and project id for user.  Upon
 // successful login, it creates a user session with
 // all enterprise, project, and user data for easy access.
-exports.login = function (req, res, next) {
+exports.login = function login(req, res, next) {
   'use strict';
 
   var sql,
@@ -26,7 +26,7 @@ exports.login = function (req, res, next) {
   .then(function (rows) {
 
     // if no data found, we return a login error
-    if (rows.length === 0) {
+    if (rows.length < 1) {
       throw req.codes.ERR_BAD_CREDENTIALS;
     }
 
@@ -100,7 +100,7 @@ exports.login = function (req, res, next) {
 
 // GET  /logout
 // Destroys a user's session
-exports.logout = function (req, res, next) {
+exports.logout = function logout(req, res, next) {
 
   var sql =
     'UPDATE user SET user.active = 0 WHERE user.id = ?';

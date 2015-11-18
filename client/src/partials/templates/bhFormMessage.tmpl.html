@@ -1,0 +1,9 @@
+<!-- TODO: better styling -->
+<div class="form-group" ng-class="MessageCtrl.type.textClass" ng-if="MessageCtrl.message">
+  <div>
+    <i class="glyphicon" ng-class="MessageCtrl.type.icon"></i> <strong>{{ MessageCtrl.message.code | translate }}</strong>
+    <a ng-if="MessageCtrl.message.link" ng-href="#/{{ MessageCtrl.message.link }}">
+      <i class="glyphicon glyphicon-link"></i> {{ "UTIL.LINK" | translate }}
+    </a>
+  </div>
+</div>
