@@ -106,6 +106,7 @@
       
               <!-- Date of birth warning message -->
               <div 
+                id="date-error"
                 class="alert alert-danger"
                 ng-if="details.dob.$error.min || details.dob.$error.max">
                 <p>{{ "PATIENT_REGISTRATIONS.INCORRECT_DATE_LIMIT" | translate }} {{PatientRegCtrl.minDOB | date}} {{ "PATIENT_REGISTRATIONS.INCORRECT_DATE_AND" | translate }} {{PatientRegCtrl.maxDOB | date}}</p>

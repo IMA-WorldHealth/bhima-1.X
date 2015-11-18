@@ -33,11 +33,11 @@ describe('patient registration', function () {
     browser.get(REGISTRATION_PATH);
   });
 
-  it('navigates and loads correctly', function () {
-    expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + REGISTRATION_PATH);
+  // it('navigates and loads correctly', function () {
+    // expect(browser.getCurrentUrl()).to.eventually.equal(browser.baseUrl + REGISTRATION_PATH);
 
     // TODO Verify key page elements
-  });
+  // });
 
   // Formats YOB/DOB correctly 
 
@@ -66,8 +66,40 @@ describe('patient registration', function () {
     element(by.id('submitPatient')).click();
 
     // expect(browser.getCurrentUrl()).to.eventually.contain(browser.baseUrl + '#/invoice/patient/');
-    expect(browser.getCurrentUrl()).to.eventually.contain(browser.baseUrl + '#/invoice/patient/');
+    expect(browser.getCurrentUrl()).to.eventually.contain(browser.baseUrl + '#/invoice/patient/')
+      .then(function () { 
+        done();
+      });
     // browser.pause();
+  });
+
+  describe('form validation', function () { 
+    
+    it('correctly alerts for minimum and maximum dates', function () { 
+      var testMaxYear = '9000';
+      var testMinYear = '1000';
+
+      element(by.model('PatientRegCtrl.yob')).sendKeys(testMaxYear);
+      expect(element(by.id('date-error')).isPresent()).to.eventually.be.true;
+
+      element(by.model('PatientRegCtrl.yob')).clear();
+      element(by.model('PatientRegCtrl.yob')).sendKeys(testMaxYear);
+      expect(element(by.id('date-error')).isPresent()).to.eventually.be.true;
+    });
+
+    it('correctly identifies duplicate hospital numbers (async)', function () { 
+
+    });
+  });
+
+  it('correctly updates Date of Birth given a valid Year of Birth', function () { 
+    var validYear = '2000'; 
+    element(by.model('PatientRegCtrl.yob')).sendKeys(validYear);
+
+    var calculatedDOB = element(by.model('PatientRegCtrl.medical.dob')).getText();
+
+    expect(calculatedDOB).to.be.defined;
+    expect(calculatedDOB).to.not.be.empty;
   });
 
   // Async blocks hosptial numbers that are taken
