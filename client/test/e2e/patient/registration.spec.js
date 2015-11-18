@@ -15,7 +15,7 @@ describe('patient registration', function () {
   var mockPatient = { 
     first_name : 'Mock',
     middle_name : 'Patient', 
-    last_name : 'Frist',
+    last_name : 'First',
     // dob : '1993-06-01T00:00:00.000Z',
     yob : '1993',
     // current_location_id : 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
@@ -48,7 +48,7 @@ describe('patient registration', function () {
     element(by.id('male')).click();
     element(by.id('submitPatient')).click();
     
-    element(by.model('PatientRegCtrl.finance.debtor_group_uuid')).element(by.cssContainingText('option', 'Second Test Debtor Group')).click();
+    element(by.model('PatientRegCtrl.finance.debitor_group_uuid')).element(by.cssContainingText('option', 'Second Test Debtor Group')).click();
     
     element(by.id('submitPatient')).click();
 
@@ -85,7 +85,7 @@ describe('patient registration', function () {
 
       // The following fields should be required
       expect(element(by.model('PatientRegCtrl.medical.last_name')).getAttribute('class')).to.eventually.contain('ng-invalid');
-      expect(element(by.model('PatientRegCtrl.finance.debtor_group_uuid')).getAttribute('class')).to.eventually.contain('ng-invalid');
+      expect(element(by.model('PatientRegCtrl.finance.debitor_group_uuid')).getAttribute('class')).to.eventually.contain('ng-invalid');
       expect(element(by.model('PatientRegCtrl.medical.dob')).getAttribute('class')).to.eventually.contain('ng-invalid');
 
       // First name is not required
