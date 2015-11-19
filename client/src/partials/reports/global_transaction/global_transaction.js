@@ -117,22 +117,13 @@ function ReportGlobalTransactionController (connect, $translate, validate, util,
     session.somDebit = 0;
 
     items.forEach(function (item) {
-      if (vm.enterprise.currency_id !== item.currency_id) {
-        sCredit += item.credit / exchange.rate(item.credit,item.currency_id,new Date());
-        sDebit += item.debit / exchange.rate(item.debit,item.currency_id,new Date());
-      } else {
-        sCredit += item.credit;
-        sDebit += item.debit;
-      }
+      sCredit += item.credit;
+      sDebit += item.debit;
     });
 
-    if (vm.enterprise.currency_id === vm.model.c) {
-      session.somCredit = sCredit;
-      session.somDebit = sDebit;
-    } else {
-      session.somCredit = sCredit * exchange.rate(sCredit,vm.model.c,new Date());
-      session.somDebit = sDebit * exchange.rate(sDebit,vm.model.c,new Date());
-    }
+    session.somCredit = Number(exchange.convertir(sCredit, vm.enterprise.currency_id, vm.model.c, new Date())).toFixed(2);
+    session.somDebit  = Number(exchange.convertir(sDebit, vm.enterprise.currency_id, vm.model.c, new Date())).toFixed(2);
+    session.solde     = session.somDebit - session.somCredit;
 
     // End loading indicator
     session.loaderState = 'loaded';
