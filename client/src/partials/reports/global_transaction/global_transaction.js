@@ -143,12 +143,6 @@ function ReportGlobalTransactionController (connect, $translate, validate, util,
     session.account_number = vm.model.account_id ? vm.accounts.get(vm.model.account_id).account_number : '';
     connect.fetch(url)
     .then(function (res) {
-      res.map(function (item) {
-        if (vm.enterprise.currency_id !== item.currency_id) {
-          item.debit *= exchange.rate(item.debit,item.currency_id,new Date());
-          item.credit *= exchange.rate(item.debit,item.currency_id,new Date());
-        }
-      });
       vm.records = res;
       return res;
     })
