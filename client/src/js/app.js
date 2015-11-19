@@ -350,7 +350,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/patients/registration/registration.html'
   })
   .when('/patients/edit/:patientID?', {
-    controller: 'patientEdit',
+    controller: 'PatientEdit as PatientEditCtrl',
     templateUrl: 'partials/patients/edit/edit.html'
   })
   .when('/patients/search/:patientID?', {
