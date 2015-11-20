@@ -11,27 +11,27 @@
   </div>
   <div class="pull-right">
     <span class="dropdown pull-right">
-      <button class="btn btn-sm btn-primary dropdown-toggle">
+      <button class="btn btn-primary dropdown-toggle">
         {{ currency.symbol || "..." }}
         <span class="caret" data-caret="&#9660;"></span>
       </button>
 
       <ul class="dropdown-menu">
         <li ng-repeat="currency in cashbox_accounts.data">
-          <a class="clk" ng-click="setCurrency(currency)">{{ currency.symbol}} </a>
+          <a href="" ng-click="setCurrency(currency)">{{ currency.symbol }} </a>
         </li>
       </ul>
     </span>
 
     <span class="dropdown pull-right" style="padding-right: 5px;">
-      <button class="btn btn-sm btn-primary dropdown-toggle">
+      <button class="btn btn-primary dropdown-toggle">
         {{ cashbox.text || "..." }}
         <span class="caret" data-caret="&#9660;"></span>
       </button>
 
       <ul class="dropdown-menu">
         <li ng-repeat="box in cashboxes.data">
-          <a class="clk" ng-click="setCashBox(box)"> {{box.text}} - {{box.symbol}} </a>
+          <a href="" ng-click="setCashBox(box)"> {{box.text}} - {{box.symbol}} </a>
         </li>
       </ul>
     </span>
@@ -39,31 +39,17 @@
   </div>
 </nav>
 
-<main>
-  <div class="row margin-top-10">
-    <div class="col-xs-6" ng-switch="session.patient">
+<main class="container-fluid">
 
-      <!-- patient search panel -->
-      <find-patient on-search-complete="loadInvoices(patient)"></find-patient>
+  <find-patient on-search-complete="CashCtrl.loadInvoices(patient)" enable-refresh="true"></find-patient>
 
-      <div ng-switch-default>
-        <div class="alert alert-info">
-          <h4>{{ "CASH.TITLE" | translate }}</h4>
-          <p>{{ "CASH.HELP_TXT_1" | translate }}.</p>
-          <p>{{ "CASH.HELP_TXT_2" | translate }}.</p>
-        </div>
-      </div>
+  <div class="row">
 
-      <div ng-switch-when="is_convention">
-        <div class="alert alert-danger">
-          <h4>{{ "CASH.WARNING" | translate }}</h4>
-          <p>{{ "CASH.WARNING_2" | translate }}.</p>
-        </div>
-      </div>
-
-      <div class="panel panel-primary" ng-switch-when="not_convention">
+    <!-- Receipt Controls -->
+    <div class="col-md-6">
+      <div class="panel panel-primary" ng-if="CashCtrl.patient">
         <div class="panel-heading">
-          <span><i class="glyphicon glyphicon-list"></i> {{ "CASH.DEBITOR_INVOICES" | translate }}</span>
+          <i class="glyphicon glyphicon-list"></i> {{ "CASH.DEBITOR_INVOICES" | translate }}
         </div>
         <table class="table table-condensed table-bordered">
           <thead>
@@ -87,7 +73,8 @@
       </div>
     </div>
 
-    <div class="col-xs-6">
+    <!-- Receipt Preview -->
+    <div class="col-md-6" ng-if="CashCtrl.patient">
       <div class="panel panel-default">
         <div class="panel-heading">
           {{ "CASH.PAYMENT" | translate }} <small>{{ patient.first_name }} {{ patient.last_name }}</small>
@@ -98,8 +85,7 @@
               <th>{{ "COLUMNS.SALE_ID" | translate }}</th>
               <th>{{ "COLUMNS.DATE" | translate }}</th>
               <th>{{ "COLUMNS.BALANCE" | translate }}</th>
-              <th style="width: 20%;">{{ "COLUMNS.PAID" | translate }}</th>
-              <th colspan="2">{{ "COLUMNS.REMAINING" | translate }}</th>
+              <th>{{ "COLUMNS.PAID" | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -108,8 +94,6 @@
               <td>{{ invoice.trans_date | date }}</td>
               <td>{{ invoice.locale | currency:currency.currency_id }}</td>
               <td>{{ invoice.allocated | currency:currency.currency_id }}</td>
-              <td>{{ invoice.remaining | currency:currency.currency_id }}</td>
-              <td><a ng-click="remove($index)" class="glyphicon glyphicon-trash clk"></a></td>
             </tr>
           </tbody>
           <tfoot>
@@ -123,33 +107,27 @@
 
         <hr style="padding:0;margin:0;" />
 
-        <div class="panel-body">
-          <div class="container">
-            <div class="row" style="font-size: 2em;">
-              <div class="col-xs-6">
-                <b>{{ "CASH.TOTAL_DUE" | translate }}</b>
-                {{ data.total | currency:currency.currency_id }}
-              </div>
-              <div class='col-xs-6'>
-                <b>{{ "CASH.OVERDUE" | translate }}</b>
-                {{ data.overdue | currency:currency.currency_id }}
-              </div>
-            </div>
+        <form class="panel-body" name="CashForm">
 
-            <div class="row">
-              <div class="input-group">
-                <input type="number" ng-model="data.payment"  class="form-bhima" min="0" required>
-                <span class="input-group-addon"> {{ currency.symbol }} </span>
-              </div>
+          <div class="form-group">
+            <label>{{ "CASH.TOTAL_DUE" | translate }}</label>
+            <p class="form-control-static">{{ data.total | currency:currency.currency_id }}</p>
+          </div>
+
+          <div class="form-group">
+            <label> {{ "CASH.PAYMENT" | translate }}</label>
+            <div class="input-group">
+              <input type="number" ng-model="data.payment" class="form-control" min="0" required>
+              <span class="input-group-addon">{{ currency.symbol }}</span>
             </div>
           </div>
         </div>
 
         <div class="panel-footer">
-          <button type="button" class="btn btn-sm" ng-class="{ 'btn-danger' : data.overdue > 0, 'btn-success':  data.overdue <= 0 }" ng-click="invoice()" ng-disabled="!data.payment">
+          <button type="button" class="btn btn-default" ng-class="{ 'btn-danger' : data.overdue > 0, 'btn-success':  data.overdue <= 0 }" ng-click="invoice()" ng-disabled="!data.payment">
             {{ "CASH.PAY_INVOICES" | translate }}
           </button>
-          <button type="button" class="btn btn-default btn-sm" ng-click="clearSelection()">
+          <button type="button" class="btn btn-default" ng-click="clearSelection()">
             {{ "CASH.CLEAR_SELECTION" | translate }}
           </button>
         </div>

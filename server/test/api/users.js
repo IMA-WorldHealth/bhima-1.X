@@ -1,6 +1,5 @@
 /*global describe, it, beforeEach, process*/
 
-// import testing framework
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var expect = chai.expect;
@@ -12,11 +11,12 @@ if (!global.Promise) {
   chai.request.addPromises(q.Promise);
 }
 
-// do not throw self-signed certificate errors
+// environment variables - disable certificate errors
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
 // base URL
 var url = 'https://localhost:8080';
+var user = { username : 'superuser', password : 'superuser', project: 1};
 
 /**
 * The /users API endpoint
@@ -43,12 +43,10 @@ describe('The /users API endpoint', function () {
 
   // login before each request
   beforeEach(function () {
-    var user = { username : 'superuser', password : 'superuser', project: 1};
     return agent
       .post('/login')
       .send(user);
   });
-
 
   it('GET /users returns a list of users', function () {
     return agent.get('/users')

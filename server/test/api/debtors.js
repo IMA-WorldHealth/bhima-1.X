@@ -1,3 +1,5 @@
+/*global describe, it, beforeEach, process*/
+
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var expect = chai.expect;
@@ -67,7 +69,8 @@ describe('The /debtors API', function () {
         
         expect(result).to.have.status(404);
         expect(result.body).to.not.be.empty;
-      });
+      })
+      .catch(handle);
   });
 
   function handle(error) {

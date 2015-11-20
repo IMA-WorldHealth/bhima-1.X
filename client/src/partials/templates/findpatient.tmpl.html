@@ -1,14 +1,14 @@
 <div class="panel panel-default" ng-class="{'panel-success': session.valid === true, 'panel-danger': session.valid === false }">
-  <div class="panel-heading">
+  <div class="panel-heading clearfix">
 
     <!-- banner before submission -->
     <div ng-if="!session.submitted">
       <i class="glyphicon glyphicon-search"></i> {{ "FIND.TITLE" | translate }}
       <div class="pull-right">
-        <a style="cursor:pointer;" ng-class="{'link-selected': session.state === 'id' }" ng-click="toggleSearch('id')">
+        <a href="" ng-class="{'link-selected': session.state === 'id' }" ng-click="toggleSearch('id')">
           <i class="glyphicon glyphicon-pencil"></i> {{ "FIND.SEARCH_PATIENT_ID" | translate }}
         </a>
-        <a style="cursor:pointer;" ng-class="{'link-selected': session.state === 'name' }" ng-click="toggleSearch('name')">
+        <a href="" ng-class="{'link-selected': session.state === 'name' }" ng-click="toggleSearch('name')">
           <i class="glyphicon glyphicon-user"></i> {{ "FIND.SEARCH_NAME" | translate }}
         </a>
       </div>

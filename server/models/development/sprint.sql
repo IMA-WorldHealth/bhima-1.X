@@ -62,6 +62,8 @@ update unit set path = '/subsidies' where id = 82;
 
 update unit set path = '/taxes' where id = 62;
 
+update unit set path = '/cashboxes' where id = 105;
+
 -- reports/tfr is never used
 delete from unit where id = 88;
 

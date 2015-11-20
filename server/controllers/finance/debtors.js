@@ -6,28 +6,28 @@ var db = require('../../lib/db'),
 exports.groupDetails = details;
 exports.listGroups = listGroups;
 
-function details(req, res, next) { 
+function details(req, res, next) {
   var debtorDetailsQuery;
   var uuid = req.params.uuid;
 
-  debtorDetailsQuery = 
-    'SELECT uuid, name, account_id, location_id, phone, email, note, locked ' + 
-      'max_credit, is_convention, price_list_uuid ' + 
-    'FROM debitor_group ' + 
+  debtorDetailsQuery =
+    'SELECT uuid, name, account_id, location_id, phone, email, note, locked ' +
+      'max_credit, is_convention, price_list_uuid ' +
+    'FROM debitor_group ' +
     'WHERE uuid = ?';
 
   db.exec(debtorDetailsQuery, [uuid])
-    .then(function (result) { 
+    .then(function (result) {
       var debtorDetail;
 
-      if (isEmpty(result)) { 
+      if (isEmpty(result)) {
         res.status(404).json({
-          code : 'ERR_NOT_FOUND', 
+          code : 'ERR_NOT_FOUND',
           reason : 'No debtor groups found under the id ' + uuid
         });
         return;
-      } else { 
-        
+      } else {
+
         debtorDetail = result[0];
         res.status(200).json(debtorDetail);
       }
@@ -37,21 +37,21 @@ function details(req, res, next) {
 }
 
 // TODO ? parameter to request all (including locked) groups
-function listGroups(req, res, next) { 
+function listGroups(req, res, next) {
   var listDebtorGroupsQuery, filterLockedCondition;
   var query;
 
-  listDebtorGroupsQuery = 
+  listDebtorGroupsQuery =
     'SELECT uuid, name, locked, account_id FROM debitor_group';
-  
-  filterLockedCondition = 
+
+  filterLockedCondition =
     'WHERE locked = 0';
-  
+
   // TODO ? parameter to request all (including locked) groups
   query = listDebtorGroupsQuery.concat(' ', filterLockedCondition);
 
   db.exec(query)
-    .then(function (result) { 
+    .then(function (result) {
       var debtors = result;
 
       res.status(200).json(result);
@@ -60,6 +60,86 @@ function listGroups(req, res, next) {
     .done();
 }
 
-function isEmpty(array) { 
+function isEmpty(array) {
   return array.length === 0;
 }
+
+// GET /debtor/:uuid/invoices
+// Show open invoices for a debtor
+exports.invoices = function invoices(req, res, next) {
+  'use strict';
+
+  var sql, accountId;
+
+  sql =
+    'SELECT account_id ' +
+    'FROM debitor JOIN debitor_group ON ' +
+      'debitor.group_uuid = debitor_group.uuid ' +
+    'WHERE debitor.uuid = ?;';
+
+  db.exec(sql, [req.params.uuid])
+  .then(function (rows) {
+
+    if (!rows.length) {
+      throw req.codes.NO_DEBTOR_GROUP_ACCOUNT;
+    }
+
+    accountId = rows[0].account_id;
+
+    sql =
+      'SELECT c.inv_po_id FROM (' +
+        'SELECT p.inv_po_id, p.trans_id, p.trans_date, p.account_id ' +
+        'FROM posting_journal AS p ' +
+        'WHERE p.deb_cred_uuid = ? AND p.account_id = ? ' +
+      'UNION ' +
+        'SELECT g.inv_po_id, g.trans_date, g.trans_id, g.account_id ' +
+        'FROM general_ledger AS g ' +
+        'WHERE g.deb_cred_uuid = ? AND g.account_id = ?' +
+      ') AS c;';
+
+    return db.exec(sql, [req.params.uuid, accountId, req.params.uuid, accountId]);
+  })
+  .then(function (rows) {
+
+    // skip this if something
+    // TODO/FIXME-- is this a good idea?
+    if (!rows.length) {
+      return [];
+    }
+
+    var invoices = rows.map(function (row) {
+      return row.inv_po_id;
+    });
+
+    // hrid is 'human-readable id'
+    sql =
+      'SELECT CONCAT(p.abbr, s.reference) AS hrid, t.inv_po_id, t.trans_date, ' +
+        'SUM(t.debit_equiv - t.credit_equiv) AS balance, t.currency_id, t.description ' +
+      'FROM (' +
+        '(' +
+          'SELECT pj.inv_po_id, pj.trans_date, pj.debit_equiv, pj.credit_equiv, ' +
+            'pj.account_id, pj.deb_cred_uuid, pj.currency_id, pj.trans_id, ' +
+            'pj.description, pj.comment ' +
+          'FROM posting_journal AS pj ' +
+        ') UNION (' +
+          'SELECT gl.inv_po_id, gl.trans_date, gl.debit_equiv, gl.credit_equiv, ' +
+            'gl.account_id, gl.deb_cred_uuid, gl.currency_id, gl.trans_id, ' +
+            'gl.description, gl.comment ' +
+          'FROM general_ledger AS gl ' +
+        ')' +
+      ') AS t ' +
+      'JOIN sale AS s ON t.inv_po_id = s.uuid ' +
+      'JOIN project AS p ON s.project_id = p.id ' +
+      'WHERE t.inv_po_id IN (?) ' +
+        'AND t.account_id = ? ' +
+      'GROUP BY t.inv_po_id ' +
+      'HAVING balance > 0;';
+
+    return db.exec(sql, [ invoices, accountId ]);
+  })
+  .then(function (rows) {
+    res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
+};

@@ -151,6 +151,8 @@ CREATE TABLE `cash_box` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+INSERT INTO `cash_box` VALUES (1,'Test Primary Cashbox A ',1,0,0), (2,'Test Aux Cashbox B', 1,1, 1);
+
 /*!40000 ALTER TABLE `cash_box` DISABLE KEYS */;
 /*!40000 ALTER TABLE `cash_box` ENABLE KEYS */;
 DROP TABLE IF EXISTS `cash_box_account_currency`;
@@ -177,6 +179,8 @@ CREATE TABLE `cash_box_account_currency` (
   CONSTRAINT `cash_box_account_currency_ibfk_5` FOREIGN KEY (`loss_exchange_account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+INSERT INTO `cash_box_account_currency` VALUES (1,1,1,2935,3378,3229,2946),(2,2,1,2939,3378,3229,2946),(3,1,2,2936,3378,3229,3542),(4,2,2,2940,3378,3229,2945);
 
 /*!40000 ALTER TABLE `cash_box_account_currency` DISABLE KEYS */;
 /*!40000 ALTER TABLE `cash_box_account_currency` ENABLE KEYS */;

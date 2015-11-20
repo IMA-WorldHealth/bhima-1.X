@@ -599,13 +599,13 @@ function bhimaconfig($routeProvider) {
   })
 
   /* cashbox routes */
-  .when('/cashbox_management', {
+  .when('/cashboxes', {
     controller : 'cash.cashbox',
-    templateUrl : 'partials/cash/cashbox/cashbox.html'
+    templateUrl : 'partials/cash/cashboxes/cashboxes.html'
   })
-  .when('/cashbox_account_management', {
+  .when('/cashboxes/:uuid/currencies', {
     controller : 'cash.cashbox_account',
-    templateUrl : 'partials/cash/cashbox_account_currency/cashbox_account_currency.html'
+    templateUrl : 'partials/cash/cashboxes/currencies/currencies.html'
   })
 
   /* reports routes */
