@@ -32,19 +32,24 @@
         <div class="input-group">
           <input
           type="text"
-          class="form-bhima"
+          class="form-control"
           ng-model="input.model"
           typeahead="patient as fmtPatient(patient) for patient in fuzzyNameSearch($viewValue)"
           placeholder="{{ 'FIND.PATIENT_NAME' | translate }}"
           typeahead-wait-ms="150"
           typeahead-template-url="/partials/templates/debtorListItem.tmpl.html"
+          typeahead-no-results="noPatients"
           size="25">
           <span class="input-group-btn">
-            <button ng-disabled="validateNameSearch(input.model)" ng-click="selectPatient(input.model)" class="btn btn-sm btn-default">
+            <button ng-disabled="validateNameSearch(input.model)" ng-click="selectPatient(input.model)" class="btn btn-default">
               {{ "FORM.SUBMIT" | translate }}
             </button>
           </span>
         </div>
+        <!-- <i ng-show="loadingPatients" class="glyphicon glyphicon-refresh"></i> -->
+        <p class="help-block" ng-show="noPatients">
+          <i class="glyphicon glyphicon-remove"></i> {{ "FORM.NO_RESULTS" | translate }}
+        </p>
       </div> <!-- End searchName component -->
 
       <!-- search by uuid -->
@@ -52,11 +57,11 @@
         <div class="input-group">
           <input
           type="text"
-          class="form-bhima"
+          class="form-control"
           ng-model="input.term"
           placeholder="{{ 'FIND.PATIENT_ID' | translate }}">
           <span class="input-group-btn">
-            <button ng-click="searchReference(input.term)" class="btn btn-sm btn-default">
+            <button ng-click="searchReference(input.term)" class="btn btn-default">
               {{ "FORM.SUBMIT" | translate }}
             </button>
           </span>

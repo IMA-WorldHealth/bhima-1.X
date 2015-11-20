@@ -11,7 +11,10 @@ angular.module('bhima.controllers')
     // TODO add sortable (clickable) columns
     var dependencies = {};
     $scope.loading = false;
-
+  
+    $scope.status = { 
+      isopen : false
+    };
     var period = $scope.period = [
       {
         key : 'CASH_PAYMENTS.DAY',

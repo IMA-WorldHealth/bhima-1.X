@@ -35,16 +35,32 @@
 
 <nav>
   <div class="pull-left">
-    <span class="btn-group">
-      <button ng-click="select(session.selected)" class="btn btn-sm btn-default">{{(session.selected.key | translate) || "..."}}</button>
-      <button class="btn btn-sm btn-default dropdown-toggle"><span class="caret" data-caret="&#9660;"></span></button>
 
-      <ul class="dropdown-menu">
-        <li ng-repeat="item in period">
-          <a class="clk" ng-click="select(item)">{{item.key | translate}}</a>
+    <!-- Up to date dropdown markdown -->
+    <div class="btn-group" dropdown>
+      <button ng-click="select(session.selected)" class="btn btn-sm btn-default">{{(session.selected.key | translate) || "..."}}</button>
+      <button class="btn btn-sm btn-default" dropdown-toggle>
+        <span class="caret"></span>
+      </button>
+
+      <ul class="dropdown-menu" role="menu">
+        <li role="menuitem" ng-repeat="item in period">
+          <a ng-click="select(item)">{{item.key | translate}}</a>
         </li>
       </ul>
-    </span>
+    </div>
+
+    <!-- Previous custom dropdown markdown -->
+    <!-- <span class="btn-group"> -->
+    <!--   <button ng-click="select(session.selected)" class="btn btn-sm btn-default">{{(session.selected.key | translate) || "..."}}</button> -->
+    <!--   <button class="btn btn-sm btn-default dropdown-toggle"><span class="caret" data-caret="&#9660;"></span></button> -->
+
+    <!--   <ul class="dropdown-menu"> -->
+    <!--     <li ng-repeat="item in period"> -->
+    <!--       <a class="clk" ng-click="select(item)">{{item.key | translate}}</a> -->
+    <!--     </li> -->
+    <!--   </ul> -->
+    <!-- </span> -->
   </div>
 
   <div>
@@ -70,6 +86,7 @@
 </nav>
 
 <main>
+    
   <!-- UI Grid placeholder -->
   <div ui-grid="gridOptions" style="width : 100%; height : 95%">
     <div class="grid-overlay" ng-if="loading">
