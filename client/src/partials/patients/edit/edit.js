@@ -59,7 +59,7 @@ function PatientEdit($scope, $routeParams, $uibModal, patients) {
   viewModel.updateDebtorGroup = function updateDebtorGroup() { 
     var modalInstance = $uibModal.open({
       animation : true,
-      template : '<p>Reference template</p>',
+      templateUrl : 'partials/patients/edit/updateDebtorGroup.tmpl.html',
       size : 'md'
     });
   };
