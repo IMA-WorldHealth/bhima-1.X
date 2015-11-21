@@ -1,19 +1,31 @@
-var stockIntegration = function ($q, $translate, $location, $routeParams, validate, connect, messenger, uuid, util, Appcache, Session) {
+angular.module('bhima.controllers')
+.controller('ServiceReturnStockController', ServiceReturnStockController);
 
-  var vm = this, cache = new Appcache('integration'), dependencies = {};
+ServiceReturnStockController.$inject = [
+  '$routeParams', '$http', '$q', '$translate', '$location', 'SessionService',
+  'messenger', 'connect', 'uuid', 'validate', 'util'
+];
 
-  vm.session = {
-    total : 0,
-    depot : null,
-    project : Session.project,
-    user : Session.user,
-    step : null,
-    stocks : [],
-    integrationStarted : false
-  };
+/**
+  * Responsible for return medications from service to depot.
+  * This is the following steps:
+  *   1) Select the service in which there are stock to return
+  *   2) Select medications
+  *   3) Submission
+  *   4) Print a receipt/generate documentation
+  *   5) Increase the stock inventory account in the journal by debiting the
+  *       stock account and crediting the cost of goods sold account.
+  *       indicate the service as cost center in journal
+  *
+  * @constructor
+  * @class ServiceReturnStockController
+  */
+function ServiceReturnStockController($routeParams, $http, $q, $translate, $location, SessionService, messenger, connect, uuid, validate, util) {
+  var vm           = this,
+      session      = vm.session = {},
+      dependencies = {};
 
-  testContuity();
-
+  // dependencies
   dependencies.depots = {
     query : {
       identifier : 'uuid',
@@ -22,6 +34,16 @@ var stockIntegration = function ($q, $translate, $location, $routeParams, valida
           columns : ['uuid', 'reference', 'text']
         }
       }
+    }
+  };
+
+  dependencies.services = {
+    query : {
+      identifier : 'id',
+      tables : {
+        'service' : { columns : ['id', 'name', 'cost_center_id'] }
+      },
+      where : ['service.project_id=' + SessionService.project.id]
     }
   };
 
@@ -45,31 +67,59 @@ var stockIntegration = function ($q, $translate, $location, $routeParams, valida
     }
   };
 
-  validate.process(dependencies).then(startup).catch(error);
+  // initialize models
+  vm.session.step  = null;
+  vm.session.total = 0;
+  vm.session.stocks = [];
+  vm.session.integrationStarted = false;
 
-  function startup (models) {
-    angular.extend(vm, models);
-    vm.session.depot = vm.depots.get(vm.session.depot.uuid);
-  }
+  // Expose models to the views
+  vm.startingReturnProcess = startingReturnProcess;
+  vm.addStockItem = addStockItem;
+  vm.removeStockItem = removeStockItem;
+  vm.updateStockItem = updateStockItem;
+  vm.isValidLine = isValidLine;
+  vm.preview = preview;
+  vm.isPassed = isPassed;
+  vm.goback = goback;
+  vm.reset = reset;
+  vm.integrate = integrate;
 
-  function error (err) {
-    messenger.danger(JSON.stringify(err));
-    return;
-  }
+  // start the module up
+  startup();
 
-  function testContuity (){
-    if (angular.isDefined($routeParams.depotId)) {
-      vm.session.depot = { uuid : $routeParams.depotId };
-    }else{
+  // Functions definitions
+  function startup() {
+    if (angular.isUndefined($routeParams.depotId)) {
       messenger.error($translate.instant('UTIL.NO_DEPOT_SELECTED'), true);
       return;
     }
+    validate.process(dependencies)
+    .then(initialize)
+    .catch(error);
   }
 
-  function startIntegration() {
+  function initialize(models) {
+    angular.extend(vm, models);
+    vm.session.depot = vm.depots.get($routeParams.depotId);
+  }
+
+  function error (err) {
+    console.error(err);
+    return;
+  }
+
+  function startingReturnProcess () {
+    if (!vm.service || !vm.service.id) { return; }
     vm.session.step = 'select_inventories';
     vm.session.integrationStarted = true;
+    vm.session.labelMovement = translateLabelMovement();
     addStockItem();
+  }
+
+  function translateLabelMovement() {
+    if (!vm.service || !vm.session.depot) { return; }
+    return '' + $translate.instant('SERVICE_RETURN_STOCK.MOVEMENT').replace('%SERVICE%', vm.service.name).replace('%DEPOT%', vm.session.depot.text);
   }
 
   function addStockItem () {
@@ -151,18 +201,23 @@ var stockIntegration = function ($q, $translate, $location, $routeParams, valida
     vm.session.step = 'select_inventories';
   }
 
+  function reset () {
+    vm.session.stocks = [];
+    vm.session.step = null;
+  }
+
   function simulatePurchase() {
     return {
       uuid          : uuid(),
       cost          : vm.session.total,
       purchase_date : util.sqlDate(new Date()),
-      currency_id   : Session.enterprise.currency_id,
+      currency_id   : SessionService.enterprise.currency_id,
       creditor_uuid : null,
       purchaser_id  : null,
-      emitter_id    : vm.session.user.id,
-      project_id    : vm.session.project.id,
+      emitter_id    : SessionService.user.id,
+      project_id    : SessionService.project.id,
       receiver_id   : null,
-      note          : 'INTEGRATION_STOCK/' + util.sqlDate(new Date()),
+      note          : 'Service Return Stock/' + vm.service.name + '/' + vm.description + '/' + util.sqlDate(new Date()),
       paid          : 0,
       confirmed     : 0,
       closed        : 0,
@@ -246,6 +301,15 @@ var stockIntegration = function ($q, $translate, $location, $routeParams, valida
       });
       return $q.all(promisses);
     })
+    .then(function () {
+      // journal notify return stock from service
+      var params = {
+        purchase_uuid   : purchase.uuid,
+        cost_center_id  : vm.service.cost_center_id
+      };
+
+      return $http.get('/journal/service_return_stock/' + JSON.stringify(params));
+    })
     .then(function (){
       messenger.success($translate.instant('STOCK.ENTRY.WRITE_SUCCESS'), false);
       return $q.when(1);
@@ -254,11 +318,12 @@ var stockIntegration = function ($q, $translate, $location, $routeParams, valida
       $location.path('/stock/entry/report/' + document_id);
     })
     .catch(function (err) {
-      console.log(err);
-      messenger.success($translate.instant('STOCK.ENTRY.WRITE_ERROR'), false);
+      // notify error
+      messenger.error($translate.instant('STOCK.ENTRY.WRITE_ERROR'), false);
+      console.error(err);
 
+      // rollback
       var stock_ids = stocks.map(function (stock){return stock.tracking_number;});
-
       connect.delete('movement', 'tracking_number', stock_ids).
       then(function (){
         connect.delete('stock', 'tracking_number', stock_ids);
@@ -273,21 +338,4 @@ var stockIntegration = function ($q, $translate, $location, $routeParams, valida
     });
   }
 
-  vm.startIntegration = startIntegration;
-  vm.addStockItem = addStockItem;
-  vm.removeStockItem = removeStockItem;
-  vm.updateStockItem = updateStockItem;
-  vm.isValidLine = isValidLine;
-  vm.preview = preview;
-  vm.isPassed = isPassed;
-  vm.goback = goback;
-  vm.integrate = integrate;
-};
-
-stockIntegration.$inject = [
-  '$q', '$translate', '$location', '$routeParams', 'validate', 'connect',
-  'messenger', 'uuid', 'util', 'appcache', 'SessionService'
-];
-
-angular.module('bhima.controllers')
-.controller('stockIntegration', stockIntegration);
+}
