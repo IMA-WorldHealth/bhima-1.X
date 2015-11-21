@@ -4,57 +4,47 @@
 
 <nav>
 	<div class="pull-left">
-	    <ol class="breadcrumb">
-	      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
-	      <li><a href="#/depots/">{{ "DEPOT.MAIN.TITLE" | translate }}</a></li>
-	      <li class="active">{{ "STOCK.DONATION.TITLE" | translate }}</li>
-	    </ol>
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li><a href="#/depots/">{{ "DEPOT.MAIN.TITLE" | translate }}</a></li>
+      <li class="active">{{ "STOCK.DONATION.TITLE" | translate }}</li>
+    </ol>
 	</div>
 
-    <div class="pull-right" style="margin-top:1px;">
-    	<a ng-click="toggleView()" class="btn btn-sm btn-default">
-    		<span class="glyphicon glyphicon-th"></span> {{ session.view }}
-    	</a>
-    	<span style="margin-left:7px;">
-    	<b>[{{ session.depot.reference }}]</b> {{ session.depot.text }}
-    	</span>
-    </div>
+  <div class="pull-right">
+  	<span style="display:inline-block; margin-top:8px;"><b>[{{ session.depot.reference }}]</b> {{ session.depot.text }}</span>
+  </div>
 </nav>
 
 <main class="extend">
     <div ng-show="session.configured" class="col-xs-3">
         <div class="panel panel-default square">
-
           <div class="panel-heading square">
             <span class="glyphicon glyphicon-cog"></span> {{ 'DONATION_MANAGEMENT.CONFIGURE' | translate }}
           </div>
-
-          <div class="panel-body purchase-header">
-
-              <div class="form-group">
-                <label>{{ 'DONATION_MANAGEMENT.DATE' | translate }}</label>
-                <input type="date" class="form-bhima" ng-model="session.config.date" max="{{ session.config.maxdate | date:'yyyy-mm-dd' }}">
+          <div class="panel-body">
+            <div class="form-group">
+              <label>{{ 'DONATION_MANAGEMENT.DATE' | translate }}</label>
+              <input type="date" class="form-bhima" ng-model="session.config.date" max="{{ session.config.maxdate | date:'yyyy-mm-dd' }}">
             </div>
-              <div class="form-group">
-                <label>{{ 'DONATION_MANAGEMENT.DONOR' | translate }}</label>
-                <select ng-model="session.config.donor" ng-options="d as d.name for d in donor.data" class="form-bhima">
-                    <option value="" disabled="disabled">{{ 'SELECT.DONOR' | translate }}</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>{{ 'DONATION_MANAGEMENT.RESPONSABLE' | translate}}</label>
-                <select ng-model="session.config.employee" ng-options="e as e.name for e in employee.data" class="form-bhima">
-                    <option value="" disabled="disabled">{{ 'SELECT.EMPLOYEE' | translate }}</option>
-                </select>
-              </div>
+            <div class="form-group">
+              <label>{{ 'DONATION_MANAGEMENT.DONOR' | translate }}</label>
+              <select ng-model="session.config.donor" ng-options="d as d.name for d in donor.data" class="form-bhima">
+                  <option value="" disabled="disabled">{{ 'SELECT.DONOR' | translate }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>{{ 'DONATION_MANAGEMENT.RESPONSABLE' | translate}}</label>
+              <select ng-model="session.config.employee" ng-options="e as e.name for e in employee.data" class="form-bhima">
+                  <option value="" disabled="disabled">{{ 'SELECT.EMPLOYEE' | translate }}</option>
+              </select>
+            </div>
           </div>
         </div>
     </div>
 
-    <div ng-show="session.configured" ng-switch on="session.crud_or_read">
-
-      <!-- crud donations -->
-      <div ng-switch-default="crud" class="col-xs-9">
+    <div ng-show="session.configured">
+      <div class="col-xs-9">
           <div class="panel panel-default square">
             <div class="panel-heading square">
                 <span class="glyphicon glyphicon-list-alt"></span> {{ 'DONATION_MANAGEMENT.TITLE' | translate }} :
@@ -67,330 +57,292 @@
             <div class="panel-body">
                 <div class="row">
                   <div class="col-xs-12">
-
-                <!-- Item Warnings -->
-                <div
-                  ng-repeat="warning in warnings"
-                  class="alert alert-warning square"
-                  ng-if="warning.result">
-                  <span class="glyphicon glyphicon-exclamation-sign"></span> {{warning.message | translate}}
-                </div>
-
-                <div ng-switch on="session.donation.step">
-                    <!-- select inventories -->
                     <div
-                      ng-switch-default="select_inventories"
-                      class="panel panel-default square"
-                      ng-class="{'panel-success' : (session.config.donor && session.config.employee)}">
-                      <div class="panel-heading square">
-                          <span class="glyphicon glyphicon-list"></span> {{ 'DONATION_MANAGEMENT.DONATION_ITEM' | translate }}
-                          <a ng-class="{'disabled' : !(session.config.donor && session.config.employee)}" class="pull-right menu-item" ng-click="addDonationItem()" style="margin-top: 0px"><span class="glyphicon glyphicon&#45;plus"></span> {{ "DONATION_MANAGEMENT.ADD_LINE_ITEM" | translate }}</a>
-                      </div>
-
-                      <table
-                        class='table-condensed table'
-                        ng-if="session.config.donor && session.config.employee">
-                          <thead>
-                            <tr>
-                                <th>{{ "DONATION_MANAGEMENT.ITEM" | translate }}</th>
-                              <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
-                                <th>{{ "COLUMNS.QTY" | translate }}</th>
-                                <th>{{ "COLUMNS.PURCHASE_PRICE" | translate }}</th>
-                                <th>{{ "COLUMNS.AMOUNT" | translate }}</th>
-                                <th></th>
-                            </tr>
-                          </thead>
-
-                          <tbody>
-                            <!-- FIXME: strange filter -->
-                            <tr
-                              ng-class="{'incomplete-outline': !donationItem.code, 'complete-outline': donationItem.code}"
-                              ng-repeat="donationItem in session.donation.items">
-                                <td>
-                                  <input
-                                    class="form-invoice"
-                                    type="text"
-                                    typeahead-template-url="invoiceListItem.html"
-                                    ng-model="donationItem.selectedReference"
-                                    typeahead="inventoryItem as inventoryItem.code for inventoryItem in inventory.data | filter:$viewValue | limitTo:10"
-                                    typeahead-on-select="updateDonationItem(donationItem, donationItem.selectedReference)"
-                                    placeholder="Search Inventory">
-                                </td>
-
-                                <!-- -1 for no tab, 0 to allow -->
-                                <td>
-                                  <input ng-show="donationItem.isSet" class="form-invoice" disabled value="{{donationItem.text}}">
-                                </td>
-                                <td>
-                                  <input type="number" ng-change="cacheQuantity(donationItem)" tabindex="{{session.tablock}}" ng-show="donationItem.isSet" class="form-invoice" ng-model="donationItem.quantity">
-                                </td>
-                                <td>
-                                  <input tabindex="{{session.tablock}}" ng-show="donationItem.isSet" class="form-invoice" ng-model="donationItem.purchase_price">
-                                </td>
-                                <td>
-                                  <input tabindex="{{session.tablock}}" ng-show="donationItem.isSet" class="form-invoice" disabled value="{{donationItem.quantity * donationItem.purchase_price | currency}}">
-                                </td>
-                                <td>
-                                  <a ng-click="removeDonationItem($index)">
-                                    <span class="glyphicon glyphicon-trash"></span>
-                                  </a>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <!-- Style hack -->
-                                <td colspan="4" style="margin-right = 50px; text-align: right;">
-                                  <b> {{ "DONATION_MANAGEMENT.TOTAL_COST" | translate }}</b>
-                                </td>
-                                <td colspan="2">
-                                  <b>{{ donationTotal() | currency }}</b>
-                                </td>
-                            </tr>
-                          </tbody>
-                      </table>
-
-                      <div class="panel-footer">
-                      <div class="pull-right">
-                          <button class="btn btn-sm btn-success" ng-click="nextStep()" ng-disabled="!session.donation.items[0].isSet">
-                            {{ "DONATION_MANAGEMENT.SAVE_BY_LOT" | translate }}
-                            <span class="glyphicon glyphicon-arrow-right"></span>
-                          </button>
-                      </div>
-                      <div class="clearfix"></div>
-                  </div>
+                      ng-repeat="warning in warnings"
+                      class="alert alert-warning square"
+                      ng-if="warning.result">
+                      <span class="glyphicon glyphicon-exclamation-sign"></span> {{warning.message | translate}}
                     </div>
-                    <!-- fin select inventories -->
 
-                    <!-- input inventories in stock -->
-                    <div
-                      ng-switch-when="input_inventories"
-                      class="panel panel-default square"
-                      ng-class="{'panel-success' : (session.config.donor && session.config.employee)}">
+                    <div ng-switch on="session.donation.step">
+                        <!-- select inventories -->
+                        <div
+                          ng-switch-default="select_inventories"
+                          class="panel panel-default square"
+                          ng-class="{'panel-success' : (session.config.donor && session.config.employee)}">
+                          <div class="panel-heading square">
+                              <span class="glyphicon glyphicon-list"></span> {{ 'DONATION_MANAGEMENT.DONATION_ITEM' | translate }}
+                              <a ng-class="{'disabled' : !(session.config.donor && session.config.employee)}" class="pull-right menu-item" ng-click="addDonationItem()" style="margin-top: 0px"><span class="glyphicon glyphicon&#45;plus"></span> {{ "DONATION_MANAGEMENT.ADD_LINE_ITEM" | translate }}</a>
+                          </div>
 
-                      <div class="row" ng-if="!session.review" style="padding:0 15px;">
-                      <table class="table table-condensed">
-                          <thead>
-                            <tr>
-                              <th style="width:3%;"><span class="glyphicon glyphicon-th"></span></th>
-                              <th>{{ "COLUMNS.INVENTORY_CODE" | translate }}</th>
-                              <th>{{ "COLUMNS.LABEL" | translate }}</th>
-                              <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
-                              <th>{{ "COLUMNS.UNIT_PRICE" | translate }}</th>
-                              <th>{{ "COLUMNS.TOTAL_PRICE" | translate }}</th>
-                              <th style="width:3%;">{{ "COLUMNS.ACTIONS" | translate }}</th>
-                            </tr>
-                          </thead>
-                          <tbody ng-repeat-start="don in session.donation.items | orderBy:'code'">
-                            <tr ng-class="{'highlight-grey' : !don.isCollapsed }">
-                                <td>
-                                  <a ng-click="expand(don)" class="action">
-                                    <span class="glyphicon" ng-class="{ 'glyphicon-circle-arrow-right' : !don.isCollapsed, 'glyphicon-circle-arrow-up': !don.isCollapsed }"></span>
-                                  </a>
-                                </td>
-                                <td>{{ don.code }}</td>
-                                <td>{{ don.text }}</td>
-                                <td>{{ don.quantity }}</td>
-                                <td>{{ don.purchase_price | currency }}</td>
-                                <td>{{ don.quantity * don.purchase_price | currency }}</td>
-                                <td>
-                                  <div ng-show="!don.isCollapsed" class="pull-right">
-                                    <a ng-click="addLot(don)" class="action"><span class="glyphicon glyphicon-plus">&nbsp;</span></a>
-                                  </div>
-                                  <div ng-show="!don.isCollapsed && don.validLots" class="pull-right">
-                                    <span class="glyphicon glyphicon-ok-circle">&nbsp;</span>
-                                  </div>
-                                </td>
-                            </tr>
-                          </tbody>
-                          <tbody ng-repeat-end>
+                          <table
+                            class='table-condensed table'
+                            ng-if="session.config.donor && session.config.employee">
+                              <thead>
+                                <tr>
+                                    <th>{{ "DONATION_MANAGEMENT.ITEM" | translate }}</th>
+                                  <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
+                                    <th>{{ "COLUMNS.QTY" | translate }}</th>
+                                    <th>{{ "COLUMNS.PURCHASE_PRICE" | translate }}</th>
+                                    <th>{{ "COLUMNS.AMOUNT" | translate }}</th>
+                                    <th></th>
+                                </tr>
+                              </thead>
 
-                            <!-- header row -->
-                            <tr ng-class="{ 'row-collapse' : don.isCollapsed, 'success' : don.validLots }">
-                              <th colspan="2">
-                                <div collapse="don.isCollapsed">
-                                  <span class="glyphicon" ng-class="{ 'glyphicon-ok-circle' : don.validLots }"></span>
-                                </div>
-                              </th>
-                              <th>
-                                <div collapse="don.isCollapsed">{{ "COLUMNS.LOT_NUMBER" | translate }}</div>
-                              </th>
-                              <th>
-                                <div collapse="don.isCollapsed">{{ "COLUMNS.QUANTITY" | translate }}</div>
-                              </th>
-                              <th colspan="3">
-                                <div collapse="don.isCollapsed">{{ "COLUMNS.EXPIRATION_DATE" | translate }}</div>
-                              </th>
-                            </tr>
+                              <tbody>
+                                <!-- FIXME: strange filter -->
+                                <tr
+                                  ng-class="{'incomplete-outline': !donationItem.code, 'complete-outline': donationItem.code}"
+                                  ng-repeat="donationItem in session.donation.items">
+                                    <td>
+                                      <input
+                                        class="form-invoice"
+                                        type="text"
+                                        typeahead-template-url="invoiceListItem.html"
+                                        ng-model="donationItem.selectedReference"
+                                        typeahead="inventoryItem as inventoryItem.code for inventoryItem in inventory.data | filter:$viewValue | limitTo:10"
+                                        typeahead-on-select="updateDonationItem(donationItem, donationItem.selectedReference)"
+                                        placeholder="Search Inventory">
+                                    </td>
 
-                            <!-- data rows -->
-                            <tr ng-repeat="lot in don.lots.data" ng-class="{ 'row-collapse' : don.isCollapsed, 'success' : don.validLots }">
-                              <td colspan="2"></td>
-                              <td>
-                                <div collapse="don.isCollapsed">
-                                    <input ng-model="lot.lot_number" >
-                                </div>
-                              </td>
-                              <td>
-                                <div collapse="don.isCollapsed">
-                                    <input ng-model="lot.quantity" type="number" >
-                                </div>
-                              </td>
-                              <td colspan="2">
-                                <div collapse="don.isCollapsed">
-                                    <input ng-model="lot.expiration_date" type="date">
-                                </div>
-                              </td>
-                              <td>
-                                <div collapse="don.isCollapsed">
-                                    <a ng-click="removeLot(don, $index)" class="action danger">
-                                      <span class="glyphicon glyphicon-trash"></span>
-                                    </a>
-                                </div>
-                              </td>
-                            </tr>
+                                    <!-- -1 for no tab, 0 to allow -->
+                                    <td>
+                                      <input ng-show="donationItem.isSet" class="form-invoice" disabled value="{{donationItem.text}}">
+                                    </td>
+                                    <td>
+                                      <input type="number" ng-change="cacheQuantity(donationItem)" tabindex="{{session.tablock}}" ng-show="donationItem.isSet" class="form-invoice" ng-model="donationItem.quantity">
+                                    </td>
+                                    <td>
+                                      <input tabindex="{{session.tablock}}" ng-show="donationItem.isSet" class="form-invoice" ng-model="donationItem.purchase_price">
+                                    </td>
+                                    <td>
+                                      <input tabindex="{{session.tablock}}" ng-show="donationItem.isSet" class="form-invoice" disabled value="{{donationItem.quantity * donationItem.purchase_price | currency}}">
+                                    </td>
+                                    <td>
+                                      <a ng-click="removeDonationItem($index)">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                      </a>
+                                    </td>
+                                </tr>
 
-                            <!-- footer row -->
-                            <tr ng-class="{ 'row-collapse' : don.isCollapsed, 'success' : don.validLots }">
-                                <th colspan="3">
-                                  <div collapse="don.isCollapsed"><span class="glyphicon glyphicon-stats"></span></div>
-                                </th>
-                                <th>
-                                  <div collapse="don.isCollapsed" ng-class="{ 'error' : don.totalQuantity > don.quantity }">
-                                      {{ don.totalQuantity }}
-                                  </div>
-                                </th>
-                                <th colspan="3">
-                                  <div collapse="don.isCollapsed">
-                                      {{ don.lots.data.length }}
-                                  </div>
-                                </th>
-                            </tr>
-                          </tbody>
-                          <tfoot>
-                            <tr>
-                                <th colspan="3">{{ "COLUMNS.SUMMARY" | translate }}</th>
-                                <th colspan="2">{{ session.totals.quantity }}</th>
-                                <th colspan="2">{{ session.totals.price | currency }}</th>
-                            </tr>
-                          </tfoot>
-                      </table>
-                  </div>
+                                <tr>
+                                    <!-- Style hack -->
+                                    <td colspan="4" style="margin-right = 50px; text-align: right;">
+                                      <b> {{ "DONATION_MANAGEMENT.TOTAL_COST" | translate }}</b>
+                                    </td>
+                                    <td colspan="2">
+                                      <b>{{ donationTotal() | currency }}</b>
+                                    </td>
+                                </tr>
+                              </tbody>
+                          </table>
 
-                  <div class="panel-footer" style="padding:0 15px;" ng-if="!session.review">
-                      <div class="pull-right">
-                          <button class="btn btn-sm btn-success" ng-click="review()" ng-disabled="!session.valid">
-                            {{ "STOCK.ENTRY.REVIEW" | translate }}
-                          </button>
+                          <div class="panel-footer">
+                          <div class="pull-right">
+                              <button class="btn btn-sm btn-success" ng-click="nextStep()" ng-disabled="!session.donation.items[0].isSet">
+                                {{ "DONATION_MANAGEMENT.SAVE_BY_LOT" | translate }}
+                                <span class="glyphicon glyphicon-arrow-right"></span>
+                              </button>
+                          </div>
+                          <div class="clearfix"></div>
                       </div>
-                      <div class="clearfix"></div>
-                  </div>
+                        </div>
+                        <!-- fin select inventories -->
 
-                  <div class="row" ng-if="session.review" style="padding:0 15px;">
-                      <table class="table table-condensed">
-                          <thead>
-                            <tr>
-                                <th style="width:3%;"><span class="glyphicon glyphicon-th"></span></th>
-                                <th>{{ "COLUMNS.INVENTORY_CODE" | translate }}</th>
-                                <th>{{ "COLUMNS.LABEL" | translate }}</th>
-                                <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
-                                <th>{{ "COLUMNS.UNIT_PRICE" | translate }}</th>
-                                <th>{{ "COLUMNS.TOTAL_PRICE" | translate }}</th>
-                                <th style="width:3%;">{{ "COLUMNS.ACTIONS" | translate }}</th>
-                            </tr>
-                          </thead>
-                          <tbody ng-repeat-start="don in session.donation.items | orderBy:'code'">
-                            <tr>
-                                <td></td>
-                                <td>{{ don.code }}</td>
-                                <td>{{ don.text }}</td>
-                                <td>{{ don.quantity }}</td>
-                                <td>{{ don.purchase_price | currency }}</td>
-                                <td>{{ don.quantity * don.purchase_price | currency }}</td>
-                                <td>
-                                  <div ng-show="don.validLots" class="pull-right">
-                                      <span class="correct glyphicon glyphicon-ok-circle"></span>
-                                  </div>
-                                </td>
-                            </tr>
-                          </tbody>
-                          <tbody ng-repeat-end>
-                            <tr>
-                                <th colspan="2"></th>
-                                <th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>
-                                <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
-                                <th colspan="3">
-                                  <span class="glyphicon glyphicon-calendar"></span>
-                                    {{ "COLUMNS.EXPIRATION_DATE" | translate }}
-                                </th>
-                            </tr>
-                            <tr ng-repeat="lot in don.lots.data">
-                                <td colspan="2"></td>
-                                <td>{{ lot.lot_number }}</td>
-                                <td>{{ lot.quantity }}</td>
-                                <td colspan="3">{{ lot.expiration_date | date }}</td>
-                            </tr>
-                          </tbody>
-                          <tfoot>
-                            <tr>
-                                <th colspan="3">{{ "COLUMNS.SUMMARY" | translate }}</th>
-                                <th colspan="2">{{ session.totals.quantity }}</th>
-                                <th colspan="2">{{ session.totals.price | currency }}</th>
-                            </tr>
-                          </tfoot>
-                      </table>
-                  </div>
+                        <!-- input inventories in stock -->
+                        <div
+                          ng-switch-when="input_inventories"
+                          class="panel panel-default square"
+                          ng-class="{'panel-success' : (session.config.donor && session.config.employee)}">
 
-                  <div class="panel-footer" style="padding:0 15px;" ng-if="session.review">
-                      <div class="pull-right">
-                          <button class="btn btn-sm btn-success" ng-click="accept()">
-                            {{ "STOCK.ENTRY.ENTER_STOCK" | translate }}
-                          </button>
+                          <div class="row" ng-if="!session.review" style="padding:0 15px;">
+                          <table class="table table-condensed">
+                              <thead>
+                                <tr>
+                                  <th style="width:3%;"><span class="glyphicon glyphicon-th"></span></th>
+                                  <th>{{ "COLUMNS.INVENTORY_CODE" | translate }}</th>
+                                  <th>{{ "COLUMNS.LABEL" | translate }}</th>
+                                  <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
+                                  <th>{{ "COLUMNS.UNIT_PRICE" | translate }}</th>
+                                  <th>{{ "COLUMNS.TOTAL_PRICE" | translate }}</th>
+                                  <th style="width:3%;">{{ "COLUMNS.ACTIONS" | translate }}</th>
+                                </tr>
+                              </thead>
+                              <tbody ng-repeat-start="don in session.donation.items | orderBy:'code'">
+                                <tr ng-class="{'highlight-grey' : !don.isCollapsed }">
+                                    <td>
+                                      <a ng-click="expand(don)" class="action">
+                                        <span class="glyphicon" ng-class="{ 'glyphicon-circle-arrow-right' : !don.isCollapsed, 'glyphicon-circle-arrow-up': !don.isCollapsed }"></span>
+                                      </a>
+                                    </td>
+                                    <td>{{ don.code }}</td>
+                                    <td>{{ don.text }}</td>
+                                    <td>{{ don.quantity }}</td>
+                                    <td>{{ don.purchase_price | currency }}</td>
+                                    <td>{{ don.quantity * don.purchase_price | currency }}</td>
+                                    <td>
+                                      <div ng-show="!don.isCollapsed" class="pull-right">
+                                        <a ng-click="addLot(don)" class="action"><span class="glyphicon glyphicon-plus">&nbsp;</span></a>
+                                      </div>
+                                      <div ng-show="!don.isCollapsed && don.validLots" class="pull-right">
+                                        <span class="glyphicon glyphicon-ok-circle">&nbsp;</span>
+                                      </div>
+                                    </td>
+                                </tr>
+                              </tbody>
+                              <tbody ng-repeat-end>
+
+                                <!-- header row -->
+                                <tr ng-class="{ 'row-collapse' : don.isCollapsed, 'success' : don.validLots }">
+                                  <th colspan="2">
+                                    <div collapse="don.isCollapsed">
+                                      <span class="glyphicon" ng-class="{ 'glyphicon-ok-circle' : don.validLots }"></span>
+                                    </div>
+                                  </th>
+                                  <th>
+                                    <div collapse="don.isCollapsed">{{ "COLUMNS.LOT_NUMBER" | translate }}</div>
+                                  </th>
+                                  <th>
+                                    <div collapse="don.isCollapsed">{{ "COLUMNS.QUANTITY" | translate }}</div>
+                                  </th>
+                                  <th colspan="3">
+                                    <div collapse="don.isCollapsed">{{ "COLUMNS.EXPIRATION_DATE" | translate }}</div>
+                                  </th>
+                                </tr>
+
+                                <!-- data rows -->
+                                <tr ng-repeat="lot in don.lots.data" ng-class="{ 'row-collapse' : don.isCollapsed, 'success' : don.validLots }">
+                                  <td colspan="2"></td>
+                                  <td>
+                                    <div collapse="don.isCollapsed">
+                                        <input ng-model="lot.lot_number" >
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div collapse="don.isCollapsed">
+                                        <input ng-model="lot.quantity" type="number" >
+                                    </div>
+                                  </td>
+                                  <td colspan="2">
+                                    <div collapse="don.isCollapsed">
+                                        <input ng-model="lot.expiration_date" type="date">
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div collapse="don.isCollapsed">
+                                        <a ng-click="removeLot(don, $index)" class="action danger">
+                                          <span class="glyphicon glyphicon-trash"></span>
+                                        </a>
+                                    </div>
+                                  </td>
+                                </tr>
+
+                                <!-- footer row -->
+                                <tr ng-class="{ 'row-collapse' : don.isCollapsed, 'success' : don.validLots }">
+                                    <th colspan="3">
+                                      <div collapse="don.isCollapsed"><span class="glyphicon glyphicon-stats"></span></div>
+                                    </th>
+                                    <th>
+                                      <div collapse="don.isCollapsed" ng-class="{ 'error' : don.totalQuantity > don.quantity }">
+                                          {{ don.totalQuantity }}
+                                      </div>
+                                    </th>
+                                    <th colspan="3">
+                                      <div collapse="don.isCollapsed">
+                                          {{ don.lots.data.length }}
+                                      </div>
+                                    </th>
+                                </tr>
+                              </tbody>
+                              <tfoot>
+                                <tr>
+                                    <th colspan="3">{{ "COLUMNS.SUMMARY" | translate }}</th>
+                                    <th colspan="2">{{ session.totals.quantity }}</th>
+                                    <th colspan="2">{{ session.totals.price | currency }}</th>
+                                </tr>
+                              </tfoot>
+                          </table>
                       </div>
-                      <div class="clearfix"></div>
-                  </div>
+
+                      <div class="panel-footer" style="padding:0 15px;" ng-if="!session.review">
+                          <div class="pull-right">
+                              <button class="btn btn-sm btn-success" ng-click="review()" ng-disabled="!session.valid">
+                                {{ "STOCK.ENTRY.REVIEW" | translate }}
+                              </button>
+                          </div>
+                          <div class="clearfix"></div>
+                      </div>
+
+                      <div class="row" ng-if="session.review" style="padding:0 15px;">
+                          <table class="table table-condensed">
+                              <thead>
+                                <tr>
+                                    <th style="width:3%;"><span class="glyphicon glyphicon-th"></span></th>
+                                    <th>{{ "COLUMNS.INVENTORY_CODE" | translate }}</th>
+                                    <th>{{ "COLUMNS.LABEL" | translate }}</th>
+                                    <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
+                                    <th>{{ "COLUMNS.UNIT_PRICE" | translate }}</th>
+                                    <th>{{ "COLUMNS.TOTAL_PRICE" | translate }}</th>
+                                    <th style="width:3%;">{{ "COLUMNS.ACTIONS" | translate }}</th>
+                                </tr>
+                              </thead>
+                              <tbody ng-repeat-start="don in session.donation.items | orderBy:'code'">
+                                <tr>
+                                    <td></td>
+                                    <td>{{ don.code }}</td>
+                                    <td>{{ don.text }}</td>
+                                    <td>{{ don.quantity }}</td>
+                                    <td>{{ don.purchase_price | currency }}</td>
+                                    <td>{{ don.quantity * don.purchase_price | currency }}</td>
+                                    <td>
+                                      <div ng-show="don.validLots" class="pull-right">
+                                          <span class="correct glyphicon glyphicon-ok-circle"></span>
+                                      </div>
+                                    </td>
+                                </tr>
+                              </tbody>
+                              <tbody ng-repeat-end>
+                                <tr>
+                                    <th colspan="2"></th>
+                                    <th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>
+                                    <th>{{ "COLUMNS.QUANTITY" | translate }}</th>
+                                    <th colspan="3">
+                                      <span class="glyphicon glyphicon-calendar"></span>
+                                        {{ "COLUMNS.EXPIRATION_DATE" | translate }}
+                                    </th>
+                                </tr>
+                                <tr ng-repeat="lot in don.lots.data">
+                                    <td colspan="2"></td>
+                                    <td>{{ lot.lot_number }}</td>
+                                    <td>{{ lot.quantity }}</td>
+                                    <td colspan="3">{{ lot.expiration_date | date }}</td>
+                                </tr>
+                              </tbody>
+                              <tfoot>
+                                <tr>
+                                    <th colspan="3">{{ "COLUMNS.SUMMARY" | translate }}</th>
+                                    <th colspan="2">{{ session.totals.quantity }}</th>
+                                    <th colspan="2">{{ session.totals.price | currency }}</th>
+                                </tr>
+                              </tfoot>
+                          </table>
+                      </div>
+
+                      <div class="panel-footer" style="padding:0 15px;" ng-if="session.review">
+                          <div class="pull-right">
+                              <button class="btn btn-sm btn-success" ng-click="accept()">
+                                {{ "STOCK.ENTRY.ENTER_STOCK" | translate }}
+                              </button>
+                          </div>
+                          <div class="clearfix"></div>
+                      </div>
+                        </div>
+                      <!-- fin input inventories in stock -->
                     </div>
-                  <!-- fin input inventories in stock -->
-                </div>
-              </div>
+                  </div>
                 </div>
             </div>
           </div>
-      </div>
-
-      <!-- see all donations -->
-      <div ng-switch-when="read" class="col-xs-9">
-        <div class="panel panel-default square">
-            <div class="panel-heading square">
-                <span class="glyphicon glyphicon-th"></span>
-                <strong>{{ 'DONATION_MANAGEMENT.ALL_DONATIONS' | translate }}</strong>
-            </div>
-            <div class="panel-body">
-            <table class="table table-condensed">
-              <thead>
-                <tr>
-                  <th>{{ 'DONATION_MANAGEMENT.NB' | translate }}</th>
-                  <th>{{ 'DONATION_MANAGEMENT.DONOR' | translate }}</th>
-                  <th>{{ 'DONATION_MANAGEMENT.ITEM' | translate }}</th>
-                  <th>{{ 'DONATION_MANAGEMENT.QTE' | translate }}</th>
-                  <th>{{ 'DONATION_MANAGEMENT.LOT' | translate }}</th>
-                  <th>{{ 'DONATION_MANAGEMENT.DATE' | translate }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr ng-repeat="don in donations.data | orderBy:'name'">
-                  <td>{{ $index + 1}}</td>
-                  <td>{{ don.name }}</td>
-                  <td>{{ don.text }}</td>
-                  <td>{{ don.quantity }}</td>
-                  <td>{{ don.lot_number }}</td>
-                  <td>{{ don.date | date }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-            <div class="panel-footer">
-          </div>
-        </div>
       </div>
     </div>
 </main>
