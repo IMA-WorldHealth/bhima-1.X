@@ -67,7 +67,7 @@ function patientRegistration ($scope, $q, $location, $translate, connect, messen
       }
     };
 
-    function patientRegistration(model) {
+    function startPatientRegistration(model) {
       angular.extend($scope, model);
 
       // Update the year limit message (has to be done late to use current language)
@@ -297,7 +297,7 @@ function patientRegistration ($scope, $q, $location, $translate, connect, messen
     appstate.register('project', function (project) {
       $scope.project = project;
       validate.process(dependencies)
-      .then(patientRegistration)
+      .then(startPatientRegistration)
       .catch(handleError);
     });
 

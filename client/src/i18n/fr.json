@@ -2576,6 +2576,17 @@
    "SUCCESS_MESSAGE"        : "Insertion avec succès !",
    "TITLE"                  : "Gestion des Services"
    },
+"SERVICE_RETURN_STOCK" : {
+  "BACK"         : "Retour",
+  "DESCRIPTION"  : "Description",
+  "FROM"         : "Provenance",
+  "MOVEMENT"     : "Stock en provenance de %SERVICE% vers le depot %DEPOT%",
+  "PREVIEW"      : "Aperçu",
+  "SUBMIT"       : "Soumettre",
+  "TO"           : "Destination",
+  "TITLE"        : "Retour de stocks en provenance d'un service",
+  "TOWARD_DEPOT" : "Retourner vers depot"
+},
 "SERVICE_EXPLOITATION": {
    "TITLE" : "Exploitation par service"
    },
@@ -2742,6 +2753,9 @@
       "STOCK_COUNT"    : "Stock Count",
       "TITLE"          : "Etat du stock"
       },
+  "RETURN_SERVICE": {
+     "KEY" : "Retour de stocks en provenance d'un service"
+     },
    "SEARCH": {
       "KEY"          : "Rechercher Items Stock",
       "MANIFEST"     : "Documents des Stocks",
@@ -3198,6 +3212,7 @@
    "NEW_SUCCESS"       : "Ajout avec succès",
    "NO"                : "Non",
    "NO_DATA"           : "La requette n'a pas des données",
+   "NO_DEPOT_SELECTED" : "Aucun depot selectionné",
    "OFF"               : "Off",
    "ON"                : "On",
    "PATIENT_EXIST_A"   : "Le patient ayant la fiche [",
@@ -3205,12 +3220,14 @@
    "PRINT"             : "Imprimer",
    "PROJECT"           : "Project",
    "REGISTER_NEW_STOCK": "Enregistrer un stock",
+   "RESET"             : "Refaire",
    "RESET_FORM"        : "Remettre",
    "SAVE_SELECTION"    : "Enregistrer la Sélection",
    "SEARCH"            : "Chercher",
    "SHOW"              : "Voir",
    "SIGNATURES"        : "Signature",
    "SOURCE"            : "Source",
+   "START"             : "Commencer",
    "SUBMIT"            : "Enregistrer",
    "SUCCESS"           : "Operation Effectuee Avec Succes",
    "TOGGLE"            : "Basculer",
