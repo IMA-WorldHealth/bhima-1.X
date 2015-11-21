@@ -1,8 +1,8 @@
 <!-- TODO: better styling -->
-<div class="form-group" ng-class="MessageCtrl.type.textClass" ng-if="MessageCtrl.message">
-  <div>
+<div ng-if="MessageCtrl.message">
+  <div class="bh-form-message" ng-class="MessageCtrl.type.cssClass" >
     <i class="glyphicon" ng-class="MessageCtrl.type.icon"></i> <strong>{{ MessageCtrl.message.code | translate }}</strong>
-    <a ng-if="MessageCtrl.message.link" ng-href="#/{{ MessageCtrl.message.link }}">
+    <a ng-if="MessageCtrl.message.link" ng-href="#/{{ MessageCtrl.message.link }}" class="message-link">
       <i class="glyphicon glyphicon-link"></i> {{ "UTIL.LINK" | translate }}
     </a>
   </div>

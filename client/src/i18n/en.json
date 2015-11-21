@@ -306,7 +306,7 @@
    "OVERDUE"          : "Over Due",
    "PAYMENT"          : "Payment",
    "PAY_INVOICES"     : "Pay Invoices",
-   "TITLE"            : "Cash Payment Module",
+   "TITLE"            : "Auxillary Cash Module",
    "TOTAL_DUE"        : "Total Due",
    "TOTAL_PAYING"     : "Total Paying",
    "WARNING"          : "This patient is a contracted and can not pay checkout in Cash Payments",
@@ -1936,7 +1936,10 @@
    "RETYPE"      : "Retype",
    "SUPER"       : "Super User",
    "TITLE"       : "Users and Permissions Management",
-   "UPDATE_USER_FORM" : "Update User Details"
+   "UPDATE_USER_FORM" : "Update User Details",
+   "CREATE_SUCCESS" : "Successfully created a new user.",
+   "UPDATE_SUCCESS" : "Successfully the user.",
+   "PERMISSIONS_SUCCESS" : "Successfully updated user permissions."
    },
 "PLACEHOLDERS": {
    "PRODUCTS"       : "e.g. Products",
@@ -2948,7 +2951,7 @@
    "BUDGET_ANALYSIS"           : "Budget Analysis",
    "BUDGET_BY_ACCOUNT"         : "Budget by Account",
    "BUDGET_MANAGEMENT"         : "Budget Management",
-   "CASH"                      : "Cash Payments",
+   "CASH"                      : "Auxillary Cash",
    "CASHBOX_MANAGEMENT"        : "Cashbox Management",
    "CASHBOX_ACCOUNT_MANAGEMENT": "Treasure Configuration",
    "CASH_PAYMENTS"             : "Cash Payments",

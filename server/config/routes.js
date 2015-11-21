@@ -31,28 +31,30 @@ var inventory       = require('../controllers/stock/inventory');
 var depot           = require('../controllers/stock/depot');
 var consumptionLoss = require('../controllers/stock/inventory/depreciate/consumptionLoss');
 
-var trialbalance    = require('../controllers/finance/trialbalance');
-var journal         = require('../controllers/finance/journal');
-var ledger          = require('../controllers/finance/ledger');
-var fiscal          = require('../controllers/finance/fiscal');
-var extra           = require('../controllers/finance/extraPayment');
-var gl              = require('../controllers/finance/ledgers/general');
-var genericFinance  = require('../controllers/finance/financeGeneric');
-var accounts        = require('../controllers/finance/accounts');
-var analytics       = require('../controllers/finance/analytics');
-var purchase        = require('../controllers/finance/purchase');
-var budget          = require('../controllers/finance/budget');
-var taxPayment      = require('../controllers/finance/taxPayment');
-var donations       = require('../controllers/finance/donations');
-var debtors         = require('../controllers/finance/debtors');
+var trialbalance   = require('../controllers/finance/trialbalance');
+var journal        = require('../controllers/finance/journal');
+var ledger         = require('../controllers/finance/ledger');
+var fiscal         = require('../controllers/finance/fiscal');
+var extra          = require('../controllers/finance/extraPayment');
+var gl             = require('../controllers/finance/ledgers/general');
+var genericFinance = require('../controllers/finance/financeGeneric');
+var accounts       = require('../controllers/finance/accounts');
+var analytics      = require('../controllers/finance/analytics');
+var purchase       = require('../controllers/finance/purchase');
+var budget         = require('../controllers/finance/budget');
+var taxPayment     = require('../controllers/finance/taxPayment');
+var donations      = require('../controllers/finance/donations');
+var debtors        = require('../controllers/finance/debtors');
+var cashboxes      = require('../controllers/finance/cashboxes');
 
-var financeServices       = require('../controllers/categorised/financeServices');
-var depreciatedInventory  = require('../controllers/categorised/inventory_depreciate');
-var depreciatedReports    = require('../controllers/categorised/reports_depreciate');
-var payroll               = require('../controllers/categorised/payroll');
-var caution               = require('../controllers/categorised/caution');
-var employees             = require('../controllers/categorised/employees');
-var subsidies             = require('../controllers/categorised/subsidies');
+
+var financeServices      = require('../controllers/categorised/financeServices');
+var depreciatedInventory = require('../controllers/categorised/inventory_depreciate');
+var depreciatedReports   = require('../controllers/categorised/reports_depreciate');
+var payroll              = require('../controllers/categorised/payroll');
+var caution              = require('../controllers/categorised/caution');
+var employees            = require('../controllers/categorised/employees');
+var subsidies            = require('../controllers/categorised/subsidies');
 var units                = require('../controllers/units');
 
 // Middleware for handle uploaded file
@@ -163,9 +165,7 @@ exports.configure = function (app) {
   app.get('/hollyday_list/:pp/:employee_id', employees.listHolidays);
   app.get('/getCheckHollyday/', employees.checkHoliday);
   app.get('/getCheckOffday/', employees.checkOffday);
- 
-  app.get('/caution/:debitor_uuid/:project_id', caution.debtor);
-  
+
   app.get('/caution/:debitor_uuid/:project_id', caution.debtor);
 
   app.get('/getAccount6', accounts.listIncomeAccounts);
@@ -271,12 +271,12 @@ exports.configure = function (app) {
   app.post('/finance/journalvoucher', genericFinance.postJournalVoucher);
 
   // accounts controller
-  app.get('/accounts', accounts.getAccounts);
+  app.get('/accounts', accounts.list);
   app.get('/InExAccounts/:id_enterprise/', accounts.listInExAccounts);
   app.get('/availableAccounts/:id_enterprise/', accounts.listEnterpriseAccounts);
   app.get('/availableAccounts_profit/:id_enterprise/', accounts.listEnterpriseProfitAccounts);
-  
-  // Patients API 
+
+  // Patients API
   app.get('/patients', patient.list);
   app.post('/patients', patient.create);
   app.get('/patients/:uuid', patient.details);
@@ -284,16 +284,17 @@ exports.configure = function (app) {
 
   app.get('/patients/checkHospitalId/:id', patient.verifyHospitalNumber);
   app.post('/patients/visit', patient.visit);
-  
+
   // app.get('/patients/search', patient.search);
   app.get('/patients/search/name/:value', patient.searchFuzzy);
   app.get('/patients/search/reference/:value', patient.searchReference);
-  
+
   // Debtors API
   // app.get('/debtors', debtors.list);
   app.get('/debtors/groups', debtors.listGroups);
   app.get('/debtors/groups/:uuid', debtors.groupDetails);
   // app.get('/debtors/:uuid', debtors.details);
+  app.get('/debtors/:uuid/invoices', debtors.invoices);
 
   // search stuff
   // TODO merge with patients API
@@ -332,4 +333,11 @@ exports.configure = function (app) {
   app.put('/projects/:id', projects.update);
   app.post('/projects', projects.create);
   app.delete('/projects/:id', projects.delete);
+
+  // cashbox controller
+  app.get('/cashboxes', cashboxes.list);
+  app.get('/cashboxes/:id', cashboxes.details);
+  app.post('/cashboxes', cashboxes.create);
+  app.put('/cashboxes/:id', cashboxes.update);
+  app.delete('/cashboxes/:id', cashboxes.delete);
 };

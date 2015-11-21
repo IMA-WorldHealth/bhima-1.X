@@ -1,6 +1,5 @@
 /*global describe, it, beforeEach, process*/
 
-// import testing framework
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var expect = chai.expect;
@@ -12,11 +11,12 @@ if (!global.Promise) {
   chai.request.addPromises(q.Promise);
 }
 
-// do not throw self-signed certificate errors
+// environment variables - disable certificate errors
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
 // base URL
 var url = 'https://localhost:8080';
+var user = { username : 'superuser', password : 'superuser', project: 1};
 
 /**
 * The /users API endpoint
@@ -43,19 +43,17 @@ describe('The /users API endpoint', function () {
 
   // login before each request
   beforeEach(function () {
-    var user = { username : 'superuser', password : 'superuser', project: 1};
     return agent
       .post('/login')
       .send(user);
   });
-
 
   it('GET /users returns a list of users', function () {
     return agent.get('/users')
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
-        expect(res.body).to.have.length(4);
+        expect(res.body).to.have.length(3);
       })
       .catch(handler);
   });
@@ -81,6 +79,15 @@ describe('The /users API endpoint', function () {
         expect(res.body).to.have.keys('code', 'reason', 'missingKeys');
         expect(res.body.code).to.be.equal('ERROR.ERR_MISSING_INFO');
         expect(res.body.missingKeys).to.have.length.above(2);
+      })
+      .catch(handler);
+  });
+
+  it('POST /users with empty object will send 400 error code', function () {
+    return agent.post('/users')
+      .send({})
+      .then(function (res) {
+        expect(res).to.have.status(400);
       })
       .catch(handler);
   });
@@ -123,6 +130,16 @@ describe('The /users API endpoint', function () {
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body.email).to.equal('email@test.org');
+      })
+      .catch(handler);
+  });
+
+  it('PUT /users/:id with empty object will send 400 error code', function () {
+    return agent.put('/users/' + newUser.id)
+      .send({})
+      .then(function (res) {
+        expect(res).to.have.status(400);
+        expect(res).to.be.json;
       })
       .catch(handler);
   });

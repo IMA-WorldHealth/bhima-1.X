@@ -1,0 +1,158 @@
+<header data-header>
+  {{ "CASH.CASHBOX.TITLE" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><i class="glyphicon glyphicon-home"></i></a></li>
+      <li class="active">{{ "CASH.CASHBOX.TITLE" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right">
+    <button class="btn btn-default" ng-click="CashCtrl.create()">
+      <i class="glyphicon glyphicon-plus-sign"></i>
+      {{ "CASH.CASHBOX.ADD" | translate }}
+    </button>
+  </div>
+</nav>
+
+<main class="container-fluid">
+  <div class="row">
+
+    <div class="col-md-6">
+      <table class="table table-striped table-borded table-condensed" style="max-height:600px; overflow:auto;">
+        <thead>
+          <tr>
+            <th colspan="2">{{ "COLUMNS.NAME" | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="box in CashCtrl.cashboxes track by box.id">
+            <td>{{ box.text }}</td>
+            <td class="text-right">
+              <a class="btn btn-xs btn-default" ng-click="CashCtrl.update(box.id)"><i class="glyphicon glyphicon-pencil"></i> {{ "FORM.EDIT" | translate }}</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col-md-6" ng-switch="CashCtrl.state">
+      <div class="alert alert-info" ng-switch-default>
+        <h4>{{ "CASH.CASHBOX.TITLE" | translate }}</h4>
+        <p>{{ "CASH.CASHBOX.ALERT" | translate }}</p>
+      </div>
+
+      <bh-form-message message="CashCtrl.message"></bh-form-message>
+
+      <div class="panel panel-primary" ng-switch-when="create">
+        <div class="panel-heading">
+          {{ "CASH.CASHBOX.ADD" | translate }}
+        </div>
+        <form class="panel-body" name="CreateForm" ng-submit="CashCtrl.submit(CreateForm.$invalid)" novalidate>
+
+          <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.text.$invalid }">
+            <label class="control-label">{{ "COLUMNS.NAME" | translate }}</label>
+            <input class="form-control" name="CreateForm.text" ng-model="CashCtrl.box.text" required>
+          </div>
+
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" name="CreateForm.bank" ng-model="CashCtrl.box.is_bank" ng-true-value="1" ng-false-value="0">
+                {{ "CASH.CASHBOX.IS_BANK" | translate }}
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" name="CreateForm.auxillary" ng-model="CashCtrl.box.is_auxillary" ng-true-value="1" ng-false-value="0">
+                {{ "CASH.CASHBOX.IS_AUXILLARY" | translate }}
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.project.$invalid }">
+            <label class="control-label">{{ "CASH.CASHBOX.PROJECT" | translate }}</label>
+            <select class="form-control" name="project" ng-model="CashCtrl.box.project_id" ng-options="project.id as project.name for project in CashCtrl.projects" required>
+              <option value="">{{ "SELECT.PROJECT" | translate }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <button class="btn btn-default" type="submit">
+              {{ "FORM.SUBMIT" | translate }}
+            </button>
+            <button class="btn btn-default" type="button" ng-click="CashCtrl.cancel()">
+              {{ "FORM.CANCEL" | translate }}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div ng-switch-when="update">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            {{ "CASH.CASHBOX.EDIT" | translate }}
+          </div>
+          <form class="panel-body" name="UpdateForm" ng-submit="CashCtrl.submit(UpdateForm.$invalid)" novalidate>
+
+            <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.text.$invalid }">
+              <label class="control-label">{{ "COLUMNS.NAME" | translate }}</label>
+              <input class="form-control" name="UpdateForm.text" ng-model="CashCtrl.box.text" required>
+            </div>
+
+            <div class="form-group">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" name="UpdateForm.bank" ng-model="CashCtrl.box.is_bank" ng-true-value="1" ng-false-value="0">
+                  {{ "CASH.CASHBOX.IS_BANK" | translate }}
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" name="UpdateForm.auxillary" ng-model="CashCtrl.box.is_auxillary" ng-true-value="1" ng-false-value="0">
+                  {{ "CASH.CASHBOX.IS_AUXILLARY" | translate }}
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.project.$invalid }">
+              <label class="control-label">{{ "CASH.CASHBOX.PROJECT" | translate }}</label>
+              <select class="form-control" name="project" ng-model="CashCtrl.box.project_id" ng-options="project.id as project.name for project in CashCtrl.projects" required>
+                <option value="">{{ "SELECT.PROJECT" | translate }}</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <button class="btn btn-default" type="submit">
+                {{ "FORM.SUBMIT" | translate }}
+              </button>
+              <button class="btn btn-default" type="button" ng-click="CashCtrl.cancel()">
+                {{ "FORM.CANCEL" | translate }}
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel panel-warning">
+          <div class="panel-heading">
+            {{ "FORM.SECURE_ACTIONS" | translate }}
+          </div>
+          <div class="panel-body">
+            <button class="btn btn-danger" type="button" ng-click="CashCtrl.delete(CashCtrl.box)">
+              {{ "FORM.DELETE" | translate }} {{ "CASHBOX.CASHBOX" | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

@@ -43,15 +43,33 @@ exports.configure = function configure(app) {
     next();
   });
 
+  // NOTE -- EXPERIMENTAL
+  // reject PUTs and POSTs with empty objects in the data
+  // property with a 400 error
+  app.use(function (req, res, next) {
+    if (req.method !== 'PUT' && req.method !== 'POST') {
+      return next();
+    }
+
+    // make sure the body object contains something
+    var emptyBody = Object.keys(req.body).length === 0;
+
+    if (emptyBody) {
+      next(req.codes.ERR_EMPTY_BODY);
+    } else {
+      next();
+    }
+  });
+
   // morgan logger setup
-  // options: combined | common | dev | short | tiny 
+  // options: combined | common | dev | short | tiny
   // Recommend 'combined' for production settings.
   //
   // Uncomment if you want logs written to a file instead
   // of piped to standard out (default).
   //var logFile = fs.createWriteStream(__dirname + '/access.log', {flags : 'a'});
   //app.use(morgan('short', { stream : logFile }));
-  
+
   // custom logLevel 'none' allows developers to turn off logging during tests
   if (cfg.logLevel !== 'none') {
     app.use(morgan(cfg.logLevel));
@@ -87,15 +105,26 @@ exports.errorHandling = function errorHandling(app) {
   function interceptDatabaseErrors(err, req, res, next) {
     var codes = [{
         code : 'ER_BAD_FIELD_ERROR',
-        httpStatus : 400, // Invalid request
-        key : 'Column does not exist in database' // TODO translatable on client
+        httpStatus : 400,
+        reason : 'Column does not exist in database.'
+      }, {
+        code : 'ER_ROW_IS_REFERENCED_2',
+        httpStatus : 400,
+        reason : 'Cannot delete entity becuase entity is used in another table.'
       }
     ];
 
     var supported = codeSupported(codes, err);
     if (supported) {
-      res.status(supported.httpStatus).json(err);
-      return;
+
+      // NOTE -- we prefix errors with "DB." for proper client
+      // translation.
+      // TODO -- review this decision
+      return res.status(supported.httpStatus).json({
+        code : 'DB.' + supported.code,
+        reason : supported.reason,
+        raw : err
+      });
     } else {
 
       // Unkown code - forward error

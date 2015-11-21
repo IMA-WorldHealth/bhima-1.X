@@ -60,6 +60,7 @@ function PermissionsController($window, $translate, $http, $modal, util, Session
     vm.state = state;
     vm.super = 0; // reset super user determination between states
     vm.user = {}; // reset users between state changes
+    vm.formMessage = undefined; // reset form messages
   }
 
   // this is the new user
@@ -75,8 +76,8 @@ function PermissionsController($window, $translate, $http, $modal, util, Session
     .finally();
   }
 
+  // loads the permissions tree for a given user.
   function editPermissions(user) {
-
     var units;
 
     // load the tree units
@@ -121,6 +122,7 @@ function PermissionsController($window, $translate, $http, $modal, util, Session
     .finally();
   }
 
+  // used in the view to set permission's tree padding based on depth
   function checkboxOffset(depth) {
     return {
       'padding-left' : 30 * depth + 'px'
@@ -136,7 +138,7 @@ function PermissionsController($window, $translate, $http, $modal, util, Session
       vm.user.password === vm.user.passwordVerify;
   }
 
-  // opens a new modal that
+  // opens a new modal to let the user set a password
   function setPasswordModal() {
     var modal = $modal.open({
       templateUrl: 'partials/permissions/permissionsPasswordModalTemplate.html',
@@ -150,13 +152,19 @@ function PermissionsController($window, $translate, $http, $modal, util, Session
     }).instance;
   }
 
-  // submit the data to the server in a generic fashion
+  // submit the data to the server from all three forms (update, create,
+  // permissions)
   function submit(invalid) {
     if (invalid) { return; }
 
     var promise;
+    var messages = {
+      'create' : 'PERMISSIONS.CREATE_SUCCESS',
+      'update' : 'PERMISSIONS.UPDATE_SUCCESS',
+      'permissions' : 'PERMISSIONS.PERMISSIONS_SUCCESS'
+    };
 
-    // decide how to submit
+    // decide how to submit data to the server based on state.
     switch (vm.state) {
       case 'create':
         promise = Users.create(vm.user);
@@ -180,22 +188,30 @@ function PermissionsController($window, $translate, $http, $modal, util, Session
 
     promise.then(function (data) {
 
+      var msg = messages[vm.state];
+
       // go back to default state
       setState('success');
+
+      // display the correct state-based success message
+      vm.formMessage = { code : msg };
     })
-    .catch(function (error) {
-      console.log(error);
-      vm.formMessage = error;
+    .catch(function (res) {
+      vm.formMessage = res.data;
+    });
+  }
+
+  // load user grid
+  function loadGrid() {
+    Users.read().then(function (users) {
+      vm.uiGridOptions.data = users;
     });
   }
 
   // called on modules start
   function startup() {
 
-    // load users
-    Users.read().then(function (users) {
-      vm.uiGridOptions.data = users;
-    });
+    loadGrid();
 
     // load projects
     Projects.read().then(function (data) {
@@ -203,7 +219,7 @@ function PermissionsController($window, $translate, $http, $modal, util, Session
     });
   }
 
-  // loads tree units on demand
+  // loads tree units on demand  Used for assigning user's permissions
   function loadUnits() {
     return $http.get('/units')
     .then(util.unwrapHttpResponse);
@@ -219,6 +235,7 @@ function PermissionsController($window, $translate, $http, $modal, util, Session
     });
   }
 
+  // toggles all permissions to match there super user permission's setting
   function toggleSuperUserPermissions() {
     vm.units.forEach(function (node) {
       node.checked = vm.super;
@@ -228,5 +245,6 @@ function PermissionsController($window, $translate, $http, $modal, util, Session
     });
   }
 
+  // fire up the module
   startup();
 }

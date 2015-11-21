@@ -311,9 +311,11 @@ exports.update = function update(req, res, next) {
     });
   }
 
+  var hasProjects = (projects && projects.length > 0);
+
   // if we have changed the user's projects, update the project permissions
   // first
-  promise = (projects && projects.length) ?
+  promise = (hasProjects) ?
     helperUpdateProjectPermissions(req.params.id, projects) :
     q.resolve();
 

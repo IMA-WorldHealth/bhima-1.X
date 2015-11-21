@@ -1,0 +1,157 @@
+<header data-header>
+  {{ "CASH.CASHBOX.ACCOUNT_TITLE" | translate }}
+</header>
+
+<nav>
+  <div class="pull-left">
+    <ol class="breadcrumb">
+      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li class="active">{{ "CASH.CASHBOX.ACCOUNT_TITLE" | translate }}</li>
+    </ol>
+  </div>
+
+  <div class="pull-right">
+    <button class="btn btn-sm btn-default" ng-click="new()">
+      <span class="glyphicon glyphicon-plus-sign"></span>
+      {{ "CASH.CASHBOX.ADD" | translate }}
+    </button>
+  </div>
+</nav>
+
+<main>
+  <div class="row margin-top-10">
+
+    <div class="col-xs-8">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span class="glyphicon glyphicon-home"></span> {{ "CASH.CASHBOX.ALL" | translate }}
+        </div>
+        <table class="table table-condensed table-striped">
+          <thead>
+            <tr>
+              <th>{{ "COLUMNS.ID" | translate }}</th>
+              <th>{{ "CASH.CASHBOX.BOX" | translate }}</th>
+              <th>{{ "COLUMNS.CURRENCY" | translate }}</th>
+              <th>{{ "COLUMNS.ACCOUNT" | translate }}</th>
+              <th>{{ "CASH.CASHBOX.ACCOUNT_GAIN" | translate }}</th>
+              <th>{{ "CASH.CASHBOX.ACCOUNT_LOSS" | translate }}</th>
+              <th>{{ "CASH.CASHBOX.ACCOUNT_VIREMENT" | translate }}</th>
+              <th colspan="2" style="width:7%;">{{ "COLUMNS.ACTION" | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="box in cashbox.data | orderBy: 'id'">
+              <td>{{ box.id }}</td>
+              <td>{{ box.text }}</td>
+              <td>{{ box.symbol }}</td>
+              <td>{{ box.account.account_number }}</td>
+              <td>{{ box.gain.account_number }}</td>
+              <td>{{ box.loss.account_number }}</td>
+              <td>{{ box.virement.account_number }}</td>
+              <td><a class="action" ng-click="edit(box)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+              <td><a class="action danger" ng-click="delete(box)"><span class="glyphicon glyphicon-trash"></span></a></td>
+            </tr>
+            <tr ng-if="!cashbox.data.length">
+              <td colspan="4">{{ "CASH.CASHBOX.NO_BOX" | translate }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col-xs-4" ng-switch="session.action">
+      <div class="alert alert-info" ng-switch-default>
+        <h4>{{ "CASH.CASHBOX.ACCOUNT_TITLE" | translate }}</h4>
+        <p>{{ "CASH.CASHBOX.ACCOUNT_ALERT" | translate }}</p>
+      </div>
+
+      <form name="boxNew" ng-switch-when="new" novalidate>
+        <legend>{{ "CASH.CASHBOX.ADD" | translate }}</legend>
+
+        <div class="form-group">
+          <label class="control-label">{{ "CASH.CASHBOX.BOX" | translate }}</label>
+          <select class="form-control" required ng-model="session.new.cash_box_id" ng-options="p.id as p.text for p in cash_box.data">
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="control-label">{{ "CASH.CASHBOX.ACCOUNT_CURRENCY" | translate }}</label>
+          <select class="form-control" required ng-model="session.new.currency_id" ng-options="p.id as p.symbol for p in currency.data">
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="control-label">{{ "CASH.CASHBOX.ACCOUNT_BOX" | translate }}</label>
+          <select class="form-control" required ng-model="session.new.account_id" ng-options="p.id as formatAccount(p) for p in account1.data">
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="control-label">{{ "CASH.CASHBOX.ACCOUNT_GAIN" | translate }}</label>
+          <select class="form-control" required ng-model="session.new.gain_exchange_account_id" ng-options="p.id as formatAccount(p) for p in account2.data">
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="control-label">{{ "CASH.CASHBOX.ACCOUNT_LOSS" | translate }}</label>
+          <select class="form-control" required ng-model="session.new.loss_exchange_account_id" ng-options="p.id as formatAccount(p) for p in account3.data">
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="control-label">{{ "CASH.CASHBOX.ACCOUNT_VIREMENT" | translate }}</label>
+          <select class="form-control" required ng-model="session.new.virement_account_id" ng-options="p.id as formatAccount(p) for p in account1.data">
+          </select>
+        </div>
+
+        <button class="btn btn-sm btn-success" type="submit" ng-click="save.new()" ng-disabled="boxNew.$invalid">{{ "FORM.SUBMIT" | translate }}</button>
+        <button class="btn btn-sm btn-danger" type="reset">{{ "FORM.CLEAR" | translate }}</button>
+      </form>
+
+      <form ng-switch-when="edit" name="edit">
+        <legend>{{ "CASH.CASHBOX.EDIT" | translate }}</legend>
+
+        <div class="form-group">
+          <label class="control-label">{{ "CASH.CASHBOX.BOX" | translate }}</label>
+          <select class="form-control" required ng-model="session.edit.cash_box_id" ng-options="p.id as p.text for p in cash_box.data">
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="control-label">{{ "CASH.CASHBOX.ACCOUNT_CURRENCY" | translate }}</label>
+          <select class="form-control" required ng-model="session.edit.currency_id" ng-options="p.id as p.symbol for p in currency.data">
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="control-label">{{ "CASH.CASHBOX.ACCOUNT_BOX" | translate }}</label>
+          <select class="form-control" required ng-model="session.edit.account_id" ng-options="p.id as formatAccount(p) for p in account1.data">
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="control-label">{{ "CASH.CASHBOX.ACCOUNT_GAIN" | translate }}</label>
+          <select class="form-control" required ng-model="session.edit.gain_exchange_account_id" ng-options="p.id as formatAccount(p) for p in account2.data">
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="control-label">{{ "CASH.CASHBOX.ACCOUNT_LOSS" | translate }}</label>
+          <select class="form-control" required ng-model="session.edit.loss_exchange_account_id" ng-options="p.id as formatAccount(p) for p in account3.data">
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="control-label">{{ "CASH.CASHBOX.ACCOUNT_VIREMENT" | translate }}</label>
+          <select class="form-control" required ng-model="session.edit.virement_account_id" ng-options="p.id as formatAccount(p) for p in account1.data">
+          </select>
+        </div>
+
+        <button class="btn btn-sm btn-success" ng-disabled="edit.$invalid" type="submit" ng-click="save.edit()">{{ "FORM.SUBMIT" | translate }}</button>
+        <button class="btn btn-sm btn-danger" type="reset">{{ "FORM.CLEAR" | translate }}</button>
+      </form>
+
+    </div>
+
+  </div>
+</main>

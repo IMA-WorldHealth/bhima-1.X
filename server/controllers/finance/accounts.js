@@ -4,15 +4,15 @@ var db = require('../../lib/db');
 var sanitize = require('../../lib/sanitize');
 
 // GET /accounts
-exports.getAccounts = function (req, res, next) {
+exports.list = function list(req, res, next) {
   'use strict';
 
   // TODO
   // This should probably take a query string for filtering to
   // make it more useful all around.
-  // Some ideas: 
+  // Some ideas:
   // ?classe=5, ?type=ohada, etc...
-  
+
   var sql =
     'SELECT a.id, a.account_number, a.account_txt, a.parent, at.type ' +
     'FROM account AS a JOIN account_type AS at ON ' +
@@ -30,29 +30,8 @@ exports.getAccounts = function (req, res, next) {
   .done();
 };
 
-// GET /account/:id
-// FIXME/TODO
-exports.getAccountById = function (req, res, next) {
-  'use strict';
-  
-  var sql, id = req.param.id;
 
-  sql =
-    'SELECT a.id, a.account_number, a.account_text, a.parent, at.type ' +
-    'FROM account AS a JOIN account_type AS at ON ' +
-      'a.account_type_id = at.id ' +
-    'WHERE a.id = ?;';
-  
-  db.exec(sql, [id])
-  .then(function (rows) {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
-};
-
-
-// FIXME Moved from uncategorised - code must be refactored 
+// FIXME Moved from uncategorised - code must be refactored
 // --------------------------------------------------------
 exports.listInExAccounts = function (req, res, next) {
   var enterprise_id = sanitize.escape(req.params.id_enterprise);
