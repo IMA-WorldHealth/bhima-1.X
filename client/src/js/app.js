@@ -497,6 +497,10 @@ function bhimaconfig($routeProvider) {
     controller : 'stockIntegration as integrationCtrl',
     templateUrl : 'partials/stock/integration/integration.html'
   })
+  .when('/depots/:depotId/service_return_stock', {
+    controller : 'ServiceReturnStockController as ReturnCtrl',
+    templateUrl : 'partials/stock/service_return_stock/service_return_stock.html'
+  })
 
   // depot reports
   .when('/depots/:depotId/reports/distributions/:type', {

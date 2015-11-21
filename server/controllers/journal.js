@@ -49,7 +49,8 @@ tableRouter = {
   'create_fiscal_year'         : require('./journal/fiscal').create,
   'fiscal_year_resultat'       : require('./journal/fiscal').close,
   'confirm_integration'        : require('./journal/purchase').integration,
-  'donation'                   : require('./journal/inventory').donation
+  'donation'                   : require('./journal/inventory').donation,
+  'service_return_stock'       : require('./journal/inventory').serviceReturnStock
 };
 
 
