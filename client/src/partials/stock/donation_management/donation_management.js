@@ -16,17 +16,9 @@ function DonationManagementController($scope, $q, $translate, $location, $routeP
     return messenger.error('NO_DEPOT_ID');
   }
 
-
   var cache = new Appcache('donation');
 
-  $scope.project = Session.project;
-  $scope.user = Session.user;
-  $scope.enterprise = Session.enterprise;
-
-  session.crud_or_read = 'crud';
-  session.view = $translate.instant('DONATION_MANAGEMENT.SEE_ALL');
-  session.cfg.depot = { id : $routeParams.depotId };
-
+  // Dependencies
   dependencies.depots = {
     query : {
       identifier : 'uuid',
@@ -66,53 +58,33 @@ function DonationManagementController($scope, $q, $translate, $location, $routeP
     }
   };
 
-  dependencies.donations = {
-    query : {
-      tables : {
-        donations     : { columns : ['date']},
-        donation_item : { columns : ['uuid']},
-        inventory     : { columns : ['text']},
-        stock         : { columns : ['tracking_number','lot_number','quantity']},
-        donor         : { columns : ['name']}
-      },
-      join : [
-        'donations.donor_id=donor.id',
-        'donations.uuid=donation_item.donation_uuid',
-        'inventory.uuid=stock.inventory_uuid',
-        'stock.tracking_number=donation_item.tracking_number'
-      ]
-    }
-  };
+  // Initialize models
+  $scope.project            = Session.project;
+  $scope.user               = Session.user;
+  $scope.enterprise         = Session.enterprise;
+  session.cfg.depot         = { id : $routeParams.depotId };
 
-  dependencies.accounts = {
-    required : true,
-    query : 'getAccount7/'
-  };
+  // Expose model to the view
+  $scope.formatAccount      = formatAccount;
+  $scope.setConfiguration   = setConfiguration;
+  $scope.addDonationItem    = addDonationItem;
+  $scope.removeDonationItem = removeDonationItem;
+  $scope.reconfigure        = reconfigure;
+  $scope.nextStep           = nextStep;
+  $scope.addLot             = addLot;
+  $scope.accept             = accept;
+  $scope.review             = review;
+  $scope.cancel             = cancel;
+  $scope.expand             = expand;
+  $scope.removeLot          = removeLot;
+  $scope.previousStep       = previousStep;
+  $scope.donationTotal      = donationTotal;
+  $scope.updateDonationItem = updateDonationItem;
 
-  function initialise() {
-    validate.process(dependencies)
-    .then(startup)
-    .catch(error);
-  }
+  // start the module up
+  initialise();
 
-  function startup (models) {
-
-    session.config = {};
-    session.config.date = new Date();
-    session.config.maxdate = new Date();
-    session.donation = {};
-    session.donation.items = [];
-    addDonationItem();
-
-    angular.extend($scope, models);
-    session.depot = $scope.depots.get($routeParams.depotId);
-    // return cache.fetch('selectedAccount');
-  }
-
-  function error (err) {
-    messenger.danger(JSON.stringify(err));
-  }
-
+  // Donation functions
   function DonationItem() {
     var self = this;
 
@@ -145,7 +117,7 @@ function DonationManagementController($scope, $q, $translate, $location, $routeP
     return item;
   }
 
-  $scope.updateDonationItem = function (donationItem, inventoryReference) {
+  function updateDonationItem (donationItem, inventoryReference) {
     if (donationItem.inventoryReference) {
       $scope.inventory.post(donationItem.inventoryReference);
       $scope.inventory.recalculateIndex();
@@ -156,7 +128,7 @@ function DonationManagementController($scope, $q, $translate, $location, $routeP
     // Remove option to select duplicates
     $scope.inventory.remove(inventoryReference.uuid);
     $scope.inventory.recalculateIndex();
-  };
+  }
 
   function removeDonationItem (index) {
     var currentItem = session.donation.items[index];
@@ -168,70 +140,8 @@ function DonationManagementController($scope, $q, $translate, $location, $routeP
     session.donation.items.splice(index, 1);
   }
 
-  $scope.donationTotal = function () {
+  function donationTotal () {
     return session.donation.items.reduce(priceMultiplyQuantity, 0);
-  };
-
-  function nextStep() {
-    if (session.donation.items.length > 0) {
-
-      session.donation.items.forEach(function (donation) {
-        donation.lots = new Store({ identifier : 'tracking_number', data : [] });
-        angular.extend(donation, { isCollapsed : false });
-        $scope.addLot(donation);
-      });
-
-      calculateTotals();
-      // set up watchers for totalling and validation
-      var listenCalculateTotals = $scope.$watch('session.donation.items', calculateTotals, true);
-      var listenValidateSession = $scope.$watch('session.donation.items', validateSession, true);
-
-      session.donation.step = 'input_inventories';
-    }
-  }
-
-  $scope.previousStep = function previousStep() {
-    session.donation.step = 'select_inventories';
-  };
-
-  function priceMultiplyQuantity(a, b) {
-    a = (a.quantity * a.purchase_price) || a;
-    return (b.code) ? a + (b.quantity * b.purchase_price) : a;
-  }
-
-  function validateSession () {
-    session.valid = session.donation.items.every(function (drug) {
-      return drug.validLots;
-    });
-  }
-
-  function Lot () {
-    this.inventory_uuid = null;
-    this.expiration_date = new Date();
-    this.date = new Date();
-    this.lot_number = null;
-    this.tracking_number = uuid();
-    this.quantity = 0;
-    this.purchase_order_uuid = null;
-  }
-
-  function addLot (drug) {
-    var lot = new Lot();
-    lot.code = drug.code;
-    lot.inventory_uuid = drug.inventory_uuid;
-    drug.lots.post(lot);
-  }
-
-  $scope.removeLot = function removeLot (drug, idx) {
-    drug.lots.data.splice(idx, 1);
-  };
-
-  $scope.expand = function expand (drug) {
-    drug.isCollapsed = !drug.isCollapsed;
-  };
-
-  function sum (a, b) {
-    return a + Number(b.quantity);
   }
 
   function calculateTotals () {
@@ -254,6 +164,29 @@ function DonationManagementController($scope, $q, $translate, $location, $routeP
       donation.validLots = valid(donation.lots) && donation.totalQuantity === donation.quantity;
     });
   }
+  // End donation functions
+
+  // Handling Lots functions
+  function Lot () {
+    this.inventory_uuid = null;
+    this.expiration_date = new Date();
+    this.date = new Date();
+    this.lot_number = null;
+    this.tracking_number = uuid();
+    this.quantity = 0;
+    this.purchase_order_uuid = null;
+  }
+
+  function addLot (drug) {
+    var lot = new Lot();
+    lot.code = drug.code;
+    lot.inventory_uuid = drug.inventory_uuid;
+    drug.lots.post(lot);
+  }
+
+  function removeLot (drug, idx) {
+    drug.lots.data.splice(idx, 1);
+  }
 
   function valid (lots) {
     var isDef = angular.isDefined;
@@ -269,12 +202,7 @@ function DonationManagementController($scope, $q, $translate, $location, $routeP
     });
   }
 
-  $scope.cancel = function cancel () {
-    session = $scope.session = { cfg : {}, totals : [] };
-  };
-
-  $scope.review = function review () {
-    // prepare object for cloning
+  function review () {
     session.review = true;
     var lots = [];
     session.donation.items.forEach(function (o) {
@@ -284,9 +212,52 @@ function DonationManagementController($scope, $q, $translate, $location, $routeP
       lots = lots.concat(o.lots.data);
     });
     session.lots = lots;
-  };
+  }
+  // End handling lots functions
 
-  $scope.accept = function () {
+  function nextStep() {
+    if (session.donation.items.length > 0) {
+
+      session.donation.items.forEach(function (donation) {
+        donation.lots = new Store({ identifier : 'tracking_number', data : [] });
+        angular.extend(donation, { isCollapsed : false });
+        $scope.addLot(donation);
+      });
+
+      calculateTotals();
+      // set up watchers for totalling and validation
+      var listenCalculateTotals = $scope.$watch('session.donation.items', calculateTotals, true);
+      var listenValidateSession = $scope.$watch('session.donation.items', validateSession, true);
+
+      session.donation.step = 'input_inventories';
+    }
+  }
+
+  function previousStep() {
+    session.donation.step = 'select_inventories';
+  }
+
+  function priceMultiplyQuantity(a, b) {
+    a = (a.quantity * a.purchase_price) || a;
+    return (b.code) ? a + (b.quantity * b.purchase_price) : a;
+  }
+
+  function validateSession () {
+    session.valid = session.donation.items.every(function (drug) {
+      return drug.validLots;
+    });
+  }
+
+  function expand (drug) {
+    drug.isCollapsed = !drug.isCollapsed;
+  }
+
+  function sum (a, b) {
+    return a + Number(b.quantity);
+  }
+
+  // Submissions functions
+  function accept () {
     var document_id = uuid();
     var lots = processLots();
     var don = processDonations();
@@ -320,28 +291,34 @@ function DonationManagementController($scope, $q, $translate, $location, $routeP
 
     });
 
-    connect.post('stock',lots)
-      .then(function () {
-        return connect.post('movement', movement);
-      })
-      .then(function () {
-        return connect.post('donations', [donation]);
-      })
-      .then(function () {
-        return connect.post('donation_item', donation_items);
-      })
-      .then(simulatePurchase)
-      .then(function () {
-        $location.path('/stock/donation_management/report/' + document_id);
-      })
-      .then(function () {
-        messenger.success($translate.instant('STOCK.ENTRY.WRITE_SUCCESS'));
-      })
-      .catch(function () {
-        messenger.error('STOCK.ENTRY.WRITE_ERROR');
-      });
 
-  };
+    simulatePurchase()
+    .then(function (purchase) {
+      lots.forEach(function (item) {
+        item.purchase_order_uuid = purchase.uuid;
+      });
+      return connect.post('stock',lots);
+    })
+    .then(function () {
+      return connect.post('movement', movement);
+    })
+    .then(function () {
+      return connect.post('donations', donation);
+    })
+    .then(function () {
+      return connect.post('donation_item', donation_items);
+    })
+    .then(function () {
+      $location.path('/stock/donation_management/report/' + document_id);
+    })
+    .then(function () {
+      messenger.success($translate.instant('STOCK.ENTRY.WRITE_SUCCESS'));
+    })
+    .catch(function () {
+      messenger.error('STOCK.ENTRY.WRITE_ERROR');
+    });
+
+  }
 
   function processMovements (document_id) {
     var movements = [];
@@ -398,18 +375,34 @@ function DonationManagementController($scope, $q, $translate, $location, $routeP
 
     return don;
   }
+  // End submission functions
 
-  $scope.toggleView = function () {
-    if (session.crud_or_read === 'crud') {
-      session.crud_or_read = 'read';
-      session.view = $translate.instant('DONATION_MANAGEMENT.NEW');
-      session.crud = true;
-    } else if (session.crud_or_read === 'read') {
-      session.crud_or_read = 'crud';
-      session.view = $translate.instant('DONATION_MANAGEMENT.SEE_ALL');
-      session.read = true;
-    }
-  };
+  // Modules functions
+  function initialise() {
+    validate.process(dependencies)
+    .then(startup)
+    .catch(error);
+  }
+
+  function startup (models) {
+    session.config = {};
+    session.config.date = new Date();
+    session.config.maxdate = new Date();
+    session.donation = {};
+    session.donation.items = [];
+    addDonationItem();
+
+    angular.extend($scope, models);
+    session.depot = $scope.depots.get($routeParams.depotId);
+  }
+
+  function error (err) {
+    messenger.danger(JSON.stringify(err));
+  }
+
+  function cancel () {
+    session = $scope.session = { cfg : {}, totals : [] };
+  }
 
   function formatAccount (acc) {
     return [acc.account_number, acc.account_txt].join(' - ');
@@ -429,48 +422,53 @@ function DonationManagementController($scope, $q, $translate, $location, $routeP
     session.configured = false;
   }
 
-  function simulatePurchase() {
-    if (session.donation.items.length > 0) {
-
-      var purchase = {
-        uuid          : uuid(),
-        cost          : simulatePurchaseTotal(),
-        purchase_date : util.sqlDate(session.config.date),
-        currency_id   : $scope.enterprise.currency_id,
-        creditor_uuid : null,
-        purchaser_id  : session.config.employee.id, //$scope.user.data.id,
-        project_id    : $scope.project.id,
-        note          : 'DONATION ' + session.config.donor.name + '/' + util.sqlDate(session.config.date),
-        receiver_id   : session.config.employee.id,
-        paid          : 0,
-        confirmed     : 0,
-        closed        : 0,
-        is_donation   : 1,
-        is_direct     : 0
-      };
-
-      simulateWritePurchaseLine(purchase)
-      .then(simulateWritePurchaseItems(purchase.uuid))
-      .then(updateStockPurchaseOrder(purchase.uuid))
-      .catch(handleError);
-    }
-
-  }
-
-  function updateStockPurchaseOrder (purchase_uuid) {
-    session.lots.forEach(function (lot) {
-      var stockEntry = {
-        tracking_number     : lot.tracking_number,
-        purchase_order_uuid : purchase_uuid
-      };
-      connect.put('stock',[stockEntry], ['tracking_number']);
+  function handleError(error) {
+    $translate('PURCHASE.WRITE_FAILED')
+    .then(function (value) {
+       messenger.danger(value);
     });
+  }
+  // End modules functions
+
+  // Simulations functions
+  function simulatePurchase() {
+    if (session.donation.items.length <= 0) { throw new Error('Need donation items'); }
+
+    var def = $q.defer();
+
+    var purchase = {
+      uuid          : uuid(),
+      cost          : simulatePurchaseTotal(),
+      purchase_date : util.sqlDate(session.config.date),
+      currency_id   : $scope.enterprise.currency_id,
+      creditor_uuid : null,
+      purchaser_id  : session.config.employee.id, //$scope.user.data.id,
+      project_id    : $scope.project.id,
+      note          : 'DONATION ' + session.config.donor.name + '/' + util.sqlDate(session.config.date),
+      receiver_id   : session.config.employee.id,
+      paid          : 0,
+      confirmed     : 0,
+      closed        : 0,
+      is_donation   : 1,
+      is_direct     : 0
+    };
+
+    simulateWritePurchaseLine(purchase)
+    .then(simulateWritePurchaseItems(purchase.uuid))
+    .then(function () {
+      def.resolve(purchase);
+    })
+    .catch(function () {
+      def.reject();
+    });
+
+    return def.promise;
+
   }
 
   function simulatePurchaseTotal() {
     return session.donation.items.reduce(priceMultiplyQuantity, 0);
   }
-
 
   function simulateWritePurchaseLine(purchase) {
     return connect.post('purchase', [purchase], ['uuid']);
@@ -501,22 +499,5 @@ function DonationManagementController($scope, $q, $translate, $location, $routeP
     });
     return deferred.promise;
   }
-
-  function handleError(error) {
-    $translate('PURCHASE.WRITE_FAILED')
-    .then(function (value) {
-       messenger.danger(value);
-    });
-  }
-
-  // start the module up
-  initialise();
-
-  $scope.formatAccount = formatAccount;
-  $scope.setConfiguration = setConfiguration;
-  $scope.addDonationItem = addDonationItem;
-  $scope.removeDonationItem = removeDonationItem;
-  $scope.reconfigure = reconfigure;
-  $scope.nextStep = nextStep;
-  $scope.addLot = addLot;
+  // End Simulations functions
 }

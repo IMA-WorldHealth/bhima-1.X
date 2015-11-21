@@ -158,7 +158,7 @@
                 {{ 'STOCK_DASHBOARD.DONATIONS.NO_DATA' | translate }}
               </td>
             </tr>
-            <tr ng-repeat="donation in StockDashCtrl.donations | limitTo:StockDashCtrl.limits.donations">
+            <tr ng-repeat="donation in StockDashCtrl.donations | limitTo:StockDashCtrl.limits.donations | orderBy:date">
               <td>{{ donation.name }}</td>
               <td>{{ donation.date | date }}</td>
               <td>{{ donation.label }}</td>
