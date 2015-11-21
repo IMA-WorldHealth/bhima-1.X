@@ -28,7 +28,7 @@
                 <label class="required">{{ "UTIL.SOURCE" | translate }}</label>
                 <select class="form-bhima" id="sources" name="sources"
                   ng-model="ReportCtrl.model.source_id"
-                  ng-options="idx as source for (idx, source) in ReportCtrl.model.sources" 
+                  ng-options="idx as source for (idx, source) in ReportCtrl.model.sources"
                   required>
                   <option value="" disabled>-- {{ "SELECT.SOURCE" | translate }} --</option>
                 </select>
@@ -62,7 +62,6 @@
             </div>
           </form>
           <div class="panel-footer clearfix">
-            <span ng-if="configForm.$invalid">{{configForm.sources.$error}}</span>
             <div class="pull-right">
               <button class="btn btn-sm btn-success" type="button" ng-click="ReportCtrl.generate()" ng-disabled="configForm.$invalid">
                 <span ng-if="!ReportCtrl.session.buttonLoader">{{ "UTIL.GENERATE" | translate }}</span>
@@ -127,8 +126,8 @@
                   <td width="15%"> {{ record.trans_date | date }} </td>
                   <td width="10%"> {{ record.account_number }} </td>
                   <td width="30%"> {{ record.description}} </td>
-                  <td class="text-right"> {{ record.debit | currency:record.currency_id }} </td>
-                  <td class="text-right"> {{ record.credit | currency:record.currency_id }} </td>
+                  <td class="text-right"> {{ record.debit | currency:ReportCtrl.enterprise.currency_id }} </td>
+                  <td class="text-right"> {{ record.credit | currency:ReportCtrl.enterprise.currency_id }} </td>
                 </tr>
               </tbody>
               <tfoot>
@@ -136,6 +135,12 @@
                   <th colspan="4">{{ "COLUMNS.TOTAL" | translate }} : {{ ReportCtrl.records.length }}</th>
                   <th class="text-right">{{ ReportCtrl.session.somDebit | currency:ReportCtrl.model.c }}</th>
                   <th class="text-right">{{ ReportCtrl.session.somCredit | currency:ReportCtrl.model.c }}</th>
+                </tr>
+                <tr>
+                  <th colspan="4">{{ "COLUMNS.SOLDE" | translate }} : </th>
+                  <th colspan="2" style="background-color:#ccc;" class="text-center">
+                    {{ReportCtrl.session.solde | currency:ReportCtrl.model.c}}
+                  </th>
                 </tr>
               </tfoot>
             </table>
