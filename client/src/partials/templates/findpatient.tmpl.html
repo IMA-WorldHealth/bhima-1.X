@@ -34,11 +34,11 @@
           type="text"
           class="form-control"
           ng-model="input.model"
-          typeahead="patient as fmtPatient(patient) for patient in fuzzyNameSearch($viewValue)"
+          uib-typeahead="patient as fmtPatient(patient) for patient in fuzzyNameSearch($viewValue)"
           placeholder="{{ 'FIND.PATIENT_NAME' | translate }}"
-          typeahead-wait-ms="150"
-          typeahead-template-url="/partials/templates/debtorListItem.tmpl.html"
-          typeahead-no-results="noPatients"
+          uib-typeahead-wait-ms="150"
+          uib-typeahead-template-url="/partials/templates/debtorListItem.tmpl.html"
+          uib-typeahead-no-results="noPatients"
           size="25">
           <span class="input-group-btn">
             <button ng-disabled="validateNameSearch(input.model)" ng-click="selectPatient(input.model)" class="btn btn-default">
