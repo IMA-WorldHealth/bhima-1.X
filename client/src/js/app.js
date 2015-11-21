@@ -232,7 +232,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/reports/balance_mensuelle/balance_mensuelle.html'
   })
   .when('/reports/donation/', {
-    controller: 'report.donation',
+    controller: 'ReportDonationController as ReportCtrl',
     templateUrl: 'partials/reports/donation/donation.html'
   })
   .when('/location', {
@@ -496,6 +496,10 @@ function bhimaconfig($routeProvider) {
   .when('/depots/:depotId/integrations', {
     controller : 'stockIntegration as integrationCtrl',
     templateUrl : 'partials/stock/integration/integration.html'
+  })
+  .when('/depots/:depotId/service_return_stock', {
+    controller : 'ServiceReturnStockController as ReturnCtrl',
+    templateUrl : 'partials/stock/service_return_stock/service_return_stock.html'
   })
 
   // depot reports

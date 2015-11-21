@@ -10,7 +10,7 @@ var db = require('../../lib/db');
 exports.getInventoryDonations = getInventoryDonations;
 exports.getInventoryDonationsById = getInventoryDonationsById;
 
-// all donations for all inventory items 
+// all donations for all inventory items
 function getInventoryDonations() {
   'use strict';
 
@@ -23,7 +23,7 @@ function getInventoryDonations() {
       's.tracking_number = di.tracking_number AND ' +
       'i.uuid = s.inventory_uuid ' +
     'WHERE d.is_received = 1 ' +
-    'ORDER BY d.date;';
+    'ORDER BY d.date DESC;';
 
   return db.exec(sql);
 }
