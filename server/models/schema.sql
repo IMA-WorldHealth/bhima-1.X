@@ -1,7 +1,3 @@
-/*!40000 DROP DATABASE IF EXISTS `bhima`*/;
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `bhima`;
-USE `bhima`;
-
 SET foreign_key_checks = 0;
 
 DROP TABLE IF EXISTS `account`;
