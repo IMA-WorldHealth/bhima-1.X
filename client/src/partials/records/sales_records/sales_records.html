@@ -37,13 +37,13 @@
   <div class="pull-left">
 
     <!-- Up to date dropdown markdown -->
-    <div class="btn-group" dropdown>
+    <div class="btn-group" uib-dropdown>
       <button ng-click="select(session.selected)" class="btn btn-sm btn-default">{{(session.selected.key | translate) || "..."}}</button>
-      <button class="btn btn-sm btn-default" dropdown-toggle>
+      <button class="btn btn-sm btn-default" uib-dropdown-toggle>
         <span class="caret"></span>
       </button>
 
-      <ul class="dropdown-menu" role="menu">
+      <ul class="uib-dropdown-menu" role="menu">
         <li role="menuitem" ng-repeat="item in period">
           <a ng-click="select(item)">{{item.key | translate}}</a>
         </li>
