@@ -337,4 +337,7 @@ exports.configure = function (app) {
   // cashbox controller
   app.get('/cashboxes', cashboxes.list);
   app.get('/cashboxes/:id', cashboxes.details);
+  app.post('/cashboxes', cashboxes.create);
+  app.put('/cashboxes/:id', cashboxes.update);
+  app.delete('/cashboxes/:id', cashboxes.delete);
 };

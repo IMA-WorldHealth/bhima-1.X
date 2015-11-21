@@ -28,6 +28,15 @@ describe('The /cashboxes API endpoint', function () {
   var NUMBER_OF_CASHBOXES = 2;
   var NUMBER_OF_AUX_CASHBOXES = 1;
   var NUMBER_OF_CASHBOX_CURRENCIES = 2;
+  var PROJECT_ID = 1;
+
+  // new cashbox
+  var BOX = {
+    text : 'New Cashbox C',
+    project_id : PROJECT_ID,
+    is_auxillary : 1,
+    is_bank : 0
+  };
 
   // throw errors
   function handler(err) { throw err; }
@@ -80,4 +89,48 @@ describe('The /cashboxes API endpoint', function () {
       .catch(handler);
   });
 
+  it('POST /cashboxes should create a new cashbox', function () {
+    return agent.post('/cashboxes')
+      .send({ cashbox : BOX })
+      .then(function (res) {
+        expect(res).to.have.status(201);
+        expect(res).to.be.json;
+        expect(res.body).to.not.be.empty;
+        expect(res.body.id).to.be.defined;
+
+        // set the box id
+        BOX.id = res.body.id;
+        return agent.get('/cashboxes/' + BOX.id);
+      })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res.body.text).to.equal(BOX.text);
+        expect(res.body.is_auxillary).to.equal(BOX.is_auxillary);
+      })
+      .catch(handler);
+  });
+
+  it('PUT /cashboxes/:id should update the cashbox', function () {
+    return agent.put('/cashboxes/' + BOX.id)
+      .send({ is_auxillary : 0 })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res.body).to.not.be.empty;
+        expect(res.body.text).to.equal(BOX.text);
+        expect(res.body.is_auxillary).to.equal(0);
+      })
+      .catch(handler);
+  });
+
+  it('DELETE /cashboxes/:id should delete the cashbox', function () {
+    return agent.delete('/cashboxes/' + BOX.id)
+    .then(function (res) {
+      expect(res).to.have.status(200);
+      return agent.get('/cashboxes/' + BOX.id);
+    })
+    .then(function (res) {
+      expect(res).to.have.status(404);
+    })
+    .catch(handler);
+  });
 });

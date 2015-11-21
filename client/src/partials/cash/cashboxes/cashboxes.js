@@ -1,105 +1,98 @@
 angular.module('bhima.controllers')
-.controller('cash.cashbox', [
-  '$scope',
-  '$translate',
-  'validate',
-  'connect',
-  'messenger',
-  'appstate',
-  'uuid',
-  function ($scope, $translate, validate, connect, messenger, appstate, uuid) {
-    var dependencies = {},
-        session = $scope.session = {};
+.controller('CashboxController', CashboxController);
 
-    dependencies.cashbox = {
-      query : {
-        identifier : 'id',
-        tables : {
-          'cash_box' : { columns : ['id', 'text', 'project_id', 'is_auxillary', 'is_bank'] },
-          'project' : { columns : ['abbr'] }
-        },
-        join : ['cash_box.project_id=project.id']
-      }
-    };
+CashboxController.$inject = [ 'SessionService', 'ProjectService', 'CashboxService', '$window'];
 
-    dependencies.project = {
-      query : {
-        identifier : 'id',
-        tables : {
-          'project' : {
-            columns : ['id', 'name', 'abbr']
-          }
-        }
-      }
-    };
+/**
+* Cashbox Controller
+*
+* This controller is responsible for creating new cashboxes for the enterprise
+*/
+function CashboxController(Session, Projects, Boxes, $window) {
+  var vm = this;
 
-    function startup (models) {
-      angular.extend($scope, models);
-      session.project = $scope.project;
-    }
+  // bind variables
+  vm.enterprise = Session.enterprise;
+  vm.project = Session.project;
 
-    appstate.register('enterprise', function (enterprise) {
-      $scope.enterprise = enterprise;
-      validate.process(dependencies)
-      .then(startup);
-    });
+  // bind methods
+  vm.create = create;
+  vm.update = update;
+  vm.cancel = cancel;
+  vm.submit = submit;
+  vm.delete = del;
 
-    $scope.delete = function (cashbox) {
-      connect.delete('cash_box', ['id'], [cashbox.id])
-      .then(function () {
-        $scope.cashbox.remove(cashbox.id);
-        messenger.info($translate.instant('UTIL.DELETE_SUCCESS'));
-      });
-    };
+  /* ------------------------------------------------------------------------ */
 
-    $scope.edit = function (cashbox) {
-      session.action = 'edit';
-      session.edit = angular.copy(cashbox);
-    };
-
-    $scope.new = function () {
-      session.action = 'new';
-      session.new = {};
-    };
-
-    $scope.save = {};
-
-    $scope.save.edit = function () {
-      var record = session.edit;
-      record.project_id = session.edit.project_id;
-      if (record.is_bank) {
-        record.is_auxillary = 0;
-      }
-      delete record.abbr;
-      connect.put('cash_box', [record], ['id'])
-      .then(function () {
-        messenger.info($translate.instant('UTIL.EDIT_SUCCESS'));
-        session.action = '';
-        session.edit = {};
-        validate.refresh(dependencies, ['cashbox']).then(startup);
-      });
-    };
-
-    $scope.save.new = function () {
-      var record = session.new;
-      record.project_id = session.new.project_id || 1;
-      if (record.is_bank) {
-        record.is_auxillary = 0;
-      }
-      connect.post('cash_box', [record])
-      .then(function () {
-        messenger.info($translate.instant('UTIL.NEW_SUCCESS'));
-        session.action = '';
-        session.new = {};
-        validate.refresh(dependencies, ['cashbox']).then(startup);
-      });
-    };
-
-    function generateReference () {
-      window.data = $scope.cashbox.data;
-      var max = Math.max.apply(Math.max, $scope.cashbox.data.map(function (o) { return o.id; }));
-      return Number.isNaN(max) ? 1 : max + 1;
-    }
-
+  function handler(error) {
+    throw error;
   }
-]);
+  
+  // state transitions
+  function setState(state) {
+    vm.box = {};
+    vm.state = state;
+    vm.message = null;
+  }
+
+  function startup() {
+
+    // load projects
+    Projects.read().then(function (data) {
+      vm.projects = data;
+    }).catch(handler);
+
+    // load cashboxes
+    Boxes.read().then(function (data) {
+      vm.cashboxes = data;
+    }).catch(handler);
+
+    // default state
+    setState('default');
+  }
+
+  function cancel() {
+    setState('default');
+  }
+
+  function create() {
+    setState('create');
+  }
+
+  function update(id) {
+
+    // load the cashbox
+    Boxes.read(id).then(function (data) {
+      setState('update');
+      vm.box = data;
+    })
+    .catch(handler);
+  }
+
+  function submit(invalid) {
+    if (invalid) { return; }
+
+    var promise = (vm.state === 'create') ?
+      Boxes.create(vm.box) :
+      Boxes.update(vm.id, vm.box);
+
+    promise.then(function (response) {
+
+    })
+    .catch(handler);
+  }
+  
+  function del(box) {
+    var yes =
+      $window.confirm('Are you sure you want to delete this cashbox?');
+
+    if (yes) {
+      Boxes.delete(box.id).then(function () {
+        setState('default');
+      })
+      .catch(handler);
+    }
+  }
+
+  startup();
+}

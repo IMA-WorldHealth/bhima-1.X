@@ -110,8 +110,8 @@ CREATE TABLE `cash_box` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `text` text NOT NULL,
   `project_id` smallint(5) unsigned NOT NULL,
-  `is_auxillary` tinyint(1) NOT NULL,
-  `is_bank` tinyint(1) DEFAULT NULL,
+  `is_auxillary` tinyint(1) NOT NULL DEFAULT 0,
+  `is_bank` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `project_id` (`project_id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)

@@ -63,13 +63,8 @@ exports.list = function list(req, res, next) {
   .done();
 };
 
-/**
-* GET /cashboxes/:id
-*
-* Returns the details of a specific cashbox, including the supported currencies
-* and their accounts.
-*/
-exports.details = function details(req, res, next) {
+// get cashboxes
+function helperGetCashbox(id, codes) {
   'use strict';
 
   var sql,
@@ -79,11 +74,11 @@ exports.details = function details(req, res, next) {
     'SELECT id, text, project_id, is_auxillary, is_bank FROM cash_box ' +
     'WHERE id = ?;';
 
-  db.exec(sql, [req.params.id])
+  return db.exec(sql, [id])
   .then(function (rows) {
 
     if (!rows.length) {
-      throw req.codes.NOT_FOUND;
+      throw codes.NOT_FOUND;
     }
 
     cashbox = rows[0];
@@ -102,7 +97,75 @@ exports.details = function details(req, res, next) {
     // assign the currencies to the cashbox
     cashbox.currencies = rows;
 
+    return cashbox;
+  });
+}
+
+/**
+* GET /cashboxes/:id
+*
+* Returns the details of a specific cashbox, including the supported currencies
+* and their accounts.
+*/
+exports.details = function details(req, res, next) {
+  'use strict';
+
+  helperGetCashbox(req.params.id, req.codes)
+  .then(function (cashbox) {
     res.status(200).json(cashbox);
+  })
+  .catch(next)
+  .done();
+};
+
+// POST /cashboxes
+exports.create = function create(req, res, next) {
+  'use strict';
+
+  var sql,
+      box = req.body.cashbox;
+
+  sql = 'INSERT INTO cash_box (text, project_id, is_auxillary, is_bank) VALUES (?);';
+
+  db.exec(sql, [[box.text, box.project_id, box.is_auxillary, box.is_bank]])
+  .then(function (row) {
+    res.status(201).json({ id : row.insertId });
+  })
+  .catch(next)
+  .done();
+};
+
+// PUT /cashboxes/:id
+exports.update = function update(req, res, next) {
+  'use strict';
+
+  var sql;
+
+  sql = 'UPDATE cash_box SET ? WHERE id = ?;';
+
+  db.exec(sql, [req.body, req.params.id])
+  .then(function (rows) {
+    return helperGetCashbox(req.params.id, req.codes);
+  })
+  .then(function (cashbox) {
+    res.status(200).json(cashbox);
+  })
+  .catch(next)
+  .done();
+};
+
+
+// DELETE /cashboxes/:id
+exports.delete = function del(req, res, next) {
+  'use strict';
+
+  var sql;
+
+  sql = 'DELETE FROM cash_box WHERE id = ?';
+
+  db.exec(sql, [req.params.id])
+  .then(function (rows) {
+    res.status(200).send();
   })
   .catch(next)
   .done();

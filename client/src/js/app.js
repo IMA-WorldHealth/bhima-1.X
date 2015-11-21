@@ -600,7 +600,7 @@ function bhimaconfig($routeProvider) {
 
   /* cashbox routes */
   .when('/cashboxes', {
-    controller : 'cash.cashbox',
+    controller : 'CashboxController as CashCtrl',
     templateUrl : 'partials/cash/cashboxes/cashboxes.html'
   })
   .when('/cashboxes/:uuid/currencies', {
