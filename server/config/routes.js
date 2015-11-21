@@ -280,7 +280,8 @@ exports.configure = function (app) {
   app.get('/patients', patient.list);
   app.post('/patients', patient.create);
   app.get('/patients/:uuid', patient.details);
-  
+  app.get('/patients/:uuid/groups', patient.groups); 
+
   app.get('/patients/checkHospitalId/:id', patient.verifyHospitalNumber);
   app.post('/patients/visit', patient.visit);
   

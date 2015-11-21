@@ -13,6 +13,9 @@ exports.details = details;
 exports.list = list;
 exports.search = search;
 
+exports.groups = groups;
+// exports.patientGroups = listPatientGroups;
+
 exports.verifyHospitalNumber = verifyHospitalNumber;
 
 /*
@@ -85,9 +88,9 @@ function details(req, res, next) {
   var uuid = req.params.uuid;
   
   patientDetailQuery =
-    'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name, p.middle_name, ' +
+    'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name, p.middle_name, p.hospital_no, ' +
       'p.sex, p.dob, p.origin_location_id, p.reference, proj.abbr, d.text, ' +
-      'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.locked ' +
+      'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.locked, dg.name as debitor_group_name ' +
     'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
     'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id ' +
     'WHERE p.uuid = ?';
@@ -109,6 +112,24 @@ function details(req, res, next) {
         patientDetail = result[0];
         res.status(200).json(patientDetail);
       }
+    })
+    .catch(next)
+    .done();
+}
+
+function groups(req, res, next) { 
+  var patientGroupsQuery;
+  var uuid = req.params.uuid;
+  
+  patientGroupsQuery =
+    'SELECT patient_group.name, patient_group.note, patient_group.created, patient_group.uuid ' + 
+    'FROM assignation_patient left join patient_group on patient_group_uuid = patient_group.uuid ' + 
+    'WHERE patient_uuid = ?';
+
+  db.exec(patientGroupsQuery, [uuid])
+    .then(function(patientGroups) { 
+      
+      res.status(200).json(patientGroups);
     })
     .catch(next)
     .done();

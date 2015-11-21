@@ -27,6 +27,24 @@ function Patients($http) {
     return $http.post(path, details)
       .then(extractData);
   }
+  
+  // TODO Review/ refactor
+  function groups(patientUuid) { 
+    
+    var path = '/patients/';
+
+    // If a patient ID has been specified - return only the patient groups for that patient
+    if (angular.isDefined(patientUuid)) { 
+      path = path.concat(patientUuid, '/groups');
+    } else { 
+      
+      // No Patient ID is specified - return a list of all patient groups
+      path = path.concat('groups');
+    }
+
+    return $http.get(path)
+      .then(extractData);
+  }
 
   function logVisit(details) { 
     var path = '/patients/visit';
@@ -38,7 +56,8 @@ function Patients($http) {
   return {
     detail : detail,
     create : create,
-    logVisit : logVisit
+    logVisit : logVisit, 
+    groups : groups
   };
 }
 
