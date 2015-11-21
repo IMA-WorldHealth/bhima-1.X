@@ -25,7 +25,9 @@ function CashboxController(Session, Projects, Boxes, $window) {
   /* ------------------------------------------------------------------------ */
 
   function handler(error) {
-    throw error;
+    vm.message = error.data;
+    vm.message.type = 'danger';
+    console.error(error.data.reason);
   }
   
   // state transitions
@@ -76,8 +78,9 @@ function CashboxController(Session, Projects, Boxes, $window) {
       Boxes.create(vm.box) :
       Boxes.update(vm.id, vm.box);
 
-    promise.then(function (response) {
-
+    promise.then(function (message) {
+      setState('success');
+      vm.message = message;
     })
     .catch(handler);
   }
@@ -87,8 +90,12 @@ function CashboxController(Session, Projects, Boxes, $window) {
       $window.confirm('Are you sure you want to delete this cashbox?');
 
     if (yes) {
-      Boxes.delete(box.id).then(function () {
-        setState('default');
+      Boxes.delete(box.id).then(function (message) {
+        setState('success');
+        vm.message = {
+          type : 'success',
+          code : 'CASHBOXES.DELETE_SUCCESS'
+        };
       })
       .catch(handler);
     }

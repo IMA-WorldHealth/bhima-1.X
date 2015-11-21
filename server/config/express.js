@@ -105,15 +105,26 @@ exports.errorHandling = function errorHandling(app) {
   function interceptDatabaseErrors(err, req, res, next) {
     var codes = [{
         code : 'ER_BAD_FIELD_ERROR',
-        httpStatus : 400, // Invalid request
-        key : 'Column does not exist in database' // TODO translatable on client
+        httpStatus : 400,
+        reason : 'Column does not exist in database.'
+      }, {
+        code : 'ER_ROW_IS_REFERENCED_2',
+        httpStatus : 400,
+        reason : 'Cannot delete entity becuase entity is used in another table.'
       }
     ];
 
     var supported = codeSupported(codes, err);
     if (supported) {
-      res.status(supported.httpStatus).json(err);
-      return;
+
+      // NOTE -- we prefix errors with "DB." for proper client
+      // translation.
+      // TODO -- review this decision
+      return res.status(supported.httpStatus).json({
+        code : 'DB.' + supported.code,
+        reason : supported.reason,
+        raw : err
+      });
     } else {
 
       // Unkown code - forward error

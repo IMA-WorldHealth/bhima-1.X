@@ -134,7 +134,7 @@ CREATE TABLE `cash_box_account_currency` (
   KEY `gain_exchange_account_id` (`gain_exchange_account_id`),
   KEY `loss_exchange_account_id` (`loss_exchange_account_id`),
   FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
-  FOREIGN KEY (`cash_box_id`) REFERENCES `cash_box` (`id`),
+  FOREIGN KEY (`cash_box_id`) REFERENCES `cash_box` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`gain_exchange_account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`loss_exchange_account_id`) REFERENCES `account` (`id`)
