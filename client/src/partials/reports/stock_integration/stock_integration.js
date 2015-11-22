@@ -2,12 +2,13 @@ angular.module('bhima.controllers')
 .controller('ReportStockIntegrationController', ReportStockIntegrationController);
 
 ReportStockIntegrationController.$inject = [
-  '$scope', 'connect', 'validate'
+  'connect', 'validate'
 ];
 
-function ReportStockIntegrationController ($scope, connect, validate) {
-  var session = $scope.session = {},
-      state = $scope.state,
+function ReportStockIntegrationController (connect, validate) {
+  var vm = this,
+      session = vm.session = {},
+      state = vm.state,
       dependencies = {};
 
   // Dependencies
@@ -25,8 +26,8 @@ function ReportStockIntegrationController ($scope, connect, validate) {
   // Initialise model
   session.dateFrom = new Date();
   session.dateTo   = new Date();
-  $scope.selected  = null;
-  $scope.options   = [
+  vm.selected  = null;
+  vm.options   = [
     {
       label : 'CASH_PAYMENTS.DAY',
       fn : day,
@@ -42,10 +43,10 @@ function ReportStockIntegrationController ($scope, connect, validate) {
   ];
 
   // Expose model to the view
-  $scope.search      = search;
-  $scope.reset       = reset;
-  $scope.reconfigure = reconfigure;
-  $scope.print       = function () { print(); };
+  vm.search      = search;
+  vm.reset       = reset;
+  vm.reconfigure = reconfigure;
+  vm.print       = function () { print(); };
 
   // Start the module up
   startup();
@@ -94,8 +95,8 @@ function ReportStockIntegrationController ($scope, connect, validate) {
     connect.fetch(url)
     .then(function (model) {
       if (!model) { return; }
-      $scope.integration_records = model;
-      $scope.state = 'generate';
+      vm.integration_records = model;
+      vm.state = 'generate';
     })
     .catch(error);
 
@@ -104,14 +105,14 @@ function ReportStockIntegrationController ($scope, connect, validate) {
   function startup() {
     validate.process(dependencies)
     .then(function (models) {
-      $scope.depots        = models.depots.data;
-      search($scope.options[0]);
+      vm.depots = models.depots.data;
+      search(vm.options[0]);
     });
   }
 
   function reconfigure () {
-    $scope.state = null;
-    $scope.session.type = null;
+    vm.state = null;
+    vm.session.type = null;
   }
 
   function error(err) {
