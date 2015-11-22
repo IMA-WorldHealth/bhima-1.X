@@ -11,7 +11,7 @@ PermissionsController.$inject = [
   'ProjectService', 'NodeTreeService'
 ];
 
-function PermissionsController($window, $translate, $http, $modal, util, Session, Users, Projects, NT) {
+function PermissionsController($window, $translate, $http, $uibModal, util, Session, Users, Projects, NT) {
   var vm = this;
   var btnTemplate =
     '<button ng-click="grid.appScope.edit(row.entity)" style="margin: 0 5px">{{ "FORM.EDIT" | translate }}</button>' +
@@ -137,12 +137,11 @@ function PermissionsController($window, $translate, $http, $modal, util, Session
 
   // opens a new modal to let the user set a password
   function setPasswordModal() {
-    var modal = $modal.open({
+    var modal = $uibModal.open({
       templateUrl: 'partials/permissions/permissionsPasswordModalTemplate.html',
-      backdrop:    'static',
-      keyboard:    false,
-      controller:  'PermissionsPasswordModalController',
-      controllerAs : 'ModalCtrl',
+      size : 'md',
+      animation : true,
+      controller:  'PermissionsPasswordModalController as ModalCtrl',
       resolve:     {
         user:      vm.user
       }

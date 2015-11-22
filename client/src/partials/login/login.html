@@ -1,16 +1,18 @@
-<div  style="margin-top: 5em;">
-  <div class="col-sm-offset-4 col-xs-4" style="margin-top:5%;">
+<div class="container-fluid">
+  <div class="center-block" style="margin-top:10em; max-width:400px;">
     <div class="panel panel-default">
-      <div class="panel-heading">
-        <div class="pull-right dropdown">
-          <a class="btn btn-sm btn-default dropdown-toggle" style="color:#000;"><i class="glyphicon glyphicon-cog"></i></a>
-          <ul class="dropdown-menu">
-            <li ng-repeat="lang in LoginCtrl.languages track by lang.key">
+      <div class="panel-heading clearfix">
+        <div class="pull-right" uib-dropdown>
+          <button class="btn btn-default" uib-dropdown-toggle>
+            <span class="caret"></span>
+          </button>
+          <ul class="uib-dropdown-menu" role="menu">
+            <li role="menuitem" ng-repeat="lang in LoginCtrl.languages track by lang.key">
               <a ng-click="LoginCtrl.setLanguage(lang)">{{ lang.name }}</a>
             </li>
           </ul>
         </div>
-        <h6>{{ "AUTH.LOGIN_TO_BHIMA" | translate }}</h6>
+        <h4>{{ "AUTH.LOGIN" | translate }}</h4>
       </div>
       <div class="panel-body">
 
@@ -33,7 +35,7 @@
                 <span class="input-group-addon" style="background-color: #fff;">
                   <span class="glyphicon glyphicon-user"></span>
                 </span>
-                <input name="username" ng-model="LoginCtrl.credentials.username" class="form-bhima" placeholder="{{ 'AUTH.LOGIN_PLACEHOLDER_USERNAME' | translate }}" type="text" autofocus required />
+                <input name="username" ng-model="LoginCtrl.credentials.username" class="form-control" placeholder="{{ 'AUTH.LOGIN_PLACEHOLDER_USERNAME' | translate }}" type="text" autofocus required />
               </div>
             </div>
 
@@ -43,7 +45,7 @@
                 <span class="input-group-addon" style="background-color: #fff;">
                   <span class="glyphicon glyphicon-lock"></span>
                 </span>
-                <input name="password" ng-model="LoginCtrl.credentials.password" class="form-bhima" placeholder="{{ 'AUTH.LOGIN_PLACEHOLDER_PASSWORD' | translate }}" "" type="password" required />
+                <input name="password" ng-model="LoginCtrl.credentials.password" class="form-control" placeholder="{{ 'AUTH.LOGIN_PLACEHOLDER_PASSWORD' | translate }}" "" type="password" required />
               </div>
             </div>
 
@@ -53,14 +55,16 @@
                 <span class="input-group-addon" style="background-color: #fff;">
                   <i class="glyphicon glyphicon-home"></i>
                 </span>
-                <select name="project" class="form-bhima" ng-model="LoginCtrl.credentials.project" ng-options="proj.id as proj.name for proj in LoginCtrl.projects">
+                <select name="project" class="form-control" ng-model="LoginCtrl.credentials.project" ng-options="proj.id as proj.name for proj in LoginCtrl.projects">
                   <option value="" disabled="disabled"> -- {{ "SELECT.PROJECT" | translate }} --</option>
                 </select>
               </div>
             </div>
 
             <div class="form-group">
-              <input id="submit" class="btn btn-sm btn-success" type="submit" value="{{ 'AUTH.LOGIN' | translate }}"/>
+              <button id="submit" class="btn btn-default" type="submit">
+               {{ "FORM.LOGIN" | translate }}
+              </button>
             </div>
           </fieldset>
         </form>

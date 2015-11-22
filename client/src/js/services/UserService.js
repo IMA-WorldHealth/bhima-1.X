@@ -76,7 +76,7 @@ function UserService($http, util) {
 
   // sets a user's password using the public API
   function updatePassword(id, data) {
-    return $http.put('/users/' +id+ '/password')
+    return $http.put('/users/' + id + '/password', data)
     .then(util.unwrapHttpResponse);
   }
 }
