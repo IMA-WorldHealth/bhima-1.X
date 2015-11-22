@@ -9,7 +9,7 @@ MultiPayrollController.$inject = [
 function MultiPayrollController($scope, $translate, $http, $timeout, messenger, validate, connect, util, Appcache, exchange, $q, ipr, uuid, SessionService) {
   var dependencies = {},
       cache = new Appcache('payroll'),
-      session = $scope.session = {configured : false, complete : false, data : {}, selectedCurrency : {}, rows : [], error: {}};
+      session = $scope.session = {configured : false, complete : false, data : {}, selectedCurrency : {}, rows : [], error: {} };
 
   dependencies.currencies = {
     required : true,
@@ -210,6 +210,7 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
     var def = $q.defer();
     var self = this;
     self.emp = emp;
+
     getHollyDayCount(emp)
     .then(function (hld) {
       var hl = (hld)? hld.nb : 0; //hl contains the number of hollydays
@@ -662,11 +663,14 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
       });
 
       cotisation_config_list.forEach(function (cotisation) {
-
-        if (cotisation.is_percent) {
-          var primePercentCotisation = ((somPrime * cotisation.value) / 100);
-          elmt[cotisation.abbr] += primePercentCotisation;
-        }
+        // FIXME: it's necessary to keep catisation value unmodifiable
+        // the code below it commented because we offer to user the possibility
+        // to change manually cotisation value...
+        // FIXME: we need a function which update the cotisation value
+        // if (cotisation.is_percent) {
+        //   var primePercentCotisation = ((somPrime * cotisation.value) / 100);
+        //   elmt[cotisation.abbr] += primePercentCotisation;
+        // }
 
         if (cotisation.is_employee) {
           somCot += elmt[cotisation.abbr];
@@ -674,11 +678,13 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
       });
 
       elmt.net_before_taxe += somPrime;
-      var newIPR = getIPR(elmt);
+      // FIXME: IPR value must be modifiable in a input zone
+      // var newIPR = getIPR(elmt);
 
       tax_config_list.forEach(function (tax) {
         if (tax.is_ipr) {
-          elmt[tax.abbr] = newIPR;
+          // Dont reset the IPR value after a user change
+          // elmt[tax.abbr] = newIPR;
         }
         if (tax.is_employee) {
           SomTax += elmt[tax.abbr];
