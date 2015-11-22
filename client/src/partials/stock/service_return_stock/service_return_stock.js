@@ -113,13 +113,7 @@ function ServiceReturnStockController($routeParams, $http, $q, $translate, $loca
     if (!vm.service || !vm.service.id) { return; }
     vm.session.step = 'select_inventories';
     vm.session.integrationStarted = true;
-    vm.session.labelMovement = translateLabelMovement();
     addStockItem();
-  }
-
-  function translateLabelMovement() {
-    if (!vm.service || !vm.session.depot) { return; }
-    return '' + $translate.instant('SERVICE_RETURN_STOCK.MOVEMENT').replace('%SERVICE%', vm.service.name).replace('%DEPOT%', vm.session.depot.text);
   }
 
   function addStockItem () {

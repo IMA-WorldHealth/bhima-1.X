@@ -8,7 +8,7 @@
           </div>
 
           <div class="panel-body">
-            <form name="configForm" novalidate>   
+            <form name="configForm" novalidate>
               <div class="form-group">
                 <label class="control-label col-xs-4 required">
                   {{ 'STOCK.INTEGRATION.STORE' | translate }}
@@ -17,18 +17,12 @@
                   <div class="pull-left form-group input-group">
                     <span class="input-group-addon">
                       <span class="glyphicon glyphicon-briefcase"></span>
-                    </span>  
+                    </span>
                     <select class="form-bhima" required ng-model="session.depot_entry" >
                       <option ng-repeat="depot in depots" value="{{ depot.uuid }}">{{ depot.text}}</option>
-                    </select>                    
+                    </select>
                   </div>
                 </div>
-              </div>
-
-              <div class="form-group">
-                <label class="control-label required">
-                  {{ 'STOCK.INTEGRATION.SELECT_TIME' | translate }}
-                </label>
               </div>
 
               <div class="form-group">
@@ -40,7 +34,7 @@
                       <a class="clk" ng-click="search(opt)">{{ opt.label | translate }}</a>
                     </li>
                   </ul>
-                </span> 
+                </span>
               </div>
 
               <div class="form-group">
@@ -51,11 +45,11 @@
                   <div class="pull-left form-group input-group">
                     <span class="input-group-addon">
                       <span class="glyphicon glyphicon-calendar"></span>
-                    </span>  
+                    </span>
                     <input class="form-bhima" type="date" ng-model="session.dateFrom" rows="20" >
                   </div>
                 </div>
-              </div>              
+              </div>
 
               <div class="form-group">
                 <label class="control-label col-xs-4 required">
@@ -65,11 +59,11 @@
                   <div class="pull-left form-group input-group">
                     <span class="input-group-addon">
                       <span class="glyphicon glyphicon-calendar"></span>
-                    </span>  
+                    </span>
                     <input class="form-bhima" type="date" ng-model="session.dateTo" rows="20" >
                   </div>
                 </div>
-              </div>               
+              </div>
               <div class="pull-right">
                 <button class="btn btn-sm btn-success" type="button" ng-click="reset()" ng-disabled="configForm.$invalid">
                   {{ "REPORT.GENERATE" | translate }}
@@ -80,16 +74,16 @@
           </div>
         </div>
       </div>
-    </main>  
+    </main>
   </div>
-  <div ng-switch-when="generate">  
+  <div ng-switch-when="generate">
     <header>
       <b> {{ "STOCK.INTEGRATION.REPORT_CONF" | translate }} </b> : <small>  {{ session.dateFrom | date }} - {{ session.dateTo | date }} </small>
     </header>
 
     <nav>
 
-      <div class="pull-right">        
+      <div class="pull-right">
         <button class="btn btn-sm btn-default" ng-click="print()">
           <span class="glyphicon glyphicon-print"></span>
           {{ "UTIL.PRINT" | translate }}
@@ -101,7 +95,7 @@
           <span class="glyphicon glyphicon-repeat"></span>
         </button>
       </div>
-    
+
     </nav>
 
     <div class="report">
@@ -118,14 +112,14 @@
                 <th>{{ "COLUMNS.ISSUER" | translate }}</th>
                 <th>{{ "COLUMNS.DEPOT" | translate }}</th>
                 <th>{{ "COLUMNS.CONFIRM_BY" | translate }}</th>
-                <th>{{ "COLUMNS.DATE" | translate }}</th>                
+                <th>{{ "COLUMNS.DATE" | translate }}</th>
               </tr>
             </thead>
             <tbody>
               <tr ng-repeat='integrations in integration_records | orderBy: "purchase_date" '>
                 <td>
                   <a ng-if="integrations.uuid" ng-href="/#/invoice/confirm_integration/{{integrations.document_id}}"><span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}</a>
-                </td>                                
+                </td>
                 <td><b> {{ integrations.trans_id }} </b></td>
                 <td> {{ integrations.first + ' ' + integrations.last }} </td>
                 <td> {{ integrations.text }} </td>
@@ -139,10 +133,9 @@
                 </td>
               </tr>
             </tbody>
-          </table>      
+          </table>
         </div>
       </div>
     </div>
-  </div>    
-</div>  
-
+  </div>
+</div>
