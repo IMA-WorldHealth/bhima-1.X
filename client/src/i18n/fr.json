@@ -1720,7 +1720,7 @@
    "ADD"            : "Ajouter un jour férié",
    "ALERT"          : "Le module gestion des jours fériés permet de configurer les différents types de jours fériés qui sont prises en charge dans l'organisation",
    "CONFIRM"        : "Etes vous sure de vouloir supprimer ce jour férié",
-   "CREATE_TAXE"    : "Création des taxes",
+   "CREATE_TAXE"    : "Création des Taxes",
    "DELETE_SUCCESS" : "Supprimé avec succès",
    "NEW_OFFDAY"     : "Nouveau Jour férié",
    "NO_OFFDAY"      : "Aucun jour férié n'est encore enregistré",
@@ -2938,7 +2938,7 @@
    },
 "TAXE_MANAGEMENT": {
    "CONFIGURE_IPR" : "Configuration IPR",
-   "CREATE_TAXE"   : "Création des taxes",
+   "CREATE_TAXE"   : "Création des Taxes",
    "OPTIONS"       : "Options",
    "TITLE"         : "Gestion des taxes"
    },
@@ -3225,6 +3225,7 @@
    "RESET_FORM"        : "Remettre",
    "SAVE_SELECTION"    : "Enregistrer la Sélection",
    "SEARCH"            : "Chercher",
+   "SEARCH_EMPLOYEE"   : "Recherche employés",
    "SHOW"              : "Voir",
    "SIGNATURES"        : "Signature",
    "SOURCE"            : "Source",

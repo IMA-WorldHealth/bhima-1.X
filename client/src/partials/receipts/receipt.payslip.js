@@ -17,11 +17,11 @@ angular.module('bhima.controllers')
 
       $http.get('/getDataPaiement/',{params : {
             'invoiceId' : invoiceId
-          }  
+          }
       }).
       success(function(data) {
         getPPConf();
-        function getHollyDayCount(paiement_period_confs) {        
+        function getHollyDayCount(paiement_period_confs) {
           dependencies.get_hollydayCount = {
             query : {
               tables : {
@@ -43,30 +43,30 @@ angular.module('bhima.controllers')
           validate.process(dependencies, ['get_hollydayCount'])
           .then(function (model) {
             if(data[0].enterprise_currency_id !== data[0].currency_id){
-              data[0].basic_salary *= data[0].rate; 
+              data[0].basic_salary *= data[0].rate;
             }
-            
+
             $scope.total_day = data[0].working_day;
             $scope.daly_rate = data[0].basic_salary / $scope.max_day;
 
-            $scope.amont_payable = $scope.daly_rate * $scope.total_day; 
+            $scope.amont_payable = $scope.daly_rate * $scope.total_day;
             $scope.TotalPaid += $scope.amont_payable;
             $scope.TotalNet += $scope.amont_payable;
-                    
+
             var dataHollydays = $scope.dataHollydays = model.get_hollydayCount.data,
               cotisationValue = model.get_cotisation.data,
               dailyRate = data[0].basic_salary / $scope.max_day;
 
             dataHollydays.forEach(function (item) {
-            item.dailyHollyd = dailyRate * (item.hollyday_percentage /100); 
+            item.dailyHollyd = dailyRate * (item.hollyday_percentage /100);
             item.somHolly = item.dailyHollyd * item.hollyday_nbdays;
 
             $scope.TotalPaid += item.somHolly;
             $scope.TotalNet += item.somHolly;
-          });       
+          });
         });
-      }  
-      function getOffDayCount() {          
+      }
+      function getOffDayCount() {
         dependencies.offDays = {
           query : {
             tables : {
@@ -76,7 +76,7 @@ angular.module('bhima.controllers')
             },
             where : ['offday.date>=' + util.sqlDate(data[0].dateFrom), 'AND', 'offday.date<=' + util.sqlDate(data[0].dateTo)]
           }
-        };  
+        };
 
         validate.process(dependencies, ['offDays'])
         .then(function (model) {
@@ -85,7 +85,7 @@ angular.module('bhima.controllers')
         });
       }
 
-      function getOffDay() {        
+      function getOffDay() {
         dependencies.offDays = {
           query : {
             tables : {
@@ -95,7 +95,7 @@ angular.module('bhima.controllers')
             },
             where : ['offday.date>=' + util.sqlDate(data[0].dateFrom), 'AND', 'offday.date<=' + util.sqlDate(data[0].dateTo)]
           }
-        };  
+        };
 
         validate.process(dependencies, ['offDays'])
         .then(function (model) {
@@ -108,7 +108,7 @@ angular.module('bhima.controllers')
         });
       }
 
-      function getPPConf() {  
+      function getPPConf() {
         dependencies.paiement_period_conf = {
           required : true,
           query : {
@@ -125,11 +125,11 @@ angular.module('bhima.controllers')
         .then(function (model) {
           var paiement_period_confs = model.paiement_period_conf.data;
           $scope.max_day = getMaxDays(paiement_period_confs);
-          getOffDayCount(); 
+          getOffDayCount();
           getHollyDayCount(paiement_period_confs);
-          getOffDay(); 
+          getOffDay();
         });
-      } 
+      }
 
       function getMaxDays (ppcs) {
         var nb = 0;
@@ -139,7 +139,7 @@ angular.module('bhima.controllers')
           nb += (parseInt((t2-t1)/(24*3600*1000))) + 1;
         });
         return nb;
-      }         
+      }
       $scope.dataPaiements = data;
     });
 
@@ -176,7 +176,7 @@ angular.module('bhima.controllers')
           item.valueP = 0;
           item.valueR = item.value;
           $scope.TotalNet -= item.value;
-        } 
+        }
       });
     });
 
@@ -234,7 +234,7 @@ angular.module('bhima.controllers')
         $scope.TotalNet -= item.value;
       });
     });
-  } 
+  }
 
   function promiseInvoiceId (invoiceId) {
     return $q.when(invoiceId);
@@ -250,7 +250,7 @@ angular.module('bhima.controllers')
       .catch(function (err){
         messenger.danger('error', err);
       });
-		});     
-  });    
+		});
+  });
   }
 ]);
