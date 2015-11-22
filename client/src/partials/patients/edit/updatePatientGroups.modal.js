@@ -1,34 +1,63 @@
 angular.module('bhima.controllers')
 .controller('UpdateDebtorGroup', UpdateDebtorGroup);
 
-UpdateDebtorGroup.$inject = ['$scope', '$uibModalInstance', 'Debtors',  'patient'];
+UpdateDebtorGroup.$inject = ['$scope', '$uibModalInstance', 'Debtors',  'patient', 'updateModel'];
 
-function UpdateDebtorGroup($scope, $uibModalInstance, debtors, patient) { 
+function UpdateDebtorGroup($scope, $uibModalInstance, debtors, patient, updateModel) { 
   var viewModel = this;
-  
-  console.log('got', patient);
-  console.log('modal controller initiliased');
-
-  viewModel.debitor_group_uuid = patient.debitor_group_uuid;
   
   // TODO Handle errors with generic modal exception display (inform system administrator)
   debtors.groups()
     .then(function (debtorGroups) { 
-      console.log('groups', debtorGroups); 
+  
+      viewModel.debitor_group_uuid = patient.debitor_group_uuid;
+
+      // setDebtorGroup(patient.debitor_group_uuid);
 
       viewModel.debtorGroups = debtorGroups;
     });
 
+  // TODO Refactor - use stores?
+  function fetchGroupName(uuid) { 
+    var name;
+    viewModel.debtorGroups.some(function (debtorGroup) { 
+      if (debtorGroup.uuid === uuid) { 
+        name = debtorGroup.name;
+        return true;
+      }
+    });
+    return name;
+  }
+
   viewModel.confirmGroup = function confirmGroup() { 
-    console.log($scope.groupForm);
-    var formIsUpdated = $scope.groupFrom.$dirty;
+    var formIsUpdated = $scope.groupForm.$dirty;
+    var updateRequest;
 
     // Simply exit the modal
     if (!formIsUpdated) { 
     
       return;
     }
-
+  
+    updateRequest = { 
+      group_uuid : viewModel.debitor_group_uuid
+    };
     
+    debtors.update(patient.debitor_uuid, updateRequest)
+      .then(function (result) { 
+      
+        updateModel(
+          viewModel.debitor_group_uuid,
+          fetchGroupName(viewModel.debitor_group_uuid));
+        
+        close();
+      });
+     
+  }
+  
+  viewModel.close = close;
+
+  function close() { 
+    $uibModalInstance.dismiss();
   }
 }

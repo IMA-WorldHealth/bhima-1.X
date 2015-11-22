@@ -66,6 +66,12 @@
               <div class="form-group">
                 <label class="control-label">Debtor Group</label>
                 
+                <p 
+                  class="text-success form-control-static" 
+                  ng-if="PatientEditCtrl.updatedDebtorGroup">
+                  <span class="glyphicon glyphicon-ok-sign"></span> Debtor group updated
+                </p>
+
                 <ul class="form-control-static">
                   <li>{{ PatientEditCtrl.medical.debitor_group_name }}</li>
                 </ul>

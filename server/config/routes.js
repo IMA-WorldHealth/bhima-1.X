@@ -297,6 +297,8 @@ exports.configure = function (app) {
   app.get('/debtors/groups/:uuid', debtors.groupDetails);
   // app.get('/debtors/:uuid', debtors.details);
   app.get('/debtors/:uuid/invoices', debtors.invoices);
+ 
+  app.put('/debtors/:uuid', debtors.update);
 
   // search stuff
   // TODO merge with patients API

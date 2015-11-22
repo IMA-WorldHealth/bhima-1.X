@@ -30,7 +30,15 @@ function Debtors($http) {
       .then(extractData);
   }
 
+  function update(uuid, params) { 
+    var path = '/debtors/';
+
+    return $http.put(path.concat(uuid), params)
+      .then(extractData);
+  }
+
   return {
+    update : update,
     groups : groups,
     groupDetail : groupDetail
   };

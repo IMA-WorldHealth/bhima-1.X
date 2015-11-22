@@ -3,10 +3,11 @@
 var db = require('../../lib/db'),
     guid = require('../../lib/guid');
 
-exports.groupDetails = details;
+exports.groupDetails = groupDetails;
 exports.listGroups = listGroups;
+exports.update = update;
 
-function details(req, res, next) {
+function groupDetails(req, res, next) {
   var debtorDetailsQuery;
   var uuid = req.params.uuid;
 
@@ -58,6 +59,47 @@ function listGroups(req, res, next) {
     })
     .catch(next)
     .done();
+}
+
+function update(req, res, next) { 
+  var updateDebtorQuery;
+  var queryData = req.body;
+  var debtorId = req.params.uuid;
+  
+  if (!debtorId) { 
+    res.status(400).json({
+      code : 'ERR_INVALID_REQUEST',
+      reason : 'A valid debtor UUID must be provided to update a debtor record.'
+    });
+    return;
+  }
+  
+  updateDebtorQuery = 
+    'UPDATE debitor SET ? WHERE uuid = ?';
+  
+  db.exec(updateDebtorQuery, [queryData, debtorId])
+    .then(function (result) { 
+    
+      return handleFetchDebtor(debtorId);
+    })
+    .then(function (updatedDebtor) { 
+      res.status(200).json(updatedDebtor);
+    })
+    .catch(next);
+}
+
+function handleFetchDebtor(uuid) { 
+  var debtorQuery = 
+    'SELECT uuid, group_uuid, text ' + 
+    'FROM debitor ' + 
+    'WHERE uuid = ?';
+
+  return db.exec(debtorQuery, [uuid])
+    .then(function debtorResult) { 
+      
+      // Got correct debtor - seperate JSON object
+      return debtorResult[0];
+    });
 }
 
 function isEmpty(array) {

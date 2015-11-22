@@ -43,6 +43,12 @@ function PatientEdit($scope, $routeParams, $uibModal, patients) {
       });
   }
 
+  function updateDebtorModel(debtorGroupUuid, debtorGroupName) { 
+    viewModel.medical.debitor_group_uuid = debtorGroupUuid;
+    viewModel.medical.debitor_group_name = debtorGroupName;
+    viewModel.updatedDebtorGroup = true;
+  }
+
   viewModel.updatePatient = function updatePatient(patient) { 
 
   };
@@ -57,6 +63,11 @@ function PatientEdit($scope, $routeParams, $uibModal, patients) {
   // TODO 
   // Modal group update interactions 
   viewModel.updateDebtorGroup = function updateDebtorGroup() { 
+
+    // Reset updated flag 
+    viewModel.updatedDebtorGroup = false;
+  
+    // Provide modal
     var modalInstance = $uibModal.open({
       animation : true,
       templateUrl : 'partials/patients/edit/updateDebtorGroup.tmpl.html',
@@ -65,6 +76,9 @@ function PatientEdit($scope, $routeParams, $uibModal, patients) {
       resolve : {
         patient : function () { 
           return viewModel.medical;
+        }, 
+        updateModel : function () { 
+          return updateDebtorModel;
         }
       }
     });
