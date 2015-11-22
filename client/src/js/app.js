@@ -368,7 +368,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/reports/donation_confirmation/donation_confirmation.html'
   })
   .when('/reports/stock_integration', {
-    controller : 'stockIntegration',
+    controller : 'ReportStockIntegrationController as ReportCtrl',
     templateUrl : 'partials/reports/stock_integration/stock_integration.html'
   })
   .when('/reports/stock_movement', {

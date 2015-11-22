@@ -134,14 +134,15 @@ function GradeEmployeeController ($scope, $translate, validate, messenger, conne
   }
 
   function calculateBaseSalary () {
-    var base = 33; // The Base Salary
+    var salary,
+        base = 33; // The Base Salary
     if (session.new) {
-      var salary = session.new.text && tension[session.new.text] ? (tension[session.new.text] * base) / 100 : 0;
+      salary = session.new.text && tension[session.new.text] ? (tension[session.new.text] * base) / 100 : 0;
       session.new.basic_salary = salary;
     }
 
     if (session.edit) {
-      var salary = session.edit.text && tension[session.edit.text] ? (tension[session.edit.text] * base) / 100 : 0;
+      salary = session.edit.text && tension[session.edit.text] ? (tension[session.edit.text] * base) / 100 : 0;
       session.edit.basic_salary = salary;
     }
   }

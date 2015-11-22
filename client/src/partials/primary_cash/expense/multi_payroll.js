@@ -682,10 +682,10 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
       // var newIPR = getIPR(elmt);
 
       tax_config_list.forEach(function (tax) {
-        if (tax.is_ipr) {
-          // Dont reset the IPR value after a user change
-          // elmt[tax.abbr] = newIPR;
-        }
+        // FIXME: Dont reset the IPR value after a user change
+        // if (tax.is_ipr) {
+        //   elmt[tax.abbr] = newIPR;
+        // }
         if (tax.is_employee) {
           SomTax += elmt[tax.abbr];
         }
