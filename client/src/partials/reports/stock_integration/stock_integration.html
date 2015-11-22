@@ -1,4 +1,4 @@
-<div ng-switch="state">
+<div ng-switch="ReportCtrl.state">
   <div ng-switch-default>
     <main>
       <div class="col-xs-12">
@@ -18,8 +18,8 @@
                     <span class="input-group-addon">
                       <span class="glyphicon glyphicon-briefcase"></span>
                     </span>
-                    <select class="form-bhima" required ng-model="session.depot_entry" >
-                      <option ng-repeat="depot in depots" value="{{ depot.uuid }}">{{ depot.text}}</option>
+                    <select class="form-bhima" required ng-model="ReportCtrl.session.depot_entry" >
+                      <option ng-repeat="depot in ReportCtrl.depots" value="{{ depot.uuid }}">{{ depot.text}}</option>
                     </select>
                   </div>
                 </div>
@@ -27,11 +27,11 @@
 
               <div class="form-group">
                 <span class="btn-group">
-                  <button class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : session.active }">{{ (session.selected | translate) || "..." }}</button>
+                  <button class="btn btn-sm btn-default btn-sq" ng-class="{ 'active' : ReportCtrl.session.active }">{{ (ReportCtrl.session.selected | translate) || "..." }}</button>
                   <button class="btn btn-sm btn-default dropdown-toggle btn-sq"><span class="caret" data-caret="&#9660;"></span></button>
                   <ul class="dropdown-menu menu-sq">
-                    <li ng-repeat="opt in options">
-                      <a class="clk" ng-click="search(opt)">{{ opt.label | translate }}</a>
+                    <li ng-repeat="opt in ReportCtrl.options">
+                      <a class="clk" ng-click="ReportCtrl.search(opt)">{{ opt.label | translate }}</a>
                     </li>
                   </ul>
                 </span>
@@ -46,7 +46,7 @@
                     <span class="input-group-addon">
                       <span class="glyphicon glyphicon-calendar"></span>
                     </span>
-                    <input class="form-bhima" type="date" ng-model="session.dateFrom" rows="20" >
+                    <input class="form-bhima" type="date" ng-model="ReportCtrl.session.dateFrom" rows="20" >
                   </div>
                 </div>
               </div>
@@ -60,12 +60,12 @@
                     <span class="input-group-addon">
                       <span class="glyphicon glyphicon-calendar"></span>
                     </span>
-                    <input class="form-bhima" type="date" ng-model="session.dateTo" rows="20" >
+                    <input class="form-bhima" type="date" ng-model="ReportCtrl.session.dateTo" rows="20" >
                   </div>
                 </div>
               </div>
               <div class="pull-right">
-                <button class="btn btn-sm btn-success" type="button" ng-click="reset()" ng-disabled="configForm.$invalid">
+                <button class="btn btn-sm btn-success" type="button" ng-click="ReportCtrl.reset()" ng-disabled="configForm.$invalid">
                   {{ "REPORT.GENERATE" | translate }}
                 </button>
               </div>
@@ -78,19 +78,19 @@
   </div>
   <div ng-switch-when="generate">
     <header>
-      <b> {{ "STOCK.INTEGRATION.REPORT_CONF" | translate }} </b> : <small>  {{ session.dateFrom | date }} - {{ session.dateTo | date }} </small>
+      <b> {{ "STOCK.INTEGRATION.REPORT_CONF" | translate }} </b> : <small>  {{ ReportCtrl.session.dateFrom | date }} - {{ ReportCtrl.session.dateTo | date }} </small>
     </header>
 
     <nav>
 
       <div class="pull-right">
-        <button class="btn btn-sm btn-default" ng-click="print()">
+        <button class="btn btn-sm btn-default" ng-click="ReportCtrl.print()">
           <span class="glyphicon glyphicon-print"></span>
           {{ "UTIL.PRINT" | translate }}
         </button>
         <button
           style="margin-left: 5px;"
-          ng-click="reconfigure()"
+          ng-click="ReportCtrl.reconfigure()"
           class="btn btn-sm btn-default pull-right">
           <span class="glyphicon glyphicon-repeat"></span>
         </button>
@@ -102,7 +102,7 @@
       <div class="reportBody">
         <div class="reportFrame">
           <h4 class="visible-print">
-            <b> {{ "STOCK.INTEGRATION.REPORT_CONF" | translate }} </b> {{ session.dateFrom | date }} - {{ session.dateTo | date }} </small>
+            <b> {{ "STOCK.INTEGRATION.REPORT_CONF" | translate }} </b> {{ ReportCtrl.session.dateFrom | date }} - {{ ReportCtrl.session.dateTo | date }} </small>
           </h4>
           <table class="reportTable">
             <thead>
@@ -116,9 +116,11 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat='integrations in integration_records | orderBy: "purchase_date" '>
+              <tr ng-repeat='integrations in ReportCtrl.integration_records | orderBy: "purchase_date" '>
                 <td>
-                  <a ng-if="integrations.uuid" ng-href="/#/invoice/confirm_integration/{{integrations.document_id}}"><span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}</a>
+                  <a ng-if="integrations.uuid" ng-href="/#/invoice/confirm_integration/{{integrations.document_id}}">
+                    <span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}
+                  </a>
                 </td>
                 <td><b> {{ integrations.trans_id }} </b></td>
                 <td> {{ integrations.first + ' ' + integrations.last }} </td>
@@ -126,7 +128,7 @@
                 <td> {{ integrations.confirmed_first }} {{ integrations.confirmed_last }} </td>
                 <td> {{ integrations.purchase_date | date }} </td>
               </tr>
-              <tr ng-if="!integration_records.length">
+              <tr ng-if="!ReportCtrl.integration_records.length">
                 <td colspan="7">
                   <span class="glyphicon glyphicon-stats"></span>
                   {{ "PURCHASE.REPORT.EMPTY_REPORT" | translate }}
