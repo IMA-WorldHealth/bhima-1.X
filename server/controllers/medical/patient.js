@@ -13,8 +13,12 @@ exports.details = details;
 exports.list = list;
 exports.search = search;
 
+// TODO Review naming conventions
+// Provide groups for individual patient
 exports.groups = groups;
-// exports.patientGroups = listPatientGroups;
+
+// Provide all patient groups
+exports.listGroups = listGroups;
 
 exports.verifyHospitalNumber = verifyHospitalNumber;
 
@@ -90,7 +94,7 @@ function details(req, res, next) {
   patientDetailQuery =
     'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name, p.middle_name, p.hospital_no, ' +
       'p.sex, p.dob, p.origin_location_id, p.reference, proj.abbr, d.text, ' +
-      'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.locked, dg.name as debitor_group_name ' +
+      'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.uuid as debitor_group_uuid, dg.locked, dg.name as debitor_group_name ' +
     'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
     'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id ' +
     'WHERE p.uuid = ?';
@@ -130,6 +134,22 @@ function groups(req, res, next) {
     .then(function(patientGroups) { 
       
       res.status(200).json(patientGroups);
+    })
+    .catch(next)
+    .done();
+}
+
+function listGroups(req, res, next) { 
+  var listGroupsQuery;
+
+  listGroupsQuery = 
+    'SELECT uuid, name, note, created, price_list_uuid ' + 
+    'FROM patient_group';
+
+  db.exec(listGroupsQuery)
+    .then(function(allPatientGroups) { 
+      
+      res.status(200).json(allPatientGroups);
     })
     .catch(next)
     .done();

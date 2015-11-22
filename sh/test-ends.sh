@@ -9,7 +9,9 @@ echo "Building test database for end to end tests ..."
 mysql -u bhima -pHISCongo2013 -e "DROP DATABASE bhima_test;"
 mysql -u bhima -pHISCongo2013 -e "CREATE DATABASE bhima_test;"
 mysql -u bhima -pHISCongo2013 bhima_test -e "GRANT ALL ON bhima_test.* TO 'bhima'@'localhost' IDENTIFIED BY 'HISCongo2013';"
-mysql -u bhima -pHISCongo2013 bhima_test < server/models/test/test.sql
+mysql -u bhima -pHISCongo2013 bhima_test < server/models/schema.sql
+mysql -u bhima -pHISCongo2013 bhima_test < server/models/test/data.sql
+
 
 echo "Building server ...."
 

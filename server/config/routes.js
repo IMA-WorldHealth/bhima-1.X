@@ -279,6 +279,8 @@ exports.configure = function (app) {
   // Patients API
   app.get('/patients', patient.list);
   app.post('/patients', patient.create);
+
+  app.get('/patients/groups', patient.listGroups);
   app.get('/patients/:uuid', patient.details);
   app.get('/patients/:uuid/groups', patient.groups); 
 

@@ -23,6 +23,8 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 describe('The /patients API', function () { 
   var agent = chai.request.agent(url);
   
+  var preparedTestPatientUuid = '81af634f-321a-40de-bc6f-ceb1167a9f65';
+
   // TODO Should this import UUID library and track mock patient throughout?
   var mockPatientUuid = '85bf7a85-16d9-4ae5-b5c0-1fec9748d2f9';
   var mockDebtorUuid = 'ec4241e4-3558-493b-9d78-dbaa47e3cefd';
@@ -151,6 +153,41 @@ describe('The /patients API', function () {
       })
       .catch(handle);
 
+  });
+
+  it('GET /patients/:id/groups will return a list of the patients groups', function () { 
+    var groupRoute = '/patients/'.concat(preparedTestPatientUuid).concat('/groups');
+    var SUBSCRIBED_PATIENT_GROUPS = 1;
+
+    return agent.get(groupRoute)
+      .then(function (result) { 
+        expect(result).to.have.status(200);
+        expect(result.body).to.not.be.empty;
+        expect(result.body).to.have.length(SUBSCRIBED_PATIENT_GROUPS);
+      })
+      .catch(handle);
+  });
+
+  if('GET /patients/:id/groups will return 404 not found for invalid request', function () { 
+    
+    return agent.get('/patient/unkownid/groups')
+      .then(function (result) { 
+        expect(result).to.have.status(404);
+        expect(result.body).to.not.be.empty;
+      })
+      .catch(handle);
+  });
+
+  it('GET /patients/groups will return a list of all patient groups', function () { 
+    var TOTAL_PATIENT_GROUPS = 2;
+    
+    return agent.get('/patients/groups')
+      .then(function (result) { 
+        expect(result).to.have.status(200);
+        expect(result.body).to.not.be.empty;
+        expect(result.body).to.have.length(TOTAL_PATIENT_GROUPS);
+      })
+      .catch(handle);
   });
  
   // TODO get information on the registered patient - ensure details route is correct 

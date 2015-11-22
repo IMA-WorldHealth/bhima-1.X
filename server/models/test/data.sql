@@ -43,6 +43,10 @@ INSERT INTO `debitor_group` VALUES
   (1, '4de0fe47-177f-4d30-b95f-cff8166400b4', 'Test Debtor Group', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6', NULL, NULL, NULL, 0, 0, 0, NULL),
   (1, '66f03607-bfbc-4b23-aa92-9321ca0ff586', 'Second Test Debtor Group', 3631, '03a329b2-03fe-4f73-b40f-56a2870cc7e6', NULL, NULL, NULL, 0, 0, 0, NULL);
 
+INSERT INTO `patient_group` VALUES
+  (1, '112a9fb5-847d-4c6a-9b20-710fa8b4da24', NULL, 'Test Patient Group', 'Test Patient Group 1 Note', CURRENT_TIMESTAMP, NULL),
+  (1, '0b8fcc00-8640-479d-872a-31d36361fcfd', NULL, 'Test Patient Group', 'Test Patient Group 1 Note', CURRENT_TIMESTAMP, NULL);
+
 INSERT INTO `debitor` VALUES
   ('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4', '4de0fe47-177f-4d30-b95f-cff8166400b4','Patient/1/Patient'),
   ('3be232f9-a4b9-4af6-984c-5d3f87d5c107', '4de0fe47-177f-4d30-b95f-cff8166400b4','Patient/2/Patient');
@@ -51,3 +55,6 @@ INSERT INTO `debitor` VALUES
 INSERT INTO `patient` VALUES 
   ('81af634f-321a-40de-bc6f-ceb1167a9f65',1,1,'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4',NULL,'Test','1','1990-06-01',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'M',NULL,NULL,NULL,NULL,NULL,NULL,0,'bda70b4b-8143-47cf-a683-e4ea7ddd4cff','bda70b4b-8143-47cf-a683-e4ea7ddd4cff','2015-11-14 07:04:49',NULL,NULL,'Patient','100'),
   ('274c51ae-efcc-4238-98c6-f402bfb39866',1,2,'3be232f9-a4b9-4af6-984c-5d3f87d5c107',NULL,'Test','2','1990-06-01',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'M',NULL,NULL,NULL,NULL,NULL,NULL,0,'bda70b4b-8143-47cf-a683-e4ea7ddd4cff','bda70b4b-8143-47cf-a683-e4ea7ddd4cff','2015-11-14 07:04:49',NULL,NULL,'Patient','110');
+
+INSERT INTO `assignation_patient` VALUES 
+  (UUID(), '112a9fb5-847d-4c6a-9b20-710fa8b4da24', '81af634f-321a-40de-bc6f-ceb1167a9f65');
