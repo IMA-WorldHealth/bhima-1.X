@@ -72,33 +72,6 @@
     <div ng-switch-when="select_inventories">
 
       <div class="row">
-        <div class="col-xs-6">
-          <table class="table table-bordered table-condensed">
-            <thead>
-              <tr>
-                <th colspan="2">{{ReturnCtrl.session.labelMovement}}</th>
-              </tr>
-              <tr>
-                <th>{{ "SERVICE_RETURN_STOCK.FROM" | translate }}</th>
-                <th>{{ "SERVICE_RETURN_STOCK.TO" | translate }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{{ReturnCtrl.service.name}}</td>
-                <td>{{ReturnCtrl.session.depot.text}}</td>
-              </tr>
-              <tr>
-                <td colspan="2">
-                  <p><b>{{ "SERVICE_RETURN_STOCK.DESCRIPTION" | translate }}</b> : {{ReturnCtrl.description}}</p>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="row">
         <div class="col-xs-12">
           <div class="panel panel-default">
             <div class="panel-heading square">
@@ -214,33 +187,6 @@
     <div ng-switch-when="preview_inventories">
 
       <div class="row">
-        <div class="col-xs-6">
-          <table class="table table-bordered table-condensed">
-            <thead>
-              <tr>
-                <th colspan="2">{{ReturnCtrl.session.labelMovement}}</th>
-              </tr>
-              <tr>
-                <th>{{ "SERVICE_RETURN_STOCK.FROM" | translate }}</th>
-                <th>{{ "SERVICE_RETURN_STOCK.TO" | translate }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{{ReturnCtrl.service.name}}</td>
-                <td>{{ReturnCtrl.session.depot.text}}</td>
-              </tr>
-              <tr>
-                <td colspan="2">
-                  <p><b>{{ "SERVICE_RETURN_STOCK.DESCRIPTION" | translate }}</b> : {{ReturnCtrl.description}}</p>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="row">
         <div class="col-xs-12">
           <div class="panel panel-default">
             <table class="table table-condensed">
@@ -299,6 +245,7 @@
           </div>
         </div>
       </div>
+
     </div>
     <!-- fin preview -->
   </div>
