@@ -23,6 +23,7 @@ require('./config/express').configure(app);
 // Link routes
 require('./config/routes').configure(app);
 
+// link error hanlding
 require('./config/express').errorHandling(app);
 
 // Load and configure plugins

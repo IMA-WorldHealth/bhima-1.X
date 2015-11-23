@@ -58,22 +58,48 @@
             <input class="form-control" name="CreateForm.text" ng-model="CashCtrl.box.text" required>
           </div>
 
-          <div class="form-group">
-            <div class="checkbox">
+          <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.type.$invalid }">
+            <label>{{ "CASHBOX.TYPE" | translate }}</label>
+            <div class="radio">
               <label>
-                <input type="checkbox" name="CreateForm.bank" ng-model="CashCtrl.box.is_bank" ng-true-value="1" ng-false-value="0">
-                {{ "CASH.CASHBOX.IS_BANK" | translate }}
+                <input type="radio" name="type" ng-model="CashCtrl.box.type" value="primary" required>
+                {{ "CASHBOX.PRIMARY" | translate }}
+              </label>
+            </div>
+
+            <div class="radio">
+              <label>
+                <input type="radio" name="type" ng-model="CashCtrl.box.type" value="auxillary" required>
+                {{ "CASHBOX.AUXILLARY" | translate }}
+              </label>
+            </div>
+
+            <div class="radio">
+              <label>
+                <input type="radio" name="type" ng-model="CashCtrl.box.type" value="bank" required>
+                {{ "CASHBOX.BANK" | translate }}
               </label>
             </div>
           </div>
 
           <div class="form-group">
-            <div class="checkbox">
-              <label>
-                <input type="checkbox" name="CreateForm.auxillary" ng-model="CashCtrl.box.is_auxillary" ng-true-value="1" ng-false-value="0">
-                {{ "CASH.CASHBOX.IS_AUXILLARY" | translate }}
-              </label>
-            </div>
+            <label>{{ "CASHBOX.CURRENCIES" | translate }}</label>
+            <ul class="list-unstyled">
+              <li ng-repeat="currency in CashCtrl.registeredCurrencies track by currency.id">
+                <i class="glyphicon glyphicon-ok text-success"></i> {{ currency.symbol}} {{ currency.name }}
+              </li>
+            </ul>
+            <ul class="list-unstyled">
+              <li ng-repeat="currency in CashCtrl.missingCurrencies track by currency.id">
+                <i class="glyphicon glyphicon-remove text-danger"></i> {{ currency.symbol}} {{ currency.name }}
+              </li>
+            </ul>
+          </div>
+
+          <div class="form-group" ng-if="CashCtrl.hasMissingCurrencies">
+            <button class="btn btn-warning btn-block">
+              {{ "CASHBOX.ADD_CURRENCY_ACCOUNTS" | translate }}
+            </button>
           </div>
 
           <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.project.$invalid }">
@@ -106,22 +132,48 @@
               <input class="form-control" name="UpdateForm.text" ng-model="CashCtrl.box.text" required>
             </div>
 
-            <div class="form-group">
-              <div class="checkbox">
+            <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.type.$invalid }">
+              <label>{{ "CASHBOX.TYPE" | translate }}</label>
+              <div class="radio">
                 <label>
-                  <input type="checkbox" name="UpdateForm.bank" ng-model="CashCtrl.box.is_bank" ng-true-value="1" ng-false-value="0">
-                  {{ "CASH.CASHBOX.IS_BANK" | translate }}
+                  <input type="radio" name="type" ng-model="CashCtrl.box.type" value="primary" required>
+                  {{ "CASHBOX.PRIMARY" | translate }}
+                </label>
+              </div>
+
+              <div class="radio">
+                <label>
+                  <input type="radio" name="type" ng-model="CashCtrl.box.type" value="auxillary" required>
+                  {{ "CASHBOX.AUXILLARY" | translate }}
+                </label>
+              </div>
+
+              <div class="radio">
+                <label>
+                  <input type="radio" name="type" ng-model="CashCtrl.box.type" value="bank" required>
+                  {{ "CASHBOX.BANK" | translate }}
                 </label>
               </div>
             </div>
 
             <div class="form-group">
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" name="UpdateForm.auxillary" ng-model="CashCtrl.box.is_auxillary" ng-true-value="1" ng-false-value="0">
-                  {{ "CASH.CASHBOX.IS_AUXILLARY" | translate }}
-                </label>
-              </div>
+              <label>{{ "CASHBOX.CURRENCIES" | translate }}</label>
+              <ul class="list-unstyled">
+                <li ng-repeat="currency in CashCtrl.registeredCurrencies track by currency.id">
+                  <i class="glyphicon glyphicon-ok text-success"></i> {{ currency.symbol}} {{ currency.name }}
+                </li>
+              </ul>
+              <ul class="list-unstyled">
+                <li ng-repeat="currency in CashCtrl.missingCurrencies track by currency.id">
+                  <i class="glyphicon glyphicon-remove text-danger"></i> {{ currency.symbol}} {{ currency.name }}
+                </li>
+              </ul>
+            </div>
+
+            <div class="form-group" ng-if="CashCtrl.hasMissingCurrencies">
+              <button class="btn btn-warning btn-block">
+                {{ "CASHBOX.ADD_CURRENCY_ACCOUNTS" | translate }}
+              </button>
             </div>
 
             <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.project.$invalid }">
@@ -148,7 +200,7 @@
           </div>
           <div class="panel-body">
             <button class="btn btn-danger" type="button" ng-click="CashCtrl.delete(CashCtrl.box)">
-              {{ "FORM.DELETE" | translate }} {{ "CASHBOX.CASHBOX" | translate }}
+              <i class="glyphicon glyphicon-trash"></i> {{ "FORM.DELETE" | translate }} {{ "CASHBOX.CASHBOX" | translate }}
             </button>
           </div>
         </div>

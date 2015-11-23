@@ -41,10 +41,10 @@ function CashController($scope, $location, $modal, $q, connect, Appcache, appsta
     if (exchange.hasDailyRate()) { return; }
 
     var instance = $modal.open({
-      templateUrl : 'partials/exchangeRateModal/exchangeRateModal.html',
-      backdrop    : 'static',
-      keyboard    : false,
-      controller  : 'exchangeRateModal'
+      templateUrl: 'partials/exchangeRateModal/exchangeRateModal.html',
+      keyboard:    false,
+      size:        'md',
+      controller:  'exchangeRateModal'
     });
 
     instance.result.then(function () {

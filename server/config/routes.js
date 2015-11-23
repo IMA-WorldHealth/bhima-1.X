@@ -46,6 +46,7 @@ var taxPayment     = require('../controllers/finance/taxPayment');
 var donations      = require('../controllers/finance/donations');
 var debtors        = require('../controllers/finance/debtors');
 var cashboxes      = require('../controllers/finance/cashboxes');
+var exchange       = require('../controllers/finance/exchange');
 
 
 var financeServices      = require('../controllers/categorised/financeServices');
@@ -71,6 +72,9 @@ exports.configure = function (app) {
 
   app.post('/login', auth.login);
   app.get('/logout', auth.logout);
+
+  app.get('/exchange', exchange.list);
+  app.post('/exchange', exchange.create);
 
   // application data
   app.post('/data', data.create);

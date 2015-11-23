@@ -1,146 +1,117 @@
-<header data-header>
+<header>
   {{ "EXCHANGE.TITLE" | translate }}
 </header>
 
 <nav>
   <div class="pull-left">
     <ol class="breadcrumb">
-      <li><a href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
+      <li><a href="#/"><i class="glyphicon glyphicon-home"></i></a></li>
       <li class="active">{{ "EXCHANGE.TITLE" | translate }}</li>
     </ol>
   </div>
-  <div class="pull-right">
-    <button class="btn btn-sm btn-default" ng-click="ExchangeCtrl.setState('new')">
-      <i class="glyphicon glyphicon-plus-sign"></i> {{ "EXCHANGE.NEW" | translate }}</a>
-    </button>
-    <button class="btn btn-sm btn-default" ng-click="ExchangeCtrl.setState('review')">
-      <i class="glyphicon glyphicon-list"></i> {{ "EXCHANGE.REVIEW" | translate }}</a>
-    </button>
 </nav>
 
-<main>
+<main class="container-fluid">
   <div class="row">
-    <div class="col-xs-6">
-      <h3 style="margin-top:inherit;">{{ EXCHANGE.PREV | translate }}</h3>
+    <div class="col-md-6">
       <table class="table table-bordered table-condensed">
         <thead>
           <tr>
+            <th colspan="3">{{ "EXCHANGE.ENTERPRISE_CURRENCY" | translate }} {{ ExchangeCtrl.enterpriseCurrency }}</th>
+          </tr>
+          <tr>
             <th>{{ "COLUMNS.DATE" | translate }}</th>
-            <th>{{ "COLUMNS.ENTERPRISE_CURRENCY" | translate }}</th>
-            <th>{{ "COLUMNS.OTHER_CURRENCY" | translate }}</th>
+            <th>{{ "COLUMNS.CURRENCY" | translate }}</th>
             <th>{{ "COLUMNS.RATE" | translate }}</th>
           </tr>
         </thead>
         <tbody>
           <tr ng-repeat="rate in ExchangeCtrl.rates.data | orderBy:'-date' | limitTo:12">
             <td>{{ rate.date | date }}</td>
-            <td>{{ ExchangeCtrl.currency.get(rate.enterprise_currency_id).name }}</td>
-            <td>{{ ExchangeCtrl.currency.get(rate.foreign_currency_id).name }}</td>
-            <td>{{ rate.rate }}</td>
+            <td>{{ rate.foreign_currency_id }}</td>
+            <td>{{ rate.rate | currency:rate.foreign_currency_id }}</td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <div class="col-xs-6" ng-switch="ExchangeCtrl.state">
+    <div class="col-md-6">
 
-      <div ng-switch-default>
-        <div class="alert alert-info">
-          <h4>{{ "EXCHANGE.TITLE" | translate }}</h4>
-          <p>{{ "EXCHANGE.HELP_TXT_1" | translate }}</p>
-        </div>
-      </div>
-
-      <div class="panel panel-default" ng-switch-when="review">
+      <div class="panel panel-default">
         <div class="panel-heading">
-          <span>{{ 'EXCHANGE.TODAY_RATE' | translate }} <b>{{ ExchangeCtrl.today | date }}</b></span>
+          {{ "EXCHANGE.CURRENCY_EXCHANGE_RATES" | translate }}
         </div>
         <div class="panel-body">
-          <form class="form-horizontal">
-
-            <div class="form-group" ng-repeat="rate in ExchangeCtrl.currentRates">
-              <label class="control-label col-xs-4">
-                {{ ExchangeCtrl.currency.get(rate.foreign_currency_id).name }} Rate
-              </label>
-              <div class="col-xs-4">
-                <p class="form-control-static">{{ 100 | currency:rate.enterprise_currency_id }}</p>
-              </div>
-              <div class="col-xs-4">
-                <p class="form-control-static">{{ rate.rate * 100 | currency:rate.foreign_currency_id }}</p>
-              </div>
+          <div class="form-group" ng-repeat="rate in ExchangeCtrl.currentRates">
+            <label class="control-label col-md-4">
+              {{ ExchangeCtrl.currency.get(rate.foreign_currency_id).name }} Rate
+            </label>
+            <div class="col-md-4">
+              <p class="form-control-static">{{ 100 | currency:rate.enterprise_currency_id }}</p>
             </div>
-
-            <div class="box box-error" ng-show="!ExchangeCtrl.currentRates.length">
-              <h5>{{ "EXCHANGE.NO_RATES" | translate }}</h5>
+            <div class="col-md-4">
+              <p class="form-control-static">{{ rate.rate * 100 | currency:rate.foreign_currency_id }}</p>
             </div>
-
-          </form>
+          </div>
         </div>
       </div>
 
-      <div class="panel panel-default" ng-switch-when="new">
+      <div class="panel panel-default">
         <div class="panel-body">
 
-
-          <form name="RateForm" class="form-horizontal" novalidate>
+          <form name="RateForm" novalidate ng-submit="ExchangeCtrl.submit(RateForm.$invalid)">
             <fieldset>
-              <legend>{{ 'EXCHANGE.SET' | translate }}</legend>
+              <legend>{{ "EXCHANGE.SET" | translate }}</legend>
 
-              <div class="checkbox">
-                <label>
-                  <input name="isOld" type="checkbox" ng-model="ExchangeCtrl.form.isOld">
-                  {{ "EXCHANGE.OLD_DATE" | translate}}
-                </label>
+              <div class="form-group">
+                <div class="checkbox">
+                  <label>
+                    <input name="previous" type="checkbox" ng-model="ExchangeCtrl.form.previous">
+                    {{ "EXCHANGE.OLD_DATE" | translate}}
+                  </label>
+                </div>
               </div>
-
-              <br />
 
               <div class="form-group" >
-                <div class="col-xs-11">
-                  <input name="date" type="date" class="form-bhima" ng-model="ExchangeCtrl.form.date" ng-disabled="!ExchangeCtrl.form.isOld" ng-max="{{ ExchangeCtrl.tomorrow }}" max="{{ ExchangeCtrl.today | date:'yyyy-MM-dd' }}">
-                </div>
+                <input name="date" type="date" class="form-control" ng-model="ExchangeCtrl.form.date" ng-disabled="!ExchangeCtrl.form.isOld" ng-max="{{ ExchangeCtrl.tomorrow }}" max="{{ ExchangeCtrl.today | date:'yyyy-MM-dd' }}">
               </div>
 
               <div class="form-group">
-                <div class="col-xs-5">
-                  <p class="form-control-static text-center">
-                    <strong>{{ ExchangeCtrl.currency.get(ExchangeCtrl.enterprise.currency_id).name }}</strong>
+                <div class="col-md-5">
+                  <p class="form-control-static">
+                    {{  }}
                   </p>
                 </div>
 
-                <div class="col-sm-offset-1 col-xs-5">
-                  <select name="currency" class="form-bhima" ng-model="ExchangeCtrl.form.foreign_currency_id" ng-options="c.id as c.name for c in ExchangeCtrl.currency.data | filter:ExchangeCtrl.fcurrency track by c.id" required>
-                    <option value="" disabled>-- {{ 'SELECT.CURRENCY' | translate }} --</option>
+                <div class="col-sm-offset-1 col-md-5">
+                  <select name="currency" class="form-control" ng-model="ExchangeCtrl.form.foreign_currency_id" ng-options="c.id as c.name for c in ExchangeCtrl.currency.data | filter:ExchangeCtrl.fcurrency track by c.id" required>
+                    <option value="" disabled> {{ "SELECT.CURRENCY" | translate }} </option>
                   </select>
                 </div>
               </div>
 
               <div class="form-group">
-                <div class="col-xs-5 input-group">
-                  <input class="form-bhima" value="100" readonly>
+                <div class="input-group">
+                  <input class="form-control" value="100" readonly>
                   <span class="input-group-addon">
                     {{ ExchangeCtrl.currency.get(ExchangeCtrl.enterprise.currency_id).symbol }}
                   </span>
                 </div>
-                <label class="col-xs-1 control-label">
+                <label class="control-label">
                   <i class="glyphicon glyphicon-arrow-right"></i>
                 </label>
-                <div class="col-xs-5 input-group">
-                  <input
-                    class="form-bhima"
-                    name="rate"
-                    type="number"
-                    ng-model="ExchangeCtrl.form.rate"
-                    min="0"
-                    required>
-                  <span class="input-group-addon">
-                    {{ ExchangeCtrl.currency.get(ExchangeCtrl.form.foreign_currency_id).symbol }}
-                  </span>
+                <div class="col-md-5 input-group">
+                  <input class="form-control" name="rate" type="number" ng-model="ExchangeCtrl.form.rate" min="0" required>
+                    <span class="input-group-addon">
+                      {{ ExchangeCtrl.currency.get(ExchangeCtrl.form.foreign_currency_id).symbol }}
+                    </span>
                 </div>
               </div>
             </fieldset>
 
-            <input type="submit" class="btn btn-sm btn-success" ng-click="ExchangeCtrl.submit(RateForm.$invalid)" ng-disabled="RateForm.$invalid" value="{{ 'FORM.SUBMIT' | translate }}">
+            <button type="submit" class="btn btn-default">
+              {{ 'FORM.SUBMIT' | translate }}
+            </button>
           </form>
         </div>
       </div>
