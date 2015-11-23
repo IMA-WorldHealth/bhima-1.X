@@ -910,7 +910,7 @@ function integration_stock(params) {
     'JOIN movement ON movement.tracking_number = stock.tracking_number ' +
     'JOIN depot ON depot.uuid = movement.depot_entry ' +
     'WHERE DATE(purchase.purchase_date) BETWEEN DATE(' + _start + ') AND DATE(' + _end + ') ' +
-    'AND purchase.is_integration = 1 AND purchase.confirmed = 1 AND movement.depot_entry = ' + _depot + ' ' +
+    'AND (purchase.is_return = 0 OR purchase.is_return IS NULL) AND purchase.is_integration = 1 AND purchase.confirmed = 1 AND movement.depot_entry = ' + _depot + ' ' +
     'UNION ' +
     'SELECT DISTINCT purchase.uuid, purchase.cost, purchase.is_integration, purchase.currency_id, ' +
     'purchase.purchase_date, purchase.is_direct, purchase.reference, purchase.is_direct, ' +
@@ -924,7 +924,7 @@ function integration_stock(params) {
     'JOIN movement ON movement.tracking_number = stock.tracking_number ' +
     'JOIN depot ON depot.uuid = movement.depot_entry ' +
     'WHERE DATE(purchase.purchase_date) BETWEEN DATE(' + _start + ') AND DATE(' + _end + ') ' +
-    'AND purchase.is_integration = 1 AND purchase.confirmed = 1 AND movement.depot_entry = ' + _depot + ' ';
+    'AND (purchase.is_return = 0 OR purchase.is_return IS NULL) AND purchase.is_integration = 1 AND purchase.confirmed = 1 AND movement.depot_entry = ' + _depot + ' ';
 
   return db.exec(sql);
 }

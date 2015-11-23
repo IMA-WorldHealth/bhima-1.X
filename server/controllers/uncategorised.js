@@ -1041,7 +1041,7 @@ exports.profitByPeriod = function (req, res, next) {
 };
 
 exports.listExpenseAccounts = function (req, res, next) {
-  var sql ="SELECT id, enterprise_id, account_number, account_txt FROM account " + 
+  var sql ="SELECT id, enterprise_id, account_number, account_txt FROM account " +
            "WHERE account_type_id = (SELECT id FROM account_type WHERE type = 'income/expense' LIMIT 1) " +
            " AND is_charge = 0 AND account_type_id <> (SELECT id FROM account_type WHERE type = 'title' LIMIT 1)";
   db.exec(sql)
@@ -1341,7 +1341,7 @@ exports.getStockIntegration = function (req, res, next) {
     'JOIN movement AS m ON s.tracking_number = m.tracking_number ' +
     'JOIN project AS pr ON pr.id = p.project_id ' +
     'JOIN user AS u ON u.id = p.emitter_id ' +
-    'WHERE p.confirmed = 0 AND p.is_integration = 1;';
+    'WHERE p.confirmed = 0 AND p.is_integration = 1 AND (p.is_return = 0 OR p.is_return IS NULL);';
 
   db.exec(sql)
   .then(function (data) {

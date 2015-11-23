@@ -29,3 +29,8 @@ INSERT INTO `bhima`.`transaction_type` (`id`, `service_txt`) VALUES (34, 'servic
 -- Date: 2015-11-06
 INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`) VALUES
 (135, 'Stock Entry Report', 'TREE.STOCK_ENTRY_REPORT', 'Rapport des entrees de stock' , 125, '/partials/reports/stock/stock_entry', '/reports/stock_entry');
+
+-- Adding column `is_return` to purchase
+-- By: Bruce M.
+-- Date: 2015-11-23
+ALTER TABLE `purchase` ADD `is_return` TINYINT(1) DEFAULT 0;
