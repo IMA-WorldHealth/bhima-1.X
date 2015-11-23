@@ -215,8 +215,9 @@ function ServiceReturnStockController($routeParams, $http, $q, $translate, $loca
       paid          : 0,
       confirmed     : 0,
       closed        : 0,
-      is_integration: 1,
-      is_direct     : 0
+      is_integration: 0,
+      is_direct     : 0,
+      is_return     : 1
     };
   }
 
