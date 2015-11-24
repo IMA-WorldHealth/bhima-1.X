@@ -496,22 +496,41 @@ function employeeStanding(params) {
 function employeeStandingV2(params) {
   params = querystring.parse(params);
   var id = sanitize.escape(params.id),
-      defer = q.defer(),
-      sql =
-      'SELECT `aggregate`.`uuid`, `aggregate`.`trans_id`, `aggregate`.`trans_date`, sum(`aggregate`.`credit_equiv`) as credit, sum(`aggregate`.`debit_equiv`) as debit, `aggregate`.`description`, `aggregate`.`inv_po_id` ' +
-      'FROM (' +
-        'SELECT `posting_journal`.`uuid`, `posting_journal`.`trans_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`description`, `posting_journal`.`inv_po_id` ' +
-        'FROM `posting_journal` ' +
-        'JOIN `transaction_type` ON `transaction_type`.`id`= `posting_journal`.`origin_id` '+
-        'WHERE `posting_journal`.`deb_cred_uuid`= ? AND `posting_journal`.`deb_cred_type`=\'C\' ' +
-      'UNION ' +
-        'SELECT `general_ledger`.`uuid`, `general_ledger`.`trans_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, `general_ledger`.`description`, `general_ledger`.`inv_po_id` ' +
-        'FROM `general_ledger` ' +
-        'JOIN `transaction_type` ON `transaction_type`.`id`= `general_ledger`.`origin_id` '+
-        'WHERE `general_ledger`.`deb_cred_uuid`=? AND `general_ledger`.`deb_cred_type`=\'C\') as aggregate ' +
-      'GROUP BY `aggregate`.`trans_id` ORDER BY `aggregate`.`trans_date` DESC;';
+      defer = q.defer(), sql;
 
-  db.exec(sql,[params.id, params.id])
+  // Tax and Cotisations for enterprises to exclude
+  sql = 'SELECT aggregate.four_account_id, aggregate.six_account_id FROM (' +
+        'SELECT t.four_account_id, t.six_account_id FROM tax t WHERE t.is_employee = 0 '+
+        ' UNION ' +
+        'SELECT c.four_account_id, c.six_account_id FROM cotisation c WHERE c.is_employee = 0 ) AS aggregate ';
+
+  db.exec(sql)
+  .then(function (rows) {
+    // serialize rows
+    var serial = rows.map(function (row) {
+      var arr = [];
+      for (var i in row) {
+        arr.push(row[i]);
+      }
+      return arr.join(',');
+    });
+
+    sql =
+    'SELECT `aggregate`.`uuid`, `aggregate`.`trans_id`, `aggregate`.`trans_date`, sum(`aggregate`.`credit_equiv`) as credit, sum(`aggregate`.`debit_equiv`) as debit, `aggregate`.`description`, `aggregate`.`inv_po_id` ' +
+    'FROM (' +
+      'SELECT `posting_journal`.`uuid`, `posting_journal`.`trans_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`description`, `posting_journal`.`inv_po_id` ' +
+      'FROM `posting_journal` ' +
+      'JOIN `transaction_type` ON `transaction_type`.`id`= `posting_journal`.`origin_id` '+
+      'WHERE `posting_journal`.`deb_cred_uuid`= ? AND `posting_journal`.`deb_cred_type`=\'C\' AND `posting_journal`.`account_id` NOT IN (' + serial.join(',') + ') ' +
+    'UNION ' +
+      'SELECT `general_ledger`.`uuid`, `general_ledger`.`trans_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, `general_ledger`.`description`, `general_ledger`.`inv_po_id` ' +
+      'FROM `general_ledger` ' +
+      'JOIN `transaction_type` ON `transaction_type`.`id`= `general_ledger`.`origin_id` '+
+      'WHERE `general_ledger`.`deb_cred_uuid`=? AND `general_ledger`.`deb_cred_type`=\'C\' AND `general_ledger`.`account_id` NOT IN (' + serial.join(',') + ') ) as aggregate ' +
+    'GROUP BY `aggregate`.`trans_id` ORDER BY `aggregate`.`trans_date` DESC;';
+
+    return db.exec(sql,[params.id, params.id]);
+  })
   .then(function (rows) {
     if (!rows.length) { return defer.resolve([]); }
     defer.resolve(rows);
