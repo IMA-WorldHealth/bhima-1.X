@@ -137,7 +137,7 @@ function PermissionsController($window, $translate, $http, $uibModal, util, Sess
 
   // opens a new modal to let the user set a password
   function setPasswordModal() {
-    var modal = $uibModal.open({
+    $uibModal.open({
       templateUrl: 'partials/permissions/permissionsPasswordModalTemplate.html',
       size : 'md',
       animation : true,
@@ -145,7 +145,7 @@ function PermissionsController($window, $translate, $http, $uibModal, util, Sess
       resolve:     {
         user:      vm.user
       }
-    }).instance;
+    });
   }
 
   // submit the data to the server from all three forms (update, create,

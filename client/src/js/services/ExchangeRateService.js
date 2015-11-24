@@ -55,8 +55,11 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
           throw 'EXCHANGE.MISSING_EXCHANGE_RATES';
         }
 
-        // share rates on promise chain
-        rates = data;
+        // share rates on promise chain, converting dates to date objects
+        rates = data.map(function (row) {
+          row.date = new Date(row.date);
+          return row;
+        });
 
         // make sure we have a rate per currency by looping through the
         // currencies and verifying that each currency (besides the
@@ -163,4 +166,6 @@ function ExchangeRateService($http, $q, util, Currencies, Session) {
 
     return amount * ( 1 / rate );
   }
+
+  return service;
 }

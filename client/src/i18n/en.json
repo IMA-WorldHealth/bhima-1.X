@@ -1361,7 +1361,8 @@
    "SEARCH"          : "Search",
    "SUBMIT"          : "Submit",
    "SUBMIT_SUCCESS"  : "Form submitted succesfully.",
-   "SUBMIT_FAILURE"  : "Form submission did not succeed."
+   "SUBMIT_FAILURE"  : "Form submission did not succeed.",
+   "UPDATE"          : "Update"
    },
 "GRADE": {
    "ADD"            : "Add a grade",
