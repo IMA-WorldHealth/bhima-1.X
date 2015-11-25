@@ -42,10 +42,16 @@
               <div class="form-group"> 
                 <label class="control-label">Patient Groups</label>
                 
+                <p 
+                  class="text-success form-control-static" 
+                  ng-if="PatientEditCtrl.updatedPatientGroups">
+                  <span class="glyphicon glyphicon-ok-sign"></span> Patient groups updated
+                </p>
+
                 <!-- Iterate through patient groups -->
                  <ul 
                  class="form-control-static"
-                 ng-repeat="group in PatientEditCtrl.finance.patientGroups">
+                 ng-repeat="group in PatientEditCtrl.finance.patientGroups | orderBy:'name'">
                  <li>{{group.name}}</li>
                  </ul>
 

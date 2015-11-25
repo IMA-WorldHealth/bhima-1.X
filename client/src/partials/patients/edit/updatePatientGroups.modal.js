@@ -1,58 +1,75 @@
+// TODO Handle no patient groups case
 angular.module('bhima.controllers')
-.controller('UpdateDebtorGroup', UpdateDebtorGroup);
+.controller('UpdatePatientGroups', UpdatePatientGroups);
 
-UpdateDebtorGroup.$inject = ['$scope', '$uibModalInstance', 'Debtors',  'patient', 'updateModel'];
+UpdatePatientGroups.$inject = ['$scope', '$uibModalInstance', 'Patients', 'sessionPatient', 'sessionGroups', 'updateModel'];
 
-function UpdateDebtorGroup($scope, $uibModalInstance, debtors, patient, updateModel) { 
+function UpdatePatientGroups($scope, $uibModalInstance, patients, sessionPatient, sessionGroups, updateModel) { 
   var viewModel = this;
   
-  // TODO Handle errors with generic modal exception display (inform system administrator)
-  debtors.groups()
-    .then(function (debtorGroups) { 
+  // TODO move to method
+  viewModel.subscribedGroups = {};
+  sessionGroups.forEach(function (patientGroup) { 
+    viewModel.subscribedGroups[patientGroup.uuid] = true; 
+  });
+  // /TODO
   
-      viewModel.debitor_group_uuid = patient.debitor_group_uuid;
+  console.log('session', sessionGroups);
 
-      // setDebtorGroup(patient.debitor_group_uuid);
-
-      viewModel.debtorGroups = debtorGroups;
+  // TODO Handle errors with generic modal exception display (inform system administrator)
+  patients.groups()
+    .then(function (result) { 
+      console.log('got results', result);
+      viewModel.patientGroups = result;
     });
 
-  // TODO Refactor - use stores?
-  function fetchGroupName(uuid) { 
-    var name;
-    viewModel.debtorGroups.some(function (debtorGroup) { 
-      if (debtorGroup.uuid === uuid) { 
-        name = debtorGroup.name;
-        return true;
-      }
-    });
-    return name;
-  }
-
-  viewModel.confirmGroup = function confirmGroup() { 
+  viewModel.confirmGroups = function confirmGroup() { 
     var formIsUpdated = $scope.groupForm.$dirty;
     var updateRequest;
 
+    console.log($scope.groupForm);
+    
     // Simply exit the modal
     if (!formIsUpdated) { 
-    
+      close(); 
       return;
     }
-  
-    updateRequest = { 
-      group_uuid : viewModel.debitor_group_uuid
-    };
-    
-    debtors.update(patient.debitor_uuid, updateRequest)
+
+    console.log(viewModel.subscribedGroups);
+    patients.updateGroups(sessionPatient.uuid, viewModel.subscribedGroups)
       .then(function (result) { 
-      
-        updateModel(
-          viewModel.debitor_group_uuid,
-          fetchGroupName(viewModel.debitor_group_uuid));
+
+        // TODO move to method
+        var formatControllerResponse = [];
+
+        // Fetch each of the updated group definitions and collect them in an array 
+        Object.keys(viewModel.subscribedGroups).forEach(function (groupKey) { 
+          
+          console.log('checking key', groupKey);
+          console.log(viewModel.subscribedGroups[groupKey]);
+          if (viewModel.subscribedGroups[groupKey]) { 
+            formatControllerResponse.push(fetchGroupObject(groupKey));
+          }
+        });
+        // /TODO 
         
+        updateModel(formatControllerResponse);
         close();
       });
-     
+  }
+
+  // TODO Refactor - use stores?
+  function fetchGroupObject(uuid) { 
+    var groupObject;
+    console.log('fetch', uuid);
+    viewModel.patientGroups.some(function (patientGroup) { 
+      if (patientGroup.uuid === uuid) {
+        groupObject = patientGroup;
+        return true;
+      }
+    });
+    console.log('return', groupObject);
+    return groupObject;
   }
   
   viewModel.close = close;

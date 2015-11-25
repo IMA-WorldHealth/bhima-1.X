@@ -48,7 +48,15 @@ function PatientEdit($scope, $routeParams, $uibModal, patients) {
     viewModel.medical.debitor_group_name = debtorGroupName;
     viewModel.updatedDebtorGroup = true;
   }
-
+  
+  function updatePatientGroupsModel(updated) { 
+    viewModel.updatedPatientGroups = true;
+    viewModel.finance.patientGroups = [];
+  
+    console.log('updated', updated);
+    viewModel.finance.patientGroups = updated;
+  }
+  
   viewModel.updatePatient = function updatePatient(patient) { 
 
   };
@@ -85,6 +93,26 @@ function PatientEdit($scope, $routeParams, $uibModal, patients) {
   };
 
   viewModel.updatePatientGroups = function updatePatientGroups() { 
-
+    
+    // Reset updated flag 
+    viewModel.updatedPatientGroups = false;
+  
+    var modalInstance = $uibModal.open({
+      animation : true,
+      templateUrl : 'partials/patients/edit/updatePatientGroups.tmpl.html',
+      controller : 'UpdatePatientGroups as UpdatePatientGroupsCtrl',
+      size : 'md', 
+      resolve : {
+        sessionPatient : function () { 
+          return viewModel.medical;
+        }, 
+        sessionGroups : function () { 
+          return viewModel.finance.patientGroups;
+        },
+        updateModel : function () { 
+          return updatePatientGroupsModel;
+        }
+      }
+    });
   };
 }

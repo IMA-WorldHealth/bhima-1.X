@@ -282,7 +282,9 @@ exports.configure = function (app) {
 
   app.get('/patients/groups', patient.listGroups);
   app.get('/patients/:uuid', patient.details);
+  
   app.get('/patients/:uuid/groups', patient.groups); 
+  app.post('/patients/:uuid/groups', patient.updateGroups);
 
   app.get('/patients/checkHospitalId/:id', patient.verifyHospitalNumber);
   app.post('/patients/visit', patient.visit);

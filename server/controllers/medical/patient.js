@@ -16,6 +16,7 @@ exports.search = search;
 // TODO Review naming conventions
 // Provide groups for individual patient
 exports.groups = groups;
+exports.updateGroups = updateGroups;
 
 // Provide all patient groups
 exports.listGroups = listGroups;
@@ -32,6 +33,8 @@ function create(req, res, next) {
   var invalidParameters;
   var patientText;
 
+  var transaction;
+  
   var createRequestData = req.body;
   
   var medical = createRequestData.medical;
@@ -60,7 +63,7 @@ function create(req, res, next) {
 
   writePatientQuery = 'INSERT INTO patient SET ?';
     
-  var transaction = db.transaction();
+  transaction = db.transaction();
 
   transaction
     .addQuery(writeDebtorQuery, [finance.uuid, finance.debitor_group_uuid, generatePatientText(medical)])
@@ -150,6 +153,65 @@ function listGroups(req, res, next) {
     .then(function(allPatientGroups) { 
       
       res.status(200).json(allPatientGroups);
+    })
+    .catch(next)
+    .done();
+}
+
+// Accepts an array of patient group UUIDs that will be assigned to the 
+// patient provided in the route
+function updateGroups(req, res, next) { 
+  var removeAssignmentsQuery;
+  var createAssignmentsQuery;
+  var assignmentData;
+  var transaction;
+
+  // If UUID is not passed this route will not match - invalid uuids in this case
+  // will be responded to with a bad request (mysql)
+  var patientId = req.params.uuid; 
+  
+  // TODO make sure assignments is an array etc. - test for these cases
+  if (!req.body.assignments) { 
+    return res.status(400)
+    .json({
+      code : 'ERROR.ERR_MISSING_INFO',
+      reason: 'Request must specify an `assignment` object containing an array of patient group ids'
+    });
+  }
+  
+  // Clear assigned groups
+  removeAssignmentsQuery = 
+    'DELETE FROM assignation_patient ' + 
+    'WHERE patient_uuid = ?';
+
+  // Insert new relationships
+  createAssignmentsQuery = 
+    'INSERT INTO assignation_patient (uuid, patient_uuid, patient_group_uuid) VALUES ?';
+  
+  // Map each requested patient group uuid to the current patient ID to be 
+  // inserted into the database
+  assignmentData = req.body.assignments.map(function (patientGroupId) { 
+    return [
+      uuid(),
+      patientId,
+      patientGroupId
+    ];
+  });
+
+  transaction = db.transaction();
+  
+  transaction.addQuery(removeAssignmentsQuery, [patientId])
+   
+  // Create query is not executed unless patient groups have been specified
+  if (assignmentData.length) { 
+    transaction.addQuery(createAssignmentsQuery, [assignmentData]);
+  }
+
+  transaction.execute()
+    .then(function (result) { 
+      
+      // TODO send back correct ids
+      res.status(200).json(result);
     })
     .catch(next)
     .done();

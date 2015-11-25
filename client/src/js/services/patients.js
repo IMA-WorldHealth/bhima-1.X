@@ -29,8 +29,8 @@ function Patients($http) {
   }
   
   // TODO Review/ refactor
+  // Optionally accepts patientUuid - if no uuid is passed this will return all patients groups
   function groups(patientUuid) { 
-    
     var path = '/patients/';
 
     // If a patient ID has been specified - return only the patient groups for that patient
@@ -46,6 +46,17 @@ function Patients($http) {
       .then(extractData);
   }
 
+  function updateGroups(uuid, subscribedGroups) { 
+    var path = '/patients/';
+    var options = formatGroupOptions(subscribedGroups);
+
+    path = path.concat(uuid, '/groups');
+    
+    console.log('formatted', options);
+    return $http.post(path, options)
+      .then(extractData);
+  }
+
   function logVisit(details) { 
     var path = '/patients/visit';
     
@@ -53,11 +64,29 @@ function Patients($http) {
       .then(extractData);
   }
 
+  // Utility methods 
+  function formatGroupOptions(groupFormOptions) { 
+    var groupUuids = Object.keys(groupFormOptions);
+  
+    var formatted = groupUuids.filter(function (groupUuid) { 
+      var subscribed = groupFormOptions[groupUuid];
+
+      if (subscribed) { 
+        return groupUuid;
+      }
+    });
+
+    return { 
+      assignments : formatted
+    };
+  }
+
   return {
     detail : detail,
     create : create,
     logVisit : logVisit, 
-    groups : groups
+    groups : groups,
+    updateGroups : updateGroups
   };
 }
 

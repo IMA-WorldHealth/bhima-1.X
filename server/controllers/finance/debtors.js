@@ -95,7 +95,7 @@ function handleFetchDebtor(uuid) {
     'WHERE uuid = ?';
 
   return db.exec(debtorQuery, [uuid])
-    .then(function debtorResult) { 
+    .then(function (debtorResult) { 
       
       // Got correct debtor - seperate JSON object
       return debtorResult[0];

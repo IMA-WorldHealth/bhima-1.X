@@ -189,7 +189,38 @@ describe('The /patients API', function () {
       })
       .catch(handle);
   });
- 
+  
+  describe('Updating patient group assignment', function () { 
+    
+    it('POST /patients/:id/groups will update a patients groups', function () { 
+
+    });
+
+    it('Specified patients group assignments reflect the recent update', function () { 
+
+    });
+
+    it('POST /patients/:id/groups will fail with 400 for a bad group request', function () { 
+
+    });
+
+    it('Specified patients group assignments remain unchanged', function () { 
+
+    });
+
+    it('POST /patients/:id/groups will fail with 400 for an invalid patient ID', function () { 
+
+    });
+
+    it('POST /patients/:id/groups will fail with 400 MISSING_INFO if no assignments object is passed', function () { 
+
+    });
+
+    it('POST /patients/:id/groups with no group assignments removes all patients group assignments', function () { 
+
+    });
+  });
+   
   // TODO get information on the registered patient - ensure details route is correct 
   // TODO Reject duplicate hospital number
   // TODO Test that transaction is rolled back successfully gien invalid patient
