@@ -508,10 +508,10 @@ function employeeStandingV2(params) {
     if (!rows.length) { return defer.resolve([]); }
     personnelId = rows[0].account_id;
     // Getting cotisation and tax fot employees
-    sql = 'SELECT aggregate.four_account_id, aggregate.six_account_id FROM (' +
-          'SELECT t.four_account_id, t.six_account_id FROM tax t WHERE t.is_employee = 1 '+
+    sql = 'SELECT aggregate.four_account_id FROM (' +
+          'SELECT t.four_account_id FROM tax t WHERE t.is_employee = 1 '+
           ' UNION ' +
-          'SELECT c.four_account_id, c.six_account_id FROM cotisation c WHERE c.is_employee = 1 ) AS aggregate ';
+          'SELECT c.four_account_id FROM cotisation c WHERE c.is_employee = 1 ) AS aggregate ';
     return db.exec(sql);
   })
   .then(function (rows) {
