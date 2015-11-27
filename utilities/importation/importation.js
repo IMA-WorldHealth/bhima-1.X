@@ -4,19 +4,19 @@ var xlsx = require('xlsx');
 var sanitize = require('../../server/lib/sanitize');
 var fs = require('fs');
 
-var book = xlsx.readFile('mar.xlsx');
-var sheet = book.Sheets[book.SheetNames[4]];
+var book = xlsx.readFile('Journaux_2014.xlsx');
+var sheet = book.Sheets[book.SheetNames[1]];
 var JSONSheet = xlsx.utils.sheet_to_json(sheet);
 
 //base config
 var pcgc = [], errors = [],
 	stop = false, transactions = [],
-	initial_trans_id = 1, project_name = 'HBB',
+	initial_trans_id = 44060, project_name = 'HBB',
 	lines = [];
 
 //invariant info in posting_journal
-var project_id = 1, fiscal_year_id = 2,
-	period_id = 15, trans_date = "2015-01-01", currency_id = 2,
+var project_id = 1, fiscal_year_id = 1,
+	period_id = 12, trans_date = "2014-11-29", currency_id = 2,
 	comment = 'Import automatique', origin_id = 9,
 	user_id = 1;
 
@@ -27,13 +27,14 @@ db.initialise();
 
 function getPCGCAccounts () {
 	console.log('[INFO] : Extraction Compte PCGC ...');
-	var req = "SELECT `id`, `account_number`, `account_txt` FROM `account`WHERE `is_ohada` = 0";
+	var req = "SELECT `id`, `account_number`, `account_txt` FROM `account` WHERE `is_ohada` = 0 OR `is_ohada` IS NULL AND locked = 0";
 	return db.exec(req);
 }
 
 function checkSheet (){
 	var errors = [];
-	JSONSheet.forEach(function (item){
+	JSONSheet.forEach(function (item, idx){
+		// console.log(idx, 'Scannage de ', item);
 		// console.log(item);
 		var result = isPCGC(item.CPT);
 		if(result == false){
@@ -97,7 +98,7 @@ function getAccountID (cpt){
 getPCGCAccounts()
 .then(function (ans){
 	pcgc = ans;
-	console.log('[INFO] Compte PCGC recuperes ...')
+	console.log('[INFO] Compte PCGC recuperes avec succes ...')
 	console.log('[INFO] Verification existance de correspondance entre PCGC et le fichier ...');
 	errors = checkSheet();
 	processCheckingResult();
@@ -123,11 +124,11 @@ getPCGCAccounts()
 		transaction.forEach(function (item){
 			uuid = guuid();
 			account_id = getAccountID(item.CPT);
-			debit = item.DEBIT;
-			credit = item.CREDIT;
-			debit_equiv = item.DEBIT;
-			credit_equiv = item.CREDIT;
-			description = (item.LIB) ? item.LIB : 'Pas de description';
+			debit = item.DEBIT ? item.DEBIT : 0 ;
+			credit = item.CREDIT ? item.CREDIT : 0;
+			debit_equiv = item.DEBIT ? item.DEBIT : 0;
+			credit_equiv = item.CREDIT ? item.CREDIT : 0;
+			description = (item.LIB) ? item.LIB : 'Aucune description trouvee';
 
 			var string = '(' + [
 								sanitize.escape(uuid),
@@ -136,7 +137,7 @@ getPCGCAccounts()
 								period_id,
 								sanitize.escape(trans_id),
 								sanitize.escape(trans_date),
-								doc_num,
+								// doc_num,
 								sanitize.escape(description),
 								account_id,
 								debit,
@@ -156,13 +157,13 @@ getPCGCAccounts()
 	console.log('Nombre de ligne : ', lines.length);
 
 	var request = "INSERT INTO `posting_journal` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, " +
-				  " `trans_id`, `trans_date`, `doc_num`, `description`, `account_id`, `debit`, `credit`, " +
+				  " `trans_id`, `trans_date`, `description`, `account_id`, `debit`, `credit`, " +
 				  " `debit_equiv`, `credit_equiv`, `currency_id`, `comment`, `origin_id`, `user_id`) VALUES " +
 				  lines.join(', ') + ";";
 
-	console.log("[INFO] Ecriture dans le fichier" + "Janv_" + book.SheetNames[1] + ".sql" + " encours ...");
+	console.log("[INFO] Ecriture dans le fichier" + "nov_" + book.SheetNames[1] + ".sql" + " encours ...");
 
-	fs.writeFile("Janv_" + book.SheetNames[1] + ".sql" , request, function(err) {
+	fs.writeFile("nov_" + book.SheetNames[1] + ".sql" , request, function(err) {
 	    if(err) {
 	        return console.log(err);
 	    }
