@@ -58,6 +58,10 @@ function PatientEdit($scope, $routeParams, $uibModal, patients) {
   }
   
   viewModel.updatePatient = function updatePatient(patient) { 
+    console.log($scope.details);
+    console.log($scope);
+    console.log('updating', patient);
+  
 
   };
 

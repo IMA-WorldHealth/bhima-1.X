@@ -204,10 +204,6 @@ describe('The /patients API', function () {
 
     });
 
-    it('Specified patients group assignments remain unchanged', function () { 
-
-    });
-
     it('POST /patients/:id/groups will fail with 400 for an invalid patient ID', function () { 
 
     });

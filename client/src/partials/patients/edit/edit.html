@@ -26,9 +26,10 @@
         </div>
       </div>
     </div>
-    
+
     <!-- Only display patient edit information if have loaded a valid model -->
-    <div class="row" ng-if="PatientEditCtrl.medical">
+    <!-- ng-show is used as ng-if creates new scope - form values are not availble on the $scope object -->
+    <div class="row" ng-show="PatientEditCtrl.medical">
       <div class="col-md-5 col-md-push-7">
         
         <div class="panel panel-default">
@@ -105,7 +106,7 @@
             
             <!-- Copied from patient registration -->
             <!-- TODO Should this all be one page/operation - question of state complexity -->
-            <form name="details"  class="form-horizontal">
+            <form name="details" class="form-horizontal">
               
               <!-- Last Name -->
               <div 
@@ -193,6 +194,17 @@
               </div>
             </form>
           </div>
+
+          <div class="panel-footer">
+          
+            <!-- Submission -->
+            <!-- <div class="pull-right"> -->
+              <button 
+                ng-click="PatientEditCtrl.updatePatient(PatientEditCtrl.medical)"
+                class="btn btn-sm btn-primary">Submit Changes</button>  
+            <!-- </div> -->
+          </div>
+
         </div>
 
         <div class="panel panel-default">
@@ -307,6 +319,13 @@
                 </div>
               </div>
             </form>
+          
+            <!-- Link to submission -->
+            <div class="col-md-9 col-md-offset-3">
+              <p class="text-center text-info">
+                <a href="" id="submissionLink"><span class="glyphicon glyphicon-circle-arrow-up"></span> Link to Submission</a>
+              </p>
+            </div>
 
           </div>
         </div>
