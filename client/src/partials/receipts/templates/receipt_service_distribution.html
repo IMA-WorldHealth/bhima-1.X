@@ -48,6 +48,7 @@
       <thead>
         <tr>
           <th>{{'COLUMNS.MEDECINE' | translate}}</th>
+          <th>{{'COLUMNS.LOT_NUMBER' | translate}}</th>
           <th>{{'COLUMNS.QTY' | translate}}</th>
           <th>{{'COLUMNS.UNIT_PRICE' | translate}}</th>
           <th>{{'COLUMNS.COST' | translate}}</th>
@@ -56,6 +57,7 @@
       <tbody class="items">
         <tr ng-repeat="rec in model.service_distribution">
           <td>{{ rec.text }}</td>
+          <td>{{ rec.lot_number}}</td>
           <td>{{ rec.quantity}}</td>
           <td>{{ rec.unit_price | currency }}</td>
           <td>{{ rec.quantity * rec.unit_price | currency}}</td>
@@ -78,7 +80,7 @@
       <div class="pull-right">
        <b>{{"SIGNATURES.BENEFICIARY" | translate}}</b>
       </div>
-    </div>  
+    </div>
   </div>
 </div>
 <!-- end distribution.html template  -->
