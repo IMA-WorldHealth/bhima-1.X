@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('StockServiceDistributionsController', StockServiceDistributionsController);
 
 StockServiceDistributionsController.$inject = [
-  '$routeParams', '$http', '$q', '$location', 'SessionService', 'DepotService', 'InventoryService'
+  '$routeParams', '$http', '$q', '$location', '$filter', 'SessionService', 'DepotService', 'InventoryService'
 ];
 
 /**
@@ -19,7 +19,7 @@ StockServiceDistributionsController.$inject = [
 * @constructor
 * @class StockServiceDistributionsController
 */
-function StockServiceDistributionsController($routeParams, $http, $q, $location, Session, Depots, Inventory) {
+function StockServiceDistributionsController($routeParams, $http, $q, $location, $filter, Session, Depots, Inventory) {
   var vm = this;
 
   // view data
@@ -64,6 +64,34 @@ function StockServiceDistributionsController($routeParams, $http, $q, $location,
     row.maxQuantity     = item.maxQuantity;
   }
 
+  function getPriceList(lots, quantity) {
+    var aggregateLots = lots.filter(function (lot) {
+      return quantity > lot.aggregateQuantity;
+    });
+
+    return aggregateLots.map(function (lot) {
+      return $filter('currency')(lot.unit_price, vm.currencyId);
+    }).join(', ');
+  }
+
+  function getTotalPriceList(lots, quantity) {
+    var tot = 0, cQuantity = quantity || 0;
+
+    var aggregateLots = lots.filter(function (lot) {
+      return cQuantity > lot.aggregateQuantity;
+    });
+
+    aggregateLots.forEach(function (lot) {
+      if (lot.quantity - cQuantity >= 0) {
+        tot += lot.unit_price * cQuantity;
+      } else {
+        tot += lot.unit_price * lot.quantity;
+        cQuantity -= lot.quantity;
+      }
+    });
+    return tot;
+  }
+
   // removes an item from the queue at a given index
   function dequeue(idx) {
     var item, i = 0,
@@ -88,9 +116,19 @@ function StockServiceDistributionsController($routeParams, $http, $q, $location,
   }
 
   // calculate the totals when quantities change
-  function retotal() {
-    vm.total = vm.queue.reduce(function (sum, row) {
-      return sum + (row.price * row.quantity);
+  function retotal(row) {
+    // vm.total = vm.queue.reduce(function (sum, row) {
+    //   return sum + (row.price * row.quantity);
+    // }, 0);
+
+    // In the case we have to deal with more than one lot with different unit price
+    // Display a list of prices
+    // Calculate the correct total
+    row.priceList       = getPriceList(row.lots, row.quantity);
+    row.totalPriceList  = getTotalPriceList(row.lots, row.quantity);
+
+    vm.total = vm.queue.reduce(function (sum, item) {
+      return sum + item.totalPriceList;
     }, 0);
   }
 
@@ -104,12 +142,12 @@ function StockServiceDistributionsController($routeParams, $http, $q, $location,
       lot = item.lots[i++];
 
       // q is the amount we will consume.distribute from this lot
-      q = (lot.quantity < quantity) ? quantity - lot.quantity : quantity;
+      q = (lot.quantity < quantity) ? lot.quantity : quantity;
 
       // add to list of distributions
       distributions.push({
         service_id      : vm.service.id,
-        unit_price      : item.price,
+        unit_price      : lot.unit_price,
         depot_uuid      : vm.uuid,
         date            : vm.metadata.date,
         tracking_number : lot.tracking_number,
@@ -181,6 +219,7 @@ function StockServiceDistributionsController($routeParams, $http, $q, $location,
           return {
             lot_number      : s.lot_number,
             quantity        : s.quantity,
+            unit_price      : s.unit_price,
             tracking_number : s.tracking_number,
             expiration_date : new Date(Date.parse(s.expiration_date))
           };
