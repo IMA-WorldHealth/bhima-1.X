@@ -27,6 +27,13 @@ function Patients($http) {
     return $http.post(path, details)
       .then(extractData);
   }
+
+  function update(uuid, definition) { 
+    var path = '/patients/';
+
+    return $http.put(path.concat(uuid), definition)
+      .then(extractData);
+  }
   
   // TODO Review/ refactor
   // Optionally accepts patientUuid - if no uuid is passed this will return all patients groups
@@ -84,9 +91,10 @@ function Patients($http) {
   return {
     detail : detail,
     create : create,
-    logVisit : logVisit, 
+    update : update,
     groups : groups,
-    updateGroups : updateGroups
+    updateGroups : updateGroups,
+    logVisit : logVisit
   };
 }
 

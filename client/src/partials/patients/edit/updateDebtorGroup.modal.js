@@ -35,7 +35,7 @@ function UpdateDebtorGroup($scope, $uibModalInstance, debtors, patient, updateMo
 
     // Simply exit the modal
     if (!formIsUpdated) { 
-    
+      close(); 
       return;
     }
   

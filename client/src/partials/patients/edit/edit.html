@@ -115,7 +115,7 @@
 
                 <label for="second-name" class="col-md-3 control-label">{{ "PATIENT_REG.SECOND_NAME" | translate }}</label>
                 <div class="col-md-9">
-                  <input id="second-name" class="form-control" name="lastName" ng-model="PatientEditCtrl.medical.last_name" required>
+                  <input id="second-name" class="form-control" name="last_name" ng-model="PatientEditCtrl.medical.last_name" required>
                 </div>
               </div>
               
@@ -126,7 +126,7 @@
 
                 <label for="middle-name" class="col-md-3 control-label">{{ "INVOICE.MIDDLE_NAME" | translate }}</label>
                 <div class="col-md-9">
-                  <input id="middle-name" class="form-control" name="middleName" ng-model="PatientEditCtrl.medical.middle_name" required>
+                  <input id="middle-name" class="form-control" name="middle_name" ng-model="PatientEditCtrl.medical.middle_name" required>
                 </div>
               </div>
           
@@ -137,7 +137,7 @@
 
                 <label for="new-first-name" class="col-md-3 control-label">{{ "PATIENT_REG.FIRST_NAME" | translate }}</label>
                 <div class="col-md-9">
-                  <input id="new-first-name" class="form-control" name="first-name" ng-model="PatientEditCtrl.medical.first_name">
+                  <input id="new-first-name" class="form-control" name="first_name" ng-model="PatientEditCtrl.medical.first_name">
                 </div>
               </div>
 
@@ -148,7 +148,7 @@
                 
                 <label for="new-hospital-number" class="col-md-3 control-label">{{ "INVOICE.HOSPITAL_FILE_NR" | translate }} </label>
                 <div class="col-md-9">
-                  <input id="new-hospital-number" name="hospitalNumber" class="form-control" ng-model="PatientEditCtrl.medical.hospital_no" hospital-number required>
+                  <input id="new-hospital-number" name="hospital_number" class="form-control" ng-model="PatientEditCtrl.medical.hospital_no" hospital-number required>
                   <span ng-if="details.$error.hospitalNumber" class="glyphicon glyphicon-remove form-control-feedback"></span>
                   <span ng-if="details.$pending.hospitalNumber"  class="glyphicon glyphicon-hourglass form-control-feedback"></span>
                   <!-- <p ng-if="details.$pending.hospitalNumber" class="help-block">Checking hospital number is unique...</p> -->
@@ -182,12 +182,12 @@
                 <label for="male" class="col-md-3 control-label">Gender</label>
                 <div class="col-md-9">
                   <label class="radio-inline">
-                    <input type="radio" name="genderOptions" id="male" value="M" ng-model="PatientEditCtrl.medical.sex" required>
+                    <input type="radio" name="sex" id="male" value="M" ng-model="PatientEditCtrl.medical.sex" required>
                     {{ "PATIENT_REG.MALE" | translate }}
                   </label>
 
                   <label class="radio-inline">
-                    <input type="radio" name="genderOptions" id="female" value="F" ng-model="PatientEditCtrl.medical.sex" required>
+                    <input type="radio" name="sex" id="female" value="F" ng-model="PatientEditCtrl.medical.sex" required>
                     {{ "PATIENT_REG.FEMALE" | translate }}
                   </label>  
                 </div>

@@ -10,6 +10,25 @@ function UtilService($filter) {
     return response.data;
   };
 
+  service.filterDirtyFormElements = function filterDirtyFormElements(formDefinition) { 
+    var response = {};
+
+    angular.forEach(formDefinition, function (value, key) { 
+
+      // Determine angular elements, these can be ignored
+      var isAngularAttribute = key.substring(0, 1) === '$';
+      
+      if (!isAngularAttribute) { 
+
+        // Only format and assign dirty values that have changed 
+        if (value.$dirty) { 
+          response[key] = value.$modelValue;
+        }
+      }
+    });
+    return response;
+  };
+
   service.formatDate = function formatDate(dateString) {
     return new Date(dateString).toDateString();
   };

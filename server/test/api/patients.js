@@ -194,26 +194,38 @@ describe('The /patients API', function () {
     
     it('POST /patients/:id/groups will update a patients groups', function () { 
 
+      // Not implemented
+      expect(true).to.be.false;
     });
 
     it('Specified patients group assignments reflect the recent update', function () { 
-
+      
+      // Not implemented
+      expect(true).to.be.false;
     });
 
     it('POST /patients/:id/groups will fail with 400 for a bad group request', function () { 
-
+      
+      // Not implemented
+      expect(true).to.be.false;
     });
 
     it('POST /patients/:id/groups will fail with 400 for an invalid patient ID', function () { 
 
+      // Not implemented
+      expect(true).to.be.false;
     });
 
     it('POST /patients/:id/groups will fail with 400 MISSING_INFO if no assignments object is passed', function () { 
-
+    
+      // Not implemented
+      expect(true).to.be.false;
     });
 
     it('POST /patients/:id/groups with no group assignments removes all patients group assignments', function () { 
-
+      
+      // Not implemented
+      expect(true).to.be.false;
     });
   });
    
