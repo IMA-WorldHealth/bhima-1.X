@@ -1,4 +1,3 @@
-
 /*global describe, it, beforeEach, inject, browser */
 
 var chai = require('chai');

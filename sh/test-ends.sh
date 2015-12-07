@@ -6,11 +6,14 @@ echo "Building test database for end to end tests ..."
 
 # build the test database
 # TODO Seperate test databases for integration (very few entities) and e2e tests (more featured) should be defined
-mysql -u bhima -pHISCongo2013 -e "DROP DATABASE bhima_test;"
-mysql -u bhima -pHISCongo2013 -e "CREATE DATABASE bhima_test;"
-mysql -u bhima -pHISCongo2013 bhima_test -e "GRANT ALL ON bhima_test.* TO 'bhima'@'localhost' IDENTIFIED BY 'HISCongo2013';"
-mysql -u bhima -pHISCongo2013 bhima_test < server/models/schema.sql
-mysql -u bhima -pHISCongo2013 bhima_test < server/models/test/data.sql
+user="bhima"
+pw="HISCongo2013"
+
+mysql -u $user -p$pw -e "DROP DATABASE bhima_test;"
+mysql -u $user -p$pw -e "CREATE DATABASE bhima_test;"
+#mysql -u $user -p$pw -e "GRANT ALL ON bhima_test.* TO 'bhima'@'localhost' IDENTIFIED BY 'HISCongo2013';"
+mysql -u $user -p$pw bhima_test < server/models/schema.sql
+mysql -u $user -p$pw bhima_test < server/models/test/data.sql
 
 
 echo "Building server ...."

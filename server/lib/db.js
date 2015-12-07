@@ -52,8 +52,6 @@ function exec(sql, params) {
       if (err) { return defer.reject(err); }
       defer.resolve(results);
     });
-
-    console.log(qs.sql);
   });
 
   return defer.promise;

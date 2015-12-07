@@ -3,13 +3,15 @@
 # This assumes you run tests from the top level bhima directory.
 
 echo "Building test database for integration tests ..."
+user="bhima"
+pw="HISCongo2013"
 
 # build the test database
-mysql -u bhima -pHISCongo2013 -e "DROP DATABASE bhima_test;"
-mysql -u bhima -pHISCongo2013 -e "CREATE DATABASE bhima_test;"
-mysql -u bhima -pHISCongo2013 bhima_test -e "GRANT ALL ON bhima_test.* TO 'bhima'@'localhost' IDENTIFIED BY 'HISCongo2013';"
-mysql -u bhima -pHISCongo2013 bhima_test < server/models/schema.sql
-mysql -u bhima -pHISCongo2013 bhima_test < server/models/test/data.sql
+mysql -u $user -p$pw -e "DROP DATABASE IF EXISTS bhima_test;"
+mysql -u $user -p$pw -e "CREATE DATABASE bhima_test;"
+#mysql -u $user -p$pw -e "GRANT ALL ON bhima_test.* TO 'bhima'@'localhost' IDENTIFIED BY 'HISCongo2013';"
+mysql -u $user -p$pw bhima_test < server/models/schema.sql
+mysql -u $user -p$pw bhima_test < server/models/test/data.sql
 
 echo "Building server ...."
 

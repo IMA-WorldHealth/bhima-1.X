@@ -11,7 +11,7 @@
   </div>
 
   <div class="pull-right">
-    <button class="btn btn-sm btn-default" ng-click="PermissionsCtrl.setState('create')" ng-class="{ 'active' : PermissionsCtrl.state === 'create' }">
+    <button id="initCreate" class="btn btn-default" ng-click="PermissionsCtrl.setState('create')" ng-class="{ 'active' : PermissionsCtrl.state === 'create' }">
       <i class="glyphicon glyphicon-plus-sign"></i> {{ "PERMISSIONS.ADD_NEW_USER" | translate }}
     </button>
   </div>
@@ -21,7 +21,7 @@
   <div class="row">
 
     <div class="col-md-6">
-      <div ui-grid="PermissionsCtrl.uiGridOptions" style="height:100%; width:100%;"></div>
+      <div ui-grid="PermissionsCtrl.uiGridOptions" ui-grid-auto-resize></div>
     </div>
 
     <div class="col-md-6" ng-switch="PermissionsCtrl.state">
@@ -99,7 +99,7 @@
             </div>
 
             <div class="form-group">
-              <button type="submit" class="btn btn-success">
+              <button id="submitCreate" type="submit" class="btn btn-success">
                 <i class="glyphicon glyphicon-ok"></i> {{ 'FORM.SUBMIT' | translate }}
               </button>
               <button type="button" class="btn btn-default" ng-click="PermissionsCtrl.setState('default')">

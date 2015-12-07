@@ -1,4 +1,4 @@
-var bhima = angular.module('bhima', ['bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate', 'LocalForageModule', 'chart.js', 'tmh.dynamicLocale', 'ngFileUpload', 'ui.grid']);
+var bhima = angular.module('bhima', ['bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters', 'ngRoute', 'ui.bootstrap', 'pascalprecht.translate', 'LocalForageModule', 'chart.js', 'tmh.dynamicLocale', 'ngFileUpload', 'ui.grid', 'ui.grid.autoResize']);
 
 function bhimaconfig($routeProvider) {
   // TODO: Dynamic routes loaded from unit database?

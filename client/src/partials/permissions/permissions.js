@@ -10,7 +10,7 @@ angular.module('bhima.controllers')
 .controller('PermissionsController', PermissionsController);
 
 PermissionsController.$inject = [
-  '$window', '$translate', '$http', '$modal', 'util', 'SessionService', 'UserService',
+  '$window', '$translate', '$http', '$uibModal', 'util', 'SessionService', 'UserService',
   'ProjectService', 'NodeTreeService'
 ];
 
