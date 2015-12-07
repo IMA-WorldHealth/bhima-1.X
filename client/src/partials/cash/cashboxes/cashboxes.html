@@ -40,12 +40,13 @@
     </div>
 
     <div class="col-md-6" ng-switch="CashCtrl.state">
+
       <div class="alert alert-info" ng-switch-default>
         <h4>{{ "CASH.CASHBOX.TITLE" | translate }}</h4>
         <p>{{ "CASH.CASHBOX.ALERT" | translate }}</p>
       </div>
 
-      <bh-form-message message="CashCtrl.message"></bh-form-message>
+      <bh-form-message message="CashCtrl.manager.message"></bh-form-message>
 
       <div class="panel panel-primary" ng-switch-when="create">
         <div class="panel-heading">
@@ -97,15 +98,15 @@
           </div>
 
           <div class="form-group" ng-if="CashCtrl.hasMissingCurrencies">
-            <button class="btn btn-warning btn-block">
-              {{ "CASHBOX.ADD_CURRENCY_ACCOUNTS" | translate }}
+            <button type="button" class="btn btn-warning btn-block" ng-click="CashCtrl.addCurrencies()">
+              <i class="glyphicon glyphicon-plus"></i> {{ "CASHBOX.ADD_CURRENCY_ACCOUNTS" | translate }}
             </button>
           </div>
 
           <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.project.$invalid }">
             <label class="control-label">{{ "CASH.CASHBOX.PROJECT" | translate }}</label>
             <select class="form-control" name="project" ng-model="CashCtrl.box.project_id" ng-options="project.id as project.name for project in CashCtrl.projects" required>
-              <option value="">{{ "SELECT.PROJECT" | translate }}</option>
+              <option value="" disabled>{{ "SELECT.PROJECT" | translate }}</option>
             </select>
           </div>
 
@@ -171,15 +172,15 @@
             </div>
 
             <div class="form-group" ng-if="CashCtrl.hasMissingCurrencies">
-              <button class="btn btn-warning btn-block">
-                {{ "CASHBOX.ADD_CURRENCY_ACCOUNTS" | translate }}
+              <button type="button" class="btn btn-warning btn-block" ng-click="CashCtrl.addCurrencies()">
+                <i class="glyphicon glyphicon-plus"></i> {{ "CASHBOX.ADD_CURRENCY_ACCOUNTS" | translate }}
               </button>
             </div>
 
             <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.project.$invalid }">
               <label class="control-label">{{ "CASH.CASHBOX.PROJECT" | translate }}</label>
               <select class="form-control" name="project" ng-model="CashCtrl.box.project_id" ng-options="project.id as project.name for project in CashCtrl.projects" required>
-                <option value="">{{ "SELECT.PROJECT" | translate }}</option>
+                <option value="" disabled>{{ "SELECT.PROJECT" | translate }}</option>
               </select>
             </div>
 
@@ -196,7 +197,7 @@
 
         <div class="panel panel-warning">
           <div class="panel-heading">
-            {{ "FORM.SECURE_ACTIONS" | translate }}
+            <i class="glyphicon glyphicon-lock"></i> {{ "FORM.SECURE_ACTIONS" | translate }}
           </div>
           <div class="panel-body">
             <button class="btn btn-danger" type="button" ng-click="CashCtrl.delete(CashCtrl.box)">

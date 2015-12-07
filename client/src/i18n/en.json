@@ -317,6 +317,14 @@
   "SUBMIT"           : "Submit",
   "TITLE"            : "Cash discard"
 },
+"CASHBOX":      {
+  "TYPE":       "Type",
+  "CURRENCIES": "Currencies",
+  "PRIMARY":    "Primary",
+  "AUXILLARY":  "Auxillary",
+  "BANK":       "Bank",
+  "CASHBOX" : "Cashbox"
+},
 "CASH_PAYMENTS": {
    "ALL_PROJECTS" : "All Projects",
    "DAY"          : "Today",

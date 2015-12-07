@@ -5,7 +5,6 @@ CashboxService.$inject = [ '$http', 'util' ];
 
 /**
 * Cashbox Service
-*
 */
 function CashboxService($http, util) {
   var service = {};
@@ -24,12 +23,18 @@ function CashboxService($http, util) {
   }
 
   function create(box) {
-    $http.post('/cashboxes', { cashbox: box })
+    return $http.post('/cashboxes', { cashbox: box })
       .then(util.unwrapHttpResponse);
   }
 
   function update(id, box) {
-    $http.put('/cashboxes/' + id, { cashbox: box })
+
+    // remove box props that shouldn't be submitted to the server
+    delete box.id;
+    delete box.type;
+    delete box.currencies;
+
+    return $http.put('/cashboxes/' + id, box)
       .then(util.unwrapHttpResponse);
 
   }

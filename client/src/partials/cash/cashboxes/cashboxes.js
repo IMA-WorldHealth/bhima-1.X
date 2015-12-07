@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
 .controller('CashboxController', CashboxController);
 
 CashboxController.$inject = [
-  '$window', '$uibModal', 'SessionService', 'ProjectService', 'CashboxService', 'CurrencyService'
+  '$window', '$uibModal', 'SessionService', 'ProjectService', 'CashboxService',
+  'CurrencyService', 'StateManagerService'
 ];
 
 /**
@@ -12,12 +13,13 @@ CashboxController.$inject = [
 * A valid cashbox must have accounts defined for each enterprise currency, for
 * ease of use trhought the application.
 */
-function CashboxController($window, $uibModal, Session, Projects, Boxes, Currencies) {
+function CashboxController($window, $uibModal, Session, Projects, Boxes, Currencies, State) {
   var vm = this;
 
   // bind variables
   vm.enterprise = Session.enterprise;
   vm.project = Session.project;
+  vm.manager = State;
 
   // bind methods
   vm.create = create;
@@ -25,6 +27,7 @@ function CashboxController($window, $uibModal, Session, Projects, Boxes, Currenc
   vm.cancel = cancel;
   vm.submit = submit;
   vm.delete = del;
+  vm.addCurrencies = addCurrencies;
 
   /* ------------------------------------------------------------------------ */
 
@@ -38,9 +41,23 @@ function CashboxController($window, $uibModal, Session, Projects, Boxes, Currenc
   function setState(state) {
     vm.box = {};
     vm.state = state;
-    vm.message = null;
+
+    switch (state) {
+      case 'created':
+        vm.message = { type : 'success', code : 'CASHBOX.CREATE_SUCCESS' };
+        break;
+      case 'updated' :
+        vm.message = { type : 'success', code : 'CASHBOX.UPDATE_SUCCESS' };
+        break;
+      case 'deleted' :
+        vm.message = { type : 'success', code : 'CASHBOX.UPDATE_SUCCESS' };
+        break;
+      default :
+        vm.message = null;
+    }
   }
 
+  // fired on startup
   function startup() {
 
     // load projects
@@ -68,6 +85,7 @@ function CashboxController($window, $uibModal, Session, Projects, Boxes, Currenc
   function create() {
     setState('create');
     vm.box.currencies = [];
+    calculateCurrencyDiff();
   }
 
   function update(id) {
@@ -114,8 +132,20 @@ function CashboxController($window, $uibModal, Session, Projects, Boxes, Currenc
     vm.hasMissingCurrencies = vm.missingCurrencies.length > 0;
   }
 
+  // refresh the displayed cashboxes
+  function refreshBoxes() {
+    return Boxes.read()
+      .then(function (cashboxes) {
+        vm.cashboxes = cashboxes;
+      });
+  }
+
+  // form submission
   function submit(invalid) {
     if (invalid) { return; }
+
+    var creation = (vm.state === 'create');
+    var promise;
 
     // convert radio buttons into db columns
     switch (vm.box.type) {
@@ -133,13 +163,14 @@ function CashboxController($window, $uibModal, Session, Projects, Boxes, Currenc
         break;
     }
 
-    var promise = (vm.state === 'create') ?
+
+    promise = (creation) ?
       Boxes.create(vm.box) :
-      Boxes.update(vm.id, vm.box);
+      Boxes.update(vm.box.id, vm.box);
 
     promise.then(function (message) {
-      setState('success');
-      vm.message = message;
+      setState(creation ? 'created' : 'updated');
+      return refreshBoxes();
     })
     .catch(handler);
   }
@@ -151,15 +182,15 @@ function CashboxController($window, $uibModal, Session, Projects, Boxes, Currenc
     if (yes) {
       Boxes.delete(box.id)
       .then(function (message) {
-        setState('success');
-        vm.message = {
-          type : 'success',
-          code : 'CASHBOXES.DELETE_SUCCESS'
-        };
+        setState('deleted');
+        return refreshBoxes();
       })
       .catch(handler);
     }
   }
+
+  // TODO
+  function addCurrencies() {}
 
   startup();
 }
