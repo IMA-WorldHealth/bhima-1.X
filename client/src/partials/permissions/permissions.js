@@ -3,9 +3,6 @@
 
 // TODOs:
 // - Password Insecure alert or not
-// - Rewrite this controller to use
-//   1) Controller As syntax
-//   2) Angular Form Validation
 angular.module('bhima.controllers')
 .controller('PermissionsController', PermissionsController);
 
@@ -17,7 +14,7 @@ PermissionsController.$inject = [
 function PermissionsController($window, $translate, $http, $modal, util, Session, Users, Projects, NT) {
   var vm = this;
   var btnTemplate =
-    '<button ng-click="grid.appScope.edit(row.entity)">{{ "FORM.EDIT" | translate }}</button>' +
+    '<button ng-click="grid.appScope.edit(row.entity)" style="margin: 0 5px">{{ "FORM.EDIT" | translate }}</button>' +
     '<button ng-click="grid.appScope.editPermissions(row.entity)">{{ "PERMISSIONS.EDIT_PERMISSIONS" | translate }}</button>';
 
   // options for the UI grid
