@@ -202,7 +202,8 @@ var DonationManagementController = function ($q, $translate, $location, $routePa
     don.sum = don.lots.data.reduce(function (a, b){ return a + b.quantity; }, 0);
 
     for (var i = don.lots.data.length - 1; i >= 0; i--) {
-      if(don.lots.data[i].lot_number === '' || don.lots.data[i].lot_number == null || don.lots.data[i].quantity <= 0 || don.lots.data[i].expiration_date <= vm.session.date){
+      var donation = don.lots.data[i];
+      if(donation.lot_number === '' || donation.lot_number == null || donation.quantity <= 0 || donation.expiration_date <= vm.session.date){
         cleaned = false;
         break;
       }
