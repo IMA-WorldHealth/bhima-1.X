@@ -73,7 +73,7 @@ var DonationManagementController = function ($q, $translate, $location, $routePa
     angular.extend(vm, models);
     vm.session.depot = vm.depots.get(vm.session.depot.uuid);
     vm.session.configured = true;
-    addDonationItem(); 
+    addDonationItem();
   }
 
   function addDonationItem () {
@@ -100,7 +100,7 @@ var DonationManagementController = function ($q, $translate, $location, $routePa
       self.inventory_uuid = inventoryReference.uuid;
       self.note = '';
       self.isSet = true;
-    }   
+    }
 
     return this;
   }
@@ -166,7 +166,7 @@ var DonationManagementController = function ($q, $translate, $location, $routePa
       addLot(di);
     });
 
-    vm.session.step = 'input_inventories';    
+    vm.session.step = 'input_inventories';
   }
 
   function Lot () {
@@ -199,10 +199,10 @@ var DonationManagementController = function ($q, $translate, $location, $routePa
 
   function validateDonationLine (don){
     var cleaned = true;
-    don.sum = don.lots.data.reduce(function (a, b){ return a + b.quantity}, 0);
+    don.sum = don.lots.data.reduce(function (a, b){ return a + b.quantity; }, 0);
 
     for (var i = don.lots.data.length - 1; i >= 0; i--) {
-      if(don.lots.data[i].lot_number == '' || don.lots.data[i].lot_number == null || don.lots.data[i].quantity <= 0 || don.lots.data[i].expiration_date <= vm.session.date){
+      if(don.lots.data[i].lot_number === '' || don.lots.data[i].lot_number == null || don.lots.data[i].quantity <= 0 || don.lots.data[i].expiration_date <= vm.session.date){
         cleaned = false;
         break;
       }
@@ -268,7 +268,7 @@ var DonationManagementController = function ($q, $translate, $location, $routePa
         currents.push(stock);
       });
       stocks = stocks.concat(currents);
-    });    
+    });
     return stocks;
   }
 
@@ -314,7 +314,7 @@ var DonationManagementController = function ($q, $translate, $location, $routePa
   }
 
   function accept (){
-    var document_id = uuid();    
+    var document_id = uuid();
     var purchase = simulatePurchase();
     var purchase_items = getPurchaseItem(purchase.uuid);
     var stocks = getStocks(purchase.uuid);
@@ -360,16 +360,16 @@ var DonationManagementController = function ($q, $translate, $location, $routePa
     .catch(function (err) {
       console.log(err);
       messenger.error('STOCK.ENTRY.WRITE_ERROR');
-      
+
       messenger.error($translate.instant('STOCK.ENTRY.WRITE_ERROR'), false);
 
       var stock_ids = stocks.map(function (stock){return stock.tracking_number;});
 
-      connect.delete('movement', 'tracking_number', stock_ids).
-      then(function (){
+      connect.delete('movement', 'tracking_number', stock_ids)
+      .then(function (){
         return connect.delete('donations', 'tracking_number', stock_ids);
       })
-      then(function (){
+      .then(function (){
         return connect.delete('stock', 'tracking_number', stock_ids);
       })
       .then(function (){
@@ -381,7 +381,7 @@ var DonationManagementController = function ($q, $translate, $location, $routePa
 
   vm.addDonationItem      = addDonationItem;
   vm.addLot               = addLot;
-  vm.accept               = accept; 
+  vm.accept               = accept;
   vm.isValidLine          = isValidLine;
   vm.isPassed             = isPassed;
   vm.isAllPassed          = isAllPassed;
@@ -398,4 +398,3 @@ DonationManagementController.$inject = [
 ];
 
 angular.module('bhima.controllers').controller('DonationManagementController', DonationManagementController);
-
