@@ -38,6 +38,15 @@ describe('The /cashboxes API endpoint', function () {
     is_bank : 0
   };
 
+  // new cashbox account currency
+  var BOX_CURRENCY = {
+    currency_id:              1,
+    account_id:               3631,
+    virement_account_id:      3631,
+    gain_exchange_account_id: 3631,
+    loss_exchange_account_id: 3631
+  };
+
   // throw errors
   function handler(err) { throw err; }
 
@@ -122,7 +131,39 @@ describe('The /cashboxes API endpoint', function () {
       .catch(handler);
   });
 
-  it('DELETE /cashboxes/:id should delete the cashbox', function () {
+  it('GET /cashboxes/:id/currencies should return an empty list of cashbox currencies', function () {
+    return agent.get('/cashboxes/' + BOX.id + '/currencies')
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.empty;
+      });
+  });
+
+  it('POST /cashboxes/:id/currencies should create a new currency account', function () {
+    return agent.post('/cashboxes/' + BOX.id + '/currencies')
+      .send(BOX_CURRENCY)
+      .then(function (res) {
+        expect(res).to.have.status(201);
+        expect(res).to.be.json;
+        expect(res.body).to.contain.keys('id');
+      })
+      .catch(handler);
+  });
+
+  it('PUT /cashboxes/:id/currencies/:currencyId should update a new currency account', function () {
+    return agent.put('/cashboxes/' + BOX.id + '/currencies/' + BOX_CURRENCY.currency_id)
+      .send({ gain_exchange_account_id : 3635 })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.account_id).to.equal(BOX_CURRENCY.account_id);
+        expect(res.body.gain_exchange_account_id).not.to.equal(BOX_CURRENCY.gain_exchange_account_id);
+        expect(res.body.loss_exchange_account_id).to.equal(BOX_CURRENCY.gain_exchange_account_id);
+      })
+      .catch(handler);
+  });
+
+  it('DELETE /cashboxes/:id should delete the cashbox and associated currencies', function () {
     return agent.delete('/cashboxes/' + BOX.id)
     .then(function (res) {
       expect(res).to.have.status(200);
@@ -133,4 +174,5 @@ describe('The /cashboxes API endpoint', function () {
     })
     .catch(handler);
   });
+
 });

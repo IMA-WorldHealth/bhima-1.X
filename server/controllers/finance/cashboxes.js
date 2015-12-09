@@ -182,7 +182,7 @@ exports.currencies.list = function listCurrencies(req, res, next) {
   sql =
     'SELECT id, currency_id, loss_exchange_account_id, account_id, ' +
       'gain_exchange_account_id, virement_account_id ' +
-    'FROM cash_box_account_currency WHERE cashbox_id = ?;';
+    'FROM cash_box_account_currency WHERE cash_box_id = ?;';
 
   db.exec(sql, [req.params.id])
   .then(function (rows) {
@@ -202,7 +202,7 @@ exports.currencies.details = function detailCurrencies(req, res, next) {
     'SELECT id, loss_exchange_account_id, account_id, ' +
       'gain_exchange_account_id, virement_account_id ' +
     'FROM cash_box_account_currency ' +
-    'WHERE cashbox_id = ? AND currency_id = ?;';
+    'WHERE cash_box_id = ? AND currency_id = ?;';
 
   db.exec(sql, [req.params.id, req.params.currencyId])
   .then(function (rows) {
@@ -225,10 +225,16 @@ exports.currencies.create = function createCurrency(req, res, next) {
   data.cashbox_id = req.params.id;
 
   sql =
-    'INSERT INTO cash_box_account_currency SET ?;';
+    'INSERT INTO cash_box_account_currency (' +
+      'currency_id, account_id, virement_account_id, gain_exchange_account_id, ' +
+      'loss_exchange_account_id, cash_box_id ' +
+    ') VALUES (?);';
 
-  db.exec(sql, [data])
-  .then(function (row) {
+  db.exec(sql, [[
+    data.currency_id, data.account_id, data.virement_account_id,
+    data.gain_exchange_account_id, data.loss_exchange_account_id,
+    data.cashbox_id
+  ]]).then(function (row) {
     res.status(201).json({ id: row.insertId });
   })
   .catch(next)
@@ -241,14 +247,12 @@ exports.currencies.update = function updateCurrency(req, res, next) {
 
   var sql;
   var data = req.body;
-  data.cashbox_id = req.params.id;
-  data.currency_id = req.params.currencyId;
 
   sql =
     'UPDATE cash_box_account_currency SET ? ' +
-    'WHERE cashbox_id = ? AND currency_id = ?;';
+    'WHERE cash_box_id = ? AND currency_id = ?;';
 
-  db.exec(sql, [data])
+  db.exec(sql, [data, req.params.id, req.params.currencyId])
   .then(function () {
 
     // send the changed object to the client
@@ -256,9 +260,9 @@ exports.currencies.update = function updateCurrency(req, res, next) {
       'SELECT id,  loss_exchange_account_id, account_id, ' +
         'gain_exchange_account_id, virement_account_id ' +
       'FROM cash_box_account_currency ' +
-      'WHERE cashbox_id = ? AND currency_id = ?;';
+      'WHERE cash_box_id = ? AND currency_id = ?;';
 
-    return db.exec(sql, [req.params.id, req.params.cashbox_id]);
+    return db.exec(sql, [req.params.id, req.params.currencyId ]);
   })
   .then(function (rows) {
 
