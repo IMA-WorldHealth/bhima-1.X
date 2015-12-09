@@ -53,7 +53,7 @@ function exec(sql, params) {
       defer.resolve(results);
     });
 
-    // console.log(qs.sql);
+    console.log(qs.sql);
   });
 
   return defer.promise;
