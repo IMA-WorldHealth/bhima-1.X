@@ -5,7 +5,6 @@
 * cashbox must have a name, and as many accounts as there are currencies
 * supported by the application.
 */
-
 var db = require('../../lib/db');
 
 /*
@@ -166,6 +165,104 @@ exports.delete = function del(req, res, next) {
   db.exec(sql, [req.params.id])
   .then(function (rows) {
     res.status(200).send();
+  })
+  .catch(next)
+  .done();
+};
+
+// API for cashbox currencies
+exports.currencies = {};
+
+// GET /cashboxes/:id/currencies
+exports.currencies.list = function listCurrencies(req, res, next) {
+  'use strict';
+
+  var sql;
+
+  sql =
+    'SELECT id, currency_id, loss_exchange_account_id, account_id, ' +
+      'gain_exchange_account_id, virement_account_id ' +
+    'FROM cash_box_account_currency WHERE cashbox_id = ?;';
+
+  db.exec(sql, [req.params.id])
+  .then(function (rows) {
+    res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
+};
+
+// GET /cashboxes/:id/currencies/:currencyId
+exports.currencies.details = function detailCurrencies(req, res, next) {
+  'use strict';
+
+  var sql;
+
+  sql =
+    'SELECT id, loss_exchange_account_id, account_id, ' +
+      'gain_exchange_account_id, virement_account_id ' +
+    'FROM cash_box_account_currency ' +
+    'WHERE cashbox_id = ? AND currency_id = ?;';
+
+  db.exec(sql, [req.params.id, req.params.currencyId])
+  .then(function (rows) {
+    if (rows.length === 0) {
+      throw req.codes.NOT_FOUND;
+    }
+
+    res.status(200).json(rows);
+  })
+  .catch(next)
+  .done();
+};
+
+// POST /cashboxes/:id/currencies
+exports.currencies.create = function createCurrency(req, res, next) {
+  'use strict';
+
+  var sql;
+  var data = req.body;
+  data.cashbox_id = req.params.id;
+
+  sql =
+    'INSERT INTO cash_box_account_currency SET ?;';
+
+  db.exec(sql, [data])
+  .then(function (row) {
+    res.status(201).json({ id: row.insertId });
+  })
+  .catch(next)
+  .done();
+};
+
+// PUT /cashboxes/:id/currencies/:currencyId
+exports.currencies.update = function updateCurrency(req, res, next) {
+  'use strict';
+
+  var sql;
+  var data = req.body;
+  data.cashbox_id = req.params.id;
+  data.currency_id = req.params.currencyId;
+
+  sql =
+    'UPDATE cash_box_account_currency SET ? ' +
+    'WHERE cashbox_id = ? AND currency_id = ?;';
+
+  db.exec(sql, [data])
+  .then(function () {
+
+    // send the changed object to the client
+    sql =
+      'SELECT id,  loss_exchange_account_id, account_id, ' +
+        'gain_exchange_account_id, virement_account_id ' +
+      'FROM cash_box_account_currency ' +
+      'WHERE cashbox_id = ? AND currency_id = ?;';
+
+    return db.exec(sql, [req.params.id, req.params.cashbox_id]);
+  })
+  .then(function (rows) {
+
+    res.status(200).json(rows[0]);
   })
   .catch(next)
   .done();

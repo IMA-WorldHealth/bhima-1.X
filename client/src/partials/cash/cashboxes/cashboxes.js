@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 CashboxController.$inject = [
   '$window', '$uibModal', 'SessionService', 'ProjectService', 'CashboxService',
-  'CurrencyService', 'StateManagerService'
+  'CurrencyService'
 ];
 
 /**
@@ -13,13 +13,12 @@ CashboxController.$inject = [
 * A valid cashbox must have accounts defined for each enterprise currency, for
 * ease of use trhought the application.
 */
-function CashboxController($window, $uibModal, Session, Projects, Boxes, Currencies, State) {
+function CashboxController($window, $uibModal, Session, Projects, Boxes, Currencies) {
   var vm = this;
 
   // bind variables
   vm.enterprise = Session.enterprise;
   vm.project = Session.project;
-  vm.manager = State;
 
   // bind methods
   vm.create = create;
@@ -27,7 +26,7 @@ function CashboxController($window, $uibModal, Session, Projects, Boxes, Currenc
   vm.cancel = cancel;
   vm.submit = submit;
   vm.delete = del;
-  vm.addCurrencies = addCurrencies;
+  vm.addCurrency = addCurrency;
 
   /* ------------------------------------------------------------------------ */
 
@@ -120,16 +119,9 @@ function CashboxController($window, $uibModal, Session, Projects, Boxes, Currenc
 
   // calculate what currency accounts are missing from the cashbox
   function calculateCurrencyDiff() {
-
-    vm.registeredCurrencies = vm.currencies.filter(function (currency) {
-      return hasCurrency(currency.id);
+    vm.currencies.forEach(function (currency) {
+      currency.configured = hasCurrency(currency.id);
     });
-
-    vm.missingCurrencies = vm.currencies.filter(function (currency) {
-      return !hasCurrency(currency.id);
-    });
-
-    vm.hasMissingCurrencies = vm.missingCurrencies.length > 0;
   }
 
   // refresh the displayed cashboxes
@@ -163,7 +155,6 @@ function CashboxController($window, $uibModal, Session, Projects, Boxes, Currenc
         break;
     }
 
-
     promise = (creation) ?
       Boxes.create(vm.box) :
       Boxes.update(vm.box.id, vm.box);
@@ -190,7 +181,26 @@ function CashboxController($window, $uibModal, Session, Projects, Boxes, Currenc
   }
 
   // TODO
-  function addCurrencies() {}
+  function addCurrency(currency) {
+    var instance = $uibModal.open({
+      templateUrl : 'partials/cash/cashboxes/modal.html',
+      controller : 'CashboxCurrencyModalController as CashboxModalCtrl',
+      size : 'md',
+      backdrop : 'static',
+      resolve : {
+        currency : function () {
+          return currency;
+        },
+        cashboxId : function () {
+          return vm.id;
+        }
+      }
+    });
+
+    instance.result.then(function (data) {
+      console.log('here is data:', data);
+    });
+  }
 
   startup();
 }

@@ -13,6 +13,9 @@ function CashboxService($http, util) {
   service.create = create;
   service.update = update;
   service.delete = del;
+  service.currencies = {};
+  service.currencies.create = createCurrencies;
+  service.currencies.read = readCurrencies;
 
   /* ------------------------------------------------------------------------ */
 
@@ -41,6 +44,18 @@ function CashboxService($http, util) {
 
   function del(id) {
     return $http.delete('/cashboxes/' + id)
+      .then(util.unwrapHttpResponse);
+  }
+
+  function createCurrencies(id, data) {
+    var url = '/cashboxes/' + id + '/currencies';
+    return $http.post(url, { currencies : data })
+      .then(util.unwrapHttpResponse);
+  }
+
+  function readCurrencies(id) {
+    var url = '/cashboxes/' + id + '/currencies';
+    return $http.get(url)
       .then(util.unwrapHttpResponse);
   }
 

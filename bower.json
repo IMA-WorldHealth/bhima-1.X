@@ -33,6 +33,7 @@
     "ng-file-upload-shim": "~7.3.8",
     "slickgrid": "~2.1.0",
     "angular-mocks": "~1.4.7",
-    "angular-ui-grid": "~3.0.7"
+    "angular-ui-grid": "~3.0.7",
+    "bootstrap": "~3.3.6"
   }
 }

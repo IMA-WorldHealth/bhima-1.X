@@ -258,7 +258,7 @@
       "ACCOUNT_TITLE"          : "Cashbox Account Currency Management",
       "ACCOUNT_GAIN"           : "Gain exchange account",
       "ACCOUNT_LOSS"           : "Loss exchange account",
-      "ACCOUNT_VIREMENT"       : "Virement account",
+      "ACCOUNT_VIREMENT"       : "Transfer Account",
       "ALERT"                  : "Cashbox Management Module",
       "ALL"                    : "All",
       "BOX"                    : "Cashbox",
@@ -354,6 +354,16 @@
     "SUBMIT_FAILED"    : "Error during submit, the operation is failed",
     "SUBMIT_SUCCESS"   : "Congratulation, the operation is a success"
   },
+"CASHBOXES" : {
+  "CASH_ACCOUNT" : "Cash Account",
+  "GAIN_ACCOUNT" : "Gain on Exchange Rate Account",
+  "LOSS_ACCOUNT": "Loss on Exchange Rate Account",
+  "VIREMENT_ACCOUNT" : "Transfer Account",
+  "ADD_CURRENCY_ACCOUNTS": "Add Currency Account",
+  "UPDATE_SUCCESS" : "Successfully updated the cashbox.",
+  "SAVE_UPDATES": "Remember to submit the form to save your changes.",
+  "CONFIG_CURRENCIES" : "Configure Currency Accounts"
+},
 "CAUTION": {
    "AGE"          : "Age",
    "ATTENTION"    : "Attention this patient has a debit balance",
@@ -428,6 +438,7 @@
    "CREDITOR_ID"           : "Creditor ID",
    "CRE_EQUIV"             : "Credit",
    "CURRENCY"              : "Currency",
+   "CURRENCIES"            : "Currencies",
    "CURRENT_STOCK"         : "Current stock",
    "DAILY_RATE"            : "Daily rate",
    "DATE"                  : "Date",
@@ -875,6 +886,9 @@
      "TOP_DEBTOR_GROUPS" : "Top Debtor Groups"
    }
  },
+ "DB" : {
+  "ER_ROW_IS_REFERENCED_2" : "Cannot delete entry since it has been used in a transaction."
+ },
 "DEBITOR_GRP": {
    "FILTER"     : "Filter Debtor Groups",
    "GROUPS"     : "Debtor Groups",
@@ -1192,7 +1206,8 @@
    "ERR_CSV_FILE"                : "Error with the CSV file",
    "ERROR_MISSING_ACCOUNTS"      : "Missing accounts",
    "HTTP_STATUS_CODE"            : "HTTP status code",
-   "WARN_MISSING_DOCUMENT_ID"    : "Missing document ID"
+   "WARN_MISSING_DOCUMENT_ID"    : "Missing document ID",
+   "CONNECTION"                  : "A request to the server errored.  Some required information may not have loaded.  Please refresh the page to continue.  If the problem persists, contact a system administrator."
    },
 "EXCHANGE": {
    "HELP_TXT_1"       : "The exchange rate module provides the facilty to set daily exchange rates. In order to ensure data integrity, an exchange rate for all functional currencies must be set daily",
@@ -1352,6 +1367,7 @@
    "DELETE"          : "Delete",
    "DISCARD"         : "Discard",
    "EDIT"            : "Edit",
+   "LOGIN"           : "Login",
    "NEW_FORM"        : "New Form",
    "NEW_TRANSFER"    : "New transfer",
    "OK"              : "Ok",
@@ -1367,6 +1383,7 @@
    "SAVE_CHANGES"    : "Save Changes",
    "SAVE_FORM"       : "Save Form",
    "SEARCH"          : "Search",
+   "SECURE_ACTIONS" : "Secure Actions",
    "SUBMIT"          : "Submit",
    "SUBMIT_SUCCESS"  : "Form submitted succesfully.",
    "SUBMIT_FAILURE"  : "Form submission did not succeed.",

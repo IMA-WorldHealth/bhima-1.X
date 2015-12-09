@@ -46,7 +46,7 @@
         <p>{{ "CASH.CASHBOX.ALERT" | translate }}</p>
       </div>
 
-      <bh-form-message message="CashCtrl.manager.message"></bh-form-message>
+      <bh-form-message message="CashCtrl.message"></bh-form-message>
 
       <div class="panel panel-primary" ng-switch-when="create">
         <div class="panel-heading">
@@ -83,25 +83,20 @@
             </div>
           </div>
 
-          <div class="form-group">
-            <label>{{ "CASHBOX.CURRENCIES" | translate }}</label>
-            <ul class="list-unstyled">
-              <li ng-repeat="currency in CashCtrl.registeredCurrencies track by currency.id">
-                <i class="glyphicon glyphicon-ok text-success"></i> {{ currency.symbol}} {{ currency.name }}
-              </li>
-            </ul>
-            <ul class="list-unstyled">
-              <li ng-repeat="currency in CashCtrl.missingCurrencies track by currency.id">
-                <i class="glyphicon glyphicon-remove text-danger"></i> {{ currency.symbol}} {{ currency.name }}
-              </li>
-            </ul>
-          </div>
-
-          <div class="form-group" ng-if="CashCtrl.hasMissingCurrencies">
-            <button type="button" class="btn btn-warning btn-block" ng-click="CashCtrl.addCurrencies()">
-              <i class="glyphicon glyphicon-plus"></i> {{ "CASHBOX.ADD_CURRENCY_ACCOUNTS" | translate }}
-            </button>
-          </div>
+          <!-- <div class="form-group"> -->
+          <!--   <label>{{ "COLUMNS.CURRENCIES" | translate }}</label> -->
+          <!--   <div ng-repeat="currency in CashCtrl.currencies | orderBy:currency.name track by currency.id"> -->
+          <!--     <p ng-class="{ 'text-danger' : !currency.configured }"> -->
+          <!--       <i class="glyphicon glyphicon-alert" ng-if="!currency.configured"></i> {{ currency.name }} ({{ currency.symbol}}) -->
+          <!--       <a class="btn btn-xs btn-default" href="" ng-click="CashCtrl.addCurrency(currency)"> -->
+          <!--         <i class="glyphicon glyphicon-pencil"></i> Configure -->
+          <!--       </a> -->
+          <!--     </p> -->
+          <!--     <p ng-if="!currency.configured" class="help-block"> -->
+          <!--       The accounts for this currency have not been configured yet. -->
+          <!--     </p> -->
+          <!--   </div> -->
+          <!-- </div> -->
 
           <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.project.$invalid }">
             <label class="control-label">{{ "CASH.CASHBOX.PROJECT" | translate }}</label>
@@ -158,23 +153,18 @@
             </div>
 
             <div class="form-group">
-              <label>{{ "CASHBOX.CURRENCIES" | translate }}</label>
-              <ul class="list-unstyled">
-                <li ng-repeat="currency in CashCtrl.registeredCurrencies track by currency.id">
-                  <i class="glyphicon glyphicon-ok text-success"></i> {{ currency.symbol}} {{ currency.name }}
-                </li>
-              </ul>
-              <ul class="list-unstyled">
-                <li ng-repeat="currency in CashCtrl.missingCurrencies track by currency.id">
-                  <i class="glyphicon glyphicon-remove text-danger"></i> {{ currency.symbol}} {{ currency.name }}
-                </li>
-              </ul>
-            </div>
-
-            <div class="form-group" ng-if="CashCtrl.hasMissingCurrencies">
-              <button type="button" class="btn btn-warning btn-block" ng-click="CashCtrl.addCurrencies()">
-                <i class="glyphicon glyphicon-plus"></i> {{ "CASHBOX.ADD_CURRENCY_ACCOUNTS" | translate }}
-              </button>
+              <label>{{ "COLUMNS.CURRENCIES" | translate }}</label>
+              <div ng-repeat="currency in CashCtrl.currencies | orderBy:currency.name track by currency.id">
+                <p ng-class="{ 'text-danger' : !currency.configured }">
+                  <i class="glyphicon glyphicon-alert" ng-if="!currency.configured"></i> {{ currency.name }} ({{ currency.symbol}})
+                  <a class="btn btn-xs btn-default" href="" ng-click="CashCtrl.addCurrency(currency)">
+                    <i class="glyphicon glyphicon-pencil"></i> Configure
+                  </a>
+                </p>
+                <p ng-if="!currency.configured" class="help-block">
+                  The accounts for this currency have not been configured yet.
+                </p>
+              </div>
             </div>
 
             <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.project.$invalid }">

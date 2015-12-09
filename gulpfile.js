@@ -52,7 +52,7 @@ var paths = {
     javascript : ['client/src/js/define.js', 'client/src/js/app.js', 'client/src/**/*.js', '!client/src/i18n/**/*.js', '!client/src/lib/**/*.js'],
     excludeLint: ['!client/src/lib/**/*.js'],
     css        : ['client/src/partials/**/*.css', 'client/src/css/*.css'],
-    vendor     : ['client/vendor/**/*.js', 'client/vendor/**/*.css', 'client/vendor/**/*.ttf', 'client/vendor/**/*.woff*', 'client/vendor/**/*.eot','client/vendor/**/*.svg', '!client/vendor/**/src{,/**}', '!client/vendor/**/js{,/**}'],
+    vendor     : ['client/vendor/**/*.js', 'client/vendor/**/*.css', 'client/vendor/**/*.ttf', 'client/vendor/**/*.wof*', 'client/vendor/**/*.eot','client/vendor/**/*.svg', '!client/vendor/**/src{,/**}', '!client/vendor/**/js{,/**}'],
     e2etest    : ['client/test/e2e/**/*.spec.js'],
     unittest   : [],
 

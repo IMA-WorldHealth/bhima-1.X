@@ -8,9 +8,6 @@ var ROOT_NODE = 0;
 // This module is responsible for constructing each
 // person's tree based on their permissions in the
 // database.
-//
-// FIXME: there seems to be some code repetition.
-// TODO : Use db.exec() instead of db.execute()
 
 /**
 * HTTP Controllers

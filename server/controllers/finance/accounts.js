@@ -19,8 +19,10 @@ exports.list = function list(req, res, next) {
       'a.account_type_id = at.id';
 
   if (req.query.type === 'ohada') {
-    sql += ' WHERE a.is_ohada = 1;';
+    sql += ' WHERE a.is_ohada = 1';
   }
+
+  sql += ' ORDER BY a.account_number;';
 
   db.exec(sql)
   .then(function (rows) {

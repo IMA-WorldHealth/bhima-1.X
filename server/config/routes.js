@@ -350,4 +350,10 @@ exports.configure = function (app) {
   app.post('/cashboxes', cashboxes.create);
   app.put('/cashboxes/:id', cashboxes.update);
   app.delete('/cashboxes/:id', cashboxes.delete);
+
+  // cashbox currencies
+  app.get('/cashboxes/:id/currencies', cashboxes.currencies.list);
+  app.get('/cashboxes/:id/currencies/:currencyId', cashboxes.currencies.details);
+  app.post('/cashboxes/:id/currencies', cashboxes.currencies.create);
+  app.put('/cashboxes/:id/currencies/:currencyId', cashboxes.currencies.update);
 };
