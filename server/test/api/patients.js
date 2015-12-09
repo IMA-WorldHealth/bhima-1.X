@@ -2,6 +2,8 @@ var chai = require('chai');
 var chaiHttp = require('chai-http');
 var expect = chai.expect;
 
+var q = require('q');
+
 var url = 'https://localhost:8080';
 var user = { 
   username : 'superuser', 
@@ -73,6 +75,25 @@ describe('The /patients API', function () {
     incorrectLayout : mockDebtor,
     incorrectTest : mockPatient
   }
+  
+  var simultaneousPatient = { 
+    first_name : 'Simultaneous',
+    middle_name : 'Patient', 
+    last_name : 'Last',
+    dob : '1993-06-01T00:00:00.000Z',
+    current_location_id : 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
+    origin_location_id : 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
+    sex : 'M',
+    project_id : 1,
+    hospital_no : 122,
+  };
+
+  var simultaneousRequest = { 
+    finance : { 
+      debitor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
+    }, 
+    medical : simultaneousPatient
+  };
 
   // Assumes test database is built with the following information
   // Logs in before each test
@@ -189,45 +210,89 @@ describe('The /patients API', function () {
       })
       .catch(handle);
   });
-  
-  describe('Updating patient group assignment', function () { 
+
+  it('Simultaneous patient registration requests respect reference lock', function () { 
     
-    it('POST /patients/:id/groups will update a patients groups', function () { 
+    var NUMBER_OF_PATIENTS = 2;
+    var patientQuery = [];
 
-      // Not implemented
-      expect(true).to.be.false;
-    });
+    for (var i = 0; i < NUMBER_OF_PATIENTS; i++) { 
+      patientQuery.push(agent.post('/patients')
+        .send(simultaneousRequest));
 
-    it('Specified patients group assignments reflect the recent update', function () { 
-      
-      // Not implemented
-      expect(true).to.be.false;
-    });
+      // Update for unique hospital number 
+      simultaneousRequest.medical.hospital_no += 1;
 
-    it('POST /patients/:id/groups will fail with 400 for a bad group request', function () { 
-      
-      // Not implemented
-      expect(true).to.be.false;
-    });
-
-    it('POST /patients/:id/groups will fail with 400 for an invalid patient ID', function () { 
-
-      // Not implemented
-      expect(true).to.be.false;
-    });
-
-    it('POST /patients/:id/groups will fail with 400 MISSING_INFO if no assignments object is passed', function () { 
+    }
     
-      // Not implemented
-      expect(true).to.be.false;
-    });
-
-    it('POST /patients/:id/groups with no group assignments removes all patients group assignments', function () { 
+    return q.all(patientQuery)
+      .then(function (result) { 
+        var detailsQuery = [];
       
-      // Not implemented
-      expect(true).to.be.false;
-    });
+        result.forEach(function (patient) { 
+          expect(patient).to.have.status(201);
+          detailsQuery.push(agent.get('/patients/'.concat(patient.body.uuid)));
+        });
+        
+        return q.all(detailsQuery);
+      })
+      .then(function (finalResult) { 
+        
+        var references = [];
+        // console.log('final', finalResult);
+
+        finalResult.forEach(function (patientDetail) { 
+          var patientReference;
+
+          expect(patientDetail).to.have.status(200);
+
+          patientReference = patientDetail.body.reference;
+          expect(references).to.not.include(patientReference);
+
+          references.push(patientReference);
+        });
+      })
+      .catch(handle);
   });
+  
+  // describe('Updating patient group assignment', function () { 
+    
+  //   it('POST /patients/:id/groups will update a patients groups', function () { 
+
+  //     // Not implemented
+  //     expect(true).to.be.false;
+  //   });
+
+  //   it('Specified patients group assignments reflect the recent update', function () { 
+      
+  //     // Not implemented
+  //     expect(true).to.be.false;
+  //   });
+
+  //   it('POST /patients/:id/groups will fail with 400 for a bad group request', function () { 
+      
+  //     // Not implemented
+  //     expect(true).to.be.false;
+  //   });
+
+  //   it('POST /patients/:id/groups will fail with 400 for an invalid patient ID', function () { 
+
+  //     // Not implemented
+  //     expect(true).to.be.false;
+  //   });
+
+  //   it('POST /patients/:id/groups will fail with 400 MISSING_INFO if no assignments object is passed', function () { 
+    
+  //     // Not implemented
+  //     expect(true).to.be.false;
+  //   });
+
+  //   it('POST /patients/:id/groups with no group assignments removes all patients group assignments', function () { 
+      
+  //     // Not implemented
+  //     expect(true).to.be.false;
+  //   });
+  // });
    
   // TODO get information on the registered patient - ensure details route is correct 
   // TODO Reject duplicate hospital number

@@ -1,3 +1,5 @@
+// TODO Known bug: If a patients hospital number is updated the original registered value will still 
+// be the only value ignored by the validation - the new value will be reported as an error if changed 'already registered'
 
 // TODO Refactor patient find directive to not use $scope.watch
 // TODO No action is taken if default parameter is not a valid patient
@@ -69,8 +71,12 @@ function PatientEdit($scope, $routeParams, $location, $uibModal, patients, util)
   // TODO Clearer naming conventions
   // submit a request to change patient details
   viewModel.updatePatient = function updatePatient(patient) { 
-    var patientIsUpdated = $scope.details.$dirty;
-    var changedDefinition;
+    var patientIsUpdated = $scope.details.$dirty || $scope.optional.$dirty;
+    var changedDetails, changedOptional, changedDefinition;
+
+    viewModel.updatedPatientDetails = false;
+    
+    $scope.details.$setSubmitted();
 
     if (!patientIsUpdated) { 
 
@@ -78,10 +84,29 @@ function PatientEdit($scope, $routeParams, $location, $uibModal, patients, util)
       // TODO Inform user of early exit state
       return;
     }
-    
-    changedDefinition = util.filterDirtyFormElements($scope.details);
+
+    if ($scope.details.$invalid) { 
       
-    patients.update(patient.uuid, changedDefinition);
+      // Form is not ready to be submitted to the server
+      return;
+    }
+    
+    changedDetails = util.filterDirtyFormElements($scope.details);
+    changedOptional = util.filterDirtyFormElements($scope.optional);
+
+    changedDefinition = angular.extend(changedDetails, changedOptional);
+      
+    console.log('sending', changedDefinition);
+    patients.update(patient.uuid, changedDefinition)
+      .then(function (updatedPatient) { 
+        
+        // Update view
+        viewModel.updatedPatientDetails = true;
+
+        // Reset forms dirty values
+        $scope.details.$setPristine();
+        $scope.optional.$setPristine();
+      });
   };
   
   // Callback passed to find patient directive 

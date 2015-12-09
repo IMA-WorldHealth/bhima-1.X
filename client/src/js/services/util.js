@@ -19,7 +19,7 @@ function UtilService($filter) {
       var isAngularAttribute = key.substring(0, 1) === '$';
       
       if (!isAngularAttribute) { 
-
+        
         // Only format and assign dirty values that have changed 
         if (value.$dirty) { 
           response[key] = value.$modelValue;

@@ -76,11 +76,9 @@ function Patients($http) {
     var groupUuids = Object.keys(groupFormOptions);
   
     var formatted = groupUuids.filter(function (groupUuid) { 
-      var subscribed = groupFormOptions[groupUuid];
-
-      if (subscribed) { 
-        return groupUuid;
-      }
+      
+      // Filter out UUIDs without a true subscription
+      return groupFormOptions[groupUuid];
     });
 
     return { 
