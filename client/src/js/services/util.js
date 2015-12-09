@@ -93,5 +93,7 @@ function UtilService($filter) {
   };
 
   // Define the minimum date for any patient data
-  service.minPatientDate = new Date('1900-01-01');
+  service.defaultBirthMonth = '06-01';
+  service.minDOB = new Date('1900-01-01');
+  service.maxDOB = new Date();
 }

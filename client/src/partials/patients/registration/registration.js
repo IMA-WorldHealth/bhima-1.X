@@ -1,43 +1,38 @@
-// TODO Handle generic HTTP errors (displayed contextually on form)
+// TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
 .controller('PatientRegistrationController', PatientRegistrationController);
 
-// $scope import required to make use of angular form validation
 PatientRegistrationController.$inject = [
-  '$scope', 'Patients', 'Debtors', '$location', 'SessionService'
+  '$scope', '$location', 'Patients', 'Debtors', 'util', 'SessionService'
 ];
 
-function PatientRegistrationController($scope, patients, debtors, $location, Session) {
-  var projectId = Session.project.id;
+function PatientRegistrationController($scope, $location, patients, debtors, util, Session) {
   var viewModel = this;
   
-  var DEFAULT_BIRTH_MONTH = '06-01';
-  
+  // Models for collecting patient data in logical groups
   viewModel.finance = {};
   viewModel.medical = {};
   viewModel.options = {};
-
+  
+  // Set up page elements data (debtor select data)
   debtors.groups()
     .then(function (results) { 
       viewModel.options.debtorGroups = results;
     }); 
 
   // Define limits for DOB
-  viewModel.minDOB = new Date('1900-01-01');
-  viewModel.maxDOB = new Date();
-
+  viewModel.minDOB = util.minDOB;
+  viewModel.maxDOB = util.maxDOB;
   
   viewModel.registerPatient = function registerPatient() {
     var createPatientDetails;
 
-    // Register submitted action even though the button it outside of the scope
-    // of the form 
+    // Register submitted action - explicit as the button is outside of the scope of the form 
     $scope.details.$setSubmitted(); 
   
     if ($scope.details.$invalid) { 
       
-      // TODO Scroll to top invalid input or update button state?
-      console.log($scope.details);
+      // End propegation for invalid state - this could scroll to an $invalid element on the form
       return;
     }
 
@@ -47,7 +42,7 @@ function PatientRegistrationController($scope, patients, debtors, $location, Ses
     };
 
     // Assign implicit information 
-    createPatientDetails.medical.project_id = projectId;
+    createPatientDetails.medical.project_id = Session.project.id;
   
     patients.create(createPatientDetails)
       .then(function (result) { 
@@ -64,13 +59,16 @@ function PatientRegistrationController($scope, patients, debtors, $location, Ses
         $location.path(patientCardPath.concat(confirmation.uuid));
       })
   };
-
+  
+  /**
+   * Date and location utility methods
+   */
   viewModel.enableFullDate = function enableFullDate() {
     viewModel.fullDateEnabled = true;
   };
   
   viewModel.calculateYOB = function calculateYOB(value) { 
-    viewModel.medical.dob = value && value.length === 4 ? new Date(value + '-' + DEFAULT_BIRTH_MONTH) : undefined;
+    viewModel.medical.dob = value && value.length === 4 ? new Date(value + '-' + util.defaultBirthMonth) : undefined;
   };
   
   //FIXME Location directive relies on the $scope object
