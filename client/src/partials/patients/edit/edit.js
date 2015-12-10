@@ -106,6 +106,7 @@ function PatientEdit($scope, $routeParams, $location, $uibModal, patients, util)
         // Reset forms dirty values
         $scope.details.$setPristine();
         $scope.optional.$setPristine();
+        $scope.details.$submitted = false;
       });
   };
   

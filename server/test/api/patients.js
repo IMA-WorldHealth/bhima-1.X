@@ -270,13 +270,12 @@ describe('The /patients API', function () {
  describe('Updating patient group assignment', function () { 
 
    it('POST /patients/:id/groups will update a patients groups', function () { 
+     
+     // 0b8fcc00-8640-479d-872a-31d36361fcfd
      var groupAssignment = { 
-       assignments : ['112a9fb5-847d-4c6a-9b20-710fa8b4da24', '0b8fcc00-8640-479d-872a-31d36361fcfd']
+       assignments : ['112a9fb5-847d-4c6a-9b20-710fa8b4da24']
      };
     
-     // 0b8fcc00-8640-479d-872a-31d36361fcfd
-
-
      return agent.post('/patients/'.concat(mockPatientUuid, '/groups'))
       .send(groupAssignment)
       .then(function (result) { 

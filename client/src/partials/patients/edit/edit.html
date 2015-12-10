@@ -144,12 +144,12 @@
               <!-- Hospital File Number -->
               <div 
                 class="form-group has-feedback"
-                ng-class="{'has-error' : details.hospitalNumber.$invalid && details.$submitted || details.$error.hospitalNumber}">
+                ng-class="{'has-error' : details.hospital_no.$invalid && details.$submitted || details.$error.hospitalNumber}">
                 
                 <label for="new-hospital-number" class="col-md-3 control-label">{{ "INVOICE.HOSPITAL_FILE_NR" | translate }} </label>
                 <div class="col-md-9">
 
-                  <!-- One way bing hospital number to allow skipping the registered patients hospital number -->
+                  <!-- One way bind hospital number to allow skipping the registered patients hospital number -->
                   <input 
                     id="new-hospital-number" 
                     name="hospital_no" 
@@ -224,14 +224,23 @@
           <div class="panel-footer">
           
             <!-- Submission -->
-            <!-- <div class="pull-right"> -->
               <p 
                 class="text-success"
                 ng-if="PatientEditCtrl.updatedPatientDetails"><span class="glyphicon glyphicon-ok-sign"></span> Patient records updated</p>
+
+              <p 
+                class="text-danger"
+                ng-if="details.$submitted && details.$invalid">
+                <span class="glyphicon glyphicon-remove-sign"></span> Please resolve any errors on the form. (Marked in red)</p>
+
+              <p 
+                class="text-warning"
+                ng-if="details.$submitted && !details.$dirty">
+                <span class="glyphicon glyphicon-info-sign"></span> No changes have been made to the form. Update the patients details and then press submit.</p>
+
               <button 
                 ng-click="PatientEditCtrl.updatePatient(PatientEditCtrl.medical)"
                 class="btn btn-sm btn-primary">Submit Changes</button>  
-            <!-- </div> -->
           </div>
 
         </div>
