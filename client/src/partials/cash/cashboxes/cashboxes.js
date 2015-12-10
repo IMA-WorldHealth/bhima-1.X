@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 CashboxController.$inject = [
   '$window', '$uibModal', 'SessionService', 'ProjectService', 'CashboxService',
-  'CurrencyService'
+  'CurrencyService', 'FormStateFactory'
 ];
 
 /**
@@ -13,12 +13,14 @@ CashboxController.$inject = [
 * A valid cashbox must have accounts defined for each enterprise currency, for
 * ease of use trhought the application.
 */
-function CashboxController($window, $uibModal, Session, Projects, Boxes, Currencies) {
+function CashboxController($window, $uibModal, Session, Projects, Boxes, Currencies, StateFactory) {
   var vm = this;
 
   // bind variables
   vm.enterprise = Session.enterprise;
   vm.project = Session.project;
+  vm.state = new StateFactory();
+  vm.view = 'default';
 
   // bind methods
   vm.create = create;
@@ -26,34 +28,13 @@ function CashboxController($window, $uibModal, Session, Projects, Boxes, Currenc
   vm.cancel = cancel;
   vm.submit = submit;
   vm.delete = del;
-  vm.addCurrency = addCurrency;
+  vm.configureCurrency = configureCurrency;
 
   /* ------------------------------------------------------------------------ */
 
   function handler(error) {
-    vm.message = error.data;
-    vm.message.type = 'danger';
-    console.error(error.data.reason);
-  }
-
-  // state transitions
-  function setState(state) {
-    vm.box = {};
-    vm.state = state;
-
-    switch (state) {
-      case 'created':
-        vm.message = { type : 'success', code : 'CASHBOX.CREATE_SUCCESS' };
-        break;
-      case 'updated' :
-        vm.message = { type : 'success', code : 'CASHBOX.UPDATE_SUCCESS' };
-        break;
-      case 'deleted' :
-        vm.message = { type : 'success', code : 'CASHBOX.UPDATE_SUCCESS' };
-        break;
-      default :
-        vm.message = null;
-    }
+    console.error(error);
+    vm.state.error();
   }
 
   // fired on startup
@@ -73,41 +54,52 @@ function CashboxController($window, $uibModal, Session, Projects, Boxes, Currenc
       vm.currencies = data;
     }).catch(handler);
 
-    // default state
-    setState('default');
+    vm.state.reset();
   }
 
   function cancel() {
-    setState('default');
+    vm.state.reset();
+    vm.view = 'default';
   }
 
   function create() {
-    setState('create');
+    vm.view = 'create';
+    vm.box = {};
     vm.box.currencies = [];
     calculateCurrencyDiff();
   }
 
+  // asnychronously load a cashbox from the server
+  function loadCashbox(id) {
+    return Boxes.read(id)
+      .then(function (data) {
+
+        // workaround until we build a type column into the database.
+        // converts is_aux and is_bank columns into radio button select
+        if (data.is_auxillary) {
+          data.type = 'auxillary';
+        } else if (data.is_bank) {
+          data.type = 'bank';
+        } else {
+          data.type = 'primary';
+        }
+
+        // bind the cashbox to the view
+        vm.box = data;
+
+        // calculate the currency difference
+        calculateCurrencyDiff();
+      });
+  }
+
+  // switch to update mode
   function update(id) {
-
-    // load the cashbox
-    Boxes.read(id).then(function (data) {
-      setState('update');
-
-      // workaround until we build a type column into the database.
-      // converts is_aux and is_bank columns into radio button select
-      if (data.is_auxillary) {
-        data.type = 'auxillary';
-      } else if (data.is_bank) {
-        data.type = 'bank';
-      } else {
-        data.type = 'primary';
-      }
-
-      vm.box = data;
-
-      calculateCurrencyDiff();
-    })
-    .catch(handler);
+    vm.state.reset();
+    loadCashbox(id)
+      .then(function () {
+        vm.view = 'update';
+      })
+      .catch(handler);
   }
 
   // check if a currency is in the data.currencies array
@@ -136,34 +128,41 @@ function CashboxController($window, $uibModal, Session, Projects, Boxes, Currenc
   function submit(invalid) {
     if (invalid) { return; }
 
-    var creation = (vm.state === 'create');
+    var cashboxId;
     var promise;
+    var creation = (vm.view === 'create');
+    var box = angular.copy(vm.box);
 
     // convert radio buttons into db columns
-    switch (vm.box.type) {
+    switch (box.type) {
       case 'bank' :
-        vm.box.is_bank = 1;
-        vm.box.is_auxillary = 0;
+        box.is_bank = 1;
+        box.is_auxillary = 0;
         break;
       case 'auxillary' :
-        vm.box.is_bank = 0;
-        vm.box.is_auxillary = 1;
+        box.is_bank = 0;
+        box.is_auxillary = 1;
         break;
       default :
-        vm.box.is_bank = 0;
-        vm.box.is_auxillary = 0;
+        box.is_bank = 0;
+        box.is_auxillary = 0;
         break;
     }
 
     promise = (creation) ?
-      Boxes.create(vm.box) :
-      Boxes.update(vm.box.id, vm.box);
+      Boxes.create(box) :
+      Boxes.update(box.id, box);
 
-    promise.then(function (message) {
-      setState(creation ? 'created' : 'updated');
-      return refreshBoxes();
-    })
-    .catch(handler);
+    promise
+      .then(function (response) {
+        cashboxId = response.id;
+        return refreshBoxes();
+      })
+      .then(function () {
+        update(cashboxId);
+        vm.state[creation ? 'create' : 'update']();
+      })
+      .catch(handler);
   }
 
   function del(box) {
@@ -173,33 +172,45 @@ function CashboxController($window, $uibModal, Session, Projects, Boxes, Currenc
     if (yes) {
       Boxes.delete(box.id)
       .then(function (message) {
-        setState('deleted');
+        vm.view = 'default';
+        vm.state.delete();
         return refreshBoxes();
       })
       .catch(handler);
     }
   }
 
-  // TODO
-  function addCurrency(currency) {
+  // configure the currency account for a cashbox
+  function configureCurrency(currency) {
+
     var instance = $uibModal.open({
       templateUrl : 'partials/cash/cashboxes/modal.html',
       controller : 'CashboxCurrencyModalController as CashboxModalCtrl',
       size : 'md',
       backdrop : 'static',
+      animation: false,
       resolve : {
         currency : function () {
           return currency;
         },
-        cashboxId : function () {
-          return vm.id;
-        }
+        cashbox : function () {
+          return vm.box;
+        },
+        data : function () {
+
+          // catch in case of 404, none specified default to empty object
+          return Boxes.currencies.read(vm.box.id, currency.id)
+            .catch(function () { return {}; });
+        },
       }
     });
 
-    instance.result.then(function (data) {
-      console.log('here is data:', data);
-    });
+    instance.result
+      .then(function (data) {
+        vm.state.update();
+        return loadCashbox(vm.box.id);
+      })
+      .catch(handler);
   }
 
   startup();

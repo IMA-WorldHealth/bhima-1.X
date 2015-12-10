@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 CashboxCurrencyModalController.$inject = [
   '$uibModalInstance', 'AccountService', 'CashboxService',
-  'currency', 'cashboxId'
+  'currency', 'cashbox', 'data'
 ];
 
 /**
@@ -13,18 +13,22 @@ CashboxCurrencyModalController.$inject = [
 * cashboxes.  Each cashbox must a currencied account defined for each currency
 * supported by the application.
 */
-function CashboxCurrencyModalController($instance, Accounts, Boxes, currency, cashboxId) {
+function CashboxCurrencyModalController($instance, Accounts, Boxes, currency, cashbox, data) {
   var vm = this;
+
+  // determine whether we will send a POST or a PUT request to the server
+  var method = (cashbox.currencies.indexOf(currency.id) > -1) ?
+    'update' :
+    'create';
 
   // bind data
   vm.currency = currency;
-  vm.data = {
-    cashbox_id : cashboxId,
-    currency_id : currency.id
-  };
+  vm.cashbox = cashbox;
+  vm.data = data;
+  vm.data.currency_id = currency.id;
 
-  // bind methods
-  vm.cancel = cancel;
+  // bind methods to the view-model
+  vm.dismiss = $instance.dismiss;
   vm.submit = submit;
 
   /* ------------------------------------------------------------------------ */
@@ -35,31 +39,42 @@ function CashboxCurrencyModalController($instance, Accounts, Boxes, currency, ca
     console.log(error);
   }
 
+  // startup script for the controller
   function startup() {
-    loadAccounts();
+
+    // load accounts and properly formats their labels
+    Accounts.list()
+      .then(function (accounts) {
+
+        // compute account labels once and use for all time
+        // @todo should this be done in the account service?
+        accounts.forEach(function (account) {
+          account.label = account.account_number + ' ' + account.account_txt;
+        });
+
+        vm.accounts = accounts;
+      })
+      .catch(handler);
   }
 
-  // loads accounts and properly formats their
-  function loadAccounts() {
-    Accounts.list().then(function (accounts) {
+  // return data to the
+  function submit(form) {
 
-      // label accounts
-      accounts.forEach(function (account) {
-        account.label = account.account_number + ' ' + account.account_txt;
-      });
+    // if the form has errors, exit immediately
+    if (form.$invalid) { return; }
 
-      vm.accounts = accounts;
-    }).catch(handler);
-  }
+    // if the form was never touched, just dismiss it.
+    if (form.$pristine) { vm.dismiss(); }
 
-  // return data to the 
-  function submit(invalid) {
-    if (invalid) { return; }
-    $instance.close(vm.data);
-  }
+    // send either a create or an update request to the server
+    var promise = (method === 'create') ?
+      Boxes.currencies.create(vm.cashbox.id, vm.data) :
+      Boxes.currencies.update(vm.cashbox.id, vm.data);
 
-  function cancel() {
-    $instance.dismiss();
+    // upon successful completion, close the modal or error out
+    promise
+      .then($instance.close)
+      .catch(handler);
   }
 
   // startup the controller

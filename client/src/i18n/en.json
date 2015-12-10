@@ -265,6 +265,10 @@
       "EDIT"                   : "Edit",
       "IS_AUXILLARY"           : "Auxillary ?",
       "IS_BANK"                : "Bank ?",
+      "BANK"                   : "Bank",
+      "AUXILLARY"              : "Auxillary",
+      "PRIMARY"                : "Primary",
+      "CASHBOX"                : "Cashbox",
       "NO_BOX"                 : "No cashbox",
       "TITLE"                  : "Cashbox Management",
       "PROJECT"                : "Project",
@@ -316,14 +320,6 @@
   "DESCRIPTION"      : "Description",
   "SUBMIT"           : "Submit",
   "TITLE"            : "Cash discard"
-},
-"CASHBOX":      {
-  "TYPE":       "Type",
-  "CURRENCIES": "Currencies",
-  "PRIMARY":    "Primary",
-  "AUXILLARY":  "Auxillary",
-  "BANK":       "Bank",
-  "CASHBOX" : "Cashbox"
 },
 "CASH_PAYMENTS": {
    "ALL_PROJECTS" : "All Projects",

@@ -236,12 +236,12 @@ function sanitize(x) {
 }
 
 module.exports = {
-  initialise : initialise,
-  exec : exec,
-  transaction : transaction,
-  execute : execute,
-  sanitize : sanitize, // FIXME: is this even used?
-  escape : sanitize
+  initialise:  initialise,
+  exec:        exec,
+  transaction: transaction,
+  execute:     execute,
+  sanitize:    sanitize, // FIXME: is this even used?
+  escape:      sanitize
 };
 
 //module.exports = db;

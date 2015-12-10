@@ -210,7 +210,7 @@ exports.currencies.details = function detailCurrencies(req, res, next) {
       throw req.codes.NOT_FOUND;
     }
 
-    res.status(200).json(rows);
+    res.status(200).json(rows[0]);
   })
   .catch(next)
   .done();
@@ -253,11 +253,11 @@ exports.currencies.update = function updateCurrency(req, res, next) {
     'WHERE cash_box_id = ? AND currency_id = ?;';
 
   db.exec(sql, [data, req.params.id, req.params.currencyId])
-  .then(function () {
+  .then(function (result) {
 
     // send the changed object to the client
     sql =
-      'SELECT id,  loss_exchange_account_id, account_id, ' +
+      'SELECT id, loss_exchange_account_id, account_id, ' +
         'gain_exchange_account_id, virement_account_id ' +
       'FROM cash_box_account_currency ' +
       'WHERE cash_box_id = ? AND currency_id = ?;';
@@ -265,6 +265,11 @@ exports.currencies.update = function updateCurrency(req, res, next) {
     return db.exec(sql, [req.params.id, req.params.currencyId ]);
   })
   .then(function (rows) {
+
+    // in case an unknown id is sent to the server
+    if (!rows.length) {
+      return res.status(200).json({});
+    }
 
     res.status(200).json(rows[0]);
   })

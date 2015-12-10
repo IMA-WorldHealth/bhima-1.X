@@ -14,8 +14,10 @@ function CashboxService($http, util) {
   service.update = update;
   service.delete = del;
   service.currencies = {};
-  service.currencies.create = createCurrencies;
   service.currencies.read = readCurrencies;
+  service.currencies.create = createCurrencies;
+  service.currencies.update = updateCurrencies;
+
 
   /* ------------------------------------------------------------------------ */
 
@@ -47,15 +49,33 @@ function CashboxService($http, util) {
       .then(util.unwrapHttpResponse);
   }
 
-  function createCurrencies(id, data) {
+  // this will read either all cashbox currency accounts or a specific
+  // cashbox currency account.
+  function readCurrencies(id, currencyId) {
     var url = '/cashboxes/' + id + '/currencies';
-    return $http.post(url, { currencies : data })
+
+    // attache the currencyId if it exists
+    if (currencyId) { url += '/' + currencyId; }
+
+    return $http.get(url)
       .then(util.unwrapHttpResponse);
   }
 
-  function readCurrencies(id) {
+  function createCurrencies(id, data) {
     var url = '/cashboxes/' + id + '/currencies';
-    return $http.get(url)
+    return $http.post(url, data)
+      .then(util.unwrapHttpResponse);
+  }
+
+  function updateCurrencies(cashboxId, data) {
+    var currencyId = data.currency_id;
+    var url = '/cashboxes/' + cashboxId + '/currencies/' + currencyId;
+
+    // delete potentially duplicate data entries
+    delete data.currency_id;
+    delete data.id;
+
+    return $http.put(url, data)
       .then(util.unwrapHttpResponse);
   }
 

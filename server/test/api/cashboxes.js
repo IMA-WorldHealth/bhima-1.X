@@ -32,10 +32,10 @@ describe('The /cashboxes API endpoint', function () {
 
   // new cashbox
   var BOX = {
-    text : 'New Cashbox C',
-    project_id : PROJECT_ID,
-    is_auxillary : 1,
-    is_bank : 0
+    text:         'New Cashbox C',
+    project_id:   PROJECT_ID,
+    is_auxillary: 1,
+    is_bank:      0
   };
 
   // new cashbox account currency
@@ -150,6 +150,27 @@ describe('The /cashboxes API endpoint', function () {
       .catch(handler);
   });
 
+  it('GET /cashboxes/:id/currencies/:currencyId should return a single cashbox currency reference', function () {
+    return agent.get('/cashboxes/' + BOX.id + '/currencies/' + BOX_CURRENCY.currency_id)
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).not.to.be.empty;
+        expect(res.body.account_id).to.equal(BOX_CURRENCY.account_id);
+        expect(res.body.virement_account_id).to.equal(BOX_CURRENCY.virement_account_id);
+        expect(res.body.gain_exchange_account_id).to.equal(BOX_CURRENCY.gain_exchange_account_id);
+        expect(res.body.loss_exchange_account_id).to.equal(BOX_CURRENCY.loss_exchange_account_id);
+      });
+  });
+
+  it('GET /cashboxes/:id/currencies/unknown should return a single cashbox currency reference', function () {
+    return agent.get('/cashboxes/' + BOX.id + '/currencies/unknown')
+      .then(function (res) {
+        expect(res).to.have.status(404);
+      });
+  });
+
+
   it('PUT /cashboxes/:id/currencies/:currencyId should update a new currency account', function () {
     return agent.put('/cashboxes/' + BOX.id + '/currencies/' + BOX_CURRENCY.currency_id)
       .send({ gain_exchange_account_id : 3635 })
@@ -159,6 +180,17 @@ describe('The /cashboxes API endpoint', function () {
         expect(res.body.account_id).to.equal(BOX_CURRENCY.account_id);
         expect(res.body.gain_exchange_account_id).not.to.equal(BOX_CURRENCY.gain_exchange_account_id);
         expect(res.body.loss_exchange_account_id).to.equal(BOX_CURRENCY.gain_exchange_account_id);
+      })
+      .catch(handler);
+  });
+
+  it('PUT /cashboxes/:id/currencies/undefined should return a 200 code', function () {
+    return agent.put('/cashboxes/' + BOX.id + '/currencies/undefined')
+      .send({ gain_exchange_account_id : 3635 })
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.be.empty;
       })
       .catch(handler);
   });
