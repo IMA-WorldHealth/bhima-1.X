@@ -120,13 +120,13 @@ CREATE TABLE `cash_box` (
 
 DROP TABLE IF EXISTS `cash_box_account_currency`;
 CREATE TABLE `cash_box_account_currency` (
-  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `currency_id` tinyint(3) unsigned NOT NULL,
-  `cash_box_id` mediumint(8) unsigned NOT NULL,
-  `account_id` int(10) unsigned DEFAULT NULL,
-  `gain_exchange_account_id` int(10) unsigned DEFAULT '981',
-  `loss_exchange_account_id` int(10) unsigned DEFAULT '718',
-  `virement_account_id` int(11) DEFAULT NULL,
+  `id` mediumint unsigned NOT NULL AUTO_INCREMENT,
+  `currency_id` tinyint unsigned NOT NULL,
+  `cash_box_id` mediumint unsigned NOT NULL,
+  `account_id` int unsigned NOT NULL,
+  `gain_exchange_account_id` int unsigned NOT NULL,
+  `loss_exchange_account_id` int unsigned NOT NULL,
+  `virement_account_id` int unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `currency_id` (`currency_id`),
   KEY `cash_box_id` (`cash_box_id`),
