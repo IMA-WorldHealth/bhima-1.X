@@ -208,7 +208,7 @@
       "PREVIOUS_BUDGET"    : "Budget(s) precedant(s)",
       "SELECT_BUDGET"      : "Selectionner le Budget",
       "SELECT_PERIOD"      : "Selectionner la periode",
-      "SELECT_REF_ACCOUNT" : "Selectionner le referentiel comptable",
+      "SELECT_REF_ACCOUNT" : "Selectionner le référentiel comptable",
       "TITLE"              : "Analyse Budgetaire",
       "VALIDATE"           : "Validate",
       "VIEW_MODE"          : "Mode d'affichage"
@@ -819,7 +819,7 @@
    "CREDITOR_GROUPS" : "Groupe Créditeur",
    "DETAILS"         : "Détails Groupe Créditeur",
    "HELP_TXT"        : "La page de gestion des Groupe des Créditeurs",
-   "NEW"             : "Nouveau Group Créditeur",
+   "NEW"             : "Nouveau Groupe Créditeur",
    "NEW_FORM"        : "Nouveau Formulaire",
    "SAVE_CHANGES"    : "Sauver Changements",
    "TITLE"           : "Gestion des Groupe des Créditeurs"
@@ -2495,7 +2495,7 @@
    },
 "SELECT": {
    "ACCOUNT"               : "Sélectionner Compte",
-   "ACCOUNT_REFERENTIIAL"  : "Sélectionner le referentielle de comptes",
+   "ACCOUNT_REFERENTIIAL"  : "Sélectionner le référentiel des comptes",
    "ACCOUNT_TYPE"          : "Sélectionner Type de Compte",
    "ALL"                   : "Tous",
    "BALANCE_SECTION"       : "Sélectionner la section du bilan",
