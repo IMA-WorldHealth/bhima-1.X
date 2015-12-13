@@ -17,7 +17,7 @@ var gulp       = require('gulp'),
     iife       = require('gulp-iife'),
     rimraf     = require('rimraf'),
     gutil      = require('gulp-util'),
-    less       = require('gulp-less');
+    less       = require('gulp-less'),
 
     // mocha for server-side testing
     mocha      = require('gulp-mocha'),
@@ -31,7 +31,7 @@ var gulp       = require('gulp'),
 
 // constants
 // toggle client javascript minification
-var UGLIFY = true,
+var UGLIFY = false,
 
     // path to the jshintrc to use
     JSHINT_PATH = '.jshintrc',
@@ -144,18 +144,18 @@ gulp.task('client-vendor-build-slickgrid', function () {
     .pipe(gulp.dest(CLIENT_FOLDER + 'vendor/slickgrid'));
 });
 
-gulp.task('client-vendor-build-bootstrap', function () { 
-  
+gulp.task('client-vendor-build-bootstrap', function () {
+
   /**
    * For now this just moves the latest version of bootstrap into the repository
-   * This build process should compile the latest bhima less definition with the 
+   * This build process should compile the latest bhima less definition with the
    * latest vendor files
    * - move less file to bootstrap vendor folder
    * - compile with lessc
    * - copy CSS into static file folder
    */
-  
-  var bhimaDefinition = 'client/src/less/bhima-bootstrap.less'
+
+  var bhimaDefinition = 'client/src/less/bhima-bootstrap.less';
 
   return gulp.src(bhimaDefinition)
     .pipe(gulp.dest('client/vendor/bootstrap/less'))
@@ -192,7 +192,7 @@ gulp.task('watch-client', function () {
 });
 
 // TODO This message can be removed once the lint/build process has been transitioned
-gulp.task('notify-lint-process', function () { 
+gulp.task('notify-lint-process', function () {
   gutil.log(gutil.colors.yellow('REMINDER: Please ensure you have run the command `gulp lint` before submitting a pull request to github'));
 });
 
@@ -201,9 +201,9 @@ gulp.task('build-client', ['client-clean'], function () {
   gulp.start('client-minify-js', 'client-minify-css', 'client-mv-vendor', 'client-vendor-build-slickgrid', 'client-vendor-build-bootstrap', 'client-mv-static', 'notify-lint-process');
 });
 
-// Lint client code seperately from build process 
+// Lint client code seperately from build process
 // TODO Processes for linting server code - requires uncategorised commit update
-gulp.task('lint', ['client-clean'], function () { 
+gulp.task('lint', ['client-clean'], function () {
   gulp.start('client-lint-js', 'client-lint-i18n');
 });
 

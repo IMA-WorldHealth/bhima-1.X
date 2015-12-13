@@ -10,6 +10,7 @@ CashController.$inject = [
 function CashController($scope, $location, $modal, $q, connect, Appcache, appstate, messenger, validate, exchange, util, precision, calc, uuid, Session) {
   var vm = this;
   var cache = new Appcache('cash');
+  var session;
 
   // bind data
   vm.user = Session.user;
@@ -105,7 +106,7 @@ function CashController($scope, $location, $modal, $q, connect, Appcache, appsta
   $scope.digestTotal = function () {
     $scope.data.raw = $scope.queue.reduce(addTotal, 0);
     if (!$scope.cashbox) { return; }
-    var dirty = calc(data.raw, $scope.currency.currency_id);
+    var dirty = calc($scope.data.raw, $scope.currency.currency_id);
     $scope.data.total = dirty.total;
     $scope.data.difference = dirty.difference;
 
@@ -132,8 +133,8 @@ function CashController($scope, $location, $modal, $q, connect, Appcache, appsta
       invoice.remaining = precision.compare(invoice.locale, invoice.allocated);
     });
 
-    var over  = data.payment - data.total;
-    data.overdue = over > 0 ? over : 0;
+    var over  = $scope.data.payment - $scope.data.total;
+    $scope.data.overdue = over > 0 ? over : 0;
 
   };
 

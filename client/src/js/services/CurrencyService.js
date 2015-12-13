@@ -10,7 +10,7 @@ function CurrencyService($http, $q, util) {
 
   service.read = read;
   service.symbol = symbol;
-  service.name = name;
+  service.name = namer;
 
   /* ------------------------------------------------------------------------ */
 
@@ -42,7 +42,7 @@ function CurrencyService($http, $q, util) {
     return map ? map[id].symbol : '';
   }
 
-  function name(id) {
+  function namer(id) {
     return map ? map[id].name : '';
   }
 

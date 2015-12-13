@@ -362,5 +362,5 @@ exports.configure = function (app) {
 
   // @todo - classify these
   app.get('/cashflow/report/', cashflow.getReport);
-  app.get('/stock/entries?', depot.getStockEntry);
+  //app.get('/stock/entries?', depot.getStockEntry);
 };
