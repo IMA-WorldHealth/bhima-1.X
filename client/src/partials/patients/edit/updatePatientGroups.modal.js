@@ -31,7 +31,7 @@ function UpdatePatientGroups($scope, $uibModalInstance, patients, sessionPatient
     
     // Simply exit the modal
     if (!formIsUpdated) { 
-      close(); 
+      closeModal(); 
       return;
     }
 
@@ -54,9 +54,9 @@ function UpdatePatientGroups($scope, $uibModalInstance, patients, sessionPatient
         // /TODO 
         
         updateModel(formatControllerResponse);
-        close();
+        closeModal();
       });
-  }
+  };
 
   // TODO Refactor - use stores?
   function fetchGroupObject(uuid) { 
@@ -72,9 +72,9 @@ function UpdatePatientGroups($scope, $uibModalInstance, patients, sessionPatient
     return groupObject;
   }
   
-  viewModel.close = close;
+  viewModel.closeModal = closeModal;
 
-  function close() { 
+  function closeModal() { 
     $uibModalInstance.dismiss();
   }
 }

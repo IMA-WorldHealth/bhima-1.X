@@ -10,6 +10,25 @@ function UtilService($filter) {
     return response.data;
   };
 
+  service.filterDirtyFormElements = function filterDirtyFormElements(formDefinition) { 
+    var response = {};
+
+    angular.forEach(formDefinition, function (value, key) { 
+
+      // Determine angular elements, these can be ignored
+      var isAngularAttribute = key.substring(0, 1) === '$';
+      
+      if (!isAngularAttribute) { 
+        
+        // Only format and assign dirty values that have changed 
+        if (value.$dirty) { 
+          response[key] = value.$modelValue;
+        }
+      }
+    });
+    return response;
+  };
+
   service.formatDate = function formatDate(dateString) {
     return new Date(dateString).toDateString();
   };
@@ -74,5 +93,7 @@ function UtilService($filter) {
   };
 
   // Define the minimum date for any patient data
-  service.minPatientDate = new Date('1900-01-01');
+  service.defaultBirthMonth = '06-01';
+  service.minDOB = new Date('1900-01-01');
+  service.maxDOB = new Date();
 }

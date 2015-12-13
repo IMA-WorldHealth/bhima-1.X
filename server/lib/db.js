@@ -94,7 +94,7 @@ function execTransaction(queryList) {
         return deferred.reject(error);
       }
       
-      console.log('[Transaction] begin transaction');
+      // console.log('[Transaction] begin transaction');
 
       // Successful transaction initialisation
       transactionPromises = queryList.map(function (queryObject) { 
@@ -111,7 +111,7 @@ function execTransaction(queryList) {
           connection.commit(function (error) { 
             if (error) { 
               connection.rollback(function () { 
-                console.log('[Transaction] Commit failure - rollback success');
+                // console.log('[Transaction] Commit failure - rollback success');
 
                 connection.release();
                 deferred.reject(error);
@@ -120,7 +120,7 @@ function execTransaction(queryList) {
             }
         
             connection.release();
-            console.log('[Transaction] Commit success - all changes saved');
+            // console.log('[Transaction] Commit success - all changes saved');
             deferred.resolve(results);
           });
         })
@@ -128,7 +128,7 @@ function execTransaction(queryList) {
           
           // Individual query did not work - rollback transaction
           connection.rollback(function () { 
-            console.log('[Transaction] Query failure - rollback success');
+            // console.log('[Transaction] Query failure - rollback success');
             connection.release();
             deferred.reject(error); 
           });
@@ -226,7 +226,7 @@ function queryConnection(connection, sql, params) {
     return deferred.resolve(result);
   });
 
-  console.log('[Transaction] Query :', qs.sql);
+  // console.log('[Transaction] Query :', qs.sql);
   
   return deferred.promise;
 }

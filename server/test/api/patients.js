@@ -2,6 +2,8 @@ var chai = require('chai');
 var chaiHttp = require('chai-http');
 var expect = chai.expect;
 
+var q = require('q');
+
 var url = 'https://localhost:8080';
 var user = { 
   username : 'superuser', 
@@ -73,6 +75,25 @@ describe('The /patients API', function () {
     incorrectLayout : mockDebtor,
     incorrectTest : mockPatient
   }
+  
+  var simultaneousPatient = { 
+    first_name : 'Simultaneous',
+    middle_name : 'Patient', 
+    last_name : 'Last',
+    dob : '1993-06-01T00:00:00.000Z',
+    current_location_id : 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
+    origin_location_id : 'bda70b4b-8143-47cf-a683-e4ea7ddd4cff',
+    sex : 'M',
+    project_id : 1,
+    hospital_no : 122,
+  };
+
+  var simultaneousRequest = { 
+    finance : { 
+      debitor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
+    }, 
+    medical : simultaneousPatient
+  };
 
   // Assumes test database is built with the following information
   // Logs in before each test
@@ -188,39 +209,147 @@ describe('The /patients API', function () {
         expect(result.body).to.have.length(TOTAL_PATIENT_GROUPS);
       })
       .catch(handle);
+  }); 
+
+  it('Simultaneous patient registration requests respect reference lock', function () { 
+    
+    // Custom timeout 
+    this.timeout(30000);
+    
+    var patientQuery = [];
+
+    // Extreme case 
+    // var NUMBER_OF_PATIENTS = 200;
+    // var timeoutInterval = 30;
+
+    var NUMBER_OF_PATIENTS = 3;
+    var timeoutInterval = 0;
+  
+    var timeout = 0;
+    var baseHospitalNo = 1000;
+  
+    // Settup all patient write requests 
+    for (var i = 0; i < NUMBER_OF_PATIENTS; i++) { 
+      patientQuery.push(delayPatientRequest(timeout, baseHospitalNo + i));
+      timeout += timeoutInterval;
+    }
+    
+    // Catch all patient write requests
+    return q.all(patientQuery)
+      .then(function (result) { 
+        var detailsQuery = [];
+  
+              
+        // Settup all patient read requests
+        result.forEach(function (patient) { 
+          expect(patient).to.have.status(201);
+          detailsQuery.push(agent.get('/patients/'.concat(patient.body.uuid)));
+        });
+        
+        // Catch all patient read requests
+        return q.all(detailsQuery);
+      })
+      .then(function (finalResult) { 
+        
+        var references = [];
+    
+        // Verify unqiue references
+        finalResult.forEach(function (patientDetail) { 
+          var patientReference;
+
+          expect(patientDetail).to.have.status(200);
+          
+          patientReference = patientDetail.body.reference;
+          expect(references).to.not.include(patientReference);
+          references.push(patientReference);
+        });
+      })
+      .catch(handle);
   });
   
-  describe('Updating patient group assignment', function () { 
+ describe('Updating patient group assignment', function () { 
+
+   it('POST /patients/:id/groups will update a patients groups', function () { 
+     
+     // 0b8fcc00-8640-479d-872a-31d36361fcfd
+     var groupAssignment = { 
+       assignments : ['112a9fb5-847d-4c6a-9b20-710fa8b4da24']
+     };
     
-    it('POST /patients/:id/groups will update a patients groups', function () { 
+     return agent.post('/patients/'.concat(mockPatientUuid, '/groups'))
+      .send(groupAssignment)
+      .then(function (result) { 
 
-    });
+        var assignResult;
+        
+        expect(result).to.have.status(200);
+        expect(result.body).to.not.be.empty;
+        
+        assignResult = result.body[1];
 
-    it('Specified patients group assignments reflect the recent update', function () { 
+        expect(assignResult.affectedRows).to.equal(groupAssignment.assignments.length);
+      })
+      .catch(handle);
+   });
+  
+   /* 
+   it('Specified patients group assignments reflect the recent update', function () { 
+      
+     // Not implemented
+     expect(true).to.be.false;
+   });
 
-    });
+   it('POST /patients/:id/groups will fail with 400 for a bad group request', function () { 
+      
+     // Not implemented
+     expect(true).to.be.false;
+   });
 
-    it('POST /patients/:id/groups will fail with 400 for a bad group request', function () { 
+   it('POST /patients/:id/groups will fail with 400 for an invalid patient ID', function () { 
 
-    });
+     // Not implemented
+     expect(true).to.be.false;
+   });
 
-    it('POST /patients/:id/groups will fail with 400 for an invalid patient ID', function () { 
+   it('POST /patients/:id/groups will fail with 400 MISSING_INFO if no assignments object is passed', function () { 
+    
+     // Not implemented
+     expect(true).to.be.false;
+   });
 
-    });
-
-    it('POST /patients/:id/groups will fail with 400 MISSING_INFO if no assignments object is passed', function () { 
-
-    });
-
-    it('POST /patients/:id/groups with no group assignments removes all patients group assignments', function () { 
-
-    });
+   it('POST /patients/:id/groups with no group assignments removes all patients group assignments', function () { 
+      
+     // Not implemented
+     expect(true).to.be.false;
+    });*/
   });
    
   // TODO get information on the registered patient - ensure details route is correct 
   // TODO Reject duplicate hospital number
   // TODO Test that transaction is rolled back successfully gien invalid patient
   
+  function delayPatientRequest(timeout, hospitalNo) { 
+    var deferred = q.defer();
+    
+    setTimeout(function () { 
+    
+      simultaneousRequest.medical.hospital_no = hospitalNo;
+      
+      agent.post('/patients')
+        .send(simultaneousRequest)
+        .then(function (result) { 
+
+          deferred.resolve(result);
+        })
+        .catch(function (error) { 
+          deferred.reject(error);
+        });
+    }, 
+    timeout);
+
+    return deferred.promise;
+  }
+
   function handle(error) {
     throw error;
   }

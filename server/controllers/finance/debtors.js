@@ -85,7 +85,8 @@ function update(req, res, next) {
     .then(function (updatedDebtor) { 
       res.status(200).json(updatedDebtor);
     })
-    .catch(next);
+    .catch(next)
+    .done();
 }
 
 function handleFetchDebtor(uuid) { 

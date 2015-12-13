@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 /**
  * @description 
@@ -25,6 +25,13 @@ function Patients($http) {
     var path = '/patients';
 
     return $http.post(path, details)
+      .then(extractData);
+  }
+
+  function update(uuid, definition) { 
+    var path = '/patients/';
+
+    return $http.put(path.concat(uuid), definition)
       .then(extractData);
   }
   
@@ -69,11 +76,9 @@ function Patients($http) {
     var groupUuids = Object.keys(groupFormOptions);
   
     var formatted = groupUuids.filter(function (groupUuid) { 
-      var subscribed = groupFormOptions[groupUuid];
-
-      if (subscribed) { 
-        return groupUuid;
-      }
+      
+      // Filter out UUIDs without a true subscription
+      return groupFormOptions[groupUuid];
     });
 
     return { 
@@ -84,9 +89,10 @@ function Patients($http) {
   return {
     detail : detail,
     create : create,
-    logVisit : logVisit, 
+    update : update,
     groups : groups,
-    updateGroups : updateGroups
+    updateGroups : updateGroups,
+    logVisit : logVisit
   };
 }
 

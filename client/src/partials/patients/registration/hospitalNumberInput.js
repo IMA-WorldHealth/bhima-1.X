@@ -7,13 +7,23 @@ function HospitalNumber($q, $http, $timeout) {
   
   return { 
     require : 'ngModel',
+    scope : { 
+      registeredValue : '='
+    },
     link : function (scope, elm, attrs, ctrl) { 
+      var nochecks = 0;
 
       ctrl.$asyncValidators.hospitalNumber = function (modelValue, viewValue) { 
         var deferred;
         var path = '/patients/checkHospitalId/';
 
         if (ctrl.$isEmpty(modelValue)) { 
+          return $q.when();
+        }
+        
+        // Ignore the current registered patients hospital number, this should not be flagged as existing 
+        // as it belongs to the current patient
+        if (modelValue === scope.registeredValue) { 
           return $q.when();
         }
 
@@ -36,7 +46,7 @@ function HospitalNumber($q, $http, $timeout) {
           });
         
         return deferred.promise;
-      }
+      };
     }
-  }
+  };
 }

@@ -10,6 +10,7 @@ var db = require('../../lib/db'),
 
 exports.create = create;
 exports.details = details;
+exports.update = update;
 exports.list = list;
 exports.search = search;
 
@@ -29,7 +30,7 @@ exports.verifyHospitalNumber = verifyHospitalNumber;
 
 // TODO Method handles too many operations
 function create(req, res, next) { 
-  var writeDebtorQuery, writePatientQuery;
+  var writeDebtorQuery, calculateReferenceQuery, writePatientQuery;
   var invalidParameters;
   var patientText;
 
@@ -43,7 +44,7 @@ function create(req, res, next) {
   // Debtor group required for financial modelling
   invalidParameters = !finance || !medical;
   
-    if (invalidParameters) { 
+  if (invalidParameters) { 
     
     // FIXME This should be handled by middleware
     res.status(400).json({
@@ -60,13 +61,19 @@ function create(req, res, next) {
 
   writeDebtorQuery = 'INSERT INTO debitor (uuid, group_uuid, text) VALUES ' +
     '(?, ?, ?)';
-
-  writePatientQuery = 'INSERT INTO patient SET ?';
+  
+  // calculateReferenceQuery = 'SET @reference = (SELECT MAX(reference) from patient WHERE project_id = ? LOCK IN SHARE MODE) + 1';
+  calculateReferenceQuery = 'SET @reference = (SELECT MAX(reference) from patient WHERE project_id = ? FOR UPDATE) + 1';
+  // calculateReferenceQuery = 'SET @reference = (SELECT MAX(reference) from patient WHERE project_id = ?) + 1';
+  
+  // writePatientQuery = 'INSERT INTO patient SET ?';
+  writePatientQuery = 'INSERT INTO patient SET ?, reference = (SELECT @reference)';
     
   transaction = db.transaction();
 
   transaction
     .addQuery(writeDebtorQuery, [finance.uuid, finance.debitor_group_uuid, generatePatientText(medical)])
+    .addQuery(calculateReferenceQuery, [req.session.project.id])
     .addQuery(writePatientQuery, [medical]);
   
   transaction.execute()
@@ -90,20 +97,11 @@ function generatePatientText(patient) {
   return textLineDefault.concat(patient.last_name, '/', patient.middle_name);
 }
 
+// TODO review if this many details should be returned under a patient end point
 function details(req, res, next) { 
-  var patientDetailQuery;
   var uuid = req.params.uuid;
   
-  patientDetailQuery =
-    'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name, p.middle_name, p.hospital_no, ' +
-      'p.sex, p.dob, p.origin_location_id, p.reference, proj.abbr, d.text, ' +
-      'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.uuid as debitor_group_uuid, dg.locked, dg.name as debitor_group_name ' +
-    'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
-    'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id ' +
-    'WHERE p.uuid = ?';
-    // 'SELECT * FROM debitor JOIN patient ON patient.debitor_uuid = debitor.uuid WHERE patient.uuid = ?';
-
-  db.exec(patientDetailQuery, [uuid])
+  handleFetchPatient(uuid)
     .then(function(result) { 
       var patientDetail;
 
@@ -122,6 +120,50 @@ function details(req, res, next) {
     })
     .catch(next)
     .done();
+}
+
+function update(req, res, next) { 
+  var updatePatientQuery;
+  var queryData = req.body;
+  var patientId = req.params.uuid;
+  
+  // TODO This should never be matched by express - review and remove if true
+  if (!patientId) { 
+    res.status(400).json({
+      code : 'ERR_INVALID_REQUEST',
+      reason : 'A valid patient UUID must be provided to update a patient\'s record.'
+    });
+    return;
+  }
+
+  updatePatientQuery = 
+    'UPDATE patient SET ? WHERE uuid = ?';
+  
+  db.exec(updatePatientQuery, [queryData, patientId])
+    .then(function (result) { 
+    
+      return handleFetchPatient(patientId);
+    })
+    .then(function (updatedPatientResults) { 
+      var updatedPatient = updatedPatientResults[0];
+
+      res.status(200).json(updatedPatient);
+    })
+    .catch(next)
+    .done();
+}
+
+function handleFetchPatient(uuid) { 
+  var patientDetailQuery = 
+    'SELECT p.uuid, p.project_id, p.debitor_uuid, p.first_name, p.last_name, p.middle_name, p.hospital_no, ' +
+      'p.sex, p.email, p.phone, p.dob, p.origin_location_id, p.reference, p.title, p.address_1, p.address_2, p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse, p.spouse_profession, ' + 
+      'p.spouse_employer, p.notes, proj.abbr, d.text, ' +
+      'dg.account_id, dg.price_list_uuid, dg.is_convention, dg.uuid as debitor_group_uuid, dg.locked, dg.name as debitor_group_name ' +
+    'FROM patient AS p JOIN project AS proj JOIN debitor AS d JOIN debitor_group AS dg ' +
+    'ON p.debitor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id ' +
+    'WHERE p.uuid = ?';
+  
+  return db.exec(patientDetailQuery, [uuid]);
 }
 
 function groups(req, res, next) { 
