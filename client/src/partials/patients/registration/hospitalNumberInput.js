@@ -46,7 +46,7 @@ function HospitalNumber($q, $http, $timeout) {
           });
         
         return deferred.promise;
-      }
+      };
     }
-  }
+  };
 }

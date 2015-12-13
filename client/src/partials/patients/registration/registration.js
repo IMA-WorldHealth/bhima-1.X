@@ -57,7 +57,7 @@ function PatientRegistrationController($scope, $location, patients, debtors, uti
         
         //TODO Hospital card should recieve a value that notifies the user of register success
         $location.path(patientCardPath.concat(confirmation.uuid));
-      })
+      });
   };
   
   /**
@@ -74,9 +74,9 @@ function PatientRegistrationController($scope, $location, patients, debtors, uti
   //FIXME Location directive relies on the $scope object
   $scope.setOriginLocation = function setOriginLocation(uuid) {
     viewModel.medical.origin_location_id = uuid;
-  }
+  };
 
   $scope.setCurrentLocation = function setCurrentLocation(uuid) {
     viewModel.medical.current_location_id = uuid;
-  }
+  };
 }

@@ -35,7 +35,7 @@ function UpdateDebtorGroup($scope, $uibModalInstance, debtors, patient, updateMo
 
     // Simply exit the modal
     if (!formIsUpdated) { 
-      close(); 
+      closeModal(); 
       return;
     }
   
@@ -50,14 +50,14 @@ function UpdateDebtorGroup($scope, $uibModalInstance, debtors, patient, updateMo
           viewModel.debitor_group_uuid,
           fetchGroupName(viewModel.debitor_group_uuid));
         
-        close();
+        closeModal();
       });
      
-  }
+  };
   
-  viewModel.close = close;
+  viewModel.closeModal = closeModal;
 
-  function close() { 
+  function closeModal() { 
     $uibModalInstance.dismiss();
   }
 }
