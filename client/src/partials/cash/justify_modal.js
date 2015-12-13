@@ -1,19 +1,23 @@
 angular.module('bhima.controllers')
-.controller('justifyModal', ['$scope', '$modalInstance', 'data', justifyModal]);
+.controller('CashJustifyModalController', CashModalController);
 
-function justifyModal($scope, $modalInstance, data) {
-	$scope.bill = data;
-	$scope.bill.valid = false;
+CashModalController.$inject = ['$modalInstance', 'data' ];
 
-	$scope.submit = function () {
-	  $modalInstance.close($scope.bill.justification);
-	};
+function CashModalController($modalInstance, data) {
+  var vm = this;
 
-	$scope.cancel = function () {
+  // bind props
+	vm.bill = data;
+
+  // bind methods
+  vm.submit = submit;
+  vm.cancel = cancel;
+
+	function submit() {
+	  $modalInstance.close(vm.bill.justification);
+	}
+
+	function cancel() {
 	  $modalInstance.dismiss();
-	};
-
-	$scope.$watch('bill.justification', function () {
-	  $scope.bill.valid = $scope.bill.justification ? $scope.bill.justification.length > 25 : false;
-	});
+	}
 }

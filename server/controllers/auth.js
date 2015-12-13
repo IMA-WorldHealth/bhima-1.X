@@ -7,7 +7,7 @@ var db = require('../lib/db');
 // username, password and project id for user.  Upon
 // successful login, it creates a user session with
 // all enterprise, project, and user data for easy access.
-exports.login = function (req, res, next) {
+exports.login = function login(req, res, next) {
   'use strict';
 
   var sql,
@@ -26,7 +26,9 @@ exports.login = function (req, res, next) {
   .then(function (rows) {
 
     // if no data found, we return a login error
-    if (rows.length === 0) { throw 'ERR_LOGIN'; }
+    if (rows.length < 1) {
+      throw req.codes.ERR_BAD_CREDENTIALS;
+    }
 
     // we assume only one match for the user
     user = rows[0];
@@ -40,7 +42,9 @@ exports.login = function (req, res, next) {
   .then(function (rows) {
 
     // if no permissions, notify the user that way
-    if (rows.length === 0) { throw 'ERR_NO_PERMISSIONS'; }
+    if (rows.length === 0) {
+      throw req.codes.ERR_NO_PERMISSIONS;
+    }
 
     // update the database for when the user logged in
     sql = 'UPDATE user SET user.active = 1, user.last_login = ? WHERE user.id = ?;';
@@ -60,7 +64,9 @@ exports.login = function (req, res, next) {
     return db.exec(sql, [user.enterprise_id]);
   })
   .then(function (rows) {
-    if (rows.length === 0) { throw 'ERR_NO_ENTERPRISE'; }
+    if (rows.length === 0) {
+      throw req.codes.ERR_NO_ENTERPRISE;
+    }
 
     enterprise = rows[0];
 
@@ -70,7 +76,9 @@ exports.login = function (req, res, next) {
     return db.exec(sql, [user.project_id]);
   })
   .then(function (rows) {
-    if (rows.length === 0) { throw 'ERR_NO_PROJECT'; }
+    if (rows.length === 0) {
+      throw req.codes.ERR_NO_PROJECT;
+    }
 
     project = rows[0];
 
@@ -86,15 +94,13 @@ exports.login = function (req, res, next) {
       project : project
     });
   })
-  .catch(function (err) {
-    res.status(401).send(err);
-  })
+  .catch(next)
   .done();
 };
 
 // GET  /logout
 // Destroys a user's session
-exports.logout = function (req, res, next) {
+exports.logout = function logout(req, res, next) {
 
   var sql =
     'UPDATE user SET user.active = 0 WHERE user.id = ?';

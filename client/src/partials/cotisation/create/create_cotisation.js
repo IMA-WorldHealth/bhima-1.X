@@ -44,7 +44,7 @@ angular.module('bhima.controllers')
     $scope.delete = function (cotisations) {
       var result = confirm($translate.instant('COTISATIONS.CONFIRM'));
       if (result) {
-        connect.basicDelete('cotisation', cotisations.id, 'id')
+        connect.delete('cotisation', 'id', cotisations.id)
         .then(function () {
           $scope.cotisations.remove(cotisations.id);
           messenger.info($translate.instant('COTISATIONS.DELETE_SUCCESS'));

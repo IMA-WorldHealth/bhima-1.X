@@ -1,3 +1,9 @@
+/**
+ * Data controller for enabling the client to directly (via JSON) manipulate the 
+ * database - this is in the process of refactor, potentially depreciated for 
+ * server side database manipulation and standardised API
+ */ 
+
 var url = require('url'),
     qs = require('querystring'),
     db = require('../lib/db'),

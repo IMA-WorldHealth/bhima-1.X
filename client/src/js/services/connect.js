@@ -1,11 +1,11 @@
 angular.module('bhima.services')
-.factory('connect', [
-  '$http',
-  '$q',
-  'liberror',
-  'messenger',
-  'store',
-  function ($http, $q, liberror, messenger, Store) {
+.factory('connect', ConnectFactory);
+
+ConnectFactory.$inject = [
+  '$http', '$q', 'liberror', 'messenger', 'store',
+];
+
+function ConnectFactory($http, $q, liberror, messenger, Store) {
   // Summary:
   //  provides an interface between angular modules (controllers) and a HTTP server. Requests are fetched, packaged and returned
   //  as 'models', objects with indexed data, get, delete, update and create functions, and access to the services scope to
@@ -74,7 +74,6 @@ angular.module('bhima.services')
       .catch(capture);
   }
 
-  // Cleaner API functions to replace basicPut*Post*Delete
   function put(table, data, pk) {
     var formatObject = {
       table : table,
@@ -98,30 +97,6 @@ angular.module('bhima.services')
       .catch(capture);
   }
 
-  // old API
-  function basicDelete(table, id, column) {
-    messenger.warn({ namespace : 'CONNECT', description : 'connect.basicDelete is deprecated.  Please refactor your code to use either connect.delete().' });
-    if (!column) { column = 'id'; }
-    return $http
-      .delete(['/data/', table, '/', column, '/', id].join(''))
-      .catch(capture);
-  }
-
-  // TODO reverse these two methods? I have no idea how this happened
-  function basicPut(table, data) {
-    var formatObject = { table : table, data : data};
-    return $http
-      .post('/data/', formatObject)
-      .catch(capture);
-  }
-
-  function basicPost(table, data, pk) {
-    var formatObject = {table: table, data: data, pk: pk};
-    return $http
-      .put('/data/', formatObject)
-      .catch(capture);
-  }
-
   // utility function
   function clean(o) {
     // clean off the $$hashKey and other angular bits and delete undefined
@@ -138,11 +113,8 @@ angular.module('bhima.services')
     req         : req,
     fetch       : fetch,
     clean       : clean,
-    basicPut    : basicPut,
-    basicPost   : basicPost,
-    basicDelete : basicDelete,
     put         : put,
     post        : post,
     delete      : del,
   };
-}]);
+}

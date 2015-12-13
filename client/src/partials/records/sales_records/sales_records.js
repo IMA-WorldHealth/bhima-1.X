@@ -5,11 +5,16 @@ angular.module('bhima.controllers')
   '$translate',
   'util',
   'validate',
-  function ($scope, $timeout, $translate, util, validate) {
+  'uiGridConstants',
+  function ($scope, $timeout, $translate, util, validate, uiGridConstants) {
     // TODO add search (filter)
     // TODO add sortable (clickable) columns
     var dependencies = {};
-
+    $scope.loading = false;
+  
+    $scope.status = { 
+      isopen : false
+    };
     var period = $scope.period = [
       {
         key : 'CASH_PAYMENTS.DAY',
@@ -39,6 +44,26 @@ angular.module('bhima.controllers')
       result : {}
     };
 
+    /*
+     * UI Grid definitions
+     */
+    var gridOptions = { 
+      showGridFooter : true,
+      showColumnFooter : true,
+      enableFiltering : true,
+      enableSorting : true,
+      columnDefs : [
+        { field : 'hr_id', name : 'ID' },
+        { field : 'invoice_date', name : 'Date', cellFilter : 'date', enableFiltering : false},
+        { field : 'name', name : 'Name'},
+        { field : 'cost', name : 'Total Amount', aggregationType : uiGridConstants.aggregationTypes.sum, cellFilter : 'currency', footerCellFilter : 'currency', enableFiltering : false}] 
+    };
+
+    function filterNames(row) { 
+      row.name = row.first_name.concat(' ', row.middle_name, ' ', row.last_name);
+      return;
+    }
+    
     dependencies.sale = {};
     dependencies.project = {
       query : {
@@ -86,7 +111,14 @@ angular.module('bhima.controllers')
     }
 
     function updateSession(model) {
+      $scope.loading = false; 
+      model.sale.data.forEach(filterNames);
+
       $scope.model = model;
+
+      // Update grid data
+      gridOptions.data = model.sale.data;
+
       updateTotals();
       session.searching = false;
     }
@@ -131,6 +163,7 @@ angular.module('bhima.controllers')
       if ($scope.model.sale) {
         $scope.model.sale.data = [];
       }
+      $scope.loading = true;
       validate.refresh(dependencies, ['sale']).then(updateSession);
     }
 
@@ -196,5 +229,8 @@ angular.module('bhima.controllers')
     $scope.select = select;
     $scope.reset = reset;
     $scope.getPatientProject = getPatientProject;
+
+    // Expose grid options to view
+    $scope.gridOptions = gridOptions;
   }
 ]);

@@ -1,69 +1,57 @@
 angular.module('bhima.services')
-.factory('appauth', [
-  '$q',
-  '$http',
-  '$window',
-  '$location',
-  'appstate',
-  function ($q, $http, $window, $location, appstate) {
-    var session,
-        mod = {};
+.service('appauth', AppAuth);
 
-    if ($window.sessionStorage.session) {
-      session = JSON.parse($window.sessionStorage.session);
-    }
+AppAuth.$inject = [
+  '$q', '$http', '$window', '$location', 'appstate'
+];
 
-    mod.login = function (credentials) {
-      var dfd = $q.defer();
-      $http.post('/auth/login', credentials)
-      .then(function (res) {
-        session = {
-          token : res.data.accessToken,
-          data  : res.data.userData
-        };
-        appstate.set('user', session.data);
-        $window.sessionStorage.session = JSON.stringify(session);
-        dfd.resolve(session);
-      })
-      .catch(function (err) { dfd.reject(err); })
-      .finally();
-      return dfd.promise;
-    };
+function AppAuth($q, $http, $window, $location, appstate) {
+  var session;
+  var service = {};
 
-    mod.logout = function () {
-      var dfd = $q.defer();
-      $http.get('/auth/logout')
-      .then(function (res) {
-        delete $window.sessionStorage.session;
-        session = null;
-        dfd.resolve(res);
-      })
-      .catch(function (err) {
-        dfd.reject(err);
-      })
-      .finally();
+  if ($window.sessionStorage.session) {
+    session = JSON.parse($window.sessionStorage.session);
+  }
 
-      return dfd.promise;
-    };
+  service.login = function login(credentials) {
+    return $http.post('/auth/login', credentials)
+    .then(function (res) {
 
-    mod.isAuthenticated = function () {
-      return !!session && !!session.token;
-    };
+      session = {
+        token : res.data.accessToken,
+        data  : res.data.userData
+      };
 
-    mod.getSession = function () {
+      // TODO -- do we even still use this?
+      appstate.set('user', session.data);
+      $window.sessionStorage.session = JSON.stringify(session);
+
       return session;
-    };
+    });
+  };
 
-    mod.destroySession = function () {
+  service.logout = function logout() {
+    return $http.get('/auth/logout')
+    .then(function (res) {
       delete $window.sessionStorage.session;
       session = null;
+      return res;
+    });
+  };
 
-      // Jump back to the root
-      // FIXME : This gets into an infinite loop!
-      //$location.path('/');
+  service.isAuthenticated = function () {
+    return !!session && !!session.token;
+  };
 
-    };
+  service.getSession = function () {
+    return session;
+  };
 
-    return mod;
-  }
-]);
+  service.destroySession = function () {
+    delete $window.sessionStorage.session;
+    session = null;
+
+  };
+
+  return service;
+}

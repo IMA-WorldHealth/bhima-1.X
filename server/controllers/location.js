@@ -1,5 +1,4 @@
 var db = require('../lib/db');
-'use strict';
 
 /* The Location API
 *

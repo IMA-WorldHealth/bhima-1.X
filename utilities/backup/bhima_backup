@@ -33,6 +33,3 @@ tar czvf $fn_comp $fn.sql
 mv $fn_comp ~/Dropbox/$fn_comp
 
 echo backup termine avec succes!
-
-
-

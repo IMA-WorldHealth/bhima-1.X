@@ -149,12 +149,14 @@ function PrimaryCashExpenseGenericController ($scope, $routeParams, $translate, 
         credit            : data.cost,
         document_uuid     : receiptReference
       };
-      return connect.basicPut('primary_cash_item', [item]);
+
+      return connect.post('primary_cash_item', [item]);
     })
     .then(function () {
       return connect.fetch('/journal/primary_expense/' + data.uuid);
     })
     .then(function () {
+
       // invoice
       messenger.success($translate.instant('ALLTRANSACTIONS.DATA_POSTED'));
       $location.path('/invoice/generic_expense/' + data.uuid);
@@ -176,7 +178,9 @@ function PrimaryCashExpenseGenericController ($scope, $routeParams, $translate, 
   }
 
   function formatAccount(ac) {
-    if (ac) {return ac.account_number + ' - ' + ac.account_txt;}
+    if (ac) {
+      return ac.account_number + ' - ' + ac.account_txt;
+    }
   }
 
   function reconfigure() {
@@ -193,5 +197,4 @@ function PrimaryCashExpenseGenericController ($scope, $routeParams, $translate, 
       session.complete = true;
     }
   }
-
 }

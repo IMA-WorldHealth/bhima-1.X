@@ -17,6 +17,7 @@ var gulp       = require('gulp'),
     iife       = require('gulp-iife'),
     rimraf     = require('rimraf'),
     gutil      = require('gulp-util'),
+    less       = require('gulp-less');
 
     // mocha for server-side testing
     mocha      = require('gulp-mocha'),
@@ -51,7 +52,7 @@ var paths = {
     javascript : ['client/src/js/define.js', 'client/src/js/app.js', 'client/src/**/*.js', '!client/src/i18n/**/*.js', '!client/src/lib/**/*.js'],
     excludeLint: ['!client/src/lib/**/*.js'],
     css        : ['client/src/partials/**/*.css', 'client/src/css/*.css'],
-    vendor     : ['client/vendor/**/*.js', 'client/vendor/**/*.css', '!client/vendor/**/src{,/**}', '!client/vendor/**/js{,/**}'],
+    vendor     : ['client/vendor/**/*.js', 'client/vendor/**/*.css', 'client/vendor/**/*.ttf', 'client/vendor/**/*.wof*', 'client/vendor/**/*.eot','client/vendor/**/*.svg', '!client/vendor/**/src{,/**}', '!client/vendor/**/js{,/**}'],
     e2etest    : ['client/test/e2e/**/*.spec.js'],
     unittest   : [],
 
@@ -143,6 +144,27 @@ gulp.task('client-vendor-build-slickgrid', function () {
     .pipe(gulp.dest(CLIENT_FOLDER + 'vendor/slickgrid'));
 });
 
+gulp.task('client-vendor-build-bootstrap', function () { 
+  
+  /**
+   * For now this just moves the latest version of bootstrap into the repository
+   * This build process should compile the latest bhima less definition with the 
+   * latest vendor files
+   * - move less file to bootstrap vendor folder
+   * - compile with lessc
+   * - copy CSS into static file folder
+   */
+  
+  var bhimaDefinition = 'client/src/less/bhima-bootstrap.less'
+
+  return gulp.src(bhimaDefinition)
+    .pipe(gulp.dest('client/vendor/bootstrap/less'))
+    .pipe(less({
+      paths : ['./client/vendor/bootstrap/less/mixins']
+    }))
+    .pipe(gulp.dest(CLIENT_FOLDER + 'css'));
+});
+
 // move static files to the public directory
 gulp.task('client-mv-static', ['client-lint-i18n'], function () {
   return gulp.src(paths.client.static)
@@ -172,11 +194,11 @@ gulp.task('watch-client', function () {
 // TODO This message can be removed once the lint/build process has been transitioned
 gulp.task('notify-lint-process', function () { 
   gutil.log(gutil.colors.yellow('REMINDER: Please ensure you have run the command `gulp lint` before submitting a pull request to github'));
-})
+});
 
 // builds the client with all the options available
 gulp.task('build-client', ['client-clean'], function () {
-  gulp.start('client-minify-js', 'client-minify-css', 'client-mv-vendor', 'client-vendor-build-slickgrid', 'client-mv-static', 'notify-lint-process');
+  gulp.start('client-minify-js', 'client-minify-css', 'client-mv-vendor', 'client-vendor-build-slickgrid', 'client-vendor-build-bootstrap', 'client-mv-static', 'notify-lint-process');
 });
 
 // Lint client code seperately from build process 

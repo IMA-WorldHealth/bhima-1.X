@@ -25,43 +25,33 @@ function PrimaryCashController ($location, $timeout, $q, validate, AppCache, exc
     }
   };
 
-  configuration.income = [
-    {
-      key : 'PRIMARY_CASH.INCOME.TRANSFER',
-      link : '/primary_cash/transfert/'
-    },
-    {
-      key : 'PRIMARY_CASH.INCOME.CONVENTION',
-      link : '/primary_cash/convention/'
-    },
-    {
-      key : 'PRIMARY_CASH.INCOME.SUPPORT',
-      link : '/primary_cash/support/'
-    },
-    {
-      key : 'PRIMARY_CASH.INCOME.GENERIC.TITLE',
-      link : '/primary_cash/income/generic/'
-    }
-  ];
+  configuration.income = [{
+    key : 'PRIMARY_CASH.INCOME.TRANSFER',
+    link : '/primary_cash/:uuid/transfer'
+  }, {
+    key : 'PRIMARY_CASH.INCOME.CONVENTION',
+    link : '/primary_cash/:uuid/convention'
+  }, {
+    key : 'PRIMARY_CASH.INCOME.SUPPORT',
+    link : '/primary_cash/:uuid/support'
+  }, {
+    key : 'PRIMARY_CASH.INCOME.GENERIC.TITLE',
+    link : '/primary_cash/:uuid/income/generic'
+  }];
 
-  configuration.expense = [
-    {
-      key : 'PRIMARY_CASH.EXPENSE.PURCHASE',
-      link : '/primary_cash/expense/purchase/'
-    },
-    {
-     key : 'PRIMARY_CASH.EXPENSE.CASH_RETURN',
-     link : '/primary_cash/expense/cash_return/'
-    },
-    {
-       key : 'PRIMARY_CASH.EXPENSE.PAYROLL',
-       link : '/primary_cash/expense/payroll/'
-    },
-    {
-      key : 'PRIMARY_CASH.EXPENSE.GENERIC_TITLE',
-      link : '/primary_cash/expense/generic/'
-    }
-  ];
+  configuration.expense = [ {
+    key : 'PRIMARY_CASH.EXPENSE.PURCHASE',
+    link : '/primary_cash/:uuid/expense/purchase'
+  }, {
+   key : 'PRIMARY_CASH.EXPENSE.CASH_RETURN',
+   link : '/primary_cash/:uuid/expense/refund'
+  }, {
+     key : 'PRIMARY_CASH.EXPENSE.PAYROLL',
+     link : '/primary_cash/:uuid/expense/payroll'
+  }, {
+    key : 'PRIMARY_CASH.EXPENSE.GENERIC_TITLE',
+    link : '/primary_cash/:uuid/expense/generic'
+  }];
 
   // Expose to view
   vm.loadPath         = loadPath;
@@ -119,7 +109,7 @@ function PrimaryCashController ($location, $timeout, $q, validate, AppCache, exc
   }
 
   function loadPath(path) {
-    $location.path(path + session.cashbox.id);
+    $location.path(path.replace(':uuid', session.cashbox.id));
   }
 
   function setConfiguration (cashbox) {
@@ -139,5 +129,4 @@ function PrimaryCashController ($location, $timeout, $q, validate, AppCache, exc
   function handleError(error) {
     throw error;
   }
-
 }
