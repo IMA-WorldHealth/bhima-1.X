@@ -83,7 +83,7 @@ function GradeEmployeeController ($scope, $translate, validate, messenger, conne
   function remove (grade) {
     var result = confirm($translate.instant('GRADE.CONFIRM'));
     if (result) {
-      connect.basicDelete('grade', grade.uuid, 'uuid')
+      connect.delete('grade', grade.uuid, 'uuid')
       .then(function () {
         $scope.grades.remove(grade.uuid);
         messenger.info($translate.instant('GRADE.DELETE_SUCCESS'));
@@ -104,7 +104,7 @@ function GradeEmployeeController ($scope, $translate, validate, messenger, conne
   function saveEdit () {
     var record = connect.clean(session.edit);
     delete record.reference;
-    connect.basicPost('grade', [record], ['uuid'])
+    connect.put('grade', [record], ['uuid'])
     .then(function () {
       messenger.success($translate.instant('GRADE.UPDATE_SUCCES'));
       $scope.grades.put(record);
