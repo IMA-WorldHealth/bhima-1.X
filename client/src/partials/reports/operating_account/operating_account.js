@@ -87,6 +87,24 @@ function OperatingAccountController($translate, $window, validate, SessionServic
     .then(function (data) {
 
       vm.totals = data.reduce(function (totals, row) {
+        if(row.classe === 6){
+          if(row.debit > row.credit) {
+            row.debit -= row.credit;
+            row.credit = 0;
+          } else if(row.debit < row.credit) {
+            row.credit -= row.debit;
+            row.debit = 0;            
+          }
+        } else if (row.classe === 7){
+          if(row.credit > row.debit ) {
+            row.credit -= row.debit;
+            row.debit = 0;
+          } else if(row.credit < row.debit ) {
+            row.debit -= row.credit;
+            row.credit = 0;
+          }
+        } 
+                 
         totals.debit += row.debit;
         totals.credit += row.credit;
         totals.balance += (row.credit - row.debit);
