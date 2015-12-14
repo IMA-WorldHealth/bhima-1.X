@@ -14,7 +14,6 @@ DepotEntryController.$inject = [
 * TODO
 *  1. Use Depot, Stock, and Inventory services to reduce the code in this
 *  controller.
-*  2. Migrate away from using connect.basic* functions.
 */
 function DepotEntryController($scope, $translate, $q, $location, $routeParams, validate, connect, messenger, appstate, precision, Store, uuid, util) {
   var dependencies = {},
@@ -315,12 +314,12 @@ function DepotEntryController($scope, $translate, $q, $location, $routeParams, v
     var document_id = uuid();
     var stock = processStock();
     var movements = processMovements(document_id);
-    connect.basicPut('stock', stock)
+    connect.post('stock', stock)
     .then(function () {
-      return connect.basicPut('movement', movements);
+      return connect.post('movement', movements);
     })
     .then(function () {
-      return connect.basicPost('purchase', [{ uuid : session.cfg.purchase_uuid, closed : 1 }], ['uuid']);
+      return connect.put('purchase', [{ uuid : session.cfg.purchase_uuid, closed : 1 }], ['uuid']);
     })
     .then(setPurchasePrice)
     .then(function () {

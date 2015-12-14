@@ -2,7 +2,7 @@ angular.module('bhima.directives')
 .directive('findPatient', FindPatientDirective);
 
 FindPatientDirective.$inject = [
-'$compile', '$http', 'validate', 'messenger', 'appcache'
+  '$compile', '$http', 'validate', 'messenger', 'appcache'
 ];
 
 /**

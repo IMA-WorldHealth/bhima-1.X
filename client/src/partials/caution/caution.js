@@ -248,7 +248,7 @@ function CautionController($location, $translate, $modal, validate, connect, mes
     });
 
     instance.result.then(function () {
-      $location.path('/exchange_rate');
+      $location.path('/exchange');
     });
   }
 

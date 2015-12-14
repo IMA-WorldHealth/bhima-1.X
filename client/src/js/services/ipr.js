@@ -57,9 +57,10 @@ angular.module('bhima.services')
         obj.tranches[i].impot_mensuel = obj.impots[i].impot_mensuel;
         obj.tranches[i].cumul_annuel = obj.cumuls[i].cumul_annuel;
         obj.tranches[i].cumul_mensuel = obj.cumuls[i].cumul_mensuel;
+
         //Update line
         record = connect.clean(obj.tranches[i]);
-          connect.put('taxe_ipr', [record], ['id']);
+        connect.put('taxe_ipr', [record], ['id']);
       }
       return $q.when(obj.tranches);
     }

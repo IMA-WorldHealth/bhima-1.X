@@ -58,6 +58,10 @@ function DepotController($location, $translate, $window, messenger, AppCache, St
     key : 'STOCK.MOVEMENT.KEY',
     ico : 'glyphicon-transfer',
     link : '/depots/:uuid/movements'
+  }, {
+    key : 'STOCK.SEARCH.KEY', 
+    ico : 'glyphicon-search',
+    link : '/depots/:uuid/search'
   }];
 
   // these will be concatenated with the config modules if the depot chosen is
@@ -69,7 +73,7 @@ function DepotController($location, $translate, $window, messenger, AppCache, St
   }, {
     key  : 'STOCK.DONATION.KEY',
     ico  : 'glyphicon-heart',
-    link : '/stock/donation_management/:uuid'
+    link : '/donations/:uuid'
   }];
 
   // repots modules

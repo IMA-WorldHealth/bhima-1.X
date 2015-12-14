@@ -7,9 +7,8 @@
  *
  * @returns {object} Wrapper object exposing request configuration method
  */
-
 angular.module('bhima.services')
-.factory('currencyFormat', ['$http', 'store', function ($http, Store) { 
+.factory('currencyFormat', ['$http', 'util', 'store', function ($http, util, Store) { 
   var currencyConfigurationPath = '/i18n/currency/';
   var loadedSupportedCurrencies = false;
   var supportedCurrencies = new Store({identifier : 'id'});
@@ -19,7 +18,8 @@ angular.module('bhima.services')
   
   // Request all defined BHIMA currencies
   $http.get('/finance/currencies')
-  .success(function (currencyList) {
+  .then(util.unwrapHttpResponse)
+  .then(function (currencyList) {
     supportedCurrencies.setData(currencyList);
     loadedSupportedCurrencies = true;
   });
@@ -30,10 +30,10 @@ angular.module('bhima.services')
     fetchingKeys[key] = true;
     
     $http.get(currencyConfigurationPath.concat(key, '.json'))
-      .success(function (result) { 
+      .then(function (response) { 
         
         // Add configuration to local cache
-        formatObject = result;
+        formatObject = response.data;
         formatObject.supported = true;
         formatObject.format_key = key;
         addFormat(formatObject);      

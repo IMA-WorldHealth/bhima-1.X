@@ -71,7 +71,7 @@
             <div class="alert alert-warning"  ng-show="session.error.exchange_rate">
               <b>{{ "UTIL.CONFIGURE_ER_NONE" | translate }}</b><br>
               <p>{{ "UTIL.CONFIGURE_ER_INFO" | translate }}: </p>
-              <a href="#/exchange_rate/"><b><i class="glyphicon glyphicon-link"></i> {{ "UTIL.LINK" | translate }}</b></a>
+              <a href="#/exchange"><b><i class="glyphicon glyphicon-link"></i> {{ "UTIL.LINK" | translate }}</b></a>
             </div>
 
             <button class="btn btn-success btn-sm" ng-click="setConfiguration(session.pp, session.currency)" ng-disabled="!session.pp || !session.currency">

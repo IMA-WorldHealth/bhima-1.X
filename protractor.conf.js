@@ -9,18 +9,22 @@ var q = require('q');
 // as appropriate.
 
 var config = {
-
-  // local selenium config, in case it applies
-  seleniumServerJar : '/usr/local/lib/node_modules/protractor/selenium/selenium-server-standalone-2.45.0.jar',
-  chromeDriver      : '/usr/local/lib/node_modules/protractor/selenium/chromedriver',
-  seleniumPort      : 4444,
+  
+  seleniumPort:      4444,
+  seleniumServerJar: '/usr/local/lib/node_modules/protractor/selenium/selenium-server-standalone-2.45.0.jar',
+  chromeDriver:      '/usr/local/lib/node_modules/protractor/selenium/chromedriver',
 
   specs: ['client/test/e2e/**/*.spec.js'],
 
   framework : 'mocha',
   baseUrl : 'https://localhost:8080/',
   allScriptsTimeout : 30000,
+  timeout : 10000,
+  defaultTimeoutInterval : 30000,
 
+  mochaOpts : { 
+    timeout : 30000,
+  },
   // default browsers to run
   multiCapabilities: [{
     //'browserName': 'firefox',
@@ -33,8 +37,8 @@ var config = {
     return q.fcall(function () {
       browser.get('https://localhost:8080/#/login');
 
-      element(by.model('LoginCtrl.credentials.username')).sendKeys('test');
-      element(by.model('LoginCtrl.credentials.password')).sendKeys('test');
+      element(by.model('LoginCtrl.credentials.username')).sendKeys('superuser');
+      element(by.model('LoginCtrl.credentials.password')).sendKeys('superuser');
       element(by.id('submit')).click();
 
       // NOTE - you may need to play with the delay time to get this to work properly
