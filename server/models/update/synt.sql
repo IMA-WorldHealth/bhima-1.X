@@ -7,3 +7,19 @@ INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`) V
 
 
 
+-- Updating  url in the table unit
+-- By Chris LOMAME
+-- Date : 2015-12-16
+
+
+
+
+UPDATE `unit` SET path='/budgets/analysis', url='/partials/budget/analysis/' WHERE id = 117;
+
+-- Deleting 
+-- By Chris LOMAME
+-- Date : 2015-12-16
+-- No way to view this report because it is necessary to have a store in parameter
+-- /reports/stock_store/:depotId
+
+delete from unit where id = 134;
