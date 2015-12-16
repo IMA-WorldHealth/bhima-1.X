@@ -209,8 +209,7 @@ function CashboxController($window, $uibModal, Session, Projects, Boxes, Currenc
       .then(function (data) {
         vm.state.update();
         return loadCashbox(vm.box.id);
-      })
-      .catch(handler);
+      });
   }
 
   startup();
