@@ -66,25 +66,25 @@ exports.inventoryByDepot = function (req, res, next) {
 exports.listExpiredTimes = function (req, res, next) {
   var sql;
   if(req.query.request == 'expired'){
-    sql = "SELECT inventory.text, stock.lot_number, stock.tracking_number, stock.expiration_date, SUM(stock.quantity) AS quantity"
-        + " FROM stock"
-        + " JOIN inventory ON inventory.uuid = stock.inventory_uuid"
-        + " WHERE stock.expiration_date <= CURDATE()"
-        + " GROUP BY stock.tracking_number";
+    sql = 'SELECT inventory.text, stock.lot_number, stock.tracking_number, stock.expiration_date, SUM(stock.quantity) AS quantity' +
+        ' FROM stock' +
+        ' JOIN inventory ON inventory.uuid = stock.inventory_uuid' +
+        ' WHERE stock.expiration_date <= CURDATE()' +
+        ' GROUP BY stock.tracking_number';
 
   } else if(req.query.request == 'expiredDellai'){
-    sql = "SELECT inventory.text, stock.lot_number, stock.tracking_number, stock.expiration_date,"
-        + " SUM(stock.quantity) AS quantity"
-        + " FROM stock JOIN inventory ON inventory.uuid = stock.inventory_uuid"
-        + " WHERE ((DATEDIFF(stock.expiration_date ,CURDATE()) > '" + req.query.inf + "')"
-        + " AND ((DATEDIFF(stock.expiration_date ,CURDATE()) <  '" + req.query.sup + "')))"
-        + " GROUP BY stock.tracking_number";
+    sql = 'SELECT inventory.text, stock.lot_number, stock.tracking_number, stock.expiration_date,' +
+        ' SUM(stock.quantity) AS quantity' +
+        ' FROM stock JOIN inventory ON inventory.uuid = stock.inventory_uuid' +
+        ' WHERE ((DATEDIFF(stock.expiration_date ,CURDATE()) > \'' + req.query.inf + '\')' +
+        ' AND ((DATEDIFF(stock.expiration_date ,CURDATE()) <  \'' + req.query.sup + '\')))' +
+        ' GROUP BY stock.tracking_number';
   } else if(req.query.request == 'oneYear'){
-    sql = "SELECT inventory.text, stock.lot_number, stock.tracking_number, stock.expiration_date,"
-        + " SUM(stock.quantity) AS quantity"
-        + " FROM stock JOIN inventory ON inventory.uuid = stock.inventory_uuid"
-        + " WHERE (DATEDIFF(stock.expiration_date ,CURDATE()) > '365')"
-        + " GROUP BY stock.tracking_number";
+    sql = 'SELECT inventory.text, stock.lot_number, stock.tracking_number, stock.expiration_date,' +
+        ' SUM(stock.quantity) AS quantity' +
+        ' FROM stock JOIN inventory ON inventory.uuid = stock.inventory_uuid' +
+        ' WHERE (DATEDIFF(stock.expiration_date ,CURDATE()) > \'365\')' +
+        ' GROUP BY stock.tracking_number';
   }
 
   db.exec(sql)
@@ -96,10 +96,10 @@ exports.listExpiredTimes = function (req, res, next) {
 };
 
 exports.listStockEntry = function (req, res, next) {
-  var sql = "SELECT stock.inventory_uuid, stock.entry_date, stock.tracking_number, SUM(stock.quantity) AS 'quantity', inventory.text"
-          + " FROM stock"
-          + " JOIN inventory ON inventory.uuid = stock.inventory_uuid"
-          + " GROUP BY stock.inventory_uuid";
+  var sql = 'SELECT stock.inventory_uuid, stock.entry_date, stock.tracking_number, SUM(stock.quantity) AS \'quantity\', inventory.text' +
+          ' FROM stock' +
+          ' JOIN inventory ON inventory.uuid = stock.inventory_uuid' +
+          ' GROUP BY stock.inventory_uuid';
 
   db.exec(sql)
   .then(function (result) {
@@ -110,10 +110,10 @@ exports.listStockEntry = function (req, res, next) {
 };
 
 exports.listStockConsumption = function (req, res, next) {
-  var sql = "SELECT inventory.text, SUM(consumption.quantity) AS 'quantity', inventory.uuid, stock.inventory_uuid"
-          + " FROM consumption RIGHT JOIN stock ON stock.tracking_number = consumption.tracking_number"
-          + " JOIN inventory ON inventory.uuid = stock.inventory_uuid "
-          + " GROUP BY stock.inventory_uuid";
+  var sql = 'SELECT inventory.text, SUM(consumption.quantity) AS \'quantity\', inventory.uuid, stock.inventory_uuid' +
+          ' FROM consumption RIGHT JOIN stock ON stock.tracking_number = consumption.tracking_number' +
+          ' JOIN inventory ON inventory.uuid = stock.inventory_uuid ' +
+          ' GROUP BY stock.inventory_uuid';
 
   db.exec(sql)
   .then(function (result) {
@@ -125,25 +125,25 @@ exports.listStockConsumption = function (req, res, next) {
 
 exports.listMonthlyConsumption = function (req, res, next) {
   var sql =
-    "SELECT monthlyCons.uuid, monthlyCons.date, SUM(monthlyCons.quantity) AS quantity, monthlyCons.inventory_uuid " +
-    "FROM ( " +
-      "SELECT consumption.uuid, consumption.date, SUM(consumption.quantity) AS quantity, stock.inventory_uuid " +
-      " FROM consumption " +
-      " JOIN stock  ON stock.tracking_number = consumption.tracking_number " +
-      " JOIN inventory ON inventory.uuid = stock.inventory_uuid " +
-      " WHERE stock.inventory_uuid = " + sanitize.escape(req.params.inventory_uuid) + " AND " +
-      " consumption.uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss ) " +
-      " AND (consumption.date BETWEEN DATE_SUB(CURDATE(),INTERVAL " + sanitize.escape(req.params.inventory_uuid) + " MONTH) AND CURDATE())" +
-      " GROUP BY inventory.uuid " +
-    "UNION " +
-      "SELECT consumption_reversing.uuid, consumption_reversing.date, ((SUM(consumption_reversing.quantity)) * (-1)) AS quantity, stock.inventory_uuid " +
-      " FROM consumption_reversing " +
-      " JOIN stock  ON stock.tracking_number = consumption_reversing.tracking_number " +
-      " JOIN inventory ON inventory.uuid = stock.inventory_uuid " +
-      " WHERE stock.inventory_uuid = " + sanitize.escape(req.params.inventory_uuid) + " AND " +
-      " consumption_reversing.consumption_uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss ) " +
-      " AND (consumption_reversing.date BETWEEN DATE_SUB(CURDATE(),INTERVAL " + sanitize.escape(req.params.inventory_uuid) + " MONTH) AND CURDATE())" +
-      " GROUP BY inventory.uuid ) AS monthlyCons ";
+    'SELECT monthlyCons.uuid, monthlyCons.date, SUM(monthlyCons.quantity) AS quantity, monthlyCons.inventory_uuid ' +
+    'FROM ( ' +
+      'SELECT consumption.uuid, consumption.date, SUM(consumption.quantity) AS quantity, stock.inventory_uuid ' +
+      ' FROM consumption ' +
+      ' JOIN stock  ON stock.tracking_number = consumption.tracking_number ' +
+      ' JOIN inventory ON inventory.uuid = stock.inventory_uuid ' +
+      ' WHERE stock.inventory_uuid = ' + sanitize.escape(req.params.inventory_uuid) + ' AND ' +
+      ' consumption.uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss ) ' +
+      ' AND (consumption.date BETWEEN DATE_SUB(CURDATE(),INTERVAL ' + sanitize.escape(req.params.inventory_uuid) + ' MONTH) AND CURDATE())' +
+      ' GROUP BY inventory.uuid ' +
+    'UNION ' +
+      'SELECT consumption_reversing.uuid, consumption_reversing.date, ((SUM(consumption_reversing.quantity)) * (-1)) AS quantity, stock.inventory_uuid ' +
+      ' FROM consumption_reversing ' +
+      ' JOIN stock  ON stock.tracking_number = consumption_reversing.tracking_number ' +
+      ' JOIN inventory ON inventory.uuid = stock.inventory_uuid ' +
+      ' WHERE stock.inventory_uuid = ' + sanitize.escape(req.params.inventory_uuid) + ' AND ' +
+      ' consumption_reversing.consumption_uuid NOT IN ( SELECT consumption_loss.consumption_uuid FROM consumption_loss ) ' +
+      ' AND (consumption_reversing.date BETWEEN DATE_SUB(CURDATE(),INTERVAL ' + sanitize.escape(req.params.inventory_uuid) + ' MONTH) AND CURDATE())' +
+      ' GROUP BY inventory.uuid ) AS monthlyCons ';
 
   db.exec(sql)
   .then(function (result) {
@@ -154,9 +154,9 @@ exports.listMonthlyConsumption = function (req, res, next) {
 };
 
 exports.listConsumptionByTrackingNumber = function (req, res, next) {
-  var sql = "SELECT consumption.tracking_number, SUM(consumption.quantity) AS 'quantity'"
-          + " FROM consumption"
-          + " GROUP BY consumption.tracking_number";
+  var sql = 'SELECT consumption.tracking_number, SUM(consumption.quantity) AS \'quantity\'' +
+          ' FROM consumption' +
+          ' GROUP BY consumption.tracking_number';
 
   db.exec(sql)
   .then(function (result) {
@@ -167,10 +167,10 @@ exports.listConsumptionByTrackingNumber = function (req, res, next) {
 };
 
 exports.formatLotsForExpiration = function (req, res, next) {
-  var sql = "SELECT s.tracking_number, s.lot_number, FLOOR(DATEDIFF(s.expiration_date,CURDATE())/30) AS months_before_expiration"
-          + " FROM stock s"
-          + " JOIN inventory i ON s.inventory_uuid=i.uuid "
-          + " WHERE s.inventory_uuid=" + sanitize.escape(req.params.id);
+  var sql = 'SELECT s.tracking_number, s.lot_number, FLOOR(DATEDIFF(s.expiration_date,CURDATE())/30) AS months_before_expiration' +
+          ' FROM stock s' +
+          ' JOIN inventory i ON s.inventory_uuid=i.uuid ' +
+          ' WHERE s.inventory_uuid=' + sanitize.escape(req.params.id);
 
   db.exec(sql)
   .then(function (result) {

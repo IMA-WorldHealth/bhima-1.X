@@ -1,3 +1,10 @@
+/**
+* Legacy Reports
+*
+* @todo -- refactor all of these
+*/
+
+
 var q = require('q');
 var querystring = require('querystring');
 var url = require('url');
@@ -822,15 +829,15 @@ function stock_movement (params){
   params = querystring.parse(params);
 
   var requette =
-    "SELECT `m`.`uuid`, `m`.`document_id`, `m`.`depot_entry`,  `m`.`depot_exit`, `m`.`document_id`," +
-    "`m`.`tracking_number`, `m`.`quantity`, `m`.`date`, `ex`.`text` AS `exit_text`, `ex`.`uuid`, `en`.`text` AS `entry_text`," +
-    "`inventory`.`text` AS `inventory_text`, `stock`.`lot_number`" +
-    "FROM `movement` AS `m`" +
-    "JOIN `depot` AS `ex` ON `ex`.`uuid` = `m`.`depot_exit`" +
-    "JOIN `depot` AS `en` ON `en`.`uuid` = `m`.`depot_entry`" +
-    "JOIN `stock` ON `stock`.`tracking_number` = `m`.`tracking_number`" +
-    "JOIN `inventory` ON `inventory`.`uuid` = `stock`.`inventory_uuid`" +
-    "WHERE `m`.`date` >= '" + params.datef + "' AND `m`.`date` <= '" + params.datet + "' ";
+    'SELECT `m`.`uuid`, `m`.`document_id`, `m`.`depot_entry`,  `m`.`depot_exit`, `m`.`document_id`,' +
+    '`m`.`tracking_number`, `m`.`quantity`, `m`.`date`, `ex`.`text` AS `exit_text`, `ex`.`uuid`, `en`.`text` AS `entry_text`,' +
+    '`inventory`.`text` AS `inventory_text`, `stock`.`lot_number`' +
+    'FROM `movement` AS `m`' +
+    'JOIN `depot` AS `ex` ON `ex`.`uuid` = `m`.`depot_exit`' +
+    'JOIN `depot` AS `en` ON `en`.`uuid` = `m`.`depot_entry`' +
+    'JOIN `stock` ON `stock`.`tracking_number` = `m`.`tracking_number`' +
+    'JOIN `inventory` ON `inventory`.`uuid` = `stock`.`inventory_uuid`' +
+    'WHERE `m`.`date` >= \'' + params.datef + '\' AND `m`.`date` <= \'' + params.datet + '\' ';
 
   if(params.depot_from !== '*' && params.depot_to !== '*' ){
     requette += ' AND `m`.`depot_exit` = \'' + params.depot_from + '\' AND `m`.`depot_entry` = \'' + params.depot_to + '\'';
@@ -844,7 +851,7 @@ function stock_movement (params){
     requette += ' AND `m`.`depot_exit` = \'' + params.depot_from + '\'';
   }
 
-  requette += " GROUP BY `m`.`document_id`";
+  requette += ' GROUP BY `m`.`document_id`';
 
   return db.exec(requette);
 }
@@ -906,7 +913,7 @@ function purchaseOrdeRecords(params) {
 
   var _start = sanitize.escape(util.toMysqlDate(new Date(p.start))),
       _end =  sanitize.escape(util.toMysqlDate(new Date(p.end))),
-      _id = p.id;
+      _id = p.id,
       _transaction = sanitize.escape(p.transaction);
 
   var sql =
@@ -1063,9 +1070,8 @@ function operatingAccount(params) {
 }
 
 function patientGroups(params) {
-  params = qs.parse(params);
-  // routes the request
-  
+  params = querystring.parse(params);
+
   var uuid = params.uuid;
   var body = {};
 
@@ -1078,7 +1084,7 @@ function patientGroups(params) {
     body.group.members = data.pop().members;
     return q(body);
   });
-};
+}
 
 function fetchMembers(uuid) {
   // fetch the number of members in the current patient group.
@@ -1094,10 +1100,10 @@ function fetchPatientGroupAndPriceList(groupUuid) {
   var sql, result, data;
   sql =
     'SELECT pg.uuid, pg.created, pg.price_list_uuid, pg.name, pg.note, pl.title, ' +
-      'pl.description, pli.is_discount, pli.description AS itemDescription, ' + 
+      'pl.description, pli.is_discount, pli.description AS itemDescription, ' +
       'pli.value, pli.is_global ' +
     'FROM patient_group AS pg JOIN price_list AS pl JOIN price_list_item AS pli ' +
-      'ON pg.price_list_uuid = pl.uuid AND ' + 
+      'ON pg.price_list_uuid = pl.uuid AND ' +
       'pli.price_list_uuid = pl.uuid ' +
     'WHERE pg.uuid = ?';
 
@@ -1116,7 +1122,7 @@ function fetchPatientGroupAndPriceList(groupUuid) {
   return db.exec(sql, [groupUuid])
   .then(function (rows) {
     result = rows.length > 0 ? rows[0] : result ;  // first row or null object
-   
+
     // format the data for easy client-side consumption
     data = {};
 

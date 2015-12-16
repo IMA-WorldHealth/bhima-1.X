@@ -1,5 +1,4 @@
 var db = require('./../../lib/db'),
-    util = require('./../../lib/util'),
     journal = require('./journal');
 
 /*
@@ -18,4 +17,4 @@ exports.handleExtraPayment = function (req, res, next) {
     }
     res.sendStatus(200);
   }, undefined, details);
-}
+};

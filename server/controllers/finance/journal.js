@@ -4,7 +4,7 @@ var tableRouter;
 // Todo -- Why do we need this?
 // GET /journal/:table/:id
 function lookupTable(req, res, next) {
-  
+
   // What are the params here?
   request(req.params.table, req.params.id, req.session.user.id, function (err) {
     if (err) { return next(err); }
@@ -83,7 +83,7 @@ function request (table, id, user_id, done, debCaution, details) {
 }
 
 // HTTP Handler - Return all journal transactions to date
-function listTransactions(req, res, next) { 
+function listTransactions(req, res, next) {
   var sql =
     'SELECT posting_journal.uuid, posting_journal.fiscal_year_id, posting_journal.period_id, ' +
     'posting_journal.trans_id, posting_journal.trans_date, posting_journal.doc_num, ' +
@@ -100,7 +100,7 @@ function listTransactions(req, res, next) {
     'JOIN currency ON posting_journal.currency_id=currency.id ' +
     'JOIN period ON posting_journal.period_id = period.id ' +
     'LEFT JOIN cost_center ON posting_journal.cc_id=cost_center.id ' +
-    'LEFT JOIN profit_center ON posting_journal.pc_id=profit_center.id'
+    'LEFT JOIN profit_center ON posting_journal.pc_id=profit_center.id';
 
   db.exec(sql)
   .then(function (result) {

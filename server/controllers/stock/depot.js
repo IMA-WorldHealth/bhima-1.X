@@ -286,7 +286,9 @@ function getAvailableLots(req, res, next) {
 
   return db.exec(sql, [depot, depot, depot, depot])
   .then(function (rows) {
-    var ans = rows.filter(function (item){return item.quantity > 0});
+
+    // @TODO -- this should be in the WHERE/HAVING condition
+    var ans = rows.filter(function (item){ return item.quantity > 0; });
     res.status(200).json(ans);
   })
   .catch(next)
@@ -321,7 +323,9 @@ function getAvailableLotsByInventoryId(req, res, next) {
 
   return db.exec(sql, [depot, uuid, depot, depot, depot, uuid])
   .then(function (rows) {
-    var ans = rows.filter(function (item){return item.quantity > 0});
+
+    // @TODO -- this should be in the WHERE/HAVING condition
+    var ans = rows.filter(function (item){ return item.quantity > 0; });
     res.status(200).json(ans);
   })
   .catch(next)
