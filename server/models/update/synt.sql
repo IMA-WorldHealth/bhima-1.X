@@ -6,16 +6,6 @@ INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`) V
 (138, 'Employee State Pdf', 'TREE.EMPLOYEE_STATE', 'Situation Financiere employee' , 128, 'partials/reports_proposed/employee_state/', '/reports/employee_state/');
 
 
-
--- Updating  url in the table unit
--- By Chris LOMAME
--- Date : 2015-12-16
-
-
-
-
-UPDATE `unit` SET path='/budgets/analysis', url='/partials/budget/analysis/' WHERE id = 117;
-
 -- Deleting 
 -- By Chris LOMAME
 -- Date : 2015-12-16
