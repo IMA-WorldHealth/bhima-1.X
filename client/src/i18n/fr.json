@@ -177,7 +177,7 @@
    "CHOOSE_CLASS"    : "Choisissez une classe",
    "CHOOSE_PERIOD"   : "Choisissez une periode",
    "CLASS"           : "Classe",
-   "INFO_FILL_INPUT" : "Veuillez selectionner la periode et la classe",
+   "INFO_FILL_INPUT" : "Veuillez Sélectionner la periode et la classe",
    "LABEL"           : "Intitulé",
    "MONTH_MOVEMENT"  : "Mouvement du mois",
    "NEW_SOLD"        : "Nouveau Solde",
@@ -205,9 +205,9 @@
       "INCLUDE_PREVIOUS"   : "Inclure les budgets precedants",
       "INCOME"             : "Ressources",
       "PREVIOUS_BUDGET"    : "Budget(s) precedant(s)",
-      "SELECT_BUDGET"      : "Selectionner le Budget",
-      "SELECT_PERIOD"      : "Selectionner la periode",
-      "SELECT_REF_ACCOUNT" : "Selectionner le referentiel comptable",
+      "SELECT_BUDGET"      : "Sélectionner le Budget",
+      "SELECT_PERIOD"      : "Sélectionner la periode",
+      "SELECT_REF_ACCOUNT" : "Sélectionner le référentiel comptable",
       "TITLE"              : "Analyse Budgetaire",
       "VALIDATE"           : "Validate",
       "VIEW_MODE"          : "Mode d'affichage"
@@ -269,7 +269,7 @@
       "NO_BOX"                 : "Aucune Cashbox enregistrée",
       "TITLE"                  : "Gestion des caisses et des comptes bancaires",
       "PROJECT"                : "Projet",
-      "SELECT_PROJECT"         : "Selectionner un projet"
+      "SELECT_PROJECT"         : "Sélectionner un projet"
       },
    "CLEAR_SELECTION"  : "Recommencer",
    "DEBITOR_INVOICES" : "Factures Impaye de Débiteur",
@@ -819,7 +819,7 @@
    "CREDITOR_GROUPS" : "Groupe Créditeur",
    "DETAILS"         : "Détails Groupe Créditeur",
    "HELP_TXT"        : "La page de gestion des Groupe des Créditeurs",
-   "NEW"             : "Nouveau Group Créditeur",
+   "NEW"             : "Nouveau Groupe Créditeur",
    "NEW_FORM"        : "Nouveau Formulaire",
    "SAVE_CHANGES"    : "Sauver Changements",
    "TITLE"           : "Gestion des Groupe des Créditeurs"
@@ -1365,7 +1365,7 @@
    "RESET_FORM"      : "Réinitiaiser Formulaire",
    "REVIEW"          : "Suivant",
    "REQUIRED_FIELD"  : "Ce champ est requis.",
-   "REQUIRED_OPTION" : "Vous devez selectionner une option.",
+   "REQUIRED_OPTION" : "Vous devez Sélectionner une option.",
    "REQUIRED_EMAIL"  : "Vous devez enregistrer une address valide.",
    "REQUIRED_TELEPHONE"  : "Vous devez enregistrer une numero telephone valide.",
    "SAVE"            : "Sauver",
@@ -2501,7 +2501,7 @@
    },
 "SELECT": {
    "ACCOUNT"               : "Sélectionner Compte",
-   "ACCOUNT_REFERENTIIAL"  : "Sélectionner le referentielle de comptes",
+   "ACCOUNT_REFERENTIIAL"  : "Sélectionner le référentiel des comptes",
    "ACCOUNT_TYPE"          : "Sélectionner Type de Compte",
    "ALL"                   : "Tous",
    "BALANCE_SECTION"       : "Sélectionner la section du bilan",
@@ -2736,7 +2736,7 @@
       "REPORT_CONF"          : "Rapport de confirmation des integrations",
       "SELECT_TIME"          : "Sélectionner la plage de temps",
       "STOCK_VOID"           : "Aucun stock",
-      "STOCK_VOID_DESC"      : "Veuillez selectionner des produits",
+      "STOCK_VOID_DESC"      : "Veuillez Sélectionner des produits",
       "STORE"                : "Dépôt",
       "TITLE"                : "Intergration des stocks",
       "SUBMIT"               : "Soumettre"
