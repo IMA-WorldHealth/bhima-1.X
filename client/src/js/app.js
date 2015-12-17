@@ -693,7 +693,7 @@ function bhimaconfig($routeProvider) {
     templateUrl: 'partials/reports/balance_mensuelle/balance_mensuelle.html'
   })
   .when('/reports/donation', {
-    controller: 'report.donation',
+    controller: 'ReportDonationController as ReportCtrl',
     templateUrl: 'partials/reports/donation/donation.html'
   })
   .when('/reports/chart_of_accounts', {
@@ -791,6 +791,14 @@ function bhimaconfig($routeProvider) {
   .when('/reports/stock_report', {
     controller : 'stock_report',
     templateUrl : 'partials/reports/stock/stock_report.html'
+  })
+  .when('/reports/patient_visit_status', {
+    controller : 'ReportPatientVisitStatus',
+    templateUrl : '/partials/reports/patient_visit_status/patient_visit_status.html'
+  })  
+  .when('/reports/stock_entry', {
+    controller : 'ReportStockEntryController',
+    templateUrl : 'partials/reports/stock/stock_entry/stock_entry.html'
   })
   .otherwise({ redirectTo : '/' });
 }

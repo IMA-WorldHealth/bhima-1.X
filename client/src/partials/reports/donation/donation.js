@@ -94,10 +94,11 @@ function reportDonationController ($translate, appstate, validate, util, Session
   function generate () {
     vm.state = 'generate';
     if (session.donor) {
-      dependencies.donation.query.where = ['donor.id=' + session.donor,'AND','purchase.is_donation=1','AND','donations.date>=' + util.sqlDate(session.dateFrom),'AND','donations.date<=' + util.sqlDate(session.dateFrom)];
+      dependencies.donation.query.where = ['donor.id=' + session.donor,'AND','purchase.is_donation=1','AND','donations.date>=' + util.sqlDate(session.dateFrom),'AND','donations.date<=' + util.sqlDate(session.dateTo)];
     } else {
       dependencies.donation.query.where = ['donations.date>=' + util.sqlDate(session.dateFrom),'AND','donations.date<=' + util.sqlDate(session.dateTo)];
     }
+
     validate.refresh(dependencies, ['donation'])
     .then(init);
   }
