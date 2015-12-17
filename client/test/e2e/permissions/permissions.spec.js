@@ -9,7 +9,7 @@ var gridUtils = require('../shared/gridObjectTestUtils.spec.js');
 chai.use(chaiAsPromised);
 var expect = chai.expect;
 
-describe('Users and Permissions', function () {
+describe('The Permissions Module', function () {
 
   var PATH = '#/permissions';
   var MOCK_USER = {
