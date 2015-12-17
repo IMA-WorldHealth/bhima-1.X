@@ -262,11 +262,15 @@
       "ACCOUNT_VIREMENT"       : "Compte Virement",
       "ALERT"                  : "Module de gestion des Cashbox",
       "ALL"                    : "Toutes",
+      "AUXILLARY"              : "Auxiliaire", 
+      "BANK"                   : "Banque",           
       "BOX"                    : "Cashbox",
+      "CASHBOX"                : "Cashbox",      
       "EDIT"                   : "Edit",
       "IS_AUXILLARY"           : "Auxiliaire ?",
       "IS_BANK"                : "Banque ?",
       "NO_BOX"                 : "Aucune Cashbox enregistrée",
+      "PRIMARY"                : "Primaire",      
       "TITLE"                  : "Gestion des caisses et des comptes bancaires",
       "PROJECT"                : "Projet",
       "SELECT_PROJECT"         : "Sélectionner un projet"
@@ -351,6 +355,16 @@
    "SUBMIT_FAILED"    : "Erreur durant la soumission, l'opération a échouée",
    "SUBMIT_SUCCESS"   : "Félicitation, l'opération est un succès"
   },
+"CASHBOXES" : {
+  "CASH_ACCOUNT" : "Compte de trésorerie",
+  "GAIN_ACCOUNT" : "Gain sur le taux de change compte",
+  "LOSS_ACCOUNT": "Perte sur taux de change compte",
+  "VIREMENT_ACCOUNT" : "Compte de virement",
+  "ADD_CURRENCY_ACCOUNTS": "Ajouter un compte de trésorerie",
+  "UPDATE_SUCCESS" : "Mis à jour de la la caisse avec succès.",
+  "SAVE_UPDATES": "Rappelez-vous de soumettre le formulaire enfin d'enregistrer les modifications.",
+  "CONFIG_CURRENCIES" : "Configuration des comptes de trésoreries"
+},  
 "CAUTION": {
    "AGE"          : "Age",
    "ATTENTION"    : "Attention ce patient a un solde débiteur de",
@@ -427,6 +441,7 @@
    "CREDITOR"              : "Créditeur",
    "CREDITOR_ID"           : "ID Créditeur",
    "CRE_EQUIV"             : "Crédit",
+   "CURRENCIES"            : "Monnaies",   
    "CURRENCY"              : "Monnaie",
    "CURRENT_STOCK"         : "Stock Courrant",
    "CUSTOMIZE"             : "Personnaliser",
@@ -878,6 +893,9 @@
      "TOP_DEBTOR_GROUPS" : "Top des Groupes débiteurs"
    }
 },
+ "DB" : {
+  "ER_ROW_IS_REFERENCED_2" : "Vous ne pouvez pas supprimer cette donnée car il a été utilisé dans une transaction."
+ },
 "DEBITOR_GRP": {
    "FILTER"     : "Filtrer Le Groupe de Débiteur",
    "GROUPS"     : "Groupe de Débiteur",
@@ -1171,6 +1189,7 @@
    "TITLE"                    : "Gestion de l'Entreprise"
    },
 "ERROR": {
+   "CONNECTION"                     : "Erreur sur la requête de connexion au serveur. Certaines informations requises peut ne pas avoir été chargé. S'il vous plaît rafraîchir la page pour continuer. Si le problème persiste, contactez l'administrateur du système.",    
    "ERR_ACCNT_LOCKED"               : "Erreur Compte Barre",
    "ERR_ACCNT_NULL"                 : "Erreur Compte NULL",
    "ERR_DATE_IN_THE_FUTURE"         : "Erreur: La date sélectionnée n'est pas encore atteint. Veuillez insérer une date valide.",
@@ -1372,9 +1391,11 @@
    "SAVE_CHANGES"    : "Sauver Changement",
    "SAVE_FORM"       : "Sauver Formulaire",
    "SEARCH"          : "Rechercher",
+   "SECURE_ACTIONS"  : "Actions sécurisés",
    "SUBMIT"          : "Soumettre",
    "SUBMIT_SUCCESS"  : "Formulaire est sauvegardé avec success.",
-   "SUBMIT_FAILURE"  : "Submission n'etait pas reussi."
+   "SUBMIT_FAILURE"  : "Submission n'etait pas reussi.",
+   "UPDATE"          : "Mettre à jour"
    },
 "GRADE": {
    "ADD"            : "Ajouter un grade",
@@ -1862,6 +1883,7 @@
    "DATE_TO"                    : "Date fin",
    "DAY"                        : "Aujourd'hui",
    "FIND_DATE"                  : "Choisir Date",
+   "INCORRECT_DATE_AND"         : "et",    
    "INCORRECT_DATE_LIMIT"       : "Année de naissance doit être comprise entre (min) et (max)",
    "INCORRECT_DATE_TYPE"        : "la valeur de la date est invalide",
    "INCORRECT_LOCATION_CURRENT" : "village actuel non spécifiée",
@@ -1961,7 +1983,9 @@
    "PERMISSIONS" : "Permissions",
    "REGISTERED"  : "Utilisateurs Enregistrés",
    "RETYPE"      : "Retaper",
+   "SET_PASSWORD" : "Définir le mot de passe",   
    "SUPER"       : "Super Utilisateur",
+   "UPDATE_PASSWORD" : "Mettre à jour le Mot de passe",
    "TITLE"       : "Gestion des Utilisateurs et Permissions",
    "UPDATE_USER_FORM" : "Editter Utilisateur",
    "CREATE_SUCCESS" : "Creer un nouvea utilisateur avec success.",
