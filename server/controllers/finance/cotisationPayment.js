@@ -15,7 +15,7 @@ module.exports = function() {
         return writeItem(data.primary_details);
       })
       .then(function () {
-        return writeToJournal(data.primary.uuid, userId, data.other)
+        return writeToJournal(data.primary.uuid, userId, data.other);
       })
       .then(function(){
         var res = {};

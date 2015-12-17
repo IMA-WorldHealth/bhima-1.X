@@ -6,9 +6,10 @@ var journal = require('./journal');
 
 var q = require('q');
 
-// HTTP Controller 
+// HTTP Controller
 exports.availablePaymentPeriod = function (req, res, next) {
-  var sql = "SELECT p.id, p.config_tax_id, p.config_rubric_id, p.config_accounting_id, p.config_cotisation_id, p.label, p.dateFrom, p.dateTo, r.label AS RUBRIC, t.label AS TAX, a.label AS ACCOUNT, c.label AS COTISATION FROM paiement_period p, config_rubric r, config_tax t, config_accounting a, config_cotisation c WHERE p.config_tax_id = t.id AND p.config_rubric_id = r.id AND a.id=p.config_accounting_id AND p.config_cotisation_id = c.id ORDER BY p.id DESC";
+  var sql =
+    'SELECT p.id, p.config_tax_id, p.config_rubric_id, p.config_accounting_id, p.config_cotisation_id, p.label, p.dateFrom, p.dateTo, r.label AS RUBRIC, t.label AS TAX, a.label AS ACCOUNT, c.label AS COTISATION FROM paiement_period p, config_rubric r, config_tax t, config_accounting a, config_cotisation c WHERE p.config_tax_id = t.id AND p.config_rubric_id = r.id AND a.id=p.config_accounting_id AND p.config_cotisation_id = c.id ORDER BY p.id DESC';
   db.exec(sql)
   .then(function (result) {
     res.send(result);
@@ -27,8 +28,8 @@ exports.submit = function (req, res, next) {
 };
 
 exports.setTaxPayment = function (req, res, next) {
-  var sql = 'UPDATE tax_paiement SET posted=1'
-          + ' WHERE tax_paiement.paiement_uuid=' + sanitize.escape(req.body.paiement_uuid) + ' AND tax_paiement.tax_id=' + sanitize.escape(req.body.tax_id);
+  var sql = 'UPDATE tax_paiement SET posted = 1 ' +
+            'WHERE tax_paiement.paiement_uuid=' + sanitize.escape(req.body.paiement_uuid) + ' AND tax_paiement.tax_id=' + sanitize.escape(req.body.tax_id);
 
   db.exec(sql)
   .then(function (result) {
@@ -38,7 +39,7 @@ exports.setTaxPayment = function (req, res, next) {
   .done();
 };
 
-function requestPayment () { 
+function requestPayment () {
   'use strict';
 
   function execute(data, userId, callback) {
@@ -47,7 +48,7 @@ function requestPayment () {
         return writeItem(data.primary_details);
       })
       .then(function () {
-        return writeToJournal(data.primary.uuid, userId, data.other)
+        return writeToJournal(data.primary.uuid, userId, data.other);
       })
       .then(function(){
         var res = {};

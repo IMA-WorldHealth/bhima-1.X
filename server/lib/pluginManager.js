@@ -10,7 +10,6 @@
 var path =  require('path'),
     thread = require('child_process');
 
-
 var MAX_RESTARTS = 3;
 
 /*
@@ -121,7 +120,7 @@ function PluginManager(cfgArray) {
     console.log('Exception:', e);
     echo('Killing all subprocesses ...');
 
-    // look through the 
+    // look through the
     Object.keys(plugins).forEach(function (key) {
       echo('Killing', key);
       plugins[key].kill('SIGTERM');
@@ -148,7 +147,7 @@ function PluginManager(cfgArray) {
       // send the event to the plugin
       this.plugins[pluginId].emit(eventId);
     } catch (e) {
-  
+
       // ensure that the event failure is broadcast
       throw new Error('Error: Event %s not properly constructed'.replace('%s', event));
     }
@@ -169,7 +168,6 @@ module.exports = function (app, pluginConfig) {
   // :action is actually {pluginId}::{eventId}}
   // Example : /plugin/events/mail::restart
   app.post('/plugin/events/:action', function (req, res, next) {
-    console.log("on entre");
 
     // make sure the plugin exists
     try {

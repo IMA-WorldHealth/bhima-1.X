@@ -188,6 +188,6 @@ function sp (project_id, request, callback){
 
 function menu (goal, project_id, request, callback) {
   return menu_map[goal] ? menu_map[goal](project_id, request, callback) :  new Error('Incorrect/invalid route');
-};
+}
 
 module.exports = menu;

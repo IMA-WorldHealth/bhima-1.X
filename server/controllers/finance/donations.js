@@ -3,10 +3,10 @@ var journal = require('./journal');
 var db = require('../../lib/db');
 var q = require('q');
 
-exports.post = function (req, res, next) { 
-  
-  // FIXME Hack to not disrupt workflow during categorisation 
-  requestDonation().execute(req.body, req.session.user.id, function (err, ans) {
+exports.post = function (req, res, next) {
+
+  // FIXME Hack to not disrupt workflow during categorisation
+  requestDonations().execute(req.body, req.session.user.id, function (err, ans) {
     if (err) { return next(err); }
     res.send({resp: ans});
   });
@@ -38,21 +38,21 @@ exports.getRecentDonations = function(req, res, next) {
   })
   .catch(next)
   .done();
-}
+};
 
 function requestDonations() {
   'use strict';
 
   function execute(data, userId, callback) {
     return writeToJournal(data.movement.document_id, userId, data)
-    .then(function(){ 
+    .then(function(){
       var res = {};
-      res.docId = data.movement.document_id;    
+      res.docId = data.movement.document_id;
       callback(null, res);
     })
     .catch(function (err) {
       callback(err, null);
-    });    
+    });
   }
 
   // FIXME -- make this much clearer
@@ -67,4 +67,4 @@ function requestDonations() {
     return deferred.promise;
   }
   return { execute : execute };
-};
+}

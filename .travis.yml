@@ -9,20 +9,6 @@ node_js:
   - "0.11"
   - "0.10"
 
-#addons:
-#  sauce_connect:
-#    username:
-#      secure: VgYj3w6ztd5rU+XLGLUNYkqjv/GXxyYAuAzNbFhMzYARMF/Kxc6Znwh9RkmNuQjVhRE5ViWEX8Gb0GqFqcHf5jpOjC7DkrkZ0pppWkUqaMhh+IQiU9mqWRxSVLRme1NMSlnRTv6NKX8ezHHmXy/OpuMHyfUoWbVJErXjtkwZw/M=
-#    access_key:
-#      secure: SJrx53jlcIJpvWQFrxFHwNkVhanXNZo9LRZe39NCuRPjuhojkfpizRmD+ar/Ok1E6fA+FynSZEDOhahLLNgwFlUTOxtZ0RcRjAzaCQqaQN2u5keWe4DEh/7r6Db2rriuqRNcYpvKgZpAaGYLVunsMT8I21uClTXFxvABJ6GRFls=
-
-# TODO -- find a better way to build the database
-# This hard-codes the bhima username and password.  How should we get around this?
-# Some thoughts:
-#   - have a temporary "installer" user that deletes itself after successful install
-#   - have the mysql -u root command read in a separate install mysql file with username from there
-#   - user a build script (.sh) to execute a build, which reads the config.js file to ascertain the username + password
-
 before_script:
   - npm install -g gulp bower
   - bower install
@@ -30,3 +16,11 @@ before_script:
   - mysql -u root -e "CREATE USER 'bhima'@'localhost' IDENTIFIED BY 'HISCongo2013';"
   - mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'bhima'@'localhost' WITH GRANT OPTION;"
   - mysql -u root bhima < server/models/schema.sql
+
+cache:
+  directories:
+    - node_modules/
+    - client/vendor
+
+before_cache:
+  - rm -f npm-debug.log
