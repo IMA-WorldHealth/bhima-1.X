@@ -1036,19 +1036,19 @@ function operatingAccount(params) {
   var fiscal_id = sanitize.escape(params.fiscal_id),
       sql;
 
-
   sql =
-    'SELECT period_total.period_id, account.account_number, account.account_txt, period_total.credit, period_total.debit ' +
+    'SELECT period_total.period_id, account.account_number, account.classe, account.account_txt, period_total.credit, period_total.debit ' +
     'FROM period_total ' +
     'JOIN account ON account.id = period_total.account_id ' +
     'JOIN account_type ON account_type.id = account.account_type_id ' +
     'WHERE period_total.period_id = ' + params.period_id + ' ' +
+    'AND period_total.credit <> period_total.debit ' +
     'AND account_type.type = \'income/expense\' ' +
     'ORDER BY account.account_number ASC';
 
   if (params.period_id === 'all') {
     sql =
-      'SELECT period_total.period_id, account.account_number, account.account_txt, SUM(period_total.credit) AS \'credit\', ' +
+      'SELECT period_total.period_id, account.account_number, account.classe, account.account_txt, SUM(period_total.credit) AS \'credit\', ' +
         'SUM(period_total.debit) AS \'debit\' ' +
       'FROM period_total ' +
       'JOIN account ON account.id = period_total.account_id ' +
@@ -1056,6 +1056,7 @@ function operatingAccount(params) {
       'WHERE period_total.fiscal_year_id = ' + fiscal_id + ' ' +
       'AND account_type.type = \'income/expense\' ' +
       'GROUP BY account.account_number ' +
+      'HAVING credit <> debit ' +
       'ORDER BY account.account_number ASC ';
   }
 
