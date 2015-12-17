@@ -255,6 +255,7 @@
       "ADD"                    : "Ajouter une Caisse",
       "ALERT"                  : "Module de gestion des Cashbox",
       "ALL"                    : "Toutes",
+      "ADD_CURRENCY_ACCOUNTS"  : "Ajouter Comptes",
       "AUXILIARY"              : "Auxiliare",
       "BOX"                    : "Caisse",
       "CASHBOX"                : "Caisse",
@@ -267,6 +268,7 @@
       "NOT_CONFIGURED"         : "Les comptes ne sont pas configuree.",
       "PRINCIPAL"              : "Principal",
       "PROJECT"                : "Projet",
+      "SAVE_UPDATES"           : "Sauvegarder vos changements",
       "TITLE"                  : "Gestion des caisses et des comptes bancaires",
       "TRANSFER_ACCOUNT"       : "Compte Virement",
       "UPDATE_SUCCESS"         : "Mis à jour une caisse avec succès."
@@ -351,16 +353,6 @@
    "SUBMIT_FAILED"    : "Erreur durant la soumission, l'opération a échouée",
    "SUBMIT_SUCCESS"   : "Félicitation, l'opération est un succès"
   },
-"CASHBOXES" : {
-  "CASH_ACCOUNT" : "Compte de trésorerie",
-  "GAIN_ACCOUNT" : "Gain sur le taux de change compte",
-  "LOSS_ACCOUNT": "Perte sur taux de change compte",
-  "VIREMENT_ACCOUNT" : "Compte de virement",
-  "ADD_CURRENCY_ACCOUNTS": "Ajouter un compte de trésorerie",
-  "UPDATE_SUCCESS" : "Mis à jour de la la caisse avec succès.",
-  "SAVE_UPDATES": "Rappelez-vous de soumettre le formulaire enfin d'enregistrer les modifications.",
-  "CONFIG_CURRENCIES" : "Configuration des comptes de trésoreries"
-},  
 "CAUTION": {
    "AGE"          : "Age",
    "ATTENTION"    : "Attention ce patient a un solde débiteur de",
@@ -1391,7 +1383,6 @@
    "SAVE_FORM"       : "Sauver Formulaire",
    "DANGER_ZONE"     : "Zone Dangereuse",
    "SEARCH"          : "Rechercher",
-   "SECURE_ACTIONS"  : "Actions sécurisés",
    "SUBMIT"          : "Soumettre",
    "SUBMIT_SUCCESS"  : "Formulaire est sauvegardé avec success.",
    "SUBMIT_FAILURE"  : "Submission n'etait pas reussi.",
