@@ -2,25 +2,15 @@
 
 // NOTE - The $(...) method is a shortcut for element(by.css(...))
 // NOTE - these are functions to be reusable between pages in the future
-var buttons =  {
-  add : function addButton() { return $('#create'); },
-  submit : function submitButton() { return $('form button[type=submit]'); },
-  cancel : function cancelButton() { return $('form button#cancel'); }
-};
 
 // various form utilities
-var formUtils = {
+var chai = require('chai');
+var chaiAsPromised = require('chai-as-promised');
 
-  // get an <input> element by its ng-model
-  input : function input(model, value) {
-    element(by.model(model)).sendKeys(value); 
-  },
+chai.use(chaiAsPromised);
+var expect = chai.expect;
 
-  // get a <select> element by its ng-options
-  select: function select(options) {
-    return element.all(by.options(options));
-  }
-};
+var utils = require('../shared/FormUtils');
 
 module.exports = function CashboxPage() {
   'use strict';
@@ -35,18 +25,33 @@ module.exports = function CashboxPage() {
 
   // navigates to the creation form
   this.create = function create() {
-    buttons.add.click();
+    utils.buttons.create().click();
+  };
+
+  this.clear = function clear() {
+    utils.buttons.cancel().click();
   };
 
   // submits the current form
   this.submit = function submit() {
-    buttons.submit.click();
+    utils.buttons.submit().click();
   };
+
+  // asserts whether an element exists or not
+  this.exists = function exists(locator, bool) {
+    expect(element(locator).isPresent()).to.eventually.equal(bool);
+  };
+
+  // TODO -- move these into a separate utility file
+  this.input = utils.input;
+  this.radio = utils.radio;
+  this.select = utils.select;
 
   // navigates to the update form by clicking the update button on the nth row
   this.update = function update(n) {
-    var elements = element(by.repeater('box in CashCtrl.cashboxes track by box.id'));
-    return elements.row(n).$$('a').click();
+    return element(by.repeater('box in CashCtrl.cashboxes track by box.id').row(n))
+      .$$('a')
+      .click();
   };
 
 };
