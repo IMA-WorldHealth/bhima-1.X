@@ -7,7 +7,7 @@ var expect = chai.expect;
 
 var FormUtils = require('../shared/FormUtils');
 
-describe.only('The Cashbox Module', function () {
+describe('The Cashbox Module', function () {
 
   // shared methods
   var path = '#/cashboxes';
@@ -60,7 +60,7 @@ describe.only('The Cashbox Module', function () {
     // navigate to the update form for the second item
     update(2);
 
-    FormUtils.input('CashCtrl.box.text', CASHBOX.name);
+    FormUtils.input('CashCtrl.box.text', 'New Cashbox Name');
     FormUtils.radio('CashCtrl.box.type', CASHBOX.type);
 
     // make sure no messages are displayed
@@ -70,36 +70,6 @@ describe.only('The Cashbox Module', function () {
 
     // success message!
     FormUtils.exists(FormUtils.feedback.success(), true);
-  });
-
-  it('allows you to open and close the currency modal', function () {
-
-    // navigate to the update form for the second item
-    update(2);
-
-    // get a locator for the currencies
-    var fc =
-      element.all(by.repeater('currency in CashCtrl.currencies | orderBy:currency.name track by currency.id')).get(0);
-
-    // click the first currency button
-    fc.$$('a').click();
-
-    // confirm that the modal appears
-    FormUtils.exists(by.css('[uib-modal-window]'), true);
-    FormUtils.exists(by.name('CashboxModalForm'), true);
-
-    // close the modal
-    FormUtils.modal.cancel();
-
-    // confirm that the modal closed
-    FormUtils.exists(by.css('[uib-modal-window]'), false);
-    FormUtils.exists(by.name('CashboxModalForm'), false);
-
-    // confirm that no feedback messages were displaced
-    FormUtils.exists(FormUtils.feedback.success(), false);
-    FormUtils.exists(FormUtils.feedback.error(), false);
-    FormUtils.exists(FormUtils.feedback.warning(), false);
-    FormUtils.exists(FormUtils.feedback.info(), false);
   });
 
   it('allows the user to change currency accounts', function () {
@@ -204,6 +174,21 @@ describe.only('The Cashbox Module', function () {
     // confirm that the modal did not disappear
     FormUtils.exists(by.css('[uib-modal-window]'), false);
     FormUtils.exists(FormUtils.feedback.error(), false);
+  });
+
+  it('allows you to delete a cashbox', function () {
+
+    // navigate to the update form for the second item
+    update(2);
+
+    // click the "delete" button
+    FormUtils.buttons.delete();
+
+    // confirm the deletion
+    browser.switchTo().alert().accept();
+
+    // check to see if we are in the default state
+    FormUtils.exists(by.css('.alert.alert-info'), true);
   });
 
 });

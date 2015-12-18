@@ -64,7 +64,8 @@ ElementArrayFinder.prototype.enabled = function () {
 var buttons =  {
   create : function create() { return $('[data-method="create"]').click(); },
   submit : function submit() { return $('[data-method="submit"]').click(); },
-  cancel : function cancel() { return $('[data-method="cancel"]').click(); }
+  cancel : function cancel() { return $('[data-method="cancel"]').click(); },
+  delete : function delet() { return $('[data-method="delete"]').click(); }
 };
 
 // This methods are for easily working with modals.  Works with the same custom
@@ -87,7 +88,7 @@ module.exports = {
 
   // get an <input> element by its ng-model
   input : function input(model, value) {
-    return element(by.model(model)).sendKeys(value);
+    return element(by.model(model)).sendKeys('').sendKeys(value);
   },
 
   // get a <select> element by its ng-model.
