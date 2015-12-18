@@ -1,93 +1,209 @@
-/*global describe, iit, element, by, ddescribe, it, beforeEach, inject, browser */
+/*global describe, it, element, by, beforeEach, inject, browser */
 
 var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
-
 chai.use(chaiAsPromised);
 var expect = chai.expect;
 
-var CashBoxPage = require('./cashboxes.page');
+var FormUtils = require('../shared/FormUtils');
 
-describe('The Cashbox Module', function () {
+describe.only('The Cashbox Module', function () {
 
-  var page = new CashBoxPage();
-
+  // shared methods
+  var path = '#/cashboxes';
   var CASHBOX = {
     name : 'Test Principal Cashbox',
     type : 1,  // this is the position in the radio button "principal"
     project : 1
   };
 
+  function update(n) {
+    return element(by.repeater('box in CashCtrl.cashboxes track by box.id').row(n))
+      .$$('a')
+      .click();
+  }
+
   // navigate to the cashbox module before each test
-  beforeEach(page.navigate);
+  beforeEach(function () {
+    browser.get(path);
+  });
 
   it('successfully creates a new cashbox', function () {
 
-    // navigate to the create form
-    page.create();
+    // submit the page to the server
+    FormUtils.buttons.create();
 
-    page.input('CashCtrl.box.text', CASHBOX.name);
-    page.radio('CashCtrl.box.type', CASHBOX.type);
+    FormUtils.input('CashCtrl.box.text', CASHBOX.name);
+    FormUtils.radio('CashCtrl.box.type', CASHBOX.type);
 
-    // select the first (non-disabled) option
-    page.select('CashCtrl.box.project_id').get(1).click();
+    // select a random, non-disabled option
+    FormUtils.select('CashCtrl.box.project_id')
+      .enabled()
+      .first()
+      .click();
 
     // submit the page to the server
-    page.submit();
+    FormUtils.buttons.submit();
 
     // make sure the success message shows
-    page.exists(by.css('span.text-success'), true);
+    FormUtils.exists(FormUtils.feedback.success(), true);
 
     // click the cancel button
-    page.clear();
+    FormUtils.buttons.cancel();
 
     // make sure the message is cleared
-    page.exists(by.css('span.text-success'), false);
-
-    // make sure the form is cleared
-    page.exists(by.name('CreateForm'), false);
+    FormUtils.exists(FormUtils.feedback.success(), false);
   });
 
   it('successfully edits a cashbox', function () {
 
     // navigate to the update form for the second item
-    page.update(2);
+    update(2);
 
-    page.input('CashCtrl.box.text', CASHBOX.name);
-    page.radio('CashCtrl.box.type', CASHBOX.type);
+    FormUtils.input('CashCtrl.box.text', CASHBOX.name);
+    FormUtils.radio('CashCtrl.box.type', CASHBOX.type);
 
     // make sure no messages are displayed
-    page.exists(by.css('span.text-success'), false);
+    FormUtils.exists(FormUtils.feedback.success(), false);
 
-    page.submit();
+    FormUtils.buttons.submit();
 
     // success message!
-    page.exists(by.css('span.text-success'), true);
+    FormUtils.exists(FormUtils.feedback.success(), true);
   });
 
-  it('allows you to configure a currencies via a modal', function () {
+  it('allows you to open and close the currency modal', function () {
 
-    /*
     // navigate to the update form for the second item
-    page.update(2);
+    update(2);
 
-    var currencies =
-      element(by.repeater('currency in CashCtrl.currencies | orderBy:currency.name track by currency.id').get(0));
+    // get a locator for the currencies
+    var fc =
+      element.all(by.repeater('currency in CashCtrl.currencies | orderBy:currency.name track by currency.id')).get(0);
 
     // click the first currency button
-    currencies.$$('a').click();
+    fc.$$('a').click();
 
     // confirm that the modal appears
-    expect(element(by.name('CashboxModalForm')).isPresent()).to.eventually.be.true;
+    FormUtils.exists(by.css('[uib-modal-window]'), true);
+    FormUtils.exists(by.name('CashboxModalForm'), true);
 
-    // begin filling in the modal
-    page.select('CashboxModalCtrl.data.loss_exchange_account_id')
-      .get(3).click();
-    page.select('CashboxModalCtrl.data.gain_exchange_account_id')
-      .get(3).click();
-    page.select('CashboxModalCtrl.data.virement_account_id')
-      .get(3).click();
-    */
+    // close the modal
+    FormUtils.modal.cancel();
 
+    // confirm that the modal closed
+    FormUtils.exists(by.css('[uib-modal-window]'), false);
+    FormUtils.exists(by.name('CashboxModalForm'), false);
+
+    // confirm that no feedback messages were displaced
+    FormUtils.exists(FormUtils.feedback.success(), false);
+    FormUtils.exists(FormUtils.feedback.error(), false);
+    FormUtils.exists(FormUtils.feedback.warning(), false);
+    FormUtils.exists(FormUtils.feedback.info(), false);
   });
+
+  it('allows the user to change currency accounts', function () {
+
+    // navigate to the update form for the second item
+    update(2);
+
+    // get a locator for the currencies
+    var fc =
+      element.all(by.repeater('currency in CashCtrl.currencies | orderBy:currency.name track by currency.id')).get(0);
+
+    // click the first currency button
+    fc.$$('a').click();
+
+    // confirm that the modal appears
+    FormUtils.exists(by.css('[uib-modal-window]'), true);
+    FormUtils.exists(by.name('CashboxModalForm'), true);
+
+    // choose a random cash account
+    FormUtils.select('CashboxModalCtrl.data.account_id')
+      .enabled()
+      .last()
+      .click();
+
+    // choose a random loss on exchange account
+    FormUtils.select('CashboxModalCtrl.data.loss_exchange_account_id')
+      .enabled()
+      .last()
+      .click();
+
+    // choose a random gain on exchange account
+    FormUtils.select('CashboxModalCtrl.data.gain_exchange_account_id')
+      .enabled()
+      .last()
+      .click();
+
+    // choose a random transfer account
+    FormUtils.select('CashboxModalCtrl.data.virement_account_id')
+      .enabled()
+      .last()
+      .click();
+
+    // submit the modal
+    FormUtils.modal.submit();
+
+    // confirm that the success feedback message was displaced
+    FormUtils.exists(FormUtils.feedback.success(), true);
+  });
+
+  // forget to change the gain exchange account id
+  it('rejects a missing account on the currency modal', function () {
+
+    // navigate to the update form for the second item
+    update(2);
+
+    // get a locator for the currencies
+    var fc =
+      element.all(by.repeater('currency in CashCtrl.currencies | orderBy:currency.name track by currency.id')).get(1);
+
+    // click the first currency button
+    fc.$$('a').click();
+
+    // confirm that the modal appears
+    FormUtils.exists(by.css('[uib-modal-window]'), true);
+
+    // NOTE -- we are forgetting to change the gain account id!
+
+    // choose a random cash account
+    FormUtils.select('CashboxModalCtrl.data.account_id')
+      .enabled()
+      .first()
+      .click();
+
+    // choose a random loss on exchange account
+    FormUtils.select('CashboxModalCtrl.data.loss_exchange_account_id')
+      .enabled()
+      .first()
+      .click();
+
+    // choose a random transfer account
+    FormUtils.select('CashboxModalCtrl.data.virement_account_id')
+      .enabled()
+      .first()
+      .click();
+
+    // submit the modal
+    FormUtils.modal.submit();
+
+    // confirm that the modal did not disappear
+    FormUtils.exists(by.css('[uib-modal-window]'), true);
+    FormUtils.exists(FormUtils.feedback.error(), true);
+
+    // select a valid currency account
+    FormUtils.select('CashboxModalCtrl.data.gain_exchange_account_id')
+      .enabled()
+      .first()
+      .click();
+
+    // submit the modal
+    FormUtils.modal.submit();
+
+    // confirm that the modal did not disappear
+    FormUtils.exists(by.css('[uib-modal-window]'), false);
+    FormUtils.exists(FormUtils.feedback.error(), false);
+  });
+
 });
