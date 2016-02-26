@@ -386,8 +386,6 @@
    "ACCOUNT"               : "Account",
    "ACCOUNT_ID"            : "Account ID",
    "ACCOUNT_NUMBER"        : "Account Number",
-   "ACCOUNT_TO_CREDIT"     : "Account to credit",
-   "ACCOUNT_TO_DEBIT"      : "Account to debit",
    "ACTION"                : "Action",
    "ACTIONS"               : "Actions",
    "ALERTS"                : "Alerts",

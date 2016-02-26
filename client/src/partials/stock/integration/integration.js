@@ -255,16 +255,19 @@ var stockIntegration = function ($q, $translate, $location, $routeParams, valida
     })
     .catch(function (err) {
       console.log(err);
-      messenger.error($translate.instant('STOCK.ENTRY.WRITE_ERROR'), false);
+      messenger.success($translate.instant('STOCK.ENTRY.WRITE_ERROR'), false);
 
       var stock_ids = stocks.map(function (stock){return stock.tracking_number;});
 
       connect.delete('movement', 'tracking_number', stock_ids).
       then(function (){
-        return connect.delete('stock', 'tracking_number', stock_ids);
+        connect.delete('stock', 'tracking_number', stock_ids);
       })
       .then(function (){
-        return connect.delete('purchase', 'uuid', [purchase.uuid]);
+        connect.delete('purchase_item', 'purchase_uuid', [purchase.uuid]);
+      })
+      .then(function (){
+        connect.delete('purchase', 'uuid', [purchase.uuid]);
       })
       .catch(function (err){console.log('can not remove corrumpted data, inform the admin of system');});
     });

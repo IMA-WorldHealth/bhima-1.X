@@ -42,7 +42,8 @@ function ServiceReturnStockController($routeParams, $http, $q, $translate, $loca
       identifier : 'id',
       tables : {
         'service' : { columns : ['id', 'name', 'cost_center_id'] }
-      }
+      },
+      where : ['service.project_id=' + SessionService.project.id]
     }
   };
 

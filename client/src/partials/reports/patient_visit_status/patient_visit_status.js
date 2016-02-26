@@ -202,7 +202,6 @@ function ReportPatientVisitStatus ($scope, $filter, $translate, validate, connec
   }
 
   function ChartRender(type) {
-    /* global Chart */
     // FIXME: Need optimizations
 
     var ctxBar = document.getElementById('BarChart').getContext('2d'),
