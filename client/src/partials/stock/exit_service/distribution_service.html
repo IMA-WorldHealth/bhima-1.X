@@ -91,7 +91,7 @@
               ng-model="row.quantity"
               ng-min="1"
               ng-max="row.maxQuantity"
-              ng-change="DistributionsCtrl.retotal(row)"
+              ng-change="DistributionsCtrl.retotal()"
               required>
           </td>
           <td>
@@ -121,8 +121,8 @@
               {{ 'DEPOT.DISTRIBUTION.SERVICE.NO_LOTS' | translate }}
             </span>
           </td>
-          <td>{{ row.priceList }}</td>
-          <td>{{ (row.totalPriceList) | currency:DistributionsCtrl.currencyId }}</td>
+          <td>{{ row.price | currency:DistributionsCtrl.currencyId }}</td>
+          <td>{{ (row.price * row.quantity) | currency:DistributionsCtrl.currencyId }}</td>
           <td class="text-center" >
             <a ng-click="DistributionsCtrl.dequeue($index)"><i class="glyphicon glyphicon-trash text-danger"></i></a>
           </td>

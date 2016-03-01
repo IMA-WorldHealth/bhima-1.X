@@ -34,8 +34,8 @@
               <th>{{ "COLUMNS.ABBR" | translate}}</th>
               <th>{{ "COLUMNS.STAFF_COST" | translate}}</th>
               <th>{{ "COLUMNS.IS_PERCENT" | translate}}</th>
-              <th>{{ "COLUMNS.ACCOUNT_TO_CREDIT" | translate}}</th>
-              <th>{{ "COLUMNS.ACCOUNT_TO_DEBIT" | translate}}</th>
+              <th>{{ "COLUMNS.FOUR_ACCOUNT" | translate}}</th>
+              <th>{{ "COLUMNS.SIX_ACCOUNT" | translate}}</th>
               <th>{{ "COLUMNS.VALUE" | translate}}</th>
               <th colspan="4">{{ "COLUMNS.ACTIONS" | translate }}</th>
             </tr>
@@ -106,7 +106,7 @@
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-4 required">{{ "COLUMNS.ACCOUNT_TO_CREDIT" | translate }}</label>
+            <label class="control-label col-xs-4 required">{{ "COLUMNS.FOUR_ACCOUNT" | translate }}</label>
             <div class="col-xs-7">
               <select class="form-bhima" required ng-model="session.new.four_account_id" ng-options="account.id as account.account_number + ' -- ' + account.account_txt for account in accounts.data | orderBy:'account_number'">
               </select>
@@ -114,7 +114,7 @@
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-4 required">{{ "COLUMNS.ACCOUNT_TO_DEBIT" | translate }}</label>
+            <label class="control-label col-xs-4 required">{{ "COLUMNS.SIX_ACCOUNT" | translate }}</label>
             <div class="col-xs-7">
               <select class="form-bhima" required ng-model="session.new.six_account_id" ng-options="account.id as account.account_number + ' -- ' + account.account_txt for account in accounts.data | orderBy:'account_number'">
               </select>
@@ -168,7 +168,7 @@
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-4 required">{{ "COLUMNS.ACCOUNT_TO_CREDIT" | translate }}</label>
+            <label class="control-label col-xs-4 required">{{ "COLUMNS.FOUR_ACCOUNT" | translate }}</label>
             <div class="col-xs-7">
               <select class="form-bhima" ng-model="session.edit.four_account_id" ng-options="account.id as account.account_number + ' -- ' + account.account_txt for account in accounts.data | orderBy:'account_number'">
               </select>
@@ -176,7 +176,7 @@
           </div>
 
           <div class="form-group">
-            <label class="control-label col-xs-4 required">{{ "COLUMNS.ACCOUNT_TO_DEBIT" | translate }}</label>
+            <label class="control-label col-xs-4 required">{{ "COLUMNS.SIX_ACCOUNT" | translate }}</label>
             <div class="col-xs-7">
               <select class="form-bhima" ng-model="session.edit.six_account_id" ng-options="account.id as account.account_number + ' -- ' + account.account_txt for account in accounts.data | orderBy:'account_number'">
               </select>

@@ -277,7 +277,7 @@ function patientRegistration ($scope, $q, $location, $translate, connect, messen
 
     $scope.loadPatient = function loadPatient(patient) {
       // very, very basic.
-      connect.fetch('/visit/' + patient.uuid + '/0')
+      connect.fetch('/visit/' + patient.uuid)
       .then(function () {
         //Patient visit has been logged
         messenger.success($translate.instant('RENEWAL.SUCCESS_MESSAGE'));

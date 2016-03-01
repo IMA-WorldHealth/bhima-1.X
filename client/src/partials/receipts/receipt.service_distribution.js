@@ -14,15 +14,15 @@ angular.module('bhima.controllers')
           consumption : { columns : ['quantity', 'date', 'uuid', 'unit_price'] },
           consumption_service : { columns : ['service_id'] },
           service : {columns : ['name']},
-          stock : {columns : ['tracking_number', 'lot_number']},
+          stock : {columns : ['tracking_number']},
           inventory : {columns : ['text', 'purchase_price']},
           project : { columns : ['abbr'] }
         },
         join : [
-          'consumption.uuid=consumption_service.consumption_uuid',
-          'consumption_service.service_id=service.id',
-          'consumption.tracking_number=stock.tracking_number',
-          'stock.inventory_uuid=inventory.uuid',
+          'consumption.uuid=consumption_service.consumption_uuid', 
+          'consumption_service.service_id=service.id', 
+          'consumption.tracking_number=stock.tracking_number', 
+          'stock.inventory_uuid=inventory.uuid', 
           'service.project_id=project.id'
         ]
       }
@@ -43,7 +43,7 @@ angular.module('bhima.controllers')
         .catch(function (err){
           messenger.danger('error', err);
         });
-  		});
-    });
+  		});     
+    });    
   }
 ]);

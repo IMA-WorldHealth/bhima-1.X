@@ -18,8 +18,8 @@ angular.module('bhima.controllers')
     var dependencies = {},
         cache = new Appcache('cotisation_payment'),
         session = $scope.session = {
-          configured : false,
-          complete : false,
+          configured : false, 
+          complete : false, 
           data : {},
           rows : []
         };
@@ -61,11 +61,11 @@ angular.module('bhima.controllers')
     };
 
     appstate.register('project', function (project) {
-      $scope.project = project;
+      $scope.project = project;               
         validate.process(dependencies, ['paiement_period', 'cash_box'])
         .then(init, function (err) {
           messenger.danger(err.message + ' ' + err.reference);
-        });
+        });     
     });
 
     function init (model) {
@@ -74,18 +74,18 @@ angular.module('bhima.controllers')
       .then(function (pp) {
         if(!pp){
           // throw new Error('period paiement not defined');
-          // A FIXE : ASTUCE POUR NE PAS AFFICHER LE MESSAGE D'ERREUR ET NE RIEN AFFICHER
+          // A FIXE : ASTUCE POUR NE PAS AFFICHER LE MESSAGE D'ERREUR ET NE RIEN AFFICHER         
           session.pp = {};
-          session.pp.id = -1;
+          session.pp.id = -1;        
         }else{
-          session.pp = pp;
+          session.pp = pp; 
           session.pp_label = formatPeriod (pp);
         }
-
+        
         dependencies.employees_payment = {
           query : '/getEmployeeCotisationPayment/' + session.pp.id
         };
-
+        
         return validate.process(dependencies, ['employees_payment']);
       })
       .then(function (model) {
@@ -123,7 +123,7 @@ angular.module('bhima.controllers')
           session.available = true;
           init(session.model);
         });
-      }
+      }           
     }
 
     function getCashAccountID (currency_id) {
