@@ -202,6 +202,7 @@ function ReportPatientVisitStatus ($scope, $filter, $translate, validate, connec
   }
 
   function ChartRender(type) {
+    /** global Chart */
     // FIXME: Need optimizations
 
     var ctxBar = document.getElementById('BarChart').getContext('2d'),
@@ -324,18 +325,18 @@ function ReportPatientVisitStatus ($scope, $filter, $translate, validate, connec
           datasets: [
               {
                   label: $filter('translate')('PATIENT_VISIT.NEW_CASES'),
-                  fillColor: 'rgba(220,220,220,0.5)',
-                  strokeColor: 'rgba(220,220,220,0.8)',
-                  highlightFill: 'rgba(220,220,220,0.75)',
-                  highlightStroke: 'rgba(220,220,220,1)',
+                  fillColor: 'rgba(3,3,68,1)',
+                  strokeColor: 'rgba(3,3,68,1)',
+                  highlightFill: 'rgba(3,3,68,1)',
+                  highlightStroke: 'rgba(3,3,68,1)',
                   data: dataNew
               },
               {
                   label: $filter('translate')('PATIENT_VISIT.OLD_CASES'),
-                  fillColor: 'rgba(151,187,205,0.5)',
-                  strokeColor: 'rgba(151,187,205,0.8)',
-                  highlightFill: 'rgba(151,187,205,0.75)',
-                  highlightStroke: 'rgba(151,187,205,1)',
+                  fillColor: 'rgba(130,14,11,1)',
+                  strokeColor: 'rgba(130,14,11,1)',
+                  highlightFill: 'rgba(130,14,11,1)',
+                  highlightStroke: 'rgba(130,14,11,1)',
                   data: dataOld
               }
           ]
@@ -351,18 +352,18 @@ function ReportPatientVisitStatus ($scope, $filter, $translate, validate, connec
           datasets: [
               {
                   label: $filter('translate')('PATIENT_VISIT.NEW_CASES'),
-                  fillColor: 'rgba(220,220,220,0.5)',
-                  strokeColor: 'rgba(220,220,220,0.8)',
-                  highlightFill: 'rgba(220,220,220,0.75)',
-                  highlightStroke: 'rgba(220,220,220,1)',
+                    fillColor: 'rgba(3,3,68,1)',
+                  strokeColor: 'rgba(3,3,68,1)',
+                  highlightFill: 'rgba(3,3,68,1)',
+                  highlightStroke: 'rgba(3,3,68,1)',
                   data: monthNew
               },
               {
                   label: $filter('translate')('PATIENT_VISIT.OLD_CASES'),
-                  fillColor: 'rgba(151,187,205,0.5)',
-                  strokeColor: 'rgba(151,187,205,0.8)',
-                  highlightFill: 'rgba(151,187,205,0.75)',
-                  highlightStroke: 'rgba(151,187,205,1)',
+                  fillColor: 'rgba(130,14,11,1)',
+                  strokeColor: 'rgba(130,14,11,1)',
+                  highlightFill: 'rgba(130,14,11,1)',
+                  highlightStroke: 'rgba(130,14,11,1)',
                   data: monthOld
               }
           ]
