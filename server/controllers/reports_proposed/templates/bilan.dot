@@ -57,6 +57,14 @@
                       <td class="text-center">{{=ref.previousNet_view}}</td>
                     </tr>
                   {{~}}
+                <tr class="text-center">
+                  <th></th>
+                  <th>{{=it.i18nBilan.TOTAL}} {{=gref.greferenceLabel}} ({{=gref.greferencePosition}})</th>
+                  <th>{{=gref.totalBrut_view}}</th>
+                  <th>{{=gref.totalAmortProv_view}}</th>
+                  <th>{{=gref.totalNet_view}}</th>
+                  <th>{{=gref.totalPreviousNet_view}}</th>
+                </tr>
               {{~}}
               <tr class="text-center">
                 <th></th>
@@ -110,6 +118,12 @@
                       <td class="text-center">{{=ref.previousNet_view}}</td>
                     </tr>
                   {{~}}
+                  <tr class="text-center">
+                    <th></th>
+                    <th>{{=it.i18nBilan.TOTAL}} {{=gref.greferenceLabel}} ({{=gref.greferencePosition}})</th>
+                    <th>{{=gref.totalNet_view}}</th>
+                    <th>{{=gref.totalPreviousNet_view}}</th>
+                  </tr>
               {{~}}
               <tr class="text-center">
                 <th></th>

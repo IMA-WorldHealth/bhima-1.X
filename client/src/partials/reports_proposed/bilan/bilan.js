@@ -61,6 +61,7 @@ angular.module('bhima.controllers')
       configurationObject.enterprise = configuration.enterprise;
       configurationObject.project = configuration.project;
 
+
       // Update state
       session.building = true;
 
@@ -80,8 +81,15 @@ angular.module('bhima.controllers')
       $scope.generatedDocumentPath = null;
     }
 
+    function switchFiscal (){
+      $scope.session.previous_fiscal_year_id = $scope.fiscalYears.data.filter(function (item){
+        return item.id === $scope.session.fiscal_year_id;
+      })[0].previous_fiscal_year;
+    }
+
     $scope.selectConfiguration = selectConfiguration;
     $scope.generateDocument = generateDocument;
     $scope.clearPath = clearPath;
+    $scope.switchFiscal = switchFiscal;
   }
 ]);
