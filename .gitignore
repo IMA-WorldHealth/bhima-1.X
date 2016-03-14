@@ -37,3 +37,7 @@ plugins/mail/addresses/*
 
 # ignore upload folder
 client/src/upload/
+
+#ignore utilitie folfer
+
+utilities/*

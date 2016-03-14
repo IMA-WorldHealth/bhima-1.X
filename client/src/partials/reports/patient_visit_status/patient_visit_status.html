@@ -170,50 +170,61 @@
 
           <!-- Bar Chart -->
           <div class="row">
-            <div class="col-xs-8">
-              <canvas id="BarChart" width="600" height="400"></canvas>
-            </div>
-            <div class="col-xs-4">
-              <fieldset>
-                <legend>{{ "TREE.PATIENT_VISIT_STATUS" | translate }}</legend>
-                <table class="col-xs-12 chart-legend">
-                  <tr>
-                    <td><img src="/assets/chart/blue.jpg"></td>
-                    <td><strong>{{ patientsNewVisit.length }}</strong></td>
-                    <td>{{ "PATIENT_VISIT.NEW_CASES" | translate }}</span></td>
-                  </tr>
-                  <tr>
-                    <td><img src="/assets/chart/red.jpg"></td>
-                    <td><strong>{{ patientsOldVisit.length }}</strong></td>
-                    <td>{{ "PATIENT_VISIT.OLD_CASES" | translate }}</span></td>
-                  </tr>
-                </table>
-              </fieldset>
+            <div class="col-xs-12">
+              <div class="pull-right">
+                <fieldset class="legend">
+                  <legend>{{ "TREE.PATIENT_VISIT_STATUS" | translate }}</legend>
+                  <table>
+                    <tr>
+                      <td><img src="/assets/chart/blue.jpg"></td>
+                      <td><strong>{{ patientsNewVisit.length }}</strong></td>
+                      <td>{{ "PATIENT_VISIT.NEW_CASES" | translate }}</span></td>                     
+                    </tr>
+                    <tr>
+                      <td><img src="/assets/chart/red.jpg"></td>
+                      <td><strong>{{ patientsOldVisit.length }}</strong></td>
+                      <td>{{ "PATIENT_VISIT.OLD_CASES" | translate }}</span></td>
+                    </tr>
+                  </table>
+                </fieldset> 
+              </div>
             </div>
           </div>
 
-          <!-- Line Chart -->
           <div class="row">
-            <div class="col-xs-8">
+            <div class="col-xs-12">
+              <canvas id="BarChart" width="600" height="400"></canvas>
+            </div>            
+          </div>
+
+          <!-- Line Chart -->
+
+          <div class="row">
+            <div classs="col-xs-12">
+              <div class="pull-right">
+                <fieldset class="legend">
+                  <legend>{{ "TREE.PATIENT_VISIT_STATUS" | translate }}</legend>
+                  <table>
+                    <tr>
+                      <td><img src="/assets/chart/blue.jpg"></td>
+                      <td><strong>{{ patientsNewVisit.length }}</strong></td>
+                      <td>{{ "PATIENT_VISIT.NEW_CASES" | translate }}</span></td>                     
+                    </tr>
+                    <tr>
+                      <td><img src="/assets/chart/red.jpg"></td>
+                      <td><strong>{{ patientsOldVisit.length }}</strong></td>
+                      <td>{{ "PATIENT_VISIT.OLD_CASES" | translate }}</span></td>
+                    </tr>
+                  </table>
+                </fieldset>  
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xs-12">
               <canvas id="LineChart" width="600" height="400"></canvas>
-            </div>
-            <div class="col-xs-4">
-              <fieldset>
-                <legend>{{ "TREE.PATIENT_VISIT_STATUS" | translate }}</legend>
-                <table class="col-xs-12 chart-legend">
-                  <tr>
-                    <td><img src="/assets/chart/blue.jpg"></td>
-                    <td><strong>{{ patientsNewVisit.length }}</strong></td>
-                    <td>{{ "PATIENT_VISIT.NEW_CASES" | translate }}</span></td>
-                  </tr>
-                  <tr>
-                    <td><img src="/assets/chart/red.jpg"></td>
-                    <td><strong>{{ patientsOldVisit.length }}</strong></td>
-                    <td>{{ "PATIENT_VISIT.OLD_CASES" | translate }}</span></td>
-                  </tr>
-                </table>
-              </fieldset>
-            </div>
+            </div>            
           </div>
 
           <!-- details -->
@@ -296,10 +307,8 @@
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
-
   </div>
 </div>
