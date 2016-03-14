@@ -13,7 +13,7 @@
               {{ "BILAN.FISCAL_YEAR" | translate }}
             </label>
             <div>
-              <select class="form-bhima" ng-model="session.fiscal_year_id" ng-options="fy.id as fy.fiscal_year_txt for fy in fiscalYears.data" required>
+              <select class="form-bhima" ng-model="session.fiscal_year_id" ng-options="fy.id as fy.fiscal_year_txt for fy in fiscalYears.data" ng-change="switchFiscal()" required>
               </select>
             </div>
           </div>
