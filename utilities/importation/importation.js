@@ -4,8 +4,8 @@ var xlsx = require('xlsx');
 var sanitize = require('../../server/lib/sanitize');
 var fs = require('fs');
 
-var book = xlsx.readFile('mar.xlsx');
-var sheet = book.Sheets[book.SheetNames[4]];
+var book = xlsx.readFile('report.xlsx');
+var sheet = book.Sheets[book.SheetNames[1]];
 var JSONSheet = xlsx.utils.sheet_to_json(sheet);
 
 //base config
@@ -17,7 +17,7 @@ var pcgc = [], errors = [],
 //invariant info in posting_journal
 var project_id = 1, fiscal_year_id = 2,
 	period_id = 15, trans_date = "2015-01-01", currency_id = 2,
-	comment = 'Import automatique', origin_id = 9,
+	comment = 'Report 2013', origin_id = 9,
 	user_id = 1;
 
 console.log('[INFO] traitement feuille : ' + book.SheetNames[1] + " en cours ...");
@@ -27,7 +27,7 @@ db.initialise();
 
 function getPCGCAccounts () {
 	console.log('[INFO] : Extraction Compte PCGC ...');
-	var req = "SELECT `id`, `account_number`, `account_txt` FROM `account`WHERE `is_ohada` = 0";
+	var req = "SELECT `id`, `account_number`, `account_txt` FROM `account`WHERE `is_ohada` = 0 OR ISNULL(is_ohada)";
 	return db.exec(req);
 }
 
@@ -160,11 +160,12 @@ getPCGCAccounts()
 				  " `debit_equiv`, `credit_equiv`, `currency_id`, `comment`, `origin_id`, `user_id`) VALUES " +
 				  lines.join(', ') + ";";
 
-	console.log("[INFO] Ecriture dans le fichier" + "Janv_" + book.SheetNames[1] + ".sql" + " encours ...");
+	console.log("[INFO] Ecriture dans le fichier" + "report_" + book.SheetNames[1] + ".sql" + " encours ...");
 
-	fs.writeFile("Janv_" + book.SheetNames[1] + ".sql" , request, function(err) {
+	fs.writeFile("report_" + book.SheetNames[1] + ".sql" , request, function(err) {
 	    if(err) {
-	        return console.log(err);
+	    	console.log(err);
+	        return; 
 	    }
 	    console.log("[INFO] Ecriture terminee !!!");
 	});
