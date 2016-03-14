@@ -1,14 +1,11 @@
-.legend .legend-element {
-  display: inline-block;
-  padding: 10px;
-  margin: 5px;
-  border-radius: 5px;
+.chart-legend {
+	text-align: left !important;
+	font-size: 1.5em;
 }
-
-.legend .legend-element.new {
-  background-color:rgba(3,3,68,1);color:#FFF;
+.chart-legend tr > td {
+	
 }
-
-.legend .legend-element.old {
-  background-color:rgba(130,14,11,1);color:#FFF;
+.chart-legend tr > td > img {
+	width: 50px;
+	height: 20px;
 }
