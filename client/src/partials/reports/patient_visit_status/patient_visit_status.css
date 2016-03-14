@@ -1,9 +1,11 @@
 .chart-legend {
+	clear: both;
+	margin-left: 30px;
 	text-align: left !important;
 	font-size: 1.5em;
 }
 .chart-legend tr > td {
-	
+	padding-right: 10px;
 }
 .chart-legend tr > td > img {
 	width: 50px;
