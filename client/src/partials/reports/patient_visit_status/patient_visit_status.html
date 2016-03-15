@@ -171,21 +171,18 @@
           <!-- Bar Chart -->
           <div class="row">
             <div class="col-xs-12">
-              <div class="pull-right">
-                <fieldset class="legend">
-                  <legend>{{ "TREE.PATIENT_VISIT_STATUS" | translate }}</legend>
-                  <table>
-                    <tr>
-                      <td class="legend-element new"><b>{{ patientsNewVisit.length }}</b></td>
-                      <td>{{ "PATIENT_VISIT.NEW_CASES" | translate }}</td>                      
-                    </tr>
-                    <tr>
-                      <td class="legend-element old"><b>{{ patientsOldVisit.length }}</b></td>
-                      <td>{{ "PATIENT_VISIT.OLD_CASES" | translate }}</td>
-                    </tr>
-                  </table>
-                </fieldset> 
-              </div>             
+              <table class="chart-legend">
+                <tr>
+                  <td><img src="/assets/chart/blue.jpg"></td>
+                  <td><strong>{{ patientsNewVisit.length }}</strong></td>
+                  <td>{{ "PATIENT_VISIT.NEW_CASES" | translate }}</span></td>                     
+                </tr>
+                <tr>
+                  <td><img src="/assets/chart/red.jpg"></td>
+                  <td><strong>{{ patientsOldVisit.length }}</strong></td>
+                  <td>{{ "PATIENT_VISIT.OLD_CASES" | translate }}</span></td>
+                </tr>
+              </table>
             </div>
           </div>
 
@@ -196,24 +193,20 @@
           </div>
 
           <!-- Line Chart -->
-
           <div class="row">
-            <div classs="col-xs-12">
-              <div class="pull-right">
-                <fieldset class="legend">
-                  <legend>{{ "TREE.PATIENT_VISIT_STATUS" | translate }}</legend>
-                  <table>
-                    <tr>
-                      <td class="legend-element new"><b>{{ patientsNewVisit.length }}</b></td>
-                      <td>{{ "PATIENT_VISIT.NEW_CASES" | translate }}</td>                      
-                    </tr>
-                    <tr>
-                      <td class="legend-element old"><b>{{ patientsOldVisit.length }}</b></td>
-                      <td>{{ "PATIENT_VISIT.OLD_CASES" | translate }}</td>
-                    </tr>
-                  </table>
-                </fieldset>  
-              </div>            
+            <div class="col-xs-12">
+              <table class="chart-legend">
+                <tr>
+                  <td><img src="/assets/chart/blue.jpg"></td>
+                  <td><strong>{{ patientsNewVisit.length }}</strong></td>
+                  <td>{{ "PATIENT_VISIT.NEW_CASES" | translate }}</span></td>                     
+                </tr>
+                <tr>
+                  <td><img src="/assets/chart/red.jpg"></td>
+                  <td><strong>{{ patientsOldVisit.length }}</strong></td>
+                  <td>{{ "PATIENT_VISIT.OLD_CASES" | translate }}</span></td>
+                </tr>
+              </table>
             </div>
           </div>
 
