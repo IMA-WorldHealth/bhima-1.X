@@ -293,7 +293,12 @@
       "WAIT_ACCOUNT"       : "Compte d'attente"
     },
     "FLOW" : {
-      "TITLE" : "Flux de liquidité (Cash Flow) "
+      "CASH_EXPENSE"     : "Cash Depenses",
+      "CASH_INCOME"      : "Cash Recettes",
+      "MONTH_BALANCE"    : "Cash (Balance Mensuelle)",
+      "OPENNING_BALANCE" : "Cash (Balance d'ouverture)",
+      "TITLE"            : "Flux de liquidité (Cash Flow) ",
+      "TOTALS"           : "Totaux"
     },
    "HELP_TXT_1"       : "Cette module permettre des payer contre plusiers factures",
    "HELP_TXT_2"       : "Trouver un Débiteur avec le ",
@@ -3051,6 +3056,7 @@
    "INVENTORY_MANAGEMENT"      : "Gestion des Inventaires ",
    "INVENTORY_VIEW"            : "Stocks",
    "JOURNAL_VOUCHER"           : "Ajout Transactions",
+   "LIQUIDITY_FLOW"            : "Flux de Liquidité",
    "LOCATION"                  : "Localisation",
    "LOSS_RECORDS"              : "Pertes Stocks",
    "MAIN_CASH"                 : "Caisse Principale",
