@@ -40,11 +40,11 @@ exports.compile = function (options) {
 
     ans = ans.map(function (items){
       var assets = items.filter(function (item){
-        item.sectionBilanIsActif === 1;
+        return item.sectionBilanIsActif === 1;
       });
 
       var passifs = items.filter(function (item){
-        item.sectionBilanIsActif === 0;
+        return item.sectionBilanIsActif === 0;
       });
 
       /** transform our array of array to an object which contains to array asset and passif**/
@@ -57,6 +57,8 @@ exports.compile = function (options) {
   .then(function (infos){
     //spliting into four set, asset for current and previous fiscal, passive for current and previous fiscal
     // var AssetGeneralBrut = 0, AssetGeneralAmortProv = 0, AssetGeneralNet = 0, AssetGeneralPreviousNet = 0;
+
+    context.previous = infos.previous;
 
     assetData.current_detail_list = infos.current_detail_list.filter(function (item){
       return item.sectionBilanIsActif === 1;
@@ -87,7 +89,7 @@ exports.compile = function (options) {
          
         section.grefs = getGroupReferences(section, currents);        
         section.grefs.forEach(function (gref){
-        gref.totalBrut = 0; gref.totalAmortProv = 0; gref.totalNet = 0;
+          gref.totalBrut = 0; gref.totalAmortProv = 0; gref.totalNet = 0;
 
           /**initialize each group reference total previous**/
           infos.previous.forEach(function (item, i){ gref['totalPreviousNet' + i] = 0; });
@@ -131,7 +133,7 @@ exports.compile = function (options) {
 
           /** iterate to have each total previous**/
           infos.previous.forEach(function (previousYearData, index){
-            section['totalPreviousNet' + index] += gref['totalPreviousNet' + 0];
+            section['totalPreviousNet' + index] += gref['totalPreviousNet' + index];
             gref['totalPreviousNet_view' + index] = numeral(gref['totalPreviousNet' + index]).format(formatDollar);
           });          
         });
@@ -142,7 +144,7 @@ exports.compile = function (options) {
 
         /** iterate to have each total previous**/
         infos.previous.forEach(function (previousYearData, index){
-          context['assetGeneralPreviousNet' + index] += section['totalPreviousNet' + 0];
+          context['assetGeneralPreviousNet' + index] += section['totalPreviousNet' + index];
         }); 
 
         //processing total brut, amort, previous net
@@ -213,24 +215,24 @@ exports.compile = function (options) {
 
           /** iterate to have each total previous**/
           infos.previous.forEach(function (previousYearData, index){
-            section['totalPreviousNet' + index] += gref['totalPreviousNet' + 0];
+            section['totalPreviousNet' + index] += gref['totalPreviousNet' + index];
             gref['totalPreviousNet_view' + index] = numeral(gref['totalPreviousNet' + index]).format(formatDollar);
           });  
         });
 
         context.passiveGeneralNet += section.totalNet;
 
-        /** iterate to have each total view previous**/
+        /** iterate to have each total previous**/
         infos.previous.forEach(function (previousYearData, index){
-          context['passiveGeneralPreviousNet' + index] = numeral(context['passiveGeneralPreviousNet' + index]).format(formatDollar);
-        });
-        
+          context['passiveGeneralPreviousNet' + index] += section['totalPreviousNet' + index];
+        }); 
+
         section.totalNet_view = numeral(section.totalNet).format(formatDollar);
 
         /** iterate to have each total view previous**/
         infos.previous.forEach(function (previousYearData, index){
           section['totalPreviousNet_view' + index] = numeral(section['totalPreviousNet' + index]).format(formatDollar);
-        });
+        });        
       });
 
       context.passiveGeneralNet = numeral(context.passiveGeneralNet).format(formatDollar);
