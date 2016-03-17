@@ -293,12 +293,19 @@
       "WAIT_ACCOUNT"       : "Compte d'attente"
     },
     "FLOW" : {
-      "CASH_EXPENSE"     : "Cash Depenses",
-      "CASH_INCOME"      : "Cash Recettes",
-      "MONTH_BALANCE"    : "Cash (Balance Mensuelle)",
-      "OPENNING_BALANCE" : "Cash (Balance d'ouverture)",
-      "TITLE"            : "Flux de liquidité (Cash Flow) ",
-      "TOTALS"           : "Totaux"
+      "CASH_EXPENSE"       : "Cash Depenses",
+      "CASH_INCOME"        : "Cash Recettes",
+      "CLOSING_BALANCE"    : "Cash (Balance Cloture)",
+      "CONVENTION_PAYMENT" : "Paiement des conventions",
+      "GENERIC_EXPENSE"    : "Autres Depenses",
+      "GENERIC_INCOME"     : "Autres Recettes",
+      "GROUP_DEB_INVOICE"  : "Voir Comptabilité",
+      "INDIRECT_PURCHASE"  : "Achats",
+      "MONTH_BALANCE"      : "Cash (Balance Mensuelle)",
+      "OPENNING_BALANCE"   : "Cash (Balance d'ouverture)",
+      "PATIENT_PAYMENT"    : "Paiement des patients",
+      "TITLE"              : "Flux de liquidité (Cash Flow) ",
+      "TOTALS"             : "Totaux"
     },
    "HELP_TXT_1"       : "Cette module permettre des payer contre plusiers factures",
    "HELP_TXT_2"       : "Trouver un Débiteur avec le ",

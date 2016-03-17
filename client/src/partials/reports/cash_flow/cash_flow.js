@@ -62,8 +62,7 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
   vm.setSelectedCash = setSelectedCash;
   vm.fill            = fill;
   vm.reconfigure     = reconfigure;
-  vm.getSource       = getSource;
-  vm.showDetails     = showDetails;
+  vm.mappingText     = mappingText;
   vm.print           = function () { print(); };
 
   // setting date default for a year
@@ -248,10 +247,6 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
     initialization();
   }
 
-  function showDetails () {
-    session.details = session.details ? false : true;
-  }
-
   // Grouping by source
   function groupingResult (incomes, expenses, period) {
     var tempIncome  = {},
@@ -293,20 +288,23 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
         }
       });
     }
+  }
+
+  function mappingText(text) {
+    var sources = {
+      'group_deb_invoice'     : 'CASH.FLOW.GROUP_DEB_INVOICE',
+      'pcash_convention'      : 'CASH.FLOW.CONVENTION_PAYMENT',
+      'pcash_transfert'       : 'CASH.FLOW.PATIENT_PAYMENT',
+      'generic_income'        : 'CASH.FLOW.GENERIC_INCOME',
+      'generic_expense'       : 'CASH.FLOW.GENERIC_EXPENSE',
+      'indirect_purchase'     : 'CASH.FLOW.INDIRECT_PURCHASE'
+    };
+
+    return sources[text] ? sources[text] : text; 
   }  
 
   function error (err) {
     messenger.danger(err.toString());
   }
-
-  /**
-    * getSource
-    * This function translate humanly a transaction type
-    * @param : txt = string correponding to a transaction type
-    */
-  function getSource (txt) {
-    // FIXME: translation broken
-    // return transactionSource.source(txt);
-    return txt;
-  }
+  
 }

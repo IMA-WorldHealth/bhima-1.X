@@ -292,12 +292,19 @@
       "WAIT_ACCOUNT"       : "Compte d'attente"
     },
    "FLOW" : {
-     "CASH_EXPENSE"     : "Cash Outgoing",
-     "CASH_INCOME"      : "Cash Incoming",
-     "MONTH_BALANCE"    : "Cash (Monthly Balance)",
-     "OPENNING_BALANCE" : "Cash on Hand (Openning balance)",
-     "TITLE"            : "Cash Flow ",
-     "TOTALS"           : "Totals"
+     "CASH_EXPENSE"       : "Cash Outgoing",
+     "CASH_INCOME"        : "Cash Incoming",
+     "CLOSING_BALANCE"    : "Cash (Closing Balance)",
+     "CONVENTION_PAYMENT" : "Convention payments",
+     "GENERIC_EXPENSE"    : "Other Expenses",
+     "GENERIC_INCOME"     : "Other Incomes",
+     "GROUP_DEB_INVOICE"  : "See Accounting",
+     "INDIRECT_PURCHASE"  : "Purchases",
+     "MONTH_BALANCE"      : "Cash (Monthly Balance)",
+     "OPENNING_BALANCE"   : "Cash on Hand (Openning balance)",
+     "PATIENT_PAYMENT"    : "Patients Payemnts",
+     "TITLE"              : "Cash Flow ",
+     "TOTALS"             : "Totals"
    },
    "HELP_TXT_1"       : "The module allows debitors to pay against existing invoices",
    "HELP_TXT_2"       : "To begin, search for a debitor using the search bar above",
