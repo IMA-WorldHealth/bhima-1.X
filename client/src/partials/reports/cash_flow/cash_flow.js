@@ -194,7 +194,7 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
       session.incomesLabels.forEach(function (label) {
         session.summationIncome[flow.period.period_number].forEach(function (transaction) {
           if (transaction.service_txt === label) {
-            session.incomes[flow.period.period_number][label] = exchange.convertir(transaction.value, transaction.currency_id, SessionService.enterprise.currency_id, new Date());
+            session.incomes[flow.period.period_number][label] = transaction.value;
           }
         });
       });
@@ -204,7 +204,7 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
     session.periodicData.forEach(function (flow) {
       session.totalIncomes[flow.period.period_number] = 0;
       session.summationIncome[flow.period.period_number].forEach(function (transaction) {
-        session.totalIncomes[flow.period.period_number] += exchange.convertir(transaction.value, transaction.currency_id, SessionService.enterprise.currency_id, new Date());
+        session.totalIncomes[flow.period.period_number] += transaction.value;
       });
     });
 
@@ -214,7 +214,7 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
       session.expensesLabels.forEach(function (label) {
         session.summationExpense[flow.period.period_number].forEach(function (transaction) {
           if (transaction.service_txt === label) {
-            session.expenses[flow.period.period_number][label] = exchange.convertir(transaction.value, transaction.currency_id, SessionService.enterprise.currency_id, new Date());
+            session.expenses[flow.period.period_number][label] = transaction.value;
           }
         });
       });
@@ -224,7 +224,7 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
     session.periodicData.forEach(function (flow) {
       session.totalExpenses[flow.period.period_number] = 0;
       session.summationExpense[flow.period.period_number].forEach(function (transaction) {
-        session.totalExpenses[flow.period.period_number] += exchange.convertir(transaction.value, transaction.currency_id, SessionService.enterprise.currency_id, new Date());
+        session.totalExpenses[flow.period.period_number] += transaction.value;
       });
     });
 
@@ -262,7 +262,7 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
 
         if (tempIncome[item.service_txt] === true) {
           var value = incomes.reduce(function (a, b) {
-            return b.service_txt === item.service_txt ? b.debit + a : a;
+            return b.service_txt === item.service_txt ? b.debit_equiv + a : a;
           }, 0);
           session.summationIncome[period].push({
             'service_txt' : item.service_txt,
@@ -280,7 +280,7 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
 
         if (tempExpense[item.service_txt] === true) {
           var value = expenses.reduce(function (a, b) {
-            return b.service_txt === item.service_txt ? b.credit + a : a;
+            return b.service_txt === item.service_txt ? b.credit_equiv + a : a;
           }, 0);
           session.summationExpense[period].push({
             'service_txt' : item.service_txt,
@@ -299,7 +299,12 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
       'pcash_transfert'       : 'CASH.FLOW.PATIENT_PAYMENT',
       'generic_income'        : 'CASH.FLOW.GENERIC_INCOME',
       'generic_expense'       : 'CASH.FLOW.GENERIC_EXPENSE',
-      'indirect_purchase'     : 'CASH.FLOW.INDIRECT_PURCHASE'
+      'indirect_purchase'     : 'CASH.FLOW.INDIRECT_PURCHASE',
+      'pcash_employee'        : 'CASH.FLOW.PCASH_EMPLOYEE',
+      'cash_return'           : 'CASH.FLOW.CASH_RETURN',
+      'cotisation_paiement'   : 'CASH.FLOW.COTISATION_PAYMENT',
+      'tax_paiement'          : 'CASH.FLOW.TAX_PAYMENT',
+      'salary_advance'        : 'CASH.FLOW.SALARY_ADVANCE'
     };
 
     return sources[text] ? sources[text] : text; 
