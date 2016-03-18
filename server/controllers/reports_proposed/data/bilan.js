@@ -19,8 +19,8 @@ exports.compile = function (options) {
     '`ref`.`position` AS `referencePosition`, `gref`.`id` AS `greferenceId`, `ref`.`is_report` AS `referenceIsReport`, ' +
     '`gref`.`reference_group` AS `greferenceAbbr`, `gref`.`text` AS `greferenceLabel`, `gref`.`position` AS `greferencePosition`, ' +
     '`sbl`.`id` AS `sectionBilanId`, `sbl`.`text` AS `sectionBilanLabel`, `sbl`.`is_actif` AS `sectionBilanIsActif`, ' +
-    '`sbl`.`position` AS `sectionBilanPosition`, SUM(`gld`.`debit_equiv`) AS `generalLegderDebit`, SUM(`gld`.`credit_equiv`) AS `generalLegderCredit` ' +
-    'FROM `section_bilan` `sbl` JOIN `reference_group` `gref` ON `sbl`.`id` = `gref`.`section_bilan_id` JOIN `reference` `ref` ON `gref`.`id` = `ref`.`reference_group_id` ' +
+    '`sbl`.`position` AS `sectionBilanPosition`, SUM(`gld`.`debit_equiv`) AS `generalLegderDebit`, SUM(`gld`.`credit_equiv`) AS `generalLegderCredit`, ' +
+    '`gld`.`fiscal_year_id` AS fid FROM `section_bilan` `sbl` JOIN `reference_group` `gref` ON `sbl`.`id` = `gref`.`section_bilan_id` JOIN `reference` `ref` ON `gref`.`id` = `ref`.`reference_group_id` ' +
     'JOIN `account` `acc` ON `acc`.`reference_id` = `ref`.`id` JOIN `general_ledger` `gld` ON `gld`.`account_id` = `acc`.`id` WHERE `gld`.`period_id` IN (SELECT `id` ' +
     'FROM `period` WHERE `period`.`fiscal_year_id`=?) AND `acc`.`is_ohada`=? GROUP BY `gld`.`account_id` ORDER BY `sbl`.`position`, `gref`.`position`, `ref`.`position` DESC;';
 
@@ -56,10 +56,8 @@ exports.compile = function (options) {
   })
   .then(function (infos){
     //spliting into four set, asset for current and previous fiscal, passive for current and previous fiscal
-    // var AssetGeneralBrut = 0, AssetGeneralAmortProv = 0, AssetGeneralNet = 0, AssetGeneralPreviousNet = 0;
 
     context.previous = infos.previous;
-
     assetData.current_detail_list = infos.current_detail_list.filter(function (item){
       return item.sectionBilanIsActif === 1;
     });
@@ -74,7 +72,7 @@ exports.compile = function (options) {
     function processAsset (tbl){
 
       var currents = tbl.current_detail_list;
-      var sections = (currents.length > 0) ? getSections(currents) : [];
+      var sections = (currents.length > 0) ? getSections(currents, 1) : [];
 
       context.assetGeneralBrut = 0; context.assetGeneralAmortProv = 0; context.assetGeneralNet = 0;
 
@@ -172,7 +170,7 @@ exports.compile = function (options) {
 
     function processPassive (tbl){
       var currents = tbl.current_detail_list;
-      var sections = (currents.length > 0) ? getSections(currents) : [];
+      var sections = (currents.length > 0) ? getSections(currents, 0) : [];
 
       context.passiveGeneralBrut = 0; context.passiveGeneralAmortProv = 0; context.passiveGeneralNet = 0;
 
@@ -251,28 +249,42 @@ exports.compile = function (options) {
       });
     }
 
-    function getSections (list){
+    function getSections (list, isActif){
       var sections = [];
-      sections.push({
-        sectionBilanId : list[0].sectionBilanId,
-        sectionBilanPosition : list[0].sectionBilanPosition,
-        sectionBilanLabel : list[0].sectionBilanLabel,
-        sectionBilanIsActif : list[0].sectionBilanIsActif,
-        grefs : []
-      });
-
-
+      /** fecthing sections from current fiscal years array**/
       for(var i = 0; i <= list.length - 1; i++){
-        if(!exist(list[i], sections, 'sectionBilanId')){
-          sections.push({
-            sectionBilanId : list[i].sectionBilanId,
-            sectionBilanPosition : list[i].sectionBilanPosition,
-            sectionBilanLabel : list[i].sectionBilanLabel,
-            sectionBilanIsActif : list[i].sectionBilanIsActif,
-            grefs : []
-          })
-        }
+        if(list[i].sectionBilanIsActif === isActif){
+          if(!exist(list[i], sections, 'sectionBilanId')){
+            sections.push({
+              sectionBilanId : list[i].sectionBilanId,
+              sectionBilanPosition : list[i].sectionBilanPosition,
+              sectionBilanLabel : list[i].sectionBilanLabel,
+              sectionBilanIsActif : list[i].sectionBilanIsActif,
+              grefs : []
+            });
+          }
+        }        
       }
+
+      /** getting section form previous**/
+      infos.previous.forEach(function (item){
+        var previous = [];
+        previous = previous.concat(item.assets);
+        previous = previous.concat(item.passifs);
+        previous.forEach(function (item){
+          if(item.sectionBilanIsActif === isActif){
+            if(!exist(item, sections, 'sectionBilanId')){
+              sections.push({
+                sectionBilanId : item.sectionBilanId,
+                sectionBilanPosition : item.sectionBilanPosition,
+                sectionBilanLabel : item.sectionBilanLabel,
+                sectionBilanIsActif : item.sectionBilanIsActif,
+                grefs : []
+              });
+            }
+          }
+        });        
+      });
 
       return sections;
     }
@@ -292,6 +304,27 @@ exports.compile = function (options) {
             });
           }
         }
+      });
+
+      /** getting group reference form previous**/
+      infos.previous.forEach(function (items){
+        var previous = [];
+        previous = previous.concat(items.assets);
+        previous = previous.concat(items.passifs);
+
+        previous.forEach(function (item){
+          if(item.sectionBilanId === section.sectionBilanId){
+            if(!exist(item, greferences, 'greferenceId')){
+              greferences.push({
+                greferenceId : item.greferenceId,
+                greferenceAbbr : item.greferenceAbbr,
+                greferencePosition : item.greferencePosition,
+                greferenceLabel : item.greferenceLabel,
+                refs : []
+              });
+            }
+          }          
+        });
       });
 
       return greferences;
@@ -316,7 +349,31 @@ exports.compile = function (options) {
           }
         }
       });
-      
+
+      /** getting group reference form previous**/
+      infos.previous.forEach(function (items){
+        var previous = [];
+        previous = previous.concat(items.assets);
+        previous = previous.concat(items.passifs);
+
+        previous.forEach(function (item){
+          if(item.greferenceId == greference.greferenceId){
+            if(!exist(item, references, 'referenceId')){
+              references.push({
+                referenceId : item.referenceId,
+                referenceAbbr : item.referenceAbbr,
+                referencePosition : item.referencePosition,
+                referenceLabel : item.referenceLabel,
+                brut : 0,
+                amort_prov : 0,
+                net : 0,
+                previousNet : 0
+              });
+            }
+          }          
+        });
+      });
+
       return references;
     }
 
@@ -329,7 +386,6 @@ exports.compile = function (options) {
           somCredit+=item.generalLegderCredit;
         }
       });
-
 
       return (isActif === 1)? somDebit - somCredit : somCredit - somDebit;
     }

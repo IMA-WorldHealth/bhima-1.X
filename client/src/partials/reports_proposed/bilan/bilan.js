@@ -54,6 +54,7 @@ angular.module('bhima.controllers')
         return item.id === fid;
       });
 
+      i = 0;
       parents = getFirstForPrevious(fy[0]);
       return parents;
     }
@@ -66,7 +67,10 @@ angular.module('bhima.controllers')
       /** seek for the fiscal year which is the parent of fy **/
       var res = $scope.fiscalYears.data.filter(function (item){
         return item.id === fy.previous_fiscal_year;
-      });      
+      }); 
+
+      /** Thsi case will happen if we sent 2014 as chosen fiscal year**/
+      if(!res[0] && i === 1){ return [];}; // FIX ME a hack     
 
       /** stop de recursion if the root fiscal year is fetch or limit reached**/
       if(!res[0].previous_fiscal_year || i === 4){
