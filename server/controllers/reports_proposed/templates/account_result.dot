@@ -23,36 +23,36 @@
             <th>{{=it.i18nAccountResult.REFERENCE}}</th>
             <th>{{=it.i18nAccountResult.CHARGE}}</th>
             <th>Exercice N</th>
-            <th>Ex. N-1</th>
+            {{~it.previous : data : i}} <th>Ex. N-{{=i+1}}</th> {{~}}            
           </tr>
         </thead>
         <tbody>
           {{~it.chargeSide : section : ind1}}
             <tr>
               <th></th>
-              <th>{{=section.sectionResultLabel}}({{=section.sectionResultPosition}})</th>
-              <th colspan="3"></th>
+              <th>{{=section.sectionResultLabel}}</th>
+              <th colspan="{{=2+it.previous.length}}"></th>
             </tr>
               {{~section.refs : ref : ind2}}
                 <tr>
                   <td class="text-center">{{=ref.referenceAbbr}}</td>
                   <td>{{=ref.referenceLabel}}</td>
                   <td class="text-center">{{=ref.net_view}}</td>
-                  <td class="text-center">{{=ref.previous_view}}</td>
+                  {{~it.previous : data : i}} <td class="text-center">{{=ref['previous_view' + i]}}</td> {{~}}                       
                 </tr>
               {{~}}
             <tr>
               <th></th>
-              <th>{{=it.i18nAccountResult.TOTAL}} {{=section.sectionResultLabel}} ({{=section.sectionResultPosition}})</th>
+              <th>{{=it.i18nAccountResult.TOTAL}} {{=section.sectionResultLabel}}</th>
               <th>{{=section.total_view}}</th>
-              <th>{{=section.totalPrevious_view}}</th>
+              {{~it.previous : data : i}} <th>{{=section['totalPrevious_view' + i]}}</th> {{~}}
             </tr>
           {{~}}
           <tr>
             <th></th>
             <th>{{=it.i18nAccountResult.TOTAL_GENERAL}}</th>
             <th>{{=it.chargeGeneral}}</th>
-            <th>{{=it.chargeGeneralPrevious}}</th>
+            {{~it.previous : data : i}} <th>{{=it['chargeGeneralPrevious' + i]}}</th> {{~}}
           </tr>
         </tbody>
       </table>
@@ -64,36 +64,36 @@
             <th>{{=it.i18nAccountResult.REFERENCE}}</th>
             <th>{{=it.i18nAccountResult.PROFIT}}</th>
             <th>Exercice N</th>
-            <th>Ex. N-1</th>
+            {{~it.previous : data : i}} <th>Ex. N-{{=i+1}}</th> {{~}}            
           </tr>
         </thead>
         <tbody>
           {{~it.profitSide : section : ind1}}
             <tr>
               <th></th>
-              <th>{{=section.sectionResultLabel}}({{=section.sectionResultPosition}})</th>
-              <th colspan="3"></th>
+              <th>{{=section.sectionResultLabel}}</th>
+              <th colspan="{{=2+it.previous.length}}"></th>
             </tr>
               {{~section.refs : ref : ind2}}
                 <tr>
                   <td class="text-center">{{=ref.referenceAbbr}}</td>
                   <td>{{=ref.referenceLabel}}</td>
                   <td class="text-center">{{=ref.net_view}}</td>
-                  <td class="text-center">{{=ref.previous_view}}</td>
+                  {{~it.previous : data : i}} <td class="text-center">{{=ref['previous_view' + i]}}</td> {{~}}                       
                 </tr>
               {{~}}
             <tr>
               <th></th>
-              <th>{{=it.i18nAccountResult.TOTAL}} {{=section.sectionResultLabel}} ({{=section.sectionResultPosition}})</th>
+              <th>{{=it.i18nAccountResult.TOTAL}} {{=section.sectionResultLabel}}</th>
               <th>{{=section.total_view}}</th>
-              <th>{{=section.totalPrevious_view}}</th>
+              {{~it.previous : data : i}} <th>{{=section['totalPrevious_view' + i]}}</th> {{~}}
             </tr>
           {{~}}
           <tr>
             <th></th>
             <th>{{=it.i18nAccountResult.TOTAL_GENERAL}}</th>
-            <th>{{=it.profitGeneral}}</th>
-            <th>{{=it.profitGeneralPrevious}}</th>
+            <th>{{=it.produitGeneral}}</th>
+            {{~it.previous : data : i}} <th>{{=it['produitGeneralPrevious' + i]}}</th> {{~}}
           </tr>
         </tbody>
       </table>
