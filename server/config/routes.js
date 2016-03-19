@@ -299,6 +299,7 @@ exports.initialise = function (app) {
   app.get('/stock/entries?', stock.getStockEntry);
 
   // cashflow
-  app.get('/cashflow/report/', cashflow.getReport);
+  app.get('/cash_flow/report/', cashflow.cashReport);
+  app.get('/liquidity_flow/report/', cashflow.liquidityReport);
 
 };

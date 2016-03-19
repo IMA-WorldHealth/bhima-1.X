@@ -34,3 +34,13 @@ INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`) V
 -- By: Bruce M.
 -- Date: 2015-11-23
 ALTER TABLE `purchase` ADD `is_return` TINYINT(1) DEFAULT 0;
+
+-- Cash flow and liquidity flow reports 
+-- By: Bruce M.
+-- Date: 2016-03-16
+
+INSERT INTO `unit` (`id`, `name`, `key`, `parent`, `url`, `path`) VALUES
+(140, "Cashflow Report", "TREE.CASH_FLOW", 128, "/partials/reports/cash_flow/", "/reports/cash_flow/"),
+(141, "liquidity Report", "TREE.LIQUIDITY_FLOW", 128, "/partials/reports/liquidity_flow/", "/reports/liquidity_flow/");
+
+

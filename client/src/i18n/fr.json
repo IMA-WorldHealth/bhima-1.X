@@ -293,7 +293,24 @@
       "WAIT_ACCOUNT"       : "Compte d'attente"
     },
     "FLOW" : {
-      "TITLE" : "Flux de liquidité (Cash Flow) "
+      "CASH_EXPENSE"       : "Cash Depenses",
+      "CASH_INCOME"        : "Cash Recettes",
+      "CASH_RETURN"        : "Remboursement",
+      "CLOSING_BALANCE"    : "Cash (Balance Cloture)",
+      "CONVENTION_PAYMENT" : "Paiement des conventions",
+      "COTISATION_PAYMENT" : "Payroll - cotisations",
+      "GENERIC_EXPENSE"    : "Autres Depenses",
+      "GENERIC_INCOME"     : "Autres Recettes",
+      "GROUP_DEB_INVOICE"  : "Comptabilité",
+      "INDIRECT_PURCHASE"  : "Achats",
+      "MONTH_BALANCE"      : "Cash (Balance Mensuelle)",
+      "OPENNING_BALANCE"   : "Cash (Balance d'ouverture)",
+      "PATIENT_PAYMENT"    : "Paiement des patients",
+      "PCASH_EMPLOYEE"     : "Paiement des prises en charge",
+      "SALARY_ADVANCE"     : "Avance Salaire",
+      "TAX_PAYMENT"        : "Payroll - Taxes",
+      "TITLE"              : "Flux de liquidité (Cash Flow) ",
+      "TOTALS"             : "Totaux"
     },
    "HELP_TXT_1"       : "Cette module permettre des payer contre plusiers factures",
    "HELP_TXT_2"       : "Trouver un Débiteur avec le ",
@@ -3051,6 +3068,7 @@
    "INVENTORY_MANAGEMENT"      : "Gestion des Inventaires ",
    "INVENTORY_VIEW"            : "Stocks",
    "JOURNAL_VOUCHER"           : "Ajout Transactions",
+   "LIQUIDITY_FLOW"            : "Flux de Liquidité",
    "LOCATION"                  : "Localisation",
    "LOSS_RECORDS"              : "Pertes Stocks",
    "MAIN_CASH"                 : "Caisse Principale",

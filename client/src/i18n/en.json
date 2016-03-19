@@ -292,7 +292,24 @@
       "WAIT_ACCOUNT"       : "Compte d'attente"
     },
    "FLOW" : {
-     "TITLE" : "Cash Flow "
+     "CASH_EXPENSE"       : "Cash Outgoing",
+     "CASH_INCOME"        : "Cash Incoming",
+     "CASH_RETURN"        : "Payback",
+     "COTISATION_PAYMENT" : "Payroll - Cotisations",
+     "CLOSING_BALANCE"    : "Cash (Closing Balance)",
+     "CONVENTION_PAYMENT" : "Convention payments",
+     "GENERIC_EXPENSE"    : "Other Expenses",
+     "GENERIC_INCOME"     : "Other Incomes",
+     "GROUP_DEB_INVOICE"  : "Accounting",
+     "INDIRECT_PURCHASE"  : "Purchases",
+     "MONTH_BALANCE"      : "Cash (Monthly Balance)",
+     "OPENNING_BALANCE"   : "Cash on Hand (Openning balance)",
+     "PATIENT_PAYMENT"    : "Patients Payemnts",
+     "PCASH_EMPLOYEE"     : "Paiement des prises en charge",
+     "SALARY_ADVANCE"     : "Salary Advance",
+     "TAX_PAYMENT"        : "Payroll - Taxes",
+     "TITLE"              : "Cash Flow ",
+     "TOTALS"             : "Totals"
    },
    "HELP_TXT_1"       : "The module allows debitors to pay against existing invoices",
    "HELP_TXT_2"       : "To begin, search for a debitor using the search bar above",
@@ -3047,6 +3064,7 @@
    "INVENTORY_MANAGEMENT"      : "Inventory Management",
    "INVENTORY_VIEW"            : "Stock",
    "JOURNAL_VOUCHER"           : "Journal Voucher",
+   "LIQUIDITY_FLOW"            : "Liquidity Flow",
    "LOCATION"                  : "Location Management",
    "LOSS_RECORDS"              : "Stock loss",
    "MAIN_CASH"                 : "Principal Cashbox",
