@@ -790,11 +790,12 @@ function stock_movement (params){
 
 // Calculates the monthly balance based of period totals
 function balanceMensuelle(params) {
-  var sql, hasClasse,
+  var sql, hasClasse, periodPlage, queryParameters,
       query = querystring.parse(params),
       data = {};
 
   hasClasse = (query.classe !== '*');
+  periodPlage = (query.dateFrom && query.dateTo);
 
   // gets the amount up to the current period
   sql =
@@ -805,7 +806,19 @@ function balanceMensuelle(params) {
      (hasClasse ? 'AND a.classe = ? ' : '') +
     'GROUP BY a.id;';
 
-  return db.exec(sql, [query.date, query.enterpriseId, query.classe])
+  if (periodPlage) {
+    sql =
+    'SELECT a.account_number, a.id, a.account_txt, a.account_type_id, a.is_charge, a.is_asset, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit ' +
+    'FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id ' +
+    'JOIN period AS p ON pt.period_id = p.id ' +
+    'WHERE p.period_start >= DATE(?) AND period_start < DATE(?) AND pt.enterprise_id = ? ' +
+     (hasClasse ? 'AND a.classe = ? ' : '') +
+    'GROUP BY a.id;';
+  }
+
+  queryParameters = (periodPlage) ? [query.dateFrom, query.dateTo, query.enterpriseId, query.classe] : [query.date, query.enterpriseId, query.classe];
+
+  return db.exec(sql, queryParameters)
   .then(function (rows) {
     data.beginning = rows;
 
@@ -816,6 +829,8 @@ function balanceMensuelle(params) {
       'WHERE DATE(?) BETWEEN p.period_start AND p.period_stop AND pt.enterprise_id = ? ' +
        (hasClasse ? 'AND a.classe = ? ' : '') +
       'GROUP BY a.id;';
+
+    query.date = (periodPlage) ? query.dateTo : query.date;
 
     return db.exec(sql, [query.date, query.enterpriseId, query.classe]);
   })
