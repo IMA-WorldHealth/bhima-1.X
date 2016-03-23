@@ -77,13 +77,14 @@ function cashFlowReport (req, res, next) {
 	var currentYear = currentDate.getYear() + 1900;
 
 	// get all periods for the the current fiscal year 
-	fiscalYearPeriods(currentYear)
+	fiscalYearPeriods(params.dateFrom, params.dateTo)
 	.then(function (periods) {
 		// get the closing balance (previous fiscal year) for the selected cashbox
 		glb.periods = periods;
 		return closingBalance(params.account_id, glb.periods[0].period_start);
 	})
 	.then(function (balance) {
+		if (!balance.length) { balance[0] = { balance: 0, account_id: params.account_id }; }
 		glb.openningBalance = balance[0];
 		return queryIncomeExpense(params);
 	})
@@ -167,13 +168,13 @@ function closingBalance(accountId, periodStart) {
 /**
  * @function fiscalYearPeriods
  * @param {number} year A year for finding a corresponding fiscal year
+ * @todo Find a better criteria for distinguish period successively than period_number
  */
-function fiscalYearPeriods(year) {
+function fiscalYearPeriods(dateFrom, dateTo) {
 	var query = 
 		'SELECT id, period_number, period_start, period_stop ' + 
-		'FROM period WHERE fiscal_year_id = ' + 
-		'(SELECT id FROM fiscal_year WHERE start_year = ? LIMIT 1)';
-	return db.exec(query, [year]);
+		'FROM period WHERE period_start >= DATE(?) AND period_stop <= DATE(?)';
+	return db.exec(query, [dateFrom, dateTo]);
 }
 
 /**

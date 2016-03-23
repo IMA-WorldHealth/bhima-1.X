@@ -10,6 +10,7 @@ CashFlowReportController.$inject = [
   * Cash Flow Controller
   * This controller is responsible of cash flow report, that report include
   * all incomes minus all depenses
+  * @todo remove selection by period_number is not effective when more than one fiscal year
   */
 function CashFlowReportController ($q, $http, connect, validate, messenger, util, Appcache, exchange, SessionService, transactionSource, $translate) {
   var vm = this,
