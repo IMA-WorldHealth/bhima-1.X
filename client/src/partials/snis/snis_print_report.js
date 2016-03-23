@@ -2,16 +2,18 @@ angular.module('bhima.controllers')
 .controller('snis.print_report', SnisPrintReportController);
 
 SnisPrintReportController.$inject = [
-  '$scope', '$http', '$q', '$translate', '$routeParams', '$location',
-  'util', 'validate', 'messenger', 'appstate'
+  '$http', '$routeParams', '$location',
+  'validate', 'SessionService', 'util'
 ];
 
-function SnisPrintReportController ($scope, $http, $q, $translate, $routeParams, $location, util, validate, messenger, appstate) {
-  var session = $scope.session = { step : 1 },
-      identif = $scope.identif = {},
-      dependencies = {};
+function SnisPrintReportController ($http, $routeParams, $location, validate, SessionService, util) {
+  var vm = this,
+      session = vm.session = { step : 1 },
+      identif = vm.identif = {},
+      dependencies         = {};
 
   session.reportId = $routeParams.id;
+  session.section  = $routeParams.section;
 
   dependencies.zs = {
     identifier : 'id',
@@ -53,157 +55,93 @@ function SnisPrintReportController ($scope, $http, $q, $translate, $routeParams,
     }
   };
 
-  appstate.register('project', function (project) {
-    $scope.project = project;
-    dependencies.zs.query.where = ['project.id=' + $scope.project.id];
+  /** startup the module */
+  startup();
+
+  function startup() {
+    vm.project = SessionService.project;
+    dependencies.zs.query.where = ['project.id=' + vm.project.id];
     validate.process(dependencies)
     .then(init)
     .then(load);
-  });
+  }
 
-  function load () {
+  function load() {
     if (session.reportId) {
+      session.loading = true;
       $http.get('/snis/getReport/' + session.reportId)
-      .success(function (res) {
-        setSnisData(res.snisData);
-        setIdentificationData(res.identification);
+      .then(function (res) {
+        setSnisData(res.data.snisData);
+        setIdentificationData(res.data.identification);
+      })
+      .then(function () {
+        session.loading = false;
       });
     }
   }
 
-  function init (model) {
-    angular.extend($scope, model);
+  function init(model) {
+    angular.extend(vm, model);
   } 
 
   function setIdentificationData (identification) {
-    var medecin = $scope.employes.get(identification[0].id_employe_medecin_dir);
-    var envoi = $scope.employes.get(identification[0].id_employe_envoi);
-    var reception = $scope.employes.get(identification[0].id_employe_reception);
-    var encodage = $scope.employes.get(identification[0].id_employe_encodage);
-    var zone = $scope.zs.get(identification[0].id_zs);
+    var medecin = vm.employes.get(identification[0].id_employe_medecin_dir);
+    var envoi = vm.employes.get(identification[0].id_employe_envoi);
+    var reception = vm.employes.get(identification[0].id_employe_reception);
+    var encodage = vm.employes.get(identification[0].id_employe_encodage);
+    var zone = vm.zs.get(identification[0].id_zs);
 
-    $scope.identif.mois = new Date(util.htmlDate($scope.report.data[0].date));
+    vm.identif.mois = new Date(util.htmlDate(vm.report.data[0].date));
 
-    $scope.getMedecinDir(medecin);
-    $scope.identif.nom_envoi_selected(envoi);
-    $scope.identif.nom_reception_selected(reception);
-    $scope.identif.nom_encodage_selected(encodage);
+    vm.getMedecinDir(medecin);
+    vm.identif.nom_envoi_selected(envoi);
+    vm.identif.nom_reception_selected(reception);
+    vm.identif.nom_encodage_selected(encodage);
 
-    $scope.identif.province = zone.province;
-    $scope.identif.territoire = zone.territoire;
-    $scope.identif.zone = zone.zone;
-    $scope.identif.id_zs = zone.id;
-    $scope.identif.hopital = zone.name;
-    $scope.identif.info = identification[0].information;
-    $scope.identif.adresse = zone.zone + ',' + zone.territoire + ' - ' + zone.province;
-    $scope.identif.date_envoi = new Date(util.htmlDate(identification[0].date_envoie));
-    $scope.identif.date_reception = new Date(util.htmlDate(identification[0].date_reception));
-    $scope.identif.date_encodage = new Date(util.htmlDate(identification[0].date_encodage));
+    vm.identif.province = zone.province;
+    vm.identif.territoire = zone.territoire;
+    vm.identif.zone = zone.zone;
+    vm.identif.id_zs = zone.id;
+    vm.identif.hopital = zone.name;
+    vm.identif.info = identification[0].information;
+    vm.identif.adresse = zone.zone + ',' + zone.territoire + ' - ' + zone.province;
+    vm.identif.date_envoi = new Date(util.htmlDate(identification[0].date_envoie));
+    vm.identif.date_reception = new Date(util.htmlDate(identification[0].date_reception));
+    vm.identif.date_encodage = new Date(util.htmlDate(identification[0].date_encodage));
   }
 
   function setSnisData (snisData) {
     snisData.forEach(function (field) {
-      $scope.snis_report[field.attribut_form] = field.value;
+      vm.snis_report[field.attribut_form] = field.value;
     });
-  }
-
-  function submit () {
-
-    function submitIdentification () {
-      var def = $q.defer(), next = false;
-
-      if ($scope.identif.mois && $scope.identif.medecin_dir_id && $scope.identif.nom_reception_id && $scope.identif.nom_envoi_id && $scope.identif.nom_encodage_id) {
-
-        $http.post('/snis/createReport/',{params : 
-          {
-            zs_id                  : $scope.identif.id_zs,
-            period                 : util.sqlDate($scope.identif.mois),
-            project_id             : $scope.project.id,
-            id_employe_medecin_dir : $scope.identif.medecin_dir_id,
-            info                   : $scope.identif.info,
-            date_reception         : util.sqlDate($scope.identif.date_reception),
-            id_employe_reception   : $scope.identif.nom_reception_id,
-            date_envoi             : util.sqlDate($scope.identif.date_envoi),
-            id_employe_envoi       : $scope.identif.nom_envoi_id,
-            date_encodage          : util.sqlDate($scope.identif.date_encodage),
-            id_employe_encodage    : $scope.identif.nom_encodage_id
-          }
-        })
-        .success(function (res) {
-          next = true;
-          def.resolve(next);
-        })
-        .error(function (err) {
-          messenger.danger('[erreur] lors de la sauvegarde', true);
-        });
-      } else {
-        messenger.info('Veuillez remplir correctement les zones de l\'identification', true);
-      }
-
-      return def.promise;
-    }
-
-    function saveData (obj){
-      $http.post('/snis/populateReport',{params : {data : obj}})
-      .success(function(){
-        messenger.success('[success] Donnees sauvegardees avec succes', true);
-        $location.path('/snis/');
-      });
-    }
-
-    // sending and saving data
-    submitIdentification()
-    .then(function () {
-      saveData($scope.snis_report);
-    });
-  }
-
-  function loadView (view_id) {
-    session.step = view_id;
   }
   
-  $scope.getMedecinDir = function (obj) {
-    $scope.identif.medecin_dir_id = obj.id;
-    $scope.identif.medecin_dir = obj.prenom + ', ' + obj.name + ' - ' + obj.postnom;
-    $scope.identif.qualification = obj.fonction_txt;
+  vm.getMedecinDir = function (obj) {
+    vm.identif.medecin_dir_id = obj.id;
+    vm.identif.medecin_dir = obj.prenom + ', ' + obj.name + ' - ' + obj.postnom;
+    vm.identif.qualification = obj.fonction_txt;
   };
 
-  $scope.identif.nom_envoi_selected = function (obj) {
-    $scope.identif.nom_envoi_id = obj.id;
-    $scope.identif.nom_envoi = obj.prenom + ', ' + obj.name + ' - ' + obj.postnom;
+  vm.identif.nom_envoi_selected = function (obj) {
+    vm.identif.nom_envoi_id = obj.id;
+    vm.identif.nom_envoi = obj.prenom + ', ' + obj.name + ' - ' + obj.postnom;
   };
 
-  $scope.identif.nom_reception_selected = function (obj) {
-    $scope.identif.nom_reception_id = obj.id;
-    $scope.identif.nom_reception = obj.prenom + ', ' + obj.name + ' - ' + obj.postnom;
+  vm.identif.nom_reception_selected = function (obj) {
+    vm.identif.nom_reception_id = obj.id;
+    vm.identif.nom_reception = obj.prenom + ', ' + obj.name + ' - ' + obj.postnom;
   };
 
-  $scope.identif.nom_encodage_selected = function (obj) {
-    $scope.identif.nom_encodage_id = obj.id;
-    $scope.identif.nom_encodage = obj.prenom + ', ' + obj.name + ' - ' + obj.postnom;
+  vm.identif.nom_encodage_selected = function (obj) {
+    vm.identif.nom_encodage_id = obj.id;
+    vm.identif.nom_encodage = obj.prenom + ', ' + obj.name + ' - ' + obj.postnom;
   };
 
-  $scope.getPeriod = function (obj) {
-    $scope.period = util.sqlDate(obj);
+  vm.getPeriod = function (obj) {
+    vm.period = util.sqlDate(obj);
   };
 
-  $scope.next = function () {
-    if (session.step < 9) {
-      // next step
-      session.step++;
-    } else if (session.step === 9) {
-      // validate operations
-      submit();
-    }
-  };
+  vm.print = function () { print(); };
 
-  $scope.previous = function () {
-    if (session.step > 1 && session.step <= 9) {
-      // next step
-      session.step--;
-    }
-  };
-
-  $scope.snis_report = {};
-  $scope.loadView = loadView;
+  vm.snis_report = {};
 }
