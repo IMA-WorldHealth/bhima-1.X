@@ -1,0 +1,49 @@
+<main>
+	<div id="canvas-snis" ng-switch on="session.step">
+		<div ng-switch-default>
+			<ng-include src="'partials/snis/templates/step1.html'" scope="" onload="loading()"></ng-include>
+		</div>
+		<div ng-switch-when="2">
+			<ng-include src="'partials/snis/templates/step2.html'" scope="" onload="loading()"></ng-include>
+		</div>
+		<div ng-switch-when="3">
+			<ng-include src="'partials/snis/templates/step3.html'" scope="" onload="loading()"></ng-include>
+		</div>
+		<div ng-switch-when="4">
+			<ng-include src="'partials/snis/templates/step4.html'" scope="" onload="loading()"></ng-include>
+		</div>
+		<div ng-switch-when="5">
+			<ng-include src="'partials/snis/templates/step5.html'" scope="" onload="loading()"></ng-include>
+		</div>
+		<div ng-switch-when="6">
+			<ng-include src="'partials/snis/templates/step6.html'" scope="" onload="loading()"></ng-include>
+		</div>
+		<div ng-switch-when="7">
+			<ng-include src="'partials/snis/templates/step7.html'" scope="" onload="loading()"></ng-include>
+		</div>
+		<div ng-switch-when="8">
+			<ng-include src="'partials/snis/templates/step8.html'" scope="" onload="loading()"></ng-include>
+		</div>
+		<div ng-switch-when="9">
+			<ng-include src="'partials/snis/templates/step9.html'" scope="" onload="loading()"></ng-include>
+		</div>
+	</div>
+	<div class="container">
+		<p class="text-nota">PRIERE DE REMPLIR COMPLETEMENT ET TRANSMETTRE A TEMPS CE CANEVAS POUR CENTRALISATION ET ANALYSE.<br>LA DIVISION SNIS.</p>
+	</div>
+</main>
+<footer class="print-hidden">
+	<div class="row">
+		<div class="col-xs-6">
+			<a href="#/snis/" class="btn btn-default pull-left"><i class="glyphicon glyphicon-chevron-left"></i> {{ "SNIS.BACK" | translate }}</a>
+		</div>
+		<div class="col-xs-6">
+			<div class="btn-group pull-right">
+				<button class="btn btn-default" ng-click="print()">
+					<i class="glyphicon glyphicon-print"></i> 
+					{{ "UTIL.PRINT" | translate }} 
+				</button>
+			</div>
+		</div>
+	</div>
+</footer>

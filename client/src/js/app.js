@@ -565,7 +565,7 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/stock/dashboard/dashboard.html'
   })
   .when('/snis/', {
-    controller : 'snis',
+    controller : 'SnisController as SnisCtrl',
     templateUrl : 'partials/snis/snis.html'
   })
   .when('/snis/new_report', {
@@ -573,8 +573,12 @@ function bhimaconfig($routeProvider) {
     templateUrl : 'partials/snis/snis_new_report.html'
   })
   .when('/snis/edit_report/:id', {
-    controller : 'snis.edit_report',
+    controller : 'snis.edit_report as SnisCtrl',
     templateUrl : 'partials/snis/snis_edit_report.html'
+  })
+  .when('/snis/print_report/:id/:section', {
+    controller : 'snis.print_report',
+    templateUrl : 'partials/snis/snis_print_report.html'
   })
   .when('/purchase_menu/', {
     controller : 'purchase.menu',
