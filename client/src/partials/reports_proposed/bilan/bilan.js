@@ -13,7 +13,8 @@ angular.module('bhima.controllers')
         dependencies = {},
         generatedDocumentPath = null,
         serverUtilityPath = '/report/build/bilan',
-        configuration = reportConfigService.configuration;
+        configuration = reportConfigService.configuration,
+        parents = [], i = 0;
 
     dependencies.fiscalYears = {
       query : {
@@ -45,7 +46,40 @@ angular.module('bhima.controllers')
       angular.extend($scope, models);
       selectConfiguration('language', configuration.language.options[1]);
       $scope.session.fiscal_year_id = $scope.fiscalYears.data[$scope.fiscalYears.data.length-1].id;
-      $scope.session.previous_fiscal_year_id = $scope.fiscalYears.data[$scope.fiscalYears.data.length-1].previous_fiscal_year;
+      $scope.session.parents = getParents($scope.session.fiscal_year_id);
+    }
+
+    function getParents (fid){
+      var fy = $scope.fiscalYears.data.filter(function (item){
+        return item.id === fid;
+      });
+
+      i = 0;
+      parents = getFirstForPrevious(fy[0]);
+      return parents;
+    }
+
+    function getFirstForPrevious (fy){ 
+
+      /** incrementing counter **/ 
+      i++;    
+
+      /** seek for the fiscal year which is the parent of fy **/
+      var res = $scope.fiscalYears.data.filter(function (item){
+        return item.id === fy.previous_fiscal_year;
+      }); 
+
+      /** Thsi case will happen if we sent 2014 as chosen fiscal year**/
+      if(!res[0] && i === 1){ return [];}; // FIX ME a hack     
+
+      /** stop de recursion if the root fiscal year is fetch or limit reached**/
+      if(!res[0].previous_fiscal_year || i === 4){
+        return res;
+      }
+
+      /** recursice call**/
+      var x = res[0];
+      return res.concat(getFirstForPrevious(x));
     }
 
     // POST configuration object to /report/build/:target
@@ -57,10 +91,11 @@ angular.module('bhima.controllers')
       configurationObject.language = configuration.language.selected.value;
       configurationObject.fy = $scope.session.fiscal_year_id;
       configurationObject.fy_txt = $scope.fiscalYears.get(configurationObject.fy).fiscal_year_txt;
-      configurationObject.pfy = $scope.session.previous_fiscal_year_id ||  $scope.session.fiscal_year_id;
       configurationObject.enterprise = configuration.enterprise;
       configurationObject.project = configuration.project;
-
+      configurationObject.parentIds = $scope.session.parents.map(function (item){
+        return item.id;
+      });
 
       // Update state
       session.building = true;
@@ -82,9 +117,7 @@ angular.module('bhima.controllers')
     }
 
     function switchFiscal (){
-      $scope.session.previous_fiscal_year_id = $scope.fiscalYears.data.filter(function (item){
-        return item.id === $scope.session.fiscal_year_id;
-      })[0].previous_fiscal_year;
+      $scope.session.parents = getParents($scope.session.fiscal_year_id);
     }
 
     $scope.selectConfiguration = selectConfiguration;
