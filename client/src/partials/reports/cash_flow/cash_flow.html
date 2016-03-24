@@ -127,7 +127,7 @@
               <tr class="openning">
                 <td><strong>{{ 'CASH.FLOW.OPENNING_BALANCE' | translate }}<strong></td>
                 <td ng-repeat="flow in ReportCtrl.session.periodicData">
-                  {{ ReportCtrl.session.periodicOpenningBalance[flow.period.period_number] | currency }}
+                  {{ ReportCtrl.session.periodicOpenningBalance[flow.period.period_number] | currency:ReportCtrl.session.currency_id }}
                 </td>
               </tr>
 
@@ -141,7 +141,7 @@
               <tr ng-repeat="label in ReportCtrl.session.incomesLabels">
                 <td><strong>{{ ReportCtrl.mappingText(label) | translate }}<strong></td>
                 <td ng-repeat="flow in ReportCtrl.session.periodicData">
-                  {{ ReportCtrl.session.incomes[flow.period.period_number][label] || 0 | currency }}
+                  {{ ReportCtrl.session.incomes[flow.period.period_number][label] || 0 | currency:ReportCtrl.session.currency_id }}
                 </td>
               </tr>
 
@@ -149,7 +149,7 @@
               <tr class="label-section">
                 <td><strong>{{ 'CASH.FLOW.TOTALS' | translate | uppercase }}<strong></td>
                 <td ng-repeat="flow in ReportCtrl.session.periodicData">
-                  <b>{{ ReportCtrl.session.totalIncomes[flow.period.period_number] | currency }}</b>
+                  <b>{{ ReportCtrl.session.totalIncomes[flow.period.period_number] | currency:ReportCtrl.session.currency_id }}</b>
                 </td>
               </tr>
               
@@ -168,7 +168,7 @@
               <tr ng-repeat="label in ReportCtrl.session.expensesLabels">
                 <td><strong>{{ ReportCtrl.mappingText(label) | translate }}<strong></td>
                 <td ng-repeat="flow in ReportCtrl.session.periodicData">
-                  {{ ReportCtrl.session.expenses[flow.period.period_number][label] || 0 | currency }}
+                  {{ ReportCtrl.session.expenses[flow.period.period_number][label] || 0 | currency:ReportCtrl.session.currency_id }}
                 </td>
               </tr>
 
@@ -176,7 +176,7 @@
               <tr class="label-section">
                 <td><strong>{{ 'CASH.FLOW.TOTALS' | translate | uppercase }}<strong></td>
                 <td ng-repeat="flow in ReportCtrl.session.periodicData">
-                  <b>{{ ReportCtrl.session.totalExpenses[flow.period.period_number] | currency}}</b>
+                  <b>{{ ReportCtrl.session.totalExpenses[flow.period.period_number] | currency:ReportCtrl.session.currency_id }}</b>
                 </td>
               </tr>
 
@@ -189,7 +189,7 @@
               <tr class="label-section">
                 <td><strong>{{ 'CASH.FLOW.MONTH_BALANCE' | translate | uppercase }}<strong></td>
                 <td ng-repeat="flow in ReportCtrl.session.periodicData">
-                  <b>{{ ReportCtrl.session.totalIncomes[flow.period.period_number] - ReportCtrl.session.totalExpenses[flow.period.period_number] | currency}}</b>
+                  <b>{{ ReportCtrl.session.totalIncomes[flow.period.period_number] - ReportCtrl.session.totalExpenses[flow.period.period_number] | currency:ReportCtrl.session.currency_id }}</b>
                 </td>
               </tr>
 
@@ -197,7 +197,7 @@
               <tr class="openning">
                 <td><strong>{{ 'CASH.FLOW.CLOSING_BALANCE' | translate }}<strong></td>
                 <td ng-repeat="flow in ReportCtrl.session.periodicData">
-                  {{ ReportCtrl.session.periodicBalance[flow.period.period_number] | currency }}
+                  {{ ReportCtrl.session.periodicBalance[flow.period.period_number] | currency:ReportCtrl.session.currency_id }}
                 </td>
               </tr>
 
