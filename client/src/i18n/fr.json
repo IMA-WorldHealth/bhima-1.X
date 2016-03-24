@@ -175,17 +175,18 @@
   "LANGUAGE"        : "Langue"
   },
 "BALANCE_MENSUELLE": {
-   "CHOOSE_CLASS"    : "Choisissez une classe",
-   "CHOOSE_PERIOD"   : "Choisissez une periode",
-   "CLASS"           : "Classe",
-   "INFO_FILL_INPUT" : "Veuillez selectionner la periode et la classe",
-   "LABEL"           : "Intitulé",
-   "MONTH_MOVEMENT"  : "Mouvement du mois",
-   "NEW_SOLD"        : "Nouveau Solde",
-   "NO_DATA"         : "Il n'y a pas des donnees pour la periode!",
-   "OLD_SOLD"        : "Ancien Solde",
-   "REPORT"          : "Rapport Balance Mensuelle",
-   "TITLE"           : "Balance Mensuelle par Classe"
+   "CHOOSE_CLASS"        : "Choisissez une classe",
+   "CHOOSE_PERIOD"       : "Choisissez une periode",
+   "CHOOSE_PERIOD_PLAGE" : "Choisissez une plage de periode",
+   "CLASS"               : "Classe",
+   "INFO_FILL_INPUT"     : "Veuillez selectionner la periode et la classe",
+   "LABEL"               : "Intitulé",
+   "MONTH_MOVEMENT"      : "Mouvement du mois",
+   "NEW_SOLD"            : "Nouveau Solde",
+   "NO_DATA"             : "Il n'y a pas des donnees pour la periode!",
+   "OLD_SOLD"            : "Ancien Solde",
+   "REPORT"              : "Rapport Balance Mensuelle",
+   "TITLE"               : "Balance Mensuelle par Classe"
    },
 "BILAN" : {
   "BUILD_BILAN"     : "Génération bilan",
@@ -2636,6 +2637,7 @@
   "ALL"         : "Tous les rapports SNIS",
   "BACK"        : "Retour rapports snis",
   "DESCRIPTION" : "Gestion des données pour le SNIS",
+  "GENERATE"    : "Génération des rapports",
   "LABEL"       : "SNIS rapport",
   "NEW"         : "Nouveau rapport SNIS ",
   "NEXT"        : "Suivant",
