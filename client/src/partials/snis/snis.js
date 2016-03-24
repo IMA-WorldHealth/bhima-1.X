@@ -1,59 +1,47 @@
 angular.module('bhima.controllers')
-.controller('snis', [
-  '$scope',
-  '$q',
-  '$translate',
-  '$http',
-  '$location',
-  'validate',
-  'messenger',
-  'connect',
-  'appstate',
-  function ($scope, $q, $translate, $http, $location, validate, messenger, connect, appstate) {
-    var dependencies = {};
+.controller('SnisController', SnisController);
 
-    // dependencies.reports = {
-    //   query : '/snis/getAllReports'
-    // };
+SnisController.$inject = ['$location', 'validate', 'SessionService'];
 
-    dependencies.reports = {
-      query : {
-        tables : {
-          'mod_snis_rapport' : { columns : ['id', 'date'] },
-          'project'          : { columns : ['name'] }
-        },
-        join : ['mod_snis_rapport.id_snis_hopital=project.id']
-      }
-    };
+function SnisController($location, validate, SessionService) {
+  var vm = this,
+      session = vm.session = {},
+      dependencies = {};
 
-    appstate.register('project', function (project) {
-      $scope.project = project;
-      dependencies.reports.query.where = ['project.id='+$scope.project.id];
-      validate.process(dependencies, ['reports'])
-      .then(init);
-    });
-
-    function init(model) {
-      angular.extend($scope, model);
+  dependencies.reports = {
+    query : {
+      tables : {
+        'mod_snis_rapport' : { columns : ['id', 'date'] },
+        'project'          : { columns : ['name'] }
+      },
+      join : ['mod_snis_rapport.id_snis_hopital=project.id']
     }
+  };
 
-    $scope.print = function (obj) {
+  /** session variables */
 
-    };
 
-    $scope.edit = function (obj) {
-      $location.path('/snis/edit_report/' + obj.id);
-    };
+  /** startup the module */
+  startup();
 
-    $scope.delete = function (obj) {
-      $http.delete('/snis/deleteReport/' + obj.id)
-      .success(function (res) {
-        validate.refresh(dependencies, ['reports'])
-        .then(init)
-        .then(function () {
-          messenger.success('[succes] Rapport supprime avec succes', true);
-        });
-      });
-    };
+  function startup() {
+    vm.project = SessionService.project;
+    dependencies.reports.query.where = ['project.id=' + vm.project.id];
+    validate.process(dependencies, ['reports'])
+    .then(init);
   }
-]);
+
+  function init(model) {
+    angular.extend(vm, model);
+  }
+
+  vm.seeForPrint = function (obj) {
+    session.action = 'see_for_print';
+    session.selected = obj;
+  };
+
+  vm.edit = function (obj) {
+    $location.path('/snis/edit_report/' + obj.id);
+  };
+
+}

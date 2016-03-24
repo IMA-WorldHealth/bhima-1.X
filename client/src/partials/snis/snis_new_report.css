@@ -23,3 +23,36 @@ table thead .age td { border-right: 1px solid #999; }
 
 .separate-row tr { display: block; margin-bottom: 5em;font-style: italic;text-align: right; }
 .separate-row-2m tr { display: block; margin-bottom: 2em;font-style: italic;text-align: right; }
+
+.snis-report-body {
+	margin-top: 50px;
+}
+
+
+.snis-report label.input-group-addon, 
+.snis-report input, 
+.snis-report textarea {
+	background-color: #FFF !important;
+	cursor: text !important;
+	box-shadow: none !important;
+	border: none !important;
+	padding: 0 !important;
+	border-radius: 0;
+	height: auto;
+	padding-left: 5px;
+}
+.snis-report label.input-group-addon {
+	border-bottom: 1px solid #efefef !important;
+	border-right: 1px solid #efefef !important;
+	text-align: right;
+	padding-right: 5px !important;
+}
+.snis-report input {
+	border-bottom: 1px solid #efefef !important;
+	font-weight: bolder;
+	text-align: center;
+}
+.snis-report fieldset {
+	border: none !important;
+	margin-bottom: 15px;
+}

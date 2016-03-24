@@ -2637,6 +2637,7 @@
   "ALL"         : "Tous les rapports SNIS",
   "BACK"        : "Retour rapports snis",
   "DESCRIPTION" : "Gestion des données pour le SNIS",
+  "GENERATE"    : "Génération des rapports",
   "LABEL"       : "SNIS rapport",
   "NEW"         : "Nouveau rapport SNIS ",
   "NEXT"        : "Suivant",
