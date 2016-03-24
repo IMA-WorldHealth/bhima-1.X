@@ -1,0 +1,58 @@
+<header class="hidden-print">
+	<div class="row">
+		<div class="col-xs-3">
+			<a href="#/snis/" class="btn btn-default pull-left"><i class="glyphicon glyphicon-chevron-left"></i> {{ "SNIS.BACK" | translate }}</a>
+		</div>
+		<div class="col-xs-6 text-center">
+			<a ng-href="#/snis/print_report/{{ SnisCtrl.session.reportId }}/1" class="btn btn-default">1</a>
+			<a ng-href="#/snis/print_report/{{ SnisCtrl.session.reportId }}/2" class="btn btn-default">2</a>
+			<a ng-href="#/snis/print_report/{{ SnisCtrl.session.reportId }}/3" class="btn btn-default">3</a>
+			<a ng-href="#/snis/print_report/{{ SnisCtrl.session.reportId }}/4" class="btn btn-default">4</a>
+			<a ng-href="#/snis/print_report/{{ SnisCtrl.session.reportId }}/5" class="btn btn-default">5</a>
+			<a ng-href="#/snis/print_report/{{ SnisCtrl.session.reportId }}/6" class="btn btn-default">6</a>
+			<a ng-href="#/snis/print_report/{{ SnisCtrl.session.reportId }}/7" class="btn btn-default">7</a>
+			<a ng-href="#/snis/print_report/{{ SnisCtrl.session.reportId }}/8" class="btn btn-default">8</a>
+			<a ng-href="#/snis/print_report/{{ SnisCtrl.session.reportId }}/9" class="btn btn-default">9</a>
+		</div>
+		<div class="col-xs-3">
+			<div class="btn-group pull-right">
+				<button class="btn btn-default" ng-click="SnisCtrl.print()">
+					<i class="glyphicon glyphicon-print"></i> 
+					{{ "UTIL.PRINT" | translate }} 
+				</button>
+			</div>
+		</div>
+	</div>
+</header>
+
+<section class="snis-report snis-report-body">
+<div id="canvas-snis" ng-switch on="SnisCtrl.session.section">
+	<div ng-switch-default>
+		<ng-include src="'partials/snis/reports/step1.html'" scope="" onload="SnisCtrl.loaded()"></ng-include>
+	</div>
+	<div ng-switch-when="2">
+		<ng-include src="'partials/snis/reports/step2.html'" scope="" onload="SnisCtrl.loaded()"></ng-include>
+	</div>
+	<div ng-switch-when="3">
+		<ng-include src="'partials/snis/reports/step3.html'" scope="" onload="SnisCtrl.loaded()"></ng-include>
+	</div>
+	<div ng-switch-when="4">
+		<ng-include src="'partials/snis/reports/step4.html'" scope="" onload="SnisCtrl.loaded()"></ng-include>
+	</div>
+	<div ng-switch-when="5">
+		<ng-include src="'partials/snis/reports/step5.html'" scope="" onload="SnisCtrl.loaded()"></ng-include>
+	</div>
+	<div ng-switch-when="6">
+		<ng-include src="'partials/snis/reports/step6.html'" scope="" onload="SnisCtrl.loaded()"></ng-include>
+	</div>
+	<div ng-switch-when="7">
+		<ng-include src="'partials/snis/reports/step7.html'" scope="" onload="SnisCtrl.loaded()"></ng-include>
+	</div>
+	<div ng-switch-when="8">
+		<ng-include src="'partials/snis/reports/step8.html'" scope="" onload="SnisCtrl.loaded()"></ng-include>
+	</div>
+	<div ng-switch-when="9">
+		<ng-include src="'partials/snis/reports/step9.html'" scope="" onload="SnisCtrl.loaded()"></ng-include>
+	</div>
+</div>
+</section>

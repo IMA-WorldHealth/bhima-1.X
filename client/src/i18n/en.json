@@ -2632,6 +2632,7 @@
   "ALL"         : "All SNIS reports",
   "BACK"        : "Back",
   "DESCRIPTION" : "Managing data for SNIS",
+  "GENERATE"    : "Generate reports",
   "LABEL"       : "SNIS report",
   "NEXT"        : "Next",
   "NEW"         : "New SNIS report ",
