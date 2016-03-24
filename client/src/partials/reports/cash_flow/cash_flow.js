@@ -63,7 +63,7 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
   vm.setSelectedCash = setSelectedCash;
   vm.fill            = fill;
   vm.reconfigure     = reconfigure;
-  vm.mappingText     = mappingText;
+  vm.mappingText     = transactionSource.mappingText;
   vm.print           = function () { print(); };
 
   // setting date default for a year
@@ -294,26 +294,8 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
     }
   }
 
-  function mappingText(text) {
-    var sources = {
-      'group_deb_invoice'     : 'CASH.FLOW.GROUP_DEB_INVOICE',
-      'pcash_convention'      : 'CASH.FLOW.CONVENTION_PAYMENT',
-      'pcash_transfert'       : 'CASH.FLOW.PATIENT_PAYMENT',
-      'generic_income'        : 'CASH.FLOW.GENERIC_INCOME',
-      'generic_expense'       : 'CASH.FLOW.GENERIC_EXPENSE',
-      'indirect_purchase'     : 'CASH.FLOW.INDIRECT_PURCHASE',
-      'pcash_employee'        : 'CASH.FLOW.PCASH_EMPLOYEE',
-      'cash_return'           : 'CASH.FLOW.CASH_RETURN',
-      'cotisation_paiement'   : 'CASH.FLOW.COTISATION_PAYMENT',
-      'tax_payment'           : 'CASH.FLOW.TAX_PAYMENT',
-      'salary_advance'        : 'CASH.FLOW.SALARY_ADVANCE'
-    };
-
-    return sources[text] ? sources[text] : text; 
-  }  
-
-  function error (err) {
-    messenger.danger(err.toString());
+  function error(err) {
+    console.log(err);
   }
 
 }

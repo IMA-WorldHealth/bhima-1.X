@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 liquidityFlowReportController.$inject = [
   '$q', '$http', 'connect', 'validate', 'messenger', 'util', 'appcache',
-  'exchange', 'SessionService', 'transactionSource', '$translate'
+  'exchange', 'SessionService', 'transactionSource'
 ];
 
 /**
@@ -11,7 +11,7 @@ liquidityFlowReportController.$inject = [
   * This controller is responsible of liquidity flow report, that report include
   * all incomes minus all depenses
   */
-function liquidityFlowReportController ($q, $http, connect, validate, messenger, util, Appcache, exchange, SessionService, transactionSource, $translate) {
+function liquidityFlowReportController ($q, $http, connect, validate, messenger, util, Appcache, exchange, SessionService, transactionSource) {
   var vm = this,
       session = vm.session = {},
       dependencies = {},
@@ -64,7 +64,7 @@ function liquidityFlowReportController ($q, $http, connect, validate, messenger,
   vm.fill            = fill;
   vm.convert         = convert;
   vm.reconfigure     = reconfigure;
-  vm.getSource       = getSource;
+  vm.mappingText     = transactionSource.mappingText;
   vm.showDetails     = showDetails;
 
   vm.print           = function () { print(); };
@@ -142,10 +142,6 @@ function liquidityFlowReportController ($q, $http, connect, validate, messenger,
     session.currency = SessionService.enterprise.currency_id;
     session.loading = false;
   }
-
-  function sumDebit (a, b) { return b.debit + a; }
-  function sumCredit (a, b) { return b.credit + a; }
-  function sumValue (a, b) { return b.value + a; }
 
   function convert (){
     session.sum_debit  = 0;
@@ -239,14 +235,4 @@ function liquidityFlowReportController ($q, $http, connect, validate, messenger,
     }
   }
 
-  /**
-    * getSource
-    * This function translate humanly a transaction type
-    * @param : txt = string correponding to a transaction type
-    */
-  function getSource (txt) {
-    // FIXME: translation broken
-    // return translationSource.source(txt);
-    return txt;
-  }
 }
