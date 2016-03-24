@@ -174,17 +174,18 @@
   "LANGUAGE"        : "Language"
   },
 "BALANCE_MENSUELLE": {
-   "CHOOSE_CLASS"    : "Choose a class",
-   "CHOOSE_PERIOD"   : "Choose a period",
-   "CLASS"           : "Class",
-   "INFO_FILL_INPUT" : "Please select period and class",
-   "LABEL"           : "Label",
-   "MONTH_MOVEMENT"  : "Month Movement",
-   "NEW_SOLD"        : "New Balance",
-   "NO_DATA"         : "There is no data for that period!",
-   "OLD_SOLD"        : "Old Balance",
-   "REPORT"          : "Monthly Balance Report",
-   "TITLE"           : "Monthly Balance by Class"
+   "CHOOSE_CLASS"        : "Choose a class",
+   "CHOOSE_PERIOD"       : "Choose a period",
+   "CHOOSE_PERIOD_PLAGE" : "Choose a period plage",
+   "CLASS"               : "Class",
+   "INFO_FILL_INPUT"     : "Please select period and class",
+   "LABEL"               : "Label",
+   "MONTH_MOVEMENT"      : "Month Movement",
+   "NEW_SOLD"            : "New Balance",
+   "NO_DATA"             : "There is no data for that period!",
+   "OLD_SOLD"            : "Old Balance",
+   "REPORT"              : "Monthly Balance Report",
+   "TITLE"               : "Monthly Balance by Class"
    },
 "BILAN" : {
   "BUILD_BILAN"     : "Build bilan",

@@ -1,14 +1,41 @@
 <div ng-switch="ReportCtrl.state">
   <div ng-switch-default>
-    <main class="extend">
+    <main class="extend col-xs-4 col-md-offset-4">
       <div class="panel panel-default">
         <div class="panel-heading">
           <strong>{{ "REPORT.CONFIGURE_REPORT" | translate }}:</strong> {{ "BALANCE_MENSUELLE.TITLE" | translate }}
         </div>
 
         <form class="panel-body" name="ConfigForm" novalidate>
-
+            
             <div class="form-group">
+              <label class="checkbox">
+                <input type="checkbox" ng-model="ReportCtrl.isPeriodPlage"> 
+                {{ "BALANCE_MENSUELLE.CHOOSE_PERIOD_PLAGE" | translate }}
+              </label>
+            </div>
+
+            <div ng-if="ReportCtrl.isPeriodPlage">
+              <div class="form-group">
+                <div class="input-group">
+                  <span class="input-group-addon">
+                    <i class="glyphicon glyphicon-calendar"></i> {{ 'UTIL.DATE_FROM' | translate }}
+                  </span>
+                  <input class="form-bhima" type="month" ng-model="ReportCtrl.session.periodeFrom" required >
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="input-group">
+                  <span class="input-group-addon">
+                    <i class="glyphicon glyphicon-calendar"></i> {{ 'UTIL.DATE_TO' | translate }}
+                  </span>
+                  <input class="form-bhima" type="month" ng-model="ReportCtrl.session.periodeTo" required >
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group" ng-if="!ReportCtrl.isPeriodPlage">
               <label class="required">
                 {{ "BALANCE_MENSUELLE.CHOOSE_PERIOD" | translate }}
               </label>
