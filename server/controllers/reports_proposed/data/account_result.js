@@ -1,5 +1,6 @@
 var q       = require('q');
 var db      = require('../../../lib/db');
+var additionnalConfig = require('./resultConfig');
 var numeral = require('numeral');
 var formatDollar = '$0,0.00';
 var resultAccountDate = new Date();
@@ -23,12 +24,19 @@ exports.compile = function (options) {
     return (isCharge == 1)? somDebit - somCredit : somCredit - somDebit;
   }
 
+  infos.references = [];
+
   //populating context object
   context.reportDate = resultAccountDate.toDateString();
   context.options = options;
   context.i18nAccountResult = i18nAccountResult;
 
-  db.exec(sql, [options.fy, 1, 1])
+
+  db.exec("SELECT * FROM reference")
+  .then(function (references){
+    infos.references = references;
+    return db.exec(sql, [options.fy, 1, 1]);
+  })  
   .then(function (currentAccountDetails) {
     infos.currentAccountDetails = currentAccountDetails;
     return q.all(options.parentIds.map(function (fid){
@@ -66,9 +74,80 @@ exports.compile = function (options) {
       return item.sectionResultIsCharge === 0;
     });
 
-    context.chargeSide = processCharge(chargeData);
-    context.profitSide = processProduit(produitData);
+    context.chargeSide = processComplement(processCharge(chargeData));
+    context.profitSide = processComplement(processProduit(produitData));
 
+    function processComplement (data){      
+
+      data.forEach(function (section){
+
+        //array of all reference ids
+        var refIds = section.refs.map(function (item){
+          return item.referenceId;
+        });
+
+        //getting missed references
+        var missedRefs = infos.references.filter(function (item){
+          return item.section_resultat_id === section.sectionResultId && refIds.indexOf(item.id) === -1;
+        });
+
+        //setting attribute to the property
+        var formatedRefs = missedRefs.map(function (item){
+
+          var newItem = {
+            referenceId: item.id,
+            referenceAbbr: item.ref,
+            referencePosition : item.position,
+            referenceLabel: item.text,
+            net : 0,
+            net_view : numeral(item.net).format(formatDollar)
+          };
+
+          var referenceMeta = null;
+
+          //get missed reference metadata from the resultconfig.json
+          referenceMeta = getReferenceMeta(item.ref);   
+
+          if(referenceMeta){
+
+            infos.previous.forEach(function (previousYearData, index){
+              newItem['previous' + index] = 0;
+              newItem['previous_view' + index] = numeral(newItem['previous' + index]).format(formatDollar);
+            });
+
+          }else{
+            //previous net processing
+            infos.previous.forEach(function (previousYearData, index){
+              newItem['previous' + index] = 0;
+              newItem['previous_view' + index] = numeral(newItem['previous' + index]).format(formatDollar);
+            });
+          }
+
+          return newItem;
+        });
+
+        // init to a empty array if formatedRefs is undefined
+        formatedRefs = formatedRefs || [];
+
+        //concat the the section ref
+        section.refs = section.refs.concat(formatedRefs);
+
+        //sorting the reference array base on position
+        section.refs.sort(function (a, b) {
+          return a.referencePosition - b.referencePosition;
+        });
+      });
+
+      return data;
+    }
+
+    function getReferenceMeta (abbr){
+      var elements = additionnalConfig.filter(function (conf){
+        return conf.ref === abbr;
+      });
+
+      return elements[0];
+    }
 
     function processCharge (tbl){
       var currents = tbl.currentAccountDetails;
@@ -87,9 +166,9 @@ exports.compile = function (options) {
         section.refs = getReferences(section, currents);
 
         section.refs.forEach(function (item){
-            item.net = getNet(item, currents, section.sectionResultIsCharge, doBalance);
-            item.net_view = numeral(item.net).format(formatDollar);
-            section.total += item.net;
+          item.net = getNet(item, currents, section.sectionResultIsCharge, doBalance);
+          item.net_view = numeral(item.net).format(formatDollar);
+          section.total += item.net;
 
             //previous net processing
             infos.previous.forEach(function (previousYearData, index){

@@ -1,0 +1,171 @@
+[
+	{
+		"ref" : "TB",
+		"after" : "TA",
+		"charges" : [{"ref" : "RA", "variation" : 0}, {"ref" : "RB", "variation" : 1}],
+		"produits" : [{"ref" : "TA", "variation" : 0}],
+		"type" : "MAR"
+	},
+
+	{
+		"ref" : "TG",
+		"after" : "TF",
+		"charges" : [{"ref" : "RC", "variation" : 0}, {"ref" : "RD", "variation" : 1}],
+		"produits" : [
+						{"ref" : "TC", "variation" : 0},
+						{"ref" : "TD", "variation" : 0},
+						{"ref" : "TE", "variation" : 0},
+						{"ref" : "TF", "variation" : 0}
+					],
+		"type" : "MAR"
+	},
+
+	{
+		"ref" : "TI",
+		"after" : "TH",
+		"charges" : [],
+		"produits" : [
+						{"ref" : "TA", "variation" : 0},
+						{"ref" : "TC", "variation" : 0},
+						{"ref" : "TD", "variation" : 0},
+						{"ref" : "TH", "variation" : 0}
+					],
+		"type" : "CHI"
+	},
+
+	{
+		"ref" : "TJ",
+		"after" : "TI",
+		"charges" : [],
+		"produits" : [],
+		"type" : "INF"
+	},
+
+	{
+		"ref" : "TN",
+		"after" : "TL",
+		"charges" : [
+						{"ref" : "RE", "variation" : 0},
+						{"ref" : "RH", "variation" : 1},
+						{"ref" : "RI", "variation" : 0},
+						{"ref" : "RJ", "variation" : 0},
+						{"ref" : "RK", "variation" : 0},
+						{"ref" : "RL", "variation" : 0}
+					],
+		"produits" : [
+						{"ref" : "TK", "variation" : 0},
+						{"ref" : "TL", "variation" : 0}
+					],
+		"type" : "VAL"
+	},
+
+	{
+		"ref" : "TQ",
+		"after" : "TN",
+		"charges" : [
+						{"ref" : "RP", "variation" : 0},
+						{"ref" : "RQ", "variation" : 0}
+					],
+		"produits" : [
+						{"ref" : "TN", "variation" : 0}
+					],
+		"type" : "EXC"
+	},
+
+	{
+		"ref" : "TX",
+		"after" : "TW",
+		"charges" : [
+						{"ref" : "RW", "variation" : 0}
+					],
+		"produits" : [
+						{"ref" : "TW", "variation" : 0}
+					],
+		"type" : "RES"
+	},
+
+	{
+		"ref" : "UG",
+		"after" : "UF",
+		"charges" : [
+						{"ref" : "SF", "variation" : 0}
+					],
+		"produits" : [
+						{"ref" : "UF", "variation" : 0}
+					],
+		"type" : "RES"
+	},
+
+	{
+		"ref" : "UH",
+		"after" : "UG",
+		"produits" : [
+						{"ref" : "UF", "variation" : 0},
+						{"ref" : "TW", "variation" : 0}
+					],
+		"type" : "TOT"
+	},	
+
+	{
+		"ref" : "UI",
+		"after" : "UH",
+		"charges" : [
+						{"ref" : "SH", "variation" : 0}
+					],
+		"produits" : [
+						{"ref" : "UH", "variation" : 0}
+					],
+		"type" : "RES"
+	},	
+
+	{
+		"ref" : "UJ",
+		"after" : "UI",
+		"produits" : [],
+		"charges" : [],
+		"type" : "INF"
+	},
+
+	{
+		"ref" : "UP",
+		"after" : "UO",
+		"charges" : [
+						{"ref" : "SO", "variation" : 0}
+					],
+		"produits" : [
+						{"ref" : "UO", "variation" : 0}
+					],
+		"type" : "RES"
+	},
+
+	{
+		"ref" : "UZ",
+		"after" : "UT",
+		"charges" : [
+						{"ref" : "ST", "variation" : 0}
+					],
+		"produits" : [
+						{"ref" : "UT", "variation" : 0}
+					],
+		"type" : "RES"
+	},
+
+	{
+		"ref" : "SH",
+		"after" : "UG",
+		"charges" : [
+						{"ref" : "SF", "variation" : 0}
+					],
+		"type" : "TOT"
+	},
+
+	{
+		"ref" : "SS",
+		"after" : "SR",
+		"charges" : [
+						{"ref" : "SR", "variation" : 0},
+						{"ref" : "SQ", "variation" : 0}
+					],
+		"type" : "TOT"
+	}
+]
