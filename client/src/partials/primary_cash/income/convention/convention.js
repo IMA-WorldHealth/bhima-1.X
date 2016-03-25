@@ -178,7 +178,7 @@ function PrimaryCashConventionController ($q, $location, $routeParams, validate,
           items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : vm.overviews[i].balance, credit : 0, inv_po_id : vm.overviews[i].inv_po_id, document_uuid : vm.overviews[i].inv_po_id });
         }else{
           cost_received+=vm.overviews[i].balance;
-          items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : cost_received, credit : 0, inv_po_id : vm.overviews[i].inv_po_id, document_uuid : vm.overviews[i].inv_po_id});
+          items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : cost_received, credit : 0, inv_po_id : vm.overviews[i].inv_po_id, document_uuid : vm.overviews[i].inv_po_id });
           break;
         }
       }
@@ -188,10 +188,10 @@ function PrimaryCashConventionController ($q, $location, $routeParams, validate,
         var value = (vm.overviews[j].balance * rate.rate);
         cost_received -= value;
         if (cost_received >= 0) {
-          items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : value, credit : 0, inv_po_id : vm.overviews[j].inv_po_id, document_uuid : vm.overviews[j].inv_po_id});
+          items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : value, credit : 0, inv_po_id : vm.overviews[j].inv_po_id, document_uuid : vm.overviews[j].inv_po_id });
         } else {
           cost_received += value;
-          items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : cost_received, credit : 0, inv_po_id : vm.overviews[j].inv_po_id, document_uuid : vm.overviews[j].inv_po_id});
+          items.push({uuid : uuid(), primary_cash_uuid : result.config.data.data[0].uuid, debit : cost_received, credit : 0, inv_po_id : vm.overviews[j].inv_po_id, document_uuid : vm.overviews[j].inv_po_id });
           break;
         }
       }

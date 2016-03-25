@@ -208,16 +208,16 @@ function debitorGroup(id) {
             'pj.account_id, pj.deb_cred_uuid, pj.currency_id, ' +
             'pj.doc_num, pj.trans_id, pj.description, pj.comment ' +
           'FROM posting_journal AS pj ' +
+          'WHERE pj.inv_po_id IN ("' + invoices.join('","') + '") ' +
         ') UNION (' +
           'SELECT gl.inv_po_id, gl.trans_date, gl.debit, ' +
             'gl.credit, gl.debit_equiv, gl.credit_equiv, ' +
             'gl.account_id, gl.deb_cred_uuid, gl.currency_id, ' +
             'gl.doc_num, gl.trans_id, gl.description, gl.comment ' +
           'FROM general_ledger AS gl ' +
+          'WHERE gl.inv_po_id IN ("' + invoices.join('","') + '") ' +
         ')' +
-      ') AS t JOIN sale AS s on t.inv_po_id = s.uuid ' +
-      'WHERE t.inv_po_id IN ("' + invoices.join('","') + '") ' +
-      'AND t.account_id=? ' +
+      ') AS t JOIN sale AS s on t.inv_po_id = s.uuid AND t.account_id=? ' +
       'GROUP BY t.inv_po_id;\n';
 
     return db.exec(sql, [accountId]);
